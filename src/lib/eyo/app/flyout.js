@@ -223,7 +223,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
   /**
    * Return the deletion rectangle for this flyout in viewport coordinates.
    * Edython : add management of the 0 width rectange
-   * @return {goog.math.Rect} Rectangle in which to delete.
+   * @return {eYo.Rect} Rectangle in which to delete.
    */
   clientRect: {
     get () {

@@ -1757,7 +1757,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
    * As the shape is not the same comparing to Blockly's default,
    * the bounding rect changes too.
    * Coordinate system: board coordinates.
-   * @return {!goog.math.Rect}
+   * @return {!eYo.Rect}
    *    Object with top left and bottom right coordinates of the bounding box.
    */
   boundingRect: {
@@ -1917,20 +1917,17 @@ eYo.Brick.UI.prototype.bumpNeighbours_ = function() {
  * @return {Object|eYo.VOID|null}
  */
 eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
-  var b4d = this.brick_.board
-  if (!b4d) {
+  var b3d = this.brick_.board
+  if (!b3d) {
     return
   }
   // if we clicked on a field, no connection returned
-  var gesture = b4d.getGesture(e)
+  var gesture = b3d.getGesture(e)
   if (gesture && gesture.startField_) {
     return
   }
-  var xy = b4d.xyEventInBoard(e)
-  xy = goog.math.Coordinate.difference(xy, b4d.originInDesk)
-  xy.scale(1 / b4d.scale)
-  var rect = this.boundingRect
-  xy = goog.math.Coordinate.difference(xy, rect.getTopLeft())
+  var rect = this.boundingRect // in board coordinates
+  var xy = b3d.xyEventInBoard(e).backward(rect.topLeft)
   var R
   var magnet = this.brick_.someInputMagnet(magnet => {
     if (!magnet.disabled_ && (!magnet.hidden_ || magnet.wrapped_)) {
@@ -1941,49 +1938,49 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
           if (targetM4t) {
             return targetM4t
           }
-          R = new goog.math.Rect(
+          R = new eYo.Rect(
             magnet.x + eYo.Unit.x / 2,
             magnet.y,
             target.width - eYo.Unit.x,
             target.height
           )
-          if (R.contains(xy)) {
+          if (xy.in(R)) {
             return magnet
           }
         }
         if (magnet.slot && magnet.slot.bindField) {
-          R = new goog.math.Rect(
+          R = new eYo.Rect(
             magnet.x,
             magnet.y + eYo.Padding.t,
             magnet.w * eYo.Unit.x,
             eYo.Font.height
           )
         } else if (magnet.optional_ || magnet.s7r_) {
-          R = new goog.math.Rect(
+          R = new eYo.Rect(
             magnet.x - eYo.Unit.x / 4,
             magnet.y + eYo.Padding.t,
             1.5 * eYo.Unit.x,
             eYo.Font.height
           )
         } else {
-          R = new goog.math.Rect(
+          R = new eYo.Rect(
             magnet.x + eYo.Unit.x / 4,
             magnet.y + eYo.Padding.t,
             (magnet.w - 1 / 2) * eYo.Unit.x,
             eYo.Font.height
           )
         }
-        if (R.contains(xy)) {
+        if (xy.in(R)) {
           return magnet
         }
       } else if (magnet.isFoot || magnet.isSuite) {
-        R = new goog.math.Rect(
+        R = new eYo.Rect(
           magnet.x,
           magnet.y - eYo.Style.Path.width,
           eYo.Span.tabWidth,
           1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
         )
-        if (R.contains(xy)) {
+        if (xy.in(R)) {
           return magnet
         }
       }
@@ -1992,68 +1989,68 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
   if (magnet) {
     return magnet
   } else if ((magnet = this.brick_.head_m) && !magnet.hidden) {
-    R = new goog.math.Rect(
+    R = new eYo.Rect(
       magnet.x,
       magnet.y - 2 * eYo.Style.Path.width,
       rect.width,
       1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
     )
-    if (R.contains(xy)) {
+    if (xy.in(R)) {
       return magnet
     }
   }
   if ((magnet = this.brick_.foot_m) && !magnet.hidden) {
     if (rect.height > eYo.Unit.y) { // Not the cleanest design
-      R = new goog.math.Rect(
+      R = new eYo.Rect(
         magnet.x,
         magnet.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
         eYo.Span.tabWidth + eYo.Style.Path.r, // R U sure?
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     } else {
-      R = new goog.math.Rect(
+      R = new eYo.Rect(
         magnet.x,
         magnet.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
         rect.width,
         1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
       )
     }
-    if (R.contains(xy)) {
+    if (xy.in(R)) {
       return magnet
     }
   }
   if ((magnet = this.brick_.suite_m) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
-    R = new goog.math.Rect(
+    R = new eYo.Rect(
       magnet.x + eYo.Unit.x / 2 - r,
       magnet.y + r,
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
-    if (R.contains(xy)) {
+    if (xy.in(R)) {
       return magnet
     }
   }
   if ((magnet = this.brick_.left_m) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
-    R = new goog.math.Rect(
+    R = new eYo.Rect(
       magnet.x + eYo.Unit.x / 2 - r,
       magnet.y + r,
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
-    if (R.contains(xy)) {
+    if (xy.in(R)) {
       return magnet
     }
   }
   if ((magnet = this.brick_.right_m) && !magnet.hidden) {
-    R = new goog.math.Rect(
+    R = new eYo.Rect(
       magnet.x + eYo.Unit.x / 2 - r,
       magnet.y + r,
       2 * r,
       eYo.Unit.y - 2 * r // R U sure?
     )
-    if (R.contains(xy)) {
+    if (xy.in(R)) {
       return magnet
     }
   }

@@ -422,7 +422,7 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
  * Return the deletion rectangle for this flyout in viewport coordinates.
  * Edython : add management of the 0 width rectange
  * @param {!eYo.Flyout} flyout
- * @return {goog.math.Rect} Rectangle in which to delete.
+ * @return {eYo.Rect} Rectangle in which to delete.
  */
 eYo.Svg.prototype.flyoutClientRect = function(flyout) {
   var g = flyout.dom.root_
@@ -443,10 +443,10 @@ eYo.Svg.prototype.flyoutClientRect = function(flyout) {
   // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
   var BIG_NUM = 1000000000
   if (flyout.anchor === eYo.Flyout.AT_LEFT) {
-    return new goog.math.Rect(x - BIG_NUM, -BIG_NUM, BIG_NUM + width,
+    return new eYo.Rect(x - BIG_NUM, -BIG_NUM, BIG_NUM + width,
         BIG_NUM * 2);
   } else {  // Right
-    return new goog.math.Rect(x, -BIG_NUM, BIG_NUM + width, BIG_NUM * 2);
+    return new eYo.Rect(x, -BIG_NUM, BIG_NUM + width, BIG_NUM * 2);
   }
 }
 

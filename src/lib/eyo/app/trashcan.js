@@ -15,10 +15,9 @@ goog.provide('eYo.Trashcan')
 
 goog.require('eYo')
 
-goog.require('goog.Timer');
-goog.require('goog.dom');
-goog.require('goog.math');
-goog.require('goog.math.Rect');
+goog.require('goog.Timer')
+goog.require('goog.dom')
+goog.require('goog.math')
 
 
 /**
@@ -171,7 +170,7 @@ eYo.Trashcan.prototype.place = function() {
 
 /**
  * Return the deletion rectangle for this trash can.
- * @return {goog.math.Rect} Rectangle in which to delete.
+ * @return {eYo.Rect} Rectangle in which to delete.
  */
 eYo.Trashcan.prototype.getClientRect = function() {
   if (!this.dom) {

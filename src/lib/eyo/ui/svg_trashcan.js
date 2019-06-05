@@ -220,6 +220,6 @@ eYo.Svg.prototype.trashcanClientRect = function(trashcan) {
   var top = trashRect.top + trashcan.SPRITE_TOP_ - trashcan.MARGIN_HOTSPOT_
   var width = trashcan.WIDTH_ + 2 * trashcan.MARGIN_HOTSPOT_;
   var height = trashcan.LID_HEIGHT_ + trashcan.BODY_HEIGHT_ + 2 * trashcan.MARGIN_HOTSPOT_
-  return new goog.math.Rect(left, top, width, height);
+  return new eYo.Rect().xySet(left, top, width, height)
 }
 

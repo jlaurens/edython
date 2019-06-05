@@ -29,12 +29,20 @@ eYo.Dom = function (desk) {
 goog.inherits(eYo.Dom, eYo.Driver)
 
 /**
+ * The document scroll.
+ * @return {eYo.Where}
+ */
+eYo.Dom.getDocumentScroll = () => {
+  return new eYo.Where(goog.dom.getDocumentScroll())
+}
+
+/**
  * The TOUCH_MAP lookup dictionary specifies additional touch events to fire,
  * in conjunction with mouse events.
  * @type {Object}
  */
 eYo.Dom.TOUCH_MAP = {}
-if (window && window.WhereerEvent) {
+if (window && window.PointerEvent) {
   Object.defineProperties(eYo.Dom.TOUCH_MAP, {
     mousedown: { value: ['pointerdown'] },
     mouseenter: { value: ['pointerenter'] },
@@ -123,7 +131,7 @@ eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
     })
   }
   var bindData = []
-  if (window && window.WhereerEvent && (name in eYo.Dom.TOUCH_MAP)) {
+  if (window && window.PointerEvent && (name in eYo.Dom.TOUCH_MAP)) {
     eYo.Dom.TOUCH_MAP[name].forEach(type => {
       node.addEventListener(type, wrapFunc, false)
       bindData.push([node, type, wrapFunc])

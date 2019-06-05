@@ -2874,7 +2874,7 @@ eYo.Brick.prototype.unlock = function (shallow) {
  * @return {boolean}
  */
 eYo.Brick.prototype.inVisibleArea = function () {
-  var area = this.ui && this.ui.distanceFromVisible
+  var area = this.ui && this.ui.distanceVisible
   return area && !area.x && !area.y
 }
 

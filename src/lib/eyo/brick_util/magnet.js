@@ -1589,7 +1589,7 @@ eYo.Magnet.prototype.unhideAll = function() {
  * Find the closest compatible connection to this connection.
  * All parameters are in board units.
  * @param {eYo.Where} maxLimit The maximum radius to another connection.
- * @param {goog.math.Coordinates} dxy Horizontal offset between this connection's location
+ * @param {eYo.Where} dxy Horizontal offset between this connection's location
  *     in the database and the current location (as a result of dragging).
  * @return {!{connection: ?eYo.Magnet, radius: number}} Contains two
  *     properties: 'connection' which is either another connection or null,
@@ -1626,7 +1626,7 @@ eYo.Magnet.prototype.closest = (() => {
     var min = closestIndex - 1
     while (min >= 0) {
       temp = db[min--]
-      var radius = where.distanceFrom(temp.where)
+      var radius = where.distance(temp.where)
       if (radius < maxRadius && magnet.isConnectionAllowed(temp)) {
         bestMagnet = temp
         bestRadius = radius
@@ -1635,7 +1635,7 @@ eYo.Magnet.prototype.closest = (() => {
     var max = closestIndex
     while (max < db.length) {
       temp = db[max++]
-      var radius = where.distanceFrom(temp.where)
+      var radius = where.distance(temp.where)
       if (radius < maxRadius && magnet.isConnectionAllowed(temp)) {
         bestMagnet = temp
         bestRadius = radius
@@ -1696,8 +1696,8 @@ eYo.Magnet.prototype.xyMoveBy = function(dx, dy) {
  *     the distance to.
  * @return {number} The distance between magnets, in board units.
  */
-eYo.Magnet.prototype.distanceFrom = function(other) {
-  return this.where.distanceFrom(other.where)
+eYo.Magnet.prototype.distance = function(other) {
+  return this.where.distance(other.where)
 }
 
 /**
@@ -1877,7 +1877,7 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate, maxRadius) {
   if (this.wrapped_ || candidate.wrapped_) {
     return false
   }
-  if (goog.isDef(maxRadius) && this.distanceFrom(candidate) > maxRadius) {
+  if (goog.isDef(maxRadius) && this.distance(candidate) > maxRadius) {
     return false
   }
   // Type checking.

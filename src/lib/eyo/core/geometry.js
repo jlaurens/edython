@@ -115,15 +115,17 @@ Object.defineProperties(eYo.Where.prototype, {
 
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
+ * @return {eYo.Where} The receiver
  */
 eYo.Where.prototype.set = function (c = 0, l = 0) {
   if (goog.isDef(c.x) && goog.isDef(c.y)) {
     this.x = c.x
     this.y = c.y
-    return
+    return this
   }
   this.c = c
   this.l = l
+  return this
 }
 
 /**
@@ -134,7 +136,8 @@ eYo.Where.prototype.equals = function (rhs) {
 }
 
 /**
- * Like `advance` but sets the coordinates, instead of advancing them.
+ * Like `forward` but sets the coordinates, instead of advancing them.
+ * @return {eYo.Where} The receiver
  */
 eYo.Where.prototype.xySet = function (x = 0, y = 0) {
   if (goog.isDef(x.x) && goog.isDef(x.y)) {
@@ -143,6 +146,7 @@ eYo.Where.prototype.xySet = function (x = 0, y = 0) {
   }
   this.x = x
   this.y = y
+  return this
 }
 
 /**
@@ -219,14 +223,36 @@ eYo.Where.prototype.unscale = function (scale) {
 }
 
 /**
+ * Euclidian magnitude between points.
+ * @return {number} non negative number
+ */
+eYo.Where.prototype.magnitude = function () {
+  var dx = this.x
+  var dy = this.y
+  return Math.sqrt(dx * dx + dy * dy)
+}
+
+/**
  * Euclidian distance between points.
  * @param {!eYo.Where} other
  * @return {number} non negative number
  */
-eYo.Where.prototype.distanceFrom = function (other) {
+eYo.Where.prototype.distance = function (other) {
   var dx = this.x - other.x
   var dy = this.y - other.y
   return Math.sqrt(dx * dx + dy * dy)
+}
+
+/**
+ * Test container.
+ * @param {!eYo.Rect} rect
+ * @return {number} non negative number
+ */
+eYo.Where.prototype.in = function (rect) {
+  return this.c_ >= rect.c_min
+    && this.c_ <= rect.c_max
+    && this.l_ >= rect.l_min
+    && this.l_ <= rect.l_max
 }
 
 /**
@@ -265,8 +291,7 @@ eYo.Size.sizeOfText = function (txt) {
 }
 
 /**
- * `Rect` is a descendant of `goog.math.Rect` that stores its data in text units.
- * NOT YET USED.
+ * `Rect` stores its data in text units.
  * Class for representing rectangular regions.
  * @param {number} c Left, in text units.
  * @param {number} l Top, in text units.
@@ -339,6 +364,46 @@ Object.defineProperties(eYo.Rect.prototype, {
       this.origin_.x = newValue
     }
   },
+  x_max: {
+    get () {
+      return this.x + this.width
+    },
+    set (newValue) {
+      this.width = Math.max(0, newValue - this.x)
+    }
+  },
+  c_min: {
+    get () {
+      return this.origin_.c_
+    },
+    set (newValue) {
+      this.c = newValue
+    }
+  },
+  c_max: {
+    get () {
+      return this.c + this.w
+    },
+    set (newValue) {
+      this.w = Math.max(0, newValue - this.c)
+    }
+  },
+  l_min: {
+    get () {
+      return this.l
+    },
+    set (newValue) {
+      this.l = newValue
+    }
+  },
+  l_max: {
+    get () {
+      return this.l + this.h
+    },
+    set (newValue) {
+      this.h = Math.max(0, newValue - this.l)
+    }
+  },
   top: {
     get () {
       return this.origin_.y
@@ -363,6 +428,22 @@ Object.defineProperties(eYo.Rect.prototype, {
       this.origin_.y = newValue
     }
   },
+  y_max: {
+    get () {
+      return this.y + this.height
+    },
+    set (newValue) {
+      this.height = Math.max(0, newValue - this.y)
+    }
+  },
+  bottom: {
+    get () {
+      return this.y + this.height
+    },
+    set (newValue) {
+      this.height = Math.max(0, newValue - this.y)
+    }
+  },
   width: {
     get () {
       return this.size_.width
@@ -377,38 +458,6 @@ Object.defineProperties(eYo.Rect.prototype, {
     },
     set (newValue) {
       this.size_.height = newValue
-    }
-  },
-  c_max: {
-    get () {
-      return this.c + this.w
-    },
-    set (newValue) {
-      this.w = Math.max(0, newValue - this.c)
-    }
-  },
-  l_max: {
-    get () {
-      return this.l + this.h
-    },
-    set (newValue) {
-      this.h = Math.max(0, newValue - this.l)
-    }
-  },
-  x_max: {
-    get () {
-      return this.x + this.width
-    },
-    set (newValue) {
-      this.width = Math.max(0, newValue - this.x)
-    }
-  },
-  y_max: {
-    get () {
-      return this.y + this.height
-    },
-    set (newValue) {
-      this.height = Math.max(0, newValue - this.y)
     }
   },
   origin: {
@@ -463,6 +512,7 @@ Object.defineProperties(eYo.Rect.prototype, {
  * @param{?Number|eYo.Size} l
  * @param{?Number} w
  * @param{?Number} h
+ * @return {eYo.Rect} The receiver
  */
 eYo.Rect.prototype.set = function (c = 0, l = 0, w = 0, h = 0) {
   if (goog.isDef(c.x) && goog.isDef(c.y)) {
@@ -485,6 +535,7 @@ eYo.Rect.prototype.set = function (c = 0, l = 0, w = 0, h = 0) {
       this.size_.y = h
     }
   }
+  return this
 }
 
 /**
@@ -533,14 +584,13 @@ eYo.Rect.prototype.clone = function () {
  * The only difference with closure implementation is that we keep track
  * of the rectangles order: 0 -> above, 1 -> below, 2 -> left, 3 -> right
  * SEE: https://github.com/google/closure-library/blob/master/closure/goog/math/rect.js#L272
- * The constructor of `a` is used to build the return rectangles.
  * @param {eYo.Rect} a A Rectangle.
  * @param {eYo.Rect} b A Rectangle.
  * @return {!Array<?eYo.Rect>} An array with 4 rectangles which
  *     together define the difference area of rectangle a minus rectangle b.
  */
 eYo.Rect.difference = function(a, b) {
-  var result = [null, null, null, null]
+  var ans = [null, null, null, null]
 
   var top = a.top
   var height = a.height
@@ -552,18 +602,19 @@ eYo.Rect.difference = function(a, b) {
   var b_bottom = b.top + b.height
 
   if (a_bottom <= b.top) { // b is entirely below a
-    result[0] = new eYo.Rect(a)
+    ans[0] = new eYo.Rect(a)
     return
   }
   // b.top < a_bottom
   if (b_bottom <= a.top) {
-    result[1] = new eYo.Rect(a)
+    ans[1] = new eYo.Rect(a)
     return
   }
   // a.top < b_bottom
   // Subtract off any area on top where A extends past B
   if (b.top > a.top) {
-    result[0] = new eYo.Rect(a.left, a.top, a.width, b.top - a.top)
+    var r = ans[0] = new eYo.Rect(a)
+    r.height = b.top - a.top
     top = b.top
     // If we're moving the top down, we also need to subtract the height diff.
     height -= b.top - a.top
@@ -573,18 +624,20 @@ eYo.Rect.difference = function(a, b) {
   // b.top < b_bottom < a_bottom
   // b.top < a_bottom <= b_bottom
   if (b_bottom < a_bottom) {
-    result[1] = new eYo.Rect(a.left, b_bottom, a.width, a_bottom - b_bottom)
+    r = ans[1] = new eYo.Rect(a)
+    r.y = b_bottom
+    r.height = a_bottom - b_bottom
     height = b_bottom - top
   }
   if (b.right <= a.left) {
     // no intersection
-    result[2] = new eYo.Rect(a)
+    ans[2] = new eYo.Rect(a)
     return
   }
   // a.left < b.right
   if (a.right <= b.left) {
     // no intersection
-    result[3] = new eYo.Rect(a)
+    ans[3] = new eYo.Rect(a)
     return
   }
   // b.left < a.right
@@ -593,16 +646,18 @@ eYo.Rect.difference = function(a, b) {
   // a.left < b.left < b.right
   // b.left <= a.left < b.right
   if (a.left < b.left) {
-    result[2] = new eYo.Rect(a.left, top, b.left - a.left, height)
+    r = ans[2] = new eYo.Rect(a)
+    r.width = b.left - a.left
+    r.height = height
   }
   // Subtract any area on right where A extends past B
   // We have b.left < a.right and only one of
   // b.left < b.right < a.right
   // b.left < a.right <= b.right
   if (b_right < a_right) {
-    result[3] = new eYo.Rect(b_right, top, a_right - b_right, height)
+    ans[3] = new eYo.Rect().xySet(_right, top, a_right - b_right, height)
   }
-  return result
+  return ans
 }
 
 /**
@@ -612,19 +667,19 @@ eYo.Rect.difference = function(a, b) {
  * either 0 width or 0 height,
  * thus representing either a segment or a point.
  * Both rectangles are expected to have the same constructor.
- * The constructor of `a` is used to build the return rectangle.
  * @param {eYo.Rect} a A Rectangle.
  * @param {eYo.Rect} b A Rectangle.
  * @return {eYo.Rect}
  */
 eYo.Rect.intersection = function(a, b) {
-  var left = Math.max(a.left, b.left)
-  var right = Math.min(a.left + a.width, b.left + b.width)
-  if (left <= right) {
-    var top = Math.max(a.top, b.top)
-    var bottom = Math.min(a.top + a.height, b.top + b.height)
-    if (top <= bottom) {
-      return new new eYo.Rect(left, top, right - left, bottom - top)
+  var ans = new eYo.Rect()
+  ans.left = Math.max(a.left, b.left)
+  ans.right = Math.min(a.right, b.right)
+  if (ans.width >= 0) {
+    ans.top = Math.max(a.top, b.top)
+    ans.bottom = Math.min(a.bottom, b.bottom)
+    if (ans.height >= 0) {
+      return ans
     }
   }
   return null

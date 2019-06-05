@@ -156,10 +156,7 @@ eYo.Svg.prototype.scrollbarUpdateView = function(scrollbar) {
  * @param {eYo.Scrollbar} scrollbar
  */
 eYo.Svg.prototype.scrollbarPlace = function(scrollbar) {
-  var temp = goog.math.Coordinate.sum(
-    scrollbar.position,
-    scrollbar.origin
-  )
+  var temp = scrollbar.positionInDesk
   var transform = `translate(${temp.x}px,${temp.y}px)`
   eYo.Dom.setCssTransform(scrollbar.dom.svg.root_, transform)
 }

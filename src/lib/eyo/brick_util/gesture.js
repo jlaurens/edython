@@ -21,7 +21,6 @@ goog.forwardDeclare('eYo.BrickDragger')
 // goog.forwardDeclare('eYo.BoardDragger')
 // goog.forwardDeclare('eYo.FlyoutDragger')
 
-goog.forwardDeclare('goog.math.Coordinate')
 goog.forwardDeclare('goog.asserts')
 
 /*
@@ -167,7 +166,7 @@ eYo.Gesture = function(e, board) {
    * @type {Object<number|string, eYo.Where>}
    * @private
    */
-  this.cache.Wheres_ = {}
+  this.cachedPoints_ = {}
 
   /**
    * This is the ratio between the starting distance between the touch points
@@ -352,13 +351,13 @@ eYo.Gesture.prototype.on_mousedown = function(e) {
 eYo.Gesture.prototype.handleTouchStart = function(e) {
   var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
   // store the pointerId in the current list of pointers
-  this.cache.Wheres_[pointerId] = this.getTouc.Where_(e)
-  var pointers = Object.keys(this.cache.Wheres_)
+  this.cachedPoints_[pointerId] = this.getTouchPoint_(e)
+  var pointers = Object.keys(this.cachedPoints_)
   // If two pointers are down, check for pinch gestures
   if (pointers.length === 2) {
-    var point0 = this.cache.Wheres_[pointers[0]]
-    var point1 = this.cache.Wheres_[pointers[1]]
-    this.startDistance_ = goog.math.Coordinate.distance(point0, point1)
+    var point0 = this.cachedPoints_[pointers[0]]
+    var point1 = this.cachedPoints_[pointers[1]]
+    this.startDistance_ = point0.distance(point1)
     this.multiTouch_ = true
     e.preventDefault()
   }
@@ -372,15 +371,15 @@ eYo.Gesture.prototype.handleTouchStart = function(e) {
 eYo.Gesture.prototype.handleTouchMove = function(e) {
   var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
   // Update the cache
-  this.cache.Wheres_[pointerId] = this.getTouc.Where_(e)
+  this.cachedPoints_[pointerId] = this.getTouchPoint_(e)
 
-  var pointers = Object.keys(this.cache.Wheres_)
+  var pointers = Object.keys(this.cachedPoints_)
   // If two pointers are down, check for pinch gestures
   if (pointers.length === 2) {
     // Calculate the distance between the two pointers
-    var point0 = this.cache.Wheres_[pointers[0]]
-    var point1 = this.cache.Wheres_[pointers[1]]
-    var moveDistance = goog.math.Coordinate.distance(point0, point1)
+    var point0 = this.cachedPoints_[pointers[0]]
+    var point1 = this.cachedPoints_[pointers[1]]
+    var moveDistance = point0.distance(point1)
     var startDistance = this.startDistance_
     var scale = this.touchScale_ = moveDistance / startDistance
     if (this.previousScale_ > 0 && this.previousScale_ < Infinity) {
@@ -403,7 +402,7 @@ eYo.Gesture.prototype.handleTouchMove = function(e) {
  * @return {eYo.Where} the current touch point coordinate
  * @package
  */
-eYo.Gesture.prototype.getTouc.Where_ = function(e) {
+eYo.Gesture.prototype.getTouchPoint_ = function(e) {
   if (!this.board_) {
     return null
   }
@@ -420,10 +419,9 @@ eYo.Gesture.prototype.getTouc.Where_ = function(e) {
  */
 eYo.Gesture.prototype.updateFromEvent_ = function(e) {
   this.event_ = e
-  var currentXY = new eYo.Where(e.clientX, e.clientY)
-  this.deltaXY_ = goog.math.Coordinate.difference(currentXY, this.startXY_)
+  this.deltaXY_ = new eYo.Where(e.clientX, e.clientY).backward(this.startXY_)
   if (!this.dragging) {
-    var delta = goog.math.Coordinate.magnitude(this.deltaXY_)
+    var delta = this.deltaXY_.magnitude()
     var limit = this.flyout_
     ? eYo.Gesture.FLYOUT_DRAG_RADIUS
     : eYo.Gesture.DRAG_RADIUS
@@ -517,11 +515,11 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
   this.change.done()
   if (eYo.Dom.isTouchEvent(e) && !this.dragging) {
     var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
-    if (this.cache.Wheres_[pointerId]) {
-      delete this.cache.Wheres_[pointerId]
+    if (this.cachedPoints_[pointerId]) {
+      delete this.cachedPoints_[pointerId]
     }
-    if (Object.keys(this.cache.Wheres_).length < 2) {
-      this.cache.Wheres_ = {}
+    if (Object.keys(this.cachedPoints_).length < 2) {
+      this.cachedPoints_ = {}
       this.previousScale_ = 0
     }
   }

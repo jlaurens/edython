@@ -363,7 +363,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
   },
   /**
    * The location of the origin of the board that the scrollbar is in,
-   * measured in CSS pixels relative to the injection div origin.  This is usually
+   * measured in CSS pixels relative to the desk origin.  This is usually
    * (0, 0).  When the scrollbar is in a flyout it may have a different origin.
    * @type {eYo.Where}
    * @readonly
@@ -383,6 +383,17 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
   position: {
     get () {
       return new eYo.Where(this.dx_, this.dy_)
+    }
+  },
+  /**
+   * The upper left corner of the scrollbar's SVG group in CSS pixels relative
+   * to the desk origin.
+   * @type {eYo.Where}
+   * @readonly
+   */
+  positionInDesk: {
+    get () {
+      return new eYo.Where(this.x_ + this.dx_, this.y_ + this.dy_)
     }
   },
   /**

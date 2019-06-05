@@ -21,7 +21,6 @@ goog.provide('eYo.Svg.BrickDragSurface')
 goog.require('eYo.Svg')
 
 goog.forwardDeclare('goog.asserts')
-goog.forwardDeclare('goog.math.Coordinate')
 
 
 /**

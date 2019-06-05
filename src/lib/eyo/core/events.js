@@ -21,7 +21,6 @@ goog.provide('eYo.Events.Abstract')
 goog.require('eYo')
 
 goog.require('goog.array')
-goog.require('goog.math.Coordinate')
 
 Object.defineProperties(eYo.Events, {
   /**
