@@ -22,9 +22,6 @@ goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Board')
 goog.forwardDeclare('eYo.Events.BrickMove')
 
-goog.forwardDeclare('goog.math.Coordinate')
-
-
 /**
  * Class for a brick dragger.  It moves bricks around the board when they
  * are being dragged by a mouse or touch.
@@ -69,7 +66,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
   },
   xyNew_: {
     get () {
-      return goog.math.Coordinate.sum(this.xyStart_, this.xyDelta)
+      return new eYo.Where(this.xyStart_).forward(this.xyDelta)
     }
   }
 })
