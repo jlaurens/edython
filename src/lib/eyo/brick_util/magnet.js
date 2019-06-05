@@ -467,30 +467,45 @@ Object.defineProperties(eYo.Magnet.prototype, {
   },
   c: { // in text units
     get () {
-      return this.slot ? this.where.c + this.slot.where.c : this.where.c
+      return this.slot
+      ? this.where.c + this.slot.where.c
+      : this.where.c
     }
   },
   l: { // in text units
     get () {
-      return this.slot ? this.where.l + this.slot.where.l : this.where.l
+      return this.slot
+      ? this.where.l + this.slot.where.l
+      : this.where.l
     }
   },
-  x: {
+  /**
+   * Position in the brick.
+   * @return {eYo.Where}
+   * @readonly
+   */
+  xyInBrick: {
     get () {
-      return this.x_
+      var ans = new eYo.Where(this.where)
+      return this.slot ? ans.forward(this.slot.where) : ans
     }
   },
-  y: {
+  /**
+   * Position in the brick.
+   * @return {eYo.Where}
+   * @readonly
+   */
+  xyInBoard: {
     get () {
-      return this.y_
+      return this.xyInBrick.forward(this.brick.ui.xyInBoard)
     }
   },
-  x_: { // in board coordinates
+  x: { // in board coordinates
     get () {
       return this.slot ? this.where.x + this.slot.where.x : this.where.x
     }
   },
-  y_: { // in board coordinates
+  y: { // in board coordinates
     get () {
       return this.slot ? this.where.y + this.slot.where.y : this.where.y
     }
@@ -502,6 +517,11 @@ Object.defineProperties(eYo.Magnet.prototype, {
         : this.optional_ || this.s7r_
           ? 1
           : 3
+    }
+  },
+  width: {
+    get () {
+      return this.w * eYo.Unit.x
     }
   },
   target: {
@@ -1096,17 +1116,20 @@ eYo.Magnet.prototype.connectSmart = (() => {
  * Set the origin of the connection.
  * When the connection is in a slot, the origin is the top left point
  * of the slot otherwise it is `(0, 0)`.
- * @param {number} c The column index.
- * @param {number} l The line index.
+ * @param {Number} c The column index.
+ * @param {Number} l The line index.
  */
-eYo.Magnet.prototype.setOffset = function(c = 0, l = 0) {
+eYo.Magnet.prototype.setOffset = function(c = 0, l  0) {
   if (goog.isDef(c.c) && goog.isDef(c.l)) {
     l = c.l
     c = c.c
   }
-  this.where.set(c, l)
+  var w = this.where_
+  w.c_ = c
+  w.l_ = l
   if (isNaN(this.x)) {
-    this.where.set(c, l)
+    w.c_ = c
+    w.l_ = l
     console.error(this.x)
   }
 }
@@ -1473,10 +1496,9 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
 eYo.Magnet.prototype.tighten = function() {
   var m4t = this.target
   if (m4t) {
-    var dx = m4t.x_ - this.x_
-    var dy = m4t.y_ - this.y_
-    if (dx != 0 || dy != 0) {
-      this.targetBrick.moveBy(new eYo.Where().xySet(-dx, -dy))
+    var xy = m4t.xyInBoard
+    if (xy.x != 0 || xy.y != 0) {
+      this.targetBrick.moveTo(xy)
     }
   }
 }
@@ -1528,24 +1550,22 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
   // Raise it to the top for extra visibility.
   var selected = root.isSelected
   selected || root.ui.addSelect()
-  var dx = (m4t.x_ + Blockly.SNAP_RADIUS) - this.x_
-  var dy = (m4t.y_ + Blockly.SNAP_RADIUS) - this.y_
+  var dxy = new eYo.Where(Blockly.SNAP_RADIUS, Blockly.SNAP_RADIUS).backward(this.xy)
   if (reverse) {
     // When reversing a bump due to an uneditable brick, bump up.
-    dy = -dy
+    dxy.y = -dxy.y
   }
-  // Added by JL, I don't remember exactly why...
+  // Bump to the right of the brick
   if (m4t.target) {
-    dx += m4t.targetBrick.width
+    dxy.x += m4t.targetBrick.width
   }
-  root.moveBy(new eYo.Where(dx, dy))
+  root.moveBy(dxy)
   selected || root.ui.removeSelect()
 }
 
 /**
  * Hide this connection, as well as all down-stream connections on any brick
  * attached to this connection.  This happens when a brick is collapsed.
- * Also hides down-stream comments.
  */
 eYo.Magnet.prototype.hideAll = function() {
   this.hidden = true

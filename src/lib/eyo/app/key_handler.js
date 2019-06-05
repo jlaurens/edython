@@ -489,7 +489,7 @@ eYo.KeyHandler = (() => {
         var m4t = eYo.Selected.magnet
         if (m4t && m4t.brick) {
           var xy = goog.style.getPageOffset(m4t.brick.dom.svg.group_)
-          var xxyy = m4t.xyInBrick_.clone().scale(brick.board.scale)
+          var xxyy = m4t.xyInBrick.scale(brick.board.scale)
           xy.translate(xxyy)
         } else {
           xy = goog.style.getPageOffset(brick.dom.svg.group_)

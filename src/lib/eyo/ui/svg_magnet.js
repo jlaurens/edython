@@ -57,12 +57,13 @@ eYo.Svg.prototype.magnetHilight = function (m4t) {
   } else {
     steps = eYo.Shape.definitionWithMagnet(m4t)
   }
+  var xy = m4t.xyInBoard
   eYo.Svg.magnetHighlightedPath_ = eYo.Svg.newElement(
     'path',
     {
       class: 'eyo-hilighted-magnet-path',
       d: steps,
-      transform: `translate(${m4t.x || 0},${m4t.y || 0})`
+      transform: `translate(${xy.x || 0},${xy.y || 0})`
     },
     g
   )

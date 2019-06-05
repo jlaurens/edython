@@ -1591,7 +1591,7 @@ eYo.Board.prototype.logAllConnections = function (comment) {
     var dbList = this.magnetDBList
     console.log(`${comment} > ${k} magnet`)
     dbList[eYo.Magnet[k]].forEach(m4t => {
-      console.log(m4t.x_, m4t.y_, m4t.xyInBrick_, m4t.brick.type)
+      console.log(m4t.xyInBrick, m4t.xyInBoard, m4t.brick.type)
     })
   })
 }
