@@ -174,5 +174,5 @@ eYo.Desk.prototype.resize = function() {
  * @return {eYo.Where}
  */
 eYo.Desk.prototype.xyElementInDesk = function(element) {
-  return this.ui_driver_.deskXYElement(this, element)
+  return this.ui_driver_.deskWhereElement(this, element)
 }

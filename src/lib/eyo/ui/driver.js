@@ -134,7 +134,7 @@ eYo.Driver.prototype.brickMoveTo = eYo.Do.nothing
  * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.Driver.prototype.brickXYInBoard = eYo.Do.nothing
+eYo.Driver.prototype.brickWhereInBoard = eYo.Do.nothing
 
 /**
  * Set the location.

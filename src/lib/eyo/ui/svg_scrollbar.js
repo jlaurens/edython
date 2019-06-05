@@ -294,11 +294,11 @@ eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
     e.stopPropagation()
     return
   }
-  var mouseXY = this.board_.xyEventInBoard(e)
-  var mouseLocation = this.horizontal_ ? mouseXY.x : mouseXY.y
+  var mouseWhere = this.board_.xyEventInBoard(e)
+  var mouseLocation = this.horizontal_ ? mouseWhere.x : mouseWhere.y
 
-  var handleXY = this.board.desk.xyElementInDesk(this.svgHandle_)
-  var handleStart = this.horizontal_ ? handleXY.x : handleXY.y
+  var handleWhere = this.board.desk.xyElementInDesk(this.svgHandle_)
+  var handleStart = this.horizontal_ ? handleWhere.x : handleWhere.y
   var handlePosition = this.handlePosition_
 
   var pageLength = this.handleLength_ * 0.95;

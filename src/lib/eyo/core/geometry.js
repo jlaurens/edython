@@ -51,7 +51,7 @@ Object.defineProperties(
 // c, l, w, h are in text units
 
 /**
- * `Where` is modelling a plane point that stores its data in text units.
+ * `where` is modelling a plane point that stores its data in text units.
  */
 eYo.Where = function(c, l) {
   this.set(c, l)

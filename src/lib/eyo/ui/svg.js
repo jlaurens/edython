@@ -267,7 +267,7 @@ eYo.Svg.getTransformCorrection = element => {
  * @param {!Element} element SVG element to find the coordinates of.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
-eYo.Svg.getRelativeXY = function(element) {
+eYo.Svg.getRelativeWhere = function(element) {
   var xy = new eYo.Where()
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
@@ -280,7 +280,7 @@ eYo.Svg.getRelativeXY = function(element) {
   }
   // Second, check for transform="translate(...)" attribute.
   var transform = element.getAttribute('transform')
-  var r = transform && transform.match(eYo.Svg.getRelativeXY.XY_REGEX_)
+  var r = transform && transform.match(eYo.Svg.getRelativeWhere.Where_REGEX_)
   if (r) {
     xy.x += parseFloat(r[1])
     if (r[3]) {
@@ -290,10 +290,10 @@ eYo.Svg.getRelativeXY = function(element) {
   // Then check for style = transform: translate(...) or translate3d(...)
   var style = element.getAttribute('style')
   if (style && style.indexOf('translate') > -1) {
-    var styleComponents = style.match(eYo.Svg.getRelativeXY.XY_2D_REGEX_)
+    var styleComponents = style.match(eYo.Svg.getRelativeWhere.Where_2D_REGEX_)
     // Try transform3d if 2d transform wasn't there.
     if (!styleComponents) {
-      styleComponents = style.match(eYo.Svg.getRelativeXY.XY_3D_REGEX_)
+      styleComponents = style.match(eYo.Svg.getRelativeWhere.Where_3D_REGEX_)
     }
     if (styleComponents) {
       xy.x += parseFloat(styleComponents[1])
@@ -349,12 +349,12 @@ goog.style.MATRIX_TRANSLATION_REGEX_ = /matrix\([0-9\.,-]+, [0-9\.,\-]+, [0-9\.,
  * @type {!RegExp}
  * @private
  */
-eYo.Svg.getRelativeXY.XY_REGEX_ =
+eYo.Svg.getRelativeWhere.Where_REGEX_ =
 /translate\(\s*([-+\d.,e]+)([ ,]\s*([-+\d.,e]+)\s*\))/
 
 /**
  * Static regex to pull the scale values out of a transform style property.
- * Accounts for same exceptions as XY_REGEXP_.
+ * Accounts for same exceptions as Where_REGEXP_.
  * @type {!RegExp}
  * @private
  */
@@ -362,18 +362,18 @@ eYo.Svg.getScale_REGEXP_ = /scale\(\s*([-+\d.,e]+)\s*\)/
 
 /**
  * Static regex to pull the x,y,z values out of a translate3d() style property.
- * Accounts for same exceptions as XY_REGEXP_.
+ * Accounts for same exceptions as Where_REGEXP_.
  * @type {!RegExp}
  * @private
  */
-eYo.Svg.getRelativeXY.XY_3D_REGEX_ =
+eYo.Svg.getRelativeWhere.Where_3D_REGEX_ =
   /transform:\s*translate3d\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/
 
 /**
  * Static regex to pull the x,y,z values out of a translate3d() style property.
- * Accounts for same exceptions as XY_REGEXP_.
+ * Accounts for same exceptions as Where_REGEXP_.
  * @type {!RegExp}
  * @private
  */
-eYo.Svg.getRelativeXY.XY_2D_REGEX_ =
+eYo.Svg.getRelativeWhere.Where_2D_REGEX_ =
   /transform:\s*translate\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/

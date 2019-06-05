@@ -1677,7 +1677,7 @@ eYo.Brick.prototype.willConnect = function (m4t, childM4t) {
  */
 eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   // new connections change the span properties of the superior block.
-  // How many lines did I add? Where did I add them?
+  // How many lines did I add? where did I add them?
   var t9k = m4t.targetBrick
   if (m4t.isFoot) {
     this.span.addFoot(t9k.span.l)

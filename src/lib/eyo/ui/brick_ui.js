@@ -517,7 +517,7 @@ eYo.Brick.UI.prototype.willShortRender_ = function (recorder) {
  * @param {eYo.Where} xy The xy coordinate of the translation in board units.
  */
 eYo.Brick.UI.prototype.moveTo = function(xy) {
-  this.driver.brickXYMoveTo(this.brick_, xy)
+  this.driver.brickWhereMoveTo(this.brick_, xy)
   this.placeMagnets_()
 }
 
@@ -1708,17 +1708,17 @@ eYo.Brick.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
 Object.defineProperties(eYo.Brick.UI.prototype, {
   xyInParent: {
     get () {
-      return this.driver.brickXYInParent(this.brick_)
+      return this.driver.brickWhereInParent(this.brick_)
     }
   },
   whereInBoard: {
     get () {
-      return this.driver.brickXYInBoard(this.brick_)
+      return this.driver.brickWhereInBoard(this.brick_)
     }
   },
   xyInDesk: {
     get () {
-      return this.driver.brickXYInDesk(this.brick_)
+      return this.driver.brickWhereInDesk(this.brick_)
     }
   },
   /**

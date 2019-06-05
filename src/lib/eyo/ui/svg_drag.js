@@ -63,7 +63,7 @@ eYo.Svg.BrickDragSurface.prototype.dispose = function() {
 Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
   /**
    * Get the current blocks on the drag surface, if any (primarily
-   * for BlockSvg.getRelativeToSurfaceXY).
+   * for BlockSvg.getRelativeToSurfaceWhere).
    * @return {!Element|eYo.VOID} Drag surface block DOM element, or eYo.VOID
    * if no blocks exist.
    */
@@ -89,7 +89,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
    * @type {eYo.Where}
    * @private
    */
-  surfaceXY_: {
+  surfaceWhere_: {
     value: null,
     writable: true
   },
@@ -100,7 +100,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
    */
   translation: {
     get () {
-      return eYo.Svg.getRelativeXY(this.dom.svg.root_).unscale(this.scale_)
+      return eYo.Svg.getRelativeWhere(this.dom.svg.root_).unscale(this.scale_)
     }
   },
   /**
@@ -123,7 +123,7 @@ eYo.Svg.BrickDragSurface.prototype.show = function(blocks) {
   // appendChild removes the blocks from the previous parent
   this.dom.svg.canvas_.appendChild(blocks)
   this.dom.svg.root_.style.display = 'block'
-  this.surfaceXY_ = new eYo.Where()
+  this.surfaceWhere_ = new eYo.Where()
 }
 
 /**
@@ -135,9 +135,9 @@ eYo.Svg.BrickDragSurface.prototype.show = function(blocks) {
  */
 eYo.Svg.BrickDragSurface.prototype.moveTo = function(xy) {
   this.dom.svg.root_.style.display = 'block'
-  this.surfaceXY_ = new eYo.Where(xy).scale(this.scale_)
-  var x = this.surfaceXY_.x.toFixed(0)
-  var y = this.surfaceXY_.y.toFixed(0)
+  this.surfaceWhere_ = new eYo.Where(xy).scale(this.scale_)
+  var x = this.surfaceWhere_.x.toFixed(0)
+  var y = this.surfaceWhere_.y.toFixed(0)
   // This is a work-around to prevent a the blocks from rendering
   // fuzzy while they are being dragged on the drag surface.
   var transform = `translate3d(${x}px,${y}px, 0px)`
@@ -166,7 +166,7 @@ eYo.Svg.BrickDragSurface.prototype.clearAndHide = function(opt_newSurface) {
     svg.canvas_.removeChild(this.brickGroup)
   }
   svg.root_.style.display = 'none'
-  this.surfaceXY_ = null
+  this.surfaceWhere_ = null
   goog.asserts.assert(
     svg.canvas_.childNodes.length == 0, 'Drag group was not cleared.');
 }
@@ -215,7 +215,7 @@ Object.defineProperties(eYo.Svg.BoardDragSurface.prototype, {
    */
   translation: {
     get () {
-      return eYo.Svg.getRelativeXY(this.dom.svg.root_)
+      return eYo.Svg.getRelativeWhere(this.dom.svg.root_)
     }
   },
 })

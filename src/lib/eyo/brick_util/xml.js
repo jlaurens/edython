@@ -104,12 +104,12 @@ Blockly.Xml.domToText = function (dom) {
 
 
 /**
- * Encode a brick subtree as XML with XY coordinates. Eliminates the use of the Blockly's eponym method.
+ * Encode a brick subtree as XML with where coordinates. Eliminates the use of the Blockly's eponym method.
  * @param {!eYo.Brick} brick The root brick to encode.
  * @param {?Object} opt  See the eponym parameter in `eYo.Xml.brickToDom`.
  * @return {!Element} Tree of XML elements.
  */
-eYo.Xml.brickToDomWithXY = function(brick, opt) {
+eYo.Xml.brickToDomWithWhere = function(brick, opt) {
   var element = eYo.Xml.brickToDom(brick, opt)
   var xy = brick.xy
   element.setAttribute('x', Math.round(xy.x))
@@ -131,7 +131,7 @@ eYo.Xml.boardToDom = function(board, opt) {
   )
   var xml = root.firstChild.firstChild
   board.getTopBricks(true).forEach(brick => {
-    var dom = eYo.Xml.brickToDomWithXY(brick, opt)
+    var dom = eYo.Xml.brickToDomWithWhere(brick, opt)
     var p = new eYo.Py.Exporter()
     eYo.Do.tryFinally(() => {
       if (!brick.isControl) {
@@ -267,13 +267,13 @@ Blockly.Xml.blockToDom = function (brick, optNoId) {
 }
 
 /**
- * Encode a brick subtree as XML with XY coordinates.
+ * Encode a brick subtree as XML with where coordinates.
  * @param {!eYo.Brick} brick The root brick to encode.
  * @param {boolean=} optNoId True if the encoder should skip the brick ID.
  * @return {!Element} Tree of XML elements.
  */
-Blockly.Xml.blockToDomWithXY = function(brick, optNoId) {
-  return eYo.Xml.brickToDomWithXY(brick, {noId: optNoId})
+Blockly.Xml.blockToDomWithWhere = function(brick, optNoId) {
+  return eYo.Xml.brickToDomWithWhere(brick, {noId: optNoId})
 }
 
 /**

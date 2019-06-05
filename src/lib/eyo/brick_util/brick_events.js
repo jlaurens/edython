@@ -167,7 +167,7 @@ eYo.Events.BrickChange.prototype.run = function(forward) {
 eYo.Events.BrickCreate = function(brick) {
   eYo.Events.BrickCreate.superClass_.constructor.call(this, brick)
   if (brick.board.rendered) {
-    this.xml = eYo.Xml.brickToDomWithXY(brick)
+    this.xml = eYo.Xml.brickToDomWithWhere(brick)
   } else {
     this.xml = eYo.Xml.brickToDom(brick)
   }
@@ -219,7 +219,7 @@ eYo.Events.BrickDelete = function(brick) {
   eYo.Events.BrickDelete.superClass_.constructor.call(this, brick)
 
   if (brick.board.rendered) {
-    this.oldXml = eYo.Xml.brickToDomWithXY(brick)
+    this.oldXml = eYo.Xml.brickToDomWithWhere(brick)
   } else {
     this.oldXml = eYo.Xml.brickToDom(brick)
   }
@@ -282,7 +282,7 @@ Object.defineProperties(eYo.Events.BrickMove.prototype, {
   type: { value: eYo.Events.BRICK_MOVE },
   /**
    * Returns the parentId and input if the brick is connected,
-   *   or the XY location if disconnected.
+   *   or the where location if disconnected.
    * @return {!Object} Collection of location info.
    * @private
    */

@@ -360,7 +360,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
     }
   },
   /**
-   * @type {Number} Where the flyout is anchored.
+   * @type {Number} where the flyout is anchored.
    * @package
    */
   anchor: {
@@ -593,8 +593,8 @@ eYo.Flyout.prototype.isDragTowardBoard = function(gesture) {
   if(!this.scrollable) {
     return true
   }
-  var dx = gesture.deltaXY_.x
-  var dy = gesture.deltaXY_.y
+  var dx = gesture.deltaWhere_.x
+  var dy = gesture.deltaWhere_.y
   // Direction goes from -180 to 180, with 0 toward the board.
   var direction = Math.atan2(dy,
     this.anchor_ === eYo.Flyout.AT_RIGHT ? -dx : dx

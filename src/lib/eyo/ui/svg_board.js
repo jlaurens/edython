@@ -309,7 +309,7 @@ eYo.Svg.prototype.boardStartDrag = function (board) {
     var width = parseInt(svg.group_.getAttribute('width'), 10)
     var height = parseInt(svg.group_.getAttribute('height'), 10)
     surface.setContentsAndShow(svg.canvas_, previousElement, width, height, this.board_.scale)
-    var coord = eYo.Svg.getRelativeXY(svg.canvas_)
+    var coord = eYo.Svg.getRelativeWhere(svg.canvas_)
     surface.translateSurface(coord.x, coord.y)
   }
 }
@@ -318,10 +318,10 @@ eYo.Svg.prototype.boardStartDrag = function (board) {
  * Prepares the UI for dragging.
  * @param {!eYo.Board} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.boardDragDeltaXY = function (board) {
-  var deltaXY = board.gesture_.deltaXY_
+eYo.Svg.prototype.boardDragDeltaWhere = function (board) {
+  var deltaWhere = board.gesture_.deltaWhere_
   var correction = board.dragger_.correction_
-  return correction ? correction(deltaXY) : deltaXY
+  return correction ? correction(deltaWhere) : deltaWhere
 }
 
 /**
@@ -430,7 +430,7 @@ eYo.Svg.prototype.boardZoom = function(board, x, y, amount) {
  * @return {!eYo.Where} Object with .x and .y properties.
  * @private
  */
-eYo.Svg.prototype.boardXYElement = function(board, element) {
+eYo.Svg.prototype.boardWhereElement = function(board, element) {
   var ans = new eYo.Where()
   var scale = 1
   var canvas = board.dom.svg.canvas_
@@ -440,7 +440,7 @@ eYo.Svg.prototype.boardXYElement = function(board, element) {
   }
   do {
     // Loop through this brick and every parent.
-    var xy = eYo.Svg.getRelativeXY(element)
+    var xy = eYo.Svg.getRelativeWhere(element)
     if (element !== canvas) {
       // Before the SVG canvas, scale the coordinates.
       xy.scale(scale)

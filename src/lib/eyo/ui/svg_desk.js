@@ -135,12 +135,12 @@ eYo.Svg.prototype.deskInstallFlyout = function(desk) {
  *     eYo.VOID.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
-eYo.Svg.prototype.deskXYElement = function(desk, element) {
+eYo.Svg.prototype.deskWhereElement = function(desk, element) {
   var ans = new eYo.Where()
   var div = desk.dom.div_
   while (element && element !== div) {
     ans.scale(eYo.Svg.getScale_(element))
-    .forward(eYo.Svg.getRelativeXY(element))
+    .forward(eYo.Svg.getRelativeWhere(element))
     element = element.parentNode
   }
   return ans

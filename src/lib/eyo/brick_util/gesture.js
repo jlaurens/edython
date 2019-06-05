@@ -42,15 +42,15 @@ eYo.Gesture = function(e, board) {
    * with (0, 0) at the top left of the browser window (mouseEvent clientX/Y).
    * @type {eYo.Where}
    */
-  this.startXY_ = null
+  this.startWhere_ = null
 
   /**
    * How far the mouse has moved during this drag, in pixel units.
-   * (0, 0) is at this.startXY_.
+   * (0, 0) is at this.startWhere_.
    * @type {eYo.Where}
    * @private
    */
-  this.deltaXY_ = null
+  this.deltaWhere_ = null
 
   /**
    * The brick that the gesture started on, or null if it did not start on a
@@ -424,9 +424,9 @@ eYo.Gesture.prototype.getTouchPoint_ = function(e) {
  */
 eYo.Gesture.prototype.updateFromEvent_ = function(e) {
   this.event_ = e
-  this.deltaXY_ = this.where.backward(this.startXY_)
+  this.deltaWhere_ = this.where.backward(this.startWhere_)
   if (!this.dragging) {
-    var delta = this.deltaXY_.magnitude
+    var delta = this.deltaWhere_.magnitude
     var limit = this.flyout_
     ? eYo.Gesture.FLYOUT_DRAG_RADIUS
     : eYo.Gesture.DRAG_RADIUS
@@ -453,7 +453,7 @@ eYo.Gesture.prototype.updateDraggingBrick_ = function() {
     this.brickDragger_ = board.brickDragger_
     this.board_ = board
     board.updateScreenCalculationsIfScrolled()
-    console.log('updateDraggingBrick_: ', this.deltaXY_)
+    console.log('updateDraggingBrick_: ', this.deltaWhere_)
     return true
   }
 }
@@ -651,7 +651,7 @@ eYo.Gesture.prototype.doStart = function(e) {
     eYo.Do.longStart_(e, this)
   }
 
-  this.startXY_ = this.where(e)
+  this.startWhere_ = this.where(e)
   this.healStack_ = e.altKey || e.ctrlKey || e.metaKey
 
   eYo.Dom.unbindMouseEvents(this)

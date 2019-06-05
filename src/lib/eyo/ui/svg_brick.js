@@ -662,7 +662,7 @@ eYo.Svg.prototype.brickSendToBack = function (brick) {
  * Translates the brick.
  * @param {eYo.Where} xy The coordinates of the translation in board units.
  */
-eYo.Svg.prototype.brickXYMoveTo = function(brick, xy) {
+eYo.Svg.prototype.brickWhereMoveTo = function(brick, xy) {
   var transform = `translate(${xy.x},${xy.y})`
   if (transform.match(/NaN/)) {
     throw 'FAILURE'
@@ -692,7 +692,7 @@ eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dxy) {
  * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.Svg.prototype.brickXYInParent = function (brick) {
+eYo.Svg.prototype.brickWhereInParent = function (brick) {
   return this.xyInParent(brick.dom.svg.group_)
 }
 
@@ -705,7 +705,7 @@ eYo.Svg.prototype.brickXYInParent = function (brick) {
  * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.Svg.prototype.brickXYInBoard = function (brick) {
+eYo.Svg.prototype.brickWhereInBoard = function (brick) {
   var ans = new eYo.Where()
   var bds = brick.desk.dom.svg.brickDragSurface
   var current = bds.brickGroup
@@ -731,7 +731,7 @@ eYo.Svg.prototype.brickXYInBoard = function (brick) {
  * @return {!eYo.Where} Object with .x and .y properties in
  *     desk coordinates.
  */
-eYo.Svg.prototype.brickXYInDesk = function (brick) {
+eYo.Svg.prototype.brickWhereInDesk = function (brick) {
   var ans = new eYo.Where()
   var bds = brick.desk.dom.svg.brickDragSurface
   var bdsRoot = bds.dom.svg.root_
@@ -950,9 +950,9 @@ eYo.Svg.prototype.brickParentSet = function (brick, parent) {
   var svg = brick.dom.svg
   if (parent) {
     var p_svg = parent.dom
-    var oldXY = this.brickXYInBoard(brick)
+    var oldWhere = this.brickWhereInBoard(brick)
     p_svg.group_.appendChild(svg.group_)
-    var newXY = this.brickXYInBoard(brick)
+    var newWhere = this.brickWhereInBoard(brick)
     goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
     goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
       'eyo-inner')
@@ -960,10 +960,10 @@ eYo.Svg.prototype.brickParentSet = function (brick, parent) {
     goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
       'eyo-inner')
   } else {
-    var oldXY = this.brickXYInBoard(brick)
+    var oldWhere = this.brickWhereInBoard(brick)
     brick.board.dom.svg.canvas_.appendChild(svg.group_)
-    xy && (svg.group_.setAttribute('transform', `translate(${oldXY.x},${oldXY.y})`))
-    var newXY = this.brickXYInBoard(brick)
+    xy && (svg.group_.setAttribute('transform', `translate(${oldWhere.x},${oldWhere.y})`))
+    var newWhere = this.brickWhereInBoard(brick)
     goog.dom.insertChildAt(svg.group_, svg.groupContour_, 0)
     goog.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
       'eyo-inner')
@@ -971,7 +971,7 @@ eYo.Svg.prototype.brickParentSet = function (brick, parent) {
     goog.dom.classlist.remove(/** @type {!Element} */svg.groupShape_,
       'eyo-inner')
   }
-  brick.ui.moveMagnets_(newXY.x - oldXY.x, newXY.y - oldXY.y);
+  brick.ui.moveMagnets_(newWhere.x - oldWhere.x, newWhere.y - oldWhere.y);
 }
 
 /**

@@ -1,5 +1,5 @@
 describe ('Geometry', function () {
-  describe('Where', function () {
+  describe('where', function () {
     it ('Basic', function () {
       var w1 = new eYo.Where()
       chai.assert(!['c', 'l', 'x', 'y'].some(k => w1[k] != 0))

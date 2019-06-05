@@ -61,7 +61,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
   },
   xyDelta: {
     get: eYo.Change.decorate('xyDeltaBrickDragger', function () {
-      return {ans: this.destination.fromPixelUnit(this.gesture_.deltaXY_)}
+      return {ans: this.destination.fromPixelUnit(this.gesture_.deltaWhere_)}
     }),
   },
   xyNew_: {

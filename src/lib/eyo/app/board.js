@@ -438,9 +438,9 @@ eYo.Board.prototype.getTopBricks = function(ordered) {
   if (ordered && bricks.length > 1) {
     var offset = Math.sin(goog.math.toRadians(eYo.Board.SCAN_ANGLE));
     bricks.sort(function(a, b) {
-      var aXY = a.whereInBoard
-      var bXY = b.whereInBoard
-      return (aXY.y + offset * aXY.x) - (bXY.y + offset * bXY.x)
+      var aWhere = a.whereInBoard
+      var bWhere = b.whereInBoard
+      return (aWhere.y + offset * aWhere.x) - (bWhere.y + offset * bWhere.x)
     })
   }
   return bricks
@@ -1334,7 +1334,7 @@ eYo.Board.prototype.centerOnBrick = function(id) {
     return;
   }
 
-  // XY is in board coordinates.
+  // where is in board coordinates.
   var xy = block.whereInBoard;
   // Height/width is in board units.
   var heightWidth = block.getHeightWidth();
@@ -1820,7 +1820,7 @@ eYo.Board.prototype.scrollBrickTopLeft = function(id) {
   if (!brick.isStmt) {
     brick = brick.stmtParent || brick.root
   }
-  // XY is in board coordinates.
+  // where is in board coordinates.
   var xy = brick.xy
   // Find the top left of the block in board units.
   .backward(1/2, 1/2 + brick.depth * eYo.Span.INDENT)

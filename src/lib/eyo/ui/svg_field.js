@@ -279,7 +279,7 @@ eYo.Svg.prototype.fieldSetVisualAttribute = function (field) {
  * @return {!eYo.Where} Object with `.x` and `.y` properties.
  * @private
  */
-eYo.Svg.prototype.fieldGetAbsoluteXY_ = function(field) {
+eYo.Svg.prototype.fieldGetAbsoluteWhere_ = function(field) {
   return goog.style.getPageOffset(field.dom.borderRect_)
 }
 
