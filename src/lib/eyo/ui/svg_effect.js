@@ -46,7 +46,7 @@ eYo.Svg.prototype.brickDisposeEffect = (() => {
   return function(brick) {
     var g = brick.dom.svg.group_
     var w = brick.board
-    var xy = w.ui_driver.boardWhereElement(/** @type {!Element} */ g)
+    var xy = w.ui_driver.boardElementWhere(/** @type {!Element} */ g)
     // Deeply clone the current brick.
     var clone = g.cloneNode(true)
     clone.translateX_ = xy.x
@@ -86,7 +86,7 @@ eYo.Svg.prototype.brickConnectEffect = (() => {
   return function (brick) {
     var g = brick.dom.svg.group_
     var w = brick.board
-    var xy = w.ui_driver.boardWhereElement(/** @type {!Element} */ g)
+    var xy = w.ui_driver.boardElementWhere(/** @type {!Element} */ g)
     if (brick.isExpr) {
       var h = brick.span.height * w.scale / 2
       var ripple = eYo.Svg.newElement(

@@ -430,7 +430,7 @@ eYo.Svg.prototype.boardZoom = function(board, x, y, amount) {
  * @return {!eYo.Where} Object with .x and .y properties.
  * @private
  */
-eYo.Svg.prototype.boardWhereElement = function(board, element) {
+eYo.Svg.prototype.boardElementWhere = function(board, element) {
   var ans = new eYo.Where()
   var scale = 1
   var canvas = board.dom.svg.canvas_
