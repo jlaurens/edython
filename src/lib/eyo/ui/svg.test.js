@@ -4,7 +4,7 @@ describe('SVG coordinates', function () {
     var d1 = eYo.Test.new_brick('True')
     var ui = d1.ui
     var xy1 = d1.xy
-    var xy2 = ui.xyInBoard
+    var xy2 = ui.whereInBoard
     chai.assert(xy1.x === xy2.x)
     chai.assert(xy1.y === xy2.y)
     var d = new eYo.Were().xySet(246 * Math.random(), 135 * Math.random())
@@ -12,7 +12,7 @@ describe('SVG coordinates', function () {
     var xy1d = d1.xy
     chai.assert(xy1d.x === xy1.x + dx, `FAILURE x1: ${xy1d.x} === ${xy1.x} + ${dx}`)
     chai.assert(xy1d.y === xy1.y + dy, `FAILURE y1: ${xy1d.y} === ${xy1.y} + ${dy}`)
-    var xy2d = ui.xyInBoard
+    var xy2d = ui.whereInBoard
     chai.assert(xy2d.x === xy2.x + dx, `FAILURE x2: ${xy2d.x} === ${xy2.x} + ${dx}`)
     chai.assert(xy2d.y === xy2.y + dy, `FAILURE y2: ${xy2d.y} === ${xy2.y} + ${dy}`)
     d1.dispose()

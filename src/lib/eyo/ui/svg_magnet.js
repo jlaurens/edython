@@ -57,7 +57,7 @@ eYo.Svg.prototype.magnetHilight = function (m4t) {
   } else {
     steps = eYo.Shape.definitionWithMagnet(m4t)
   }
-  var xy = m4t.xyInBoard
+  var xy = m4t.whereInBoard
   eYo.Svg.magnetHighlightedPath_ = eYo.Svg.newElement(
     'path',
     {
@@ -68,11 +68,3 @@ eYo.Svg.prototype.magnetHilight = function (m4t) {
     g
   )
 }
-
-/**
- * Move the given magnet.
- * @param {!eYo.Magnet} m4t
- */
-eYo.Svg.prototype.magnetMove = function (m4t) {
-}
-

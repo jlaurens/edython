@@ -109,7 +109,7 @@ eYo.Svg.prototype.boardInit = function(board) {
           // One or more blocks may be out of bounds.  Bump them back in.
           var MARGIN = 25;
           board.getTopBricks(false).forEach(brick => {
-            var xy = brick.xyInBoard
+            var xy = brick.whereInBoard
             var size = brick.size
             // Bump any brick that's above the top back inside.
             var overflow = new eYo.Where()

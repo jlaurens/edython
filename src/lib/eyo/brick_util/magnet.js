@@ -484,20 +484,30 @@ Object.defineProperties(eYo.Magnet.prototype, {
    * @return {eYo.Where}
    * @readonly
    */
-  xyInBrick: {
+  whereInBrick: {
     get () {
-      var ans = new eYo.Where(this.where)
-      return this.slot ? ans.forward(this.slot.where) : ans
+      return this.slot
+      ? this.slot.whereInBrick.forward(this.where)
+      : new eYo.Where(this.where)
+    },
+    set (newValue) {
+      this.where_.set(this.slot
+        ? newValue.backward(this.slot.whereInBrick)
+        : newValue
+      )
     }
   },
   /**
-   * Position in the brick.
+   * Position in the board.
    * @return {eYo.Where}
    * @readonly
    */
-  xyInBoard: {
+  whereInBoard: {
     get () {
-      return this.xyInBrick.forward(this.brick.ui.xyInBoard)
+      return this.whereInBrick.forward(this.brick.ui.whereInBoard)
+    },
+    set (newValue) {
+      this.whereInBrick = new eYo.Where(newValue).backward(this.brick.ui.whereInBoard)
     }
   },
   x: { // in board coordinates
@@ -1496,7 +1506,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
 eYo.Magnet.prototype.tighten = function() {
   var m4t = this.target
   if (m4t) {
-    var xy = m4t.xyInBoard
+    var xy = m4t.whereInBoard
     if (xy.x != 0 || xy.y != 0) {
       this.targetBrick.moveTo(xy)
     }

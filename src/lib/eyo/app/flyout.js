@@ -730,7 +730,7 @@ eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
 
   var xy = this.board_.originInDesk
   .forward(
-    oldBrick.xyInBoard.scale(this.board_.scale)
+    oldBrick.whereInBoard.scale(this.board_.scale)
   ).backward(targetBoard.originInDesk)
   .unscale(targetBoard.scale)
   brick.moveTo(xy)

@@ -49,7 +49,7 @@ goog.forwardDeclare('eYo.Svg.Brick')
  * @readonly
  * @property {boolean} hasRightEdge  whether the owning brick has a right edge.
  * @readonly
- * @property {Object}  xyInBoard  the coordinates relative to the surface.
+ * @property {Object}  whereInBoard  the coordinates relative to the surface.
  */
 eYo.Brick.UI = function(brick) {
   this.brick_ = brick
@@ -562,7 +562,7 @@ eYo.Brick.UI.prototype.didRender_ = function (recorder) {
  * Update all of the connections on this.brick_ with the new locations.  * @private
  */
 eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
-  var xy = this.xyInBoard
+  var xy = this.whereInBoard
   var f = m4t => {
     if (m4t) {
       m4t.moveToOffset(xy)
@@ -594,7 +594,7 @@ eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
  * Update all of the connections on this.brick_ with the new locations.  * @private
  */
 eYo.Brick.UI.prototype.placeMagnets_ = function() {
-  var xy = this.xyInBoard
+  var xy = this.whereInBoard
   var f = m4t => {
     if (m4t) {
       m4t.moveToOffset(xy)
@@ -633,7 +633,7 @@ eYo.Brick.UI.prototype.placeMagnets_ = function() {
  */
 eYo.Brick.UI.prototype.renderMove_ = function (recorder) {
   this.renderMoveMagnets_()
-  // var blockTL = this.xyInBoard
+  // var blockTL = this.whereInBoard
   // this.brick_.forEachSlot((slot) => {
   //   var m4t = input.magnet
   //   if (m4t) {
@@ -1711,7 +1711,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
       return this.driver.brickXYInParent(this.brick_)
     }
   },
-  xyInBoard: {
+  whereInBoard: {
     get () {
       return this.driver.brickXYInBoard(this.brick_)
     }
@@ -1732,7 +1732,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
   boundingRect: {
     get () {
       return new eYo.Rect(
-        this.xyInBoard,
+        this.whereInBoard,
         this.size
       )
     }
@@ -1829,7 +1829,7 @@ eYo.Brick.UI.prototype.snapToGrid = function() {
   if (!this.board || this.board.dragging || this.parent || this.isInFlyout) {
     return
   }
-  var xy = this.xyInBoard
+  var xy = this.whereInBoard
   var dxy = new eYo.Where().set(xy.c, xy.l).backward(xy)
   if (dxy.x || dxy.y ) {
     this.moveBy(dxy)

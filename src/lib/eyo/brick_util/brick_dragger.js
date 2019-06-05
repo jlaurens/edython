@@ -286,7 +286,7 @@ eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
   var topBound = metrics.view.y / scale - HW.height / 2
   var rightBound = (metrics.view.x + metrics.view.width) / scale - HW.width / 2
   var downBound = (metrics.view.y + metrics.view.height) / scale - HW.height / 2
-  var xy = newLoc || ui.xyInBoard
+  var xy = newLoc || ui.whereInBoard
   return {
     x: xy.x < leftBound
       ? xy.x - leftBound

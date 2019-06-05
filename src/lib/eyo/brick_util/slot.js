@@ -109,7 +109,7 @@ eYo.Slot.prototype.dispose = function (healStack) {
   this.magnet_ = eYo.VOID
   this.key_ = eYo.VOID
   this.brick_ = eYo.VOID
-  this.where_.dispose && (this.where_.dispose())
+  this.where_.dispose()
   this.where_ = eYo.VOID
 }
 
@@ -142,6 +142,19 @@ Object.defineProperties(eYo.Slot.prototype, {
     get () {
       var m4t = this.magnet
       return m4t && m4t.targetBrick
+    }
+  },
+  whereInBoard: {
+    get () {
+      return new eYo.Where(this.where_).forward(this.brick.ui.whereInBoard)
+    }
+  },
+  whereInBrick: {
+    get () {
+      return new eYo.Where(this.where_)
+    },
+    set (newValue) {
+      this.where_.set(newValue)
     }
   },
   where: {

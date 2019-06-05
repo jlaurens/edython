@@ -438,8 +438,8 @@ eYo.Board.prototype.getTopBricks = function(ordered) {
   if (ordered && bricks.length > 1) {
     var offset = Math.sin(goog.math.toRadians(eYo.Board.SCAN_ANGLE));
     bricks.sort(function(a, b) {
-      var aXY = a.xyInBoard
-      var bXY = b.xyInBoard
+      var aXY = a.whereInBoard
+      var bXY = b.whereInBoard
       return (aXY.y + offset * aXY.x) - (bXY.y + offset * bXY.x)
     })
   }
@@ -1335,7 +1335,7 @@ eYo.Board.prototype.centerOnBrick = function(id) {
   }
 
   // XY is in board coordinates.
-  var xy = block.xyInBoard;
+  var xy = block.whereInBoard;
   // Height/width is in board units.
   var heightWidth = block.getHeightWidth();
 
@@ -1591,7 +1591,7 @@ eYo.Board.prototype.logAllConnections = function (comment) {
     var dbList = this.magnetDBList
     console.log(`${comment} > ${k} magnet`)
     dbList[eYo.Magnet[k]].forEach(m4t => {
-      console.log(m4t.xyInBrick, m4t.xyInBoard, m4t.brick.type)
+      console.log(m4t.whereInBrick, m4t.whereInBoard, m4t.brick.type)
     })
   })
 }
