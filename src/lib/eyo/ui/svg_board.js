@@ -96,7 +96,7 @@ eYo.Svg.prototype.boardInit = function(board) {
   if (!options.readOnly && !options.hasScrollbars) {
     var boardChanged = function() {
       if (!board.isDragging) {
-        var metrics = board.getMetrics()
+        var metrics = board.metrics
         var edgeLeft = metrics.view.x + metrics.absolute.x;
         var edgeTop = metrics.view.y + metrics.absolute.y;
         if (metrics.content.y_min < edgeTop ||
@@ -291,6 +291,9 @@ eYo.Svg.prototype.boardBind_resize = function (board) {
  */
 eYo.Svg.prototype.boardCanvasMoveTo = function (board, xy) {
   var translation = `translate(${xy.x},${xy.y}) scale(${board.scale})`
+  if (translation.indexOf('NaN'>=0)) {
+    throw 'MISSED'
+  }
   board.dom.svg.canvas_.setAttribute('transform', translation)
 }
 
@@ -315,7 +318,7 @@ eYo.Svg.prototype.boardStartDrag = function (board) {
 }
 
 /**
- * Prepares the UI for dragging.
+ * The gesture delta.
  * @param {!eYo.Board} mode  The display mode for bricks.
  */
 eYo.Svg.prototype.boardDragDeltaWhere = function (board) {
@@ -390,7 +393,7 @@ eYo.Svg.prototype.boardZoom = function(board, x, y, amount) {
   var options = board.options.zoom
   goog.asserts.assert(options, 'Forbidden zoom with no zoom options')
   var speed = options.scaleSpeed
-  var metrics = board.getMetrics()
+  var metrics = board.metrics
   var svg = board.dom.svg
   var center = svg.root_.createSVG();
   center.x = x

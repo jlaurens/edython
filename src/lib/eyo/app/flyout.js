@@ -653,7 +653,7 @@ eYo.Flyout.prototype.place = function () {
   if (!this.visible_) {
     return
   }
-  var metrics = this.targetBoard_.getMetrics()
+  var metrics = this.targetBoard_.metrics
   if (!metrics || metrics.view.height <= 0) {
     // Hidden components will return null.
     return;
@@ -756,7 +756,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
   if (!close === !this.closed) {
     return
   }
-  var metrics = this.targetBoard_.getMetrics()
+  var metrics = this.targetBoard_.metrics
   if (!metrics) {
     // Hidden components will return null.
     return;
@@ -805,7 +805,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
       this.ui_driver.flyoutPlaceAt(this, this.width_, this.height_, positions[n], y)
       this.slideOneStep(steps[n])
       // the scrollbar won't resize because the metrics of the board did not change
-      var hostMetrics = this.board_.getMetrics()
+      var hostMetrics = this.board_.metrics
       if (hostMetrics) {
         this.scrollbar_.resizeVertical_(hostMetrics)
       }

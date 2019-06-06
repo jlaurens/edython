@@ -1883,17 +1883,17 @@ eYo.Brick.UI.prototype.bumpNeighbours_ = function() {
  * @return {Object|eYo.VOID|null}
  */
 eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
-  var b3d = this.brick_.board
-  if (!b3d) {
+  var brd = this.brick_.board
+  if (!brd) {
     return
   }
   // if we clicked on a field, no connection returned
-  var gesture = b3d.getGesture(e)
+  var gesture = brd.getGesture(e)
   if (gesture && gesture.startField_) {
     return
   }
   var rect = this.boundingRect // in board coordinates
-  var xy = b3d.xyEventInBoard(e).backward(rect.topLeft)
+  var xy = brd.xyEventInBoard(e).backward(rect.topLeft)
   var R
   var magnet = this.brick_.someInputMagnet(magnet => {
     if (!magnet.disabled_ && (!magnet.hidden_ || magnet.wrapped_)) {

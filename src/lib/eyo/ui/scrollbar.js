@@ -141,7 +141,7 @@ eYo.ScrollbarPair.prototype.dispose = function() {
  */
 eYo.ScrollbarPair.prototype.resize = function() {
   // Look up the host metrics once, and use for both scrollbars.
-  var hostMetrics = this.board_.getMetrics();
+  var hostMetrics = this.board_.metrics;
   if (!hostMetrics) {
     // Host element is likely not visible.
     return;
@@ -560,7 +560,7 @@ eYo.Scrollbar.prototype.resize = function(opt_metrics) {
   // Determine the location, height and width of the host element.
   var hostMetrics = opt_metrics
   if (!hostMetrics) {
-    hostMetrics = this.board_.getMetrics()
+    hostMetrics = this.board_.metrics
     if (!hostMetrics) {
       // Host element is likely not visible.
       return

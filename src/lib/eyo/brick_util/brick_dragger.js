@@ -270,7 +270,7 @@ eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
     return eYo.VOID
   }
   // is the brick in the visible area ?
-  var metrics = board.getMetrics()
+  var metrics = board.metrics
   if (!metrics) {
     // sometimes eYo.VOID is returned
     console.error("UNDEFINED METRICS, BREAK HERE TO DEBUG")

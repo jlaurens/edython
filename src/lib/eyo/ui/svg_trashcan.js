@@ -138,8 +138,8 @@ eYo.Svg.prototype.trashcanDispose = function(trashcan) {
  * Inspect the contents of the trash.
  */
 eYo.Svg.prototype.trashcanOn_mouseup = function(trashcan) {
-  var b3d = trashcan.board_
-  if (b3d.startScroll.backward(b3d.scroll).magnitude > eYo.Gesture.DRAG_RADIUS) {
+  var brd = trashcan.board_
+  if (brd.startScroll.backward(brd.scroll).magnitude > eYo.Gesture.DRAG_RADIUS) {
     return
   }
 }
@@ -150,7 +150,7 @@ eYo.Svg.prototype.trashcanOn_mouseup = function(trashcan) {
  */
 eYo.Svg.prototype.trashcanPlace = function(trashcan) {
   var svg = trashcan.dom.svg
-  var metrics = trashcan.board_.getMetrics()
+  var metrics = trashcan.board_.metrics
   if (!metrics) {
     // There are no metrics available (board is probably not visible).
     return;

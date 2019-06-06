@@ -356,7 +356,7 @@ eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
  * .content.x_min: Offset of the left-most content from the x=0 coordinate,
  * .absolute.x: Left-edge of view.
  * @param {!eYo.Flyout} flyout
- * @return {Object} Contains size and position metrics of the flyout.
+ * @return {Object|null} Contains size and position metrics of the flyout. Null when not visible.
  * @private
  */
 eYo.Svg.prototype.flyoutGetMetrics_ = function(flyout) {
@@ -364,35 +364,31 @@ eYo.Svg.prototype.flyoutGetMetrics_ = function(flyout) {
     // Flyout is hidden.
     return null
   }
-  var W = flyout.board_
+  var brd = flyout.board_
   try {
-    var optionBox = W.dom.svg.canvas_.getBBox()
+    var optionBox = brd.dom.svg.canvas_.getBBox()
   } catch (e) {
     // Firefox has trouble with hidden elements (Bug 528969).
     var optionBox = {height: 0, y: 0, width: 0, x: 0}
   }
-  
   var metrics = {
-    content: {
-      top: optionBox.y,
-      left: optionBox.x,
-      height: optionBox.height * W.scale + 2 * flyout.MARGIN,
-      width: optionBox.width * W.scale + 2 * flyout.MARGIN,
-    },
-    view: {
+    content: new eYo.Rect(optionBox, {
+      height: optionBox.height * brd.scale + 2 * flyout.MARGIN,
+      width: optionBox.width * brd.scale + 2 * flyout.MARGIN,
+    }),
+    view: new eYo.Rect({
       height: flyout.height_ - 2 * flyout.SCROLLBAR_PADDING - flyout.SCROLLBAR_PADDING,
       width: flyout.width_,
-      top: -W.scroll_.y + optionBox.y,
-      left: -W.scroll_.x,
-    },
+      y: -brd.scroll_.y + optionBox.y,
+      x: -brd.scroll_.x,
+    }),
     // Padding for the end of the scrollbar.
-    absolute: {
-      y: flyout.SCROLLBAR_PADDING,
-      x: 0
-    }
+    absolute: new eYo.Where({
+      y: flyout.SCROLLBAR_PADDING
+    })
   }
   return metrics
-};
+}
 
 /**
  * Sets the translation of the flyout to match the scrollbars.
@@ -408,11 +404,11 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
   if (!metrics) {
     return
   }
-  var b3d = flyout.board_
+  var brd = flyout.board_
   if (goog.isNumber(xyRatio.y)) {
-    b3d.scroll_.y = -metrics.content.height * xyRatio.y
+    brd.scroll_.y = -metrics.content.height * xyRatio.y
   }
-  b3d.moveTo(b3d.scroll.forward(metrics.absolute))
+  brd.moveTo(brd.scroll.forward(metrics.absolute))
 }
 
 /**

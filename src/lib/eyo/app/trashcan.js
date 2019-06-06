@@ -145,7 +145,7 @@ eYo.Trashcan.prototype.dispose = function() {
  * Move the trash can to the bottom-right corner.
  */
 eYo.Trashcan.prototype.place = function() {
-  var metrics = this.board_.getMetrics()
+  var metrics = this.board_.metrics
   if (!metrics) {
     // There are no metrics available (board is probably not visible).
     return;

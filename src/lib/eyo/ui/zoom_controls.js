@@ -131,7 +131,7 @@ eYo.ZoomControls.prototype.dispose = function() {
  */
 eYo.ZoomControls.prototype.place = function() {
   var ws = this.board_
-  var metrics = ws.getMetrics()
+  var metrics = ws.metrics
   if (!metrics) {
     // There are no metrics available (board is probably not visible).
     return

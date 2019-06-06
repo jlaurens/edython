@@ -139,6 +139,10 @@ eYo.Where.prototype.set = function (c = 0, l = 0) {
     this.x = c.clientX
     this.y = c.clientY
     return this
+  } else if (goog.isDef(c.width) && goog.isDef(c.height)) {
+    this.x = c.width
+    this.y = c.height
+    return this
   }
   this.c = c
   this.l = l
@@ -547,9 +551,21 @@ eYo.Rect.prototype.set = function (c = 0, l = 0, w = 0, h = 0) {
 
 /**
  * Test equality between the receiver and the rhs.
+ * @param {eYo.Rect} rhs
  */
 eYo.Rect.prototype.equals = function (rhs) {
-  return rhs instanceof eYo.Rect && this.origin_ == rhs.origin_ && this.size_ == rhs.size_
+  return rhs instanceof eYo.Rect && this.origin_.equals(rhs.origin_) && this.size_.equals(rhs.size_)
+}
+
+/**
+ * Scale the receiver.
+ * @param {!Number} scale
+ * @return {!eYo.Rect} the receiver
+ */
+eYo.Where.prototype.scale = function (scale) {
+  this.origin_.scale(scale)
+  this.size_.scale(scale)
+  return this
 }
 
 /**

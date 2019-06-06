@@ -109,7 +109,7 @@ eYo.BoardDragger.prototype.start = function(gesture) {
    * @type {!Object}
    * @private
    */
-  this.startMetrics_ = board.getMetrics()
+  this.startMetrics_ = board.metrics
 
   /**
    * The scroll position of the board at the beginning of the drag.
