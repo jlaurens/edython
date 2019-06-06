@@ -371,14 +371,14 @@ eYo.Svg.prototype.boardSizeDidChange = function(board) {
  */
 eYo.Svg.prototype.boardMouseInRoot = function(board, e) {
   var svg = board.dom.svg
-  var svg = svg.root_.createSVGPoint()
-  svg.x = e.clientX
-  svg.y = e.clientY
   var matrix = svg.matrixFromScreen_
   if (!matrix) {
     matrix = svg.matrixFromScreen_ = svg.root_.getScreenCTM().inverse()
   }
-  return svg.matrixTransform(matrix)
+  var point = svg.root_.createSVGPoint()
+  point.x = e.clientX
+  point.y = e.clientY
+  return point.matrixTransform(matrix)
 }
 
 /**
