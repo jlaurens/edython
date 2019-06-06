@@ -22,7 +22,7 @@ goog.forwardDeclare('eYo.Board')
  * @param {!eYo.Board} board
  * @return {!Element} The board's SVG group.
  */
-eYo.Svg.prototype.boardInit = function(board) {
+eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
   if (board.dom) {
     return
   }
@@ -108,7 +108,7 @@ eYo.Svg.prototype.boardInit = function(board) {
                 metrics.view.width : metrics.view.width + edgeLeft)) {
           // One or more blocks may be out of bounds.  Bump them back in.
           var MARGIN = 25;
-          board.getTopBricks(false).forEach(brick => {
+          board.topBricks.forEach(brick => {
             var xy = brick.whereInBoard
             var size = brick.size
             // Bump any brick that's above the top back inside.
@@ -142,9 +142,8 @@ eYo.Svg.prototype.boardInit = function(board) {
     board.scrollbar = new eYo.ScrollbarPair(board)
     board.scrollbar.resize()
   }
-
   return g
-}
+})
 
 /**
  * Dispose of the board SVG ressources.

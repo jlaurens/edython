@@ -117,7 +117,7 @@ eYo.BoardDragger.prototype.start = function(gesture) {
    * @type {!eYo.Where}
    * @private
    */
-  this.startWhere_ = new eYo.Where(board.scroll)
+  this.startScroll_ = new eYo.Where(board.scroll)
   
   /*
   * Move the scrollbars to drag the board.
@@ -128,10 +128,10 @@ eYo.BoardDragger.prototype.start = function(gesture) {
   */
   this.startMetrics_.updateScroll_ = board.isFlyout
   ? function (x, y) {
-    board.targetBoard.flyout_.scrollbar_.set(y)
+    board.targetBoard.flyout_.scrollbar_.set(-y)
   }
   : function (x, y) {
-    board.scrollbar.set(x, y)
+    board.scrollbar.set(-x, -y)
   }
 
   if (eYo.Selected.brick) {
@@ -180,7 +180,7 @@ eYo.BoardDragger.prototype.end = function() {
   this.isActive_ = false
   var trans = this.dragSurface_.translation
   this.dragSurface_.clearAndHide(this.dom.svg.group_)
-  this.board_.canvasMoveTo(trans)
+  this.board_.metrics_.scroll = trans
   console.log('?', eYo.App.board.topBricks_[0].ui.xyInDesk)
 }
 
@@ -194,16 +194,12 @@ eYo.BoardDragger.prototype.end = function() {
 eYo.BoardDragger.prototype.drag = function() {
   var deltaWhere = this.board_.ui_driver.boardDragDeltaWhere(this.board_)
   var metrics = this.startMetrics_
-
-  var x = this.startWhere_.x + deltaWhere.x + metrics.content.x_min
-  x = Math.min(x, 0)
-  x = Math.max(x, metrics.view.width - metrics.content.width)
-
-  var y = this.startWhere_.y + deltaWhere.y + metrics.content.y_min
-  y = Math.min(y, 0)
-  y = Math.max(y, metrics.view.height - metrics.content.height)
-
-  this.startMetrics_.updateScroll_(-x, -y)
+  var xy = metrics.scroll.clone.forward(metrics.content.origin).forward(deltaWhere)
+  xy.x = Math.min(xy.x, 0)
+  xy.x = Math.max(xy.x, metrics.view.width - metrics.content.width)
+  xy.y = Math.min(y, 0)
+  xy.y = Math.max(y, metrics.view.height - metrics.content.height)
+  this.startMetrics_.updateScroll_(xy)
 }
 
 /**

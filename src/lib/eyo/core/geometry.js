@@ -121,6 +121,15 @@ Object.defineProperties(eYo.Where.prototype, {
       var dy = this.y
       return Math.sqrt(dx * dx + dy * dy)
     }
+  },
+  /**
+   * clone the receiver.
+   * @type {eYo.Where}
+   */
+  clone: {
+    get () {
+      return new eYo.Where(this)
+    }
   }
 })
 
@@ -223,12 +232,21 @@ eYo.Where.prototype.xyAdvance = function (x = 0, y = 0) {
 
 /**
  * Scale the receiver.
- * @param {!Number} scale
+ * @param {!Number | Object} scaleX
+ * @param {?Number} scaleY or scaleX
  * @return {!eYo.Where} the receiver
  */
-eYo.Where.prototype.scale = function (scale) {
-  this.c_ *= scale
-  this.l_ *= scale
+eYo.Where.prototype.scale = function (scaleX, scaleY) {
+  if (scaleX.x) {
+    this.c_ *= scaleX.x
+    this.l_ *= scaleX.y || scaleX.x
+  } else if (scaleX.y) {
+    this.c_ *= scaleX.y
+    this.l_ *= scaleX.y
+  } else {
+    this.c_ *= scaleX
+    this.l_ *= scaleY || scaleX
+  }
   return this
 }
 
@@ -237,9 +255,17 @@ eYo.Where.prototype.scale = function (scale) {
  * @param {!Number} scale  Must not be 0.
  * @return {!eYo.Where} the receiver
  */
-eYo.Where.prototype.unscale = function (scale) {
-  this.c_ /= scale
-  this.l_ /= scale
+eYo.Where.prototype.unscale = function (scaleX, scaleY) {
+  if (scaleX.x) {
+    this.c_ /= scaleX.x
+    this.l_ /= scaleX.y || scaleX.x
+  } else if (scaleX.y) {
+    this.c_ /= scaleX.y
+    this.l_ /= scaleX.y
+  } else {
+    this.c_ /= scaleX
+    this.l_ /= scaleY || scaleX
+  }
   return this
 }
 
@@ -525,6 +551,15 @@ Object.defineProperties(eYo.Rect.prototype, {
       this.size_.width = newValue.width
       this.size_.height = newValue.height
     }
+  },
+  /**
+   * clone the receiver.
+   * @type {eYo.Rect}
+   */
+  clone: {
+    get () {
+      return new eYo.Rect(this)
+    }
   }
 })
 
@@ -580,23 +615,25 @@ eYo.Rect.prototype.equals = function (rhs) {
 
 /**
  * Scale the receiver.
- * @param {!Number} scale
+ * @param {!Number | Object} scaleX
+ * @param {?Number} scaleY
  * @return {!eYo.Rect} the receiver
  */
-eYo.Rect.prototype.scale = function (scale) {
-  this.origin_.scale(scale)
-  this.size_.scale(scale)
+eYo.Rect.prototype.scale = function (scaleX, scaleY) {
+  this.origin_.scale(scaleX, scaleY)
+  this.size_.scale(scaleX, scaleY)
   return this
 }
 
 /**
  * Unscale the receiver.
- * @param {!Number} scale  Must not be 0.
+ * @param {!Number} scaleX  Must not be 0.
+ * @param {?Number} scaleY  Must not be 0.
  * @return {!eYo.Rect} the receiver
  */
-eYo.Rect.prototype.unscale = function (scale) {
-  this.origin_.unscale(scale)
-  this.size_.unscale(scale)
+eYo.Rect.prototype.unscale = function (scaleX, scaleY) {
+  this.origin_.unscale(scaleX, scaleY)
+  this.size_.unscale(scaleX, scaleY)
   return this
 }
 
@@ -623,13 +660,6 @@ eYo.Rect.prototype.union = function (rect) {
     this.y_max = a
   }
   return this
-}
-
-/**
- * clone the `Rect`.
- */
-eYo.Rect.prototype.clone = function () {
-  return new eYo.Rect(this)
 }
 
 /**

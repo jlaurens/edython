@@ -421,6 +421,8 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
  * @private
  */
 eYo.Svg.prototype.flyoutUpdate = function(flyout) {
+  var width = flyout.width
+  var height = flyout.height
   var top_margin = flyout.TOP_MARGIN
   var atRight = flyout.atRight
   // Decide whether to start on the left or right.
@@ -499,7 +501,7 @@ eYo.Svg.prototype.flyoutListen_mouseover = function(flyout) {
     'mouseover',
     null,
     () => {
-      flyout.board_.getTopBricks(false).forEach(b3k => b3k.removeSelect)
+      flyout.board_.topBricks.forEach(b3k => b3k.removeSelect)
     }
   ))
 }

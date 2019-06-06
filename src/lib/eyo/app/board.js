@@ -60,6 +60,7 @@ eYo.Board = function(desk, options) {
    */
   this.brickDB_ = Object.create(null)
 
+  this.metrics_ = new eYo.Metrics(this)
   this.scale_ = 1
 
   this.getMetrics =
@@ -282,7 +283,7 @@ Object.defineProperties(eYo.Board.prototype, {
   },
   scale: {
     get () {
-      return this.scale_
+      return this.metrics_.scale
     },
     /**
      * Set the board's zoom factor.
@@ -290,25 +291,7 @@ Object.defineProperties(eYo.Board.prototype, {
      * @param {number} newScale Zoom factor.
      */
     set (newScale) {
-      var options = this.options.zoom
-      if (options.maxScale &&
-          newScale > options.maxScale) {
-        newScale = options.maxScale;
-      } else if (options.minScale &&
-          newScale < options.minScale) {
-        newScale = options.minScale;
-      }
-      this.scale_ = newScale
-      if (this.scrollbar) {
-        this.scrollbar.resize()
-      } else {
-        this.moveTo(this.scroll)
-      }
-      eYo.App.hideChaff()
-      if (this.flyout_) {
-        // No toolbox, resize flyout.
-        this.flyout_.reflow()
-      }
+      this.metrics_.scale = newScale
     }
   },
   /**
@@ -318,9 +301,9 @@ Object.defineProperties(eYo.Board.prototype, {
    * @return {Object} Contains the position and size of the bounding box
    *   containing the bricks on the board.
    */
-  bricksBoundingBox: {
+  bricksBoundingRect: {
     get () {
-      var topBricks = this.getTopBricks(false).filter(b3k => b3k.ui && b3k.ui.rendered)
+      var topBricks = this.topBricks.filter(b3k => b3k.ui && b3k.ui.rendered)
       if (topBricks.length) {
         var ans = topBricks.shift().ui.boundingRect
         topBricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
@@ -368,7 +351,15 @@ startScroll: {
    */
   topBricks: {
     get () {
-      return this.topBricks_
+      return [].slice.call(this.topBricks_)
+    }
+  },
+  /**
+   * the ordered top bricks of the board.
+   */
+  orderedTopBricks: {
+    get () {
+      return this.getTopBricks(true)
     }
   }
 })
@@ -407,6 +398,8 @@ eYo.Board.prototype.dispose = function() {
     this.zoomControls_.dispose()
     this.zoomControls_ = null
   }
+  this.metrics_.dispose()
+  this.metrics = null
   this.scroll_ = this.startScroll_ = null
   this.disposeUI()
 }
@@ -445,6 +438,22 @@ eYo.Board.prototype.disposeUI = function() {
 }
 
 /**
+ * Update the UI according to the scale change.
+ */
+eYo.Board.prototype.didScale = function() {
+  if (this.scrollbar) {
+    this.scrollbar.resize()
+  } else {
+    this.moveTo(this.scroll)
+  }
+  eYo.App.hideChaff()
+  if (this.flyout_) {
+    // Resize flyout.
+    this.flyout_.reflow()
+  }
+}
+
+/**
  * Angle away from the horizontal to sweep for bricks.  Order of execution is
  * generally top to bottom, but a small angle changes the scan to give a bit of
  * a left to right bias.  Units are in degrees.
@@ -460,7 +469,7 @@ eYo.Board.SCAN_ANGLE = 3
  */
 eYo.Board.prototype.getTopBricks = function(ordered) {
   // Copy the topBricks_ list.
-  var bricks = [].concat(this.topBricks_);
+  var bricks = [].concat(this.topBricks_)
   if (ordered && bricks.length > 1) {
     var offset = Math.sin(goog.math.toRadians(eYo.Board.SCAN_ANGLE));
     bricks.sort(function(a, b) {
@@ -650,7 +659,7 @@ eYo.Board.prototype.getBrickById = eYo.Board.prototype.getBrickById = function(i
  * @return {boolean} True if all inputs are filled, false otherwise.
  */
 eYo.Board.prototype.allInputsFilled = function(opt_shadowBricksAreFilled) {
-  if (this.getTopBricks(false).some(b3k => !brick.allInputsFilled(opt_shadowBricksAreFilled))) {
+  if (this.topBricks.some(b3k => !brick.allInputsFilled(opt_shadowBricksAreFilled))) {
     return false
   }
   return true
@@ -767,7 +776,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   allBricks: {
     get () {
-      var bricks = this.getTopBricks(false)
+      var bricks = this.topBricks
       for (var i = 0; i < bricks.length; i++) {
         bricks.push.apply(bricks, bricks[i].children)
       }
@@ -1055,7 +1064,7 @@ eYo.Board.prototype.recordDeleteAreas = function() {
  * @return {?number} Null if not over a delete area, or an enum representing
  *     which delete area the event is over.
  */
-eYo.Board.prototype.isDeleteArea = function(gesture) {
+eYo.Board.prototype.inDeleteArea = function(gesture) {
   var xy = gesture.where
   if (this.deleteRectTrash_ && this.deleteRectTrash_.contains(xy)) {
     return eYo.Board.DELETE_AREA_TRASH
@@ -1082,7 +1091,7 @@ eYo.Board.prototype.cleanUp = function() {
     this.setResizesEnabled(false)
   eYo.Events.group = true
   var cursor = new eYo.Where()
-  this.getTopBricks(true).forEach(brick => {
+  this.orderedTopBricks.forEach(brick => {
     brick.moveTo(cursor)
     brick.ui.snapToGrid()
     cursor.y = brick.xy.y +
@@ -1103,7 +1112,7 @@ eYo.Board.prototype.showContextMenu_ = function (e) {
     return
   }
   var menuOptions = []
-  var topBricks = this.getTopBricks(true)
+  var topBricks = this.orderedTopBricks
   var eventGroup = eYo.Do.genUid()
   var ws = this
 
@@ -1279,7 +1288,7 @@ eYo.Board.prototype.zoomCenter = function(type) {
  * Zoom the bricks to fit in the board if possible.
  */
 eYo.Board.prototype.zoomToFit = function() {
-  var bricksBox = this.bricksBoundingBox
+  var bricksBox = this.bricksBoundingRect
   var bricksWidth = bricksBox.width;
   if (!bricksWidth) {
     return;  // Prevents zooming to infinity.
@@ -1374,11 +1383,17 @@ eYo.Board.prototype.centerOnBrick = function(id) {
 }
 
 /**
+ * The metrix for the board are
+ * 1) the view rectangle in board coordinates.
+ * 2) the content rect, where the bricks live.
+ * 3) the offset of the origin of the content rect relative to the
+ * top left corner of the visible rectangle.
+ * 
  * Return an object with all the metrics required to size scrollbars for a
  * top level board.  The following properties are computed:
  * Coordinate system: pixel coordinates.
  * .view: visible rectangle, the orgin gives the coordinates of the top left corner relative to the parent.
- * .content: contents rectangle, the orgin gives the coordinates of the top left corner relative to the (0, 0) point.
+ * .content: contents rectangle.
  * .absolute.y: Top-edge of view.
  * .absolute.x: Left-edge of view.
  * .flyout.width: Width of the flyout if it is always open.  Otherwise zero.
@@ -1401,7 +1416,7 @@ eYo.Board.getTopLevelBoardMetrics_ = (() => {
    * @private
    */
   var getContentDimensionsBounded_ = function(brd, svgSize) {
-    var content = brd.bricksBoundingBox.scale(brd.scale)
+    var content = brd.bricksBoundingRect.scale(brd.scale)
     var ans = new eYo.Rect()
 
     // View height and width are both in pixels, and are the same as the SVG size.
@@ -1427,7 +1442,7 @@ eYo.Board.getTopLevelBoardMetrics_ = (() => {
     if (this.scrollbar) {
       var dimensions = getContentDimensionsBounded_(this, svgSize)
     } else {
-      dimensions = this.bricksBoundingBox.scale(this.scale)
+      dimensions = this.bricksBoundingRect.scale(this.scale)
     }
     var metrics = {
       content: dimensions,

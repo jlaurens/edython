@@ -130,7 +130,7 @@ eYo.Xml.boardToDom = function(board, opt) {
     )
   )
   var xml = root.firstChild.firstChild
-  board.getTopBricks(true).forEach(brick => {
+  board.orderedTopBricks.forEach(brick => {
     var dom = eYo.Xml.brickToDomWithWhere(brick, opt)
     var p = new eYo.Py.Exporter()
     eYo.Do.tryFinally(() => {

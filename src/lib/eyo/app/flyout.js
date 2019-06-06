@@ -55,7 +55,7 @@ eYo.Flyout = function(board, targetBoard, flyoutOptions) {
    * @type {number}
    * @private
    */
-  this.rect_ = new eYo.Rect(
+  this.rect_ = new eYo.Rect()
   
   /**
    * Opaque data that can be passed to unbindEvent.
@@ -164,7 +164,17 @@ Object.defineProperties(eYo.Flyout.prototype, {
    * @type {boolean}
    * @private
    */
-  closed: { value: false, writable: true},
+  closed_: { value: false, writable: true},
+  /**
+   * Whether the flyout is closed.
+   * @type {boolean}
+   * @readonly
+   */
+  closed: {
+    get () {
+      return this.closed_
+    }
+  },
   /**
    * Whether the board containing this flyout is visible.
    * @type {boolean}
@@ -352,11 +362,16 @@ Object.defineProperties(eYo.Flyout.prototype, {
       return this.makeUI === eYo.Do.nothing
     }
   },
+  /**
+   * The rect of the receiver in the desk
+   * @type {eYo.Rect}
+   * @readonly
+   */
   rect: {
     get () {
-      return this.rect_.clone()
+      return this.rect_.clone
     }
-  }
+  },
   position: {
     get () {
       return this.rect_.origin
@@ -364,7 +379,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
     set (newValue) {
       this.rect_.origin = newValue
     }
-  }
+  },
   /**
    * @readonly
    * @type {number} The width of the flyout.
@@ -418,9 +433,9 @@ Object.defineProperties(eYo.Flyout.prototype, {
    *     dragging.
    * @package
    */
-  scrollable: {
+  scrollable: {visible
     get () {
-      return this.scrollbar_ && this.scrollbar_.isVisible()
+      return this.scrollbar_ && this.scrollbar_.visible
     }
   },
   /**
@@ -444,18 +459,6 @@ Object.defineProperties(eYo.Flyout.prototype, {
   },
 })
 
-eYo.Flyout.prototype.getWidth = function() {
-  throw "DEPRECATED getWidth"
-}
-
-eYo.Flyout.prototype.getHeight = function() {
-  throw "DEPRECATED getHeight"
-};
-
-eYo.Flyout.prototype.getBoard = function() {
-  throw "DEPRECATED getBoard"
-}
-
 /**
  * Update the display property of the flyout based whether it thinks it should
  * be visible and whether its containing board is visible.
@@ -477,16 +480,14 @@ eYo.Flyout.prototype.hide = function() {
     return
   }
   this.visible = false
-
   this.ui_driver.flyoutRemoveListeners(this)
-  
   if (this.reflowWrapper_) {
     this.board_.removeChangeListener(this.reflowWrapper_)
-    this.reflowWrapper_ = null;
+    this.reflowWrapper_ = null
   }
   // Do NOT delete the bricks here.  Wait until Flyout.show.
   // https://neil.fraser.name/news/2014/08/09/
-};
+}
 
 /**
  * Show and populate the flyout.
@@ -497,7 +498,8 @@ eYo.Flyout.prototype.show = function(model) {
   this.board_.setResizesEnabled(false)
   this.hide()
   eYo.Events.disableWrap(() => {
-    this.clearOldBricks_()
+    // Delete any bricks from a previous showing.
+    this.board_.topBricks.forEach(brick => brick.dispose())
     // Create the bricks to be shown in this flyout.
     var contents = []
     this.permanentlyDisabled_.length = 0
@@ -560,15 +562,6 @@ eYo.Flyout.prototype.show = function(model) {
 }
 
 /**
- * Delete bricks, mats and buttons from a previous showing of the flyout.
- * @private
- */
-eYo.Flyout.prototype.clearOldBricks_ = function() {
-  // Delete any bricks from a previous showing.
-  this.board_.getTopBricks(false).forEach(brick => brick.dispose())
-}
-
-/**
  * Scroll the flyout.
  * @param {!Event} e Mouse wheel scroll event.
  * @private
@@ -622,16 +615,16 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
  */
 eYo.Flyout.prototype.layout_ = function(contents) {
   this.board_.scale = this.targetBoard_.scale
-  var cursor = new eYo.Where().xySet(this.MARGIN, this.MARGIN)
+  var where = new eYo.Where().xySet(this.MARGIN, this.MARGIN)
   contents.forEach(brick => {
     // Mark bricks as being inside a flyout.  This is used to detect and
     // prevent the closure of the flyout if the user right-clicks on such a
     // brick.
     brick.descendants.forEach(child => child.isInFlyout = true)
     brick.render()
-    brick.moveBy(cursor)
+    brick.moveTo(where)
     this.ui_driver.flyoutAddListeners(this, brick)
-    cursor.y += brick.size.height + eYo.Unit.y / 4
+    where.y += brick.size.height + eYo.Unit.y / 4
   })
 }
 
@@ -658,7 +651,7 @@ eYo.Flyout.prototype.isDragTowardBoard = function(gesture) {
   var dy = gesture.deltaWhere_.y
   // Direction goes from -180 to 180, with 0 toward the board.
   var direction = Math.atan2(dy,
-    this.anchor_ === eYo.Flyout.AT_RIGHT ? -dx : dx
+    this.atRight ? -dx : dx
   ) / Math.PI * 180
   var limit = this.dragAngleLimit_
   return -limit < direction && direction < limit
@@ -672,7 +665,7 @@ eYo.Flyout.prototype.isDragTowardBoard = function(gesture) {
  */
 eYo.Flyout.prototype.filterForCapacity_ = function() {
   var remainingCapacity = this.targetBoard_.remainingCapacity
-  this.board_.getTopBricks(false).forEach(brick => {
+  this.board_.topBricks.forEach(brick => {
     if (this.permanentlyDisabled_.indexOf(brick) < 0) {
       brick.disabled = brick.descendants.length > remainingCapacity
     }
@@ -687,7 +680,7 @@ eYo.Flyout.prototype.reflow = function() {
     this.board_.removeChangeListener(this.reflowWrapper_)
   }
   this.board_.scale = this.targetBoard_.scale
-  var rect = this.board_.bricksBoundingBox
+  var rect = this.board_.bricksBoundingRect
   var flyoutWidth = rect.width
   flyoutWidth += this.MARGIN * 1.5
   flyoutWidth *= this.board_.scale
@@ -711,32 +704,24 @@ eYo.Flyout.prototype.place = function () {
     return;
   }
   // Record the height for eYo.Flyout.getMetrics_
-  this.height_ = metrics.view.height - this.TOP_OFFSET
-
-  var size = this.size
-  size.height = metrics.view.height
+  this.rect_.height = metrics.view.height
   this.ui_driver.flyoutUpdate(this)
-
-  this.toolbar_.resize(edgeWidth, edgeHeight)
+  this.toolbar_.resize()
+  this.rect_.origin = metrics.absolute
 
   var y = metrics.absolute.y
   var x = metrics.absolute.x
-  if (this.anchor_ === eYo.Flyout.AT_RIGHT) {
+  if (this.atRight) {
     x += (metrics.view.width - this.width_)
     if (this.closed) {
       x += this.width_
     }
-     // Save the location of the left edge of the flyout, for use when Firefox
-    // gets the bounding client rect wrong.
-    this.leftEdge_ = x
-  } else if (this.anchor_ === eYo.Flyout.AT_LEFT) {
+  } else {
     if (this.closed) {
       x -= this.width_
     }
-    // Save the location of the left edge of the flyout, for use when Firefox
-    // gets the bounding client rect wrong.
-    this.leftEdge_ = x
   }
+
   this.ui_driver.flyoutPlaceAt(this, x, y)
 }
 
@@ -845,7 +830,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
   var id = setInterval(() => {
     if (n >= n_steps) {
       clearInterval(id)
-      if ((this.closed = close)) {
+      if ((this.closed_ = close)) {
         this.visible = false
       }
       this.ui_driver.flyoutUpdate(this)

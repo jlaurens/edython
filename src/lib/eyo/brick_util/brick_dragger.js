@@ -417,7 +417,7 @@ eYo.BrickDragger.prototype.connect = function() {
  * @package
  */
 eYo.BrickDragger.prototype.update = function() {
-  var deleteRect = this.deleteRect_ = this.destination.isDeleteArea(this.gesture_)
+  var deleteRect = this.deleteRect_ = this.destination.inDeleteArea(this.gesture_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
   this.distance_ = eYo.Board.SNAP_RADIUS

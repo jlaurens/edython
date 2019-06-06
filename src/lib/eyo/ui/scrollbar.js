@@ -87,7 +87,17 @@ Object.defineProperties(eYo.ScrollbarPair.prototype, {
       this.hScroll.containerVisible = newValue
       this.vScroll.containerVisible = newValue
     }
-  }
+  },
+  /**
+   * Is the scrollbar visible.  Non-paired scrollbars disappear when they aren't
+   * needed.
+   * @return {boolean} True if visible.
+   */
+  visible: {
+    get () {
+      return this.hScroll.visible || this.vScroll.visible
+    }
+  },
 })
 
 /**
@@ -156,8 +166,8 @@ eYo.ScrollbarPair.prototype.resize = function() {
     oldMetrics.absolute.y != hostMetrics.absolute.y ||
     oldMetrics.absolute.x != hostMetrics.absolute.x) {
     // The window has been resized or repositioned.
-    resizeH = true;
-    resizeV = true;
+    resizeH = true
+    resizeV = true
   } else {
     // Has the content been resized or moved?
     if (!oldMetrics ||
@@ -696,7 +706,8 @@ eYo.Scrollbar.prototype.didScroll_ = function() {
  *     scrollbar handle.
  */
 eYo.Scrollbar.prototype.set = function(value) {
-  this.handlePosition = this.constrainHandle_(value * this.ratio_)
+  var v = value[this.horizontal_ ? 'x' : 'y']
+  this.handlePosition = this.constrainHandle_((v || value) * this.ratio_)
   this.didScroll_()
 }
 
@@ -781,7 +792,7 @@ eYo.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
     coordinates.x -= hostMetrics.absolute.x + eYo.Scrollbar.thickness + 0.5
     var yOffset = flyout.TOP_OFFSET
   } else {
-    coordinates = hostMetrics.absolute.clone()
+    coordinates = hostMetrics.absolute.clone
     coordinates.x += 0.5 + hostMetrics.view.width -
         eYo.Scrollbar.thickness - 1
     yOffset = 1 * eYo.Unit.rem
