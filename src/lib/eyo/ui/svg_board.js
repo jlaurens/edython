@@ -290,11 +290,11 @@ eYo.Svg.prototype.boardBind_resize = function (board) {
  * @param {number} xy Translation.
  */
 eYo.Svg.prototype.boardCanvasMoveTo = function (board, xy) {
-  var translation = `translate(${xy.x},${xy.y}) scale(${board.scale})`
-  if (translation.indexOf('NaN'>=0)) {
+  var transform = `translate(${xy.x},${xy.y}) scale(${board.scale})`
+  if (transform.indexOf('NaN')>=0) {
     throw 'MISSED'
   }
-  board.dom.svg.canvas_.setAttribute('transform', translation)
+  board.dom.svg.canvas_.setAttribute('transform', transform)
 }
 
 /**

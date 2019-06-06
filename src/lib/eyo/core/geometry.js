@@ -234,7 +234,7 @@ eYo.Where.prototype.scale = function (scale) {
 
 /**
  * Unscale the receiver.
- * @param {!eYo.Where} other
+ * @param {!Number} scale  Must not be 0.
  * @return {!eYo.Where} the receiver
  */
 eYo.Where.prototype.unscale = function (scale) {
@@ -532,14 +532,18 @@ eYo.Rect.prototype.set = function (c = 0, l = 0, w = 0, h = 0) {
       this.size = c.size
     } else if (goog.isDef(l.x) && goog.isDef(l.y)) {
       this.size = l
+    } else if (goog.isDef(l.width) && goog.isDef(l.height)) {
+      this.size = l
     } else {
       this.size_.x = l
       this.size_.y = w
     }
   } else {
-    this.x = c.x
-    this.y = c.y
+    this.origin_.c_ = c
+    this.origin_.l_ = l
     if (goog.isDef(w.x) && goog.isDef(w.y)) {
+      this.size = w
+    } else if (goog.isDef(w.width) && goog.isDef(w.height)) {
       this.size = w
     } else {
       this.size_.x = w
@@ -562,9 +566,20 @@ eYo.Rect.prototype.equals = function (rhs) {
  * @param {!Number} scale
  * @return {!eYo.Rect} the receiver
  */
-eYo.Where.prototype.scale = function (scale) {
+eYo.Rect.prototype.scale = function (scale) {
   this.origin_.scale(scale)
   this.size_.scale(scale)
+  return this
+}
+
+/**
+ * Unscale the receiver.
+ * @param {!Number} scale  Must not be 0.
+ * @return {!eYo.Rect} the receiver
+ */
+eYo.Rect.prototype.unscale = function (scale) {
+  this.origin_.unscale(scale)
+  this.size_.unscale(scale)
   return this
 }
 

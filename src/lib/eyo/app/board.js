@@ -60,6 +60,8 @@ eYo.Board = function(desk, options) {
    */
   this.brickDB_ = Object.create(null)
 
+  this.scale_ = 1
+  
   this.getMetrics =
   options.getMetrics || eYo.Board.getTopLevelBoardMetrics_
   this.setMetrics =
@@ -247,7 +249,7 @@ Object.defineProperties(eYo.Board.prototype, {
     get () {
       return this.getMetrics()
     }
-  }
+  },
   /**
    * Maximum number of undo events in stack. `0` turns off undo, `Infinity` sets it to unlimited.
    * @type {number}
