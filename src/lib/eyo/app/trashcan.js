@@ -154,7 +154,7 @@ eYo.Trashcan.prototype.place = function() {
       this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
 
   if (metrics.flyout && metrics.flyout.anchor === eYo.Flyout.AT_RIGHT) {
-    var flyoutPosition = this.board_.flyout_.positionInPixels
+    var flyoutPosition = this.board_.flyout_.position
     if (flyoutPosition) {
       this.left_ = flyoutPosition.x -
       this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness

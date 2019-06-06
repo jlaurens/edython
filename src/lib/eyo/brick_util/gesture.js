@@ -393,8 +393,7 @@ eYo.Gesture.prototype.handleTouchMove = function(e) {
       ? gestureScale * eYo.Gesture.ZOOM_IN_FACTOR 
       : gestureScale * eYo.Gesture.ZOOM_OUT_FACTOR
       var board = this.board_
-      var where = board.eventWhere(e)
-      board.zoom(where.x, where.y, delta)
+      board.zoom(e, delta)
     }
     this.previousScale_ = scale
     e.preventDefault()

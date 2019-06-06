@@ -219,12 +219,11 @@ eYo.Svg.prototype.boardOn_wheel = function(e) {
   // TODO: Remove gesture cancellation and compensate for coordinate skew during
   // zoom.
   if (this.gesture_) {
-    this.gesture_.cancel();
+    this.gesture_.cancel()
   }
   var PIXELS_PER_ZOOM_STEP = 50
   var delta = -e.deltaY / PIXELS_PER_ZOOM_STEP
-  var position = this.eventWhere(e)
-  this.zoom(position.x, position.y, delta)
+  this.zoom(e, delta)
   e.preventDefault()
 }
 

@@ -293,13 +293,13 @@ eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
 /**
  * Update the view based on coordinates calculated in position().
  * @param {!eYo.Flyout} flyout
- * @param {number} width The computed width of the flyout's SVG group
- * @param {number} height The computed height of the flyout's SVG group.
  * @param {number} x The computed x origin of the flyout's SVG group.
  * @param {number} y The computed y origin of the flyout's SVG group.
  * @private
  */
-eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
+eYo.Svg.prototype.flyoutPlaceAt = function (flyout, x, y) {
+  var width = flyout.width
+  var height = flyout.height
   if (width < 0 || height < 0) {
     console.error(width, height, x, y)
     return
@@ -307,7 +307,7 @@ eYo.Svg.prototype.flyoutPlaceAt = function (flyout, width, height, x, y) {
   var g = flyout.dom.svg.root_
   // Always update the scrollbar (if one exists).
   g.setAttribute('width', width)
-  g.setAttribute('height', height)
+  g.setAttribute('height', height - + flyout.TOP_OFFSET)
   var transform = `translate(${x}px,${y + flyout.TOP_OFFSET}px)`
   eYo.Dom.setCssTransform(g, transform)
 
@@ -377,7 +377,7 @@ eYo.Svg.prototype.flyoutGetMetrics_ = function(flyout) {
       width: optionBox.width * brd.scale + 2 * flyout.MARGIN,
     }),
     view: new eYo.Rect({
-      height: flyout.height_ - 2 * flyout.SCROLLBAR_PADDING - flyout.SCROLLBAR_PADDING,
+      height: flyout.height_ - 3 * flyout.SCROLLBAR_PADDING,
       width: flyout.width_,
       y: -brd.scroll_.y + optionBox.y,
       x: -brd.scroll_.x,
@@ -412,60 +412,27 @@ eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
 }
 
 /**
- * Return the deletion rectangle for this flyout in viewport coordinates.
- * Edython : add management of the 0 width rectange
+ * Update the visible boundaries of the flyout.
  * @param {!eYo.Flyout} flyout
- * @return {eYo.Rect} Rectangle in which to delete.
- */
-eYo.Svg.prototype.flyoutClientRect = function(flyout) {
-  var g = flyout.dom.root_
-  if (!g) {
-    return null;
-  }
-  var rect = g.getBoundingClientRect()
-  var x = rect.left
-  var width = rect.width
-  if (!width) {
-    var xy = flyout.positionInPixels
-    if (xy) {
-      x = xy.x
-    }
-  }
-  // BIG_NUM is offscreen padding so that bricks dragged beyond the shown flyout
-  // area are still deleted.  Must be larger than the largest screen size,
-  // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
-  var BIG_NUM = 1000000000
-  if (flyout.anchor === eYo.Flyout.AT_LEFT) {
-    return new eYo.Rect(x - BIG_NUM, -BIG_NUM, BIG_NUM + width,
-        BIG_NUM * 2);
-  } else {  // Right
-    return new eYo.Rect(x, -BIG_NUM, BIG_NUM + width, BIG_NUM * 2);
-  }
-}
-
-
-/**
- * Create and set the path for the visible boundaries of the flyout.
- * @param {!eYo.Flyout} flyout
- * @param {number} width The width of the flyout, not including the
+ * @param {?Number} width The width of the flyout, not including the
  *     rounded corners, in pixels.
- * @param {number} height The height of the flyout, not including
+ * @param {?Number} height The height of the flyout, not including
  *     rounded corners, in pixels.
  * @private
  */
-eYo.Svg.prototype.flyoutUpdate = function(flyout, width, height) {
+eYo.Svg.prototype.flyoutUpdate = function(flyout) {
   var top_margin = flyout.TOP_MARGIN
-  var atRight = flyout.anchor == eYo.Flyout.AT_RIGHT
+  var atRight = flyout.atRight
   // Decide whether to start on the left or right.
-  var path = [`M ${atRight ? width : 0},${top_margin}`];
+  var path = [`M ${atRight ? width : 0},${top_margin}`]
   // Top.
-  path.push('h', atRight ? -width : width);
+  path.push('h', atRight ? -width : width)
   // Side closest to board.
-  path.push('v', Math.max(0, height - top_margin));
+  path.push('v', Math.max(0, height - top_margin))
   // Bottom.
-  path.push('h', atRight ? width : -width);
-  path.push('z');
-  flyout.dom.background_.setAttribute('d', path.join(' '))
+  path.push('h', atRight ? width : -width)
+  path.push('z')
+  flyout.dom.svg.background_.setAttribute('d', path.join(' '))
 }
 
 /**

@@ -738,8 +738,7 @@ eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
   var board = this.board_
   var flyout = board.flyout_
   if (flyout && flyout.atRight) {
-    var xy = flyout.positionInPixels
-    var viewSize = xy.x - hostMetrics.absolute.x - 1
+    var viewSize = flyout.position.x - hostMetrics.absolute.x - 1
   } else {
     viewSize = hostMetrics.view.width - 1
   }
@@ -778,23 +777,18 @@ eYo.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
   var board = this.board_
   var flyout = board.flyout_
   if (flyout && flyout.atRight) {
-    var coordinates = flyout.positionInPixels
+    var coordinates = flyout.position
+    coordinates.x -= hostMetrics.absolute.x + eYo.Scrollbar.thickness + 0.5
     var yOffset = flyout.TOP_OFFSET
   } else {
+    coordinates = hostMetrics.absolute.clone()
+    coordinates.x += 0.5 + hostMetrics.view.width -
+        eYo.Scrollbar.thickness - 1
     yOffset = 1 * eYo.Unit.rem
   }
   viewSize -= yOffset
   this.setScrollViewSize_(Math.max(0, viewSize))
-
-  if (coordinates) {
-    coordinates.x -= hostMetrics.absolute.x +eYo.Scrollbar.thickness + 0.5
-  } else {
-    coordinates = new eYo.Where(hostMetrics.absolute)
-    coordinates.x += 0.5 + hostMetrics.view.width -
-        eYo.Scrollbar.thickness - 1
-  }
   coordinates.y = hostMetrics.absolute.y + 0.5 + yOffset
-  
   this.position = coordinates
 
   // If the view has been resized, a content resize will also be necessary.

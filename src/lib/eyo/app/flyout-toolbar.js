@@ -159,11 +159,15 @@ eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
 
 /**
  * Resize.
- * @param {!Float} width.
- * @param {!Float} height.
+ * @param {!Float | eYo.Size} width.
+ * @param {?Float} height.
  * @private
  */
 eYo.FlyoutToolbar.prototype.resize = function(width, height) {
+  if (goog.isDef(width.width)) {
+    height = width.height || 0
+    width = width.width
+  }
   var height = this.HEIGHT
   var margin = this.MARGIN
   var big_radius = 1.25 * eYo.Unit.rem
@@ -183,7 +187,7 @@ eYo.FlyoutToolbar.prototype.resize = function(width, height) {
       `M ${this.flyout_.CORNER_RADIUS},${radius} l${h},${-radius/2} l 0,${radius} z`
     )
   }
-};
+}
 
 /**
  * Update the view based on coordinates calculated in position().

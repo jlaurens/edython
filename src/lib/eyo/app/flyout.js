@@ -44,11 +44,19 @@ eYo.Flyout = function(board, targetBoard, flyoutOptions) {
   // second
   this.targetBoard = targetBoard
   /**
-   * Position of the toolbox and flyout relative to the board.
+   * Position of the flyout relative to the board.
    * @type {number}
    * @private
    */
   this.anchor_ = flyoutOptions.anchor || eYo.Flyout.AT_RIGHT
+  
+  /**
+   * Position and dimensions of the flyout in the desk.
+   * @type {number}
+   * @private
+   */
+  this.rect_ = new eYo.Rect(
+  
   /**
    * Opaque data that can be passed to unbindEvent.
    * @type {!Array.<!Array>}
@@ -179,28 +187,51 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   MARGIN : { value: eYo.Unit.rem / 4 },
   /**
+   * This size and anchor of the receiver and wrapped
+   * in an object with eponym keys.
+   */
+  /**
    * Width of flyout.
    * @type {number}
    * @private
    */
-  width_: { value: 0, writable: true},
+  width_: {
+    get () {
+      return this.rect_.size_.width
+    },
+    set (newValue) {
+      if (this.rect_.size_.width !== newValue) {
+        this.rect_.size_.width = newValue
+        this.targetBoard_.resize()
+      }
+    }
+  },
   /**
    * Height of flyout.
    * @type {number}
    * @private
    */
-  height_: { value: 0, writable: true},
+  height_: {
+    get () {
+      return this.rect_.size_.height
+    },
+    set (newValue) {
+      this.rect_.size_.height = newValue
+    }
+  },
   /**
    * This size and anchor of the receiver and wrapped
    * in an object with eponym keys.
    */
   size: {
     get () {
-      return {
-        width: this.width_,
-        height: this.height_,
-        anchor: this.anchor_
-      }
+      var ans = new eYo.Size(this.rect_.size_)
+      ans.anchor = this.anchor_
+      return ans
+    },
+    set (newValue) {
+      this.rect_.size_.width = newValue.width
+      this.rect_.size_.height = newValue.height
     }
   },
   /**
@@ -225,9 +256,25 @@ Object.defineProperties(eYo.Flyout.prototype, {
    * Edython : add management of the 0 width rectange
    * @return {eYo.Rect} Rectangle in which to delete.
    */
-  clientRect: {
+  deleteRect: {
     get () {
-      return this.ui_driver.flyoutClientRect(this)
+      var rect = flyout.rect
+      var width = rect.width
+      if (!width) {
+        return null
+      }
+      // BIG_NUM is offscreen padding so that bricks dragged beyond the shown flyout
+      // area are still deleted.  Must be larger than the largest screen size,
+      // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
+      var BIG_NUM = 1000000000
+      if (flyout.atRight) {
+        rect.x_max += BIG_NUM
+      } else {
+        rect.x_min -= BIG_NUM
+      }
+      rect.y_min = -BIG_NUM
+      rect.y_max = BIG_NUM
+      return rect
     }
   },
   toolbar: {
@@ -285,6 +332,10 @@ eYo.Flyout.prototype.dispose = function() {
     return
   }
   this.disposeUI()
+  if (this.rect_) {
+    this.rect_.dispose()
+    this.rect_ = null
+  }
   this.targetBoard = null
   this.board = null
   this.desk_ = null
@@ -301,13 +352,26 @@ Object.defineProperties(eYo.Flyout.prototype, {
       return this.makeUI === eYo.Do.nothing
     }
   },
+  rect: {
+    get () {
+      return this.rect_.clone()
+    }
+  }
+  position: {
+    get () {
+      return this.rect_.origin
+    },
+    set (newValue) {
+      this.rect_.origin = newValue
+    }
+  }
   /**
    * @readonly
    * @type {number} The width of the flyout.
    */
   width: {
     get () {
-      return this.width_
+      return this.rect_.size_.width
     }
   },
   /**
@@ -316,7 +380,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   height: {
     get () {
-      return this.height_
+      return this.rect_.size_.height
     }
   },
   /**
@@ -434,15 +498,12 @@ eYo.Flyout.prototype.show = function(model) {
   this.hide()
   eYo.Events.disableWrap(() => {
     this.clearOldBricks_()
-
     // Create the bricks to be shown in this flyout.
     var contents = []
-
     this.permanentlyDisabled_.length = 0
-
     model.forEach(xml => {
       if (xml.tagName) {
-        var tagName = xml.tagName.toUpperCase();
+        var tagName = xml.tagName.toUpperCase()
         if (tagName.startsWith('EYO:')) {
           var curBrick = eYo.Xml.domToBrick(xml, this.board_)
           if (curBrick.disabled) {
@@ -484,7 +545,7 @@ eYo.Flyout.prototype.show = function(model) {
     // When the mouse is over the background, deselect all bricks.
     this.ui_driver.flyoutListen_mouseover(this)
 
-    this.width_ = 0;
+    this.width_ = 0
     this.board_.setResizesEnabled(true)
     this.reflow()
 
@@ -626,21 +687,12 @@ eYo.Flyout.prototype.reflow = function() {
     this.board_.removeChangeListener(this.reflowWrapper_)
   }
   this.board_.scale = this.targetBoard_.scale
-  var flyoutWidth = 0
-  var bricks = this.board_.getTopBricks(false)
-  bricks.forEach(brick => {
-    flyoutWidth = Math.max(flyoutWidth, brick.span.size.width)
-  })
+  var rect = this.board_.bricksBoundingBox
+  var flyoutWidth = rect.width
   flyoutWidth += this.MARGIN * 1.5
   flyoutWidth *= this.board_.scale
   flyoutWidth += eYo.Scrollbar.thickness
-  if (this.width_ != flyoutWidth) {
-    // Record the width for .getMetrics_ and .place.
-    this.width_ = flyoutWidth
-    // Call this since it is possible the trash and zoom buttons need
-    // to move. e.g. on a bottom positioned flyout when zoom is clicked.
-    this.targetBoard_.resize()
-  }
+  this.width_ = flyoutWidth
   if (this.reflowWrapper_) {
     this.board_.addChangeListener(this.reflowWrapper_)
   }
@@ -661,9 +713,10 @@ eYo.Flyout.prototype.place = function () {
   // Record the height for eYo.Flyout.getMetrics_
   this.height_ = metrics.view.height - this.TOP_OFFSET
 
-  var edgeWidth = this.width_
-  var edgeHeight = metrics.view.height
-  this.ui_driver.flyoutUpdate(edgeWidth, edgeHeight)
+  var size = this.size
+  size.height = metrics.view.height
+  this.ui_driver.flyoutUpdate(this)
+
   this.toolbar_.resize(edgeWidth, edgeHeight)
 
   var y = metrics.absolute.y
@@ -684,7 +737,7 @@ eYo.Flyout.prototype.place = function () {
     // gets the bounding client rect wrong.
     this.leftEdge_ = x
   }
-  this.ui_driver.flyoutPlaceAt(this, this.width_, this.height_, x, y)
+  this.ui_driver.flyoutPlaceAt(this, x, y)
 }
 
 /**
@@ -795,14 +848,14 @@ eYo.Flyout.prototype.doSlide = function(close) {
       if ((this.closed = close)) {
         this.visible = false
       }
-      this.ui_driver.flyoutUpdate(this.width_, this.height_)
-      this.toolbar_.resize(this.width_, this.height_)
+      this.ui_driver.flyoutUpdate(this)
+      this.toolbar_.resize(this.size)
       delete this.slide_locked
       this.targetBoard_.recordDeleteAreas()
       this.slideOneStep(steps[n_steps])
       this.didSlide(close)
     } else {
-      this.ui_driver.flyoutPlaceAt(this, this.width_, this.height_, positions[n], y)
+      this.ui_driver.flyoutPlaceAt(this, positions[n], y)
       this.slideOneStep(steps[n])
       // the scrollbar won't resize because the metrics of the board did not change
       var hostMetrics = this.board_.metrics

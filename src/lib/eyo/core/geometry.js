@@ -356,7 +356,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.origin_.x
     },
     set (newValue) {
-      this.origin_.x = newValue
+      this.x_min = newValue
     }
   },
   x: {
@@ -372,7 +372,9 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.origin_.x
     },
     set (newValue) {
+      var old = this.x_max
       this.origin_.x = newValue
+      this.x_max = old
     }
   },
   x_max: {
@@ -388,7 +390,9 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.origin_.c_
     },
     set (newValue) {
+      var old = this.c_max
       this.c = newValue
+      this.c_max = old
     }
   },
   c_max: {
@@ -404,7 +408,9 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.l
     },
     set (newValue) {
+      var old = this.l_max
       this.l = newValue
+      this.l_max = old
     }
   },
   l_max: {
@@ -420,7 +426,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.origin_.y
     },
     set (newValue) {
-      this.origin_.y = newValue
+      this.y_min = newValue
     }
   },
   y: {
@@ -436,7 +442,9 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.origin_.y
     },
     set (newValue) {
+      var old = this.y_max
       this.origin_.y = newValue
+      this.y_max = old
     }
   },
   y_max: {
@@ -521,10 +529,16 @@ Object.defineProperties(eYo.Rect.prototype, {
 })
 
 /**
+ * Dispose of the receive resources.
+ */
+eYo.Rect.prototype.dispose = eYo.Do.nothing
+
+/**
  * set the `Rect`.
+ * This is a very very permissive setter.
  * @param{?Number|eYo.Where} c
  * @param{?Number|eYo.Size} l
- * @param{?Number} w
+ * @param{?Number|eYo.Size} w
  * @param{?Number} h
  * @return {eYo.Rect} The receiver
  */

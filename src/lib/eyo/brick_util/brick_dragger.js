@@ -216,7 +216,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
    * @type {?number}
    * @private
    */
-  this.deleteArea_ = null
+  this.deleteRect_ = null
 
   /**
    * The location of the top left corner of the dragging brick at the beginning
@@ -328,7 +328,7 @@ eYo.BrickDragger.prototype.drag = function() {
 
   var trashcan = this.destination.trashcan
   if (trashcan) {
-    trashcan.setOpen_(this.wouldDelete_ && this.deleteArea_ === eYo.Board.DELETE_AREA_TRASH)
+    trashcan.setOpen_(this.wouldDelete_ && this.deleteRect_ === eYo.Board.DELETE_AREA_TRASH)
   }
 }
 
@@ -417,7 +417,7 @@ eYo.BrickDragger.prototype.connect = function() {
  * @package
  */
 eYo.BrickDragger.prototype.update = function() {
-  var deleteArea = this.deleteArea_ = this.destination.isDeleteArea(this.gesture_)
+  var deleteRect = this.deleteRect_ = this.destination.isDeleteArea(this.gesture_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
   this.distance_ = eYo.Board.SNAP_RADIUS
@@ -435,8 +435,8 @@ eYo.BrickDragger.prototype.update = function() {
   // Prefer connecting over dropping into the trash can, but prefer dragging to
   // the toolbox over connecting to other bricks.
   var wouldConnect = !!this.target_ &&
-      deleteArea != eYo.Board.DELETE_AREA_TOOLBOX
-  var wouldDelete = !wouldConnect && !!deleteArea && !this.brick_.parent &&
+      deleteRect != eYo.Board.DELETE_AREA_TOOLBOX
+  var wouldDelete = !wouldConnect && !!deleteRect && !this.brick_.parent &&
       this.brick_.deletable
   this.wouldDelete_ = wouldDelete
 

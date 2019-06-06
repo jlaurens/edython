@@ -814,18 +814,17 @@ eYo.Board.prototype.resizeContents = function() {
   }
   this.isSelected = eYo.Selected.brick && eYo.Selected.brick.inVisibleArea() && eYo.Selected.brick
   try {
-
     if (this.scrollbar) {
       // TODO(picklesrus): Once rachel-fenichel's scrollbar refactoring
       // is complete, call the method that only resizes scrollbar
       // based on contents.
-      this.scrollbar.resize();
+      this.scrollbar.resize()
     }
     this.ui_driver.boardSizeDidChange(this)
   } finally {
     this.isSelected = null
   }
-};
+}
 
 /**
  * Resize and reposition all of the board chrome (toolbox,
@@ -1039,14 +1038,14 @@ eYo.Board.prototype.paste = function () {
  */
 eYo.Board.prototype.recordDeleteAreas = function() {
   if (this.trashcan && this.dom.svg.group_.parentNode) {
-    this.deleteAreaTrash_ = this.trashcan.getClientRect();
+    this.deleteRectTrash_ = this.trashcan.getClientRect();
   } else {
-    this.deleteAreaTrash_ = null;
+    this.deleteRectTrash_ = null;
   }
   if (this.flyout_) {
-    this.deleteAreaToolbox_ = this.flyout_.clientRect
+    this.deleteRectFlyout_ = this.flyout_.deleteRect
   } else {
-    this.deleteAreaToolbox_ = null;
+    this.deleteRectFlyout_ = null;
   }
 };
 
@@ -1058,10 +1057,10 @@ eYo.Board.prototype.recordDeleteAreas = function() {
  */
 eYo.Board.prototype.isDeleteArea = function(gesture) {
   var xy = gesture.where
-  if (this.deleteAreaTrash_ && this.deleteAreaTrash_.contains(xy)) {
+  if (this.deleteRectTrash_ && this.deleteRectTrash_.contains(xy)) {
     return eYo.Board.DELETE_AREA_TRASH
   }
-  if (this.deleteAreaToolbox_ && this.deleteAreaToolbox_.contains(xy)) {
+  if (this.deleteRectFlyout_ && this.deleteRectFlyout_.contains(xy)) {
     return eYo.Board.DELETE_AREA_TOOLBOX
   }
   return eYo.Board.DELETE_AREA_NONE
@@ -1240,8 +1239,8 @@ eYo.Board.prototype.markFocused = function() {
 }
 
 /**
- * Zooming the bricks centered in (x, y) coordinate with zooming in or out.
- * @param {eYo.Where} center coordinate of center.
+ * Zooming the bricks given the center with zooming in or out.
+ * @param {eYo.Where | Event} center coordinate of center.
  * @param {number} amount Amount of zooming
  *                        (negative zooms out and positive zooms in).
  */
@@ -1262,6 +1261,9 @@ eYo.Board.prototype.zoom = function(center, amount) {
     return // No change in zoom.
   }
   this.scale *= scaleChange
+  if (goog.isDef(center.clientX)) {
+    center = new eYo.Where(center)
+  }
   this.ui_driver.boardZoom(this, center, scaleChange)
 }
 
