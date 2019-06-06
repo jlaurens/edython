@@ -502,6 +502,9 @@ Object.defineProperties(eYo.Rect.prototype, {
     get () {
       return new eYo.Where(this.origin_).forward(this.size_.unscale(2))
     },
+    /**
+     * Change the origin but keeps the size.
+     */
     set (newValue) {
       this.origin_ = newValue.addvance(this.size_.unscale(-2))
     }

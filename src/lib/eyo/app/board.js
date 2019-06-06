@@ -61,7 +61,7 @@ eYo.Board = function(desk, options) {
   this.brickDB_ = Object.create(null)
 
   this.scale_ = 1
-  
+
   this.getMetrics =
   options.getMetrics || eYo.Board.getTopLevelBoardMetrics_
   this.setMetrics =
@@ -1072,8 +1072,8 @@ eYo.Board.prototype.isDeleteArea = function(gesture) {
  * @param {!Event} e Mouse down event.
  * @param {!eYo.Where} xy Starting location of object.
  */
-eYo.Board.prototype.xyEventInBoard = function(e) {
-  return this.ui_driver.boardMouseInRoot(this, e)
+eYo.Board.prototype.eventWhere = function(e) {
+  return this.ui_driver.boardEventWhere(this, e)
 }
 
 /**
@@ -1241,13 +1241,28 @@ eYo.Board.prototype.markFocused = function() {
 
 /**
  * Zooming the bricks centered in (x, y) coordinate with zooming in or out.
- * @param {number} x X coordinate of center.
- * @param {number} y Y coordinate of center.
+ * @param {eYo.Where} center coordinate of center.
  * @param {number} amount Amount of zooming
  *                        (negative zooms out and positive zooms in).
  */
-eYo.Board.prototype.zoom = function(x, y, amount) {
-  this.ui_driver.boardZoom(this, x, y, amount)
+eYo.Board.prototype.zoom = function(center, amount) {
+  var options = this.options.zoom
+  goog.asserts.assert(options, 'Forbidden zoom with no zoom options')
+  var speed = options.scaleSpeed
+  // Scale factor.
+  var scaleChange = Math.pow(speed, amount)
+  // Clamp scale within valid range.
+  var newScale = this.scale * scaleChange
+  if (newScale > options.maxScale) {
+    scaleChange = options.maxScale / this.scale
+  } else if (newScale < options.minScale) {
+    scaleChange = options.minScale / this.scale
+  }
+  if (scaleChange == 1) {
+    return // No change in zoom.
+  }
+  this.scale *= scaleChange
+  this.ui_driver.boardZoom(this, center, scaleChange)
 }
 
 /**
@@ -1255,11 +1270,8 @@ eYo.Board.prototype.zoom = function(x, y, amount) {
  * @param {number} type Type of zooming (-1 zooming out and 1 zooming in).
  */
 eYo.Board.prototype.zoomCenter = function(type) {
-  var metrics = this.metrics
-  var x = metrics.view.width / 2
-  var y = metrics.view.height / 2
-  this.zoom(x, y, type)
-};
+  this.zoom(this.metrics.view.center, type)
+}
 
 /**
  * Zoom the bricks to fit in the board if possible.

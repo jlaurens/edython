@@ -294,7 +294,7 @@ eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
     e.stopPropagation()
     return
   }
-  var mouseWhere = this.board_.xyEventInBoard(e)
+  var mouseWhere = this.board_.eventWhere(e)
   var mouseLocation = this.horizontal_ ? mouseWhere.x : mouseWhere.y
 
   var handleWhere = this.board.desk.xyElementInDesk(this.svgHandle_)

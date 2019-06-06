@@ -1893,7 +1893,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
     return
   }
   var rect = this.boundingRect // in board coordinates
-  var xy = brd.xyEventInBoard(e).backward(rect.topLeft)
+  var xy = brd.eventWhere(e).backward(rect.topLeft)
   var R
   var magnet = this.brick_.someInputMagnet(magnet => {
     if (!magnet.disabled_ && (!magnet.hidden_ || magnet.wrapped_)) {

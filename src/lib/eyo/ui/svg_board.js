@@ -223,7 +223,7 @@ eYo.Svg.prototype.boardOn_wheel = function(e) {
   }
   var PIXELS_PER_ZOOM_STEP = 50
   var delta = -e.deltaY / PIXELS_PER_ZOOM_STEP
-  var position = this.xyEventInBoard(e)
+  var position = this.eventWhere(e)
   this.zoom(position.x, position.y, delta)
   e.preventDefault()
 }
@@ -369,7 +369,7 @@ eYo.Svg.prototype.boardSizeDidChange = function(board) {
 /**
  * Get the mouse location in board coordinates.
  */
-eYo.Svg.prototype.boardMouseInRoot = function(board, e) {
+eYo.Svg.prototype.boardEventWhere = function(board, e) {
   var svg = board.dom.svg
   var matrix = svg.matrixFromScreen_
   if (!matrix) {
@@ -384,45 +384,26 @@ eYo.Svg.prototype.boardMouseInRoot = function(board, e) {
 /**
  * Zooming the blocks centered in (x, y) coordinate with zooming in or out.
  * @param {eYo.Board} board
- * @param {number} x X coordinate of center.
- * @param {number} y Y coordinate of center.
- * @param {number} amount Amount of zooming
- *                        (negative zooms out and positive zooms in).
+ * @param {eYo.Where} center Coordinates of the center.
+ * @param {number} scale  The new scale.
  */
-eYo.Svg.prototype.boardZoom = function(board, x, y, amount) {
-  var options = board.options.zoom
-  goog.asserts.assert(options, 'Forbidden zoom with no zoom options')
-  var speed = options.scaleSpeed
-  var metrics = board.metrics
-  var svg = board.dom.svg
-  var center = svg.root_.createSVG();
-  center.x = x
-  center.y = y
-  var CTM = svg.canvas_.getCTM()
-  center = center.matrixTransform(CTM.inverse())
-  x = center.x
-  y = center.y
-  // Scale factor.
-  var scaleChange = Math.pow(speed, amount)
-  // Clamp scale within valid range.
-  var newScale = board.scale * scaleChange;
-  if (newScale > options.maxScale) {
-    scaleChange = options.maxScale / board.scale
-  } else if (newScale < options.minScale) {
-    scaleChange = options.minScale / board.scale
-  }
-  if (board.scale == newScale) {
-    return // No change in zoom.
-  }
+eYo.Svg.prototype.boardZoom = function(board, xy, scaleChange) {
   if (board.scrollbar) {
+    var svg = board.dom.svg
+    var center = svg.root_.createSVG()
+    center.x = xy.x
+    center.y = xy.y
+    var CTM = svg.canvas_.getCTM()
+    center = center.matrixTransform(CTM.inverse())
+    x = center.x * (1 - scaleChange)
+    y = center.y * (1 - scaleChange)
+    var absolute = board.metrics.absolute
     var matrix = CTM
-        .translate(x * (1 - scaleChange), y * (1 - scaleChange))
+        .translate(x, y)
         .scale(scaleChange)
-    // newScale and matrix.a should be identical (within a rounding error).
-    board.scroll_.x = matrix.e - metrics.absolute.x
-    board.scroll_.y = matrix.f - metrics.absolute.y
+    board.scroll_.x = matrix.e - absolute.x
+    board.scroll_.y = matrix.f - absolute.y
   }
-  board.scale = newScale
 }
 
 /**
