@@ -1016,7 +1016,7 @@ eYo.Board.prototype.paste = function () {
                 }
               }) || b3k.getMagnets_(false).some(m4t => {
                   var neighbour = m4t.closest(Brickly.SNAP_RADIUS,
-                    new eYo.Where().xySet(dx, dy))
+                    eYo.Where.xy(dx, dy))
                   if (neighbour) {
                     return true
                   }
@@ -1297,28 +1297,27 @@ eYo.Board.prototype.zoomCenter = function(type) {
 }
 
 /**
- * Zoom the bricks to fit in the board if possible.
+ * Zoom the bricks to fit in the clip rect if possible.
  */
 eYo.Board.prototype.zoomToFit = function() {
-  var bricksBox = this.bricksBoundingRect
-  var bricksWidth = bricksBox.width;
+  var bricksRect = this.bricksBoundingRect
+  var bricksWidth = bricksRect.width
   if (!bricksWidth) {
-    return;  // Prevents zooming to infinity.
+    return  // Prevents zooming to infinity.
   }
-  var bricksHeight = bricksBox.height;
-  var metrics = this.metrics;
-  var boardWidth = metrics.clip.width;
-  var boardHeight = metrics.clip.height;
+  var bricksHeight = bricksRect.height
+  var metrics = this.metrics
+  var boardSize = metrics.clip.size
   if (this.flyout_) {
-    boardWidth -= this.flyout_.width_;
+    boardWidth -= this.flyout_.viewRect.width
   }
   if (!this.scrollbar) {
     // Origin point of 0,0 is fixed, bricks will not scroll to center.
     bricksWidth += metrics.content.x_min;
     bricksHeight += metrics.content.y_min;
   }
-  var ratioX = boardWidth / bricksWidth;
-  var ratioY = boardHeight / bricksHeight;
+  var ratioX = boardWidth / bricksWidth
+  var ratioY = boardHeight / bricksHeight
   this.scale = Math.min(ratioX, ratioY)
   this.scrollCenter()
 };
