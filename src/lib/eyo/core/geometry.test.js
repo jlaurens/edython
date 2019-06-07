@@ -20,7 +20,7 @@ describe ('Geometry', function () {
       chai.assert(!w1.equals(w2), `MISSED !${w1.toString()}.equals(${w2.toString()})`)
       w1.forward(-1)
       chai.assert(w1.equals(w2) && w2.equals(w1))
-      var w3 = new eYo.Where().xySet(12.34, 56.78)
+      var w3 = eYo.Where.xy(12.34, 56.78)
       w1.forward(w3)
       chai.assert(!w1.equals(w2), `MISSED !${w1.toString()}.equals(${w2.toString()})`)
       w2.forward(w3)
