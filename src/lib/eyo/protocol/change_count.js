@@ -33,7 +33,7 @@ eYo.Protocol.ChangeCount.methods.resetChangeCount = function () {
 
 /**
  * Update the change count.
- * @param {Blockly.Event} event  The current event fired.
+ * @param {eYo.Event} event  The current event fired.
  * @param {!Boolean} redo  Whether (re)doing, id est not undoing.
  */
 eYo.Protocol.ChangeCount.methods.updateChangeCount = function (event, redo) {

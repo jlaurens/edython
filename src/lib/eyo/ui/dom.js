@@ -568,7 +568,7 @@ eYo.Dom.on_keydown = e => {
       return;
     }
     if (eYo.Selected.brick && eYo.Selected.brick.deletable) {
-      eYo.Boardtop.deleteBrick(eYo.Selected.brick, e.altKey || e.ctrlKey || e.metaKey);
+      eYo.Desktop.deleteBrick(eYo.Selected.brick, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
@@ -585,12 +585,12 @@ eYo.Dom.on_keydown = e => {
       if (e.keyCode == 67) {
         // 'c' for copy.
         eYo.App.hideChaff()
-        eYo.Boardtop.copyBrick(eYo.Selected.brick, deep)
+        eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
       } else if (e.keyCode == 88 && !eYo.Selected.brick.board.isFlyout) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.Boardtop.copyBrick(eYo.Selected.brick, deep)
-        eYo.Boardtop.deleteBrick(eYo.Selected.brick, deep)
+        eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
+        eYo.Desktop.deleteBrick(eYo.Selected.brick, deep)
       }
     }
     if (e.keyCode == 86) {

@@ -82,7 +82,27 @@ Object.defineProperties(eYo.Metrics.prototype, {
       return this.scroll_.clone
     },
     set (newValue) {
-      if (!newValue.equals(this.scroll_)) {
+      // clip.x_max - content.x_max <= scroll.x <= clip.x_min - content.x_min
+      var limit = this.clip_.x_max - this.content_.x_max
+      if (newValue.x < limit) {
+        newValue.x = limit
+      } else {
+        limit = this.clip_.x_min - this.content_.x_min
+        if (newValue.x > limit) {
+          newValue.x = limit
+        }
+      }
+      // clip.y_max - content.y_max <= scroll.y <= clip.y_min - content.y_min
+      limit = this.clip_.y_max - this.content_.y_max
+      if (newValue.y < limit) {
+        newValue.y = limit
+      } else {
+        limit = this.clip_.y_min - this.content_.y_min
+        if (newValue.y > limit) {
+          newValue.y = limit
+        }
+      }
+      if (!this.scroll_.equals(newValue)) {
         this.scroll_.set(newValue)
         this.update()
       }
@@ -100,7 +120,7 @@ Object.defineProperties(eYo.Metrics.prototype, {
       return this.view_.clone
     },
     set (newValue) {
-      if (!newValue.equals(this.view_)) {
+      if (!this.view_.equals(newValue)) {
         this.view_.set(newValue)
         this.update()
       }
@@ -119,8 +139,9 @@ Object.defineProperties(eYo.Metrics.prototype, {
       return this.clip_.clone
     },
     set (newValue) {
-      if (!newValue.equals(this.clip_)) {
+      if (!this.clip_.equals(newValue)) {
         this.clip_.set(newValue)
+        this.scroll = this.scroll // constrain the value as side effect
         this.update()
       }
     }

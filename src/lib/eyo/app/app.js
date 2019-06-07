@@ -22,7 +22,7 @@ goog.provide('eYo.App')
 goog.require('eYo.Do')
 
 goog.forwardDeclare('eYo.Css')
-goog.forwardDeclare('eYo.Boardtop')
+goog.forwardDeclare('eYo.Desktop')
 goog.forwardDeclare('eYo.Selected')
 
 eYo.App = Object.create(null)
@@ -36,7 +36,7 @@ eYo.App = Object.create(null)
 eYo.App.doCopy = function(optNoNext) {
   var brick = eYo.Selected.brick
   if (brick) {
-    eYo.Boardtop.copyBrick(brick, !optNoNext)
+    eYo.Desktop.copyBrick(brick, !optNoNext)
     return true
   }
 };

@@ -15,10 +15,12 @@ goog.provide('eYo.Board')
 
 goog.require('eYo.Protocol.ChangeCount')
 
+goog.forwardDeclare('eYo.Metrics')
+
 goog.forwardDeclare('goog.array');
 goog.forwardDeclare('goog.math');
 
-goog.forwardDeclare('eYo.Boardtop')
+goog.forwardDeclare('eYo.Desktop')
 
 
 /**
@@ -33,6 +35,8 @@ eYo.Board = function(desk, options) {
 
   this.desk_ = desk
   this.options = options
+
+  this.change_ = new eYo.Change(this)
 
   /**
    * @type {!Array.<!eYo.Brick>}
@@ -61,10 +65,8 @@ eYo.Board = function(desk, options) {
   this.brickDB_ = Object.create(null)
 
   this.metrics_ = new eYo.Metrics(this)
-  this.scale_ = 1
 
-  this.scroll_ = new eYo.Where()
-  this.startScroll_ = new eYo.Where()
+  this.scale_ = 1
 
   this.dragger_ = new eYo.BoardDragger(this)
   this.brickDragger_ = new eYo.BrickDragger(this)
@@ -101,6 +103,16 @@ Object.defineProperties(eYo.Board, {
 })
 
 Object.defineProperties(eYo.Board.prototype, {
+  /**
+   * The change manager.
+   * @readonly
+   * @type {eYo.Change}
+   */
+  change: {
+    get () {
+      return this.change_
+    }
+  },
   /**
    * The desk owning the board.
    * @readonly
@@ -338,17 +350,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   scroll: {
     get () {
-      return new eYo.Where(this.scroll_)
-    }
-  },
-  /**
-   * Scroll value when scrolling started in pixel units.
-   * @readonly
-   * @type {eYo.Where}
-   */
-startScroll: {
-    get () {
-      return new eYo.Where(this.startScroll_)
+      return this.metrics_.scroll
     }
   },
   /**
@@ -374,6 +376,7 @@ startScroll: {
  * Unlink from all DOM elements to prevent memory leaks.
  */
 eYo.Board.prototype.dispose = function() {
+  this.dispose = eYo.Do.nothing
   // Stop rerendering.
   this.rendered = false;
   if (this.gesture_) {
@@ -403,10 +406,16 @@ eYo.Board.prototype.dispose = function() {
     this.zoomControls_.dispose()
     this.zoomControls_ = null
   }
+  this.disposeUI()
+  
   this.metrics_.dispose()
   this.metrics = null
-  this.scroll_ = this.startScroll_ = null
-  this.disposeUI()
+  
+  this.change_.dispose()
+  this.change_ = null
+
+  this.topBricks_.forEach(b3k => b3k.dispose())
+  this.topBricks_ = this.listeners_ = this.undoStack_ = this.redoStack_ = this.brickDB_ = null
 }
 
 /**
@@ -1297,6 +1306,36 @@ eYo.Board.prototype.zoomCenter = function(type) {
 }
 
 /**
+ * Scroll one page up or down, left or right.
+ * Horizontally: increase to right, decrease to the left.
+ * Vertically: increase to the bottom, decrease to the top.
+ * @param {Boolean} horizontally
+ * @param {Boolean} increase  true for a scroll up, false otherwise
+ */
+eYo.Board.prototype.scrollPage = function(horizontally, increase) {
+  // how many lines are visible actually
+  var metrics = this.metrics_
+  var scroll = metrics.scroll
+  var size = metrics.clip.size.unscale(board.scale)
+  if (horizontally) {
+    var scrollAmount = Math.max(Math.floor(size.w) * 0.75, 1)
+    if (increase) {
+      scroll.x += scrollAmount
+    } else {
+      scroll.x -= scrollAmount
+    }
+  } else {
+    scrollAmount = Math.max(Math.floor(size.h) - 1, 1)
+    if (increase) {
+      scroll.y += scrollAmount
+    } else {
+      scroll.y -= scrollAmount
+    }
+  }
+  this.moveTo((metrics.scroll = scroll))
+}
+
+/**
  * Zoom the bricks to fit in the clip rect if possible.
  */
 eYo.Board.prototype.zoomToFit = function() {
@@ -1359,19 +1398,20 @@ eYo.Board.doRelativeScroll = function(xyRatio) {
   if (!this.scrollbar) {
     throw 'Attempt to set top level board scroll without scrollbars.'
   }
-  var metrics = this.metrics
+  var metrics = this.metrics_
   var content = metrics.content
   var clip = metrics.content
+  var scroll = metrics.scroll
   if (goog.isNumber(xyRatio.x)) {
     var t = Math.min(1, Math.max(0, xyRatio.x))
     // clip.x_max - content.x_max <= scroll.x <= clip.x_min - content.x_min
-    this.scroll_.x = clip.x_max - content.x_max + t * (clip.width - content.width)
+    scroll.x = clip.x_max - content.x_max + t * (clip.width - content.width)
   }
   if (goog.isNumber(xyRatio.y)) {
     var t = Math.min(1, Math.max(0, xyRatio.y))
-    this.scroll_.y = clip.y_max - content.y_max + t * (clip.height - content.height)
+    scroll.y = clip.y_max - content.y_max + t * (clip.height - content.height)
   }
-  this.moveTo(this.scroll)
+  this.moveTo((metrics.scroll = scroll))
 }
 
 /**
@@ -1558,23 +1598,27 @@ eYo.Board.prototype.fromUTF8ByteArray = function (bytes) {
  * @param {String} opt_id
  */
 eYo.Board.prototype.addBrick = function (brick, opt_id) {
-  brick.id = (opt_id && !this.getBrickById(opt_id)) ?
-  opt_id : eYo.Do.genUid()
-  this.hasUI && brick.makeUI()
-  this.topBricks_.push(brick)
-  this.brickDB_[brick.id] = brick
+  this.change.wrap(() => {
+    brick.id = (opt_id && !this.getBrickById(opt_id)) ?
+    opt_id : eYo.Do.genUid()
+    this.hasUI && brick.makeUI()
+    this.topBricks_.push(brick)
+    this.brickDB_[brick.id] = brick
+  })
 }
 
 /**
- * Add a brick to the board.
+ * Remove a brick from the board.
  * @param {eYo.Brick} brick
  */
 eYo.Board.prototype.removeBrick = function (brick) {
-  if (!goog.array.remove(this.topBricks_, brick)) {
-    throw 'Brick not present in board\'s list of top-most bricks.';
-  }
-  // Remove from board
-  this.brickDB_[brick.id] = null
+  this.change.wrap(() => {
+    if (!goog.array.remove(this.topBricks_, brick)) {
+      throw 'Brick not present in board\'s list of top-most bricks.'
+    }
+    // Remove from board
+    this.brickDB_[brick.id] = null
+  })
 }
 
 /**
@@ -1674,13 +1718,13 @@ eYo.Board.prototype.tidyUp = function (kvargs) {
 */
 
 /**
- * Scroll the board to center on the given brick.
+ * Scroll the board to show the brick with the given id in the top left corner.
  * @param {?string} id ID of brick center on.
  * @public
  */
 eYo.Board.prototype.scrollBrickTopLeft = function(id) {
   if (!this.scrollbar) {
-    console.warn('Tried to scroll a non-scrollable board.');
+    console.warn('Tried to scroll a non-scrollable board.')
     return;
   }
   var brick = this.getBrickById(id)
@@ -1694,10 +1738,11 @@ eYo.Board.prototype.scrollBrickTopLeft = function(id) {
   
   // Scrolling to here will put the brick line in the top-left corner of the
   // visible board.
-  this.moveTo((this.metrics.scroll = brick.xy
+  var metrics = this.metrics_
+  this.moveTo((metrics.scroll = brick.xy
     // Find the top left of the brick in board units.
-    .forward(1/2, 1/2 + brick.depth * eYo.Span.INDENT)
-    .scale(!this.scale)
-    .backward(this.metrics.clip)
+    .forward(1/2 + brick.depth * eYo.Span.INDENT, 1/4)
+    .scale(-this.scale)
+    .backward(metrics.clip.origin)
   ))
 }

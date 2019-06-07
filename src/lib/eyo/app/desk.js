@@ -18,7 +18,7 @@ goog.require('eYo')
 goog.forwardDeclare('goog.array');
 goog.forwardDeclare('goog.math');
 
-goog.forwardDeclare('eYo.Boardtop')
+goog.forwardDeclare('eYo.Desktop')
 goog.forwardDeclare('eYo.Options')
 
 

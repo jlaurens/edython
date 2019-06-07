@@ -34,7 +34,7 @@ eYo.Change = function (owner) {
  * Sever the links.
  */
 eYo.Change.prototype.dispose = function () {
-  this.owner_ = null
+  this.owner_ = this.save_ = this.cache_ = null
 }
 
 Object.defineProperties(eYo.Change.prototype, {
@@ -125,7 +125,7 @@ eYo.Change.prototype.end = function () {
     this.done()
     var O = this.owner_
     O.onChangeEnd && O.onChangeEnd(arguments)
-    }
+  }
 }
 
 /**

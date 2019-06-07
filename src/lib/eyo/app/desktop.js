@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('eYo.Boardtop')
+goog.provide('eYo.Desktop')
 
 goog.require('eYo')
 
@@ -35,7 +35,7 @@ goog.forwardDeclare('goog.crypt')
  * @param {!eYo.Brick} block The brick to delete.
  * @param {!boolean} deep
  */
-eYo.Boardtop.deleteBrick = (brick, deep) => {
+eYo.Desktop.deleteBrick = (brick, deep) => {
   if (brick && brick.deletable && !brick.board.isFlyout) {
     if (brick.isSelected) {
       // prepare a connection or a block to be selected
@@ -70,7 +70,7 @@ eYo.Boardtop.deleteBrick = (brick, deep) => {
  * @param {!eYo.Brick} brick Brick to be copied.
  * @private
  */
-eYo.Boardtop.copyBrick = (brick, deep) => {
+eYo.Desktop.copyBrick = (brick, deep) => {
   var xml = eYo.Xml.brickToDom(brick, {noId: true, noNext: !deep})
   // Copy only the selected block and internal bricks.
   // Encode start position in XML.
@@ -87,5 +87,5 @@ eYo.Boardtop.copyBrick = (brick, deep) => {
  * @param {!eYo.Brick} brick Brick to be copied.
  * @private
  */
-eYo.Boardtop.paste = () => {
+eYo.Desktop.paste = () => {
 }

@@ -303,7 +303,7 @@ Object.defineProperties(eYo.Gesture.prototype, {
     }
   },
   /**
-   * General purpose ui_driver from the creator board.
+   * Change recorder.
    */
   change: {
     get () {
