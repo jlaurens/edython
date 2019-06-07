@@ -410,7 +410,7 @@ eYo.Gesture.prototype.getTouchPoint_ = function(e) {
   if (!this.board_) {
     return null
   }
-  return new eYo.Where().xySet(
+  return eYo.Where.xy(
     (e.pageX ? e.pageX : e.changedTouches[0].pageX),
     (e.pageY ? e.pageY : e.changedTouches[0].pageY)
   )
