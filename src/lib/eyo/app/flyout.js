@@ -56,7 +56,7 @@ eYo.Flyout = function(board, targetBoard, flyoutOptions) {
    * @type {number}
    * @private
    */
-  this.rectView_ = new eYo.Rect().tie(board.metrics_.clip, {
+  this.viewRect_ = new eYo.Rect().tie(board.metrics_.clip, {
     l: (newValue) => newValue + this.TOP_OFFSET,
     h: (newValue) => newValue - this.TOP_OFFSET,
   }, {
@@ -213,11 +213,11 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   width_: {
     get () {
-      return this.rectView_.size_.width
+      return this.viewRect_.size_.width
     },
     set (newValue) {
-      if (this.rectView_.size_.width !== newValue) {
-        this.rectView_.size_.width = newValue
+      if (this.viewRect_.size_.width !== newValue) {
+        this.viewRect_.size_.width = newValue
         this.targetBoard_.resize()
       }
     }
@@ -229,11 +229,11 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   height_: {
     get () {
-      return this.rectView_.size_.height
+      return this.viewRect_.size_.height
     },
     set (newValue) {
-      if (this.rectView_.size_.height !== newValue) {
-        this.rectView_.size_.height = newValue
+      if (this.viewRect_.size_.height !== newValue) {
+        this.viewRect_.size_.height = newValue
         this.targetBoard_.resize()
       }
     }
@@ -244,13 +244,13 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   size: {
     get () {
-      var ans = new eYo.Size(this.rectView_.size_)
+      var ans = new eYo.Size(this.viewRect_.size_)
       ans.anchor = this.anchor_
       return ans
     },
     set (newValue) {
-      if ((newValue.equals(this.rectView_.size))) {
-        this.rectView_.size = newValue
+      if ((newValue.equals(this.viewRect_.size))) {
+        this.viewRect_.size = newValue
         this.sizeChanged()
       }
     }
@@ -279,7 +279,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   deleteRect: {
     get () {
-      var rect = flyout.rect
+      var rect = flyout.viewRect
       var width = rect.width
       if (!width) {
         return null
@@ -348,9 +348,9 @@ eYo.Flyout.prototype.dispose = function() {
     return
   }
   this.disposeUI()
-  if (this.rectView_) {
-    this.rectView_.dispose()
-    this.rectView_ = null
+  if (this.viewRect_) {
+    this.viewRect_.dispose()
+    this.viewRect_ = null
   }
   this.targetBoard = null
   this.board = null
@@ -381,17 +381,17 @@ Object.defineProperties(eYo.Flyout.prototype, {
    * @type {eYo.Rect}
    * @readonly
    */
-  rect: {
+  viewRect: {
     get () {
-      return this.rectView_.clone
+      return this.viewRect_.clone
     }
   },
   position: {
     get () {
-      return this.rectView_.origin
+      return this.viewRect_.origin
     },
     set (newValue) {
-      this.rectView_.origin = newValue
+      this.viewRect_.origin = newValue
     }
   },
   /**
@@ -400,7 +400,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   width: {
     get () {
-      return this.rectView_.size_.width
+      return this.viewRect_.size_.width
     }
   },
   /**
@@ -409,7 +409,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   height: {
     get () {
-      return this.rectView_.size_.height
+      return this.viewRect_.size_.height
     }
   },
   /**
@@ -634,7 +634,7 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
  */
 eYo.Flyout.prototype.layout_ = function(contents) {
   this.board_.scale = this.targetBoard_.scale
-  var where = new eYo.Where().xySet(this.MARGIN, this.MARGIN)
+  var where = eYo.Where.xy(this.MARGIN, this.MARGIN)
   contents.forEach(brick => {
     // Mark bricks as being inside a flyout.  This is used to detect and
     // prevent the closure of the flyout if the user right-clicks on such a
@@ -723,7 +723,7 @@ eYo.Flyout.prototype.place = function () {
     // Hidden components will return null.
     return;
   }
-  var rect = this.rectView_
+  var rect = this.viewRect_
   rect.y_min = view.y_min
   rect.y_max = view.y_max
   if (this.atRight) {
@@ -796,7 +796,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
   this.slide_locked = true
   this.visible = true
   eYo.Tooltip.hideAll(this.dom.svg.group_)
-  var rect = this.rectView_
+  var rect = this.viewRect_
   var x_min = rect.x_min
   var x_max = rect.x_max
   var n_steps = 50
