@@ -752,7 +752,7 @@ eYo.Brick.UI.prototype.newDrawRecorder_ = function (recorder) {
     n: 0, // count of rendered objects (fields, slots and inputs)
     form: eYo.VOID // rendered field or magnet
   }
-  io.cursor = new eYo.Where().xySet(0, this.span.header)
+  io.cursor = eYo.Where.xy(0, this.span.header)
   if (recorder) {
     // io inherits some values from the given recorder
     io.recorder = recorder
