@@ -284,39 +284,22 @@ eYo.Svg.prototype.flyoutToolbarDispose = eYo.Dom.decorateDispose(function(ftb) {
 /**
  * Update the view based on coordinates calculated in position().
  * @param {!eYo.Flyout} flyout
- * @param {number} x The computed x origin of the flyout's SVG group.
- * @param {number} y The computed y origin of the flyout's SVG group.
- * @private
  */
 eYo.Svg.prototype.flyoutPlace = function (flyout) {
-  var rect = flyout.rect
-  var width = rect.width
-  var height = rect.height
-  var g = flyout.dom.svg.root_
-  // Always update the scrollbar (if one exists).
-  g.setAttribute('width', rect.width)
-  g.setAttribute('height', rect.height - flyout.TOP_OFFSET)
-  var transform = `translate(${rect.x}px,${rect.y + flyout.TOP_OFFSET}px)`
-  eYo.Dom.setCssTransform(g, transform)
-  if (flyout.scrollbar_) {
-    // Set the scrollbars origin to be the top left of the flyout.
-    flyout.scrollbar_.origin = new eYo.Where().xySet(x, y + flyout.TOP_OFFSET)
-    flyout.scrollbar_.oldHostMetrics_ = null
-    flyout.scrollbar_.resize()
-  }
-  flyout.positionInPixels = {
-    x: x,
-    y: y
-  }
+  var rect = flyout.viewRect
+  var div = flyout.dom.div_
+  div.style.width = `${rect.width}px`
+  div.style.height = `${rect.height}px`
+  div.style.left = `${rect.x}px`
+  div.style.top = `${rect.y}px`
   if (flyout.toolbar_) {
-    flyout.toolbar_.positionAt_(width, height, x, y)
+    flyout.toolbar_.place()
   }
   flyout.board_.resizeContents()
   var board = flyout.targetBoard_
   if (board) {
     var scrollbar = board.scrollbar
     if (scrollbar) {
-      scrollbar.oldHostMetrics_ = null
       if (scrollbar.hScroll) {
         scrollbar.hScroll.oldHostMetrics_ = null
       }
@@ -332,10 +315,6 @@ eYo.Svg.prototype.flyoutPlace = function (flyout) {
 /**
  * Update the visible boundaries of the flyout.
  * @param {!eYo.Flyout} flyout
- * @param {?Number} width The width of the flyout, not including the
- *     rounded corners, in pixels.
- * @param {?Number} height The height of the flyout, not including
- *     rounded corners, in pixels.
  * @private
  */
 eYo.Svg.prototype.flyoutUpdate = function(flyout) {
