@@ -149,23 +149,10 @@ eYo.Svg.prototype.trashcanOn_mouseup = function(trashcan) {
  * @param {!eYo.Trashcan} trashcan
  */
 eYo.Svg.prototype.trashcanPlace = function(trashcan) {
-  var svg = trashcan.dom.svg
-  var metrics = trashcan.board_.metrics
-  if (!metrics) {
-    // There are no metrics available (board is probably not visible).
-    return;
-  }
-  svg.left_ = metrics.clip.width + metrics.absolute.x -
-  trashcan.WIDTH_ - trashcan.MARGIN_SIDE_ - eYo.Scrollbar.thickness;
-
-  if (metrics.flyout && metrics.flyout.anchor == eYo.Flyout.AT_RIGHT) {
-    svg.left_ -= metrics.flyout.width
-  }
-  svg.top_ = metrics.clip.height + metrics.absolute.y -
-      (trashcan.BODY_HEIGHT_ + trashcan.LID_HEIGHT_) - trashcan.bottom_
-  svg.group_.setAttribute(
+  var r = trashcan.viewRect
+  trashcan.dom.svg.group_.setAttribute(
     'transform',
-    `translate(${svg.left_},${svg.top_})`
+    `translate(${r.left_},${r.top_})`
   )
 }
 
@@ -218,6 +205,6 @@ eYo.Svg.prototype.trashcanClientRect = function(trashcan) {
   var top = trashRect.top + trashcan.SPRITE_TOP_ - trashcan.MARGIN_HOTSPOT_
   var width = trashcan.WIDTH_ + 2 * trashcan.MARGIN_HOTSPOT_;
   var height = trashcan.LID_HEIGHT_ + trashcan.BODY_HEIGHT_ + 2 * trashcan.MARGIN_HOTSPOT_
-  return new eYo.Rect().xySet(left, top, width, height)
+  return eYo.Rect.xy(left, top, width, height)
 }
 
