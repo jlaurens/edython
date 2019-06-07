@@ -39,6 +39,7 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
  * @constructor
  */
 eYo.Flyout = function(board, targetBoard, flyoutOptions) {
+  goog.asserts.assert(!board.hasUI, 'TOO LATE')
   // First
   this.board = board
   // second
@@ -55,8 +56,13 @@ eYo.Flyout = function(board, targetBoard, flyoutOptions) {
    * @type {number}
    * @private
    */
-  this.rect_ = new eYo.Rect()
-  
+  this.rectView_ = new eYo.Rect().tie(board.metrics_.view, {
+    l: (newValue) => newValue + this.TOP_OFFSET,
+    h: (newValue) => newValue - this.TOP_OFFSET,
+  }, {
+    l: (newValue) => newValue - this.TOP_OFFSET,
+    h: (newValue) => newValue + this.TOP_OFFSET,
+  })
   /**
    * Opaque data that can be passed to unbindEvent.
    * @type {!Array.<!Array>}
@@ -207,11 +213,11 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   width_: {
     get () {
-      return this.rect_.size_.width
+      return this.rectView_.size_.width
     },
     set (newValue) {
-      if (this.rect_.size_.width !== newValue) {
-        this.rect_.size_.width = newValue
+      if (this.rectView_.size_.width !== newValue) {
+        this.rectView_.size_.width = newValue
         this.targetBoard_.resize()
       }
     }
@@ -223,10 +229,13 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   height_: {
     get () {
-      return this.rect_.size_.height
+      return this.rectView_.size_.height
     },
     set (newValue) {
-      this.rect_.size_.height = newValue
+      if (this.rectView_.size_.height !== newValue) {
+        this.rectView_.size_.height = newValue
+        this.targetBoard_.resize()
+      }
     }
   },
   /**
@@ -235,13 +244,15 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   size: {
     get () {
-      var ans = new eYo.Size(this.rect_.size_)
+      var ans = new eYo.Size(this.rectView_.size_)
       ans.anchor = this.anchor_
       return ans
     },
     set (newValue) {
-      this.rect_.size_.width = newValue.width
-      this.rect_.size_.height = newValue.height
+      if ((newValue.equals(this.rectView_.size))) {
+        this.rectView_.size = newValue
+        this.sizeChanged()
+      }
     }
   },
   /**
@@ -300,12 +311,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
 eYo.Flyout.prototype.makeUI = function () {
   delete this.disposeUI
   this.makeUI = eYo.Do.nothing
-  // Add scrollbar.
-  this.scrollbar_ = new eYo.Scrollbar(
-    this.board_,
-    false /*this.horizontalLayout_*/,
-    false, 'eyo-flyout-scrollbar'
-  )
+  this.board_.makeUI()
   this.hide()
   var d = this.ui_driver
   d.flyoutInit(this)
@@ -342,13 +348,21 @@ eYo.Flyout.prototype.dispose = function() {
     return
   }
   this.disposeUI()
-  if (this.rect_) {
-    this.rect_.dispose()
-    this.rect_ = null
+  if (this.rectView_) {
+    this.rectView_.dispose()
+    this.rectView_ = null
   }
   this.targetBoard = null
   this.board = null
   this.desk_ = null
+}
+
+/**
+ * Dispose of this flyout.
+ * Unlink from all DOM elements to prevent memory leaks.
+ */
+eYo.Flyout.prototype.sizeChanged = function() {
+
 }
 
 Object.defineProperties(eYo.Flyout, {
@@ -369,15 +383,15 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   rect: {
     get () {
-      return this.rect_.clone
+      return this.rectView_.clone
     }
   },
   position: {
     get () {
-      return this.rect_.origin
+      return this.rectView_.origin
     },
     set (newValue) {
-      this.rect_.origin = newValue
+      this.rectView_.origin = newValue
     }
   },
   /**
@@ -386,7 +400,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   width: {
     get () {
-      return this.rect_.size_.width
+      return this.rectView_.size_.width
     }
   },
   /**
@@ -395,7 +409,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   height: {
     get () {
-      return this.rect_.size_.height
+      return this.rectView_.size_.height
     }
   },
   /**
@@ -433,9 +447,19 @@ Object.defineProperties(eYo.Flyout.prototype, {
    *     dragging.
    * @package
    */
-  scrollable: {visible
+  scrollbar: {
     get () {
-      return this.scrollbar_ && this.scrollbar_.visible
+      return this.board.scrollbar
+    }
+  },
+  /**
+   * @type {boolean} True if this flyout may be scrolled with a scrollbar or by
+   *     dragging.
+   * @package
+   */
+  scrollable: {
+    get () {
+      return this.board.scrollable
     }
   },
   /**
@@ -469,7 +493,7 @@ eYo.Flyout.prototype.updateDisplay_ = function() {
   this.ui_driver.flyoutDisplaySet(show)
   // Update the scrollbar's visiblity too since it should mimic the
   // flyout's visibility.
-  this.scrollbar_.containerVisible = show
+  this.scrollbar.containerVisible = show
 }
 
 /**
@@ -547,7 +571,6 @@ eYo.Flyout.prototype.show = function(model) {
     // When the mouse is over the background, deselect all bricks.
     this.ui_driver.flyoutListen_mouseover(this)
 
-    this.width_ = 0
     this.board_.setResizesEnabled(true)
     this.reflow()
 
@@ -573,12 +596,8 @@ eYo.Flyout.prototype.on_wheel = function(e) {
       // Firefox's deltas are a tenth that of Chrome/Safari.
       delta *= 10
     }
-    var metrics = this.getMetrics_()
-    var pos = (metrics.view.y - metrics.content.y_min) + delta
-    var limit = metrics.content.height - metrics.view.height
-    pos = Math.min(pos, limit)
-    pos = Math.max(pos, 0)
-    this.scrollbar_.set(pos)
+    var metrics = this.board.metrics
+    metrics.scroll = metrics.scroll.forward({x: 0, y: delta})
   }
   eYo.Dom.gobbleEvent(e)
 }
@@ -632,7 +651,7 @@ eYo.Flyout.prototype.layout_ = function(contents) {
  * Scroll the flyout to the top.
  */
 eYo.Flyout.prototype.scrollToStart = function() {
-  this.scrollbar_.set(0)
+  this.board.metrics.scroll.set()
 }
 
 /**
@@ -680,12 +699,10 @@ eYo.Flyout.prototype.reflow = function() {
     this.board_.removeChangeListener(this.reflowWrapper_)
   }
   this.board_.scale = this.targetBoard_.scale
-  var rect = this.board_.bricksBoundingRect
-  var flyoutWidth = rect.width
-  flyoutWidth += this.MARGIN * 1.5
-  flyoutWidth *= this.board_.scale
-  flyoutWidth += eYo.Scrollbar.thickness
-  this.width_ = flyoutWidth
+  var size = this.size
+  var rect = this.board_.metrics.content
+  size.width = rect.width + this.MARGIN * 1.5 + eYo.Scrollbar.thickness
+  this.size = size
   if (this.reflowWrapper_) {
     this.board_.addChangeListener(this.reflowWrapper_)
   }
@@ -698,31 +715,30 @@ eYo.Flyout.prototype.place = function () {
   if (!this.visible_) {
     return
   }
-  var metrics = this.targetBoard_.metrics
-  if (!metrics || metrics.view.height <= 0) {
+  var view = this.targetBoard_.metrics.view
+  if (view.height <= 0) {
     // Hidden components will return null.
     return;
   }
-  // Record the height for eYo.Flyout.getMetrics_
-  this.rect_.height = metrics.view.height
-  this.ui_driver.flyoutUpdate(this)
-  this.toolbar_.resize()
-  this.rect_.origin = metrics.absolute
-
-  var y = metrics.absolute.y
-  var x = metrics.absolute.x
+  var rect = this.rectView_
+  rect.y_min = view.y_min
+  rect.y_max = view.y_max
   if (this.atRight) {
-    x += (metrics.view.width - this.width_)
     if (this.closed) {
-      x += this.width_
+      rect.left = view.x_max
+    } else {
+      rect.right = view.x_max
     }
   } else {
     if (this.closed) {
-      x -= this.width_
+      rect.right = view.x_min
+    } else {
+      rect.left = view.x_min
     }
   }
-
-  this.ui_driver.flyoutPlaceAt(this, x, y)
+  this.toolbar_.resize()
+  this.ui_driver.flyoutUpdate(this)
+  this.ui_driver.flyoutPlace(this)
 }
 
 /**
@@ -794,63 +810,55 @@ eYo.Flyout.prototype.doSlide = function(close) {
   if (!close === !this.closed) {
     return
   }
-  var metrics = this.targetBoard_.metrics
-  if (!metrics) {
-    // Hidden components will return null.
-    return;
-  }
   this.slide_locked = true
-  var atRight = this.anchor_ == eYo.Flyout.AT_RIGHT
   this.visible = true
   eYo.Tooltip.hideAll(this.dom.svg.group_)
-  var left = metrics.absolute.x
-  var right = left + metrics.view.width
+  var rect = this.rectView_
+  var x_min = rect.x_min
+  var x_max = rect.x_max
   var n_steps = 50
   var n = 0
   var steps = []
   var positions = []
-  if (atRight) {
-    var x_start = close? right - this.width_ : right
-    var x_end = close? right : right - this.width_
+  if (this.atRight) {
+    var x_start = close ? x_min : x_max
+    var x_end = close ? x_max : x_min
   } else {
-    x_start = close? left : left - this.width_
-    x_end = close? left - this.width_ : left
+    x_start = close ? x_min : x_min - rect.width
+    x_end = close ? x_min - rect.width : x_min
   }
-  steps[0] = close? 0: 1
+  steps[0] = close ? 0: 1
   positions[0] = x_start
   for (n = 1; n < n_steps; n++) {
     var step = Math.sin(n*Math.PI/n_steps/2)**2
-    steps[n] = close ? step : 1-step
+    steps[n] = close ? step : 1 - step
     positions[n] = x_start + step * (x_end - x_start)
   }
   steps[n] = close ? 1 : 0
   positions[n] = x_end
-  var y = metrics.absolute.y;
+
   n = 0
   var id = setInterval(() => {
     if (n >= n_steps) {
+      rect.x = x_end
       clearInterval(id)
       if ((this.closed_ = close)) {
         this.visible = false
       }
       this.ui_driver.flyoutUpdate(this)
-      this.toolbar_.resize(this.size)
       delete this.slide_locked
       this.targetBoard_.recordDeleteAreas()
       this.slideOneStep(steps[n_steps])
       this.didSlide(close)
     } else {
-      this.ui_driver.flyoutPlaceAt(this, positions[n], y)
-      this.slideOneStep(steps[n])
+      rect.x = positions[n]
+      this.ui_driver.flyoutPlace(this)
       // the scrollbar won't resize because the metrics of the board did not change
-      var hostMetrics = this.board_.metrics
-      if (hostMetrics) {
-        this.scrollbar_.resizeVertical_(hostMetrics)
-      }
+      this.slideOneStep(steps[n])
       ++n
     }
-  }, 20);
-};
+  }, 20)
+}
 
 /**
  * Slide the flyout in or out.

@@ -18,6 +18,22 @@ goog.require('eYo.Svg')
 goog.forwardDeclare('eYo.Desk')
 
 /**
+ * Default CSS class of the flyout panel.
+ * @type {string}
+ */
+eYo.Svg.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
+
+/**
+ * Returns the CSS class to be applied to the root element.
+ * @param {!eYo.Flyout} flyout
+ * @return {string} Renderer-specific CSS class.
+ * @override
+ */
+eYo.Svg.prototype.flyoutCssClass = function() {
+  return eYo.Svg.FLYOUT_CSS_CLASS
+}
+
+/**
  * Initialize the desk SVG ressources.
  * @param {!eYo.Desk} desk
  * @return {!Element} The desk's SVG group.
@@ -36,21 +52,45 @@ eYo.Svg.prototype.deskInit = function(desk) {
     svg.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
     svg.boardDragSurface = new eYo.Svg.BoardDragSurface(dom.div_)
   }
+  // Build the SVG DOM.
+  var div = dom.div_
+  // main board
+  /*
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns: html="http://www.w3.org/1999/xhtml"
+    xmlns: xlink="http://www.w3.org/1999/xlink"
+    version="1.1"
+    class="eyo-svg">
+    ...
+  </svg>
+  */
+  var x = svg.rootBoard_ = eYo.Svg.newElement('svg', {
+    xmlns: eYo.Dom.SVG_NS,
+    'xmlns:html': eYo.Dom.HTML_NS,
+    'xmlns:xlink': eYo.Dom.XLINK_NS,
+    version: '1.1',
+    class: 'eyo-svg eyo-board'
+  }, div)
+  x.dataset && (x.dataset.type = 'board')
+  // flyout toolbar
+  var cssClass = this.flyoutCssClass()
+  x = dom.flyoutToolbar_ = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    goog.getCssName(cssClass, 'toolbar')
+  )
+  div.appendChild(x)
+  x.dataset && (x.dataset.type = 'flyout toolbar')
+  // flyout
+  x = svg.rootFlyout_ = eYo.Svg.newElement('svg', {
+    xmlns: eYo.Dom.SVG_NS,
+    'xmlns:html': eYo.Dom.HTML_NS,
+    'xmlns:xlink': eYo.Dom.XLINK_NS,
+    version: '1.1',
+    class: 'eyo-svg eyo-flyout'
+  }, div)
+  x.dataset && (x.dataset.type = 'flyout')
 }
-
-/**
- * Dispose of the desk resources.
- * @param {!eYo.Desk} desk
- */
-eYo.Svg.prototype.deskDispose = eYo.Dom.decorateDispose(function(desk) {
-  var dom = desk.dom
-  var svg = dom.svg
-  goog.dom.removeNode(svg.group_)
-  goog.dom.removeNode(svg.brickDragSurface)
-  goog.dom.removeNode(svg.boardDragSurface)
-  dom.svg = null
-  eYo.Svg.superClass_.deskDispose.call(this, desk)
-})
 
 /**
  * Set the display mode for bricks.
@@ -92,38 +132,6 @@ eYo.Svg.deskResize = eYo.Svg.prototype.deskResize = function(desk) {
     size.height = height
   }
   mainBoard.resize()
-}
-
-/**
- * Install the main board as first child of the desk.
- * @param {!eYo.Desk}
- */
-eYo.Svg.prototype.deskInstallMainBoard = function(desk) {
-  goog.dom.insertChildAt(
-    desk.dom.div_,
-    desk.mainBoard.dom.svg.root_,
-    0
-  )
-}
-
-/**
- * Install the flyout svg at the correct place,
- * just after the main board.
- * The flyout toolbar is also managed.
- * @param {!eYo.Desk}
- */
-eYo.Svg.prototype.deskInstallFlyout = function(desk) {
-  var flyout = desk.flyout
-  var root = flyout.dom.svg.root_
-  goog.dom.insertSiblingAfter(
-    root,
-    desk.mainBoard.dom.svg.root_
-  )
-  var tb = flyout.toolbar
-  tb && goog.dom.insertSiblingBefore(
-    tb.dom.div_,
-    root
-  )
 }
 
 /**

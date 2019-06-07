@@ -412,14 +412,28 @@ eYo.Board.prototype.makeUI = function(container) {
   var options = this.options
   this.makeUI = eYo.Do.nothing
   this.ui_driver.boardInit(this)
+  if (options.hasScrollbars) {
+      // Add scrollbar.
+    this.scrollbar_ = this.isFlyout
+      ? new eYo.Scrollbar(
+          this.board_,
+          false /*this.horizontalLayout_*/,
+          false, 'eyo-flyout-scrollbar'
+        )
+      : new eYo.ScrollbarPair(this.board_)
+    this.scrollbar.resize()
+  }
   var bottom = eYo.Scrollbar.thickness
   if (options.hasTrashcan) {
     this.trashcan = new eYo.Trashcan(this, bottom)
     bottom = this.trashcan.top
   }
-  if (options.zoom && options.zoom.controls) {
-    this.zoomControls_ = new eYo.ZoomControls(this, bottom)
-    return this.zoomControls_.top
+  if (options.zoom) {
+    board.scale = options.zoom.startScale || 1
+    if (options.zoom.controls) {
+      this.zoomControls_ = new eYo.ZoomControls(this, bottom)
+      bottom = this.zoomControls_.top
+    }
   }
   this.recordDeleteAreas()
 }
@@ -819,20 +833,15 @@ eYo.Board.prototype.updateScreenCalculations_ = function() {
  */
 eYo.Board.prototype.resizeContents = function() {
   if (!this.resizesEnabled_ || !this.rendered) {
-    return;
+    return
   }
-  this.isSelected = eYo.Selected.brick && eYo.Selected.brick.inVisibleArea() && eYo.Selected.brick
-  try {
-    if (this.scrollbar) {
-      // TODO(picklesrus): Once rachel-fenichel's scrollbar refactoring
-      // is complete, call the method that only resizes scrollbar
-      // based on contents.
-      this.scrollbar.resize()
-    }
-    this.ui_driver.boardSizeDidChange(this)
-  } finally {
-    this.isSelected = null
+  if (this.scrollbar) {
+    // TODO(picklesrus): Once rachel-fenichel's scrollbar refactoring
+    // is complete, call the method that only resizes scrollbar
+    // based on contents.
+    this.scrollbar.resize()
   }
+  this.ui_driver.boardSizeDidChange(this)
 }
 
 /**

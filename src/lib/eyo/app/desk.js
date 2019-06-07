@@ -83,7 +83,6 @@ eYo.Desk.prototype.makeUI = function() {
   var d = this.ui_driver_ = new eYo.Svg(this)
   d.deskInit(this)
   this.mainBoard_.makeUI()
-  d.deskInstallMainBoard(this)
   this.willFlyout_ && this.addFlyout()
 }
 

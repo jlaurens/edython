@@ -29,31 +29,12 @@ eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
   var dom = eYo.Svg.superClass_.boardInit.call(this, board)
   var svg = dom.svg = Object.create(null)
   svg.size = {}
-  // Build the SVG DOM.
-  /*
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns: html="http://www.w3.org/1999/xhtml"
-    xmlns: xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    class="eyo-svg">
-    ...
-  </svg>
-  */
-  
-  var div = board.desk.dom.div_
-  var root = svg.root_ = eYo.Svg.newElement('svg', {
-    xmlns: eYo.Dom.SVG_NS,
-    'xmlns:html': eYo.Dom.HTML_NS,
-    'xmlns:xlink': eYo.Dom.XLINK_NS,
-    version: '1.1',
-    'class': 'eyo-svg'
-  }, div)
-  var options = board.options
-  options.zoom && (board.scale = options.zoom.startScale)
-  // A null translation will also apply the correct initial scale.
-  board.moveTo(new eYo.Where())
-
+  const root = board.isFlyout
+  ? board.desk.dom.svg.rootMain_
+  : board.desk.dom.svg.rootFlyout_
+  Object.defineProperty(svg, 'root_', {
+    get () { return root }
+  })
   /**
   * <g class="eyo-board-surface">
   *   <rect class="eyo-main-board-background" height="100%" width="100%"></rect>
@@ -87,9 +68,10 @@ eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
     {class: 'eyo-brick-canvas'},
     g
   )
+  var options = board.options
   if (!board.isFlyout) {
     this.boardBind_mousedown(board)
-    if (board.options.zoom && board.options.zoom.wheel) {
+    if (options.zoom && options.zoom.wheel) {
       this.boardBind_wheel(board)
     }
   }
@@ -102,10 +84,8 @@ eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
         if (metrics.content.y_min < edgeTop ||
             metrics.content.y_min + metrics.content.height >
             metrics.view.height + edgeTop ||
-            metrics.content.x_min <
-                (options.RTL ? metrics.view.x : edgeLeft) ||
-            metrics.content.x_min + metrics.content.width > (options.RTL ?
-                metrics.view.width : metrics.view.width + edgeLeft)) {
+            metrics.content.x_min < edgeLeft ||
+            metrics.content.x_min + metrics.content.width > metrics.view.width + edgeLeft) {
           // One or more blocks may be out of bounds.  Bump them back in.
           var MARGIN = 25;
           board.topBricks.forEach(brick => {
@@ -138,10 +118,6 @@ eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
   this.boardBind_resize(board)
   eYo.Dom.bindDocumentEvents()
 
-  if (options.hasScrollbars) {
-    board.scrollbar = new eYo.ScrollbarPair(board)
-    board.scrollbar.resize()
-  }
   return g
 })
 
@@ -152,7 +128,7 @@ eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
 eYo.Svg.prototype.boardDispose = eYo.Dom.decorateDispose(function(board) {
   var dom = board.dom
   var svg = dom.svg
-  goog.dom.removeNode(svg.root_)
+  goog.dom.removeNode(svg.group_)
   svg.matrixFromScreen_ = svg.group_ = svg.canvas_ = null
   dom.svg = null
 })

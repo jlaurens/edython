@@ -403,6 +403,9 @@ Object.defineProperties(eYo.Rect.prototype, {
       this.x_max = old
     }
   },
+  /**
+   * Change the width, not `x_min`.
+   */
   x_max: {
     get () {
       return this.x + this.width
@@ -421,6 +424,9 @@ Object.defineProperties(eYo.Rect.prototype, {
       this.c_max = old
     }
   },
+  /**
+   * Change the width, not `c_min`.
+   */
   c_max: {
     get () {
       return this.c + this.w
@@ -439,6 +445,9 @@ Object.defineProperties(eYo.Rect.prototype, {
       this.l_max = old
     }
   },
+  /**
+   * Change the height, not `l_min`.
+   */
   l_max: {
     get () {
       return this.l + this.h
@@ -477,10 +486,27 @@ Object.defineProperties(eYo.Rect.prototype, {
     get () {
       return this.y + this.height
     },
+    /**
+     * Change the height, not `y_min`.
+     */
     set (newValue) {
-      this.height = Math.max(0, newValue - this.y)
+      this.y = newValue - this.height
     }
   },
+  right: {
+    get () {
+      return this.x + this.width
+    },
+    /**
+     * Change `left`, not the width.
+     */
+    set (newValue) {
+      this.x = newValue - this.width
+    }
+  },
+  /**
+   * Change `top`, not the height.
+   */
   bottom: {
     get () {
       return this.y + this.height
@@ -503,6 +529,15 @@ Object.defineProperties(eYo.Rect.prototype, {
     },
     set (newValue) {
       this.size_.height = newValue
+    }
+  },
+  origin: {
+    get () {
+      return new eYo.Where(this.origin_)
+    },
+    set (newValue) {
+      this.origin_.x = newValue.x
+      this.origin_.y = newValue.y
     }
   },
   origin: {
@@ -634,6 +669,56 @@ eYo.Rect.prototype.scale = function (scaleX, scaleY) {
 eYo.Rect.prototype.unscale = function (scaleX, scaleY) {
   this.origin_.unscale(scaleX, scaleY)
   this.size_.unscale(scaleX, scaleY)
+  return this
+}
+
+/**
+ * Tie the two rectangles such that modifying one of them
+ * automatically changes the other one accordingly.
+ * @param {!eYo.Rect} tied  A tied rect.
+ * @param {Object} to
+ * @param {Object} from
+ * @return {!eYo.Rect} the receiver
+ */
+eYo.Rect.prototype.tie = function (tied, to, from) {
+  Object.defineProperties(this, {
+    c_: {
+      get () {
+        var c = tied.origin_.c_
+        return (from.c && from.c(c)) || c
+      },
+      set (newValue) {
+        tied.origin_.c_ = (to.c && to.c(newValue)) || newValue
+      }
+    },
+    l_: {
+      get () {
+        var l = tied.origin_.l_
+        return (from.l && from.l(l)) || l
+      },
+      set (newValue) {
+        tied.origin_.l_ = (to.l && to.l(newValue)) || newValue
+      }
+    },
+    h_: {
+      get () {
+        var c = tied.size_.c_
+        return (from.c && from.c(c)) || c
+      },
+      set (newValue) {
+        tied.size_.c_ = (to.c && to.c(newValue)) || newValue
+      }
+    },
+    w_: {
+      get () {
+        var l = tied.size_.l_
+        return (from.l && from.l(l)) || l
+      },
+      set (newValue) {
+        tied.size_.l_ = (to.l && to.l(newValue)) || newValue
+      }
+    }
+  })
   return this
 }
 

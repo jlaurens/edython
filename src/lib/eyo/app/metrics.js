@@ -92,7 +92,7 @@ Object.defineProperties(eYo.Metrics.prototype, {
    * The view rect is the visible rectangle on screen.
    * For the main board it is the bounding rect of the enclosing
    * desk's div.
-   * @type {eYo.Where} 
+   * @type {eYo.Rect} 
    */
   view: {
     get () {
@@ -107,17 +107,12 @@ Object.defineProperties(eYo.Metrics.prototype, {
   },
   /**
    * The content rect is a rect enclosing all the bricks.
-   * @type {eYo.Where} 
+   * @type {eYo.Rect} 
+   * @readonly 
    */
   content: {
     get () {
-      return this.content_.clone
-    },
-    set (newValue) {
-      if (!newValue.equals(this.content_)) {
-        this.content_.set(newValue)
-        this.update()
-      }
+      return this.board_.bricksBoundingRect
     }
   }
 })

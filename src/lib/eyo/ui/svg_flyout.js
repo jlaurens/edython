@@ -102,35 +102,6 @@ eYo.Svg.prototype.flyoutDisplayGet = function (flyout) {
 }
 
 /**
- * Default CSS class of the flyout panel.
- * @type {string}
- */
-eYo.Svg.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
-
-/**
- * Returns the CSS class to be applied to the root element.
- * @param {!eYo.Flyout} flyout
- * @return {string} Renderer-specific CSS class.
- * @override
- */
-eYo.Svg.prototype.flyoutCssClass = function() {
-  return eYo.Svg.FLYOUT_CSS_CLASS
-}
-
-/**
- * Initializes the flyout toolbar SVG ressources.
- * @param {!eYo.FlyoutToolbar} flyoutToolbar
- */
-eYo.Svg.prototype.flyoutToolbarDispose = function(ftb) {
-  var dom = this.basicInit(ftb)
-  goog.dom.removeNode(dom.control_)
-  goog.dom.removeNode(dom.div_)
-  var svg = dom.svg
-  goog.dom.removeNode(svg.root_)
-  this.basicDispose(ftb)
-}
-
-/**
  * Initializes the flyout toolbar SVG ressources.
  * @param {!eYo.FlyoutToolbar} flyoutToolbar
  */
@@ -245,24 +216,19 @@ eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
     goog.getCssName(cssClass, 'toolbar-module'),
     dom.select_module_
   )
-  dom.div_ = flyout.switcher_
-    ? goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'toolbar'),
-      flyout.switcher_,
-      dom.control_
-    )
-    : goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'toolbar'),
-      div_general,
-      div_module,
-      dom.control_
-    )
+  const div = this.flyout.desk.dom.div_.flyoutToolbar_
+  Object.definePorperty(dom, 'div_', {
+    get () { return div }
+  })
   if (flyout.switcher_) {
+    div.appendChild(flyout.switcher_)
     flyout.switcher_.style.left = '0px'
     flyout.switcher_.style.top = '0px'
+  } else {
+    div.appendChild(div_general)
+    div.appendChild(div_module)
   }
+  div.appendChild(dom.control_)
   var bound = dom.bound
   bound.mousedown = eYo.Dom.bindEvent(
     dom.control_,
@@ -291,26 +257,38 @@ eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
 }
 
 /**
+ * Initializes the flyout toolbar SVG ressources.
+ * @param {!eYo.FlyoutToolbar} flyoutToolbar
+ */
+eYo.Svg.prototype.flyoutToolbarDispose = eYo.Dom.decorateDispose(function(ftb) {
+  var dom = ftb.dom
+  var div = dom.div_
+  var fc
+  while((fc = dom.div_.firstChild)) {
+    myNode.removeChild(fc)
+  }
+  var svg = dom.svg
+  goog.dom.removeNode(svg.group_)
+  svg.group_ = null
+})
+
+/**
  * Update the view based on coordinates calculated in position().
  * @param {!eYo.Flyout} flyout
  * @param {number} x The computed x origin of the flyout's SVG group.
  * @param {number} y The computed y origin of the flyout's SVG group.
  * @private
  */
-eYo.Svg.prototype.flyoutPlaceAt = function (flyout, x, y) {
-  var width = flyout.width
-  var height = flyout.height
-  if (width < 0 || height < 0) {
-    console.error(width, height, x, y)
-    return
-  }
+eYo.Svg.prototype.flyoutPlace = function (flyout) {
+  var rect = flyout.rect
+  var width = rect.width
+  var height = rect.height
   var g = flyout.dom.svg.root_
   // Always update the scrollbar (if one exists).
-  g.setAttribute('width', width)
-  g.setAttribute('height', height - + flyout.TOP_OFFSET)
-  var transform = `translate(${x}px,${y + flyout.TOP_OFFSET}px)`
+  g.setAttribute('width', rect.width)
+  g.setAttribute('height', rect.height - flyout.TOP_OFFSET)
+  var transform = `translate(${rect.x}px,${rect.y + flyout.TOP_OFFSET}px)`
   eYo.Dom.setCssTransform(g, transform)
-
   if (flyout.scrollbar_) {
     // Set the scrollbars origin to be the top left of the flyout.
     flyout.scrollbar_.origin = new eYo.Where().xySet(x, y + flyout.TOP_OFFSET)
