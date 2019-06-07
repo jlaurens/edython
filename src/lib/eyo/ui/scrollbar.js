@@ -222,7 +222,7 @@ eYo.Scrollbar = function(board, horizontal, opt_pair, opt_class) {
   this.board_ = board
   this.pair_ = opt_pair || false
   this.horizontal_ = horizontal
-  this.rect_ = new eYo.Rect()
+  this.viewRect_ = new eYo.Rect()
   this.oldHostMetrics_ = null
   board.hasUI && this.makeUI(opt_class)
 }
@@ -343,7 +343,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
      * @readonly
      */
     get () {
-      return this.rect_.clone
+      return this.viewRect_.clone
     },
     /**
      * Record the origin of the board that the scrollbar is in, in pixels
@@ -353,7 +353,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
      * @param {eYo.Where} newOrigin The coordinates of the scrollbar's origin, in CSS pixels.
      */
     set (newValue) {
-      this.rect_.set(newValue)
+      this.viewRect_.set(newValue)
     }
   },
   /**
@@ -436,7 +436,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
   },
   viewLength_: {
     get () {
-      var size = this.rect_.size
+      var size = this.viewRect_.size
       return this.horizontal_ ? size.width : size.height
     },
     /**
@@ -450,7 +450,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
       var old = this.viewLength_
       if (newValue !== old) {
         var ratio = old ? newValue / old : 1
-        var size = this.rect_.size
+        var size = this.viewRect_.size
         this.horizontal_
         ? (size.width = newValue)
         : (size.height = newValue)
@@ -546,7 +546,7 @@ eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
     || oldMetrics.content.width != content.width) {
     // The window has been resized or repositioned.
     this.oldHostMetrics_ = hostMetrics
-    var r = this.rect_
+    var r = this.viewRect_
     r.x_min = clip.x_min
     r.x_max = this.pair_ ? clip.x_max : clip.x_max - eYo.Scrollbar.thickness
     r.y_min = (r.y_max = clip.y_max) - eYo.Scrollbar.thickness
@@ -586,7 +586,7 @@ eYo.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
     || oldMetrics.content.height != content.height) {
     // The window has been resized or repositioned.
     this.oldHostMetrics_ = hostMetrics
-    var r = this.rect_
+    var r = this.viewRect_
     r.y_min = clip.y_min
     r.y_max = this.pair_ ? clip.y_max : clip.y_max - eYo.Scrollbar.thickness
     r.x_min = (r.x_max = clip.x_max) - eYo.Scrollbar.thickness
