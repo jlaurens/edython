@@ -27,9 +27,13 @@ goog.require('goog.math')
  */
 eYo.Trashcan = function(board, bottom) {
   this.board_ = board
+  var r = this.viewRect_ = new eYo.Rect()
+  r.width = this.WIDTH_
+  r.height = this.BODY_HEIGHT_ + this.LID_HEIGHT_
+  r.bottom = bottom - this.MARGIN_BOTTOM_
   this.disposeUI = eYo.Do.nothing
   if (board.hasUI) {
-    this.makeUI(bottom)
+    this.makeUI()
     this.ui_driver.trashcanSetOpen(this, false)
   }
 }
@@ -50,9 +54,14 @@ Object.defineProperties(eYo.Trashcan.prototype, {
       return this.dom && !!this.dom.isOpen
     }
   },
+  viewRect: {
+    get () {
+      return this.viewRect_
+    }
+  },
   top: {
     get () {
-      return this.bottom_ + this.BODY_HEIGHT_ + this.LID_HEIGHT_
+      return this.viewRect_.y
     }
   }
 })
@@ -115,12 +124,10 @@ eYo.Trashcan.prototype.SPRITE_TOP_ = 32
 
 /**
  * Create the trash can elements.
- * @param {Number} bottom
  */
-eYo.Trashcan.prototype.makeUI = function(bottom) {
+eYo.Trashcan.prototype.makeUI = function() {
   this.makeUI = eYo.Do.nothing
   delete this.disposeUI
-  this.bottom_ = this.MARGIN_BOTTOM_ + bottom
   this.ui_driver.trashcanInit(this)
 }
 
@@ -139,32 +146,22 @@ eYo.Trashcan.prototype.disposeUI = function() {
 eYo.Trashcan.prototype.dispose = function() {
   this.disposeUI()
   this.board_ = null
+  this.viewRect_.dispose()
+  this.viewRect_ = null
 }
 
 /**
  * Move the trash can to the bottom-right corner.
  */
 eYo.Trashcan.prototype.place = function() {
-  var metrics = this.board_.metrics
-  if (!metrics) {
-    // There are no metrics available (board is probably not visible).
-    return;
-  }
-  this.left_ = metrics.clip.width + metrics.absolute.x -
-      this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
-
-  if (metrics.flyout && metrics.flyout.anchor === eYo.Flyout.AT_RIGHT) {
-    var flyoutPosition = this.board_.flyout_.position
-    if (flyoutPosition) {
-      this.left_ = flyoutPosition.x -
-      this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
-    } else {
-      this.left_ -= metrics.flyout.width
-    }
-  }
-  this.top_ = metrics.clip.height + metrics.absolute.y -
-      (this.BODY_HEIGHT_ + this.LID_HEIGHT_) - this.bottom_;
-
+  var board = this.board_
+  var clip = this.board_.metrics.clip
+  var r = this.viewRect_
+  var flyout = board.flyout_
+  r.right = (flyout && flyout.atRight
+    ? flyout.viewRect.left
+    : clip.left) - this.MARGIN_SIDE_
+  r.bottom = clip.bottom - this.MARGIN_SIDE_
   this.ui_driver.trashcanPlace(this)
 }
 
