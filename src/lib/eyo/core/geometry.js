@@ -166,7 +166,9 @@ eYo.Where.prototype.equals = function (rhs) {
 }
 
 /**
- * Like `forward` but sets the coordinates, instead of advancing them.
+ * Setter.
+ * @param {Number} x  x coordinate
+ * @param {Number} y  y coordinate
  * @return {eYo.Where} The receiver
  */
 eYo.Where.prototype.xySet = function (x = 0, y = 0) {
@@ -177,6 +179,16 @@ eYo.Where.prototype.xySet = function (x = 0, y = 0) {
   this.x = x
   this.y = y
   return this
+}
+
+/**
+ * Convenient creator.
+ * @param {Number} x  x coordinate
+ * @param {Number} y  y coordinate
+ * @return {eYo.Where} The receiver
+ */
+eYo.Where.xy = function (x = 0, y = 0) {
+  return new eYo.Where().xySet(x, y)
 }
 
 /**
@@ -641,6 +653,37 @@ eYo.Rect.prototype.set = function (c = 0, l = 0, w = 0, h = 0) {
 }
 
 /**
+ * Setter.
+ * @param {Number} x  x coordinate
+ * @param {Number} y  y coordinate
+ * @param {Number} width  x coordinate
+ * @param {Number} height  y coordinate
+ * @return {eYo.Rect} The receiver
+ */
+eYo.Rect.prototype.xySet = function (x = 0, y = 0, width = 0, height = 0) {
+  if (goog.isDef(x.x) && goog.isDef(x.y)) {
+    this.origin_.set(x)
+    this.size_.xySet(y, width)
+  } else {
+    this.origin_.xySet(x, y)
+    this.size_.xySet(width, height)
+    }
+  return this
+}
+
+/**
+ * Convenient creator.
+ * @param {Number} x  x coordinate
+ * @param {Number} y  y coordinate
+ * @param {Number} width  x coordinate
+ * @param {Number} height  y coordinate
+ * @return {eYo.Rect} The newly created rect instance.
+ */
+eYo.Rect.xy = function (x = 0, y = 0, width = 0, height = 0) {
+  return new eYo.Rect().xySet(x, y, width, height)
+}
+
+/**
  * Test equality between the receiver and the rhs.
  * @param {eYo.Rect} rhs
  */
@@ -850,7 +893,7 @@ eYo.Rect.difference = function(a, b) {
   // b.left < b.right < a.right
   // b.left < a.right <= b.right
   if (b_right < a_right) {
-    ans[3] = new eYo.Rect().xySet(_right, top, a_right - b_right, height)
+    ans[3] = eYo.Rect.xy(_right, top, a_right - b_right, height)
   }
   return ans
 }
