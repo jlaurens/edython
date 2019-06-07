@@ -47,6 +47,7 @@ eYo.ScrollbarPair = function(board) {
     true,
     'blocklyMainBoardScrollbar'
   )
+  this.cornerRect_ = new eYo.Rect()
   this.disposeUI = eYo.Do.nothing
   board.hasUI && this.makeUI()
 }
@@ -143,6 +144,8 @@ eYo.ScrollbarPair.prototype.dispose = function() {
   this.hScroll = null
   this.vScroll.dispose()
   this.vScroll = null
+  this.cornerRect_.dispose()
+  this.cornerRect_ = null
 }
 
 /**
@@ -151,49 +154,23 @@ eYo.ScrollbarPair.prototype.dispose = function() {
  */
 eYo.ScrollbarPair.prototype.resize = function() {
   // Look up the host metrics once, and use for both scrollbars.
-  var hostMetrics = this.board_.metrics;
+  var hostMetrics = this.board_.metrics
   if (!hostMetrics) {
-    // Host element is likely not visible.
-    return;
+    // Host element is likely not visible. Not any longer
+    return
   }
-  var oldMetrics = this.oldHostMetrics_
-  // Only change the scrollbars if there has been a change in metrics.
-  var resizeH = false
-  var resizeV = false
-  if (!oldMetrics ||
-    oldMetrics.view.width != hostMetrics.view.width ||
-    oldMetrics.view.height != hostMetrics.view.height ||
-    oldMetrics.absolute.y != hostMetrics.absolute.y ||
-    oldMetrics.absolute.x != hostMetrics.absolute.x) {
-    // The window has been resized or repositioned.
-    resizeH = true
-    resizeV = true
-  } else {
-    // Has the content been resized or moved?
-    if (!oldMetrics ||
-      oldMetrics.content.width != hostMetrics.content.width ||
-      oldMetrics.view.x != hostMetrics.view.x ||
-      oldMetrics.content.x_min != hostMetrics.content.x_min) {
-      resizeH = true
-    }
-    if (!oldMetrics ||
-      oldMetrics.content.height != hostMetrics.content.height ||
-      oldMetrics.view.y != hostMetrics.view.y ||
-      oldMetrics.content.y_min != hostMetrics.content.y_min) {
-      resizeV = true
-    }
-  }
-  if (resizeH) {
-    this.hScroll.resize(hostMetrics)
-  }
-  if (resizeV) {
-    this.vScroll.resize(hostMetrics)
-  }
+  this.hScroll.resize(hostMetrics)
+  this.vScroll.resize(hostMetrics)
+  // resize the corner
+  var r = this.cornerRect_
+  var rr = this.vScroll.viewRect
+  r.x_min = rr.x_min
+  r.x_max = rr.x_max
+  rr = this.hScroll.viewRect
+  r.y_min = rr.y_min
+  r.y_max = rr._max
   // Reposition the corner square.
-  this.ui_driver.scrollbarPairPlaceCorner(this, hostMetrics)
-
-  // Cache the current metrics to potentially short-cut the next resize event.
-  this.oldHostMetrics_ = hostMetrics
+  this.ui_driver.scrollbarPairPlaceCorner(this)
 }
 
 /**
@@ -204,36 +181,27 @@ eYo.ScrollbarPair.prototype.resize = function() {
 eYo.ScrollbarPair.prototype.set = (() => {
   /*
    * Helper to calculate the ratio of handle position to scrollbar view size.
-   * @param {number} handlePosition The value of the handle.
+   * @param {number} handlePosition_ The value of the handle.
    * @param {number} viewSize The total size of the scrollbar's view.
    * @return {number} Ratio.
    * @private
    */
-  var getRatio = function(handlePosition, viewSize) {
-    var ratio = handlePosition / viewSize
+  var getRatio = function(handlePosition_, viewSize) {
+    var ratio = handlePosition_ / viewSize
     return isNaN(ratio) ? 0 : ratio
   }
   return function(xy) {
-    // This function is equivalent to:
-    //   this.hScroll.set(x);
-    //   this.vScroll.set(y);
-    // However, that calls setMetrics twice which causes a chain of
-    // getAttribute->setAttribute->getAttribute resulting in an extra layout pass.
-    // Combining them speeds up rendering.
     var xyRatio = new eYo.Where()
 
-    var hHandlePosition = xy.x * this.hScroll.ratio_
-    var vHandlePosition = xy.y * this.vScroll.ratio_
+    var hHandlePosition = xy.x * this.hScroll.handleLength_
+    var vHandlePosition = xy.y * this.vScroll.handleLength_
 
     var hLength = this.hScroll.viewLength_
     var vLength = this.vScroll.viewLength_
 
     xyRatio.x = getRatio(hHandlePosition, hLength)
     xyRatio.y = getRatio(vHandlePosition, vLength)
-    this.board_.setMetrics(xyRatio)
-
-    this.hScroll.handlePosition = hHandlePosition
-    this.vScroll.handlePosition = vHandlePosition
+    this.board_.doRelativeScroll(xyRatio)
   }
 })()
 
@@ -253,13 +221,9 @@ eYo.Scrollbar = function(board, horizontal, opt_pair, opt_class) {
   this.disposeUI = eYo.Do.nothing
   this.board_ = board
   this.pair_ = opt_pair || false
-  this.opt_class_ = opt_class
   this.horizontal_ = horizontal
-
+  this.rect_ = new eYo.Rect()
   this.oldHostMetrics_ = null
-  this.origin_ = new eYo.Where()
-  this.position_ = new eYo.Where()
-  this.deleteUI = eYo.Do.nothing
   board.hasUI && this.makeUI(opt_class)
 }
 
@@ -269,7 +233,7 @@ Object.defineProperties(eYo.Scrollbar, {
    * Scrollbars should be larger on touch devices.
    */
   thickness: {
-    value: goog.events.BrowserFeature.TOUCH_ENABLED ? 25 : 15
+    value: goog.events.BrowserFeature.TOUCH_ENABLED ? 26 : 16
   },
 })
 
@@ -372,16 +336,14 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
       return this.makeUI === eYo.Do.nothing
     }
   },
-  origin: {
+  viewRect: {
     /**
-     * The location of the origin of the board that the scrollbar is in,
-     * measured in CSS pixels relative to the desk origin.  This is usually
-     * (0, 0).  When the scrollbar is in a flyout it may have a different origin.
-     * @type {eYo.Where}
+     * The view rectangle
+     * @type {eYo.Rect}
      * @readonly
      */
     get () {
-      return new eYo.Where(this.origin_)
+      return this.rect_.clone
     },
     /**
      * Record the origin of the board that the scrollbar is in, in pixels
@@ -391,39 +353,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
      * @param {eYo.Where} newOrigin The coordinates of the scrollbar's origin, in CSS pixels.
      */
     set (newValue) {
-      this.origin_.xySet(newValue)
-    }
-  },
-  position: {
-    /**
-     * The upper left corner of the scrollbar's SVG group in CSS pixels relative
-     * to the scrollbar's origin.  This is usually relative to the injection div
-     * origin.
-     * @type {eYo.Where}
-     */
-    get () {
-      return new eYo.Where(this.position_)
-    },
-    /**
-     * Set the position of the scrollbar's SVG group in CSS pixels relative to the
-     * scrollbar's origin.  This sets the scrollbar's location within the board.
-     * @param {eYo.Where} newValue The new coordinates.
-     * @private
-     */
-    set (newValue) {
-      this.position_.xySet(newValue)
-      this.ui_driver.scrollbarPlace(this)
-    }
-  },
-  /**
-   * The upper left corner of the scrollbar's SVG group in CSS pixels relative
-   * to the desk origin.
-   * @type {eYo.Where}
-   * @readonly
-   */
-  positionInDesk: {
-    get () {
-      return this.origin.forward(this.position_)
+      this.rect_.set(newValue)
     }
   },
   /**
@@ -434,17 +364,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
    * for a vertical scrollbar it's the y coordinate of the mouse down event.
    * @type {eYo.Where}
    */
-  startDragMouse_: {
-    value: 0,
-    writable: true
-  },
-  /**
-   * The size of the area within which the scrollbar handle can move, in CSS
-   * pixels.
-   * @type {number}
-   * @private
-   */
-  viewLength_: {
+  dragStart_: {
     value: 0,
     writable: true
   },
@@ -453,7 +373,17 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
    * @type {number}
    * @private
    */
-  handleLength_: {
+  handleLength__: {
+    value: 0,
+    writable: true
+  },
+  /**
+   * The offset of the start of the handle from the scrollbar position, in CSS
+   * pixels.
+   * @type {number}
+   * @private
+   */
+  handlePosition__: {
     value: 0,
     writable: true
   },
@@ -464,18 +394,8 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
    * @private
    */
   handlePosition_: {
-    value: 0,
-    writable: true
-  },
-  /**
-   * The offset of the start of the handle from the scrollbar position, in CSS
-   * pixels.
-   * @type {number}
-   * @private
-   */
-  handlePosition: {
     get () {
-      return this.handlePosition_
+      return this.handlePosition__
     },
     /**
      * Set the offset of the scrollbar's handle from the scrollbar's position, and
@@ -483,8 +403,61 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
      * @param {number} newPosition The new scrollbar handle offset in CSS pixels.
      */
     set (newValue) {
-      this.handlePosition_ = newValue
-      this.ui_driver.scrollbarUpdateHandle(this)
+      if (newValue <= 0 || isNaN(newValue) || this.viewLength_ < this.handleLength_) {
+        newValue = 0
+      } else {
+        newValue = Math.min(newValue, this.viewLength_ - this.handleLength_)
+      }
+      if (this.handlePosition__ !== newValue) {
+        this.handlePosition__ = newValue
+        this.ui_driver.scrollbarUpdateHandle(this)
+      }
+    }
+  },
+  handleLength_: {
+    get () {
+      return this.handleLength__
+    },
+    /**
+     * Set the length of the scrollbar's handle and change the SVG attribute
+     * accordingly.
+     * @param {number} newLength The new scrollbar handle length in CSS pixels.
+     */
+    set (newValue) {
+      newValue = Math.min(Math.max(0, newValue), this.viewLength_)
+      if (newValue !== this.handleLength__) {
+        this.handleLength__ = newValue
+        if (this.handlePosition__ + newValue > this.viewLength_) {
+          this.handlePosition__ = this.viewLength_ - newValue
+        }
+        this.ui_driver.scrollbarUpdateView(this)
+      }
+    }
+  },
+  viewLength_: {
+    get () {
+      var size = this.rect_.size
+      return this.horizontal_ ? size.width : size.height
+    },
+    /**
+     * Set the size of the scrollbar's background and change the SVG attribute
+     * accordingly.
+     * @param {number} newSize The new scrollbar background length in CSS pixels.
+     * @private
+     */
+    set (newValue) {
+      newValue = Math.max(0, newValue)
+      var old = this.viewLength_
+      if (newValue !== old) {
+        var ratio = old ? newValue / old : 1
+        var size = this.rect_.size
+        this.horizontal_
+        ? (size.width = newValue)
+        : (size.height = newValue)
+        this.handlePosition__ *= ratio
+        this.handleLength__ *= ratio
+        this.ui_driver.scrollbarUpdateView(this)
+      }
     }
   },
   /**
@@ -505,7 +478,6 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
     value: true,
     writable: true
   },
-
 })
 
 /**
@@ -540,67 +512,18 @@ eYo.Scrollbar.prototype.dispose = function() {
 }
 
 /**
- * Set the length of the scrollbar's handle and change the SVG attribute
- * accordingly.
- * @param {number} newLength The new scrollbar handle length in CSS pixels.
- */
-eYo.Scrollbar.prototype.setHandleLength_ = function(newLength) {
-  this.handleLength_ = newLength
-  this.ui_driver.scrollbarUpdateHandle(this)
-}
-
-/**
- * Set the size of the scrollbar's background and change the SVG attribute
- * accordingly.
- * @param {number} newSize The new scrollbar background length in CSS pixels.
- * @private
- */
-eYo.Scrollbar.prototype.setScrollViewSize_ = function(newSize) {
-  this.viewLength_ = newSize
-  this.ui_driver.scrollbarUpdateView(this)
-}
-
-/**
  * Recalculate the scrollbar's location and its length.
  * @param {Object=} opt_metrics A data structure of from the describing all the
  * required dimensions.  If not provided, it will be fetched from the host
  * object.
  */
-eYo.Scrollbar.prototype.resize = function(opt_metrics) {
-  // Determine the location, height and width of the host element.
-  var hostMetrics = opt_metrics
-  if (!hostMetrics) {
-    hostMetrics = this.board_.metrics
-    if (!hostMetrics) {
-      // Host element is likely not visible.
-      return
-    }
-  }
-  if (eYo.Scrollbar.metricsAreEquivalent_(hostMetrics,
-      this.oldHostMetrics_)) {
-    return
-  }
-  this.oldHostMetrics_ = hostMetrics
-
-  /* hostMetrics is an object with the following properties.
-   * .view.height: Height of the visible rectangle,
-   * .view.width: Width of the visible rectangle,
-   * .content.height: Height of the contents,
-   * .content.width: Width of the content,
-   * .view.y: Offset of top edge of visible rectangle from parent,
-   * .view.x: Offset of left edge of visible rectangle from parent,
-   * .content.y_min: Offset of the top-most content from the y=0 coordinate,
-   * .content.x_min: Offset of the left-most content from the x=0 coordinate,
-   * .absolute.y: Top-edge of view.
-   * .absolute.x: Left-edge of view.
-   */
+eYo.Scrollbar.prototype.resize = function(hostMetrics) {
   if (this.horizontal_) {
     this.resizeViewHorizontal(hostMetrics)
   } else {
     this.resizeViewVertical(hostMetrics)
   }
-  // Resizing may have caused some scrolling.
-  this.didScroll_()
+  this.place()
 }
 
 /**
@@ -610,50 +533,77 @@ eYo.Scrollbar.prototype.resize = function(opt_metrics) {
  *     required dimensions, possibly fetched from the host object.
  */
 eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
-  var viewSize = hostMetrics.view.width - 1
-  if (this.pair_) {
-    // Shorten the scrollbar to make room for the corner square.
-    viewSize -= eYo.Scrollbar.thickness
+  var clip = hostMetrics.clip
+  var content = hostMetrics.content
+  var range = content.width - clip.width
+  this.visible = (clip.width > this.pair_
+  ? 2 * eYo.Scrollbar.thickness
+  : eYo.Scrollbar.thickness) && (this.pair_ || range > 0)
+  var oldMetrics = this.oldHostMetrics_
+  if (!oldMetrics
+    || oldMetrics.scroll.x != hostMetrics.scroll.x
+    || oldMetrics.clip.width != clip.width
+    || oldMetrics.content.width != content.width) {
+    // The window has been resized or repositioned.
+    this.oldHostMetrics_ = hostMetrics
+    var r = this.rect_
+    r.x_min = clip.x_min
+    r.x_max = this.pair_ ? clip.x_max : clip.x_max - eYo.Scrollbar.thickness
+    r.y_min = (r.y_max = clip.y_max) - eYo.Scrollbar.thickness
+    r.xyInset(0.5)
+    // resize the content
+    this.handleLength_ = clip.width / content.width * r.width
+    if (this.handleLength_ === -Infinity || this.handleLength_ === Infinity ||
+        isNaN(this.handleLength_)) {
+      this.handleLength_ = 0
+    }
+    // clip.x_max - content.x_max <= scroll.x <= clip.x_min - content.x_min
+    if (range > 0) {
+      this.handlePosition_ = (scroll.x - clip.x_max + content.x_max) / range * (r.width - this.handleLength_)
+    } else {
+      this.handlePosition_ = r.width / 2
+    }
   }
-  this.setScrollViewSize_(Math.max(0, viewSize))
-
-  var coordinates = new eYo.Where(hostMetrics.absolute)
-  coordinates.x += 0.5
-  // Horizontal toolbar should always be just above the bottom of the board.
-  coordinates.y += hostMetrics.view.height - eYo.Scrollbar.thickness - 0.5
-  this.position = coordinates
-
-  // If the view has been resized, a content resize will also be necessary.
-  // The converse is not true.
-  this.resizeContentHorizontal(hostMetrics)
 }
 
 /**
- * Recalculate a horizontal scrollbar's location within its path and length.
- * This should be called when the contents of the board have changed.
+ * Recalculate a vertical scrollbar's location on the screen and path length.
+ * This should be called when the layout or size of the window has changed.
  * @param {!Object} hostMetrics A data structure describing all the
  *     required dimensions, possibly fetched from the host object.
  */
-eYo.Scrollbar.prototype.resizeContentHorizontal = function(hostMetrics) {
-  if (!this.pair_) {
-    // Only show the scrollbar if needed.
-    // Ideally this would also apply to scrollbar pairs, but that's a bigger
-    // headache (due to interactions with the corner square).
-    this.visible = this.viewLength_ < hostMetrics.content.width
+eYo.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
+  var clip = hostMetrics.clip
+  var content = hostMetrics.content
+  var range = content.height - clip.height
+  this.visible = (clip.height > this.pair_
+  ? 2 * eYo.Scrollbar.thickness
+  : eYo.Scrollbar.thickness) && (this.pair_ || range > 0)
+  var oldMetrics = this.oldHostMetrics_
+  if (!oldMetrics
+    || oldMetrics.scroll.y != hostMetrics.scroll.y
+    || oldMetrics.clip.height != clip.height
+    || oldMetrics.content.height != content.height) {
+    // The window has been resized or repositioned.
+    this.oldHostMetrics_ = hostMetrics
+    var r = this.rect_
+    r.y_min = clip.y_min
+    r.y_max = this.pair_ ? clip.y_max : clip.y_max - eYo.Scrollbar.thickness
+    r.x_min = (r.x_max = clip.x_max) - eYo.Scrollbar.thickness
+    r.xyInset(0.5)
+    // resize the content
+    this.handleLength_ = clip.height / content.height * r.height
+    if (this.handleLength_ === -Infinity || this.handleLength_ === Infinity ||
+        isNaN(this.handleLength_)) {
+      this.handleLength_ = 0
+    }
+    // clip.y_max - content.y_max <= scroll.y <= clip.y_min - content.y_min
+    if (range > 0) {
+      this.handlePosition_ = (scroll.y - clip.y_max + content.y_max) / range * (r.height - this.handleLength_)
+    } else {
+      this.handlePosition_ = r.height / 2
+    }
   }
-
-  this.ratio_ = this.viewLength_ / hostMetrics.content.width
-  if (this.ratio_ === -Infinity || this.ratio_ === Infinity ||
-      isNaN(this.ratio_)) {
-    this.ratio_ = 0
-  }
-
-  var handleLength = hostMetrics.view.width * this.ratio_
-  this.setHandleLength_(Math.max(0, handleLength))
-
-  var handlePosition = (hostMetrics.view.x - hostMetrics.content.x_min) *
-      this.ratio_
-  this.handlePosition = this.constrainHandle_(handlePosition)
 }
 
 /**
@@ -670,36 +620,6 @@ eYo.Scrollbar.prototype.updateDisplay_ = function() {
 }
 
 /**
- * Constrain the handle's position within the minimum (0) and maximum
- * (length of scrollbar) values allowed for the scrollbar.
- * @param {number} value Value that is potentially out of bounds, in CSS pixels.
- * @return {number} Constrained value, in CSS pixels.
- * @private
- */
-eYo.Scrollbar.prototype.constrainHandle_ = function(value) {
-  if (value <= 0 || isNaN(value) || this.viewLength_ < this.handleLength_) {
-    value = 0;
-  } else {
-    value = Math.min(value, this.viewLength_ - this.handleLength_);
-  }
-  return value;
-}
-
-/**
- * Called when scrollbar has moved.
- * @private
- */
-eYo.Scrollbar.prototype.didScroll_ = function() {
-  var ratio = this.handlePosition_ / this.viewLength_
-  if (isNaN(ratio)) {
-    ratio = 0
-  }
-  var xyRatio = {}
-  xyRatio[this.horizontal_ ? 'x' : 'y'] = ratio
-  this.board_.setMetrics(xyRatio)
-}
-
-/**
  * Set the scrollbar handle's position.
  * @param {number} value The distance from the top/left end of the bar, in CSS
  *     pixels.  It may be larger than the maximum allowable position of the
@@ -707,104 +627,7 @@ eYo.Scrollbar.prototype.didScroll_ = function() {
  */
 eYo.Scrollbar.prototype.set = function(value) {
   var v = value[this.horizontal_ ? 'x' : 'y']
-  this.handlePosition = this.constrainHandle_((v || value) * this.ratio_)
-  this.didScroll_()
-}
-
-/**
- * Recalculate a vertical scrollbar's location within its path and length.
- * This should be called when the contents of the board have changed.
- * @param {!Object} hostMetrics A data structure describing all the
- *     required dimensions, possibly fetched from the host object.
- */
-eYo.Scrollbar.prototype.resizeContentVertical = function(hostMetrics) {
-  if (!this.pair_) {
-    // Only show the scrollbar if needed.
-    this.visible = this.viewLength_ < hostMetrics.content.height;
-  }
-
-  this.ratio_ = this.viewLength_ / hostMetrics.content.height;
-  if (this.ratio_ == -Infinity || this.ratio_ == Infinity ||
-      isNaN(this.ratio_)) {
-    this.ratio_ = 0;
-  }
-
-  var handleLength = hostMetrics.view.height * this.ratio_;
-  this.setHandleLength_(Math.max(0, handleLength));
-
-  var handlePosition = (hostMetrics.view.y - hostMetrics.content.y_min) *
-      this.ratio_;
-  this.handlePosition = this.constrainHandle_(handlePosition)
-}
-
-
-/**
- * Recalculate a horizontal scrollbar's location on the screen and path length.
- * This should be called when the layout or size of the window has changed.
- * Edython: position and resize according to the position of the flyout.
- * @param {!Object} hostMetrics A data structure describing all the
- *     required dimensions, possibly fetched from the host object.
- */
-eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
-  var board = this.board_
-  var flyout = board.flyout_
-  if (flyout && flyout.atRight) {
-    var viewSize = flyout.position.x - hostMetrics.absolute.x - 1
-  } else {
-    viewSize = hostMetrics.view.width - 1
-  }
-  if (this.pair_) {
-    // Shorten the scrollbar to make room for the corner square.
-    viewSize -= eYo.Scrollbar.thickness;
-  }
-  this.setScrollViewSize_(Math.max(0, viewSize))
-
-  var coordinates = new eYo.Where(hostMetrics.absolute)
-
-  coordinates.x += 0.5
-  // Horizontal toolbar should always be just above the bottom of the board.
-  coordinates.y += hostMetrics.view.height - eYo.Scrollbar.thickness - 0.5
-
-  this.position = coordinates
-
-  // If the view has been resized, a content resize will also be necessary.  The
-  // reverse is not true.
-  this.resizeContentHorizontal(hostMetrics)
-}
-
-/**
- * Recalculate a vertical scrollbar's location on the screen and path length.
- * This should be called when the layout or size of the window has changed.
- * Edython: position and resize according to the position of the flyout.
- * @param {!Object} hostMetrics A data structure describing all the
- *     required dimensions, possibly fetched from the host object.
- */
-eYo.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
-  var viewSize = hostMetrics.view.height - 1;
-  if (this.pair_) {
-    // Shorten the scrollbar to make room for the corner square.
-    viewSize -= eYo.Scrollbar.thickness;
-  }
-  var board = this.board_
-  var flyout = board.flyout_
-  if (flyout && flyout.atRight) {
-    var coordinates = flyout.position
-    coordinates.x -= hostMetrics.absolute.x + eYo.Scrollbar.thickness + 0.5
-    var yOffset = flyout.TOP_OFFSET
-  } else {
-    coordinates = hostMetrics.absolute.clone
-    coordinates.x += 0.5 + hostMetrics.view.width -
-        eYo.Scrollbar.thickness - 1
-    yOffset = 1 * eYo.Unit.rem
-  }
-  viewSize -= yOffset
-  this.setScrollViewSize_(Math.max(0, viewSize))
-  coordinates.y = hostMetrics.absolute.y + 0.5 + yOffset
-  this.position = coordinates
-
-  // If the view has been resized, a content resize will also be necessary.
-  // The converse is not true.
-  this.resizeContentVertical(hostMetrics)
+  this.handlePosition_ = (v || value) * this.handleLength_
 }
 
 /**
@@ -813,6 +636,15 @@ eYo.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
  * @private
  */
 eYo.Scrollbar.prototype.cleanUp_ = function() {
-  this.ui_driver.scrollbarCleanUp_(this)
+  this.ui_driver.scrollbarCleanUp(this)
+}
+
+/**
+ * Stop binding to mouseup and mousemove events.  Call this to
+ * wrap up lose ends associated with the scrollbar.
+ * @private
+ */
+eYo.Scrollbar.prototype.place = function() {
+  this.ui_driver.scrollbarPlace(this)
 }
 

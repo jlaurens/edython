@@ -56,7 +56,7 @@ eYo.Flyout = function(board, targetBoard, flyoutOptions) {
    * @type {number}
    * @private
    */
-  this.rectView_ = new eYo.Rect().tie(board.metrics_.view, {
+  this.rectView_ = new eYo.Rect().tie(board.metrics_.clip, {
     l: (newValue) => newValue + this.TOP_OFFSET,
     h: (newValue) => newValue - this.TOP_OFFSET,
   }, {
@@ -651,7 +651,10 @@ eYo.Flyout.prototype.layout_ = function(contents) {
  * Scroll the flyout to the top.
  */
 eYo.Flyout.prototype.scrollToStart = function() {
-  this.board.metrics.scroll.set()
+  var board = this.board
+  var metrics = board.metrics_
+  metrics.scroll.set()
+  board.moveTo(metrics.scroll)
 }
 
 /**
@@ -715,7 +718,7 @@ eYo.Flyout.prototype.place = function () {
   if (!this.visible_) {
     return
   }
-  var view = this.targetBoard_.metrics.view
+  var view = this.targetBoard_.metrics.clip
   if (view.height <= 0) {
     // Hidden components will return null.
     return;
@@ -739,26 +742,6 @@ eYo.Flyout.prototype.place = function () {
   this.toolbar_.resize()
   this.ui_driver.flyoutUpdate(this)
   this.ui_driver.flyoutPlace(this)
-}
-
-/**
- * Return an object with all the metrics required to size scrollbars for the
- * flyout.  The following properties are computed:
- * .view.height: Height of the visible rectangle,
- * .view.width: Width of the visible rectangle,
- * .content.height: Height of the contents,
- * .content.width: Width of the contents,
- * .view.y: Offset of top edge of visible rectangle from parent,
- * .content.y_min: Offset of the top-most content from the y=0 coordinate,
- * .absolute.y: Top-edge of view.
- * .view.x: Offset of the left edge of visible rectangle from parent,
- * .content.x_min: Offset of the left-most content from the x=0 coordinate,
- * .absolute.x: Left-edge of view.
- * @return {Object} Contains size and position metrics of the flyout.
- * @private
- */
-eYo.Flyout.prototype.getMetrics_ = function() {
-  return this.ui_driver.flyoutGetMetrics_(this)
 }
 
 /**

@@ -673,6 +673,31 @@ eYo.Rect.prototype.unscale = function (scaleX, scaleY) {
 }
 
 /**
+ * Inset the receiver. Arguments are in desk coordinates.
+ * @param {!Number} dx_min
+ * @param {?Number} dy_min
+ * @param {?Number} dx_max
+ * @param {?Number} dy_max
+ * @return {!eYo.Rect} the receiver
+ */
+eYo.Rect.prototype.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
+  if (!googisDef(dy_min)) {
+    dy_min = dx_min
+  }
+  if (!googisDef(dx_max)) {
+    dx_max = dx_min
+  }
+  if (!googisDef(dy_max)) {
+    dy_max = dy_min
+  }
+  this.x_min += dx_min
+  this.x_max -= dx_min + dx_max
+  this.y_min += dy_min
+  this.y_max -= dy_min + dy_max
+  return this
+}
+
+/**
  * Tie the two rectangles such that modifying one of them
  * automatically changes the other one accordingly.
  * @param {!eYo.Rect} tied  A tied rect.

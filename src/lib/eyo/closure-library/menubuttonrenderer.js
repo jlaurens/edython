@@ -108,7 +108,7 @@ eYo.MenuButtonRenderer.prototype.createButton = function(content, dom) {
   var dropdown = dom.createDom(
     goog.dom.TagName.DIV,
     goog.getCssName(cssClass, 'dropdown'))
-  var svg = eYo.Svg.newElement('svg', null, dropdown)
+  var svg = eYo.Svg.newElementSvg(dropdown)
   var h = eYo.Font.lineHeight / 9 * 4
   svg.style.width = h
   svg.style.height = h * 0.866

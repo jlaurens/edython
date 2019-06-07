@@ -36,13 +36,7 @@ eYo.Svg.BrickDragSurface = function(container) {
    */
   var dom = this.dom = Object.create(null)
   var svg = dom.svg = Object.create(null)
-  var root = svg.root_ = eYo.Svg.newElement('svg', {
-    xmlns: eYo.Dom.SVG_NS,
-    'xmlns:html': eYo.Dom.HTML_NS,
-    'xmlns:xlink': eYo.Dom.XLINK_NS,
-    version: '1.1',
-    class: 'eyo-brick-drag-surface'
-  }, container)
+  var root = svg.root_ = eYo.Svg.newElementSvg(container, 'eyo-brick-drag-surface')
   var g = svg.group_ = eYo.Svg.newElement('g', {
     class: 'eyo-brick-surface'
   }, root)
@@ -185,13 +179,7 @@ eYo.Svg.BoardDragSurface = function(container) {
    */
   var dom = this.dom = Object.create(null)
   var svg = dom.svg = Object.create(null)
-  svg.root_ = eYo.Svg.newElement('svg', {
-    xmlns: eYo.Dom.SVG_NS,
-    'xmlns:html': eYo.Dom.HTML_NS,
-    'xmlns:xlink': eYo.Dom.XLINK_NS,
-    version: '1.1',
-    class: 'eyo-board-drag-surface eyo-overflow-visible'
-  }, container)
+  svg.root_ = eYo.Svg.newElementSvg(container, 'eyo-board-drag-surface eyo-overflow-visible')
 }
 
 /**

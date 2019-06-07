@@ -131,7 +131,7 @@ eYo.Svg.prototype.scrollbarUpdateHandle = function(scrollbar) {
   )
   handle.setAttribute(
     scrollbar.positionAttribute_,
-    scrollbar.handlePosition_
+    scrollbar.handlePosition__
   )
 }
 
@@ -156,8 +156,8 @@ eYo.Svg.prototype.scrollbarUpdateView = function(scrollbar) {
  * @param {eYo.Scrollbar} scrollbar
  */
 eYo.Svg.prototype.scrollbarPlace = function(scrollbar) {
-  var temp = scrollbar.positionInDesk
-  var transform = `translate(${temp.x}px,${temp.y}px)`
+  var where = scrollbar.rect_.origin
+  var transform = `translate(${where.x}px,${where.y}px)`
   eYo.Dom.setCssTransform(scrollbar.dom.svg.root_, transform)
 }
 
@@ -211,11 +211,18 @@ eYo.Svg.prototype.scrollbarOnHandle_mousedown = function(e) {
     e.stopPropagation()
     return
   }
-  // Look up the current translation and record it.
-  this.startDragHandle = this.handlePosition_
-
   // Record the current mouse position.
-  this.startDragMouse_ = this.horizontal_ ? e.clientX : e.clientY
+  if (this.horizontal_) {
+    this.dragStart_ = e.clientX
+    // what is the mouse range ?
+    this.dragMin_ = this.dragStart_ - this.handlePosition_ + this.rect.x_min
+    this.dragLength_ = this.rect.width - this.handleLength_
+  } else {
+    this.dragStart_ = e.clientY
+    // what is the mouse range ?
+    this.dragMin_ = this.dragStart_ - this.handlePosition_ + this.rect.y_min
+    this.dragLength_ = this.rect.height - this.handleLength_
+  }
   var bound = this.dom.bound
   bound.mouseup = eYo.Dom.bindEvent(
     document,
@@ -239,11 +246,13 @@ eYo.Svg.prototype.scrollbarOnHandle_mousedown = function(e) {
  */
 eYo.Svg.prototype.scrollbarOn_mousemove = function(e) {
   var currentMouse = this.horizontal_ ? e.clientX : e.clientY
-  var mouseDelta = currentMouse - this.startDragMouse_
-  var handlePosition = this.startDragHandle + mouseDelta
-  // Position the bar.
-  this.handlePosition = this.constrainHandle_(handlePosition)
-  this.didScroll_()
+  var ratio = this.dragLength_ ? (currentMouse - this.dragMin_) / this.dragLength_ : 0
+  if (ratio < 0) {
+    ration = 0
+  } else if (ratio > 1) {
+    ratio = 1
+  }
+  this.board_.doRelativeScroll({[this.horizontal_ ? 'x' : 'y']: ratio})
   eYo.Dom.gobbleEvent(e)
 }
 
@@ -264,7 +273,7 @@ eYo.Svg.prototype.scrollbarOn_mouseup = function() {
  * @param {!eYo.Scrollbar}
  * @private
  */
-eYo.Svg.prototype.scrollbarCleanUp_ = function(scrollbar) {
+eYo.Svg.prototype.scrollbarCleanUp = function(scrollbar) {
   eYo.App.hideChaff()
   var bound = scrollbar.dom.bound
   if (bound.mouseup) {
@@ -299,18 +308,18 @@ eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
 
   var handleWhere = this.board.desk.xyElementInDesk(this.svgHandle_)
   var handleStart = this.horizontal_ ? handleWhere.x : handleWhere.y
-  var handlePosition = this.handlePosition_
+  var handlePosition_ = this.handlePosition__
 
   var pageLength = this.handleLength_ * 0.95;
   if (mouseLocation <= handleStart) {
     // Decrease the scrollbar's value by a page.
-    handlePosition -= pageLength
+    handlePosition_ -= pageLength
   } else if (mouseLocation >= handleStart + this.handleLength_) {
     // Increase the scrollbar's value by a page.
-    handlePosition += pageLength
+    handlePosition_ += pageLength
   }
 
-  this.handlePosition = this.constrainHandle_(handlePosition)
+  this.handlePosition_ = this.constrainHandle_(handlePosition_)
 
   this.didScroll_()
   eYo.Dom.gobbleEvent(e)
@@ -321,17 +330,10 @@ eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
  * @param {!eYo.ScrollbarPair} scrollbarPair
  * @private
  */
-eYo.Svg.prototype.scrollbarPairPlaceCorner = function(pair, newMetrics) {
-  var oldMetrics = pair.oldHostMetrics_
-  var corner = pair.dom.svg.corner_
-  if (!oldMetrics ||
-    oldMetrics.view.width != newMetrics.view.width ||
-    oldMetrics.absolute.x != newMetrics.absolute.x) {
-      corner.setAttribute('x', pair.vScroll.position.x)
-  }
-  if (!oldMetrics ||
-    oldMetrics.view.height != newMetrics.view.height ||
-    oldMetrics.absolute.y != newMetrics.absolute.y) {
-      corner.setAttribute('y', pair.hScroll.position.y)
-  }
+eYo.Svg.prototype.scrollbarPairPlaceCorner = function(pair) {
+  var r = pair.cornerRect_
+  corner.setAttribute('x', r.x)
+  corner.setAttribute('y', r.y)
+  corner.setAttribute('width', r.width)
+  corner.setAttribute('height', r.height)
 }

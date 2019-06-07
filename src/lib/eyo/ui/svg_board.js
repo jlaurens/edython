@@ -32,9 +32,29 @@ eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
   const root = board.isFlyout
   ? board.desk.dom.svg.rootMain_
   : board.desk.dom.svg.rootFlyout_
-  Object.defineProperty(svg, 'root_', {
-    get () { return root }
-  })
+  Object.defineProperty(svg, 'root_', { value: root })
+  /**
+   *   <defs>
+   *     <clipPath id="cut-off-bottom">
+   *       <rect x="0" y="0" width="200" height="100" />
+   *     </clipPath>
+   *   </defs>
+   */
+  var x = eYo.Svg.newElement(
+    'defs',
+    {},
+    root
+  )
+  x = eYo.Svg.newElement(
+    'clipPath',
+    {id: `eyo-board-clip-rect-${Math.ceil(10000 + 89999 * Math.random())}`},
+    x
+  )
+  svg.clipRect_ = eYo.Svg.newElement(
+    'rect',
+    {},
+    x
+  )
   /**
   * <g class="eyo-board-surface">
   *   <rect class="eyo-main-board-background" height="100%" width="100%"></rect>
@@ -48,7 +68,6 @@ eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
     {class: 'eyo-board-surface'},
     root
   )
-
   // Note that a <g> alone does not receive mouse events--it must have a
   // valid target inside it.  If no background class is specified, as in the
   // flyout, the board will not receive mouse events.
@@ -65,7 +84,10 @@ eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
   /** @type {SVGElement} */
   svg.canvas_ = eYo.Svg.newElement(
     'g',
-    {class: 'eyo-brick-canvas'},
+    {
+      class: 'eyo-brick-canvas',
+      'clip-path': `url(${svg.clipRect_.getAttribute('id')})`
+    },
     g
   )
   var options = board.options
@@ -79,13 +101,13 @@ eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
     var boardChanged = function() {
       if (!board.isDragging) {
         var metrics = board.metrics
-        var edgeLeft = metrics.view.x + metrics.absolute.x;
-        var edgeTop = metrics.view.y + metrics.absolute.y;
+        var edgeLeft = metrics.clip.x + metrics.absolute.x;
+        var edgeTop = metrics.clip.y + metrics.absolute.y;
         if (metrics.content.y_min < edgeTop ||
             metrics.content.y_min + metrics.content.height >
-            metrics.view.height + edgeTop ||
+            metrics.clip.height + edgeTop ||
             metrics.content.x_min < edgeLeft ||
-            metrics.content.x_min + metrics.content.width > metrics.view.width + edgeLeft) {
+            metrics.content.x_min + metrics.content.width > metrics.clip.width + edgeLeft) {
           // One or more blocks may be out of bounds.  Bump them back in.
           var MARGIN = 25;
           board.topBricks.forEach(brick => {
@@ -96,14 +118,14 @@ eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
             overflow.y = edgeTop + MARGIN - size.height - xy.y
             if (overflow.y <= 0) {
               // Bump any brick that's below the bottom back inside.
-              overflow.y = Math.min(edgeTop + metrics.view.height - MARGIN - xy.y, 0)
+              overflow.y = Math.min(edgeTop + metrics.clip.height - MARGIN - xy.y, 0)
             }
             overflow.y = 0
             // Bump any brick that's off the left back inside.
             overflow.x = MARGIN + edgeLeft - xy.x - size.width
             if (overflow.x <= 0) {
               // Bump any brick that's off the right back inside ???
-              overflow.x = Math.min(edgeLeft + metrics.view.width - MARGIN - xy.x, 0)
+              overflow.x = Math.min(edgeLeft + metrics.clip.width - MARGIN - xy.x, 0)
             }
             brick.moveBy(overflow)
           })
@@ -132,6 +154,41 @@ eYo.Svg.prototype.boardDispose = eYo.Dom.decorateDispose(function(board) {
   svg.matrixFromScreen_ = svg.group_ = svg.canvas_ = null
   dom.svg = null
 })
+
+/**
+ * Dispose of the board SVG ressources.
+ * @param {!eYo.Board} board
+ */
+eYo.Svg.prototype.boardResize = function(board) {
+  var svg = board.dom.svg
+  var div = board.desk.dom.div_
+  var view_ = board.metrics.view_
+  if (board.isMain) {
+    var width = div.offsetWidth
+    var height = div.offsetHeight
+    view_.width = width
+    view_.height = height
+  } else {
+    width = view_.width
+    height = view_.height
+  }
+  var root = svg.root_
+  var size = svg.size
+  if (size.width != width) {
+    root.setAttribute('width', width + 'px')
+    size.width = width
+  }
+  if (size.height != height) {
+    root.setAttribute('height', height + 'px')
+    size.height = height
+  }
+  var r = svg.clipRect_
+  var clip = board.metrics.clip
+  r.setAttribute('x', clip.x)
+  r.setAttribute('y', clip.y)
+  r.setAttribute('width', clip.width)
+  r.setAttribute('height', clip.height)
+}
 
 /**
  * Add a `mousedown` listener.

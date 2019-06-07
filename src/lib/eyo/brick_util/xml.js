@@ -446,7 +446,7 @@ eYo.Xml.Text.toDom = function (brick, element) {
  * @return a dom element
  */
 eYo.Xml.Text.fromDom = function (brick, element) {
-  return eYo.Do.someChild(element, child => child.nodeType === Node.TEXT_NODE && brick.value_d.set(child.nodeValue)
+  return eYo.Do.someChild(element, child => child.nodeType === Node.TEXT_NODE && (brick.value_p = child.nodeValue)
   )
 }
 

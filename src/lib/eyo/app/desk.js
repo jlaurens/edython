@@ -133,10 +133,7 @@ eYo.Desk.prototype.addFlyout = function(switcher) {
     flyoutAnchor: this.options.flyoutAnchor,
     switcher: switcher
   }
-  var options = {
-    getMetrics: flyout.getMetrics_.bind(flyout),
-    setMetrics: flyout.setMetrics_.bind(flyout),
-  }
+  var options = {}
   var board = this.flyoutBoard_ = new eYo.Board(this, options)
   board.options = this.mainBoard_.options
   var flyout = this.flyout_ = new eYo.Flyout(this, board, flyoutOptions)

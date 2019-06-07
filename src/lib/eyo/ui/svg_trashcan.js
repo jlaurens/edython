@@ -155,13 +155,13 @@ eYo.Svg.prototype.trashcanPlace = function(trashcan) {
     // There are no metrics available (board is probably not visible).
     return;
   }
-  svg.left_ = metrics.view.width + metrics.absolute.x -
+  svg.left_ = metrics.clip.width + metrics.absolute.x -
   trashcan.WIDTH_ - trashcan.MARGIN_SIDE_ - eYo.Scrollbar.thickness;
 
   if (metrics.flyout && metrics.flyout.anchor == eYo.Flyout.AT_RIGHT) {
     svg.left_ -= metrics.flyout.width
   }
-  svg.top_ = metrics.view.height + metrics.absolute.y -
+  svg.top_ = metrics.clip.height + metrics.absolute.y -
       (trashcan.BODY_HEIGHT_ + trashcan.LID_HEIGHT_) - trashcan.bottom_
   svg.group_.setAttribute(
     'transform',

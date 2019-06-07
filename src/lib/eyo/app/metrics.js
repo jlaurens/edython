@@ -39,13 +39,13 @@ Object.defineProperties(eYo.Metrics.prototype, {
     }
   },
   /**
-   * @type {Number} Positive scale factor.
    * Bricks visible dimensions are propotional to this value.
    * Doubling the scale will double the size of the bricks on screen.
    * Each time the scale changes, an `update` message is sent.
    * The same holds for other properties.
    * NB: The scroll offset, view and content rectangles
    * are not affected by this value.
+   * @type {Number} Positive scale factor.
    */
   scale: {
     get () {
@@ -71,8 +71,8 @@ Object.defineProperties(eYo.Metrics.prototype, {
   },
   /**
    * How much is the content rect scrolled
-   * relative to the view rect, in desk coordinates.
-   * When this point is (0,0) the view topleft corner
+   * relative to the clip rect, in desk coordinates.
+   * When this point is (0,0) the clip topleft corner
    * and the (0,0) point in the content are exactly
    * at the same location on screen.
    * @type {eYo.Where} 
@@ -91,7 +91,8 @@ Object.defineProperties(eYo.Metrics.prototype, {
   /**
    * The view rect is the visible rectangle on screen.
    * For the main board it is the bounding rect of the enclosing
-   * desk's div.
+   * desk's div. For a flyout, it is generally smaller.
+   * It is used for the svg size and location.
    * @type {eYo.Rect} 
    */
   view: {
@@ -101,6 +102,25 @@ Object.defineProperties(eYo.Metrics.prototype, {
     set (newValue) {
       if (!newValue.equals(this.view_)) {
         this.view_.set(newValue)
+        this.update()
+      }
+    }
+  },
+  /**
+   * The clip rect is the clip rectangle on screen.
+   * For the main board it is the view rect but for the flyout it is smaller.
+   * If any, scrollbars are tied to the clip rectangle.
+   * It defines the dimensions of the `clipRect_`.
+   * Dimensions in desk coordinates, relative to the top left corner of the view rect.
+   * @type {eYo.Rect} 
+   */
+  clip: {
+    get () {
+      return this.clip_.clone
+    },
+    set (newValue) {
+      if (!newValue.equals(this.clip_)) {
+        this.clip_.set(newValue)
         this.update()
       }
     }
@@ -124,6 +144,7 @@ eYo.Metrics.prototype.dispose = function () {
   this.board_ = null
   this.scroll_.dispose()
   this.view_.dispose()
+  this.clip_.dispose()
   this.content_.dispose()
   this.scroll_ = this.view_ = this.content_ = null
 }
@@ -135,6 +156,7 @@ eYo.Metrics.prototype.clone = function () {
   var ans = new eYo.Metrics()
   ans.scale = this.scale_
   ans.view = this.view_
+  ans.clip = this.clip_
   ans.content = this.content_
   ans.scroll = this.scroll_
   return ans

@@ -77,6 +77,23 @@ eYo.Svg.newElement = function(name, attrs, parent) {
 }
 
 /**
+ * Helper method for creating SVG root elements.
+ * @return {!Element} parent
+ * @param {string} className.
+ * @return {!SVGElement} Newly created SVG element.
+ */
+eYo.Svg.newElementSvg = function(parent, className) {
+  return eYo.Svg.newElement('svg', {
+    xmlns: eYo.Dom.SVG_NS,
+    'xmlns:html': eYo.Dom.HTML_NS,
+    'xmlns:xlink': eYo.Dom.XLINK_NS,
+    version: '1.1',
+    class: className
+  },
+  parent)
+}
+
+/**
  * Regular expressions.
  */
 Object.defineProperties(eYo.Svg, {

@@ -95,17 +95,6 @@ eYo.Options = function(options) {
 }
 
 /**
- * If set, sets the translation of the board to match the scrollbars.
- */
-eYo.Options.prototype.setMetrics = null
-
-/**
- * Return an object with the metrics required to size the board.
- * @return {Object} Contains size and position metrics, or null.
- */
-eYo.Options.prototype.getMetrics = null
-
-/**
  * Parse the user-specified zoom options, using reasonable defaults where
  * behaviour is unspecified.
  * @param {!Object} options Dictionary of options.

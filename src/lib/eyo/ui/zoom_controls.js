@@ -136,13 +136,13 @@ eYo.ZoomControls.prototype.place = function() {
     // There are no metrics available (board is probably not visible).
     return
   }
-  this.left_ = metrics.view.width + metrics.absolute.x -
+  this.left_ = metrics.clip.width + metrics.absolute.x -
       this.WIDTH_ - this.MARGIN_SIDE_ - eYo.Scrollbar.thickness
 
   if (metrics.flyout && metrics.flyout.anchor === eYo.Flyout.AT_RIGHT) {
     this.left_ -= metrics.flyout.width
   }
-  this.top_ = metrics.view.height + metrics.absolute.y -
+  this.top_ = metrics.clip.height + metrics.absolute.y -
       this.HEIGHT_ - this.bottom_
   ws.ui_driver.zoomControlsPlace(this)
 }

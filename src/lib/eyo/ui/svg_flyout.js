@@ -27,6 +27,8 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
     return
   }
   var dom = this.basicInit(flyout)
+  const div = flyout.desk.dom.flyout_
+  Object.defineProperty(dom, 'div_', { value: div })
   this.flyoutBindScrollEvents(this)
   var svg = dom.svg
   /*
@@ -37,14 +39,24 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
     <g class="eyo-board">...</g>
   </svg>
   */
- var root = svg.root_ = eYo.Svg.newElement('svg', {
-    xmlns:  eYo.Dom.SVG_NS,
-    'xmlns:html': eYo.Dom.HTML_NS,
-    'xmlns:xlink': eYo.Dom.XLINK_NS,
-    version: '1.1',
-    class: 'eyo-flyout',
-    style: 'display: none'
-  })
+  var root = svg.root_ = eYo.Svg.newElementSvg(div, 'eyo-svg eyo-flyout')
+  x.dataset && (x.dataset.type = 'flyout board')
+  // flyout toolbar, on top of the flyout
+  var cssClass = this.flyoutCssClass()
+  x = dom.flyoutToolbar_ = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    goog.getCssName(cssClass, 'toolbar')
+  )
+  flyout.appendChild(x)
+  x.dataset && (x.dataset.type = 'flyout toolbar')
+  // Create surfaces for dragging things. These are optimizations
+  // so that the browser does not repaint during the drag.
+  // Figure out where we want to put the canvas back.
+  if (eYo.Dom.is3dSupported) {
+    svg.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
+    svg.boardDragSurface = new eYo.Svg.BoardDragSurface(dom.div_)
+  }
+
   var background = svg.background_ = eYo.Svg.newElement('path', {
     class: 'eyo-flyout-background'
   }, root)
@@ -134,10 +146,7 @@ eYo.Svg.prototype.flyoutToolbarInit = function(ftb) {
     goog.dom.TagName.DIV,
     goog.getCssName(cssClass, 'control')
   )
-  svg.root_ = eYo.Svg.newElement('svg', {
-    id: 'eyo-flyout-control-image',
-    class: goog.getCssName(cssClass, 'control-image')
-  }, dom.control_)
+  svg.root_ = eYo.Svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
   svg.pathControl_ = eYo.Svg.newElement('path', {
     id: 'p-flyout-control'
   }, dom.svg)
@@ -318,75 +327,6 @@ eYo.Svg.prototype.flyoutPlace = function (flyout) {
     board.resizeContents()
     board.trashcan.place()
   }
-}
-
-/**
- * Return an object with all the metrics required to size scrollbars for the
- * flyout.  The following properties are computed:
- * .view.height: Height of the visible rectangle,
- * .view.width: Width of the visible rectangle,
- * .content.height: Height of the contents,
- * .content.width: Width of the contents,
- * .view.y: Offset of top edge of visible rectangle from parent,
- * .content.y_min: Offset of the top-most content from the y=0 coordinate,
- * .absolute.y: Top-edge of view.
- * .view.x: Offset of the left edge of visible rectangle from parent,
- * .content.x_min: Offset of the left-most content from the x=0 coordinate,
- * .absolute.x: Left-edge of view.
- * @param {!eYo.Flyout} flyout
- * @return {Object|null} Contains size and position metrics of the flyout. Null when not visible.
- * @private
- */
-eYo.Svg.prototype.flyoutGetMetrics_ = function(flyout) {
-  if (!flyout.visible) {
-    // Flyout is hidden.
-    return null
-  }
-  var brd = flyout.board_
-  try {
-    var optionBox = brd.dom.svg.canvas_.getBBox()
-  } catch (e) {
-    // Firefox has trouble with hidden elements (Bug 528969).
-    var optionBox = {height: 0, y: 0, width: 0, x: 0}
-  }
-  var metrics = {
-    content: new eYo.Rect(optionBox, {
-      height: optionBox.height * brd.scale + 2 * flyout.MARGIN,
-      width: optionBox.width * brd.scale + 2 * flyout.MARGIN,
-    }),
-    view: new eYo.Rect({
-      height: flyout.height_ - 3 * flyout.SCROLLBAR_PADDING,
-      width: flyout.width_,
-      y: -brd.scroll_.y + optionBox.y,
-      x: -brd.scroll_.x,
-    }),
-    // Padding for the end of the scrollbar.
-    absolute: new eYo.Where({
-      y: flyout.SCROLLBAR_PADDING
-    })
-  }
-  return metrics
-}
-
-/**
- * Sets the translation of the flyout to match the scrollbars.
- * @param {!eYo.Flyout} flyout
- * @param {!Object} xyRatio Contains a y property which is a float
- *     between 0 and 1 specifying the degree of scrolling and a
- *     similar x property.
- * @private
- */
-eYo.Svg.prototype.flyoutSetMetrics_ = function(flyout, xyRatio) {
-  var metrics = flyout.getMetrics_()
-  // This is a fix to an apparent race condition.
-  if (!metrics) {
-    return
-  }
-  var brd = flyout.board_
-  if (goog.isNumber(xyRatio.y)) {
-    brd.scroll_.y = -metrics.content.height * xyRatio.y
-  }
-  brd.moveTo(brd.scroll.forward(metrics.absolute))
 }
 
 /**
