@@ -156,7 +156,7 @@ eYo.Svg.prototype.scrollbarUpdateView = function(scrollbar) {
  * @param {eYo.Scrollbar} scrollbar
  */
 eYo.Svg.prototype.scrollbarPlace = function(scrollbar) {
-  var where = scrollbar.rect_.origin
+  var where = scrollbar.viewRect_.origin
   var transform = `translate(${where.x}px,${where.y}px)`
   eYo.Dom.setCssTransform(scrollbar.dom.svg.root_, transform)
 }
@@ -212,16 +212,17 @@ eYo.Svg.prototype.scrollbarOnHandle_mousedown = function(e) {
     return
   }
   // Record the current mouse position.
+  var rect = this.viewRect
   if (this.horizontal_) {
     this.dragStart_ = e.clientX
     // what is the mouse range ?
-    this.dragMin_ = this.dragStart_ - this.handlePosition_ + this.rect.x_min
-    this.dragLength_ = this.rect.width - this.handleLength_
+    this.dragMin_ = this.dragStart_ - this.handlePosition_ + rect.x_min
+    this.dragLength_ = rect.width - this.handleLength_
   } else {
     this.dragStart_ = e.clientY
     // what is the mouse range ?
-    this.dragMin_ = this.dragStart_ - this.handlePosition_ + this.rect.y_min
-    this.dragLength_ = this.rect.height - this.handleLength_
+    this.dragMin_ = this.dragStart_ - this.handlePosition_ + rect.y_min
+    this.dragLength_ = rect.height - this.handleLength_
   }
   var bound = this.dom.bound
   bound.mouseup = eYo.Dom.bindEvent(
@@ -294,7 +295,8 @@ eYo.Svg.prototype.scrollbarCleanUp = function(scrollbar) {
  * @private
  */
 eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
-  this.board_.markFocused()
+  var board = this.board_
+  board.markFocused()
   eYo.Dom.clearTouchIdentifier()  // This is really a click.
   this.cleanUp_()
   if (eYo.Dom.isRightButton(e)) {
@@ -303,25 +305,19 @@ eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
     e.stopPropagation()
     return
   }
-  var mouseWhere = this.board_.eventWhere(e)
+  var mouseWhere = board.eventWhere(e)
   var mouseLocation = this.horizontal_ ? mouseWhere.x : mouseWhere.y
 
-  var handleWhere = this.board.desk.xyElementInDesk(this.svgHandle_)
-  var handleStart = this.horizontal_ ? handleWhere.x : handleWhere.y
-  var handlePosition_ = this.handlePosition__
-
-  var pageLength = this.handleLength_ * 0.95;
+  var rect = this.viewRect
+  var handleStart = this.horizontal_ ? rect.origin.x : rect.origin.y
+  
   if (mouseLocation <= handleStart) {
-    // Decrease the scrollbar's value by a page.
-    handlePosition_ -= pageLength
+    // Decrease the scrollbar's value by a page minus one line.
+    board.scrollPage(true)
   } else if (mouseLocation >= handleStart + this.handleLength_) {
     // Increase the scrollbar's value by a page.
-    handlePosition_ += pageLength
+    board.scrollPage(false)
   }
-
-  this.handlePosition_ = this.constrainHandle_(handlePosition_)
-
-  this.didScroll_()
   eYo.Dom.gobbleEvent(e)
 }
 
