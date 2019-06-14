@@ -242,13 +242,13 @@ eYo.Css.CONTENT = path => {
       'fill-opacity: .8;',
     '}',
 
-    '.blocklyTransparentBackground {',
+    '.eyo-transparent-background {',// used
       'opacity: 0;',
     '}',
 
-    '.blocklyMainBoardScrollbar {',
-      'z-index: 20;',
-    '}',
+    `.eyo-main-board-scrollbar {
+  z-index: 20;
+}`,
 
     '.eyo-scrollbar-horizontal, .eyo-scrollbar-vertical {',
       'position: absolute;',
@@ -512,7 +512,7 @@ eYo.Css.CONTENT = path => {
   stroke-width: ${eYo.Shape.Style.width.light}px;
   fill: none;
   pointer-events: all;
-  stroke-linejoin="round";
+  stroke-linejoin: round;
 }
 .eyo-medium .eyo-path-contour,
 .eyo-medium .eyo-path-inner,
@@ -522,7 +522,7 @@ eYo.Css.CONTENT = path => {
   stroke-width: ${eYo.Shape.Style.width.medium}px;
   fill: none;
   pointer-events: all;
-  stroke-linejoin="round";
+  stroke-linejoin: round;
 }
 .eyo-dark .eyo-path-contour,
 .eyo-dark .eyo-path-inner,
@@ -532,7 +532,7 @@ eYo.Css.CONTENT = path => {
   stroke-width: ${eYo.Shape.Style.width.dark}px;
   fill: none;
   pointer-events: all;
-  stroke-linejoin="round";
+  stroke-linejoin: round;
 }
 .eyo-path-selected {
   pointer-events: none;

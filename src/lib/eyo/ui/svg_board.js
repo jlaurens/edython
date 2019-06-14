@@ -17,47 +17,52 @@ goog.require('eYo.Svg')
 
 goog.forwardDeclare('eYo.Board')
 
+
+/**
+ * Initialize the board dom ressources.
+ * @param {!eYo.Board} board
+ * @param {?Element} container
+ * @return {!Element} The board's dom repository.
+ */
+eYo.Dom.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
+  var container = (board.isFlyout
+  ? board.desk.flyout
+  : board.desk).dom.board_
+  var dom = board.dom
+  Object.defineProperty(dom, 'div_', {
+    value: container,
+    writable: true
+  })
+  return dom
+})
+
+/**
+ * Dispose of the desk dom resources.
+ * @param {!eYo.Board} board
+ */
+eYo.Dom.prototype.boardDispose = eYo.Dom.decorateDispose(function(board) {
+  board.dom.div_ = null
+})
+
 /**
  * Initialize the board SVG ressources.
  * @param {!eYo.Board} board
  * @return {!Element} The board's SVG group.
  */
-eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
-  if (board.dom) {
+eYo.Svg.prototype.boardInit = function(board) {
+  var dom = board.dom
+  if (dom) {
     return
   }
-  var dom = eYo.Svg.superClass_.boardInit.call(this, board)
+  dom = eYo.Svg.superClass_.boardInit.call(this, board)
   var svg = dom.svg = Object.create(null)
   svg.size = {}
-  const root = board.isFlyout
-  ? board.desk.dom.svg.rootMain_
-  : board.desk.dom.svg.rootFlyout_
-  Object.defineProperty(svg, 'root_', { value: root })
-  /**
-   *   <defs>
-   *     <clipPath id="cut-off-bottom">
-   *       <rect x="0" y="0" width="200" height="100" />
-   *     </clipPath>
-   *   </defs>
-   */
-  var x = eYo.Svg.newElement(
-    'defs',
-    {},
-    root
-  )
-  x = eYo.Svg.newElement(
-    'clipPath',
-    {id: `eyo-board-clip-rect-${Math.ceil(10000 + 89999 * Math.random())}`},
-    x
-  )
-  svg.clipRect_ = eYo.Svg.newElement(
-    'rect',
-    {},
-    x
-  )
+  var options = board.options
+  const root = svg.root_ = eYo.Svg.newElementSvg(dom.div_, 'eyo-svg')
+  root.style.overflow = 'visible'
   /**
   * <g class="eyo-board-surface">
-  *   <rect class="eyo-main-board-background" height="100%" width="100%"></rect>
+  *   <rect class="eyo-board-background" height="100%" width="100%"></rect>
   *   [Trashcan and/or flyout may go here]
   *   <g class="eyo-brick-canvas"></g>
   * </g>
@@ -86,62 +91,20 @@ eYo.Svg.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
     'g',
     {
       class: 'eyo-brick-canvas',
-      'clip-path': `url(${svg.clipRect_.getAttribute('id')})`
     },
     g
   )
-  var options = board.options
   if (!board.isFlyout) {
     this.boardBind_mousedown(board)
     if (options.zoom && options.zoom.wheel) {
       this.boardBind_wheel(board)
     }
   }
-  if (!options.readOnly && !options.hasScrollbars) {
-    var boardChanged = function() {
-      if (!board.isDragging) {
-        var metrics = board.metrics
-        var edgeLeft = metrics.clip.x + metrics.absolute.x;
-        var edgeTop = metrics.clip.y + metrics.absolute.y;
-        if (metrics.content.y_min < edgeTop ||
-            metrics.content.y_min + metrics.content.height >
-            metrics.clip.height + edgeTop ||
-            metrics.content.x_min < edgeLeft ||
-            metrics.content.x_min + metrics.content.width > metrics.clip.width + edgeLeft) {
-          // One or more blocks may be out of bounds.  Bump them back in.
-          var MARGIN = 25;
-          board.topBricks.forEach(brick => {
-            var xy = brick.whereInBoard
-            var size = brick.size
-            // Bump any brick that's above the top back inside.
-            var overflow = new eYo.Where()
-            overflow.y = edgeTop + MARGIN - size.height - xy.y
-            if (overflow.y <= 0) {
-              // Bump any brick that's below the bottom back inside.
-              overflow.y = Math.min(edgeTop + metrics.clip.height - MARGIN - xy.y, 0)
-            }
-            overflow.y = 0
-            // Bump any brick that's off the left back inside.
-            overflow.x = MARGIN + edgeLeft - xy.x - size.width
-            if (overflow.x <= 0) {
-              // Bump any brick that's off the right back inside ???
-              overflow.x = Math.min(edgeLeft + metrics.clip.width - MARGIN - xy.x, 0)
-            }
-            brick.moveBy(overflow)
-          })
-        }
-      }
-    }
-    board.addChangeListener(boardChanged)
-  }
-  // The SVG is now fully assembled.
-  this.deskResize(board.desk)
 
-  this.boardBind_resize(board)
   eYo.Dom.bindDocumentEvents()
 
   return g
-})
+}
 
 /**
  * Dispose of the board SVG ressources.
@@ -156,38 +119,63 @@ eYo.Svg.prototype.boardDispose = eYo.Dom.decorateDispose(function(board) {
 })
 
 /**
- * Dispose of the board SVG ressources.
+ * Place the board according to its metrics.
  * @param {!eYo.Board} board
  */
-eYo.Svg.prototype.boardResize = function(board) {
-  var svg = board.dom.svg
-  var div = board.desk.dom.div_
-  var view_ = board.metrics.view_
-  if (board.isMain) {
-    var width = div.offsetWidth
-    var height = div.offsetHeight
-    view_.width = width
-    view_.height = height
-  } else {
-    width = view_.width
-    height = view_.height
-  }
+eYo.Svg.prototype.boardPlace = function(board) {
+  var metrics = board.metrics
+  var dom = board.dom
+  var svg = dom.svg
   var root = svg.root_
-  var size = svg.size
-  if (size.width != width) {
-    root.setAttribute('width', width + 'px')
-    size.width = width
+  var scroll = metrics.scroll
+  console.log('scroll', scroll)
+  root.setAttribute('transform', `translate(${scroll.x},${scroll.y})`)
+  // var view = metrics.view
+  // root.setAttribute('width', `${view.width}px`) // to be removed ???
+  // root.setAttribute('height', `${view.height}px`)
+  svg.group_.setAttribute('transform', `scale(${metrics.scale})`)
+}
+
+/**
+ * Clean the cached inverted screen CTM.
+ */
+eYo.Svg.prototype.boardResizeContents = function(board) {
+  var svg = board.dom.svg
+  svg.matrixFromScreen_ = null
+}
+
+/**
+ * Show or hide the svg.
+ * Used to draw bricks lighter or not.
+ * @param {!eYo.Board} mode  The display mode for bricks.
+ * @param {!String} mode  The display mode for bricks.
+ */
+eYo.Svg.prototype.boardVisibleGet = function (board) {
+  return board.dom.svg.root_.style.display !== 'none'
+}
+
+/**
+ * Show or hide the svg.
+ * Used to draw bricks lighter or not.
+ * @param {!eYo.Board} mode  The display mode for bricks.
+ * @param {!String} mode  The display mode for bricks.
+ */
+eYo.Svg.prototype.boardVisibleSet = function (board, isVisible) {
+  board.dom.svg.root_.style.display = isVisible ? 'block' : 'none'
+}
+
+/**
+ * Set the display mode for bricks.
+ * Used to draw bricks lighter or not.
+ * @param {!eYo.Board} mode  The display mode for bricks.
+ * @param {!String} mode  The display mode for bricks.
+ */
+eYo.Svg.prototype.boardSetBrickDisplayMode = function (board, mode) {
+  var canvas = board.dom.svg.canvas_
+  board.currentBrickDisplayMode && (goog.dom.classlist.remove(canvas, `eyo-${board.currentBrickDisplayMode}`))
+  if ((board.currentBrickDisplayMode = mode)) {
+    goog.dom.classlist.add(canvas, `eyo-${board.currentBrickDisplayMode}`)
   }
-  if (size.height != height) {
-    root.setAttribute('height', height + 'px')
-    size.height = height
-  }
-  var r = svg.clipRect_
-  var clip = board.metrics.clip
-  r.setAttribute('x', clip.x)
-  r.setAttribute('y', clip.y)
-  r.setAttribute('width', clip.width)
-  r.setAttribute('height', clip.height)
 }
 
 /**
@@ -260,44 +248,8 @@ eYo.Svg.prototype.boardOn_wheel = function(e) {
 }
 
 /**
- * Show or hide the svg.
- * Used to draw bricks lighter or not.
- * @param {!eYo.Board} mode  The display mode for bricks.
- * @param {!String} mode  The display mode for bricks.
- */
-eYo.Svg.prototype.boardVisibleGet = function (board) {
-  return board.dom.svg.root_.style.display !== 'none'
-}
-
-/**
- * Show or hide the svg.
- * Used to draw bricks lighter or not.
- * @param {!eYo.Board} mode  The display mode for bricks.
- * @param {!String} mode  The display mode for bricks.
- */
-eYo.Svg.prototype.boardVisibleSet = function (board, isVisible) {
-  board.dom.svg.root_.style.display = isVisible ? 'block' : 'none'
-}
-
-/**
- * Set the display mode for bricks.
- * Used to draw bricks lighter or not.
- * @param {!eYo.Board} mode  The display mode for bricks.
- * @param {!String} mode  The display mode for bricks.
- */
-eYo.Svg.prototype.boardSetBrickDisplayMode = function (board, mode) {
-  var canvas = board.dom.svg.canvas_
-  board.currentBrickDisplayMode && (goog.dom.classlist.remove(canvas, `eyo-${board.currentBrickDisplayMode}`))
-  if ((board.currentBrickDisplayMode = mode)) {
-    goog.dom.classlist.add(canvas, `eyo-${board.currentBrickDisplayMode}`)
-  }
-}
-
-/**
- * Set the display mode for bricks.
- * Used to draw bricks lighter or not.
- * @param {!eYo.Board} mode  The display mode for bricks.
- * @param {!String} mode  The display mode for bricks.
+ * Bind the resize element.
+ * @param {!eYo.Board} board
  */
 eYo.Svg.prototype.boardBind_resize = function (board) {
   var bound = board.dom.bound || Object.create(null)
@@ -310,7 +262,7 @@ eYo.Svg.prototype.boardBind_resize = function (board) {
     null,
     () => {
       eYo.App.hideChaff()
-      board.desk.resize()
+      board.desk.updateMetrics()
     }
   )
 }
@@ -326,26 +278,6 @@ eYo.Svg.prototype.boardCanvasMoveTo = function (board, xy) {
     throw 'MISSED'
   }
   board.dom.svg.canvas_.setAttribute('transform', transform)
-}
-
-/**
- * Prepares the UI for dragging.
- * @param {!eYo.Board} mode  The display mode for bricks.
- */
-eYo.Svg.prototype.boardStartDrag = function (board) {
-  var element = board.dom.svg.group_.parentNode.parentNode // div above the `svg` element
-  var dragger = board.dragger_
-  dragger.correction_ = eYo.Svg.getTransformCorrection(element)
-  var surface = dragger.dragSurface_
-  if (surface) {
-    var svg = board.dom.svg
-    var previousElement = svg.canvas_.previousSibling
-    var width = parseInt(svg.group_.getAttribute('width'), 10)
-    var height = parseInt(svg.group_.getAttribute('height'), 10)
-    surface.setContentsAndShow(svg.canvas_, previousElement, width, height, this.board_.scale)
-    var coord = eYo.Svg.getRelativeWhere(svg.canvas_)
-    surface.translateSurface(coord.x, coord.y)
-  }
 }
 
 /**
@@ -390,14 +322,6 @@ eYo.Svg.prototype.boardSetBrowserFocus = function(board) {
 }
 
 /**
- * Clean the cached inverted screen CTM.
- */
-eYo.Svg.prototype.boardSizeDidChange = function(board) {
-  var svg = board.dom.svg
-  svg.matrixFromScreen_ = null
-}
-
-/**
  * Get the mouse location in board coordinates.
  */
 eYo.Svg.prototype.boardEventWhere = function(board, e) {
@@ -409,7 +333,7 @@ eYo.Svg.prototype.boardEventWhere = function(board, e) {
   var point = svg.root_.createSVGPoint()
   point.x = e.clientX
   point.y = e.clientY
-  return point.matrixTransform(matrix)
+  return eYo.Where.xy(point.matrixTransform(matrix))
 }
 
 /**

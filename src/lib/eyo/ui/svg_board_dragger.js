@@ -19,23 +19,33 @@ goog.require('eYo.Svg')
  * Initializes the boardDragger SVG ressources.
  * @param {!eYo.BoardDragger} boardDragger
  */
-eYo.Svg.prototype.boardDraggerInit = function(dragger) {
-  if (dragger.dom) {
-    return
-  }
-  var dom = this.basicInit(dragger)
-  var svg = dom.svg
-  svg.dragSurface = dragger.desk.dom.svg.boardDragSurface
-}
+eYo.Svg.prototype.boardDraggerInit = eYo.Dom.decorateInit(function(dragger) {
+  var dom = dragger.dom
+  var svg = dom.svg = Object.create(null)
+  svg.dragSurface = null // dragger.desk.dom.svg.boardDragSurface
+})
 
 /**
- * Dispose of the given slot's rendering resources.
- * @param {!eYo.BoardDragger} boardDragger
+ * Dispose of the given dragger's rendering resources.
+ * @param {!eYo.BoardDragger} dragger
  */
-eYo.Svg.prototype.boardDraggerDispose = eYo.Dom.decorateDispose(function (boardDragger) {
-  var svg = boardDragger.dom.svg
+eYo.Svg.prototype.boardDraggerDispose = eYo.Dom.decorateDispose(function (dragger) {
+  var svg = dragger.dom.svg
   if (svg) {
     svg.dragSurface = null
-    dom.svg = null
+    dragger.dom.svg = null
   }
 })
+
+/**
+ * Prepares the UI for dragging.
+ * @param {!eYo.BoardDragger} dragger
+ */
+eYo.Svg.prototype.boardDraggerStart = function (dragger) {
+  var element = dragger.board.dom.div_
+  dragger.correction_ = eYo.Svg.getTransformCorrection(element)
+  var surface = dragger.dragSurface
+  if (surface) {
+    surface.start(dragger)
+  }
+}

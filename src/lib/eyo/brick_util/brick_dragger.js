@@ -33,6 +33,16 @@ eYo.BrickDragger = function(destination) {
 }
 
 Object.defineProperties(eYo.BrickDragger.prototype, {
+  /**
+   * The associate drag surface
+   * @type{eYo.BrickDragSurface}
+   * @readonly
+   */
+  dragSurface: {
+    get () {
+      return this.destination_.desk_.dom.svg.brickDragSurface
+    }
+  },
   brick_: {
     get () {
       return this.brick__
@@ -59,10 +69,19 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
       return this.gesture_.change
     }
   },
-  xyDelta: {
+  /**
+   * Returns the deplacement relative to the starting point.
+   * 
+   */
+  xyDelta_: {
     get: eYo.Change.decorate('xyDeltaBrickDragger', function () {
       return {ans: this.destination.fromPixelUnit(this.gesture_.deltaWhere_)}
     }),
+  },
+  xyDelta: {
+    get () {
+      return this.xyDelta_.clone
+    }
   },
   xyNew_: {
     get () {
@@ -282,10 +301,11 @@ eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
   var scale = board.scale || 1
   var HW = ui.size
   // the brick is in the visible area if we see its center
-  var leftBound = metrics.clip.x / scale - HW.width / 2
-  var topBound = metrics.clip.y / scale - HW.height / 2
-  var rightBound = (metrics.clip.x + metrics.clip.width) / scale - HW.width / 2
-  var downBound = (metrics.clip.y + metrics.clip.height) / scale - HW.height / 2
+  var view = metrics.view
+  var leftBound = view.x / scale - HW.width / 2
+  var topBound = view.y / scale - HW.height / 2
+  var rightBound = view.x_max / scale - HW.width / 2
+  var downBound = view.y_max / scale - HW.height / 2
   var xy = newLoc || ui.whereInBoard
   return {
     x: xy.x < leftBound
@@ -316,9 +336,9 @@ eYo.BrickDragger.prototype.drag = function() {
     xyNew.x -= d.x
     xyNew.y -= d.y
   }
-  var bds = this.desk.dom.svg.brickDragSurface
+  var bds = this.dragSurface
   if (bds) {
-    bds.moveTo(xyNew)
+    bds.move()
   } else {
     this.ui_driver.brickSetOffsetDuringDrag(b3k, xyNew)
   }

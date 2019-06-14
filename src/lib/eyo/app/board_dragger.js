@@ -37,9 +37,19 @@ Object.defineProperties(eYo.BoardDragger.prototype, {
       return this.board_
     }
   },
+  /**
+   * The associate drag surface
+   * @type{eYo.BoardDragSurface}
+   * @readonly
+   */
+  dragSurface: {
+    get () {
+      return this.desk.dom.svg.boardDragSurface
+    }
+  },
   ui_driver: {
     get () {
-      return this.desk_.ui_driver
+      return this.desk.ui_driver
     }
   },
   has_UI: {
@@ -95,18 +105,25 @@ eYo.BoardDragger.prototype.isActive_ = false
  * @package
  */
 eYo.BoardDragger.prototype.start = function(gesture) {
-  var board = gesture.board
+  // This can happen if the user starts a drag, mouses up outside of the
+  // document where the mouseup listener is registered (e.g. outside of an
+  // iframe) and then moves the mouse back in the board.  On mobile and ff,
+  // we get the mouseup outside the frame. On chrome and safari desktop we do
+  // not.
+  if (this.isActive_) {
+    return
+  }
   /**
    * @type {!eYo.BoardSvg}
    * @private
    */
-  this.board_ = board
+  var board = this.board_ = gesture.board
 
   /**
    * The board's metrics object at the beginning of the drag.  Contains size
    * and position metrics of a board.
    * Coordinate system: pixel coordinates.
-   * @type {!Object}
+   * @type {!eYo.Metrics}
    * @private
    */
   this.startMetrics_ = board.metrics
@@ -114,23 +131,10 @@ eYo.BoardDragger.prototype.start = function(gesture) {
   if (eYo.Selected.brick) {
     eYo.Selected.brick.unselect()
   }
-  // This can happen if the user starts a drag, mouses up outside of the
-  // document where the mouseup listener is registered (e.g. outside of an
-  // iframe) and then moves the mouse back in the board.  On mobile and ff,
-  // we get the mouseup outside the frame. On chrome and safari boardtop we do
-  // not.
-  if (this.isActive_) {
-    return
-  }
 
   this.isActive_ = true
 
-  /**
-   * What is the purpose of this transform correction_?
-   * Zoom I guess
-   * Is it for the flyout also?
-   */
-  board.ui_driver.boardStartDrag(board)
+  this.ui_driver.boardDraggerStart(this)
 }
 
 /**
@@ -139,26 +143,6 @@ eYo.BoardDragger.prototype.start = function(gesture) {
  */
 eYo.BoardDragger.prototype.clearGesture = function() {
   this.gesture_ = null
-}
-
-/**
- * Finish dragging the board and put everything back where it belongs.
- * @param {!Event} e The most recent move event.
- * @param {!eYo.Where} delta How far the pointer has
- *     moved from the position at the start of the drag, in pixel coordinates.
- * @package
- */
-eYo.BoardDragger.prototype.end = function() {
-  this.drag()
-  // Don't do anything if we aren't using a drag surface.
-  if (!this.dragSurface_) {
-    return
-  }
-  this.isActive_ = false
-  var trans = this.dragSurface_.translation
-  this.dragSurface_.clearAndHide(this.dom.svg.group_)
-  this.board_.metrics_.scroll = trans
-  console.log('?', eYo.App.board.topBricks_[0].ui.xyInDesk)
 }
 
 /**
@@ -179,13 +163,30 @@ eYo.BoardDragger.prototype.drag = function() {
 }
 
 /**
- * Translate the board to new coordinates.
- * @param {eYo.Where} xy
+ * Translate the board to new coordinates given by its metrics' scroll.
  */
-eYo.BoardDragger.prototype.moveTo = function(xy) {
+eYo.BoardDragger.prototype.move = function() {
+  var scroll = this.board_.metrics.scroll
   if (this.dragSurface_ && this.isActive_) {
-    this.dragSurface_.moveTo(xy)
+    this.dragSurface_.moveTo(scroll)
   } else {
-    this.board_.canvasMoveTo(xy)
+//    this.board_.canvasMoveTo(scroll)
+    this.board.place()
   }
+}
+
+/**
+ * Finish dragging the board and put everything back where it belongs.
+ */
+eYo.BoardDragger.prototype.end = function() {
+  this.drag()
+  // Don't do anything if we aren't using a drag surface.
+  if (!this.dragSurface_) {
+    return
+  }
+  this.isActive_ = false
+  var trans = this.dragSurface_.translation
+  this.dragSurface_.clearAndHide(this.dom.svg.group_)
+  this.board_.metrics_.scroll = trans
+  console.log('?', eYo.App.board.topBricks_[0].ui.xyInDesk)
 }

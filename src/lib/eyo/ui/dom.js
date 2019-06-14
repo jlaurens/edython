@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Dom utils.
+ * @fileoverview Dom utils. Some code specific to flyout and desk.
  * @author jerome.laurens@u-bourgogne.fr
  */
 'use strict'
@@ -526,7 +526,7 @@ eYo.Dom.bindDocumentEvents = (() => {
         eYo.Dom.bindEvent(
           window,
           'orientationchange',
-          e => eYo.Svg.deskResize(eYo.App.desk) // TODO(#397): Fix for multiple boards.
+          e => eYo.App.desk.resize() // TODO(#397): Fix for multiple boards.
         )
       }
     }
@@ -627,6 +627,20 @@ eYo.Dom.prototype.basicInit = function(object) {
 }
 
 /**
+ * Decorates a function after `basicDispose`.
+ */
+eYo.Dom.decorateInit = f => {
+  return function (object) {
+    if (object.dom) {
+      return
+    }
+    var dom = this.basicInit(object)
+    f.apply(this, arguments)
+    return dom
+  }
+}
+
+/**
  * Decorates a function between `clearBoundEvents` and `basicDispose`.
  */
 eYo.Dom.decorateDispose = f => {
@@ -652,65 +666,3 @@ eYo.Dom.prototype.basicDispose = function(object) {
     eYo.Dom.superClass_.dispose.call(this)
   }
 }
-
-/**
- * Dispose of the given slot's rendering resources.
- * @param {eYo.Flyout} flyout
- */
-eYo.Dom.prototype.flyoutDispose = function (flyout) {
-  if (flyout.dom && flyout.dom.toolbarDiv_) {
-    goog.dom.removeNode(flyout.dom.toolbarDiv_)
-  }
-  this.basicDispose(flyout)
-}
-
-/**
- * Initialize the desk SVG ressources.
- * @param {!eYo.Desk} desk
- * @return {!Element} The desk's dom repository.
- */
-eYo.Dom.prototype.deskInit = function(desk) {
-  if (desk.dom) {
-    return
-  }
-  var dom = this.basicInit(desk)
-  var options = desk.options
-  var container = options.container
-  // no UI if no valid container
-  if (goog.isString(container)) {
-    container = options.container = document.getElementById(container) ||
-        document.querySelector(container)
-  }
-  if (!goog.dom.contains(document, container)) {
-    throw 'Error: container is not in current document.'
-  }
-  dom.div_ || (dom.div_= container)
-  eYo.Dom.bindEvent(
-    container,
-    'contextmenu',
-    e => eYo.Dom.isTargetInput(e) || e.preventDefault()
-  )
-  return dom
-}
-
-/**
- * Dispose of the desk dom resources.
- * @param {!eYo.Desk} desk
- */
-eYo.Dom.prototype.deskDispose = eYo.Dom.decorateDispose(
-  function(desk) {
-    var dom = desk.dom
-    goog.dom.removeNode(dom.div_)
-    dom.div_ = null
-  }
-)
-
-/**
- * Initialize the board dom ressources.
- * @param {!eYo.Board} board
- * @param {!Element|string} container Containing element, or its ID,
- *     or a CSS selector.
- * @param {Object=} opt_options Optional dictionary of options.
- * @return {!eYo.Board} Newly created main board.
- */
-eYo.Dom.prototype.boardInit = eYo.Dom.prototype.basicInit

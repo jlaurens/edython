@@ -47,7 +47,7 @@ describe('Statement', function () {
       var d2 = eYo.Test.new_brick('comment_stmt')
       // d1.comment_p = 'abc'
       // d2.comment_p = 'cde'
-      // d2.moveBy(new eYo.Where(100,20))
+      // d2.moveBy(eYo.Where.xy(100,20))
       ;[
         ['high', 'low'],
         ['left', 'right']
@@ -96,7 +96,7 @@ describe('Statement', function () {
       var d1 = eYo.Test.new_brick('comment_stmt')
       d.comment_p = 'abc'
       d1.comment_p = 'cde'
-      d1.moveBy(new eYo.Where(100,20))
+      d1.moveBy(eYo.Where.xy(100,20))
       d1.right_m.select()
       // d1.dispose()
       // d.dispose()

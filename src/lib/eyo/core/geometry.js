@@ -67,7 +67,7 @@ eYo.Where.property_c_ = {
     return this.c_
   },
   set (newValue) {
-    this.c_ = Math.round(newValue)
+    this.c_ = Math.round(2 * newValue) / 2
   }
 }
 eYo.Where.property_l_ = {
@@ -75,7 +75,7 @@ eYo.Where.property_l_ = {
     return this.l_
   },
   set (newValue) {
-    this.l_ = Math.round(newValue)
+    this.l_ = Math.round(4 * newValue) / 4
   }
 }
 eYo.Where.property_x_ = {
@@ -189,6 +189,16 @@ eYo.Where.prototype.xySet = function (x = 0, y = 0) {
  */
 eYo.Where.xy = function (x = 0, y = 0) {
   return new eYo.Where().xySet(x, y)
+}
+
+/**
+ * Convenient creator in text units.
+ * @param {Number} c  c coordinate
+ * @param {Number} l  l coordinate
+ * @return {eYo.Where} The receiver
+ */
+eYo.Where.cl = function (c = 0, l = 0) {
+  return new eYo.Where().set(c, l)
 }
 
 /**
@@ -357,6 +367,11 @@ eYo.Rect = function(c, l, w, h) {
 }
 
 Object.defineProperties(eYo.Rect.prototype, {
+  // Basic properties in text dimensions.
+  // When in text dimensions,
+  // setters round their arguments to half width and quarter height.
+  // Except for left, right, top and bottom,
+  // the position setters won't change the size.
   c: {
     get () {
       return this.origin_.c
@@ -389,14 +404,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       this.size_.h = newValue
     }
   },
-  left: {
-    get () {
-      return this.origin_.x
-    },
-    set (newValue) {
-      this.x_min = newValue
-    }
-  },
+  // basic properties in board dimensions
   x: {
     get () {
       return this.origin_.x
@@ -405,126 +413,12 @@ Object.defineProperties(eYo.Rect.prototype, {
       this.origin_.x = newValue
     }
   },
-  x_min: {
-    get () {
-      return this.origin_.x
-    },
-    set (newValue) {
-      var old = this.x_max
-      this.origin_.x = newValue
-      this.x_max = old
-    }
-  },
-  /**
-   * Change the width, not `x_min`.
-   */
-  x_max: {
-    get () {
-      return this.x + this.width
-    },
-    set (newValue) {
-      this.width = Math.max(0, newValue - this.x)
-    }
-  },
-  c_min: {
-    get () {
-      return this.origin_.c_
-    },
-    set (newValue) {
-      var old = this.c_max
-      this.c = newValue
-      this.c_max = old
-    }
-  },
-  /**
-   * Change the width, not `c_min`.
-   */
-  c_max: {
-    get () {
-      return this.c + this.w
-    },
-    set (newValue) {
-      this.w = Math.max(0, newValue - this.c)
-    }
-  },
-  l_min: {
-    get () {
-      return this.l
-    },
-    set (newValue) {
-      var old = this.l_max
-      this.l = newValue
-      this.l_max = old
-    }
-  },
-  /**
-   * Change the height, not `l_min`.
-   */
-  l_max: {
-    get () {
-      return this.l + this.h
-    },
-    set (newValue) {
-      this.h = Math.max(0, newValue - this.l)
-    }
-  },
-  top: {
-    get () {
-      return this.origin_.y
-    },
-    set (newValue) {
-      this.y_min = newValue
-    }
-  },
   y: {
     get () {
       return this.origin_.y
     },
     set (newValue) {
       this.origin_.y = newValue
-    }
-  },
-  y_min: {
-    get () {
-      return this.origin_.y
-    },
-    set (newValue) {
-      var old = this.y_max
-      this.origin_.y = newValue
-      this.y_max = old
-    }
-  },
-  y_max: {
-    get () {
-      return this.y + this.height
-    },
-    /**
-     * Change the height, not `y_min`.
-     */
-    set (newValue) {
-      this.y = newValue - this.height
-    }
-  },
-  right: {
-    get () {
-      return this.x + this.width
-    },
-    /**
-     * Change `left`, not the width.
-     */
-    set (newValue) {
-      this.x = newValue - this.width
-    }
-  },
-  /**
-   * Change `top`, not the height.
-   */
-  bottom: {
-    get () {
-      return this.y + this.height
-    },
-    set (newValue) {
-      this.height = Math.max(0, newValue - this.y)
     }
   },
   width: {
@@ -543,15 +437,162 @@ Object.defineProperties(eYo.Rect.prototype, {
       this.size_.height = newValue
     }
   },
-  origin: {
+  // convenient setters and getters
+  c_min: {
     get () {
-      return new eYo.Where(this.origin_)
+      return this.origin_.c_
     },
+    /**
+     * @param {Number} newValue 
+     */
     set (newValue) {
-      this.origin_.x = newValue.x
-      this.origin_.y = newValue.y
+      this.c = newValue
     }
   },
+  c_mid: {
+    get () {
+      return this.c + this.w / 2
+    },
+    /**
+     * @param {Number} newValue 
+     */
+    set (newValue) {
+      this.c = newValue - this.w / 2
+    }
+  },
+  c_max: {
+    get () {
+      return this.c + this.w
+    },
+    set (newValue) {
+      this.c = newValue - this.w
+    }
+  },
+  l_min: {
+    get () {
+      return this.l
+    },
+    /**
+     * The height does not change, `l_max` changes accordingly.
+     * @param {Number} newValue 
+     */
+    set (newValue) {
+      this.l = newValue
+    }
+  },
+  l_mid: {
+    get () {
+      return this.l + this.h / 2
+    },
+    set (newValue) {
+      this.l = newValue - this.h / 2
+    }
+  },
+  l_max: {
+    get () {
+      return this.l + this.h
+    },
+    set (newValue) {
+      this.l = newValue - this.h
+    }
+  },
+  // Convenient setters in board coordinates
+  x_min: {
+    get () {
+      return this.x
+    },
+    set (newValue) {
+      this.x = newValue
+    }
+  },
+  x_mid: {
+    get () {
+      return this.x + this.width / 2
+    },
+    set (newValue) {
+      this.x = newValue - this.width / 2
+    }
+  },
+  x_max: {
+    get () {
+      return this.x + this.width
+    },
+    set (newValue) {
+      this.x = newValue - this.width
+    }
+  },
+  y_min: {
+    get () {
+      return this.y
+    },
+    set (newValue) {
+      this.y = newValue
+    }
+  },
+  y_mid: {
+    get () {
+      return this.y + this.height / 2
+    },
+    set (newValue) {
+      this.y = newValue - this.height / 2
+    }
+  },
+  y_max: {
+    get () {
+      return this.y + this.height
+    },
+    set (newValue) {
+      this.y = newValue - this.height
+    }
+  },
+  //// The setters change the width
+  left: {
+    get () {
+      return this.origin_.x
+    },
+    set (newValue) {
+      this.height = this.x_max - newValue
+      this.x_min = newValue
+    }
+  },
+  top: {
+    get () {
+      return this.y
+    },
+    /**
+     * The width does not change.
+     * @param {Number} newValue 
+     */
+    set (newValue) {
+      this.height = this.y_max - newValue
+      this.y_min = newValue
+    }
+  },
+  right: {
+    get () {
+      return this.x_max
+    },
+    /**
+     * Change the width, not the `left`.
+     * No negative width.
+     */
+    set (newValue) {
+      this.width = Math.max(0, newValue - this.left)
+    }
+  },
+  bottom: {
+    get () {
+      return this.y_max
+    },
+    /**
+     * Change the height, not the `top`.
+     * No negative height.
+     */
+    set (newValue) {
+      this.height = Math.max(0, newValue - this.top)
+    }
+  },
+  // Composed
   origin: {
     get () {
       return new eYo.Where(this.origin_)
@@ -618,14 +659,20 @@ eYo.Rect.prototype.dispose = eYo.Do.nothing
 /**
  * set the `Rect`.
  * This is a very very permissive setter.
- * @param{?Number|eYo.Where} c
+ * @param{?Number|eYo.Where|Element} c
  * @param{?Number|eYo.Size} l
  * @param{?Number|eYo.Size} w
  * @param{?Number} h
  * @return {eYo.Rect} The receiver
  */
 eYo.Rect.prototype.set = function (c = 0, l = 0, w = 0, h = 0) {
-  if (goog.isDef(c.x) && goog.isDef(c.y)) {
+  if (goog.isDef(c.left) && goog.isDef(c.right) && goog.isDef(c.top) && goog.isDef(c.bottom)) {
+    // properties are evaluated twice
+    this.left = c.left
+    this.right = c.right
+    this.top = c.top
+    this.bottom = c.bottom
+  } else if (goog.isDef(c.x) && goog.isDef(c.y)) {
     this.origin = c
     if (goog.isDef(c.size)) {
       this.size = c.size
@@ -668,6 +715,28 @@ eYo.Rect.prototype.xySet = function (x = 0, y = 0, width = 0, height = 0) {
     this.origin_.xySet(x, y)
     this.size_.xySet(width, height)
     }
+  return this
+}
+
+/**
+ * Like `set` but advance the coordinates, instead of setting them.
+ * @param {number | eYo.Where | eYo.Size} c
+ * @param {number} l
+ * @return {eYo.Rect}
+ */
+eYo.Rect.prototype.forward = function (c = 0, l = 0) {
+  this.origin_.forward(c, l)
+  return this
+}
+
+/**
+ * Like `set` but advance the coordinates, instead of setting them.
+ * @param {number | eYo.Where | eYo.Size} c
+ * @param {number} l
+ * @return {eYo.Rect}
+ */
+eYo.Rect.prototype.backward = function (c = 0, l = 0) {
+  this.origin_.backward(c, l)
   return this
 }
 
@@ -717,21 +786,27 @@ eYo.Rect.prototype.unscale = function (scaleX, scaleY) {
 
 /**
  * Inset the receiver. Arguments are in desk coordinates.
- * @param {!Number} dx_min
+ * Default values are `eYo.Unit.x / 2` and `eYo.Unit.y / 4`
+ * @param {?Number} dx_min
  * @param {?Number} dy_min
  * @param {?Number} dx_max
  * @param {?Number} dy_max
  * @return {!eYo.Rect} the receiver
  */
 eYo.Rect.prototype.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
-  if (!googisDef(dy_min)) {
-    dy_min = dx_min
-  }
-  if (!googisDef(dx_max)) {
-    dx_max = dx_min
-  }
-  if (!googisDef(dy_max)) {
-    dy_max = dy_min
+  if (!goog.isDef(dx_min)) {
+    dx_min = dx_max = eYo.Unit.x / 2
+    dy_min = dy_max = eYo.Unit.y / 4
+  } else {
+    if (!goog.isDef(dy_min)) {
+      dy_min = dx_min
+    }
+    if (!goog.isDef(dx_max)) {
+      dx_max = dx_min
+    }
+    if (!goog.isDef(dy_max)) {
+      dy_max = dy_min
+    }
   }
   this.x_min += dx_min
   this.x_max -= dx_min + dx_max
@@ -788,6 +863,23 @@ eYo.Rect.prototype.tie = function (tied, to, from) {
     }
   })
   return this
+}
+
+/**
+ * Whether the receiver contains the given point.
+ * @param {Number | eYo.Where} x
+ * @param {?Number} y
+ * @return {Boolean}
+ */
+eYo.Rect.prototype.xyContains = function (x, y) {
+  var c = x.c
+  var l = x.l
+  if (!goog.isDef(c) || !goog.isDef(l)) {
+    c = x / eYo.Unit.x
+    l = y / eYo.Unit.y
+  }
+  return c >= this.c_min && c <= this.c_max
+    && l >= this.l_min && l <= this.l_max
 }
 
 /**

@@ -169,10 +169,6 @@ Blockly.Xml.domToBoard = eYo.Xml.domToBoard = function (xml, owner) {
                  'swap the arguments.')
   }
   var board = owner.board || owner
-  var width // Not used in LTR.
-  if (board.RTL) {
-    width = board.getWidth()
-  }
   if (goog.isString(xml)) {
     var parser = new DOMParser()
     xml = parser.parseFromString(xml, 'application/xml')

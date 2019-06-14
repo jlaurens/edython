@@ -159,8 +159,8 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   this.span_ = eYo.VOID
   this.board.resizeContents()
   this.board_ = eYo.VOID
-  this.change__.dispose()
-  this.change__ = eYo.VOID
+  this.change_.dispose()
+  this.change_ = eYo.VOID
 }
 
 /**
@@ -2097,17 +2097,19 @@ Object.defineProperties(eYo.Brick.prototype, {
 /**
  * Move a brick to an offset in board coordinates.
  * @param {eYo.Where} xy Offset in board units.
+ * @param {Boolean} snap Whether we should snap to the grid.
  */
-eYo.Brick.prototype.moveTo = function (xy) {
-  this.ui.moveTo(xy)
+eYo.Brick.prototype.moveTo = function (xy, snap) {
+  this.ui.moveTo(xy, snap)
 }
 
 /**
  * Move a brick by a relative offset in board coordinates.
  * @param {number} dxy Offset in board units.
+ * @param {boolean} snap Whether we should snap to grid.
  */
-eYo.Brick.prototype.moveBy = function (dxy) {
-  this.ui.moveBy(dxy)
+eYo.Brick.prototype.moveBy = function (dxy, snap) {
+  this.ui.moveBy(dxy, snap)
 }
 
 /**

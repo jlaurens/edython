@@ -37,12 +37,21 @@ eYo.Svg.BrickDragSurface = function(container) {
   var dom = this.dom = Object.create(null)
   var svg = dom.svg = Object.create(null)
   var root = svg.root_ = eYo.Svg.newElementSvg(container, 'eyo-brick-drag-surface')
+  var x = eYo.Svg.newElement('rect', {
+    x: eYo.Unit.x,
+    y: eYo.Unit.y,
+    width: 10 * eYo.Unit.x,
+    height: 3 * eYo.Unit.y,
+    class: 'eyo-background-drag-surface'
+  }, root)
+  x.setAttribute('fill', 'yellow')
   var g = svg.group_ = eYo.Svg.newElement('g', {
     class: 'eyo-brick-surface'
   }, root)
   svg.canvas_ = eYo.Svg.newElement('g', {
     class: 'eyo-brick-canvas'
   }, g)
+  this.where_ = new eYo.Where()
 }
 
 /**
@@ -51,19 +60,30 @@ eYo.Svg.BrickDragSurface = function(container) {
 eYo.Svg.BrickDragSurface.prototype.dispose = function() {
   this.dispose = eYo.Do.Nothing
   goog.dom.removeNode(this.dom.svg.root_)
-  this.limits_ = this.dom = null
+  this.limits_ = this.dom = this.brick_ = null
 }
 
 Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
   /**
    * Get the current blocks on the drag surface, if any (primarily
    * for BlockSvg.getRelativeToSurfaceWhere).
+   * @return {!eYo.BrickDragger} Drag surface block DOM element, or eYo.VOID
+   * if no blocks exist.
+   */
+  dragger: {
+    get () {
+      return this.dragger_
+    }
+  },
+  /**
+   * Get the current blocks on the drag surface, if any (primarily
+   * for BlockSvg.getRelativeToSurfaceWhere).
    * @return {!Element|eYo.VOID} Drag surface block DOM element, or eYo.VOID
    * if no blocks exist.
    */
-  brickGroup: {
+  brick: {
     get () {
-      return this.dom.svg.canvas_.firstChild
+      return this.dragger_.brick
     }
   },
   /**
@@ -83,9 +103,22 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
    * @type {eYo.Where}
    * @private
    */
-  surfaceWhere_: {
-    value: null,
-    writable: true
+  where: {
+    get () {
+      return this.where_
+    },
+    set (newValue) {
+      this.where_.set(newValue)
+      var x = this.where_.x.toFixed(0)
+      var y = this.where_.y.toFixed(0)
+      // This is a work-around to prevent a the blocks from rendering
+      // fuzzy while they are being dragged on the drag surface.
+      var transform = `translate3d(${x}px,${y}px, 0px)`
+      eYo.Dom.setCssTransform(
+        this.dom.svg.root_,
+        transform
+      )    
+    }
   },
   /**
    * Reports the surface translation in scaled board coordinates.
@@ -108,38 +141,46 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
 })
 
 /**
- * Set the SVG block's group on the drag surface's group and show the surface.
- * @param {!Element} group Brick's group element.
+ * Set the SVG brick's group on the drag surface's group and show the surface.
+ * Set the size of the svg drag surface equal to the one of the brick's board. Make both canvases transformed similarly.
+ * @param {!eYo.Brick} brick  A top block with no parent.
  */
-eYo.Svg.BrickDragSurface.prototype.show = function(blocks) {
+eYo.Svg.BrickDragSurface.prototype.start = function(brickDragger) {
+  this.dragger_ = brickDragger
+  var brick = this.brick
+  var svg = this.dom.svg
+  var canvas = svg.canvas_
   goog.asserts.assert(
-      this.dom.svg.canvas_.childNodes.length == 0, 'Already dragging a block.');
-  // appendChild removes the blocks from the previous parent
-  this.dom.svg.canvas_.appendChild(blocks)
-  this.dom.svg.root_.style.display = 'block'
-  this.surfaceWhere_ = new eYo.Where()
+    canvas.childNodes.length == 0, 'Already dragging a brick.')
+  var b_svg = brick.board.dom.svg
+  var b_root = b_svg.root_
+  var root = svg.root_
+  root.setAttribute('width', b_root.getAttribute('width'))
+  root.setAttribute('height', b_root.getAttribute('height'))
+  var transform = b_svg.canvas_.getAttribute('transform')
+  transform && canvas.setAttribute(
+    'transform',
+    transform
+  )
+  // appendChild removes the group from its previous parent node
+  canvas.appendChild(brick.dom.svg.group_)
+  svg.root_.style.display = 'block'
+  this.where = new eYo.Where()
 }
+
+eYo.Temp.i = 0
 
 /**
  * Translate the entire drag surface during a drag.
  * We translate the drag surface instead of the blocks inside the surface
  * so that the browser avoids repainting the SVG.
  * Because of this, the drag coordinates must be adjusted by scale.
- * @param {eYo.Where} xy Y Translation for the entire surface.
  */
-eYo.Svg.BrickDragSurface.prototype.moveTo = function(xy) {
-  this.dom.svg.root_.style.display = 'block'
-  this.surfaceWhere_ = new eYo.Where(xy).scale(this.scale_)
-  var x = this.surfaceWhere_.x.toFixed(0)
-  var y = this.surfaceWhere_.y.toFixed(0)
-  // This is a work-around to prevent a the blocks from rendering
-  // fuzzy while they are being dragged on the drag surface.
-  var transform = `translate3d(${x}px,${y}px, 0px)`
-  console.log('transform', transform)
-  eYo.Dom.setCssTransform(
-    this.dom.svg.root_,
-    transform
-  )
+eYo.Svg.BrickDragSurface.prototype.move = function() {
+  if (++eYo.Temp.i > 100) {
+    console.error('BREAK HERE')
+  }
+  this.where = this.dragger.xyDelta.scale(this.scale_)
 }
 
 /**
@@ -147,22 +188,25 @@ eYo.Svg.BrickDragSurface.prototype.moveTo = function(xy) {
  * element.
  * If the block is being deleted it doesn't need to go back to the original
  * surface, since it would be removed immediately during dispose.
- * @param {Element=} opt_newSurface Surface the dragging blocks should be moved
- *     to, or null if the blocks should be removed from this surface without
- *     being moved to a different surface.
+ * @param {eYo.Board | true} board Target board where the brick should be dropped on, or true if this is the receiver's brick's board.
  */
-eYo.Svg.BrickDragSurface.prototype.clearAndHide = function(opt_newSurface) {
+eYo.Svg.BrickDragSurface.prototype.end = function(board) {
+  this.brick.moveBy(this.where_, true)
+  this.where = 0
   var svg = this.dom.svg
-  if (opt_newSurface) {
+  if (board === true) {
+    board = this.brick.board
+  }
+  if (board) {
     // appendChild removes the node from svg.canvas_
-    opt_newSurface.appendChild(this.brickGroup)
+    board.dom.svg.canvas_.appendChild(this.brick.dom.svg.group_)
   } else {
-    svg.canvas_.removeChild(this.brickGroup)
+    svg.canvas_.removeChild(this.brick.dom.svg.group_)
   }
   svg.root_.style.display = 'none'
-  this.surfaceWhere_ = null
   goog.asserts.assert(
-    svg.canvas_.childNodes.length == 0, 'Drag group was not cleared.');
+    svg.canvas_.childNodes.length == 0, 'Drag group was not cleared.')
+  this.dragger_ = null
 }
 
 /**
@@ -191,7 +235,7 @@ eYo.Svg.BoardDragSurface.prototype.dispose = function () {
   var svg = this.dom.svg
   var svg = dom.svg
   goog.dom.removeNode(svg.root_)
-  this.dom = dom.svg = svg.root_ = null
+  this.dom = dom.svg = svg.root_ = this.dragger_ = null
 }
 
 Object.defineProperties(eYo.Svg.BoardDragSurface.prototype, {
@@ -207,6 +251,36 @@ Object.defineProperties(eYo.Svg.BoardDragSurface.prototype, {
     }
   },
 })
+
+/**
+ * Set the SVG to have the brick canvas in it and then
+ * show the surface.
+ * @param {!Element} brickCanvas The block canvas <g> element from the board.
+ * @param {?Element} previousSibling The element to insert the block canvas after when it goes back in the DOM at the end of a drag.
+ * @param {number} width The width of the board SVG element.
+ * @param {number} height The height of the board SVG element.
+ * @param {number} scale The scale of the board being dragged.
+ * @package
+ */
+eYo.Svg.BoardDragSurface.prototype.start = function(dragger, width, height) {
+  this.dragger_ = dragger
+  var board = dragger.board
+  var brickCanvas = board.dom.svg.canvas_
+  var root = this.dom.svg.root_
+  goog.asserts.assert(
+    root.childNodes.length == 0, 'Already dragging a block.')
+    var coord = eYo.Svg.getRelativeWhere(brickCanvas)
+    eYo.Dom.setCssTransform(
+      root,
+      `translate3d(${coord.x.toFixed(0)}px,${coord.y.toFixed(0)}px, 0px)`
+    )
+  this.previousSibling_ = brickCanvas.previousSibling
+  root.appendChild(brickCanvas)
+  var svg = board.dom.svg
+  root.setAttribute('width', +svg.group_.getAttribute('width'))
+  root.setAttribute('height', +svg.group_.getAttribute('height'))
+  root.style.display = 'block'
+}
 
 /**
  * Translate the entire drag surface during a drag.
@@ -255,28 +329,4 @@ eYo.Svg.BoardDragSurface.prototype.clearAndHide = function(newSurface) {
     root.childNodes.length == 0, 'Drag surface was not cleared.')
   eYo.Dom.setCssTransform(root, '')
   this.previousSibling_ = null
-}
-
-/**
- * Set the SVG to have the block canvas in it and then
- * show the surface.
- * @param {!Element} blockCanvas The block canvas <g> element from the board.
- * @param {?Element} previousSibling The element to insert the block canvas after when it goes back in the DOM at the end of a drag.
- * @param {number} width The width of the board SVG element.
- * @param {number} height The height of the board SVG element.
- * @param {number} scale The scale of the board being dragged.
- * @package
- */
-eYo.Svg.BoardDragSurface.prototype.setContentsAndShow = function(
-    blockCanvas, previousSibling, width, height, scale) {
-  var root = this.dom.svg.root_
-  goog.asserts.assert(
-    root.childNodes.length == 0, 'Already dragging a block.');
-  this.previousSibling_ = previousSibling
-  // Make sure the blocks canvas is scaled appropriately.
-  blockCanvas.setAttribute('transform', `translate(0, 0) scale(${scale})`)
-  root.setAttribute('width', width)
-  root.setAttribute('height', height)
-  root.appendChild(blockCanvas)
-  root.style.display = 'block'
 }

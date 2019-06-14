@@ -124,9 +124,16 @@ Object.defineProperties(eYo.Board.prototype, {
     }
   },
   flyout: {
+    /**
+     * The flyout associate to the board.
+     * @return{eYo.Flyout}
+     */
     get () {
       return this.flyout_
     },
+    /**
+     * @param{?eYo.Flyout}
+     */
     set (newValue) {
       var oldValue = this.flyout_
       if (newValue !== oldValue) {
@@ -141,6 +148,12 @@ Object.defineProperties(eYo.Board.prototype, {
       }
     }
   },
+  /**
+   * In a flyout, the target board where bricks should be placed after a drag.
+   * Otherwise null.
+   * @type {?eYo.Board}
+   * @package
+   */
   targetBoard: {
     get () {
       return this.targetBoard_
@@ -153,13 +166,10 @@ Object.defineProperties(eYo.Board.prototype, {
           oldValue.flyout = null
         }
         if (newValue) {
-          this.getGesture = newValue.getGesture.bind(newValue)
           this.flyout = null
           if (newValue.flyout) {
             newValue.flyout.targetBoard = newValue
           }
-        } else {
-          delete this.getGesture
         }
       }
     }
@@ -260,12 +270,21 @@ Object.defineProperties(eYo.Board.prototype, {
     writable: true
   },
   /**
+   * @type {eYo.Scrollbar | eYo.ScrollbarPair}
+   * @readonly
+   */
+  scrollbar: {
+    get () {
+      return this.scrollbar_
+    }
+  },
+  /**
    * @type {eYo.Metrics}
    * @readonly
    */
   metrics: {
     get () {
-      return this.metrics.clone
+      return this.metrics_.clone
     }
   },
   /**
@@ -420,9 +439,8 @@ eYo.Board.prototype.dispose = function() {
 
 /**
  * Make the UI.
- * @param {Element!} container
  */
-eYo.Board.prototype.makeUI = function(container) {
+eYo.Board.prototype.makeUI = function() {
   var options = this.options
   this.makeUI = eYo.Do.nothing
   this.ui_driver.boardInit(this)
@@ -430,12 +448,12 @@ eYo.Board.prototype.makeUI = function(container) {
       // Add scrollbar.
     this.scrollbar_ = this.isFlyout
       ? new eYo.Scrollbar(
-          this.board_,
+          this,
           false /*this.horizontalLayout_*/,
           false, 'eyo-flyout-scrollbar'
         )
-      : new eYo.ScrollbarPair(this.board_)
-    this.scrollbar.resize()
+      : new eYo.ScrollbarPair(this)
+    this.scrollbar_.resize()
   }
   var bottom = eYo.Scrollbar.thickness
   if (options.hasTrashcan) {
@@ -472,7 +490,7 @@ eYo.Board.prototype.didScale = function() {
   if (this.scrollbar) {
     this.scrollbar.resize()
   } else {
-    this.moveTo(this.scroll)
+    this.move()
   }
   eYo.App.hideChaff()
   if (this.flyout_) {
@@ -740,12 +758,6 @@ eYo.Board.prototype.resizesEnabled_ = true;
 eYo.Board.prototype.trashcan = null
 
 /**
- * This board's scrollbars, if they exist.
- * @type {eYo.ScrollbarPair}
- */
-eYo.Board.prototype.scrollbar = null
-
-/**
  * The current gesture in progress on this board, if any.
  * @type {eYo.Gesture}
  * @private
@@ -759,7 +771,7 @@ eYo.Board.prototype.gesture_ = null
  * @type {!eYo.Where}
  * @private
  */
-eYo.Board.prototype.lastRecordedPageScroll_ = null;
+eYo.Board.prototype.lastPageScroll_ = null;
 
 /**
  * Developers may define this function to add custom menu options to the
@@ -767,14 +779,6 @@ eYo.Board.prototype.lastRecordedPageScroll_ = null;
  * @param {!Array.<!Object>} options List of menu options to add to.
  */
 eYo.Board.prototype.configureContextMenu = null;
-
-/**
- * In a flyout, the target board where bricks should be placed after a drag.
- * Otherwise null.
- * @type {?eYo.Board}
- * @package
- */
-eYo.Board.prototype.targetBoard = null
 
 /**
  * Save resize handler data so we can delete it later in dispose.
@@ -835,9 +839,43 @@ eYo.Board.prototype.getFlyout_ = function() {
  * @private
  */
 eYo.Board.prototype.updateScreenCalculations_ = function() {
-  this.ui_driver.boardSizeDidChange(this)
   this.recordDeleteAreas()
-};
+}
+
+/**
+ * Update the board metrics according to the desk.
+ * NB: No css styling.
+ */
+eYo.Board.prototype.updateMetrics = function() {
+  this.metrics_.view_.size = this.desk.viewRect.size
+}
+
+/**
+ * Update the metrics and place the board.
+ * @package
+ */
+eYo.Board.prototype.resize = function() {
+  this.updateMetrics(this)
+  this.place(this)
+}
+
+/**
+ * If enabled, resize the parts of the board that change when the board
+ * contents (e.g. brick positions) change.  This will also scroll the
+ * board contents if needed. Should be sent after `updateMetrics`.
+ * @package
+ */
+eYo.Board.prototype.place = function() {
+  this.ui_driver.boardPlace(this)
+}
+
+/**
+ * Hook after a `metrics` change.
+ * @package
+ */
+eYo.Board.prototype.metricsDidChange = function() {
+  this.place()
+}
 
 /**
  * If enabled, resize the parts of the board that change when the board
@@ -852,7 +890,20 @@ eYo.Board.prototype.resizeContents = function() {
   if (this.scrollbar) {
     this.scrollbar.resize()
   }
-  this.ui_driver.boardSizeDidChange(this)
+  this.metrics_.content = this.bricksBoundingRect
+  this.ui_driver.boardResizeContents(this)
+}
+
+/**
+ * Resize and reposition all of the board chrome (toolbox,
+ * trash, scrollbars etc.)
+ * This should be called when something changes that
+ * requires recalculating dimensions and positions of the
+ * trash, zoom, etc. (e.g. window resize).
+ */
+eYo.Board.prototype.resize = function() {
+  this.updateMetrics()
+  this.place()
 }
 
 /**
@@ -862,8 +913,8 @@ eYo.Board.prototype.resizeContents = function() {
  * requires recalculating dimensions and positions of the
  * trash, zoom, toolbox, etc. (e.g. window resize).
  */
-eYo.Board.prototype.resize = function() {
-  this.driver.boardResize(this)
+eYo.Board.prototype.place = function() {
+  this.ui_driver.boardPlace(this)
   if (this.flyout_) {
     this.flyout_.place()
   }
@@ -886,47 +937,44 @@ eYo.Board.prototype.resize = function() {
  */
 eYo.Board.prototype.updateScreenCalculationsIfScrolled =
     function() {
-    /* eslint-disable indent */
   var currScroll = goog.dom.getDocumentScroll()
-  if (!this.lastRecordedPageScroll_.equals(currScroll)) {
-    this.lastRecordedPageScroll_ = currScroll
+  if (!this.lastPageScroll_ || !this.lastPageScroll_.equals(currScroll)) {
+    this.lastPageScroll_ = currScroll
     this.updateScreenCalculations_()
   }
-}; /* eslint-enable indent */
+}
+
+/**
+ * Move the receiver to the new coordinates given by its metrics' scroll.
+ */
+eYo.Board.prototype.move = function() {
+  this.dragger && this.dragger.move()
+}
 
 /**
  * Move the receiver to new coordinates.
  * @param {eYo.Where} xy Translation.
  */
 eYo.Board.prototype.moveTo = function(xy) {
-  this.dragger && this.dragger.moveTo(xy)
+  this.metrics_.scroll = xy
+  this.move()
 }
 
 /**
  * Translate this board to new coordinates.
- * @param {eYo.Where} xyy translation.
+ * @param {eYo.Where} xy translation.
  */
 eYo.Board.prototype.canvasMoveTo = function(xy) {
   this.ui_driver.boardCanvasMoveTo(this, xy)
 }
 
 /**
- * Returns the horizontal offset of the board.
- * @return {number} Width.
- */
-eYo.Board.prototype.getWidth = function() {
-  var metrics = this.metrics;
-  return metrics ? metrics.clip.width / this.scale : 0;
-}
-
-/**
  * Render all bricks in board.
  */
 eYo.Board.prototype.render = function() {
-  // Generate list of all bricks.
   var bricks = this.allBricks
   // Render each brick
-  var i = bricks.length - 1
+  var i = bricks.length
   while (i--) {
     bricks[i].render(false)
   }
@@ -1038,24 +1086,17 @@ eYo.Board.prototype.paste = function () {
           }
           avoidCollision()
           // is the brick in the visible area ?
-          var metrics = this.metrics
+          var view = this.metrics.view
           var scale = this.scale || 1
           var size = b3k.size
           // the brick is in the visible area if we see its center
-          var leftBound = metrics.clip.x / scale - size.width / 2
-          var topBound = metrics.clip.y / scale - size.height / 2
-          var rightBound = (metrics.clip.x + metrics.clip.width) / scale - size.width / 2
-          var downBound = (metrics.clip.y + metrics.clip.height) / scale - size.height / 2
-          var inVisibleArea = () => {
-            return dx >= leftBound && dx <= rightBound &&
-            dy >= topBound && dy <= downBound
-          }
-          if (!inVisibleArea()) {
-            dx = (metrics.clip.x + metrics.clip.width / 2) / scale - size.width / 2
-            dy = (metrics.clip.y + metrics.clip.height / 2) / scale - size.height / 2
+          var bounds = view.clone.unscale(scale).inset(size.width / 2, size.height / 2)
+          if (!bounds.xyContains(dx, dy)) {
+            dx = (view.x + view.width / 2) / scale - size.width / 2
+            dy = (view.y + view.height / 2) / scale - size.height / 2
             avoidCollision()
           }
-          b3k.moveBy(new eYo.Where(dx, dy))
+          b3k.moveBy(eYo.Where.xy(dx, dy))
         }
         b3k.select().scrollToVisible()
       }
@@ -1302,7 +1343,7 @@ eYo.Board.prototype.zoom = function(center, amount) {
  * @param {number} type Type of zooming (-1 zooming out and 1 zooming in).
  */
 eYo.Board.prototype.zoomCenter = function(type) {
-  this.zoom(this.metrics.clip.center, type)
+  this.zoom(this.metrics.view.center, type)
 }
 
 /**
@@ -1316,7 +1357,7 @@ eYo.Board.prototype.scrollPage = function(horizontally, increase) {
   // how many lines are visible actually
   var metrics = this.metrics_
   var scroll = metrics.scroll
-  var size = metrics.clip.size.unscale(board.scale)
+  var size = metrics.view.size.unscale(board.scale)
   if (horizontally) {
     var scrollAmount = Math.max(Math.floor(size.w) * 0.75, 1)
     if (increase) {
@@ -1332,34 +1373,36 @@ eYo.Board.prototype.scrollPage = function(horizontally, increase) {
       scroll.y -= scrollAmount
     }
   }
-  this.moveTo((metrics.scroll = scroll))
+  this.moveTo(scroll)
 }
 
 /**
- * Zoom the bricks to fit in the clip rect if possible.
+ * Zoom the bricks to fit in the view rect if possible.
  */
 eYo.Board.prototype.zoomToFit = function() {
-  var bricksRect = this.bricksBoundingRect
-  var bricksWidth = bricksRect.width
-  if (!bricksWidth) {
+  var rect = this.bricksBoundingRect
+  var width = rect.width
+  if (!width) {
     return  // Prevents zooming to infinity.
   }
-  var bricksHeight = bricksRect.height
+  var height = rect.height
   var metrics = this.metrics
-  var boardSize = metrics.clip.size
+  var size = metrics.view.size
   if (this.flyout_) {
-    boardWidth -= this.flyout_.viewRect.width
+    size.width -= this.flyout_.viewRect.width
   }
   if (!this.scrollbar) {
     // Origin point of 0,0 is fixed, bricks will not scroll to center.
-    bricksWidth += metrics.content.x_min;
-    bricksHeight += metrics.content.y_min;
+    width += metrics.content.x_min
+    height += metrics.content.y_min
   }
-  var ratioX = boardWidth / bricksWidth
-  var ratioY = boardHeight / bricksHeight
-  this.scale = Math.min(ratioX, ratioY)
+  size.unscale(width, height)
+  this.scale = Math.min(size.x, size.y)
   this.scrollCenter()
-};
+  if (this.flyout_) {
+    this.moveBy(eYo.Where.xy(-this.flyout_.viewRect.width / 2, 0))
+  }
+}
 
 /**
  * Center the board.
@@ -1384,7 +1427,7 @@ eYo.Board.prototype.centerOnBrick = function(id) {
   }
   // Board scale, used to convert from board coordinates to pixels.
   var metrics = this.metrics_
-  this.moveTo((metrics.scroll = brick.ui.center.scale(-metrics.scale).forward(metrics.clip.center)))
+  this.moveTo(brick.ui.center.scale(-metrics.scale).forward(metrics.view.center))
 }
 
 /**
@@ -1400,18 +1443,18 @@ eYo.Board.doRelativeScroll = function(xyRatio) {
   }
   var metrics = this.metrics_
   var content = metrics.content
-  var clip = metrics.content
+  var view = metrics.content
   var scroll = metrics.scroll
   if (goog.isNumber(xyRatio.x)) {
     var t = Math.min(1, Math.max(0, xyRatio.x))
-    // clip.x_max - content.x_max <= scroll.x <= clip.x_min - content.x_min
-    scroll.x = clip.x_max - content.x_max + t * (clip.width - content.width)
+    // view.x_max - content.x_max <= scroll.x <= view.x_min - content.x_min
+    scroll.x = view.x_max - content.x_max + t * (view.width - content.width)
   }
   if (goog.isNumber(xyRatio.y)) {
     var t = Math.min(1, Math.max(0, xyRatio.y))
-    scroll.y = clip.y_max - content.y_max + t * (clip.height - content.height)
+    scroll.y = view.y_max - content.y_max + t * (view.height - content.height)
   }
-  this.moveTo((metrics.scroll = scroll))
+  this.moveTo(scroll)
 }
 
 /**
@@ -1433,12 +1476,16 @@ eYo.Board.prototype.setResizesEnabled = function(enabled) {
 /**
  * Look up the gesture that is tracking this touch stream on this board.
  * May create a new gesture.
+ * Forwards to rhe target board if any.
  * @param {!Event} e Mouse event or touch event.
  * @return {eYo.Gesture} The gesture that is tracking this touch
  *     stream, or null if no valid gesture exists.
  * @package
  */
 eYo.Board.prototype.getGesture = function(e) {
+  if (this.targetBoard_) {
+    return this.targetBoard_.getGesture(e)
+  }
   var isStart = (e.type == 'mousedown' || e.type == 'touchstart' ||
       e.type == 'pointerdown')
   var gesture = this.gesture_
@@ -1605,6 +1652,7 @@ eYo.Board.prototype.addBrick = function (brick, opt_id) {
     this.topBricks_.push(brick)
     this.brickDB_[brick.id] = brick
   })
+  this.resizeContents()
 }
 
 /**
@@ -1739,10 +1787,10 @@ eYo.Board.prototype.scrollBrickTopLeft = function(id) {
   // Scrolling to here will put the brick line in the top-left corner of the
   // visible board.
   var metrics = this.metrics_
-  this.moveTo((metrics.scroll = brick.xy
+  this.moveTo(brick.xy
     // Find the top left of the brick in board units.
     .forward(1/2 + brick.depth * eYo.Span.INDENT, 1/4)
     .scale(-this.scale)
-    .backward(metrics.clip.origin)
-  ))
+    .backward(metrics.view.origin)
+  )
 }

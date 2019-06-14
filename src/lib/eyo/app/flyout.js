@@ -25,9 +25,8 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
 
 /**
  * Class for a flyout.
- * Circular dependencies:
+ * Circular dependencies through links:
  *  flyout >>> board >>> targetBoard >>> flyout
- * 
  * When defined, we have
  * flyout === flyout.board.targetBoard.flyout
  * A board has either a flyout or a targetBoard
@@ -56,12 +55,12 @@ eYo.Flyout = function(board, targetBoard, flyoutOptions) {
    * @type {number}
    * @private
    */
-  this.viewRect_ = new eYo.Rect().tie(board.metrics_.clip, {
-    l: (newValue) => newValue + this.TOP_OFFSET,
-    h: (newValue) => newValue - this.TOP_OFFSET,
+  this.viewRect_ = new eYo.Rect().tie(board.metrics_.view, {
+    l: (newValue) => newValue + this.TOOLBAR_HEIGHT,
+    h: (newValue) => newValue - this.TOOLBAR_HEIGHT,
   }, {
-    l: (newValue) => newValue - this.TOP_OFFSET,
-    h: (newValue) => newValue + this.TOP_OFFSET,
+    l: (newValue) => newValue - this.TOOLBAR_HEIGHT,
+    h: (newValue) => newValue + this.TOOLBAR_HEIGHT,
   })
   /**
    * Opaque data that can be passed to unbindEvent.
@@ -195,7 +194,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
   SCROLLBAR_PADDING: { value: 2 },
   TOP_MARGIN: { value: 0 }, // 4 * eYo.Unit.rem
   BOTTOM_MARGIN: { value: 16 }, // scroll bar width
-  TOP_OFFSET : { value: 2 * eYo.Unit.y },
+  TOOLBAR_HEIGHT : { value: Math.round(2 * eYo.Unit.y) },
   /**
    * Margin around the edges of the bricks.
    * @type {number}
@@ -289,12 +288,12 @@ Object.defineProperties(eYo.Flyout.prototype, {
       // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
       var BIG_NUM = 1000000000
       if (flyout.atRight) {
-        rect.x_max += BIG_NUM
+        rect.right += BIG_NUM
       } else {
-        rect.x_min -= BIG_NUM
+        rect.left -= BIG_NUM
       }
-      rect.y_min = -BIG_NUM
-      rect.y_max = BIG_NUM
+      rect.top = BIG_NUM
+      rect.bottom = BIG_NUM
       return rect
     }
   },
@@ -358,11 +357,11 @@ eYo.Flyout.prototype.dispose = function() {
 }
 
 /**
- * Dispose of this flyout.
- * Unlink from all DOM elements to prevent memory leaks.
+ * When the size of the receiver did change.
  */
 eYo.Flyout.prototype.sizeChanged = function() {
-
+  this.targetBoard_.resize()
+  this.board_.resize()
 }
 
 Object.defineProperties(eYo.Flyout, {
@@ -654,7 +653,7 @@ eYo.Flyout.prototype.scrollToStart = function() {
   var board = this.board
   var metrics = board.metrics_
   metrics.scroll.set()
-  board.moveTo(metrics.scroll)
+  board.move()
 }
 
 /**
@@ -718,25 +717,25 @@ eYo.Flyout.prototype.place = function () {
   if (!this.visible_) {
     return
   }
-  var view = this.targetBoard_.metrics.clip
+  var view = this.targetBoard_.metrics.view
   if (view.height <= 0) {
     // Hidden components will return null.
     return;
   }
   var rect = this.viewRect_
-  rect.y_min = view.y_min
-  rect.y_max = view.y_max
+  rect.top = view.top // change the height
+  rect.bottom = view.bottom
   if (this.atRight) {
     if (this.closed) {
-      rect.left = view.x_max
+      rect.x_min = view.x_max
     } else {
-      rect.right = view.x_max
+      rect.x_max = view.x_max
     }
   } else {
     if (this.closed) {
-      rect.right = view.x_min
+      rect.x_max = view.x_min
     } else {
-      rect.left = view.x_min
+      rect.x_min = view.x_min
     }
   }
   this.toolbar_.resize()
@@ -821,7 +820,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
   positions[n] = x_end
 
   n = 0
-  var id = setInterval(() => {
+  var f = () => {
     if (n >= n_steps) {
       rect.x = x_end
       clearInterval(id)
@@ -833,6 +832,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
       this.targetBoard_.recordDeleteAreas()
       this.slideOneStep(steps[n_steps])
       this.didSlide(close)
+      this.abortSlide = eYo.Do.nothing
     } else {
       rect.x = positions[n]
       this.ui_driver.flyoutPlace(this)
@@ -840,7 +840,12 @@ eYo.Flyout.prototype.doSlide = function(close) {
       this.slideOneStep(steps[n])
       ++n
     }
-  }, 20)
+  }
+  var id = setInterval(f, 20)
+  this.abortSlide = function () {
+    n = n_steps
+    f()
+  }
 }
 
 /**
@@ -876,3 +881,31 @@ eYo.Flyout.prototype.didSlide = function(closed) {
 eYo.Flyout.prototype.getList = function (category) {
   return eYo.FlyoutCategory[category] || []
 }
+
+/**
+ * Update metrics, nothing more nothing less.
+ * The size and location of the view may change due to user interaction,
+ * for example a window resize, a pane resize.
+ * The driver updates the internal state accordingly.
+ * This must be called at initialization time, when building the UI,
+ * and each time some change occurs that modifies the geometry.
+ */
+eYo.Flyout.prototype.updateMetrics = function() {
+  // if the flyout is moving, either opening or closing,
+  // stop moving
+  this.abortSlide() // ideally, sliding would follow the new metrics
+  var view = this.targetBoard.metrics.view
+  var r = this.viewRect_
+  r.size_.height = view.height
+  r.size_.width = Math.min(view.width / 3, Math.max(this.board.metrics.content.width, eYo.Unit.x * 10))
+  var where = this.atRight ? view.right : view.left
+  if (!this.closed === !this.atRight) {
+    r.origin_.x_min = where
+  } else {
+    r.origin_.x_max = view.right
+  }
+  this.ui_driver.flyoutUpdateMetrics(this)
+  this.toolbar.updateMetrics()
+  this.board.updateMetrics()
+}
+

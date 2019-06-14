@@ -154,7 +154,10 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
    */
   xy: {
     get () {
-      return new eYo.Where(this.xy_)
+      return this.xy_.clone
+    },
+    set (newValue) {
+      this.xy_.set(newValue)
     }
   }
 })
@@ -515,9 +518,14 @@ eYo.Brick.UI.prototype.willShortRender_ = function (recorder) {
 /**
  * Translates the brick, forwards to the ui driver.
  * @param {eYo.Where} xy The xy coordinate of the translation in board units.
+ * @param {Boolean} snap Whether we should snap to the grid.
  */
-eYo.Brick.UI.prototype.moveTo = function(xy) {
-  this.driver.brickWhereMoveTo(this.brick_, xy)
+eYo.Brick.UI.prototype.moveTo = function(xy, snap) {
+  if (snap && this.board && !this.board.dragging && !this.parent && !this.isInFlyout) {
+    xy = eYo.Where.cl(xy.c, xy.l)
+  }
+  this.xy = xy
+  this.driver.brickPlace(this.brick_)
   this.placeMagnets_()
 }
 
@@ -525,14 +533,15 @@ eYo.Brick.UI.prototype.moveTo = function(xy) {
  * Move a standalone brick by a relative offset.
  * Event aware for top blocks, except when dragging.
  * @param {number} dxy Offset in board units.
+ * @param {Boolean} snap Whether we should snap to the grid.
  */
-eYo.Brick.UI.prototype.moveBy = function(dxy) {
+eYo.Brick.UI.prototype.moveBy = function(dxy, snap) {
   var xy = this.xy.forward(dxy)
   if (this.brick_.parent || this.isDragging) {
     this.moveTo(xy)
   } else {
     eYo.Events.fireBrickMove(this.brick_, () => {
-      this.moveTo(xy)
+      this.moveTo(xy, snap)
       this.board.resizeContents()
     })
   }
@@ -1829,11 +1838,7 @@ eYo.Brick.UI.prototype.snapToGrid = function() {
   if (!this.board || this.board.dragging || this.parent || this.isInFlyout) {
     return
   }
-  var xy = this.whereInBoard
-  var dxy = new eYo.Where().set(xy.c, xy.l).backward(xy)
-  if (dxy.x || dxy.y ) {
-    this.moveBy(dxy)
-  }
+  this.moveTo(this.xy, true)
 }
 
 

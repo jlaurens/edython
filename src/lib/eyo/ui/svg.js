@@ -64,7 +64,8 @@ eYo.Svg.newElement = function(name, attrs, parent) {
   var e = /** @type {!SVGElement} */
       document.createElementNS(eYo.Dom.SVG_NS, name)
   for (var key in attrs) {
-    e.setAttribute(key, attrs[key])
+    var value = attrs[key]
+    value && e.setAttribute(key, value)
   }
   // IE defines a unique attribute "runtimeStyle", it is NOT applied to
   // elements created with createElementNS. However, Closure checks for IE
@@ -88,7 +89,7 @@ eYo.Svg.newElementSvg = function(parent, className) {
     'xmlns:html': eYo.Dom.HTML_NS,
     'xmlns:xlink': eYo.Dom.XLINK_NS,
     version: '1.1',
-    class: className
+    class: className | ''
   },
   parent)
 }

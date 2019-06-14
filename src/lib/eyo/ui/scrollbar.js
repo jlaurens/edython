@@ -13,7 +13,7 @@
 
 goog.provide('eYo.Scrollbar')
 
-goog.provide('eYo.ScrollbarPair');
+goog.provide('eYo.ScrollbarPair')
 
 goog.require('eYo')
 
@@ -38,14 +38,14 @@ eYo.ScrollbarPair = function(board) {
   this.hScroll = new eYo.Scrollbar(
     board,
     true,
-    true,
-    'blocklyMainBoardScrollbar'
+    this,
+    'eyo-main-board-scrollbar'
   )
   this.vScroll = new eYo.Scrollbar(
     board,
     false,
-    true,
-    'blocklyMainBoardScrollbar'
+    this,
+    'eyo-main-board-scrollbar'
   )
   this.cornerRect_ = new eYo.Rect()
   this.disposeUI = eYo.Do.nothing
@@ -130,7 +130,7 @@ eYo.ScrollbarPair.prototype.disposeUI = function () {
  * @type {Object}
  * @private
  */
-eYo.ScrollbarPair.prototype.oldHostMetrics_ = null;
+eYo.ScrollbarPair.prototype.oldMetrics_ = null;
 
 /**
  * Dispose of this pair of scrollbars.
@@ -139,7 +139,7 @@ eYo.ScrollbarPair.prototype.oldHostMetrics_ = null;
 eYo.ScrollbarPair.prototype.dispose = function() {
   this.disposeUI()
   this.board_ = null
-  this.oldHostMetrics_ = null
+  this.oldMetrics_ = null
   this.hScroll.dispose()
   this.hScroll = null
   this.vScroll.dispose()
@@ -159,16 +159,19 @@ eYo.ScrollbarPair.prototype.resize = function() {
     // Host element is likely not visible. Not any longer
     return
   }
-  this.hScroll.resize(hostMetrics)
-  this.vScroll.resize(hostMetrics)
+  // In order to resize properly, cross visibility is required
+  this.hScroll.resize(hostMetrics, true)
+  this.vScroll.resize(hostMetrics, true)
+  this.hScroll.resize(hostMetrics, false)
+  this.vScroll.resize(hostMetrics, false)
   // resize the corner
   var r = this.cornerRect_
   var rr = this.vScroll.viewRect
-  r.x_min = rr.x_min
-  r.x_max = rr.x_max
+  r.left = rr.left
+  r.right = rr.right
   rr = this.hScroll.viewRect
-  r.y_min = rr.y_min
-  r.y_max = rr._max
+  r.top = rr.top
+  r.bottom = rr.bottom
   // Reposition the corner square.
   this.ui_driver.scrollbarPairPlaceCorner(this)
 }
@@ -205,6 +208,17 @@ eYo.ScrollbarPair.prototype.set = (() => {
   }
 })()
 
+/**
+ * Stop binding to mouseup and mousemove events.  Call this to
+ * wrap up lose ends associated with the scrollbar.
+ * @private
+ */
+eYo.ScrollbarPair.prototype.place = function() {
+  var s
+  ;(s = this.hScroll) && s.place()
+  ;(s = this.vScroll) && s.place()
+}
+
 // --------------------------------------------------------------------
 
 /**
@@ -213,17 +227,17 @@ eYo.ScrollbarPair.prototype.set = (() => {
  * look or behave like the system's scrollbars.
  * @param {!eYo.Board} board Board to bind the scrollbar to.
  * @param {boolean} horizontal True if horizontal, false if vertical.
- * @param {boolean=} opt_pair True if scrollbar is part of a horiz/vert pair.
+ * @param {?eYo.ScrollbarPair} opt_pair True if scrollbar is part of a horiz/vert pair.
  * @param {string=} opt_class A class to be applied to this scrollbar.
  * @constructor
  */
 eYo.Scrollbar = function(board, horizontal, opt_pair, opt_class) {
   this.disposeUI = eYo.Do.nothing
   this.board_ = board
-  this.pair_ = opt_pair || false
+  this.pair_ = opt_pair
   this.horizontal_ = horizontal
   this.viewRect_ = new eYo.Rect()
-  this.oldHostMetrics_ = null
+  this.oldMetrics_ = null
   board.hasUI && this.makeUI(opt_class)
 }
 
@@ -263,11 +277,6 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
      */
     set (newValue) {
       var visibilityChanged = (newValue != this.visible_)
-      // Ideally this would also apply to scrollbar pairs, but that's a bigger
-      // headache (due to interactions with the corner square).
-      if (this.pair_) {
-        throw 'Unable to toggle visibility of paired scrollbars.'
-      }
       this.visible_ = newValue
       if (visibilityChanged) {
         this.updateDisplay_()
@@ -504,24 +513,27 @@ eYo.Scrollbar.prototype.disposeUI = function() {
 }
 
 /**
- * Dispose of this scrollbar.
+ * Dispose of this scrollbar and sever the links.
  */
 eYo.Scrollbar.prototype.dispose = function() {
   this.disposeUI()
   this.board_ = null
+  this.pair_ = null
 }
 
 /**
  * Recalculate the scrollbar's location and its length.
+ * When `prepare` is true, updates the visibility status, when `false` it does not.
  * @param {Object=} opt_metrics A data structure of from the describing all the
  * required dimensions.  If not provided, it will be fetched from the host
  * object.
+ * @param{?Boolean} prepare  True when prepare only.
  */
-eYo.Scrollbar.prototype.resize = function(hostMetrics) {
+eYo.Scrollbar.prototype.resize = function(hostMetrics, prepare) {
   if (this.horizontal_) {
-    this.resizeViewHorizontal(hostMetrics)
+    this.resizeHorizontal(hostMetrics, prepare)
   } else {
-    this.resizeViewVertical(hostMetrics)
+    this.resizeVertical(hostMetrics, prepare)
   }
   this.place()
 }
@@ -531,35 +543,41 @@ eYo.Scrollbar.prototype.resize = function(hostMetrics) {
  * This should be called when the layout or size of the window has changed.
  * @param {!Object} hostMetrics A data structure describing all the
  *     required dimensions, possibly fetched from the host object.
+ * @param {?Boolean} prepare  True when only preparing.
  */
-eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
-  var clip = hostMetrics.clip
+eYo.Scrollbar.prototype.resizeHorizontal = function(hostMetrics, prepare) {
+  var view = hostMetrics.view
   var content = hostMetrics.content
-  var range = content.width - clip.width
-  this.visible = (clip.width > this.pair_
-  ? 2 * eYo.Scrollbar.thickness
-  : eYo.Scrollbar.thickness) && (this.pair_ || range > 0)
-  var oldMetrics = this.oldHostMetrics_
+  var range = content.width - view.width
+  if (prepare !== false) {
+    this.visible = (view.width > this.pair_
+    ? 2 * eYo.Scrollbar.thickness
+    : eYo.Scrollbar.thickness) && (this.pair_ || range > 0)
+    if (prepare) {
+      return
+    }
+  }
+  var oldMetrics = this.oldMetrics_
   if (!oldMetrics
     || oldMetrics.scroll.x != hostMetrics.scroll.x
-    || oldMetrics.clip.width != clip.width
+    || oldMetrics.view.width != view.width
     || oldMetrics.content.width != content.width) {
     // The window has been resized or repositioned.
-    this.oldHostMetrics_ = hostMetrics
+    this.oldMetrics_ = hostMetrics
     var r = this.viewRect_
-    r.x_min = clip.x_min
-    r.x_max = this.pair_ ? clip.x_max : clip.x_max - eYo.Scrollbar.thickness
-    r.y_min = (r.y_max = clip.y_max) - eYo.Scrollbar.thickness
+    r.left = view.left
+    r.right = this.pair_ && this.pair_.vScroll.visible ? view.right - eYo.Scrollbar.thickness : view.right
+    r.top = (r.bottom = view.bottom) - eYo.Scrollbar.thickness
     r.xyInset(0.5)
     // resize the content
-    this.handleLength_ = clip.width / content.width * r.width
+    this.handleLength_ = view.width / content.width * r.width
     if (this.handleLength_ === -Infinity || this.handleLength_ === Infinity ||
         isNaN(this.handleLength_)) {
       this.handleLength_ = 0
     }
-    // clip.x_max - content.x_max <= scroll.x <= clip.x_min - content.x_min
+    // view.x_max - content.x_max <= scroll.x <= view.x_min - content.x_min
     if (range > 0) {
-      this.handlePosition_ = (scroll.x - clip.x_max + content.x_max) / range * (r.width - this.handleLength_)
+      this.handlePosition_ = (scroll.x - view.x_max + content.x_max) / range * (r.width - this.handleLength_)
     } else {
       this.handlePosition_ = r.width / 2
     }
@@ -571,35 +589,41 @@ eYo.Scrollbar.prototype.resizeViewHorizontal = function(hostMetrics) {
  * This should be called when the layout or size of the window has changed.
  * @param {!Object} hostMetrics A data structure describing all the
  *     required dimensions, possibly fetched from the host object.
+ * @param {?Boolean} prepare  True when preparing.
  */
-eYo.Scrollbar.prototype.resizeViewVertical = function(hostMetrics) {
-  var clip = hostMetrics.clip
+eYo.Scrollbar.prototype.resizeVertical = function(hostMetrics, prepare) {
+  var view = hostMetrics.view
   var content = hostMetrics.content
-  var range = content.height - clip.height
-  this.visible = (clip.height > this.pair_
-  ? 2 * eYo.Scrollbar.thickness
-  : eYo.Scrollbar.thickness) && (this.pair_ || range > 0)
-  var oldMetrics = this.oldHostMetrics_
+  var range = content.height - view.height
+  if (prepare !== false) {
+    this.visible = (view.height > this.pair_
+    ? 2 * eYo.Scrollbar.thickness
+    : eYo.Scrollbar.thickness) && (this.pair_ || range > 0)
+    if (prepare) {
+      return
+    }
+  }
+  var oldMetrics = this.oldMetrics_
   if (!oldMetrics
     || oldMetrics.scroll.y != hostMetrics.scroll.y
-    || oldMetrics.clip.height != clip.height
+    || oldMetrics.view.height != view.height
     || oldMetrics.content.height != content.height) {
     // The window has been resized or repositioned.
-    this.oldHostMetrics_ = hostMetrics
+    this.oldMetrics_ = hostMetrics
     var r = this.viewRect_
-    r.y_min = clip.y_min
-    r.y_max = this.pair_ ? clip.y_max : clip.y_max - eYo.Scrollbar.thickness
-    r.x_min = (r.x_max = clip.x_max) - eYo.Scrollbar.thickness
+    r.top = view.top
+    r.bottom = this.pair_ && this.pair_.hScroll.visible ? view.bottom - eYo.Scrollbar.thickness : view.bottom
+    r.top = (r.bottom = view.bottom) - eYo.Scrollbar.thickness
     r.xyInset(0.5)
     // resize the content
-    this.handleLength_ = clip.height / content.height * r.height
+    this.handleLength_ = view.height / content.height * r.height
     if (this.handleLength_ === -Infinity || this.handleLength_ === Infinity ||
         isNaN(this.handleLength_)) {
       this.handleLength_ = 0
     }
-    // clip.y_max - content.y_max <= scroll.y <= clip.y_min - content.y_min
+    // view.y_max - content.y_max <= scroll.y <= view.y_min - content.y_min
     if (range > 0) {
-      this.handlePosition_ = (scroll.y - clip.y_max + content.y_max) / range * (r.height - this.handleLength_)
+      this.handlePosition_ = (scroll.y - view.y_max + content.y_max) / range * (r.height - this.handleLength_)
     } else {
       this.handlePosition_ = r.height / 2
     }

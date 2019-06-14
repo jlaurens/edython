@@ -660,11 +660,12 @@ eYo.Svg.prototype.brickSendToBack = function (brick) {
 
 /**
  * Translates the brick.
- * @param {eYo.Where} xy The coordinates of the translation in board units.
+ * @param {eYo.Brick} brick The brick to place.
  */
-eYo.Svg.prototype.brickWhereMoveTo = function(brick, xy) {
+eYo.Svg.prototype.brickPlace = function(brick) {
+  var xy = brick.xy
   var transform = `translate(${xy.x},${xy.y})`
-  if (transform.match(/NaN/)) {
+  if (transform.match(/NaN/) || transform.match(/undefined/)) {
     throw 'FAILURE'
   }
   brick.dom.svg.groups.forEach(g => {

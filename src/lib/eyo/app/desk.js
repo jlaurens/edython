@@ -36,6 +36,7 @@ eYo.Desk = function(options) {
   this.options_ = options
   // create the various boards and flyout
   this.mainBoard_ = new eYo.Board(this, options)
+  this.viewRect_ = new eYo.Rect()
 }
 
 Object.defineProperties(eYo.Desk.prototype, {
@@ -44,11 +45,17 @@ Object.defineProperties(eYo.Desk.prototype, {
       return this.makeUI === eYo.Do.nothing
     }
   },
+  /**
+   * The owned main board instance.
+   */
   mainBoard: {
     get () {
       return this.mainBoard_
     }
   },
+  /**
+   * The onwed flyout instance, eventually.
+   */
   flyout: {
     get () {
       return this.flyout_
@@ -59,6 +66,23 @@ Object.defineProperties(eYo.Desk.prototype, {
       return this.ui_driver_
     }
   },
+  /**
+   * The view rectangle
+   */
+  viewRect: {
+    get () {
+      return this.viewRect_.clone
+    },
+    /**
+     * Actually set from a `div` object.
+     */
+    set (newValue) {
+      this.viewRect_.set(newValue)
+    }
+  },
+  /**
+   * The owned audio manager.
+   */
   audio: {
     get () {
       return this.audio_
@@ -84,6 +108,7 @@ eYo.Desk.prototype.makeUI = function() {
   d.deskInit(this)
   this.mainBoard_.makeUI()
   this.willFlyout_ && this.addFlyout()
+  this.resize()
 }
 
 /**
@@ -120,6 +145,42 @@ eYo.Desk.prototype.dispose = function() {
 }
 
 /**
+ * Update metrics. Sent on document's resize and other occasions.
+ * The size and location of the view may change due to user interaction,
+ * for example a window resize, a pane resize.
+ * The driver updates the internal state accordingly.
+ * The desk's metrics are supposed to be up to date first, then the
+ * other metrics are set up in cascade in next order.
+ * 1) the desk injection div is queried for its size and location.
+ *    This gives the desk viewRect.
+ * 2) Then the main board dimensions.
+ * 3) the flyout's div viewRect and its board as side effect.
+ 
+ */
+eYo.Desk.prototype.updateMetrics = function() {
+  this.ui_driver.deskUpdateMetrics(this)
+  this.mainBoard_.updateMetrics()
+  this.flyout_ && this.flyout_.updateMetrics()
+}
+
+/**
+ * Place the components.
+ */
+eYo.Desk.prototype.resize = function() {
+  this.updateMetrics()
+  this.place()
+}
+
+/**
+ * Place the components.
+ */
+eYo.Desk.prototype.place = function() {
+  // this.ui_driver.deskPlace(this)
+  this.mainBoard_.place()
+  this.flyout_ && this.flyout_.place()
+}
+
+/**
  * Add a flyout.
  * @param {!Object} switcher  See eYo.FlyoutToolbar constructor.
  */
@@ -152,15 +213,6 @@ eYo.Desk.prototype.removeFlyout = function() {
     x.dispose()
 
   }
-}
-
-/**
- * Size the main board to completely fill its container.
- * Call this when the view actually changes sizes
- * (e.g. on a window resize/device orientation change).
-*/
-eYo.Desk.prototype.resize = function() {
-  this.ui_driver_.deskResize(this)
 }
 
 /**

@@ -650,7 +650,7 @@ eYo.Gesture.prototype.doStart = function(e) {
     eYo.Do.longStart_(e, this)
   }
 
-  this.startWhere_ = this.where(e)
+  this.startWhere_ = new eYo.Where(e)
   this.healStack_ = e.altKey || e.ctrlKey || e.metaKey
 
   eYo.Dom.unbindMouseEvents(this)

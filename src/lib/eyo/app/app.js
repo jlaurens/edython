@@ -76,11 +76,11 @@ eYo.App.doFocus = () => {
  * Scroll the board to show the selected brick.
  */
 eYo.App.makeDesk = options => {
-  var f = eYo.App.desk = new eYo.Desk(options)
-  eYo.App.board = f.mainBoard
+  var desk = eYo.App.desk = new eYo.Desk(options)
+  eYo.App.board = desk.mainBoard
   eYo.setup(eYo.App.board)
   eYo.App.board.clearUndo()
-  f.makeUI()
+  desk.makeUI()
 }
 
 /**

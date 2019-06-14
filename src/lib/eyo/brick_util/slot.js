@@ -146,12 +146,12 @@ Object.defineProperties(eYo.Slot.prototype, {
   },
   whereInBoard: {
     get () {
-      return new eYo.Where(this.where_).forward(this.brick.ui.whereInBoard)
+      return this.where.forward(this.brick.ui.whereInBoard)
     }
   },
   whereInBrick: {
     get () {
-      return new eYo.Where(this.where_)
+      return this.where
     },
     set (newValue) {
       this.where_.set(newValue)
@@ -159,7 +159,7 @@ Object.defineProperties(eYo.Slot.prototype, {
   },
   where: {
     get () {
-      return this.where_
+      return this.where_.clone
     }
   },
   model: {

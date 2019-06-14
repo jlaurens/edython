@@ -18,20 +18,57 @@ goog.require('eYo.Svg')
 goog.forwardDeclare('eYo.Desk')
 
 /**
- * Default CSS class of the flyout panel.
- * @type {string}
+ * Initialize the desk dom ressources.
+ * @param {!eYo.Desk} desk
+ * @param {?Function} f
+ * @return {!Element} The desk's dom repository.
  */
-eYo.Svg.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
+eYo.Dom.prototype.deskInit = eYo.Dom.decorateInit(function(desk) {
+  var dom = desk.dom
+  var options = desk.options
+  var container = options.container
+  // no UI if no valid container
+  if (goog.isString(container)) {
+    container = options.container = document.getElementById(container) ||
+        document.querySelector(container)
+  }
+  if (!goog.dom.contains(document, container)) {
+    throw 'Error: container is not in current document.'
+  }
+  var div = dom.div_ || (dom.div_= container)
+  eYo.Dom.bindEvent(
+    container,
+    'contextmenu',
+    e => eYo.Dom.isTargetInput(e) || e.preventDefault()
+  )
+  /*
+  <div>
+    <div class='eyo-board-div'/>
+    <div class='eyo-flyout-div'/>
+  </div>
+  */
+  var x = dom.board_ = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    'eyo-board-div'
+  )
+  div.appendChild(x)  
+  var x = dom.flyout_ = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    'eyo-flyout-div'
+  )
+  x.style.display = 'none'
+  div.appendChild(x)
+})
 
 /**
- * Returns the CSS class to be applied to the root element.
- * @param {!eYo.Flyout} flyout
- * @return {string} Renderer-specific CSS class.
- * @override
+ * Dispose of the desk dom resources.
+ * @param {!eYo.Desk} desk
  */
-eYo.Svg.prototype.flyoutCssClass = function() {
-  return eYo.Svg.FLYOUT_CSS_CLASS
-}
+eYo.Dom.prototype.deskDispose = eYo.Dom.decorateDispose(function(desk) {
+  var dom = desk.dom
+  goog.dom.removeNode(dom.div_)
+  dom.div_ = null
+})
 
 /**
  * Initialize the desk SVG ressources.
@@ -58,16 +95,34 @@ eYo.Svg.prototype.deskInit = function(desk) {
     ...
   </svg>
   */
-  var x = svg.rootBoard_ = eYo.Svg.newElementSvg(div, 'eyo-svg eyo-board')
-  x.dataset && (x.dataset.type = 'board')
-  // flyout
-  var cssClass = this.flyoutCssClass()
-  var flyout = dom.flyout_ = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    cssClass
+  // Create surfaces for dragging things. These are optimizations
+  // so that the browser does not repaint during the drag.
+  // Figure out where we want to put the canvas back.
+  if (eYo.Dom.is3dSupported) {
+    svg.boardDragSurface = new eYo.Svg.BoardDragSurface(dom.div_)
+    svg.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
+  }
+  this.deskBind_resize(desk)
+}
+
+/**
+ * Bind the resize element.
+ * @param {!eYo.Board} board
+ */
+eYo.Svg.prototype.deskBind_resize = function (desk) {
+  var bound = desk.dom.bound || Object.create(null)
+  if (bound.resize) {
+    return
+  }
+  bound.resize = eYo.Dom.bindEvent(
+    window,
+    'resize',
+    null,
+    () => {
+      eYo.App.hideChaff()
+      desk.updateMetrics()
+    }
   )
-  flyout.style.display = 'none'
-  div.appendChild(flyout)  
 }
 
 /**
@@ -90,12 +145,12 @@ eYo.Svg.prototype.deskSetBrickDisplayMode = function (desk, mode) {
  * (e.g. on a window resize/device orientation change).
  * See eYo.Svg.boardResizeContents to resize the board when the contents
  * change (e.g. when a block is added or removed).
- * Record the height/width of the SVG image.
  * @param {!eYo.Desk} desk A desk.
  */
-eYo.Svg.deskResize = eYo.Svg.prototype.deskResize = function(desk) {
-  var mainBoard = desk.mainBoard
-  mainBoard.resize()
+eYo.Svg.prototype.deskUpdateMetrics = function(desk) {
+  // TODO: when changing the metrics, keep track of the selected brick/magnet
+  // After the change, the selection should be visible if it was.
+  desk.viewRect = desk.dom.div_.getBoundingClientRect()
 }
 
 /**

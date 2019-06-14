@@ -18,6 +18,73 @@ goog.forwardDeclare('eYo.Flyout')
 
 // Slot management
 
+
+/**
+ * Default CSS class of the flyout panel.
+ * @type {string}
+ */
+eYo.Dom.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
+
+
+/**
+ * Returns the CSS class to be applied to the root element.
+ * @param {!eYo.Flyout} flyout
+ * @return {string} Renderer-specific CSS class.
+ * @override
+ */
+eYo.Dom.prototype.flyoutCssClass = function() {
+  return eYo.Dom.FLYOUT_CSS_CLASS
+}
+
+/**
+ * Initialize the flyout dom ressources.
+ * @param {!eYo.Flyout} flyout
+ * @return {!Element} The desk's dom repository.
+ */
+eYo.Dom.prototype.flyoutInit = eYo.Dom.decorateInit(function(flyout) {
+  var dom = flyout.dom
+  const div = flyout.desk.dom.flyout_
+  Object.defineProperty(dom, 'div_', { value: div })
+  // flyout toolbar, on top of the flyout
+  var cssClass = this.flyoutCssClass()
+  var f = (type) => {
+    var x = goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(cssClass, type)
+    )
+    div.appendChild(x)
+    x.dataset && (x.dataset.type = `flyout ${type}`)
+    return x
+  }
+  dom.toolbar_ = f('toolbar')
+  dom.board_ = f('board')
+  return dom
+})
+
+/**
+ * Dispose of the given slot's rendering resources.
+ * @param {eYo.Flyout} flyout
+ */
+eYo.Dom.prototype.flyoutDispose = eYo.Dom.decorateDispose(function (flyout) {
+  goog.dom.removeNode(flyout.dom.toolbarDiv_)
+  goog.dom.removeNode(flyout.dom.boardDiv_)
+})
+
+/**
+ * Dispose of the given slot's rendering resources.
+ * @param {eYo.Flyout} flyout
+ */
+eYo.Dom.prototype.flyoutUpdateMetrics = function (flyout) {
+  var r = flyout.viewRect
+  var div = flyout.dom.toolbarDiv_
+  div.style.width = `${r.width} px`
+  div.style.height = `${eYo.Flyout.TOOLBAR_HEIGHT} px`
+  flyout.dom.boardDiv_
+  div.style.y = `${eYo.Flyout.TOOLBAR_HEIGHT} px`
+  div.style.width = `${r.width} px`
+  div.style.height = `${r.height - eYo.Flyout.TOOLBAR_HEIGHT} px`
+}
+
 /**
  * Initializes the flyout SVG ressources.
  * @param {!eYo.Flyout} flyout
@@ -26,11 +93,8 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
   if (flyout.dom) {
     return
   }
-  var dom = this.basicInit(flyout)
-  const div = flyout.desk.dom.flyout_
-  Object.defineProperty(dom, 'div_', { value: div })
-  this.flyoutBindScrollEvents(this)
-  var svg = dom.svg
+  var dom = eYo.Svg.superClass_.flyoutInit.call(this, flyout)
+  var svg = dom.svg = Object.create(null)
   /*
   <svg class="eyo-flyout">
     <g class="eyo-flyout-canvas">
@@ -39,23 +103,8 @@ eYo.Svg.prototype.flyoutInit = function(flyout) {
     <g class="eyo-board">...</g>
   </svg>
   */
-  var root = svg.root_ = eYo.Svg.newElementSvg(div, 'eyo-svg eyo-flyout')
+  var root = svg.root_ = eYo.Svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
   x.dataset && (x.dataset.type = 'flyout board')
-  // flyout toolbar, on top of the flyout
-  var cssClass = this.flyoutCssClass()
-  x = dom.flyoutToolbar_ = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'toolbar')
-  )
-  flyout.appendChild(x)
-  x.dataset && (x.dataset.type = 'flyout toolbar')
-  // Create surfaces for dragging things. These are optimizations
-  // so that the browser does not repaint during the drag.
-  // Figure out where we want to put the canvas back.
-  if (eYo.Dom.is3dSupported) {
-    svg.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
-    svg.boardDragSurface = new eYo.Svg.BoardDragSurface(dom.div_)
-  }
 
   var background = svg.background_ = eYo.Svg.newElement('path', {
     class: 'eyo-flyout-background'
@@ -439,4 +488,3 @@ eYo.Svg.prototype.flyoutOn_mousedown = function(e) {
     gesture.handleFlyoutStart(e, this)
   }
 }
-

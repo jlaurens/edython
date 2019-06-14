@@ -1560,7 +1560,7 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
   // Raise it to the top for extra visibility.
   var selected = root.isSelected
   selected || root.ui.addSelect()
-  var dxy = new eYo.Where(Blockly.SNAP_RADIUS, Blockly.SNAP_RADIUS).backward(this.xy)
+  var dxy = eYo.Where.xy(Blockly.SNAP_RADIUS, Blockly.SNAP_RADIUS).backward(this.xy)
   if (reverse) {
     // When reversing a bump due to an uneditable brick, bump up.
     dxy.y = -dxy.y
@@ -1708,10 +1708,11 @@ eYo.Magnet.prototype.moveTo = function(here) {
 
 /**
  * Change the connection's coordinates.
+ * Relative move with respect to the actual position.
  * @param {eYo.Where} dxy Change to coordinates, in board units.
  */
 eYo.Magnet.prototype.moveBy = function(dxy) {
-  this.moveTo(new eYo.Where(dxy).forward(this))
+  this.moveTo(this.where.forward(dxy))
 }
 
 /**

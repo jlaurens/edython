@@ -29,7 +29,7 @@ eYo.Test.makeDesk = options => {
 }
 
 beforeEach(function() {
-  eYo.Test.makeDesk()
+  eYo.Test.makeDesk(this.mainBoardOptions)
 })
 
 eYo.Test.setItUp = () => {

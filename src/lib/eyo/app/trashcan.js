@@ -155,13 +155,13 @@ eYo.Trashcan.prototype.dispose = function() {
  */
 eYo.Trashcan.prototype.place = function() {
   var board = this.board_
-  var clip = this.board_.metrics.clip
+  var view = this.board_.metrics.view
   var r = this.viewRect_
   var flyout = board.flyout_
   r.right = (flyout && flyout.atRight
     ? flyout.viewRect.left
-    : clip.left) - this.MARGIN_SIDE_
-  r.bottom = clip.bottom - this.MARGIN_SIDE_
+    : view.left) - this.MARGIN_SIDE_
+  r.bottom = view.bottom - this.MARGIN_SIDE_
   this.ui_driver.trashcanPlace(this)
 }
 

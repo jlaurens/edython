@@ -20,11 +20,8 @@ goog.require('eYo.Svg')
  * @param {!eYo.Scrollbar} scrollbar
  * @param {?String} opt_class
  */
-eYo.Svg.prototype.scrollbarInit = function(scrollbar, opt_class) {
-  if (scrollbar.dom) {
-    return
-  }
-  var dom = this.basicInit(scrollbar)
+eYo.Svg.prototype.scrollbarInit = eYo.Dom.decorateInit(function(scrollbar, opt_class) {
+  var dom = scrollbar.dom
   var svg = dom.svg
   /* Create the following DOM:
   <svg class="eyo-scrollbar-horizontal  optionalClass">
@@ -94,7 +91,7 @@ eYo.Svg.prototype.scrollbarInit = function(scrollbar, opt_class) {
     this.scrollbarOnHandle_mousedown.bind(scrollbar)
   )
   return g
-}
+})
 
 /**
  * Dispose of the given slot's rendering resources.
@@ -165,12 +162,8 @@ eYo.Svg.prototype.scrollbarPlace = function(scrollbar) {
  * Inits the scroll bar.
  * @param {eYo.ScrollbarPair} scrollbarPair
  */
-eYo.Svg.prototype.scrollbarPairInit = function(pair) {
-  if (pair.dom) {
-    return
-  }
-  var dom = this.basicInit(pair)
-  var svg = dom.svg
+eYo.Svg.prototype.scrollbarPairInit = eYo.Dom.decorateInit(function(pair) {
+  var svg = pair.dom.svg
   var corner = svg.corner_ = eYo.Svg.newElement(
     'rect',
     {
@@ -183,7 +176,7 @@ eYo.Svg.prototype.scrollbarPairInit = function(pair) {
     corner,
     pair.board_.dom.svg.canvas_
   )
-}
+})
 
 /**
  * Dispose of the given slot's rendering resources.
@@ -328,6 +321,7 @@ eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
  */
 eYo.Svg.prototype.scrollbarPairPlaceCorner = function(pair) {
   var r = pair.cornerRect_
+  var corner = pair.dom.svg.corner_
   corner.setAttribute('x', r.x)
   corner.setAttribute('y', r.y)
   corner.setAttribute('width', r.width)
