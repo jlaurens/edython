@@ -560,7 +560,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.y
     },
     /**
-     * The width does not change.
+     * The height does not change.
      * @param {Number} newValue 
      */
     set (newValue) {
@@ -652,7 +652,7 @@ Object.defineProperties(eYo.Rect.prototype, {
 })
 
 /**
- * Dispose of the receive resources.
+ * Dispose of the receiver's resources.
  */
 eYo.Rect.prototype.dispose = eYo.Do.nothing
 
@@ -785,9 +785,9 @@ eYo.Rect.prototype.unscale = function (scaleX, scaleY) {
 }
 
 /**
- * Inset the receiver. Arguments are in desk coordinates.
+ * Inset the receiver.
  * Default values are `eYo.Unit.x / 2` and `eYo.Unit.y / 4`
- * @param {?Number} dx_min
+ * @param {?Number|eYo.Where} dx_min
  * @param {?Number} dy_min
  * @param {?Number} dx_max
  * @param {?Number} dy_max
@@ -797,6 +797,9 @@ eYo.Rect.prototype.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
   if (!goog.isDef(dx_min)) {
     dx_min = dx_max = eYo.Unit.x / 2
     dy_min = dy_max = eYo.Unit.y / 4
+  } else if (goog.isDef(dx_min.x)) {
+    dy_min = dy_max = dx_min.y
+    dx_min = dx_max = dx_min.x
   } else {
     if (!goog.isDef(dy_min)) {
       dy_min = dx_min

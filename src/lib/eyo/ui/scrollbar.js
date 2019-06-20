@@ -152,19 +152,19 @@ eYo.ScrollbarPair.prototype.dispose = function() {
  * Recalculate both of the scrollbars' locations and lengths.
  * Also reposition the corner rectangle.
  */
-eYo.ScrollbarPair.prototype.resize = function() {
+eYo.ScrollbarPair.prototype.layout = function() {
   // Look up the host metrics once, and use for both scrollbars.
   var hostMetrics = this.board_.metrics
   if (!hostMetrics) {
     // Host element is likely not visible. Not any longer
     return
   }
-  // In order to resize properly, cross visibility is required
-  this.hScroll.resize(hostMetrics, true)
-  this.vScroll.resize(hostMetrics, true)
-  this.hScroll.resize(hostMetrics, false)
-  this.vScroll.resize(hostMetrics, false)
-  // resize the corner
+  // In order to layout properly, cross visibility is required
+  this.hScroll.layout(hostMetrics, true)
+  this.vScroll.layout(hostMetrics, true)
+  this.hScroll.layout(hostMetrics, false)
+  this.vScroll.layout(hostMetrics, false)
+  // layout the corner
   var r = this.cornerRect_
   var rr = this.vScroll.viewRect
   r.left = rr.left
@@ -387,8 +387,8 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
     writable: true
   },
   /**
-   * The offset of the start of the handle from the scrollbar position, in CSS
-   * pixels.
+   * The offset of the start of the handle from the scrollbar position,
+   * in CSS pixels.
    * @type {number}
    * @private
    */
@@ -459,7 +459,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
       var old = this.viewLength_
       if (newValue !== old) {
         var ratio = old ? newValue / old : 1
-        var size = this.viewRect_.size
+        var size = this.viewRect_.size_
         this.horizontal_
         ? (size.width = newValue)
         : (size.height = newValue)
@@ -529,7 +529,7 @@ eYo.Scrollbar.prototype.dispose = function() {
  * object.
  * @param{?Boolean} prepare  True when prepare only.
  */
-eYo.Scrollbar.prototype.resize = function(hostMetrics, prepare) {
+eYo.Scrollbar.prototype.layout = function(hostMetrics, prepare) {
   if (this.horizontal_) {
     this.resizeHorizontal(hostMetrics, prepare)
   } else {
@@ -569,7 +569,7 @@ eYo.Scrollbar.prototype.resizeHorizontal = function(hostMetrics, prepare) {
     r.right = this.pair_ && this.pair_.vScroll.visible ? view.right - eYo.Scrollbar.thickness : view.right
     r.top = (r.bottom = view.bottom) - eYo.Scrollbar.thickness
     r.xyInset(0.5)
-    // resize the content
+    // layout the content
     this.handleLength_ = view.width / content.width * r.width
     if (this.handleLength_ === -Infinity || this.handleLength_ === Infinity ||
         isNaN(this.handleLength_)) {
@@ -596,9 +596,9 @@ eYo.Scrollbar.prototype.resizeVertical = function(hostMetrics, prepare) {
   var content = hostMetrics.content
   var range = content.height - view.height
   if (prepare !== false) {
-    this.visible = (view.height > this.pair_
+    this.visible = (view.height > (this.pair_
     ? 2 * eYo.Scrollbar.thickness
-    : eYo.Scrollbar.thickness) && (this.pair_ || range > 0)
+    : eYo.Scrollbar.thickness)) && (!!this.pair_ || range > 0)
     if (prepare) {
       return
     }
@@ -613,9 +613,9 @@ eYo.Scrollbar.prototype.resizeVertical = function(hostMetrics, prepare) {
     var r = this.viewRect_
     r.top = view.top
     r.bottom = this.pair_ && this.pair_.hScroll.visible ? view.bottom - eYo.Scrollbar.thickness : view.bottom
-    r.top = (r.bottom = view.bottom) - eYo.Scrollbar.thickness
+    r.left = (r.right = view.right) - eYo.Scrollbar.thickness
     r.xyInset(0.5)
-    // resize the content
+    // layout the content
     this.handleLength_ = view.height / content.height * r.height
     if (this.handleLength_ === -Infinity || this.handleLength_ === Infinity ||
         isNaN(this.handleLength_)) {

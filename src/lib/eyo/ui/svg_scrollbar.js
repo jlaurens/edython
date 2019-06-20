@@ -37,7 +37,10 @@ eYo.Svg.prototype.scrollbarInit = eYo.Dom.decorateInit(function(scrollbar, opt_c
   }
   var root = svg.root_ = eYo.Svg.newElement(
     'svg',
-    { class: className }
+    {
+      class: className,
+      preserveAspectRatio: 'xMinYMin slice'
+    }
   )
   var g = svg.group_ = eYo.Svg.newElement(
     'g',
@@ -62,18 +65,16 @@ eYo.Svg.prototype.scrollbarInit = eYo.Dom.decorateInit(function(scrollbar, opt_c
   var thickness = eYo.Scrollbar.thickness;
   if (scrollbar.horizontal_) {
     background.setAttribute('height', thickness)
-    root.setAttribute('height', thickness)
     handle.setAttribute('height', thickness - 5)
     handle.setAttribute('y', 2.5);
-    scrollbar.lengthAttribute_ = 'width';
-    scrollbar.positionAttribute_ = 'x';
+    scrollbar.lengthAttribute_ = 'width'
+    scrollbar.positionAttribute_ = 'x'
   } else {
     background.setAttribute('width', thickness)
-    root.setAttribute('width', thickness)
     handle.setAttribute('width', thickness - 5)
     handle.setAttribute('x', 2.5);
-    scrollbar.lengthAttribute_ = 'height';
-    scrollbar.positionAttribute_ = 'y';
+    scrollbar.lengthAttribute_ = 'height'
+    scrollbar.positionAttribute_ = 'y'
   }
   eYo.Dom.insertAfter(
     root,
@@ -138,14 +139,6 @@ eYo.Svg.prototype.scrollbarUpdateHandle = function(scrollbar) {
  */
 eYo.Svg.prototype.scrollbarUpdateView = function(scrollbar) {
   var svg = scrollbar.dom.svg
-  svg.root_.setAttribute(
-    scrollbar.lengthAttribute_,
-    scrollbar.viewLength_
-  )
-  svg.background_.setAttribute(
-    scrollbar.lengthAttribute_,
-    scrollbar.viewLength_
-  )
 }
 
 /**
@@ -153,9 +146,8 @@ eYo.Svg.prototype.scrollbarUpdateView = function(scrollbar) {
  * @param {eYo.Scrollbar} scrollbar
  */
 eYo.Svg.prototype.scrollbarPlace = function(scrollbar) {
-  var where = scrollbar.viewRect_.origin
-  var transform = `translate(${where.x}px,${where.y}px)`
-  eYo.Dom.setCssTransform(scrollbar.dom.svg.root_, transform)
+  var r = scrollbar.viewRect
+  scrollbar.dom.svg.root_.setAttribute('viewBox', `${r.x_min} ${r.y_min} ${r.width} ${r.height}`)
 }
 
 /**

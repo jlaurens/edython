@@ -95,9 +95,6 @@ eYo.Svg.prototype.deskInit = function(desk) {
     ...
   </svg>
   */
-  // Create surfaces for dragging things. These are optimizations
-  // so that the browser does not repaint during the drag.
-  // Figure out where we want to put the canvas back.
   if (eYo.Dom.is3dSupported) {
     svg.boardDragSurface = new eYo.Svg.BoardDragSurface(dom.div_)
     svg.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
@@ -155,7 +152,7 @@ eYo.Svg.prototype.deskUpdateMetrics = function(desk) {
 
 /**
  * Return the coordinates of the top-left corner of this element relative to
- * the div blockly was injected into.
+ * the div containing the desk.
  * @param {!eYo.Desk}
  * @param {!Element} element SVG element to find the coordinates of. If this is
  *     not a child of the div blockly was injected into, the behaviour is

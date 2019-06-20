@@ -163,7 +163,7 @@ eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
  * @param {?Float} height.
  * @private
  */
-eYo.FlyoutToolbar.prototype.resize = function(width, height) {
+eYo.FlyoutToolbar.prototype.layout = function(width, height) {
   if (goog.isDef(width.width)) {
     height = width.height || 0
     width = width.width

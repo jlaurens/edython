@@ -363,7 +363,7 @@ eYo.Brick.UI.prototype.render = (() => {
         return true
       }
     } else {
-      // Top-most brick.  Fire an event to allow scrollbars to resize.
+      // Top-most brick.  Fire an event to allow scrollbars to layout.
       this.brick_.board.resizeContents()
     }
   }

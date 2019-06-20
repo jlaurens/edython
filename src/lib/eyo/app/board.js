@@ -66,8 +66,6 @@ eYo.Board = function(desk, options) {
 
   this.metrics_ = new eYo.Metrics(this)
 
-  this.scale_ = 1
-
   this.dragger_ = new eYo.BoardDragger(this)
   this.brickDragger_ = new eYo.BrickDragger(this)
 
@@ -453,7 +451,7 @@ eYo.Board.prototype.makeUI = function() {
           false, 'eyo-flyout-scrollbar'
         )
       : new eYo.ScrollbarPair(this)
-    this.scrollbar_.resize()
+    this.scrollbar_.layout()
   }
   var bottom = eYo.Scrollbar.thickness
   if (options.hasTrashcan) {
@@ -488,7 +486,7 @@ eYo.Board.prototype.disposeUI = function() {
  */
 eYo.Board.prototype.didScale = function() {
   if (this.scrollbar) {
-    this.scrollbar.resize()
+    this.scrollbar.layout()
   } else {
     this.move()
   }
@@ -781,7 +779,7 @@ eYo.Board.prototype.lastPageScroll_ = null;
 eYo.Board.prototype.configureContextMenu = null;
 
 /**
- * Save resize handler data so we can delete it later in dispose.
+ * Save layout handler data so we can delete it later in dispose.
  * @param {!Array.<!Array>} handler Data that can be passed to unbindEvent.
  */
 eYo.Board.prototype.setResizeHandlerWrapper = function(handler) {
@@ -848,25 +846,7 @@ eYo.Board.prototype.updateScreenCalculations_ = function() {
  */
 eYo.Board.prototype.updateMetrics = function() {
   this.metrics_.view_.size = this.desk.viewRect.size
-}
-
-/**
- * Update the metrics and place the board.
- * @package
- */
-eYo.Board.prototype.resize = function() {
-  this.updateMetrics(this)
-  this.place(this)
-}
-
-/**
- * If enabled, resize the parts of the board that change when the board
- * contents (e.g. brick positions) change.  This will also scroll the
- * board contents if needed. Should be sent after `updateMetrics`.
- * @package
- */
-eYo.Board.prototype.place = function() {
-  this.ui_driver.boardPlace(this)
+  this.scrollbar_.layout()
 }
 
 /**
@@ -878,7 +858,7 @@ eYo.Board.prototype.metricsDidChange = function() {
 }
 
 /**
- * If enabled, resize the parts of the board that change when the board
+ * If enabled, layout the parts of the board that change when the board
  * contents (e.g. brick positions) change.  This will also scroll the
  * board contents if needed.
  * @package
@@ -888,7 +868,7 @@ eYo.Board.prototype.resizeContents = function() {
     return
   }
   if (this.scrollbar) {
-    this.scrollbar.resize()
+    this.scrollbar.layout()
   }
   this.metrics_.content = this.bricksBoundingRect
   this.ui_driver.boardResizeContents(this)
@@ -899,9 +879,9 @@ eYo.Board.prototype.resizeContents = function() {
  * trash, scrollbars etc.)
  * This should be called when something changes that
  * requires recalculating dimensions and positions of the
- * trash, zoom, etc. (e.g. window resize).
+ * trash, zoom, etc. (e.g. window layout).
  */
-eYo.Board.prototype.resize = function() {
+eYo.Board.prototype.layout = function() {
   this.updateMetrics()
   this.place()
 }
@@ -911,7 +891,7 @@ eYo.Board.prototype.resize = function() {
  * trash, scrollbars etc.)
  * This should be called when something changes that
  * requires recalculating dimensions and positions of the
- * trash, zoom, toolbox, etc. (e.g. window resize).
+ * trash, zoom, toolbox, etc. (e.g. window layout).
  */
 eYo.Board.prototype.place = function() {
   this.ui_driver.boardPlace(this)
@@ -956,6 +936,7 @@ eYo.Board.prototype.move = function() {
  * @param {eYo.Where} xy Translation.
  */
 eYo.Board.prototype.moveTo = function(xy) {
+  console.log('moveTo', xy)
   this.metrics_.scroll = xy
   this.move()
 }
@@ -1459,8 +1440,8 @@ eYo.Board.doRelativeScroll = function(xyRatio) {
 
 /**
  * Update whether this board has resizes enabled.
- * If enabled, board will resize when appropriate.
- * If disabled, board will not resize until re-enabled.
+ * If enabled, board will layout when appropriate.
+ * If disabled, board will not layout until re-enabled.
  * Use to avoid resizing during a batch operation, for performance.
  * @param {boolean} enabled Whether resizes should be enabled.
  */
@@ -1468,7 +1449,7 @@ eYo.Board.prototype.setResizesEnabled = function(enabled) {
   var reenabled = (!this.resizesEnabled_ && enabled)
   this.resizesEnabled_ = enabled
   if (reenabled) {
-    // Newly enabled.  Trigger a resize.
+    // Newly enabled.  Trigger a layout.
     this.resizeContents()
   }
 }

@@ -33,6 +33,9 @@ eYo.Dom.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
     value: container,
     writable: true
   })
+  // initial metrics from the desk container
+  var r = board.desk.dom.div_.getBoundingClientRect()
+  board.metrics_.view_.set(r)
   return dom
 })
 
@@ -60,6 +63,8 @@ eYo.Svg.prototype.boardInit = function(board) {
   var options = board.options
   const root = svg.root_ = eYo.Svg.newElementSvg(dom.div_, 'eyo-svg')
   root.style.overflow = 'visible'
+  root.setAttribute('preserveAspectRatio', 'xMinYMin slice')
+  root.style.position = 'absolute'
   /**
   * <g class="eyo-board-surface">
   *   <rect class="eyo-board-background" height="100%" width="100%"></rect>
@@ -127,13 +132,13 @@ eYo.Svg.prototype.boardPlace = function(board) {
   var dom = board.dom
   var svg = dom.svg
   var root = svg.root_
-  var scroll = metrics.scroll
-  console.log('scroll', scroll)
-  root.setAttribute('transform', `translate(${scroll.x},${scroll.y})`)
-  // var view = metrics.view
-  // root.setAttribute('width', `${view.width}px`) // to be removed ???
-  // root.setAttribute('height', `${view.height}px`)
-  svg.group_.setAttribute('transform', `scale(${metrics.scale})`)
+  var size = metrics.view.size
+  root.setAttribute('width', `${size.width}px`)
+  root.setAttribute('height', `${size.height}px`)
+  size.unscale(metrics.scale)
+  var scroll = metrics.scroll.unscale(metrics.scale)
+  root.setAttribute('viewBox', `${scroll.x} ${scroll.y} ${size.width} ${size.height}`)
+  // svg.group_.setAttribute('transform', `scale(${metrics.scale})`)
 }
 
 /**
@@ -356,8 +361,7 @@ eYo.Svg.prototype.boardZoom = function(board, xy, scaleChange) {
     var matrix = CTM
         .translate(x, y)
         .scale(scaleChange)
-    board.scroll_.x = matrix.e - absolute.x
-    board.scroll_.y = matrix.f - absolute.y
+    board.metrics.scroll = eYo.Where.xy(matrix.e - absolute.x, matrix.f - absolute.y)
   }
 }
 

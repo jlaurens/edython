@@ -108,7 +108,7 @@ eYo.Desk.prototype.makeUI = function() {
   d.deskInit(this)
   this.mainBoard_.makeUI()
   this.willFlyout_ && this.addFlyout()
-  this.resize()
+  this.layout()
 }
 
 /**
@@ -166,7 +166,7 @@ eYo.Desk.prototype.updateMetrics = function() {
 /**
  * Place the components.
  */
-eYo.Desk.prototype.resize = function() {
+eYo.Desk.prototype.layout = function() {
   this.updateMetrics()
   this.place()
 }

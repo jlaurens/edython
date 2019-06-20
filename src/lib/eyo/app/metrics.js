@@ -18,10 +18,10 @@ goog.forwardDeclare(eYo.Geometry)
 
 /**
  * The `content` rect is enclosing all the bricks.
- * Its coordinates are the board coordinates.
+ * Its coordinates define the board coordinates.
  * The `view` rectangle corresponds to the view port.
  * Its coordinates correspond to screen coordinates or at least
- * enclosing graphical element coordinates.
+ * the enclosing graphical element's coordinates.
  * @param {?eYo.Board} board the owner board.
  */
 eYo.Metrics = function (board) {
@@ -49,8 +49,6 @@ Object.defineProperties(eYo.Metrics.prototype, {
    * Doubling the scale will double the size of the bricks on screen.
    * Each time the scale changes, an `update` message is sent.
    * The same holds for other properties.
-   * NB: The scroll offset, view and content rectangles
-   * are not affected by this value.
    * @type {Number} Positive scale factor.
    */
   scale: {
@@ -81,6 +79,7 @@ Object.defineProperties(eYo.Metrics.prototype, {
    * When this point is (0,0) the view topleft corner
    * and the (0,0) point in the content are exactly
    * at the same location on screen.
+   * 
    * @type {eYo.Where} 
    */
   scroll: {
@@ -88,25 +87,18 @@ Object.defineProperties(eYo.Metrics.prototype, {
       return this.scroll_.clone
     },
     set (newValue) {
-      // view.x_max - content.x_max <= scroll.x <= view.x_min - content.x_min
-      var limit = this.view_.x_max - this.content_.x_max
-      if (newValue.x < limit) {
-        newValue.x = limit
-      } else {
-        limit = this.view_.x_min - this.content_.x_min
-        if (newValue.x > limit) {
-          newValue.x = limit
-        }
+      var r = this.scrollLimits(eYo.Where.xy())
+      if (newValue.x < r.x) {
+        newValue.x = r.x
       }
-      // view.y_max - content.y_max <= scroll.y <= view.y_min - content.y_min
-      limit = this.view_.y_max - this.content_.y_max
-      if (newValue.y < limit) {
-        newValue.y = limit
-      } else {
-        limit = this.view_.y_min - this.content_.y_min
-        if (newValue.y > limit) {
-          newValue.y = limit
-        }
+      if (newValue.x < r.x_max) {
+        newValue.x_max = r.x_max
+      }
+      if (newValue.y < r.y) {
+        newValue.y = r.y
+      }
+      if (newValue.y < r.y_max) {
+        newValue.y_max = r.y_max
       }
       if (!this.scroll_.equals(newValue)) {
         this.scroll_.set(newValue)
@@ -169,7 +161,7 @@ Object.defineProperties(eYo.Metrics.prototype, {
     }
   },
   /**
-   * Sever the links and dispose of the resources.
+   * Clone the object.
    */
   clone: {
     get () {
@@ -178,6 +170,7 @@ Object.defineProperties(eYo.Metrics.prototype, {
       ans.view = this.view_
       ans.content = this.content_
       ans.scroll = this.scroll_
+      ans.box = this.box_
       return ans
     }
   },
@@ -188,10 +181,11 @@ Object.defineProperties(eYo.Metrics.prototype, {
  */
 eYo.Metrics.prototype.dispose = function () {
   this.board_ = null
+  this.box_.dispose()
   this.scroll_.dispose()
   this.view_.dispose()
   this.content_.dispose()
-  this.scroll_ = this.view_ = this.content_ = null
+  this.box_ = this.scroll_ = this.view_ = this.content_ = null
 }
 
 /**
@@ -202,7 +196,7 @@ eYo.Metrics.prototype.update = function () {
 }
 
 /**
- * Convert the given rect into `view` coordinates.
+ * Convert the given argument from `board` coordinates to `view` coordinates.
  * @param{eYo.Rect | eYo.Where} WR
  */
 eYo.Metrics.prototype.toView = function (WR) {
@@ -210,20 +204,43 @@ eYo.Metrics.prototype.toView = function (WR) {
   // Referential(view) = (origin: o, basis: {i, j})
   // I = i * scale, J = j * scale
   // o + scroll = O, scroll is a vector in view coordinates
-  // P = O + X I + Y J
-  //   = o + x i + y j
-  //   = o + scroll.x * i + scroll.y * j + X * scale * i + Y * scale * j 
+  // P = o + (x, y) •{i, j}
+  //   = O + (X, Y) • {I, J}
+  //   = o + scroll • {i, j} + (X, Y) * scale • {i, j} 
   //  (x, y) = scroll + (X, Y) * scale
   //  (X, Y) = ((x, y) - scroll) / scale
-  return WR.scale(this.scale).forward(this.scroll)
+  return WR.scale(this.scale).forward(this.scroll_)
 }
 
 /**
- * Convert the given rect from `view` coordinates.
+ * Convert the given argument from `view` coordinates to `board` coordinates.
  * @param{eYo.Rect | eYo.Where} wr
  */
 eYo.Metrics.prototype.fromView = function (wr) {
-  return wr.backward(this.scroll).unscale(this.scale)
+  return wr.backward(this.scroll_).unscale(this.scale)
+}
+
+/**
+ * The scroll limits in view coordinates.
+ * @param{eYo.Size} margin  Extra margin in board coordinates, in general, it is the size of some brick.
+ */
+eYo.Metrics.prototype.scrollLimits = function (margin) {
+  // Limits for scroll values.
+  // given view port dimensions and content dimensions,
+  // what are the possible values for the scroll vector.
+  // The top limitation is when the top of the content rect is
+  // at the top of the view.
+  // The bottom limitation is when the bottom of the content view is
+  // at the bottom of the view.
+  // And so forth.
+  // An extra margin is required to manage brick scrolling.
+  // `o + scroll` and `o + scroll + view_size` must be within the limits
+  // of the content rect.
+  var ans = this.content
+  var size = this.view.size.scale(this.scale)
+  ans.x_min -= Math.max(size.width, margin.width)
+  ans.y_min -= Math.max(size.height, margin.height)
+  return ans.unscale(this.scale)
 }
 
 /**

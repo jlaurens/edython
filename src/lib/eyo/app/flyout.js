@@ -217,7 +217,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
     set (newValue) {
       if (this.viewRect_.size_.width !== newValue) {
         this.viewRect_.size_.width = newValue
-        this.targetBoard_.resize()
+        this.targetBoard_.layout()
       }
     }
   },
@@ -233,7 +233,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
     set (newValue) {
       if (this.viewRect_.size_.height !== newValue) {
         this.viewRect_.size_.height = newValue
-        this.targetBoard_.resize()
+        this.targetBoard_.layout()
       }
     }
   },
@@ -360,8 +360,8 @@ eYo.Flyout.prototype.dispose = function() {
  * When the size of the receiver did change.
  */
 eYo.Flyout.prototype.sizeChanged = function() {
-  this.targetBoard_.resize()
-  this.board_.resize()
+  this.targetBoard_.layout()
+  this.board_.layout()
 }
 
 Object.defineProperties(eYo.Flyout, {
@@ -738,7 +738,7 @@ eYo.Flyout.prototype.place = function () {
       rect.x_min = view.x_min
     }
   }
-  this.toolbar_.resize()
+  this.toolbar_.layout()
   this.ui_driver.flyoutUpdate(this)
   this.ui_driver.flyoutPlace(this)
 }
@@ -836,7 +836,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
     } else {
       rect.x = positions[n]
       this.ui_driver.flyoutPlace(this)
-      // the scrollbar won't resize because the metrics of the board did not change
+      // the scrollbar won't layout because the metrics of the board did not change
       this.slideOneStep(steps[n])
       ++n
     }

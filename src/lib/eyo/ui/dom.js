@@ -526,7 +526,7 @@ eYo.Dom.bindDocumentEvents = (() => {
         eYo.Dom.bindEvent(
           window,
           'orientationchange',
-          e => eYo.App.desk.resize() // TODO(#397): Fix for multiple boards.
+          e => eYo.App.desk.layout() // TODO(#397): Fix for multiple boards.
         )
       }
     }

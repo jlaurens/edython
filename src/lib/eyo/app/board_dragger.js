@@ -158,7 +158,7 @@ eYo.BoardDragger.prototype.drag = function() {
   var metrics = this.startMetrics_
   board.metrics_.scroll = metrics.scroll.forward(metrics.content.origin).forward(deltaWhere)
   if (board.scrollbar) {
-    board.scrollbar.resize()
+    board.scrollbar.layout()
   }
 }
 
