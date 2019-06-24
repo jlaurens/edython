@@ -84,6 +84,9 @@ Object.defineProperties(eYo.Span.prototype, {
  */
 eYo.Span.INDENT = 4
 
+/**
+ * The tab width in board unit.
+ */
 Object.defineProperty(eYo.Span, 'tabWidth', {
   get () {
     return eYo.Span.INDENT * eYo.Unit.x
@@ -114,7 +117,7 @@ Object.defineProperties(eYo.Span.prototype, {
   * @readonly
   * @property {number} x  Synonym of `width`.
   */
- x: {
+  x: {
     get () {
       return this.width
     }

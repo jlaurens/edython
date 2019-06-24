@@ -159,6 +159,19 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
     set (newValue) {
       this.xy_.set(newValue)
     }
+  },
+  /**
+   * Position of the receiver in the board.
+   * @type {eYo.Where}
+   * @readonly
+   */
+  where: {
+    get () {
+      return this.xy_.clone
+    },
+    set (newValue) {
+      this.xy_.set(newValue)
+    }
   }
 })
 

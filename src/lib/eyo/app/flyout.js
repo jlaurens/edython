@@ -32,7 +32,6 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
  * A board has either a flyout or a targetBoard
  * but never has both.
  * This constructor takes care of this cycle.
- * @param {!eYo.Board} board
  * @param {!eYo.Board} targetBoard
  * @param {!Object} flyoutOptions Dictionary of options for the board.
  * @constructor
@@ -40,7 +39,8 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
 eYo.Flyout = function(board, targetBoard, flyoutOptions) {
   goog.asserts.assert(!board.hasUI, 'TOO LATE')
   // First
-  this.board = board
+  var board = this.board = new eYo.Board(this, {})
+  board.options = targetBoard.options
   // second
   this.targetBoard = targetBoard
   /**
@@ -97,7 +97,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   desk: { 
     get () {
-      return this.desk_
+      return this.targetBoard.desk
     }
   },
   /**
@@ -110,27 +110,27 @@ Object.defineProperties(eYo.Flyout.prototype, {
     set (newValue) {
       var oldValue = this.board_ 
       if (newValue !== oldValue) {
-        var oldTWS = this.targetBoard
+        var oldTB = this.targetBoard
         this.board_ = newValue
         if (newValue) {
-          if (newValue.targetBoard !== oldTWS) {
-            if (oldTWS) {
-              oldTWS.removeChangeListener(this.filterWrapper_)
+          if (newValue.targetBoard !== oldTB) {
+            if (oldTB) {
+              oldTB.removeChangeListener(this.filterWrapper_)
               this.filterWrapper_ = null
             }
-            var newTWS = newValue.targetBoard
+            var newTB = newValue.targetBoard
             if (!this.autoClose) {
               this.filterWrapper_ = this.filterForCapacity_.bind(this)
-              newTWS.addChangeListener(this.filterWrapper_)
+              newTB.addChangeListener(this.filterWrapper_)
             }
-            newTWS.flyout = this
+            newTB.flyout = this
           }
         }
       }
     }
   },
   /**
-   * @type {eYo.Board} The fyout's board's targetBoard.
+   * @type {eYo.Board} The flyout's board's targetBoard.
    */
   targetBoard: {
     get () {
@@ -329,6 +329,7 @@ eYo.Flyout.prototype.disposeUI = function() {
   delete this.makeUI
   this.disposeUI = eYo.Do.nothing
   this.hide()
+  this.board_.disposeUI()
   var d = this.ui_driver
   this.toolbar_ && d.flyoutToolbarDispose(tb)
   d.flyoutDispose(this)
@@ -343,7 +344,7 @@ eYo.Flyout.prototype.disposeUI = function() {
  * Unlink from all DOM elements to prevent memory leaks.
  */
 eYo.Flyout.prototype.dispose = function() {
-  if (!this.desk_) {
+  if (!this.desk) {
     return
   }
   this.disposeUI()
@@ -351,9 +352,8 @@ eYo.Flyout.prototype.dispose = function() {
     this.viewRect_.dispose()
     this.viewRect_ = null
   }
-  this.targetBoard = null
-  this.board = null
-  this.desk_ = null
+  this.board.dispose()
+  this.targetBoard = this.board = null
 }
 
 /**
@@ -756,7 +756,7 @@ eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
   // Create the new brick by cloning the brick in the flyout (via XML).
   var xml = eYo.Xml.brickToDom(oldBrick)
   // The target board would normally resize during domToBrick, which will
-  // lead to weird jumps.  Save it for terminateDrag.
+  // lead to weird (AKA buggy) jumps.  Save it for terminateDrag.
   var targetBoard = this.targetBoard_
   targetBoard.setResizesEnabled(false)
 
@@ -770,7 +770,6 @@ eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
   ).backward(targetBoard.originInDesk)
   .unscale(targetBoard.scale)
   brick.moveTo(xy)
-
   brick.render()
   return brick
 }

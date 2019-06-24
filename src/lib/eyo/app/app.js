@@ -77,7 +77,7 @@ eYo.App.doFocus = () => {
  */
 eYo.App.makeDesk = options => {
   var desk = eYo.App.desk = new eYo.Desk(options)
-  eYo.App.board = desk.mainBoard
+  eYo.App.board = desk.board
   eYo.setup(eYo.App.board)
   eYo.App.board.clearUndo()
   desk.makeUI()

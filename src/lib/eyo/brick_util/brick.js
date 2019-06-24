@@ -2092,6 +2092,24 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.ui.xy_
     }
   },
+  /**
+   * Position of the receiver in the board.
+   * @type {eYo.Where}
+   * @readonly
+   */
+  where: {
+    get () {
+      return this.ui.xy_
+    }
+  },
+  /**
+   * Position of the receiver in the board.
+   * @type {eYo.Where}
+   * @readonly
+   */
+  isMain: {
+    value: false
+  },
 })
 
 /**

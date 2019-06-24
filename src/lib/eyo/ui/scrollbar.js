@@ -12,8 +12,7 @@
 'use strict'
 
 goog.provide('eYo.Scrollbar')
-
-goog.provide('eYo.ScrollbarPair')
+goog.provide('eYo.Scroller')
 
 goog.require('eYo')
 
@@ -22,29 +21,21 @@ goog.forwardDeclare('eYo.Board')
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
 
-
-/**
- * A note on units: most of the numbers that are in CSS pixels are scaled if the
- * scrollbar is in a mutator.
- */
-
 /**
  * Class for a pair of scrollbars.  Horizontal and vertical.
  * @param {!eYo.Board} board Board to bind the scrollbars to.
  * @constructor
  */
-eYo.ScrollbarPair = function(board) {
+eYo.Scroller = function(board) {
   this.board_ = board
   this.hScroll = new eYo.Scrollbar(
-    board,
-    true,
     this,
+    true,
     'eyo-main-board-scrollbar'
   )
   this.vScroll = new eYo.Scrollbar(
-    board,
-    false,
     this,
+    false,
     'eyo-main-board-scrollbar'
   )
   this.cornerRect_ = new eYo.Rect()
@@ -52,7 +43,7 @@ eYo.ScrollbarPair = function(board) {
   board.hasUI && this.makeUI()
 }
 
-Object.defineProperties(eYo.ScrollbarPair.prototype, {
+Object.defineProperties(eYo.Scroller.prototype, {
   /**
    * @type{eYo.Board} The scrolled board...
    * @readonly
@@ -77,7 +68,7 @@ Object.defineProperties(eYo.ScrollbarPair.prototype, {
     }
   },
   /**
-   * Set whether this scrollbar's container is visible.
+   * Set/get whether this scrollbar's container is visible.
    * @param {boolean} visible Whether the container is visible.
    */
   containerVisible: {
@@ -106,9 +97,9 @@ Object.defineProperties(eYo.ScrollbarPair.prototype, {
  * @type {Object}
  * @private
  */
-eYo.ScrollbarPair.prototype.makeUI = function () {
+eYo.Scroller.prototype.makeUI = function () {
   this.makeUI = eYo.Do.nothing
-  this.ui_driver.scrollbarPairInit(this)
+  this.ui_driver.scrollerInit(this)
   delete this.disposeUI
 }
 
@@ -117,12 +108,12 @@ eYo.ScrollbarPair.prototype.makeUI = function () {
  * @type {Object}
  * @private
  */
-eYo.ScrollbarPair.prototype.disposeUI = function () {
+eYo.Scroller.prototype.disposeUI = function () {
   this.disposeUI = eYo.Do.nothing
   delete this.makeUI
   this.hScroll.disposeUI()
   this.vScroll.disposeUI()
-  this.ui_driver.ScrollbarPairDispose(this)
+  this.ui_driver.scrollerDispose(this)
 }
 
 /**
@@ -130,13 +121,13 @@ eYo.ScrollbarPair.prototype.disposeUI = function () {
  * @type {Object}
  * @private
  */
-eYo.ScrollbarPair.prototype.oldMetrics_ = null;
+eYo.Scroller.prototype.oldMetrics_ = null;
 
 /**
  * Dispose of this pair of scrollbars.
  * Unlink from all DOM elements to prevent memory leaks.
  */
-eYo.ScrollbarPair.prototype.dispose = function() {
+eYo.Scroller.prototype.dispose = function() {
   this.disposeUI()
   this.board_ = null
   this.oldMetrics_ = null
@@ -152,7 +143,7 @@ eYo.ScrollbarPair.prototype.dispose = function() {
  * Recalculate both of the scrollbars' locations and lengths.
  * Also reposition the corner rectangle.
  */
-eYo.ScrollbarPair.prototype.layout = function() {
+eYo.Scroller.prototype.layout = function() {
   // Look up the host metrics once, and use for both scrollbars.
   var hostMetrics = this.board_.metrics
   if (!hostMetrics) {
@@ -173,72 +164,41 @@ eYo.ScrollbarPair.prototype.layout = function() {
   r.top = rr.top
   r.bottom = rr.bottom
   // Reposition the corner square.
-  this.ui_driver.scrollbarPairPlaceCorner(this)
+  this.ui_driver.scrollerPlaceCorner(this)
 }
 
 /**
- * Set the handles of both scrollbars to be at a certain position in CSS pixels
- * relative to their parents.
- * @param {eYo.Where} xy
- */
-eYo.ScrollbarPair.prototype.set = (() => {
-  /*
-   * Helper to calculate the ratio of handle position to scrollbar view size.
-   * @param {number} handlePosition_ The value of the handle.
-   * @param {number} viewSize The total size of the scrollbar's view.
-   * @return {number} Ratio.
-   * @private
-   */
-  var getRatio = function(handlePosition_, viewSize) {
-    var ratio = handlePosition_ / viewSize
-    return isNaN(ratio) ? 0 : ratio
-  }
-  return function(xy) {
-    var xyRatio = new eYo.Where()
-
-    var hHandlePosition = xy.x * this.hScroll.handleLength_
-    var vHandlePosition = xy.y * this.vScroll.handleLength_
-
-    var hLength = this.hScroll.viewLength_
-    var vLength = this.vScroll.viewLength_
-
-    xyRatio.x = getRatio(hHandlePosition, hLength)
-    xyRatio.y = getRatio(vHandlePosition, vLength)
-    this.board_.doRelativeScroll(xyRatio)
-  }
-})()
-
-/**
- * Stop binding to mouseup and mousemove events.  Call this to
- * wrap up lose ends associated with the scrollbar.
+ * Place the scroller.
  * @private
  */
-eYo.ScrollbarPair.prototype.place = function() {
+eYo.Scroller.prototype.place = function() {
   var s
   ;(s = this.hScroll) && s.place()
   ;(s = this.vScroll) && s.place()
 }
 
-// --------------------------------------------------------------------
-
 /**
  * Class for a pure SVG scrollbar.
  * This technique offers a scrollbar that is guaranteed to work, but may not
  * look or behave like the system's scrollbars.
- * @param {!eYo.Board} board Board to bind the scrollbar to.
+ * @param {!eYo.Board|eYo.Scroller} bs Board to bind the scrollbar to, or scroller. Owner of the receiver.
  * @param {boolean} horizontal True if horizontal, false if vertical.
- * @param {?eYo.ScrollbarPair} opt_pair True if scrollbar is part of a horiz/vert pair.
  * @param {string=} opt_class A class to be applied to this scrollbar.
  * @constructor
  */
-eYo.Scrollbar = function(board, horizontal, opt_pair, opt_class) {
+eYo.Scrollbar = function(bs, horizontal, opt_class) {
+  if (bs instanceof eYo.Scroller) {
+    this.board_ = bs.board
+    this.scroller_ = bs  
+  } else {
+    this.board_ = bs
+    this.scroller_ = null  
+  }
   this.disposeUI = eYo.Do.nothing
-  this.board_ = board
-  this.pair_ = opt_pair
   this.horizontal_ = horizontal
   this.viewRect_ = new eYo.Rect()
   this.oldMetrics_ = null
-  board.hasUI && this.makeUI(opt_class)
+  this.board_.hasUI && this.makeUI(opt_class)
 }
 
 Object.defineProperties(eYo.Scrollbar, {
@@ -262,8 +222,8 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
     }
   },
   /**
-   * Is the scrollbar visible.  Non-paired scrollbars disappear when they aren't
-   * needed.
+   * Is the scrollbar visible.  Should non-paired scrollbars disappear when they aren't
+   * needed?
    * @return {boolean} True if visible.
    */
   visible: {
@@ -272,7 +232,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
     },
     /**
      * Set whether the scrollbar is visible.
-     * Only applies to non-paired scrollbars.
+     * Only applies to non-paired scrollbars?
      * @param {boolean} newValue True if visible.
      */
     set (newValue) {
@@ -293,42 +253,13 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
       return this.containerVisible_
     },
     set (newValue) {
-      var visibilityChanged = (newValue != this.containerVisible_)
-      this.containerVisible_ = newValue
-      if (visibilityChanged) {
+      if (newValue != this.containerVisible_) {
+        this.containerVisible_ = newValue
         this.updateDisplay_()
       }
     }
   },
 })
-
-/**
- * @param {!Object} first An object containing computed measurements of a
- *    board.
- * @param {!Object} second Another object containing computed measurements of a
- *    board.
- * @return {boolean} Whether the two sets of metrics are equivalent.
- * @private
- */
-eYo.Scrollbar.metricsAreEquivalent_ = function(first, second) {
-  if (!(first && second)) {
-    return false
-  }
-  if (first.view.width != second.view.width ||
-      first.view.height != second.view.height ||
-      first.view.x != second.view.x ||
-      first.view.y != second.view.y ||
-      first.absolute.y != second.absolute.y ||
-      first.absolute.x != second.absolute.x ||
-      first.content.width != second.content.width ||
-      first.content.height != second.content.height ||
-      first.content.x_min != second.content.x_min ||
-      first.content.y_min != second.content.y_min) {
-    return false
-  }
-
-  return true
-}
 
 Object.defineProperties(eYo.Scrollbar.prototype, {
 /**
@@ -518,15 +449,14 @@ eYo.Scrollbar.prototype.disposeUI = function() {
 eYo.Scrollbar.prototype.dispose = function() {
   this.disposeUI()
   this.board_ = null
-  this.pair_ = null
+  this.scroller_ = null
 }
 
 /**
  * Recalculate the scrollbar's location and its length.
  * When `prepare` is true, updates the visibility status, when `false` it does not.
- * @param {Object=} opt_metrics A data structure of from the describing all the
- * required dimensions.  If not provided, it will be fetched from the host
- * object.
+ * @param {?eYo.Metrics} opt_metrics A data structure describing all the
+ * required dimensions.  If not provided, it will be fetched from the board.
  * @param{?Boolean} prepare  True when prepare only.
  */
 eYo.Scrollbar.prototype.layout = function(hostMetrics, prepare) {
@@ -546,13 +476,14 @@ eYo.Scrollbar.prototype.layout = function(hostMetrics, prepare) {
  * @param {?Boolean} prepare  True when only preparing.
  */
 eYo.Scrollbar.prototype.layoutHorizontal = function(hostMetrics, prepare) {
+  hostMetrics || (hostMetrics = this.board.metrics)
   var view = hostMetrics.view
   var content = hostMetrics.content
   var range = content.width - view.width
   if (prepare !== false) {
-    this.visible = (view.width > this.pair_
+    this.visible = (view.width > this.scroller_
     ? 2 * eYo.Scrollbar.thickness
-    : eYo.Scrollbar.thickness) && (this.pair_ || range > 0)
+    : eYo.Scrollbar.thickness) && (this.scroller_ || range > 0)
     if (prepare) {
       return
     }
@@ -566,7 +497,7 @@ eYo.Scrollbar.prototype.layoutHorizontal = function(hostMetrics, prepare) {
     this.oldMetrics_ = hostMetrics
     var r = this.viewRect_
     r.left = view.left
-    r.right = this.pair_ && this.pair_.vScroll.visible ? view.right - eYo.Scrollbar.thickness : view.right
+    r.right = this.scroller_ && this.scroller_.vScroll.visible ? view.right - eYo.Scrollbar.thickness : view.right
     r.top = (r.bottom = view.bottom) - eYo.Scrollbar.thickness
     r.xyInset(0.5)
     // layout the content
@@ -592,13 +523,14 @@ eYo.Scrollbar.prototype.layoutHorizontal = function(hostMetrics, prepare) {
  * @param {?Boolean} prepare  True when preparing.
  */
 eYo.Scrollbar.prototype.layoutVertical = function(hostMetrics, prepare) {
+  hostMetrics || (hostMetrics = this.board.metrics)
   var view = hostMetrics.view
   var content = hostMetrics.content
   var range = content.height - view.height
   if (prepare !== false) {
-    this.visible = (view.height > (this.pair_
+    this.visible = (view.height > (this.scroller_
     ? 2 * eYo.Scrollbar.thickness
-    : eYo.Scrollbar.thickness)) && (!!this.pair_ || range > 0)
+    : eYo.Scrollbar.thickness)) && (!!this.scroller_ || range > 0)
     if (prepare) {
       return
     }
@@ -612,7 +544,9 @@ eYo.Scrollbar.prototype.layoutVertical = function(hostMetrics, prepare) {
     this.oldMetrics_ = hostMetrics
     var r = this.viewRect_
     r.top = view.top
-    r.bottom = this.pair_ && this.pair_.hScroll.visible ? view.bottom - eYo.Scrollbar.thickness : view.bottom
+    r.bottom = this.scroller_ && this.scroller_.hScroll.visible
+    ? view.bottom - eYo.Scrollbar.thickness
+    : view.bottom
     r.left = (r.right = view.right) - eYo.Scrollbar.thickness
     r.xyInset(0.5)
     // layout the content
@@ -644,19 +578,7 @@ eYo.Scrollbar.prototype.updateDisplay_ = function() {
 }
 
 /**
- * Set the scrollbar handle's position.
- * @param {number} value The distance from the top/left end of the bar, in CSS
- *     pixels.  It may be larger than the maximum allowable position of the
- *     scrollbar handle.
- */
-eYo.Scrollbar.prototype.set = function(value) {
-  var v = value[this.horizontal_ ? 'x' : 'y']
-  this.handlePosition_ = (v || value) * this.handleLength_
-}
-
-/**
- * Stop binding to mouseup and mousemove events.  Call this to
- * wrap up lose ends associated with the scrollbar.
+ * Forwards to the driver.
  * @private
  */
 eYo.Scrollbar.prototype.cleanUp_ = function() {

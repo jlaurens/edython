@@ -36,7 +36,7 @@ goog.forwardDeclare('goog.crypt')
  * @param {!boolean} deep
  */
 eYo.Desktop.deleteBrick = (brick, deep) => {
-  if (brick && brick.deletable && !brick.board.isFlyout) {
+  if (brick && brick.deletable && !brick.board.inFlyout) {
     if (brick.isSelected) {
       // prepare a connection or a block to be selected
       var m4t

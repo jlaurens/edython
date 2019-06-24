@@ -5,7 +5,7 @@ describe('Statement', function () {
 
   var test_connection_db = () => {
     for (var i = 1; i < eYo.Magnet.RIGHT; i++) {
-      chai.assert(Blockly.mainBoard.magnetDBList[i].length === 0, `Unexpected connection ${i}`)
+      chai.assert(eYo.App.board.magnetDBList[i].length === 0, `Unexpected connection ${i}`)
     }
   }
 

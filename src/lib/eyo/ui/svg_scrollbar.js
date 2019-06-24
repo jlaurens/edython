@@ -152,9 +152,9 @@ eYo.Svg.prototype.scrollbarPlace = function(scrollbar) {
 
 /**
  * Inits the scroll bar.
- * @param {eYo.ScrollbarPair} scrollbarPair
+ * @param {eYo.Scroller} scroller
  */
-eYo.Svg.prototype.scrollbarPairInit = eYo.Dom.decorateInit(function(pair) {
+eYo.Svg.prototype.scrollerInit = eYo.Dom.decorateInit(function(pair) {
   var svg = pair.dom.svg
   var corner = svg.corner_ = eYo.Svg.newElement(
     'rect',
@@ -172,10 +172,10 @@ eYo.Svg.prototype.scrollbarPairInit = eYo.Dom.decorateInit(function(pair) {
 
 /**
  * Dispose of the given slot's rendering resources.
- * @param {!eYo.ScrollbarPair} scrollbarPair
+ * @param {!eYo.Scroller} scroller
  */
-eYo.Svg.prototype.scrollbarPairDispose = eYo.Dom.decorateDispose(function (scrollbarPair) {
-  var dom = scrollbarPair.dom
+eYo.Svg.prototype.scrollerDispose = eYo.Dom.decorateDispose(function (scroller) {
+  var dom = scroller.dom
   goog.dom.removeNode(dom.svg.corner_)
   dom.svg = dom.svg.corner_ = null
 })
@@ -308,10 +308,10 @@ eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
 
 /**
  * Place the corner.
- * @param {!eYo.ScrollbarPair} scrollbarPair
+ * @param {!eYo.Scroller} scroller
  * @private
  */
-eYo.Svg.prototype.scrollbarPairPlaceCorner = function(pair) {
+eYo.Svg.prototype.scrollerPlaceCorner = function(pair) {
   var r = pair.cornerRect_
   var corner = pair.dom.svg.corner_
   corner.setAttribute('x', r.x)

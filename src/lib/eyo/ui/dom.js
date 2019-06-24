@@ -586,7 +586,7 @@ eYo.Dom.on_keydown = e => {
         // 'c' for copy.
         eYo.App.hideChaff()
         eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
-      } else if (e.keyCode == 88 && !eYo.Selected.brick.board.isFlyout) {
+      } else if (e.keyCode == 88 && !eYo.Selected.brick.board.inFlyout) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
         eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
@@ -604,7 +604,7 @@ eYo.Dom.on_keydown = e => {
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBrick && !eYo.Selected.brick.board.isFlyout) {
+  // if (deleteBrick && !eYo.Selected.brick.board.inFlyout) {
   //   eYo.Events.group = true
   //   eYo.App.hideChaff();
   //   eYo.Selected.brick.dispose(/* heal */ true, true);

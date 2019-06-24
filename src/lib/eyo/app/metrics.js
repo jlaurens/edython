@@ -23,6 +23,7 @@ goog.forwardDeclare(eYo.Geometry)
  * Its coordinates correspond to screen coordinates or at least
  * the enclosing graphical element's coordinates.
  * @param {?eYo.Board} board the owner board.
+ * @constructor
  */
 eYo.Metrics = function (board) {
   this.board_ = board
@@ -285,3 +286,15 @@ eYo.Metrics.prototype.getDraggingLimits = function (rect) {
   }
 }
 
+/**
+ * Test whether the receiver equals the given metrics object.
+ * @param {!eYo.Metrics} rhs Another metrics.
+ * @return {boolean} Whether the two sets of metrics are equivalent.
+ * @private
+ */
+eYo.Metrics.prototype.equals = function(rhs) {
+  return rhs && this.view.equals(rhs.view) &&
+  this.scale === rhs.scale &&
+  this.scroll.equals(rhs.scroll) &&
+  this.content.equals(rhs.content)
+}

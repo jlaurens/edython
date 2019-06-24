@@ -44,9 +44,9 @@ Object.defineProperties(eYo.Clipboard, {
       return this.sourceBoard_.desk
     }
   },
-  mainBoard: {
+  board: {
     get () {
-      return this.sourceBoard_.desk.mainBoard
+      return this.sourceBoard_.desk.board
     }
   }
 })

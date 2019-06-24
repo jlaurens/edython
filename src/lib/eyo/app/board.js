@@ -25,39 +25,62 @@ goog.forwardDeclare('eYo.Desktop')
 
 /**
  * Class for a board.  This is a data structure that contains bricks.
- * @param {!eYo.Desk} desk Any board belongs to a desk.
+ * @param {!eYo.Desk | eYo.Flyout} owner Any board belongs to either a desk or a flyout.
  * @constructor
  */
-eYo.Board = function(desk, options) {
+eYo.Board = function(owner, options) {
   /** @type {string} */
   this.id = eYo.Do.genUid()
   eYo.Board.BoardDB_[this.id] = this
 
-  this.desk_ = desk
+  this.owner_ = owner
+
   this.options = options
 
   this.change_ = new eYo.Change(this)
 
   /**
+   * The top bricks are all the bricks with no parent.
+   * They are owned by a board.
    * @type {!Array.<!eYo.Brick>}
    * @private
    */
   this.topBricks_ = []
+
+  /**
+   * The main bricks are displayed in the main pane,
+   * which is the right part of the board.
+   * @type {!Array.<!eYo.Brick>}
+   * @private
+   */
+  this.mainBricks_ = []
+
+  /**
+   * The draft bricks are displayed in the draft pane,
+   * which is the left part of the board, with a grey background.
+   * @type {!Array.<!eYo.Brick>}
+   * @private
+   */
+  this.draftBricks_ = []
+
   /**
    * @type {!Array.<!Function>}
    * @private
    */
   this.listeners_ = []
+  
   /**
    * @type {!Array.<!eYo.Events.Abstract>}
    * @protected
    */
   this.undoStack_ = []
+
   /**
    * @type {!Array.<!eYo.Events.Abstract>}
    * @protected
    */
   this.redoStack_ = []
+  
   /**
    * @type {!Object}
    * @private
@@ -102,6 +125,16 @@ Object.defineProperties(eYo.Board, {
 
 Object.defineProperties(eYo.Board.prototype, {
   /**
+   * Convenient property.
+   * @readonly
+   * @type {eYo.Board}
+   */
+  board: {
+    get () {
+      return this
+    }
+  },
+  /**
    * The change manager.
    * @readonly
    * @type {eYo.Change}
@@ -118,7 +151,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   desk: {
     get () {
-      return this.desk_
+      return this.owner_.desk
     }
   },
   flyout: {
@@ -179,7 +212,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   isMain: {
     get () {
-      return this === this.desk.mainBoard
+      return this === this.desk.board
     }
   },
   /**
@@ -187,7 +220,7 @@ Object.defineProperties(eYo.Board.prototype, {
    * @readonly
    * @type {boolean}
    */
-  isFlyout: {
+  inFlyout: {
     get () {
       return !!this.targetBoard
     }
@@ -268,7 +301,7 @@ Object.defineProperties(eYo.Board.prototype, {
     writable: true
   },
   /**
-   * @type {eYo.Scrollbar | eYo.ScrollbarPair}
+   * @type {eYo.Scrollbar | eYo.Scroller}
    * @readonly
    */
   scrollbar: {
@@ -337,13 +370,14 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   bricksBoundingRect: {
     get () {
+      // JL: TODO separate main bricks and draft bricks
       var topBricks = this.topBricks.filter(b3k => b3k.ui && b3k.ui.rendered)
       if (topBricks.length) {
         var ans = topBricks.shift().ui.boundingRect
         topBricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
         return ans
       }
-      // There are no rendered bricks, return empty rectangle.
+      // There are no rendered bricks, return an empty rectangle.
       return new eYo.Rect()
     }
   },
@@ -357,7 +391,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   originInDesk: {
     get () {
-      return this.desk_.xyElementInDesk(this.dom.svg.canvas_)
+      return this.desk.xyElementInDesk(this.dom.svg.canvas_)
     }
   },
   /**
@@ -375,7 +409,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   topBricks: {
     get () {
-      return [].slice.call(this.topBricks_)
+      return [].concat(this.topBricks_)
     }
   },
   /**
@@ -385,7 +419,23 @@ Object.defineProperties(eYo.Board.prototype, {
     get () {
       return this.getTopBricks(true)
     }
-  }
+  },
+  /**
+   * the main bricks of the board.
+   */
+  mainBricks: {
+    get () {
+      return [].concat(this.mainBricks_)
+    }
+  },
+  /**
+   * the draft bricks of the board.
+   */
+  draftBricks: {
+    get () {
+      return [].concat(this.draftBricks_)
+    }
+  },
 })
 
 /**
@@ -432,7 +482,7 @@ eYo.Board.prototype.dispose = function() {
   this.change_ = null
 
   this.topBricks_.forEach(b3k => b3k.dispose())
-  this.topBricks_ = this.listeners_ = this.undoStack_ = this.redoStack_ = this.brickDB_ = null
+  this.topBricks_ = this.listeners_ = this.undoStack_ = this.redoStack_ = this.brickDB_ = this.owner_ = null
 }
 
 /**
@@ -441,16 +491,17 @@ eYo.Board.prototype.dispose = function() {
 eYo.Board.prototype.makeUI = function() {
   var options = this.options
   this.makeUI = eYo.Do.nothing
+  this.updateMetrics() // Initialization here
   this.ui_driver.boardInit(this)
   if (options.hasScrollbars) {
       // Add scrollbar.
-    this.scrollbar_ = this.isFlyout
+    this.scrollbar_ = this.inFlyout
       ? new eYo.Scrollbar(
           this,
           false /*this.horizontalLayout_*/,
           false, 'eyo-flyout-scrollbar'
         )
-      : new eYo.ScrollbarPair(this)
+      : new eYo.Scroller(this)
     this.scrollbar_.layout()
   }
   var bottom = eYo.Scrollbar.thickness
@@ -515,8 +566,8 @@ eYo.Board.prototype.getTopBricks = function(ordered) {
   // Copy the topBricks_ list.
   var bricks = [].concat(this.topBricks_)
   if (ordered && bricks.length > 1) {
-    var offset = Math.sin(goog.math.toRadians(eYo.Board.SCAN_ANGLE));
-    bricks.sort(function(a, b) {
+    var offset = Math.sin(goog.math.toRadians(eYo.Board.SCAN_ANGLE))
+    bricks.sort((a, b) => {
       var aWhere = a.whereInBoard
       var bWhere = b.whereInBoard
       return (aWhere.y + offset * aWhere.x) - (bWhere.y + offset * bWhere.x)
@@ -537,6 +588,7 @@ eYo.Board.prototype.clear = function() {
   while (this.topBricks_.length) {
     this.topBricks_[0].dispose()
   }
+  this.mainBricks_.length = this.draftBricks_.length = 0
   if (!existingGroup) {
     eYo.Events.group = false
   }
@@ -859,9 +911,8 @@ eYo.Board.prototype.metricsDidChange = function() {
 }
 
 /**
- * If enabled, layout the parts of the board that change when the board
- * contents (e.g. brick positions) change.  This will also scroll the
- * board contents if needed.
+ * If enabled, calculate the metrics' content related info.
+ * Update UI accordingly.
  * @package
  */
 eYo.Board.prototype.resizeContents = function() {
@@ -870,6 +921,7 @@ eYo.Board.prototype.resizeContents = function() {
   }
   this.metrics_.content = this.bricksBoundingRect
   this.ui_driver.boardResizeContents(this)
+  this.scrollbar.resize()
 }
 
 /**
@@ -1149,7 +1201,7 @@ eYo.Board.prototype.cleanUp = function() {
  * @suppress{accessControls}
  */
 eYo.Board.prototype.showContextMenu_ = function (e) {
-  if (this.options.readOnly || this.isFlyout) {
+  if (this.options.readOnly || this.inFlyout) {
     return
   }
   var menuOptions = []
@@ -1284,8 +1336,8 @@ eYo.Board.prototype.showContextMenu_ = function (e) {
  * Mark this board's desk main board as the currently focused main board.
  */
 eYo.Board.prototype.markFocused = function() {
-  var mainBoard = this.desk.mainBoard
-  mainBoard.ui_driver.boardSetBrowserFocus(mainBoard)
+  var board = this.desk.board
+  board.ui_driver.boardSetBrowserFocus(board)
 }
 
 /**
@@ -1623,16 +1675,60 @@ eYo.Board.prototype.fromUTF8ByteArray = function (bytes) {
  * @param {eYo.Brick} brick
  * @param {String} opt_id
  */
-eYo.Board.prototype.addBrick = function (brick, opt_id) {
-  this.change.wrap(() => {
-    brick.id = (opt_id && !this.getBrickById(opt_id)) ?
-    opt_id : eYo.Do.genUid()
-    this.hasUI && brick.makeUI()
-    this.topBricks_.push(brick)
-    this.brickDB_[brick.id] = brick
-  })
-  this.resizeContents()
-}
+eYo.Board.prototype.addBrick = (() => {
+  var insertAt = (array, b, i) => {
+    array.splice(i, 0, b)
+    var l = b.where.l
+    var bb
+    while ((bb = array[++i])) {
+      l += b.span.l + 2
+      if (bb.where.l < l) {
+        (b = bb).ui.xy_.l = l
+      } else {
+        break
+      }
+    }
+  }
+  var insert = (array, brick) => {
+    var i_min = 0
+    var b_min = array[i_min]
+    if (brick.where.l <= b_min.where.l) {
+      insertAt(array, brick, i_min)
+    } else {
+      var i_max = array.length - 1
+      while (i_min < i_max) {
+        var i = Math.floor((i_min + i_max) / 2)
+        var dl = brick.where.l - array[i].where.l
+        if (dl < 0) {
+          i_max = i
+        } else if (dl > 0) {
+          i_min = i
+        } else {
+          i_max = i
+          break
+        }
+      }
+      insertAt(array, brick, i_max)
+    }
+  }
+  return function (brick, opt_id) {
+    this.change.wrap(() => {
+      brick.id = (opt_id && !this.getBrickById(opt_id)) ?
+      opt_id : eYo.Do.genUid()
+      this.hasUI && brick.makeUI()
+      this.brickDB_[brick.id] = brick
+      this.topBricks_.push(brick)
+      if (brick.isMain) {
+        insert(this.mainBricks_, brick)
+        brick.ui.xy_.x = 0
+      } else {
+        insert(this.draftBricks_, brick)
+        brick.ui.xy_.c = - brick.span.c - 2
+      }
+    })
+    this.resizeContents()
+  }
+})()
 
 /**
  * Remove a brick from the board.
@@ -1645,6 +1741,8 @@ eYo.Board.prototype.removeBrick = function (brick) {
     }
     // Remove from board
     this.brickDB_[brick.id] = null
+    goog.array.remove(this.mainBricks_, brick)
+    goog.array.remove(this.draftBricks_, brick)
   })
 }
 

@@ -25,7 +25,7 @@ goog.forwardDeclare('eYo.Board')
  * @return {!Element} The board's dom repository.
  */
 eYo.Dom.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
-  var container = (board.isFlyout
+  var container = (board.inFlyout
   ? board.desk.flyout
   : board.desk).dom.board_
   var dom = board.dom
@@ -96,7 +96,7 @@ eYo.Svg.prototype.boardInit = function(board) {
     },
     g
   )
-  if (!board.isFlyout) {
+  if (!board.inFlyout) {
     this.boardBind_mousedown(board)
     if (options.zoom && options.zoom.wheel) {
       this.boardBind_wheel(board)

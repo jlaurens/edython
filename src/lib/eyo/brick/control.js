@@ -45,11 +45,6 @@ eYo.Brick.BaseGroup.makeSubclass('Control', {
 }, eYo.Brick)
 
 /**
- * True for controls only.
- */
-eYo.Brick.Control.prototype.isControl = true
-
-/**
  * Update the creation number.
  */
 eYo.Brick.Control.prototype.updateCreation = (() => {
@@ -68,7 +63,15 @@ Object.defineProperties (eYo.Brick.Control.prototype, {
     get() {
       return this.creation__
     }
-  }
+  },
+  /**
+   * True for controls only.
+   * @type {Boolean}
+   * @readonly
+   */
+  isControl: {
+    value: true
+  },
 })
 
 /**
@@ -98,6 +101,17 @@ eYo.Brick.Control.makeSubclass('start_stmt', {
       check: eYo.T3.Stmt.start_stmt
     }
   }
+})
+
+Object.defineProperties (eYo.Brick.Control.prototype, {
+  /**
+   * True for start statements only.
+   * @type {Boolean}
+   * @readonly
+   */
+  isMain: {
+    value: true
+  },
 })
 
 eYo.Brick.Control.T3s = [
