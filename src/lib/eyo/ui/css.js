@@ -613,7 +613,7 @@ text.eyo-code-comment {
   fill: none;
 }`,
 `.eyo-main-board-background {
-  fill: white;
+  fill: green;
 }`,
   ]
 }

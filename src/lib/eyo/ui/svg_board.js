@@ -33,9 +33,6 @@ eYo.Dom.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
     value: container,
     writable: true
   })
-  // initial metrics from the desk container
-  var r = board.desk.dom.div_.getBoundingClientRect()
-  board.metrics_.view_.set(r)
   return dom
 })
 
@@ -105,9 +102,7 @@ eYo.Svg.prototype.boardInit = function(board) {
       this.boardBind_wheel(board)
     }
   }
-
   eYo.Dom.bindDocumentEvents()
-
   return g
 }
 
@@ -129,16 +124,15 @@ eYo.Svg.prototype.boardDispose = eYo.Dom.decorateDispose(function(board) {
  */
 eYo.Svg.prototype.boardPlace = function(board) {
   var metrics = board.metrics
-  var dom = board.dom
-  var svg = dom.svg
-  var root = svg.root_
-  var size = metrics.view.size
-  root.setAttribute('width', `${size.width}px`)
-  root.setAttribute('height', `${size.height}px`)
-  size.unscale(metrics.scale)
-  var scroll = metrics.scroll.unscale(metrics.scale)
-  root.setAttribute('viewBox', `${scroll.x} ${scroll.y} ${size.width} ${size.height}`)
-  // svg.group_.setAttribute('transform', `scale(${metrics.scale})`)
+  var content = metrics.content_
+  var root = board.dom.svg.root_
+  
+  root.setAttribute('viewBox', `${content.x} ${content.y} ${content.width} ${content.height}`)
+  content = metrics.contentInView
+  root.setAttribute('width', `${content.width}px`)
+  root.setAttribute('height', `${content.height}px`)
+  root.style.transform = `translate(${content.x}px,${content.y}px)`
+
 }
 
 /**
@@ -167,20 +161,6 @@ eYo.Svg.prototype.boardVisibleGet = function (board) {
  */
 eYo.Svg.prototype.boardVisibleSet = function (board, isVisible) {
   board.dom.svg.root_.style.display = isVisible ? 'block' : 'none'
-}
-
-/**
- * Set the display mode for bricks.
- * Used to draw bricks lighter or not.
- * @param {!eYo.Board} mode  The display mode for bricks.
- * @param {!String} mode  The display mode for bricks.
- */
-eYo.Svg.prototype.boardSetBrickDisplayMode = function (board, mode) {
-  var canvas = board.dom.svg.canvas_
-  board.currentBrickDisplayMode && (goog.dom.classlist.remove(canvas, `eyo-${board.currentBrickDisplayMode}`))
-  if ((board.currentBrickDisplayMode = mode)) {
-    goog.dom.classlist.add(canvas, `eyo-${board.currentBrickDisplayMode}`)
-  }
 }
 
 /**
@@ -250,26 +230,6 @@ eYo.Svg.prototype.boardOn_wheel = function(e) {
   var delta = -e.deltaY / PIXELS_PER_ZOOM_STEP
   this.zoom(e, delta)
   e.preventDefault()
-}
-
-/**
- * Bind the resize element.
- * @param {!eYo.Board} board
- */
-eYo.Svg.prototype.boardBind_resize = function (board) {
-  var bound = board.dom.bound || Object.create(null)
-  if (bound.resize) {
-    return
-  }
-  bound.resize = eYo.Dom.bindEvent(
-    window,
-    'resize',
-    null,
-    () => {
-      eYo.App.hideChaff()
-      board.desk.updateMetrics()
-    }
-  )
 }
 
 /**

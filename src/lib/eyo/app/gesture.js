@@ -120,7 +120,7 @@ eYo.Gesture = function(e, board) {
   /**
    * The object tracking a board or flyout board drag, or null if none
    * is in progress.
-   * @type {Blockly.BoardDragger}
+   * @type {eYo.BoardDragger}
    * @private
    */
   this.boardDragger_ = null

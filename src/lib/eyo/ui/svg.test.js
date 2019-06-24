@@ -1,33 +1,3 @@
-describe('Basic SVG', function () {
-  it ('viewBox', function() {
-    var div = document.querySelector('#eyo-desk')
-    while (div.hasChildNodes()) {
-      div.removeChild(div.lastChild)
-    }
-    var svg = eYo.Svg.newElementSvg(div, 'eyo-svg')
-    div.style.position='relative'
-    svg.style.position='absolute'
-    //svg.style.transform = 'translate(0px, 0px)'
-    svg.setAttribute('preserveAspectRatio', 'xMinYMin slice')
-    svg.setAttribute('viewBox', '10 20 100 66')
-    svg.setAttribute('width', '100px')
-    svg.setAttribute('height', '55px')
-    eYo.Svg.newElement('circle',
-    {cx: 20, cy: 33, r: 10, fill: 'red'},
-    svg)
-    var svg = eYo.Svg.newElementSvg(div, 'eyo-svg')
-    //div.style.position='relative'
-    svg.style.position='absolute'
-    svg.setAttribute('preserveAspectRatio', 'xMinYMin slice')
-    svg.setAttribute('viewBox', '10 20 50 55')
-    //svg.style.transform = 'translate(55px, 44px)'
-    svg.setAttribute('width', '100px')
-    svg.setAttribute('height', '55px')
-    eYo.Svg.newElement('circle',
-    {cx: 20, cy: 33, r: 10, fill: 'blue'},
-    svg)
-  })
-})
 describe('SVG coordinates', function () {
   it ('xy', function () {
     eYo.Test.setItUp()

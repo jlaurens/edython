@@ -51,11 +51,15 @@ eYo.Dom.prototype.deskInit = eYo.Dom.decorateInit(function(desk) {
     goog.dom.TagName.DIV,
     'eyo-board-div'
   )
-  div.appendChild(x)  
+  x.style.position = 'absolute'
+  x.style.width = x.style.height = '100%'
+  div.appendChild(x)
+
   var x = dom.flyout_ = goog.dom.createDom(
     goog.dom.TagName.DIV,
     'eyo-flyout-div'
   )
+  x.style.position = 'absolute'
   x.style.display = 'none'
   div.appendChild(x)
 })
@@ -71,6 +75,13 @@ eYo.Dom.prototype.deskDispose = eYo.Dom.decorateDispose(function(desk) {
 })
 
 /**
+ * Place the desk div.
+ * @param {!eYo.Desk} desk
+ */
+eYo.Dom.prototype.deskPlace = function(desk) {
+}
+
+/**
  * Initialize the desk SVG ressources.
  * @param {!eYo.Desk} desk
  * @return {!Element} The desk's SVG group.
@@ -81,23 +92,10 @@ eYo.Svg.prototype.deskInit = function(desk) {
   }
   var dom = eYo.Svg.superClass_.deskInit.call(this, desk)
   var svg = dom.svg = Object.create(null)
-  // Build the SVG DOM. The order
-  // in the dom is important because things are layered.
   var div = dom.div_
-  // main board
-  /*
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns: html="http://www.w3.org/1999/xhtml"
-    xmlns: xlink="http://www.w3.org/1999/xlink"
-    version="1.1"
-    class="eyo-svg">
-    ...
-  </svg>
-  */
   if (eYo.Dom.is3dSupported) {
-    svg.boardDragSurface = new eYo.Svg.BoardDragSurface(dom.div_)
-    svg.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
+    svg.boardDragSurface = new eYo.Svg.BoardDragSurface(div)
+    svg.brickDragSurface = new eYo.Svg.BrickDragSurface(div)
   }
   this.deskBind_resize(desk)
 }
@@ -124,15 +122,17 @@ eYo.Svg.prototype.deskBind_resize = function (desk) {
 
 /**
  * Set the display mode for bricks.
- * Used to draw bricks lighter or not.
+ * Used to draw bricks lighter or not,
+ * by adding/removing a class on the main div.
  * @param {!eYo.Desk} mode  The display mode for bricks.
  * @param {!String} mode  The display mode for bricks.
  */
 eYo.Svg.prototype.deskSetBrickDisplayMode = function (desk, mode) {
-  var canvas = desk.dom.svg.canvas_
-  desk.currentBrickDisplayMode && (goog.dom.classlist.remove(canvas, `eyo-${desk.currentBrickDisplayMode}`))
+  var div = desk.dom.div_
+  var old = desk.currentBrickDisplayMode
+  old && (goog.dom.classlist.remove(div, `eyo-${old}`))
   if ((desk.currentBrickDisplayMode = mode)) {
-    goog.dom.classlist.add(canvas, `eyo-${desk.currentBrickDisplayMode}`)
+    goog.dom.classlist.add(div, `eyo-${mode}`)
   }
 }
 
@@ -145,7 +145,6 @@ eYo.Svg.prototype.deskSetBrickDisplayMode = function (desk, mode) {
  * @param {!eYo.Desk} desk A desk.
  */
 eYo.Svg.prototype.deskUpdateMetrics = function(desk) {
-  // TODO: when changing the metrics, keep track of the selected brick/magnet
   // After the change, the selection should be visible if it was.
   desk.viewRect = desk.dom.div_.getBoundingClientRect()
 }

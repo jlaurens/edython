@@ -261,7 +261,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/core/do.js" \
 --js "src/lib/eyo/Include/errcode.js" \
 --js "src/lib/eyo/core/ui.js" \
---js "src/lib/eyo/brick_util/gesture.js" \
+--js "src/lib/eyo/app/gesture.js" \
 --js "src/lib/eyo/msg/js/base.js" \
 --js "src/lib/eyo/brick_util/owned.js" \
 --js "src/lib/eyo/ui/scrollbar.js" \

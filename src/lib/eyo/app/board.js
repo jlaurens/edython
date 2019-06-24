@@ -846,6 +846,7 @@ eYo.Board.prototype.updateScreenCalculations_ = function() {
  */
 eYo.Board.prototype.updateMetrics = function() {
   this.metrics_.view_.size = this.desk.viewRect.size
+  this.resizeContents()
   this.scrollbar_.layout()
 }
 
@@ -867,9 +868,6 @@ eYo.Board.prototype.resizeContents = function() {
   if (!this.resizesEnabled_ || !this.rendered) {
     return
   }
-  if (this.scrollbar) {
-    this.scrollbar.layout()
-  }
   this.metrics_.content = this.bricksBoundingRect
   this.ui_driver.boardResizeContents(this)
 }
@@ -884,6 +882,9 @@ eYo.Board.prototype.resizeContents = function() {
 eYo.Board.prototype.layout = function() {
   this.updateMetrics()
   this.place()
+  if (this.scrollbar) {
+    this.scrollbar.layout()
+  }
 }
 
 /**
@@ -903,9 +904,6 @@ eYo.Board.prototype.place = function() {
   }
   if (this.zoomControls_) {
     this.zoomControls_.place()
-  }
-  if (this.scrollbar) {
-    this.scrollbar.place()
   }
   this.updateScreenCalculations_()
 }

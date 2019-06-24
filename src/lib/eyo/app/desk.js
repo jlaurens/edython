@@ -164,7 +164,7 @@ eYo.Desk.prototype.updateMetrics = function() {
 }
 
 /**
- * Place the components.
+ * Update the metics and place the components accordingly.
  */
 eYo.Desk.prototype.layout = function() {
   this.updateMetrics()
@@ -172,10 +172,10 @@ eYo.Desk.prototype.layout = function() {
 }
 
 /**
- * Place the components.
+ * Place the board and the flyout.
  */
 eYo.Desk.prototype.place = function() {
-  // this.ui_driver.deskPlace(this)
+  this.ui_driver.deskPlace(this)
   this.mainBoard_.place()
   this.flyout_ && this.flyout_.place()
 }
@@ -211,7 +211,8 @@ eYo.Desk.prototype.removeFlyout = function() {
     this.flyout_ = null
     this.mainBoard_.flyout = null
     x.dispose()
-
+    this.flyoutBoard_.dispose()
+    this.flyoutBoard_ = null
   }
 }
 

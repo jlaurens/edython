@@ -531,9 +531,9 @@ eYo.Scrollbar.prototype.dispose = function() {
  */
 eYo.Scrollbar.prototype.layout = function(hostMetrics, prepare) {
   if (this.horizontal_) {
-    this.resizeHorizontal(hostMetrics, prepare)
+    this.layoutHorizontal(hostMetrics, prepare)
   } else {
-    this.resizeVertical(hostMetrics, prepare)
+    this.layoutVertical(hostMetrics, prepare)
   }
   this.place()
 }
@@ -545,7 +545,7 @@ eYo.Scrollbar.prototype.layout = function(hostMetrics, prepare) {
  *     required dimensions, possibly fetched from the host object.
  * @param {?Boolean} prepare  True when only preparing.
  */
-eYo.Scrollbar.prototype.resizeHorizontal = function(hostMetrics, prepare) {
+eYo.Scrollbar.prototype.layoutHorizontal = function(hostMetrics, prepare) {
   var view = hostMetrics.view
   var content = hostMetrics.content
   var range = content.width - view.width
@@ -591,7 +591,7 @@ eYo.Scrollbar.prototype.resizeHorizontal = function(hostMetrics, prepare) {
  *     required dimensions, possibly fetched from the host object.
  * @param {?Boolean} prepare  True when preparing.
  */
-eYo.Scrollbar.prototype.resizeVertical = function(hostMetrics, prepare) {
+eYo.Scrollbar.prototype.layoutVertical = function(hostMetrics, prepare) {
   var view = hostMetrics.view
   var content = hostMetrics.content
   var range = content.height - view.height

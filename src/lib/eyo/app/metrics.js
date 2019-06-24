@@ -31,6 +31,7 @@ eYo.Metrics = function (board) {
   this.box_ = new eYo.Rect()
   this.scroll_ = new eYo.Where()
   this.scale_ = 1
+  this.updateDepth_ = 0
 }
 
 Object.defineProperties(eYo.Metrics.prototype, {
@@ -91,18 +92,17 @@ Object.defineProperties(eYo.Metrics.prototype, {
       if (newValue.x < r.x) {
         newValue.x = r.x
       }
-      if (newValue.x < r.x_max) {
-        newValue.x_max = r.x_max
+      if (newValue.x > r.x_max) {
+        newValue.x = r.x_max
       }
       if (newValue.y < r.y) {
         newValue.y = r.y
       }
-      if (newValue.y < r.y_max) {
-        newValue.y_max = r.y_max
+      if (newValue.y > r.y_max) {
+        newValue.y = r.y_max
       }
       if (!this.scroll_.equals(newValue)) {
-        this.scroll_.set(newValue)
-        this.update()
+        this.wrapUpdate(() => this.scroll_.set(newValue))
       }
     }
   },
@@ -119,8 +119,7 @@ Object.defineProperties(eYo.Metrics.prototype, {
     },
     set (newValue) {
       if (!this.view_.equals(newValue)) {
-        this.view_.set(newValue)
-        this.update()
+        this.wrapUpdate(() => this.view_.set(newValue))
       }
     }
   },
@@ -136,15 +135,26 @@ Object.defineProperties(eYo.Metrics.prototype, {
     },
     set (newValue) {
       if (!this.content_.equals(newValue)) {
-        this.content_.set(newValue)
-        this.content_.xyInset()
-        this.update()
+        this.wrapUpdate(() => {
+          this.content_.set(newValue)
+          this.content_.xyInset()
+        })
       }
     }
   },
   /**
+   * The content rect is enclosing all the bricks.
+   * In board coordinates.
+   * @type {eYo.Rect} 
+   * @readonly 
+   */
+  contentInView: {
+    get () {
+      return this.toView(this.content)
+    }
+  },
+  /**
    * The box rect is bigger than the content rect.
-   * It defines the viewBox.
    * It is reset each time the content rect changes.
    * @type {eYo.Rect} 
    * @readonly 
@@ -155,8 +165,7 @@ Object.defineProperties(eYo.Metrics.prototype, {
     },
     set (newValue) {
       if (!this.box_.equals(newValue)) {
-        this.box_.set(newValue)
-        this.update()
+        this.wrapUpdate(() => this.box_.set(newValue))
       }
     }
   },
@@ -193,6 +202,21 @@ eYo.Metrics.prototype.dispose = function () {
  */
 eYo.Metrics.prototype.update = function () {
   this.board_ && this.board_.metricsDidChange()
+}
+
+/**
+ * Update the board.
+ */
+eYo.Metrics.prototype.wrapUpdate = function (do_it) {
+  try {
+    ++this.updateDepth_
+    do_it()
+  } finally {
+    if(--this.updateDepth_) {
+      return
+    }
+    this.update()
+  }
 }
 
 /**
@@ -236,6 +260,11 @@ eYo.Metrics.prototype.scrollLimits = function (margin) {
   // An extra margin is required to manage brick scrolling.
   // `o + scroll` and `o + scroll + view_size` must be within the limits
   // of the content rect.
+  /* Note about scrolling.
+    Scrolling the board and the brick is extended.
+    When the mouse is close to the boundary, then scrolling may occur
+    without any mouse move.
+  */
   var ans = this.content
   var size = this.view.size.scale(this.scale)
   ans.x_min -= Math.max(size.width, margin.width)
@@ -244,14 +273,13 @@ eYo.Metrics.prototype.scrollLimits = function (margin) {
 }
 
 /**
- * Get dragging limits.
+ * Get the dragging limits.
  * Reference is the brick board.
  * @param{?eYo.Rect} rect
  */
 eYo.Metrics.prototype.getDraggingLimits = function (rect) {
   var view = this.fromView(this.view)
   var limits = this.content
-
   if (rect) {
 
   }
