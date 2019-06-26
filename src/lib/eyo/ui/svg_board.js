@@ -159,9 +159,6 @@ eYo.Svg.prototype.boardDispose = eYo.Dom.decorateDispose(function(board) {
 /**
  * Place the board according to its metrics.
  * The default position is near the top left corner.
- * The point with coordinates `(0, 0)` in the main board
- * is located 1/2 character width from the left border
- * and 1/4 line height from the top border.
  * @param {!eYo.Board} board
  */
 eYo.Svg.prototype.boardPlace = function(board) {
