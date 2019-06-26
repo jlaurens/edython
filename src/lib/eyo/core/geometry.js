@@ -97,6 +97,17 @@ eYo.Where.property_y_ = {
 
 // Overdefined, for better understanding
 Object.defineProperties(eYo.Where.prototype, {
+  c_: {
+    get () {
+      return this.c__
+    },
+    set (newValue) {
+      this.c__ = newValue
+      if (newValue < -1.5 && newValue > -1.501) {
+        console.error(newValue)
+      }
+    }
+  },
   c: eYo.Where.property_c_,
   l: eYo.Where.property_l_,
   dc: eYo.Where.property_c_,
@@ -545,13 +556,13 @@ Object.defineProperties(eYo.Rect.prototype, {
       this.y = newValue - this.height
     }
   },
-  //// The setters change the width
+  //// The setters change the width, but does not change the `right`
   left: {
     get () {
       return this.origin_.x
     },
     set (newValue) {
-      this.height = this.x_max - newValue
+      this.width = this.x_max - newValue
       this.x_min = newValue
     }
   },
@@ -762,8 +773,8 @@ eYo.Rect.prototype.equals = function (rhs) {
 
 /**
  * Scale the receiver.
- * @param {!Number | Object} scaleX
- * @param {?Number} scaleY
+ * @param {!Number | Object} scaleX  Must be positive.
+ * @param {?Number} scaleY  Must be positive when defines, defaults to scaleX.
  * @return {!eYo.Rect} the receiver
  */
 eYo.Rect.prototype.scale = function (scaleX, scaleY) {
@@ -774,13 +785,24 @@ eYo.Rect.prototype.scale = function (scaleX, scaleY) {
 
 /**
  * Unscale the receiver.
- * @param {!Number} scaleX  Must not be 0.
- * @param {?Number} scaleY  Must not be 0.
+ * @param {!Number} scaleX  Must be positive.
+ * @param {?Number} scaleY  Must be positive when defines, defaults to scaleX.
  * @return {!eYo.Rect} the receiver
  */
 eYo.Rect.prototype.unscale = function (scaleX, scaleY) {
   this.origin_.unscale(scaleX, scaleY)
   this.size_.unscale(scaleX, scaleY)
+  return this
+}
+
+/**
+ * Mirror the receiver vertically and horizontally.
+ * @return {!eYo.Rect} the receiver
+ */
+eYo.Rect.prototype.mirror = function () {
+  // size does not change, only max <-> -min
+  this.x_max = -this.x
+  this.y_max = -this.y
   return this
 }
 
@@ -815,6 +837,40 @@ eYo.Rect.prototype.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
   this.x_max -= dx_min + dx_max
   this.y_min += dy_min
   this.y_max -= dy_min + dy_max
+  return this
+}
+
+/**
+ * outset the receiver.
+ * Default values are `eYo.Unit.x / 2` and `eYo.Unit.y / 4`
+ * @param {?Number|eYo.Where} dx_min
+ * @param {?Number} dy_min
+ * @param {?Number} dx_max
+ * @param {?Number} dy_max
+ * @return {!eYo.Rect} the receiver
+ */
+eYo.Rect.prototype.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
+  if (!goog.isDef(dx_min)) {
+    dx_min = dx_max = eYo.Unit.x / 2
+    dy_min = dy_max = eYo.Unit.y / 4
+  } else if (goog.isDef(dx_min.x)) {
+    dy_min = dy_max = dx_min.y
+    dx_min = dx_max = dx_min.x
+  } else {
+    if (!goog.isDef(dy_min)) {
+      dy_min = dx_min
+    }
+    if (!goog.isDef(dx_max)) {
+      dx_max = dx_min
+    }
+    if (!goog.isDef(dy_max)) {
+      dy_max = dy_min
+    }
+  }
+  this.x_min -= dx_min
+  this.x_max += dx_min + dx_max
+  this.y_min -= dy_min
+  this.y_max += dy_min + dy_max
   return this
 }
 

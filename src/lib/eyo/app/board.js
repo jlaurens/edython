@@ -88,7 +88,7 @@ eYo.Board = function(owner, options) {
   this.brickDB_ = Object.create(null)
 
   this.metrics_ = new eYo.Metrics(this)
-
+  
   this.dragger_ = new eYo.BoardDragger(this)
   this.brickDragger_ = new eYo.BrickDragger(this)
 
@@ -371,9 +371,9 @@ Object.defineProperties(eYo.Board.prototype, {
   bricksBoundingRect: {
     get () {
       // JL: TODO separate main bricks and draft bricks
-      var topBricks = this.topBricks.filter(b3k => b3k.ui && b3k.ui.rendered)
+      var ans = new eYo.Rect(-2, -1, 4, 2)
+      var topBricks = this.topBricks.filter(b3k => b3k.ui && b3k.hasUI)
       if (topBricks.length) {
-        var ans = topBricks.shift().ui.boundingRect
         topBricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
         return ans
       }
@@ -491,7 +491,6 @@ eYo.Board.prototype.dispose = function() {
 eYo.Board.prototype.makeUI = function() {
   var options = this.options
   this.makeUI = eYo.Do.nothing
-  this.updateMetrics() // Initialization here
   this.ui_driver.boardInit(this)
   if (options.hasScrollbars) {
       // Add scrollbar.
@@ -502,7 +501,6 @@ eYo.Board.prototype.makeUI = function() {
           false, 'eyo-flyout-scrollbar'
         )
       : new eYo.Scroller(this)
-    this.scrollbar_.layout()
   }
   var bottom = eYo.Scrollbar.thickness
   if (options.hasTrashcan) {
@@ -799,7 +797,7 @@ eYo.Board.prototype.rendered = true;
  * @type {boolean}
  * @private
  */
-eYo.Board.prototype.resizesEnabled_ = true;
+eYo.Board.prototype.resizesEnabled_ = true
 
 /**
  * The board's trashcan (if any).
@@ -899,7 +897,6 @@ eYo.Board.prototype.updateScreenCalculations_ = function() {
 eYo.Board.prototype.updateMetrics = function() {
   this.metrics_.view_.size = this.desk.viewRect.size
   this.resizeContents()
-  this.scrollbar_.layout()
 }
 
 /**
@@ -919,9 +916,10 @@ eYo.Board.prototype.resizeContents = function() {
   if (!this.resizesEnabled_ || !this.rendered) {
     return
   }
-  this.metrics_.content = this.bricksBoundingRect
+  var metrics = this.metrics_
+  metrics.port = metrics.minPort.union(this.bricksBoundingRect)
   this.ui_driver.boardResizeContents(this)
-  this.scrollbar.resize()
+  this.scrollbar && this.scrollbar.layout()
 }
 
 /**
@@ -934,9 +932,7 @@ eYo.Board.prototype.resizeContents = function() {
 eYo.Board.prototype.layout = function() {
   this.updateMetrics()
   this.place()
-  if (this.scrollbar) {
-    this.scrollbar.layout()
-  }
+  this.scrollbar && this.scrollbar.layout()
 }
 
 /**
@@ -989,14 +985,6 @@ eYo.Board.prototype.moveTo = function(xy) {
   console.log('moveTo', xy)
   this.metrics_.scroll = xy
   this.move()
-}
-
-/**
- * Translate this board to new coordinates.
- * @param {eYo.Where} xy translation.
- */
-eYo.Board.prototype.canvasMoveTo = function(xy) {
-  this.ui_driver.boardCanvasMoveTo(this, xy)
 }
 
 /**
@@ -1178,23 +1166,6 @@ eYo.Board.prototype.eventWhere = function(e) {
 }
 
 /**
- * Clean up the board by ordering all the bricks in a column.
- */
-eYo.Board.prototype.cleanUp = function() {
-    this.setResizesEnabled(false)
-  eYo.Events.group = true
-  var cursor = new eYo.Where()
-  this.orderedTopBricks.forEach(brick => {
-    brick.moveTo(cursor)
-    brick.ui.snapToGrid()
-    cursor.y = brick.xy.y +
-        brick.size.height + eYo.Unit.y / 2
-  })
-  eYo.Events.group = false
-  this.setResizesEnabled(true)
-}
-
-/**
  * Show the context menu for the board.
  * @param {!Event} e Mouse event.
  * @private
@@ -1220,15 +1191,6 @@ eYo.Board.prototype.showContextMenu_ = function (e) {
   redoOption.enabled = this.redoStack_.length > 0
   redoOption.callback = this.undo.bind(this, true)
   menuOptions.push(redoOption)
-
-  // Option to clean up bricks.
-  if (this.scrollbar) {
-    var cleanOption = {}
-    cleanOption.text = eYo.Msg.CLEAN_UP
-    cleanOption.enabled = topBricks.length > 1
-    cleanOption.callback = this.cleanUp.bind(this)
-    menuOptions.push(cleanOption)
-  }
 
   // Add a little animation to collapsing and expanding.
   var DELAY = 10
@@ -1424,8 +1386,8 @@ eYo.Board.prototype.zoomToFit = function() {
   }
   if (!this.scrollbar) {
     // Origin point of 0,0 is fixed, bricks will not scroll to center.
-    width += metrics.content.x_min
-    height += metrics.content.y_min
+    width += metrics.port.x_min
+    height += metrics.port.y_min
   }
   size.unscale(width, height)
   this.scale = Math.min(size.x, size.y)
@@ -1473,8 +1435,8 @@ eYo.Board.doRelativeScroll = function(xyRatio) {
     throw 'Attempt to set top level board scroll without scrollbars.'
   }
   var metrics = this.metrics_
-  var content = metrics.content
-  var view = metrics.content
+  var content = metrics.port
+  var view = metrics.port
   var scroll = metrics.scroll
   if (goog.isNumber(xyRatio.x)) {
     var t = Math.min(1, Math.max(0, xyRatio.x))
@@ -1692,7 +1654,7 @@ eYo.Board.prototype.addBrick = (() => {
   var insert = (array, brick) => {
     var i_min = 0
     var b_min = array[i_min]
-    if (brick.where.l <= b_min.where.l) {
+    if (!b_min || brick.where.l <= b_min.where.l) {
       insertAt(array, brick, i_min)
     } else {
       var i_max = array.length - 1
@@ -1723,8 +1685,10 @@ eYo.Board.prototype.addBrick = (() => {
         brick.ui.xy_.x = 0
       } else {
         insert(this.draftBricks_, brick)
-        brick.ui.xy_.c = - brick.span.c - 2
+        brick.ui.xy_.c = - brick.span.c + 0.5
+        brick.ui.xy_.l += 0.5
       }
+      brick.move()
     })
     this.resizeContents()
   }

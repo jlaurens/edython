@@ -17,7 +17,6 @@ goog.require('eYo.Svg')
 
 goog.forwardDeclare('eYo.Board')
 
-
 /**
  * Initialize the board dom ressources.
  * @param {!eYo.Board} board
@@ -41,7 +40,7 @@ eYo.Dom.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
  * @param {!eYo.Board} board
  */
 eYo.Dom.prototype.boardDispose = eYo.Dom.decorateDispose(function(board) {
-  board.dom.div_ = null
+  board.dom.div_ = null // do not remove this div from the dom
 })
 
 /**
@@ -78,15 +77,54 @@ eYo.Svg.prototype.boardInit = function(board) {
   // Note that a <g> alone does not receive mouse events--it must have a
   // valid target inside it.  If no background class is specified, as in the
   // flyout, the board will not receive mouse events.
-  /** @type {SVGElement} */
-  svg.background_ = eYo.Svg.newElement(
+  svg.draftBackground_ = eYo.Svg.newElement(
     'rect',
     {
       height: '100%',
-      width: '100%',
-      class: options.backgroundClass
+      class: `${options.backgroundClass} eyo-draft`,
+      rx: `${eYo.Unit.x}`,
+      ry: `${eYo.Unit.y}`,
     },
     g
+  )
+   /** @type {SVGElement} */
+  svg.background_ = eYo.Svg.newElement(
+    'svg',
+    {},
+    g
+  )
+  eYo.Svg.newElement(
+    'rect',
+    {
+      rx: `${eYo.Unit.x}`,
+      ry: `${eYo.Unit.y / 2}`,
+      width: '100%',
+      height: '100%',
+      class: options.backgroundClass
+    },
+    svg.background_
+  )
+  eYo.Svg.newElement(
+    'line',
+    {
+      x1: `0`,
+      y1: `0`,
+      x2: `100%`,
+      y2: `100%`,
+      stroke: 'red'
+    },
+    svg.background_
+  )
+  eYo.Svg.newElement(
+    'line',
+    {
+      x1: `0`,
+      y1: `100%`,
+      x2: `100%`,
+      y2: `0`,
+      stroke: 'red'
+    },
+    svg.background_
   )
   /** @type {SVGElement} */
   svg.canvas_ = eYo.Svg.newElement(
@@ -120,19 +158,31 @@ eYo.Svg.prototype.boardDispose = eYo.Dom.decorateDispose(function(board) {
 
 /**
  * Place the board according to its metrics.
+ * The default position is near the top left corner.
+ * The point with coordinates `(0, 0)` in the main board
+ * is located 1/2 character width from the left border
+ * and 1/4 line height from the top border.
  * @param {!eYo.Board} board
  */
 eYo.Svg.prototype.boardPlace = function(board) {
   var metrics = board.metrics
-  var content = metrics.content_
-  var root = board.dom.svg.root_
-  
-  root.setAttribute('viewBox', `${content.x} ${content.y} ${content.width} ${content.height}`)
-  content = metrics.contentInView
-  root.setAttribute('width', `${content.width}px`)
-  root.setAttribute('height', `${content.height}px`)
-  root.style.transform = `translate(${content.x}px,${content.y}px)`
-
+  var port = metrics.port_
+  var svg = board.dom.svg
+  var r = svg.draftBackground_
+  r.setAttribute('x', `${port.x}px`)
+  r.setAttribute('y', `${port.y}px`)
+  r.setAttribute('width', `${-port.x - eYo.Unit.x / 2}px`)
+  r = svg.background_
+  r.setAttribute('x', `2px`)
+  r.setAttribute('y', `${port.y}px`)
+  r.setAttribute('width', `${port.right - 4}px`)
+  var root = svg.root_
+  port = metrics.portInView
+  root.setAttribute('viewBox', `${port.x} ${port.y} ${port.width} ${port.height}`)
+  root.setAttribute('width', `${port.width}px`)
+  root.setAttribute('height', `${port.height}px`)
+  var scroll = metrics.scroll
+  root.style.transform = `translate(${port.x + scroll.x + 0 * eYo.Unit.x / 2}px,${port.y + scroll.y + 0 * eYo.Unit.y / 4}px)`
 }
 
 /**
@@ -230,19 +280,6 @@ eYo.Svg.prototype.boardOn_wheel = function(e) {
   var delta = -e.deltaY / PIXELS_PER_ZOOM_STEP
   this.zoom(e, delta)
   e.preventDefault()
-}
-
-/**
- * Translate this board to new coordinates.
- * @param {!eYo.Board} board  The bord owning the canvas.
- * @param {number} xy Translation.
- */
-eYo.Svg.prototype.boardCanvasMoveTo = function (board, xy) {
-  var transform = `translate(${xy.x},${xy.y}) scale(${board.scale})`
-  if (transform.indexOf('NaN')>=0) {
-    throw 'MISSED'
-  }
-  board.dom.svg.canvas_.setAttribute('transform', transform)
 }
 
 /**

@@ -702,7 +702,7 @@ eYo.Flyout.prototype.reflow = function() {
   }
   this.board_.scale = this.targetBoard_.scale
   var size = this.size
-  var rect = this.board_.metrics.content
+  var rect = this.board_.metrics.port
   size.width = rect.width + this.MARGIN * 1.5 + eYo.Scrollbar.thickness
   this.size = size
   if (this.reflowWrapper_) {
@@ -896,7 +896,7 @@ eYo.Flyout.prototype.updateMetrics = function() {
   var view = this.targetBoard.metrics.view
   var r = this.viewRect_
   r.size_.height = view.height
-  r.size_.width = Math.min(view.width / 3, Math.max(this.board.metrics.content.width, eYo.Unit.x * 10))
+  r.size_.width = Math.min(view.width / 3, Math.max(this.board.metrics.port.width, eYo.Unit.x * 10))
   var where = this.atRight ? view.right : view.left
   if (!this.closed === !this.atRight) {
     r.origin_.x_min = where

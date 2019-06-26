@@ -615,5 +615,11 @@ text.eyo-code-comment {
 `.eyo-main-board-background {
   fill: green;
 }`,
+`.eyo-main-board-background.eyo-draft {
+  fill: gainsboro;
+}`,
+`#eyo-desk svg { pointer-events: none; }
+#eyo-desk svg * { pointer-events: all; }
+`,
   ]
 }

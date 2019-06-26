@@ -478,7 +478,7 @@ eYo.Scrollbar.prototype.layout = function(hostMetrics, prepare) {
 eYo.Scrollbar.prototype.layoutHorizontal = function(hostMetrics, prepare) {
   hostMetrics || (hostMetrics = this.board.metrics)
   var view = hostMetrics.view
-  var content = hostMetrics.content
+  var content = hostMetrics.port
   var range = content.width - view.width
   if (prepare !== false) {
     this.visible = (view.width > this.scroller_
@@ -492,7 +492,7 @@ eYo.Scrollbar.prototype.layoutHorizontal = function(hostMetrics, prepare) {
   if (!oldMetrics
     || oldMetrics.scroll.x != hostMetrics.scroll.x
     || oldMetrics.view.width != view.width
-    || oldMetrics.content.width != content.width) {
+    || oldMetrics.port.width != content.width) {
     // The window has been resized or repositioned.
     this.oldMetrics_ = hostMetrics
     var r = this.viewRect_
@@ -525,7 +525,7 @@ eYo.Scrollbar.prototype.layoutHorizontal = function(hostMetrics, prepare) {
 eYo.Scrollbar.prototype.layoutVertical = function(hostMetrics, prepare) {
   hostMetrics || (hostMetrics = this.board.metrics)
   var view = hostMetrics.view
-  var content = hostMetrics.content
+  var content = hostMetrics.port
   var range = content.height - view.height
   if (prepare !== false) {
     this.visible = (view.height > (this.scroller_
@@ -539,7 +539,7 @@ eYo.Scrollbar.prototype.layoutVertical = function(hostMetrics, prepare) {
   if (!oldMetrics
     || oldMetrics.scroll.y != hostMetrics.scroll.y
     || oldMetrics.view.height != view.height
-    || oldMetrics.content.height != content.height) {
+    || oldMetrics.port.height != content.height) {
     // The window has been resized or repositioned.
     this.oldMetrics_ = hostMetrics
     var r = this.viewRect_

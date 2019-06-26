@@ -529,7 +529,7 @@ eYo.Brick.UI.prototype.willShortRender_ = function (recorder) {
 }
 
 /**
- * Translates the brick, forwards to the ui driver.
+ * Translates the brick, forwards to the ui driver after managing the snap formal argument.
  * @param {eYo.Where} xy The xy coordinate of the translation in board units.
  * @param {Boolean} snap Whether we should snap to the grid.
  */

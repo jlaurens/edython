@@ -127,6 +127,7 @@ eYo.BoardDragger.prototype.start = function(gesture) {
    * @private
    */
   this.startMetrics_ = board.metrics
+  console.error(this.startMetrics_)
 
   if (eYo.Selected.brick) {
     eYo.Selected.brick.unselect()
@@ -155,8 +156,7 @@ eYo.BoardDragger.prototype.clearGesture = function() {
 eYo.BoardDragger.prototype.drag = function() {
   var board = this.board_
   var deltaWhere = board.ui_driver.boardDragDeltaWhere(board)
-  var metrics = this.startMetrics_
-  board.metrics_.scroll = metrics.scroll.forward(metrics.content.origin).forward(deltaWhere)
+  board.metrics_.scroll = this.startMetrics_.scroll.forward(deltaWhere)
   if (board.scrollbar) {
     board.scrollbar.layout()
   }
@@ -170,7 +170,6 @@ eYo.BoardDragger.prototype.move = function() {
   if (this.dragSurface_ && this.isActive_) {
     this.dragSurface_.moveTo(scroll)
   } else {
-//    this.board_.canvasMoveTo(scroll)
     this.board.place()
   }
 }

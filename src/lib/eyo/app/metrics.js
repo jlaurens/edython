@@ -27,10 +27,10 @@ goog.forwardDeclare(eYo.Geometry)
  */
 eYo.Metrics = function (board) {
   this.board_ = board
-  this.content_ = new eYo.Rect()
+  this.port_ = new eYo.Rect()
   this.view_ = new eYo.Rect()
   this.box_ = new eYo.Rect()
-  this.scroll_ = new eYo.Where()
+  this.scroll_ = this.scrollDefault.clone
   this.scale_ = 1
   this.updateDepth_ = 0
 }
@@ -76,9 +76,13 @@ Object.defineProperties(eYo.Metrics.prototype, {
     }
   },
   /**
-   * How much is the content rect scrolled
-   * relative to the view rect, in desk coordinates.
+   * How much is the port rect scrolled.
+   * When there are some top bricks and the scale is big enough,
+   * the view region is bigger than the port region and scrolling
+   * is possible.
+   * 
    * When this point is (0,0) the view topleft corner
+   * (with a small margin offset)
    * and the (0,0) point in the content are exactly
    * at the same location on screen.
    * 
@@ -125,33 +129,93 @@ Object.defineProperties(eYo.Metrics.prototype, {
     }
   },
   /**
-   * The content rect is enclosing all the bricks.
+   * The port rect is at least enclosing all the bricks.
    * In board coordinates.
+   * 
+   * The port is virtually unlimited and contains bricks of arbitrary size,
+   * within memory capacities of course.
+   * The port rect refers to a visual rectangle where
+   * all the visible bricks lie.
+   * 
+   * The main pane is the half plane of the port with equation `c≥0`.
+   * The draft pane is the half plane of the port with equation `c≤1`.
+   * There is a 1 character width margin to separate both regions.
+   * 
+   * At initialization time, the dimensions of the port are defined
+   * by the `minPort` rectangle.
+   * When there is no brick, view and port share the same origin and size.
+   * When there are some bricks, the port may be bigger than the view
+   * and scrolling may be possible.
+   * 
+   * The 
    * @type {eYo.Rect} 
    * @readonly 
    */
-  content: {
+  port: {
     get () {
-      return this.content_.clone
+      return this.port_.clone
     },
     set (newValue) {
-      if (!this.content_.equals(newValue)) {
+      if (!this.port_.equals(newValue)) {
         this.wrapUpdate(() => {
-          this.content_.set(newValue)
-          this.content_.xyInset()
+          this.port_.set(newValue)
         })
       }
     }
   },
   /**
-   * The content rect is enclosing all the bricks.
-   * In board coordinates.
+   * The port rect is at least enclosing all the bricks.
+   * In view coordinates.
    * @type {eYo.Rect} 
    * @readonly 
    */
-  contentInView: {
+  portInView: {
     get () {
-      return this.toView(this.content)
+      return this.toView(this.port)
+    }
+  },
+  /**
+   * Whether line numbering is available or not.
+   * When true, an extra margin at the right of the draft board is added
+   * to display line numbers.
+   * @type {Boolean} 
+   * @readonly 
+   */
+  numbering: {
+    get () {
+      return this.numbering_
+    },
+    set (newValue) {
+      if (this.numbering_ !== newValue) {
+        this.wrapUpdate(() => this.numbering_ = newValue)
+      }
+    }
+  },
+  /**
+   * The minimum port rect in board coordinates.
+   * 
+   * @type {eYo.Rect} 
+   * @readonly 
+   */
+  minPort: {
+    get () {
+      var ans = this.view
+      ans.size_.unscale(this.scale)
+      ans.origin = this.scrollDefault
+      ans.left = -(this.numbering ? 5 : 3) * eYo.Unit.x
+      ans.top = -eYo.Unit.y
+      return ans
+    }
+  },
+  /**
+   * The minimum port rect in board coordinates.
+   * 
+   * @type {eYo.Rect} 
+   * @readonly 
+   */
+  scrollDefault: {
+    get () {
+      return eYo.Where.cl(-1.5, -0.25)
     }
   },
   /**
@@ -176,11 +240,12 @@ Object.defineProperties(eYo.Metrics.prototype, {
   clone: {
     get () {
       var ans = new eYo.Metrics()
-      ans.scale = this.scale_
+      ans.scale_ = this.scale_
       ans.view = this.view_
-      ans.content = this.content_
+      ans.port = this.port_
       ans.scroll = this.scroll_
       ans.box = this.box_
+      ans.board_ = this.board_ // at the end only
       return ans
     }
   },
@@ -194,8 +259,8 @@ eYo.Metrics.prototype.dispose = function () {
   this.box_.dispose()
   this.scroll_.dispose()
   this.view_.dispose()
-  this.content_.dispose()
-  this.box_ = this.scroll_ = this.view_ = this.content_ = null
+  this.port_.dispose()
+  this.box_ = this.scroll_ = this.view_ = this.port_ = null
 }
 
 /**
@@ -247,30 +312,20 @@ eYo.Metrics.prototype.fromView = function (wr) {
 
 /**
  * The scroll limits in view coordinates.
+ * Used for scrolling, gives the limiting values of the `scroll` property.
  * @param{eYo.Size} margin  Extra margin in board coordinates, in general, it is the size of some brick.
  */
 eYo.Metrics.prototype.scrollLimits = function (margin) {
-  // Limits for scroll values.
-  // given view port dimensions and content dimensions,
-  // what are the possible values for the scroll vector.
-  // The top limitation is when the top of the content rect is
-  // at the top of the view.
-  // The bottom limitation is when the bottom of the content view is
-  // at the bottom of the view.
-  // And so forth.
-  // An extra margin is required to manage brick scrolling.
-  // `o + scroll` and `o + scroll + view_size` must be within the limits
-  // of the content rect.
-  /* Note about scrolling.
-    Scrolling the board and the brick is extended.
-    When the mouse is close to the boundary, then scrolling may occur
-    without any mouse move.
-  */
-  var ans = this.content
-  var size = this.view.size.scale(this.scale)
-  ans.x_min -= Math.max(size.width, margin.width)
-  ans.y_min -= Math.max(size.height, margin.height)
-  return ans.unscale(this.scale)
+  var min = this.minPort // visible area when scroll is default
+  var ans = this.port // available area
+  ans.right -= min.right
+  ans.bottom -= min.bottom + margin.height
+  var scroll = this.scrollDefault
+  ans.left -= scroll.x + margin.width
+  ans.top -= scroll.y + margin.height
+  ans.origin_.forward(this.scrollDefault)
+  ans.unscale(this.scale).mirror()
+  return ans
 }
 
 /**
@@ -279,8 +334,8 @@ eYo.Metrics.prototype.scrollLimits = function (margin) {
  * @param{?eYo.Rect} rect
  */
 eYo.Metrics.prototype.getDraggingLimits = function (rect) {
-  var view = this.fromView(this.view)
-  var limits = this.content
+  var view = this.minPort
+  var limits = this.port
   if (rect) {
 
   }
@@ -296,5 +351,5 @@ eYo.Metrics.prototype.equals = function(rhs) {
   return rhs && this.view.equals(rhs.view) &&
   this.scale === rhs.scale &&
   this.scroll.equals(rhs.scroll) &&
-  this.content.equals(rhs.content)
+  this.port.equals(rhs.port)
 }

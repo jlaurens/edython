@@ -12,13 +12,13 @@ describe('Basic metrics', function () {
     var svg = eYo.Svg.newElementSvg(div1, 'eyo-svg')
     svg.style.position='absolute'
     svg.setAttribute('preserveAspectRatio', 'xMinYMin slice')
-    var content = metrics.content_
+    var content = metrics.port_
     content.origin = eYo.Where.cl(-8, -2)
     content.size = eYo.Where.cl(88, 22)
     svg.setAttribute('viewBox', `${content.x} ${content.y} ${content.width} ${content.height}`)
     metrics.scale_ = 1.1
     metrics.scroll = eYo.Where.cl(4, 2)
-    content = metrics.contentInView
+    content = metrics.portInView
     svg.setAttribute('width', `${content.width}px`)
     svg.setAttribute('height', `${content.height}px`)
     svg.style.transform = `translate(${content.x}px,${content.y}px)`

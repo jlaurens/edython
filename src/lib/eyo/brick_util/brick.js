@@ -179,7 +179,7 @@ Object.defineProperties(eYo.Brick.prototype, {
   },
   desk: {
     get () {
-      return this.board_.desk_
+      return this.board_.desk
     }
   },
   audio: {
@@ -2119,6 +2119,13 @@ Object.defineProperties(eYo.Brick.prototype, {
  */
 eYo.Brick.prototype.moveTo = function (xy, snap) {
   this.ui.moveTo(xy, snap)
+}
+
+/**
+ * Move a brick assuming according to its `xy` property.
+ */
+eYo.Brick.prototype.move = function () {
+  this.ui.moveTo(this.xy)
 }
 
 /**

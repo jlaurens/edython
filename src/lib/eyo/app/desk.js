@@ -167,7 +167,7 @@ eYo.Desk.prototype.updateMetrics = function() {
 }
 
 /**
- * Update the metics and place the components accordingly.
+ * Update the metrics and place the components accordingly.
  */
 eYo.Desk.prototype.layout = function() {
   this.updateMetrics()
