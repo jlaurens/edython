@@ -30,7 +30,7 @@ eYo.Metrics = function (board) {
   this.port_ = new eYo.Rect()
   this.view_ = new eYo.Rect()
   this.box_ = new eYo.Rect()
-  this.scroll_ = this.scrollDefault.clone
+  this.scroll__ = this.scrollDefault.clone
   this.scale_ = 1
   this.updateDepth_ = 0
 }
@@ -72,42 +72,6 @@ Object.defineProperties(eYo.Metrics.prototype, {
         }
         this.scale_ = newValue
         this.board_ && this.board_.didScale()
-      }
-    }
-  },
-  /**
-   * How much is the port rect scrolled.
-   * When there are some top bricks and the scale is big enough,
-   * the view region is bigger than the port region and scrolling
-   * is possible.
-   * 
-   * When this point is (0,0) the view topleft corner
-   * (with a small margin offset)
-   * and the (0,0) point in the content are exactly
-   * at the same location on screen.
-   * 
-   * @type {eYo.Where} 
-   */
-  scroll: {
-    get () {
-      return this.scroll_.clone
-    },
-    set (newValue) {
-      var r = this.scrollLimits(eYo.Where.xy())
-      if (newValue.x < r.x) {
-        newValue.x = r.x
-      }
-      if (newValue.x > r.x_max) {
-        newValue.x = r.x_max
-      }
-      if (newValue.y < r.y) {
-        newValue.y = r.y
-      }
-      if (newValue.y > r.y_max) {
-        newValue.y = r.y_max
-      }
-      if (!this.scroll_.equals(newValue)) {
-        this.wrapUpdate(() => this.scroll_.set(newValue))
       }
     }
   },
@@ -192,7 +156,60 @@ Object.defineProperties(eYo.Metrics.prototype, {
     }
   },
   /**
-   * The minimum port rect in board coordinates.
+   * The default scroll value.
+   * 
+   * @type {eYo.Where} 
+   * @readonly 
+   */
+  scrollDefault: {
+    get () {
+      return eYo.Where.cl(1.5, 0*0.25)
+    }
+  },
+  /**
+   * When this point is (0,0) the view topleft corner
+   * and the (0,0) point in the port are exactly
+   * at the same location on screen.
+   * The port is translated by `scroll•(i,j)` with respect to the view.
+   * 
+   * @type {eYo.Where} 
+   */
+  scroll: {
+    get () {
+      return this.scroll_
+    },
+    set (newValue) {
+      this.scroll_ = newValue
+      return
+      var r = this.scrollLimits
+      if (newValue.x < r.x) {
+        newValue.x = r.x
+      }
+      if (newValue.x > r.x_max) {
+        newValue.x = r.x_max
+      }
+      if (newValue.y < r.y) {
+        newValue.y = r.y
+      }
+      if (newValue.y > r.y_max) {
+        newValue.y = r.y_max
+      }
+      this.scroll_ = newValue
+    }
+  },
+  scroll_: {
+    get () {
+      return this.scroll__.clone
+    },
+    set (newValue) {
+      if (!this.scroll__.equals(newValue)) {
+        this.wrapUpdate(() => this.scroll__.set(newValue))
+      }
+    }
+  },
+  /**
+   * The minimum port rect in board coordinates,
+   * when the scroll value is default.
    * 
    * @type {eYo.Rect} 
    * @readonly 
@@ -200,22 +217,34 @@ Object.defineProperties(eYo.Metrics.prototype, {
   minPort: {
     get () {
       var ans = this.view
-      ans.size_.unscale(this.scale)
-      ans.origin = this.scrollDefault
+      ans.origin = this.scrollDefault.scale(-1)
       ans.left = -(this.numbering ? 5 : 3) * eYo.Unit.x
       ans.top = -eYo.Unit.y
+      ans.unscale(this.scale)
       return ans
     }
   },
   /**
-   * The minimum port rect in board coordinates.
-   * 
-   * @type {eYo.Rect} 
-   * @readonly 
+   * The scroll limits in view coordinates.
+   * Used for scrolling, gives the limiting values of the `scroll` property.
    */
-  scrollDefault: {
+  scrollLimits: {
     get () {
-      return eYo.Where.cl(-1.5, -0.25)
+      var min = this.view
+      min.origin_.set()
+      var ans = this.port.scale(this.scale)
+      var d = ans.right - min.right
+      ans.right = d >= 0 ? d : 0
+      d = ans.left - min.left
+      ans.left = d <= 0 ? d : 0
+      d = ans.bottom - min.bottom
+      ans.bottom = d >= 0 ? d : 0
+      d = ans.top - min.top
+      ans.top = d <= 0 ? d : 0
+      var scroll = this.scroll
+      ans.backward(scroll).mirror()
+      goog.asserts.assert(ans.xyContains(scroll), 'MISSED')
+      return ans
     }
   },
   /**
@@ -243,7 +272,7 @@ Object.defineProperties(eYo.Metrics.prototype, {
       ans.scale_ = this.scale_
       ans.view = this.view_
       ans.port = this.port_
-      ans.scroll = this.scroll_
+      ans.scroll_ = this.scroll_
       ans.box = this.box_
       ans.board_ = this.board_ // at the end only
       return ans
@@ -257,7 +286,7 @@ Object.defineProperties(eYo.Metrics.prototype, {
 eYo.Metrics.prototype.dispose = function () {
   this.board_ = null
   this.box_.dispose()
-  this.scroll_.dispose()
+  this.scroll__.dispose()
   this.view_.dispose()
   this.port_.dispose()
   this.box_ = this.scroll_ = this.view_ = this.port_ = null
@@ -290,8 +319,9 @@ eYo.Metrics.prototype.wrapUpdate = function (do_it) {
  * @param{eYo.Rect | eYo.Where} WR
  */
 eYo.Metrics.prototype.toView = function (WR) {
-  // Referential(content) = (origin: O, basis: {I, J})
   // Referential(view) = (origin: o, basis: {i, j})
+  // o is the top left corner of the visible area.
+  // Referential(port) = (origin: O, basis: {I, J})
   // I = i * scale, J = j * scale
   // o + scroll = O, scroll is a vector in view coordinates
   // P = o + (x, y) •{i, j}
@@ -308,24 +338,6 @@ eYo.Metrics.prototype.toView = function (WR) {
  */
 eYo.Metrics.prototype.fromView = function (wr) {
   return wr.backward(this.scroll_).unscale(this.scale)
-}
-
-/**
- * The scroll limits in view coordinates.
- * Used for scrolling, gives the limiting values of the `scroll` property.
- * @param{eYo.Size} margin  Extra margin in board coordinates, in general, it is the size of some brick.
- */
-eYo.Metrics.prototype.scrollLimits = function (margin) {
-  var min = this.minPort // visible area when scroll is default
-  var ans = this.port // available area
-  ans.right -= min.right
-  ans.bottom -= min.bottom + margin.height
-  var scroll = this.scrollDefault
-  ans.left -= scroll.x + margin.width
-  ans.top -= scroll.y + margin.height
-  ans.origin_.forward(this.scrollDefault)
-  ans.unscale(this.scale).mirror()
-  return ans
 }
 
 /**

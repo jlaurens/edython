@@ -545,11 +545,11 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
     // The ordering within drags does not matter, because the three types of
     // dragging are exclusive.
     if (this.brickDragger_) {
-      console.error('brickDragger_.end')
       this.brickDragger_.end()
+      this.brickDragger_ = null
     } else if (this.boardDragger_) {
-      console.error('boardDragger_.end')
       this.boardDragger_.end()
+      this.boardDragger_ = null
     } else if (this.startBrick_) {
       console.error('doBrickClick_')
       this.doBrickClick_()
@@ -605,9 +605,9 @@ eYo.Gesture.prototype.handleRightClick = function(e) {
  * @param {!Blockly.Board} ws The board the event hit.
  * @package
  */
-eYo.Gesture.prototype.handleWsStart = function(e, ws) {
+eYo.Gesture.prototype.handleBoardStart = function(e, ws) {
   goog.asserts.assert(!this.started_,
-      'Tried to call gesture.handleWsStart, but the gesture had already been ' +
+      'Tried to call gesture.handleBoardStart, but the gesture had already been ' +
       'started.');
   this.started_ = true
   this.board_ = ws
@@ -619,7 +619,7 @@ eYo.Gesture.prototype.handleWsStart = function(e, ws) {
 /**
  * Start a gesture: update the board to indicate that a gesture is in
  * progress and bind mousemove and mouseup handlers.
- * Called from `handleWsStart`
+ * Called from `handleBoardStart`
  * @param {!Event} e A mouse down or touch start event.
  * @package
  */
@@ -674,7 +674,7 @@ eYo.Gesture.prototype.handleFlyoutStart = function(e, flyout) {
       'Tried to call gesture.handleFlyoutStart, but the gesture had already ' +
       'been started.')
   this.flyout_ || (this.flyout_ = flyout)
-  this.handleWsStart(e, flyout.board)
+  this.handleBoardStart(e, flyout.board)
 }
 
 /**

@@ -94,7 +94,7 @@ eYo.Svg.prototype.deskInit = function(desk) {
   var svg = dom.svg = Object.create(null)
   var div = dom.div_
   if (eYo.Dom.is3dSupported) {
-    svg.boardDragSurface = new eYo.Svg.BoardDragSurface(div)
+    svg.boardDragSurface = null // new eYo.Svg.BoardDragSurface(div)
     svg.brickDragSurface = new eYo.Svg.BrickDragSurface(div)
   }
   this.deskBind_resize(desk)

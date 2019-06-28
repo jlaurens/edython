@@ -57,6 +57,11 @@ Object.defineProperties(eYo.BoardDragger.prototype, {
       return this.makeUI === eYo.Do.nothing
     }
   },
+  startScroll: {
+    get () {
+      return this.startScroll_.clone
+    }
+  },
 })
 
 /**
@@ -102,6 +107,7 @@ eYo.BoardDragger.prototype.isActive_ = false
 /**
  * Start dragging the board.
  * @param {!eYo.Gesture} gesture
+ * @return {Boolean} started or not
  * @package
  */
 eYo.BoardDragger.prototype.start = function(gesture) {
@@ -111,8 +117,9 @@ eYo.BoardDragger.prototype.start = function(gesture) {
   // we get the mouseup outside the frame. On chrome and safari desktop we do
   // not.
   if (this.isActive_) {
-    return
+    return true
   }
+  this.isActive_ = true
   /**
    * @type {!eYo.BoardSvg}
    * @private
@@ -126,16 +133,11 @@ eYo.BoardDragger.prototype.start = function(gesture) {
    * @type {!eYo.Metrics}
    * @private
    */
-  this.startMetrics_ = board.metrics
-  console.error(this.startMetrics_)
-
+  this.startScroll_ = board.metrics.scroll
   if (eYo.Selected.brick) {
     eYo.Selected.brick.unselect()
   }
-
-  this.isActive_ = true
-
-  this.ui_driver.boardDraggerStart(this)
+  return this.ui_driver.boardDraggerStart(this)
 }
 
 /**
@@ -156,7 +158,7 @@ eYo.BoardDragger.prototype.clearGesture = function() {
 eYo.BoardDragger.prototype.drag = function() {
   var board = this.board_
   var deltaWhere = board.ui_driver.boardDragDeltaWhere(board)
-  board.metrics_.scroll = this.startMetrics_.scroll.forward(deltaWhere)
+  board.metrics_.scroll = this.startScroll.forward(deltaWhere)
   if (board.scrollbar) {
     board.scrollbar.layout()
   }
@@ -179,11 +181,11 @@ eYo.BoardDragger.prototype.move = function() {
  */
 eYo.BoardDragger.prototype.end = function() {
   this.drag()
+  this.isActive_ = false
   // Don't do anything if we aren't using a drag surface.
   if (!this.dragSurface_) {
     return
   }
-  this.isActive_ = false
   var trans = this.dragSurface_.translation
   this.dragSurface_.clearAndHide(this.dom.svg.group_)
   this.board_.metrics_.scroll = trans

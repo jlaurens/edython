@@ -99,13 +99,18 @@ eYo.Where.property_y_ = {
 Object.defineProperties(eYo.Where.prototype, {
   c_: {
     get () {
-      return this.c__
+      return this.c__ / 10000
     },
     set (newValue) {
-      this.c__ = newValue
-      if (newValue < -1.5 && newValue > -1.501) {
-        console.error(newValue)
-      }
+      this.c__ = Math.round(10000 * newValue)
+    }
+  },
+  l_: {
+    get () {
+      return this.l__ / 10000
+    },
+    set (newValue) {
+      this.l__ = Math.round(10000 * newValue)
     }
   },
   c: eYo.Where.property_c_,
@@ -141,7 +146,18 @@ Object.defineProperties(eYo.Where.prototype, {
     get () {
       return new eYo.Where(this)
     }
+  },
+  /**
+   * Euclidian distance between points.
+   * @param {!eYo.Where} other
+   * @return {number} non negative number
+   */
+  toString: {
+    get () {
+      return `eYo.Where(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
+    }
   }
+
 })
 
 /**
@@ -323,15 +339,6 @@ eYo.Where.prototype.in = function (rect) {
     && this.c_ <= rect.c_max
     && this.l_ >= rect.l_min
     && this.l_ <= rect.l_max
-}
-
-/**
- * Euclidian distance between points.
- * @param {!eYo.Where} other
- * @return {number} non negative number
- */
-eYo.Where.prototype.toString = function () {
-  return `eYo.Where(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
 }
 
 /**
@@ -659,7 +666,17 @@ Object.defineProperties(eYo.Rect.prototype, {
     get () {
       return new eYo.Rect(this)
     }
-  }
+  },
+  /**
+   * Euclidian distance between points.
+   * @param {!eYo.Where} other
+   * @return {number} non negative number
+   */
+  toString: {
+      get () {
+      return `eYo.Rect(origin: ${this.origin_.toString}, size: ${this.size_.toString})`
+    }
+  },
 })
 
 /**

@@ -239,7 +239,7 @@ eYo.Svg.prototype.boardBind_mousedown = function(board) {
 eYo.Svg.prototype.boardOn_mousedown = function(e) {
   var gesture = this.getGesture(e)
   if (gesture) {
-    gesture.handleWsStart(e, this)
+    gesture.handleBoardStart(e, this)
   }
 }
 

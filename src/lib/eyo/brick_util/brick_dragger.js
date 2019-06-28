@@ -138,6 +138,9 @@ eYo.BrickDragger.prototype.dispose = function() {
  * @package
  */
 eYo.BrickDragger.prototype.start = function(gesture) {
+  if (this.brick_) {
+    return this.brick_
+  }
   this.gesture_ = gesture
   var targetBrick = gesture.targetBrick_
   if (!targetBrick) {
