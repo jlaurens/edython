@@ -9,6 +9,60 @@ setTimeout(() => {
 
 eYo.Test = Object.create(null)
 
+eYo.Test.makeTestDesk = (id) => {
+  var div0 = document.querySelector('#eyo-desk')
+  var div1 = goog.dom.createDom('div')
+  div1.setAttribute('id', id)
+  goog.dom.appendChild(div0.parentNode, div1)
+  var style = div1.style
+  style.position = 'relative'
+  var w  = 10 * eYo.Unit.x
+  var h = 5 * eYo.Unit.y
+  style.width = `${w}px`
+  style.height = `${h}px`
+  style.background = 'red'
+  style.border = '2px solid gray'
+  var desk = new eYo.Desk({
+    container: id
+  })
+  desk.makeUI()
+  return desk
+}
+
+Object.defineProperties(eYo.Test, {
+  desk: {
+    /**
+     * A programmatically created test desk.
+     * A `div#eyo-desk` is expected.
+     * A `div#eyo-desk-headfull-test` is created.
+     */
+    get () {
+      return this.desk_ || (this.desk_ = eYo.Test.makeTestDesk('#eyo-desk-headfull-test'))
+    }
+  },
+  board: {
+    get () {
+      return this.board_ || (this.board_ = this.desk.board)
+    }
+  },
+  desk1: {
+    /**
+     * A programmatically created test desk.
+     * A `div#eyo-desk` is expected.
+     * A `div#eyo-desk-headfull-test1` is created.
+     */
+    get () {
+      return this.desk1_ || (this.desk1_ = eYo.Test.makeTestDesk('#eyo-desk-headfull-test1'))
+
+    }
+  },
+  board1: {
+    get () {
+      return this.board1_ || (this.board1_ = this.desk1.board)
+    }
+  }
+})
+
 eYo.Test.makeDesk = options => {
   if (!eYo.App.board) {
     options = options || {}
@@ -19,7 +73,8 @@ eYo.Test.makeDesk = options => {
       css : true,
       scrollbars : true,
       sounds : false,
-      container: 'eyo-desk'
+      container: 'eyo-desk',
+      zoom: {},
     })
     if (options.container && (document.getElementById(options.container) ||
     document.querySelector(options.container))) {

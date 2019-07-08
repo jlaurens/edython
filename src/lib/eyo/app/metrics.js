@@ -30,7 +30,7 @@ eYo.Metrics = function (board) {
   this.port_ = new eYo.Rect()
   this.view_ = new eYo.Rect()
   this.box_ = new eYo.Rect()
-  this.scroll__ = this.scrollDefault.clone
+  this.drag__ = this.dragDefault.clone
   this.scale_ = 1
   this.updateDepth_ = 0
 }
@@ -49,8 +49,11 @@ Object.defineProperties(eYo.Metrics.prototype, {
   /**
    * Bricks visible dimensions are propotional to this value.
    * Doubling the scale will double the size of the bricks on screen.
-   * Each time the scale changes, an `update` message is sent.
+   * Each time the scale changes, a `didScale` message is sent to the board.
    * The same holds for other properties.
+   * Scaling will change the scroll bars and the view rect.
+   * When the scaling corresponds to a zoom out, scrolling
+   * might be disabled if the zoom factor is too small.
    * @type {Number} Positive scale factor.
    */
   scale: {
@@ -76,7 +79,7 @@ Object.defineProperties(eYo.Metrics.prototype, {
     }
   },
   /**
-   * The view rect is the visible rectangle on screen (the view port).
+   * The view rect is the visible rectangle on screen.
    * For the main board it is the bounding rect of the enclosing
    * desk's div. For a flyout, it is generally smaller.
    * It is used for clipping the svg.
@@ -161,51 +164,76 @@ Object.defineProperties(eYo.Metrics.prototype, {
    * @type {eYo.Where} 
    * @readonly 
    */
-  scrollDefault: {
+  dragDefault: {
     get () {
-      return eYo.Where.cl(1.5, 0*0.25)
+      return eYo.Where.cl(0*1.5, 0*0.25)
     }
   },
   /**
    * When this point is (0,0) the view topleft corner
    * and the (0,0) point in the port are exactly
    * at the same location on screen.
-   * The port is translated by `scroll•(i,j)` with respect to the view.
+   * The drag div is translated by `drag•(i,j)` with respect to the view.
    * 
    * @type {eYo.Where} 
    */
-  scroll: {
+  drag: {
+    /**
+     * This is the private `drag_` property projected
+     * on the admissible set of values.
+     * @return {eYo.Where}
+     */
     get () {
-      return this.scroll_
+      var ans = this.drag_
+      var r = this.dragLimits
+      if (r) {
+        if (ans.x < r.x) {
+          // console.error(`${ans.x} < ${r.x}`)
+          ans.x = r.x
+        }
+        if (ans.x > r.x_max) {
+          // console.error(`${ans.x} > ${r.x_max}`)
+          ans.x = r.x_max
+        }
+        if (ans.y < r.y) {
+          // console.error(`${ans.y} < ${r.y}`)
+          ans.y = r.y
+        }
+        if (ans.y > r.y_max) {
+          // console.error(`${ans.y} > ${r.y_max}`)
+          ans.y = r.y_max
+        }
+      }
+      return ans
     },
+    /**
+     * 
+     * @param {eYo.Where} newValue 
+     */
     set (newValue) {
-      this.scroll_ = newValue
-      return
-      var r = this.scrollLimits
-      if (newValue.x < r.x) {
-        newValue.x = r.x
-      }
-      if (newValue.x > r.x_max) {
-        newValue.x = r.x_max
-      }
-      if (newValue.y < r.y) {
-        newValue.y = r.y
-      }
-      if (newValue.y > r.y_max) {
-        newValue.y = r.y_max
-      }
-      this.scroll_ = newValue
+      this.drag_ = newValue
     }
   },
-  scroll_: {
+  drag_: {
     get () {
-      return this.scroll__.clone
+      return this.drag__.clone
     },
     set (newValue) {
-      if (!this.scroll__.equals(newValue)) {
-        this.wrapUpdate(() => this.scroll__.set(newValue))
+      if (!this.drag__.equals(newValue)) {
+        this.wrapUpdate(() => this.drag__.set(newValue))
       }
     }
+  },
+  /**
+   * The opposite of `drag`.
+   * 
+   * @type {eYo.Where}
+   * @readonly
+   */
+  scroll: {
+    get () {
+      return this.drag.mirror
+    },
   },
   /**
    * The minimum port rect in board coordinates,
@@ -217,10 +245,10 @@ Object.defineProperties(eYo.Metrics.prototype, {
   minPort: {
     get () {
       var ans = this.view
-      ans.origin = this.scrollDefault.scale(-1)
+      ans.origin.set()
+      ans.unscale(this.scale)
       ans.left = -(this.numbering ? 5 : 3) * eYo.Unit.x
       ans.top = -eYo.Unit.y
-      ans.unscale(this.scale)
       return ans
     }
   },
@@ -228,22 +256,20 @@ Object.defineProperties(eYo.Metrics.prototype, {
    * The scroll limits in view coordinates.
    * Used for scrolling, gives the limiting values of the `scroll` property.
    */
-  scrollLimits: {
+  dragLimits: {
     get () {
-      var min = this.view
-      min.origin_.set()
+      var v = this.view
+      v.origin_.set()
       var ans = this.port.scale(this.scale)
-      var d = ans.right - min.right
+      var d = ans.right - v.right
       ans.right = d >= 0 ? d : 0
-      d = ans.left - min.left
+      d = ans.left - v.left
       ans.left = d <= 0 ? d : 0
-      d = ans.bottom - min.bottom
+      d = ans.bottom - v.bottom
       ans.bottom = d >= 0 ? d : 0
-      d = ans.top - min.top
+      d = ans.top - v.top
       ans.top = d <= 0 ? d : 0
-      var scroll = this.scroll
-      ans.backward(scroll).mirror()
-      goog.asserts.assert(ans.xyContains(scroll), 'MISSED')
+      ans.mirror()
       return ans
     }
   },
@@ -272,12 +298,17 @@ Object.defineProperties(eYo.Metrics.prototype, {
       ans.scale_ = this.scale_
       ans.view = this.view_
       ans.port = this.port_
-      ans.scroll_ = this.scroll_
+      ans.drag_ = this.drag_
       ans.box = this.box_
       ans.board_ = this.board_ // at the end only
       return ans
     }
   },
+  toString: {
+    get () {
+      return `drag: ${this.drag.toString}, view: ${this.view.toString}, port: ${this.port.toString}`
+    }
+  }
 })
 
 /**
@@ -286,10 +317,10 @@ Object.defineProperties(eYo.Metrics.prototype, {
 eYo.Metrics.prototype.dispose = function () {
   this.board_ = null
   this.box_.dispose()
-  this.scroll__.dispose()
+  this.drag__.dispose()
   this.view_.dispose()
   this.port_.dispose()
-  this.box_ = this.scroll_ = this.view_ = this.port_ = null
+  this.box_ = this.drag_ = this.view_ = this.port_ = null
 }
 
 /**
@@ -323,13 +354,13 @@ eYo.Metrics.prototype.toView = function (WR) {
   // o is the top left corner of the visible area.
   // Referential(port) = (origin: O, basis: {I, J})
   // I = i * scale, J = j * scale
-  // o + scroll = O, scroll is a vector in view coordinates
+  // o + drag = O, drag is a vector in view coordinates
   // P = o + (x, y) •{i, j}
   //   = O + (X, Y) • {I, J}
-  //   = o + scroll • {i, j} + (X, Y) * scale • {i, j} 
-  //  (x, y) = scroll + (X, Y) * scale
-  //  (X, Y) = ((x, y) - scroll) / scale
-  return WR.scale(this.scale).forward(this.scroll_)
+  //   = o + drag • {i, j} + (X, Y) * scale • {i, j} 
+  //  (x, y) = drag + (X, Y) * scale
+  //  (X, Y) = ((x, y) - drag) / scale
+  return WR.scale(this.scale).forward(this.drag_)
 }
 
 /**
@@ -337,7 +368,7 @@ eYo.Metrics.prototype.toView = function (WR) {
  * @param{eYo.Rect | eYo.Where} wr
  */
 eYo.Metrics.prototype.fromView = function (wr) {
-  return wr.backward(this.scroll_).unscale(this.scale)
+  return wr.backward(this.drag_).unscale(this.scale)
 }
 
 /**
@@ -362,6 +393,6 @@ eYo.Metrics.prototype.getDraggingLimits = function (rect) {
 eYo.Metrics.prototype.equals = function(rhs) {
   return rhs && this.view.equals(rhs.view) &&
   this.scale === rhs.scale &&
-  this.scroll.equals(rhs.scroll) &&
+  this.drag.equals(rhs.drag) &&
   this.port.equals(rhs.port)
 }

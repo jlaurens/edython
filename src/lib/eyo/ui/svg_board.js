@@ -20,18 +20,51 @@ goog.forwardDeclare('eYo.Board')
 /**
  * Initialize the board dom ressources.
  * @param {!eYo.Board} board
- * @param {?Element} container
  * @return {!Element} The board's dom repository.
  */
 eYo.Dom.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
-  var container = (board.inFlyout
-  ? board.desk.flyout
-  : board.desk).dom.board_
-  var dom = board.dom
+  const dom = board.dom
   Object.defineProperty(dom, 'div_', {
-    value: container,
-    writable: true
+    get () {
+      return board.owner.dom.board_
+    }
   })
+  var d1 = dom.drag_ = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    'eyo-board-scroll'
+  )
+  var style = d1.style
+  style.left = style.top = style.width = style.height = '0px'
+  style.overflow = 'visible'
+  style.position = 'absolute'
+  dom.div_.appendChild(d1)
+  var d2 = dom.scale_ = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    'eyo-board-scale'
+  )
+  var stl = d2.style
+  stl.width = stl.height = '0px'
+  stl.overflow = 'visible'
+  stl.position = 'absolute'
+  d1.appendChild(d2)
+  var d3 = dom.content_ = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    'eyo-board-content'
+  )
+  stl = d3.style
+  stl.overflow = 'visible'
+  stl.position = 'absolute'
+  d2.appendChild(d3)
+  if (board.isMain) {
+    const flyout = dom.flyout_ = goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      'eyo-flyout'
+    )
+    stl = flyout.style
+    stl.position = 'absolute'
+    stl.display = 'none'
+    dom.div_.appendChild(flyout)
+  }
   return dom
 })
 
@@ -57,7 +90,8 @@ eYo.Svg.prototype.boardInit = function(board) {
   var svg = dom.svg = Object.create(null)
   svg.size = {}
   var options = board.options
-  const root = svg.root_ = eYo.Svg.newElementSvg(dom.div_, 'eyo-svg')
+  const root = svg.root_ = eYo.Svg.newElementSvg(null, 'eyo-svg')
+  goog.dom.insertChildAt(dom.content_, root, 0)
   root.style.overflow = 'visible'
   root.setAttribute('preserveAspectRatio', 'xMinYMin slice')
   root.style.position = 'absolute'
@@ -134,11 +168,23 @@ eYo.Svg.prototype.boardInit = function(board) {
     },
     g
   )
+  // var el = eYo.Svg.newElement(
+  //   'rect',
+  //   {
+  //     width: '100%',
+  //     height: '100%',
+  //   },
+  //   svg.canvas_
+  // )
+  // el.style.fill = 'blue'
   if (!board.inFlyout) {
     this.boardBind_mousedown(board)
     if (options.zoom && options.zoom.wheel) {
       this.boardBind_wheel(board)
     }
+  }
+  if (eYo.Dom.is3dSupported) {
+    svg.brickDragSurface = new eYo.Svg.BrickDragSurface(dom.div_)
   }
   eYo.Dom.bindDocumentEvents()
   return g
@@ -162,32 +208,35 @@ eYo.Svg.prototype.boardDispose = eYo.Dom.decorateDispose(function(board) {
  * @param {!eYo.Board} board
  */
 eYo.Svg.prototype.boardPlace = function(board) {
+  var dom = board.dom
   var metrics = board.metrics
-  var port = metrics.port_
-  var svg = board.dom.svg
+  var drag = metrics.drag
+  dom.drag_.style.transform = `translate(${drag.x}px,${drag.y}px)`
+  var port = metrics.port
+  dom.content_.style.transform = `translate(${port.x}px,${port.y}px)`
+  var svg = dom.svg
   var r = svg.draftBackground_
   r.setAttribute('x', `${port.x}px`)
   r.setAttribute('y', `${port.y}px`)
   r.setAttribute('width', `${-port.x - eYo.Unit.x / 2}px`)
+  r.setAttribute('height', `${port.height}px`)
   r = svg.background_
   r.setAttribute('x', `2px`)
   r.setAttribute('y', `${port.y}px`)
   r.setAttribute('width', `${port.right - 4}px`)
+  r.setAttribute('height', `${port.height}px`)
   var root = svg.root_
-  port = metrics.portInView
   root.setAttribute('viewBox', `${port.x} ${port.y} ${port.width} ${port.height}`)
   root.setAttribute('width', `${port.width}px`)
   root.setAttribute('height', `${port.height}px`)
-  var scroll = metrics.scroll
-  root.style.transform = `translate(${port.x + scroll.x + 0 * eYo.Unit.x / 2}px,${port.y + scroll.y + 0 * eYo.Unit.y / 4}px)`
 }
 
 /**
- * Clean the cached inverted screen CTM.
+ * Dispose of the desk dom resources.
+ * @param {!eYo.Board} board
  */
-eYo.Svg.prototype.boardResizeContents = function(board) {
-  var svg = board.dom.svg
-  svg.matrixFromScreen_ = null
+eYo.Svg.prototype.boardDidScale = function(board) {
+  board.dom.scale_.style.transform = `scale(${board.metrics.scale})`
 }
 
 /**
@@ -285,7 +334,7 @@ eYo.Svg.prototype.boardOn_wheel = function(e) {
  */
 eYo.Svg.prototype.boardDragDeltaWhere = function (board) {
   var deltaWhere = board.gesture_.deltaWhere_
-  var correction = board.dragger_.correction_
+  var correction = board.boardDragger_.correction_
   return correction ? correction(deltaWhere) : deltaWhere
 }
 
@@ -344,18 +393,16 @@ eYo.Svg.prototype.boardEventWhere = function(board, e) {
 eYo.Svg.prototype.boardZoom = function(board, xy, scaleChange) {
   if (board.scrollbar) {
     var svg = board.dom.svg
-    var center = svg.root_.createSVG()
+    var center = svg.root_.createSVGPoint()
     center.x = xy.x
     center.y = xy.y
     var CTM = svg.canvas_.getCTM()
     center = center.matrixTransform(CTM.inverse())
-    x = center.x * (1 - scaleChange)
-    y = center.y * (1 - scaleChange)
-    var absolute = board.metrics.absolute
+    var drag = board.metrics.drag
     var matrix = CTM
-        .translate(x, y)
+        .translate(center.x * (1 - scaleChange), center.y * (1 - scaleChange))
         .scale(scaleChange)
-    board.metrics.scroll = eYo.Where.xy(matrix.e - absolute.x, matrix.f - absolute.y)
+    board.metrics.drag = eYo.Where.xy(matrix.e - drag.x, matrix.f - drag.y)
   }
 }
 

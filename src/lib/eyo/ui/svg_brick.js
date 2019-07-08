@@ -708,7 +708,7 @@ eYo.Svg.prototype.brickWhereInParent = function (brick) {
  */
 eYo.Svg.prototype.brickWhereInBoard = function (brick) {
   var ans = new eYo.Where()
-  var bds = brick.desk.dom.svg.brickDragSurface
+  var bds = brick.board.dom.svg.brickDragSurface
   var current = bds.brickGroup
   var bdsGroup = bds.dom.svg.group_
   var canvas = brick.board.dom.svg.canvas_
@@ -734,7 +734,7 @@ eYo.Svg.prototype.brickWhereInBoard = function (brick) {
  */
 eYo.Svg.prototype.brickWhereInDesk = function (brick) {
   var ans = new eYo.Where()
-  var bds = brick.desk.dom.svg.brickDragSurface
+  var bds = brick.board.dom.svg.brickDragSurface
   var bdsRoot = bds.dom.svg.root_
   var boardRoot = brick.board.dom.svg.root_
   var element = brick.dom.svg.group_

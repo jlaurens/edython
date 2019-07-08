@@ -72,7 +72,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
    */
   dragger: {
     get () {
-      return this.dragger_
+      return this.boardDragger_
     }
   },
   /**
@@ -83,7 +83,7 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
    */
   brick: {
     get () {
-      return this.dragger_.brick
+      return this.boardDragger_.brick
     }
   },
   /**

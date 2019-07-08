@@ -22,7 +22,7 @@ goog.require('eYo.Svg')
 eYo.Svg.prototype.brickDraggerInit = eYo.Dom.decorateInit(function(dragger) {
   var dom = dragger.dom
   var svg = dom.svg = Object.create(null)
-  svg.dragSurface = dragger.desk.dom.svg.brickDragSurface
+  svg.dragSurface = dragger.board.dom.svg.brickDragSurface
 })
 
 /**
@@ -48,10 +48,13 @@ eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
   // to keep the position in sync as it moves on/off the surface.
   var brick = brickDragger.brick_
   var board = brick.board
-  var dragSurface = brickDragger.dragSurface
+  var bds = brickDragger.dragSurface
   // Execute the move on the top-level SVG component
-  dragSurface.start(brickDragger)
-
+  if (bds) {
+    bds.start(brickDragger)
+  } else {
+    
+  }
   // at start the board is centered in the visible area,
   // the whole size is at least 3x3 times the visible area.
   // Prepare the dragging boundaries
@@ -63,12 +66,12 @@ eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
   var point = svg.root_.createSVGPoint()
   point.x = rect.top
   point.y = rect.left
-  dragSurface.topLeft_ = eYo.Where.xy(point.matrixTransform(matrix))
+  bds.topLeft_ = eYo.Where.xy(point.matrixTransform(matrix))
   point.x = rect.bottom
   point.y = rect.right
-  dragSurface.bottomRight_ = eYo.Where.xy(point.matrixTransform(matrix))
+  bds.bottomRight_ = eYo.Where.xy(point.matrixTransform(matrix))
   // While dragging, the visible area must be contained within these limits.
-  var limits = dragSurface.limits_ = new eYo.Rect()
+  var limits = bds.limits_ = new eYo.Rect()
   var topBricks = board.topBricks.filter(b3k => b3k.ui && b3k.ui.rendered)
   topBricks.forEach(b3k => limits.union(b3k.ui.boundingRect))
   var brickBoundary = brick.ui.boundingRect

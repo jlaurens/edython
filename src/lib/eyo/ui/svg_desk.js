@@ -42,26 +42,33 @@ eYo.Dom.prototype.deskInit = eYo.Dom.decorateInit(function(desk) {
     e => eYo.Dom.isTargetInput(e) || e.preventDefault()
   )
   /*
-  <div>
-    <div class='eyo-board-div'/>
-    <div class='eyo-flyout-div'/>
+  <div id='eyo-desk'>
+    <div class='eyo-board'>
+      <svg data-type='board'/>
+      <div class='eyo-flyout'>
+        <div class='eyo-flyout-control'/>
+        <div class='eyo-flyout-toolbar'/>
+        <div class='eyo-board'>
+          <svg data-type='board'/>
+          <svg data-type='vertical-scrollbar'/>
+        </div>
+      </div>
+      <svg data-type='scrollbars'/>
+      <svg data-type='drag-board'/>
+    </div>
   </div>
   */
-  var x = dom.board_ = goog.dom.createDom(
+  var d = dom.board_ = goog.dom.createDom(
     goog.dom.TagName.DIV,
-    'eyo-board-div'
+    'eyo-board'
   )
-  x.style.position = 'absolute'
-  x.style.width = x.style.height = '100%'
-  div.appendChild(x)
-
-  var x = dom.flyout_ = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    'eyo-flyout-div'
-  )
-  x.style.position = 'absolute'
-  x.style.display = 'none'
-  div.appendChild(x)
+  var stl = d.style
+  stl.overflow = 'hidden'
+  stl.position = 'absolute'
+  stl.width = '100%'
+  stl.height = '100%'
+  div.appendChild(d)
+  desk.board_.makeUI(d)
 })
 
 /**
@@ -91,12 +98,6 @@ eYo.Svg.prototype.deskInit = function(desk) {
     return
   }
   var dom = eYo.Svg.superClass_.deskInit.call(this, desk)
-  var svg = dom.svg = Object.create(null)
-  var div = dom.div_
-  if (eYo.Dom.is3dSupported) {
-    svg.boardDragSurface = null // new eYo.Svg.BoardDragSurface(div)
-    svg.brickDragSurface = new eYo.Svg.BrickDragSurface(div)
-  }
   this.deskBind_resize(desk)
 }
 
@@ -140,13 +141,12 @@ eYo.Svg.prototype.deskSetBrickDisplayMode = function (desk, mode) {
  * Size the main board to completely fill its container.
  * Call this when the view actually changes sizes
  * (e.g. on a window resize/device orientation change).
- * See eYo.Svg.boardResizeContents to resize the board when the contents
- * change (e.g. when a block is added or removed).
  * @param {!eYo.Desk} desk A desk.
  */
 eYo.Svg.prototype.deskUpdateMetrics = function(desk) {
   // After the change, the selection should be visible if it was.
   desk.viewRect = desk.dom.div_.getBoundingClientRect()
+  console.error('desk size', desk.dom.div_.getBoundingClientRect())
 }
 
 /**
@@ -168,3 +168,12 @@ eYo.Svg.prototype.deskWhereElement = function(desk, element) {
   }
   return ans
 }
+
+/**
+ * Initialize the desk's flyout SVG ressources.
+ * @param {!eYo.Desk} desk
+ * @return {!Element} The desk's SVG group.
+ */
+eYo.Svg.prototype.deskInstallFlyout = function(desk) {
+}
+

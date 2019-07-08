@@ -22,11 +22,9 @@ goog.forwardDeclare('eYo.Trashcan')
  * @param {?Object} options
  * @return {!Element} The trashcan's SVG group.
  */
-eYo.Svg.prototype.trashcanInit = function(trashcan, options) {
-  if (trashcan.dom) {
-    return
-  }
-  var svg = trashcan.dom.svg
+eYo.Svg.prototype.trashcanInit = eYo.Dom.decorateInit(function(trashcan, options) {
+  var dom = trashcan.dom
+  var svg = dom.svg = Object.create(null)
   svg.state_ = svg.left_ = svg.top_ = 0
   /* Here's the markup that will be generated:
   <g class="eyo-trash">
@@ -106,13 +104,11 @@ eYo.Svg.prototype.trashcanInit = function(trashcan, options) {
     null,
     this.trashcanOn_mouseup.bind(trashcan)
   )
-  svg = this.board_.dom.svg
+  svg = trashcan.board_.dom.svg
   svg.group_.insertBefore(g, svg.canvas_)
-
-  trashcan.animateLid_()
   
   return g
-}
+})
 
 /**
  * Initializes the trashcan SVG ressources.
@@ -139,7 +135,7 @@ eYo.Svg.prototype.trashcanDispose = function(trashcan) {
  */
 eYo.Svg.prototype.trashcanOn_mouseup = function(trashcan) {
   var brd = trashcan.board_
-  if (brd.startScroll.backward(brd.scroll).magnitude > eYo.Gesture.DRAG_RADIUS) {
+  if (brd.startDrag.backward(brd.drag).magnitude > eYo.Gesture.DRAG_RADIUS) {
     return
   }
 }
@@ -152,7 +148,7 @@ eYo.Svg.prototype.trashcanPlace = function(trashcan) {
   var r = trashcan.viewRect
   trashcan.dom.svg.group_.setAttribute(
     'transform',
-    `translate(${r.left_},${r.top_})`
+    `translate(${r.left},${r.top})`
   )
 }
 
@@ -167,9 +163,10 @@ eYo.Svg.prototype.trashcanSetOpen = function(trashcan, state) {
   if (dom.isOpen == state) {
     return
   }
-  goog.Timer.clear(dom.lidTask_)
-  dom.isOpen = state;
-  this.trashcansAnimate(trashcan)
+  var svg = dom.svg
+  goog.Timer.clear(svg.lidTask_)
+  dom.isOpen = state
+  this.trashcanAnimate(trashcan)
 }
 
 /**
@@ -178,17 +175,18 @@ eYo.Svg.prototype.trashcanSetOpen = function(trashcan, state) {
  */
 eYo.Svg.prototype.trashcanAnimate = function(trashcan) {
   var dom = trashcan.dom
-  dom.state_ += dom.isOpen ? 0.2 : -0.2
-  dom.state_ = goog.math.clamp(dom.state_, 0, 1)
-  var angle = dom.state_ * 45
-  dom.svg.lid_.setAttribute(
+  var svg = dom.svg
+  svg.state_ += dom.isOpen ? 0.2 : -0.2
+  svg.state_ = goog.math.clamp(svg.state_, 0, 1)
+  var angle = svg.state_ * 45
+  svg.lid_.setAttribute(
     'transform',
-    `rotate(${angle},${dom.WIDTH_ - 4},${dom.LID_HEIGHT_ - 2})`
+    `rotate(${angle},${trashcan.WIDTH_ - 4},${trashcan.LID_HEIGHT_ - 2})`
   )
-  var opacity = goog.math.lerp(0.4, 0.8, dom.state_)
+  var opacity = goog.math.lerp(0.4, 0.8, svg.state_)
   dom.svg.group_.style.opacity = opacity
-  if (dom.state_ > 0 && dom.state_ < 1) {
-    dom.lidTask_ = goog.Timer.callOnce(() => {
+  if (svg.state_ > 0 && svg.state_ < 1) {
+    svg.lidTask_ = goog.Timer.callOnce(() => {
       this.trashcanAnimate(trashcan)
     }, 20)
   }
@@ -199,7 +197,7 @@ eYo.Svg.prototype.trashcanAnimate = function(trashcan) {
  * @param {!eYo.Trashcan} trashcan
  */
 eYo.Svg.prototype.trashcanClientRect = function(trashcan) {
-  var svg = thashcan.dom.svg
+  var svg = trashcan.dom.svg
   var trashRect = svg.group_.getBoundingClientRect()
   var left = trashRect.left + trashcan.SPRITE_LEFT_ - trashcan.MARGIN_HOTSPOT_
   var top = trashRect.top + trashcan.SPRITE_TOP_ - trashcan.MARGIN_HOTSPOT_

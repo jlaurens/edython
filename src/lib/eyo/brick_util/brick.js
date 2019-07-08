@@ -157,7 +157,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   this.disposeUI()
   this.span.dispose()
   this.span_ = eYo.VOID
-  this.board.resizeContents()
+  this.board.resizePort()
   this.board_ = eYo.VOID
   this.change_.dispose()
   this.change_ = eYo.VOID

@@ -51,7 +51,7 @@ eYo.Style = {
 ;(function () {
   var g = {
     get () {
-      return 8 * eYo.Style.weight(eYo.Font.size / 10)
+      return Math.round(8000 * eYo.Style.weight(eYo.Font.size / 10)) / 1000
     }
   }
   Object.defineProperties(
@@ -64,7 +64,7 @@ eYo.Style = {
   )
   g = {
     get () {
-      return 6 * eYo.Style.weight(eYo.Font.size / 10)
+      return Math.round(6000 * eYo.Style.weight(eYo.Font.size / 10) / 1000)
     }
   }
   Object.defineProperties(
@@ -80,7 +80,6 @@ eYo.Style = {
  * Point size of text.
  */
 eYo.Font = {
-  ascent: 13,
   familyMono: 'DejaVuSansMono,monospace',
   familySans: 'DejaVuSans,sans-serif'
 }
@@ -91,24 +90,46 @@ Object.defineProperties(eYo.Font, {
       return this.ascent
     }
   },
+  ascent: {
+    get () {
+      return this.ascent_
+    },
+    /**
+     * `newValue` is truncated to the `1/32th`
+     * such that half value is still exact
+     * when used in pixel dimension.
+     * @param {Number} newValue 
+     */
+    set (newValue) {
+      newValue = Math.round(32 * newValue) / 32
+      if (newValue !== this.ascent_) {
+        this.ascent_ = newValue
+        newValue *= 32 / 1556 // = 16 / 778 = 8 / 389
+        this.descent_ = Math.round(492 * newValue) / 32
+        this.xHeight_ = Math.round(1120 * newValue) / 32
+        this.space_ = Math.round(1233 * newValue) / 32
+        this.totalAscent_ = Math.round(2048 * newValue) / 32
+      }
+    }
+  },
   descent: {
     get () {
-      return this.ascent * 492 / 1556
+      return this.descent_
     }
   },
   xHeight: {
     get () {
-      return this.ascent * 1120 / 1556
+      return this.xHeight_
     }
   },
   space: {
     get () {
-      return this.ascent * 1233 / 1556
+      return this.space_
     }
   },
   totalAscent: {
     get () {
-      return this.ascent * 2048 / 1556
+      return this.totalAscent_
     }
   },
   height: {
@@ -132,6 +153,8 @@ Object.defineProperties(eYo.Font, {
     }
   }
 })
+
+eYo.Font.ascent = 13
 
 /**
  * Offset of the text editor.

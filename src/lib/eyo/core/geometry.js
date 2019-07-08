@@ -97,22 +97,22 @@ eYo.Where.property_y_ = {
 
 // Overdefined, for better understanding
 Object.defineProperties(eYo.Where.prototype, {
-  c_: {
-    get () {
-      return this.c__ / 10000
-    },
-    set (newValue) {
-      this.c__ = Math.round(10000 * newValue)
-    }
-  },
-  l_: {
-    get () {
-      return this.l__ / 10000
-    },
-    set (newValue) {
-      this.l__ = Math.round(10000 * newValue)
-    }
-  },
+  // c_: {
+  //   get () {
+  //     return this.c__ / 10000
+  //   },
+  //   set (newValue) {
+  //     this.c__ = Math.round(10000 * newValue)
+  //   }
+  // },
+  // l_: {
+  //   get () {
+  //     return this.l__ / 10000
+  //   },
+  //   set (newValue) {
+  //     this.l__ = Math.round(10000 * newValue)
+  //   }
+  // },
   c: eYo.Where.property_c_,
   l: eYo.Where.property_l_,
   dc: eYo.Where.property_c_,
@@ -668,15 +668,33 @@ Object.defineProperties(eYo.Rect.prototype, {
     }
   },
   /**
-   * Euclidian distance between points.
-   * @param {!eYo.Where} other
-   * @return {number} non negative number
+   * String representation of the receiver.
+   * @return {String} a string
    */
   toString: {
       get () {
       return `eYo.Rect(origin: ${this.origin_.toString}, size: ${this.size_.toString})`
     }
   },
+  /**
+   * Width of the draft part of the board.
+   * @return {number} non negative number
+   */
+  draft: {
+    get () {
+      return Math.max(0, -this.x)
+    }
+  },
+  /**
+   * Width of the main part of the board.
+   * `0` when in flyout.
+   * @return {number} non negative number
+   */
+  main: {
+    get () {
+      return Math.min(this.width, this.width + this.x)
+    }
+  }
 })
 
 /**
@@ -968,17 +986,17 @@ eYo.Rect.prototype.union = function (rect) {
   if (a < this.x) {
     this.x = a
   }
-  a = rect.x_max
-  if (this.x_max < a) {
-    this.x_max = a
+  a = rect.right
+  if (this.right < a) {
+    this.right = a
   }
   a = rect.y
   if (a < this.y) {
     this.y = a
   }
-  a = rect.y_max
-  if (this.y_max < a) {
-    this.y_max = a
+  a = rect.bottom
+  if (this.bottom < a) {
+    this.bottom = a
   }
   return this
 }

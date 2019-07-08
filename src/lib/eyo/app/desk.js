@@ -24,7 +24,7 @@ goog.forwardDeclare('eYo.Options')
 
 /**
  * Class for a desk.
- * This is the structure above the board and the flyout.
+ * This is the structure above the board.
  * @param {?Object=} options Dictionary of options.
  * @constructor
  */
@@ -34,9 +34,9 @@ eYo.Desk = function(options) {
   // Load CSS.
   eYo.Css.inject(options.hasCss, options.pathToMedia)
   this.options_ = options
-  // create the various boards and flyout
-  this.board_ = new eYo.Board(this, options)
   this.viewRect_ = new eYo.Rect()
+  // create the main board
+  this.board_ = new eYo.Board(this, options)
 }
 
 Object.defineProperties(eYo.Desk.prototype, {
@@ -59,14 +59,6 @@ Object.defineProperties(eYo.Desk.prototype, {
   board: {
     get () {
       return this.board_
-    }
-  },
-  /**
-   * The onwed flyout instance, eventually.
-   */
-  flyout: {
-    get () {
-      return this.flyout_
     }
   },
   ui_driver: {
@@ -114,7 +106,6 @@ eYo.Desk.prototype.makeUI = function() {
   this.audio_ = new eYo.Audio(this.options.pathToMedia)
   var d = this.ui_driver_ = new eYo.Svg(this)
   d.deskInit(this)
-  this.board_.makeUI()
   this.willFlyout_ && this.addFlyout()
   this.layout()
 }
@@ -127,7 +118,6 @@ eYo.Desk.prototype.disposeUI = function() {
   this.board_ && this.board_.disposeUI()
   this.audio_.dispose()
   this.audio_ = null
-  this.flyout_ && this.flyout_.disposeUI()
   this.ui_driver_ && this.ui_driver_.dispose()
   this.ui_driver_ = null
 }
@@ -136,11 +126,6 @@ eYo.Desk.prototype.disposeUI = function() {
  * Dispose of this desk.
  */
 eYo.Desk.prototype.dispose = function() {
-  if (this.flyout_) {
-    this.board_.flyout = null
-    this.flyout_.dispose()
-    this.flyout_ = null
-  }
   if (this.board_) {
     this.board_.dispose()
     this.board_ = null
@@ -157,13 +142,11 @@ eYo.Desk.prototype.dispose = function() {
  * 1) the desk injection div is queried for its size and location.
  *    This gives the desk viewRect.
  * 2) Then the main board dimensions.
- * 3) the flyout's div viewRect and its board as side effect.
  
  */
 eYo.Desk.prototype.updateMetrics = function() {
   this.ui_driver.deskUpdateMetrics(this)
   this.board_.updateMetrics()
-  this.flyout_ && this.flyout_.updateMetrics()
 }
 
 /**
@@ -175,43 +158,11 @@ eYo.Desk.prototype.layout = function() {
 }
 
 /**
- * Place the board and the flyout.
+ * Place the board.
  */
 eYo.Desk.prototype.place = function() {
   this.ui_driver.deskPlace(this)
   this.board_.place()
-  this.flyout_ && this.flyout_.place()
-}
-
-/**
- * Add a flyout.
- * @param {!Object} switcher  See eYo.FlyoutToolbar constructor.
- */
-eYo.Desk.prototype.addFlyout = function(switcher) {
-  if (!this.hasUI) {
-    this.willFlyout_ = true
-    return
-  }
-  delete this.willFlyout_
-  var flyoutOptions = {
-    flyoutAnchor: this.options.flyoutAnchor,
-    switcher: switcher
-  }
-  var flyout = this.flyout_ = new eYo.Flyout(this, flyoutOptions)
-  flyout.targetBoard = this.board_
-  this.ui_driver.deskInstallFlyout(this)
-}
-
-/**
- * Remove a previously added flyout.
-*/
-eYo.Desk.prototype.removeFlyout = function() {
-  var x = this.flyout_
-  if (x) {
-    this.flyout_ = null
-    this.board_.flyout = null
-    x.dispose()
-  }
 }
 
 /**

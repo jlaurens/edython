@@ -21,8 +21,7 @@ goog.require('eYo.Svg')
  */
 eYo.Svg.prototype.boardDraggerInit = eYo.Dom.decorateInit(function(dragger) {
   var dom = dragger.dom
-  var svg = dom.svg = Object.create(null)
-  svg.dragSurface = null // dragger.desk.dom.svg.boardDragSurface
+  dom.svg = Object.create(null)
 })
 
 /**
@@ -32,7 +31,6 @@ eYo.Svg.prototype.boardDraggerInit = eYo.Dom.decorateInit(function(dragger) {
 eYo.Svg.prototype.boardDraggerDispose = eYo.Dom.decorateDispose(function (dragger) {
   var svg = dragger.dom.svg
   if (svg) {
-    svg.dragSurface = null
     dragger.dom.svg = null
   }
 })
@@ -44,8 +42,4 @@ eYo.Svg.prototype.boardDraggerDispose = eYo.Dom.decorateDispose(function (dragge
 eYo.Svg.prototype.boardDraggerStart = function (dragger) {
   var element = dragger.board.dom.div_
   dragger.correction_ = eYo.Svg.getTransformCorrection(element)
-  var surface = dragger.dragSurface
-  if (surface) {
-    surface.start(dragger)
-  }
 }

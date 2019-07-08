@@ -248,6 +248,16 @@ Object.defineProperties(eYo.Gesture.prototype, {
       return new eYo.Where(this.event_)
     }
   },
+  /**
+   * The move when dragging.
+   * @type {eYo.Where}
+   * @readonly
+   */
+  delta: {
+    get () {
+      return this.deltaWhere_.clone
+    }
+  },
   started: {
     get () {
       return this.started_

@@ -43,7 +43,7 @@ eYo.Dom.prototype.flyoutCssClass = function() {
  */
 eYo.Dom.prototype.flyoutInit = eYo.Dom.decorateInit(function(flyout) {
   var dom = flyout.dom
-  const div = flyout.desk.dom.flyout_
+  const div = flyout.targetBoard.dom.flyout_
   Object.defineProperty(dom, 'div_', { value: div })
   // flyout toolbar, on top of the flyout
   var cssClass = this.flyoutCssClass()
@@ -344,7 +344,7 @@ eYo.Svg.prototype.flyoutPlace = function (flyout) {
   if (flyout.toolbar_) {
     flyout.toolbar_.place()
   }
-  flyout.board_.resizeContents()
+  flyout.board_.resizePort()
   var board = flyout.targetBoard_
   if (board) {
     var scrollbar = board.scrollbar
@@ -356,7 +356,7 @@ eYo.Svg.prototype.flyoutPlace = function (flyout) {
         scrollbar.vScroll.oldHostMetrics_ = null
       }
     }
-    board.resizeContents()
+    board.resizePort()
     board.trashcan.place()
   }
 }
@@ -458,18 +458,18 @@ eYo.Svg.prototype.flyoutListen_mouseover = function(flyout) {
  */
 eYo.Svg.prototype.flyoutBindScrollEvents = function(flyout) {
   var bound = flyout.dom.bound
-  if (bound.scroll_wheel) {
+  if (bound.drag_wheel) {
     return
   }
   var svg = flyout.dom.svg
-  bound.scroll_wheel = eYo.Dom.bindEvent(
+  bound.drag_wheel = eYo.Dom.bindEvent(
     svg.group_,
     'wheel',
     null,
     this.flyoutOn_wheel.bind(flyout)
   )
   // Dragging the flyout up and down.
-  bound.scroll_mousedown = eYo.Dom.bindEvent(
+  bound.drag_mousedown = eYo.Dom.bindEvent(
     svg.background_,
     'mousedown',
     null,

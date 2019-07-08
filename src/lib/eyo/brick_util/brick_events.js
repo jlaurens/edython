@@ -21,6 +21,7 @@ goog.require('eYo.Events')
 goog.require('eYo.Events.Abstract')
 
 goog.forwardDeclare('goog.array')
+goog.forwardDeclare('goog.dom')
 
 /**
  * Convenient shortcut.

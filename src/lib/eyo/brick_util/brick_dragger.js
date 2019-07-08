@@ -40,7 +40,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
    */
   dragSurface: {
     get () {
-      return this.destination_.desk_.dom.svg.brickDragSurface
+      return this.destination_.dom.svg.brickDragSurface
     }
   },
   brick_: {

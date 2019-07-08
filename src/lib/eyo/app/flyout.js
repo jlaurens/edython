@@ -32,17 +32,17 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
  * A board has either a flyout or a targetBoard
  * but never has both.
  * This constructor takes care of this cycle.
- * @param {!eYo.Board} targetBoard
+ * @param {!eYo.Board} board  The owning board, which must be a main board.
  * @param {!Object} flyoutOptions Dictionary of options for the board.
  * @constructor
  */
-eYo.Flyout = function(board, targetBoard, flyoutOptions) {
-  goog.asserts.assert(!board.hasUI, 'TOO LATE')
+eYo.Flyout = function(targetBoard, flyoutOptions) {
+  goog.asserts.assert(targetBoard.isMain, 'Only main boards may have a flyout')
+  goog.asserts.assert(!targetBoard.hasUI, 'TOO LATE')
   // First
+  this.targetBoard = targetBoard
   var board = this.board = new eYo.Board(this, {})
   board.options = targetBoard.options
-  // second
-  this.targetBoard = targetBoard
   /**
    * Position of the flyout relative to the board.
    * @type {number}
@@ -596,7 +596,7 @@ eYo.Flyout.prototype.on_wheel = function(e) {
       delta *= 10
     }
     var metrics = this.board.metrics
-    metrics.scroll = metrics.scroll.forward({x: 0, y: delta})
+    metrics.drag = metrics.drag.forward({x: 0, y: delta})
   }
   eYo.Dom.gobbleEvent(e)
 }
@@ -652,7 +652,7 @@ eYo.Flyout.prototype.layout_ = function(contents) {
 eYo.Flyout.prototype.scrollToStart = function() {
   var board = this.board
   var metrics = board.metrics_
-  metrics.scroll.set()
+  metrics.drag.set()
   board.move()
 }
 
@@ -668,8 +668,9 @@ eYo.Flyout.prototype.isDragTowardBoard = function(gesture) {
   if(!this.scrollable) {
     return true
   }
-  var dx = gesture.deltaWhere_.x
-  var dy = gesture.deltaWhere_.y
+  var delta = gesture.deltaWhere
+  var dx = delta.x
+  var dy = delta.y
   // Direction goes from -180 to 180, with 0 toward the board.
   var direction = Math.atan2(dy,
     this.atRight ? -dx : dx

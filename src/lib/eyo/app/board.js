@@ -25,7 +25,7 @@ goog.forwardDeclare('eYo.Desktop')
 
 /**
  * Class for a board.  This is a data structure that contains bricks.
- * @param {!eYo.Desk | eYo.Flyout} owner Any board belongs to either a desk or a flyout.
+ * @param {!eYo.Desk | eYo.Flyout | eYo.Board} owner Any board belongs to either a desk (the main board), a flyout (the flyout board) or another board (the dragger board).
  * @constructor
  */
 eYo.Board = function(owner, options) {
@@ -89,8 +89,10 @@ eYo.Board = function(owner, options) {
 
   this.metrics_ = new eYo.Metrics(this)
   
-  this.dragger_ = new eYo.BoardDragger(this)
-  this.brickDragger_ = new eYo.BrickDragger(this)
+  if (this.isMain) {
+    this.boardDragger_ = new eYo.BoardDragger(this)
+    this.brickDragger_ = new eYo.BrickDragger(this)
+  }
 
   /**
    * List of currently highlighted bricks.  Brick highlighting is often used to
@@ -124,6 +126,16 @@ Object.defineProperties(eYo.Board, {
 })
 
 Object.defineProperties(eYo.Board.prototype, {
+  /**
+   * Convenient property.
+   * @readonly
+   * @type {eYo.Board}
+   */
+  owner: {
+    get () {
+      return this.owner_
+    }
+  },
   /**
    * Convenient property.
    * @readonly
@@ -206,23 +218,33 @@ Object.defineProperties(eYo.Board.prototype, {
     }
   },
   /**
-   * Is this board the surface for a flyout?
+   * Only main boards may have a flyout and draggers.
    * @readonly
    * @type {boolean}
    */
   isMain: {
     get () {
-      return this === this.desk.board
+      return this.owner_ instanceof eYo.Desk
     }
   },
   /**
-   * Is this board the surface for a flyout?
+   * Dragger boards are owned by another board.
+   * @readonly
+   * @type {boolean}
+   */
+  isDragger: {
+    get () {
+      return this.owner_ instanceof eYo.Board
+    }
+  },
+  /**
+   * Is this board belonging to a flyout?
    * @readonly
    * @type {boolean}
    */
   inFlyout: {
     get () {
-      return !!this.targetBoard
+      return this.owner_ instanceof eYo.Flyout
     }
   },
   /**
@@ -230,7 +252,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   dragger: {
     get () {
-      return this.draggable && this.dragger_
+      return this.draggable && this.boardDragger_
     }
   },
   audio: {
@@ -239,8 +261,8 @@ Object.defineProperties(eYo.Board.prototype, {
     }
   },
   /**
-   * Is this board draggable and scrollable?
-   * @type {boolean} True if this board may be dragged.
+   * Is this board visible
+   * @type {boolean} True if this board is visible.
    */
   visible: {
     get () {
@@ -357,8 +379,20 @@ Object.defineProperties(eYo.Board.prototype, {
      * zoom options are required
      * @param {number} newScale Zoom factor.
      */
-    set (newScale) {
-      this.metrics_.scale = newScale
+    set (newValue) {
+      this.metrics_.scale = newValue
+    }
+  },
+  drag: {
+    get () {
+      return this.metrics_.drag
+    },
+    /**
+     * Set the board's scroll vector.
+     * @param {eYo.Size} newValue Scroll factor.
+     */
+    set (newValue) {
+      this.metrics_.drag = newValue
     }
   },
   /**
@@ -371,14 +405,40 @@ Object.defineProperties(eYo.Board.prototype, {
   bricksBoundingRect: {
     get () {
       // JL: TODO separate main bricks and draft bricks
-      var ans = new eYo.Rect(-2, -1, 4, 2)
-      var topBricks = this.topBricks.filter(b3k => b3k.ui && b3k.hasUI)
-      if (topBricks.length) {
-        topBricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
-        return ans
-      }
-      // There are no rendered bricks, return an empty rectangle.
-      return new eYo.Rect()
+      var ans = new eYo.Rect()
+      var bricks = this.topBricks.filter(b3k => b3k.ui && b3k.hasUI)
+      bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
+      return ans
+    }
+  },
+  /**
+   * Calculate the bounding box for the bricks on the board.
+   * Coordinate system: board coordinates.
+   *
+   * @return {Object} Contains the position and size of the bounding box
+   *   containing the bricks on the board.
+   */
+  mainBricksBoundingRect: {
+    get () {
+      var ans = new eYo.Rect()
+      var bricks = this.mainBricks.filter(b3k => b3k.ui && b3k.hasUI)
+      bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
+      return ans
+    }
+  },
+  /**
+   * Calculate the bounding box for the bricks on the board.
+   * Coordinate system: board coordinates.
+   *
+   * @return {Object} Contains the position and size of the bounding box
+   *   containing the bricks on the board.
+   */
+  draftBricksBoundingRect: {
+    get () {
+      var ans = new eYo.Rect()
+      var bricks = this.draftBricks.filter(b3k => b3k.ui && b3k.hasUI)
+      bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
+      return ans
     }
   },
   /**
@@ -392,16 +452,6 @@ Object.defineProperties(eYo.Board.prototype, {
   originInDesk: {
     get () {
       return this.desk.xyElementInDesk(this.dom.svg.canvas_)
-    }
-  },
-  /**
-   * Current scrolling offset in pixel units.
-   * @readonly
-   * @type {eYo.Where}
-   */
-  scroll: {
-    get () {
-      return this.metrics_.scroll
     }
   },
   /**
@@ -446,14 +496,14 @@ eYo.Board.prototype.dispose = function() {
   this.dispose = eYo.Do.nothing
   // Stop rerendering.
   this.rendered = false;
-  if (this.gesture_) {
-    this.gesture_.cancel()
-  }
+  this.cancelCurrentGesture()
   this.listeners_.length = 0
   this.clear()
-  if (this.dragger_) {
-    this.dragger_.dispose()
-    this.dragger_ = null
+  if (this.isMain) {
+    this.boardDragger_.dispose()
+    this.boardDragger_ = null
+    this.brickDragger_.dispose()
+    this.brickDragger_ = null
   }
   // Remove from board database.
   delete eYo.Board.BoardDB_[this.id]
@@ -508,7 +558,7 @@ eYo.Board.prototype.makeUI = function() {
     bottom = this.trashcan.top
   }
   if (options.zoom) {
-    board.scale = options.zoom.startScale || 1
+    this.scale = options.zoom.startScale || 1
     if (options.zoom.controls) {
       this.zoomControls_ = new eYo.ZoomControls(this, bottom)
       bottom = this.zoomControls_.top
@@ -521,6 +571,7 @@ eYo.Board.prototype.makeUI = function() {
  * Dispose the UI related resources.
  */
 eYo.Board.prototype.disposeUI = function() {
+  this.flyout_ && this.flyout_.disposeUI()
   this.zoomControls_ && this.zoomControls_.disposeUI()
   this.trashcan && this.trashcan.disposeUI()
   var d = this.ui_driver_
@@ -532,18 +583,24 @@ eYo.Board.prototype.disposeUI = function() {
 
 /**
  * Update the UI according to the scale change.
+ * The dimensions and the scroll offset are updated.
  */
 eYo.Board.prototype.didScale = function() {
-  if (this.scrollbar) {
-    this.scrollbar.layout()
-  } else {
-    this.move()
-  }
-  eYo.App.hideChaff()
-  if (this.flyout_) {
-    // Resize flyout.
-    this.flyout_.reflow()
-  }
+  console.error('BEFORE', this.metrics)
+  this.updateMetrics()
+  console.error('AFTER', this.metrics)
+  this.place()
+  this.ui_driver && this.ui_driver.boardDidScale(this)
+  // if (this.scrollbar) {
+  //   this.scrollbar.layout()
+  // } else {
+  //   this.move()
+  // }
+  // eYo.App.hideChaff()
+  // if (this.flyout_) {
+  //   // Resize flyout.
+  //   this.flyout_.reflow()
+  // }
 }
 
 /**
@@ -605,17 +662,6 @@ eYo.Board.prototype.clear = function() {
 eYo.Board.prototype.newBrick = function (prototypeName, opt_id) {
   return eYo.Brick.Manager.create(this, prototypeName, opt_id)
 }
-
-/**
- * Obtain a newly created brick.
- * Returns a brick subclass for eYo bricks.
- * @param {?string} prototypeName Name of the language object containing
- *     type-specific functions for this brick.
- * @param {string=} optId Optional ID.  Use this ID if provided, otherwise
- *     create a new id.
- * @return {!eYo.Brick} The created brick.
- */
-eYo.Board.prototype.newBrick = eYo.Board.prototype.newBrick
 
 /**
  * Undo or redo the previous action.
@@ -871,17 +917,6 @@ Object.defineProperties(eYo.Board.prototype, {
 })
 
 /**
- * Getter for the flyout associated with this board.  This flyout may be
- * owned by either the toolbox or the board, depending on toolbox
- * configuration.  It will be null if there is no flyout.
- * @return {eYo.Flyout} The flyout on this board.
- * @package
- */
-eYo.Board.prototype.getFlyout_ = function() {
-  return this.flyout_
-}
-
-/**
  * Update items that use screen coordinate calculations
  * because something has changed (e.g. scroll position, window size).
  * @private
@@ -896,7 +931,37 @@ eYo.Board.prototype.updateScreenCalculations_ = function() {
  */
 eYo.Board.prototype.updateMetrics = function() {
   this.metrics_.view_.size = this.desk.viewRect.size
-  this.resizeContents()
+  this.resizePort()
+  this.flyout_ && this.flyout_.updateMetrics()
+}
+
+/**
+ * Add a flyout.
+ * @param {!Object} switcher  See eYo.FlyoutToolbar constructor.
+ */
+eYo.Desk.prototype.addFlyout = function(switcher) {
+  if (!this.hasUI) {
+    this.willFlyout_ = true
+    return
+  }
+  delete this.willFlyout_
+  var flyoutOptions = {
+    flyoutAnchor: this.options.flyoutAnchor,
+    switcher: switcher
+  }
+  this.flyout_ = new eYo.Flyout(this, flyoutOptions)
+}
+
+/**
+ * Remove a previously added flyout.
+*/
+eYo.Desk.prototype.removeFlyout = function() {
+  var x = this.flyout_
+  if (x) {
+    this.flyout_ = null
+    this.board_.flyout = null
+    x.dispose()
+  }
 }
 
 /**
@@ -912,14 +977,53 @@ eYo.Board.prototype.metricsDidChange = function() {
  * Update UI accordingly.
  * @package
  */
-eYo.Board.prototype.resizeContents = function() {
+eYo.Board.prototype.resizePort = function() {
   if (!this.resizesEnabled_ || !this.rendered) {
     return
   }
-  var metrics = this.metrics_
-  metrics.port = metrics.minPort.union(this.bricksBoundingRect)
-  this.ui_driver.boardResizeContents(this)
-  this.scrollbar && this.scrollbar.layout()
+  var metrics_ = this.metrics_
+  // Start with the minimal rectangle enclosing all the blocks.
+  var port = this.bricksBoundingRect
+  // add room for the draft
+  var z = -3 * eYo.Unit.x
+  if (port.left > z) {
+    port.left = z
+  }
+  // add room for line numbering
+  this.numbering && (port.left -= 2 * eYo.Unit.x)
+  // Add room for the whole visible rectangle.
+  var view = metrics_.view
+  // remove the room for both scrollers
+  var withHScroller = view.height > eYo.Scrollbar.thickness
+  if (withHScroller) {
+    view.size_.height -= eYo.Scrollbar.thickness
+  }
+  var withVScroller = view.width > eYo.Scrollbar.thickness
+  if (withVScroller) {
+    view.size_.width -= eYo.Scrollbar.thickness
+  }
+  view.unscale(metrics_.scale)
+  view.origin_.set()
+  // enlarge the port to include the visual rectangle
+  if (port.right < view.right) {
+    port.right = view.right
+  }
+  if (port.bottom < view.bottom) {
+    port.bottom = view.bottom
+  }
+  z = -eYo.Unit.y
+  if (port.top > z) {
+    port.top = z
+  }
+  // then add the scrollers
+  if (withHScroller) {
+    port.height += eYo.Scrollbar.thickness / metrics_.scale
+  }
+  if (withVScroller) {
+    port.width += eYo.Scrollbar.thickness / metrics_.scale
+  }
+  metrics_.port = port
+  console.error('port: ', port.toString)
 }
 
 /**
@@ -943,7 +1047,7 @@ eYo.Board.prototype.layout = function() {
  * trash, zoom, toolbox, etc. (e.g. window layout).
  */
 eYo.Board.prototype.place = function() {
-  this.ui_driver.boardPlace(this)
+  this.ui_driver && this.ui_driver.boardPlace(this)
   if (this.flyout_) {
     this.flyout_.place()
   }
@@ -983,7 +1087,7 @@ eYo.Board.prototype.move = function() {
  */
 eYo.Board.prototype.moveTo = function(xy) {
   console.log('moveTo', xy)
-  this.metrics_.scroll = xy
+  this.metrics_.drag = xy
   this.move()
 }
 
@@ -1042,9 +1146,7 @@ eYo.Board.prototype.paste = function () {
       this.remainingCapacity) {
     return
   }
-  if (this.gesture_) {
-    this.gesture_.cancel() // Dragging while pasting?  No.
-  }
+  this.cancelCurrentGesture() // Dragging while pasting?  No.
   var m4t, targetM4t, b3k
   eYo.Events.groupWrap(() => {
     if ((b3k = eYo.Xml.domToBrick(xml, this))) {
@@ -1178,7 +1280,6 @@ eYo.Board.prototype.showContextMenu_ = function (e) {
   var menuOptions = []
   var topBricks = this.orderedTopBricks
   var eventGroup = eYo.Do.genUid()
-  var ws = this
 
   // Options to undo/redo previous action.
   var undoOption = {}
@@ -1272,10 +1373,8 @@ eYo.Board.prototype.showContextMenu_ = function (e) {
     text: deleteList.length === 1 ? eYo.Msg.DELETE_BLOCK
       : eYo.Msg.DELETE_X_BLOCKS.replace('{0}', String(deleteList.length)),
     enabled: deleteList.length > 0,
-    callback: function () {
-      if (ws.gesture_) {
-        ws.gesture_.cancel()
-      }
+    callback: () => {
+      this.cancelCurrentGesture()
       if (deleteList.length < 2) {
         deleteNext()
       } else {
@@ -1310,7 +1409,8 @@ eYo.Board.prototype.markFocused = function() {
  */
 eYo.Board.prototype.zoom = function(center, amount) {
   var options = this.options.zoom
-  goog.asserts.assert(options, 'Forbidden zoom with no zoom options')
+  console.error(this.options)
+  goog.asserts.assert(options, `Forbidden zoom with no zoom options ${this.options}`)
   var speed = options.scaleSpeed
   // Scale factor.
   var scaleChange = Math.pow(speed, amount)
@@ -1349,24 +1449,24 @@ eYo.Board.prototype.zoomCenter = function(type) {
 eYo.Board.prototype.scrollPage = function(horizontally, increase) {
   // how many lines are visible actually
   var metrics = this.metrics_
-  var scroll = metrics.scroll
+  var drag = metrics.drag
   var size = metrics.view.size.unscale(board.scale)
   if (horizontally) {
     var scrollAmount = Math.max(Math.floor(size.w) * 0.75, 1)
     if (increase) {
-      scroll.x += scrollAmount
+      drag.x += scrollAmount
     } else {
-      scroll.x -= scrollAmount
+      drag.x -= scrollAmount
     }
   } else {
     scrollAmount = Math.max(Math.floor(size.h) - 1, 1)
     if (increase) {
-      scroll.y += scrollAmount
+      drag.y += scrollAmount
     } else {
-      scroll.y -= scrollAmount
+      drag.y -= scrollAmount
     }
   }
-  this.moveTo(scroll)
+  this.moveTo(drag)
 }
 
 /**
@@ -1437,17 +1537,17 @@ eYo.Board.doRelativeScroll = function(xyRatio) {
   var metrics = this.metrics_
   var content = metrics.port
   var view = metrics.port
-  var scroll = metrics.scroll
+  var drag = metrics.drag
   if (goog.isNumber(xyRatio.x)) {
     var t = Math.min(1, Math.max(0, xyRatio.x))
     // view.x_max - content.x_max <= scroll.x <= view.x_min - content.x_min
-    scroll.x = view.x_max - content.x_max + t * (view.width - content.width)
+    drag.x = view.x_max - content.x_max + t * (view.width - content.width)
   }
   if (goog.isNumber(xyRatio.y)) {
     var t = Math.min(1, Math.max(0, xyRatio.y))
-    scroll.y = view.y_max - content.y_max + t * (view.height - content.height)
+    drag.y = view.y_max - content.y_max + t * (view.height - content.height)
   }
-  this.moveTo(scroll)
+  this.moveTo(drag)
 }
 
 /**
@@ -1462,7 +1562,7 @@ eYo.Board.prototype.setResizesEnabled = function(enabled) {
   this.resizesEnabled_ = enabled
   if (reenabled) {
     // Newly enabled.  Trigger a layout.
-    this.resizeContents()
+    this.resizePort()
   }
 }
 
@@ -1690,7 +1790,7 @@ eYo.Board.prototype.addBrick = (() => {
       }
       brick.move()
     })
-    this.resizeContents()
+    this.resizePort()
   }
 })()
 

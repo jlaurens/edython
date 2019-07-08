@@ -377,7 +377,7 @@ eYo.Brick.UI.prototype.render = (() => {
       }
     } else {
       // Top-most brick.  Fire an event to allow scrollbars to layout.
-      this.brick_.board.resizeContents()
+      this.brick_.board.resizePort()
     }
   }
   var longRender = eYo.Decorate.reentrant_method(
@@ -555,7 +555,7 @@ eYo.Brick.UI.prototype.moveBy = function(dxy, snap) {
   } else {
     eYo.Events.fireBrickMove(this.brick_, () => {
       this.moveTo(xy, snap)
-      this.board.resizeContents()
+      this.board.resizePort()
     })
   }
 }

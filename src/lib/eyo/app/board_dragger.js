@@ -44,7 +44,7 @@ Object.defineProperties(eYo.BoardDragger.prototype, {
    */
   dragSurface: {
     get () {
-      return this.desk.dom.svg.boardDragSurface
+      return null
     }
   },
   ui_driver: {
@@ -57,9 +57,9 @@ Object.defineProperties(eYo.BoardDragger.prototype, {
       return this.makeUI === eYo.Do.nothing
     }
   },
-  startScroll: {
+  startDrag: {
     get () {
-      return this.startScroll_.clone
+      return this.startDrag_.clone
     }
   },
 })
@@ -133,7 +133,7 @@ eYo.BoardDragger.prototype.start = function(gesture) {
    * @type {!eYo.Metrics}
    * @private
    */
-  this.startScroll_ = board.metrics.scroll
+  this.startDrag_ = board.metrics.drag
   if (eYo.Selected.brick) {
     eYo.Selected.brick.unselect()
   }
@@ -150,15 +150,12 @@ eYo.BoardDragger.prototype.clearGesture = function() {
 
 /**
  * Move the board based on the most recent mouse movements.
- * @param {!Event} e The most recent move event.
- * @param {!eYo.Where} deltaWhere How far the pointer has
- *     moved from the position at the start of the drag, in pixel coordinates.
  * @package
  */
 eYo.BoardDragger.prototype.drag = function() {
   var board = this.board_
   var deltaWhere = board.ui_driver.boardDragDeltaWhere(board)
-  board.metrics_.scroll = this.startScroll.forward(deltaWhere)
+  board.metrics_.drag = this.startDrag.forward(deltaWhere)
   if (board.scrollbar) {
     board.scrollbar.layout()
   }
@@ -168,9 +165,9 @@ eYo.BoardDragger.prototype.drag = function() {
  * Translate the board to new coordinates given by its metrics' scroll.
  */
 eYo.BoardDragger.prototype.move = function() {
-  var scroll = this.board_.metrics.scroll
+  var drag = this.board_.metrics.drag
   if (this.dragSurface_ && this.isActive_) {
-    this.dragSurface_.moveTo(scroll)
+    this.dragSurface_.moveTo(drag)
   } else {
     this.board.place()
   }
@@ -188,6 +185,6 @@ eYo.BoardDragger.prototype.end = function() {
   }
   var trans = this.dragSurface_.translation
   this.dragSurface_.clearAndHide(this.dom.svg.group_)
-  this.board_.metrics_.scroll = trans
+  this.board_.metrics_.drag = trans
   console.log('?', eYo.App.board.topBricks_[0].ui.xyInDesk)
 }

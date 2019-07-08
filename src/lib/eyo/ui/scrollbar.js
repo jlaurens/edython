@@ -490,7 +490,7 @@ eYo.Scrollbar.prototype.layoutHorizontal = function(hostMetrics, prepare) {
   }
   var oldMetrics = this.oldMetrics_
   if (!oldMetrics
-    || oldMetrics.scroll.x != hostMetrics.scroll.x
+    || oldMetrics.drag.x != hostMetrics.drag.x
     || oldMetrics.view.width != view.width
     || oldMetrics.port.width != content.width) {
     // The window has been resized or repositioned.
@@ -537,7 +537,7 @@ eYo.Scrollbar.prototype.layoutVertical = function(hostMetrics, prepare) {
   }
   var oldMetrics = this.oldMetrics_
   if (!oldMetrics
-    || oldMetrics.scroll.y != hostMetrics.scroll.y
+    || oldMetrics.drag.y != hostMetrics.drag.y
     || oldMetrics.view.height != view.height
     || oldMetrics.port.height != content.height) {
     // The window has been resized or repositioned.

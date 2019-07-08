@@ -16,7 +16,6 @@ goog.provide('eYo.Trashcan')
 goog.require('eYo')
 
 goog.require('goog.Timer')
-goog.require('goog.dom')
 goog.require('goog.math')
 
 
@@ -30,7 +29,7 @@ eYo.Trashcan = function(board, bottom) {
   var r = this.viewRect_ = new eYo.Rect()
   r.width = this.WIDTH_
   r.height = this.BODY_HEIGHT_ + this.LID_HEIGHT_
-  r.bottom = bottom - this.MARGIN_BOTTOM_
+  r.y_max = bottom - this.MARGIN_BOTTOM_
   this.disposeUI = eYo.Do.nothing
   if (board.hasUI) {
     this.makeUI()
@@ -161,8 +160,8 @@ eYo.Trashcan.prototype.place = function() {
   r.right = (flyout && flyout.atRight
     ? flyout.viewRect.left
     : view.left) - this.MARGIN_SIDE_
-  r.bottom = view.bottom - this.MARGIN_SIDE_
-  this.ui_driver.trashcanPlace(this)
+  r.y_max = view.bottom - this.MARGIN_SIDE_
+  this.ui_driver && this.ui_driver.trashcanPlace(this)
 }
 
 /**
@@ -173,7 +172,7 @@ eYo.Trashcan.prototype.getClientRect = function() {
   if (!this.dom) {
     return null
   }
-  return this.ui_driver.trashcanClientRect(trashcan)
+  return this.ui_driver.trashcanClientRect(this)
 }
 
 /**

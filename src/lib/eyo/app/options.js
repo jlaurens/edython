@@ -54,8 +54,8 @@ goog.provide('eYo.Options')
  *  {controls: true,
  *           wheel: true,
  *           startScale: 1.0,
- *           maxScale: 3,
- *           minScale: 0.3,
+ *           maxScale: 10,
+ *           minScale: 0.1,
  *           scaleSpeed: 1.2}
  * @constructor
  */
@@ -91,7 +91,7 @@ eYo.Options = function(options) {
   // Strip off any trailing slash (either Unix or Windows).
   pathToMedia = pathToMedia.replace(/[\\\/]$/, '')
   this.pathToMedia = pathToMedia
-  this.zoomOptions = eYo.Options.parseZoomOptions_(options)
+  this.zoom = eYo.Options.parseZoom_(options)
 }
 
 /**
@@ -101,38 +101,38 @@ eYo.Options = function(options) {
  * @return {!Object} A dictionary of normalized options.
  * @private
  */
-eYo.Options.parseZoomOptions_ = function(options) {
+eYo.Options.parseZoom_ = function(options) {
   var zoom = options.zoom || {}
-  var zoomOptions = {}
+  var options = {}
   if (zoom.controls === eYo.VOID) {
-    zoomOptions.controls = false
+    options.controls = false
   } else {
-    zoomOptions.controls = !!zoom.controls
+    options.controls = !!zoom.controls
   }
   if (zoom.wheel === eYo.VOID) {
-    zoomOptions.wheel = false
+    options.wheel = false
   } else {
-    zoomOptions.wheel = !!zoom.wheel
+    options.wheel = !!zoom.wheel
   }
   if (zoom.startScale === eYo.VOID) {
-    zoomOptions.startScale = 1
+    options.startScale = 1
   } else {
-    zoomOptions.startScale = parseFloat(zoom.startScale);
+    options.startScale = parseFloat(zoom.startScale);
   }
   if (zoom.maxScale === eYo.VOID) {
-    zoomOptions.maxScale = 3
+    options.maxScale = 3
   } else {
-    zoomOptions.maxScale = parseFloat(zoom.maxScale)
+    options.maxScale = parseFloat(zoom.maxScale)
   }
   if (zoom.minScale === eYo.VOID) {
-    zoomOptions.minScale = 0.3
+    options.minScale = 0.1
   } else {
-    zoomOptions.minScale = parseFloat(zoom.minScale);
+    options.minScale = parseFloat(zoom.minScale);
   }
   if (zoom.scaleSpeed === eYo.VOID) {
-    zoomOptions.scaleSpeed = 1.2
+    options.scaleSpeed = 1.2
   } else {
-    zoomOptions.scaleSpeed = parseFloat(zoom.scaleSpeed)
+    options.scaleSpeed = parseFloat(zoom.scaleSpeed)
   }
-  return zoomOptions
+  return options
 }
