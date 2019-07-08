@@ -679,7 +679,6 @@ eYo.Svg.prototype.brickPlace = function(brick) {
  * This brick must be a top-level brick.
  * @param {!eYo.Brick} brick  the brick.
  * @param {!eYo.Where} dxy  in board coordinates.
- * @package
  */
 eYo.Svg.prototype.brickSetOffsetDuringDrag = function(brick, dxy) {
   var svg = brick.dom.svg
@@ -999,7 +998,6 @@ eYo.Svg.prototype.brickAddTooltip = function (brick, key, options) {
  * Update the cursor over this block by adding or removing a class.
  * @param {boolean} enable True if the delete cursor should be shown, false
  *     otherwise.
- * @package
  */
 eYo.Svg.prototype.brickSetDeleteStyle = function(brick, enable) {
   (enable

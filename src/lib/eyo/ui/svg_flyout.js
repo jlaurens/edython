@@ -43,7 +43,7 @@ eYo.Dom.prototype.flyoutCssClass = function() {
  */
 eYo.Dom.prototype.flyoutInit = eYo.Dom.decorateInit(function(flyout) {
   var dom = flyout.dom
-  const div = flyout.targetBoard.dom.flyout_
+  const div = flyout.owner_.dom.flyout_
   Object.defineProperty(dom, 'div_', { value: div })
   // flyout toolbar, on top of the flyout
   var cssClass = this.flyoutCssClass()
@@ -66,8 +66,9 @@ eYo.Dom.prototype.flyoutInit = eYo.Dom.decorateInit(function(flyout) {
  * @param {eYo.Flyout} flyout
  */
 eYo.Dom.prototype.flyoutDispose = eYo.Dom.decorateDispose(function (flyout) {
-  goog.dom.removeNode(flyout.dom.toolbarDiv_)
-  goog.dom.removeNode(flyout.dom.boardDiv_)
+  var dom = flyout.dom
+  goog.dom.removeNode(dom.toolbar_)
+  goog.dom.removeNode(dom.board_)
 })
 
 /**

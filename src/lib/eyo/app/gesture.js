@@ -221,8 +221,7 @@ Object.defineProperties(eYo.Gesture.prototype, {
    * Whether this gesture is a drag of either a board or brick.
    * @readonly
    * @type{boolean} true if this gesture is a drag of a board or brick.
-   * @package
-   */
+     */
   dragging: {
     get () {
       return this.boardDragger_ || this.brickDragger_
@@ -324,7 +323,6 @@ Object.defineProperties(eYo.Gesture.prototype, {
 
 /**
  * Sever all links from this object.
- * @package
  */
 eYo.Gesture.prototype.dispose = function() {
   eYo.Dom.clearTouchIdentifier()
@@ -342,7 +340,6 @@ eYo.Gesture.prototype.dispose = function() {
 /**
  * Handle a mouse down, touch start, or pointer down event.
  * @param {!Event} e A mouse down, touch start, or pointer down event.
- * @package
  */
 eYo.Gesture.prototype.on_mousedown = function(e) {
   this.change.done()
@@ -361,7 +358,6 @@ eYo.Gesture.prototype.on_mousedown = function(e) {
 /**
  * Handle a touch start or pointer down event and keep track of current pointers.
  * @param {!Event} e A touch start, or pointer down event.
- * @package
  */
 eYo.Gesture.prototype.handleTouchStart = function(e) {
   var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
@@ -381,7 +377,6 @@ eYo.Gesture.prototype.handleTouchStart = function(e) {
 /**
  * Handle a touch move or pointer move event and zoom in/out if two pointers are on the screen.
  * @param {!Event} e A touch move, or pointer move event.
- * @package
  */
 eYo.Gesture.prototype.handleTouchMove = function(e) {
   var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
@@ -414,7 +409,6 @@ eYo.Gesture.prototype.handleTouchMove = function(e) {
  * Helper function returning the current touch point coordinate.
  * @param {!Event} e A touch or pointer event.
  * @return {eYo.Where} the current touch point coordinate
- * @package
  */
 eYo.Gesture.prototype.getTouchPoint_ = function(e) {
   if (!this.board_) {
@@ -488,7 +482,6 @@ eYo.Gesture.prototype.updateDraggingBoard_ = function() {
 /**
  * Handle a mouse move or touch move event.
  * @param {!Event} e A mouse move or touch move event.
- * @package
  */
 eYo.Gesture.prototype.on_mousemove = (() => {
   var move = function (self, e) {
@@ -523,7 +516,6 @@ eYo.Gesture.prototype.on_mousemove = (() => {
 /**
  * Handle a mouse up or touch end event.
  * @param {!Event} e A mouse up or touch end event.
- * @package
  */
 eYo.Gesture.prototype.on_mouseup = function(e) {
   this.change.done()
@@ -575,7 +567,6 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
 /**
  * Cancel an in-progress gesture.  If a board or brick drag is in progress,
  * end the drag at the most recent location.
- * @package
  */
 eYo.Gesture.prototype.cancel = function() {
   // Disposing of a brick cancels in-progress drags, but dragging to a delete
@@ -595,7 +586,6 @@ eYo.Gesture.prototype.cancel = function() {
 /**
  * Handle a real or faked right-click event by showing a context menu.
  * @param {!Event} e A mouse move or touch move event.
- * @package
  */
 eYo.Gesture.prototype.handleRightClick = function(e) {
   if (this.targetBrick_) {
@@ -613,7 +603,6 @@ eYo.Gesture.prototype.handleRightClick = function(e) {
  * Used by board and flyout.
  * @param {!Event} e A mouse down or touch start event.
  * @param {!Blockly.Board} ws The board the event hit.
- * @package
  */
 eYo.Gesture.prototype.handleBoardStart = function(e, ws) {
   goog.asserts.assert(!this.started_,
@@ -631,7 +620,6 @@ eYo.Gesture.prototype.handleBoardStart = function(e, ws) {
  * progress and bind mousemove and mouseup handlers.
  * Called from `handleBoardStart`
  * @param {!Event} e A mouse down or touch start event.
- * @package
  */
 eYo.Gesture.prototype.doStart = function(e) {
   if (eYo.Dom.isTargetInput(e)) {
@@ -677,7 +665,6 @@ eYo.Gesture.prototype.doStart = function(e) {
  * Used by flyout.
  * @param {!Event} e A mouse down or touch start event.
  * @param {!Blockly.Flyout} flyout The flyout the event hit.
- * @package
  */
 eYo.Gesture.prototype.handleFlyoutStart = function(e, flyout) {
   goog.asserts.assert(!this.started_,
@@ -692,7 +679,6 @@ eYo.Gesture.prototype.handleFlyoutStart = function(e, flyout) {
  * Used by brick's on_mousedown (or synonym).
  * @param {!Event} e A mouse down or touch start event.
  * @param {!eYo.Brick} brick The brick the event hits.
- * @package
  */
 eYo.Gesture.prototype.handleBrickStart = function(e, brick) {
   goog.asserts.assert(!this.started_,
@@ -754,7 +740,6 @@ eYo.Gesture.prototype.bringBrickToFront_ = function() {
  * Record the brick that a gesture started on, and set the target brick
  * appropriately.
  * @param {eYo.Brick} brick The brick the gesture started on.
- * @package
  */
 eYo.Gesture.prototype.setStartBrick = function(brick) {
   console.error("BREAK HERE")
@@ -788,7 +773,6 @@ eYo.Gesture.prototype.setStartBoard_ = function(ws) {
  * has a corresponding mouse up, but in reality it is possible to lose a
  * mouse up, leaving an in-process gesture hanging.
  * @return {boolean} whether this gesture was a click on a board.
- * @package
  */
 eYo.Gesture.prototype.hasStarted = function() {
   console.log('ERROR')

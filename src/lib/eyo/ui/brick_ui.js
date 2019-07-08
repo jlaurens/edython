@@ -1795,7 +1795,6 @@ eYo.Brick.UI.prototype.magnetHilight = function (c_eyo) {
 /**
  * Change the UI while dragging, or not.
  * @param {boolean} dragging True if adding, false if removing.
- * @package
  */
 eYo.Brick.UI.prototype.setDragging = function(dragging) {
   this.dragging = dragging
@@ -1827,7 +1826,6 @@ eYo.Brick.UI.prototype.parentDidChange = function (oldParent) {
 /**
  * Schedule snapping to grid and bumping neighbours to occur after a brief
  * delay.
- * @package
  */
 eYo.Brick.UI.prototype.scheduleSnapAndBump = function() {
   // Ensure that any snap and bump are part of this move's event group.
@@ -2044,7 +2042,6 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
  * Update the cursor over this block by adding or removing a class.
  * @param {boolean} enable True if the delete cursor should be shown, false
  *     otherwise.
- * @package
  */
 eYo.Brick.UI.prototype.setDeleteStyle = function(enable) {
   this.driver.brickSetDeleteStyle(this.brick_, enable)

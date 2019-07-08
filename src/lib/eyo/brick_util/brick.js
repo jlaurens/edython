@@ -2051,7 +2051,6 @@ eYo.Brick.prototype.scrollToVisible = function (force) {
  *     Otherwise, for a non-rendered brick return an empty list, and for a
  *     collapsed brick don't return inputs connections.
  * @return {!Array.<!eYo.Magnet>} Array of magnets.
- * @package
  */
 eYo.Brick.prototype.getMagnets_ = function(all) {
   var ans = [];

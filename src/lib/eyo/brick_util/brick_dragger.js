@@ -110,7 +110,6 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
 
 /**
  * Sever all links from this object.
- * @package
  */
 eYo.BrickDragger.prototype.dispose = function() {
   this.availableMagnets_.length = 0
@@ -135,7 +134,6 @@ eYo.BrickDragger.prototype.dispose = function() {
  * we scroll the brick board to keep it back.
  * @param {!eYo.Gesture} gesture  The gesture initiating the eventual drag.
  * @return {eYo.Brick}  The target brick of the drag event, if any.
- * @package
  */
 eYo.BrickDragger.prototype.start = function(gesture) {
   if (this.brick_) {
@@ -329,7 +327,6 @@ eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
  * display accordingly.
  * @param {!eYo.Where} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
- * @package
  */
 eYo.BrickDragger.prototype.drag = function() {
   var xyNew = this.xyNew_
@@ -360,7 +357,6 @@ eYo.BrickDragger.prototype.drag = function() {
  * @param {!Event} e The most recent move event.
  * @param {!eYo.Where} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
- * @package
  */
 eYo.BrickDragger.prototype.end = (() => {
   /**
@@ -407,7 +403,6 @@ eYo.BrickDragger.prototype.end = (() => {
 
 /**
  * Reset gesture.
- * @package
  */
 eYo.BrickDragger.prototype.clearGesture = function() {
   this.gesture_ = null
@@ -416,7 +411,6 @@ eYo.BrickDragger.prototype.clearGesture = function() {
 /**
  * Connect to the closest magnet and render the results.
  * This should be called at the end of a drag.
- * @package
  */
 eYo.BrickDragger.prototype.connect = function() {
   if (this.target_) {
@@ -437,7 +431,6 @@ eYo.BrickDragger.prototype.connect = function() {
 
 /**
  * Update highlighted connections based on the most recent move location.
- * @package
  */
 eYo.BrickDragger.prototype.update = function() {
   var deleteRect = this.deleteRect_ = this.destination.inDeleteArea(this.gesture_)

@@ -32,17 +32,17 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
  * A board has either a flyout or a targetBoard
  * but never has both.
  * This constructor takes care of this cycle.
- * @param {!eYo.Board} board  The owning board, which must be a main board.
+ * @param {!eYo.Board} owner  The owning board, which must be a main board.
  * @param {!Object} flyoutOptions Dictionary of options for the board.
  * @constructor
  */
-eYo.Flyout = function(targetBoard, flyoutOptions) {
-  goog.asserts.assert(targetBoard.isMain, 'Only main boards may have a flyout')
-  goog.asserts.assert(!targetBoard.hasUI, 'TOO LATE')
+eYo.Flyout = function(owner, flyoutOptions) {
+  goog.asserts.assert(owner.isMain, 'Only main boards may have a flyout')
+  goog.asserts.assert(!owner.hasUI, 'TOO LATE')
   // First
-  this.targetBoard = targetBoard
+  this.owner_ = owner
   var board = this.board = new eYo.Board(this, {})
-  board.options = targetBoard.options
+  board.options = owner.options
   /**
    * Position of the flyout relative to the board.
    * @type {number}
@@ -91,13 +91,23 @@ eYo.Flyout = function(targetBoard, flyoutOptions) {
 
 Object.defineProperties(eYo.Flyout.prototype, {
   /**
+   * The targetBoard
+   * @type {eYo.Board}
+   * @readonly
+   */
+  targetBoard: { 
+    get () {
+      return this.owner_
+    }
+  },
+  /**
    * The desk
    * @type {eYo.Desk}
    * @readonly
    */
   desk: { 
     get () {
-      return this.targetBoard.desk
+      return this.owner_.desk
     }
   },
   /**
@@ -110,7 +120,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
     set (newValue) {
       var oldValue = this.board_ 
       if (newValue !== oldValue) {
-        var oldTB = this.targetBoard
+        var oldTB = this.owner_
         this.board_ = newValue
         if (newValue) {
           if (newValue.targetBoard !== oldTB) {
@@ -344,7 +354,7 @@ eYo.Flyout.prototype.disposeUI = function() {
  * Unlink from all DOM elements to prevent memory leaks.
  */
 eYo.Flyout.prototype.dispose = function() {
-  if (!this.desk) {
+  if (!this.owner_) {
     return
   }
   this.disposeUI()
@@ -353,7 +363,7 @@ eYo.Flyout.prototype.dispose = function() {
     this.viewRect_ = null
   }
   this.board.dispose()
-  this.targetBoard = this.board = null
+  this.owner_ = this.board = null
 }
 
 /**
@@ -442,9 +452,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
     }
   },
   /**
-   * @type {boolean} True if this flyout may be scrolled with a scrollbar or by
-   *     dragging.
-   * @package
+   * @type {eYo.Scrollbar}.
    */
   scrollbar: {
     get () {
@@ -454,7 +462,6 @@ Object.defineProperties(eYo.Flyout.prototype, {
   /**
    * @type {boolean} True if this flyout may be scrolled with a scrollbar or by
    *     dragging.
-   * @package
    */
   scrollable: {
     get () {
@@ -463,7 +470,6 @@ Object.defineProperties(eYo.Flyout.prototype, {
   },
   /**
    * @type {Number} where the flyout is anchored.
-   * @package
    */
   anchor: {
     get () {
@@ -473,7 +479,6 @@ Object.defineProperties(eYo.Flyout.prototype, {
   /**
    * @type {Boolean} Is it anchored at right ?
    * @readonly
-   * @package
    */
   atRight: {
     get () {
@@ -606,7 +611,6 @@ eYo.Flyout.prototype.on_wheel = function(e) {
  * @param {!eYo.Brick} originalBrick The brick to copy from the flyout.
  * @return {eYo.Brick} The newly created brick, or null if something
  *     went wrong with deserialization.
- * @package
  */
 eYo.Flyout.prototype.createBrick = function(originalBrick) {
   this.targetBoard_.setResizesEnabled(false)
@@ -662,7 +666,6 @@ eYo.Flyout.prototype.scrollToStart = function() {
  * determine if a new brick should be created or if the flyout should scroll.
  * @param {!eYo.Gesture} gesture.
  * @return {boolean} true if the drag is toward the board.
- * @package
  */
 eYo.Flyout.prototype.isDragTowardBoard = function(gesture) {
   if(!this.scrollable) {

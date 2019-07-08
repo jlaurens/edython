@@ -199,7 +199,6 @@ eYo.Dom.insertAfter = function(node, before) {
  * @param {!Object} listener A mouse down or touch start event listener.
  * @param {!Element} element A mouse down or touch start event.
  * @param {?Object} opt  Option data: suffix, option flags: willUnbind, and bindEventWithChecks_'s options
- * @package
  */
 eYo.Dom.bindMouseEvents = (listener, element, opt) => {
   ;[
@@ -221,7 +220,6 @@ eYo.Dom.bindMouseEvents = (listener, element, opt) => {
 /**
  * Bind mouse events.
  * @param {!Event} e A mouse down or touch start event.
- * @package
  */
 eYo.Dom.unbindMouseEvents = function(listener) {
   listener.bind_data_ && listener.bind_data_.forEach(data => eYo.Dom.unbindEvent(data))

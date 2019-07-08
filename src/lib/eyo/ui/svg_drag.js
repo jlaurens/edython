@@ -243,7 +243,6 @@ Object.defineProperties(eYo.Svg.BoardDragSurface.prototype, {
    * Reports the surface translation in scaled board coordinates.
    * Use this when finishing a drag to return bricks to the correct position.
    * @type {!eYo.Where} Current translation of the surface
-   * @package
    */
   translation: {
     get () {
@@ -260,7 +259,6 @@ Object.defineProperties(eYo.Svg.BoardDragSurface.prototype, {
  * @param {number} width The width of the board SVG element.
  * @param {number} height The height of the board SVG element.
  * @param {number} scale The scale of the board being dragged.
- * @package
  */
 eYo.Svg.BoardDragSurface.prototype.start = function(dragger, width, height) {
   this.dragger_ = dragger
@@ -288,7 +286,6 @@ eYo.Svg.BoardDragSurface.prototype.start = function(dragger, width, height) {
  * so that the browser avoids repainting the SVG.
  * Because of this, the drag coordinates must be adjusted by scale.
  * @param {eYo.Where} xy Translation for the entire surface
- * @package
  */
 eYo.Svg.BoardDragSurface.prototype.moveTo = function(xy) {
   // This is a work-around to prevent the bricks from rendering
@@ -308,7 +305,6 @@ eYo.Svg.BoardDragSurface.prototype.moveTo = function(xy) {
  * newSurface.
  * @param {?SVGElement} newSurface The element to put the drag surface contents
  *     into, when there was no previous sibling.
- * @package
  */
 eYo.Svg.BoardDragSurface.prototype.clearAndHide = function(newSurface) {
   var root = this.dom.svg.root_

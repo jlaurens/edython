@@ -88,7 +88,6 @@ eYo.Audio.SOUND_VOLUME = 0.5
 
 /**
  * Dispose of this audio manager.
- * @package
  */
 eYo.Audio.prototype.dispose = function() {
   this.sounds_ = null
@@ -117,7 +116,6 @@ eYo.Audio.prototype.load = function(pathToMedia, name) {
 
 /**
  * Preload all the audio files so that they play quickly when asked for.
- * @package
  */
 eYo.Audio.prototype.preload = function() {
   if (eYo.Test && !eYo.Test.audio) {

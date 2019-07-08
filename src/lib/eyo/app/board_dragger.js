@@ -49,7 +49,6 @@ Object.defineProperties(eYo.BoardDragger.prototype, {
 
 /**
  * Sever all links from this object.
- * @package
  */
 eYo.BoardDragger.prototype.dispose = function() {
   this.board_ = null
@@ -69,7 +68,6 @@ eYo.BoardDragger.prototype.isActive_ = false
  * Start dragging the board.
  * @param {!eYo.Gesture} gesture
  * @return {Boolean} started or not
- * @package
  */
 eYo.BoardDragger.prototype.start = function(gesture) {
   if (this.isActive_) {
@@ -101,7 +99,6 @@ eYo.BoardDragger.prototype.start = function(gesture) {
 
 /**
  * Reset gesture.
- * @package
  */
 eYo.BoardDragger.prototype.clearGesture = function() {
   this.gesture_ = null
@@ -109,7 +106,6 @@ eYo.BoardDragger.prototype.clearGesture = function() {
 
 /**
  * Move the board based on the most recent mouse movements.
- * @package
  */
 eYo.BoardDragger.prototype.drag = function() {
   var board = this.board_

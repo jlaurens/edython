@@ -25,7 +25,7 @@ goog.forwardDeclare('eYo.Desktop')
 
 /**
  * Class for a board.  This is a data structure that contains bricks.
- * @param {!eYo.Desk | eYo.Flyout | eYo.Board} owner Any board belongs to either a desk (the main board), a flyout (the flyout board) or another board (the dragger board).
+ * @param {!eYo.Desk | eYo.Flyout | eYo.Board} owner Any board belongs to either a desk (the main board), a flyout (the flyout board) or another board (the brick dragger board).
  * @constructor
  */
 eYo.Board = function(owner, options) {
@@ -34,9 +34,7 @@ eYo.Board = function(owner, options) {
   eYo.Board.BoardDB_[this.id] = this
 
   this.owner_ = owner
-
   this.options = options
-
   this.change_ = new eYo.Change(this)
 
   /**
@@ -89,8 +87,10 @@ eYo.Board = function(owner, options) {
 
   this.metrics_ = new eYo.Metrics(this)
   
-  if (this.isMain) {
+  if (!this.isDragger) {
     this.boardDragger_ = new eYo.BoardDragger(this)
+  }
+  if (this.isMain) {
     this.brickDragger_ = new eYo.BrickDragger(this)
   }
 
@@ -168,8 +168,8 @@ Object.defineProperties(eYo.Board.prototype, {
   },
   flyout: {
     /**
-     * The flyout associate to the board.
-     * @return{eYo.Flyout}
+     * The flyout associate to the board if any.
+     * @return{?eYo.Flyout}
      */
     get () {
       return this.flyout_
@@ -180,14 +180,9 @@ Object.defineProperties(eYo.Board.prototype, {
     set (newValue) {
       var oldValue = this.flyout_
       if (newValue !== oldValue) {
+        goog.asserts.assert(this.isMain, 'Only main boards may have flyouts')
         this.flyout_ = newValue
-        if (oldValue) {
-          oldValue.targetBoard = null
-        }
-        if (newValue) {
-          this.targetBoard = null
-          newValue.board.targetBoard = this
-        }
+        oldValue && oldValue.dispose()
       }
     }
   },
@@ -195,26 +190,11 @@ Object.defineProperties(eYo.Board.prototype, {
    * In a flyout, the target board where bricks should be placed after a drag.
    * Otherwise null.
    * @type {?eYo.Board}
-   * @package
+   * @readonly
    */
   targetBoard: {
     get () {
-      return this.targetBoard_
-    },
-    set (newValue) {
-      var oldValue = this.targetBoard_
-      if (newValue !== oldValue) {
-        this.targetBoard_ = newValue
-        if (oldValue) {
-          oldValue.flyout = null
-        }
-        if (newValue) {
-          this.flyout = null
-          if (newValue.flyout) {
-            newValue.flyout.targetBoard = newValue
-          }
-        }
-      }
+      return this.inFlyout && this.owner_.owner_
     }
   },
   /**
@@ -300,7 +280,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   draggable: {
     get () {
-      return this.targetBoard
+      return this.targetBoard // or this.inFlyout
       ? this.targetBoard.flyout_.scrollable
       : !!this.scrollbar
     }
@@ -311,7 +291,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   isDragging: {
     get () {
-      return this.gesture_ != null && this.gesture_.isDragging
+      return this.gesture_ && this.gesture_.isDragging
     }
   },
   /**
@@ -447,7 +427,6 @@ Object.defineProperties(eYo.Board.prototype, {
    * The board origin is where a brick would render at position (0, 0).
    * It is not the upper left corner of the board SVG.
    * @return {!eYo.Where} Offset in pixels.
-   * @package
    */
   originInDesk: {
     get () {
@@ -966,7 +945,6 @@ eYo.Desk.prototype.removeFlyout = function() {
 
 /**
  * Hook after a `metrics` change.
- * @package
  */
 eYo.Board.prototype.metricsDidChange = function() {
   this.place()
@@ -975,7 +953,6 @@ eYo.Board.prototype.metricsDidChange = function() {
 /**
  * If enabled, calculate the metrics' content related info.
  * Update UI accordingly.
- * @package
  */
 eYo.Board.prototype.resizePort = function() {
   if (!this.resizesEnabled_ || !this.rendered) {
@@ -1063,7 +1040,6 @@ eYo.Board.prototype.place = function() {
 /**
  * Resizes and repositions board chrome if the page has a new
  * scroll position.
- * @package
  */
 eYo.Board.prototype.updateScreenCalculationsIfScrolled =
     function() {
@@ -1573,7 +1549,6 @@ eYo.Board.prototype.setResizesEnabled = function(enabled) {
  * @param {!Event} e Mouse event or touch event.
  * @return {eYo.Gesture} The gesture that is tracking this touch
  *     stream, or null if no valid gesture exists.
- * @package
  */
 eYo.Board.prototype.getGesture = function(e) {
   if (this.targetBoard_) {
@@ -1604,7 +1579,6 @@ eYo.Board.prototype.getGesture = function(e) {
 
 /**
  * Clear the reference to the current gesture.
- * @package
  */
 eYo.Board.prototype.clearGesture = function() {
   this.gesture_ = null
@@ -1612,7 +1586,6 @@ eYo.Board.prototype.clearGesture = function() {
 
 /**
  * Cancel the current gesture, if one exists.
- * @package
  */
 eYo.Board.prototype.cancelCurrentGesture = function() {
   if (this.gesture_) {
