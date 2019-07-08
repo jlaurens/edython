@@ -22,8 +22,6 @@ goog.require('eYo')
  */
 eYo.BoardDragger = function(board) {
   this.board_ = board
-  this.disposeUI = eYo.Do.nothing
-  board.hasUI && this.makeUI()
 }
 
 Object.defineProperties(eYo.BoardDragger.prototype, {
@@ -37,24 +35,9 @@ Object.defineProperties(eYo.BoardDragger.prototype, {
       return this.board_
     }
   },
-  /**
-   * The associate drag surface
-   * @type{eYo.BoardDragSurface}
-   * @readonly
-   */
-  dragSurface: {
-    get () {
-      return null
-    }
-  },
   ui_driver: {
     get () {
       return this.desk.ui_driver
-    }
-  },
-  has_UI: {
-    get () {
-      return this.makeUI === eYo.Do.nothing
     }
   },
   startDrag: {
@@ -65,33 +48,11 @@ Object.defineProperties(eYo.BoardDragger.prototype, {
 })
 
 /**
- * Prepare the UI for dragging.
- * @package
- */
-eYo.BoardDragger.prototype.makeUI = function() {
-  this.makeUI = eYo.Do.nothing
-  delete this.disposeUI
-  this.ui_driver.boardDraggerInit(this)
-}
-
-/**
- * Dispose of the UI resources.
- * @package
- */
-eYo.BoardDragger.prototype.disposeUI = function() {
-  this.disposeUI = eYo.Do.nothing
-  delete this.makeUI
-  this.ui_driver.boardDraggerDispose(this)
-}
-
-/**
  * Sever all links from this object.
  * @package
  */
 eYo.BoardDragger.prototype.dispose = function() {
-  this.disposeUI()
   this.board_ = null
-  this.correction_ = null
 }
 
 /**
@@ -111,13 +72,13 @@ eYo.BoardDragger.prototype.isActive_ = false
  * @package
  */
 eYo.BoardDragger.prototype.start = function(gesture) {
+  if (this.isActive_) {
   // This can happen if the user starts a drag, mouses up outside of the
   // document where the mouseup listener is registered (e.g. outside of an
   // iframe) and then moves the mouse back in the board.  On mobile and ff,
   // we get the mouseup outside the frame. On chrome and safari desktop we do
   // not.
-  if (this.isActive_) {
-    return true
+  return true
   }
   this.isActive_ = true
   /**
@@ -127,17 +88,15 @@ eYo.BoardDragger.prototype.start = function(gesture) {
   var board = this.board_ = gesture.board
 
   /**
-   * The board's metrics object at the beginning of the drag.  Contains size
-   * and position metrics of a board.
+   * The board's metrics' drag object at the beginning of the drag.
    * Coordinate system: pixel coordinates.
-   * @type {!eYo.Metrics}
+   * @type {!eYo.Where}
    * @private
    */
   this.startDrag_ = board.metrics.drag
   if (eYo.Selected.brick) {
     eYo.Selected.brick.unselect()
   }
-  return this.ui_driver.boardDraggerStart(this)
 }
 
 /**
@@ -154,7 +113,7 @@ eYo.BoardDragger.prototype.clearGesture = function() {
  */
 eYo.BoardDragger.prototype.drag = function() {
   var board = this.board_
-  var deltaWhere = board.ui_driver.boardDragDeltaWhere(board)
+  var deltaWhere = board.gesture_.deltaWhere_
   board.metrics_.drag = this.startDrag.forward(deltaWhere)
   if (board.scrollbar) {
     board.scrollbar.layout()
@@ -165,26 +124,14 @@ eYo.BoardDragger.prototype.drag = function() {
  * Translate the board to new coordinates given by its metrics' scroll.
  */
 eYo.BoardDragger.prototype.move = function() {
-  var drag = this.board_.metrics.drag
-  if (this.dragSurface_ && this.isActive_) {
-    this.dragSurface_.moveTo(drag)
-  } else {
-    this.board.place()
-  }
+  this.board.place()
 }
 
 /**
- * Finish dragging the board and put everything back where it belongs.
+ * Finish dragging the board.
  */
 eYo.BoardDragger.prototype.end = function() {
   this.drag()
   this.isActive_ = false
-  // Don't do anything if we aren't using a drag surface.
-  if (!this.dragSurface_) {
-    return
-  }
-  var trans = this.dragSurface_.translation
-  this.dragSurface_.clearAndHide(this.dom.svg.group_)
-  this.board_.metrics_.drag = trans
-  console.log('?', eYo.App.board.topBricks_[0].ui.xyInDesk)
+  return
 }

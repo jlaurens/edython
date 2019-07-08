@@ -23,6 +23,39 @@ goog.forwardDeclare('eYo.Board')
  * @return {!Element} The board's dom repository.
  */
 eYo.Dom.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
+  /*
+  For the main board, the dom looks like
+  <div class="eyo-main-board">
+    <div class="eyo-board-drag">
+      ...
+    </div>
+    <div class="eyo-flyout">
+      <div class="eyo-flyout-toolbar">
+        ...
+      </div>
+      <div class="eyo-flyout-board">
+        <div class="eyo-board-drag">
+          ...
+        </div>
+      </div>
+    </div>
+    <div class="eyo-dragger-board">
+      <div class="eyo-board-drag">
+        ...
+      </div>
+    </div>
+    With the next board drag content
+    <div class="eyo-board-drag">
+      <div class="eyo-board-scale">
+        <div class="eyo-board-content">
+          <svg>
+          ...
+          </svg/>
+        </div>
+      </div>
+    </div>
+  </div>
+  */
   const dom = board.dom
   Object.defineProperty(dom, 'div_', {
     get () {
@@ -31,7 +64,7 @@ eYo.Dom.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
   })
   var d1 = dom.drag_ = goog.dom.createDom(
     goog.dom.TagName.DIV,
-    'eyo-board-scroll'
+    'eyo-board-drag'
   )
   var style = d1.style
   style.left = style.top = style.width = style.height = '0px'
@@ -326,16 +359,6 @@ eYo.Svg.prototype.boardOn_wheel = function(e) {
   var delta = -e.deltaY / PIXELS_PER_ZOOM_STEP
   this.zoom(e, delta)
   e.preventDefault()
-}
-
-/**
- * The gesture delta.
- * @param {!eYo.Board} mode  The display mode for bricks.
- */
-eYo.Svg.prototype.boardDragDeltaWhere = function (board) {
-  var deltaWhere = board.gesture_.deltaWhere_
-  var correction = board.boardDragger_.correction_
-  return correction ? correction(deltaWhere) : deltaWhere
 }
 
 /**
