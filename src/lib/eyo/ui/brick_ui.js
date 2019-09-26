@@ -2058,8 +2058,8 @@ eYo.Brick.UI.prototype.setDeleteStyle = function(enable) {
  * independantly. Whatever node is answering to a mousDown event,
  * a connection will be activated if relevant.
  * There is a problem due to the shape of the bricks.
- * Depending on the brick, the coutour path ou the whole svg group
- * is better suited to listed to mouse events.
+ * Depending on the brick, the contour path or the whole svg group
+ * is better suited to listen to mouse events.
  * Actually, both are registered which implies that
  * handlers must filter out reentrancy.
  * @param {!Event} e Mouse down event or touch start event.

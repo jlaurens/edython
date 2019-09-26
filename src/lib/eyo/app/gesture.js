@@ -72,22 +72,11 @@ eYo.Gesture = function(e, board) {
 
   /**
    * The board that the gesture started on.  There may be multiple
-   * boards on a page; this is more accurate than using
-   * Blockly.getMainBoard().
+   * boards on a page.
    * @type {eYo.Board}
    * @private
    */
   this.board_ = null
-
-  /**
-   * The board that created this gesture.  This board keeps a reference
-   * to the gesture, which will need to be cleared at deletion.
-   * This may be different from the start board.  For instance, a flyout is
-   * a board, but its parent board manages gestures for it.
-   * @type {eYo.Board}
-   * @private
-   */
-  this.creatorBoard_ = board
 
   /**
    * Whether the board is currently being dragged.
@@ -186,6 +175,15 @@ eYo.Gesture = function(e, board) {
   this.startDistance_ = 0
 
   this.change_ = new eYo.Change(this)
+
+  goog.asserts.assert(board.isMain, 'Only main boards own gestures')
+  /**
+   * The owner.
+   * @type {eYo.Board}
+   * @private
+   */
+  this.owner_ = board
+  board.gesture_ = this
 }
 
 Object.defineProperties(eYo.Gesture, {
@@ -292,7 +290,7 @@ Object.defineProperties(eYo.Gesture.prototype, {
    */
   ui_driver: {
     get () {
-      return this.creatorBoard_.ui_driver
+      return this.owner_.ui_driver
     }
   },
   /**
@@ -300,11 +298,13 @@ Object.defineProperties(eYo.Gesture.prototype, {
    */
   creatorBoard: {
     get () {
-      return this.creatorBoard_
+      return this.owner_
     }
   },
   /**
-   * The actual board.
+   * The actual board the receiver is acting upon.
+   * @readonly
+   * @type {eYo.Board}
    */
   board: {
     get () {
@@ -328,10 +328,10 @@ eYo.Gesture.prototype.dispose = function() {
   eYo.Dom.clearTouchIdentifier()
   Blockly.Tooltip.unblock()
   // Clear the owner's reference to this gesture.
-  this.creatorBoard_.clearGesture()
+  this.owner_.clearGesture()
   eYo.Dom.unbindMouseEvents(this)
   this.startBrick_ = this.targetBrick_ = null
-  this.board_ = this.creatorBoard_ = this.flyout_ = null
+  this.board_ = this.owner_ = this.flyout_ = null
   this.brickDragger_ && (this.brickDragger_ = this.brickDragger_.clearGesture())
   this.boardDragger_ && (this.boardDragger_ = this.boardDragger_.clearGesture())
   this.change_ = null
@@ -397,8 +397,7 @@ eYo.Gesture.prototype.handleTouchMove = function(e) {
       var delta = gestureScale > 0
       ? gestureScale * eYo.Gesture.ZOOM_IN_FACTOR 
       : gestureScale * eYo.Gesture.ZOOM_OUT_FACTOR
-      var board = this.board_
-      board.zoom(e, delta)
+      this.board_.zoom(e, delta)
     }
     this.previousScale_ = scale
     e.preventDefault()
@@ -409,6 +408,7 @@ eYo.Gesture.prototype.handleTouchMove = function(e) {
  * Helper function returning the current touch point coordinate.
  * @param {!Event} e A touch or pointer event.
  * @return {eYo.Where} the current touch point coordinate
+ * @package
  */
 eYo.Gesture.prototype.getTouchPoint_ = function(e) {
   if (!this.board_) {
@@ -448,12 +448,13 @@ eYo.Gesture.prototype.updateFromEvent_ = function(e) {
  * @private
  */
 eYo.Gesture.prototype.updateDraggingBrick_ = function() {
+  var dragger = this.owner_.brickDragger_
   var board = this.flyout_
   ? this.flyout_.targetBoard_
   : this.board_
-  if (board && (this.targetBrick_ = board.brickDragger_.start(this))) {
+  if (board && (this.targetBrick_ = dragger.start(this))) {
     this.startBrick_ = null
-    this.brickDragger_ = board.brickDragger_
+    this.brickDragger_ = dragger
     this.board_ = board
     board.updateScreenCalculationsIfScrolled()
     console.log('updateDraggingBrick_: ', this.deltaWhere_)
@@ -486,14 +487,16 @@ eYo.Gesture.prototype.updateDraggingBoard_ = function() {
 eYo.Gesture.prototype.on_mousemove = (() => {
   var move = function (self, e) {
     self.updateFromEvent_(e)
-    if (self.boardDragger_) {
-      self.boardDragger_.drag()
-    } else if (self.brickDragger_) {
-      self.brickDragger_.drag() // sometimes it failed when in Blockly
+    var d
+    if ((d = self.boardDragger_)) {
+      d.drag()
+    } else if ((d = self.brickDragger_)) {
+      d.drag() // sometimes it failed when in Blockly
     }
     eYo.Dom.gobbleEvent(e) 
   }
   return function(e) {
+    console.error('on_mousemove')
     this.change.done()
     if (this.dragging) {
       // We are in the middle of a drag, only handle the relevant events
@@ -554,7 +557,7 @@ eYo.Gesture.prototype.on_mouseup = function(e) {
       this.boardDragger_ = null
     } else if (this.startBrick_) {
       console.error('doBrickClick_')
-      this.doBrickClick_()
+      this.startBrick_.isSelected ? this.doBrickClick_() : this.doBoardClick_()
     } else {
       console.error('doBoardClick_')
       this.doBoardClick_()
@@ -602,14 +605,15 @@ eYo.Gesture.prototype.handleRightClick = function(e) {
  * Handle a mousedown/touchstart event on a board.
  * Used by board and flyout.
  * @param {!Event} e A mouse down or touch start event.
- * @param {!Blockly.Board} ws The board the event hit.
+ * @param {!eYo.Board} board The board the event hit.
+ * @package
  */
-eYo.Gesture.prototype.handleBoardStart = function(e, ws) {
+eYo.Gesture.prototype.handleBoardStart = function(e, board) {
   goog.asserts.assert(!this.started_,
       'Tried to call gesture.handleBoardStart, but the gesture had already been ' +
       'started.');
   this.started_ = true
-  this.board_ = ws
+  this.board_ = board
   var b3k = eYo.Selected.brick
   b3k && (b3k.ui.selectMouseDownEvent = e)
   this.doStart(e)
@@ -642,13 +646,15 @@ eYo.Gesture.prototype.doStart = function(e) {
     this.handleRightClick(e)
     return
   }
-
+  console.log('START')
   if (e.type == 'touchstart' ||
       (e.type == 'pointerdown' && e.pointerType != 'mouse')) {
-    eYo.Do.longStart_(e, this)
+   console.log('LONG')
+   eYo.Do.longStart_(e, this)
   }
 
   this.startWhere_ = new eYo.Where(e)
+  this.startDrag_ = new eYo.Where()
   this.healStack_ = e.altKey || e.ctrlKey || e.metaKey
 
   eYo.Dom.unbindMouseEvents(this)
@@ -732,49 +738,4 @@ eYo.Gesture.prototype.bringBrickToFront_ = function() {
   if (this.targetBrick_ && !this.flyout_) {
     this.targetBrick_.ui.sendToFront()
   }
-}
-
-/* Begin functions for populating a gesture at mouse down. */
-
-/**
- * Record the brick that a gesture started on, and set the target brick
- * appropriately.
- * @param {eYo.Brick} brick The brick the gesture started on.
- */
-eYo.Gesture.prototype.setStartBrick = function(brick) {
-  console.error("BREAK HERE")
-  throw "DEPRECATED"
-}
-
-/**
- * Record the flyout that a gesture started on.
- * @param {Blockly.Flyout} flyout The flyout the gesture started on.
- * @private
- */
-eYo.Gesture.prototype.setStartFlyout_ = function(flyout) {
-  console.error("BREAK HERE")
-  throw "DEPRECATED"
-}
-
-/**
- * Record the board that a gesture started on.
- * @param {eYo.Board} ws The board the gesture started on.
- * @private
- */
-eYo.Gesture.prototype.setStartBoard_ = function(ws) {
-  console.error("BREAK HERE")
-  throw "DEPRECATED"
-}
-
-/* End functions for populating a gesture at mouse down. */
-
-/**
- * Whether this gesture has already been started.  In theory every mouse down
- * has a corresponding mouse up, but in reality it is possible to lose a
- * mouse up, leaving an in-process gesture hanging.
- * @return {boolean} whether this gesture was a click on a board.
- */
-eYo.Gesture.prototype.hasStarted = function() {
-  console.log('ERROR')
-  throw "DEPRECATED"
 }

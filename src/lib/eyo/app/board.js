@@ -25,17 +25,16 @@ goog.forwardDeclare('eYo.Desktop')
 
 /**
  * Class for a board.  This is a data structure that contains bricks.
- * @param {!eYo.Desk | eYo.Flyout | eYo.Board} owner Any board belongs to either a desk (the main board), a flyout (the flyout board) or another board (the brick dragger board).
+ * @param {!eYo.Desk | eYo.Flyout | eYo.Board} owner Any board belongs to either a desk (the main board), a flyout (the flyout board) or another board (the brick dragger board). We allways have `this === owner.board`, which means that each kind of owner may have only one board.
  * @constructor
  */
 eYo.Board = function(owner, options) {
-  /** @type {string} */
-  this.id = eYo.Do.genUid()
-  eYo.Board.BoardDB_[this.id] = this
-
+  owner.board_ = this
   this.owner_ = owner
+
   this.options = options
-  this.change_ = new eYo.Change(this)
+  
+  eYo.Magnet.DB.init(this)
 
   /**
    * The top bricks are all the bricks with no parent.
@@ -44,6 +43,43 @@ eYo.Board = function(owner, options) {
    * @private
    */
   this.topBricks_ = []
+
+  /**
+   * @type {!Object}
+   * @private
+   */
+  this.brickDB_ = Object.create(null)
+
+  this.metrics_ = new eYo.Metrics(this)
+  
+  if (!this.isDragger) {
+    this.boardDragger_ = new eYo.BoardDragger(this)
+  }
+
+  /**
+   * List of currently highlighted bricks.  Brick highlighting is often used to
+   * visually mark bricks currently being executed.
+   * @type !Array.<!eYo.Brick>
+   * @private
+   */
+  this.highlightedBricks_ = []
+
+  this.resetChangeCount()
+}
+
+/**
+ * Class for a main board.  This is a data structure that contains bricks, has event, undo/redo management...
+ * @param {!eYo.Desk} owner The main board belongs to a desk. We allways have `this === owner.board`, which means that each kind of owner may have only one board.
+ * @constructor
+ */
+eYo.Board.Main = function(owner, options) {
+  eYo.Board.Main.superClass_.constructor.call(this, owner, options)
+  
+  /** @type {string} */
+  this.id = eYo.Do.genUid()
+  eYo.Board.Main.DB_[this.id] = this
+
+  this.change_ = new eYo.Change(this)
 
   /**
    * The main bricks are displayed in the main pane,
@@ -62,12 +98,6 @@ eYo.Board = function(owner, options) {
   this.draftBricks_ = []
 
   /**
-   * @type {!Array.<!Function>}
-   * @private
-   */
-  this.listeners_ = []
-  
-  /**
    * @type {!Array.<!eYo.Events.Abstract>}
    * @protected
    */
@@ -80,36 +110,22 @@ eYo.Board = function(owner, options) {
   this.redoStack_ = []
   
   /**
-   * @type {!Object}
+   * @type {!Array.<!Function>}
    * @private
    */
-  this.brickDB_ = Object.create(null)
-
-  this.metrics_ = new eYo.Metrics(this)
+  this.listeners_ = []
   
-  if (!this.isDragger) {
-    this.boardDragger_ = new eYo.BoardDragger(this)
-  }
-  if (this.isMain) {
-    this.brickDragger_ = new eYo.BrickDragger(this)
-  }
-
-  /**
-   * List of currently highlighted bricks.  Brick highlighting is often used to
-   * visually mark bricks currently being executed.
-   * @type !Array.<!eYo.Brick>
-   * @private
-   */
-  this.highlightedBricks_ = []
-
-  eYo.Magnet.DB.init(this)
-
-  this.resetChangeCount()
+  this.board_ = new eYo.Board(this, {
+    backgroundClass: 'eyo-board-dragger-background'
+  })
+  this.brickDragger_ = new eYo.BrickDragger(this)
 }
+
+goog.inherits(eYo.Board.Main, eYo.Board)
 
 eYo.Do.addProtocol(eYo.Board.prototype, 'ChangeCount')
 
-Object.defineProperties(eYo.Board, {
+Object.defineProperties(eYo.Board.Main, {
   SNAP_RADIUS: { value: 20 },
   DELETE_AREA_NONE: { value: null },
   /**
@@ -137,53 +153,14 @@ Object.defineProperties(eYo.Board.prototype, {
     }
   },
   /**
-   * Convenient property.
-   * @readonly
-   * @type {eYo.Board}
-   */
-  board: {
-    get () {
-      return this
-    }
-  },
-  /**
-   * The change manager.
-   * @readonly
-   * @type {eYo.Change}
-   */
-  change: {
-    get () {
-      return this.change_
-    }
-  },
-  /**
-   * The desk owning the board.
+   * The desk enclosing the board. Every board belongs to a desk, either directly or not.
    * @readonly
    * @type {eYo.Desk}
    */
   desk: {
     get () {
+      // This is why the owner's desk is itself when being a desk
       return this.owner_.desk
-    }
-  },
-  flyout: {
-    /**
-     * The flyout associate to the board if any.
-     * @return{?eYo.Flyout}
-     */
-    get () {
-      return this.flyout_
-    },
-    /**
-     * @param{?eYo.Flyout}
-     */
-    set (newValue) {
-      var oldValue = this.flyout_
-      if (newValue !== oldValue) {
-        goog.asserts.assert(this.isMain, 'Only main boards may have flyouts')
-        this.flyout_ = newValue
-        oldValue && oldValue.dispose()
-      }
     }
   },
   /**
@@ -194,17 +171,17 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   targetBoard: {
     get () {
-      return this.inFlyout && this.owner_.owner_
+      return this.inFlyout && this.owner_.owner_ || null
     }
   },
   /**
-   * Only main boards may have a flyout and draggers.
+   * The main board is the receiver.
    * @readonly
-   * @type {boolean}
+   * @type {eYo.Board}
    */
-  isMain: {
+  main: {
     get () {
-      return this.owner_ instanceof eYo.Desk
+      return this.inFlyout && this.owner_.owner_ || this.owner_
     }
   },
   /**
@@ -237,7 +214,7 @@ Object.defineProperties(eYo.Board.prototype, {
   },
   audio: {
     get () {
-      return (this.desk || this.targetBoard).audio
+      return this.desk.audio
     }
   },
   /**
@@ -467,6 +444,68 @@ Object.defineProperties(eYo.Board.prototype, {
   },
 })
 
+Object.defineProperties(eYo.Board.Main.prototype, {
+  /**
+   * The change manager.
+   * @readonly
+   * @type {eYo.Change}
+   */
+  change: {
+    get () {
+      return this.change_
+    }
+  },
+  /**
+   * The main board is the receiver.
+   * @readonly
+   * @type {eYo.Board}
+   */
+  main: {
+    get () {
+      return this
+    }
+  },
+  /**
+   * The board used for brick dragging.
+   * @readonly
+   * @type {eYo.Board}
+   */
+  draggerBoard: {
+    get () {
+      return this.board_
+    }
+  },
+  flyout: {
+    /**
+     * The flyout associate to the board if any.
+     * @return{?eYo.Flyout}
+     */
+    get () {
+      return this.flyout_
+    },
+    /**
+     * @param{?eYo.Flyout}
+     */
+    set (newValue) {
+      var oldValue = this.flyout_
+      if (newValue !== oldValue) {
+        goog.asserts.assert(this.isMain, 'Only main boards may have flyouts')
+        this.flyout_ = newValue
+        oldValue && oldValue.dispose()
+      }
+    }
+  },
+  /**
+   * Only main boards may have a flyout and draggers.
+   * @readonly
+   * @type {boolean}
+   */
+  isMain: {
+    value: true
+  },
+
+})
+
 /**
  * Dispose of this board.
  * Unlink from all DOM elements to prevent memory leaks.
@@ -475,17 +514,19 @@ eYo.Board.prototype.dispose = function() {
   this.dispose = eYo.Do.nothing
   // Stop rerendering.
   this.rendered = false;
-  this.cancelCurrentGesture()
+  this.cancelGesture()
   this.listeners_.length = 0
   this.clear()
   if (this.isMain) {
+    this.board_.dispose()
+    this.board_ = null
     this.boardDragger_.dispose()
     this.boardDragger_ = null
     this.brickDragger_.dispose()
     this.brickDragger_ = null
   }
   // Remove from board database.
-  delete eYo.Board.BoardDB_[this.id]
+  delete eYo.Board.Main.DB_[this.id]
   if (this.flyout_) {
     this.flyout_.dispose()
     this.flyout_ = null
@@ -511,11 +552,64 @@ eYo.Board.prototype.dispose = function() {
   this.change_ = null
 
   this.topBricks_.forEach(b3k => b3k.dispose())
-  this.topBricks_ = this.listeners_ = this.undoStack_ = this.redoStack_ = this.brickDB_ = this.owner_ = null
+
+  eYo.Magnet.DB.dispose(this)
+
+  this.options = null
+
+  this.highlightedBricks_ = this.metrics_ = this.topBricks_ = this.brickDB_ = this.owner_ = this.owner_.board_ = null
 }
 
 /**
- * Make the UI.
+ * Dispose of this board.
+ * Unlink from all DOM elements to prevent memory leaks.
+ */
+eYo.Board.Main.prototype.dispose = function() {
+  this.dispose = eYo.Do.nothing
+  // Stop rerendering.
+  this.rendered = false;
+  this.cancelGesture()
+  this.listeners_.length = 0
+  this.clear()
+  if (this.isMain) {
+    this.boardDragger_.dispose()
+    this.boardDragger_ = null
+    this.brickDragger_.dispose()
+    this.brickDragger_ = null
+  }
+  // Remove from board database.
+  delete eYo.Board.Main.DB_[this.id]
+  if (this.flyout_) {
+    this.flyout_.dispose()
+    this.flyout_ = null
+  }
+  if (this.trashcan) {
+    this.trashcan.dispose()
+    this.trashcan = null
+  }
+  if (this.scrollbar) {
+    this.scrollbar.dispose()
+    this.scrollbar = null
+  }
+  if (this.zoomControls_) {
+    this.zoomControls_.dispose()
+    this.zoomControls_ = null
+  }
+  this.disposeUI()
+  
+  this.metrics_.dispose()
+  this.metrics = null
+  
+  this.change_.dispose()
+  this.change_ = null
+
+  this.topBricks_.forEach(b3k => b3k.dispose())
+  this.topBricks_ = this.mainBricks_ = this.draftBricks_ = this.listeners_ = this.undoStack_ = this.redoStack_ = this.brickDB_ = this.owner_ = null
+  eYo.Board.Main.superClass_.dispose.call(this)
+}
+
+/**
+ * Make the UI. Called by the board's owner.
  */
 eYo.Board.prototype.makeUI = function() {
   var options = this.options
@@ -543,6 +637,8 @@ eYo.Board.prototype.makeUI = function() {
       bottom = this.zoomControls_.top
     }
   }
+  this.board_ && this.board_.makeUI()
+  this.flyout_ && this.flyout_.makeUI()
   this.recordDeleteAreas()
 }
 
@@ -551,6 +647,7 @@ eYo.Board.prototype.makeUI = function() {
  */
 eYo.Board.prototype.disposeUI = function() {
   this.flyout_ && this.flyout_.disposeUI()
+  this.board_ && this.board_.disposeUI()
   this.zoomControls_ && this.zoomControls_.disposeUI()
   this.trashcan && this.trashcan.disposeUI()
   var d = this.ui_driver_
@@ -615,19 +712,27 @@ eYo.Board.prototype.getTopBricks = function(ordered) {
  */
 eYo.Board.prototype.clear = function() {
   this.setResizesEnabled(false)
+  while (this.topBricks_.length) {
+    this.topBricks_[0].dispose()
+  }
+  this.setResizesEnabled(true)
+  this.error = eYo.VOID
+}
+
+/**
+ * Dispose of all bricks in board.
+ */
+eYo.Board.Main.prototype.clear = function() {
+  this.setResizesEnabled(false)
   var existingGroup = eYo.Events.group
   if (!existingGroup) {
     eYo.Events.group = true
   }
-  while (this.topBricks_.length) {
-    this.topBricks_[0].dispose()
-  }
   this.mainBricks_.length = this.draftBricks_.length = 0
+  eYo.Board.Main.superClass_.clear.call(this)
   if (!existingGroup) {
     eYo.Events.group = false
   }
-  this.setResizesEnabled(true)
-  this.error = eYo.VOID
 }
 
 /**
@@ -696,9 +801,9 @@ eYo.Board.prototype.undo = function(redo) {
 /**
  * Clear the undo/redo stacks.
  */
-eYo.Board.prototype.clearUndo = function() {
-  this.undoStack_.length = 0;
-  this.redoStack_.length = 0;
+eYo.Board.Main.prototype.clearUndo = function() {
+  this.undoStack_.length = 0
+  this.redoStack_.length = 0
   // Stop any events already in the firing queue from being undoable.
   eYo.Events.clearPendingUndo()
   eYo.App.didClearUndo && eYo.App.didClearUndo()
@@ -713,7 +818,7 @@ eYo.Board.prototype.clearUndo = function() {
 eYo.Board.prototype.addChangeListener = function(func) {
   this.listeners_.push(func)
   return func
-};
+}
 
 /**
  * Stop listening for this board's changes.
@@ -722,31 +827,6 @@ eYo.Board.prototype.addChangeListener = function(func) {
 eYo.Board.prototype.removeChangeListener = function(func) {
   goog.array.remove(this.listeners_, func)
 };
-
-/**
- * Fire a change event.
- * @param {!eYo.Events.Abstract} event Event to fire.
- */
-eYo.Board.prototype.fireChangeListener = function(event) {
-  var before = this.undoStack_.length
-  if (event.recordUndo) {
-    this.undoStack_.push(event)
-    this.redoStack_.length = 0
-    if (this.undoStack_.length > this.MAX_UNDO) {
-      this.undoStack_.unshift()
-    }
-  }
-  this.listeners_.forEach(f => f(event))
-  // For newly created events, update the change count
-  if (event.recordUndo) {
-    this.updateChangeCount(event, true)
-    if (before === this.undoStack_.length) {
-      eYo.App.didUnshiftUndo && eYo.App.didUnshiftUndo()
-    } else {
-      eYo.App.didPushUndo && eYo.App.didPushUndo()
-    }
-  }
-}
 
 /**
  * Find the brick on this board with the specified ID.
@@ -785,28 +865,19 @@ eYo.Board.prototype.allInputsFilled = function(opt_shadowBricksAreFilled) {
 }
 
 /**
- * Database of all boards.
+ * Database of all main boards.
  * @private
  */
-eYo.Board.BoardDB_ = Object.create(null)
+eYo.Board.Main.DB_ = Object.create(null)
 
 /**
- * Find the board with the specified ID.
+ * Find the main board with the specified ID.
  * @param {string} id ID of board to find.
  * @return {eYo.Board} The sought after board or null if not found.
  */
-eYo.Board.getById = function(id) {
-  return eYo.Board.BoardDB_[id] || null
+eYo.Board.mainWithId = function(id) {
+  return eYo.Board.Main.DB_[id] || null
 }
-
-// Export symbols that would otherwise be renamed by Closure compiler.
-eYo.Board.prototype['clear'] = eYo.Board.prototype.clear;
-eYo.Board.prototype['clearUndo'] =
-    eYo.Board.prototype.clearUndo;
-eYo.Board.prototype['addChangeListener'] =
-    eYo.Board.prototype.addChangeListener;
-eYo.Board.prototype['removeChangeListener'] =
-    eYo.Board.prototype.removeChangeListener;
 
 /**
  * The render status of an SVG board.
@@ -1122,7 +1193,7 @@ eYo.Board.prototype.paste = function () {
       this.remainingCapacity) {
     return
   }
-  this.cancelCurrentGesture() // Dragging while pasting?  No.
+  this.cancelGesture() // Dragging while pasting?  No.
   var m4t, targetM4t, b3k
   eYo.Events.groupWrap(() => {
     if ((b3k = eYo.Xml.domToBrick(xml, this))) {
@@ -1169,15 +1240,15 @@ eYo.Board.prototype.paste = function () {
                   return true
                 }
               }) || b3k.getMagnets_(false).some(m4t => {
-                  var neighbour = m4t.closest(Brickly.SNAP_RADIUS,
+                  var neighbour = m4t.closest(eYo.Board.Main.SNAP_RADIUS,
                     eYo.Where.xy(dx, dy))
                   if (neighbour) {
                     return true
                   }
               })
               if (collide) {
-                dx += eYo.Board.SNAP_RADIUS
-                dy += eYo.Board.SNAP_RADIUS * 2
+                dx += eYo.Board.Main.SNAP_RADIUS
+                dy += eYo.Board.Main.SNAP_RADIUS * 2
               }
             } while (collide)
           }
@@ -1206,16 +1277,16 @@ eYo.Board.prototype.paste = function () {
  */
 eYo.Board.prototype.recordDeleteAreas = function() {
   if (this.trashcan && this.dom.svg.group_.parentNode) {
-    this.deleteRectTrash_ = this.trashcan.getClientRect();
+    this.deleteRectTrash_ = this.trashcan.getClientRect()
   } else {
-    this.deleteRectTrash_ = null;
+    this.deleteRectTrash_ = null
   }
   if (this.flyout_) {
     this.deleteRectFlyout_ = this.flyout_.deleteRect
   } else {
-    this.deleteRectFlyout_ = null;
+    this.deleteRectFlyout_ = null
   }
-};
+}
 
 /**
  * Is the gesture over a delete area (toolbox or non-closing flyout)?
@@ -1226,12 +1297,12 @@ eYo.Board.prototype.recordDeleteAreas = function() {
 eYo.Board.prototype.inDeleteArea = function(gesture) {
   var xy = gesture.where
   if (this.deleteRectTrash_ && this.deleteRectTrash_.contains(xy)) {
-    return eYo.Board.DELETE_AREA_TRASH
+    return eYo.Board.Main.DELETE_AREA_TRASH
   }
   if (this.deleteRectFlyout_ && this.deleteRectFlyout_.contains(xy)) {
-    return eYo.Board.DELETE_AREA_TOOLBOX
+    return eYo.Board.Main.DELETE_AREA_TOOLBOX
   }
-  return eYo.Board.DELETE_AREA_NONE
+  return eYo.Board.Main.DELETE_AREA_NONE
 }
 
 /**
@@ -1350,7 +1421,7 @@ eYo.Board.prototype.showContextMenu_ = function (e) {
       : eYo.Msg.DELETE_X_BLOCKS.replace('{0}', String(deleteList.length)),
     enabled: deleteList.length > 0,
     callback: () => {
-      this.cancelCurrentGesture()
+      this.cancelGesture()
       if (deleteList.length < 2) {
         deleteNext()
       } else {
@@ -1544,18 +1615,25 @@ eYo.Board.prototype.setResizesEnabled = function(enabled) {
 
 /**
  * Look up the gesture that is tracking this touch stream on this board.
- * May create a new gesture.
- * Forwards to rhe target board if any.
+ * Forwards to the main board.
  * @param {!Event} e Mouse event or touch event.
  * @return {eYo.Gesture} The gesture that is tracking this touch
  *     stream, or null if no valid gesture exists.
  */
 eYo.Board.prototype.getGesture = function(e) {
-  if (this.targetBoard_) {
-    return this.targetBoard_.getGesture(e)
-  }
+  return this.main.getGesture(e)
+}
+
+/**
+ * Look up the gesture that is tracking this touch stream on this board.
+ * May create a new gesture.
+ * @param {!Event} e Mouse event or touch event.
+ * @return {eYo.Gesture} The gesture that is tracking this touch
+ *     stream, or null if no valid gesture exists.
+ */
+eYo.Board.Main.prototype.getGesture = function(e) {
   var isStart = (e.type == 'mousedown' || e.type == 'touchstart' ||
-      e.type == 'pointerdown')
+  e.type == 'pointerdown')
   var gesture = this.gesture_
   if (gesture) {
     if (isStart && gesture.started) {
@@ -1567,7 +1645,6 @@ eYo.Board.prototype.getGesture = function(e) {
     }
     return gesture
   }
-
   // No gesture existed on this board, but this looks like the start of a
   // new gesture.
   if (isStart) {
@@ -1587,19 +1664,11 @@ eYo.Board.prototype.clearGesture = function() {
 /**
  * Cancel the current gesture, if one exists.
  */
-eYo.Board.prototype.cancelCurrentGesture = function() {
+eYo.Board.prototype.cancelGesture = function() {
   if (this.gesture_) {
     this.gesture_.cancel()
   }
 }
-
-/**
- * Get the audio manager for this board.
- * @return {Brickly.BoardAudio} The audio manager for this board.
- */
-eYo.Board.prototype.getAudioManager = function() {
-  return this.audioManager_
-};
    
 eYo.Board.prototype.logAllConnections = function (comment) {
   comment = comment || ''
@@ -1746,7 +1815,7 @@ eYo.Board.prototype.addBrick = (() => {
       insertAt(array, brick, i_max)
     }
   }
-  return function (brick, opt_id) {
+  return function (brick, opt_id, f) {
     this.change.wrap(() => {
       brick.id = (opt_id && !this.getBrickById(opt_id)) ?
       opt_id : eYo.Do.genUid()
@@ -1770,14 +1839,25 @@ eYo.Board.prototype.addBrick = (() => {
 /**
  * Remove a brick from the board.
  * @param {eYo.Brick} brick
+ * @param {?Function} f
  */
-eYo.Board.prototype.removeBrick = function (brick) {
+eYo.Board.prototype.removeBrick = function (brick, f) {
   this.change.wrap(() => {
     if (!goog.array.remove(this.topBricks_, brick)) {
       throw 'Brick not present in board\'s list of top-most bricks.'
     }
     // Remove from board
     this.brickDB_[brick.id] = null
+    f && f(this)
+  })
+}
+
+/**
+ * Remove a brick from the board.
+ * @param {eYo.Brick} brick
+ */
+eYo.Board.Main.prototype.removeBrick = function (brick) {
+  eYo.Board.Main.superclass_.removeBrick.call(this, brick, () => {
     goog.array.remove(this.mainBricks_, brick)
     goog.array.remove(this.draftBricks_, brick)
   })
@@ -1907,4 +1987,29 @@ eYo.Board.prototype.scrollBrickTopLeft = function(id) {
     .scale(-this.scale)
     .backward(metrics.view.origin)
   )
+}
+
+/**
+ * Fire a change event.
+ * @param {!eYo.Events.Abstract} event Event to fire.
+ */
+eYo.Board.Main.prototype.fireChangeListener = function(event) {
+  var before = this.undoStack_.length
+  if (event.recordUndo) {
+    this.undoStack_.push(event)
+    this.redoStack_.length = 0
+    if (this.undoStack_.length > this.MAX_UNDO) {
+      this.undoStack_.unshift()
+    }
+  }
+  this.listeners_.forEach(f => f(event))
+  // For newly created events, update the change count
+  if (event.recordUndo) {
+    this.updateChangeCount(event, true)
+    if (before === this.undoStack_.length) {
+      eYo.App.didUnshiftUndo && eYo.App.didUnshiftUndo()
+    } else {
+      eYo.App.didPushUndo && eYo.App.didPushUndo()
+    }
+  }
 }

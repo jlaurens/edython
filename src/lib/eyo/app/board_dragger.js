@@ -51,7 +51,7 @@ Object.defineProperties(eYo.BoardDragger.prototype, {
  * Sever all links from this object.
  */
 eYo.BoardDragger.prototype.dispose = function() {
-  this.board_ = null
+  this.board_ = this.startDrag_ = this.startWhere_ = null
 }
 
 /**
@@ -71,16 +71,16 @@ eYo.BoardDragger.prototype.isActive_ = false
  */
 eYo.BoardDragger.prototype.start = function(gesture) {
   if (this.isActive_) {
-  // This can happen if the user starts a drag, mouses up outside of the
-  // document where the mouseup listener is registered (e.g. outside of an
-  // iframe) and then moves the mouse back in the board.  On mobile and ff,
-  // we get the mouseup outside the frame. On chrome and safari desktop we do
-  // not.
-  return true
+    // This can happen if the user starts a drag, mouses up outside of the
+    // document where the mouseup listener is registered (e.g. outside of an
+    // iframe) and then moves the mouse back in the board.  On mobile and ff,
+    // we get the mouseup outside the frame. On chrome and safari desktop we do
+    // not.
+    return true
   }
   this.isActive_ = true
   /**
-   * @type {!eYo.BoardSvg}
+   * @type {!eYo.Board}
    * @private
    */
   var board = this.board_ = gesture.board
@@ -90,8 +90,18 @@ eYo.BoardDragger.prototype.start = function(gesture) {
    * Coordinate system: pixel coordinates.
    * @type {!eYo.Where}
    * @private
+   * @package
    */
   this.startDrag_ = board.metrics.drag
+
+  /**
+   * The local start where. Used to manage the boundaries:
+   * dragging past the limits is recorded.
+   * @type {!eYo.Where}
+   * @private
+   * @package
+   */
+  this.startWhere_ = new eYo.Where()
   if (eYo.Selected.brick) {
     eYo.Selected.brick.unselect()
   }
@@ -110,9 +120,13 @@ eYo.BoardDragger.prototype.clearGesture = function() {
 eYo.BoardDragger.prototype.drag = function() {
   var board = this.board_
   var deltaWhere = board.gesture_.deltaWhere_
-  board.metrics_.drag = this.startDrag.forward(deltaWhere)
+  var m_ = board.metrics_
+  m_.drag = this.startDrag.forward(deltaWhere)
   if (board.scrollbar) {
     board.scrollbar.layout()
+  }
+  if (m_.dragPastLimits) {
+//    this.startDrag_ = m_.drag
   }
 }
 

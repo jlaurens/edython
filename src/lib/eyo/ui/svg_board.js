@@ -39,12 +39,12 @@ eYo.Dom.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
         </div>
       </div>
     </div>
-    <div class="eyo-dragger-board">
+    <div class="eyo-board-dragger">
       <div class="eyo-board-drag">
         ...
       </div>
     </div>
-    With the next board drag content
+    With the next board drag content expanded.
     <div class="eyo-board-drag">
       <div class="eyo-board-scale">
         <div class="eyo-board-content">
@@ -97,6 +97,14 @@ eYo.Dom.prototype.boardInit = eYo.Dom.decorateInit(function(board) {
     stl.position = 'absolute'
     stl.display = 'none'
     dom.div_.appendChild(flyout)
+    d1 = dom.board_ = goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      'eyo-board-dragger'
+    )
+    dom.div_.appendChild(d1)
+    stl = d1.style
+    stl.display = 'none'
+    stl.background = 'transparent'
   }
   return dom
 })

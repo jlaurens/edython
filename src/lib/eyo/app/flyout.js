@@ -41,7 +41,12 @@ eYo.Flyout = function(owner, flyoutOptions) {
   goog.asserts.assert(!owner.hasUI, 'TOO LATE')
   // First
   this.owner_ = owner
-  var board = this.board = new eYo.Board(this, {})
+  var board = /*this.board_ = */new eYo.Board(this, {})
+
+  if (!this.autoClose) {
+    this.filterWrapper_ = this.filterForCapacity_.bind(this)
+    owner.addChangeListener(this.filterWrapper_)
+  }
   board.options = owner.options
   /**
    * Position of the flyout relative to the board.
@@ -116,51 +121,6 @@ Object.defineProperties(eYo.Flyout.prototype, {
   board: {
     get () {
       return this.board_
-    },
-    set (newValue) {
-      var oldValue = this.board_ 
-      if (newValue !== oldValue) {
-        var oldTB = this.owner_
-        this.board_ = newValue
-        if (newValue) {
-          if (newValue.targetBoard !== oldTB) {
-            if (oldTB) {
-              oldTB.removeChangeListener(this.filterWrapper_)
-              this.filterWrapper_ = null
-            }
-            var newTB = newValue.targetBoard
-            if (!this.autoClose) {
-              this.filterWrapper_ = this.filterForCapacity_.bind(this)
-              newTB.addChangeListener(this.filterWrapper_)
-            }
-            newTB.flyout = this
-          }
-        }
-      }
-    }
-  },
-  /**
-   * @type {eYo.Board} The flyout's board's targetBoard.
-   */
-  targetBoard: {
-    get () {
-      return this.board_ && this.board_.targetBoard_
-    },
-    set (newValue) {
-      var old = this.targetBoard
-      if ((newValue !== old)) {
-        if (old) {
-          old.removeChangeListener(this.filterWrapper_)
-          this.filterWrapper_ = null
-        }
-        if (newValue && !this.autoClose) {
-          this.filterWrapper_ = this.filterForCapacity_.bind(this)
-          newValue.addChangeListener(this.filterWrapper_)
-        }
-        if ((this.board_.targetBoard = newValue)) {
-          newValue.flyout = this
-        }
-      }
     }
   },
   /**
@@ -351,19 +311,20 @@ eYo.Flyout.prototype.disposeUI = function() {
 
 /**
  * Dispose of this flyout.
- * Unlink from all DOM elements to prevent memory leaks.
+ * Sever all links.
  */
 eYo.Flyout.prototype.dispose = function() {
-  if (!this.owner_) {
-    return
-  }
+  this.dispose = eYo.Do.nothing
   this.disposeUI()
   if (this.viewRect_) {
     this.viewRect_.dispose()
     this.viewRect_ = null
   }
-  this.board.dispose()
-  this.owner_ = this.board = null
+  if (!this.filterWrapper_) {
+    this.owner_.removeChangeListener(this.filterWrapper_)
+  }
+  this.board_.dispose()
+  this.owner_ = this.board_ = null
 }
 
 /**

@@ -48,6 +48,9 @@ eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
   // to keep the position in sync as it moves on/off the surface.
   var brick = brickDragger.brick_
   var board = brick.board
+  var main = brickDragger.destination
+  var stl = main.board_.dom.div_.style
+  stl.display = 'block'
   var bds = brickDragger.dragSurface
   // Execute the move on the top-level SVG component
   if (bds) {

@@ -210,9 +210,9 @@ eYo.Magnet.DB.constructor = eYo.Magnet.DB
 
 /**
  * Initialize a set of connection DBs for a specified board.
- * @param {!Brickly.Board} board The board this DB is for.
+ * @param {!eYo.Board} board The board this DB is for.
  */
-eYo.Magnet.DB.init = function(board) {
+eYo.Magnet.DB.init = (board) => {
   // Create four databases, one for each connection type.
   var dbList = []
   dbList[eYo.Magnet.IN] = new eYo.Magnet.DB()
@@ -222,7 +222,15 @@ eYo.Magnet.DB.init = function(board) {
   dbList[eYo.Magnet.RIGHT] = new eYo.Magnet.DB()
   dbList[eYo.Magnet.FOOT] = new eYo.Magnet.DB()
   board.magnetDBList = dbList
-};
+}
+
+/**
+ * Initialize a set of connection DBs for a specified board.
+ * @param {!eYo.Board} board The board containing the DB to disose of.
+ */
+eYo.Magnet.DB.dispose = (board) => {
+  board.magnetDBList = null
+}
 
 /**
  * Finds a candidate position for inserting this magnet into the list.
@@ -270,7 +278,7 @@ eYo.Magnet.DB.prototype.removeMagnet_ = (() => {
    * Find the given connection.
    * Starts by doing a binary search to find the approximate location, then
    *     linearly searches nearby for the exact connection.
-   * @param {!Brickly.Connection} conn The connection to find.
+   * @param {!eYo.Connection} conn The connection to find.
    * @return {number} The index of the connection, or -1 if the connection was
    *     not found.
    */
@@ -1629,12 +1637,12 @@ eYo.Magnet.prototype.unhideAll = function() {
 eYo.Magnet.prototype.closest = (() => {
   /*
    * Find the closest compatible connection to this connection.
-   * @param {!Brickly.Connection} conn The connection searching for a compatible
+   * @param {!eYo.Connection} conn The connection searching for a compatible
    *     mate.
    * @param {number} maxRadius The maximum radius to another connection.
    * @param {!eYo.Where} dxy Offset between this connection's location
    *     in the database and the current location (as a result of dragging).
-   * @return {!{connection: ?Brickly.Connection, radius: number}} Contains two
+   * @return {!{connection: ?eYo.Connection, radius: number}} Contains two
    *     properties:' connection' which is either another connection or null,
    *     and 'radius' which is the distance.
    */

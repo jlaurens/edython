@@ -52,7 +52,7 @@ if (window && window.PointerEvent) {
     mouseover: { value: ['pointerover'] },
     mouseup: { value: ['pointerup', 'pointercancel'] },
     touchend: { value: ['pointerup'] },
-    'touchcancel': { value: ['pointercancel'] }
+    touchcancel: { value: ['pointercancel'] }
   })
 } else if (goog.events.BrowserFeature.TOUCH_ENABLED) {
   Object.defineProperties(eYo.Dom.TOUCH_MAP, {
@@ -201,7 +201,7 @@ eYo.Dom.insertAfter = function(node, before) {
  * @param {?Object} opt  Option data: suffix, option flags: willUnbind, and bindEventWithChecks_'s options
  */
 eYo.Dom.bindMouseEvents = (listener, element, opt) => {
-  ;[
+  [
     'mousedown',
     'mousemove',
     'mouseup'

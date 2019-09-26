@@ -121,8 +121,8 @@ Object.defineProperties(eYo.Where.prototype, {
   h: eYo.Where.property_l_,
   x: eYo.Where.property_x_,
   y: eYo.Where.property_y_,
-  w: eYo.Where.property_x_,
-  h: eYo.Where.property_y_,
+  w: eYo.Where.property_c_,
+  h: eYo.Where.property_l_,
   width: eYo.Where.property_x_,
   height: eYo.Where.property_y_,
   dx: eYo.Where.property_x_,
@@ -342,7 +342,19 @@ eYo.Where.prototype.in = function (rect) {
 }
 
 /**
- * `Size` is a Point.
+ * Test container.
+ * @param {!eYo.Rect} rect
+ * @return {number} non negative number
+ */
+eYo.Where.prototype.out = function (rect) {
+  return this.c_ <= rect.c_min
+    || this.c_ >= rect.c_max
+    || this.l_ <= rect.l_min
+    || this.l_ >= rect.l_max
+}
+
+/**
+ * `Size` is also a Point and a Where.
  */
 eYo.Size = eYo.Where
 

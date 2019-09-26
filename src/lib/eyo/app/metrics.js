@@ -170,6 +170,17 @@ Object.defineProperties(eYo.Metrics.prototype, {
     }
   },
   /**
+   * Whether the actual drag value is within the acceptable limits.
+   * 
+   * @type {Boolean} 
+   */
+  dragPastLimits: {
+    get () {
+      var r = this.dragLimits
+      return r && this.drag_.out(r)
+    }
+  },
+  /**
    * When this point is (0,0) the view topleft corner
    * and the (0,0) point in the port are exactly
    * at the same location on screen.

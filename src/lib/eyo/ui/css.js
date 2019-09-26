@@ -615,6 +615,9 @@ text.eyo-code-comment {
 `.eyo-main-board-background {
   fill: green;
 }`,
+`.eyo-board-dragger-background {
+  fill: rgba(255, 0, 127, 0.3)
+}`,
 `.eyo-main-board-background.eyo-draft {
   fill: gainsboro;
 }`,

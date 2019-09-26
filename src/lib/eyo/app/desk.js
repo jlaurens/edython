@@ -36,7 +36,7 @@ eYo.Desk = function(options) {
   this.options_ = options
   this.viewRect_ = new eYo.Rect()
   // create the main board
-  this.board_ = new eYo.Board(this, options)
+  this.board_ = new eYo.Board.Main(this, options)
 }
 
 Object.defineProperties(eYo.Desk.prototype, {

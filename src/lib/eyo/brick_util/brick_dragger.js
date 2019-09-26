@@ -231,8 +231,8 @@ eYo.BrickDragger.prototype.start = function(gesture) {
 
   /**
    * Which delete area the mouse pointer is over, if any.
-   * One of {@link eYo.Board.DELETE_AREA_TRASH},
-   * {@link eYo.Board.DELETE_AREA_TOOLBOX}, or {@link eYo.Board.DELETE_AREA_NONE}.
+   * One of {@link eYo.Board.Main.DELETE_AREA_TRASH},
+   * {@link eYo.Board.Main.DELETE_AREA_TOOLBOX}, or {@link eYo.Board.Main.DELETE_AREA_NONE}.
    * @type {?number}
    * @private
    */
@@ -252,7 +252,8 @@ eYo.BrickDragger.prototype.start = function(gesture) {
     eYo.Events.group = true
   }
   this.destination.setResizesEnabled(false)
-  this.ui_driver.disconnectStop()
+  var d = this.ui_driver
+  d.disconnectStop()
   var healStack = gesture.healStack_
   var b3k = this.brick_
   b3k.ui.dragging = true
@@ -262,7 +263,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
     b3k.moveBy(this.xyDelta)
     b3k.ui.disconnectEffect()
   }
-  this.ui_driver.brickDraggerStart(this)
+  d.brickDraggerStart(this)
   this.drag()
   return targetBrick
 }
@@ -348,7 +349,7 @@ eYo.BrickDragger.prototype.drag = function() {
 
   var trashcan = this.destination.trashcan
   if (trashcan) {
-    trashcan.setOpen_(this.wouldDelete_ && this.deleteRect_ === eYo.Board.DELETE_AREA_TRASH)
+    trashcan.setOpen_(this.wouldDelete_ && this.deleteRect_ === eYo.Board.Main.DELETE_AREA_TRASH)
   }
 }
 
@@ -436,7 +437,7 @@ eYo.BrickDragger.prototype.update = function() {
   var deleteRect = this.deleteRect_ = this.destination.inDeleteArea(this.gesture_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
-  this.distance_ = eYo.Board.SNAP_RADIUS
+  this.distance_ = eYo.Board.Main.SNAP_RADIUS
   this.availableMagnets_.forEach(m4t => {
     var neighbour = m4t.closest(this.distance_, this.xyDelta)
     if (neighbour.magnet) {
@@ -451,7 +452,7 @@ eYo.BrickDragger.prototype.update = function() {
   // Prefer connecting over dropping into the trash can, but prefer dragging to
   // the toolbox over connecting to other bricks.
   var wouldConnect = !!this.target_ &&
-      deleteRect != eYo.Board.DELETE_AREA_TOOLBOX
+      deleteRect != eYo.Board.Main.DELETE_AREA_TOOLBOX
   var wouldDelete = !wouldConnect && !!deleteRect && !this.brick_.parent &&
       this.brick_.deletable
   this.wouldDelete_ = wouldDelete
