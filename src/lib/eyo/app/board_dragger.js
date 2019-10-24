@@ -71,6 +71,7 @@ eYo.BoardDragger.prototype.isActive_ = false
  */
 eYo.BoardDragger.prototype.start = function(gesture) {
   if (this.isActive_) {
+    // The drag has already started, nothing more to do.
     // This can happen if the user starts a drag, mouses up outside of the
     // document where the mouseup listener is registered (e.g. outside of an
     // iframe) and then moves the mouse back in the board.  On mobile and ff,

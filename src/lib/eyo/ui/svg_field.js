@@ -311,7 +311,7 @@ eYo.Svg.prototype.fieldGetDisplayText_ = function(field) {
  */
 eYo.Svg.onFieldMouseDown_ = function(e) {
   if (this.board && this.brick.isSelected) {
-    var gesture = this.board.getGesture(e)
+    var gesture = eYo.App.getGesture(e)
     if (gesture) {
       gesture.setStartField(this)
     }

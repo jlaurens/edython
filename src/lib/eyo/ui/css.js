@@ -159,7 +159,7 @@ eYo.Css.CONTENT = path => {
   position: absolute;
   display: block;
 }`,
-  /* Display below toolbox, but above everything else. */
+  /* Display below flyout, but above everything else. */
     `.eyo-brick-drag-surface {
   display: none;
   position: absolute;

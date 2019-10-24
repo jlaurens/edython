@@ -64,7 +64,7 @@ eYo.Brick = function (board, type, opt_id) {
   // which is oftely used
   this.getBaseType = eYo.Brick.prototype.getBaseType // no side effect during creation.
   // private properties
-  this.children_ = []
+  this.children__ = []
   this.errors = Object.create(null)
   this.span_ = new eYo.Span(this)
   
@@ -151,7 +151,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     this.forEachInput(input => input.dispose())
     this.disposeMagnets()
     this.inputList_ = eYo.VOID
-    this.children_ = eYo.VOID
+    this.children__ = eYo.VOID
   })
   // this must be done after the child bricks are released
   this.disposeUI()
@@ -204,10 +204,18 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.inputList_ || (this.inputList_ = [])
     }
   },
+  /**
+   * Direct descendants.
+   */
   children: {
     get () {
-      return this.children_
+      return this.children__.slice()
     }
+  },
+  children_: {
+    get () {
+      return this.children__
+    },
   },
 })
 
@@ -816,7 +824,7 @@ eYo.Brick.prototype.equals = function (rhs) {
  * @return {Boolean} true when consolidation occurred
  */
 eYo.Brick.prototype.doConsolidate = function (deep, force) {
-  if (!force && (!eYo.Events.recordUndo || !this.board || this.change_.level > 1)) {
+  if (!force && (!eYo.Events.recordingUndo || !this.board || this.change_.level > 1)) {
     // do not consolidate while un(re)doing
     return
   }
@@ -932,10 +940,10 @@ eYo.Brick.prototype.forEachField = function (helper) {
 
 /**
  * Execute the helper for each child.
- * Works on a shallow copy of `children_`.
+ * Works on a shallow copy of `children__`.
  */
 eYo.Brick.prototype.forEachChild = function (helper) {
-  this.children_.slice().forEach((b, i, ra) => helper(b, i, ra))
+  this.children__.slice().forEach((b, i, ra) => helper(b, i, ra))
 }
 
 /**
@@ -1559,7 +1567,7 @@ Object.defineProperties(eYo.Brick.prototype, {
   descendants: {
     get () {
       var ans = [this]
-      this.children_.forEach(d => ans.push.apply(ans, d.descendants))
+      this.children__.forEach(d => ans.push.apply(ans, d.descendants))
       return ans
     }
   },
@@ -2930,7 +2938,7 @@ Object.defineProperties(eYo.Brick, {
       }
       if (this.parent__) {
         // Remove this brick from the old parent_'s child list.
-        goog.array.remove(this.parent__.children_, this)
+        goog.array.remove(this.parent__.children__, this)
         this.parent__ = null
         this.ui.setParent(null)
       } else {
@@ -2940,7 +2948,7 @@ Object.defineProperties(eYo.Brick, {
       this.parent__ = newParent
       if (newParent) {
         // Add this brick to the new parent_'s child list.
-        newParent.children_.push(this)
+        newParent.children__.push(this)
       } else {
         this.board.addBrick(this)
       }

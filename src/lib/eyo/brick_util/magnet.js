@@ -1163,7 +1163,7 @@ eYo.Magnet.prototype.setOffset = function(c = 0, l = 0) {
  * @suppress {accessControls}
  */
 eYo.Magnet.prototype.checkType_ = function (other, force) {
-  if (!eYo.Events.recordUndo) {
+  if (!eYo.Events.recordingUndo) {
     // we are undoing or redoing
     // we will most certainly reach a state that was valid
     // some time ago
@@ -1410,7 +1410,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
       var oldChild = oldChildT4t.brick
       if (oldChild) {
         if (oldChild.wrapped_) {
-          eYo.Events.recordUndo && (oldChild.dispose(true))
+          eYo.Events.recordingUndo && (oldChild.dispose(true))
         } else if (!oldChildT4t.targetBrick) {
           // another chance to reconnect the orphan
           // just in case the check_ has changed in between
@@ -1541,7 +1541,7 @@ eYo.Magnet.prototype.scrollToVisible = function (force) {
  */
 eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
   var brick = this.brick
-  if (!brick.board || brick.board.isDragging) {
+  if (!brick.board || brick.board.desk.desktop.isDragging) {
     return
   }
   // Move the root brick.

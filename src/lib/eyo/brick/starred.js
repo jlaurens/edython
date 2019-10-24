@@ -180,7 +180,7 @@ eYo.Brick.Expr.makeSubclass('Starred', {
           : eYo.T3.Expr.Check._expression_or_parameter
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
-        if (eYo.Events.recordUndo) {
+        if (eYo.Events.recordingUndo) {
           this.brick.variant_p = eYo.Key.NONE
         }
       }

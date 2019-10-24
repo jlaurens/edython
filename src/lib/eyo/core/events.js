@@ -53,7 +53,7 @@ Object.defineProperties(eYo.Events, {
    * Sets whether the next event should be added to the undo stack.
    * @type {boolean}
    */
-  recordUndo: { value: true, writable: true },
+  recordingUndo: { value: true, writable: true },
   /**
    * Allow change events to be created and fired.
    * @type {number}
@@ -75,11 +75,6 @@ Object.defineProperties(eYo.Events, {
    * @const
    */
   UI: { value: 'ui' },
-  /**
-   * List of events queued for firing.
-   * @private
-   */
-  FIRE_QUEUE_: { value: [] },
   /**
    * Current group.
    * @return {string} ID string.
@@ -154,30 +149,40 @@ eYo.Events.groupWrap = (f, g) => {
   g)(f)
 }
 
+(()=>{
+  FIRE_QUEUE_ = { value: [] }
+  /**
+   * Create a custom event and fire it.
+   * @param {!eYo.Events.Abstract} event Custom data for event.
+   */
+  eYo.Events.fire = function(event) {
+    if (!eYo.Events.enabled) {
+      return
+    }
+    if (!FIRE_QUEUE_.length) {
+      // First event added; schedule a firing of the event queue.
+      setTimeout(() => {
+        var queue = eYo.Events.filter(FIRE_QUEUE_, true)
+        FIRE_QUEUE_.length = 0
+        queue.forEach(event => {
+          var board = eYo.Board.byId(event.boardId)
+          if (board) {
+            board.eventDidFireChange(event)
+          }
+        })
+      }, 0)
+    }
+    FIRE_QUEUE_.push(event)
+  }
 
-/**
- * Create a custom event and fire it.
- * @param {!eYo.Events.Abstract} event Custom data for event.
- */
-eYo.Events.fire = function(event) {
-  if (!eYo.Events.enabled) {
-    return
+  /**
+   * Modify pending undo events so that when they are fired they don't land
+   * in the undo stack.  Called by eYo.Backer's clear.
+   */
+  eYo.Events.clearPendingUndo = function() {
+    FIRE_QUEUE_.forEach(event => (event.toUndoStack = false))
   }
-  if (!eYo.Events.FIRE_QUEUE_.length) {
-    // First event added; schedule a firing of the event queue.
-    setTimeout(() => {
-      var queue = eYo.Events.filter(eYo.Events.FIRE_QUEUE_, true)
-      eYo.Events.FIRE_QUEUE_.length = 0
-      queue.forEach(event => {
-        var board = eYo.Board.mainWithId(event.boardId)
-        if (board) {
-          board.fireChangeListener(event)
-        }
-      }) 
-    }, 0)
-  }
-  eYo.Events.FIRE_QUEUE_.push(event)
-}
+})()
 
 /**
  * Filter the queued events and merge duplicates.
@@ -244,14 +249,6 @@ eYo.Events.filter = function(queueIn, forward) {
 }
 
 /**
- * Modify pending undo events so that when they are fired they don't land
- * in the undo stack.  Called by eYo.Board.clearUndo.
- */
-eYo.Events.clearPendingUndo = function() {
-  eYo.Events.FIRE_QUEUE_.forEach(event => (event.recordUndo = false))
-}
-
-/**
  * Stop sending events.  Every call to this function MUST also call enable.
  */
 eYo.Events.disable = function() {
@@ -276,13 +273,13 @@ eYo.Events.enable = function() {
 eYo.Events.disableOrphans = function(event) {
   if (event.type === eYo.Events.BRICK_MOVE ||
       event.type === eYo.Events.BRICK_CREATE) {
-    var board = eYo.Board.mainWithId(event.boardId)
+    var board = eYo.Board.byId(event.boardId)
     var brick = board.getBrickById(event.brickId)
     if (brick) {
       if (brick.parent && !brick.parent.disabled) {
         brick.descendants.forEach(child => child.disabled = false)
       } else if ((brick.output_m || brick.head_m || brick.left_m) &&
-                 !board.isDragging) {
+                 !board.desk.desktop.isDragging) {
         do {
           brick.disabled = true
           brick = brick.foot
@@ -315,7 +312,7 @@ eYo.Events.Abstract = function(board) {
    * Sets whether the event should be added to the undo stack.
    * @type {boolean}
    */
-  this.recordUndo = eYo.Events.recordUndo
+  this.toUndoStack = eYo.Events.recordingUndo
 }
 
 Object.defineProperties(eYo.Events.Abstract.prototype, {
@@ -336,7 +333,7 @@ Object.defineProperties(eYo.Events.Abstract.prototype, {
    */
   board: {
     get () {
-      var board = eYo.Board.mainWithId(this.boardId)
+      var board = eYo.Board.byId(this.boardId)
       if (!board) {
         throw Error('Board is null. Event must have been generated from real' +
           ' Edython events.')

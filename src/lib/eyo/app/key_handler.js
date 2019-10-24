@@ -512,7 +512,7 @@ eYo.KeyHandler = (() => {
       // B is not always a brick!
       F = f => {
         eYo.Dom.gobbleEvent(e)
-        var brick = eYo.Brick.getBestBrick(eYo.App.board, f)
+        var brick = eYo.Brick.getBestBrick(eYo.App.main, f)
         if (brick) {
           brick.select().scrollToVisible()
         }

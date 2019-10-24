@@ -41,7 +41,7 @@ eYo.Dom.getDocumentScroll = () => {
  * in conjunction with mouse events.
  * @type {Object}
  */
-eYo.Dom.TOUCH_MAP = {}
+eYo.Dom.TOUCH_MAP = Object.create(null)
 if (window && window.PointerEvent) {
   Object.defineProperties(eYo.Dom.TOUCH_MAP, {
     mousedown: { value: ['pointerdown'] },
@@ -539,7 +539,7 @@ eYo.Dom.bindDocumentEvents = (() => {
  * @private
  */
 eYo.Dom.on_keydown = e => {
-  if (eYo.App.board.options.readOnly || eYo.Dom.isTargetInput(e)) {
+  if (eYo.App.main.options.readOnly || eYo.Dom.isTargetInput(e)) {
     // No key actions on readonly boards.
     // When focused on an HTML text input widget, don't trap any keys.
     return
@@ -562,15 +562,15 @@ eYo.Dom.on_keydown = e => {
     // data loss.
     e.preventDefault()
     // Don't delete while dragging.  Jeez.
-    if (eYo.App.board.isDragging) {
+    if (eYo.App.desktop.isDragging) {
       return;
     }
     if (eYo.Selected.brick && eYo.Selected.brick.deletable) {
-      eYo.Desktop.deleteBrick(eYo.Selected.brick, e.altKey || e.ctrlKey || e.metaKey);
+      eYo.App.deleteBrick(eYo.Selected.brick, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
-    if (eYo.App.board.isDragging) {
+    if (eYo.App.desktop.isDragging) {
       return;
     }
     if (eYo.Selected.brick &&
@@ -588,16 +588,16 @@ eYo.Dom.on_keydown = e => {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
         eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
-        eYo.Desktop.deleteBrick(eYo.Selected.brick, deep)
+        eYo.App.deleteBrick(eYo.Selected.brick, deep)
       }
     }
     if (e.keyCode == 86) {
       // 'v' for paste.
-      eYo.App.board.paste()
+      eYo.App.main.paste()
     } else if (e.keyCode == 90) {
       // 'z' for undo 'Z' is for redo.
       eYo.App.hideChaff()
-      eYo.App.board.undo(e.shiftKey)
+      eYo.App.desk.undo(e.shiftKey)
     }
   }
   // Common code for delete and cut.

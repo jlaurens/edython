@@ -90,7 +90,7 @@ eYo.Navigate.doTab = (() => {
 eYo.Brick.getBestBrick = function (board, weight) {
   var smallest = Infinity
   var best
-  board.topBricks_.forEach(top => {
+  board.bricks_.forEach(top => {
     var box = top.ui.boundingRect
     var w = weight(box.getCenter())
     if (w < smallest) {
@@ -111,7 +111,7 @@ eYo.Brick.prototype.getBestBrick = function (distance) {
   const box_a = this.ui.boundingBox
   var smallest = {}
   var best
-  this.board.topBricks_.forEach(brick => {
+  this.board.bricks_.forEach(brick => {
     if (brick !== this) {
       var box_p = brick.ui.boundingBox
       var m4t

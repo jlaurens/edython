@@ -346,7 +346,7 @@ eYo.Svg.prototype.flyoutPlace = function (flyout) {
     flyout.toolbar_.place()
   }
   flyout.board_.resizePort()
-  var board = flyout.targetBoard_
+  var board = flyout.desk.main
   if (board) {
     var scrollbar = board.scrollbar
     if (scrollbar) {
@@ -410,7 +410,7 @@ eYo.Svg.prototype.flyoutAddListeners = function(flyout, brick) {
     'mousedown',
     null,
     e => {
-      var gesture = flyout.targetBoard_.getGesture(e)
+      var gesture = eYo.App.getGesture(e)
       if (gesture) {
         gesture.startBrick = brick
         gesture.handleFlyoutStart(e, flyout)
@@ -484,7 +484,7 @@ eYo.Svg.prototype.flyoutBindScrollEvents = function(flyout) {
  * @private
  */
 eYo.Svg.prototype.flyoutOn_mousedown = function(e) {
-  var gesture = this.targetBoard_.getGesture(e)
+  var gesture = eYo.App.getGesture(e)
   if (gesture) {
     gesture.handleFlyoutStart(e, this)
   }

@@ -127,15 +127,15 @@ Object.defineProperties(eYo.Events.BrickChange.prototype, {
 
 /**
  * Run a change event.
- * @param {boolean} forward True if run forward, false if run backward (undo).
+ * @param {boolean} redo True if run forward, false if run backward (undo).
  */
-eYo.Events.BrickChange.prototype.run = function(forward) {
+eYo.Events.BrickChange.prototype.run = function(redo) {
   var brick = this.brick
   if (!brick) {
     console.warn("Can't change non-existent brick: " + this.brickId);
     return;
   }
-  var value = forward ? this.newValue : this.oldValue;
+  var value = redo ? this.newValue : this.oldValue;
   switch (this.element) {
     case 'field':
       var field = brick.getField(this.name)

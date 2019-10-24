@@ -13,8 +13,6 @@
 
 goog.provide('eYo.Board')
 
-goog.require('eYo.Protocol.ChangeCount')
-
 goog.forwardDeclare('eYo.Metrics')
 
 goog.forwardDeclare('goog.array');
@@ -24,32 +22,29 @@ goog.forwardDeclare('eYo.Desktop')
 
 
 /**
- * Class for a board.  This is a data structure that contains bricks.
- * @param {!eYo.Desk | eYo.Flyout | eYo.Board} owner Any board belongs to either a desk (the main board), a flyout (the flyout board) or another board (the brick dragger board). We allways have `this === owner.board`, which means that each kind of owner may have only one board.
+ * Class for a board. This is a data structure that contains bricks.
+ * The desk contains the main board and the draft board.
+ * The flyout contains the flyout board.
+ * There is also a board used to drag bricks.
+ * That makes at least 4 boards.
+ * @param {Object} options.
  * @constructor
  */
-eYo.Board = function(owner, options) {
-  owner.board_ = this
-  this.owner_ = owner
-
+eYo.Board = function(options, db) {
   this.options = options
-  
-  eYo.Magnet.DB.init(this)
-
   /**
    * The top bricks are all the bricks with no parent.
    * They are owned by a board.
+   * They are ordered by line number.
    * @type {!Array.<!eYo.Brick>}
    * @private
    */
-  this.topBricks_ = []
+  this.bricks_ = new eYo.List()
 
   /**
    * @type {!Object}
    * @private
    */
-  this.brickDB_ = Object.create(null)
-
   this.metrics_ = new eYo.Metrics(this)
   
   if (!this.isDragger) {
@@ -67,6 +62,27 @@ eYo.Board = function(owner, options) {
   this.resetChangeCount()
 }
 
+Object.defineProperties(eYo.Board.prototype, {
+  list: {
+    get () {
+      return this.list__
+    }
+  },
+  list_: {
+    get () {
+      return this.list__
+    },
+    set (newValue) {
+      if (newValue != this.list__) {
+        this.list__ && this.list__.dispose()
+        this.list__ = newValue
+      }
+    }
+  }
+})
+
+eYo.Board.prototype.list__ = null
+
 /**
  * Class for a main board.  This is a data structure that contains bricks, has event, undo/redo management...
  * @param {!eYo.Desk} owner The main board belongs to a desk. We allways have `this === owner.board`, which means that each kind of owner may have only one board.
@@ -77,37 +93,8 @@ eYo.Board.Main = function(owner, options) {
   
   /** @type {string} */
   this.id = eYo.Do.genUid()
-  eYo.Board.Main.DB_[this.id] = this
 
   this.change_ = new eYo.Change(this)
-
-  /**
-   * The main bricks are displayed in the main pane,
-   * which is the right part of the board.
-   * @type {!Array.<!eYo.Brick>}
-   * @private
-   */
-  this.mainBricks_ = []
-
-  /**
-   * The draft bricks are displayed in the draft pane,
-   * which is the left part of the board, with a grey background.
-   * @type {!Array.<!eYo.Brick>}
-   * @private
-   */
-  this.draftBricks_ = []
-
-  /**
-   * @type {!Array.<!eYo.Events.Abstract>}
-   * @protected
-   */
-  this.undoStack_ = []
-
-  /**
-   * @type {!Array.<!eYo.Events.Abstract>}
-   * @protected
-   */
-  this.redoStack_ = []
   
   /**
    * @type {!Array.<!Function>}
@@ -123,24 +110,6 @@ eYo.Board.Main = function(owner, options) {
 
 goog.inherits(eYo.Board.Main, eYo.Board)
 
-eYo.Do.addProtocol(eYo.Board.prototype, 'ChangeCount')
-
-Object.defineProperties(eYo.Board.Main, {
-  SNAP_RADIUS: { value: 20 },
-  DELETE_AREA_NONE: { value: null },
-  /**
-   * ENUM representing that an event is in the delete area of the trash can.
-   * @const
-   */
-  DELETE_AREA_TRASH: { value: 1 },
-  /**
-   * ENUM representing that an event is in the delete area of the toolbox or
-   * flyout.
-   * @const
-   */
-  DELETE_AREA_TOOLBOX: { value: 2 },
-})
-
 Object.defineProperties(eYo.Board.prototype, {
   /**
    * Convenient property.
@@ -149,7 +118,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   owner: {
     get () {
-      return this.owner_
+      return this.desk_
     }
   },
   /**
@@ -160,18 +129,7 @@ Object.defineProperties(eYo.Board.prototype, {
   desk: {
     get () {
       // This is why the owner's desk is itself when being a desk
-      return this.owner_.desk
-    }
-  },
-  /**
-   * In a flyout, the target board where bricks should be placed after a drag.
-   * Otherwise null.
-   * @type {?eYo.Board}
-   * @readonly
-   */
-  targetBoard: {
-    get () {
-      return this.inFlyout && this.owner_.owner_ || null
+      return this.desk_
     }
   },
   /**
@@ -257,18 +215,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   draggable: {
     get () {
-      return this.targetBoard // or this.inFlyout
-      ? this.targetBoard.flyout_.scrollable
-      : !!this.scrollbar
-    }
-  },
-  /**
-   * Is the user currently dragging a brick or scrolling the flyout/board?
-   * @return {boolean} True if currently dragging or scrolling.
-   */
-  isDragging: {
-    get () {
-      return this.gesture_ && this.gesture_.isDragging
+      return !!this.scrollbar
     }
   },
   /**
@@ -298,14 +245,6 @@ Object.defineProperties(eYo.Board.prototype, {
     }
   },
   /**
-   * Maximum number of undo events in stack. `0` turns off undo, `Infinity` sets it to unlimited.
-   * @type {number}
-   */
-  MAX_UNDO: {
-    value: 1024,
-    writable: true
-  },
-  /**
    * @type {*}
    */
   error: {
@@ -320,11 +259,6 @@ Object.defineProperties(eYo.Board.prototype, {
   ui_driver: {
     get () {
       return this.desk.ui_driver_
-    }
-  },
-  gesture: {
-    get () {
-      return this.gesture_
     }
   },
   scale: {
@@ -412,10 +346,11 @@ Object.defineProperties(eYo.Board.prototype, {
   },
   /**
    * the top bricks of the board.
+   * Returns a copy or the internal array.
    */
   topBricks: {
     get () {
-      return [].concat(this.topBricks_)
+      return this.list.bricks
     }
   },
   /**
@@ -423,7 +358,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   orderedTopBricks: {
     get () {
-      return this.getTopBricks(true)
+      return this.list.bricks
     }
   },
   /**
@@ -525,16 +460,6 @@ eYo.Board.prototype.dispose = function() {
     this.brickDragger_.dispose()
     this.brickDragger_ = null
   }
-  // Remove from board database.
-  delete eYo.Board.Main.DB_[this.id]
-  if (this.flyout_) {
-    this.flyout_.dispose()
-    this.flyout_ = null
-  }
-  if (this.trashcan) {
-    this.trashcan.dispose()
-    this.trashcan = null
-  }
   if (this.scrollbar) {
     this.scrollbar.dispose()
     this.scrollbar = null
@@ -551,13 +476,13 @@ eYo.Board.prototype.dispose = function() {
   this.change_.dispose()
   this.change_ = null
 
-  this.topBricks_.forEach(b3k => b3k.dispose())
+  this.list_.clear()
 
   eYo.Magnet.DB.dispose(this)
 
   this.options = null
 
-  this.highlightedBricks_ = this.metrics_ = this.topBricks_ = this.brickDB_ = this.owner_ = this.owner_.board_ = null
+  this.highlightedBricks_ = this.metrics_ = this.list_ = this.owner_ = this.owner_.board_ = null
 }
 
 /**
@@ -570,6 +495,7 @@ eYo.Board.Main.prototype.dispose = function() {
   this.rendered = false;
   this.cancelGesture()
   this.listeners_.length = 0
+  this.list_
   this.clear()
   if (this.isMain) {
     this.boardDragger_.dispose()
@@ -583,10 +509,6 @@ eYo.Board.Main.prototype.dispose = function() {
     this.flyout_.dispose()
     this.flyout_ = null
   }
-  if (this.trashcan) {
-    this.trashcan.dispose()
-    this.trashcan = null
-  }
   if (this.scrollbar) {
     this.scrollbar.dispose()
     this.scrollbar = null
@@ -603,8 +525,7 @@ eYo.Board.Main.prototype.dispose = function() {
   this.change_.dispose()
   this.change_ = null
 
-  this.topBricks_.forEach(b3k => b3k.dispose())
-  this.topBricks_ = this.mainBricks_ = this.draftBricks_ = this.listeners_ = this.undoStack_ = this.redoStack_ = this.brickDB_ = this.owner_ = null
+  this.mainBricks_ = this.draftBricks_ = this.listeners_ = this.owner_ = null
   eYo.Board.Main.superClass_.dispose.call(this)
 }
 
@@ -625,31 +546,12 @@ eYo.Board.prototype.makeUI = function() {
         )
       : new eYo.Scroller(this)
   }
-  var bottom = eYo.Scrollbar.thickness
-  if (options.hasTrashcan) {
-    this.trashcan = new eYo.Trashcan(this, bottom)
-    bottom = this.trashcan.top
-  }
-  if (options.zoom) {
-    this.scale = options.zoom.startScale || 1
-    if (options.zoom.controls) {
-      this.zoomControls_ = new eYo.ZoomControls(this, bottom)
-      bottom = this.zoomControls_.top
-    }
-  }
-  this.board_ && this.board_.makeUI()
-  this.flyout_ && this.flyout_.makeUI()
-  this.recordDeleteAreas()
 }
 
 /**
  * Dispose the UI related resources.
  */
 eYo.Board.prototype.disposeUI = function() {
-  this.flyout_ && this.flyout_.disposeUI()
-  this.board_ && this.board_.disposeUI()
-  this.zoomControls_ && this.zoomControls_.disposeUI()
-  this.trashcan && this.trashcan.disposeUI()
   var d = this.ui_driver_
   if (d) {
     d.boardDispose(this)
@@ -712,9 +614,7 @@ eYo.Board.prototype.getTopBricks = function(ordered) {
  */
 eYo.Board.prototype.clear = function() {
   this.setResizesEnabled(false)
-  while (this.topBricks_.length) {
-    this.topBricks_[0].dispose()
-  }
+  this.list_.clear()
   this.setResizesEnabled(true)
   this.error = eYo.VOID
 }
@@ -728,7 +628,6 @@ eYo.Board.Main.prototype.clear = function() {
   if (!existingGroup) {
     eYo.Events.group = true
   }
-  this.mainBricks_.length = this.draftBricks_.length = 0
   eYo.Board.Main.superClass_.clear.call(this)
   if (!existingGroup) {
     eYo.Events.group = false
@@ -746,68 +645,6 @@ eYo.Board.Main.prototype.clear = function() {
 eYo.Board.prototype.newBrick = function (prototypeName, opt_id) {
   return eYo.Brick.Manager.create(this, prototypeName, opt_id)
 }
-
-/**
- * Undo or redo the previous action.
- * @param {boolean} redo False if undo, true if redo.
- */
-eYo.Board.prototype.undo = function(redo) {
-  var inputStack = redo ? this.redoStack_ : this.undoStack_
-  var outputStack = redo ? this.undoStack_ : this.redoStack_
-  while (true) {
-    var inputEvent = inputStack.pop()
-    if (!inputEvent) {
-      return
-    }
-    var events = [inputEvent]
-    // Do another undo/redo if the next one is of the same group.
-    while (inputStack.length && inputEvent.group &&
-        inputEvent.group == inputStack[inputStack.length - 1].group) {
-      events.push(inputStack.pop())
-      // update the change count
-    }
-    events = eYo.Events.filter(events, redo)
-    if (events.length) {
-      // Push these popped events on the opposite stack.
-      events.forEach((event) => {
-        outputStack.push(event)
-      })
-      eYo.Events.recordUndo = false
-      var Bs = []
-      eYo.Do.tryFinally(() => { // try
-        if (this.rendered) {
-          events.forEach(event => {
-            var B = this.getBrickById(event.brickId)
-            if (B) {
-              B.change.begin()
-              Bs.push(B)
-            }
-          })
-        }
-        events.forEach(event => {
-          event.run(redo)
-          this.updateChangeCount(event, redo)
-        })
-      }, () => { // finally
-        eYo.Events.recordUndo = true
-        Bs.forEach(B => B.change.end())
-        eYo.App.didProcessUndo && (eYo.App.didProcessUndo(redo))
-      })
-      return
-    }
-  }
-}
-
-/**
- * Clear the undo/redo stacks.
- */
-eYo.Board.Main.prototype.clearUndo = function() {
-  this.undoStack_.length = 0
-  this.redoStack_.length = 0
-  // Stop any events already in the firing queue from being undoable.
-  eYo.Events.clearPendingUndo()
-  eYo.App.didClearUndo && eYo.App.didClearUndo()
-};
 
 /**
  * When something in this board changes, call a function.
@@ -835,19 +672,7 @@ eYo.Board.prototype.removeChangeListener = function(func) {
  * @return {eYo.Brick} The sought after brick or null if not found.
  */
 eYo.Board.prototype.getBrickById = eYo.Board.prototype.getBrickById = function(id) {
-  var brick = this.brickDB_[id]
-  if (brick) {
-    return brick
-  }
-  var m = XRegExp.exec(id, eYo.XRE.id_wrapped)
-  if (m && (brick = this.brickDB_[m.id])) {
-    return brick.someInputMagnet(m4t => {
-      var b3k = m4t.targetBrick
-      if (b3k && b3k.id === id) {
-        return b3k
-      }
-    })
-  }
+  return this.list_.getBrickById(id)
 }
 
 /**
@@ -865,17 +690,27 @@ eYo.Board.prototype.allInputsFilled = function(opt_shadowBricksAreFilled) {
 }
 
 /**
- * Database of all main boards.
- * @private
+ * Database of all identified boards.
+ * @constructor
  */
-eYo.Board.Main.DB_ = Object.create(null)
+eYo.Board.DB = function() {
+  this.byID_ = Object.create(null)
+}
+
+/**
+ * Database of all identified boards.
+ * @constructor
+ */
+eYo.Board.DB.prototype.add = function(board) {
+  this.byID_ = Object.create(null)
+}
 
 /**
  * Find the main board with the specified ID.
  * @param {string} id ID of board to find.
  * @return {eYo.Board} The sought after board or null if not found.
  */
-eYo.Board.mainWithId = function(id) {
+eYo.Board.DB.byId = function(id) {
   return eYo.Board.Main.DB_[id] || null
 }
 
@@ -894,19 +729,6 @@ eYo.Board.prototype.rendered = true;
  * @private
  */
 eYo.Board.prototype.resizesEnabled_ = true
-
-/**
- * The board's trashcan (if any).
- * @type {eYo.Trashcan}
- */
-eYo.Board.prototype.trashcan = null
-
-/**
- * The current gesture in progress on this board, if any.
- * @type {eYo.Gesture}
- * @private
- */
-eYo.Board.prototype.gesture_ = null
 
 /**
  * Last known position of the page scroll.
@@ -965,15 +787,6 @@ Object.defineProperties(eYo.Board.prototype, {
     }
   },
 })
-
-/**
- * Update items that use screen coordinate calculations
- * because something has changed (e.g. scroll position, window size).
- * @private
- */
-eYo.Board.prototype.updateScreenCalculations_ = function() {
-  this.recordDeleteAreas()
-}
 
 /**
  * Update the board metrics according to the desk.
@@ -1075,11 +888,10 @@ eYo.Board.prototype.resizePort = function() {
 }
 
 /**
- * Resize and reposition all of the board chrome (toolbox,
- * trash, scrollbars etc.)
+ * Resize and reposition all of the board chrome (scrollbars etc.)
  * This should be called when something changes that
  * requires recalculating dimensions and positions of the
- * trash, zoom, etc. (e.g. window layout).
+ * chromes. (e.g. window layout).
  */
 eYo.Board.prototype.layout = function() {
   this.updateMetrics()
@@ -1088,23 +900,13 @@ eYo.Board.prototype.layout = function() {
 }
 
 /**
- * Resize and reposition all of the board chrome (toolbox,
- * trash, scrollbars etc.)
+ * Resize and reposition all of the board chromes (scrollbars etc.)
  * This should be called when something changes that
  * requires recalculating dimensions and positions of the
- * trash, zoom, toolbox, etc. (e.g. window layout).
+ * chromes. (e.g. window layout).
  */
 eYo.Board.prototype.place = function() {
   this.ui_driver && this.ui_driver.boardPlace(this)
-  if (this.flyout_) {
-    this.flyout_.place()
-  }
-  if (this.trashcan) {
-    this.trashcan.place()
-  }
-  if (this.zoomControls_) {
-    this.zoomControls_.place()
-  }
   this.updateScreenCalculations_()
 }
 
@@ -1142,7 +944,7 @@ eYo.Board.prototype.moveTo = function(xy) {
  * Render all bricks in board.
  */
 eYo.Board.prototype.render = function() {
-  var bricks = this.allBricks
+  var bricks = this.list.all
   // Render each brick
   var i = bricks.length
   while (i--) {
@@ -1230,7 +1032,7 @@ eYo.Board.prototype.paste = function () {
         if (!isNaN(dx) && !isNaN(dy)) {
           // Offset brick until not clobbering another brick and not in connection
           // distance with neighbouring bricks.
-          var allBricks = this.allBricks
+          var allBricks = this.list.all
           var avoidCollision = () => {
             do {
               var collide = allBricks.some(b => {
@@ -1240,15 +1042,15 @@ eYo.Board.prototype.paste = function () {
                   return true
                 }
               }) || b3k.getMagnets_(false).some(m4t => {
-                  var neighbour = m4t.closest(eYo.Board.Main.SNAP_RADIUS,
+                  var neighbour = m4t.closest(eYo.App.SNAP_RADIUS,
                     eYo.Where.xy(dx, dy))
                   if (neighbour) {
                     return true
                   }
               })
               if (collide) {
-                dx += eYo.Board.Main.SNAP_RADIUS
-                dy += eYo.Board.Main.SNAP_RADIUS * 2
+                dx += eYo.App.SNAP_RADIUS
+                dy += eYo.App.SNAP_RADIUS * 2
               }
             } while (collide)
           }
@@ -1273,23 +1075,7 @@ eYo.Board.prototype.paste = function () {
 }
 
 /**
- * Make a list of all the delete areas for this board.
- */
-eYo.Board.prototype.recordDeleteAreas = function() {
-  if (this.trashcan && this.dom.svg.group_.parentNode) {
-    this.deleteRectTrash_ = this.trashcan.getClientRect()
-  } else {
-    this.deleteRectTrash_ = null
-  }
-  if (this.flyout_) {
-    this.deleteRectFlyout_ = this.flyout_.deleteRect
-  } else {
-    this.deleteRectFlyout_ = null
-  }
-}
-
-/**
- * Is the gesture over a delete area (toolbox or non-closing flyout)?
+ * Is the gesture over a delete area (flyout or non-closing flyout)?
  * @param {!eYo.Gesture} e Mouse move event.
  * @return {?number} Null if not over a delete area, or an enum representing
  *     which delete area the event is over.
@@ -1297,12 +1083,12 @@ eYo.Board.prototype.recordDeleteAreas = function() {
 eYo.Board.prototype.inDeleteArea = function(gesture) {
   var xy = gesture.where
   if (this.deleteRectTrash_ && this.deleteRectTrash_.contains(xy)) {
-    return eYo.Board.Main.DELETE_AREA_TRASH
+    return eYo.App.DELETE_AREA_TRASH
   }
   if (this.deleteRectFlyout_ && this.deleteRectFlyout_.contains(xy)) {
-    return eYo.Board.Main.DELETE_AREA_TOOLBOX
+    return eYo.App.DELETE_AREA_TOOLBOX
   }
-  return eYo.Board.Main.DELETE_AREA_NONE
+  return eYo.App.DELETE_AREA_NONE
 }
 
 /**
@@ -1328,17 +1114,10 @@ eYo.Board.prototype.showContextMenu_ = function (e) {
   var topBricks = this.orderedTopBricks
   var eventGroup = eYo.Do.genUid()
 
-  // Options to undo/redo previous action.
-  var undoOption = {}
-  undoOption.text = eYo.Msg.UNDO
-  undoOption.enabled = this.undoStack_.length > 0
-  undoOption.callback = this.undo.bind(this, false)
-  menuOptions.push(undoOption)
-  var redoOption = {}
-  redoOption.text = eYo.Msg.REDO
-  redoOption.enabled = this.redoStack_.length > 0
-  redoOption.callback = this.undo.bind(this, true)
-  menuOptions.push(redoOption)
+  if (this.back_) {
+    menuOptions.push(this.back_.undoMenuItemData)
+    menuOptions.push(this.back_.redoMenuItemData)
+  }
 
   // Add a little animation to collapsing and expanding.
   var DELAY = 10
@@ -1613,63 +1392,6 @@ eYo.Board.prototype.setResizesEnabled = function(enabled) {
   }
 }
 
-/**
- * Look up the gesture that is tracking this touch stream on this board.
- * Forwards to the main board.
- * @param {!Event} e Mouse event or touch event.
- * @return {eYo.Gesture} The gesture that is tracking this touch
- *     stream, or null if no valid gesture exists.
- */
-eYo.Board.prototype.getGesture = function(e) {
-  return this.main.getGesture(e)
-}
-
-/**
- * Look up the gesture that is tracking this touch stream on this board.
- * May create a new gesture.
- * @param {!Event} e Mouse event or touch event.
- * @return {eYo.Gesture} The gesture that is tracking this touch
- *     stream, or null if no valid gesture exists.
- */
-eYo.Board.Main.prototype.getGesture = function(e) {
-  var isStart = (e.type == 'mousedown' || e.type == 'touchstart' ||
-  e.type == 'pointerdown')
-  var gesture = this.gesture_
-  if (gesture) {
-    if (isStart && gesture.started) {
-      console.warn('tried to start the same gesture twice')
-      // That's funny.  We must have missed a mouse up.
-      // Cancel it, rather than try to retrieve all of the state we need.
-      gesture.cancel()
-      return null
-    }
-    return gesture
-  }
-  // No gesture existed on this board, but this looks like the start of a
-  // new gesture.
-  if (isStart) {
-    return (this.gesture_ = new eYo.Gesture(e, this))
-  }
-  // No gesture existed and this event couldn't be the start of a new gesture.
-  return null
-}
-
-/**
- * Clear the reference to the current gesture.
- */
-eYo.Board.prototype.clearGesture = function() {
-  this.gesture_ = null
-}
-
-/**
- * Cancel the current gesture, if one exists.
- */
-eYo.Board.prototype.cancelGesture = function() {
-  if (this.gesture_) {
-    this.gesture_.cancel()
-  }
-}
-   
 eYo.Board.prototype.logAllConnections = function (comment) {
   comment = comment || ''
   ;[
@@ -1773,68 +1495,19 @@ eYo.Board.prototype.fromUTF8ByteArray = function (bytes) {
   return str && (this.fromString(str))
 }
 
-
 /**
  * Add a brick to the board.
  * @param {eYo.Brick} brick
  * @param {String} opt_id
  */
-eYo.Board.prototype.addBrick = (() => {
-  var insertAt = (array, b, i) => {
-    array.splice(i, 0, b)
-    var l = b.where.l
-    var bb
-    while ((bb = array[++i])) {
-      l += b.span.l + 2
-      if (bb.where.l < l) {
-        (b = bb).ui.xy_.l = l
-      } else {
-        break
-      }
-    }
-  }
-  var insert = (array, brick) => {
-    var i_min = 0
-    var b_min = array[i_min]
-    if (!b_min || brick.where.l <= b_min.where.l) {
-      insertAt(array, brick, i_min)
-    } else {
-      var i_max = array.length - 1
-      while (i_min < i_max) {
-        var i = Math.floor((i_min + i_max) / 2)
-        var dl = brick.where.l - array[i].where.l
-        if (dl < 0) {
-          i_max = i
-        } else if (dl > 0) {
-          i_min = i
-        } else {
-          i_max = i
-          break
-        }
-      }
-      insertAt(array, brick, i_max)
-    }
-  }
-  return function (brick, opt_id, f) {
-    this.change.wrap(() => {
-      brick.id = (opt_id && !this.getBrickById(opt_id)) ?
-      opt_id : eYo.Do.genUid()
-      this.hasUI && brick.makeUI()
-      this.brickDB_[brick.id] = brick
-      this.topBricks_.push(brick)
-      if (brick.isMain) {
-        insert(this.mainBricks_, brick)
-        brick.ui.xy_.x = 0
-      } else {
-        insert(this.draftBricks_, brick)
-        brick.ui.xy_.c = - brick.span.c + 0.5
-        brick.ui.xy_.l += 0.5
-      }
-      brick.move()
-    })
-    this.resizePort()
-  }
-})()
+eYo.Board.prototype.addBrick = function (brick, opt_id) {
+  this.change.wrap(() => {
+    this.list_.add(brick, opt_id)
+    this.hasUI && brick.makeUI()
+    brick.move()
+  })
+  this.resizePort()
+}
 
 /**
  * Remove a brick from the board.
@@ -1843,23 +1516,8 @@ eYo.Board.prototype.addBrick = (() => {
  */
 eYo.Board.prototype.removeBrick = function (brick, f) {
   this.change.wrap(() => {
-    if (!goog.array.remove(this.topBricks_, brick)) {
-      throw 'Brick not present in board\'s list of top-most bricks.'
-    }
-    // Remove from board
-    this.brickDB_[brick.id] = null
+    this.list.remove(brick)
     f && f(this)
-  })
-}
-
-/**
- * Remove a brick from the board.
- * @param {eYo.Brick} brick
- */
-eYo.Board.Main.prototype.removeBrick = function (brick) {
-  eYo.Board.Main.superclass_.removeBrick.call(this, brick, () => {
-    goog.array.remove(this.mainBricks_, brick)
-    goog.array.remove(this.draftBricks_, brick)
   })
 }
 
@@ -1993,23 +1651,13 @@ eYo.Board.prototype.scrollBrickTopLeft = function(id) {
  * Fire a change event.
  * @param {!eYo.Events.Abstract} event Event to fire.
  */
-eYo.Board.Main.prototype.fireChangeListener = function(event) {
-  var before = this.undoStack_.length
-  if (event.recordUndo) {
-    this.undoStack_.push(event)
-    this.redoStack_.length = 0
-    if (this.undoStack_.length > this.MAX_UNDO) {
-      this.undoStack_.unshift()
+eYo.Board.prototype.eventDidFireChange = function(event) {
+  const task = () => {
+      this.listeners_.forEach(f => f(event))
     }
-  }
-  this.listeners_.forEach(f => f(event))
-  // For newly created events, update the change count
-  if (event.recordUndo) {
-    this.updateChangeCount(event, true)
-    if (before === this.undoStack_.length) {
-      eYo.App.didUnshiftUndo && eYo.App.didUnshiftUndo()
-    } else {
-      eYo.App.didPushUndo && eYo.App.didPushUndo()
-    }
+  if (this.backer_) {
+    this.backer_.eventDidFireChange(event, task)
+  } else {
+    task()
   }
 }

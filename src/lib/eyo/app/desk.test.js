@@ -3,10 +3,10 @@ describe('Programmatically create a desk', function () {
     var desk = new eYo.Desk({})
     chai.assert(desk !== eYo.App.Desk)
     var board = desk.board
-    chai.assert(board !== eYo.App.board)
+    chai.assert(board !== eYo.App.main)
   })
   it ('Headfull desk', function () {
-    chai.assert(eYo.Test.board && eYo.Test.board !== eYo.App.board)
+    chai.assert(eYo.Test.board && eYo.Test.board !== eYo.App.main)
   })
   it ('Headfull board metrics scale', function () {
     var board = eYo.Test.board
@@ -24,6 +24,6 @@ describe('Basic metrics', function () {
     var type = `simple`
     eYo.T3.Expr[type] = type
     eYo.Brick.Expr.makeSubclass(type, {})
-    var b3k = eYo.Brick.newReady(eYo.App.board, type)
+    var b3k = eYo.Brick.newReady(eYo.App.main, type)
   })
 })

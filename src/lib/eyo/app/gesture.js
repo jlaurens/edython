@@ -25,72 +25,19 @@ goog.forwardDeclare('goog.asserts')
 
 /*
  * Note: In this file "start" refers to touchstart, mousedown, and pointerstart
- * events.  "End" refers to touchend, mouseup, and pointerend events.
+ * events.  "end" refers to touchend, mouseup, and pointerend events.
  */
 // TODO: Consider touchcancel/pointercancel.
 
 /**
  * Class for one gesture.
+ * There should be only one active gesture at a time.
+ * Actually, the topmost object, eYo.App, is managing this gesture.
+ * 
  * @param {!Event} e The event that kicked off this gesture.
- * @param {!eYo.Board} creatorBoard The board that created
- *     this gesture and has a reference to it.
  * @constructor
  */
-eYo.Gesture = function(e, board) {
-  /**
-   * The position of the mouse when the gesture started.  Units are css pixels,
-   * with (0, 0) at the top left of the browser window (mouseEvent clientX/Y).
-   * @type {eYo.Where}
-   */
-  this.startWhere_ = null
-
-  /**
-   * How far the mouse has moved during this drag, in pixel units.
-   * (0, 0) is at this.startWhere_.
-   * @type {eYo.Where}
-   * @private
-   */
-  this.deltaWhere_ = null
-
-  /**
-   * The brick that the gesture started on, or null if it did not start on a
-   * brick.
-   * @type {eYo.Brick}
-   * @private
-   */
-  this.startBrick_ = null
-
-  /**
-   * The brick that this gesture targets.  If the gesture started on a
-   * shadow brick, this is the first non-shadow parent of the brick.  If the
-   * gesture started in the flyout, this is the root brick of the brick group
-   * that was clicked or dragged.
-   * @type {eYo.Brick}
-   * @private
-   */
-  this.targetBrick_ = null
-
-  /**
-   * The board that the gesture started on.  There may be multiple
-   * boards on a page.
-   * @type {eYo.Board}
-   * @private
-   */
-  this.board_ = null
-
-  /**
-   * Whether the board is currently being dragged.
-   * @type {boolean}
-   * @private
-   */
-  this.boardDragger_ = eYo.VOID
-
-  /**
-   * Whether the brick is currently being dragged.
-   * @type {boolean}
-   * @private
-   */
-  this.brickDragger_ = eYo.VOID
+eYo.Gesture = function(e) {
 
   /**
    * The event that most recently updated this gesture.
@@ -100,40 +47,111 @@ eYo.Gesture = function(e, board) {
   this.event_ = e
 
   /**
-   * The object tracking a brick drag, or null if none is in progress.
-   * @type {eYo.BrickDragger}
+   * A map of cached points used for tracking multi-touch gestures.
+   * @type {Object<number|string, eYo.Where>}
    * @private
    */
-  this.brickDragger_ = null
+  this.cachedPoints_ = Object.create(null)
 
-  /**
-   * The object tracking a board or flyout board drag, or null if none
-   * is in progress.
-   * @type {eYo.BoardDragger}
-   * @private
-   */
-  this.boardDragger_ = null
+  this.change_ = new eYo.Change(this)
+}
 
+Object.defineProperties(eYo.Gesture.prototype, {
   /**
-   * The flyout a gesture started in, if any.
-   * @type {eYo.Flyout}
-   * @private
+   * The position of the mouse when the gesture started.  Units are css pixels,
+   * with (0, 0) at the top left of the browser window (mouseEvent clientX/Y).
+   * @type {eYo.Where}
    */
-  this.flyout_ = null
+  startWhere_: {
+    value: null,
+    writable: true
+  },
 
-  /**
-   * Boolean for sanity-checking that some code is only called once.
-   * @type {boolean}
-   * @private
-   */
-  this.started_ = false
+/**
+ * How far the mouse has moved during this drag, in pixel units.
+ * (0, 0) is at this.startWhere_.
+ * @type {eYo.Where}
+ * @private
+ */
+deltaWhere_: {
+  value: null,
+  writable: true
+},
 
-  /**
-   * Boolean used internally to break a cycle in disposal.
-   * @type {boolean}
-   * @private
-   */
-  this.isEnding_ = false
+/**
+ * The brick that the gesture started on, or null if it did not start on a
+ * brick.
+ * @type {eYo.Brick}
+ * @private
+ */
+startBrick_: {
+  value: null,
+  writable: true
+},
+
+/**
+ * The brick that this gesture targets.  If the gesture started on a
+ * shadow brick, this is the first non-shadow parent of the brick.  If the
+ * gesture started in the flyout, this is the root brick of the brick group
+ * that was clicked or dragged.
+ * @type {eYo.Brick}
+ * @private
+ */
+targetBrick_: {
+  value: null,
+  writable: true
+},
+
+/**
+ * The object tracking a brick drag, or null if none is in progress.
+ * @type {eYo.BrickDragger}
+ * @private
+ */
+brickDragger_: {
+  value: null,
+  writable: true
+},
+
+/**
+ * The object tracking a board or flyout board drag, or null if none
+ * is in progress.
+ * @type {eYo.BoardDragger}
+ * @private
+ */
+boardDragger_: {
+  value: null,
+  writable: true
+},
+
+/**
+ * The flyout a gesture started in, if any.
+ * @type {eYo.Flyout}
+ * @private
+ */
+flyout_: {
+  value: null,
+  writable: true
+},
+
+/**
+ * Boolean for sanity-checking that some code is only called once.
+ * @type {boolean}
+ * @private
+ */
+started_: {
+  value: null,
+  writable: true
+},
+
+/**
+ * Boolean used internally to break a cycle in disposal.
+ * @type {boolean}
+ * @private
+  */
+  isEnding_: {
+    value: null,
+    writable: true
+  },
 
   /**
    * Boolean used to indicate whether or not to heal the stack after
@@ -141,22 +159,20 @@ eYo.Gesture = function(e, board) {
    * @type {boolean}
    * @private
    */
-  this.healStack_ = !eYo.Gesture.DRAG_STACK
+  healStack_: {
+    value: !eYo.Gesture.DRAG_STACK,
+    writable: true
+  },
 
   /**
    * Boolean for whether or not this gesture is a multi-touch gesture.
    * @type {boolean}
    * @private
    */
-  this.multiTouch_ = false
-
-  /**
-   * A map of cached points used for tracking multi-touch gestures.
-   * @type {Object<number|string, eYo.Where>}
-   * @private
-   */
-  this.cachedPoints_ = {}
-
+  multiTouch_: {
+    value: false,
+    writable: true
+  },
   /**
    * This is the ratio between the starting distance between the touch points
    * and the most recent distance between the touch points.
@@ -165,26 +181,30 @@ eYo.Gesture = function(e, board) {
    * @type {number}
    * @private
    */
-  this.previousScale_ = 0
-
+  previousScale_: {
+    value: 0,
+    writable: true
+  },
   /**
    * The starting distance between two touch points.
    * @type {number}
    * @private
    */
-  this.startDistance_ = 0
+  startDistance_: {
+    value: 0,
+    writable: true
+  },
 
-  this.change_ = new eYo.Change(this)
-
-  goog.asserts.assert(board.isMain, 'Only main boards own gestures')
   /**
    * The owner.
    * @type {eYo.Board}
    * @private
    */
-  this.owner_ = board
-  board.gesture_ = this
-}
+  board_: {
+    value: null,
+    writable: true
+  },
+})
 
 Object.defineProperties(eYo.Gesture, {
   /**
@@ -230,6 +250,11 @@ Object.defineProperties(eYo.Gesture.prototype, {
       return this.event_
     }
   },
+  /**
+   * Position of the receiver's event in the board.
+   * @type {eYo.Where}
+   * @readonly
+   */
   where: {
     get () {
       return new eYo.Where(this.event_)
@@ -291,14 +316,6 @@ Object.defineProperties(eYo.Gesture.prototype, {
   ui_driver: {
     get () {
       return this.owner_.ui_driver
-    }
-  },
-  /**
-   * General purpose ui_driver from the creator board.
-   */
-  creatorBoard: {
-    get () {
-      return this.owner_
     }
   },
   /**
@@ -415,8 +432,8 @@ eYo.Gesture.prototype.getTouchPoint_ = function(e) {
     return null
   }
   return eYo.Where.xy(
-    (e.pageX ? e.pageX : e.changedTouches[0].pageX),
-    (e.pageY ? e.pageY : e.changedTouches[0].pageY)
+    (e.pageX || e.changedTouches[0].pageX),
+    (e.pageY || e.changedTouches[0].pageY)
   )
 }
 
@@ -450,7 +467,7 @@ eYo.Gesture.prototype.updateFromEvent_ = function(e) {
 eYo.Gesture.prototype.updateDraggingBrick_ = function() {
   var dragger = this.owner_.brickDragger_
   var board = this.flyout_
-  ? this.flyout_.targetBoard_
+  ? this.flyout_.desk.main
   : this.board_
   if (board && (this.targetBrick_ = dragger.start(this))) {
     this.startBrick_ = null
@@ -609,31 +626,18 @@ eYo.Gesture.prototype.handleRightClick = function(e) {
  * @package
  */
 eYo.Gesture.prototype.handleBoardStart = function(e, board) {
-  goog.asserts.assert(!this.started_,
-      'Tried to call gesture.handleBoardStart, but the gesture had already been ' +
-      'started.');
-  this.started_ = true
+  this.handleBoardStart = eYo.Do.nothing
   this.board_ = board
   var b3k = eYo.Selected.brick
   b3k && (b3k.ui.selectMouseDownEvent = e)
-  this.doStart(e)
-}
-
-/**
- * Start a gesture: update the board to indicate that a gesture is in
- * progress and bind mousemove and mouseup handlers.
- * Called from `handleBoardStart`
- * @param {!Event} e A mouse down or touch start event.
- */
-eYo.Gesture.prototype.doStart = function(e) {
   if (eYo.Dom.isTargetInput(e)) {
     this.cancel()
     return
   }
   this.event_ = e
   this.ui_driver.disconnectStop()
-  this.board.updateScreenCalculationsIfScrolled()
-  this.board.markFocused()
+  board.updateScreenCalculationsIfScrolled()
+  board.markFocused()
 
   // Hide chaff also hides the flyout, so don't do it if the click is in a flyout.
   Blockly.Tooltip.block()
@@ -673,9 +677,7 @@ eYo.Gesture.prototype.doStart = function(e) {
  * @param {!Blockly.Flyout} flyout The flyout the event hit.
  */
 eYo.Gesture.prototype.handleFlyoutStart = function(e, flyout) {
-  goog.asserts.assert(!this.started_,
-      'Tried to call gesture.handleFlyoutStart, but the gesture had already ' +
-      'been started.')
+  this.handleFlyoutStart = eYo.Do.nothing
   this.flyout_ || (this.flyout_ = flyout)
   this.handleBoardStart(e, flyout.board)
 }
@@ -687,9 +689,7 @@ eYo.Gesture.prototype.handleFlyoutStart = function(e, flyout) {
  * @param {!eYo.Brick} brick The brick the event hits.
  */
 eYo.Gesture.prototype.handleBrickStart = function(e, brick) {
-  goog.asserts.assert(!this.started_,
-      'Tried to call gesture.handleBrickStart, but the gesture had already ' +
-      'been started.')
+  this.handleBrickStart = eYo.Do.nothing
   this.startBrick = brick.wrapper
   this.event_ = e
 }

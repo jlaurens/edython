@@ -550,7 +550,7 @@ eYo.Brick.UI.prototype.moveTo = function(xy, snap) {
  */
 eYo.Brick.UI.prototype.moveBy = function(dxy, snap) {
   var xy = this.xy.forward(dxy)
-  if (this.brick_.parent || this.isDragging) {
+  if (this.brick_.parent || this.desk.desktop.isDragging) {
     this.moveTo(xy)
   } else {
     eYo.Events.fireBrickMove(this.brick_, () => {
@@ -1904,7 +1904,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
     return
   }
   // if we clicked on a field, no connection returned
-  var gesture = brd.getGesture(e)
+  var gesture = eYo.App.getGesture(e)
   if (gesture && gesture.startField_) {
     return
   }
@@ -2073,11 +2073,11 @@ eYo.Brick.UI.prototype.on_mousedown = function (e) {
       return
     }
   }
-  var ws = brick.board
+  var brd = brick.board
   if (brick.parentIsShort && !brick.isSelected) {
     parent = brick.parent
     if (!parent.isSelected) {
-      var gesture = ws.getGesture(e)
+      var gesture = eYo.App.getGesture(e)
       if (gesture) {
         gesture.handleBrickStart(e, brick)
       }
@@ -2107,7 +2107,7 @@ eYo.Brick.UI.prototype.on_mousedown = function (e) {
   t9k.ui.lastSelectedMagnet__ = eYo.Selected.magnet
   // Prepare the mouseUp event for an eventual connection selection
   t9k.ui.lastMouseDownEvent = t9k.isSelected ? e : null
-  if ((gesture = ws.getGesture(e))) {
+  if ((gesture = eYo.App.getGesture(e))) {
     gesture.handleBrickStart(e, t9k)
   }
 }

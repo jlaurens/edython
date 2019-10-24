@@ -231,8 +231,8 @@ eYo.BrickDragger.prototype.start = function(gesture) {
 
   /**
    * Which delete area the mouse pointer is over, if any.
-   * One of {@link eYo.Board.Main.DELETE_AREA_TRASH},
-   * {@link eYo.Board.Main.DELETE_AREA_TOOLBOX}, or {@link eYo.Board.Main.DELETE_AREA_NONE}.
+   * One of {@link eYo.App.DELETE_AREA_TRASH},
+   * {@link eYo.App.DELETE_AREA_TOOLBOX}, or {@link eYo.App.DELETE_AREA_NONE}.
    * @type {?number}
    * @private
    */
@@ -349,7 +349,7 @@ eYo.BrickDragger.prototype.drag = function() {
 
   var trashcan = this.destination.trashcan
   if (trashcan) {
-    trashcan.setOpen_(this.wouldDelete_ && this.deleteRect_ === eYo.Board.Main.DELETE_AREA_TRASH)
+    trashcan.setOpen_(this.wouldDelete_ && this.deleteRect_ === eYo.App.DELETE_AREA_TRASH)
   }
 }
 
@@ -437,7 +437,7 @@ eYo.BrickDragger.prototype.update = function() {
   var deleteRect = this.deleteRect_ = this.destination.inDeleteArea(this.gesture_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
-  this.distance_ = eYo.Board.Main.SNAP_RADIUS
+  this.distance_ = eYo.App.SNAP_RADIUS
   this.availableMagnets_.forEach(m4t => {
     var neighbour = m4t.closest(this.distance_, this.xyDelta)
     if (neighbour.magnet) {
@@ -450,9 +450,9 @@ eYo.BrickDragger.prototype.update = function() {
     oldTarget.ui.removeBrickHilight_()
   }
   // Prefer connecting over dropping into the trash can, but prefer dragging to
-  // the toolbox over connecting to other bricks.
+  // the flyout over connecting to other bricks.
   var wouldConnect = !!this.target_ &&
-      deleteRect != eYo.Board.Main.DELETE_AREA_TOOLBOX
+      deleteRect != eYo.App.DELETE_AREA_TOOLBOX
   var wouldDelete = !wouldConnect && !!deleteRect && !this.brick_.parent &&
       this.brick_.deletable
   this.wouldDelete_ = wouldDelete

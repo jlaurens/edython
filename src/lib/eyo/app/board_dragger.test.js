@@ -6,6 +6,6 @@ describe('Basic  board dragger', function () {
     Object.defineProperty(eYo.Brick.Expr[type].prototype, 'isMain', {
       value: true
     })
-    var b3k = eYo.Brick.newReady(eYo.App.board, type)
+    var b3k = eYo.Brick.newReady(eYo.App.main, type)
   })
 })

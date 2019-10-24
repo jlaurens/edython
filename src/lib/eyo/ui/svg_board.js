@@ -322,12 +322,12 @@ eYo.Svg.prototype.boardBind_mousedown = function(board) {
 /**
  * Handle a mouse-down on SVG drawing surface, bound to a board.
  * NB: this is intentionnaly not a member of `eYo.Board.prototype`
+ * @param {!eYo.Board} board
  * @param {!Event} e Mouse down event.
- * @this {eYo.Board}
  * @private
  */
-eYo.Svg.prototype.boardOn_mousedown = function(e) {
-  var gesture = this.getGesture(e)
+eYo.Svg.prototype.boardOn_mousedown = function(board, e) {
+  var gesture = eYo.App.getGesture(e)
   if (gesture) {
     gesture.handleBoardStart(e, this)
   }
@@ -353,15 +353,15 @@ eYo.Svg.prototype.boardBind_wheel = function(board) {
 /**
  * Handle a mouse-wheel on SVG drawing surface.
  * Bound to a board.
+ * @param {eYo.Board}
  * @param {!Event} e Mouse wheel event.
- * @this {eYo.Board}
  * @private
  */
-eYo.Svg.prototype.boardOn_wheel = function(e) {
+eYo.Svg.prototype.boardOn_wheel = function(board, e) {
   // TODO: Remove gesture cancellation and compensate for coordinate skew during
   // zoom.
-  if (this.gesture_) {
-    this.gesture_.cancel()
+  if (board.gesture_) {
+    board.gesture_.cancel()
   }
   var PIXELS_PER_ZOOM_STEP = 50
   var delta = -e.deltaY / PIXELS_PER_ZOOM_STEP

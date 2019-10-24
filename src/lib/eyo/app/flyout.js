@@ -25,13 +25,6 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
 
 /**
  * Class for a flyout.
- * Circular dependencies through links:
- *  flyout >>> board >>> targetBoard >>> flyout
- * When defined, we have
- * flyout === flyout.board.targetBoard.flyout
- * A board has either a flyout or a targetBoard
- * but never has both.
- * This constructor takes care of this cycle.
  * @param {!eYo.Board} owner  The owning board, which must be a main board.
  * @param {!Object} flyoutOptions Dictionary of options for the board.
  * @constructor
@@ -95,16 +88,6 @@ eYo.Flyout = function(owner, flyoutOptions) {
 }
 
 Object.defineProperties(eYo.Flyout.prototype, {
-  /**
-   * The targetBoard
-   * @type {eYo.Board}
-   * @readonly
-   */
-  targetBoard: { 
-    get () {
-      return this.owner_
-    }
-  },
   /**
    * The desk
    * @type {eYo.Desk}
@@ -187,7 +170,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
     set (newValue) {
       if (this.viewRect_.size_.width !== newValue) {
         this.viewRect_.size_.width = newValue
-        this.targetBoard_.layout()
+        this.desk.main.layout()
       }
     }
   },
@@ -203,7 +186,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
     set (newValue) {
       if (this.viewRect_.size_.height !== newValue) {
         this.viewRect_.size_.height = newValue
-        this.targetBoard_.layout()
+        this.desk.main.layout()
       }
     }
   },
@@ -331,7 +314,7 @@ eYo.Flyout.prototype.dispose = function() {
  * When the size of the receiver did change.
  */
 eYo.Flyout.prototype.sizeChanged = function() {
-  this.targetBoard_.layout()
+  this.desk.main.layout()
   this.board_.layout()
 }
 
@@ -574,7 +557,7 @@ eYo.Flyout.prototype.on_wheel = function(e) {
  *     went wrong with deserialization.
  */
 eYo.Flyout.prototype.createBrick = function(originalBrick) {
-  this.targetBoard_.setResizesEnabled(false)
+  this.desk.main.setResizesEnabled(false)
   var newBrick
   eYo.Events.disableWrap(() => {
     newBrick = this.placeNewBrick_(originalBrick)
@@ -597,7 +580,7 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
  * @private
  */
 eYo.Flyout.prototype.layout_ = function(contents) {
-  this.board_.scale = this.targetBoard_.scale
+  this.board_.scale = this.desk.main.scale
   var where = eYo.Where.xy(this.MARGIN, this.MARGIN)
   contents.forEach(brick => {
     // Mark bricks as being inside a flyout.  This is used to detect and
@@ -650,7 +633,7 @@ eYo.Flyout.prototype.isDragTowardBoard = function(gesture) {
  * @private
  */
 eYo.Flyout.prototype.filterForCapacity_ = function() {
-  var remainingCapacity = this.targetBoard_.remainingCapacity
+  var remainingCapacity = this.desk.main.remainingCapacity
   this.board_.topBricks.forEach(brick => {
     if (this.permanentlyDisabled_.indexOf(brick) < 0) {
       brick.disabled = brick.descendants.length > remainingCapacity
@@ -665,7 +648,7 @@ eYo.Flyout.prototype.reflow = function() {
   if (this.reflowWrapper_) {
     this.board_.removeChangeListener(this.reflowWrapper_)
   }
-  this.board_.scale = this.targetBoard_.scale
+  this.board_.scale = this.desk.main.scale
   var size = this.size
   var rect = this.board_.metrics.port
   size.width = rect.width + this.MARGIN * 1.5 + eYo.Scrollbar.thickness
@@ -682,7 +665,7 @@ eYo.Flyout.prototype.place = function () {
   if (!this.visible_) {
     return
   }
-  var view = this.targetBoard_.metrics.view
+  var view = this.desk.main.metrics.view
   if (view.height <= 0) {
     // Hidden components will return null.
     return;
@@ -712,17 +695,17 @@ eYo.Flyout.prototype.place = function () {
  * Copy a brick from the flyout to the board and position it correctly.
  * Edython adds a full rendering process.
  * No rendering is made while bricks are dragging.
- * @param {!eYo.Brick} oldBrick The flyout brick to copy.
+ * @param {!eYo.Brick} srcBrick The flyout brick to copy.
  * @return {!eYo.Brick} The new brick in the main board.
  * @private
  */
-eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
+eYo.Flyout.prototype.placeNewBrick_ = function(srcBrick) {
 
   // Create the new brick by cloning the brick in the flyout (via XML).
-  var xml = eYo.Xml.brickToDom(oldBrick)
+  var xml = eYo.Xml.brickToDom(srcBrick)
   // The target board would normally resize during domToBrick, which will
   // lead to weird (AKA buggy) jumps.  Save it for terminateDrag.
-  var targetBoard = this.targetBoard_
+  var targetBoard = this.desk.main
   targetBoard.setResizesEnabled(false)
 
   // Using domToBrick instead of domToBoard means that the new brick will be
@@ -731,9 +714,9 @@ eYo.Flyout.prototype.placeNewBrick_ = function(oldBrick) {
 
   var xy = this.board_.originInDesk
   .forward(
-    oldBrick.whereInBoard.scale(this.board_.scale)
+    srcBrick.whereInBoard.scale(this.board_.scale)
   ).backward(targetBoard.originInDesk)
-  .unscale(targetBoard.scale)
+  .unscale(this.desk.scale)
   brick.moveTo(xy)
   brick.render()
   return brick
@@ -793,7 +776,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
       }
       this.ui_driver.flyoutUpdate(this)
       delete this.slide_locked
-      this.targetBoard_.recordDeleteAreas()
+      this.desk_.recordDeleteAreas()
       this.slideOneStep(steps[n_steps])
       this.didSlide(close)
       this.abortSlide = eYo.Do.nothing
@@ -858,7 +841,7 @@ eYo.Flyout.prototype.updateMetrics = function() {
   // if the flyout is moving, either opening or closing,
   // stop moving
   this.abortSlide() // ideally, sliding would follow the new metrics
-  var view = this.targetBoard.metrics.view
+  var view = this.desk.main.metrics.view
   var r = this.viewRect_
   r.size_.height = view.height
   r.size_.width = Math.min(view.width / 3, Math.max(this.board.metrics.port.width, eYo.Unit.x * 10))
