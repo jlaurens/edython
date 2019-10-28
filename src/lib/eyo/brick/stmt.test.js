@@ -97,7 +97,7 @@ describe('Statement', function () {
       d.comment_p = 'abc'
       d1.comment_p = 'cde'
       d1.moveBy(eYo.Where.xy(100,20))
-      d1.right_m.select()
+      d1.right_m.focus()
       // d1.dispose()
       // d.dispose()
       eYo.Test.tearItDown()

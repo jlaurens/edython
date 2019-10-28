@@ -1392,15 +1392,15 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
   var connect1 = () => {
     connect2()
     if (parentM4t.wrapped_) {
-      child.isSelected && (parent.select())
+      child.hasFocus && (parent.focus())
       child.wrapped_ = true
     } else {
       // if this connection was selected, the newly connected brick should be selected too
-      if (parentM4t.isSelected) {
+      if (parentM4t.hasFocus) {
         var P = parent
         do {
-          if (P.isSelected) {
-            child.select()
+          if (P.hasFocus) {
+            child.focus()
             break
           }
         } while ((P = P.group))
@@ -1446,8 +1446,8 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
         }
       }
     }
-    childM4t.isSelected && (childM4t.unselect())
-    parentM4t.isSelected && (parentM4t.unselect())
+    childM4t.hasFocus && (childM4t.unfocus())
+    parentM4t.hasFocus && (parentM4t.unfocus())
     child.incog = parentM4t.incog
   }
   eYo.Events.groupWrap(() => {
@@ -1566,7 +1566,7 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
     reverse = true
   }
   // Raise it to the top for extra visibility.
-  var selected = root.isSelected
+  var selected = root.hasFocus
   selected || root.ui.addSelect()
   var dxy = eYo.Where.xy(Blockly.SNAP_RADIUS, Blockly.SNAP_RADIUS).backward(this.xy)
   if (reverse) {
@@ -1578,7 +1578,7 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
     dxy.x += m4t.targetBrick.width
   }
   root.moveBy(dxy)
-  selected || root.ui.removeSelect()
+  selected || root.ui.removeFocus()
 }
 
 /**
@@ -1748,7 +1748,7 @@ eYo.Magnet.prototype.disconnect = (() => {
       // this occurs while removing the parent
       // if the parent was selected, select the child
       child.wrapped_ = false
-      parent.isSelected && (child.select())
+      parent.hasFocus && (child.focus())
     }
     // Now do the job
     parentM4t.target_ = null

@@ -373,7 +373,7 @@ Object.defineProperties(eYo.Responder.prototype, {
     set (brick) {
       if (!this.startBrick_) {
         var candidate
-        var selected = eYo.Selected.brick
+        var selected = eYo.Focus.brick
         do {
           candidate = brick
         } while (brick.isExpr && (selected !== brick) && (brick = brick.parent))
@@ -576,7 +576,7 @@ eYo.Responder.prototype.on_mouseup = function(e) {
       this.boardDragger_ = null
     } else if (this.startBrick_) {
       console.error('doBrickClick_')
-      this.startBrick_.isSelected ? this.doBrickClick_() : this.doBoardClick_()
+      this.startBrick_.hasFocus ? this.doBrickClick_() : this.doBoardClick_()
     } else {
       console.error('doBoardClick_')
       this.doBoardClick_()
@@ -630,7 +630,7 @@ eYo.Responder.prototype.handleRightClick = function(e) {
 eYo.Responder.prototype.handleBoardStart = function(e, board) {
   this.handleBoardStart = eYo.Do.nothing
   this.board_ = board
-  var b3k = eYo.Selected.brick
+  var b3k = eYo.Focus.brick
   b3k && (b3k.ui.selectMouseDownEvent = e)
   if (eYo.Dom.isTargetInput(e)) {
     this.cancel()
@@ -645,7 +645,7 @@ eYo.Responder.prototype.handleBoardStart = function(e, board) {
   Blockly.Tooltip.block()
 
   if (this.targetBrick_) {
-    this.targetBrick_.select()
+    this.targetBrick_.focus()
   }
 
   if (eYo.Dom.isRightButton(e)) {
@@ -724,7 +724,7 @@ eYo.Responder.prototype.doBrickClick_ = function() {
  * @private
  */
 eYo.Responder.prototype.doBoardClick_ = function() {
-  eYo.Selected.brick && eYo.Selected.brick.unselect()
+  eYo.Focus.brick && eYo.Focus.brick.unfocus()
 }
 
 /* End functions defining what actions to take to execute clicks on each type

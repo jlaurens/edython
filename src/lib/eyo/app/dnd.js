@@ -17,13 +17,15 @@ goog.provide('eYo.DnD')
 
 goog.forwardDeclare('eYo.Motion')
 
+eYo.DnD = Object.create(null)
+
 /**
  * Main drag and drop manager.
  * It maintains a list of droppers.
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param{!eYo.Motion} motion,  the owning motion
  */
-eYo.DnD.Manager = function (motion) {
+eYo.DnD.Mgr = function (motion) {
   this.motion_ = motion
   /** the dragger_ that started a drag, not owned */
   this.dragger_ = null
@@ -43,7 +45,7 @@ eYo.DnD.Manager = function (motion) {
   ]
 }
 
-Object.defineProperties(eYo.DnD.Manager.prototype, {
+Object.defineProperties(eYo.DnD.Mgr.prototype, {
   active_: {
     get () {
       return !!this.dragger_
@@ -56,7 +58,7 @@ Object.defineProperties(eYo.DnD.Manager.prototype, {
  * It maintains a list of draggers and droppers
  * * @param{!eYo.Desktop} desktop,  the owning desktop
  */
-eYo.DnD.Manager.prototype.dispose = function () {
+eYo.DnD.Mgr.prototype.dispose = function () {
   this.cancel()
   this.draggers_.foreach(d => d.dispose())
   this.draggers_ = null
@@ -69,7 +71,7 @@ eYo.DnD.Manager.prototype.dispose = function () {
  * Ask one of its draggers to initate a dragging operation.
  * @return {Boolean} Whether a drag operation did start.
  */
-eYo.DnD.Manager.prototype.start = function () {
+eYo.DnD.Mgr.prototype.start = function () {
   this.cancel()
   if ((this.dragger_ = this.draggers_.some(d => d.start()))) {
     return this.update()
@@ -81,7 +83,7 @@ eYo.DnD.Manager.prototype.start = function () {
  * Forwards to the current dragger, then to all its droppers.
  * @return {Boolean} Whether a drag operation did update.
  */
-eYo.DnD.Manager.prototype.update = function () {
+eYo.DnD.Mgr.prototype.update = function () {
   if (this.dragger_) {
     this.dragger_.update()
     this.droppers_.forEach(d => d.update())
@@ -95,7 +97,7 @@ eYo.DnD.Manager.prototype.update = function () {
  * Forwards to the current dragger.
  * @return {Boolean} Whether a drag operation did cancel.
  */
-eYo.DnD.Manager.prototype.cancel = function () {
+eYo.DnD.Mgr.prototype.cancel = function () {
   if (this.dragger_) {
     this.dragger_.cancel()
     this.droppers_.foreach(d => d.cancel())
@@ -109,7 +111,7 @@ eYo.DnD.Manager.prototype.cancel = function () {
  * Forwards to the current dragger.
  * @return {Boolean} Whether a drag operation did reset.
  */
-eYo.DnD.Manager.prototype.reset = function () {
+eYo.DnD.Mgr.prototype.reset = function () {
   if (this.dragger_) {
     this.dragger_.reset()
     this.droppers_.foreach(d => d.reset())
@@ -123,7 +125,7 @@ eYo.DnD.Manager.prototype.reset = function () {
  * Forwards to the current dragger, then to all its droppers.
  * @return {Boolean} Whether a drag operation did complete.
  */
-eYo.DnD.Manager.prototype.complete = function () {
+eYo.DnD.Mgr.prototype.complete = function () {
   if (this.dragger_) {
     this.droppers_.foreach(d => d.update())
     this.dropper_.complete()
@@ -137,14 +139,14 @@ eYo.DnD.Manager.prototype.complete = function () {
  * Add a dragger.
  * @param {!eYo.DnD.Dragger} dragger
  */
-eYo.DnD.Manager.prototype.addDragger = function (dragger) {
+eYo.DnD.Mgr.prototype.addDragger = function (dragger) {
   this.draggers_.push(dragger)
 }
 
 /**
  * Add a dropper.
  */
-eYo.DnD.Manager.prototype.addDropper = function (dropper) {
+eYo.DnD.Mgr.prototype.addDropper = function (dropper) {
   this.droppers_.push(dropper)
 }
 
@@ -223,7 +225,7 @@ eYo.DnD.Dragger.prototype.complete = eYo.DnD.Dragger.prototype.reset
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Manager} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mgr} manager,  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.Board = function (manager) {
   eYo.DnD.Dragger.Board.superClass_.constructor.call(this, manager)
@@ -283,7 +285,7 @@ eYo.DnD.Dragger.Board.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Manager} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mgr} manager,  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.FlyoutBoard = function (manager) {
   eYo.DnD.Dragger.FlyoutBoard.superClass_.constructor.call(this, manager)
@@ -344,7 +346,7 @@ eYo.DnD.Dragger.FlyoutBoard.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Manager} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mgr} manager,  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.Brick = function (manager) {
   eYo.DnD.Dragger.Brick.superClass_.constructor.call(this, manager)
@@ -405,7 +407,7 @@ eYo.DnD.Dragger.Brick.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Manager} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mgr} manager,  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.FlyoutBrick = function (manager) {
   eYo.DnD.Dragger.FlyoutBrick.superClass_.constructor.call(this, manager)

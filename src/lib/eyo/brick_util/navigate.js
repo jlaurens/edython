@@ -15,7 +15,7 @@ goog.provide('eYo.Navigate')
 
 goog.require('eYo')
 
-goog.require('eYo.Selected')
+goog.forwardDeclare('eYo.Focus')
 
 /**
  * Tab navigation.
@@ -28,12 +28,12 @@ eYo.Navigate.doTab = (() => {
     return m4t && !m4t.incog && !m4t.hidden && m4t.isInput && m4t
   }
   var doLeft = b3k => {
-    if (!(magnet = eYo.Selected.magnet) || magnet.incog || !(magnet = b3k.out_m || b3k.ui.lastRenderedMagnet || (b3k.stmtParent || b3k.root).ui.lastRenderedMagnet)) {
+    if (!(magnet = eYo.Focus.magnet) || magnet.incog || !(magnet = b3k.out_m || b3k.ui.lastRenderedMagnet || (b3k.stmtParent || b3k.root).ui.lastRenderedMagnet)) {
       return
     }
     var m4t = magnet
     while ((m4t = m4t.renderedLeft)) {
-      if ((eYo.Selected.magnet = accept(m4t))) {
+      if ((eYo.Focus.magnet = accept(m4t))) {
         return
       }
     }
@@ -42,18 +42,18 @@ eYo.Navigate.doTab = (() => {
       m4t = magnet
     }
     do {
-      if ((eYo.Selected.magnet = accept(m4t))) {
+      if ((eYo.Focus.magnet = accept(m4t))) {
         return
       }
     } while ((m4t = m4t.renderedLeft))
   }
   var doRight = b3k => {
-    if (!(magnet = eYo.Selected.magnet) || magnet.incog || !(magnet = b3k.out_m || b3k.ui.firstRenderedMagnet || (b3k.stmtParent || b3k.root).ui.firstRenderedMagnet)) {
+    if (!(magnet = eYo.Focus.magnet) || magnet.incog || !(magnet = b3k.out_m || b3k.ui.firstRenderedMagnet || (b3k.stmtParent || b3k.root).ui.firstRenderedMagnet)) {
       return
     }
     var m4t = magnet
     while ((m4t = m4t.renderedRight)) {
-      if ((eYo.Selected.magnet = accept(m4t))) {
+      if ((eYo.Focus.magnet = accept(m4t))) {
         return
       }
     }
@@ -62,7 +62,7 @@ eYo.Navigate.doTab = (() => {
       m4t = magnet
     }
     do {
-      if ((eYo.Selected.magnet = accept(m4t))) {
+      if ((eYo.Focus.magnet = accept(m4t))) {
         return
       }
     } while ((m4t = m4t.renderedRight))
@@ -136,34 +136,34 @@ eYo.Brick.prototype.getBestBrick = function (distance) {
  * For edython.
  * @return None
  */
-eYo.Selected.chooseLeft = () => {
-  const b3k = eYo.Selected.brick
+eYo.Focus.chooseLeft = () => {
+  const b3k = eYo.Focus.brick
   if (!b3k) {
     return
   }
-  var m4t = eYo.Selected.magnet
+  var m4t = eYo.Focus.magnet
   if (m4t) {
     if (m4t.isInput || m4t.isOutput) {
-      eYo.Selected.magnet = null
-      b3k.wrapper.select().scrollToVisible()
+      eYo.Focus.magnet = null
+      b3k.wrapper.focus().scrollToVisible()
       return
     } else if (m4t.isSuite) {
-      eYo.Selected.magnet = null
-      eYo.Selected.scrollToVisible()
+      eYo.Focus.magnet = null
+      eYo.Focus.scrollToVisible()
       return
     } else {
-      eYo.Selected.magnet = null
-      ;(b3k.group || b3k.root).select().scrollToVisible()
+      eYo.Focus.magnet = null
+      ;(b3k.group || b3k.root).focus().scrollToVisible()
       return
     }
   } else if (b3k.isStmt) {
     var ans = b3k.group || b3k.root
     if (b3k !== ans) {
-      ans.select().scrollToVisible()
+      ans.focus().scrollToVisible()
       return
     }
   } else if ((ans = b3k.stmtParent)) {
-    ans.select().scrollToVisible()
+    ans.focus().scrollToVisible()
     return
   }  // now try to select a top brick
   var root = b3k.root
@@ -183,8 +183,8 @@ eYo.Selected.chooseLeft = () => {
       minor: b.foot - b.head
     }
   })
-  eYo.Selected.magnet = null
-  ;(target || root).select().scrollToVisible()
+  eYo.Focus.magnet = null
+  ;(target || root).focus().scrollToVisible()
 }
 /**
  * Select the brick to the right of the selection.
@@ -192,16 +192,16 @@ eYo.Selected.chooseLeft = () => {
  * For edython.
  * @return yorn
  */
-eYo.Selected.chooseRight = function () {
-  const eyo = eYo.Selected.brick
+eYo.Focus.chooseRight = function () {
+  const eyo = eYo.Focus.brick
   if (!eyo) {
     return
   }
-  var m4t = eYo.Selected.magnet
+  var m4t = eYo.Focus.magnet
   if (m4t) {
     if (m4t.isInput || m4t.isOutput) {
-      eYo.Selected.magnet = null
-      eYo.Selected.scrollToVisible()
+      eYo.Focus.magnet = null
+      eYo.Focus.scrollToVisible()
       return
     } else if (m4t.isFoot) {
       if (eyo.isGroup) {
@@ -211,18 +211,18 @@ eYo.Selected.chooseRight = function () {
         while ((t9k = m4t.targetBrick) && (next = t9k.foot_m)) {
           m4t = next
         }
-        m4t.select().scrollToVisible()
+        m4t.focus().scrollToVisible()
         return
       }
     } else if (m4t.isSuite) {
       // select a top brick
     } else {
-      eYo.Selected.magnet = null
-      eYo.Selected.scrollToVisible()
+      eYo.Focus.magnet = null
+      eYo.Focus.scrollToVisible()
       return
     }
   } else if ((m4t = eyo.suite_m)) {
-    m4t.select().scrollToVisible()
+    m4t.focus().scrollToVisible()
     return
   }
   // now try to select a top brick
@@ -243,8 +243,8 @@ eYo.Selected.chooseRight = function () {
       minor: b.foot - b.head
     }
   })
-  eYo.Selected.magnet = null
-  ;(target || root).select().scrollToVisible()
+  eYo.Focus.magnet = null
+  ;(target || root).focus().scrollToVisible()
 }
 
 /**
@@ -252,33 +252,33 @@ eYo.Selected.chooseRight = function () {
  * For edython.
  * @return None
  */
-eYo.Selected.chooseAbove = function () {
-  var eyo = eYo.Selected.brick
+eYo.Focus.chooseAbove = function () {
+  var eyo = eYo.Focus.brick
   if (!eyo) {
     return
   }
-  var m4t = eYo.Selected.magnet
+  var m4t = eYo.Focus.magnet
   if (m4t) {
     if (m4t.isHead) {
       var target = m4t.target
       if (target) {
-        target.select().scrollToVisible()
+        target.focus().scrollToVisible()
         return
       }
     } else if (m4t.isFoot || m4t.isSuite) {
       var brick = m4t.brick
       if (brick) {
-        brick.select().scrollToVisible()
+        brick.focus().scrollToVisible()
         return
       }
     }
   } else if ((m4t = eyo.head_m)) {
-    m4t.select().scrollToVisible()
+    m4t.focus().scrollToVisible()
     return
   }
   if ((brick = eyo.stmtParent) || (brick = eyo.root)) {
     if (eyo !== brick) {
-      brick.select().scrollToVisible()
+      brick.focus().scrollToVisible()
       return
     }
   }
@@ -300,9 +300,9 @@ eYo.Selected.chooseAbove = function () {
   })
   if (brick) {
     if (m4t && m4t.isHead && eyo.foot_m) {
-      brick.foot_m.select().scrollToVisible()
+      brick.foot_m.focus().scrollToVisible()
     } else {
-      brick.select().scrollToVisible()
+      brick.focus().scrollToVisible()
     }
   }
 }
@@ -312,42 +312,42 @@ eYo.Selected.chooseAbove = function () {
  * For edython.
  * @return None
  */
-eYo.Selected.chooseBelow = () => {
-  var brick = eYo.Selected.brick
+eYo.Focus.chooseBelow = () => {
+  var brick = eYo.Focus.brick
   if (!brick) {
     return
   }
-  var m4t = eYo.Selected.magnet
+  var m4t = eYo.Focus.magnet
   var b3k
   if (m4t) {
     if (m4t.isFoot) {
       var target = m4t.target
       if (target) {
-        target.select().scrollToVisible()
+        target.focus().scrollToVisible()
         return
       } else if ((b3k = brick.group) && (m4t = b3k.foot_m)) {
-        m4t.select().scrollToVisible()
+        m4t.focus().scrollToVisible()
         return
       }
     } else if (m4t.isSuite) {
       var target = m4t.target
       if (target) {
-        target.select().scrollToVisible()
+        target.focus().scrollToVisible()
         return
       } else if ((b3k = brick.group) && (b3k !== brick) && (m4t = b3k.foot_m)) {
-        m4t.select().scrollToVisible()
+        m4t.focus().scrollToVisible()
         return
       }
     } else if (m4t.isHead) {
-      eYo.Selected.magnet = null
-      eYo.Selected.scrollToVisible()
+      eYo.Focus.magnet = null
+      eYo.Focus.scrollToVisible()
       return
     }
   } else if ((m4t = brick.foot_m) || ((brick = brick.stmtParent) && (m4t = brick.foot_m))) {
-    m4t.select().scrollToVisible()
+    m4t.focus().scrollToVisible()
     return
   }
-  b3k = eYo.Selected.brick.root.getBestBrick((a, b) => {
+  b3k = eYo.Focus.brick.root.getBestBrick((a, b) => {
     if (a.foot >= b.foot) {
       return {}
     }
@@ -365,9 +365,9 @@ eYo.Selected.chooseBelow = () => {
   })
   if (b3k) {
     if (m4t && m4t.isFoot && b3k.head_m) {
-      b3k.head_m.select().scrollToVisible()
+      b3k.head_m.focus().scrollToVisible()
     } else {
-      b3k.select().scrollToVisible()
+      b3k.focus().scrollToVisible()
     }
   }
 }
@@ -377,13 +377,13 @@ eYo.Selected.chooseBelow = () => {
  * For edython.
  * @return None
  */
-eYo.Selected.chooseNext = () => {
-  var eyo = eYo.Selected.brick
+eYo.Focus.chooseNext = () => {
+  var eyo = eYo.Focus.brick
   if (!eyo) {
     return
   }
   if ((eyo = eyo.next)) {
-    eyo.select()
-    eYo.Selected.scrollToVisible()
+    eyo.focus()
+    eYo.Focus.scrollToVisible()
   }
 }

@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Motion model. Superseeds the dom events.
+ * @fileoverview Motion model. Superseeds the dom events relatd to mouse, pointer and touch.
  * @author jerome.laurens@u-bourgogne.fr
  */
 'use strict'
@@ -15,9 +15,15 @@ goog.provide('eYo.Motion')
 
 goog.require('eYo')
 
-goog.forwardDeclare('eYo.Dom')
+goog.forwardDeclare('eYo.Board')
+goog.forwardDeclare('eYo.Brick')
+goog.forwardDeclare('eYo.Field')
+goog.forwardDeclare('eYo.Magnet')
+
 goog.forwardDeclare('eYo.Dragger')
 goog.forwardDeclare('eYo.Scaler')
+
+goog.forwardDeclare('eYo.Dom')
 
 goog.forwardDeclare('goog.asserts')
 
@@ -47,7 +53,7 @@ eYo.Motion = function(desktop) {
 
   this.touchIDs_ = []
 
-  this.dndmgr_ = new eYo.DnD.Manager(this)
+  this.dndmgr_ = new eYo.DnD.Mgr(this)
   this.scaler_ = new eYo.Scaler(this)
 
   this.change_ = new eYo.Change()
@@ -344,7 +350,7 @@ Object.defineProperties(eYo.Motion.prototype, {
     set (brick) {
       if (!this.brick_) {
         var candidate
-        var selected = eYo.Selected.brick
+        var selected = eYo.Focus.brick
         do {
           candidate = brick
         } while (brick.isExpr && (selected !== brick) && (brick = brick.parent))
@@ -514,7 +520,7 @@ eYo.Motion.prototype.captureMouseStart_ = function() {
   }
   // there can be a drag only if the brick is already selected
   // or no brick was clicked at all
-  if (!this.brick_ || this.brick_.isSelected) {
+  if (!this.brick_ || this.brick_.hasFocus) {
     var captureMove = e => {
       this.captureMouseMove_(e)
     }
@@ -527,12 +533,12 @@ eYo.Motion.prototype.captureMouseStart_ = function() {
   // select the brick if any
   // and prepare a click motion
   if (this.brick_) {
-    if (this.brick_.isDescendantOf(eYo.Selected.brick) && this.event_.altKey) {
-      this.shouldSelect_ = eYo.Selected.brick.parent
+    if (this.brick_.isDescendantOf(eYo.Focus.brick) && this.event_.altKey) {
+      this.shouldSelect_ = eYo.Focus.brick.parent
     } else {
       this.shouldSelect_ = this.brick_.selected? null: this.brick_
     }
-    this.brick_.select()
+    this.brick_.focus()
   }
   // prepare to capture a mouseup like event
   var captureUp = e => {
@@ -557,7 +563,7 @@ eYo.Motion.prototype.captureMouseMove_ = function(e) {
   ? eYo.Motion.FLYOUT_DRAG_RADIUS
   : eYo.Motion.DRAG_RADIUS
   if (delta > limit) {
-    this.brick_ && this.brick_.select()
+    this.brick_ && this.brick_.focus()
     this.abortLongPress_()
     this.abortHandle_()
     this.captureMouseMove_ = this.captureMouseDrag_
@@ -702,7 +708,7 @@ eYo.Motion.prototype.captureTouchMove_ = function(e) {
         ? eYo.Motion.FLYOUT_DRAG_RADIUS
         : eYo.Motion.DRAG_RADIUS
         if (delta > limit) {
-          this.brick_ && this.brick_.select()
+          this.brick_ && this.brick_.focus()
           this.abortLongPress_()
           this.abortHandle_()
           this.captureTouchMove_ = this.captureTouchDragOrScale_
@@ -896,7 +902,7 @@ eYo.Motion.prototype.handleClickBoard_ = function() {
   if (this.clickCount_>1) {
     this.board_.close()
   } else {
-    eYo.Selected.brick && eYo.Selected.brick.unselect()
+    eYo.Focus.brick && eYo.Focus.brick.unfocus()
   }
 }
 
@@ -923,7 +929,7 @@ eYo.Motion.prototype.handleClickField_ = eYo.Motion.prototype.handleClickBrick_ 
           return true
         }
       } 
-      eYo.Selected.brick = this.shouldSelect_
+      eYo.Focus.brick = this.shouldSelect_
     }
     return true
   }
@@ -935,6 +941,6 @@ eYo.Motion.prototype.handleClickField_ = eYo.Motion.prototype.handleClickBrick_ 
  * @private
  */
 eYo.Motion.prototype.handleClickBoard_ = function() {
-  eYo.Selected.brick && eYo.Selected.brick.unselect()
+  eYo.Focus.brick && eYo.Focus.brick.unfocus()
   return true
 }

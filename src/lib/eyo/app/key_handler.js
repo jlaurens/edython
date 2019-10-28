@@ -115,8 +115,8 @@ eYo.KeyHandler = (() => {
   }
   me.handleFirstMenuItemAction = function (model) {
     // first check to see if the selected brick can handle the model
-    var eyo = eYo.Selected.brick
-    var m4t = eYo.Selected.magnet
+    var eyo = eYo.Focus.brick
+    var m4t = eYo.Focus.magnet
     if (eyo && !m4t) {
       var D = model.data
       if (D && eyo.setDataWithModel(D)) {
@@ -155,9 +155,9 @@ eYo.KeyHandler = (() => {
       model.action.call(me, model.model)
       return
     }
-    var eyo = eYo.Selected.brick
+    var eyo = eYo.Focus.brick
     if (eyo) {
-      var m4t = eYo.Selected.magnet
+      var m4t = eYo.Focus.magnet
       var newB = m4t && (eyo.insertBrickWithModel(model, m4t))
         || (model.parent || model.slot
           ? eyo.insertParentWithModel(model) || eyo.insertBrickWithModel(model, m4t)
@@ -172,7 +172,7 @@ eYo.KeyHandler = (() => {
               if (m4t.type === type) {
                 var t9k = m4t.targetBrick
                 if (!m4t.hidden_ && !t9k && (!m4t.source || !m4t.source.bindField)) {
-                  m4t.select()
+                  m4t.focus()
                   return true
                 } else {
                   return t9k && (doFirst(t9k, type))
@@ -183,11 +183,11 @@ eYo.KeyHandler = (() => {
           if (doFirst(newB, eYo.Magnet.IN)) {
             return true
           } else if ((m4t === eyo.foot_m) && (m4t = newB.foot_m) && !m4t.hidden_) {
-            m4t.select()
+            m4t.focus()
             return true
           }
-          eYo.Selected.magnet = null
-          newB.select()
+          eYo.Focus.magnet = null
+          newB.focus()
           return true
         }
         // no selected magnet
@@ -195,15 +195,15 @@ eYo.KeyHandler = (() => {
         do {
           if (parent.someInputMagnet(m4t => {
             if (m4t.isInput && !m4t.optional_ && !m4t.target && !m4t.hidden_) {
-              m4t.select()
+              m4t.focus()
               return true
             }
           })) {
             return true
           }
         } while ((parent = parent.group))
-        eYo.Selected.magnet = null
-        newB.select()
+        eYo.Focus.magnet = null
+        newB.focus()
         return true
       }
     }
@@ -435,12 +435,12 @@ eYo.KeyHandler = (() => {
         return
       }
     } else if (k === 'enter' || k === 'return') {
-      if ((brick = eYo.Selected.brick)) {
+      if ((brick = eYo.Focus.brick)) {
         eYo.Dom.gobbleEvent(e)
         return
       }
     }
-    if ((brick = eYo.Selected.brick)) {
+    if ((brick = eYo.Focus.brick)) {
       if (K === ' ') {
         eYo.Dom.gobbleEvent(e)
         eYo.MenuManager.shared().showMenu(brick, event)
@@ -486,7 +486,7 @@ eYo.KeyHandler = (() => {
           })
         }
         var scaledHeight = eYo.Unit.y * brick.board.scale
-        var m4t = eYo.Selected.magnet
+        var m4t = eYo.Focus.magnet
         if (m4t && m4t.brick) {
           var xy = goog.style.getPageOffset(m4t.brick.dom.svg.group_)
           var xxyy = m4t.whereInBrick.scale(brick.board.scale)
@@ -502,10 +502,10 @@ eYo.KeyHandler = (() => {
           f()
         }
         switch (k) {
-        case 'arrowdown': return F(eYo.Selected.chooseBelow)
-        case 'arrowup': return F(eYo.Selected.chooseAbove)
-        case 'arrowleft': return F(eYo.Selected.chooseLeft)
-        case 'arrowright': return F(eYo.Selected.chooseRight)
+        case 'arrowdown': return F(eYo.Focus.chooseBelow)
+        case 'arrowup': return F(eYo.Focus.chooseAbove)
+        case 'arrowleft': return F(eYo.Focus.chooseLeft)
+        case 'arrowright': return F(eYo.Focus.chooseRight)
         }
       }
     } else {
@@ -514,7 +514,7 @@ eYo.KeyHandler = (() => {
         eYo.Dom.gobbleEvent(e)
         var brick = eYo.Brick.getBestBrick(eYo.App.main, f)
         if (brick) {
-          brick.select().scrollToVisible()
+          brick.focus().scrollToVisible()
         }
       }
       switch (k) {
@@ -599,14 +599,14 @@ eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
     'identifier': eYo.T3.Expr.identifier,
     'name': eYo.T3.Expr.identifier,
     'not …': function (key) {
-      var eyo = eYo.Selected.brick
+      var eyo = eYo.Focus.brick
       if (eyo) {
         var parent = eyo.surround
         if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
           eyo.replaceBrick(parent)
           return
         }
-        if (eYo.Selected.magnet) {
+        if (eYo.Focus.magnet) {
           eyo.insertBrickWithModel(eYo.T3.Expr.not_test)
         } else {
           eyo.insertParentWithModel(eYo.T3.Expr.not_test)
@@ -614,7 +614,7 @@ eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
       }
     },
     '+…': function (key) {
-      var eyo = eYo.Selected.brick
+      var eyo = eYo.Focus.brick
       if (eyo) {
         var parent = eyo.surround
         if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_p === '+') {
@@ -624,7 +624,7 @@ eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
           type: eYo.T3.Expr.u_expr,
           operator_p: '+'
         }
-        if (eYo.Selected.magnet) {
+        if (eYo.Focus.magnet) {
           eyo.insertBrickWithModel(model)
         } else {
           eyo.insertParentWithModel(model)
@@ -639,7 +639,7 @@ eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
 
   Ks = (() => {
     var F = (key, op) => {
-      var brick = eYo.Selected.brick
+      var brick = eYo.Focus.brick
       if (brick) {
         var parent = eyo.surround
         if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {
@@ -650,7 +650,7 @@ eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
           type: eYo.T3.Expr.u_expr,
           operator_p: op
         }
-        eYo.Selected.magnet
+        eYo.Focus.magnet
           ? brick.insertBrickWithModel(model)
           : brick.insertParentWithModel(model)
       }

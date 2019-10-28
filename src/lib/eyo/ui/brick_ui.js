@@ -1632,7 +1632,7 @@ eYo.Brick.UI.prototype.addSelect = function () {
  * Remove the select path.
  * Forwards to the driver.
  */
-eYo.Brick.UI.prototype.removeSelect = function () {
+eYo.Brick.UI.prototype.removeFocus = function () {
   this.driver.brickSelectRemove(this.brick_)
 }
 
@@ -1685,11 +1685,11 @@ eYo.Brick.UI.prototype.addStatusSelect_ = function () {
 /**
  * Reverse `addStatusSelect_`. Forwards to the driver and various fields.
  */
-eYo.Brick.UI.prototype.removeStatusSelect_ = function () {
+eYo.Brick.UI.prototype.removeStatusFocus_ = function () {
   this.driver.brickStatusSelectRemove(this.brick_)
   this.brick_.forEachInput(input => {
     input.fieldRow.forEach(field => {
-      goog.isFunction(field.removeSelect) && field.removeSelect()
+      goog.isFunction(field.removeFocus) && field.removeFocus()
     })
   })
 }
@@ -1891,7 +1891,7 @@ eYo.Brick.UI.prototype.bumpNeighbours_ = function() {
 
 
 /**
- * Get the input for the given event.
+ * Get the magnet for the given event.
  * The brick is already rendered once.
  *
  * For edython.
@@ -2072,9 +2072,9 @@ eYo.Brick.UI.prototype.on_mousedown = function (e) {
       return
     }
   }
-  if (brick.parentIsShort && !brick.isSelected) {
+  if (brick.parentIsShort && !brick.hasFocus) {
     parent = brick.parent
-    if (!parent.isSelected) {
+    if (!parent.hasFocus) {
       eYo.App.motion.handleBrickStart(e, brick)
       return
     }
@@ -2099,9 +2099,9 @@ eYo.Brick.UI.prototype.on_mousedown = function (e) {
   // Next is not good design
   // remove any selected connection, if any
   // but remember it for a contextual menu
-  t9k.ui.lastSelectedMagnet__ = eYo.Selected.magnet
+  t9k.ui.lastSelectedMagnet__ = eYo.Focus.magnet
   // Prepare the mouseUp event for an eventual connection selection
-  t9k.ui.lastMouseDownEvent = t9k.isSelected ? e : null
+  t9k.ui.lastMouseDownEvent = t9k.hasFocus ? e : null
   eYo.App.motion.handleBrickStart(e, t9k)
 }
 
@@ -2132,33 +2132,33 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
     // a brick was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      if (t9k.isSelected) {
+      if (t9k.hasFocus) {
         // the brick was already selected,
         if (magnet) {
           // and there is a candidate selection
-          if (magnet.isSelected) {
+          if (magnet.hasFocus) {
             // unselect
-            eYo.Selected.magnet = null
+            eYo.Focus.magnet = null
           } else if (magnet !== t9k.ui.lastSelectedMagnet__) {
             if (magnet.isInput) {
               if (!magnet.targetBrick) {
-                magnet.bindField && magnet.select()
+                magnet.bindField && magnet.focus()
               }
             } else {
-              magnet.select()
+              magnet.focus()
             }
           } else {
-            eYo.Selected.magnet = null
+            eYo.Focus.magnet = null
           }
-        } else if (eYo.Selected.magnet) {
-          eYo.Selected.magnet = null
+        } else if (eYo.Focus.magnet) {
+          eYo.Focus.magnet = null
         } else if (t9k.ui.selectMouseDownEvent) {
-          // (this.isSelected ? this : this.stmtParent) || t9k.root
+          // (this.hasFocus ? this : this.stmtParent) || t9k.root
           t9k.ui.selectMouseDownEvent = null
         }
       }
     }
-  } else if ((b3k = eYo.Selected.brick) && (ee = b3k.ui.selectMouseDownEvent)) {
+  } else if ((b3k = eYo.Focus.brick) && (ee = b3k.ui.selectMouseDownEvent)) {
     b3k.ui.selectMouseDownEvent = null
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
@@ -2167,8 +2167,8 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
       var parent = t9k
       while ((parent = parent.parent)) {
         console.log('ancestor', parent.type)
-        if ((parent.isSelected)) {
-          t9k.select()
+        if ((parent.hasFocus)) {
+          t9k.focus()
           break
         } else if (!parent.wrapped_) {
           t9k = parent
@@ -2176,7 +2176,7 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
       }
     }
   }
-  eYo.App.didTouchBrick && (eYo.App.didTouchBrick(eYo.Selected.brick))
+  eYo.App.didTouchBrick && (eYo.App.didTouchBrick(eYo.Focus.brick))
 }
 
 /**

@@ -424,7 +424,7 @@ eYo.Brick.Expr.makeSubclass('lambda', {
   'lambda_expr_nocond'
 ].forEach((key) => {
   eYo.Brick.Expr[key] = eYo.Brick.Expr.lambda
-  eYo.Brick.Manager.register(key)
+  eYo.Brick.Mgr.register(key)
 })
 
 /**

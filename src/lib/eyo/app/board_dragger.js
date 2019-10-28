@@ -105,8 +105,8 @@ eYo.BoardDragger.prototype.start = function(Motion) {
    * @package
    */
   this.xyStart_ = new eYo.Where()
-  if (eYo.Selected.brick) {
-    eYo.Selected.brick.unselect()
+  if (eYo.Focus.brick) {
+    eYo.Focus.brick.unfocus()
   }
 }
 

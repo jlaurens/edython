@@ -31,12 +31,12 @@ goog.forwardDeclare('eYo.Magnets')
 goog.forwardDeclare('eYo.Brick.UI')
 goog.forwardDeclare('eYo.Brick.Expr')
 goog.forwardDeclare('eYo.Brick.Stmt')
-goog.forwardDeclare('eYo.Selected')
+goog.forwardDeclare('eYo.Focus')
 
 
 /**
  * Class for a Brick.
- * Not normally called directly, eYo.Brick.Manager.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Mgr.create(...) is preferred.
  * Also initialize a implementation model.
  * The underlying state and model are not expected to change while running.
  * When done, the node has all its properties ready to use
@@ -121,12 +121,12 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   }
   this.disposeUI(healStack, animate)
   var board = this.board
-  if (this.isSelected) {
+  if (this.hasFocus) {
     var m5s = this.magnets
     // this brick was selected, select the brick below or above before deletion
     var f = m => m && m.target
     var m4t = f(m5s.right) || f(m5s.left) || f(m5s.head) || f(m5s.foot) || f(m5s.out)
-    m4t ? m4t.select() : this.unselect()
+    m4t ? m4t.focus() : this.unfocus()
     this.board.cancelMotion()
   }
   if (animate && this.ui.rendered) {
@@ -167,7 +167,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
  * Model getter. Convenient shortcut.
  */
 eYo.Brick.getModel = function (type) {
-  return eYo.Brick.Manager.getModel(type)
+  return eYo.Brick.Mgr.getModel(type)
 }
 
 // owned computed properties
@@ -1185,8 +1185,8 @@ eYo.Brick.prototype.setDataWithModel = function (model, noCheck) {
  */
 eYo.Brick.makeSubclass = function (key, model, owner) {
   // First ensure that eYo.Brick is well formed
-  eYo.Brick.Manager.prepareConstructor(eYo.Brick)
-  return eYo.Brick.Manager.makeSubclass(key, model, eYo.Brick, owner)
+  eYo.Brick.Mgr.prepareConstructor(eYo.Brick)
+  return eYo.Brick.Mgr.makeSubclass(key, model, eYo.Brick, owner)
 }
 
 /**
@@ -1292,7 +1292,7 @@ eYo.Brick.prototype.makeSlots = (() => {
       var insert = model.insert
       var slot, next
       if (insert) {
-        var model = eYo.Brick.Manager.getModel(insert)
+        var model = eYo.Brick.Mgr.getModel(insert)
         if (model) {
           if ((slot = feedSlots.call(this, model.slots))) {
             next = slot
@@ -1696,8 +1696,8 @@ eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
     this.span.resetPadding() && b.ui.updateShape()
   }
   this.consolidateType()
-  if (m4t.isInput && m4t.isSelected) {
-    t9k.select()
+  if (m4t.isInput && m4t.hasFocus) {
+    t9k.focus()
   }
 }
 
@@ -2380,10 +2380,10 @@ eYo.Brick.newReady = (() => {
   var processModel = (board, model, id, brick) => {
     var dataModel = model // may change below
     if (!brick) {
-      if (eYo.Brick.Manager.get(model.type)) {
+      if (eYo.Brick.Mgr.get(model.type)) {
         brick = board.newBrick(model.type, id)
         brick.setDataWithType(model.type)
-      } else if (eYo.Brick.Manager.get(model)) {
+      } else if (eYo.Brick.Mgr.get(model)) {
         brick = board.newBrick(model, id) // can undo
         brick.setDataWithType(model)
       } else if (goog.isString(model) || goog.isNumber(model)) {
@@ -2585,7 +2585,7 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
               prepare && (prepare())
               otherM4t.connect(m4t)
             }, () => {
-              eYo.Selected.brick = candidate
+              eYo.Focus.brick = candidate
               candidate.render()
               candidate.ui.bumpNeighbours_()
             })
@@ -2595,7 +2595,7 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
       }
       if (!candidate) {
         // very special management for tuple input
-        if ((otherM4t = eYo.Selected.magnet) && goog.isString(model)) {
+        if ((otherM4t = eYo.Focus.magnet) && goog.isString(model)) {
           var otherBrick = otherM4t.brick
           if (otherBrick instanceof eYo.Brick.List && otherM4t.isInput) {
             eYo.Events.groupWrap(() => {
@@ -2629,13 +2629,13 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
                   })
                 }
               })
-              otherM4t.select()
+              otherM4t.focus()
             })
           }
         }
         return
       }
-      if ((otherM4t = eYo.Selected.magnet)) {
+      if ((otherM4t = eYo.Focus.magnet)) {
         otherBrick = otherM4t.brick
         if (otherM4t.isInput) {
           if ((m4t = candidate.out_m) && m4t.checkType_(otherM4t)) {
@@ -2807,8 +2807,8 @@ eYo.Brick.prototype.lock = function () {
   eYo.Events.fireBrickChange(
     this, eYo.Const.Event.locked, null, this.locked_, true)
   this.locked_ = true
-  if (this.isSelected) {
-    eYo.Selected.magnet = null
+  if (this.hasFocus) {
+    eYo.Focus.magnet = null
   }
   // list all the input for connections with a target
   var m4t
@@ -2843,11 +2843,11 @@ eYo.Brick.prototype.lock = function () {
   if ((m4t = this.foot_m) && (t9k = m4t.targetBrick)) {
     ans += t9k.lock()
   }
-  if (this.isSelected) {
+  if (this.hasFocus) {
     var parent = this
     while ((parent = parent.surround)) {
       if (!parent.wrapped_ && !parent.locked_) {
-        parent.select()
+        parent.focus()
         break
       }
     }
@@ -2968,7 +2968,7 @@ eYo.Brick.prototype.connectionUiEffect = function() {
  * Delegate manager.
  * @param {?string} prototypeName Name of the language object containing
  */
-eYo.Brick.Manager = (() => {
+eYo.Brick.Mgr = (() => {
   var me = {}
   var C9rs = Object.create(null)
   /**
@@ -3185,7 +3185,7 @@ eYo.Brick.Manager = (() => {
       }
       goog.inherits(c9r, parent)
       me.prepareConstructor(c9r, key)
-      eYo.Brick.Manager.register_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, c9r)
+      eYo.Brick.Mgr.register_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, c9r)
       if (goog.isFunction(model)) {
         model = model()
       }
@@ -3402,7 +3402,7 @@ eYo.Brick.Manager = (() => {
  * The delegate is searched as a Delegate element
  * @param{!string} key  key is the last component of the brick type as a dotted name.
  */
-eYo.Brick.Manager.register = function (key) {
+eYo.Brick.Mgr.register = function (key) {
   var prototypeName = eYo.T3.Expr[key]
   var c9r, available
   if (prototypeName) {
@@ -3415,11 +3415,11 @@ eYo.Brick.Manager.register = function (key) {
   } else {
     throw new Error('Unknown brick eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
   }
-  eYo.Brick.Manager.register_(prototypeName, c9r)
+  eYo.Brick.Mgr.register_(prototypeName, c9r)
   available.push(prototypeName)
 }
 
 // register this delegate for all the T3 types
-eYo.Brick.Manager.registerAll(eYo.T3.Expr, eYo.Brick)
-eYo.Brick.Manager.registerAll(eYo.T3.Stmt, eYo.Brick)
+eYo.Brick.Mgr.registerAll(eYo.T3.Expr, eYo.Brick)
+eYo.Brick.Mgr.registerAll(eYo.T3.Stmt, eYo.Brick)
 

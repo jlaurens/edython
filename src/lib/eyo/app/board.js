@@ -649,7 +649,7 @@ eYo.Board.Main.prototype.clear = function() {
  * @return {!eYo.Brick} The created brick.
  */
 eYo.Board.prototype.newBrick = function (prototypeName, opt_id) {
-  return eYo.Brick.Manager.create(this, prototypeName, opt_id)
+  return eYo.Brick.Mgr.create(this, prototypeName, opt_id)
 }
 
 /**
@@ -1005,7 +1005,7 @@ eYo.Board.prototype.paste = function () {
   var m4t, targetM4t, b3k
   eYo.Events.groupWrap(() => {
     if ((b3k = eYo.Xml.domToBrick(xml, this))) {
-      if ((m4t = eYo.Selected.magnet)) {
+      if ((m4t = eYo.Focus.magnet)) {
         if (m4t.isInput) {
           targetM4t = b3k.out_m
         } else if (m4t.isFoot || m4t.isSuite) {
@@ -1029,7 +1029,7 @@ eYo.Board.prototype.paste = function () {
           // if (magnet.isHead) {
           //   targetMagnet = brick.foot_m
           // }
-          b3k.select()
+          b3k.focus()
         }
       } else {
         // Move the duplicate to original position.
@@ -1074,7 +1074,7 @@ eYo.Board.prototype.paste = function () {
           }
           b3k.moveBy(eYo.Where.xy(dx, dy))
         }
-        b3k.select().scrollToVisible()
+        b3k.focus().scrollToVisible()
       }
     }
   })

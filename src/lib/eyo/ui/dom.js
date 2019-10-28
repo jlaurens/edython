@@ -500,7 +500,7 @@ eYo.Dom.on_keydown = e => {
   }
   // var deleteBrick = false;
   if (e.keyCode == 9) {
-    if (eYo.Navigate.doTab(eYo.Selected.brick, {
+    if (eYo.Navigate.doTab(eYo.Focus.brick, {
         left: e.shiftKey,
         fast: e.altKey || e.ctrlKey || e.metaKey
       })) {
@@ -519,16 +519,16 @@ eYo.Dom.on_keydown = e => {
     if (eYo.App.desktop.isDragging) {
       return;
     }
-    if (eYo.Selected.brick && eYo.Selected.brick.deletable) {
-      eYo.App.deleteBrick(eYo.Selected.brick, e.altKey || e.ctrlKey || e.metaKey);
+    if (eYo.Focus.brick && eYo.Focus.brick.deletable) {
+      eYo.App.deleteBrick(eYo.Focus.brick, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
     if (eYo.App.desktop.isDragging) {
       return;
     }
-    if (eYo.Selected.brick &&
-        eYo.Selected.brick.deletable && eYo.Selected.brick.movable) {
+    if (eYo.Focus.brick &&
+        eYo.Focus.brick.deletable && eYo.Focus.brick.movable) {
       // Eyo: 1 meta key for shallow copy, more for deep copy
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable bricks. The next step
@@ -537,12 +537,12 @@ eYo.Dom.on_keydown = e => {
       if (e.keyCode == 67) {
         // 'c' for copy.
         eYo.App.hideChaff()
-        eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
-      } else if (e.keyCode == 88 && !eYo.Selected.brick.board.inFlyout) {
+        eYo.Desktop.copyBrick(eYo.Focus.brick, deep)
+      } else if (e.keyCode == 88 && !eYo.Focus.brick.board.inFlyout) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.Desktop.copyBrick(eYo.Selected.brick, deep)
-        eYo.App.deleteBrick(eYo.Selected.brick, deep)
+        eYo.Desktop.copyBrick(eYo.Focus.brick, deep)
+        eYo.App.deleteBrick(eYo.Focus.brick, deep)
       }
     }
     if (e.keyCode == 86) {
@@ -556,10 +556,10 @@ eYo.Dom.on_keydown = e => {
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBrick && !eYo.Selected.brick.board.inFlyout) {
+  // if (deleteBrick && !eYo.Focus.brick.board.inFlyout) {
   //   eYo.Events.group = true
   //   eYo.App.hideChaff();
-  //   eYo.Selected.brick.dispose(/* heal */ true, true);
+  //   eYo.Focus.brick.dispose(/* heal */ true, true);
   //   eYo.Events.group = false
   // }
 };

@@ -252,10 +252,10 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
   if (ee) {
     // this brick was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
-      if (brick.isSelected) {
+      if (brick.hasFocus) {
         // if the brick was already selected,
         // try to select an input connection
-        eYo.Selected.magnet = brick.ui.lastSelectedMagnet__
+        eYo.Focus.magnet = brick.ui.lastSelectedMagnet__
       }
     }
   }
@@ -601,13 +601,13 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
     eYo.Events.group = true
     var returnState = false
     try {
-      if (target.isSelected && target !== unwrapped) {
+      if (target.hasFocus && target !== unwrapped) {
         // this brick was selected, select the brick below or above before deletion
         var m4t
         if (((m4t = unwrapped.foot_m) && (target = m4t.targetBrick)) || ((m4t = unwrapped.head_m) && (target = m4t.targetBrick))) {
-          target.select()
+          target.focus()
         } else if ((m4t = unwrapped.out_m) && (m4t = m4t.target)) {
-          m4t.select()
+          m4t.focus()
         }
       }
       unwrapped.dispose(true, true)
@@ -860,7 +860,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
   }
   /** @suppress {accessControls} */
   var outCheck = m4t.check_
-  var D = eYo.Brick.Manager.getModel(model.type).slots
+  var D = eYo.Brick.Mgr.getModel(model.type).slots
   // if the brick which type is model.type has no slot
   // no chance to insert anything, pass away
   if (D) {
@@ -893,7 +893,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
         this.addInsertChild(MI)
         return true
       } else if (d && d.wrap && !parent_subtype) {
-        var list = eYo.Brick.Manager.getModel(d.wrap).list
+        var list = eYo.Brick.Mgr.getModel(d.wrap).list
         if (!list) {
           if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
             key = d.key || K

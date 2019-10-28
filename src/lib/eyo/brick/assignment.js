@@ -330,7 +330,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
   'augmented_assignment_stmt'
 ].forEach(k => {
   eYo.Brick.Stmt[k] = eYo.Brick.Stmt.assignment_stmt
-  eYo.Brick.Manager.register(k)
+  eYo.Brick.Mgr.register(k)
 })
 
 

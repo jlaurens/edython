@@ -246,7 +246,7 @@ eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr) {
 ].forEach(name => {
   var key = name + '_part'
   eYo.Brick.Stmt[key] = eYo.Brick.Group.Branch
-  eYo.Brick.Manager.register(key)
+  eYo.Brick.Mgr.register(key)
 })
 
 /**

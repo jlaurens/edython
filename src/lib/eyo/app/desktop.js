@@ -19,7 +19,7 @@ goog.require('eYo.Do')
 
 goog.forwardDeclare('eYo.Css')
 
-goog.forwardDeclare('eYo.Selected')
+goog.forwardDeclare('eYo.Focus')
 goog.forwardDeclare('eYo.Motion')
 
 eYo.Desktop = function () {
@@ -171,7 +171,7 @@ Object.defineProperties(eYo.App, {
  */
 eYo.App.deleteBrick = (brick, deep) => {
   if (brick && brick.deletable && !brick.board.inFlyout) {
-    if (brick.isSelected) {
+    if (brick.hasFocus) {
       // prepare a connection or a block to be selected
       var m4t
       if ((m4t = brick.out_m)) {
@@ -192,9 +192,9 @@ eYo.App.deleteBrick = (brick, deep) => {
       }
     })
     if (m4t && m4t.brick.board) {
-      m4t.select()
+      m4t.focus()
     } else if (t9k) {
-      t9k.select()
+      t9k.focus()
     }
   }
 }
@@ -223,7 +223,7 @@ eYo.App.copyBrick = (brick, deep) => {
  * @return {Boolean} true if copied, false otherwise
  */
 eYo.App.doCopy = function(optNoNext) {
-  var brick = eYo.Selected.brick
+  var brick = eYo.Focus.brick
   if (brick) {
     eYo.Desktop.copyBrick(brick, !optNoNext)
     return true
@@ -235,7 +235,7 @@ eYo.App.doCopy = function(optNoNext) {
  * This is a job for the renderer.
  */
 eYo.App.doFront = function() {
-  var b3k = eYo.Selected.brick
+  var b3k = eYo.Focus.brick
   if (b3k) {
     b3k.ui.sendToFront()
   }
@@ -245,7 +245,7 @@ eYo.App.doFront = function() {
  * Send the selected brick to the back.
  */
 eYo.App.doBack = function() {
-  var b3k = b3k.Selected.brick
+  var b3k = eYo.Focus.brick
   if (b3k) {
     b3k.ui.sendToBack()
   }
@@ -255,7 +255,7 @@ eYo.App.doBack = function() {
  * Scroll the board to show the selected brick.
  */
 eYo.App.doFocus = () => {
-  var b3k = eYo.Selected.brick
+  var b3k = eYo.Focus.brick
   if (b3k) {
     b3k.board.scrollBrickTopLeft(b3k.id)
   }

@@ -65,7 +65,7 @@ eYo.Brick.makeSubclass('Stmt', {
     }
   }
 })
-eYo.Brick.Manager.registerAll(eYo.T3.Stmt, eYo.Brick.Stmt, true)
+eYo.Brick.Mgr.registerAll(eYo.T3.Stmt, eYo.Brick.Stmt, true)
 
 Object.defineProperties(eYo.Brick.Stmt.prototype, {
   isStmt: {
@@ -116,8 +116,8 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
               parent.render()
               magnet.target = p_magnet
               parent.makeUI(this.hasUI)
-              if (this.isSelected) {
-                parent.isSelected
+              if (this.hasFocus) {
+                parent.hasFocus
               }
             })
           } else {
@@ -153,8 +153,8 @@ eYo.Brick.Stmt.prototype.insertBrickAfter = function (belowPrototypeName) {
       }
     }
     magnet.target = head_m
-    if (this.isSelected) {
-      after.select()
+    if (this.hasFocus) {
+      after.focus()
     }
     return after
   })
@@ -220,7 +220,7 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
 
 ;['blank_stmt'].forEach(k => {
   eYo.Brick.Stmt[k] = eYo.Brick.Stmt.comment_stmt
-  eYo.Brick.Manager.register(k)
+  eYo.Brick.Mgr.register(k)
 })
 
 Object.defineProperties(eYo.Brick.Stmt.comment_stmt.prototype, {
@@ -383,7 +383,7 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
 ].forEach((k) => {
   k = k + '_stmt'
   eYo.Brick.Stmt[k] = eYo.Brick.Stmt.global_stmt
-  eYo.Brick.Manager.register(k)
+  eYo.Brick.Mgr.register(k)
 })
 
 /**

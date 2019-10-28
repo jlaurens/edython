@@ -168,7 +168,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
   'void_except_part'
 ].forEach(k => {
   eYo.Brick.Stmt[k] = eYo.Brick.Stmt.except_part
-  eYo.Brick.Manager.register(k)
+  eYo.Brick.Mgr.register(k)
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.

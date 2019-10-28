@@ -310,7 +310,7 @@ eYo.Svg.prototype.fieldGetDisplayText_ = function(field) {
  * @private
  */
 eYo.Svg.onFieldMouseDown_ = function(e) {
-  if (this.board && this.brick.isSelected) {
+  if (this.board && this.brick.hasFocus) {
     eYo.App.motion.setStartField(this)
   }
 }

@@ -15,7 +15,7 @@ goog.provide('eYo.Svg.Brick')
 
 goog.require('eYo.Svg')
 
-goog.forwardDeclare('eYo.Selected')
+goog.forwardDeclare('eYo.Focus')
 
 // Brick management
 
@@ -340,8 +340,8 @@ eYo.Svg.prototype.pathCollapsedDef_ = eYo.Svg.prototype.pathDef_
  * @private
  */
 eYo.Svg.prototype.pathMagnetDef_ = function (brick) {
-  return eYo.Selected.magnet
-  ? eYo.Shape.definitionWithMagnet(eYo.Selected.magnet, {hilight: true})
+  return eYo.Focus.magnet
+  ? eYo.Shape.definitionWithMagnet(eYo.Focus.magnet, {hilight: true})
   : ''
 }
 

@@ -29,7 +29,7 @@ goog.require('goog.dom');
 eYo.Brick.makeSubclass('Expr')
 
 // Default delegate for all expression bricks
-eYo.Brick.Manager.registerAll(eYo.T3.Expr, eYo.Brick.Expr, true)
+eYo.Brick.Mgr.registerAll(eYo.T3.Expr, eYo.Brick.Expr, true)
 
 Object.defineProperties(eYo.Brick.Expr.prototype, {
   isExpr: {
@@ -132,13 +132,13 @@ eYo.Brick.Expr.prototype.replaceBrick = function (brick) {
         if (its_m4t && (its_m4t = its_m4t.target) && its_m4t.checkType_(my_m4t)) {
           // the other brick has an output connection that can connect to the brick's one
           var brick = its_m4t.brick
-          var selected = brick.isSelected
+          var selected = brick.hasFocus
           // next operations may unselect the brick
           var old = brick.consolidating_
           its_m4t.connect(my_m4t)
           brick.consolidating_ = old
           if (selected) {
-            brick.select()
+            brick.focus()
           }
         } else {
           this.moveTo(brick.xy)

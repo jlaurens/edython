@@ -178,7 +178,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
    * @type {!eYo.Brick}
    * @private
    */
-  this.brick_ = targetBrick.select()
+  this.brick_ = targetBrick.focus()
 
   /**
    * The connections on the dragging bricks that are available to connect to
@@ -246,7 +246,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
    */
   this.xyStart_ = this.brick_.xy
 
-  eYo.Selected.magnet = null
+  eYo.Focus.magnet = null
   
   if (!eYo.Events.group) {
     eYo.Events.group = true
