@@ -66,7 +66,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
   },
   change: {
     get () {
-      return this.gesture_.change
+      return this.motion_.change
     }
   },
   /**
@@ -75,7 +75,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
    */
   xyDelta_: {
     get: eYo.Change.decorate('xyDeltaBrickDragger', function () {
-      return {ans: this.destination.fromPixelUnit(this.gesture_.deltaWhere_)}
+      return {ans: this.destination.fromPixelUnit(this.motion_.xyDelta_)}
     }),
   },
   xyDelta: {
@@ -132,25 +132,25 @@ eYo.BrickDragger.prototype.dispose = function() {
  * We track both the mouse location and the brick location.
  * When the center of the brick will gout out the visible area,
  * we scroll the brick board to keep it back.
- * @param {!eYo.Gesture} gesture  The gesture initiating the eventual drag.
+ * @param {!eYo.Motion} motion  The motion initiating the eventual drag.
  * @return {eYo.Brick}  The target brick of the drag event, if any.
  */
-eYo.BrickDragger.prototype.start = function(gesture) {
+eYo.BrickDragger.prototype.start = function(motion) {
   if (this.brick_) {
     return this.brick_
   }
-  this.gesture_ = gesture
-  var targetBrick = gesture.targetBrick_
+  this.motion_ = motion
+  var targetBrick = motion.targetBrick_
   if (!targetBrick) {
     return
   }
-  var flyout = gesture.flyout_
+  var flyout = motion.flyout_
   if (flyout) {
     /*
-     * Update this gesture to record whether a brick is being dragged from the
+     * Update this motion to record whether a brick is being dragged from the
      * flyout.
      * This function should be called on a mouse/touch move event the first time the
-     * drag radius is exceeded.  It should be called no more than once per gesture.
+     * drag radius is exceeded.  It should be called no more than once per motion.
      * If a brick should be dragged from the flyout this function creates the new
      * brick on the main board and updates targetBrick_ and board_.
      * @return {boolean} destination_ if a brick is being dragged from the flyout.
@@ -160,7 +160,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
     if (targetBrick.disabled) {
       return
     }
-    if (!flyout.isDragTowardBoard(gesture)) {
+    if (!flyout.isDragTowardBoard(motion)) {
       return
     }
     // Start the event group now,
@@ -254,7 +254,7 @@ eYo.BrickDragger.prototype.start = function(gesture) {
   this.destination.setResizesEnabled(false)
   var d = this.ui_driver
   d.disconnectStop()
-  var healStack = gesture.healStack_
+  var healStack = motion.healStack_
   var b3k = this.brick_
   b3k.ui.dragging = true
   if (b3k.parent ||
@@ -374,7 +374,7 @@ eYo.BrickDragger.prototype.end = (() => {
     this.ui_driver.brickDraggerEnd(this)
     var b3k = this.brick_
     if (this.wouldDelete_) {
-      if (!this.gesture_.flyout_) {
+      if (!this.motion_.flyout_) {
         fireMoveEvent(this)
       }
       b3k.dispose(false, true)
@@ -384,7 +384,7 @@ eYo.BrickDragger.prototype.end = (() => {
       b3k.ui.dragging = false
       this.connect()
       b3k.render()
-      if (this.gesture_.flyout_) {
+      if (this.motion_.flyout_) {
         eYo.Events.fireBrickCreate(b3k, true) 
       }
       fireMoveEvent(this)
@@ -398,15 +398,15 @@ eYo.BrickDragger.prototype.end = (() => {
 
     eYo.Events.group = false
     this.availableMagnets_.length = 0
-    this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = this.clearGesture()
+    this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = this.clearMotion()
   }
 })()
 
 /**
- * Reset gesture.
+ * Reset motion.
  */
-eYo.BrickDragger.prototype.clearGesture = function() {
-  this.gesture_ = null
+eYo.BrickDragger.prototype.clearMotion = function() {
+  this.motion_ = null
 }
 
 /**
@@ -434,7 +434,7 @@ eYo.BrickDragger.prototype.connect = function() {
  * Update highlighted connections based on the most recent move location.
  */
 eYo.BrickDragger.prototype.update = function() {
-  var deleteRect = this.deleteRect_ = this.destination.inDeleteArea(this.gesture_)
+  var deleteRect = this.deleteRect_ = this.destination.inDeleteArea(this.motion_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
   this.distance_ = eYo.App.SNAP_RADIUS

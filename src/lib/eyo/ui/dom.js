@@ -297,7 +297,7 @@ eYo.Dom.isMouseOrTouchEvent = e => {
  * we'll use the identifier "mouse".  This means we won't deal well with
  * multiple mice being used at the same time.  That seems okay.
  * If the current identifier was unset, save the identifier from the
- * event.  This starts a drag/gesture, during which touch events with other
+ * event.  This starts a drag/motion, during which touch events with other
  * identifiers will be silently ignored.
  * @param {!Event} e Mouse event or touch event.
  * @return {boolean} Whether the identifier on the event matches the current
@@ -307,7 +307,7 @@ eYo.Dom.checkTouchIdentifier = (() => {
   var touchIdentifier = null
   /**
    * Clear the touch identifier that tracks which touch stream to pay attention
-   * to.  This ends the current drag/gesture and allows other pointers to be
+   * to.  This ends the current drag/motion and allows other pointers to be
    * captured.
    */
   eYo.Dom.clearTouchIdentifier = function() {
@@ -440,52 +440,6 @@ Object.defineProperties(eYo.Dom, {
     }) ()
   }
 })
-
-/**
- * Context menus on touch devices are activated using a long-press.
- * Unfortunately the contextmenu touch event is currently (2015) only supported
- * by Chrome.  This function is fired on any touchstart event, queues a task,
- * which after about a second opens the context menu.  The tasks is killed
- * if the touch event terminates early.
- * @param {!Event} e Touch start event.
- * @param {eYo.Gesture} gesture The gesture that triggered this longStart.
- * @private
- */
-eYo.Dom.longStart_ = (() => {
-  var pid = 0
-  /**
-   * Nope, that's not a long-press.  Either touchend or touchcancel was fired,
-   * or a drag hath begun.  Kill the queued long-press task.
-   * @private
-   */
-  eYo.Dom.longStop_ = () => {
-    if (pid) {
-      clearTimeout(pid)
-      pid = 0
-    }
-  }
-  return (e, gesture) => {
-    eYo.Dom.longStop_()
-    // Punt on multitouch events.
-    if (e.changedTouches && e.changedTouches.length != 1) {
-      return;
-    }
-    pid = setTimeout(() => {
-      // Additional check to distinguish between touch events and pointer events
-      if (e.changedTouches) {
-        // TouchEvent
-        e.button = 2  // Simulate a right button click.
-        // e was a touch event.  It needs to pretend to be a mouse event.
-        e.clientX = e.changedTouches[0].clientX
-        e.clientY = e.changedTouches[0].clientY
-      }
-      // Let the gesture route the right-click correctly.
-      if (gesture) {
-        gesture.handleRightClick(e)
-      }
-    }, eYo.Dom.LONG_PRESS)
-  }
-})()
 
 /**
  * Bind document events, but only once.  Destroying and reinjecting Blockly

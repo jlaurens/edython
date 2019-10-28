@@ -37,10 +37,9 @@ goog.forwardDeclare('eYo.Options')
  */
 eYo.Desk = function(options) {
   /** @type {!eYo.Options} */
-  options = new eYo.Options(options || {})
+  this.options_ = options = new eYo.Options(options || {})
   // Load CSS.
   eYo.Css.inject(options.hasCss, options.pathToMedia)
-  this.options_ = options
   this.viewRect_ = new eYo.Rect()
   // create the main board
   this.main_ = new eYo.Board.Main(options)
@@ -260,27 +259,14 @@ eYo.Desk.prototype.disposeUI = function() {
  */
 eYo.Desk.prototype.dispose = function() {
   this.disposeUI()
-  var board
-  if ((board = this.main_)) {
-    this.main_ = null
-    board.dispose()
-  }
-  if ((board = this.flyout_)) {
-    this.flyout_ = null
-    board.dispose()
-  }
-  if ((board = this.draft_)) {
-    this.draft_ = null
-    board.dispose()
-  }
-  if (this.zoomControls_) {
-    this.zoomControls_.dispose()
-    this.zoomControls_ = null
-  }
-  if (this.trashcan) {
-    this.trashcan.dispose()
-    this.trashcan = null
-  }
+  eYo.Do.disposeProperties(this, [
+    "backer_",
+    "main_",
+    "flyout_",
+    "draft_",
+    "zoomControls_",
+    "trashcan"
+  ])
 }
 
 /**

@@ -1904,8 +1904,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
     return
   }
   // if we clicked on a field, no connection returned
-  var gesture = eYo.App.getGesture(e)
-  if (gesture && gesture.startField_) {
+  if (eYo.App.motion.field) {
     return
   }
   var rect = this.boundingRect // in board coordinates
@@ -2073,14 +2072,10 @@ eYo.Brick.UI.prototype.on_mousedown = function (e) {
       return
     }
   }
-  var brd = brick.board
   if (brick.parentIsShort && !brick.isSelected) {
     parent = brick.parent
     if (!parent.isSelected) {
-      var gesture = eYo.App.getGesture(e)
-      if (gesture) {
-        gesture.handleBrickStart(e, brick)
-      }
+      eYo.App.motion.handleBrickStart(e, brick)
       return
     }
   }
@@ -2107,9 +2102,7 @@ eYo.Brick.UI.prototype.on_mousedown = function (e) {
   t9k.ui.lastSelectedMagnet__ = eYo.Selected.magnet
   // Prepare the mouseUp event for an eventual connection selection
   t9k.ui.lastMouseDownEvent = t9k.isSelected ? e : null
-  if ((gesture = eYo.App.getGesture(e))) {
-    gesture.handleBrickStart(e, t9k)
-  }
+  eYo.App.motion.handleBrickStart(e, t9k)
 }
 
 /**

@@ -25,9 +25,9 @@ goog.forwardDeclare('goog.math')
  * Class for a brick list.
  * Any number of brick lists can be created.
  * This list is kept ordered according to brick's vertical position.
- * The main board, the draft board and the flyout board
+ * The main board, the draft board, the flyout board and the drag board
  * both own exactly one such list.
- * The main board and the draft board should share the same database.
+ * The main board, the draft board and the drag should share the same database.
  * @param{?eYo.DB} db
  * @constructor
  */
@@ -171,167 +171,99 @@ eYo.List.prototype.remove = function (brick) {
 
 /**
  * Performs a function on each brick until one is found for which the answer is a truthy value.
- * @param {function} f,  (element)=>Boolean: {}
- */
-eYo.List.prototype.some = function (f) {
-  return this.bricks_.some(f)
-}
-
-/**
- * Performs a function on each brick.
- * @param {function} f,  (element)=>{}
- */
-eYo.List.prototype.forEach = function (f) {
-  return this.bricks_.forEach(f)
-}
-
-/**
- * Performs a function on each brick until one is found for which the answer is a truthy value.
  * Children are looked after too.
  * @param {function} f,  (element)=>Boolean: {}
+ * @param {Boolean} deep,  deep first traversal when true, flat traversal otherwise
  */
-eYo.List.prototype.someBrick = function (f) {
-  var bricks = this.bricks_
-  const stack = []
-  while (true) {
-    var b3k = bricks.shift()
-    if (b3k) {
-      if (f(b3k)) {
-        return
+eYo.List.prototype.some = (function () {
+  somer = (test) => {
+    return function (f, deep=false) {
+      var bricks = this.bricks_
+      i = 0
+      const stack = []
+      while (true) {
+        if (i < bricks.length) {
+          var b3k = bricks[i]
+          if (test(f) && f(b3k)) {
+            return
+          }
+          if (deep && b3k.children.length) {
+            stack.push(i)
+            i = 0
+            stack.push(bricks)
+            bricks = b3k.children
+          } else {
+            ++i
+          }
+          continue
+        } else if (bricks = stack.pop()) {
+          i = stack.pop() + 1
+          continue
+        }
+        break
       }
-      stack.push(bricks)
-      bricks = b3k.children
-      continue  
-    } else if (bricks = stack.pop()) {
-      continue
     }
-    break
   }
-}
-
-/**
- * Performs a function on each statement brick
- * until one is found for which the answer is a truthy value.
- * Children are looked after too.
- * @param {function} f,  (element)=>Boolean: {}
- */
-eYo.List.prototype.someStmt = function (f) {
-  var bricks = this.bricks_
-  const stack = []
-  while (true) {
-    var b3k = bricks.shift()
-    if (b3k && b3k.isStmt) {
-      if (f(b3k)) {
-        return
+  foreacher = (test) => {
+    return function (f, deep=false) {
+      var bricks = this.bricks_
+      i = 0
+      const stack = []
+      while (true) {
+        if (i < bricks.length) {
+          var b3k = bricks[i]
+          test(f) && f(b3k)
+          if (deep && b3k.children.length) {
+            stack.push(i)
+            i = 0
+            stack.push(bricks)
+            bricks = b3k.children
+          } else {
+            ++i
+          }
+          continue
+        } else if (bricks = stack.pop()) {
+          i = stack.pop() + 1
+          continue
+        }
+        break
       }
-      stack.push(bricks)
-      bricks = b3k.children
-      continue  
-    } else if (bricks = stack.pop()) {
-      continue
     }
-    break
   }
-}
-
-/**
- * Performs a function on each expression brick
- * until one is found for which the answer is a truthy value.
- * Children are looked after too.
- * @param {function} f,  (element)=>Boolean: {}
- */
-eYo.List.prototype.someExpr = function (f) {
-  var bricks = this.bricks_
-  const stack = []
-  while (true) {
-    var b3k = bricks.shift()
-    if (b3k) {
-      if (b3k.isExpr && f(b3k)) {
-        return
-      }
-      stack.push(bricks)
-      bricks = b3k.children
-      continue  
-    } else if (bricks = stack.pop()) {
-      continue
-    }
-    break
-  }
-}
-
-/**
- * Performs a function on each brick.
- * @param {function} f,  (element)=>{}
- */
-eYo.List.prototype.forEach = function (f) {
-  return this.bricks_.forEach(f)
-}
-
-/**
- * Performs a function on each brick
- * until one is found for which the answer is a truthy value.
- * Children are looked after too.
- * @param {function} f,  (element)=>Boolean: {}
- */
-eYo.List.prototype.forEachBrick = function (f) {
-  var bricks = this.bricks_
-  const stack = []
-  while (true) {
-    var b3k = bricks.shift()
-    if (b3k) {
-      f(b3k)
-      stack.push(bricks)
-      bricks = b3k.children
-      continue  
-    } else if (bricks = stack.pop()) {
-      continue
-    }
-    break
-  }
-}
-
-/**
- * Performs a function on each statement brick
- * until one is found for which the answer is a truthy value.
- * Children are looked after too in a deep first traversal.
- * @param {function} f,  (element)=>Boolean: {}
- */
-eYo.List.prototype.forEachStmt = function (f) {
-  var bricks = this.bricks_
-  const stack = []
-  while (true) {
-    var b3k = bricks.shift()
-    if (b3k && b3k.isStmt) {
-      f(b3k)
-      stack.push(bricks)
-      bricks = b3k.children
-      continue  
-    } else if (bricks = stack.pop()) {
-      continue
-    }
-    break
-  }
-}
-
-/**
- * Performs a function on each expression brick
- * until one is found for which the answer is a truthy value.
- * Children are looked after too in a deep first traversal.
- * @param {function} f,  (element)=>Boolean: {}
- */
-eYo.List.prototype.forEachExpr = function (f) {
-  var bricks = this.bricks_
-  const stack = []
-  while (true) {
-    var b3k = bricks.shift()
-    if (b3k) {
-      b3k.isExpr && f(b3k)
-      stack.push(bricks)
-      bricks = b3k.children
-      continue  
-    } else if (bricks = stack.pop()) {
-      continue
-    }
-    break
-  }
-}
+  /**
+   * Performs a function on each brick.
+   * Children are looked after too.
+   * @param {function} f,  (element)=>None: {}
+   */
+  eYo.List.prototype.forEach = forEacher(b3k=>true)
+  /**
+   * Performs a function on each expression brick
+   * until one is found for which the answer is a truthy value.
+   * Children are looked after too in a deep first traversal.
+   * @param {function} f,  (element)=>None: {}
+   */
+  eYo.List.prototype.forEachExpr = forEacher(b3k=>b3k.isExpr)
+  /**
+   * Performs a function on each statement brick
+   * until one is found for which the answer is a truthy value.
+   * Children are looked after too in a deep first traversal.
+   * @param {function} f,  (element)=>None: {}
+   */
+  eYo.List.prototype.forEachStmt = forEacher(b3k=>b3k.isStmt)
+  /**
+   * Performs a function on each expression brick
+   * until one is found for which the answer is a truthy value.
+   * Children are looked after too.
+   * @param {function} f,  (element)=>Boolean: {}
+   */
+  eYo.List.prototype.someExpr = somer(b3k=>b3k.isExpr)
+  /**
+   * Performs a function on each statement brick
+   * until one is found for which the answer is a truthy value.
+   * Children are looked after too.
+   * @param {function} f,  (element)=>Boolean: {}
+   * @param {Boolean} deep,  deep first traversal when true, flat traversal otherwise
+   */
+  eYo.List.prototype.someStmt = somer(b3k=>b3k.isStmt)
+  return somer(b3k=>true)
+}())

@@ -131,10 +131,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
     }
     this.flyout_.slide()
     this.onButtonLeave_(e)
-    var gesture = eYo.App.getGesture(e)
-    if (gesture) {
-      gesture.cancel()// comes from flyout button
-    }
+    eYo.App.cancelMotion()
     eYo.Dom.gobbleEvent(e)
   }
 };
@@ -150,10 +147,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
 eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonLeave_(e)
-  var gesture = eYo.App.getGesture(e)
-  if (gesture) {
-    gesture.cancel()// comes from flyout button
-  }
+  eYo.App.cancelMotion()
   eYo.Dom.gobbleEvent(e)
 }
 

@@ -20,6 +20,14 @@ goog.require('eYo')
  */
 eYo.Change = function (owner) {
   this.owner_ = owner
+  this.reset()
+}
+
+/**
+ * Sever the links.
+ */
+eYo.Change.prototype.reset = function () {
+  this.count = this.step = this.level = 0
   // Some operations are performed only when there is a change
   // In order to decide whether to run or do nothing,
   // we have to store the last change count when the operation was

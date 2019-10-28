@@ -51,7 +51,9 @@ Object.defineProperties(eYo.BoardDragger.prototype, {
  * Sever all links from this object.
  */
 eYo.BoardDragger.prototype.dispose = function() {
-  this.board_ = this.startDrag_ = this.startWhere_ = null
+  this.xyStart_.dispose()
+  this.startDrag_.dispose()
+  this.board_ = this.startDrag_ = this.xyStart_ = null
 }
 
 /**
@@ -66,10 +68,10 @@ eYo.BoardDragger.prototype.isActive_ = false
 
 /**
  * Start dragging the board.
- * @param {!eYo.Gesture} gesture
+ * @param {!eYo.Motion} Motion
  * @return {Boolean} started or not
  */
-eYo.BoardDragger.prototype.start = function(gesture) {
+eYo.BoardDragger.prototype.start = function(Motion) {
   if (this.isActive_) {
     // The drag has already started, nothing more to do.
     // This can happen if the user starts a drag, mouses up outside of the
@@ -84,7 +86,7 @@ eYo.BoardDragger.prototype.start = function(gesture) {
    * @type {!eYo.Board}
    * @private
    */
-  var board = this.board_ = gesture.board
+  var board = this.board_ = Motion.board
 
   /**
    * The board's metrics' drag object at the beginning of the drag.
@@ -102,17 +104,17 @@ eYo.BoardDragger.prototype.start = function(gesture) {
    * @private
    * @package
    */
-  this.startWhere_ = new eYo.Where()
+  this.xyStart_ = new eYo.Where()
   if (eYo.Selected.brick) {
     eYo.Selected.brick.unselect()
   }
 }
 
 /**
- * Reset gesture.
+ * Reset Motion.
  */
-eYo.BoardDragger.prototype.clearGesture = function() {
-  this.gesture_ = null
+eYo.BoardDragger.prototype.clearMotion = function() {
+  this.motion_ = null
 }
 
 /**
@@ -120,7 +122,7 @@ eYo.BoardDragger.prototype.clearGesture = function() {
  */
 eYo.BoardDragger.prototype.drag = function() {
   var board = this.board_
-  var deltaWhere = board.gesture_.deltaWhere_
+  var deltaWhere = board.motion_.xyDelta_
   var m_ = board.metrics_
   m_.drag = this.startDrag.forward(deltaWhere)
   if (board.scrollbar) {

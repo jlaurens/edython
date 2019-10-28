@@ -30,7 +30,12 @@ eYo.Backer = function () {
    * @protected
    */
   this.redoStack_ = []
-};
+  /**
+   * The owner is a desk, a board, whatsoever.
+   * Mainly, this property is set by the owner.
+   */
+  this.owner_ = null
+}
 
 eYo.Do.addProtocol(eYo.Desk.prototype, 'ChangeCount')
 
@@ -41,14 +46,6 @@ Object.defineProperties(eYo.Backer.prototype, {
    */
   MAX_UNDO: {
     value: 1024,
-    writable: true
-  },
-  /**
-   * The owner is a desk, a board, whatsoever.
-   * Mainly, this property is set by the owner.
-   */
-  owner_: {
-    value: null,
     writable: true
   },
   /**

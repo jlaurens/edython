@@ -22,11 +22,12 @@ goog.forwardDeclare('eYo.Desktop')
 
 
 /**
- * Class for a board. This is a data structure that contains bricks.
+ * Class for a board. This is a data structure that contains bricks
+ * and the UI to display them.
  * The desk contains the main board and the draft board.
  * The flyout contains the flyout board.
- * There is also a board used to drag bricks.
- * That makes at least 4 boards.
+ * There is also a board used to drag bricks around.
+ * That makes at least 4 different boards.
  * @param {Object} options.
  * @constructor
  */
@@ -36,10 +37,10 @@ eYo.Board = function(options, db) {
    * The top bricks are all the bricks with no parent.
    * They are owned by a board.
    * They are ordered by line number.
-   * @type {!Array.<!eYo.Brick>}
+   * @type {!eYo.List}
    * @private
    */
-  this.bricks_ = new eYo.List()
+  this.list_ = new eYo.List()
 
   /**
    * @type {!Object}
@@ -60,6 +61,15 @@ eYo.Board = function(options, db) {
   this.highlightedBricks_ = []
 
   this.resetChangeCount()
+  /**
+   * `true` if the board is visible and `false` if it's headless.
+   * @type {boolean}
+   */
+  this.rendered = false
+  /**
+   * @type {*}
+   */
+  this.error = eYo.VOID
 }
 
 Object.defineProperties(eYo.Board.prototype, {
@@ -219,14 +229,6 @@ Object.defineProperties(eYo.Board.prototype, {
     }
   },
   /**
-   * Returns `true` if the board is visible and `false` if it's headless.
-   * @type {boolean}
-   */
-  rendered: {
-    value: false,
-    writable: true
-  },
-  /**
    * @type {eYo.Scrollbar | eYo.Scroller}
    * @readonly
    */
@@ -243,13 +245,6 @@ Object.defineProperties(eYo.Board.prototype, {
     get () {
       return this.metrics_.clone
     }
-  },
-  /**
-   * @type {*}
-   */
-  error: {
-    value: eYo.VOID,
-    writable: true
   },
   recover: {
     get () {
@@ -449,7 +444,7 @@ eYo.Board.prototype.dispose = function() {
   this.dispose = eYo.Do.nothing
   // Stop rerendering.
   this.rendered = false;
-  this.cancelGesture()
+  this.cancelMotion()
   this.listeners_.length = 0
   this.clear()
   if (this.isMain) {
@@ -482,7 +477,19 @@ eYo.Board.prototype.dispose = function() {
 
   this.options = null
 
-  this.highlightedBricks_ = this.metrics_ = this.list_ = this.owner_ = this.owner_.board_ = null
+  if (this.list_) {
+    this.list_.dispose()
+    this.list_ = null
+  }
+  if (this.metrics_) {
+    this.metrics_.dispose()
+    this.metrics_ = null
+  }
+  if (this.recover_) {
+    this.recover_.dispose()
+    this.recover_ = null
+  }
+  this.highlightedBricks_ = this.owner_ = this.owner_.board_ = null
 }
 
 /**
@@ -493,9 +500,8 @@ eYo.Board.Main.prototype.dispose = function() {
   this.dispose = eYo.Do.nothing
   // Stop rerendering.
   this.rendered = false;
-  this.cancelGesture()
+  this.cancelMotion()
   this.listeners_.length = 0
-  this.list_
   this.clear()
   if (this.isMain) {
     this.boardDragger_.dispose()
@@ -995,7 +1001,7 @@ eYo.Board.prototype.paste = function () {
       this.remainingCapacity) {
     return
   }
-  this.cancelGesture() // Dragging while pasting?  No.
+  this.cancelMotion() // Dragging while pasting?  No.
   var m4t, targetM4t, b3k
   eYo.Events.groupWrap(() => {
     if ((b3k = eYo.Xml.domToBrick(xml, this))) {
@@ -1075,13 +1081,13 @@ eYo.Board.prototype.paste = function () {
 }
 
 /**
- * Is the gesture over a delete area (flyout or non-closing flyout)?
- * @param {!eYo.Gesture} e Mouse move event.
+ * Is the motion over a delete area (flyout or non-closing flyout)?
+ * @param {!eYo.Motion} e Mouse move event.
  * @return {?number} Null if not over a delete area, or an enum representing
  *     which delete area the event is over.
  */
-eYo.Board.prototype.inDeleteArea = function(gesture) {
-  var xy = gesture.where
+eYo.Board.prototype.inDeleteArea = function(motion) {
+  var xy = motion.where
   if (this.deleteRectTrash_ && this.deleteRectTrash_.contains(xy)) {
     return eYo.App.DELETE_AREA_TRASH
   }
@@ -1200,7 +1206,7 @@ eYo.Board.prototype.showContextMenu_ = function (e) {
       : eYo.Msg.DELETE_X_BLOCKS.replace('{0}', String(deleteList.length)),
     enabled: deleteList.length > 0,
     callback: () => {
-      this.cancelGesture()
+      this.cancelMotion()
       if (deleteList.length < 2) {
         deleteNext()
       } else {

@@ -127,7 +127,7 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
     var f = m => m && m.target
     var m4t = f(m5s.right) || f(m5s.left) || f(m5s.head) || f(m5s.foot) || f(m5s.out)
     m4t ? m4t.select() : this.unselect()
-    this.board.cancelGesture()
+    this.board.cancelMotion()
   }
   if (animate && this.ui.rendered) {
     this.unplug(healStack)

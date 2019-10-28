@@ -639,3 +639,23 @@ eYo.Do.genUid = (() => {
     return id.join('')
   }
 })()
+
+/**
+ * Dispose in the given object, the property given by its name.
+ * 
+ */
+eYo.Do.disposeProperty = (object, name) => {
+  var x = object[name]
+  if (x) {
+    object[name] = null
+    x.dispose()
+  }
+}
+
+/**
+ * Dispose in the given object, all of the properties given by their name.
+ * 
+ */
+eYo.Do.disposeProperties = (object, names) => {
+  names.forEach(n => eYo.Do.disposeProperty(object, n))
+}

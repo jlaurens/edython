@@ -135,7 +135,7 @@ eYo.Svg.prototype.trashcanDispose = function(trashcan) {
  */
 eYo.Svg.prototype.trashcanOn_mouseup = function(trashcan) {
   var brd = trashcan.board_
-  if (brd.startDrag.backward(brd.drag).magnitude > eYo.Gesture.DRAG_RADIUS) {
+  if (brd.startDrag.backward(brd.drag).magnitude > eYo.Motion.DRAG_RADIUS) {
     return
   }
 }

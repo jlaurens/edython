@@ -327,10 +327,7 @@ eYo.Svg.prototype.boardBind_mousedown = function(board) {
  * @private
  */
 eYo.Svg.prototype.boardOn_mousedown = function(board, e) {
-  var gesture = eYo.App.getGesture(e)
-  if (gesture) {
-    gesture.handleBoardStart(e, this)
-  }
+  eYo.App.motion.startBoard(e, board)
 }
 
 /**
@@ -358,10 +355,10 @@ eYo.Svg.prototype.boardBind_wheel = function(board) {
  * @private
  */
 eYo.Svg.prototype.boardOn_wheel = function(board, e) {
-  // TODO: Remove gesture cancellation and compensate for coordinate skew during
+  // TODO: Remove motion cancellation and compensate for coordinate skew during
   // zoom.
-  if (board.gesture_) {
-    board.gesture_.cancel()
+  if (board.motion_) {
+    board.motion_.cancel()
   }
   var PIXELS_PER_ZOOM_STEP = 50
   var delta = -e.deltaY / PIXELS_PER_ZOOM_STEP

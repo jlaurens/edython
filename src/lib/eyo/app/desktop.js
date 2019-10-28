@@ -7,15 +7,10 @@
  */
 
 /**
- * @fileoverview utilities for edython.
+ * @fileoverview Top desktop class, eYo.App is an instance.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
-
-/**
- * @name eYo
- * @namespace
- */
 
 goog.provide('eYo.App')
 goog.provide('eYo.Desktop')
@@ -25,13 +20,21 @@ goog.require('eYo.Do')
 goog.forwardDeclare('eYo.Css')
 
 goog.forwardDeclare('eYo.Selected')
-goog.forwardDeclare('eYo.Gesture')
+goog.forwardDeclare('eYo.Motion')
 
 eYo.Desktop = function () {
-
+  /**
+   * The current motion in progress, if any.
+   * @type {?eYo.Motion}
+   * @private
+   */
+  eYo.App.motion__ = null
 }
 
 Object.defineProperties(eYo.Desktop.prototype, {
+  /**
+   * The desk of the receiver
+   */
   desk: {
     get () {
       return this.desk_
@@ -43,29 +46,37 @@ Object.defineProperties(eYo.Desktop.prototype, {
     }
   },
   /**
-   * Only one gesture at a time
+   * The main object of the desk of the receiver
    */
-  gesture: {
+  main: {
     get () {
-      return this.gesture__
+      return this.desk.main
     }
   },
   /**
-   * Only one gesture at a time
+   * Only one motion at a time
    */
-  gesture_: {
+  motion: {
     get () {
-      return this.gesture__
+      return this.motion__
+    }
+  },
+  /**
+   * Only one motion at a time
+   */
+  motion_: {
+    get () {
+      return this.motion__
     },
     /**
      * The setter takes ownership into account.
      * @param{?Object} newValue
      */
     set (newValue) {
-      if (newValue != this.gesture__) {
-        this.gesture__ && (this.gesture__.owner_ = null)
-        this.gesture__ = newValue
-        newValue && (newValue.owner_ = this)
+      if (newValue != this.motion__) {
+        this.motion__.desktop_ = null
+        this.motion__ = newValue
+        newValue && (newValue.desktop_ = this)
       }
     }
   },
@@ -75,75 +86,65 @@ Object.defineProperties(eYo.Desktop.prototype, {
    */
   isDragging: {
     get () {
-      return this.gesture__ && this.gesture__.isDragging
+      return this.motion__.isDragging
     }
   },
 })
 
 /**
- * Dispose of the audio and the gesture.
+ * Dispose of the audio and the motion.
  */
 eYo.Desktop.prototype.dispose = function() {
-  this.audio_ = this.gesture_ = null
+  if (this.desk_) {
+    this.desk_.dispose()
+    this.desk_ = null
+  }
+  this.motion_.dispose()
+  this.audio_ = this.motion_ = null
 }
 
 eYo.App = new eYo.Desktop(null)
 
 /**
- * Paste a brick onto the local clipboard.
+ * Paste a brick from the local clipboard.
  * @private
  */
 eYo.Desktop.prototype.paste = () => {
 }
 
 /**
- * The current gesture in progress, if any.
- * @type {?eYo.Gesture}
- * @private
- */
-eYo.App.gesture__ = null
-
-/**
- * Look up the gesture that is tracking this touch stream. May create a new gesture.
+ * Look up the motion that is tracking this touch stream. May create a new motion.
  * @param {!Event} e Mouse event or touch event.
- * @return {eYo.Gesture} The gesture that is tracking this touch
- *     stream, or null if no valid gesture exists.
+ * @return {eYo.Motion} The motion that is tracking this touch
+ *     stream, or null if no valid motion exists.
  */
-eYo.Desktop.prototype.getGesture = function(e) {
-  var isStart = (e.type == 'mousedown' || e.type == 'touchstart' ||
-  e.type == 'pointerdown')
-  var gesture = this.gesture_
-  if (gesture) {
-    if (isStart && gesture.started) {
-      console.warn('tried to start the same gesture twice')
-      // That's funny.  We must have missed a mouse up.
-      // Cancel it, rather than try to retrieve all of the state we need.
-      gesture.cancel()
+eYo.Desktop.prototype.getMotion = function(e) {
+  var motion = this.motion_
+  if (e.type == 'mousedown'
+      || e.type == 'touchstart'
+      || e.type == 'pointerdown') {
+    if (motion.started) {
+      // motion is not in an expected state.
+      console.warn('tried to start the same motion twice')
+      motion.cancel()
       return null
     }
-    return gesture
   }
-  // No gesture existed on this board, but this looks like the start of a
-  // new gesture.
-  if (isStart) {
-    return (this.gesture_ = new eYo.Gesture(e))
-  }
-  // No gesture existed and this event couldn't be the start of a new gesture.
-  return null
+  return motion.reset(e)
 }
 
 /**
- * Clear the reference to the current gesture.
+ * Clear the reference to the current Motion.
  */
-eYo.App.clearGesture = function() {
-  this.gesture_ = null
+eYo.App.clearMotion = function() {
+  this.motion_ = null
 }
 
 /**
- * Cancel the current gesture, if one exists.
+ * Cancel the current motion, if one exists.
  */
-eYo.App.cancelGesture = function() {
-  this.gesture_ && this.gesture_.cancel()
+eYo.App.cancelMotion = function() {
+  this.motion_ && this.motion_.cancel() && this.clearMotion()
 }
 
 Object.defineProperties(eYo.App, {
@@ -263,9 +264,9 @@ eYo.App.doFocus = () => {
 /**
  * Make the desk.
  */
-eYo.App.makeDesk = options => {
+eYo.Desktop.prototype.makeDesk = function (options) {
   eYo.setup()
-  var desk = eYo.App.desk = new eYo.Desk(options)
+  var desk = this.desk_ = new eYo.Desk(options)
   eYo.App.main = desk.main
   eYo.App.main.backer.clear()
   desk.makeUI()
@@ -274,4 +275,4 @@ eYo.App.makeDesk = options => {
 /**
  * Close tooltips, context menus, dropdown selections, etc.
  */
-eYo.App.hideChaff = eYo.Do.nothing
+eYo.Desktop.prototype.hideChaff = eYo.Do.nothing

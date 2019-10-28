@@ -370,7 +370,7 @@ eYo.Svg.prototype.flyoutPlace = function (flyout) {
 eYo.Svg.prototype.flyoutUpdate = function(flyout) {
   var width = flyout.width
   var height = flyout.height
-  var top_margin = flyout.TOP_MARGIN
+  var top_margin = eYo.Flyout.TOP_MARGIN
   var atRight = flyout.atRight
   // Decide whether to start on the left or right.
   var path = [`M ${atRight ? width : 0},${top_margin}`]
@@ -409,13 +409,7 @@ eYo.Svg.prototype.flyoutAddListeners = function(flyout, brick) {
     g,
     'mousedown',
     null,
-    e => {
-      var gesture = eYo.App.getGesture(e)
-      if (gesture) {
-        gesture.startBrick = brick
-        gesture.handleFlyoutStart(e, flyout)
-      }
-    }
+    e => eYo.App.motion.handleFlyoutStart(e, flyout, brick)
   ))
   flyout.listeners_.push(eYo.Dom.bindEvent(
     g,
@@ -484,8 +478,5 @@ eYo.Svg.prototype.flyoutBindScrollEvents = function(flyout) {
  * @private
  */
 eYo.Svg.prototype.flyoutOn_mousedown = function(e) {
-  var gesture = eYo.App.getGesture(e)
-  if (gesture) {
-    gesture.handleFlyoutStart(e, this)
-  }
+  eYo.App.motion.handleFlyoutStart(e, this)
 }

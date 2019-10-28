@@ -54,11 +54,11 @@ eYo.Flyout = function(owner, flyoutOptions) {
    * @private
    */
   this.viewRect_ = new eYo.Rect().tie(board.metrics_.view, {
-    l: (newValue) => newValue + this.TOOLBAR_HEIGHT,
-    h: (newValue) => newValue - this.TOOLBAR_HEIGHT,
+    l: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
+    h: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
   }, {
-    l: (newValue) => newValue - this.TOOLBAR_HEIGHT,
-    h: (newValue) => newValue + this.TOOLBAR_HEIGHT,
+    l: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
+    h: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
   })
   /**
    * Opaque data that can be passed to unbindEvent.
@@ -107,6 +107,16 @@ Object.defineProperties(eYo.Flyout.prototype, {
     }
   },
   /**
+   * Whether the flyout is closed.
+   * @type {boolean}
+   * @readonly
+   */
+  closed: {
+    get () {
+      return this.closed_
+    }
+  },
+  /**
    * Does the flyout automatically close when a brick is created?
    * @type {boolean}
    */
@@ -124,40 +134,11 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   closed_: { value: false, writable: true},
   /**
-   * Whether the flyout is closed.
-   * @type {boolean}
-   * @readonly
-   */
-  closed: {
-    get () {
-      return this.closed_
-    }
-  },
-  /**
    * Whether the board containing this flyout is visible.
    * @type {boolean}
    * @private
    */
   containerVisible_: { value: true, writable: true},
-  /**
-   * Top/bottom padding between scrollbar and edge of flyout background.
-   * @type {number}
-   * @const
-   */
-  SCROLLBAR_PADDING: { value: 2 },
-  TOP_MARGIN: { value: 0 }, // 4 * eYo.Unit.rem
-  BOTTOM_MARGIN: { value: 16 }, // scroll bar width
-  TOOLBAR_HEIGHT : { value: Math.round(2 * eYo.Unit.y) },
-  /**
-   * Margin around the edges of the bricks.
-   * @type {number}
-   * @const
-   */
-  MARGIN : { value: eYo.Unit.rem / 4 },
-  /**
-   * This size and anchor of the receiver and wrapped
-   * in an object with eponym keys.
-   */
   /**
    * Width of flyout.
    * @type {number}
@@ -231,7 +212,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   deleteRect: {
     get () {
-      var rect = flyout.viewRect
+      var rect = this.viewRect
       var width = rect.width
       if (!width) {
         return null
@@ -240,7 +221,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
       // area are still deleted.  Must be larger than the largest screen size,
       // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
       var BIG_NUM = 1000000000
-      if (flyout.atRight) {
+      if (this.atRight) {
         rect.right += BIG_NUM
       } else {
         rect.left -= BIG_NUM
@@ -284,12 +265,9 @@ eYo.Flyout.prototype.disposeUI = function() {
   this.hide()
   this.board_.disposeUI()
   var d = this.ui_driver
-  this.toolbar_ && d.flyoutToolbarDispose(tb)
+  this.toolbar_ && d.flyoutToolbarDispose(this.toolbar_)
   d.flyoutDispose(this)
-  if (this.scrollbar_) {
-    this.scrollbar_.dispose()
-    this.scrollbar_ = null
-  }
+  eYo.Do.disposeProperty(this, "scrollbar_")
 }
 
 /**
@@ -299,10 +277,7 @@ eYo.Flyout.prototype.disposeUI = function() {
 eYo.Flyout.prototype.dispose = function() {
   this.dispose = eYo.Do.nothing
   this.disposeUI()
-  if (this.viewRect_) {
-    this.viewRect_.dispose()
-    this.viewRect_ = null
-  }
+  eYo.Do.disposeProperties(this, ["viewRect_"])
   if (!this.filterWrapper_) {
     this.owner_.removeChangeListener(this.filterWrapper_)
   }
@@ -320,7 +295,26 @@ eYo.Flyout.prototype.sizeChanged = function() {
 
 Object.defineProperties(eYo.Flyout, {
   AT_RIGHT: { value: 1 },
-  AT_LEFT: { value: 2 }
+  AT_LEFT: { value: 2 },
+  /**
+   * Top/bottom padding between scrollbar and edge of flyout background.
+   * @type {number}
+   * @const
+   */
+  SCROLLBAR_PADDING: { value: 2 },
+  TOP_MARGIN: { value: 0 }, // 4 * eYo.Unit.rem
+  BOTTOM_MARGIN: { value: 16 }, // scroll bar width
+  TOOLBAR_HEIGHT : { value: Math.round(2 * eYo.Unit.y) },
+  /**
+   * Margin around the edges of the bricks.
+   * @type {number}
+   * @const
+   */
+  MARGIN : { value: eYo.Unit.rem / 4 },
+  /**
+   * This size and anchor of the receiver and wrapped
+   * in an object with eponym keys.
+   */
 })
 
 Object.defineProperties(eYo.Flyout.prototype, {
@@ -608,14 +602,14 @@ eYo.Flyout.prototype.scrollToStart = function() {
  * Determine if a drag delta is toward the board, based on the position
  * and orientation of the flyout. This is used in determineDragIntention_ to
  * determine if a new brick should be created or if the flyout should scroll.
- * @param {!eYo.Gesture} gesture.
+ * @param {!eYo.Motion} Motion.
  * @return {boolean} true if the drag is toward the board.
  */
-eYo.Flyout.prototype.isDragTowardBoard = function(gesture) {
+eYo.Flyout.prototype.isDragTowardBoard = function(Motion) {
   if(!this.scrollable) {
     return true
   }
-  var delta = gesture.deltaWhere
+  var delta = Motion.deltaWhere
   var dx = delta.x
   var dy = delta.y
   // Direction goes from -180 to 180, with 0 toward the board.
