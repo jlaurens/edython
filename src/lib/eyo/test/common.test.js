@@ -64,7 +64,7 @@ Object.defineProperties(eYo.Test, {
 })
 
 eYo.Test.makeDesk = options => {
-  if (!eYo.App.main) {
+  if (!eYo.app.board) {
     options = options || {}
     goog.mixin(options, {
       collapse : true,
@@ -78,7 +78,7 @@ eYo.Test.makeDesk = options => {
     })
     if (options.container && (document.getElementById(options.container) ||
     document.querySelector(options.container))) {
-      eYo.App.makeDesk(options)
+      eYo.app.makeDesk(options)
     }
   }
 }
@@ -88,14 +88,14 @@ beforeEach(function() {
 })
 
 eYo.Test.setItUp = () => {
-  eYo.App.main.backer.clear()
-  eYo.App.main.topBricks_.length = 0
+  eYo.app.board.backer.clear()
+  eYo.app.board.topBricks_.length = 0
 }
 
 eYo.Test.tearItDown = (opt) => {
-  eYo.App.main.backer.clear()
+  eYo.app.board.backer.clear()
   if (!opt || !opt.ignoreTopBrick) {
-    chai.assert(eYo.App.main.topBricks_.length === 0, `FAILED ${eYo.App.main.topBricks_.length} === 0`)
+    chai.assert(eYo.app.board.topBricks_.length === 0, `FAILED ${eYo.app.board.topBricks_.length} === 0`)
   }
 }
 
@@ -113,7 +113,7 @@ eYo.Test.brick = (brick, t, str) => {
 
 eYo.Test.new_brick = (t, tt, str, headless) => {
   var type = t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
-  var brick = eYo.Brick.newReady(eYo.App.main, type)
+  var brick = eYo.Brick.newReady(eYo.app.board, type)
   eYo.Test.brick(brick, tt, str)
   if (!headless) {
     brick.render()
@@ -432,7 +432,7 @@ eYo.Test.same_list_length = (dlgt1, dlgt2, key) => {
  * Create a new identifier brick
  */
 eYo.Test.newIdentifier = (str) => {
-  var brick = eYo.Brick.newReady(eYo.App.main, eYo.T3.Expr.identifier)
+  var brick = eYo.Brick.newReady(eYo.app.board, eYo.T3.Expr.identifier)
   brick.target_p = str
   eYo.Test.brick(brick, 'identifier')
   eYo.Test.data_value(brick, 'target', str)
@@ -470,7 +470,7 @@ eYo.Test.svgNodeParent = (bdom, node, parent, type) => {
 eYo.Test.source = (str) => {
   var err_ret = {}
   var n = eYo.Parser.PyParser_ParseString(str, eYo.GMR._PyParser_Grammar, eYo.TKN.file_input, err_ret)
-  var d = n.toBrick(eYo.App.main)
+  var d = n.toBrick(eYo.app.board)
   if (!d) {
     eYo.GMR.showtree(eYo.GMR._PyParser_Grammar, n)
   }

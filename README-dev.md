@@ -26,8 +26,8 @@ git submodule add https://github.com/slevithan/xregexp
 
 # edython Brick design
 
-edython block design is independant from Blockly's,
-but uses Blockly's features internally
+edython brick design is independant from Blockly's,
+but may use Blockly's features or ideas internally
 
 ## General overview
 
@@ -105,6 +105,11 @@ Mixins could be used but it seems less dynamic and less easy at first glance.
 We get both general controllers, that define behaviours shared by all the bricks, and specific ones, than can be subclassed. The main example being the xml controller which is reponsible of the persistent storage.
 
 # Building
+
+# Preparing
+
+`npm run prepare`
+
 
 ## Building for a web application
 

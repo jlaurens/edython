@@ -11,6 +11,7 @@ pathBuild = pathRoot / 'build' / 'helpers'
 pathBuild.mkdir(parents=True, exist_ok=True)
 
 pathTest = pathRoot / 'test' / 'test.js'
+pathSrcLib = pathRoot / 'src' / 'lib'
 
 # read the build.sh, change it and save the modified file to the build
 def updateBuild(path_in, path_out, path_deps):
@@ -80,36 +81,60 @@ def updateTest(path_in, path_out, path_deps):
     return 1
 
 def updateWebTests(path_root, path_deps):
-    re_start = re.compile(r"^\s*<\!--\s+DYNAMIC DEPS START\s+-->\s*$")
-    re_end = re.compile(r"^\s*<\!--\s+DYNAMIC DEPS END\s+-->\s*$")
-    global pathRoot
-    files = [x for x in path_root.glob('**/*')
-            if x.is_file()
-            if os.path.basename(x).endswith('.test.html')]
-    for path_in in files:
-        print(f'Updating {path_in}')
-        head = []
-        tail = []
-        fill = head
-        with path_in.open('r', encoding='utf-8') as f:
-            for l in f.readlines():
-                if re_start.match(l):
-                    fill.append(l)
-                    fill = None
-                elif re_end.match(l):
-                    fill = tail
-                    fill.append(l)
-                elif fill is not None:
-                    fill.append(l)
-        with path_deps.open('r', encoding='utf-8') as f:
-            s = f.read()
-            relative = path_in.relative_to(pathRoot)
-            s = s.replace('PATH_ROOT/', '../' * (len(relative.parts) - 1))
-            head.append(s)
-            head.extend(tail)
-        path_in.write_text(''.join(head), encoding='utf-8')
-    return 0
-
+  re_start = re.compile(r"^\s*<\!--\s+DYNAMIC DEPS START\s+-->\s*$")
+  re_end = re.compile(r"^\s*<\!--\s+DYNAMIC DEPS END\s+-->\s*$")
+  global pathRoot
+  files = [x for x in path_root.rglob('*')
+    if x.is_file()
+    if os.path.basename(x).endswith('.test.js')]
+  for path_test in files:
+    print(f'Updating {path_test}')
+    relative = path_test.relative_to(pathRoot)
+    root = '../' * (len(relative.parts) - 1)
+    path_base = path_test.with_suffix('').with_suffix('')
+    basename = path_base.stem
+    path_in = path_base.with_suffix('.in.xml')
+    path_out = path_base.with_suffix('.test.html')
+    lines = []
+    lines.append(f'''<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mocha Tests</title>
+    <script src="{root}src/lib/xregexp-all/xregexp-all.js"></script>
+    <script src="{root}src/lib/brython/www/src/brython.js"></script>
+    <script src="{root}src/lib/brython/www/src/brython_stdlib.js"></script>
+    <script src="{root}src/lib/closure-library/closure/goog/base.js"></script>
+''')
+    with path_deps.open('r', encoding='utf-8') as f:
+      s = f.read()
+      s = s.replace('PATH_ROOT/', root)
+      lines.append(s)
+    lines.append(f'''    <link rel="stylesheet" href="{root}node_modules/mocha/mocha.css">
+</head>
+<body style="background-color: snow">
+  <div id="eyo-desk" style="height: 95.375px; width: 412.5px;"></div>
+  <div id="mocha"></div>
+  <script src="{root}node_modules/mocha/mocha.js"></script>
+  <script src="{root}node_modules/chai/chai.js"></script>
+  <script>mocha.setup('bdd')</script>
+  <script src="{root}test/common.test.js"></script>
+  <script src="./{basename}.test.js" charset="utf-8"></script>
+  <script src="{root}/src/lib/eyo/debugging.js"></script>
+  <script>
+    mocha.run();
+  </script>
+''')
+    try:
+      with path_in.open('r', encoding='utf-8') as f:
+        s = f.read()
+        lines.append(s)
+    except: pass
+    lines.append(f'''</body>
+</html>
+''')
+    path_out.write_text(''.join(lines), encoding='utf-8')
+  return 0
 
 print('Step 3:')
 print('=======')
