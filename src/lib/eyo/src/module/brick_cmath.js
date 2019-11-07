@@ -22,7 +22,7 @@ goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Tooltip')
-goog.require('eYo.FlyoutCategory')
+goog.require('eYo.Library')
 
 /**
  * Populate the context menu for the given brick.
@@ -153,7 +153,7 @@ goog.require('eYo.FlyoutCategory')
     }
   }
 
-eYo.FlyoutCategory.basic_cmath__module = [
+eYo.Library.basic_cmath__module = [
   {
     type: eYo.T3.Expr.call_expr,
     data: {
@@ -229,7 +229,7 @@ F_k = (name, title) => {
   }
 }
 
-eYo.FlyoutCategory.cmath__module = [
+eYo.Library.cmath__module = [
   {
     type: eYo.T3.Expr.call_expr,
     data: {

@@ -655,7 +655,7 @@ eYo.Brick.UI.prototype.renderMove_ = function (recorder) {
   this.renderMoveMagnets_()
   // var blockTL = this.whereInBoard
   // this.brick_.forEachSlot((slot) => {
-  //   var m4t = input.magnet
+  //   var m4t = slot.magnet
   //   if (m4t) {
   //     m4t.moveToOffset(blockTL)
   //     m4t.tighten()
@@ -1149,7 +1149,7 @@ eYo.Brick.UI.prototype.fieldDrawFrom_ = function (field, io) {
  */
 eYo.Brick.UI.prototype.drawFields_ = function (io, only_prefix) {
   var current = io.cursor.c
-  io.input.fieldRow.forEach((field) => {
+  io.slot.forEachField(field => {
     if (!!only_prefix === !field.suffix) {
       this.drawField_(field, io)
     }
@@ -1328,7 +1328,7 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
   // io.cursor is relative to the brick or the slot
   // but the magnet must be located relative to the brick
   // the magnet will take care of that because it knows
-  // if there is a slot or only an input.
+  // if there is a slot.
   var t9k = m4t.targetBrick
   if (t9k) {
     if (m4t.bindField && m4t.bindField.visible) {
@@ -1403,7 +1403,7 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
       io.common.field.afterCaret = false
     } else if (!this.brick_.locked_ && !m4t.hidden_) {
       // locked bricks won't display any placeholder
-      // (input with no target)
+      // (slot with no target)
       if (!m4t.disabled_) {
         m4t.setOffset(io.cursor)
         m4t.startOfLine = io.common.startOfLine
@@ -1470,7 +1470,7 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
  */
 eYo.Brick.UI.prototype.drawInput_ = function (io) {
   this.drawFields_(io, true)
-  io.magnet = io.input.magnet
+  io.magnet = io.slot.magnet
   this.drawInputMagnet_(io)
   this.drawFields_(io, false)
   return true
@@ -1893,9 +1893,9 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
   var rect = this.boundingRect // in board coordinates
   var xy = brd.eventWhere(e).backward(rect.topLeft)
   var R
-  var magnet = this.brick_.someInputMagnet(magnet => {
+  var magnet = this.brick_.someSlotMagnet(magnet => {
     if (!magnet.disabled_ && (!magnet.hidden_ || magnet.wrapped_)) {
-      if (magnet.isInput) {
+      if (magnet.isSlot) {
         var target = magnet.target
         if (target) {
           var targetM4t = target.brick.ui.getMagnetForEvent(e)
@@ -2033,7 +2033,7 @@ eYo.Brick.UI.prototype.setDeleteStyle = function(enable) {
  * Handle a mousedown on an SVG brick.
  * If the brick is sealed to its parent, forwards to the parent.
  * This is used to prevent a dragging operation on a sealed brick.
- * However, this will manage the selection of an input connection.
+ * However, this will manage the selection of a slot connection.
  * on_mousedown message is sent multiple times for one mouse click
  * because bricks may lay on above the other (when connected for example)
  * Considering the selection of a connection, we manage the on_mousedown calls
@@ -2065,7 +2065,7 @@ eYo.Brick.UI.prototype.on_mousedown = function (e) {
   // unfortunately, the mouse events sometimes do not find there way to the proper brick
   var magnet = this.getMagnetForEvent(e)
   var t9k = magnet
-  ? magnet.isInput
+  ? magnet.isSlot
     ? magnet.targetBrick || magnet.brick
     : magnet.brick
   : brick
@@ -2098,7 +2098,7 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
   const magnet = this.getMagnetForEvent(e)
   var b3k
   var t9k = magnet
-  ? magnet.isInput
+  ? magnet.isSlot
     ? magnet.targetBrick || magnet.brick
     : magnet.brick
   : this.brick_
@@ -2123,7 +2123,7 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
             // unselect
             eYo.Focus.magnet = null
           } else if (magnet !== t9k.ui.lastSelectedMagnet__) {
-            if (magnet.isInput) {
+            if (magnet.isSlot) {
               if (!magnet.targetBrick) {
                 magnet.bindField && magnet.focusOn()
               }

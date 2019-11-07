@@ -846,9 +846,9 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
  * Populate the context menu for the given brick and model.
  * Only for expressions.
  * `model.type` is the type of the to be inserted parent brick.
- * `model.input` is the slot where the actual brick should be connected.
+ * `model.slot` is the slot where the actual brick should be connected.
  * @param {!eYo.Brick} brick The brick.
- * @param {!Object} model the type of the parent to be and target input.
+ * @param {!Object} model the type of the parent to be and target slot.
  * @private
  */
 eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model) {
@@ -978,13 +978,13 @@ eYo.MenuManager.prototype.populate_insert_parent = function (brick, model, top) 
 eYo.MenuManager.prototype.populate_replace_parent = function (brick, model) {
   var parent = brick.parent
   if (parent && parent.type === model.type) {
-    var input = brick.out_m.input
-    if (model.input && input.name !== model.input) {
+    var slot = brick.out_m.slot
+    if (model.slot && slot.name !== model.slot) {
       return false
     }
     if (!brick.wrapped_ || brick.canUnwrap()) {
       if (brick.canReplaceBrick(parent)) {
-        var content = this.get_menuitem_content(model.type, input && input.name)
+        var content = this.get_menuitem_content(model.type, slot && slot.name)
         if (content) {
           var MI = this.newMenuItem(content, function () {
             brick.replaceBrick(parent)

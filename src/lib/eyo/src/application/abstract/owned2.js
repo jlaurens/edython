@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Basic object owned by either a brick, a slot or an input.
+ * @fileoverview Basic object owned by either a brick or a slot.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'

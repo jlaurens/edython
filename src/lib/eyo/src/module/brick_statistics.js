@@ -22,7 +22,7 @@ goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Tooltip')
-goog.require('eYo.FlyoutCategory')
+goog.require('eYo.Library')
 
 /*
     'pstdev': 7,
@@ -55,7 +55,7 @@ goog.require('eYo.FlyoutCategory')
     }
   }
 
-eYo.FlyoutCategory.basic_statistics__module = [
+eYo.Library.basic_statistics__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     from_p: 'statistics',
@@ -90,7 +90,7 @@ eYo.FlyoutCategory.basic_statistics__module = [
     }
   }
 
-eYo.FlyoutCategory.statistics__module = [
+eYo.Library.statistics__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.IMPORT,

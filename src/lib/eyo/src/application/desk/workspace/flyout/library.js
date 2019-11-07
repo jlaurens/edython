@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.FlyoutCategory')
-
 goog.require('eYo')
+
+goog.provide('eYo.Library')
 
 goog.require('eYo.T3')
 goog.require('eYo.Const')
@@ -22,7 +22,7 @@ goog.require('eYo.Tooltip')
 /**
  * Flyout list of node models by category.
  */
-eYo.FlyoutCategory = {
+eYo.Library = {
   test: [
     {
       type: eYo.T3.Stmt.expression_stmt,

@@ -363,7 +363,7 @@ eYo.Test.list_connect = (brick, key, target, name) => {
   chai.assert(target, 'MISSING target')
   var s = brick.slots[key]
   chai.assert(s.listConnect(target, name), `CONNECTION FAILED`)
-  chai.assert(s.targetBrick.someInput(input => input.magnet && input.targetBrick === target), `MISSED CONNECTION for ${key} in ${brick.type}`)
+  chai.assert(s.targetBrick.someSlot(slot => slot.magnet && slot.targetBrick === target), `MISSED CONNECTION for ${key} in ${brick.type}`)
 }
 
 /**
@@ -398,8 +398,8 @@ eYo.Test.copy_paste = (brick, opts) => {
   }
   var filter = opts && opts.filter
   if (goog.isFunction(filter)) {
-    var f = input => {
-      var t9k = input.targetBrick
+    var f = slot => {
+      var t9k = slot.targetBrick
       if (t9k) {
         return filter(t9k)
       }

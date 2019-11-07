@@ -24,7 +24,7 @@ goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Msg')
 goog.require('eYo.Tooltip')
-goog.require('eYo.FlyoutCategory')
+goog.require('eYo.Library')
 
 eYo.T3.Stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
 
@@ -66,7 +66,7 @@ eYo.Brick.Stmt.makeSubclass('turtle__setup_stmt', {
       title: key
     }
   }
-  eYo.FlyoutCategory.basic_turtle__module = [
+  eYo.Library.basic_turtle__module = [
     {
       type: eYo.T3.Stmt.import_stmt,
       variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
@@ -134,7 +134,7 @@ eYo.Brick.Stmt.makeSubclass('turtle__setup_stmt', {
       title: key
     }
   }
-  eYo.FlyoutCategory.turtle__module = [
+  eYo.Library.turtle__module = [
     {
       type: eYo.T3.Stmt.import_stmt,
       variant_p: eYo.Key.IMPORT,

@@ -234,16 +234,6 @@ Object.defineProperties(eYo.Slot.prototype, {
 })
 // obsolete and deprecated API
 Object.defineProperties(eYo.Slot.prototype, {
-  /**
-   * @readonly
-   * @property {Object} input
-   */
-  input: {
-    get () {
-      console.error("BREAK HERE")
-      throw "INCONSISTANCY"
-    }
-  },
   c_eyo: {
     get () {
       console.error("BREAK HERE")
@@ -325,7 +315,7 @@ isRequiredToModel: {
       if (t9k) {
         if (t9k.wrapped_) {
           // return true if one of the inputs is connected
-          return t9k.someInput(input => !!input.target)
+          return t9k.someSlot(slot => !!slot.target)
         }
         return true
       }

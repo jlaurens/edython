@@ -22,7 +22,7 @@ goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Tooltip')
-goog.require('eYo.FlyoutCategory')
+goog.require('eYo.Library')
 
 goog.require('eYo.Model.decimal__module')
 
@@ -91,7 +91,7 @@ goog.require('eYo.Model.decimal__module')
     'FloatOperation': 30
 
     */
-eYo.FlyoutCategory.basic_decimal__module = [
+eYo.Library.basic_decimal__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     from_p: 'decimal',
@@ -189,7 +189,7 @@ eYo.FlyoutCategory.basic_decimal__module = [
     }
   }
 
-eYo.FlyoutCategory.decimal__module = [
+eYo.Library.decimal__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     import_module_s: {

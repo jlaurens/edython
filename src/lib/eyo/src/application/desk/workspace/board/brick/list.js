@@ -74,7 +74,7 @@ eYo.List.prototype.getBrickById = function(id) {
   }
   var m = XRegExp.exec(id, eYo.XRE.id_wrapped)
   if (m && (b3k = this.db_.byId(m.id))) {
-    return b3k.someInputMagnet(m4t => {
+    return b3k.someSlotMagnet(m4t => {
       var b3k = m4t.targetBrick
       if (b3k && b3k.id === id) {
         return b3k

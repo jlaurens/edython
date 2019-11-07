@@ -702,7 +702,7 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
   var r = this.hilighted_width
   this.begin()
   if (magnet && opt && opt.hilight) {
-    if (magnet.isInput) {
+    if (magnet.isSlot) {
       if (m4t.targetBrick) {
         this.push(magnet.targetBrick.ui.driver.pathValueDef_())
       } else if (!brick.disabled) {

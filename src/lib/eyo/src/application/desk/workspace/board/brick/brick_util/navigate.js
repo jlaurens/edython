@@ -24,7 +24,7 @@ goog.require('eYo.Focus')
 eYo.Navigate.doTab = (() => {
   var magnet
   var accept = m4t => {
-    return m4t && !m4t.incog && !m4t.hidden && m4t.isInput && m4t
+    return m4t && !m4t.incog && !m4t.hidden && m4t.isSlot && m4t
   }
   var doLeft = b3k => {
     if (!(magnet = eYo.Focus.magnet) || magnet.incog || !(magnet = b3k.out_m || b3k.ui.lastRenderedMagnet || (b3k.stmtParent || b3k.root).ui.lastRenderedMagnet)) {
@@ -70,7 +70,6 @@ eYo.Navigate.doTab = (() => {
     if (brick) {
       var f = opt && opt.left ? doLeft : doRight
       var n = opt && opt.fast ? 4 : 1
-      input = eYo.VOID
       while (n--) {
         f(brick)
       }
@@ -142,7 +141,7 @@ eYo.Focus.chooseLeft = () => {
   }
   var m4t = eYo.Focus.magnet
   if (m4t) {
-    if (m4t.isInput || m4t.isOutput) {
+    if (m4t.isSlot || m4t.isOutput) {
       eYo.Focus.magnet = null
       b3k.wrapper.focusOn().scrollToVisible()
       return
@@ -198,7 +197,7 @@ eYo.Focus.chooseRight = function () {
   }
   var m4t = eYo.Focus.magnet
   if (m4t) {
-    if (m4t.isInput || m4t.isOutput) {
+    if (m4t.isSlot || m4t.isOutput) {
       eYo.Focus.magnet = null
       eYo.Focus.scrollToVisible()
       return

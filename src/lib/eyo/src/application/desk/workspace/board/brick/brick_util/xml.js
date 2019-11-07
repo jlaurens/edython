@@ -16,12 +16,12 @@
  * The Blockly original methods are overriden to manage the edython bricks.
  * The xml nodes concerning edython all pertain to the `eyo` namespace.
  * There are separate xml nodes for statements and expressions,
- * the latter are characterized by an input attribute, which may be
+ * the latter are characterized by a slot attribute, which may be
  * a void string. This is useful for call expression that can appear as
  * statements too.
  * The domToBoard has been overriden to manage more bricks.
  * When both an expression and a statement share the same
- * tag, the expression always have an input attribute,
+ * tag, the expression always have a slot attribute,
  * which may be void.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
@@ -337,7 +337,7 @@ eYo.Brick.newReady = (() => {
  * The same holds for comparison bricks, mutatis mutandis.
  * 3) List bricks are meant to be wrapped. They should never appear
  * as top bricks. When wrapped, the tag name is always eyo:list.
- * The solid type is encoded in the input attribute,
+ * The solid type is encoded in the slot attribute,
  * it also depends on the enclosing brick.
  * 4) Wrapped bricks other than lists will not add an xml child level.
  * As a consequence, this method just returns nothing for such bricks.
@@ -1027,8 +1027,8 @@ eYo.Xml.fromDom = function (brick, element) {
       if (this instanceof eYo.Brick.List) {
         eYo.Do.forEachElementChild(element, child => {
           var name = child.getAttribute(eYo.Xml.SLOT)
-          var slot_m4t = this.getSlot(name)
-          var m4t = input && input.magnet
+          var slot = this.getSlot(name)
+          var m4t = slot && slot.magnet
           if (m4t) {
             var t9k = m4t.targetBrick
             if (t9k) {
@@ -1043,7 +1043,7 @@ eYo.Xml.fromDom = function (brick, element) {
             } else {
               console.error('eYo.Xml.fromDom: Ignoring', child)
             }
-          } else if (input) {
+          } else if (slot) {
             console.error('Missing connection')
           }
         })
@@ -1339,7 +1339,7 @@ goog.provide('eYo.Xml.Call')
 /**
  * Reads the given element into a brick.
  * call bricks have eyo:call and tag eyo:builtin__call names
- * if there is an eyo:input attribute, even a ''
+ * if there is an `eyo:slot` attribute, even a ''
  * then it is an expression brick otherwise it is a statement brick. DEPRECATED.
  * @param {!Element} element dom element to be completed.
  * @param {!*} owner  The board or the parent brick

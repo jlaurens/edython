@@ -21,7 +21,7 @@ goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Tooltip')
-goog.require('eYo.FlyoutCategory')
+goog.require('eYo.Library')
 
 goog.require('eYo.Model.functions')
 

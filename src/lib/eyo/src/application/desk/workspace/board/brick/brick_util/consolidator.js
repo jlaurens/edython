@@ -106,10 +106,10 @@ goog.provide('eYo.Consolidator.List')
  * Remove empty place holders, add separators,
  * order non empty placeholders.
  * Main entries: consolidate and getSlot.
- * The idea is to create the input elements
+ * The idea is to create the slot elements
  * only when needed.
  * The undo/redo management is based on the name
- * of the input, which means that naming should be done
+ * of the slot, which means that naming should be done
  * dynamically.
  */
 eYo.Consolidator.makeSubclass('List')
@@ -169,16 +169,16 @@ eYo.Consolidator.List.prototype.getMandatory = function (io) {
 
 /**
  * Setup the io parameter dictionary.
- * Called when the input list has changed and or the index has changed.
+ * Called when the slot list has changed and or the index has changed.
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.setupIO = function (io, i) {
   if (i !== eYo.VOID) {
     io.i = i
   }
-  if ((io.input = io.list[io.i])) {
-    io.m4t = io.input.magnet
-    goog.asserts.assert(!io.input || !!io.m4t, 'List items must have a magnet')
+  if ((io.slot = io.list[io.i])) {
+    io.m4t = io.slot.magnet
+    goog.asserts.assert(!io.slot || !!io.m4t, 'List items must have a magnet')
     return true
   } else {
     io.m4t = null
@@ -187,7 +187,7 @@ eYo.Consolidator.List.prototype.setupIO = function (io, i) {
 }
 
 /**
- * Advance to the next input. Returns false when at end.
+ * Advance to the next slot. Returns false when at end.
  * @param {!Object} io parameter.
  * @return boolean, false when at end
  */
@@ -197,12 +197,12 @@ eYo.Consolidator.List.prototype.nextSlot = function (io) {
 }
 
 /**
- * Wether the current input is connected or will be connected.
+ * Wether the current slot is connected or will be connected.
  * @param {!Object} io parameter.
  * @return boolean, true when connected.
  */
 eYo.Consolidator.List.prototype.willBeConnected = function (io) {
-  return io.input && (io.m4t.target || io.m4t.will_connect_)
+  return io.slot && (io.m4t.target || io.m4t.will_connect_)
 }
 
 /**
@@ -210,7 +210,7 @@ eYo.Consolidator.List.prototype.willBeConnected = function (io) {
  * io is properly set up at the end.
  * @param {!Object} io parameter.
  * @param {number} i When eYo.VOID, take io.i
- * @return {eYo.Slot}, the input inserted.
+ * @return {eYo.Slot}, the slot inserted.
  */
 eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
   if (goog.isNumber(i)) {
@@ -232,7 +232,7 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
 }
 
 /**
- * Dispose of the input at the given index.
+ * Dispose of the slot at the given index.
  * No range checking.
  * io is properly set up at the end.
  * @param {!Object} io parameter.
@@ -242,17 +242,17 @@ eYo.Consolidator.List.prototype.disposeAtI = function (io, i) {
   if (!goog.isNumber(i)) {
     i = io.i
   }
-  var input = io.list[i]
-  var m4t = input.magnet
+  var slot = io.list[i]
+  var m4t = slot.magnet
   m4t && (m4t.disconnect())
-  input.dispose()
+  slot.dispose()
   io.list.splice(i, 1)
   io.edited = true
   return this.setupIO(io)
 }
 
 /**
- * Returns the required types for the current input.
+ * Returns the required types for the current slot.
  * When not in single mode, returns `check`.
  * When in single mode, returns `all` if the list is void
  * or if there is only one item to be replaced.
@@ -277,11 +277,11 @@ eYo.Consolidator.List.prototype.getCheck = function (io) {
 }
 
 /**
- * Finalize the current input as a placeholder.
+ * Finalize the current slot as a placeholder.
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = eYo.VOID, optional = false) {
-  io.input.lst_n = io.n
+  io.slot.lst_n = io.n
   io.slot.lst_presep = io.presep
   io.slot.lst_postsep = io.postsep
   io.m4t.s7r_ = false
@@ -290,17 +290,17 @@ eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = eYo
     console.error('CONNECTIONS FORBIDDEN ?', this.getCheck(io)) // DEBUG
   }
   if (name && name.length) {
-    io.input.name_ = name
+    io.slot.name_ = name
   }
   io.slot.check = check
   io.m4t.optional_ = optional
-  while (io.input.fieldRow.length) {
-    io.input.fieldRow.shift().dispose()
+  while (io.slot.fieldRow.length) {
+    io.slot.fieldRow.shift().dispose()
   }
 }
 
 /**
- * Finalize the current input as a separator.
+ * Finalize the current slot as a separator.
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, name) {
@@ -314,10 +314,10 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
   if (extreme || (!io.slot.lst_presep.length && io.slot.lst_postsep.length)) {
     // remove all the fields
     eYo.Field.disposeFields(io.slot)
-  } else if (!io.input.fieldRow.length) {
+  } else if (!io.slot.fieldRow.length) {
     var f = (sep, suffix) => {
-      var field = new eYo.FieldLabel(io.input, sep)
-      io.input.fieldRow.splice(0, 0, field)
+      var field = new eYo.FieldLabel(io.slot, sep)
+      io.slot.fieldRow.splice(0, 0, field)
       field.makeUI()
       field.suffix = suffix
     }
@@ -341,15 +341,15 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
 }
 
 /**
- * Consolidate a connected input but the first one.
- * Add an unconnected input after, if there is no one.
+ * Consolidate a connected slot but the first one.
+ * Add an unconnected slot after, if there is no one.
  * On return, io points to the location after
  * the potential separator.
  * @param {!Object} io parameter.
- * @return yes exactly if there are more input
+ * @return yes exactly if there are more slots
  */
 eYo.Consolidator.List.prototype.consolidate_connected = function (io) {
-  // ensure that there is one input after,
+  // ensure that there is one slot after,
   // which is not connected
   if (!this.nextSlot(io) || this.willBeConnected(io)) {
     this.insertPlaceholder(io)
@@ -360,9 +360,9 @@ eYo.Consolidator.List.prototype.consolidate_connected = function (io) {
 }
 
 /**
- * Consolidate the first connected input
+ * Consolidate the first connected slot
  * @param {!Object} io parameter.
- * @return true exactly if there are more input
+ * @return true exactly if there are more slots
  */
 eYo.Consolidator.List.prototype.consolidate_first_connected = function (io) {
   // let subclassers catch this if they want to.
@@ -370,7 +370,7 @@ eYo.Consolidator.List.prototype.consolidate_first_connected = function (io) {
     // nothing more to consolidate
     return false
   }
-  // the actual input is the first connected
+  // the actual slot is the first connected
   // remove whatever precedes it, except the very first separator, if any
   var j = io.i
   if (j === 0) {
@@ -386,12 +386,12 @@ eYo.Consolidator.List.prototype.consolidate_first_connected = function (io) {
 }
 
 /**
- * Consolidate the first connected input when expected to be single.
+ * Consolidate the first connected slot when expected to be single.
  * Default implementation return true.
  * Subclassers will manage things differently and
  * return false
  * @param {!Object} io parameter.
- * @return yes exactly if there are more input
+ * @return yes exactly if there are more slots
  */
 eYo.Consolidator.List.prototype.consolidate_single = function (io) {
   if (io.unique >= 0) {
@@ -452,17 +452,17 @@ eYo.Consolidator.List.prototype.makeUnique = function (io) {
 }
 
 /**
- * Find the next connected input.
+ * Find the next connected slot.
  * @param {!Object} io parameter.
- * @param {!boolean} gobble whether to gobble intermediate inputs.
+ * @param {!boolean} gobble whether to gobble intermediate slot.
  */
 eYo.Consolidator.List.prototype.walk_to_next_connected = function (io, gobble) {
   // things are different if one of the inputs is connected
-  while (io.input) {
+  while (io.slot) {
     if (this.willBeConnected(io)) {
       io.presep = io.slot.lst_presep || this.model.presep
       io.postsep = io.slot.lst_postsep || this.model.postsep
-      // manage the unique input
+      // manage the unique slot
       if (io.unique < 0) {
 
       }
@@ -491,7 +491,7 @@ eYo.Consolidator.List.prototype.consolidate_unconnected = function (io) {
   this.setupIO(io, 0)
   var ary = this.getAry(io)
   if (ary > 0) {
-    if (io.input) {
+    if (io.slot) {
       while (true) {
         if (io.m4t.s7r_) {
           this.disposeAtI(io)
@@ -516,7 +516,7 @@ eYo.Consolidator.List.prototype.consolidate_unconnected = function (io) {
       }
       // unreachable code
     }
-    // create an input
+    // create a slot
     this.insertPlaceholder(io)
     this.doFinalizePlaceholder(io,
       eYo.Do.Name.middle_name, !this.getMandatory(io))
@@ -635,7 +635,7 @@ eYo.Consolidator.List.prototype.doLink = function (io) {
       if (previous) {
         previous.nextIsSeparator = false
       }
-      previous = io.input
+      previous = io.slot
       previous.previousIsSeparator = wasSeparator
       wasSeparator = false
     }
@@ -646,7 +646,7 @@ eYo.Consolidator.List.prototype.doLink = function (io) {
 }
 
 /**
- * Prepare io, just before walking through the input list.
+ * Prepare io, just before walking through the slot list.
  * Subclassers may add their own stuff to io.
  * @param {Object} io, parameters....
  */
@@ -696,7 +696,7 @@ eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('con
       this.doAry(io)
     }
   } else {
-    // no connected input
+    // no connected slot
     this.consolidate_unconnected(io)
   }
   this.doLink(io)
@@ -706,7 +706,7 @@ eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('con
  * Fetches the named slot object
  * @param {!eYo.Brick} brick
  * @param {String} name The name of the slot.
- * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
+ * @param {?Boolean} dontCreate Whether the receiver should create slots on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.VOID for the default brick implementation.
  */
 eYo.Consolidator.List.prototype.getSlot = function (brick, name, dontCreate) {
@@ -748,7 +748,7 @@ eYo.Consolidator.List.prototype.getSlot = function (brick, name, dontCreate) {
     if (!!dontCreate) {
       return null
     }
-    // no input found, create one
+    // no slot found, create one
     if (io.list.length === 1) {
       // there is only one placeholder with no separators
       // either we insert at 0 or one
@@ -764,21 +764,21 @@ eYo.Consolidator.List.prototype.getSlot = function (brick, name, dontCreate) {
       j = io.list.length
     }
     this.insertPlaceholder(io, j)
-    var input = this.insertPlaceholder(io)
-    input.name = name
+    var slot = this.insertPlaceholder(io)
+    slot.name = name
     this.doFinalize(io)
     // this.doAry(io)
-    return input
+    return slot
   })
   return eYo.Decorate.whenAns(f.call(this))
 }
 
 /**
- * Get the next input compatible with the given type.
+ * Get the next slot compatible with the given type.
  * Enumerator object. Used by the print brick.
  * @param {object} io argument object
  * @param {Object} type, string or array of strings
- * @return the next keyword item input, eYo.VOID when at end.
+ * @return the next keyword item slot, eYo.VOID when at end.
  */
 eYo.Consolidator.List.prototype.nextSlotForType = function (io, type) {
   var filter = goog.isArray(type)
@@ -795,18 +795,18 @@ eYo.Consolidator.List.prototype.nextSlotForType = function (io, type) {
   while (this.nextSlot(io)) {
     var target = io.m4t.target
     if (target && target.check_ && filter(target.check_)) {
-      return io.input
+      return io.slot
     }
   }
   return eYo.VOID
 }
 
 /**
- * Whether the brick has an input for the given type.
+ * Whether the brick has an slot for the given type.
  * Used by the print brick.
  * @param {!eYo.Brick} brick
  * @param {Object} type, string or array of strings
- * @return the next keyword item input, eYo.VOID when at end.
+ * @return the next keyword item slot, eYo.VOID when at end.
  */
 eYo.Consolidator.List.prototype.hasInputForType = function (brick, type) {
   var io = this.getIO(brick)

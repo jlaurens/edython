@@ -75,7 +75,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
   }
   /**
    * Whether the input corresponds to an identifier...
-   * Called when io.input is connected.
+   * Called when io.slot is connected.
    * @param {Object} io, parameters....
    */
   var getCheckType = (io) => {
@@ -106,8 +106,8 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
     io.last_expression = io.last_positional = io.unique = -Infinity
     io.first_keyword_star_star = io.first_star_star = Infinity
     this.setupIO(io, 0)
-    while (!!io.input && io.unique < 0) {
-      switch ((io.input.parameter_type_ = getCheckType(io))) {
+    while (!!io.slot && io.unique < 0) {
+      switch ((io.slot.parameter_type_ = getCheckType(io))) {
       case Type.ARGUMENT:
         io.last_expression = io.i
       case Type.STAR:

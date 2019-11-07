@@ -24,7 +24,7 @@ goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Tooltip')
-goog.require('eYo.FlyoutCategory')
+goog.require('eYo.Library')
 
 eYo.T3.Expr.random__randrange = 'eyo:random__randrange'
 
@@ -157,7 +157,7 @@ eYo.Brick.Expr.random__randrange.prototype.xmlAttr = function () {
       title: key
     }
   }
-eYo.FlyoutCategory.basic_random__module = [
+eYo.Library.basic_random__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     data: {
@@ -251,7 +251,7 @@ F_s = function (name, title) {
     title: key
   }
 }
-eYo.FlyoutCategory.random__module = [
+eYo.Library.random__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.IMPORT,

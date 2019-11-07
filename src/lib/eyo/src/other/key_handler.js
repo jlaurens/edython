@@ -168,7 +168,7 @@ eYo.KeyHandler = (() => {
           // we try to select another one, with possibly the same type
           // First we take a look at B : is there an unconnected input connection
           var doFirst = (eyo, type) => {
-            return eyo.someInputMagnet(m4t => {
+            return eyo.someSlotMagnet(m4t => {
               if (m4t.type === type) {
                 var t9k = m4t.targetBrick
                 if (!m4t.hidden_ && !t9k && (!m4t.source || !m4t.source.bindField)) {
@@ -193,8 +193,8 @@ eYo.KeyHandler = (() => {
         // no selected magnet
         var parent = eyo
         do {
-          if (parent.someInputMagnet(m4t => {
-            if (m4t.isInput && !m4t.optional_ && !m4t.target && !m4t.hidden_) {
+          if (parent.someSlotMagnet(m4t => {
+            if (m4t.isSlot && !m4t.optional_ && !m4t.target && !m4t.hidden_) {
               m4t.focusOn()
               return true
             }

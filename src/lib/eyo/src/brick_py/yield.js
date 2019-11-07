@@ -112,13 +112,13 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
         }
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
-        if (this.isInput) {
+        if (this.isSlot) {
           var parent = this.brick.parent
           parent && (parent.variant_p = eYo.Key.EXPRESSION)
         }
       },
       didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
-        if (this.isInput) {
+        if (this.isSlot) {
           var parent = this.brick.parent
           parent && (parent.variant_p = parent.expression_s.unwrappedTarget || parent.expression_p ? eYo.Key.EXPRESSION : eYo.Key.NONE)
         }

@@ -130,8 +130,8 @@ eYo.Magnets.prototype.makeUI = function () {
  * @param {!Object} model  the model of this magnet
  * @readonly
  * @property {*} node  the node if any
- * @property {boolean} startOfLine  whether the connection is an input connection starting a line.
- * @property {boolean} startOfStatement  whether the connection is an input connection starting a brick.
+ * @property {boolean} startOfLine  whether the connection is a slot connection starting a line.
+ * @property {boolean} startOfStatement  whether the connection is a slot connection starting a brick.
  * @readonly
  * @property {string} type  the type of the connection
  * @readonly
@@ -144,8 +144,6 @@ eYo.Magnet = function (bs, type, model) {
   eYo.Magnet.superClass_.constructor.call(this, bs)
   if (this.slot) {
     this.name_ = this.slot.key
-  } else if (this.input) {
-    this.name_ = this.input.name_
   }
   this.type_ = type
   this.model_ = model
@@ -453,7 +451,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
   },
   isSuperior: {
     get () { // the source 'owns' the target
-      return this.isInput || this.isFoot || this.isRight
+      return this.isSlot || this.isFoot || this.isRight
     }
   },
   hidden: {
@@ -637,10 +635,10 @@ Object.defineProperties(eYo.Magnet.prototype, {
     }
   },
   /**
-   * Is it an input magnet.
-   * @return {boolean} True if the magnet is one of the brick's input magnet.
+   * Is it a slot magnet.
+   * @return {boolean} True if the magnet is one of the brick's slot magnet.
    */
-  isInput: {
+  isSlot: {
     get () {
       return this.type === eYo.Magnet.IN
     }
@@ -697,8 +695,8 @@ Object.defineProperties(eYo.Magnet.prototype, {
     get () {
       var t = this.targetBrick
       var f = t => {
-        return t && (!t.wrapped_ || t.someInput(i => {
-          var m4t = i.magnet
+        return t && (!t.wrapped_ || t.someSlot(slot => {
+          var m4t = slot.magnet
           return f(t = m4t && m4t.targetBrick)
         }))
       }
@@ -1119,7 +1117,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
       this.connectSmart = connectToLeft
       return this.connectSmart(b)
     }
-    if (this.isInput) {
+    if (this.isSlot) {
       this.connectSmart = connectToOutput
       return this.connectSmart(b)
     }
@@ -1196,7 +1194,7 @@ eYo.Magnet.prototype.checkType_ = function (other, force) {
   var typeB = dlgtB.type // the brick type is not up to date
   var checkA = m4tA.check_
   var checkB = m4tB.check_
-  if (m4tA.isInput) {
+  if (m4tA.isSlot) {
     if (dlgtA.locked_) {
       return m4tA.target === m4tB
     }
@@ -1211,7 +1209,7 @@ eYo.Magnet.prototype.checkType_ = function (other, force) {
     }
     return true
   }
-  if (m4tB.isInput) {
+  if (m4tB.isSlot) {
     if (dlgtB.locked_) {
       return m4tA === m4tB.target
     }
@@ -1260,7 +1258,7 @@ eYo.Magnet.prototype.toString = function() {
   } else if (this.isRight) {
     msg = 'Right statement Magnet of '
   } else {
-    var parent = this.input || this.slot
+    var parent = this.slot
     if (parent) {
       msg = 'Parent "' + parent.name + '" connection on '
     } else {
@@ -1412,12 +1410,10 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
           // just in case the check_ has changed in between
           // which might be the case for the else_part bricks
           if (oldChildT4t.isOutput) {
-            ;(child instanceof eYo.Brick.List
-              ? child.someInput
-              : child.someSlot).call(this, x => { // a slot or an input
-              if (!x.incog) {
+            child.someSlot(slot => {
+              if (!slot.incog) {
                 var m4t, t9k
-                if ((m4t = x.magnet)) {
+                if ((m4t = slot.magnet)) {
                   if (m4t.hidden_ && !m4t.wrapped_) {
                     return
                   }
@@ -1920,7 +1916,7 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate, maxRadius) {
     }
   }
   var its_brick = candidate.targetBrick
-  if (candidate.isInput && candidate.target &&
+  if (candidate.isSlot && candidate.target &&
       !its_brick.isMovable) {
     return false;
   }

@@ -939,7 +939,7 @@ eYo.Board.prototype.paste = function () {
   eYo.Events.groupWrap(() => {
     if ((b3k = eYo.Xml.domToBrick(xml, this))) {
       if ((m4t = eYo.Focus.magnet)) {
-        if (m4t.isInput) {
+        if (m4t.isSlot) {
           targetM4t = b3k.out_m
         } else if (m4t.isFoot || m4t.isSuite) {
           targetM4t = b3k.head_m

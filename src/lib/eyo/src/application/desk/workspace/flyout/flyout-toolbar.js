@@ -69,7 +69,7 @@ eYo.FlyoutToolbar.prototype.doSelectGeneral = function (e) {
   var board = this.flyout_.desk.board
   if (board && this.selectControl_) {
     var category = this.selectControl_.getValue()
-    var list = eYo.FlyoutCategory[category]
+    var list = eYo.Library[category]
     if (list.length) {
       this.flyout_.show(list)
     }

@@ -19,7 +19,7 @@ goog.require('eYo.Msg')
 goog.require('eYo.Brick.Stmt')
 
 goog.require('eYo.Tooltip')
-goog.require('eYo.FlyoutCategory')
+goog.require('eYo.Library')
 
 /**
  * Populate the context menu for the given brick.
@@ -77,7 +77,7 @@ goog.require('eYo.FlyoutCategory')
     template: 21,
     'capwords': 22
   */
-eYo.FlyoutCategory.basic_string__module = [
+eYo.Library.basic_string__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
@@ -143,7 +143,7 @@ eYo.FlyoutCategory.basic_string__module = [
     }
   }
 
-eYo.FlyoutCategory.string__module = [
+eYo.Library.string__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.IMPORT,

@@ -117,7 +117,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
   }
   /**
    * Whether the input corresponds to an identifier...
-   * Called when io.input is connected.
+   * Called when io.slot is connected.
    * @param {Object} io, parameters....
    */
   var getCheckType = (io) => {
@@ -134,7 +134,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
           && (goog.array.contains(check, eYo.T3.Expr.identifier_annotated)
           || goog.array.contains(check, eYo.T3.Expr.augtarget_annotated)
           || goog.array.contains(check, eYo.T3.Expr.key_datum))) {
-          io.annotatedInput = io.input
+          io.annotatedInput = io.slot
         }
         return Type.OTHER
       }
@@ -146,12 +146,12 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
     io.first_starred = io.last = -1
     io.annotatedInput = eYo.VOID
     this.setupIO(io, 0)
-    while (io.input) {
-      if ((io.input.parameter_type_ = getCheckType(io)) === Type.STARRED) {
+    while (io.slot) {
+      if ((io.slot.parameter_type_ = getCheckType(io)) === Type.STARRED) {
         if (io.first_starred < 0) {
           io.first_starred = io.i
         }
-      } else if (io.input.parameter_type_ === Type.OTHER) {
+      } else if (io.slot.parameter_type_ === Type.OTHER) {
         io.last = io.i
       }
       this.nextSlot(io)
@@ -163,8 +163,8 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
     if (io.first_starred >= 0) {
       // ther must be only one starred
       this.setupIO(io, io.first_starred + 2)
-      while (io.input) {
-        if (io.input.parameter_type_ === Type.STARRED) {
+      while (io.slot) {
+        if (io.slot.parameter_type_ === Type.STARRED) {
           // disconnect this
           io.m4t.disconnect()
           // remove that input and the next one
@@ -252,7 +252,7 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
   eYo.Consolidator.List.Target.superClass_.doFinalize.call(this, io)
   if (this.setupIO(io, 0)) {
     do {
-      io.m4t.incog = io.annotatedInput && io.annotatedInput !== io.input // will ensure that there is only one annotated input
+      io.m4t.incog = io.annotatedInput && io.annotatedInput !== io.slot // will ensure that there is only one annotated input
     } while (this.nextSlot(io))
   }
 }
@@ -324,11 +324,11 @@ eYo.Brick.Expr.target_list.prototype.getSubtype = function () {
  * @param {!eYo.Magnet} oldTargetM4t that was connected to blockConnection
  */
 eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
-  if (m4t.isInput) {
+  if (m4t.isSlot) {
     var other = false
-    if (this.someInput(input => {
-      if (input.magnet) {
-        var t9k = input.targetBrick
+    if (this.someSlot(slot => {
+      if (slot.magnet) {
+        var t9k = slot.targetBrick
         if (t9k) {
           other= true
           if ([eYo.T3.Expr.identifier_annotated,
@@ -365,7 +365,7 @@ eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4
 eYo.Brick.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.Brick.Expr.target_list.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   // BEWARE: the brick is NOT consolidated
-  if (m4t.isInput) {
+  if (m4t.isSlot) {
     var parent = this.parent
     if (parent) {
       parent.target_s.bindField.visible = false
@@ -1054,7 +1054,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         // the brick is not yet consolidated
-        if (this.isInput) {
+        if (this.isSlot) {
           var parent = this.brick.parent
           if (parent) {
             parent.target_s.bindField.visible = false
@@ -1502,8 +1502,8 @@ eYo.Brick.Expr.primary.prototype.getOutCheck = function () {
     if (!eYo.T3.Expr.Check.slice_only) {
       eYo.T3.Expr.Check.slice_only = eYo.T3.Expr.Check.slice_list.filter(i => eYo.T3.Expr.Check.expression.indexOf(i) < 0)
     }
-    if (this.someInput(input => {
-      var t = input.targetBrick
+    if (this.someSlot(slot => {
+      var t = slot.targetBrick
       return t && (t.checkOutputType(eYo.T3.Expr.Check.slice_only))
     })) {
       return named()

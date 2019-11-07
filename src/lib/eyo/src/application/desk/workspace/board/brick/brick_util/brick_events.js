@@ -93,7 +93,7 @@ Object.defineProperties(eYo.Events.BrickBase.prototype, {
  * Class for a brick change event.
  * @param {eYo.Brick} brick The changed brick.
  * @param {string} element One of 'field', 'collapsed', 'disabled', etc.
- * @param {?string} name Name of input or field affected, or null.
+ * @param {?string} name Name of slot or field affected, or null.
  * @param {*} oldValue Previous value of element.
  * @param {*} newValue New value of element.
  * @extends {eYo.Events.BrickBase}
@@ -282,7 +282,7 @@ Object.defineProperties(eYo.Events.BrickMove.prototype, {
    */
   type: { value: eYo.Events.BRICK_MOVE },
   /**
-   * Returns the parentId and input if the brick is connected,
+   * Returns the parentId and slot if the brick is connected,
    *   or the where location if disconnected.
    * @return {!Object} Collection of location info.
    * @private
@@ -373,7 +373,7 @@ eYo.Events.BrickMove.prototype.run = function(forward) {
     if (targetM4t) {
       m4t.connect(targetM4t)
     } else {
-      console.warn("Can't connect to non-existent input: " + name)
+      console.warn("Can't connect to non-existent slot: " + name)
     }
   }
 }

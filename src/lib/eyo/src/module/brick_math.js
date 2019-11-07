@@ -22,7 +22,7 @@ goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Tooltip')
-goog.require('eYo.FlyoutCategory')
+goog.require('eYo.Library')
 
 goog.require('eYo.Model.math__module')
 
@@ -54,7 +54,7 @@ goog.require('eYo.Model.math__module')
       title: key
     }
   }
-eYo.FlyoutCategory.basic_math__module = [
+eYo.Library.basic_math__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     data: {
@@ -138,7 +138,7 @@ eYo.FlyoutCategory.basic_math__module = [
       title: key
     }
   }
-eYo.FlyoutCategory.math__module = [
+eYo.Library.math__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     data: {

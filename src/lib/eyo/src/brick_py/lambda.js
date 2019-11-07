@@ -96,7 +96,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
   }
   /**
    * Whether the input corresponds to an identifier...
-   * Called when io.input is connected.
+   * Called when io.slot is connected.
    * @param {Object} io, parameters....
    */
   var getCheckType = io => {
@@ -125,8 +125,8 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
     io.first_star_star = io.min_first_star = io.first_star = io.first_default = io.last_default = -1
     var last_default = -1
     this.setupIO(io, 0)
-    while (io.input) {
-      switch ((io.input.parameter_type_ = getCheckType(io))) {
+    while (io.slot) {
+      switch ((io.slot.parameter_type_ = getCheckType(io))) {
       case Type.star_star:
         if (io.first_star_star < 0) {
           io.first_star_star = io.i
@@ -166,7 +166,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
     if (i >= 0 && i + 2 < io.list.length) {
       io.i = i + 2
       while (this.setupIO(io)) {
-        if (io.input.parameter_type_ === Type.star_star) {
+        if (io.slot.parameter_type_ === Type.star_star) {
           this.disposeAtI(io)
           this.disposeAtI(io)
         } else {
@@ -174,7 +174,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
         }
       }
       if (io.i + 2 < io.list.length) {
-        io.input.edited = true
+        io.slot.edited = true
         this.setupIO(io, i)
         // move this parameter to the end of the list and hide a space
         // 1) disconnect the '**' from its input
@@ -207,7 +207,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
     if (i >= 0) {
       io.i = i + 2
       while (this.setupIO(io)) {
-        if (io.input.parameter_type_ === Type.star) {
+        if (io.slot.parameter_type_ === Type.star) {
           this.disposeAtI(io)
           this.disposeAtI(io)
         } else {
@@ -220,7 +220,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
     if (io.last_default >= 0 && io.last_default + 4 <= io.first_star) {
       // it means that io.last_default + 2 is a no default parameter
       // we must move the '*' brick at io.last_default + 2
-      io.input.edited = true
+      io.slot.edited = true
       this.setupIO(io, io.first_star)
       m4t = io.m4t
       targetM4t = m4t.target

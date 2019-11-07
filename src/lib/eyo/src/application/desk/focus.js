@@ -361,7 +361,7 @@ Object.defineProperties(eYo.Focus.Mgr.prototype, {
             if (brick.locked_) {
               return
             }
-            if (magnet.isInput) {
+            if (magnet.isSlot) {
               // Do not select a connection with a target, select the target instead
               var t9k = magnet.targetBrick
               if (t9k) {

@@ -22,7 +22,7 @@ goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Primary')
 
 goog.require('eYo.Tooltip')
-goog.require('eYo.FlyoutCategory')
+goog.require('eYo.Library')
 
 /*
     'Fraction': 0,
@@ -63,7 +63,7 @@ goog.require('eYo.FlyoutCategory')
     }
   }
 
-eYo.FlyoutCategory.basic_fractions__module = [
+eYo.Library.basic_fractions__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
@@ -100,7 +100,7 @@ F = function (name, title) {
   }
 }
 
-eYo.FlyoutCategory.fractions__module = [
+eYo.Library.fractions__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.IMPORT,

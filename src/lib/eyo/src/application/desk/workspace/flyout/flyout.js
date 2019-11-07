@@ -17,7 +17,7 @@ goog.require('eYo.Protocol')
 goog.require('eYo.Unit')
 goog.require('eYo.Events')
 
-goog.forwardDeclare('eYo.FlyoutCategory');
+goog.forwardDeclare('eYo.Library');
 goog.forwardDeclare('eYo.Style');
 goog.forwardDeclare('eYo.Brick');
 goog.forwardDeclare('eYo.FlyoutToolbar');
@@ -826,7 +826,7 @@ eYo.Flyout.prototype.didSlide = function(closed) {
  * @param {!String} category The name of the category to retrieve.
  */
 eYo.Flyout.prototype.getList = function (category) {
-  return eYo.FlyoutCategory[category] || []
+  return eYo.Library[category] || []
 }
 
 /**

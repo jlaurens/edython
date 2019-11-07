@@ -334,7 +334,7 @@ eYo.Svg.prototype.pathCollapsedDef_ = eYo.Svg.prototype.pathDef_
 /**
  * Highlighted magnet outline.
  * When a brick is selected and one of its magnet is also selected
- * the ui displays a bold line on the magnet. When the brick has wrapped input,
+ * the ui displays a bold line on the magnet. When the brick has wrapped slot,
  * the selected magnet may belong to a wrapped brick.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private

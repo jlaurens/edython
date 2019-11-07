@@ -317,8 +317,8 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
 
 /**
  * Export the given slot in.
- * @param {eYo.Slot} input
- * @param {Object} input
+ * @param {eYo.Slot} slot
+ * @param {Object} opt
  * @private
  */
 eYo.Py.Exporter.prototype.exportSlot_ = function (slot, opt) {

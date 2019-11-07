@@ -36,7 +36,7 @@ eYo.Svg.prototype.magnetHilight = function (m4t) {
   var node = m4t.brick
   var g = node.dom.svg.group_
   var steps
-  if (m4t.isInput) {
+  if (m4t.isSlot) {
     if (m4t.target) {
       steps = eYo.Shape.definitionWithBrick(m4t.targetBrick)
     } else {

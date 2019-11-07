@@ -1650,7 +1650,7 @@ eYo.Brick.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
     this.span.resetPadding() && b.ui.updateShape()
   }
   this.consolidateType()
-  if (m4t.isInput && m4t.hasFocus) {
+  if (m4t.isSlot && m4t.hasFocus) {
     t9k.focusOn()
   }
 }
@@ -1876,30 +1876,14 @@ Object.defineProperty(eYo.Brick.prototype, 'incog', {
 })
 
 /**
- * Runs the helper function for some input, until it responds a truthy value.
- * For edython.
- * @param {!Function} helper
- * @return {Object} returns the first input for which the helper returns true or the first truthy value returned by the helper.
- */
-eYo.Brick.prototype.someInput = function (helper) {
-  var ans
-  this.someInput(input => {
-    if ((ans = helper(input))) {
-      return ans === true ? input : ans
-    }
-  })
-  return ans
-}
-
-/**
  * Runs the helper function for some input connection, until it responds true
  * For edython.
  * @param {!Function} helper
  * @return {Object} returns the first connection for which helper returns true or the helper return value
  */
-eYo.Brick.prototype.someInputMagnet = function (helper) {
-  return this.someInput(input => {
-    var m4t = input.magnet
+eYo.Brick.prototype.someSlotMagnet = function (helper) {
+  return this.someSlot(slot => {
+    var m4t = slot.magnet
     return m4t && (helper(m4t))
   })
 }
@@ -2194,7 +2178,7 @@ eYo.Brick.prototype.getField = function (name) {
       if (f(slot.fields)) return ans
     } while ((slot = slot.next))
   }
-  this.someInput(input => input.fieldRow.some(f => (f.name === name) && (ans = f)))
+  this.someSlot(slot => slot.fieldRow.some(f => (f.name === name) && (ans = f)))
   return ans
 }
 
@@ -2523,7 +2507,7 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
         // very special management for tuple input
         if ((otherM4t = eYo.Focus.magnet) && goog.isString(model)) {
           var otherBrick = otherM4t.brick
-          if (otherBrick instanceof eYo.Brick.List && otherM4t.isInput) {
+          if (otherBrick instanceof eYo.Brick.List && otherM4t.isSlot) {
             eYo.Events.groupWrap(() => {
               var b4s = model.split(',').map(x => {
                 var model = x.trim()
@@ -2545,7 +2529,7 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
                 if ((m4t = candidate.out_m) && m4t.checkType_(otherM4t)) {
                   fin()
                   var next = false
-                  otherBrick.someInputMagnet(m4t => {
+                  otherBrick.someSlotMagnet(m4t => {
                     if (next) {
                       otherM4t = m4t
                       return true
@@ -2563,7 +2547,7 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
       }
       if ((otherM4t = eYo.Focus.magnet)) {
         otherBrick = otherM4t.brick
-        if (otherM4t.isInput) {
+        if (otherM4t.isSlot) {
           if ((m4t = candidate.out_m) && m4t.checkType_(otherM4t)) {
             return fin()
           }
@@ -2603,8 +2587,8 @@ eYo.Brick.prototype.insertBrickWithModel = function (model, m4t) {
         // When not eYo.VOID, the returned magnet can connect to m4t.
         var findM4t = eyo => {
           var otherM4t, t9k
-          otherM4t = eyo.someInputMagnet(foundM4t => {
-            if (foundM4t.isInput) {
+          otherM4t = eyo.someSlotMagnet(foundM4t => {
+            if (foundM4t.isSlot) {
               if ((t9k = foundM4t.targetBrick)) {
                 if (!(foundM4t = findM4t(t9k))) {
                   return
@@ -2686,8 +2670,8 @@ eYo.Brick.prototype.canLock = function () {
   }
   // list all the input for a non optional connection with no target
   var m4t, target
-  return !this.someInput(input => {
-    if ((m4t = input.magnet) && !m4t.disabled_) {
+  return !this.someSlot(slot => {
+    if ((m4t = slot.magnet) && !m4t.disabled_) {
       if ((target = m4t.target)) {
         if (!target.canLock()) {
           return true
@@ -2707,10 +2691,10 @@ eYo.Brick.prototype.canUnlock = function () {
   if (this.locked_) {
     return true
   }
-  // list all the input for a non optional connection with no target
+  // list all the slots for a non optional connection with no target
   var m4t, t9k
-  return this.someInput(input => {
-    if ((m4t = input.magnet)) {
+  return this.someSlot(slot => {
+    if ((m4t = slot.magnet)) {
       if ((t9k = m4t.targetBrick)) {
         if (t9k.canUnlock()) {
           return true
@@ -2744,7 +2728,7 @@ eYo.Brick.prototype.lock = function () {
       if ((t9k = m4t.targetBrick)) {
         ans += t9k.lock()
       }
-      if (m4t.isInput) {
+      if (m4t.isSlot) {
         m4t.hidden = true
       }
     }
@@ -2755,7 +2739,7 @@ eYo.Brick.prototype.lock = function () {
       if ((t9k = m4t.targetBrick)) {
         ans += t9k.lock()
       }
-      if (m4t.isInput) {
+      if (m4t.isSlot) {
         m4t.hidden = true
       }
     }
@@ -2797,7 +2781,7 @@ eYo.Brick.prototype.unlock = function (shallow) {
   var m4t, t9k
   this.forEachSlot(slot => {
     if ((m4t = slot.magnet)) {
-      if ((!shallow || m4t.isInput) && (t9k = m4t.targetBrick)) {
+      if ((!shallow || m4t.isSlot) && (t9k = m4t.targetBrick)) {
         ans += t9k.unlock(shallow)
       }
       m4t.hidden = false
