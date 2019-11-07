@@ -600,12 +600,6 @@ eYo.Xml.toDom = function (brick, element, opt) {
         }
       }
     }
-    // the list bricks have no slots yet
-    brick.forEachInput(input => {
-      if (!input.slot) {
-        magnetToDom(input.magnet, eYo.Xml.SLOT, input.name)
-      }
-    })
     // the right, suite and next flows
     magnetToDom(brick.right_m, eYo.Xml.FLOW, eYo.Xml.RIGHT)
     magnetToDom(brick.suite_m, eYo.Xml.FLOW, eYo.Xml.SUITE)

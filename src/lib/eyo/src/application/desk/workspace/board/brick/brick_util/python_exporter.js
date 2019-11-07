@@ -140,12 +140,6 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
     do {
       this.exportSlot_(slot, opt)
     } while ((slot = slot.next))
-  } else {
-    // list bricks
-    brick.consolidate()
-    brick.forEachInput(input => {
-      this.exportInput_(input, opt)
-    })
   }
   if ((field = brick.toEndField)) {
     do {

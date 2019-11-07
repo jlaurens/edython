@@ -818,7 +818,6 @@ eYo.Brick.prototype.doConsolidate = function (deep, force) {
   // then the in state
   this.consolidateData()
   this.consolidateSlots(deep, force)
-  this.consolidateInputs(deep, force)
   // then the out state
   this.consolidateMagnets()
   return true
@@ -907,7 +906,7 @@ eYo.Brick.prototype.getBaseType = function () {
  */
 eYo.Brick.prototype.someSlot = function (helper) {
   var slot = this.slotAtHead
-  return slot && (slot.some(helper))
+  return slot && slot.some(helper)
 }
 
 // various forEach convenient methods
@@ -936,26 +935,7 @@ eYo.Brick.prototype.forEachChild = function (helper) {
  */
 eYo.Brick.prototype.forEachSlot = function (helper) {
   var slot = this.slotAtHead
-  slot && (slot.forEach(helper))
-}
-
-/**
- * execute the given function for the head slot of the receiver and its next sibling.
- * For edython.
- * @param {!function} helper
- * @return {boolean} whether there was an slot to act upon or a valid helper
- */
-eYo.Brick.prototype.forEachInput = function (helper) {
-  this.inputList_.forEach(helper)
-}
-
-/**
- * Runs the helper function for each input connection
- * For edython.
- * @param {!Function} helper
- */
-eYo.Brick.prototype.forEachInputMagnet = function (helper) {
-  this.forEachInput(input => input.magnet && (helper(input.magnet)))
+  slot && slot.forEach(helper)
 }
 
 /**
@@ -994,16 +974,6 @@ eYo.Brick.prototype.forEachData = function (helper) {
 eYo.Brick.prototype.forEachMagnet = function (helper) {
   Object.values(this.magnets).forEach(helper)
   this.forEachSlot(s => s.magnet && helper(s.magnet))
-  this.forEachInput(i => i.magnet && helper(i.magnet))
-}
-
-/**
- * Runs the helper function for each input
- * For edython.
- * @param {!Function} helper
- */
-eYo.Brick.prototype.forEachInput = function (helper) {
-  this.inputList.forEach(helper)
 }
 
 /**
@@ -1417,22 +1387,6 @@ eYo.Brick.prototype.consolidateData = function () {
 eYo.Brick.prototype.consolidateSlots = function (deep, force) {
   this.forEachSlot(slot => slot.consolidate(deep, force))
   // some child bricks may be disconnected as side effect
-}
-
-/**
- * Some bricks may change when their properties change.
- * Consolidate the slots.
- * Only used by `consolidate`.
- * Should not be called directly, but may be overriden.
- * For edython.
- * @param {?Boolean} deep
- * @param {?Boolean} force
- */
-eYo.Brick.prototype.consolidateInputs = function (deep, force) {
-  if (deep) {
-    // Consolidate the child bricks that are still connected
-    this.forEachInput(input => input.consolidate(deep, force))
-  }
 }
 
 /**
@@ -1901,12 +1855,6 @@ Object.defineProperty(eYo.Brick.prototype, 'incog', {
     this.forEachSlot(slot => slot.incog = newValue) // with incog validator
     var m4t = this.suite_m
     m4t && (m4t.incog = newValue)
-    this.forEachInput(input => {
-      if (!input.slot) {
-        var m4t = input.magnet
-        m4t && (m4t.incog = newValue) // without incog validator
-      }
-    })
     this.consolidate() // no deep consolidation because connected blocs were consolidated during slot's or connection's incog setter
     return true  
   }
@@ -2046,11 +1994,11 @@ eYo.Brick.prototype.scrollToVisible = function (force) {
  * @return {!Array.<!eYo.Magnet>} Array of magnets.
  */
 eYo.Brick.prototype.getMagnets_ = function(all) {
-  var ans = [];
+  var ans = []
   if (all || this.ui.rendered) {
     Object.values(this.magnets).forEach(m4t => ans.push(m4t))
     if (all || !this.collapsed_) {
-      this.forEachInput(input => ans.push(input.magnet))
+      this.forEachSlot(slot => ans.push(slot.magnet))
     }
   }
   return ans
@@ -2185,7 +2133,7 @@ Object.defineProperties(eYo.Brick.prototype, {
         return
       }
       // Show/hide the next statement inputs.
-      this.forEachInput(input => input.visible = !collapsed)
+      this.forEachSlot(slot => slot.visible = !collapsed)
       eYo.Events.fireBrickChange(
           this, 'collapsed', null, this.collapsed_, newValue)
       this.collapsed_ = newValue;
@@ -2463,7 +2411,6 @@ eYo.Brick.prototype.makeUI = function () {
     this.ui_ = new eYo.Brick.UI(this)
     this.forEachField(field => field.makeUI())
     this.forEachSlot(slot => slot.makeUI())
-    this.forEachInput(input => input.makeUI())
     ;[this.suite_m,
       this.right_m,
       this.foot_m
@@ -2786,11 +2733,11 @@ eYo.Brick.prototype.lock = function () {
   if (this.hasFocus) {
     eYo.Focus.magnet = null
   }
-  // list all the input for connections with a target
+  // list all the slots for connections with a target
   var m4t
   var t9k
-  this.forEachInput(input => {
-    if ((m4t = input.magnet)) {
+  this.forEachSlot(slot => {
+    if ((m4t = slot.magnet)) {
       if ((t9k = m4t.targetBrick)) {
         ans += t9k.lock()
       }
@@ -2845,8 +2792,8 @@ eYo.Brick.prototype.unlock = function (shallow) {
   this.locked_ = false
   // list all the input for connections with a target
   var m4t, t9k
-  this.forEachInput(input => {
-    if ((m4t = input.magnet)) {
+  this.forEachSlot(slot => {
+    if ((m4t = slot.magnet)) {
       if ((!shallow || m4t.isInput) && (t9k = m4t.targetBrick)) {
         ans += t9k.unlock(shallow)
       }

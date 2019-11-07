@@ -605,7 +605,6 @@ eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
     m4t.moveToOffset(xy)
   }
   this.brick_.forEachSlot(slot => f(slot.magnet))
-  this.brick_.forEachInput(input => f(input.magnet))
   // next is done while rendering
   // f(m5s.right)
   // f(m5s.suite)
@@ -641,7 +640,6 @@ eYo.Brick.UI.prototype.placeMagnets_ = function() {
     m4t.moveToOffset(xy)
   }
   this.brick_.forEachSlot(slot => f(slot.magnet))
-  this.brick_.forEachInput(input => f(input.magnet))
   // next is done while rendering
   // f(m5s.right)
   // f(m5s.suite)
@@ -875,21 +873,6 @@ eYo.Brick.UI.prototype.drawModel_ = function (io) {
     do {
       this.drawSlot_(io)
     } while ((io.slot = io.slot.next))
-  } else {
-    // for dynamic lists
-    this.brick_.forEachInput(input => {
-      goog.asserts.assert(input, `Input with no eyo ${input.name} in brick ${this.brick_.type}`)
-      if (input.visible) {
-        io.input = input
-        this.drawInput_(io)
-      } else {
-        input.fieldRow.forEach(field => {
-          this.driver.fieldDisplayedSet(field, false)
-        })
-        var x = input.magnet
-        x && (x = x.targetBrick) && x.ui.hide()
-      }
-    })
   }
   this.fieldDrawFrom_(this.brick_.toEndField, io)
   this.drawModelEnd_(io)
@@ -1671,10 +1654,10 @@ eYo.Brick.UI.prototype.removeStatusTop_ = function (eyo) {
 /**
  * Forwards to the driver and `addSelect` to each field.
  */
-eYo.Brick.UI.prototype.addStatusSelect_ = function () {
-  this.driver.brickStatusSelectAdd(this.brick_)
-  this.brick_.forEachInput(input => {
-    input.fieldRow.forEach(field => {
+eYo.Brick.UI.prototype.addStatusFocus_ = function () {
+  this.driver.brickStatusFocusAdd(this.brick_)
+  this.brick_.forEachSlot(slot => {
+    slot.forEachField(field => {
       if (goog.isFunction(field.addSelect)) {
         field.addSelect()
       }
@@ -1683,12 +1666,12 @@ eYo.Brick.UI.prototype.addStatusSelect_ = function () {
 }
 
 /**
- * Reverse `addStatusSelect_`. Forwards to the driver and various fields.
+ * Reverse `addStatusFocus_`. Forwards to the driver and various fields.
  */
 eYo.Brick.UI.prototype.removeStatusFocus_ = function () {
   this.driver.brickStatusSelectRemove(this.brick_)
-  this.brick_.forEachInput(input => {
-    input.fieldRow.forEach(field => {
+  this.brick_.forEachSlot(slot => {
+    slot.forEachField(field => {
       goog.isFunction(field.removeFocus) && field.removeFocus()
     })
   })

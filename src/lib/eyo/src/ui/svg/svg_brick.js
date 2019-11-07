@@ -827,7 +827,7 @@ eYo.Svg.prototype.brickStatusTopRemove = function (brick) {
  * The svg group has an `eyo-select` class.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
-eYo.Svg.prototype.brickStatusSelectAdd = function (brick) {
+eYo.Svg.prototype.brickStatusFocusAdd = function (brick) {
   var svg = brick.dom.svg
   var g = svg.group_
   if (goog.dom.classlist.contains(g, 'eyo-select')) {

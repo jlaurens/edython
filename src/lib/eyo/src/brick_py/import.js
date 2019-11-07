@@ -305,8 +305,8 @@ eYo.Brick.Stmt.import_stmt.prototype.importedModules = function () {
   var v = this.variant_p
   if (v === eYo.Key.IMPORT) {
     // non_void_import_identifier_as_list
-    this.import_b.forEachInput(input => {
-      var t9k = input.targetBrick
+    this.import_b.forEachSlot(slot => {
+      var t9k = slot.targetBrick
       if (t9k.type === eYo.T3.Expr.identifier) {
         modules[t9k.target_p] = t9k.target_p
       } else if (t9k.type === eYo.T3.Expr.identifier_as) {
