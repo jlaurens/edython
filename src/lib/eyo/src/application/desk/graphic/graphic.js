@@ -6,8 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Graphic model.
- * The desk is the top object containing bricks.
+ * @fileoverview Graphic environment.
  * 
  * @author jerome.laurens@u-bourgogne.fr
  */
@@ -15,12 +14,12 @@
 
 goog.provide('eYo.Graphic')
 
-goog.require('eYo.Owned')
 goog.require('eYo.Pane')
+goog.require('eYo.Decorate')
 
 /**
- * Class for a graphic.
- * @param {!eYo.Desk} owner Owner application.
+ * Class for a graphic environment.
+ * @param {!eYo.Desk} owner Owner desk.
  * @constructor
  */
 eYo.Graphic = function(owner) {
@@ -28,21 +27,36 @@ eYo.Graphic = function(owner) {
 }
 goog.inherits(eYo.Graphic, eYo.Pane)
 
-Object.defineProperties(eYo.Graphic.prototype, {
-  /**
-   * The desk's trashcan (if any).
-   * @type {eYo.Desk}
-   */
-  desk: {
-    get () {
-      return this.owner__
-    }
-  },
-})
+/**
+ * Make the user interface.
+ */
+eYo.Graphic.prototype.makeUI = eYo.Decorate.makeUI(
+  eYo.Graphic,
+  function() {
+    this.driver.graphicInit(this)
+  }
+)
 
 /**
- * Sever the links.
+ * Dispose of UI resources.
  */
-eYo.Graphic.prototype.dispose = function() {
-  eYo.Graphic.superClass_.dispose.call(this, owner)
+eYo.Graphic.prototype.disposeUI = eYo.Decorate.disposeUI(
+  eYo.Graphic,
+  function() {
+    this.driver.graphicDispose(this)
+  }
+)
+
+/**
+ * Update the metrics of the receiver.
+ */
+eYo.Graphic.prototype.updateMetrics = function () {
+  this.ui_driver.graphicUpdateMetrics()
+}
+
+/**
+ * Place the receiver.
+ */
+eYo.Graphic.prototype.place = function () {
+  this.ui_driver.graphicPlace()
 }

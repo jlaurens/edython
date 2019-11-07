@@ -1,0 +1,3 @@
+# Edython's variable
+
+The variable inspector...

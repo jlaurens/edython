@@ -252,7 +252,7 @@ eYo.Svg.prototype.brickGetBBox = function (brick) {
  * @return {Boolean}
  * @private
  */
-eYo.Svg.prototype.brickHasSelect = function (brick) {
+eYo.Svg.prototype.brickHasFocus = function (brick) {
   return goog.dom.classlist.contains(brick.dom.svg.group_, 'eyo-select')
 }
 

@@ -91,7 +91,7 @@ Object.defineProperties(eYo.List.prototype, {
    */
   bricks: {
     get () {
-      return [].concat(this.bricks_)
+      return this.bricks_.slice()
     }
   },
   /**

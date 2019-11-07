@@ -73,7 +73,7 @@ eYo.Board = function(owner) {
    */
   this.error = eYo.VOID
 }
-goog.inherits(eYo.Board, eYo.Owned)
+goog.inherits(eYo.Board, eYo.Owned.UI)
 
 Object.defineProperties(eYo.Board.prototype, {
   list: {
@@ -331,7 +331,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   mainBricks: {
     get () {
-      return [].concat(this.mainBricks_)
+      return this.mainBricks_.slice()
     }
   },
 })
@@ -421,9 +421,9 @@ eYo.Board.prototype.dispose = function() {
     this.scrollbar.dispose()
     this.scrollbar = null
   }
-  if (this.zoomControls_) {
-    this.zoomControls_.dispose()
-    this.zoomControls_ = null
+  if (this.zoomer_) {
+    this.zoomer_.dispose()
+    this.zoomer_ = null
   }
   this.disposeUI()
   
@@ -482,9 +482,9 @@ eYo.Board.Main.prototype.dispose = function() {
     this.scrollbar.dispose()
     this.scrollbar = null
   }
-  if (this.zoomControls_) {
-    this.zoomControls_.dispose()
-    this.zoomControls_ = null
+  if (this.zoomer_) {
+    this.zoomer_.dispose()
+    this.zoomer_ = null
   }
   this.disposeUI()
   
@@ -570,7 +570,7 @@ eYo.Board.SCAN_ANGLE = 3
  */
 eYo.Board.prototype.getTopBricks = function(ordered) {
   // Copy the topBricks_ list.
-  var bricks = [].concat(this.topBricks_)
+  var bricks = this.topBricks_.slice()
   if (ordered && bricks.length > 1) {
     var offset = Math.sin(goog.math.toRadians(eYo.Board.SCAN_ANGLE))
     bricks.sort((a, b) => {
@@ -1526,7 +1526,7 @@ eYo.Board.prototype.tidyUp = function (kvargs) {
     }
     ordered[d] = ll
   })
-  tops = [].concat(...distances.map(d => ordered[d]))
+  tops = ...distances.map(d => ordered[d])
 
   var order = (l, r) => {
     var dx = r.xy.x - l.xy.x

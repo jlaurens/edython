@@ -11,15 +11,16 @@
  */
 'use strict'
 
-goog.provide('eYo.Consolidator')
+goog.require('eYo.Decorate')
 
-goog.require('eYo')
+goog.provide('eYo.Consolidator')
 
 goog.require('eYo.Const')
 goog.require('eYo.Slot')
-goog.require('eYo.Decorate')
 goog.require('eYo.Do')
 goog.require('eYo.Brick')
+
+console.error('Manage rentrant_ more carefully')
 
 /**
  * Consolidator. Fake abstract class, just here for the record and namespace.
@@ -34,14 +35,15 @@ goog.require('eYo.Brick')
  * @constructor
  */
 eYo.Consolidator = function (d) {
-  this.reentrant_ = {}
+  this.reentrant_ = Object.create(null)
   this.init(d)
 }
 
-eYo.Consolidator.eyo = {}
+eYo.Consolidator.eyo = Object.create(null)
 
 /**
- * Init. Not implemented. No parameter, no return.
+ * Init. Not implemented. No return.
+ * @param{Object} d  dictionary.
  */
 eYo.Consolidator.prototype.init = function(d) {
   this.model = Object.create(null)
@@ -53,7 +55,7 @@ eYo.Consolidator.prototype.init = function(d) {
     goog.mixin(this.model, d)
   }
   goog.asserts.assert(goog.isDef(this.model.check), 'Consolidators must check their objects')
-  this.model.check = eYo.Do.ensureArrayFunction(this.model.check)
+  this.model.check = eYo.Decorate.arrayFunction(this.model.check)
 }
 
 /**
@@ -80,10 +82,10 @@ eYo.Consolidator.makeSubclass = function (key, model, C10r, owner) {
     subclass.superClass_.constructor.call(this, d)
   }
   goog.inherits(subclass, C10r)
-  subclass.eyo = {
+  subclass.eyo = Object.create({
     key: key,
-    model_: {} // start with a fresh object for the constructor model model
-  }
+    model_: Object.create(null) // start with a fresh object for the constructor model model
+  })
   if (C10r.eyo.model_) {
     goog.mixin(subclass.eyo.model_, C10r.eyo.model_)
   }
@@ -119,10 +121,10 @@ eYo.Consolidator.makeSubclass('List')
 eYo.Consolidator.List.prototype.init = function (d) {
   eYo.Consolidator.List.superClass_.init.call(this, d)
   if (this.model.unique) {
-    this.model.unique = eYo.Do.ensureArrayFunction(this.model.unique)
+    this.model.unique = eYo.Decorate.arrayFunction(this.model.unique)
   }
   if (this.model.all) {
-    this.model.all = eYo.Do.ensureArrayFunction(this.model.all)
+    this.model.all = eYo.Decorate.arrayFunction(this.model.all)
   }
   this.model.ary || (this.model.ary = Infinity)
 }
@@ -176,7 +178,7 @@ eYo.Consolidator.List.prototype.setupIO = function (io, i) {
   }
   if ((io.input = io.list[io.i])) {
     io.m4t = io.input.magnet
-    goog.asserts.assert(!io.input || !!io.m4t, 'List items must have a connection')
+    goog.asserts.assert(!io.input || !!io.m4t, 'List items must have a magnet')
     return true
   } else {
     io.m4t = null
@@ -280,8 +282,8 @@ eYo.Consolidator.List.prototype.getCheck = function (io) {
  */
 eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = eYo.VOID, optional = false) {
   io.input.lst_n = io.n
-  io.input.lst_presep = io.presep
-  io.input.lst_postsep = io.postsep
+  io.slot.lst_presep = io.presep
+  io.slot.lst_postsep = io.postsep
   io.m4t.s7r_ = false
   var check = this.getCheck(io)
   if (check && check.length === 0) {
@@ -290,7 +292,7 @@ eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = eYo
   if (name && name.length) {
     io.input.name_ = name
   }
-  io.input.check = check
+  io.slot.check = check
   io.m4t.optional_ = optional
   while (io.input.fieldRow.length) {
     io.input.fieldRow.shift().dispose()
@@ -302,30 +304,29 @@ eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = eYo
  * @param {!Object} io parameter.
  */
 eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, name) {
-  io.input.lst_presep = io.presep || ''
-  io.input.lst_postsep = io.postsep || ''
+  io.slot.lst_presep = io.presep || ''
+  io.slot.lst_postsep = io.postsep || ''
   if (name && name.length) {
-    io.input.name = name
+    io.slot.name = name
   }
   io.m4t.s7r_ = true
   io.m4t.disabled_ = false
-  if (extreme || (!io.input.lst_presep.length && io.input.lst_postsep.length)) {
-    while (io.input.fieldRow.length) {
-      io.input.fieldRow.shift().dispose()
-    }
+  if (extreme || (!io.slot.lst_presep.length && io.slot.lst_postsep.length)) {
+    // remove all the fields
+    eYo.Field.disposeFields(io.slot)
   } else if (!io.input.fieldRow.length) {
     var f = (sep, suffix) => {
       var field = new eYo.FieldLabel(io.input, sep)
       io.input.fieldRow.splice(0, 0, field)
-      field.makeUI(io.input.hasUI)
+      field.makeUI()
       field.suffix = suffix
     }
-    var sep = io.input.lst_presep || this.model.presep
-    sep && sep.length && (f(sep))
-    sep = io.input.lst_postsep || this.model.postsep
-    sep && sep.length && (f(sep, true))
+    var sep = io.slot.lst_presep || this.model.presep
+    sep && sep.length && f(sep)
+    sep = io.slot.lst_postsep || this.model.postsep
+    sep && sep.length && f(sep, true)
   }
-  io.input.check = this.getCheck(io)
+  io.slot.check = this.getCheck(io)
   io.m4t.hidden_ = eYo.VOID
   if (io.brick.locked_) {
     io.m4t.hidden_ = true
@@ -459,8 +460,8 @@ eYo.Consolidator.List.prototype.walk_to_next_connected = function (io, gobble) {
   // things are different if one of the inputs is connected
   while (io.input) {
     if (this.willBeConnected(io)) {
-      io.presep = io.input.lst_presep || this.model.presep
-      io.postsep = io.input.lst_postsep || this.model.postsep
+      io.presep = io.slot.lst_presep || this.model.presep
+      io.postsep = io.slot.lst_postsep || this.model.postsep
       // manage the unique input
       if (io.unique < 0) {
 
@@ -660,7 +661,7 @@ eYo.Consolidator.List.prototype.getIO = function (brick) {
     noDynamicList: brick.board && (brick.board.eyo.options.noDynamicList) &&
       (!unwrapped ||
         !unwrapped.withDynamicList_),
-    list: brick.inputList,
+    list: brick.slots,
     presep: this.model.presep,
     postsep: this.model.postsep,
     unique: -1
@@ -702,11 +703,11 @@ eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('con
 })
 
 /**
- * Fetches the named input object
+ * Fetches the named slot object
  * @param {!eYo.Brick} brick
- * @param {String} name The name of the input.
+ * @param {String} name The name of the slot.
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
- * @return {eYo.Slot} The input object, or null if input does not exist or eYo.VOID for the default brick implementation.
+ * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.VOID for the default brick implementation.
  */
 eYo.Consolidator.List.prototype.getSlot = function (brick, name, dontCreate) {
   // name = eYo.Do.Name.getNormalized(name) not here

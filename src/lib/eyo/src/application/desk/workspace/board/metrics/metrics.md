@@ -1,0 +1,3 @@
+# Edython's metrics
+
+The board maintains a `eYo.Metrics` instance to keep track of the various metrics of the board: what is visible, what is the scale, what are the dimensions...

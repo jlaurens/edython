@@ -14,7 +14,7 @@
 goog.provide('eYo.Magnets')
 goog.provide('eYo.Magnet')
 
-goog.require('eYo.Owned2')
+goog.require('eYo.Owned.UI2')
 goog.require('eYo.Protocol')
 
 goog.forwardDeclare('eYo.Do')
@@ -164,7 +164,7 @@ eYo.Magnet = function (bs, type, model) {
     }
   }
 }
-goog.inherits(eYo.Magnet, eYo.Owned2)
+goog.inherits(eYo.Magnet, eYo.Owned.UI2)
 
 // Magnet types
 Object.defineProperties(eYo.Magnet, {
@@ -697,7 +697,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
     get () {
       var t = this.targetBrick
       var f = t => {
-        return t && (!t.wrapped_ || t.inputList.some(i => {
+        return t && (!t.wrapped_ || t.someInput(i => {
           var m4t = i.magnet
           return f(t = m4t && m4t.targetBrick)
         }))

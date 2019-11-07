@@ -17,7 +17,7 @@ goog.provide('eYo.FieldInput')
 
 goog.require('eYo.Protocol')
 
-goog.require('eYo.Owned2')
+goog.require('eYo.Owned.UI2')
 
 goog.forwardDeclare('eYo.Size')
 goog.forwardDeclare('eYo.Events')
@@ -41,7 +41,7 @@ eYo.Field = function (bsm, name, text) {
   this.disposeUI = eYo.Do.nothing
   bsm.hasUI && this.makeUI()
 }
-goog.inherits(eYo.Field, eYo.Owned2)
+goog.inherits(eYo.Field, eYo.Owned.UI2)
 
 Object.defineProperties(eYo.Field, {
   STATUS_NONE: { value: '' }, // names correspond to `eyo-code-...` css class names

@@ -6,36 +6,29 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Rendering delegate. In progress.
+ * @fileoverview Rendering delegate. Do nothing driver.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
+goog.require('eYo.Do')
+goog.require('eYo.Owned')
+
 goog.provide('eYo.Driver')
 
-goog.require('eYo')
-
-goog.forwardDeclare('eYo.Desk')
+goog.forwardDeclare('eYo.Application')
 goog.forwardDeclare('eYo.Brick.UI')
-
-goog.require('eYo.Do')
 
 /**
  * Rendering driver to help the renderer
- * @param {!eYo.Desk} desk
+ * @param {!eYo.Application} owner
  * @constructor
  * @readonly
  */
-eYo.Driver = function(desk) {
-  this.desk_ = desk
+eYo.Driver = function(owner) {
+  eYo.Driver.superClass_.constructor.call(this, owner)
 }
-
-/**
- * Sever links.
- */
-eYo.Driver.prototype.dispose = function () {
-  this.desk_ = null
-}
+goog.inherits(eYo.Driver, eYo.Owned)
 
 /**
  * Returns the bounding box of the node.
@@ -53,7 +46,7 @@ eYo.Driver.prototype.brickGetBBox = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.prototype.brickHasSelect = function (node) {
+eYo.Driver.prototype.brickHasFocus = function (node) {
   return false
 }
 
@@ -545,4 +538,57 @@ eYo.Driver.prototype.searchToolbarInit = eYo.Do.nothing
  * @param {!eYo.Search} search  The search controller we must dispose of the toolbar of.
  */
 eYo.Driver.prototype.searchToolbarDispose = eYo.Do.nothing
+
+/*****  TrashCan  *****/
+
+/**
+ * Initiate the trash can UI.
+ * @param {!eYo.TrashCan} trashCan  The trash can we must initialize the UI.
+ */
+eYo.Driver.prototype.trashCanInit = eYo.Do.nothing
+
+/**
+ * Dispose of the trash can UI.
+ * @param {!eYo.TrashCan} trashCan  The trash can we must dispose the UI of.
+ */
+eYo.Driver.prototype.trashCanDispose = eYo.Do.nothing
+
+/**
+ * Is the given trash can open.
+ * @param {!eYo.TrashCan} trashCan  The trash can we must query.
+ */
+eYo.Driver.prototype.trashCanOpenGet = eYo.Do.nothing
+
+/**
+ * Set the given trash can open status.
+ * @param {!eYo.TrashCan} trashCan  The trash can we must set.
+ * @param {Boolean} torf  The expected value.
+ */
+eYo.Driver.prototype.trashCanOpenSet = eYo.Do.nothing
+
+/**
+ * Place the given trash can.
+ * @param {!eYo.TrashCan} trashCan  The trash can we must place.
+ */
+eYo.Driver.prototype.trashCanPlace = eYo.Do.nothing
+
+/**
+ * Get the given trash can's client rect.
+ * @param {!eYo.TrashCan} trashCan  The trash can we must query.
+ */
+eYo.Driver.prototype.trashCanClientRect = eYo.Do.nothing
+
+/*****  Zoomer  *****/
+
+/**
+ * Initiate the zoomer UI.
+ * @param {!eYo.Zoomer} trashCan  The zoomer we must initialize the UI.
+ */
+eYo.Driver.prototype.zoomerInit = eYo.Do.nothing
+
+/**
+ * Dispose of the zoomer UI.
+ * @param {!eYo.Zoomer} zoomer  The zoomer we must dispose the UI of.
+ */
+eYo.Driver.prototype.zoomerDispose = eYo.Do.nothing
 

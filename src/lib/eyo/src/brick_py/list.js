@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.List')
-
 goog.require('eYo.Brick.Expr')
+
+goog.provide('eYo.Brick.List')
 
 goog.require('eYo.Change')
 goog.require('eYo.Decorate')
@@ -25,13 +25,110 @@ goog.require('eYo.Consolidator.List')
  * For edython.
  */
 eYo.Brick.Expr.makeSubclass('List', {
+  init: function () {
+    this.slotList_ = new Proxy(this, eYo.Brick.List.slotsHandler)
+  },
   list: {}
 }, eYo.Brick)
 
+eYo.Brick.List.slotsHandler = {
+  get: function (brick, k) {
+    if (k === 'length') {
+      var slot = brick.slotAtHead
+      var ans = 0
+      while (slot) {
+        ++ans
+        slot = slot.next
+      }
+      return ans
+    } else if (k === 'push') {
+      return function (what) {
+        var slot = brick.slotAtHead
+        if (slot) {
+          while (slot.next) {
+            slot = slot.next
+          }
+          slot.next = what
+        } else {
+          
+          return brick.slotAtHead = what
+        }
+        what && (what.previous = slot)
+      }
+    } else if (k === 'insert') {
+      return function (what, where) {
+        var head = brick.slotAtHead
+        if (head) {
+          var i = where
+          while (i-- > 0) {
+            if (head.next) {
+              head = head.next
+            } else {
+              head.next = what
+              what && (what.previous = head)
+              return what
+            }
+          }
+          var b = what.previous = head.previous
+          ;(b && (b.next = what)) || (brick.slotAtHead = what)
+          while (what.next) {
+            what = what.next
+          }
+          what.next = head
+          head && (head.previous = what)
+        } else {
+          return brick.slotAtHead = what
+        }
+      }
+    } else if (isNaN(k)) {
+      return undefined
+    }
+    var ans = brick.slotAtHead
+    var i = k
+    while (i-- > 0) {
+      ans = ans.next
+    }
+    return ans
+  },
+  set: function (brick, k, value) {
+    if (isNaN(k) || !value) {
+      return false
+    }
+    var i = k
+    var ans = brick.slotAtHead
+    while (i-- > 0) {
+      ans = ans.next
+    }
+    var v = value.previous = ans.previous
+    v ? (v.next = value) : (brick.slotAtHead = value)
+    v = value.next = ans.next
+    v && (v.previous = value)
+    ans.previous = ans.next = null
+    return true
+  },
+  deleteProperty: function (brick, k) {
+    if (isNaN(k)) {
+      return false
+    }
+    var i = k
+    var ans = brick.slotAtHead
+    while (i-- > 0) {
+      ans = ans.next
+    }
+    // remove the ans object
+    var v = ans.previous
+    v ? (v.next = ans.next) : (brick.slotAtHead = ans.next)
+    v = ans.next
+    v && (v.previous = ans.previous)
+    ans.previous = ans.next = null
+    return true
+  }
+}
+
 /**
- * Fetches the named input object, getSlot.
- * @param {String} name The name of the input.
- * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
+ * Fetches the named slot object, getSlot.
+ * @param {String} name The name of the slot.
+ * @param {?Boolean} dontCreate Whether the receiver should create slots on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.VOID for the default brick implementation.
  */
 eYo.Brick.List.prototype.getSlot = function (name, dontCreate) {
@@ -56,7 +153,7 @@ eYo.Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
     console.error('unexpected void type')
   }
   var D = eYo.Brick.Mgr.getModel(type).list
-  goog.asserts.assert(D, 'inputModel__.list is missing in ' + type)
+  goog.asserts.assert(D, '`model`.list is missing in ' + type)
   var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
   if (this.consolidator) {
     if (this.consolidator.constructor !== C10r) {
@@ -76,7 +173,7 @@ eYo.Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
 })
 
 /**
- * Fetches the named input object, getSlot.
+ * Hook point.
  * @param {!eYo.Magnet} m4t.
  * @param {!eYo.Magnet} oldTargetM4t.
  * @param {!eYo.Magnet} targetOldM4t
@@ -89,16 +186,16 @@ eYo.Brick.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t)
 }
 
 /**
- * Consolidate the input.
+ * Consolidate the slots.
  * Removes empty place holders.
  * This must not be overriden.
  *
  * @param {!Brick} brick
  */
 eYo.Brick.List.prototype.doConsolidate = (() => {
-  // this is a closure
+  // this is a one shot function
   /**
-   * Consolidate the input.
+   * Consolidate the slots.
    * Removes empty place holders.
    * This must not be overriden.
    */
@@ -107,7 +204,7 @@ eYo.Brick.List.prototype.doConsolidate = (() => {
       // reentrant flag or wait for the new connection
       // to be established before consolidating
       // reentrant is essential because the consolidation
-      // may cause rerendering ad vitam eternam.
+      // may cause rerendering ad vitam aeternam.
       return
     }
     force = true  // always force consolidation because of the dynamics
@@ -131,8 +228,8 @@ eYo.Brick.List.prototype.doConsolidate = (() => {
  */
 eYo.Brick.List.prototype.removeItems = function () {
   eYo.Events.groupWrap(() => {
-    this.forEachInput(input => {
-      var m4t = input.magnet
+    this.forEachSlot(slot => {
+      var m4t = slot.magnet
       var t9k = m4t.targetBrick
       if (t9k) {
         m4t.disconnect()
@@ -149,8 +246,8 @@ eYo.Brick.List.prototype.removeItems = function () {
  * For edython.
  */
 eYo.Brick.List.prototype.changeInputDone = function () {
-  this.forEachInput(input => {
-    var t9k = input.targetBrick
+  this.forEachSlot(slot => {
+    var t9k = slot.targetBrick
     t9k && (t9k.changeDone())
   })
   this.changeDone()
@@ -160,7 +257,7 @@ Object.defineProperties(eYo.Brick.List.prototype, {
   firstTarget: {
     get () {
       var t
-      this.inputList.some(input => (t = input.targetBrick))
+      this.someSlot(slot => (t = slot.targetBrick))
       return t
     }
   }
@@ -370,8 +467,8 @@ eYo.Brick.Expr.enclosure.prototype.getProfile = eYo.Change.decorate(
     // neither `data` nor `slots` may exist yet
     if (this.data && this.slots) {
       var f = (target, no_target) => {
-        return {ans: this.someInput(input => {
-            var t = input.targetBrick
+        return {ans: this.someSlot(slot => {
+            var t = slot.targetBrick
             if (t && (t = t.out_m.check_)) {
               return t.some(x => eYo.T3.Expr.Check.target.indexOf(x) >= 0)
             }
@@ -393,7 +490,7 @@ eYo.Brick.Expr.enclosure.prototype.getProfile = eYo.Change.decorate(
           return {ans: eYo.T3.Expr.set_display}
         } else if (target.type === eYo.T3.Expr.dict_comprehension) {
           return {ans: eYo.T3.Expr.dict_display}
-        } else if (this.inputList.length === 3) {
+        } else if (this.slots.length === 3) {
             if (this.model.list.all(eYo.T3.Expr.set_display).indexOf(target.type) >= 0) {
               return {ans: eYo.T3.Expr.one_set_display}
             } else {

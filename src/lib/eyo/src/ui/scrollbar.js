@@ -42,7 +42,7 @@ eYo.Scroller = function(board) {
   this.disposeUI = eYo.Do.nothing
   board.hasUI && this.makeUI()
 }
-goog.inherits(eYo.Scroller, eYo.Owned)
+goog.inherits(eYo.Scroller, eYo.Owned.UI)
 
 Object.defineProperties(eYo.Scroller.prototype, {
   /**
@@ -177,10 +177,8 @@ eYo.Scroller.prototype.place = function() {
 eYo.Scrollbar = function(bs, horizontal, opt_class) {
   eYo.Scrollbar.superClass_.constructor.call(this, bs)
   if (bs instanceof eYo.Scroller) {
-    this.board = bs.board
     this.scroller_ = bs  
   } else {
-    this.board = bs
     this.scroller_ = null  
   }
   this.disposeUI = eYo.Do.nothing
@@ -189,7 +187,7 @@ eYo.Scrollbar = function(bs, horizontal, opt_class) {
   this.oldMetrics_ = null
   this.board.hasUI && this.makeUI(opt_class)
 }
-goog.inherits(eYo.Scrollbar, eYo.Owned)
+goog.inherits(eYo.Scrollbar, eYo.Owned.UI)
 
 Object.defineProperties(eYo.Scrollbar, {
   /**
@@ -208,7 +206,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
    */
   board: {
     get () {
-      return this.board
+      return this.owner.board
     }
   },
   /**

@@ -1,10 +1,6 @@
-# Edython's desk
+# Edython's workspace
 
-The desk contains a code editor or workspace, a terminal, a turtle view...
+The workspace is a pane owned by the desk...
 
-Other possible views are
-
-* a graphics view (screen)...
-* a variables view
-
-If not already available, they likely be implemented in the future.
+It owns a main board and a flyout.
+It also owns the trashcan and some navigation controls.

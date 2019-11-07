@@ -347,9 +347,9 @@ eYo.BrickDragger.prototype.drag = function() {
   
   this.update()
 
-  var trashcan = this.destination.trashcan
-  if (trashcan) {
-    trashcan.setOpen_(this.wouldDelete_ && this.deleteRect_ === eYo.Motion.DELETE_AREA_TRASH)
+  var trashCan = this.destination.trashCan
+  if (trashCan) {
+    trashCan.setOpen_(this.wouldDelete_ && this.deleteRect_ === eYo.Motion.DELETE_AREA_TRASH)
   }
 }
 
@@ -390,9 +390,9 @@ eYo.BrickDragger.prototype.end = (() => {
       fireMoveEvent(this)
       b3k.ui.scheduleSnapAndBump()
     }
-    var trashcan = this.destination.trashcan
-    if (trashcan) {
-      goog.Timer.callOnce(trashcan.close, 100, trashcan)
+    var trashCan = this.destination.trashCan
+    if (trashCan) {
+      goog.Timer.callOnce(trashCan.close, 100, trashCan)
     }
     this.destination.setResizesEnabled(true)
 

@@ -11,12 +11,11 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Functions')
-
 goog.require('eYo.Brick')
 
+goog.provide('eYo.Brick.Functions')
+
 goog.require('eYo.Msg')
-goog.require('eYo.Brick.Stmt')
 
 goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Primary')

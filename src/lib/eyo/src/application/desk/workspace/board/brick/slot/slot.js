@@ -66,7 +66,6 @@ eYo.Slot = function (brick, key, model) {
   this.brick_ = brick
   this.key_ = key
   this.model_ = model
-  this.model__ = model
   var setupModel = model => {
     model.setup_ = true
     if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
@@ -90,7 +89,7 @@ eYo.Slot = function (brick, key, model) {
   var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)
   f && (f.call(this))
 }
-goog.inherits(eYo.Slot, eYo.Owned2)
+goog.inherits(eYo.Slot, eYo.Owned.UI2)
 
 // Private properties with default values
 Object.defineProperties(eYo.Slot.prototype, {
@@ -98,23 +97,33 @@ Object.defineProperties(eYo.Slot.prototype, {
 })
 
 /**
+ * Make the UI.
+*/
+eYo.Slot.prototype.makeUI = eYo.Decorate.makeUI(eYo.Slot, function () {
+  this.ui_driver.slotInit(this)
+})
+
+/**
+ * Dispose of the UI.
+*/
+eYo.Slot.prototype.disposeUI = eYo.Decorate.disposeUI(eYo.Slot, function () {
+  this.ui_driver.slotDispose(this)
+})
+
+/**
  * Dispose of all attributes.
  * Asks the owner's renderer to do the same.
-* @param {?Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
+* @param {?Boolean} onlyThis  Dispose of the inferior target iff healStack is a falsy value
 */
-eYo.Slot.prototype.dispose = function (healStack) {
+eYo.Slot.prototype.dispose = eYo.Decorate.dispose(eYo.Slot, function (onlyThis) {
   eYo.Field.disposeFields(this)
-  var d = this.ui_driver
-  d && (d.slotDispose(this))
   this.model_ = eYo.VOID
-  this.magnet_ && (this.magnet_.dispose(healStack))
+  this.magnet_ && this.magnet_.dispose(onlyThis)
   this.magnet_ = eYo.VOID
   this.key_ = eYo.VOID
   this.brick_ = eYo.VOID
-  this.where_.dispose()
-  this.where_ = eYo.VOID
-  eYo.Slot.superClass_.dispose.call(this)
-}
+  eYo.Property.dispose(this, 'where')
+})
 
 Object.defineProperties(eYo.Slot.prototype, {
   /**
@@ -316,7 +325,7 @@ isRequiredToModel: {
       if (t9k) {
         if (t9k.wrapped_) {
           // return true if one of the inputs is connected
-          return t9k.inputList.some(input => !!input.target)
+          return t9k.someInput(input => !!input.target)
         }
         return true
       }
@@ -683,4 +692,3 @@ eYo.Slot.prototype.completePromise = function () {
     return true
   }
 }
-

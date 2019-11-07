@@ -11,9 +11,10 @@
  */
 'use strict'
 
+goog.require('eYo.Brick.List')
+
 goog.provide('eYo.Brick.Argument')
 
-goog.require('eYo.Brick.List')
 
 /**
  * List consolidator for argument list.

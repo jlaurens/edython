@@ -341,26 +341,6 @@ eYo.Do.ensureFunction = function (object) {
       }
 }
 
-/**
- * Used only by the model's checking.
- * If the object is a faulthy value,
- * it means that to check array will be defined.
- * This is used to indicate that any brick is accepted for a connection.
- * If object is a void array, no connection will be possible.
- * @param {?Object} object
- * @return object when a function else a function with signature f() -> []
- */
-eYo.Do.ensureArrayFunction = object => {
-  var did = goog.isFunction(object)
-    ? object
-    : goog.isArray(object)
-      ? () => object
-      : object
-        ? () => [object]
-        : () => object
-  return did
-}
-
 eYo.Do.createSPAN = function (text, css) {
   return goog.dom.createDom(goog.dom.TagName.SPAN, css || null,
     goog.dom.createTextNode(text)

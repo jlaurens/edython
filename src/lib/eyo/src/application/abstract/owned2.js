@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('eYo.Owned2')
+goog.provide('eYo.Owned.UI2')
 
 goog.require('eYo.Owned')
 
@@ -26,8 +26,8 @@ goog.forwardDeclare('eYo.Magnet')
  * @param {!eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
  * @constructor
  */
-eYo.Owned2 = function (bsm) {
-  eYo.Owned2.superClass_.constructor.call(this, bsim)
+eYo.Owned.UI2 = function (bsm) {
+  eYo.Owned.UI2.superClass_.constructor.call(this, bsim)
   if (bsm instanceof eYo.Slot) {
     this.slot_ = bsm
     this.brick_ = bsm.brick
@@ -39,18 +39,18 @@ eYo.Owned2 = function (bsm) {
   }
 }
 
-goog.inherits(eYo.Owned2, eYo.Owned)
+goog.inherits(eYo.Owned.UI2, eYo.Owned)
 
 /**
  * Dispose of the ressources, sever the links.
  */
-eYo.Owned2.prototype.dispose = function () {
+eYo.Owned.UI2.prototype.dispose = function () {
   this.brick_ = this.slot_ = this.magnet_ = null
-  eYo.Owned2.superClass_.dispose.call(this)
+  eYo.Owned.UI2.superClass_.dispose.call(this)
 }
 
 // private properties with default values
-Object.defineProperties(eYo.Owned2.prototype, {
+Object.defineProperties(eYo.Owned.UI2.prototype, {
   magnet__: { value: eYo.VOID, writable: true},
   slot__: { value: eYo.VOID, writable: true},
   brick__: { value: eYo.VOID, writable: true},
@@ -58,7 +58,7 @@ Object.defineProperties(eYo.Owned2.prototype, {
 
 // public computed properties
 
-Object.defineProperties(eYo.Owned2.prototype, {
+Object.defineProperties(eYo.Owned.UI2.prototype, {
   /**
    * @readonly
    * @type {eYo.Brick}  each object belongs to a brick

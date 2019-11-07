@@ -18,12 +18,6 @@ goog.require('eYo.Svg')
 goog.forwardDeclare('eYo.Application')
 
 /**
- * Initiate the application UI.
- * @param {!eYo.Application} app  The application we must init the UI of.
- */
-eYo.Driver.prototype.applicationInit = eYo.Do.nothing
-
-/**
  * Dispose of the application UI.
  * @param {!eYo.DnD.Mgr} mgr  The application we must dispose of the UI of.
  */
@@ -38,6 +32,8 @@ eYo.Driver.prototype.applicationDispose = eYo.Do.nothing
 eYo.Dom.prototype.applicationInit = eYo.Dom.decorateInit(function(app) {
   var dom = app.dom
   var options = app.options
+  // Load CSS.
+  eYo.Css.inject(options.hasCss, options.pathToMedia)
   var container = options.container
   // no UI if no valid container
   if (goog.isString(container)) {

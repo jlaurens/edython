@@ -139,7 +139,7 @@ eYo.Svg.prototype.boardInit = function(board) {
   /**
   * <g class="eyo-board-surface">
   *   <rect class="eyo-board-background" height="100%" width="100%"></rect>
-  *   [Trashcan and/or flyout may go here]
+  *   [TrashCan and/or flyout may go here]
   *   <g class="eyo-brick-canvas"></g>
   * </g>
   * @type {SVGElement}

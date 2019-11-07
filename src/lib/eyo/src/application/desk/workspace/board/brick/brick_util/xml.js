@@ -34,6 +34,7 @@ goog.require('eYo')
 goog.require('eYo.Const')
 goog.require('eYo.XRE')
 goog.require('eYo.T3')
+goog.require('eYo.Brick')
 
 goog.require('Blockly.Xml')
 goog.require('goog.dom');
@@ -188,7 +189,7 @@ Blockly.Xml.domToBoard = eYo.Xml.domToBoard = function (xml, owner) {
   }
 
   // This part is a custom part for edython
-  var newBrick = (xmlChild) => {
+  var brickMaker = (xmlChild) => {
     var brick
     if (xmlChild && xmlChild.nodeType === Node.ELEMENT_NODE) {
       if ((brick = eYo.Xml.domToBrick(xmlChild, owner))) {
@@ -225,7 +226,7 @@ Blockly.Xml.domToBoard = eYo.Xml.domToBoard = function (xml, owner) {
             child.childNodes.some(child => {
               if (child.tagName && child.tagName.toLowerCase() === eYo.Xml.CONTENT) {
                 child.childNodes.forEach(child => {
-                  if ((brick = newBrick(child))) {
+                  if ((brick = brickMaker(child))) {
                     newBlockIds.push(brick.id)
                   }
                 })
@@ -237,7 +238,7 @@ Blockly.Xml.domToBoard = eYo.Xml.domToBoard = function (xml, owner) {
         })
       } else if (name === eYo.Xml.STMT || name === eYo.Xml.EXPR) {
         // for edython
-        ;(brick = newBrick(child)) && (newBlockIds.push(brick.id))
+        ;(brick = brickMaker(child)) && (newBlockIds.push(brick.id))
       }
     })
   }, () => {
@@ -456,7 +457,7 @@ goog.provide('eYo.Xml.Literal')
  * @override
  */
 eYo.Xml.Literal.domToComplete = (() => {
-  var newBrick = (board, text, id, stmt_expected) => {
+  var brickMaker = (board, text, id, stmt_expected) => {
     if (text && text.length) {
       var type = eYo.T3.Profile.get(text, null).expr
       switch (type) {
@@ -489,12 +490,12 @@ eYo.Xml.Literal.domToComplete = (() => {
     var brick
     eYo.Do.someChild(element, child => {
       if (child.nodeType === Node.TEXT_NODE) {
-        return brick = newBrick(board, child.nodeValue, id, stmt_expected)
+        return brick = brickMaker(board, child.nodeValue, id, stmt_expected)
       }
     })
     if (!brick) {
       // there was no text node to infer the type
-      brick = newBrick(board, element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
+      brick = brickMaker(board, element.getAttribute(eYo.Key.PLACEHOLDER), id, stmt_expected)
     }
     return brick || eYo.Brick.newReady(board, eYo.T3.Expr.shortliteral, id)
   }
@@ -560,7 +561,7 @@ eYo.Xml.Data.fromDom = function (brick, element) {
  * to take control.
  * @param {!eYo.Brick} brick The root brick to encode.
  * @param {element} dom element to encode in
- * @param {?Object} opt  See the eponym option in `eYo.Xml.BlockToDom`.
+ * @param {?Object} opt  See the eponym option in `eYo.Xml.BrickToDom`.
  * @return {!Element} Tree of XML elements, possibly null.
  */
 eYo.Xml.toDom = function (brick, element, opt) {

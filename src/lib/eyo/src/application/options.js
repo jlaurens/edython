@@ -40,7 +40,7 @@ goog.forwardDeclare('eYo.Flyout')
  *  Path from page (or frame) to the Edython media directory.
  * readOnly:	boolean
  *  If true, prevent the user from editing.
- *  Supresses the flyout and trashcan.
+ *  Supresses the flyout and trash can.
  *  Defaults to false.
  * scrollbars:	boolean
  *  Sets whether the board is scrollable or not.
@@ -48,11 +48,11 @@ goog.forwardDeclare('eYo.Flyout')
  * sounds:	boolean
  *  If false, don't play sounds (e.g. click and delete).
  *  Defaults to true.
- * trashcan:	boolean
- *  Displays or hides the trashcan.
+ * trash can:	boolean
+ *  Displays or hides the trash can.
  * maxTrashcanContents:	number
  *  Maximum number of deleted items that will appear
- *  in the trashcan flyout. '0' disables the feature. Defaults to '32'.
+ *  in the trash can flyout. '0' disables the feature. Defaults to '32'.
  * zoom: object
  *  Configures zooming behaviour.
  *  {controls: true,
@@ -71,7 +71,7 @@ eYo.Options = function(options) {
     var hasDisable = false
     var hasSounds = false
   } else {
-    var hasTrashcan = eYo.Do.ifDef(options.trashcan, true)
+    var hasTrashcan = eYo.Do.ifDef(options.trashCan, true)
     var hasCollapse = eYo.Do.ifDef(options.collapse, true)
     var hasDisable = eYo.Do.ifDef(options.disable, true)
     var hasSounds = eYo.Do.ifDef(options.sounds, true)

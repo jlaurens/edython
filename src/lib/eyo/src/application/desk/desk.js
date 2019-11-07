@@ -13,14 +13,13 @@
  */
 'use strict'
 
-goog.provide('eYo.Desk')
-
 goog.require('eYo.Owned')
 goog.require('eYo.Decorate')
 
+goog.provide('eYo.Desk')
+
 goog.forwardDeclare('eYo.Application')
 goog.forwardDeclare('eYo.Backer')
-goog.forwardDeclare('eYo.Scrollbar')
 goog.forwardDeclare('eYo.Options')
 
 goog.forwardDeclare('goog.array');
@@ -28,171 +27,82 @@ goog.forwardDeclare('goog.math');
 
 /**
  * Class for a desk.
- * This is the structure above the boards but below the desktop.
- * The desk has 3+n boards:
- * - the board one where bricks are dropped to be executed,
- * - the 2+n in the flyout,
+ * This is the structure above the panes but below the application.
  * @param {!eYo.Application|Object} owner Owner application.
  * @constructor
  */
 eYo.Desk = function(owner) {
   eYo.Desk.superClass_.constructor.call(this, owner)
-  /** @type {!eYo.Options} */
-  var options = this.options_ = new eYo.Options(options || {})
-  // Load CSS.
-  eYo.Css.inject(options.hasCss, options.pathToMedia)
-  this.viewRect_ = new eYo.Rect()
-  // create the board
-  this.board_ = new eYo.Board.Main(options)
-  this.flyout_ = new eYo.Flyout(options)
-  var bottom = eYo.Scrollbar.thickness
-  if (options.hasTrashcan) {
-    this.trashcan = new eYo.Trashcan(this, bottom)
-    bottom = this.trashcan.top
-  }
-  if (options.zoom) {
-    this.scale = options.zoom.startScale || 1
-    if (options.zoom.controls) {
-      this.zoomControls_ = new eYo.ZoomControls(this, bottom)
-      bottom = this.zoomControls_.top
-    }
-  }
+  /**
+   * Wokspace.
+   * @type{eYo.Workspace}
+   */
+  this.workspace_ = new eYo.Workspace(this)
+  /**
+   * Terminal.
+   * @type{eYo.Terminal}
+   */
+  this.terminal_ = new eYo.Terminal(this)
+  /**
+   * Turtle.
+   * @type{eYo.Turtle}
+   */
+  this.turtle_ = new eYo.Turtle(this)
+  /**
+   * Graphic.
+   * @type{eYo.Graphic}
+   */
+  this.graphic_ = new eYo.Graphic(this)
+  /**
+   * Variable.
+   * @type{eYo.Variable}
+   */
+  this.variable_ = new eYo.Variable(this)
+  /**
+   * Main focus manager.
+   * @type{eYo.Focus.Main}
+   */
+  this.panes_ = [
+    this.workspace_,
+    this.terminal_,
+    this.turtle_,
+    this.graphic_,
+    this.variable_
+  ]
   this.focus_ = new eYo.Focus.Main(this)
 }
-goog.inherits(eYo.Desk, eYo.Owned)
+goog.inherits(eYo.Desk, eYo.Owned.UI)
 
+eYo.Property.addMany(
+  eYo.Desk.prototype,
+  {
+    terminal: {},
+    turtle: {},
+    graphic: {},
+    variable: {},
+    workspace: {},
+    focus: {},
+  }
+)
 Object.defineProperties(eYo.Desk.prototype, {
   /**
-   * The desk's trashcan (if any).
-   * @type {eYo.Trashcan}
-   */
-  trashcan_: {value: null, writable: true},
-  /**
-   * The desk's owner (if any).
+   * The desk's application.
    * @type {!eYo.Application|Object}
    * @private
    */
-  owner: {
+  app: {
     get () {
       return this.owner_
     }
   },
   /**
-   * The owned board instance.
-   */
-  board: {
-    /**
-     * The board.
-     * @return {?eYo.Board.Main} 
-     */
-    get () {
-      return this.board__
-    }
-  },
-  board_: {
-    /**
-     * The board.
-     * @return {?eYo.Board.Main} 
-     */
-    get () {
-      return this.board__
-    },
-    /**
-     * Takes care of ownership
-     * @param {?eYo.Board.Main} newValue 
-     */
-    set (newValue) {
-      if (newValue != this.board__) {
-        this.board__ && (this.board__.desk_ = null)
-        this.board__ = newValue
-        newValue && (newValue.desk_ = this)
-      }
-    }
-  },
-  /**
-   * The flyout.
-   * @type {?eYo.Flyout} 
-   */
-  flyout: {
-    get () {
-      return this.flyout__
-    }
-  },
-  flyout_: {
-    /**
-     * The flyout.
-     * @return {?eYo.Flyout} 
-     */
-    get () {
-      return this.flyout__
-    },
-    /**
-     * Takes care of ownership
-     * @param {?eYo.Flyout} newValue 
-     */
-    set (newValue) {
-      if (newValue != this.flyout__) {
-        this.flyout__ && (this.flyout__.owner_ = null)
-        this.flyout__ = newValue
-        newValue && (newValue.owner_ = this)
-      }
-    }
-  },
-  /**
-   * The main focus manager
-   * @type {eYo.Focus.Main}
+   * The desk's desk.
+   * @type {!eYo.Desk}
    * @private
    */
-  focus_: {
-    value: null
-  },
-  /**
-   * The main focus manager
-   * @type {eYo.Focus.Main}
-   * @readonly
-   */
-  focus: {
+  desk: {
     get () {
-      return this.focus_
-    }
-  },
-  /**
-   * The undo/redo manager
-   */
-  backer: {
-    value: this.backer__
-  },
-  backer_: {
-    get () {
-      return this.backer__
-    },
-    set (newValue) {
-      if (this.backer__) {
-        this.backer__.owner_ = null
-      }
-      this.backer__ = newValue
-      if (newValue) {
-        newValue.owner_ = this
-      }
-    }
-  },
-  /**
-   * The view rectangle
-   */
-  viewRect: {
-    get () {
-      return this.viewRect_.clone
-    },
-    /**
-     * Actually set from a `div` object.
-     */
-    set (newValue) {
-      this.viewRect_.set(newValue)
-    }
-  },
-  options: {
-    get () {
-      return this.owner.options
+      return this
     }
   },
 })
@@ -200,43 +110,49 @@ Object.defineProperties(eYo.Desk.prototype, {
 /**
  * Make the user interface.
  */
-eYo.Desk.prototype.makeUI = function() {
-  this.makeUI = eYo.Do.nothing
-  delete this.deleteUI
-  var d = this.ui_driver_ = new eYo.Svg(this)
-  d.deskInit(this)
-  this.willFlyout_ && this.addFlyout()
-  this.board__.makeUI()
-  this.flyout__.makeUI()
-  this.recordDeleteAreas()
-  this.layout()
-}
+eYo.Desk.prototype.makeUI = eYo.Decorate.makeUI(
+  eYo.Desk,
+  function() {
+    this.ui_driver.deskInit(this)
+    this.panes_.forEach(p => p.makeUI())
+    this.layout()
+  }
+)
 
 /**
  * Dispose of UI resources.
  */
-eYo.Desk.prototype.disposeUI = function() {
-  this.disposeUI = eYo.Do.nothing
-  delete this.makeUI
-  this.zoomControls_ && this.zoomControls_.disposeUI()
-  this.trashcan && this.trashcan.disposeUI()
-  this.board__.disposeUI()
-  this.flyout__.disposeUI()
-}
+eYo.Desk.prototype.disposeUI = eYo.Decorate.disposeUI(
+  eYo.Desk,
+  function() {
+    [].concate(this.panes_).reverse().forEach(p => p.disposeUI())
+    this.ui_driver.deskDispose(this)
+  }
+)
 
 /**
  * Dispose of this desk's board.
  */
-eYo.Desk.prototype.dispose = function() {
-  this.disposeUI()
-  eYo.Property.disposeMany(this, [
-    "backer",
-    "board",
-    "flyout",
-    "zoomControls",
-    "trashcan",
-  ])
-  eYo.Desk.superClass_.constructor.call(this, owner)
+eYo.Desk.prototype.dispose = eYo.Decorate.dispose(
+  eYo.Desk,
+  function() {
+    eYo.Property.dispose(this,
+      'workspace',
+      'terminal',
+      'turtle',
+      'graphic',
+      'variable',
+      'focus',
+    )
+  }
+)
+
+/**
+ * Update the metrics and place the components accordingly.
+ */
+eYo.Desk.prototype.layout = function() {
+  this.updateMetrics()
+  this.place()
 }
 
 /**
@@ -253,53 +169,24 @@ eYo.Desk.prototype.dispose = function() {
  */
 eYo.Desk.prototype.updateMetrics = function() {
   this.ui_driver.deskUpdateMetrics(this)
-  this.board__.updateMetrics()
-  this.flyout__.updateMetrics()
+  this.panes_.forEach(p => p.updateMetrics())
 }
 
 /**
- * Update the metrics and place the components accordingly.
- */
-eYo.Desk.prototype.layout = function() {
-  this.updateMetrics()
-  this.place()
-}
-
-/**
- * Place the boards.
+ * Place the panes.
  */
 eYo.Desk.prototype.place = function() {
   this.ui_driver.deskPlace(this)
-  this.board__.place()
-  this.flyout__.place()
-  this.trashcan && this.trashcan.place()
-  this.zoomControls_ && this.zoomControls_.place()
+  this.panes_.forEach(p => p.place())
 }
 
 /**
- * Size the board to completely fill its container.
- * Call this when the view actually changes sizes
- * (e.g. on a window resize/device orientation change).
+ * See `deskWhereElement`.
+ * @param {!Element}
  * @return {eYo.Where}
  */
 eYo.Desk.prototype.xyElementInDesk = function(element) {
-  return this.ui_driver_.deskWhereElement(this, element)
-}
-
-/**
- * Make a list of all the delete areas for this board.
- */
-eYo.Desk.prototype.recordDeleteAreas = function() {
-  if (this.trashcan && this.dom.svg.group_.parentNode) {
-    this.deleteRectTrash_ = this.trashcan.getClientRect()
-  } else {
-    this.deleteRectTrash_ = null
-  }
-  if (this.flyout__) {
-    this.deleteRectFlyout_ = this.flyout__.deleteRect
-  } else {
-    this.deleteRectFlyout_ = null
-  }
+  return this.ui_driver.deskWhereElement(this, element)
 }
 
 /**
@@ -308,13 +195,5 @@ eYo.Desk.prototype.recordDeleteAreas = function() {
  * @private
  */
 eYo.Desk.prototype.updateScreenCalculations_ = function() {
-  this.recordDeleteAreas()
-}
-
-/**
- * Forwards to the backer.
- * @param{Boolean} redo  True when redoing, false otherwise
- */
-eYo.Desk.prototype.undo = function(redo) {
-  this.backer__.undo(redo)
+  this.workspace.recordDeleteAreas()
 }

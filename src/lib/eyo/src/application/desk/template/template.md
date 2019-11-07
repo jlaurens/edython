@@ -1,0 +1,3 @@
+# Edython's TEMPLATE
+
+Template for a pane's subclass...

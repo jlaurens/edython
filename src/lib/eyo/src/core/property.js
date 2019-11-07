@@ -23,22 +23,36 @@ goog.require('eYo')
  * `key` is the public getter.
  * @param {Object} proto,  the object to add a property to
  * @param {Object} data,  the object used to define the property: key `value` for the initial value, key `willChange` to be called when the property is about to change (signature (before, after) => function, truthy when the change should take place). The returned value is a function called after the change has been made in memory.
+ * The `get` and `set` keys allow to provide a getter and a setter.
+ * In that case, the setter should manage ownership if required.
  */
 eYo.Property.add = (proto, key, data) => {
   var getter = (key) => {
-    return function () {
+    return data.get || function () {
       return this[key]
     }
   }
   var setter = (key) => {
-    return function (after) {
+    return data.set ?
+    function (after) {
       var before = this[key]
       if(before !== after) {
         var f = data.willChange
         if (!f || (f = f(before, after))) {
-          before && before.dispose()
+          data.set(after)
+          f && f(before, after)
+        }
+      }
+    }:
+    function (after) {
+      var before = this[key]
+      if(before !== after) {
+        var f = data.willChange
+        if (!f || (f = f(before, after))) {
+          !!before && typeof before === "object" && (before.owner_ = null)
           this[key] = after
-          f(before, after)
+          !!after && typeof after === "object" && (after.owner_ = this)
+          f && f(before, after)
         }
       }
     }
@@ -66,7 +80,7 @@ eYo.Property.add = (proto, key, data) => {
 }
 
 /**
- * Add a 3 levels properties to a prototype.
+ * Add 3 levels properties to a prototype.
  * @param {Object} proto,  the object to add a property to
  * @param {Object} many,  the K => V mapping to which we apply `eYo.Property.add(proto, K, V)`.
  */
@@ -77,17 +91,87 @@ eYo.Property.addMany = (proto, many) => {
 }
 
 /**
- * Dispose in the given object, the property given by its main name.
- * @param {Object} object, the object that owns the property
- * @param {String} name,  a main property name
+ * Add a 3 levels clonable property to a prototype.
+ * @param {Object} proto,  the object to add a property to
+ * @param {Object} many,  the K => V mapping to which we apply `eYo.Property.addClonables(proto, K)`.
  */
-eYo.Property.dispose = (object, name) => {
-  var k = name + '__'
-  var x = object[k]
-  if (x) {
-    object[k] = null
-    x.dispose()
+eYo.Property.addClonables = (proto, ...many) => {
+  var getter = (key) => {
+    return function () {
+      return this[key].clone
+    }
   }
+  var setter = (key) => {
+    return function (after) {
+      var k = key + '_'
+      var before = this[k]
+      var f = () => {
+        this[k].set(after)
+      }
+      if (!before.equals(after)) {
+        this.wrapUpdate && this.wrapUpdate(f) || f()
+      }
+    }
+  }
+  many.forEach(key => {
+    Object.defineProperty(
+      proto,
+      key+'__',
+      {value: eYo.VOID, writable: true}
+    )
+    Object.defineProperty(
+      proto,
+      key+'_',
+      {
+        get: getter(key+'_'),
+        set: setter(key+'_'),
+      }
+    )
+    Object.defineProperty(
+      proto,
+      key,
+      {
+        get: getter(key),
+      }
+    )
+  })
+}
+
+/**
+ * Add a link properties.
+ * The receiver is not the owner.
+ * @param {Object} object, the object that owns the property
+ * @param {String} ...names names of the links to add
+ */
+eYo.Property.addLinks = (proto, ...many) => {
+  var getter = (key) => {
+    return function () {
+      return this[key]
+    }
+  }
+  var setter = (key) => {
+    return function (after) {
+      var before = this[key]
+      if (before !== after) {
+        this[key] = after
+      }
+    }
+  }
+  many.forEach(key => {
+    Object.defineProperty(
+      proto,
+      key+'_',
+      {value: eYo.VOID, writable: true}
+    )
+    Object.defineProperty(
+      proto,
+      key,
+      {
+        get: getter(key+'_'),
+        set: setter(key+'_'),
+      }
+    )
+  })
 }
 
 /**
@@ -95,6 +179,35 @@ eYo.Property.dispose = (object, name) => {
  * @param {Object} object, the object that owns the property
  * @param {Array<string>} names,  a list of names
  */
-eYo.Property.disposeMany = (object, many) => {
-  many.forEach(name => eYo.Property.dispose(object, name))
+eYo.Property.dispose = function (object, ...names) {
+  names.forEach(name => {
+    var k = name + '__'
+    var x = object[k]
+    if (x) {
+      object[k] = null
+      x.dispose()
+    }
+  })
 }
+
+/**
+ * Dispose in the given object, the properties given by their main name.
+ * @param {Object} object, the object that owns the property
+ * @param {Object} names,  a list of names
+ */
+eYo.Property.removeLinks = function (object, ...names) {
+  names.forEach(name => {
+    var k = name + '_'
+    var x = object[k]
+    if (x) {
+      object[k] = null
+    }
+  })
+}
+
+/**
+ * Dispose in the given clonable object, the properties given by their main name.
+ * @param {Object} object, the object that owns the property
+ * @param {...names} names,  a list of names
+ */
+eYo.Property.disposeClonables = eYo.Property.dispose

@@ -358,7 +358,7 @@ eYo.Svg.prototype.flyoutPlace = function (flyout) {
       }
     }
     board.resizePort()
-    board.trashcan.place()
+    board.trashCan.place()
   }
 }
 

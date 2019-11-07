@@ -144,7 +144,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
   },
   hasSelect: {
     get () {
-      return this.rendered && (this.driver.brickHasSelect(this.brick_))
+      return this.rendered && (this.driver.brickHasFocus(this.brick_))
     }
   },
   /**

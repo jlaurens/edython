@@ -26,7 +26,7 @@ goog.forwardDeclare('eYo.Desk')
 eYo.Pane = function (desk) {
   eYo.Pane.superClass_.constructor.call(this, desk)
 }
-goog.inherits(eYo.Pane, eYo.Owned)
+goog.inherits(eYo.Pane, eYo.Owned.UI)
 
 Object.defineProperties(eYo.Pane.prototype, {
   /**
@@ -42,10 +42,17 @@ Object.defineProperties(eYo.Pane.prototype, {
 })
 
 /**
- * Sever all the links including the focus managers.
+ * Layout the receiver.
+ * The default implementation does nothing.
  */
-eYo.Pane.prototype.dispose = function () {
-  this.disposeUI()
-  eYo.Pane.superClass_.dispose.call(this)
-}
+eYo.Pane.prototype.layout = eYo.Do.nothing
 
+/**
+ * Update the metrics of the receiver.
+ */
+eYo.Pane.prototype.updateMetrics = eYo.Do.nothing
+
+/**
+ * Place the receiver.
+ */
+eYo.Pane.prototype.place = eYo.Do.nothing

@@ -441,7 +441,7 @@ eYo.Focus.Mgr.prototype.didRemove = eYo.Do.nothing
  */
 eYo.Focus.Mgr.prototype.selectOneBrickOf = function (bricks, force) {
   var select
-  bricks = [].concat(bricks)
+  bricks = bricks.slice()
   var f = brick => {
     if (brick.isControl && brick.span.suite) {
       select = brick

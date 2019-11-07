@@ -15,14 +15,14 @@ goog.provide('eYo.Svg.ZoomControl')
 
 goog.require('eYo.Svg')
 
-goog.forwardDeclare('eYo.ZoomControls')
+goog.forwardDeclare('eYo.Zoomer')
 
 /**
  * Initialize the board's controls.
- * @param {!eYo.ZoomControls} constrols
+ * @param {!eYo.Zoomer} constrols
  * @return {!Element} The controls's SVG group.
  */
-eYo.Svg.prototype.zoomControlsInit = function(controls) {
+eYo.Svg.prototype.zoomerInit = function(controls) {
   var board = controls.board_
   var dom = board.dom
   var svg = dom.svg
@@ -177,9 +177,9 @@ eYo.Svg.prototype.zoomControlsInit = function(controls) {
 
 /**
  * Dispose of the zoom controls SVG ressources.
- * @param {!eYo.ZoomControls} constrols
+ * @param {!eYo.Zoomer} constrols
  */
-eYo.Svg.prototype.zoomControlsDispose = function(controls) {
+eYo.Svg.prototype.zoomerDispose = function(controls) {
   var board = controls.board_
   var dom = board.dom
   var svg = dom.svg
@@ -198,9 +198,9 @@ eYo.Svg.prototype.zoomControlsDispose = function(controls) {
 
 /**
  * Position of the zoom controls.
- * @param {!eYo.ZoomControls} controls
+ * @param {!eYo.Zoomer} controls
  */
-eYo.Svg.prototype.zoomControlsPlace = function(controls) {
+eYo.Svg.prototype.zoomerPlace = function(controls) {
   controls.board_.dom.svg.zoom_.setAttribute(
     'transform',
     `translate(${controls.left_},${controls.top_})`

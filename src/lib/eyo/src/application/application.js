@@ -65,10 +65,11 @@ eYo.Property.addMany(
     ui_driver: {
       willChange(before, after) {
         if (before) {
-          this.desk && this.desk.disposeUI()
-          before.applicationDispose(this)
+          this.disposeUI()
         }
-        return eYo.Do.nothing
+        return function (before, after) {
+          this.makeUI()
+        }
       }
     },
     /**
@@ -154,7 +155,7 @@ eYo.Application.prototype.disposeUI = function() {
 eYo.Application.prototype.dispose = function() {
   this.dispose = eYo.Do.nothing
   this.disposeUI()
-  eYo.Property.disposeMany(['desk', 'motion', 'audio', 'clipboard'])
+  eYo.Property.dispose(this, 'desk', 'motion', 'audio', 'clipboard')
 }
 
 /**

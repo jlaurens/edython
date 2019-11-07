@@ -79,3 +79,19 @@ eYo.Decorate.benchmark = function (key, f) {
     }
   }
 }
+
+/**
+ * Ensure an array function.
+ * @param {?Object} object
+ * @return object when a function else a function with signature f() -> []
+ */
+eYo.Decorate.arrayFunction = object => {
+  var did = goog.isFunction(object)
+    ? object
+    : goog.isArray(object)
+      ? () => object
+      : object
+        ? () => [object]
+        : () => object
+  return did
+}

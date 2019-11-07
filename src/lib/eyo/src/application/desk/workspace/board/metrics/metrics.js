@@ -11,10 +11,12 @@
  */
 'use strict'
 
+goog.require('eYo.Owned')
+
 goog.provide('eYo.Metrics')
 
-goog.forwardDeclare(eYo.Board)
-goog.forwardDeclare(eYo.Geometry)
+goog.forwardDeclare('eYo.Board')
+goog.forwardDeclare('eYo.Geometry')
 
 /**
  * The `content` rect is enclosing all the bricks.
@@ -26,76 +28,8 @@ goog.forwardDeclare(eYo.Geometry)
  * @constructor
  */
 eYo.Metrics = function (board) {
-  this.board_ = board
-  this.port_ = new eYo.Rect()
-  this.view_ = new eYo.Rect()
-  this.box_ = new eYo.Rect()
-  this.drag__ = this.dragDefault.clone
-  this.scale_ = 1
-  this.updateDepth_ = 0
-}
-
-Object.defineProperties(eYo.Metrics.prototype, {
-  board: {
-    get () {
-      return this.board_
-    }
-  },
-  options: {
-    get () {
-      return this.board_ && this.board_.options.zoom || {}
-    }
-  },
-  /**
-   * Bricks visible dimensions are propotional to this value.
-   * Doubling the scale will double the size of the bricks on screen.
-   * Each time the scale changes, a `didScale` message is sent to the board.
-   * The same holds for other properties.
-   * Scaling will change the scroll bars and the view rect.
-   * When the scaling corresponds to a zoom out, scrolling
-   * might be disabled if the zoom factor is too small.
-   * @type {Number} Positive scale factor.
-   */
-  scale: {
-    get () {
-      return this.scale_
-    },
-    set (newValue) {
-      if (newValue <= 0) {
-        newValue = 1
-      }
-      if (this.scale_ !== newValue) {
-        var options = this.options
-        if (options && options.maxScale &&
-          newValue > options.maxScale) {
-            newValue = options.maxScale
-        } else if (options && options.minScale &&
-          newValue < options.minScale) {
-            newValue = options.minScale
-        }
-        this.scale_ = newValue
-        this.board_ && this.board_.didScale()
-      }
-    }
-  },
-  /**
-   * The view rect is the visible rectangle on screen.
-   * For the main board it is the bounding rect of the enclosing
-   * desk's div. For a flyout, it is generally smaller.
-   * It is used for clipping the svg.
-   * @type {eYo.Rect} 
-   */
-  view: {
-    get () {
-      return this.view_.clone
-    },
-    set (newValue) {
-      if (!this.view_.equals(newValue)) {
-        this.wrapUpdate(() => this.view_.set(newValue))
-      }
-    }
-  },
-  /**
+  eYo.Metrics.superClass_.constructor.call(this, board)
+/**
    * The port rect is at least enclosing all the bricks.
    * In board coordinates.
    * 
@@ -118,16 +52,96 @@ Object.defineProperties(eYo.Metrics.prototype, {
    * @type {eYo.Rect} 
    * @readonly 
    */
-  port: {
-    get () {
-      return this.port_.clone
-    },
+  this.port__ = new eYo.Rect()
+  /**
+   * The view rect is the visible rectangle on screen.
+   * For the main board it is the bounding rect of the enclosing
+   * desk's div. For a flyout, it is generally smaller.
+   * It is used for clipping the svg.
+   * @type {eYo.Rect} 
+   */
+  this.view__ = new eYo.Rect()
+  /**
+   * The box rect is bigger than the content rect.
+   * It is reset each time the content rect changes.
+   * @type {eYo.Rect} 
+   * @readonly 
+   */
+  this.box__ = new eYo.Rect()
+
+  /**
+   * Bricks visible dimensions are propotional to this value.
+   * Doubling the scale will double the size of the bricks on screen.
+   * Each time the scale changes, a `didScale` message is sent to the board.
+   * The same holds for other properties.
+   * Scaling will change the scroll bars and the view rect.
+   * When the scaling corresponds to a zoom out, scrolling
+   * might be disabled if the zoom factor is too small.
+   * @type {Number} Positive scale factor.
+   */
+  this.scale_ = 1
+    /**
+   * Whether line numbering is available or not.
+   * When true, an extra margin at the right of the draft board is added
+   * to display line numbers.
+   * @type {Boolean} 
+   * @readonly 
+   */
+  this.numbering_ = false
+
+  this.updateDepth_ = 0
+
+  this.drag___ = this.dragDefault.clone
+}
+goog.inherits(eYo.Metrics, eYo.Owned)
+
+eYo.Property.addClonables(
+  eYo.Metrics.prototype,
+  'box',
+  'view',
+  'port',
+  'drag_'
+)
+
+eYo.Property.addMany(eYo.Metrics.prototype, {
+  scale: {
     set (newValue) {
-      if (!this.port_.equals(newValue)) {
-        this.wrapUpdate(() => {
-          this.port_.set(newValue)
-        })
+      if (newValue <= 0) {
+        newValue = 1
       }
+      if (this.scale__ !== newValue) {
+        var options = this.options
+        if (options && options.maxScale &&
+          newValue > options.maxScale) {
+            newValue = options.maxScale
+        } else if (options && options.minScale &&
+          newValue < options.minScale) {
+            newValue = options.minScale
+        }
+        this.scale__ = newValue
+        this.board && this.board.didScale()
+      }
+    }
+  },
+  numbering: {
+    set (newValue) {
+      if (this.numbering_ !== newValue) {
+        this.wrapUpdate(() => this.numbering_ = newValue)
+      }
+    }
+  },
+})
+
+// Read only computed properties
+Object.defineProperties(eYo.Metrics.prototype, {
+  board: {
+    get () {
+      return this.owner
+    }
+  },
+  options: {
+    get () {
+      return this.board && this.board.options.zoom || {}
     }
   },
   /**
@@ -139,23 +153,6 @@ Object.defineProperties(eYo.Metrics.prototype, {
   portInView: {
     get () {
       return this.toView(this.port)
-    }
-  },
-  /**
-   * Whether line numbering is available or not.
-   * When true, an extra margin at the right of the draft board is added
-   * to display line numbers.
-   * @type {Boolean} 
-   * @readonly 
-   */
-  numbering: {
-    get () {
-      return this.numbering_
-    },
-    set (newValue) {
-      if (this.numbering_ !== newValue) {
-        this.wrapUpdate(() => this.numbering_ = newValue)
-      }
     }
   },
   /**
@@ -222,17 +219,7 @@ Object.defineProperties(eYo.Metrics.prototype, {
      * @param {eYo.Where} newValue 
      */
     set (newValue) {
-      this.drag_ = newValue
-    }
-  },
-  drag_: {
-    get () {
-      return this.drag__.clone
-    },
-    set (newValue) {
-      if (!this.drag__.equals(newValue)) {
-        this.wrapUpdate(() => this.drag__.set(newValue))
-      }
+      this.drag__ = newValue
     }
   },
   /**
@@ -285,33 +272,16 @@ Object.defineProperties(eYo.Metrics.prototype, {
     }
   },
   /**
-   * The box rect is bigger than the content rect.
-   * It is reset each time the content rect changes.
-   * @type {eYo.Rect} 
-   * @readonly 
-   */
-  box: {
-    get () {
-      return this.box_.clone
-    },
-    set (newValue) {
-      if (!this.box_.equals(newValue)) {
-        this.wrapUpdate(() => this.box_.set(newValue))
-      }
-    }
-  },
-  /**
    * Clone the object.
    */
   clone: {
     get () {
-      var ans = new eYo.Metrics()
+      var ans = new eYo.Metrics(this)
       ans.scale_ = this.scale_
       ans.view = this.view_
       ans.port = this.port_
       ans.drag_ = this.drag_
       ans.box = this.box_
-      ans.board_ = this.board_ // at the end only
       return ans
     }
   },
@@ -325,14 +295,14 @@ Object.defineProperties(eYo.Metrics.prototype, {
 /**
  * Sever the links and dispose of the resources.
  */
-eYo.Metrics.prototype.dispose = function () {
-  this.board_ = null
-  this.box_.dispose()
-  this.drag__.dispose()
-  this.view_.dispose()
-  this.port_.dispose()
-  this.box_ = this.drag_ = this.view_ = this.port_ = null
-}
+eYo.Metrics.prototype.dispose = eYo.Decorate.dispose(function () {
+  eYo.Property.dispose(this,
+    'box',
+    'drag',
+    'view',
+    'port'
+  )
+})
 
 /**
  * Update the board.
@@ -371,7 +341,7 @@ eYo.Metrics.prototype.toView = function (WR) {
   //   = o + drag • {i, j} + (X, Y) * scale • {i, j} 
   //  (x, y) = drag + (X, Y) * scale
   //  (X, Y) = ((x, y) - drag) / scale
-  return WR.scale(this.scale).forward(this.drag_)
+  return WR.scale(this.scale).forward(this.drag___)
 }
 
 /**
@@ -379,7 +349,7 @@ eYo.Metrics.prototype.toView = function (WR) {
  * @param{eYo.Rect | eYo.Where} wr
  */
 eYo.Metrics.prototype.fromView = function (wr) {
-  return wr.backward(this.drag_).unscale(this.scale)
+  return wr.backward(this.drag___).unscale(this.scale)
 }
 
 /**
@@ -387,6 +357,7 @@ eYo.Metrics.prototype.fromView = function (wr) {
  * Reference is the brick board.
  * @param{?eYo.Rect} rect
  */
+console.error('MISSING IMPLEMENTATION')
 eYo.Metrics.prototype.getDraggingLimits = function (rect) {
   var view = this.minPort
   var limits = this.port

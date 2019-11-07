@@ -46,11 +46,11 @@ eYo.Flyout = function(owner) {
    */
   this.anchor_ = flyoutOptions.anchor || eYo.Flyout.AT_RIGHT
   /**
-   * Position and dimensions of the flyout in the desk.
+   * Position and dimensions of the flyout in the workspace.
    * @type {number}
    * @private
    */
-  this.viewRect_ = new eYo.Rect().tie(board.metrics_.view, {
+  this.viewRect__ = new eYo.Rect().tie(board.metrics_.view, {
     l: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
     h: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
   }, {
@@ -100,8 +100,10 @@ eYo.Flyout = function(owner) {
   this.draft_ = new eYo.Draft(this)
 
   this.disposeUI = eYo.Do.nothing
-
 }
+goog.inherits(eYo.Flyout, eYo.Owned.UI)
+
+eYo.Property.addClonables(eYo.Flyout.prototype, 'viewRect')
 
 Object.defineProperties(eYo.Flyout.prototype, {
   /**
@@ -111,17 +113,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
    */
   workspace: { 
     get () {
-      return this.owner_
-    }
-  },
-  /**
-   * The options
-   * @type {eYo.Options}
-   * @readonly
-   */
-  options: { 
-    get () {
-      return this.owner_.options
+      return this.owner
     }
   },
   /**
@@ -350,16 +342,6 @@ Object.defineProperties(eYo.Flyout, {
 })
 
 Object.defineProperties(eYo.Flyout.prototype, {
-  /**
-   * The rect of the receiver in the desk
-   * @type {eYo.Rect}
-   * @readonly
-   */
-  viewRect: {
-    get () {
-      return this.viewRect_.clone
-    }
-  },
   position: {
     get () {
       return this.viewRect_.origin

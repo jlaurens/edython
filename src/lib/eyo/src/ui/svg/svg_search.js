@@ -383,7 +383,7 @@ eYo.Svg.prototype.searchPlace = function (search) {
       }
     }
     board.resizePort()
-    board.trashcan.place()
+    board.trashCan.place()
   }
 }
 

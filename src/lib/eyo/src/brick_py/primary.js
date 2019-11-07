@@ -185,7 +185,6 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
  */
 eYo.Consolidator.List.Target.prototype.getCheck = (() => {
   var f = io => {
-    var subtype = io.subtype
     if (io.i === io.unique) {
       // all subtypes with `unique` elements
       return {
@@ -327,7 +326,7 @@ eYo.Brick.Expr.target_list.prototype.getSubtype = function () {
 eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isInput) {
     var other = false
-    if (this.inputList.some(input => {
+    if (this.someInput(input => {
       if (input.magnet) {
         var t9k = input.targetBrick
         if (t9k) {

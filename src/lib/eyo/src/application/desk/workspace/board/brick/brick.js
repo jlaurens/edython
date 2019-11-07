@@ -11,13 +11,14 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick')
-
-goog.require('eYo.Owned')
+goog.require('eYo.Owned.UI')
 goog.require('eYo.Decorate')
 
 goog.require('eYo.Change')
 goog.require('eYo.Data')
+
+goog.provide('eYo.Brick')
+
 
 goog.forwardDeclare('eYo.XRE')
 goog.forwardDeclare('eYo.T3')
@@ -37,14 +38,15 @@ goog.forwardDeclare('eYo.Focus')
 
 /**
  * Class for a Brick.
- * Not normally called directly, eYo.Brick.Mgr.create(...) is preferred.
- * Also initialize a implementation model.
+ * Not normally called directly, `eYo.Brick.Mgr.create(...)` is recommanded and `eYo.Board` 's `newBrick` method is highly recommanded.
+ * Also initialize an implementation model.
  * The underlying state and model are not expected to change while running.
  * When done, the node has all its properties ready to use
  * but their values are not properly setup.
  * The brick may not be in a consistent state,
  * for what it was designed to.
  * For edython.
+ * @param {eYo.Board} board - the owner of the brick.
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this brick.
  * @constructor
@@ -57,80 +59,87 @@ goog.forwardDeclare('eYo.Focus')
  */
 eYo.Brick = function (board, type, opt_id) {
   eYo.Brick.superClass_.constructor.call(this, board)
-  /** @type {string} */
-  this.baseType_ = type // readonly private property used by getType
-  // next trick to avoid some costy computations
-  // this makes sense because subclassers may use a long getBaseType
-  // which is oftely used
-  this.getBaseType = eYo.Brick.prototype.getBaseType // no side effect during creation.
-  // private properties
-  this.children__ = []
-  this.errors = Object.create(null)
-  this.span_ = new eYo.Span(this)
-  
-  this.change_ = new eYo.Change(this)
-  // to manage reentrency
-  this.reentrant_ = {}
-  // make the state
-  eYo.Events.disableWrap(() => {
-    this.change.wrap(() => {
-      this.makeMagnets()
-      this.makeData()
-      this.makeFields()
-      this.makeSlots()
-      // now make the bounds between data and fields
-      this.makeBounds()
-      // initialize the data
-      this.forEachData(data => data.init())
-      // At this point the state value may not be consistent
-      this.consolidate()
-      // but now it should be
-      this.model.init && (this.model.init.call(this))
+  try {
+    /** @type {string} */
+    this.baseType_ = type // readonly private property used by getType
+    // next trick to avoid some costy computations
+    // this makes sense because subclassers may use a long getBaseType
+    // which is oftely used
+    this.getBaseType = eYo.Brick.prototype.getBaseType // no side effect during creation due to inheritance.
+
+    // private properties
+    this.children__ = []
+    this.span__ = new eYo.Span(this)
+    this.change__ = new eYo.Change(this)
+    // to manage reentrency
+    this.reentrant_ = Object.create(null)
+    // to manage errors
+    this.errors = Object.create(null)
+
+    // make the state
+    eYo.Events.disableWrap(() => {
+      this.change.wrap(() => {
+        this.makeMagnets()
+        this.makeData()
+        this.makeFields()
+        this.makeSlots()
+        // now make the bounds between data and fields
+        this.makeBounds()
+        // initialize the data
+        this.forEachData(data => data.init())
+        // At this point the state value may not be consistent
+        this.consolidate()
+        // but now it should be
+        this.model.init && (this.model.init.call(this))
+      })
     })
-  })
-  // Now we are ready to work
-  delete this.getBaseType // next call will use the overriden method if any
+    // Now we are ready to work
+  } finally {
+    delete this.getBaseType // next call will use the overriden method if any
+  }
   board.addBrick(this, opt_id)
 }
-goog.inherits(eYo.Brick, eYo.Owned)
+goog.inherits(eYo.Brick, eYo.Owned.UI)
+
+/**
+ * Model getter. Convenient shortcut.
+ */
+eYo.Brick.getModel = function (type) {
+  return eYo.Brick.Mgr.getModel(type)
+}
 
 // convenient namespace for debugging
-eYo.Brick.DEBUG = {}
+eYo.Brick.DEBUG = Object.create(null)
+
+eYo.Property.addLinks(eYo.Brick.prototype, 'parent')
+eYo.Property.add(eYo.Brick.prototype, 'span', 'change')
 
 // owned properties with default value
 Object.defineProperties(eYo.Brick.prototype, {
-  parent__: { value: eYo.VOID, writable: true },
   wrappedMagnets_: { value: eYo.VOID, writable: true },
   inputList_: { value: eYo.VOID, writable: true },
   pythonType_: { value: eYo.VOID, writable: true },
-  parent_: { value: eYo.VOID, writable: true },
   movable_: { value: true, writable: true },
 })
 
 /**
  * Dispose of all the resources.
  */
-eYo.Brick.prototype.dispose = function (healStack, animate) {
-  if (!this.board) {
+eYo.Brick.prototype.dispose = eYo.Decorate.dispose(function (healStack, animate) {
+  var board = this.board
+  if (!board) {
     // The block has already been deleted.
     return
   }
-  this.disposeUI(healStack, animate)
-  var board = this.board
   if (this.hasFocus) {
     var m5s = this.magnets
     // this brick was selected, select the brick below or above before deletion
     var f = m => m && m.target
     var m4t = f(m5s.right) || f(m5s.left) || f(m5s.head) || f(m5s.foot) || f(m5s.out)
     m4t ? m4t.focusOn() : this.focusOff()
-    this.board.cancelMotion()
+    board.cancelMotion()
   }
-  if (animate && this.ui.rendered) {
-    this.unplug(healStack)
-    this.ui_ && (this.ui_.disposeEffect())
-  } else {
-    this.unplug()
-  }
+  this.unplug(healStack, animate)
   if (eYo.Events.enabled) {
     eYo.Events.fire(new eYo.Events.BrickDelete(this))
   }
@@ -142,38 +151,20 @@ eYo.Brick.prototype.dispose = function (healStack, animate) {
   this.wrappedMagnets_ && (this.wrappedMagnets_.length = 0)
   eYo.Events.disableWrap(() => {
     this.disposeSlots(healStack)
+    this.disposeMagnets()
     this.disposeFields()
     this.disposeData()
-    this.forEachInput(input => input.dispose())
-    this.disposeMagnets()
     this.inputList_ = eYo.VOID
+    this.slotList_ = eYo.VOID
     this.children__ = eYo.VOID
   })
-  // this must be done after the child bricks are released
-  this.disposeUI()
-  this.span.dispose()
-  this.span_ = eYo.VOID
   this.board.resizePort()
-  this.board_ = eYo.VOID
-  this.change_.dispose()
-  this.change_ = eYo.VOID
-  eYo.Brick.superClass_.dispose.call(this)
-}
-
-/**
- * Model getter. Convenient shortcut.
- */
-eYo.Brick.getModel = function (type) {
-  return eYo.Brick.Mgr.getModel(type)
-}
+  eYo.Property.dispose(this, 'span', 'change')
+  eYo.Property.removeLinks(this, 'parent')
+})
 
 // owned computed properties
 Object.defineProperties(eYo.Brick.prototype, {
-  board: {
-    get () {
-      return this.owner_
-    }
-  },
   deletable: { value: false, writable: true},
   isEditing: { value: false, writable: true},
   data: {
@@ -208,6 +199,15 @@ Object.defineProperties(eYo.Brick.prototype, {
 
 // computed properties
 Object.defineProperties(eYo.Brick.prototype, {
+  /**
+   * The receiver's board
+   * @type {eYo.Board}
+   */
+  board: {
+    get () {
+      return this.owner
+    }
+  },
   /** @type {string} */
   type: {
     get () {
@@ -304,11 +304,6 @@ Object.defineProperties(eYo.Brick.prototype, {
         ans = ans.parent
       } while (ans && !ans.isStmt)
       return ans
-    }
-  },
-  span: {
-    get () {
-      return this.span_
     }
   },
   magnets: {
@@ -1459,19 +1454,21 @@ eYo.Brick.prototype.consolidateType = function () {
   }
 }
 
+console.error('allways heal stack, unplug next of not?')
 /**
  * Unplug this brick from its superior brick.  If this brick is a statement,
  * optionally reconnect the brick underneath with the brick on top.
  * @param {boolean=} opt_healStack Disconnect child statement and reconnect
  *   stack.  Defaults to false.
  */
-eYo.Brick.prototype.unplug = function(opt_healStack) {
+eYo.Brick.prototype.unplug = function(opt_healStack, animate) {
+  var healStack = animate && this.ui_.rendered && opt_healStack
   var m4t
   if ((m4t = this.out_m)) {
     m4t.disconnect()
   } else if ((m4t = this.head_m) && (m4t = m4t.target)) {
     m4t.disconnect()
-    if (opt_healStack) {
+    if (healStack) {
       var child = this.foot_m
       if (child && (child = child.target)) {
         child.disconnect()
@@ -1480,13 +1477,14 @@ eYo.Brick.prototype.unplug = function(opt_healStack) {
     }
   } else if ((m4t = this.left_m) && (m4t = m4t.target)) {
     m4t.disconnect()
-    if (opt_healStack) {
+    if (healStack) {
       if ((child = this.right_m) && (child = child.target)) {
         child.disconnect()
         m4t.connect(child)
       }
     }
   }
+  animate && this.ui_ && (this.ui_.disposeEffect())
 }
 
 /**
@@ -1934,7 +1932,7 @@ eYo.Brick.prototype.inputEnumerator = function (all) {
  */
 eYo.Brick.prototype.someInput = function (helper) {
   var ans
-  this.inputList.some(input => {
+  this.someInput(input => {
     if ((ans = helper(input))) {
       return ans === true ? input : ans
     }
@@ -2245,7 +2243,7 @@ eYo.Brick.prototype.getField = function (name) {
       if (f(slot.fields)) return ans
     } while ((slot = slot.next))
   }
-  this.inputList.some(input => input.fieldRow.some(f => (f.name === name) && (ans = f)))
+  this.someInput(input => input.fieldRow.some(f => (f.name === name) && (ans = f)))
   return ans
 }
 
@@ -2274,7 +2272,7 @@ eYo.Brick.debugCount = {}
  * @param {!String} name The name of the input.
  * @return {eYo.Slot} The slot object, or null if input does not exist. Input that are disabled are skipped.
  */
-eYo.Brick.prototypeSlot = function (name) {
+eYo.Brick.prototype.getSlot = function (name) {
   return this.someSlot(slot => slot.name === name)
 }
 
@@ -2984,9 +2982,9 @@ eYo.Brick.Mgr = (() => {
   var merger = (to, from, ignore) => {
     var from_d
     if ((from.check)) {
-      from.check = eYo.Do.ensureArrayFunction(from.check)
+      from.check = eYo.Decorate.arrayFunction(from.check)
     } else if ((from_d = from.wrap)) {
-      from.check = eYo.Do.ensureArrayFunction(from_d)
+      from.check = eYo.Decorate.arrayFunction(from_d)
     }
     for (var k in from) {
       if (ignore && ignore(k)) {
@@ -3014,9 +3012,9 @@ eYo.Brick.Mgr = (() => {
       }
     }
     if ((to.check)) {
-      to.check = eYo.Do.ensureArrayFunction(to.check)
+      to.check = eYo.Decorate.arrayFunction(to.check)
     } else if ((to_d = to.wrap)) {
-      to.check = eYo.Do.ensureArrayFunction(to_d)
+      to.check = eYo.Decorate.arrayFunction(to_d)
     }
   }
   /**
@@ -3202,7 +3200,7 @@ eYo.Brick.Mgr = (() => {
           if (!model.out) {
             model.out = Object.create(null)
           }
-          model.out.check = eYo.Do.ensureArrayFunction(model.out.check || t)
+          model.out.check = eYo.Decorate.arrayFunction(model.out.check || t)
           model.statement && (model.statement = eYo.VOID)
         } else if ((t = eYo.T3.Stmt[key])) {
           var statement = model.statement || (model.statement = Object.create(null))
@@ -3212,11 +3210,11 @@ eYo.Brick.Mgr = (() => {
               s = statement[k] = Object.create(null)
             } else if (s) {
               if (s.check || goog.isNull(s.check)) {
-                s.check = eYo.Do.ensureArrayFunction(s.check)
+                s.check = eYo.Decorate.arrayFunction(s.check)
               } else {
                 var ch = eYo.T3.Stmt[type][key]
                 if (ch) {
-                  s.check = eYo.Do.ensureArrayFunction()
+                  s.check = eYo.Decorate.arrayFunction()
                 }
               }
             }
