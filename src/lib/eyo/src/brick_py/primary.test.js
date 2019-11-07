@@ -522,7 +522,7 @@ describe('Primary slots', function() {
         f(unique, 'unique')
         f(check, 'check')
         f(all, 'all')
-        chai.assert(chai.expect(da.value_b.inputList[0].magnet.check_).equals(all), `BAD CHECK (0)`)
+        chai.assert(chai.expect(da.value_b.slotAtHead.magnet.check_).equals(all), `BAD CHECK (0)`)
         chai.assert(chai.expect(goog.array.concat(unique, check)).eql(all), `BAD CHECK (0)`)
         unique.forEach(tt => {
           var d = eYo.Test.new_brick(tt)
@@ -582,7 +582,7 @@ describe('Primary slots', function() {
         f(unique, 'unique')
         f(check, 'check')
         f(all, 'all')
-        chai.assert(chai.expect(da.value_b.inputList[0].magnet.check_).equals(all), `BAD CHECK (0)`)
+        chai.assert(chai.expect(da.value_b.slotAtHead.magnet.check_).equals(all), `BAD CHECK (0)`)
         chai.assert(chai.expect(goog.array.concat(unique, check)).eql(all), `BAD CHECK (0)`)
         unique.forEach(tt => {
           var d = eYo.Test.new_brick(tt)
@@ -642,9 +642,9 @@ describe('Primary slots', function() {
     var dc = eYo.Test.new_brick('identifier')
     dc.target_p = 'c'
     eYo.Test.code(dc, 'c')
-    // console.error(da.value_b.inputList[0].magnet.check_)
-    // console.error(da.value_b.inputList[1].magnet.check_)
-    // console.error(da.value_b.inputList[2].magnet.check_)
+    // console.error(da.value_b.slotAtHead.magnet.check_)
+    // console.error(da.value_b.slotAtHead.next.magnet.check_)
+    // console.error(da.value_b.slotAtHead.next.next.magnet.check_)
     chai.assert(da.value_b.lastConnect(dc), 'MISSED')
     eYo.Test.code(da, 'a = d, c')
     da.variant_p = eYo.Key.ANNOTATED
@@ -666,12 +666,12 @@ describe('Primary slots', function() {
     chai.assert(da.value_b.lastConnect(d), 'MISSED')
     eYo.Test.input_length(da.value_b, 5)
     eYo.Test.code(da, 'a = c[<MISSING INPUT>], d')
-    chai.assert(da.value_b.inputList[4].connect(dc), 'MISSED')
+    chai.assert(da.value_b.slotAtHead.next.next.next.next.connect(dc), 'MISSED')
     eYo.Test.code(da, 'a = d, c[<MISSING INPUT>]')
     eYo.Test.input_length(da.value_b, 5)
     d.dispose()
     d = eYo.Test.new_brick('yield_expr')
-    chai.assert(da.value_b.inputList[1].connect(d), 'MISSED')
+    chai.assert(da.value_b.slotAtHead.next.connect(d), 'MISSED')
     eYo.Test.input_length(da.value_b, 1)
     chai.assert(!dc.out_m.targetBrick)
     dc.dispose()
@@ -755,10 +755,10 @@ describe('Primary(value_list)', function() {
   it('void unwrapped', function() {
     var d = eYo.Test.new_brick(eYo.T3.Expr.value_list)
     chai.assert(d, 'MISSED')
-    chai.assert(d.inputList.length === 1)
+    chai.assert(Object.keys(d.slots).length === 1)
     var model = d.consolidator.model
     console.error('ALL', d.type, d.subtype, model.all(d.type, d.subtype))
-    var check = d.inputList[0].magnet.check_
+    var check = d.slotAtHead.magnet.check_
     chai.assert(check === null, 'BAD 1')
     // expect(model).to.have.all.keys('unique', 'all', 'check')
     chai.assert(chai.expect(check).equal(model.all(d.type, d.subtype)), `MISMATCH 1`)
@@ -774,7 +774,7 @@ describe('Primary(value_list)', function() {
     eYo.Test.brick(d, 'value_list')
     eYo.Test.input_length(d, 1)
     var model = d.consolidator.model
-    var check = d.inputList[0].magnet.check_
+    var check = d.slotAtHead.magnet.check_
     chai.assert(chai.expect(check).to.equal(model.all(d.type, d.subtype)),`MISMATCH 1`)
     chai.assert(chai.expect(check).to.not.equal(model.check(d.type, d.subtype)),`MISMATCH 2`)
     chai.assert(chai.expect(check).to.not.equal(model.unique(d.type, d.subtype)),`MISMATCH 3`)
@@ -784,21 +784,21 @@ describe('Primary(value_list)', function() {
     var dd = eYo.Test.new_brick('identifier_valued')
     var d = dd.value_b
     eYo.Test.subtype(d, 'identifier_valued')
-    d.lastInput.connect(eYo.Test.new_brick('a'))
+    d.lastSlot.connect(eYo.Test.new_brick('a'))
     eYo.Test.input_length(d, 3)
     var model = d.consolidator.model
-    var check = d.inputList[0].magnet.check_
+    var check = d.slotAtHead.magnet.check_
     var model_check = model.check(d.type, d.subtype)
     var model_all = model.all(d.type, d.subtype)
     var model_unique = model.unique(d.type, d.subtype)
     chai.assert(chai.expect(check).to.equal(model_check), `MISMATCH 01`)
     chai.assert(chai.expect(check).to.not.equal(model_all), `MISMATCH 02`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 03`)
-    check = d.inputList[1].magnet.check_
+    check = d.slotAtHead.next.magnet.check_
     chai.assert(chai.expect(check).to.equal(model_all), `MISMATCH 11`)
     chai.assert(chai.expect(check).to.not.equal(model_check), `MISMATCH 12`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 13`)
-    check = d.inputList[2].magnet.check_
+    check = d.slotAtHead.next.next.magnet.check_
     chai.assert(chai.expect(check).to.equal(model_check), `MISMATCH 21`)
     chai.assert(chai.expect(check).to.not.equal(model_all), `MISMATCH 22`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 23`)
@@ -807,10 +807,10 @@ describe('Primary(value_list)', function() {
   it('non void (=) wrapped', function() {
     var dd = eYo.Test.new_brick('identifier_valued')
     var d = dd.value_b
-    d.lastInput.connect(eYo.Test.new_brick('identifier_valued'))
-    chai.assert(d.inputList.length === 1)
+    d.lastSlot.connect(eYo.Test.new_brick('identifier_valued'))
+    chai.assert(Object.keys(d.slots).length === 1)
     var model = d.consolidator.model
-    var check = d.inputList[0].magnet.check_
+    var check = d.slotAtHead.magnet.check_
     var model_check = model.check(d.type, d.subtype)
     var model_all = model.all(d.type, d.subtype)
     var model_unique = model.unique(d.type, d.subtype)
@@ -862,7 +862,7 @@ describe('Primary(DEFINED)', function() {
     u = d.value_s.unwrappedTarget
     chai.assert(u.target_p === rhs_a, `MISSED ${u.target_p} === ${rhs_a}`)
     eYo.Test.input_length(d.value_b, 5)
-    var name = d.value_b.inputList[3].targetBrick.target_p
+    var name = d.value_b.slotAtHead.next.next.next.targetBrick.target_p
     chai.assert(name = rhs_b, `MISSED ${name} = ${rhs_b}`)
     d.dispose()
   })

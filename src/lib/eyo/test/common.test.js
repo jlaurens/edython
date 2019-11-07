@@ -234,7 +234,7 @@ eYo.Test.magnets = (d, cfg) => {
 }
 
 eYo.Test.input_length = (d, k, str) => {
-  chai.assert(d.inputList.length === k, `BAD INPUT LENGTH ${str || ''} ${d.inputList.length} === ${k}`)
+  chai.assert(d.slotList.length === k, `BAD INPUT LENGTH ${str || ''} ${Object.keys(d.slots).length} === ${k}`)
 }
 
 /**
@@ -404,8 +404,8 @@ eYo.Test.copy_paste = (brick, opts) => {
         return filter(t9k)
       }
     }
-    var m = brick.inputList.map(f)
-    var mm = dd.inputList.map(f)
+    var m = brick.slotList.map(f)
+    var mm = dd.slotList.map(f)
     chai.assert(chai.expect(m).to.deep.equal(mm), `FAILURE filter`)
   }
   dd.dispose()
@@ -425,7 +425,7 @@ eYo.Test.same_list_length = (dlgt1, dlgt2, key) => {
   var t2_brick = s2.targetBrick
   chai.assert(t1_brick, `MISSING d slot target for key ${key}`)
   chai.assert(t2_brick, `MISSING dd slot target for key ${key}`)
-  chai.assert(t1_brick.inputList.length === t2_brick.inputList.length, `FAILED inputList length ${t1_brick.inputList.length} === ${t2_brick.inputList.length}`)
+  chai.assert(Object.keys(t1_brick.slots).length === Object.keys(t2_brick.slots).length, `FAILED slotList length ${Object.keys(t1_brick.slots).length} === ${Object.keys(t2_brick.slots).length}`)
 }
 
 /**

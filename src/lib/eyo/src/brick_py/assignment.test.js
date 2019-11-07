@@ -75,7 +75,7 @@ describe('Assignment', function() {
     var d1 = eYo.Test.new_brick('assignment_stmt')
     eYo.Test.variant(d1, 'TARGET_VALUED')
     var d2 = eYo.Test.new_brick(eYo.T3.Expr.assignment_chain)
-    var input = d1.value_b.lastInput
+    var input = d1.value_b.lastSlot
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
     chai.assert(input.targetBrick === d2, 'MISSED M4T 2')
     d1.dispose()
@@ -88,7 +88,7 @@ describe('Assignment', function() {
     var d2 = eYo.Test.new_brick('identifier_valued')
     d2.eyotarget_p = 'NOM'
     d2.value_p = 'EXPR'
-    var input = d1.value_b.lastInput
+    var input = d1.value_b.lastSlot
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
     chai.assert(input.targetBrick === d2, 'MISSED M4T 2')
     d1.dispose()
@@ -225,7 +225,7 @@ describe('Copy/Paste', function() {
     var d1 = eYo.Test.new_brick('assignment_stmt')
     eYo.Test.variant(d1, 'TARGET_VALUED')
     var d2 = eYo.Test.new_brick(eYo.T3.Expr.assignment_chain)
-    var input = d1.value_b.lastInput
+    var input = d1.value_b.lastSlot
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
     chai.assert(input.targetBrick === d2, 'MISSED M4T 2')
     d1.dispose()
@@ -238,7 +238,7 @@ describe('Copy/Paste', function() {
     var d2 = eYo.Test.new_brick('identifier_valued')
     d2.eyotarget_p = 'NOM'
     d2.value_p = 'EXPR'
-    var input = d1.value_b.lastInput
+    var input = d1.value_b.lastSlot
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
     chai.assert(input.targetBrick === d2, 'MISSED M4T 2')
     d1.dispose()
@@ -417,7 +417,7 @@ describe('One brick: annotated_assignment_stmt', function() {
     eYo.Test.code(d3, 'Z: abcd + cdef')
     eYo.Test.brick(d3, 'identifier_annotated')
     // it's a unique target
-    chai.assert(d_main.target_b.inputList[0].connect(d3), 'MISSED M4T 4')
+    chai.assert(d_main.target_b.slotAtHead.connect(d3), 'MISSED M4T 4')
     eYo.Test.brick(d_main, 'annotated_assignment_stmt')
     eYo.Test.input_length(d_main.target_b, 1, `MISSED M4T 5`)
     var b3k = d_main.target_s.unwrappedTarget

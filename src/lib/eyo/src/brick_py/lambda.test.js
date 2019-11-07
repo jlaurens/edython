@@ -7,8 +7,8 @@ describe('Lambda', function() {
       var b3k = eYo.Test.new_brick(eYo.T3.Expr.lambda)
       var d = b3k.parameters_b
       var a = eYo.Test.new_brick('a')
-      assert(d.lastInput.connect(a), 'MISSING 1')
-      assert(d.inputList.length === 3, 'MISSED 2')
+      assert(d.lastSlot.connect(a), 'MISSING 1')
+      assert(d.slots.length === 3, 'MISSED 2')
       var f = v => {
         a.variant_p = v
         var u = b3k.parameters_s.unwrappedTarget
@@ -59,17 +59,17 @@ describe('Lambda', function() {
               var b3k = eYo.Test.new_brick(eYo.T3.Expr.lambda)
               var t = b3k.parameters_b
               var a = eYo.Test.new_brick('a')
-              assert(t.lastInput.connect(a), 'MISSING 1')
+              assert(t.lastSlot.connect(a), 'MISSING 1')
               a.variant_p = v1
               var d = eYo.Test.new_brick('d')
-              assert(t.lastInput.connect(d), 'MISSING 2')
+              assert(t.lastSlot.connect(d), 'MISSING 2')
               d.variant_p = v2
               var c = eYo.Test.new_brick('c')
-              assert(this._runnable.lastInput.connect(c), 'MISSING 3')
+              assert(this._runnable.lastSlot.connect(c), 'MISSING 3')
               c.variant_p = v3
-              assert(t.inputList.length === 7, 'MISSED 1')
+              assert(t.slots.length === 7, 'MISSED 1')
               var f = (n, i) => {
-                var u = b3k.parameters_b.inputList[i].targetBrick
+                var u = b3k.parameters_b.slotList_[i].targetBrick
                 assert(u.target_p === n, `MISSED: ${n} at ${i}`)
               }
               f('a', 1)

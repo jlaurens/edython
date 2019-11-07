@@ -593,8 +593,8 @@ Object.defineProperties(eYo.Magnet.prototype, {
       }
       // in a void wrapped list
       var brick = this.brick
-      var input = brick.inputList[0]
-      if (input && (input.magnet === this)) {
+      var slot = brick.slotAtHead
+      if (slot && (slot.magnet === this)) {
         var m4t = brick.out_m
         if (m4t && (m4t = m4t.target)) {
           return m4t.bindField
@@ -1946,34 +1946,17 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate, maxRadius) {
 
 Object.defineProperty(eYo.Magnet.prototype, 'right', {
   /**
-   * The right connection is just at the right... Not used.
+   * The right magnet is just at the right... Not used.
    * @private
    */
   get () {
     var slot = this.slot
     if (slot) {
-      if ((slot = slot.next) && (slot = slot.some (slot => !slot.incog && slot.magnet && !slot.magnet.hidden))) {
+      if ((slot = slot.next) && (slot = slot.some(slot => !slot.incog && slot.magnet && !slot.magnet.hidden))) {
         return slot.magnet
       }
-      var brick = this.brick
-    } else if ((brick = this.brick)) {
-      var e8r = brick.inputEnumerator()
-      if (e8r) {
-        var input
-        while ((input = e8r.next)) {
-          if (this === input.magnet) {
-            // found it
-            while ((input = e8r.next)) {
-              var m4t
-              if ((m4t = input.magnet)) {
-                return m4t
-              }
-            }
-          }
-        }
-      }
     }
-    if (brick && (m4t = brick.out_m) && (m4t = m4t.target)) {
+    if ((m4t = this.brick.out_m) && (m4t = m4t.target)) {
       return m4t.right
     }
   }

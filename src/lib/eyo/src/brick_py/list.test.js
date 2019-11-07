@@ -61,8 +61,8 @@ describe('Enclosure connections', function() {
     chai.assert(d.connectLast(dd3))
     eYo.Test.input_length(d, 3)
     chai.assert(!dd2.out_m.target)
-    chai.assert(!d.inputList[0].connect(dd2), 'UNEXPECTED connection')
-    chai.assert(!d.inputList[2].connect(dd2), 'UNEXPECTED connection')
+    chai.assert(!d.slotAtHead.connect(dd2), 'UNEXPECTED connection')
+    chai.assert(!d.slotAtHead.next.next.connect(dd2), 'UNEXPECTED connection')
     dd2.dispose()
     dd1 = eYo.Test.new_brick(124)
     eYo.Test.brick(dd1, 'integer')
@@ -70,7 +70,7 @@ describe('Enclosure connections', function() {
     eYo.Test.input_length(d, 5)
     dd1 = eYo.Test.new_brick(241)
     eYo.Test.brick(dd1, 'integer')
-    chai.assert(d.inputList[0].connect(dd1), 'MISSING connection')
+    chai.assert(d.slotAtHead.connect(dd1), 'MISSING connection')
     eYo.Test.input_length(d, 7)
     d.dispose()
   })
@@ -106,29 +106,29 @@ describe('Enclosure connections', function() {
   it(`Enclosure: '() -> [] -> () -> {} -> ()'`, function() {
     var d = eYo.Test.new_brick('parenth_form')
     var dd1 = eYo.Test.new_brick('comprehension')
-    var input = d.inputList[0]
-    chai.assert(input.connect(dd1), 'MISSING connection')
+    var slot = d.slotAtHead
+    chai.assert(slot.connect(dd1), 'MISSING connection')
     d.variant_p === eYo.Key.SQB
-    chai.assert(input.target === dd1, 'LOST CONNECTION')
+    chai.assert(slot.target === dd1, 'LOST CONNECTION')
     d.variant_p === eYo.Key.BRACE
-    chai.assert(input.target === dd1, 'LOST CONNECTION')
+    chai.assert(slot.target === dd1, 'LOST CONNECTION')
     d.variant_p === eYo.Key.PAR
-    chai.assert(input.target === dd1, 'LOST CONNECTION')
+    chai.assert(slot.target === dd1, 'LOST CONNECTION')
     d.variant_p === eYo.Key.BRACE
-    chai.assert(input.target === dd1, 'LOST CONNECTION')
+    chai.assert(slot.target === dd1, 'LOST CONNECTION')
     d.variant_p === eYo.Key.SQB
-    chai.assert(input.target === dd1, 'LOST CONNECTION')
+    chai.assert(slot.target === dd1, 'LOST CONNECTION')
     d.variant_p === eYo.Key.PAR
-    chai.assert(input.target === dd1, 'LOST CONNECTION')
+    chai.assert(slot.target === dd1, 'LOST CONNECTION')
     d.dispose()
   })
   it(`Enclosure: '() -> {}'`, function() {
     var d = eYo.Test.new_brick('parenth_form')
     var dd1 = eYo.Test.new_brick(421)
-    var input = d.inputList[0]
-    chai.assert(input.connect(dd1), 'MISSING connection')
+    var slot = d.slotAtHead
+    chai.assert(slot.connect(dd1), 'MISSING connection')
     d.variant_p === eYo.Key.BRACE
-    chai.assert(input.target === dd1, 'LOST CONNECTION')
+    chai.assert(slot.target === dd1, 'LOST CONNECTION')
     d.dispose()
   })
 })

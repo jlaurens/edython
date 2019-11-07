@@ -309,24 +309,21 @@ eYo.Brick.List.makeSubclass('parameter_list', {
  * @private
  */
 eYo.Brick.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mgr) {
-  var e8r = this.inputEnumerator()
   var F = (modifier, flags, msg) => {
-    var y
+    var b3k
     eYo.Events.disableWrap(() => {
-      y = eYo.Brick.newReady(this, eYo.T3.Expr.identifier)
-      y.change.wrap(
+      b3k = eYo.Brick.newReady(this, eYo.T3.Expr.identifier)
+      b3k.change.wrap(
         function() { // `this` is `y`
           this.modifier_p = modifier
           this.variant_p = flags
         }
       )
     })
-    e8r.end()
-    var input
-    while ((input = e8r.previous)) {
-      var m4t = input.magnet
+    this.forEachSlotReverse((slot) => {
+      var m4t = slot.magnet
       if (m4t && !m4t.target) {
-        if (m4t.checkType_(y.out_m)) {
+        if (m4t.checkType_(b3k.out_m)) {
           var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
             eYo.Do.createSPAN('( ', 'eyo-code-disabled'),
             eYo.Do.createSPAN(msg),
@@ -335,13 +332,13 @@ eYo.Brick.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mg
           mgr.addInsertChild(mgr.newMenuItem(
             content,
             () => {
-              var y = eYo.Brick.newReady(this, eYo.T3.Expr.identifier)
+              var b3k = eYo.Brick.newReady(this, eYo.T3.Expr.identifier)
               eYo.Events.groupWrap(() => { // `this` is catched
-                y.change.wrap(
-                  function () { // `this` is `y`
+                b3k.change.wrap(
+                  function () { // `this` is `b3k`
                     this.modifier_p = modifier
                     this.variant_p = flags
-                    m4t.connect(y.out_m)
+                    m4t.connect(b3k.out_m)
                   }
                 )
               })
@@ -349,9 +346,9 @@ eYo.Brick.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mg
           ))
         }
       }
-    }
+    })
     eYo.Events.disableWrap(() => {
-      y.dispose(true)
+      b3k.dispose(true)
     })
   }
   F('', 0, 'name')

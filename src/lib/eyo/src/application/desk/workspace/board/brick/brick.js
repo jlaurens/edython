@@ -177,11 +177,6 @@ Object.defineProperties(eYo.Brick.prototype, {
       return this.slots_
     }
   },
-  inputList: {
-    get () {
-      return this.inputList_ || (this.inputList_ = [])
-    }
-  },
   /**
    * Direct descendants.
    */
@@ -475,10 +470,15 @@ Object.defineProperties(eYo.Brick.prototype, {
       return ans
     },
   },
-  lastInput: {
+  lastSlot: {
     get () {
-      var list = this.inputList
-      return list[list.length - 1]
+      var ans = this.slotAtHead
+      if (ans) {
+        while (ans.next) {
+          ans = ans.next
+        }
+      }
+      return ans
     }
   },
   /**
@@ -489,7 +489,7 @@ Object.defineProperties(eYo.Brick.prototype, {
   rootControl: {
     get () {
       var ans = this
-      while (!ans.isControl && (ans = ans.parent));
+      while (!ans.isControl && (ans = ans.parent)) {}
       return ans
     }
   },
@@ -936,6 +936,21 @@ eYo.Brick.prototype.forEachChild = function (helper) {
 eYo.Brick.prototype.forEachSlot = function (helper) {
   var slot = this.slotAtHead
   slot && slot.forEach(helper)
+}
+
+/**
+ * execute the given function for the tail slot of the receiver and its previous sibling.
+ * For edython.
+ * @param {!function} helper
+ */
+eYo.Brick.prototype.forEachSlotReverse = function (helper) {
+  var slot = this.slotAtHead
+  if (slot) {
+    while(slot.next) {
+      slot = slot.next
+    }
+    slot.forEachPrevious(helper)
+  }
 }
 
 /**
@@ -1408,39 +1423,6 @@ eYo.Brick.prototype.consolidateType = function () {
   }
 }
 
-console.error('allways heal stack, unplug next of not?')
-/**
- * Unplug this brick from its superior brick.  If this brick is a statement,
- * optionally reconnect the brick underneath with the brick on top.
- * @param {boolean=} opt_healStack Disconnect child statement and reconnect
- *   stack.  Defaults to false.
- */
-eYo.Brick.prototype.unplug = function(opt_healStack, animate) {
-  var healStack = animate && this.ui_.rendered && opt_healStack
-  var m4t
-  if ((m4t = this.out_m)) {
-    m4t.disconnect()
-  } else if ((m4t = this.head_m) && (m4t = m4t.target)) {
-    m4t.disconnect()
-    if (healStack) {
-      var child = this.foot_m
-      if (child && (child = child.target)) {
-        child.disconnect()
-        m4t.connect(child)
-      }
-    }
-  } else if ((m4t = this.left_m) && (m4t = m4t.target)) {
-    m4t.disconnect()
-    if (healStack) {
-      if ((child = this.right_m) && (child = child.target)) {
-        child.disconnect()
-        m4t.connect(child)
-      }
-    }
-  }
-  animate && this.ui_ && (this.ui_.disposeEffect())
-}
-
 /**
  * Set the connection check array.
  * The connections are supposed to be configured only once.
@@ -1473,6 +1455,39 @@ eYo.Brick.prototype.consolidateMagnets = function () {
     f(m5s.suite)
     f(m5s.foot)
   }
+}
+
+console.error('allways heal stack, unplug next of not?')
+/**
+ * Unplug this brick from its superior brick.  If this brick is a statement,
+ * optionally reconnect the brick underneath with the brick on top.
+ * @param {boolean=} opt_healStack Disconnect child statement and reconnect
+ *   stack.  Defaults to false.
+ */
+eYo.Brick.prototype.unplug = function(opt_healStack, animate) {
+  var healStack = animate && this.ui_.rendered && opt_healStack
+  var m4t
+  if ((m4t = this.out_m)) {
+    m4t.disconnect()
+  } else if ((m4t = this.head_m) && (m4t = m4t.target)) {
+    m4t.disconnect()
+    if (healStack) {
+      var child = this.foot_m
+      if (child && (child = child.target)) {
+        child.disconnect()
+        m4t.connect(child)
+      }
+    }
+  } else if ((m4t = this.left_m) && (m4t = m4t.target)) {
+    m4t.disconnect()
+    if (healStack) {
+      if ((child = this.right_m) && (child = child.target)) {
+        child.disconnect()
+        m4t.connect(child)
+      }
+    }
+  }
+  animate && this.ui_ && (this.ui_.disposeEffect())
 }
 
 /**
@@ -1861,18 +1876,6 @@ Object.defineProperty(eYo.Brick.prototype, 'incog', {
 })
 
 /**
- * Input enumerator
- * For edython.
- * @param {!Boolean} all  Retrieve all the inputs, or just the ones with a slot.
- * @return !String
- */
-eYo.Brick.prototype.inputEnumerator = function (all) {
-  return eYo.Do.Enumerator(this.inputList, all || (x =>
-    !x.magnet || !x.magnet.slot || !x.magnet.slot.incog)
-  )
-}
-
-/**
  * Runs the helper function for some input, until it responds a truthy value.
  * For edython.
  * @param {!Function} helper
@@ -1940,9 +1943,9 @@ eYo.Brick.prototype.removeError = function (key) {
 /**
  * get the slot magnets, mainly for debugging purposes.
  * For edython.
- * @return An array of all the connections
+ * @return An array of all the magnets
  */
-eYo.Brick.prototype.getSlotMagnetss = function () {
+eYo.Brick.prototype.getSlotMagnets = function () {
   var ra = []
   this.forEachSlot(slot => slot.magnet && (ra.push(slot.magnet)))
   return ra
@@ -1960,14 +1963,14 @@ eYo.Brick.prototype.footConnect = function (brick) {
 }
 
 /**
- * Connect the magnet of the `lastInput`, to the given expression brick/magnet/type.
+ * Connect the magnet of the `lastSlot`, to the given expression brick/magnet/type.
  * @param {!eYo.Brick|eYo.Magnet|String} bdct  brick, magnet or type
  * @return {?eYo.Brick}  The connected brick, if any.
  */
 eYo.Brick.prototype.connectLast = function (bmt) {
   var other = (bmt.magnets && bmt.out_m) || (bmt instanceof eYo.Magnet && bmt) || eYo.Brick.newReady(this, bmt).out_m
   if (other) {
-    var m4t = this.lastInput.magnet
+    var m4t = this.lastSlot.magnet
     if (m4t.checkType_(other)) {
       m4t.connect(other)
       return m4t.target === other ? m4t.targetBrick : eYo.VOID

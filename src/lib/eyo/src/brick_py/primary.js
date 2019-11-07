@@ -369,7 +369,7 @@ eYo.Brick.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, 
     var parent = this.parent
     if (parent) {
       parent.target_s.bindField.visible = false
-      if (this.inputList.length > 1) {
+      if (Object.keys(this.slots).length > 1) {
         // this is the second brick we connect
         parent.variant_p = eYo.Key.TARGET_VALUED
       } else {
@@ -1058,7 +1058,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
           var parent = this.brick.parent
           if (parent) {
             parent.target_s.bindField.visible = false
-            if (this.brick.inputList.length > 1) {
+            if (Object.keys(this.brick.slots).length > 1) {
               // this is the second brick we connect
               parent.variant_p = eYo.Key.TARGET_VALUED
             } else {
@@ -1087,7 +1087,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
         // when there is no connected brick, we display the field
         var unwrappedB3k = this.unwrappedMagnet.brick
         if (unwrappedB3k) {
-          if (this.brick.inputList.length < 4) { // bad design
+          if (Object.keys(this.brick.slots).length < 4) { // bad design
             // this is the last brick we disconnected
             var f = unwrappedB3k.target_s.bindField
             f && (f.visible = true)
@@ -1313,7 +1313,7 @@ eYo.Brick.Expr.primary.prototype.getProfile = eYo.Change.decorate(
       var t9k, p5e
       var type
       // if the `target` slot is connected.
-      if (this.target_b && this.target_b.inputList.length > 3) {
+      if (this.target_b && Object.keys(this.target_b.slots).length > 3) {
         type = eYo.T3.Expr.assignment_chain
         ans.name = {
           type: type,
@@ -1591,10 +1591,10 @@ eYo.Brick.Expr.primary.prototype.getOutCheck = function () {
     ]
   } else if (profile.variant === eYo.Key.TARGET_VALUED) {
     // Is the target connected to something that is not an identifier ?
-    if (this.target_b.inputList.length > 3) {
+    if (Object.keys(this.target_b.slots).length > 3) {
       return [eYo.T3.Expr.assignment_chain]
     }
-    if (this.target_b.inputList.length > 1) {
+    if (Object.keys(this.target_b.slots).length > 1) {
       // only one connected input
       var b3k = this.target_s.unwrappedTarget
       if (b3k && b3k.type !== eYo.T3.Expr.identifier) {

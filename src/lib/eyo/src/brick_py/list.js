@@ -50,7 +50,7 @@ eYo.Brick.List.slotsHandler = {
           }
           slot.next = what
         } else {
-          
+
           return brick.slotAtHead = what
         }
         what && (what.previous = slot)
@@ -79,6 +79,14 @@ eYo.Brick.List.slotsHandler = {
         } else {
           return brick.slotAtHead = what
         }
+      }
+    } else if (k === 'map') {
+      return function (f) {
+        var ans = []
+        brick.forEachSlot(slot => {
+          ans.push(f(slot))
+        })
+        return ans
       }
     } else if (isNaN(k)) {
       return undefined
