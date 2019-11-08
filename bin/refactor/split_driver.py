@@ -1,3 +1,6 @@
+"""
+Once the drivers as UI delegates were gathered into one big file.
+"""
 from pathlib import Path
 import regex as re
 
@@ -23,7 +26,11 @@ for p in eyo_path.glob('**/*.js'):
       lower = m[4]
       upper = m[5]
       rest = m[6]
-      if head in ['contour', 'disconnect', 'path']:
+      if head is 'contour':
+        continue
+      if head is 'path':
+        continue
+      if head is 'disconnect':
         continue
       if head.lower() == name:
         k = f'{driver}.prototype.{find}'
@@ -60,3 +67,4 @@ for p in eyo_path.glob('**/*.js'):
   if content is not content0:
     print(f'SAVING to {p}')
     p.write_text(content)
+

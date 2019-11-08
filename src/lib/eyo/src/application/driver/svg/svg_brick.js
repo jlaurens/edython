@@ -11,13 +11,19 @@
  */
 'use strict'
 
-goog.provide('eYo.Svg.Brick')
-
 goog.require('eYo.Svg')
+goog.require('eYo.Dom.Brick')
+
+goog.provide('eYo.Svg.Brick')
 
 goog.forwardDeclare('eYo.Focus')
 
 // Brick management
+
+/**
+ * Svg driver for bricks.
+ */
+eYo.Svg.makeSubclass('Brick')
 
 /**
  * Initialize the given brick.
@@ -25,10 +31,7 @@ goog.forwardDeclare('eYo.Focus')
  * The svg
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
-eYo.Svg.Brick.prototype.initUI = function (brick) {
-  if (brick.dom) {
-    return
-  }
+eYo.Svg.Brick.prototype.initUI = eYo.Decorate.Svg.initUI(function (brick) {
   var dom = this.basicInit(brick)
   var svg = dom.svg
   // groups:
@@ -166,7 +169,7 @@ eYo.Svg.Brick.prototype.initUI = function (brick) {
     svg.groupShape_.removeAttribute('transform')
     svg.groups = [g]
   }
-}
+})
 
 
 /**

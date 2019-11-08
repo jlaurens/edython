@@ -14,6 +14,7 @@
 goog.provide('eYo.Svg')
 
 goog.require('eYo.Dom')
+goog.require('eYo.Decorate')
 
 goog.require('eYo.T3.Profile')
 goog.require('eYo.Field')
@@ -46,10 +47,20 @@ goog.forwardDeclare('goog.userAgent')
  * @memberof eYo.Brick.prototype.dom
  */
 
-eYo.Svg = function (desk) {
-  eYo.Svg.superClass_.constructor.call(this, desk)
+eYo.Svg = function () {
+  eYo.Svg.superClass_.constructor.call(this)
 }
 goog.inherits(eYo.Svg, eYo.Dom)
+
+/**
+ * Convenient method to subclass a Dom driver into a Svg driver.
+ */
+ eYo.Svg.makeSubclass = (name) => {
+  eYo.Svg[name] = function() {
+    eYo.Svg[name].superClass_.contructor.call(this)
+  }
+  goog.inherits(eYo.Svg[name], eYo.Dom[name])  
+}
 
 eYo.Svg.prototype.withBBox = true
 
@@ -395,3 +406,21 @@ eYo.Svg.getRelativeWhere.Where_3D_REGEX_ =
  */
 eYo.Svg.getRelativeWhere.Where_2D_REGEX_ =
   /transform:\s*translate\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/
+
+/**
+ * @name{eYo.Decorate.Svg}
+ * @namespace
+ */
+eYo.Decorate.Svg = Object.create(null)
+
+/**
+ * Decorator for initSvg
+ */
+eYo.Decorate.Svg.initUI = (constructor, f) => {
+  return function () {
+    if (constructor.superClass_.apply(this, arguments)) {
+      f.apply(this.arguments)
+      return true
+    }
+  }
+}
