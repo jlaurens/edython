@@ -100,14 +100,14 @@ Object.defineProperties(eYo.Slot.prototype, {
  * Make the UI.
 */
 eYo.Slot.prototype.makeUI = eYo.Decorate.makeUI(eYo.Slot, function () {
-  this.ui_driver.slotInit(this)
+  this.ui_driver_mgr.slotInit(this)
 })
 
 /**
  * Dispose of the UI.
 */
 eYo.Slot.prototype.disposeUI = eYo.Decorate.disposeUI(eYo.Slot, function () {
-  this.ui_driver.slotDispose(this)
+  this.ui_driver_mgr.slotDispose(this)
 })
 
 /**
@@ -185,7 +185,7 @@ Object.defineProperties(eYo.Slot.prototype, {
       return this.brick.ui
     }
   },
-  ui_driver: {
+  ui_driver_mgr: {
     get () {
       var ui = this.ui
       return ui && ui.driver
@@ -272,7 +272,7 @@ Object.defineProperties(eYo.Slot.prototype, {
  */
 eYo.Slot.prototype.makeUI = function () {
   this.makeUI = eYo.Do.nothing // one shot function
-  this.ui_driver.slotInit(this)
+  this.ui_driver_mgr.slotInit(this)
   this.forEachField(f => f.makeUI())
   this.magnet && (this.magnet.makeUI())
 }
@@ -376,7 +376,7 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
  * For edython.
  */
 eYo.Slot.prototype.synchronize = function () {
-  var d = this.ui_driver
+  var d = this.ui_driver_mgr
   if (!d) {
     return
   }

@@ -181,7 +181,7 @@ eYo.Workspace.prototype.dispose = eYo.Decorate.dispose(
  * 2) Then the board dimensions.
  */
 eYo.Workspace.prototype.updateMetrics = function() {
-  this.ui_driver.workspaceUpdateMetrics(this)
+  this.ui_driver_mgr.workspaceUpdateMetrics(this)
   this.board.updateMetrics()
   this.flyout.updateMetrics()
 }
@@ -198,7 +198,7 @@ eYo.Workspace.prototype.layout = function() {
  * Place the boards.
  */
 eYo.Workspace.prototype.place = function() {
-  this.ui_driver.wokspacePlace(this)
+  this.ui_driver_mgr.wokspacePlace(this)
   this.board.place()
   this.flyout.place()
   var bottom = eYo.Scrollbar.thickness

@@ -62,7 +62,7 @@ eYo.Property.addMany(
      * @type {eYo.Driver}
      * @readonly
      */
-    ui_driver: {
+    ui_driver_mgr: {
       willChange(before, after) {
         if (before) {
           this.disposeUI()
@@ -134,7 +134,7 @@ eYo.Application.prototype.makeUI = function() {
   this.makeUI = eYo.Do.nothing
   delete this.disposeUI
   this.audio__ = new eYo.Audio(this, this.options.pathToMedia)
-  var d = this.ui_driver__ = new eYo.Svg(this)
+  var d = this.ui_driver_mgr__ = new eYo.Svg(this)
   d.applicationInit(this)
   this.desk.makeUI()
 }
@@ -145,7 +145,7 @@ eYo.Application.prototype.makeUI = function() {
 eYo.Application.prototype.disposeUI = function() {
   this.disposeUI = eYo.Do.nothing
   this.desk.disposeUI()
-  this.ui_driver_ = null
+  this.ui_driver_mgr_ = null
   delete this.makeUI
 }
 

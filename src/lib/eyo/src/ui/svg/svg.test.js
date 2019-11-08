@@ -29,8 +29,8 @@ describe('SVG groups and paths', function () {
     chai.assert(dom, `MISSING svg in value field of ${type}`)
     var ui = field.ui
     chai.assert(ui === d1.ui, `MISSING field.ui === d1.ui for value field of ${type}`)
-    var ui_driver = field.ui_driver
-    chai.assert(ui_driver, `MISSING ui_driver in value field of ${type}`)
+    var ui_driver_mgr = field.ui_driver_mgr
+    chai.assert(ui_driver_mgr, `MISSING ui_driver_mgr in value field of ${type}`)
     chai.assert(dom.svg.group_ === dom.svg.textElement_, `FAILED dom.svg.group_ === dom.svg.textElement_ in value field of ${type}`)
     d1.dispose()
     chai.assert(!d1.dom, `FAILED SVG dispose`)
@@ -45,8 +45,8 @@ describe('SVG groups and paths', function () {
   //   chai.assert(dom, `MISSING svg in value field of ${type}`)
   //   var ui = field.ui
   //   chai.assert(ui === d1.ui, `MISSING field.ui === d1.ui for value field of ${type}`)
-  //   var ui_driver = field.ui_driver
-  //   chai.assert(ui_driver, `MISSING ui_driver in value field of ${type}`)
+  //   var ui_driver_mgr = field.ui_driver_mgr
+  //   chai.assert(ui_driver_mgr, `MISSING ui_driver_mgr in value field of ${type}`)
   //   eYo.Test.svgNodeParent(dom, 'textElement_', 'group_', type)
   //   eYo.Test.tearItDown()
   // })

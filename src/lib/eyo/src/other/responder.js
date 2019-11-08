@@ -619,7 +619,7 @@ eYo.Responder.prototype.handleBoardStart = function(e, board) {
     return
   }
   this.event_ = e
-  this.ui_driver.disconnectStop()
+  this.ui_driver_mgr.disconnectStop()
   board.updateScreenCalculationsIfScrolled()
   board.markFocused()
 

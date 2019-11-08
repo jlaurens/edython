@@ -33,7 +33,7 @@ eYo.Brick.Expr.makeSubclass('binary', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var d = this.field.ui_driver
+        var d = this.field.ui_driver_mgr
         d && (d.fieldMakeReserved(this.field, ['in', 'or', 'and'].indexOf(newValue) >= 0))
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -310,7 +310,7 @@ eYo.Brick.Expr.makeSubclass('unary', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var d = this.field.ui_driver
+        var d = this.field.ui_driver_mgr
         d && (d.fieldMakeReserved(this.field, newValue === 'not'))
       },
       fromType: /** @suppress {globalThis} */ function (type) {

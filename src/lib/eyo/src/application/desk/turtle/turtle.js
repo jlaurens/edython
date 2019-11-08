@@ -51,12 +51,12 @@ eYo.Turtle.prototype.disposeUI = eYo.Decorate.disposeUI(
  * Update the metrics of the receiver.
  */
 eYo.Turtle.prototype.updateMetrics = function () {
-  this.ui_driver.turtleUpdateMetrics()
+  this.ui_driver_mgr.turtleUpdateMetrics()
 }
 
 /**
  * Place the receiver.
  */
 eYo.Turtle.prototype.place = function () {
-  this.ui_driver.turtlePlace()
+  this.ui_driver_mgr.turtlePlace()
 }

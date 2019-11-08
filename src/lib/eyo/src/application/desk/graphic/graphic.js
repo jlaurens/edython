@@ -51,12 +51,12 @@ eYo.Graphic.prototype.disposeUI = eYo.Decorate.disposeUI(
  * Update the metrics of the receiver.
  */
 eYo.Graphic.prototype.updateMetrics = function () {
-  this.ui_driver.graphicUpdateMetrics()
+  this.ui_driver_mgr.graphicUpdateMetrics()
 }
 
 /**
  * Place the receiver.
  */
 eYo.Graphic.prototype.place = function () {
-  this.ui_driver.graphicPlace()
+  this.ui_driver_mgr.graphicPlace()
 }

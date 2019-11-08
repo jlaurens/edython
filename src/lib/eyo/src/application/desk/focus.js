@@ -104,9 +104,9 @@ Object.defineProperties(eYo.Focus.Main.prototype, {
     },
     set (board) {
       if (board && this.mgr_ && board !== this.mgr_.board) {
-        this.hasUI && this.ui_driver.focusOffBoard(this)
+        this.hasUI && this.ui_driver_mgr.focusOffBoard(this)
         this.mgr_ = board.focusMgr
-        this.hasUI && this.ui_driver.focusOnBoard(this)
+        this.hasUI && this.ui_driver_mgr.focusOnBoard(this)
       }
     }
   },
@@ -175,7 +175,7 @@ eYo.Focus.Main.prototype.dispose = function () {
 eYo.Focus.Main.prototype.makeUI = function() {
   delete this.disposeUI
   this.makeUI = eYo.Do.nothing
-  this.ui_driver.focusMainInit(this)
+  this.ui_driver_mgr.focusMainInit(this)
   this.mgrs_.foreach(m => m.makeUI())
 }
 
@@ -184,7 +184,7 @@ eYo.Focus.Main.prototype.makeUI = function() {
  */
 eYo.Focus.Main.prototype.disposeUI = function() {
   this.mgrs_.foreach(m => m.disposeUI())
-  this.ui_driver.focusMainDispose(this)
+  this.ui_driver_mgr.focusMainDispose(this)
   delete this.makeUI
   this.disposeUI = eYo.Do.nothing
 }
@@ -222,7 +222,7 @@ eYo.Focus.Mgr.prototype.dispose = function () {
  * Make the UI. Called by the owner.
  */
 eYo.Focus.Mgr.prototype.makeUI = function() {
-  this.ui_driver.focusMgrInit(this)
+  this.ui_driver_mgr.focusMgrInit(this)
   delete this.disposeUI
   this.makeUI = eYo.Do.nothing
 }
@@ -231,7 +231,7 @@ eYo.Focus.Mgr.prototype.makeUI = function() {
  * Dispose the UI related resources.
  */
 eYo.Focus.Mgr.prototype.disposeUI = function() {
-  this.ui_driver.focusMgrDispose(this)
+  this.ui_driver_mgr.focusMgrDispose(this)
   delete this.makeUI
   this.disposeUI = eYo.Do.nothing
 }
@@ -283,7 +283,7 @@ Object.defineProperties(eYo.Focus.Mgr.prototype, {
       }
       if (this.brick__ !== brick) {
         if (this.brick__) {
-          this.hasUI && this.ui_driver.focusOffBrick(this)
+          this.hasUI && this.ui_driver_mgr.focusOffBrick(this)
           this.brick__ = null
         }
         if (brick) {
@@ -294,7 +294,7 @@ Object.defineProperties(eYo.Focus.Mgr.prototype, {
               this.magnet_ = null
             }
           }
-          this.hasUI && this.ui_driver.focusOnBrick(this)
+          this.hasUI && this.ui_driver_mgr.focusOnBrick(this)
           this.didAdd()
         } else {
           this.magnet_ = null
@@ -314,7 +314,7 @@ Object.defineProperties(eYo.Focus.Mgr.prototype, {
     },
     set (magnet) {
       if (magnet !== this.magnet__) {
-        this.hasUI && this.ui_driver.focusOffMagnet(this)
+        this.hasUI && this.ui_driver_mgr.focusOffMagnet(this)
         if (magnet) {
           var b3k = magnet.brick
           if (b3k !== this.brick__) {
@@ -336,7 +336,7 @@ Object.defineProperties(eYo.Focus.Mgr.prototype, {
         } else {
           this.magnet__ = magnet
         }
-        this.hasUI && this.ui_driver.focusOnMagnet(this)
+        this.hasUI && this.ui_driver_mgr.focusOnMagnet(this)
       }
     }
   },
@@ -399,7 +399,7 @@ Object.defineProperties(eYo.Focus.Mgr.prototype, {
     },
     set (field) {
       if (field !== this.field__) {
-        this.hasUI && this.ui_driver.focusOffField(this)
+        this.hasUI && this.ui_driver_mgr.focusOffField(this)
         this.magnet_ = null
         if (field) {
           var b3k = field.brick
@@ -410,7 +410,7 @@ Object.defineProperties(eYo.Focus.Mgr.prototype, {
         } else {
           this.field__ = field
         }
-        this.hasUI && this.ui_driver.focusOnField(this)
+        this.hasUI && this.ui_driver_mgr.focusOnField(this)
       }
     }
   },

@@ -168,9 +168,9 @@ Object.defineProperties(eYo.Owned.UI.prototype, {
    * @readonly
    * @type {eYo.Driver}  The ui driver used for rendering.
    */
-  ui_driver: {
+  ui_driver_mgr: {
     get () {
-      return this.hasUI && this.owner.ui_driver
+      return this.hasUI && this.owner.ui_driver_mgr
     }
   },
 })

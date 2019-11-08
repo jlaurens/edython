@@ -52,12 +52,12 @@ eYo.Terminal.prototype.disposeUI = eYo.Decorate.disposeUI(
  * Update the metrics of the receiver.
  */
 eYo.Terminal.prototype.updateMetrics = function () {
-  this.ui_driver.terminalUpdateMetrics()
+  this.ui_driver_mgr.terminalUpdateMetrics()
 }
 
 /**
  * Place the receiver.
  */
 eYo.Terminal.prototype.place = function () {
-  this.ui_driver.terminalPlace()
+  this.ui_driver_mgr.terminalPlace()
 }

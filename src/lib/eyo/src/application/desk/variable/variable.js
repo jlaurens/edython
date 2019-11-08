@@ -51,12 +51,12 @@ eYo.Variable.prototype.disposeUI = eYo.Decorate.disposeUI(
  * Update the metrics of the receiver.
  */
 eYo.Variable.prototype.updateMetrics = function () {
-  this.ui_driver.variableUpdateMetrics()
+  this.ui_driver_mgr.variableUpdateMetrics()
 }
 
 /**
  * Place the receiver.
  */
 eYo.Variable.prototype.place = function () {
-  this.ui_driver.variablePlace()
+  this.ui_driver_mgr.variablePlace()
 }

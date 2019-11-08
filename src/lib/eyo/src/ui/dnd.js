@@ -36,7 +36,7 @@ eYo.DnD.Mgr = function (motion) {
   /** the dragger_ that started a drag, not owned */
   this.dragger_ = null
   /** Make the UI */
-  this.ui_driver.dndMgrInit(this)
+  this.ui_driver_mgr.dndMgrInit(this)
   /** The list of draggers_, owned */
   this.draggers_ = [
     new eYo.DnD.Dragger.Board(this),
@@ -56,9 +56,9 @@ eYo.DnD.Mgr = function (motion) {
 }
 
 Object.defineProperties(eYo.DnD.Mgr.prototype, {
-  ui_driver: {
+  ui_driver_mgr: {
     get () {
-      return this.motion.ui_driver
+      return this.motion.ui_driver_mgr
     }
   },
   active_: {
@@ -79,7 +79,7 @@ eYo.DnD.Mgr.prototype.dispose = function () {
   this.draggers_ = null
   this.droppers_.foreach(d => d.dispose())
   this.droppers_ = null
-  this.ui_driver.dndMgrDispose(this)
+  this.ui_driver_mgr.dndMgrDispose(this)
   this.motion_ = null
 }
 
@@ -190,9 +190,9 @@ Object.defineProperties(eYo.DnD.Dragger.prototype, {
       return this.manager_.motion_
     }
   },
-  ui_driver: {
+  ui_driver_mgr: {
     get () {
-      return this.manager_.ui_driver
+      return this.manager_.ui_driver_mgr
     }
   },
   /**
@@ -630,9 +630,9 @@ Object.defineProperties(eYo.DnD.Dropper.prototype, {
       return this.manager_.motion_
     }
   },
-  ui_driver: {
+  ui_driver_mgr: {
     get () {
-      return this.manager_.ui_driver
+      return this.manager_.ui_driver_mgr
     }
   },
   started_: {

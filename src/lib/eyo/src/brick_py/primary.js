@@ -1044,7 +1044,7 @@ eYo.Brick.Expr.makeSubclass('primary', {
             this.willRender()
             var item = this.brick.item_p
             var reserved = item && item.module && (item.module.name === 'functions' || item.module.name === 'stdtypes' || item.module.name === 'datamodel')
-            var d = this.ui_driver
+            var d = this.ui_driver_mgr
             d && (d.fieldMakeReserved(this, reserved))
           }
         }

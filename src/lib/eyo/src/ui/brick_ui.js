@@ -109,7 +109,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
   },
   driver: {
     get() {
-      return this.brick_.board.ui_driver
+      return this.brick_.board.ui_driver_mgr
     }
   },
   reentrant_: {
@@ -1018,7 +1018,7 @@ eYo.Brick.UI.prototype.drawSharp_ = function (io) {
  */
 eYo.Brick.UI.prototype.drawField_ = function (field, io) {
   var c = io.cursor.c
-  field.ui_driver.fieldDisplayedUpdate(field)
+  field.ui_driver_mgr.fieldDisplayedUpdate(field)
   if (field.visible) {
     // Actually, io.cursor points to the location where the field
     // is expected. It is relative to the enclosing `SVG` group,

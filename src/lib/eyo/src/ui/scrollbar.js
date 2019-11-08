@@ -85,7 +85,7 @@ Object.defineProperties(eYo.Scroller.prototype, {
  * @private
  */
 eYo.Scroller.prototype.makeUI = function () {
-  this.ui_driver.scrollerInit(this)
+  this.ui_driver_mgr.scrollerInit(this)
   this.makeUI = eYo.Do.nothing
   delete this.disposeUI
 }
@@ -98,7 +98,7 @@ eYo.Scroller.prototype.makeUI = function () {
 eYo.Scroller.prototype.disposeUI = function () {
   this.hScroll.disposeUI()
   this.vScroll.disposeUI()
-  this.ui_driver.scrollerDispose(this)
+  this.ui_driver_mgr.scrollerDispose(this)
   this.disposeUI = eYo.Do.nothing
   delete this.makeUI
 }
@@ -152,7 +152,7 @@ eYo.Scroller.prototype.layout = function() {
   r.top = rr.top
   r.bottom = rr.bottom
   // Reposition the corner square.
-  this.ui_driver.scrollerPlaceCorner(this)
+  this.ui_driver_mgr.scrollerPlaceCorner(this)
 }
 
 /**
@@ -324,7 +324,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
       }
       if (this.handlePosition__ !== newValue) {
         this.handlePosition__ = newValue
-        this.ui_driver.scrollbarUpdateHandle(this)
+        this.ui_driver_mgr.scrollbarUpdateHandle(this)
       }
     }
   },
@@ -344,7 +344,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
         if (this.handlePosition__ + newValue > this.viewLength_) {
           this.handlePosition__ = this.viewLength_ - newValue
         }
-        this.ui_driver.scrollbarUpdateView(this)
+        this.ui_driver_mgr.scrollbarUpdateView(this)
       }
     }
   },
@@ -370,7 +370,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
         : (size.height = newValue)
         this.handlePosition__ *= ratio
         this.handleLength__ *= ratio
-        this.ui_driver.scrollbarUpdateView(this)
+        this.ui_driver_mgr.scrollbarUpdateView(this)
       }
     }
   },
@@ -404,7 +404,7 @@ eYo.Scrollbar.prototype.makeUI = function(opt_class) {
   if (this.board.hasUI) {
     this.makeUI = eYo.Do.nothing
     delete this.disposeUI
-    return this.ui_driver.scrollbarInit(this, opt_class)
+    return this.ui_driver_mgr.scrollbarInit(this, opt_class)
   }
 }
 
@@ -414,7 +414,7 @@ eYo.Scrollbar.prototype.makeUI = function(opt_class) {
 eYo.Scrollbar.prototype.disposeUI = function() {
   this.disposeUI = eYo.Do.nothing
   delete this.makeUI
-  return this.ui_driver.scrollbarDispose(this)
+  return this.ui_driver_mgr.scrollbarDispose(this)
 }
 
 /**
@@ -549,7 +549,7 @@ eYo.Scrollbar.prototype.updateDisplay_ = function() {
   var show = true
   // Check whether our parent/container is visible.
   show = this.containerVisible_ && this.visible_
-  this.ui_driver.scrollbarUpdateDisplay(this, show)
+  this.ui_driver_mgr.scrollbarUpdateDisplay(this, show)
 }
 
 /**
@@ -557,7 +557,7 @@ eYo.Scrollbar.prototype.updateDisplay_ = function() {
  * @private
  */
 eYo.Scrollbar.prototype.cleanUp_ = function() {
-  this.ui_driver.scrollbarCleanUp(this)
+  this.ui_driver_mgr.scrollbarCleanUp(this)
 }
 
 /**
@@ -566,6 +566,6 @@ eYo.Scrollbar.prototype.cleanUp_ = function() {
  * @private
  */
 eYo.Scrollbar.prototype.place = function() {
-  this.ui_driver.scrollbarPlace(this)
+  this.ui_driver_mgr.scrollbarPlace(this)
 }
 

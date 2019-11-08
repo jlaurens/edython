@@ -378,11 +378,11 @@ Object.defineProperties(eYo.Motion.prototype, {
     }
   },
   /**
-   * General purpose ui_driver from the creator board.
+   * General purpose ui_driver_mgr from the creator board.
    */
-  ui_driver: {
+  ui_driver_mgr: {
     get () {
-      return this.board_.ui_driver
+      return this.board_.ui_driver_mgr
     }
   },
 })
@@ -501,7 +501,7 @@ eYo.Motion.prototype.captureStart = function(e, starter) {
       this.cancel()
     }, eYo.Motion.CANCEL_LATENCY)
     this.event__ = e
-    this.ui_driver.disconnectStop()
+    this.ui_driver_mgr.disconnectStop()
     var board = this.board_
     board.updateScreenCalculationsIfScrolled()
     board.markFocused()  

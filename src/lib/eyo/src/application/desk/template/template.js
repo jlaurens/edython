@@ -51,12 +51,12 @@ eYo.Template.prototype.disposeUI = eYo.Decorate.disposeUI(
  * Update the metrics of the receiver.
  */
 eYo.Template.prototype.updateMetrics = function () {
-  this.ui_driver.templateUpdateMetrics()
+  this.ui_driver_mgr.templateUpdateMetrics()
 }
 
 /**
  * Place the receiver.
  */
 eYo.Template.prototype.place = function () {
-  this.ui_driver.templatePlace()
+  this.ui_driver_mgr.templatePlace()
 }

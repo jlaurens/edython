@@ -401,7 +401,7 @@ Object.defineProperties(eYo.Field.prototype, {
         return;
       }
       this.visible_ = visible
-      var d = this.ui_driver
+      var d = this.ui_driver_mgr
       d && (d.fieldDisplayedUpdate(this))
       if (this.brick.rendered) {
         this.brick.render()
@@ -454,7 +454,7 @@ eYo.Field.prototype.dispose = function() {
  * Ensure that the field is ready.
  */
 eYo.Field.prototype.makeUI = function () {
-  this.ui_driver.fieldInit(this)
+  this.ui_driver_mgr.fieldInit(this)
   this.makeUI = eYo.Do.nothing
   delete this.disposeUI
 }
@@ -463,7 +463,7 @@ eYo.Field.prototype.makeUI = function () {
  * Dispose of all DOM objects belonging to this editable field.
  */
 eYo.Field.prototype.disposeUI = function() {
-  this.ui_driver.fieldDispose(this)
+  this.ui_driver_mgr.fieldDispose(this)
   this.disposeUI = eYo.Do.nothing
   delete this.makeUI
 }
@@ -507,7 +507,7 @@ eYo.Field.prototype.render_ = function() {
     this.size_.width = 0
     return
   }
-  var d = this.ui_driver
+  var d = this.ui_driver_mgr
   d && (d.fieldTextRemove(field), d.fieldTextCreate(field))
   this.updateWidth()
 }
@@ -516,7 +516,7 @@ eYo.Field.prototype.render_ = function() {
  * Updates the width of the field in the UI.
  **/
 eYo.Field.prototype.updateWidth = function() {
-  var d = this.ui_driver
+  var d = this.ui_driver_mgr
   d && (d.fieldUpdateWidth(this))
 }
 
@@ -541,7 +541,7 @@ eYo.Field.prototype.willRender = function () {
   if (f) {
     f.call(this)
   } else {
-    var d = this.ui_driver
+    var d = this.ui_driver_mgr
     if (d) {
       d.fieldMakePlaceholder(this, this.isPlaceholder)
       d.fieldMakeComment(this, this.isComment)
