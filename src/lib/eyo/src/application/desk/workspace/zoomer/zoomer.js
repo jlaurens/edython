@@ -34,7 +34,7 @@ Object.defineProperties(eYo.Zoomer.prototype, {
  * @param {Number} bottom
  */
 eYo.Zoomer.prototype.makeUI = eYo.Decorate.makeUI(eYo.Zoomer, function() {
-  this.ui_driver_mgr.zoomerInit(this)
+  this.ui_driver_mgr.initUI(this)
 })
 
 /**
@@ -42,7 +42,7 @@ eYo.Zoomer.prototype.makeUI = eYo.Decorate.makeUI(eYo.Zoomer, function() {
  * @return {!Element} The zoom controls SVG group.
  */
 eYo.Zoomer.prototype.disposeUI = eYo.Decorate.disposeUI(eYo.Zoomer, function() {
-  this.ui_driver_mgr.zoomerDispose(this)
+  this.ui_driver_mgr.disposeUI(this)
 })
 
 /**
@@ -51,5 +51,5 @@ eYo.Zoomer.prototype.disposeUI = eYo.Decorate.disposeUI(eYo.Zoomer, function() {
  */
 eYo.Zoomer.prototype.place = function(bottom) {
   eYo.Zoomer.superClass_.place.call(this, bottom)
-  this.ui_driver_mgr.zoomerPlace(this)
+  this.ui_driver_mgr.place(this)
 }

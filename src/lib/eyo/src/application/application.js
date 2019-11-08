@@ -135,7 +135,7 @@ eYo.Application.prototype.makeUI = function() {
   delete this.disposeUI
   this.audio__ = new eYo.Audio(this, this.options.pathToMedia)
   var d = this.ui_driver_mgr__ = new eYo.Svg(this)
-  d.applicationInit(this)
+  d.initUI(this)
   this.desk.makeUI()
 }
 

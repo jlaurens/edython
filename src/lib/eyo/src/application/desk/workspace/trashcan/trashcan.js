@@ -28,7 +28,7 @@ goog.inherits(eYo.TrashCan, eYo.WorkspaceControl)
 Object.defineProperties(eYo.TrashCan.prototype, {
   isOpen: {
     get () {
-      return this.ui_driver_mgr.trashCanOpenGet(this)
+      return this.ui_driver_mgr.openGet(this)
     }
   },
 })
@@ -79,14 +79,14 @@ Object.defineProperties(eYo.TrashCan.prototype, {
  * Create the trash can elements.
  */
 eYo.TrashCan.prototype.makeUI = eYo.Decorate.makeUI(eYo.TrashCan, function() {
-  this.ui_driver_mgr.trashCanInit(this)
+  this.ui_driver_mgr.initUI(this)
 })
 
 /**
  * Dispose of this trash's UI.
  */
 eYo.TrashCan.prototype.disposeUI = eYo.Decorate.makeUI(eYo.TrashCan, function() {
-  this.ui_driver_mgr.trashCanDispose(this)
+  this.ui_driver_mgr.disposeUI(this)
 })
 
 /**
@@ -94,7 +94,7 @@ eYo.TrashCan.prototype.disposeUI = eYo.Decorate.makeUI(eYo.TrashCan, function() 
  */
 eYo.TrashCan.prototype.place = function(bottom) {
   eYo.TrashCan.superClass_.place.call(this, bottom)
-  this.ui_driver_mgr.trashCanPlace(this)
+  this.ui_driver_mgr.place(this)
 }
 
 /**
@@ -102,7 +102,7 @@ eYo.TrashCan.prototype.place = function(bottom) {
  * @return {eYo.Rect} Rectangle in which to delete.
  */
 eYo.TrashCan.prototype.getClientRect = function() {
-  return this.ui_driver_mgr.trashCanClientRect(this)
+  return this.ui_driver_mgr.clientRect(this)
 }
 
 /**
@@ -110,5 +110,5 @@ eYo.TrashCan.prototype.getClientRect = function() {
  * Called externally after a drag.
  */
 eYo.TrashCan.prototype.close = function() {
-  this.ui_driver_mgr.trashCanOpenSet(this, false)
+  this.ui_driver_mgr.openSet(this, false)
 }

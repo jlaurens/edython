@@ -100,14 +100,14 @@ Object.defineProperties(eYo.Slot.prototype, {
  * Make the UI.
 */
 eYo.Slot.prototype.makeUI = eYo.Decorate.makeUI(eYo.Slot, function () {
-  this.ui_driver_mgr.slotInit(this)
+  this.ui_driver_mgr.initUI(this)
 })
 
 /**
  * Dispose of the UI.
 */
 eYo.Slot.prototype.disposeUI = eYo.Decorate.disposeUI(eYo.Slot, function () {
-  this.ui_driver_mgr.slotDispose(this)
+  this.ui_driver_mgr.disposeUI(this)
 })
 
 /**
@@ -272,7 +272,7 @@ Object.defineProperties(eYo.Slot.prototype, {
  */
 eYo.Slot.prototype.makeUI = function () {
   this.makeUI = eYo.Do.nothing // one shot function
-  this.ui_driver_mgr.slotInit(this)
+  this.ui_driver_mgr.initUI(this)
   this.forEachField(f => f.makeUI())
   this.magnet && (this.magnet.makeUI())
 }
@@ -385,7 +385,7 @@ eYo.Slot.prototype.synchronize = function () {
   if (this.visible) {
     this.forEachField(field => field.text.length > 0 && (field.visible = true))
   }
-  d.slotDisplayedUpdate(this)
+  d.displayedUpdate(this)
 }
 
 goog.forwardDeclare('eYo.Brick.List')

@@ -113,7 +113,7 @@ Object.defineProperties(eYo.Desk.prototype, {
 eYo.Desk.prototype.makeUI = eYo.Decorate.makeUI(
   eYo.Desk,
   function() {
-    this.ui_driver_mgr.deskInit(this)
+    this.ui_driver_mgr.initUI(this)
     this.panes_.forEach(p => p.makeUI())
     this.layout()
   }
@@ -126,7 +126,7 @@ eYo.Desk.prototype.disposeUI = eYo.Decorate.disposeUI(
   eYo.Desk,
   function() {
     [].concate(this.panes_).reverse().forEach(p => p.disposeUI())
-    this.ui_driver_mgr.deskDispose(this)
+    this.ui_driver_mgr.disposeUI(this)
   }
 )
 
@@ -168,7 +168,7 @@ eYo.Desk.prototype.layout = function() {
  
  */
 eYo.Desk.prototype.updateMetrics = function() {
-  this.ui_driver_mgr.deskUpdateMetrics(this)
+  this.ui_driver_mgr.updateMetrics(this)
   this.panes_.forEach(p => p.updateMetrics())
 }
 
@@ -176,7 +176,7 @@ eYo.Desk.prototype.updateMetrics = function() {
  * Place the panes.
  */
 eYo.Desk.prototype.place = function() {
-  this.ui_driver_mgr.deskPlace(this)
+  this.ui_driver_mgr.place(this)
   this.panes_.forEach(p => p.place())
 }
 
@@ -186,7 +186,7 @@ eYo.Desk.prototype.place = function() {
  * @return {eYo.Where}
  */
 eYo.Desk.prototype.xyElementInDesk = function(element) {
-  return this.ui_driver_mgr.deskWhereElement(this, element)
+  return this.ui_driver_mgr.whereElement(this, element)
 }
 
 /**

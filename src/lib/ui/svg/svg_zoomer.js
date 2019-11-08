@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.provide('eYo.Svg.ZoomControl')
+goog.provide('eYo.Svg.Zoomer')
 
 goog.require('eYo.Svg')
 

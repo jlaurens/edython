@@ -673,7 +673,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
             field.visible = true
           }
           var d = field.ui_driver_mgr
-          d && (d.fieldMakeError(field))
+          d && (d.makeError(field))
         })
       }
     }

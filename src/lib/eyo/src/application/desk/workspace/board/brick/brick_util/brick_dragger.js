@@ -253,7 +253,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
   }
   this.destination.setResizesEnabled(false)
   var d = this.ui_driver_mgr
-  d.disconnectStop()
+  d.brickEffectStop()
   var healStack = motion.healStack_
   var b3k = this.brick_
   b3k.ui.dragging = true

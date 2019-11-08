@@ -151,36 +151,6 @@ eYo.Svg.prototype.scrollbarPlace = function(scrollbar) {
 }
 
 /**
- * Inits the scroll bar.
- * @param {eYo.Scroller} scroller
- */
-eYo.Svg.prototype.scrollerInit = eYo.Dom.decorateInit(function(pair) {
-  var svg = pair.dom.svg
-  var corner = svg.corner_ = eYo.Svg.newElement(
-    'rect',
-    {
-      height: eYo.Scrollbar.thickness,
-      width: eYo.Scrollbar.thickness,
-      class: 'eyo-scrollbar-background'
-    }
-  )
-  eYo.Dom.insertAfter(
-    corner,
-    pair.board_.dom.svg.canvas_
-  )
-})
-
-/**
- * Dispose of the given slot's rendering resources.
- * @param {!eYo.Scroller} scroller
- */
-eYo.Svg.prototype.scrollerDispose = eYo.Dom.decorateDispose(function (scroller) {
-  var dom = scroller.dom
-  goog.dom.removeNode(dom.svg.corner_)
-  dom.svg = dom.svg.corner_ = null
-})
-
-/**
  * Start a dragging operation.
  * Called when scrollbar handle is clicked.
  * @param {!Event} e Mouse down event.
@@ -304,18 +274,4 @@ eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
     board.scrollPage(false)
   }
   eYo.Dom.gobbleEvent(e)
-}
-
-/**
- * Place the corner.
- * @param {!eYo.Scroller} scroller
- * @private
- */
-eYo.Svg.prototype.scrollerPlaceCorner = function(pair) {
-  var r = pair.cornerRect_
-  var corner = pair.dom.svg.corner_
-  corner.setAttribute('x', r.x)
-  corner.setAttribute('y', r.y)
-  corner.setAttribute('width', r.width)
-  corner.setAttribute('height', r.height)
 }
