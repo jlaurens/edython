@@ -13,12 +13,22 @@
 
 goog.require('eYo.Driver')
 
-goog.provide('eYo.Driver.application')
+goog.provide('eYo.Driver.Zoomer')
 
 /**
- * Shared application driver.
+ * Faceless driver for the zoomer.
  */
-eYo.Driver.application = Object.create({
-  init: eYo.Do.nothing,
-  dispose: eYo.Do.nothing,
-})
+eYo.Driver.makeSubclass('Zoomer')
+
+
+/**
+ * Initiate the zoomer UI.
+ * @param {!eYo.Zoomer} trashCan  The zoomer we must initialize the UI.
+ */
+eYo.Driver.Zoomer.prototype.initUI = eYo.Do.nothing
+
+/**
+ * Dispose of the zoomer UI.
+ * @param {!eYo.Zoomer} zoomer  The zoomer we must dispose the UI of.
+ */
+eYo.Driver.Zoomer.prototype.disposeUI = eYo.Do.nothing

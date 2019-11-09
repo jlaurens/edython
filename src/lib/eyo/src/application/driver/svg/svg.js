@@ -11,9 +11,10 @@
  */
 'use strict'
 
+goog.require('eYo.Dom')
+
 goog.provide('eYo.Svg')
 
-goog.require('eYo.Dom')
 goog.require('eYo.Decorate')
 
 goog.require('eYo.T3.Profile')
@@ -29,37 +30,72 @@ goog.forwardDeclare('goog.userAgent')
 
 /**
  * A namespace.
- * @namespace eYo.Brick.UI.prototype.dom
+ * @name{eYo.Svg}
+ * @namespace
  */
+eYo.Svg = Object.create(null)
 
 /**
- * Svg driver to help rendering bricks in a svg context.
- * @readonly
- * @property {SvgGroupElement} group_  The svg group.
- * @property {SvgGroupElement} groupContour_  The svg group for the contour.
- * @property {SvgGroupElement} groupShape_  The svg group for the shape.
- * @property {SvgPathElement} pathInner_  A path.
- * @property {SvgPathElement} pathShape_  A path.
- * @property {SvgPathElement} pathContour_  A path.
- * @property {SvgPathElement} pathCollapsed_  A path.
- * @property {SvgPathElement} pathSelect_  A path.
- * @property {SvgPathElement} pathHilight_  A path.
- * @memberof eYo.Brick.prototype.dom
+ * A namespace.
+ * @name{eYo.Svg.Decorate}
+ * @namespace
  */
-
-eYo.Svg = function () {
-  eYo.Svg.superClass_.constructor.call(this)
-}
-goog.inherits(eYo.Svg, eYo.Dom)
+eYo.Svg.Decorate = Object.create(null)
 
 /**
- * Convenient method to subclass a Dom driver into a Svg driver.
+ * Svg driver manager.
+ * @param {eYo.Application} owner
  */
- eYo.Svg.makeSubclass = (name) => {
-  eYo.Svg[name] = function() {
-    eYo.Svg[name].superClass_.contructor.call(this)
+eYo.Svg.Mgr = (() => {
+  var drivers = set()
+  var me = function (owner) {
+    eYo.Svg.Mgr.superClass_.constructor.call(this, owner)
+    drivers.forEach(name => {
+      this[name[0].toUpperCase() + name.substr(1)] = new eYo.Svg[name]()
+    })
   }
-  goog.inherits(eYo.Svg[name], eYo.Dom[name])  
+  /**
+   * Convenient automatic subclasser.
+   * @param {String} name
+   */
+  eYo.Svg.makeSubclass = (name) => {
+    drivers.add(name)
+    eYo.Svg[name] = function () {
+      eYo.Svg[name].superClass_.constructor.call(this)
+    }
+    goog.inherits(eYo.Svg[name], eYo.Dom[name])
+  }
+  return me
+})()
+goog.inherits(eYo.Svg.Mgr, eYo.Owned)
+
+
+/**
+ * Decorator for initUI.
+ */
+eYo.Svg.Decorate.initUI = (constructor, f) => {
+  return function (object, ...rest) {
+    var dom = constructor.superClass_.initUI.apply(object, ...rest)
+    if (dom) {
+      dom.svg = Object.create(null)
+      f.apply(object, ...rest)
+      return dom
+    }
+  }
+}
+
+/**
+ * Decorator for disposeUI.
+ */
+eYo.Svg.Decorate.disposeUI = (constructor, f) => {
+  return function (object, ...rest) {
+    var dom = object.dom
+    if (dom) {
+      f.apply(object, ...rest)
+      dom.svg = null
+      constructor.superClass_.disposeUI.apply(object, ...rest)
+    }
+  }
 }
 
 eYo.Svg.prototype.withBBox = true
@@ -113,28 +149,6 @@ Object.defineProperties(eYo.Svg, {
   TRANSLATE_2D_REGEX_: { value: /transform\s*:\s*translate\s*\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ },
   TRANSLATE_3D_REGEX_: { value: /transform\s*:\s*translate3d\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ }
 })
-
-/**
- * Initialize the basic dom ressources.
- * @param {!Object} object
- * @return {!Object} The object's dom repository.
- */
-eYo.Svg.prototype.basicInit = function(object) {
-  var dom = eYo.Svg.superClass_.basicInit.call(this, object)
-  if (!dom.svg) {
-    dom.svg = Object.create(null)
-  }
-  return dom
-}
-
-/**
- * Dispose of the basic dom ressources.
- * @param {!Object} object
- */
-eYo.Svg.prototype.basicDispose = function(object) {
-  object.dom && (object.dom.svg = null)
-  eYo.Svg.superClass_.basicDispose.call(this, object)
-}
 
 /**
  * Return the coordinates of the top-left corner of this element relative to
@@ -406,21 +420,3 @@ eYo.Svg.getRelativeWhere.Where_3D_REGEX_ =
  */
 eYo.Svg.getRelativeWhere.Where_2D_REGEX_ =
   /transform:\s*translate\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/
-
-/**
- * @name{eYo.Decorate.Svg}
- * @namespace
- */
-eYo.Decorate.Svg = Object.create(null)
-
-/**
- * Decorator for initSvg
- */
-eYo.Decorate.Svg.initUI = (constructor, f) => {
-  return function () {
-    if (constructor.superClass_.apply(this, arguments)) {
-      f.apply(this.arguments)
-      return true
-    }
-  }
-}

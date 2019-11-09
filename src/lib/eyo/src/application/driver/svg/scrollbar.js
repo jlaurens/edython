@@ -20,7 +20,7 @@ goog.require('eYo.Svg')
  * @param {!eYo.Scrollbar} scrollbar
  * @param {?String} opt_class
  */
-eYo.Svg.prototype.scrollbarInit = eYo.Dom.decorateInit(function(scrollbar, opt_class) {
+eYo.Svg.Scrollbar.prototype.initUI = eYo.Dom.Decorate.initUI(function(scrollbar, opt_class) {
   var dom = scrollbar.dom
   var svg = dom.svg
   /* Create the following DOM:
@@ -98,7 +98,7 @@ eYo.Svg.prototype.scrollbarInit = eYo.Dom.decorateInit(function(scrollbar, opt_c
  * Dispose of the given slot's rendering resources.
  * @param {!eYo.Scrollbar} scrollbar
  */
-eYo.Svg.prototype.scrollbarDispose = eYo.Dom.decorateDispose(function (scrollbar) {
+eYo.Svg.Scrollbar.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function (scrollbar) {
   var dom = scrollbar.dom
   goog.dom.removeNode(dom.svg.root_)
   dom.svg = dom.svg.root_ = null
@@ -113,7 +113,7 @@ eYo.Svg.prototype.scrollbarDispose = eYo.Dom.decorateDispose(function (scrollbar
  * @param {eYo.Scrollbar} scrollbar
  * @param {Boolean} show
  */
-eYo.Svg.prototype.scrollbarUpdateDisplay = function(scrollbar, show) {
+eYo.Svg.Scrollbar.prototype.updateDisplay = function(scrollbar, show) {
   scrollbar.dom.svg.root_.setAttribute('display', show ? 'block' : 'none')
 }
 
@@ -121,7 +121,7 @@ eYo.Svg.prototype.scrollbarUpdateDisplay = function(scrollbar, show) {
  * Update the handle of the scroll bar, position and dimensions at the same time.
  * @param {eYo.Scrollbar} scrollbar
  */
-eYo.Svg.prototype.scrollbarUpdateHandle = function(scrollbar) {
+eYo.Svg.Scrollbar.prototype.updateHandle = function(scrollbar) {
   var handle = scrollbar.dom.svg.handle_
   handle.setAttribute(
     scrollbar.lengthAttribute_,
@@ -137,7 +137,7 @@ eYo.Svg.prototype.scrollbarUpdateHandle = function(scrollbar) {
  * Update the view of the scroll bar, position and dimensions at the same time.
  * @param {eYo.Scrollbar} scrollbar
  */
-eYo.Svg.prototype.scrollbarUpdateView = function(scrollbar) {
+eYo.Svg.Scrollbar.prototype.updateView = function(scrollbar) {
   var svg = scrollbar.dom.svg
 }
 
@@ -145,7 +145,7 @@ eYo.Svg.prototype.scrollbarUpdateView = function(scrollbar) {
  * Place the scroll bar.
  * @param {eYo.Scrollbar} scrollbar
  */
-eYo.Svg.prototype.scrollbarPlace = function(scrollbar) {
+eYo.Svg.Scrollbar.prototype.place = function(scrollbar) {
   var r = scrollbar.viewRect
   scrollbar.dom.svg.root_.setAttribute('viewBox', `${r.x_min} ${r.y_min} ${r.width} ${r.height}`)
 }
@@ -157,7 +157,7 @@ eYo.Svg.prototype.scrollbarPlace = function(scrollbar) {
  * @this {eYo.Scrollbar}
  * @private
  */
-eYo.Svg.prototype.scrollbarOnHandle_mousedown = function(e) {
+eYo.Svg.Scrollbar.prototype.onHandle_mousedown = function(e) {
   this.board_.markFocused()
   this.cleanUp_()
   if (eYo.Dom.isRightButton(e)) {
@@ -200,7 +200,7 @@ eYo.Svg.prototype.scrollbarOnHandle_mousedown = function(e) {
  * @param {!Event} e Mouse up event.
  * @this {eYo.Scrollbar}
  */
-eYo.Svg.prototype.scrollbarOn_mousemove = function(e) {
+eYo.Svg.Scrollbar.prototype.on_mousemove = function(e) {
   var currentMouse = this.horizontal_ ? e.clientX : e.clientY
   var ratio = this.dragLength_ ? (currentMouse - this.dragMin_) / this.dragLength_ : 0
   if (ratio < 0) {
@@ -217,7 +217,7 @@ eYo.Svg.prototype.scrollbarOn_mousemove = function(e) {
  * @param {!Event} e Mouse up event.
  * @this {eYo.Scrollbar}
  */
-eYo.Svg.prototype.scrollbarOn_mouseup = function() {
+eYo.Svg.Scrollbar.prototype.on_mouseup = function() {
   // Tell the board to clean up now that the board is done moving.
   eYo.Dom.clearTouchIdentifier()
   this.cleanUp_()
@@ -229,7 +229,7 @@ eYo.Svg.prototype.scrollbarOn_mouseup = function() {
  * @param {!eYo.Scrollbar}
  * @private
  */
-eYo.Svg.prototype.scrollbarCleanUp = function(scrollbar) {
+eYo.Svg.Scrollbar.prototype.cleanUp = function(scrollbar) {
   eYo.app.hideChaff()
   var bound = scrollbar.dom.bound
   if (bound.mouseup) {
@@ -249,7 +249,7 @@ eYo.Svg.prototype.scrollbarCleanUp = function(scrollbar) {
  * @this {eYo.Scrollbar}
  * @private
  */
-eYo.Svg.prototype.scrollbarOnBar_mousedown = function(e) {
+eYo.Svg.Scrollbar.prototype.onBar_mousedown = function(e) {
   var board = this.board_
   board.markFocused()
   eYo.Dom.clearTouchIdentifier()  // This is really a click.

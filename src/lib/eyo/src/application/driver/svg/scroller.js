@@ -19,7 +19,7 @@ goog.require('eYo.Svg')
  * Inits the scroll bar.
  * @param {eYo.Scroller} scroller
  */
-eYo.Svg.Scroller.prototype.initUI = eYo.Dom.decorateInit(function(pair) {
+eYo.Svg.Scroller.prototype.initUI = eYo.Dom.Decorate.initUI(function(pair) {
   var svg = pair.dom.svg
   var corner = svg.corner_ = eYo.Svg.newElement(
     'rect',
@@ -39,7 +39,7 @@ eYo.Svg.Scroller.prototype.initUI = eYo.Dom.decorateInit(function(pair) {
  * Dispose of the given slot's rendering resources.
  * @param {!eYo.Scroller} scroller
  */
-eYo.Svg.Scroller.prototype.disposeUI = eYo.Dom.decorateDispose(function (scroller) {
+eYo.Svg.Scroller.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function (scroller) {
   var dom = scroller.dom
   goog.dom.removeNode(dom.svg.corner_)
   dom.svg = dom.svg.corner_ = null

@@ -11,22 +11,93 @@
  */
 'use strict'
 
-goog.provide('eYo.Dom')
-
 goog.require('eYo.Driver')
 
-goog.require('goog.events');
-goog.forwardDeclare('goog.dom');
+goog.provide('eYo.Dom')
+
+goog.require('goog.events')
+goog.forwardDeclare('goog.dom')
 
 /**
- * Model for dom utilities
- * @param {eYo.Desk} desk
- * @constructor
+ * @name {eYo.Dom}
+ * @namespace
  */
-eYo.Dom = function (desk) {
-  eYo.Dom.superClass_.constructor.call(this, desk)
+eYo.Dom = Object.create(null)
+
+/**
+ * @name {eYo.Dom.Decorate}
+ * @namespace
+ */
+eYo.Dom.Decorate = Object.create(null)
+
+
+/**
+ * Dom driver manager.
+ * @param {eYo.Application} owner
+ */
+eYo.Dom.Mgr = (() => {
+  var drivers = set()
+  var me = function (owner) {
+    eYo.Dom.Mgr.superClass_.constructor.call(this, owner)
+    drivers.forEach(name => {
+      this[name[0].toUpperCase() + name.substr(1)] = new eYo.Dom[name]()
+    })
+  }
+  /**
+   * Convenient automatic subclasser.
+   * @param {String} name
+   */
+  eYo.Dom.makeSubclass = (name) => {
+    drivers.add(name)
+    eYo.Dom[name] = function () {
+      eYo.Dom[name].superClass_.constructor.call(this)
+    }
+    goog.inherits(eYo.Dom[name], eYo.Driver[name])
+  }
+  return me
+})()
+goog.inherits(eYo.Dom.Mgr, eYo.Owned)
+
+/**
+ * Decorates a function as `initUI`.
+ */
+eYo.Dom.Decorate.initUI = (constructor, f) => {
+  return function (object, ...rest) {
+    if (object.dom) {
+      return
+    }
+    var dom = object.dom = Object.create(null)
+    dom.bound = Object.create(null)
+    f.apply(this, rest)
+    return dom
+  }
 }
-goog.inherits(eYo.Dom, eYo.Driver)
+
+/**
+ * Dispose of the basic dom ressources.
+ * @param {!Object} object
+ */
+eYo.Dom._disposeUI = function(object) {
+  var dom = object.dom
+  if (dom) {
+    dom.bound = null
+    object.dom = null
+  }
+}
+
+/**
+ * Decorates a function between `clearBoundEvents` and `_disposeUI`.
+ */
+eYo.Dom.Decorate.disposeUI = (constructor, f) => {
+  return function (object) {
+    var dom = object.dom
+    if (dom) {
+      eYo.Dom.clearBoundEvents(object)
+      f.call(this, object)
+      object.dom = dom.bound = null
+    }
+  }
+}
 
 /**
  * The document scroll.
@@ -255,8 +326,8 @@ eYo.Dom.forEachTouch = eYo.Dom.prototype.forEachTouch = (e, f) => {
 /**
  * @param {eYo.Brick|eYo.Board|eYo.Flyout}
  */
-eYo.Dom.clearBoundEvents = (bfw) => {
-  var dom = bfw.dom || bfw.dom
+eYo.Dom.clearBoundEvents = (bbf) => {
+  var dom = bbf.dom || bbf.dom
   var bound = dom = dom.bound
   bound && Object.values(bound).forEach(item => eYo.Dom.unbindEvent(item))
 }
@@ -564,57 +635,3 @@ eYo.Dom.on_keydown = e => {
   // }
 };
 
-/**
- * Initialize the basic dom ressources.
- * @param {!Object} object
- * @return {!Object} The object's dom repository.
- */
-eYo.Dom.prototype.basicInit = function(object) {
-  var dom = object.dom
-  if (!dom) {
-    dom = object.dom = Object.create(null)
-    dom.bound = Object.create(null)
-  }
-  return dom
-}
-
-/**
- * Decorates a function after `basicDispose`.
- */
-eYo.Dom.decorateInit = f => {
-  return function (object) {
-    if (object.dom) {
-      return
-    }
-    var dom = this.basicInit(object)
-    f.apply(this, arguments)
-    return dom
-  }
-}
-
-/**
- * Decorates a function between `clearBoundEvents` and `basicDispose`.
- */
-eYo.Dom.decorateDispose = f => {
-  return function (object) {
-    var dom = object.dom
-    if (dom) {
-      eYo.Dom.clearBoundEvents(object)
-      f.call(this, object)
-      this.basicDispose(object)
-    }
-  }
-}
-
-/**
- * Dispose of the basic dom ressources.
- * @param {!Object} object
- */
-eYo.Dom.prototype.basicDispose = function(object) {
-  var dom = object.dom
-  if (dom) {
-    dom.bound = null
-    object.dom = null
-    eYo.Dom.superClass_.dispose.call(this)
-  }
-}

@@ -25,7 +25,7 @@ eYo.Svg.Slot.prototype.initUI = function (slot) {
   if (slot.dom) {
     return // already initialized
   }
-  var dom = this.basicInit(slot)
+  var dom = this._initUI(slot)
   var svg = dom.svg = Object.create(null)
   var g = svg.group_ = eYo.Svg.newElement('g', {
     class: 'eyo-slot'

@@ -19,7 +19,7 @@ goog.require('eYo.Svg')
  * Initializes the brickDragger SVG ressources.
  * @param {!eYo.brickDragger} brickDragger
  */
-eYo.Svg.prototype.brickDraggerInit = eYo.Dom.decorateInit(function(dragger) {
+eYo.Svg.prototype.brickDraggerInit = eYo.Dom.Decorate.initUI(function(dragger) {
   var dom = dragger.dom
   var svg = dom.svg = Object.create(null)
   svg.dragSurface = dragger.board.dom.svg.brickDragSurface
@@ -29,7 +29,7 @@ eYo.Svg.prototype.brickDraggerInit = eYo.Dom.decorateInit(function(dragger) {
  * Dispose of the given slot's rendering resources.
  * @param {!eYo.brickDragger} brickDragger
  */
-eYo.Svg.prototype.brickDraggerDispose = eYo.Dom.decorateDispose(function (brickDragger) {
+eYo.Svg.prototype.brickDraggerDispose = eYo.Dom.Decorate.disposeUI(function (brickDragger) {
   var svg = brickDragger.dom.svg
   if (svg) {
     svg.dragSurface = null

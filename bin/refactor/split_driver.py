@@ -32,7 +32,7 @@ for p in eyo_path.glob('**/*.js'):
         continue
       if head is 'disconnect':
         continue
-      if head.lower() == name:
+      if head.lower() == name or name == 'driver':
         k = f'{driver}.prototype.{find}'
         v = f'{driver}.{first.upper()}{lower}.prototype.{upper.lower()}{rest}'
         if k.endswith('Init') or k.endswith('Dispose'):

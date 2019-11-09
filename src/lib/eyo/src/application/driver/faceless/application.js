@@ -13,13 +13,22 @@
 
 goog.require('eYo.Driver')
 
-goog.provide('eYo.Driver.application')
+goog.provide('eYo.Driver.Application')
 
 /**
  * Shared application driver.
  */
-eYo.Driver.application = Object.create({
-  init: eYo.Do.nothing,
-  dispose: eYo.Do.nothing,
-})
+eYo.Driver.makeSubclass('Application')
+
+/**
+ * Initiate the application UI.
+ * @param {!eYo.Application} app  The application we must init the UI of.
+ */
+eYo.Driver.Application.prototype.initUI = eYo.Do.nothing
+
+/**
+ * Dispose of the application UI.
+ * @param {!eYo.DnD.Mgr} mgr  The application we must dispose of the UI of.
+ */
+eYo.Driver.Application.prototype.disposeUI = eYo.Do.nothing
 

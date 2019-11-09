@@ -16,13 +16,21 @@ goog.require('eYo.Driver')
 goog.provide('eYo.Driver.brick')
 
 /**
- * Shared brick driver.
+ * Faceless driver for bricks.
  */
-eYo.Driver.brick = Object.create({
-  init: eYo.Do.nothing,
-  dispose: eYo.Do.nothing,
-})
+eYo.Driver.makeSubclass('Brick')
 
+/**
+ * The default implementation does nothing.
+ * @param {!eYo.Brick} newParent to be connected.
+ */
+eYo.Driver.Brick.prototype.parentWillChange = eYo.Do.nothing
+
+/**
+ * The default implementation does nothing.
+ * @param {!eYo.Brick} oldParent replaced.
+ */
+eYo.Driver.Brick.prototype.parentDidChange = eYo.Do.nothing
 
 /**
  * Returns the bounding box of the node.
@@ -122,3 +130,127 @@ eYo.Driver.brickMoveTo = eYo.Do.nothing
  *     board coordinates.
  */
 eYo.Driver.brickWhereInBoard = eYo.Do.nothing
+
+/**
+ * The default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.updateDisabled = eYo.Do.nothing
+
+/**
+ * The default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.connectEffect = eYo.Do.nothing
+
+/**
+ * The default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ * @param {!Object} menu
+ */
+eYo.Driver.Brick.prototype.menuShow = eYo.Do.nothing
+
+/**
+ * The default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.makeWrapped = eYo.Do.nothing
+
+/**
+ * The default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.makeUnwrapped = eYo.Do.nothing
+
+/**
+ * The default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.sendToFront = eYo.Do.nothing
+
+/**
+ * The default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.sendToBack = eYo.Do.nothing
+
+/**
+ * Add the hilight path_.
+ * Default implementation does nothing
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.addBrickHilight_ = eYo.Do.nothing
+
+/**
+ * Remove the hilight path.
+ * Default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.removeBrickHilight_ = eYo.Do.nothing
+
+/**
+ * Add the select path.
+ * Default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.addSelect_ = eYo.Do.nothing
+
+/**
+ * Remove the select path.
+ * Default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.removeSelect_ = eYo.Do.nothing
+
+/**
+ * Add the hilight path_.
+ * Default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.addBlockConnection_ = eYo.Do.nothing
+
+/**
+ * Remove the select path.
+ * Default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.removeBlockConnection_ = eYo.Do.nothing
+
+/**
+ * The svg group has an `eyo-top` class.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.addStatusTop_ = eYo.Do.nothing
+
+/**
+ * The default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.removeStatusTop_ = eYo.Do.nothing
+
+/**
+ * Default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.addStatusFocus_ = eYo.Do.nothing
+
+/**
+ * Reverse `nodeAddStatusFocus_`.
+ * Default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.removeStatusFocus_ = eYo.Do.nothing
+
+/**
+ * Set the displayed status of the given node.
+ * Default implementation does nothing.
+ * @param {!Object} node  the node the driver acts on
+ * @param {boolean} visible  the expected visibility status
+ */
+eYo.Driver.Brick.prototype.displayedSet = eYo.Do.nothing
+
+/**
+ * Make the given field disabled eventually.
+ * @param {!Object} node  the node the driver acts on
+ */
+eYo.Driver.Brick.prototype.updateDisabled = eYo.Do.nothing

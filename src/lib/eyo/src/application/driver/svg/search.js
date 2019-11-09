@@ -66,7 +66,7 @@ eYo.Dom.Search.prototype.cssClass = function() {
  * @param {!eYo.Search} search
  * @return {!Element} The desk's dom repository.
  */
-eYo.Dom.Search.prototype.initUI = eYo.Dom.decorateInit(function(search) {
+eYo.Dom.Search.prototype.initUI = eYo.Dom.Decorate.initUI(function(search) {
   var dom = search.dom
   const div = search.owner_.dom.search_
   Object.defineProperty(dom, 'div_', { value: div, writable: true})
@@ -90,7 +90,7 @@ eYo.Dom.Search.prototype.initUI = eYo.Dom.decorateInit(function(search) {
  * Dispose of the given slot's rendering resources.
  * @param {eYo.Search} search
  */
-eYo.Dom.Search.prototype.disposeUI = eYo.Dom.decorateDispose(function (search) {
+eYo.Dom.Search.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function (search) {
   var dom = search.dom
   goog.dom.removeNode(dom.toolbar_)
   goog.dom.removeNode(dom.board_)
@@ -162,7 +162,7 @@ eYo.Svg.Search.prototype.initUI = function(search) {
  * Dispose of the given slot's rendering resources.
  * @param {!eYo.Search} search
  */
-eYo.Svg.Search.prototype.disposeUI = eYo.Dom.decorateDispose(function (search) {
+eYo.Svg.Search.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function (search) {
   var dom = search.dom
   goog.dom.removeNode(dom.svg.root_)
   dom.svg.root_ = null
@@ -197,7 +197,7 @@ eYo.Svg.Search.prototype.toolbarInitUI = function(ftb) {
     return
   }
   var search = ftb.search
-  var dom = this.basicInit(ftb)
+  var dom = this._initUI(ftb)
   var svg = dom.svg
   /*
   <div class="eyo-search-toolbar">
@@ -344,7 +344,7 @@ eYo.Svg.Search.prototype.toolbarInitUI = function(ftb) {
  * Initializes the search toolbar SVG ressources.
  * @param {!eYo.SearchToolbar} searchToolbar
  */
-eYo.Svg.Search.prototype.toolbarDisposeUI = eYo.Dom.decorateDispose(function(ftb) {
+eYo.Svg.Search.prototype.toolbarDisposeUI = eYo.Dom.Decorate.disposeUI(function(ftb) {
   var dom = ftb.dom
   var div = dom.div_
   var fc

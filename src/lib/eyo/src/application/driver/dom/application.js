@@ -6,22 +6,21 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Desk rendering driver.
+ * @fileoverview Application rendering driver.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-goog.provide('eYo.Svg.Application')
+goog.require('eYo.Dom')
 
-goog.require('eYo.Svg')
+goog.provide('eYo.Dom.Application')
 
 goog.forwardDeclare('eYo.Application')
 
 /**
- * Dispose of the application UI.
- * @param {!eYo.DnD.Mgr} mgr  The application we must dispose of the UI of.
+ * Dom driver for application.
  */
-eYo.Driver.prototype.applicationDispose = eYo.Do.nothing
+eYo.Dom.makeSubclass('Application')
 
 /**
  * Initialize the desk dom ressources.
@@ -29,7 +28,7 @@ eYo.Driver.prototype.applicationDispose = eYo.Do.nothing
  * @param {?Function} f
  * @return {!Element} The desk's dom repository.
  */
-eYo.Dom.prototype.applicationInit = eYo.Dom.decorateInit(function(app) {
+eYo.Dom.Application.prototype.initUI = eYo.Dom.Decorate.initUI(function(app) {
   var dom = app.dom
   var options = app.options
   // Load CSS.
@@ -51,7 +50,7 @@ eYo.Dom.prototype.applicationInit = eYo.Dom.decorateInit(function(app) {
  * Dispose of the application dom resources.
  * @param {!eYo.Application} app
  */
-eYo.Dom.prototype.applicationDispose = eYo.Dom.decorateDispose(function(app) {
+eYo.Dom.Application.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function(app) {
   var dom = app.dom
   goog.dom.removeNode(dom.div_)
   dom.div_ = null

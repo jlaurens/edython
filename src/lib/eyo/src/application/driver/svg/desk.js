@@ -23,7 +23,7 @@ goog.forwardDeclare('eYo.Desk')
  * @param {?Function} f
  * @return {!Element} The desk's dom repository.
  */
-eYo.Dom.prototype.deskInit = eYo.Dom.decorateInit(function(desk) {
+eYo.Dom.Desk.prototype.initUI = eYo.Dom.Decorate.initUI(function(desk) {
   var dom = desk.dom
   var options = desk.options
   var container = options.container
@@ -58,7 +58,7 @@ eYo.Dom.prototype.deskInit = eYo.Dom.decorateInit(function(desk) {
  * Dispose of the desk dom resources.
  * @param {!eYo.Desk} desk
  */
-eYo.Dom.prototype.deskDispose = eYo.Dom.decorateDispose(function(desk) {
+eYo.Dom.Desk.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function(desk) {
   var dom = desk.dom
   goog.dom.removeNode(dom.div_)
   dom.div_ = null
@@ -68,7 +68,7 @@ eYo.Dom.prototype.deskDispose = eYo.Dom.decorateDispose(function(desk) {
  * Place the desk div.
  * @param {!eYo.Desk} desk
  */
-eYo.Dom.prototype.deskPlace = function(desk) {
+eYo.Dom.Desk.prototype.place = function(desk) {
 }
 
 /**
@@ -76,19 +76,19 @@ eYo.Dom.prototype.deskPlace = function(desk) {
  * @param {!eYo.Desk} desk
  * @return {!Element} The desk's SVG group.
  */
-eYo.Svg.prototype.deskInit = function(desk) {
+eYo.Svg.Desk.prototype.initUI = function(desk) {
   if (desk.dom) {
     return
   }
   var dom = eYo.Svg.superClass_.deskInit.call(this, desk)
-  this.deskBind_resize(desk)
+  this.bind_resize(desk)
 }
 
 /**
  * Bind the resize element.
  * @param {!eYo.Board} board
  */
-eYo.Svg.prototype.deskBind_resize = function (desk) {
+eYo.Svg.Desk.prototype.bind_resize = function (desk) {
   var bound = desk.dom.bound || Object.create(null)
   if (bound.resize) {
     return
@@ -111,7 +111,7 @@ eYo.Svg.prototype.deskBind_resize = function (desk) {
  * @param {!eYo.Desk} mode  The display mode for bricks.
  * @param {!String} mode  The display mode for bricks.
  */
-eYo.Svg.prototype.deskSetBrickDisplayMode = function (desk, mode) {
+eYo.Svg.Desk.prototype.setBrickDisplayMode = function (desk, mode) {
   var div = desk.dom.div_
   var old = desk.currentBrickDisplayMode
   old && (goog.dom.classlist.remove(div, `eyo-${old}`))
@@ -126,7 +126,7 @@ eYo.Svg.prototype.deskSetBrickDisplayMode = function (desk, mode) {
  * (e.g. on a window resize/device orientation change).
  * @param {!eYo.Desk} desk A desk.
  */
-eYo.Svg.prototype.deskUpdateMetrics = function(desk) {
+eYo.Svg.Desk.prototype.updateMetrics = function(desk) {
   // After the change, the selection should be visible if it was.
   desk.viewRect = desk.dom.div_.getBoundingClientRect()
   console.error('desk size', desk.dom.div_.getBoundingClientRect())
@@ -141,7 +141,7 @@ eYo.Svg.prototype.deskUpdateMetrics = function(desk) {
  *     eYo.VOID.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
-eYo.Svg.prototype.deskWhereElement = function(desk, element) {
+eYo.Svg.Desk.prototype.whereElement = function(desk, element) {
   var ans = new eYo.Where()
   var div = desk.dom.div_
   while (element && element !== div) {
@@ -157,6 +157,6 @@ eYo.Svg.prototype.deskWhereElement = function(desk, element) {
  * @param {!eYo.Desk} desk
  * @return {!Element} The desk's SVG group.
  */
-eYo.Svg.prototype.deskInstallFlyout = function(desk) {
+eYo.Svg.Desk.prototype.installFlyout = function(desk) {
 }
 

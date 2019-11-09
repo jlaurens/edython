@@ -13,12 +13,23 @@
 
 goog.require('eYo.Driver')
 
-goog.provide('eYo.Driver.application')
+goog.provide('eYo.Driver.Slot')
 
 /**
- * Shared application driver.
+ * Faceless driver for fields.
  */
-eYo.Driver.application = Object.create({
-  init: eYo.Do.nothing,
-  dispose: eYo.Do.nothing,
-})
+eYo.Driver.makeSubclass('Slot')
+
+/**
+ * Whether the slot is displayed.
+ * @param {!eYo.Slot} slot  the slot to query about
+ */
+eYo.Driver.Slot.prototype.displayedGet = eYo.Do.nothing
+
+/**
+ * Display/hide the given slot.
+ * @param {!eYo.Slot} slot  the slot the driver acts on
+ * @param {boolean} yorn
+ */
+eYo.Driver.Slot.prototype.displayedSet = eYo.Do.nothing
+

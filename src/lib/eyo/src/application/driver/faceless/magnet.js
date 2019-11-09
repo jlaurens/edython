@@ -13,12 +13,18 @@
 
 goog.require('eYo.Driver')
 
-goog.provide('eYo.Driver.application')
+goog.provide('eYo.Driver.Magnet')
 
 /**
- * Shared application driver.
+ * Faceless driver for magnets.
  */
-eYo.Driver.application = Object.create({
-  init: eYo.Do.nothing,
-  dispose: eYo.Do.nothing,
-})
+eYo.Driver.makeSubclass('Magnet')
+
+/**
+ * Hilight the given connection.
+ * The default implementation does nothing.
+ * @param {eYo.Magnet} magnet
+ */
+eYo.Driver.Magnet.prototype.hilight = eYo.Do.nothing
+
+console.error('hilight -> focusOn?')
