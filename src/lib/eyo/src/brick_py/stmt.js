@@ -115,7 +115,7 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
               }
               parent.render()
               magnet.target = p_magnet
-              parent.makeUI(this.hasUI)
+              parent.initUI(this.hasUI)
               if (this.hasFocus) {
                 parent.hasFocus
               }

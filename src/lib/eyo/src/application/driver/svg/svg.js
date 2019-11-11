@@ -37,7 +37,7 @@ eYo.Svg = Object.create(null)
  * The manager of all the svg drivers.
  * @type {eYo.Svg.Mgr}
  */
-eYo.Driver.makeManagerClass(eYo.Svg)
+eYo.Dom.makeManagerClass(eYo.Svg)
 
 /**
  * A namespace.
@@ -45,34 +45,6 @@ eYo.Driver.makeManagerClass(eYo.Svg)
  * @namespace
  */
 eYo.Svg.Decorate = Object.create(null)
-
-/**
- * Svg driver manager.
- * @param {eYo.Application} owner
- */
-eYo.Svg.Mgr = (() => {
-  var drivers = new Set()
-  var me = function (owner) {
-    eYo.Svg.Mgr.superClass_.constructor.call(this, owner)
-    drivers.forEach(name => {
-      this[name[0].toUpperCase() + name.substr(1)] = new eYo.Svg[name]()
-    })
-  }
-  /**
-   * Convenient automatic subclasser.
-   * @param {String} name
-   */
-  eYo.Svg.makeSubclass = (name) => {
-    drivers.add(name)
-    eYo.Svg[name] = function () {
-      eYo.Svg[name].superClass_.constructor.call(this)
-    }
-    goog.inherits(eYo.Svg[name], eYo.Dom[name])
-  }
-  return me
-})()
-goog.inherits(eYo.Svg.Mgr, eYo.Owned)
-
 
 /**
  * Decorator for initUI.

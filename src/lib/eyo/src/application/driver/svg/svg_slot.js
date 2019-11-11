@@ -11,44 +11,52 @@
  */
 'use strict'
 
-goog.provide('eYo.Svg.Slot')
-
 goog.require('eYo.Svg')
 
-// Slot management
+goog.provide('eYo.Svg.Slot')
+
+goog.forwardDeclare('eYo.Slot')
+
+/**
+ * Svg driver for slots.
+ */
+eYo.Svg.makeDriveClass('Slot')
 
 /**
  * Prepare the given slot.
  * @param {!eYo.Slot} slot to be prepared.
  */
-eYo.Svg.Slot.prototype.initUI = function (slot) {
-  if (slot.dom) {
-    return // already initialized
+eYo.Svg.makeInitUI(
+  eYo.Svg.Slot,
+  function (slot) {
+    var dom = this._initUI(slot)
+    var svg = dom.svg = Object.create(null)
+    var g = svg.group_ = eYo.Svg.newElement('g', {
+      class: 'eyo-slot'
+    }, null)
+    g.dataset && (g.dataset.slot = slot.key)
+    if (slot.previous) {
+      goog.dom.insertSiblingAfter(g, slot.previous.dom.svg.group_)
+    } else {
+      goog.asserts.assert(slot.brick.slotAtHead === slot, 'Unexpected head slot not at head')
+      goog.dom.appendChild(slot.brick.dom.svg.group_, g)
+    }
+    this.displayedUpdate(slot)
   }
-  var dom = this._initUI(slot)
-  var svg = dom.svg = Object.create(null)
-  var g = svg.group_ = eYo.Svg.newElement('g', {
-    class: 'eyo-slot'
-  }, null)
-  g.dataset && (g.dataset.slot = slot.key)
-  if (slot.previous) {
-    goog.dom.insertSiblingAfter(g, slot.previous.dom.svg.group_)
-  } else {
-    goog.asserts.assert(slot.brick.slotAtHead === slot, 'Unexpected head slot not at head')
-    goog.dom.appendChild(slot.brick.dom.svg.group_, g)
-  }
-  this.displayedUpdate(slot)
-}
+)
 
 /**
  * Dispose of the given slot's rendering resources.
  * @param {eYo.Slot} slot
  */
-eYo.Svg.Slot.prototype.disposeUI = function (slot) {
-  goog.dom.removeNode(slot.dom.svg.group_)
-  slot.dom.svg.group_ = null
-  slot.dom.svg = null
-}
+eYo.Svg.makeDisposeUI(
+  eYo.Svg.Slot,
+  function (slot) {
+    goog.dom.removeNode(slot.dom.svg.group_)
+    slot.dom.svg.group_ = null
+    slot.dom.svg = null
+  }
+)
 
 /**
  * Whether the slot is displayed.

@@ -74,9 +74,12 @@ Object.defineProperties(eYo.WorkspaceControl.prototype, {
 /**
  * Dispose of this workspace control and its UI.
  */
-eYo.WorkspaceControl.prototype.dispose = eYo.Decorate.dispose(eYo.WorkspaceControl, function() {
-  eYo.Property.dispose(this, 'viewRect')
-})
+eYo.Decorate.makeDispose(
+  eYo.WorkspaceControl,
+  function() {
+    eYo.Property.dispose(this, 'viewRect')
+  }
+)
 
 /**
  * Move the workspace control to the bottom-right corner.

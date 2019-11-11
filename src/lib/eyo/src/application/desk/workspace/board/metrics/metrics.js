@@ -295,14 +295,17 @@ Object.defineProperties(eYo.Metrics.prototype, {
 /**
  * Sever the links and dispose of the resources.
  */
-eYo.Metrics.prototype.dispose = eYo.Decorate.dispose(function () {
-  eYo.Property.dispose(this,
-    'box',
-    'drag',
-    'view',
-    'port'
-  )
-})
+eYo.Decorate.makeDispose(
+  eYo.Metrics,
+  function () {
+    eYo.Property.dispose(this,
+      'box',
+      'drag',
+      'view',
+      'port'
+    )
+  }
+)
 
 /**
  * Update the board.

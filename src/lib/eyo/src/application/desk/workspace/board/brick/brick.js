@@ -125,43 +125,46 @@ Object.defineProperties(eYo.Brick.prototype, {
 /**
  * Dispose of all the resources.
  */
-eYo.Brick.prototype.dispose = eYo.Decorate.dispose(function (healStack, animate) {
-  var board = this.board
-  if (!board) {
-    // The block has already been deleted.
-    return
+eYo.Decorate.makeDispose(
+  eYo.Brick,
+  function (healStack, animate) {
+    var board = this.board
+    if (!board) {
+      // The block has already been deleted.
+      return
+    }
+    if (this.hasFocus) {
+      var m5s = this.magnets
+      // this brick was selected, select the brick below or above before deletion
+      var f = m => m && m.target
+      var m4t = f(m5s.right) || f(m5s.left) || f(m5s.head) || f(m5s.foot) || f(m5s.out)
+      m4t ? m4t.focusOn() : this.focusOff()
+      board.cancelMotion()
+    }
+    this.unplug(healStack, animate)
+    if (eYo.Events.enabled) {
+      eYo.Events.fire(new eYo.Events.BrickDelete(this))
+    }
+    // Stop rerendering.
+    this.ui_ && (this.ui_.rendered = false)
+    this.consolidate = this.initUI = this.render = eYo.Do.nothing
+    // Remove from board
+    board.removeBrick(this)
+    this.wrappedMagnets_ && (this.wrappedMagnets_.length = 0)
+    eYo.Events.disableWrap(() => {
+      this.disposeSlots(healStack)
+      this.disposeMagnets()
+      this.disposeFields()
+      this.disposeData()
+      this.inputList_ = eYo.VOID
+      this.slotList_ = eYo.VOID
+      this.children__ = eYo.VOID
+    })
+    this.board.resizePort()
+    eYo.Property.dispose(this, 'span', 'change')
+    eYo.Property.removeLinks(this, 'parent')
   }
-  if (this.hasFocus) {
-    var m5s = this.magnets
-    // this brick was selected, select the brick below or above before deletion
-    var f = m => m && m.target
-    var m4t = f(m5s.right) || f(m5s.left) || f(m5s.head) || f(m5s.foot) || f(m5s.out)
-    m4t ? m4t.focusOn() : this.focusOff()
-    board.cancelMotion()
-  }
-  this.unplug(healStack, animate)
-  if (eYo.Events.enabled) {
-    eYo.Events.fire(new eYo.Events.BrickDelete(this))
-  }
-  // Stop rerendering.
-  this.ui_ && (this.ui_.rendered = false)
-  this.consolidate = this.makeUI = this.render = eYo.Do.nothing
-  // Remove from board
-  board.removeBrick(this)
-  this.wrappedMagnets_ && (this.wrappedMagnets_.length = 0)
-  eYo.Events.disableWrap(() => {
-    this.disposeSlots(healStack)
-    this.disposeMagnets()
-    this.disposeFields()
-    this.disposeData()
-    this.inputList_ = eYo.VOID
-    this.slotList_ = eYo.VOID
-    this.children__ = eYo.VOID
-  })
-  this.board.resizePort()
-  eYo.Property.dispose(this, 'span', 'change')
-  eYo.Property.removeLinks(this, 'parent')
-})
+)
 
 // owned computed properties
 Object.defineProperties(eYo.Brick.prototype, {
@@ -2290,7 +2293,7 @@ eYo.Brick.prototype.someStatement = function (helper) {
  * If the model fits a number, then create a number
  * If the model fits a string literal, then create a string literal...
  * If the board is headless,
- * this is headless and should not render until a makeUI message is sent.
+ * this is headless and should not render until a initUI message is sent.
  * @param {!*} owner  board or brick
  * @param {!String|Object} model
  * @param {?String|Object} id
@@ -2381,7 +2384,7 @@ eYo.Brick.newReady = (() => {
     var b3k = processModel(board, model, id)
     if (b3k) {
       b3k.consolidate()
-      owner.hasUI && b3k.makeUI()
+      owner.hasUI && b3k.initUI()
     }
     return b3k
   }
@@ -2393,21 +2396,21 @@ eYo.Brick.newReady = (() => {
  * This is a one shot function.
  * @param {boolean} headless  no op when false
  */
-eYo.Brick.prototype.makeUI = function () {
+eYo.Brick.prototype.initUI = function () {
   this.change.wrap(() => {
     this.ui_ = new eYo.Brick.UI(this)
-    this.forEachField(field => field.makeUI())
-    this.forEachSlot(slot => slot.makeUI())
+    this.forEachField(field => field.initUI())
+    this.forEachSlot(slot => slot.initUI())
     ;[this.suite_m,
       this.right_m,
       this.foot_m
-    ].forEach(m => m && m.makeUI())
+    ].forEach(m => m && m.initUI())
     this.forEachData(data => data.synchronize()) // data is no longer headless
-    this.magnets.makeUI()
+    this.magnets.initUI()
     this.ui.updateShape()
     this.render = eYo.Brick.prototype.render_
   })
-  this.makeUI = eYo.Do.nothing
+  this.initUI = eYo.Do.nothing
   delete this.disposeUI
 }
 
@@ -2425,7 +2428,7 @@ eYo.Brick.prototype.disposeUI = function (healStack, animate) {
   })
   this.ui_ && (this.ui_.dispose() && (this.ui_ = null))
   this.disposeUI = eYo.Do.nothing
-  delete this.makeUI
+  delete this.initUI
 }
 
 /**

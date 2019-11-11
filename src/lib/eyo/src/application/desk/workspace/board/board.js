@@ -502,9 +502,9 @@ eYo.Board.Main.prototype.dispose = function() {
 /**
  * Make the UI. Called by the board's owner.
  */
-eYo.Board.prototype.makeUI = function() {
+eYo.Board.prototype.initUI = function() {
   delete this.disposeUI
-  this.makeUI = eYo.Do.nothing
+  this.initUI = eYo.Do.nothing
   this.ui_driver_mgr.initUI(this)
   var options = this.options
   if (options.hasScrollbars) {
@@ -524,7 +524,7 @@ eYo.Board.prototype.makeUI = function() {
  */
 eYo.Board.prototype.disposeUI = function() {
   this.disposeUI = eYo.Do.nothing
-  delete this.makeUI
+  delete this.initUI
   var d = this.ui_driver_mgr_
   if (d) {
     d.disposeUI(this)
@@ -1442,7 +1442,7 @@ eYo.Board.prototype.fromUTF8ByteArray = function (bytes) {
 eYo.Board.prototype.addBrick = function (brick, opt_id) {
   this.change.wrap(() => {
     this.list_.add(brick, opt_id)
-    this.hasUI && brick.makeUI()
+    this.hasUI && brick.initUI()
     brick.move()
   })
   this.resizePort()

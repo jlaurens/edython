@@ -11,15 +11,22 @@
  */
 'use strict'
 
-goog.provide('eYo.Svg.Effect')
-
 goog.require('eYo.Svg')
 goog.require('eYo.Brick')
+
+goog.provide('eYo.Svg.Effect')
+
+// goog.forwardDeclare('eYo.Effect')
+
+/**
+ * Svg driver for brick effects
+ */
+eYo.Svg.makeDriverClass('Effect')
 
 /**
  * Play some UI effects (sound, animation) when disposing of a brick.
  */
-eYo.Svg.prototype.brickDisposeEffect = (() => {
+eYo.Svg.Effect.prototype.brickDispose = (() => {
   /*
   * Animate a cloned brick and eventually dispose of it.
   * @param {!Element} clone SVG element to animate and dispose of.
@@ -65,7 +72,7 @@ eYo.Svg.prototype.brickDisposeEffect = (() => {
  * Make the given field reserved or not, to emphasize reserved keywords.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  */
-eYo.Svg.prototype.brickConnectEffect = (() => {
+eYo.Svg.Effect.prototype.brickConnect = (() => {
   /*
    * Expand a ripple around a connection.
    * @param {!Element} ripple Element to animate.
@@ -120,7 +127,7 @@ eYo.Svg.prototype.brickConnectEffect = (() => {
 /**
  * Play some UI effects (sound, animation) when disconnecting a brick.
  */
-eYo.Svg.prototype.brickDisconnectEffect = (() => {
+eYo.Svg.Effect.prototype.brickDisconnect = (() => {
   /*
    * Animate a brief wiggle of a disconnected brick.
    * @param {!Element} group SVG element to animate.
@@ -170,7 +177,7 @@ eYo.Svg.prototype.brickDisconnectEffect = (() => {
  * Stop the disconnect UI animation immediately.
  * @private
  */
-eYo.Svg.prototype.brickEffectStop = function() {
+eYo.Svg.Effect.prototype.brickStop = function() {
   var svg = this.svg_
   if (svg) {
     var g = this.group_

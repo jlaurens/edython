@@ -30,7 +30,7 @@ goog.inherits(eYo.Graphic, eYo.Pane)
 /**
  * Make the user interface.
  */
-eYo.Graphic.prototype.makeUI = eYo.Decorate.makeUI(
+eYo.Graphic.prototype.initUI = eYo.Decorate.makeInitUI(
   eYo.Graphic,
   function() {
     this.driver.graphicInit(this)
@@ -40,7 +40,7 @@ eYo.Graphic.prototype.makeUI = eYo.Decorate.makeUI(
 /**
  * Dispose of UI resources.
  */
-eYo.Graphic.prototype.disposeUI = eYo.Decorate.disposeUI(
+eYo.Decorate.makeDisposeUI(
   eYo.Graphic,
   function() {
     this.driver.graphicDispose(this)

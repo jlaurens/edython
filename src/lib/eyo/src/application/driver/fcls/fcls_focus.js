@@ -60,34 +60,34 @@ eYo.Fcls.Focus.prototype.offBoard = eYo.Do.nothing
  * Focus on a board.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus on a brick.
  */
-eYo.Fcls.Focus.prototype.onBrick = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.brickOn = eYo.Do.nothing
 
 /**
  * Focus off a brick.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus off a brick.
  */
-eYo.Fcls.Focus.prototype.offBrick = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.brickOff = eYo.Do.nothing
 
 /**
  * Focus on a field.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus on a field.
  */
-eYo.Fcls.Focus.prototype.onField = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.fieldOn = eYo.Do.nothing
 
 /**
  * Focus off a field.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus off a field.
  */
-eYo.Fcls.Focus.prototype.offField = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.fieldOff = eYo.Do.nothing
 
 /**
  * Focus on a magnet.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus on a magnet.
  */
-eYo.Fcls.Focus.prototype.onMagnet = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.magnetOn = eYo.Do.nothing
 
 /**
  * Focus off a magnet.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus off a magnet.
  */
-eYo.Fcls.Focus.prototype.offMagnet = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.magnetOff = eYo.Do.nothing

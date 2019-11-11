@@ -39,7 +39,7 @@ eYo.Field = function (bsm, name, text) {
   this.reentrant_ = {}
   Object.defineProperty(bsm, `${name}_f`, { value: this})
   this.disposeUI = eYo.Do.nothing
-  bsm.hasUI && this.makeUI()
+  bsm.hasUI && this.initUI()
 }
 goog.inherits(eYo.Field, eYo.Owned.UI2)
 
@@ -453,9 +453,9 @@ eYo.Field.prototype.dispose = function() {
 /**
  * Ensure that the field is ready.
  */
-eYo.Field.prototype.makeUI = function () {
+eYo.Field.prototype.initUI = function () {
   this.ui_driver_mgr.initUI(this)
-  this.makeUI = eYo.Do.nothing
+  this.initUI = eYo.Do.nothing
   delete this.disposeUI
 }
 
@@ -465,7 +465,7 @@ eYo.Field.prototype.makeUI = function () {
 eYo.Field.prototype.disposeUI = function() {
   this.ui_driver_mgr.disposeUI(this)
   this.disposeUI = eYo.Do.nothing
-  delete this.makeUI
+  delete this.initUI
 }
 
 /**

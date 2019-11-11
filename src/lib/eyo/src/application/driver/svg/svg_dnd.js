@@ -11,28 +11,28 @@
  */
 'use strict'
 
+goog.require('eYo.Svg')
+
 goog.provide('eYo.Svg.DnD')
+
+goog.forwardDeclare('eYo.DnD')
 
 /**
  * @name {eYo.Svg.DnD}
  * @namespace
  */
 
-goog.require('eYo.Svg')
-
-goog.forwardDeclare('eYo.DnD')
-
 console.error('NYI: DnD UI')
 /**
  * Initiate the DnD manager UI.
  * @param {!eYo.DnD.Mgr} mgr  The DnD manager we must init the UI.
  */
-eYo.Svg.prototype.dndMgrInit = function (mgr) {
+eYo.Svg.DnD.prototype.mgrInit = function (mgr) {
 }
 
 /**
  * Dispose of the DnD manager UI.
  * @param {!eYo.DnD.Mgr} mgr  The DnD manager we must dispose of the UI.
  */
-eYo.Svg.prototype.dndMgrDispose = function (mgr) {
+eYo.Svg.DnD.prototype.mgrDispose = function (mgr) {
 }

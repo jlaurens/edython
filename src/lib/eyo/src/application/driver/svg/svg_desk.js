@@ -11,78 +11,21 @@
  */
 'use strict'
 
+goog.require('eYo.Svg')
+goog.require('eYo.Dom.Desk')
+
 goog.provide('eYo.Svg.Desk')
 
-goog.require('eYo.Svg')
-
 goog.forwardDeclare('eYo.Desk')
-
-/**
- * Initialize the desk dom ressources.
- * @param {!eYo.Desk} desk
- * @param {?Function} f
- * @return {!Element} The desk's dom repository.
- */
-eYo.Dom.Desk.prototype.initUI = eYo.Dom.Decorate.initUI(function(desk) {
-  var dom = desk.dom
-  var options = desk.options
-  var container = options.container
-  // no UI if no valid container
-  if (goog.isString(container)) {
-    container = options.container = document.getElementById(container) ||
-        document.querySelector(container)
-  }
-  if (!goog.dom.contains(document, container)) {
-    throw 'Error: container is not in current document.'
-  }
-  var div = dom.div_ || (dom.div_= container)
-  eYo.Dom.bindEvent(
-    container,
-    'contextmenu',
-    e => eYo.Dom.isTargetInput(e) || e.preventDefault()
-  )
-  var d = dom.board_ = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    'eyo-board'
-  )
-  var stl = d.style
-  stl.overflow = 'hidden'
-  stl.position = 'absolute'
-  stl.width = '100%'
-  stl.height = '100%'
-  div.appendChild(d)
-  desk.board_.makeUI(d)
-})
-
-/**
- * Dispose of the desk dom resources.
- * @param {!eYo.Desk} desk
- */
-eYo.Dom.Desk.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function(desk) {
-  var dom = desk.dom
-  goog.dom.removeNode(dom.div_)
-  dom.div_ = null
-})
-
-/**
- * Place the desk div.
- * @param {!eYo.Desk} desk
- */
-eYo.Dom.Desk.prototype.place = function(desk) {
-}
 
 /**
  * Initialize the desk SVG ressources.
  * @param {!eYo.Desk} desk
  * @return {!Element} The desk's SVG group.
  */
-eYo.Svg.Desk.prototype.initUI = function(desk) {
-  if (desk.dom) {
-    return
-  }
-  var dom = eYo.Svg.superClass_.deskInit.call(this, desk)
+eYo.Svg.Desk.prototype.initUI = eYo.Svg.Decorate.initUI(eYo.Svg.Desk, function(desk) {
   this.bind_resize(desk)
-}
+})
 
 /**
  * Bind the resize element.

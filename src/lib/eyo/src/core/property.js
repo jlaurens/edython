@@ -69,8 +69,8 @@ eYo.Property.add = (object, k, data) => {
             f && f(before, after)
             f = data.didChange
             f && f(before, after)
-            if (after && this.hasUI && after.makeUI) {
-              after.makeUI()
+            if (after && this.hasUI && after.initUI) {
+              after.initUI()
             }
           }
         }

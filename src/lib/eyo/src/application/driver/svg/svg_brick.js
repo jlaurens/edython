@@ -16,6 +16,7 @@ goog.require('eYo.Dom.Brick')
 
 goog.provide('eYo.Svg.Brick')
 
+goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Focus')
 goog.forwardDeclare('goog.dom')
 
@@ -39,7 +40,7 @@ goog.forwardDeclare('goog.dom')
 /**
  * Svg driver for bricks.
  */
-eYo.Svg.makeSubclass('Brick')
+eYo.Svg.makeDriverClass('Brick')
 
 /**
  * Initialize the given brick.

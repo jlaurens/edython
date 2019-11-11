@@ -11,16 +11,23 @@
  */
 'use strict'
 
+goog.require('eYo.Svg')
+
 goog.provide('eYo.Svg.Scrollbar')
 
-goog.require('eYo.Svg')
+goog.forwardDeclare('eYo.Scrollbar')
+
+/**
+ * Svg driver for a scrollbar.
+ */
+eYo.Svg.makeDriverClass('Scrollbar')
 
 /**
  * Initializes the scrollbar SVG ressources.
  * @param {!eYo.Scrollbar} scrollbar
  * @param {?String} opt_class
  */
-eYo.Svg.Scrollbar.prototype.initUI = eYo.Dom.Decorate.initUI(function(scrollbar, opt_class) {
+eYo.Svg.Scrollbar.prototype.initUI = eYo.Dom.Decorate.initUI(eYo.Svg.Scrollbar, function(scrollbar, opt_class) {
   var dom = scrollbar.dom
   var svg = dom.svg
   /* Create the following DOM:

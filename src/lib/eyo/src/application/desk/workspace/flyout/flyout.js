@@ -254,7 +254,7 @@ Object.defineProperties(eYo.Flyout.prototype, {
 /**
  * Make the UI
  */
-eYo.Flyout.prototype.makeUI = function () {
+eYo.Flyout.prototype.initUI = function () {
   this.hide()
   var d = this.ui_driver_mgr
   d.initUI(this)
@@ -263,11 +263,11 @@ eYo.Flyout.prototype.makeUI = function () {
     d.toolbarInitUI(tb)
     tb.doSelectGeneral(null) // is it necessary ?
   }
-  this.draft_.makeUI()
-  this.search_.makeUI()
-  this.library_.makeUI()
+  this.draft_.initUI()
+  this.search_.initUI()
+  this.library_.initUI()
   delete this.disposeUI
-  this.makeUI = eYo.Do.nothing
+  this.initUI = eYo.Do.nothing
 }
 
 /**
@@ -283,7 +283,7 @@ eYo.Flyout.prototype.disposeUI = function() {
   this.toolbar_ && d.toolbarDisposeUI(this.toolbar_)
   d.disposeUI(this)
   eYo.Property.dispose(this, 'scrollbar_')
-  delete this.makeUI
+  delete this.initUI
   this.disposeUI = eYo.Do.nothing
 }
 

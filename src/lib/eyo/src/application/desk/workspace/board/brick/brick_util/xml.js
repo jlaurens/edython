@@ -965,7 +965,7 @@ eYo.Xml.domToBrick = (() => {
         }
         if (brick) {
           eYo.Xml.fromDom(brick, dom)
-          board.hasUI && brick.makeUI()
+          board.hasUI && brick.initUI()
           return brick
         }
       }

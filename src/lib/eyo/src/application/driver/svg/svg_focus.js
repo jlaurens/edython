@@ -20,9 +20,16 @@ goog.provide('eYo.Svg.Focus')
 
 goog.require('eYo.Svg')
 
+goog.provide('eYo.Svg.Focus')
+
 goog.forwardDeclare('eYo.Focus')
 
 console.error('NYI')
+
+/**
+ * Svg driver for the focus.
+ */
+eYo.Svg.makeDriverClass('Focus')
 
 /*******  Focus  *******/
 /**
@@ -77,7 +84,7 @@ eYo.Svg.Focus.prototype.offBoard = function (mgr) {
  * Focus on a board.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus on a brick.
  */
-eYo.Svg.Focus.prototype.onBrick = function (mgr) {
+eYo.Svg.Focus.prototype.brickOn = function (mgr) {
   var b = mgr.brick
   if (b) {
     b.ui.sendToFront()
@@ -98,7 +105,7 @@ eYo.Svg.Focus.prototype.onBrick = function (mgr) {
  * Focus off a brick.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus off a brick.
  */
-eYo.Svg.Focus.prototype.offBrick = function (mgr) {
+eYo.Svg.Focus.prototype.brickOff = function (mgr) {
   var b = mgr.brick
   if (b) {
     // unselect/unhilight the previous brick
@@ -115,7 +122,7 @@ eYo.Svg.Focus.prototype.offBrick = function (mgr) {
  * Focus on a field.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus on a field.
  */
-eYo.Svg.Focus.prototype.onField = function (mgr) {
+eYo.Svg.Focus.prototype.fieldOn = function (mgr) {
   var f = mgr.field
   if (f) {
     var b = mgr.brick
@@ -131,7 +138,7 @@ eYo.Svg.Focus.prototype.onField = function (mgr) {
  * Focus off a field.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus off a field.
  */
-eYo.Svg.Focus.prototype.offField = function (mgr) {
+eYo.Svg.Focus.prototype.fieldOff = function (mgr) {
   var b = mgr.brick
   if (b) {
     var ui = b.ui
@@ -143,7 +150,7 @@ eYo.Svg.Focus.prototype.offField = function (mgr) {
  * Focus on a magnet.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus on a magnet.
  */
-eYo.Svg.Focus.prototype.onMagnet = function (mgr) {
+eYo.Svg.Focus.prototype.magnetOn = function (mgr) {
   var m = mgr.magnet
   if (m) {
     var b = mgr.brick
@@ -159,7 +166,7 @@ eYo.Svg.Focus.prototype.onMagnet = function (mgr) {
  * Focus off a magnet.
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus off a magnet.
  */
-eYo.Svg.Focus.prototype.offMagnet = function (mgr) {
+eYo.Svg.Focus.prototype.magnetOff = function (mgr) {
   var b = mgr.brick
   if (b) {
     var ui = b.ui

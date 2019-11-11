@@ -20,4 +20,4 @@ goog.forwardDeclare('eYo.Application')
 /**
  * Svg driver for application.
  */
-eYo.Svg.makeSubclass('Application')
+eYo.Svg.makeDriverClass('Application')

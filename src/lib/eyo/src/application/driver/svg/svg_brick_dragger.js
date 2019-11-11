@@ -11,15 +11,22 @@
  */
 'use strict'
 
-goog.provide('eYo.Svg.brickDragger')
-
 goog.require('eYo.Svg')
+
+goog.provide('eYo.Svg.BrickDragger')
+
+goog.forwardDeclare('eYo.BrickDragger')
+
+/**
+ * Svg driver for a brick dragger.
+ */
+eYo.Dom.makeDriverClass('BrickDragger')
 
 /**
  * Initializes the brickDragger SVG ressources.
  * @param {!eYo.brickDragger} brickDragger
  */
-eYo.Svg.prototype.brickDraggerInit = eYo.Dom.Decorate.initUI(function(dragger) {
+eYo.Svg.BrickDragger.prototype.initUI = eYo.Svg.Decorate.initUI(function(dragger) {
   var dom = dragger.dom
   var svg = dom.svg = Object.create(null)
   svg.dragSurface = dragger.board.dom.svg.brickDragSurface
@@ -29,7 +36,7 @@ eYo.Svg.prototype.brickDraggerInit = eYo.Dom.Decorate.initUI(function(dragger) {
  * Dispose of the given slot's rendering resources.
  * @param {!eYo.brickDragger} brickDragger
  */
-eYo.Svg.prototype.brickDraggerDispose = eYo.Dom.Decorate.disposeUI(function (brickDragger) {
+eYo.Svg.BrickDragger.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function (brickDragger) {
   var svg = brickDragger.dom.svg
   if (svg) {
     svg.dragSurface = null
@@ -41,7 +48,7 @@ eYo.Svg.prototype.brickDraggerDispose = eYo.Dom.Decorate.disposeUI(function (bri
  * Start dragging.
  * @param {!eYo.brickDragger} brickDragger
  */
-eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
+eYo.Svg.BrickDragger.prototype.start = function (brickDragger) {
   // Move the brick dragged to the drag surface
   // The translation for drag surface bricks,
   // is equal to the current relative-to-surface position,
@@ -90,7 +97,7 @@ eYo.Svg.prototype.brickDraggerStart = function (brickDragger) {
  * End dragging.
  * @param {!eYoBrickDragger} dragger
  */
-eYo.Svg.prototype.brickDraggerEnd = function (dragger) {
+eYo.Svg.BrickDragger.prototype.end = function (dragger) {
   this.brickEffectStop(dragger.brick)
   dragger.dragSurface.end(!dragger.wouldDelete_)
 }

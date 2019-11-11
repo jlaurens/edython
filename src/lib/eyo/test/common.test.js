@@ -25,7 +25,7 @@ eYo.Test.makeTestDesk = (id) => {
   var desk = new eYo.Desk({
     container: id
   })
-  desk.makeUI()
+  desk.initUI()
   return desk
 }
 

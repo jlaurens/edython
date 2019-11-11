@@ -21,18 +21,18 @@ goog.provide('eYo.Driver')
  */
 eYo.Driver = Object.create(null)
 
-eYo.Driver.makeManagerClass = (object) => {
+eYo.Driver.makeManagerClass = (object, superClass) => {
   if (object === eYo.Driver) {
     return
   }
   var drivers = new Set()
   object['Mgr'] = function (owner) {
-    eYo.Driver.Mgr.superClass_.constructor.call(this, owner)
+    object['Mgr'].superClass_.constructor.call(this, owner)
     drivers.forEach(name => {
-      this[name[0].toUpperCase() + name.substr(1)] = new eYo.Driver[name]()
+      this[name[0].toLowerCase() + name.substr(1)] = new eYo.Driver[name[0].toUpperCase() + name.substr(1)]()
     })
   }
-  goog.inherits(object['Mgr'], eYo.Owned)
+  goog.inherits(object['Mgr'], superClass || eYo.Owned)
   /**
    * Convenient automatic subclasser.
    * @param {String} name
@@ -42,7 +42,7 @@ eYo.Driver.makeManagerClass = (object) => {
     object[name] = function () {
       object[name].superClass_.constructor.call(this)
     }
-    goog.inherits(object[name], object.Default)
+    goog.inherits(object[name], object.superClass_[name] || object.Default)
   }
   // make the default driver
   object.Default = eYo.Driver.Default

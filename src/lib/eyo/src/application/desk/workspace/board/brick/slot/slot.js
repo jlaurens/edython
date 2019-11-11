@@ -99,31 +99,37 @@ Object.defineProperties(eYo.Slot.prototype, {
 /**
  * Make the UI.
 */
-eYo.Slot.prototype.makeUI = eYo.Decorate.makeUI(eYo.Slot, function () {
+eYo.Slot.prototype.initUI = eYo.Decorate.makeInitUI(eYo.Slot, function () {
   this.ui_driver_mgr.initUI(this)
 })
 
 /**
  * Dispose of the UI.
 */
-eYo.Slot.prototype.disposeUI = eYo.Decorate.disposeUI(eYo.Slot, function () {
-  this.ui_driver_mgr.disposeUI(this)
-})
+eYo.Decorate.makeDisposeUI(
+  eYo.Slot,
+  function () {
+    this.ui_driver_mgr.disposeUI(this)
+  }
+)
 
 /**
  * Dispose of all attributes.
  * Asks the owner's renderer to do the same.
 * @param {?Boolean} onlyThis  Dispose of the inferior target iff healStack is a falsy value
 */
-eYo.Slot.prototype.dispose = eYo.Decorate.dispose(eYo.Slot, function (onlyThis) {
-  eYo.Field.disposeFields(this)
-  this.model_ = eYo.VOID
-  this.magnet_ && this.magnet_.dispose(onlyThis)
-  this.magnet_ = eYo.VOID
-  this.key_ = eYo.VOID
-  this.brick_ = eYo.VOID
-  eYo.Property.dispose(this, 'where')
-})
+eYo.Decorate.makeDispose(
+  eYo.Slot,
+  function (onlyThis) {
+    eYo.Field.disposeFields(this)
+    this.model_ = eYo.VOID
+    this.magnet_ && this.magnet_.dispose(onlyThis)
+    this.magnet_ = eYo.VOID
+    this.key_ = eYo.VOID
+    this.brick_ = eYo.VOID
+    eYo.Property.dispose(this, 'where')
+  }
+)
 
 Object.defineProperties(eYo.Slot.prototype, {
   /**
@@ -270,11 +276,11 @@ Object.defineProperties(eYo.Slot.prototype, {
  * Install this slot and its associate fields on their brick.
  * No data change.
  */
-eYo.Slot.prototype.makeUI = function () {
-  this.makeUI = eYo.Do.nothing // one shot function
+eYo.Slot.prototype.initUI = function () {
+  this.initUI = eYo.Do.nothing // one shot function
   this.ui_driver_mgr.initUI(this)
-  this.forEachField(f => f.makeUI())
-  this.magnet && (this.magnet.makeUI())
+  this.forEachField(f => f.initUI())
+  this.magnet && (this.magnet.initUI())
 }
 
 Object.defineProperties(eYo.Slot.prototype, {

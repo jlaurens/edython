@@ -20,7 +20,7 @@ goog.forwardDeclare('eYo.Board')
 /**
  * Svg driver for boards.
  */
-eYo.Svg.makeSubclass('Board')
+eYo.Svg.makeDriverClass('Board')
 
 /**
  * Initialize the board dom ressources.

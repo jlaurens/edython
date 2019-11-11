@@ -24,7 +24,7 @@ goog.require('eYo.Section')
 eYo.Search = function(owner) {
   eYo.Search.superClass_.constructor.call(this.owner)
   this.board_ = new eYo.Board(this, {})
-  this.makeUI()
+  this.initUI()
 }
 goog.inherits(eYo.Search, eYo.Section)
 
@@ -42,10 +42,10 @@ Object.defineProperties(eYo.Search.prototype, {
 /**
  * Make the UI
  */
-eYo.Search.prototype.makeUI = function () {
+eYo.Search.prototype.initUI = function () {
   delete this.disposeUI
-  this.makeUI = eYo.Do.nothing
-  this.board_.makeUI()
+  this.initUI = eYo.Do.nothing
+  this.board_.initUI()
 }
 
 /**
@@ -53,7 +53,7 @@ eYo.Search.prototype.makeUI = function () {
  * Unlink from all DOM elements to prevent memory leaks.
  */
 eYo.Search.prototype.disposeUI = function() {
-  delete this.makeUI
+  delete this.initUI
   this.disposeUI = eYo.Do.nothing
   this.board_.disposeUI()
   var d = this.ui_driver_mgr

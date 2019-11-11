@@ -255,7 +255,7 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
  * @param {string=} opt_class A class to be applied to this scrollbar.
  * @private
  */
-eYo.Scrollbar.prototype.makeUI = eYo.Decorate.makeUI(eYo.Scrollbar, function() {
+eYo.Scrollbar.prototype.initUI = eYo.Decorate.makeInitUI(eYo.Scrollbar, function() {
   return this.ui_driver_mgr.scrollbarInit(this, this.opt_class_)
 })
 
@@ -264,7 +264,7 @@ eYo.Scrollbar.prototype.makeUI = eYo.Decorate.makeUI(eYo.Scrollbar, function() {
  */
 eYo.Scrollbar.prototype.disposeUI = function() {
   this.disposeUI = eYo.Do.nothing
-  delete this.makeUI
+  delete this.initUI
   return this.ui_driver_mgr.scrollbarDispose(this)
 }
 

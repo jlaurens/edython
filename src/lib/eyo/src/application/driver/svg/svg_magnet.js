@@ -11,13 +11,22 @@
  */
 'use strict'
 
-goog.provide('eYo.Svg.Magnet')
-
 goog.require('eYo.Svg')
+
+goog.provide('eYo.Svg.Magnet')
 
 goog.forwardDeclare('eYo.Magnet')
 
-// Magnet management
+/**
+ * Svg driver for magnets.
+ */
+eYo.Svg.makeDriverClass('Magnet')
+
+/**
+ * Dispose of the magnet SVG ressources.
+ * @param {!eYo.Magnet} magnet
+ */
+eYo.Svg.Magnet.prototype.initUI = eYo.Do.nothing
 
 /**
  * Dispose of the magnet SVG ressources.

@@ -31,7 +31,7 @@ goog.inherits(eYo.Terminal, eYo.Pane)
 /**
  * Make the user interface.
  */
-eYo.Terminal.prototype.makeUI = eYo.Decorate.makeUI(
+eYo.Terminal.prototype.initUI = eYo.Decorate.makeInitUI(
   eYo.Terminal,
   function() {
     this.driver.terminalInit(this)
@@ -41,7 +41,7 @@ eYo.Terminal.prototype.makeUI = eYo.Decorate.makeUI(
 /**
  * Dispose of UI resources.
  */
-eYo.Terminal.prototype.disposeUI = eYo.Decorate.disposeUI(
+eYo.Decorate.makeDisposeUI(
   eYo.Terminal,
   function() {
     this.driver.terminalDispose(this)

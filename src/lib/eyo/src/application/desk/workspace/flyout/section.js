@@ -61,10 +61,10 @@ eYo.Section.prototype.dispose = function() {
 /**
  * Make the UI
  */
-eYo.Section.prototype.makeUI = function () {
-  this.toolbar_.makeUI()
+eYo.Section.prototype.initUI = function () {
+  this.toolbar_.initUI()
   delete this.disposeUI
-  this.makeUI = eYo.Do.nothing
+  this.initUI = eYo.Do.nothing
 }
 
 /**
@@ -72,7 +72,7 @@ eYo.Section.prototype.makeUI = function () {
  */
 eYo.Section.prototype.disposeUI = function () {
   this.toolbar_.disposeUI()
-  delete this.makeUI
+  delete this.initUI
   this.disposeUI = eYo.Do.nothing
 }
 
@@ -101,11 +101,11 @@ eYo.Section.Single.prototype.dispose = function() {
 /**
  * Make the UI
  */
-eYo.Section.Single.prototype.makeUI = function () {
-  eYo.Section.Single.superClass_.makeUI.call(this)
-  this.board_.makeUI()
+eYo.Section.Single.prototype.initUI = function () {
+  eYo.Section.Single.superClass_.initUI.call(this)
+  this.board_.initUI()
   delete this.disposeUI
-  this.makeUI = eYo.Do.nothing
+  this.initUI = eYo.Do.nothing
 }
 
 /**
@@ -114,6 +114,6 @@ eYo.Section.Single.prototype.makeUI = function () {
 eYo.Section.Single.prototype.disposeUI = function () {
   eYo.Section.Single.superClass_.disposeUI.call(this)
   this.board_.disposeUI()
-  delete this.makeUI
+  delete this.initUI
   this.disposeUI = eYo.Do.nothing
 }

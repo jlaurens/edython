@@ -118,11 +118,11 @@ Object.defineProperties(eYo.Desk.prototype, {
 /**
  * Make the user interface.
  */
-eYo.Desk.prototype.makeUI = eYo.Decorate.makeUI(
+eYo.Desk.prototype.initUI = eYo.Decorate.makeInitUI(
   eYo.Desk,
   function() {
     this.ui_driver_mgr.initUI(this)
-    this.panes_.forEach(p => p.makeUI())
+    this.panes_.forEach(p => p.initUI())
     this.layout()
   }
 )
@@ -130,7 +130,7 @@ eYo.Desk.prototype.makeUI = eYo.Decorate.makeUI(
 /**
  * Dispose of UI resources.
  */
-eYo.Desk.prototype.disposeUI = eYo.Decorate.disposeUI(
+eYo.Decorate.makeDisposeUI(
   eYo.Desk,
   function() {
     [].concate(this.panes_).reverse().forEach(p => p.disposeUI())
@@ -141,7 +141,7 @@ eYo.Desk.prototype.disposeUI = eYo.Decorate.disposeUI(
 /**
  * Dispose of this desk's board.
  */
-eYo.Desk.prototype.dispose = eYo.Decorate.dispose(
+eYo.Decorate.makeDispose(
   eYo.Desk,
   function() {
     eYo.Property.dispose(this,

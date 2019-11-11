@@ -318,7 +318,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
     var f = (sep, suffix) => {
       var field = new eYo.FieldLabel(io.slot, sep)
       io.slot.fieldRow.splice(0, 0, field)
-      field.makeUI()
+      field.initUI()
       field.suffix = suffix
     }
     var sep = io.slot.lst_presep || this.model.presep

@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview An SVG that floats on top of the board.
+ * @fileoverview An SVG element that floats on top of the board.
  * Bricks are moved into this SVG during a drag, improving performance.
  * The entire SVG is translated using css translation instead of SVG so the
  * blocks are never repainted during drag improving performance.

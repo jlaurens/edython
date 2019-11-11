@@ -11,9 +11,17 @@
  */
 'use strict'
 
+goog.require('eYo.Svg')
+
 goog.provide('eYo.Svg.Scroller')
 
-goog.require('eYo.Svg')
+goog.forwardDeclare('eYo.Scroller')
+
+/**
+ * Svg driver for a scroller.
+ */
+z
+eYo.Svg.makeDriverClass('Scroller')
 
 /**
  * Inits the scroll bar.

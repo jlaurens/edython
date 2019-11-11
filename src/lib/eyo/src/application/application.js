@@ -68,7 +68,7 @@ eYo.Property.addMany(
           this.disposeUI()
         }
         return function (before, after) {
-          this.makeUI()
+          this.initUI()
         }
       }
     },
@@ -122,7 +122,7 @@ Object.defineProperties(eYo.Application.prototype, {
    */
   hasUI: {
     get () {
-      return !this.makeUI || this.makeUI === eYo.Do.nothing
+      return !this.initUI || this.initUI === eYo.Do.nothing
     }
   },
 })
@@ -130,13 +130,13 @@ Object.defineProperties(eYo.Application.prototype, {
 /**
  * Make the UI.
  */
-eYo.Application.prototype.makeUI = function() {
-  this.makeUI = eYo.Do.nothing
+eYo.Application.prototype.initUI = function() {
+  this.initUI = eYo.Do.nothing
   delete this.disposeUI
   this.audio__ = new eYo.Audio(this, this.options.pathToMedia)
   var d = this.ui_driver_mgr__ = new eYo.Svg(this)
   d.initUI(this)
-  this.desk.makeUI()
+  this.desk.initUI()
 }
 
 /**
@@ -146,7 +146,7 @@ eYo.Application.prototype.disposeUI = function() {
   this.disposeUI = eYo.Do.nothing
   this.desk.disposeUI()
   this.ui_driver_mgr_ = null
-  delete this.makeUI
+  delete this.initUI
 }
 
 /**

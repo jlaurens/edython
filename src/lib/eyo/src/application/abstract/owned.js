@@ -144,8 +144,8 @@ eYo.Owned.prototype.dispose = function () {
  * Decorator to wrap the `dispose` between appropriate calls to `disposeUI` and the inherited code.
  * Caveat: Arguments are the same for all the hierarchy.
  */
-eYo.Decorate.dispose = (constructor, f) => {
-  return function () {
+eYo.Decorate.makeDispose = (constructor, f) => {
+  constructor.dispose = function () {
     try {
       this.dispose = eYo.Do.nothing
       this.disposeUI()
@@ -179,7 +179,7 @@ Object.defineProperties(eYo.Owned.UI.prototype, {
    */
   hasUI: {
     get () {
-      return !this.makeUI || this.makeUI === eYo.Do.nothing
+      return !this.initUI || this.initUI === eYo.Do.nothing
     }
   },
   /**
@@ -197,15 +197,15 @@ Object.defineProperties(eYo.Owned.UI.prototype, {
  * Decorator to make the UI only when the owner has a UI.
  * Caveat: arguments are the same throughout the inheritance hierarchy.
  */
-eYo.Decorate.makeUI = (constructor, f) => {
-  return function () {
+eYo.Decorate.makeInitUI = (constructor, f) => {
+  constructor.prototype.initUI = function () {
     if (this.owner.hasUI) {
       try {
-        this.makeUI = eYo.Do.nothing
+        this.initUI = eYo.Do.nothing
         f.apply(this, arguments)
         var super_ = constructor.superClass_
-        if (!!super_ && !!super_.makeUI) {
-          super_.makeUI.apply(this, arguments)
+        if (!!super_ && !!super_.initUI) {
+          super_.initUI.apply(this, arguments)
         }
       } finally {
         delete this.disposeUI
@@ -217,17 +217,17 @@ eYo.Decorate.makeUI = (constructor, f) => {
 /**
  * Decorator to make the UI only when the owner has a UI.
  */
-eYo.Decorate.disposeUI = (constructor, f) => {
-  return function () {
+eYo.Decorate.makeDisposeUI = (constructor, f) => {
+  constructor.prototype.disposeUI = function () {
     this.disposeUI = eYo.Do.nothing
     try {
       f.call(this)
-      var super_ = super_
+      var super_ = constructor.superClass_
       if (!!super_ && !!super_.disposeUI) {
         super_.disposeUI.call(this)
       }
     } finally {
-      delete this.makeUI
+      delete this.initUI
     }
   }
 }

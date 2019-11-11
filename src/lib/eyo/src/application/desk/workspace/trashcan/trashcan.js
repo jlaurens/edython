@@ -78,14 +78,14 @@ Object.defineProperties(eYo.TrashCan.prototype, {
 /**
  * Create the trash can elements.
  */
-eYo.TrashCan.prototype.makeUI = eYo.Decorate.makeUI(eYo.TrashCan, function() {
+eYo.TrashCan.prototype.initUI = eYo.Decorate.makeInitUI(eYo.TrashCan, function() {
   this.ui_driver_mgr.initUI(this)
 })
 
 /**
  * Dispose of this trash's UI.
  */
-eYo.TrashCan.prototype.disposeUI = eYo.Decorate.makeUI(eYo.TrashCan, function() {
+eYo.TrashCan.prototype.disposeUI = eYo.Decorate.makeInitUI(eYo.TrashCan, function() {
   this.ui_driver_mgr.disposeUI(this)
 })
 

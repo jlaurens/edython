@@ -33,7 +33,7 @@ Object.defineProperties(eYo.Zoomer.prototype, {
  * Create the zoom controls UI at above the given bottom.
  * @param {Number} bottom
  */
-eYo.Zoomer.prototype.makeUI = eYo.Decorate.makeUI(eYo.Zoomer, function() {
+eYo.Zoomer.prototype.initUI = eYo.Decorate.makeInitUI(eYo.Zoomer, function() {
   this.ui_driver_mgr.initUI(this)
 })
 
@@ -41,9 +41,12 @@ eYo.Zoomer.prototype.makeUI = eYo.Decorate.makeUI(eYo.Zoomer, function() {
  * Create the zoom controls.
  * @return {!Element} The zoom controls SVG group.
  */
-eYo.Zoomer.prototype.disposeUI = eYo.Decorate.disposeUI(eYo.Zoomer, function() {
-  this.ui_driver_mgr.disposeUI(this)
-})
+eYo.Decorate.makeDisposeUI(
+  eYo.Zoomer,
+  function() {
+    this.ui_driver_mgr.disposeUI(this)
+  }
+)
 
 /**
  * Move the zoom controls to the bottom-right corner.

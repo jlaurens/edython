@@ -125,14 +125,14 @@ Object.defineProperties(eYo.Workspace.prototype, {
 /**
  * Make the user interface.
  */
-eYo.Workspace.prototype.makeUI = eYo.Decorate.makeUI(
+eYo.Workspace.prototype.initUI = eYo.Decorate.makeInitUI(
   eYo.Workspace,
   function() {
     this.driver.workspaceInit(this)
-    this.trashCan.makeUI()
-    this.zoomer.makeUI()
-    this.board__.makeUI()
-    this.flyout__.makeUI()
+    this.trashCan.initUI()
+    this.zoomer.initUI()
+    this.board__.initUI()
+    this.flyout__.initUI()
     this.recordDeleteAreas()
     this.layout()  
   }
@@ -141,7 +141,7 @@ eYo.Workspace.prototype.makeUI = eYo.Decorate.makeUI(
 /**
  * Dispose of UI resources.
  */
-eYo.Workspace.prototype.disposeUI = eYo.Decorate.disposeUI(
+eYo.Decorate.makeDisposeUI(
   eYo.Workspace,
   function() {
     this.flyout__.disposeUI()
@@ -155,7 +155,7 @@ eYo.Workspace.prototype.disposeUI = eYo.Decorate.disposeUI(
 /**
  * Dispose of this desk's board.
  */
-eYo.Workspace.prototype.dispose = eYo.Decorate.dispose(
+eYo.Decorate.makeDispose(
   eYo.Workspace,
   function() {
     eYo.Property.dispose(

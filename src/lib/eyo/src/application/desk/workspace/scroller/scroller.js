@@ -39,7 +39,7 @@ eYo.Scroller = function(board) {
   )
   this.cornerRect_ = new eYo.Rect()
   this.disposeUI = eYo.Do.nothing
-  board.hasUI && this.makeUI()
+  board.hasUI && this.initUI()
 }
 goog.inherits(eYo.Scroller, eYo.Owned.UI)
 
@@ -83,9 +83,9 @@ Object.defineProperties(eYo.Scroller.prototype, {
  * @type {Object}
  * @private
  */
-eYo.Scroller.prototype.makeUI = function () {
+eYo.Scroller.prototype.initUI = function () {
   this.ui_driver_mgr.scrollerInit(this)
-  this.makeUI = eYo.Do.nothing
+  this.initUI = eYo.Do.nothing
   delete this.disposeUI
 }
 
@@ -99,7 +99,7 @@ eYo.Scroller.prototype.disposeUI = function () {
   this.vScroll.disposeUI()
   this.ui_driver_mgr.scrollerDispose(this)
   this.disposeUI = eYo.Do.nothing
-  delete this.makeUI
+  delete this.initUI
 }
 
 /**

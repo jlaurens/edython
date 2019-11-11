@@ -112,13 +112,13 @@ eYo.Magnets.prototype.dispose = function () {
 }
 
 /**
- * `makeUI` the magnets.
+ * `initUI` the magnets.
  */
-eYo.Magnets.prototype.makeUI = function () {
-  this.makeUI = eYo.Do.nothing // one shot function
+eYo.Magnets.prototype.initUI = function () {
+  this.initUI = eYo.Do.nothing // one shot function
   for (var k in this) { 
     var m = this[k]
-    m && m.makeUI && (m.makeUI())
+    m && m.initUI && (m.initUI())
   }
 }
 
@@ -802,16 +802,16 @@ eYo.Magnet.prototype.forEachField = function (helper) {
 }
 
 /**
- * `makeUI` the target brick when superior and the fields.
+ * `initUI` the target brick when superior and the fields.
  */
-eYo.Magnet.prototype.makeUI = function () {
-  this.makeUI = eYo.Do.nothing // one shot function
+eYo.Magnet.prototype.initUI = function () {
+  this.initUI = eYo.Do.nothing // one shot function
   this.inDB_ = !this.hidden_
   if (this.isSuperior) {
     var t9k = this.targetBrick
-    t9k && (t9k.makeUI())
+    t9k && (t9k.initUI())
   }
-  this.forEachField(f => f.makeUI())
+  this.forEachField(f => f.initUI())
 }
 
 /**
@@ -1445,8 +1445,8 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
   eYo.Events.groupWrap(() => {
     parent.change.wrap(() => { // Disable rendering until changes are made
       child.change.wrap(() => {
-        parent.makeUI(child.hasUI)
-        child.makeUI(parent.hasUI)
+        parent.initUI(child.hasUI)
+        child.initUI(parent.hasUI)
         parentM4t.willConnect(childM4t)
         if (unwrappedM4t !== parentM4t) {
           unwrappedM4t.willConnect(childM4t)

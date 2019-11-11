@@ -30,7 +30,7 @@ goog.inherits(eYo.Turtle, eYo.Pane)
 /**
  * Make the user interface.
  */
-eYo.Turtle.prototype.makeUI = eYo.Decorate.makeUI(
+eYo.Turtle.prototype.initUI = eYo.Decorate.makeInitUI(
   eYo.Turtle,
   function() {
     this.driver.turtleInit(this)
@@ -40,7 +40,7 @@ eYo.Turtle.prototype.makeUI = eYo.Decorate.makeUI(
 /**
  * Dispose of UI resources.
  */
-eYo.Turtle.prototype.disposeUI = eYo.Decorate.disposeUI(
+eYo.Decorate.makeDisposeUI(
   eYo.Turtle,
   function() {
     this.driver.turtleDispose(this)

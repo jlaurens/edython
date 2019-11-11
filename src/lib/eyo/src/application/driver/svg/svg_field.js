@@ -19,14 +19,16 @@ goog.forwardDeclare('eYo.Field')
 
 // field management
 
+eYo.Svg.makeDriverClass('Field')
+
 /**
  * Initializes the field SVG ressources.
  * Does nothing if the field's brick has no SVG ressources.
- * Part of the `makeUI` process.
+ * Part of the `initUI` process.
  * @param {!eYo.Field} field
  * @return {?eYo.Field}
  */
-eYo.Svg.Field.prototype.initUI = function(field) {
+eYo.Svg.Field.prototype.initUI = eYo.Svg.Decorate.initUI(eYo.Svg.Field, function(field) {
   if (field.dom) {
     return
   }
@@ -66,18 +68,18 @@ eYo.Svg.Field.prototype.initUI = function(field) {
   // add tooltip management here
   this.updateEditable(field)
   return field
-}
+})
 
 /**
  * Dispose of the given field's rendering resources.
  * @param {!Object} field
  */
-eYo.Svg.Field.prototype.disposeUI = function (field) {
+eYo.Svg.Decorate.disposeUI(eYo.Svg.Field, function (field) {
   var svg = field.dom && field.dom.svg
   if (!svg) { return }
   svg.group_ = goog.dom.removeNode(svg.group_)
   this._disposeUI(field)
-}
+})
 
 /**
  * Set the location.
@@ -311,6 +313,6 @@ eYo.Svg.Field.prototype.getDisplayText_ = function(field) {
  */
 eYo.Svg.onFieldMouseDown_ = function(e) {
   if (this.board && this.brick.hasFocus) {
-    eYo.app.motion.setStartField(this)
+    this.app.motion.setStartField(this)
   }
 }
