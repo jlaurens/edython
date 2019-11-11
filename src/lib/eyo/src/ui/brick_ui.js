@@ -11,13 +11,11 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.UI')
-
 goog.require('eYo.Brick')
-
 goog.require('eYo.Change')
 
-goog.forwardDeclare('eYo.Driver')
+goog.provide('eYo.Brick.UI')
+
 goog.forwardDeclare('eYo.Svg.Brick')
 
 /**
@@ -52,21 +50,24 @@ goog.forwardDeclare('eYo.Svg.Brick')
  * @property {Object}  whereInBoard  the coordinates relative to the surface.
  */
 eYo.Brick.UI = function(brick) {
-  this.brick_ = brick
-  brick.ui_ = this
+  eYo.Brick.UI.superClass_.constructor.call(this, brick)
   this.down = this.up = false
   this.xy_ = new eYo.Where()
-  this.driver.brickInit(brick)
   this.updateBrickWrapped()
 }
+goog.inherits(eYo.Brick.UI, eYo.Owned)
+
+Object.defineProperties(eYo.Brick.UI.prototype, {
+  
+})
 
 /**
  * The default implementation forwards to the driver.
  */
 eYo.Brick.UI.prototype.dispose = function () {
   if (this.xy_) {
-    this.driver.brickDispose(this.brick_)
-    this.brick_ = null
+    this.driver.brickDispose(this.brick)
+    this.brick = null
     this.xy_.dispose()
     this.xy_= null
   }
@@ -83,10 +84,10 @@ Object.defineProperties(eYo.Brick.UI, {
 Object.defineProperties(eYo.Brick.UI.prototype, {
   brick: {
     get() {
-      return this.brick_
+      return this.brick
     }
   },
-  // brick_: {
+  // brick: {
   //   get() {
   //     return this.brick__
   //   },
@@ -99,52 +100,52 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
   // },
   board: {
     get () {
-      return this.brick_.board
+      return this.brick.board
     }
   },
   change: {
     get() {
-      return this.brick_.change
+      return this.brick.change
     }
   },
   driver: {
     get() {
-      return this.brick_.board.ui_driver_mgr
+      return this.brick.board.ui_driver_mgr
     }
   },
   reentrant_: {
     get() {
-      return this.brick_.reentrant_
+      return this.brick.reentrant_
     }
   },
   span: {
     get() {
-      return this.brick_.span
+      return this.brick.span
     }
   },
   hasLeftEdge: {
     get () {
-      return !this.brick_.wrapped_ && !this.brick_.locked_
+      return !this.brick.wrapped_ && !this.brick.locked_
     }
   },
   hasRightEdge: {
     get () {
-      return !this.brick_.wrapped_ && !this.brick_.locked_
+      return !this.brick.wrapped_ && !this.brick.locked_
     }
   },
   minBrickW: {
     get () {
-      return this.brick_.isStmt ? eYo.Span.INDENT : 0
+      return this.brick.isStmt ? eYo.Span.INDENT : 0
     }
   },
   bBox: {
     get () {
-      return this.rendered && (this.driver.brickGetBBox(this.brick_))
+      return this.rendered && (this.driver.brickGetBBox(this.brick))
     }
   },
   hasSelect: {
     get () {
-      return this.rendered && (this.driver.brickHasFocus(this.brick_))
+      return this.rendered && (this.driver.brickHasFocus(this.brick))
     }
   },
   /**
@@ -181,7 +182,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
 eYo.Brick.UI.prototype.drawFoot_ = function (recorder) {
-  var magnet = this.brick_.foot_m
+  var magnet = this.brick.foot_m
   if (!magnet) {
     return
   }
@@ -220,7 +221,7 @@ eYo.Brick.UI.prototype.drawFoot_ = function (recorder) {
  */
 eYo.Brick.UI.prototype.renderRight_ = function (io) {
   this.span.right = 0
-  var m4t = this.brick_.right_m
+  var m4t = this.brick.right_m
   if (m4t) {
     var t9k = m4t.targetBrick
     if (t9k) {
@@ -267,7 +268,7 @@ eYo.Brick.UI.prototype.renderRight_ = function (io) {
       this.span.footer = t9k.span.footer + t9k.span.main - 1
       this.span.right = t9k.span.c + t9k.span.right
       return !t9k.isComment
-    } else if (this.brick_.isGroup) {
+    } else if (this.brick.isGroup) {
       this.drawField_(m4t.label_f, io) // only the ':' or ';' trailing field.
       return false
     }
@@ -280,7 +281,7 @@ eYo.Brick.UI.prototype.renderRight_ = function (io) {
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
 eYo.Brick.UI.prototype.renderSuite_ = function (io) {
-  var m4t = this.brick_.suite_m
+  var m4t = this.brick.suite_m
   if (!m4t) {
     return
   }
@@ -316,30 +317,30 @@ eYo.Brick.UI.prototype.renderSuite_ = function (io) {
  * Lays out and reflows a brick based on its contents and settings.
  * Rendering is complicated considering the possibility of both line continuation and multi line strings.
  * @param {*} recorder
- * @param {boolean=} bbbl If false, just render this.brick_ brick.
+ * @param {boolean=} bbbl If false, just render this.brick brick.
  *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
  */
 // deleted bricks are rendered during deletion
-// this.brick_ should be avoided
+// this.brick should be avoided
 eYo.Brick.UI.prototype.render = (() => {
   // this is a closure
   /**
    * May render the parent brick, if relevant.
    * @param {Object} recorder  A recorder object.
-   * @param {boolean=} bbbl If false, just render this.brick_ brick.
+   * @param {boolean=} bbbl If false, just render this.brick brick.
    *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
    * @return {boolean=} true if an rendering message was sent, false otherwise.
    */
   var drawParent = function (recorder, bbbl) {
-    // `this.brick_` is a brick
+    // `this.brick` is a brick
     if (bbbl === false || this.down) {
       return
     }
     // Render all bricks above this one only
     // when the render message did not come from above!
-    var parent = this.brick_.parent
+    var parent = this.brick.parent
     if (parent) {
-      var justConnected = eYo.Magnet.connectedParent && this.brick_.out_m === eYo.Magnet.connectedParent.target
+      var justConnected = eYo.Magnet.connectedParent && this.brick.out_m === eYo.Magnet.connectedParent.target
       if (!parent.ui.down) {
         try {
           parent.ui.up = true
@@ -377,7 +378,7 @@ eYo.Brick.UI.prototype.render = (() => {
       }
     } else {
       // Top-most brick.  Fire an event to allow scrollbars to layout.
-      this.brick_.board.resizePort()
+      this.brick.board.resizePort()
     }
   }
   var longRender = eYo.Decorate.reentrant_method(
@@ -415,70 +416,70 @@ eYo.Brick.UI.prototype.render = (() => {
     }
   )
   return function (bbbl, recorder) {
-    if (!this.brick_.hasUI || this.rendered === false) { // this.rendered === eYo.VOID is OK
+    if (!this.brick.hasUI || this.rendered === false) { // this.rendered === eYo.VOID is OK
       return
     }
-    if (!this.brick_.isEditing && (this.dragging_ || this.brick_.change.level || !this.brick_.board)) {
+    if (!this.brick.isEditing && (this.dragging_ || this.brick.change.level || !this.brick.board)) {
       return
     }
-    recorder && (this.drawPending_(recorder, !this.brick_.wrapped_ && eYo.Key.LEFT))
-    // rendering is very special when this.brick_ is just a matter of
+    recorder && (this.drawPending_(recorder, !this.brick.wrapped_ && eYo.Key.LEFT))
+    // rendering is very special when this.brick is just a matter of
     // statement connection
     if (this.rendered) {
-      if (eYo.Magnet.disconnectedChild && this.brick_.head_m === eYo.Magnet.disconnectedChild) {
-        // this.brick_ is the child one
+      if (eYo.Magnet.disconnectedChild && this.brick.head_m === eYo.Magnet.disconnectedChild) {
+        // this.brick is the child one
         var io = this.willShortRender_(recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
         this.renderMove_(io)
         this.updateShape()
-        this.brick_.change.save.render = this.brick_.change.count
+        this.brick.change.save.render = this.brick.change.count
         drawParent.call(this, io, bbbl) || this.alignRightEdges_(io) // will they have a parent meanwhile?
         return
-      } else if (eYo.Magnet.disconnectedParent && this.brick_.foot_m === eYo.Magnet.disconnectedParent) {
-        // this.brick_ is the parent one
+      } else if (eYo.Magnet.disconnectedParent && this.brick.foot_m === eYo.Magnet.disconnectedParent) {
+        // this.brick is the parent one
         // but it may belong to a suite
         var io = this.willShortRender_(recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
         this.renderMove_(io)
         this.updateShape()
-        this.brick_.change.save.render = this.brick_.change.count
+        this.brick.change.save.render = this.brick.change.count
         drawParent.call(this, io, bbbl) || this.alignRightEdges_(io)
         return
       } else if (eYo.Magnet.connectedParent) {
-        if (this.brick_.head_m && eYo.Magnet.connectedParent === this.brick_.head_m.target) {
+        if (this.brick.head_m && eYo.Magnet.connectedParent === this.brick.head_m.target) {
           var io = this.willShortRender_(recorder)
           this.layoutMagnets_(io)
           this.drawFoot_(io)
           this.renderMove_(io)
           this.updateShape()
-          this.brick_.change.save.render = this.brick_.change.count
+          this.brick.change.save.render = this.brick.change.count
           drawParent.call(this, io, bbbl) || this.alignRightEdges_(io)
-        } else if (this.brick_.foot_m && eYo.Magnet.connectedParent === this.brick_.foot_m) {
+        } else if (this.brick.foot_m && eYo.Magnet.connectedParent === this.brick.foot_m) {
           var io = this.willShortRender_(recorder)
           this.layoutMagnets_(io)
           this.drawFoot_(io)
           this.renderMove_(io)
           this.updateShape()
-          this.brick_.change.save.render = this.brick_.change.count
+          this.brick.change.save.render = this.brick.change.count
           drawParent.call(this, io, bbbl) || this.alignRightEdges_(io)
-        } else if (this.brick_.suite_m && eYo.Magnet.connectedParent === this.brick_.suite_m) {
+        } else if (this.brick.suite_m && eYo.Magnet.connectedParent === this.brick.suite_m) {
           var io = this.willShortRender_(recorder)
           this.layoutMagnets_(io)
           this.drawFoot_(io)
           this.renderMove_(io)
           this.updateShape()
-          this.brick_.change.save.render = this.brick_.change.count
+          this.brick.change.save.render = this.brick.change.count
           drawParent.call(this, io, bbbl) || this.alignRightEdges_(io)
         }
       }
     }
-    if (!this.down && this.brick_.out_m) {
+    if (!this.down && this.brick.out_m) {
       // always render from a line start id est
       // an orphan brick or a statement brick with no left brick
       var parent
-      if ((parent = this.brick_.parent)) {
+      if ((parent = this.brick.parent)) {
         var next
         while (parent.out_m && !parent.ui.down && (next = parent.parent)) {
           parent = next
@@ -486,7 +487,7 @@ eYo.Brick.UI.prototype.render = (() => {
         // parent has no output magnet or has no parent.
         recorder && (recorder.field.last = eYo.VOID)
         if (!parent.ui.down) {
-          if (eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.brick_) {
+          if (eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this.brick) {
             try {
               parent.ui.up = true
               parent.render(bbbl, recorder)
@@ -503,7 +504,7 @@ eYo.Brick.UI.prototype.render = (() => {
         return
       }
     }
-    if (this.brick_.change.save.render === this.brick_.change.count) {
+    if (this.brick.change.save.render === this.brick.change.count) {
       // minimal rendering
       var io = this.willShortRender_(recorder)
       this.layoutMagnets_(io)
@@ -514,7 +515,7 @@ eYo.Brick.UI.prototype.render = (() => {
       return
     }
     longRender.call(this, bbbl, recorder)
-    this.brick_.change.save.render = this.brick_.change.count
+    this.brick.change.save.render = this.brick.change.count
   }
 }) ()
 
@@ -538,7 +539,7 @@ eYo.Brick.UI.prototype.moveTo = function(xy, snap) {
     xy = eYo.Where.cl(xy.c, xy.l)
   }
   this.xy = xy
-  this.driver.brickPlace(this.brick_)
+  this.driver.brickPlace(this.brick)
   this.placeMagnets_()
 }
 
@@ -550,10 +551,10 @@ eYo.Brick.UI.prototype.moveTo = function(xy, snap) {
  */
 eYo.Brick.UI.prototype.moveBy = function(dxy, snap) {
   var xy = this.xy.forward(dxy)
-  if (this.brick_.parent || this.desk.desktop.isDragging) {
+  if (this.brick.parent || this.desk.desktop.isDragging) {
     this.moveTo(xy)
   } else {
-    eYo.Events.fireBrickMove(this.brick_, () => {
+    eYo.Events.fireBrickMove(this.brick, () => {
       this.moveTo(xy, snap)
       this.board.resizePort()
     })
@@ -567,8 +568,8 @@ eYo.Brick.UI.prototype.moveBy = function(dxy, snap) {
  * @private
  */
 eYo.Brick.UI.prototype.willRender_ = function (recorder) {
-  this.brick_.consolidate()
-  this.driver.brickWillRender(this.brick_, recorder)
+  this.brick.consolidate()
+  this.driver.brickWillRender(this.brick, recorder)
 }
 
 /**
@@ -577,11 +578,11 @@ eYo.Brick.UI.prototype.willRender_ = function (recorder) {
  * @private
  */
 eYo.Brick.UI.prototype.didRender_ = function (recorder) {
-  this.driver.brickDidRender(this.brick_, recorder)
+  this.driver.brickDidRender(this.brick, recorder)
 }
 
 /**
- * Update all of the connections on this.brick_ with the new locations.  * @private
+ * Update all of the connections on this.brick with the new locations.  * @private
  */
 eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
   var xy = this.whereInBoard
@@ -593,7 +594,7 @@ eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
   }
   // Don't tighten previous or output connections because they are inferior
   // connections.
-  var m5s = this.brick_.magnets
+  var m5s = this.brick.magnets
   var m4t
   if ((m4t = m5s.left)) {
     m4t.moveToOffset(xy)
@@ -604,7 +605,7 @@ eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
   if ((m4t = m5s.out)) {
     m4t.moveToOffset(xy)
   }
-  this.brick_.forEachSlot(slot => f(slot.magnet))
+  this.brick.forEachSlot(slot => f(slot.magnet))
   // next is done while rendering
   // f(m5s.right)
   // f(m5s.suite)
@@ -612,7 +613,7 @@ eYo.Brick.UI.prototype.renderMoveMagnets_ = function() {
 }
 
 /**
- * Update all of the connections on this.brick_ with the new locations.  * @private
+ * Update all of the connections on this.brick with the new locations.  * @private
  */
 eYo.Brick.UI.prototype.placeMagnets_ = function() {
   var xy = this.whereInBoard
@@ -628,7 +629,7 @@ eYo.Brick.UI.prototype.placeMagnets_ = function() {
   }
   // Don't tighten previous or output connections because they are inferior
   // connections.
-  var m5s = this.brick_.magnets
+  var m5s = this.brick.magnets
   var m4t
   if ((m4t = m5s.left)) {
     m4t.moveToOffset(xy)
@@ -639,7 +640,7 @@ eYo.Brick.UI.prototype.placeMagnets_ = function() {
   if ((m4t = m5s.out)) {
     m4t.moveToOffset(xy)
   }
-  this.brick_.forEachSlot(slot => f(slot.magnet))
+  this.brick.forEachSlot(slot => f(slot.magnet))
   // next is done while rendering
   // f(m5s.right)
   // f(m5s.suite)
@@ -654,7 +655,7 @@ eYo.Brick.UI.prototype.placeMagnets_ = function() {
 eYo.Brick.UI.prototype.renderMove_ = function (recorder) {
   this.renderMoveMagnets_()
   // var blockTL = this.whereInBoard
-  // this.brick_.forEachSlot((slot) => {
+  // this.brick.forEachSlot((slot) => {
   //   var m4t = slot.magnet
   //   if (m4t) {
   //     m4t.moveToOffset(blockTL)
@@ -669,7 +670,7 @@ eYo.Brick.UI.prototype.renderMove_ = function (recorder) {
  * @private
  */
 eYo.Brick.UI.prototype.layoutMagnets_ = function (recorder) {
-  var m5s = this.brick_.magnets
+  var m5s = this.brick.magnets
   var m4t = m5s.out
   if (m4t) {
     m4t.setOffset()
@@ -678,7 +679,7 @@ eYo.Brick.UI.prototype.layoutMagnets_ = function (recorder) {
       m4t.setOffset()
     }
     if ((m4t = m5s.foot)) {
-      if (this.brick_.collapsed) {
+      if (this.brick.collapsed) {
         m4t.setOffset(0, 2)
       } else {
         m4t.setOffset(0, this.span.height)
@@ -699,7 +700,7 @@ eYo.Brick.UI.prototype.layoutMagnets_ = function (recorder) {
  * @private
  */
 eYo.Brick.UI.prototype.draw_ = function (recorder) {
-  if (this.driver.brickCanDraw(this.brick_)) {
+  if (this.driver.brickCanDraw(this.brick)) {
     var io = this.drawModelBegin_(recorder)
     try {
       this.drawModel_(io)
@@ -726,12 +727,12 @@ eYo.Brick.UI.prototype.draw_ = function (recorder) {
 eYo.Brick.UI.prototype.alignRightEdges_ = eYo.Change.decorate(
   'alignRightEdges_',
   function (recorder) {
-    if (this.brick_.parent || !this.brick_.isStmt || !this.rendered || !this.brick_.board || !this.brick_.hasUI) {
+    if (this.brick.parent || !this.brick.isStmt || !this.rendered || !this.brick.board || !this.brick.hasUI) {
       return
     }
     var right = 0
     var t = eYo.Span.INDENT
-    this.brick_.forEachStatement((b, depth) => {
+    this.brick.forEachStatement((b, depth) => {
       if (b.span.min_c) {
         var c = t * depth + b.span.min_c
         // all the right bricks now
@@ -743,7 +744,7 @@ eYo.Brick.UI.prototype.alignRightEdges_ = eYo.Change.decorate(
       }
     })
     if (right) {
-      this.brick_.forEachStatement((b, depth) => {
+      this.brick.forEachStatement((b, depth) => {
         var c = right - t * depth
         // find the last right brick and
         var bb = b
@@ -785,7 +786,7 @@ eYo.Brick.UI.prototype.newDrawRecorder_ = function (recorder) {
       afterEdge: false,
       shouldPack: false,
       startOfStatement: false,
-      startOfLine: !this.brick_.isExpr || !this.brick_.parent, // statement, group or orphan brick
+      startOfLine: !this.brick.isExpr || !this.brick.parent, // statement, group or orphan brick
       field: {
         afterBlack: false, // true if the position before the cursor contains a black character
         afterSeparator: false, // true if the position before the cursor contains a mandatory white character
@@ -808,7 +809,7 @@ eYo.Brick.UI.prototype.newDrawRecorder_ = function (recorder) {
 
 /**
  * Prepare rendering of a brick.
- * @param {?Object} recorder  When null, this.brick_ is not the start of a statement
+ * @param {?Object} recorder  When null, this.brick is not the start of a statement
  * @return {!Object} a local recorder
  * @private
  */
@@ -816,7 +817,7 @@ eYo.Brick.UI.prototype.drawModelBegin_ = function (recorder) {
   this.parentIsShort = false
   this.isShort = false
   this.someTargetIsMissing = false
-  // we define the `io` named recorder which is specific to this.brick_.
+  // we define the `io` named recorder which is specific to this.brick.
   var io = this.newDrawRecorder_(recorder)
   // By default, we restart from scratch,
   // set the size to 0 for the width and 1 for the height
@@ -826,20 +827,20 @@ eYo.Brick.UI.prototype.drawModelBegin_ = function (recorder) {
   this.isLastInStatement = false
   // Do we need some room for the left side of the brick?
   // no for wrapped bricks
-  if (!this.brick_.wrapped_) {
-    if (!this.brick_.isExpr || !this.brick_.locked_ || !recorder) {
+  if (!this.brick.wrapped_) {
+    if (!this.brick.isExpr || !this.brick.locked_ || !recorder) {
       // statement or unlocked,
       // one space for the left edge of the brick
-      // (even for locked statements, this.brick_ is to avoid a
+      // (even for locked statements, this.brick is to avoid a
       // display shift when locking/unlocking)
       io.cursor.c = 1
       io.common.field.afterBlack = false
     }
   }
-  if (this.hasLeftEdge || !recorder || !this.brick_.out_m) {
+  if (this.hasLeftEdge || !recorder || !this.brick.out_m) {
     // statement or unlocked,
     // one space for the left edge of the brick
-    // (even for locked statements, this.brick_ is to avoid a
+    // (even for locked statements, this.brick is to avoid a
     // display shift when locking/unlocking)
     io.cursor.c = 1
     io.common.field.afterBlack = false
@@ -847,14 +848,14 @@ eYo.Brick.UI.prototype.drawModelBegin_ = function (recorder) {
     io.common.field.shouldSeparate = false
     // Do not change io.common.field.shouldSeparate ?
   }
-  if (this.brick_.isExpr) {
+  if (this.brick.isExpr) {
     this.startOfStatement = io.common.startOfStatement
     this.startOfLine = io.common.startOfLine
   } else {
     this.startOfStatement = io.common.startOfStatement = true
     this.span.header = 0
   }
-  this.driver.brickDrawModelBegin(this.brick_, io)
+  this.driver.brickDrawModelBegin(this.brick, io)
   return io
 }
 
@@ -868,15 +869,15 @@ eYo.Brick.UI.prototype.drawModelBegin_ = function (recorder) {
  * @private
  */
 eYo.Brick.UI.prototype.drawModel_ = function (io) {
-  this.fieldDrawFrom_(this.brick_.fieldAtStart, io)
-  if ((io.slot = this.brick_.slotAtHead)) {
+  this.fieldDrawFrom_(this.brick.fieldAtStart, io)
+  if ((io.slot = this.brick.slotAtHead)) {
     do {
       this.drawSlot_(io)
     } while ((io.slot = io.slot.next))
   }
-  this.fieldDrawFrom_(this.brick_.toEndField, io)
+  this.fieldDrawFrom_(this.brick.toEndField, io)
   this.drawModelEnd_(io)
-  this.driver.brickDrawModelEnd(this.brick_, io)
+  this.driver.brickDrawModelEnd(this.brick, io)
   return
 }
 
@@ -887,8 +888,8 @@ eYo.Brick.UI.prototype.drawModel_ = function (io) {
  */
 eYo.Brick.UI.prototype.drawModelEnd_ = function (io) {
   // and now some space for the right edge, if any
-  if (!this.brick_.wrapped_) {
-    if (this.brick_.isExpr) {
+  if (!this.brick.wrapped_) {
+    if (this.brick.isExpr) {
       if (io.common.field.last && io.common.field.last.isEditing) {
         io.cursor.c += 1
         io.common.field.afterSeparator = false
@@ -904,7 +905,7 @@ eYo.Brick.UI.prototype.drawModelEnd_ = function (io) {
           io.common.field.afterSeparator = io.common.field.shouldSeparate
           io.common.field.shouldSeparate = false
           io.common.field.afterBlack = false
-        } else if (!this.brick_.locked_ && !io.common.ending.length) {
+        } else if (!this.brick.locked_ && !io.common.ending.length) {
           io.cursor.c += 1
           io.common.field.afterSeparator = io.common.field.shouldSeparate
           io.common.field.shouldSeparate = false
@@ -922,17 +923,17 @@ eYo.Brick.UI.prototype.drawModelEnd_ = function (io) {
       io.common.field.afterBlack = false
     }
   }
-  if (!this.brick_.isExpr) {
+  if (!this.brick.isExpr) {
     this.drawEnding_(io, true, true)
   } else if (!io.recorder) {
     this.drawEnding_(io, true)
   }
   this.drawPending_(io)
-  if (!this.brick_.wrapped_) {
+  if (!this.brick.wrapped_) {
     var m4t = io.form
     var t9k = m4t && m4t.targetBrick
-    if (io.n < 2 && !this.brick_.wrapped_) {
-      // this.brick_ is a short brick, special management of selection
+    if (io.n < 2 && !this.brick.wrapped_) {
+      // this.brick is a short brick, special management of selection
       this.isShort = true
       if (t9k) {
         t9k.ui.parentIsShort = true
@@ -996,11 +997,11 @@ eYo.Brick.UI.prototype.drawSlot_ = function (io) {
  * @private
  */
 eYo.Brick.UI.prototype.drawSharp_ = function (io) {
-  if (this.brick_.isControl) { // Not very clean, used as hook before rendering the comment fields.
+  if (this.brick.isControl) { // Not very clean, used as hook before rendering the comment fields.
     io.cursor.c += 4
-  } else if (this.brick_.isStmt) {
-    this.driver.brickDrawSharp(this.brick_, this.brick_.disabled)
-    if (this.brick_.disabled) {
+  } else if (this.brick.isStmt) {
+    this.driver.brickDrawSharp(this.brick, this.brick.disabled)
+    if (this.brick.disabled) {
       io.cursor.c += 2
       io.common.startOfLine = io.common.startOfStatement = false
     }
@@ -1053,13 +1054,13 @@ eYo.Brick.UI.prototype.drawField_ = function (field, io) {
             && !io.common.field.afterBlack
             && !io.common.startOfLine
             && !io.common.field.afterCaret) {
-            if (this.brick_.packedQuotes && (head === "'" || head === '"')) {
+            if (this.brick.packedQuotes && (head === "'" || head === '"')) {
               io.cursor.c -= 1
-            } else if (this.brick_.packedBrackets && head === "[") {
+            } else if (this.brick.packedBrackets && head === "[") {
               io.cursor.c -= 1
-            } else if (this.brick_.packedBraces && head === "{") {
+            } else if (this.brick.packedBraces && head === "{") {
               io.cursor.c -= 1
-            } else if (this.brick_.packedParenthesis && head === "(") {
+            } else if (this.brick.packedParenthesis && head === "(") {
               io.cursor.c -= 1
             }
           } else if (head === '.' && !io.common.field.afterBlack) {
@@ -1098,20 +1099,20 @@ eYo.Brick.UI.prototype.drawField_ = function (field, io) {
         io.common.startOfLine = io.common.startOfStatement = false
       }
       if (io.cursor.c > 2) {
-        if ((tail === '"' || tail === "'") && this.brick_.packedQuotes) {
-          io.common.shouldPack = null // this.brick_
-        } else if (tail === ']' && this.brick_.packedBrackets) {
-          io.common.shouldPack = this.brick_
-        } else if ((tail === '}') && this.brick_.packedBraces) {
-          io.common.shouldPack = this.brick_
-        } else if ((tail === ')') && this.brick_.packedParenthesis) {
-          io.common.shouldPack = this.brick_
+        if ((tail === '"' || tail === "'") && this.brick.packedQuotes) {
+          io.common.shouldPack = null // this.brick
+        } else if (tail === ']' && this.brick.packedBrackets) {
+          io.common.shouldPack = this.brick
+        } else if ((tail === '}') && this.brick.packedBraces) {
+          io.common.shouldPack = this.brick
+        } else if ((tail === ')') && this.brick.packedParenthesis) {
+          io.common.shouldPack = this.brick
         }
       }
     }
     if (field.isEditing) {
       // This is a trick to avoid some bad geometry while editing
-      // this.brick_ is useful for widget only.
+      // this.brick is useful for widget only.
       io.cursor.c += 1
       io.common.field.shouldSeparate =
       io.common.field.afterBlack = false
@@ -1242,13 +1243,13 @@ eYo.Brick.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement =
           m4t.isLastInStatement = isLastInStatement
           var d = eYo.Shape.definitionWithMagnet(m4t) // depends on the shape and the side
           var brick = m4t.brick
-          if (this.brick_ === brick) {
-            // we are lucky, this.brick_ is the brick we are currently rendering
+          if (this.brick === brick) {
+            // we are lucky, this.brick is the brick we are currently rendering
             io.steps.push(departFocus)
           } else {
             // bad luck, brick has already been rendered
             // we must append the definition to the path
-            // this.brick_ may happen for bricks with no left or right end,
+            // this.brick may happen for bricks with no left or right end,
             // eg locked or wrapped bricks.
             var path = brick.pathInner_
             path.setAttribute('d', `${path.getAttribute('d')} ${d}`)
@@ -1275,13 +1276,13 @@ eYo.Brick.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape =
       m4t.shape = io.isLastInStatement ? eYo.Key.Right : shape
       var shp = eYo.Shape.newWithMagnet(m4t)
       var brick = m4t.brick
-      if (this.brick_ === brick) {
-        // we are lucky, this.brick_ is the brick we are currently rendering
+      if (this.brick === brick) {
+        // we are lucky, this.brick is the brick we are currently rendering
         io.steps.push(shp.definition)
       } else {
         // bad luck, brick has already been rendered
         // we must append the definition to the path
-        // this.brick_ may happen for bricks with no left or right end,
+        // this.brick may happen for bricks with no left or right end,
         // eg locked or wrapped bricks.
         var path = brick.pathInner_
         path.setAttribute('d', `${path.getAttribute('d')} ${shp.definition}`)
@@ -1362,7 +1363,7 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
             ui.startOfLine = ui.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
           }
         }
-        if (this.brick_.out_m !== eYo.Magnet.disconnectedChild && !ui.up) {
+        if (this.brick.out_m !== eYo.Magnet.disconnectedChild && !ui.up) {
           t9k.render(false, io)
           if (!t9k.wrapped_) {
             io.common.field.shouldSeparate = false
@@ -1401,7 +1402,7 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
       // for that connection is a bit different.
       // Don't display anything for that connection
       io.common.field.afterCaret = false
-    } else if (!this.brick_.locked_ && !m4t.hidden_) {
+    } else if (!this.brick.locked_ && !m4t.hidden_) {
       // locked bricks won't display any placeholder
       // (slot with no target)
       if (!m4t.disabled_) {
@@ -1422,12 +1423,12 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
             m4t.isAfterRightEdge = io.afterEdge
             io.common.field.afterCaret = true
           } else {
-            // we might want this.brick_ caret not to advance the cursor
+            // we might want this.brick caret not to advance the cursor
             // If the next rendered object is a field, then
-            // this.brick_ caret should be rendered normally
+            // this.brick caret should be rendered normally
             // and the cursor should advance.
             // If the next rendered object is an expression brick
-            // with a left end, then this.brick_ caret shoud be rendered
+            // with a left end, then this.brick caret shoud be rendered
             // with a left shape and the cursor should not advance.
             // If the caret is the last rendered object of the brick,
             // then it should be rendered with special shape and
@@ -1482,7 +1483,7 @@ eYo.Brick.UI.prototype.drawInput_ = function (io) {
  * @protected
  */
 eYo.Brick.UI.prototype.updateShape = function () {
-  this.driver.brickUpdateShape(this.brick_)
+  this.driver.brickUpdateShape(this.brick)
 }
 
 /**
@@ -1490,7 +1491,7 @@ eYo.Brick.UI.prototype.updateShape = function () {
  * Forwards to the driver.
  */
 eYo.Brick.UI.prototype.hide = function () {
-  this.driver.brickDisplayedSet(this.brick_, false)
+  this.driver.brickDisplayedSet(this.brick, false)
 }
 
 Object.defineProperties(eYo.Brick.UI.prototype, {
@@ -1500,7 +1501,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
      * Forwards to the driver.
      */
     get () {
-      return this.driver.brickDisplayedGet(this.brick_)
+      return this.driver.brickDisplayedGet(this.brick)
     },
     /**
      * Set the display status of the receiver's brick.
@@ -1508,7 +1509,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
      * @param {boolean} visible
      */
     set (newValue) {
-      this.driver.brickDisplayedSet(this.brick_, visible)
+      this.driver.brickDisplayedSet(this.brick, visible)
     }
   },
   dragging: {
@@ -1519,7 +1520,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
       newValue = !!newValue
       if (this.dragging_ !== newValue) {
         this.dragging_ = newValue
-        this.driver.brickSetDragging(this.brick_, newValue)      
+        this.driver.brickSetDragging(this.brick, newValue)      
       }
     }
   }
@@ -1529,20 +1530,20 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
  * The default implementation forwards to the driver.
  */
 eYo.Brick.UI.prototype.updateDisabled = function () {
-  this.driver.brickUpdateDisabled(this.brick_)
-  this.brick_.children.forEach(child => child.ui.updateDisabled())
+  this.driver.brickUpdateDisabled(this.brick)
+  this.brick.children.forEach(child => child.ui.updateDisabled())
 }
 
 /**
  * The default implementation forwards to the driver.
  */
 eYo.Brick.UI.prototype.connectEffect = function () {
-  var b = this.brick_.board
+  var b = this.brick.board
   b.audio.play('click')
   if (b.scale < 1) {
     return // Too small to care about visual effects.
   }
-  this.driver.brickConnectEffect(this.brick_)
+  this.driver.brickConnectEffect(this.brick)
 }
 
 /**
@@ -1551,7 +1552,7 @@ eYo.Brick.UI.prototype.connectEffect = function () {
  */
 eYo.Brick.UI.prototype.disposeEffect = function () {
   this.board.audio.play('delete');
-  this.driver.brickDisposeEffect(this.brick_)
+  this.driver.brickDisposeEffect(this.brick)
 }
 
 /**
@@ -1560,7 +1561,7 @@ eYo.Brick.UI.prototype.disposeEffect = function () {
  * @param {*} menu
  */
 eYo.Brick.UI.prototype.showMenu = function (menu) {
-  this.driver.brickMenuShow(this.brick_, menu)
+  this.driver.brickMenuShow(this.brick, menu)
 }
 
 /**
@@ -1568,21 +1569,21 @@ eYo.Brick.UI.prototype.showMenu = function (menu) {
  * The default implementation forwards to the driver.
  */
 eYo.Brick.UI.prototype.updateBrickWrapped = function () {
-  this.driver.brickUpdateWrapped(this.brick_)
+  this.driver.brickUpdateWrapped(this.brick)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
 eYo.Brick.UI.prototype.sendToFront = function () {
-  this.driver.brickSendToFront(this.brick_)
+  this.driver.brickSendToFront(this.brick)
 }
 
 /**
  * The default implementation forwards to the driver.
  */
 eYo.Brick.UI.prototype.sendToBack = function () {
-  this.driver.brickSendToFront(this.brick_)
+  this.driver.brickSendToFront(this.brick)
 }
 
 //////////////////
@@ -1592,7 +1593,7 @@ eYo.Brick.UI.prototype.sendToBack = function () {
  * Forwards to the driver.
  */
 eYo.Brick.UI.prototype.addBrickHilight_ = function () {
-  this.driver.brickHilightAdd(this.brick_)
+  this.driver.brickHilightAdd(this.brick)
 }
 
 /**
@@ -1600,7 +1601,7 @@ eYo.Brick.UI.prototype.addBrickHilight_ = function () {
  * Forwards to the driver.
  */
 eYo.Brick.UI.prototype.removeBrickHilight_ =function () {
-  this.driver.brickHilightRemove(this.brick_)
+  this.driver.brickHilightRemove(this.brick)
 }
 
 /**
@@ -1608,7 +1609,7 @@ eYo.Brick.UI.prototype.removeBrickHilight_ =function () {
  * Forwards to the driver.
  */
 eYo.Brick.UI.prototype.addSelect = function () {
-  this.driver.brickSelectAdd(this.brick_)
+  this.driver.brickSelectAdd(this.brick)
 }
 
 /**
@@ -1616,7 +1617,7 @@ eYo.Brick.UI.prototype.addSelect = function () {
  * Forwards to the driver.
  */
 eYo.Brick.UI.prototype.removeFocus = function () {
-  this.driver.brickSelectRemove(this.brick_)
+  this.driver.brickSelectRemove(this.brick)
 }
 
 /**
@@ -1624,7 +1625,7 @@ eYo.Brick.UI.prototype.removeFocus = function () {
  * Forwards to the driver.
  */
 eYo.Brick.UI.prototype.addMagnet_ = function () {
-  this.driver.brickMagnetAdd(this.brick_)
+  this.driver.brickMagnetAdd(this.brick)
 }
 
 /**
@@ -1632,14 +1633,14 @@ eYo.Brick.UI.prototype.addMagnet_ = function () {
  * Forwards to the driver.
  */
 eYo.Brick.UI.prototype.removeMagnet_ = function () {
-  this.driver.brickMagnetRemove(this.brick_)
+  this.driver.brickMagnetRemove(this.brick)
 }
 
 /**
  * Forwards to the driver.
  */
 eYo.Brick.UI.prototype.addStatusTop_ = function () {
-  this.driver.brickStatusTopAdd(this.brick_)
+  this.driver.brickStatusTopAdd(this.brick)
 }
 
 
@@ -1648,15 +1649,15 @@ eYo.Brick.UI.prototype.addStatusTop_ = function () {
  * Forwards to the driver.
  */
 eYo.Brick.UI.prototype.removeStatusTop_ = function (eyo) {
-  this.driver.brickStatusTopRemove(this.brick_)
+  this.driver.brickStatusTopRemove(this.brick)
 }
 
 /**
  * Forwards to the driver and `addSelect` to each field.
  */
 eYo.Brick.UI.prototype.addStatusFocus_ = function () {
-  this.driver.brickStatusFocusAdd(this.brick_)
-  this.brick_.forEachSlot(slot => {
+  this.driver.brickStatusFocusAdd(this.brick)
+  this.brick.forEachSlot(slot => {
     slot.forEachField(field => {
       if (goog.isFunction(field.addSelect)) {
         field.addSelect()
@@ -1669,8 +1670,8 @@ eYo.Brick.UI.prototype.addStatusFocus_ = function () {
  * Reverse `addStatusFocus_`. Forwards to the driver and various fields.
  */
 eYo.Brick.UI.prototype.removeStatusFocus_ = function () {
-  this.driver.brickStatusSelectRemove(this.brick_)
-  this.brick_.forEachSlot(slot => {
+  this.driver.brickStatusSelectRemove(this.brick)
+  this.brick.forEachSlot(slot => {
     slot.forEachField(field => {
       goog.isFunction(field.removeFocus) && field.removeFocus()
     })
@@ -1702,7 +1703,7 @@ eYo.Brick.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
 }
 
 /**
- * Return the coordinates of the top-left corner of this.brick_ relative to the
+ * Return the coordinates of the top-left corner of this.brick relative to the
  * drawing surface's origin (0,0), in board units.
  * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
@@ -1713,17 +1714,17 @@ eYo.Brick.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
 Object.defineProperties(eYo.Brick.UI.prototype, {
   xyInParent: {
     get () {
-      return this.driver.brickWhereInParent(this.brick_)
+      return this.driver.brickWhereInParent(this.brick)
     }
   },
   whereInBoard: {
     get () {
-      return this.driver.brickWhereInBoard(this.brick_)
+      return this.driver.brickWhereInBoard(this.brick)
     }
   },
   xyInDesk: {
     get () {
-      return this.driver.brickWhereInDesk(this.brick_)
+      return this.driver.brickWhereInDesk(this.brick)
     }
   },
   /**
@@ -1747,7 +1748,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
    */
   size: {
     get () {
-      return this.brick_.size
+      return this.brick.size
     }
   },
   /**
@@ -1795,7 +1796,7 @@ eYo.Brick.UI.prototype.setParent = function (parent) {
  * @param {!eYo.Brick} newParent to be connected.
  */
 eYo.Brick.UI.prototype.parentWillChange = function (newParent) {
-  this.driver.brickParentWillChange(this.brick_, newParent)
+  this.driver.brickParentWillChange(this.brick, newParent)
 }
 
 /**
@@ -1803,7 +1804,7 @@ eYo.Brick.UI.prototype.parentWillChange = function (newParent) {
  * @param {!eYo.Brick} oldParent replaced.
  */
 eYo.Brick.UI.prototype.parentDidChange = function (oldParent) {
-  this.driver.brickParentDidChange(this.brick_, oldParent)
+  this.driver.brickParentDidChange(this.brick, oldParent)
 }
 
 /**
@@ -1845,11 +1846,11 @@ eYo.Brick.UI.prototype.bumpNeighbours_ = function() {
   if (!this.board || this.board.dragging) {
     return;  // Don't bump blocks during a drag.
   }
-  var root = this.brick_.root
+  var root = this.brick.root
   if (root.isInFlyout) {
     return
   }
-  this.brick_.getMagnets_(false).forEach(magnet => {
+  this.brick.getMagnets_(false).forEach(magnet => {
     // Spider down from this block bumping all sub-blocks.
     if (magnet.target && magnet.isSuperior) {
       magnet.targetBrick.ui.bumpNeighbours_()
@@ -1882,7 +1883,7 @@ eYo.Brick.UI.prototype.bumpNeighbours_ = function() {
  * @return {Object|eYo.VOID|null}
  */
 eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
-  var brd = this.brick_.board
+  var brd = this.brick.board
   if (!brd) {
     return
   }
@@ -1893,7 +1894,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
   var rect = this.boundingRect // in board coordinates
   var xy = brd.eventWhere(e).backward(rect.topLeft)
   var R
-  var magnet = this.brick_.someSlotMagnet(magnet => {
+  var magnet = this.brick.someSlotMagnet(magnet => {
     if (!magnet.disabled_ && (!magnet.hidden_ || magnet.wrapped_)) {
       if (magnet.isSlot) {
         var target = magnet.target
@@ -1952,7 +1953,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
   })
   if (magnet) {
     return magnet
-  } else if ((magnet = this.brick_.head_m) && !magnet.hidden) {
+  } else if ((magnet = this.brick.head_m) && !magnet.hidden) {
     R = new eYo.Rect(
       magnet.x,
       magnet.y - 2 * eYo.Style.Path.width,
@@ -1963,7 +1964,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
       return magnet
     }
   }
-  if ((magnet = this.brick_.foot_m) && !magnet.hidden) {
+  if ((magnet = this.brick.foot_m) && !magnet.hidden) {
     if (rect.height > eYo.Unit.y) { // Not the cleanest design
       R = new eYo.Rect(
         magnet.x,
@@ -1983,7 +1984,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
       return magnet
     }
   }
-  if ((magnet = this.brick_.suite_m) && !magnet.hidden) {
+  if ((magnet = this.brick.suite_m) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new eYo.Rect(
       magnet.x + eYo.Unit.x / 2 - r,
@@ -1995,7 +1996,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
       return magnet
     }
   }
-  if ((magnet = this.brick_.left_m) && !magnet.hidden) {
+  if ((magnet = this.brick.left_m) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new eYo.Rect(
       magnet.x + eYo.Unit.x / 2 - r,
@@ -2007,7 +2008,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
       return magnet
     }
   }
-  if ((magnet = this.brick_.right_m) && !magnet.hidden) {
+  if ((magnet = this.brick.right_m) && !magnet.hidden) {
     R = new eYo.Rect(
       magnet.x + eYo.Unit.x / 2 - r,
       magnet.y + r,
@@ -2026,7 +2027,7 @@ eYo.Brick.UI.prototype.getMagnetForEvent = function (e) {
  *     otherwise.
  */
 eYo.Brick.UI.prototype.setDeleteStyle = function(enable) {
-  this.driver.brickSetDeleteStyle(this.brick_, enable)
+  this.driver.brickSetDeleteStyle(this.brick, enable)
 }
 
 /**
@@ -2048,7 +2049,7 @@ eYo.Brick.UI.prototype.setDeleteStyle = function(enable) {
  * @private
  */
 eYo.Brick.UI.prototype.on_mousedown = function (e) {
-  var brick = this.brick_
+  var brick = this.brick
   if (this.locked_) {
     var parent = brick.parent
     if (parent) {
@@ -2101,7 +2102,7 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
   ? magnet.isSlot
     ? magnet.targetBrick || magnet.brick
     : magnet.brick
-  : this.brick_
+  : this.brick
   while (t9k && (t9k.wrapped_ || t9k.locked_)) {
     t9k = t9k.parent
   }
@@ -2172,5 +2173,5 @@ eYo.Brick.UI.prototype.showContextMenu_ = function (e) {
   if (this.board.options.readOnly || !this.contextMenu) {
     return
   }
-  eYo.MenuManager.shared().showMenu(this.brick_, e)
+  eYo.MenuManager.shared().showMenu(this.brick, e)
 }

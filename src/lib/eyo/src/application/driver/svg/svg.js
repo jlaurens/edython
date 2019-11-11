@@ -12,20 +12,18 @@
 'use strict'
 
 goog.require('eYo.Dom')
+goog.require('eYo.Decorate')
 
 goog.provide('eYo.Svg')
 
-goog.require('eYo.Decorate')
-
-goog.require('eYo.T3.Profile')
-goog.require('eYo.Field')
-
+goog.forwardDeclare('eYo.T3.Profile')
 goog.forwardDeclare('eYo.Svg.Brick')
 goog.forwardDeclare('eYo.Svg.Slot')
 goog.forwardDeclare('eYo.Svg.Field')
 goog.forwardDeclare('eYo.Slot')
 goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Style')
+
 goog.forwardDeclare('goog.userAgent')
 
 /**
@@ -34,6 +32,12 @@ goog.forwardDeclare('goog.userAgent')
  * @namespace
  */
 eYo.Svg = Object.create(null)
+
+/**
+ * The manager of all the svg drivers.
+ * @type {eYo.Svg.Mgr}
+ */
+eYo.Driver.makeManagerClass(eYo.Svg)
 
 /**
  * A namespace.
@@ -47,7 +51,7 @@ eYo.Svg.Decorate = Object.create(null)
  * @param {eYo.Application} owner
  */
 eYo.Svg.Mgr = (() => {
-  var drivers = set()
+  var drivers = new Set()
   var me = function (owner) {
     eYo.Svg.Mgr.superClass_.constructor.call(this, owner)
     drivers.forEach(name => {
@@ -207,11 +211,6 @@ eYo.Svg.prototype.addTooltip = function (el, title, options) {
     tippy(el, title)
   }
 }
-
-// Private holder of svg ressources
-Object.defineProperties(eYo.Field, {
-  svg: { value: eYo.VOID, writable: true }
-})
 
 /**
  * The css class for the given text

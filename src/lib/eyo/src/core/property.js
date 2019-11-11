@@ -20,61 +20,82 @@ goog.require('eYo')
  * `key__` is the basic private recorder.
  * `key_` is the basic private setter/getter.
  * Changing this property is encapsulated between `willChange` and `didChange` methods.
- * `key` is the public getter.
- * @param {Object} proto,  the object to add a property to
+ * `k` is the public getter.
+ * In the setter, we arrange things such that the new value
+ * and the receiver have the same status with respoct to UI. 
+ * @param {Object} object,  the object to add a property to
  * @param {Object} data,  the object used to define the property: key `value` for the initial value, key `willChange` to be called when the property is about to change (signature (before, after) => function, truthy when the change should take place). The returned value is a function called after the change has been made in memory.
  * The `get` and `set` keys allow to provide a getter and a setter.
  * In that case, the setter should manage ownership if required.
  */
-eYo.Property.add = (proto, key, data) => {
-  var getter = (key) => {
-    return data.get || function () {
-      return this[key]
-    }
-  }
-  var setter = (key) => {
-    return data.set ?
-    function (after) {
-      var before = this[key]
-      if(before !== after) {
-        var f = data.willChange
-        if (!f || (f = f(before, after))) {
-          data.set(after)
-          f && f(before, after)
-        }
-      }
-    }:
-    function (after) {
-      var before = this[key]
-      if(before !== after) {
-        var f = data.willChange
-        if (!f || (f = f(before, after))) {
-          !!before && typeof before === "object" && (before.owner_ = null)
-          this[key] = after
-          !!after && typeof after === "object" && (after.owner_ = this)
-          f && f(before, after)
-        }
-      }
-    }
-  }
+eYo.Property.add = (object, k, data) => {
+  data = data || {}
+  var k_  = k + '_'
+  var k__ = k + '__'
   Object.defineProperty(
-    proto,
-    key+'__',
+    object,
+    k__,
     {value: data.value || eYo.VOID, writable: true}
   )
   Object.defineProperty(
-    proto,
-    key+'_',
+    object,
+    k_,
     {
-      get: getter(key+'_'),
-      set: setter(key+'_'),
+      get: data.get || function () {
+        return this[k__]
+      },
+      set: data.set
+      ? function (after) {
+        var before = this[k__]
+        if(before !== after) {
+          var f = data.willChange
+          if (!f || (f = f(before, after))) {
+            data.set(after)
+            f && f(before, after)
+          }
+        }
+      }
+      : function (after) {
+        var before = this[k__]
+        if(before !== after) {
+          var f = data.willChange
+          if (!f || (f = f(before, after))) {
+            if (before && before.hasUI && before.deleteUI) {
+              before.deleteUI()
+            }
+            !!before && typeof before === "object" && (before.owner_ = null)
+            this[k__] = after
+            !!after && typeof after === "object" && (after.owner_ = this)
+            f && f(before, after)
+            f = data.didChange
+            f && f(before, after)
+            if (after && this.hasUI && after.makeUI) {
+              after.makeUI()
+            }
+          }
+        }
+      },
     }
   )
   Object.defineProperty(
-    proto,
-    key,
+    object,
+    k,
     {
-      get: getter(key),
+      get () {
+        return this[k__]
+      },
+    }
+  )
+}
+
+eYo.Property.readOnly = (object, k) => {
+  Object.defineProperty(
+    object,
+    k,
+    {
+      get () {
+        return this[k + '__']
+      },
     }
   )
 }
@@ -93,9 +114,62 @@ eYo.Property.addMany = (proto, many) => {
 /**
  * Add a 3 levels clonable property to a prototype.
  * @param {Object} proto,  the object to add a property to
- * @param {Object} many,  the K => V mapping to which we apply `eYo.Property.addClonables(proto, K)`.
+ * @param {String} key,  the key
+ * @param {Object} data,  the data
  */
-eYo.Property.addClonables = (proto, ...many) => {
+eYo.Property.addCached = (proto, key, data) => {
+  var getter = (key) => {
+    return function () {
+      var k = key + '__'
+      var v = this[k]
+      return v !== eYo.VOID ? v : (this[k] = data.get.call(this))
+    }
+  }
+  Object.defineProperty(
+    proto,
+    key+'__',
+    {value: eYo.VOID, writable: true}
+  )
+  Object.defineProperty(
+    proto,
+    key,
+    {
+      get: getter(key),
+    }
+  )
+  proto[key+'Uncache'] = function () {
+    this[key + '__'] = eYo.VOID
+    data.forget.call(this)
+  }
+}
+
+/**
+ * Add 3 levels cached properties to a prototype.
+ * @param {Object} proto,  the object to add a property to
+ * @param {Object} many,  the K => V mapping to which we apply `eYo.Property.add(proto, K, V)`.
+ */
+eYo.Property.addCachedMany = (proto, many) => {
+  Object.keys(many).forEach(n => {
+    eYo.Property.addCached(proto, n, many[n])
+  })
+}
+
+/**
+ * Add the cached `app` property to the given prototype.
+ * @param {Object} proto
+ */
+eYo.Property.addApp = (proto) => {
+  eYo.Property.addCached(proto, 'app', function() {
+    return this.owner__.app
+  })
+}
+
+/**
+ * Add a 3 levels clonable property to a prototype.
+ * @param {Object} proto,  the object to add a property to
+ * @param {Object} many,  the K => V mapping to which we apply `eYo.Property.addClonableMany(proto, K)`.
+ */
+eYo.Property.addClonableMany = (proto, ...many) => {
   var getter = (key) => {
     return function () {
       return this[key].clone

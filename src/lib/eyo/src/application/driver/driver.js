@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo')
+goog.require('eYo.Owned')
 
 goog.provide('eYo.Driver')
 
@@ -21,51 +21,49 @@ goog.provide('eYo.Driver')
  */
 eYo.Driver = Object.create(null)
 
-/**
- * Faceless driver manager.
- * @param {eYo.Application} owner
- */
-eYo.Driver.Mgr = (() => {
-  var drivers = set()
-  var me = function (owner) {
+eYo.Driver.makeManagerClass = (object) => {
+  if (object === eYo.Driver) {
+    return
+  }
+  var drivers = new Set()
+  object['Mgr'] = function (owner) {
     eYo.Driver.Mgr.superClass_.constructor.call(this, owner)
     drivers.forEach(name => {
       this[name[0].toUpperCase() + name.substr(1)] = new eYo.Driver[name]()
     })
   }
+  goog.inherits(object['Mgr'], eYo.Owned)
   /**
    * Convenient automatic subclasser.
    * @param {String} name
    */
-  eYo.Driver.makeSubclass = (name) => {
+  object.makeDriverClass = (name) => {
     drivers.add(name)
-    eYo.Driver[name] = function () {
-      eYo.Driver[name].superClass_.constructor.call(this)
+    object[name] = function () {
+      object[name].superClass_.constructor.call(this)
     }
-    goog.inherits(eYo.Driver[name], eYo.Driver.Default)
+    goog.inherits(object[name], object.Default)
   }
-  return me
-})()
-goog.inherits(eYo.Driver.Mgr, eYo.Owned)
-
-/**
- * Faceless driver.
- */
-eYo.Driver.Default = function () {}
-
-/**
- * Init the UI.
- * @param {*} object
- */
-eYo.Driver.Default.prototype.initUI = function () {
-  return true
+  // make the default driver
+  object.Default = eYo.Driver.Default
 }
 
 /**
+ * Default convenient driver, to be subclassed.
+ */
+eYo.Driver.Default = function () {}
+/**
  * Init the UI.
  * @param {*} object
  */
-eYo.Driver.Default.prototype.disposeUI = function () {
+object.Default.prototype.initUI = function () {
+  return true
+}
+/**
+ * Dispose of the UI.
+ * @param {*} object
+ */
+object.Default.prototype.disposeUI = function () {
   return true
 }
 
@@ -86,24 +84,3 @@ eYo.Driver.Decorate.disposeUI = (constructor, f) => {
     return constructor.superClass_.disposeUI.apply(this, arguments) && f.apply(this, arguments)
   }
 }
-
-
-
-
-
-/*******  Application *******/
-
-/*******  DnD *******/
-
-/**
- * Initiate the DnD manager UI.
- * @param {!eYo.DnD.Mgr} mgr  The DnD manager we must init the UI of.
- */
-eYo.Driver.Dnd.prototype.mgrInitUI = eYo.Do.nothing
-
-/**
- * Dispose of the DnD manager UI.
- * @param {!eYo.DnD.Mgr} mgr  The DnD manager we must dispose of the UI of.
- */
-eYo.Driver.Dnd.prototype.mgrDisposeUI = eYo.Do.nothing
-

@@ -32,31 +32,11 @@ eYo.Dom.Decorate = Object.create(null)
 
 
 /**
- * Dom driver manager.
- * @param {eYo.Application} owner
+ * The manager of all the dom drivers.
+ * The dom drivers are uncomplete drivers.
+ * @type {eYo.Dom.Mgr}
  */
-eYo.Dom.Mgr = (() => {
-  var drivers = set()
-  var me = function (owner) {
-    eYo.Dom.Mgr.superClass_.constructor.call(this, owner)
-    drivers.forEach(name => {
-      this[name[0].toUpperCase() + name.substr(1)] = new eYo.Dom[name]()
-    })
-  }
-  /**
-   * Convenient automatic subclasser.
-   * @param {String} name
-   */
-  eYo.Dom.makeSubclass = (name) => {
-    drivers.add(name)
-    eYo.Dom[name] = function () {
-      eYo.Dom[name].superClass_.constructor.call(this)
-    }
-    goog.inherits(eYo.Dom[name], eYo.Driver[name])
-  }
-  return me
-})()
-goog.inherits(eYo.Dom.Mgr, eYo.Owned)
+eYo.Driver.makeManagerClass(eYo.Dom)
 
 /**
  * Decorates a function as `initUI`.
@@ -134,6 +114,38 @@ if (window && window.PointerEvent) {
 }
 
 /**
+ * Sets the CSS transform property on an element. This function sets the
+ * non-vendor-prefixed and vendor-prefixed versions for backwards compatibility
+ * with older browsers. See http://caniuse.com/#feat=transforms2d
+ * @param {!Element} node The node which the CSS transform should be applied.
+ * @param {string} transform The value of the CSS `transform` property.
+ */
+eYo.Dom.setCssTransform = function(node, transform) {
+  node.style['transform'] = transform
+  node.style['-webkit-transform'] = transform // 2014
+}
+
+/**
+ * Insert a node after a reference node.
+ * Contrast with node.insertBefore function.
+ * @param {!Element} after New element to insert.
+ * @param {!Element} before Existing element to precede new node.
+ * @private
+ */
+eYo.Dom.insertAfter = function(node, before) {
+  var parent = before.parentNode
+  if (!parent) {
+    throw 'Reference node has no parent.'
+  }
+  var after = before.nextSibling
+  if (after) {
+    parent.insertBefore(node, after)
+  } else {
+    parent.appendChild(node)
+  }
+}
+
+/**
  * Is this event a right-click?
  * @param {!Event} e Mouse event.
  * @return {boolean} True if right-click.
@@ -145,18 +157,6 @@ eYo.Dom.isRightButton = e => {
     return true
   }
   return e.button === 2
-}
-
-/**
- * Sets the CSS transform property on an element. This function sets the
- * non-vendor-prefixed and vendor-prefixed versions for backwards compatibility
- * with older browsers. See http://caniuse.com/#feat=transforms2d
- * @param {!Element} node The node which the CSS transform should be applied.
- * @param {string} transform The value of the CSS `transform` property.
- */
-eYo.Dom.setCssTransform = function(node, transform) {
-  node.style['transform'] = transform
-  node.style['-webkit-transform'] = transform // 2014
 }
 
 /**
@@ -243,26 +243,6 @@ eYo.Dom.unbindEvent = bindData => {
     d[0].removeEventListener(d[1], func, false)
   }
   return func
-}
-
-/**
- * Insert a node after a reference node.
- * Contrast with node.insertBefore function.
- * @param {!Element} after New element to insert.
- * @param {!Element} before Existing element to precede new node.
- * @private
- */
-eYo.Dom.insertAfter = function(node, before) {
-  var parent = before.parentNode
-  if (!parent) {
-    throw 'Reference node has no parent.'
-  }
-  var after = before.nextSibling
-  if (after) {
-    parent.insertBefore(node, after)
-  } else {
-    parent.appendChild(node)
-  }
 }
 
 /**

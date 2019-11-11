@@ -32,7 +32,7 @@ eYo.WorkspaceControl = function(workspace) {
 }
 goog.inherits(eYo.WorkspaceControl, eYo.Owned.UI)
 
-eYo.Property.addClonables(
+eYo.Property.addClonableMany(
   eYo.WorkspaceControl.prototype,
   'viewRect'
 )

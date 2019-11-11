@@ -20,7 +20,7 @@ goog.forwardDeclare('eYo.Board')
 /**
  * Dom driver for boards.
  */
-eYo.Dom.makeSubclass('Board')
+eYo.Dom.makeDriverClass('Board')
 
 /**
  * Initialize the board dom ressources.

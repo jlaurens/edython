@@ -11,48 +11,50 @@
  */
 'use strict'
 
-goog.require('eYo.Driver')
+goog.require('eYo.Fcls')
 
-goog.provide('eYo.Driver.TrashCan')
+goog.provide('eYo.Fcls.TrashCan')
+
+goog.forwardDeclare('eYo.TrashCan')
 
 /**
  * Faceless driver for the trash can.
  */
-eYo.Driver.makeSubclass('TrashCan')
+eYo.Fcls.makeDriverClass('TrashCan')
 
 /**
  * Initiate the trash can UI.
  * @param {!eYo.TrashCan} trashCan  The trash can we must initialize the UI.
  */
-// eYo.Driver.TrashCan.prototype.initUI = eYo.Do.nothing
+// eYo.Fcls.TrashCan.prototype.initUI = eYo.Do.nothing
 
 /**
  * Dispose of the trash can UI.
  * @param {!eYo.TrashCan} trashCan  The trash can we must dispose the UI of.
  */
-// eYo.Driver.TrashCan.prototype.disposeUI = eYo.Do.nothing
+// eYo.Fcls.TrashCan.prototype.disposeUI = eYo.Do.nothing
 
 /**
  * Is the given trash can open.
  * @param {!eYo.TrashCan} trashCan  The trash can we must query.
  */
-eYo.Driver.TrashCan.prototype.openGet = eYo.Do.nothing
+eYo.Fcls.TrashCan.prototype.openGet = eYo.Do.nothing
 
 /**
  * Set the given trash can open status.
  * @param {!eYo.TrashCan} trashCan  The trash can we must set.
  * @param {Boolean} torf  The expected value.
  */
-eYo.Driver.TrashCan.prototype.openSet = eYo.Do.nothing
+eYo.Fcls.TrashCan.prototype.openSet = eYo.Do.nothing
 
 /**
  * Place the given trash can.
  * @param {!eYo.TrashCan} trashCan  The trash can we must place.
  */
-eYo.Driver.TrashCan.prototype.place = eYo.Do.nothing
+eYo.Fcls.TrashCan.prototype.place = eYo.Do.nothing
 
 /**
  * Get the given trash can's client rect.
  * @param {!eYo.TrashCan} trashCan  The trash can we must query.
  */
-eYo.Driver.TrashCan.prototype.clientRect = eYo.Do.nothing
+eYo.Fcls.TrashCan.prototype.clientRect = eYo.Do.nothing

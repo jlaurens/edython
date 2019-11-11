@@ -11,25 +11,27 @@
  */
 'use strict'
 
-goog.require('eYo.Driver')
+goog.require('eYo.Fcls')
 
-goog.provide('eYo.Driver.Slot')
+goog.provide('eYo.Fcls.Slot')
+
+goog.forwardDeclare('eYo.Slot')
 
 /**
- * Faceless driver for fields.
+ * Faceless driver for slots.
  */
-eYo.Driver.makeSubclass('Slot')
+eYo.Fcls.makeDriverClass('Slot')
 
 /**
  * Whether the slot is displayed.
  * @param {!eYo.Slot} slot  the slot to query about
  */
-eYo.Driver.Slot.prototype.displayedGet = eYo.Do.nothing
+eYo.Fcls.Slot.prototype.displayedGet = eYo.Do.nothing
 
 /**
  * Display/hide the given slot.
  * @param {!eYo.Slot} slot  the slot the driver acts on
  * @param {boolean} yorn
  */
-eYo.Driver.Slot.prototype.displayedSet = eYo.Do.nothing
+eYo.Fcls.Slot.prototype.displayedSet = eYo.Do.nothing
 

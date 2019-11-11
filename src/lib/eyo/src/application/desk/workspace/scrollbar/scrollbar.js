@@ -11,10 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Scrollbar')
-goog.provide('eYo.Scroller')
+goog.require('eYo.Owned.UI')
 
-goog.require('eYo.Owned')
+goog.provide('eYo.Scrollbar')
 
 goog.forwardDeclare('eYo.Board')
 

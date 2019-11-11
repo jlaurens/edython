@@ -11,24 +11,25 @@
  */
 'use strict'
 
-goog.require('eYo.Driver')
+goog.require('eYo.Fcls')
 
-goog.provide('eYo.Driver.Zoomer')
+goog.provide('eYo.Fcls.Zoomer')
+
+goog.forwardDeclare('eYo.Zoomer')
 
 /**
  * Faceless driver for the zoomer.
  */
-eYo.Driver.makeSubclass('Zoomer')
-
+eYo.Fcls.makeDriverClass('Zoomer')
 
 /**
  * Initiate the zoomer UI.
  * @param {!eYo.Zoomer} trashCan  The zoomer we must initialize the UI.
  */
-eYo.Driver.Zoomer.prototype.initUI = eYo.Do.nothing
+eYo.Fcls.Zoomer.prototype.initUI = eYo.Do.nothing
 
 /**
  * Dispose of the zoomer UI.
  * @param {!eYo.Zoomer} zoomer  The zoomer we must dispose the UI of.
  */
-eYo.Driver.Zoomer.prototype.disposeUI = eYo.Do.nothing
+eYo.Fcls.Zoomer.prototype.disposeUI = eYo.Do.nothing

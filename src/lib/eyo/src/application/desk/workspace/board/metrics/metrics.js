@@ -95,7 +95,7 @@ eYo.Metrics = function (board) {
 }
 goog.inherits(eYo.Metrics, eYo.Owned)
 
-eYo.Property.addClonables(
+eYo.Property.addClonableMany(
   eYo.Metrics.prototype,
   'box',
   'view',

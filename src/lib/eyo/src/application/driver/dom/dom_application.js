@@ -20,10 +20,10 @@ goog.forwardDeclare('eYo.Application')
 /**
  * Dom driver for application.
  */
-eYo.Dom.makeSubclass('Application')
+eYo.Dom.makeDriverClass('Application')
 
 /**
- * Initialize the desk dom ressources.
+ * Initialize the application's dom ressources.
  * @param {!eYo.Application} app
  * @param {?Function} f
  * @return {!Element} The desk's dom repository.

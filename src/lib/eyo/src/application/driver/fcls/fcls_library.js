@@ -11,14 +11,13 @@
  */
 'use strict'
 
-goog.require('eYo.Driver')
+goog.require('eYo.Fcls')
 
-goog.provide('eYo.Driver.application')
+goog.provide('eYo.Fcls.Library')
+
+goog.forwardDeclare('eYo.Library')
 
 /**
  * Shared application driver.
  */
-eYo.Driver.application = Object.create({
-  init: eYo.Do.nothing,
-  dispose: eYo.Do.nothing,
-})
+eYo.Fcls.makeDriverClass('Library')

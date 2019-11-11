@@ -11,26 +11,28 @@
  */
 'use strict'
 
-goog.require('eYo.Driver')
+goog.require('eYo.Fcls')
 
-goog.provide('eYo.Driver.brick')
+goog.provide('eYo.Fcls.brick')
+
+goog.forwardDeclare('eYo.brick')
 
 /**
  * Faceless driver for bricks.
  */
-eYo.Driver.makeSubclass('Brick')
+eYo.Fcls.makeSubclass('Brick')
 
 /**
  * The default implementation does nothing.
  * @param {!eYo.Brick} newParent to be connected.
  */
-eYo.Driver.Brick.prototype.parentWillChange = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.parentWillChange = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!eYo.Brick} oldParent replaced.
  */
-eYo.Driver.Brick.prototype.parentDidChange = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.parentDidChange = eYo.Do.nothing
 
 /**
  * Returns the bounding box of the node.
@@ -38,7 +40,7 @@ eYo.Driver.Brick.prototype.parentDidChange = eYo.Do.nothing
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.brickGetBBox = function (node) {
+eYo.Fcls.brickGetBBox = function (node) {
   return eYo.VOID
 }
 
@@ -48,7 +50,7 @@ eYo.Driver.brickGetBBox = function (node) {
  * @param {!Object} node  the node the driver acts on
  * @private
  */
-eYo.Driver.brickHasFocus = function (node) {
+eYo.Fcls.brickHasFocus = function (node) {
   return false
 }
 
@@ -58,7 +60,7 @@ eYo.Driver.brickHasFocus = function (node) {
  * @param {*} recorder
  * @private
  */
-eYo.Driver.brickWillRender = eYo.Do.nothing
+eYo.Fcls.brickWillRender = eYo.Do.nothing
 
 /**
  * After node rendering.
@@ -66,7 +68,7 @@ eYo.Driver.brickWillRender = eYo.Do.nothing
  * @param {*} recorder
  * @private
  */
-eYo.Driver.brickDidRender = eYo.Do.nothing
+eYo.Fcls.brickDidRender = eYo.Do.nothing
 
 /**
  * Draw the path of the brick.
@@ -74,7 +76,7 @@ eYo.Driver.brickDidRender = eYo.Do.nothing
  * @param {Object} recorder
  * @private
  */
-eYo.Driver.brickDraw = function (node, recorder) {
+eYo.Fcls.brickDraw = function (node, recorder) {
 }
 
 /**
@@ -82,7 +84,7 @@ eYo.Driver.brickDraw = function (node, recorder) {
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickUpdateShape = eYo.Do.nothing
+eYo.Fcls.brickUpdateShape = eYo.Do.nothing
 
 /**
  * Default implementation does nothing.
@@ -90,7 +92,7 @@ eYo.Driver.brickUpdateShape = eYo.Do.nothing
  * @param {Object} recorder
  * @private
  */
-eYo.Driver.brickDrawModelBegin = eYo.Do.nothing
+eYo.Fcls.brickDrawModelBegin = eYo.Do.nothing
 
 /**
  * Default implementation does nothing.
@@ -98,27 +100,27 @@ eYo.Driver.brickDrawModelBegin = eYo.Do.nothing
  * @param {Object} recorder
  * @private
  */
-eYo.Driver.brickDrawModelEnd = eYo.Do.nothing
+eYo.Fcls.brickDrawModelEnd = eYo.Do.nothing
 
 /**
  * Get the displayed status of the given node.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.brickDisplayedGet = eYo.Do.nothing
+eYo.Fcls.brickDisplayedGet = eYo.Do.nothing
 
 /**
  * Set the displayed status of the given node.
  * @param {!Object} node  the node the driver acts on
  * @param {boolean} visible  the expected visibility status
  */
-eYo.Driver.brickDisplayedSet = eYo.Do.nothing
+eYo.Fcls.brickDisplayedSet = eYo.Do.nothing
 
 /**
  * Translates the brick, forwards to the ui driver.
  * @param {number} x The x coordinate of the translation in board units.
  * @param {number} y The y coordinate of the translation in board units.
  */
-eYo.Driver.brickMoveTo = eYo.Do.nothing
+eYo.Fcls.brickMoveTo = eYo.Do.nothing
 
 /**
  * Return the coordinates of the top-left corner of this brick relative to the
@@ -129,117 +131,117 @@ eYo.Driver.brickMoveTo = eYo.Do.nothing
  * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.Driver.brickWhereInBoard = eYo.Do.nothing
+eYo.Fcls.brickWhereInBoard = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.updateDisabled = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.updateDisabled = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.connectEffect = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.connectEffect = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  * @param {!Object} menu
  */
-eYo.Driver.Brick.prototype.menuShow = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.menuShow = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.makeWrapped = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.makeWrapped = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.makeUnwrapped = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.makeUnwrapped = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.sendToFront = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.sendToFront = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.sendToBack = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.sendToBack = eYo.Do.nothing
 
 /**
  * Add the hilight path_.
  * Default implementation does nothing
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.addBrickHilight_ = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.addBrickHilight_ = eYo.Do.nothing
 
 /**
  * Remove the hilight path.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.removeBrickHilight_ = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.removeBrickHilight_ = eYo.Do.nothing
 
 /**
  * Add the select path.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.addSelect_ = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.addSelect_ = eYo.Do.nothing
 
 /**
  * Remove the select path.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.removeSelect_ = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.removeSelect_ = eYo.Do.nothing
 
 /**
  * Add the hilight path_.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.addBlockConnection_ = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.addBlockConnection_ = eYo.Do.nothing
 
 /**
  * Remove the select path.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.removeBlockConnection_ = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.removeBlockConnection_ = eYo.Do.nothing
 
 /**
  * The svg group has an `eyo-top` class.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.addStatusTop_ = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.addStatusTop_ = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.removeStatusTop_ = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.removeStatusTop_ = eYo.Do.nothing
 
 /**
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.addStatusFocus_ = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.addStatusFocus_ = eYo.Do.nothing
 
 /**
  * Reverse `nodeAddStatusFocus_`.
  * Default implementation does nothing.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.removeStatusFocus_ = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.removeStatusFocus_ = eYo.Do.nothing
 
 /**
  * Set the displayed status of the given node.
@@ -247,10 +249,10 @@ eYo.Driver.Brick.prototype.removeStatusFocus_ = eYo.Do.nothing
  * @param {!Object} node  the node the driver acts on
  * @param {boolean} visible  the expected visibility status
  */
-eYo.Driver.Brick.prototype.displayedSet = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.displayedSet = eYo.Do.nothing
 
 /**
  * Make the given field disabled eventually.
  * @param {!Object} node  the node the driver acts on
  */
-eYo.Driver.Brick.prototype.updateDisabled = eYo.Do.nothing
+eYo.Fcls.Brick.prototype.updateDisabled = eYo.Do.nothing

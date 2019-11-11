@@ -73,6 +73,14 @@ eYo.Desk = function(owner) {
 }
 goog.inherits(eYo.Desk, eYo.Owned.UI)
 
+eYo.Property.addApp(
+  eYo.Desk.prototype,
+  'app',
+  function() {
+    return this.owner__.app
+  }
+)
+
 eYo.Property.addMany(
   eYo.Desk.prototype,
   {

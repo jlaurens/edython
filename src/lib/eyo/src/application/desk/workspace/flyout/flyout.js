@@ -103,7 +103,7 @@ eYo.Flyout = function(owner) {
 }
 goog.inherits(eYo.Flyout, eYo.Owned.UI)
 
-eYo.Property.addClonables(eYo.Flyout.prototype, 'viewRect')
+eYo.Property.addClonableMany(eYo.Flyout.prototype, 'viewRect')
 
 Object.defineProperties(eYo.Flyout.prototype, {
   /**

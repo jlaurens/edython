@@ -1,0 +1,53 @@
+/**
+ * edython
+ *
+ * Copyright 2019 Jérôme LAURENS.
+ *
+ * @license EUPL-1.2
+ */
+/**
+ * @fileoverview Board rendering driver.
+ * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
+ */
+'use strict'
+
+goog.require('eYo.Dom')
+
+goog.provide('eYo.Dom.Brick')
+
+goog.forwardDeclare('eYo.Brick')
+
+/**
+ * Dom driver for boards.
+ */
+eYo.Dom.makeDriverClass('Brick')
+
+/**
+ * Initialize the board dom ressources.
+ * @param {!eYo.Board} board
+ * @return {!Element} The board's dom repository.
+ */
+eYo.Dom.Brick.prototype.initUI = eYo.Dom.Decorate.initUI(function(brick) {
+  const dom = Brick.dom
+  Object.defineProperty(dom, 'div_', {
+    get () {
+      return brick.owner.dom.board_
+    }
+  })
+  dom.drag_ = goog.dom.createDom(
+    goog.dom.TagName.DIV,
+    'eyo-brick'
+  )
+  return dom
+})
+
+/**
+ * Dispose of the desk dom resources.
+ * @param {!eYo.Brick} brick
+ */
+eYo.Dom.Brick.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function(brick) {
+  if (brick.dom && brick.dom.div_) {
+    goog.dom.removeNode(brick.dom.div_)
+    brick.dom.div_ = null // do not remove this div from the dom
+  }
+})

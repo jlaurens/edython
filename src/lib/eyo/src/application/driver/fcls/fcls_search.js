@@ -11,35 +11,37 @@
  */
 'use strict'
 
-goog.require('eYo.Driver')
+goog.require('eYo.Fcls')
 
-goog.provide('eYo.Driver.Search')
+goog.provide('eYo.Fcls.Search')
+
+goog.forwardDeclare('eYo.Search')
 
 /**
  * Faceless driver for the search pane.
  */
-eYo.Driver.makeSubclass('Search')
+eYo.Fcls.makeDriverClass('Search')
 
 /**
  * Initiate the search UI.
  * @param {!eYo.Search} search  The search controller we must init the UI of.
  */
-eYo.Driver.Search.prototype.initUI = eYo.Do.nothing
+eYo.Fcls.Search.prototype.initUI = eYo.Do.nothing
 
 /**
  * Dispose of the search UI.
  * @param {!eYo.Search} search  The search controller we must dispose of the UI of.
  */
-eYo.Driver.Search.prototype.disposeUI = eYo.Do.nothing
+eYo.Fcls.Search.prototype.disposeUI = eYo.Do.nothing
 
 /**
  * Initiate the search UI.
  * @param {!eYo.Search} search  The search controller we must init the toolbar of.
  */
-eYo.Driver.Search.prototype.toolbarInitUI = eYo.Do.nothing
+eYo.Fcls.Search.prototype.toolbarInitUI = eYo.Do.nothing
 
 /**
  * Dispose of the search UI.
  * @param {!eYo.Search} search  The search controller we must dispose of the toolbar of.
  */
-eYo.Driver.Search.prototype.toolbarDisposeUI = eYo.Do.nothing
+eYo.Fcls.Search.prototype.toolbarDisposeUI = eYo.Do.nothing

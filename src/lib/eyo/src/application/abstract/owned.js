@@ -12,6 +12,7 @@
 'use strict'
 
 goog.require('eYo.Decorate')
+goog.require('eYo.Property')
 
 goog.provide('eYo.Owned')
 goog.provide('eYo.Owned.UI')
@@ -44,6 +45,23 @@ Object.defineProperties(eYo.Owned.prototype, {
    * @type {Object}
    */
   owner__: {value: null, writable: true},
+  /**
+   * @type {Object}
+   * @readonly
+   */
+  owner_: {
+    get () {
+      return this.owner__
+    },
+    set (owner) {
+      var old = this.owner__
+      if (old !== owner) {
+        this.ownerWillChange(old, owner)
+        this.owner__ = owner
+        this.ownerDidChange(old, owner)
+      }
+    }
+  },
   /**
    * @type {Object}
    * @readonly
@@ -165,12 +183,12 @@ Object.defineProperties(eYo.Owned.UI.prototype, {
     }
   },
   /**
+   * @type {eYo.Driver.Mgr}  The ui driver manager used for rendering.
    * @readonly
-   * @type {eYo.Driver}  The ui driver used for rendering.
    */
   ui_driver_mgr: {
     get () {
-      return this.hasUI && this.owner.ui_driver_mgr
+      return this.hasUI && this.app.ui_driver_mgr
     }
   },
 })
@@ -214,3 +232,13 @@ eYo.Decorate.disposeUI = (constructor, f) => {
   }
 }
 
+/**
+ * Add a driver to the given prototype.
+ */
+eYo.Property.addUIDriver = (proto, key) => {
+  eYo.Property.addCached(proto, 'ui_driver', {
+    get () {
+      return this.app.ui_driver_mgr[key]
+    }
+  })
+}
