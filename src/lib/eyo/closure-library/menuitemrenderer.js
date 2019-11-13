@@ -152,8 +152,8 @@ eYo.Style.setControlRendererCssClass(
  * No overriding by goog.ui.MenuItemRenderer.
  * It exists to be used below.
  * @param {goog.ui.Component.State} state Component state.
- * @return {string|eYo.VOID} CSS class representing the given state
- *     (eYo.VOID if none).
+ * @return {string|eYo.NA} CSS class representing the given state
+ *     (eYo.NA if none).
  * @override
  */
 eYo.MenuItemRenderer.prototype.getClassForState = function (state) {

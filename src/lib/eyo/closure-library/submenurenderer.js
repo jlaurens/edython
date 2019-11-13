@@ -40,7 +40,7 @@ goog.require('goog.ui.SubMenuRenderer')
  * @final
  */
 eYo.SubMenuRenderer = function () {
-  goog.ui.SubMenuRenderer.call(this, eYo.VOID)
+  goog.ui.SubMenuRenderer.call(this, eYo.NA)
 }
 goog.inherits(eYo.SubMenuRenderer, goog.ui.SubMenuRenderer)
 goog.addSingletonGetter(eYo.SubMenuRenderer)

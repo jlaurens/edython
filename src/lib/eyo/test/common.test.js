@@ -258,7 +258,7 @@ eYo.Test.data_key = (brick, key, value) => {
   var dd = d[`${key}_d`]
   chai.assert(d === dd, `NO DATA SHORTCUT FOR ${key} in ${brick.type}`)
   chai.assert(d.get() === d[`${key}_p`], `NO VALUE SHORTCUT FOR ${key} in ${brick.type}`)
-  if (value !== eYo.VOID) {
+  if (value !== eYo.NA) {
     var old = d.get()
     d.set(value)
     chai.assert(d.get() === value, `NO CHANGE FOR ${key} in ${brick.type}: ${d.get()} === ${value}`)
