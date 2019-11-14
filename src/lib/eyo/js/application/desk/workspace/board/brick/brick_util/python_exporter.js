@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Py.Exporter')
-
 goog.require('eYo')
 
 goog.require('eYo.Field')
+
 goog.require('eYo.Brick')
+goog.provide('eYo.Py.Exporter')
 
 goog.forwardDeclare('eYo.XRE')
 goog.forwardDeclare('eYo.Slot')

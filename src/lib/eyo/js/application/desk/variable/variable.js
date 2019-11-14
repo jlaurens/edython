@@ -12,10 +12,10 @@
  */
 'use strict'
 
-goog.provide('eYo.Variable')
-
 goog.require('eYo.Pane')
+
 goog.require('eYo.Decorate')
+goog.provide('eYo.Variable')
 
 /**
  * Class for a variable inspector.

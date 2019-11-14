@@ -11,15 +11,15 @@
  */
 'use strict'
 
-goog.provide('eYo.FlyoutToolbar')
-
 goog.require('eYo')
-goog.forwardDeclare('eYo.FlyoutToolbar')
 
 goog.require('eYo.MenuRenderer')
+goog.forwardDeclare('eYo.FlyoutToolbar')
+
 goog.require('eYo.MenuButtonRenderer')
 goog.require('goog.dom')
 goog.require('goog.ui.Select')
+goog.provide('eYo.FlyoutToolbar')
 
 /**
  * Class for a flyout toolbar.

@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.provide('eYo.Backer')
-
 goog.require('eYo.Owned')
+
 goog.require('eYo.Protocol.ChangeCount')
+goog.provide('eYo.Backer')
 
 goog.forwardDeclare('eYo.Events')
 goog.forwardDeclare('eYo.Application')

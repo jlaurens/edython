@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.E')
-
 goog.require('eYo')
+
+goog.provide('eYo.E')
 
 Object.defineProperties(eYo.E, {
   OK: {get () {return 10}}, /* No error */

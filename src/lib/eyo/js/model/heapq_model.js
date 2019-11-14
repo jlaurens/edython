@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Model.heapq__module')
-goog.provide('eYo.Model.heapq__module.Item')
-
 goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
+
 goog.require('eYo.Model.Item')
+goog.provide('eYo.Model.heapq__module.Item')
+goog.provide('eYo.Model.heapq__module')
 
 eYo.Model.heapq__module = new eYo.Model.Module('heapq__module', 'https://docs.python.org/3.6/library/heapq.html')
 

@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Owned.UI2')
-
 goog.require('eYo.Owned')
+
+goog.provide('eYo.Owned.UI2')
 
 goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Brick.UI')

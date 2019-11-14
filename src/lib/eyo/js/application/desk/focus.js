@@ -21,15 +21,15 @@
  * @namespace
  **/
 
-goog.provide('eYo.Focus')
-
 goog.require('eYo.Decorate')
-goog.require('eYo.Do')
 
+goog.require('eYo.Do')
 goog.require('eYo.Board')
+
 goog.require('eYo.Brick')
 goog.require('eYo.Magnet')
 goog.require('eYo.Field')
+goog.provide('eYo.Focus')
 
 goog.forwardDeclare('eYo.Desk')
 goog.forwardDeclare('goog.math')

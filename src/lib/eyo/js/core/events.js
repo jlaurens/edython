@@ -15,12 +15,12 @@
  * Events fired as a result of actions in Edython.
  * @namespace eYo.Events
  */
-goog.provide('eYo.Events')
-goog.provide('eYo.Events.Abstract')
-
 goog.require('eYo')
-
 goog.require('goog.array')
+
+goog.provide('eYo.Events')
+
+goog.provide('eYo.Events.Abstract')
 
 Object.defineProperties(eYo.Events, {
   /**

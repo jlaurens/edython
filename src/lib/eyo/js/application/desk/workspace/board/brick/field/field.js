@@ -11,19 +11,19 @@
  */
 'use strict';
 
-goog.provide('eYo.Field')
-goog.provide('eYo.FieldLabel')
-goog.provide('eYo.FieldInput')
-
 goog.require('eYo.Protocol')
-
 goog.require('eYo.Owned.UI2')
+goog.require('goog.asserts');
+
+goog.provide('eYo.Field')
+
+goog.provide('eYo.FieldLabel')
 
 goog.forwardDeclare('eYo.Size')
 goog.forwardDeclare('eYo.Events')
 
 
-goog.require('goog.asserts');
+goog.provide('eYo.FieldInput')
 
 /**
  * Abstract class for text fields.

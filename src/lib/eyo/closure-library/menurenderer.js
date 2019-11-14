@@ -11,10 +11,10 @@
  * @author jerome.laurens@u-bourgogne.fr
  */
 
-goog.provide('eYo.MenuRenderer')
-
 goog.require('eYo')
+
 goog.require('goog.ui.MenuRenderer')
+goog.provide('eYo.MenuRenderer')
 
 /**
  * Default renderer for {@link eYo.Menu}s, based on {@link

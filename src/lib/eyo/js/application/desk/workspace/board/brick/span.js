@@ -32,9 +32,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Span')
-
 goog.require('eYo')
+
+goog.provide('eYo.Span')
 
 goog.forwardDeclare('eYo.Unit')
 goog.forwardDeclare('eYo.Brick')

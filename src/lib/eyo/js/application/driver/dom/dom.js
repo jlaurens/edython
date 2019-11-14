@@ -13,9 +13,9 @@
 
 goog.require('eYo.Driver')
 
-goog.provide('eYo.Dom')
-
 goog.require('goog.events')
+
+goog.provide('eYo.Dom')
 goog.forwardDeclare('goog.dom')
 
 /**

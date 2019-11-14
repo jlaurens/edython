@@ -17,12 +17,12 @@
  *
  */
 
-goog.provide('eYo.SubMenuRenderer')
-
 goog.require('eYo')
 
 goog.require('goog.dom');
+
 goog.require('goog.ui.SubMenuRenderer')
+goog.provide('eYo.SubMenuRenderer')
 
 /**
  * Default renderer for {@link goog.ui.SubMenu}s.  Each item has the following

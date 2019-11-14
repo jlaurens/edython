@@ -27,10 +27,10 @@
  * @author jerome.laurens@u-bourgogne.fr
  */
 
-goog.provide('eYo.MenuItemRenderer')
-
 goog.require('goog.ui.MenuItemRenderer')
+
 goog.require('eYo.Style')
+goog.provide('eYo.MenuItemRenderer')
 
 /**
  * Sets the css class of the control renderer.

@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Model.pprint__module')
-goog.provide('eYo.Model.pprint__module.Item')
-
 goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
+
 goog.require('eYo.Model.Item')
+goog.provide('eYo.Model.pprint__module.Item')
+goog.provide('eYo.Model.pprint__module')
 
 eYo.Model.pprint__module = new eYo.Model.Module('pprint__module', 'https://docs.python.org/3.6/library/pprint.html')
 

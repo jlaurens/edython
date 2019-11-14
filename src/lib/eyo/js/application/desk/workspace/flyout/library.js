@@ -13,11 +13,11 @@
 
 goog.require('eYo')
 
-goog.provide('eYo.Library')
-
 goog.require('eYo.T3')
+
 goog.require('eYo.Const')
 goog.require('eYo.Tooltip')
+goog.provide('eYo.Library')
 
 /**
  * Flyout list of node models by category.

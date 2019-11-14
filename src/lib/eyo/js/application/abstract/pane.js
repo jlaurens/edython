@@ -12,9 +12,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Pane')
-
 goog.require('eYo.Owned')
+
+goog.provide('eYo.Pane')
 
 goog.forwardDeclare('eYo.Desk')
 

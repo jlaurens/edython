@@ -11,15 +11,15 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Proc')
-
 goog.require('eYo.Brick.Group')
 
 goog.require('eYo.XRE')
+
 goog.require('eYo.Msg')
 goog.require('eYo.Brick.Primary')
 goog.require('eYo.MenuItem')
 goog.require('goog.dom');
+goog.provide('eYo.Brick.Proc')
 
 eYo.Do.readOnlyMixin(eYo.XRE, {
   decorator: XRegExp(`^@?

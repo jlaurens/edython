@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Motion')
-
 goog.require('eYo')
+
+goog.provide('eYo.Motion')
 
 goog.forwardDeclare('eYo.Board')
 goog.forwardDeclare('eYo.Brick')

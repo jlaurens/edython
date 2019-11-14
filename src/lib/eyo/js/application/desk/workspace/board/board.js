@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.provide('eYo.Board')
-
 goog.require('eYo.Owned')
+
 goog.require('eYo.Decorate')
+goog.provide('eYo.Board')
 
 goog.forwardDeclare('eYo.Workspace')
 

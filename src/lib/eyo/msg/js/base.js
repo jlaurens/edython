@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.provide('eYo.Msg')
+goog.require('eYo')
 goog.provide('eYo.MsgPack')
 
-goog.require('eYo')
+goog.provide('eYo.Msg')
 
 /** @export */ eYo.Msg.RENAME = 'Renommer'
 

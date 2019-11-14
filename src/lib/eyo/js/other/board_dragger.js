@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.BoardDragger')
-
 goog.require('eYo')
+
+goog.provide('eYo.BoardDragger')
 
 /**
  * Class for a board dragger. Set some scrollbar according to the drag delta. The scrollbar depends on whether the board is in a flyout.

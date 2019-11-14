@@ -11,17 +11,17 @@
  */
 'use strict'
 
-goog.provide('eYo.MenuManager')
-
 goog.require('eYo')
 
 goog.require('eYo.Msg')
+
 goog.require('eYo.T3')
 goog.require('eYo.Brick')
 goog.require('eYo.MenuItem')
 goog.require('eYo.Separator')
 goog.require('goog.dom');
 goog.require('eYo.Py.Exporter')
+goog.provide('eYo.MenuManager')
 
 /**
  * Shared context menu manager.

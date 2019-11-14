@@ -11,15 +11,15 @@
  */
 'use strict'
 
-goog.provide('eYo.Unit')
-goog.provide('eYo.Geometry')
+goog.require('eYo')
+goog.require('eYo.Do')
 goog.provide('eYo.Where')
 goog.provide('eYo.Size')
 goog.provide('eYo.Rect')
 
-goog.require('eYo')
+goog.provide('eYo.Unit')
 
-goog.require('eYo.Do')
+goog.provide('eYo.Geometry')
 
 goog.forwardDeclare('eYo.Font')
 

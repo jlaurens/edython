@@ -11,18 +11,18 @@
  */
 'use strict'
 
-goog.provide('eYo.Slot')
-
 goog.require('eYo.Protocol')
 
 goog.require('eYo.Do')
+
 goog.require('eYo.Where')
 goog.require('eYo.Decorate')
 goog.require('eYo.Field')
 goog.require('eYo.Magnet')
 goog.require('eYo.T3.Profile')
-
 goog.require('goog.dom');
+
+goog.provide('eYo.Slot')
 
 goog.forwardDeclare('eYo.Xml')
 

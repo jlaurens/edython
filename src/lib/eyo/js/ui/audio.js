@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Audio')
-
 goog.require('eYo')
+
+goog.provide('eYo.Audio')
 
 goog.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('goog.userAgent')

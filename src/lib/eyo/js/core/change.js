@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Change')
-
 goog.require('eYo')
+
+goog.provide('eYo.Change')
 
 /**
  * @param{Object} owner

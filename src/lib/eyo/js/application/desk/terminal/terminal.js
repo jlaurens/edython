@@ -13,10 +13,10 @@
  */
 'use strict'
 
-goog.provide('eYo.Terminal')
-
 goog.require('eYo.Pane')
+
 goog.require('eYo.Decorate')
+goog.provide('eYo.Terminal')
 
 /**
  * Class for a terminal.

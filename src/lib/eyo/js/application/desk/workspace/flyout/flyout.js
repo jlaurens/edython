@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.provide('eYo.Flyout')
-
 goog.require('eYo.Protocol')
+
 goog.require('eYo.Unit')
 goog.require('eYo.Events')
+goog.provide('eYo.Flyout')
 
 goog.forwardDeclare('eYo.Library');
 goog.forwardDeclare('eYo.Style');

@@ -11,15 +11,15 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.String')
-
 goog.require('eYo.Brick')
 
 goog.require('eYo.Msg')
-goog.require('eYo.Brick.Stmt')
 
+goog.require('eYo.Brick.Stmt')
 goog.require('eYo.Tooltip')
+
 goog.require('eYo.Library')
+goog.provide('eYo.Brick.String')
 
 /**
  * Populate the context menu for the given brick.

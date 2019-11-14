@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Protocol')
-
 goog.require('eYo')
+
+goog.provide('eYo.Protocol')
 
 /**
  * Enhance the prototype with the given methods and properties.

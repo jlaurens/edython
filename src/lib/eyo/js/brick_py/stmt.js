@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Stmt')
-
 goog.require('eYo.Brick')
 
 goog.require('eYo.Change')
+
 goog.require('eYo.Brick.List')
+goog.provide('eYo.Brick.Stmt')
 
 goog.forwardDeclare('eYo.XRE')
 goog.forwardDeclare('eYo.Msg')

@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Responder')
-
 goog.require('eYo.Protocol')
+
+goog.provide('eYo.Responder')
 
 goog.forwardDeclare('eYo.Dom')
 

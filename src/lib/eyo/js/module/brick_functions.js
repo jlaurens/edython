@@ -13,17 +13,17 @@
 
 goog.require('eYo.Brick')
 
-goog.provide('eYo.Brick.Functions')
-
 goog.require('eYo.Msg')
 
 goog.require('eYo.Brick.List')
+
 goog.require('eYo.Brick.Primary')
-
 goog.require('eYo.Tooltip')
-goog.require('eYo.Library')
 
+goog.require('eYo.Library')
 goog.require('eYo.Model.functions')
+
+goog.provide('eYo.Brick.Functions')
 
 /**
  * Add the conjugate, imag and real names

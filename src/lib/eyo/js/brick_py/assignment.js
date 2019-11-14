@@ -11,15 +11,15 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Assignment')
-
 goog.require('eYo')
 
 goog.require('eYo.Msg')
+
 goog.require('eYo.Brick.Primary')
 goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Stmt')
 goog.require('goog.dom');
+goog.provide('eYo.Brick.Assignment')
 
 goog.provide('eYo.Brick.Stmt.assignment_stmt')
 

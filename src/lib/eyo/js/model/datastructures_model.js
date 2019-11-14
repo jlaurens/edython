@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Model.datastructures')
-goog.provide('eYo.Model.datastructures.Item')
-
 goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
+
 goog.require('eYo.Model.Item')
+goog.provide('eYo.Model.datastructures.Item')
+goog.provide('eYo.Model.datastructures')
 
 eYo.Model.datastructures = new eYo.Model.Module('datastructures', 'https://docs.python.org/3.6/library/datastructures.html')
 

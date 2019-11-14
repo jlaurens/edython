@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Data.Test')
-
 goog.require('eYo.Data')
+
+goog.provide('eYo.Data.Test')
 
 eYo.Data.Test.run = function () {
   for (var x in eYo.Data.Test) {

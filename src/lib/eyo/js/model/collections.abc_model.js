@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Model.collections.abc__module')
-goog.provide('eYo.Model.collections.abc__module.Item')
-
 goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
+
 goog.require('eYo.Model.Item')
+goog.provide('eYo.Model.collections.abc__module.Item')
+goog.provide('eYo.Model.collections.abc__module')
 
 eYo.Model.collections.abc__module = new eYo.Model.Module('collections.abc__module', 'https://docs.python.org/3.6/library/collections.abc.html')
 

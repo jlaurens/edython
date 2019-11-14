@@ -16,9 +16,9 @@
  * @namespace
  **/
 
-goog.provide('eYo.XRE')
-
 goog.require('eYo.Do')
+
+goog.provide('eYo.XRE')
 
 goog.asserts.assert(XRegExp, 'load XRegExp before')
 

@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.provide('eYo.Style')
+goog.require('eYo')
 goog.provide('eYo.Font')
 goog.provide('eYo.Padding')
 
-goog.require('eYo')
+goog.provide('eYo.Style')
 
 goog.forwardDeclare('eYo.Unit')
 goog.forwardDeclare('eYo.font-face')

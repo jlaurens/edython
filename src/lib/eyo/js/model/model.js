@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.provide('eYo.Model')
+goog.require('eYo.Protocol.Register')
 goog.provide('eYo.Model.Item')
 goog.provide('eYo.Model.Module')
 
-goog.require('eYo.Protocol.Register')
+goog.provide('eYo.Model')
 
 /**
  * @constructor

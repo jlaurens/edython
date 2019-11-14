@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Model.random__module')
-goog.provide('eYo.Model.random__module.Item')
-
 goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
+
 goog.require('eYo.Model.Item')
+goog.provide('eYo.Model.random__module.Item')
+goog.provide('eYo.Model.random__module')
 
 eYo.Model.random__module = new eYo.Model.Module('random__module', 'https://docs.python.org/3.6/library/random.html')
 

@@ -12,10 +12,10 @@
  */
 'use strict'
 
-goog.provide('eYo.Graphic')
-
 goog.require('eYo.Pane')
+
 goog.require('eYo.Decorate')
+goog.provide('eYo.Graphic')
 
 /**
  * Class for a graphic environment.

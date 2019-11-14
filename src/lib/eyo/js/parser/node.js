@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Node')
-
 goog.require('eYo.E')
+
+goog.provide('eYo.Node')
 
 /* Parse tree node implementation *-/
 

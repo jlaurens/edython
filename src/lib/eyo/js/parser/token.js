@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.TKN')
-
 goog.require('eYo')
+
+goog.provide('eYo.TKN')
 
 eYo.TKN.ISTERMINAL = x => x < eYo.TKN.NT_OFFSET
 eYo.TKN.ISNONTERMINAL = x => x >= eYo.TKN.NT_OFFSET

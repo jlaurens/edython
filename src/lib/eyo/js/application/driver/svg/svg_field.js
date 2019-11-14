@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Svg.Field')
-
 goog.require('eYo.Svg')
+
+goog.provide('eYo.Svg.Field')
 
 goog.forwardDeclare('eYo.Field')
 

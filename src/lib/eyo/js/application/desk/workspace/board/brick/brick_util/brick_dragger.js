@@ -12,10 +12,10 @@
 'use strict'
 
 
-goog.provide('eYo.BrickDragger')
-
 goog.require('eYo')
+
 goog.require('eYo.Change')
+goog.provide('eYo.BrickDragger')
 
 goog.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('eYo.Brick')

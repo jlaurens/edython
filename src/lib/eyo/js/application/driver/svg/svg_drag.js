@@ -15,10 +15,10 @@
  */
 'use strict'
 
-goog.provide('eYo.Svg.BoardDragSurface')
+goog.require('eYo.Svg')
 goog.provide('eYo.Svg.BrickDragSurface')
 
-goog.require('eYo.Svg')
+goog.provide('eYo.Svg.BoardDragSurface')
 
 goog.forwardDeclare('goog.asserts')
 

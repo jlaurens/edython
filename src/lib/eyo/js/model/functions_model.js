@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Model.functions')
-goog.provide('eYo.Model.functions.Item')
-
 goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
+
 goog.require('eYo.Model.Item')
+goog.provide('eYo.Model.functions.Item')
+goog.provide('eYo.Model.functions')
 
 eYo.Model.functions = new eYo.Model.Module('functions', 'https://docs.python.org/3.6/library/functions.html')
 

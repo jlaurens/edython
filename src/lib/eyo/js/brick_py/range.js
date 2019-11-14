@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Range')
-
 goog.require('eYo.Brick.Expr')
+
+goog.provide('eYo.Brick.Range')
 
 eYo.T3.Expr.builtin__range_expr = 'eyo:builtin__range_expr'
 

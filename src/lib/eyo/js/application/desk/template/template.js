@@ -12,10 +12,10 @@
  */
 'use strict'
 
-goog.provide('eYo.Template')
-
 goog.require('eYo.Pane')
+
 goog.require('eYo.Decorate')
+goog.provide('eYo.Template')
 
 /**
  * Class for a template environment.

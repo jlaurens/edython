@@ -27,25 +27,25 @@
  */
 'use strict'
 
-goog.provide('eYo.Xml')
-
 goog.require('eYo')
 
 goog.require('eYo.Const')
+
 goog.require('eYo.XRE')
 goog.require('eYo.T3')
 goog.require('eYo.Brick')
-
 goog.require('Blockly.Xml')
+
 goog.require('goog.dom');
+goog.require('eYo.Brick.Functions');
 
 // Next are used to let the compiler know that we need them
-goog.require('eYo.Brick.Functions');
 goog.require('eYo.Brick.Stdtypes');
 goog.require('eYo.Brick.Random');
 goog.require('eYo.Brick.Math');
 goog.require('eYo.Brick.CMath');
 goog.require('eYo.Brick.Turtle');
+goog.provide('eYo.Xml')
 goog.require('eYo.Brick.Decimal');
 goog.require('eYo.Brick.Fractions');
 goog.require('eYo.Brick.Statistics');

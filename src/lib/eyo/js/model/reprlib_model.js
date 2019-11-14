@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Model.reprlib__module')
-goog.provide('eYo.Model.reprlib__module.Item')
-
 goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
+
 goog.require('eYo.Model.Item')
+goog.provide('eYo.Model.reprlib__module.Item')
+goog.provide('eYo.Model.reprlib__module')
 
 eYo.Model.reprlib__module = new eYo.Model.Module('reprlib__module', 'https://docs.python.org/3.6/library/reprlib.html')
 

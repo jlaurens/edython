@@ -18,9 +18,9 @@
  * @namespace
  **/
 
-goog.provide('eYo.T3.All')
-
 goog.require('eYo.T3')
+
+goog.provide('eYo.T3.All')
 
 
 eYo.T3.All = {}

@@ -11,15 +11,15 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Literal')
-goog.provide('eYo.Brick.Expr.numberliteral')
-
 goog.require('eYo.Brick.Expr')
-
 goog.require('eYo.XRE')
+
 goog.require('eYo.Msg')
+
 goog.require('eYo.Brick.Expr')
 goog.require('goog.dom');
+goog.provide('eYo.Brick.Expr.numberliteral')
+goog.provide('eYo.Brick.Literal')
 
 /**
  * Class for a Delegate, number: integer, floatnumber or imagnumber.

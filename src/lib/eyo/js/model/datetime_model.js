@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Model.datetime__module')
-goog.provide('eYo.Model.datetime__module.Item')
-
 goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
+
 goog.require('eYo.Model.Item')
+goog.provide('eYo.Model.datetime__module.Item')
+goog.provide('eYo.Model.datetime__module')
 
 eYo.Model.datetime__module = new eYo.Model.Module('datetime__module', 'https://docs.python.org/3.6/library/datetime.html')
 

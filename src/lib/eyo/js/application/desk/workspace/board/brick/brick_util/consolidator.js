@@ -13,12 +13,12 @@
 
 goog.require('eYo.Decorate')
 
-goog.provide('eYo.Consolidator')
-
 goog.require('eYo.Const')
+
 goog.require('eYo.Slot')
 goog.require('eYo.Do')
 goog.require('eYo.Brick')
+goog.provide('eYo.Consolidator')
 
 console.error('Manage rentrant_ more carefully')
 

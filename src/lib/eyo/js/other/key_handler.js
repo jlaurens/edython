@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.provide('eYo.KeyHandler')
-goog.provide('eYo.KeyHandlerMenu')
-
 goog.require('eYo')
-
 goog.require('eYo.PopupMenu')
+
+goog.provide('eYo.KeyHandler')
+
+goog.provide('eYo.KeyHandlerMenu')
 
 goog.forwardDeclare('eYo.XRE')
 goog.forwardDeclare('eYo.Dom')

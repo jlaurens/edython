@@ -11,20 +11,20 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Decimal')
-
 goog.require('eYo.Brick')
 
 goog.require('eYo.Msg')
+
 goog.require('eYo.Brick.Stmt')
-
 goog.require('eYo.Brick.List')
+
 goog.require('eYo.Brick.Primary')
-
 goog.require('eYo.Tooltip')
-goog.require('eYo.Library')
 
+goog.require('eYo.Library')
 goog.require('eYo.Model.decimal__module')
+
+goog.provide('eYo.Brick.Decimal')
 
 /**
  * Populate the context menu for the given brick.

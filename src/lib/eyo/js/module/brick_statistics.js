@@ -11,18 +11,18 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Statistics')
-
 goog.require('eYo.Brick')
 
 goog.require('eYo.Msg')
+
 goog.require('eYo.Brick.Stmt')
-
 goog.require('eYo.Brick.List')
-goog.require('eYo.Brick.Primary')
 
+goog.require('eYo.Brick.Primary')
 goog.require('eYo.Tooltip')
+
 goog.require('eYo.Library')
+goog.provide('eYo.Brick.Statistics')
 
 /*
     'pstdev': 7,

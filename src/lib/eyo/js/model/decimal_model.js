@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Model.decimal__module')
-goog.provide('eYo.Model.decimal__module.Item')
-
 goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
+
 goog.require('eYo.Model.Item')
+goog.provide('eYo.Model.decimal__module.Item')
+goog.provide('eYo.Model.decimal__module')
 
 eYo.Model.decimal__module = new eYo.Model.Module('decimal__module', 'https://docs.python.org/3.6/library/decimal.html')
 

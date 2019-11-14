@@ -11,21 +11,21 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Primary')
-
 goog.require('eYo.Brick.Expr')
-goog.require('eYo.Protocol')
 
+goog.require('eYo.Protocol')
 goog.require('eYo.Change')
 
 goog.require('eYo.Model.stdtypes')
-goog.require('eYo.Model.functions')
 
+goog.require('eYo.Model.functions')
 goog.require('eYo.Msg')
+
 goog.require('eYo.Brick.Primary')
 goog.require('eYo.Brick.Stmt')
 goog.require('eYo.Protocol.Register')
 goog.require('goog.dom');
+goog.provide('eYo.Brick.Primary')
 
 /**
  * List consolidator for assignment target list. Used in primary, only.

@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.provide('eYo.Parser')
-goog.provide('stack')
-
 goog.require('eYo')
-
 goog.require('eYo.Scan')
+
 goog.require('eYo.E')
+
+goog.provide('stack')
+goog.provide('eYo.Parser')
 
 /* Parser implementation */
 

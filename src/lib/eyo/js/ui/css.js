@@ -15,9 +15,9 @@
  * @name eYo.Css
  * @namespace
  */
-goog.provide('eYo.Css')
-
 goog.require('eYo.Style')
+
+goog.provide('eYo.Css')
 
 
 goog.forwardDeclare('eYo.Unit')

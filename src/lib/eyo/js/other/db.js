@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.DB')
-
 goog.require('eYo')
+
+goog.provide('eYo.DB')
 
 /**
  * Database of all identified object.

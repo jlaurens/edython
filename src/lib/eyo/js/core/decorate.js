@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.provide('eYo.Decorate')
-
 goog.require('eYo')
+
+goog.provide('eYo.Decorate')
 
 goog.forwardDeclare('eYo.Do')
 

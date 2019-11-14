@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Model.datamodel')
-goog.provide('eYo.Model.datamodel.Item')
-
 goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
+
 goog.require('eYo.Model.Item')
+goog.provide('eYo.Model.datamodel.Item')
+goog.provide('eYo.Model.datamodel')
 
 eYo.Model.datamodel = new eYo.Model.Module('datamodel', 'https://docs.python.org/3.6/library/datamodel.html')
 

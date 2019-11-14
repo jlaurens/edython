@@ -14,12 +14,12 @@
  * @see ../demos/submenus2.html
  */
 
-goog.provide('eYo.SubMenu')
-
 goog.require('eYo.MenuRenderer')
 
 goog.require('goog.dom');
+
 goog.require('goog.ui.SubMenu')
+goog.provide('eYo.SubMenu')
 
 /**
  * Class representing a submenu that can be added as an item to other menus.

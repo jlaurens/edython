@@ -16,10 +16,10 @@
  * @namespace
  **/
 
-goog.provide('eYo.Const')
+goog.require('eYo.Do')
 goog.provide('eYo.ID')
 
-goog.require('eYo.Do')
+goog.provide('eYo.Const')
 
 goog.asserts.assert(XRegExp, 'load XRegExp before')
 

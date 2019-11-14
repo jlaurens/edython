@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.provide('eYo.Magnets')
-goog.provide('eYo.Magnet')
-
 goog.require('eYo.Owned.UI2')
 goog.require('eYo.Protocol')
+
+goog.provide('eYo.Magnets')
+goog.provide('eYo.Magnet')
 
 goog.forwardDeclare('eYo.Do')
 goog.forwardDeclare('eYo.Where')

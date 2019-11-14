@@ -11,8 +11,8 @@
  */
 'use strict';
 
-goog.provide('eYo.Demo');
-
 goog.require('eYo')
+
 goog.require('eYo.Xml')
+goog.provide('eYo.Demo');
 

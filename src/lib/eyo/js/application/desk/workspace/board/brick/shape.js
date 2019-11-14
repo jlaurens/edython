@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.provide('eYo.Shape')
-
 goog.require('eYo')
 
 goog.require('eYo.Geometry')
+
+goog.provide('eYo.Shape')
 
 goog.forwardDeclare('eYo.Unit')
 goog.forwardDeclare('eYo.Padding')

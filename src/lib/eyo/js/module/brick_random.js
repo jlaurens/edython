@@ -11,8 +11,6 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Random')
-
 goog.require('eYo.Brick')
 
 goog.require('eYo.Brick.Range')
@@ -20,11 +18,13 @@ goog.require('eYo.Brick.Range')
 goog.require('eYo.Model.random__module')
 
 goog.require('eYo.Brick.Stmt')
+
 goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Primary')
-
 goog.require('eYo.Tooltip')
+
 goog.require('eYo.Library')
+goog.provide('eYo.Brick.Random')
 
 eYo.T3.Expr.random__randrange = 'eyo:random__randrange'
 

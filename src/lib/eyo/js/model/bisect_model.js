@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Model.bisect__module')
-goog.provide('eYo.Model.bisect__module.Item')
-
 goog.require('eYo.Model')
 goog.require('eYo.Model.Module')
+
 goog.require('eYo.Model.Item')
+goog.provide('eYo.Model.bisect__module.Item')
+goog.provide('eYo.Model.bisect__module')
 
 eYo.Model.bisect__module = new eYo.Model.Module('bisect__module', 'https://docs.python.org/3.6/library/bisect.html')
 

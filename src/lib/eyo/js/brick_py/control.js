@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Control')
-
 goog.require('goog.ui.Dialog')
+
 goog.require('eYo.Msg')
 goog.require('eYo.Brick.Group')
 goog.require('goog.dom');
+goog.provide('eYo.Brick.Control')
 
 /**
  * Class for a Delegate, control brick.

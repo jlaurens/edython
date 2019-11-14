@@ -11,14 +11,14 @@
  */
 'use strict'
 
-goog.provide('eYo.Brick.Group')
-
 goog.require('eYo.Brick.Stmt')
 
 goog.require('eYo.Msg')
-goog.require('eYo.Brick.Expr')
 
+goog.require('eYo.Brick.Expr')
 goog.require('goog.dom')
+
+goog.provide('eYo.Brick.Group')
 
 /**
  * Class for a Delegate, base group statement brick.
