@@ -269,6 +269,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/core/font.js" \
 --js "src/lib/eyo/js/parser/ast.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/brick_dragger.js" \
+--js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/consolidator.js" \
 --js "src/lib/eyo/js/core/const.js" \
 --js "src/lib/eyo/js/core/constructor.js" \
 --js "src/lib/eyo/js/ui/css.js" \
@@ -391,7 +392,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/brick_py/expr.js" \
 --js "src/lib/eyo/js/brick_py/final.js" \
 --js "src/lib/eyo/js/ui/brick_ui.js" \
---js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/consolidator.js" \
 --js "src/lib/eyo/js/application/desk/focus.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/python_exporter.js" \
 --js "src/lib/eyo/js/application/driver/svg/svg_effect.js" \
@@ -407,13 +407,13 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/brick_py/comp.js" \
 --js "src/lib/eyo/js/brick_py/stmt.js" \
 --js "src/lib/eyo/closure-library/menuitemrenderer.js" \
+--js "src/lib/eyo/js/brick_py/assignment.js" \
 --js "src/lib/eyo/js/brick_py/group.js" \
 --js "src/lib/eyo/js/brick_py/import.js" \
 --js "src/lib/eyo/js/brick_py/primary.js" \
 --js "src/lib/eyo/js/module/brick_string.js" \
 --js "src/lib/eyo/js/brick_py/yield.js" \
 --js "src/lib/eyo/closure-library/menuitem.js" \
---js "src/lib/eyo/js/brick_py/assignment.js" \
 --js "src/lib/eyo/js/module/brick_cmath.js" \
 --js "src/lib/eyo/js/brick_py/control.js" \
 --js "src/lib/eyo/js/module/brick_decimal.js" \
@@ -430,9 +430,9 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/other/menu_manager.js" \
 --js "src/lib/eyo/closure-library/menurenderer.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/node_brick.js" \
---js "src/lib/eyo/closure-library/menu.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/xml.js" \
 --js "src/lib/eyo/js/other/demo.js" \
+--js "src/lib/eyo/closure-library/menu.js" \
 --js "src/lib/eyo/closure-library/menubuttonrenderer.js" \
 --js "src/lib/eyo/closure-library/popupmenu.js" \
 --js "src/lib/eyo/closure-library/submenurenderer.js" \

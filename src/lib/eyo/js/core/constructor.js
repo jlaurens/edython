@@ -20,26 +20,35 @@ goog.provide('eYo.Constructor')
  * Caveat, constructors must have the same arguments.
  * Use a key->value design if you do not want that.
  * The `params` object has template: `{key: String, f: function, owner: Object, super: superClass}`
- * @param {!Object} params,  The dictionary of parameters.
+ * @param {!Object} model,  The dictionary of parameters.
  * 
  */
-eYo.Constructor.make = (params) => {
-  params.owner || (params.owner = params.super) || eYo.throw('Missing `super` property.')
+eYo.Constructor.make = (model) => {
+  model.owner || (model.owner = model.super) || eYo.throw('Missing `super` property.')
   var ctor
-  if (params.super === null) {
-    ctor = params.owner[params.key] = function () {
+  if (model.super === null) {
+    ctor = model.owner[model.key] = function () {
       ctor.eyo__.init(this)
-      params.f && params.f.call(this, arguments)
+      model.f && model.f.call(this, arguments)
     }
   } else {
-    ctor = params.owner[params.key] = function () {
+    ctor = model.owner[model.key] = function () {
       ctor.superClass_.constructor.call(this, arguments)
       ctor.eyo__.init(this)
-      params.f && params.f.call(this, arguments)
+      model.f && model.f.call(this, arguments)
     }
-    eYo.Do.inherits(ctor, params.super || params.owner)
+    eYo.Do.inherits(ctor, model.super || model.owner)
   }
-  ctor.eyo__ = new eYo.Constructor.Dlgt(ctor, params)
+  ctor.eyo__ = new eYo.Constructor.Dlgt(ctor, model)
+  ctor.eyo__.makeDispose = (f) => {
+    ctor.prototype.dispose = function () {
+      f && f.apply(this, arguments)
+      ctor.eyo__.dispose(this)
+      var super_ = ctor.superClass_
+      super_ && super_.dispose.apply(this, arguments)
+    }
+  }
+  ctor.eyo__.makeDispose()
   Object.defineProperty(ctor.prototype, 'eyo', {
     get () {
       return ctor.eyo__
@@ -133,10 +142,11 @@ Object.defineProperties(eYo.Constructor.Dlgt.prototype, {
  * @param {Object} instance,  instance is an instance of a subclass of the `ctor_` of the receiver
  */
 eYo.Constructor.Dlgt.prototype.init = function (object) {
+  var suffix = '__'
   var f = k => {
     Object.defineProperty(object, k, {
       get () {
-        return this[k + '__']
+        return this[k + suffix]
       },
       set() {
         throw "Forbidden setter"
@@ -144,9 +154,14 @@ eYo.Constructor.Dlgt.prototype.init = function (object) {
     })
   }
   this.forEachLink(f)
-  this.forEachCached(f)
   this.forEachOwned(f)
   this.forEachClonable(f)
+  suffix = '_'
+  this.forEachCached(f)
+  this.forEachClonable(k => {
+    var k__ = k + '__'
+    object[k__] = this.initClonable_[k].call(this)
+  })
 }
 
 /**
@@ -161,24 +176,13 @@ eYo.Constructor.Dlgt.prototype.dispose = function (object) {
 }
 
 /**
- * Override the init method
- * @param {Object} ctor,  a subclass of eYo.Constructor.Dlgt
- */
-eYo.Constructor.overloadInit = (f) => {
-  var old = eYo.Constructor.Dlgt.prototype.init
-  eYo.Constructor.Dlgt.prototype.init = function () {
-    old.apply(this, arguments)
-    f.apply(this, arguments)
-  }
-}
-
-
-/**
  * Add a link property.
  * The receiver is not the owner.
  * @param {String} k name of the link to add
+ * @param {Object} model Object with `willChange` and `didChange` keys,
+ * f any.
  */
-eYo.Constructor.Dlgt.prototype.declareLink_ = function (k) {
+eYo.Constructor.Dlgt.prototype.declareLink_ = function (k, model) {
   this.link_.add(k)
   const proto = this.ctor_.prototype
   var k_ = k + '_'
@@ -191,10 +195,21 @@ eYo.Constructor.Dlgt.prototype.declareLink_ = function (k) {
         get () {
           return this[k__]
         },
-        set(after) {
+        set (after) {
           var before = this[k__]
           if (before !== after) {
-            this[k__] = after
+            var f = model && model.willChange
+            if (!f || (f = f(before, after))) {
+              var ff = this[k + 'WillChange']
+              ff && ff.call(this, before, after)
+              this[k__] = after
+              f && f(before, after)
+              f = model && model.didChange
+              f && f(before, after)
+              ff && ff.call(this, before, after)
+              ff = this[k + 'DidChange']
+              ff && ff.call(this, before, after)
+            }
           }
         },
       },
@@ -209,10 +224,16 @@ eYo.Constructor.Dlgt.prototype.declareLink_ = function (k) {
  * The initial value is `eYo.NA`.
  * @param {Array<String>} names names of the link to add
  */
-eYo.Constructor.Dlgt.prototype.declareLink = function (names) {
-  names.forEach(k => {
-    this.declareLink_(k)
-  })  
+eYo.Constructor.Dlgt.prototype.declareLink = function (model) {
+  if (model.forEach) {
+    model.forEach(k => {
+      this.declareLink_(k)
+    })
+  } else {
+    Object.keys(model).forEach(k => {
+      this.declareLink_(k, model[k])
+    })
+  }
 }
 
 /**
@@ -247,24 +268,24 @@ eYo.Constructor.Dlgt.prototype.clearLink_ = function (object) {
  * @param {String} k name of the owned to add
  * @param {Object} data,  the object used to define the property: key `value` for the initial value, key `willChange` to be called when the property is about to change (signature (before, after) => function, truthy when the change should take place). The returned value is a function called after the change has been made in memory.
  */
-eYo.Constructor.Dlgt.prototype.declareOwned_ = function (k, data) {
+eYo.Constructor.Dlgt.prototype.declareOwned_ = function (k, model = {}) {
   this.owned_.add(k)
   const proto = this.ctor_.prototype
   var k_ = k + '_'
   var k__ = k + '__'
   Object.defineProperties(proto, {
-    [k__]: {value: data.value || eYo.NA, writable: true},
+    [k__]: {value: model.value || eYo.NA, writable: true},
     [k_]: {
-      get: data.get || function () {
+      get: model.get || function () {
         return this[k__]
       },
-      set: data.set
+      set: model.set
       ? function (after) {
         var before = this[k__]
         if(before !== after) {
-          var f = data.willChange
+          var f = model.willChange
           if (!f || (f = f(before, after))) {
-            data.set(after)
+            model.set.call(this, after)
             f && f(before, after)
           }
         }
@@ -272,18 +293,38 @@ eYo.Constructor.Dlgt.prototype.declareOwned_ = function (k, data) {
       : function (after) {
         var before = this[k__]
         if(before !== after) {
-          var f = data.willChange
+          var f = model.willChange
           if (!f || (f = f(before, after))) {
-            if (before && before.hasUI && before.deleteUI) {
+            var ff = this[k + 'WillChange']
+            ff && ff.call(this, before, after)
+            if (!!before && before.hasUI && before.deleteUI) {
               before.deleteUI()
             }
-            !!before && typeof before === "object" && (before.owner_ = null)
+            if (!!before && before.owner_) {
+              if (before.ownerKey_ && before.ownerKey_ !== k_) {
+                before.owner_[before.ownerKey_] = eYo.NA
+              } else {
+                before.owner_ = before.ownerKey_ = eYo.NA
+              }
+            }
             this[k__] = after
-            !!after && typeof after === "object" && (after.owner_ = this)
+            if (after) {
+              if (after.owner_) {
+                after.owner_[after.ownerKey_] = eYo.NA
+              }
+              after.ownerKey_ = k_
+              after.owner_ = this
+            } else if (typeof after === "object") {
+              after.ownerKey_ = k_
+              after.owner_ = this
+            }
             f && f(before, after)
-            f = data.didChange
+            f = model.didChange
             f && f(before, after)
-            if (after && this.hasUI && after.initUI) {
+            ff && ff.call(this, before, after)
+            ff = this[k + 'DidChange']
+            ff && ff.call(this, before, after)
+            if (!!after && this.hasUI && after.initUI) {
               after.initUI()
             }
           }
@@ -299,18 +340,24 @@ eYo.Constructor.Dlgt.prototype.declareOwned_ = function (k, data) {
  * @param {Object} many  key -> data map.
  */
 eYo.Constructor.Dlgt.prototype.declareOwned = function (many) {
-  Object.keys(many).forEach(k => {
-    this.declareOwned_(k, many[k])
-  })  
+  if (many.forEach) {
+    many.forEach(k => {
+      this.declareOwned_(k)
+    })
+  } else {
+    Object.keys(many).forEach(k => {
+      this.declareOwned_(k, many[k])
+    })  
+  }
 }
 
 /**
  * Add a 2 levels cached property to the receiver's constructor's prototype.
  * @param {String} key,  the key
- * @param {Object} data,  the data object, must have a `get` key and
+ * @param {Object} model,  the model object, must have a `get` key and
  * may have a `forget` key.
  */
-eYo.Constructor.Dlgt.prototype.declareCached_ = function (k, data) {
+eYo.Constructor.Dlgt.prototype.declareCached_ = function (k, model) {
   this.cached_.add(k)
   var proto = this.ctor_.prototype
   var k_ = k + '_'
@@ -320,7 +367,7 @@ eYo.Constructor.Dlgt.prototype.declareCached_ = function (k, data) {
     [k_]: {
       get () {
         var v = this[k__]
-        return v !== eYo.NA ? v : (this[k__] = data.get.call(this))
+        return v === eYo.NA ? (this[k__] = model.get.call(this)) : v
       },
       set () {
         throw 'Forbidden setter'
@@ -328,10 +375,10 @@ eYo.Constructor.Dlgt.prototype.declareCached_ = function (k, data) {
     }
   })
   this.forget_ || (this.forget_ = Object.create(null))
-  proto[k+'Uncache'] = this.forget_[k] = data.forget
+  proto[k+'Forget'] = this.forget_[k] = model.forget
   ? function () {
     this[k__] = eYo.NA
-    data.forget.call(this)
+    model.forget.call(this)
   } : function () {
     this[k__] = eYo.NA
   }
@@ -376,27 +423,84 @@ eYo.Constructor.Dlgt.prototype.addApp = function () {
  * Add a 3 levels clonable property to a prototype.
  * `foo` is a clonable object means that `foo.clone` is a clone of `foo`
  * and `foo.set(bar)` will set `foo` properties according to `bar`.
- * @param {Array<String>} many,  the K => V mapping to which we apply `declareClonable_(K, V)`.
+ * @param {Map<String, Function>} model,  the key => Function mapping.
  */
-eYo.Constructor.Dlgt.prototype.declareClonable = function (many) {
+eYo.Constructor.Dlgt.prototype.declareClonable = function (model) {
+  this.initClonable_ || (this.initClonable_ = Object.create(null))
   var proto = this.ctor_.prototype
-  many.forEach(k => {
+  Object.keys(model).forEach(k => {
     this.clonable_.add(k)
+    this.initClonable_[k] = model[k]
     var k_ = k + '_'
     var k__ = k + '__'
     Object.defineProperties(proto, {
-      [k__]: {value: eYo.NA, writable: true},
+      [k__]: {value: eYo.KeyHandler, writable: true},
       [k_]: {
         get() {
           return this[k__].clone
         },
         set (after) {
           var before = this[k__]
-          var f = () => {
-            this[k__].set(after)
+          if (!before) {
+            if (!after) {
+              return
+            }
+            var setter = () => {
+              this[k__] = after.clone
+            }
+            var f = model.willChange
+            if (!f || (f = f(before, after))) {
+              var ff = this[k + 'WillChange']
+              ff && ff.call(this, before, after)
+              this.wrapUpdate && this.wrapUpdate(setter) || setter()
+              if (after.owner_) {
+                after.owner_[after.ownerKey_] = eYo.NA
+              }
+              after.ownerKey_ = k_
+              after.owner_ = this
+              f && f(before, after)
+              f = model.didChange
+              f && f(before, after)
+              ff && ff.call(this, before, after)
+              ff = this[k + 'DidChange']
+              ff && ff.call(this, before, after)
+              if (!!after && this.hasUI && after.initUI) {
+                after.initUI()
+              }
+            }
+          } else if (before.equals(after)) {
+            return
           }
-          if (!before.equals(after)) {
-            this.wrapUpdate && this.wrapUpdate(f) || f()
+          var f = model.willChange
+          if (!f || (f = f(before, after))) {
+            var ff = this[k + 'WillChange']
+            ff && ff.call(this, before, after)
+            if (!after && before.hasUI && before.deleteUI) {
+              before.deleteUI()
+            }
+            if (!after) {
+              before.owner_ = before.ownerKey_ = eYo.NA
+            }
+            var setter = () => {
+              this[k__].set(after)
+            }
+            if (!!after && !!after.ownerKey_) {
+              after.owner_[after.ownerKey_] = eYo.NA
+            }
+            this.wrapUpdate && this.wrapUpdate(setter) || setter()
+            if (typeof after === "object") {
+              after.ownerKey_ = k_
+              after.owner_ = this
+            }
+            f && f(before, after)
+            f = model.didChange
+            f && f(before, after)
+            ff && ff.call(this, before, after)
+            ff = this[k + 'DidChange']
+            ff && ff.call(this, before, after)
+            if (!!after && this.hasUI && after.initUI) {
+              after.initUI()
+            }
           }
         },
       },
@@ -410,11 +514,12 @@ eYo.Constructor.Dlgt.prototype.declareClonable = function (many) {
  * @param {Array<string>} names,  a list of names
  */
 eYo.Constructor.Dlgt.prototype.disposeOwned_ = function (object) {
-  this.forEachOwned(k__ => {
-    var k__ = name + '__'
+  this.forEachOwned(k => {
+    var k_ = k + '_'
+    var k__ = k + '__'
     var x = object[k__]
     if (x) {
-      object[k__] = null
+      object[k_] = eYo.NA
       x.dispose()
     }
   })
@@ -426,11 +531,11 @@ eYo.Constructor.Dlgt.prototype.disposeOwned_ = function (object) {
  * @param {Array<string>} names,  a list of names
  */
 eYo.Constructor.Dlgt.prototype.disposeClonable_ = function (object) {
-  this.forEachClonable(k__ => {
-    var k__ = name + '__'
+  this.forEachClonable(k => {
+    var k__ = k + '__'
     var x = object[k__]
     if (x) {
-      object[k__] = null
+      object[k__] = eYo.NA
       x.dispose()
     }
   })

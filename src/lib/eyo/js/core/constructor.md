@@ -1,5 +1,6 @@
-# Edython's property management
+# Edython's constructor and property management
 
-`eYo.Property` is an helper to manage owned properties whereas `eYo.Link` is an helper to manage link properties.
+The `eYo.Constructor` provides us with a convenient method to create constructors. It takes care of links, owned properties, cached properties, clonable owned properties.
 
-Owned properties come in 2 different flavours, whether the target has a user interface or not.
+Each constructor created like that also
+contains a delegate (an instance of `eYo.Constructor.Dlgt`) which helps in managing those properties.
