@@ -12,11 +12,11 @@
  */
 'use strict'
 
-goog.provide('eYo.Application')
-
 goog.require('eYo.Do')
 goog.require('eYo.Decorate')
-goog.require('eYo.Property')
+goog.require('eYo.Constructor')
+
+goog.provide('eYo.Application')
 
 goog.forwardDeclare('eYo.Css')
 

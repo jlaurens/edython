@@ -257,7 +257,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/core/do.js" \
 --js "src/lib/eyo/Include/errcode.js" \
 --js "src/lib/eyo/js/core/ui.js" \
---js "src/lib/eyo/js/core/link.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/list.js" \
 --js "src/lib/eyo/js/ui/motion.js" \
 --js "src/lib/eyo/msg/js/base.js" \
@@ -273,6 +272,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/application.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/brick_dragger.js" \
 --js "src/lib/eyo/js/core/const.js" \
+--js "src/lib/eyo/js/core/constructor.js" \
 --js "src/lib/eyo/js/ui/css.js" \
 --js "src/lib/eyo/js/parser/grammar.js" \
 --js "src/lib/eyo/js/core/geometry.js" \

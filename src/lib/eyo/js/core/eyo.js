@@ -102,3 +102,9 @@ Object.defineProperties(eYo, {
   })
 })()
 
+/**
+ * Function to throw. Trick to throw in an expression.
+ */
+eYo.throw = (what) => {
+  throw what
+}

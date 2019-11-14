@@ -12,7 +12,7 @@
 'use strict'
 
 goog.require('eYo.Decorate')
-goog.require('eYo.Property')
+goog.require('eYo.Constructor')
 
 goog.provide('eYo.Owned')
 goog.provide('eYo.Owned.UI')
