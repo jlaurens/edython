@@ -13,12 +13,12 @@
 
 goog.require('eYo.Decorate')
 
-goog.require('eYo.Const')
-
-goog.require('eYo.Slot')
-goog.require('eYo.Do')
-goog.require('eYo.Brick')
 goog.provide('eYo.Consolidator')
+goog.provide('eYo.Consolidator.List')
+
+goog.forwardDeclare('eYo.Brick')
+goog.forwardDeclare('eYo.Do')
+goog.forwardDeclare('eYo.Slot')
 
 console.error('Manage rentrant_ more carefully')
 
@@ -100,7 +100,6 @@ eYo.Consolidator.makeSubclass = function (key, model, C10r, owner) {
   }
 }
 
-goog.provide('eYo.Consolidator.List')
 /**
  * List consolidator.
  * Remove empty place holders, add separators,

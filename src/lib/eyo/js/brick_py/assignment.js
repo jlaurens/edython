@@ -13,15 +13,15 @@
 
 goog.require('eYo')
 
-goog.require('eYo.Msg')
-
-goog.require('eYo.Brick.Primary')
-goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Stmt')
-goog.require('goog.dom');
-goog.provide('eYo.Brick.Assignment')
 
 goog.provide('eYo.Brick.Stmt.assignment_stmt')
+goog.provide('eYo.Brick.Assignment')
+
+goog.forwardDeclare('eYo.Msg')
+goog.forwardDeclare('eYo.Brick.Primary')
+goog.forwardDeclare('eYo.Brick.List')
+goog.forwardDeclare('goog.dom')
 
 /**
  * Class for a Delegate, assignment_stmt.
@@ -564,8 +564,6 @@ eYo.Brick.List.makeSubclass('augassigned_list', function () {
     list: D
   }
 })
-
-goog.provide('eYo.Brick.AugAssign')
 
 // /**
 //  * Populate the context menu for the given brick.

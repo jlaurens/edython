@@ -13,12 +13,15 @@
 
 goog.require('eYo.Events')
 goog.require('eYo.Events.Abstract')
+
 goog.require('eYo.Data')
+
 goog.provide('eYo.Events.BrickMove')
 goog.provide('eYo.Events.BrickDelete')
-
 goog.provide('eYo.Events.BrickBase')
 goog.provide('eYo.Events.BrickCreate')
+goog.provide('eYo.Events.BrickChange')
+
 
 goog.forwardDeclare('goog.array')
 goog.forwardDeclare('goog.dom')
@@ -377,8 +380,6 @@ eYo.Events.BrickMove.prototype.run = function(forward) {
     }
   }
 }
-
-goog.provide('eYo.Events.BrickChange')
 
 /**
  * set the value of the property,

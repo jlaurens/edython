@@ -29,6 +29,7 @@ goog.require('eYo.MenuRenderer')
 goog.require('goog.ui.Menu')
 
 goog.require('goog.dom')
+
 goog.provide('eYo.Menu')
 
 // TODO(robbyw): Reverse constructor argument order for consistency.

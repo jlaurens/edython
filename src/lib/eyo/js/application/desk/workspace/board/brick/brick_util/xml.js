@@ -37,21 +37,10 @@ goog.require('eYo.Brick')
 goog.require('Blockly.Xml')
 
 goog.require('goog.dom');
-goog.require('eYo.Brick.Functions');
 
-// Next are used to let the compiler know that we need them
-goog.require('eYo.Brick.Stdtypes');
-goog.require('eYo.Brick.Random');
-goog.require('eYo.Brick.Math');
-goog.require('eYo.Brick.CMath');
-goog.require('eYo.Brick.Turtle');
 goog.provide('eYo.Xml')
-goog.require('eYo.Brick.Decimal');
-goog.require('eYo.Brick.Fractions');
-goog.require('eYo.Brick.Statistics');
-goog.require('eYo.Brick.Range')
 
-eYo.Xml = {
+eYo.Xml = Object.create({
   URN: 'urn:edython:',
   XMLNS: 'urn:edython:0.2',
   PYTHON: 'python',
@@ -87,7 +76,32 @@ eYo.Xml = {
   WORKSPACE: 'board', // tag name
   CONTENT: 'content', // tag name
   EDYTHON: 'edython', // tag name
-}
+})
+
+goog.provide('eYo.Xml.Text')
+goog.provide('eYo.Xml.Assignment')
+goog.provide('eYo.Xml.Starred')
+goog.provide('eYo.Xml.Literal')
+goog.provide('eYo.Xml.Comparison')
+goog.provide('eYo.Xml.Data')
+goog.provide('eYo.Xml.Primary')
+goog.provide('eYo.Xml.Recover')
+goog.provide('eYo.Xml.Group')
+goog.provide('eYo.Xml.Compatibility')
+goog.provide('eYo.Xml.Call')
+
+// Next are used to let the compiler know that we need them
+goog.forwardDeclare('eYo.Brick.Functions');
+goog.forwardDeclare('eYo.Brick.Stdtypes');
+goog.forwardDeclare('eYo.Brick.Random');
+goog.forwardDeclare('eYo.Brick.Math');
+goog.forwardDeclare('eYo.Brick.CMath');
+goog.forwardDeclare('eYo.Brick.Turtle');
+goog.forwardDeclare('eYo.Brick.Decimal');
+goog.forwardDeclare('eYo.Brick.Fractions');
+goog.forwardDeclare('eYo.Brick.Statistics');
+goog.forwardDeclare('eYo.Brick.Range')
+goog.forwardDeclare('eYo.Brick.Expr')
 
 /**
  * Converts a DOM structure into plain text.
@@ -389,7 +403,7 @@ eYo.Xml.brickToDom = (() => {
 
 goog.exportSymbol('eYo.Xml.brickToDom', eYo.Xml.brickToDom)
 
-goog.require('eYo.Brick.Expr')
+goog.require('eYo.Brick.Group')
 
 /**
  * The xml tag name of this brick, as it should appear in the saved data.
@@ -401,9 +415,9 @@ eYo.Brick.prototype.xmlAttr = function () {
   return attr || (this.type && this.type.substring(4)) || eYo.Key.PLACEHOLDER
 }
 
-goog.require('eYo.Brick.Group')
-
 goog.require('eYo.Brick.List')
+
+goog.require('eYo.Brick.Literal')
 
 /**
  * The xml tag name of this brick, as it should appear in the saved data.
@@ -417,7 +431,7 @@ eYo.Brick.List.prototype.xmlAttr = function () {
     : eYo.Brick.List.superClass_.xmlAttr.call(this)
 }
 
-goog.provide('eYo.Xml.Text')
+goog.require('eYo.Brick.Primary')
 
 /**
  * Convert the brick's value to a text dom element.
@@ -447,9 +461,9 @@ eYo.Xml.Text.fromDom = function (brick, element) {
   )
 }
 
-goog.require('eYo.Brick.Literal')
+goog.require('eYo.Brick.Assignment')
 
-goog.provide('eYo.Xml.Literal')
+goog.require('eYo.Brick.Starred')
 /**
  * Try to create a Literal brick from the given element.
  * @param {!Element} element dom element to be completed.
@@ -501,7 +515,7 @@ eYo.Xml.Literal.domToComplete = (() => {
   }
 }) ()
 
-goog.provide('eYo.Xml.Data')
+goog.require('eYo.Brick.Operator')
 
 /**
  * Save the brick's data.
@@ -685,7 +699,7 @@ eYo.Xml.stringToBrick = function (string, owner) {
   return brick
 }
 
-goog.provide('eYo.Xml.Recover')
+goog.require('eYo.Brick.Group')
 
 /**
  * Recover nodes from a possibly corrupted xml data.
@@ -1100,8 +1114,6 @@ eYo.Xml.fromDom = function (brick, element) {
   })
 }
 
-goog.require('eYo.Brick.Primary')
-
 /**
  * The xml tag name of this brick, as it should appear in the saved data.
  * For edython.
@@ -1159,8 +1171,6 @@ eYo.Brick.Expr.primary.prototype.xmlAttr = function () {
   return '…'
 }
 
-goog.require('eYo.Brick.Assignment')
-
 /**
  * The xml `eyo` attribute of this brick, as it should appear in the saved data.
  * For edython.
@@ -1172,8 +1182,6 @@ eYo.Brick.Stmt.assignment_stmt.prototype.xmlAttr = function () {
     ? 'x'
     : '='
 }
-
-goog.provide('eYo.Xml.Assignment')
 
 /**
  * Try to create a primary brick from the given element.
@@ -1199,12 +1207,6 @@ eYo.Xml.Assignment.domToComplete = function (element, owner) {
     }
   }
 }
-
-goog.provide('eYo.Xml.Starred')
-goog.require('eYo.Brick.Starred')
-
-goog.provide('eYo.Xml.Comparison')
-goog.require('eYo.Brick.Operator')
 
 /**
  * Try to create a comparison brick from the given element.
@@ -1254,8 +1256,6 @@ eYo.Xml.Starred.domToComplete = function (element, owner) {
   return b3k
 }
 
-goog.provide('eYo.Xml.Primary')
-
 /**
  * Try to create a primary brick from the given element.
  * @param {!Element} element dom element to be completed.
@@ -1282,9 +1282,6 @@ eYo.Xml.Primary.domToComplete = function (element, owner) {
   }
 }
 
-goog.require('eYo.Brick.Group')
-goog.provide('eYo.Xml.Group')
-
 // /**
 //  * Reads the given element into a brick.
 //  * @param {!Element} element dom element to be read.
@@ -1299,8 +1296,6 @@ goog.provide('eYo.Xml.Group')
 //     return eYo.Brick.newReady(owner, type, id)
 //   }
 // }
-
-goog.provide('eYo.Xml.Compatibility')
 
 /**
  * .
@@ -1333,8 +1328,6 @@ eYo.Xml.Compatibility.domToComplete = function (element, owner) {
     }
   }
 }
-
-goog.provide('eYo.Xml.Call')
 
 /**
  * Reads the given element into a brick.

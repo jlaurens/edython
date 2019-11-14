@@ -11,15 +11,18 @@
  */
 'use strict'
 
-goog.require('eYo.Brick.Expr')
-goog.require('eYo.XRE')
-
-goog.require('eYo.Msg')
 
 goog.require('eYo.Brick.Expr')
-goog.require('goog.dom');
+
 goog.provide('eYo.Brick.Expr.numberliteral')
 goog.provide('eYo.Brick.Literal')
+goog.provide('eYo.Brick.Expr.longliteral')
+goog.provide('eYo.Brick.Expr.shortliteral')
+
+goog.forwardDeclare('eYo.XRE')
+goog.forwardDeclare('eYo.Msg')
+
+goog.forwardDeclare('goog.dom')
 
 /**
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
@@ -121,8 +124,6 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
 eYo.Brick.Expr.numberliteral.prototype.getBaseType = function () {
   return this.type_p
 }
-
-goog.provide('eYo.Brick.Expr.shortliteral')
 
 /**
  * Class for a Delegate, string litteral.
@@ -390,8 +391,6 @@ eYo.Brick.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mgr)
   eYo.Brick.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
-
-goog.provide('eYo.Brick.Expr.longliteral')
 
 /**
  * Class for a Delegate, longliteral (expression).
