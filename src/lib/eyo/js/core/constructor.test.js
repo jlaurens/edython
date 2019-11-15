@@ -59,7 +59,7 @@ describe ('Constructor', function () {
         key: 'A',
         owner: NS,
         super: null,
-        f () {
+        init () {
           flag += 1
         }
       })
@@ -74,7 +74,7 @@ describe ('Constructor', function () {
         key: 'A',
         owner: NS,
         super: null,
-        f () {
+        init () {
           flag_A += 1
         },
         props: {
@@ -88,7 +88,7 @@ describe ('Constructor', function () {
         key: 'AB',
         owner: NS.A,
         super: NS.A,
-        f () {
+        init () {
           flag_AB += 1
         },
         props: {
@@ -110,7 +110,7 @@ describe ('Constructor', function () {
         key: 'A',
         owner: NS,
         super: null,
-        f () {
+        init () {
           flag_A += 1
         },
         props: {
@@ -122,7 +122,7 @@ describe ('Constructor', function () {
         key: 'B',
         owner: NS,
         super: null,
-        f () {
+        init () {
           flag_B += 1
         },
         props: {
@@ -134,7 +134,7 @@ describe ('Constructor', function () {
         key: 'AA',
         owner: NS.A,
         super: NS.A,
-        f () {
+        init () {
           flag_AA += 1
         },
         props: {
@@ -146,7 +146,7 @@ describe ('Constructor', function () {
         key: 'AB',
         owner: NS.A,
         super: NS.A,
-        f () {
+        init () {
           flag_AB += 1
         },
         props: {
@@ -158,7 +158,7 @@ describe ('Constructor', function () {
         key: 'BA',
         owner: NS.B,
         super: NS.B,
-        f () {
+        init () {
           flag_BA += 1
         },
         props: {
@@ -170,7 +170,7 @@ describe ('Constructor', function () {
         key: 'BB',
         owner: NS.B,
         super: NS.B,
-        f () {
+        init () {
           flag_BB += 1
         },
         props: {
@@ -200,7 +200,7 @@ describe ('Constructor', function () {
         key: 'A',
         owner: NS,
         super: null,
-        f () {
+        init () {
           flag_A += 1
         }
       })
@@ -208,7 +208,7 @@ describe ('Constructor', function () {
       eYo.Constructor.make({
         key: 'B',
         owner: NS.A,
-        f () {
+        init () {
           flag_B += 1
         },
         props: {
@@ -223,7 +223,7 @@ describe ('Constructor', function () {
       eYo.Constructor.make({
         key: 'B',
         super: NS.A,
-        f () {
+        init () {
           flag_B += 1
         },
         props: {
@@ -243,14 +243,14 @@ describe ('Constructor', function () {
       key: 'A',
       owner: NS,
       super: null,
-      f () {
+      init () {
         flag_A += 1
       }
     })
     eYo.Constructor.make({
       key: 'AB',
       owner: NS.A,
-      f () {
+      init () {
         flag_AB += 1
       }
     })
@@ -258,8 +258,8 @@ describe ('Constructor', function () {
     chai.assert(!NS.A.eyo.super)
     var ab = new NS.A.AB()
   })
-describe ('Link', function () {
-    it ("declare 'foo' and 'bar' then clear", function () {
+  describe ('Link', function () {
+    it ("Link: declare 'foo' and 'bar' then clear", function () {
       eYo.Constructor.make({
         key: 'A',
         owner: NS,
@@ -282,9 +282,45 @@ describe ('Link', function () {
       const a = new NS.A()
       NS.test_link(a, 'foo', 'bar')
     })
+    it ('Link: hooks', function () {
+      var flag = 0
+      var foo_before = 421
+      var foo_after = 123
+      var test = function (before, after) {
+        chai.assert(this === a)
+        chai.assert(before === foo_before)
+        chai.assert(after === foo_after)
+      }
+      eYo.Constructor.make({
+        key: 'A',
+        owner: NS,
+        super: null,
+        init (value) {
+          this.foo__ = value
+        },
+        props: {
+          link: {
+            foo: {
+              willChange (before, after) {
+                test.call(this, before, after)
+                return () => {
+                  flag = 421
+                }
+              },
+              didChange: test
+            }
+          },
+        },
+      })
+      NS.A.prototype.fooWillChange = NS.A.prototype.fooDidChange = test
+      var a = new NS.A(foo_before)
+      chai.assert(a.foo === foo_before)
+      a.foo_ = foo_after
+      chai.assert(flag === 421)
+    })
   })
   describe('Cached property', function () {
-    it ('Basic', function () {
+    it ('Cached: Basic', function () {
       var flag = 0
       eYo.Constructor.make({
         key: 'A',
@@ -293,7 +329,7 @@ describe ('Link', function () {
         props: {
           cached: {
             foo: {
-              get () {
+              init () {
                 return flag
               }
             }
@@ -309,7 +345,30 @@ describe ('Link', function () {
       a1.fooForget()
       chai.assert(a1.foo === 1)
     })
-    it ('Two objects', function () {
+    it ('Cached: Shortcut', function () {
+      var flag = 0
+      eYo.Constructor.make({
+        key: 'A',
+        owner: NS,
+        super: null,
+        props: {
+          cached: {
+            foo () {
+              return flag
+            }
+          },
+        },
+      })
+      var a1 = new NS.A()
+      var a2 = new NS.A()
+      chai.assert(a1.foo === 0)
+      flag = 1
+      chai.assert(a1.foo === 0)
+      chai.assert(a2.foo === 1)
+      a1.fooForget()
+      chai.assert(a1.foo === 1)
+    })
+    it ('Cached: Two objects', function () {
       var flag_A1 = 0
       var flag_A2 = 1
       var flag_B1 = 2
@@ -321,12 +380,12 @@ describe ('Link', function () {
         props: {
           cached: {
             foo1: {
-              get () {
+              init () {
                 return flag_A1
               }
             },
             foo2: {
-              get () {
+              init () {
                 return flag_A2
               }
             }
@@ -340,12 +399,12 @@ describe ('Link', function () {
         props: {
           cached: {
             foo1: {
-              get () {
+              init () {
                 return flag_B1
               }
             },
             foo2: {
-              get () {
+              init () {
                 return flag_B2
               }
             }
@@ -378,7 +437,7 @@ describe ('Link', function () {
       b.foo2Forget()
       test(10, 11, 12, 13)
     })
-    it ('Inherit', function () {
+    it ('Cached: Inherit cached', function () {
       var flag_1 = 0
       var flag_2 = 1
       eYo.Constructor.make({
@@ -388,7 +447,7 @@ describe ('Link', function () {
         props: {
           cached: {
             foo1: {
-              get () {
+              init () {
                 return flag_1
               }
             }
@@ -401,7 +460,7 @@ describe ('Link', function () {
         props: {
           cached: {
             foo2: {
-              get () {
+              init () {
                 return flag_2
               }
             }
@@ -423,9 +482,114 @@ describe ('Link', function () {
       ab.foo2Forget()
       test(10, 11)
     })
+    it ('Cached: forget', function () {
+      var flag = 123
+      eYo.Constructor.make({
+        key: 'A',
+        owner: NS,
+        super: null,
+        props: {
+          cached: {
+            foo: {
+              init () {
+                return flag
+              },
+              forget (forgetter) {
+                flag += 100
+                forgetter()
+              }
+            }
+          },
+        },
+      })
+      var a = new NS.A()
+      chai.assert(a.foo === 123)
+      flag = 421
+      a.fooForget()
+      chai.assert(a.foo === 521)
+    })
+    it ('Cached: updater basic', function () {
+      var flag = 421
+      eYo.Constructor.make({
+        key: 'A',
+        owner: NS,
+        super: null,
+        props: {
+          cached: {
+            foo: {
+              init () {
+                return flag
+              }
+            }
+          },
+        },
+      })
+      var a = new NS.A()
+      chai.assert(a.foo === 421)
+      flag = 521
+      a.fooUpdate()
+      chai.assert(a.foo__ === 521)
+    })
+    it ('Cached: updater no override', function () {
+      var flag = 421
+      eYo.Constructor.make({
+        key: 'A',
+        owner: NS,
+        super: null,
+        props: {
+          cached: {
+            foo: {
+              init () {
+                return flag
+              },
+              update (before, after, updater) {
+                flag = 0
+                if (before === 421) {
+                  flag += 1
+                }
+                if (after === 123) {
+                  flag += 10
+                }
+                updater()
+              }
+            }
+          },
+        },
+      })
+      var a = new NS.A()
+      chai.assert(a.foo === 421)
+      flag = 123
+      a.fooUpdate()
+      chai.assert(flag === 11)
+      chai.assert(a.foo === 11)
+    })
+    it ('Cached: updater with override', function () {
+      var flag = 421
+      eYo.Constructor.make({
+        key: 'A',
+        owner: NS,
+        super: null,
+        props: {
+          cached: {
+            foo: {
+              init () {
+                return flag
+              },
+              update (before, after, updater) {
+                updater(flag+100)
+              }
+            }
+          },
+        },
+      })
+      var a = new NS.A()
+      chai.assert(a.foo === 421)
+      a.fooUpdate()
+      chai.assert(a.foo === 521)
+    })
   })
   describe('Owned', function () {
-    it ('Basic', function () {
+    it ('Owned: Basic', function () {
       eYo.Constructor.make({
         key: 'A',
         owner: NS,
@@ -458,7 +622,7 @@ describe ('Link', function () {
       chai.assert(b.ownerKey_ === eYo.NA)
       chai.assert(b.disposed_)
     })
-    it ('Two instances', function () {
+    it ('Owned: Two instances', function () {
       eYo.Constructor.make({
         key: 'A',
         owner: NS,
@@ -502,7 +666,7 @@ describe ('Link', function () {
       test1(a2, b2)
       test1(a1, b1)
     })
-    it ('Two keys', function () {
+    it ('Owned: Two keys', function () {
       eYo.Constructor.make({
         key: 'A',
         owner: NS,
@@ -550,7 +714,7 @@ describe ('Link', function () {
       a.foo1_ = eYo.NA
       test(eYo.NA, eYo.NA, b1, b2)
     })
-    it ('Inherit', function () {
+    it ('Owned: Inherit', function () {
       eYo.Constructor.make({
         key: 'A',
         owner: NS,
@@ -617,9 +781,48 @@ describe ('Link', function () {
       ab.foo_ = foo
       test(eYo.NA, foo, eYo.NA, bar)
     })
+    it ('Owned: hooks', function () {
+      var flag = 0
+      var B = function (value) {
+        this.value_ = value
+      }
+      var foo_before = new B(421)
+      var foo_after = new B(123)
+      var test = function (before, after) {
+        chai.assert(this === a)
+        chai.assert(before === foo_before)
+        chai.assert(after === foo_after)
+      }
+      eYo.Constructor.make({
+        key: 'A',
+        owner: NS,
+        super: null,
+        init (value) {
+          this.foo__ = value
+        },
+        props: {
+          owned: {
+            foo: {
+              willChange (before, after) {
+                test.call(this, before, after)
+                return () => {
+                  flag = 421
+                }
+              },
+              didChange: test
+            }
+          },
+        },
+      })
+      NS.A.prototype.fooWillChange = NS.A.prototype.fooDidChange = test
+      var a = new NS.A(foo_before)
+      chai.assert(a.foo === foo_before)
+      a.foo_ = foo_after
+      chai.assert(flag === 421)
+    })
   })
   describe ('Clonable', function () {
-    it ('Basic', function () {
+    it ('Clonable: Basic', function () {
       var B = function (value) {
         this.value_ = value
       }
@@ -663,7 +866,6 @@ describe ('Link', function () {
       chai.assert(a.foo.value_ === 123)
       b = a.foo__
       a.dispose()
-      console.warn(a)
       chai.assert(a.foo__ === eYo.NA)
       chai.expect(() => {
         a.foo_ === eYo.NA
@@ -672,6 +874,131 @@ describe ('Link', function () {
         a.foo === eYo.NA
       }).to.throw()
       chai.assert(b.disposed_)
+    })
+    it ('Clonable: hooks', function () {
+      var flag = 0
+      var B = function (owner, value) {
+        this.value_ = value
+      }
+      B.prototype.dispose = function () {
+        this.disposed_ = true
+      }
+      B.prototype.set = function (other) {
+        this.value_ = other.value_
+      }
+      B.prototype.equals = function (other) {
+        return this.value_ === other.value_
+      }
+      Object.defineProperty(B.prototype, 'clone', {
+        get () {
+          return new B(this.value_)
+        }
+      })
+      var foo_before = new B(421)
+      var foo_after = new B(123)
+      var test = function (before, after) {
+        chai.assert(this === a)
+        chai.assert(before === foo_before)
+        chai.assert(after === foo_after)
+      }
+      eYo.Constructor.make({
+        key: 'A',
+        owner: NS,
+        super: null,
+        props: {
+          clonable: {
+            foo: {
+              init () {
+                return foo_before
+              },
+              willChange (before, after) {
+                test.call(this, before, after)
+                return () => {
+                  flag = 421
+                }
+              },
+              didChange: test
+            }
+          },
+        },
+      })
+      NS.A.prototype.fooWillChange = NS.A.prototype.fooDidChange = test
+      var a = new NS.A(foo_before)
+      chai.assert(a.foo__ === foo_before)
+      chai.assert(a.foo.equals(foo_before))
+      a.foo_ = foo_after
+      chai.assert(a.foo__ === foo_before)
+      chai.assert(a.foo.equals(foo_after))
+    })
+  })
+  describe ('No collision', function () {
+    var params = (props) => {
+      return {
+        key: 'A',
+        owner: NS,
+        super: null,
+        props: props,
+      }
+    }
+    it ('No collision: link + cached', function () {
+      chai.expect(() => {
+        eYo.Constructor.make(params({
+          link: ['foo'],
+          cached: {
+            foo () {}
+          }
+        }))
+      }).to.throw()
+    })
+    it ('No collision: link + owned', function () {
+      chai.expect(() => {
+        eYo.Constructor.make(params({
+          link: ['foo'],
+          owned: ['foo'],
+        }))
+      }).to.throw()
+    })
+    it ('No collision: link + clonable', function () {
+      chai.expect(() => {
+        eYo.Constructor.make(params({
+          link: ['foo'],
+          clonable: {
+            foo () {}
+          },
+        }))
+      }).to.throw()
+    })
+    it ('No collision: cached + owned', function () {
+      chai.expect(() => {
+        eYo.Constructor.make(params({
+          cached: {
+            foo () {}
+          },
+          owned: ['foo'],
+        }))
+      }).to.throw()
+    })
+    it ('No collision: cached + clonable', function () {
+      chai.expect(() => {
+        eYo.Constructor.make(params({
+          cached: {
+            foo () {}
+          },
+          clonable: {
+            foo () {}
+          },
+        }))
+      }).to.throw()
+    })
+    it ('No collision: owned + clonable', function () {
+      chai.expect(() => {
+        eYo.Constructor.make(params({
+          owned: ['foo'],
+          clonable: {
+            foo () {}
+          },
+        }))
+      }).to.throw()
     })
   })
 })

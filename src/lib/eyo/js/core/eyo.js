@@ -103,8 +103,50 @@ Object.defineProperties(eYo, {
 })()
 
 /**
+ * Whether the argument is `eYo.NA`.
+ * @param {*} what
+ */
+eYo.isNA = (what) => {
+  return what === eYo.NA
+}
+
+/**
+ * Whether the argument is not `undefined`.
+ * @param {*} what
+ */
+eYo.isDef = (what) => {
+  return what !== undefined
+}
+
+/**
+ * Whether the argument is not `undefined`.
+ * @param {*} what
+ */
+eYo.isF = (what) => {
+  return typeof what === 'function' && !!what.call
+}
+
+/**
  * Function to throw. Trick to throw in an expression.
+ * @param {?String} what
  */
 eYo.throw = (what) => {
   throw what
+}
+
+/**
+ * Cover to raise when necessary.
+ * @param {Boolean} what
+ * @param {?String} reason
+ */
+eYo.assert = (what, reason) => {
+  goog.asserts.assert(what, reason)
+}
+
+/**
+ * Cover to raise when necessary.
+ * @param {Boolean} what
+ */
+eYo.parameterAssert = (what) => {
+  goog.asserts.assert(what, "Bad parameter")
 }
