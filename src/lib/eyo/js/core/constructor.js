@@ -21,31 +21,45 @@ goog.provide('eYo.Constructor')
  * Use a key->value design if you do not want that.
  * The `params` object has template: `{key: String, f: function, owner: Object, super: superClass}`
  * @param {!Object} model,  The dictionary of parameters.
+ * @return {Object} the created constructor.
  * 
  */
 eYo.Constructor.make = (model) => {
   model.owner || (model.owner = model.super) || eYo.throw('Missing `super` property.')
   var ctor
+  if (eYo.isF(model.init)) {
+    var endInit = model.init
+  } else if (model.init) {
+    var beginInit = model.init.begin
+    endInit = model.init.end
+  }
   if (model.super === null) {
     ctor = model.owner[model.key] = function () {
+      beginInit && beginInit.apply(this, arguments)
       ctor.eyo__.init(this)
-      eYo.isF(model.init) && model.init.apply(this, arguments)
+      endInit && endInit.apply(this, arguments)
     }
   } else {
     ctor = model.owner[model.key] = function () {
       ctor.superClass_.constructor.apply(this, arguments)
+      beginInit && beginInit.apply(this, arguments)
       ctor.eyo__.init(this)
-      eYo.isF(model.init) && model.init.apply(this, arguments)
+      endInit && endInit.apply(this, arguments)
     }
     eYo.Do.inherits(ctor, model.super || model.owner)
   }
   ctor.eyo__ = new eYo.Constructor.Dlgt(ctor, model)
   ctor.eyo__.makeDispose = (f) => {
     ctor.prototype.dispose = function () {
-      f && f.apply(this, arguments)
-      ctor.eyo__.dispose(this)
-      var super_ = ctor.superClass_
-      super_ && super_.dispose.apply(this, arguments)
+      try {
+        this.dispose = eYo.Do.nothing
+        f && f.apply(this, arguments)
+        ctor.eyo__.dispose(this)
+        var super_ = ctor.superClass_
+        !!super_ && !!super_.dispose && !!super_.dispose.apply(this, arguments)
+      } finally {
+        delete this.dispose
+      }
     }
   }
   ctor.eyo__.makeDispose()
@@ -57,14 +71,37 @@ eYo.Constructor.make = (model) => {
       throw 'Forbidden setter'
     }
   })
-  Object.defineProperty(ctor, 'eyo', {
-    get () {
-      return this.eyo__
+  Object.defineProperties(ctor, {
+    eyo: {
+      get () {
+        return this.eyo__
+      },
+      set () {
+        throw 'Forbidden setter'
+      }
     },
-    set () {
-      throw 'Forbidden setter'
+    eyo_: {
+      get () {
+        return this.eyo__
+      },
+      set () {
+        throw 'Forbidden setter'
+      }
+    },
+  })
+  ;['owned', 'clonable', 'link', 'cached'].forEach(k => {
+    var K = k[0].toUpperCase() + k.substring(1)
+    var name = 'forEach' + K
+    ctor.prototype[name] = function (f) {
+      ctor.eyo[name].call(ctor.eyo, f)
+    }
+    name = 'some' + K
+    ctor.prototype[name] = function (f) {
+      return ctor.eyo[name].call(ctor.eyo, (k) => {
+      })
     }
   })
+  return ctor
 }
 
 /**
@@ -91,6 +128,7 @@ eYo.Constructor.Dlgt = function (ctor, model) {
     props.owned && this.declareOwned(props.owned)
     props.cached && this.declareCached(props.cached)
     props.clonable && this.declareClonable(props.clonable)
+    props.computed && this.declareComputed(props.computed)
   }
 }
 
@@ -131,9 +169,14 @@ Object.defineProperties(eYo.Constructor.Dlgt.prototype, {
    * Owned enumerating loop.
    * @param {Function} helper,  signature (name) => {...}
    */
-  var name = 'forEach' + k[0].toUpperCase() + k.substring(1)
+  var K = k[0].toUpperCase() + k.substring(1)
+  var name = 'forEach' + K
   eYo.Constructor.Dlgt.prototype[name] = function (f) {
     this[k__] && this[k__].forEach(f)
+  }
+  name = 'some' + K
+  eYo.Constructor.Dlgt.prototype[name] = function (f) {
+    return this[k__] && this[k__].some(f)
   }
 })
 
@@ -376,33 +419,57 @@ eYo.Constructor.Dlgt.prototype.declareCached_ = function (k, model) {
     [k__]: {value: eYo.NA, writable: true},
     [k_]: {
       get () {
-        var v = this[k__]
-        return v === eYo.NA ? (this[k__] = init.call(this)) : v
+        var before = this[k__]
+        if (eYo.isDef(before)) {
+          return before
+        }
+        var after = init.call(this)
+        return (this[k_] = after)
       },
-      set () {
-        throw 'Forbidden setter'
+      set (after) {
+        var before = this[k__]
+        if (before !== after) {
+          var f = model && model.willChange
+          if (!f || (f = f.call(this, before, after))) {
+            var ff = this[k + 'WillChange']
+            ff && ff.call(this, before, after)
+            this[k__] = after
+            f && f.call(this, before, after)
+            f = model && model.didChange
+            f && f.call(this, before, after)
+            ff && ff.call(this, before, after)
+            ff = this[k + 'DidChange']
+            ff && ff.call(this, before, after)
+          }
+        }
       }
     }
   })
   this.forget_ || (this.forget_ = Object.create(null))
   proto[k+'Forget'] = this.forget_[k] = model.forget
   ? function () {
-    model.forget.call(this, (after) => {
-      this[k__] = eYo.isDef(after) ? after : init.call(this)
+    model.forget.call(this, () => {
+      this[k_] = eYo.NA
     })
   } : function () {
-    this[k__] = eYo.NA
+    this[k_] = eYo.NA
   }
   this.update_ || (this.update_ = Object.create(null))
   proto[k+'Update'] = this.update_[k] = model.update
-  ? function () {
+  ? function (after) {
     var before = this[k__]
-    var after = init.call(this)
-    model.update.call(this, before, after, (after) => {
-      this[k__] = eYo.isDef(after) ? after : init.call(this)
-    })
-  } : function () {
-    this[k__] = init.call(this)
+    eYo.isDef(after) || (after = init.call(this))
+    if (before !== after) {
+      model.update.call(this, before, after, (x) => {
+        this[k_] = eYo.isDef(x)? x : after
+      })
+    }
+  } : function (after) {
+    var before = this[k__]
+    eYo.isDef(after) || (after = init.call(this))
+    if (before !== after) {
+      this[k_] = after
+    }
   }
 }
 
@@ -426,18 +493,35 @@ eYo.Constructor.Dlgt.prototype.forgetCached_ = function () {
 }
 
 /**
- * Add the cached `app` property to the given prototype.
- * @param {Object} proto
+ * Add computed properties to a prototype.
+ * @param {Map<String, Function>} models,  the key => Function mapping.
  */
-eYo.Constructor.Dlgt.prototype.addApp = function () {
-  this.declareCached_('app', {
+eYo.Constructor.Dlgt.prototype.declareComputed = function (models) {
+  var proto = this.ctor_.prototype
+  var params = {
     get () {
-      return this.owner__.app
+      throw 'Forbidden getter'
     },
-    forget () {
-      var f = this.ui_driverForget
-      f && f.call(this)
+    set (after) {
+      throw 'Forbidden setter'
     }
+  }
+  Object.keys(models).forEach(k => {
+    eYo.parameterAssert(!this.props_.has(k))
+    var k_ = k + '_'
+    var k__ = k + '__'
+    Object.defineProperties(proto, {
+      [k]: {
+        get () {
+          return models[k].call(this)
+        },
+        set (after) {
+          throw 'Forbidden setter'
+        }
+      },
+      [k_]: params,
+      [k__]: params,
+    })
   })
 }
 
@@ -567,3 +651,23 @@ eYo.Constructor.Dlgt.prototype.disposeClonable_ = function (object) {
     }
   })
 }
+
+/**
+ * Add the cached `app` property to the given prototype.
+ * @param {Object} proto
+ */
+eYo.Constructor.Dlgt.prototype.addApp = function () {
+  this.declareCached_('app', {
+    get () {
+      return this.owner__.app
+    },
+    forget () {
+      this.forEachOwned(k => {
+        var x = this[k]
+        x && x.appForget && x.appForget()
+      })
+      this.ui_driverForget && this.ui_driverForget()
+    }
+  })
+}
+

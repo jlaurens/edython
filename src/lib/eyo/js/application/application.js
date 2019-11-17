@@ -22,80 +22,67 @@ goog.forwardDeclare('eYo.Css')
 
 goog.forwardDeclare('eYo.Focus')
 goog.forwardDeclare('eYo.Motion')
+goog.forwardDeclare('eYo.Desk')
+goog.forwardDeclare('eYo.Driver')
+goog.forwardDeclare('eYo.Audio')
 
 /**
  * Main application object.
  * @param {!Object} options
- */
-eYo.Application = function (options) {
-  this.disposeUI = eYo.Do.nothing
-  /**
-   * The options.
-   * @type {eYo.Options}
-   * @private
-   */
-  this.options_ = options = new eYo.Options(options || {})
-  /**
-   * The current motion in progress, if any.
-   * @type {?eYo.Motion}
-   * @private
-   */
-  this.motion_ = new eYo.Motion(this)
-  /**
-   * Desk.
-   * @type {?eYo.Desk}
-   * @private
-   */
-  this.desk_ = new eYo.Desk(this)
-}
-
-/**
- * UI driver
- * @type {eYo.Driver}
+ * @constructor
  * @readonly
+ * The current options.
+ * @property {eYo.Options} options
+ * @readonly
+ * The current motion in progress, if any.
+ * @property {?eYo.Motion} motion
+ * @readonly
+ * The desk, if any.
+ * @property {eYo.Desk} desk
+ * @readonly
+ * The ui drivers manager.
+ * @property {eYo.Driver.Mgr} ui_driver_mgr
  */
-eYo.Property.addMany(
-  eYo.Application.prototype,
-  {
-    /**
-     * Driver
-     * @type {eYo.Driver}
-     * @readonly
-     */
-    ui_driver_mgr: {
-      willChange(before, after) {
-        if (before) {
-          this.disposeUI()
-        }
-        return function (before, after) {
-          this.initUI()
-        }
-      }
+eYo.Constructor.make({
+  key: 'Application',
+  owner: eYo,
+  super: null,
+  init : {
+    begin () {
+      this.disposeUI = eYo.Do.nothing
     },
-    /**
-     * Desk
-     * @type {eYo.Desk}
-     * @readonly
-     */
-    desk: {},
-    /**
-     * Motion
-     * @type {eYo.Motion}
-     * @readonly
-     */
-    motion: {},
-    /**
-     * Audio
-     * @readonly
-     */
-    audio: {},
-    /**
-     * Clipboard
-     * @readonly
-     */
-    clipboard: {},
-  }
-)
+    end (options) {
+      this.options_ = new eYo.Options(options || {})
+    }
+  },
+  props: {
+    owned: {
+      motion: {
+        init () {
+          return new eYo.Motion(this)
+        }
+      },
+      desk: {
+        init () {
+          return new eYo.Desk(this)
+        }
+      },
+      options: {},
+      audio: {},
+      clipboard: {},
+      ui_driver_mgr: {
+        willChange(before, after) {
+          if (before) {
+            this.disposeUI()
+          }
+          return function (before, after) {
+            this.initUI()
+          }
+        }
+      },
+    },
+  },
+})
 
 Object.defineProperties(eYo.Application.prototype, {
   /**
@@ -134,7 +121,7 @@ eYo.Application.prototype.initUI = function() {
   this.initUI = eYo.Do.nothing
   delete this.disposeUI
   this.audio__ = new eYo.Audio(this, this.options.pathToMedia)
-  var d = this.ui_driver_mgr__ = new eYo.Svg(this)
+  var d = this.ui_driver_mgr__ = new eYo.Svg.Mgr(this)
   d.initUI(this)
   this.desk.initUI()
 }

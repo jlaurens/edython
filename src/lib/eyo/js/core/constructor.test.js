@@ -25,7 +25,7 @@ NS.test_link = (x, foo, bar) => {
 
 describe ('Constructor', function () {
   describe ('make', function () {
-    it ('Missing', function () {
+    it ('Make: Missing', function () {
       chai.assert(eYo.Constructor)
       chai.assert(eYo.Constructor.make)
         chai.expect(()=>{
@@ -40,7 +40,7 @@ describe ('Constructor', function () {
         })
       }).to.throw()
     })
-    it ('super: null', function () {
+    it ('Make: super: null', function () {
       eYo.Constructor.make({
         key: 'A',
         owner: NS,
@@ -53,7 +53,7 @@ describe ('Constructor', function () {
       const a = new NS.A()
       NS.test_link(a, 'foo', 'bar')
     })  
-    it ('constructor call', function () {
+    it ('Make: constructor call', function () {
       var flag = 0
       eYo.Constructor.make({
         key: 'A',
@@ -68,7 +68,7 @@ describe ('Constructor', function () {
       a = new NS.A()
       chai.assert(flag === 2)
     })
-    it ('super !== null', function () {
+    it ('Make: super !== null', function () {
       var flag_A = 0
       eYo.Constructor.make({
         key: 'A',
@@ -104,7 +104,7 @@ describe ('Constructor', function () {
       chai.assert(flag_AB === 1)
       NS.test_link(ab, 'foo', 'bar')
     })  
-    it ('multi super !== null', function () {
+    it ('Make: multi super !== null', function () {
       var flag_A = 0
       eYo.Constructor.make({
         key: 'A',
@@ -194,7 +194,7 @@ describe ('Constructor', function () {
       chai.assert(flag_BB === 1)
       NS.test_link(bb, 'foo', 'bar')
     })
-    it ('undefined owner xor super', function () {
+    it ('Make: undefined owner xor super', function () {
       var flag_A = 0
       eYo.Constructor.make({
         key: 'A',
@@ -234,6 +234,69 @@ describe ('Constructor', function () {
       chai.assert(flag_A === 2)
       chai.assert(flag_B === 2)
       NS.test_link(ab, 'foo', 'bar')      
+    })
+    it ('Make: init shortcuts', function () {
+      var flag = 0
+      var make = (init) => {
+        eYo.Constructor.make({
+          key: 'A',
+          owner: NS,
+          super: null,
+          init: init
+        })
+        return new NS.A()
+      }
+      make(function () {
+        flag = 421
+      })
+      chai.assert(flag === 421)
+      make({
+        begin () {
+          flag = 123
+        }
+      })
+      chai.assert(flag === 123)
+      make({
+        end () {
+          flag = 421
+        }
+      })
+      chai.assert(flag === 421)
+      make({
+        begin () {
+          flag = 123
+        },
+        end () {
+          flag += 421
+        }
+      })
+      chai.assert(flag === 544)
+    })
+    it ('Make: dispose', function () {
+      var flag = 0
+      eYo.Constructor.make({
+        key: 'A',
+        owner: NS,
+        super: null,
+      })
+      NS.A.eyo.makeDispose(function () {
+        flag += 1
+      })
+      eYo.Constructor.make({
+        key: 'AB',
+        owner: NS.A,
+      })
+      NS.A.AB.eyo.makeDispose(function () {
+        flag += 10
+      })
+      var a = new NS.A()
+      flag = 0
+      a.dispose()
+      chai.assert(flag === 1)
+      var ab = new NS.A.AB()
+      flag = 0
+      ab.dispose()
+      chai.assert(flag === 11)
     })
   })
   it ('Init', function () {
@@ -561,7 +624,7 @@ describe ('Constructor', function () {
       flag = 123
       a.fooUpdate()
       chai.assert(flag === 11)
-      chai.assert(a.foo === 11)
+      chai.assert(a.foo === 123)
     })
     it ('Cached: updater with override', function () {
       var flag = 421
@@ -584,8 +647,9 @@ describe ('Constructor', function () {
       })
       var a = new NS.A()
       chai.assert(a.foo === 421)
+      flag = 123
       a.fooUpdate()
-      chai.assert(a.foo === 521)
+      chai.assert(a.foo === 223)
     })
   })
   describe('Owned', function () {
@@ -1000,5 +1064,113 @@ describe ('Constructor', function () {
         }))
       }).to.throw()
     })
+  })
+  it ('Override rules', function () {
+    var make = (k, super_, props) => {
+      eYo.Constructor.make({
+        key: k,
+        owner: NS,
+        super: super_,
+        props: props,
+      })
+    }
+    var makeA = (props) => {
+      make ('A', null, props)
+    }
+    var makeAB = (props) => {
+      make ('AB', NS.A, props)
+    }
+    var props = {
+      owned: ['foo'],
+      cached: {
+        foo () {}
+      },
+      clonable: {
+        foo () {}
+      },
+      linked: ['foo'],
+    }
+    var ok = () => {
+      new NS.AB()
+    }
+    var okThrow = () => {
+      chai.expect(ok).to.throw()
+    }
+    var expect = {
+      owned: {
+        owned: okThrow,
+        cached: okThrow,
+        clonable: okThrow,
+        linked: ok,
+      },
+      cached: {
+        owned: okThrow,
+        cached: okThrow,
+        clonable: okThrow,
+        linked: ok,
+      },
+      clonable: {
+        owned: okThrow,
+        cached: okThrow,
+        clonable: okThrow,
+        linked: ok,
+      },
+      linked: {
+        owned: ok,
+        cached: ok,
+        clonable: ok,
+        linked: ok,
+      },
+    }
+    Object.keys(props).forEach(l => {
+      makeA({
+        [l]: props[l]
+      })
+      Object.keys(props).forEach(r => {
+        makeAB({
+          [r]: props[r]
+        })
+        expect[l][r]()
+      })
+    })
+  })
+  it ('Computed', function () {
+    var flag = 123
+    eYo.Constructor.make({
+      key: 'C',
+      owner: NS,
+      super: null,
+      props: {
+        computed: {
+          foo () {
+            return 10 * flag + 1
+          },
+        },
+        cached: {
+          bar () {
+            return flag
+          }
+        },
+      },
+    })
+    flag = 421
+    var a = new NS.C()
+    chai.assert(a.bar === 421)
+    chai.assert(a.foo === 4211)
+    chai.expect(() => {
+      a.foo = 421
+    }).to.throw()
+    chai.expect(() => {
+      a.foo_ = 421
+    }).to.throw()
+    chai.expect(() => {
+      a.foo__ = 421
+    }).to.throw()
+    chai.expect(() => {
+      a.foo_
+    }).to.throw()
+    chai.expect(() => {
+      a.foo__
+    }).to.throw()
   })
 })
