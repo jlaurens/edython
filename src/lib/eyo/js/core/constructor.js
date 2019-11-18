@@ -93,13 +93,27 @@ eYo.Constructor.make = (model) => {
     var K = k[0].toUpperCase() + k.substring(1)
     var name = 'forEach' + K
     ctor.prototype[name] = function (f) {
-      ctor.eyo[name].call(ctor.eyo, f)
-    }
-    name = 'some' + K
-    ctor.prototype[name] = function (f) {
-      return ctor.eyo[name].call(ctor.eyo, (k) => {
+      var super_ = ctor.superClass_
+      if (super_) {
+        var g = super_[name]
+        g && g.call(this, f)
+      }
+      ctor.eyo[name].call(ctor.eyo, (k) => {
+        var x = this[k]
+        return x && f(x)
       })
     }
+    // name = 'some' + K
+    // ctor.prototype[name] = function (f) {
+    //   var super_ = ctor.superClass_
+    //   if (super_) {
+    //     var g = super_[name]
+    //   }
+    //   return g && get.call(this, f) || ctor.eyo[name].call(ctor.eyo, (k) => {
+    //     var x = this[k]
+    //     return x && f(x)
+    //   })
+    // }
   })
   return ctor
 }
@@ -174,10 +188,10 @@ Object.defineProperties(eYo.Constructor.Dlgt.prototype, {
   eYo.Constructor.Dlgt.prototype[name] = function (f) {
     this[k__] && this[k__].forEach(f)
   }
-  name = 'some' + K
-  eYo.Constructor.Dlgt.prototype[name] = function (f) {
-    return this[k__] && this[k__].some(f)
-  }
+  // name = 'some' + K
+  // eYo.Constructor.Dlgt.prototype[name] = function (f) {
+  //   return this[k__] && this[k__].some(f)
+  // }
 })
 
 /**

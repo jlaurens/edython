@@ -45,9 +45,8 @@ eYo.Constructor.make({
       owner: {
         didChange (before, after) {
           this.appForget() // do not update, may be the owner is not complete
-          this.constructor.eyo.forEachOwned(k => {
-            var x = this[k]
-            x && x.appForget && x.appForget()
+          this.forEachOwned(x => {
+            x.appForget && x.appForget()
           })
         }
       }
@@ -58,9 +57,8 @@ eYo.Constructor.make({
           return this.owner && this.owner.app
         },
         didChange (before, after) {
-          this.constructor.eyo.forEachOwned(k => {
-            var x = this[k]
-            x && x.appForget && x.appForget()
+          this.forEachOwned(x => {
+            x.appForget && x.appForget()
           })
         },
       }

@@ -42,13 +42,13 @@ eYo.Constructor.make({
     cached: {
       ui_driver: {
         init () {
-          var mgr = ui_driver_mgr
+          var mgr = this.ui_driver_mgr
           return mgr && mgr.driver(this)
         }
       },
       didChange () {
-        this.constructor.eyo.forEachOwned(k => {
-          
+        this.forEachOwned(x => {
+          x.ui_driverUpdate && x.ui_driverUpdate()
         })
       }
     },
@@ -71,7 +71,8 @@ eYo.Constructor.make({
  * 
  */
 eYo.Owned.UI.prototype.appDidChange = function () {
-  eYo.Owned.UI.superClass_.appDidChange.call(this)
+  var super_ = eYo.Owned.UI.superClass_.appDidChange
+  super_ && super_.call(this)
   this.ui_driverUpdate()
 }
 

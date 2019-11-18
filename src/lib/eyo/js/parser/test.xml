@@ -1,0 +1,5 @@
+<!-- Created by `npm run eyo:prepare` -->
+      <script src="ROOT_PLACE_HOLDER/bitset.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/grammar.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/parsetok.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/tokenizer.test.js" charset="utf-8"></script>

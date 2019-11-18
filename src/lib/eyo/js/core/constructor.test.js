@@ -1173,4 +1173,149 @@ describe ('Constructor', function () {
       a.foo__
     }).to.throw()
   })
+  it ('Constructor: forEachOwned', function () {
+    eYo.Constructor.make({
+      key: 'A',
+      owner: NS,
+      super: null,
+      props: {
+        owned: {
+          foo () {}
+        }
+      }
+    })
+    eYo.Constructor.make({
+      key: 'AB',
+      owner: NS.A,
+      props: {
+        owned: {
+          bar () {}
+        }
+      }
+    })
+    var a = new NS.A()
+    a.foo_ = {value: 1}
+    var ab = new NS.A.AB()
+    ab.foo_ = {value: 1}
+    ab.bar_ = {value: 10}
+    var flag = 0
+    a.forEachOwned(x => flag += x.value)
+    chai.assert(flag === 1)
+    flag = 0
+    ab.forEachOwned(x => flag += x.value)
+    chai.assert(flag === 11)
+  })
+  it ('Constructor: forEachCached', function () {
+    eYo.Constructor.make({
+      key: 'A',
+      owner: NS,
+      super: null,
+      props: {
+        cached: {
+          foo () {return 1}
+        }
+      }
+    })
+    eYo.Constructor.make({
+      key: 'AB',
+      owner: NS.A,
+      props: {
+        cached: {
+          bar () {return 10}
+        }
+      }
+    })
+    var a = new NS.A()
+    var ab = new NS.A.AB()
+    var flag = 0
+    a.forEachCached(x => flag += x)
+    chai.assert(flag === 1)
+    flag = 0
+    ab.forEachCached(x => flag += x)
+    chai.assert(flag === 11)
+  })
+  it ('Constructor: forEachLink', function () {
+    eYo.Constructor.make({
+      key: 'A',
+      owner: NS,
+      super: null,
+      props: {
+        link: ['foo']
+      }
+    })
+    eYo.Constructor.make({
+      key: 'AB',
+      owner: NS.A,
+      props: {
+        link: ['bar']
+      }
+    })
+    var a = new NS.A()
+    a.foo_ = 1
+    var flag = 0
+    a.forEachLink(x => flag += x)
+    chai.assert(flag === 1)
+    var ab = new NS.A.AB()
+    ab.foo_ = 1
+    ab.bar_ = 10
+    flag = 0
+    ab.forEachLink(x => flag += x)
+    chai.assert(flag === 11)
+  })
+  it ('Constructor: forEachClonable', function () {
+    eYo.Constructor.make({
+      key: 'A',
+      owner: NS,
+      super: null,
+      props: {
+        clonable: {
+          foo () {
+            return new B()
+          }
+        }
+      },
+    })
+    eYo.Constructor.make({
+      key: 'AB',
+      owner: NS.A,
+      props: {
+        clonable: {
+          bar () {
+            return new B()
+          }
+        }
+      },
+    })
+    var B = function (value) {
+      this.value_ = value
+    }
+    B.prototype.dispose = function () {
+      this.disposed_ = true
+    }
+    B.prototype.set = function (other) {
+      this.value_ = other.value_
+    }
+    B.prototype.equals = function (other) {
+      return this.value_ === other.value_
+    }
+    Object.defineProperty(B.prototype, 'clone', {
+      get () {
+        return new B(this.value_)
+      }
+    })
+    var a = new NS.A()
+    a.foo_ = new B(1)
+    chai.assert(a.foo.value_ === 1)
+    var flag = 0
+    a.forEachClonable(x => flag += x.value_)
+    chai.assert(flag === 1)
+    var ab = new NS.A.AB()
+    ab.foo_ = new B(1)
+    chai.assert(ab.foo.value_ === 1)
+    ab.bar_ = new B(10)
+    chai.assert(ab.bar.value_ === 10)
+    flag = 0
+    ab.forEachClonable(x => flag += x.value_)
+    chai.assert(flag === 11)
+  })
 })
