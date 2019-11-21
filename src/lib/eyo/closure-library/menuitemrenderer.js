@@ -28,8 +28,10 @@
  */
 
 goog.require('goog.ui.MenuItemRenderer')
+goog.require('goog.ui.MenuSeparatorRenderer')
 
 goog.require('eYo.Style')
+
 goog.provide('eYo.MenuItemRenderer')
 
 /**

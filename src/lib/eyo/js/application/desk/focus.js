@@ -22,6 +22,7 @@
  **/
 
 goog.require('eYo.Decorate')
+goog.require('eYo.Owned')
 
 goog.require('eYo.Do')
 goog.require('eYo.Board')
@@ -29,6 +30,7 @@ goog.require('eYo.Board')
 goog.require('eYo.Brick')
 goog.require('eYo.Magnet')
 goog.require('eYo.Field')
+
 goog.provide('eYo.Focus')
 
 goog.forwardDeclare('eYo.Desk')

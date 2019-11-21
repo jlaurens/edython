@@ -1,0 +1,9 @@
+<!-- Created by `npm run eyo:prepare` -->
+      <script src="ROOT_PLACE_HOLDER/menu.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/menubuttonrenderer.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/menuitem.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/menuitemrenderer.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/menurenderer.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/popupmenu.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/submenu.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/submenurenderer.test.js" charset="utf-8"></script>

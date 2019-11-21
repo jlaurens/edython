@@ -11,8 +11,8 @@
  */
 'use strict'
 
-goog.require('eYo.Constructor.UI')
-goog.require('eYo.Owned.UI')
+goog.require('eYo.UI.Constructor')
+goog.require('eYo.UI.Owned')
 
 goog.provide('eYo.Owned.UI2')
 
@@ -36,10 +36,10 @@ goog.forwardDeclare('eYo.Magnet')
  * @property {eYo.Magnet} slot  The magnet.
  */
 
-eYo.Constructor.UI.make({
+eYo.UI.Constructor.make({
   key: 'UI2',
   owner: eYo.Owned,
-  super: eYo.Owned.UI,
+  super: eYo.UI.Owned,
   props: {
     link: ['slot', 'brick', 'magnet'],
     computed: {
@@ -50,17 +50,17 @@ eYo.Constructor.UI.make({
   }
 })
 
-// public computed properties
-
-eYo.Owned.UI.prototype.ownerDidChange = function (before, after) {
+eYo.UI.Owned.prototype.ownerDidChange = function (before, after) {
+  var super_ = eYo.UI.Owned.superClass_.ownerDidChange
+  super_ && super_call(this, before, after)
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA
   if (after instanceof eYo.Slot) {
-    this.slot_ = bsm
-    this.brick_ = bsm.brick
+    this.slot_ = after
+    this.brick_ = after.brick
   } else if (after instanceof eYo.Magnet) {
-    this.magnet_ = bsm
-    this.brick_ = bsm.brick
+    this.magnet_ = after
+    this.brick_ = after.brick
   } else if (after instanceof eYo.Brick) {
-    this.brick_ = bsm
+    this.brick_ = after
   }
 }

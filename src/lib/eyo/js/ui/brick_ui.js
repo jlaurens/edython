@@ -11,6 +11,7 @@
  */
 'use strict'
 
+goog.require('eYo.Owned')
 goog.require('eYo.Brick')
 goog.require('eYo.Change')
 

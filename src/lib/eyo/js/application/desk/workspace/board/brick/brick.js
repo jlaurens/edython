@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.Owned.UI')
+goog.require('eYo.UI.Owned')
 goog.require('eYo.Decorate')
 
 goog.require('eYo.Change')
@@ -99,7 +99,7 @@ eYo.Brick = function (board, type, opt_id) {
   }
   board.addBrick(this, opt_id)
 }
-goog.inherits(eYo.Brick, eYo.Owned.UI)
+goog.inherits(eYo.Brick, eYo.UI.Owned)
 
 /**
  * Model getter. Convenient shortcut.
@@ -125,7 +125,7 @@ Object.defineProperties(eYo.Brick.prototype, {
 /**
  * Dispose of all the resources.
  */
-eYo.Decorate.makeDispose(
+eYo.Decorate.disposeMake(
   eYo.Brick,
   function (healStack, animate) {
     var board = this.board

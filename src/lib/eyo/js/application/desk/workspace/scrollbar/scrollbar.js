@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.Owned.UI')
+goog.require('eYo.UI.Owned')
 
 goog.provide('eYo.Scrollbar')
 
@@ -29,29 +29,39 @@ goog.forwardDeclare('goog.events')
  * @param {string=} opt_class A class to be applied to this scrollbar.
  * @constructor
  */
-eYo.Scrollbar = function(bs, horizontal, opt_class) {
-  eYo.Scrollbar.superClass_.constructor.call(this, bs)
-  if (bs instanceof eYo.Scroller) {
-    this.scroller_ = bs  
-  } else {
-    this.scroller_ = null  
-  }
-  this.disposeUI = eYo.Do.nothing
-  this.horizontal_ = horizontal
-  this.viewRect_ = new eYo.Rect()
-  this.oldMetrics_ = null
-  this.opt_class_ = opt_class
-}
-goog.inherits(eYo.Scrollbar, eYo.Owned.UI)
+eYo.UI.Constructor.make({
+  key: 'Scrollbar',
+  owner: eYo,
+  super: eYo.UI.Owned,
+  init(bs, horizontal, opt_class) {
+    if (bs instanceof eYo.Scroller) {
+      this.scroller_ = bs  
+    } else {
+      this.scroller_ = null  
+    }
+    this.horizontal_ = horizontal
+    this.oldMetrics_ = null
+    this.opt_class_ = opt_class  
+  },
+  props: {
+    clonable: {
+      viewRect () {
+        new eYo.Rect()
+      }
+    },
+    computed: {
+      /**
+       * Width of vertical scrollbar or height of horizontal scrollbar in CSS pixels.
+       * Scrollbars should be larger on touch devices.
+       */
+      thickness: {
+        value: goog.events.BrowserFeature.TOUCH_ENABLED ? 26 : 16
+      },
+    }
+  },
+})
 
 Object.defineProperties(eYo.Scrollbar, {
-  /**
-   * Width of vertical scrollbar or height of horizontal scrollbar in CSS pixels.
-   * Scrollbars should be larger on touch devices.
-   */
-  thickness: {
-    value: goog.events.BrowserFeature.TOUCH_ENABLED ? 26 : 16
-  },
 })
 
 Object.defineProperties(eYo.Scrollbar.prototype, {
@@ -105,26 +115,6 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
 })
 
 Object.defineProperties(eYo.Scrollbar.prototype, {
-  viewRect: {
-    /**
-     * The view rectangle
-     * @type {eYo.Rect}
-     * @readonly
-     */
-    get () {
-      return this.viewRect_.clone
-    },
-    /**
-     * Record the origin of the board that the scrollbar is in, in pixels
-     * relative to the injection div origin. This is for times when the scrollbar is
-     * used in an object whose origin isn't the same as the main board
-     * (e.g. in a flyout.)
-     * @param {eYo.Where} newOrigin The coordinates of the scrollbar's origin, in CSS pixels.
-     */
-    set (newValue) {
-      this.viewRect_.set(newValue)
-    }
-  },
   /**
    * The position of the mouse along this scrollbar's major axis at the start of
    * the most recent drag.
@@ -248,35 +238,6 @@ Object.defineProperties(eYo.Scrollbar.prototype, {
     writable: true
   },
 })
-
-/**
- * Create all the DOM elements required for a scrollbar.
- * The resulting widget is not sized.
- * @param {string=} opt_class A class to be applied to this scrollbar.
- * @private
- */
-eYo.Scrollbar.prototype.initUI = eYo.Decorate.makeInitUI(eYo.Scrollbar, function() {
-  return this.ui_driver_mgr.scrollbarInit(this, this.opt_class_)
-})
-
-/**
- * Dispose of the UI resources
- */
-eYo.Scrollbar.prototype.disposeUI = function() {
-  this.disposeUI = eYo.Do.nothing
-  delete this.initUI
-  return this.ui_driver_mgr.scrollbarDispose(this)
-}
-
-/**
- * Dispose of this scrollbar and sever the links.
- */
-eYo.Scrollbar.prototype.dispose = function() {
-  this.disposeUI()
-  this.board = null
-  this.scroller_ = null
-  eYo.Scrollbar.superClass_.constructor.call(this)
-}
 
 /**
  * Recalculate the scrollbar's location and its length.

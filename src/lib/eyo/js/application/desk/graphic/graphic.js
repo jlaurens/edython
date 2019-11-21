@@ -22,41 +22,8 @@ goog.provide('eYo.Graphic')
  * @param {!eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.Graphic = function(owner) {
-  eYo.Graphic.superClass_.constructor.call(this, owner)
-}
-goog.inherits(eYo.Graphic, eYo.Pane)
-
-/**
- * Make the user interface.
- */
-eYo.Graphic.prototype.initUI = eYo.Decorate.makeInitUI(
-  eYo.Graphic,
-  function() {
-    this.driver.graphicInit(this)
-  }
-)
-
-/**
- * Dispose of UI resources.
- */
-eYo.Decorate.makeDisposeUI(
-  eYo.Graphic,
-  function() {
-    this.driver.graphicDispose(this)
-  }
-)
-
-/**
- * Update the metrics of the receiver.
- */
-eYo.Graphic.prototype.updateMetrics = function () {
-  this.ui_driver_mgr.graphicUpdateMetrics()
-}
-
-/**
- * Place the receiver.
- */
-eYo.Graphic.prototype.place = function () {
-  this.ui_driver_mgr.graphicPlace()
-}
+eYo.UI.Constructor.make({
+  key: 'Graphic',
+  owner: eYo,
+  super: eYo.Pane,
+})

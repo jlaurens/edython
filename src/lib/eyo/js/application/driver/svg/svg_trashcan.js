@@ -21,14 +21,14 @@ goog.forwardDeclare('eYo.TrashCan')
  * Svg driver fro the trash can.
  */
 eYo.Svg.makeDriverClass('TrashCan')
-
+console.error('NYI: makeDriverClass({params}) initUI and disposUI in the model')
 /**
  * Initialize the trash can SVG ressources.
  * @param {!eYo.TrashCan} trashCan
  * @param {?Object} options
  * @return {!Element} The trash can's SVG group.
  */
-eYo.Svg.Decorate.makeInitUI(
+eYo.Svg.Decorate.initUIMake(
   eYo.Svg.TrashCan,
   function(trashCan, options) {
     var dom = trashCan.dom
@@ -123,7 +123,7 @@ eYo.Svg.Decorate.makeInitUI(
  * Initializes the trash can SVG ressources.
  * @param {!eYo.TrashCan} trashCan
  */
-eYo.Svg.makeDisposeUI( 
+eYo.Svg.disposeUIMake( 
   eYo.Svg.TrashCan,
   function(trashCan) {
     var dom = trashCan.dom

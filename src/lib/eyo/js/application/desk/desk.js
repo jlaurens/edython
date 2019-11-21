@@ -13,7 +13,7 @@
  */
 'use strict'
 
-goog.require('eYo.Owned')
+goog.require('eYo.UI.Owned')
 goog.require('eYo.Decorate')
 
 goog.provide('eYo.Desk')
@@ -31,78 +31,59 @@ goog.forwardDeclare('goog.math');
  * @param {!eYo.Application|Object} owner Owner application.
  * @constructor
  */
-eYo.Desk = function(owner) {
-  eYo.Desk.superClass_.constructor.call(this, owner)
-  /**
-   * Wokspace.
-   * @type{eYo.Workspace}
-   */
-  this.workspace_ = new eYo.Workspace(this)
-  /**
-   * Terminal.
-   * @type{eYo.Terminal}
-   */
-  this.terminal_ = new eYo.Terminal(this)
-  /**
-   * Turtle.
-   * @type{eYo.Turtle}
-   */
-  this.turtle_ = new eYo.Turtle(this)
-  /**
-   * Graphic.
-   * @type{eYo.Graphic}
-   */
-  this.graphic_ = new eYo.Graphic(this)
-  /**
-   * Variable.
-   * @type{eYo.Variable}
-   */
-  this.variable_ = new eYo.Variable(this)
-  /**
-   * Main focus manager.
-   * @type{eYo.Focus.Main}
-   */
-  this.panes_ = [
-    this.workspace_,
-    this.terminal_,
-    this.turtle_,
-    this.graphic_,
-    this.variable_
-  ]
-  this.focus_ = new eYo.Focus.Main(this)
-}
-goog.inherits(eYo.Desk, eYo.Owned.UI)
-
-eYo.Property.addApp(
-  eYo.Desk.prototype,
-  'app',
-  function() {
-    return this.owner__.app
-  }
-)
-
-eYo.Property.addMany(
-  eYo.Desk.prototype,
-  {
-    terminal: {},
-    turtle: {},
-    graphic: {},
-    variable: {},
-    workspace: {},
-    focus: {},
-  }
-)
-Object.defineProperties(eYo.Desk.prototype, {
-  /**
-   * The desk's application.
-   * @type {!eYo.Application|Object}
-   * @private
-   */
-  app: {
-    get () {
-      return this.owner_
+eYo.UI.Constructor.make({
+  key: 'Desk',
+  owner: eYo,
+  super: eYo.UI.Owned,
+  props: {
+    owned: {
+      /**
+       * Terminal.
+       * @type{eYo.Terminal}
+       */
+      terminal () {
+        return new eYo.Terminal(this)
+      },
+      /**
+       * Turtle.
+       * @type{eYo.Turtle}
+       */
+      turtle () {
+        return new eYo.Turtle(this)
+      },
+      /**
+       * Graphic.
+       * @type{eYo.Graphic}
+       */
+      graphic () {
+        return new eYo.Graphic(this)
+      },
+      /**
+       * Variable.
+       * @type{eYo.Variable}
+       */
+      variable () {
+        return new eYo.Variable(this)
+      },
+      /**
+       * Wokspace.
+       * @type{eYo.Workspace}
+       */
+      workspace () {
+        return new eYo.Workspace(this)
+      },
+      /**
+       * Main focus manager.
+       * @type{eYo.Focus.Main}
+       */
+      focus () {
+        return new eYo.Focus.Main(this)
+      },
     }
-  },
+  }
+})
+
+Object.defineProperties(eYo.Desk.prototype, {
   /**
    * The desk's desk.
    * @type {!eYo.Desk}
@@ -111,6 +92,9 @@ Object.defineProperties(eYo.Desk.prototype, {
   desk: {
     get () {
       return this
+    },
+    set (ignored) {
+      throw 'Forbidden setter'
     }
   },
 })
@@ -118,42 +102,22 @@ Object.defineProperties(eYo.Desk.prototype, {
 /**
  * Make the user interface.
  */
-eYo.Desk.prototype.initUI = eYo.Decorate.makeInitUI(
-  eYo.Desk,
-  function() {
-    this.ui_driver_mgr.initUI(this)
-    this.panes_.forEach(p => p.initUI())
-    this.layout()
-  }
-)
+eYo.Desk.prototype.forEachPane = function (f) {
+  [
+    this.workspace,
+    this.terminal,
+    this.turtle,
+    this.graphic,
+    this.variable,
+  ].forEach(f)
+}
 
 /**
- * Dispose of UI resources.
+ * Make the user interface.
  */
-eYo.Decorate.makeDisposeUI(
-  eYo.Desk,
-  function() {
-    [].concate(this.panes_).reverse().forEach(p => p.disposeUI())
-    this.ui_driver_mgr.disposeUI(this)
-  }
-)
-
-/**
- * Dispose of this desk's board.
- */
-eYo.Decorate.makeDispose(
-  eYo.Desk,
-  function() {
-    eYo.Property.dispose(this,
-      'workspace',
-      'terminal',
-      'turtle',
-      'graphic',
-      'variable',
-      'focus',
-    )
-  }
-)
+eYo.Desk.eyo.initUIMake(function() {
+  this.layout()
+})
 
 /**
  * Update the metrics and place the components accordingly.
@@ -176,16 +140,16 @@ eYo.Desk.prototype.layout = function() {
  
  */
 eYo.Desk.prototype.updateMetrics = function() {
-  this.ui_driver_mgr.updateMetrics(this)
-  this.panes_.forEach(p => p.updateMetrics())
+  this.ui_driver.updateMetrics(this)
+  this.forEachPane(p => p.updateMetrics())
 }
 
 /**
  * Place the panes.
  */
 eYo.Desk.prototype.place = function() {
-  this.ui_driver_mgr.place(this)
-  this.panes_.forEach(p => p.place())
+  this.ui_driver.place(this)
+  this.forEachPane(p => p.place())
 }
 
 /**
@@ -194,7 +158,7 @@ eYo.Desk.prototype.place = function() {
  * @return {eYo.Where}
  */
 eYo.Desk.prototype.xyElementInDesk = function(element) {
-  return this.ui_driver_mgr.whereElement(this, element)
+  return this.ui_driver.whereElement(this, element)
 }
 
 /**

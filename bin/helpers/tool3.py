@@ -128,19 +128,20 @@ class HTML:
 def minimalTests(path_src):
   print('Updating minimal tests...')
   for js in [x for x in path_src.rglob('*.js')
-    if x.is_file() if not x.name.endswith('.test.js')]:
-    test = js.with_suffix('').with_suffix('.test').with_suffix('.js')
+    if x.is_file() if not x.name.endswith('test.js')]:
+    test = js.with_suffix('.test.js')
+    print(js.relative_to(path_src), test.relative_to(path_src))
     if not test.is_file():
-      name = test.stem.capitalize()
-      test.write_text(f'''NS = Object.create()
-describe ('Tests: {test.stem}', function () {{
+      name = js.stem.capitalize()
+      test.write_text(f'''NS = Object.create(null)
+describe ('Tests: {js.stem}', function () {{
   it ('{name}: basic', function () {{
-
+    chai.assert(false, 'NOT YET IMPLEMENTED')
   }})
 }})
 ''')
       print('Creating ', test)
-  exit(-1)
+  print('... DONE')
   return 0
 
 def updateWebTests(path_eyo, path_deps):
@@ -173,7 +174,7 @@ def updateWebTests(path_eyo, path_deps):
 ''')
     path_out = path_base.with_suffix('.test.html')
     path_out.write_text(''.join(lines), encoding='utf-8')
-  print('... Updating web tests: DONE')
+  print('... DONE')
   return 0
 
 def updateWebTestWrappers(path_eyo, path_deps):
@@ -256,13 +257,12 @@ def updateWebTestWrappers(path_eyo, path_deps):
       path_out.write_text(''.join(lines), encoding='utf-8')
       print(path_out.relative_to(path_eyo))
  
-  print('... Updating web test wrappers: DONE')
+  print('... DONE')
   return 0
 
 print('Step 3:')
 print('=======')
 
-print('Create minimal test files.')
 out = minimalTests(path_eyo)
 
 print('Update source files.')

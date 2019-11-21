@@ -12,6 +12,7 @@
 'use strict'
 
 goog.require('eYo.Protocol')
+goog.require('eYo.Owned')
 
 goog.provide('eYo.Responder')
 

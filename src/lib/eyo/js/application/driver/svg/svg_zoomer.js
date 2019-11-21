@@ -27,7 +27,7 @@ eYo.Svg.makeDriverClass('Zoomer')
  * @param {!eYo.Zoomer} constrols
  * @return {!Element} The controls's SVG group.
  */
-eYo.Svg.makeInitUI(
+eYo.Svg.initUIMake(
   eYo.Svg.Zoomer,
   function(controls) {
     var board = controls.board_
@@ -187,7 +187,7 @@ eYo.Svg.makeInitUI(
  * Dispose of the zoom controls SVG ressources.
  * @param {!eYo.Zoomer} constrols
  */
-eYo.Svg.makeDisposeUI(
+eYo.Svg.disposeUIMake(
   eYo.Svg.Zoomer,
   function(controls) {
     var board = controls.board_

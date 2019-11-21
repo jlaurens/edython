@@ -26,7 +26,7 @@ eYo.Svg.makeDriverClass('Slot')
  * Prepare the given slot.
  * @param {!eYo.Slot} slot to be prepared.
  */
-eYo.Svg.makeInitUI(
+eYo.Svg.initUIMake(
   eYo.Svg.Slot,
   function (slot) {
     var dom = this._initUI(slot)
@@ -49,7 +49,7 @@ eYo.Svg.makeInitUI(
  * Dispose of the given slot's rendering resources.
  * @param {eYo.Slot} slot
  */
-eYo.Svg.makeDisposeUI(
+eYo.Svg.disposeUIMake(
   eYo.Svg.Slot,
   function (slot) {
     goog.dom.removeNode(slot.dom.svg.group_)

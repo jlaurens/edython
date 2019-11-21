@@ -2,12 +2,12 @@ NS = Object.create(null)
 
 describe('Owned.UI', function () {
   it ('Owned.UI: Basic', function () {
-    chai.assert(eYo.Owned.UI && eYo.Owned.UI.eyo)
+    chai.assert(eYo.UI.Owned && eYo.UI.Owned.eyo)
   })
   it ('Owned.UI: new', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.Owned.UI(onr)
+    var o = new eYo.UI.Owned(onr)
     chai.assert(o.owner === onr)
   })
   it ('Owned.UI: app', function () {
@@ -20,11 +20,11 @@ describe('Owned.UI', function () {
     o.appUpdate()
     chai.assert(o.app === 421)
   })
-  it ('Owned: computed', function () {
+  it ('Owned UI: computed', function () {
     // hasUI, options, ui_driver_mgr
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.Owned.UI(onr)
+    var o = new eYo.UI.Owned(onr)
     chai.assert(o.owner === onr)
     onr.app = {}
     o.appForget()

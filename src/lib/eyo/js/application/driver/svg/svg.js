@@ -37,7 +37,7 @@ eYo.Svg = Object.create(null)
  * The manager of all the svg drivers.
  * @type {eYo.Svg.Mgr}
  */
-eYo.Dom.makeManagerClass(eYo.Svg)
+eYo.Dom.Mgr.eyo.makeSublass(eYo.Svg)
 
 /**
  * A namespace.

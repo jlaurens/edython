@@ -15,7 +15,6 @@
 
 goog.require('eYo.Pane')
 
-goog.require('eYo.Decorate')
 goog.provide('eYo.Terminal')
 
 /**
@@ -23,41 +22,8 @@ goog.provide('eYo.Terminal')
  * @param {!eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.Terminal = function(owner) {
-  eYo.Terminal.superClass_.constructor.call(this, owner)
-}
-goog.inherits(eYo.Terminal, eYo.Pane)
-
-/**
- * Make the user interface.
- */
-eYo.Terminal.prototype.initUI = eYo.Decorate.makeInitUI(
-  eYo.Terminal,
-  function() {
-    this.driver.terminalInit(this)
-  }
-)
-
-/**
- * Dispose of UI resources.
- */
-eYo.Decorate.makeDisposeUI(
-  eYo.Terminal,
-  function() {
-    this.driver.terminalDispose(this)
-  }
-)
-
-/**
- * Update the metrics of the receiver.
- */
-eYo.Terminal.prototype.updateMetrics = function () {
-  this.ui_driver_mgr.terminalUpdateMetrics()
-}
-
-/**
- * Place the receiver.
- */
-eYo.Terminal.prototype.place = function () {
-  this.ui_driver_mgr.terminalPlace()
-}
+eYo.UI.Constructor.make({
+  key: 'Terminal',
+  owner: eYo,
+  super: eYo.Pane,
+})

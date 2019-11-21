@@ -39,12 +39,6 @@ eYo.Dom.Decorate = Object.create(null)
 eYo.Driver.makeManagerClass(eYo.Dom)
 
 /**
- * Convenient shortcut.
- */
-eYo.Dom.makeManagerClass = (object) => {
-  eYo.Driver.makeManagerClass(object, eYo.Dom)
-}
-/**
  * Decorates a function as `initUI`.
  */
 eYo.Dom.Decorate.initUI = (constructor, f) => {

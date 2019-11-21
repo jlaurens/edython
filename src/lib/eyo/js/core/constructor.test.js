@@ -279,14 +279,14 @@ describe ('Constructor', function () {
         owner: NS,
         super: null,
       })
-      NS.A.eyo.makeDispose(function () {
+      NS.A.eyo.disposeMake(function () {
         flag += 1
       })
       eYo.Constructor.make({
         key: 'AB',
         owner: NS.A,
       })
-      NS.A.AB.eyo.makeDispose(function () {
+      NS.A.AB.eyo.disposeMake(function () {
         flag += 10
       })
       var a = new NS.A()
@@ -854,7 +854,7 @@ describe ('Constructor', function () {
       var foo_after = new B(123)
       var test = function (before, after) {
         chai.assert(this === a)
-        chai.assert(before === foo_before)
+        chai.assert(before === foo_before, `Unexpected ${before} !=== ${foo_before}`)
         chai.assert(after === foo_after)
       }
       eYo.Constructor.make({
@@ -868,12 +868,17 @@ describe ('Constructor', function () {
           owned: {
             foo: {
               willChange (before, after) {
-                test.call(this, before, after)
+                console.warn
+                after && test.call(this, before, after)
                 return () => {
-                  flag = 421
+                  flag += 100
                 }
               },
-              didChange: test
+              didChange: test,
+              disposer (foo) {
+                console.warn("HERE")
+                flag += foo
+              }
             }
           },
         },
@@ -883,6 +888,16 @@ describe ('Constructor', function () {
       chai.assert(a.foo === foo_before)
       a.foo_ = foo_after
       chai.assert(flag === 421)
+      // Dispose
+      B.prototype.dispose = function (what) {
+        flag += 1000
+      }
+      foo_before = foo_after
+      foo_after = eYo.NA
+      flag = 0
+      a.dispose(123)
+      console.warn(flag)
+      chai.assert(flag === 1100)
     })
   })
   describe ('Clonable', function () {
@@ -1317,5 +1332,54 @@ describe ('Constructor', function () {
     flag = 0
     ab.forEachClonable(x => flag += x.value_)
     chai.assert(flag === 11)
+  })
+  it ('Constructor: makeSubclass', function () {
+    var flag = 0
+    eYo.Constructor.make({
+      key: 'A',
+      owner: NS,
+      super: null,
+      init() {
+        flag += 1
+      }
+    })
+    chai.assert(NS.A.eyo.makeSubclass)
+    NS.A.eyo.makeSubclass({
+      key: 'AB',
+      owner: NS.A,
+      init() {
+        flag += 10
+      },
+    })
+    chai.assert(NS.A.AB.superClass_ === NS.A.prototype)
+    flag = 0
+    var ab = new NS.A.AB()
+    chai.assert(flag === 11)
+  })
+  it ('Constructor: dlgt key', function () {
+    var flag = 0
+    var Dlgt = function (ctor, model) {
+      Dlgt.superClass_.constructor.call(this, ctor, model)
+      flag += 1
+    }
+    eYo.Do.inherits(Dlgt, eYo.Constructor.Dlgt)
+    eYo.Constructor.make({
+      key: 'A',
+      owner: NS,
+      super: null,
+      dlgt: Dlgt,
+      init() {
+        flag += 1
+      }
+    })
+    chai.assert(flag === 1)
+    chai.assert(NS.A.eyo.constructor === Dlgt)
+    chai.assert(NS.A.eyo.makeSubclass)
+    NS.A.eyo.makeSubclass({
+      key: 'AB',
+      owner: NS.A,
+    })
+    chai.assert(flag === 2)
+    chai.assert(NS.A.AB.eyo.constructor === Dlgt)
   })
 })

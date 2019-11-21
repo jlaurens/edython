@@ -20,15 +20,16 @@ goog.provide('eYo.TrashCan')
  * @param {!eYo.Workspace} workspace The workspace to sit in.
  * @constructor
  */
-eYo.TrashCan = function(workspace) {
-  eYo.TrashCan.superClass_.constructor.call(this, workspace)
-}
-goog.inherits(eYo.TrashCan, eYo.WorkspaceControl)
+eYo.UI.Constructor.make({
+  key: 'TrashCan',
+  owner: eYo,
+  super: eYo.WorkspaceControl,
+})
 
 Object.defineProperties(eYo.TrashCan.prototype, {
   isOpen: {
     get () {
-      return this.ui_driver_mgr.openGet(this)
+      return this.ui_driver.openGet(this)
     }
   },
 })
@@ -76,33 +77,19 @@ Object.defineProperties(eYo.TrashCan.prototype, {
 })
 
 /**
- * Create the trash can elements.
- */
-eYo.TrashCan.prototype.initUI = eYo.Decorate.makeInitUI(eYo.TrashCan, function() {
-  this.ui_driver_mgr.initUI(this)
-})
-
-/**
- * Dispose of this trash's UI.
- */
-eYo.TrashCan.prototype.disposeUI = eYo.Decorate.makeInitUI(eYo.TrashCan, function() {
-  this.ui_driver_mgr.disposeUI(this)
-})
-
-/**
  * Move the trash can to the bottom-right corner.
  */
 eYo.TrashCan.prototype.place = function(bottom) {
   eYo.TrashCan.superClass_.place.call(this, bottom)
-  this.ui_driver_mgr.place(this)
+  this.ui_driver.place(this)
 }
-
+console.error('NYI: what does the inherited place do?')
 /**
  * Return the deletion rectangle for this trash can.
  * @return {eYo.Rect} Rectangle in which to delete.
  */
 eYo.TrashCan.prototype.getClientRect = function() {
-  return this.ui_driver_mgr.clientRect(this)
+  return this.ui_driver.clientRect(this)
 }
 
 /**
@@ -110,5 +97,5 @@ eYo.TrashCan.prototype.getClientRect = function() {
  * Called externally after a drag.
  */
 eYo.TrashCan.prototype.close = function() {
-  this.ui_driver_mgr.openSet(this, false)
+  this.ui_driver.openSet(this, false)
 }

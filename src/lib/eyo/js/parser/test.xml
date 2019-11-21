@@ -1,5 +1,12 @@
 <!-- Created by `npm run eyo:prepare` -->
-      <script src="ROOT_PLACE_HOLDER/bitset.test.js" charset="utf-8"></script>
+      <script src="ROOT_PLACE_HOLDER/acceler.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/ast.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/bitset.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/ctokenizer.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/grammar.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/listnode.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/node.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/parser.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/parsetok.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/token.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/tokenizer.test.js" charset="utf-8"></script>

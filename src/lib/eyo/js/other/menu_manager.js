@@ -1031,11 +1031,11 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
   ]
   var /** !eYo.Magnet */ m4t, sep
   var F_after = /** @suppress{accessControls} */ (targetM4t, type) => {
-    var eyo = eYo.Brick.newReady(brick, type)
-    var yorn = eyo.head_m &&
-    eyo.head_m.checkType_(m4t) &&
-    (!targetM4t || (eyo.foot_m && (targetM4t.checkType_(eyo.foot_m))))
-    eyo.dispose(true)
+    var b3k = eYo.Brick.newReady(brick, type)
+    var yorn = b3k.head_m &&
+    b3k.head_m.checkType_(m4t) &&
+    (!targetM4t || (b3k.foot_m && (targetM4t.checkType_(b3k.foot_m))))
+    b3k.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
       var MI = this.newMenuItem(content, () => {
@@ -1047,11 +1047,11 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     return false
   }
   var F_before = /** @suppress{accessControls} */ (target, type) => {
-    var eyo = eYo.Brick.newReady(brick, type)
-    var yorn = eyo.foot_m &&
-    eyo.foot_m.checkType_(m4t) &&
-    (!target || (eyo.head_m && (target.checkType_(eyo.head_m))))
-    eyo.dispose(true)
+    var b3k = eYo.Brick.newReady(brick, type)
+    var yorn = b3k.foot_m &&
+    b3k.foot_m.checkType_(m4t) &&
+    (!target || (b3k.head_m && (target.checkType_(b3k.head_m))))
+    b3k.dispose(true)
     if (yorn) {
       var content = this.get_menuitem_content(type)
       var MI = this.newMenuItem(content, () => {

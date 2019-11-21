@@ -13,7 +13,10 @@
 'use strict'
 
 goog.require('eYo')
+
 goog.provide('eYo.DnD')
+goog.provide('eYo.DnD.Dragger')
+goog.provide('eYo.DnD.Dropper')
 
 goog.forwardDeclare('eYo.Motion')
 goog.forwardDeclare('eYo.Driver')

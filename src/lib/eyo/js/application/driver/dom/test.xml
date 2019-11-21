@@ -1,2 +1,8 @@
 <!-- Created by `npm run eyo:prepare` -->
       <script src="ROOT_PLACE_HOLDER/dom.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/dom_application.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/dom_board.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/dom_brick.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/dom_desk.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/dom_flyout.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/dom_search.test.js" charset="utf-8"></script>

@@ -12,7 +12,7 @@
  */
 'use strict'
 
-goog.require('eYo.Owned')
+goog.require('eYo.UI.Owned')
 
 goog.provide('eYo.Pane')
 
@@ -23,22 +23,22 @@ goog.forwardDeclare('eYo.Desk')
  * @param {!eYo.Desk} desk,  the owning desk.
  * @constructor
  */
-eYo.Pane = function (desk) {
-  eYo.Pane.superClass_.constructor.call(this, desk)
-}
-goog.inherits(eYo.Pane, eYo.Owned.UI)
-
-Object.defineProperties(eYo.Pane.prototype, {
-  /**
-   * The desk of the receiver.
-   * @type {eYo.Desk}
-   * @readonly
-   */
-  desk: {
-    get () {
-      return this.owner_
-    },
-  },
+eYo.UI.Constructor.make({
+  key: 'Pane',
+  owner: eYo,
+  super: eYo.UI.Owned,
+  props: {
+    computed: {
+      /**
+       * The desk of the receiver.
+       * @type {eYo.Desk}
+       * @readonly
+       */
+      desk () {
+        return this.owner_
+      }
+    }
+  }
 })
 
 /**

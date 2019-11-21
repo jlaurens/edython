@@ -35,89 +35,68 @@ goog.forwardDeclare('goog.math');
  * @param {!eYo.Application|Object} owner Owner application.
  * @constructor
  */
-eYo.Workspace = function(owner) {
-  eYo.Workspace.superClass_.constructor.call(this, owner)
-  /** @type {!eYo.Rect} */
-  this.viewRect__ = new eYo.Rect()
-  // create the board
-  this.board_ = new eYo.Board.Main(this)
-  this.flyout_ = new eYo.Flyout(this)
-  this.backer_ = new eYo.Backer(this)
-  this.trashCan_ = new eYo.TrashCan(this)
-  this.zoomer_ = new eYo.Zoomer(this)
-  this.scale = this.options.zoom.startScale || 1
-}
-goog.inherits(eYo.Workspace, eYo.Pane)
-
-eYo.Property.addMany(
-  eYo.Workspace.prototype,
-  {
-    /**
-     * @type {?eYo.Board.Main} newValue 
-     */
-    board: {},
-    /**
-     * The workspace's trashCan (if any).
-     * @type {eYo.TrashCan}
-     */
-    trashCan: {},
-    /**
-     * The flyout.
-     * @type {?eYo.Flyout} 
-     */
-    flyout: {},
-    /**
-     * The main focus manager.
-     * @type {?eYo.Focus.Main} 
-     */
-    focus: {},
-    /**
-     * The undo/redo manager
-     * @type {?eYo.Backer} 
-     */
-    backer: {},
-    /**
-     * The view rectangle
-     * @type {eYo.ViewRect}
-     */
-    viewRect: {
-      get () {
-        return this.viewRect__.clone
-      },
+eYo.Pane.eyo.makeSubclass({
+  key: 'Workspace',
+  props: {
+    owned: {
       /**
-       * Actually set from a `div` object.
+       * @type {?eYo.Board.Main} newValue 
        */
-      set (newValue) {
-        this.viewRect__.set(newValue)
+      board () { return new eYo.Board.Main(this) },
+      /**
+       * The flyout.
+       * @type {?eYo.Flyout} 
+       */
+      flyout () { return new eYo.Flyout(this) },
+      /**
+       * The undo/redo manager
+       * @type {?eYo.Backer} 
+       */
+      backer () { return new eYo.Backer(this) },
+      /**
+       * The workspace's trashCan (if any).
+       * @type {eYo.TrashCan}
+       */
+      trashCan () { return new eYo.TrashCan(this) },
+      /**
+       * The main focus manager.
+       * @type {?eYo.Focus.Main} 
+       */
+      focus () { return new eYo.Focus.Main(this) },
+      zoomer () { return new eYo.Zoomer(this) },
+    },
+    clonable: {
+      /** @type {!eYo.Rect} */
+      viewRect () {
+        new eYo.Rect()
       }
     },
-    /**
-     * The scale
-     * @type {Number} 
-     */
-    scale: {value: 1},
-  }
-)
-
-Object.defineProperties(eYo.Workspace.prototype, {
-  /**
-   * The workspace's desk.
-   * @type {!eYo.Desk}
-   * @private
-   */
-  desk: {
-    get () {
-      return this.owner
-    }
-  },
-  /**
-   * The workspace's workspace.
-   * @type {!eYo.Workspace}
-   * @private
-   */
-  workspace: {
-    get () {
-      return this
+    link: {
+      scale () {
+        return this.options.zoom.startScale || 1
+      },
+    },
+    computed: {
+      /**
+       * The workspace's desk.
+       * @type {!eYo.Desk}
+       * @private
+       */
+      desk: {
+        get () {
+          return this.owner
+        }
+      },
+      /**
+       * The workspace's workspace.
+       * @type {!eYo.Workspace}
+       * @private
+       */
+      workspace: {
+        get () {
+          return this
+        }
+      },
     }
   },
 })
@@ -125,49 +104,10 @@ Object.defineProperties(eYo.Workspace.prototype, {
 /**
  * Make the user interface.
  */
-eYo.Workspace.prototype.initUI = eYo.Decorate.makeInitUI(
-  eYo.Workspace,
-  function() {
-    this.driver.workspaceInit(this)
-    this.trashCan.initUI()
-    this.zoomer.initUI()
-    this.board__.initUI()
-    this.flyout__.initUI()
-    this.recordDeleteAreas()
-    this.layout()  
-  }
-)
-
-/**
- * Dispose of UI resources.
- */
-eYo.Decorate.makeDisposeUI(
-  eYo.Workspace,
-  function() {
-    this.flyout__.disposeUI()
-    this.board__.disposeUI()
-    this.zoomer__.disposeUI()
-    this.trashCan__.disposeUI()
-    this.driver.workspaceDispose(this)
-  }
-)
-
-/**
- * Dispose of this desk's board.
- */
-eYo.Decorate.makeDispose(
-  eYo.Workspace,
-  function() {
-    eYo.Property.dispose(
-      this,
-      'backer',
-      'board',
-      'flyout',
-      'zoomer',
-      'trashCan',
-    )
-  }
-)
+eYo.Workspace.eyo.initUIMake(function() {
+  this.recordDeleteAreas()
+  this.layout()  
+})
 
 /**
  * Update metrics. Sent on document's resize and other occasions.
@@ -181,7 +121,7 @@ eYo.Decorate.makeDispose(
  * 2) Then the board dimensions.
  */
 eYo.Workspace.prototype.updateMetrics = function() {
-  this.ui_driver_mgr.workspaceUpdateMetrics(this)
+  this.ui_driver.updateMetrics(this)
   this.board.updateMetrics()
   this.flyout.updateMetrics()
 }
@@ -198,7 +138,7 @@ eYo.Workspace.prototype.layout = function() {
  * Place the boards.
  */
 eYo.Workspace.prototype.place = function() {
-  this.ui_driver_mgr.wokspacePlace(this)
+  this.ui_driver.place(this)
   this.board.place()
   this.flyout.place()
   var bottom = eYo.Scrollbar.thickness

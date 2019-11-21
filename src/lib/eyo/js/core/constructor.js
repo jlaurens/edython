@@ -14,12 +14,13 @@
 goog.require('eYo.Do')
 
 goog.provide('eYo.Constructor')
+goog.provide('eYo.Constructor.Dlgt')
 
 /**
  * Make a constructor with an 'eyo__' property.
  * Caveat, constructors must have the same arguments.
  * Use a key->value design if you do not want that.
- * The `params` object has template: `{key: String, f: function, owner: Object, super: superClass}`
+ * The `params` object has template: `{key: String, owner: Object, super: superClass, init: function, dispose: function}`
  * @param {!Object} model,  The dictionary of parameters.
  * @return {Object} the created constructor.
  * 
@@ -48,24 +49,12 @@ eYo.Constructor.make = (model) => {
     }
     eYo.Do.inherits(ctor, model.super || model.owner)
   }
-  ctor.eyo__ = new eYo.Constructor.Dlgt(ctor, model)
-  ctor.eyo__.makeDispose = (f) => {
-    ctor.prototype.dispose = function () {
-      try {
-        this.dispose = eYo.Do.nothing
-        f && f.apply(this, arguments)
-        ctor.eyo__.dispose(this)
-        var super_ = ctor.superClass_
-        !!super_ && !!super_.dispose && !!super_.dispose.apply(this, arguments)
-      } finally {
-        delete this.dispose
-      }
-    }
-  }
-  ctor.eyo__.makeDispose()
+  var eyo = ctor.eyo__ = new (model.dlgt || eYo.Constructor.Dlgt)(ctor, model)
+  eyo.constructorMake = eYo.Constructor.make
+  eyo.disposeMake(model.dispose)
   Object.defineProperty(ctor.prototype, 'eyo', {
     get () {
-      return ctor.eyo__
+      return eyo
     },
     set () {
       throw 'Forbidden setter'
@@ -216,21 +205,54 @@ eYo.Constructor.Dlgt.prototype.init = function (object) {
   this.forEachClonable(f)
   suffix = '_'
   this.forEachCached(f)
-  this.forEachClonable(k => {
-    var k__ = k + '__'
-    object[k__] = this.initClonable_[k].call(this)
-  })
+  var f = k => {
+    var init = this.init_ && this.init_[k]
+    if (init) {
+      var k__ = k + '__'
+      object[k__] = init.call(this)
+    }
+  }
+  this.forEachOwned(f)
+  this.forEachClonable(f)
+  this.forEachLink(f)
 }
 
 /**
  * Dispose of the resources declared at that level.
  * @param {Object} instance,  instance is an instance of a subclass of the `ctor_` of the receiver
  */
-eYo.Constructor.Dlgt.prototype.dispose = function (object) {
+eYo.Constructor.Dlgt.prototype.disposeInstance = function (object) {
   this.clearLink_(object)
   this.forgetCached_(object)
   this.disposeOwned_(object)
   this.disposeClonable_(object)
+}
+
+/**
+ * Register the `init` method  in the model, to be used when necessary.
+ * @param {String} k name of the link to add
+ * @param {Object} model Object with `init` key, eventually.
+ */
+eYo.Constructor.Dlgt.prototype.registerInit = function (k, model) {
+  var init = (eYo.isF(model) && model) || (eYo.isF(model.init) && model.init)
+  if (init) {
+    !this.init_ && (this.init_ = Object.create(null))
+    this.init_[k] = init
+  } 
+}
+
+/**
+ * Register the `disposer` method  in the model, to be used when necessary.
+ * See the `disposeOwned` method for more informations.
+ * @param {String} k name of the link to add
+ * @param {Object} model Object with `disposer` key, eventually.
+ */
+eYo.Constructor.Dlgt.prototype.registerDisposer = function (k, model) {
+  var disposer = eYo.isF(model.disposer) && model.disposer
+  if (disposer) {
+    !this.disposer_ && (this.disposer_ = Object.create(null))
+    this.disposer_[k] = disposer
+  } 
 }
 
 /**
@@ -240,30 +262,32 @@ eYo.Constructor.Dlgt.prototype.dispose = function (object) {
  * @param {Object} model Object with `willChange` and `didChange` keys,
  * f any.
  */
-eYo.Constructor.Dlgt.prototype.declareLink_ = function (k, model) {
+eYo.Constructor.Dlgt.prototype.declareLink_ = function (k, model = {}) {
   eYo.parameterAssert(!this.props_.has(k))
   this.link_.add(k)
   const proto = this.ctor_.prototype
   var k_ = k + '_'
   var k__ = k + '__'
+  this.registerInit(k, model)
   Object.defineProperties(
     proto, 
     {
-      [k__]: {value: eYo.NA, writable: true},
+      [k__]: {value: model.value || eYo.NA, writable: true},
       [k_]: {
         get () {
           return this[k__]
         },
         set (after) {
           var before = this[k__]
+          model.validate && (after = model.validate(before, after))
           if (before !== after) {
-            var f = model && model.willChange
+            var f = model.willChange
             if (!f || (f = f.call(this, before, after))) {
               var ff = this[k + 'WillChange']
               ff && ff.call(this, before, after)
               this[k__] = after
               f && f.call(this, before, after)
-              f = model && model.didChange
+              f = model.didChange
               f && f.call(this, before, after)
               ff && ff.call(this, before, after)
               ff = this[k + 'DidChange']
@@ -333,6 +357,8 @@ eYo.Constructor.Dlgt.prototype.declareOwned_ = function (k, model = {}) {
   const proto = this.ctor_.prototype
   var k_ = k + '_'
   var k__ = k + '__'
+  this.registerInit(k, model)
+  this.registerDisposer(k, model)
   Object.defineProperties(proto, {
     [k__]: {value: model.value || eYo.NA, writable: true},
     [k_]: {
@@ -468,8 +494,8 @@ eYo.Constructor.Dlgt.prototype.declareCached_ = function (k, model) {
   } : function () {
     this[k_] = eYo.NA
   }
-  this.update_ || (this.update_ = Object.create(null))
-  proto[k+'Update'] = this.update_[k] = model.update
+  this.updateCached_ || (this.updateCached_ = Object.create(null))
+  proto[k+'Update'] = this.updateCached_[k] = model.update
   ? function (after) {
     var before = this[k__]
     eYo.isDef(after) || (after = init.call(this))
@@ -546,7 +572,7 @@ eYo.Constructor.Dlgt.prototype.declareComputed = function (models) {
  * @param {Map<String, Function|Object>} models,  the key => Function mapping.
  */
 eYo.Constructor.Dlgt.prototype.declareClonable = function (models) {
-  this.initClonable_ || (this.initClonable_ = Object.create(null))
+  this.init_ || (this.init_ = Object.create(null))
   var proto = this.ctor_.prototype
   Object.keys(models).forEach(k => {
     eYo.parameterAssert(!this.props_.has(k))
@@ -558,7 +584,7 @@ eYo.Constructor.Dlgt.prototype.declareClonable = function (models) {
     } else {
       init = model.init
     }
-    this.initClonable_[k] = init
+    this.init_[k] = init
     var k_ = k + '_'
     var k__ = k + '__'
     Object.defineProperties(proto, {
@@ -667,7 +693,7 @@ eYo.Constructor.Dlgt.prototype.disposeClonable_ = function (object) {
 }
 
 /**
- * Add the cached `app` property to the given prototype.
+ * Add the cached `app` property to the prototype.
  * @param {Object} proto
  */
 eYo.Constructor.Dlgt.prototype.addApp = function () {
@@ -685,3 +711,32 @@ eYo.Constructor.Dlgt.prototype.addApp = function () {
   })
 }
 
+/**
+ * Convenient shortcut to crate subclasses.
+ * @param {Object} proto
+ */
+eYo.Constructor.Dlgt.prototype.makeSubclass = function (model) {
+  model.super = this.ctor
+  !model.owner && (model.owner = eYo)
+  !model.dlgt && (model.dlgt = this.constructor)
+  this.constructorMake(model)
+}
+
+/**
+ * Add a dispose function to the prototype of the receiver.
+ */
+eYo.Constructor.Dlgt.prototype.disposeMake = function (f) {
+  var ctor = this.ctor
+  var eyo = this
+  ctor.prototype.dispose = function () {
+    try {
+      this.dispose = eYo.Do.nothing
+      f && f.apply(this, arguments)
+      eyo.disposeInstance(this)
+      var super_ = ctor.superClass_
+      !!super_ && !!super_.dispose && !!super_.dispose.apply(this, arguments)
+    } finally {
+      delete this.dispose
+    }
+  }
+}

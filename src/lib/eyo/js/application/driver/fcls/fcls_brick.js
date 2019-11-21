@@ -20,7 +20,7 @@ goog.forwardDeclare('eYo.Brick')
 /**
  * Faceless driver for bricks.
  */
-eYo.Fcls.makeSubclass('Brick')
+eYo.Fcls.makeDriverClass('Brick')
 
 /**
  * The default implementation does nothing.

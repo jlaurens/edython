@@ -1,7 +1,7 @@
 /**
  * edython
  *
- * Copyright 2018 Jérôme LAURENS.
+ * Copyright 2019 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -14,6 +14,7 @@
 goog.require('eYo.Protocol')
 
 goog.require('eYo.Do')
+goog.require('eYo.Owned.UI2')
 
 goog.require('eYo.Where')
 goog.require('eYo.Decorate')
@@ -52,84 +53,69 @@ goog.forwardDeclare('eYo.Xml')
  * @param {!Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.Slot = function (brick, key, model) {
-  eYo.Slot.superClass_.constructor.call(this, brick)
-  goog.asserts.assert(brick, 'Missing slot owner brick')
-  goog.asserts.assert(key, 'Missing slot key')
-  goog.asserts.assert(model, 'Missing slot model')
-  if (!model.order) {
-    console.error('Missing slot model order')
-  }
-  goog.asserts.assert(model.order, 'Missing slot model order')
-  this.where_ = new eYo.Where()
-  this.reentrant_ = {}
-  this.brick_ = brick
-  this.key_ = key
-  this.model_ = model
-  var setupModel = model => {
-    model.setup_ = true
-    if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
-      delete model.validateIncog
+eYo.UI.Constructor.make({
+  key: 'Slot',
+  owner: eYo,
+  super: eYo.Owned.UI2,
+  init (brick, key, model) {
+    goog.asserts.assert(brick, 'Missing slot owner brick')
+    goog.asserts.assert(key, 'Missing slot key')
+    goog.asserts.assert(model, 'Missing slot model')
+    if (!model.order) {
+      console.error('Missing slot model order')
+    }
+    goog.asserts.assert(model.order, 'Missing slot model order')
+    this.where_ = new eYo.Where()
+    this.reentrant_ = {}
+    this.brick_ = brick
+    this.key_ = key
+    this.model_ = model
+    var setupModel = model => {
+      model.setup_ = true
+      if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
+        delete model.validateIncog
+      }
+    }
+    model.setup_ || setupModel(model)
+    if (goog.isDefAndNotNull(model.check)) {
+      this.magnet_ = new eYo.Magnet(this, eYo.Magnet.IN, model)
+      if (model.wrap) {
+        this.magnet_.wrapped = model.wrap   
+      } else if (model.promise) {
+        this.magnet_.promised = model.promise
+        this.incog = true
+      }
+    }
+    eYo.Field.makeFields(this, model.fields)
+    if (key === 'comment') {
+      this.bind_f && (this.bind_f.isComment = true)
+    }
+    var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)
+    f && (f.call(this))
+  },
+  props: {
+    link: {
+      incog () {
+        return true
+      },
+      brick: {},
+      model: {}
     }
   }
-  model.setup_ || setupModel(model)
-  if (goog.isDefAndNotNull(model.check)) {
-    this.magnet_ = new eYo.Magnet(this, eYo.Magnet.IN, model)
-    if (model.wrap) {
-      this.magnet_.wrapped = model.wrap   
-    } else if (model.promise) {
-      this.magnet_.promised = model.promise
-      this.incog = true
-    }
-  }
-  eYo.Field.makeFields(this, model.fields)
-  if (key === 'comment') {
-    this.bind_f && (this.bind_f.isComment = true)
-  }
-  var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)
-  f && (f.call(this))
-}
-goog.inherits(eYo.Slot, eYo.Owned.UI2)
-
-// Private properties with default values
-Object.defineProperties(eYo.Slot.prototype, {
-  incog_: {value: true, writable: true},
 })
-
-/**
- * Make the UI.
-*/
-eYo.Slot.prototype.initUI = eYo.Decorate.makeInitUI(eYo.Slot, function () {
-  this.ui_driver_mgr.initUI(this)
-})
-
-/**
- * Dispose of the UI.
-*/
-eYo.Decorate.makeDisposeUI(
-  eYo.Slot,
-  function () {
-    this.ui_driver_mgr.disposeUI(this)
-  }
-)
 
 /**
  * Dispose of all attributes.
  * Asks the owner's renderer to do the same.
 * @param {?Boolean} onlyThis  Dispose of the inferior target iff healStack is a falsy value
 */
-eYo.Decorate.makeDispose(
-  eYo.Slot,
-  function (onlyThis) {
-    eYo.Field.disposeFields(this)
-    this.model_ = eYo.NA
-    this.magnet_ && this.magnet_.dispose(onlyThis)
-    this.magnet_ = eYo.NA
-    this.key_ = eYo.NA
-    this.brick_ = eYo.NA
-    eYo.Property.dispose(this, 'where')
-  }
-)
+eYo.Slot.eyo.disposeMake(function (onlyThis) {
+  eYo.Field.disposeFields(this)
+  this.magnet_ && this.magnet_.dispose(onlyThis)
+  this.magnet_ = eYo.NA
+  this.key_ = eYo.NA
+  eYo.Property.dispose(this, 'where')
+})
 
 Object.defineProperties(eYo.Slot.prototype, {
   /**
@@ -189,12 +175,6 @@ Object.defineProperties(eYo.Slot.prototype, {
   ui: {
     get () {
       return this.brick.ui
-    }
-  },
-  ui_driver_mgr: {
-    get () {
-      var ui = this.ui
-      return ui && ui.driver
     }
   },
   incog: {
@@ -276,12 +256,20 @@ Object.defineProperties(eYo.Slot.prototype, {
  * Install this slot and its associate fields on their brick.
  * No data change.
  */
-eYo.Slot.prototype.initUI = function () {
-  this.initUI = eYo.Do.nothing // one shot function
-  this.ui_driver_mgr.initUI(this)
+eYo.Slot.eyo.initUIMake(function () {
   this.forEachField(f => f.initUI())
   this.magnet && (this.magnet.initUI())
-}
+})
+
+/**
+ * UI management.
+ * Install this slot and its associate fields on their brick.
+ * No data change.
+ */
+eYo.Slot.eyo.disposeUIMake(function () {
+  this.magnet && (this.magnet.disposeUI())
+  this.forEachField(f => f.disposeUI())
+})
 
 Object.defineProperties(eYo.Slot.prototype, {
 /**
@@ -596,7 +584,7 @@ eYo.Slot.prototype.didLoad = eYo.Decorate.reentrant_method('didLoad', function (
  */
 eYo.Slot.prototype.forEach = function (helper) {
   var slot = this
-  if (goog.isFunction(helper)) {
+  if (eYo.isF(helper)) {
     do {
       helper(slot)
     } while ((slot = slot.next))

@@ -38,6 +38,7 @@ goog.provide('eYo.Brick.Parameter')
 // eYo.Consolidator.Parameter = function() {
 //   eYo.Consolidator.Parameter.superClass_.constructor.call(this, eYo.Consolidator.Parameter.data)
 // }
+// goog.require(eYo.Consolidator.List)
 // goog.inherits(eYo.Consolidator.Parameter, eYo.Consolidator.List)
 
 // eYo.Consolidator.Parameter.data = {

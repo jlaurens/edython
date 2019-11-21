@@ -12,9 +12,10 @@
 'use strict'
 
 goog.require('eYo.Protocol')
-
+goog.require('eYo.UI.Owned')
 goog.require('eYo.Unit')
 goog.require('eYo.Events')
+
 goog.provide('eYo.Flyout')
 
 goog.forwardDeclare('eYo.Library');
@@ -29,178 +30,161 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
  * Class for a flyout.
  * @param {!eYo.Workspace} owner  The owning desk, which must be a desk...
  * @constructor
+ * @readonly
+ * @property {eYo.Workspace} workspace, The workspace
+ * 
+ * @private
+ * @property {eYo.Search} search Search section.
+ * 
+ * @private
+ * @property {eYo.Library} library Library section.
+ * 
+ * @private
+ * @property {eYo.Draft} draft Draft section.
+ *
+ * @readonly
+ * @property {boolean} closed Whether the flyout is closed.
+ * 
+ * @property {boolean}autoClose Does the flyout automatically close when a brick is created?
+ * 
+ * @readonly
+ * @property {boolean} visible Whether the flyout is visible.
+ * 
+ * @readonly
+ * @property {boolean} closed Whether the flyout is closed.
+ *
+ * @readonly
+ * @property {boolean} containerVisible Whether the board containing this flyout is visible.
+ * 
+ * @readonly
+ * @property {number} dragAngleLimit
+ * Range of a drag angle from a flyout considered "dragging toward board".
+ * Drags that are within the bounds of this many degrees from the orthogonal
+ * line to the flyout edge are considered to be "drags toward the board".
+ * Example:
+ * Flyout Edge   Board
+ * [brick] /  <-within this angle, drags "toward board" |
+ * [brick] ---- orthogonal to flyout boundary ----          |
+ * [brick] \                                                |
+ * The angle is given in degrees from the orthogonal.
+ *
+ * This is used to know when to create a new brick and when to scroll the
+ * flyout. Setting it to 360 means that all drags create a new brick.
+ *
+ * @private
+ * @property {Number} width_  Width of flyout.
+ *
+ * @property {number} height_ Height of flyout.
+ * @private
  */
-eYo.Flyout = function(owner) {
-  goog.asserts.assert(!owner.hasUI, 'TOO LATE')
-  eYo.Fluyout.superClass_.constructor.call(this, owner)
+eYo.UI.Constructor.make({
+  key: 'Flyout',
+  owner: eYo,
+  super: eYo.UI.Owned,
+  init (owner) {
   // First
   if (!this.autoClose) {
     this.filterWrapper_ = this.filterForCapacity_.bind(this)
     owner.board.addChangeListener(this.filterWrapper_)
   }
   var flyoutOptions = this.options
-  /**
-   * Position of the flyout relative to the board.
-   * @type {number}
-   * @private
-   */
-  this.anchor_ = flyoutOptions.anchor || eYo.Flyout.AT_RIGHT
-  /**
-   * Position and dimensions of the flyout in the workspace.
-   * @type {number}
-   * @private
-   */
-  this.viewRect__ = new eYo.Rect().tie(board.metrics_.view, {
-    l: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
-    h: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
-  }, {
-    l: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
-    h: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
-  })
-  /**
-   * Opaque data that can be passed to unbindEvent.
-   * @type {!Array.<!Array>}
-   * @private
-   */
-  this.eventWrappers_ = []
-  /**
-   * List of event listeners.
-   * Array of opaque data that can be passed to unbindEvent.
-   * @type {!Array.<!Array>}
-   * @private
-   */
-  this.listeners_ = []
-
-  /**
-   * List of bricks that should always be disabled.
-   * @type {!Array.<!eYo.Brick>}
-   * @private
-   */
-  this.permanentlyDisabled_ = []
-  if (flyoutOptions.autoClose) {
-    this.autoClose = true
-  }
-  /**
-   * Search section.
-   * @type {eYo.Search}
-   * @private
-   */
-  this.search_ = new eYo.Search(this)
-  /**
-   * Library section.
-   * @type {eYo.Library}
-   * @private
-   */
-  this.library_ = new eYo.Library(this)
-  /**
-   * Draft section.
-   * @type {eYo.Draft}
-   * @private
-   */
-  this.draft_ = new eYo.Draft(this)
-
-  this.disposeUI = eYo.Do.nothing
-}
-goog.inherits(eYo.Flyout, eYo.Owned.UI)
-
-eYo.Property.addClonableMany(eYo.Flyout.prototype, 'viewRect')
-
-Object.defineProperties(eYo.Flyout.prototype, {
-  /**
-   * The workspace
-   * @type {eYo.Workspace}
-   * @readonly
-   */
-  workspace: { 
-    get () {
-      return this.owner
-    }
-  },
-  /**
-   * Whether the flyout is closed.
-   * @type {boolean}
-   * @readonly
-   */
-  closed: {
-    get () {
-      return this.closed_
-    }
-  },
-  /**
-   * Does the flyout automatically close when a brick is created?
-   * @type {boolean}
-   */
-  autoClose: {value: true, writable: true},
-  /**
-   * Whether the flyout is visible.
-   * @type {boolean}
-   * @private
-   */
-  visible_: {value: false, writable: true},
-  /**
-   * Whether the flyout is closed.
-   * @type {boolean}
-   * @private
-   */
-  closed_: {value: false, writable: true},
-  /**
-   * Whether the board containing this flyout is visible.
-   * @type {boolean}
-   * @private
-   */
-  containerVisible_: {value: true, writable: true},
-  /**
-   * Range of a drag angle from a flyout considered "dragging toward board".
-   * Drags that are within the bounds of this many degrees from the orthogonal
-   * line to the flyout edge are considered to be "drags toward the board".
-   * Example:
-   * Flyout Edge   Board
-   * [brick] /  <-within this angle, drags "toward board" |
-   * [brick] ---- orthogonal to flyout boundary ----          |
-   * [brick] \                                                |
-   * The angle is given in degrees from the orthogonal.
-   *
-   * This is used to know when to create a new brick and when to scroll the
-   * flyout. Setting it to 360 means that all drags create a new brick.
-   * @type {number}
-   * @private
-  */
-  dragAngleLimit_: {value: 70, writable: true},
+/**
+ * Position of the flyout relative to the board.
+ * @type {number}
+ * @private
+ */
+this.anchor_ = flyoutOptions.anchor || eYo.Flyout.AT_RIGHT
+/**
+ * Position and dimensions of the flyout in the workspace.
+ * @type {number}
+ * @private
+ */
+this.viewRect__ = new eYo.Rect().tie(board.metrics_.view, {
+  l: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
+  h: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
+}, {
+  l: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
+  h: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
 })
+/**
+ * Opaque data that can be passed to unbindEvent.
+ * @type {!Array.<!Array>}
+ * @private
+ */
+this.eventWrappers_ = []
+/**
+ * List of event listeners.
+ * Array of opaque data that can be passed to unbindEvent.
+ * @type {!Array.<!Array>}
+ * @private
+ */
+this.listeners_ = []
+
+/**
+ * List of bricks that should always be disabled.
+ * @type {!Array.<!eYo.Brick>}
+ * @private
+ */
+this.permanentlyDisabled_ = []
+if (flyoutOptions.autoClose) {
+  this.autoClose = true
+}
+
+  },
+  props: {
+    owned: {
+      search () {
+        return new eYo.Search(this)
+      },
+      library () {
+        return new eYo.Library(this)
+      },
+      draft () {
+        return new eYo.Draft(this)
+      }
+    },
+    computed: {
+      workspace () {
+        return this.owner
+      },
+      toolbar () {
+        return this.toolbar_
+      },
+      width_: {
+        get () {
+          return this.viewRect_.size_.width
+        },
+        set (newValue) {
+          if (this.viewRect_.size_.width !== newValue) {
+            this.viewRect_.size_.width = newValue
+            this.desk.board.layout()
+          }
+        }
+      },
+      height_: {
+        get () {
+          return this.viewRect_.size_.height
+        },
+        set (newValue) {
+          if (this.viewRect_.size_.height !== newValue) {
+            this.viewRect_.size_.height = newValue
+            this.desk.board.layout()
+          }
+        }
+      },
+    },
+    link: {
+      closed: {value: false},
+      autoClose: {value: false},
+      visible: {value: false},
+      containerVisible: {value: true},
+      dragAngleLimit: {value: 70},
+    }
+  }
+})
+
 // Computed properties
 Object.defineProperties(eYo.Flyout.prototype, {
-  /**
-   * Width of flyout.
-   * @type {number}
-   * @private
-   */
-  width_: {
-    get () {
-      return this.viewRect_.size_.width
-    },
-    set (newValue) {
-      if (this.viewRect_.size_.width !== newValue) {
-        this.viewRect_.size_.width = newValue
-        this.desk.board.layout()
-      }
-    }
-  },
-  /**
-   * Height of flyout.
-   * @type {number}
-   * @private
-   */
-  height_: {
-    get () {
-      return this.viewRect_.size_.height
-    },
-    set (newValue) {
-      if (this.viewRect_.size_.height !== newValue) {
-        this.viewRect_.size_.height = newValue
-        this.desk.board.layout()
-      }
-    }
-  },
   /**
    * This size and anchor of the receiver and wrapped
    * in an object with eponym keys.
@@ -244,68 +228,41 @@ Object.defineProperties(eYo.Flyout.prototype, {
       return rect
     }
   },
-  toolbar: {
-    get () {
-      return this.toolbar_
-    }
-  }
 })
 
 /**
  * Make the UI
  */
-eYo.Flyout.prototype.initUI = function () {
-  this.hide()
-  var d = this.ui_driver_mgr
-  d.initUI(this)
-  if (flyoutOptions.switcher) {
-    var tb = this.toolbar_ = new eYo.FlyoutToolbar(this, flyoutOptions.switcher)
+eYo.Flyout.eyo.initUIMake(function () {
+  var switcher = this.flyoutOptions.switcher
+  if (switcher) {
+    var tb = this.toolbar_ = new eYo.FlyoutToolbar(this, switcher)
     d.toolbarInitUI(tb)
     tb.doSelectGeneral(null) // is it necessary ?
   }
-  this.draft_.initUI()
-  this.search_.initUI()
-  this.library_.initUI()
-  delete this.disposeUI
-  this.initUI = eYo.Do.nothing
-}
+})
 
 /**
  * Dispose of this flyout UI resources.
  * Unlink from all DOM elements to prevent memory leaks.
  */
-eYo.Flyout.prototype.disposeUI = function() {
+eYo.Flyout.eyo.disposeUIMake(function() {
   this.hide()
-  this.draft_.disposeUI()
-  this.search_.disposeUI()
-  this.library_.disposeUI()
   var d = this.ui_driver_mgr
   this.toolbar_ && d.toolbarDisposeUI(this.toolbar_)
   d.disposeUI(this)
-  eYo.Property.dispose(this, 'scrollbar_')
-  delete this.initUI
-  this.disposeUI = eYo.Do.nothing
-}
+  eYo.Flyout.eyo.disposeOwned(this, 'scrollbar_')
+})
 
 /**
  * Dispose of this flyout.
  * Sever all links.
  */
-eYo.Flyout.prototype.dispose = function() {
-  this.disposeUI()
-  eYo.Property.dispose(this, [
-    'viewRect_',
-    'scrollbar_',
-    'draft_',
-    'search_',
-    'library_'
-  ])
+eYo.Flyout.eyo.disposeMake(function() {
   if (!this.filterWrapper_) {
     this.owner_.removeChangeListener(this.filterWrapper_)
   }
-  eYo.Flyout.superClass_.dispose.call(this)
-  this.dispose = eYo.Do.nothing
-}
+})
 
 /**
  * When the size of the receiver did change.

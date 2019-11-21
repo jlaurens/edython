@@ -1,2 +1,9 @@
 <!-- Created by `npm run eyo:prepare` -->
       <script src="ROOT_PLACE_HOLDER/board_dragger.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/db.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/demo.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/key_handler.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/menu_manager.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/responder.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/scaler.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/tooltip.test.js" charset="utf-8"></script>
