@@ -661,17 +661,16 @@ eYo.Constructor.Dlgt.prototype.declareClonable = function (models) {
 
 /**
  * Dispose in the given object, the properties given by their main name.
- * @param {Object} object, the object that owns the property
- * @param {Array<string>} names,  a list of names
+ * @param {Object} object, the object that owns the property. The other parameters are forwarded to the dispose method.
  */
-eYo.Constructor.Dlgt.prototype.disposeOwned_ = function (object) {
+eYo.Constructor.Dlgt.prototype.disposeOwned_ = function (object, ...params) {
   this.forEachOwned(k => {
     var k_ = k + '_'
     var k__ = k + '__'
     var x = object[k__]
     if (x) {
       object[k_] = eYo.NA
-      x.dispose()
+      x.dispose(...params)
     }
   })
 }

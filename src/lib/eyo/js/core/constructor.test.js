@@ -886,8 +886,9 @@ describe ('Constructor', function () {
       NS.A.prototype.fooWillChange = NS.A.prototype.fooDidChange = test
       var a = new NS.A(foo_before)
       chai.assert(a.foo === foo_before)
+      flag = 0
       a.foo_ = foo_after
-      chai.assert(flag === 421)
+      chai.assert(flag === 100)
       // Dispose
       B.prototype.dispose = function (what) {
         flag += 1000
