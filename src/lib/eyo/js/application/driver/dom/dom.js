@@ -11,13 +11,10 @@
  */
 'use strict'
 
-goog.require('eYo.Driver')
+goog.require('eYo.Fcls')
+goog.require('eYo.Fcls.Mgr')
 
 goog.provide('eYo.Dom')
-goog.provide('eYo.Dom.Mgr')
-
-goog.forwardDeclare('goog.dom')
-goog.forwardDeclare('goog.events')
 
 /**
  * @name {eYo.Dom}
@@ -26,12 +23,17 @@ goog.forwardDeclare('goog.events')
 
 eYo.Dom = Object.create(null)
 
+goog.provide('eYo.Dom.Mgr')
+
+goog.forwardDeclare('goog.dom')
+goog.forwardDeclare('goog.events')
+
 /**
  * The manager of all the dom drivers.
  * The dom drivers are uncomplete drivers.
  * @type {eYo.Dom.Mgr}
  */
-eYo.Driver.makeMgrClass(eYo.Dom)
+eYo.Fcls.makeMgrClass(eYo.Dom)
 
 /**
  * @name {eYo.Dom.Decorate}

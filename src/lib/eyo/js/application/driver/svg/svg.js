@@ -12,9 +12,19 @@
 'use strict'
 
 goog.require('eYo.Dom')
+goog.require('eYo.Dom.Mgr')
+
 goog.require('eYo.Decorate')
 
 goog.provide('eYo.Svg')
+
+/**
+ * A namespace.
+ * @name{eYo.Svg}
+ * @namespace
+ */
+eYo.Svg = Object.create(null)
+
 goog.provide('eYo.Svg.Mgr')
 
 goog.forwardDeclare('eYo.T3.Profile')
@@ -28,17 +38,10 @@ goog.forwardDeclare('eYo.Style')
 goog.forwardDeclare('goog.userAgent')
 
 /**
- * A namespace.
- * @name{eYo.Svg}
- * @namespace
- */
-eYo.Svg = Object.create(null)
-
-/**
  * The manager of all the svg drivers.
  * @type {eYo.Svg.Mgr}
  */
-eYo.Dom.Mgr.eyo.makeSubclass(eYo.Svg)
+eYo.Dom.Mgr.makeSubclass(eYo.Svg)
 
 /**
  * A namespace.

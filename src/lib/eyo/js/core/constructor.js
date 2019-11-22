@@ -50,6 +50,9 @@ eYo.Constructor.make = (model) => {
     eYo.Do.inherits(ctor, model.super || model.owner)
   }
   var eyo = ctor.eyo__ = new (model.dlgt || eYo.Constructor.Dlgt)(ctor, model)
+  ctor.makeSubclass = (model) => {
+    return eyo.makeSubclass(model)
+  }
   eyo.constructorMake = eYo.Constructor.make
   eyo.disposeMake(model.dispose)
   Object.defineProperty(ctor.prototype, 'eyo', {
@@ -715,6 +718,11 @@ eYo.Constructor.Dlgt.prototype.addApp = function () {
  * @param {Object} proto
  */
 eYo.Constructor.Dlgt.prototype.makeSubclass = function (model) {
+  if (goog.isString(model)) {
+    model = {
+      key: model
+    }
+  }
   model.super = this.ctor
   !model.owner && (model.owner = eYo)
   !model.dlgt && (model.dlgt = this.constructor)

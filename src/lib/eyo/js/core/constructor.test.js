@@ -1344,8 +1344,8 @@ describe ('Constructor', function () {
         flag += 1
       }
     })
-    chai.assert(NS.A.eyo.makeSubclass)
-    NS.A.eyo.makeSubclass({
+    chai.assert(NS.A.makeSubclass)
+    NS.A.makeSubclass({
       key: 'AB',
       owner: NS.A,
       init() {
@@ -1389,8 +1389,8 @@ describe ('Constructor', function () {
     })
     chai.assert(flag === 1)
     chai.assert(NS.A.eyo.constructor === Dlgt)
-    chai.assert(NS.A.eyo.makeSubclass)
-    NS.A.eyo.makeSubclass({
+    chai.assert(NS.A.makeSubclass)
+    NS.A.makeSubclass({
       key: 'AB',
       owner: NS.A,
     })

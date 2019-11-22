@@ -14,15 +14,16 @@
 goog.require('eYo.Driver')
 
 goog.provide('eYo.Fcls')
-goog.provide('eYo.Fcls.Mgr')
-
-goog.forwardDeclare('goog.dom')
 
 /**
  * @name {eYo.Fcls}
  * @namespace
  */
 eYo.Fcls = Object.create(null)
+
+goog.provide('eYo.Fcls.Mgr')
+
+goog.forwardDeclare('goog.dom')
 
 /**
  * The manager of all the faceless drivers.

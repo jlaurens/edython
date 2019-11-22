@@ -328,7 +328,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/abstract/owned_ui.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/board.js" \
 --js "src/lib/eyo/js/application/desk/desk.js" \
---js "src/lib/eyo/js/application/driver/dom/dom.js" \
 --js "src/lib/eyo/js/application/driver/fcls/fcls.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/flyout.js" \
 --js "src/lib/eyo/js/application/abstract/owned_ui2.js" \
@@ -337,11 +336,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/scrollbar/scrollbar.js" \
 --js "src/lib/eyo/js/application/desk/workspace/scroller/scroller.js" \
 --js "src/lib/eyo/js/application/abstract/workspace_control.js" \
---js "src/lib/eyo/js/application/driver/dom/dom_application.js" \
---js "src/lib/eyo/js/application/driver/dom/dom_board.js" \
---js "src/lib/eyo/js/application/driver/dom/dom_brick.js" \
---js "src/lib/eyo/js/application/driver/dom/dom_desk.js" \
---js "src/lib/eyo/js/application/driver/dom/dom_search.js" \
+--js "src/lib/eyo/js/application/driver/dom/dom.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/draft.js" \
 --js "src/lib/eyo/js/application/driver/fcls/fcls_application.js" \
 --js "src/lib/eyo/js/application/driver/fcls/fcls_board.js" \
@@ -362,7 +357,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/field/field.js" \
 --js "src/lib/eyo/js/application/desk/graphic/graphic.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/magnet/magnet.js" \
---js "src/lib/eyo/js/application/driver/svg/svg.js" \
 --js "src/lib/eyo/js/application/desk/template/template.js" \
 --js "src/lib/eyo/js/application/desk/terminal/terminal.js" \
 --js "src/lib/eyo/js/application/desk/workspace/trashcan/trashcan.js" \
@@ -370,6 +364,12 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/variable/variable.js" \
 --js "src/lib/eyo/js/application/desk/workspace/workspace.js" \
 --js "src/lib/eyo/js/application/desk/workspace/zoomer/zoomer.js" \
+--js "src/lib/eyo/js/application/driver/dom/dom_application.js" \
+--js "src/lib/eyo/js/application/driver/dom/dom_board.js" \
+--js "src/lib/eyo/js/application/driver/dom/dom_brick.js" \
+--js "src/lib/eyo/js/application/driver/dom/dom_desk.js" \
+--js "src/lib/eyo/js/application/driver/dom/dom_search.js" \
+--js "src/lib/eyo/js/application/driver/svg/svg.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom_flyout.js" \
 --js "src/lib/eyo/js/application/driver/svg/svg_application.js" \
 --js "src/lib/eyo/js/application/driver/svg/svg_board.js" \

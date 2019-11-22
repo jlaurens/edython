@@ -54,6 +54,7 @@ eYo.Driver.makeMgrClass = (owner, super_) => {
   !super_ && (super_ = eYo.Owned)
   var driverNames = new Set()
   var ctor = eYo.Constructor.make({
+    key: 'Mgr',
     owner: owner,
     super: super_ || eYo.Owned,
     dlgt: eYo.Driver.Dlgt,
@@ -74,8 +75,6 @@ eYo.Driver.makeMgrClass = (owner, super_) => {
       }
     }
   })
-  var eyo = ctor.eyo__
-  console.warn('I AM EXPECTING SOMETHIN:', eyo)
   /**
    * Convenient driver constructor maker.
    * The prototype will have eventually an `initUI` or `disposeUI`
@@ -126,6 +125,9 @@ eYo.Driver.makeMgrClass = (owner, super_) => {
   }
   // make the default driver
   owner.Default = eYo.Driver.Default
+  owner.makeMgrClass = (onr) => {
+    return eYo.Driver.makeMgrClass(onr, ctor)
+  }
   return ctor
 }
 
