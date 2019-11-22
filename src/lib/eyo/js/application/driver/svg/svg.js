@@ -15,6 +15,7 @@ goog.require('eYo.Dom')
 goog.require('eYo.Decorate')
 
 goog.provide('eYo.Svg')
+goog.provide('eYo.Svg.Mgr')
 
 goog.forwardDeclare('eYo.T3.Profile')
 goog.forwardDeclare('eYo.Svg.Brick')
@@ -37,7 +38,7 @@ eYo.Svg = Object.create(null)
  * The manager of all the svg drivers.
  * @type {eYo.Svg.Mgr}
  */
-eYo.Dom.Mgr.eyo.makeSublass(eYo.Svg)
+eYo.Dom.Mgr.eyo.makeSubclass(eYo.Svg)
 
 /**
  * A namespace.

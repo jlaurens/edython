@@ -14,6 +14,7 @@
 goog.require('eYo.Driver')
 
 goog.provide('eYo.Fcls')
+goog.provide('eYo.Fcls.Mgr')
 
 goog.forwardDeclare('goog.dom')
 
@@ -27,5 +28,5 @@ eYo.Fcls = Object.create(null)
  * The manager of all the faceless drivers.
  * @type {eYo.Fcls.Mgr}
  */
-eYo.Driver.makeManagerClass(eYo.Fcls)
+eYo.Driver.makeMgrClass(eYo.Fcls)
 

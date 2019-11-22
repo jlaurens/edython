@@ -17,29 +17,29 @@ goog.provide('eYo.font-face')
  /**
  * Setup the font style, amongst others.
  */
-eYo.Temp.x = ((static) => {
+eYo.Temp.x = ((static_) => {
   eYo.setup.register(() => {
     eYo.Css.insertRuleAt(`@font-face {
   font-family: 'DejaVuSansMono';
-  src: local('☺'),url(${static}/font/DejaVuSansMono.woff') format('woff');
+  src: local('☺'),url(${static_}/font/DejaVuSansMono.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }`)
     eYo.Css.insertRuleAt(`@font-face {
   font-family: 'DejaVuSansMono';
-  src: local('☺'), url('${static}/font/DejaVuSansMono-Bold.woff')format('woff');
+  src: local('☺'), url('${static_}/font/DejaVuSansMono-Bold.woff')format('woff');
   font-weight: bold;
   font-style: normal;
 }`)
     eYo.Css.insertRuleAt(`@font-face {
   font-family: 'DejaVuSansMono';
-  src: local('☺'),url('${static}/font/DejaVuSansMono-Oblique.woff')format('woff');
+  src: local('☺'),url('${static_}/font/DejaVuSansMono-Oblique.woff')format('woff');
   font-weight: normal;
   font-style: oblique;
 }`)
     eYo.Css.insertRuleAt(`@font-face {
   font-family: 'DejaVuSansMono';
-  src: local('☺'),url('${static}/font/DejaVuSansMono-BoldOblique.woff')format('woff');
+  src: local('☺'),url('${static_}/font/DejaVuSansMono-BoldOblique.woff')format('woff');
   font-weight: bold;
   font-style: oblique;
 }`)

@@ -28,7 +28,7 @@ eYo.Driver = Object.create(null)
 eYo.Constructor.make({
   key: 'Dlgt',
   owner: eYo.Driver,
-  super: null,
+  super: eYo.Constructor.Dlgt,
   init (ctor) {
     this.ctor_ = ctor
   },
@@ -40,36 +40,42 @@ eYo.Constructor.make({
 })
 
 /**
- * Usage: `eYo.Driver.makeManagerClass(eYo.Dom)`.
+ * Usage: `eYo.Driver.makeMgrClass(eYo.Dom)`.
  * Actual implementation with Driver, Dom and Svg drivers.
  * `eYo.Driver`
+ * @param {Oject} owner,  a namespace
+ * @param {Oject} super_,  the super class of the constructor created
+ * @return {Object} a constructor
  */
-eYo.Driver.makeManagerClass = (owner, super_) => {
+eYo.Driver.makeMgrClass = (owner, super_) => {
   if (owner === eYo.Driver) {
     return
   }
   !super_ && (super_ = eYo.Owned)
   var driverNames = new Set()
-  var ctor = owner['Mgr'] = function (owner) {
-    super_.call(this, owner)
-    driverNames.forEach(name => {
-      var n = name[0].toLowerCase() + name.substr(1)
-      var N = name[0].toUpperCase() + name.substr(1)
-      this[n] = new eYo.Driver[N]()
-    })
-  }
-  goog.inherits(ctor, super_)
-  ctor.eyo__ = new eYo.Driver.Dlgt(ctor)
-  Object.defineProperties(ctor, {
-    eyo: {
-      get () {
-        return this.eyo__
-      },
-      set (ignored) {
-        throw 'Forbidden setter'
+  var ctor = eYo.Constructor.make({
+    owner: owner,
+    super: super_ || eYo.Owned,
+    dlgt: eYo.Driver.Dlgt,
+    init () {
+      driverNames.forEach(name => {
+        var n = name[0].toLowerCase() + name.substr(1)
+        var N = name[0].toUpperCase() + name.substr(1)
+        this[n] = new eYo.Driver[N]()
+      })
+    },
+    static: {
+      link: {
+        eyo: {
+          validate (ignored) {
+            throw 'Forbidden setter'
+          }
+        }
       }
     }
   })
+  var eyo = ctor.eyo__
+  console.warn('I AM EXPECTING SOMETHIN:', eyo)
   /**
    * Convenient driver constructor maker.
    * The prototype will have eventually an `initUI` or `disposeUI`
@@ -120,6 +126,7 @@ eYo.Driver.makeManagerClass = (owner, super_) => {
   }
   // make the default driver
   owner.Default = eYo.Driver.Default
+  return ctor
 }
 
 /**

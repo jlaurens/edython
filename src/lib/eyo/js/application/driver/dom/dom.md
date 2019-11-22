@@ -1,6 +1,6 @@
 # Edython's ui dom driver
 
-Absctract driver based on the dom.
+Abstract driver based on the dom.
 This piece of code exists for an eventual portability to another language...
 
 ## Facts

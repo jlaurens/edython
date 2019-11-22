@@ -1357,6 +1357,20 @@ describe ('Constructor', function () {
     var ab = new NS.A.AB()
     chai.assert(flag === 11)
   })
+  it ('Constructor: eyo setter', function () {
+    eYo.Constructor.make({
+      key: 'A',
+      owner: NS,
+      super: null
+    })
+    chai.assert(NS.A.eyo.constructor === eYo.Constructor.Dlgt)
+    chai.expect(() => {
+      NS.A.eyo = null
+    }).to.throw()
+    chai.expect(() => {
+      NS.A.eyo_ = null
+    }).to.throw()
+  })
   it ('Constructor: dlgt key', function () {
     var flag = 0
     var Dlgt = function (ctor, model) {

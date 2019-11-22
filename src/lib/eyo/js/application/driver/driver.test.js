@@ -4,7 +4,7 @@ describe('Driver', function() {
   it ('Driver: Basic', function () {
     chai.assert(eYo.Driver)
     chai.assert(eYo.Driver.Dlgt)
-    chai.assert(eYo.isF(eYo.Driver.makeManagerClass))
+    chai.assert(eYo.isF(eYo.Driver.makeMgrClass))
     chai.assert(eYo.isF(eYo.Driver.Default))
   })
   it ('Driver: Default', function () {
@@ -13,8 +13,8 @@ describe('Driver', function() {
     chai.assert(eYo.isF(d.initUI))
     chai.assert(eYo.isF(d.disposeUI))
   })
-  it ('Driver: makeManagerClass', function () {
-    eYo.Driver.makeManagerClass(NS)
+  it ('Driver: makeMgrClass', function () {
+    eYo.Driver.makeMgrClass(NS)
     chai.assert(NS.Mgr)
     chai.assert(NS.Mgr.eyo.ctor === NS.Mgr)
     chai.assert(NS.Mgr.eyo.constructor === eYo.Driver.Dlgt)
@@ -22,14 +22,14 @@ describe('Driver', function() {
     chai.assert(NS.Default = eYo.Driver.Default)
   })
   it ('Driver: manager', function () {
-    eYo.Driver.makeManagerClass(NS)
+    eYo.Driver.makeMgrClass(NS)
     var onr = {}
     onr.mgr = new NS.Mgr(onr)
     chai.assert(onr.mgr)
     chai.assert(onr.mgr.owner === onr)
   })
   it ('Driver: makeDriverClass basic', function () {
-    eYo.Driver.makeManagerClass(NS)
+    eYo.Driver.makeMgrClass(NS)
     NS.makeDriverClass({
       key: 'Foo',
       owner: NS,
@@ -42,7 +42,7 @@ describe('Driver', function() {
     }).to.not.throw()
   })
   it ('Driver: makeDriverClass inherits', function () {
-    eYo.Driver.makeManagerClass(NS)
+    eYo.Driver.makeMgrClass(NS)
     var flag
     NS.Default = function () {
       flag += 421
@@ -61,7 +61,7 @@ describe('Driver', function() {
   })
   it ('Driver: makeDriverClass with model', function () {
     var flag
-    eYo.Driver.makeManagerClass(NS)
+    eYo.Driver.makeMgrClass(NS)
     var super_ = (NS.super && owner.super[name])|| NS.Default
     chai.assert(super_ === NS.Default)
     NS.makeDriverClass({
@@ -88,7 +88,7 @@ describe('Driver', function() {
   })
   it ('Driver: makeDriverClass concurrent', function () {
     var flag
-    eYo.Driver.makeManagerClass(NS)
+    eYo.Driver.makeMgrClass(NS)
     NS.makeDriverClass({
       key: 'Foo',
       owner: NS,

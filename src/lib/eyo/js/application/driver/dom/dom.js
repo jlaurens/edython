@@ -13,30 +13,31 @@
 
 goog.require('eYo.Driver')
 
-goog.require('goog.events')
-
 goog.provide('eYo.Dom')
+goog.provide('eYo.Dom.Mgr')
+
 goog.forwardDeclare('goog.dom')
+goog.forwardDeclare('goog.events')
 
 /**
  * @name {eYo.Dom}
  * @namespace
  */
+
 eYo.Dom = Object.create(null)
-
-/**
- * @name {eYo.Dom.Decorate}
- * @namespace
- */
-eYo.Dom.Decorate = Object.create(null)
-
 
 /**
  * The manager of all the dom drivers.
  * The dom drivers are uncomplete drivers.
  * @type {eYo.Dom.Mgr}
  */
-eYo.Driver.makeManagerClass(eYo.Dom)
+eYo.Driver.makeMgrClass(eYo.Dom)
+
+/**
+ * @name {eYo.Dom.Decorate}
+ * @namespace
+ */
+eYo.Dom.Decorate = Object.create(null)
 
 /**
  * Decorates a function as `initUI`.
