@@ -14,67 +14,68 @@
 goog.require('eYo.Svg')
 
 goog.provide('eYo.Svg.Flyout')
+goog.provide('eYo.Svg.FlyoutToolbar')
 
 goog.forwardDeclare('eYo.Flyout')
+goog.forwardDeclare('eYo.FlyoutToolbar')
 
 /**
  * Svg driver for the flyout
  */
-eYo.Svg.makeDriverClass('Flyout')
+eYo.Svg.makeDriverClass('Flyout', {
+  /**
+   * Initializes the flyout SVG ressources.
+   * @param {!eYo.Flyout} flyout
+   */
+  initUI (flyout) {
+    var dom = flyout.dom
+    var svg = dom.svg = Object.create(null)
+    /*
+    <svg class="eyo-flyout">
+      <g class="eyo-flyout-canvas">
+        <path class="eyo-flyout-background"/>
+      </g>
+      <g class="eyo-board">...</g>
+    </svg>
+    */
+    var root = svg.root_ = eYo.Svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
+    x.dataset && (x.dataset.type = 'flyout board')
 
-/**
- * Initializes the flyout SVG ressources.
- * @param {!eYo.Flyout} flyout
- */
-eYo.Svg.Flyout.prototype.initUI = eYo.Svg.decorate.initUI(eYo.Svg.Flyout, function(flyout) {
-  var dom = flyout.dom
-  var svg = dom.svg = Object.create(null)
-  /*
-  <svg class="eyo-flyout">
-    <g class="eyo-flyout-canvas">
-      <path class="eyo-flyout-background"/>
-    </g>
-    <g class="eyo-board">...</g>
-  </svg>
-  */
-  var root = svg.root_ = eYo.Svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
-  x.dataset && (x.dataset.type = 'flyout board')
-
-  var background = svg.background_ = eYo.Svg.newElement('path', {
-    class: 'eyo-flyout-background'
-  }, root)
-// Bad design: code reuse: options
-  this.addTooltip(background, eYo.Tooltip.getTitle('flyout'), {
-    position: 'right',
-    theme: 'light bordered',
-    flipDuration: 0,
-    inertia: true,
-    arrow: true,
-    animation: 'perspective',
-    duration: [600, 300],
-    delay: [750, 0],
-    popperOptions: {
-      modifiers: {
-        preventOverflow: {
-          enabled: true
+    var background = svg.background_ = eYo.Svg.newElement('path', {
+      class: 'eyo-flyout-background'
+    }, root)
+  // Bad design: code reuse: options
+    this.addTooltip(background, eYo.Tooltip.getTitle('flyout'), {
+      position: 'right',
+      theme: 'light bordered',
+      flipDuration: 0,
+      inertia: true,
+      arrow: true,
+      animation: 'perspective',
+      duration: [600, 300],
+      delay: [750, 0],
+      popperOptions: {
+        modifiers: {
+          preventOverflow: {
+            enabled: true
+          }
         }
+      },
+      onShow: x => {
+        eYo.Tooltip.hideAll(background)
       }
-    },
-    onShow: x => {
-      eYo.Tooltip.hideAll(background)
-    }
-  })
-})
-
-/**
- * Dispose of the given slot's rendering resources.
- * @param {!eYo.Flyout} flyout
- */
-eYo.Svg.Decorate.disposeUI(eYo.Svg.Flyout, function (flyout) {
-  var dom = flyout.dom
-  goog.dom.removeNode(dom.svg.root_)
-  dom.svg.root_ = null
-  dom.svg = null
+    })
+  },
+  /**
+   * Dispose of the given slot's rendering resources.
+   * @param {!eYo.Flyout} flyout
+   */
+  disposeUI (flyout) {
+    var dom = flyout.dom
+    goog.dom.removeNode(dom.svg.root_)
+    dom.svg.root_ = null
+    dom.svg = null
+  },
 })
 
 /**
@@ -96,172 +97,178 @@ eYo.Svg.Flyout.prototype.displayGet = function (flyout) {
 }
 
 /**
- * Initializes the flyout toolbar SVG ressources.
- * @param {!eYo.FlyoutToolbar} flyoutToolbar
+ * Svg driver for the flyout toolbar.
  */
-eYo.Svg.Flyout.prototype.toolbarInitUI = function(ftb) {
-  if (ftb.dom) {
-    return
-  }
-  var flyout = ftb.flyout
-  var dom = this._initUI(ftb)
-  var svg = dom.svg
-  /*
-  <div class="eyo-flyout-toolbar">
-    <div class="eyo-flyout-toolbar-general">
-      <div class="eyo-flyout-select-general">
-        ...
+eYo.Svg.makeDriverClass('FlyoutToolbar', {
+  /**
+   * Initializes the flyout toolbar SVG ressources.
+   * @param {!eYo.FlyoutToolbar} flyoutToolbar
+   */
+  initUI (ftb) {
+    if (ftb.dom) {
+      return
+    }
+    var flyout = ftb.flyout
+    var dom = this._initUI(ftb)
+    var svg = dom.svg
+    /*
+    <div class="eyo-flyout-toolbar">
+      <div class="eyo-flyout-toolbar-general">
+        <div class="eyo-flyout-select-general">
+          ...
+        </div>
+        <div class="eyo-flyout-control">
+          ...
+        </div>
       </div>
-      <div class="eyo-flyout-control">
-        ...
+      <div class="eyo-flyout-toolbar-module">
+        <div class="eyo-flyout-select-module">
+          ...
+        </div>
       </div>
     </div>
-    <div class="eyo-flyout-toolbar-module">
-      <div class="eyo-flyout-select-module">
-        ...
-      </div>
-    </div>
-  </div>
-  */
-  var cssClass = this.cssClass()
-  dom.control_ = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'control')
-  )
-  svg.root_ = eYo.Svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
-  svg.pathControl_ = eYo.Svg.newElement('path', {
-    id: 'p-flyout-control'
-  }, dom.svg)
-  if (eYo.Application && eYo.app.flyoutDropDown) {
-    dom.select_general_ = goog.dom.createDom(
+    */
+    var cssClass = this.cssClass()
+    dom.control_ = goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select'),
-      eYo.app.flyoutDropDown
+      goog.getCssName(cssClass, 'control')
     )
-  } else if (eYo.Application && eYo.app.flyoutDropDownGeneral && eYo.app.flyoutDropDownModule) {
-    dom.select_general_ = goog.dom.createDom(
+    svg.root_ = eYo.Svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
+    svg.pathControl_ = eYo.Svg.newElement('path', {
+      id: 'p-flyout-control'
+    }, dom.svg)
+    if (eYo.Application && eYo.app.flyoutDropDown) {
+      dom.select_general_ = goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName(cssClass, 'select'),
+        eYo.app.flyoutDropDown
+      )
+    } else if (eYo.Application && eYo.app.flyoutDropDownGeneral && eYo.app.flyoutDropDownModule) {
+      dom.select_general_ = goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName(cssClass, 'select-general'),
+        eYo.app.flyoutDropDownGeneral
+      )
+      dom.select_module_ = goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName(cssClass, 'select-module'),
+        eYo.app.flyoutDropDownModule
+      )
+    } else {
+      dom.select_general_ = goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName(cssClass, 'select-general')
+      )
+      select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
+      // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+      // select.addItem(new eYo.Separator())
+      select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+      select.addItem(new eYo.Separator())
+      select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
+      select.setSelectedIndex(0)
+      select.render(dom.select_general_)
+      flyout.listenableKey = select.listen(
+        goog.ui.Component.EventType.ACTION,
+        flyout.doSelectGeneral,
+        false,
+        flyout
+      )
+      dom.select_module_ = goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName(cssClass, 'select-module')
+      )
+      var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
+      // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+      // select.addItem(new eYo.Separator())
+      select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+      select.addItem(new eYo.Separator())
+      select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
+      select.setSelectedIndex(0)
+      select.render(dom.select_module_)
+      flyout.listenableKey = select.listen(
+        goog.ui.Component.EventType.ACTION,
+        flyout.doSelectGeneral,
+        false,
+        flyout
+      )
+    }
+    var div_general = goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-general'),
-      eYo.app.flyoutDropDownGeneral
+      goog.getCssName(cssClass, 'toolbar-general'),
+      dom.select_general_
     )
-    dom.select_module_ = goog.dom.createDom(
+    var div_module = goog.dom.createDom(
       goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-module'),
-      eYo.app.flyoutDropDownModule
+      goog.getCssName(cssClass, 'toolbar-module'),
+      dom.select_module_
     )
-  } else {
-    dom.select_general_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-general')
+    const div = this.flyout.desk.dom.div_.flyoutToolbar_
+    Object.definePorperty(dom, 'div_', {
+      get () { return div }
+    })
+    if (flyout.switcher_) {
+      div.appendChild(flyout.switcher_)
+      flyout.switcher_.style.left = '0px'
+      flyout.switcher_.style.top = '0px'
+    } else {
+      div.appendChild(div_general)
+      div.appendChild(div_module)
+    }
+    div.appendChild(dom.control_)
+    var bound = dom.bound
+    bound.mousedown = eYo.Dom.bindEvent(
+      dom.control_,
+      'mousedown',
+      flyout,
+      flyout.on_mousedown.bind(flyout)
     )
-    select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-    // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
-    // select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
-    select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
-    select.setSelectedIndex(0)
-    select.render(dom.select_general_)
-    flyout.listenableKey = select.listen(
-      goog.ui.Component.EventType.ACTION,
-      flyout.doSelectGeneral,
-      false,
-      flyout
+    bound.mouseenter = eYo.Dom.bindEvent(
+      dom.control_,
+      'mouseenter',
+      flyout,
+      flyout.on_mouseenter.bind(flyout)
     )
-    dom.select_module_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-module')
+    bound.mouseleave = eYo.Dom.bindEvent(
+      dom.control_,
+      'mouseleave',
+      flyout,
+      flyout.on_mouseleave.bind(flyout)
     )
-    var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-    // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
-    // select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
-    select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
-    select.setSelectedIndex(0)
-    select.render(dom.select_module_)
-    flyout.listenableKey = select.listen(
-      goog.ui.Component.EventType.ACTION,
-      flyout.doSelectGeneral,
-      false,
-      flyout
+    bound.mouseup = eYo.Dom.bindEvent(
+      dom.control_,
+      'mouseup',
+      flyout,
+      flyout.on_mouseup.bind(flyout)
     )
-  }
-  var div_general = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'toolbar-general'),
-    dom.select_general_
-  )
-  var div_module = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'toolbar-module'),
-    dom.select_module_
-  )
-  const div = this.flyout.desk.dom.div_.flyoutToolbar_
-  Object.definePorperty(dom, 'div_', {
-    get () { return div }
-  })
-  if (flyout.switcher_) {
-    div.appendChild(flyout.switcher_)
-    flyout.switcher_.style.left = '0px'
-    flyout.switcher_.style.top = '0px'
-  } else {
-    div.appendChild(div_general)
-    div.appendChild(div_module)
-  }
-  div.appendChild(dom.control_)
-  var bound = dom.bound
-  bound.mousedown = eYo.Dom.bindEvent(
-    dom.control_,
-    'mousedown',
-    flyout,
-    flyout.on_mousedown.bind(flyout)
-  )
-  bound.mouseenter = eYo.Dom.bindEvent(
-    dom.control_,
-    'mouseenter',
-    flyout,
-    flyout.on_mouseenter.bind(flyout)
-  )
-  bound.mouseleave = eYo.Dom.bindEvent(
-    dom.control_,
-    'mouseleave',
-    flyout,
-    flyout.on_mouseleave.bind(flyout)
-  )
-  bound.mouseup = eYo.Dom.bindEvent(
-    dom.control_,
-    'mouseup',
-    flyout,
-    flyout.on_mouseup.bind(flyout)
-  )
-}
-
-/**
- * Initializes the flyout toolbar SVG ressources.
- * @param {!eYo.FlyoutToolbar} flyoutToolbar
- */
-eYo.Svg.Flyout.prototype.toolbarDisposeUI = eYo.Dom.Decorate.disposeUI(function(ftb) {
-  var dom = ftb.dom
-  var div = dom.div_
-  var fc
-  while((fc = dom.div_.firstChild)) {
-    myNode.removeChild(fc)
-  }
-  var svg = dom.svg
-  goog.dom.removeNode(svg.group_)
-  svg.group_ = null
+  },
+  /**
+   * Initializes the flyout toolbar SVG ressources.
+   * @param {!eYo.FlyoutToolbar} flyoutToolbar
+   */
+  disposeUI (ftb) {
+    var dom = ftb.dom
+    var div = dom.div_
+    var fc
+    while((fc = dom.div_.firstChild)) {
+      myNode.removeChild(fc)
+    }
+    var svg = dom.svg
+    goog.dom.removeNode(svg.group_)
+    svg.group_ = null
+  },
 })
+
+
 
 /**
  * Update the view based on coordinates calculated in position().

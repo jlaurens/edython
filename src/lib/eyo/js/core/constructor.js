@@ -25,7 +25,7 @@ goog.provide('eYo.Constructor.Dlgt')
  * @return {Object} the created constructor.
  * 
  */
-eYo.Constructor.make = (model) => {
+eYo.Constructor.make = (key, model) => {
   model.owner || (model.owner = model.super) || eYo.throw('Missing `super` property.')
   var ctor
   if (eYo.isF(model.init)) {
@@ -35,26 +35,25 @@ eYo.Constructor.make = (model) => {
     endInit = model.init.end
   }
   if (model.super === null) {
-    ctor = model.owner[model.key] = function () {
+    ctor = model.owner[key] = function () {
       beginInit && beginInit.apply(this, arguments)
-      ctor.eyo__.init(this)
+      ctor.eyo__.initInstance(this)
       endInit && endInit.apply(this, arguments)
     }
   } else {
-    ctor = model.owner[model.key] = function () {
+    ctor = model.owner[key] = function () {
       ctor.superClass_.constructor.apply(this, arguments)
       beginInit && beginInit.apply(this, arguments)
-      ctor.eyo__.init(this)
+      ctor.eyo__.initInstance(this)
       endInit && endInit.apply(this, arguments)
     }
     eYo.Do.inherits(ctor, model.super || model.owner)
   }
-  var eyo = ctor.eyo__ = new (model.dlgt || eYo.Constructor.Dlgt)(ctor, model)
+  var eyo = ctor.eyo__ = new (model.dlgt || eYo.Constructor.Dlgt)(ctor, key, model)
   ctor.makeSubclass = (model) => {
     return eyo.makeSubclass(model)
   }
   eyo.constructorMake = eYo.Constructor.make
-  eyo.disposeMake(model.dispose)
   Object.defineProperty(ctor.prototype, 'eyo', {
     get () {
       return eyo
@@ -107,6 +106,18 @@ eYo.Constructor.make = (model) => {
     //   })
     // }
   })
+  var f = ctor.eyo.disposeDecorate (model.dispose)
+  ctor.prototype.dispose = function () {
+    try {
+      this.dispose = eYo.Do.nothing
+      f && f.apply(this, arguments)
+      eyo.disposeInstance(this)
+      var super_ = ctor.superClass_
+      !!super_ && !!super_.dispose && !!super_.dispose.apply(this, arguments)
+    } finally {
+      delete this.dispose
+    }
+  }
   return ctor
 }
 
@@ -124,9 +135,13 @@ eYo.Constructor.make = (model) => {
  * @readonly
  * @property {Set<String>} cached_ - Set of cached identifiers. Lazy initializer.
  */
-eYo.Constructor.Dlgt = function (ctor, model) {
+eYo.Constructor.Dlgt = function (ctor, key, model) {
   this.ctor_ = ctor
-  this.name_ = model.key
+  ctor.eyo_ = this
+  if (!model) {
+    console.error('NO MODEL')
+  }
+  this.name_ = key
   var props = model.props
   if (props) {
     this.props_ = new Set()
@@ -142,6 +157,14 @@ Object.defineProperties(eYo.Constructor.Dlgt.prototype, {
   ctor: {
     get () {
       return this.ctor_
+    },
+    set () {
+      throw 'Forbidden setter'
+    }
+  },
+  eyo: {
+    get () {
+      return this.eyo_
     },
     set () {
       throw 'Forbidden setter'
@@ -191,7 +214,7 @@ Object.defineProperties(eYo.Constructor.Dlgt.prototype, {
  * Default implementation forwards to super.
  * @param {Object} instance,  instance is an instance of a subclass of the `ctor_` of the receiver
  */
-eYo.Constructor.Dlgt.prototype.init = function (object) {
+eYo.Constructor.Dlgt.prototype.initInstance = function (object) {
   var suffix = '__'
   var f = k => {
     Object.defineProperty(object, k, {
@@ -272,35 +295,41 @@ eYo.Constructor.Dlgt.prototype.declareLink_ = function (k, model = {}) {
   var k_ = k + '_'
   var k__ = k + '__'
   this.registerInit(k, model)
-  Object.defineProperties(
-    proto, 
-    {
-      [k__]: {value: model.value || eYo.NA, writable: true},
-      [k_]: {
-        get () {
-          return this[k__]
-        },
-        set (after) {
-          var before = this[k__]
-          model.validate && (after = model.validate(before, after))
-          if (before !== after) {
-            var f = model.willChange
-            if (!f || (f = f.call(this, before, after))) {
-              var ff = this[k + 'WillChange']
-              ff && ff.call(this, before, after)
-              this[k__] = after
-              f && f.call(this, before, after)
-              f = model.didChange
-              f && f.call(this, before, after)
-              ff && ff.call(this, before, after)
-              ff = this[k + 'DidChange']
-              ff && ff.call(this, before, after)
-            }
-          }
-        },
-      },
-    }
-  )
+  Object.defineProperty(proto, k__, {
+    value: model.value || eYo.NA,
+    writable: true
+  })
+  Object.defineProperty(proto, k_, {
+    get: model.get_ || function () {
+      return this[k__]
+    },
+    set: model.set_ || function (after) {
+      var before = this[k__]
+      model.validate && (after = model.validate(before, after))
+      if (before !== after) {
+        var f = model.willChange
+        if (!f || (f = f.call(this, before, after))) {
+          var ff = this[k + 'WillChange']
+          ff && ff.call(this, before, after)
+          this[k__] = after
+          f && f.call(this, before, after)
+          f = model.didChange
+          f && f.call(this, before, after)
+          ff && ff.call(this, before, after)
+          ff = this[k + 'DidChange']
+          ff && ff.call(this, before, after)
+        }
+      }
+    },
+  })
+  Object.defineProperty(proto, k, {
+    get: model.get || function () {
+      return this[k_]
+    },
+    set: model.set || function (after) {
+      throw 'Forbidden setter'
+    },
+  })
 }
 
 /**
@@ -434,6 +463,22 @@ eYo.Constructor.Dlgt.prototype.declareOwned = function (many) {
 }
 
 /**
+ * Dispose in the given object, the properties given by their main name.
+ * @param {Object} object, the object that owns the property. The other parameters are forwarded to the dispose method.
+ */
+eYo.Constructor.Dlgt.prototype.disposeOwned_ = function (object, ...params) {
+  this.forEachOwned(k => {
+    var k_ = k + '_'
+    var k__ = k + '__'
+    var x = object[k__]
+    if (x) {
+      object[k_] = eYo.NA
+      x.dispose(...params)
+    }
+  })
+}
+
+/**
  * Add a 2 levels cached property to the receiver's constructor's prototype.
  * @param {String} key,  the key
  * @param {Object} model,  the model object, must have a `init` key and
@@ -551,20 +596,65 @@ eYo.Constructor.Dlgt.prototype.declareComputed = function (models) {
   }
   Object.keys(models).forEach(k => {
     eYo.parameterAssert(!this.props_.has(k))
-    var k_ = k + '_'
-    var k__ = k + '__'
-    Object.defineProperties(proto, {
-      [k]: {
-        get () {
-          return models[k].call(this)
-        },
-        set (after) {
-          throw 'Forbidden setter'
+    try {
+      var k_ = k + '_'
+      var k__ = k + '__'
+      var model = models[k]
+      var get = model.get || eYo.isF(model) && model
+      var set = model.set
+      Object.defineProperty(proto, k, model.set ?
+        {
+          get: get,
+          set (after) {
+            throw 'Forbidden setter'
+          },
+        } : {
+          get: get,
+          set: set,
         }
-      },
-      [k_]: params,
-      [k__]: params,
-    })
+      )
+      k = k_
+      get = eYo.isF(model.get_) ? model.get_ : function () {
+        return this[k__]
+      }
+      set = model.set_
+      Object.defineProperty(proto, k, get ? set ? {
+          get: get,
+          set: set,
+        } : {
+          get: get,
+          set () { throw 'Forbidden setter' },
+        }
+        : set ? {
+          get () { throw 'Forbidden setter' },
+          set: set,
+        } : {
+          get () { throw 'Forbidden setter' },
+          set () { throw 'Forbidden setter' },
+        }
+      )
+      k = k__
+      get = model.get__
+      set = model.set__
+      Object.defineProperty(proto, k, get ? set ? {
+          get: get,
+          set: set,
+        } : {
+          get: get,
+          set () { throw 'Forbidden setter' },
+        }
+        : set ? {
+          get () { throw 'Forbidden setter' },
+          set: set,
+        } : {
+          get () { throw 'Forbidden setter' },
+          set () { throw 'Forbidden setter' },
+        }
+      )
+    }
+    catch (e) {
+      console.error('Computed property problem', k, this.name_)
+    }
   })
 }
 
@@ -664,22 +754,6 @@ eYo.Constructor.Dlgt.prototype.declareClonable = function (models) {
 
 /**
  * Dispose in the given object, the properties given by their main name.
- * @param {Object} object, the object that owns the property. The other parameters are forwarded to the dispose method.
- */
-eYo.Constructor.Dlgt.prototype.disposeOwned_ = function (object, ...params) {
-  this.forEachOwned(k => {
-    var k_ = k + '_'
-    var k__ = k + '__'
-    var x = object[k__]
-    if (x) {
-      object[k_] = eYo.NA
-      x.dispose(...params)
-    }
-  })
-}
-
-/**
- * Dispose in the given object, the properties given by their main name.
  * @param {Object} object, the object that owns the property
  * @param {Array<string>} names,  a list of names
  */
@@ -730,20 +804,13 @@ eYo.Constructor.Dlgt.prototype.makeSubclass = function (model) {
 }
 
 /**
- * Add a dispose function to the prototype of the receiver.
+ * Helper to add a dispose function to the prototype of the receiver.
+ * @param {Function} f a model value for key `dispose`, or a function given by another constructor delegate.
  */
-eYo.Constructor.Dlgt.prototype.disposeMake = function (f) {
-  var ctor = this.ctor
-  var eyo = this
-  ctor.prototype.dispose = function () {
-    try {
-      this.dispose = eYo.Do.nothing
-      f && f.apply(this, arguments)
-      eyo.disposeInstance(this)
-      var super_ = ctor.superClass_
-      !!super_ && !!super_.dispose && !!super_.dispose.apply(this, arguments)
-    } finally {
-      delete this.dispose
-    }
+eYo.Constructor.Dlgt.prototype.disposeDecorate = function (f) {
+  var me = this
+  return function () {
+    f && f.apply(this, arguments)
+    me.disposeInstance(this)
   }
 }

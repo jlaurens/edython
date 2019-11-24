@@ -377,7 +377,7 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
   }
 }
 
-Object.defineProperties(eYo.Brick.prototype, {
+Object.defineProperties(eYo.Brick.Dflt.prototype, {
   toString: {
     get () {
       return new eYo.Py.Exporter().export(this, {is_deep: true})

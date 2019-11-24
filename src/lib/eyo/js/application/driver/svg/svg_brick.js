@@ -32,7 +32,7 @@ goog.forwardDeclare('goog.dom')
  * @property {SvgPathElement} pathCollapsed_  A path.
  * @property {SvgPathElement} pathSelect_  A path.
  * @property {SvgPathElement} pathHilight_  A path.
- * @memberof eYo.Brick.prototype.dom
+ * @memberof eYo.Brick.Dflt.prototype.dom
  */
 
 // Brick management
@@ -40,202 +40,202 @@ goog.forwardDeclare('goog.dom')
 /**
  * Svg driver for bricks.
  */
-eYo.Svg.makeDriverClass('Brick')
-
-/**
- * Initialize the given brick.
- * Adds to brick's renderer a `svg` attribute owning all the svg related resources.
- * The svg
- * @param {!eYo.Brick} brick  the brick the driver acts on
- */
-eYo.Svg.Brick.prototype.initUI = eYo.Decorate.Svg.initUI(function (brick) {
-  var dom = brick.dom
-  var svg = dom.svg
-  // groups:
-  var g = svg.group_ = eYo.Svg.newElement('g',
-    {class: 'eyo-brick'}, null)
-  // Expose this brick's ID on its top-level SVG group.
-  if (g.dataset) {
-    g.dataset.id = brick.id
-    g.dataset.type = brick.type
-  }
-  svg.pathInner_ = eYo.Svg.newElement('path', {
-    class: 'eyo-path-inner'
-  }, null)
-  svg.pathCollapsed_ = eYo.Svg.newElement('path', {
-    class: 'eyo-path-collapsed'
-  }, null)
-  svg.pathContour_ = eYo.Svg.newElement('path', {
-    class: 'eyo-path-contour'
-  }, null)
-  svg.pathShape_ = eYo.Svg.newElement('path', {
-    class: 'eyo-path-shape'
-  }, null)
-  svg.pathSelect_ = eYo.Svg.newElement('path', {
-    class: 'eyo-path-selected'
-  }, null)
-  svg.pathHilight_ = eYo.Svg.newElement('path', {
-    class: 'eyo-path-hilighted'
-  }, null)
-  svg.pathMagnet_ = eYo.Svg.newElement('path', {
-    class: 'eyo-path-magnet eyo-path-hilighted'
-  }, null)
-  // Contour
-  svg.groupContour_ = eYo.Svg.newElement('g', {
-    class: 'eyo-contour'
-  }, null)
-  if (svg.groupContour_.dataset) {
-    svg.groupContour_.dataset.id = brick.id
-    svg.groupContour_.dataset.type = brick.type
-  }
-  if (this.withBBox) {
-    svg.pathBBox_ = eYo.Svg.newElement('path', {
-      class: 'eyo-path-bbox'
-    }, null)
-    goog.dom.appendChild(svg.groupContour_, svg.pathBBox_)
-  }
-  goog.dom.appendChild(svg.groupContour_, svg.pathInner_)
-  goog.dom.appendChild(svg.groupContour_, svg.pathCollapsed_)
-  goog.dom.appendChild(svg.groupContour_, svg.pathContour_)
-  // Shape
-  svg.groupShape_ = eYo.Svg.newElement('g', {
-    class: 'eyo-shape'
-  }, null)
-  if (svg.groupShape_.dataset) {
-    svg.groupShape_.dataset.id = brick.id
-    svg.groupShape_.dataset.type = brick.type
-  }
-  goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
-  if (!brick.board.options.readOnly) {
-    eYo.Dom.bindMouseEvents(brick.ui, g)
-    // I could not achieve to use only one binding
-    // With 2 bindings all the mouse events are catched,
-    // but some, not all?, are catched twice.
-    eYo.Dom.bindMouseEvents(brick.ui, svg.pathContour_)
-  }
-  if (brick.isExpr) {
-    goog.dom.classlist.add(svg.groupShape_, 'eyo-expr')
-    goog.dom.classlist.add(svg.groupContour_, 'eyo-expr')
-    goog.dom.classlist.add(g, 'eyo-top')
-  } else if (brick.isStmt) {
-    svg.groupSharp_ = eYo.Svg.newElement('g', {
-      class: 'eyo-sharp-group'
-    })
-    goog.dom.insertSiblingAfter(svg.groupSharp_, svg.pathContour_)
-    goog.dom.classlist.add(svg.groupShape_, 'eyo-stmt')
-    goog.dom.classlist.add(svg.groupContour_, 'eyo-stmt')
-    if (brick.isControl) {
-      svg.groupPlay_ = eYo.Svg.newElement('g', {
-        class: 'eyo-play'
-      }, g)
-      svg.pathPlayContour_ = eYo.Svg.newElement('path', {
-        class: 'eyo-path-play-contour'
-      }, svg.groupPlay_)
-      svg.pathPlayIcon_ = eYo.Svg.newElement('path', {
-        class: 'eyo-path-play-icon'
-      }, svg.groupPlay_)
-      svg.pathPlayContour_.setAttribute(
-        'd',
-        eYo.Shape.definitionForPlayContour({x: 0, y: 0})
-      )
-      svg.pathPlayIcon_.setAttribute(
-        'd',
-        eYo.Shape.definitionForPlayIcon({x: 0, y: 0})
-      )
-      dom.bound.mousedown = eYo.Dom.bindEvent(
-        svg.pathPlayIcon_,
-        'mousedown',
-        null,
-        e => {
-          if (brick.isInFlyout) {
-            return
-          }
-          console.log('Start executing ' + brick.id)
-          brick.runScript()
-        }
-      )
-      goog.dom.classlist.add(g, 'eyo-start')
-      goog.dom.classlist.add(svg.pathShape_, 'eyo-start-path')
-      goog.dom.insertSiblingAfter(svg.groupPlay_, svg.pathHilight_)
+eYo.Svg.makeDriverClass('Brick', {
+  /**
+   * Initialize the given brick.
+   * Adds to brick's renderer a `svg` attribute owning all the svg related resources.
+   * The svg
+   * @param {!eYo.Brick} brick  the brick the driver acts on
+   */
+  initUI (brick) {
+    var dom = brick.dom
+    var svg = dom.svg
+    // groups:
+    var g = svg.group_ = eYo.Svg.newElement('g',
+      {class: 'eyo-brick'}, null)
+    // Expose this brick's ID on its top-level SVG group.
+    if (g.dataset) {
+      g.dataset.id = brick.id
+      g.dataset.type = brick.type
     }
-  }
-  var parent = brick.parent
-  if (parent) {
-    this.parentDidChange(brick)
-  } else {
-    this.placeOnTop(brick)
-  }
-  if (parent) {
-    var p_svg = parent.dom.svg
-    goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
-    goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
-      'eyo-inner')
-    goog.dom.appendChild(p_svg.groupShape_, svg.groupShape_)
-    goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
-      'eyo-inner')
-    svg.groups = [g, svg.groupShape_, svg.groupContour_]
-  } else {
-    brick.board.dom.svg.canvas_.appendChild(g)
-    goog.dom.insertChildAt(g, svg.groupContour_, 0)
-    goog.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
-      'eyo-inner')
-    goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
-    goog.dom.classlist.remove(/** @type {!Element} */svg.groupShape_,
-      'eyo-inner')
-    svg.groupContour_.removeAttribute('transform')
-    svg.groupShape_.removeAttribute('transform')
-    svg.groups = [g]
-  }
+    svg.pathInner_ = eYo.Svg.newElement('path', {
+      class: 'eyo-path-inner'
+    }, null)
+    svg.pathCollapsed_ = eYo.Svg.newElement('path', {
+      class: 'eyo-path-collapsed'
+    }, null)
+    svg.pathContour_ = eYo.Svg.newElement('path', {
+      class: 'eyo-path-contour'
+    }, null)
+    svg.pathShape_ = eYo.Svg.newElement('path', {
+      class: 'eyo-path-shape'
+    }, null)
+    svg.pathSelect_ = eYo.Svg.newElement('path', {
+      class: 'eyo-path-selected'
+    }, null)
+    svg.pathHilight_ = eYo.Svg.newElement('path', {
+      class: 'eyo-path-hilighted'
+    }, null)
+    svg.pathMagnet_ = eYo.Svg.newElement('path', {
+      class: 'eyo-path-magnet eyo-path-hilighted'
+    }, null)
+    // Contour
+    svg.groupContour_ = eYo.Svg.newElement('g', {
+      class: 'eyo-contour'
+    }, null)
+    if (svg.groupContour_.dataset) {
+      svg.groupContour_.dataset.id = brick.id
+      svg.groupContour_.dataset.type = brick.type
+    }
+    if (this.withBBox) {
+      svg.pathBBox_ = eYo.Svg.newElement('path', {
+        class: 'eyo-path-bbox'
+      }, null)
+      goog.dom.appendChild(svg.groupContour_, svg.pathBBox_)
+    }
+    goog.dom.appendChild(svg.groupContour_, svg.pathInner_)
+    goog.dom.appendChild(svg.groupContour_, svg.pathCollapsed_)
+    goog.dom.appendChild(svg.groupContour_, svg.pathContour_)
+    // Shape
+    svg.groupShape_ = eYo.Svg.newElement('g', {
+      class: 'eyo-shape'
+    }, null)
+    if (svg.groupShape_.dataset) {
+      svg.groupShape_.dataset.id = brick.id
+      svg.groupShape_.dataset.type = brick.type
+    }
+    goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
+    if (!brick.board.options.readOnly) {
+      eYo.Dom.bindMouseEvents(brick.ui, g)
+      // I could not achieve to use only one binding
+      // With 2 bindings all the mouse events are catched,
+      // but some, not all?, are catched twice.
+      eYo.Dom.bindMouseEvents(brick.ui, svg.pathContour_)
+    }
+    if (brick.isExpr) {
+      goog.dom.classlist.add(svg.groupShape_, 'eyo-expr')
+      goog.dom.classlist.add(svg.groupContour_, 'eyo-expr')
+      goog.dom.classlist.add(g, 'eyo-top')
+    } else if (brick.isStmt) {
+      svg.groupSharp_ = eYo.Svg.newElement('g', {
+        class: 'eyo-sharp-group'
+      })
+      goog.dom.insertSiblingAfter(svg.groupSharp_, svg.pathContour_)
+      goog.dom.classlist.add(svg.groupShape_, 'eyo-stmt')
+      goog.dom.classlist.add(svg.groupContour_, 'eyo-stmt')
+      if (brick.isControl) {
+        svg.groupPlay_ = eYo.Svg.newElement('g', {
+          class: 'eyo-play'
+        }, g)
+        svg.pathPlayContour_ = eYo.Svg.newElement('path', {
+          class: 'eyo-path-play-contour'
+        }, svg.groupPlay_)
+        svg.pathPlayIcon_ = eYo.Svg.newElement('path', {
+          class: 'eyo-path-play-icon'
+        }, svg.groupPlay_)
+        svg.pathPlayContour_.setAttribute(
+          'd',
+          eYo.Shape.definitionForPlayContour({x: 0, y: 0})
+        )
+        svg.pathPlayIcon_.setAttribute(
+          'd',
+          eYo.Shape.definitionForPlayIcon({x: 0, y: 0})
+        )
+        dom.bound.mousedown = eYo.Dom.bindEvent(
+          svg.pathPlayIcon_,
+          'mousedown',
+          null,
+          e => {
+            if (brick.isInFlyout) {
+              return
+            }
+            console.log('Start executing ' + brick.id)
+            brick.runScript()
+          }
+        )
+        goog.dom.classlist.add(g, 'eyo-start')
+        goog.dom.classlist.add(svg.pathShape_, 'eyo-start-path')
+        goog.dom.insertSiblingAfter(svg.groupPlay_, svg.pathHilight_)
+      }
+    }
+    var parent = brick.parent
+    if (parent) {
+      this.parentDidChange(brick)
+    } else {
+      this.placeOnTop(brick)
+    }
+    if (parent) {
+      var p_svg = parent.dom.svg
+      goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
+      goog.dom.classlist.add(/** @type {!Element} */(svg.groupContour_),
+        'eyo-inner')
+      goog.dom.appendChild(p_svg.groupShape_, svg.groupShape_)
+      goog.dom.classlist.add(/** @type {!Element} */(svg.groupShape_),
+        'eyo-inner')
+      svg.groups = [g, svg.groupShape_, svg.groupContour_]
+    } else {
+      brick.board.dom.svg.canvas_.appendChild(g)
+      goog.dom.insertChildAt(g, svg.groupContour_, 0)
+      goog.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
+        'eyo-inner')
+      goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
+      goog.dom.classlist.remove(/** @type {!Element} */svg.groupShape_,
+        'eyo-inner')
+      svg.groupContour_.removeAttribute('transform')
+      svg.groupShape_.removeAttribute('transform')
+      svg.groups = [g]
+    }
+  },
+  /**
+   * Remove the svg related resources of brick.
+   * This must be called just when changing the driver in the renderer.
+   * @param {!eYo.Brick} brick  the brick the driver acts on
+   */
+  disposeUI (brick) {
+    var svg = brick.dom.svg
+    // goog.dom.removeNode(dom.svg.group_) only once the block_ design is removed
+    goog.dom.removeNode(svg.group_)
+    svg.group_ = eYo.NA
+    // just in case the path were not already removed as child or a removed parent
+    goog.dom.removeNode(svg.pathShape_)
+    svg.pathShape_ = eYo.NA
+    goog.dom.removeNode(svg.pathContour_)
+    svg.pathContour_ = eYo.NA
+    goog.dom.removeNode(svg.pathCollapsed_)
+    svg.pathCollapsed_ = eYo.NA
+    goog.dom.removeNode(svg.pathBBox_)
+    svg.pathBBox_ = eYo.NA
+    goog.dom.removeNode(svg.pathInner_)
+    svg.pathInner_ = eYo.NA
+    goog.dom.removeNode(svg.pathSelect_)
+    svg.pathSelect_ = eYo.NA
+    goog.dom.removeNode(svg.pathHilight_)
+    svg.pathHilight_ = eYo.NA
+    goog.dom.removeNode(svg.pathMagnet_)
+    svg.pathMagnet_ = eYo.NA
+    if (svg.groupContour_) {
+      goog.dom.removeNode(svg.groupContour_)
+      svg.groupContour_ = eYo.NA
+    }
+    if (svg.groupShape_) {
+      goog.dom.removeNode(svg.groupShape_)
+      svg.groupShape_ = eYo.NA
+    }
+    if (svg.groupSharp_) {
+      goog.dom.removeNode(svg.groupSharp_)
+      svg.groupSharp_ = eYo.NA
+    }
+    if (svg.groupPlay_) {
+      goog.dom.removeNode(svg.groupPlay_)
+      svg.groupPlay_ = eYo.NA
+      svg.pathPlayIcon_ = eYo.NA
+      svg.pathPlayContour_ = eYo.NA
+    }
+    brick.dom.svg = eYo.NA
+  },
 })
 
-
-/**
- * Remove the svg related resources of brick.
- * This must be called just when changing the driver in the renderer.
- * @param {!eYo.Brick} brick  the brick the driver acts on
- */
-eYo.Svg.Brick.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function (brick) {
-  var svg = brick.dom.svg
-  // goog.dom.removeNode(dom.svg.group_) only once the block_ design is removed
-  goog.dom.removeNode(svg.group_)
-  svg.group_ = eYo.NA
-  // just in case the path were not already removed as child or a removed parent
-  goog.dom.removeNode(svg.pathShape_)
-  svg.pathShape_ = eYo.NA
-  goog.dom.removeNode(svg.pathContour_)
-  svg.pathContour_ = eYo.NA
-  goog.dom.removeNode(svg.pathCollapsed_)
-  svg.pathCollapsed_ = eYo.NA
-  goog.dom.removeNode(svg.pathBBox_)
-  svg.pathBBox_ = eYo.NA
-  goog.dom.removeNode(svg.pathInner_)
-  svg.pathInner_ = eYo.NA
-  goog.dom.removeNode(svg.pathSelect_)
-  svg.pathSelect_ = eYo.NA
-  goog.dom.removeNode(svg.pathHilight_)
-  svg.pathHilight_ = eYo.NA
-  goog.dom.removeNode(svg.pathMagnet_)
-  svg.pathMagnet_ = eYo.NA
-  if (svg.groupContour_) {
-    goog.dom.removeNode(svg.groupContour_)
-    svg.groupContour_ = eYo.NA
-  }
-  if (svg.groupShape_) {
-    goog.dom.removeNode(svg.groupShape_)
-    svg.groupShape_ = eYo.NA
-  }
-  if (svg.groupSharp_) {
-    goog.dom.removeNode(svg.groupSharp_)
-    svg.groupSharp_ = eYo.NA
-  }
-  if (svg.groupPlay_) {
-    goog.dom.removeNode(svg.groupPlay_)
-    svg.groupPlay_ = eYo.NA
-    svg.pathPlayIcon_ = eYo.NA
-    svg.pathPlayContour_ = eYo.NA
-  }
-  brick.dom.svg = eYo.NA
-})
+eYo.Svg.Brick.prototype.withBBox = true
 
 /**
  * Whether the given brick can draw.
@@ -252,7 +252,7 @@ eYo.Svg.Brick.prototype.canDraw = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.contourAboveParent_ = function (brick) {
+eYo.Svg.contourAboveParent_ = function (brick) {
   return !brick instanceof eYo.Brick.Expr
 }
 
@@ -281,7 +281,7 @@ eYo.Svg.Brick.prototype.hasFocus = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathSelectDef_ = function (brick) {
+eYo.Svg.Brick.prototype.pathSelectDef_ = function (brick) {
   return eYo.Shape.definitionWithBrick(brick, {dido: true})
 }
 
@@ -290,7 +290,7 @@ eYo.Svg.prototype.pathSelectDef_ = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathDef_ = function (brick) {
+eYo.Svg.Brick.prototype.pathDef_ = function (brick) {
   return eYo.Shape.definitionWithBrick(brick)
 }
 
@@ -299,28 +299,28 @@ eYo.Svg.prototype.pathDef_ = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathControlDef_ = eYo.Svg.prototype.pathDef_
+eYo.Svg.Brick.prototype.pathControlDef_ = eYo.Svg.Brick.prototype.pathDef_
 
 /**
  * Statement brick path.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathStatementDef_ = eYo.Svg.prototype.pathDef_
+eYo.Svg.Brick.prototype.pathStatementDef_ = eYo.Svg.Brick.prototype.pathDef_
 
 /**
  * Brick path.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathGroupShapeDef_ = eYo.Svg.prototype.pathDef_
+eYo.Svg.Brick.prototype.pathGroupShapeDef_ = eYo.Svg.Brick.prototype.pathDef_
 
 /**
  * Brick path.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathValueDef_ = eYo.Svg.prototype.pathDef_
+eYo.Svg.Brick.prototype.pathValueDef_ = eYo.Svg.Brick.prototype.pathDef_
 
 
 /**
@@ -328,28 +328,28 @@ eYo.Svg.prototype.pathValueDef_ = eYo.Svg.prototype.pathDef_
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathContourDef_ = eYo.Svg.prototype.pathDef_
+eYo.Svg.Brick.prototype.pathContourDef_ = eYo.Svg.Brick.prototype.pathDef_
 
 /**
  * Highlighted brick outline. Default implementation forwards to pathDef_.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathHilightDef_ = eYo.Svg.prototype.pathDef_
+eYo.Svg.Brick.prototype.pathHilightDef_ = eYo.Svg.Brick.prototype.pathDef_
 
 /**
  * Brick outline. Default implementation forwards to pathDef_.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathShapeDef_ = eYo.Svg.prototype.pathDef_
+eYo.Svg.Brick.prototype.pathShapeDef_ = eYo.Svg.Brick.prototype.pathDef_
 
 /**
  * Brick path when collapsed.
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathCollapsedDef_ = eYo.Svg.prototype.pathDef_
+eYo.Svg.Brick.prototype.pathCollapsedDef_ = eYo.Svg.Brick.prototype.pathDef_
 
 /**
  * Highlighted magnet outline.
@@ -359,7 +359,7 @@ eYo.Svg.prototype.pathCollapsedDef_ = eYo.Svg.prototype.pathDef_
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathMagnetDef_ = function (brick) {
+eYo.Svg.Brick.prototype.pathMagnetDef_ = function (brick) {
   return eYo.Focus.magnet
   ? eYo.Shape.definitionWithMagnet(eYo.Focus.magnet, {hilight: true})
   : ''
@@ -370,7 +370,7 @@ eYo.Svg.prototype.pathMagnetDef_ = function (brick) {
  * @param {!eYo.Brick} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.prototype.pathBBoxDef_ = function (brick) {
+eYo.Svg.Brick.prototype.pathBBoxDef_ = function (brick) {
   return eYo.Shape.definitionWithBrick(brick, {bbox: true})
 }
 
@@ -585,7 +585,7 @@ eYo.Svg.Brick.prototype.parentDidChange = function (brick, oldParent) {
     brick.ui.placeMagnets_()
     var p_svg = newParent.dom.svg
     p_svg.group_.appendChild(g)
-    if (this.contourAboveParent_(brick)) {
+    if (eYo.Svg.contourAboveParent_(brick)) {
       goog.dom.appendChild(p_svg.groupContour_, svg.groupContour_)
     } else {
       goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)

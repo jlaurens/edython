@@ -20,8 +20,7 @@ goog.provide('eYo.TrashCan')
  * @param {!eYo.Workspace} workspace The workspace to sit in.
  * @constructor
  */
-eYo.UI.Constructor.make({
-  key: 'TrashCan',
+eYo.UI.Constructor.make('TrashCan', {
   owner: eYo,
   super: eYo.WorkspaceControl,
 })

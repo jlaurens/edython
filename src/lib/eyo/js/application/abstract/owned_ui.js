@@ -29,8 +29,7 @@ goog.provide('eYo.UI.Owned')
  * @readonly
  * @property {eYo.Driver.Mgr}ui_driver_mgr,  The ui driver manager used for rendering.
  */
-eYo.Constructor.make({
-  key: 'Owned',
+eYo.Constructor.make('Owned', {
   owner: eYo.UI,
   super: eYo.Owned,
   dlgt: eYo.UI.Constructor.Dlgt,

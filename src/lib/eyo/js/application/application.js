@@ -43,8 +43,7 @@ goog.forwardDeclare('eYo.Audio')
  * The ui drivers manager.
  * @property {eYo.Driver.Mgr} ui_driver_mgr
  */
-eYo.Constructor.make({
-  key: 'Application',
+eYo.Constructor.make('Application', {
   owner: eYo,
   super: null,
   init : {

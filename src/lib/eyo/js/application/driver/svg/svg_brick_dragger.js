@@ -20,28 +20,27 @@ goog.forwardDeclare('eYo.BrickDragger')
 /**
  * Svg driver for a brick dragger.
  */
-eYo.Dom.makeDriverClass('BrickDragger')
-
-/**
- * Initializes the brickDragger SVG ressources.
- * @param {!eYo.brickDragger} brickDragger
- */
-eYo.Svg.BrickDragger.prototype.initUI = eYo.Svg.Decorate.initUI(function(dragger) {
-  var dom = dragger.dom
-  var svg = dom.svg = Object.create(null)
-  svg.dragSurface = dragger.board.dom.svg.brickDragSurface
-})
-
-/**
- * Dispose of the given slot's rendering resources.
- * @param {!eYo.brickDragger} brickDragger
- */
-eYo.Svg.BrickDragger.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function (brickDragger) {
-  var svg = brickDragger.dom.svg
-  if (svg) {
-    svg.dragSurface = null
-    dom.svg = null
-  }
+eYo.Svg.makeDriverClass('BrickDragger', {
+    /**
+   * Initializes the brickDragger SVG ressources.
+   * @param {!eYo.brickDragger} brickDragger
+   */
+  initUI (dragger) {
+    var dom = dragger.dom
+    var svg = dom.svg = Object.create(null)
+    svg.dragSurface = dragger.board.dom.svg.brickDragSurface
+  },
+  /**
+   * Dispose of the given slot's rendering resources.
+   * @param {!eYo.brickDragger} brickDragger
+   */
+  disposeUI (brickDragger) {
+    var svg = brickDragger.dom.svg
+    if (svg) {
+      svg.dragSurface = null
+      dom.svg = null
+    }
+  },
 })
 
 /**

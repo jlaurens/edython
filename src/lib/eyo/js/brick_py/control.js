@@ -78,7 +78,7 @@ Object.defineProperties (eYo.Brick.Control.prototype, {
  * Run the script exported from the brick.
  * @private
  */
-eYo.Brick.prototype.runScript = function () {
+eYo.Brick.Dflt.prototype.runScript = function () {
   console.log('Someone should everride this method to really run some script')
 }
 

@@ -31,8 +31,7 @@ goog.forwardDeclare('goog.math');
  * @param {!eYo.Application|Object} owner Owner application.
  * @constructor
  */
-eYo.UI.Constructor.make({
-  key: 'Desk',
+eYo.UI.Constructor.make('Desk', {
   owner: eYo,
   super: eYo.UI.Owned,
   props: {
@@ -79,24 +78,25 @@ eYo.UI.Constructor.make({
       focus () {
         return new eYo.Focus.Main(this)
       },
-    }
-  }
-})
-
-Object.defineProperties(eYo.Desk.prototype, {
-  /**
-   * The desk's desk.
-   * @type {!eYo.Desk}
-   * @private
-   */
-  desk: {
-    get () {
-      return this
     },
-    set (ignored) {
-      throw 'Forbidden setter'
+    computed: {
+      /**
+       * The desk's desk.
+       * @type {!eYo.Desk}
+       */
+      desk () {
+        return this
+      },
     }
   },
+  ui: {
+    /**
+     * Make the user interface.
+     */
+    init () {
+      this.layout()
+    }
+  }
 })
 
 /**
@@ -111,13 +111,6 @@ eYo.Desk.prototype.forEachPane = function (f) {
     this.variable,
   ].forEach(f)
 }
-
-/**
- * Make the user interface.
- */
-eYo.Desk.eyo.initUIMake(function() {
-  this.layout()
-})
 
 /**
  * Update the metrics and place the components accordingly.

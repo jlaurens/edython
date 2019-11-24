@@ -464,7 +464,7 @@ eYo.Focus.Mgr.prototype.selectOneBrickOf = function (bricks, force) {
   }
 }
 
-Object.defineProperties(eYo.Brick.prototype, {
+Object.defineProperties(eYo.Brick.Dflt.prototype, {
   focusMgr_: {
     get () {
       return this.board_.focusMgr_
@@ -543,7 +543,7 @@ eYo.Board.prototype.focusOn = function () {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Brick.prototype.focusOn = function (noBoard) {
+eYo.Brick.Dflt.prototype.focusOn = function (noBoard) {
   !noBoard && (this.focusMain_.board = this.board)
   return !!(this.focusMgr_.brick = this)
 }
@@ -585,7 +585,7 @@ eYo.Board.prototype.focusOff = function () {
  * If there is a selected connection, it is removed.
  * `focusOff` is used from click handling methods.
  */
-eYo.Brick.prototype.focusOff = function () {
+eYo.Brick.Dflt.prototype.focusOff = function () {
   this.hasFocus && (this.focusMgr_.brick = null)
 }
 

@@ -6,8 +6,7 @@ describe ('Tests: owned_ui2', function () {
   NS.Magnet = eYo.Magnet
   eYo.Brick = eYo.Slot = eYo.Magnet = eYo.NA
   var ff = k => {
-    eYo.Constructor.make({
-      key: k,
+    eYo.Constructor.make(k, {
       owner: eYo,
       super: null,
       props: {

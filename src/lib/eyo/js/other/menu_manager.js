@@ -336,7 +336,7 @@ eYo.ID.HELP = 'HELP'
  * @param {!eYo.MenuManager} mgr The context menu manager.
  * @private
  */
-eYo.Brick.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Brick.Dflt.prototype.populateContextMenuFirst_ = function (mgr) {
   mgr.shouldSeparate()
   mgr.populate_movable_parent(this)
 }
@@ -346,7 +346,7 @@ eYo.Brick.prototype.populateContextMenuFirst_ = function (mgr) {
  * @param {!eYo.MenuManager} mgr The context menu manager.
  * @private
  */
-eYo.Brick.prototype.populateContextMenuMiddle_ = function (mgr) {
+eYo.Brick.Dflt.prototype.populateContextMenuMiddle_ = function (mgr) {
   return false
 }
 
@@ -356,7 +356,7 @@ eYo.Brick.prototype.populateContextMenuMiddle_ = function (mgr) {
  * @param {!eYo.MenuManager} mgr The context menu manager.
  * @private
  */
-eYo.Brick.prototype.populateContextMenuLast_ = function (mgr) {
+eYo.Brick.Dflt.prototype.populateContextMenuLast_ = function (mgr) {
   return mgr.populateLast(this)
 }
 
@@ -530,7 +530,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
  * @param {!eYo.MenuManager} mgr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.Brick.prototype.handleMenuItemActionFirst = function (mgr, event) {
+eYo.Brick.Dflt.prototype.handleMenuItemActionFirst = function (mgr, event) {
   return mgr.handleAction_movable_parent(this, event)
 }
 
@@ -540,7 +540,7 @@ eYo.Brick.prototype.handleMenuItemActionFirst = function (mgr, event) {
  * @param {!eYo.MenuManager} mgr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.Brick.prototype.handleMenuItemActionMiddle = function (mgr, event) {
+eYo.Brick.Dflt.prototype.handleMenuItemActionMiddle = function (mgr, event) {
   return false
 }
 
@@ -551,7 +551,7 @@ eYo.Brick.prototype.handleMenuItemActionMiddle = function (mgr, event) {
  * @param {!eYo.MenuManager} mgr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.Brick.prototype.handleMenuItemActionLast = function (mgr, event) {
+eYo.Brick.Dflt.prototype.handleMenuItemActionLast = function (mgr, event) {
   return mgr.handleActionLast(this, event)
 }
 

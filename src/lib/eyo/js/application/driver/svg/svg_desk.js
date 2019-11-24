@@ -19,12 +19,17 @@ goog.provide('eYo.Svg.Desk')
 goog.forwardDeclare('eYo.Desk')
 
 /**
- * Initialize the desk SVG ressources.
- * @param {!eYo.Desk} desk
- * @return {!Element} The desk's SVG group.
+ * Svg driver for desk.
  */
-eYo.Svg.Desk.prototype.initUI = eYo.Svg.Decorate.initUI(eYo.Svg.Desk, function(desk) {
-  this.bind_resize(desk)
+eYo.Svg.makeDriverClass('Desk', {
+  /**
+   * Initialize the desk SVG ressources.
+   * @param {!eYo.Desk} desk
+   * @return {!Element} The desk's SVG group.
+   */
+  initUI (desk) {
+    this.bind_resize(desk)
+  },
 })
 
 /**

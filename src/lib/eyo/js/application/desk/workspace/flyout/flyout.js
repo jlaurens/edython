@@ -77,60 +77,9 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.UI.Constructor.make({
-  key: 'Flyout',
+eYo.UI.Constructor.make('Flyout', {
   owner: eYo,
   super: eYo.UI.Owned,
-  init (owner) {
-  // First
-  if (!this.autoClose) {
-    this.filterWrapper_ = this.filterForCapacity_.bind(this)
-    owner.board.addChangeListener(this.filterWrapper_)
-  }
-  var flyoutOptions = this.options
-/**
- * Position of the flyout relative to the board.
- * @type {number}
- * @private
- */
-this.anchor_ = flyoutOptions.anchor || eYo.Flyout.AT_RIGHT
-/**
- * Position and dimensions of the flyout in the workspace.
- * @type {number}
- * @private
- */
-this.viewRect__ = new eYo.Rect().tie(board.metrics_.view, {
-  l: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
-  h: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
-}, {
-  l: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
-  h: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
-})
-/**
- * Opaque data that can be passed to unbindEvent.
- * @type {!Array.<!Array>}
- * @private
- */
-this.eventWrappers_ = []
-/**
- * List of event listeners.
- * Array of opaque data that can be passed to unbindEvent.
- * @type {!Array.<!Array>}
- * @private
- */
-this.listeners_ = []
-
-/**
- * List of bricks that should always be disabled.
- * @type {!Array.<!eYo.Brick>}
- * @private
- */
-this.permanentlyDisabled_ = []
-if (flyoutOptions.autoClose) {
-  this.autoClose = true
-}
-
-  },
   props: {
     owned: {
       search () {
@@ -150,117 +99,221 @@ if (flyoutOptions.autoClose) {
       toolbar () {
         return this.toolbar_
       },
-      width_: {
+      /**
+       * This size and anchor of the receiver and wrapped
+       * in an object with eponym keys.
+       */
+      size: {
+        get () {
+          var ans = new eYo.Size(this.viewRect_.size_)
+          ans.anchor = this.anchor_
+          return ans
+        },
+        set (newValue) {
+          if (!newValue.equals(this.viewRect_.size)) {
+            this.viewRect_.size = newValue
+            this.sizeChanged()
+          }
+        }
+      },
+      /**
+       * Return the deletion rectangle for this flyout in viewport coordinates.
+       * Edython : add management of the 0 width rectange
+       * @return {eYo.Rect} Rectangle in which to delete.
+       */
+      deleteRect () {
+        var rect = this.viewRect
+        var width = rect.width
+        if (!width) {
+          return null
+        }
+        // BIG_NUM is offscreen padding so that bricks dragged beyond the shown flyout
+        // area are still deleted.  Must be larger than the largest screen size,
+        // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
+        var BIG_NUM = 1000000000
+        if (this.atRight) {
+          rect.right += BIG_NUM
+        } else {
+          rect.left -= BIG_NUM
+        }
+        rect.top = BIG_NUM
+        rect.bottom = BIG_NUM
+        return rect
+      },
+      position: {
+        get () {
+          return this.viewRect_.origin
+        },
+        set (newValue) {
+          this.viewRect_.origin = newValue
+        }
+      },
+      /**
+       * @readonly
+       * @type {number} The width of the flyout.
+       */
+      width: {
         get () {
           return this.viewRect_.size_.width
         },
-        set (newValue) {
+        get_ () {
+          return this.viewRect_.size_.width
+        },
+        set_ (newValue) {
           if (this.viewRect_.size_.width !== newValue) {
             this.viewRect_.size_.width = newValue
             this.desk.board.layout()
           }
         }
       },
-      height_: {
+      /**
+       * @readonly
+       * @type {number} The height of the flyout.
+       */
+      height: {
         get () {
           return this.viewRect_.size_.height
         },
-        set (newValue) {
+        get_ () {
+          return this.viewRect_.size_.height
+        },
+        set_ (newValue) {
           if (this.viewRect_.size_.height !== newValue) {
             this.viewRect_.size_.height = newValue
             this.desk.board.layout()
           }
         }
       },
+      /**
+       * @type {eYo.Scrollbar}.
+       */
+      scrollbar () {
+        return this.board.scrollbar
+      },
+      /**
+       * @type {boolean} True if this flyout may be scrolled with a scrollbar or by
+       *     dragging.
+       */
+      scrollable () {
+        return this.board.scrollable
+      },
+      /**
+       * @type {Boolean} Is it anchored at right ?
+       * @readonly
+       */
+      atRight () {
+        return this.anchor_ === eYo.Flyout.AT_RIGHT
+      },
     },
     link: {
       closed: {value: false},
       autoClose: {value: false},
-      visible: {value: false},
-      containerVisible: {value: true},
+      /**
+       * Is the flyout visible?
+       * @type {boolean} True if visible.
+       */
+      visible: {
+        value: true,
+        didChange (previous, next) {
+          this.updateDisplay_()
+        }
+      },
+      /**
+       * Whether this flyout's container is visible.
+       * @type {boolean}
+       */
+      containerVisible: {
+        value: true,
+        didChange (previous, next) {
+          this.updateDisplay_()
+        }
+       },
       dragAngleLimit: {value: 70},
+      /**
+       * @type {Number} where the flyout is anchored.
+       */
+      anchor: {},
     }
-  }
-})
-
-// Computed properties
-Object.defineProperties(eYo.Flyout.prototype, {
+  },
+  init (owner) {
+    // First
+    if (!this.autoClose) {
+      this.filterWrapper_ = this.filterForCapacity_.bind(this)
+      owner.board.addChangeListener(this.filterWrapper_)
+    }
+    var flyoutOptions = this.options
+    /**
+     * Position of the flyout relative to the board.
+     * @type {number}
+     * @private
+     */
+    this.anchor_ = flyoutOptions.anchor || eYo.Flyout.AT_RIGHT
+    /**
+     * Position and dimensions of the flyout in the workspace.
+     * @type {number}
+     * @private
+     */
+    this.viewRect__ = new eYo.Rect().tie(board.metrics_.view, {
+      l: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
+      h: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
+    }, {
+      l: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
+      h: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
+    })
+    /**
+     * Opaque data that can be passed to unbindEvent.
+     * @type {!Array.<!Array>}
+     * @private
+     */
+    this.eventWrappers_ = []
+    /**
+     * List of event listeners.
+     * Array of opaque data that can be passed to unbindEvent.
+     * @type {!Array.<!Array>}
+     * @private
+     */
+    this.listeners_ = []
+    /**
+     * List of bricks that should always be disabled.
+     * @type {!Array.<!eYo.Brick>}
+     * @private
+     */
+    this.permanentlyDisabled_ = []
+    if (flyoutOptions.autoClose) {
+      this.autoClose = true
+    }
+  },
   /**
-   * This size and anchor of the receiver and wrapped
-   * in an object with eponym keys.
+   * Dispose of this flyout.
    */
-  size: {
-    get () {
-      var ans = new eYo.Size(this.viewRect_.size_)
-      ans.anchor = this.anchor_
-      return ans
+  dispose () {
+    if (!this.filterWrapper_) {
+      this.owner.removeChangeListener(this.filterWrapper_)
+    }
+  },
+  ui: {
+    /**
+     * Make the UI
+     */
+    init () {
+      var switcher = this.flyoutOptions.switcher
+      if (switcher) {
+        var tb = this.toolbar_ = new eYo.FlyoutToolbar(this, switcher)
+        d.toolbarInitUI(tb)
+        tb.doSelectGeneral(null) // is it necessary ?
+      }
     },
-    set (newValue) {
-      if ((newValue.equals(this.viewRect_.size))) {
-        this.viewRect_.size = newValue
-        this.sizeChanged()
-      }
+    /**
+     * Dispose of this flyout UI resources.
+     * Unlink from all DOM elements to prevent memory leaks.
+     */
+    dispose () {
+      this.hide()
+      var d = this.ui_driver_mgr
+      this.toolbar_ && d.toolbarDisposeUI(this.toolbar_)
+      d.disposeUI(this)
+      eYo.Flyout.eyo.disposeOwned(this, 'scrollbar_')
     }
-  },
-  /**
-   * Return the deletion rectangle for this flyout in viewport coordinates.
-   * Edython : add management of the 0 width rectange
-   * @return {eYo.Rect} Rectangle in which to delete.
-   */
-  deleteRect: {
-    get () {
-      var rect = this.viewRect
-      var width = rect.width
-      if (!width) {
-        return null
-      }
-      // BIG_NUM is offscreen padding so that bricks dragged beyond the shown flyout
-      // area are still deleted.  Must be larger than the largest screen size,
-      // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
-      var BIG_NUM = 1000000000
-      if (this.atRight) {
-        rect.right += BIG_NUM
-      } else {
-        rect.left -= BIG_NUM
-      }
-      rect.top = BIG_NUM
-      rect.bottom = BIG_NUM
-      return rect
-    }
-  },
-})
-
-/**
- * Make the UI
- */
-eYo.Flyout.eyo.initUIMake(function () {
-  var switcher = this.flyoutOptions.switcher
-  if (switcher) {
-    var tb = this.toolbar_ = new eYo.FlyoutToolbar(this, switcher)
-    d.toolbarInitUI(tb)
-    tb.doSelectGeneral(null) // is it necessary ?
-  }
-})
-
-/**
- * Dispose of this flyout UI resources.
- * Unlink from all DOM elements to prevent memory leaks.
- */
-eYo.Flyout.eyo.disposeUIMake(function() {
-  this.hide()
-  var d = this.ui_driver_mgr
-  this.toolbar_ && d.toolbarDisposeUI(this.toolbar_)
-  d.disposeUI(this)
-  eYo.Flyout.eyo.disposeOwned(this, 'scrollbar_')
-})
-
-/**
- * Dispose of this flyout.
- * Sever all links.
- */
-eYo.Flyout.eyo.disposeMake(function() {
-  if (!this.filterWrapper_) {
-    this.owner_.removeChangeListener(this.filterWrapper_)
   }
 })
 
@@ -296,99 +349,6 @@ Object.defineProperties(eYo.Flyout, {
    * This size and anchor of the receiver and wrapped
    * in an object with eponym keys.
    */
-})
-
-Object.defineProperties(eYo.Flyout.prototype, {
-  position: {
-    get () {
-      return this.viewRect_.origin
-    },
-    set (newValue) {
-      this.viewRect_.origin = newValue
-    }
-  },
-  /**
-   * @readonly
-   * @type {number} The width of the flyout.
-   */
-  width: {
-    get () {
-      return this.viewRect_.size_.width
-    }
-  },
-  /**
-   * @readonly
-   * @type {number} The height of the flyout.
-   */
-  height: {
-    get () {
-      return this.viewRect_.size_.height
-    }
-  },
-  /**
-   * Is the flyout visible?
-   * @type {boolean} True if visible.
-   */
-  visible: {
-    get () {
-      return this.visible_
-    },
-    set (visible) {
-      if(visible != this.visible_) {
-        this.visible_ = visible
-        this.updateDisplay_()
-      }
-    }
-  },
-  /**
-   * Whether this flyout's container is visible.
-   * @type {boolean}
-   */
-  containerVisible: {
-    get () {
-      return this.containerVisible_
-    },
-    set (visible) {
-      if(visible != this.containerVisible_) {
-        this.containerVisible_ = visible
-        this.updateDisplay_()
-      }
-    }
-  },
-  /**
-   * @type {eYo.Scrollbar}.
-   */
-  scrollbar: {
-    get () {
-      return this.board.scrollbar
-    }
-  },
-  /**
-   * @type {boolean} True if this flyout may be scrolled with a scrollbar or by
-   *     dragging.
-   */
-  scrollable: {
-    get () {
-      return this.board.scrollable
-    }
-  },
-  /**
-   * @type {Number} where the flyout is anchored.
-   */
-  anchor: {
-    get () {
-      return this.anchor_
-    }
-  },
-  /**
-   * @type {Boolean} Is it anchored at right ?
-   * @readonly
-   */
-  atRight: {
-    get () {
-      return this.anchor_ === eYo.Flyout.AT_RIGHT
-    }
-  },
 })
 
 /**

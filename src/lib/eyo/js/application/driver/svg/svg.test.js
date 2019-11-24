@@ -1,3 +1,16 @@
+describe('Svg driver', function() {
+  it ('Svg: Basic', function () {
+    chai.assert(eYo.Svg)
+    chai.assert(eYo.Svg.Mgr)
+    chai.assert(eYo.Svg.makeDriverClass)
+    chai.assert(eYo.Svg.makeMgrClass)
+    chai.assert(eYo.Svg.Dflt)
+  })
+})
+
+
+
+var x = () => {
 describe('SVG coordinates', function () {
   it ('xy', function () {
     eYo.Test.setItUp()
@@ -67,3 +80,4 @@ describe('SVG groups and paths', function () {
     eYo.Test.tearItDown()
   })
 })
+}

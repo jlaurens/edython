@@ -22,8 +22,7 @@ goog.provide('eYo.Turtle')
  * @param {!eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.UI.Constructor.make({
-  key: 'Turtle',
+eYo.UI.Constructor.make('Turtle', {
   owner: eYo,
   super: eYo.Pane,
 })

@@ -20,37 +20,35 @@ goog.forwardDeclare('eYo.Scroller')
 /**
  * Svg driver for a scroller.
  */
-z
-eYo.Svg.makeDriverClass('Scroller')
-
-/**
- * Inits the scroll bar.
- * @param {eYo.Scroller} scroller
- */
-eYo.Svg.Scroller.prototype.initUI = eYo.Dom.Decorate.initUI(function(pair) {
-  var svg = pair.dom.svg
-  var corner = svg.corner_ = eYo.Svg.newElement(
-    'rect',
-    {
-      height: eYo.Scrollbar.thickness,
-      width: eYo.Scrollbar.thickness,
-      class: 'eyo-scrollbar-background'
-    }
-  )
-  eYo.Dom.insertAfter(
-    corner,
-    pair.board_.dom.svg.canvas_
-  )
-})
-
-/**
- * Dispose of the given slot's rendering resources.
- * @param {!eYo.Scroller} scroller
- */
-eYo.Svg.Scroller.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function (scroller) {
-  var dom = scroller.dom
-  goog.dom.removeNode(dom.svg.corner_)
-  dom.svg = dom.svg.corner_ = null
+eYo.Svg.makeDriverClass('Scroller', {
+    /**
+   * Inits the scroll bar.
+   * @param {eYo.Scroller} scroller
+   */
+  initUI (pair) {
+    var svg = pair.dom.svg
+    var corner = svg.corner_ = eYo.Svg.newElement(
+      'rect',
+      {
+        height: eYo.Scrollbar.thickness,
+        width: eYo.Scrollbar.thickness,
+        class: 'eyo-scrollbar-background'
+      }
+    )
+    eYo.Dom.insertAfter(
+      corner,
+      pair.board_.dom.svg.canvas_
+    )
+  },
+  /**
+   * Dispose of the given slot's rendering resources.
+   * @param {!eYo.Scroller} scroller
+   */
+  disposeUI (scroller) {
+    var dom = scroller.dom
+    goog.dom.removeNode(dom.svg.corner_)
+    dom.svg = dom.svg.corner_ = null
+  },
 })
 
 /**

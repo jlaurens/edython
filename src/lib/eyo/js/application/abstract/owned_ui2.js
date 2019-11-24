@@ -36,8 +36,7 @@ goog.forwardDeclare('eYo.Magnet')
  * @property {eYo.Magnet} slot  The magnet.
  */
 
-eYo.UI.Constructor.make({
-  key: 'UI2',
+eYo.UI.Constructor.make('UI2', {
   owner: eYo.Owned,
   super: eYo.UI.Owned,
   props: {

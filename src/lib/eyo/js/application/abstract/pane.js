@@ -23,8 +23,7 @@ goog.forwardDeclare('eYo.Desk')
  * @param {!eYo.Desk} desk,  the owning desk.
  * @constructor
  */
-eYo.UI.Constructor.make({
-  key: 'Pane',
+eYo.UI.Constructor.make('Pane', {
   owner: eYo,
   super: eYo.UI.Owned,
   props: {

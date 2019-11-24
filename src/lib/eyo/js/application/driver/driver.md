@@ -27,7 +27,7 @@ When a constructor `eYo.Foo` is created via `eYo.Constructor.UI.make`, the insta
 All the driver classes are created with a call to some `makeDriverClass`. When created, a driver manager instance owns an instance of all the driver classes created that way.
 
 <span style="color:red">**LIMITATION:**</span>
-A driver class may have any name, except `Mgr` and `Dlgt`. Instead, use full name `Manager`, `Delegate` or some other name like that.
+A driver class may have any name, except `Mgr`, `Dflt` and `Dlgt`. Instead, use full name `Manager`, `Default`, `Delegate` or some other name like that.
 
 ### Creating a namespace
 
@@ -49,11 +49,12 @@ The `eYo.Driver.makeMgrClass` also creates a local maager class maker. At some p
 
 `eYo.Svg` extends `eYo.Dom` means that the driver `eYo.Svg.Foo` is a subclass of `eYo.Dom.Foo`.
 
+
+
 ### Creating a driver class
 
 The `eYo.Driver.makeMgrClass` also creates a driver class maker. At some point, we have both
 `eYo.Fcls.makeDriverClass`, 
 `eYo.Dom.makeDriverClass` and
 `eYo.Svg.makeDriverClass`.
-
 

@@ -29,8 +29,7 @@ goog.forwardDeclare('goog.events')
  * @param {string=} opt_class A class to be applied to this scrollbar.
  * @constructor
  */
-eYo.UI.Constructor.make({
-  key: 'Scrollbar',
+eYo.UI.Constructor.make('Scrollbar', {
   owner: eYo,
   super: eYo.UI.Owned,
   init(bs, horizontal, opt_class) {
@@ -49,7 +48,7 @@ eYo.UI.Constructor.make({
         new eYo.Rect()
       }
     },
-    computed: {
+    cached: {
       /**
        * Width of vertical scrollbar or height of horizontal scrollbar in CSS pixels.
        * Scrollbars should be larger on touch devices.

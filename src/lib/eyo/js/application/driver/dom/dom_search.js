@@ -20,7 +20,41 @@ goog.forwardDeclare('eYo.Search')
 /**
  * Dom driver for the search pane.
  */
-eYo.Dom.makeDriverClass('Search')
+eYo.Dom.makeDriverClass('Search', {
+    /**
+   * Initialize the search dom ressources.
+   * @param {!eYo.Search} search
+   * @return {!Element} The desk's dom repository.
+   */
+  initUI (search) {
+    var dom = search.dom
+    const div = search.owner_.dom.search_
+    Object.defineProperty(dom, 'div_', { value: div, writable: true})
+    // search toolbar, on top of the search
+    var cssClass = this.cssClass()
+    var f = (type) => {
+      var x = goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName(cssClass, type)
+      )
+      div.appendChild(x)
+      x.dataset && (x.dataset.type = `search ${type}`)
+      return x
+    }
+    dom.toolbar_ = f('toolbar')
+    dom.board_ = f('board')
+    return dom
+  },
+  /**
+   * Dispose of the given slot's rendering resources.
+   * @param {eYo.Search} search
+   */
+  disposeUI (search) {
+    var dom = search.dom
+    goog.dom.removeNode(dom.toolbar_)
+    goog.dom.removeNode(dom.board_)
+  },
+})
 
 /**
  * Default CSS class of the search panel.
@@ -38,41 +72,6 @@ eYo.Dom.SEARCH_CSS_CLASS = goog.getCssName('eyo-search')
 eYo.Dom.Search.prototype.cssClass = function() {
   return eYo.Dom.SEARCH_CSS_CLASS
 }
-
-/**
- * Initialize the search dom ressources.
- * @param {!eYo.Search} search
- * @return {!Element} The desk's dom repository.
- */
-eYo.Dom.Search.prototype.initUI = eYo.Dom.Decorate.initUI(eYo.Dom.Search, function(search) {
-  var dom = search.dom
-  const div = search.owner_.dom.search_
-  Object.defineProperty(dom, 'div_', { value: div, writable: true})
-  // search toolbar, on top of the search
-  var cssClass = this.cssClass()
-  var f = (type) => {
-    var x = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, type)
-    )
-    div.appendChild(x)
-    x.dataset && (x.dataset.type = `search ${type}`)
-    return x
-  }
-  dom.toolbar_ = f('toolbar')
-  dom.board_ = f('board')
-  return dom
-})
-
-/**
- * Dispose of the given slot's rendering resources.
- * @param {eYo.Search} search
- */
-eYo.Dom.Search.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function (search) {
-  var dom = search.dom
-  goog.dom.removeNode(dom.toolbar_)
-  goog.dom.removeNode(dom.board_)
-})
 
 /**
  * Dispose of the given slot's rendering resources.

@@ -20,16 +20,13 @@ goog.forwardDeclare('eYo.Zoomer')
 /**
  * Svg driver for the zoomer.
  */
-eYo.Svg.makeDriverClass('Zoomer')
-
-/**
- * Initialize the board's controls.
- * @param {!eYo.Zoomer} constrols
- * @return {!Element} The controls's SVG group.
- */
-eYo.Svg.initUIMake(
-  eYo.Svg.Zoomer,
-  function(controls) {
+eYo.Svg.makeDriverClass('Zoomer', {
+    /**
+   * Initialize the board's controls.
+   * @param {!eYo.Zoomer} constrols
+   * @return {!Element} The controls's SVG group.
+   */
+  initUI (controls) {
     var board = controls.board_
     var dom = board.dom
     var svg = dom.svg
@@ -63,7 +60,7 @@ eYo.Svg.initUIMake(
     )
     var rnd = String(Math.random()).substring(2)
     var clip;
-  
+
     clip = eYo.Svg.newElement(
       'clipPath',
       {id: 'eyo-zoomout-clip-path' + rnd},
@@ -180,16 +177,12 @@ eYo.Svg.initUIMake(
       }
     )
     return g
-  }
-)
-
-/**
- * Dispose of the zoom controls SVG ressources.
- * @param {!eYo.Zoomer} constrols
- */
-eYo.Svg.disposeUIMake(
-  eYo.Svg.Zoomer,
-  function(controls) {
+  },
+  /**
+   * Dispose of the zoom controls SVG ressources.
+   * @param {!eYo.Zoomer} constrols
+   */
+  disposeUI (controls) {
     var board = controls.board_
     var dom = board.dom
     var svg = dom.svg
@@ -204,8 +197,8 @@ eYo.Svg.disposeUIMake(
     bound.zoomout = eYo.Dom.unbindEvent(bound.zoomout)
     goog.dom.removeNode(svg.zoom_)
     svg.zoom_ = null
-  }
-)
+  },
+})
 
 /**
  * Position of the zoom controls.

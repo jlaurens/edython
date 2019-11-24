@@ -24,7 +24,6 @@ goog.require('eYo.Msg')
 goog.require('eYo.Brick.Primary')
 goog.require('eYo.Brick.Stmt')
 goog.require('eYo.Protocol.Register')
-goog.require('goog.dom');
 goog.provide('eYo.Brick.Primary')
 
 /**

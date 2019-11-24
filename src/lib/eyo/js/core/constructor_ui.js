@@ -23,42 +23,47 @@ eYo.UI.Constructor = Object.create(null)
 /**
  * Constructor maker.
  * The delegate of the constructor has convenient methods
- * named `initUIMake` and `disposeUIMake` to
+ * named `initUIDecorate` and `disposeUIDecorate` to
  * make the `initUI` and `disposeUI` methods of the prototype.
  * They are used for 
  */
-eYo.UI.Constructor.make = (model) => {
+eYo.UI.Constructor.make = (key, model) => {
   model.super || (model.super = eYo.UI.Owned)
   model.dlgt || (model.dlgt = eYo.UI.Constructor.Dlgt)
-  var ctor = eYo.Constructor.make(model)
+  var ctor = eYo.Constructor.make(key, model)
   var eyo = ctor.eyo__
   eyo.constructorMake = eYo.UI.Constructor.make
   var ui = model.ui
-  eyo.initUIMake(ui && ui.init
-    ? function () {
-      this.ui_driver.init(this)
-      ui.init.call(this)
+  var f = ctor.eyo.initUIDecorate (ui && ui.dispose)
+  ctor.prototype.initUI = function (...args) {
+    try {
+      this.initUI = eYo.Do.nothing
+      var super_ = ctor.superClass_
+      !!super_ && !!super_.initUI && !!super_.initUI.call(this, ...args)
+      this.ui_driver.init(this, ...args)
+      f && f.apply(this, ...args)
+    } finally {
+      delete this.initUI
     }
-    : function () {
-      this.ui_driver.init(this)
+  }
+  var f = ctor.eyo.disposeUIDecorate (ui && ui.init)
+  ctor.prototype.disposeUI = function (...args) {
+    try {
+      this.disposeUI = eYo.Do.nothing
+      f && f.apply(this, arguments)
+      this.ui_driver.disposeInstance(this)
+      var super_ = ctor.superClass_
+      !!super_ && !!super_.disposeUI && !!super_.disposeUI.apply(this, arguments)
+    } finally {
+      delete this.disposeUI
     }
-  )
-  eyo.disposeUIMake(ui && ui.dispose
-    ? function () {
-      ui.dispose.call(this)
-      this.ui_driver.init(this)
-    }
-    : function () {
-      this.ui_driver.dispose(this)
-    }
-  )
+  }
 }
 
 /**
  * Constructor delegate subclass
  */
-eYo.Constructor.make({
-  key: 'Dlgt',
+eYo.Constructor.make('Dlgt', {
   owner: eYo.UI.Constructor,
   super: eYo.Constructor.Dlgt,
 })
@@ -67,56 +72,25 @@ eYo.Constructor.make({
  * Make the dispose function.
  * @override
  */
-eYo.UI.Constructor.Dlgt.prototype.disposeMake = function (f) {
-  var eyo = this
-  this.ctor.prototype.dispose = function () {
-    try {
-      this.dispose = eYo.Do.nothing
-      this.disposeUI()
-      f && f.apply(this, arguments)
-      eyo.disposeInstance(this)
-      var super_ = ctor.superClass_
-      !!super_ && !!super_.dispose && !!super_.dispose.apply(this, arguments)
-    } finally {
-      delete this.dispose
-    }
-  }
+eYo.UI.Constructor.Dlgt.prototype.disposeDecorate = function (f) {
+  return eYo.UI.Constructor.Dlgt.superClass_.disposeDecorate.call(this, function () {
+    this.disposeUI()
+    f && f.apply(this, arguments)
+  })
 }
 
 /**
- * Make the `initUI` method based on the given function.
+ * Helper to make the `initUI` method based on the given function.
  * @param {?Function} f  a function with at least one argument.
  */
-eYo.UI.Constructor.Dlgt.prototype.initUIMake = function (f) {
-  this.ctor.prototype.initUI = function () {
-    try {
-      this.initUI = eYo.Do.nothing
-      var super_ = ctor.superClass_
-      !!super_ && !!super_.initUI && !!super_.initUI.apply(this, arguments)
-      var d = this.ui_driver
-      d && d.init(this)
-      f && f.apply(this, arguments)
-    } finally {
-      delete this.initUI
-    }
-  }
+eYo.UI.Constructor.Dlgt.prototype.initUIDecorate = function (f) {
+  return f
 }
 
 /**
- * Make the `disposeUI` method based on the given function.
+ * Helps to make the `disposeUI` method based on the given function.
  * @param {?Function} f  a function with at least one argument.
  */
-eYo.UI.Constructor.Dlgt.prototype.disposeUIMake = function (f) {
-  this.ctor.prototype.disposeUI = function () {
-    try {
-      this.disposeUI = eYo.Do.nothing
-      f && f.apply(this, arguments)
-      var d = this.ui_driver
-      d && d.dispose(this)
-      var super_ = ctor.superClass_
-      !!super_ && !!super_.disposeUI && !!super_.disposeUI.apply(this, arguments)
-    } finally {
-      delete this.disposeUI
-    }
-  }
+eYo.UI.Constructor.Dlgt.prototype.disposeUIDecorate = function (f) {
+  return f
 }

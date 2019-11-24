@@ -11,21 +11,21 @@
  */
 'use strict'
 
-goog.require('eYo.Protocol')
-
 goog.require('eYo.Do')
 goog.require('eYo.Owned.UI2')
-
-goog.require('eYo.Where')
 goog.require('eYo.Decorate')
-goog.require('eYo.Field')
-goog.require('eYo.Magnet')
-goog.require('eYo.T3.Profile')
-goog.require('goog.dom');
 
 goog.provide('eYo.Slot')
 
+goog.forwardDeclare('eYo.Where')
+goog.forwardDeclare('eYo.Field')
+goog.forwardDeclare('eYo.Magnet')
+
 goog.forwardDeclare('eYo.Xml')
+goog.forwardDeclare('eYo.Key')
+goog.forwardDeclare('eYo.Brick.List')
+
+goog.forwardDeclare('goog.dom');
 
 /**
  * The model is one of the entries of the `slots` section
@@ -53,8 +53,7 @@ goog.forwardDeclare('eYo.Xml')
  * @param {!Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.UI.Constructor.make({
-  key: 'Slot',
+eYo.UI.Constructor.make('Slot', {
   owner: eYo,
   super: eYo.Owned.UI2,
   init (brick, key, model) {
@@ -94,236 +93,186 @@ eYo.UI.Constructor.make({
     f && (f.call(this))
   },
   props: {
-    link: {
-      incog () {
-        return true
-      },
-      brick: {},
-      model: {}
-    }
-  }
-})
-
-/**
- * Dispose of all attributes.
- * Asks the owner's renderer to do the same.
-* @param {?Boolean} onlyThis  Dispose of the inferior target iff healStack is a falsy value
-*/
-eYo.Slot.eyo.disposeMake(function (onlyThis) {
-  eYo.Field.disposeFields(this)
-  this.magnet_ && this.magnet_.dispose(onlyThis)
-  this.magnet_ = eYo.NA
-  this.key_ = eYo.NA
-  eYo.Property.dispose(this, 'where')
-})
-
-Object.defineProperties(eYo.Slot.prototype, {
-  /**
-   * @readonly
-   * @property {eYo.Brick} brick  the immediate brick in which this is contained
-   */
-  brick: {
-    get () {
-      return this.brick_
-    }
-  },
-  key: {
-    get () {
-      return this.key_
-    }
-  },
-  magnet: {
-    get () {
-      return this.magnet_
-    }
-  },
-  targetBrick: {
-    get () {
-      var m4t = this.magnet
-      return m4t && m4t.targetBrick
-    }
-  },
-  whereInBoard: {
-    get () {
-      return this.where.forward(this.brick.ui.whereInBoard)
-    }
-  },
-  whereInBrick: {
-    get () {
-      return this.where
+    owned: {
+      magnet: {}
     },
-    set (newValue) {
-      this.where_.set(newValue)
-    }
-  },
-  where: {
-    get () {
-      return this.where_.clone
-    }
-  },
-  model: {
-    get () {
-      return this.model_
-    }
+    link: {
+      /**
+       * @property {eYo.Data} data  Bound data.
+       */
+      data: {},
+      visible: { value: true},
+      incog: {
+        init () {
+          return true
+        },
+        set (newValue) {
+          if (this.data) {
+            newValue = this.data.incog
+          } else if (!goog.isDef(newValue)) {
+            newValue = !this.required
+          } else {
+            newValue = !!newValue
+          }
+          var validator = this.slots && this.model.validateIncog
+          if (validator) { // if !this.slots, the receiver is not yet ready
+            newValue = validator.call(this, newValue)
+          }
+          this.brick_.change.wrap(
+            () => {
+              this.incog_ = newValue
+              // forward to the connection
+              var m4t = this.magnet
+              if (m4t) {
+                m4t.incog = newValue
+              }
+            },
+            this,
+            newValue
+          )
+        }    
+      },
+      /**
+       * @readonly
+       * @property {eYo.Brick} brick  the immediate brick in which this is contained
+       */
+      brick: {},
+      key: {},
+      model: {},
+      /**
+       * Get the concrete required status.
+       * For edython.
+       * @param {boolean} newValue
+       */
+      requiredFromModel: {}
+    },
+    computed: {
+      targetBrick: {
+        get () {
+          var m4t = this.magnet
+          return m4t && m4t.targetBrick
+        }
+      },
+      whereInBoard: {
+        get () {
+          return this.where.forward(this.brick.ui.whereInBoard)
+        }
+      },
+      whereInBrick: {
+        get () {
+          return this.where
+        },
+        set (newValue) {
+          this.where_.set(newValue)
+        }
+      },
+      where: {
+        get () {
+          return this.where_.clone
+        }
+      },    
+      recover: {
+        get () {
+          return this.brick_.recover
+        }
+      },
+      xmlKey: {
+        get () {
+          return (this.model.xml && this.model.xml.key) || this.key
+        }
+      },
+      ui: {
+        get () {
+          return this.brick.ui
+        }
+      },
+      unwrappedTarget: {
+        get () {
+          var m4t = this.magnet
+          return m4t && m4t.unwrappedTarget
+        }
+      },
+      requiredIncog: {
+        get () {
+          return this.incog
+        },
+        set (newValue) {
+          this.incog = !(this.required = !!newValue)
+        }
+      },
+      /**
+       * @property {boolean} isRequiredToModel  Get the required status.
+       */
+      isRequiredToModel () {
+        if (this.incog) {
+          return false
+        }
+        if (!this.magnet) {
+          return false
+        }
+        if (!this.magnet.wrapped_ && this.targetBrick) {
+          return true
+        }
+        if (this.required) {
+          return true
+        }
+        if (this.data && this.data.required) {
+          return false
+        }
+        if (this.model.xml && this.model.xml.required) {
+          return true
+        }
+        return false
+      },
+      /**
+       * Get the concrete required status.
+       * For edython.
+       * @param {boolean} newValue
+       */
+      requiredFromSaved () {
+        var t9k = this.targetBrick
+        if (t9k) {
+          if (t9k.wrapped_) {
+            // return true if one of the inputs is connected
+            return t9k.someSlot(slot => !!slot.target)
+          }
+          return true
+        }
+        return this.requiredFromModel
+      },
+    },
   },
   /**
-   * @property {eYo.Data} data  Bound data.
+   * Dispose of all attributes.
+   * Asks the owner's renderer to do the same.
+   * @param {?Boolean} onlyThis  Dispose of the inferior target iff healStack is a falsy value
    */
-  data: {
-    writable: true
+  dispose (onlyThis) {
+    eYo.Field.disposeFields(this)
+    this.magnet_ && this.magnet_.dispose(onlyThis)
+    this.magnet_ = eYo.NA
+    this.key_ = eYo.NA
+    eYo.Property.dispose(this, 'where')
   },
   ui: {
-    get () {
-      return this.brick.ui
-    }
-  },
-  incog: {
-    get () {
-      return this.incog_
+    /**
+     * UI management.
+     * Install this slot and its associate fields on their brick.
+     * No data change.
+     */
+    init () {
+      this.forEachField(f => f.initUI())
     },
-    set (newValue) {
-      if (this.data) {
-        newValue = this.data.incog
-      } else if (!goog.isDef(newValue)) {
-        newValue = !this.required
-      } else {
-        newValue = !!newValue
-      }
-      var validator = this.slots && this.model.validateIncog
-      if (validator) { // if !this.slots, the receiver is not yet ready
-        newValue = validator.call(this, newValue)
-      }
-      this.brick_.change.wrap(
-        () => {
-          this.incog_ = newValue
-          // forward to the connection
-          var m4t = this.magnet
-          if (m4t) {
-            m4t.incog = newValue
-          }
-        },
-        this,
-        newValue
-      )
-    }
-  },
-  recover: {
-    get () {
-      return this.brick_.recover
-    }
-  },
-  xmlKey: {
-    get () {
-      return (this.model.xml && this.model.xml.key) || this.key
-    }
+    /**
+     * UI management.
+     * Install this slot and its associate fields on their brick.
+     * No data change.
+     */
+    dispose () {
+      this.forEachField(f => f.disposeUI())
+    },
   },
 })
-// obsolete and deprecated API
-Object.defineProperties(eYo.Slot.prototype, {
-  c_eyo: {
-    get () {
-      console.error("BREAK HERE")
-      throw "INCONSISTANCY"
-    }
-  },
-  target: {
-    get () {
-      console.error("BREAK HERE")
-      throw "ILLEGAL"
-    }
-  },
-  unwrappedTarget: {
-    get () {
-      var m4t = this.magnet
-      return m4t && m4t.unwrappedTarget
-    }
-  },
-  requiredIncog: {
-    set (newValue) {
-      this.incog = !(this.required = newValue)
-    }
-  },
-  visible: { value: true, writable: true },
-  connection: {
-    get () {
-      throw "INCONSISTANCY, BREAK HERE"
-    }
-  }
-})
-
-/**
- * UI management.
- * Install this slot and its associate fields on their brick.
- * No data change.
- */
-eYo.Slot.eyo.initUIMake(function () {
-  this.forEachField(f => f.initUI())
-  this.magnet && (this.magnet.initUI())
-})
-
-/**
- * UI management.
- * Install this slot and its associate fields on their brick.
- * No data change.
- */
-eYo.Slot.eyo.disposeUIMake(function () {
-  this.magnet && (this.magnet.disposeUI())
-  this.forEachField(f => f.disposeUI())
-})
-
-Object.defineProperties(eYo.Slot.prototype, {
-/**
- * @property {boolean} isRequiredToModel  Get the required status.
- */
-isRequiredToModel: {
-    get () {
-      if (this.incog) {
-        return false
-      }
-      if (!this.magnet) {
-        return false
-      }
-      if (!this.magnet.wrapped_ && this.targetBrick) {
-        return true
-      }
-      if (this.required) {
-        return true
-      }
-      if (this.data && this.data.required) {
-        return false
-      }
-      if (this.model.xml && this.model.xml.required) {
-        return true
-      }
-      return false
-    }
-  },
-  /**
-   * Get the concrete required status.
-   * For edython.
-   * @param {boolean} newValue
-   */
-  requiredFromSaved: {
-    get () {
-      var t9k = this.targetBrick
-      if (t9k) {
-        if (t9k.wrapped_) {
-          // return true if one of the inputs is connected
-          return t9k.someSlot(slot => !!slot.target)
-        }
-        return true
-      }
-      return this.requiredFromModel
-    }
-  },
-  /**
-   * Get the concrete required status.
-   * For edython.
-   * @param {boolean} newValue
-   */
-  requiredFromModel: { writable: true }
-})
-
 
 /**
  * Clean the required status, changing the value if necessary.
@@ -381,8 +330,6 @@ eYo.Slot.prototype.synchronize = function () {
   }
   d.displayedUpdate(this)
 }
-
-goog.forwardDeclare('eYo.Brick.List')
 
 /**
  * Convert the slot's connected target into the given xml element.

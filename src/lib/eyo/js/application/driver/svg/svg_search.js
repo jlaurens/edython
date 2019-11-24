@@ -14,71 +14,72 @@
 goog.require('eYo.Dom.Search')
 
 goog.provide('eYo.Svg.Search')
+goog.provide('eYo.Svg.SearchToolbar')
 
 goog.forwardDeclare('eYo.Search')
+goog.forwardDeclare('eYo.SearchToolbar')
 
 /**
  * Svg driver for the search pane.
  */
-eYo.Svg.makeDriverClass('Search')
-
-/**
- * Initializes the search SVG ressources.
- * @param {!eYo.Search} search
- */
-eYo.Svg.Search.prototype.initUI = eYo.Svg.Decorate.initUI(eYo.Svg.Search, function(search) {
-  if (search.dom) {
-    return
-  }
-  var dom = eYo.Svg.superClass_.searchInit.call(this, search)
-  var svg = dom.svg = Object.create(null)
-  /*
-  <svg class="eyo-search">
-    <g class="eyo-search-canvas">
-      <path class="eyo-search-background"/>
-    </g>
-    <g class="eyo-board">...</g>
-  </svg>
-  */
-  var root = svg.root_ = eYo.Svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
-  x.dataset && (x.dataset.type = 'search board')
-
-  var background = svg.background_ = eYo.Svg.newElement('path', {
-    class: 'eyo-search-background'
-  }, root)
-// Bad design: code reuse: options
-  this.addTooltip(background, eYo.Tooltip.getTitle('search'), {
-    position: 'right',
-    theme: 'light bordered',
-    flipDuration: 0,
-    inertia: true,
-    arrow: true,
-    animation: 'perspective',
-    duration: [600, 300],
-    delay: [750, 0],
-    popperOptions: {
-      modifiers: {
-        preventOverflow: {
-          enabled: true
-        }
-      }
-    },
-    onShow: x => {
-      eYo.Tooltip.hideAll(background)
+eYo.Svg.makeDriverClass('Search', {
+    /**
+   * Initializes the search SVG ressources.
+   * @param {!eYo.Search} search
+   */
+  initUI (search) {
+    if (search.dom) {
+      return
     }
-  })
-})
+    var dom = eYo.Svg.superClass_.searchInit.call(this, search)
+    var svg = dom.svg = Object.create(null)
+    /*
+    <svg class="eyo-search">
+      <g class="eyo-search-canvas">
+        <path class="eyo-search-background"/>
+      </g>
+      <g class="eyo-board">...</g>
+    </svg>
+    */
+    var root = svg.root_ = eYo.Svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
+    x.dataset && (x.dataset.type = 'search board')
 
-/**
- * Dispose of the given slot's rendering resources.
- * @param {!eYo.Search} search
- */
-eYo.Svg.Decorate.disposeUI(eYo.Svg.Search, function (search) {
-  var dom = search.dom
-  goog.dom.removeNode(dom.svg.root_)
-  dom.svg.root_ = null
-  dom.svg = null
-  eYo.Svg.superClass_.searchDispose.call(this, search)
+    var background = svg.background_ = eYo.Svg.newElement('path', {
+      class: 'eyo-search-background'
+    }, root)
+  // Bad design: code reuse: options
+    this.addTooltip(background, eYo.Tooltip.getTitle('search'), {
+      position: 'right',
+      theme: 'light bordered',
+      flipDuration: 0,
+      inertia: true,
+      arrow: true,
+      animation: 'perspective',
+      duration: [600, 300],
+      delay: [750, 0],
+      popperOptions: {
+        modifiers: {
+          preventOverflow: {
+            enabled: true
+          }
+        }
+      },
+      onShow: x => {
+        eYo.Tooltip.hideAll(background)
+      }
+    })
+  },
+  /**
+   * Dispose of the given slot's rendering resources.
+   * @param {!eYo.Search} search
+   */
+  disposeUI (search) {
+    var dom = search.dom
+    goog.dom.removeNode(dom.svg.root_)
+    dom.svg.root_ = null
+    dom.svg = null
+    eYo.Svg.superClass_.searchDispose.call(this, search)
+  }
 })
 
 /**
@@ -98,174 +99,6 @@ eYo.Svg.Search.prototype.displaySet = function (search, show) {
 eYo.Svg.Search.prototype.displayGet = function (search) {
   return search.dom.svg.root_.style.display !== 'none'
 }
-
-/**
- * Initializes the search toolbar SVG ressources.
- * @param {!eYo.SearchToolbar} searchToolbar
- */
-eYo.Svg.Search.prototype.toolbarInitUI = function(ftb) {
-  if (ftb.dom) {
-    return
-  }
-  var search = ftb.search
-  var dom = this._initUI(ftb)
-  var svg = dom.svg
-  /*
-  <div class="eyo-search-toolbar">
-    <div class="eyo-search-toolbar-general">
-      <div class="eyo-search-select-general">
-        ...
-      </div>
-      <div class="eyo-search-control">
-        ...
-      </div>
-    </div>
-    <div class="eyo-search-toolbar-module">
-      <div class="eyo-search-select-module">
-        ...
-      </div>
-    </div>
-  </div>
-  */
-  var cssClass = this.cssClass()
-  dom.control_ = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'control')
-  )
-  svg.root_ = eYo.Svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
-  svg.pathControl_ = eYo.Svg.newElement('path', {
-    id: 'p-search-control'
-  }, dom.svg)
-  if (eYo.Application && eYo.app.searchDropDown) {
-    dom.select_general_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select'),
-      eYo.app.searchDropDown
-    )
-  } else if (eYo.Application && eYo.app.searchDropDownGeneral && eYo.app.searchDropDownModule) {
-    dom.select_general_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-general'),
-      eYo.app.searchDropDownGeneral
-    )
-    dom.select_module_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-module'),
-      eYo.app.searchDropDownModule
-    )
-  } else {
-    dom.select_general_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-general')
-    )
-    select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-    // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
-    // select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
-    select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
-    select.setSelectedIndex(0)
-    select.render(dom.select_general_)
-    search.listenableKey = select.listen(
-      goog.ui.Component.EventType.ACTION,
-      search.doSelectGeneral,
-      false,
-      search
-    )
-    dom.select_module_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'select-module')
-    )
-    var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-    // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
-    // select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
-    select.addItem(new eYo.Separator())
-    select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-    select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
-    select.setSelectedIndex(0)
-    select.render(dom.select_module_)
-    search.listenableKey = select.listen(
-      goog.ui.Component.EventType.ACTION,
-      search.doSelectGeneral,
-      false,
-      search
-    )
-  }
-  var div_general = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'toolbar-general'),
-    dom.select_general_
-  )
-  var div_module = goog.dom.createDom(
-    goog.dom.TagName.DIV,
-    goog.getCssName(cssClass, 'toolbar-module'),
-    dom.select_module_
-  )
-  const div = this.search.desk.dom.div_.searchToolbar_
-  Object.definePorperty(dom, 'div_', {
-    get () { return div }
-  })
-  if (search.switcher_) {
-    div.appendChild(search.switcher_)
-    search.switcher_.style.left = '0px'
-    search.switcher_.style.top = '0px'
-  } else {
-    div.appendChild(div_general)
-    div.appendChild(div_module)
-  }
-  div.appendChild(dom.control_)
-  var bound = dom.bound
-  bound.mousedown = eYo.Dom.bindEvent(
-    dom.control_,
-    'mousedown',
-    search,
-    search.on_mousedown
-  )
-  bound.mouseenter = eYo.Dom.bindEvent(
-    dom.control_,
-    'mouseenter',
-    search,
-    search.on_mouseenter
-  )
-  bound.mouseleave = eYo.Dom.bindEvent(
-    dom.control_,
-    'mouseleave',
-    search,
-    search.on_mouseleave
-  )
-  bound.mouseup = eYo.Dom.bindEvent(
-    dom.control_,
-    'mouseup',
-    search,
-    search.on_mouseup
-  )
-}
-
-/**
- * Initializes the search toolbar SVG ressources.
- * @param {!eYo.SearchToolbar} searchToolbar
- */
-eYo.Svg.Search.prototype.toolbarDisposeUI = eYo.Dom.Decorate.disposeUI(function(ftb) {
-  var dom = ftb.dom
-  var div = dom.div_
-  var fc
-  while((fc = dom.div_.firstChild)) {
-    myNode.removeChild(fc)
-  }
-  var svg = dom.svg
-  goog.dom.removeNode(svg.group_)
-  svg.group_ = null
-})
 
 /**
  * Update the view based on coordinates calculated in position().
@@ -417,3 +250,175 @@ eYo.Svg.Search.prototype.on_mousedown = function(e) {
   eYo.app.motion.handleFlyoutStart(e, this)
   
 }
+
+/**
+ * Svg driver for the search tool bar.
+ */
+eYo.Svg.makeDriverClass('SearchToolbar', {
+  /**
+   * Initializes the search toolbar SVG ressources.
+   * @param {!eYo.SearchToolbar} searchToolbar
+   */
+  initUI (ftb) {
+    if (ftb.dom) {
+      return
+    }
+    var search = ftb.search
+    var dom = this._initUI(ftb)
+    var svg = dom.svg
+    /*
+    <div class="eyo-search-toolbar">
+      <div class="eyo-search-toolbar-general">
+        <div class="eyo-search-select-general">
+          ...
+        </div>
+        <div class="eyo-search-control">
+          ...
+        </div>
+      </div>
+      <div class="eyo-search-toolbar-module">
+        <div class="eyo-search-select-module">
+          ...
+        </div>
+      </div>
+    </div>
+    */
+    var cssClass = this.cssClass()
+    dom.control_ = goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(cssClass, 'control')
+    )
+    svg.root_ = eYo.Svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
+    svg.pathControl_ = eYo.Svg.newElement('path', {
+      id: 'p-search-control'
+    }, dom.svg)
+    if (eYo.Application && eYo.app.searchDropDown) {
+      dom.select_general_ = goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName(cssClass, 'select'),
+        eYo.app.searchDropDown
+      )
+    } else if (eYo.Application && eYo.app.searchDropDownGeneral && eYo.app.searchDropDownModule) {
+      dom.select_general_ = goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName(cssClass, 'select-general'),
+        eYo.app.searchDropDownGeneral
+      )
+      dom.select_module_ = goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName(cssClass, 'select-module'),
+        eYo.app.searchDropDownModule
+      )
+    } else {
+      dom.select_general_ = goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName(cssClass, 'select-general')
+      )
+      select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
+      // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+      // select.addItem(new eYo.Separator())
+      select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+      select.addItem(new eYo.Separator())
+      select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
+      select.setSelectedIndex(0)
+      select.render(dom.select_general_)
+      search.listenableKey = select.listen(
+        goog.ui.Component.EventType.ACTION,
+        search.doSelectGeneral,
+        false,
+        search
+      )
+      dom.select_module_ = goog.dom.createDom(
+        goog.dom.TagName.DIV,
+        goog.getCssName(cssClass, 'select-module')
+      )
+      var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
+      // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+      // select.addItem(new eYo.Separator())
+      select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+      select.addItem(new eYo.Separator())
+      select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
+      select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
+      select.setSelectedIndex(0)
+      select.render(dom.select_module_)
+      search.listenableKey = select.listen(
+        goog.ui.Component.EventType.ACTION,
+        search.doSelectGeneral,
+        false,
+        search
+      )
+    }
+    var div_general = goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(cssClass, 'toolbar-general'),
+      dom.select_general_
+    )
+    var div_module = goog.dom.createDom(
+      goog.dom.TagName.DIV,
+      goog.getCssName(cssClass, 'toolbar-module'),
+      dom.select_module_
+    )
+    const div = this.search.desk.dom.div_.searchToolbar_
+    Object.definePorperty(dom, 'div_', {
+      get () { return div }
+    })
+    if (search.switcher_) {
+      div.appendChild(search.switcher_)
+      search.switcher_.style.left = '0px'
+      search.switcher_.style.top = '0px'
+    } else {
+      div.appendChild(div_general)
+      div.appendChild(div_module)
+    }
+    div.appendChild(dom.control_)
+    var bound = dom.bound
+    bound.mousedown = eYo.Dom.bindEvent(
+      dom.control_,
+      'mousedown',
+      search,
+      search.on_mousedown
+    )
+    bound.mouseenter = eYo.Dom.bindEvent(
+      dom.control_,
+      'mouseenter',
+      search,
+      search.on_mouseenter
+    )
+    bound.mouseleave = eYo.Dom.bindEvent(
+      dom.control_,
+      'mouseleave',
+      search,
+      search.on_mouseleave
+    )
+    bound.mouseup = eYo.Dom.bindEvent(
+      dom.control_,
+      'mouseup',
+      search,
+      search.on_mouseup
+    )
+  },
+  /**
+   * Initializes the search toolbar SVG ressources.
+   * @param {!eYo.SearchToolbar} searchToolbar
+   */
+  disposeUI (ftb) {
+    var dom = ftb.dom
+    var div = dom.div_
+    var fc
+    while((fc = dom.div_.firstChild)) {
+      myNode.removeChild(fc)
+    }
+    var svg = dom.svg
+    goog.dom.removeNode(svg.group_)
+    svg.group_ = null
+  },
+})

@@ -75,8 +75,7 @@ goog.forwardDeclare('eYo.Geometry')
  * When true, an extra margin at the right of the draft board is added
  * to display line numbers.
  */
-eYo.Constructor.make({
-  key: 'Metrics',
+eYo.Constructor.make('Metrics', {
   owner: eYo,
   super: eYo.Owned,
   props: {

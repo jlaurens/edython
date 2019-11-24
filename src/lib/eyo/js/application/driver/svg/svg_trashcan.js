@@ -20,17 +20,14 @@ goog.forwardDeclare('eYo.TrashCan')
 /**
  * Svg driver fro the trash can.
  */
-eYo.Svg.makeDriverClass('TrashCan')
-console.error('NYI: makeDriverClass({params}) initUI and disposUI in the model')
-/**
- * Initialize the trash can SVG ressources.
- * @param {!eYo.TrashCan} trashCan
- * @param {?Object} options
- * @return {!Element} The trash can's SVG group.
- */
-eYo.Svg.Decorate.initUIMake(
-  eYo.Svg.TrashCan,
-  function(trashCan, options) {
+eYo.Svg.makeDriverClass('TrashCan', {
+    /**
+   * Initialize the trash can SVG ressources.
+   * @param {!eYo.TrashCan} trashCan
+   * @param {?Object} options
+   * @return {!Element} The trash can's SVG group.
+   */
+  initUI (trashCan, options) {
     var dom = trashCan.dom
     var svg = dom.svg = Object.create(null)
     svg.state_ = svg.left_ = svg.top_ = 0
@@ -116,16 +113,12 @@ eYo.Svg.Decorate.initUIMake(
     svg.group_.insertBefore(g, svg.canvas_)
     
     return g
-  }
-)
-
-/**
- * Initializes the trash can SVG ressources.
- * @param {!eYo.TrashCan} trashCan
- */
-eYo.Svg.disposeUIMake( 
-  eYo.Svg.TrashCan,
-  function(trashCan) {
+  },
+  /**
+   * Initializes the trash can SVG ressources.
+   * @param {!eYo.TrashCan} trashCan
+   */
+  disposeUIMake (trashCan) {
     var dom = trashCan.dom
     if (dom) {
       goog.Timer.clear(dom.lidTask)
@@ -139,8 +132,8 @@ eYo.Svg.disposeUIMake(
       }
       this._disposeUI(trashCan)
     }
-  }
-)
+  },
+})
 
 /**
  * Inspect the contents of the trash.

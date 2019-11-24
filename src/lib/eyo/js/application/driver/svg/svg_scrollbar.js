@@ -20,97 +20,98 @@ goog.forwardDeclare('eYo.Scrollbar')
 /**
  * Svg driver for a scrollbar.
  */
-eYo.Svg.makeDriverClass('Scrollbar')
-
-/**
- * Initializes the scrollbar SVG ressources.
- * @param {!eYo.Scrollbar} scrollbar
- * @param {?String} opt_class
- */
-eYo.Svg.Scrollbar.prototype.initUI = eYo.Dom.Decorate.initUI(eYo.Svg.Scrollbar, function(scrollbar, opt_class) {
-  var dom = scrollbar.dom
-  var svg = dom.svg
-  /* Create the following DOM:
-  <svg class="eyo-scrollbar-horizontal  optionalClass">
-    <g>
-      <rect class="eyo-scrollbar-background" />
-      <rect class="eyo-scrollbar-handle" rx="8" ry="8" />
-    </g>
-  </svg>
-  */
-  var className = 'eyo-scrollbar-' + (scrollbar.horizontal_ ? 'horizontal' : 'vertical')
-  if (opt_class) {
-    className += ' ' + opt_class
-  }
-  var root = svg.root_ = eYo.Svg.newElement(
-    'svg',
-    {
-      class: className,
-      preserveAspectRatio: 'xMinYMin slice'
+eYo.Svg.makeDriverClass('Scrollbar', {
+    /**
+   * Initializes the scrollbar SVG ressources.
+   * @param {!eYo.Scrollbar} scrollbar
+   * @param {?String} opt_class
+   */
+  initUI (scrollbar, opt_class) {
+    var dom = scrollbar.dom
+    var svg = dom.svg
+    /* Create the following DOM:
+    <svg class="eyo-scrollbar-horizontal  optionalClass">
+      <g>
+        <rect class="eyo-scrollbar-background" />
+        <rect class="eyo-scrollbar-handle" rx="8" ry="8" />
+      </g>
+    </svg>
+    */
+    var className = 'eyo-scrollbar-' + (scrollbar.horizontal_ ? 'horizontal' : 'vertical')
+    if (opt_class) {
+      className += ' ' + opt_class
     }
-  )
-  var g = svg.group_ = eYo.Svg.newElement(
-    'g',
-    {},
-    root
-  )
-  var background = svg.background_ = eYo.Svg.newElement(
-    'rect',
-    { class: 'eyo-scrollbar-background'},
-    g
-  )
-  var radius = Math.floor((eYo.Scrollbar.thickness - 5) / 2)
-  var handle = svg.handle_ = eYo.Svg.newElement(
-    'rect',
-    {
-      class: 'eyo-scrollbar-handle',
-      rx: radius,
-      ry: radius
-    },
-    g
-  )
-  var thickness = eYo.Scrollbar.thickness;
-  if (scrollbar.horizontal_) {
-    background.setAttribute('height', thickness)
-    handle.setAttribute('height', thickness - 5)
-    handle.setAttribute('y', 2.5);
-    scrollbar.lengthAttribute_ = 'width'
-    scrollbar.positionAttribute_ = 'x'
-  } else {
-    background.setAttribute('width', thickness)
-    handle.setAttribute('width', thickness - 5)
-    handle.setAttribute('x', 2.5);
-    scrollbar.lengthAttribute_ = 'height'
-    scrollbar.positionAttribute_ = 'y'
-  }
-  eYo.Dom.insertAfter(
-    root,
-    scrollbar.board_.dom.svg.root_
-  )
-  var bound = dom.bound
-  bound.bar_mousedown = eYo.Dom.bindEvent(
-    background,
-    'mousedown',
-    this.scrollbarOnBar_mousedown.bind(scrollbar)
-  )
-  bound.handle_mousedown = eYo.Dom.bindEvent(
-    handle,
-    'mousedown',
-    this.scrollbarOnHandle_mousedown.bind(scrollbar)
-  )
-  return g
+    var root = svg.root_ = eYo.Svg.newElement(
+      'svg',
+      {
+        class: className,
+        preserveAspectRatio: 'xMinYMin slice'
+      }
+    )
+    var g = svg.group_ = eYo.Svg.newElement(
+      'g',
+      {},
+      root
+    )
+    var background = svg.background_ = eYo.Svg.newElement(
+      'rect',
+      { class: 'eyo-scrollbar-background'},
+      g
+    )
+    var radius = Math.floor((eYo.Scrollbar.thickness - 5) / 2)
+    var handle = svg.handle_ = eYo.Svg.newElement(
+      'rect',
+      {
+        class: 'eyo-scrollbar-handle',
+        rx: radius,
+        ry: radius
+      },
+      g
+    )
+    var thickness = eYo.Scrollbar.thickness;
+    if (scrollbar.horizontal_) {
+      background.setAttribute('height', thickness)
+      handle.setAttribute('height', thickness - 5)
+      handle.setAttribute('y', 2.5);
+      scrollbar.lengthAttribute_ = 'width'
+      scrollbar.positionAttribute_ = 'x'
+    } else {
+      background.setAttribute('width', thickness)
+      handle.setAttribute('width', thickness - 5)
+      handle.setAttribute('x', 2.5);
+      scrollbar.lengthAttribute_ = 'height'
+      scrollbar.positionAttribute_ = 'y'
+    }
+    eYo.Dom.insertAfter(
+      root,
+      scrollbar.board_.dom.svg.root_
+    )
+    var bound = dom.bound
+    bound.bar_mousedown = eYo.Dom.bindEvent(
+      background,
+      'mousedown',
+      this.scrollbarOnBar_mousedown.bind(scrollbar)
+    )
+    bound.handle_mousedown = eYo.Dom.bindEvent(
+      handle,
+      'mousedown',
+      this.scrollbarOnHandle_mousedown.bind(scrollbar)
+    )
+    return g
+  },
+  /**
+   * Dispose of the given slot's rendering resources.
+   * @param {!eYo.Scrollbar} scrollbar
+   */
+  disposeUI (scrollbar) {
+    var dom = scrollbar.dom
+    goog.dom.removeNode(dom.svg.root_)
+    dom.svg = dom.svg.root_ = null
+    throw 'WHAT ABOUT THE OTHER EVENTS'
+  },
 })
 
-/**
- * Dispose of the given slot's rendering resources.
- * @param {!eYo.Scrollbar} scrollbar
- */
-eYo.Svg.Scrollbar.prototype.disposeUI = eYo.Dom.Decorate.disposeUI(function (scrollbar) {
-  var dom = scrollbar.dom
-  goog.dom.removeNode(dom.svg.root_)
-  dom.svg = dom.svg.root_ = null
-  throw 'WHAT ABOUT THE OTHER EVENTS'
-})
+
 
 /**
  * Update visibility of scrollbar based on whether it thinks it should

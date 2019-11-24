@@ -38,10 +38,39 @@ goog.forwardDeclare('eYo.Style')
 goog.forwardDeclare('goog.userAgent')
 
 /**
+ * The Svg delegate.
+ * @constructor
+ */
+eYo.Driver.Dlgt.makeSubclass('Dlgt', {
+  owner: eYo.Svg
+})
+
+/**
  * The manager of all the svg drivers.
  * @type {eYo.Svg.Mgr}
  */
-eYo.Dom.Mgr.makeSubclass(eYo.Svg)
+eYo.Dom.makeMgrClass(eYo.Svg, {
+  initUIMake (f) {
+    return function (object, ...rest) {
+      var dom = object.dom
+      if (dom && !dom.svg) {
+        dom.svg = Object.create(null)
+        f && f.apply(object, rest)
+        return dom
+      }
+    }
+  },
+  disposeUIMake (f) {
+    return function (object, ...rest) {
+      var dom = object.dom
+      if (dom && dom.svg) {
+        f && f.apply(object, rest)
+        dom.svg = null
+        cls.superClass_.disposeUI.apply(object, ...rest)
+      }
+    }
+  },
+})
 
 /**
  * A namespace.
@@ -53,21 +82,21 @@ eYo.Svg.Decorate = Object.create(null)
 /**
  * Decorator for initUI.
  */
-eYo.Svg.Decorate.initUI = (constructor, f) => {
-  return function (object, ...rest) {
-    var dom = constructor.superClass_.initUI.apply(object, ...rest)
+eYo.Svg.Decorate.initUI = (f) => {
+  return eYo.Dom.Decorate.initUI (function (object, ...rest) {
+    var dom = object.dom
     if (dom) {
       dom.svg = Object.create(null)
       f.apply(object, ...rest)
       return dom
     }
-  }
+  })
 }
 
 /**
  * Decorator for disposeUI.
  */
-eYo.Svg.Decorate.disposeUI = (constructor, f) => {
+eYo.Svg.Decorate.disposeUI = (f) => {
   return function (object, ...rest) {
     var dom = object.dom
     if (dom) {
@@ -77,8 +106,6 @@ eYo.Svg.Decorate.disposeUI = (constructor, f) => {
     }
   }
 }
-
-eYo.Svg.prototype.withBBox = true
 
 /**
  * Helper method for creating SVG elements.
@@ -137,7 +164,7 @@ Object.defineProperties(eYo.Svg, {
  * @param {!Element} element SVG element to find the coordinates of.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
-eYo.Svg.prototype.xyInParent = function(element) {
+eYo.Svg.Dflt.prototype.xyInParent = function(element) {
   var xy = new eYo.Where()
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
@@ -179,7 +206,7 @@ eYo.Svg.prototype.xyInParent = function(element) {
  * Add tooltip to an element
  * @param {!String} key
  */
-eYo.Svg.prototype.addTooltip = function (el, title, options) {
+eYo.Svg.Dflt.prototype.addTooltip = function (el, title, options) {
   if (goog.isString(title)) {
     el.setAttribute('title', title)
     tippy(el, options)
@@ -214,7 +241,7 @@ eYo.Svg.getCssClassForText = function (txt) {
  * @param {!Element} element DOM element to remove attribute from.
  * @param {string} attributeName Name of attribute to remove.
  */
-eYo.Svg.prototype.removeAttribute = function(element, attributeName) {
+eYo.Svg.removeAttribute = (element, attributeName) => {
   // goog.userAgent.isVersion is deprecated, but the replacement is
   // goog.userAgent.isVersionOrHigher.
   if (goog.userAgent.IE && goog.userAgent.isVersion('10.0')) {

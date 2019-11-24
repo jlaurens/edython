@@ -99,14 +99,15 @@ eYo.Pane.makeSubclass({
       },
     }
   },
-})
-
-/**
- * Make the user interface.
- */
-eYo.Workspace.eyo.initUIMake(function() {
-  this.recordDeleteAreas()
-  this.layout()  
+  ui: {
+    /**
+     * Make the user interface.
+     */
+    init () {
+      this.recordDeleteAreas()
+      this.layout()  
+    }
+  }
 })
 
 /**

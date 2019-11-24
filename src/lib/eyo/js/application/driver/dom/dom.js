@@ -29,11 +29,41 @@ goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
 
 /**
+ * The Svg delegate.
+ * @constructor
+ */
+eYo.Driver.Dlgt.makeSubclass('Dlgt', {
+  owner: eYo.Dom
+})
+
+/**
  * The manager of all the dom drivers.
  * The dom drivers are uncomplete drivers.
  * @type {eYo.Dom.Mgr}
  */
-eYo.Fcls.makeMgrClass(eYo.Dom)
+eYo.Fcls.makeMgrClass(eYo.Dom, {
+  iniUIMake (f) {
+    return function () {
+      if (object.dom) {
+        return
+      }
+      var dom = object.dom = Object.create(null)
+      dom.bound = Object.create(null)
+      f && f.apply(object, rest)
+      return dom
+    }
+  },
+  disposeUIMake (f) {
+    return function (object, ...rest) {
+      var dom = object.dom
+      if (dom) {
+        eYo.Dom.clearBoundEvents(object)
+        f && f.apply(object, rest)
+        object.dom = dom.bound = null
+      }
+    }
+  },
+})
 
 /**
  * @name {eYo.Dom.Decorate}
@@ -41,46 +71,6 @@ eYo.Fcls.makeMgrClass(eYo.Dom)
  */
 eYo.Dom.Decorate = Object.create(null)
 
-/**
- * Decorates a function as `initUI`.
- */
-eYo.Dom.Decorate.initUI = (constructor, f) => {
-  return function (object, ...rest) {
-    if (object.dom) {
-      return
-    }
-    var dom = object.dom = Object.create(null)
-    dom.bound = Object.create(null)
-    f.apply(this, rest)
-    return dom
-  }
-}
-
-/**
- * Dispose of the basic dom ressources.
- * @param {!Object} object
- */
-eYo.Dom._disposeUI = function(object) {
-  var dom = object.dom
-  if (dom) {
-    dom.bound = null
-    object.dom = null
-  }
-}
-
-/**
- * Decorates a function between `clearBoundEvents` and `_disposeUI`.
- */
-eYo.Dom.Decorate.disposeUI = (constructor, f) => {
-  return function (object) {
-    var dom = object.dom
-    if (dom) {
-      eYo.Dom.clearBoundEvents(object)
-      f.call(this, object)
-      object.dom = dom.bound = null
-    }
-  }
-}
 
 /**
  * The document scroll.

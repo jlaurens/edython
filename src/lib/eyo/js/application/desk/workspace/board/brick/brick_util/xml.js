@@ -410,7 +410,7 @@ goog.require('eYo.Brick.Group')
  * For edython.
  * @return attr name
  */
-eYo.Brick.prototype.xmlAttr = function () {
+eYo.Brick.Dflt.prototype.xmlAttr = function () {
   var attr = this.constructor.eyo.xmlAttr || (this instanceof eYo.Brick.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
   return attr || (this.type && this.type.substring(4)) || eYo.Key.PLACEHOLDER
 }
@@ -523,7 +523,7 @@ goog.require('eYo.Brick.Operator')
  * @param {Element} element the persistent element.
  * @param {?Object} opt
  */
-eYo.Brick.prototype.saveData = function (element, opt) {
+eYo.Brick.Dflt.prototype.saveData = function (element, opt) {
   this.forEachData(data => data.save(element, opt))
 }
 
@@ -533,7 +533,7 @@ eYo.Brick.prototype.saveData = function (element, opt) {
  * @param {Element} element the persistent element.
  * @param {?Object} opt
  */
-eYo.Brick.prototype.saveSlots = function (element, opt) {
+eYo.Brick.Dflt.prototype.saveSlots = function (element, opt) {
   this.forEachSlot(slot => slot.save(element, opt))
 }
 

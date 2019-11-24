@@ -18,21 +18,21 @@ goog.provide('eYo.Svg.DnD')
 goog.forwardDeclare('eYo.DnD')
 
 /**
- * @name {eYo.Svg.DnD}
- * @namespace
+ * Svg driver for DnD.
  */
 
-console.error('NYI: DnD UI')
-/**
- * Initiate the DnD manager UI.
- * @param {!eYo.DnD.Mgr} mgr  The DnD manager we must init the UI.
- */
-eYo.Svg.DnD.prototype.mgrInit = function (mgr) {
-}
+eYo.Svg.makeDriverClass('DnD', {
+  /**
+   * Initiate the DnD manager UI.
+   * @param {!eYo.DnD.Mgr} mgr  The DnD manager we must init the UI.
+   */
+  initUI (mgr) {
+  },
+  /**
+   * Dispose of the DnD manager UI.
+   * @param {!eYo.DnD.Mgr} mgr  The DnD manager we must dispose of the UI.
+   */
+  disposeUI (mgr) {
+  },
+})
 
-/**
- * Dispose of the DnD manager UI.
- * @param {!eYo.DnD.Mgr} mgr  The DnD manager we must dispose of the UI.
- */
-eYo.Svg.DnD.prototype.mgrDispose = function (mgr) {
-}

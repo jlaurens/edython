@@ -19,66 +19,65 @@ goog.forwardDeclare('eYo.Field')
 
 // field management
 
-eYo.Svg.makeDriverClass('Field')
-
-/**
- * Initializes the field SVG ressources.
- * Does nothing if the field's brick has no SVG ressources.
- * Part of the `initUI` process.
- * @param {!eYo.Field} field
- * @return {?eYo.Field}
- */
-eYo.Svg.Field.prototype.initUI = eYo.Svg.Decorate.initUI(eYo.Svg.Field, function(field) {
-  if (field.dom) {
-    return
-  }
-  if (!(field.css_class_ = (field.model && field.model.css_class) || (field.status && `eyo-code-${field.status}`))) {
-    field.css_class_ = eYo.Svg.getCssClassForText(field.text)
-  }
-  var dom = field.owner.dom || field.brick.dom
-  if (!dom) {
-    throw 'MISSING owner dom'
-  }
-  var g = dom.svg.group_
-  if (!g) { return }
-  dom = this._initUI(field)
-  var svg = dom.svg
-  if (field.isTextInput) {
-    g = svg.group_ = eYo.Svg.newElement('g', {}, g)
-    dom.borderRect_ = eYo.Svg.newElement('rect', {
-      rx: 4,
-      ry: 4,
-      x: -eYo.Style.SEP_SPACE_X / 2,
-      y: 0,
-      height: 16
-    }, g)
-    /** @type {!Element} */
-    svg.textElement_ = eYo.Svg.newElement('text', {
-      class: field.css_class,
-      y: eYo.Font.totalAscent
-    }, g)
-  } else {
-    g = svg.group_ = svg.textElement_ = eYo.Svg.newElement('text', {
-      class: field.css_class,
-      y: eYo.Font.totalAscent
-    }, g)
-  }
-  g.dataset && (g.dataset.field = field.name)
-  !field.visible && (g.style.display = 'none')
-  // add tooltip management here
-  this.updateEditable(field)
-  return field
-})
-
-/**
- * Dispose of the given field's rendering resources.
- * @param {!Object} field
- */
-eYo.Svg.Decorate.disposeUI(eYo.Svg.Field, function (field) {
-  var svg = field.dom && field.dom.svg
-  if (!svg) { return }
-  svg.group_ = goog.dom.removeNode(svg.group_)
-  this._disposeUI(field)
+eYo.Svg.makeDriverClass('Field', {
+  /**
+   * Initializes the field SVG ressources.
+   * Does nothing if the field's brick has no SVG ressources.
+   * Part of the `initUI` process.
+   * @param {!eYo.Field} field
+   * @return {?eYo.Field}
+   */
+  initUI (field) {
+    if (field.dom) {
+      return
+    }
+    if (!(field.css_class_ = (field.model && field.model.css_class) || (field.status && `eyo-code-${field.status}`))) {
+      field.css_class_ = eYo.Svg.getCssClassForText(field.text)
+    }
+    var dom = field.owner.dom || field.brick.dom
+    if (!dom) {
+      throw 'MISSING owner dom'
+    }
+    var g = dom.svg.group_
+    if (!g) { return }
+    dom = this._initUI(field)
+    var svg = dom.svg
+    if (field.isTextInput) {
+      g = svg.group_ = eYo.Svg.newElement('g', {}, g)
+      dom.borderRect_ = eYo.Svg.newElement('rect', {
+        rx: 4,
+        ry: 4,
+        x: -eYo.Style.SEP_SPACE_X / 2,
+        y: 0,
+        height: 16
+      }, g)
+      /** @type {!Element} */
+      svg.textElement_ = eYo.Svg.newElement('text', {
+        class: field.css_class,
+        y: eYo.Font.totalAscent
+      }, g)
+    } else {
+      g = svg.group_ = svg.textElement_ = eYo.Svg.newElement('text', {
+        class: field.css_class,
+        y: eYo.Font.totalAscent
+      }, g)
+    }
+    g.dataset && (g.dataset.field = field.name)
+    !field.visible && (g.style.display = 'none')
+    // add tooltip management here
+    this.updateEditable(field)
+    return field
+  },
+  /**
+   * Dispose of the given field's rendering resources.
+   * @param {!Object} field
+   */
+  disposeUI (field) {
+    var svg = field.dom && field.dom.svg
+    if (!svg) { return }
+    svg.group_ = goog.dom.removeNode(svg.group_)
+    this._disposeUI(field)
+  },
 })
 
 /**

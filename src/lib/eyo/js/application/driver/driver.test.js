@@ -5,10 +5,10 @@ describe('Driver', function() {
     chai.assert(eYo.Driver)
     chai.assert(eYo.Driver.Dlgt)
     chai.assert(eYo.isF(eYo.Driver.makeMgrClass))
-    chai.assert(eYo.isF(eYo.Driver.Default))
+    chai.assert(eYo.isF(eYo.Driver.Dflt))
   })
-  it ('Driver: Default', function () {
-    var d = new eYo.Driver.Default()
+  it ('Driver: Dflt', function () {
+    var d = new eYo.Driver.Dflt()
     chai.assert(d)
     chai.assert(eYo.isF(d.initUI))
     chai.assert(eYo.isF(d.disposeUI))
@@ -18,8 +18,11 @@ describe('Driver', function() {
     chai.assert(NS.Mgr)
     chai.assert(NS.Mgr.eyo.ctor === NS.Mgr)
     chai.assert(NS.Mgr.eyo.constructor === eYo.Driver.Dlgt)
+    chai.assert(NS.makeMgrClass)
     chai.assert(NS.makeDriverClass)
-    chai.assert(NS.Default = eYo.Driver.Default)
+    chai.assert(NS.Dflt = eYo.Driver.Dflt)
+    NS.A = Object.create(null)
+    NS.makeMgrClass(NS.A)
   })
   it ('Driver: manager', function () {
     eYo.Driver.makeMgrClass(NS)
@@ -36,7 +39,8 @@ describe('Driver', function() {
     })
     chai.assert(eYo.isF(NS.Foo))
     var foo = new NS.Foo()
-    chai.assert(foo.initUI())
+    chai.assert(foo.initUI)
+    chai.assert(!foo.initUI())
     chai.expect(() => {
       foo.disposeUI()
     }).to.not.throw()
@@ -44,10 +48,10 @@ describe('Driver', function() {
   it ('Driver: makeDriverClass inherits', function () {
     eYo.Driver.makeMgrClass(NS)
     var flag
-    NS.Default = function () {
+    NS.Dflt = function () {
       flag += 421
     }
-    NS.Default.prototype.initUI = NS.Default.prototype.disposeUI = function () {
+    NS.Dflt.prototype.initUI = NS.Dflt.prototype.disposeUI = function () {
       return true
     }
     NS.makeDriverClass({
@@ -59,11 +63,39 @@ describe('Driver', function() {
     var foo = new NS.Foo()
     chai.assert(flag === 421)
   })
+  it ('Driver: makeDriverClass inherits (2)', function () {
+    var flag
+    eYo.Driver.makeMgrClass(NS)
+    NS.makeDriverClass({
+      key: 'Foo',
+      init (x) {
+        flag += x
+      },
+    })
+    chai.assert(eYo.isF(NS.Foo))
+    flag = 0
+    new NS.Foo(1)
+    chai.assert(flag === 1)
+    NS.A = {}
+    NS.makeMgrClass(NS.A)
+    chai.assert(NS.A.super === NS)
+    NS.A.makeDriverClass({
+      key: 'Foo',
+      init (x) {
+        flag += 10*x
+      },
+    })
+    chai.assert(eYo.isF(NS.A.Foo))
+    flag = 0
+    new NS.A.Foo(1)
+    console.warn('flag', flag)
+    chai.assert(flag === 11)
+  })
   it ('Driver: makeDriverClass with model', function () {
     var flag
     eYo.Driver.makeMgrClass(NS)
-    var super_ = (NS.super && owner.super[name])|| NS.Default
-    chai.assert(super_ === NS.Default)
+    var super_ = (NS.super && owner.super[name])|| NS.Dflt
+    chai.assert(super_ === NS.Dflt)
     NS.makeDriverClass({
       key: 'Foo',
       owner: NS,
@@ -75,13 +107,14 @@ describe('Driver', function() {
         return true
       },
       disposeUI () {
+        console.error('I AM COLD')
         flag += 100
       }
     })
     flag = 0
     var foo = new NS.Foo()
     chai.assert(flag === 1)
-    chai.assert(foo.initUI())
+    chai.assert(foo.initUI && foo.initUI())
     chai.assert(flag === 11)
     foo.disposeUI()
     chai.assert(flag === 111)
