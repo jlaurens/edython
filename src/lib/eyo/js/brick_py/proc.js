@@ -50,7 +50,7 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
  * Class for a Delegate, decorator.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
+eYo.Stmt.makeSubclass('decorator_stmt', {
   xml: {
     attr: '@'
   },
@@ -339,7 +339,7 @@ eYo.Brick.Stmt.makeSubclass('decorator_stmt', {
   }
 }, true)
 
-Object.defineProperties(eYo.Brick.Stmt.decorator_stmt.prototype, {
+Object.defineProperties(eYo.Stmt.decorator_stmt.prototype, {
   /**
    * @readonly
    * @property {Boolean} decorator bricks are white when followed by a statement.
@@ -353,11 +353,11 @@ Object.defineProperties(eYo.Brick.Stmt.decorator_stmt.prototype, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @override
  */
-eYo.Brick.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var variant_p = this.variant_p
   if (variant_p !== eYo.Key.NONE) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -412,7 +412,7 @@ eYo.Brick.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mg
     })
   }
   mgr.shouldSeparate()
-  return eYo.Brick.Stmt.decorator_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Stmt.decorator_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
@@ -473,11 +473,11 @@ eYo.Brick.Group.makeSubclass('funcdef_part', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
   var variants = this.variant_d.getAll()
   var variant = this.variant_p
   var F = (content, key) => {
@@ -498,7 +498,7 @@ eYo.Brick.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mgr)
     goog.dom.createTextNode('(…) -> …')
   ), variants[1])
   mgr.shouldSeparate()
-  return eYo.Brick.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /*
@@ -563,11 +563,11 @@ eYo.Brick.Group.makeSubclass('classdef_part', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
   var variants = this.variant_d.getAll()
   var variant = this.variant_d.get()
   var F = (content, key) => {
@@ -587,7 +587,7 @@ eYo.Brick.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mgr
     goog.dom.createTextNode('(…)')
   ), variants[1])
   mgr.shouldSeparate()
-  return eYo.Brick.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 eYo.Brick.Proc.T3s = [

@@ -24,13 +24,13 @@ eYo.Fcls.makeDriverClass('Brick')
 
 /**
  * The default implementation does nothing.
- * @param {!eYo.Brick} newParent to be connected.
+ * @param {!eYo.Brick.Dflt} newParent to be connected.
  */
 eYo.Fcls.Brick.prototype.parentWillChange = eYo.Do.nothing
 
 /**
  * The default implementation does nothing.
- * @param {!eYo.Brick} oldParent replaced.
+ * @param {!eYo.Brick.Dflt} oldParent replaced.
  */
 eYo.Fcls.Brick.prototype.parentDidChange = eYo.Do.nothing
 

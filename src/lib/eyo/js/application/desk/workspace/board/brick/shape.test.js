@@ -35,8 +35,8 @@ describe('Expression shape', function () {
 describe('Statement shape', function () {
   var type = 'test_shape_stmt'
   eYo.T3.Stmt[type] = type
-  eYo.Brick.Stmt.makeSubclass(type, {}) 
-  chai.assert(eYo.Brick.Stmt.test_shape_stmt)
+  eYo.Stmt.makeSubclass(type, {}) 
+  chai.assert(eYo.Stmt.test_shape_stmt)
   var b
   before(function() {
     b = eYo.Test.new_brick(type)
@@ -70,7 +70,7 @@ describe('Group shape', function () {
   var type = 'test_shape_part'
   eYo.T3.Stmt[type] = type
   eYo.Brick.Group.makeSubclass(type, {}) 
-  chai.assert(eYo.Brick.Stmt.test_shape_part)
+  chai.assert(eYo.Stmt.test_shape_part)
   var b
   before(function() {
     b = eYo.Test.new_brick(type)

@@ -17,7 +17,7 @@ goog.require('eYo.Brick.Range')
 
 goog.require('eYo.Model.random__module')
 
-goog.require('eYo.Brick.Stmt')
+goog.require('eYo.Stmt')
 
 goog.require('eYo.Brick.List')
 goog.require('eYo.Brick.Primary')

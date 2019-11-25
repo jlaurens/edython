@@ -280,7 +280,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
  * If the answer is `{x: -15, y: 0}`, we just have to scroll the board
  * 15 units to the right and the brick is visible.
  * For edython.
- * @param {eYo.Brick} brick The new location of the receiver, the actual location when eYo.NA.
+ * @param {eYo.Brick.Dflt} brick The new location of the receiver, the actual location when eYo.NA.
  * @param {?Object} newLoc The new location of the receiver, the actual location when eYo.NA.
  * @return {{x: number, y: number}|eYo.NA}
  */

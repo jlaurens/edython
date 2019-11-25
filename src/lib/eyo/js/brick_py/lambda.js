@@ -73,7 +73,7 @@ eYo.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
 /**
  * Prepare io, just before walking through the input list for example.
  * Subclassers may add their own stuff to io.
- * @param {!eYo.Brick} brick owner of the receiver
+ * @param {!eYo.Brick.Dflt} brick owner of the receiver
  */
 eYo.Consolidator.Parameter.prototype.getIO = function (brick) {
   var io = eYo.Consolidator.Parameter.superClass_.getIO.call(this, brick)

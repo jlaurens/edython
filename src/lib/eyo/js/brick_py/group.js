@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.Brick.Stmt')
+goog.require('eYo.Stmt')
 
 goog.require('eYo.Msg')
 
@@ -25,7 +25,7 @@ goog.provide('eYo.Brick.Group')
  * Base group is subclassed into Group and Control.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('BaseGroup', {
+eYo.Stmt.makeSubclass('BaseGroup', {
   statement: {
     head: {
       check: /** @suppress {globalThis} */ function (type) {
@@ -210,7 +210,7 @@ eYo.Brick.Group.Branch.prototype.getBaseType = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
@@ -233,7 +233,7 @@ eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr) {
   F(2)
   F(3)
   mgr.shouldSeparate()
-  return eYo.Brick.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 ;[
@@ -245,7 +245,7 @@ eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr) {
   'last_else'
 ].forEach(name => {
   var key = name + '_part'
-  eYo.Brick.Stmt[key] = eYo.Brick.Group.Branch
+  eYo.Stmt[key] = eYo.Brick.Group.Branch
   eYo.Brick.Mgr.register(key)
 })
 
@@ -265,7 +265,7 @@ eYo.Brick.Group.prototype.willRender_ = function (recorder) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */

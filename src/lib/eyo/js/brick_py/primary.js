@@ -22,7 +22,7 @@ goog.require('eYo.Model.functions')
 goog.require('eYo.Msg')
 
 goog.require('eYo.Brick.Primary')
-goog.require('eYo.Brick.Stmt')
+goog.require('eYo.Stmt')
 goog.require('eYo.Protocol.Register')
 goog.provide('eYo.Brick.Primary')
 
@@ -91,7 +91,7 @@ eYo.Consolidator.List.makeSubclass('Target', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {!eYo.Brick} brick, owner or the receiver.
+ * @param {!eYo.Brick.Dflt} brick, owner or the receiver.
  */
 eYo.Consolidator.List.Target.prototype.getIO = function (brick) {
   var io = eYo.Consolidator.List.Target.superClass_.getIO.call(this, brick)
@@ -1242,7 +1242,7 @@ eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {!eYo.Brick} brick to be initialized.
+ * @param {!eYo.Brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
 eYo.Expr.primary.prototype.init = function () {
@@ -1801,16 +1801,16 @@ eYo.Expr.primary.prototype.getSlot = function (name) {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('pre_call_stmt', {
+eYo.Stmt.makeSubclass('pre_call_stmt', {
   link: eYo.T3.Expr.primary
-}, eYo.Brick.Stmt)
+}, eYo.Stmt)
 
 /**
  * Class for a Delegate, base call statement brick.
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
+eYo.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
   data: {
     variant: {
       init: eYo.Key.CALL_EXPR,
@@ -1819,9 +1819,9 @@ eYo.Brick.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
       }
     }
   }
-}, eYo.Brick.Stmt, true)
+}, eYo.Stmt, true)
 
-Object.defineProperties( eYo.Brick.Stmt.call_stmt.prototype, {
+Object.defineProperties( eYo.Stmt.call_stmt.prototype, {
   profile_p : {
     get () {
       return this.profile_ === this.getProfile()
@@ -1845,13 +1845,13 @@ Object.defineProperties( eYo.Brick.Stmt.call_stmt.prototype, {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('base_call_stmt', {
+eYo.Stmt.makeSubclass('base_call_stmt', {
   link: eYo.T3.Expr.primary
-}, eYo.Brick.Stmt, true)
+}, eYo.Stmt, true)
 
-eYo.Brick.Stmt.base_call_stmt.prototype.updateProfile = eYo.Expr.primary.prototype.updateProfile
+eYo.Stmt.base_call_stmt.prototype.updateProfile = eYo.Expr.primary.prototype.updateProfile
 
-eYo.Brick.Stmt.base_call_stmt.prototype.getProfile = eYo.Expr.primary.prototype.getProfile
+eYo.Stmt.base_call_stmt.prototype.getProfile = eYo.Expr.primary.prototype.getProfile
 
 
 /**
@@ -1859,15 +1859,15 @@ eYo.Brick.Stmt.base_call_stmt.prototype.getProfile = eYo.Expr.primary.prototype.
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {!eYo.Brick} brick to be initialized.
+ * @param {!eYo.Brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
-eYo.Brick.Stmt.base_call_stmt.prototype.init = function () {
-  eYo.Brick.Stmt.base_call_stmt.superClass_.init.call(this)
+eYo.Stmt.base_call_stmt.prototype.init = function () {
+  eYo.Stmt.base_call_stmt.superClass_.init.call(this)
   this.profile_p = eYo.NA
 }
 
-Object.defineProperties(eYo.Brick.Stmt.base_call_stmt.prototype, {
+Object.defineProperties(eYo.Stmt.base_call_stmt.prototype, {
   profile_p: {
     get () {
       return this.profile_ === this.getProfile()
@@ -1891,7 +1891,7 @@ Object.defineProperties(eYo.Brick.Stmt.base_call_stmt.prototype, {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Stmt.base_call_stmt.makeSubclass('call_stmt', {
+eYo.Stmt.base_call_stmt.makeSubclass('call_stmt', {
 }, true)
 
 eYo.Expr.primary.T3s = [

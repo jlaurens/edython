@@ -33,7 +33,7 @@ goog.forwardDeclare('eYo.Magnet')
  * @param {!eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
-eYo.Constructor.make('Owned', {
+eYo.Constructor.makeClass('Owned', {
   init (owner) {
     this.owner_ = owner
   },

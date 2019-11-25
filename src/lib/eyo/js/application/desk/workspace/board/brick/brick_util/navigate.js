@@ -18,7 +18,7 @@ goog.provide('eYo.Navigate')
 
 /**
  * Tab navigation.
- * @param {?eYo.Brick} brick  Brick.
+ * @param {?eYo.Brick.Dflt} brick  Brick.
  * @param {?Object} opt Optional key value arguments.
  */
 eYo.Navigate.doTab = (() => {

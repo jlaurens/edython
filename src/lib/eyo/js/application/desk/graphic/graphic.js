@@ -22,4 +22,4 @@ goog.provide('eYo.Graphic')
  * @param {!eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.UI.Constructor.make('Graphic', eYo.Pane)
+eYo.UI.Constructor.makeClass('Graphic', eYo.Pane)

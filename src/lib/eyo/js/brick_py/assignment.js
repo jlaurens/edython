@@ -13,9 +13,9 @@
 
 goog.require('eYo')
 
-goog.require('eYo.Brick.Stmt')
+goog.require('eYo.Stmt')
 
-goog.provide('eYo.Brick.Stmt.assignment_stmt')
+goog.provide('eYo.Stmt.assignment_stmt')
 goog.provide('eYo.Brick.Assignment')
 
 goog.forwardDeclare('eYo.Msg')
@@ -46,7 +46,7 @@ goog.forwardDeclare('goog.dom')
  * or a augtarget_annotated which is a particular case of key_datum.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
+eYo.Stmt.makeSubclass('assignment_stmt', {
   data: {
     variant: {
       all: [
@@ -329,7 +329,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
   'annotated_assignment_stmt',
   'augmented_assignment_stmt'
 ].forEach(k => {
-  eYo.Brick.Stmt[k] = eYo.Brick.Stmt.assignment_stmt
+  eYo.Stmt[k] = eYo.Stmt.assignment_stmt
   eYo.Brick.Mgr.register(k)
 })
 
@@ -338,7 +338,7 @@ eYo.Brick.Stmt.makeSubclass('assignment_stmt', {
  * getType.
  * @return {String} The type of the receiver's brick.
  */
-eYo.Brick.Stmt.assignment_stmt.prototype.getType = function () {
+eYo.Stmt.assignment_stmt.prototype.getType = function () {
   var x = this.variant_p
   if (x === eYo.Key.VALUED || x === eYo.Key.EXPRESSION) { // not yet consolidated
     return eYo.T3.Stmt.expression_stmt
@@ -363,11 +363,11 @@ eYo.Brick.Stmt.assignment_stmt.prototype.getType = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var target_p = this.target_p
   var variant_p = this.variant_p
   var F = (content, newVariant) => {
@@ -391,7 +391,7 @@ eYo.Brick.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (m
     mgr.addChild(menuItem, true)
     mgr.shouldSeparate()
   }
-  eYo.Brick.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  eYo.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
@@ -567,11 +567,11 @@ eYo.Brick.List.makeSubclass('augassigned_list', function () {
 
 // /**
 //  * Populate the context menu for the given brick.
-//  * @param {!eYo.Brick} brick The brick.
+//  * @param {!eYo.Brick.Dflt} brick The brick.
 //  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
 //  * @private
 //  */
-// eYo.Brick.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+// eYo.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
 //   var brick = this
 //   var withTarget = this.target_b
 //   var target = this.target_p
@@ -609,7 +609,7 @@ eYo.Brick.List.makeSubclass('augassigned_list', function () {
 //   })
 //   mgr.addChild(menuItem, true)
 //   mgr.shouldSeparate()
-//   return eYo.Brick.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+//   return eYo.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 // }
 
 eYo.Brick.Assignment.T3s = [

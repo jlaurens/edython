@@ -316,7 +316,7 @@ eYo.Expr.shortliteral.prototype.validateComponents = function(kvargs) {
 
 /**
  * Get the content for the menu item.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {string} op op is the operator
  * @private
  */
@@ -326,7 +326,7 @@ eYo.Expr.shortliteral.prototype.makeTitle = function (variant) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  * @suppress {globalThis}
@@ -382,7 +382,7 @@ eYo.Brick.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */

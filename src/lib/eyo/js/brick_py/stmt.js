@@ -16,7 +16,7 @@ goog.require('eYo.Brick')
 goog.require('eYo.Change')
 
 goog.require('eYo.Brick.List')
-goog.provide('eYo.Brick.Stmt')
+goog.provide('eYo.Stmt')
 
 goog.forwardDeclare('eYo.XRE')
 goog.forwardDeclare('eYo.Msg')
@@ -65,9 +65,9 @@ eYo.Brick.makeSubclass('Stmt', {
     }
   }
 })
-eYo.Brick.Mgr.registerAll(eYo.T3.Stmt, eYo.Brick.Stmt, true)
+eYo.Brick.Mgr.registerAll(eYo.T3.Stmt, eYo.Stmt, true)
 
-Object.defineProperties(eYo.Brick.Stmt.prototype, {
+Object.defineProperties(eYo.Stmt.prototype, {
   isStmt: {
     get () {
       return true
@@ -90,7 +90,7 @@ Object.defineProperties(eYo.Brick.Stmt.prototype, {
  * @param {Object} model
  * @return the created brick
  */
-eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
+eYo.Stmt.prototype.insertParentWithModel = function (model) {
   var magnet = this.head_m
   if (magnet) {
     var parent
@@ -140,7 +140,7 @@ eYo.Brick.Stmt.prototype.insertParentWithModel = function (model) {
  * @param {string} belowPrototypeName
  * @return the created brick
  */
-eYo.Brick.Stmt.prototype.insertBrickAfter = function (belowPrototypeName) {
+eYo.Stmt.prototype.insertBrickAfter = function (belowPrototypeName) {
   return eYo.Events.groupWrap(() => {
     var below = eYo.Brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m
@@ -164,7 +164,7 @@ eYo.Brick.Stmt.prototype.insertBrickAfter = function (belowPrototypeName) {
  * Class for a Delegate, comment_stmt.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
+eYo.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
   data: {
     variant: {
       all: [
@@ -219,11 +219,11 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
 })
 
 ;['blank_stmt'].forEach(k => {
-  eYo.Brick.Stmt[k] = eYo.Brick.Stmt.comment_stmt
+  eYo.Stmt[k] = eYo.Stmt.comment_stmt
   eYo.Brick.Mgr.register(k)
 })
 
-Object.defineProperties(eYo.Brick.Stmt.comment_stmt.prototype, {
+Object.defineProperties(eYo.Stmt.comment_stmt.prototype, {
   /**
    * @readonly
    * @property {Boolean} whether the receiver is a comment.
@@ -272,7 +272,7 @@ eYo.Brick.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
  * Class for a Delegate, global_stmt.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
+eYo.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
   data: {
     variant: {
       all: [
@@ -382,7 +382,7 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
   'return'
 ].forEach((k) => {
   k = k + '_stmt'
-  eYo.Brick.Stmt[k] = eYo.Brick.Stmt.global_stmt
+  eYo.Stmt[k] = eYo.Stmt.global_stmt
   eYo.Brick.Mgr.register(k)
 })
 
@@ -390,7 +390,7 @@ eYo.Brick.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Brick.Stmt.global_stmt.prototype.getType = eYo.Change.decorate(
+eYo.Stmt.global_stmt.prototype.getType = eYo.Change.decorate(
   'getType',
   function () {
     this.setupType(
@@ -413,17 +413,17 @@ eYo.Brick.Stmt.global_stmt.prototype.getType = eYo.Change.decorate(
  * For edython.
  * @return !String
  */
-eYo.Brick.Stmt.global_stmt.prototype.xmlAttr = function () {
+eYo.Stmt.global_stmt.prototype.xmlAttr = function () {
   return this.variant_p
 }
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
@@ -458,18 +458,18 @@ eYo.Brick.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mgr) 
   F(5)
   F(6)
   mgr.shouldSeparate()
-  return eYo.Brick.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
  * Class for a Delegate, docstring_stmt.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('docstring_stmt', {
+eYo.Stmt.makeSubclass('docstring_stmt', {
   link: eYo.T3.Expr.longliteral
 }, true)
 
-Object.defineProperties(eYo.Brick.Stmt.docstring_stmt.prototype, {
+Object.defineProperties(eYo.Stmt.docstring_stmt.prototype, {
   /**
    * @readonly
    * @property {Boolean}  always true
@@ -481,7 +481,7 @@ Object.defineProperties(eYo.Brick.Stmt.docstring_stmt.prototype, {
   }
 })
 
-eYo.Brick.Stmt.T3s = [
+eYo.Stmt.T3s = [
   eYo.T3.Stmt.comment_stmt,
   eYo.T3.Stmt.pass_stmt,
   eYo.T3.Stmt.break_stmt,

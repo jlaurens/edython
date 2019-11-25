@@ -167,14 +167,14 @@ eYo.Brick.Group.makeSubclass('except_part', {
 ;[
   'void_except_part'
 ].forEach(k => {
-  eYo.Brick.Stmt[k] = eYo.Brick.Stmt.except_part
+  eYo.Stmt[k] = eYo.Stmt.except_part
   eYo.Brick.Mgr.register(k)
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Brick.Stmt.except_part.prototype.getType = eYo.Change.decorate(
+eYo.Stmt.except_part.prototype.getType = eYo.Change.decorate(
   'getType',
   function () {
     this.setupType(
@@ -188,11 +188,11 @@ eYo.Brick.Stmt.except_part.prototype.getType = eYo.Change.decorate(
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
   var F = (content, k) => {
     var menuItem = mgr.newMenuItem(content, () => {
@@ -218,7 +218,7 @@ eYo.Brick.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mgr) 
   ), eYo.Key.ALIASED
   )
   mgr.shouldSeparate()
-  return eYo.Brick.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
@@ -236,7 +236,7 @@ eYo.Brick.Group.makeSubclass('finally_part', {
  * Class for a Delegate, raise_stmt.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('raise_stmt', {
+eYo.Stmt.makeSubclass('raise_stmt', {
   data: {
     variant: {
       all: [
@@ -333,11 +333,11 @@ eYo.Brick.Stmt.makeSubclass('raise_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
   var F = (content, k) => {
     var menuItem = mgr.newMenuItem(content, () => {
@@ -363,14 +363,14 @@ eYo.Brick.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   ), eYo.Key.FROM
   )
   mgr.shouldSeparate()
-  return eYo.Brick.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /**
  * Class for a Delegate, assert_stmt.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('assert_stmt', {
+eYo.Stmt.makeSubclass('assert_stmt', {
   data: {
     variant: {
       all: [
@@ -436,11 +436,11 @@ eYo.Brick.Stmt.makeSubclass('assert_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
   var F = (content, key) => {
     var menuItem = mgr.newMenuItem(content, () => {
@@ -460,7 +460,7 @@ eYo.Brick.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mgr) 
   ), eYo.Key.BINARY
   )
   mgr.shouldSeparate()
-  return eYo.Brick.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 eYo.Brick.Try.T3s = [

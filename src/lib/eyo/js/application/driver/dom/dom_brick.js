@@ -41,7 +41,7 @@ eYo.Dom.makeDriverClass('Brick', {
   },
   /**
    * Dispose of the desk dom resources.
-   * @param {!eYo.Brick} brick
+   * @param {!eYo.Brick.Dflt} brick
    */
   disposeUI (brick) {
     if (brick.dom && brick.dom.div_) {

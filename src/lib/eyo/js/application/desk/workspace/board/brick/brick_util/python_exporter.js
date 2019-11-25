@@ -93,7 +93,7 @@ eYo.Py.Exporter.prototype.linePush = function (s) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {!eYo.Brick} brick The owner of the receiver, to be converted to python.
+ * @param {!eYo.Brick.Dflt} brick The owner of the receiver, to be converted to python.
  * @param {?Object} opt  See the eponym parameter in `eYo.Xml.domToBrick`.
  * @return some python code
  */
@@ -119,7 +119,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
     if (brick.dotted_p === 0 && brick.target_p === 'print' && brick.variant_p === eYo.Key.CALL_EXPR) {
       this.use_print = true
     }
-  } else if (brick instanceof eYo.Brick.Stmt.call_stmt) {
+  } else if (brick instanceof eYo.Stmt.call_stmt) {
     if (brick.dotted_p === 0 && brick.target_p === 'print') {
       this.use_print = true
     }
@@ -157,7 +157,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {!eYo.Brick} eyo The owner of the receiver, to be converted to python.
+ * @param {!eYo.Brick.Dflt} eyo The owner of the receiver, to be converted to python.
  * @param {?Object} opt  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -221,7 +221,7 @@ eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {!eYo.Brick} brick The owner of the receiver, to be converted to python.
+ * @param {!eYo.Brick.Dflt} brick The owner of the receiver, to be converted to python.
  * @param {?Object} opt  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */

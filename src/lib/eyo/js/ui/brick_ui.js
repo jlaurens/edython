@@ -22,7 +22,7 @@ goog.forwardDeclare('eYo.Svg.Brick')
 /**
  * Class for a Render.
  * For edython.
- * @param {!eYo.Brick} brick  brick is the owning object.
+ * @param {!eYo.Brick.Dflt} brick  brick is the owning object.
  * @readonly
  * @property {eYo.Brick} brick - The brick owning the receiver.
  * @readonly
@@ -1794,7 +1794,7 @@ eYo.Brick.UI.prototype.setParent = function (parent) {
 
 /**
  * The default implementation forwards to the driver.
- * @param {!eYo.Brick} newParent to be connected.
+ * @param {!eYo.Brick.Dflt} newParent to be connected.
  */
 eYo.Brick.UI.prototype.parentWillChange = function (newParent) {
   this.driver.brickParentWillChange(this.brick, newParent)
@@ -1802,7 +1802,7 @@ eYo.Brick.UI.prototype.parentWillChange = function (newParent) {
 
 /**
  * The default implementation forwards to the driver.
- * @param {!eYo.Brick} oldParent replaced.
+ * @param {!eYo.Brick.Dflt} oldParent replaced.
  */
 eYo.Brick.UI.prototype.parentDidChange = function (oldParent) {
   this.driver.brickParentDidChange(this.brick, oldParent)

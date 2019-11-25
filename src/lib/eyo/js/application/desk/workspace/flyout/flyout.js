@@ -77,7 +77,7 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.UI.Constructor.make('Flyout', {
+eYo.UI.Constructor.makeClass('Flyout', {
   props: {
     owned: {
       search () {
@@ -470,7 +470,7 @@ eYo.Flyout.prototype.on_wheel = function(e) {
 
 /**
  * Create a copy of this brick on the board.
- * @param {!eYo.Brick} originalBrick The brick to copy from the flyout.
+ * @param {!eYo.Brick.Dflt} originalBrick The brick to copy from the flyout.
  * @return {eYo.Brick} The newly created brick, or null if something
  *     went wrong with deserialization.
  */
@@ -613,7 +613,7 @@ console.error('IN PROGRESS')
  * Copy a brick from the flyout to the board and position it correctly.
  * Edython adds a full rendering process.
  * No rendering is made while bricks are dragging.
- * @param {!eYo.Brick} srcBrick The flyout brick to copy.
+ * @param {!eYo.Brick.Dflt} srcBrick The flyout brick to copy.
  * @return {!eYo.Brick} The new brick in the main board.
  * @private
  */

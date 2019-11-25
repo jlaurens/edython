@@ -15,7 +15,7 @@ describe('Span expression', function () {
     s = b.span
     chai.assert(b.isExpr, 'MISSED')
     var type = 'test_stmt_span'
-    eYo.Brick.Stmt.makeSubclass(type, {
+    eYo.Stmt.makeSubclass(type, {
       out: {
         check: null
       }
@@ -161,7 +161,7 @@ describe('Current Field', function () {
   before(function() {
     var type = 'test_stmt_span_reserved'
     eYo.T3.Stmt[type] = type
-    eYo.Brick.Stmt.makeSubclass(type, {
+    eYo.Stmt.makeSubclass(type, {
       fields: {
         FIELD: {
           reserved: '1234'
@@ -195,7 +195,7 @@ describe('Current Span statements', function () {
   before(function() {
     var type = 'test_stmt_span'
     eYo.T3.Stmt[type] = type
-    eYo.Brick.Stmt.makeSubclass(type, {
+    eYo.Stmt.makeSubclass(type, {
       fields: {
         FIELD: {
           reserved: '1234'

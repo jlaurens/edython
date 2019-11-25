@@ -28,7 +28,7 @@ eYo.UI.Constructor = Object.create(null)
  * They are used for 
  */
 eYo.UI.Constructor.make = (owner, key, superC9r, dlgtC9r, model) => {
-  // same beginning as `eYo.Constructor.make`
+  // same beginning as `eYo.Constructor.makeClass`
   if (goog.isString(owner)) {
     model = dlgtC9r
     dlgtC9r = superC9r
@@ -52,13 +52,13 @@ eYo.UI.Constructor.make = (owner, key, superC9r, dlgtC9r, model) => {
     }
     superC9r = eYo.UI.Owned
   }
-  var c9r = eYo.Constructor.make(owner, key, superC9r, dlgtC9r, model)
+  var c9r = eYo.Constructor.makeClass(owner, key, superC9r, dlgtC9r, model)
   var eyo = c9r.eyo__
   eyo.constructorMake = eYo.UI.Constructor.make
   var ui = model.ui
   if (!eYo.isF(eyo.initUIDecorate)) {
     console.error('BREAK HERE')
-    c9r = eYo.Constructor.make(owner, key, superC9r, dlgtC9r, model)
+    c9r = eYo.Constructor.makeClass(owner, key, superC9r, dlgtC9r, model)
   }
   var f = eyo.initUIDecorate(ui && ui.dispose)
   c9r.prototype.initUI = function (...args) {
@@ -89,7 +89,7 @@ eYo.UI.Constructor.make = (owner, key, superC9r, dlgtC9r, model) => {
 /**
  * Constructor delegate subclass
  */
-eYo.Constructor.make(eYo.UI.Constructor, 'Dlgt', eYo.Constructor.Dlgt)
+eYo.Constructor.makeClass(eYo.UI.Constructor, 'Dlgt', eYo.Constructor.Dlgt)
 
 /**
  * Make the dispose function.

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.Brick.Stmt')
+goog.require('eYo.Stmt')
 
 goog.require('eYo.Msg')
 
@@ -158,7 +158,7 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
  * @this {eYo.Brick}
  * @private
@@ -195,7 +195,7 @@ eYo.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
@@ -209,19 +209,19 @@ eYo.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mgr) {
  * Class for a Delegate, yield_stmt.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('yield_stmt', {
+eYo.Stmt.makeSubclass('yield_stmt', {
   link: eYo.T3.Expr.yield_expr
 }, true)
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   eYo.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
-  return eYo.Brick.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 eYo.Brick.Yield.T3s = [

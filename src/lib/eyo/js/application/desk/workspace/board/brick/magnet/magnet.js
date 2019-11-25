@@ -23,7 +23,7 @@ goog.forwardDeclare('eYo.Where')
 
 /**
  *
- * @param {!eYo.Brick} brick  brick is the owner
+ * @param {!eYo.Brick.Dflt} brick  brick is the owner
  */
 eYo.Magnets = function (brick) {
   // configure the connections
@@ -542,7 +542,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
     },
     /**
      * Connect the receiver to the newValue, if any, otherwise disconnects the receiver.
-     * @param {?eYo.Brick} newValue 
+     * @param {?eYo.Brick.Dflt} newValue 
      */
     set (newValue) {
       if (newValue) {
@@ -1048,13 +1048,13 @@ eYo.Magnet.prototype.getMagnetBelow = function () {
 /**
  * Establish a connection with a brick.
  *
- * @param {!eYo.Brick} eyo
+ * @param {!eYo.Brick.Dflt} eyo
  */
 eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {!eYo.Brick} brick
+   * @param {!eYo.Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToHead = function (brick) {
@@ -1064,7 +1064,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {!eYo.Brick} brick
+   * @param {!eYo.Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToLeft = function (brick) {
@@ -1074,7 +1074,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {!eYo.Brick} brick
+   * @param {!eYo.Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToRight = function (brick) {
@@ -1084,7 +1084,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {!eYo.Brick} brick
+   * @param {!eYo.Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToFoot = function (brick) {
@@ -1094,7 +1094,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {!eYo.Brick} brick
+   * @param {!eYo.Brick.Dflt} brick
    */
   var connectToOutput = function (brick) {
     this.connect(brick.out_m)
@@ -1316,7 +1316,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
         /*
         * Find the first free magnet in the given brick
         * that positively checks type with the given potential target magnet.
-        * @param {!eYo.Brick} brick The brick.
+        * @param {!eYo.Brick.Dflt} brick The brick.
         * @param {!eYo.Magnet} child The inferior brick.
         * @private
         * @suppress {accessControls}

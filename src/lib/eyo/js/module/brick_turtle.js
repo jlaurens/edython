@@ -15,7 +15,7 @@ goog.require('eYo.Brick')
 
 goog.require('eYo.Model.turtle__module')
 
-goog.require('eYo.Brick.Stmt')
+goog.require('eYo.Stmt')
 
 goog.require('eYo.Brick.List')
 
@@ -33,7 +33,7 @@ eYo.T3.Stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('turtle__setup_stmt', {
+eYo.Stmt.makeSubclass('turtle__setup_stmt', {
   fields: {
     label: 'edython.turtleSetup()'
   }

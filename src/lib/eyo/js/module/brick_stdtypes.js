@@ -15,7 +15,7 @@ goog.require('eYo.Brick')
 
 goog.require('eYo.Msg')
 
-goog.require('eYo.Brick.Stmt')
+goog.require('eYo.Stmt')
 goog.require('eYo.Brick.List')
 
 goog.require('eYo.Brick.Primary')

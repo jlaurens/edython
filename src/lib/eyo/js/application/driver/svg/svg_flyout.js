@@ -340,7 +340,7 @@ eYo.Svg.Flyout.prototype.removeAllBrickListeners = function(flyout) {
  * Listeners work only when the flyout authorizes it.
  * The 'rect' listeners have been removed.
  * @param {!eYo.Flyout} flyout
- * @param {!eYo.Brick} brick The block to add listeners for.
+ * @param {!eYo.Brick.Dflt} brick The block to add listeners for.
  */
 eYo.Svg.Flyout.prototype.addListeners = function(flyout, brick) {
   var g = brick.dom.svg.group_

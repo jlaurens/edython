@@ -47,7 +47,7 @@ goog.forwardDeclare('eYo.Brick')
  * The state is always in a consistent state.
  * However, the span state may not be consistent with the brick state.
  * For edython.
- * @param {!eYo.Brick} brick The brick owning the span.
+ * @param {!eYo.Brick.Dflt} brick The brick owning the span.
  * @constructor
  */
 eYo.Span = function (brick) {

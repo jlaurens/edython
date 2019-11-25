@@ -53,7 +53,7 @@ Object.defineProperties(eYo.Expr.Dflt.prototype, {
 eYo.Expr.Dflt.prototype.changeDone = function (deep) {
   eYo.Expr.Dflt.superClass_.changeDone.call(this, deep)
   var parent = this.parent
-  parent && (parent.changeDone())
+  parent && parent.changeDone()
 }
 
 /**
@@ -99,7 +99,7 @@ eYo.Expr.Dflt.prototype.checkOutputType = function (type) {
  * If the parent's output connection is connected,
  * can connect the brick's output connection to it?
  * The connection cannot always establish.
- * @param {!eYo.Brick} brick  the brick to be replaced
+ * @param {!eYo.Brick.Dflt} brick  the brick to be replaced
  */
 eYo.Expr.Dflt.prototype.canReplaceBrick = function (brick) {
   if (brick) {
@@ -121,7 +121,7 @@ eYo.Expr.Dflt.prototype.canReplaceBrick = function (brick) {
  * If the parent's output magnet is connected,
  * connects the brick's output magnet to it.
  * The connection cannot always establish.
- * @param {!eYo.Brick} brick
+ * @param {!eYo.Brick.Dflt} brick
  */
 eYo.Expr.Dflt.prototype.replaceBrick = function (brick) {
   if (this.board && brick && brick.board) {
@@ -486,7 +486,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__object', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
@@ -499,7 +499,7 @@ eYo.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mgr) {
 
 /**
  * Get the content for the menu item.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {string} op op is the operator
  * @private
  */

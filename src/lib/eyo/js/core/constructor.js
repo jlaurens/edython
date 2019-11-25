@@ -24,12 +24,12 @@ goog.provide('eYo.Constructor.Dlgt')
  * @param {?Object} owner,  A namespace. Defaults to `eYo`.
  * @param {!String} key,  The key.
  * @param {?Function} superC9r,  The eventual super class. There is no default value. Give a falsy value if you do not want inheritance.
- * @param {?Function} dlgtC9r,  The constructor's delegate class. Defaults to the `super_`'s delegate.
+ * @param {?Function} dlgtC9r,  The constructor's delegate class. Defaults to the `super_`'s delegate. Must be a subclass of `eYo.Constructor.Dlgt`.
  * @param {!Object} model,  The dictionary of parameters.
  * @return {Object} the created constructor.
  * 
  */
-eYo.Constructor.make = (owner, key, superC9r, dlgtC9r, model) => {
+eYo.Constructor.makeClass = (owner, key, superC9r, dlgtC9r, model) => {
   if (goog.isString(owner)) {
     model = dlgtC9r
     dlgtC9r = superC9r
@@ -40,6 +40,10 @@ eYo.Constructor.make = (owner, key, superC9r, dlgtC9r, model) => {
   if (eYo.isF(superC9r)) {
     if (eYo.isF(dlgtC9r)) {
       model || (model = {})
+    } else if (superC9r.prototype instanceof eYo.Constructor.Dlgt) {
+      model = dlgtC9r || {}
+      dlgtC9r = superC9r
+      superC9r = eYo.NA
     } else {
       model = dlgtC9r || {}
       dlgtC9r = (superC9r.eyo && superC9r.eyo.constructor) || eYo.Constructor.Dlgt
@@ -110,7 +114,7 @@ eYo.Constructor.make = (owner, key, superC9r, dlgtC9r, model) => {
     }
     return eyo.makeSubclass(owner_, key_, c9r, dlgtC9r_, model_ || {})
   }
-  eyo.constructorMake = eYo.Constructor.make
+  eyo.constructorMake = eYo.Constructor.makeClass
   Object.defineProperty(c9r.prototype, 'eyo', {
     get () {
       return eyo
@@ -161,9 +165,36 @@ eYo.Constructor.make = (owner, key, superC9r, dlgtC9r, model) => {
 }
 
 /**
+ * Make a namespace with a dedicated constructor maker.
+ * @param {?Object} owner, existing namespace, defaults to `eYo`.
+ * @param {!String} key, capitalised name in `owner`.
+ */
+eYo.Constructor.makeNS = (owner, key) => {
+  if (goog.isString(owner)) {
+    key = owner
+    owner = eYo
+  }
+  if (owner[key]) {
+    throw new Error('Duplicate namespace:' + owner + ', '
++ key)
+  }
+  var NS = owner[key] = Object.create(null)
+  NS.makeClass = (...args) => {
+    return eYo.Constructor.makeClass(NS, ...args)
+  }
+  NS.makeSublass = (...args) => {
+    return eYo.Constructor.makeClass(NS, ...args)
+  }
+  NS.makeNS = (...args) => {
+    return eYo.Constructor.makeNS(NS, ...args)
+  }
+}
+
+/**
  * Object adding data to a constructor in a safe way.
  * @param {!Object} c9r,  the object to which this instance is attached.
- * @param {!String} name,  the key used when the constructor was created.
+ * @param {!String} key,  the key used when the constructor was created.
+ * @param {!Object} model,  the model used to create the constructor.
  * @constructor
  * @readonly
  * @property {Set<String>} link_ - Set of link identifiers. Lazy initializer.

@@ -120,7 +120,7 @@ Blockly.Xml.domToText = function (dom) {
 
 /**
  * Encode a brick subtree as XML with where coordinates. Eliminates the use of the Blockly's eponym method.
- * @param {!eYo.Brick} brick The root brick to encode.
+ * @param {!eYo.Brick.Dflt} brick The root brick to encode.
  * @param {?Object} opt  See the eponym parameter in `eYo.Xml.brickToDom`.
  * @return {!Element} Tree of XML elements.
  */
@@ -269,7 +269,7 @@ goog.exportSymbol('eYo.Xml.domToBoard', eYo.Xml.domToBoard)
 
 /**
  * Encode a brick subtree as XML.
- * @param {!eYo.Brick} brick The root brick to encode.
+ * @param {!eYo.Brick.Dflt} brick The root brick to encode.
  * @param {boolean} optNoId True if the encoder should skip the brick id.
  * @return {!Element} Tree of XML elements, possibly null.
  */
@@ -279,7 +279,7 @@ Blockly.Xml.blockToDom = function (brick, optNoId) {
 
 /**
  * Encode a brick subtree as XML with where coordinates.
- * @param {!eYo.Brick} brick The root brick to encode.
+ * @param {!eYo.Brick.Dflt} brick The root brick to encode.
  * @param {boolean=} optNoId True if the encoder should skip the brick ID.
  * @return {!Element} Tree of XML elements.
  */
@@ -358,7 +358,7 @@ eYo.Brick.newReady = (() => {
  * 5) solid bricks are named after their type which eyo:foo.
  * These brick types correspond to an alternate in the python grammar.
  * The persistence storage may remember these bricks as eyo:foo instead of eyo:foo.
- * @param {!eYo.Brick} brick The root brick to encode.
+ * @param {!eYo.Brick.Dflt} brick The root brick to encode.
  * @param {?Object} opt  Options `noId` is True if the encoder should skip the brick id, `noNext` is True if the encoder should skip the next brick.
  * @return {!Element} Tree of XML elements, possibly null.
  */
@@ -436,7 +436,7 @@ goog.require('eYo.Brick.Primary')
 /**
  * Convert the brick's value to a text dom element.
  * For edython.
- * @param {!eYo.Brick} brick The brick to be converted.
+ * @param {!eYo.Brick.Dflt} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element
  */
@@ -452,7 +452,7 @@ eYo.Xml.Text.toDom = function (brick, element) {
 /**
  * Convert the brick from a dom element.
  * For edython.
- * @param {!eYo.Brick} brick The brick to be converted.
+ * @param {!eYo.Brick.Dflt} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element
  */
@@ -540,7 +540,7 @@ eYo.Brick.Dflt.prototype.saveSlots = function (element, opt) {
 /**
  * Convert the brick's data from a dom element.
  * For edython.
- * @param {!eYo.Brick} brick The brick to be converted.
+ * @param {!eYo.Brick.Dflt} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  */
 eYo.Xml.Data.fromDom = function (brick, element) {
@@ -573,7 +573,7 @@ eYo.Xml.Data.fromDom = function (brick, element) {
  * 4) brick.constructor (no inheritance here too)
  * The default implementation does nothing if there's no controller
  * to take control.
- * @param {!eYo.Brick} brick The root brick to encode.
+ * @param {!eYo.Brick.Dflt} brick The root brick to encode.
  * @param {element} dom element to encode in
  * @param {?Object} opt  See the eponym option in `eYo.Xml.BrickToDom`.
  * @return {!Element} Tree of XML elements, possibly null.
@@ -1003,7 +1003,7 @@ goog.exportSymbol('eYo.Xml.domToBrick', eYo.Xml.domToBrick)
  * 3) brick.constructor.xml (no inheritance)
  * 4) brick.constructor (no inheritance here too)
  * The default implementation does nothing if there's no controller
- * @param {!eYo.Brick} brick  The root brick to decode.
+ * @param {!eYo.Brick.Dflt} brick  The root brick to decode.
  * @param {element} dom element to encode in
  * @return {?Boolean} Used?
  */
@@ -1175,7 +1175,7 @@ eYo.Expr.primary.prototype.xmlAttr = function () {
  * The xml `eyo` attribute of this brick, as it should appear in the saved data.
  * For edython.
  */
-eYo.Brick.Stmt.assignment_stmt.prototype.xmlAttr = function () {
+eYo.Stmt.assignment_stmt.prototype.xmlAttr = function () {
   return this.type === eYo.T3.Stmt.augmented_assignment_stmt
   ? this.operator_p
   : this.type === eYo.T3.Stmt.annotated_stmt || this.variant_p === eYo.Key.NONE || this.variant_p === eYo.Key.VALUED || this.variant_p === eYo.Key.EXPRESSION
@@ -1290,7 +1290,7 @@ eYo.Xml.Primary.domToComplete = function (element, owner) {
 //  */
 // eYo.Xml.Group.domToComplete = function (element, owner) {
 //   var attr = element.getAttribute(eYo.Key.EYO)
-//   if (attr === eYo.Brick.Stmt.else_part.prototype.xmlAttr()) {
+//   if (attr === eYo.Stmt.else_part.prototype.xmlAttr()) {
 //     var type = eYo.T3.Stmt.else_part
 //     var id = element.getAttribute('id')
 //     return eYo.Brick.newReady(owner, type, id)
@@ -1352,8 +1352,8 @@ eYo.Xml.Call.domToComplete = function (element, owner) {
  * Compare the bricks by comparing their xml string representation.
  * Usefull for testing.
  * For edython.
- * @param {!eYo.Brick} lhs
- * @param {!eYo.Brick} rhs
+ * @param {!eYo.Brick.Dflt} lhs
+ * @param {!eYo.Brick.Dflt} rhs
  * @return {Number} classical values -1, 0 or 1.
  */
 eYo.Xml.compareBricks = function (lhs, rhs) {

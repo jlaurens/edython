@@ -36,7 +36,7 @@ goog.forwardDeclare('eYo.Magnet')
  * @property {eYo.Magnet} slot  The magnet.
  */
 
-eYo.UI.Constructor.make(eYo.Owned, 'UI2', eYo.UI.Owned, {
+eYo.UI.Constructor.makeClass(eYo.Owned, 'UI2', eYo.UI.Owned, {
   props: {
     link: ['slot', 'brick', 'magnet'],
     computed: {

@@ -208,7 +208,7 @@ eYo.Node.prototype.comp_iter2Brick = function (board) {
 /**
  * Converts the node `n` to a visual brick.
  * `this.type === eYo.TKN.comp_for`
- * @param {!eYo.Brick} brick  a brick with a 'for' slot.
+ * @param {!eYo.Brick.Dflt} brick  a brick with a 'for' slot.
  */
 eYo.Node.prototype.comp_forInBrick = function (brick) {
   // comp_for: ['async'] sync_comp_for
@@ -222,7 +222,7 @@ eYo.Node.prototype.comp_forInBrick = function (brick) {
 /**
  * Converts the node `n` to a visual brick.
  * `this.type === eYo.TKN.sync_comp_for`
- * @param {!eYo.Brick} brick  a brick with a 'for' slot.
+ * @param {!eYo.Brick.Dflt} brick  a brick with a 'for' slot.
  */
 eYo.Node.prototype.sync_comp_forInBrick = function (brick) {
   // 'for' exprlist 'in' or_test [comp_iter]
@@ -564,7 +564,7 @@ eYo.Node.prototype.tfpdef2Brick = function (board) {
 /**
  * `this` is the first node of a typedargslist.
  * `this.type === eYo.TKN.typedargslist`
- * @param {!eYo.Brick} brick  a brick
+ * @param {!eYo.Brick.Dflt} brick  a brick
  */
 eYo.Node.prototype.typedargslistInBrick = function (brick) {
   var n = this.n0
@@ -789,7 +789,7 @@ eYo.Node.prototype.varargslistInBrick = function (brick) {
 /**
  * `this` is the first node of a typedargslist.
  * `this.type === eYo.TKN.dictorsetmaker`
- * @param {!eYo.Brick} brick  a brick
+ * @param {!eYo.Brick.Dflt} brick  a brick
  */
 eYo.Node.prototype.dictorsetmakerInBrick = function (brick) {
 /*dictorsetmaker: ( ((test ':' test | '**' expr)
@@ -865,7 +865,7 @@ eYo.Node.prototype.dictorsetmakerInBrick = function (brick) {
 /**
  * Partially converts the node `this` to a visual brick.
  * `this.n_type === eo.TKN.comp_for`
- * @param {!eYo.Brick} brick a brick
+ * @param {!eYo.Brick.Dflt} brick a brick
  */
 eYo.Node.prototype.comprehensionInBrick = function (brick) {
   this.comp_forInBrick(brick)

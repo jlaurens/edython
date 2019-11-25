@@ -43,7 +43,7 @@ goog.forwardDeclare('eYo.Audio')
  * The ui drivers manager.
  * @property {eYo.Driver.Mgr} ui_driver_mgr
  */
-eYo.Constructor.make('Application', {
+eYo.Constructor.makeClass('Application', {
   init : {
     begin () {
       this.disposeUI = eYo.Do.nothing
@@ -152,7 +152,7 @@ eYo.Application.prototype.paste = () => {
 /**
  * Delete this brick and the next ones if requested.
  * For edython.
- * @param {!eYo.Brick} block The brick to delete.
+ * @param {!eYo.Brick.Dflt} block The brick to delete.
  * @param {!boolean} deep
  */
 eYo.Application.prototype.deleteBrick = (brick, deep) => {
@@ -187,7 +187,7 @@ eYo.Application.prototype.deleteBrick = (brick, deep) => {
 
 /**
  * Copy a brick onto the local clipboard.
- * @param {!eYo.Brick} brick Brick to be copied.
+ * @param {!eYo.Brick.Dflt} brick Brick to be copied.
  * @private
  */
 eYo.Application.prototype.copyBrick = (brick, deep) => {

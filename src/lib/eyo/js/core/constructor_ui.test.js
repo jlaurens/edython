@@ -6,7 +6,7 @@ describe ('Tests: constructor_ui', function () {
   })
   it ('Constructor_ui: make', function () {
     var NS = Object.create(null)
-    eYo.UI.Constructor.make(NS, 'A')
+    eYo.UI.Constructor.makeClass(NS, 'A')
     chai.assert(NS.A)
     chai.assert(NS.A.superClass_ = eYo.UI.Owned.prototype)
     chai.assert(NS.A.eyo.constructor = eYo.UI.Constructor.Dlgt)
@@ -18,7 +18,7 @@ describe ('Tests: constructor_ui', function () {
     var NS = Object.create(null)
     var F = function () {}
     eYo.Do.inherits(F, eYo.UI.Constructor.Dlgt)
-    eYo.UI.Constructor.make(NS, 'A')
+    eYo.UI.Constructor.makeClass(NS, 'A')
     NS.A.makeSubclass('AB')
     chai.assert(NS.A.AB)
     chai.assert(NS.A.AB.superClass_ = NS.A.prototype)

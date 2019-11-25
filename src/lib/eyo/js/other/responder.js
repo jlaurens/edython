@@ -671,7 +671,7 @@ eYo.Responder.prototype.handleFlyoutStart = function(e, flyout) {
  * Handle a mousedown/touchstart event on a brick.
  * Used by brick's on_mousedown (or synonym).
  * @param {!Event} e A mouse down or touch start event.
- * @param {!eYo.Brick} brick The brick the event hits.
+ * @param {!eYo.Brick.Dflt} brick The brick the event hits.
  */
 eYo.Responder.prototype.handleBrickStart = function(e, brick) {
   this.handleBrickStart = eYo.Do.nothing

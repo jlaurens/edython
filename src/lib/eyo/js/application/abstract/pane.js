@@ -23,7 +23,7 @@ goog.forwardDeclare('eYo.Desk')
  * @param {!eYo.Desk} desk,  the owning desk.
  * @constructor
  */
-eYo.UI.Constructor.make('Pane', {
+eYo.UI.Constructor.makeClass('Pane', {
   props: {
     computed: {
       /**

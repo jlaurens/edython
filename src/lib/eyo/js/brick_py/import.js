@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.Brick.Stmt')
+goog.require('eYo.Stmt')
 
 goog.require('eYo.Protocol')
 goog.require('eYo.Msg')
@@ -69,7 +69,7 @@ eYo.Brick.List.makeSubclass('non_void_import_identifier_as_list', {
  * The value property is used to store the module.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('import_stmt', {
+eYo.Stmt.makeSubclass('import_stmt', {
   data: {
     variant: {
       all: [
@@ -269,18 +269,18 @@ eYo.Brick.Stmt.makeSubclass('import_stmt', {
     }
   },
   init: /** @suppress {globalThis} */ function () {
-    eYo.Brick.Stmt.registerImport(this)
+    eYo.Stmt.registerImport(this)
   },
   deinit: /** @suppress {globalThis} */ function () {
-    eYo.Brick.Stmt.unregisterImport(this)
+    eYo.Stmt.unregisterImport(this)
   }
 }, true)
 
-eYo.Protocol.add(eYo.Brick.Stmt, 'Register', 'Import', function (delegate) {
+eYo.Protocol.add(eYo.Stmt, 'Register', 'Import', function (delegate) {
   return !delegate.isInFlyout
 })
 
-Object.defineProperties(eYo.Brick.Stmt.import_stmt.prototype, {
+Object.defineProperties(eYo.Stmt.import_stmt.prototype, {
   star_p: {
     get () {
       return this.variant_p === eYo.Key.FROM_MODULE_IMPORT_STAR
@@ -297,7 +297,7 @@ Object.defineProperties(eYo.Brick.Stmt.import_stmt.prototype, {
 /**
  * Returns a dictionary of modules imported by this brick, when not disabled.
  */
-eYo.Brick.Stmt.import_stmt.prototype.importedModules = function () {
+eYo.Stmt.import_stmt.prototype.importedModules = function () {
   if (this.disabled) {
     return
   }
@@ -329,17 +329,17 @@ eYo.Brick.Stmt.import_stmt.prototype.importedModules = function () {
 /**
  * When the brick is just a wrapper, returns the wrapped target.
  */
-eYo.Brick.Stmt.import_stmt.prototype.getMenuTarget = function () {
+eYo.Stmt.import_stmt.prototype.getMenuTarget = function () {
   return this
 }
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   var current = this.variant_p
   var F = (content, variant) => {
     if (variant !== current) {
@@ -374,7 +374,7 @@ eYo.Brick.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) 
     eYo.Do.createSPAN('import *', 'eyo-code-reserved')
   ), eYo.Key.FROM_MODULE_IMPORT_STAR)
   mgr.shouldSeparate()
-  return eYo.Brick.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 
 /// //////// future
@@ -383,7 +383,7 @@ eYo.Brick.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) 
  * Class for a Delegate, future_statement.
  * For edython.
  */
-eYo.Brick.Stmt.makeSubclass('future_statement', {
+eYo.Stmt.makeSubclass('future_statement', {
   slots: {
     list: {
       order: 1,

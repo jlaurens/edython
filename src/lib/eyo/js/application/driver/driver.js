@@ -25,7 +25,7 @@ eYo.Driver = Object.create(null)
  * Contructor delegate.
  * @param {Function} constructor
  */
-eYo.Constructor.make(eYo.Driver, 'Dlgt', eYo.Constructor.Dlgt, {
+eYo.Constructor.makeClass(eYo.Driver, 'Dlgt', eYo.Constructor.Dlgt, {
   init (c9r) {
     this.c9r_ = c9r
   },
@@ -51,7 +51,7 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
   var superC9r = mgrModel.super
   !superC9r && (superC9r = eYo.Owned)
   var driverNames = new Set()
-  var c9r = eYo.Constructor.make(owner, 'Mgr', superC9r || eYo.Owned, eYo.Driver.Dlgt, {
+  var c9r = eYo.Constructor.makeClass(owner, 'Mgr', superC9r || eYo.Owned, eYo.Driver.Dlgt, {
     init () {
       driverNames.forEach(name => {
         var n = name[0].toLowerCase() + name.substr(1)

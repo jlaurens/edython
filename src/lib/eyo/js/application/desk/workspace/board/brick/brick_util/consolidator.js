@@ -12,15 +12,24 @@
 'use strict'
 
 goog.require('eYo.Decorate')
+goog.require('eYo.Constructor')
 
 goog.provide('eYo.Consolidator')
+
+eYo.Constructor.makeNS('Consolidator')
+
 goog.provide('eYo.Consolidator.List')
 
 goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Do')
 goog.forwardDeclare('eYo.Slot')
 
-console.error('Manage rentrant_ more carefully')
+console.error('Manage reentrant_ more carefully')
+
+/**
+ * Consolidator constructor delegate.
+ */
+eYo.Consolidator.makeClass('Dlgt')
 
 /**
  * Consolidator. Fake abstract class, just here for the record and namespace.
@@ -31,72 +40,88 @@ console.error('Manage rentrant_ more carefully')
  * These are implemented as potential singletons but are not used as is.
  * Extra initialization may be performed by the init function.
  * TODO: use singletons...
- * @param {!Object} d, all the model needed
+ * @name {eYo.Consolidator.Dflt}
+ * @param {!Object} model, all the model needed
  * @constructor
  */
-eYo.Consolidator = function (d) {
-  this.reentrant_ = Object.create(null)
-  this.init(d)
-}
-
-eYo.Consolidator.eyo = Object.create(null)
-
-/**
- * Init. Not implemented. No return.
- * @param{Object} d  dictionary.
- */
-eYo.Consolidator.prototype.init = function(d) {
-  this.model = Object.create(null)
-  var D = this.constructor.eyo && this.constructor.eyo.model_
-  if (D) {
-    goog.mixin(this.model, D)
+eYo.Consolidator.makeClass('Dflt', {
+  props: {
+    link: {
+      model() {
+        return Object.create(null)
+      }
+    }
+  },
+  /**
+   * Init. Not implemented. No return.
+   * @param{Object} model  dictionary.
+   */
+  init (model) {
+    this.reentrant_ = Object.create(null)
+    var D = this.model
+    var DD = this.constructor.eyo.model_
+    if (DD) {
+      goog.mixin(D, DD)
+    }
+    if (model) {
+      goog.mixin(D, model)
+    }
+    goog.asserts.assert(goog.isDef(D.check), 'Consolidators must check their objects')
+    D.check = eYo.Decorate.arrayFunction(D.check)
+    this.model_ = D
   }
-  if (d) {
-    goog.mixin(this.model, d)
-  }
-  goog.asserts.assert(goog.isDef(this.model.check), 'Consolidators must check their objects')
-  this.model.check = eYo.Decorate.arrayFunction(this.model.check)
-}
+})
 
 /**
  * Main and unique entry point.
  * Removes empty place holders
- * @param {!eYo.Brick} brick, to be consolidated....
+ * @param {!eYo.Brick.Dflt} brick, to be consolidated....
  */
-eYo.Consolidator.prototype.consolidate = eYo.NA
+eYo.Consolidator.Dflt.prototype.consolidate = eYo.Do.nothing
 
 /**
  * Create a subclass of a consolidator.
  * This is the preferred method to create consolidator classes.
  * The main purpose is to manage the shared data model
  * and allow inheritance.
- * @param {!string} key
- * @param {!Object} model
- * @param {!Object} C10r  ancestor
- * @param {!Object} owner
+ * @param {?Object} ns, namespace, defaults to `eYo.Consolidator`.
+ * @param {!String} key, capitalized string except 'Dflt'.
+ * @param {?Object} superC9r,  ancestor, defaults to `eYo.Consolidator.Dflt`.
+ * @param {!Object} model, model object
  */
-eYo.Consolidator.makeSubclass = function (key, model, C10r, owner) {
-  C10r = C10r || eYo.Consolidator
-  owner = owner || C10r
-  var subclass = owner[key] = function (d) {
-    subclass.superClass_.constructor.call(this, d)
+eYo.Consolidator.makeSubclass = function (ns, key, superC9r, model) {
+  if (goog.isString(ns)) {
+    model = superC9r
+    superC9r = key
+    key = ns
+    ns = eYo.Consolidator
   }
-  goog.inherits(subclass, C10r)
-  subclass.eyo = Object.create({
+  if (!eYo.isF(superC9r)) {
+    model = superC9r
+    superC9r = eYo.Constructor.Dflt
+  }
+  superC9r = superC9r || eYo.Consolidator.Dflt
+  ns || (ns = eYo.Consolidator)
+  var c9r = ns[key] = function (d) {
+    c9r.superClass_.constructor.call(this, d)
+  }
+  goog.inherits(c9r, superC9r)
+  
+  c9r.eyo = Object.create({
     key: key,
     model_: Object.create(null) // start with a fresh object for the constructor model model
   })
-  if (C10r.eyo.model_) {
-    goog.mixin(subclass.eyo.model_, C10r.eyo.model_)
+  if (superC9r.eyo.model_) {
+    goog.mixin(c9r.eyo.model_, superC9r.eyo.model_)
   }
   if (goog.isFunction(model)) {
     model = model.call(this)
   }
   if (model) {
-    goog.mixin(subclass.eyo.model_, model)
+    goog.mixin(c9r.eyo.model_, model)
   }
-  subclass.makeSubclass = function (key, model, C10r, owner) {
-    eYo.Consolidator.makeSubclass(key, model, C10r || subclass, owner)
+  c9r.makeSubclass = function (owner_, key_, superC9r_, model_) {
+    eYo.Consolidator.makeSubclass(owner_, key_, superC9r_ || c9r, model_)
   }
 }
 
@@ -673,7 +698,7 @@ eYo.Consolidator.List.prototype.getIO = function (brick) {
  * List consolidator.
  * Removes empty place holders, add some...
  * Problem of `when`: the brick should not consolidate when not in a wokspace.
- * @param {!eYo.Brick} brick, to be consolidated.
+ * @param {!eYo.Brick.Dflt} brick, to be consolidated.
  * @param {boolean} force, true if no shortcut is allowed.
  */
 eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('consolidate', function (brick, force) {
@@ -703,7 +728,7 @@ eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('con
 
 /**
  * Fetches the named slot object
- * @param {!eYo.Brick} brick
+ * @param {!eYo.Brick.Dflt} brick
  * @param {String} name The name of the slot.
  * @param {?Boolean} dontCreate Whether the receiver should create slots on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
@@ -803,7 +828,7 @@ eYo.Consolidator.List.prototype.nextSlotForType = function (io, type) {
 /**
  * Whether the brick has an slot for the given type.
  * Used by the print brick.
- * @param {!eYo.Brick} brick
+ * @param {!eYo.Brick.Dflt} brick
  * @param {Object} type, string or array of strings
  * @return the next keyword item slot, eYo.NA when at end.
  */

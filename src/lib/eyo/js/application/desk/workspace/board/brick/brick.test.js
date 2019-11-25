@@ -37,7 +37,7 @@ describe('Statement magnets', function () {
   before(function() {
     var type = 'test_stmt_magnets'
     eYo.T3.Stmt[type] = type
-    eYo.Brick.Stmt.makeSubclass(type, {
+    eYo.Stmt.makeSubclass(type, {
       statement: {
         left: { check: type },
         right: { check: type },

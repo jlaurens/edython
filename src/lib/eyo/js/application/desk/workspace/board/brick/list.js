@@ -119,7 +119,7 @@ Object.defineProperties(eYo.List.prototype, {
  * If `opt_id` is provided and is not the id
  * of an already existing brick, then it will be the `id` of the added brick once added.
  * If the `opt_id` is already used or is not provided, then a new id is created.
- * @param {eYo.Brick} brick
+ * @param {eYo.Brick.Dflt} brick
  * @param {string} opt_id
  */
 eYo.List.prototype.add = function (brick, opt_id) {
@@ -159,7 +159,7 @@ eYo.List.prototype.add = function (brick, opt_id) {
 /**
  * Remove a brick from the receiver.
  * Throws if the brick is not in the list.
- * @param {eYo.Brick} brick
+ * @param {eYo.Brick.Dflt} brick
  */
 eYo.List.prototype.remove = function (brick) {
   if (!goog.array.remove(this.bricks_, brick)) {

@@ -48,12 +48,12 @@ goog.forwardDeclare('goog.dom');
   // - wrap input
   // - insert input
   // It may contain label fields
- * @param {!eYo.Brick} brick  The owner is a brick.
+ * @param {!eYo.Brick.Dflt} brick  The owner is a brick.
  * @param {!string} key  One of the keys in `slots` section of the brick model.
  * @param {!Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.UI.Constructor.make('Slot', eYo.Owned.UI2, {
+eYo.UI.Constructor.makeClass('Slot', eYo.Owned.UI2, {
   init (brick, key, model) {
     goog.asserts.assert(brick, 'Missing slot owner brick')
     goog.asserts.assert(key, 'Missing slot key')

@@ -15,7 +15,7 @@ goog.require('eYo.Brick')
 
 goog.require('eYo.Msg')
 
-goog.require('eYo.Brick.Stmt')
+goog.require('eYo.Stmt')
 goog.require('eYo.Brick.List')
 
 goog.require('eYo.Brick.Primary')
@@ -26,7 +26,7 @@ goog.provide('eYo.Brick.CMath')
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick} brick The brick.
+ * @param {!eYo.Brick.Dflt} brick The brick.
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */

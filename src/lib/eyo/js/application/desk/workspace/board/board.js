@@ -1436,7 +1436,7 @@ eYo.Board.prototype.fromUTF8ByteArray = function (bytes) {
 
 /**
  * Add a brick to the board.
- * @param {eYo.Brick} brick
+ * @param {eYo.Brick.Dflt} brick
  * @param {String} opt_id
  */
 eYo.Board.prototype.addBrick = function (brick, opt_id) {
@@ -1450,7 +1450,7 @@ eYo.Board.prototype.addBrick = function (brick, opt_id) {
 
 /**
  * Remove a brick from the board.
- * @param {eYo.Brick} brick
+ * @param {eYo.Brick.Dflt} brick
  * @param {?Function} f
  */
 eYo.Board.prototype.removeBrick = function (brick, f) {
