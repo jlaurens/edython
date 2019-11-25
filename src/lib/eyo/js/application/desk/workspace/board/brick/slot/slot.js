@@ -12,7 +12,7 @@
 'use strict'
 
 goog.require('eYo.Do')
-goog.require('eYo.Owned.UI2')
+goog.require('eYo.UI.Owned2')
 goog.require('eYo.Decorate')
 
 goog.provide('eYo.Slot')
@@ -53,7 +53,7 @@ goog.forwardDeclare('goog.dom');
  * @param {!Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.UI.Constructor.makeClass('Slot', eYo.Owned.UI2, {
+eYo.UI.Constructor.makeClass('Slot', eYo.UI.Owned2, {
   init (brick, key, model) {
     goog.asserts.assert(brick, 'Missing slot owner brick')
     goog.asserts.assert(key, 'Missing slot key')

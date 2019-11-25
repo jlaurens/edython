@@ -11,15 +11,27 @@
  */
 'use strict'
 
+goog.require('eYo.UI')
+
 goog.require('eYo.UI.Constructor.Dlgt')
+
 goog.require('eYo.Owned')
 
-goog.provide('eYo.UI.Owned')
+goog.provide('eYo.UI.Dflt')
 
+/**
+ * @name {eYo.UI.Dlgt}
+ * @param {!Function} c9r,  the constructor
+ * @constructor
+ * Basic constructor delegate.
+ */
+eYo.Constructor.Dlgt.makeSublass(eYo.UI, 'Dlgt')
 
 /**
  * Class for a basic object with a UI driver.
  * 
+ * @name {eYo.UI.Dflt}
+ * @constructor
  * @param {!eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  * @readonly
@@ -29,7 +41,7 @@ goog.provide('eYo.UI.Owned')
  * @readonly
  * @property {eYo.Driver.Mgr}ui_driver_mgr,  The ui driver manager used for rendering.
  */
-eYo.Constructor.makeClass(eYo.UI, 'Owned', eYo.Owned, eYo.UI.Constructor.Dlgt, {
+eYo.Owned.makeSublass(eYo.UI, 'Dflt', {
   init: {
     begin () {
       this.disposeUI = eYo.Do.nothing
@@ -64,11 +76,26 @@ eYo.Constructor.makeClass(eYo.UI, 'Owned', eYo.Owned, eYo.UI.Constructor.Dlgt, {
 })
 
 /**
- * Update the cached `ui_driver`.
+ * Update the cached `ui_driver` each time the app object changes.
  * 
  */
-eYo.UI.Owned.prototype.appDidChange = function () {
-  var super_ = eYo.UI.Owned.superClass_.appDidChange
+eYo.UI.Dflt.prototype.appDidChange = function () {
+  var super_ = eYo.UI.Dflt.superClass_.appDidChange
   super_ && super_.call(this)
   this.ui_driverUpdate()
+}
+
+eYo.UI.Dflt.prototype.ownerDidChange = function (before, after) {
+  var super_ = eYo.UI.Dflt.superClass_.ownerDidChange
+  super_ && super_call(this, before, after)
+  this.slot_ = this.brick_ = this.magnet_ = eYo.NA
+  if (after instanceof eYo.Slot) {
+    this.slot_ = after
+    this.brick_ = after.brick
+  } else if (after instanceof eYo.Magnet) {
+    this.magnet_ = after
+    this.brick_ = after.brick
+  } else if (after instanceof eYo.Brick.Dflt) {
+    this.brick_ = after
+  }
 }

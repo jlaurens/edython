@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.UI.Owned')
+goog.require('eYo.UI.Dflt')
 
 goog.provide('eYo.WorkspaceControl')
 
@@ -36,7 +36,7 @@ goog.provide('eYo.WorkspaceControl')
  * @property {number} MARGIN_SIDE_, Distance between trash can and right edge of board.
  *
  */
-eYo.UI.Constructor.makeClass('WorkspaceControl', eYo.UI.Owned, {
+eYo.UI.Constructor.makeClass('WorkspaceControl', eYo.UI.Dflt, {
   props: {
     computed: {
       workspace () {

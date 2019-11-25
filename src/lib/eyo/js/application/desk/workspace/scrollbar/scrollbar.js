@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.UI.Owned')
+goog.require('eYo.UI.Dflt')
 
 goog.provide('eYo.Scrollbar')
 

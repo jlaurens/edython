@@ -8,7 +8,7 @@ describe ('Tests: constructor_ui', function () {
     var NS = Object.create(null)
     eYo.UI.Constructor.makeClass(NS, 'A')
     chai.assert(NS.A)
-    chai.assert(NS.A.superClass_ = eYo.UI.Owned.prototype)
+    chai.assert(NS.A.superClass_ = eYo.UI.Dflt.prototype)
     chai.assert(NS.A.eyo.constructor = eYo.UI.Constructor.Dlgt)
     chai.assert(NS.A.eyo.initUIDecorate)
     chai.assert(NS.A.eyo.disposeUIDecorate)

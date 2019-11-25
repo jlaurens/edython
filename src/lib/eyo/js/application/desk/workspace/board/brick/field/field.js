@@ -12,7 +12,7 @@
 'use strict';
 
 goog.require('eYo.Protocol')
-goog.require('eYo.Owned.UI2')
+goog.require('eYo.UI.Owned2')
 goog.require('goog.asserts');
 
 goog.provide('eYo.Field')
@@ -41,7 +41,7 @@ eYo.Field = function (bsm, name, text) {
   this.disposeUI = eYo.Do.nothing
   bsm.hasUI && this.initUI()
 }
-goog.inherits(eYo.Field, eYo.Owned.UI2)
+goog.inherits(eYo.Field, eYo.UI.Owned2)
 
 Object.defineProperties(eYo.Field, {
   STATUS_NONE: { value: '' }, // names correspond to `eyo-code-...` css class names

@@ -13,7 +13,7 @@
  */
 'use strict'
 
-goog.require('eYo.UI.Owned')
+goog.require('eYo.UI.Dflt')
 goog.require('eYo.Decorate')
 
 goog.provide('eYo.Desk')

@@ -21,4 +21,4 @@ goog.provide('eYo.UI')
  * @namespace
  */
 
- eYo.UI = Object.create(null)
+ eYo.Constructor.makeNS('UI')

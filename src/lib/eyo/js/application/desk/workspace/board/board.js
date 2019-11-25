@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.UI.Owned')
+goog.require('eYo.UI.Dflt')
 
 goog.require('eYo.Decorate')
 goog.provide('eYo.Board')
@@ -73,7 +73,7 @@ eYo.Board = function(owner) {
    */
   this.error = eYo.NA
 }
-goog.inherits(eYo.Board, eYo.UI.Owned)
+goog.inherits(eYo.Board, eYo.UI.Dflt)
 
 Object.defineProperties(eYo.Board.prototype, {
   list: {

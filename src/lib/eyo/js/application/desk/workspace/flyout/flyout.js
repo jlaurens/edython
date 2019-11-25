@@ -12,7 +12,7 @@
 'use strict'
 
 goog.require('eYo.Protocol')
-goog.require('eYo.UI.Owned')
+goog.require('eYo.UI.Dflt')
 goog.require('eYo.Unit')
 goog.require('eYo.Events')
 

@@ -21,7 +21,7 @@ goog.provide('eYo.Constructor.Dlgt')
  * Caveat, constructors must have the same arguments.
  * Use a key->value design if you do not want that.
  * The `params` object has template: `{init: function, dispose: function}`
- * @param {?Object} owner,  A namespace. Defaults to `eYo`.
+ * @param {?Object} ns,  A namespace. Defaults to `eYo`.
  * @param {!String} key,  The key.
  * @param {?Function} superC9r,  The eventual super class. There is no default value. Give a falsy value if you do not want inheritance.
  * @param {?Function} dlgtC9r,  The constructor's delegate class. Defaults to the `super_`'s delegate. Must be a subclass of `eYo.Constructor.Dlgt`.
@@ -29,13 +29,13 @@ goog.provide('eYo.Constructor.Dlgt')
  * @return {Object} the created constructor.
  * 
  */
-eYo.Constructor.makeClass = (owner, key, superC9r, dlgtC9r, model) => {
-  if (goog.isString(owner)) {
+eYo.Constructor.makeClass = (ns, key, superC9r, dlgtC9r, model) => {
+  if (goog.isString(ns)) {
     model = dlgtC9r
     dlgtC9r = superC9r
     superC9r = key
-    key = owner
-    owner = eYo
+    key = ns
+    ns = eYo
   }
   if (eYo.isF(superC9r)) {
     if (eYo.isF(dlgtC9r)) {
@@ -46,7 +46,13 @@ eYo.Constructor.makeClass = (owner, key, superC9r, dlgtC9r, model) => {
       superC9r = eYo.NA
     } else {
       model = dlgtC9r || {}
-      dlgtC9r = (superC9r.eyo && superC9r.eyo.constructor) || eYo.Constructor.Dlgt
+      dlgtC9r = superC9r.eyo && superC9r.eyo.constructor
+      var c9r = ns.Dlgt
+      if (c9r instanceof eYo.Constructor.Dlgt) {
+        dlgtC9r = c9r
+      } else {
+        dlgtC9r = eYo.Constructor.Dlgt
+      }
     }
   } else {
     if (eYo.isF(dlgtC9r)) {
@@ -55,7 +61,8 @@ eYo.Constructor.makeClass = (owner, key, superC9r, dlgtC9r, model) => {
       model = superC9r || {}
       dlgtC9r = eYo.Constructor.Dlgt
     }
-    superC9r = eYo.NA
+    c9r = ns.Dflt
+    superC9r = eYo.isF(c9r) ? c9r : eYo.NA
   }
   if (eYo.isF(model.init)) {
     var endInit = model.init
@@ -64,7 +71,7 @@ eYo.Constructor.makeClass = (owner, key, superC9r, dlgtC9r, model) => {
     endInit = model.init.end
   }
   if (superC9r) {
-    var c9r = owner[key] = function () {
+    var c9r = ns[key] = function () {
       c9r.superClass_.constructor.apply(this, arguments)
       beginInit && beginInit.apply(this, arguments)
       c9r.eyo__.initInstance(this)
@@ -76,7 +83,7 @@ eYo.Constructor.makeClass = (owner, key, superC9r, dlgtC9r, model) => {
       console.error('BREAK HERE')
     }
   } else {
-    c9r = owner[key] = function () {
+    c9r = ns[key] = function () {
       beginInit && beginInit.apply(this, arguments)
       c9r.eyo__.initInstance(this)
       endInit && endInit.apply(this, arguments)
@@ -106,7 +113,7 @@ eYo.Constructor.makeClass = (owner, key, superC9r, dlgtC9r, model) => {
       model_ = dlgtC9r_
       dlgtC9r_ = key_
       key_ = owner_
-      owner_ = owner
+      owner_ = ns
     }
     if (!eYo.isF(dlgtC9r_)) {
       model_ = dlgtC9r_
@@ -114,7 +121,6 @@ eYo.Constructor.makeClass = (owner, key, superC9r, dlgtC9r, model) => {
     }
     return eyo.makeSubclass(owner_, key_, c9r, dlgtC9r_, model_ || {})
   }
-  eyo.constructorMake = eYo.Constructor.makeClass
   Object.defineProperty(c9r.prototype, 'eyo', {
     get () {
       return eyo
@@ -123,6 +129,7 @@ eYo.Constructor.makeClass = (owner, key, superC9r, dlgtC9r, model) => {
       throw 'Forbidden setter'
     }
   })
+  eyo.constructorMake = eYo.Constructor.makeClass
   ;['owned', 'clonable', 'link', 'cached'].forEach(k => {
     var K = k[0].toUpperCase() + k.substring(1)
     var name = 'forEach' + K

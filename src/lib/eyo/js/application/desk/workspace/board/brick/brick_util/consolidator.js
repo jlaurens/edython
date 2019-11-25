@@ -96,32 +96,25 @@ eYo.Consolidator.makeSubclass = function (ns, key, superC9r, model) {
     key = ns
     ns = eYo.Consolidator
   }
-  if (!eYo.isF(superC9r)) {
+  if (eYo.isF(superC9r)) {
+    if (!superC9r.prototype instanceof eYo.Consolidator.Dflt) {
+      model = superC9r
+      superC9r = eYo.Consolidator.Dflt
+    }
+  } else {
     model = superC9r
-    superC9r = eYo.Constructor.Dflt
-  }
-  superC9r = superC9r || eYo.Consolidator.Dflt
-  ns || (ns = eYo.Consolidator)
-  var c9r = ns[key] = function (d) {
-    c9r.superClass_.constructor.call(this, d)
-  }
-  goog.inherits(c9r, superC9r)
-  
-  c9r.eyo = Object.create({
-    key: key,
-    model_: Object.create(null) // start with a fresh object for the constructor model model
-  })
-  if (superC9r.eyo.model_) {
-    goog.mixin(c9r.eyo.model_, superC9r.eyo.model_)
+    superC9r = eYo.Consolidator.Dflt
   }
   if (goog.isFunction(model)) {
-    model = model.call(this)
+    model = model()
+  }
+  var c9r = eYo.Constructor.makeClass(ns, key, superC9r, eYo.Consolidator.Dlgt, model)
+  var eyo = c9r.eyo
+  if (superC9r.eyo.model) {
+    goog.mixin(eyo.model, superC9r.eyo.model)
   }
   if (model) {
-    goog.mixin(c9r.eyo.model_, model)
-  }
-  c9r.makeSubclass = function (owner_, key_, superC9r_, model_) {
-    eYo.Consolidator.makeSubclass(owner_, key_, superC9r_ || c9r, model_)
+    goog.mixin(eyo.model_, model)
   }
 }
 
@@ -136,23 +129,21 @@ eYo.Consolidator.makeSubclass = function (ns, key, superC9r, model) {
  * of the slot, which means that naming should be done
  * dynamically.
  */
-eYo.Consolidator.makeSubclass('List')
-
-/**
- * Initialize the list consolidator.
- * @param {!Object} d model.
- */
-eYo.Consolidator.List.prototype.init = function (d) {
-  eYo.Consolidator.List.superClass_.init.call(this, d)
-  if (this.model.unique) {
-    this.model.unique = eYo.Decorate.arrayFunction(this.model.unique)
+eYo.Consolidator.Dflt.makeSubclass('List', {
+  /**
+   * Initialize the list consolidator.
+   * @param {!Object} d model.
+   */
+  init (d) {
+    if (this.model.unique) {
+      this.model.unique = eYo.Decorate.arrayFunction(this.model.unique)
+    }
+    if (this.model.all) {
+      this.model.all = eYo.Decorate.arrayFunction(this.model.all)
+    }
+    this.model.ary || (this.model.ary = Infinity)  
   }
-  if (this.model.all) {
-    this.model.all = eYo.Decorate.arrayFunction(this.model.all)
-  }
-  this.model.ary || (this.model.ary = Infinity)
-}
-
+})
 
 /**
  * Get the ary.

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.UI.Owned')
+goog.require('eYo.UI.Dflt')
 goog.require('eYo.Decorate')
 goog.require('eYo.UI.Constructor.Dlgt')
 
@@ -82,7 +82,7 @@ eYo.Constructor.makeClass(eYo.Brick, 'Dlgt', eYo.UI.Constructor.Dlgt, {
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.UI.Constructor.makeClass('Dflt', eYo.Brick, eYo.UI.Owned, eYo.Brick.Dlgt, {
+eYo.UI.Constructor.makeClass('Dflt', eYo.Brick, eYo.UI.Dflt, eYo.Brick.Dlgt, {
   props: {
     link: {
       parent: {},

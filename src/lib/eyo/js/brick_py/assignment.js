@@ -549,7 +549,7 @@ eYo.Expr.value_list.prototype.getSubtype = function () {
   return (t && (this.subtype_ = t.type)) || this.subtype_
 }
 
-eYo.Brick.List.makeSubclass('augassigned_list', function () {
+eYo.Brick.List.makeSubclass('augassigned_list', () => {
   var D = {
     check: eYo.T3.Expr.Check.expression,
     unique: eYo.T3.Expr.yield_expr,

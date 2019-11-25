@@ -50,7 +50,7 @@ eYo.UI.Constructor.make = (owner, key, superC9r, dlgtC9r, model) => {
       model = superC9r || {}
       dlgtC9r = eYo.UI.Constructor.Dlgt
     }
-    superC9r = eYo.UI.Owned
+    superC9r = eYo.UI.Dflt
   }
   var c9r = eYo.Constructor.makeClass(owner, key, superC9r, dlgtC9r, model)
   var eyo = c9r.eyo__
