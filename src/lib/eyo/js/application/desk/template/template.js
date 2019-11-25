@@ -23,14 +23,7 @@ goog.provide('eYo.Template')
  * @param {!eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.UI.Constructor.make('Template', {
-  owner: eYo,
-  super: eYo.Pane,
-})
-eYo.Template = function(owner) {
-  eYo.Template.superClass_.constructor.call(this, owner)
-}
-goog.inherits(eYo.Template, eYo.Pane)
+eYo.UI.Constructor.make('Template', eYo.Pane)
 
 /**
  * Update the metrics of the receiver.

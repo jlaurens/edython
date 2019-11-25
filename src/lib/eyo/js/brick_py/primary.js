@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.Brick.Expr')
+goog.require('eYo.Expr')
 
 goog.require('eYo.Protocol')
 goog.require('eYo.Change')
@@ -312,7 +312,7 @@ eYo.Brick.List.makeSubclass('target_list', {
  * The subtype is the type of the enclosing brick.
  * @return {String} The subtype of the receiver's brick.
  */
-eYo.Brick.Expr.target_list.prototype.getSubtype = function () {
+eYo.Expr.target_list.prototype.getSubtype = function () {
   var parent = this.parent
   return parent && parent.type
 }
@@ -322,7 +322,7 @@ eYo.Brick.Expr.target_list.prototype.getSubtype = function () {
  * @param {!eYo.Magnet} m4t
  * @param {!eYo.Magnet} oldTargetM4t that was connected to blockConnection
  */
-eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
+eYo.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isSlot) {
     var other = false
     if (this.someSlot(slot => {
@@ -351,7 +351,7 @@ eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4
       ;(x = x.target_s) && (x.bindField.visible = true)
     }
   }
-  eYo.Brick.Expr.target_list.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
+  eYo.Expr.target_list.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
 }
 
 /**
@@ -361,8 +361,8 @@ eYo.Brick.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4
  * @param {!eYo.Magnet} oldTargetM4t.
  * @param {!eYo.Magnet} targetOldM4t
  */
-eYo.Brick.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.Brick.Expr.target_list.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+eYo.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+  eYo.Expr.target_list.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   // BEWARE: the brick is NOT consolidated
   if (m4t.isSlot) {
     var parent = this.parent
@@ -531,7 +531,7 @@ eYo.Brick.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, 
 
  * For edython.
  */
-eYo.Brick.Expr.makeSubclass('primary', {
+eYo.Expr.Dflt.makeSubclass('primary', {
   xml: {
     types: [
       eYo.T3.Expr.identifier,
@@ -1199,14 +1199,14 @@ eYo.Brick.Expr.makeSubclass('primary', {
     }
   },
   init: /** @suppress {globalThis} */ function () {
-    eYo.Brick.Expr.registerPrimary(this)
+    eYo.Expr.registerPrimary(this)
   },
   deinit: /** @suppress {globalThis} */ function () {
-    eYo.Brick.Expr.unregisterPrimary(this)
+    eYo.Expr.unregisterPrimary(this)
   },
 }, true)
 
-eYo.Protocol.add(eYo.Brick.Expr, 'Register', 'primary', function (brick) {
+eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
   return !brick.isInFlyout
 })
 
@@ -1233,7 +1233,7 @@ eYo.Protocol.add(eYo.Brick.Expr, 'Register', 'primary', function (brick) {
   'assignment_chain',
   'named_expr'
 ].forEach(k => {
-  eYo.Brick.Expr[k] = eYo.Brick.Expr.primary
+  eYo.Expr[k] = eYo.Expr.primary
   eYo.Brick.Mgr.register(k)
 })
 
@@ -1245,12 +1245,12 @@ eYo.Protocol.add(eYo.Brick.Expr, 'Register', 'primary', function (brick) {
  * @param {!eYo.Brick} brick to be initialized.
  * For subclassers eventually
  */
-eYo.Brick.Expr.primary.prototype.init = function () {
-  eYo.Brick.Expr.primary.superClass_.init.call(this)
+eYo.Expr.primary.prototype.init = function () {
+  eYo.Expr.primary.superClass_.init.call(this)
   this.profile_ = eYo.NA
 }
 
-Object.defineProperties( eYo.Brick.Expr.primary.prototype, {
+Object.defineProperties( eYo.Expr.primary.prototype, {
   profile_p : {
     get () {
       var p5e = this.getProfile()
@@ -1273,7 +1273,7 @@ Object.defineProperties( eYo.Brick.Expr.primary.prototype, {
 /**
  * updateProfile.
  */
-eYo.Brick.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_method(
+eYo.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_method(
   'updateProfile',
   function () {
     ++this.change.count
@@ -1297,7 +1297,7 @@ eYo.Brick.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_method(
  * This has not been tested despite it is essential.
  * @return {!Object}.
  */
-eYo.Brick.Expr.primary.prototype.getProfile = eYo.Change.decorate(
+eYo.Expr.primary.prototype.getProfile = eYo.Change.decorate(
   'getProfile',
   function () {
       // this may be called very very early when
@@ -1435,8 +1435,8 @@ eYo.Brick.Expr.primary.prototype.getProfile = eYo.Change.decorate(
  * After initialization, this should be called whenever
  * the brick type has changed.
  */
-eYo.Brick.Expr.primary.prototype.consolidateMagnets = function () {
-  eYo.Brick.Expr.primary.superClass_.consolidateMagnets.call(this)
+eYo.Expr.primary.prototype.consolidateMagnets = function () {
+  eYo.Expr.primary.superClass_.consolidateMagnets.call(this)
   this.target_s.magnet.hidden = this.variant_p === eYo.Key.NONE && this.dotted_p === 0
 }
 
@@ -1445,7 +1445,7 @@ eYo.Brick.Expr.primary.prototype.consolidateMagnets = function () {
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
-eYo.Brick.Expr.primary.prototype.getBaseType = function () {
+eYo.Expr.primary.prototype.getBaseType = function () {
   var check = this.getOutCheck()
   if (!check.length) {
     console.error('BIG PROBLEM', this.getOutCheck())
@@ -1460,7 +1460,7 @@ eYo.Brick.Expr.primary.prototype.getBaseType = function () {
  * getOutCheck.
  * The check_ array of the output connection.
  */
-eYo.Brick.Expr.primary.prototype.getOutCheck = function () {
+eYo.Expr.primary.prototype.getOutCheck = function () {
   var f = function () {
   // there is no validation here
   // simple cases first, variant based
@@ -1763,7 +1763,7 @@ eYo.Brick.Expr.primary.prototype.getOutCheck = function () {
  * The subtype depends on the variant and the modifiers.
  * Set by getType as side effect.
  */
-eYo.Brick.Expr.primary.prototype.getSubtype = function () {
+eYo.Expr.primary.prototype.getSubtype = function () {
   this.getType()
   return this.subtype_p
 }
@@ -1776,8 +1776,8 @@ eYo.Brick.Expr.primary.prototype.getSubtype = function () {
  * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
-eYo.Brick.Expr.primary.prototype.getSlot = function (name) {
-  var slot = eYo.Brick.Expr.primary.superClass_.getSlot.call(this, name)
+eYo.Expr.primary.prototype.getSlot = function (name) {
+  var slot = eYo.Expr.primary.superClass_.getSlot.call(this, name)
   if (!slot) {
     // we suppose that ary is set
     var f = (slot) => {
@@ -1849,9 +1849,9 @@ eYo.Brick.Stmt.makeSubclass('base_call_stmt', {
   link: eYo.T3.Expr.primary
 }, eYo.Brick.Stmt, true)
 
-eYo.Brick.Stmt.base_call_stmt.prototype.updateProfile = eYo.Brick.Expr.primary.prototype.updateProfile
+eYo.Brick.Stmt.base_call_stmt.prototype.updateProfile = eYo.Expr.primary.prototype.updateProfile
 
-eYo.Brick.Stmt.base_call_stmt.prototype.getProfile = eYo.Brick.Expr.primary.prototype.getProfile
+eYo.Brick.Stmt.base_call_stmt.prototype.getProfile = eYo.Expr.primary.prototype.getProfile
 
 
 /**
@@ -1894,7 +1894,7 @@ Object.defineProperties(eYo.Brick.Stmt.base_call_stmt.prototype, {
 eYo.Brick.Stmt.base_call_stmt.makeSubclass('call_stmt', {
 }, true)
 
-eYo.Brick.Expr.primary.T3s = [
+eYo.Expr.primary.T3s = [
   eYo.T3.Expr.primary,
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.attributeref,

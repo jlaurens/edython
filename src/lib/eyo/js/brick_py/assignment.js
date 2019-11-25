@@ -544,7 +544,7 @@ eYo.Brick.List.makeSubclass('value_list', {
  * This should be used instead of direct brick querying.
  * @return {String} The subtype of the receiver's brick.
  */
-eYo.Brick.Expr.value_list.prototype.getSubtype = function () {
+eYo.Expr.value_list.prototype.getSubtype = function () {
   var t = this.out_m.targetBrick
   return (t && (this.subtype_ = t.type)) || this.subtype_
 }

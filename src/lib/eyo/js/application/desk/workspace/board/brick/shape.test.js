@@ -3,12 +3,12 @@ eYo.Test.no_brick_type = true
 describe('Expression shape', function () {
   var type = 'test_shape_out'
   eYo.T3.Expr[type] = type
-  eYo.Brick.Expr.makeSubclass(type, {
+  eYo.Expr.Dflt.makeSubclass(type, {
     out: {
       check: null
     }
   }) 
-  chai.assert(eYo.Brick.Expr.test_shape_out)
+  chai.assert(eYo.Expr.test_shape_out)
   var b
   beforeEach(function() {
     b = eYo.Test.new_brick(type)

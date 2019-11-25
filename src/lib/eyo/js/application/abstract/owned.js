@@ -34,8 +34,6 @@ goog.forwardDeclare('eYo.Magnet')
  * @constructor
  */
 eYo.Constructor.make('Owned', {
-  owner: eYo,
-  super: null,
   init (owner) {
     this.owner_ = owner
   },

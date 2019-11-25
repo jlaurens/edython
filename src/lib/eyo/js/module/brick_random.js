@@ -33,7 +33,7 @@ eYo.T3.Expr.random__randrange = 'eyo:random__randrange'
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Expr.builtin__range_expr.makeSubclass('random__randrange', {
+eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
   xml: {
     attr: 'randrange'
   },
@@ -127,7 +127,7 @@ eYo.Brick.Expr.builtin__range_expr.makeSubclass('random__randrange', {
  * The xml `eyo` attribute of this brick, as it should appear in the saved data.
  * For edython.
  */
-eYo.Brick.Expr.random__randrange.prototype.xmlAttr = function () {
+eYo.Expr.random__randrange.prototype.xmlAttr = function () {
   return this.model.xml.attr
 }
 

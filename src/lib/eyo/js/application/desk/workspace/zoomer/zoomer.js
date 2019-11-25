@@ -20,9 +20,8 @@ goog.provide('eYo.Zoomer')
  * @param {!eYo.Workspace} workspace Workspace to zoom.
  * @constructor
  */
-eYo.WorkspaceControl.makeSubclass({
-  key: 'Zoomer',
-})
+eYo.WorkspaceControl.makeSubclass('Zoomer', {
+  })
 
 Object.defineProperties(eYo.Zoomer.prototype, {
   HEIGHT_: { value: 110 },

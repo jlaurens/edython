@@ -7,8 +7,6 @@ describe ('Tests: owned_ui2', function () {
   eYo.Brick = eYo.Slot = eYo.Magnet = eYo.NA
   var ff = k => {
     eYo.Constructor.make(k, {
-      owner: eYo,
-      super: null,
       props: {
         owned: ['foo']
       },

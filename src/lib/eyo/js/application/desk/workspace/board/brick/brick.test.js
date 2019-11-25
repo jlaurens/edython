@@ -2,7 +2,7 @@ describe('Brick constructor delegate', function() {
   it(`BCD: Basic`, function() {
     chai.assert(eYo.Brick.Dlgt)
     var c9r = function () {}
-    var eyo = new eYo.Brick.Dlgt(c9r, 'Foo')
+    var eyo = new eYo.Brick.Dlgt(c9r, 'Foo', {})
     chai.assert(eyo)
     chai.assert(eyo.name_ === 'Foo')
     chai.assert(eyo.types)

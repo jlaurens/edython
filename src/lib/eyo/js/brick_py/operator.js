@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.Brick.Expr')
+goog.require('eYo.Expr')
 
 goog.provide('eYo.Brick.Operator')
 
@@ -21,12 +21,12 @@ goog.provide('eYo.Brick.Operator')
  * Abstract class.
  * For edython.
  */
-eYo.Brick.Expr.makeSubclass('binary', {
+eYo.Expr.Dflt.makeSubclass('binary', {
   data: {
     operator: { // only one field with that key,
       init: '+',
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var m = eYo.Brick.Expr.binary.getTypeForOperator(newValue)
+        var m = eYo.Expr.binary.getTypeForOperator(newValue)
         return m !== eYo.T3.Expr.unset
           ? {validated: newValue}
           : null
@@ -96,7 +96,7 @@ eYo.Brick.Expr.makeSubclass('binary', {
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
-        var m = eYo.Brick.Expr.binary.getOperatorModelForType(type)
+        var m = eYo.Expr.binary.getOperatorModelForType(type)
         if (!m) {
           console.error('NO MODEL FOR', type)
         }
@@ -132,7 +132,7 @@ eYo.Brick.Expr.makeSubclass('binary', {
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
-        var m = eYo.Brick.Expr.binary.getOperatorModelForType(type)
+        var m = eYo.Expr.binary.getOperatorModelForType(type)
         return m && m.rhs
       }
     }
@@ -147,7 +147,7 @@ eYo.Brick.Expr.makeSubclass('binary', {
 eYo.T3.Expr.Check.binary.forEach(t => {
   if (t !== eYo.T3.Expr.any) {
     t = t.substring(4)
-    eYo.Brick.Expr[t] = eYo.Brick.Expr.binary
+    eYo.Expr[t] = eYo.Expr.binary
     eYo.Brick.Mgr.register(t)
   }
 })
@@ -160,7 +160,7 @@ eYo.T3.Expr.Check.binary.forEach(t => {
   'number_comparison',
   'object_comparison'
 ].forEach(t => {
-  eYo.Brick.Expr[t] = eYo.Brick.Expr.binary
+  eYo.Expr[t] = eYo.Expr.binary
   eYo.Brick.Mgr.register(t)
 })
 
@@ -169,7 +169,7 @@ eYo.T3.Expr.Check.binary.forEach(t => {
  * For edython.
  * @return a dictionary
  */
-eYo.Brick.Expr.binary.getOperatorModelForType = function (type) {
+eYo.Expr.binary.getOperatorModelForType = function (type) {
   return {
     [eYo.T3.Expr.m_expr]: {
       lhs: eYo.T3.Expr.Check.m_expr_all,
@@ -227,7 +227,7 @@ eYo.Brick.Expr.binary.getOperatorModelForType = function (type) {
  * For edython.
  * @return a dictionary
  */
-eYo.Brick.Expr.binary.getTypeForOperator = function (op) {
+eYo.Expr.binary.getTypeForOperator = function (op) {
   if (['*', '//', '/', '%', '@'].indexOf(op) >= 0) {
     return eYo.T3.Expr.m_expr
   }
@@ -269,7 +269,7 @@ eYo.Brick.Expr.binary.getTypeForOperator = function (op) {
  * For edython.
  * @return !String
  */
-eYo.Brick.Expr.binary.prototype.xmlAttr = function () {
+eYo.Expr.binary.prototype.xmlAttr = function () {
   var type = this.type
   return type.endsWith('comparison') ? 'comparison' : type.substring(4)
 }
@@ -279,7 +279,7 @@ eYo.Brick.Expr.binary.prototype.xmlAttr = function () {
  * Unstable state.
  * For edython.
  */
-eYo.Brick.Expr.binary.prototype.getBaseType = function () {
+eYo.Expr.binary.prototype.getBaseType = function () {
   return this.constructor.getTypeForOperator(this.operator_p)
 }
 
@@ -290,7 +290,7 @@ eYo.T3.Expr.unary = 'eyo:unary' // don't forget it !
  * u_expr.
  * For edython.
  */
-eYo.Brick.Expr.makeSubclass('unary', {
+eYo.Expr.Dflt.makeSubclass('unary', {
   xml: {
     types: [
       eYo.T3.Expr.u_expr,
@@ -303,7 +303,7 @@ eYo.Brick.Expr.makeSubclass('unary', {
       all: ['-', '+', '~', 'not'],
       init: '-',
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var m = eYo.Brick.Expr.unary.getTypeForOperator(newValue)
+        var m = eYo.Expr.unary.getTypeForOperator(newValue)
         return m !== eYo.T3.Expr.unset
           ? {validated: newValue}
           : null
@@ -344,7 +344,7 @@ eYo.Brick.Expr.makeSubclass('unary', {
         }
       },
       check: /** @suppress {globalThis} */ function (type) {
-        var m = eYo.Brick.Expr.unary.getOperatorModelForType(type)
+        var m = eYo.Expr.unary.getOperatorModelForType(type)
         return m && m.rhs
       }
     }
@@ -360,7 +360,7 @@ eYo.Brick.Expr.makeSubclass('unary', {
   'u_expr',
   'not_test'
 ].forEach((k) => {
-  eYo.Brick.Expr[k] = eYo.Brick.Expr.unary
+  eYo.Expr[k] = eYo.Expr.unary
   eYo.Brick.Mgr.register(k)
 })
 
@@ -369,7 +369,7 @@ eYo.Brick.Expr.makeSubclass('unary', {
  * For edython.
  * @return a dictionary
  */
-eYo.Brick.Expr.unary.getOperatorModelForType = function (type) {
+eYo.Expr.unary.getOperatorModelForType = function (type) {
   return {
     [eYo.T3.Expr.u_expr]: {
       rhs: eYo.T3.Expr.Check.u_expr_all
@@ -385,9 +385,9 @@ eYo.Brick.Expr.unary.getOperatorModelForType = function (type) {
  * For edython.
  * @return a dictionary
  */
-eYo.Brick.Expr.unary.prototype.getOperatorModel = function () {
+eYo.Expr.unary.prototype.getOperatorModel = function () {
   var op = this.operator_p
-  return eYo.Brick.Expr.unary.getOperatorModel(op)
+  return eYo.Expr.unary.getOperatorModel(op)
 }
 
 /**
@@ -395,7 +395,7 @@ eYo.Brick.Expr.unary.prototype.getOperatorModel = function () {
  * Unstable state.
  * For edython.
  */
-eYo.Brick.Expr.unary.prototype.getBaseType = function () {
+eYo.Expr.unary.prototype.getBaseType = function () {
   return this.constructor.getTypeForOperator(this.operator_p)
 }
 
@@ -404,7 +404,7 @@ eYo.Brick.Expr.unary.prototype.getBaseType = function () {
  * For edython.
  * @return a dictionary
  */
-eYo.Brick.Expr.unary.getTypeForOperator = function (op) {
+eYo.Expr.unary.getTypeForOperator = function (op) {
   if (['+', '-', '~'].indexOf(op) >= 0) {
     return eYo.T3.Expr.u_expr
   }

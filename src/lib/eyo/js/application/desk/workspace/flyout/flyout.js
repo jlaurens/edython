@@ -78,8 +78,6 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
  * @private
  */
 eYo.UI.Constructor.make('Flyout', {
-  owner: eYo,
-  super: eYo.UI.Owned,
   props: {
     owned: {
       search () {

@@ -24,8 +24,6 @@ goog.forwardDeclare('eYo.Desk')
  * @constructor
  */
 eYo.UI.Constructor.make('Pane', {
-  owner: eYo,
-  super: eYo.UI.Owned,
   props: {
     computed: {
       /**

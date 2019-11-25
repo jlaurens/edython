@@ -28,22 +28,18 @@ describe ('Constructor', function () {
     it ('Make: Missing', function () {
       chai.assert(eYo.Constructor)
       chai.assert(eYo.Constructor.make)
-        chai.expect(()=>{
+      chai.expect(()=>{
         eYo.Constructor.make()
       }).to.throw()
       chai.expect(()=>{
-        eYo.Constructor.make('Foo', {})
-      }).to.throw()
+        eYo.Constructor.make('Foo')
+      }).not.to.throw()
       chai.expect(()=>{
-        eYo.Constructor.make('Foo', {
-          super: null
-        })
-      }).to.throw()
+        eYo.Constructor.make('Foo', null, {})
+      }).not.to.throw()
     })
     it ('Make: super: null', function () {
-      eYo.Constructor.make('A', {
-        owner: NS,
-        super: null,
+      eYo.Constructor.make(NS, 'A', {
         props: {
            link: ['foo', 'bar'],
         },
@@ -312,7 +308,7 @@ describe ('Constructor', function () {
            link: ['foo', 'bar'],
         },
       })
-      chai.assert(NS.A.eyo.ctor === NS.A)
+      chai.assert(NS.A.eyo.c9r === NS.A)
       chai.expect(() => {
         Object.defineProperties(NS.A.prototype, {
           foo_: {
@@ -1297,8 +1293,7 @@ describe ('Constructor', function () {
       }
     })
     chai.assert(NS.A.makeSubclass)
-    NS.A.makeSubclass({
-      key: 'AB',
+    NS.A.makeSubclass('AB', {
       owner: NS.A,
       init() {
         flag += 10
@@ -1324,15 +1319,12 @@ describe ('Constructor', function () {
   })
   it ('Constructor: dlgt key', function () {
     var flag = 0
-    var Dlgt = function (ctor, key, model) {
-      Dlgt.superClass_.constructor.call(this, ctor, key, model)
+    var Dlgt = function (c9r, key, model) {
+      Dlgt.superClass_.constructor.call(this, c9r, key, model)
       flag += 1
     }
     eYo.Do.inherits(Dlgt, eYo.Constructor.Dlgt)
-    eYo.Constructor.make('A', {
-      owner: NS,
-      super: null,
-      dlgt: Dlgt,
+    eYo.Constructor.make(NS, 'A', null, Dlgt, {
       init() {
         flag += 1
       }
@@ -1340,8 +1332,7 @@ describe ('Constructor', function () {
     chai.assert(flag === 1)
     chai.assert(NS.A.eyo.constructor === Dlgt)
     chai.assert(NS.A.makeSubclass)
-    NS.A.makeSubclass({
-      key: 'AB',
+    NS.A.makeSubclass('AB', {
       owner: NS.A,
     })
     chai.assert(flag === 2)

@@ -27,18 +27,44 @@ eYo.UI.Constructor = Object.create(null)
  * make the `initUI` and `disposeUI` methods of the prototype.
  * They are used for 
  */
-eYo.UI.Constructor.make = (key, model) => {
-  model.super || (model.super = eYo.UI.Owned)
-  model.dlgt || (model.dlgt = eYo.UI.Constructor.Dlgt)
-  var ctor = eYo.Constructor.make(key, model)
-  var eyo = ctor.eyo__
+eYo.UI.Constructor.make = (owner, key, superC9r, dlgtC9r, model) => {
+  // same beginning as `eYo.Constructor.make`
+  if (goog.isString(owner)) {
+    model = dlgtC9r
+    dlgtC9r = superC9r
+    superC9r = key
+    key = owner
+    owner = eYo
+  }
+  if (eYo.isF(superC9r)) {
+    if (eYo.isF(dlgtC9r)) {
+      model || (model = {})
+    } else {
+      model = dlgtC9r || {}
+      dlgtC9r = (superC9r.eyo && superC9r.eyo.constructor) || eYo.UI.Constructor.Dlgt
+    }
+  } else {
+    if (eYo.isF(dlgtC9r)) {
+      model || (model = {})
+    } else {
+      model = superC9r || {}
+      dlgtC9r = eYo.UI.Constructor.Dlgt
+    }
+    superC9r = eYo.UI.Owned
+  }
+  var c9r = eYo.Constructor.make(owner, key, superC9r, dlgtC9r, model)
+  var eyo = c9r.eyo__
   eyo.constructorMake = eYo.UI.Constructor.make
   var ui = model.ui
-  var f = ctor.eyo.initUIDecorate (ui && ui.dispose)
-  ctor.prototype.initUI = function (...args) {
+  if (!eYo.isF(eyo.initUIDecorate)) {
+    console.error('BREAK HERE')
+    c9r = eYo.Constructor.make(owner, key, superC9r, dlgtC9r, model)
+  }
+  var f = eyo.initUIDecorate(ui && ui.dispose)
+  c9r.prototype.initUI = function (...args) {
     try {
       this.initUI = eYo.Do.nothing
-      var super_ = ctor.superClass_
+      var super_ = c9r.superClass_
       !!super_ && !!super_.initUI && !!super_.initUI.call(this, ...args)
       this.ui_driver.init(this, ...args)
       f && f.apply(this, ...args)
@@ -46,13 +72,13 @@ eYo.UI.Constructor.make = (key, model) => {
       delete this.initUI
     }
   }
-  var f = ctor.eyo.disposeUIDecorate (ui && ui.init)
-  ctor.prototype.disposeUI = function (...args) {
+  var f = c9r.eyo.disposeUIDecorate (ui && ui.init)
+  c9r.prototype.disposeUI = function (...args) {
     try {
       this.disposeUI = eYo.Do.nothing
       f && f.apply(this, arguments)
       this.ui_driver.disposeInstance(this)
-      var super_ = ctor.superClass_
+      var super_ = c9r.superClass_
       !!super_ && !!super_.disposeUI && !!super_.disposeUI.apply(this, arguments)
     } finally {
       delete this.disposeUI
@@ -63,10 +89,7 @@ eYo.UI.Constructor.make = (key, model) => {
 /**
  * Constructor delegate subclass
  */
-eYo.Constructor.make('Dlgt', {
-  owner: eYo.UI.Constructor,
-  super: eYo.Constructor.Dlgt,
-})
+eYo.Constructor.make(eYo.UI.Constructor, 'Dlgt', eYo.Constructor.Dlgt)
 
 /**
  * Make the dispose function.

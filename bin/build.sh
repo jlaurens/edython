@@ -357,6 +357,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/field/field.js" \
 --js "src/lib/eyo/js/application/desk/graphic/graphic.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/magnet/magnet.js" \
+--js "src/lib/eyo/js/application/desk/workspace/board/brick/slot/slot.js" \
 --js "src/lib/eyo/js/application/desk/template/template.js" \
 --js "src/lib/eyo/js/application/desk/terminal/terminal.js" \
 --js "src/lib/eyo/js/application/desk/workspace/trashcan/trashcan.js" \
@@ -389,7 +390,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/driver/svg/svg_trashcan.js" \
 --js "src/lib/eyo/js/application/driver/svg/svg_zoomer.js" \
 --js "src/lib/eyo/js/core/data.js" \
---js "src/lib/eyo/js/application/desk/workspace/board/brick/slot/slot.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/brick_events.js" \
 --js "src/lib/eyo/js/brick_py/expr.js" \

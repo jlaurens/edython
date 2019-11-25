@@ -12,12 +12,12 @@
 'use strict'
 
 
-goog.require('eYo.Brick.Expr')
+goog.require('eYo.Expr')
 
-goog.provide('eYo.Brick.Expr.numberliteral')
+goog.provide('eYo.Expr.numberliteral')
 goog.provide('eYo.Brick.Literal')
-goog.provide('eYo.Brick.Expr.longliteral')
-goog.provide('eYo.Brick.Expr.shortliteral')
+goog.provide('eYo.Expr.longliteral')
+goog.provide('eYo.Expr.shortliteral')
 
 goog.forwardDeclare('eYo.XRE')
 goog.forwardDeclare('eYo.Msg')
@@ -28,7 +28,7 @@ goog.forwardDeclare('goog.dom')
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.Brick.Expr.makeSubclass('Literal', {
+eYo.Expr.Dflt.makeSubclass('Literal', {
   xml: {
     attr: 'literal',
   },
@@ -110,7 +110,7 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
   'floatnumber',
   'imagnumber'
 ].forEach(key => {
-  eYo.Brick.Expr[key] = eYo.Brick.Expr.numberliteral
+  eYo.Expr[key] = eYo.Expr.numberliteral
   eYo.Brick.Mgr.register(key)
 })
 
@@ -121,7 +121,7 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
  *     type-specific functions for this brick.
  * @constructor
  */
-eYo.Brick.Expr.numberliteral.prototype.getBaseType = function () {
+eYo.Expr.numberliteral.prototype.getBaseType = function () {
   return this.type_p
 }
 
@@ -282,7 +282,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
   'shortformattedliteral',
   'shortbytesliteral',
 ].forEach(t => {
-  eYo.Brick.Expr[t] = eYo.Brick.Expr.shortliteral
+  eYo.Expr[t] = eYo.Expr.shortliteral
   eYo.Brick.Mgr.register(t)
 })
 
@@ -292,7 +292,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
  * @param {?string} prototypeName Name of the language object containing
  *     type-specific functions for this brick.
  */
-eYo.Brick.Expr.shortliteral.prototype.getBaseType = function () {
+eYo.Expr.shortliteral.prototype.getBaseType = function () {
   return this.subtype_p
 }
 
@@ -303,7 +303,7 @@ eYo.Brick.Expr.shortliteral.prototype.getBaseType = function () {
  *     type-specific functions for this brick.
  * @constructor
  */
-eYo.Brick.Expr.shortliteral.prototype.validateComponents = function(kvargs) {
+eYo.Expr.shortliteral.prototype.validateComponents = function(kvargs) {
   var prefix = kvargs.prefix || this.prefix_p
   var delimiter = kvargs.delimiter || this.delimiter_p
   var content = kvargs.content || this.content_p
@@ -320,7 +320,7 @@ eYo.Brick.Expr.shortliteral.prototype.validateComponents = function(kvargs) {
  * @param {string} op op is the operator
  * @private
  */
-eYo.Brick.Expr.shortliteral.prototype.makeTitle = function (variant) {
+eYo.Expr.shortliteral.prototype.makeTitle = function (variant) {
   return eYo.Do.createSPAN(variant + '…' + variant, 'eyo-code')
 }
 
@@ -386,9 +386,9 @@ eYo.Brick.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mgr) {
   eYo.Brick.Literal.literalPopulateContextMenuFirst_.call(this, mgr)
-  eYo.Brick.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, mgr)
+  eYo.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, mgr)
   return true
 }
 
@@ -397,7 +397,7 @@ eYo.Brick.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mgr)
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.Brick.Expr.shortliteral.makeSubclass('longliteral', {
+eYo.Expr.shortliteral.makeSubclass('longliteral', {
   data: {
     subtype: {
       all: [
@@ -461,7 +461,7 @@ eYo.Brick.Expr.shortliteral.makeSubclass('longliteral', {
  *     type-specific functions for this brick.
  * @constructor
  */
-eYo.Brick.Expr.longliteral.prototype.validateComponents = function(kvargs) {
+eYo.Expr.longliteral.prototype.validateComponents = function(kvargs) {
   var prefix = kvargs.prefix || this.prefix_p
   var delimiter = kvargs.delimiter || this.delimiter_p
   var content = kvargs.content || this.content_p
@@ -477,7 +477,7 @@ eYo.Brick.Expr.longliteral.prototype.validateComponents = function(kvargs) {
   'longformattedliteral',
   'longbytesliteral',
 ].forEach(t => {
-  eYo.Brick.Expr[t] = eYo.Brick.Expr.longliteral
+  eYo.Expr[t] = eYo.Expr.longliteral
   eYo.Brick.Mgr.register(t)
 })
 

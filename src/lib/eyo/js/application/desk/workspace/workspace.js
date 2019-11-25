@@ -35,8 +35,7 @@ goog.forwardDeclare('goog.math');
  * @param {!eYo.Application|Object} owner Owner application.
  * @constructor
  */
-eYo.Pane.makeSubclass({
-  key: 'Workspace',
+eYo.Pane.makeSubclass('Workspace', {
   props: {
     owned: {
       /**

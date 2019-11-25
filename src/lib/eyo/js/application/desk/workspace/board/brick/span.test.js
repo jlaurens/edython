@@ -6,7 +6,7 @@ describe('Span expression', function () {
   var b, s, b_g, s_g, b_s, s_s
   before(function() {
     var type = 'test_expr_span'
-    eYo.Brick.Expr.makeSubclass(type, {
+    eYo.Expr.Dflt.makeSubclass(type, {
       out: {
         check: null
       }

@@ -32,8 +32,6 @@ goog.forwardDeclare('goog.math');
  * @constructor
  */
 eYo.UI.Constructor.make('Desk', {
-  owner: eYo,
-  super: eYo.UI.Owned,
   props: {
     owned: {
       /**

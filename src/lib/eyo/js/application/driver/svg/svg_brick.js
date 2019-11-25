@@ -253,7 +253,7 @@ eYo.Svg.Brick.prototype.canDraw = function (brick) {
  * @private
  */
 eYo.Svg.contourAboveParent_ = function (brick) {
-  return !brick instanceof eYo.Brick.Expr
+  return !brick.isExpr
 }
 
 /**

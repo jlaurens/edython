@@ -30,7 +30,7 @@ goog.provide('eYo.Brick.CMath')
  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
  * @private
  */
-// eYo.Brick.Expr.cmath__call_expr.populateMenu = function (mgr) {
+// eYo.Expr.cmath__call_expr.populateMenu = function (mgr) {
 //   var brick = this
 //   // populate the menu with the functions in the same category
 //   var name_get = brick.name_d.get()
@@ -92,7 +92,7 @@ goog.provide('eYo.Brick.CMath')
 //  * Not normally called directly, eYo.Brick.create(...) is preferred.
 //  * For edython.
 //  */
-// eYo.Brick.Expr.cmath__call_expr.makeSubclass('cmath__const', {
+// eYo.Expr.cmath__call_expr.makeSubclass('cmath__const', {
 //   data: {
 //     callerFlag: {
 //       init: true, // true when `foo` is expected instead of `foo(…)`

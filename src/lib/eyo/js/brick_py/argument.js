@@ -257,7 +257,7 @@ eYo.Brick.List.makeSubclass('argument_list', {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
+eYo.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
   list: {
     can_comprehension: true
   }

@@ -15,7 +15,7 @@ goog.require('eYo.Brick.Stmt')
 
 goog.require('eYo.Msg')
 
-goog.require('eYo.Brick.Expr')
+goog.require('eYo.Expr')
 goog.require('goog.dom')
 
 goog.provide('eYo.Brick.Group')

@@ -36,9 +36,7 @@ goog.forwardDeclare('eYo.Magnet')
  * @property {eYo.Magnet} slot  The magnet.
  */
 
-eYo.UI.Constructor.make('UI2', {
-  owner: eYo.Owned,
-  super: eYo.UI.Owned,
+eYo.UI.Constructor.make(eYo.Owned, 'UI2', eYo.UI.Owned, {
   props: {
     link: ['slot', 'brick', 'magnet'],
     computed: {
@@ -59,7 +57,7 @@ eYo.UI.Owned.prototype.ownerDidChange = function (before, after) {
   } else if (after instanceof eYo.Magnet) {
     this.magnet_ = after
     this.brick_ = after.brick
-  } else if (after instanceof eYo.Brick) {
+  } else if (after instanceof eYo.Brick.Dflt) {
     this.brick_ = after
   }
 }

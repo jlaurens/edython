@@ -76,8 +76,6 @@ goog.forwardDeclare('eYo.Geometry')
  * to display line numbers.
  */
 eYo.Constructor.make('Metrics', {
-  owner: eYo,
-  super: eYo.Owned,
   props: {
     clonable: {
       port () {

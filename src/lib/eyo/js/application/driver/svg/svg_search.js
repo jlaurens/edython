@@ -17,7 +17,7 @@ goog.provide('eYo.Svg.Search')
 goog.provide('eYo.Svg.SearchToolbar')
 
 goog.forwardDeclare('eYo.Search')
-goog.forwardDeclare('eYo.SearchToolbar')
+// goog.forwardDeclare('eYo.SearchToolbar')
 
 /**
  * Svg driver for the search pane.

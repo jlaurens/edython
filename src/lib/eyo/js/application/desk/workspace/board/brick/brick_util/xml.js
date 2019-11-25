@@ -101,7 +101,7 @@ goog.forwardDeclare('eYo.Brick.Decimal');
 goog.forwardDeclare('eYo.Brick.Fractions');
 goog.forwardDeclare('eYo.Brick.Statistics');
 goog.forwardDeclare('eYo.Brick.Range')
-goog.forwardDeclare('eYo.Brick.Expr')
+goog.forwardDeclare('eYo.Expr')
 
 /**
  * Converts a DOM structure into plain text.
@@ -383,7 +383,7 @@ eYo.Xml.brickToDom = (() => {
       var element = controller.brickToDom(brick, opt)
     } else {
       var attr = brick.xmlAttr()
-      element = goog.dom.createDom(brick instanceof eYo.Brick.Expr? eYo.Xml.EXPR: eYo.Xml.STMT)
+      element = goog.dom.createDom(brick.isExpr? eYo.Xml.EXPR: eYo.Xml.STMT)
       element.setAttribute(eYo.Key.EYO, attr)
       !(opt && opt.noId) && (element.setAttribute('id', brick.id))
       eYo.Xml.toDom(brick, element, opt)
@@ -411,7 +411,7 @@ goog.require('eYo.Brick.Group')
  * @return attr name
  */
 eYo.Brick.Dflt.prototype.xmlAttr = function () {
-  var attr = this.constructor.eyo.xmlAttr || (this instanceof eYo.Brick.Expr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
+  var attr = this.constructor.eyo.xmlAttr || (this.isExpr ? eYo.T3.Xml.toDom.Expr : eYo.T3.Xml.toDom.Stmt)[this.constructor.eyo.key]
   return attr || (this.type && this.type.substring(4)) || eYo.Key.PLACEHOLDER
 }
 
@@ -1119,7 +1119,7 @@ eYo.Xml.fromDom = function (brick, element) {
  * For edython.
  * @return !String
  */
-eYo.Brick.Expr.primary.prototype.xmlAttr = function () {
+eYo.Expr.primary.prototype.xmlAttr = function () {
   var type = this.type
   if ([
     eYo.T3.Expr.identifier_valued,

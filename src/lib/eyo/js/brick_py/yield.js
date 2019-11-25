@@ -24,7 +24,7 @@ goog.provide('eYo.Brick.Yield')
  * Class for a Delegate, yield_expr.
  * For edython.
  */
-eYo.Brick.Expr.makeSubclass('yield_expr', {
+eYo.Expr.Dflt.makeSubclass('yield_expr', {
   xml: {
     attr: 'yield'
   },
@@ -163,7 +163,7 @@ eYo.Brick.Expr.makeSubclass('yield_expr', {
  * @this {eYo.Brick}
  * @private
  */
-eYo.Brick.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
+eYo.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
   var brick = this
   if (brick.locked_) {
     return
@@ -199,10 +199,10 @@ eYo.Brick.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
  * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mgr) {
   var brick = this
-  var yorn = eYo.Brick.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
-  return eYo.Brick.Expr.yield_expr.superClass_.populateContextMenuFirst_.call(this, mgr) || yorn
+  var yorn = eYo.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Expr.yield_expr.superClass_.populateContextMenuFirst_.call(this, mgr) || yorn
 }
 
 /**
@@ -220,7 +220,7 @@ eYo.Brick.Stmt.makeSubclass('yield_stmt', {
  * @private
  */
 eYo.Brick.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-  eYo.Brick.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
+  eYo.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
   return eYo.Brick.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
 }
 

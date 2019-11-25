@@ -30,8 +30,6 @@ goog.forwardDeclare('goog.events')
  * @constructor
  */
 eYo.UI.Constructor.make('Scrollbar', {
-  owner: eYo,
-  super: eYo.UI.Owned,
   init(bs, horizontal, opt_class) {
     if (bs instanceof eYo.Scroller) {
       this.scroller_ = bs  

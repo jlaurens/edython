@@ -25,15 +25,13 @@ eYo.Driver = Object.create(null)
  * Contructor delegate.
  * @param {Function} constructor
  */
-eYo.Constructor.make('Dlgt', {
-  owner: eYo.Driver,
-  super: eYo.Constructor.Dlgt,
-  init (ctor) {
-    this.ctor_ = ctor
+eYo.Constructor.make(eYo.Driver, 'Dlgt', eYo.Constructor.Dlgt, {
+  init (c9r) {
+    this.c9r_ = c9r
   },
   props: {
     link: {
-      ctor: {value: eYo.NA}
+      c9r: {value: eYo.NA}
     }
   }
 })
@@ -50,13 +48,10 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
   if (owner === eYo.Driver) {
     return
   }
-  var super_ = mgrModel.super
-  !super_ && (super_ = eYo.Owned)
+  var superC9r = mgrModel.super
+  !superC9r && (superC9r = eYo.Owned)
   var driverNames = new Set()
-  var ctor = eYo.Constructor.make('Mgr', {
-    owner: owner,
-    super: super_ || eYo.Owned,
-    dlgt: eYo.Driver.Dlgt,
+  var c9r = eYo.Constructor.make(owner, 'Mgr', superC9r || eYo.Owned, eYo.Driver.Dlgt, {
     init () {
       driverNames.forEach(name => {
         var n = name[0].toLowerCase() + name.substr(1)
@@ -93,42 +88,45 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
    * wrapping the model's eponym methods, if any.
    * The owner will have a dafault driver named `Dflt`,
    * which is expected to be the ancestor of all drivers.
+   * @param {?Object} owner, a namespace
+   * @param {!String} key, a (capitalized) word, the name of the subclass (last component)
+   * @param {?Function} superC9r, the super class of the driver constructor,
+   * defaults to the owner's super_'s key property or the owner's `Dflt`.
    * @param {Object} driverModel
    * An object with various keys:
-   * - key: a (capitalized) word, the name of the subclass
    * - owner: An object owning the class, basically a namespace object.
    * If the owner is `Foo` and the key is 'Bar', the created constructor
    * is `Foo.Bar`. Actually used with `eYo` as owner, 'Dom' or 'Svg' as key.
-   * - super: the super class of the driver constructor,
-   * defaults to the owner's super_'s key property or the owner's `Dflt`.
    * - initUI: an optional function with signature (object, ...)->eYo.NA
    * - disposeUI: an optional function with signature (object)->eYo.NA
    */
-  owner.makeDriverClass = (driverModel) => {
-    var name = driverModel.key
-    if (!name) {
-      name = driverModel
-      driverModel = {
-        owner: owner
-      }
+  owner.makeDriverClass = (owner_, key, superC9r, driverModel) => {
+    if (goog.isString(owner_)) {
+      driverModel = superC9r || {}
+      superC9r = key
+      key = owner_
+      owner_ = owner
     }
-    driverNames.add(name)
-    var onr = driverModel.owner || owner
-    var driverSuper = driverModel.super
-      || (onr.super && onr.super[name])
-      || onr.Dflt
-    var ctor = onr[name] = driverModel.init
+    if (eYo.isF(superC9r)) {
+      driverModel || (driverModel = {})
+    } else {
+      driverModel = superC9r || {}
+      var super_ = owner_.super
+      superC9r = super_ && super_[key] || owner_.Dflt
+    }
+    driverNames.add(key)
+    var c9r = owner_[key] = driverModel.init
     ? function () {
-      driverSuper.apply(this, arguments)
+      superC9r.apply(this, arguments)
       driverModel.init.apply(this, arguments)
     }
     : function () {
-      driverSuper.apply(this, arguments)
+      superC9r.apply(this, arguments)
     }
-    eYo.Do.inherits(ctor, driverSuper)
-    var proto = ctor.prototype
+    eYo.Do.inherits(c9r, superC9r)
+    var proto = c9r.prototype
     proto.initUI = function (object, ...rest) {
-      var spr = ctor.superClass_
+      var spr = c9r.superClass_
       var f = spr && spr.initUI
       f && f.apply(this, arguments)
       f = mgrModel.initUIMake
@@ -141,7 +139,7 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
       var ff = driverModel.initUI
       f = (f && f(ff)) || ff
       f && f.apply(object, rest)
-      var spr = ctor.superClass_
+      var spr = c9r.superClass_
       f = spr && spr.initUI
       f && f.apply(this, arguments)
     }
@@ -149,12 +147,12 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
   // make the default driver
   owner.Dflt = eYo.Driver.Dflt
   // postflight allows to override many things NYU
-  owner.makeMgrClass = (onr, model) => {
-    var mgr = eYo.Driver.makeMgrClass(onr, model)
-    onr.super = owner
+  owner.makeMgrClass = (owner_, model) => {
+    var mgr = eYo.Driver.makeMgrClass(owner_, model)
+    owner_.super = owner
     return mgr
   }
-  return ctor
+  return c9r
 }
 
 /**

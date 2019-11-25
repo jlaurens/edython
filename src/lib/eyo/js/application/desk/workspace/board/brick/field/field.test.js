@@ -1,6 +1,6 @@
 describe('Field', function () {
   chai.assert(eYo.Test)
-  chai.assert(eYo.Brick.Expr.makeSubclass)
+  chai.assert(eYo.Expr.Dflt.makeSubclass)
 
   eYo.Test.FIELD = 'field'
   var RA = [
@@ -12,7 +12,7 @@ describe('Field', function () {
   RA.forEach(X => {
     var type = `one_slot_one_field_${X[0]}`
     eYo.T3.Expr[type] = type
-    eYo.Brick.Expr.makeSubclass(type, {
+    eYo.Expr.Dflt.makeSubclass(type, {
       slots: {
         SLOT: {
           order: 1,

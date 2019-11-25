@@ -19,6 +19,10 @@ goog.require('eYo.Change')
 goog.require('eYo.Data')
 
 goog.provide('eYo.Brick')
+goog.provide('eYo.Brick.Dflt')
+
+goog.forwardDeclare('eYo.Expr')
+goog.forwardDeclare('eYo.Stmt')
 
 /**
  * The namespace is expected to contain everything about bricks.
@@ -39,16 +43,14 @@ goog.forwardDeclare('eYo.Field')
 goog.forwardDeclare('eYo.Slot')
 goog.forwardDeclare('eYo.Magnets')
 goog.forwardDeclare('eYo.Brick.UI')
-goog.forwardDeclare('eYo.Brick.Expr')
+goog.forwardDeclare('eYo.Expr')
 goog.forwardDeclare('eYo.Brick.Stmt')
 goog.forwardDeclare('eYo.Focus')
 
 /**
  * Delegate constructor for bricks.
  */
-eYo.Constructor.make('Dlgt', {
-  owner: eYo.Brick,
-  super: eYo.UI.Constructor.Dlgt,
+eYo.Constructor.make(eYo.Brick, 'Dlgt', eYo.UI.Constructor.Dlgt, {
   init () {
     this.types = []
   }
@@ -75,10 +77,7 @@ eYo.Constructor.make('Dlgt', {
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.UI.Constructor.make('Dflt', {
-  owner: eYo.Brick,
-  super: eYo.UI.Owned,
-  dlgt: eYo.Brick.Dlgt,
+eYo.UI.Constructor.make('Dflt', eYo.Brick, eYo.UI.Owned, eYo.Brick.Dlgt, {
   props: {
     link: {
       parent: {},
@@ -620,7 +619,7 @@ Object.defineProperties(eYo.Brick.Dflt.prototype, {
  * Each subclass created will have its own makeSubclass method.
  */
 eYo.Brick.makeSubclass = function (key, model, owner) {
-  return eYo.Brick.Mgr.makeSubclass(key, model, eYo.Brick.Dflt, owner)
+  return eYo.Brick.Mgr.makeSubclass(key, model || {}, owner, eYo.Brick.Dflt)
 }
 
 /**
@@ -2849,29 +2848,6 @@ eYo.Brick.Mgr = (() => {
   var me = {}
   var C9rs = Object.create(null)
   /**
-   * Get the constructor with the proper delegate..
-   * @param {Object} constructor
-   * @param {string} key
-   * @private
-   */
-  me.prepareConstructor = function (c9r, key) {
-    var ans = new eYo.Brick.Dlgt(c9r, key, {})
-    if (!ans.getModel) {
-      ans.getModel = function () {
-        return modeller(c9r)
-      }
-      Object.defineProperty(ans, 'model', {
-        get () {
-          return this.getModel()
-        },
-        set (after) {
-          throw 'Forbidden setter'
-        }
-      })
-    }
-    return ans
-  }
-  /**
    * Helper to initialize a brick's model.
    * to and from are trees.
    * Add to destination all the leafs from source.
@@ -2967,12 +2943,12 @@ eYo.Brick.Mgr = (() => {
    * In particular, some bricks share a basic do nothing delegate
    * because they are not meant to really exist yet.
    * , , ,  = eYo.NA,  = eYo.Brick.Dlgt,  = false
-   * @param {!String} key
-   * @param {!Object} model
-   * @param {!Function} super_
-   * @param {?Object} owner
-   * @param {?Function} dlgtClass
-   * @param {?Boolean} register
+   * @param {?Object} owner, namespace, `eYo.Brick` when omitted
+   * @param {!String} key,  capitalized string, `owner[key]` will be created.
+   * @param {!Function} superC9r
+   * @param {?Function} dlgtC9r, The constructor of `superC9r` when omitted.
+   * @param {?Boolean} register, falsy or truthy values are not supported!, false when omitted.
+   * @param {?Object} model
    * @return the constructor created
    */
   me.makeSubclass = (() => {
@@ -3049,34 +3025,63 @@ eYo.Brick.Mgr = (() => {
         }
       }
     }
-    return function (key, model, super_, owner = eYo.NA, dlgtClass = eYo.Brick.Dlgt, register = false) {
-      goog.asserts.assert(super_.eyo, 'Only subclass constructors with an `eyo` property.')
+    return function (owner, key, superC9r, dlgtC9r, register = false, model) {
+      goog.asserts.assert(superC9r.eyo, 'Only subclass constructors with an `eyo` property.')
+      if (goog.isString(owner)) {
+        // shif arguments
+        model = register
+        register = dlgtC9r
+        dlgtC9r = superC9r
+        superC9r = model
+        model = key
+        key = owner
+        owner = (eYo.T3.Expr[key] && eYo.Brick && eYo.Expr) ||
+        (eYo.T3.Stmt[key] && eYo.Brick && eYo.Brick.Stmt) ||
+        eYo.Brick
+      }
+      if (!eYo.isF(dlgtC9r)) {
+        model = register
+        register = dlgtC9r
+        dlgtC9r = superC9r.eyo.constructor
+      }
+      if (!goog.isBoolean(register)) {
+        model = register
+        register = false
+      }
+      model || (model = {})
+/*
+   * @param {?Object} owner
+   * @param {!String} key
+   * @param {!Function} superC9r
+   * @param {?Function} dlgtC9r
+   * @param {?Boolean} register
+   * @param {?Object} model
+*/
       if (key.indexOf('eyo:') >= 0) {
         key = key.substring(4)
       }
-      // managing optional arguments, keep this order
-      if (owner === true) {
-        register = true
-        owner = eYo.NA
-      }
-      if (dlgtClass === true) {
-        register = true
-        dlgtClass = eYo.NA
-      }
-      if (eYo.isF(owner)) {
-        dlgtClass = owner
-        owner = eYo.NA
-      }
-      dlgtClass || (dlgtClass = super_.eyo.constructor) || (dlgtClass = eYo.Brick.Dlgt)
       owner = owner ||
-      (eYo.T3.Expr[key] && eYo.Brick && eYo.Brick.Expr) ||
+      (eYo.T3.Expr[key] && eYo.Brick && eYo.Expr) ||
       (eYo.T3.Stmt[key] && eYo.Brick && eYo.Brick.Stmt) ||
-      super_
+      superC9r
       var c9r = owner[key] = function (board, type, opt_id) {
         c9r.superClass_.constructor.call(this, board, type, opt_id)
       }
-      eYo.Do.inherits(c9r, super_)
-      me.prepareConstructor(c9r, key)
+      eYo.Do.inherits(c9r, superC9r)
+      var dlgt = new dlgtC9r(c9r, key, model)
+      if (!dlgt.getModel) {
+        dlgt.getModel = function () {
+          return modeller(c9r)
+        }
+        Object.defineProperty(dlgt, 'model', {
+          get () {
+            return this.getModel()
+          },
+          set (after) {
+            throw 'Forbidden setter'
+          }
+        })
+      }
       if (!c9r.eyo) {
         console.error('WHERE IS EYO???')
       }
@@ -3300,7 +3305,7 @@ eYo.Brick.Mgr.register = function (key) {
   var prototypeName = eYo.T3.Expr[key]
   var c9r, available
   if (prototypeName) {
-    c9r = eYo.Brick.Expr[key]
+    c9r = eYo.Expr[key]
     available = eYo.T3.Expr.Available
   } else if ((prototypeName = eYo.T3.Stmt[key])) {
     // console.log('Registering statement', key)

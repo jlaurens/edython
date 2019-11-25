@@ -32,9 +32,7 @@ goog.forwardDeclare('goog.events')
  * The Svg delegate.
  * @constructor
  */
-eYo.Driver.Dlgt.makeSubclass('Dlgt', {
-  owner: eYo.Dom
-})
+eYo.Driver.Dlgt.makeSubclass(eYo.Dom, 'Dlgt')
 
 /**
  * The manager of all the dom drivers.

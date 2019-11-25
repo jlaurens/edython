@@ -22,7 +22,7 @@ goog.provide('eYo.Brick.Comprehension')
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Expr.makeSubclass('comprehension', {
+eYo.Expr.Dflt.makeSubclass('comprehension', {
   data: {
     expression: {
       order: 1,
@@ -96,13 +96,13 @@ eYo.Brick.Expr.makeSubclass('comprehension', {
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
-eYo.Brick.Expr.comprehension.prototype.getBaseType = function () {
+eYo.Expr.comprehension.prototype.getBaseType = function () {
   var check = this.out_m.check_
   return (check && check[0]) || eYo.T3.Expr.comprehension
 }
 
 ;['dict_comprehension'].forEach(k => {
-  eYo.Brick.Expr[k] = eYo.Brick.Expr.comprehension
+  eYo.Expr[k] = eYo.Expr.comprehension
   eYo.Brick.Mgr.register(k)
 })
 
@@ -111,7 +111,7 @@ eYo.Brick.Expr.comprehension.prototype.getBaseType = function () {
  * For edython.
  * @return attr name
  */
-eYo.Brick.Expr.comprehension.prototype.xmlAttr = function () {
+eYo.Expr.comprehension.prototype.xmlAttr = function () {
   return 'comprehension'
 }
 
@@ -120,7 +120,7 @@ eYo.Brick.Expr.comprehension.prototype.xmlAttr = function () {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Expr.makeSubclass('comp_for', {
+eYo.Expr.Dflt.makeSubclass('comp_for', {
   slots: {
     for: {
       order: 1,
@@ -144,7 +144,7 @@ eYo.Brick.Expr.makeSubclass('comp_for', {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Expr.makeSubclass('comp_if', {
+eYo.Expr.Dflt.makeSubclass('comp_if', {
   slots: {
     if: {
       order: 1,
@@ -175,7 +175,7 @@ eYo.Brick.List.makeSubclass('comp_iter_list', {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Expr.makeSubclass('key_datum', {
+eYo.Expr.Dflt.makeSubclass('key_datum', {
   slots: {
     key: {
       order: 1,

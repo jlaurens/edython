@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.Brick.Expr')
+goog.require('eYo.Expr')
 
 goog.provide('eYo.Brick.Range')
 
@@ -22,7 +22,7 @@ eYo.T3.Expr.builtin__range_expr = 'eyo:builtin__range_expr'
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Expr.makeSubclass('builtin__range_expr', {
+eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
   xml: {
     attr: 'range',
   },
@@ -167,7 +167,7 @@ eYo.Brick.Expr.makeSubclass('builtin__range_expr', {
  * The xml `eyo` attribute of this brick, as it should appear in the saved data.
  * For edython.
  */
-eYo.Brick.Expr.builtin__range_expr.prototype.xmlAttr = function () {
+eYo.Expr.builtin__range_expr.prototype.xmlAttr = function () {
   return 'range'
 }
 

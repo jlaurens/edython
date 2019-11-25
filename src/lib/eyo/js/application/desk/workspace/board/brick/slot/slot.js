@@ -53,9 +53,7 @@ goog.forwardDeclare('goog.dom');
  * @param {!Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.UI.Constructor.make('Slot', {
-  owner: eYo,
-  super: eYo.Owned.UI2,
+eYo.UI.Constructor.make('Slot', eYo.Owned.UI2, {
   init (brick, key, model) {
     goog.asserts.assert(brick, 'Missing slot owner brick')
     goog.asserts.assert(key, 'Missing slot key')

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.Brick.Expr')
+goog.require('eYo.Expr')
 
 goog.require('eYo.Change')
 
@@ -48,7 +48,7 @@ eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.T3.Expr.Check.or_exp
  * For edython.
  */
 
-eYo.Brick.Expr.makeSubclass('Starred', {
+eYo.Expr.Dflt.makeSubclass('Starred', {
   xml: {
     types: [
       eYo.T3.Expr.star_expr,
@@ -242,7 +242,7 @@ eYo.Brick.Expr.makeSubclass('Starred', {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Brick.Expr.Starred.prototype.getType = eYo.Change.decorate(
+eYo.Expr.Starred.prototype.getType = eYo.Change.decorate(
   'getType',
   function () {
     var check = this.out_m.check_
@@ -255,7 +255,7 @@ eYo.Brick.Expr.Starred.prototype.getType = eYo.Change.decorate(
  * For edython.
  * @return {String}
  */
-eYo.Brick.Expr.Starred.prototype.xmlAttr = function () {
+eYo.Expr.Starred.prototype.xmlAttr = function () {
   return this.modifier_p
 }
 
@@ -265,8 +265,8 @@ eYo.Brick.Expr.Starred.prototype.xmlAttr = function () {
 //  * @param {!eYo.Magnet} oldTargetM4t that was connected to connection
 //  * @param {!eYo.Magnet} targetOldM4t that was connected to the old target connection.
 //  */
-// eYo.Brick.Expr.Starred.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-//   eYo.Brick.Expr.Starred.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+// eYo.Expr.Starred.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+//   eYo.Expr.Starred.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
 //   if (m4t === this.modified_s.magnet) {
 
 //   }
@@ -277,8 +277,8 @@ eYo.Brick.Expr.Starred.prototype.xmlAttr = function () {
 //  * @param {!eYo.Magnet} m4t
 //  * @param {!eYo.Magnet} oldTargetM4t that was connected to m4t
 //  */
-// eYo.Brick.Expr.Starred.prototype.didDisconnect = function (m4t, oldTargetM4t) {
-//   eYo.Brick.Expr.Starred.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
+// eYo.Expr.Starred.prototype.didDisconnect = function (m4t, oldTargetM4t) {
+//   eYo.Expr.Starred.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
 // }
 
 ;[
@@ -291,6 +291,6 @@ eYo.Brick.Expr.Starred.prototype.xmlAttr = function () {
   'parameter_star_star',
   'or_expr_star_star'
 ].forEach(key => {
-  eYo.Brick.Expr[key] = eYo.Brick.Expr.Starred
+  eYo.Expr[key] = eYo.Expr.Starred
   eYo.Brick.Mgr.register(key)
 })

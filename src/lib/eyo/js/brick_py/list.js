@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.Brick.Expr')
+goog.require('eYo.Expr')
 
 goog.require('eYo.Change')
 
@@ -20,11 +20,11 @@ goog.require('eYo.Consolidator.List')
 goog.provide('eYo.Brick.List')
 
 /**
- * Class for a Delegate, value brick.
+ * Class for a Delegate, list value brick.
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Expr.makeSubclass('List', {
+eYo.Expr.Dflt.makeSubclass('List', {
   init: function () {
     this.slotList_ = new Proxy(this, eYo.Brick.List.slotsHandler)
   },
@@ -450,7 +450,7 @@ eYo.Brick.List.makeSubclass('enclosure', {
   }
 })
 
-Object.defineProperties(eYo.Brick.Expr.enclosure.prototype, {
+Object.defineProperties(eYo.Expr.enclosure.prototype, {
   profile_p : {
     get () {
       var p = this.getProfile()
@@ -468,7 +468,7 @@ Object.defineProperties(eYo.Brick.Expr.enclosure.prototype, {
  * getProfile.
  * @return {!Object} with `ans` key.
  */
-eYo.Brick.Expr.enclosure.prototype.getProfile = eYo.Change.decorate(
+eYo.Expr.enclosure.prototype.getProfile = eYo.Change.decorate(
   'getProfile',
   function () {
     // this may be called very very early when
@@ -521,7 +521,7 @@ eYo.Brick.Expr.enclosure.prototype.getProfile = eYo.Change.decorate(
  * The check_ array of the output connection.
  * @param {!Object} profile
  */
-eYo.Brick.Expr.enclosure.prototype.getOutCheck = function (profile) {
+eYo.Expr.enclosure.prototype.getOutCheck = function (profile) {
   if (profile === eYo.T3.Expr.parenth_target_list) {
     return [eYo.T3.Expr.parenth_target_list, eYo.T3.Expr.parenth_form]
   } else if (profile === eYo.T3.Expr.bracket_target_list) {
@@ -542,7 +542,7 @@ eYo.Brick.Expr.enclosure.prototype.getOutCheck = function (profile) {
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
-eYo.Brick.Expr.enclosure.prototype.getBaseType = function () {
+eYo.Expr.enclosure.prototype.getBaseType = function () {
   return this.profile_p
 }
 ;['parenth_form',
@@ -554,7 +554,7 @@ eYo.Brick.Expr.enclosure.prototype.getBaseType = function () {
 'set_display',
 'dict_display',
 'one_dict_display'].forEach(k => {
-  eYo.Brick.Expr[k] = eYo.Brick.Expr.enclosure
+  eYo.Expr[k] = eYo.Expr.enclosure
   eYo.Brick.Mgr.register(k)
 })
 

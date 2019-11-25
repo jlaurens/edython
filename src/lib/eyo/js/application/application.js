@@ -44,8 +44,6 @@ goog.forwardDeclare('eYo.Audio')
  * @property {eYo.Driver.Mgr} ui_driver_mgr
  */
 eYo.Constructor.make('Application', {
-  owner: eYo,
-  super: null,
   init : {
     begin () {
       this.disposeUI = eYo.Do.nothing
