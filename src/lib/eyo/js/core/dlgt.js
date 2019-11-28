@@ -19,7 +19,7 @@ goog.provide('eYo.Dlgt')
  * Object adding data to a constructor in a safe way.
  * @param {!Object} c9r,  the object to which this instance is attached.
  * @param {!String} key,  the key used when the constructor was created.
- * @param {!Object} model,  the model used to create the constructor.
+ * @param {?Object} model,  the model used to create the constructor.
  * @constructor
  * @readonly
  * @property {Set<String>} link_ - Set of link identifiers. Lazy initializer.
@@ -33,18 +33,17 @@ goog.provide('eYo.Dlgt')
 eYo.Dlgt = function (c9r, key, model) {
   this.c9r__ = c9r
   c9r.eyo__ = this
-  if (!model) {
-    console.error('NO MODEL')
-  }
   this.name_ = key || ('My name is nobody')
-  var props = model.props
-  if (props) {
-    this.props_ = new Set()
-    props.link && this.declareLink(props.link)
-    props.owned && this.declareOwned(props.owned)
-    props.cached && this.declareCached(props.cached)
-    props.clonable && this.declareClonable(props.clonable)
-    props.computed && this.declareComputed(props.computed)
+  if (model) {
+    var props = model.props
+    if (props) {
+      this.props_ = new Set()
+      props.link && this.declareLink(props.link)
+      props.owned && this.declareOwned(props.owned)
+      props.cached && this.declareCached(props.cached)
+      props.clonable && this.declareClonable(props.clonable)
+      props.computed && this.declareComputed(props.computed)
+    }
   }
 }
 
@@ -812,24 +811,27 @@ eYo.makeClass = (() => {
         } else {
           model || (model = {})
         }
-        Dlgt = Super.eyo.constructor
+        Dlgt = Super.eyo && Super.eyo.constructor || eYo.Dlgt
       }
     } else if (eYo.isSubclass(Super, eYo.Dlgt)) {
       if (eYo.isSubclass(Dlgt, eYo.Dlgt)) {
         eYo.isF(model) && (model = model()) || model || {}
       } else {
-        model = eYo.isF(Dlgt) ? Dlgt() : Dlgt || {}
+        model || (model = Dlgt || {})
+        eYo.isF(model) && (model = model())
         Dlgt = Super
-        Super = eYo.NA
       }
+      Super = eYo.NA
     } else if (Super) {
       if (eYo.isSubclass(Dlgt, eYo.Dlgt)) {
         // Dlgt and Super OK
-        model || (model = {})
+        eYo.isF(model) && (model = model()) || model || (model = {})
       } else if (Dlgt) {
-        model = eYo.isF(Dlgt) ? Dlgt() : Dlgt
+        model || (model = Dlgt || {})
+        eYo.isF(model) && (model = model())
         Dlgt = ns.Dlgt || eYo.Dlgt
       } else if (model) {
+        eYo.isF(model) && (model = model())
         Dlgt = ns.Dlgt || eYo.Dlgt
       } else {
         model = eYo.isF(Super) ? Super() : Super
@@ -948,7 +950,7 @@ eYo.makeNS = (ns, key) => {
 
 /**
  * The default class.
- * This first call must not have a Super,
- * because eYo.Dflt is not yet a constructor.
+ * @name {eYo.Dflt}
+ * @constructor
  */
 eYo.makeClass('Dflt')

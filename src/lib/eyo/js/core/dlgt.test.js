@@ -24,6 +24,7 @@ NS.test_link = (x, foo, bar) => {
 }
 
 describe ('Dlgt', function () {
+  this.timeout(10000); 
   it ('Basic', function () {
     chai.assert(eYo.makeClass)
     chai.assert(eYo.makeNS)
@@ -362,14 +363,422 @@ describe ('Dlgt', function () {
       chai.assert(flag === 11)
     })
   })
-  describe('eYo.makeClass', function () {
+  it ('eYo.makeClass', function () {
+    var flag_A = 0
+    var expected_A = 0
+    var model = () => {
+      expected_A = 421
+      return {
+        init () {
+          flag_A = 421
+        }
+      }
+    }
+    var X
+    var NSX = eYo
+    var Super = eYo.Dflt
+    var Dlgt = eYo.Dlgt
+    chai.assert(Super && Dlgt)
+    var Super0 = function () {}
+    eYo.Do.inherits(Super0, eYo.Dflt)
+    var Dlgt0 = function () {
+      eYo.Dlgt.apply(this, arguments)
+    }
+    eYo.Do.inherits(Dlgt0, eYo.Dlgt)
+    var Dlgt1 = function () {
+      eYo.Dlgt.apply(this, arguments)
+    }
+    eYo.Do.inherits(Dlgt1, eYo.Dlgt)
+    var Super1 = function () {}
+    eYo.Do.inherits(Super1, eYo.Dflt)
+    Super1.eyo_ = new Dlgt1(Super1, 'Super1')
+    var test = () => {
+      chai.assert(X)
+      chai.assert(X === NSX.A)
+      chai.assert(X.eyo)
+      chai.assert(X.eyo.c9r === X)
+      chai.assert(X.eyo.constructor === Dlgt)
+      if (Super) {
+        chai.assert(X.superClass_ === Super.prototype)
+        chai.assert(X.superClass_.constructor === Super)
+        chai.assert(X.superClass_.constructor.eyo === Super.eyo)
+        chai.assert(X.eyo.super === Super.eyo)
+      } else {
+        chai.assert(!X.superClass_)
+        chai.assert(!X.eyo.super)
+      }
+      chai.expect(() => {
+        new X()
+      }).not.to.throw()
+      chai.assert(flag_A === expected_A)
+    }
+    ;[
+      // () => {
+      //   NSX = eYo; Super = eYo.NA; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A')
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.NA; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A', model())
+      // },
+      // () => {
+      //   NSX = NS; Super = eYo.NA; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A')
+      // },
+      // () => {
+      //   NSX = NS; Super = eYo.NA; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A', model())
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.Dflt; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A', Super)
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.Dflt; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A', Super, model())
+      // },
+      // () => {
+      //   NSX = NS; Super = eYo.Dflt; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A', Super)
+      // },
+      // () => {
+      //   NSX = NS; Super = eYo.Dflt; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A', Super, model())
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.NA; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A', Dlgt)
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.NA; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A', Dlgt, model())
+      // },
+      // () => {
+      //   NSX = NS; Super = eYo.NA; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A', Dlgt)
+      // },
+      // () => {
+      //   NSX = NS; Super = eYo.NA; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A', Dlgt, model())
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.Dflt; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A', Super, Dlgt)
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.Dflt; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A', Super, Dlgt, model())
+      // },
+      // () => {
+      //   NSX = NS; Super = eYo.Dflt; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A', Super, Dlgt)
+      // },
+      // () => {
+      //   NSX = NS; Super = eYo.Dflt; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A', Super, model())
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.NA; Dlgt = Dlgt0;
+      //   return eYo.makeClass('A', Dlgt)
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.NA; Dlgt = Dlgt0;
+      //   return eYo.makeClass('A', Dlgt, model())
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.NA; Dlgt = Dlgt0;
+      //   return eYo.makeClass(NSX, 'A', Dlgt)
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.NA; Dlgt = Dlgt0;
+      //   return eYo.makeClass(NSX, 'A', Dlgt, model())
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.Dflt; Dlgt = Dlgt0;
+      //   return eYo.makeClass('A', Super, Dlgt)
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.Dflt; Dlgt = Dlgt0;
+      //   return eYo.makeClass('A', Super, Dlgt, model())
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.Dflt; Dlgt = Dlgt0;
+      //   return eYo.makeClass(NSX, 'A', Super, Dlgt)
+      // },
+      // () => {
+      //   NSX = eYo; Super = eYo.Dflt; Dlgt = Dlgt0;
+      //   return eYo.makeClass(NSX, 'A', Super, Dlgt, model())
+      // },
+      // () => {
+      //   NSX = eYo; Super = Super0; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A', Super)
+      // },
+      // () => {
+      //   NSX = eYo; Super = Super0; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A', Super, model())
+      // },
+      // () => {
+      //   NSX = NS; Super = Super0; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A', Super)
+      // },
+      // () => {
+      //   NSX = NS; Super = Super0; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A', Super, model())
+      // },
+      // () => {
+      //   NSX = eYo; Super = Super0; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A', Super, Dlgt)
+      // },
+      // () => {
+      //   NSX = eYo; Super = Super0; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass('A', Super, Dlgt, model())
+      // },
+      // () => {
+      //   NSX = NS; Super = Super0; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A', Super, Dlgt)
+      // },
+      // () => {
+      //   NSX = NS; Super = Super0; Dlgt = eYo.Dlgt;
+      //   return eYo.makeClass(NSX, 'A', Super, model())
+      // },
+      // () => {
+      //   NSX = eYo; Super = Super0; Dlgt = Dlgt0;
+      //   return eYo.makeClass('A', Super, Dlgt)
+      // },
+      // () => {
+      //   NSX = eYo; Super = Super0; Dlgt = Dlgt0;
+      //   return eYo.makeClass('A', Super, Dlgt, model())
+      // },
+      // () => {
+      //   NSX = eYo; Super = Super0; Dlgt = Dlgt0;
+      //   return eYo.makeClass(NSX, 'A', Super, Dlgt)
+      // },
+      // () => {
+      //   NSX = eYo; Super = Super0; Dlgt = Dlgt0;
+      //   return eYo.makeClass(NSX, 'A', Super, Dlgt, model())
+      // },
+      () => {
+        NSX = eYo; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass('A', Super)
+      },
+      () => {
+        NSX = eYo; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass('A', Super, model())
+      },
+      () => {
+        NSX = NS; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass(NSX, 'A', Super)
+      },
+      () => {
+        NSX = NS; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass(NSX, 'A', Super, model())
+      },
+      () => {
+        NSX = eYo; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass('A', Super, Dlgt)
+      },
+      () => {
+        NSX = eYo; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass('A', Super, Dlgt, model())
+      },
+      () => {
+        NSX = NS; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass(NSX, 'A', Super, Dlgt)
+      },
+      () => {
+        NSX = NS; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass(NSX, 'A', Super, Dlgt, model())
+      },
+      () => {
+        NSX = eYo; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass('A', Super, Dlgt)
+      },
+      () => {
+        NSX = eYo; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass('A', Super, Dlgt, model())
+      },
+      () => {
+        NSX = eYo; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass(NSX, 'A', Super, Dlgt)
+      },
+      () => {
+        NSX = eYo; Super = Super1; Dlgt = Dlgt1;
+        return eYo.makeClass(NSX, 'A', Super, Dlgt, model())
+      },
+    ].forEach(f => {
+      delete eYo.A
+      delete NS.A
+      NSX = eYo
+      Super = eYo.Dflt
+      Dlgt = eYo.Dlgt
+      flag_A = expected_A = 0
+      X = f()
+      test()
+      delete eYo.A
+      delete NS.A
+    })
+  })
+  describe ('eYo.makeClass', function () {
+    var testX = (X, Super, Dlgt) => {
+      chai.assert(X)
+      chai.assert(X.eyo)
+      chai.assert(X.eyo.constructor === Dlgt)
+      chai.assert(X.eyo.super === Super.eyo)
+      chai.assert(X.superClass_ === Super.prototype)
+      chai.assert(X.superClass_.constructor === Super)
+      chai.expect(() => {
+        new X()
+      }).not.to.throw()
+    }
     it (`eYo.makeClass('...')`, function () {
+      testX(eYo.A, eYo.Dflt, eYo.Dlgt)
+      delete eYo.A
     })
     it (`eYo.makeClass('...', {...})`, function () {
+      delete eYo.A
+      var flag_A = 0
+      eYo.makeClass('A', {
+        init () {
+          flag_A += 1
+        }
+      })
+      testX(eYo.A, eYo.Dflt, eYo.Dlgt)
+      chai.assert(flag_A===1)
+      delete eYo.A
+    })
+    it (`eYo.makeClass(NS, '...')`, function () {
+      delete NS.A
+      eYo.makeClass(NS, 'A')
+      testX(NS.A, eYo.Dflt, eYo.Dlgt)
+      delete NS.A
     })
     it (`eYo.makeClass(NS, '...', {...})`, function () {
+      var flag_A = 0
+      delete NS.A
+      eYo.makeClass(NS, 'A', {
+        init () {
+          flag_A += 1
+        }
+      })
+      testX(NS.A, eYo.Dflt, eYo.Dlgt)
+      chai.assert(flag_A===1)
+      delete NS.A
     })
-    it (`eYo.makeClass(NS, '...', Super, Dlgt, {...})`, function () {
+    it (`eYo.makeClass('...', Super = eYo.Dflt)`, function () {
+      delete eYo.A
+      eYo.makeClass('A', eYo.Dflt)
+      testX(eYo.A, eYo.Dflt, eYo.Dlgt)
+      delete eYo.A
+    })
+    it (`eYo.makeClass('...', Super = eYo.Dflt, {...})`, function () {
+      var flag_A = 0
+      eYo.makeClass('A', eYo.Dflt, {
+        init () {
+          flag_A += 1
+        }
+      })
+      testX(eYo.A, eYo.Dflt, eYo.Dlgt)
+      chai.assert(flag_A===1)
+      delete eYo.A
+    })
+    it (`eYo.makeClass(NS, '...', Super = eYo.Dflt)`, function () {
+      delete NS.A
+      eYo.makeClass(NS, 'A', eYo.Dflt)
+      testX(NS.A, eYo.Dflt, eYo.Dlgt)
+      delete NS.A
+    })
+    it (`eYo.makeClass(NS, '...', Super = eYo.Dflt, {...})`, function () {
+      var flag_A = 0
+      delete NS.A
+      eYo.makeClass(NS, 'A', eYo.Dflt, {
+        init () {
+          flag_A += 1
+        }
+      })
+      chai.assert(NS.A)
+      chai.assert(NS.A.superClass_ === eYo.Dflt.prototype)
+      chai.assert(NS.A.superClass_.constructor === eYo.Dflt)
+      chai.expect(() => {
+        new NS.A()
+      }).not.to.throw()
+      chai.assert(flag_A===1)
+      delete NS.A
+    })
+    it (`eYo.makeClass('...', Super|eYo.Dflt, {...}?)`, function () {
+      var Super = function () {}
+      eYo.inherits(Super, eYo.Dflt)
+      ;[eYo.Dflt, Super].forEach(Super => {
+        delete eYo.A
+        eYo.makeClass('A', Super)
+        test(eYo.A)
+        delete eYo.A
+        var flag_A = 0
+        eYo.makeClass('A', Super, {
+          init () {
+            flag_A += 1
+          }
+        })
+        chai.assert(eYo.A)
+        chai.assert(eYo.A.eyo)
+        chai.assert(eYo.A.eyo.super === Super.eyo)
+        chai.assert(eYo.A.superClass_ === Super.prototype)
+        chai.assert(eYo.A.superClass_.constructor === Super)
+        chai.expect(() => {
+          new eYo.A()
+        }).not.to.throw()
+        chai.assert(flag_A===1)
+        delete eYo.A
+      })
+    })
+    it (`eYo.makeClass('...', Super = eYo.Dflt, {...})`, function () {
+      var flag_A = 0
+      eYo.makeClass('A', eYo.Dflt, {
+        init () {
+          flag_A += 1
+        }
+      })
+      chai.assert(eYo.A)
+      chai.assert(eYo.A.eyo)
+      chai.assert(eYo.A.eyo.super === eYo.Dflt.eyo)
+      chai.assert(eYo.A.superClass_ === eYo.Dflt.prototype)
+      chai.assert(eYo.A.superClass_.constructor === eYo.Dflt)
+      chai.expect(() => {
+        new eYo.A()
+      }).not.to.throw()
+      chai.assert(flag_A===1)
+      delete eYo.A
+    })
+    it (`eYo.makeClass(NS, '...', Super = eYo.Dflt)`, function () {
+      delete NS.A
+      eYo.makeClass(NS, 'A', eYo.Dflt)
+      chai.assert(NS.A)
+      chai.assert(NS.A.eyo)
+      chai.assert(NS.A.eyo.super === eYo.Dflt.eyo)
+      chai.assert(NS.A.superClass_ === eYo.Dflt.prototype)
+      chai.assert(NS.A.superClass_.constructor === eYo.Dflt)
+      chai.expect(() => {
+        new NS.A()
+      }).not.to.throw()
+      delete NS.A
+    })
+    it (`eYo.makeClass(NS, '...', Super = eYo.Dflt, {...})`, function () {
+      var flag_A = 0
+      delete NS.A
+      eYo.makeClass(NS, 'A', eYo.Dflt, {
+        init () {
+          flag_A += 1
+        }
+      })
+      chai.assert(NS.A)
+      chai.assert(NS.A.superClass_ === eYo.Dflt.prototype)
+      chai.assert(NS.A.superClass_.constructor === eYo.Dflt)
+      chai.expect(() => {
+        new NS.A()
+      }).not.to.throw()
+      chai.assert(flag_A===1)
+      delete NS.A
+    })
+    it (`?eYo.makeClass(NS, '...', Super, Dlgt, {...})`, function () {
       var flag_A = 0
       var flag_AB = 0
       eYo.makeClass(NS, 'A', {
