@@ -12,7 +12,7 @@
 'use strict'
 
 goog.require('eYo.Decorate')
-goog.require('eYo.Constructor')
+goog.require('eYo.Dlgt')
 
 goog.provide('eYo.Owned')
 
@@ -33,7 +33,7 @@ goog.forwardDeclare('eYo.Magnet')
  * @param {!eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
-eYo.Constructor.makeClass('Owned', {
+eYo.makeClass('Owned', {
   init (owner) {
     this.owner_ = owner
   },

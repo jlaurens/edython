@@ -12,11 +12,11 @@
 'use strict'
 
 goog.require('eYo.Decorate')
-goog.require('eYo.Constructor')
+goog.require('eYo.Dlgt')
 
 goog.provide('eYo.Consolidator')
 
-eYo.Constructor.makeNS('Consolidator')
+eYo.makeNS('Consolidator')
 
 goog.provide('eYo.Consolidator.List')
 
@@ -86,32 +86,32 @@ eYo.Consolidator.Dflt.prototype.consolidate = eYo.Do.nothing
  * and allow inheritance.
  * @param {?Object} ns, namespace, defaults to `eYo.Consolidator`.
  * @param {!String} key, capitalized string except 'Dflt'.
- * @param {?Object} superC9r,  ancestor, defaults to `eYo.Consolidator.Dflt`.
+ * @param {?Object} Super,  ancestor, defaults to `eYo.Consolidator.Dflt`.
  * @param {!Object} model, model object
  */
-eYo.Consolidator.makeSubclass = function (ns, key, superC9r, model) {
+eYo.Consolidator.makeSubclass = function (ns, key, Super, model) {
   if (goog.isString(ns)) {
-    model = superC9r
-    superC9r = key
+    model = Super
+    Super = key
     key = ns
     ns = eYo.Consolidator
   }
-  if (eYo.isF(superC9r)) {
-    if (!superC9r.prototype instanceof eYo.Consolidator.Dflt) {
-      model = superC9r
-      superC9r = eYo.Consolidator.Dflt
+  if (eYo.isF(Super)) {
+    if (!Super.prototype instanceof eYo.Consolidator.Dflt) {
+      model = Super
+      Super = eYo.Consolidator.Dflt
     }
   } else {
-    model = superC9r
-    superC9r = eYo.Consolidator.Dflt
+    model = Super
+    Super = eYo.Consolidator.Dflt
   }
   if (goog.isFunction(model)) {
     model = model()
   }
-  var c9r = eYo.Constructor.makeClass(ns, key, superC9r, eYo.Consolidator.Dlgt, model)
+  var c9r = eYo.makeClass(ns, key, Super, eYo.Consolidator.Dlgt, model)
   var eyo = c9r.eyo
-  if (superC9r.eyo.model) {
-    goog.mixin(eyo.model, superC9r.eyo.model)
+  if (Super.eyo.model) {
+    goog.mixin(eyo.model, Super.eyo.model)
   }
   if (model) {
     goog.mixin(eyo.model_, model)

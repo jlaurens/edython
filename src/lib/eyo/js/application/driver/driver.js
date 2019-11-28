@@ -25,7 +25,7 @@ eYo.Driver = Object.create(null)
  * Contructor delegate.
  * @param {Function} constructor
  */
-eYo.Constructor.makeClass(eYo.Driver, 'Dlgt', eYo.Constructor.Dlgt, {
+eYo.makeClass(eYo.Driver, 'Dlgt', eYo.Dlgt, {
   init (c9r) {
     this.c9r_ = c9r
   },
@@ -48,10 +48,10 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
   if (owner === eYo.Driver) {
     return
   }
-  var superC9r = mgrModel.super
-  !superC9r && (superC9r = eYo.Owned)
+  var Super = mgrModel.super
+  !Super && (Super = eYo.Owned)
   var driverNames = new Set()
-  var c9r = eYo.Constructor.makeClass(owner, 'Mgr', superC9r || eYo.Owned, eYo.Driver.Dlgt, {
+  var c9r = eYo.makeClass(owner, 'Mgr', Super || eYo.Owned, eYo.Driver.Dlgt, {
     init () {
       driverNames.forEach(name => {
         var n = name[0].toLowerCase() + name.substr(1)
@@ -90,7 +90,7 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
    * which is expected to be the ancestor of all drivers.
    * @param {?Object} owner, a namespace
    * @param {!String} key, a (capitalized) word, the name of the subclass (last component)
-   * @param {?Function} superC9r, the super class of the driver constructor,
+   * @param {?Function} Super, the super class of the driver constructor,
    * defaults to the owner's super_'s key property or the owner's `Dflt`.
    * @param {Object} driverModel
    * An object with various keys:
@@ -100,30 +100,30 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
    * - initUI: an optional function with signature (object, ...)->eYo.NA
    * - disposeUI: an optional function with signature (object)->eYo.NA
    */
-  owner.makeDriverClass = (owner_, key, superC9r, driverModel) => {
+  owner.makeDriverClass = (owner_, key, Super, driverModel) => {
     if (goog.isString(owner_)) {
-      driverModel = superC9r || {}
-      superC9r = key
+      driverModel = Super || {}
+      Super = key
       key = owner_
       owner_ = owner
     }
-    if (eYo.isF(superC9r)) {
+    if (eYo.isF(Super)) {
       driverModel || (driverModel = {})
     } else {
-      driverModel = superC9r || {}
+      driverModel = Super || {}
       var super_ = owner_.super
-      superC9r = super_ && super_[key] || owner_.Dflt
+      Super = super_ && super_[key] || owner_.Dflt
     }
     driverNames.add(key)
     var c9r = owner_[key] = driverModel.init
     ? function () {
-      superC9r.apply(this, arguments)
+      Super.apply(this, arguments)
       driverModel.init.apply(this, arguments)
     }
     : function () {
-      superC9r.apply(this, arguments)
+      Super.apply(this, arguments)
     }
-    eYo.Do.inherits(c9r, superC9r)
+    eYo.Do.inherits(c9r, Super)
     var proto = c9r.prototype
     proto.initUI = function (object, ...rest) {
       var spr = c9r.superClass_

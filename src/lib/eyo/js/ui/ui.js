@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo')
+goog.require('eYo.Dlgt')
 
 goog.provide('eYo.UI')
 
@@ -21,4 +21,4 @@ goog.provide('eYo.UI')
  * @namespace
  */
 
- eYo.Constructor.makeNS('UI')
+ eYo.makeNS('UI')

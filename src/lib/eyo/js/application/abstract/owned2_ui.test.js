@@ -1,12 +1,12 @@
 NS = Object.create(null)
-describe ('Tests: owned_ui2', function () {
+describe ('Tests: owned2_ui', function () {
   var wrapper = f => 
   NS.Brick = eYo.Brick
   NS.Slot = eYo.Slot
   NS.Magnet = eYo.Magnet
   eYo.Brick = eYo.Slot = eYo.Magnet = eYo.NA
   var ff = k => {
-    eYo.Constructor.makeClass(k, {
+    eYo.makeClass(k, {
       props: {
         owned: ['foo']
       },
@@ -28,12 +28,12 @@ describe ('Tests: owned_ui2', function () {
     chai.assert(eYo.Slot === NS.Slot)
     chai.assert(eYo.Magnet === NS.Magnet)
   }
-  it ('Owned_ui2: basic', function () {
+  it ('Owned2_ui: basic', function () {
     chai.assert(eYo.UI.Dflt)
   })
-  it ('Owned_ui2: ', function () {
+  it ('Owned2_ui: ', function () {
     wrapper(() => {
-      var onr = new eYo.Brick()
+      var onr = new eYo.Brick.Dflt()
       chai.assert(onr)
       var ond = new eYo.UI.Owned2(onr)
       chai.assert(ond)

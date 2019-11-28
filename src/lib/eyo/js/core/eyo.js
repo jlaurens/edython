@@ -150,3 +150,13 @@ eYo.assert = (what, reason) => {
 eYo.parameterAssert = (what) => {
   goog.asserts.assert(what, "Bad parameter")
 }
+
+/**
+ * Whether sub_ is a subclass of super_, or equals to super_...
+ * @param {!Function} sub_
+ * @param {!Function} super_
+ * @return {Boolean}
+ */
+eYo.isSubclass = (sub_, super_) => {
+  return !!super_ && !!sub_ && (sub_ === super_ || sub_.prototype instanceof super_)
+}

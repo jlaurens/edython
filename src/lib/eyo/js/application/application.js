@@ -14,7 +14,7 @@
 
 goog.require('eYo.Do')
 goog.require('eYo.Decorate')
-goog.require('eYo.Constructor')
+goog.require('eYo.Dlgt')
 
 goog.provide('eYo.Application')
 
@@ -43,7 +43,7 @@ goog.forwardDeclare('eYo.Audio')
  * The ui drivers manager.
  * @property {eYo.Driver.Mgr} ui_driver_mgr
  */
-eYo.Constructor.makeClass('Application', {
+eYo.makeClass('Application', {
   init : {
     begin () {
       this.disposeUI = eYo.Do.nothing

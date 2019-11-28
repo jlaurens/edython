@@ -23,7 +23,7 @@ goog.provide('eYo.Template')
  * @param {!eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.UI.Constructor.makeClass('Template', eYo.Pane)
+eYo.UI.makeClass('Template', eYo.Pane)
 
 /**
  * Update the metrics of the receiver.

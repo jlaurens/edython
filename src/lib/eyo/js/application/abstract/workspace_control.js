@@ -36,7 +36,7 @@ goog.provide('eYo.WorkspaceControl')
  * @property {number} MARGIN_SIDE_, Distance between trash can and right edge of board.
  *
  */
-eYo.UI.Constructor.makeClass('WorkspaceControl', eYo.UI.Dflt, {
+eYo.UI.makeClass('WorkspaceControl', eYo.UI.Dflt, {
   props: {
     computed: {
       workspace () {

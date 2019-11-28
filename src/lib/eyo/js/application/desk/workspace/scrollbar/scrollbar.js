@@ -29,7 +29,7 @@ goog.forwardDeclare('goog.events')
  * @param {string=} opt_class A class to be applied to this scrollbar.
  * @constructor
  */
-eYo.UI.Constructor.makeClass('Scrollbar', {
+eYo.UI.makeClass('Scrollbar', {
   init(bs, horizontal, opt_class) {
     if (bs instanceof eYo.Scroller) {
       this.scroller_ = bs  

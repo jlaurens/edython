@@ -23,23 +23,106 @@ NS.test_link = (x, foo, bar) => {
   chai.assert(x[bar__] === eYo.NA && x[bar_] === eYo.NA && x[bar] === eYo.NA)
 }
 
-describe ('Constructor', function () {
+describe ('Dlgt', function () {
+  it ('Basic', function () {
+    chai.assert(eYo.makeClass)
+    chai.assert(eYo.makeNS)
+    chai.assert(eYo.Dlgt)
+  })
+  describe('makeNS', function () {
+    it ('eYo.makeNS(...)', function () {
+      var NS = eYo.makeNS()
+      chai.assert(NS.makeClass)
+      chai.assert(NS.makeNS)
+      eYo.makeNS('Foo')
+      chai.assert(eYo.Foo)
+      chai.assert(eYo.Foo.makeNS)
+      chai.assert(eYo.Foo.makeClass)
+      eYo.makeNS(NS, 'Foo')
+      chai.assert(NS.Foo)
+      chai.assert(NS.Foo.makeNS)
+      chai.assert(NS.Foo.makeClass)
+    })
+    it ('NS.makeNS(...)', function () {
+      var NS = eYo.makeNS()
+      chai.expect(() => {
+        NS.makeNS()
+      }).to.throw()
+      NS.makeNS('Foo')
+      chai.assert(NS.Foo)
+      chai.assert(NS.Foo.makeNS)
+      chai.assert(NS.Foo.makeClass)
+      var NS_ = eYo.makeNS()
+      NS_['Foo'] = 421
+      NS_.Foo = 123
+      delete NS_.Foo
+      chai.expect(() => {
+        NS.makeNS(NS_, 'Foo')
+      }).to.throw()
+    })
+    it ("eYo.makeClass('A')", function () {
+      var A = eYo.makeClass('A')
+      chai.assert(A)
+      chai.assert(A.eyo.constructor === eYo.Dlgt)
+      chai.assert(A.makeSubclass)
+      // delete NS.A
+    /* @param {?Object} ns,  A namespace. Defaults to the caller, eg `eYo`.
+     * @param {!String} key,  The key.
+     * @param {?Function} Super,  The eventual super class. There is no default value. Give a falsy value if you do not want inheritance.
+     * @param {?Function} Dlgt,  The constructor's delegate class. Defaults to the `super_`'s delegate. Must be a subclass of `eYo.Dlgt`.
+     * @param {?Object} model,  The dictionary of parameters.
+     */
+
+    })
+    it ("NS.makeClass('A')", function () {
+      var NS = eYo.makeNS()
+      NS.makeClass('A')
+      chai.assert(NS.A)
+      chai.assert(!NS.A.superClass_)
+      chai.assert(NS.A.eyo.constructor === eYo.Dlgt)
+      // chai.assert(false)
+    })
+    it ("...makeSubclass('B')", function () {
+      var A = eYo.makeClass('A')
+      var B = A.makeSubclass('B')
+      chai.assert(B)
+      chai.assert(B.eyo.constructor === eYo.Dlgt)
+    })
+    it ("eYo.makeClass(ns, 'A', super, dlgt, model)", function () {
+      var flag = 0
+      var NS = eYo.makeNS()
+      eYo.Dflt.makeSubclass(NS, 'Dflt')
+      eYo.Dlgt.makeSubclass(NS, 'Dlgt')
+      eYo.makeClass(NS, 'A', eYo.Dflt, eYo.Dlgt, {
+        init (x) {
+          flag += x
+        }
+      })
+      chai.assert(NS.A)
+      chai.assert(eYo.isSubclass(NS.A, eYo.Dflt))
+      chai.assert(NS.A.superClass_ === eYo.Dflt.prototype)
+      chai.assert(NS.A.eyo.constructor === eYo.Dlgt)
+      flag = 0
+      var a = new NS.A(123)
+      chai.assert(flag === 123)
+    })
+  })
   describe ('make', function () {
     it ('Make: Missing', function () {
-      chai.assert(eYo.Constructor)
-      chai.assert(eYo.Constructor.makeClass)
+      chai.assert(eYo.Dlgt)
+      chai.assert(eYo.makeClass)
       chai.expect(()=>{
-        eYo.Constructor.makeClass()
+        eYo.makeClass()
       }).to.throw()
       chai.expect(()=>{
-        eYo.Constructor.makeClass('Foo')
+        eYo.makeClass('Foo')
       }).not.to.throw()
       chai.expect(()=>{
-        eYo.Constructor.makeClass('Foo', null, {})
+        eYo.makeClass('Foo', null, {})
       }).not.to.throw()
     })
     it ('Make: super: null', function () {
-      eYo.Constructor.makeClass(NS, 'A', {
+      eYo.makeClass(NS, 'A', {
         props: {
            link: ['foo', 'bar'],
         },
@@ -50,7 +133,7 @@ describe ('Constructor', function () {
     })  
     it ('Make: constructor call', function () {
       var flag = 0
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         init () {
@@ -64,7 +147,7 @@ describe ('Constructor', function () {
     })
     it ('Make: super !== null', function () {
       var flag_A = 0
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         init () {
@@ -77,7 +160,7 @@ describe ('Constructor', function () {
       chai.assert(NS.A.eyo.link_.has('foo'))
       chai.assert(!NS.A.eyo.link_.has('bar'))
       var flag_AB = 0
-      eYo.Constructor.makeClass('AB', {
+      eYo.makeClass('AB', {
         owner: NS.A,
         super: NS.A,
         init () {
@@ -98,7 +181,7 @@ describe ('Constructor', function () {
     })  
     it ('Make: multi super !== null', function () {
       var flag_A = 0
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         init () {
@@ -109,7 +192,7 @@ describe ('Constructor', function () {
        },
      })
       var flag_B = 0
-      eYo.Constructor.makeClass('B', {
+      eYo.makeClass('B', {
         owner: NS,
         super: null,
         init () {
@@ -120,7 +203,7 @@ describe ('Constructor', function () {
        },
      })
       var flag_AA = 0
-      eYo.Constructor.makeClass('AA', {
+      eYo.makeClass('AA', {
         owner: NS.A,
         super: NS.A,
         init () {
@@ -131,7 +214,7 @@ describe ('Constructor', function () {
        },
      })
       var flag_AB = 0
-      eYo.Constructor.makeClass('AB', {
+      eYo.makeClass('AB', {
         owner: NS.A,
         super: NS.A,
         init () {
@@ -142,7 +225,7 @@ describe ('Constructor', function () {
        },
      })
       var flag_BA = 0
-      eYo.Constructor.makeClass('BA', {
+      eYo.makeClass('BA', {
         owner: NS.B,
         super: NS.B,
         init () {
@@ -153,7 +236,7 @@ describe ('Constructor', function () {
         },
       })
       var flag_BB = 0
-      eYo.Constructor.makeClass('BB', {
+      eYo.makeClass('BB', {
         owner: NS.B,
         super: NS.B,
         init () {
@@ -182,7 +265,7 @@ describe ('Constructor', function () {
     })
     it ('Make: undefined owner xor super', function () {
       var flag_A = 0
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         init () {
@@ -190,7 +273,7 @@ describe ('Constructor', function () {
         }
       })
       var flag_B = 0
-      eYo.Constructor.makeClass('B', {
+      eYo.makeClass('B', {
         owner: NS.A,
         init () {
           flag_B += 1
@@ -204,7 +287,7 @@ describe ('Constructor', function () {
       chai.assert(flag_A === 1)
       chai.assert(flag_B === 1)
       NS.test_link(ab, 'foo', 'bar')
-      eYo.Constructor.makeClass('B', {
+      eYo.makeClass('B', {
         super: NS.A,
         init () {
           flag_B += 1
@@ -221,7 +304,7 @@ describe ('Constructor', function () {
     it ('Make: init shortcuts', function () {
       var flag = 0
       var make = (init) => {
-        eYo.Constructor.makeClass('A', {
+        eYo.makeClass('A', {
           owner: NS,
           super: null,
           init: init
@@ -256,14 +339,14 @@ describe ('Constructor', function () {
     })
     it ('Make: dispose', function () {
       var flag = 0
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
       })
       NS.A.eyo.disposeMake(function () {
         flag += 1
       })
-      eYo.Constructor.makeClass('AB', {
+      eYo.makeClass('AB', {
         owner: NS.A,
       })
       NS.A.AB.eyo.disposeMake(function () {
@@ -279,29 +362,36 @@ describe ('Constructor', function () {
       chai.assert(flag === 11)
     })
   })
-  it ('Init', function () {
-    var flag_A = 0
-    var flag_AB = 0
-    eYo.Constructor.makeClass('A', {
-      owner: NS,
-      super: null,
-      init () {
-        flag_A += 1
-      }
+  describe('eYo.makeClass', function () {
+    it (`eYo.makeClass('...')`, function () {
     })
-    eYo.Constructor.makeClass('AB', {
-      owner: NS.A,
-      init () {
-        flag_AB += 1
-      }
+    it (`eYo.makeClass('...', {...})`, function () {
     })
-    chai.assert(NS.A.AB.eyo.super === NS.A.eyo)
-    chai.assert(!NS.A.eyo.super)
-    var ab = new NS.A.AB()
+    it (`eYo.makeClass(NS, '...', {...})`, function () {
+    })
+    it (`eYo.makeClass(NS, '...', Super, Dlgt, {...})`, function () {
+      var flag_A = 0
+      var flag_AB = 0
+      eYo.makeClass(NS, 'A', {
+        init () {
+          flag_A += 1
+        }
+      })
+      eYo.makeClass('AB', {
+        owner: NS.A,
+        init () {
+          flag_AB += 1
+        }
+      })
+      chai.assert(NS.A.AB.eyo.super === NS.A.eyo)
+      chai.assert(!NS.A.eyo.super)
+      var ab = new NS.A.AB()
+    })
+
   })
   describe ('Link', function () {
     it ("Link: declare 'foo' and 'bar' then clear", function () {
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -331,7 +421,7 @@ describe ('Constructor', function () {
         chai.assert(before === foo_before)
         chai.assert(after === foo_after)
       }
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         init (value) {
@@ -361,7 +451,7 @@ describe ('Constructor', function () {
   describe('Cached property', function () {
     it ('Cached: Basic', function () {
       var flag = 0
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -385,7 +475,7 @@ describe ('Constructor', function () {
     })
     it ('Cached: Shortcut', function () {
       var flag = 0
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -410,7 +500,7 @@ describe ('Constructor', function () {
       var flag_A2 = 1
       var flag_B1 = 2
       var flag_B2 = 3
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -428,7 +518,7 @@ describe ('Constructor', function () {
           },
         },
       })
-      eYo.Constructor.makeClass('B', {
+      eYo.makeClass('B', {
         owner: NS,
         super: null,
         props: {
@@ -475,7 +565,7 @@ describe ('Constructor', function () {
     it ('Cached: Inherit cached', function () {
       var flag_1 = 0
       var flag_2 = 1
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -488,7 +578,7 @@ describe ('Constructor', function () {
           },
         },
       })
-      eYo.Constructor.makeClass('AB', {
+      eYo.makeClass('AB', {
         owner: NS.A,
         props: {
           cached: {
@@ -517,7 +607,7 @@ describe ('Constructor', function () {
     })
     it ('Cached: forget', function () {
       var flag = 123
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -542,7 +632,7 @@ describe ('Constructor', function () {
     })
     it ('Cached: updater basic', function () {
       var flag = 421
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -563,7 +653,7 @@ describe ('Constructor', function () {
     })
     it ('Cached: updater no override', function () {
       var flag = 421
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -595,7 +685,7 @@ describe ('Constructor', function () {
     })
     it ('Cached: updater with override', function () {
       var flag = 421
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -620,7 +710,7 @@ describe ('Constructor', function () {
   })
   describe('Owned', function () {
     it ('Owned: Basic', function () {
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -652,7 +742,7 @@ describe ('Constructor', function () {
       chai.assert(b.disposed_)
     })
     it ('Owned: Two instances', function () {
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -695,7 +785,7 @@ describe ('Constructor', function () {
       test1(a1, b1)
     })
     it ('Owned: Two keys', function () {
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -742,14 +832,14 @@ describe ('Constructor', function () {
       test(eYo.NA, eYo.NA, b1, b2)
     })
     it ('Owned: Inherit', function () {
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
           owned: ['foo']
         },
       })
-      eYo.Constructor.makeClass('AB', {
+      eYo.makeClass('AB', {
         owner: NS.A,
         props: {
           owned: ['bar']
@@ -818,7 +908,7 @@ describe ('Constructor', function () {
         chai.assert(before === foo_before, `Unexpected ${before} !=== ${foo_before}`)
         chai.assert(after === foo_after)
       }
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         init (value) {
@@ -866,7 +956,7 @@ describe ('Constructor', function () {
       var B = function (value) {
         this.value_ = value
       }
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -940,7 +1030,7 @@ describe ('Constructor', function () {
         chai.assert(before === foo_before)
         chai.assert(after === foo_after)
       }
-      eYo.Constructor.makeClass('A', {
+      eYo.makeClass('A', {
         owner: NS,
         super: null,
         props: {
@@ -980,7 +1070,7 @@ describe ('Constructor', function () {
     }
     it ('No collision: link + cached', function () {
       chai.expect(() => {
-        eYo.Constructor.makeClass(params({
+        eYo.makeClass(params({
           link: ['foo'],
           cached: {
             foo () {}
@@ -990,7 +1080,7 @@ describe ('Constructor', function () {
     })
     it ('No collision: link + owned', function () {
       chai.expect(() => {
-        eYo.Constructor.makeClass(params({
+        eYo.makeClass(params({
           link: ['foo'],
           owned: ['foo'],
         }))
@@ -998,7 +1088,7 @@ describe ('Constructor', function () {
     })
     it ('No collision: link + clonable', function () {
       chai.expect(() => {
-        eYo.Constructor.makeClass(params({
+        eYo.makeClass(params({
           link: ['foo'],
           clonable: {
             foo () {}
@@ -1008,7 +1098,7 @@ describe ('Constructor', function () {
     })
     it ('No collision: cached + owned', function () {
       chai.expect(() => {
-        eYo.Constructor.makeClass(params({
+        eYo.makeClass(params({
           cached: {
             foo () {}
           },
@@ -1018,7 +1108,7 @@ describe ('Constructor', function () {
     })
     it ('No collision: cached + clonable', function () {
       chai.expect(() => {
-        eYo.Constructor.makeClass(params({
+        eYo.makeClass(params({
           cached: {
             foo () {}
           },
@@ -1030,7 +1120,7 @@ describe ('Constructor', function () {
     })
     it ('No collision: owned + clonable', function () {
       chai.expect(() => {
-        eYo.Constructor.makeClass(params({
+        eYo.makeClass(params({
           owned: ['foo'],
           clonable: {
             foo () {}
@@ -1041,7 +1131,7 @@ describe ('Constructor', function () {
   })
   it ('Override rules', function () {
     var make = (k, super_, props) => {
-      eYo.Constructor.makeClass(k, {
+      eYo.makeClass(k, {
         owner: NS,
         super: super_,
         props: props,
@@ -1109,7 +1199,7 @@ describe ('Constructor', function () {
   })
   it ('Computed', function () {
     var flag = 123
-    eYo.Constructor.makeClass('C', {
+    eYo.makeClass('C', {
       owner: NS,
       super: null,
       props: {
@@ -1146,7 +1236,7 @@ describe ('Constructor', function () {
     }).to.throw()
   })
   it ('Constructor: forEachOwned', function () {
-    eYo.Constructor.makeClass('A', {
+    eYo.makeClass('A', {
       owner: NS,
       super: null,
       props: {
@@ -1155,7 +1245,7 @@ describe ('Constructor', function () {
         }
       }
     })
-    eYo.Constructor.makeClass('AB', {
+    eYo.makeClass('AB', {
       owner: NS.A,
       props: {
         owned: {
@@ -1176,7 +1266,7 @@ describe ('Constructor', function () {
     chai.assert(flag === 11)
   })
   it ('Constructor: forEachCached', function () {
-    eYo.Constructor.makeClass('A', {
+    eYo.makeClass('A', {
       owner: NS,
       super: null,
       props: {
@@ -1185,7 +1275,7 @@ describe ('Constructor', function () {
         }
       }
     })
-    eYo.Constructor.makeClass('AB', {
+    eYo.makeClass('AB', {
       owner: NS.A,
       props: {
         cached: {
@@ -1203,14 +1293,14 @@ describe ('Constructor', function () {
     chai.assert(flag === 11)
   })
   it ('Constructor: forEachLink', function () {
-    eYo.Constructor.makeClass('A', {
+    eYo.makeClass('A', {
       owner: NS,
       super: null,
       props: {
         link: ['foo']
       }
     })
-    eYo.Constructor.makeClass('AB', {
+    eYo.makeClass('AB', {
       owner: NS.A,
       props: {
         link: ['bar']
@@ -1229,7 +1319,7 @@ describe ('Constructor', function () {
     chai.assert(flag === 11)
   })
   it ('Constructor: forEachClonable', function () {
-    eYo.Constructor.makeClass('A', {
+    eYo.makeClass('A', {
       owner: NS,
       super: null,
       props: {
@@ -1240,7 +1330,7 @@ describe ('Constructor', function () {
         }
       },
     })
-    eYo.Constructor.makeClass('AB', {
+    eYo.makeClass('AB', {
       owner: NS.A,
       props: {
         clonable: {
@@ -1284,7 +1374,7 @@ describe ('Constructor', function () {
   })
   it ('Constructor: makeSubclass', function () {
     var flag = 0
-    eYo.Constructor.makeClass('Foo', {
+    eYo.makeClass('Foo', {
       key: 'A',
       owner: NS,
       super: null,
@@ -1305,11 +1395,11 @@ describe ('Constructor', function () {
     chai.assert(flag === 11)
   })
   it ('Constructor: eyo setter', function () {
-    eYo.Constructor.makeClass('A', {
+    eYo.makeClass('A', {
       owner: NS,
       super: null
     })
-    chai.assert(NS.A.eyo.constructor === eYo.Constructor.Dlgt)
+    chai.assert(NS.A.eyo.constructor === eYo.Dlgt)
     chai.expect(() => {
       NS.A.eyo = null
     }).to.throw()
@@ -1319,23 +1409,23 @@ describe ('Constructor', function () {
   })
   it ('Constructor: dlgt key', function () {
     var flag = 0
-    var Dlgt = function (c9r, key, model) {
-      Dlgt.superClass_.constructor.call(this, c9r, key, model)
+    var dlgt = function (c9r, key, model) {
+      dlgt.superClass_.constructor.call(this, c9r, key, model)
       flag += 1
     }
-    eYo.Do.inherits(Dlgt, eYo.Constructor.Dlgt)
-    eYo.Constructor.makeClass(NS, 'A', null, Dlgt, {
+    eYo.Do.inherits(dlgt, eYo.Dlgt)
+    eYo.makeClass(NS, 'A', null, dlgt, {
       init() {
         flag += 1
       }
     })
     chai.assert(flag === 1)
-    chai.assert(NS.A.eyo.constructor === Dlgt)
+    chai.assert(NS.A.eyo.constructor === dlgt)
     chai.assert(NS.A.makeSubclass)
     NS.A.makeSubclass('AB', {
       owner: NS.A,
     })
     chai.assert(flag === 2)
-    chai.assert(NS.A.AB.eyo.constructor === Dlgt)
+    chai.assert(NS.A.AB.eyo.constructor === dlgt)
   })
 })

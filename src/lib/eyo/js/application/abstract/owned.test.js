@@ -62,7 +62,7 @@ describe('Owned', function () {
   it ('Owned: cascade', function () {
     var ONR = function () {}
     var onr0 = new ONR()
-    eYo.Constructor.makeClass(NS, 'A', eYo.Owned, {
+    eYo.makeClass(NS, 'A', eYo.Owned, {
       props: {
         owned: {
           foo () {}

@@ -13,7 +13,7 @@
 
 goog.require('eYo.UI')
 
-goog.require('eYo.UI.Constructor.Dlgt')
+goog.require('eYo.UI.Dlgt')
 
 goog.require('eYo.Owned')
 
@@ -25,7 +25,7 @@ goog.provide('eYo.UI.Dflt')
  * @constructor
  * Basic constructor delegate.
  */
-eYo.Constructor.Dlgt.makeSublass(eYo.UI, 'Dlgt')
+eYo.Dlgt.makeSublass(eYo.UI, 'Dlgt')
 
 /**
  * Class for a basic object with a UI driver.

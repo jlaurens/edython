@@ -13,189 +13,7 @@
 
 goog.require('eYo.Do')
 
-goog.provide('eYo.Constructor')
-goog.provide('eYo.Constructor.Dlgt')
-
-/**
- * Make a constructor with an 'eyo__' property.
- * Caveat, constructors must have the same arguments.
- * Use a key->value design if you do not want that.
- * The `params` object has template: `{init: function, dispose: function}`
- * @param {?Object} ns,  A namespace. Defaults to `eYo`.
- * @param {!String} key,  The key.
- * @param {?Function} superC9r,  The eventual super class. There is no default value. Give a falsy value if you do not want inheritance.
- * @param {?Function} dlgtC9r,  The constructor's delegate class. Defaults to the `super_`'s delegate. Must be a subclass of `eYo.Constructor.Dlgt`.
- * @param {!Object} model,  The dictionary of parameters.
- * @return {Object} the created constructor.
- * 
- */
-eYo.Constructor.makeClass = (ns, key, superC9r, dlgtC9r, model) => {
-  if (goog.isString(ns)) {
-    model = dlgtC9r
-    dlgtC9r = superC9r
-    superC9r = key
-    key = ns
-    ns = eYo
-  }
-  if (eYo.isF(superC9r)) {
-    if (eYo.isF(dlgtC9r)) {
-      model || (model = {})
-    } else if (superC9r.prototype instanceof eYo.Constructor.Dlgt) {
-      model = dlgtC9r || {}
-      dlgtC9r = superC9r
-      superC9r = eYo.NA
-    } else {
-      model = dlgtC9r || {}
-      dlgtC9r = superC9r.eyo && superC9r.eyo.constructor
-      var c9r = ns.Dlgt
-      if (c9r instanceof eYo.Constructor.Dlgt) {
-        dlgtC9r = c9r
-      } else {
-        dlgtC9r = eYo.Constructor.Dlgt
-      }
-    }
-  } else {
-    if (eYo.isF(dlgtC9r)) {
-      model || (model = {})
-    } else {
-      model = superC9r || {}
-      dlgtC9r = eYo.Constructor.Dlgt
-    }
-    c9r = ns.Dflt
-    superC9r = eYo.isF(c9r) ? c9r : eYo.NA
-  }
-  if (eYo.isF(model.init)) {
-    var endInit = model.init
-  } else if (model.init) {
-    var beginInit = model.init.begin
-    endInit = model.init.end
-  }
-  if (superC9r) {
-    var c9r = ns[key] = function () {
-      c9r.superClass_.constructor.apply(this, arguments)
-      beginInit && beginInit.apply(this, arguments)
-      c9r.eyo__.initInstance(this)
-      endInit && endInit.apply(this, arguments)
-    }
-    try {
-      eYo.Do.inherits(c9r, superC9r)
-    } catch(e) {
-      console.error('BREAK HERE')
-    }
-  } else {
-    c9r = ns[key] = function () {
-      beginInit && beginInit.apply(this, arguments)
-      c9r.eyo__.initInstance(this)
-      endInit && endInit.apply(this, arguments)
-    }
-  }
-  Object.defineProperties(c9r, {
-    eyo: {
-      get () {
-        return this.eyo__
-      },
-      set () {
-        throw 'Forbidden setter'
-      }
-    },
-    eyo_: {
-      get () {
-        return this.eyo__
-      },
-      set () {
-        throw 'Forbidden setter'
-      }
-    },
-  })
-  var eyo = c9r.eyo__ = new dlgtC9r(c9r, key, model)
-  c9r.makeSubclass = (owner_, key_, dlgtC9r_, model_) => {
-    if (goog.isString(owner_)) {
-      model_ = dlgtC9r_
-      dlgtC9r_ = key_
-      key_ = owner_
-      owner_ = ns
-    }
-    if (!eYo.isF(dlgtC9r_)) {
-      model_ = dlgtC9r_
-      dlgtC9r_ = dlgtC9r
-    }
-    return eyo.makeSubclass(owner_, key_, c9r, dlgtC9r_, model_ || {})
-  }
-  Object.defineProperty(c9r.prototype, 'eyo', {
-    get () {
-      return eyo
-    },
-    set () {
-      throw 'Forbidden setter'
-    }
-  })
-  eyo.constructorMake = eYo.Constructor.makeClass
-  ;['owned', 'clonable', 'link', 'cached'].forEach(k => {
-    var K = k[0].toUpperCase() + k.substring(1)
-    var name = 'forEach' + K
-    c9r.prototype[name] = function (f) {
-      var super_ = c9r.superClass_
-      if (super_) {
-        var g = super_[name]
-        g && g.call(this, f)
-      }
-      c9r.eyo[name].call(c9r.eyo, (k) => {
-        var x = this[k]
-        return x && f(x)
-      })
-    }
-    // name = 'some' + K
-    // c9r.prototype[name] = function (f) {
-    //   var super_ = c9r.superClass_
-    //   if (super_) {
-    //     var g = super_[name]
-    //   }
-    //   return g && get.call(this, f) || c9r.eyo[name].call(c9r.eyo, (k) => {
-    //     var x = this[k]
-    //     return x && f(x)
-    //   })
-    // }
-  })
-  var f = c9r.eyo.disposeDecorate (model.dispose)
-  c9r.prototype.dispose = function () {
-    try {
-      this.dispose = eYo.Do.nothing
-      f && f.apply(this, arguments)
-      eyo.disposeInstance(this)
-      var super_ = c9r.superClass_
-      !!super_ && !!super_.dispose && !!super_.dispose.apply(this, arguments)
-    } finally {
-      delete this.dispose
-    }
-  }
-  return c9r
-}
-
-/**
- * Make a namespace with a dedicated constructor maker.
- * @param {?Object} owner, existing namespace, defaults to `eYo`.
- * @param {!String} key, capitalised name in `owner`.
- */
-eYo.Constructor.makeNS = (owner, key) => {
-  if (goog.isString(owner)) {
-    key = owner
-    owner = eYo
-  }
-  if (owner[key]) {
-    throw new Error('Duplicate namespace:' + owner + ', '
-+ key)
-  }
-  var NS = owner[key] = Object.create(null)
-  NS.makeClass = (...args) => {
-    return eYo.Constructor.makeClass(NS, ...args)
-  }
-  NS.makeSublass = (...args) => {
-    return eYo.Constructor.makeClass(NS, ...args)
-  }
-  NS.makeNS = (...args) => {
-    return eYo.Constructor.makeNS(NS, ...args)
-  }
-}
+goog.provide('eYo.Dlgt')
 
 /**
  * Object adding data to a constructor in a safe way.
@@ -212,13 +30,13 @@ eYo.Constructor.makeNS = (owner, key) => {
  * @readonly
  * @property {Set<String>} cached_ - Set of cached identifiers. Lazy initializer.
  */
-eYo.Constructor.Dlgt = function (c9r, key, model) {
+eYo.Dlgt = function (c9r, key, model) {
   this.c9r__ = c9r
   c9r.eyo__ = this
   if (!model) {
     console.error('NO MODEL')
   }
-  this.name_ = key
+  this.name_ = key || ('My name is nobody')
   var props = model.props
   if (props) {
     this.props_ = new Set()
@@ -230,7 +48,7 @@ eYo.Constructor.Dlgt = function (c9r, key, model) {
   }
 }
 
-Object.defineProperties(eYo.Constructor.Dlgt.prototype, {
+Object.defineProperties(eYo.Dlgt.prototype, {
   c9r: {
     get () {
       return this.c9r_
@@ -245,14 +63,6 @@ Object.defineProperties(eYo.Constructor.Dlgt.prototype, {
     },
     set (after) {
       this.c9r__ = after
-    }
-  },
-  eyo: {
-    get () {
-      return this.eyo_
-    },
-    set () {
-      throw 'Forbidden setter'
     }
   },
   name: {
@@ -282,7 +92,7 @@ Object.defineProperties(eYo.Constructor.Dlgt.prototype, {
 ;['owned', 'clonable', 'link', 'cached'].forEach(k => {
   var k_ = k + '_'
   var k__ = k + '__'
-  Object.defineProperty(eYo.Constructor.Dlgt.prototype, k_, {
+  Object.defineProperty(eYo.Dlgt.prototype, k_, {
     get () {
       return this[k__] || (this[k__] = new Set())
     }
@@ -293,11 +103,11 @@ Object.defineProperties(eYo.Constructor.Dlgt.prototype, {
    */
   var K = k[0].toUpperCase() + k.substring(1)
   var name = 'forEach' + K
-  eYo.Constructor.Dlgt.prototype[name] = function (f) {
+  eYo.Dlgt.prototype[name] = function (f) {
     this[k__] && this[k__].forEach(f)
   }
   // name = 'some' + K
-  // eYo.Constructor.Dlgt.prototype[name] = function (f) {
+  // eYo.Dlgt.prototype[name] = function (f) {
   //   return this[k__] && this[k__].some(f)
   // }
 })
@@ -307,7 +117,7 @@ Object.defineProperties(eYo.Constructor.Dlgt.prototype, {
  * Default implementation forwards to super.
  * @param {Object} instance,  instance is an instance of a subclass of the `c9r_` of the receiver
  */
-eYo.Constructor.Dlgt.prototype.initInstance = function (object) {
+eYo.Dlgt.prototype.initInstance = function (object) {
   var suffix = '__'
   var f = k => {
     Object.defineProperty(object, k, {
@@ -340,7 +150,7 @@ eYo.Constructor.Dlgt.prototype.initInstance = function (object) {
  * Dispose of the resources declared at that level.
  * @param {Object} instance,  instance is an instance of a subclass of the `c9r_` of the receiver
  */
-eYo.Constructor.Dlgt.prototype.disposeInstance = function (object) {
+eYo.Dlgt.prototype.disposeInstance = function (object) {
   this.clearLink_(object)
   this.forgetCached_(object)
   this.disposeOwned_(object)
@@ -352,7 +162,7 @@ eYo.Constructor.Dlgt.prototype.disposeInstance = function (object) {
  * @param {String} k name of the link to add
  * @param {Object} model Object with `init` key, eventually.
  */
-eYo.Constructor.Dlgt.prototype.registerInit = function (k, model) {
+eYo.Dlgt.prototype.registerInit = function (k, model) {
   var init = (eYo.isF(model) && model) || (eYo.isF(model.init) && model.init)
   if (init) {
     !this.init_ && (this.init_ = Object.create(null))
@@ -366,7 +176,7 @@ eYo.Constructor.Dlgt.prototype.registerInit = function (k, model) {
  * @param {String} k name of the link to add
  * @param {Object} model Object with `disposer` key, eventually.
  */
-eYo.Constructor.Dlgt.prototype.registerDisposer = function (k, model) {
+eYo.Dlgt.prototype.registerDisposer = function (k, model) {
   var disposer = eYo.isF(model.disposer) && model.disposer
   if (disposer) {
     !this.disposer_ && (this.disposer_ = Object.create(null))
@@ -381,7 +191,7 @@ eYo.Constructor.Dlgt.prototype.registerDisposer = function (k, model) {
  * @param {Object} model Object with `willChange` and `didChange` keys,
  * f any.
  */
-eYo.Constructor.Dlgt.prototype.declareLink_ = function (k, model = {}) {
+eYo.Dlgt.prototype.declareLink_ = function (k, model = {}) {
   eYo.parameterAssert(!this.props_.has(k))
   this.link_.add(k)
   const proto = this.c9r_.prototype
@@ -432,7 +242,7 @@ eYo.Constructor.Dlgt.prototype.declareLink_ = function (k, model = {}) {
  * The initial value is `eYo.NA`.
  * @param {Array<String>} names names of the link to add
  */
-eYo.Constructor.Dlgt.prototype.declareLink = function (model) {
+eYo.Dlgt.prototype.declareLink = function (model) {
   if (model.forEach) {
     model.forEach(k => {
       this.declareLink_(k)
@@ -449,7 +259,7 @@ eYo.Constructor.Dlgt.prototype.declareLink = function (model) {
  * @param {Object} object,  an instance of the receiver's constructor,
  * or one of its subclasses.
  */
-eYo.Constructor.Dlgt.prototype.clearLink_ = function (object) {
+eYo.Dlgt.prototype.clearLink_ = function (object) {
   this.forEachLink(k => {
     var k_ = k + '_'
     var x = object[k_]
@@ -468,7 +278,7 @@ eYo.Constructor.Dlgt.prototype.clearLink_ = function (object) {
  * Changing this property is encapsulated between `willChange` and `didChange` methods.
  * `k` is the public getter.
  * In the setter, we arrange things such that the new value
- * and the receiver have the same status with respoct to UI. 
+ * and the receiver have the same status with respect to UI. 
  * The `get` and `set` keys allow to provide a getter and a setter.
  * In that case, the setter should manage ownership if required.
  * Add an owned object.
@@ -476,7 +286,7 @@ eYo.Constructor.Dlgt.prototype.clearLink_ = function (object) {
  * @param {String} k name of the owned to add
  * @param {Object} data,  the object used to define the property: key `value` for the initial value, key `willChange` to be called when the property is about to change (signature (before, after) => function, truthy when the change should take place). The returned value is a function called after the change has been made in memory.
  */
-eYo.Constructor.Dlgt.prototype.declareOwned_ = function (k, model = {}) {
+eYo.Dlgt.prototype.declareOwned_ = function (k, model = {}) {
   eYo.parameterAssert(!this.props_.has(k))
   this.owned_.add(k)
   const proto = this.c9r_.prototype
@@ -528,6 +338,7 @@ eYo.Constructor.Dlgt.prototype.declareOwned_ = function (k, model = {}) {
             ff && ff.call(this, before, after)
             ff = this[k + 'DidChange']
             ff && ff.call(this, before, after)
+            // init the UI if necessary, we intentionnaly did not delete the UI
             if (!!after && this.hasUI && after.initUI) {
               after.initUI()
             }
@@ -543,7 +354,7 @@ eYo.Constructor.Dlgt.prototype.declareOwned_ = function (k, model = {}) {
  * The receiver is the owner.
  * @param {Object} many  key -> data map.
  */
-eYo.Constructor.Dlgt.prototype.declareOwned = function (many) {
+eYo.Dlgt.prototype.declareOwned = function (many) {
   if (many.forEach) {
     many.forEach(k => {
       this.declareOwned_(k)
@@ -559,7 +370,7 @@ eYo.Constructor.Dlgt.prototype.declareOwned = function (many) {
  * Dispose in the given object, the properties given by their main name.
  * @param {Object} object, the object that owns the property. The other parameters are forwarded to the dispose method.
  */
-eYo.Constructor.Dlgt.prototype.disposeOwned_ = function (object, ...params) {
+eYo.Dlgt.prototype.disposeOwned_ = function (object, ...params) {
   this.forEachOwned(k => {
     var k_ = k + '_'
     var k__ = k + '__'
@@ -584,7 +395,7 @@ eYo.Constructor.Dlgt.prototype.disposeOwned_ = function (object, ...params) {
  * that effectively set the new value.
  * It may take one argument to override the proposed after value.
  */
-eYo.Constructor.Dlgt.prototype.declareCached_ = function (k, model) {
+eYo.Dlgt.prototype.declareCached_ = function (k, model) {
   eYo.parameterAssert(!this.props_.has(k))
   this.cached_.add(k)
   var proto = this.c9r_.prototype
@@ -658,7 +469,7 @@ eYo.Constructor.Dlgt.prototype.declareCached_ = function (k, model) {
  * Add 3 levels cached properties to a prototype.
  * @param {Object} many,  the K => V mapping to which we apply `declareCached_(K, V)`.
  */
-eYo.Constructor.Dlgt.prototype.declareCached = function (many) {
+eYo.Dlgt.prototype.declareCached = function (many) {
   Object.keys(many).forEach(n => {
     this.declareCached_(n, many[n])
   })
@@ -667,7 +478,7 @@ eYo.Constructor.Dlgt.prototype.declareCached = function (many) {
 /**
  * Forget all the cached values.
  */
-eYo.Constructor.Dlgt.prototype.forgetCached_ = function () {
+eYo.Dlgt.prototype.forgetCached_ = function () {
   this.forEachCached(n => {
     this.forget_[n].call(this)
   })
@@ -677,7 +488,7 @@ eYo.Constructor.Dlgt.prototype.forgetCached_ = function () {
  * Add computed properties to a prototype.
  * @param {Map<String, Function>} models,  the key => Function mapping.
  */
-eYo.Constructor.Dlgt.prototype.declareComputed = function (models) {
+eYo.Dlgt.prototype.declareComputed = function (models) {
   var proto = this.c9r_.prototype
   var params = {
     get () {
@@ -757,7 +568,7 @@ eYo.Constructor.Dlgt.prototype.declareComputed = function (models) {
  * and `foo.set(bar)` will set `foo` properties according to `bar`.
  * @param {Map<String, Function|Object>} models,  the key => Function mapping.
  */
-eYo.Constructor.Dlgt.prototype.declareClonable = function (models) {
+eYo.Dlgt.prototype.declareClonable = function (models) {
   this.init_ || (this.init_ = Object.create(null))
   var proto = this.c9r_.prototype
   Object.keys(models).forEach(k => {
@@ -850,7 +661,7 @@ eYo.Constructor.Dlgt.prototype.declareClonable = function (models) {
  * @param {Object} object, the object that owns the property
  * @param {Array<string>} names,  a list of names
  */
-eYo.Constructor.Dlgt.prototype.disposeClonable_ = function (object) {
+eYo.Dlgt.prototype.disposeClonable_ = function (object) {
   this.forEachClonable(k => {
     var k__ = k + '__'
     var x = object[k__]
@@ -865,7 +676,7 @@ eYo.Constructor.Dlgt.prototype.disposeClonable_ = function (object) {
  * Add the cached `app` property to the prototype.
  * @param {Object} proto
  */
-eYo.Constructor.Dlgt.prototype.addApp = function () {
+eYo.Dlgt.prototype.addApp = function () {
   this.declareCached_('app', {
     get () {
       return this.owner__.app
@@ -884,25 +695,260 @@ eYo.Constructor.Dlgt.prototype.addApp = function () {
  * Convenient shortcut to create subclasses.
  * @param {!Object} owner,  required namespace
  * @param {!String} key,  to create `owner[key]`
- * @param {?Function} superC9r,  super class, defaults to the receiver's class.
+ * @param {?Function} Super,  super class, defaults to the receiver's class.
  * @param {?Object} model,  Model object
  */
-eYo.Constructor.Dlgt.prototype.makeSubclass = function (owner, key, superC9r, model = {}) {
-  if (!eYo.isF(superC9r)) {
-    model = superC9r || {}
-    superC9r = this.constructor
+eYo.Dlgt.prototype.makeSubclass = function (owner, key, Super, model = {}) {
+  if (!eYo.isF(Super)) {
+    model = Super || {}
+    Super = this.constructor
   }
-  this.constructorMake(owner, key, superC9r, model)
+  this.makeClass(owner, key, Super, model)
 }
 
 /**
  * Helper to add a dispose function to the prototype of the receiver.
  * @param {Function} f a model value for key `dispose`, or a function given by another constructor delegate.
  */
-eYo.Constructor.Dlgt.prototype.disposeDecorate = function (f) {
+eYo.Dlgt.prototype.disposeDecorate = function (f) {
   var me = this
   return function () {
     f && f.apply(this, arguments)
     me.disposeInstance(this)
   }
 }
+
+/**
+ * Make a constructor with an 'eyo__' property.
+ * Caveat, constructors must have the same arguments.
+ * Use a key->value design if you do not want that.
+ * The `params` object has template: `{init: function, dispose: function}`
+ * @param {?Object} ns,  A namespace. Defaults to the caller, eg `eYo`.
+ * @param {?String} key,  The key.
+ * @param {?Function} Super,  The eventual super class. There is no default value. If this is the last argument, it the model function.
+ * @param {?Function} Dlgt,  The constructor's delegate class. Defaults to the `super_`'s delegate. Must be a subclass of `eYo.Dlgt`.
+ * @param {?Object|Function} model,  The dictionary of parameters. Or a function to create such a dictionary. This might overcomplicated.
+ * @return {Function} the created constructor.
+ * 
+ */
+eYo.makeClass = (() => {
+  /**
+   * Add a subclasser convenient method to a constructor.
+   * @param {!Function} c9r,  the constructor to modify
+   * @param {?Object} ns,  the optional namespace of the constructor
+   * @param {?Function} Dlgt,  the optional delegate constructor, as default.
+   */
+  var makeSubclasser = (c9r, ns, Dlgt) => {
+    c9r.makeSubclass = (ns_, key_, dlgtC9r_, model_) => {
+      if (goog.isString(ns_)) {
+        model_ = dlgtC9r_
+        dlgtC9r_ = key_
+        key_ = ns_
+        ns_ = ns || eYo
+      }
+      if (!dlgtC9r_) {
+        dlgtC9r_ = Dlgt
+      } else if (!eYo.isSubclass(dlgtC9r_, eYo.Dlgt)) {
+        model_ = dlgtC9r_.prototype ? dlgtC9r_() : {}
+        dlgtC9r_ = Dlgt || eYo.Dlgt
+      }
+      return c9r.eyo.makeClass(ns_, key_, c9r, dlgtC9r_, model_ || {})
+    }
+  }
+  makeSubclasser(eYo.Dlgt)
+
+  var makeDlgt = (key, c9r, Dlgt, model) => {
+    Object.defineProperties(c9r, {
+      eyo: {
+        get () {
+          return this.eyo__
+        },
+        set () {
+          throw 'Forbidden setter'
+        }
+      },
+      eyo_: {
+        get () {
+          return this.eyo__
+        },
+        set () {
+          throw 'Forbidden setter'
+        }
+      },
+    })
+    c9r.eyo__ = new Dlgt(c9r, key, model || {})
+    Object.defineProperty(c9r.prototype, 'eyo', {
+      get () {
+        return c9r.eyo__
+      },
+      set () {
+        throw 'Forbidden setter'
+      }
+    })
+  }
+
+  makeDlgt('Dlgt', eYo.Dlgt, eYo.Dlgt, {})
+
+  return eYo.Dlgt.prototype.makeClass = (ns, key, Super, Dlgt, model) => {
+    if (goog.isString(ns)) {
+      model = Dlgt
+      Dlgt = Super
+      Super = key
+      key = ns
+      ns = eYo
+    } else if (!goog.isString(key)) {
+      model = Super
+      Dlgt = key
+      Super = ns
+    }
+    if (eYo.isSubclass(Super, eYo.Dflt)) {
+      // Super is OK
+      if (eYo.isSubclass(Dlgt, eYo.Dlgt)) {
+        // Dlgt is also OK
+        (eYo.isF(model) && (model = model())) || model || (model = {})
+      } else {
+        if (Dlgt) {
+          model = eYo.isF(Dlgt) ? Dlgt() : Dlgt
+        } else {
+          model || (model = {})
+        }
+        Dlgt = Super.eyo.constructor
+      }
+    } else if (eYo.isSubclass(Super, eYo.Dlgt)) {
+      if (eYo.isSubclass(Dlgt, eYo.Dlgt)) {
+        eYo.isF(model) && (model = model()) || model || {}
+      } else {
+        model = eYo.isF(Dlgt) ? Dlgt() : Dlgt || {}
+        Dlgt = Super
+        Super = eYo.NA
+      }
+    } else if (Super) {
+      if (eYo.isSubclass(Dlgt, eYo.Dlgt)) {
+        // Dlgt and Super OK
+        model || (model = {})
+      } else if (Dlgt) {
+        model = eYo.isF(Dlgt) ? Dlgt() : Dlgt
+        Dlgt = ns.Dlgt || eYo.Dlgt
+      } else if (model) {
+        Dlgt = ns.Dlgt || eYo.Dlgt
+      } else {
+        model = eYo.isF(Super) ? Super() : Super
+        Dlgt = ns.Dlgt || eYo.Dlgt
+        Super = eYo.NA
+      }
+    } else {
+      model = {}
+      Dlgt = ns.Dlgt || eYo.Dlgt
+      Super = eYo.NA
+    }
+    if (!model) {
+      throw new Error('Unexpected void model')
+    }
+    if (eYo.isF(model.init)) {
+      var endInit = model.init
+    } else if (model.init) {
+      var beginInit = model.init.begin
+      endInit = model.init.end
+    }
+    if (Super) {
+      var c9r = function () {
+        c9r.superClass_.constructor.apply(this, arguments)
+        beginInit && beginInit.apply(this, arguments)
+        c9r.eyo__.initInstance(this)
+        endInit && endInit.apply(this, arguments)
+      }
+      try {
+        eYo.Do.inherits(c9r, Super)
+      } catch(e) {
+        console.error('BREAK HERE')
+      }
+    } else {
+      c9r = function () {
+        beginInit && beginInit.apply(this, arguments)
+        c9r.eyo__.initInstance(this)
+        endInit && endInit.apply(this, arguments)
+      }
+    }
+    makeDlgt(key, c9r, Dlgt, model)
+    makeSubclasser(c9r, ns, Dlgt)
+    ;['owned', 'clonable', 'link', 'cached'].forEach(k => {
+      var K = k[0].toUpperCase() + k.substring(1)
+      var name = 'forEach' + K
+      c9r.prototype[name] = function (f) {
+        var super_ = c9r.superClass_
+        if (super_) {
+          var g = super_[name]
+          g && g.call(this, f)
+        }
+        c9r.eyo[name].call(c9r.eyo, (k) => {
+          var x = this[k]
+          return x && f(x)
+        })
+      }
+      // name = 'some' + K
+      // c9r.prototype[name] = function (f) {
+      //   var super_ = c9r.superClass_
+      //   if (super_) {
+      //     var g = super_[name]
+      //   }
+      //   return g && get.call(this, f) || c9r.eyo[name].call(c9r.eyo, (k) => {
+      //     var x = this[k]
+      //     return x && f(x)
+      //   })
+      // }
+    })
+    var f = c9r.eyo.disposeDecorate (model.dispose)
+    c9r.prototype.dispose = function () {
+      try {
+        this.dispose = eYo.Do.nothing
+        f && f.apply(this, arguments)
+        c9r.eyo.disposeInstance(this)
+        var super_ = c9r.superClass_
+        !!super_ && !!super_.dispose && !!super_.dispose.apply(this, arguments)
+      } finally {
+        delete this.dispose
+      }
+    }
+    if (ns && key) {
+      ns[key] = c9r
+    }
+    return c9r
+  }
+}) ()
+
+
+/**
+ * Make a namespace with a dedicated constructor maker.
+ * @param {?Object} ns, existing namespace, defaults to `eYo`.
+ * @param {?String} key, capitalised name, created object will be `ns[key]`. `key` is required when `ns` is given.
+ * @return {Object}
+ */
+eYo.makeNS = (ns, key) => {
+  var ans = Object.create(null)
+  ans.makeClass = (...args) => {
+    return eYo.makeClass(ans, ...args)
+  }
+  ans.makeNS = (...args) => {
+    return eYo.makeNS(ans, ...args)
+  }
+  if (goog.isString(ns)) {
+    key = ns
+    ns = eYo
+  }
+  if (ns) {
+    if (key) {
+      console.warn(ns, key)
+      ns[key] = ans
+    } else {
+      throw new Error('Missing key argument')
+    }
+  }
+  return ans
+}
+
+/**
+ * The default class.
+ * This first call must not have a Super,
+ * because eYo.Dflt is not yet a constructor.
+ */
+eYo.makeClass('Dflt')

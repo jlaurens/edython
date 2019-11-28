@@ -13,7 +13,7 @@
 
 goog.require('eYo.UI')
 goog.require('eYo.UI.Dflt')
-goog.require('eYo.UI.Constructor')
+goog.require('eYo.UI.Dlgt')
 
 goog.provide('eYo.UI.Owned2')
 

@@ -20,7 +20,7 @@ goog.provide('eYo.TrashCan')
  * @param {!eYo.Workspace} workspace The workspace to sit in.
  * @constructor
  */
-eYo.UI.Constructor.makeClass('TrashCan', eYo.WorkspaceControl)
+eYo.UI.makeClass('TrashCan', eYo.WorkspaceControl)
 
 Object.defineProperties(eYo.TrashCan.prototype, {
   isOpen: {

@@ -31,7 +31,7 @@ goog.forwardDeclare('goog.math');
  * @param {!eYo.Application|Object} owner Owner application.
  * @constructor
  */
-eYo.UI.Constructor.makeClass('Desk', {
+eYo.UI.makeClass('Desk', {
   props: {
     owned: {
       /**

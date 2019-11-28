@@ -77,7 +77,7 @@ goog.forwardDeclare('eYo.MenuButtonRenderer');
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.UI.Constructor.makeClass('Flyout', {
+eYo.UI.makeClass('Flyout', {
   props: {
     owned: {
       search () {

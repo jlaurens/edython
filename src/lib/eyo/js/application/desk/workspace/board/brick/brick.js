@@ -13,7 +13,7 @@
 
 goog.require('eYo.UI.Dflt')
 goog.require('eYo.Decorate')
-goog.require('eYo.UI.Constructor.Dlgt')
+goog.require('eYo.UI.Dlgt')
 
 goog.require('eYo.Change')
 goog.require('eYo.Data')
@@ -55,7 +55,7 @@ goog.forwardDeclare('eYo.Focus')
  * @param {!String} key,  the key used when the constructor was created.
  * @param {!Object} model,  the model used to create the constructor.
  */
-eYo.Constructor.makeClass(eYo.Brick, 'Dlgt', eYo.UI.Constructor.Dlgt, {
+eYo.Brick.makeClass('Dlgt', eYo.UI.Dlgt, {
   init () {
     this.types = []
   }
@@ -82,7 +82,7 @@ eYo.Constructor.makeClass(eYo.Brick, 'Dlgt', eYo.UI.Constructor.Dlgt, {
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.UI.Constructor.makeClass('Dflt', eYo.Brick, eYo.UI.Dflt, eYo.Brick.Dlgt, {
+eYo.UI.makeClass('Dflt', eYo.Brick, eYo.UI.Dflt, eYo.Brick.Dlgt, {
   props: {
     link: {
       parent: {},
@@ -2899,27 +2899,27 @@ eYo.Brick.Mgr = (() => {
   }
   /**
    * Private modeller to provide the constructor with a complete `model` property.
-   * @param {!Object} dlgtC9r the constructor of a delegate. Must have an `eyo` namespace.
+   * @param {!Object} Dlgt the constructor of a delegate. Must have an `eyo` namespace.
    * @param {?Object} insertModel  data and inputs entries are merged into the model.
    */
-  var modeller = (dlgtC9r, insertModel) => {
-    var eyo = dlgtC9r.eyo
+  var modeller = (Dlgt, insertModel) => {
+    var eyo = Dlgt.eyo
     goog.asserts.assert(eyo, 'Forbidden constructor, `eyo` is missing')
     if (eyo.model_) {
       return eyo.model_
     }
     var model = Object.create(null)
-    var c = dlgtC9r.superClass_
+    var c = Dlgt.superClass_
     if (c && (c = c.constructor) && c.eyo) {
       merger(model, modeller(c))
     }
-    if (dlgtC9r.model__) {
-      if (goog.isFunction(dlgtC9r.model__)) {
-        model = dlgtC9r.model__(model)
-      } else if (Object.keys(dlgtC9r.model__).length) {
-        merger(model, dlgtC9r.model__)
+    if (Dlgt.model__) {
+      if (goog.isFunction(Dlgt.model__)) {
+        model = Dlgt.model__(model)
+      } else if (Object.keys(Dlgt.model__).length) {
+        merger(model, Dlgt.model__)
       }
-      delete dlgtC9r.model__
+      delete Dlgt.model__
     }
     if (insertModel) {
       insertModel.data && (merger(model.data, insertModel.data))
@@ -2929,10 +2929,10 @@ eYo.Brick.Mgr = (() => {
       insertModel.statement && (merger(model.statement, insertModel.statement))
     }
     // store that object permanently
-    dlgtC9r.eyo.model_ = model
+    Dlgt.eyo.model_ = model
     // now change the getModel to return this stored value
-    dlgtC9r.eyo.getModel = function () {
-      return dlgtC9r.eyo.model_
+    Dlgt.eyo.getModel = function () {
+      return Dlgt.eyo.model_
     }
     return model
   }
@@ -2948,10 +2948,10 @@ eYo.Brick.Mgr = (() => {
    * In particular, some bricks share a basic do nothing delegate
    * because they are not meant to really exist yet.
    * , , ,  = eYo.NA,  = eYo.Brick.Dlgt,  = false
-   * @param {?Object} owner, namespace, `eYo.Brick` when omitted
+   * @param {?Object} ns, namespace, `eYo.Brick` when omitted
    * @param {!String} key,  capitalized string, `owner[key]` will be created.
-   * @param {!Function} superC9r
-   * @param {?Function} dlgtC9r, The constructor of `superC9r` when omitted.
+   * @param {!Function} Super
+   * @param {?Function} Dlgt, The constructor of `Super` when omitted.
    * @param {?Boolean} register, falsy or truthy values are not supported!, false when omitted.
    * @param {?Object} model
    * @return the constructor created
@@ -3030,24 +3030,24 @@ eYo.Brick.Mgr = (() => {
         }
       }
     }
-    return function (owner, key, superC9r, dlgtC9r, register = false, model) {
-      goog.asserts.assert(superC9r.eyo, 'Only subclass constructors with an `eyo` property.')
-      if (goog.isString(owner)) {
+    return function (ns, key, Super, Dlgt, register = false, model) {
+      goog.asserts.assert(Super.eyo, 'Only subclass constructors with an `eyo` property.')
+      if (goog.isString(ns)) {
         // shif arguments
         model = register
-        register = dlgtC9r
-        dlgtC9r = superC9r
-        superC9r = model
+        register = Dlgt
+        Dlgt = Super
+        Super = model
         model = key
-        key = owner
-        owner = (eYo.T3.Expr[key] && eYo.Brick && eYo.Expr) ||
+        key = ns
+        ns = (eYo.T3.Expr[key] && eYo.Brick && eYo.Expr) ||
         (eYo.T3.Stmt[key] && eYo.Brick && eYo.Stmt) ||
         eYo.Brick
       }
-      if (!eYo.isF(dlgtC9r)) {
+      if (!eYo.isF(Dlgt)) {
         model = register
-        register = dlgtC9r
-        dlgtC9r = superC9r.eyo.constructor
+        register = Dlgt
+        Dlgt = Super.eyo.constructor
       }
       if (!goog.isBoolean(register)) {
         model = register
@@ -3057,23 +3057,23 @@ eYo.Brick.Mgr = (() => {
 /*
    * @param {?Object} owner
    * @param {!String} key
-   * @param {!Function} superC9r
-   * @param {?Function} dlgtC9r
+   * @param {!Function} Super
+   * @param {?Function} Dlgt
    * @param {?Boolean} register
    * @param {?Object} model
 */
       if (key.indexOf('eyo:') >= 0) {
         key = key.substring(4)
       }
-      owner = owner ||
+      ns = ns ||
       (eYo.T3.Expr[key] && eYo.Brick && eYo.Expr) ||
       (eYo.T3.Stmt[key] && eYo.Brick && eYo.Stmt) ||
-      superC9r
-      var c9r = owner[key] = function (board, type, opt_id) {
+      Super
+      var c9r = ns[key] = function (board, type, opt_id) {
         c9r.superClass_.constructor.call(this, board, type, opt_id)
       }
-      eYo.Do.inherits(c9r, superC9r)
-      var dlgt = new dlgtC9r(c9r, key, model)
+      eYo.Do.inherits(c9r, Super)
+      var dlgt = new Dlgt(c9r, key, model)
       if (!dlgt.getModel) {
         dlgt.getModel = function () {
           return modeller(c9r)
@@ -3195,8 +3195,8 @@ eYo.Brick.Mgr = (() => {
           }
         }
       }
-      c9r.makeSubclass = function (owner_, key_, ...args) {
-        return me.makeSubclass(owner_, key_, c9r_, ...args)
+      c9r.makeSubclass = function (ns_, key_, ...args) {
+        return me.makeSubclass(ns_, key_, c9r_, ...args)
       }
       if (register) {
         me.register(key)

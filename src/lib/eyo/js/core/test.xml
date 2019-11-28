@@ -4,10 +4,10 @@
     <script src="ROOT_PLACE_HOLDER/change.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/change_count.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/const.test.js" charset="utf-8"></script>
-    <script src="ROOT_PLACE_HOLDER/constructor.test.js" charset="utf-8"></script>
-    <script src="ROOT_PLACE_HOLDER/constructor_ui.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/data.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/decorate.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/dlgt.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/dlgt_ui.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/do.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/events.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/eyo.test.js" charset="utf-8"></script>

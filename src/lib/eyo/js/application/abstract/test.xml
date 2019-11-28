@@ -1,6 +1,6 @@
 <!-- Created by `npm run eyo:prepare` -->
       <script src="ROOT_PLACE_HOLDER/owned.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/owned2_ui.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/owned_ui.test.js" charset="utf-8"></script>
-    <script src="ROOT_PLACE_HOLDER/owned_ui2.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/pane.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/workspace_control.test.js" charset="utf-8"></script>
