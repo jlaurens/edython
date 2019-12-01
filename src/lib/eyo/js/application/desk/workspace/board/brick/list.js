@@ -267,5 +267,3 @@ eYo.List.prototype.some = (function () {
   eYo.List.prototype.someStmt = somer(b3k=>b3k.isStmt)
   return somer(b3k=>true)
 }())
-
-eYo.Debug.test() // remove this line when finished

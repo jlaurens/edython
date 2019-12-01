@@ -105,5 +105,3 @@ eYo.SubMenu.prototype.getMenu = function () {
   }
   return this.subMenu_
 }
-
-eYo.Debug.test() // remove this line when finished

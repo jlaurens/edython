@@ -18,4 +18,3 @@ describe('Python exporter', function() {
     f('[1, 2, 3]')
   })
 })
-eYo.Debug.test() // remove this line when finished

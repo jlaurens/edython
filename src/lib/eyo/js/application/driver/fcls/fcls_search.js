@@ -45,5 +45,3 @@ eYo.Fcls.Search.prototype.toolbarInitUI = eYo.Do.nothing
  * @param {!eYo.Search} search  The search controller we must dispose of the toolbar of.
  */
 eYo.Fcls.Search.prototype.toolbarDisposeUI = eYo.Do.nothing
-
-eYo.Debug.test() // remove this line when finished

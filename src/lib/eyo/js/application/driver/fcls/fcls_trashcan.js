@@ -58,5 +58,3 @@ eYo.Fcls.TrashCan.prototype.place = eYo.Do.nothing
  * @param {!eYo.TrashCan} trashCan  The trash can we must query.
  */
 eYo.Fcls.TrashCan.prototype.clientRect = eYo.Do.nothing
-
-eYo.Debug.test() // remove this line when finished

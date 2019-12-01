@@ -551,5 +551,3 @@ eYo.Span.prototype.addSuite = function (delta) {
     this.addParent_(delta)
   }
 }
-
-eYo.Debug.test() // remove this line when finished

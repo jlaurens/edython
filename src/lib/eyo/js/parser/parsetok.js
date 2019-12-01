@@ -241,5 +241,3 @@ goog.provide('eYo.ParseTok')
     return 0;
   }
 })()
-
-eYo.Debug.test() // remove this line when finished

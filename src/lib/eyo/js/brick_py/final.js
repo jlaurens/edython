@@ -21,5 +21,3 @@ goog.provide('eYo.Brick.Final')
  * Must be loaded after all the delegates have been defined.
  * This installs behaviors on a group basis.
  */
-
-eYo.Debug.test() // remove this line when finished

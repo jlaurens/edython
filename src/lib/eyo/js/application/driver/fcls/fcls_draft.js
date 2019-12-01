@@ -21,5 +21,3 @@ goog.forwardDeclare('eYo.Draft')
  * Shared application driver.
  */
 eYo.Fcls.makeDriverClass('Draft')
-
-eYo.Debug.test() // remove this line when finished

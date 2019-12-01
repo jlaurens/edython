@@ -87,5 +87,3 @@ eYo.Dom.Flyout.prototype.updateMetrics = function (flyout) {
   div.style.width = `${r.width} px`
   div.style.height = `${r.height - eYo.Flyout.TOOLBAR_HEIGHT} px`
 }
-
-eYo.Debug.test() // remove this line when finished

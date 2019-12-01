@@ -149,4 +149,3 @@ goog.provide('eYo.Msg.Placeholder')
 eYo.Msg.i18n = function(key, pack) {
   return pack && eYo.MsgPack[pack] && eYo.MsgPack[pack][key] || eYo.Msg[key] || key
 }
-eYo.Debug.test() // remove this line when finished

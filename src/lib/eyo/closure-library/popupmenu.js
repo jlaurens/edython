@@ -29,5 +29,3 @@ eYo.PopupMenu = function (optDomHelper, optRenderer) {
 }
 goog.inherits(eYo.PopupMenu, goog.ui.PopupMenu)
 goog.tagUnsealableClass(eYo.PopupMenu)
-
-eYo.Debug.test() // remove this line when finished

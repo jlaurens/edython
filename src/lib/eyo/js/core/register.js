@@ -43,5 +43,3 @@ eYo.Protocol.Register = function (key, filter) {
   }
   return ans
 }
-
-eYo.Debug.test() // remove this line when finished

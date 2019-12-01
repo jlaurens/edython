@@ -1170,5 +1170,3 @@ eYo.MenuManager.prototype.populateProperties = function (brick, key) {
   }
   return false
 }
-
-eYo.Debug.test() // remove this line when finished

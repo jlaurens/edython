@@ -50,5 +50,3 @@ eYo.Dom.makeDriverClass('Brick', {
     }
   },
 })
-
-eYo.Debug.test() // remove this line when finished

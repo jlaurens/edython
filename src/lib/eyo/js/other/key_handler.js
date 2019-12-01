@@ -924,5 +924,3 @@ eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
     })
   }
 })
-
-eYo.Debug.test() // remove this line when finished

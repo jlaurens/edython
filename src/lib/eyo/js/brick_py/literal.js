@@ -486,5 +486,3 @@ eYo.Brick.Literal.T3s = [
   eYo.T3.Expr.longliteral,
   eYo.T3.Expr.numberliteral
 ]
-
-eYo.Debug.test() // remove this line when finished

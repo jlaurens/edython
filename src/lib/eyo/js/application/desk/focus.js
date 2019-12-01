@@ -606,5 +606,3 @@ eYo.Magnet.prototype.focusOff = function () {
 eYo.Field.prototype.focusOff = function () {
   this.hasFocus && (this.focusMgr_.field = null)
 }
-
-eYo.Debug.test() // remove this line when finished

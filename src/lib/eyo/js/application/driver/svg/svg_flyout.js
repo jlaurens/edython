@@ -419,5 +419,3 @@ eYo.Svg.Flyout.prototype.bindScrollEvents = function(flyout) {
 eYo.Svg.Flyout.prototype.on_mousedown = function(e) {
   this.app.motion.handleFlyoutStart(e, this)
 }
-
-eYo.Debug.test() // remove this line when finished

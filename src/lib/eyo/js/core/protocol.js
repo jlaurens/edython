@@ -46,5 +46,3 @@ eYo.Protocol.add = function () {
     base.properties
   )
 }
-
-eYo.Debug.test() // remove this line when finished

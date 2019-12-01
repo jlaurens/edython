@@ -837,5 +837,3 @@ eYo.Consolidator.List.prototype.hasInputForType = function (brick, type) {
   var io = this.getIO(brick)
   return !!this.nextSlotForType(io, type)
 }
-
-eYo.Debug.test() // remove this line when finished

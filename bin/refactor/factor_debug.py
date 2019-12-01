@@ -19,10 +19,10 @@ eYo && eYo.Debug && eYo.Debug.test && eYo.Debug.test('{p}') // remove this line 
 def defactor():
   for p in eyo_path.rglob('*.js'):
     content = p.read_text()
-
     if re.search(r'^eYo && eYo.Debug && eYo.Debug.test && eYo.Debug.test\(', content, flags = re.M|re.S):
-      content = re.sub(r'.^eYo && eYo.Debug && eYo.Debug.test && eYo.Debug.test\(.*$.', '', content, flags = re.M|re.S)
-      p.write_text(content)
+      print(p)
+      content_sub = re.sub(r'.^eYo && eYo.Debug && eYo.Debug.test && eYo.Debug.test\(.*?$.', '', content, flags = re.M|re.S)
+      p.write_text(content_sub)
 
-# refactor()
-defactor()
+refactor()
+# defactor()

@@ -252,5 +252,3 @@ eYo.Style.MenuIcon.path = function (g) {
     E)
   return E
 }
-
-eYo.Debug.test() // remove this line when finished

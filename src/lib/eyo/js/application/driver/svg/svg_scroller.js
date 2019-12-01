@@ -64,5 +64,3 @@ eYo.Svg.Scroller.prototype.placeCorner = function(pair) {
   corner.setAttribute('width', r.width)
   corner.setAttribute('height', r.height)
 }
-
-eYo.Debug.test() // remove this line when finished

@@ -326,5 +326,3 @@ eYo.Svg.BoardDragSurface.prototype.clearAndHide = function(newSurface) {
   eYo.Dom.setCssTransform(root, '')
   this.previousSibling_ = null
 }
-
-eYo.Debug.test() // remove this line when finished

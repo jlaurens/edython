@@ -115,5 +115,3 @@ eYo.Dflt.makeSubclass('Owned', {
     },
   },
 })
-
-eYo.Debug.test() // remove this line when finished

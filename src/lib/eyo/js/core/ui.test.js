@@ -32,5 +32,3 @@ describe ('Tests: dlgt_ui', function () {
     chai.assert(NS.A.AB.eyo.constructor = F)
   })
 })
-
-eYo.Debug.test() // remove this line when finished

@@ -172,5 +172,3 @@ eYo.Workspace.prototype.undo = function(redo) {
   this.backer__.undo(redo)
 }
 
-
-eYo.Debug.test() // remove this line when finished

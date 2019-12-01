@@ -728,5 +728,3 @@ eYo.T3.Profile.getReserved = function (identifier) {
     })
   }
 }
-
-eYo.Debug.test() // remove this line when finished

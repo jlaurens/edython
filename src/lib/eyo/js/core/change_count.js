@@ -55,5 +55,3 @@ eYo.Protocol.ChangeCount.properties.changeCount = {
     return this.changeCount_
   }
 }
-
-eYo.Debug.test() // remove this line when finished

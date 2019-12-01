@@ -190,5 +190,3 @@ eYo.Tooltip.Title = {
   text_splitlines: 'Découper le texte en lignes, avec ou sans séparateur de fin de ligne',
   text_index: 'Trouver un texte inclus, avec levée d\'exception',
 }
-
-eYo.Debug.test() // remove this line when finished

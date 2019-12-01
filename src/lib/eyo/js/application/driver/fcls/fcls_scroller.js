@@ -21,5 +21,3 @@ goog.forwardDeclare('eYo.Scroller')
  * Shared application driver.
  */
 eYo.Fcls.makeDriverClass('Scroller')
-
-eYo.Debug.test() // remove this line when finished

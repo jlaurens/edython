@@ -3324,5 +3324,3 @@ eYo.Brick.Mgr.register = function (key) {
 eYo.Brick.Mgr.registerAll(eYo.T3.Expr, eYo.Brick.Dflt)
 eYo.Brick.Mgr.registerAll(eYo.T3.Stmt, eYo.Brick.Dflt)
 
-
-eYo.Debug.test() // remove this line when finished

@@ -116,5 +116,3 @@ eYo.UI.Dflt.prototype.ownerDidChange = function (before, after) {
     this.brick_ = after
   }
 }
-
-eYo.Debug.test() // remove this line when finished

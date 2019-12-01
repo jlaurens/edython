@@ -17,4 +17,3 @@ describe(`start_stmt connections`, function () {
     d.dispose()
   })
 })
-eYo.Debug.test() // remove this line when finished

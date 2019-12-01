@@ -26,5 +26,3 @@ eYo.WorkspaceControl.makeSubclass('Zoomer', {
 Object.defineProperties(eYo.Zoomer.prototype, {
   HEIGHT_: { value: 110 },
 })
-
-eYo.Debug.test() // remove this line when finished

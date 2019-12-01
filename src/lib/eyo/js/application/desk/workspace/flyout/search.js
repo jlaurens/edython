@@ -76,5 +76,3 @@ eYo.Search.prototype.dispose = function() {
   this.owner_ = this.board_ = null
   this.dispose = eYo.Do.nothing
 }
-
-eYo.Debug.test() // remove this line when finished

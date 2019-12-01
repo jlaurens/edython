@@ -27,5 +27,3 @@ describe('Basic metrics', function () {
     var b3k = eYo.Brick.newReady(eYo.app.board, type)
   })
 })
-
-eYo.Debug.test() // remove this line when finished

@@ -235,5 +235,3 @@ goog.mixin(eYo.Tooltip.Title, {
 eYo.Brick.Turtle.T3s = [
   eYo.T3.Stmt.turtle__setup_stmt
 ]
-
-eYo.Debug.test() // remove this line when finished

@@ -21,5 +21,3 @@ goog.forwardDeclare('eYo.Application')
  * Svg driver for application.
  */
 eYo.Svg.makeDriverClass('Application')
-
-eYo.Debug.test() // remove this line when finished

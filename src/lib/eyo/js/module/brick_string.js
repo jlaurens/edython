@@ -198,5 +198,3 @@ goog.mixin(eYo.Tooltip.Title, {
 eYo.Brick.String.T3s = [
   eYo.T3.Expr.string__const
 ]
-
-eYo.Debug.test() // remove this line when finished

@@ -73,5 +73,3 @@ eYo.Dom.makeDriverClass('Desk', {
  */
 eYo.Dom.Desk.prototype.place = function(desk) {
 }
-
-eYo.Debug.test() // remove this line when finished

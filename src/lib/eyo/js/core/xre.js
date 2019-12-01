@@ -307,5 +307,3 @@ eYo.Const.Event = {
   asynced: 'eyo:asynced'
 }
 
-
-eYo.Debug.test() // remove this line when finished

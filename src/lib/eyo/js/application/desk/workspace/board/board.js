@@ -1600,5 +1600,3 @@ eYo.Board.prototype.eventDidFireChange = function(event) {
     task()
   }
 }
-
-eYo.Debug.test() // remove this line when finished

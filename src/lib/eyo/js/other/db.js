@@ -48,5 +48,3 @@ eYo.DB.prototype.remove = function(object) {
 eYo.DB.prototype.byId = function(id) {
   return this.byID_[id]
 }
-
-eYo.Debug.test() // remove this line when finished

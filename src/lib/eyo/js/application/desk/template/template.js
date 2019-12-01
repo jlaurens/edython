@@ -38,5 +38,3 @@ eYo.Template.prototype.updateMetrics = function () {
 eYo.Template.prototype.place = function () {
   this.ui_driver.place(this)
 }
-
-eYo.Debug.test() // remove this line when finished

@@ -91,5 +91,3 @@ eYo.Fcls.Focus.prototype.magnetOn = eYo.Do.nothing
  * @param {!eYo.Focus.Mgr} mgr  The focus manager that should put focus off a magnet.
  */
 eYo.Fcls.Focus.prototype.magnetOff = eYo.Do.nothing
-
-eYo.Debug.test() // remove this line when finished

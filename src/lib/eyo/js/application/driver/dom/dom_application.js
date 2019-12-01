@@ -54,5 +54,3 @@ eYo.Dom.makeDriverClass('Application', {
     dom.div_ = null
   }
 })
-
-eYo.Debug.test() // remove this line when finished

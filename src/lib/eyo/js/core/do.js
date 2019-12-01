@@ -633,5 +633,3 @@ eYo.Do.genUid = (() => {
     return id.join('')
   }
 })()
-
-eYo.Debug.test() // remove this line when finished

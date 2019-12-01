@@ -189,5 +189,3 @@ eYo.setup.register(() => {
     'fill-opacity:0.666',
   '}')
 })
-
-eYo.Debug.test() // remove this line when finished

@@ -199,5 +199,3 @@ eYo.Backer.prototype.didUnshiftUndo = function() {
   this.owner_ && this.owner_.didUnshiftUndo && (this.owner_.didUnshiftUndo())
 };
 
-
-eYo.Debug.test() // remove this line when finished

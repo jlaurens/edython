@@ -30,4 +30,3 @@ eYo.Draft = function(owner, options) {
   eYo.Draft.superClass_.call(this, owner, options)
 }
 goog.inherits(eYo.Draft, eYo.Board)
-eYo.Debug.test() // remove this line when finished

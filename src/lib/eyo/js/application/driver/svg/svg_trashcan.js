@@ -220,5 +220,3 @@ eYo.Svg.TrashCan.prototype.clientRect = function(trashCan) {
   return eYo.Rect.xy(left, top, width, height)
 }
 
-
-eYo.Debug.test() // remove this line when finished

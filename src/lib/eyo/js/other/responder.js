@@ -724,5 +724,3 @@ eYo.Responder.prototype.bringBrickToFront_ = function() {
     this.targetBrick_.ui.sendToFront()
   }
 }
-
-eYo.Debug.test() // remove this line when finished

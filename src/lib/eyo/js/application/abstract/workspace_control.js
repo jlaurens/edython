@@ -77,5 +77,3 @@ eYo.WorkspaceControl.prototype.place = function(bottom) {
     : view.left) - this.MARGIN_SIDE_
   r.y_max = bottom - this.MARGIN_BOTTOM_
 }
-
-eYo.Debug.test() // remove this line when finished

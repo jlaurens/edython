@@ -77,5 +77,3 @@ eYo.Svg.Magnet.prototype.hilight = function (m4t) {
     g
   )
 }
-
-eYo.Debug.test() // remove this line when finished

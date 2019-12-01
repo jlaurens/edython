@@ -45,5 +45,3 @@ eYo.Temp.x = ((static_) => {
 }`)
   })
 })(window.__static || 'static')
-
-eYo.Debug.test() // remove this line when finished

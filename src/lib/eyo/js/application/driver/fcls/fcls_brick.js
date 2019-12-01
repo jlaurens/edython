@@ -256,5 +256,3 @@ eYo.Fcls.Brick.prototype.displayedSet = eYo.Do.nothing
  * @param {!Object} node  the node the driver acts on
  */
 eYo.Fcls.Brick.prototype.updateDisabled = eYo.Do.nothing
-
-eYo.Debug.test() // remove this line when finished

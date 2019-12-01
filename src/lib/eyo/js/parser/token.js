@@ -315,5 +315,3 @@ eYo.TKN.PyToken_ThreeChars = (c1, c2, c3) =>
     }
     return eYo.TKN.OP
 }
-
-eYo.Debug.test() // remove this line when finished

@@ -1321,5 +1321,3 @@ eYo.Xml.compareBricks = function (lhs, rhs) {
   var xmlR = goog.dom.xml.serialize(eYo.Xml.brickToDom(rhs, {noId: true}))
   return xmlL < xmlR ? -1 : (xmlL < xmlR ? 1 : 0)
 }
-
-eYo.Debug.test() // remove this line when finished

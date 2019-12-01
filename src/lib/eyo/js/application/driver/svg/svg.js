@@ -422,5 +422,3 @@ eYo.Svg.getRelativeWhere.Where_3D_REGEX_ =
  */
 eYo.Svg.getRelativeWhere.Where_2D_REGEX_ =
   /transform:\s*translate\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/
-
-eYo.Debug.test() // remove this line when finished

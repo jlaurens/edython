@@ -492,5 +492,3 @@ eYo.Stmt.T3s = [
   eYo.T3.Stmt.del_stmt,
   eYo.T3.Stmt.return_stmt
 ]
-
-eYo.Debug.test() // remove this line when finished

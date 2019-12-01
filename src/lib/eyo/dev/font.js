@@ -23,5 +23,3 @@ eYo.setup.register(() => {
  eYo.Css.insertRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-Oblique.woff')format('woff');font-weight: normal;font-style: oblique;}", 0)
  eYo.Css.insertRuleAt("@font-face{font-family:'DejaVuSansMono';src:local('☺'),url('DejaVuSansMono-BoldOblique.woff')format('woff');font-weight: bold;font-style: oblique;}", 0)
 }, 'Loading fonts')
-
-eYo.Debug.test() // remove this line when finished

@@ -4,5 +4,3 @@ describe ('Tests: svg_search', function () {
     chai.assert(false, 'NOT YET IMPLEMENTED')
   })
 })
-
-eYo.Debug.test() // remove this line when finished

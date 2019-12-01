@@ -10,7 +10,6 @@
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
-eYo.Debug.test() // remove this line when finished
 
 goog.require('eYo.Events')
 goog.require('eYo.Events.Abstract')
@@ -468,5 +467,3 @@ function (try_f, finally_f) {
   }
 }
 */
-
-eYo.Debug.test() // remove this line when finished

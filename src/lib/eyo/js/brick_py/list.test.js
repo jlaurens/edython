@@ -132,5 +132,3 @@ describe('Enclosure connections', function() {
     d.dispose()
   })
 })
-
-eYo.Debug.test() // remove this line when finished

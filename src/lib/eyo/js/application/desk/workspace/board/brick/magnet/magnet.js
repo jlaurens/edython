@@ -1950,5 +1950,3 @@ Object.defineProperty(eYo.Magnet.prototype, 'right', {
     }
   }
 })
-
-eYo.Debug.test() // remove this line when finished

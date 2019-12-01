@@ -113,5 +113,3 @@ eYo.Fcls.Field.prototype.makePlaceholder = eYo.Do.nothing
  * @param {boolean} yorn
  */
 eYo.Fcls.Field.prototype.makeComment = eYo.Do.nothing
-
-eYo.Debug.test() // remove this line when finished

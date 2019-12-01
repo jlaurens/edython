@@ -106,5 +106,3 @@ describe('YIELD expression and statement', function() {
     d.dispose()
   })
 })
-
-eYo.Debug.test() // remove this line when finished

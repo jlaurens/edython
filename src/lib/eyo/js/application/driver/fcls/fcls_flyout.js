@@ -21,5 +21,3 @@ goog.forwardDeclare('eYo.Flyout')
  * Shared application driver.
  */
 eYo.Fcls.makeDriverClass('Flyout')
-
-eYo.Debug.test() // remove this line when finished

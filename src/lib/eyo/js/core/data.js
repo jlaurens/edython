@@ -1062,5 +1062,3 @@ eYo.Data.prototype.whenRequiredFromSaved = function (helper) {
     return true
   }
 }
-
-eYo.Debug.test() // remove this line when finished

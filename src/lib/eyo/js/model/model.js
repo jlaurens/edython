@@ -229,5 +229,3 @@ Object.defineProperties(
     }
   }
 )
-
-eYo.Debug.test() // remove this line when finished

@@ -2176,5 +2176,3 @@ eYo.Brick.UI.prototype.showContextMenu_ = function (e) {
   }
   eYo.MenuManager.shared().showMenu(this.brick, e)
 }
-
-eYo.Debug.test() // remove this line when finished

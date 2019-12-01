@@ -173,5 +173,3 @@ eYo.Driver.Dflt.prototype.disposeUI = function () {
   return true
 }
 
-
-eYo.Debug.test() // remove this line when finished

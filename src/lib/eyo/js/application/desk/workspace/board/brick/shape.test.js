@@ -92,5 +92,3 @@ describe('Group shape', function () {
     b.dispose()
   })
 })
-
-eYo.Debug.test() // remove this line when finished

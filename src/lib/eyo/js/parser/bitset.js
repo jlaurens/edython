@@ -72,5 +72,3 @@ eYo.BitSet.mergebitset = (ss1, ss2, nbits) =>
     ss1.ra[i] = ss1.ra[i] | ss2.ra[i]
   }
 }
-
-eYo.Debug.test() // remove this line when finished

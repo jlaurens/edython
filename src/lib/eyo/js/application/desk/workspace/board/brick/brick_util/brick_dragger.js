@@ -466,5 +466,3 @@ eYo.BrickDragger.prototype.update = function() {
     this.target_.ui.addBrickHilight_()
   }
 }
-
-eYo.Debug.test() // remove this line when finished

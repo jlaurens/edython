@@ -67,5 +67,3 @@ eYo.Scaler.prototype.cancel = function () {
  */
 eYo.Scaler.prototype.complete = function () {
 }
-
-eYo.Debug.test() // remove this line when finished

@@ -175,5 +175,3 @@ eYo.Brick.Range.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.builtin__range_expr
 ]
-
-eYo.Debug.test() // remove this line when finished

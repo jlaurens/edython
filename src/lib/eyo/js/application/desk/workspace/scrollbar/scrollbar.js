@@ -378,5 +378,3 @@ eYo.Scrollbar.prototype.place = function() {
   this.ui_driver_mgr.scrollbarPlace(this)
 }
 
-
-eYo.Debug.test() // remove this line when finished

@@ -636,5 +636,3 @@ eYo.Slot.prototype.completePromise = function () {
     return true
   }
 }
-
-eYo.Debug.test() // remove this line when finished

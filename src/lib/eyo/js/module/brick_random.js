@@ -316,5 +316,3 @@ goog.mixin(eYo.Tooltip.Title, {
 eYo.Brick.Random.T3s = [
   eYo.T3.Expr.random__randrange,
 ]
-
-eYo.Debug.test() // remove this line when finished

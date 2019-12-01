@@ -421,5 +421,3 @@ eYo.FieldInput.prototype.getPythonText_ = function () {
   }
   return t
 }
-
-eYo.Debug.test() // remove this line when finished

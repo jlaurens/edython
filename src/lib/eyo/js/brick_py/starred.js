@@ -294,5 +294,3 @@ eYo.Expr.Starred.prototype.xmlAttr = function () {
   eYo.Expr[key] = eYo.Expr.Starred
   eYo.Brick.Mgr.register(key)
 })
-
-eYo.Debug.test() // remove this line when finished

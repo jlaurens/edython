@@ -349,5 +349,3 @@ Object.defineProperties(eYo.Events.Abstract.prototype, {
  */
 eYo.Events.Abstract.prototype.run = eYo.Do.nothing
 
-
-eYo.Debug.test() // remove this line when finished

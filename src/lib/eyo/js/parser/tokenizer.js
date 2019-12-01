@@ -1266,5 +1266,3 @@ eYo.Scan.prototype.nextToken = function () {
   }
   return shift()
 }
-
-eYo.Debug.test() // remove this line when finished

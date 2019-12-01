@@ -95,5 +95,3 @@ eYo.Decorate.arrayFunction = object => {
         : () => object
   return did
 }
-
-eYo.Debug.test() // remove this line when finished

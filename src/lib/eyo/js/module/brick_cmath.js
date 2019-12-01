@@ -321,5 +321,3 @@ goog.mixin(eYo.Tooltip.Title, {
 eYo.Brick.CMath.T3s = [
   eYo.T3.Expr.cmath__const
 ]
-
-eYo.Debug.test() // remove this line when finished

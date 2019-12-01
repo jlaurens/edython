@@ -70,5 +70,3 @@ goog.provide('eYo.Brick.Functions')
     type_: t + 1
   }))
 }) ()
-
-eYo.Debug.test() // remove this line when finished

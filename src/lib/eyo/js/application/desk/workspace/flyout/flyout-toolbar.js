@@ -196,5 +196,3 @@ eYo.FlyoutToolbar.prototype.positionAt_ = function(width, height, x, y) {
   this.div_.style.left = x + 'px'
   this.div_.style.top = y + 'px'
 };
-
-eYo.Debug.test() // remove this line when finished

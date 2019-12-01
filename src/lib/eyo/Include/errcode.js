@@ -35,5 +35,3 @@ Object.defineProperties(eYo.E, {
   IDENTIFIER: {get () {return 26}}, /* Invalid characters in identifier */
   BADSINGLE: {get () {return 27}} /* Ill-formed single statement input */
 })
-
-eYo.Debug.test() // remove this line when finished

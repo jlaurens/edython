@@ -473,5 +473,3 @@ eYo.Brick.Lambda.T3s = [
   eYo.T3.Expr.parameter_list,
   eYo.T3.Expr.lambda
 ]
-
-eYo.Debug.test() // remove this line when finished

@@ -1100,5 +1100,3 @@ describe ('Primary data by key', function () {
     })
   })
 })
-
-eYo.Debug.test() // remove this line when finished

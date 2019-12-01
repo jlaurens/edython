@@ -4,5 +4,3 @@ describe ('Tests: copy_model', function () {
     chai.assert(false, 'NOT YET IMPLEMENTED')
   })
 })
-
-eYo.Debug.test() // remove this line when finished

@@ -33,5 +33,3 @@ eYo.Fcls.Zoomer.prototype.initUI = eYo.Do.nothing
  * @param {!eYo.Zoomer} zoomer  The zoomer we must dispose the UI of.
  */
 eYo.Fcls.Zoomer.prototype.disposeUI = eYo.Do.nothing
-
-eYo.Debug.test() // remove this line when finished

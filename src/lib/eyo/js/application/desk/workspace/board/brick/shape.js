@@ -847,5 +847,3 @@ eYo.Shape.definitionForPlayContour = function(cursor) {
   eYo.Shape.shared.initForPlay(cursor, true)
   return eYo.Shape.shared.definition
 }
-
-eYo.Debug.test() // remove this line when finished

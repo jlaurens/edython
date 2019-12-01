@@ -117,5 +117,3 @@ Object.defineProperties (eYo.Brick.Control.prototype, {
 eYo.Brick.Control.T3s = [
   eYo.T3.Stmt.start_stmt
 ]
-
-eYo.Debug.test() // remove this line when finished

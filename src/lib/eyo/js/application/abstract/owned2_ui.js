@@ -49,5 +49,3 @@ eYo.UI.Dflt.makeSubclass('Owned2', {
   }
 })
 
-
-eYo.Debug.test() // remove this line when finished

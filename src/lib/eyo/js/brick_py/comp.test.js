@@ -58,5 +58,3 @@ describe('Comprehension', function() {
     dd.dispose()
   })
 })
-
-eYo.Debug.test() // remove this line when finished

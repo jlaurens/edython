@@ -315,5 +315,3 @@ eYo.Svg.onFieldMouseDown_ = function(e) {
     this.app.motion.setStartField(this)
   }
 }
-
-eYo.Debug.test() // remove this line when finished

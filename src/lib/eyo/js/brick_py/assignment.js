@@ -623,5 +623,3 @@ eYo.Brick.Assignment.T3s = [
   eYo.T3.Expr.augassigned_list,
   eYo.T3.Stmt.augmented_assignment_stmt
 ]
-
-eYo.Debug.test() // remove this line when finished

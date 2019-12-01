@@ -4,5 +4,3 @@ describe ('Tests: graminit.test', function () {
 
   })
 })
-
-eYo.Debug.test() // remove this line when finished

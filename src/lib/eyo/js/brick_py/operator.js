@@ -428,5 +428,3 @@ eYo.Brick.Operator.T3s = [
   eYo.T3.Expr.and_test,
   eYo.T3.Expr.power
 ]
-
-eYo.Debug.test() // remove this line when finished
