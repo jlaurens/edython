@@ -15,7 +15,7 @@ def swap_provide_require():
     new_p = []
     for p in ps:
       content = p.read_text()
-      m = re.search('(?<provide>^goog\.provide.*?$)(?<middle>.*?)(?<require>^goog\.require.*?$)', content, re.S | re.M)
+      m = re.search('(?<provide>^goog\.provide.*?$)(?<middle>.*?)(?<require>^goog\.require.*?$)', content, flags = re.S | re.M)
       if m:
         new_p.append(p)
         before = content[:m.span(0)[0]]

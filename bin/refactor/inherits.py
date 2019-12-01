@@ -16,7 +16,7 @@ def inherits():
   if len(ps):
     for p in ps:
       content = p.read_text()
-      m = re.search(r'''makeDriverClass\('(\S*)'\)''', content, re.S | re.M)
+      m = re.search(r'''makeDriverClass\('(\S*)'\)''', content, flags = re.S | re.M)
       if m:
         print(p.relative_to(eyo_path))
 

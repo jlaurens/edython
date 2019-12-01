@@ -10,8 +10,8 @@ fcls_path = driver_path / 'fcls'
 def refactor():
   for p in eyo_path.rglob('*.js'):
     content = p.read_text()
-    if re.search(r'makeSubclass\(\{.*?key:\s*\S*\s*,\s*', content, re.M|re.S):
-      content = re.sub(r'makeSubclass\(\{(\s*?)key:\s*(\S*?)\s*,\s*', r'makeSubclass(\2, {\1', content, re.M|re.S)
+    if re.search(r'makeSubclass\(\{.*?key:\s*\S*\s*,\s*', content, flags = re.M|re.S):
+      content = re.sub(r'makeSubclass\(\{(\s*?)key:\s*(\S*?)\s*,\s*', r'makeSubclass(\2, {\1', content, flags = re.M|re.S)
       p.write_text(content)
 
 refactor()

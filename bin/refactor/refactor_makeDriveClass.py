@@ -8,11 +8,11 @@ eyo_path = project_path / 'src/lib/eyo'
 def refactor():
   for p in eyo_path.rglob('*.js'):
     content = p.read_text()
-    m = re.search(r'''makeDriverClass\((?<key>'\S*')\)''', content, re.M | re.S)
+    m = re.search(r'''makeDriverClass\((?<key>'\S*')\)''', content, flags = re.M | re.S)
     if m:
       content = re.sub(r'''makeDriverClass\((?<key>'\S*?')\)''', r'''makeDriverClass({
   key: \1,
-)}''', content, re.M | re.S)
+)}''', content, flags = re.M | re.S)
       print (content)
       exit(0)
 
