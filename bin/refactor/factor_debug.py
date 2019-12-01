@@ -11,15 +11,17 @@ def refactor():
   for p in eyo_path.rglob('*.js'):
     content = p.read_text()
     if not re.search(r'eYo.Debug.test\s*\(', content, flags = re.M|re.S):
-      p.write_text(content + '''
-eYo.Debug.test() // remove this line when finished
-''')
+      line = f'''
+eYo && eYo.Debug && eYo.Debug.test && eYo.Debug.test('{p}') // remove this line when finished
+'''
+      p.write_text(line + content + line)
 
 def defactor():
   for p in eyo_path.rglob('*.js'):
     content = p.read_text()
-    if re.search(r'^eYo.Debug.test\s*\(\)', content, flags = re.M|re.S):
-      content = re.sub(r'.^eYo.Debug.test\s*\(.*$\s*', '', content, flags = re.M|re.S)
+
+    if re.search(r'^eYo && eYo.Debug && eYo.Debug.test && eYo.Debug.test\(', content, flags = re.M|re.S):
+      content = re.sub(r'.^eYo && eYo.Debug && eYo.Debug.test && eYo.Debug.test\(.*$.', '', content, flags = re.M|re.S)
       p.write_text(content)
 
 # refactor()
