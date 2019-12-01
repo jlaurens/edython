@@ -536,3 +536,5 @@ eYo.Expr.T3s = [
   eYo.T3.Expr.builtin__object,
   eYo.T3.Expr.any
 ]
+
+eYo.Debug.test() // remove this line when finished

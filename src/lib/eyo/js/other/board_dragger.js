@@ -143,3 +143,5 @@ eYo.BoardDragger.prototype.end = function() {
   this.isActive_ = false
   return
 }
+
+eYo.Debug.test() // remove this line when finished

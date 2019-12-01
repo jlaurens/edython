@@ -1,59 +1,115 @@
 """Generates a dependency javacript file from a directory.
 """
-import pathlib, os
+import pathlib
 import re
 import json
 import pprint
-
-re_provide = re.compile(r"^\s*goog\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)\('(?P<what>[^']+)'\)[;\s]*(?://.*)?$")
-#re_provide = re.compile(r"^\s*goog.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
 pathRoot = pathlib.Path(__file__).resolve().parent.parent.parent
 pathBuild = pathRoot / 'build' / 'helpers'
 pathBuild.mkdir(parents=True, exist_ok=True)
 
+class Foo:
+
+  re_provide = re.compile(r"^\s*goog\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)\s*\('(?P<what>[^']+)'\)[;\s]*(?://.*)?$")
+  #re_provide = re.compile(r"^\s*goog.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
+
+  #eYo.Consolidator.makeClass('Dlgt')
+  re_make = re.compile(r"^\s*(?:(?P<makeClass>[\w.]+)\.makeClass|(?P<makeSubclass>[\w.]+)\.makeSubclass|(?P<makeNS>[\w.]+)\.makeNS)\s*\(\s*(?:(?P<ns>[\w.]+)\s*,\s*)?'(?P<what>[^']+)'.*")
+
+  pathByProvided = {}
+
+  # we scan all the files and look separately for provide, require, forwardDeclare, makeNS, makeClass, makeSubclass lines.
+  def __init__(self, path):
+    self.path = path
+    with path.open('r', encoding='utf-8') as f:
+      relative = path.relative_to(pathRoot)
+      provided = set()
+      required = set()
+      forwarded = set()
+      classed = set()
+      subclassed = set()
+      namespaced = set()
+      for l in f.readlines():
+        m = self.re_make.match(l)
+        if m:
+          makeClass = m.group('makeClass')
+          makeSubclass = m.group('makeSubclass')
+          makeNS = m.group('makeNS')
+          ns = m.group('ns')
+          what = '.' + m.group('what')
+          if makeNS:
+            what = (ns if ns else makeNS) + what
+            provided.add(what)
+            namespaced.add(what)
+          elif makeClass:
+            what = (ns if ns else makeClass) + what
+            provided.add(what)
+            classed.add(what)
+          elif ns:
+            what = ns + what
+            provided.add(what)
+          else:
+            subclassed.add((makeSubclass, what))
+        m = self.re_provide.match(l)
+        if m:
+          what = m.group('what')
+          if m.group('provide'):
+            provided.add(what)
+          elif m.group('require'):
+            required.add(what)
+          else:
+            forwarded.add(what)
+      for p in provided:
+        if p in self.pathByProvided:
+          raise f'''At least two providers for {p}:
+{self.pathByProvided[p]}
+{path}
+'''
+      self.provided = provided
+      self.required = required
+      self.forwarded = forwarded
 def buildDeps(library, library_name):
     pathInput = pathRoot / 'src/lib/' / library
     print('Scanning folder\n    ', pathInput, '\nfor `*.js` files:')
-    files = [x for x in pathInput.glob('**/*')
+    files = [x for x in pathInput.rglob('*')
              if x.is_file() and x.suffix == '.js'
-             if not os.path.basename(x).endswith('.test.js')
+             if not x.name.endswith('test.js')
              if '/dev/' not in x.as_posix()]
     print(*files, sep='\n')
+    foos = []
+    for file in files:
+      foos.append(Foo(file))
 
     dependency_lines = []
-    requirement_lines = []
+    requirement_lines = set()
 
-    for file in files:
-        with file.open('r', encoding='utf-8') as f:
-            relative = file.relative_to(pathRoot)
-            provide = '['
-            require = '['
-            provide_sep = ''
-            require_sep = ''
-            for l in f.readlines():
-                m = re_provide.match(l)
-                if m:
-                    if m.group('provide'):
-                        provide += provide_sep + "'" + m.group('what') + "'"
-                        provide_sep = ', '
-                        requirement_lines.append(m.group('what'))
-                    elif m.group('require'):
-                        require += require_sep + "'" + m.group('what') + "'"
-                        require_sep = ', '
-                    else:
-                        requirement_lines.append(m.group('what'))
-            if len(provide) + len(require)>2:
-                provide += ']'
-                require += ']'
-                dependency_lines.append("goog.addDependency('" + relative.as_posix() + "', " + provide + ', ' + require + ', {});\n')
+    for foo in foos:
+      requirement_lines.update(foo.required)
+      requirement_lines.update(foo.forwarded)
+      provide = '['
+      provide_sep = ''
+      for what in foo.provided:
+        provide += provide_sep + f"'{what}'"
+        provide_sep = ', '
+      require = '['
+      require_sep = ''
+      for what in foo.required:
+        require += require_sep + f"'{what}'"
+        require_sep = ', '
+      if len(provide) + len(require)>2:
+        provide += ']'
+        require += ']'
+        relative = foo.path.relative_to(pathRoot)
+        dependency_lines.append("goog.addDependency('" + relative.as_posix() + "', " + provide + ', ' + require + ', {});\n')
+
     p_out = pathBuild / (library_name+'_deps.js')
     print('Writing dependencies in\n   ', p_out)
     dependency_lines.sort()
     p_out.write_text(''.join(dependency_lines))
     p_out = pathBuild / (library_name+'_required.txt')
     print('Writing requirements in\n   ', p_out)
-    requirement_lines.sort()
+    requirement_lines = sorted(requirement_lines)
     p_out.write_text('\n'.join(requirement_lines))
 print('Step 1:')
 print('=======')

@@ -771,3 +771,5 @@ eYo.Flyout.prototype.updateMetrics = function() {
   this.board.updateMetrics()
 }
 
+
+eYo.Debug.test() // remove this line when finished

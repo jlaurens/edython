@@ -471,3 +471,5 @@ eYo.Brick.Try.T3s = [
   eYo.T3.Stmt.raise_stmt,
   eYo.T3.Stmt.assert_stmt
 ]
+
+eYo.Debug.test() // remove this line when finished

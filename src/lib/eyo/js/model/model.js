@@ -71,7 +71,7 @@ eYo.Model.Module.prototype.getItem = function (key) {
  */
 eYo.Model.Module.prototype.getItemsInCategory = function (category, type) {
   var ra = this.data.by_category[category] || []
-  if (goog.isString(type)) {
+  if (eYo.isStr(type)) {
     type = this.data.type.indexOf(type)
   }
   if (goog.isNumber(type) && type >= 0) {
@@ -93,7 +93,7 @@ eYo.Model.Module.prototype.getItemsInCategory = function (category, type) {
  * @param {!String} key  The name of the category
  */
 eYo.Model.Module.prototype.forEachItemWithType = function (type, handler) {
-  if (goog.isString(type)) {
+  if (eYo.isStr(type)) {
     var ra = this.items_by_type[type]
     if (!ra) {
       ra = this.items_by_type[type] = []
@@ -229,3 +229,5 @@ Object.defineProperties(
     }
   }
 )
+
+eYo.Debug.test() // remove this line when finished

@@ -4,3 +4,5 @@ describe ('Tests: T3_all', function () {
     chai.assert(false, 'NOT YET IMPLEMENTED')
   })
 })
+
+eYo.Debug.test() // remove this line when finished

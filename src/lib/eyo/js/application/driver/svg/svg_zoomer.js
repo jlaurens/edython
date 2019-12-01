@@ -212,3 +212,5 @@ eYo.Svg.Zoomer.prototype.place = function(controls) {
 }
 
 
+
+eYo.Debug.test() // remove this line when finished

@@ -76,7 +76,7 @@ eYo.KeyHandler = (() => {
   me.register = function (key, model) {
     // manage duplicates
     if (key.length) {
-      goog.asserts.assert(goog.isString(model) || goog.isFunction(model) || goog.isFunction(model.action) || goog.isString(model.type), 'No model to register for ' + key)
+      goog.asserts.assert(eYo.isStr(model) || goog.isFunction(model) || goog.isFunction(model.action) || eYo.isStr(model.type), 'No model to register for ' + key)
       for (var i = 0, s; (s = shortcuts_[i]); i++) {
         if (s.key === key) {
           shortcuts_[i] = {
@@ -924,3 +924,5 @@ eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
     })
   }
 })
+
+eYo.Debug.test() // remove this line when finished

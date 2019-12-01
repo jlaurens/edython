@@ -217,3 +217,5 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   BRACE: '{}', // also used in xml eyo attribute
 
 })
+
+eYo.Debug.test() // remove this line when finished

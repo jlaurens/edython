@@ -34,7 +34,6 @@ goog.require('eYo.Const')
 goog.require('eYo.XRE')
 goog.require('eYo.T3')
 goog.require('eYo.Brick')
-goog.require('Blockly.Xml')
 
 goog.require('goog.dom');
 
@@ -110,7 +109,7 @@ goog.forwardDeclare('eYo.Expr')
  * @param {!Element} dom A tree of XML elements.
  * @return {string} Value representation.
  */
-Blockly.Xml.domToText = function (dom) {
+eYo.Xml.domToText = function (dom) {
   dom.setAttribute('xmlns', eYo.Xml.XMLNS)
   dom.setAttribute('xmlns:eyo', eYo.Xml.XMLNS)
   var oSerializer = new XMLSerializer()
@@ -134,7 +133,7 @@ eYo.Xml.brickToDomWithWhere = function(brick, opt) {
 
 /**
  * Encode a brick tree as XML.
- * @param {!Blockly.Board} board The board containing bricks.
+ * @param {!eYo.Board} board The board containing bricks.
  * @param {?Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
  * @return {!Element} XML document.
  */
@@ -174,17 +173,9 @@ eYo.Xml.boardToDom = function(board, opt) {
  * @param {!*} owner The board or the parent brick.
  * @return {Array.<string>} An array containing new brick IDs.
  */
-Blockly.Xml.domToBoard = eYo.Xml.domToBoard = function (xml, owner) {
-  var board = owner
-  if (xml instanceof Blockly.Board) {
-    var swap = xml
-    xml = board
-    board = swap
-    console.warn('Deprecated call to Blockly.Xml.domToBoard, ' +
-                 'swap the arguments.')
-  }
+eYo.Xml.domToBoard = function (xml, owner) {
   var board = owner.board || owner
-  if (goog.isString(xml)) {
+  if (eYo.isStr(xml)) {
     var parser = new DOMParser()
     xml = parser.parseFromString(xml, 'application/xml')
   }
@@ -268,37 +259,6 @@ Blockly.Xml.domToBoard = eYo.Xml.domToBoard = function (xml, owner) {
 goog.exportSymbol('eYo.Xml.domToBoard', eYo.Xml.domToBoard)
 
 /**
- * Encode a brick subtree as XML.
- * @param {!eYo.Brick.Dflt} brick The root brick to encode.
- * @param {boolean} optNoId True if the encoder should skip the brick id.
- * @return {!Element} Tree of XML elements, possibly null.
- */
-Blockly.Xml.blockToDom = function (brick, optNoId) {
-  return eYo.Xml.brickToDom(brick, {noId: optNoId})
-}
-
-/**
- * Encode a brick subtree as XML with where coordinates.
- * @param {!eYo.Brick.Dflt} brick The root brick to encode.
- * @param {boolean=} optNoId True if the encoder should skip the brick ID.
- * @return {!Element} Tree of XML elements.
- */
-Blockly.Xml.blockToDomWithWhere = function(brick, optNoId) {
-  return eYo.Xml.brickToDomWithWhere(brick, {noId: optNoId})
-}
-
-/**
- * Decode an XML brick tag and create a brick (and possibly sub bricks) on the
- * board.
- * @param {!Element|string} xmlBrick XML brick element or string representation of an xml brick.
- * @param {!Blockly.Board} board The board.
- * @return {!eYo.Brick} The root brick created.
- */
-Blockly.Xml.domToBrick = function (dom, board) {
-  throw "FORBIDDEN CALL, BREAK HERE"
-}
-
-/**
  * Create a new brick, with full contents.
  * This is the expected way to create a brick
  * to be displayed immediately.
@@ -310,7 +270,7 @@ Blockly.Xml.domToBrick = function (dom, board) {
 eYo.Brick.newReady = (() => {
   var newReady = eYo.Brick.newReady
   return (owner, model, id) => {
-    if (goog.isString(model)) {
+    if (eYo.isStr(model)) {
       model = model.trim()
       if (model.startsWith('<')) {
         var brick = eYo.Xml.stringToBrick(model, owner)
@@ -642,7 +602,7 @@ eYo.Xml.registerAllTags = function () {
       var model = eYo.Brick.Mgr.getModel(type)
       var xml = model && model.xml
       var attr = xml && xml.attr
-      if (!goog.isString(attr)) {
+      if (!eYo.isStr(attr)) {
         var m = XRegExp.exec(type, eYo.XRE.s3d)
         if (m) {
           attr = m.core
@@ -657,7 +617,7 @@ eYo.Xml.registerAllTags = function () {
         if (already.indexOf(type) < 0) {
           already.push(type)
         }
-      } else if (goog.isString(already)) {
+      } else if (eYo.isStr(already)) {
         if (type !== already) {
           eYo.T3.Xml.fromDom[attr] = already = [already, type]
         }
@@ -723,7 +683,7 @@ eYo.Xml.Recover.prototype.whenRecovered = function (f) {
  * Don't resit the given dom.
  *
  * @param {!Element} dom XML dom element.
- * @param {!Blockly.Board} board  The board.
+ * @param {!eYo.Board} board  The board.
  */
 eYo.Xml.Recover.prototype.dontResit = function (dom) {
   var i = this.to_resit.indexOf(dom)
@@ -1361,3 +1321,5 @@ eYo.Xml.compareBricks = function (lhs, rhs) {
   var xmlR = goog.dom.xml.serialize(eYo.Xml.brickToDom(rhs, {noId: true}))
   return xmlL < xmlR ? -1 : (xmlL < xmlR ? 1 : 0)
 }
+
+eYo.Debug.test() // remove this line when finished

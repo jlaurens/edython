@@ -23,3 +23,5 @@ goog.provide('eYo.Turtle')
  * @constructor
  */
 eYo.UI.makeClass('Turtle', eYo.Pane)
+
+eYo.Debug.test() // remove this line when finished

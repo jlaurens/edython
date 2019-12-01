@@ -23,3 +23,5 @@ goog.provide('eYo.Variable')
  * @constructor
  */
 eYo.UI.makeClass('Variable', eYo.Pane)
+
+eYo.Debug.test() // remove this line when finished

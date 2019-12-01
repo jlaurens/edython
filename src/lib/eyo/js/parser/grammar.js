@@ -398,3 +398,5 @@ eYo.GMR.PyGrammar_LabelRepr = (/* label * */ lb) =>
   }
 }
 
+
+eYo.Debug.test() // remove this line when finished

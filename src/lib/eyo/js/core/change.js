@@ -182,3 +182,5 @@ eYo.Change.prototype.wrap = function () {
   }
   return ans
 }
+
+eYo.Debug.test() // remove this line when finished

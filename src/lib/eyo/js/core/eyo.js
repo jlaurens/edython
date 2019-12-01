@@ -22,9 +22,30 @@ goog.provide('eYo')
 goog.provide('eYo.Version')
 goog.provide('eYo.Session')
 
+goog.provide('eYo.makeNS')
+
 goog.forwardDeclare('eYo.Application')
 
-var eYo = Object.create(null)
+/**
+ * @name {eYo}
+ * @namespace
+ */
+var eYo = (() => {
+  var eYo = function() {}
+  var ans = new eYo()
+  var NA
+  Object.defineProperties(ans, {
+    NA: { value: NA },
+    name: { value: 'eYo' }, 
+  })
+  return ans
+})()
+
+/**
+ * Stands for Not Available, strong `undefined` object that cannot be overwritten.
+ * @name {eYo.NA}
+ */
+
 eYo.Version = Object.create(null)
 eYo.Session = Object.create(null)
 
@@ -86,21 +107,16 @@ eYo.setup = (() => {
   return me
 })()
 
-Object.defineProperties(eYo, {
-  Temp: {
-    value: Object.create(null)
-  }
-})
+eYo.Temp = Object.create(null)
+eYo.Debug = Object.create(null)
 
 /**
- * One shot object standing for NA, aka Not Available (trusty undefined value).
+ * Whether the argument is `eYo.NA`.
+ * @param {*} what
  */
-;(function () {
-  var x
-  Object.defineProperty(eYo, 'NA', {
-    value: x
-  })
-})()
+eYo.isStr = (what) => {
+  return goog.isString (what)
+}
 
 /**
  * Whether the argument is `eYo.NA`.
@@ -115,15 +131,35 @@ eYo.isNA = (what) => {
  * @param {*} what
  */
 eYo.isDef = (what) => {
-  return what !== undefined
+  return what !== eYo.NA
 }
 
 /**
- * Whether the argument is not `undefined`.
+ * Whether the argument is a function.
  * @param {*} what
+ * @return {!Boolean}
  */
 eYo.isF = (what) => {
   return typeof what === 'function' && !!what.call
+}
+
+/**
+ * Returns the argument if its a function, `eYo.NA` otherwise.
+ * @param {*} what
+ * @return {Function|eYo.NA}
+ */
+eYo.asF = (what) => {
+  return typeof what === 'function' && !!what.call ? what : eYo.NA
+}
+
+/**
+ * Returns the evaluated argument if its a function,
+ * the argument itself otherwise.
+ * @param {*} what
+ * @return {Function|eYo.NA}
+ */
+eYo.called = (what) => {
+  return eYo.isF(what) ? what() : what
 }
 
 /**
@@ -146,17 +182,83 @@ eYo.assert = (what, reason) => {
 /**
  * Cover to raise when necessary.
  * @param {Boolean} what
+ * @param {?String} str
  */
-eYo.parameterAssert = (what) => {
-  goog.asserts.assert(what, "Bad parameter")
+eYo.parameterAssert = (what, str) => {
+  goog.asserts.assert(what, str ? `Bad parameter: ${str}` : "Bad parameter")
 }
 
 /**
- * Whether sub_ is a subclass of super_, or equals to super_...
- * @param {!Function} sub_
- * @param {!Function} super_
+ * Contrary to goog.inherits, does not erase the childC9r.prototype.
+ * IE<11
+ * @param {!Function} childC9r
+ * @param {!Function} superC9r
+ */
+eYo.inherits = function (childC9r, superC9r) {
+  childC9r.superClass_ = superC9r.prototype
+  Object.setPrototypeOf(childC9r.prototype, superC9r.prototype)
+  childC9r.prototype.constructor = childC9r
+}
+
+/**
+ * Whether sub_ is a subclass of Super, or equals to Super...
+ * @param {!Function} Sub
+ * @param {!Function} Super
  * @return {Boolean}
  */
-eYo.isSubclass = (sub_, super_) => {
-  return !!super_ && !!sub_ && (sub_ === super_ || sub_.prototype instanceof super_)
+eYo.isSubclass = (Sub, Super) => {
+  return !!Super && !!Sub && eYo.isF(Super) && (Sub === Super || Sub.prototype instanceof Super)
 }
+
+/**
+ * @name {eYo.makeNS}
+ * Make a namespace by subclassing the namespace's or the caller's constructor.
+ * @param {?Object} ns,  namespace.
+ * @param {!String} key, capitalised name, created object will be `ns[key]`. `key` is required when `ns` is given.
+ * @return {Object}
+ */
+eYo.constructor.prototype.makeNS = function (ns, key) {
+  if (eYo.isStr(ns)) {
+    eYo.parameterAssert(!key, 'Unexpected key')
+    key = ns
+    ns = key && this || eYo.NA
+  } else {
+    !key || eYo.parameterAssert(eYo.isStr(key), 'Unexpected key type')
+  }
+  var Super = (ns||this).constructor
+  var C9r = function () {
+    Super.call(this)
+  }
+  eYo.inherits(C9r, Super)
+  var ans = new C9r()
+  if (ns) {
+    eYo.parameterAssert(!!key, 'Missing key')
+    if (ns[key] && !eYo.isSubclass(ans, ns[key])) {
+      throw new Error(`ns[${key}] already exists.`)
+    }
+    Object.defineProperty(ns, key, {
+      value: ans,
+    })
+    Object.defineProperties(ans, {
+      name: { value: `${ns.name}.${key}`, },
+    })
+  } else {
+    Object.defineProperties(ans, {
+      name: { value: key || "No man's land", },
+    })
+  }
+  return ans
+}
+
+eYo.Debug.test = (k = 1) => {
+  if (eYo.Debug.n) {
+    eYo.Debug.n += k
+  } else {
+    eYo.Debug.n = k
+  }
+  if (eYo.Debug.n === 62) {
+    console.warn('BREAK HERE!!!')
+  }
+  console.error(eYo.Debug.n, eYo.Dlgt)
+}
+eYo.Debug.test() // remove this line when finished

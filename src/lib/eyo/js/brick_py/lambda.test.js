@@ -83,3 +83,5 @@ describe('Lambda', function() {
   })
 })
 
+
+eYo.Debug.test() // remove this line when finished

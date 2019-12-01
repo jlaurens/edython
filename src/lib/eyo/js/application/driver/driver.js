@@ -26,12 +26,12 @@ eYo.Driver = Object.create(null)
  * @param {Function} constructor
  */
 eYo.makeClass(eYo.Driver, 'Dlgt', eYo.Dlgt, {
-  init (c9r) {
-    this.c9r_ = c9r
+  init (C9r) {
+    this.C9r_ = C9r
   },
   props: {
     link: {
-      c9r: {value: eYo.NA}
+      C9r: {value: eYo.NA}
     }
   }
 })
@@ -62,9 +62,7 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
     static: {
       link: {
         eyo: {
-          validate (ignored) {
-            throw 'Forbidden setter'
-          }
+          validate: eYo.Do.noSetter,
         }
       }
     }
@@ -101,7 +99,7 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
    * - disposeUI: an optional function with signature (object)->eYo.NA
    */
   owner.makeDriverClass = (owner_, key, Super, driverModel) => {
-    if (goog.isString(owner_)) {
+    if (eYo.isStr(owner_)) {
       driverModel = Super || {}
       Super = key
       key = owner_
@@ -123,7 +121,7 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
     : function () {
       Super.apply(this, arguments)
     }
-    eYo.Do.inherits(c9r, Super)
+    eYo.inherits(c9r, Super)
     var proto = c9r.prototype
     proto.initUI = function (object, ...rest) {
       var spr = c9r.superClass_
@@ -175,3 +173,5 @@ eYo.Driver.Dflt.prototype.disposeUI = function () {
   return true
 }
 
+
+eYo.Debug.test() // remove this line when finished

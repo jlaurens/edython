@@ -4,3 +4,5 @@ describe ('Tests: collections', function () {
 
   })
 })
+
+eYo.Debug.test() // remove this line when finished

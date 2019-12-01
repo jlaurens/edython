@@ -4,3 +4,5 @@ describe ('Tests: menubuttonrenderer.test', function () {
 
   })
 })
+
+eYo.Debug.test() // remove this line when finished

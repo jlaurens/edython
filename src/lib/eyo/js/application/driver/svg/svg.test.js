@@ -81,3 +81,4 @@ describe('SVG groups and paths', function () {
   })
 })
 }
+eYo.Debug.test() // remove this line when finished

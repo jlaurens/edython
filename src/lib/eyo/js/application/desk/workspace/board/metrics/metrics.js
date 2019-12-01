@@ -13,8 +13,6 @@
 
 goog.require('eYo.Owned')
 
-goog.provide('eYo.Metrics')
-
 goog.forwardDeclare('eYo.Board')
 goog.forwardDeclare('eYo.Geometry')
 
@@ -360,3 +358,5 @@ eYo.Metrics.prototype.equals = function(rhs) {
   this.drag.equals(rhs.drag) &&
   this.port.equals(rhs.port)
 }
+
+eYo.Debug.test() // remove this line when finished

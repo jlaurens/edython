@@ -112,7 +112,7 @@ eYo.T3.Profile = function (owner, model) {
     var key, value
     var f = (key) => {
       value = m[key]
-      if (goog.isString(value)) {
+      if (eYo.isStr(value)) {
         Object.defineProperty(
           this,
           key,
@@ -141,7 +141,7 @@ eYo.T3.Profile = function (owner, model) {
         this,
         key,
         {
-          value: goog.isString(value) ? value : eYo.NA
+          value: eYo.isStr(value) ? value : eYo.NA
         }
       )
       delete m[key]
@@ -282,7 +282,7 @@ var setup = (() => {
       ? eYo.T3.Profile.integer
       : eYo.T3.Profile.floatnumber
     }
-    if (!candidate || !goog.isString(candidate)) {
+    if (!candidate || !eYo.isStr(candidate)) {
       return eYo.T3.Profile.void
     }
     if (!candidate.length) {
@@ -728,3 +728,5 @@ eYo.T3.Profile.getReserved = function (identifier) {
     })
   }
 }
+
+eYo.Debug.test() // remove this line when finished

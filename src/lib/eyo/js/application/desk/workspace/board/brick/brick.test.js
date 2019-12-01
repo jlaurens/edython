@@ -149,3 +149,4 @@ describe('Group magnets', function () {
     b_1.dispose()
   })
 })
+eYo.Debug.test() // remove this line when finished

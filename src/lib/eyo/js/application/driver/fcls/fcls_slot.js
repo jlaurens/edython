@@ -35,3 +35,5 @@ eYo.Fcls.Slot.prototype.displayedGet = eYo.Do.nothing
  */
 eYo.Fcls.Slot.prototype.displayedSet = eYo.Do.nothing
 
+
+eYo.Debug.test() // remove this line when finished

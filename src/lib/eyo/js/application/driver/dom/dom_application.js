@@ -34,7 +34,7 @@ eYo.Dom.makeDriverClass('Application', {
     eYo.Css.inject(options.hasCss, options.pathToMedia)
     var container = options.container
     // no UI if no valid container
-    if (goog.isString(container)) {
+    if (eYo.isStr(container)) {
       container = options.container = document.getElementById(container) ||
           document.querySelector(container)
     }
@@ -54,3 +54,5 @@ eYo.Dom.makeDriverClass('Application', {
     dom.div_ = null
   }
 })
+
+eYo.Debug.test() // remove this line when finished

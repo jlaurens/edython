@@ -17,6 +17,7 @@ goog.require('eYo.Decorate')
 goog.require('eYo.Dlgt')
 
 goog.provide('eYo.Application')
+delete eYo.Application
 
 goog.forwardDeclare('eYo.Css')
 
@@ -251,3 +252,5 @@ eYo.Application.prototype.doFocus = function() {
  * Close tooltips, context menus, dropdown selections, etc.
  */
 eYo.Application.prototype.hideChaff = eYo.Do.nothing
+
+eYo.Debug.test() // remove this line when finished

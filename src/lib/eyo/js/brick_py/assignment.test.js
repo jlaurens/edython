@@ -22,7 +22,7 @@ describe('Each assignment brick type', function() {
     it (`basic operator: ${Ts[0]} / ${Ts[1] || Ts[0]} / ${Ts[2]}`, function () {
       eYo.Test.setItUp()
       var d = eYo.Test.new_brick(Ts[0], Ts[1])
-      eYo.Test.c9r(d, 'assignment_stmt')
+      eYo.Test.C9r(d, 'assignment_stmt')
       eYo.Test.data_value(d, 'operator', Ts[2])
       d.dispose()
       eYo.Test.tearItDown()
@@ -36,7 +36,7 @@ describe('Assignment', function() {
     it(t, function() {
       eYo.Test.setItUp()
       var d = eYo.Test.new_brick(t)
-      eYo.Test.c9r(d, 'assignment_stmt')
+      eYo.Test.C9r(d, 'assignment_stmt')
       eYo.Test.variant(d, variant)
       eYo.Test.incog(d, incogs)
       d.dispose()
@@ -52,7 +52,7 @@ describe('Assignment', function() {
   it('variant change', function() {
     eYo.Test.setItUp()
     var d1 = eYo.Test.new_brick('expression_stmt')
-    eYo.Test.c9r(d1, 'assignment_stmt')
+    eYo.Test.C9r(d1, 'assignment_stmt')
     eYo.Test.variant(d1, 'EXPRESSION')
     eYo.Test.incog(d1, ['Xtarget', 'Xannotated', 'value'])
     eYo.Test.variant(d1, 'EXPRESSION', '2')
@@ -171,7 +171,7 @@ describe('Comment/Variant changes', function() {
   it('variant change 1', function() {
     eYo.Test.setItUp()
     var d1 = eYo.Test.new_brick('expression_stmt')
-    eYo.Test.c9r(d1, 'assignment_stmt')
+    eYo.Test.C9r(d1, 'assignment_stmt')
     eYo.Test.variant(d1, 'EXPRESSION', '1')
     eYo.Test.incog(d1, ['Xtarget', 'Xannotated', 'value'])
     eYo.Test.variant(d1, 'EXPRESSION', '2')
@@ -201,13 +201,13 @@ describe('Copy/Paste', function() {
     it(t, function() {
       eYo.Test.setItUp()
       var d = eYo.Test.new_brick(t)
-      eYo.Test.c9r(d, 'assignment_stmt')
+      eYo.Test.C9r(d, 'assignment_stmt')
       eYo.Test.variant(d, variant)
       eYo.Test.incog(d, incogs)
       var dom = eYo.Xml.brickToDom(d)
       d.dispose()
       d = eYo.Test.new_brick(dom)
-      eYo.Test.c9r(d, 'assignment_stmt')
+      eYo.Test.C9r(d, 'assignment_stmt')
       console.error(dom)
       eYo.Test.variant(d, variant)
       eYo.Test.incog(d, incogs)
@@ -542,3 +542,5 @@ describe('Check: assignment_stmt target', function() {
     eYo.Test.tearItDown()
   })
 })
+
+eYo.Debug.test() // remove this line when finished

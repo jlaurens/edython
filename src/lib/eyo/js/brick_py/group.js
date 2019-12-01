@@ -339,3 +339,5 @@ eYo.Brick.Group.T3s = [
   eYo.T3.Stmt.with_part,
   eYo.T3.Stmt.for_part
 ]
+
+eYo.Debug.test() // remove this line when finished

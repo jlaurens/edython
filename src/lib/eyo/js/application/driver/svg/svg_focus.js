@@ -168,3 +168,5 @@ eYo.Svg.Focus.prototype.magnetOff = function (mgr) {
   }
 }
 
+
+eYo.Debug.test() // remove this line when finished

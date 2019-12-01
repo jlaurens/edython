@@ -42,3 +42,5 @@ describe ('Tests: owned2_ui', function () {
     })
   })
 })
+
+eYo.Debug.test() // remove this line when finished

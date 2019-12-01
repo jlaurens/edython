@@ -86,3 +86,5 @@ describe('Owned', function () {
     chai.assert(!onr2.app)
   })
 })
+
+eYo.Debug.test() // remove this line when finished

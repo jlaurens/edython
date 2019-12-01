@@ -81,7 +81,7 @@ eYo.Navigate.doTab = (() => {
 /**
  * Get the closest box, according to the filter.
  * For edython.
- * @param {!Blockly.Board} board .
+ * @param {!eYo.Board} board .
  * @param {function(point): number} weight is a function.
  * @return {?eYo.Brick}
  */
@@ -385,3 +385,5 @@ eYo.Focus.chooseNext = () => {
     eYo.Focus.scrollToVisible()
   }
 }
+
+eYo.Debug.test() // remove this line when finished

@@ -87,3 +87,5 @@ eYo.Dom.makeDriverClass('Board', {
     board.dom.div_ = null // do not remove this div from the dom
   }
 })
+
+eYo.Debug.test() // remove this line when finished

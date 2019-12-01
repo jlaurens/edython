@@ -257,7 +257,7 @@ eYo.Py.Exporter.prototype.export = function (brick, opt) {
 /**
  * Export the field, which must be defined.
  *
- * @param {!Blockly.Field}
+ * @param {!eYo.Field}
  * @private
  */
 eYo.Py.Exporter.prototype.exportField_ = function (field) {
@@ -421,3 +421,5 @@ eYo.FieldInput.prototype.getPythonText_ = function () {
   }
   return t
 }
+
+eYo.Debug.test() // remove this line when finished

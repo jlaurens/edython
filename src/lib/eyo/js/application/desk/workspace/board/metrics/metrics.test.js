@@ -145,3 +145,5 @@ describe('Basic metrics IN PROGRESS', function () {
     chai.assert(before.view.equals(after.view))
   })  
 })
+
+eYo.Debug.test() // remove this line when finished

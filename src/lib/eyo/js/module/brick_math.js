@@ -219,3 +219,5 @@ eYo.Brick.Math.T3s = [
   eYo.T3.Stmt.math__call_stmt,
   eYo.T3.Expr.math__const
 ]
+
+eYo.Debug.test() // remove this line when finished

@@ -21,3 +21,5 @@ goog.forwardDeclare('eYo.Workspace')
  * Shared application driver.
  */
 eYo.Fcls.makeDriverClass('Workspace')
+
+eYo.Debug.test() // remove this line when finished

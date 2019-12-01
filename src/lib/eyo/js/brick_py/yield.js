@@ -228,3 +228,5 @@ eYo.Brick.Yield.T3s = [
   eYo.T3.Expr.yield_expr,
   eYo.T3.Stmt.yield_stmt
 ]
+
+eYo.Debug.test() // remove this line when finished

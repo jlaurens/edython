@@ -98,3 +98,5 @@ eYo.Svg.Slot.prototype.display = function (slot) {
       `translate(${slot.where.x}, ${slot.where.y})`)
   }
 }
+
+eYo.Debug.test() // remove this line when finished

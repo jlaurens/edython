@@ -100,3 +100,5 @@ eYo.Svg.BrickDragger.prototype.end = function (dragger) {
   this.brickEffectStop(dragger.brick)
   dragger.dragSurface.end(!dragger.wouldDelete_)
 }
+
+eYo.Debug.test() // remove this line when finished

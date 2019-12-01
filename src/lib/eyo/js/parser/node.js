@@ -508,3 +508,5 @@ eYo.Node._PyNode_SizeOf = (n) =>
 {
   throw 'DO NOT CALL THIS'
 }
+
+eYo.Debug.test() // remove this line when finished

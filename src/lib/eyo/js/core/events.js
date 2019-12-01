@@ -91,7 +91,7 @@ Object.defineProperties(eYo.Events, {
     set: (() => {
       var level = 0
       return state => {
-        if (goog.isString(state)) {
+        if (eYo.isStr(state)) {
           eYo.Events.group_ = state
           level = 1
         } else if (state) {
@@ -349,3 +349,5 @@ Object.defineProperties(eYo.Events.Abstract.prototype, {
  */
 eYo.Events.Abstract.prototype.run = eYo.Do.nothing
 
+
+eYo.Debug.test() // remove this line when finished

@@ -138,3 +138,5 @@ describe('Proxy between lists and linked lists (Proof of concept)', function() {
 //    test('a0','b1','c2')
   })
 })
+
+eYo.Debug.test() // remove this line when finished

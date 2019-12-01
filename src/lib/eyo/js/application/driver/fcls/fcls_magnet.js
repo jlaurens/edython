@@ -30,3 +30,5 @@ eYo.Fcls.makeDriverClass('Magnet')
 eYo.Fcls.Magnet.prototype.hilight = eYo.Do.nothing
 
 console.error('hilight -> focusOn?')
+
+eYo.Debug.test() // remove this line when finished

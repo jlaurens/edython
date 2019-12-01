@@ -745,3 +745,4 @@ eYo.DnD.Dropper.Board.prototype.complete = function () {
 }
 
 /*******/
+eYo.Debug.test() // remove this line when finished

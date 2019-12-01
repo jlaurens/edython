@@ -1856,7 +1856,7 @@ eYo.Brick.UI.prototype.bumpNeighbours_ = function() {
     if (magnet.target && magnet.isSuperior) {
       magnet.targetBrick.ui.bumpNeighbours_()
     }
-    magnet.neighbours_(Blockly.SNAP_RADIUS).forEach(other => {
+    magnet.neighbours_(eYo.Motion.SNAP_RADIUS).forEach(other => {
       // If both magnets are connected, that's probably fine.  But if
       // either one of them is unconnected, then there could be confusion.
       if (!magnet.target || !other.target) {
@@ -2176,3 +2176,5 @@ eYo.Brick.UI.prototype.showContextMenu_ = function (e) {
   }
   eYo.MenuManager.shared().showMenu(this.brick, e)
 }
+
+eYo.Debug.test() // remove this line when finished

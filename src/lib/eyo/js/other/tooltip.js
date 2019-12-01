@@ -25,7 +25,7 @@ goog.provide('eYo.Tooltip')
  * @param {?Object} option.
  */
 eYo.Tooltip.add = function (el, title, options) {
-  if (goog.isString(title)) {
+  if (eYo.isStr(title)) {
     el.setAttribute('title', title)
     tippy(el, options)
   } else if (goog.isDef(title)) {
@@ -190,3 +190,5 @@ eYo.Tooltip.Title = {
   text_splitlines: 'Découper le texte en lignes, avec ou sans séparateur de fin de ligne',
   text_index: 'Trouver un texte inclus, avec levée d\'exception',
 }
+
+eYo.Debug.test() // remove this line when finished

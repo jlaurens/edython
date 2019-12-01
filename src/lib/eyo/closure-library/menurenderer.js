@@ -36,3 +36,5 @@ eYo.MenuRenderer.CSS_CLASS = 'eyo-menu'
 eYo.MenuRenderer.prototype.getCssClass = function () {
   return eYo.MenuRenderer.CSS_CLASS
 }
+
+eYo.Debug.test() // remove this line when finished

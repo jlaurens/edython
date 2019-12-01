@@ -422,3 +422,5 @@ eYo.Svg.makeDriverClass('SearchToolbar', {
     svg.group_ = null
   },
 })
+
+eYo.Debug.test() // remove this line when finished

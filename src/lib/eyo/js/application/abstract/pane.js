@@ -53,3 +53,5 @@ eYo.Pane.prototype.updateMetrics = eYo.Do.nothing
  * Place the receiver.
  */
 eYo.Pane.prototype.place = eYo.Do.nothing
+
+eYo.Debug.test() // remove this line when finished

@@ -4,3 +4,5 @@ describe ('Tests: brick_random', function () {
     chai.assert(false, 'NOT YET IMPLEMENTED')
   })
 })
+
+eYo.Debug.test() // remove this line when finished

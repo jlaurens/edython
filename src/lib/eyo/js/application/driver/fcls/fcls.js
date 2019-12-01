@@ -31,3 +31,5 @@ goog.forwardDeclare('goog.dom')
  */
 eYo.Driver.makeMgrClass(eYo.Fcls)
 
+
+eYo.Debug.test() // remove this line when finished

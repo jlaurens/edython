@@ -231,7 +231,7 @@ eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
  * @param {Object} newValue
  */
 eYo.Data.prototype.internalSet = function (newValue) {
-  if (goog.isString(newValue)) {
+  if (eYo.isStr(newValue)) {
     var x = this.model[newValue]
     !x || !goog.isFucntion(newValue) || (newValue = x)
   }
@@ -717,7 +717,7 @@ eYo.Data.prototype.filter = function (newValue) {
     return eYo.Decorate.whenAns(f.apply(this, arguments))
   }
   if (this.model.filter === true) {
-    if (goog.isString(newValue)) {
+    if (eYo.isStr(newValue)) {
       if (newValue === newValue.toUpperCase()) {
         var x = eYo.Key[newValue]
         !x || (newValue = x)
@@ -798,7 +798,7 @@ eYo.Data.prototype.consolidate = function () {
  * @private
  */
 eYo.Data.prototype.isActive = function () {
-  return !!this.required || (!this.incog_ && (goog.isString(this.value_) && this.value_.length))
+  return !!this.required || (!this.incog_ && (eYo.isStr(this.value_) && this.value_.length))
 }
 
 /**
@@ -1062,3 +1062,5 @@ eYo.Data.prototype.whenRequiredFromSaved = function (helper) {
     return true
   }
 }
+
+eYo.Debug.test() // remove this line when finished

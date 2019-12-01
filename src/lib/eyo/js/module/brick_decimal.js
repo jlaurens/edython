@@ -270,3 +270,5 @@ goog.mixin(eYo.Tooltip.Title, {
 eYo.Brick.Decimal.T3s = [
   eYo.T3.Expr.decimal__const
 ]
+
+eYo.Debug.test() // remove this line when finished

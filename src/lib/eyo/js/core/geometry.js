@@ -1120,3 +1120,5 @@ eYo.Rect.intersection = function(a, b) {
   }
   return null
 }
+
+eYo.Debug.test() // remove this line when finished

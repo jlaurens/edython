@@ -16,3 +16,5 @@ goog.require('eYo')
 goog.require('eYo.Xml')
 goog.provide('eYo.Demo');
 
+
+eYo.Debug.test() // remove this line when finished

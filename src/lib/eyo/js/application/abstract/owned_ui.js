@@ -11,13 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.UI')
-
 goog.require('eYo.UI.Dlgt')
 
 goog.require('eYo.Owned')
 
-goog.provide('eYo.UI.Dflt')
+// goog.provide('eYo.UI.Dflt')
 
 /**
  * @name {eYo.UI.Dlgt}
@@ -25,7 +23,26 @@ goog.provide('eYo.UI.Dflt')
  * @constructor
  * Basic constructor delegate.
  */
-eYo.Dlgt.makeSublass(eYo.UI, 'Dlgt')
+eYo.Dflt.makeSubclass(eYo.UI, 'Dflt')
+
+/**
+ * Add the cached `app` property to the associate constructor.
+ * NYU.
+ */
+eYo.UI.Dlgt.prototype.addApp = function () {
+  this.declareCached_('app', {
+    get () {
+      return this.owner__.app
+    },
+    forget () {
+      this.forEachOwned(k => {
+        var x = this[k]
+        x && x.appForget && x.appForget()
+      })
+      this.ui_driverForget && this.ui_driverForget()
+    }
+  })
+}
 
 /**
  * Class for a basic object with a UI driver.
@@ -41,7 +58,7 @@ eYo.Dlgt.makeSublass(eYo.UI, 'Dlgt')
  * @readonly
  * @property {eYo.Driver.Mgr}ui_driver_mgr,  The ui driver manager used for rendering.
  */
-eYo.Owned.makeSublass(eYo.UI, 'Dflt', {
+eYo.Owned.makeSubclass(eYo.UI, 'Dflt', {
   init: {
     begin () {
       this.disposeUI = eYo.Do.nothing
@@ -99,3 +116,5 @@ eYo.UI.Dflt.prototype.ownerDidChange = function (before, after) {
     this.brick_ = after
   }
 }
+
+eYo.Debug.test() // remove this line when finished

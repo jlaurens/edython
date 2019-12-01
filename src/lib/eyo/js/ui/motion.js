@@ -961,3 +961,5 @@ eYo.Motion.prototype.handleClickBoard_ = function() {
   eYo.app.focusMgr.brick && eYo.app.focusMgr.brick.focusOff()
   return true
 }
+
+eYo.Debug.test() // remove this line when finished

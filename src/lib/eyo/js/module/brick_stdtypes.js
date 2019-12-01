@@ -116,3 +116,5 @@ goog.provide('eYo.Brick.Stdtypes')
   }))
 
 }) ()
+
+eYo.Debug.test() // remove this line when finished

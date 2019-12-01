@@ -404,3 +404,5 @@ eYo.Brick.Import.T3s = [
   eYo.T3.Stmt.import_stmt,
   eYo.T3.Stmt.future_statement
 ]
+
+eYo.Debug.test() // remove this line when finished

@@ -314,13 +314,6 @@ eYo.Magnet.DB.prototype.removeMagnet_ = (() => {
   }
 })()
 
-// deprecated
-Object.defineProperty(Blockly, 'OPPOSITE', {
-  get () {
-    throw "FORBIDDEN"
-  }
-})
-
 /**
  * Dispose of the ressources.
  * @param {?Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
@@ -1560,7 +1553,7 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
   // Raise it to the top for extra visibility.
   var selected = root.hasFocus
   selected || root.ui.addSelect()
-  var dxy = eYo.Where.xy(Blockly.SNAP_RADIUS, Blockly.SNAP_RADIUS).backward(this.xy)
+  var dxy = eYo.Where.xy(eYo.Motion.SNAP_RADIUS, eYo.Motion.SNAP_RADIUS).backward(this.xy)
   if (reverse) {
     // When reversing a bump due to an uneditable brick, bump up.
     dxy.y = -dxy.y
@@ -1957,3 +1950,5 @@ Object.defineProperty(eYo.Magnet.prototype, 'right', {
     }
   }
 })
+
+eYo.Debug.test() // remove this line when finished

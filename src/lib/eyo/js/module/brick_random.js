@@ -43,7 +43,7 @@ eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
       init: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var validated
-        if (goog.isString(newValue)) {
+        if (eYo.isStr(newValue)) {
           if (newValue.length) {
             validated = Math.max(0, Math.floor(Number(newValue)))
           } else {
@@ -316,3 +316,5 @@ goog.mixin(eYo.Tooltip.Title, {
 eYo.Brick.Random.T3s = [
   eYo.T3.Expr.random__randrange,
 ]
+
+eYo.Debug.test() // remove this line when finished

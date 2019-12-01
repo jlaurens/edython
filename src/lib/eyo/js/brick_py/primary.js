@@ -563,7 +563,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
       init: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var validated
-        if (goog.isString(newValue)) {
+        if (eYo.isStr(newValue)) {
           if (newValue.length) {
             validated = Math.max(0, Math.floor(Number(newValue)))
           } else {
@@ -915,7 +915,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
         if (item) {
           validated = newValue
         } else {
-          if (goog.isString(newValue)) {
+          if (eYo.isStr(newValue)) {
             if (newValue.length) {
               validated = Math.max(0, Math.floor(Number(newValue)))
             } else {
@@ -962,7 +962,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
         if (item) {
           validated = newValue
         } else {
-          if (goog.isString(newValue)) {
+          if (eYo.isStr(newValue)) {
             if (newValue.length) {
               validated = Math.max(0, Math.floor(Number(newValue)))
             } else {
@@ -1903,3 +1903,5 @@ eYo.Expr.primary.T3s = [
   eYo.T3.Expr.call_expr,
   eYo.T3.Stmt.call_stmt
 ]
+
+eYo.Debug.test() // remove this line when finished

@@ -283,3 +283,5 @@ eYo.Svg.Scrollbar.prototype.onBar_mousedown = function(e) {
   }
   eYo.Dom.gobbleEvent(e)
 }
+
+eYo.Debug.test() // remove this line when finished

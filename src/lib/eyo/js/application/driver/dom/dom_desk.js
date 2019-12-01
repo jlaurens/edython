@@ -32,7 +32,7 @@ eYo.Dom.makeDriverClass('Desk', {
     var options = desk.options
     var container = options.container
     // no UI if no valid container
-    if (goog.isString(container)) {
+    if (eYo.isStr(container)) {
       container = options.container = document.getElementById(container) ||
           document.querySelector(container)
     }
@@ -73,3 +73,5 @@ eYo.Dom.makeDriverClass('Desk', {
  */
 eYo.Dom.Desk.prototype.place = function(desk) {
 }
+
+eYo.Debug.test() // remove this line when finished

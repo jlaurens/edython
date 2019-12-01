@@ -161,3 +161,5 @@ eYo.Separator = function (optRenderer, optDomHelper) {
     optDomHelper)
 }
 goog.inherits(eYo.Separator, goog.ui.Separator)
+
+eYo.Debug.test() // remove this line when finished

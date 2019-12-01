@@ -1027,3 +1027,5 @@ eYo.Svg.Brick.prototype.setDeleteStyle = function(brick, enable) {
       'eyo-dragging-delete'
   )
 }
+
+eYo.Debug.test() // remove this line when finished

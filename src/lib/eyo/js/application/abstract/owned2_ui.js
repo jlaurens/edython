@@ -38,7 +38,7 @@ goog.forwardDeclare('eYo.Magnet')
  * @property {eYo.Magnet} slot  The magnet.
  */
 
-eYo.UI.Dflt.makeSublass('Owned2', {
+eYo.UI.Dflt.makeSubclass('Owned2', {
   props: {
     link: ['slot', 'brick', 'magnet'],
     computed: {
@@ -49,3 +49,5 @@ eYo.UI.Dflt.makeSublass('Owned2', {
   }
 })
 
+
+eYo.Debug.test() // remove this line when finished

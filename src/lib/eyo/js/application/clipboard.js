@@ -59,3 +59,5 @@ Object.defineProperties(eYo.Clipboard, {
 eYo.Clipboard.prototype.dispose = function () {
   eYo.Clipboard.superClass_.dispose.call(this)
 }
+
+eYo.Debug.test() // remove this line when finished

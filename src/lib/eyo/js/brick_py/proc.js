@@ -596,3 +596,5 @@ eYo.Brick.Proc.T3s = [
   eYo.T3.Stmt.funcdef_part,
   eYo.T3.Stmt.classdef_part
 ]
+
+eYo.Debug.test() // remove this line when finished

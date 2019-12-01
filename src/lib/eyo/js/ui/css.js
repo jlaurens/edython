@@ -46,7 +46,7 @@ eYo.Css.insertRuleAt = (() => {
     }
     var rule = []
     var i = 0
-    while (goog.isString(arguments[i])) {
+    while (eYo.isStr(arguments[i])) {
       rule.push(arguments[i])
       ++i
     }
@@ -626,3 +626,5 @@ text.eyo-code-comment {
 `,
   ]
 }
+
+eYo.Debug.test() // remove this line when finished

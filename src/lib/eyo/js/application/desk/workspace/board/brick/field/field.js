@@ -113,7 +113,7 @@ eYo.Field.makeFields = (() => {
    */
   var makeField = (owner, name, model) => {
     var field
-    if (goog.isString(model)) {
+    if (eYo.isStr(model)) {
       field = new eYo.FieldLabel(owner, name, model)
     } else if (goog.isObject(model)) {
       setupModel(model)
@@ -232,7 +232,7 @@ eYo.Field.makeFields = (() => {
       var startField, nextField
       for (var i = 0; i < arguments.length; i++) {
         var name = arguments[i]
-        if ((startField = goog.isString(name) ? owner.fields[name] : name)) {
+        if ((startField = eYo.isStr(name) ? owner.fields[name] : name)) {
           // remove this field from the list of unordered fields
           if (startField.previousField) {
             // this field already belongs to a chain
@@ -245,7 +245,7 @@ eYo.Field.makeFields = (() => {
           // Now scan the next argument fields, if any
           while (++i < arguments.length) {
             name = arguments[i]
-            if ((nextField = goog.isString(name) ? owner.fields[name] : name)) {
+            if ((nextField = eYo.isStr(name) ? owner.fields[name] : name)) {
               if (nextField.previousField) {
                 // this was not a starting point
                 continue
@@ -653,3 +653,5 @@ eYo.FieldInput.prototype.getPlaceholderText = function (clear) {
     return (this.placeholderText_ = ph(data && data.model) || ph(this.model) || eYo.Msg.Placeholder.CODE)
   }
 }
+
+eYo.Debug.test() // remove this line when finished

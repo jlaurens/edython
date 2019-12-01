@@ -160,3 +160,5 @@ eYo.Desk.prototype.xyElementInDesk = function(element) {
 eYo.Desk.prototype.updateScreenCalculations_ = function() {
   this.workspace.recordDeleteAreas()
 }
+
+eYo.Debug.test() // remove this line when finished

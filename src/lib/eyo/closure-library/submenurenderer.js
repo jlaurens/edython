@@ -235,3 +235,5 @@ eYo.setup.register(() => {
       eYo.Font.menuStyle,
   '}')
 })
+
+eYo.Debug.test() // remove this line when finished

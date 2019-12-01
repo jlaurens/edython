@@ -11,18 +11,12 @@
  */
 'use strict'
 
-goog.require('eYo.UI.Dflt')
 goog.require('eYo.Decorate')
+goog.require('eYo.UI.Dflt')
 goog.require('eYo.UI.Dlgt')
 
 goog.require('eYo.Change')
 goog.require('eYo.Data')
-
-goog.provide('eYo.Brick')
-goog.provide('eYo.Brick.Dflt')
-
-goog.forwardDeclare('eYo.Expr')
-goog.forwardDeclare('eYo.Stmt')
 
 /**
  * The namespace is expected to contain everything about bricks.
@@ -30,7 +24,12 @@ goog.forwardDeclare('eYo.Stmt')
  * @name {eYo.Brick}
  * @namespace
  */
-eYo.Brick = Object.create(null)
+eYo.makeNS('Brick')
+
+// goog.provide('eYo.Brick.Dflt')
+
+goog.forwardDeclare('eYo.Expr')
+goog.forwardDeclare('eYo.Stmt')
 
 goog.forwardDeclare('eYo.XRE')
 goog.forwardDeclare('eYo.T3')
@@ -82,7 +81,7 @@ eYo.Brick.makeClass('Dlgt', eYo.UI.Dlgt, {
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.UI.makeClass('Dflt', eYo.Brick, eYo.UI.Dflt, eYo.Brick.Dlgt, {
+eYo.UI.makeClass(eYo.Brick, 'Dflt', eYo.UI.Dflt, eYo.Brick.Dlgt, {
   props: {
     link: {
       parent: {},
@@ -1056,7 +1055,7 @@ eYo.Brick.Dflt.prototype.setDataWithModel = function (model, noCheck) {
   this.forEachData(data => data.setRequiredFromModel(false))
   this.change.wrap(() => {
     var data_in = model.data
-    if (goog.isString(data_in) || goog.isNumber(data_in)) {
+    if (eYo.isStr(data_in) || goog.isNumber(data_in)) {
       var d = this.main_d
       if (d && !d.incog && d.validate(data_in)) {
         d.doChange(data_in)
@@ -2277,7 +2276,7 @@ eYo.Brick.newReady = (() => {
       } else if (eYo.Brick.Mgr.get(model)) {
         brick = board.newBrick(model, id) // can undo
         brick.setDataWithType(model)
-      } else if (goog.isString(model) || goog.isNumber(model)) {
+      } else if (eYo.isStr(model) || goog.isNumber(model)) {
         var p5e = eYo.T3.Profile.get(model, null)
         var f = p5e => {
           var ans
@@ -2476,7 +2475,7 @@ eYo.Brick.Dflt.prototype.insertBrickWithModel = function (model, m4t) {
       }
       if (!candidate) {
         // very special management for tuple input
-        if ((otherM4t = eYo.Focus.magnet) && goog.isString(model)) {
+        if ((otherM4t = eYo.Focus.magnet) && eYo.isStr(model)) {
           var otherBrick = otherM4t.brick
           if (otherBrick instanceof eYo.Brick.List && otherM4t.isSlot) {
             eYo.Events.groupWrap(() => {
@@ -2873,7 +2872,7 @@ eYo.Brick.Mgr = (() => {
       from_d = from[k]
       // next contains my test for a dictionary, hence my meaning of dictionary
       // in that context
-      if (goog.isNull(from_d) || goog.isBoolean(from_d) || goog.isNumber(from_d) || goog.isString(from_d) || goog.isFunction(from_d) || goog.isArray(from_d)) {
+      if (goog.isNull(from_d) || goog.isBoolean(from_d) || goog.isNumber(from_d) || eYo.isStr(from_d) || goog.isFunction(from_d) || goog.isArray(from_d)) {
         to[k] = from_d
       } else if (from_d && Object.keys(from_d).length === Object.getOwnPropertyNames(from_d).length) {
         // we have a dictionary, do a mixin
@@ -3032,7 +3031,7 @@ eYo.Brick.Mgr = (() => {
     }
     return function (ns, key, Super, Dlgt, register = false, model) {
       goog.asserts.assert(Super.eyo, 'Only subclass constructors with an `eyo` property.')
-      if (goog.isString(ns)) {
+      if (eYo.isStr(ns)) {
         // shif arguments
         model = register
         register = Dlgt
@@ -3072,7 +3071,7 @@ eYo.Brick.Mgr = (() => {
       var c9r = ns[key] = function (board, type, opt_id) {
         c9r.superClass_.constructor.call(this, board, type, opt_id)
       }
-      eYo.Do.inherits(c9r, Super)
+      eYo.inherits(c9r, Super)
       var dlgt = new Dlgt(c9r, key, model)
       if (!dlgt.getModel) {
         dlgt.getModel = function () {
@@ -3082,9 +3081,7 @@ eYo.Brick.Mgr = (() => {
           get () {
             return this.getModel()
           },
-          set (after) {
-            throw 'Forbidden setter'
-          }
+          set: eYo.Do.noSetter,
         })
       }
       if (!c9r.eyo) {
@@ -3196,7 +3193,7 @@ eYo.Brick.Mgr = (() => {
         }
       }
       c9r.makeSubclass = function (ns_, key_, ...args) {
-        return me.makeSubclass(ns_, key_, c9r_, ...args)
+        return me.makeSubclass(ns_, key_, C9r_, ...args)
       }
       if (register) {
         me.register(key)
@@ -3210,7 +3207,7 @@ eYo.Brick.Mgr = (() => {
    * @param {?string} prototypeName Name of the language object containing
    */
   me.create = function (board, prototypeName, opt_id) {
-    goog.asserts.assert(!goog.isString(brick), 'API DID CHANGE, update!')
+    goog.asserts.assert(!eYo.isStr(brick), 'API DID CHANGE, update!')
     var c9r = C9rs[prototypeName]
     goog.asserts.assert(c9r, 'No class for ' + prototypeName)
     var b3k = c9r && new c9r(board, prototypeName, opt_id)
@@ -3280,7 +3277,7 @@ eYo.Brick.Mgr = (() => {
   me.registerAll = function (keyedPrototypeNames, c9r, fake) {
     for (var k in keyedPrototypeNames) {
       var name = keyedPrototypeNames[k]
-      if (goog.isString(name)) {
+      if (eYo.isStr(name)) {
         //        console.log('Registering', k)
         me.register_(name, c9r, k)
         if (fake) {
@@ -3327,3 +3324,5 @@ eYo.Brick.Mgr.register = function (key) {
 eYo.Brick.Mgr.registerAll(eYo.T3.Expr, eYo.Brick.Dflt)
 eYo.Brick.Mgr.registerAll(eYo.T3.Stmt, eYo.Brick.Dflt)
 
+
+eYo.Debug.test() // remove this line when finished

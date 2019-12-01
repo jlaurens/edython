@@ -28,12 +28,31 @@ goog.forwardDeclare('eYo.Slot')
 goog.forwardDeclare('eYo.Magnet')
 
 /**
+ * Add the cached `app` property to the associate constructor.
+ * NYU.
+ */
+eYo.Dlgt.prototype.addApp = function () {
+  this.declareCached_('app', {
+    get () {
+      return this.owner__.app
+    },
+    forget () {
+      this.forEachOwned(k => {
+        var x = this[k]
+        x && x.appForget && x.appForget()
+      })
+//      this.ui_driverForget && this.ui_driverForget()
+    }
+  })
+}
+
+/**
  * Class for a basic object.
  * 
  * @param {!eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
-eYo.makeClass('Owned', {
+eYo.Dflt.makeSubclass('Owned', {
   init (owner) {
     this.owner_ = owner
   },
@@ -96,3 +115,5 @@ eYo.makeClass('Owned', {
     },
   },
 })
+
+eYo.Debug.test() // remove this line when finished

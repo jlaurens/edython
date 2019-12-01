@@ -14,11 +14,17 @@
 goog.require('eYo.Decorate')
 goog.require('eYo.Dlgt')
 
-goog.provide('eYo.Consolidator')
+// goog.provide('eYo.Consolidator')
 
+/**
+ * @name {eYo.Consolidator}
+ * @namespace
+ */
 eYo.makeNS('Consolidator')
 
-goog.provide('eYo.Consolidator.List')
+// goog.provide('eYo.Consolidator.Dflt')
+// goog.provide('eYo.Consolidator.Dlgt')
+// goog.provide('eYo.Consolidator.List')
 
 goog.forwardDeclare('eYo.Brick')
 goog.forwardDeclare('eYo.Do')
@@ -28,10 +34,14 @@ console.error('Manage reentrant_ more carefully')
 
 /**
  * Consolidator constructor delegate.
+ * @name{eYo.Consolidator.Dlgt}
+ * @constructor
  */
 eYo.Consolidator.makeClass('Dlgt')
 
 /**
+ * @name{eYo.Consolidator.Dflt}
+ * @constructor
  * Consolidator. Fake abstract class, just here for the record and namespace.
  * Any dynamic brick must be consolidated.
  * A dynamic brick changes its inputs while alive.
@@ -90,7 +100,7 @@ eYo.Consolidator.Dflt.prototype.consolidate = eYo.Do.nothing
  * @param {!Object} model, model object
  */
 eYo.Consolidator.makeSubclass = function (ns, key, Super, model) {
-  if (goog.isString(ns)) {
+  if (eYo.isStr(ns)) {
     model = Super
     Super = key
     key = ns
@@ -827,3 +837,5 @@ eYo.Consolidator.List.prototype.hasInputForType = function (brick, type) {
   var io = this.getIO(brick)
   return !!this.nextSlotForType(io, type)
 }
+
+eYo.Debug.test() // remove this line when finished

@@ -48,3 +48,5 @@ eYo.Menu = function (optDomHelper, optRenderer) {
 }
 goog.inherits(eYo.Menu, goog.ui.Menu)
 goog.tagUnsealableClass(eYo.Menu)
+
+eYo.Debug.test() // remove this line when finished

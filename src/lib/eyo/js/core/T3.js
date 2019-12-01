@@ -1753,3 +1753,5 @@ eYo.T3.Xml.fromDom = { // count 26
     literal: [eYo.T3.Expr.longliteral, eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortbytesliteral, eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longbytesliteral, eYo.T3.Expr.integer, eYo.T3.Expr.floatnumber, eYo.T3.Expr.imagnumber],
     comparison: [eYo.T3.Expr.number_comparison, eYo.T3.Expr.object_comparison],
 }
+
+eYo.Debug.test() // remove this line when finished

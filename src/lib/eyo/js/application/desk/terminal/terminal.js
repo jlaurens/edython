@@ -23,3 +23,5 @@ goog.provide('eYo.Terminal')
  * @constructor
  */
 eYo.UI.makeClass('Terminal', eYo.Pane)
+
+eYo.Debug.test() // remove this line when finished

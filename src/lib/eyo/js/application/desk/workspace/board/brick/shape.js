@@ -158,7 +158,7 @@ eYo.Shape.prototype.push = function () {
   var i
   for(i = 0; i < arguments.length ; i++) {
     var arg = arguments[i]
-    if (goog.isString(arg)) {
+    if (eYo.isStr(arg)) {
       this.steps.push(arg)
     } else if (goog.isArray(arg)) {
       var j = 0
@@ -847,3 +847,5 @@ eYo.Shape.definitionForPlayContour = function(cursor) {
   eYo.Shape.shared.initForPlay(cursor, true)
   return eYo.Shape.shared.definition
 }
+
+eYo.Debug.test() // remove this line when finished

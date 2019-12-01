@@ -23,7 +23,7 @@ eYo.Protocol.add = function () {
   var args = Array.prototype.slice.call(arguments)
   var proto = args.shift()
   var base = args.shift()
-  if (goog.isString(base)) {
+  if (eYo.isStr(base)) {
     base = eYo.Protocol[base]
   }
   if (goog.isFunction(base)) {
@@ -46,3 +46,5 @@ eYo.Protocol.add = function () {
     base.properties
   )
 }
+
+eYo.Debug.test() // remove this line when finished

@@ -6,3 +6,5 @@ describe ('Tests: pane', function () {
     chai.assert(eYo.Pane.makeSubclass)
   })
 })
+
+eYo.Debug.test() // remove this line when finished

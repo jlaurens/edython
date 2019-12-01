@@ -659,7 +659,7 @@ eYo.Responder.prototype.handleBoardStart = function(e, board) {
  * Handle a mousedown/touchstart event on a flyout.
  * Used by flyout.
  * @param {!Event} e A mouse down or touch start event.
- * @param {!Blockly.Flyout} flyout The flyout the event hit.
+ * @param {!eYo.Flyout} flyout The flyout the event hit.
  */
 eYo.Responder.prototype.handleFlyoutStart = function(e, flyout) {
   this.handleFlyoutStart = eYo.Do.nothing
@@ -724,3 +724,5 @@ eYo.Responder.prototype.bringBrickToFront_ = function() {
     this.targetBrick_.ui.sendToFront()
   }
 }
+
+eYo.Debug.test() // remove this line when finished

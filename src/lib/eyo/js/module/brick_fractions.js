@@ -136,3 +136,5 @@ goog.mixin(eYo.Tooltip.Title, {
 eYo.Brick.Fractions.T3s = [
   eYo.T3.Fraction
 ]
+
+eYo.Debug.test() // remove this line when finished

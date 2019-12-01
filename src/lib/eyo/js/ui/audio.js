@@ -161,3 +161,5 @@ eYo.Audio.prototype.play = function(name, opt_volume) {
     mySound.play()
   }
 }
+
+eYo.Debug.test() // remove this line when finished

@@ -79,7 +79,7 @@ describe('Each Primary brick type', function() {
   ].some(Ts => {
     it (`basic type: ${Ts[0]}/${Ts[1]}/${Ts[2]}`, function () {
       var d = eYo.Test.new_brick(Ts[0], Ts[1])
-      eYo.Test.c9r(d, 'primary')
+      eYo.Test.C9r(d, 'primary')
       eYo.Test.variant(d, Ts[2])
       d.dispose()
     })
@@ -691,7 +691,7 @@ describe('Primary types', function() {
       chai.assert(t2, `UNKNOWN ${k2}`)
       var d = eYo.Test.new_brick(t1, t2)
       chai.assert(d, `MISSING ${t1}`)
-      eYo.Test.c9r(d, ctor_key)
+      eYo.Test.C9r(d, ctor_key)
       d.dispose()
     })
   }
@@ -769,7 +769,7 @@ describe('Primary(value_list)', function() {
   })
   it('void wrapped', function() {
     var dd = eYo.Test.new_brick('identifier_valued')
-    eYo.Test.c9r(dd, 'primary')
+    eYo.Test.C9r(dd, 'primary')
     var d = dd.value_b
     eYo.Test.brick(d, 'value_list')
     eYo.Test.input_length(d, 1)
@@ -1100,3 +1100,5 @@ describe ('Primary data by key', function () {
     })
   })
 })
+
+eYo.Debug.test() // remove this line when finished

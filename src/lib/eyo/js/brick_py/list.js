@@ -577,3 +577,5 @@ eYo.Brick.List.T3s = [
   eYo.T3.Expr.dict_display,
   eYo.T3.Expr.with_item_list
 ]
+
+eYo.Debug.test() // remove this line when finished

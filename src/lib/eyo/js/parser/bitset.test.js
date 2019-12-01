@@ -57,3 +57,4 @@ describe('BitSet(Create)', function() {
 
   console.log('DONE')
 })
+eYo.Debug.test() // remove this line when finished

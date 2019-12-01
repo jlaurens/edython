@@ -140,3 +140,5 @@ eYo.Options.parseZoom_ = function(options) {
   }
   return options
 }
+
+eYo.Debug.test() // remove this line when finished

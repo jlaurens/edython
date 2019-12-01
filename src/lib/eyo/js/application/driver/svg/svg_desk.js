@@ -108,3 +108,5 @@ eYo.Svg.Desk.prototype.whereElement = function(desk, element) {
 eYo.Svg.Desk.prototype.installFlyout = function(desk) {
 }
 
+
+eYo.Debug.test() // remove this line when finished

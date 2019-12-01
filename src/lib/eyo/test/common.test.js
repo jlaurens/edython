@@ -101,7 +101,7 @@ eYo.Test.tearItDown = (opt) => {
 
 eYo.Test.g = eYo.GMR._PyParser_Grammar
 
-eYo.Test.c9r = (brick, k) => {
+eYo.Test.C9r = (brick, k) => {
   chai.assert(brick.constructor.eyo.key === k, `MISSED CTOR KEY ${brick.constructor.eyo.key} === ${k}`)
 }
 
@@ -139,9 +139,9 @@ eYo.Test.basic = (ra, str) => {
       var t = args[0]
       var tt = args[1] || ((args[1] === null) && args[0])
       var k = args[2] || ((args[2] === null) && args[0])
-      it (`${t}${tt ? `/${tt}` : ''}${k ? `/c9r: ${k}` : ''}`, function () {
+      it (`${t}${tt ? `/${tt}` : ''}${k ? `/C9r: ${k}` : ''}`, function () {
         var d = eYo.Test.new_brick(args[0], args[1] || args[0])
-        args[2] && (eYo.Test.c9r(d, args[2]))
+        args[2] && (eYo.Test.C9r(d, args[2]))
         d.dispose()
       })
     })
@@ -455,7 +455,7 @@ eYo.Test.svgNodeParent = (bdom, node, parent, type) => {
     type = type || 'svg'
   }
   chai.assert(bdom[node], `MISSING svg.${node} in ${type}`)
-  if (goog.isString(parent)) {
+  if (eYo.isStr(parent)) {
     chai.assert(bdom[parent], `MISSING svg.${parent} in ${type}`)
     chai.assert(bdom[node].parentNode === bdom[parent], `MISSING svg.${node}.parentNode === svg.${parent} in ${type}`)
   } else if (parent) {
@@ -532,3 +532,5 @@ eYo.Test.span = (b, span) => {
   
 }
 
+
+eYo.Debug.test() // remove this line when finished

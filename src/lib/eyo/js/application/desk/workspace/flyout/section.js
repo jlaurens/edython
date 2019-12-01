@@ -117,3 +117,5 @@ eYo.Section.Single.prototype.disposeUI = function () {
   delete this.initUI
   this.disposeUI = eYo.Do.nothing
 }
+
+eYo.Debug.test() // remove this line when finished

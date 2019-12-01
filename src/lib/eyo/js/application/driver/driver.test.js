@@ -16,7 +16,7 @@ describe('Driver', function() {
   it ('Driver: makeMgrClass', function () {
     eYo.Driver.makeMgrClass(NS)
     chai.assert(NS.Mgr)
-    chai.assert(NS.Mgr.eyo.c9r === NS.Mgr)
+    chai.assert(NS.Mgr.eyo.C9r === NS.Mgr)
     chai.assert(NS.Mgr.eyo.constructor === eYo.Driver.Dlgt)
     chai.assert(NS.makeMgrClass)
     chai.assert(NS.makeDriverClass)
@@ -166,3 +166,5 @@ describe('Driver', function() {
   })
 })
 
+
+eYo.Debug.test() // remove this line when finished

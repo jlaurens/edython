@@ -36,3 +36,5 @@ eYo.Svg.makeDriverClass('DnD', {
   },
 })
 
+
+eYo.Debug.test() // remove this line when finished

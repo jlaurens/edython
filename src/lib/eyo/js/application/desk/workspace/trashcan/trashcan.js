@@ -95,3 +95,5 @@ eYo.TrashCan.prototype.getClientRect = function() {
 eYo.TrashCan.prototype.close = function() {
   this.ui_driver.openSet(this, false)
 }
+
+eYo.Debug.test() // remove this line when finished

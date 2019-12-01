@@ -87,3 +87,5 @@ eYo.Dom.Search.prototype.updateMetrics = function (search) {
   div.style.width = `${r.width} px`
   div.style.height = `${r.height - eYo.Search.TOOLBAR_HEIGHT} px`
 }
+
+eYo.Debug.test() // remove this line when finished

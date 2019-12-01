@@ -203,7 +203,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
       init: "''",
       main: true,
       validate: /** @this{eYo.Data} */ function (newValue) {
-        return goog.isString(newValue)? {validated: newValue}: null
+        return eYo.isStr(newValue)? {validated: newValue}: null
       },
       didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
@@ -486,3 +486,5 @@ eYo.Brick.Literal.T3s = [
   eYo.T3.Expr.longliteral,
   eYo.T3.Expr.numberliteral
 ]
+
+eYo.Debug.test() // remove this line when finished

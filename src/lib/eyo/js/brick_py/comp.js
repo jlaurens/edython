@@ -202,3 +202,5 @@ eYo.Brick.Comprehension.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.key_datum,
 ]
+
+eYo.Debug.test() // remove this line when finished

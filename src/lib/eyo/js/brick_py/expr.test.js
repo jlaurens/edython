@@ -6,3 +6,5 @@ describe('Builtin objects', function () {
     eYo.Test.tearItDown()
   })
 })
+
+eYo.Debug.test() // remove this line when finished

@@ -163,3 +163,5 @@ eYo.Scroller.prototype.place = function() {
   ;(s = this.hScroll) && s.place()
   ;(s = this.vScroll) && s.place()
 }
+
+eYo.Debug.test() // remove this line when finished

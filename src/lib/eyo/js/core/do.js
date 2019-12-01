@@ -30,16 +30,6 @@ if (!Object.keys) Object.keys = function(o) {
   return k;
 }
 
-/**
- * Contrary to goog.inherits, does not erase the childC9r.prototype.
- * IE<11
- */
-eYo.Do.inherits = function (childC9r, parentC9r) {
-  childC9r.superClass_ = parentC9r.prototype
-  Object.setPrototypeOf(childC9r.prototype, parentC9r.prototype)
-  childC9r.prototype.constructor = childC9r
-}
-
 //
 // /* Replace the cssText for rule matching selectorText with value
 //  ** Changes all matching rules in all style sheets
@@ -532,6 +522,30 @@ eYo.Do.ifDef = function (object, fallout) {
 eYo.Do.nothing = () => {}
 
 /**
+ * Function frequently used.
+ */
+eYo.Do.noGetter = function () {
+  throw new Error('Forbidden getter')
+}
+
+/**
+ * function frequently used.
+ */
+eYo.Do.noSetter = function () {
+  throw new Error('Forbidden setter')
+}
+
+/**
+ * function frequently used.
+ */
+eYo.Do.propertyR = (getter) => {
+  return {
+    get: getter,
+    set: eYo.Do.noSetter,
+  }
+}
+
+/**
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
  * @param {?Function} try_f
@@ -619,3 +633,5 @@ eYo.Do.genUid = (() => {
     return id.join('')
   }
 })()
+
+eYo.Debug.test() // remove this line when finished
