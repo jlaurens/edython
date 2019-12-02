@@ -12,15 +12,15 @@
 'use strict'
 
 
-goog.require('eYo.Expr')
+eYo.require('eYo.Expr')
 
-goog.provide('eYo.Expr.numberliteral')
-goog.provide('eYo.Brick.Literal')
-goog.provide('eYo.Expr.longliteral')
-goog.provide('eYo.Expr.shortliteral')
+eYo.provide('eYo.Expr.numberliteral')
+eYo.provide('eYo.Brick.Literal')
+eYo.provide('eYo.Expr.longliteral')
+eYo.provide('eYo.Expr.shortliteral')
 
-goog.forwardDeclare('eYo.XRE')
-goog.forwardDeclare('eYo.Msg')
+eYo.forwardDeclare('eYo.XRE')
+eYo.forwardDeclare('eYo.Msg')
 
 goog.forwardDeclare('goog.dom')
 

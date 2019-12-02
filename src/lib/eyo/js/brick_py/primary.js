@@ -11,20 +11,20 @@
  */
 'use strict'
 
-goog.require('eYo.Expr')
+eYo.require('eYo.Expr')
 
-goog.require('eYo.Protocol')
-goog.require('eYo.Change')
+eYo.require('eYo.Protocol')
+eYo.require('eYo.Change')
 
-goog.require('eYo.Model.stdtypes')
+eYo.require('eYo.Model.stdtypes')
 
-goog.require('eYo.Model.functions')
-goog.require('eYo.Msg')
+eYo.require('eYo.Model.functions')
+eYo.require('eYo.Msg')
 
-goog.require('eYo.Brick.Primary')
-goog.require('eYo.Stmt')
-goog.require('eYo.Protocol.Register')
-goog.provide('eYo.Brick.Primary')
+eYo.require('eYo.Brick.Primary')
+eYo.require('eYo.Stmt')
+eYo.require('eYo.Protocol.Register')
+eYo.provide('eYo.Brick.Primary')
 
 /**
  * List consolidator for assignment target list. Used in primary, only.

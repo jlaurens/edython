@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Dom.Flyout')
+eYo.provide('eYo.Dom.Flyout')
 
-goog.forwardDeclare('eYo.Flyout')
+eYo.forwardDeclare('eYo.Flyout')
 
 /**
  * Dom driver for the flyout.

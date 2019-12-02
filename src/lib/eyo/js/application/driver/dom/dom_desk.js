@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Dom')
+eYo.require('eYo.Dom')
 
-goog.provide('eYo.Dom.Desk')
+eYo.provide('eYo.Dom.Desk')
 
-goog.forwardDeclare('eYo.Desk')
+eYo.forwardDeclare('eYo.Desk')
 
 /**
  * Dom driver for boards.

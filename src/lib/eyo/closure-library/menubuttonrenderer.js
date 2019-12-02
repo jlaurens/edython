@@ -18,11 +18,11 @@
  * @author attila@google.com (Attila Bodis)
  */
 
-goog.require('eYo')
+eYo.require('eYo')
 
 goog.require('goog.ui.MenuButtonRenderer')
 
-goog.provide('eYo.MenuButtonRenderer')
+eYo.provide('eYo.MenuButtonRenderer')
 
 /**
  * Renderer for {@link goog.ui.MenuButton}s.  This implementation overrides

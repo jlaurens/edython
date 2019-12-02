@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
-goog.require('eYo.Dom.Desk')
+eYo.require('eYo.Svg')
+eYo.require('eYo.Dom.Desk')
 
-goog.provide('eYo.Svg.Desk')
+eYo.provide('eYo.Svg.Desk')
 
-goog.forwardDeclare('eYo.Desk')
+eYo.forwardDeclare('eYo.Desk')
 
 /**
  * Svg driver for desk.

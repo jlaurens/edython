@@ -12,10 +12,10 @@
  */
 'use strict'
 
-goog.require('eYo')
-goog.provide('eYo.Scaler')
+eYo.require('eYo')
+eYo.provide('eYo.Scaler')
 
-goog.forwardDeclare('eYo.Motion')
+eYo.forwardDeclare('eYo.Motion')
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.

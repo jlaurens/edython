@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
-goog.require('eYo.Fcls.Mgr')
+eYo.require('eYo.Fcls')
+eYo.require('eYo.Fcls.Mgr')
 
-goog.provide('eYo.Dom')
+eYo.provide('eYo.Dom')
 
 /**
  * @name {eYo.Dom}
@@ -23,7 +23,7 @@ goog.provide('eYo.Dom')
 
 eYo.Dom = Object.create(null)
 
-goog.provide('eYo.Dom.Mgr')
+eYo.provide('eYo.Dom.Mgr')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
@@ -171,7 +171,7 @@ eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
     callback = thisObject
     thisObject = null
   }
-  goog.asserts.assert(goog.isFunction(callback))
+  eYo.assert(goog.isFunction(callback))
   var handled = false
   var wrapFunc = e => {
     var noCaptureIdentifier = opt && opt.noCaptureIdentifier

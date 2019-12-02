@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo.UI.Dflt')
+eYo.require('eYo.UI.Dflt')
 
-goog.provide('eYo.WorkspaceControl')
+eYo.provide('eYo.WorkspaceControl')
 
 /**
  * Class for a workspace control.

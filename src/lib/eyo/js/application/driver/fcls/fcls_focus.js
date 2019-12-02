@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
+eYo.require('eYo.Fcls')
 
-goog.provide('eYo.Fcls.Focus')
+eYo.provide('eYo.Fcls.Focus')
 
 /**
  * Faceless driver for Focus managers.

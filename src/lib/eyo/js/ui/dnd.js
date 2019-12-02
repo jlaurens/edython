@@ -12,14 +12,14 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.DnD')
-goog.provide('eYo.DnD.Dragger')
-goog.provide('eYo.DnD.Dropper')
+eYo.provide('eYo.DnD')
+eYo.provide('eYo.DnD.Dragger')
+eYo.provide('eYo.DnD.Dropper')
 
-goog.forwardDeclare('eYo.Motion')
-goog.forwardDeclare('eYo.Driver')
+eYo.forwardDeclare('eYo.Motion')
+eYo.forwardDeclare('eYo.Driver')
 
 /**
  * @name{eYo.DnD}

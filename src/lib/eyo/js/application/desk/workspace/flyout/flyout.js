@@ -11,20 +11,20 @@
  */
 'use strict'
 
-goog.require('eYo.Protocol')
-goog.require('eYo.UI.Dflt')
-goog.require('eYo.Unit')
-goog.require('eYo.Events')
+eYo.require('eYo.Protocol')
+eYo.require('eYo.UI.Dflt')
+eYo.require('eYo.Unit')
+eYo.require('eYo.Events')
 
-goog.provide('eYo.Flyout')
+eYo.provide('eYo.Flyout')
 
-goog.forwardDeclare('eYo.Library');
-goog.forwardDeclare('eYo.Style');
-goog.forwardDeclare('eYo.Brick');
-goog.forwardDeclare('eYo.FlyoutToolbar');
-goog.forwardDeclare('eYo.Tooltip');
-goog.forwardDeclare('eYo.MenuRenderer');
-goog.forwardDeclare('eYo.MenuButtonRenderer');
+eYo.forwardDeclare('eYo.Library');
+eYo.forwardDeclare('eYo.Style');
+eYo.forwardDeclare('eYo.Brick');
+eYo.forwardDeclare('eYo.FlyoutToolbar');
+eYo.forwardDeclare('eYo.Tooltip');
+eYo.forwardDeclare('eYo.MenuRenderer');
+eYo.forwardDeclare('eYo.MenuButtonRenderer');
 
 /**
  * Class for a flyout.

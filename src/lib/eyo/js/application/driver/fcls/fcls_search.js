@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
+eYo.require('eYo.Fcls')
 
-goog.provide('eYo.Fcls.Search')
+eYo.provide('eYo.Fcls.Search')
 
-goog.forwardDeclare('eYo.Search')
+eYo.forwardDeclare('eYo.Search')
 
 /**
  * Faceless driver for the search pane.

@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo.Protocol')
+eYo.require('eYo.Protocol')
 
-goog.provide('eYo.Protocol.Register')
+eYo.provide('eYo.Protocol.Register')
 
 eYo.Protocol.Register = function (key, filter) {
   var ans = {

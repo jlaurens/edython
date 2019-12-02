@@ -11,21 +11,21 @@
  */
 'use strict'
 
-goog.require('eYo.Decorate')
-goog.require('eYo.Dlgt')
+eYo.require('eYo.Decorate')
+eYo.require('eYo.Dlgt')
 
-// goog.provide('eYo.Owned')
+// eYo.provide('eYo.Owned')
 
 // Possible owner
-goog.forwardDeclare('eYo.Application')
+eYo.forwardDeclare('eYo.Application')
 // Possible owned
-goog.forwardDeclare('eYo.Desk')
-goog.forwardDeclare('eYo.Workspace')
-goog.forwardDeclare('eYo.Flyout')
-goog.forwardDeclare('eYo.Board')
-goog.forwardDeclare('eYo.Brick')
-goog.forwardDeclare('eYo.Slot')
-goog.forwardDeclare('eYo.Magnet')
+eYo.forwardDeclare('eYo.Desk')
+eYo.forwardDeclare('eYo.Workspace')
+eYo.forwardDeclare('eYo.Flyout')
+eYo.forwardDeclare('eYo.Board')
+eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.Slot')
+eYo.forwardDeclare('eYo.Magnet')
 
 /**
  * Add the cached `app` property to the associate constructor.

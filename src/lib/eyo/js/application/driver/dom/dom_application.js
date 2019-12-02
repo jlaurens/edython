@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Dom')
+eYo.require('eYo.Dom')
 
-goog.provide('eYo.Dom.Application')
+eYo.provide('eYo.Dom.Application')
 
-goog.forwardDeclare('eYo.Application')
+eYo.forwardDeclare('eYo.Application')
 
 /**
  * Dom driver for application.

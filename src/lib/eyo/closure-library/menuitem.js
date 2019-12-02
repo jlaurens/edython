@@ -19,14 +19,14 @@
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 
-goog.require('eYo.MenuItemRenderer')
+eYo.require('eYo.MenuItemRenderer')
 goog.require('goog.dom');
 
 goog.require('goog.ui.MenuItem')
 
 goog.require('goog.ui.Separator')
-goog.provide('eYo.MenuItem')
-goog.provide('eYo.Separator')
+eYo.provide('eYo.MenuItem')
+eYo.provide('eYo.Separator')
 
 // goog.forwardDeclare('goog.ui.Menu'); // circular
 

@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.require('eYo.Dlgt')
-goog.require('eYo.Owned')
+eYo.require('eYo.Dlgt')
+eYo.require('eYo.Owned')
 
-// goog.provide('eYo.UI')
-// goog.require('eYo.UI.Dlgt')
-// goog.require('eYo.UI.Dflt')
+// eYo.provide('eYo.UI')
+// eYo.require('eYo.UI.Dlgt')
+// eYo.require('eYo.UI.Dflt')
 
 /**
  * Class for loading, storing, and playing audio.

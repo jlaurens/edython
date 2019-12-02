@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.Change')
+eYo.provide('eYo.Change')
 
 /**
  * @param{Object} owner
@@ -95,7 +95,7 @@ Object.defineProperties(eYo.Change.prototype, {
  * @return {!Function}
  */
 eYo.Change.decorate = function (key, do_it) {
-  goog.asserts.assert(goog.isFunction(do_it), 'do_it MUST be a function')
+  eYo.assert(goog.isFunction(do_it), 'do_it MUST be a function')
   return function() {
     var c = this.change
     if (c.save_[key] === c.count) {

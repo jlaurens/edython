@@ -11,20 +11,20 @@
  */
 'use strict'
 
-goog.require('eYo.Brick')
+eYo.require('eYo.Brick')
 
-goog.require('eYo.Model.turtle__module')
+eYo.require('eYo.Model.turtle__module')
 
-goog.require('eYo.Stmt')
+eYo.require('eYo.Stmt')
 
-goog.require('eYo.Brick.List')
+eYo.require('eYo.Brick.List')
 
-goog.require('eYo.Brick.Primary')
-goog.require('eYo.Msg')
+eYo.require('eYo.Brick.Primary')
+eYo.require('eYo.Msg')
 
-goog.require('eYo.Tooltip')
-goog.require('eYo.Library')
-goog.provide('eYo.Brick.Turtle')
+eYo.require('eYo.Tooltip')
+eYo.require('eYo.Library')
+eYo.provide('eYo.Brick.Turtle')
 
 eYo.T3.Stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
 

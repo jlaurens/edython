@@ -12,15 +12,15 @@
 'use strict'
 
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.require('eYo.Change')
-goog.provide('eYo.BrickDragger')
+eYo.require('eYo.Change')
+eYo.provide('eYo.BrickDragger')
 
-goog.forwardDeclare('eYo.Dom')
-goog.forwardDeclare('eYo.Brick')
-goog.forwardDeclare('eYo.Board')
-goog.forwardDeclare('eYo.Events.BrickMove')
+eYo.forwardDeclare('eYo.Dom')
+eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.Board')
+eYo.forwardDeclare('eYo.Events.BrickMove')
 
 /**
  * Class for a brick dragger.  It moves bricks around the board when they

@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
+eYo.require('eYo.Fcls')
 
-goog.provide('eYo.Fcls.Field')
+eYo.provide('eYo.Fcls.Field')
 
-goog.forwardDeclare('eYo.Field')
+eYo.forwardDeclare('eYo.Field')
 
 /**
  * Faceless driver for fields.

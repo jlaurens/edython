@@ -32,12 +32,12 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.Span')
+eYo.provide('eYo.Span')
 
-goog.forwardDeclare('eYo.Unit')
-goog.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.Unit')
+eYo.forwardDeclare('eYo.Brick')
 
 /**
  * Class for a Span object.

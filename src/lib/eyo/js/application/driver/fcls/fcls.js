@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo.Driver')
+eYo.require('eYo.Driver')
 
-goog.provide('eYo.Fcls')
+eYo.provide('eYo.Fcls')
 
 /**
  * @name {eYo.Fcls}
@@ -21,7 +21,7 @@ goog.provide('eYo.Fcls')
  */
 eYo.Fcls = Object.create(null)
 
-goog.provide('eYo.Fcls.Mgr')
+eYo.provide('eYo.Fcls.Mgr')
 
 goog.forwardDeclare('goog.dom')
 

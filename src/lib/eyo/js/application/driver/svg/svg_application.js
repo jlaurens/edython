@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Svg.Application')
+eYo.provide('eYo.Svg.Application')
 
-goog.forwardDeclare('eYo.Application')
+eYo.forwardDeclare('eYo.Application')
 
 /**
  * Svg driver for application.

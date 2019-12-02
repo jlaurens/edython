@@ -11,14 +11,14 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.require('eYo.Geometry')
+eYo.require('eYo.Geometry')
 
-goog.provide('eYo.Shape')
+eYo.provide('eYo.Shape')
 
-goog.forwardDeclare('eYo.Unit')
-goog.forwardDeclare('eYo.Padding')
+eYo.forwardDeclare('eYo.Unit')
+eYo.forwardDeclare('eYo.Padding')
 goog.forwardDeclare('goog.color')
 
 /**

@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Dom')
+eYo.require('eYo.Dom')
 
-goog.provide('eYo.Dom.Search')
+eYo.provide('eYo.Dom.Search')
 
-goog.forwardDeclare('eYo.Search')
+eYo.forwardDeclare('eYo.Search')
 
 /**
  * Dom driver for the search pane.

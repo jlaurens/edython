@@ -1,7 +1,7 @@
 """Create a list of deps from a list of requirements
 Each line of the file_name named 'required.txt' is what is put in goog.require('blablabla')
 """
-import pathlib
+from pathlib import Path
 import re
 import json
 import argparse
@@ -15,7 +15,7 @@ parser.add_argument('--verbose', dest='verbose', action='store_const',
 global_args = parser.parse_args()
 
 # re to parse the 
-re_addDep = re.compile(r"""^goog.addDependency\(
+re_addDep = re.compile(r"""^(?:eYo|goog)\.addDependency\(
     (?P<file_name>'[^']+'),\s+
     (?P<provided>\[[^\]]*\])\s*,\s+
     (?P<required>\[[^\]]*\])\s*,\s+
@@ -24,16 +24,6 @@ re_addDep = re.compile(r"""^goog.addDependency\(
 
 def loads(input):
     return json.loads(input.replace("'", '"'))
-
-class Provide:
-    def __init__(self, provide, file_name):
-        self.provide = provide
-        self.file_name = file_name
-
-class Require:
-    def __init__(self, file_name, require):
-        self.file_name = file_name
-        self.require = require
 
 # Dependencies data base
 class DDB:
@@ -104,6 +94,9 @@ class DDB:
                         assert self.by_file_name.get(file_name) is None, 'Same file_name appears twice at least ' + file_name
                         self.by_file_name[file_name] = dep
                         for p in provided:
+                          if self.by_provide.get(p) is dep:
+                            continue
+                          else:
                             assert self.by_provide.get(p) is None, 'Same provide appears twice at least ' + p + ', ' + path.as_posix()
                             self.by_provide[p] = dep
                     elif global_args.verbose:
@@ -135,15 +128,15 @@ def getRQR(p):
     return RQR
 
 if __name__ != "main":
-#    path0 = pathlib.Path(__file__).parent / 'lexical.html'
+#    path0 = Path(__file__).parent / 'lexical.html'
 #    print(path0)
-#    path00 = pathlib.Path(__file__).parent / 'lexical_xtd.html'
+#    path00 = Path(__file__).parent / 'lexical_xtd.html'
 #    print(path00)
     print('Step 2:')
     print('=======')
     print('Resolve deps.')
-    print(pathlib.Path(__file__).resolve())
-    pathRoot = pathlib.Path(__file__).resolve().parent.parent.parent
+    print(Path(__file__).resolve())
+    pathRoot = Path(__file__).resolve().parent.parent.parent
     pathBuild = pathRoot / 'build' / 'helpers'
     print(pathBuild)
     pathBuild.mkdir(parents=True, exist_ok=True)
@@ -303,9 +296,24 @@ Cascaded required:
         print('Exporting to', p_out)
         p_out.write_text(''.join(map(mapper, final)))
    
-    export('deps-build.txt', lambda r: f'--js "{r}" \\\n')
-    export('deps-vue.txt', lambda r: f'''      <script src="{pathlib.Path(r).relative_to('src').as_posix()}"></script>\n''')
-    export('deps-web-dev.txt', lambda r: f'''      <script src="../../src/{pathlib.Path(r).relative_to('src').as_posix()}"></script>\n''')
-    export('deps-web-test.txt', lambda r: f'''      <script src="PATH_ROOT/src/{pathlib.Path(r).relative_to('src').as_posix()}"></script>\n''')
-    export('deps-test-import.txt', lambda r: f'''import_file("src/{pathlib.Path(r).relative_to('src').as_posix()}")\n''')
+    export(
+      'deps-build.txt',
+      lambda r: f'--js "{r}" \\\n'
+    )
+    export(
+      'deps-vue.txt',
+      lambda r: f'''      <script src="{Path(r).relative_to('src').as_posix()}"></script>\n'''
+    )
+    export(
+      'deps-web-dev.txt',
+      lambda r: f'''      <script src="../../src/{Path(r).relative_to('src').as_posix()}"></script>\n'''
+    )
+    export(
+      'deps-web-test.txt',
+      lambda r: f'''      <script src="PATH_ROOT/src/{Path(r).relative_to('src').as_posix()}"></script>\n'''
+    )
+    export(
+      'deps-test-import.txt',
+      lambda r: f'''import_file("src/{Path(r).relative_to('src').as_posix()}")\n'''
+    )
     

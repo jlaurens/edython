@@ -11,17 +11,17 @@
  */
 'use strict'
 
-goog.require('eYo')
-goog.require('eYo.Do')
-goog.provide('eYo.Where')
-goog.provide('eYo.Size')
-goog.provide('eYo.Rect')
+eYo.require('eYo')
+eYo.require('eYo.Do')
+eYo.provide('eYo.Where')
+eYo.provide('eYo.Size')
+eYo.provide('eYo.Rect')
 
-goog.provide('eYo.Unit')
+eYo.provide('eYo.Unit')
 
-goog.provide('eYo.Geometry')
+eYo.provide('eYo.Geometry')
 
-goog.forwardDeclare('eYo.Font')
+eYo.forwardDeclare('eYo.Font')
 
 /**
  * unit

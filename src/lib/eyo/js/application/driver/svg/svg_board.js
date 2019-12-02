@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Svg.Board')
+eYo.provide('eYo.Svg.Board')
 
-goog.forwardDeclare('eYo.Board')
+eYo.forwardDeclare('eYo.Board')
 
 /**
  * Svg driver for boards.

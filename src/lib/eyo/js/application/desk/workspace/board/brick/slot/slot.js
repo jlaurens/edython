@@ -11,19 +11,19 @@
  */
 'use strict'
 
-goog.require('eYo.Do')
-goog.require('eYo.UI.Owned2')
-goog.require('eYo.Decorate')
+eYo.require('eYo.Do')
+eYo.require('eYo.UI.Owned2')
+eYo.require('eYo.Decorate')
 
-goog.provide('eYo.Slot')
+eYo.provide('eYo.Slot')
 
-goog.forwardDeclare('eYo.Where')
-goog.forwardDeclare('eYo.Field')
-goog.forwardDeclare('eYo.Magnet')
+eYo.forwardDeclare('eYo.Where')
+eYo.forwardDeclare('eYo.Field')
+eYo.forwardDeclare('eYo.Magnet')
 
-goog.forwardDeclare('eYo.Xml')
-goog.forwardDeclare('eYo.Key')
-goog.forwardDeclare('eYo.Brick.List')
+eYo.forwardDeclare('eYo.Xml')
+eYo.forwardDeclare('eYo.Key')
+eYo.forwardDeclare('eYo.Brick.List')
 
 goog.forwardDeclare('goog.dom');
 
@@ -55,13 +55,13 @@ goog.forwardDeclare('goog.dom');
  */
 eYo.UI.makeClass('Slot', eYo.UI.Owned2, {
   init (brick, key, model) {
-    goog.asserts.assert(brick, 'Missing slot owner brick')
-    goog.asserts.assert(key, 'Missing slot key')
-    goog.asserts.assert(model, 'Missing slot model')
+    eYo.assert(brick, 'Missing slot owner brick')
+    eYo.assert(key, 'Missing slot key')
+    eYo.assert(model, 'Missing slot model')
     if (!model.order) {
       console.error('Missing slot model order')
     }
-    goog.asserts.assert(model.order, 'Missing slot model order')
+    eYo.assert(model.order, 'Missing slot model order')
     this.where_ = new eYo.Where()
     this.reentrant_ = {}
     this.brick_ = brick

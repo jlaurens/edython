@@ -16,11 +16,11 @@
  * @namespace
  **/
 
-goog.require('eYo.Do')
+eYo.require('eYo.Do')
 
-goog.provide('eYo.XRE')
+eYo.provide('eYo.XRE')
 
-goog.asserts.assert(XRegExp, 'load XRegExp before')
+eYo.assert(XRegExp, 'load XRegExp before')
 
 XRegExp.install('astral')// python supports astral
 
@@ -286,18 +286,18 @@ bytesescapeseq ::=  "\" <any ASCII character>
 */
 
 /*
-goog.asserts.assert('1234567890123456789123'.match(RE.decinteger), 'FAILURE')
-goog.asserts.assert(!'01234567890123456789123'.match(RE.decinteger), 'FAILURE')
-goog.asserts.assert('00000'.match(RE.decinteger), 'FAILURE')
-goog.asserts.assert('0o0007'.match(RE.octinteger), 'FAILURE')
-goog.asserts.assert('0x0007'.match(RE.hexinteger), 'FAILURE')
-goog.asserts.assert('0b0001'.match(RE.bininteger), 'FAILURE')
-goog.asserts.assert('12345.'.match(RE.pointfloat), 'FAILURE')
-goog.asserts.assert('012345.'.match(RE.pointfloat), 'FAILURE')
-goog.asserts.assert('.0'.match(RE.pointfloat), 'FAILURE')
-goog.asserts.assert('0e0'.match(RE.exponentfloat), 'FAILURE')
-goog.asserts.assert('0e+0'.match(RE.exponentfloat), 'FAILURE')
-goog.asserts.assert('0e-0'.match(RE.exponentfloat), 'FAILURE')
+eYo.assert('1234567890123456789123'.match(RE.decinteger), 'FAILURE')
+eYo.assert(!'01234567890123456789123'.match(RE.decinteger), 'FAILURE')
+eYo.assert('00000'.match(RE.decinteger), 'FAILURE')
+eYo.assert('0o0007'.match(RE.octinteger), 'FAILURE')
+eYo.assert('0x0007'.match(RE.hexinteger), 'FAILURE')
+eYo.assert('0b0001'.match(RE.bininteger), 'FAILURE')
+eYo.assert('12345.'.match(RE.pointfloat), 'FAILURE')
+eYo.assert('012345.'.match(RE.pointfloat), 'FAILURE')
+eYo.assert('.0'.match(RE.pointfloat), 'FAILURE')
+eYo.assert('0e0'.match(RE.exponentfloat), 'FAILURE')
+eYo.assert('0e+0'.match(RE.exponentfloat), 'FAILURE')
+eYo.assert('0e-0'.match(RE.exponentfloat), 'FAILURE')
 */
 
 eYo.Const.Event = {

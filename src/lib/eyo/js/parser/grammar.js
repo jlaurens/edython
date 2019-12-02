@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.E')
+eYo.require('eYo.E')
 
-goog.require('eYo.Do')
-goog.require('eYo.TKN')
-goog.provide('eYo.GMR')
+eYo.require('eYo.Do')
+eYo.require('eYo.TKN')
+eYo.provide('eYo.GMR')
 
 /* Grammar implementation *-/
 
@@ -369,7 +369,7 @@ eYo.GMR.PyGrammar_FindDFA = (/* grammar * */ g, /* int */ type) =>
   if (!d) {
     console.error('WTF')
   }
-  goog.asserts.assert(d.d_type === type, `${d.d_type} === ${type}`)
+  eYo.assert(d.d_type === type, `${d.d_type} === ${type}`)
   return d
 }
 

@@ -12,20 +12,20 @@
  */
 'use strict'
 
-goog.require('eYo.Do')
-goog.require('eYo.Decorate')
-goog.require('eYo.Dlgt')
+eYo.require('eYo.Do')
+eYo.require('eYo.Decorate')
+eYo.require('eYo.Dlgt')
 
-goog.provide('eYo.Application')
+eYo.provide('eYo.Application')
 delete eYo.Application
 
-goog.forwardDeclare('eYo.Css')
+eYo.forwardDeclare('eYo.Css')
 
-goog.forwardDeclare('eYo.Focus')
-goog.forwardDeclare('eYo.Motion')
-goog.forwardDeclare('eYo.Desk')
-goog.forwardDeclare('eYo.Driver')
-goog.forwardDeclare('eYo.Audio')
+eYo.forwardDeclare('eYo.Focus')
+eYo.forwardDeclare('eYo.Motion')
+eYo.forwardDeclare('eYo.Desk')
+eYo.forwardDeclare('eYo.Driver')
+eYo.forwardDeclare('eYo.Audio')
 
 /**
  * Main application object.

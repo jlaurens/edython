@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo.Brick.List')
+eYo.require('eYo.Brick.List')
 
-goog.provide('eYo.Brick.Argument')
+eYo.provide('eYo.Brick.Argument')
 
 
 /**

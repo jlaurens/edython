@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
+eYo.require('eYo.Fcls')
 
-goog.provide('eYo.Fcls.Magnet')
+eYo.provide('eYo.Fcls.Magnet')
 
-goog.forwardDeclare('eYo.Magnet')
+eYo.forwardDeclare('eYo.Magnet')
 
 /**
  * Faceless driver for magnets.

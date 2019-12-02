@@ -11,14 +11,14 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.require('eYo.Do')
+eYo.require('eYo.Do')
 
-goog.require('eYo.E')
-goog.require('eYo.TKN')
-goog.require('eYo.Node')
-goog.provide('eYo.Scan')
+eYo.require('eYo.E')
+eYo.require('eYo.TKN')
+eYo.require('eYo.Node')
+eYo.provide('eYo.Scan')
 
 /* Scan implementation */
 

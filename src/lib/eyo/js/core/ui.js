@@ -11,15 +11,15 @@
  */
 'use strict'
 
-goog.require('eYo')
-goog.provide('eYo.Font')
-goog.provide('eYo.Padding')
+eYo.require('eYo')
+eYo.provide('eYo.Font')
+eYo.provide('eYo.Padding')
 
-goog.provide('eYo.Style')
+eYo.provide('eYo.Style')
 
-goog.forwardDeclare('eYo.Unit')
-goog.forwardDeclare('eYo.font-face')
-goog.forwardDeclare('eYo.Shape')
+eYo.forwardDeclare('eYo.Unit')
+eYo.forwardDeclare('eYo.font-face')
+eYo.forwardDeclare('eYo.Shape')
 goog.forwardDeclare('goog.cssom');
 
 /**

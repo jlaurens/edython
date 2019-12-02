@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.require('eYo.Decorate')
-goog.require('eYo.Dlgt')
+eYo.require('eYo.Decorate')
+eYo.require('eYo.Dlgt')
 
-// goog.provide('eYo.Consolidator')
+// eYo.provide('eYo.Consolidator')
 
 /**
  * @name {eYo.Consolidator}
@@ -22,13 +22,13 @@ goog.require('eYo.Dlgt')
  */
 eYo.makeNS('Consolidator')
 
-// goog.provide('eYo.Consolidator.Dflt')
-// goog.provide('eYo.Consolidator.Dlgt')
-// goog.provide('eYo.Consolidator.List')
+// eYo.provide('eYo.Consolidator.Dflt')
+// eYo.provide('eYo.Consolidator.Dlgt')
+// eYo.provide('eYo.Consolidator.List')
 
-goog.forwardDeclare('eYo.Brick')
-goog.forwardDeclare('eYo.Do')
-goog.forwardDeclare('eYo.Slot')
+eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.Do')
+eYo.forwardDeclare('eYo.Slot')
 
 console.error('Manage reentrant_ more carefully')
 
@@ -76,7 +76,7 @@ eYo.Consolidator.makeClass('Dflt', {
     if (model) {
       goog.mixin(D, model)
     }
-    goog.asserts.assert(goog.isDef(D.check), 'Consolidators must check their objects')
+    eYo.assert(goog.isDef(D.check), 'Consolidators must check their objects')
     D.check = eYo.Decorate.arrayFunction(D.check)
     this.model_ = D
   }
@@ -203,7 +203,7 @@ eYo.Consolidator.List.prototype.setupIO = function (io, i) {
   }
   if ((io.slot = io.list[io.i])) {
     io.m4t = io.slot.magnet
-    goog.asserts.assert(!io.slot || !!io.m4t, 'List items must have a magnet')
+    eYo.assert(!io.slot || !!io.m4t, 'List items must have a magnet')
     return true
   } else {
     io.m4t = null

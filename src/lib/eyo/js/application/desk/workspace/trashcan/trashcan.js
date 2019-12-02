@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo.WorkspaceControl')
+eYo.require('eYo.WorkspaceControl')
 
-goog.provide('eYo.TrashCan')
+eYo.provide('eYo.TrashCan')
 
 /**
  * Class for a trash can.

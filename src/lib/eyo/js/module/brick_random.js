@@ -11,20 +11,20 @@
  */
 'use strict'
 
-goog.require('eYo.Brick')
+eYo.require('eYo.Brick')
 
-goog.require('eYo.Brick.Range')
+eYo.require('eYo.Brick.Range')
 
-goog.require('eYo.Model.random__module')
+eYo.require('eYo.Model.random__module')
 
-goog.require('eYo.Stmt')
+eYo.require('eYo.Stmt')
 
-goog.require('eYo.Brick.List')
-goog.require('eYo.Brick.Primary')
-goog.require('eYo.Tooltip')
+eYo.require('eYo.Brick.List')
+eYo.require('eYo.Brick.Primary')
+eYo.require('eYo.Tooltip')
 
-goog.require('eYo.Library')
-goog.provide('eYo.Brick.Random')
+eYo.require('eYo.Library')
+eYo.provide('eYo.Brick.Random')
 
 eYo.T3.Expr.random__randrange = 'eyo:random__randrange'
 

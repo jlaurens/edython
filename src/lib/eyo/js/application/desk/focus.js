@@ -21,19 +21,19 @@
  * @namespace
  **/
 
-goog.require('eYo.Decorate')
-goog.require('eYo.Owned')
+eYo.require('eYo.Decorate')
+eYo.require('eYo.Owned')
 
-goog.require('eYo.Do')
-goog.require('eYo.Board')
+eYo.require('eYo.Do')
+eYo.require('eYo.Board')
 
-goog.require('eYo.Brick')
-goog.require('eYo.Magnet')
-goog.require('eYo.Field')
+eYo.require('eYo.Brick')
+eYo.require('eYo.Magnet')
+eYo.require('eYo.Field')
 
-goog.provide('eYo.Focus')
+eYo.provide('eYo.Focus')
 
-goog.forwardDeclare('eYo.Desk')
+eYo.forwardDeclare('eYo.Desk')
 goog.forwardDeclare('goog.math')
 
 /**

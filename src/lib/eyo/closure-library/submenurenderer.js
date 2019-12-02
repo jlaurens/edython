@@ -17,12 +17,12 @@
  *
  */
 
-goog.require('eYo')
+eYo.require('eYo')
 
 goog.require('goog.dom');
 
 goog.require('goog.ui.SubMenuRenderer')
-goog.provide('eYo.SubMenuRenderer')
+eYo.provide('eYo.SubMenuRenderer')
 
 /**
  * Default renderer for {@link goog.ui.SubMenu}s.  Each item has the following
@@ -98,7 +98,7 @@ eYo.SubMenuRenderer.prototype.createDom = function (control) {
 //   var subMenu = /** @type {goog.ui.SubMenu} */ (control)
 //   element =
 //       goog.ui.SubMenuRenderer.superClass_.decorate.call(this, subMenu, element)
-//   goog.asserts.assert(element)
+//   eYo.assert(element)
 //   goog.dom.classlist.add(element, goog.ui.SubMenuRenderer.CSS_CLASS)
 //   this.addArrow_(subMenu, element)
 //
@@ -167,7 +167,7 @@ goog.ui.SubMenuRenderer.prototype.initializeDom = function (control) {
     element.appendChild(arrow)
   }
   var subMenuElement = subMenu.getElement()
-  goog.asserts.assert(
+  eYo.assert(
     subMenuElement, 'The sub menu DOM element cannot be null.')
   goog.a11y.aria.setState(
     subMenuElement, goog.a11y.aria.State.HASPOPUP, 'true')
@@ -215,7 +215,7 @@ goog.ui.SubMenuRenderer.prototype.addArrow_ = function (subMenu, element) {
 //   var leftArrow = goog.ui.SubMenuRenderer.LEFT_ARROW_
 //   var rightArrow = goog.ui.SubMenuRenderer.RIGHT_ARROW_
 //
-//   goog.asserts.assert(arrow)
+//   eYo.assert(arrow)
 //
 //   if (subMenu.isRightToLeft()) {
 //     goog.dom.classlist.add(arrow, goog.getCssName('goog-submenu-arrow-rtl'))

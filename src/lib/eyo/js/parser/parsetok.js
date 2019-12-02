@@ -11,14 +11,14 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.require('eYo.GMR.Init')
+eYo.require('eYo.GMR.Init')
 
-goog.require('eYo.Parser')
-goog.require('eYo.Scan')
-goog.require('eYo.E')
-goog.provide('eYo.ParseTok')
+eYo.require('eYo.Parser')
+eYo.require('eYo.Scan')
+eYo.require('eYo.E')
+eYo.provide('eYo.ParseTok')
 
   ;(function(){
 
@@ -182,7 +182,7 @@ goog.provide('eYo.ParseTok')
         /* Put type_ignore nodes in the ENDMARKER of file_input. */
         var /* int */ num = parent.n_nchildren
         var /* node * */ ch = parent.n_child[num - 1]
-        goog.asserts.assert(ch.n_type === eYo.TKN.ENDMARKER);
+        eYo.assert(ch.n_type === eYo.TKN.ENDMARKER);
 
         for (var i = 0; i < type_ignores.length; i++) {
             eYo.Do.PyNode_AddChild(ch, eYo.TKN.TYPE_IGNORE, null,

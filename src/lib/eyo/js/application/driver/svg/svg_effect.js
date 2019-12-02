@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
-goog.require('eYo.Brick')
+eYo.require('eYo.Svg')
+eYo.require('eYo.Brick')
 
-goog.provide('eYo.Svg.Effect')
+eYo.provide('eYo.Svg.Effect')
 
-// goog.forwardDeclare('eYo.Effect')
+// eYo.forwardDeclare('eYo.Effect')
 
 /**
  * Svg driver for brick effects

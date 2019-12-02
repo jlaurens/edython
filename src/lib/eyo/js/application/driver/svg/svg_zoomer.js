@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Svg.Zoomer')
+eYo.provide('eYo.Svg.Zoomer')
 
-goog.forwardDeclare('eYo.Zoomer')
+eYo.forwardDeclare('eYo.Zoomer')
 
 /**
  * Svg driver for the zoomer.

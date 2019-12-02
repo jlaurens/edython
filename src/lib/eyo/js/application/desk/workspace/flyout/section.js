@@ -12,9 +12,9 @@
  */
 'use strict'
 
-goog.require('eYo.Protocol')
+eYo.require('eYo.Protocol')
 
-goog.provide('eYo.Section')
+eYo.provide('eYo.Section')
 
 /**
  * Class for a flyout's section.

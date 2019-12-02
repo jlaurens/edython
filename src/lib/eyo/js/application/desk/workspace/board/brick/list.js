@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.List')
+eYo.provide('eYo.List')
 
-goog.forwardDeclare('eYo.Brick')
-goog.forwardDeclare('eYo.DB')
+eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.DB')
 
 goog.forwardDeclare('goog.array')
 goog.forwardDeclare('goog.math')

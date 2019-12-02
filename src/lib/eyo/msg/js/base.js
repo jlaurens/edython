@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.require('eYo')
-goog.provide('eYo.MsgPack')
+eYo.require('eYo')
+eYo.provide('eYo.MsgPack')
 
-goog.provide('eYo.Msg')
+eYo.provide('eYo.Msg')
 
 /** @export */ eYo.Msg.RENAME = 'Renommer'
 
@@ -47,7 +47,7 @@ eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TOOLTIP = 'Exécuter les instructions de ce bloc 
 
 /** @export */ eYo.Msg.RENAME_VARIABLE_TITLE = "Renommer la variable '%1' en :"
 
-goog.provide('eYo.Msg.Placeholder')
+eYo.provide('eYo.Msg.Placeholder')
 
 /** @export */ eYo.Msg.Placeholder.STRING = 'Du texte ici'
 

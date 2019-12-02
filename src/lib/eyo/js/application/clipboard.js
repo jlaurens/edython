@@ -13,9 +13,9 @@
 
 console.error('In progress')
 
-goog.require('eYo.Owned')
+eYo.require('eYo.Owned')
 
-goog.provide('eYo.Clipboard')
+eYo.provide('eYo.Clipboard')
 
 /**
  * 

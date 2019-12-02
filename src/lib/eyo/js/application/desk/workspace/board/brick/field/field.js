@@ -11,19 +11,18 @@
  */
 'use strict';
 
-goog.require('eYo.Protocol')
-goog.require('eYo.UI.Owned2')
-goog.require('goog.asserts');
+eYo.require('eYo.Protocol')
+eYo.require('eYo.UI.Owned2')
 
-goog.provide('eYo.Field')
+eYo.provide('eYo.Field')
 
-goog.provide('eYo.FieldLabel')
+eYo.provide('eYo.FieldLabel')
 
-goog.forwardDeclare('eYo.Size')
-goog.forwardDeclare('eYo.Events')
+eYo.forwardDeclare('eYo.Size')
+eYo.forwardDeclare('eYo.Events')
 
 
-goog.provide('eYo.FieldInput')
+eYo.provide('eYo.FieldInput')
 
 /**
  * Abstract class for text fields.
@@ -64,7 +63,7 @@ eYo.Field.makeFields = (() => {
   }
   var endEditing = function () {
     var data = this.data
-    goog.asserts.assert(data, `No data bound to field ${this.name}/${this.brick.type}`)
+    eYo.assert(data, `No data bound to field ${this.name}/${this.brick.type}`)
     var result = this.validate(this.text)
     if (result) {
       data.fromField(result)
@@ -159,7 +158,7 @@ eYo.Field.makeFields = (() => {
     // field maker
     // Serious things here
     var brick = owner.brick || owner
-    goog.asserts.assert(brick, 'Missing brick while making fields')
+    eYo.assert(brick, 'Missing brick while making fields')
     for (var name in fieldsModel) {
       var model = fieldsModel[name]
       var field = makeField(owner, name, model)
@@ -168,7 +167,7 @@ eYo.Field.makeFields = (() => {
           owner.bindField = field
         }
         owner.fields[name] = field
-        goog.asserts.assert(field.brick, 'Missing field brick while making fields')
+        eYo.assert(field.brick, 'Missing field brick while making fields')
       }
     }
     // now order
@@ -182,7 +181,7 @@ eYo.Field.makeFields = (() => {
       field = owner.fields[name]
       var order = field.order__
       if (order) {
-        goog.asserts.assert(!goog.isDefAndNotNull(byOrder[order]),
+        eYo.assert(!goog.isDefAndNotNull(byOrder[order]),
         'Fields with the same order  %s = %s / %s',
         byOrder[order] && byOrder[order].name || 'NOTHING', field.name, owner.getBrick().type)
         byOrder[order] = field
@@ -288,7 +287,7 @@ eYo.Field.makeFields = (() => {
         unordered.splice(j, 1)
       }
     }
-    goog.asserts.assert(unordered.length < 2,
+    eYo.assert(unordered.length < 2,
       `Too many unordered fields in ${name}/${JSON.stringify(model)}`)
     unordered[0] && (owner.fieldAtStart = chain(owner.fieldAtStart, unordered[0]))
     owner.fieldAtStart && delete owner.fieldAtStart.eyoLast_
@@ -573,7 +572,7 @@ goog.inherits(eYo.FieldLabel, eYo.Field)
  * @constructor
  */
 eYo.FieldInput = function (bsi, name, text) {
-  goog.asserts.assert(name, 'missing name for an editable field')
+  eYo.assert(name, 'missing name for an editable field')
   eYo.FieldInput.superClass_.constructor.call(this, bsi, name, text)
   this.editable = true
 }

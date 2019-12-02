@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo.Do')
+eYo.require('eYo.Do')
 
-goog.provide('eYo.Dlgt')
+eYo.provide('eYo.Dlgt')
 
 delete eYo.Dlgt
 delete eYo.Dflt
@@ -524,13 +524,15 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
    */
   pttp.declareComputed = function (models) {
     Object.keys(models).forEach(k => {
+      console.warn('COMPUTED', k, models[k])
       eYo.parameterAssert(!this.props_.has(k))
       try {
         var k_ = k + '_'
         var k__ = k + '__'
         var model = models[k]
-        var get = model.get || eYo.isF(model) && model
+        var get = model.get || eYo.asF(model)
         var set = model.set
+        console.warn('COMPUTED', k, get, set)
         Object.defineProperty(proto, k, model.set ?
           {
             get: get,
@@ -541,10 +543,11 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
           }
         )
         k = k_
-        get = eYo.isF(model.get_) ? model.get_ : function () {
+        get = eYo.asF(model.get_) || function () {
           return this[k__]
         }
         set = model.set_
+        console.warn('COMPUTED2', k, get, set)
         Object.defineProperty(proto, k, get ? set ? {
             get: get,
             set: set,
@@ -562,6 +565,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
         k = k__
         get = model.get__
         set = model.set__
+        console.warn('COMPUTED3', k, get, set)
         Object.defineProperty(proto, k, get ? set ? {
             get: get,
             set: set,

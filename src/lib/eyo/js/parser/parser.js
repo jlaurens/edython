@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.require('eYo')
-goog.require('eYo.Scan')
+eYo.require('eYo')
+eYo.require('eYo.Scan')
 
-goog.require('eYo.E')
+eYo.require('eYo.E')
 
-goog.provide('stack')
-goog.provide('eYo.Parser')
+eYo.provide('stack')
+eYo.provide('eYo.Parser')
 
 /* Parser implementation */
 
@@ -119,7 +119,7 @@ extern int Py_DEBUG
   /* static int */
   var shift = (/* stack * */ s, child, /* int */ newstate) =>
   {
-    // goog.asserts.assert(!s_empty(s))
+    // eYo.assert(!s_empty(s))
     var err = eYo.Node.PyNode_AddChild_(s.s_top.s_parent, child)
     if (err) {
       return err
@@ -131,7 +131,7 @@ extern int Py_DEBUG
   /* static int */
   var push = (/* stack * */ s, tkn, type, /* dfa * */ d, /* int */ newstate) =>
   {
-    // goog.asserts.assert(!s_empty(s))
+    // eYo.assert(!s_empty(s))
     var child = s.last_tkn = new eYo.Node(tkn.scan, type)
     child.lineno = tkn.lineno
     child.end_lineno = tkn.end_lineno

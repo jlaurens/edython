@@ -11,16 +11,16 @@
  */
 'use strict'
 
-goog.require('eYo.Brick')
+eYo.require('eYo.Brick')
 
-goog.require('eYo.Change')
-goog.require('eYo.Msg')
+eYo.require('eYo.Change')
+eYo.require('eYo.Msg')
 
-goog.require('eYo.Decorate')
-goog.require('eYo.T3.All')
+eYo.require('eYo.Decorate')
+eYo.require('eYo.T3.All')
 goog.require('goog.dom');
 
-goog.provide('eYo.Expr')
+eYo.provide('eYo.Expr')
 
 /**
  * Class for a Delegate, value brick.
@@ -234,18 +234,18 @@ eYo.Expr.Dflt.prototype.insertParentWithModel = function (model) {
     // start by the slots
     var slot = parent.slots[model.slot]
     var parentSlot = slot
-    goog.asserts.assert(parentSlot, 'No input named ' + model.slot)
+    eYo.assert(parentSlot, 'No input named ' + model.slot)
     var parentInputM4t = parentSlot.magnet
-    goog.asserts.assert(parentInputM4t, 'Unexpected dummy input ' + model.slot+ ' in ' + parent.type)
+    eYo.assert(parentInputM4t, 'Unexpected dummy input ' + model.slot+ ' in ' + parent.type)
   } else if ((parentSlot = parent.getSlot(eYo.Key.LIST, true))) {
     var list = parentSlot.targetBrick
-    goog.asserts.assert(list, 'Missing list brick inside ' + this.type)
+    eYo.assert(list, 'Missing list brick inside ' + this.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh
     // get the middle input.
     parentSlot = list.getSlot(eYo.Do.Name.middle_name)
     parentInputM4t = parentSlot.magnet
-    goog.asserts.assert(parentInputM4t, 'Unexpected dummy input ' + parentSlotName)
+    eYo.assert(parentInputM4t, 'Unexpected dummy input ' + parentSlotName)
   } else {
     // find the first parent's connection that can accept brick
     var findM4t = y => {

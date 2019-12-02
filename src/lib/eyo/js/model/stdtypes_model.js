@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.require('eYo.Model')
-goog.require('eYo.Model.Module')
+eYo.require('eYo.Model')
+eYo.require('eYo.Model.Module')
 
-goog.require('eYo.Model.Item')
-goog.provide('eYo.Model.stdtypes.Item')
-goog.provide('eYo.Model.stdtypes')
+eYo.require('eYo.Model.Item')
+eYo.provide('eYo.Model.stdtypes.Item')
+eYo.provide('eYo.Model.stdtypes')
 
 eYo.Model.stdtypes = new eYo.Model.Module('stdtypes', 'https://docs.python.org/3.6/library/stdtypes.html')
 

@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
+eYo.require('eYo.Fcls')
 
-goog.provide('eYo.Fcls.Zoomer')
+eYo.provide('eYo.Fcls.Zoomer')
 
-goog.forwardDeclare('eYo.Zoomer')
+eYo.forwardDeclare('eYo.Zoomer')
 
 /**
  * Faceless driver for the zoomer.

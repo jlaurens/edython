@@ -11,29 +11,27 @@
  */
 'use strict'
 
-goog.require('eYo.Dom')
-goog.require('eYo.Dom.Mgr')
+eYo.require('eYo.Dom')
+eYo.require('eYo.Dom.Mgr')
 
-goog.require('eYo.Decorate')
-
-goog.provide('eYo.Svg')
+eYo.require('eYo.Decorate')
 
 /**
  * A namespace.
  * @name{eYo.Svg}
  * @namespace
  */
-eYo.Svg = Object.create(null)
+eYo.makeNS('Svg')
 
-goog.provide('eYo.Svg.Mgr')
+eYo.provide('eYo.Svg.Mgr')
 
-goog.forwardDeclare('eYo.T3.Profile')
-goog.forwardDeclare('eYo.Svg.Brick')
-goog.forwardDeclare('eYo.Svg.Slot')
-goog.forwardDeclare('eYo.Svg.Field')
-goog.forwardDeclare('eYo.Slot')
-goog.forwardDeclare('eYo.Brick')
-goog.forwardDeclare('eYo.Style')
+eYo.forwardDeclare('eYo.T3.Profile')
+eYo.forwardDeclare('eYo.Svg.Brick')
+eYo.forwardDeclare('eYo.Svg.Slot')
+eYo.forwardDeclare('eYo.Svg.Field')
+eYo.forwardDeclare('eYo.Slot')
+eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.Style')
 
 goog.forwardDeclare('goog.userAgent')
 
@@ -41,9 +39,7 @@ goog.forwardDeclare('goog.userAgent')
  * The Svg delegate.
  * @constructor
  */
-eYo.Driver.Dlgt.makeSubclass('Dlgt', {
-  owner: eYo.Svg
-})
+eYo.Driver.Dlgt.makeSubclass(eYo.Svg)
 
 /**
  * The manager of all the svg drivers.
@@ -77,7 +73,7 @@ eYo.Dom.makeMgrClass(eYo.Svg, {
  * @name{eYo.Svg.Decorate}
  * @namespace
  */
-eYo.Svg.Decorate = Object.create(null)
+eYo.Svg.makeNS('Decorate')
 
 /**
  * Decorator for initUI.
@@ -156,6 +152,12 @@ Object.defineProperties(eYo.Svg, {
   TRANSLATE_2D_REGEX_: { value: /transform\s*:\s*translate\s*\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ },
   TRANSLATE_3D_REGEX_: { value: /transform\s*:\s*translate3d\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ }
 })
+
+/**
+ * @name{eYo.Svg.Dflt}
+ * @constructor
+ */
+eYo.Dflt.makeSubclass(eYo.Svg)
 
 /**
  * Return the coordinates of the top-left corner of this element relative to

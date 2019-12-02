@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Svg.Scrollbar')
+eYo.provide('eYo.Svg.Scrollbar')
 
-goog.forwardDeclare('eYo.Scrollbar')
+eYo.forwardDeclare('eYo.Scrollbar')
 
 /**
  * Svg driver for a scrollbar.

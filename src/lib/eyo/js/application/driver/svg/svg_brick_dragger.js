@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Svg.BrickDragger')
+eYo.provide('eYo.Svg.BrickDragger')
 
-goog.forwardDeclare('eYo.BrickDragger')
+eYo.forwardDeclare('eYo.BrickDragger')
 
 /**
  * Svg driver for a brick dragger.

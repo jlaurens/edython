@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Svg.Magnet')
+eYo.provide('eYo.Svg.Magnet')
 
-goog.forwardDeclare('eYo.Magnet')
+eYo.forwardDeclare('eYo.Magnet')
 
 /**
  * Svg driver for magnets.

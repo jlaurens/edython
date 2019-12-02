@@ -11,14 +11,13 @@
  */
 'use strict'
 
-goog.require('eYo.Protocol')
-goog.require('eYo.Owned')
+eYo.require('eYo.Protocol')
+eYo.require('eYo.Owned')
 
-goog.provide('eYo.Responder')
+eYo.provide('eYo.Responder')
 
-goog.forwardDeclare('eYo.Dom')
+eYo.forwardDeclare('eYo.Dom')
 
-goog.forwardDeclare('goog.asserts')
 
 /*
  * Note: In this file "start" refers to touchstart,

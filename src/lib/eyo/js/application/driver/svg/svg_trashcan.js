@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Svg.TrashCan')
+eYo.provide('eYo.Svg.TrashCan')
 
-goog.forwardDeclare('eYo.TrashCan')
+eYo.forwardDeclare('eYo.TrashCan')
 
 /**
  * Svg driver fro the trash can.

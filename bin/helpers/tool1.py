@@ -11,11 +11,13 @@ pathBuild.mkdir(parents=True, exist_ok=True)
 
 class Foo:
 
-  re_provide = re.compile(r"^\s*goog\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)\s*\('(?P<what>[^']+)'\)[;\s]*(?://.*)?$")
-  #re_provide = re.compile(r"^\s*goog.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
+  re_provide = re.compile(r"^\s*(?:eYo|goog)\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)\s*\('(?P<what>[^']+)'\)[;\s]*(?://.*)?$")
+  #re_provide = re.compile(r"^\s*eYo.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
   #eYo.Consolidator.makeClass('Dlgt')
-  re_make = re.compile(r"^\s*(?:(?P<makeClass>[\w.]+)\.makeClass|(?P<makeSubclass>[\w.]+)\.makeSubclass|(?P<makeNS>[\w.]+)\.makeNS)\s*\(\s*(?:(?P<ns>[\w.]+)\s*,\s*)?'(?P<what>[^']+)'.*")
+  re_make = re.compile(r"""^\s*(?:(?P<makeClass>[\w.]+)\.makeClass|(?P<makeSubclass>[\w.]+)\.makeSubclass|(?P<makeNS>[\w.]+)\.makeNS)\s*\(\s*(?P<ns>[\w.]+)?(?:\s*,\s*)?(?:(?:'|")(?P<what>[\w.]+)(?:'|"))?.*""")
+
+  assert re.match(re_make, "eYo.makeNS('Brick')"), 'BAD re_make 2'
 
   pathByProvided = {}
   nsByClass = {}
@@ -32,13 +34,26 @@ class Foo:
       subclassed = set()
       namespaced = set()
       for l in f.readlines():
+        if re.search('eYo.Driver.Dlgt.makeSubclass\(eYo.Svg\)', l):
+          print('FOUND...')
         m = self.re_make.match(l)
         if m:
           makeClass = m.group('makeClass')
           makeSubclass = m.group('makeSubclass')
           makeNS = m.group('makeNS')
           ns = m.group('ns')
-          what = '.' + m.group('what')
+          what = m.group('what')
+          if re.search('eYo.Driver.Dlgt.makeSubclass(eYo.Svg)', l):
+          # eYo.Driver.Dlgt.makeSubclass(eYo.Svg)
+          #if makeSubclass is 'eYo.Driver.Dlgt' and ns is 'eYo.Svg':
+            print('FOUND', makeSubclass, what)
+            exit(-1)
+          if what:
+            what = '.' + what
+          elif makeSubclass:
+            what = pathlib.Path(makeSubclass).suffix
+          else:
+            continue
           if makeNS:
             what = (ns if ns else makeNS) + what
             provided.add(what)
@@ -98,8 +113,9 @@ def buildDeps(library, library_name):
         if makeSubclass in Foo.nsByClass:
           foo.provided.add(f'{Foo.nsByClass[makeSubclass]}{what}')
         else:
-          print(makeSubclass, what)
-    exit(-1)
+          p = pathlib.Path(makeSubclass)
+          foo.provided.add(p.with_suffix(what))
+
     for foo in foos:
       requirement_lines.update(foo.required)
       requirement_lines.update(foo.forwarded)
@@ -117,7 +133,7 @@ def buildDeps(library, library_name):
         provide += ']'
         require += ']'
         relative = foo.path.relative_to(pathRoot)
-        dependency_lines.append("goog.addDependency('" + relative.as_posix() + "', " + provide + ', ' + require + ', {});\n')
+        dependency_lines.append("eYo.addDependency('" + relative.as_posix() + "', " + provide + ', ' + require + ', {});\n')
 
     p_out = pathBuild / (library_name+'_deps.js')
     print('Writing dependencies in\n   ', p_out)

@@ -27,17 +27,17 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.require('eYo.Const')
+eYo.require('eYo.Const')
 
-goog.require('eYo.XRE')
-goog.require('eYo.T3')
-goog.require('eYo.Brick')
+eYo.require('eYo.XRE')
+eYo.require('eYo.T3')
+eYo.require('eYo.Brick')
 
 goog.require('goog.dom');
 
-goog.provide('eYo.Xml')
+eYo.provide('eYo.Xml')
 
 eYo.Xml = Object.create({
   URN: 'urn:edython:',
@@ -77,30 +77,30 @@ eYo.Xml = Object.create({
   EDYTHON: 'edython', // tag name
 })
 
-goog.provide('eYo.Xml.Text')
-goog.provide('eYo.Xml.Assignment')
-goog.provide('eYo.Xml.Starred')
-goog.provide('eYo.Xml.Literal')
-goog.provide('eYo.Xml.Comparison')
-goog.provide('eYo.Xml.Data')
-goog.provide('eYo.Xml.Primary')
-goog.provide('eYo.Xml.Recover')
-goog.provide('eYo.Xml.Group')
-goog.provide('eYo.Xml.Compatibility')
-goog.provide('eYo.Xml.Call')
+eYo.provide('eYo.Xml.Text')
+eYo.provide('eYo.Xml.Assignment')
+eYo.provide('eYo.Xml.Starred')
+eYo.provide('eYo.Xml.Literal')
+eYo.provide('eYo.Xml.Comparison')
+eYo.provide('eYo.Xml.Data')
+eYo.provide('eYo.Xml.Primary')
+eYo.provide('eYo.Xml.Recover')
+eYo.provide('eYo.Xml.Group')
+eYo.provide('eYo.Xml.Compatibility')
+eYo.provide('eYo.Xml.Call')
 
 // Next are used to let the compiler know that we need them
-goog.forwardDeclare('eYo.Brick.Functions');
-goog.forwardDeclare('eYo.Brick.Stdtypes');
-goog.forwardDeclare('eYo.Brick.Random');
-goog.forwardDeclare('eYo.Brick.Math');
-goog.forwardDeclare('eYo.Brick.CMath');
-goog.forwardDeclare('eYo.Brick.Turtle');
-goog.forwardDeclare('eYo.Brick.Decimal');
-goog.forwardDeclare('eYo.Brick.Fractions');
-goog.forwardDeclare('eYo.Brick.Statistics');
-goog.forwardDeclare('eYo.Brick.Range')
-goog.forwardDeclare('eYo.Expr')
+eYo.forwardDeclare('eYo.Brick.Functions');
+eYo.forwardDeclare('eYo.Brick.Stdtypes');
+eYo.forwardDeclare('eYo.Brick.Random');
+eYo.forwardDeclare('eYo.Brick.Math');
+eYo.forwardDeclare('eYo.Brick.CMath');
+eYo.forwardDeclare('eYo.Brick.Turtle');
+eYo.forwardDeclare('eYo.Brick.Decimal');
+eYo.forwardDeclare('eYo.Brick.Fractions');
+eYo.forwardDeclare('eYo.Brick.Statistics');
+eYo.forwardDeclare('eYo.Brick.Range')
+eYo.forwardDeclare('eYo.Expr')
 
 /**
  * Converts a DOM structure into plain text.
@@ -363,7 +363,7 @@ eYo.Xml.brickToDom = (() => {
 
 goog.exportSymbol('eYo.Xml.brickToDom', eYo.Xml.brickToDom)
 
-goog.require('eYo.Brick.Group')
+eYo.require('eYo.Brick.Group')
 
 /**
  * The xml tag name of this brick, as it should appear in the saved data.
@@ -375,9 +375,9 @@ eYo.Brick.Dflt.prototype.xmlAttr = function () {
   return attr || (this.type && this.type.substring(4)) || eYo.Key.PLACEHOLDER
 }
 
-goog.require('eYo.Brick.List')
+eYo.require('eYo.Brick.List')
 
-goog.require('eYo.Brick.Literal')
+eYo.require('eYo.Brick.Literal')
 
 /**
  * The xml tag name of this brick, as it should appear in the saved data.
@@ -391,7 +391,7 @@ eYo.Brick.List.prototype.xmlAttr = function () {
     : eYo.Brick.List.superClass_.xmlAttr.call(this)
 }
 
-goog.require('eYo.Brick.Primary')
+eYo.require('eYo.Brick.Primary')
 
 /**
  * Convert the brick's value to a text dom element.
@@ -421,9 +421,9 @@ eYo.Xml.Text.fromDom = function (brick, element) {
   )
 }
 
-goog.require('eYo.Brick.Assignment')
+eYo.require('eYo.Brick.Assignment')
 
-goog.require('eYo.Brick.Starred')
+eYo.require('eYo.Brick.Starred')
 /**
  * Try to create a Literal brick from the given element.
  * @param {!Element} element dom element to be completed.
@@ -475,7 +475,7 @@ eYo.Xml.Literal.domToComplete = (() => {
   }
 }) ()
 
-goog.require('eYo.Brick.Operator')
+eYo.require('eYo.Brick.Operator')
 
 /**
  * Save the brick's data.
@@ -659,7 +659,7 @@ eYo.Xml.stringToBrick = function (string, owner) {
   return brick
 }
 
-goog.require('eYo.Brick.Group')
+eYo.require('eYo.Brick.Group')
 
 /**
  * Recover nodes from a possibly corrupted xml data.

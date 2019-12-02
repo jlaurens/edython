@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
+eYo.require('eYo.Fcls')
 
-goog.provide('eYo.Fcls.Flyout')
+eYo.provide('eYo.Fcls.Flyout')
 
-goog.forwardDeclare('eYo.Flyout')
+eYo.forwardDeclare('eYo.Flyout')
 
 /**
  * Shared application driver.

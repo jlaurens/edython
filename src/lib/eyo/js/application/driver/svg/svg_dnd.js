@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Svg.DnD')
+eYo.provide('eYo.Svg.DnD')
 
-goog.forwardDeclare('eYo.DnD')
+eYo.forwardDeclare('eYo.DnD')
 
 /**
  * Svg driver for DnD.

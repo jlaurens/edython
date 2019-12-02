@@ -11,15 +11,15 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.require('eYo.Field')
+eYo.require('eYo.Field')
 
-goog.require('eYo.Brick')
-goog.provide('eYo.Py.Exporter')
+eYo.require('eYo.Brick')
+eYo.provide('eYo.Py.Exporter')
 
-goog.forwardDeclare('eYo.XRE')
-goog.forwardDeclare('eYo.Slot')
+eYo.forwardDeclare('eYo.XRE')
+eYo.forwardDeclare('eYo.Slot')
 
 /**
  * Python code generator.

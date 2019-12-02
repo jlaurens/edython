@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
+eYo.require('eYo.Fcls')
 
-goog.provide('eYo.Fcls.Slot')
+eYo.provide('eYo.Fcls.Slot')
 
-goog.forwardDeclare('eYo.Slot')
+eYo.forwardDeclare('eYo.Slot')
 
 /**
  * Faceless driver for slots.

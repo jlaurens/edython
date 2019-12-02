@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.require('eYo.E')
-goog.require('eYo.TKN')
+eYo.require('eYo.E')
+eYo.require('eYo.TKN')
 
-goog.provide('eYo.AST')
+eYo.provide('eYo.AST')
 /*
  * This file includes functions to transform a concrete syntax tree (CST) to
  * an abstract syntax tree (AST). The main function is PyAST_FromNode().
@@ -816,7 +816,7 @@ PyAST_FromNodeObject(const node *n, PyCompilerFlags *flags,
                 ch = n.n_child[i];
                 if (ch.n_type == NEWLINE)
                     continue;
-                goog.asserts.assert(ch.n_type === stmt);
+                eYo.assert(ch.n_type === stmt);
                 num = num_stmts(ch);
                 if (num == 1) {
                     s = ast_for_stmt(&c, ch);
@@ -826,7 +826,7 @@ PyAST_FromNodeObject(const node *n, PyCompilerFlags *flags,
                 }
                 else {
                     ch = ch.n_child[0];
-                    goog.asserts.assert(ch.n_type === simple_stmt);
+                    eYo.assert(ch.n_type === simple_stmt);
                     for (j = 0; j < num; j++) {
                         s = ast_for_stmt(&c, CHILD(ch, j * 2));
                         if (!s)
@@ -838,7 +838,7 @@ PyAST_FromNodeObject(const node *n, PyCompilerFlags *flags,
 
             /* Type ignores are stored under the ENDMARKER in file_input. *-/
             ch = n.n_child[NCH(n] - 1);
-            goog.asserts.assert(ch.n_type === ENDMARKER);
+            eYo.assert(ch.n_type === ENDMARKER);
             num = NCH(ch);
             type_ignores = _Py_asdl_seq_new(num, arena);
             if (!type_ignores)
@@ -889,7 +889,7 @@ PyAST_FromNodeObject(const node *n, PyCompilerFlags *flags,
                 }
                 else {
                     /* Only a simple_stmt can contain multiple statements. *-/
-                    goog.asserts.assert(n.n_type === simple_stmt);
+                    eYo.assert(n.n_type === simple_stmt);
                     for (i = 0; i < NCH(n); i += 2) {
                         if (n.n_child[i].n_type == NEWLINE)
                             break;
@@ -905,7 +905,7 @@ PyAST_FromNodeObject(const node *n, PyCompilerFlags *flags,
             break;
         case func_type_input:
             n = n.n_child[0];
-            goog.asserts.assert(n.n_type === func_type);
+            eYo.assert(n.n_type === func_type);
 
             if (n.n_child[1].n_type == typelist) {
                 ch = n.n_child[1];
@@ -1223,7 +1223,7 @@ set_context(struct compiling *c, expr_ty e, expr_context_ty ctx, const node *n)
 static operator_ty
 ast_for_augassign(struct compiling *c, const node *n)
 {
-    goog.asserts.assert(n.n_type === augassign);
+    eYo.assert(n.n_type === augassign);
     n = n.n_child[0];
     switch (n.n_str[0]) {
         case '+':
@@ -1266,7 +1266,7 @@ ast_for_comp_op(struct compiling *c, const node *n)
     /* comp_op: '<'|'>'|'=='|'>='|'<='|'!='|'in'|'not' 'in'|'is'
                |'is' 'not'
     *-/
-    goog.asserts.assert(n.n_type === comp_op);
+    eYo.assert(n.n_type === comp_op);
     if (NCH(n) == 1) {
         n = n.n_child[0];
         switch (n.n_type) {
@@ -1664,7 +1664,7 @@ ast_for_dotted_name(struct compiling *c, const node *n)
     int i;
     node *ch;
 
-    goog.asserts.assert(n.n_type === dotted_name);
+    eYo.assert(n.n_type === dotted_name);
 
     lineno = n.n_lineno;
     col_offset = n->n_col_offset;
@@ -1698,9 +1698,9 @@ ast_for_decorator(struct compiling *c, const node *n)
     expr_ty d = NULL;
     expr_ty name_expr;
 
-    goog.asserts.assert(n.n_type === decorator);
-    goog.asserts.assert(n.n_child[0].n_type === AT);
-    goog.asserts.assert(RCHILD(n.n_type === -1), NEWLINE);
+    eYo.assert(n.n_type === decorator);
+    eYo.assert(n.n_child[0].n_type === AT);
+    eYo.assert(RCHILD(n.n_type === -1), NEWLINE);
 
     name_expr = ast_for_dotted_name(c, n.n_child[1]);
     if (!name_expr)
@@ -1734,7 +1734,7 @@ ast_for_decorators(struct compiling *c, const node *n)
     expr_ty d;
     int i;
 
-    goog.asserts.assert(n.n_type === decorators);
+    eYo.assert(n.n_type === decorators);
     decorator_seq = _Py_asdl_seq_new(NCH(n), c->c_arena);
     if (!decorator_seq)
         return NULL;
@@ -1763,7 +1763,7 @@ ast_for_funcdef_impl(struct compiling *c, const node *n0,
     node *tc;
     string type_comment = NULL;
 
-    goog.asserts.assert(n.n_type === funcdef);
+    eYo.assert(n.n_type === funcdef);
 
     name = NEW_IDENTIFIER(n.n_child[name_i]);
     if (!name)
@@ -1817,10 +1817,10 @@ static stmt_ty
 ast_for_async_funcdef(struct compiling *c, const node *n, asdl_seq *decorator_seq)
 {
     /* async_funcdef: 'async' funcdef *-/
-    goog.asserts.assert(n.n_type === async_funcdef);
-    goog.asserts.assert(n.n_child[0].n_type === NAME);
+    eYo.assert(n.n_type === async_funcdef);
+    eYo.assert(n.n_child[0].n_type === NAME);
     assert(strcmp(n.n_child[0].n_str, "async") == 0);
-    goog.asserts.assert(n.n_child[1].n_type === funcdef);
+    eYo.assert(n.n_child[1].n_type === funcdef);
 
     return ast_for_funcdef_impl(c, n, decorator_seq,
                                 true /* is_async *-/);
@@ -1839,8 +1839,8 @@ static stmt_ty
 ast_for_async_stmt(struct compiling *c, const node *n)
 {
     /* async_stmt: 'async' (funcdef | with_stmt | for_stmt) *-/
-    goog.asserts.assert(n.n_type === async_stmt);
-    goog.asserts.assert(n.n_child[0].n_type === NAME);
+    eYo.assert(n.n_type === async_stmt);
+    eYo.assert(n.n_child[0].n_type === NAME);
     assert(strcmp(n.n_child[0].n_str, "async") == 0);
 
     switch (n.n_child[1].n_type) {
@@ -1870,7 +1870,7 @@ ast_for_decorated(struct compiling *c, const node *n)
     stmt_ty thing = NULL;
     asdl_seq *decorator_seq = NULL;
 
-    goog.asserts.assert(n.n_type === decorated);
+    eYo.assert(n.n_type === decorated);
 
     decorator_seq = ast_for_decorators(c, n.n_child[0]);
     if (!decorator_seq)
@@ -1982,9 +1982,9 @@ count_comp_fors(struct compiling *c, const node *n)
 
   count_comp_for:
     n_fors++;
-    goog.asserts.assert(n.n_type === comp_for);
+    eYo.assert(n.n_type === comp_for);
     if (NCH(n) == 2) {
-        goog.asserts.assert(n.n_child[0].n_type === NAME);
+        eYo.assert(n.n_child[0].n_type === NAME);
         assert(strcmp(n.n_child[0].n_str, "async") == 0);
         n = n.n_child[1];
     }
@@ -2001,7 +2001,7 @@ count_comp_fors(struct compiling *c, const node *n)
         return n_fors;
     }
   count_comp_iter:
-    goog.asserts.assert(n.n_type === comp_iter);
+    eYo.assert(n.n_type === comp_iter);
     n = n.n_child[0];
     if (n.n_type == comp_for)
         goto count_comp_for;
@@ -2032,11 +2032,11 @@ count_comp_ifs(struct compiling *c, const node *n)
     int n_ifs = 0;
 
     while (1) {
-        goog.asserts.assert(n.n_type === comp_iter);
+        eYo.assert(n.n_type === comp_iter);
         if (n.n_child[0].n_type == comp_for)
             return n_ifs;
         n = n.n_child[0];
-        goog.asserts.assert(n.n_type === comp_if);
+        eYo.assert(n.n_type === comp_if);
         n_ifs++;
         if (NCH(n) == 2)
             return n_ifs;
@@ -2066,18 +2066,18 @@ ast_for_comprehension(struct compiling *c, const node *n)
         node *sync_n;
         int is_async = 0;
 
-        goog.asserts.assert(n.n_type === comp_for);
+        eYo.assert(n.n_type === comp_for);
 
         if (NCH(n) == 2) {
             is_async = 1;
-            goog.asserts.assert(n.n_child[0].n_type === NAME);
+            eYo.assert(n.n_child[0].n_type === NAME);
             assert(strcmp(n.n_child[0].n_str, "async") == 0);
             sync_n = n.n_child[1];
         }
         else {
             sync_n = n.n_child[0];
         }
-        goog.asserts.assert(sync_n.n_type === sync_comp_for);
+        eYo.assert(sync_n.n_type === sync_comp_for);
 
         for_ch = sync_n.n_child[1];
         t = ast_for_exprlist(c, for_ch, Store);
@@ -2115,9 +2115,9 @@ ast_for_comprehension(struct compiling *c, const node *n)
                 return NULL;
 
             for (j = 0; j < n_ifs; j++) {
-                goog.asserts.assert(n.n_type === comp_iter);
+                eYo.assert(n.n_type === comp_iter);
                 n = n.n_child[0];
-                goog.asserts.assert(n.n_type === comp_if);
+                eYo.assert(n.n_type === comp_if);
 
                 expression = ast_for_expr(c, n.n_child[1]);
                 if (!expression)
@@ -2415,7 +2415,7 @@ ast_for_atom(struct compiling *c, const node *n)
             return List(NULL, Load, n.n_lineno, n->n_col_offset,
                         n->n_end_lineno, n->n_end_col_offset, c->c_arena);
 
-        goog.asserts.assert(ch.n_type === testlist_comp);
+        eYo.assert(ch.n_type === testlist_comp);
         if (NCH(ch) == 1 || ch.n_child[1].n_type == COMMA) {
             asdl_seq *elts = seq_for_testlist(c, ch);
             if (!elts)
@@ -2481,7 +2481,7 @@ ast_for_slice(struct compiling *c, const node *n)
     node *ch;
     expr_ty lower = NULL, upper = NULL, step = NULL;
 
-    goog.asserts.assert(n.n_type === subscript);
+    eYo.assert(n.n_type === subscript);
 
     /*
        subscript: test | [test] ':' [test] [sliceop]
@@ -2603,7 +2603,7 @@ ast_for_trailer(struct compiling *c, const node *n, expr_ty left_expr)
        subscript: '.' '.' '.' | test | [test] ':' [test] [sliceop]
      *-/
     const node *n_copy = n;
-    goog.asserts.assert(n.n_type === trailer);
+    eYo.assert(n.n_type === trailer);
     if (n.n_child[0].n_type == LPAR) {
         if (NCH(n) == 2)
             return Call(left_expr, NULL, NULL, n.n_lineno, n->n_col_offset,
@@ -2620,8 +2620,8 @@ ast_for_trailer(struct compiling *c, const node *n, expr_ty left_expr)
                          n->n_end_lineno, n->n_end_col_offset, c->c_arena);
     }
     else {
-        goog.asserts.assert(n.n_child[0].n_type === LSQB);
-        goog.asserts.assert(n.n_child[2].n_type === RSQB);
+        eYo.assert(n.n_child[0].n_type === LSQB);
+        eYo.assert(n.n_child[2].n_type === RSQB);
         n = n.n_child[1];
         if (NCH(n) == 1) {
             slice_ty slc = ast_for_slice(c, n.n_child[0]);
@@ -2711,7 +2711,7 @@ ast_for_atom_expr(struct compiling *c, const node *n)
     int i, nch, start = 0;
     expr_ty e, tmp;
 
-    goog.asserts.assert(n.n_type === atom_expr);
+    eYo.assert(n.n_type === atom_expr);
     nch = NCH(n);
 
     if (n.n_child[0].n_type == NAME && strcmp(n.n_child[0].n_str, "await") == 0) {
@@ -2757,7 +2757,7 @@ ast_for_power(struct compiling *c, const node *n)
     /* power: atom trailer* ('**' factor)*
      *-/
     expr_ty e;
-    goog.asserts.assert(n.n_type === power);
+    eYo.assert(n.n_type === power);
     e = ast_for_atom_expr(c, n.n_child[0]);
     if (!e)
         return NULL;
@@ -2777,7 +2777,7 @@ static expr_ty
 ast_for_starred(struct compiling *c, const node *n)
 {
     expr_ty tmp;
-    goog.asserts.assert(n.n_type === star_expr);
+    eYo.assert(n.n_type === star_expr);
 
     tmp = ast_for_expr(c, n.n_child[1]);
     if (!tmp)
@@ -2981,7 +2981,7 @@ ast_for_call(struct compiling *c, const node *n, expr_ty func,
     asdl_seq *args;
     asdl_seq *keywords;
 
-    goog.asserts.assert(n.n_type === arglist);
+    eYo.assert(n.n_type === arglist);
 
     nargs = 0;
     nkeywords = 0;
@@ -3205,7 +3205,7 @@ ast_for_testlist(struct compiling *c, const node* n)
 static stmt_ty
 ast_for_expr_stmt(struct compiling *c, const node *n)
 {
-    goog.asserts.assert(n.n_type === expr_stmt);
+    eYo.assert(n.n_type === expr_stmt);
     /* expr_stmt: testlist_star_expr (annassign | augassign (yield_expr|testlist) |
                      [('=' (yield_expr|testlist_star_expr))+ [TYPE_COMMENT]] )
        annassign: ':' test ['=' (yield_expr|testlist)]
@@ -3348,7 +3348,7 @@ ast_for_expr_stmt(struct compiling *c, const node *n)
         string type_comment;
 
         /* a normal assignment *-/
-        goog.asserts.assert(n.n_child[1].n_type === EQUAL);
+        eYo.assert(n.n_child[1].n_type === EQUAL);
 
         has_type_comment = TYPE(CHILD(n, num - 1)) == TYPE_COMMENT;
         nch_minus_type = num - has_type_comment;
@@ -3400,7 +3400,7 @@ ast_for_exprlist(struct compiling *c, const node *n, expr_context_ty context)
     int i;
     expr_ty e;
 
-    goog.asserts.assert(n.n_type === exprlist);
+    eYo.assert(n.n_type === exprlist);
 
     seq = _Py_asdl_seq_new((NCH(n) + 1) / 2, c->c_arena);
     if (!seq)
@@ -3422,7 +3422,7 @@ ast_for_del_stmt(struct compiling *c, const node *n)
     asdl_seq *expr_list;
 
     /* del_stmt: 'del' exprlist *-/
-    goog.asserts.assert(n.n_type === del_stmt);
+    eYo.assert(n.n_type === del_stmt);
 
     expr_list = ast_for_exprlist(c, n.n_child[1], Del);
     if (!expr_list)
@@ -3446,7 +3446,7 @@ ast_for_flow_stmt(struct compiling *c, const node *n)
     *-/
     node *ch;
 
-    goog.asserts.assert(n.n_type === flow_stmt);
+    eYo.assert(n.n_type === flow_stmt);
     ch = n.n_child[0];
     switch (ch.n_type) {
         case break_stmt:
@@ -3633,13 +3633,13 @@ ast_for_import_stmt(struct compiling *c, const node *n)
     int i;
     asdl_seq *aliases;
 
-    goog.asserts.assert(n.n_type === import_stmt);
+    eYo.assert(n.n_type === import_stmt);
     lineno = n.n_lineno;
     col_offset = n->n_col_offset;
     n = n.n_child[0];
     if (n.n_type == import_name) {
         n = n.n_child[1];
-        goog.asserts.assert(n.n_type === dotted_as_names);
+        eYo.assert(n.n_type === dotted_as_names);
         aliases = _Py_asdl_seq_new((NCH(n) + 1) / 2, c->c_arena);
         if (!aliases)
                 return NULL;
@@ -3745,7 +3745,7 @@ ast_for_global_stmt(struct compiling *c, const node *n)
     asdl_seq *s;
     int i;
 
-    goog.asserts.assert(n.n_type === global_stmt);
+    eYo.assert(n.n_type === global_stmt);
     s = _Py_asdl_seq_new(NCH(n) / 2, c->c_arena);
     if (!s)
         return NULL;
@@ -3767,7 +3767,7 @@ ast_for_nonlocal_stmt(struct compiling *c, const node *n)
     asdl_seq *s;
     int i;
 
-    goog.asserts.assert(n.n_type === nonlocal_stmt);
+    eYo.assert(n.n_type === nonlocal_stmt);
     s = _Py_asdl_seq_new(NCH(n) / 2, c->c_arena);
     if (!s)
         return NULL;
@@ -3785,7 +3785,7 @@ static stmt_ty
 ast_for_assert_stmt(struct compiling *c, const node *n)
 {
     /* assert_stmt: 'assert' test [',' test] *-/
-    goog.asserts.assert(n.n_type === assert_stmt);
+    eYo.assert(n.n_type === assert_stmt);
     if (NCH(n) == 2) {
         expr_ty expression = ast_for_expr(c, n.n_child[1]);
         if (!expression)
@@ -3822,7 +3822,7 @@ ast_for_suite(struct compiling *c, const node *n)
     node *ch;
 
     if (n.n_type != func_body_suite) {
-        goog.asserts.assert(n.n_type === suite);
+        eYo.assert(n.n_type === suite);
     }
 
     total = num_stmts(n);
@@ -3850,12 +3850,12 @@ ast_for_suite(struct compiling *c, const node *n)
         i = 2;
         if (n.n_child[1].n_type == TYPE_COMMENT) {
             i += 2;
-            goog.asserts.assert(n.n_child[2].n_type === NEWLINE);
+            eYo.assert(n.n_child[2].n_type === NEWLINE);
         }
 
         for (; i < (NCH(n) - 1); i++) {
             ch = n.n_child[i];
-            goog.asserts.assert(ch.n_type === stmt);
+            eYo.assert(ch.n_type === stmt);
             num = num_stmts(ch);
             if (num == 1) {
                 /* small_stmt or compound_stmt with only one child *-/
@@ -3867,7 +3867,7 @@ ast_for_suite(struct compiling *c, const node *n)
             else {
                 int j;
                 ch = ch.n_child[0];
-                goog.asserts.assert(ch.n_type === simple_stmt);
+                eYo.assert(ch.n_type === simple_stmt);
                 for (j = 0; j < NCH(ch); j += 2) {
                     /* statement terminates with a semi-colon ';' *-/
                     if (NCH(ch.n_child[j]) == 0) {
@@ -3906,7 +3906,7 @@ ast_for_if_stmt(struct compiling *c, const node *n)
     char *s;
     int end_lineno, end_col_offset;
 
-    goog.asserts.assert(n.n_type === if_stmt);
+    eYo.assert(n.n_type === if_stmt);
 
     if (NCH(n) == 4) {
         expr_ty expression;
@@ -4033,7 +4033,7 @@ static stmt_ty
 ast_for_while_stmt(struct compiling *c, const node *n)
 {
     /* while_stmt: 'while' test ':' suite ['else' ':' suite] *-/
-    goog.asserts.assert(n.n_type === while_stmt);
+    eYo.assert(n.n_type === while_stmt);
     int end_lineno, end_col_offset;
 
     if (NCH(n) == 4) {
@@ -4087,7 +4087,7 @@ ast_for_for_stmt(struct compiling *c, const node *n0, bool is_async)
     int has_type_comment;
     string type_comment;
     /* for_stmt: 'for' exprlist 'in' testlist ':' [TYPE_COMMENT] suite ['else' ':' suite] *-/
-    goog.asserts.assert(n.n_type === for_stmt);
+    eYo.assert(n.n_type === for_stmt);
 
     has_type_comment = n.n_child[5].n_type == TYPE_COMMENT;
 
@@ -4147,8 +4147,8 @@ ast_for_except_clause(struct compiling *c, const node *exc, node *body)
 {
     /* except_clause: 'except' [test ['as' test]] *-/
     int end_lineno, end_col_offset;
-    goog.asserts.assert(exc.n_type === except_clause);
-    goog.asserts.assert(body.n_type === suite);
+    eYo.assert(exc.n_type === except_clause);
+    eYo.assert(body.n_type === suite);
 
     if (NCH(exc) == 1) {
         asdl_seq *suite_seq = ast_for_suite(c, body);
@@ -4211,7 +4211,7 @@ ast_for_try_stmt(struct compiling *c, const node *n)
     asdl_seq *body, *handlers = NULL, *orelse = NULL, *finally = NULL;
     excepthandler_ty last_handler;
 
-    goog.asserts.assert(n.n_type === try_stmt);
+    eYo.assert(n.n_type === try_stmt);
 
     body = ast_for_suite(c, n.n_child[2]);
     if (body == NULL)
@@ -4287,7 +4287,7 @@ ast_for_with_item(struct compiling *c, const node *n)
 {
     expr_ty context_expr, optional_vars = NULL;
 
-    goog.asserts.assert(n.n_type === with_item);
+    eYo.assert(n.n_type === with_item);
     context_expr = ast_for_expr(c, n.n_child[0]);
     if (!context_expr)
         return NULL;
@@ -4314,7 +4314,7 @@ ast_for_with_stmt(struct compiling *c, const node *n0, bool is_async)
     asdl_seq *items, *body;
     string type_comment;
 
-    goog.asserts.assert(n.n_type === with_stmt);
+    eYo.assert(n.n_type === with_stmt);
 
     has_type_comment = TYPE(n.n_child[NCH(n] - 2)) == TYPE_COMMENT;
     nch_minus_type = NCH(n) - has_type_comment;
@@ -4360,7 +4360,7 @@ ast_for_classdef(struct compiling *c, const node *n, asdl_seq *decorator_seq)
     expr_ty call;
     int end_lineno, end_col_offset;
 
-    goog.asserts.assert(n.n_type === classdef);
+    eYo.assert(n.n_type === classdef);
 
     if (NCH(n) == 4) { /* class NAME ':' suite *-/
         s = ast_for_suite(c, n.n_child[3]);
@@ -4471,7 +4471,7 @@ ast_for_stmt(struct compiling *c, const node *n)
                         | funcdef | classdef | decorated | async_stmt
         *-/
         node *ch = n.n_child[0];
-        goog.asserts.assert(n.n_type === compound_stmt);
+        eYo.assert(n.n_type === compound_stmt);
         switch (ch.n_type) {
             case if_stmt:
                 return ast_for_if_stmt(c, ch);
@@ -5698,7 +5698,7 @@ parsestrplus(struct compiling *c, const node *n)
         const char *fstr;
         Py_ssize_t fstrlen = -1;  /* Silence a compiler warning. *-/
 
-        goog.asserts.assert(n.n_child[i].n_type === STRING);
+        eYo.assert(n.n_child[i].n_type === STRING);
         if (parsestr(c, n.n_child[i], &this_bytesmode, &this_rawmode, &s,
                      &fstr, &fstrlen) != 0)
             goto error;

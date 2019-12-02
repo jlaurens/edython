@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.require('eYo.Dom.Search')
+eYo.require('eYo.Dom.Search')
 
-goog.provide('eYo.Svg.Search')
-goog.provide('eYo.Svg.SearchToolbar')
+eYo.provide('eYo.Svg.Search')
+eYo.provide('eYo.Svg.SearchToolbar')
 
-goog.forwardDeclare('eYo.Search')
-// goog.forwardDeclare('eYo.SearchToolbar')
+eYo.forwardDeclare('eYo.Search')
+// eYo.forwardDeclare('eYo.SearchToolbar')
 
 /**
  * Svg driver for the search pane.

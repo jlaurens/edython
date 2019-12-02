@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
+eYo.require('eYo.Fcls')
 
-goog.provide('eYo.Fcls.Scroller')
+eYo.provide('eYo.Fcls.Scroller')
 
-goog.forwardDeclare('eYo.Scroller')
+eYo.forwardDeclare('eYo.Scroller')
 
 /**
  * Shared application driver.

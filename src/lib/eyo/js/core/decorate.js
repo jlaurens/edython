@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.Decorate')
+eYo.provide('eYo.Decorate')
 
-goog.forwardDeclare('eYo.Do')
+eYo.forwardDeclare('eYo.Do')
 
 /**
  * Decorate the function to be reentrant.

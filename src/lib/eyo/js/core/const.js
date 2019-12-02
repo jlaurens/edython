@@ -16,12 +16,12 @@
  * @namespace
  **/
 
-goog.require('eYo.Do')
-goog.provide('eYo.ID')
+eYo.require('eYo.Do')
+eYo.provide('eYo.ID')
 
-goog.provide('eYo.Const')
+eYo.provide('eYo.Const')
 
-goog.asserts.assert(XRegExp, 'load XRegExp before')
+eYo.assert(XRegExp, 'load XRegExp before')
 
 eYo.Const = {
   ABOVE: 'ABOVE', // not for brick definition
@@ -46,7 +46,7 @@ eYo.Const.Field = {
   NCSTR: 'NCSTR'
 }
 
-goog.provide('eYo.Key')
+eYo.provide('eYo.Key')
 
 eYo.Key = {}
 

@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo.Section')
+eYo.require('eYo.Section')
 
-goog.provide('eYo.Search')
+eYo.provide('eYo.Search')
 
 /**
  * Class for a flyout.

@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Protocol')
+eYo.require('eYo.Protocol')
 
-goog.provide('eYo.Protocol.ChangeCount')
+eYo.provide('eYo.Protocol.ChangeCount')
 
-goog.forwardDeclare('eYo.Events')
+eYo.forwardDeclare('eYo.Events')
 
 eYo.Protocol.ChangeCount = {
   methods: {},

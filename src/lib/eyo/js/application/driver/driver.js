@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.require('eYo.Owned')
+eYo.require('eYo.Owned')
 
 /**
  * @name {eYo.Driver}

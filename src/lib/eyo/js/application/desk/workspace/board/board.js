@@ -11,14 +11,14 @@
  */
 'use strict'
 
-goog.require('eYo.UI.Dflt')
+eYo.require('eYo.UI.Dflt')
 
-goog.require('eYo.Decorate')
-goog.provide('eYo.Board')
+eYo.require('eYo.Decorate')
+eYo.provide('eYo.Board')
 
-goog.forwardDeclare('eYo.Workspace')
+eYo.forwardDeclare('eYo.Workspace')
 
-goog.forwardDeclare('eYo.Metrics')
+eYo.forwardDeclare('eYo.Metrics')
 
 goog.forwardDeclare('goog.array')
 goog.forwardDeclare('goog.math')
@@ -381,7 +381,7 @@ Object.defineProperties(eYo.Board.Main.prototype, {
     set (newValue) {
       var oldValue = this.flyout_
       if (newValue !== oldValue) {
-        goog.asserts.assert(this.isMain, 'Only main boards may have flyouts')
+        eYo.assert(this.isMain, 'Only main boards may have flyouts')
         this.flyout_ = newValue
         oldValue && oldValue.dispose()
       }
@@ -1175,7 +1175,7 @@ eYo.Board.prototype.markFocused = function() {
 eYo.Board.prototype.zoom = function(center, amount) {
   var options = this.options.zoom
   console.error(this.options)
-  goog.asserts.assert(options, `Forbidden zoom with no zoom options ${this.options}`)
+  eYo.assert(options, `Forbidden zoom with no zoom options ${this.options}`)
   var speed = options.scaleSpeed
   // Scale factor.
   var scaleChange = Math.pow(speed, amount)
@@ -1369,7 +1369,7 @@ eYo.Board.prototype.getRecover = (() => {
     return this.recover_
   }
   return function () {
-    goog.asserts.assert(!this.recover_, 'Collision: this.recover_')
+    eYo.assert(!this.recover_, 'Collision: this.recover_')
     this.recover_ = new eYo.Xml.Recover(this)
     this.getRecover = get
     return this.recover_

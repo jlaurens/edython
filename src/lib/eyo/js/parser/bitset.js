@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.BitSet')
+eYo.provide('eYo.BitSet')
 
 /* Bitset primitives used by the parser generator *-/
 

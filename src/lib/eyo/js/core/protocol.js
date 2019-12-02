@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.Protocol')
+eYo.provide('eYo.Protocol')
 
 /**
  * Enhance the prototype with the given methods and properties.
@@ -35,7 +35,7 @@ eYo.Protocol.add = function () {
       if (eYo.Do.hasOwnProperty(base.methods, key)) {
         var method = base.methods[key]
         if (goog.isFunction(method)) {
-          goog.asserts.assert(!proto[key], key + 'already exists')
+          eYo.assert(!proto[key], key + 'already exists')
           proto[key] = method
         }
       }

@@ -23,16 +23,16 @@
  * eyo-code, for code snippets
  * eyo-with-accel, to reserve room for a key shortcut (accelerator)
  * eyo-with-checkbox, to reserve room for a checkbox
- * See the subemnu renderer for submenus.
+ * See the submenu renderer for submenus.
  * @author jerome.laurens@u-bourgogne.fr
  */
 
 goog.require('goog.ui.MenuItemRenderer')
 goog.require('goog.ui.MenuSeparatorRenderer')
 
-goog.require('eYo.Style')
+eYo.require('eYo.Style')
 
-goog.provide('eYo.MenuItemRenderer')
+eYo.provide('eYo.MenuItemRenderer')
 
 /**
  * Sets the css class of the control renderer.

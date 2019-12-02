@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
+eYo.require('eYo.Fcls')
 
-goog.provide('eYo.Fcls.Desk')
+eYo.provide('eYo.Fcls.Desk')
 
-goog.forwardDeclare('eYo.Desk')
+eYo.forwardDeclare('eYo.Desk')
 
 /**
  * Shared application driver.

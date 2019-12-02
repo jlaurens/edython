@@ -11,14 +11,14 @@
  */
 'use strict'
 
-goog.require('eYo.Node')
+eYo.require('eYo.Node')
 
-goog.require('eYo.TKN')
+eYo.require('eYo.TKN')
 
-goog.require('eYo.GMR')
-goog.require('eYo.Brick.Primary')
+eYo.require('eYo.GMR')
+eYo.require('eYo.Brick.Primary')
 
-goog.provide('eYo.Node.Brick')
+eYo.provide('eYo.Node.Brick')
 
 /**
  * Converts the receiver to a visual brick.

@@ -11,18 +11,18 @@
  */
 'use strict'
 
-goog.require('eYo')
-goog.require('eYo.PopupMenu')
+eYo.require('eYo')
+eYo.require('eYo.PopupMenu')
 
-goog.provide('eYo.KeyHandler')
+eYo.provide('eYo.KeyHandler')
 
-goog.provide('eYo.KeyHandlerMenu')
+eYo.provide('eYo.KeyHandlerMenu')
 
-goog.forwardDeclare('eYo.XRE')
-goog.forwardDeclare('eYo.Dom')
-goog.forwardDeclare('eYo.Navigate')
-goog.forwardDeclare('eYo.MenuItem')
-goog.forwardDeclare('eYo.Separator')
+eYo.forwardDeclare('eYo.XRE')
+eYo.forwardDeclare('eYo.Dom')
+eYo.forwardDeclare('eYo.Navigate')
+eYo.forwardDeclare('eYo.MenuItem')
+eYo.forwardDeclare('eYo.Separator')
 
 eYo.KeyHandlerMenu = function (opt_domHelper, opt_renderer) {
   eYo.KeyHandlerMenu.superClass_.constructor.call(this, opt_domHelper, opt_renderer)
@@ -76,7 +76,7 @@ eYo.KeyHandler = (() => {
   me.register = function (key, model) {
     // manage duplicates
     if (key.length) {
-      goog.asserts.assert(eYo.isStr(model) || goog.isFunction(model) || goog.isFunction(model.action) || eYo.isStr(model.type), 'No model to register for ' + key)
+      eYo.assert(eYo.isStr(model) || goog.isFunction(model) || goog.isFunction(model.action) || eYo.isStr(model.type), 'No model to register for ' + key)
       for (var i = 0, s; (s = shortcuts_[i]); i++) {
         if (s.key === key) {
           shortcuts_[i] = {

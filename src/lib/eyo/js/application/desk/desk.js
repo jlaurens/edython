@@ -13,14 +13,14 @@
  */
 'use strict'
 
-goog.require('eYo.UI.Dflt')
-goog.require('eYo.Decorate')
+eYo.require('eYo.UI.Dflt')
+eYo.require('eYo.Decorate')
 
-goog.provide('eYo.Desk')
+eYo.provide('eYo.Desk')
 
-goog.forwardDeclare('eYo.Application')
-goog.forwardDeclare('eYo.Backer')
-goog.forwardDeclare('eYo.Options')
+eYo.forwardDeclare('eYo.Application')
+eYo.forwardDeclare('eYo.Backer')
+eYo.forwardDeclare('eYo.Options')
 
 goog.forwardDeclare('goog.array');
 goog.forwardDeclare('goog.math');

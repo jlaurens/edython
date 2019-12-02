@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
+eYo.require('eYo.Fcls')
 
-goog.provide('eYo.Fcls.TrashCan')
+eYo.provide('eYo.Fcls.TrashCan')
 
-goog.forwardDeclare('eYo.TrashCan')
+eYo.forwardDeclare('eYo.TrashCan')
 
 /**
  * Faceless driver for the trash can.

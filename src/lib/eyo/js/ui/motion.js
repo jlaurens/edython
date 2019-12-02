@@ -11,21 +11,20 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.Motion')
+eYo.provide('eYo.Motion')
 
-goog.forwardDeclare('eYo.Board')
-goog.forwardDeclare('eYo.Brick')
-goog.forwardDeclare('eYo.Field')
-goog.forwardDeclare('eYo.Magnet')
+eYo.forwardDeclare('eYo.Board')
+eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.Field')
+eYo.forwardDeclare('eYo.Magnet')
 
-goog.forwardDeclare('eYo.DnD')
-goog.forwardDeclare('eYo.Scaler')
+eYo.forwardDeclare('eYo.DnD')
+eYo.forwardDeclare('eYo.Scaler')
 
-goog.forwardDeclare('eYo.Dom')
+eYo.forwardDeclare('eYo.Dom')
 
-goog.forwardDeclare('goog.asserts')
 
 /*
  * Note: In this file "start" refers to touchstart,

@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Svg.Flyout')
-goog.provide('eYo.Svg.FlyoutToolbar')
+eYo.provide('eYo.Svg.Flyout')
+eYo.provide('eYo.Svg.FlyoutToolbar')
 
-goog.forwardDeclare('eYo.Flyout')
-goog.forwardDeclare('eYo.FlyoutToolbar')
+eYo.forwardDeclare('eYo.Flyout')
+eYo.forwardDeclare('eYo.FlyoutToolbar')
 
 /**
  * Svg driver for the flyout

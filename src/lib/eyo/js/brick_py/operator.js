@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo.Expr')
+eYo.require('eYo.Expr')
 
-goog.provide('eYo.Brick.Operator')
+eYo.provide('eYo.Brick.Operator')
 
 /**
  * Class for a Delegate, [...] op ... brick.

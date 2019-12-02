@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.require('eYo.Model')
-goog.require('eYo.Model.Module')
+eYo.require('eYo.Model')
+eYo.require('eYo.Model.Module')
 
-goog.require('eYo.Model.Item')
-goog.provide('eYo.Model.weakref__module.Item')
-goog.provide('eYo.Model.weakref__module')
+eYo.require('eYo.Model.Item')
+eYo.provide('eYo.Model.weakref__module.Item')
+eYo.provide('eYo.Model.weakref__module')
 
 eYo.Model.weakref__module = new eYo.Model.Module('weakref__module', 'https://docs.python.org/3.6/library/weakref.html')
 

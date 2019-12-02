@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.Audio')
+eYo.provide('eYo.Audio')
 
-goog.forwardDeclare('eYo.Dom')
+eYo.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('goog.userAgent')
 
 /**

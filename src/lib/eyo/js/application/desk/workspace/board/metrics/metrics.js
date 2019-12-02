@@ -11,10 +11,10 @@
  */
 'use strict'
 
-goog.require('eYo.Owned')
+eYo.require('eYo.Owned')
 
-goog.forwardDeclare('eYo.Board')
-goog.forwardDeclare('eYo.Geometry')
+eYo.forwardDeclare('eYo.Board')
+eYo.forwardDeclare('eYo.Geometry')
 
 /**
  * The `content` rect is enclosing all the bricks.

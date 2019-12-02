@@ -15,13 +15,10 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
-goog.provide('eYo.Svg.BrickDragSurface')
+eYo.require('eYo.Svg')
+eYo.provide('eYo.Svg.BrickDragSurface')
 
-goog.provide('eYo.Svg.BoardDragSurface')
-
-goog.forwardDeclare('goog.asserts')
-
+eYo.provide('eYo.Svg.BoardDragSurface')
 
 /**
  * Class for a drag surface for the currently dragged block. This is a separate
@@ -150,7 +147,7 @@ eYo.Svg.BrickDragSurface.prototype.start = function(brickDragger) {
   var brick = this.brick
   var svg = this.dom.svg
   var canvas = svg.canvas_
-  goog.asserts.assert(
+  eYo.assert(
     canvas.childNodes.length == 0, 'Already dragging a brick.')
   var b_svg = brick.board.dom.svg
   var b_root = b_svg.root_
@@ -204,7 +201,7 @@ eYo.Svg.BrickDragSurface.prototype.end = function(board) {
     svg.canvas_.removeChild(this.brick.dom.svg.group_)
   }
   svg.root_.style.display = 'none'
-  goog.asserts.assert(
+  eYo.assert(
     svg.canvas_.childNodes.length == 0, 'Drag group was not cleared.')
   this.dragger_ = null
 }
@@ -265,7 +262,7 @@ eYo.Svg.BoardDragSurface.prototype.start = function(dragger, width, height) {
   var board = dragger.board
   var brickCanvas = board.dom.svg.canvas_
   var root = this.dom.svg.root_
-  goog.asserts.assert(
+  eYo.assert(
     root.childNodes.length == 0, 'Already dragging a block.')
     var coord = eYo.Svg.getRelativeWhere(brickCanvas)
     eYo.Dom.setCssTransform(
@@ -321,7 +318,7 @@ eYo.Svg.BoardDragSurface.prototype.clearAndHide = function(newSurface) {
   }
   // Hide the drag surface.
   root.style.display = 'none'
-  goog.asserts.assert(
+  eYo.assert(
     root.childNodes.length == 0, 'Drag surface was not cleared.')
   eYo.Dom.setCssTransform(root, '')
   this.previousSibling_ = null

@@ -11,14 +11,14 @@
  */
 'use strict'
 
-goog.require('eYo.UI.Owned2')
-goog.require('eYo.Protocol')
+eYo.require('eYo.UI.Owned2')
+eYo.require('eYo.Protocol')
 
-goog.provide('eYo.Magnets')
-goog.provide('eYo.Magnet')
+eYo.provide('eYo.Magnets')
+eYo.provide('eYo.Magnet')
 
-goog.forwardDeclare('eYo.Do')
-goog.forwardDeclare('eYo.Where')
+eYo.forwardDeclare('eYo.Do')
+eYo.forwardDeclare('eYo.Where')
 
 
 /**
@@ -872,8 +872,8 @@ eYo.Magnet.prototype.completeWrap = eYo.Decorate.reentrant_method(
         () => {
           var brick = this.brick
           t9k = eYo.Brick.newReady(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
-          goog.asserts.assert(t9k, 'completeWrap failed: ' + this.wrapped_)
-          goog.asserts.assert(t9k.out_m, 'Did you declare an Expr brick typed ' + t9k.type)
+          eYo.assert(t9k, 'completeWrap failed: ' + this.wrapped_)
+          eYo.assert(t9k.out_m, 'Did you declare an Expr brick typed ' + t9k.type)
           ans = this.connect(t9k.out_m)
         }
       )

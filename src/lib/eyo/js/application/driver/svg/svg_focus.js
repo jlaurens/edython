@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Svg.Focus')
+eYo.provide('eYo.Svg.Focus')
 
-goog.forwardDeclare('eYo.Focus')
+eYo.forwardDeclare('eYo.Focus')
 
 console.error('NYI')
 

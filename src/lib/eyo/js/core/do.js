@@ -11,14 +11,15 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.Do')
+eYo.provide('eYo.Do')
+
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.math.AffineTransform')
 
-goog.asserts.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
+eYo.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
 
 // Object.keys polyfill
 // http://tokenposts.blogspot.com/2012/04/javascript-objectkeys-browser.html
@@ -602,7 +603,7 @@ eYo.Do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
 eYo.Do.readOnlyMixin = (object, props) => {
   var key
   for (key in props) {
-    goog.asserts.assert(!eYo.Do.hasOwnProperty(object, key), 'Duplicate keys are forbidden: ' + key)
+    eYo.assert(!eYo.Do.hasOwnProperty(object, key), 'Duplicate keys are forbidden: ' + key)
     var value = props[key]
     var prop = goog.isFunction(value)
     ? { get: value }

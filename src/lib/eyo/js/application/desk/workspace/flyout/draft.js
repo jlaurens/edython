@@ -11,14 +11,14 @@
  */
 'use strict'
 
-goog.require('eYo.Board')
+eYo.require('eYo.Board')
 
-goog.provide('eYo.Draft')
+eYo.provide('eYo.Draft')
 
 goog.forwardDeclare('goog.array');
 goog.forwardDeclare('goog.math');
 
-goog.forwardDeclare('eYo.Application')
+eYo.forwardDeclare('eYo.Application')
 
 
 /**

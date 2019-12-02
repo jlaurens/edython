@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.require('eYo.Expr')
+eYo.require('eYo.Expr')
 
-goog.require('eYo.Change')
+eYo.require('eYo.Change')
 
-goog.require('eYo.Decorate')
-goog.require('eYo.Consolidator.List')
-goog.provide('eYo.Brick.List')
+eYo.require('eYo.Decorate')
+eYo.require('eYo.Consolidator.List')
+eYo.provide('eYo.Brick.List')
 
 /**
  * Class for a Delegate, list value brick.
@@ -161,12 +161,12 @@ eYo.Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
     console.error('unexpected void type')
   }
   var D = eYo.Brick.Mgr.getModel(type).list
-  goog.asserts.assert(D, '`model`.list is missing in ' + type)
+  eYo.assert(D, '`model`.list is missing in ' + type)
   var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
   if (this.consolidator) {
     if (this.consolidator.constructor !== C10r) {
       this.consolidator = new C10r(D)
-      goog.asserts.assert(this.consolidator, `Could not create the consolidator ${type}`)
+      eYo.assert(this.consolidator, `Could not create the consolidator ${type}`)
     } else {
       this.consolidator.init(D)
     }
@@ -175,7 +175,7 @@ eYo.Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
     }
   } else {
     this.consolidator = new C10r(D)
-    goog.asserts.assert(this.consolidator, `Could not create the consolidator ${type}`)
+    eYo.assert(this.consolidator, `Could not create the consolidator ${type}`)
     this.consolidate()
   }
 })

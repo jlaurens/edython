@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.require('eYo.Owned')
-goog.require('eYo.Brick')
-goog.require('eYo.Change')
+eYo.require('eYo.Owned')
+eYo.require('eYo.Brick')
+eYo.require('eYo.Change')
 
-goog.provide('eYo.Brick.UI')
+eYo.provide('eYo.Brick.UI')
 
-goog.forwardDeclare('eYo.Svg.Brick')
+eYo.forwardDeclare('eYo.Svg.Brick')
 
 /**
  * Class for a Render.

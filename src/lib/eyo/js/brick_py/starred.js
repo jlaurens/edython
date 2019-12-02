@@ -11,15 +11,15 @@
  */
 'use strict'
 
-goog.require('eYo.Expr')
+eYo.require('eYo.Expr')
 
-goog.require('eYo.Change')
+eYo.require('eYo.Change')
 
-goog.require('eYo.Decorate')
-goog.require('eYo.Msg')
+eYo.require('eYo.Decorate')
+eYo.require('eYo.Msg')
 
-goog.require('eYo.T3.All')
-goog.provide('eYo.Brick.Starred')
+eYo.require('eYo.T3.All')
+eYo.provide('eYo.Brick.Starred')
 
 /**
  * Convenient check list for starred expressions

@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Fcls')
+eYo.require('eYo.Fcls')
 
-goog.provide('eYo.Fcls.Brick')
+eYo.provide('eYo.Fcls.Brick')
 
-goog.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.Brick')
 
 /**
  * Faceless driver for bricks.

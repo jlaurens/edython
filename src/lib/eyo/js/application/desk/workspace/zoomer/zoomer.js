@@ -11,9 +11,9 @@
  */
 'use strict'
 
-goog.require('eYo.WorkspaceControl')
+eYo.require('eYo.WorkspaceControl')
 
-goog.provide('eYo.Zoomer')
+eYo.provide('eYo.Zoomer')
 
 /**
  * Zoom controls model

@@ -11,12 +11,12 @@
  */
 'use strict'
 
-goog.require('eYo.Decorate')
-goog.require('eYo.UI.Dflt')
-goog.require('eYo.UI.Dlgt')
+eYo.require('eYo.Decorate')
+eYo.require('eYo.UI.Dflt')
+eYo.require('eYo.UI.Dlgt')
 
-goog.require('eYo.Change')
-goog.require('eYo.Data')
+eYo.require('eYo.Change')
+eYo.require('eYo.Data')
 
 /**
  * The namespace is expected to contain everything about bricks.
@@ -26,25 +26,25 @@ goog.require('eYo.Data')
  */
 eYo.makeNS('Brick')
 
-// goog.provide('eYo.Brick.Dflt')
+// eYo.provide('eYo.Brick.Dflt')
 
-goog.forwardDeclare('eYo.Expr')
-goog.forwardDeclare('eYo.Stmt')
+eYo.forwardDeclare('eYo.Expr')
+eYo.forwardDeclare('eYo.Stmt')
 
-goog.forwardDeclare('eYo.XRE')
-goog.forwardDeclare('eYo.T3')
-goog.forwardDeclare('eYo.Where')
-goog.forwardDeclare('eYo.Do')
+eYo.forwardDeclare('eYo.XRE')
+eYo.forwardDeclare('eYo.T3')
+eYo.forwardDeclare('eYo.Where')
+eYo.forwardDeclare('eYo.Do')
 
-goog.forwardDeclare('eYo.Events')
-goog.forwardDeclare('eYo.Span')
-goog.forwardDeclare('eYo.Field')
-goog.forwardDeclare('eYo.Slot')
-goog.forwardDeclare('eYo.Magnets')
-goog.forwardDeclare('eYo.Brick.UI')
-goog.forwardDeclare('eYo.Expr')
-goog.forwardDeclare('eYo.Stmt')
-goog.forwardDeclare('eYo.Focus')
+eYo.forwardDeclare('eYo.Events')
+eYo.forwardDeclare('eYo.Span')
+eYo.forwardDeclare('eYo.Field')
+eYo.forwardDeclare('eYo.Slot')
+eYo.forwardDeclare('eYo.Magnets')
+eYo.forwardDeclare('eYo.Brick.UI')
+eYo.forwardDeclare('eYo.Expr')
+eYo.forwardDeclare('eYo.Stmt')
+eYo.forwardDeclare('eYo.Focus')
 
 /**
  * Delegate constructor for bricks.
@@ -1007,7 +1007,7 @@ eYo.Brick.Dflt.prototype.makeBounds = function () {
         var candidate
         slot.forEachField(f => {
           if (f.editable) {
-            goog.asserts.assert(!candidate, 'Ambiguous slot <-> data bound (too many editable fields)')
+            eYo.assert(!candidate, 'Ambiguous slot <-> data bound (too many editable fields)')
             candidate = f
           }
         })
@@ -1017,7 +1017,7 @@ eYo.Brick.Dflt.prototype.makeBounds = function () {
     } else {
       this.someSlot(slot => {
         if ((data.field = slot.fields[k])) {
-          goog.asserts.assert(!slot.data, `Ambiguous slot <-> data bound ${data.key}, ${slot.data && slot.data.key}`)
+          eYo.assert(!slot.data, `Ambiguous slot <-> data bound ${data.key}, ${slot.data && slot.data.key}`)
           data.slot = slot
           slot.data = data
           return true
@@ -1072,7 +1072,7 @@ eYo.Brick.Dflt.prototype.setDataWithModel = function (model, noCheck) {
             //     }
             //   })
             // }
-            goog.asserts.assert(!done, `Ambiguous data model ${d.key} / ${data_in}: ${done}`)
+            eYo.assert(!done, `Ambiguous data model ${d.key} / ${data_in}: ${done}`)
             d.doChange(data_in)
             d.setRequiredFromModel(true)
             done = d.key
@@ -1164,7 +1164,7 @@ eYo.Brick.Dflt.prototype.makeData = function () {
   this.forEachData(d => {
     Object.defineProperty(d.brick, d.key + '_d', { value: d })
     if (d.model.main === true) {
-      goog.asserts.assert(!data.main, 'Only one main data please')
+      eYo.assert(!data.main, 'Only one main data please')
       Object.defineProperty(d.brick, 'main_d', { value: d })
     }
   })
@@ -1234,7 +1234,7 @@ eYo.Brick.Dflt.prototype.makeSlots = (() => {
           if ((slot = feedSlots.call(this, model.slots))) {
             next = slot
             do {
-              goog.asserts.assert(!goog.isDef(slots[next.key]),
+              eYo.assert(!goog.isDef(slots[next.key]),
                 'Duplicate inserted slot key %s/%s/%s', next.key, insert, brick.type)
               slots[next.key] = next
             } while ((next = next.next))
@@ -1245,7 +1245,7 @@ eYo.Brick.Dflt.prototype.makeSlots = (() => {
           continue
         }
       } else if (goog.isObject(model) && (slot = new eYo.Slot(this, k, model))) {
-        goog.asserts.assert(!goog.isDef(slots[k]),
+        eYo.assert(!goog.isDef(slots[k]),
           `Duplicate slot key ${k}/${this.type}`)
         slots[k] = slot
         slot.slots = slots
@@ -1255,7 +1255,7 @@ eYo.Brick.Dflt.prototype.makeSlots = (() => {
       slot.order = order
       for (var i = 0; i < ordered.length; i++) {
         // we must not find an aleady existing entry.
-        goog.asserts.assert(i !== slot.order,
+        eYo.assert(i !== slot.order,
           `Same order slot ${i}/${this.type}`)
         if (ordered[i].model.order > slot.model.order) {
           break
@@ -1571,7 +1571,7 @@ eYo.Brick.Dflt.prototype.completeWrap_ = function () {
  * @private
  */
 eYo.Brick.Dflt.prototype.duringBrickWrapped = function () {
-  goog.asserts.assert(!this.uiHasSelect, 'Deselect brick before')
+  eYo.assert(!this.uiHasSelect, 'Deselect brick before')
   this.ui && (this.ui.updateBrickWrapped())
 }
 
@@ -2420,7 +2420,7 @@ eYo.Brick.Dflt.prototype.getPythonType = function () {
  * @return {?eYo.Brick} the created brick
  */
 eYo.Brick.Dflt.prototype.insertParentWithModel = function (model) {
-  goog.asserts.assert(false, 'Must be subclassed')
+  eYo.assert(false, 'Must be subclassed')
 }
 
 /**
@@ -2903,7 +2903,7 @@ eYo.Brick.Mgr = (() => {
    */
   var modeller = (Dlgt, insertModel) => {
     var eyo = Dlgt.eyo
-    goog.asserts.assert(eyo, 'Forbidden constructor, `eyo` is missing')
+    eYo.assert(eyo, 'Forbidden constructor, `eyo` is missing')
     if (eyo.model_) {
       return eyo.model_
     }
@@ -3030,7 +3030,7 @@ eYo.Brick.Mgr = (() => {
       }
     }
     return function (ns, key, Super, Dlgt, register = false, model) {
-      goog.asserts.assert(Super.eyo, 'Only subclass constructors with an `eyo` property.')
+      eYo.assert(Super.eyo, 'Only subclass constructors with an `eyo` property.')
       if (eYo.isStr(ns)) {
         // shif arguments
         model = register
@@ -3098,7 +3098,7 @@ eYo.Brick.Mgr = (() => {
         if ((link = model.link)) {
           do {
             var linkC9r = goog.isFunction(link) ? link : me.get(link)
-            goog.asserts.assert(linkC9r, 'Not inserted: ' + link)
+            eYo.assert(linkC9r, 'Not inserted: ' + link)
             var linkModel = linkC9r.eyo.model
             if (linkModel) {
               model = linkModel
@@ -3207,9 +3207,9 @@ eYo.Brick.Mgr = (() => {
    * @param {?string} prototypeName Name of the language object containing
    */
   me.create = function (board, prototypeName, opt_id) {
-    goog.asserts.assert(!eYo.isStr(brick), 'API DID CHANGE, update!')
+    eYo.assert(!eYo.isStr(brick), 'API DID CHANGE, update!')
     var c9r = C9rs[prototypeName]
-    goog.asserts.assert(c9r, 'No class for ' + prototypeName)
+    eYo.assert(c9r, 'No class for ' + prototypeName)
     var b3k = c9r && new c9r(board, prototypeName, opt_id)
     return b3k
   }
@@ -3218,7 +3218,7 @@ eYo.Brick.Mgr = (() => {
    * @param {?string} prototypeName Name of the language object containing
    */
   me.get = function (prototypeName) {
-    goog.asserts.assert(!prototypeName || !C9rs[prototypeName] || C9rs[prototypeName].eyo, 'FAILURE' + prototypeName)
+    eYo.assert(!prototypeName || !C9rs[prototypeName] || C9rs[prototypeName].eyo, 'FAILURE' + prototypeName)
     return C9rs[prototypeName]
   }
   /**
@@ -3251,7 +3251,7 @@ eYo.Brick.Mgr = (() => {
    */
   me.register_ = function (prototypeName, c9r, key) {
     // console.log(prototypeName+' -> '+c9r)
-    goog.asserts.assert(prototypeName, 'Missing prototypeName')
+    eYo.assert(prototypeName, 'Missing prototypeName')
     C9rs[prototypeName] = c9r
     // cache all the input, output and statement data at the prototype level
     c9r.eyo.types.push(prototypeName)

@@ -12,12 +12,12 @@
  */
 'use strict'
 
-goog.require('eYo.Model')
-goog.require('eYo.Model.Module')
+eYo.require('eYo.Model')
+eYo.require('eYo.Model.Module')
 
-goog.require('eYo.Model.Item')
-goog.provide('eYo.Model.types__module.Item')
-goog.provide('eYo.Model.types__module')
+eYo.require('eYo.Model.Item')
+eYo.provide('eYo.Model.types__module.Item')
+eYo.provide('eYo.Model.types__module')
 
 eYo.Model.types__module = new eYo.Model.Module('types__module', 'https://docs.python.org/3.6/library/types.html')
 

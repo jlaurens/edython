@@ -14,12 +14,12 @@
  * @see ../demos/submenus2.html
  */
 
-goog.require('eYo.MenuRenderer')
+eYo.require('eYo.MenuRenderer')
 
 goog.require('goog.dom');
 
 goog.require('goog.ui.SubMenu')
-goog.provide('eYo.SubMenu')
+eYo.provide('eYo.SubMenu')
 
 /**
  * Class representing a submenu that can be added as an item to other menus.
@@ -64,7 +64,7 @@ eYo.SubMenu.prototype.setSubMenuVisible_ = function (visible) {
       goog.ui.Component.State.OPENED, visible))
   if (visible !== this.menuIsVisible_) {
     goog.dom.classlist.enable(
-      goog.asserts.assert(this.getElement()),
+      eYo.assert(this.getElement()),
       subMenu.getRenderer().getCssClass() + '-open', visible)
   }
   if (visible !== subMenu.isVisible()) {

@@ -13,9 +13,9 @@
  */
 'use strict'
 
-goog.require('eYo.Pane')
+eYo.require('eYo.Pane')
 
-goog.provide('eYo.Terminal')
+eYo.provide('eYo.Terminal')
 
 /**
  * Class for a terminal.

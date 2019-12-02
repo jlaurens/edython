@@ -12,11 +12,11 @@
  */
 'use strict'
 
-goog.require('eYo.UI.Dflt')
+eYo.require('eYo.UI.Dflt')
 
-goog.provide('eYo.Pane')
+eYo.provide('eYo.Pane')
 
-goog.forwardDeclare('eYo.Desk')
+eYo.forwardDeclare('eYo.Desk')
 
 /**
  * The main focus manager.

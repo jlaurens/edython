@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.require('eYo.Brick.List')
+eYo.require('eYo.Brick.List')
 
-goog.provide('eYo.Brick.Comprehension')
+eYo.provide('eYo.Brick.Comprehension')
 
 /**
  * Class for a Delegate, comprehension value brick.

@@ -10,9 +10,9 @@
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.font-face')
+eYo.provide('eYo.font-face')
 
  /**
  * Setup the font style, amongst others.

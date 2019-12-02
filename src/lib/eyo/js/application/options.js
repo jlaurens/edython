@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.provide('eYo.Options')
+eYo.provide('eYo.Options')
 
-goog.forwardDeclare('eYo.Flyout')
+eYo.forwardDeclare('eYo.Flyout')
 
 
 /**

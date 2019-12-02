@@ -1,1 +1,1 @@
-// goog.provide('eYo.Msg')
+// eYo.provide('eYo.Msg')

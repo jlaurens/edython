@@ -11,19 +11,19 @@
  */
 'use strict'
 
-goog.require('eYo.Brick')
+eYo.require('eYo.Brick')
 
-goog.require('eYo.Msg')
+eYo.require('eYo.Msg')
 
-goog.require('eYo.Brick.List')
+eYo.require('eYo.Brick.List')
 
-goog.require('eYo.Brick.Primary')
-goog.require('eYo.Tooltip')
+eYo.require('eYo.Brick.Primary')
+eYo.require('eYo.Tooltip')
 
-goog.require('eYo.Library')
-goog.require('eYo.Model.functions')
+eYo.require('eYo.Library')
+eYo.require('eYo.Model.functions')
 
-goog.provide('eYo.Brick.Functions')
+eYo.provide('eYo.Brick.Functions')
 
 /**
  * Add the conjugate, imag and real names

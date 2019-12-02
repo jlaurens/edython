@@ -11,11 +11,11 @@
  */
 'use strict';
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.require('eYo.Brick')
+eYo.require('eYo.Brick')
 
-goog.provide('eYo.Tooltip')
+eYo.provide('eYo.Tooltip')
 
 /**
  * Add a tooltip programatically to an element

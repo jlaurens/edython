@@ -11,13 +11,13 @@
  */
 'use strict'
 
-goog.require('eYo.Owned')
+eYo.require('eYo.Owned')
 
-goog.require('eYo.Protocol.ChangeCount')
-goog.provide('eYo.Backer')
+eYo.require('eYo.Protocol.ChangeCount')
+eYo.provide('eYo.Backer')
 
-goog.forwardDeclare('eYo.Events')
-goog.forwardDeclare('eYo.Application')
+eYo.forwardDeclare('eYo.Events')
+eYo.forwardDeclare('eYo.Application')
 
 /**
  * @param {Object} owner

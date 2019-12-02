@@ -15,13 +15,13 @@
  */
 'use strict'
 
-goog.require('eYo.T3')
+eYo.require('eYo.T3')
 
-goog.require('eYo.XRE')
+eYo.require('eYo.XRE')
 
-goog.require('eYo.Model')
-goog.require('eYo.Do')
-goog.provide('eYo.T3.Profile')
+eYo.require('eYo.Model')
+eYo.require('eYo.Do')
+eYo.provide('eYo.T3.Profile')
 
 eYo.Do.readOnlyMixin(
   eYo.T3.Expr,

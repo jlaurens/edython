@@ -11,11 +11,11 @@
  */
 'use strict'
 
-goog.require('eYo.Svg')
+eYo.require('eYo.Svg')
 
-goog.provide('eYo.Svg.Field')
+eYo.provide('eYo.Svg.Field')
 
-goog.forwardDeclare('eYo.Field')
+eYo.forwardDeclare('eYo.Field')
 
 // field management
 

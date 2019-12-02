@@ -32,14 +32,14 @@
  */
 'use strict'
 
-goog.require('eYo')
+eYo.require('eYo')
 
-goog.require('eYo.XRE')
+eYo.require('eYo.XRE')
 
-goog.require('eYo.Decorate')
+eYo.require('eYo.Decorate')
 goog.require('goog.dom')
 
-goog.provide('eYo.Data')
+eYo.provide('eYo.Data')
 
 /**
  * Base property constructor.
@@ -53,9 +53,9 @@ goog.provide('eYo.Data')
  * @constructor
  */
 eYo.Data = function (brick, key, model) {
-  goog.asserts.assert(brick, 'Missing brick')
-  goog.asserts.assert(key, 'Missing key')
-  goog.asserts.assert(model, 'Missing model')
+  eYo.assert(brick, 'Missing brick')
+  eYo.assert(key, 'Missing key')
+  eYo.assert(model, 'Missing model')
   this.reentrant_ = {},
   this.key = key,
   this.upperKey = key[0].toUpperCase() + key.slice(1),
@@ -654,7 +654,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
     return
   }
   if (this.reentrant_['model_synchronize'] || this.model.synchronize === true) {
-    goog.asserts.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.brickType)
+    eYo.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.brickType)
     var field = this.field
     if (field) {
       if (this.incog) {
