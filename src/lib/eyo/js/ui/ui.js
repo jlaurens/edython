@@ -40,7 +40,7 @@ goog.require('eYo.Owned')
  * @return {Function} the created constructor.
  */
 eYo.UI.constructor.prototype.makeClass = function (ns, key, Super, Dlgt, model) {
-  var C9r = eYo.UI.constructor.superClass_.apply(this, arguments)
+  var C9r = eYo.UI.constructor.superClass_.makeClass.apply(this, arguments)
   var eyo = C9r.eyo
   var ui = model.ui
   if (!eYo.isF(eyo.initUIDecorate)) {
@@ -110,14 +110,6 @@ eYo.UI.Dlgt.prototype.initUIDecorate = function (f) {
 eYo.UI.Dlgt.prototype.disposeUIDecorate = function (f) {
   return f
 }
-
-/**
- * @name {eYo.UI.Dlgt}
- * @param {!Function} c9r,  the constructor
- * @constructor
- * Basic constructor delegate.
- */
-eYo.Dflt.makeSubclass(eYo.UI, 'Dflt')
 
 /**
  * Add the cached `app` property to the associate constructor.

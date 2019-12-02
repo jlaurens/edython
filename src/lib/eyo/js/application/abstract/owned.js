@@ -14,7 +14,7 @@
 goog.require('eYo.Decorate')
 goog.require('eYo.Dlgt')
 
-goog.provide('eYo.Owned')
+// goog.provide('eYo.Owned')
 
 // Possible owner
 goog.forwardDeclare('eYo.Application')

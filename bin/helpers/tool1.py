@@ -18,6 +18,7 @@ class Foo:
   re_make = re.compile(r"^\s*(?:(?P<makeClass>[\w.]+)\.makeClass|(?P<makeSubclass>[\w.]+)\.makeSubclass|(?P<makeNS>[\w.]+)\.makeNS)\s*\(\s*(?:(?P<ns>[\w.]+)\s*,\s*)?'(?P<what>[^']+)'.*")
 
   pathByProvided = {}
+  nsByClass = {}
 
   # we scan all the files and look separately for provide, require, forwardDeclare, makeNS, makeClass, makeSubclass lines.
   def __init__(self, path):
@@ -46,6 +47,7 @@ class Foo:
             what = (ns if ns else makeClass) + what
             provided.add(what)
             classed.add(what)
+            self.nsByClass[what] = ns if ns else makeClass
           elif ns:
             what = ns + what
             provided.add(what)
@@ -69,6 +71,8 @@ class Foo:
       self.provided = provided
       self.required = required
       self.forwarded = forwarded
+      self.subclassed = subclassed
+
 def buildDeps(library, library_name):
     pathInput = pathRoot / 'src/lib/' / library
     print('Scanning folder\n    ', pathInput, '\nfor `*.js` files:')
@@ -84,6 +88,18 @@ def buildDeps(library, library_name):
     dependency_lines = []
     requirement_lines = set()
 
+    for k in Foo.nsByClass:
+      print(k, '->', Foo.nsByClass[k])
+    print('----------------------')
+    for foo in foos:
+      for x in foo.subclassed:
+        makeSubclass = x[0]
+        what = x[1]
+        if makeSubclass in Foo.nsByClass:
+          foo.provided.add(f'{Foo.nsByClass[makeSubclass]}{what}')
+        else:
+          print(makeSubclass, what)
+    exit(-1)
     for foo in foos:
       requirement_lines.update(foo.required)
       requirement_lines.update(foo.forwarded)

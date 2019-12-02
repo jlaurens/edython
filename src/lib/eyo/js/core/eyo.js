@@ -226,11 +226,11 @@ eYo.constructor.prototype.makeNS = function (ns, key) {
     !key || eYo.parameterAssert(eYo.isStr(key), 'Unexpected key type')
   }
   var Super = (ns||this).constructor
-  var C9r = function () {
+  var NS = function () {
     Super.call(this)
   }
-  eYo.inherits(C9r, Super)
-  var ans = new C9r()
+  eYo.inherits(NS, Super)
+  var ans = new NS()
   if (ns) {
     eYo.parameterAssert(!!key, 'Missing key')
     if (ns[key] && !eYo.isSubclass(ans, ns[key])) {
@@ -248,16 +248,4 @@ eYo.constructor.prototype.makeNS = function (ns, key) {
     })
   }
   return ans
-}
-
-eYo.Debug.test = (k = 1) => {
-  if (eYo.Debug.n) {
-    eYo.Debug.n += k
-  } else {
-    eYo.Debug.n = k
-  }
-  if (eYo.Debug.n === 62) {
-    console.warn('BREAK HERE!!!')
-  }
-  console.error(eYo.Debug.n, eYo.Dlgt)
 }

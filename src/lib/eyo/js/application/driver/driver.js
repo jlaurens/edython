@@ -13,19 +13,17 @@
 
 goog.require('eYo.Owned')
 
-goog.provide('eYo.Driver')
-
 /**
  * @name {eYo.Driver}
  * @namespace
  */
-eYo.Driver = Object.create(null)
+eYo.makeNS('Driver')
 
 /**
  * Contructor delegate.
  * @param {Function} constructor
  */
-eYo.makeClass(eYo.Driver, 'Dlgt', eYo.Dlgt, {
+eYo.Dlgt.makeSubclass(eYo.Driver, {
   init (C9r) {
     this.C9r_ = C9r
   },

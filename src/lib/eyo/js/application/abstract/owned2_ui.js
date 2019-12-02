@@ -15,13 +15,6 @@ goog.require('eYo.UI')
 goog.require('eYo.UI.Dflt')
 goog.require('eYo.UI.Dlgt')
 
-goog.provide('eYo.UI.Owned2')
-
-goog.forwardDeclare('eYo.Brick')
-goog.forwardDeclare('eYo.Brick.UI')
-goog.forwardDeclare('eYo.Slot')
-goog.forwardDeclare('eYo.Magnet')
-
 /**
  * Class for a basic object indirectly owned by a brick.
  * 
@@ -48,4 +41,9 @@ eYo.UI.Dflt.makeSubclass('Owned2', {
     }
   }
 })
+
+goog.forwardDeclare('eYo.Brick')
+goog.forwardDeclare('eYo.Brick.UI')
+goog.forwardDeclare('eYo.Slot')
+goog.forwardDeclare('eYo.Magnet')
 

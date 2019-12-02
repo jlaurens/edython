@@ -38,7 +38,8 @@ delete eYo.Dflt
  * @readonly
  * @property {Set<String>} cached_ - Set of cached identifiers. Lazy initializer.
  */
-eYo.constructor.prototype.Dlgt = (() => {
+Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
+  value: (() => {
   var Dlgt = function (ns, key, C9r, model) {
     if (eYo.isStr(ns)) {
       model = C9r
@@ -725,13 +726,21 @@ eYo.constructor.prototype.Dlgt = (() => {
       Dlgt_ = key
       key = this.key
     }
+    if (!Dlgt_) {
+      Dlgt_ = this.C9r.eyo.constructor
+      if (ns) {
+        if (!eYo.isSubclass(Dlgt_, ns.Dlgt)) {
+          Dlgt_ = ns.Dlgt
+        }
+      }
+    }
     return ns && ns.makeClass(ns, key, this.C9r, Dlgt_, model) || eYo.makeClass(ns, key, this.C9r, Dlgt_, model)
   }
   Dlgt.makeSubclass = (ns, key, Dlgt_, model) => {
     return Dlgt.eyo.makeSubclass(ns, key, Dlgt_, model)
   }
   return Dlgt
-})()
+})()})
 
 /**
  * @name{eYo.makeClass}
@@ -773,7 +782,6 @@ eYo.constructor.prototype.makeClass = (() => {
   makeDlgt(eYo, 'Dlgt', eYo.Dlgt, eYo.Dlgt, {})
 
   var ans = function (ns, key, Super, Dlgt, model) {
-    eYo.Debug.test()
     // formal parameters management:
     if (eYo.isStr(ns)) {
       model = Dlgt
@@ -829,7 +837,7 @@ eYo.constructor.prototype.makeClass = (() => {
       eYo.parameterAssert(!model, 'Unexpected model (5)')
       model = eYo.called(Super) || {}
       Dlgt = this.Dlgt
-      Super = eYo.NA
+      Super = eYo.asF(this[key])
     }
     if (!model) {
       throw new Error('Unexpected void model')
@@ -904,7 +912,7 @@ eYo.constructor.prototype.makeClass = (() => {
         delete this.dispose
       }
     }
-    ns.constructor.prototype[key] = C9r
+    Object.defineProperty(ns.constructor.prototype, key, {value: C9r})
     C9r.makeSubclass = (ns, key, Dlgt, model) => {
       return C9r.eyo.makeSubclass(ns, key, Dlgt, model)
     }
