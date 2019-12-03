@@ -12,8 +12,6 @@
 'use strict'
 
 eYo.require('eYo.UI')
-eYo.require('eYo.UI.Dflt')
-eYo.require('eYo.UI.Dlgt')
 
 /**
  * Class for a basic object indirectly owned by a brick.

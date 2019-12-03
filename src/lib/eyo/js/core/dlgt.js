@@ -739,7 +739,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
     }
     return ns && ns.makeClass(ns, key, this.C9r, Dlgt_, model) || eYo.makeClass(ns, key, this.C9r, Dlgt_, model)
   }
-  Dlgt.makeSubclass = (ns, key, Dlgt_, model) => {
+  Dlgt.makeSubclass = function (ns, key, Dlgt_, model) {
     return Dlgt.eyo.makeSubclass(ns, key, Dlgt_, model)
   }
   return Dlgt
@@ -916,7 +916,7 @@ eYo.constructor.prototype.makeClass = (() => {
       }
     }
     Object.defineProperty(ns.constructor.prototype, key, {value: C9r})
-    C9r.makeSubclass = (ns, key, Dlgt, model) => {
+    C9r.makeSubclass = function (ns, key, Dlgt, model) {
       return C9r.eyo.makeSubclass(ns, key, Dlgt, model)
     }
     return C9r

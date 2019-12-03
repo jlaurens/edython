@@ -17,15 +17,10 @@ eYo.require('eYo.Driver')
  * @name {eYo.Fcls}
  * @namespace
  */
-eYo.makeNS('Fcls')
-
-eYo.provide('eYo.Fcls.Mngr')
-
-goog.forwardDeclare('goog.dom')
+eYo.Driver.makeNS(eYo, 'Fcls')
 
 /**
  * @name {eYo.Fcls.Mngr}
  * The manager of all the faceless drivers.
  */
-eYo.Driver.makeMngrClass(eYo.Fcls)
-
+eYo.Fcls.makeMngrClass()

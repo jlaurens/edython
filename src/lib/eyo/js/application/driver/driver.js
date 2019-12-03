@@ -27,7 +27,22 @@ eYo.makeNS('Driver')
 eYo.Dlgt.makeSubclass(eYo.Driver)
 
 /**
- * Usage: `eYo.Driver.makeMngrClass(eYo.Dom)`.
+ * Contructor delegate.
+ * @name {eYo.Driver.Dlgt}
+ * @param {Function} constructor
+ */
+eYo.Driver.Dlgt.makeSubclass(eYo.Driver, 'DlgtMngr', {
+  props: {
+    link: {
+      driverNames () {
+        return new Set()
+      }
+    }
+  }
+})
+
+/**
+ * Usage: `eYo.Driver.makeMngrClass(model)`.
  * Actual implementation with Fcls, Dom and Svg drivers.
  * {Code: ns.Mngr} is instantiated by the main application object.
  * @param {Object} ns,  a namespace
@@ -35,19 +50,11 @@ eYo.Dlgt.makeSubclass(eYo.Driver)
  * @param {?Object} mngrModel,  model used for creation
  * @return {Function} a constructor equals to ns.Mngr
  */
-eYo.Driver.constructor.prototype.makeMngrClass = (ns, mngrModel) => {
-  if (ns === eYo.Driver) {
+eYo.Driver.constructor.prototype.makeMngrClass = function (mngrModel) {
+  if (this === eYo.Driver) {
     return
   }
-  var driverNames = new Set()
-  var Mngr = ns.super.Mngr.makeSublass(ns, 'Mngr', {
-    init () {
-      driverNames.forEach(name => {
-        var n = name[0].toLowerCase() + name.substr(1)
-        var N = name[0].toUpperCase() + name.substr(1)
-        this[n] = new eYo.Driver[N]()
-      })
-    },
+  var Mngr = this.super.Mngr.makeSubclass(this, 'Mngr', this.DlgtMngr, {
     static: { // Bad smell
       link: {
         eyo: {
@@ -57,14 +64,21 @@ eYo.Driver.constructor.prototype.makeMngrClass = (ns, mngrModel) => {
     }
   })
   const pttp = ns.constructor.prototype
-  pttp.iniUIMake = (f) => {
+  pttp.initDrivers = function () {
+    Mngr.eyo.driverNames.forEach(name => {
+      var n = name[0].toLowerCase() + name.substr(1)
+      var N = name[0].toUpperCase() + name.substr(1)
+      this[n] = new eYo.Driver[N]()
+    })
+  }
+  pttp.initUIMake = function (f) {
     var spr = ns.super
     var make = spr && spr.initUIMake
     f = make ? make(f) : f
     make = mngrModel.initUIMake
     return make ? make(f) : f
   }
-  pttp.disposeUIMake = (f) => {
+  pttp.disposeUIMake = function (f) {
     var make = mngrModel.disposeUIMake
     f = make ? make(f) : f
     make = spr && spr.disposeUIMake
@@ -88,22 +102,22 @@ eYo.Driver.constructor.prototype.makeMngrClass = (ns, mngrModel) => {
    * - initUI: an optional function with signature (object, ...)->eYo.NA
    * - disposeUI: an optional function with signature (object)->eYo.NA
    */
-  pttp.makeDriverClass = (owner_, key, Super, driverModel) => {
-    if (eYo.isStr(owner_)) {
+  pttp.makeDriverClass = function (ns_, key, Super, driverModel) {
+    if (eYo.isStr(ns_)) {
       driverModel = Super || {}
       Super = key
-      key = owner_
-      owner_ = ns
+      key = ns_
+      ns_ = ns
     }
     if (eYo.isF(Super)) {
       driverModel || (driverModel = {})
     } else {
       driverModel = Super || {}
-      var super_ = owner_.super
-      Super = super_ && super_[key] || owner_.Dflt
+      var super_ = ns_.super
+      Super = super_ && super_[key] || ns_.Dflt
     }
-    driverNames.add(key)
-    var c9r = owner_[key] = driverModel.init
+    Mngr.eyo.driverNames.add(key)
+    var c9r = ns_[key] = driverModel.init
     ? function () {
       Super.apply(this, arguments)
       driverModel.init.apply(this, arguments)
@@ -132,23 +146,20 @@ eYo.Driver.constructor.prototype.makeMngrClass = (ns, mngrModel) => {
       f && f.apply(this, arguments)
     }
   }
-  // make the default driver
-  pttp.Dflt = eYo.Driver.Dflt
-  // postflight allows to override many things NYU
-  pttp.makeMngrClass = (ns_, mngrModel_) => {
-    var mngr = eYo.Driver.makeMngrClass(ns_, mngrModel_)
-    return mngr
-  }
   return Mngr
 }
 
 /**
  * @name {eYo.Driver.Mngr}
- * Default driver manager, to be subclassed.
+ * Default driver manager, abstract class to be subclassed.
  * Owns instances of `eYo.Driver.Dflt`'s descendants.
  * @param {Object} owner
  */
-eYo.Owned.makeSubclass(eYo.Driver, 'Mngr')
+eYo.Owned.makeSubclass(eYo.Driver, 'Mngr', {
+  init () {
+    this.initDrivers()
+  }
+})
 
 /**
  * @name {eYo.Driver.Dflt}

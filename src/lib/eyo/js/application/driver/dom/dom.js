@@ -12,7 +12,6 @@
 'use strict'
 
 eYo.require('eYo.Fcls')
-eYo.require('eYo.Fcls.Mngr')
 
 eYo.provide('eYo.Dom')
 
@@ -35,12 +34,12 @@ goog.forwardDeclare('goog.events')
 eYo.Driver.Dlgt.makeSubclass(eYo.Dom, 'Dlgt')
 
 /**
+ * @type {eYo.Dom.Mngr}
  * The manager of all the dom drivers.
  * The dom drivers are uncomplete drivers.
- * @type {eYo.Dom.Mngr}
  */
-eYo.Fcls.makeMngrClass(eYo.Dom, {
-  iniUIMake (f) {
+eYo.Dom.makeMngrClass({
+  initUIMake (f) {
     return function () {
       if (object.dom) {
         return

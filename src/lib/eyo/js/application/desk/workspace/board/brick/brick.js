@@ -12,8 +12,7 @@
 'use strict'
 
 eYo.require('eYo.Decorate')
-eYo.require('eYo.UI.Dflt')
-eYo.require('eYo.UI.Dlgt')
+eYo.require('eYo.UI')
 
 eYo.require('eYo.Change')
 eYo.require('eYo.Data')

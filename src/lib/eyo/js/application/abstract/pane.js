@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.require('eYo.UI.Dflt')
+eYo.require('eYo.UI')
 
 eYo.provide('eYo.Pane')
 

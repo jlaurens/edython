@@ -14,31 +14,34 @@ describe('Driver', function() {
     chai.assert(eYo.isF(d.disposeUI))
   })
   it ('Driver: makeMngrClass', function () {
-    eYo.Driver.makeMngrClass(NS)
-    chai.assert(NS.Mngr)
-    chai.assert(NS.Mngr.eyo.C9r === NS.Mngr)
-    chai.assert(NS.Mngr.eyo.constructor === eYo.Driver.Dlgt)
-    chai.assert(NS.makeMngrClass)
-    chai.assert(NS.makeDriverClass)
-    chai.assert(NS.Dflt = eYo.Driver.Dflt)
-    NS.A = Object.create(null)
-    NS.makeMngrClass(NS.A)
+    var ns = eYo.Driver.makeNS()
+    ns.makeMngrClass()
+    chai.assert(ns.Mngr)
+    chai.assert(ns.Mngr.eyo.C9r === ns.Mngr)
+    chai.assert(ns.Mngr.eyo.constructor === eYo.Driver.Dlgt)
+    chai.assert(ns.makeMngrClass)
+    chai.assert(ns.makeDriverClass)
+    chai.assert(ns.Dflt = eYo.Driver.Dflt)
+    ns.A = Object.create(null)
+    ns.makeMngrClass(ns.A)
   })
   it ('Driver: manager', function () {
-    eYo.Driver.makeMngrClass(NS)
+    var ns = eYo.Driver.makeNS()
+    ns.makeMngrClass()
     var onr = {}
-    onr.mngr = new NS.Mngr(onr)
+    onr.mngr = new ns.Mngr(onr)
     chai.assert(onr.mngr)
     chai.assert(onr.mngr.owner === onr)
   })
   it ('Driver: makeDriverClass basic', function () {
-    eYo.Driver.makeMngrClass(NS)
-    NS.makeDriverClass({
+    var ns = eYo.Driver.makeNS()
+    ns.makeMngrClass()
+    ns.makeDriverClass({
       key: 'Foo',
       owner: NS,
     })
-    chai.assert(eYo.isF(NS.Foo))
-    var foo = new NS.Foo()
+    chai.assert(eYo.isF(ns.Foo))
+    var foo = new ns.Foo()
     chai.assert(foo.initUI)
     chai.assert(!foo.initUI())
     chai.expect(() => {
@@ -46,7 +49,8 @@ describe('Driver', function() {
     }).to.not.throw()
   })
   it ('Driver: makeDriverClass inherits', function () {
-    eYo.Driver.makeMngrClass(NS)
+    var ns = eYo.Driver.makeNS()
+    ns.makeMngrClass()
     var flag
     NS.Dflt = function () {
       flag += 421

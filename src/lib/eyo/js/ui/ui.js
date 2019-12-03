@@ -15,8 +15,6 @@ eYo.require('eYo.Dlgt')
 eYo.require('eYo.Owned')
 
 // eYo.provide('eYo.UI')
-// eYo.require('eYo.UI.Dlgt')
-// eYo.require('eYo.UI.Dflt')
 
 /**
  * Class for loading, storing, and playing audio.

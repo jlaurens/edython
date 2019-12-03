@@ -42,10 +42,10 @@ goog.forwardDeclare('goog.userAgent')
 eYo.Driver.Dlgt.makeSubclass(eYo.Svg)
 
 /**
- * The manager of all the svg drivers.
- * @type {eYo.Svg.Mngr}
+ * @name {eYo.Svg.Mngr}
+ * The manager constructor of all the svg drivers.
  */
-eYo.Dom.makeMngrClass(eYo.Svg, {
+eYo.Svg.makeMngrClass({
   initUIMake (f) {
     return function (object, ...rest) {
       var dom = object.dom

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.UI.Dflt')
+eYo.require('eYo.UI')
 
 eYo.require('eYo.Decorate')
 eYo.provide('eYo.Board')

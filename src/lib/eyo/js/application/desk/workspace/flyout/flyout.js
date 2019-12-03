@@ -12,21 +12,20 @@
 'use strict'
 
 eYo.require('eYo.Protocol')
-eYo.require('eYo.UI.Dflt')
+eYo.require('eYo.UI')
 eYo.require('eYo.Unit')
 eYo.require('eYo.Events')
 
-eYo.provide('eYo.Flyout')
-
-eYo.forwardDeclare('eYo.Library');
-eYo.forwardDeclare('eYo.Style');
-eYo.forwardDeclare('eYo.Brick');
-eYo.forwardDeclare('eYo.FlyoutToolbar');
-eYo.forwardDeclare('eYo.Tooltip');
-eYo.forwardDeclare('eYo.MenuRenderer');
-eYo.forwardDeclare('eYo.MenuButtonRenderer');
+eYo.forwardDeclare('eYo.Library')
+eYo.forwardDeclare('eYo.Style')
+eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.FlyoutToolbar')
+eYo.forwardDeclare('eYo.Tooltip')
+eYo.forwardDeclare('eYo.MenuRenderer')
+eYo.forwardDeclare('eYo.MenuButtonRenderer')
 
 /**
+ * @type {eYo.Flyout}
  * Class for a flyout.
  * @param {!eYo.Workspace} owner  The owning desk, which must be a desk...
  * @constructor
@@ -77,7 +76,7 @@ eYo.forwardDeclare('eYo.MenuButtonRenderer');
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.UI.makeClass('Flyout', {
+eYo.UI.makeClass(eYo, 'Flyout', {
   props: {
     owned: {
       search () {
