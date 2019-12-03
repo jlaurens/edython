@@ -33,7 +33,7 @@ eYo.Expr.Dflt.makeSubclass('binary', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var d = this.field.ui_driver_mgr
+        var d = this.field.ui_driver_mngr
         d && (d.makeReserved(this.field, ['in', 'or', 'and'].indexOf(newValue) >= 0))
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -148,7 +148,7 @@ eYo.T3.Expr.Check.binary.forEach(t => {
   if (t !== eYo.T3.Expr.any) {
     t = t.substring(4)
     eYo.Expr[t] = eYo.Expr.binary
-    eYo.Brick.Mgr.register(t)
+    eYo.Brick.Mngr.register(t)
   }
 })
 
@@ -161,7 +161,7 @@ eYo.T3.Expr.Check.binary.forEach(t => {
   'object_comparison'
 ].forEach(t => {
   eYo.Expr[t] = eYo.Expr.binary
-  eYo.Brick.Mgr.register(t)
+  eYo.Brick.Mngr.register(t)
 })
 
 /**
@@ -310,7 +310,7 @@ eYo.Expr.Dflt.makeSubclass('unary', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var d = this.field.ui_driver_mgr
+        var d = this.field.ui_driver_mngr
         d && (d.makeReserved(this.field, newValue === 'not'))
       },
       fromType: /** @suppress {globalThis} */ function (type) {
@@ -361,7 +361,7 @@ eYo.Expr.Dflt.makeSubclass('unary', {
   'not_test'
 ].forEach((k) => {
   eYo.Expr[k] = eYo.Expr.unary
-  eYo.Brick.Mgr.register(k)
+  eYo.Brick.Mngr.register(k)
 })
 
 /**

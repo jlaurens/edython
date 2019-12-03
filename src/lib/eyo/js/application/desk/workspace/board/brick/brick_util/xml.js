@@ -598,8 +598,8 @@ eYo.Xml.registerAllTags = function () {
       if (!type.startsWith || type.startsWith('.')) {
         continue
       }
-      var c9r = eYo.Brick.Mgr.get(type)
-      var model = eYo.Brick.Mgr.getModel(type)
+      var c9r = eYo.Brick.Mngr.get(type)
+      var model = eYo.Brick.Mngr.getModel(type)
       var xml = model && model.xml
       var attr = xml && xml.attr
       if (!eYo.isStr(attr)) {
@@ -902,7 +902,7 @@ eYo.Xml.domToBrick = (() => {
                 var where = dom.tagName.toLowerCase() === eYo.Xml.EXPR ? eYo.T3.Expr : eYo.T3.Stmt
                 for (var i = 0; i < prototypeName.length; i++) {
                   var candidate = prototypeName[i]
-                  var C9r = eYo.Brick.Mgr.get(candidate)
+                  var C9r = eYo.Brick.Mngr.get(candidate)
                   if (C9r && where[C9r.eyo.key]) {
                     return candidate
                   }
@@ -919,7 +919,7 @@ eYo.Xml.domToBrick = (() => {
           }
           prototypeName = 'eyo:'+name
           var solid = prototypeName + ''
-          var controller = eYo.Brick.Mgr.get(solid)
+          var controller = eYo.Brick.Mngr.get(solid)
           if (controller) {
             if (controller.eyo && goog.isFunction(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, board, id)
@@ -927,7 +927,7 @@ eYo.Xml.domToBrick = (() => {
               return controller.domToBrick(dom, board, id)
             }
             brick = eYo.Brick.newReady(board, solid, id)
-          } else if ((controller = eYo.Brick.Mgr.get(prototypeName))) {
+          } else if ((controller = eYo.Brick.Mngr.get(prototypeName))) {
             if (controller.eyo && goog.isFunction(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, board, id)
             } else if (goog.isFunction(controller.domToBrick)) {
@@ -979,10 +979,10 @@ eYo.Xml.fromDom = function (brick, element) {
         goog.isFunction(controller.fromDom)) ||
         ((controller = this.xml) &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = eYo.Brick.Mgr.get(this.type)) &&
+        ((controller = eYo.Brick.Mngr.get(this.type)) &&
         (controller = controller.xml) &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = eYo.Brick.Mgr.get(this.type)) &&
+        ((controller = eYo.Brick.Mngr.get(this.type)) &&
         goog.isFunction(controller.fromDom))) {
       eYo.Do.tryFinally(() => {
         this.controller_fromDom_locked = true
@@ -1181,14 +1181,14 @@ eYo.Xml.Comparison.domToComplete = function (element, owner) {
     var op = element.getAttribute(eYo.Xml.OPERATOR)
     var C9r, model
     var type = eYo.T3.Expr.number_comparison
-    if ((C9r = eYo.Brick.Mgr.get(type))
+    if ((C9r = eYo.Brick.Mngr.get(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && (model.all.indexOf(op) >= 0)) {
       var b3k = eYo.Brick.newReady(owner, type, id)
     } else if ((type = eYo.T3.Expr.object_comparison)
-      && (C9r = eYo.Brick.Mgr.get(type))
+      && (C9r = eYo.Brick.Mngr.get(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all

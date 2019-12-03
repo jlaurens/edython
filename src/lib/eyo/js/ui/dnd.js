@@ -34,12 +34,12 @@ eYo.DnD = Object.create(null)
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param{!eYo.Motion} motion,  the owning motion
  */
-eYo.DnD.Mgr = function (motion) {
+eYo.DnD.Mngr = function (motion) {
   this.motion_ = motion
   /** the dragger_ that started a drag, not owned */
   this.dragger_ = null
   /** Make the UI */
-  this.ui_driver_mgr.dndMgrInit(this)
+  this.ui_driver_mngr.dndMngrInit(this)
   /** The list of draggers_, owned */
   this.draggers_ = [
     new eYo.DnD.Dragger.Board(this),
@@ -58,10 +58,10 @@ eYo.DnD.Mgr = function (motion) {
   ]
 }
 
-Object.defineProperties(eYo.DnD.Mgr.prototype, {
-  ui_driver_mgr: {
+Object.defineProperties(eYo.DnD.Mngr.prototype, {
+  ui_driver_mngr: {
     get () {
-      return this.motion.ui_driver_mgr
+      return this.motion.ui_driver_mngr
     }
   },
   active_: {
@@ -76,13 +76,13 @@ Object.defineProperties(eYo.DnD.Mgr.prototype, {
  * It maintains a list of draggers and droppers
  * * @param{!eYo.Application} desktop,  the owning desktop
  */
-eYo.DnD.Mgr.prototype.dispose = function () {
+eYo.DnD.Mngr.prototype.dispose = function () {
   this.cancel()
   this.draggers_.foreach(d => d.dispose())
   this.draggers_ = null
   this.droppers_.foreach(d => d.dispose())
   this.droppers_ = null
-  this.ui_driver_mgr.dndMgrDispose(this)
+  this.ui_driver_mngr.dndMngrDispose(this)
   this.motion_ = null
 }
 
@@ -90,7 +90,7 @@ eYo.DnD.Mgr.prototype.dispose = function () {
  * Ask one of its draggers to initate a dragging operation.
  * @return {Boolean} Whether a drag operation did start.
  */
-eYo.DnD.Mgr.prototype.start = function () {
+eYo.DnD.Mngr.prototype.start = function () {
   this.cancel()
   if ((this.dragger_ = this.draggers_.some(d => d.start()))) {
     return this.update()
@@ -102,7 +102,7 @@ eYo.DnD.Mgr.prototype.start = function () {
  * Forwards to the current dragger, then to all its droppers.
  * @return {Boolean} Whether a drag operation did update.
  */
-eYo.DnD.Mgr.prototype.update = function () {
+eYo.DnD.Mngr.prototype.update = function () {
   if (this.dragger_) {
     this.dragger_.update()
     this.droppers_.forEach(d => d.update())
@@ -116,7 +116,7 @@ eYo.DnD.Mgr.prototype.update = function () {
  * Forwards to the current dragger.
  * @return {Boolean} Whether a drag operation did cancel.
  */
-eYo.DnD.Mgr.prototype.cancel = function () {
+eYo.DnD.Mngr.prototype.cancel = function () {
   if (this.dragger_) {
     this.dragger_.cancel()
     this.droppers_.foreach(d => d.cancel())
@@ -130,7 +130,7 @@ eYo.DnD.Mgr.prototype.cancel = function () {
  * Forwards to the current dragger.
  * @return {Boolean} Whether a drag operation did reset.
  */
-eYo.DnD.Mgr.prototype.reset = function () {
+eYo.DnD.Mngr.prototype.reset = function () {
   if (this.dragger_) {
     this.dragger_.reset()
     this.droppers_.foreach(d => d.reset())
@@ -144,7 +144,7 @@ eYo.DnD.Mgr.prototype.reset = function () {
  * Forwards to the current dragger, then to all its droppers.
  * @return {Boolean} Whether a drag operation did complete.
  */
-eYo.DnD.Mgr.prototype.complete = function () {
+eYo.DnD.Mngr.prototype.complete = function () {
   if (this.dragger_) {
     this.droppers_.foreach(d => d.update())
     this.dropper_.complete()
@@ -158,14 +158,14 @@ eYo.DnD.Mgr.prototype.complete = function () {
  * Add a dragger.
  * @param {!eYo.DnD.Dragger} dragger
  */
-eYo.DnD.Mgr.prototype.addDragger = function (dragger) {
+eYo.DnD.Mngr.prototype.addDragger = function (dragger) {
   this.draggers_.push(dragger)
 }
 
 /**
  * Add a dropper.
  */
-eYo.DnD.Mgr.prototype.addDropper = function (dropper) {
+eYo.DnD.Mngr.prototype.addDropper = function (dropper) {
   this.droppers_.push(dropper)
 }
 
@@ -193,9 +193,9 @@ Object.defineProperties(eYo.DnD.Dragger.prototype, {
       return this.manager_.motion_
     }
   },
-  ui_driver_mgr: {
+  ui_driver_mngr: {
     get () {
-      return this.manager_.ui_driver_mgr
+      return this.manager_.ui_driver_mngr
     }
   },
   /**
@@ -249,7 +249,7 @@ eYo.DnD.Dragger.prototype.complete = eYo.DnD.Dragger.prototype.reset
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mgr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.Board = function (manager) {
   eYo.DnD.Dragger.Board.superClass_.constructor.call(this, manager)
@@ -309,7 +309,7 @@ eYo.DnD.Dragger.Board.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mgr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.DraftBoard = function (manager) {
   eYo.DnD.Dragger.DraftBoard.superClass_.constructor.call(this, manager)
@@ -370,7 +370,7 @@ eYo.DnD.Dragger.DraftBoard.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mgr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.LibraryBoard = function (manager) {
   eYo.DnD.Dragger.LibraryBoard.superClass_.constructor.call(this, manager)
@@ -431,7 +431,7 @@ eYo.DnD.Dragger.LibraryBoard.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mgr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.Brick = function (manager) {
   eYo.DnD.Dragger.Brick.superClass_.constructor.call(this, manager)
@@ -492,7 +492,7 @@ eYo.DnD.Dragger.Brick.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mgr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.LibraryBrick = function (manager) {
   eYo.DnD.Dragger.LibraryBrick.superClass_.constructor.call(this, manager)
@@ -553,7 +553,7 @@ eYo.DnD.Dragger.LibraryBrick.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mgr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.DraftBrick = function (manager) {
   eYo.DnD.Dragger.DraftBrick.superClass_.constructor.call(this, manager)
@@ -633,9 +633,9 @@ Object.defineProperties(eYo.DnD.Dropper.prototype, {
       return this.manager_.motion_
     }
   },
-  ui_driver_mgr: {
+  ui_driver_mngr: {
     get () {
-      return this.manager_.ui_driver_mgr
+      return this.manager_.ui_driver_mngr
     }
   },
   started_: {

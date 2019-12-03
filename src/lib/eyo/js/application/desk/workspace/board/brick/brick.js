@@ -62,7 +62,7 @@ eYo.Brick.makeClass('Dlgt', eYo.UI.Dlgt, {
 
 /**
  * Default class for a brick.
- * Not normally called directly, `eYo.Brick.Mgr.create(...)` is recommanded and `eYo.Board` 's `newBrick` method is highly recommanded.
+ * Not normally called directly, `eYo.Brick.Mngr.create(...)` is recommanded and `eYo.Board` 's `newBrick` method is highly recommanded.
  * Also initialize an implementation model.
  * The underlying state and model are not expected to change while running.
  * When done, the node has all its properties ready to use
@@ -426,7 +426,7 @@ eYo.UI.makeClass(eYo.Brick, 'Dflt', eYo.UI.Dflt, eYo.Brick.Dlgt, {
  * Model getter. Convenient shortcut.
  */
 eYo.Brick.getModel = function (type) {
-  return eYo.Brick.Mgr.getModel(type)
+  return eYo.Brick.Mngr.getModel(type)
 }
 
 // convenient namespace for debugging
@@ -623,7 +623,7 @@ Object.defineProperties(eYo.Brick.Dflt.prototype, {
  * Each subclass created will have its own makeSubclass method.
  */
 eYo.Brick.makeSubclass = function (owner, key, model) {
-  return eYo.Brick.Mgr.makeSubclass(owner, key, eYo.Brick.Dflt, eYo.Brick.Dlgt, false, model || {})
+  return eYo.Brick.Mngr.makeSubclass(owner, key, eYo.Brick.Dflt, eYo.Brick.Dlgt, false, model || {})
 }
 
 /**
@@ -1229,7 +1229,7 @@ eYo.Brick.Dflt.prototype.makeSlots = (() => {
       var insert = model.insert
       var slot, next
       if (insert) {
-        var model = eYo.Brick.Mgr.getModel(insert)
+        var model = eYo.Brick.Mngr.getModel(insert)
         if (model) {
           if ((slot = feedSlots.call(this, model.slots))) {
             next = slot
@@ -2270,10 +2270,10 @@ eYo.Brick.newReady = (() => {
   var processModel = (board, model, id, brick) => {
     var dataModel = model // may change below
     if (!brick) {
-      if (eYo.Brick.Mgr.get(model.type)) {
+      if (eYo.Brick.Mngr.get(model.type)) {
         brick = board.newBrick(model.type, id)
         brick.setDataWithType(model.type)
-      } else if (eYo.Brick.Mgr.get(model)) {
+      } else if (eYo.Brick.Mngr.get(model)) {
         brick = board.newBrick(model, id) // can undo
         brick.setDataWithType(model)
       } else if (eYo.isStr(model) || goog.isNumber(model)) {
@@ -2465,7 +2465,7 @@ eYo.Brick.Dflt.prototype.insertBrickWithModel = function (model, m4t) {
               prepare && (prepare())
               otherM4t.connect(m4t)
             }, () => {
-              eYo.app.focusMgr.brick = candidate
+              eYo.app.focusMngr.brick = candidate
               candidate.render()
               candidate.ui.bumpNeighbours_()
             })
@@ -2848,7 +2848,7 @@ eYo.Brick.Dflt.prototype.connectionUiEffect = function() {
  * Brick manager.
  * @param {?string} prototypeName Name of the language object containing
  */
-eYo.Brick.Mgr = (() => {
+eYo.Brick.Mngr = (() => {
   var me = {}
   var C9rs = Object.create(null)
   /**
@@ -3087,7 +3087,7 @@ eYo.Brick.Mgr = (() => {
       if (!c9r.eyo) {
         console.error('WHERE IS EYO???')
       }
-      eYo.Brick.Mgr.register_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, c9r)
+      eYo.Brick.Mngr.register_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, c9r)
       if (goog.isFunction(model)) {
         model = model()
       }
@@ -3303,7 +3303,7 @@ eYo.Brick.Mgr = (() => {
  * The delegate is searched as a Delegate element
  * @param{!string} key  key is the last component of the brick type as a dotted name.
  */
-eYo.Brick.Mgr.register = function (key) {
+eYo.Brick.Mngr.register = function (key) {
   var prototypeName = eYo.T3.Expr[key]
   var c9r, available
   if (prototypeName) {
@@ -3316,11 +3316,11 @@ eYo.Brick.Mgr.register = function (key) {
   } else {
     throw new Error('Unknown brick eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
   }
-  eYo.Brick.Mgr.register_(prototypeName, c9r)
+  eYo.Brick.Mngr.register_(prototypeName, c9r)
   available.push(prototypeName)
 }
 
 // register this delegate for all the T3 types
-eYo.Brick.Mgr.registerAll(eYo.T3.Expr, eYo.Brick.Dflt)
-eYo.Brick.Mgr.registerAll(eYo.T3.Stmt, eYo.Brick.Dflt)
+eYo.Brick.Mngr.registerAll(eYo.T3.Expr, eYo.Brick.Dflt)
+eYo.Brick.Mngr.registerAll(eYo.T3.Stmt, eYo.Brick.Dflt)
 

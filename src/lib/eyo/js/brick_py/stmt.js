@@ -65,7 +65,7 @@ eYo.Brick.makeSubclass('Stmt', {
     }
   }
 })
-eYo.Brick.Mgr.registerAll(eYo.T3.Stmt, eYo.Stmt, true)
+eYo.Brick.Mngr.registerAll(eYo.T3.Stmt, eYo.Stmt, true)
 
 Object.defineProperties(eYo.Stmt.prototype, {
   isStmt: {
@@ -220,7 +220,7 @@ eYo.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
 
 ;['blank_stmt'].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.comment_stmt
-  eYo.Brick.Mgr.register(k)
+  eYo.Brick.Mngr.register(k)
 })
 
 Object.defineProperties(eYo.Stmt.comment_stmt.prototype, {
@@ -383,7 +383,7 @@ eYo.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
 ].forEach((k) => {
   k = k + '_stmt'
   eYo.Stmt[k] = eYo.Stmt.global_stmt
-  eYo.Brick.Mgr.register(k)
+  eYo.Brick.Mngr.register(k)
 })
 
 /**
@@ -420,10 +420,10 @@ eYo.Stmt.global_stmt.prototype.xmlAttr = function () {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
@@ -431,34 +431,34 @@ eYo.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
       eYo.Do.createSPAN(key, 'eyo-code-reserved')
     )
-    var menuItem = mgr.newMenuItem(content, () => {
+    var menuItem = mngr.newMenuItem(content, () => {
       this.variant_p = key
     })
-    mgr.addChild(menuItem, true)
+    mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
   }
   F(0)
   F(1)
   F(2)
-  mgr.shouldSeparate()
+  mngr.shouldSeparate()
   F = (i) => {
     var key = variants[i]
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
       eYo.Do.createSPAN(key, 'eyo-code-reserved'),
       eYo.Do.createSPAN(' …', 'eyo-code-placeholder')
     )
-    var menuItem = mgr.newMenuItem(content, () => {
+    var menuItem = mngr.newMenuItem(content, () => {
       this.variant_p = key
     })
-    mgr.addChild(menuItem, true)
+    mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
   }
   F(3)
   F(4)
   F(5)
   F(6)
-  mgr.shouldSeparate()
-  return eYo.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  mngr.shouldSeparate()
+  return eYo.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**

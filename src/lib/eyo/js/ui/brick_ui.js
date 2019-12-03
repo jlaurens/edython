@@ -111,7 +111,7 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
   },
   driver: {
     get() {
-      return this.brick.board.ui_driver_mgr
+      return this.brick.board.ui_driver_mngr
     }
   },
   reentrant_: {
@@ -1020,7 +1020,7 @@ eYo.Brick.UI.prototype.drawSharp_ = function (io) {
  */
 eYo.Brick.UI.prototype.drawField_ = function (field, io) {
   var c = io.cursor.c
-  field.ui_driver_mgr.fieldDisplayedUpdate(field)
+  field.ui_driver_mngr.fieldDisplayedUpdate(field)
   if (field.visible) {
     // Actually, io.cursor points to the location where the field
     // is expected. It is relative to the enclosing `SVG` group,
@@ -2143,7 +2143,7 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
         }
       }
     }
-  } else if ((b3k = eYo.app.focusMgr.brick) && (ee = b3k.ui.selectMouseDownEvent)) {
+  } else if ((b3k = eYo.app.focusMngr.brick) && (ee = b3k.ui.selectMouseDownEvent)) {
     b3k.ui.selectMouseDownEvent = null
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
@@ -2161,7 +2161,7 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
       }
     }
   }
-  eYo.app.didTouchBrick && (eYo.app.didTouchBrick(eYo.app.focusMgr.brick))
+  eYo.app.didTouchBrick && (eYo.app.didTouchBrick(eYo.app.focusMngr.brick))
 }
 
 /**

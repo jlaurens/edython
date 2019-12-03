@@ -317,7 +317,7 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
  * For edython.
  */
 eYo.Slot.prototype.synchronize = function () {
-  var d = this.ui_driver_mgr
+  var d = this.ui_driver_mngr
   if (!d) {
     return
   }

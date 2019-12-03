@@ -101,9 +101,9 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
       return this.destination_
     }
   },
-  ui_driver_mgr: {
+  ui_driver_mngr: {
     get () {
-      return this.desk.ui_driver_mgr
+      return this.desk.ui_driver_mngr
     }
   },
 })
@@ -252,7 +252,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
     eYo.Events.group = true
   }
   this.destination.setResizesEnabled(false)
-  var d = this.ui_driver_mgr
+  var d = this.ui_driver_mngr
   d.brickEffectStop()
   var healStack = motion.healStack_
   var b3k = this.brick_
@@ -341,7 +341,7 @@ eYo.BrickDragger.prototype.drag = function() {
   if (bds) {
     bds.move()
   } else {
-    this.ui_driver_mgr.brickSetOffsetDuringDrag(b3k, xyNew)
+    this.ui_driver_mngr.brickSetOffsetDuringDrag(b3k, xyNew)
   }
   this.brick_.ui.setDeleteStyle(this.wouldDelete_)
   
@@ -371,7 +371,7 @@ eYo.BrickDragger.prototype.end = (() => {
   }
   return function(e, delta) {
     this.drag(delta)
-    this.ui_driver_mgr.brickDraggerEnd(this)
+    this.ui_driver_mngr.brickDraggerEnd(this)
     var b3k = this.brick_
     if (this.wouldDelete_) {
       if (!this.motion_.flyout_) {

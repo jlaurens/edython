@@ -52,7 +52,7 @@ eYo.Motion = function(desktop) {
 
   this.touchIDs_ = []
 
-  this.dndmgr_ = new eYo.DnD.Mgr(this)
+  this.dndmngr_ = new eYo.DnD.Mngr(this)
   this.scaler_ = new eYo.Scaler(this)
 
   this.change_ = new eYo.Change()
@@ -366,7 +366,7 @@ Object.defineProperties(eYo.Motion.prototype, {
     set (brick) {
       if (!this.brick_) {
         var candidate
-        var selected = eYo.app.focusMgr.brick
+        var selected = eYo.app.focusMngr.brick
         do {
           candidate = brick
         } while (brick.isExpr && (selected !== brick) && (brick = brick.parent))
@@ -377,11 +377,11 @@ Object.defineProperties(eYo.Motion.prototype, {
     }
   },
   /**
-   * General purpose ui_driver_mgr from the creator board.
+   * General purpose ui_driver_mngr from the creator board.
    */
-  ui_driver_mgr: {
+  ui_driver_mngr: {
     get () {
-      return this.board_.ui_driver_mgr
+      return this.board_.ui_driver_mngr
     }
   },
 })
@@ -402,7 +402,7 @@ eYo.Motion.prototype.update = function(e) {
 eYo.Motion.prototype.reset = function() {
   if (this.event_) {
     this.change_.reset()
-    this.dndmgr_.reset()
+    this.dndmngr_.reset()
     this.scaler_.reset()
     this.starter_ = null
     this.touchIDs_.length = 0
@@ -428,8 +428,8 @@ eYo.Motion.prototype.dispose = function() {
   this.touchIDs_ = null
   this.change_ = null
   this.desktop_ = null
-  this.dndmgr_.dispose()
-  this.dndmgr_ = null
+  this.dndmngr_.dispose()
+  this.dndmngr_ = null
   this.scaler_.dispose()
   this.scaler_ = null
 }
@@ -500,7 +500,7 @@ eYo.Motion.prototype.captureStart = function(e, starter) {
       this.cancel()
     }, eYo.Motion.CANCEL_LATENCY)
     this.event__ = e
-    this.ui_driver_mgr.disconnectStop()
+    this.ui_driver_mngr.disconnectStop()
     var board = this.board_
     board.updateScreenCalculationsIfScrolled()
     board.markFocused()  
@@ -549,8 +549,8 @@ eYo.Motion.prototype.captureMouseStart_ = function() {
   // select the brick if any
   // and prepare a click motion
   if (this.brick_) {
-    if (this.brick_.isDescendantOf(eYo.app.focusMgr.brick) && this.event_.altKey) {
-      this.shouldSelect_ = eYo.app.focusMgr.brick.parent
+    if (this.brick_.isDescendantOf(eYo.app.focusMngr.brick) && this.event_.altKey) {
+      this.shouldSelect_ = eYo.app.focusMngr.brick.parent
     } else {
       this.shouldSelect_ = this.brick_.selected? null: this.brick_
     }
@@ -583,18 +583,18 @@ eYo.Motion.prototype.captureMouseMove_ = function(e) {
     this.abortLongPress_()
     this.abortHandle_()
     this.captureMouseMove_ = this.captureMouseDrag_
-    this.dndmgr_.start()
+    this.dndmngr_.start()
   }
 }
 
 /**
  * A dragging operation has started, any move of the device
- * is applied to the dndmgr.
+ * is applied to the dndmngr.
  */
 eYo.Motion.prototype.captureMouseDrag_ = function(e) {
   this.event__ = e
   this.xyDelta_ = this.where.backward(this.xyStart_)
-  this.dndmgr_.update()
+  this.dndmngr_.update()
 }
 
 /**
@@ -604,7 +604,7 @@ eYo.Motion.prototype.captureMouseDrag_ = function(e) {
 eYo.Motion.prototype.captureMouseUp_ = function(e) {
   if (this.dragging) {
     this.captureMouseDrag_(e)
-    this.dndmgr_.complete()
+    this.dndmngr_.complete()
     this.reset()
     return
   }
@@ -706,7 +706,7 @@ eYo.Motion.prototype.captureTouchMove_ = function(e) {
       // this code is executed only when
       // - touchmove and not in WebKit xor 
       // - gesturemove and in WebKit
-      if (this.scaler_.start() || this.dndmgr_.start()) {
+      if (this.scaler_.start() || this.dndmngr_.start()) {
         eYo.Dom.gobbleEvent(e)
         this.abortLongPress_()
         this.abortHandle_()
@@ -717,7 +717,7 @@ eYo.Motion.prototype.captureTouchMove_ = function(e) {
         if (e.scale > eYo.Motion.ZOOM_IN_LIMIT || e.scale < eYo.Motion.ZOOM_OUT_LIMIT) {
           this.scaler_.start()
         }
-      } else if (!this.dndmgr_.update()) {
+      } else if (!this.dndmngr_.update()) {
         this.xyDelta_ = this.where.backward(this.xyStart_)
         var delta = this.xyDelta_.magnitude
         var limit = this.flyout
@@ -728,7 +728,7 @@ eYo.Motion.prototype.captureTouchMove_ = function(e) {
           this.abortLongPress_()
           this.abortHandle_()
           this.captureTouchMove_ = this.captureTouchDragOrScale_
-          this.dndmgr_.start()
+          this.dndmngr_.start()
         }      
       }
       */
@@ -746,7 +746,7 @@ eYo.Motion.prototype.captureTouchDragOrScale_ = function(e) {
     this.event__ = e
     if (e.scale) {
       eYo.Dom.gobbleEvent(e)
-      this.scaler_.update() || this.dndmgr_.update()
+      this.scaler_.update() || this.dndmngr_.update()
     }
   }
 }
@@ -757,7 +757,7 @@ eYo.Motion.prototype.captureTouchDragOrScale_ = function(e) {
  */
 eYo.Motion.prototype.captureTouchEnd_ = function(e) {
   this.event__ = e
-  if (this.scaler_.end() || this.dndmgr_.end()) {
+  if (this.scaler_.end() || this.dndmngr_.end()) {
     this.reset()
     eYo.Dom.gobbleEvent(e)
   } else {
@@ -810,7 +810,7 @@ eYo.Motion.prototype.captureTouchCancel_ = function(e) {
  */
 eYo.Motion.prototype.cancel = function(e) {
   this.abortCancel_()
-  this.scaler_.cancel() || this.dndmgr_.cancel()
+  this.scaler_.cancel() || this.dndmngr_.cancel()
   this.reset()
 }
 
@@ -918,7 +918,7 @@ eYo.Motion.prototype.handleClickBoard_ = function() {
   if (this.clickCount_>1) {
     this.board_.close()
   } else {
-    eYo.app.focusMgr.brick && eYo.app.focusMgr.brick.focusOff()
+    eYo.app.focusMngr.brick && eYo.app.focusMngr.brick.focusOff()
   }
 }
 
@@ -945,7 +945,7 @@ eYo.Motion.prototype.handleClickField_ = eYo.Motion.prototype.handleClickBrick_ 
           return true
         }
       } 
-      eYo.app.focusMgr.brick = this.shouldSelect_
+      eYo.app.focusMngr.brick = this.shouldSelect_
     }
     return true
   }
@@ -957,6 +957,6 @@ eYo.Motion.prototype.handleClickField_ = eYo.Motion.prototype.handleClickBrick_ 
  * @private
  */
 eYo.Motion.prototype.handleClickBoard_ = function() {
-  eYo.app.focusMgr.brick && eYo.app.focusMgr.brick.focusOff()
+  eYo.app.focusMngr.brick && eYo.app.focusMngr.brick.focusOff()
   return true
 }

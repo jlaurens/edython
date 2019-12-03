@@ -24,15 +24,15 @@ eYo.forwardDeclare('eYo.DnD')
 eYo.Svg.makeDriverClass('DnD', {
   /**
    * Initiate the DnD manager UI.
-   * @param {!eYo.DnD.Mgr} mgr  The DnD manager we must init the UI.
+   * @param {!eYo.DnD.Mngr} mngr  The DnD manager we must init the UI.
    */
-  initUI (mgr) {
+  initUI (mngr) {
   },
   /**
    * Dispose of the DnD manager UI.
-   * @param {!eYo.DnD.Mgr} mgr  The DnD manager we must dispose of the UI.
+   * @param {!eYo.DnD.Mngr} mngr  The DnD manager we must dispose of the UI.
    */
-  disposeUI (mgr) {
+  disposeUI (mngr) {
   },
 })
 

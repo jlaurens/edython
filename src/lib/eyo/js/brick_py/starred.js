@@ -292,5 +292,5 @@ eYo.Expr.Starred.prototype.xmlAttr = function () {
   'or_expr_star_star'
 ].forEach(key => {
   eYo.Expr[key] = eYo.Expr.Starred
-  eYo.Brick.Mgr.register(key)
+  eYo.Brick.Mngr.register(key)
 })

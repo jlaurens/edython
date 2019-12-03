@@ -30,7 +30,7 @@ eYo.provide('eYo.Expr')
 eYo.Brick.Dflt.makeSubclass(eYo.Expr, 'Dflt')
 
 // Default delegate for all expression bricks
-eYo.Brick.Mgr.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
+eYo.Brick.Mngr.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
 
 Object.defineProperties(eYo.Expr.Dflt.prototype, {
   isExpr: {
@@ -186,24 +186,24 @@ eYo.Expr.Dflt.prototype.awaitable = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Expr.Dflt.prototype.populateContextMenuFirst_ = function (mgr) {
-  var yorn = eYo.Expr.Dflt.superClass_.populateContextMenuFirst_.call(this, mgr)
+eYo.Expr.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
+  var yorn = eYo.Expr.Dflt.superClass_.populateContextMenuFirst_.call(this, mngr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('await', 'eyo-code-reserved'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
     )
     if (this.await_) {
-      mgr.shouldSeparateRemove()
-      mgr.addRemoveChild(mgr.newMenuItem(content, () => {
+      mngr.shouldSeparateRemove()
+      mngr.addRemoveChild(mngr.newMenuItem(content, () => {
         this.await_p = false
       }))
     } else {
-      mgr.shouldSeparateInsert()
-      mgr.addInsertChild(mgr.newMenuItem(content, () => {
+      mngr.shouldSeparateInsert()
+      mngr.addInsertChild(mngr.newMenuItem(content, () => {
         this.await_p = true
       }))
     }
@@ -487,13 +487,13 @@ eYo.Expr.Dflt.makeSubclass('builtin__object', {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mgr) {
-  mgr.populateProperties(this, 'value')
-  mgr.shouldSeparateInsert()
-  eYo.Expr.builtin__object.superClass_.populateContextMenuFirst_.call(this, mgr)
+eYo.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
+  mngr.populateProperties(this, 'value')
+  mngr.shouldSeparateInsert()
+  eYo.Expr.builtin__object.superClass_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 

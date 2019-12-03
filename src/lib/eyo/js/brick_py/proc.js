@@ -157,7 +157,7 @@ eYo.Stmt.makeSubclass('decorator_stmt', {
       },
       synchronize: /** @suppress {globalThis} */ function (newValue) {
         this.synchronize(newValue)
-        var d = this.field.ui_driver_mgr
+        var d = this.field.ui_driver_mngr
         d && (d.setVisualAttribute(this.field, newValue))
       },
       xml: false
@@ -354,17 +354,17 @@ Object.defineProperties(eYo.Stmt.decorator_stmt.prototype, {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @override
  */
-eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var variant_p = this.variant_p
   if (variant_p !== eYo.Key.NONE) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('@', 'eyo-code-reserved'),
       eYo.Do.createSPAN(eYo.Msg.Placeholder.DECORATOR, 'eyo-code-placeholder')
     )
-    mgr.addChild(mgr.newMenuItem(content, () => {
+    mngr.addChild(mngr.newMenuItem(content, () => {
       this.chooser_p = eYo.Key.NONE
     }))
   }
@@ -376,7 +376,7 @@ eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   builtins.forEach((builtin) => {
     if (builtin !== this.target_p) {
       var content = eYo.Do.createSPAN('@' + builtin, 'eyo-code-reserved')
-      mgr.addChild(mgr.newMenuItem(content, () => {
+      mngr.addChild(mngr.newMenuItem(content, () => {
           this.chooser_p = builtin
         }
       ))
@@ -388,7 +388,7 @@ eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
       eYo.Do.createSPAN(eYo.Msg.Placeholder.DECORATOR, 'eyo-code-placeholder'),
       eYo.Do.createSPAN('(…)', 'eyo-code')
     )
-    mgr.addChild(mgr.newMenuItem(content, () => {
+    mngr.addChild(mngr.newMenuItem(content, () => {
       this.chooser_p = eYo.Key.N_ARY
     }))
   }
@@ -405,14 +405,14 @@ eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
           eYo.Do.createSPAN('.', 'eyo-code'),
           eYo.Do.createSPAN(builtin, 'eyo-code-reserved')
         )
-        mgr.addChild(mgr.newMenuItem(content, () => {
+        mngr.addChild(mngr.newMenuItem(content, () => {
           this.chooser_p = builtin
         }))
       }
     })
   }
-  mgr.shouldSeparate()
-  return eYo.Stmt.decorator_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  mngr.shouldSeparate()
+  return eYo.Stmt.decorator_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -474,17 +474,17 @@ eYo.Brick.Group.makeSubclass('funcdef_part', {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
   var variants = this.variant_d.getAll()
   var variant = this.variant_p
   var F = (content, key) => {
-    var menuItem = mgr.newMenuItem(content, () => {
+    var menuItem = mngr.newMenuItem(content, () => {
       this.variant_p = key
     })
-    mgr.addChild(menuItem, true)
+    mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== variant)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
@@ -497,8 +497,8 @@ eYo.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
     eYo.Do.createSPAN(' f', 'eyo-code-placeholder'),
     goog.dom.createTextNode('(…) -> …')
   ), variants[1])
-  mgr.shouldSeparate()
-  return eYo.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
+  mngr.shouldSeparate()
+  return eYo.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /*
@@ -564,17 +564,17 @@ eYo.Brick.Group.makeSubclass('classdef_part', {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
   var variants = this.variant_d.getAll()
   var variant = this.variant_d.get()
   var F = (content, key) => {
-    var menuItem = mgr.newMenuItem(content, () => {
+    var menuItem = mngr.newMenuItem(content, () => {
       this.variant_p = key
     })
-    mgr.addChild(menuItem, true)
+    mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== variant)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
@@ -586,8 +586,8 @@ eYo.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mgr) {
     eYo.Do.createSPAN(' name', 'eyo-code-placeholder'),
     goog.dom.createTextNode('(…)')
   ), variants[1])
-  mgr.shouldSeparate()
-  return eYo.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this, mgr)
+  mngr.shouldSeparate()
+  return eYo.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 eYo.Brick.Proc.T3s = [

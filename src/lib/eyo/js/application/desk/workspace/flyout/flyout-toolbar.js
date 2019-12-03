@@ -192,7 +192,7 @@ eYo.FlyoutToolbar.prototype.layout = function(width, height) {
  * @private
  */
 eYo.FlyoutToolbar.prototype.positionAt_ = function(width, height, x, y) {
-  this.flyout_.desk.board.ui_driver_mgr.flyoutToolbarPositionAt(width, height, x, y)
+  this.flyout_.desk.board.ui_driver_mngr.flyoutToolbarPositionAt(width, height, x, y)
   this.div_.style.left = x + 'px'
   this.div_.style.top = y + 'px'
 };

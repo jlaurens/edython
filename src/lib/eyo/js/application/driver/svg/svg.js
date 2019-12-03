@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('eYo.Dom')
-eYo.require('eYo.Dom.Mgr')
+eYo.require('eYo.Dom.Mngr')
 
 eYo.require('eYo.Decorate')
 
@@ -23,7 +23,7 @@ eYo.require('eYo.Decorate')
  */
 eYo.makeNS('Svg')
 
-eYo.provide('eYo.Svg.Mgr')
+eYo.provide('eYo.Svg.Mngr')
 
 eYo.forwardDeclare('eYo.T3.Profile')
 eYo.forwardDeclare('eYo.Svg.Brick')
@@ -43,9 +43,9 @@ eYo.Driver.Dlgt.makeSubclass(eYo.Svg)
 
 /**
  * The manager of all the svg drivers.
- * @type {eYo.Svg.Mgr}
+ * @type {eYo.Svg.Mngr}
  */
-eYo.Dom.makeMgrClass(eYo.Svg, {
+eYo.Dom.makeMngrClass(eYo.Svg, {
   initUIMake (f) {
     return function (object, ...rest) {
       var dom = object.dom

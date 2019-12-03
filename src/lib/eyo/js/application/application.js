@@ -42,7 +42,7 @@ eYo.forwardDeclare('eYo.Audio')
  * @property {eYo.Desk} desk
  * @readonly
  * The ui drivers manager.
- * @property {eYo.Driver.Mgr} ui_driver_mgr
+ * @property {eYo.Driver.Mngr} ui_driver_mngr
  */
 eYo.makeClass('Application', {
   init : {
@@ -68,7 +68,7 @@ eYo.makeClass('Application', {
       options: {},
       audio: {},
       clipboard: {},
-      ui_driver_mgr: {
+      ui_driver_mngr: {
         willChange(before, after) {
           if (before) {
             this.disposeUI()
@@ -119,7 +119,7 @@ eYo.Application.prototype.initUI = function() {
   this.initUI = eYo.Do.nothing
   delete this.disposeUI
   this.audio__ = new eYo.Audio(this, this.options.pathToMedia)
-  var d = this.ui_driver_mgr__ = new eYo.Svg.Mgr(this)
+  var d = this.ui_driver_mngr__ = new eYo.Svg.Mngr(this)
   d.initUI(this)
   this.desk.initUI()
 }
@@ -130,7 +130,7 @@ eYo.Application.prototype.initUI = function() {
 eYo.Application.prototype.disposeUI = function() {
   this.disposeUI = eYo.Do.nothing
   this.desk.disposeUI()
-  this.ui_driver_mgr_ = null
+  this.ui_driver_mngr_ = null
   delete this.initUI
 }
 
@@ -210,7 +210,7 @@ eYo.Application.prototype.copyBrick = (brick, deep) => {
  * @return {Boolean} true if copied, false otherwise
  */
 eYo.Application.prototype.doCopy = function(optNoNext) {
-  var brick = this.focusMgr.brick
+  var brick = this.focusMngr.brick
   if (brick) {
     this.copyBrick(brick, !optNoNext)
     return true
@@ -222,7 +222,7 @@ eYo.Application.prototype.doCopy = function(optNoNext) {
  * This is a job for the renderer.
  */
 eYo.Application.prototype.doFront = function() {
-  var b3k = this.focusMgr.brick
+  var b3k = this.focusMngr.brick
   if (b3k) {
     b3k.ui.sendToFront()
   }
@@ -232,7 +232,7 @@ eYo.Application.prototype.doFront = function() {
  * Send the selected brick to the back.
  */
 eYo.Application.prototype.doBack = function() {
-  var b3k = this.focusMgr.brick
+  var b3k = this.focusMngr.brick
   if (b3k) {
     b3k.ui.sendToBack()
   }
@@ -242,7 +242,7 @@ eYo.Application.prototype.doBack = function() {
  * Scroll the board to show the selected brick.
  */
 eYo.Application.prototype.doFocus = function() {
-  var b3k = this.focusMgr.brick
+  var b3k = this.focusMngr.brick
   if (b3k) {
     b3k.board.scrollBrickTopLeft(b3k.id)
   }

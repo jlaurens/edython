@@ -115,3 +115,5 @@ eYo.Dflt.makeSubclass('Owned', {
     },
   },
 })
+
+eYo.assert(eYo.Owned, 'MISSING eYo.Owned')

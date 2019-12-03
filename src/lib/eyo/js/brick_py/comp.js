@@ -103,7 +103,7 @@ eYo.Expr.comprehension.prototype.getBaseType = function () {
 
 ;['dict_comprehension'].forEach(k => {
   eYo.Expr[k] = eYo.Expr.comprehension
-  eYo.Brick.Mgr.register(k)
+  eYo.Brick.Mngr.register(k)
 })
 
 /**

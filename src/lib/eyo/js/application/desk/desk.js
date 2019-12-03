@@ -16,8 +16,6 @@
 eYo.require('eYo.UI.Dflt')
 eYo.require('eYo.Decorate')
 
-eYo.provide('eYo.Desk')
-
 eYo.forwardDeclare('eYo.Application')
 eYo.forwardDeclare('eYo.Backer')
 eYo.forwardDeclare('eYo.Options')
@@ -31,7 +29,7 @@ goog.forwardDeclare('goog.math');
  * @param {!eYo.Application|Object} owner Owner application.
  * @constructor
  */
-eYo.UI.makeClass('Desk', {
+eYo.UI.makeClass(eYo, 'Desk', {
   props: {
     owned: {
       /**

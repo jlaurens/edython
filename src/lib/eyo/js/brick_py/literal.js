@@ -111,7 +111,7 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
   'imagnumber'
 ].forEach(key => {
   eYo.Expr[key] = eYo.Expr.numberliteral
-  eYo.Brick.Mgr.register(key)
+  eYo.Brick.Mngr.register(key)
 })
 
 /**
@@ -283,7 +283,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
   'shortbytesliteral',
 ].forEach(t => {
   eYo.Expr[t] = eYo.Expr.shortliteral
-  eYo.Brick.Mgr.register(t)
+  eYo.Brick.Mngr.register(t)
 })
 
 /**
@@ -327,13 +327,13 @@ eYo.Expr.shortliteral.prototype.makeTitle = function (variant) {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  * @suppress {globalThis}
 */
-eYo.Brick.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
-  mgr.populateProperties(this, 'delimiter')
-  mgr.separate()
+eYo.Brick.Literal.literalPopulateContextMenuFirst_ = function (mngr) {
+  mngr.populateProperties(this, 'delimiter')
+  mngr.separate()
   var current = this.prefix_p
   var can_b = this.validateComponents({
     prefix: 'b'
@@ -347,48 +347,48 @@ eYo.Brick.Literal.literalPopulateContextMenuFirst_ = function (mgr) {
         eYo.Do.createSPAN(msg, 'eyo-code'),
         goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
       )
-      return mgr.newMenuItem(title, () => {
+      return mngr.newMenuItem(title, () => {
         this.prefix_p = prefix
       })
     }
   }
   if (!current.length) {
-    // mgr.addInsertChild(item('u', insert))
-    mgr.addInsertChild(item('r', 'r'))
-    can_f && (mgr.addInsertChild(item('f', 'f')))
-    can_b && (mgr.addInsertChild(item('b', 'b')))
+    // mngr.addInsertChild(item('u', insert))
+    mngr.addInsertChild(item('r', 'r'))
+    can_f && (mngr.addInsertChild(item('f', 'f')))
+    can_b && (mngr.addInsertChild(item('b', 'b')))
   } else if (current === 'u') {
-    mgr.addRemoveChild(item('u', ''))
+    mngr.addRemoveChild(item('u', ''))
   } else if (current === 'r') {
-    mgr.addInsertChild(item('f', 'rf'))
-    can_b && (mgr.addInsertChild(item('b', 'rb')))
-    mgr.addRemoveChild(item('r', ''))
+    mngr.addInsertChild(item('f', 'rf'))
+    can_b && (mngr.addInsertChild(item('b', 'rb')))
+    mngr.addRemoveChild(item('r', ''))
   } else if (current === 'f') {
-    mgr.addInsertChild(item('r', 'rf'))
-    mgr.addRemoveChild(item('f', ''))
+    mngr.addInsertChild(item('r', 'rf'))
+    mngr.addRemoveChild(item('f', ''))
   } else if (current === 'b') {
-    mgr.addInsertChild(item('r', 'rb'))
-    mgr.addRemoveChild(item('b', ''))
+    mngr.addInsertChild(item('r', 'rb'))
+    mngr.addRemoveChild(item('b', ''))
   } else if (['rf', 'fr'].indexOf(current.toLowerCase()) < 0) {
-    mgr.addRemoveChild(item('r', 'b'))
-    mgr.addRemoveChild(item('b', 'r'))
+    mngr.addRemoveChild(item('r', 'b'))
+    mngr.addRemoveChild(item('b', 'r'))
   } else {
-    mgr.addRemoveChild(item('r', 'f'))
-    mgr.addRemoveChild(item('f', 'r'))
+    mngr.addRemoveChild(item('r', 'f'))
+    mngr.addRemoveChild(item('f', 'r'))
   }
-  mgr.shouldSeparateInsert()
+  mngr.shouldSeparateInsert()
   return true
 }
 
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mgr) {
-  eYo.Brick.Literal.literalPopulateContextMenuFirst_.call(this, mgr)
-  eYo.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, mgr)
+eYo.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
+  eYo.Brick.Literal.literalPopulateContextMenuFirst_.call(this, mngr)
+  eYo.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -478,7 +478,7 @@ eYo.Expr.longliteral.prototype.validateComponents = function(kvargs) {
   'longbytesliteral',
 ].forEach(t => {
   eYo.Expr[t] = eYo.Expr.longliteral
-  eYo.Brick.Mgr.register(t)
+  eYo.Brick.Mngr.register(t)
 })
 
 eYo.Brick.Literal.T3s = [

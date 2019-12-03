@@ -159,21 +159,21 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr, mngr.menu is the menu to populate.
  * @this {eYo.Brick}
  * @private
  */
-eYo.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
+eYo.Expr.yield_expr.populateContextMenuFirst_ = function (mngr) {
   var brick = this
   if (brick.locked_) {
     return
   }
   var current = this.variant_p
   var F = (content, k) => {
-    var menuItem = mgr.newMenuItem(content, () => {
+    var menuItem = mngr.newMenuItem(content, () => {
       this.variant_p = k
     })
-    mgr.addChild(menuItem, true)
+    mngr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
@@ -190,19 +190,19 @@ eYo.Expr.yield_expr.populateContextMenuFirst_ = function (mgr) {
     goog.dom.createTextNode('…')
   ), eYo.Key.FROM
   )
-  mgr.shouldSeparate()
+  mngr.shouldSeparate()
 }
 
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr, mngr.menu is the menu to populate.
  * @private
  */
-eYo.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
   var brick = this
-  var yorn = eYo.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
-  return eYo.Expr.yield_expr.superClass_.populateContextMenuFirst_.call(this, mgr) || yorn
+  var yorn = eYo.Expr.yield_expr.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Expr.yield_expr.superClass_.populateContextMenuFirst_.call(this, mngr) || yorn
 }
 
 /**
@@ -216,12 +216,12 @@ eYo.Stmt.makeSubclass('yield_stmt', {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr, mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr, mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
-  eYo.Expr.yield_expr.populateContextMenuFirst_.call(this, mgr)
-  return eYo.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+eYo.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
+  eYo.Expr.yield_expr.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 eYo.Brick.Yield.T3s = [

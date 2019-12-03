@@ -27,10 +27,10 @@ eYo.provide('eYo.Brick.CMath')
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-// eYo.Expr.cmath__call_expr.populateMenu = function (mgr) {
+// eYo.Expr.cmath__call_expr.populateMenu = function (mngr) {
 //   var brick = this
 //   // populate the menu with the functions in the same category
 //   var name_get = brick.name_d.get()
@@ -49,16 +49,16 @@ eYo.provide('eYo.Brick.CMath')
 //         item.names[0],
 //         args
 //       )
-//       var menuItem = mgr.newMenuItem(content, function () {
+//       var menuItem = mngr.newMenuItem(content, function () {
 //         brick.name_d.set(item.names[0])
 //       })
-//       mgr.addChild(menuItem, true)
+//       mngr.addChild(menuItem, true)
 //     }
 //   }
 //   for (var i = 0; i < items.length; i++) {
 //     F(i)
 //   }
-//   mgr.shouldSeparate()
+//   mngr.shouldSeparate()
 //   var contents = {
 //     'conversions-to-and-from-polar-coordinates': 'conversion',
 //     'power-and-logarithmic-functions': 'power',
@@ -70,19 +70,19 @@ eYo.provide('eYo.Brick.CMath')
 //   F = function (i) {
 //     var category = categories[i]
 //     if (i !== item_get.category) {
-//       var menuItem = mgr.newMenuItem(contents[category] || category, function () {
+//       var menuItem = mngr.newMenuItem(contents[category] || category, function () {
 //         var items = eYo.Model.cmath__module.getItemsInCategory(i)
 //         var item = eYo.Model.cmath__module.getItem(items[0])
 //         eyo.name_d.set(item.names[0])
 //       })
-//       mgr.addChild(menuItem, true)
+//       mngr.addChild(menuItem, true)
 //     }
 //   }
 //   var categories = model.data.categories
 //   for (var i = 0; i < categories.length - 1; i++) {
 //     F(i)
 //   }
-//   mgr.shouldSeparate()
+//   mngr.shouldSeparate()
 // }
 
 // /**

@@ -168,7 +168,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
   'void_except_part'
 ].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.except_part
-  eYo.Brick.Mgr.register(k)
+  eYo.Brick.Mngr.register(k)
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.
@@ -189,16 +189,16 @@ eYo.Stmt.except_part.prototype.getType = eYo.Change.decorate(
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.variant_p
   var F = (content, k) => {
-    var menuItem = mgr.newMenuItem(content, () => {
+    var menuItem = mngr.newMenuItem(content, () => {
       this.variant_p = k
     })
-    mgr.addChild(menuItem, true)
+    mngr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
@@ -217,8 +217,8 @@ eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mgr) {
     goog.dom.createTextNode(' …:')
   ), eYo.Key.ALIASED
   )
-  mgr.shouldSeparate()
-  return eYo.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this, mgr)
+  mngr.shouldSeparate()
+  return eYo.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -334,16 +334,16 @@ eYo.Stmt.makeSubclass('raise_stmt', {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.variant_p
   var F = (content, k) => {
-    var menuItem = mgr.newMenuItem(content, () => {
+    var menuItem = mngr.newMenuItem(content, () => {
       this.variant_p = k
     })
-    mgr.addChild(menuItem, true)
+    mngr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
@@ -362,8 +362,8 @@ eYo.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
     goog.dom.createTextNode(' …')
   ), eYo.Key.FROM
   )
-  mgr.shouldSeparate()
-  return eYo.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  mngr.shouldSeparate()
+  return eYo.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -437,16 +437,16 @@ eYo.Stmt.makeSubclass('assert_stmt', {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.variant_p
   var F = (content, key) => {
-    var menuItem = mgr.newMenuItem(content, () => {
+    var menuItem = mngr.newMenuItem(content, () => {
       this.variant_p = key
     })
-    mgr.addChild(menuItem, true)
+    mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
@@ -459,8 +459,8 @@ eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
     goog.dom.createTextNode('…, …')
   ), eYo.Key.BINARY
   )
-  mgr.shouldSeparate()
-  return eYo.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  mngr.shouldSeparate()
+  return eYo.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 eYo.Brick.Try.T3s = [

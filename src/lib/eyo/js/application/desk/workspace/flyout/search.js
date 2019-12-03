@@ -56,7 +56,7 @@ eYo.Search.prototype.disposeUI = function() {
   delete this.initUI
   this.disposeUI = eYo.Do.nothing
   this.board_.disposeUI()
-  var d = this.ui_driver_mgr
+  var d = this.ui_driver_mngr
   this.toolbar_ && d.toolbarDisposeUI(this.toolbar_)
   d.disposeUI(this)
   eYo.Property.dispose(this, "scrollbar_")

@@ -330,7 +330,7 @@ eYo.Stmt.makeSubclass('assignment_stmt', {
   'augmented_assignment_stmt'
 ].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.assignment_stmt
-  eYo.Brick.Mgr.register(k)
+  eYo.Brick.Mngr.register(k)
 })
 
 
@@ -364,18 +364,18 @@ eYo.Stmt.assignment_stmt.prototype.getType = function () {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var target_p = this.target_p
   var variant_p = this.variant_p
   var F = (content, newVariant) => {
-    var menuItem = mgr.newMenuItem(content, () => {
+    var menuItem = mngr.newMenuItem(content, () => {
       this.variant_p = newVariant
     })
     menuItem.setEnabled(newVariant !== variant_p)
-    mgr.addChild(menuItem, true)
+    mngr.addChild(menuItem, true)
   }
   var content =
   goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -385,13 +385,13 @@ eYo.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
   F(content, eYo.Key.TARGET_VALUED)
   content = eYo.Do.createSPAN('…,… = …,…', 'eyo-code')
   F(content, eYo.Key.TARGET_VALUED)
-  mgr.shouldSeparate()
+  mngr.shouldSeparate()
   if (variant_p !== eYo.Key.TARGET_VALUED) {
-    var menuItem = mgr.newMenuItem(eYo.Msg.RENAME)
-    mgr.addChild(menuItem, true)
-    mgr.shouldSeparate()
+    var menuItem = mngr.newMenuItem(eYo.Msg.RENAME)
+    mngr.addChild(menuItem, true)
+    mngr.shouldSeparate()
   }
-  eYo.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  eYo.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -568,10 +568,10 @@ eYo.Brick.List.makeSubclass('augassigned_list', () => {
 // /**
 //  * Populate the context menu for the given brick.
 //  * @param {!eYo.Brick.Dflt} brick The brick.
-//  * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+//  * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
 //  * @private
 //  */
-// eYo.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+// eYo.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
 //   var brick = this
 //   var withTarget = this.target_b
 //   var target = this.target_p
@@ -590,26 +590,26 @@ eYo.Brick.List.makeSubclass('augassigned_list', () => {
 //         eYo.Do.createSPAN(' ' + op + ' ', 'eyo-code'),
 //         eYo.Do.createSPAN('…', 'eyo-code')
 //       )
-//       var menuItem = mgr.newMenuItem(content, function () {
+//       var menuItem = mngr.newMenuItem(content, function () {
 //         console.log('Change', withBitwise ? 'bitwise' : 'number', 'operator to', op)
 //         withBitwise ? brick.bitwiseOperator_d.set(op) : brick.numberOperator_d.set(op)
 //       })
-//       mgr.addChild(menuItem, true)
+//       mngr.addChild(menuItem, true)
 //     }
 //   }
 //   for (var i = 0; i < operators.length; i++) {
 //     F(i)
 //   }
-//   mgr.shouldSeparate()
+//   mngr.shouldSeparate()
 //   var content =
 //   eYo.Do.createSPAN(withBitwise ? '+=, -=, /= …' : '<<=, >>=, &= …', 'eyo-code')
-//   var menuItem = mgr.newMenuItem(content, () => {
+//   var menuItem = mngr.newMenuItem(content, () => {
 //     this.operator_p = withBitwise
 //       ? this.numberOperator_p : this.bitwiseOperator_p
 //   })
-//   mgr.addChild(menuItem, true)
-//   mgr.shouldSeparate()
-//   return eYo.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+//   mngr.addChild(menuItem, true)
+//   mngr.shouldSeparate()
+//   return eYo.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 // }
 
 eYo.Brick.Assignment.T3s = [

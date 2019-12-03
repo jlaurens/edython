@@ -66,11 +66,10 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
         `Wrong subclass delegate: ${dlgt.name}`,
       )
     }
-    this.C9r__ = C9r
-    this.ns__ = ns
     Object.defineProperties(this, {
       C9r__: { value: C9r },
       ns__: { value: ns },
+      model__: { value: model },
       key__: {value: key || 'My name is nobody'},
     })  
     C9r.eyo__ = this
@@ -112,6 +111,12 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
     }),
     ns_: eYo.Do.propertyR(function () {
       return this.ns__
+    }),
+    model: eYo.Do.propertyR(function () {
+      return this.model__
+    }),
+    model_: eYo.Do.propertyR(function () {
+      return this.model__
     }),
     name: eYo.Do.propertyR(function () {
       return this.ns__ && this.key && `${this.ns__.name}.${this.key}` || this.key
@@ -524,16 +529,15 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
    */
   pttp.declareComputed = function (models) {
     Object.keys(models).forEach(k => {
-      console.warn('COMPUTED', k, models[k])
       eYo.parameterAssert(!this.props_.has(k))
       try {
+        const proto = this.C9r_.prototype
         var k_ = k + '_'
         var k__ = k + '__'
         var model = models[k]
         var get = model.get || eYo.asF(model)
         var set = model.set
-        console.warn('COMPUTED', k, get, set)
-        Object.defineProperty(proto, k, model.set ?
+        Object.defineProperty(proto, k, set ?
           {
             get: get,
             set: eYo.Do.noSetter,
@@ -547,7 +551,6 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
           return this[k__]
         }
         set = model.set_
-        console.warn('COMPUTED2', k, get, set)
         Object.defineProperty(proto, k, get ? set ? {
             get: get,
             set: set,
@@ -565,7 +568,6 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
         k = k__
         get = model.get__
         set = model.set__
-        console.warn('COMPUTED3', k, get, set)
         Object.defineProperty(proto, k, get ? set ? {
             get: get,
             set: set,
@@ -730,13 +732,10 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
       Dlgt_ = key
       key = this.key
     }
-    if (!Dlgt_) {
-      Dlgt_ = this.C9r.eyo.constructor
-      if (ns) {
-        if (!eYo.isSubclass(Dlgt_, ns.Dlgt)) {
-          Dlgt_ = ns.Dlgt
-        }
-      }
+    var Dlgt__ = ns ? ns.Dlgt : this.C9r.eyo.constructor
+    if (!eYo.isSubclass(Dlgt_, Dlgt__)) {
+      model = Dlgt_
+      Dlgt_ = Dlgt__
     }
     return ns && ns.makeClass(ns, key, this.C9r, Dlgt_, model) || eYo.makeClass(ns, key, this.C9r, Dlgt_, model)
   }

@@ -136,7 +136,7 @@ Object.defineProperties(eYo.Data.prototype, {
       return this.brick_.ui
     }
   },
-  ui_driver_mgr: {
+  ui_driver_mngr: {
     get () {
       var ui = this.ui
       return ui && ui.driver
@@ -649,7 +649,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
   if (!goog.isDef(newValue)) {
     newValue = this.get()
   }
-  var d = this.ui_driver_mgr
+  var d = this.ui_driver_mngr
   if (!d) {
     return
   }
@@ -672,7 +672,7 @@ eYo.Data.prototype.synchronize = function (newValue) {
           } else {
             field.visible = true
           }
-          var d = field.ui_driver_mgr
+          var d = field.ui_driver_mngr
           d && (d.makeError(field))
         })
       }

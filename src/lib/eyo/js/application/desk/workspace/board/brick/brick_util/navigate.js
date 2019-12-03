@@ -135,7 +135,7 @@ eYo.Brick.Dflt.prototype.getBestBrick = function (distance) {
  * @return None
  */
 eYo.Focus.chooseLeft = () => {
-  const b3k = eYo.app.focusMgr.brick
+  const b3k = eYo.app.focusMngr.brick
   if (!b3k) {
     return
   }
@@ -191,7 +191,7 @@ eYo.Focus.chooseLeft = () => {
  * @return yorn
  */
 eYo.Focus.chooseRight = function () {
-  const eyo = eYo.app.focusMgr.brick
+  const eyo = eYo.app.focusMngr.brick
   if (!eyo) {
     return
   }
@@ -251,7 +251,7 @@ eYo.Focus.chooseRight = function () {
  * @return None
  */
 eYo.Focus.chooseAbove = function () {
-  var eyo = eYo.app.focusMgr.brick
+  var eyo = eYo.app.focusMngr.brick
   if (!eyo) {
     return
   }
@@ -311,7 +311,7 @@ eYo.Focus.chooseAbove = function () {
  * @return None
  */
 eYo.Focus.chooseBelow = () => {
-  var brick = eYo.app.focusMgr.brick
+  var brick = eYo.app.focusMngr.brick
   if (!brick) {
     return
   }
@@ -345,7 +345,7 @@ eYo.Focus.chooseBelow = () => {
     m4t.focusOn().scrollToVisible()
     return
   }
-  b3k = eYo.app.focusMgr.brick.root.getBestBrick((a, b) => {
+  b3k = eYo.app.focusMngr.brick.root.getBestBrick((a, b) => {
     if (a.foot >= b.foot) {
       return {}
     }
@@ -376,7 +376,7 @@ eYo.Focus.chooseBelow = () => {
  * @return None
  */
 eYo.Focus.chooseNext = () => {
-  var b3k = eYo.app.focusMgr.brick
+  var b3k = eYo.app.focusMngr.brick
   if (!b3k) {
     return
   }

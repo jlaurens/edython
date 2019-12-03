@@ -363,7 +363,7 @@ Object.defineProperties(eYo.Responder.prototype, {
     set (brick) {
       if (!this.startBrick_) {
         var candidate
-        var selected = eYo.app.focusMgr.brick
+        var selected = eYo.app.focusMngr.brick
         do {
           candidate = brick
         } while (brick.isExpr && (selected !== brick) && (brick = brick.parent))
@@ -612,14 +612,14 @@ eYo.Responder.prototype.handleRightClick = function(e) {
 eYo.Responder.prototype.handleBoardStart = function(e, board) {
   this.handleBoardStart = eYo.Do.nothing
   this.board_ = board
-  var b3k = eYo.app.focusMgr.brick
+  var b3k = eYo.app.focusMngr.brick
   b3k && (b3k.ui.selectMouseDownEvent = e)
   if (eYo.Dom.isTargetInput(e)) {
     this.cancel()
     return
   }
   this.event_ = e
-  this.ui_driver_mgr.brickEffectStop()
+  this.ui_driver_mngr.brickEffectStop()
   board.updateScreenCalculationsIfScrolled()
   board.markFocused()
 
@@ -706,7 +706,7 @@ eYo.Responder.prototype.doBrickClick_ = function() {
  * @private
  */
 eYo.Responder.prototype.doBoardClick_ = function() {
-  eYo.app.focusMgr.brick && eYo.app.focusMgr.brick.focusOff()
+  eYo.app.focusMngr.brick && eYo.app.focusMngr.brick.focusOff()
 }
 
 /* End functions defining what actions to take to execute clicks on each type

@@ -306,10 +306,10 @@ eYo.Brick.List.makeSubclass('parameter_list', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
   var F = (modifier, flags, msg) => {
     var b3k
     eYo.Events.disableWrap(() => {
@@ -330,7 +330,7 @@ eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mgr) {
             eYo.Do.createSPAN(msg),
             eYo.Do.createSPAN(' )', 'eyo-code-disabled')
           )
-          mgr.addInsertChild(mgr.newMenuItem(
+          mngr.addInsertChild(mngr.newMenuItem(
             content,
             () => {
               var b3k = eYo.Brick.newReady(this, eYo.T3.Expr.identifier)
@@ -358,8 +358,8 @@ eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mgr) {
   F('*', 4, '*')
   F('*', 0, '*…')
   F('**', 0, '**…')
-  mgr.shouldSeparateInsert()
-  eYo.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this, mgr)
+  mngr.shouldSeparateInsert()
+  eYo.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -422,7 +422,7 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
   'lambda_expr_nocond'
 ].forEach((key) => {
   eYo.Expr[key] = eYo.Expr.lambda
-  eYo.Brick.Mgr.register(key)
+  eYo.Brick.Mngr.register(key)
 })
 
 /**

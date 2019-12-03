@@ -336,17 +336,17 @@ eYo.Stmt.import_stmt.prototype.getMenuTarget = function () {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.variant_p
   var F = (content, variant) => {
     if (variant !== current) {
-      var menuItem = mgr.newMenuItem(content, () => {
+      var menuItem = mngr.newMenuItem(content, () => {
         this.variant_p = variant
       })
-      mgr.addChild(menuItem, true)
+      mngr.addChild(menuItem, true)
       menuItem.setEnabled(variant !== current)
     }
   }
@@ -373,8 +373,8 @@ eYo.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mgr) {
     eYo.Do.createSPAN(module + ' ', style),
     eYo.Do.createSPAN('import *', 'eyo-code-reserved')
   ), eYo.Key.FROM_MODULE_IMPORT_STAR)
-  mgr.shouldSeparate()
-  return eYo.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  mngr.shouldSeparate()
+  return eYo.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /// //////// future

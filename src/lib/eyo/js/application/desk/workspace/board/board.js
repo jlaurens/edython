@@ -167,7 +167,7 @@ Object.defineProperties(eYo.Board.prototype, {
    */
   visible: {
     get () {
-      return this.ui_driver_mgr.visibleGet(this)
+      return this.ui_driver_mngr.visibleGet(this)
 
     },
     /**
@@ -187,7 +187,7 @@ Object.defineProperties(eYo.Board.prototype, {
       if (this.flyout_) {
         this.flyout_.containerVisible = newValue
       }
-      this.ui_driver_mgr.visibleSet(this, newValue)
+      this.ui_driver_mngr.visibleSet(this, newValue)
       if (newValue) {
         this.render()
       } else {
@@ -505,7 +505,7 @@ eYo.Board.Main.prototype.dispose = function() {
 eYo.Board.prototype.initUI = function() {
   delete this.disposeUI
   this.initUI = eYo.Do.nothing
-  this.ui_driver_mgr.initUI(this)
+  this.ui_driver_mngr.initUI(this)
   var options = this.options
   if (options.hasScrollbars) {
       // Add scrollbar.
@@ -525,10 +525,10 @@ eYo.Board.prototype.initUI = function() {
 eYo.Board.prototype.disposeUI = function() {
   this.disposeUI = eYo.Do.nothing
   delete this.initUI
-  var d = this.ui_driver_mgr_
+  var d = this.ui_driver_mngr_
   if (d) {
     d.disposeUI(this)
-    this.ui_driver_mgr_ = null
+    this.ui_driver_mngr_ = null
   }
 }
 
@@ -541,7 +541,7 @@ eYo.Board.prototype.didScale = function() {
   this.updateMetrics()
   console.error('AFTER', this.metrics)
   this.place()
-  this.ui_driver_mgr && this.ui_driver_mgr.didScale(this)
+  this.ui_driver_mngr && this.ui_driver_mngr.didScale(this)
   // if (this.scrollbar) {
   //   this.scrollbar.layout()
   // } else {
@@ -616,7 +616,7 @@ eYo.Board.Main.prototype.clear = function() {
  * @return {!eYo.Brick} The created brick.
  */
 eYo.Board.prototype.newBrick = function (prototypeName, opt_id) {
-  return eYo.Brick.Mgr.create(this, prototypeName, opt_id)
+  return eYo.Brick.Mngr.create(this, prototypeName, opt_id)
 }
 
 /**
@@ -845,7 +845,7 @@ eYo.Board.prototype.layout = function() {
  * chromes. (e.g. window layout).
  */
 eYo.Board.prototype.place = function() {
-  this.ui_driver_mgr && this.ui_driver_mgr.place(this)
+  this.ui_driver_mngr && this.ui_driver_mngr.place(this)
   this.updateScreenCalculations_()
 }
 
@@ -1036,7 +1036,7 @@ eYo.Board.prototype.inDeleteArea = function(motion) {
  * @param {!eYo.Where} xy Starting location of object.
  */
 eYo.Board.prototype.eventWhere = function(e) {
-  return this.ui_driver_mgr.eventWhere(this, e)
+  return this.ui_driver_mngr.eventWhere(this, e)
 }
 
 /**
@@ -1163,7 +1163,7 @@ eYo.Board.prototype.showContextMenu_ = function (e) {
  */
 eYo.Board.prototype.markFocused = function() {
   var board = this.desk.board
-  board.ui_driver_mgr.setBrowserFocus(board)
+  board.ui_driver_mngr.setBrowserFocus(board)
 }
 
 /**
@@ -1193,7 +1193,7 @@ eYo.Board.prototype.zoom = function(center, amount) {
   if (goog.isDef(center.clientX)) {
     center = new eYo.Where(center)
   }
-  this.ui_driver_mgr.zoom(this, center, scaleChange)
+  this.ui_driver_mngr.zoom(this, center, scaleChange)
 }
 
 /**

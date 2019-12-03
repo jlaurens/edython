@@ -211,10 +211,10 @@ eYo.Brick.Group.Branch.prototype.getBaseType = function () {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
@@ -222,18 +222,18 @@ eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
       eYo.Do.createSPAN(key, 'eyo-code-reserved')
     )
-    var menuItem = mgr.newMenuItem(content, () => {
+    var menuItem = mngr.newMenuItem(content, () => {
       this.variant_p = key
     })
-    mgr.addChild(menuItem, true)
+    mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
   }
   F(0)
   F(1)
   F(2)
   F(3)
-  mgr.shouldSeparate()
-  return eYo.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mgr)
+  mngr.shouldSeparate()
+  return eYo.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 ;[
@@ -246,7 +246,7 @@ eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mgr) {
 ].forEach(name => {
   var key = name + '_part'
   eYo.Stmt[key] = eYo.Brick.Group.Branch
-  eYo.Brick.Mgr.register(key)
+  eYo.Brick.Mngr.register(key)
 })
 
 /**
@@ -266,28 +266,28 @@ eYo.Brick.Group.prototype.willRender_ = function (recorder) {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Group.prototype.populateContextMenuFirst_ = function (mgr) {
+eYo.Brick.Group.prototype.populateContextMenuFirst_ = function (mngr) {
   if (this.async_f) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('async', 'eyo-code-reserved'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
     )
     if (this.async_) {
-      mgr.addRemoveChild(mgr.newMenuItem(content, () => {
+      mngr.addRemoveChild(mngr.newMenuItem(content, () => {
         this.async_ = false
       }))
-      mgr.shouldSeparateRemove()
+      mngr.shouldSeparateRemove()
     } else {
-      mgr.addInsertChild(mgr.newMenuItem(content, () => {
+      mngr.addInsertChild(mngr.newMenuItem(content, () => {
         this.async_ = true
       }))
-      mgr.shouldSeparateInsert()
+      mngr.shouldSeparateInsert()
     }
   }
-  return eYo.Brick.Group.superClass_.populateContextMenuFirst_.call(this, mgr)
+  return eYo.Brick.Group.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**

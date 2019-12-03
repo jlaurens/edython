@@ -333,31 +333,31 @@ eYo.ID.HELP = 'HELP'
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr The context menu manager.
+ * @param {!eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.Brick.Dflt.prototype.populateContextMenuFirst_ = function (mgr) {
-  mgr.shouldSeparate()
-  mgr.populate_movable_parent(this)
+eYo.Brick.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
+  mngr.shouldSeparate()
+  mngr.populate_movable_parent(this)
 }
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.MenuManager} mgr The context menu manager.
+ * @param {!eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.Brick.Dflt.prototype.populateContextMenuMiddle_ = function (mgr) {
+eYo.Brick.Dflt.prototype.populateContextMenuMiddle_ = function (mngr) {
   return false
 }
 
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr The context menu manager.
+ * @param {!eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.Brick.Dflt.prototype.populateContextMenuLast_ = function (mgr) {
-  return mgr.populateLast(this)
+eYo.Brick.Dflt.prototype.populateContextMenuLast_ = function (mngr) {
+  return mngr.populateLast(this)
 }
 
 /**
@@ -527,20 +527,20 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
 /**
  * Handle the selection of an item in the context dropdown menu.
  * Intended to be overriden.
- * @param {!eYo.MenuManager} mgr
+ * @param {!eYo.MenuManager} mngr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.Brick.Dflt.prototype.handleMenuItemActionFirst = function (mgr, event) {
-  return mgr.handleAction_movable_parent(this, event)
+eYo.Brick.Dflt.prototype.handleMenuItemActionFirst = function (mngr, event) {
+  return mngr.handleAction_movable_parent(this, event)
 }
 
 /**
  * Handle the selection of an item in the context dropdown menu.
  * Intended to be overriden.
- * @param {!eYo.MenuManager} mgr
+ * @param {!eYo.MenuManager} mngr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.Brick.Dflt.prototype.handleMenuItemActionMiddle = function (mgr, event) {
+eYo.Brick.Dflt.prototype.handleMenuItemActionMiddle = function (mngr, event) {
   return false
 }
 
@@ -548,11 +548,11 @@ eYo.Brick.Dflt.prototype.handleMenuItemActionMiddle = function (mgr, event) {
  * Handle the selection of an item in the context dropdown menu.
  * Intended to be overriden.
  * @param {!eYo.Brick.Dflt} brick
- * @param {!eYo.MenuManager} mgr
+ * @param {!eYo.MenuManager} mngr
  * @param {!goog.events.Event} event The event containing as target
  */
-eYo.Brick.Dflt.prototype.handleMenuItemActionLast = function (mgr, event) {
-  return mgr.handleActionLast(this, event)
+eYo.Brick.Dflt.prototype.handleMenuItemActionLast = function (mngr, event) {
+  return mngr.handleActionLast(this, event)
 }
 
 /**
@@ -628,7 +628,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
 /**
  * Populate the context menu for the given brick.
  * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mgr mgr.menu is the menu to populate.
+ * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.MenuManager.prototype.populateVariable_ = function (brick) {
@@ -860,7 +860,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
   }
   /** @suppress {accessControls} */
   var outCheck = m4t.check_
-  var D = eYo.Brick.Mgr.getModel(model.type).slots
+  var D = eYo.Brick.Mngr.getModel(model.type).slots
   // if the brick which type is model.type has no slot
   // no chance to insert anything, pass away
   if (D) {
@@ -893,7 +893,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
         this.addInsertChild(MI)
         return true
       } else if (d && d.wrap && !parent_subtype) {
-        var list = eYo.Brick.Mgr.getModel(d.wrap).list
+        var list = eYo.Brick.Mngr.getModel(d.wrap).list
         if (!list) {
           if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
             key = d.key || K

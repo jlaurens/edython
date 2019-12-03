@@ -21,35 +21,26 @@ eYo.makeNS('Driver')
 
 /**
  * Contructor delegate.
+ * @name {eYo.Driver.Dlgt}
  * @param {Function} constructor
  */
-eYo.Dlgt.makeSubclass(eYo.Driver, {
-  init (C9r) {
-    this.C9r_ = C9r
-  },
-  props: {
-    link: {
-      C9r: {value: eYo.NA}
-    }
-  }
-})
+eYo.Dlgt.makeSubclass(eYo.Driver)
 
 /**
- * Usage: `eYo.Driver.makeMgrClass(eYo.Dom)`.
- * Actual implementation with Driver, Dom and Svg drivers.
- * `eYo.Driver`
- * @param {Oject} owner,  a namespace
- * @param {Oject} super_,  the super class of the constructor created
- * @return {Object} a constructor
+ * Usage: `eYo.Driver.makeMngrClass(eYo.Dom)`.
+ * Actual implementation with Fcls, Dom and Svg drivers.
+ * {Code: ns.Mngr} is instantiated by the main application object.
+ * @param {Object} ns,  a namespace
+ * @param {?Function} Super,  the super class of the constructor created
+ * @param {?Object} mngrModel,  model used for creation
+ * @return {Function} a constructor equals to ns.Mngr
  */
-eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
-  if (owner === eYo.Driver) {
+eYo.Driver.constructor.prototype.makeMngrClass = (ns, mngrModel) => {
+  if (ns === eYo.Driver) {
     return
   }
-  var Super = mgrModel.super
-  !Super && (Super = eYo.Owned)
   var driverNames = new Set()
-  var c9r = eYo.makeClass(owner, 'Mgr', Super || eYo.Owned, eYo.Driver.Dlgt, {
+  var Mngr = ns.super.Mngr.makeSublass(ns, 'Mngr', {
     init () {
       driverNames.forEach(name => {
         var n = name[0].toLowerCase() + name.substr(1)
@@ -57,7 +48,7 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
         this[n] = new eYo.Driver[N]()
       })
     },
-    static: {
+    static: { // Bad smell
       link: {
         eyo: {
           validate: eYo.Do.noSetter,
@@ -65,15 +56,16 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
       }
     }
   })
-  owner.iniUIMake = (f) => {
-    var spr = owner.super
+  const pttp = ns.constructor.prototype
+  pttp.iniUIMake = (f) => {
+    var spr = ns.super
     var make = spr && spr.initUIMake
     f = make ? make(f) : f
-    make = mgrModel.initUIMake
+    make = mngrModel.initUIMake
     return make ? make(f) : f
   }
-  owner.disposeUIMake = (f) => {
-    var make = mgrModel.disposeUIMake
+  pttp.disposeUIMake = (f) => {
+    var make = mngrModel.disposeUIMake
     f = make ? make(f) : f
     make = spr && spr.disposeUIMake
     return make ? make(f) : f
@@ -96,12 +88,12 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
    * - initUI: an optional function with signature (object, ...)->eYo.NA
    * - disposeUI: an optional function with signature (object)->eYo.NA
    */
-  owner.makeDriverClass = (owner_, key, Super, driverModel) => {
+  pttp.makeDriverClass = (owner_, key, Super, driverModel) => {
     if (eYo.isStr(owner_)) {
       driverModel = Super || {}
       Super = key
       key = owner_
-      owner_ = owner
+      owner_ = ns
     }
     if (eYo.isF(Super)) {
       driverModel || (driverModel = {})
@@ -125,13 +117,13 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
       var spr = c9r.superClass_
       var f = spr && spr.initUI
       f && f.apply(this, arguments)
-      f = mgrModel.initUIMake
+      f = mngrModel.initUIMake
       var ff = driverModel.initUI
       f = (f && f(ff)) || ff
       return f && f.apply(object, rest)
     }
     proto.disposeUI = function (object, ...rest) {
-      var f = mgrModel.initUIMake
+      var f = mngrModel.initUIMake
       var ff = driverModel.initUI
       f = (f && f(ff)) || ff
       f && f.apply(object, rest)
@@ -141,20 +133,39 @@ eYo.Driver.makeMgrClass = (owner, mgrModel = {}) => {
     }
   }
   // make the default driver
-  owner.Dflt = eYo.Driver.Dflt
+  pttp.Dflt = eYo.Driver.Dflt
   // postflight allows to override many things NYU
-  owner.makeMgrClass = (owner_, model) => {
-    var mgr = eYo.Driver.makeMgrClass(owner_, model)
-    owner_.super = owner
-    return mgr
+  pttp.makeMngrClass = (ns_, mngrModel_) => {
+    var mngr = eYo.Driver.makeMngrClass(ns_, mngrModel_)
+    return mngr
   }
-  return c9r
+  return Mngr
 }
 
 /**
- * Default convenient driver, to be subclassed.
+ * @name {eYo.Driver.Mngr}
+ * Default driver manager, to be subclassed.
+ * Owns instances of `eYo.Driver.Dflt`'s descendants.
+ * @param {Object} owner
  */
-eYo.Driver.Dflt = function () {}
+eYo.Owned.makeSubclass(eYo.Driver, 'Mngr')
+
+/**
+ * @name {eYo.Driver.Dflt}
+ * Default convenient driver, to be subclassed.
+ * @param {Object} owner
+ * @property {eYo.Driver.Mgt} mngr,  the owning driver manager
+ */
+eYo.Owned.makeSubclass(eYo.Driver, 'Dflt', {
+  props: {
+    computed: {
+      mngr () {
+        return this.owner
+      }
+    }
+  }
+})
+
 /**
  * Init the UI.
  * @param {*} object
@@ -163,6 +174,7 @@ eYo.Driver.Dflt = function () {}
 eYo.Driver.Dflt.prototype.initUI = function () {
   return true
 }
+
 /**
  * Dispose of the UI.
  * @param {*} object

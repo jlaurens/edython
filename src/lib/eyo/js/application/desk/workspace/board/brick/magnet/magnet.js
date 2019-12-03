@@ -335,7 +335,7 @@ eYo.Magnet.prototype.dispose = function (healStack) {
   this.promised_ = eYo.NA
   this.inDB_ = false
   this.db_ = this.dbOpposite_ = null
-  this.ui_driver_mgr && this.ui_driver_mgr.disposeUI(this)
+  this.ui_driver_mngr && this.ui_driver_mngr.disposeUI(this)
   eYo.Field.disposeFields(this)
   this.where_ = this.model_ = eYo.NA
   eYo.Magnet.superClass_.dispose.call(this)

@@ -84,7 +84,7 @@ Object.defineProperties(eYo.Scroller.prototype, {
  * @private
  */
 eYo.Scroller.prototype.initUI = function () {
-  this.ui_driver_mgr.scrollerInit(this)
+  this.ui_driver_mngr.scrollerInit(this)
   this.initUI = eYo.Do.nothing
   delete this.disposeUI
 }
@@ -97,7 +97,7 @@ eYo.Scroller.prototype.initUI = function () {
 eYo.Scroller.prototype.disposeUI = function () {
   this.hScroll.disposeUI()
   this.vScroll.disposeUI()
-  this.ui_driver_mgr.scrollerDispose(this)
+  this.ui_driver_mngr.scrollerDispose(this)
   this.disposeUI = eYo.Do.nothing
   delete this.initUI
 }
@@ -151,7 +151,7 @@ eYo.Scroller.prototype.layout = function() {
   r.top = rr.top
   r.bottom = rr.bottom
   // Reposition the corner square.
-  this.ui_driver_mgr.scrollerPlaceCorner(this)
+  this.ui_driver_mngr.scrollerPlaceCorner(this)
 }
 
 /**

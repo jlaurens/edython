@@ -1043,7 +1043,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
             this.willRender()
             var item = this.brick.item_p
             var reserved = item && item.module && (item.module.name === 'functions' || item.module.name === 'stdtypes' || item.module.name === 'datamodel')
-            var d = this.ui_driver_mgr
+            var d = this.ui_driver_mngr
             d && (d.makeReserved(this, reserved))
           }
         }
@@ -1234,7 +1234,7 @@ eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
   'named_expr'
 ].forEach(k => {
   eYo.Expr[k] = eYo.Expr.primary
-  eYo.Brick.Mgr.register(k)
+  eYo.Brick.Mngr.register(k)
 })
 
 /**

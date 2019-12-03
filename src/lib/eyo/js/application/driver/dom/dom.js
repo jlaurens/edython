@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('eYo.Fcls')
-eYo.require('eYo.Fcls.Mgr')
+eYo.require('eYo.Fcls.Mngr')
 
 eYo.provide('eYo.Dom')
 
@@ -23,7 +23,7 @@ eYo.provide('eYo.Dom')
 
 eYo.Dom = Object.create(null)
 
-eYo.provide('eYo.Dom.Mgr')
+eYo.provide('eYo.Dom.Mngr')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
@@ -37,9 +37,9 @@ eYo.Driver.Dlgt.makeSubclass(eYo.Dom, 'Dlgt')
 /**
  * The manager of all the dom drivers.
  * The dom drivers are uncomplete drivers.
- * @type {eYo.Dom.Mgr}
+ * @type {eYo.Dom.Mngr}
  */
-eYo.Fcls.makeMgrClass(eYo.Dom, {
+eYo.Fcls.makeMngrClass(eYo.Dom, {
   iniUIMake (f) {
     return function () {
       if (object.dom) {
@@ -542,7 +542,7 @@ eYo.Dom.on_keydown = e => {
   }
   // var deleteBrick = false;
   if (e.keyCode == 9) {
-    if (eYo.Navigate.doTab(eYo.app.focusMgr.brick, {
+    if (eYo.Navigate.doTab(eYo.app.focusMngr.brick, {
         left: e.shiftKey,
         fast: e.altKey || e.ctrlKey || e.metaKey
       })) {
@@ -561,16 +561,16 @@ eYo.Dom.on_keydown = e => {
     if (eYo.app.desktop.isDragging) {
       return;
     }
-    if (eYo.app.focusMgr.brick && eYo.app.focusMgr.brick.deletable) {
-      eYo.app.deleteBrick(eYo.app.focusMgr.brick, e.altKey || e.ctrlKey || e.metaKey);
+    if (eYo.app.focusMngr.brick && eYo.app.focusMngr.brick.deletable) {
+      eYo.app.deleteBrick(eYo.app.focusMngr.brick, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
     if (eYo.app.desktop.isDragging) {
       return;
     }
-    if (eYo.app.focusMgr.brick &&
-        eYo.app.focusMgr.brick.deletable && eYo.app.focusMgr.brick.movable) {
+    if (eYo.app.focusMngr.brick &&
+        eYo.app.focusMngr.brick.deletable && eYo.app.focusMngr.brick.movable) {
       // Eyo: 1 meta key for shallow copy, more for deep copy
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable bricks. The next step
@@ -579,12 +579,12 @@ eYo.Dom.on_keydown = e => {
       if (e.keyCode == 67) {
         // 'c' for copy.
         eYo.app.hideChaff()
-        eYo.Application.copyBrick(eYo.app.focusMgr.brick, deep)
-      } else if (e.keyCode == 88 && !eYo.app.focusMgr.brick.board.readOnly) {
+        eYo.Application.copyBrick(eYo.app.focusMngr.brick, deep)
+      } else if (e.keyCode == 88 && !eYo.app.focusMngr.brick.board.readOnly) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.Application.copyBrick(eYo.app.focusMgr.brick, deep)
-        eYo.app.deleteBrick(eYo.app.focusMgr.brick, deep)
+        eYo.Application.copyBrick(eYo.app.focusMngr.brick, deep)
+        eYo.app.deleteBrick(eYo.app.focusMngr.brick, deep)
       }
     }
     if (e.keyCode == 86) {
@@ -598,10 +598,10 @@ eYo.Dom.on_keydown = e => {
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBrick && !eYo.app.focusMgr.brick.board.readOnly) {
+  // if (deleteBrick && !eYo.app.focusMngr.brick.board.readOnly) {
   //   eYo.Events.group = true
   //   eYo.app.hideChaff();
-  //   eYo.app.focusMgr.brick.dispose(/* heal */ true, true);
+  //   eYo.app.focusMngr.brick.dispose(/* heal */ true, true);
   //   eYo.Events.group = false
   // }
 };
