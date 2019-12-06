@@ -76,7 +76,7 @@ eYo.Expr.Dflt.prototype.getType = eYo.Change.decorate(
  * Whether the receiver's brick is of the given type.
  * Bricks may have different types (eg identifier and dotted_name).
  * This is recorded in the output connection.
- * @param {!String} type
+ * @param {String} type
  * @return {Boolean}
  */
 eYo.Expr.Dflt.prototype.checkOutputType = function (type) {
@@ -99,7 +99,7 @@ eYo.Expr.Dflt.prototype.checkOutputType = function (type) {
  * If the parent's output connection is connected,
  * can connect the brick's output connection to it?
  * The connection cannot always establish.
- * @param {!eYo.Brick.Dflt} brick  the brick to be replaced
+ * @param {eYo.Brick.Dflt} brick  the brick to be replaced
  */
 eYo.Expr.Dflt.prototype.canReplaceBrick = function (brick) {
   if (brick) {
@@ -121,7 +121,7 @@ eYo.Expr.Dflt.prototype.canReplaceBrick = function (brick) {
  * If the parent's output magnet is connected,
  * connects the brick's output magnet to it.
  * The connection cannot always establish.
- * @param {!eYo.Brick.Dflt} brick
+ * @param {eYo.Brick.Dflt} brick
  */
 eYo.Expr.Dflt.prototype.replaceBrick = function (brick) {
   if (this.board && brick && brick.board) {
@@ -186,7 +186,7 @@ eYo.Expr.Dflt.prototype.awaitable = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Expr.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
@@ -217,7 +217,7 @@ eYo.Expr.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
  * connects the parent's output to it.
  * The connection cannot always establish.
  * The holes are filled when fill_holes is true.
- * @param {!Brick} brick
+ * @param {Brick} brick
  * @param {Object} model
  * @return the created brick
  */
@@ -325,8 +325,8 @@ eYo.Expr.Dflt.prototype.insertParentWithModel = function (model) {
  * All the connections and components are consolidated.
  * Sends a `consolidate` message to each component of the brick.
  * However, there might be some caveats related to undo management.
- * @param {!Boolean} deep
- * @param {!Boolean} force
+ * @param {Boolean} deep
+ * @param {Boolean} force
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
 eYo.Expr.Dflt.prototype.doConsolidate = function (deep, force) {
@@ -486,8 +486,8 @@ eYo.Expr.Dflt.makeSubclass('builtin__object', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
@@ -499,7 +499,7 @@ eYo.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Get the content for the menu item.
- * @param {!eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {string} op op is the operator
  * @private
  */

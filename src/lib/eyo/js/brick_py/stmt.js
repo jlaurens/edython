@@ -419,8 +419,8 @@ eYo.Stmt.global_stmt.prototype.xmlAttr = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {

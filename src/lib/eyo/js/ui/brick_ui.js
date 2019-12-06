@@ -22,7 +22,7 @@ eYo.forwardDeclare('eYo.Svg.Brick')
 /**
  * Class for a Render.
  * For edython.
- * @param {!eYo.Brick.Dflt} brick  brick is the owning object.
+ * @param {eYo.Brick.Dflt} brick  brick is the owning object.
  * @readonly
  * @property {eYo.Brick} brick - The brick owning the receiver.
  * @readonly
@@ -810,7 +810,7 @@ eYo.Brick.UI.prototype.newDrawRecorder_ = function (recorder) {
 
 /**
  * Prepare rendering of a brick.
- * @param {?Object} recorder  When null, this.brick is not the start of a statement
+ * @param {!Object} recorder  When null, this.brick is not the start of a statement
  * @return {!Object} a local recorder
  * @private
  */
@@ -866,7 +866,7 @@ eYo.Brick.UI.prototype.drawModelBegin_ = function (recorder) {
  * rendering information. It is the argument of various methods.
  * This method is executed at least once for any rendered brick.
  * Since then, it won't be executed as long as the brick has not been edited.
- * @param {?Object} io
+ * @param {!Object} io
  * @private
  */
 eYo.Brick.UI.prototype.drawModel_ = function (io) {
@@ -884,7 +884,7 @@ eYo.Brick.UI.prototype.drawModel_ = function (io) {
 
 /**
  * Terminate to render the model.
- * @param {?Object} recorder
+ * @param {!Object} recorder
  * @private
  */
 eYo.Brick.UI.prototype.drawModelEnd_ = function (io) {
@@ -1014,8 +1014,8 @@ eYo.Brick.UI.prototype.drawSharp_ = function (io) {
  * This is the process that make the cursor move,
  * together with brick boundaries.
  *
- * @param {!Object} field A field.
- * @param {!Object} io An input/output recorder.
+ * @param {Object} field A field.
+ * @param {Object} io An input/output recorder.
  * @private
  */
 eYo.Brick.UI.prototype.drawField_ = function (field, io) {
@@ -1127,8 +1127,8 @@ eYo.Brick.UI.prototype.drawField_ = function (field, io) {
 /**
  * Render the given field, when defined.
  *
- * @param {!Object} field A field.
- * @param {!Object} io An input/output recorder.
+ * @param {Object} field A field.
+ * @param {Object} io An input/output recorder.
  * @private
  */
 eYo.Brick.UI.prototype.fieldDrawFrom_ = function (field, io) {
@@ -1144,8 +1144,8 @@ eYo.Brick.UI.prototype.fieldDrawFrom_ = function (field, io) {
  * Fields are either before or after the connection.
  * If `only_prefix` is true, only fields before the
  * connection are rendered.
- * @param {!Object} io An input/output record.
- * @param {?Boolean} only_prefix
+ * @param {Object} io An input/output record.
+ * @param {!Boolean} only_prefix
  * @return {Number}  The advance of the cursor (in columns)
  * @private
  */
@@ -1198,7 +1198,7 @@ eYo.Brick.UI.prototype.drawFields_ = function (io, only_prefix) {
  *
  * This message is sent at the end of statement brick rendering.
  * It is also sent each time we have rendered a field or a slot.
- * @param {?Object} io the input/output argument.
+ * @param {!Object} io the input/output argument.
  * @private
  */
 eYo.Brick.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false) {
@@ -1264,9 +1264,9 @@ eYo.Brick.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement =
 
 /**
  * Render a pending caret, if relevant.
- * @param {?Object} io the input/output argument.
- * @param {?String} side On which side of a brick.
- * @param {?String} shape Which is the shape.
+ * @param {!Object} io the input/output argument.
+ * @param {!String} side On which side of a brick.
+ * @param {!String} shape Which is the shape.
  * @private
  */
 eYo.Brick.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.Key.NONE) {
@@ -1308,7 +1308,7 @@ eYo.Brick.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape =
 
 /**
  * Render the input magnet.
- * @param {!Object} io the input/output argument.
+ * @param {Object} io the input/output argument.
  * @private
  */
 eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
@@ -1467,7 +1467,7 @@ eYo.Brick.UI.prototype.drawInputMagnet_ = function (io) {
 
 /**
  * Render the fields of a value input, if relevant.
- * @param {!Object} io the input/output argument.
+ * @param {Object} io the input/output argument.
  * @private
  */
 eYo.Brick.UI.prototype.drawInput_ = function (io) {
@@ -1682,9 +1682,9 @@ eYo.Brick.UI.prototype.removeStatusFocus_ = function () {
 /**
  * Did connect some brick's connection to another connection.
  * When connecting locked bricks, select the receiver.
- * @param {!eYo.Magnet} m4t what has been connected in the brick
- * @param {!eYo.Magnet} oldTargetM4t what was previously connected in the brick
- * @param {!eYo.Magnet} targetOldM4t what was previously connected to the new targetConnection
+ * @param {eYo.Magnet} m4t what has been connected in the brick
+ * @param {eYo.Magnet} oldTargetM4t what was previously connected in the brick
+ * @param {eYo.Magnet} targetOldM4t what was previously connected to the new targetConnection
  */
 eYo.Brick.UI.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   if (m4t.isOutput) {
@@ -1694,8 +1694,8 @@ eYo.Brick.UI.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
 
 /**
  * Converse of the preceeding.
- * @param {!eYo.Magnet} m4t what has been connected in the brick
- * @param {!eYo.Magnet} oldTargetM4t what was previously connected in the brick
+ * @param {eYo.Magnet} m4t what has been connected in the brick
+ * @param {eYo.Magnet} oldTargetM4t what was previously connected in the brick
  */
 eYo.Brick.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isOutput) {
@@ -1794,7 +1794,7 @@ eYo.Brick.UI.prototype.setParent = function (parent) {
 
 /**
  * The default implementation forwards to the driver.
- * @param {!eYo.Brick.Dflt} newParent to be connected.
+ * @param {eYo.Brick.Dflt} newParent to be connected.
  */
 eYo.Brick.UI.prototype.parentWillChange = function (newParent) {
   this.driver.brickParentWillChange(this.brick, newParent)
@@ -1802,7 +1802,7 @@ eYo.Brick.UI.prototype.parentWillChange = function (newParent) {
 
 /**
  * The default implementation forwards to the driver.
- * @param {!eYo.Brick.Dflt} oldParent replaced.
+ * @param {eYo.Brick.Dflt} oldParent replaced.
  */
 eYo.Brick.UI.prototype.parentDidChange = function (oldParent) {
   this.driver.brickParentDidChange(this.brick, oldParent)
@@ -2046,7 +2046,7 @@ eYo.Brick.UI.prototype.setDeleteStyle = function(enable) {
  * is better suited to listen to mouse events.
  * Actually, both are registered which implies that
  * handlers must filter out reentrancy.
- * @param {!Event} e Mouse down event or touch start event.
+ * @param {Event} e Mouse down event or touch start event.
  * @private
  */
 eYo.Brick.UI.prototype.on_mousedown = function (e) {
@@ -2166,7 +2166,7 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
 
 /**
  * Show the context menu for this brick.
- * @param {!Event} e Mouse event.
+ * @param {Event} e Mouse event.
  * @private
  */
 eYo.Brick.UI.prototype.showContextMenu_ = function (e) {

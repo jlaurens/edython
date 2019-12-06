@@ -20,7 +20,7 @@ eYo.provide('eYo.Template')
 /**
  * Class for a template environment.
  * To be subclassed.
- * @param {!eYo.Desk} owner Owner desk.
+ * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
 eYo.UI.makeClass('Template', eYo.Pane)

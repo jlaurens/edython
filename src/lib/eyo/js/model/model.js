@@ -35,7 +35,7 @@ eYo.Model.Module = function (name, url) {
 
 /**
  * Set the data object and registers the given type.
- * @param {!String|Number} key  The key or index of the item
+ * @param {String|Number} key  The key or index of the item
  * @return {?Object} return the model object for that item, if any.
  */
 eYo.Model.Module.prototype.setData = function (data) {
@@ -52,7 +52,7 @@ eYo.Model.Module.prototype.setData = function (data) {
 
 /**
  * Get the item with the given key
- * @param {!String|Number} key  The key or index of the item
+ * @param {String|Number} key  The key or index of the item
  * @return {?Object} return the model object for that item, if any.
  */
 eYo.Model.Module.prototype.getItem = function (key) {
@@ -66,7 +66,7 @@ eYo.Model.Module.prototype.getItem = function (key) {
 
 /**
  * Get the indices of the items for the given category
- * @param {!String} key  The name of the category
+ * @param {String} key  The name of the category
  * @return {!Array} the list of item indices with the given category (possibly void).
  */
 eYo.Model.Module.prototype.getItemsInCategory = function (category, type) {
@@ -90,7 +90,7 @@ eYo.Model.Module.prototype.getItemsInCategory = function (category, type) {
 
 /**
  * Sends a message for each ordered item with the give type
- * @param {!String} key  The name of the category
+ * @param {String} key  The name of the category
  */
 eYo.Model.Module.prototype.forEachItemWithType = function (type, handler) {
   if (eYo.isStr(type)) {

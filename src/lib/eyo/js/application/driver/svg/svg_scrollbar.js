@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Svg')
 
-eYo.provide('eYo.Svg.Scrollbar')
-
 eYo.forwardDeclare('eYo.Scrollbar')
 
 /**
@@ -23,8 +21,8 @@ eYo.forwardDeclare('eYo.Scrollbar')
 eYo.Svg.makeDriverClass('Scrollbar', {
     /**
    * Initializes the scrollbar SVG ressources.
-   * @param {!eYo.Scrollbar} scrollbar
-   * @param {?String} opt_class
+   * @param {eYo.Scrollbar} scrollbar
+   * @param {!String} opt_class
    */
   initUI (scrollbar, opt_class) {
     var dom = scrollbar.dom
@@ -101,7 +99,7 @@ eYo.Svg.makeDriverClass('Scrollbar', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {!eYo.Scrollbar} scrollbar
+   * @param {eYo.Scrollbar} scrollbar
    */
   disposeUI (scrollbar) {
     var dom = scrollbar.dom
@@ -161,7 +159,7 @@ eYo.Svg.Scrollbar.prototype.place = function(scrollbar) {
 /**
  * Start a dragging operation.
  * Called when scrollbar handle is clicked.
- * @param {!Event} e Mouse down event.
+ * @param {Event} e Mouse down event.
  * @this {eYo.Scrollbar}
  * @private
  */
@@ -205,7 +203,7 @@ eYo.Svg.Scrollbar.prototype.onHandle_mousedown = function(e) {
 
 /**
  * Drag the scrollbar's handle.
- * @param {!Event} e Mouse up event.
+ * @param {Event} e Mouse up event.
  * @this {eYo.Scrollbar}
  */
 eYo.Svg.Scrollbar.prototype.on_mousemove = function(e) {
@@ -222,7 +220,7 @@ eYo.Svg.Scrollbar.prototype.on_mousemove = function(e) {
 
 /**
  * End of scrolling.
- * @param {!Event} e Mouse up event.
+ * @param {Event} e Mouse up event.
  * @this {eYo.Scrollbar}
  */
 eYo.Svg.Scrollbar.prototype.on_mouseup = function() {
@@ -234,7 +232,7 @@ eYo.Svg.Scrollbar.prototype.on_mouseup = function() {
 /**
  * Stop binding to mouseup and mousemove events.  Call this to
  * wrap up lose ends associated with the scrollbar.
- * @param {!eYo.Scrollbar}
+ * @param {eYo.Scrollbar}
  * @private
  */
 eYo.Svg.Scrollbar.prototype.cleanUp = function(scrollbar) {
@@ -253,7 +251,7 @@ eYo.Svg.Scrollbar.prototype.cleanUp = function(scrollbar) {
 /**
  * Scroll by one pageful.
  * Called when scrollbar background is clicked.
- * @param {!Event} e Mouse down event.
+ * @param {Event} e Mouse down event.
  * @this {eYo.Scrollbar}
  * @private
  */

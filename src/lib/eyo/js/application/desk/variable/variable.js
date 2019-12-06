@@ -19,7 +19,7 @@ eYo.provide('eYo.Variable')
 
 /**
  * Class for a variable inspector.
- * @param {!eYo.Desk} owner Owner desk.
+ * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
 eYo.UI.makeClass('Variable', eYo.Pane)

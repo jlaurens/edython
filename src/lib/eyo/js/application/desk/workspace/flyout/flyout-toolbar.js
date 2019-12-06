@@ -86,7 +86,7 @@ eYo.FlyoutToolbar.prototype.BUTTON_MARGIN = eYo.FlyoutToolbar.prototype.BUTTON_R
 
 /**
  * Slide out.
- * @param {!Event} e Mouse up event.
+ * @param {Event} e Mouse up event.
  * @private
  */
 eYo.FlyoutToolbar.prototype.onButtonDown_ = function(e) {
@@ -98,7 +98,7 @@ eYo.FlyoutToolbar.prototype.onButtonDown_ = function(e) {
 
 /**
  * That is catched when the flyout has the focus.
- * @param {!Event} e Mouse up event.
+ * @param {Event} e Mouse up event.
  * @private
  */
 eYo.FlyoutToolbar.prototype.onButtonEnter_ = function(e) {
@@ -109,7 +109,7 @@ eYo.FlyoutToolbar.prototype.onButtonEnter_ = function(e) {
 
 /**
  * Unhilight.
- * @param {!Event} e Mouse up event.
+ * @param {Event} e Mouse up event.
  * @private
  */
 eYo.FlyoutToolbar.prototype.onButtonLeave_ = function(e) {
@@ -118,7 +118,7 @@ eYo.FlyoutToolbar.prototype.onButtonLeave_ = function(e) {
 
 /**
  * Slide out.
- * @param {!Event} e Mouse up event.
+ * @param {Event} e Mouse up event.
  * @private
  */
 eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
@@ -141,7 +141,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
 
 /**
  * Mouse up catcher.
- * @param {!Event} e Mouse up event.
+ * @param {Event} e Mouse up event.
  * @private
  */
 eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
@@ -153,8 +153,8 @@ eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
 
 /**
  * Resize.
- * @param {!Float | eYo.Size} width.
- * @param {?Float} height.
+ * @param {Float | eYo.Size} width.
+ * @param {!Float} height.
  * @private
  */
 eYo.FlyoutToolbar.prototype.layout = function(width, height) {

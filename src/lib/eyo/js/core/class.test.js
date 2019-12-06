@@ -74,11 +74,11 @@ describe ('Dlgt', function () {
       chai.assert(A.eyo.constructor === eYo.Dlgt)
       chai.assert(A.eyo.makeSubclass)
       delete eYo.A
-    /* @param {?Object} ns,  A namespace. Defaults to the caller, eg `eYo`.
-     * @param {!String} key,  The key.
-     * @param {?Function} Super,  The eventual super class. There is no default value. Give a falsy value if you do not want inheritance.
-     * @param {?Function} Dlgt,  The constructor's delegate class. Defaults to the `super_`'s delegate. Must be a subclass of `eYo.Dlgt`.
-     * @param {?Object} model,  The dictionary of parameters.
+    /* @param {!Object} ns,  A namespace. Defaults to the caller, eg `eYo`.
+     * @param {String} key,  The key.
+     * @param {!Function} Super,  The eventual super class. There is no default value. Give a falsy value if you do not want inheritance.
+     * @param {!Function} Dlgt,  The constructor's delegate class. Defaults to the `super_`'s delegate. Must be a subclass of `eYo.Dlgt`.
+     * @param {!Object} model,  The dictionary of parameters.
      */
 
     })

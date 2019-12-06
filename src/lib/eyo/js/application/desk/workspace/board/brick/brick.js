@@ -23,7 +23,7 @@ eYo.require('eYo.Data')
  * @name {eYo.Brick}
  * @namespace
  */
-eYo.makeNS('Brick')
+eYo.UI.makeNS(eYo, 'Brick')
 
 // eYo.provide('eYo.Brick.Dflt')
 
@@ -40,7 +40,6 @@ eYo.forwardDeclare('eYo.Span')
 eYo.forwardDeclare('eYo.Field')
 eYo.forwardDeclare('eYo.Slot')
 eYo.forwardDeclare('eYo.Magnets')
-eYo.forwardDeclare('eYo.Brick.UI')
 eYo.forwardDeclare('eYo.Expr')
 eYo.forwardDeclare('eYo.Stmt')
 eYo.forwardDeclare('eYo.Focus')
@@ -49,11 +48,12 @@ eYo.forwardDeclare('eYo.Focus')
  * Delegate constructor for bricks.
  * @name {eYo.Brick.Dlgt}
  * @constructor
- * @param {!Object} c9r,  the object to which this instance is attached.
- * @param {!String} key,  the key used when the constructor was created.
- * @param {!Object} model,  the model used to create the constructor.
+ * @param {Object} ns,  namespace.
+ * @param {String} key,  the key used when the constructor was created.
+ * @param {Object} C9r,  the object to which this instance is attached.
+ * @param {Object} model,  the model used to create the constructor.
  */
-eYo.Brick.makeClass('Dlgt', eYo.UI.Dlgt, {
+eYo.UI.Dlgt.makeSubclass(eYo.Brick, 'Dlgt', {
   init () {
     this.types = []
   }
@@ -70,7 +70,7 @@ eYo.Brick.makeClass('Dlgt', eYo.UI.Dlgt, {
  * for what it was designed to.
  * For edython.
  * @param {eYo.Board} board - the owner of the brick.
- * @param {?string} prototypeName Name of the language object containing
+ * @param {!string} prototypeName Name of the language object containing
  *     type-specific functions for this brick.
  * @constructor
  * @readonly
@@ -80,7 +80,7 @@ eYo.Brick.makeClass('Dlgt', eYo.UI.Dlgt, {
  * @readonly
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
-eYo.UI.makeClass(eYo.Brick, 'Dflt', eYo.UI.Dflt, eYo.Brick.Dlgt, {
+eYo.UI.Dflt.makeSubclass(eYo.Brick, 'Dflt', {
   props: {
     link: {
       parent: {},
@@ -743,7 +743,7 @@ eYo.Brick.Dflt.prototype.didLoad = function () {
  * Bricks must be of the same type.
  * Lists and dictionaries are managed differently.
  * Usefull for testing purposes for example.
- * @param {?eYo.Brick.Dflt} rhs  Another brick
+ * @param {!eYo.Brick.Dflt} rhs  Another brick
  */
 eYo.Brick.Dflt.prototype.equals = function (rhs) {
   var equals = rhs && (this.type == rhs.type)
@@ -802,8 +802,8 @@ eYo.Brick.Dflt.prototype.equals = function (rhs) {
  *
  * The return value may be cached.
  *
- * @param {?Boolean} deep
- * @param {?Boolean} force
+ * @param {!Boolean} deep
+ * @param {!Boolean} force
  * @return {Boolean} true when consolidation occurred
  */
 eYo.Brick.Dflt.prototype.doConsolidate = function (deep, force) {
@@ -881,7 +881,7 @@ eYo.Brick.Dflt.prototype.getBaseType = function () {
  * If the return value of the given function is true,
  * then it was the last iteration and the loop nreaks.
  * For edython.
- * @param {!function} helper
+ * @param {function} helper
  * @return {Object} The first slot for which helper returns true
  */
 eYo.Brick.Dflt.prototype.someSlot = function (helper) {
@@ -893,7 +893,7 @@ eYo.Brick.Dflt.prototype.someSlot = function (helper) {
 /**
  * execute the given function for the fields.
  * For edython.
- * @param {!function} helper
+ * @param {function} helper
  */
 eYo.Brick.Dflt.prototype.forEachField = function (helper) {
   Object.values(this.fields).forEach(f => helper(f))
@@ -910,7 +910,7 @@ eYo.Brick.Dflt.prototype.forEachChild = function (helper) {
 /**
  * execute the given function for the head slot of the receiver and its next sibling.
  * For edython.
- * @param {!function} helper
+ * @param {function} helper
  * @return {boolean} whether there was an slot to act upon or a valid helper
  */
 eYo.Brick.Dflt.prototype.forEachSlot = function (helper) {
@@ -921,7 +921,7 @@ eYo.Brick.Dflt.prototype.forEachSlot = function (helper) {
 /**
  * execute the given function for the tail slot of the receiver and its previous sibling.
  * For edython.
- * @param {!function} helper
+ * @param {function} helper
  */
 eYo.Brick.Dflt.prototype.forEachSlotReverse = function (helper) {
   var slot = this.slotAtHead
@@ -936,7 +936,7 @@ eYo.Brick.Dflt.prototype.forEachSlotReverse = function (helper) {
 /**
  * execute the given function for the head slot of the receiver and its next sibling. Stops as soon as the helper returns a truthy value.
  * For edython.
- * @param {!function} helper
+ * @param {function} helper
  * @return {boolean} whether there was an slot to act upon or a valid helper
  */
 eYo.Brick.Dflt.prototype.someSlot = function (helper) {
@@ -948,7 +948,7 @@ eYo.Brick.Dflt.prototype.someSlot = function (helper) {
  * execute the given function for the head data of the receiver and its next sibling.
  * Ends the loop as soon as the helper returns true.
  * For edython.
- * @param {!function} helper
+ * @param {function} helper
  * @return {boolean} whether there was a data to act upon or a valid helper
  */
 eYo.Brick.Dflt.prototype.forEachData = function (helper) {
@@ -964,7 +964,7 @@ eYo.Brick.Dflt.prototype.forEachData = function (helper) {
 
 /**
  * Execute the helper for each magnet, either superior or inferior.
- * @param {!Function} helper  helper is a function with signature (eYo.Magnet) -> eYo.NA
+ * @param {Function} helper  helper is a function with signature (eYo.Magnet) -> eYo.NA
  */
 eYo.Brick.Dflt.prototype.forEachMagnet = function (helper) {
   Object.values(this.magnets).forEach(helper)
@@ -974,7 +974,7 @@ eYo.Brick.Dflt.prototype.forEachMagnet = function (helper) {
 /**
  * Execute the helper for all the statements.
  * Deep first traversal.
- * @param {!Function} helper  helper has signature `(brick, depth) -> eYo.NA`
+ * @param {Function} helper  helper has signature `(brick, depth) -> eYo.NA`
  * @return the truthy value from the helper.
  */
 eYo.Brick.Dflt.prototype.forEachStatement = function (helper) {
@@ -1038,7 +1038,7 @@ eYo.Brick.Dflt.prototype.makeBounds = function () {
  * Set the data values from the type.
  * One brick implementation may correspond to different types,
  * For example, there is one implementation for all the primaries.
- * @param {!String} type
+ * @param {String} type
  */
 eYo.Brick.Dflt.prototype.setDataWithType = function (type) {
   this.forEachData(data => data.setWithType(type))
@@ -1046,7 +1046,7 @@ eYo.Brick.Dflt.prototype.setDataWithType = function (type) {
 
 /**
  * Set the data values from the model.
- * @param {!Object} model
+ * @param {Object} model
  * @return {boolean} whether the model was really used.
  */
 eYo.Brick.Dflt.prototype.setDataWithModel = function (model, noCheck) {
@@ -1282,7 +1282,7 @@ eYo.Brick.Dflt.prototype.makeSlots = (() => {
 /**
  * Dispose the slots
  * For edython.
- * @param {?Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
+ * @param {!Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
  */
 eYo.Brick.Dflt.prototype.disposeSlots = function (healStack) {
   this.forEachSlot(slot => slot.dispose(healStack))
@@ -1322,7 +1322,7 @@ Object.defineProperties(eYo.Brick.Dflt.prototype, {
  * the constructor's delegate's `type` method.
  * NEVER call this directly, except if you are a brick.
  * No need to override this.
- * @param {?string} optNewType,
+ * @param {!string} optNewType,
  * @private
  */
 eYo.Brick.Dflt.prototype.setupType = function (optNewType) {
@@ -1353,7 +1353,7 @@ eYo.Brick.Dflt.prototype.synchronizeSlots = function () {
  * Only used by `consolidate`.
  * Should not be called directly, but may be overriden.
  * For edython.
- * @param {?string} type Name of the new type.
+ * @param {!string} type Name of the new type.
  */
 eYo.Brick.Dflt.prototype.consolidateData = function () {
   this.forEachData(data => data.consolidate())
@@ -1365,8 +1365,8 @@ eYo.Brick.Dflt.prototype.consolidateData = function () {
  * Only used by `consolidate`.
  * Should not be called directly, but may be overriden.
  * For edython.
- * @param {?Boolean} deep
- * @param {?Boolean} force
+ * @param {!Boolean} deep
+ * @param {!Boolean} force
  */
 eYo.Brick.Dflt.prototype.consolidateSlots = function (deep, force) {
   this.forEachSlot(slot => slot.consolidate(deep, force))
@@ -1496,7 +1496,7 @@ Object.defineProperties(eYo.Brick.Dflt.prototype, {
   },
   /**
    * Compute a list of the IDs of the specified brick and all its descendants.
-   * @param {!eYo.Brick.Dflt} brick The root brick.
+   * @param {eYo.Brick.Dflt} brick The root brick.
    * @return {!Array.<string>} List of brick IDs.
    * @private
    */
@@ -1594,17 +1594,17 @@ eYo.Brick.Dflt.prototype.duringBrickUnwrapped = function () {
 
 /**
  * Will connect this brick's connection to another connection.
- * @param {!eYo.Magnet} m4t
- * @param {!eYo.Magnet} childM4t
+ * @param {eYo.Magnet} m4t
+ * @param {eYo.Magnet} childM4t
  */
 eYo.Brick.Dflt.prototype.willConnect = function (m4t, childM4t) {
 }
 
 /**
  * Did connect this brick's magnet to another magnet.
- * @param {!eYo.Magnet} m4t what has been connected in the brick
- * @param {!eYo.Magnet} oldTargetM4t what was previously connected in the brick
- * @param {!eYo.Magnet} targetOldM4t what was previously connected to the new magnet
+ * @param {eYo.Magnet} m4t what has been connected in the brick
+ * @param {eYo.Magnet} oldTargetM4t what was previously connected in the brick
+ * @param {eYo.Magnet} targetOldM4t what was previously connected to the new magnet
  */
 eYo.Brick.Dflt.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   // new connections change the span properties of the superior block.
@@ -1626,15 +1626,15 @@ eYo.Brick.Dflt.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t)
 
 /**
  * Will disconnect this brick's connection.
- * @param {!eYo.Magnet} m4t
+ * @param {eYo.Magnet} m4t
  */
 eYo.Brick.Dflt.prototype.willDisconnect = function (m4t) {
 }
 
 /**
  * Did disconnect this receiver's magnet from another magnet.
- * @param {!eYo.Magnet} m4t  
- * @param {!eYo.Magnet} oldTargetM4t  that was connected to m4t
+ * @param {eYo.Magnet} m4t  
+ * @param {eYo.Magnet} oldTargetM4t  that was connected to m4t
  */
 eYo.Brick.Dflt.prototype.didDisconnect = function (m4t, oldTargetM4t) {
   // how many bricks/line did I remove in the superior brick?
@@ -1658,7 +1658,7 @@ eYo.Brick.Dflt.prototype.didDisconnect = function (m4t, oldTargetM4t) {
  * If the parent's output connection is connected,
  * can connect the brick's output connection to it?
  * The connection cannot always establish.
- * @param {!eYo.Brick.Dflt} other  the brick to be replaced
+ * @param {eYo.Brick.Dflt} other  the brick to be replaced
  */
 eYo.Brick.Dflt.prototype.canReplaceBrick = function (other) {
   return false
@@ -1820,7 +1820,7 @@ Object.defineProperty(eYo.Brick.Dflt.prototype, 'incog', {
    * Change the incog status.
    * An incog brick won't render.
    * The connections must be explicitely hidden when the brick is incog.
-   * @param {!Boolean} incog
+   * @param {Boolean} incog
    */
   set (newValue) {
     if (!this.incog_ === !newValue) {
@@ -1847,7 +1847,7 @@ Object.defineProperty(eYo.Brick.Dflt.prototype, 'incog', {
 /**
  * Runs the helper function for some input connection, until it responds true
  * For edython.
- * @param {!Function} helper
+ * @param {Function} helper
  * @return {Object} returns the first connection for which helper returns true or the helper return value
  */
 eYo.Brick.Dflt.prototype.someSlotMagnet = function (helper) {
@@ -1860,9 +1860,9 @@ eYo.Brick.Dflt.prototype.someSlotMagnet = function (helper) {
 /**
  * Set the error
  * For edython.
- * @param {!eYo.Brick.Dflt} brick The owner of the receiver.
- * @param {!string} key
- * @param {!string} msg
+ * @param {eYo.Brick.Dflt} brick The owner of the receiver.
+ * @param {string} key
+ * @param {string} msg
  * @return true if the given value is accepted, false otherwise
  */
 eYo.Brick.Dflt.prototype.setError = function (key, msg) {
@@ -1874,8 +1874,8 @@ eYo.Brick.Dflt.prototype.setError = function (key, msg) {
 /**
  * get the error
  * For edython.
- * @param {!eYo.Brick.Dflt} brick The owner of the receiver.
- * @param {!string} key
+ * @param {eYo.Brick.Dflt} brick The owner of the receiver.
+ * @param {string} key
  * @return true if the given value is accepted, false otherwise
  */
 eYo.Brick.Dflt.prototype.getError = function (key) {
@@ -1885,8 +1885,8 @@ eYo.Brick.Dflt.prototype.getError = function (key) {
 /**
  * get the error
  * For edython.
- * @param {!eYo.Brick.Dflt} brick The owner of the receiver.
- * @param {!string} key
+ * @param {eYo.Brick.Dflt} brick The owner of the receiver.
+ * @param {string} key
  * @return true if the given value is accepted, false otherwise
  */
 eYo.Brick.Dflt.prototype.removeError = function (key) {
@@ -1907,7 +1907,7 @@ eYo.Brick.Dflt.prototype.getSlotMagnets = function () {
 /**
  * get the slot connections, mainly for debugging purposes.
  * For edython.
- * @param {!eYo.Brick.Dflt} brick
+ * @param {eYo.Brick.Dflt} brick
  * @return the given brick
  */
 eYo.Brick.Dflt.prototype.footConnect = function (brick) {
@@ -1917,7 +1917,7 @@ eYo.Brick.Dflt.prototype.footConnect = function (brick) {
 
 /**
  * Connect the magnet of the `lastSlot`, to the given expression brick/magnet/type.
- * @param {!eYo.Brick|eYo.Magnet|String} bdct  brick, magnet or type
+ * @param {eYo.Brick|eYo.Magnet|String} bdct  brick, magnet or type
  * @return {?eYo.Brick}  The connected brick, if any.
  */
 eYo.Brick.Dflt.prototype.connectLast = function (bmt) {
@@ -1935,7 +1935,7 @@ eYo.Brick.Dflt.prototype.connectLast = function (bmt) {
  * Scrolls the receiver to the top left part of the board.
  * Does nothing if the brick is already in the visible are,
  * and is not forced.
- * @param {!Boolean} force  flag
+ * @param {Boolean} force  flag
  */
 eYo.Brick.Dflt.prototype.scrollToVisible = function (force) {
   if (!this.inVisibleArea || force) {
@@ -2115,7 +2115,7 @@ eYo.Brick.Dflt.prototype.packedBrackets = true
  * Called when the parent will just change.
  * This code is responsible to place the various path
  * in the proper domain of the dom tree.
- * @param {!eYo.Brick.Dflt} newParent to be connected.
+ * @param {eYo.Brick.Dflt} newParent to be connected.
  */
 eYo.Brick.Dflt.prototype.parentWillChange = function (newParent) {
   this.ui.parentWillChange(newParent)
@@ -2125,7 +2125,7 @@ eYo.Brick.Dflt.prototype.parentWillChange = function (newParent) {
  * Called when the parent will just change.
  * This code is responsible to place the various path
  * in the proper domain of the dom tree.
- * @param {!eYo.Brick.Dflt} oldParent that was disConnected.
+ * @param {eYo.Brick.Dflt} oldParent that was disConnected.
  */
 eYo.Brick.Dflt.prototype.parentDidChange = function (oldParent) {
   this.ui.parentDidChange(newParent)
@@ -2173,7 +2173,7 @@ eYo.Brick.debugCount = {}
 
 /**
  * Fetches the named slot object.
- * @param {!String} name The name of the input.
+ * @param {String} name The name of the input.
  * @return {eYo.Slot} The slot object, or null if input does not exist. Input that are disabled are skipped.
  */
 eYo.Brick.Dflt.prototype.getSlot = function (name) {
@@ -2238,7 +2238,7 @@ eYo.Brick.Dflt.prototype.statementEnumerator = function () {
 /**
  * Execute the helper until one answer is a truthy value.
  * Deep first traversal.
- * @param {!Function} helper  helper has signature `(block, depth) -> truthy`
+ * @param {Function} helper  helper has signature `(block, depth) -> truthy`
  * @return the truthy value from the helper if it is not `true`, the brick chosen otherwise.
  */
 eYo.Brick.Dflt.prototype.someStatement = function (helper) {
@@ -2260,10 +2260,10 @@ eYo.Brick.Dflt.prototype.someStatement = function (helper) {
  * If the model fits a string literal, then create a string literal...
  * If the board is headless,
  * this is headless and should not render until a initUI message is sent.
- * @param {!*} owner  board or brick
- * @param {!String|Object} model
- * @param {?String|Object} id
- * @param {?eYo.Brick.Dflt} id
+ * @param {*} owner  board or brick
+ * @param {String|Object} model
+ * @param {!String|Object} id
+ * @param {!eYo.Brick.Dflt} id
  */
 eYo.Brick.newReady = (() => {
   var processModel = (board, model, id, brick) => {
@@ -2737,7 +2737,7 @@ eYo.Brick.Dflt.prototype.lock = function () {
 /**
  * Unlock the given brick.
  * For edython.
- * @param {!eYo.Brick.Dflt} brick The owner of the receiver.
+ * @param {eYo.Brick.Dflt} brick The owner of the receiver.
  * @param {boolean} deep Whether to unlock statements too.
  * @return {number} the number of bricks unlocked
  */
@@ -2765,7 +2765,7 @@ eYo.Brick.Dflt.prototype.unlock = function (shallow) {
 /**
  * Whether the brick of the receiver is in the visible area.
  * For edython.
- * @param {!eYo.Brick.Dflt} brick The owner of the receiver.
+ * @param {eYo.Brick.Dflt} brick The owner of the receiver.
  * @return {boolean}
  */
 eYo.Brick.Dflt.prototype.inVisibleArea = function () {
@@ -2781,7 +2781,7 @@ Object.defineProperties(eYo.Brick, {
     /**
      * Set parent of this brick to be a new brick or null.
      * Beware, we cannot replace an already existing parent!
-     * @param {?eYo.Brick.Dflt} newParent New parent brick.
+     * @param {!eYo.Brick.Dflt} newParent New parent brick.
      */
     set (newParent) {
       var oldParent = this.parent__
@@ -2809,7 +2809,7 @@ Object.defineProperties(eYo.Brick, {
      * are parent and child from each other.
      * The converse is not true.
      * 
-     * @param {?eYo.Brick.Dflt} newParent New parent_ brick.
+     * @param {!eYo.Brick.Dflt} newParent New parent_ brick.
      */
     set (newParent) {
       if (newParent === this.parent__) {
@@ -2845,7 +2845,7 @@ eYo.Brick.Dflt.prototype.connectionUiEffect = function() {
 
 /**
  * Brick manager.
- * @param {?string} prototypeName Name of the language object containing
+ * @param {!string} prototypeName Name of the language object containing
  */
 eYo.Brick.Mngr = (() => {
   var me = {}
@@ -2854,83 +2854,72 @@ eYo.Brick.Mngr = (() => {
    * Helper to initialize a brick's model.
    * to and from are trees.
    * Add to destination all the leafs from source.
-   * @param {!Object} to  destination.
-   * @param {!Object} from  source.
+   * @param {Object} model  an object for model.
+   * @param {Function} ignore  Function with signature `(k): Boolean`.
    */
-  var merger = (to, from, ignore) => {
-    var from_d
-    if ((from.check)) {
-      from.check = eYo.Decorate.arrayFunction(from.check)
-    } else if ((from_d = from.wrap)) {
-      from.check = eYo.Decorate.arrayFunction(from_d)
+  var prepare = (model, ignore) => {
+    if (!eYo.isO(model) || model.prepared__) {
+      return
     }
-    for (var k in from) {
-      if (ignore && ignore(k)) {
-        continue
-      }
-      from_d = from[k]
-      // next contains my test for a dictionary, hence my meaning of dictionary
-      // in that context
-      if (goog.isNull(from_d) || goog.isBoolean(from_d) || goog.isNumber(from_d) || eYo.isStr(from_d) || goog.isFunction(from_d) || goog.isArray(from_d)) {
-        to[k] = from_d
-      } else if (from_d && Object.keys(from_d).length === Object.getOwnPropertyNames(from_d).length) {
-        // we have a dictionary, do a mixin
-        var to_d = to[k]
-        if (to_d) {
-          if (Object.keys(to_d).length !== Object.getOwnPropertyNames(to_d).length) {
-            to_d = to[k] = Object.create(null)
-          }
-        } else {
-          to_d = to[k] = Object.create(null)
-        }
-        merger(to_d, from_d)
-      } else {
-        // it is not a dictionary, do a simple copy/override
-        to[k] = from_d
-      }
+    model.prepared__ = true
+    if (model.check) {
+      model.check = eYo.Decorate.arrayFunction(model.check)
+    } else if (model.wrap) {
+      model.check = eYo.Decorate.arrayFunction(model.wrap)
     }
-    if ((to.check)) {
-      to.check = eYo.Decorate.arrayFunction(to.check)
-    } else if ((to_d = to.wrap)) {
-      to.check = eYo.Decorate.arrayFunction(to_d)
+    for (var k in model) {
+      ignore && ignore(k) || prepare(model[k], ignore)
     }
   }
   /**
+   * Helper to initialize a brick's model.
+   * to and from are trees.
+   * Add to destination all the leafs from source.
+   * @param {Object} model  destination.
+   * @param {Object} base  source.
+   */
+  var extender = (model, base, ignore) => {
+    prepare(model)
+    prepare(base)
+    eYo.extends(model, base, ignore)
+  }
+  /**
    * Private modeller to provide the constructor with a complete `model` property.
-   * @param {!Object} Dlgt the constructor of a delegate. Must have an `eyo` namespace.
-   * @param {?Object} insertModel  data and inputs entries are merged into the model.
+   * @param {Object} Dlgt the constructor of a delegate.
+   * @param {Object} Dlgt.eyo  the delegate of the constructor.
+   * @param {!Object} insertModel  data and inputs entries are merged into the model.
    */
   var modeller = (Dlgt, insertModel) => {
     var eyo = Dlgt.eyo
-    eYo.assert(eyo, 'Forbidden constructor, `eyo` is missing')
+    eYo.ParameterAssert(eyo, `Forbidden constructor, 'eyo' is missing in ${Dlgt}`)
     if (eyo.model_) {
       return eyo.model_
     }
-    var model = Object.create(null)
+    var model = {}
     var c = Dlgt.superClass_
     if (c && (c = c.constructor) && c.eyo) {
-      merger(model, modeller(c))
+      extender(model, modeller(c))
     }
     if (Dlgt.model__) {
       if (goog.isFunction(Dlgt.model__)) {
         model = Dlgt.model__(model)
       } else if (Object.keys(Dlgt.model__).length) {
-        merger(model, Dlgt.model__)
+        extender(model, Dlgt.model__)
       }
       delete Dlgt.model__
     }
     if (insertModel) {
-      insertModel.data && (merger(model.data, insertModel.data))
-      insertModel.heads && (merger(model.heads, insertModel.heads))
-      insertModel.slots && (merger(model.slots, insertModel.slots))
-      insertModel.tails && (merger(model.tails, insertModel.tails))
-      insertModel.statement && (merger(model.statement, insertModel.statement))
+      insertModel.data && (extender(model.data, insertModel.data))
+      insertModel.heads && (extender(model.heads, insertModel.heads))
+      insertModel.slots && (extender(model.slots, insertModel.slots))
+      insertModel.tails && (extender(model.tails, insertModel.tails))
+      insertModel.statement && (extender(model.statement, insertModel.statement))
     }
     // store that object permanently
-    Dlgt.eyo.model_ = model
+    eyo.model_ = model
     // now change the getModel to return this stored value
-    Dlgt.eyo.getModel = function () {
-      return Dlgt.eyo.model_
+    eyo.getModel = function () {
+      return eyo.model_
     }
     return model
   }
@@ -2946,100 +2935,77 @@ eYo.Brick.Mngr = (() => {
    * In particular, some bricks share a basic do nothing delegate
    * because they are not meant to really exist yet.
    * , , ,  = eYo.NA,  = eYo.Brick.Dlgt,  = false
-   * @param {?Object} ns, namespace, `eYo.Brick` when omitted
-   * @param {!String} key,  capitalized string, `owner[key]` will be created.
-   * @param {!Function} Super
-   * @param {?Function} Dlgt, The constructor of `Super` when omitted.
-   * @param {?Boolean} register, falsy or truthy values are not supported!, false when omitted.
-   * @param {?Object} model
+   * @param {!Object} ns, namespace, `eYo.Brick` when omitted
+   * @param {String} key,  capitalized string, `owner[key]` will be created.
+   * @param {Function} Super
+   * @param {!Function} Dlgt, The constructor of `Super` when omitted.
+   * @param {!Boolean} register, falsy or truthy values are not supported!, false when omitted.
+   * @param {!Object} model
    * @return the constructor created
    */
   me.makeSubclass = (() => {
     var defineDataProperty = function (k) {
-      var key = k + '_p'
-      // make a closure to catch the value of k
-      return function () {
-        if (!(key in this)) {
-          // print("Data property", key, 'for', this.constructor.eyo.key)
-          Object.defineProperty(
-            this,
-            key,
-            {
-              get () {
-                return this.data[k].get()
-              },
-              set (newValue) {
-                this.data[k].doChange(newValue)
-              }
-            }
-          )
-        }
+      var k_p = k + '_p'
+      if (!(k_p in this)) {
+        // print("Data property", k_p, 'for', this.constructor.eyo.key)
+        Object.defineProperty(this, k_p, {
+          get () {
+            return this.data[k].get()
+          },
+          set (after) {
+            this.data[k].doChange(after)
+          }
+        })
       }
     }
     var defineSlotProperty = k => {
-      var key_s = k + '_s'
-      var key_b = k + '_b'
-      // make a closure to catch the value of k
-      return function () {
-        if (!(key_s in this)) {
-          // print("Slot property", key, 'for', this.constructor.eyo.key)
-          Object.defineProperty(
-            this,
-            key_s,
-            {
-              get () {
-                return this.slots[k]
-              }
-            }
-          )
-        }
-        if (!(key_b in this)) {
-          // print("Slot property", key, 'for', this.constructor.eyo.key)
-          Object.defineProperty(
-            this,
-            key_b,
-            {
-              get () {
-                var s = this.slots[k] // early call
-                if (s) {
-                  var m4t = s.magnet
-                  if (m4t) {
-                    if (m4t.promised_) {
-                      m4t.completePromise()
-                    }
-                    return s.targetBrick
-                  }
+      var k_s = k + '_s'
+      var k_b = k + '_b'
+      if (!(k_s in this)) {
+        // print("Slot property", key, 'for', this.constructor.eyo.key)
+        Object.defineProperty(this, k_s, {
+          get () {
+            return this.slots[k]
+          }
+        })
+      }
+      if (!(k_b in this)) {
+        // print("Brick property", key, 'for', this.constructor.eyo.key)
+        Object.defineProperty(this, k_b, {
+          get () {
+            var s = this.slots[k] // early call
+            if (s) {
+              var m4t = s.magnet
+              if (m4t) {
+                if (m4t.promised_) {
+                  m4t.completePromise()
                 }
+                return s.targetBrick
               }
             }
-          )
-        }
-        if (!(key_b in this)) {
-          // print("Slot property", key, 'for', this.constructor.eyo.key)
-          Object.defineProperty(
-            this,
-            key_b,
-            {
-              get () {
-                throw "NO SUCH KEY, BREAK HERE"
-              }
-            }
-          )
-        }
+          }
+        })
+      }
+      if (!(k_b in this)) {
+        // print("Slot property", key, 'for', this.constructor.eyo.key)
+        Object.defineProperty( this, k_b, {
+          get () {
+            throw "NO SUCH KEY, BREAK HERE"
+          }
+        })
       }
     }
     return function (ns, key, Super, Dlgt, register = false, model) {
-      eYo.assert(Super.eyo, 'Only subclass constructors with an `eyo` property.')
+      eYo.ParameterAssert(Super.eyo, 'Only subclass constructors with an `eyo` property.')
       if (eYo.isStr(ns)) {
-        // shif arguments
+        // shift arguments
         model = register
         register = Dlgt
         Dlgt = Super
-        Super = model
-        model = key
+        Super = key
         key = ns
-        ns = (eYo.T3.Expr[key] && eYo.Brick && eYo.Expr) ||
-        (eYo.T3.Stmt[key] && eYo.Brick && eYo.Stmt) ||
+        ns = (eYo.T3.Expr[key] && eYo.Expr) ||
+        (eYo.T3.Stmt[key] && eYo.Stmt) ||
         eYo.Brick
       }
       if (!eYo.isF(Dlgt)) {
@@ -3053,12 +3019,12 @@ eYo.Brick.Mngr = (() => {
       }
       model || (model = {})
 /*
-   * @param {?Object} owner
-   * @param {!String} key
-   * @param {!Function} Super
-   * @param {?Function} Dlgt
-   * @param {?Boolean} register
-   * @param {?Object} model
+   * @param {!Object} owner
+   * @param {String} key
+   * @param {Function} Super
+   * @param {!Function} Dlgt
+   * @param {!Boolean} register
+   * @param {!Object} model
 */
       if (key.indexOf('eyo:') >= 0) {
         key = key.substring(4)
@@ -3067,14 +3033,14 @@ eYo.Brick.Mngr = (() => {
       (eYo.T3.Expr[key] && eYo.Brick && eYo.Expr) ||
       (eYo.T3.Stmt[key] && eYo.Brick && eYo.Stmt) ||
       Super
-      var c9r = ns[key] = function (board, type, opt_id) {
-        c9r.superClass_.constructor.call(this, board, type, opt_id)
+      var C9r = ns[key] = function (board, type, opt_id) {
+        C9r.superClass_.constructor.call(this, board, type, opt_id)
       }
-      eYo.inherits(c9r, Super)
-      var dlgt = new Dlgt(c9r, key, model)
+      eYo.inherits(C9r, Super)
+      var dlgt = new Dlgt(C9r, key, model)
       if (!dlgt.getModel) {
         dlgt.getModel = function () {
-          return modeller(c9r)
+          return modeller(C9r)
         }
         Object.defineProperty(dlgt, 'model', {
           get () {
@@ -3083,10 +3049,10 @@ eYo.Brick.Mngr = (() => {
           set: eYo.Do.noSetter,
         })
       }
-      if (!c9r.eyo) {
+      if (!C9r.eyo) {
         console.error('WHERE IS EYO???')
       }
-      eYo.Brick.Mngr.register_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, c9r)
+      eYo.Brick.Mngr.register_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, C9r)
       if (goog.isFunction(model)) {
         model = model()
       }
@@ -3106,7 +3072,7 @@ eYo.Brick.Mngr = (() => {
             }
           } while ((link = model.link))
           model = {}
-          linkModel && (merger(model, linkModel))
+          linkModel && (extender(model, linkModel))
         }
         // manage the inherits key, uncomplete management,
         var inherits = model.inherits
@@ -3115,8 +3081,8 @@ eYo.Brick.Mngr = (() => {
           var inheritsModel = inheritsC9r.eyo.model
           if (inheritsModel) {
             var m = {}
-            merger(m, inheritsModel)
-            merger(m, model)
+            extender(m, inheritsModel)
+            extender(m, model)
             model = m
           }
         }
@@ -3151,7 +3117,7 @@ eYo.Brick.Mngr = (() => {
           // this is a statement, remove the irrelevant output info
           model.out && (model.out = eYo.NA)
         }
-        c9r.model__ = model // intermediate storage used by `modeller` in due time
+        C9r.model__ = model // intermediate storage used by `modeller` in due time
         // Create properties to access data
         if (model.data) {
           for (var k in model.data) {
@@ -3174,7 +3140,7 @@ eYo.Brick.Mngr = (() => {
                       MD.isUnchanging = MD.isChanging
                   }
                 }
-                defineDataProperty(k).call(c9r.prototype)
+                defineDataProperty(k).call(C9r.prototype)
               }
             }
           }
@@ -3185,25 +3151,25 @@ eYo.Brick.Mngr = (() => {
             if (eYo.Do.hasOwnProperty(model.slots, k)) {
               var MS = model.slots[k]
               if (MS) {
-                defineSlotProperty(k).call(c9r.prototype)
+                defineSlotProperty(k).call(C9r.prototype)
               }
             }
           }
         }
       }
-      c9r.makeSubclass = function (ns_, key_, ...args) {
+      C9r.makeSubclass = function (ns_, key_, ...args) {
         return me.makeSubclass(ns_, key_, C9r_, ...args)
       }
       if (register) {
         me.register(key)
       }
-      return c9r
+      return C9r
     }
 }) ()
   /**
    * Delegate instance creator.
-   * @param {!eYo.Brick.Dflt} brick
-   * @param {?string} prototypeName Name of the language object containing
+   * @param {eYo.Brick.Dflt} brick
+   * @param {!string} prototypeName Name of the language object containing
    */
   me.create = function (board, prototypeName, opt_id) {
     eYo.assert(!eYo.isStr(brick), 'API DID CHANGE, update!')
@@ -3214,7 +3180,7 @@ eYo.Brick.Mngr = (() => {
   }
   /**
    * Get the constructor for the given prototype name.
-   * @param {?string} prototypeName Name of the language object containing
+   * @param {!string} prototypeName Name of the language object containing
    */
   me.get = function (prototypeName) {
     eYo.assert(!prototypeName || !C9rs[prototypeName] || C9rs[prototypeName].eyo, 'FAILURE' + prototypeName)
@@ -3222,14 +3188,14 @@ eYo.Brick.Mngr = (() => {
   }
   /**
    * Get the Delegate constructor for the given prototype name.
-   * @param {?string} prototypeName Name of the language object containing
+   * @param {!string} prototypeName Name of the language object containing
    */
   me.getTypes = function () {
     return Object.keys(C9rs)
   }
   /**
    * Get the input model for that prototypeName.
-   * @param {?string} prototypeName Name of the language object containing
+   * @param {!string} prototypeName Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
   me.getModel = function (prototypeName) {
@@ -3244,16 +3210,16 @@ eYo.Brick.Mngr = (() => {
    * only once from the creation of the delegate.
    *
    * The last delegate registered for a given prototype name wins.
-   * @param {?string} prototypeName Name of the language object containing
+   * @param {!string} prototypeName Name of the language object containing
    * @param {Object} constructor
    * @private
    */
-  me.register_ = function (prototypeName, c9r, key) {
+  me.register_ = function (prototypeName, C9r) {
     // console.log(prototypeName+' -> '+c9r)
     eYo.assert(prototypeName, 'Missing prototypeName')
-    C9rs[prototypeName] = c9r
+    C9rs[prototypeName] = C9r
     // cache all the input, output and statement data at the prototype level
-    c9r.eyo.types.push(prototypeName)
+    C9r.eyo.types.push(prototypeName)
   }
   /**
    * Handy method to register an expression or statement brick.
@@ -3270,7 +3236,7 @@ eYo.Brick.Mngr = (() => {
     } else {
       throw new Error('Unknown brick eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
     }
-    me.register_(prototypeName, c9r, key)
+    me.register_(prototypeName, c9r)
     available.push(prototypeName)
   }
   me.registerAll = function (keyedPrototypeNames, c9r, fake) {
@@ -3278,11 +3244,11 @@ eYo.Brick.Mngr = (() => {
       var name = keyedPrototypeNames[k]
       if (eYo.isStr(name)) {
         //        console.log('Registering', k)
-        me.register_(name, c9r, k)
+        me.register_(name, c9r)
         if (fake) {
           name = name.replace('eyo:', 'eyo:fake_')
           //          console.log('Registering', k)
-          me.register_(name, c9r, k)
+          me.register_(name, c9r)
         }
       }
     }

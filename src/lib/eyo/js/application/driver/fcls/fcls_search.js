@@ -24,24 +24,24 @@ eYo.Fcls.makeDriverClass('Search')
 
 /**
  * Initiate the search UI.
- * @param {!eYo.Search} search  The search controller we must init the UI of.
+ * @param {eYo.Search} search  The search controller we must init the UI of.
  */
 eYo.Fcls.Search.prototype.initUI = eYo.Do.nothing
 
 /**
  * Dispose of the search UI.
- * @param {!eYo.Search} search  The search controller we must dispose of the UI of.
+ * @param {eYo.Search} search  The search controller we must dispose of the UI of.
  */
 eYo.Fcls.Search.prototype.disposeUI = eYo.Do.nothing
 
 /**
  * Initiate the search UI.
- * @param {!eYo.Search} search  The search controller we must init the toolbar of.
+ * @param {eYo.Search} search  The search controller we must init the toolbar of.
  */
 eYo.Fcls.Search.prototype.toolbarInitUI = eYo.Do.nothing
 
 /**
  * Dispose of the search UI.
- * @param {!eYo.Search} search  The search controller we must dispose of the toolbar of.
+ * @param {eYo.Search} search  The search controller we must dispose of the toolbar of.
  */
 eYo.Fcls.Search.prototype.toolbarDisposeUI = eYo.Do.nothing

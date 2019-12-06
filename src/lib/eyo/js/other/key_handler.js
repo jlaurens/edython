@@ -49,7 +49,7 @@ eYo.KeyHandlerMenu.prototype.handleKeyEventInternal = function (e) {
 /**
  * Key handler class.
  * For edython.
- * @param {!constructor} constructor is either a constructor or the name of a constructor.
+ * @param {constructor} constructor is either a constructor or the name of a constructor.
  */
 eYo.KeyHandler = (() => {
   var me = {
@@ -64,7 +64,7 @@ eYo.KeyHandler = (() => {
   /**
  * Setup the shared key handler.
  * For edython.
- * @param {!constructor} constructor is either a constructor or the name of a constructor.
+ * @param {constructor} constructor is either a constructor or the name of a constructor.
  */
   me.setup = function (document) {
     target_ = document

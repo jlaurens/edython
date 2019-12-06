@@ -15,7 +15,7 @@ class Foo:
   #re_provide = re.compile(r"^\s*eYo.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
   #eYo.Consolidator.makeClass('Dlgt')
-  re_make = re.compile(r"""^\s*(?:(?P<makeClass>[\w.]+)\.makeClass|(?P<makeSubclass>[\w.]+)\.makeSubclass|(?P<makeNS>[\w.]+)\.makeNS)\s*\(\s*(?P<ns>[\w.]+)?(?:\s*,\s*)?(?:(?:'|")(?P<what>[\w.]+)(?:'|"))?.*""")
+  re_make = re.compile(r"""^\s*(?:(?P<makeClass>[\w.]+)\.make(?:Driver)?Class|(?P<makeSubclass>[\w.]+)\.makeSubclass|(?P<makeNS>[\w.]+)\.makeNS)\s*\(\s*(?P<ns>[\w.]+)?(?:\s*,\s*)?(?:(?:'|")(?P<what>[\w.]+)(?:'|"))?.*""")
 
   assert re.match(re_make, "eYo.makeNS('Brick')"), 'BAD re_make 2'
 

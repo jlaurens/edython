@@ -18,8 +18,8 @@ eYo.provide('eYo.Navigate')
 
 /**
  * Tab navigation.
- * @param {?eYo.Brick.Dflt} brick  Brick.
- * @param {?Object} opt Optional key value arguments.
+ * @param {!eYo.Brick.Dflt} brick  Brick.
+ * @param {!Object} opt Optional key value arguments.
  */
 eYo.Navigate.doTab = (() => {
   var magnet
@@ -81,7 +81,7 @@ eYo.Navigate.doTab = (() => {
 /**
  * Get the closest box, according to the filter.
  * For edython.
- * @param {!eYo.Board} board .
+ * @param {eYo.Board} board .
  * @param {function(point): number} weight is a function.
  * @return {?eYo.Brick}
  */

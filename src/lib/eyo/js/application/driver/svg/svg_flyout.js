@@ -13,9 +13,6 @@
 
 eYo.require('eYo.Svg')
 
-eYo.provide('eYo.Svg.Flyout')
-eYo.provide('eYo.Svg.FlyoutToolbar')
-
 eYo.forwardDeclare('eYo.Flyout')
 eYo.forwardDeclare('eYo.FlyoutToolbar')
 
@@ -25,7 +22,7 @@ eYo.forwardDeclare('eYo.FlyoutToolbar')
 eYo.Svg.makeDriverClass('Flyout', {
   /**
    * Initializes the flyout SVG ressources.
-   * @param {!eYo.Flyout} flyout
+   * @param {eYo.Flyout} flyout
    */
   initUI (flyout) {
     var dom = flyout.dom
@@ -68,7 +65,7 @@ eYo.Svg.makeDriverClass('Flyout', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {!eYo.Flyout} flyout
+   * @param {eYo.Flyout} flyout
    */
   disposeUI (flyout) {
     var dom = flyout.dom
@@ -80,7 +77,7 @@ eYo.Svg.makeDriverClass('Flyout', {
 
 /**
  * Set the display attribute.
- * @param {!eYo.Flyout} flyout
+ * @param {eYo.Flyout} flyout
  * @param {Boolean} show
  */
 eYo.Svg.Flyout.prototype.displaySet = function (flyout, show) {
@@ -90,7 +87,7 @@ eYo.Svg.Flyout.prototype.displaySet = function (flyout, show) {
 
 /**
  * Get the display attribute.
- * @param {!eYo.Flyout} flyout
+ * @param {eYo.Flyout} flyout
  */
 eYo.Svg.Flyout.prototype.displayGet = function (flyout) {
   return flyout.dom.svg.root_.style.display !== 'none'
@@ -102,7 +99,7 @@ eYo.Svg.Flyout.prototype.displayGet = function (flyout) {
 eYo.Svg.makeDriverClass('FlyoutToolbar', {
   /**
    * Initializes the flyout toolbar SVG ressources.
-   * @param {!eYo.FlyoutToolbar} flyoutToolbar
+   * @param {eYo.FlyoutToolbar} flyoutToolbar
    */
   initUI (ftb) {
     if (ftb.dom) {
@@ -253,7 +250,7 @@ eYo.Svg.makeDriverClass('FlyoutToolbar', {
   },
   /**
    * Initializes the flyout toolbar SVG ressources.
-   * @param {!eYo.FlyoutToolbar} flyoutToolbar
+   * @param {eYo.FlyoutToolbar} flyoutToolbar
    */
   disposeUI (ftb) {
     var dom = ftb.dom
@@ -268,11 +265,9 @@ eYo.Svg.makeDriverClass('FlyoutToolbar', {
   },
 })
 
-
-
 /**
  * Update the view based on coordinates calculated in position().
- * @param {!eYo.Flyout} flyout
+ * @param {eYo.Flyout} flyout
  */
 eYo.Svg.Flyout.prototype.place = function (flyout) {
   var rect = flyout.viewRect
@@ -303,7 +298,7 @@ eYo.Svg.Flyout.prototype.place = function (flyout) {
 
 /**
  * Update the visible boundaries of the flyout.
- * @param {!eYo.Flyout} flyout
+ * @param {eYo.Flyout} flyout
  * @private
  */
 eYo.Svg.Flyout.prototype.update = function(flyout) {
@@ -327,7 +322,7 @@ eYo.Svg.Flyout.prototype.update = function(flyout) {
  * Add listeners to a block that has been added to the flyout.
  * Listeners work only when the flyout authorizes it.
  * The 'rect' listeners have been removed.
- * @param {!eYo.Flyout} flyout
+ * @param {eYo.Flyout} flyout
  */
 eYo.Svg.Flyout.prototype.removeAllBrickListeners = function(flyout) {
   // Delete all the event listeners.
@@ -339,8 +334,8 @@ eYo.Svg.Flyout.prototype.removeAllBrickListeners = function(flyout) {
  * Add listeners to a block that has been added to the flyout.
  * Listeners work only when the flyout authorizes it.
  * The 'rect' listeners have been removed.
- * @param {!eYo.Flyout} flyout
- * @param {!eYo.Brick.Dflt} brick The block to add listeners for.
+ * @param {eYo.Flyout} flyout
+ * @param {eYo.Brick.Dflt} brick The block to add listeners for.
  */
 eYo.Svg.Flyout.prototype.addListeners = function(flyout, brick) {
   var g = brick.dom.svg.group_
@@ -372,7 +367,7 @@ eYo.Svg.Flyout.prototype.addListeners = function(flyout, brick) {
 
 /**
  * Add a `mouseover` listener to deselect all bricks.
- * @param {!eYo.Flyout} flyout
+ * @param {eYo.Flyout} flyout
  */
 eYo.Svg.Flyout.prototype.listen_mouseover = function(flyout) {
   flyout.listeners_.push(
@@ -388,7 +383,7 @@ eYo.Svg.Flyout.prototype.listen_mouseover = function(flyout) {
 
 /**
  * Add a `wheel` and `mousdown` listener to scroll.
- * @param {!eYo.Flyout} flyout
+ * @param {eYo.Flyout} flyout
  */
 eYo.Svg.Flyout.prototype.bindScrollEvents = function(flyout) {
   var bound = flyout.dom.bound
@@ -413,7 +408,7 @@ eYo.Svg.Flyout.prototype.bindScrollEvents = function(flyout) {
 
 /**
  * Mouse down on the flyout background.  Start a vertical scroll drag.
- * @param {!Event} e Mouse down event.
+ * @param {Event} e Mouse down event.
  * @private
  */
 eYo.Svg.Flyout.prototype.on_mousedown = function(e) {

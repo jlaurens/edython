@@ -15,8 +15,6 @@ eYo.require('eYo.Do')
 eYo.require('eYo.UI.Owned2')
 eYo.require('eYo.Decorate')
 
-eYo.provide('eYo.Slot')
-
 eYo.forwardDeclare('eYo.Where')
 eYo.forwardDeclare('eYo.Field')
 eYo.forwardDeclare('eYo.Magnet')
@@ -48,12 +46,12 @@ goog.forwardDeclare('goog.dom');
   // - wrap input
   // - insert input
   // It may contain label fields
- * @param {!eYo.Brick.Dflt} brick  The owner is a brick.
- * @param {!string} key  One of the keys in `slots` section of the brick model.
- * @param {!Object} model  the model for the given key in the above mention section.
+ * @param {eYo.Brick.Dflt} brick  The owner is a brick.
+ * @param {string} key  One of the keys in `slots` section of the brick model.
+ * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.UI.makeClass('Slot', eYo.UI.Owned2, {
+eYo.UI.makeClass(eYo, 'Slot', eYo.UI.Owned2, {
   init (brick, key, model) {
     eYo.assert(brick, 'Missing slot owner brick')
     eYo.assert(key, 'Missing slot key')
@@ -243,7 +241,7 @@ eYo.UI.makeClass('Slot', eYo.UI.Owned2, {
   /**
    * Dispose of all attributes.
    * Asks the owner's renderer to do the same.
-   * @param {?Boolean} onlyThis  Dispose of the inferior target iff healStack is a falsy value
+   * @param {!Boolean} onlyThis  Dispose of the inferior target iff healStack is a falsy value
    */
   dispose (onlyThis) {
     eYo.Field.disposeFields(this)
@@ -334,7 +332,7 @@ eYo.Slot.prototype.synchronize = function () {
  * List all the available data and converts them to xml.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {?Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
+ * @param {!Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
  * @return a dom element, void lists may return nothing
  * @this a brick
  */
@@ -390,7 +388,7 @@ eYo.Slot.prototype.save = function (element, opt) {
  * Save a placeholder.
  * For edython.
  * @param {Element} element a dom element in which to save the receiver
- * @param {!Object} opt
+ * @param {Object} opt
  */
 eYo.Slot.prototype.saveRequired = function (element) {
   var child = goog.dom.createDom(eYo.Xml.EXPR)
@@ -524,7 +522,7 @@ eYo.Slot.prototype.didLoad = eYo.Decorate.reentrant_method('didLoad', function (
 /**
  * execute the given function for the receiver and its next siblings.
  * For edython.
- * @param {!function} helper
+ * @param {function} helper
  * @return {boolean} whether there was an slot to act upon or no helper given
  */
 eYo.Slot.prototype.forEach = function (helper) {
@@ -539,7 +537,7 @@ eYo.Slot.prototype.forEach = function (helper) {
 /**
  * execute the given function for the receiver and its previous siblings.
  * For edython.
- * @param {!function} helper
+ * @param {function} helper
  * @return {boolean} whether there was an slot to act upon or no helper given
  */
 eYo.Slot.prototype.forEachPrevious = function (helper) {
@@ -556,7 +554,7 @@ eYo.Slot.prototype.forEachPrevious = function (helper) {
  * If the return value of the given function is true,
  * then it was the last iteration and the loop breaks.
  * For edython.
- * @param {!function} helper
+ * @param {function} helper
  * @return {?Object} The slot that returned true, eventually.
  */
 eYo.Slot.prototype.some = function (helper) {
@@ -573,7 +571,7 @@ eYo.Slot.prototype.some = function (helper) {
 /**
  * execute the given function for the fields.
  * For edython.
- * @param {!function} helper
+ * @param {function} helper
  */
 eYo.Slot.prototype.forEachField = function (helper) {
   this.fields && (Object.values(this.fields).forEach(f => helper(f)))
@@ -582,8 +580,8 @@ eYo.Slot.prototype.forEachField = function (helper) {
 /**
  * Connect the brick or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
  * The slot corresponds to a wrapped list block.
- * @param {!eYo.Brick | eYo.Magnet} bm  either a brick or a magnet.
- * @param {?String} key an input key. When not given the last free input is used.
+ * @param {eYo.Brick | eYo.Magnet} bm  either a brick or a magnet.
+ * @param {!String} key an input key. When not given the last free input is used.
  * @return {?eYo.Magnet} the eventual magnet target that was connected.
  */
 eYo.Slot.prototype.listConnect = function (bm, key) {
@@ -610,7 +608,7 @@ eYo.Slot.prototype.listConnect = function (bm, key) {
 /**
  * Connect to the target.
  * For edython.
- * @param {!eYo.Brick | eYo.Magnet} bm  The target is either a brick or another magnet.
+ * @param {eYo.Brick | eYo.Magnet} bm  The target is either a brick or another magnet.
  * @return {?eYo.Magnet} the eventual target magnet
  */
 eYo.Slot.prototype.connect = function (bm) {

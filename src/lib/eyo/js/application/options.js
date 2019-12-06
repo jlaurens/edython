@@ -21,7 +21,7 @@ eYo.forwardDeclare('eYo.Flyout')
 /**
  * Parse the user-specified options, using reasonable defaults where behaviour
  * is unspecified.
- * @param {!Object} options Dictionary of options.  Specification:
+ * @param {Object} options Dictionary of options.  Specification:
  * collapse: boolean
  *  Allows blocks to be collapsed or expanded. Defaults to false.
  * css: boolean
@@ -101,7 +101,7 @@ eYo.Options = function(options) {
 /**
  * Parse the user-specified zoom options, using reasonable defaults where
  * behaviour is unspecified.
- * @param {!Object} options Dictionary of options.
+ * @param {Object} options Dictionary of options.
  * @return {!Object} A dictionary of normalized options.
  * @private
  */

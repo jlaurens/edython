@@ -14,8 +14,6 @@
 eYo.require('eYo.Svg')
 eYo.require('eYo.Brick')
 
-eYo.provide('eYo.Svg.Effect')
-
 // eYo.forwardDeclare('eYo.Effect')
 
 /**
@@ -29,9 +27,9 @@ eYo.Svg.makeDriverClass('Effect')
 eYo.Svg.Effect.prototype.brickDispose = (() => {
   /*
   * Animate a cloned brick and eventually dispose of it.
-  * @param {!Element} clone SVG element to animate and dispose of.
+  * @param {Element} clone SVG element to animate and dispose of.
   * @param {boolean} rtl True if RTL, false if LTR.
-  * @param {!Date} start Date of animation's start.
+  * @param {Date} start Date of animation's start.
   * @param {number} boardScale Scale of board.
   * @private
   */
@@ -70,13 +68,13 @@ eYo.Svg.Effect.prototype.brickDispose = (() => {
 
 /**
  * Make the given field reserved or not, to emphasize reserved keywords.
- * @param {!eYo.Brick.Dflt} brick  the brick the driver acts on
+ * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
 eYo.Svg.Effect.prototype.brickConnect = (() => {
   /*
    * Expand a ripple around a connection.
-   * @param {!Element} ripple Element to animate.
-   * @param {!Date} start Date of animation's start.
+   * @param {Element} ripple Element to animate.
+   * @param {Date} start Date of animation's start.
    * @param {number} scale Scale of board.
    * @private
    */
@@ -130,9 +128,9 @@ eYo.Svg.Effect.prototype.brickConnect = (() => {
 eYo.Svg.Effect.prototype.brickDisconnect = (() => {
   /*
    * Animate a brief wiggle of a disconnected brick.
-   * @param {!Element} group SVG element to animate.
+   * @param {Element} group SVG element to animate.
    * @param {number} magnitude Maximum degrees skew (reversed for RTL).
-   * @param {!Date} start Date of animation's start.
+   * @param {Date} start Date of animation's start.
    * @private
    */
   var step = function (magnitude, start) {

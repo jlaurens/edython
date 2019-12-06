@@ -14,16 +14,14 @@
 
 eYo.require('eYo.UI')
 
-eYo.provide('eYo.Pane')
-
 eYo.forwardDeclare('eYo.Desk')
 
 /**
  * The main focus manager.
- * @param {!eYo.Desk} desk,  the owning desk.
+ * @param {eYo.Desk} desk,  the owning desk.
  * @constructor
  */
-eYo.UI.makeClass('Pane', {
+eYo.UI.makeClass(eYo, 'Pane', {
   props: {
     computed: {
       /**

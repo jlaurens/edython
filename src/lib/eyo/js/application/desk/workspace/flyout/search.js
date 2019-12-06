@@ -17,8 +17,8 @@ eYo.provide('eYo.Search')
 
 /**
  * Class for a flyout.
- * @param {!eYo.Board} owner  The owning board, which must be a main board.
- * @param {!Object} options Dictionary of options for the board.
+ * @param {eYo.Board} owner  The owning board, which must be a main board.
+ * @param {Object} options Dictionary of options for the board.
  * @constructor
  */
 eYo.Search = function(owner) {

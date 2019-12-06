@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Svg')
 
-eYo.provide('eYo.Svg.Application')
-
 eYo.forwardDeclare('eYo.Application')
 
 /**

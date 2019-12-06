@@ -210,8 +210,8 @@ eYo.Brick.Group.Branch.prototype.getBaseType = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
@@ -252,7 +252,7 @@ eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
 /**
  * Will draw the brick. Default implementation does nothing.
  * The print statement needs some preparation before drawing.
- * @param {!Brick} brick
+ * @param {Brick} brick
  * @private
  */
 eYo.Brick.Group.prototype.willRender_ = function (recorder) {
@@ -265,8 +265,8 @@ eYo.Brick.Group.prototype.willRender_ = function (recorder) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Brick.Group.prototype.populateContextMenuFirst_ = function (mngr) {

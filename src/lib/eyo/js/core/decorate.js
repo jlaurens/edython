@@ -20,9 +20,9 @@ eYo.forwardDeclare('eYo.Do')
 /**
  * Decorate the function to be reentrant.
  * The return function will test if `this.reentrant_[key]` exists.
- * @param {!string} key
- * @param {!function} f
- * @param {?Boolean} raw
+ * @param {string} key
+ * @param {function} f
+ * @param {!Boolean} raw
  * @return {Object | *} An object which `ans` property is the value returned by f when called. When `raw` is true, the value returned by f is returned.
  */
 eYo.Decorate.reentrant_method = function(key, f, raw) {
@@ -49,8 +49,8 @@ eYo.Decorate.reentrant_method = function(key, f, raw) {
 /**
  * Calls `helper` if the `call_result` has an `ans` property.
  * `call_result` is the output of a reentrant method
- * @param {!string} key
- * @param {?function} f
+ * @param {string} key
+ * @param {!function} f
  * @return The result of the call to `f`, when `f` is defined,
  * the `ans` property of `call_result` otherwise.
  */
@@ -62,8 +62,8 @@ eYo.Decorate.whenAns = function(call_result, f) {
 
 /**
  * Calls `f` and logs the time used when gerater than 50ms.
- * @param {!string} key
- * @param {!function} f
+ * @param {string} key
+ * @param {function} f
  * @return The result of the call to `f`.
  */
 eYo.Decorate.benchmark = function (key, f) {
@@ -82,7 +82,7 @@ eYo.Decorate.benchmark = function (key, f) {
 
 /**
  * Ensure an array function.
- * @param {?Object} object
+ * @param {!Object} object
  * @return object when a function else a function with signature f() -> []
  */
 eYo.Decorate.arrayFunction = object => {

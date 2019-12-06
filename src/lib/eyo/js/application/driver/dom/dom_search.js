@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Dom')
 
-eYo.provide('eYo.Dom.Search')
-
 eYo.forwardDeclare('eYo.Search')
 
 /**
@@ -23,7 +21,7 @@ eYo.forwardDeclare('eYo.Search')
 eYo.Dom.makeDriverClass('Search', {
     /**
    * Initialize the search dom ressources.
-   * @param {!eYo.Search} search
+   * @param {eYo.Search} search
    * @return {!Element} The desk's dom repository.
    */
   initUI (search) {
@@ -65,7 +63,7 @@ eYo.Dom.SEARCH_CSS_CLASS = goog.getCssName('eyo-search')
 
 /**
  * Returns the CSS class to be applied to the root element.
- * @param {!eYo.Search} search
+ * @param {eYo.Search} search
  * @return {string} Renderer-specific CSS class.
  * @override
  */

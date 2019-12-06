@@ -13,9 +13,6 @@
 
 eYo.require('eYo.Dom.Search')
 
-eYo.provide('eYo.Svg.Search')
-eYo.provide('eYo.Svg.SearchToolbar')
-
 eYo.forwardDeclare('eYo.Search')
 // eYo.forwardDeclare('eYo.SearchToolbar')
 
@@ -25,7 +22,7 @@ eYo.forwardDeclare('eYo.Search')
 eYo.Svg.makeDriverClass('Search', {
     /**
    * Initializes the search SVG ressources.
-   * @param {!eYo.Search} search
+   * @param {eYo.Search} search
    */
   initUI (search) {
     if (search.dom) {
@@ -71,7 +68,7 @@ eYo.Svg.makeDriverClass('Search', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {!eYo.Search} search
+   * @param {eYo.Search} search
    */
   disposeUI (search) {
     var dom = search.dom
@@ -84,7 +81,7 @@ eYo.Svg.makeDriverClass('Search', {
 
 /**
  * Set the display attribute.
- * @param {!eYo.Search} search
+ * @param {eYo.Search} search
  * @param {Boolean} show
  */
 eYo.Svg.Search.prototype.displaySet = function (search, show) {
@@ -94,7 +91,7 @@ eYo.Svg.Search.prototype.displaySet = function (search, show) {
 
 /**
  * Get the display attribute.
- * @param {!eYo.Search} search
+ * @param {eYo.Search} search
  */
 eYo.Svg.Search.prototype.displayGet = function (search) {
   return search.dom.svg.root_.style.display !== 'none'
@@ -102,7 +99,7 @@ eYo.Svg.Search.prototype.displayGet = function (search) {
 
 /**
  * Update the view based on coordinates calculated in position().
- * @param {!eYo.Search} search
+ * @param {eYo.Search} search
  */
 eYo.Svg.Search.prototype.place = function (search) {
   var rect = search.viewRect
@@ -133,7 +130,7 @@ eYo.Svg.Search.prototype.place = function (search) {
 
 /**
  * Update the visible boundaries of the search.
- * @param {!eYo.Search} search
+ * @param {eYo.Search} search
  * @private
  */
 eYo.Svg.Search.prototype.update = function(search) {
@@ -157,7 +154,7 @@ eYo.Svg.Search.prototype.update = function(search) {
  * Add listeners to a block that has been added to the search.
  * Listeners work only when the search authorizes it.
  * The 'rect' listeners have been removed.
- * @param {!eYo.Search} search
+ * @param {eYo.Search} search
  */
 eYo.Svg.Search.prototype.removeAllBrickListeners = function(search) {
   // Delete all the event listeners.
@@ -169,8 +166,8 @@ eYo.Svg.Search.prototype.removeAllBrickListeners = function(search) {
  * Add listeners to a block that has been added to the search.
  * Listeners work only when the search authorizes it.
  * The 'rect' listeners have been removed.
- * @param {!eYo.Search} search
- * @param {!eYo.Brick.Dflt} brick The block to add listeners for.
+ * @param {eYo.Search} search
+ * @param {eYo.Brick.Dflt} brick The block to add listeners for.
  */
 eYo.Svg.Search.prototype.addListeners = function(search, brick) {
   var g = brick.dom.svg.group_
@@ -202,7 +199,7 @@ eYo.Svg.Search.prototype.addListeners = function(search, brick) {
 
 /**
  * Add a `mouseover` listener to deselect all bricks.
- * @param {!eYo.Search} search
+ * @param {eYo.Search} search
  */
 eYo.Svg.Search.prototype.listen_mouseover = function(search) {
   search.listeners_.push(
@@ -218,7 +215,7 @@ eYo.Svg.Search.prototype.listen_mouseover = function(search) {
 
 /**
  * Add a `wheel` and `mousdown` listener to scroll.
- * @param {!eYo.Search} search
+ * @param {eYo.Search} search
  */
 eYo.Svg.Search.prototype.bindScrollEvents = function(search) {
   var bound = search.dom.bound
@@ -243,7 +240,7 @@ eYo.Svg.Search.prototype.bindScrollEvents = function(search) {
 
 /**
  * Mouse down on the search background.  Start a vertical scroll drag.
- * @param {!Event} e Mouse down event.
+ * @param {Event} e Mouse down event.
  * @private
  */
 eYo.Svg.Search.prototype.on_mousedown = function(e) {
@@ -257,7 +254,7 @@ eYo.Svg.Search.prototype.on_mousedown = function(e) {
 eYo.Svg.makeDriverClass('SearchToolbar', {
   /**
    * Initializes the search toolbar SVG ressources.
-   * @param {!eYo.SearchToolbar} searchToolbar
+   * @param {eYo.SearchToolbar} searchToolbar
    */
   initUI (ftb) {
     if (ftb.dom) {
@@ -408,7 +405,7 @@ eYo.Svg.makeDriverClass('SearchToolbar', {
   },
   /**
    * Initializes the search toolbar SVG ressources.
-   * @param {!eYo.SearchToolbar} searchToolbar
+   * @param {eYo.SearchToolbar} searchToolbar
    */
   disposeUI (ftb) {
     var dom = ftb.dom

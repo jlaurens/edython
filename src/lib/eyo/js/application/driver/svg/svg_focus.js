@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Svg')
 
-eYo.provide('eYo.Svg.Focus')
-
 eYo.forwardDeclare('eYo.Focus')
 
 console.error('NYI')
@@ -27,33 +25,33 @@ eYo.Svg.makeDriverClass('Focus')
 /*******  Focus  *******/
 /**
  * Init the main focus manager.
- * @param {!eYo.Focus.Main} mainMngr  The main focus manager
+ * @param {eYo.Focus.Main} mainMngr  The main focus manager
  */
 eYo.Svg.Focus.prototype.mainInitUI = eYo.Do.nothing
 
 /**
  * Init the main focus manager.
- * @param {!eYo.Focus.Main} mainMngr  The main focus manager
+ * @param {eYo.Focus.Main} mainMngr  The main focus manager
  */
 eYo.Svg.Focus.prototype.mainDisposeUI = eYo.Do.nothing
 
 
 /**
  * Init a standard focus manager.
- * @param {!eYo.Focus.Mngr} mngr  The standard focus manager
+ * @param {eYo.Focus.Mngr} mngr  The standard focus manager
  */
 eYo.Svg.Focus.prototype.mngrInitUI = eYo.Do.nothing
 
 /**
  * Init a standard focus manager.
- * @param {!eYo.Focus.Mngr} mngr  The standard focus manager
+ * @param {eYo.Focus.Mngr} mngr  The standard focus manager
  */
 eYo.Svg.Focus.prototype.mngrDisposeUI = eYo.Do.nothing
 
 console.error("CSS flag missing in board's dom")
 /**
  * Focus on a board.
- * @param {!eYo.Focus.Mngr} mngr  The focus manager that should put focus on a board.
+ * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus on a board.
  */
 eYo.Svg.Focus.prototype.onBoard = function (mngr) {
   var b = mngr.board
@@ -64,7 +62,7 @@ eYo.Svg.Focus.prototype.onBoard = function (mngr) {
 
 /**
  * Focus off a board.
- * @param {!eYo.Focus.Mngr} mngr  The focus manager that should put focus off a board.
+ * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus off a board.
  */
 eYo.Svg.Focus.prototype.offBoard = function (mngr) {
   var b = mngr.board
@@ -75,7 +73,7 @@ eYo.Svg.Focus.prototype.offBoard = function (mngr) {
 
 /**
  * Focus on a board.
- * @param {!eYo.Focus.Mngr} mngr  The focus manager that should put focus on a brick.
+ * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus on a brick.
  */
 eYo.Svg.Focus.prototype.brickOn = function (mngr) {
   var b = mngr.brick
@@ -96,7 +94,7 @@ eYo.Svg.Focus.prototype.brickOn = function (mngr) {
 
 /**
  * Focus off a brick.
- * @param {!eYo.Focus.Mngr} mngr  The focus manager that should put focus off a brick.
+ * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus off a brick.
  */
 eYo.Svg.Focus.prototype.brickOff = function (mngr) {
   var b = mngr.brick
@@ -113,7 +111,7 @@ eYo.Svg.Focus.prototype.brickOff = function (mngr) {
 
 /**
  * Focus on a field.
- * @param {!eYo.Focus.Mngr} mngr  The focus manager that should put focus on a field.
+ * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus on a field.
  */
 eYo.Svg.Focus.prototype.fieldOn = function (mngr) {
   var f = mngr.field
@@ -129,7 +127,7 @@ eYo.Svg.Focus.prototype.fieldOn = function (mngr) {
 
 /**
  * Focus off a field.
- * @param {!eYo.Focus.Mngr} mngr  The focus manager that should put focus off a field.
+ * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus off a field.
  */
 eYo.Svg.Focus.prototype.fieldOff = function (mngr) {
   var b = mngr.brick
@@ -141,7 +139,7 @@ eYo.Svg.Focus.prototype.fieldOff = function (mngr) {
 
 /**
  * Focus on a magnet.
- * @param {!eYo.Focus.Mngr} mngr  The focus manager that should put focus on a magnet.
+ * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus on a magnet.
  */
 eYo.Svg.Focus.prototype.magnetOn = function (mngr) {
   var m = mngr.magnet
@@ -157,7 +155,7 @@ eYo.Svg.Focus.prototype.magnetOn = function (mngr) {
 
 /**
  * Focus off a magnet.
- * @param {!eYo.Focus.Mngr} mngr  The focus manager that should put focus off a magnet.
+ * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus off a magnet.
  */
 eYo.Svg.Focus.prototype.magnetOff = function (mngr) {
   var b = mngr.brick

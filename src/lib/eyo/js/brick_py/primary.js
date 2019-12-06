@@ -31,7 +31,7 @@ eYo.provide('eYo.Brick.Primary')
  * There are different situations depending on the type of the
  * brick enclosing the list.
  * Main entry: consolidate
- * @param {!String} single, the required type for a single element....
+ * @param {String} single, the required type for a single element....
  */
 eYo.Consolidator.List.makeSubclass('Target', {
   check: null,
@@ -40,7 +40,7 @@ eYo.Consolidator.List.makeSubclass('Target', {
   /**
    * Augmented assignments, annotated assignment and expressions,
    * except assignment chain, must take only one target.
-   * @param {!Object} io input/output parameter
+   * @param {Object} io input/output parameter
    */
   makeUnique: /** @suppress {globalThis} */ function (io) {
     // types with no unique element
@@ -91,7 +91,7 @@ eYo.Consolidator.List.makeSubclass('Target', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {!eYo.Brick.Dflt} brick, owner or the receiver.
+ * @param {eYo.Brick.Dflt} brick, owner or the receiver.
  */
 eYo.Consolidator.List.Target.prototype.getIO = function (brick) {
   var io = eYo.Consolidator.List.Target.superClass_.getIO.call(this, brick)
@@ -180,7 +180,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
 /**
  * Returns the required types for the current input.
  * This does not suppose that the list of input has been completely consolidated
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.Target.prototype.getCheck = (() => {
   var f = io => {
@@ -319,8 +319,8 @@ eYo.Expr.target_list.prototype.getSubtype = function () {
 
 /**
  * Did disconnect this brick's connection from another connection.
- * @param {!eYo.Magnet} m4t
- * @param {!eYo.Magnet} oldTargetM4t that was connected to blockConnection
+ * @param {eYo.Magnet} m4t
+ * @param {eYo.Magnet} oldTargetM4t that was connected to blockConnection
  */
 eYo.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isSlot) {
@@ -357,9 +357,9 @@ eYo.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
 /**
  * Hook.
  * If more that 2 bricks are connected, the variant is target_valued.
- * @param {!eYo.Magnet} m4t.
- * @param {!eYo.Magnet} oldTargetM4t.
- * @param {!eYo.Magnet} targetOldM4t
+ * @param {eYo.Magnet} m4t.
+ * @param {eYo.Magnet} oldTargetM4t.
+ * @param {eYo.Magnet} targetOldM4t
  */
 eYo.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.Expr.target_list.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
@@ -1242,7 +1242,7 @@ eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {!eYo.Brick.Dflt} brick to be initialized.
+ * @param {eYo.Brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
 eYo.Expr.primary.prototype.init = function () {
@@ -1771,9 +1771,9 @@ eYo.Expr.primary.prototype.getSubtype = function () {
 /**
  * Fetches the named input object, getSlot.
  * This is not a very strong design but it should work, I guess.
- * @param {!Brick} brick
+ * @param {Brick} brick
  * @param {String} name The name of the input.
- * @param {?Boolean} dontCreate Whether the receiver should create inputs on the fly.
+ * @param {!Boolean} dontCreate Whether the receiver should create inputs on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.Expr.primary.prototype.getSlot = function (name) {
@@ -1859,7 +1859,7 @@ eYo.Stmt.base_call_stmt.prototype.getProfile = eYo.Expr.primary.prototype.getPro
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {!eYo.Brick.Dflt} brick to be initialized.
+ * @param {eYo.Brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
 eYo.Stmt.base_call_stmt.prototype.init = function () {

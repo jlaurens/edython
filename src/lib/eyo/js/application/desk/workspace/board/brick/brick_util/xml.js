@@ -106,7 +106,7 @@ eYo.forwardDeclare('eYo.Expr')
  * Converts a DOM structure into plain text.
  * Currently the text format is fairly ugly: all one line with no whitespace.
  * Overriden to add the `eyo` namespace.
- * @param {!Element} dom A tree of XML elements.
+ * @param {Element} dom A tree of XML elements.
  * @return {string} Value representation.
  */
 eYo.Xml.domToText = function (dom) {
@@ -119,8 +119,8 @@ eYo.Xml.domToText = function (dom) {
 
 /**
  * Encode a brick subtree as XML with where coordinates. Eliminates the use of the Blockly's eponym method.
- * @param {!eYo.Brick.Dflt} brick The root brick to encode.
- * @param {?Object} opt  See the eponym parameter in `eYo.Xml.brickToDom`.
+ * @param {eYo.Brick.Dflt} brick The root brick to encode.
+ * @param {!Object} opt  See the eponym parameter in `eYo.Xml.brickToDom`.
  * @return {!Element} Tree of XML elements.
  */
 eYo.Xml.brickToDomWithWhere = function(brick, opt) {
@@ -133,8 +133,8 @@ eYo.Xml.brickToDomWithWhere = function(brick, opt) {
 
 /**
  * Encode a brick tree as XML.
- * @param {!eYo.Board} board The board containing bricks.
- * @param {?Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
+ * @param {eYo.Board} board The board containing bricks.
+ * @param {!Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
  * @return {!Element} XML document.
  */
 eYo.Xml.boardToDom = function(board, opt) {
@@ -169,8 +169,8 @@ eYo.Xml.boardToDom = function(board, opt) {
  * Decode an XML DOM and create bricks on the board.
  * overriden to support other kind of bricks
  * This is a copy with a tiny formal modification.
- * @param {!Element} xml XML DOM.
- * @param {!*} owner The board or the parent brick.
+ * @param {Element} xml XML DOM.
+ * @param {*} owner The board or the parent brick.
  * @return {Array.<string>} An array containing new brick IDs.
  */
 eYo.Xml.domToBoard = function (xml, owner) {
@@ -262,9 +262,9 @@ goog.exportSymbol('eYo.Xml.domToBoard', eYo.Xml.domToBoard)
  * Create a new brick, with full contents.
  * This is the expected way to create a brick
  * to be displayed immediately.
- * @param {!BoardSvg} board
- * @param {!String|Object} model prototypeName or xml representation.
- * @param {?string} id
+ * @param {BoardSvg} board
+ * @param {String|Object} model prototypeName or xml representation.
+ * @param {!string} id
  * @private
  */
 eYo.Brick.newReady = (() => {
@@ -318,8 +318,8 @@ eYo.Brick.newReady = (() => {
  * 5) solid bricks are named after their type which eyo:foo.
  * These brick types correspond to an alternate in the python grammar.
  * The persistence storage may remember these bricks as eyo:foo instead of eyo:foo.
- * @param {!eYo.Brick.Dflt} brick The root brick to encode.
- * @param {?Object} opt  Options `noId` is True if the encoder should skip the brick id, `noNext` is True if the encoder should skip the next brick.
+ * @param {eYo.Brick.Dflt} brick The root brick to encode.
+ * @param {!Object} opt  Options `noId` is True if the encoder should skip the brick id, `noNext` is True if the encoder should skip the next brick.
  * @return {!Element} Tree of XML elements, possibly null.
  */
 eYo.Xml.brickToDom = (() => {
@@ -396,7 +396,7 @@ eYo.require('eYo.Brick.Primary')
 /**
  * Convert the brick's value to a text dom element.
  * For edython.
- * @param {!eYo.Brick.Dflt} brick The brick to be converted.
+ * @param {eYo.Brick.Dflt} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element
  */
@@ -412,7 +412,7 @@ eYo.Xml.Text.toDom = function (brick, element) {
 /**
  * Convert the brick from a dom element.
  * For edython.
- * @param {!eYo.Brick.Dflt} brick The brick to be converted.
+ * @param {eYo.Brick.Dflt} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element
  */
@@ -426,8 +426,8 @@ eYo.require('eYo.Brick.Assignment')
 eYo.require('eYo.Brick.Starred')
 /**
  * Try to create a Literal brick from the given element.
- * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The board or the parent brick.
+ * @param {Element} element dom element to be completed.
+ * @param {*} owner  The board or the parent brick.
  * @override
  */
 eYo.Xml.Literal.domToComplete = (() => {
@@ -481,7 +481,7 @@ eYo.require('eYo.Brick.Operator')
  * Save the brick's data.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {?Object} opt
+ * @param {!Object} opt
  */
 eYo.Brick.Dflt.prototype.saveData = function (element, opt) {
   this.forEachData(data => data.save(element, opt))
@@ -491,7 +491,7 @@ eYo.Brick.Dflt.prototype.saveData = function (element, opt) {
  * Save the brick's slots.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {?Object} opt
+ * @param {!Object} opt
  */
 eYo.Brick.Dflt.prototype.saveSlots = function (element, opt) {
   this.forEachSlot(slot => slot.save(element, opt))
@@ -500,7 +500,7 @@ eYo.Brick.Dflt.prototype.saveSlots = function (element, opt) {
 /**
  * Convert the brick's data from a dom element.
  * For edython.
- * @param {!eYo.Brick.Dflt} brick The brick to be converted.
+ * @param {eYo.Brick.Dflt} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  */
 eYo.Xml.Data.fromDom = function (brick, element) {
@@ -533,9 +533,9 @@ eYo.Xml.Data.fromDom = function (brick, element) {
  * 4) brick.constructor (no inheritance here too)
  * The default implementation does nothing if there's no controller
  * to take control.
- * @param {!eYo.Brick.Dflt} brick The root brick to encode.
+ * @param {eYo.Brick.Dflt} brick The root brick to encode.
  * @param {element} dom element to encode in
- * @param {?Object} opt  See the eponym option in `eYo.Xml.BrickToDom`.
+ * @param {!Object} opt  See the eponym option in `eYo.Xml.BrickToDom`.
  * @return {!Element} Tree of XML elements, possibly null.
  */
 eYo.Xml.toDom = function (brick, element, opt) {
@@ -641,8 +641,8 @@ eYo.Xml.registerAllTags = function () {
  * on the board.
  * If the string is not valid xml, then nothing is returned.
  *
- * @param {!String} string a serialized dom element.
- * @param {!*} owner board or brick.
+ * @param {String} string a serialized dom element.
+ * @param {*} owner board or brick.
  * @return {?eYo.Brick} The root brick created, if any.
  */
 eYo.Xml.stringToBrick = function (string, owner) {
@@ -673,7 +673,7 @@ eYo.Xml.Recover = function (board) {
 
 /**
  * Will execute the given action for each recovered brick.
- * @param {?Function} f
+ * @param {!Function} f
  */
 eYo.Xml.Recover.prototype.whenRecovered = function (f) {
   this.recovered_f = f
@@ -682,8 +682,8 @@ eYo.Xml.Recover.prototype.whenRecovered = function (f) {
 /**
  * Don't resit the given dom.
  *
- * @param {!Element} dom XML dom element.
- * @param {!eYo.Board} board  The board.
+ * @param {Element} dom XML dom element.
+ * @param {eYo.Board} board  The board.
  */
 eYo.Xml.Recover.prototype.dontResit = function (dom) {
   var i = this.to_resit.indexOf(dom)
@@ -695,10 +695,10 @@ eYo.Xml.Recover.prototype.dontResit = function (dom) {
 /**
  * Create bricks with elements that were not used during the normal flow.
  * Uses `domToBrick`.
- * @param {!*} dom
- * @param {!*} try_f
- * @param {?*} finally_f
- * @param {?*} recovered_f
+ * @param {*} dom
+ * @param {*} try_f
+ * @param {!*} finally_f
+ * @param {!*} recovered_f
  */
 eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
   this.dontResit(dom)
@@ -749,7 +749,7 @@ eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
  * The idea is to replace the faulty xml part by a brick
  * and parse the children separately with `recoverDom`
  *
- * @param {!Element} dom XML dom element.
+ * @param {Element} dom XML dom element.
  * @param {eYo.Board | eYo.Brick} owner either the board or a brick.
  * @return {!eYo.Brick} The root brick created.
  */
@@ -858,7 +858,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
  * of the constructor itself.
  * Is it really headless ?
  *
- * @param {!Element} xmlBrick XML brick element.
+ * @param {Element} xmlBrick XML brick element.
  * @param {*} owner The board or the owning brick.
  * @return {!eYo.Brick} The root brick created.
  */
@@ -963,7 +963,7 @@ goog.exportSymbol('eYo.Xml.domToBrick', eYo.Xml.domToBrick)
  * 3) brick.constructor.xml (no inheritance)
  * 4) brick.constructor (no inheritance here too)
  * The default implementation does nothing if there's no controller
- * @param {!eYo.Brick.Dflt} brick  The root brick to decode.
+ * @param {eYo.Brick.Dflt} brick  The root brick to decode.
  * @param {element} dom element to encode in
  * @return {?Boolean} Used?
  */
@@ -1145,8 +1145,8 @@ eYo.Stmt.assignment_stmt.prototype.xmlAttr = function () {
 
 /**
  * Try to create a primary brick from the given element.
- * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The board or the parent brick.
+ * @param {Element} element dom element to be completed.
+ * @param {*} owner  The board or the parent brick.
  * @override
  */
 eYo.Xml.Assignment.domToComplete = function (element, owner) {
@@ -1170,8 +1170,8 @@ eYo.Xml.Assignment.domToComplete = function (element, owner) {
 
 /**
  * Try to create a comparison brick from the given element.
- * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The board or the parent brick.
+ * @param {Element} element dom element to be completed.
+ * @param {*} owner  The board or the parent brick.
  * @override
  */
 eYo.Xml.Comparison.domToComplete = function (element, owner) {
@@ -1201,8 +1201,8 @@ eYo.Xml.Comparison.domToComplete = function (element, owner) {
 
 /**
  * Try to create a starred brick from the given element.
- * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The board or the parent brick.
+ * @param {Element} element dom element to be completed.
+ * @param {*} owner  The board or the parent brick.
  * @override
  */
 eYo.Xml.Starred.domToComplete = function (element, owner) {
@@ -1218,8 +1218,8 @@ eYo.Xml.Starred.domToComplete = function (element, owner) {
 
 /**
  * Try to create a primary brick from the given element.
- * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The board or the parent brick.
+ * @param {Element} element dom element to be completed.
+ * @param {*} owner  The board or the parent brick.
  * @override
  */
 eYo.Xml.Primary.domToComplete = function (element, owner) {
@@ -1244,8 +1244,8 @@ eYo.Xml.Primary.domToComplete = function (element, owner) {
 
 // /**
 //  * Reads the given element into a brick.
-//  * @param {!Element} element dom element to be read.
-//  * @param {!*} owner  The board or the parent brick.
+//  * @param {Element} element dom element to be read.
+//  * @param {*} owner  The board or the parent brick.
 //  * @override
 //  */
 // eYo.Xml.Group.domToComplete = function (element, owner) {
@@ -1259,8 +1259,8 @@ eYo.Xml.Primary.domToComplete = function (element, owner) {
 
 /**
  * .
- * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The board or the parent brick
+ * @param {Element} element dom element to be completed.
+ * @param {*} owner  The board or the parent brick
  * @override
  */
 eYo.Xml.Compatibility.domToComplete = function (element, owner) {
@@ -1294,8 +1294,8 @@ eYo.Xml.Compatibility.domToComplete = function (element, owner) {
  * call bricks have eyo:call and tag eyo:builtin__call names
  * if there is an `eyo:slot` attribute, even a ''
  * then it is an expression brick otherwise it is a statement brick. DEPRECATED.
- * @param {!Element} element dom element to be completed.
- * @param {!*} owner  The board or the parent brick
+ * @param {Element} element dom element to be completed.
+ * @param {*} owner  The board or the parent brick
  * @override
  */
 eYo.Xml.Call.domToComplete = function (element, owner) {
@@ -1312,8 +1312,8 @@ eYo.Xml.Call.domToComplete = function (element, owner) {
  * Compare the bricks by comparing their xml string representation.
  * Usefull for testing.
  * For edython.
- * @param {!eYo.Brick.Dflt} lhs
- * @param {!eYo.Brick.Dflt} rhs
+ * @param {eYo.Brick.Dflt} lhs
+ * @param {eYo.Brick.Dflt} rhs
  * @return {Number} classical values -1, 0 or 1.
  */
 eYo.Xml.compareBricks = function (lhs, rhs) {

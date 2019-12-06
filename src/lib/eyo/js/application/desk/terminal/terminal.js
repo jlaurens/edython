@@ -19,7 +19,7 @@ eYo.provide('eYo.Terminal')
 
 /**
  * Class for a terminal.
- * @param {!eYo.Desk} owner Owner desk.
+ * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
 eYo.UI.makeClass('Terminal', eYo.Pane)

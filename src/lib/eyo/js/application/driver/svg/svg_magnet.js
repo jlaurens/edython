@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Svg')
 
-eYo.provide('eYo.Svg.Magnet')
-
 eYo.forwardDeclare('eYo.Magnet')
 
 /**
@@ -23,20 +21,8 @@ eYo.forwardDeclare('eYo.Magnet')
 eYo.Svg.makeDriverClass('Magnet')
 
 /**
- * Dispose of the magnet SVG ressources.
- * @param {!eYo.Magnet} magnet
- */
-eYo.Svg.Magnet.prototype.initUI = eYo.Do.nothing
-
-/**
- * Dispose of the magnet SVG ressources.
- * @param {!eYo.Magnet} magnet
- */
-eYo.Svg.Magnet.prototype.disposeUI = eYo.Do.nothing
-
-/**
  * Hilight the given magnet.
- * @param {!eYo.Magnet} m4t
+ * @param {eYo.Magnet} m4t
  */
 eYo.Svg.Magnet.prototype.hilight = function (m4t) {
   if (!m4t.board) {

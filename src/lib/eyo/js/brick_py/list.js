@@ -136,7 +136,7 @@ eYo.Brick.List.slotsHandler = {
 /**
  * Fetches the named slot object, getSlot.
  * @param {String} name The name of the slot.
- * @param {?Boolean} dontCreate Whether the receiver should create slots on the fly.
+ * @param {!Boolean} dontCreate Whether the receiver should create slots on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.Brick.List.prototype.getSlot = function (name, dontCreate) {
@@ -182,9 +182,9 @@ eYo.Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
 
 /**
  * Hook point.
- * @param {!eYo.Magnet} m4t.
- * @param {!eYo.Magnet} oldTargetM4t.
- * @param {!eYo.Magnet} targetOldM4t
+ * @param {eYo.Magnet} m4t.
+ * @param {eYo.Magnet} oldTargetM4t.
+ * @param {eYo.Magnet} targetOldM4t
  */
 eYo.Brick.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.Brick.List.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
@@ -198,7 +198,7 @@ eYo.Brick.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t)
  * Removes empty place holders.
  * This must not be overriden.
  *
- * @param {!Brick} brick
+ * @param {Brick} brick
  */
 eYo.Brick.List.prototype.doConsolidate = (() => {
   // this is a one shot function
@@ -519,7 +519,7 @@ eYo.Expr.enclosure.prototype.getProfile = eYo.Change.decorate(
 /**
  * getOutCheck.
  * The check_ array of the output connection.
- * @param {!Object} profile
+ * @param {Object} profile
  */
 eYo.Expr.enclosure.prototype.getOutCheck = function (profile) {
   if (profile === eYo.T3.Expr.parenth_target_list) {

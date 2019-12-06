@@ -29,7 +29,7 @@ eYo.forwardDeclare('eYo.Audio')
 
 /**
  * Main application object.
- * @param {!Object} options
+ * @param {Object} options
  * @constructor
  * @readonly
  * The current options.
@@ -153,8 +153,8 @@ eYo.Application.prototype.paste = () => {
 /**
  * Delete this brick and the next ones if requested.
  * For edython.
- * @param {!eYo.Brick.Dflt} block The brick to delete.
- * @param {!boolean} deep
+ * @param {eYo.Brick.Dflt} block The brick to delete.
+ * @param {boolean} deep
  */
 eYo.Application.prototype.deleteBrick = (brick, deep) => {
   if (brick && brick.deletable && !brick.board.readOnly) {
@@ -188,7 +188,7 @@ eYo.Application.prototype.deleteBrick = (brick, deep) => {
 
 /**
  * Copy a brick onto the local clipboard.
- * @param {!eYo.Brick.Dflt} brick Brick to be copied.
+ * @param {eYo.Brick.Dflt} brick Brick to be copied.
  * @private
  */
 eYo.Application.prototype.copyBrick = (brick, deep) => {

@@ -18,7 +18,7 @@ eYo.provide('eYo.Section')
 
 /**
  * Class for a flyout's section.
- * @param {!eYo.Flyout} owner  The owning flyout.
+ * @param {eYo.Flyout} owner  The owning flyout.
  * @constructor
  */
 eYo.Section = function(owner) {
@@ -78,7 +78,7 @@ eYo.Section.prototype.disposeUI = function () {
 
 /**
  * Class for a flyout's section with one board.
- * @param {!eYo.Flyout} owner  The owning flyout.
+ * @param {eYo.Flyout} owner  The owning flyout.
  * @constructor
  */
 eYo.Section.Single = function(owner) {

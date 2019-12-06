@@ -51,7 +51,7 @@ eYo.Consolidator.makeClass('Dlgt')
  * Extra initialization may be performed by the init function.
  * TODO: use singletons...
  * @name {eYo.Consolidator.Dflt}
- * @param {!Object} model, all the model needed
+ * @param {Object} model, all the model needed
  * @constructor
  */
 eYo.Consolidator.makeClass('Dflt', {
@@ -85,7 +85,7 @@ eYo.Consolidator.makeClass('Dflt', {
 /**
  * Main and unique entry point.
  * Removes empty place holders
- * @param {!eYo.Brick.Dflt} brick, to be consolidated....
+ * @param {eYo.Brick.Dflt} brick, to be consolidated....
  */
 eYo.Consolidator.Dflt.prototype.consolidate = eYo.Do.nothing
 
@@ -94,10 +94,10 @@ eYo.Consolidator.Dflt.prototype.consolidate = eYo.Do.nothing
  * This is the preferred method to create consolidator classes.
  * The main purpose is to manage the shared data model
  * and allow inheritance.
- * @param {?Object} ns, namespace, defaults to `eYo.Consolidator`.
- * @param {!String} key, capitalized string except 'Dflt'.
- * @param {?Object} Super,  ancestor, defaults to `eYo.Consolidator.Dflt`.
- * @param {!Object} model, model object
+ * @param {!Object} ns, namespace, defaults to `eYo.Consolidator`.
+ * @param {String} key, capitalized string except 'Dflt'.
+ * @param {!Object} Super,  ancestor, defaults to `eYo.Consolidator.Dflt`.
+ * @param {Object} model, model object
  */
 eYo.Consolidator.makeSubclass = function (ns, key, Super, model) {
   if (eYo.isStr(ns)) {
@@ -142,7 +142,7 @@ eYo.Consolidator.makeSubclass = function (ns, key, Super, model) {
 eYo.Consolidator.Dflt.makeSubclass('List', {
   /**
    * Initialize the list consolidator.
-   * @param {!Object} d model.
+   * @param {Object} d model.
    */
   init (d) {
     if (this.model.unique) {
@@ -158,7 +158,7 @@ eYo.Consolidator.Dflt.makeSubclass('List', {
 /**
  * Get the ary.
  * Asks the list
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.getAry = function (io) {
   if (io.brick) {
@@ -175,7 +175,7 @@ eYo.Consolidator.List.prototype.getAry = function (io) {
 /**
  * Get the mandatory.
  * Asks the list
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.getMandatory = function (io) {
   if (io.brick) {
@@ -195,7 +195,7 @@ eYo.Consolidator.List.prototype.getMandatory = function (io) {
 /**
  * Setup the io parameter dictionary.
  * Called when the slot list has changed and or the index has changed.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.setupIO = function (io, i) {
   if (i !== eYo.NA) {
@@ -213,7 +213,7 @@ eYo.Consolidator.List.prototype.setupIO = function (io, i) {
 
 /**
  * Advance to the next slot. Returns false when at end.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  * @return boolean, false when at end
  */
 eYo.Consolidator.List.prototype.nextSlot = function (io) {
@@ -223,7 +223,7 @@ eYo.Consolidator.List.prototype.nextSlot = function (io) {
 
 /**
  * Wether the current slot is connected or will be connected.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  * @return boolean, true when connected.
  */
 eYo.Consolidator.List.prototype.willBeConnected = function (io) {
@@ -233,7 +233,7 @@ eYo.Consolidator.List.prototype.willBeConnected = function (io) {
 /**
  * Insert a placeholder at the given index.
  * io is properly set up at the end.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  * @param {number} i When eYo.NA, take io.i
  * @return {eYo.Slot}, the slot inserted.
  */
@@ -260,7 +260,7 @@ eYo.Consolidator.List.prototype.insertPlaceholder = function (io, i) {
  * Dispose of the slot at the given index.
  * No range checking.
  * io is properly set up at the end.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  * @return boolean, whether the io is at end.
  */
 eYo.Consolidator.List.prototype.disposeAtI = function (io, i) {
@@ -282,7 +282,7 @@ eYo.Consolidator.List.prototype.disposeAtI = function (io, i) {
  * When in single mode, returns `all` if the list is void
  * or if there is only one item to be replaced.
  * In all other situations, return `check`.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.getCheck = function (io) {
   if (this.model.all) {
@@ -303,7 +303,7 @@ eYo.Consolidator.List.prototype.getCheck = function (io) {
 
 /**
  * Finalize the current slot as a placeholder.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = eYo.NA, optional = false) {
   io.slot.lst_n = io.n
@@ -326,7 +326,7 @@ eYo.Consolidator.List.prototype.doFinalizePlaceholder = function (io, name = eYo
 
 /**
  * Finalize the current slot as a separator.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, name) {
   io.slot.lst_presep = io.presep || ''
@@ -370,7 +370,7 @@ eYo.Consolidator.List.prototype.doFinalizeSeparator = function (io, extreme, nam
  * Add an unconnected slot after, if there is no one.
  * On return, io points to the location after
  * the potential separator.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  * @return yes exactly if there are more slots
  */
 eYo.Consolidator.List.prototype.consolidate_connected = function (io) {
@@ -386,7 +386,7 @@ eYo.Consolidator.List.prototype.consolidate_connected = function (io) {
 
 /**
  * Consolidate the first connected slot
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  * @return true exactly if there are more slots
  */
 eYo.Consolidator.List.prototype.consolidate_first_connected = function (io) {
@@ -415,7 +415,7 @@ eYo.Consolidator.List.prototype.consolidate_first_connected = function (io) {
  * Default implementation return true.
  * Subclassers will manage things differently and
  * return false
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  * @return yes exactly if there are more slots
  */
 eYo.Consolidator.List.prototype.consolidate_single = function (io) {
@@ -449,7 +449,7 @@ eYo.Consolidator.List.prototype.consolidate_single = function (io) {
  * is make unique when the target connection contains a type in that array.
  * Returning a void array means that no unique object may exist in that list.
  * `null` is deliberately returned and tested for development reasons.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.makeUnique = function (io) {
   if (!this.reentrant_.makeUnique) {
@@ -478,8 +478,8 @@ eYo.Consolidator.List.prototype.makeUnique = function (io) {
 
 /**
  * Find the next connected slot.
- * @param {!Object} io parameter.
- * @param {!boolean} gobble whether to gobble intermediate slot.
+ * @param {Object} io parameter.
+ * @param {boolean} gobble whether to gobble intermediate slot.
  */
 eYo.Consolidator.List.prototype.walk_to_next_connected = function (io, gobble) {
   // things are different if one of the inputs is connected
@@ -507,7 +507,7 @@ eYo.Consolidator.List.prototype.walk_to_next_connected = function (io, gobble) {
  * No connected connection has been found.
  * Removes extra empty placeholders, or
  * create of if none exists.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.consolidate_unconnected = function (io) {
   // remove any separator up to the first placeholder
@@ -558,7 +558,7 @@ eYo.Consolidator.List.prototype.consolidate_unconnected = function (io) {
  * once the whole list has been managed once
  * in a de facto standard way.
  * Default implementation does nothing.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.doCleanup = function (io) {
 }
@@ -566,7 +566,7 @@ eYo.Consolidator.List.prototype.doCleanup = function (io) {
 /**
  * When there is a limitation of the number of arguments,
  * remove the excedent.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.doAry = function (io) {
   var ary = this.getAry(io)
@@ -609,7 +609,7 @@ eYo.Consolidator.List.prototype.doAry = function (io) {
  * There can be a supplemental separator after.
  * Find dynamic names for placeholders,
  * set the separator property when not connected.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.doFinalize = function (io) {
   this.setupIO(io, 0)
@@ -643,7 +643,7 @@ eYo.Consolidator.List.prototype.doFinalize = function (io) {
 
 /**
  * In order to prepare rendering, add some information to the inputs.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.List.prototype.doLink = function (io) {
   this.setupIO(io, 0)
@@ -699,7 +699,7 @@ eYo.Consolidator.List.prototype.getIO = function (brick) {
  * List consolidator.
  * Removes empty place holders, add some...
  * Problem of `when`: the brick should not consolidate when not in a wokspace.
- * @param {!eYo.Brick.Dflt} brick, to be consolidated.
+ * @param {eYo.Brick.Dflt} brick, to be consolidated.
  * @param {boolean} force, true if no shortcut is allowed.
  */
 eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('consolidate', function (brick, force) {
@@ -729,9 +729,9 @@ eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('con
 
 /**
  * Fetches the named slot object
- * @param {!eYo.Brick.Dflt} brick
+ * @param {eYo.Brick.Dflt} brick
  * @param {String} name The name of the slot.
- * @param {?Boolean} dontCreate Whether the receiver should create slots on the fly.
+ * @param {!Boolean} dontCreate Whether the receiver should create slots on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.Consolidator.List.prototype.getSlot = function (brick, name, dontCreate) {
@@ -829,7 +829,7 @@ eYo.Consolidator.List.prototype.nextSlotForType = function (io, type) {
 /**
  * Whether the brick has an slot for the given type.
  * Used by the print brick.
- * @param {!eYo.Brick.Dflt} brick
+ * @param {eYo.Brick.Dflt} brick
  * @param {Object} type, string or array of strings
  * @return the next keyword item slot, eYo.NA when at end.
  */

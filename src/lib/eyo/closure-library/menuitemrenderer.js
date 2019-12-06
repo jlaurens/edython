@@ -48,7 +48,7 @@ eYo.provide('eYo.MenuItemRenderer')
  * Calling syntax
  * setControlRendererCssClass(renderer, cssClass[, style](, name, style)*)
  *
- * @param {?...Object} rest
+ * @param {!...Object} rest
  */
 eYo.Style.setControlRendererCssClass = (() => {
   var helper = (name, dict) => {

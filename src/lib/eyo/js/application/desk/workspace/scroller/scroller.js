@@ -22,7 +22,7 @@ goog.forwardDeclare('goog.events')
 
 /**
  * Class for a pair of scrollbars.  Horizontal and vertical.
- * @param {!eYo.Board} board Board to bind the scrollbars to.
+ * @param {eYo.Board} board Board to bind the scrollbars to.
  * @constructor
  */
 eYo.Scroller = function(board) {

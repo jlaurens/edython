@@ -45,7 +45,7 @@ eYo.Focus = Object.create(null)
 
 /**
  * The main focus manager.
- * @param {!eYo.Desk} desk,  the owning desk.
+ * @param {eYo.Desk} desk,  the owning desk.
  * @constructor
  */
 eYo.Focus.Main = function (desk) {
@@ -193,8 +193,8 @@ eYo.Focus.Main.prototype.disposeUI = function() {
 
 /**
  * Create a standard focus manager, managed by a main focus manager.
- * @param {!eYo.Board} board,  the owner of the focus object.
- * @param {!eYo.Focus.Main} main,  The main focus manager.
+ * @param {eYo.Board} board,  the owner of the focus object.
+ * @param {eYo.Focus.Main} main,  The main focus manager.
  * @constructor
  */
 eYo.Focus.Mngr = function (board, main) {

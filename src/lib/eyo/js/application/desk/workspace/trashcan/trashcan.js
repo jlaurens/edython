@@ -13,14 +13,12 @@
 
 eYo.require('eYo.WorkspaceControl')
 
-eYo.provide('eYo.TrashCan')
-
 /**
  * Class for a trash can.
- * @param {!eYo.Workspace} workspace The workspace to sit in.
+ * @param {eYo.Workspace} workspace The workspace to sit in.
  * @constructor
  */
-eYo.UI.makeClass('TrashCan', eYo.WorkspaceControl)
+eYo.WorkspaceControl.makeSubclass('TrashCan')
 
 Object.defineProperties(eYo.TrashCan.prototype, {
   isOpen: {

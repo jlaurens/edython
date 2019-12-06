@@ -45,9 +45,9 @@ eYo.provide('eYo.Data')
  * Base property constructor.
  * The bounds between the data and the arguments are immutable.
  * For edython.
- * @param {!eYo.Brick.Dflt} brick The object owning the data.
- * @param {!string} key name of the data.
- * @param {!Object} model contains methods and properties.
+ * @param {eYo.Brick.Dflt} brick The object owning the data.
+ * @param {string} key name of the data.
+ * @param {Object} model contains methods and properties.
  * It is shared by all data controllers belonging to the same kind
  * of owner. Great care should be taken when editing this model.
  * @constructor
@@ -349,7 +349,7 @@ eYo.Data.prototype.validate = function (newValue) {
 
 /**
  * Returns the text representation of the data.
- * @param {?Object} newValue
+ * @param {!Object} newValue
  */
 eYo.Data.prototype.toText = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toText', this.model.toText)
@@ -366,7 +366,7 @@ eYo.Data.prototype.toText = function () {
 /**
  * Returns the text representation of the data.
  * Called during synchronization.
- * @param {?Object} newValue
+ * @param {!Object} newValue
  */
 eYo.Data.prototype.toField = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toField', this.model.toField || this.model.toText)
@@ -803,7 +803,7 @@ eYo.Data.prototype.isActive = function () {
 
 /**
  * Set the value of the main field eventually given by its key.
- * @param {!Object} newValue
+ * @param {Object} newValue
  * @param {string|null} fieldKey  of the input holder in the ui object
  * @param {boolean} noUndo  true when no undo tracking should be performed.
  * @private
@@ -826,7 +826,7 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
  * then the data is not saved either.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {?Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
+ * @param {!Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
  */
 eYo.Data.prototype.save = function (element, opt) {
   var xml = this.model.xml

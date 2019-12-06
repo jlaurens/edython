@@ -22,7 +22,7 @@ eYo.forwardDeclare('eYo.Geometry')
  * The `view` rectangle corresponds to the view port.
  * Its coordinates correspond to screen coordinates or at least
  * the enclosing graphical element's coordinates.
- * @param {?eYo.Board} board the owning board.
+ * @param {!eYo.Board} board the owning board.
  * @constructor
  * @readonly
  * @property {eYo.Rect}  port
@@ -348,7 +348,7 @@ eYo.Metrics.prototype.getDraggingLimits = function (rect) {
 
 /**
  * Test whether the receiver equals the given metrics object.
- * @param {!eYo.Metrics} rhs Another metrics.
+ * @param {eYo.Metrics} rhs Another metrics.
  * @return {boolean} Whether the two sets of metrics are equivalent.
  * @private
  */

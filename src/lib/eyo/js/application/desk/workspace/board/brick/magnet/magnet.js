@@ -23,7 +23,7 @@ eYo.forwardDeclare('eYo.Where')
 
 /**
  *
- * @param {!eYo.Brick.Dflt} brick  brick is the owner
+ * @param {eYo.Brick.Dflt} brick  brick is the owner
  */
 eYo.Magnets = function (brick) {
   // configure the connections
@@ -125,9 +125,9 @@ eYo.Magnets.prototype.initUI = function () {
 /**
  * Class for a magnet.
  * 
- * @param {!eYo.Brick|eYo.Slot} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
- * @param {!String} type  the type of this magnet
- * @param {!Object} model  the model of this magnet
+ * @param {eYo.Brick|eYo.Slot} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {String} type  the type of this magnet
+ * @param {Object} model  the model of this magnet
  * @readonly
  * @property {*} node  the node if any
  * @property {boolean} startOfLine  whether the connection is a slot connection starting a line.
@@ -209,7 +209,7 @@ eYo.Magnet.DB.constructor = eYo.Magnet.DB
 
 /**
  * Initialize a set of connection DBs for a specified board.
- * @param {!eYo.Board} board The board this DB is for.
+ * @param {eYo.Board} board The board this DB is for.
  */
 eYo.Magnet.DB.init = (board) => {
   // Create four databases, one for each connection type.
@@ -225,7 +225,7 @@ eYo.Magnet.DB.init = (board) => {
 
 /**
  * Initialize a set of connection DBs for a specified board.
- * @param {!eYo.Board} board The board containing the DB to disose of.
+ * @param {eYo.Board} board The board containing the DB to disose of.
  */
 eYo.Magnet.DB.dispose = (board) => {
   board.magnetDBList = null
@@ -235,7 +235,7 @@ eYo.Magnet.DB.dispose = (board) => {
  * Finds a candidate position for inserting this magnet into the list.
  * This will be in the correct y order
  * but makes no guarantees about ordering in the x axis.
- * @param {!float} y  The y coordinate of the magnet to add.
+ * @param {float} y  The y coordinate of the magnet to add.
  * @return {number} The candidate index.
  * @private
  */
@@ -261,7 +261,7 @@ eYo.Magnet.DB.prototype.findIndex_ = function(y) {
 
 /**
  * Add a magnet to the database. Do not look for duplicates.
- * @param {!eYo.Magnet} magnet The magnet to be added.
+ * @param {eYo.Magnet} magnet The magnet to be added.
  */
 eYo.Magnet.DB.prototype.addMagnet_ = function(magnet) {
   var magnetIndex = this.findIndex_(magnet.y)
@@ -270,14 +270,14 @@ eYo.Magnet.DB.prototype.addMagnet_ = function(magnet) {
 
 /**
  * Remove a magnet from the database. Do not look for duplicates.
- * @param {!eYo.Magnet} magnet The magnet to be remove.
+ * @param {eYo.Magnet} magnet The magnet to be remove.
  */
 eYo.Magnet.DB.prototype.removeMagnet_ = (() => {
   /*
    * Find the given connection.
    * Starts by doing a binary search to find the approximate location, then
    *     linearly searches nearby for the exact connection.
-   * @param {!eYo.Connection} conn The connection to find.
+   * @param {eYo.Connection} conn The connection to find.
    * @return {number} The index of the connection, or -1 if the connection was
    *     not found.
    */
@@ -316,7 +316,7 @@ eYo.Magnet.DB.prototype.removeMagnet_ = (() => {
 
 /**
  * Dispose of the ressources.
- * @param {?Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
+ * @param {!Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
  */
 eYo.Magnet.prototype.dispose = function (healStack) {
   var t9k = this.targetBrick
@@ -535,7 +535,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
     },
     /**
      * Connect the receiver to the newValue, if any, otherwise disconnects the receiver.
-     * @param {?eYo.Brick.Dflt} newValue 
+     * @param {!eYo.Brick.Dflt} newValue 
      */
     set (newValue) {
       if (newValue) {
@@ -788,7 +788,7 @@ eYo.Magnet.prototype.s7r_ = false
 /**
  * execute the given function for the fields.
  * For edython.
- * @param {!function} helper
+ * @param {function} helper
  */
 eYo.Magnet.prototype.forEachField = function (helper) {
   this.fields && (Object.values(this.fields).forEach(f => helper(f)))
@@ -1041,13 +1041,13 @@ eYo.Magnet.prototype.getMagnetBelow = function () {
 /**
  * Establish a connection with a brick.
  *
- * @param {!eYo.Brick.Dflt} eyo
+ * @param {eYo.Brick.Dflt} eyo
  */
 eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {!eYo.Brick.Dflt} brick
+   * @param {eYo.Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToHead = function (brick) {
@@ -1057,7 +1057,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {!eYo.Brick.Dflt} brick
+   * @param {eYo.Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToLeft = function (brick) {
@@ -1067,7 +1067,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {!eYo.Brick.Dflt} brick
+   * @param {eYo.Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToRight = function (brick) {
@@ -1077,7 +1077,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {!eYo.Brick.Dflt} brick
+   * @param {eYo.Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToFoot = function (brick) {
@@ -1087,7 +1087,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {!eYo.Brick.Dflt} brick
+   * @param {eYo.Brick.Dflt} brick
    */
   var connectToOutput = function (brick) {
     this.connect(brick.out_m)
@@ -1143,8 +1143,8 @@ eYo.Magnet.prototype.setOffset = function(c = 0, l = 0) {
  * The type checking mechanism is fine grained compared to blockly's.
  * The check_ is used more precisely.
  * For example, elif bricks cannot connect to the suite connection, only the next connection.
- * @param {!eYo.Magnet} other Magnet to compare against.
- * @param {?Boolean} force  checks even if a connection is hidden or incog.
+ * @param {eYo.Magnet} other Magnet to compare against.
+ * @param {!Boolean} force  checks even if a connection is hidden or incog.
  * @return {boolean} True if the connections share a type.
  * @private
  * @suppress {accessControls}
@@ -1281,7 +1281,7 @@ eYo.Magnet.prototype.toString = function() {
  * Finally the check management once the state is modified.
  * We assume that breaking one connection does not cascade into another
  * connection break.
- * @param {!eYo.Magnets.prototype} childM4t  A magnet on an inferior brick.
+ * @param {eYo.Magnets.prototype} childM4t  A magnet on an inferior brick.
  * @private
  * @suppress {accessControls}
  */
@@ -1309,8 +1309,8 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
         /*
         * Find the first free magnet in the given brick
         * that positively checks type with the given potential target magnet.
-        * @param {!eYo.Brick.Dflt} brick The brick.
-        * @param {!eYo.Magnet} child The inferior brick.
+        * @param {eYo.Brick.Dflt} brick The brick.
+        * @param {eYo.Magnet} child The inferior brick.
         * @private
         * @suppress {accessControls}
         */
@@ -1510,7 +1510,7 @@ eYo.Magnet.prototype.tighten = function() {
  * Scrolls the receiver to the top left part of the board.
  * Does nothing if the brick is already in the visible are,
  * and is not forced.
- * @param {!Boolean} force  flag
+ * @param {Boolean} force  flag
  */
 eYo.Magnet.prototype.scrollToVisible = function (force) {
   this.brick.scrollToVisible(force)
@@ -1519,7 +1519,7 @@ eYo.Magnet.prototype.scrollToVisible = function (force) {
 /**
  * Move the brick(s) belonging to the connection to a point where they don't
  * visually interfere with the specified connection.
- * @param {!eYo.Magnet} m4t The connection to move away
+ * @param {eYo.Magnet} m4t The connection to move away
  *     from.
  * @private
  * @suppress {accessControls}
@@ -1622,10 +1622,10 @@ eYo.Magnet.prototype.unhideAll = function() {
 eYo.Magnet.prototype.closest = (() => {
   /*
    * Find the closest compatible connection to this connection.
-   * @param {!eYo.Connection} conn The connection searching for a compatible
+   * @param {eYo.Connection} conn The connection searching for a compatible
    *     mate.
    * @param {number} maxRadius The maximum radius to another connection.
-   * @param {!eYo.Where} dxy Offset between this connection's location
+   * @param {eYo.Where} dxy Offset between this connection's location
    *     in the database and the current location (as a result of dragging).
    * @return {!{connection: ?eYo.Connection, radius: number}} Contains two
    *     properties:' connection' which is either another connection or null,
@@ -1678,7 +1678,7 @@ eYo.Magnet.prototype.closest = (() => {
 /**
  * Move this magnet to the location given by its offset within the brick and
  * the location of the brick's top left corner.
- * @param {!eYo.Where} blockTL The location of the top left corner
+ * @param {eYo.Where} blockTL The location of the top left corner
  *     of the brick, in board coordinates.
  */
 eYo.Magnet.prototype.moveToOffset = function(blockTL) {
@@ -1711,7 +1711,7 @@ eYo.Magnet.prototype.moveBy = function(dxy) {
 /**
  * Returns the distance between this magnet and another magnet in
  * board units.
- * @param {!eYo.Magnet} other The other connection to measure
+ * @param {eYo.Magnet} other The other connection to measure
  *     the distance to.
  * @return {number} The distance between magnets, in board units.
  */
@@ -1824,7 +1824,7 @@ eYo.Magnet.prototype.disconnect = (() => {
 
 /**
  * Connect the receiver to another magnet.
- * @param {!eYo.Magnet} other  The magnet to connect to.
+ * @param {eYo.Magnet} other  The magnet to connect to.
  */
 eYo.Magnet.prototype.connect = function(other) {
   if (this.target === other) {
@@ -1888,8 +1888,8 @@ eYo.Magnet.prototype.canConnectWithReason_ = function(target) {
 /**
  * Check if the two connections can be dragged to connect to each other.
  * A sealed connection is never allowed.
- * @param {!eYo.Magnet} candidate A nearby connection to check.
- * @param {?Boolean} ignoreDistance
+ * @param {eYo.Magnet} candidate A nearby connection to check.
+ * @param {!Boolean} ignoreDistance
  * @return {boolean} True if the connection is allowed, false otherwise.
  */
 eYo.Magnet.prototype.isConnectionAllowed = function (candidate, maxRadius) {

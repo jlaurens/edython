@@ -13,11 +13,9 @@
 
 eYo.require('eYo.UI')
 
-eYo.provide('eYo.WorkspaceControl')
-
 /**
  * Class for a workspace control.
- * @param {!eYo.Workspace} workspace The board to sit in.
+ * @param {eYo.Workspace} workspace The board to sit in.
  * @constructor
  * @readonly
  * @property {eYo.Rect} viewRect,  The view rectangle
@@ -36,7 +34,7 @@ eYo.provide('eYo.WorkspaceControl')
  * @property {number} MARGIN_SIDE_, Distance between trash can and right edge of board.
  *
  */
-eYo.UI.makeClass('WorkspaceControl', eYo.UI.Dflt, {
+eYo.UI.makeClass(eYo, 'WorkspaceControl', {
   props: {
     computed: {
       workspace () {

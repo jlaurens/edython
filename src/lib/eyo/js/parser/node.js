@@ -412,7 +412,7 @@ Object.defineProperties(eYo.Node.prototype, {
 
 /**
  * Add a comment to the node or one of its ancestors.
- * @param {!eYo.Node} comment  the comment node token to add.
+ * @param {eYo.Node} comment  the comment node token to add.
  */
 eYo.Node.prototype.pushComment = function (comment) {
   var n = this

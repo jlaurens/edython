@@ -13,16 +13,12 @@
 
 eYo.require('eYo.Fcls')
 
-eYo.provide('eYo.Dom')
-
 /**
  * @name {eYo.Dom}
  * @namespace
  */
 
-eYo.Dom = Object.create(null)
-
-eYo.provide('eYo.Dom.Mngr')
+eYo.Driver.makeNS(eYo, 'Dom')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
@@ -31,7 +27,7 @@ goog.forwardDeclare('goog.events')
  * The Svg delegate.
  * @constructor
  */
-eYo.Driver.Dlgt.makeSubclass(eYo.Dom, 'Dlgt')
+eYo.Driver.Dlgt.makeSubclass(eYo.Dom)
 
 /**
  * @type {eYo.Dom.Mngr}
@@ -61,13 +57,6 @@ eYo.Dom.makeMngrClass({
     }
   },
 })
-
-/**
- * @name {eYo.Dom.Decorate}
- * @namespace
- */
-eYo.Dom.Decorate = Object.create(null)
-
 
 /**
  * The document scroll.
@@ -107,7 +96,7 @@ if (window && window.PointerEvent) {
  * Sets the CSS transform property on an element. This function sets the
  * non-vendor-prefixed and vendor-prefixed versions for backwards compatibility
  * with older browsers. See http://caniuse.com/#feat=transforms2d
- * @param {!Element} node The node which the CSS transform should be applied.
+ * @param {Element} node The node which the CSS transform should be applied.
  * @param {string} transform The value of the CSS `transform` property.
  */
 eYo.Dom.setCssTransform = function(node, transform) {
@@ -118,8 +107,8 @@ eYo.Dom.setCssTransform = function(node, transform) {
 /**
  * Insert a node after a reference node.
  * Contrast with node.insertBefore function.
- * @param {!Element} after New element to insert.
- * @param {!Element} before Existing element to precede new node.
+ * @param {Element} after New element to insert.
+ * @param {Element} before Existing element to precede new node.
  * @private
  */
 eYo.Dom.insertAfter = function(node, before) {
@@ -137,7 +126,7 @@ eYo.Dom.insertAfter = function(node, before) {
 
 /**
  * Is this event a right-click?
- * @param {!Event} e Mouse event.
+ * @param {Event} e Mouse event.
  * @return {boolean} True if right-click.
  */
 eYo.Dom.isRightButton = e => {
@@ -153,10 +142,10 @@ eYo.Dom.isRightButton = e => {
  * Bind an event to a function call. When calling the function, verifies that
  * it belongs to the touch stream that is currently being processed, and splits
  * multitouch events into multiple events as needed.
- * @param {!EventTarget} node Node upon which to listen.
+ * @param {EventTarget} node Node upon which to listen.
  * @param {string} name Event name to listen to (e.g. 'mousedown').
- * @param {?Object} thisObject The value of 'this' in the function.
- * @param {!Function} callback Function to call when event is triggered.
+ * @param {!Object} thisObject The value of 'this' in the function.
+ * @param {Function} callback Function to call when event is triggered.
  * @param {boolean=} opt.noCaptureIdentifier True if triggering on this event
  *     should not block execution of other event handlers on this touch or other
  *     simultaneous touches.
@@ -222,7 +211,7 @@ eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
 
 /**
  * Unbind one or more events event from a function call.
- * @param {!Array.<!Array>} bindData Opaque data from bindEvent.
+ * @param {Array.<!Array>} bindData Opaque data from bindEvent.
  *     This list is emptied during the course of calling this function.
  * @return {!Function} The function call.
  */
@@ -237,9 +226,9 @@ eYo.Dom.unbindEvent = bindData => {
 
 /**
  * Bind mouse events.
- * @param {!Object} listener A mouse down or touch start event listener.
- * @param {!Element} element A mouse down or touch start event.
- * @param {?Object} opt  Option data: suffix, option flags: willUnbind, and bindEventWithChecks_'s options
+ * @param {Object} listener A mouse down or touch start event listener.
+ * @param {Element} element A mouse down or touch start event.
+ * @param {!Object} opt  Option data: suffix, option flags: willUnbind, and bindEventWithChecks_'s options
  */
 eYo.Dom.bindMouseEvents = (listener, element, opt) => {
   [
@@ -260,7 +249,7 @@ eYo.Dom.bindMouseEvents = (listener, element, opt) => {
 
 /**
  * Bind mouse events.
- * @param {!Event} e A mouse down or touch start event.
+ * @param {Event} e A mouse down or touch start event.
  */
 eYo.Dom.unbindMouseEvents = function(listener) {
   listener.bind_data_ && listener.bind_data_.forEach(data => eYo.Dom.unbindEvent(data))
@@ -270,9 +259,9 @@ eYo.Dom.unbindMouseEvents = function(listener) {
 /**
  * Split an event into an array of events, one per changed touch or mouse
  * point.
- * @param {!Event} e A mouse event or a touch event with one or more changed
+ * @param {Event} e A mouse event or a touch event with one or more changed
  * touches.
- * @param {!Function} f A function to be executed for each event, signature (<!Event>e) -> eYo.NA.
+ * @param {Function} f A function to be executed for each event, signature (<!Event>e) -> eYo.NA.
  * @return {!Array.<!Event>} An array of mouse or touch events.  Each touch
  *     event will have exactly one changed touch.
  */
@@ -306,7 +295,7 @@ eYo.Dom.clearBoundEvents = (bbf) => {
  * Decide whether we should handle or ignore this event.
  * Mouse and touch events require special checks because we only want to deal
  * with one touch stream at a time.  All other events should always be handled.
- * @param {!Event} e The event to check.
+ * @param {Event} e The event to check.
  * @return {boolean} True if this event should be passed through to the
  *     registered handler; false if it should be blocked.
  */
@@ -316,7 +305,7 @@ eYo.Dom.shouldHandleEvent = e => {
 
 /**
  * Check whether a given event is a touch event or a pointer event.
- * @param {!Event} e An event.
+ * @param {Event} e An event.
  * @return {boolean} true if it is a touch event; false otherwise.
  */
 eYo.Dom.isTouchEvent = e => {
@@ -325,7 +314,7 @@ eYo.Dom.isTouchEvent = e => {
 
 /**
  * Check whether a given event is a touch event or a pointer event.
- * @param {!Event} e An event.
+ * @param {Event} e An event.
  * @return {boolean} true if it is a touch event; false otherwise.
  */
 eYo.Dom.isMouseOrTouchEvent = e => {
@@ -340,7 +329,7 @@ eYo.Dom.isMouseOrTouchEvent = e => {
  * If the current identifier was unset, save the identifier from the
  * event.  This starts a drag/motion, during which touch events with other
  * identifiers will be silently ignored.
- * @param {!Event} e Mouse event or touch event.
+ * @param {Event} e Mouse event or touch event.
  * @return {boolean} Whether the identifier on the event matches the current
  *     saved identifier.
  */
@@ -380,7 +369,7 @@ eYo.Dom.checkTouchIdentifier = (() => {
 /**
  * Get the touch identifier from the given event.  If it was a mouse event, the
  * identifier is the string 'mouse'.
- * @param {!Event} e Mouse event or touch event.
+ * @param {Event} e Mouse event or touch event.
  * @return {string} The touch identifier from the first changed touch, if
  *     defined.  Otherwise 'mouse'.
  */
@@ -404,7 +393,7 @@ eYo.Dom.gobbleEvent = e => {
 
 /**
  * Is this event targeting a text input widget?
- * @param {!Event} e An event.
+ * @param {Event} e An event.
  * @return {boolean} True if text input.
  */
 eYo.Dom.isTargetInput = e => {
@@ -530,7 +519,7 @@ eYo.Dom.bindDocumentEvents = (() => {
 /**
  * Handle a key-down on SVG drawing surface.
  * The delete block code is.unbindMouseEvents modified
- * @param {!Event} e Key down event.
+ * @param {Event} e Key down event.
  * @private
  */
 eYo.Dom.on_keydown = e => {

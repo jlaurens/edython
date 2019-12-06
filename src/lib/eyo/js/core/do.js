@@ -74,8 +74,8 @@ eYo.Do.Name = (() => {
    * an infinite string ending with '!' characters
    * 2) no finite string last character is '!',
    * except for the one length string '!' itself.
-   * @param {!string} lhs
-   * @param {!string} rhs
+   * @param {string} lhs
+   * @param {string} rhs
    * @return an object {sign: ±1, value: rhs - lhs as array} or eYo.NA on entry error
    */
   me.getDelta = function (lhs, rhs) {
@@ -145,7 +145,7 @@ eYo.Do.Name = (() => {
    * Get the normalized name.
    * 1) characters are in ]MIN, MAX[
    * 2) no '!' at the end
-   * @param {!string} name
+   * @param {string} name
    * @return a name in the proper format
    */
   me.getNormalized = function (name) {
@@ -201,8 +201,8 @@ eYo.Do.Name = (() => {
   }
   /**
    * Get the order of the two given strings.
-   * @param {!string} lhs
-   * @param {!string} rhs
+   * @param {string} lhs
+   * @param {string} rhs
    * @return -1 if lhs < rhs,
    * 0 if lhs === rhs,
    * 1 if lhs > rhs,
@@ -250,8 +250,8 @@ eYo.Do.Name = (() => {
    * 1) any finite string represents in reality
    * an infinite string ending with '!' characters
    * 2) no finite string last character is '!'
-   * @param {!string} lhs
-   * @param {!string} rhs
+   * @param {string} lhs
+   * @param {string} rhs
    * @return a string between lhs and rhs
    */
   me.getBetween = function (lhs, rhs, weight = 0.5) {
@@ -341,8 +341,8 @@ eYo.Do.createSPAN = function (text, css) {
 /**
  * List enumerator
  * For edython.
- * @param {!Array} list indexed object.
- * @param {!function(Object): boolean} filter an optional filter.
+ * @param {Array} list indexed object.
+ * @param {function(Object): boolean} filter an optional filter.
  * @return {Object} an enumerator
  */
 eYo.Do.Enumerator = (list, filter) => {
@@ -409,8 +409,8 @@ eYo.Do.Enumerator = (list, filter) => {
 /**
  * Convenient shortcut
  * For edython.
- * @param {!Object} object
- * @param {!string} key
+ * @param {Object} object
+ * @param {string} key
  * @return {boolean}
  */
 eYo.Do.hasOwnProperty = function (object, key) {
@@ -422,7 +422,7 @@ eYo.Do.hasOwnProperty = function (object, key) {
  * Throws an error for bad input.
  * See https://stackoverflow.com/questions/11563554/how-do-i-detect-xml-parsing-errors-when-using-javascripts-domparser-in-a-cross
  * For edython.
- * @param {!string} string
+ * @param {string} string
  * @return {'Element'}
  */
 eYo.Do.stringToDom = function (string) {
@@ -549,8 +549,8 @@ eYo.Do.propertyR = (getter) => {
 /**
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
- * @param {?Function} try_f
- * @param {?Function} finally_f
+ * @param {!Function} try_f
+ * @param {!Function} finally_f
  * @return whatever returns try_f
  */
 eYo.Do.tryFinally = function (try_f, finally_f) {
@@ -568,9 +568,9 @@ eYo.Do.tryFinally = function (try_f, finally_f) {
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
  * No `this` in both arguments.
- * @param {?Function} start_f
- * @param {?Function} begin_finally_f
- * @param {?Function} end_finally_f
+ * @param {!Function} start_f
+ * @param {!Function} begin_finally_f
+ * @param {!Function} end_finally_f
  */
 eYo.Do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
   return (try_f, finally_f) => {

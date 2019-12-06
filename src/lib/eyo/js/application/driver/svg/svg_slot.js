@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Svg')
 
-eYo.provide('eYo.Svg.Slot')
-
 eYo.forwardDeclare('eYo.Slot')
 
 /**
@@ -23,7 +21,7 @@ eYo.forwardDeclare('eYo.Slot')
 eYo.Svg.makeDriverClass('Slot', {
     /**
    * Prepare the given slot.
-   * @param {!eYo.Slot} slot to be prepared.
+   * @param {eYo.Slot} slot to be prepared.
    */
   initUI (slot) {
     var dom = this._initUI(slot)
@@ -53,7 +51,7 @@ eYo.Svg.makeDriverClass('Slot', {
 
 /**
  * Whether the slot is displayed.
- * @param {!Object} slot  the slot to query about
+ * @param {Object} slot  the slot to query about
  */
 eYo.Svg.Slot.prototype.displayedGet = function (slot) {
   var g = slot.dom.svg.group_
@@ -62,7 +60,7 @@ eYo.Svg.Slot.prototype.displayedGet = function (slot) {
 
 /**
  * Display/hide the given slot.
- * @param {!Object} slot  the slot the driver acts on
+ * @param {Object} slot  the slot the driver acts on
  * @param {boolean} yorn
  */
 eYo.Svg.Slot.prototype.displayedSet = function (slot, yorn) {
@@ -76,7 +74,7 @@ eYo.Svg.Slot.prototype.displayedSet = function (slot, yorn) {
 
 /**
  * Display/hide the given slot according to its `visible` property.
- * @param {!Object} slot  the slot the driver acts on
+ * @param {Object} slot  the slot the driver acts on
  * @param {boolean} yorn
  */
 eYo.Svg.Slot.prototype.displayedUpdate = function (slot) {

@@ -158,8 +158,8 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr, mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr, mngr.menu is the menu to populate.
  * @this {eYo.Brick}
  * @private
  */
@@ -195,8 +195,8 @@ eYo.Expr.yield_expr.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr, mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr, mngr.menu is the menu to populate.
  * @private
  */
 eYo.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
@@ -215,8 +215,8 @@ eYo.Stmt.makeSubclass('yield_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr, mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr, mngr.menu is the menu to populate.
  * @private
  */
 eYo.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mngr) {

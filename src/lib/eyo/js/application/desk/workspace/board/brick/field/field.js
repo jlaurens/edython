@@ -26,7 +26,7 @@ eYo.provide('eYo.FieldInput')
 
 /**
  * Abstract class for text fields.
- * @param {!eYo.Brick|eYo.Slot|eYo.Magnet} bsim The owner of the field.
+ * @param {eYo.Brick|eYo.Slot|eYo.Magnet} bsim The owner of the field.
  * @param {string} text The initial content of the field.
  * @constructor
  */
@@ -52,8 +52,8 @@ Object.defineProperties(eYo.Field, {
 /**
  * Create all the fields from the given model.
  * For edython.
- * @param {!eYo.Slot|!eYo.Magnet|!eYo.Brick} owner
- * @param {!Object} fieldsModel
+ * @param {eYo.Slot|!eYo.Magnet|!eYo.Brick} owner
+ * @param {Object} fieldsModel
  */
 eYo.Field.makeFields = (() => {
   // This is a closure
@@ -551,7 +551,7 @@ eYo.Field.prototype.willRender = function () {
 /**
  * Class for a non-editable field.
  * The only purpose is to start with a different height.
- * @param {!eYo.Brick|eYo.Slot} bsi The owner of the field.
+ * @param {eYo.Brick|eYo.Slot} bsi The owner of the field.
  * @param {string} name The required name of the field
  * @param {string} text The initial content of the field.
  * @extends {eYo.Field}
@@ -565,7 +565,7 @@ goog.inherits(eYo.FieldLabel, eYo.Field)
 
 /**
  * Class for an editable code field.
- * @param {!eYo.Brick|eYo.Slot} bsi The owner of the field.
+ * @param {eYo.Brick|eYo.Slot} bsi The owner of the field.
  * @param {string=} name
  * @param {string} text The initial content of the field.
  * @extends {eYo.Field}

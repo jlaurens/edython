@@ -114,8 +114,8 @@ Object.defineProperties(eYo.Events, {
 /**
  * Event enabler.
  * Use the arrow definition of functions to catch `this`.
- * @param {!Function} try_f
- * @param {?Function} finally_f
+ * @param {Function} try_f
+ * @param {!Function} finally_f
  */
 eYo.Events.enableWrap = eYo.Do.makeWrapper(
   eYo.Events.enable,
@@ -125,8 +125,8 @@ eYo.Events.enableWrap = eYo.Do.makeWrapper(
 /**
  * Event disabler.
  * Use the arrow definition of functions to catch `this`.
- * @param {!Function} try_f
- * @param {?Function} finally_f
+ * @param {Function} try_f
+ * @param {!Function} finally_f
  */
 eYo.Events.disableWrap = eYo.Do.makeWrapper(
   eYo.Events.disable,
@@ -135,8 +135,8 @@ eYo.Events.disableWrap = eYo.Do.makeWrapper(
 
 /**
  * Wrap the given function into a single undo group.
- * @param {!Function} try_f
- * @param {?Function} finally_f
+ * @param {Function} try_f
+ * @param {!Function} finally_f
  */
 eYo.Events.groupWrap = (f, g) => {
   eYo.Do.makeWrapper(
@@ -153,7 +153,7 @@ eYo.Events.groupWrap = (f, g) => {
   var FIRE_QUEUE_ = []
   /**
    * Create a custom event and fire it.
-   * @param {!eYo.Events.Abstract} event Custom data for event.
+   * @param {eYo.Events.Abstract} event Custom data for event.
    */
   eYo.Events.fire = function(event) {
     if (!eYo.Events.enabled) {
@@ -186,7 +186,7 @@ eYo.Events.groupWrap = (f, g) => {
 
 /**
  * Filter the queued events and merge duplicates.
- * @param {!Array.<!eYo.Events.Abstract>} queueIn Array of events.
+ * @param {Array.<!eYo.Events.Abstract>} queueIn Array of events.
  * @param {boolean} forward True if forward (redo), false if backward (undo).
  * @return {!Array.<!eYo.Events.Abstract>} Array of filtered events.
  */
@@ -268,7 +268,7 @@ eYo.Events.enable = function() {
  * Use this on applications where all bricks should be connected to a top brick.
  * Recommend setting the 'disable' option to 'false' in the config so that
  * users don't try to reenable disabled orphan bricks.
- * @param {!eYo.Events.Abstract} event Custom data for event.
+ * @param {eYo.Events.Abstract} event Custom data for event.
  */
 eYo.Events.disableOrphans = function(event) {
   if (event.type === eYo.Events.BRICK_MOVE ||

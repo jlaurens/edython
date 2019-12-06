@@ -31,7 +31,7 @@ goog.forwardDeclare('goog.math')
  * The flyout contains the flyout board.
  * There is also a board used to drag bricks around.
  * That makes at least 4 different boards.
- * @param {!eYo.Desk|eYo.Workspace|eYo.Section} owner.
+ * @param {eYo.Desk|eYo.Workspace|eYo.Section} owner.
  * @constructor
  */
 eYo.Board = function(owner) {
@@ -98,7 +98,7 @@ eYo.Board.prototype.list__ = null
 
 /**
  * Class for a main board.  This is a data structure that contains bricks, has event, undo/redo management...
- * @param {!eYo.Desk} owner The main board belongs to a workspace. We allways have `this === owner.board`, which means that each kind of owner may have only one board.
+ * @param {eYo.Desk} owner The main board belongs to a workspace. We allways have `this === owner.board`, which means that each kind of owner may have only one board.
  * @constructor
  */
 eYo.Board.Main = function(owner, options) {
@@ -609,7 +609,7 @@ eYo.Board.Main.prototype.clear = function() {
 
 /**
  * Returns a brick subclass for eYo bricks.
- * @param {?string} prototypeName Name of the language object containing
+ * @param {!string} prototypeName Name of the language object containing
  *     type-specific functions for this brick.
  * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
@@ -621,7 +621,7 @@ eYo.Board.prototype.newBrick = function (prototypeName, opt_id) {
 
 /**
  * When something in this board changes, call a function.
- * @param {!Function} func Function to call.
+ * @param {Function} func Function to call.
  * @return {!Function} Function that can be passed to
  *     removeChangeListener.
  */
@@ -715,13 +715,13 @@ eYo.Board.prototype.lastPageScroll_ = null;
 /**
  * Developers may define this function to add custom menu options to the
  * board's context menu or edit the board-created set of menu options.
- * @param {!Array.<!Object>} options List of menu options to add to.
+ * @param {Array.<!Object>} options List of menu options to add to.
  */
 eYo.Board.prototype.configureContextMenu = null;
 
 /**
  * Save layout handler data so we can delete it later in dispose.
- * @param {!Array.<!Array>} handler Data that can be passed to unbindEvent.
+ * @param {Array.<!Array>} handler Data that can be passed to unbindEvent.
  */
 eYo.Board.prototype.setResizeHandlerWrapper = function(handler) {
   this.resizeHandlerWrapper_ = handler;
@@ -894,7 +894,7 @@ eYo.Board.prototype.render = function() {
 /**
  * Highlight or unhighlight a brick in the board.  Brick highlighting is
  * often used to visually mark bricks currently being executed.
- * @param {?string} id ID of brick to highlight/unhighlight,
+ * @param {!string} id ID of brick to highlight/unhighlight,
  *   or null for no brick (used to unhighlight all bricks).
  * @param {boolean=} opt_state If eYo.NA, highlight specified brick and
  * automatically unhighlight all others.  If true or false, manually
@@ -1015,7 +1015,7 @@ eYo.Board.prototype.paste = function () {
 
 /**
  * Is the motion over a delete area (flyout or non-closing flyout)?
- * @param {!eYo.Motion} e Mouse move event.
+ * @param {eYo.Motion} e Mouse move event.
  * @return {?number} Null if not over a delete area, or an enum representing
  *     which delete area the event is over.
  */
@@ -1032,8 +1032,8 @@ eYo.Board.prototype.inDeleteArea = function(motion) {
 
 /**
  * Start tracking a drag of an object on this board.
- * @param {!Event} e Mouse down event.
- * @param {!eYo.Where} xy Starting location of object.
+ * @param {Event} e Mouse down event.
+ * @param {eYo.Where} xy Starting location of object.
  */
 eYo.Board.prototype.eventWhere = function(e) {
   return this.ui_driver_mngr.eventWhere(this, e)
@@ -1041,7 +1041,7 @@ eYo.Board.prototype.eventWhere = function(e) {
 
 /**
  * Show the context menu for the board.
- * @param {!Event} e Mouse event.
+ * @param {Event} e Mouse event.
  * @private
  * @suppress{accessControls}
  */
@@ -1271,7 +1271,7 @@ eYo.Board.prototype.scrollCenter = function() {
   
 /**
  * Scroll the board to center on the given brick.
- * @param {?string} id ID of brick center on.
+ * @param {!string} id ID of brick center on.
  * @public
  */
 eYo.Board.prototype.centerOnBrick = function(id) {
@@ -1290,7 +1290,7 @@ eYo.Board.prototype.centerOnBrick = function(id) {
 
 /**
  * Sets the X/Y translations of a top level board to match the scrollbars.
- * @param {!Object} xyRatio Contains an x and/or y property which is a float
+ * @param {Object} xyRatio Contains an x and/or y property which is a float
  *     between 0 and 1 specifying the degree of scrolling.
  * @private
  * @this eYo.Board
@@ -1351,7 +1351,7 @@ eYo.Board.prototype.logAllConnections = function (comment) {
 
 /**
  * Convert a coordinate object from pixels to board units.
- * @param {!eYo.Where} pixelCoord  A coordinate with x and y values
+ * @param {eYo.Where} pixelCoord  A coordinate with x and y values
  *     in css pixel units.
  * @return {!eYo.Where} The input coordinate divided by the board
  *     scale.
@@ -1379,7 +1379,7 @@ eYo.Board.prototype.getRecover = (() => {
 /**
  * Add the nodes from string to the board.
  * Usefull for testing? -> commonn test methods.
- * @param {!String} str
+ * @param {String} str
  * @return {Array.<string>} An array containing new brick IDs.
  */
 eYo.Board.prototype.fromDom = function (dom) {
@@ -1388,7 +1388,7 @@ eYo.Board.prototype.fromDom = function (dom) {
 
 /**
  * Add the nodes from string to the board.
- * @param {!String} str
+ * @param {String} str
  * @return {Array.<string>} An array containing new brick IDs.
  */
 eYo.Board.prototype.fromString = function (str) {
@@ -1400,7 +1400,7 @@ eYo.Board.prototype.fromString = function (str) {
 
 /**
  * Convert the board to string.
- * @param {?Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
+ * @param {!Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
  */
 eYo.Board.prototype.toDom = function (opt) {
   return eYo.Xml.boardToDom(this, opt)
@@ -1408,7 +1408,7 @@ eYo.Board.prototype.toDom = function (opt) {
 
 /**
  * Convert the board to string.
- * @param {?Boolean} opt_noId
+ * @param {!Boolean} opt_noId
  */
 eYo.Board.prototype.toString = function (opt_noId) {
   let oSerializer = new XMLSerializer()
@@ -1417,7 +1417,7 @@ eYo.Board.prototype.toString = function (opt_noId) {
 
 /**
  * Convert the board to UTF8 byte array.
- * @param {?Boolean} opt_noId
+ * @param {!Boolean} opt_noId
  */
 eYo.Board.prototype.toUTF8ByteArray = function (opt_noId) {
   var s = '<?xml version="1.0" encoding="utf-8"?>\n' + this.toString(optNoId)
@@ -1426,7 +1426,7 @@ eYo.Board.prototype.toUTF8ByteArray = function (opt_noId) {
 
 /**
  * Add the nodes from UTF8 string representation to the board. UNUSED.
- * @param {!Array} bytes
+ * @param {Array} bytes
  * @return {Array.<string>} An array containing new brick IDs.
  */
 eYo.Board.prototype.fromUTF8ByteArray = function (bytes) {
@@ -1451,7 +1451,7 @@ eYo.Board.prototype.addBrick = function (brick, opt_id) {
 /**
  * Remove a brick from the board.
  * @param {eYo.Brick.Dflt} brick
- * @param {?Function} f
+ * @param {!Function} f
  */
 eYo.Board.prototype.removeBrick = function (brick, f) {
   this.change.wrap(() => {
@@ -1462,7 +1462,7 @@ eYo.Board.prototype.removeBrick = function (brick, f) {
 
 /**
  * Tidy up the nodes.
- * @param {?Object} kvargs  key value arguments
+ * @param {!Object} kvargs  key value arguments
  * IN PROGRESS
 eYo.Board.prototype.tidyUp = function (kvargs) {
   // x + y < O / x + y > 0
@@ -1558,7 +1558,7 @@ eYo.Board.prototype.tidyUp = function (kvargs) {
 
 /**
  * Scroll the board to show the brick with the given id in the top left corner.
- * @param {?string} id ID of brick center on.
+ * @param {!string} id ID of brick center on.
  * @public
  */
 eYo.Board.prototype.scrollBrickTopLeft = function(id) {
@@ -1588,7 +1588,7 @@ eYo.Board.prototype.scrollBrickTopLeft = function(id) {
 
 /**
  * Fire a change event.
- * @param {!eYo.Events.Abstract} event Event to fire.
+ * @param {eYo.Events.Abstract} event Event to fire.
  */
 eYo.Board.prototype.eventDidFireChange = function(event) {
   const task = () => {

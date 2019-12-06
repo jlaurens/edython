@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Svg')
 
-eYo.provide('eYo.Svg.TrashCan')
-
 eYo.forwardDeclare('eYo.TrashCan')
 
 /**
@@ -23,8 +21,8 @@ eYo.forwardDeclare('eYo.TrashCan')
 eYo.Svg.makeDriverClass('TrashCan', {
     /**
    * Initialize the trash can SVG ressources.
-   * @param {!eYo.TrashCan} trashCan
-   * @param {?Object} options
+   * @param {eYo.TrashCan} trashCan
+   * @param {!Object} options
    * @return {!Element} The trash can's SVG group.
    */
   initUI (trashCan, options) {
@@ -116,7 +114,7 @@ eYo.Svg.makeDriverClass('TrashCan', {
   },
   /**
    * Initializes the trash can SVG ressources.
-   * @param {!eYo.TrashCan} trashCan
+   * @param {eYo.TrashCan} trashCan
    */
   disposeUIMake (trashCan) {
     var dom = trashCan.dom
@@ -147,7 +145,7 @@ eYo.Svg.TrashCan.prototype.on_mouseup = function(trashCan) {
 
 /**
  * Initializes the trashCan SVG ressources.
- * @param {!eYo.TrashCan} trashCan
+ * @param {eYo.TrashCan} trashCan
  */
 eYo.Svg.TrashCan.prototype.place = function(trashCan) {
   var r = trashCan.viewRect
@@ -159,7 +157,7 @@ eYo.Svg.TrashCan.prototype.place = function(trashCan) {
 
 /**
  * Is the lid open or shut.
- * @param {!eYo.TrashCan} trashCan
+ * @param {eYo.TrashCan} trashCan
  * @private
  */
 eYo.Svg.TrashCan.prototype.openGet = function(trashCan) {
@@ -168,7 +166,7 @@ eYo.Svg.TrashCan.prototype.openGet = function(trashCan) {
 
 /**
  * Flip the lid open or shut.
- * @param {!eYo.TrashCan} trashCan
+ * @param {eYo.TrashCan} trashCan
  * @param {boolean} state True if open.
  * @private
  */
@@ -185,7 +183,7 @@ eYo.Svg.TrashCan.prototype.openSet = function(trashCan, state) {
 
 /**
  * Rotate the lid open or closed by one step.  Then wait and recurse.
- * @param {!eYo.TrashCan} trashCan
+ * @param {eYo.TrashCan} trashCan
  */
 eYo.Svg.TrashCan.prototype.animate = function(trashCan) {
   var dom = trashCan.dom
@@ -208,7 +206,7 @@ eYo.Svg.TrashCan.prototype.animate = function(trashCan) {
 
 /**
  * Return the deletion rectangle for the given trash can.
- * @param {!eYo.TrashCan} trashCan
+ * @param {eYo.TrashCan} trashCan
  */
 eYo.Svg.TrashCan.prototype.clientRect = function(trashCan) {
   var svg = trashCan.dom.svg

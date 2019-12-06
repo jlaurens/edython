@@ -369,9 +369,9 @@ eYo.Shape.prototype.V = function (is_brick, l) {
  * part = 2 -> 180° ≤ -angle ≤ 180° + 90°
  * part = 3 -> 270° ≤ -angle ≤ 270° + 90°
  *
- * @param {?Number} r  optional radius.
- * @param {?Boolean} clockwise  Drawing direction.
- * @param {?Number} part  part is in [[0, 3]].
+ * @param {!Number} r  optional radius.
+ * @param {!Boolean} clockwise  Drawing direction.
+ * @param {!Number} part  part is in [[0, 3]].
  */
 eYo.Shape.prototype.quarter_circle = function (r, clockwise, part) {
   if (r === null) {
@@ -411,9 +411,9 @@ eYo.Shape.prototype.quarter_circle = function (r, clockwise, part) {
  * part = 2 -> 180° ≤ -angle ≤ 180° + 180°
  * part = 3 -> 270° ≤ -angle ≤ 270° + 180°
  *
- * @param {?Number} r  optional radius. At least 2 arguments are required.
- * @param {?Boolean} part  part is in [[0, 3]].
- * @param {?Boolean} clockwise  Drawing direction.
+ * @param {!Number} r  optional radius. At least 2 arguments are required.
+ * @param {!Boolean} part  part is in [[0, 3]].
+ * @param {!Boolean} clockwise  Drawing direction.
  */
 eYo.Shape.prototype.half_circle = function (r, clockwise, part) {
   if (part === true || part === false) {
@@ -660,7 +660,7 @@ eYo.Shape.newWithMagnet = function(magnet) {
 /**
  * Create a path definition with the given connection delegate.
  * @param {eYo.Magnet!} m4t  A connection delegate.
- * @param {?Object} opt  Optional kv arguments
+ * @param {!Object} opt  Optional kv arguments
  * @return {String!} A path definition.
  */
 eYo.Shape.definitionWithMagnet = function(m4t, opt) {
@@ -669,8 +669,8 @@ eYo.Shape.definitionWithMagnet = function(m4t, opt) {
 
 /**
  * create a shape with the given connection delegate.
- * @param {?eYo.MagnetSvg} magnet  Magnet
- * @param {?Object} opt  Optional kv arguments
+ * @param {!eYo.MagnetSvg} magnet  Magnet
+ * @param {!Object} opt  Optional kv arguments
  * @return {!Object} The receiver.
  */
 eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {

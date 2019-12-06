@@ -23,8 +23,8 @@ eYo.forwardDeclare('eYo.Application')
 eYo.Dom.makeDriverClass('Application', {
   /**
    * Initialize the application's dom ressources.
-   * @param {!eYo.Application} app
-   * @param {?Function} f
+   * @param {eYo.Application} app
+   * @param {!Function} f
    * @return {!Element} The desk's dom repository.
    */
   initUI (app) {
@@ -46,7 +46,7 @@ eYo.Dom.makeDriverClass('Application', {
   },
   /**
    * Dispose of the application dom resources.
-   * @param {!eYo.Application} app
+   * @param {eYo.Application} app
    */
   disposeUI (app) {
     var dom = app.dom

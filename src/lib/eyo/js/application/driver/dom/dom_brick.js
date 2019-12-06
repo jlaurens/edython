@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Dom')
 
-eYo.provide('eYo.Dom.Brick')
-
 eYo.forwardDeclare('eYo.Brick')
 
 /**
@@ -23,7 +21,7 @@ eYo.forwardDeclare('eYo.Brick')
 eYo.Dom.makeDriverClass('Brick', {
   /**
    * Initialize the board dom ressources.
-   * @param {!eYo.Board} board
+   * @param {eYo.Board} board
    * @return {!Element} The board's dom repository.
    */
   initUI (brick) {
@@ -41,7 +39,7 @@ eYo.Dom.makeDriverClass('Brick', {
   },
   /**
    * Dispose of the desk dom resources.
-   * @param {!eYo.Brick.Dflt} brick
+   * @param {eYo.Brick.Dflt} brick
    */
   disposeUI (brick) {
     if (brick.dom && brick.dom.div_) {

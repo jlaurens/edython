@@ -363,8 +363,8 @@ eYo.Stmt.assignment_stmt.prototype.getType = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
@@ -567,8 +567,8 @@ eYo.Brick.List.makeSubclass('augassigned_list', () => {
 
 // /**
 //  * Populate the context menu for the given brick.
-//  * @param {!eYo.Brick.Dflt} brick The brick.
-//  * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+//  * @param {eYo.Brick.Dflt} brick The brick.
+//  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
 //  * @private
 //  */
 // eYo.Stmt.augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {

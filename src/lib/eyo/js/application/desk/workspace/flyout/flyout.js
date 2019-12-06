@@ -27,7 +27,7 @@ eYo.forwardDeclare('eYo.MenuButtonRenderer')
 /**
  * @type {eYo.Flyout}
  * Class for a flyout.
- * @param {!eYo.Workspace} owner  The owning desk, which must be a desk...
+ * @param {eYo.Workspace} owner  The owning desk, which must be a desk...
  * @constructor
  * @readonly
  * @property {eYo.Workspace} workspace, The workspace
@@ -381,7 +381,7 @@ eYo.Flyout.prototype.hide = function() {
 /**
  * Show and populate the flyout.
  * More tagnames accepted.
- * @param {!Array|string} model List of bricks to show.
+ * @param {Array|string} model List of bricks to show.
  */
 eYo.Flyout.prototype.show = function(model) {
   this.board_.setResizesEnabled(false)
@@ -451,7 +451,7 @@ eYo.Flyout.prototype.show = function(model) {
 
 /**
  * Scroll the flyout.
- * @param {!Event} e Mouse wheel scroll event.
+ * @param {Event} e Mouse wheel scroll event.
  * @private
  */
 eYo.Flyout.prototype.on_wheel = function(e) {
@@ -469,7 +469,7 @@ eYo.Flyout.prototype.on_wheel = function(e) {
 
 /**
  * Create a copy of this brick on the board.
- * @param {!eYo.Brick.Dflt} originalBrick The brick to copy from the flyout.
+ * @param {eYo.Brick.Dflt} originalBrick The brick to copy from the flyout.
  * @return {eYo.Brick} The newly created brick, or null if something
  *     went wrong with deserialization.
  */
@@ -492,8 +492,8 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
 
 /**
  * Lay out the bricks in the flyout.
- * @param {!Array.<!Object>} contents The bricks and buttons to lay out.
- * @param {!Array.<number>} gaps The visible gaps between bricks.
+ * @param {Array.<!Object>} contents The bricks and buttons to lay out.
+ * @param {Array.<number>} gaps The visible gaps between bricks.
  * @private
  */
 eYo.Flyout.prototype.layout_ = function(contents) {
@@ -525,7 +525,7 @@ eYo.Flyout.prototype.scrollToStart = function() {
  * Determine if a drag delta is toward the board, based on the position
  * and orientation of the flyout. This is used in determineDragIntention_ to
  * determine if a new brick should be created or if the flyout should scroll.
- * @param {!eYo.Motion} Motion.
+ * @param {eYo.Motion} Motion.
  * @return {boolean} true if the drag is toward the board.
  */
 eYo.Flyout.prototype.isDragTowardBoard = function(Motion) {
@@ -612,7 +612,7 @@ console.error('IN PROGRESS')
  * Copy a brick from the flyout to the board and position it correctly.
  * Edython adds a full rendering process.
  * No rendering is made while bricks are dragging.
- * @param {!eYo.Brick.Dflt} srcBrick The flyout brick to copy.
+ * @param {eYo.Brick.Dflt} srcBrick The flyout brick to copy.
  * @return {!eYo.Brick} The new brick in the main board.
  * @private
  */
@@ -638,7 +638,7 @@ eYo.Flyout.prototype.placeNewBrick_ = function(srcBrick) {
 
 /**
  * Does the job of sliding the flyout in or out.
- * @param {?Boolean} close  close corresponds to the final state.
+ * @param {!Boolean} close  close corresponds to the final state.
  * When not given, toggle the closed state.
  */
 eYo.Flyout.prototype.doSlide = function(close) {
@@ -713,7 +713,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
  * Slide the flyout in or out.
  * This 2 levels design allows overwriting.
  * Actually, the ui button calls the slide method.
- * @param {?Boolean} close  close corresponds to the final state.
+ * @param {!Boolean} close  close corresponds to the final state.
  * When not given, toggle the closed state.
  */
 eYo.Flyout.prototype.slide = function(close) {
@@ -737,7 +737,7 @@ eYo.Flyout.prototype.didSlide = function(closed) {
 /**
  * List of node models by category.
  * Used by the front end.
- * @param {!String} category The name of the category to retrieve.
+ * @param {String} category The name of the category to retrieve.
  */
 eYo.Flyout.prototype.getList = function (category) {
   return eYo.Library[category] || []

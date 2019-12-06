@@ -30,8 +30,8 @@ var eYo = (() => {
 /**
  * Contrary to goog.inherits, does not erase the childC9r.prototype.
  * IE<11
- * @param {!Function} childC9r
- * @param {!Function} superC9r
+ * @param {Function} childC9r
+ * @param {Function} superC9r
  */
 eYo.inherits = function (childC9r, superC9r) {
   childC9r.superClass_ = superC9r.prototype
@@ -61,12 +61,18 @@ eYo.global =
     // For in-page browser environments and workers.
     self;
 
+/**
+ * @param {String} name
+ */
 eYo.provide = (name) => {
   if (name.includes('.') || !eYo.global[name]) {
-    goog.provide(name)
+    goog.provide(/* Type: String*/name)
   }
 }
 
+/**
+ * @param {String} name
+ */
 eYo.require = (name) => {
   goog.require(/* Type: String*/name)
 }
@@ -83,53 +89,8 @@ eYo.provide('eYo.Session')
 eYo.forwardDeclare('eYo.Application')
 
 /**
- * Checks if the condition evaluates to true.
- * @template T
- * @param {T} condition The condition to check.
- * @param {string=} opt_message Error message in case of failure.
- * @param {...*} args The items to substitute into the failure message.
- * @return {T} The value of the condition.
- * @throws {eYo.AssertionError} When the condition evaluates to false.
- * @closurePrimitive {asserts.truthy}
- */
-eYo.assert = function(condition, opt_message, ...args) {
-  if (eYo.ENABLE_ASSERTS && !condition) {
-    eYo.doAssertFailure_('', null, opt_message, ...args)
-  }
-  return condition
-};
-
-/**
- * Throws an exception with the given message and "Assertion failed" prefixed
- * onto it.
- * @param {string} defaultMessage The message to use if givenMessage is empty.
- * @param {Array<*>} defaultArgs The substitution arguments for defaultMessage.
- * @param {string|undefined} givenMessage Message supplied by the caller.
- * @param {Array<*>} givenArgs The substitution arguments for givenMessage.
- * @throws {eYo.AssertionError} When the value is not a number.
- * @private
- */
-eYo.doAssertFailure_ = function(
-  defaultMessage, defaultArgs, givenMessage, givenArgs) {
-  var message = 'Assertion failed';
-  if (givenMessage) {
-    message += ': ' + givenMessage;
-    var args = givenArgs;
-  } else if (defaultMessage) {
-    message += ': ' + defaultMessage;
-    args = defaultArgs;
-  }
-  // The '' + works around an Opera 10 bug in the unit tests. Without it,
-  // a stack trace is added to var message above. With this, a stack trace is
-  // not added until this line (it causes the extra garbage to be added after
-  // the assertion message instead of in the middle of it).
-  var e = new eYo.AssertionError('' + message, args || []);
-  eYo.errorHandler_(e);
-};
-
-/**
  * The default error handler.
- * @param {!eYo.AssertionError} e The exception to be handled.
+ * @param {eYo.AssertionError} e The exception to be handled.
  */
 eYo.DEFAULT_ERROR_HANDLER = function(e) {
   throw e
@@ -142,34 +103,56 @@ eYo.DEFAULT_ERROR_HANDLER = function(e) {
 eYo.errorHandler_ = eYo.DEFAULT_ERROR_HANDLER
 
 /**
+ * Checks if the condition evaluates to true.
+ * @template T
+ * @param {T} condition The condition to check.
+ * @param {string=} opt_message Error message in case of failure.
+ * @param {...*} args The items to substitute into the failure message.
+ * @return {T} The value of the condition.
+ * @throws {eYo.AssertionError} When the condition evaluates to false.
+ * @closurePrimitive {asserts.truthy}
+ */
+eYo.assert = function(condition, message, ...args) {
+  if (eYo.ENABLE_ASSERTS && !condition) {
+    var e = new eYo.AssertionError(message, ...args);
+    eYo.errorHandler_(e);
+  }
+  return condition
+}
+
+/**
  * Error object for failed assertions.
- * @param {string} messagePattern The pattern that was used to form message.
- * @param {!Array<*>} messageArgs The items to substitute into the pattern.
+ * https://stackoverflow.com/questions/1382107/whats-a-good-way-to-extend-error-in-javascript
+ * @param {string} pattern The pattern that was used to form message.
+ * @param {...*} messageArgs The items to substitute into the pattern.
  * @constructor
  * @extends {Error}
  * @final
  */
-eYo.AssertionError = function(messagePattern, messageArgs) {
-  eYo.AssertionError.superClass_.constructor.call(this, eYo.subs_(messagePattern, messageArgs))
+eYo.AssertionError = function(pattern, ...args) {
+  this.message = eYo.subs_(pattern, ...args)
+  this.stack = Error().stack
   /**
    * The message pattern used to format the error message. Error handlers can
    * use this to uniquely identify the assertion.
    * @type {string}
    */
-  this.messagePattern = messagePattern
+  this.messagePattern = pattern
 }
 eYo.inherits(eYo.AssertionError, Error)
+
+eYo.AssertionError.prototype.name = "AssertionError"
 
 /**
  * Does simple python-style string substitution.
  * subs("foo%s hot%s", "bar", "dog") becomes "foobar hotdog".
  * @param {string} pattern The string containing the pattern.
- * @param {!Array<*>} subs The items to substitute into the pattern.
+ * @param {Array<*>} subs The items to substitute into the pattern.
  * @return {string} A copy of `str` in which each occurrence of
  *     {@code %s} has been replaced by an argument from `subs`.
  * @private
  */
-eYo.subs_ = function(pattern, subs) {
+eYo.subs_ = function(pattern, ...subs) {
   var splitParts = pattern.split('%s')
   var returnString = ''
   // Replace up to the last split part. We are inserting in the
@@ -186,15 +169,15 @@ eYo.subs_ = function(pattern, subs) {
 /**
  * Cover to raise when necessary.
  * @param {Boolean} what
- * @param {?String} str
+ * @param {!String} str
  */
 eYo.parameterAssert = (what, str) => {
-  eYo.assert(what, str ? `Bad parameter: ${str}` : "Bad parameter")
+  eYo.assert(what, str ? `Bad parameter - ${str}` : "Bad parameter")
 }
 
 /**
  * Function to throw. Trick to throw in an expression.
- * @param {?String} what
+ * @param {!String} what
  */
 eYo.throw = (what) => {
   throw what
@@ -278,6 +261,25 @@ eYo.isStr = (what) => {
 }
 
 /**
+ * Whether the argument is a dictionary.
+ * @param {*} what
+ */
+eYo.isD = (what) => {
+  return !(goog.isNull(what) || goog.isBoolean(what) || goog.isNumber(what) || eYo.isStr(what) || eYo.isF(what) || goog.isArray(what))
+}
+
+/**
+ * Whether the argument is an object created with `{...}` syntax.
+ * @param {*} what
+ */
+eYo.isO = (() => {
+  var pttp = Object.getPrototypeOf({})
+  return (what) => {
+    return what && Object.getPrototypeOf(what) === pttp
+  }
+})()
+
+/**
  * Whether the argument is `eYo.NA`.
  * @param {*} what
  */
@@ -323,8 +325,8 @@ eYo.called = (what) => {
 
 /**
  * Whether sub_ is a subclass of Super, or equals to Super...
- * @param {!Function} Sub
- * @param {!Function} Super
+ * @param {Function} Sub
+ * @param {Function} Super
  * @return {Boolean}
  */
 eYo.isSubclass = (Sub, Super) => {
@@ -334,8 +336,8 @@ eYo.isSubclass = (Sub, Super) => {
 /**
  * @name {eYo.makeNS}
  * Make a namespace by subclassing the caller's constructor.
- * @param {?Object} ns,  namespace owning the result, defaults to the caller.
- * @param {!String} key, capitalised name, created object will be `ns[key]`. `key` is required when `ns` is given.
+ * @param {!Object} ns,  namespace owning the result, defaults to the caller.
+ * @param {String} key, capitalised name, created object will be `ns[key]`. `key` is required when `ns` is given.
  * @return {Object}
  */
 eYo.constructor.prototype.makeNS = function (ns, key) {
@@ -351,7 +353,7 @@ eYo.constructor.prototype.makeNS = function (ns, key) {
     Super.call(this)
   }
   eYo.inherits(NS, Super)
-  Object.defineProperty(NS, 'super', {
+  Object.defineProperty(NS.prototype, 'super', {
     value: this,
   })
   var ans = new NS()
@@ -372,4 +374,66 @@ eYo.constructor.prototype.makeNS = function (ns, key) {
     })
   }
   return ans
+}
+
+eYo.ENABLE_ASSERTS = true
+
+/**
+ * The model management.
+ * Models are trees with some inheritancy.
+ * @name {eYo.Model}
+ * @namespace
+ */
+eYo.makeNS('Model')
+
+/**
+ * Whether the argument is a model object once created with `{...}` syntax.
+ * @param {*} what
+ */
+eYo.isModel = (what) => {
+  return what && (what.model__ || eYo.isO(what))
+}
+
+/**
+ * Make `model` inherit from model `from`.
+ * @param {Object} model_  a tree of properties
+ * @param {Object} from_  a tree of properties
+ */
+eYo.Model.extends = (model, base, ignore) => {
+  var do_it = (model_, base_, ignore) => {
+    // if (eYo.isO(model_) && eYo.isModel(from_)) {
+    //   for (var k in model_) {
+    //     ignore && ignore(k) || do_it(model_[k], from_[k], ignore)
+    //   }
+    //   Object.setPrototypeOf(model_, from_)
+    //   eYo.assert(Object.getPrototypeOf(model_) === from_, `Unexpected ${Object.getPrototypeOf(model_)} !== ${from_}`)
+    //   model_.model__ = model
+    // }
+    if (eYo.isO(model_) && eYo.isO(base_)) {
+      for (var k in base_) {
+        if (ignore && ignore(k)) {
+          continue
+        }
+        var model_d = model_[k]
+        var base_d = base_[k]
+        if (eYo.isO(base_d)) {
+          if (model_d) {
+            if (!eYo.isO(model_d)) {
+              // already defined
+              continue
+            }
+          } else {
+            model_d = model_[k] = {}
+          }
+          // we have an object dictionary, do a mixin
+          do_it(model_d, base_d, ignore)
+        } else if (!model_d) {
+          // it is not a dictionary, do a simple copy when not already set
+          model_[k] = base_d
+        }
+      }
+    }
+  }
+  do_it(model, base, ignore)
+  return
 }

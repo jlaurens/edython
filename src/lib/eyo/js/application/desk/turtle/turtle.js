@@ -19,7 +19,7 @@ eYo.provide('eYo.Turtle')
 
 /**
  * Class for a turtle graphic environment.
- * @param {!eYo.Desk} owner Owner desk.
+ * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
 eYo.UI.makeClass('Turtle', eYo.Pane)

@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Svg')
 
-eYo.provide('eYo.Dom.Flyout')
-
 eYo.forwardDeclare('eYo.Flyout')
 
 /**
@@ -23,7 +21,7 @@ eYo.forwardDeclare('eYo.Flyout')
 eYo.Dom.makeDriverClass('Flyout', {
     /**
    * Initialize the flyout dom ressources.
-   * @param {!eYo.Flyout} flyout
+   * @param {eYo.Flyout} flyout
    * @return {!Element} The desk's dom repository.
    */
   initUI (flyout) {
@@ -65,7 +63,7 @@ eYo.Dom.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
 
 /**
  * Returns the CSS class to be applied to the root element.
- * @param {!eYo.Flyout} flyout
+ * @param {eYo.Flyout} flyout
  * @return {string} Renderer-specific CSS class.
  * @override
  */

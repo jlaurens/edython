@@ -25,7 +25,7 @@ eYo.forwardDeclare('eYo.Events.BrickMove')
 /**
  * Class for a brick dragger.  It moves bricks around the board when they
  * are being dragged by a mouse or touch.
- * @param {!eYo.Board} destination The board to drag on.
+ * @param {eYo.Board} destination The board to drag on.
  * @constructor
  */
 eYo.BrickDragger = function(destination) {
@@ -132,7 +132,7 @@ eYo.BrickDragger.prototype.dispose = function() {
  * We track both the mouse location and the brick location.
  * When the center of the brick will gout out the visible area,
  * we scroll the brick board to keep it back.
- * @param {!eYo.Motion} motion  The motion initiating the eventual drag.
+ * @param {eYo.Motion} motion  The motion initiating the eventual drag.
  * @return {eYo.Brick}  The target brick of the drag event, if any.
  */
 eYo.BrickDragger.prototype.start = function(motion) {
@@ -281,7 +281,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
  * 15 units to the right and the brick is visible.
  * For edython.
  * @param {eYo.Brick.Dflt} brick The new location of the receiver, the actual location when eYo.NA.
- * @param {?Object} newLoc The new location of the receiver, the actual location when eYo.NA.
+ * @param {!Object} newLoc The new location of the receiver, the actual location when eYo.NA.
  * @return {{x: number, y: number}|eYo.NA}
  */
 eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
@@ -326,7 +326,7 @@ eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
 /**
  * Execute a step of brick dragging, based on the given event.  Update the
  * display accordingly.
- * @param {!eYo.Where} delta How far the pointer has
+ * @param {eYo.Where} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  */
 eYo.BrickDragger.prototype.drag = function() {
@@ -355,8 +355,8 @@ eYo.BrickDragger.prototype.drag = function() {
 
 /**
  * Finish a brick drag and put the brick back on the board.
- * @param {!Event} e The most recent move event.
- * @param {!eYo.Where} delta How far the pointer has
+ * @param {Event} e The most recent move event.
+ * @param {eYo.Where} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  */
 eYo.BrickDragger.prototype.end = (() => {

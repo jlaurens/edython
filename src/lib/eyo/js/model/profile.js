@@ -84,7 +84,7 @@ eYo.Model.Module.prototype.getProfile = function(identifier) {
  * or simply a dict of properties.
  * When a dictionary has not a `methods` key,
  * it is considered a properties dictionary.
- * @param {?eYo.T3.Profiles} owner  a dictionary
+ * @param {!eYo.T3.Profiles} owner  a dictionary
  * @param {*} model  a dictionary
  * @constructor
  */
@@ -200,8 +200,8 @@ eYo.T3.Profile = function (owner, model) {
  * The profile of identifiers.
  * Based on a default profile.
  * Mainly for dotted names.
- * @param {?eYo.T3.Profiles} owner  a dictionary
- * @param {!eYo.T3.Profile} profile  another profile
+ * @param {!eYo.T3.Profiles} owner  a dictionary
+ * @param {eYo.T3.Profile} profile  another profile
  * @param {*} model  a dictionary of properties
  * @constructor
  */
@@ -272,8 +272,8 @@ var setup = (() => {
   /**
    * What is the profile of this string? an identifier, a number, a reserved word ?
    * For edython.
-   * @param {!String} candidate
-   * @param {?String} module  the module or holder
+   * @param {String} candidate
+   * @param {!String} module  the module or holder
    * @return {!eYo.T3} the type of this candidate, possible keys are `name`, `expr`, `stmt`.
    */
   eYo.T3.Profile.get = function (candidate, module) {
@@ -352,7 +352,7 @@ eYo.Do.readOnlyMixin(
 /**
  * Returns a profile if `candidate` is a dotted name
  * For edython.
- * @param {!String} candidate
+ * @param {String} candidate
  * @return {!eYo.T3} the profile of this candidate.
  */
 eYo.T3.Profile.getDotted = function (candidate, module) {
@@ -407,7 +407,7 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
  * Returns a profile if `candidate` is an identifier,
  * possibly with an named attribute or a named value.
  * For edython.
- * @param {!String} candidate
+ * @param {String} candidate
  * @return {!eYo.T3} the profile of this candidate.
  */
 eYo.T3.Profile.getIdentifier = function (candidate, module) {
@@ -441,7 +441,7 @@ eYo.T3.Profile.getIdentifier = function (candidate, module) {
 /**
  * Returns a profile if `candidate` is a name with a name annotation or a name definition
  * For edython.
- * @param {!String} candidate
+ * @param {String} candidate
  * @return {!eYo.T3} the profile of this candidate.
  */
 eYo.T3.Profile.getAnnotatedValued = function (candidate, module) {
@@ -466,7 +466,7 @@ eYo.T3.Profile.getAnnotatedValued = function (candidate, module) {
 /**
  * Returns a profile if `candidate` is a literal
  * For edython.
- * @param {!String} candidate
+ * @param {String} candidate
  * @return {!eYo.T3} the profile of this candidate.
  */
 eYo.T3.Profile.getLiteral = function (candidate) {
@@ -559,7 +559,7 @@ eYo.T3.Profile.getLiteral = function (candidate) {
 /**
  * Returns a profile if `identifier` is a reserved keyword/identifier
  * For edython.
- * @param {!String} identifier
+ * @param {String} identifier
  * @return {!eYo.T3} the profile of this identifier when a reference.
  */
 eYo.T3.Profile.getReference = function (identifier) {
@@ -593,7 +593,7 @@ eYo.T3.Profile.getReference = function (identifier) {
 /**
  * Returns a profile if `identifier` is a known module's keyword/identifier
  * For edython.
- * @param {!String} identifier
+ * @param {String} identifier
  * @return {!eYo.T3} the profile of this identifier when a reference.
  */
 eYo.T3.Profile.getInModule = function (identifier) {
@@ -621,7 +621,7 @@ eYo.T3.Profile.getInModule = function (identifier) {
 /**
  * Returns a profile if `identifier` is a delimiter
  * For edython.
- * @param {!String} identifier
+ * @param {String} identifier
  * @return {!eYo.T3} the profile of this identifier when reserved.
  */
 eYo.T3.Profile.getShort = function (identifier) {
@@ -635,7 +635,7 @@ eYo.T3.Profile.getShort = function (identifier) {
 /**
  * Returns a profile if `identifier` is a reference keyword/identifier
  * For edython.
- * @param {!String} identifier
+ * @param {String} identifier
  * @return {!eYo.T3} the profile of this identifier when reserved.
  */
 eYo.T3.Profile.getReserved = function (identifier) {

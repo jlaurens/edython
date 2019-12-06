@@ -44,7 +44,7 @@ eYo.Expr.Dflt.makeSubclass('Literal', {
  * Save the brick's data.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {?Object} opt
+ * @param {!Object} opt
  */
 eYo.Brick.Literal.prototype.saveData = function (element, opt) {
   eYo.Brick.Literal.superClass_.saveData.apply(this, arguments)
@@ -117,7 +117,7 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
 /**
  * The type and connection depend on the properties prefix, value and variant.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
+ * @param {!string} prototypeName Name of the language object containing
  *     type-specific functions for this brick.
  * @constructor
  */
@@ -289,7 +289,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
 /**
  * The type and connection depend on the properties prefix, value and variant.
  * For edython.
- * @param {?string} prototypeName Name of the language object containing
+ * @param {!string} prototypeName Name of the language object containing
  *     type-specific functions for this brick.
  */
 eYo.Expr.shortliteral.prototype.getBaseType = function () {
@@ -299,7 +299,7 @@ eYo.Expr.shortliteral.prototype.getBaseType = function () {
 /**
  * Validate the components.
  * For edython.
- * @param {?kvargs} prototypeName Name of the language object containing
+ * @param {!kvargs} prototypeName Name of the language object containing
  *     type-specific functions for this brick.
  * @constructor
  */
@@ -316,7 +316,7 @@ eYo.Expr.shortliteral.prototype.validateComponents = function(kvargs) {
 
 /**
  * Get the content for the menu item.
- * @param {!eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {string} op op is the operator
  * @private
  */
@@ -326,8 +326,8 @@ eYo.Expr.shortliteral.prototype.makeTitle = function (variant) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  * @suppress {globalThis}
 */
@@ -382,8 +382,8 @@ eYo.Brick.Literal.literalPopulateContextMenuFirst_ = function (mngr) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
@@ -457,7 +457,7 @@ eYo.Expr.shortliteral.makeSubclass('longliteral', {
 /**
  * Validate the components.
  * For edython.
- * @param {?kvargs} prototypeName Name of the language object containing
+ * @param {!kvargs} prototypeName Name of the language object containing
  *     type-specific functions for this brick.
  * @constructor
  */

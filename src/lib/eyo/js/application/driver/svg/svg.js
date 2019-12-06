@@ -12,7 +12,6 @@
 'use strict'
 
 eYo.require('eYo.Dom')
-eYo.require('eYo.Dom.Mngr')
 
 eYo.require('eYo.Decorate')
 
@@ -21,9 +20,7 @@ eYo.require('eYo.Decorate')
  * @name{eYo.Svg}
  * @namespace
  */
-eYo.makeNS('Svg')
-
-eYo.provide('eYo.Svg.Mngr')
+eYo.Driver.makeNS(eYo, 'Svg')
 
 eYo.forwardDeclare('eYo.T3.Profile')
 eYo.forwardDeclare('eYo.Svg.Brick')
@@ -69,44 +66,9 @@ eYo.Svg.makeMngrClass({
 })
 
 /**
- * A namespace.
- * @name{eYo.Svg.Decorate}
- * @namespace
- */
-eYo.Svg.makeNS('Decorate')
-
-/**
- * Decorator for initUI.
- */
-eYo.Svg.Decorate.initUI = (f) => {
-  return eYo.Dom.Decorate.initUI (function (object, ...rest) {
-    var dom = object.dom
-    if (dom) {
-      dom.svg = Object.create(null)
-      f.apply(object, ...rest)
-      return dom
-    }
-  })
-}
-
-/**
- * Decorator for disposeUI.
- */
-eYo.Svg.Decorate.disposeUI = (f) => {
-  return function (object, ...rest) {
-    var dom = object.dom
-    if (dom) {
-      f.apply(object, ...rest)
-      dom.svg = null
-      constructor.superClass_.disposeUI.apply(object, ...rest)
-    }
-  }
-}
-
-/**
  * Helper method for creating SVG elements.
  * @param {string} name Element's tag name.
- * @param {!Object} attrs Dictionary of attribute names and values.
+ * @param {Object} attrs Dictionary of attribute names and values.
  * @param {Element} parent Optional parent on which to append the element.
  * @return {!SVGElement} Newly created SVG element.
  */
@@ -163,7 +125,7 @@ eYo.Dflt.makeSubclass(eYo.Svg)
  * Return the coordinates of the top-left corner of this element relative to
  * its parent.  Only for SVG elements and children (e.g. rect, g, path).
  * Fixed bug in original code.
- * @param {!Element} element SVG element to find the coordinates of.
+ * @param {Element} element SVG element to find the coordinates of.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
 eYo.Svg.Dflt.prototype.xyInParent = function(element) {
@@ -206,7 +168,7 @@ eYo.Svg.Dflt.prototype.xyInParent = function(element) {
 
 /**
  * Add tooltip to an element
- * @param {!String} key
+ * @param {String} key
  */
 eYo.Svg.Dflt.prototype.addTooltip = function (el, title, options) {
   if (eYo.isStr(title)) {
@@ -220,7 +182,7 @@ eYo.Svg.Dflt.prototype.addTooltip = function (el, title, options) {
 /**
  * The css class for the given text
  * For edython.
- * @param {!string} txt The text to yield_expr
+ * @param {string} txt The text to yield_expr
  * @return {string}
  */
 eYo.Svg.getCssClassForText = function (txt) {
@@ -240,7 +202,7 @@ eYo.Svg.getCssClassForText = function (txt) {
  * Similar to Element.removeAttribute() but it works on SVG elements in IE 10.
  * Sets the attribute to null in IE 10, which treats removeAttribute as a no-op
  * if it's called on an SVG element.
- * @param {!Element} element DOM element to remove attribute from.
+ * @param {Element} element DOM element to remove attribute from.
  * @param {string} attributeName Name of attribute to remove.
  */
 eYo.Svg.removeAttribute = (element, attributeName) => {
@@ -311,7 +273,7 @@ eYo.Svg.getTransformCorrection = element => {
 /**
  * Return the coordinates of the top-left corner of this element relative to
  * its parent.  Only for SVG elements and children (e.g. rect, g, path).
- * @param {!Element} element SVG element to find the coordinates of.
+ * @param {Element} element SVG element to find the coordinates of.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
 eYo.Svg.getRelativeWhere = function(element) {
@@ -354,7 +316,7 @@ eYo.Svg.getRelativeWhere = function(element) {
 
 /**
  * Return the scale of this element.
- * @param {!Element} element  The element to find the coordinates of.
+ * @param {Element} element  The element to find the coordinates of.
  * @return {!number} number represending the scale applied to the element.
  * @private
  */

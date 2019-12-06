@@ -11,21 +11,22 @@
  */
 'use strict'
 
-eYo.require('eYo.Do')
+eYo.require('eYo')
 
 eYo.provide('eYo.Dlgt')
 
+eYo.forwardDeclare('eYo.Do')
+
 delete eYo.Dlgt
-delete eYo.Dflt
 
 /**
  * @name {eYo.Dlgt}
  * @constructor
  * Object adding data to a constructor in a safe way.
- * @param {?Object} ns,  namespace of the constructor. Subclass of `eYo`'s constructor.
- * @param {?String} key,  the key used when the constructor was created.
- * @param {!Object} C9r,  the object to which this instance is attached.
- * @param {?Object} model,  the model used to create the constructor.
+ * @param {!Object} ns,  namespace of the constructor. Subclass of `eYo`'s constructor.
+ * @param {!String} key,  the key used when the constructor was created.
+ * @param {Object} C9r,  the object to which this instance is attached.
+ * @param {!Object} model,  the model used to create the constructor.
  * @readonly
  * @property {!Function} C9r - The associate constructor.
  * @property {?Object} ns - The namespace of the associate constructor, if any.
@@ -57,13 +58,17 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
       C9r = key
       key = eYo.NA
     }
-    // compatibility
+    eYo.parameterAssert(
+      C9r,
+      'Missing constructor',
+    )
+  // compatibility
     var pttp = C9r.superClass_
     if (pttp) {
       var dlgt = pttp.constructor.eyo__
       dlgt && eYo.parameterAssert(
         eYo.isSubclass(this.constructor, dlgt.constructor),
-        `Wrong subclass delegate: ${dlgt.name}`,
+        `Wrong subclass delegate: ${dlgt.name}, ${this.constructor.eyo.name} not a subclass ${dlgt.constructor.eyo.name}`,
       )
     }
     Object.defineProperties(this, {
@@ -715,27 +720,32 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
   /**
    * Convenient shortcut to create subclasses.
    * Forwards to the namespace which must exist!
-   * @param {?Object} ns,  The namespace, possibly `eYo.NA`.
-   * @param {!String} key,  to create `ns[key]`
-   * @param {?Function} Dlgt,  Delegate class.
-   * @param {?Object} model,  Model object
+   * @param {!Object} ns,  The namespace, possibly `eYo.NA`.
+   * @param {String} key,  to create `ns[key]`
+   * @param {!Function} Dlgt,  Delegate class.
+   * @param {!Object} model,  Model object
    * @return {?Function} the constructor created or `eYo.NA` when the receiver has no namespace.
    */
   pttp.makeSubclass = function (ns, key, Dlgt_, model) {
     if (eYo.isStr(ns)) {
+      eYo.parameterAssert(!model, 'Unexpected model')
       model = Dlgt_
       Dlgt_ = key
       key = ns
       ns = this.ns__
     } else if (!eYo.isStr(key)) {
+      eYo.parameterAssert(!model, 'Unexpected model')
       model = Dlgt_
       Dlgt_ = key
       key = this.key
     }
-    var Dlgt__ = ns ? ns.Dlgt : this.C9r.eyo.constructor
-    if (!eYo.isSubclass(Dlgt_, Dlgt__)) {
+    if (!eYo.isSubclass(Dlgt_, eYo.Dlgt)) {
+      eYo.parameterAssert(!model, 'Unexpected model')
       model = Dlgt_
-      Dlgt_ = Dlgt__
+      Dlgt_ = this.C9r.eyo.constructor
+      if (eYo.isSubclass(this.ns__.Dlgt, Dlgt_)) {
+        Dlgt_ = this.ns__.Dlgt
+      }
     }
     return ns && ns.makeClass(ns, key, this.C9r, Dlgt_, model) || eYo.makeClass(ns, key, this.C9r, Dlgt_, model)
   }
@@ -752,11 +762,11 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
  * Use a key->value design if you do not want that.
  * The `params` object has template: `{init: function, dispose: function}`.
  * Each namespace has its own `makeClass` method which creates classes in itself.
- * @param {?Object} ns,  The namespace, defaults to the Super's one or the caller.
- * @param {!String} key,  The key.
- * @param {?Function} Super,  The eventual super class. There is no default value. Must be a subclass of `eYo.Dflt`, when no `Dlgt_`is given but not necessarily with an `eyo`.
- * @param {?Function} Dlgt_,  The constructor's delegate class. Defaults to the `Super`'s delegate. Must be a subclass of `eYo.Dlgt`.
- * @param {?Object|Function} model,  The dictionary of parameters. Or a function to create such a dictionary. This might overcomplicated.
+ * @param {!Object} ns,  The namespace, defaults to the Super's one or the caller.
+ * @param {String} key,  The key.
+ * @param {!Function} Super,  The eventual super class. There is no default value. Must be a subclass of `eYo.Dflt`, when no `Dlgt_`is given but not necessarily with an `eyo`.
+ * @param {!Function} Dlgt_,  The constructor's delegate class. Defaults to the `Super`'s delegate. Must be a subclass of `eYo.Dlgt`.
+ * @param {!Object|Function} model,  The dictionary of parameters. Or a function to create such a dictionary. This might overcomplicated.
  * @return {Function} the created constructor.
  * 
  */
@@ -796,9 +806,10 @@ eYo.constructor.prototype.makeClass = (() => {
       eYo.parameterAssert(eYo.isStr(key), '`key` is not a string')
     }
     eYo.parameterAssert(!eYo.Do.hasOwnProperty(ns, key), `${key} is already a property of ns: ${ns.name}`)
-    if (eYo.isSubclass(Super, this.Dflt)) {
+    eYo.parameterAssert(!eYo.Do.hasOwnProperty(ns.constructor.prototype, key), `${key} is already a property of ns: ${ns.name}`)
+    if (eYo.isSubclass(Super, eYo.Dflt)) {
       // Super is OK
-      if (eYo.isSubclass(Dlgt, this.Dlgt)) {
+      if (eYo.isSubclass(Dlgt, eYo.Dlgt)) {
         // Dlgt is also OK
         eYo.parameterAssert(
           !Super.eyo || eYo.isSubclass(Dlgt, Super.eyo.constructor),
@@ -810,9 +821,9 @@ eYo.constructor.prototype.makeClass = (() => {
         model = eYo.called(Dlgt) || {}
         Dlgt = Super.eyo && Super.eyo.constructor || this.Dlgt
       }
-    } else if (eYo.isSubclass(Super, this.Dlgt)) {
-      if (eYo.isSubclass(Dlgt, this.Dlgt)) {
-        // we subclass this.Dlgt
+    } else if (eYo.isSubclass(Super, eYo.Dlgt)) {
+      if (eYo.isSubclass(Dlgt, eYo.Dlgt)) {
+        // we subclass eYo.Dlgt
         model = eYo.called(model) || {}
       } else {
         // we subclass nothing
@@ -822,7 +833,7 @@ eYo.constructor.prototype.makeClass = (() => {
         Super = eYo.NA
       }
     } else if (eYo.isF(Super)) {
-      if (eYo.isSubclass(Dlgt, this.Dlgt)) {
+      if (eYo.isSubclass(Dlgt, eYo.Dlgt)) {
         // Dlgt and Super OK
         model = eYo.called(model) || {}
       } else if (Dlgt) {
@@ -855,7 +866,7 @@ eYo.constructor.prototype.makeClass = (() => {
     // create the constructor
     if (Super) {
       var C9r = function () {
-        C9r.superClass_.constructor.apply(this, arguments)
+        Super.apply(this, arguments)
         beginInit && beginInit.apply(this, arguments)
         C9r.eyo__.initInstance(this)
         endInit && endInit.apply(this, arguments)

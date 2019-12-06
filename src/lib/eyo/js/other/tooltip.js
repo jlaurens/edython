@@ -20,9 +20,9 @@ eYo.provide('eYo.Tooltip')
 /**
  * Add a tooltip programatically to an element
  * Do nothing function, meant to be overriden.
- * @param {!Element} el Dom reference element target of the tooltip.
- * @param {!String} title tooltip string content.
- * @param {?Object} option.
+ * @param {Element} el Dom reference element target of the tooltip.
+ * @param {String} title tooltip string content.
+ * @param {!Object} option.
  */
 eYo.Tooltip.add = function (el, title, options) {
   if (eYo.isStr(title)) {
@@ -56,8 +56,8 @@ eYo.Tooltip.options = {
 /**
  * Add a tooltip programatically to an element
  * Do nothing function, meant to be overriden.
- * @param {!Element} el Dom reference element target of the tooltip.
- * @param {!String} title tooltip string content.
+ * @param {Element} el Dom reference element target of the tooltip.
+ * @param {String} title tooltip string content.
  */
 eYo.Tooltip.getTitle = function (key) {
   return eYo.Tooltip.Title[key] || key
@@ -65,7 +65,7 @@ eYo.Tooltip.getTitle = function (key) {
 
 /**
  * Hide all tooltip in a given element
- * @param {!Element} el The element containing the objects of which
+ * @param {Element} el The element containing the objects of which
  we want to hide the tooltip.
  */
 eYo.Tooltip.hideAll = function (el) {

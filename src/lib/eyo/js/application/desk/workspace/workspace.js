@@ -16,8 +16,6 @@
 eYo.require('eYo.Pane')
 eYo.require('eYo.Decorate')
 
-eYo.provide('eYo.Workspace')
-
 eYo.forwardDeclare('eYo.Flyout')
 eYo.forwardDeclare('eYo.Application')
 eYo.forwardDeclare('eYo.Backer')
@@ -33,10 +31,10 @@ goog.forwardDeclare('goog.math');
  * The workspace has 3+n boards:
  * - the board one where bricks are dropped to be executed,
  * - the 2+n in the flyout,
- * @param {!eYo.Application|Object} owner Owner application.
+ * @param {eYo.Application|Object} owner Owner application.
  * @constructor
  */
-eYo.Pane.makeSubclass('Workspace', {
+eYo.Pane.makeSubclass(eYo, 'Workspace', {
   props: {
     owned: {
       /**

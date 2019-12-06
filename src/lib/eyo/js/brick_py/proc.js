@@ -353,8 +353,8 @@ Object.defineProperties(eYo.Stmt.decorator_stmt.prototype, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @override
  */
 eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
@@ -473,8 +473,8 @@ eYo.Brick.Group.makeSubclass('funcdef_part', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
@@ -563,8 +563,8 @@ eYo.Brick.Group.makeSubclass('classdef_part', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mngr) {

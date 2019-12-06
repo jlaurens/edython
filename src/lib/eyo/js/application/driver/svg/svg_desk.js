@@ -14,8 +14,6 @@
 eYo.require('eYo.Svg')
 eYo.require('eYo.Dom.Desk')
 
-eYo.provide('eYo.Svg.Desk')
-
 eYo.forwardDeclare('eYo.Desk')
 
 /**
@@ -24,7 +22,7 @@ eYo.forwardDeclare('eYo.Desk')
 eYo.Svg.makeDriverClass('Desk', {
   /**
    * Initialize the desk SVG ressources.
-   * @param {!eYo.Desk} desk
+   * @param {eYo.Desk} desk
    * @return {!Element} The desk's SVG group.
    */
   initUI (desk) {
@@ -34,7 +32,7 @@ eYo.Svg.makeDriverClass('Desk', {
 
 /**
  * Bind the resize element.
- * @param {!eYo.Board} board
+ * @param {eYo.Board} board
  */
 eYo.Svg.Desk.prototype.bind_resize = function (desk) {
   var bound = desk.dom.bound || Object.create(null)
@@ -56,8 +54,8 @@ eYo.Svg.Desk.prototype.bind_resize = function (desk) {
  * Set the display mode for bricks.
  * Used to draw bricks lighter or not,
  * by adding/removing a class on the main div.
- * @param {!eYo.Desk} mode  The display mode for bricks.
- * @param {!String} mode  The display mode for bricks.
+ * @param {eYo.Desk} mode  The display mode for bricks.
+ * @param {String} mode  The display mode for bricks.
  */
 eYo.Svg.Desk.prototype.setBrickDisplayMode = function (desk, mode) {
   var div = desk.dom.div_
@@ -72,7 +70,7 @@ eYo.Svg.Desk.prototype.setBrickDisplayMode = function (desk, mode) {
  * Size the main board to completely fill its container.
  * Call this when the view actually changes sizes
  * (e.g. on a window resize/device orientation change).
- * @param {!eYo.Desk} desk A desk.
+ * @param {eYo.Desk} desk A desk.
  */
 eYo.Svg.Desk.prototype.updateMetrics = function(desk) {
   // After the change, the selection should be visible if it was.
@@ -83,8 +81,8 @@ eYo.Svg.Desk.prototype.updateMetrics = function(desk) {
 /**
  * Return the coordinates of the top-left corner of this element relative to
  * the div containing the desk.
- * @param {!eYo.Desk}
- * @param {!Element} element SVG element to find the coordinates of. If this is
+ * @param {eYo.Desk}
+ * @param {Element} element SVG element to find the coordinates of. If this is
  *     not a child of the div blockly was injected into, the behaviour is
  *     eYo.NA.
  * @return {!eYo.Where} Object with .x and .y properties.
@@ -102,7 +100,7 @@ eYo.Svg.Desk.prototype.whereElement = function(desk, element) {
 
 /**
  * Initialize the desk's flyout SVG ressources.
- * @param {!eYo.Desk} desk
+ * @param {eYo.Desk} desk
  * @return {!Element} The desk's SVG group.
  */
 eYo.Svg.Desk.prototype.installFlyout = function(desk) {

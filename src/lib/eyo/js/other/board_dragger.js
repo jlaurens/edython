@@ -17,7 +17,7 @@ eYo.provide('eYo.BoardDragger')
 
 /**
  * Class for a board dragger. Set some scrollbar according to the drag delta. The scrollbar depends on whether the board is in a flyout.
- * @param {!eYo.Board} board The board to drag.
+ * @param {eYo.Board} board The board to drag.
  * @constructor
  */
 eYo.BoardDragger = function(board) {
@@ -63,7 +63,7 @@ eYo.BoardDragger.prototype.isActive_ = false
 
 /**
  * Start dragging the board.
- * @param {!eYo.Motion} Motion
+ * @param {eYo.Motion} Motion
  * @return {Boolean} started or not
  */
 eYo.BoardDragger.prototype.start = function(Motion) {

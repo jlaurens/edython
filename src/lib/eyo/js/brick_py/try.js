@@ -188,8 +188,8 @@ eYo.Stmt.except_part.prototype.getType = eYo.Change.decorate(
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
@@ -333,8 +333,8 @@ eYo.Stmt.makeSubclass('raise_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
@@ -436,8 +436,8 @@ eYo.Stmt.makeSubclass('assert_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {

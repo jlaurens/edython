@@ -38,7 +38,7 @@ eYo.forwardDeclare('eYo.Dom')
  * There should be only one active motion at a time.
  * Actually, the topmost object, eYo.Application, is managing this motion.
  * 
- * @param {!eYo.Application} desktop The top application where the event occured.
+ * @param {eYo.Application} desktop The top application where the event occured.
  * @constructor
  */
 eYo.Motion = function(desktop) {
@@ -388,7 +388,7 @@ Object.defineProperties(eYo.Motion.prototype, {
 
 /**
  * The receiver has been started.
- * @param {!Event} e, the dom event
+ * @param {Event} e, the dom event
  * @return {eYo.Motion} the receiver
  */
 eYo.Motion.prototype.update = function(e) {
@@ -474,8 +474,8 @@ Object.defineProperties(eYo.Motion, {
  * a drag, a touch, a pinch... What we only know is the caller.
  * If the return value is true, the caller should prevent default
  * event handling, it should not otherwise.
- * @param {!Event} e A mouse/pointer down or touch start event.
- * @param {?eYo.Brick|eYo.Board} starter The object that received the starting event, either a board or a brick.
+ * @param {Event} e A mouse/pointer down or touch start event.
+ * @param {!eYo.Brick|eYo.Board} starter The object that received the starting event, either a board or a brick.
  * @return {Object} Whether the start is successfull
  */
 eYo.Motion.prototype.captureStart = function(e, starter) {
@@ -821,7 +821,7 @@ eYo.Motion.prototype.cancel = function(e) {
  * by Chrome.  This function is fired on any touchstart event, queues a task,
  * which after about a second opens the context menu.  The tasks is killed
  * if the touch event terminates early.
- * @param {!Event} e Touch start event.
+ * @param {Event} e Touch start event.
  * @private
  */
 eYo.Motion.prototype.willLongPress = function (e) {
@@ -858,7 +858,7 @@ eYo.Motion.prototype.abortLongPress_ = function () {
 
 /**
  * Handle a real or faked right-click event by showing a context menu.
- * @param {!Event} e A mouse move or touch move event.
+ * @param {Event} e A mouse move or touch move event.
  */
 eYo.Motion.prototype.handleLongPress = function(e) {
   var b = this.targetBrick_

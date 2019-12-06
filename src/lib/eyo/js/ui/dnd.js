@@ -156,7 +156,7 @@ eYo.DnD.Mngr.prototype.complete = function () {
 
 /**
  * Add a dragger.
- * @param {!eYo.DnD.Dragger} dragger
+ * @param {eYo.DnD.Dragger} dragger
  */
 eYo.DnD.Mngr.prototype.addDragger = function (dragger) {
   this.draggers_.push(dragger)

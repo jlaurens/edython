@@ -55,7 +55,7 @@ eYo.Consolidator.List.makeSubclass('Parameter', {
 /**
  * Consolidate a connected input but the first one.
  * Does nothing if this is the last input of '**' type.
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  * @return yes exactly if there are more input
  * @override
  */
@@ -73,7 +73,7 @@ eYo.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
 /**
  * Prepare io, just before walking through the input list for example.
  * Subclassers may add their own stuff to io.
- * @param {!eYo.Brick.Dflt} brick owner of the receiver
+ * @param {eYo.Brick.Dflt} brick owner of the receiver
  */
 eYo.Consolidator.Parameter.prototype.getIO = function (brick) {
   var io = eYo.Consolidator.Parameter.superClass_.getIO.call(this, brick)
@@ -246,7 +246,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
 /**
  * Returns the required types for the current input.
  * This does not suppose that the list of input has been completely consolidated
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.Parameter.prototype.getCheck = (() => {
   var cache = {}
@@ -306,7 +306,7 @@ eYo.Brick.List.makeSubclass('parameter_list', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {

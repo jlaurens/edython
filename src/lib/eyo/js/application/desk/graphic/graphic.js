@@ -19,7 +19,7 @@ eYo.provide('eYo.Graphic')
 
 /**
  * Class for a graphic environment.
- * @param {!eYo.Desk} owner Owner desk.
+ * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
 eYo.UI.makeClass('Graphic', eYo.Pane)

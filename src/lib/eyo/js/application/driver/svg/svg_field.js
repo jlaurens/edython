@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Svg')
 
-eYo.provide('eYo.Svg.Field')
-
 eYo.forwardDeclare('eYo.Field')
 
 // field management
@@ -24,7 +22,7 @@ eYo.Svg.makeDriverClass('Field', {
    * Initializes the field SVG ressources.
    * Does nothing if the field's brick has no SVG ressources.
    * Part of the `initUI` process.
-   * @param {!eYo.Field} field
+   * @param {eYo.Field} field
    * @return {?eYo.Field}
    */
   initUI (field) {
@@ -70,7 +68,7 @@ eYo.Svg.makeDriverClass('Field', {
   },
   /**
    * Dispose of the given field's rendering resources.
-   * @param {!Object} field
+   * @param {Object} field
    */
   disposeUI (field) {
     var svg = field.dom && field.dom.svg
@@ -167,7 +165,7 @@ eYo.Svg.Field.prototype.makeComment = function (field, yorn) {
 
 /**
  * Whether the field is displayed.
- * @param {!Object} field  the field to query about
+ * @param {Object} field  the field to query about
  */
 eYo.Svg.Field.prototype.displayedGet = function (field) {
   var g = field.dom.svg.group_
@@ -176,7 +174,7 @@ eYo.Svg.Field.prototype.displayedGet = function (field) {
 
 /**
  * Display/hide the given field.
- * @param {!Object} field  the field the driver acts on
+ * @param {Object} field  the field the driver acts on
  * @param {boolean} yorn
  */
 eYo.Svg.Field.prototype.displayedSet = function (field, yorn) {
@@ -190,7 +188,7 @@ eYo.Svg.Field.prototype.displayedSet = function (field, yorn) {
 
 /**
  * Display/hide the given field.
- * @param {!Object} field  the field the driver acts on
+ * @param {Object} field  the field the driver acts on
  * @param {boolean} yorn
  */
 eYo.Svg.Field.prototype.displayedUpdate = function (field) {
@@ -199,7 +197,7 @@ eYo.Svg.Field.prototype.displayedUpdate = function (field) {
 
 /**
  * Add or remove the UI indicating if this field is editable or not.
- * @param {!eYo.Field} field
+ * @param {eYo.Field} field
  */
 eYo.Svg.Field.prototype.updateEditable = function(field) {
   var g = field.dom && field.dom.svg && field.dom.svg.group_
@@ -221,7 +219,7 @@ eYo.Svg.Field.prototype.updateEditable = function(field) {
 /**
  * The field text will change.
  * Remove the children of the text element.
- * @param {!Object} field  the node the driver acts on
+ * @param {Object} field  the node the driver acts on
  */
 eYo.Svg.Field.prototype.textRemove = function (field) {
   goog.dom.removeChildren(/** @type {!Element} */ (field.dom.textElement_))
@@ -230,7 +228,7 @@ eYo.Svg.Field.prototype.textRemove = function (field) {
 /**
  * The field text will change.
  * Add a text node to the text element.
- * @param {!Object} field  the node the driver acts on
+ * @param {Object} field  the node the driver acts on
  */
 eYo.Svg.Field.prototype.textCreate = function (field) {
   var textNode = document.createTextNode(field.text)
@@ -240,7 +238,7 @@ eYo.Svg.Field.prototype.textCreate = function (field) {
 /**
  * The field text will change.
  * Add a text node to the text element.
- * @param {!Object} field  the node the driver acts on
+ * @param {Object} field  the node the driver acts on
  */
 eYo.Svg.Field.prototype.textUpdate = function (field) {
   var text = field.dom.svg.textElement_
@@ -307,7 +305,7 @@ eYo.Svg.Field.prototype.getDisplayText_ = function(field) {
 
 /**
  * Handle a mouse down event on a field.
- * @param {!Event} e Mouse down event.
+ * @param {Event} e Mouse down event.
  * @private
  */
 eYo.Svg.onFieldMouseDown_ = function(e) {

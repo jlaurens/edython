@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Svg')
 
-eYo.provide('eYo.Svg.Scroller')
-
 eYo.forwardDeclare('eYo.Scroller')
 
 /**
@@ -42,7 +40,7 @@ eYo.Svg.makeDriverClass('Scroller', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {!eYo.Scroller} scroller
+   * @param {eYo.Scroller} scroller
    */
   disposeUI (scroller) {
     var dom = scroller.dom
@@ -53,7 +51,7 @@ eYo.Svg.makeDriverClass('Scroller', {
 
 /**
  * Place the corner.
- * @param {!eYo.Scroller} scroller
+ * @param {eYo.Scroller} scroller
  * @private
  */
 eYo.Svg.Scroller.prototype.placeCorner = function(pair) {

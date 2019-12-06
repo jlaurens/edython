@@ -90,8 +90,8 @@ Object.defineProperties(eYo.Change.prototype, {
  * If `do_it` return value is an object with a `return` property,
  * the `change.count` is recorded such that `do_it` won't be executed
  * until the next `change.count` increment.
- * @param {!String} key,
- * @param {!Function} do_it  must return something.
+ * @param {String} key,
+ * @param {Function} do_it  must return something.
  * @return {!Function}
  */
 eYo.Change.decorate = function (key, do_it) {
@@ -160,7 +160,7 @@ eYo.Change.prototype.done = function () {
 /**
  * Begin a mutation.
  * For edython.
- * @param {!Function} do_it
+ * @param {Function} do_it
  * @param {*} thisObject
  * @param {*} rest
  * @return {*} whatever `do_it` returns.

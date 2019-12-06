@@ -18,7 +18,7 @@ eYo.require('eYo.UI')
  * 
  * @name {eYo.UI.Owned2}
  * @constructor
- * @param {!eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
+ * @param {eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
  * @readonly
  * @property {eYo.Brick.UI} ui  The ui object used for rendering.
  * @readonly

@@ -26,9 +26,9 @@ eYo.require('eYo.Owned')
 
 /**
  * @name {eYo.UI.Dlgt}
- * @param {!Function} c9r,  constructor
- * @param {!String} key,  key
- * @param {!Object} key,  model
+ * @param {Function} c9r,  constructor
+ * @param {String} key,  key
+ * @param {Object} key,  model
  * @constructor
  * Constructor delegate subclass
  */
@@ -47,7 +47,7 @@ eYo.UI.Dlgt.prototype.disposeDecorate = function (f) {
 
 /**
  * Helper to make the `initUI` method based on the given function.
- * @param {?Function} f  a function with at least one argument.
+ * @param {!Function} f  a function with at least one argument.
  */
 eYo.UI.Dlgt.prototype.initUIDecorate = function (f) {
   return f
@@ -55,7 +55,7 @@ eYo.UI.Dlgt.prototype.initUIDecorate = function (f) {
 
 /**
  * Helps to make the `disposeUI` method based on the given function.
- * @param {?Function} f  a function with at least one argument.
+ * @param {!Function} f  a function with at least one argument.
  */
 eYo.UI.Dlgt.prototype.disposeUIDecorate = function (f) {
   return f
@@ -85,7 +85,7 @@ eYo.UI.Dlgt.prototype.addApp = function () {
  * 
  * @name {eYo.UI.Dflt}
  * @constructor
- * @param {!eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  * @readonly
  * @property {Boolean} hasUI, Whether the receiver is faceless.
@@ -161,11 +161,11 @@ eYo.UI.Dflt.prototype.ownerDidChange = function (before, after) {
  * The delegate of the constructor has convenient methods
  * named `initUIDecorate` and `disposeUIDecorate` to
  * make the `initUI` and `disposeUI` methods of the prototype.
- * @param {?Object} ns,  A namespace. Defaults to `eYo`.
- * @param {!String} key,  The key.
- * @param {?Function} Super,  The eventual super class. There is no default value. If given, it must be a subclass of `eYo.UI.Dflt`.
- * @param {?Function} Dlgt,  The constructor's delegate class. Defaults to the constructor of `Super`'s delegate if any. Must be a subclass of `eYo.UI.Dlgt`.
- * @param {!Object} model,  The dictionary of parameters.
+ * @param {!Object} ns,  A namespace. Defaults to `eYo`.
+ * @param {String} key,  The key.
+ * @param {!Function} Super,  The eventual super class. There is no default value. If given, it must be a subclass of `eYo.UI.Dflt`.
+ * @param {!Function} Dlgt,  The constructor's delegate class. Defaults to the constructor of `Super`'s delegate if any. Must be a subclass of `eYo.UI.Dlgt`.
+ * @param {Object} model,  The dictionary of parameters.
  * @return {Function} the created constructor.
  */
 eYo.UI.constructor.prototype.makeClass = function (ns, key, Super, Dlgt, model) {

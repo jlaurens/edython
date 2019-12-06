@@ -26,8 +26,8 @@ eYo.provide('eYo.Brick.CMath')
 
 /**
  * Populate the context menu for the given brick.
- * @param {!eYo.Brick.Dflt} brick The brick.
- * @param {!eYo.MenuManager} mngr mngr.menu is the menu to populate.
+ * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 // eYo.Expr.cmath__call_expr.populateMenu = function (mngr) {

@@ -24,20 +24,20 @@ eYo.Fcls.makeDriverClass('Field')
 
 /**
  * Set the location.
- * @param {!eYo.Field} field
+ * @param {eYo.Field} field
  * @param {*} where
  */
 eYo.Fcls.Field.prototype.moveTo = eYo.Do.nothing
 
 /**
  * The field text will change.
- * @param {!eYo.Field} field  the node the driver acts on
+ * @param {eYo.Field} field  the node the driver acts on
  */
 eYo.Fcls.Field.prototype.textRemove = eYo.Do.nothing
 
 /**
  * Display the field text.
- * @param {!eYo.Field} field  the node the driver acts on
+ * @param {eYo.Field} field  the node the driver acts on
  */
 eYo.Fcls.Field.prototype.textCreate = eYo.Do.nothing
 
@@ -55,20 +55,20 @@ eYo.Fcls.Field.prototype.inlineEditorResize = eYo.Do.nothing
 
 /**
  * Whether the field is displayed.
- * @param {!eYo.Field} field  the field to query about
+ * @param {eYo.Field} field  the field to query about
  */
 eYo.Fcls.Field.prototype.displayedGet = eYo.Do.nothing
 
 /**
  * Display/hide the given field.
- * @param {!eYo.Field} field  the field the driver acts on
+ * @param {eYo.Field} field  the field the driver acts on
  * @param {boolean} yorn
  */
 eYo.Fcls.Field.prototype.displayedSet = eYo.Do.nothing
 
 /**
  * Display/hide the given field, according to its `visible` status.
- * @param {!eYo.Field} field  the field the driver acts on
+ * @param {eYo.Field} field  the field the driver acts on
  * @param {boolean} yorn
  */
 eYo.Fcls.Field.prototype.displayedUpdate = eYo.Do.nothing

@@ -32,8 +32,8 @@ eYo.forwardDeclare('eYo.Dom')
  * Actually, the topmost object, eYo.Application, is managing this responder.
  * The responder has different delegates to handle different events.
  * 
- * @param {!Event} e The event that kicked off this responder.
- * @param {!eYo.Desk} desk The top application where the event occured.
+ * @param {Event} e The event that kicked off this responder.
+ * @param {eYo.Desk} desk The top application where the event occured.
  * @constructor
  */
 eYo.Responder = function(desk, e) {
@@ -133,7 +133,7 @@ Object.defineProperties(eYo.Responder.prototype, {
 
 /**
  * Handle a mouse down, touch start, or pointer down event.
- * @param {!Event} e A mouse down, touch start, or pointer down event.
+ * @param {Event} e A mouse down, touch start, or pointer down event.
  */
 eYo.Responder.prototype.on_mousedown = function(e) {
   this.change_.done()
@@ -151,7 +151,7 @@ eYo.Responder.prototype.on_mousedown = function(e) {
 
 /**
  * Handle a touch start or pointer down event and keep track of current pointers.
- * @param {!Event} e A touch start, or pointer down event.
+ * @param {Event} e A touch start, or pointer down event.
  */
 eYo.Responder.prototype.handleTouchStart = function(e) {
   var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
@@ -377,7 +377,7 @@ Object.defineProperties(eYo.Responder.prototype, {
 
 /**
  * Handle a touch move or pointer move event and zoom in/out if two pointers are on the screen.
- * @param {!Event} e A touch move, or pointer move event.
+ * @param {Event} e A touch move, or pointer move event.
  */
 eYo.Responder.prototype.handleTouchMove = function(e) {
   var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
@@ -407,7 +407,7 @@ eYo.Responder.prototype.handleTouchMove = function(e) {
 
 /**
  * Helper function returning the current touch point coordinate.
- * @param {!Event} e A touch or pointer event.
+ * @param {Event} e A touch or pointer event.
  * @return {eYo.Where} the current touch point coordinate
  * @package
  */
@@ -423,7 +423,7 @@ eYo.Responder.prototype.getTouchPoint_ = function(e) {
 
 /**
  * Update internal state based on an event.
- * @param {!Event} e The most recent mouse or touch event.
+ * @param {Event} e The most recent mouse or touch event.
  * @private
  */
 eYo.Responder.prototype.update_ = function(e) {
@@ -483,7 +483,7 @@ eYo.Responder.prototype.updateDraggingBoard_ = function() {
 
 /**
  * Handle a mouse move or touch move event.
- * @param {!Event} e A mouse move or touch move event.
+ * @param {Event} e A mouse move or touch move event.
  */
 eYo.Responder.prototype.on_mousemove = (() => {
   var move = function (self, e) {
@@ -519,7 +519,7 @@ eYo.Responder.prototype.on_mousemove = (() => {
 
 /**
  * Handle a mouse up or touch end event.
- * @param {!Event} e A mouse up or touch end event.
+ * @param {Event} e A mouse up or touch end event.
  */
 eYo.Responder.prototype.on_mouseup = function(e) {
   this.change.done()
@@ -589,7 +589,7 @@ eYo.Responder.prototype.cancel = function() {
 
 /**
  * Handle a real or faked right-click event by showing a context menu.
- * @param {!Event} e A mouse move or touch move event.
+ * @param {Event} e A mouse move or touch move event.
  */
 eYo.Responder.prototype.handleRightClick = function(e) {
   if (this.targetBrick_) {
@@ -605,8 +605,8 @@ eYo.Responder.prototype.handleRightClick = function(e) {
 /**
  * Handle a mousedown/touchstart event on a board.
  * Used by board and flyout.
- * @param {!Event} e A mouse down or touch start event.
- * @param {!eYo.Board} board The board the event hit.
+ * @param {Event} e A mouse down or touch start event.
+ * @param {eYo.Board} board The board the event hit.
  * @package
  */
 eYo.Responder.prototype.handleBoardStart = function(e, board) {
@@ -657,8 +657,8 @@ eYo.Responder.prototype.handleBoardStart = function(e, board) {
 /**
  * Handle a mousedown/touchstart event on a flyout.
  * Used by flyout.
- * @param {!Event} e A mouse down or touch start event.
- * @param {!eYo.Flyout} flyout The flyout the event hit.
+ * @param {Event} e A mouse down or touch start event.
+ * @param {eYo.Flyout} flyout The flyout the event hit.
  */
 eYo.Responder.prototype.handleFlyoutStart = function(e, flyout) {
   this.handleFlyoutStart = eYo.Do.nothing
@@ -669,8 +669,8 @@ eYo.Responder.prototype.handleFlyoutStart = function(e, flyout) {
 /**
  * Handle a mousedown/touchstart event on a brick.
  * Used by brick's on_mousedown (or synonym).
- * @param {!Event} e A mouse down or touch start event.
- * @param {!eYo.Brick.Dflt} brick The brick the event hits.
+ * @param {Event} e A mouse down or touch start event.
+ * @param {eYo.Brick.Dflt} brick The brick the event hits.
  */
 eYo.Responder.prototype.handleBrickStart = function(e, brick) {
   this.handleBrickStart = eYo.Do.nothing

@@ -48,7 +48,7 @@ eYo.Consolidator.List.makeSubclass('Arguments', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {!eYo.Brick.Dflt} brick, owner or the receiver.
+ * @param {eYo.Brick.Dflt} brick, owner or the receiver.
  */
 eYo.Consolidator.Arguments.prototype.getIO = function (brick) {
   var io = eYo.Consolidator.Arguments.superClass_.getIO.call(this, brick)
@@ -150,7 +150,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
 /**
  * Returns the required types for the current input.
  * This does not suppose that the list of input has been completely consolidated
- * @param {!Object} io parameter.
+ * @param {Object} io parameter.
  */
 eYo.Consolidator.Arguments.prototype.getCheck = (() => {
   var cache = {}

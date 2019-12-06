@@ -13,8 +13,6 @@
 
 eYo.require('eYo.Dom')
 
-eYo.provide('eYo.Dom.Desk')
-
 eYo.forwardDeclare('eYo.Desk')
 
 /**
@@ -23,8 +21,8 @@ eYo.forwardDeclare('eYo.Desk')
 eYo.Dom.makeDriverClass('Desk', {
   /**
    * Initialize the desk dom ressources.
-   * @param {!eYo.Desk} desk
-   * @param {?Function} f
+   * @param {eYo.Desk} desk
+   * @param {!Function} f
    * @return {!Element} The desk's dom repository.
    */
   initUI (desk) {
@@ -58,7 +56,7 @@ eYo.Dom.makeDriverClass('Desk', {
   },
   /**
    * Dispose of the desk dom resources.
-   * @param {!eYo.Desk} desk
+   * @param {eYo.Desk} desk
    */
   disposeUI (desk) {
     var dom = desk.dom
@@ -69,7 +67,7 @@ eYo.Dom.makeDriverClass('Desk', {
 
 /**
  * Place the desk div.
- * @param {!eYo.Desk} desk
+ * @param {eYo.Desk} desk
  */
 eYo.Dom.Desk.prototype.place = function(desk) {
 }

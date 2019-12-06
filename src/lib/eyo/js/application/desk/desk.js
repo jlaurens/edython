@@ -26,7 +26,7 @@ goog.forwardDeclare('goog.math');
 /**
  * Class for a desk.
  * This is the structure above the panes but below the application.
- * @param {!eYo.Application|Object} owner Owner application.
+ * @param {eYo.Application|Object} owner Owner application.
  * @constructor
  */
 eYo.UI.makeClass(eYo, 'Desk', {
@@ -143,7 +143,7 @@ eYo.Desk.prototype.place = function() {
 
 /**
  * See `deskWhereElement`.
- * @param {!Element}
+ * @param {Element}
  * @return {eYo.Where}
  */
 eYo.Desk.prototype.xyElementInDesk = function(element) {
