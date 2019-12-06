@@ -810,7 +810,7 @@ eYo.Brick.UI.prototype.newDrawRecorder_ = function (recorder) {
 
 /**
  * Prepare rendering of a brick.
- * @param {!Object} recorder  When null, this.brick is not the start of a statement
+ * @param {Object} [recorder]  When null, this.brick is not the start of a statement
  * @return {!Object} a local recorder
  * @private
  */
@@ -866,7 +866,7 @@ eYo.Brick.UI.prototype.drawModelBegin_ = function (recorder) {
  * rendering information. It is the argument of various methods.
  * This method is executed at least once for any rendered brick.
  * Since then, it won't be executed as long as the brick has not been edited.
- * @param {!Object} io
+ * @param {Object} [io]
  * @private
  */
 eYo.Brick.UI.prototype.drawModel_ = function (io) {
@@ -884,7 +884,7 @@ eYo.Brick.UI.prototype.drawModel_ = function (io) {
 
 /**
  * Terminate to render the model.
- * @param {!Object} recorder
+ * @param {Object} [recorder]
  * @private
  */
 eYo.Brick.UI.prototype.drawModelEnd_ = function (io) {
@@ -1145,7 +1145,7 @@ eYo.Brick.UI.prototype.fieldDrawFrom_ = function (field, io) {
  * If `only_prefix` is true, only fields before the
  * connection are rendered.
  * @param {Object} io An input/output record.
- * @param {!Boolean} only_prefix
+ * @param {Boolean} [only_prefix]
  * @return {Number}  The advance of the cursor (in columns)
  * @private
  */
@@ -1198,7 +1198,7 @@ eYo.Brick.UI.prototype.drawFields_ = function (io, only_prefix) {
  *
  * This message is sent at the end of statement brick rendering.
  * It is also sent each time we have rendered a field or a slot.
- * @param {!Object} io the input/output argument.
+ * @param {Object} [io] the input/output argument.
  * @private
  */
 eYo.Brick.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement = false) {
@@ -1264,9 +1264,9 @@ eYo.Brick.UI.prototype.drawEnding_ = function (io, isLast = false, inStatement =
 
 /**
  * Render a pending caret, if relevant.
- * @param {!Object} io the input/output argument.
- * @param {!String} side On which side of a brick.
- * @param {!String} shape Which is the shape.
+ * @param {Object} [io] the input/output argument.
+ * @param {String} [side] On which side of a brick.
+ * @param {String} [shape] Which is the shape.
  * @private
  */
 eYo.Brick.UI.prototype.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.Key.NONE) {

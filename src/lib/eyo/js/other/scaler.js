@@ -19,7 +19,7 @@ eYo.forwardDeclare('eYo.Motion')
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param{!eYo.Motion} motion,  the owning motion
+ * @param{eYo.Motion} [motion] -  the owning motion
  */
 eYo.Scaler = function (motion) {
   this.motion_ = motion
@@ -34,7 +34,7 @@ Object.defineProperties(eYo.Scaler.prototype, {
 /**
  * Main drag and drop manager.
  * It maintains a list of draggers and droppers
- * * @param{!eYo.Application} desktop,  the owning desktop
+ * * @param{eYo.Application} [desktop] -  the owning desktop
  */
 eYo.Scaler.prototype.dispose = function () {
   this.motion_ = null

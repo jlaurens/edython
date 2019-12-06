@@ -22,7 +22,7 @@ eYo.forwardDeclare('eYo.Geometry')
  * The `view` rectangle corresponds to the view port.
  * Its coordinates correspond to screen coordinates or at least
  * the enclosing graphical element's coordinates.
- * @param {!eYo.Board} board the owning board.
+ * @param {eYo.Board} [board] the owning board.
  * @constructor
  * @readonly
  * @property {eYo.Rect}  port

@@ -349,7 +349,7 @@ eYo.Data.prototype.validate = function (newValue) {
 
 /**
  * Returns the text representation of the data.
- * @param {!Object} newValue
+ * @param {Object} [newValue]
  */
 eYo.Data.prototype.toText = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toText', this.model.toText)
@@ -366,7 +366,7 @@ eYo.Data.prototype.toText = function () {
 /**
  * Returns the text representation of the data.
  * Called during synchronization.
- * @param {!Object} newValue
+ * @param {Object} [newValue]
  */
 eYo.Data.prototype.toField = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toField', this.model.toField || this.model.toText)
@@ -484,7 +484,7 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
  * Returns a function with signature is `foo(before, after) → void`
  * `foo` is overriden by the model.
  * The model `foo` can call the builtin `foo` with `this.foo(...)`.
- * @param {Object} key,
+ * @param {Object} key -
  * @param {Object} do_it
  * @return eYo.NA
  */
@@ -826,7 +826,7 @@ eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
  * then the data is not saved either.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {!Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
+ * @param {Object} [opt]  See eponym parameter in `eYo.Xml.brickToDom`.
  */
 eYo.Data.prototype.save = function (element, opt) {
   var xml = this.model.xml

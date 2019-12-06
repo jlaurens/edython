@@ -475,7 +475,7 @@ eYo.Svg.Brick.prototype.updateShape = function (brick) {
 /**
  * Default implementation does nothing.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
- * @param {!Object} io
+ * @param {Object} [io]
  * @private
  */
 eYo.Svg.Brick.prototype.drawModelBegin = function (brick, io) {
@@ -485,7 +485,7 @@ eYo.Svg.Brick.prototype.drawModelBegin = function (brick, io) {
 /**
  * Default implementation does nothing.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
- * @param {!Object} io
+ * @param {Object} [io]
  * @private
  */
 eYo.Svg.Brick.prototype.drawModelEnd = function (brick, io) {
@@ -996,7 +996,7 @@ eYo.Svg.Brick.prototype.parentSet = function (brick, parent) {
  * Add tooltip to a brick
  * @param {eYo.Brick.Dflt} brick
  * @param {String} key
- * @param {!Object} options
+ * @param {Object} [options]
  */
 eYo.Svg.Brick.prototype.addTooltip = function (brick, key, options) {
   var g = brick.dom.group

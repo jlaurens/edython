@@ -388,7 +388,7 @@ Object.defineProperties(eYo.Motion.prototype, {
 
 /**
  * The receiver has been started.
- * @param {Event} e, the dom event
+ * @param {Event} e - the dom event
  * @return {eYo.Motion} the receiver
  */
 eYo.Motion.prototype.update = function(e) {
@@ -475,7 +475,7 @@ Object.defineProperties(eYo.Motion, {
  * If the return value is true, the caller should prevent default
  * event handling, it should not otherwise.
  * @param {Event} e A mouse/pointer down or touch start event.
- * @param {!eYo.Brick|eYo.Board} starter The object that received the starting event, either a board or a brick.
+ * @param {eYo.Brick|eYo.Board} [starter] The object that received the starting event, either a board or a brick.
  * @return {Object} Whether the start is successfull
  */
 eYo.Motion.prototype.captureStart = function(e, starter) {

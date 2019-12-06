@@ -638,7 +638,7 @@ eYo.Flyout.prototype.placeNewBrick_ = function(srcBrick) {
 
 /**
  * Does the job of sliding the flyout in or out.
- * @param {!Boolean} close  close corresponds to the final state.
+ * @param {Boolean} [close]  close corresponds to the final state.
  * When not given, toggle the closed state.
  */
 eYo.Flyout.prototype.doSlide = function(close) {
@@ -713,7 +713,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
  * Slide the flyout in or out.
  * This 2 levels design allows overwriting.
  * Actually, the ui button calls the slide method.
- * @param {!Boolean} close  close corresponds to the final state.
+ * @param {Boolean} [close]  close corresponds to the final state.
  * When not given, toggle the closed state.
  */
 eYo.Flyout.prototype.slide = function(close) {

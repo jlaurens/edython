@@ -281,7 +281,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
  * 15 units to the right and the brick is visible.
  * For edython.
  * @param {eYo.Brick.Dflt} brick The new location of the receiver, the actual location when eYo.NA.
- * @param {!Object} newLoc The new location of the receiver, the actual location when eYo.NA.
+ * @param {Object} [newLoc] The new location of the receiver, the actual location when eYo.NA.
  * @return {{x: number, y: number}|eYo.NA}
  */
 eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {

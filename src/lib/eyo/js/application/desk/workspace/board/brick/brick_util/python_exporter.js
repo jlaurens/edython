@@ -24,7 +24,7 @@ eYo.forwardDeclare('eYo.Slot')
 /**
  * Python code generator.
  * For edython.
- * @param {!string} One indentation, defaults to 4 spaces.
+ * @param {string} [One] indentation, defaults to 4 spaces.
  * @constructor
  */
 eYo.Py.Exporter = function (oneIndent) {
@@ -94,7 +94,7 @@ eYo.Py.Exporter.prototype.linePush = function (s) {
  * Convert the brick to python code.
  * For edython.
  * @param {eYo.Brick.Dflt} brick The owner of the receiver, to be converted to python.
- * @param {!Object} opt  See the eponym parameter in `eYo.Xml.domToBrick`.
+ * @param {Object} [opt]  See the eponym parameter in `eYo.Xml.domToBrick`.
  * @return some python code
  */
 eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
@@ -158,7 +158,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
  * Convert the brick to python code.
  * For edython.
  * @param {eYo.Brick.Dflt} eyo The owner of the receiver, to be converted to python.
- * @param {!Object} opt  flags, `is_deep` whether next bricks should be exported too.
+ * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
 eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
@@ -222,7 +222,7 @@ eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
  * Convert the brick to python code.
  * For edython.
  * @param {eYo.Brick.Dflt} brick The owner of the receiver, to be converted to python.
- * @param {!Object} opt  flags, `is_deep` whether next bricks should be exported too.
+ * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
 eYo.Py.Exporter.prototype.export = function (brick, opt) {

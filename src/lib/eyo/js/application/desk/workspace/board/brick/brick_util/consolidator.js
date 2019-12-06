@@ -51,7 +51,7 @@ eYo.Consolidator.makeClass('Dlgt')
  * Extra initialization may be performed by the init function.
  * TODO: use singletons...
  * @name {eYo.Consolidator.Dflt}
- * @param {Object} model, all the model needed
+ * @param {Object} model - all the model needed
  * @constructor
  */
 eYo.Consolidator.makeClass('Dflt', {
@@ -85,7 +85,7 @@ eYo.Consolidator.makeClass('Dflt', {
 /**
  * Main and unique entry point.
  * Removes empty place holders
- * @param {eYo.Brick.Dflt} brick, to be consolidated....
+ * @param {eYo.Brick.Dflt} brick - to be consolidated....
  */
 eYo.Consolidator.Dflt.prototype.consolidate = eYo.Do.nothing
 
@@ -94,10 +94,10 @@ eYo.Consolidator.Dflt.prototype.consolidate = eYo.Do.nothing
  * This is the preferred method to create consolidator classes.
  * The main purpose is to manage the shared data model
  * and allow inheritance.
- * @param {!Object} ns, namespace, defaults to `eYo.Consolidator`.
- * @param {String} key, capitalized string except 'Dflt'.
- * @param {!Object} Super,  ancestor, defaults to `eYo.Consolidator.Dflt`.
- * @param {Object} model, model object
+ * @param {Object} [ns] - namespace, defaults to `eYo.Consolidator`.
+ * @param {String} key - capitalized string except 'Dflt'.
+ * @param {Object} [Super] -  ancestor, defaults to `eYo.Consolidator.Dflt`.
+ * @param {Object} model - model object
  */
 eYo.Consolidator.makeSubclass = function (ns, key, Super, model) {
   if (eYo.isStr(ns)) {
@@ -673,7 +673,7 @@ eYo.Consolidator.List.prototype.doLink = function (io) {
 /**
  * Prepare io, just before walking through the slot list.
  * Subclassers may add their own stuff to io.
- * @param {Object} io, parameters....
+ * @param {Object} io - parameters....
  */
 eYo.Consolidator.List.prototype.getIO = function (brick) {
   var unwrapped = brick.wrapper
@@ -699,8 +699,8 @@ eYo.Consolidator.List.prototype.getIO = function (brick) {
  * List consolidator.
  * Removes empty place holders, add some...
  * Problem of `when`: the brick should not consolidate when not in a wokspace.
- * @param {eYo.Brick.Dflt} brick, to be consolidated.
- * @param {boolean} force, true if no shortcut is allowed.
+ * @param {eYo.Brick.Dflt} brick - to be consolidated.
+ * @param {boolean} force - true if no shortcut is allowed.
  */
 eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('consolidate', function (brick, force) {
   // do not consolidate while changing or not in a board
@@ -731,7 +731,7 @@ eYo.Consolidator.List.prototype.consolidate = eYo.Decorate.reentrant_method('con
  * Fetches the named slot object
  * @param {eYo.Brick.Dflt} brick
  * @param {String} name The name of the slot.
- * @param {!Boolean} dontCreate Whether the receiver should create slots on the fly.
+ * @param {Boolean} [dontCreate] Whether the receiver should create slots on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.Consolidator.List.prototype.getSlot = function (brick, name, dontCreate) {
@@ -802,7 +802,7 @@ eYo.Consolidator.List.prototype.getSlot = function (brick, name, dontCreate) {
  * Get the next slot compatible with the given type.
  * Enumerator object. Used by the print brick.
  * @param {object} io argument object
- * @param {Object} type, string or array of strings
+ * @param {Object} type - string or array of strings
  * @return the next keyword item slot, eYo.NA when at end.
  */
 eYo.Consolidator.List.prototype.nextSlotForType = function (io, type) {
@@ -830,7 +830,7 @@ eYo.Consolidator.List.prototype.nextSlotForType = function (io, type) {
  * Whether the brick has an slot for the given type.
  * Used by the print brick.
  * @param {eYo.Brick.Dflt} brick
- * @param {Object} type, string or array of strings
+ * @param {Object} type - string or array of strings
  * @return the next keyword item slot, eYo.NA when at end.
  */
 eYo.Consolidator.List.prototype.hasInputForType = function (brick, type) {

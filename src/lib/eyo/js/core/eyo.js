@@ -169,7 +169,7 @@ eYo.subs_ = function(pattern, ...subs) {
 /**
  * Cover to raise when necessary.
  * @param {Boolean} what
- * @param {!String} str
+ * @param {String} [str]
  */
 eYo.parameterAssert = (what, str) => {
   eYo.assert(what, str ? `Bad parameter - ${str}` : "Bad parameter")
@@ -177,7 +177,7 @@ eYo.parameterAssert = (what, str) => {
 
 /**
  * Function to throw. Trick to throw in an expression.
- * @param {!String} what
+ * @param {String} [what]
  */
 eYo.throw = (what) => {
   throw what
@@ -336,8 +336,8 @@ eYo.isSubclass = (Sub, Super) => {
 /**
  * @name {eYo.makeNS}
  * Make a namespace by subclassing the caller's constructor.
- * @param {!Object} ns,  namespace owning the result, defaults to the caller.
- * @param {String} key, capitalised name, created object will be `ns[key]`. `key` is required when `ns` is given.
+ * @param {Object} [ns] -  namespace owning the result, defaults to the caller.
+ * @param {String} key - capitalised name, created object will be `ns[key]`. `key` is required when `ns` is given.
  * @return {Object}
  */
 eYo.constructor.prototype.makeNS = function (ns, key) {

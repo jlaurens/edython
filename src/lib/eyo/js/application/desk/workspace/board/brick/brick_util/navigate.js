@@ -18,8 +18,8 @@ eYo.provide('eYo.Navigate')
 
 /**
  * Tab navigation.
- * @param {!eYo.Brick.Dflt} brick  Brick.
- * @param {!Object} opt Optional key value arguments.
+ * @param {eYo.Brick.Dflt} [brick]  Brick.
+ * @param {Object} [opt] Optional key value arguments.
  */
 eYo.Navigate.doTab = (() => {
   var magnet

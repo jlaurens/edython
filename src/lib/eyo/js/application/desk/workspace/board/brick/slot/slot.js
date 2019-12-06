@@ -241,7 +241,7 @@ eYo.UI.makeClass(eYo, 'Slot', eYo.UI.Owned2, {
   /**
    * Dispose of all attributes.
    * Asks the owner's renderer to do the same.
-   * @param {!Boolean} onlyThis  Dispose of the inferior target iff healStack is a falsy value
+   * @param {Boolean} [onlyThis]  Dispose of the inferior target iff healStack is a falsy value
    */
   dispose (onlyThis) {
     eYo.Field.disposeFields(this)
@@ -332,7 +332,7 @@ eYo.Slot.prototype.synchronize = function () {
  * List all the available data and converts them to xml.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {!Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
+ * @param {Object} [opt]  See eponym parameter in `eYo.Xml.brickToDom`.
  * @return a dom element, void lists may return nothing
  * @this a brick
  */
@@ -581,7 +581,7 @@ eYo.Slot.prototype.forEachField = function (helper) {
  * Connect the brick or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
  * The slot corresponds to a wrapped list block.
  * @param {eYo.Brick | eYo.Magnet} bm  either a brick or a magnet.
- * @param {!String} key an input key. When not given the last free input is used.
+ * @param {String} [key] an input key. When not given the last free input is used.
  * @return {?eYo.Magnet} the eventual magnet target that was connected.
  */
 eYo.Slot.prototype.listConnect = function (bm, key) {

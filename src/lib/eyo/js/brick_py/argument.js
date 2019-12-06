@@ -48,7 +48,7 @@ eYo.Consolidator.List.makeSubclass('Arguments', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {eYo.Brick.Dflt} brick, owner or the receiver.
+ * @param {eYo.Brick.Dflt} brick - owner or the receiver.
  */
 eYo.Consolidator.Arguments.prototype.getIO = function (brick) {
   var io = eYo.Consolidator.Arguments.superClass_.getIO.call(this, brick)
@@ -76,7 +76,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
   /**
    * Whether the input corresponds to an identifier...
    * Called when io.slot is connected.
-   * @param {Object} io, parameters....
+   * @param {Object} io - parameters....
    */
   var getCheckType = (io) => {
     var target = io.m4t.target

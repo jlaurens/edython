@@ -120,7 +120,7 @@ eYo.Xml.domToText = function (dom) {
 /**
  * Encode a brick subtree as XML with where coordinates. Eliminates the use of the Blockly's eponym method.
  * @param {eYo.Brick.Dflt} brick The root brick to encode.
- * @param {!Object} opt  See the eponym parameter in `eYo.Xml.brickToDom`.
+ * @param {Object} [opt]  See the eponym parameter in `eYo.Xml.brickToDom`.
  * @return {!Element} Tree of XML elements.
  */
 eYo.Xml.brickToDomWithWhere = function(brick, opt) {
@@ -134,7 +134,7 @@ eYo.Xml.brickToDomWithWhere = function(brick, opt) {
 /**
  * Encode a brick tree as XML.
  * @param {eYo.Board} board The board containing bricks.
- * @param {!Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
+ * @param {Object} [opt]  See eponym parameter in `eYo.Xml.brickToDom`.
  * @return {!Element} XML document.
  */
 eYo.Xml.boardToDom = function(board, opt) {
@@ -264,7 +264,7 @@ goog.exportSymbol('eYo.Xml.domToBoard', eYo.Xml.domToBoard)
  * to be displayed immediately.
  * @param {BoardSvg} board
  * @param {String|Object} model prototypeName or xml representation.
- * @param {!string} id
+ * @param {string} [id]
  * @private
  */
 eYo.Brick.newReady = (() => {
@@ -319,7 +319,7 @@ eYo.Brick.newReady = (() => {
  * These brick types correspond to an alternate in the python grammar.
  * The persistence storage may remember these bricks as eyo:foo instead of eyo:foo.
  * @param {eYo.Brick.Dflt} brick The root brick to encode.
- * @param {!Object} opt  Options `noId` is True if the encoder should skip the brick id, `noNext` is True if the encoder should skip the next brick.
+ * @param {Object} [opt]  Options `noId` is True if the encoder should skip the brick id, `noNext` is True if the encoder should skip the next brick.
  * @return {!Element} Tree of XML elements, possibly null.
  */
 eYo.Xml.brickToDom = (() => {
@@ -481,7 +481,7 @@ eYo.require('eYo.Brick.Operator')
  * Save the brick's data.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {!Object} opt
+ * @param {Object} [opt]
  */
 eYo.Brick.Dflt.prototype.saveData = function (element, opt) {
   this.forEachData(data => data.save(element, opt))
@@ -491,7 +491,7 @@ eYo.Brick.Dflt.prototype.saveData = function (element, opt) {
  * Save the brick's slots.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {!Object} opt
+ * @param {Object} [opt]
  */
 eYo.Brick.Dflt.prototype.saveSlots = function (element, opt) {
   this.forEachSlot(slot => slot.save(element, opt))
@@ -535,7 +535,7 @@ eYo.Xml.Data.fromDom = function (brick, element) {
  * to take control.
  * @param {eYo.Brick.Dflt} brick The root brick to encode.
  * @param {element} dom element to encode in
- * @param {!Object} opt  See the eponym option in `eYo.Xml.BrickToDom`.
+ * @param {Object} [opt]  See the eponym option in `eYo.Xml.BrickToDom`.
  * @return {!Element} Tree of XML elements, possibly null.
  */
 eYo.Xml.toDom = function (brick, element, opt) {
@@ -673,7 +673,7 @@ eYo.Xml.Recover = function (board) {
 
 /**
  * Will execute the given action for each recovered brick.
- * @param {!Function} f
+ * @param {Function} [f]
  */
 eYo.Xml.Recover.prototype.whenRecovered = function (f) {
   this.recovered_f = f
@@ -697,8 +697,8 @@ eYo.Xml.Recover.prototype.dontResit = function (dom) {
  * Uses `domToBrick`.
  * @param {*} dom
  * @param {*} try_f
- * @param {!*} finally_f
- * @param {!*} recovered_f
+ * @param {*} [finally_f]
+ * @param {*} [recovered_f]
  */
 eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
   this.dontResit(dom)

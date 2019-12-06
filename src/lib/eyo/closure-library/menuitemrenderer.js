@@ -38,7 +38,7 @@ eYo.provide('eYo.MenuItemRenderer')
  * Sets the css class of the control renderer.
  * Ensures that the style is setup accordingly.
  * @param {goog.ui.ControlRenderer} renderer
- * @param {String} cssClass, class name
+ * @param {String} cssClass - class name
  * If the next argument is a dictionary,
  * a new css rule is created with the cssClass name
  * and style attributes given in the dictionary.
@@ -48,7 +48,7 @@ eYo.provide('eYo.MenuItemRenderer')
  * Calling syntax
  * setControlRendererCssClass(renderer, cssClass[, style](, name, style)*)
  *
- * @param {!...Object} rest
+ * @param {...Object} [rest]
  */
 eYo.Style.setControlRendererCssClass = (() => {
   var helper = (name, dict) => {

@@ -17,8 +17,8 @@ eYo.provide('eYo.PopupMenu')
 
 /**
  * A basic menu class.
- * @param {!goog.dom.DomHelper=} optDomHelper Optional DOM helper.
- * @param {!goog.ui.MenuRenderer=} optRenderer Renderer used to render or
+ * @param {goog.dom.DomHelper=} [optDomHelper] Optional DOM helper.
+ * @param {goog.ui.MenuRenderer=} [optRenderer] Renderer used to render or
  *     decorate the container; defaults to {@link goog.ui.MenuRenderer}.
  * @extends {goog.ui.Menu}
  * @constructor

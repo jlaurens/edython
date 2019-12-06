@@ -549,8 +549,8 @@ eYo.Do.propertyR = (getter) => {
 /**
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
- * @param {!Function} try_f
- * @param {!Function} finally_f
+ * @param {Function} [try_f]
+ * @param {Function} [finally_f]
  * @return whatever returns try_f
  */
 eYo.Do.tryFinally = function (try_f, finally_f) {
@@ -568,9 +568,9 @@ eYo.Do.tryFinally = function (try_f, finally_f) {
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
  * No `this` in both arguments.
- * @param {!Function} start_f
- * @param {!Function} begin_finally_f
- * @param {!Function} end_finally_f
+ * @param {Function} [start_f]
+ * @param {Function} [begin_finally_f]
+ * @param {Function} [end_finally_f]
  */
 eYo.Do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
   return (try_f, finally_f) => {

@@ -316,7 +316,7 @@ eYo.Magnet.DB.prototype.removeMagnet_ = (() => {
 
 /**
  * Dispose of the ressources.
- * @param {!Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
+ * @param {Boolean} [healStack]  Dispose of the inferior target iff healStack is a falsy value
  */
 eYo.Magnet.prototype.dispose = function (healStack) {
   var t9k = this.targetBrick
@@ -535,7 +535,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
     },
     /**
      * Connect the receiver to the newValue, if any, otherwise disconnects the receiver.
-     * @param {!eYo.Brick.Dflt} newValue 
+     * @param {eYo.Brick.Dflt} [newValue] 
      */
     set (newValue) {
       if (newValue) {
@@ -1144,7 +1144,7 @@ eYo.Magnet.prototype.setOffset = function(c = 0, l = 0) {
  * The check_ is used more precisely.
  * For example, elif bricks cannot connect to the suite connection, only the next connection.
  * @param {eYo.Magnet} other Magnet to compare against.
- * @param {!Boolean} force  checks even if a connection is hidden or incog.
+ * @param {Boolean} [force]  checks even if a connection is hidden or incog.
  * @return {boolean} True if the connections share a type.
  * @private
  * @suppress {accessControls}
@@ -1889,7 +1889,7 @@ eYo.Magnet.prototype.canConnectWithReason_ = function(target) {
  * Check if the two connections can be dragged to connect to each other.
  * A sealed connection is never allowed.
  * @param {eYo.Magnet} candidate A nearby connection to check.
- * @param {!Boolean} ignoreDistance
+ * @param {Boolean} [ignoreDistance]
  * @return {boolean} True if the connection is allowed, false otherwise.
  */
 eYo.Magnet.prototype.isConnectionAllowed = function (candidate, maxRadius) {

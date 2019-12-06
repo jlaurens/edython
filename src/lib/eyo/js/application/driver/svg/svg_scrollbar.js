@@ -22,7 +22,7 @@ eYo.Svg.makeDriverClass('Scrollbar', {
     /**
    * Initializes the scrollbar SVG ressources.
    * @param {eYo.Scrollbar} scrollbar
-   * @param {!String} opt_class
+   * @param {String} [opt_class]
    */
   initUI (scrollbar, opt_class) {
     var dom = scrollbar.dom

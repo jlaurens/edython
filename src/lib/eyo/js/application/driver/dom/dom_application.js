@@ -24,7 +24,7 @@ eYo.Dom.makeDriverClass('Application', {
   /**
    * Initialize the application's dom ressources.
    * @param {eYo.Application} app
-   * @param {!Function} f
+   * @param {Function} [f]
    * @return {!Element} The desk's dom repository.
    */
   initUI (app) {

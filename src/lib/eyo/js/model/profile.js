@@ -84,7 +84,7 @@ eYo.Model.Module.prototype.getProfile = function(identifier) {
  * or simply a dict of properties.
  * When a dictionary has not a `methods` key,
  * it is considered a properties dictionary.
- * @param {!eYo.T3.Profiles} owner  a dictionary
+ * @param {eYo.T3.Profiles} [owner]  a dictionary
  * @param {*} model  a dictionary
  * @constructor
  */
@@ -200,7 +200,7 @@ eYo.T3.Profile = function (owner, model) {
  * The profile of identifiers.
  * Based on a default profile.
  * Mainly for dotted names.
- * @param {!eYo.T3.Profiles} owner  a dictionary
+ * @param {eYo.T3.Profiles} [owner]  a dictionary
  * @param {eYo.T3.Profile} profile  another profile
  * @param {*} model  a dictionary of properties
  * @constructor
@@ -273,7 +273,7 @@ var setup = (() => {
    * What is the profile of this string? an identifier, a number, a reserved word ?
    * For edython.
    * @param {String} candidate
-   * @param {!String} module  the module or holder
+   * @param {String} [module]  the module or holder
    * @return {!eYo.T3} the type of this candidate, possible keys are `name`, `expr`, `stmt`.
    */
   eYo.T3.Profile.get = function (candidate, module) {

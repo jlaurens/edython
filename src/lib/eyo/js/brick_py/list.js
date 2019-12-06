@@ -136,7 +136,7 @@ eYo.Brick.List.slotsHandler = {
 /**
  * Fetches the named slot object, getSlot.
  * @param {String} name The name of the slot.
- * @param {!Boolean} dontCreate Whether the receiver should create slots on the fly.
+ * @param {Boolean} [dontCreate] Whether the receiver should create slots on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.Brick.List.prototype.getSlot = function (name, dontCreate) {

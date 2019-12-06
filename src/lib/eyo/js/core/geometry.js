@@ -163,7 +163,7 @@ Object.defineProperties(eYo.Where.prototype, {
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
  * @param {Number | eYo.Where | Event | Object} c
- * @param {!Number} l
+ * @param {Number} [l]
  * @return {eYo.Where} The receiver
  */
 eYo.Where.prototype.set = function (c = 0, l = 0) {
@@ -282,7 +282,7 @@ eYo.Where.prototype.xyAdvance = function (x = 0, y = 0) {
 /**
  * Scale the receiver.
  * @param {Number | Object} scaleX
- * @param {!Number} scaleY or scaleX
+ * @param {Number} [scaleY] or scaleX
  * @return {!eYo.Where} the receiver
  */
 eYo.Where.prototype.scale = function (scaleX, scaleY) {
@@ -821,7 +821,7 @@ eYo.Rect.prototype.equals = function (rhs) {
 /**
  * Scale the receiver.
  * @param {Number | Object} scaleX  Must be positive.
- * @param {!Number} scaleY  Must be positive when defines, defaults to scaleX.
+ * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
  * @return {!eYo.Rect} the receiver
  */
 eYo.Rect.prototype.scale = function (scaleX, scaleY) {
@@ -833,7 +833,7 @@ eYo.Rect.prototype.scale = function (scaleX, scaleY) {
 /**
  * Unscale the receiver.
  * @param {Number} scaleX  Must be positive.
- * @param {!Number} scaleY  Must be positive when defines, defaults to scaleX.
+ * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
  * @return {!eYo.Rect} the receiver
  */
 eYo.Rect.prototype.unscale = function (scaleX, scaleY) {
@@ -856,10 +856,10 @@ eYo.Rect.prototype.mirror = function () {
 /**
  * Inset the receiver.
  * Default values are `eYo.Unit.x / 2` and `eYo.Unit.y / 4`
- * @param {!Number|eYo.Where} dx_min
- * @param {!Number} dy_min
- * @param {!Number} dx_max
- * @param {!Number} dy_max
+ * @param {Number|eYo.Where} [dx_min]
+ * @param {Number} [dy_min]
+ * @param {Number} [dx_max]
+ * @param {Number} [dy_max]
  * @return {!eYo.Rect} the receiver
  */
 eYo.Rect.prototype.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
@@ -890,10 +890,10 @@ eYo.Rect.prototype.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
 /**
  * outset the receiver.
  * Default values are `eYo.Unit.x / 2` and `eYo.Unit.y / 4`
- * @param {!Number|eYo.Where} dx_min
- * @param {!Number} dy_min
- * @param {!Number} dx_max
- * @param {!Number} dy_max
+ * @param {Number|eYo.Where} [dx_min]
+ * @param {Number} [dy_min]
+ * @param {Number} [dx_max]
+ * @param {Number} [dy_max]
  * @return {!eYo.Rect} the receiver
  */
 eYo.Rect.prototype.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
@@ -974,7 +974,7 @@ eYo.Rect.prototype.tie = function (tied, to, from) {
 /**
  * Whether the receiver contains the given point.
  * @param {Number | eYo.Where} x
- * @param {!Number} y
+ * @param {Number} [y]
  * @return {Boolean}
  */
 eYo.Rect.prototype.xyContains = function (x, y) {

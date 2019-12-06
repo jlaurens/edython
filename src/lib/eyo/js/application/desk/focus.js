@@ -45,7 +45,7 @@ eYo.Focus = Object.create(null)
 
 /**
  * The main focus manager.
- * @param {eYo.Desk} desk,  the owning desk.
+ * @param {eYo.Desk} desk -  the owning desk.
  * @constructor
  */
 eYo.Focus.Main = function (desk) {
@@ -193,8 +193,8 @@ eYo.Focus.Main.prototype.disposeUI = function() {
 
 /**
  * Create a standard focus manager, managed by a main focus manager.
- * @param {eYo.Board} board,  the owner of the focus object.
- * @param {eYo.Focus.Main} main,  The main focus manager.
+ * @param {eYo.Board} board -  the owner of the focus object.
+ * @param {eYo.Focus.Main} main -  The main focus manager.
  * @constructor
  */
 eYo.Focus.Mngr = function (board, main) {
@@ -538,7 +538,7 @@ eYo.Board.prototype.focusOn = function () {
 /**
  * Select this brick.  Highlight it visually.
  * Wrapped bricks are not selectable.
- * @param {Boolean} noBoard,  Do not focus on the receiver' board.
+ * @param {Boolean} noBoard -  Do not focus on the receiver' board.
  * Defaults to false, which means that focusing on an object
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
@@ -550,7 +550,7 @@ eYo.Brick.Dflt.prototype.focusOn = function (noBoard) {
 
 /**
  * Select this field. Highlight it visually.
- * @param {Boolean} noBoard,  Do not focus on the receiver' board.
+ * @param {Boolean} noBoard -  Do not focus on the receiver' board.
  * Defaults to false, which means that focusing on an object
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
@@ -563,7 +563,7 @@ eYo.Field.prototype.focusOn = function (noBoard) {
 /**
  * Select this magnet. Highlight it visually.
  * Wrapped magnets are not selectable.
- * @param {Boolean} noBoard,  Do not focus on the receiver' board.
+ * @param {Boolean} noBoard -  Do not focus on the receiver' board.
  * Defaults to false, which means that focusing on an object
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.

@@ -154,7 +154,7 @@ eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
 /**
  * Resize.
  * @param {Float | eYo.Size} width.
- * @param {!Float} height.
+ * @param {Float} [height.]
  * @private
  */
 eYo.FlyoutToolbar.prototype.layout = function(width, height) {

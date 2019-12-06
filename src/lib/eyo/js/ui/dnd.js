@@ -32,7 +32,7 @@ eYo.DnD = Object.create(null)
  * Main drag and drop manager.
  * It maintains a list of draggers and droppers.
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param{!eYo.Motion} motion,  the owning motion
+ * @param{eYo.Motion} [motion] -  the owning motion
  */
 eYo.DnD.Mngr = function (motion) {
   this.motion_ = motion
@@ -74,7 +74,7 @@ Object.defineProperties(eYo.DnD.Mngr.prototype, {
 /**
  * Main drag and drop manager.
  * It maintains a list of draggers and droppers
- * * @param{!eYo.Application} desktop,  the owning desktop
+ * * @param{eYo.Application} [desktop] -  the owning desktop
  */
 eYo.DnD.Mngr.prototype.dispose = function () {
   this.cancel()
@@ -173,7 +173,7 @@ eYo.DnD.Mngr.prototype.addDropper = function (dropper) {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Dragger} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Dragger} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger = function (manager) {
   this.manager_ = manager
@@ -249,7 +249,7 @@ eYo.DnD.Dragger.prototype.complete = eYo.DnD.Dragger.prototype.reset
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.Board = function (manager) {
   eYo.DnD.Dragger.Board.superClass_.constructor.call(this, manager)
@@ -309,7 +309,7 @@ eYo.DnD.Dragger.Board.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.DraftBoard = function (manager) {
   eYo.DnD.Dragger.DraftBoard.superClass_.constructor.call(this, manager)
@@ -370,7 +370,7 @@ eYo.DnD.Dragger.DraftBoard.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.LibraryBoard = function (manager) {
   eYo.DnD.Dragger.LibraryBoard.superClass_.constructor.call(this, manager)
@@ -431,7 +431,7 @@ eYo.DnD.Dragger.LibraryBoard.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.Brick = function (manager) {
   eYo.DnD.Dragger.Brick.superClass_.constructor.call(this, manager)
@@ -492,7 +492,7 @@ eYo.DnD.Dragger.Brick.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.LibraryBrick = function (manager) {
   eYo.DnD.Dragger.LibraryBrick.superClass_.constructor.call(this, manager)
@@ -553,7 +553,7 @@ eYo.DnD.Dragger.LibraryBrick.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Mngr} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.DraftBrick = function (manager) {
   eYo.DnD.Dragger.DraftBrick.superClass_.constructor.call(this, manager)
@@ -614,7 +614,7 @@ eYo.DnD.Dragger.DraftBrick.prototype.complete = function () {
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Dropper} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Dropper} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dropper = function (manager) {
   this.manager_ = manager
@@ -686,7 +686,7 @@ eYo.DnD.Dropper.prototype.complete = eYo.DnD.Dropper.prototype.reset
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.DnD.Dropper} manager,  the owning drag and drop manager.
+ * @param {eYo.DnD.Dropper} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dropper.Board = function (manager) {
   eYo.DnD.Dropper.Board.superClass_.constructor.call(this, manager)

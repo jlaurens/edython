@@ -22,7 +22,7 @@ eYo.provide('eYo.Tooltip')
  * Do nothing function, meant to be overriden.
  * @param {Element} el Dom reference element target of the tooltip.
  * @param {String} title tooltip string content.
- * @param {!Object} option.
+ * @param {Object} [option.]
  */
 eYo.Tooltip.add = function (el, title, options) {
   if (eYo.isStr(title)) {

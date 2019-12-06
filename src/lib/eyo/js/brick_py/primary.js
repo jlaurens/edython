@@ -31,7 +31,7 @@ eYo.provide('eYo.Brick.Primary')
  * There are different situations depending on the type of the
  * brick enclosing the list.
  * Main entry: consolidate
- * @param {String} single, the required type for a single element....
+ * @param {String} single - the required type for a single element....
  */
 eYo.Consolidator.List.makeSubclass('Target', {
   check: null,
@@ -91,7 +91,7 @@ eYo.Consolidator.List.makeSubclass('Target', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {eYo.Brick.Dflt} brick, owner or the receiver.
+ * @param {eYo.Brick.Dflt} brick - owner or the receiver.
  */
 eYo.Consolidator.List.Target.prototype.getIO = function (brick) {
   var io = eYo.Consolidator.List.Target.superClass_.getIO.call(this, brick)
@@ -117,7 +117,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
   /**
    * Whether the input corresponds to an identifier...
    * Called when io.slot is connected.
-   * @param {Object} io, parameters....
+   * @param {Object} io - parameters....
    */
   var getCheckType = (io) => {
     var m4t = io.m4t.target
@@ -1773,7 +1773,7 @@ eYo.Expr.primary.prototype.getSubtype = function () {
  * This is not a very strong design but it should work, I guess.
  * @param {Brick} brick
  * @param {String} name The name of the input.
- * @param {!Boolean} dontCreate Whether the receiver should create inputs on the fly.
+ * @param {Boolean} [dontCreate] Whether the receiver should create inputs on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.Expr.primary.prototype.getSlot = function (name) {

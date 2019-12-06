@@ -115,7 +115,7 @@ Object.defineProperties(eYo.Events, {
  * Event enabler.
  * Use the arrow definition of functions to catch `this`.
  * @param {Function} try_f
- * @param {!Function} finally_f
+ * @param {Function} [finally_f]
  */
 eYo.Events.enableWrap = eYo.Do.makeWrapper(
   eYo.Events.enable,
@@ -126,7 +126,7 @@ eYo.Events.enableWrap = eYo.Do.makeWrapper(
  * Event disabler.
  * Use the arrow definition of functions to catch `this`.
  * @param {Function} try_f
- * @param {!Function} finally_f
+ * @param {Function} [finally_f]
  */
 eYo.Events.disableWrap = eYo.Do.makeWrapper(
   eYo.Events.disable,
@@ -136,7 +136,7 @@ eYo.Events.disableWrap = eYo.Do.makeWrapper(
 /**
  * Wrap the given function into a single undo group.
  * @param {Function} try_f
- * @param {!Function} finally_f
+ * @param {Function} [finally_f]
  */
 eYo.Events.groupWrap = (f, g) => {
   eYo.Do.makeWrapper(

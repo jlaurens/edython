@@ -444,7 +444,7 @@ eYo.Test.newIdentifier = (str) => {
  * @param {*} svg  either a brick or a dom resource object.
  * @param {string} node  the child element is `svg[node]`
  * @param {string} parent  the parent element is `svg[parent]`, when parent is defined
- * @param {!string} type
+ * @param {string} [type]
  */
 eYo.Test.svgNodeParent = (bdom, node, parent, type) => {
   if (bdom.ui) {

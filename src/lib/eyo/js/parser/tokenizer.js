@@ -336,8 +336,8 @@ eYo.Scan.prototype.nextToken = function () {
   /**
    * Push the token if the character(s) can be scanned.
    * @param {String} type
-   * @param {!Character} c1
-   * @param {!Character} c2
+   * @param {Character} [c1]
+   * @param {Character} [c2]
    */
   var new_TokenIf = (type, c1, c2) => {
     if (c1) {

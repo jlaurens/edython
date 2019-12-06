@@ -609,7 +609,7 @@ eYo.Board.Main.prototype.clear = function() {
 
 /**
  * Returns a brick subclass for eYo bricks.
- * @param {!string} prototypeName Name of the language object containing
+ * @param {string} [prototypeName] Name of the language object containing
  *     type-specific functions for this brick.
  * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
@@ -894,7 +894,7 @@ eYo.Board.prototype.render = function() {
 /**
  * Highlight or unhighlight a brick in the board.  Brick highlighting is
  * often used to visually mark bricks currently being executed.
- * @param {!string} id ID of brick to highlight/unhighlight,
+ * @param {string} [id] ID of brick to highlight/unhighlight,
  *   or null for no brick (used to unhighlight all bricks).
  * @param {boolean=} opt_state If eYo.NA, highlight specified brick and
  * automatically unhighlight all others.  If true or false, manually
@@ -1271,7 +1271,7 @@ eYo.Board.prototype.scrollCenter = function() {
   
 /**
  * Scroll the board to center on the given brick.
- * @param {!string} id ID of brick center on.
+ * @param {string} [id] ID of brick center on.
  * @public
  */
 eYo.Board.prototype.centerOnBrick = function(id) {
@@ -1400,7 +1400,7 @@ eYo.Board.prototype.fromString = function (str) {
 
 /**
  * Convert the board to string.
- * @param {!Object} opt  See eponym parameter in `eYo.Xml.brickToDom`.
+ * @param {Object} [opt]  See eponym parameter in `eYo.Xml.brickToDom`.
  */
 eYo.Board.prototype.toDom = function (opt) {
   return eYo.Xml.boardToDom(this, opt)
@@ -1408,7 +1408,7 @@ eYo.Board.prototype.toDom = function (opt) {
 
 /**
  * Convert the board to string.
- * @param {!Boolean} opt_noId
+ * @param {Boolean} [opt_noId]
  */
 eYo.Board.prototype.toString = function (opt_noId) {
   let oSerializer = new XMLSerializer()
@@ -1417,7 +1417,7 @@ eYo.Board.prototype.toString = function (opt_noId) {
 
 /**
  * Convert the board to UTF8 byte array.
- * @param {!Boolean} opt_noId
+ * @param {Boolean} [opt_noId]
  */
 eYo.Board.prototype.toUTF8ByteArray = function (opt_noId) {
   var s = '<?xml version="1.0" encoding="utf-8"?>\n' + this.toString(optNoId)
@@ -1451,7 +1451,7 @@ eYo.Board.prototype.addBrick = function (brick, opt_id) {
 /**
  * Remove a brick from the board.
  * @param {eYo.Brick.Dflt} brick
- * @param {!Function} f
+ * @param {Function} [f]
  */
 eYo.Board.prototype.removeBrick = function (brick, f) {
   this.change.wrap(() => {
@@ -1462,7 +1462,7 @@ eYo.Board.prototype.removeBrick = function (brick, f) {
 
 /**
  * Tidy up the nodes.
- * @param {!Object} kvargs  key value arguments
+ * @param {Object} [kvargs]  key value arguments
  * IN PROGRESS
 eYo.Board.prototype.tidyUp = function (kvargs) {
   // x + y < O / x + y > 0
@@ -1558,7 +1558,7 @@ eYo.Board.prototype.tidyUp = function (kvargs) {
 
 /**
  * Scroll the board to show the brick with the given id in the top left corner.
- * @param {!string} id ID of brick center on.
+ * @param {string} [id] ID of brick center on.
  * @public
  */
 eYo.Board.prototype.scrollBrickTopLeft = function(id) {

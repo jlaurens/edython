@@ -22,7 +22,7 @@ eYo.Dom.makeDriverClass('Desk', {
   /**
    * Initialize the desk dom ressources.
    * @param {eYo.Desk} desk
-   * @param {!Function} f
+   * @param {Function} [f]
    * @return {!Element} The desk's dom repository.
    */
   initUI (desk) {

@@ -23,10 +23,10 @@ delete eYo.Dlgt
  * @name {eYo.Dlgt}
  * @constructor
  * Object adding data to a constructor in a safe way.
- * @param {!Object} ns,  namespace of the constructor. Subclass of `eYo`'s constructor.
- * @param {!String} key,  the key used when the constructor was created.
- * @param {Object} C9r,  the object to which this instance is attached.
- * @param {!Object} model,  the model used to create the constructor.
+ * @param {Object} [ns] -  namespace of the constructor. Subclass of `eYo`'s constructor.
+ * @param {String} [key] -  the key used when the constructor was created.
+ * @param {Object} C9r -  the object to which this instance is attached.
+ * @param {Object} [model] -  the model used to create the constructor.
  * @readonly
  * @property {!Function} C9r - The associate constructor.
  * @property {?Object} ns - The namespace of the associate constructor, if any.
@@ -150,7 +150,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
     })
     /**
      * Owned enumerating loop.
-     * @param {Function} helper,  signature (name) => {...}
+     * @param {Function} helper -  signature (name) => {...}
      */
     var K = k[0].toUpperCase() + k.substring(1)
     var name = 'forEach' + K
@@ -166,7 +166,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
   /**
    * Initialize an instance with link, cached, owned and clonable properties.
    * Default implementation forwards to super.
-   * @param {Object} instance,  instance is an instance of a subclass of the `C9r_` of the receiver
+   * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
   pttp.initInstance = function (object) {
     var suffix = '__'
@@ -194,7 +194,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
 
   /**
    * Dispose of the resources declared at that level.
-   * @param {Object} instance,  instance is an instance of a subclass of the `C9r_` of the receiver
+   * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
   pttp.disposeInstance = function (object) {
     this.clearLink_(object)
@@ -282,7 +282,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
   /**
    * Add a link properties.
    * The receiver is not the owner.
-   * @param {Object} constructor,  Its prototype object gains a storage named `foo__` and both getters and setters for `foo_`.
+   * @param {Object} constructor -  Its prototype object gains a storage named `foo__` and both getters and setters for `foo_`.
    * The initial value is `eYo.NA`.
    * @param {Array<String>} names names of the link to add
    */
@@ -300,7 +300,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
 
   /**
    * Dispose in the given object, the link given by the constructor.
-   * @param {Object} object,  an instance of the receiver's constructor,
+   * @param {Object} object -  an instance of the receiver's constructor,
    * or one of its subclasses.
    */
   pttp.clearLink_ = function (object) {
@@ -328,7 +328,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
    * Add an owned object.
    * The receiver is not the owner.
    * @param {String} k name of the owned to add
-   * @param {Object} data,  the object used to define the property: key `value` for the initial value, key `willChange` to be called when the property is about to change (signature (before, after) => function, truthy when the change should take place). The returned value is a function called after the change has been made in memory.
+   * @param {Object} data -  the object used to define the property: key `value` for the initial value, key `willChange` to be called when the property is about to change (signature (before, after) => function, truthy when the change should take place). The returned value is a function called after the change has been made in memory.
    */
   pttp.declareOwned_ = function (k, model = {}) {
     eYo.parameterAssert(!this.props_.has(k))
@@ -412,7 +412,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
 
   /**
    * Dispose in the given object, the properties given by their main name.
-   * @param {Object} object, the object that owns the property. The other parameters are forwarded to the dispose method.
+   * @param {Object} object - the object that owns the property. The other parameters are forwarded to the dispose method.
    */
   pttp.disposeOwned_ = function (object, ...params) {
     this.forEachOwned(k => {
@@ -428,8 +428,8 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
 
   /**
    * Add a 2 levels cached property to the receiver's constructor's prototype.
-   * @param {String} key,  the key
-   * @param {Object} model,  the model object, must have a `init` key and
+   * @param {String} key -  the key
+   * @param {Object} model -  the model object, must have a `init` key and
    * may have a `forget` or an `update` key.
    * Both are functions called in the contect of the owner
    * (`this` is the owner). `init` takes no arguments.
@@ -511,7 +511,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
 
   /**
    * Add 3 levels cached properties to a prototype.
-   * @param {Object} many,  the K => V mapping to which we apply `declareCached_(K, V)`.
+   * @param {Object} many -  the K => V mapping to which we apply `declareCached_(K, V)`.
    */
   pttp.declareCached = function (many) {
     Object.keys(many).forEach(n => {
@@ -691,8 +691,8 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
 
   /**
    * Dispose in the given object, the properties given by their main name.
-   * @param {Object} object, the object that owns the property
-   * @param {Array<string>} names,  a list of names
+   * @param {Object} object - the object that owns the property
+   * @param {Array<string>} names -  a list of names
    */
   pttp.disposeClonable_ = function (object) {
     this.forEachClonable(k => {
@@ -720,10 +720,10 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
   /**
    * Convenient shortcut to create subclasses.
    * Forwards to the namespace which must exist!
-   * @param {!Object} ns,  The namespace, possibly `eYo.NA`.
-   * @param {String} key,  to create `ns[key]`
-   * @param {!Function} Dlgt,  Delegate class.
-   * @param {!Object} model,  Model object
+   * @param {Object} [ns] -  The namespace, possibly `eYo.NA`.
+   * @param {String} key -  to create `ns[key]`
+   * @param {Function} [Dlgt] -  Delegate class.
+   * @param {Object} [model] -  Model object
    * @return {?Function} the constructor created or `eYo.NA` when the receiver has no namespace.
    */
   pttp.makeSubclass = function (ns, key, Dlgt_, model) {
@@ -762,11 +762,11 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
  * Use a key->value design if you do not want that.
  * The `params` object has template: `{init: function, dispose: function}`.
  * Each namespace has its own `makeClass` method which creates classes in itself.
- * @param {!Object} ns,  The namespace, defaults to the Super's one or the caller.
- * @param {String} key,  The key.
- * @param {!Function} Super,  The eventual super class. There is no default value. Must be a subclass of `eYo.Dflt`, when no `Dlgt_`is given but not necessarily with an `eyo`.
- * @param {!Function} Dlgt_,  The constructor's delegate class. Defaults to the `Super`'s delegate. Must be a subclass of `eYo.Dlgt`.
- * @param {!Object|Function} model,  The dictionary of parameters. Or a function to create such a dictionary. This might overcomplicated.
+ * @param {Object} [ns] -  The namespace, defaults to the Super's one or the caller.
+ * @param {String} key -  The key.
+ * @param {Function} [Super] -  The eventual super class. There is no default value. Must be a subclass of `eYo.Dflt`, when no `Dlgt_`is given but not necessarily with an `eyo`.
+ * @param {Function} [Dlgt_] -  The constructor's delegate class. Defaults to the `Super`'s delegate. Must be a subclass of `eYo.Dlgt`.
+ * @param {Object|Function} [model] -  The dictionary of parameters. Or a function to create such a dictionary. This might overcomplicated.
  * @return {Function} the created constructor.
  * 
  */

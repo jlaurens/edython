@@ -22,7 +22,7 @@ eYo.Svg.makeDriverClass('TrashCan', {
     /**
    * Initialize the trash can SVG ressources.
    * @param {eYo.TrashCan} trashCan
-   * @param {!Object} options
+   * @param {Object} [options]
    * @return {!Element} The trash can's SVG group.
    */
   initUI (trashCan, options) {

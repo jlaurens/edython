@@ -47,8 +47,8 @@ eYo.Driver.Dlgt.makeSubclass(eYo.Driver, 'DlgtMngr', {
  * wrapping the model's eponym methods, if any.
  * The owner will have a dafault driver named `Dflt`,
  * which is expected to be the ancestor of all drivers.
- * @param {String} key, a (capitalized) word, the name of the subclass (last component)
- * @param {!Function} Super, the super class of the driver constructor,
+ * @param {String} key - a (capitalized) word, the name of the subclass (last component)
+ * @param {Function} [Super] - the super class of the driver constructor,
  * defaults to the owner's super_'s key property or the owner's `Dflt`.
  * @param {Object} driverModel
  * An object with various keys:
@@ -87,7 +87,7 @@ eYo.Driver.DlgtMngr.prototype.makeDriverClass = function (key, Super, driverMode
  * Usage: `eYo.Driver.makeMngrClass(model)`.
  * Actual implementation with Fcls, Dom and Svg drivers.
  * {Code: ns.Mngr} is instantiated by the main application object.
- ** @param {!Object} mngrModel,  model used for creation
+ ** @param {Object} [mngrModel] -  model used for creation
  * @return {Function} a constructor equals to ns.Mngr
  */
 eYo.Driver.constructor.prototype.makeMngrClass = function (mngrModel) {
@@ -110,9 +110,9 @@ eYo.Driver.constructor.prototype.makeMngrClass = function (mngrModel) {
  * Usage: `eYo.Driver.makeMngrClass(model)`.
  * Actual implementation with Fcls, Dom and Svg drivers.
  * {Code: ns.Mngr} is instantiated by the main application object.
- * @param {String} key,  The key of the driver
- * @param {!Object} Super,  The ancestor of the driver
- * @param {!Object} mngrModel,  model used for creation
+ * @param {String} key -  The key of the driver
+ * @param {Object} [Super] -  The ancestor of the driver
+ * @param {Object} [mngrModel] -  model used for creation
  * @return {Function} a constructor equals to this.Mngr[key]
  */
 eYo.Driver.constructor.prototype.makeDriverClass = function (key, Super, driverModel) {

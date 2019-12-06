@@ -183,7 +183,7 @@ eYo.UI.makeClass(eYo, 'Scrollbar', {
 /**
  * Recalculate the scrollbar's location and its length.
  * When `prepare` is true, updates the visibility status, when `false` it does not.
- * @param {!eYo.Metrics} opt_metrics A data structure describing all the
+ * @param {eYo.Metrics} [opt_metrics] A data structure describing all the
  * required dimensions.  If not provided, it will be fetched from the board.
  * @param{?Boolean} prepare  True when prepare only.
  */
@@ -201,7 +201,7 @@ eYo.Scrollbar.prototype.layout = function(hostMetrics, prepare) {
  * This should be called when the layout or size of the window has changed.
  * @param {Object} hostMetrics A data structure describing all the
  *     required dimensions, possibly fetched from the host object.
- * @param {!Boolean} prepare  True when only preparing.
+ * @param {Boolean} [prepare]  True when only preparing.
  */
 eYo.Scrollbar.prototype.layoutHorizontal = function(hostMetrics, prepare) {
   hostMetrics || (hostMetrics = this.board.metrics)
@@ -248,7 +248,7 @@ eYo.Scrollbar.prototype.layoutHorizontal = function(hostMetrics, prepare) {
  * This should be called when the layout or size of the window has changed.
  * @param {Object} hostMetrics A data structure describing all the
  *     required dimensions, possibly fetched from the host object.
- * @param {!Boolean} prepare  True when preparing.
+ * @param {Boolean} [prepare]  True when preparing.
  */
 eYo.Scrollbar.prototype.layoutVertical = function(hostMetrics, prepare) {
   hostMetrics || (hostMetrics = this.board.metrics)

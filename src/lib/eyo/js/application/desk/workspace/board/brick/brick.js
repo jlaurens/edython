@@ -48,10 +48,10 @@ eYo.forwardDeclare('eYo.Focus')
  * Delegate constructor for bricks.
  * @name {eYo.Brick.Dlgt}
  * @constructor
- * @param {Object} ns,  namespace.
- * @param {String} key,  the key used when the constructor was created.
- * @param {Object} C9r,  the object to which this instance is attached.
- * @param {Object} model,  the model used to create the constructor.
+ * @param {Object} ns -  namespace.
+ * @param {String} key -  the key used when the constructor was created.
+ * @param {Object} C9r -  the object to which this instance is attached.
+ * @param {Object} model -  the model used to create the constructor.
  */
 eYo.UI.Dlgt.makeSubclass(eYo.Brick, 'Dlgt', {
   init () {
@@ -70,7 +70,7 @@ eYo.UI.Dlgt.makeSubclass(eYo.Brick, 'Dlgt', {
  * for what it was designed to.
  * For edython.
  * @param {eYo.Board} board - the owner of the brick.
- * @param {!string} prototypeName Name of the language object containing
+ * @param {string} [prototypeName] Name of the language object containing
  *     type-specific functions for this brick.
  * @constructor
  * @readonly
@@ -743,7 +743,7 @@ eYo.Brick.Dflt.prototype.didLoad = function () {
  * Bricks must be of the same type.
  * Lists and dictionaries are managed differently.
  * Usefull for testing purposes for example.
- * @param {!eYo.Brick.Dflt} rhs  Another brick
+ * @param {eYo.Brick.Dflt} [rhs]  Another brick
  */
 eYo.Brick.Dflt.prototype.equals = function (rhs) {
   var equals = rhs && (this.type == rhs.type)
@@ -802,8 +802,8 @@ eYo.Brick.Dflt.prototype.equals = function (rhs) {
  *
  * The return value may be cached.
  *
- * @param {!Boolean} deep
- * @param {!Boolean} force
+ * @param {Boolean} [deep]
+ * @param {Boolean} [force]
  * @return {Boolean} true when consolidation occurred
  */
 eYo.Brick.Dflt.prototype.doConsolidate = function (deep, force) {
@@ -1282,7 +1282,7 @@ eYo.Brick.Dflt.prototype.makeSlots = (() => {
 /**
  * Dispose the slots
  * For edython.
- * @param {!Boolean} healStack  Dispose of the inferior target iff healStack is a falsy value
+ * @param {Boolean} [healStack]  Dispose of the inferior target iff healStack is a falsy value
  */
 eYo.Brick.Dflt.prototype.disposeSlots = function (healStack) {
   this.forEachSlot(slot => slot.dispose(healStack))
@@ -1322,7 +1322,7 @@ Object.defineProperties(eYo.Brick.Dflt.prototype, {
  * the constructor's delegate's `type` method.
  * NEVER call this directly, except if you are a brick.
  * No need to override this.
- * @param {!string} optNewType,
+ * @param {string} [optNewType] -
  * @private
  */
 eYo.Brick.Dflt.prototype.setupType = function (optNewType) {
@@ -1353,7 +1353,7 @@ eYo.Brick.Dflt.prototype.synchronizeSlots = function () {
  * Only used by `consolidate`.
  * Should not be called directly, but may be overriden.
  * For edython.
- * @param {!string} type Name of the new type.
+ * @param {string} [type] Name of the new type.
  */
 eYo.Brick.Dflt.prototype.consolidateData = function () {
   this.forEachData(data => data.consolidate())
@@ -1365,8 +1365,8 @@ eYo.Brick.Dflt.prototype.consolidateData = function () {
  * Only used by `consolidate`.
  * Should not be called directly, but may be overriden.
  * For edython.
- * @param {!Boolean} deep
- * @param {!Boolean} force
+ * @param {Boolean} [deep]
+ * @param {Boolean} [force]
  */
 eYo.Brick.Dflt.prototype.consolidateSlots = function (deep, force) {
   this.forEachSlot(slot => slot.consolidate(deep, force))
@@ -2262,8 +2262,8 @@ eYo.Brick.Dflt.prototype.someStatement = function (helper) {
  * this is headless and should not render until a initUI message is sent.
  * @param {*} owner  board or brick
  * @param {String|Object} model
- * @param {!String|Object} id
- * @param {!eYo.Brick.Dflt} id
+ * @param {String|Object} [id]
+ * @param {eYo.Brick.Dflt} [id]
  */
 eYo.Brick.newReady = (() => {
   var processModel = (board, model, id, brick) => {
@@ -2415,7 +2415,7 @@ eYo.Brick.Dflt.prototype.getPythonType = function () {
  * connects the parent's output to it.
  * The connection cannot always establish.
  * The holes are filled.
- * @param {Object} model, for subclassers
+ * @param {Object} model - for subclassers
  * @return {?eYo.Brick} the created brick
  */
 eYo.Brick.Dflt.prototype.insertParentWithModel = function (model) {
@@ -2781,7 +2781,7 @@ Object.defineProperties(eYo.Brick, {
     /**
      * Set parent of this brick to be a new brick or null.
      * Beware, we cannot replace an already existing parent!
-     * @param {!eYo.Brick.Dflt} newParent New parent brick.
+     * @param {eYo.Brick.Dflt} [newParent] New parent brick.
      */
     set (newParent) {
       var oldParent = this.parent__
@@ -2809,7 +2809,7 @@ Object.defineProperties(eYo.Brick, {
      * are parent and child from each other.
      * The converse is not true.
      * 
-     * @param {!eYo.Brick.Dflt} newParent New parent_ brick.
+     * @param {eYo.Brick.Dflt} [newParent] New parent_ brick.
      */
     set (newParent) {
       if (newParent === this.parent__) {
@@ -2845,7 +2845,7 @@ eYo.Brick.Dflt.prototype.connectionUiEffect = function() {
 
 /**
  * Brick manager.
- * @param {!string} prototypeName Name of the language object containing
+ * @param {string} [prototypeName] Name of the language object containing
  */
 eYo.Brick.Mngr = (() => {
   var me = {}
@@ -2887,7 +2887,7 @@ eYo.Brick.Mngr = (() => {
    * Private modeller to provide the constructor with a complete `model` property.
    * @param {Object} Dlgt the constructor of a delegate.
    * @param {Object} Dlgt.eyo  the delegate of the constructor.
-   * @param {!Object} insertModel  data and inputs entries are merged into the model.
+   * @param {Object} [insertModel]  data and inputs entries are merged into the model.
    */
   var modeller = (Dlgt, insertModel) => {
     var eyo = Dlgt.eyo
@@ -2935,12 +2935,12 @@ eYo.Brick.Mngr = (() => {
    * In particular, some bricks share a basic do nothing delegate
    * because they are not meant to really exist yet.
    * , , ,  = eYo.NA,  = eYo.Brick.Dlgt,  = false
-   * @param {!Object} ns, namespace, `eYo.Brick` when omitted
-   * @param {String} key,  capitalized string, `owner[key]` will be created.
+   * @param {Object} [ns] - namespace, `eYo.Brick` when omitted
+   * @param {String} key -  capitalized string, `owner[key]` will be created.
    * @param {Function} Super
-   * @param {!Function} Dlgt, The constructor of `Super` when omitted.
-   * @param {!Boolean} register, falsy or truthy values are not supported!, false when omitted.
-   * @param {!Object} model
+   * @param {Function} [Dlgt] - The constructor of `Super` when omitted.
+   * @param {Boolean} [register] - falsy or truthy values are not supported!, false when omitted.
+   * @param {Object} [model]
    * @return the constructor created
    */
   me.makeSubclass = (() => {
@@ -3019,12 +3019,12 @@ eYo.Brick.Mngr = (() => {
       }
       model || (model = {})
 /*
-   * @param {!Object} owner
+   * @param {Object} [owner]
    * @param {String} key
    * @param {Function} Super
-   * @param {!Function} Dlgt
-   * @param {!Boolean} register
-   * @param {!Object} model
+   * @param {Function} [Dlgt]
+   * @param {Boolean} [register]
+   * @param {Object} [model]
 */
       if (key.indexOf('eyo:') >= 0) {
         key = key.substring(4)
@@ -3169,7 +3169,7 @@ eYo.Brick.Mngr = (() => {
   /**
    * Delegate instance creator.
    * @param {eYo.Brick.Dflt} brick
-   * @param {!string} prototypeName Name of the language object containing
+   * @param {string} [prototypeName] Name of the language object containing
    */
   me.create = function (board, prototypeName, opt_id) {
     eYo.assert(!eYo.isStr(brick), 'API DID CHANGE, update!')
@@ -3180,7 +3180,7 @@ eYo.Brick.Mngr = (() => {
   }
   /**
    * Get the constructor for the given prototype name.
-   * @param {!string} prototypeName Name of the language object containing
+   * @param {string} [prototypeName] Name of the language object containing
    */
   me.get = function (prototypeName) {
     eYo.assert(!prototypeName || !C9rs[prototypeName] || C9rs[prototypeName].eyo, 'FAILURE' + prototypeName)
@@ -3188,14 +3188,14 @@ eYo.Brick.Mngr = (() => {
   }
   /**
    * Get the Delegate constructor for the given prototype name.
-   * @param {!string} prototypeName Name of the language object containing
+   * @param {string} [prototypeName] Name of the language object containing
    */
   me.getTypes = function () {
     return Object.keys(C9rs)
   }
   /**
    * Get the input model for that prototypeName.
-   * @param {!string} prototypeName Name of the language object containing
+   * @param {string} [prototypeName] Name of the language object containing
    * @return void object if no delegate is registered for that name
    */
   me.getModel = function (prototypeName) {
@@ -3210,7 +3210,7 @@ eYo.Brick.Mngr = (() => {
    * only once from the creation of the delegate.
    *
    * The last delegate registered for a given prototype name wins.
-   * @param {!string} prototypeName Name of the language object containing
+   * @param {string} [prototypeName] Name of the language object containing
    * @param {Object} constructor
    * @private
    */
@@ -3266,7 +3266,7 @@ eYo.Brick.Mngr = (() => {
 /**
  * Method to register an expression or a statement brick.
  * The delegate is searched as a Delegate element
- * @param{!string} key  key is the last component of the brick type as a dotted name.
+ * @param{string} [key]  key is the last component of the brick type as a dotted name.
  */
 eYo.Brick.Mngr.register = function (key) {
   var prototypeName = eYo.T3.Expr[key]

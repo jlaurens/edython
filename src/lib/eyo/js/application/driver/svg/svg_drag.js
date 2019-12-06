@@ -252,7 +252,7 @@ Object.defineProperties(eYo.Svg.BoardDragSurface.prototype, {
  * Set the SVG to have the brick canvas in it and then
  * show the surface.
  * @param {Element} brickCanvas The block canvas <g> element from the board.
- * @param {!Element} previousSibling The element to insert the block canvas after when it goes back in the DOM at the end of a drag.
+ * @param {Element} [previousSibling] The element to insert the block canvas after when it goes back in the DOM at the end of a drag.
  * @param {number} width The width of the board SVG element.
  * @param {number} height The height of the board SVG element.
  * @param {number} scale The scale of the board being dragged.
@@ -300,7 +300,7 @@ eYo.Svg.BoardDragSurface.prototype.moveTo = function(xy) {
 /**
  * Move the blockCanvas out of the surface SVG and on to
  * newSurface.
- * @param {!SVGElement} newSurface The element to put the drag surface contents
+ * @param {SVGElement} [newSurface] The element to put the drag surface contents
  *     into, when there was no previous sibling.
  */
 eYo.Svg.BoardDragSurface.prototype.clearAndHide = function(newSurface) {

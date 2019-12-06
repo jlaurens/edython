@@ -144,7 +144,7 @@ eYo.Dom.isRightButton = e => {
  * multitouch events into multiple events as needed.
  * @param {EventTarget} node Node upon which to listen.
  * @param {string} name Event name to listen to (e.g. 'mousedown').
- * @param {!Object} thisObject The value of 'this' in the function.
+ * @param {Object} [thisObject] The value of 'this' in the function.
  * @param {Function} callback Function to call when event is triggered.
  * @param {boolean=} opt.noCaptureIdentifier True if triggering on this event
  *     should not block execution of other event handlers on this touch or other
@@ -228,7 +228,7 @@ eYo.Dom.unbindEvent = bindData => {
  * Bind mouse events.
  * @param {Object} listener A mouse down or touch start event listener.
  * @param {Element} element A mouse down or touch start event.
- * @param {!Object} opt  Option data: suffix, option flags: willUnbind, and bindEventWithChecks_'s options
+ * @param {Object} [opt]  Option data: suffix, option flags: willUnbind, and bindEventWithChecks_'s options
  */
 eYo.Dom.bindMouseEvents = (listener, element, opt) => {
   [

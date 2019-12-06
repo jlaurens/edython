@@ -29,7 +29,7 @@ goog.forwardDeclare('goog.dom')
 /**
  * Convenient shortcut.
  * @param {eYo.Brick.Dflt} brick  The newly created brick.
- * @param {!Boolean|String} group  eventually set a group.
+ * @param {Boolean|String} [group]  eventually set a group.
  */
 eYo.Events.fireBrickCreate = function (brick, group) {
   if (eYo.Events.enabled) {
@@ -96,7 +96,7 @@ Object.defineProperties(eYo.Events.BrickBase.prototype, {
  * Class for a brick change event.
  * @param {eYo.Brick.Dflt} brick The changed brick.
  * @param {string} element One of 'field', 'collapsed', 'disabled', etc.
- * @param {!string} name Name of slot or field affected, or null.
+ * @param {string} [name] Name of slot or field affected, or null.
  * @param {*} oldValue Previous value of element.
  * @param {*} newValue New value of element.
  * @extends {eYo.Events.BrickBase}

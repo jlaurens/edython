@@ -172,8 +172,8 @@ eYo.List.prototype.remove = function (brick) {
 /**
  * Performs a function on each brick until one is found for which the answer is a truthy value.
  * Children are looked after too.
- * @param {function} f,  (element)=>Boolean: {}
- * @param {Boolean} deep,  deep first traversal when true, flat traversal otherwise
+ * @param {function} f -  (element)=>Boolean: {}
+ * @param {Boolean} deep -  deep first traversal when true, flat traversal otherwise
  */
 eYo.List.prototype.some = (function () {
   var somer = (test) => {
@@ -233,36 +233,36 @@ eYo.List.prototype.some = (function () {
   /**
    * Performs a function on each brick.
    * Children are looked after too.
-   * @param {function} f,  (element)=>None: {}
+   * @param {function} f -  (element)=>None: {}
    */
   eYo.List.prototype.forEach = forEacher(b3k=>true)
   /**
    * Performs a function on each expression brick
    * until one is found for which the answer is a truthy value.
    * Children are looked after too in a deep first traversal.
-   * @param {function} f,  (element)=>None: {}
+   * @param {function} f -  (element)=>None: {}
    */
   eYo.List.prototype.forEachExpr = forEacher(b3k=>b3k.isExpr)
   /**
    * Performs a function on each statement brick
    * until one is found for which the answer is a truthy value.
    * Children are looked after too in a deep first traversal.
-   * @param {function} f,  (element)=>None: {}
+   * @param {function} f -  (element)=>None: {}
    */
   eYo.List.prototype.forEachStmt = forEacher(b3k=>b3k.isStmt)
   /**
    * Performs a function on each expression brick
    * until one is found for which the answer is a truthy value.
    * Children are looked after too.
-   * @param {function} f,  (element)=>Boolean: {}
+   * @param {function} f -  (element)=>Boolean: {}
    */
   eYo.List.prototype.someExpr = somer(b3k=>b3k.isExpr)
   /**
    * Performs a function on each statement brick
    * until one is found for which the answer is a truthy value.
    * Children are looked after too.
-   * @param {function} f,  (element)=>Boolean: {}
-   * @param {Boolean} deep,  deep first traversal when true, flat traversal otherwise
+   * @param {function} f -  (element)=>Boolean: {}
+   * @param {Boolean} deep -  deep first traversal when true, flat traversal otherwise
    */
   eYo.List.prototype.someStmt = somer(b3k=>b3k.isStmt)
   return somer(b3k=>true)
