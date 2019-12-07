@@ -57,7 +57,7 @@ eYo.Dflt.makeSubclass('Owned', {
     this.owner_ = owner
   },
   props: {
-    link: {
+    linked: {
       owner: {
         didChange (before, after) {
           this.appForget() // do not update, may be the owner is not complete

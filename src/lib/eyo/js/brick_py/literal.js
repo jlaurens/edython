@@ -111,7 +111,7 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
   'imagnumber'
 ].forEach(key => {
   eYo.Expr[key] = eYo.Expr.numberliteral
-  eYo.Brick.Mngr.register(key)
+  eYo.Brick.mngr.register(key)
 })
 
 /**
@@ -283,7 +283,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
   'shortbytesliteral',
 ].forEach(t => {
   eYo.Expr[t] = eYo.Expr.shortliteral
-  eYo.Brick.Mngr.register(t)
+  eYo.Brick.mngr.register(t)
 })
 
 /**
@@ -478,7 +478,7 @@ eYo.Expr.longliteral.prototype.validateComponents = function(kvargs) {
   'longbytesliteral',
 ].forEach(t => {
   eYo.Expr[t] = eYo.Expr.longliteral
-  eYo.Brick.Mngr.register(t)
+  eYo.Brick.mngr.register(t)
 })
 
 eYo.Brick.Literal.T3s = [

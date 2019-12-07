@@ -30,7 +30,7 @@ eYo.provide('eYo.Expr')
 eYo.Brick.Dflt.makeSubclass(eYo.Expr, 'Dflt')
 
 // Default delegate for all expression bricks
-eYo.Brick.Mngr.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
+eYo.Brick.mngr.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
 
 Object.defineProperties(eYo.Expr.Dflt.prototype, {
   isExpr: {

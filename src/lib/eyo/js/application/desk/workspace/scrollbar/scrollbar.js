@@ -53,7 +53,7 @@ eYo.UI.makeClass(eYo, 'Scrollbar', {
         value: goog.events.BrowserFeature.TOUCH_ENABLED ? 26 : 16
       },
     },
-    link: {
+    linked: {
       /**
        * Whether the scrollbar handle is visible.
        * @type {boolean}

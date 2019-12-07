@@ -52,7 +52,7 @@ eYo.UI.makeClass(eYo, 'WorkspaceControl', {
         return ans
       }
     },
-    link: {
+    linked: {
       WIDTH_: {value: 47},
       MARGIN_BOTTOM_: {value: 20},
       MARGIN_SIDE_: {value: 20},

@@ -65,7 +65,7 @@ eYo.Brick.makeSubclass('Stmt', {
     }
   }
 })
-eYo.Brick.Mngr.registerAll(eYo.T3.Stmt, eYo.Stmt, true)
+eYo.Brick.mngr.registerAll(eYo.T3.Stmt, eYo.Stmt, true)
 
 Object.defineProperties(eYo.Stmt.prototype, {
   isStmt: {
@@ -220,7 +220,7 @@ eYo.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
 
 ;['blank_stmt'].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.comment_stmt
-  eYo.Brick.Mngr.register(k)
+  eYo.Brick.mngr.register(k)
 })
 
 Object.defineProperties(eYo.Stmt.comment_stmt.prototype, {
@@ -383,7 +383,7 @@ eYo.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
 ].forEach((k) => {
   k = k + '_stmt'
   eYo.Stmt[k] = eYo.Stmt.global_stmt
-  eYo.Brick.Mngr.register(k)
+  eYo.Brick.mngr.register(k)
 })
 
 /**

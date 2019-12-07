@@ -148,7 +148,7 @@ eYo.T3.Expr.Check.binary.forEach(t => {
   if (t !== eYo.T3.Expr.any) {
     t = t.substring(4)
     eYo.Expr[t] = eYo.Expr.binary
-    eYo.Brick.Mngr.register(t)
+    eYo.Brick.mngr.register(t)
   }
 })
 
@@ -161,7 +161,7 @@ eYo.T3.Expr.Check.binary.forEach(t => {
   'object_comparison'
 ].forEach(t => {
   eYo.Expr[t] = eYo.Expr.binary
-  eYo.Brick.Mngr.register(t)
+  eYo.Brick.mngr.register(t)
 })
 
 /**
@@ -361,7 +361,7 @@ eYo.Expr.Dflt.makeSubclass('unary', {
   'not_test'
 ].forEach((k) => {
   eYo.Expr[k] = eYo.Expr.unary
-  eYo.Brick.Mngr.register(k)
+  eYo.Brick.mngr.register(k)
 })
 
 /**

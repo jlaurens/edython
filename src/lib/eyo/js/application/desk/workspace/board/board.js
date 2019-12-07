@@ -616,7 +616,7 @@ eYo.Board.Main.prototype.clear = function() {
  * @return {!eYo.Brick} The created brick.
  */
 eYo.Board.prototype.newBrick = function (prototypeName, opt_id) {
-  return eYo.Brick.Mngr.create(this, prototypeName, opt_id)
+  return eYo.Brick.mngr.create(this, prototypeName, opt_id)
 }
 
 /**

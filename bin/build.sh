@@ -266,7 +266,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/brick_dragger.js" \
 --js "src/lib/eyo/js/core/const.js" \
 --js "src/lib/eyo/js/ui/css.js" \
---js "src/lib/eyo/js/core/dlgt.js" \
+--js "src/lib/eyo/js/core/class.js" \
 --js "src/lib/eyo/js/parser/grammar.js" \
 --js "src/lib/eyo/js/core/geometry.js" \
 --js "src/lib/eyo/js/parser/node.js" \
@@ -279,11 +279,12 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/consolidator.js" \
 --js "src/lib/eyo/js/core/events.js" \
 --js "src/lib/eyo/Python/graminit.js" \
---js "src/lib/eyo/js/model/model.js" \
+--js "src/lib/eyo/js/model/module_model.js" \
 --js "src/lib/eyo/js/application/abstract/owned.js" \
 --js "src/lib/eyo/js/parser/tokenizer.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/search.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/shape.js" \
+--js "src/lib/eyo/js/model/profile.js" \
 --js "src/lib/eyo/js/application/backer.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/metrics/metrics.js" \
 --js "src/lib/eyo/js/model/decimal_model.js" \
@@ -293,7 +294,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/model/stdtypes_model.js" \
 --js "src/lib/eyo/js/model/turtle_model.js" \
 --js "src/lib/eyo/js/parser/parser.js" \
---js "src/lib/eyo/js/model/profile.js" \
 --js "src/lib/eyo/js/ui/ui.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/board.js" \
 --js "src/lib/eyo/js/application/desk/desk.js" \

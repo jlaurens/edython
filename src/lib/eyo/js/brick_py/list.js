@@ -160,7 +160,7 @@ eYo.Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
   if (!type) {
     console.error('unexpected void type')
   }
-  var D = eYo.Brick.Mngr.getModel(type).list
+  var D = eYo.Brick.mngr.getModel(type).list
   eYo.assert(D, '`model`.list is missing in ' + type)
   var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
   if (this.consolidator) {
@@ -555,7 +555,7 @@ eYo.Expr.enclosure.prototype.getBaseType = function () {
 'dict_display',
 'one_dict_display'].forEach(k => {
   eYo.Expr[k] = eYo.Expr.enclosure
-  eYo.Brick.Mngr.register(k)
+  eYo.Brick.mngr.register(k)
 })
 
 eYo.Brick.List.T3s = [

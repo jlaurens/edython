@@ -422,7 +422,7 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
   'lambda_expr_nocond'
 ].forEach((key) => {
   eYo.Expr[key] = eYo.Expr.lambda
-  eYo.Brick.Mngr.register(key)
+  eYo.Brick.mngr.register(key)
 })
 
 /**

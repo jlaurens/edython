@@ -784,7 +784,7 @@ describe ('Dlgt', function () {
           this.foo__ = value
         },
         props: {
-          link: {
+          linked: {
             foo: {
               willChange (before, after) {
                 test.call(this, before, after)

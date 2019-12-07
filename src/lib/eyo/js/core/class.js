@@ -11,11 +11,10 @@
  */
 'use strict'
 
-eYo.require('eYo')
+eYo.require('eYo.Do')
 
 eYo.provide('eYo.Dlgt')
 
-eYo.forwardDeclare('eYo.Do')
 
 delete eYo.Dlgt
 
@@ -80,16 +79,13 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
     C9r.eyo__ = this
 
     if (model) {
-      var props = model.props
-      if (props) {
-        this.props_ = new Set()
-        props.link && this.declareLink(props.link)
-        props.owned && this.declareOwned(props.owned)
-        props.cached && this.declareCached(props.cached)
-        props.clonable && this.declareClonable(props.clonable)
-        props.computed && this.declareComputed(props.computed)
-      }
-    }
+      this.props_ = new Set()
+      model.linked && this.declareLinked(model.linked)
+      model.owned && this.declareOwned(model.owned)
+      model.cached && this.declareCached(model.cached)
+      model.clonable && this.declareClonable(model.clonable)
+      model.computed && this.declareComputed(model.computed)
+  }
   }
   // convenient variable
   var pttp = Dlgt.prototype
@@ -181,7 +177,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
     suffix = '_'
     this.forEachCached(f)
     var f = k => {
-      var init = this.init_ && this.init_[k]
+      var init = this.init_ && this.init_[k] || object[k+'Init']
       if (init) {
         var k__ = k + '__'
         object[k__] = init.call(this)
@@ -237,7 +233,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
    * @param {Object} model Object with `willChange` and `didChange` keys,
    * f any.
    */
-  pttp.declareLink_ = function (k, model = {}) {
+  pttp.declareLinked_ = function (k, model = {}) {
     eYo.parameterAssert(!this.props_.has(k))
     this.link_.add(k)
     const proto = this.C9r_.prototype
@@ -254,9 +250,12 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
       },
       set: model.set_ || function (after) {
         var before = this[k__]
-        model.validate && (after = model.validate(before, after))
+        var f = model.validate
+        f && (after = f.call(this, before, after))
+        f = this[k + 'Validate']
+        f && (after = f.call(this, before, after))
         if (before !== after) {
-          var f = model.willChange
+          f = model.willChange
           if (!f || (f = f.call(this, before, after))) {
             var ff = this[k + 'WillChange']
             ff && ff.call(this, before, after)
@@ -286,14 +285,14 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
    * The initial value is `eYo.NA`.
    * @param {Array<String>} names names of the link to add
    */
-  pttp.declareLink = function (model) {
+  pttp.declareLinked = function (model) {
     if (model.forEach) {
       model.forEach(k => {
-        this.declareLink_(k)
+        this.declareLinked_(k)
       })
     } else {
       Object.keys(model).forEach(k => {
-        this.declareLink_(k, model[k])
+        this.declareLinked_(k, model[k])
       })
     }
   }
@@ -357,6 +356,10 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
         }
         : function (after) {
           var before = this[k__]
+          var f = model && model.validate
+          f && (after = f.call(this, before, after))
+          var ff = this[k + 'Validate']
+          ff && (after = ff.call(this, before, after))
           if(before !== after) {
             var f = model.willChange
             if (!f || (f = f.call(this, before, after))) {
@@ -445,29 +448,31 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
     var proto = this.C9r_.prototype
     var k_ = k + '_'
     var k__ = k + '__'
-    if (eYo.isF(model)) {
-      var init = model
-      model = Object.create(null)
-    } else {
-      init = model.init
-    }
+    model.lazy || this.registerInit(k, model)
     Object.defineProperties(proto, {
       [k__]: {value: eYo.NA, writable: true},
       [k_]: {
-        get () {
+        get: model.lazy
+        ? function () {
           var before = this[k__]
           if (eYo.isDef(before)) {
             return before
           }
           var after = init.call(this)
           return (this[k_] = after)
+        } : function () {
+          return this[k__]
         },
         set (after) {
           var before = this[k__]
+          var f = model && model.validate
+          f && (after = f.call(this, before, after))
+          var ff = this[k + 'Validate']
+          ff && (after = ff.call(this, before, after))
           if (before !== after) {
-            var f = model && model.willChange
+            f = model && model.willChange
             if (!f || (f = f.call(this, before, after))) {
-              var ff = this[k + 'WillChange']
+              ff = this[k + 'WillChange']
               ff && ff.call(this, before, after)
               this[k__] = after
               f && f.call(this, before, after)
@@ -604,7 +609,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
   pttp.declareClonable = function (models) {
     this.init_ || (this.init_ = Object.create(null))
     var proto = this.C9r_.prototype
-    Object.keys(models).forEach(k => {
+    Object.keys(models).forEach(k => { // No `for (var k in models) {...}`, models may change during the loop
       eYo.parameterAssert(!this.props_.has(k))
       this.clonable_.add(k)
       var model = models[k]
@@ -632,7 +637,11 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
               var setter = () => {
                 this[k__] = after.clone
               }
-              var f = model.willChange
+              var f = model.validate
+              f && (after = f.validate(before, after))
+              f = this[k + 'Validate']
+              f && (after = f.validate(before, after))
+              f = model.willChange
               if (!f || (f = f.call(this, before, after))) {
                 var ff = this[k + 'WillChange']
                 ff && ff.call(this, before, after)
@@ -655,7 +664,11 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
             } else if (before.equals(after)) {
               return
             }
-            var f = model.willChange
+            var f = model.validate
+            f && (after = f.validate(before, after))
+            f = this[k + 'Validate']
+            f && (after = f.validate(before, after))
+            f = model.willChange
             if (!f || (f = f(before, after))) {
               var ff = this[k + 'WillChange']
               ff && ff.call(this, before, after)
@@ -773,18 +786,12 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
 eYo.constructor.prototype.makeClass = (() => {
   var makeDlgt = (ns, key, C9r, Dlgt, model) => {
     Object.defineProperties(C9r, {
-      eyo: {
-        get () {
+      eyo: eYo.Do.propertyR(function () {
+        return this.eyo__
+      }),
+      eyo_: eYo.Do.propertyR(function () {
           return this.eyo__
-        },
-        set: eYo.Do.noSetter,
-      },
-      eyo_: {
-        get () {
-          return this.eyo__
-        },
-        set: eYo.Do.noSetter,
-      },
+      }),
     })
     C9r.eyo__ = new Dlgt(ns, key, C9r, model)
     Object.defineProperty(C9r.prototype, 'eyo', eYo.Do.propertyR(function () {

@@ -69,7 +69,7 @@ eYo.Pane.makeSubclass(eYo, 'Workspace', {
         new eYo.Rect()
       }
     },
-    link: {
+    linked: {
       scale () {
         return this.options.zoom.startScale || 1
       },

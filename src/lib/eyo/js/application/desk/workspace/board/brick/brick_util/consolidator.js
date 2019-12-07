@@ -56,7 +56,7 @@ eYo.Consolidator.makeClass('Dlgt')
  */
 eYo.Consolidator.makeClass('Dflt', {
   props: {
-    link: {
+    linked: {
       model() {
         return Object.create(null)
       }

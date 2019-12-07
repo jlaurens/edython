@@ -17,7 +17,7 @@
     <script src="ROOT_PLACE_HOLDER/functions_model.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/heapq_model.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/math_model.test.js" charset="utf-8"></script>
-    <script src="ROOT_PLACE_HOLDER/model.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/module_model.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/pprint_model.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/profile.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/random_model.test.js" charset="utf-8"></script>

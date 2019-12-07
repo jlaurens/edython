@@ -526,7 +526,7 @@ describe('Initalize with model', function() {
 })
 
 describe('Initalize augmented_assignment_stmt', function() {
-  eYo.Brick.Mngr.getModel(eYo.T3.Expr.augmented_stmt)
+  eYo.Brick.mngr.getModel(eYo.T3.Expr.augmented_stmt)
   it(`basic augmented_assignment_stmt`, function() {
     eYo.Test.setItUp()
     var d = eYo.Test.new_brick(eYo.T3.Stmt.augmented_assignment_stmt)

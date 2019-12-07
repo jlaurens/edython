@@ -33,7 +33,7 @@ eYo.UI.Dlgt.makeSubclass(eYo.Driver)
  */
 eYo.Driver.Dlgt.makeSubclass(eYo.Driver, 'DlgtMngr', {
   props: {
-    link: {
+    linked: {
       driverNames () {
         return new Set()
       }

@@ -1234,7 +1234,7 @@ eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
   'named_expr'
 ].forEach(k => {
   eYo.Expr[k] = eYo.Expr.primary
-  eYo.Brick.Mngr.register(k)
+  eYo.Brick.mngr.register(k)
 })
 
 /**

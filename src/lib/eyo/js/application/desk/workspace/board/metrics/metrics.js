@@ -89,7 +89,7 @@ eYo.makeClass('Metrics', {
         return this.dragDefault.clone
       },
     },
-    link: {
+    linked: {
       scale_: {value: 1},
       numbering_: {
         didChange (before, after) {

@@ -12,10 +12,11 @@
 'use strict'
 
 eYo.require('eYo.Protocol.Register')
+eYo.require('eYo.Model')
+
 eYo.provide('eYo.Model.Item')
 eYo.provide('eYo.Model.Module')
 
-eYo.provide('eYo.Model')
 
 /**
  * @constructor
