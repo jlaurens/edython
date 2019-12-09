@@ -11,20 +11,20 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('eYo.NS_Svg')
 
 eYo.forwardDeclare('eYo.Magnet')
 
 /**
  * Svg driver for magnets.
  */
-eYo.Svg.makeDriverClass('Magnet')
+eYo.NS_Svg.makeDriverClass('Magnet')
 
 /**
  * Hilight the given magnet.
  * @param {eYo.Magnet} m4t
  */
-eYo.Svg.Magnet.prototype.hilight = function (m4t) {
+eYo.NS_Svg.Magnet.prototype.hilight = function (m4t) {
   if (!m4t.board) {
     return
   }
@@ -36,8 +36,8 @@ eYo.Svg.Magnet.prototype.hilight = function (m4t) {
       steps = eYo.Shape.definitionWithBrick(m4t.targetBrick)
     } else {
       steps = eYo.Shape.definitionWithMagnet(m4t)
-      eYo.Svg.magnetHighlightedPath_ =
-      eYo.Svg.newElement(
+      eYo.NS_Svg.magnetHighlightedPath_ =
+      eYo.NS_Svg.newElement(
         'path',
         {
           class: 'eyo-hilighted-magnet-path',
@@ -53,7 +53,7 @@ eYo.Svg.Magnet.prototype.hilight = function (m4t) {
     steps = eYo.Shape.definitionWithMagnet(m4t)
   }
   var xy = m4t.whereInBoard
-  eYo.Svg.magnetHighlightedPath_ = eYo.Svg.newElement(
+  eYo.NS_Svg.magnetHighlightedPath_ = eYo.NS_Svg.newElement(
     'path',
     {
       class: 'eyo-hilighted-magnet-path',

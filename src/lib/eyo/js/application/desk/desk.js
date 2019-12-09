@@ -13,7 +13,7 @@
  */
 'use strict'
 
-eYo.require('eYo.UI')
+eYo.require('eYo.NS_UI')
 eYo.require('eYo.Decorate')
 
 eYo.forwardDeclare('eYo.Application')
@@ -29,61 +29,59 @@ goog.forwardDeclare('goog.math');
  * @param {eYo.Application|Object} owner Owner application.
  * @constructor
  */
-eYo.UI.makeClass(eYo, 'Desk', {
-  props: {
-    owned: {
-      /**
-       * Terminal.
-       * @type{eYo.Terminal}
-       */
-      terminal () {
-        return new eYo.Terminal(this)
-      },
-      /**
-       * Turtle.
-       * @type{eYo.Turtle}
-       */
-      turtle () {
-        return new eYo.Turtle(this)
-      },
-      /**
-       * Graphic.
-       * @type{eYo.Graphic}
-       */
-      graphic () {
-        return new eYo.Graphic(this)
-      },
-      /**
-       * Variable.
-       * @type{eYo.Variable}
-       */
-      variable () {
-        return new eYo.Variable(this)
-      },
-      /**
-       * Wokspace.
-       * @type{eYo.Workspace}
-       */
-      workspace () {
-        return new eYo.Workspace(this)
-      },
-      /**
-       * Main focus manager.
-       * @type{eYo.Focus.Main}
-       */
-      focus () {
-        return new eYo.Focus.Main(this)
-      },
+eYo.NS_UI.makeClass(eYo, 'Desk', {
+  owned: {
+    /**
+     * Terminal.
+     * @type{eYo.Terminal}
+     */
+    terminal () {
+      return new eYo.Terminal(this)
     },
-    computed: {
-      /**
-       * The desk's desk.
-       * @type {!eYo.Desk}
-       */
-      desk () {
-        return this
-      },
-    }
+    /**
+     * Turtle.
+     * @type{eYo.Turtle}
+     */
+    turtle () {
+      return new eYo.Turtle(this)
+    },
+    /**
+     * Graphic.
+     * @type{eYo.Graphic}
+     */
+    graphic () {
+      return new eYo.Graphic(this)
+    },
+    /**
+     * Variable.
+     * @type{eYo.Variable}
+     */
+    variable () {
+      return new eYo.Variable(this)
+    },
+    /**
+     * Wokspace.
+     * @type{eYo.Workspace}
+     */
+    workspace () {
+      return new eYo.Workspace(this)
+    },
+    /**
+     * Main focus manager.
+     * @type{eYo.Focus.Main}
+     */
+    focus () {
+      return new eYo.Focus.Main(this)
+    },
+  },
+  computed: {
+    /**
+     * The desk's desk.
+     * @type {!eYo.Desk}
+     */
+    desk () {
+      return this
+    },
   },
   ui: {
     /**
@@ -92,7 +90,7 @@ eYo.UI.makeClass(eYo, 'Desk', {
     init () {
       this.layout()
     }
-  }
+  },
 })
 
 /**

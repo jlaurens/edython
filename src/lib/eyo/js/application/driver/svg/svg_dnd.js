@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('eYo.NS_Svg')
 
 eYo.forwardDeclare('eYo.DnD')
 
@@ -19,7 +19,7 @@ eYo.forwardDeclare('eYo.DnD')
  * Svg driver for DnD.
  */
 
-eYo.Svg.makeDriverClass('DnD', {
+eYo.NS_Svg.makeDriverClass('DnD', {
   /**
    * Initiate the DnD manager UI.
    * @param {eYo.DnD.Mngr} mngr  The DnD manager we must init the UI.

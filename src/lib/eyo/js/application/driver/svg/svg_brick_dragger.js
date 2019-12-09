@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('eYo.NS_Svg')
 
-eYo.forwardDeclare('eYo.BrickDragger')
+eYo.forwardDeclare('eYo.BrickNSDragger')
 
 /**
  * Svg driver for a brick dragger.
  */
-eYo.Svg.makeDriverClass('BrickDragger', {
+eYo.NS_Svg.makeDriverClass('BrickDragger', {
     /**
    * Initializes the brickDragger SVG ressources.
    * @param {eYo.brickDragger} brickDragger
@@ -45,7 +45,7 @@ eYo.Svg.makeDriverClass('BrickDragger', {
  * Start dragging.
  * @param {eYo.brickDragger} brickDragger
  */
-eYo.Svg.BrickDragger.prototype.start = function (brickDragger) {
+eYo.NS_Svg.BrickDragger.prototype.start = function (brickDragger) {
   // Move the brick dragged to the drag surface
   // The translation for drag surface bricks,
   // is equal to the current relative-to-surface position,
@@ -94,7 +94,7 @@ eYo.Svg.BrickDragger.prototype.start = function (brickDragger) {
  * End dragging.
  * @param {eYoBrickDragger} dragger
  */
-eYo.Svg.BrickDragger.prototype.end = function (dragger) {
+eYo.NS_Svg.BrickDragger.prototype.end = function (dragger) {
   this.brickEffectStop(dragger.brick)
   dragger.dragSurface.end(!dragger.wouldDelete_)
 }

@@ -23,7 +23,7 @@ eYo.forwardDeclare('eYo.Desk')
 eYo.forwardDeclare('eYo.Workspace')
 eYo.forwardDeclare('eYo.Flyout')
 eYo.forwardDeclare('eYo.Board')
-eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.NS_Brick')
 eYo.forwardDeclare('eYo.Slot')
 eYo.forwardDeclare('eYo.Magnet')
 
@@ -49,69 +49,67 @@ eYo.Dlgt.prototype.addApp = function () {
 /**
  * Class for a basic object.
  * 
- * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.NS_Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
 eYo.Dflt.makeSubclass('Owned', {
   init (owner) {
     this.owner_ = owner
   },
-  props: {
-    linked: {
-      owner: {
-        didChange (before, after) {
-          this.appForget() // do not update, may be the owner is not complete
-          this.forEachOwned(x => {
-            x.appForget && x.appForget()
-          })
-        }
+  linked: {
+    owner: {
+      didChange (before, after) {
+        this.appForget() // do not update, may be the owner is not complete
+        this.forEachOwned(x => {
+          x.appForget && x.appForget()
+        })
       }
+    }
+  },
+  cached: {
+    app: {
+      init () {
+        return this.owner && this.owner.app
+      },
+      didChange (before, after) {
+        this.forEachOwned(x => {
+          x.appForget && x.appForget()
+        })
+      },
+    }
+  },
+  computed: {
+    /**
+     * The app's desk
+     * @readonly
+     * @type {eYo.Desk}
+     */
+    desk () {
+      return this.app.desk
     },
-    cached: {
-      app: {
-        init () {
-          return this.owner && this.owner.app
-        },
-        didChange (before, after) {
-          this.forEachOwned(x => {
-            x.appForget && x.appForget()
-          })
-        },
-      }
+    /**
+     * The desk's flyout...
+     * @readonly
+     * @type {eYo.Flyout}
+     */
+    flyout () {
+      return this.desk.flyout
     },
-    computed: {
-      /**
-       * The app's desk
-       * @readonly
-       * @type {eYo.Desk}
-       */
-      desk () {
-        return this.app.desk
-      },
-      /**
-       * The desk's flyout...
-       * @readonly
-       * @type {eYo.Flyout}
-       */
-      flyout () {
-        return this.desk.flyout
-      },
-      /**
-       * The desk's board
-       * @readonly
-       * @type {eYo.Board}
-       */
-      board () {
-        return this.desk.board
-      },
-      /**
-       * The owner's workspace...
-       * @readonly
-       * @type {eYo.Workspace}
-       */
-      workspace () {
-        return this.desk.workspace
-      },
+    /**
+     * The desk's board
+     * @readonly
+     * @type {eYo.Board}
+     */
+    board () {
+      return this.desk.board
+    },
+    /**
+     * The owner's workspace...
+     * @readonly
+     * @type {eYo.Workspace}
+     */
+    workspace () {
+      return this.desk.workspace
     },
   },
 })

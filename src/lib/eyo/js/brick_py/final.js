@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('eYo.NS_Brick')
 
-eYo.provide('eYo.Brick.Final')
+eYo.provide('eYo.NS_Brick.Final')
 
 
 /**

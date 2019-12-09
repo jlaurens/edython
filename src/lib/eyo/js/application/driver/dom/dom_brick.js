@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.Dom')
+eYo.require('eYo.NS_Dom')
 
-eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.NS_Brick')
 
 /**
  * Dom driver for boards.
  */
-eYo.Dom.makeDriverClass('Brick', {
+eYo.NS_Dom.makeDriverClass('Brick', {
   /**
    * Initialize the board dom ressources.
    * @param {eYo.Board} board
@@ -39,7 +39,7 @@ eYo.Dom.makeDriverClass('Brick', {
   },
   /**
    * Dispose of the desk dom resources.
-   * @param {eYo.Brick.Dflt} brick
+   * @param {eYo.NS_Brick.Dflt} brick
    */
   disposeUI (brick) {
     if (brick.dom && brick.dom.div_) {

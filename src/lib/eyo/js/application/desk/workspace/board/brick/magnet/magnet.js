@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.UI.Owned2')
+eYo.require('eYo.NS_UI.Owned2')
 eYo.require('eYo.Protocol')
 
 eYo.provide('eYo.Magnets')
@@ -23,7 +23,7 @@ eYo.forwardDeclare('eYo.Where')
 
 /**
  *
- * @param {eYo.Brick.Dflt} brick  brick is the owner
+ * @param {eYo.NS_Brick.Dflt} brick  brick is the owner
  */
 eYo.Magnets = function (brick) {
   // configure the connections
@@ -125,7 +125,7 @@ eYo.Magnets.prototype.initUI = function () {
 /**
  * Class for a magnet.
  * 
- * @param {eYo.Brick|eYo.Slot} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.NS_Brick|eYo.Slot} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @param {String} type  the type of this magnet
  * @param {Object} model  the model of this magnet
  * @readonly
@@ -162,7 +162,7 @@ eYo.Magnet = function (bs, type, model) {
     }
   }
 }
-goog.inherits(eYo.Magnet, eYo.UI.Owned2)
+goog.inherits(eYo.Magnet, eYo.NS_UI.Owned2)
 
 // Magnet types
 Object.defineProperties(eYo.Magnet, {
@@ -535,7 +535,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
     },
     /**
      * Connect the receiver to the newValue, if any, otherwise disconnects the receiver.
-     * @param {eYo.Brick.Dflt} [newValue] 
+     * @param {eYo.NS_Brick.Dflt} [newValue] 
      */
     set (newValue) {
       if (newValue) {
@@ -871,7 +871,7 @@ eYo.Magnet.prototype.completeWrap = eYo.Decorate.reentrant_method(
       eYo.Events.disableWrap(
         () => {
           var brick = this.brick
-          t9k = eYo.Brick.newReady(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
+          t9k = eYo.NS_Brick.newReady(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
           eYo.assert(t9k, 'completeWrap failed: ' + this.wrapped_)
           eYo.assert(t9k.out_m, 'Did you declare an Expr brick typed ' + t9k.type)
           ans = this.connect(t9k.out_m)
@@ -1041,13 +1041,13 @@ eYo.Magnet.prototype.getMagnetBelow = function () {
 /**
  * Establish a connection with a brick.
  *
- * @param {eYo.Brick.Dflt} eyo
+ * @param {eYo.NS_Brick.Dflt} eyo
  */
 eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {eYo.Brick.Dflt} brick
+   * @param {eYo.NS_Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToHead = function (brick) {
@@ -1057,7 +1057,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {eYo.Brick.Dflt} brick
+   * @param {eYo.NS_Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToLeft = function (brick) {
@@ -1067,7 +1067,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {eYo.Brick.Dflt} brick
+   * @param {eYo.NS_Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToRight = function (brick) {
@@ -1077,7 +1077,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {eYo.Brick.Dflt} brick
+   * @param {eYo.NS_Brick.Dflt} brick
    * @return {!eYo.Magnet}
    */
   var connectToFoot = function (brick) {
@@ -1087,7 +1087,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
-   * @param {eYo.Brick.Dflt} brick
+   * @param {eYo.NS_Brick.Dflt} brick
    */
   var connectToOutput = function (brick) {
     this.connect(brick.out_m)
@@ -1309,7 +1309,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
         /*
         * Find the first free magnet in the given brick
         * that positively checks type with the given potential target magnet.
-        * @param {eYo.Brick.Dflt} brick The brick.
+        * @param {eYo.NS_Brick.Dflt} brick The brick.
         * @param {eYo.Magnet} child The inferior brick.
         * @private
         * @suppress {accessControls}

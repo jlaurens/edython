@@ -11,22 +11,22 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('eYo.NS_Brick')
 
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.Stmt')
-eYo.require('eYo.Brick.List')
+eYo.require('eYo.NS_Brick.List')
 
-eYo.require('eYo.Brick.Primary')
+eYo.require('eYo.NS_Brick.Primary')
 eYo.require('eYo.Tooltip')
 
 eYo.require('eYo.Library')
-eYo.provide('eYo.Brick.CMath')
+eYo.provide('eYo.NS_Brick.CMath')
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -89,7 +89,7 @@ eYo.provide('eYo.Brick.CMath')
 //  * Class for a Delegate, cmath constant brick.
 //  * As call is already a reserved message in javascript,
 //  * we use call_expr instead.
-//  * Not normally called directly, eYo.Brick.create(...) is preferred.
+//  * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
 //  * For edython.
 //  */
 // eYo.Expr.cmath__call_expr.makeSubclass('cmath__const', {
@@ -318,6 +318,6 @@ goog.mixin(eYo.Tooltip.Title, {
   cmath__import_stmt: 'Importer le module cmath',
 })
 
-eYo.Brick.CMath.T3s = [
+eYo.NS_Brick.CMath.T3s = [
   eYo.T3.Expr.cmath__const
 ]

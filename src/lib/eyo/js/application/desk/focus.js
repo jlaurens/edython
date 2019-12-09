@@ -27,7 +27,7 @@ eYo.require('eYo.Owned')
 eYo.require('eYo.Do')
 eYo.require('eYo.Board')
 
-eYo.require('eYo.Brick')
+eYo.require('eYo.NS_Brick')
 eYo.require('eYo.Magnet')
 eYo.require('eYo.Field')
 
@@ -114,7 +114,7 @@ Object.defineProperties(eYo.Focus.Main.prototype, {
   },
   /**
    * The brick that has current focus, if any
-   * @type {?eYo.Brick}
+   * @type {?eYo.NS_Brick}
    */
   brick: {
     get () {
@@ -252,7 +252,7 @@ Object.defineProperties(eYo.Focus.Mngr.prototype, {
     value: null
   },
   /**
-   * @type{eYo.Brick}
+   * @type{eYo.NS_Brick}
    */
   brick: {
     get () {
@@ -267,7 +267,7 @@ Object.defineProperties(eYo.Focus.Mngr.prototype, {
   },
   /**
    * Manages the brick's wrapper.
-   * @type{eYo.Brick}
+   * @type{eYo.NS_Brick}
    * @private
    */
   brick_: {
@@ -438,7 +438,7 @@ eYo.Focus.Mngr.prototype.didRemove = eYo.Do.nothing
 
 /**
  * Select one of the given bricks.
- * @param {Array<eYo.Bricks>} bricks
+ * @param {Array<eYo.BrickNSs>} bricks
  * @param {Boolean} force
  */
 eYo.Focus.Mngr.prototype.selectOneBrickOf = function (bricks, force) {
@@ -464,7 +464,7 @@ eYo.Focus.Mngr.prototype.selectOneBrickOf = function (bricks, force) {
   }
 }
 
-Object.defineProperties(eYo.Brick.Dflt.prototype, {
+Object.defineProperties(eYo.NS_Brick.Dflt.prototype, {
   focusMngr_: {
     get () {
       return this.board_.focusMngr_
@@ -543,7 +543,7 @@ eYo.Board.prototype.focusOn = function () {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Brick.Dflt.prototype.focusOn = function (noBoard) {
+eYo.NS_Brick.Dflt.prototype.focusOn = function (noBoard) {
   !noBoard && (this.focusMain_.board = this.board)
   return !!(this.focusMngr_.brick = this)
 }
@@ -585,7 +585,7 @@ eYo.Board.prototype.focusOff = function () {
  * If there is a selected connection, it is removed.
  * `focusOff` is used from click handling methods.
  */
-eYo.Brick.Dflt.prototype.focusOff = function () {
+eYo.NS_Brick.Dflt.prototype.focusOff = function () {
   this.hasFocus && (this.focusMngr_.brick = null)
 }
 

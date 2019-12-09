@@ -16,7 +16,7 @@ eYo.require('eYo.Owned')
 
 eYo.provide('eYo.Responder')
 
-eYo.forwardDeclare('eYo.Dom')
+eYo.forwardDeclare('eYo.NS_Dom')
 
 
 /*
@@ -64,11 +64,11 @@ eYo.Responder.prototype.dispose = function() {
   this.change_ = this.cachedPoints_ = this.desktop_ = this.event_ = null
 
   
-  eYo.Dom.clearTouchIdentifier()
+  eYo.NS_Dom.clearTouchIdentifier()
   Blockly.Tooltip.unblock()
   // Clear the owner's reference to this responder.
   this.owner_.clearMotion()
-  eYo.Dom.unbindMouseEvents(this)
+  eYo.NS_Dom.unbindMouseEvents(this)
   this.startBrick_ = this.targetBrick_ = null
   this.flyout_ = null
   this.brickDragger_ && (this.brickDragger_ = this.brickDragger_.clearMotion())
@@ -141,10 +141,10 @@ eYo.Responder.prototype.on_mousedown = function(e) {
     // A drag has already started, so this can no longer be a pinch-zoom.
     return
   }
-  if (eYo.Dom.isTouchEvent(e)) {
+  if (eYo.NS_Dom.isTouchEvent(e)) {
     this.handleTouchStart(e)
     if (this.multiTouch) {
-      eYo.Dom.longStop_()
+      eYo.NS_Dom.longStop_()
     }
   }
 }
@@ -154,7 +154,7 @@ eYo.Responder.prototype.on_mousedown = function(e) {
  * @param {Event} e A touch start, or pointer down event.
  */
 eYo.Responder.prototype.handleTouchStart = function(e) {
-  var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
+  var pointerId = eYo.NS_Dom.touchIdentifierFromEvent(e)
   // store the pointerId in the current list of pointers
   this.cachedPoints_[pointerId] = this.getTouchPoint_(e)
   var pointers = Object.keys(this.cachedPoints_)
@@ -172,7 +172,7 @@ Object.defineProperties(eYo.Responder.prototype, {
   /**
    * The brick that the responder started on, or null if it did not start on a
    * brick.
-   * @type {eYo.Brick}
+   * @type {eYo.NS_Brick}
    * @private
    */
   startBrick_: {
@@ -185,7 +185,7 @@ Object.defineProperties(eYo.Responder.prototype, {
    * shadow brick, this is the first non-shadow parent of the brick.  If the
    * responder started in the flyout, this is the root brick of the brick group
    * that was clicked or dragged.
-   * @type {eYo.Brick}
+   * @type {eYo.NS_Brick}
    * @private
    */
   targetBrick_: {
@@ -195,7 +195,7 @@ Object.defineProperties(eYo.Responder.prototype, {
 
   /**
    * The object tracking a brick drag, or null if none is in progress.
-   * @type {eYo.BrickDragger}
+   * @type {eYo.BrickNSDragger}
    * @private
    */
   brickDragger_: {
@@ -380,7 +380,7 @@ Object.defineProperties(eYo.Responder.prototype, {
  * @param {Event} e A touch move, or pointer move event.
  */
 eYo.Responder.prototype.handleTouchMove = function(e) {
-  var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
+  var pointerId = eYo.NS_Dom.touchIdentifierFromEvent(e)
   // Update the cache
   this.cachedPoints_[pointerId] = this.getTouchPoint_(e)
 
@@ -436,7 +436,7 @@ eYo.Responder.prototype.update_ = function(e) {
     : eYo.Responder.DRAG_RADIUS
     if (delta > limit) {
       this.updateDraggingBrick_() || this.updateDraggingBoard_()
-      eYo.Dom.longStop_()
+      eYo.NS_Dom.longStop_()
     }
   }
 }
@@ -494,23 +494,23 @@ eYo.Responder.prototype.on_mousemove = (() => {
     } else if ((d = self.brickDragger_)) {
       d.drag() // sometimes it failed when in Blockly
     }
-    eYo.Dom.gobbleEvent(e) 
+    eYo.NS_Dom.gobbleEvent(e) 
   }
   return function(e) {
     console.error('on_mousemove')
     this.change.done()
     if (this.dragging) {
       // We are in the middle of a drag, only handle the relevant events
-      if (eYo.Dom.shouldHandleEvent(e)) {
+      if (eYo.NS_Dom.shouldHandleEvent(e)) {
         move(this, e)
       }
       return;
     }
     if (this.multiTouch) {
-      if (eYo.Dom.isTouchEvent(e)) {
+      if (eYo.NS_Dom.isTouchEvent(e)) {
         this.handleTouchMove(e)
       }
-      eYo.Dom.longStop_()
+      eYo.NS_Dom.longStop_()
     } else {
       move(this, e)
     }
@@ -523,8 +523,8 @@ eYo.Responder.prototype.on_mousemove = (() => {
  */
 eYo.Responder.prototype.on_mouseup = function(e) {
   this.change.done()
-  if (eYo.Dom.isTouchEvent(e) && !this.dragging) {
-    var pointerId = eYo.Dom.touchIdentifierFromEvent(e)
+  if (eYo.NS_Dom.isTouchEvent(e) && !this.dragging) {
+    var pointerId = eYo.NS_Dom.touchIdentifierFromEvent(e)
     if (this.cachedPoints_[pointerId]) {
       delete this.cachedPoints_[pointerId]
     }
@@ -534,11 +534,11 @@ eYo.Responder.prototype.on_mouseup = function(e) {
     }
   }
   if (!this.multiTouch || this.dragging) {
-    if (!eYo.Dom.shouldHandleEvent(e)) {
+    if (!eYo.NS_Dom.shouldHandleEvent(e)) {
       return
     }
     this.update_(e)
-    eYo.Dom.longStop_()
+    eYo.NS_Dom.longStop_()
 
     if (this.isEnding_) {
       console.log('Trying to end a responder recursively.')
@@ -564,7 +564,7 @@ eYo.Responder.prototype.on_mouseup = function(e) {
       this.doBoardClick_()
     }
   }
-  eYo.Dom.gobbleEvent(e)
+  eYo.NS_Dom.gobbleEvent(e)
   this.dispose()
 }
 
@@ -578,7 +578,7 @@ eYo.Responder.prototype.cancel = function() {
   if (this.isEnding) {
     return
   }
-  eYo.Dom.longStop_()
+  eYo.NS_Dom.longStop_()
   if (this.brickDragger_) {
     this.brickDragger_.end()
   } else if (this.boardDragger_) {
@@ -598,7 +598,7 @@ eYo.Responder.prototype.handleRightClick = function(e) {
   } else if (this.board_ && !this.flyout_) {
     this.board_.showContextMenu_(e)
   }
-  eYo.Dom.gobbleEvent(e)
+  eYo.NS_Dom.gobbleEvent(e)
   this.dispose()
 }
 
@@ -614,7 +614,7 @@ eYo.Responder.prototype.handleBoardStart = function(e, board) {
   this.board_ = board
   var b3k = eYo.app.focusMngr.brick
   b3k && (b3k.ui.selectMouseDownEvent = e)
-  if (eYo.Dom.isTargetInput(e)) {
+  if (eYo.NS_Dom.isTargetInput(e)) {
     this.cancel()
     return
   }
@@ -630,7 +630,7 @@ eYo.Responder.prototype.handleBoardStart = function(e, board) {
     this.targetBrick_.focusOn()
   }
 
-  if (eYo.Dom.isRightButton(e)) {
+  if (eYo.NS_Dom.isRightButton(e)) {
     this.handleRightClick(e)
     return
   }
@@ -645,13 +645,13 @@ eYo.Responder.prototype.handleBoardStart = function(e, board) {
   this.startDrag_ = new eYo.Where()
   this.healStack_ = e.altKey || e.ctrlKey || e.metaKey
 
-  eYo.Dom.unbindMouseEvents(this)
-  eYo.Dom.bindMouseEvents(this, document, {willUnbind: true, noCaptureIdentifier: true})
+  eYo.NS_Dom.unbindMouseEvents(this)
+  eYo.NS_Dom.bindMouseEvents(this, document, {willUnbind: true, noCaptureIdentifier: true})
 
-  if (!this.isEnding_ && eYo.Dom.isTouchEvent(e)) {
+  if (!this.isEnding_ && eYo.NS_Dom.isTouchEvent(e)) {
     this.handleTouchStart(e)
   }
-  eYo.Dom.gobbleEvent(e)
+  eYo.NS_Dom.gobbleEvent(e)
 }
 
 /**
@@ -670,7 +670,7 @@ eYo.Responder.prototype.handleFlyoutStart = function(e, flyout) {
  * Handle a mousedown/touchstart event on a brick.
  * Used by brick's on_mousedown (or synonym).
  * @param {Event} e A mouse down or touch start event.
- * @param {eYo.Brick.Dflt} brick The brick the event hits.
+ * @param {eYo.NS_Brick.Dflt} brick The brick the event hits.
  */
 eYo.Responder.prototype.handleBrickStart = function(e, brick) {
   this.handleBrickStart = eYo.Do.nothing

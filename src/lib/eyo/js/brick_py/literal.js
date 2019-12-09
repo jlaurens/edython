@@ -15,7 +15,7 @@
 eYo.require('eYo.Expr')
 
 eYo.provide('eYo.Expr.numberliteral')
-eYo.provide('eYo.Brick.Literal')
+eYo.provide('eYo.NS_Brick.Literal')
 eYo.provide('eYo.Expr.longliteral')
 eYo.provide('eYo.Expr.shortliteral')
 
@@ -38,7 +38,7 @@ eYo.Expr.Dflt.makeSubclass('Literal', {
       xml: false
     }
   }
-}, eYo.Brick)
+}, eYo.NS_Brick)
 
 /**
  * Save the brick's data.
@@ -46,8 +46,8 @@ eYo.Expr.Dflt.makeSubclass('Literal', {
  * @param {Element} element the persistent element.
  * @param {Object} [opt]
  */
-eYo.Brick.Literal.prototype.saveData = function (element, opt) {
-  eYo.Brick.Literal.superClass_.saveData.apply(this, arguments)
+eYo.NS_Brick.Literal.prototype.saveData = function (element, opt) {
+  eYo.NS_Brick.Literal.superClass_.saveData.apply(this, arguments)
   if (this.value_p == '') {
     element.setAttribute(eYo.Key.PLACEHOLDER, this.value_d.model.placeholder)
   }
@@ -57,7 +57,7 @@ eYo.Brick.Literal.prototype.saveData = function (element, opt) {
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.Brick.Literal.makeSubclass('numberliteral', {
+eYo.NS_Brick.Literal.makeSubclass('numberliteral', {
   data: {
     type: {
       all: [
@@ -111,7 +111,7 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
   'imagnumber'
 ].forEach(key => {
   eYo.Expr[key] = eYo.Expr.numberliteral
-  eYo.Brick.mngr.register(key)
+  eYo.NS_Brick.mngr.register(key)
 })
 
 /**
@@ -130,7 +130,7 @@ eYo.Expr.numberliteral.prototype.getBaseType = function () {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.Brick.Literal.makeSubclass('shortliteral', {
+eYo.NS_Brick.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
       all: [
@@ -283,7 +283,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
   'shortbytesliteral',
 ].forEach(t => {
   eYo.Expr[t] = eYo.Expr.shortliteral
-  eYo.Brick.mngr.register(t)
+  eYo.NS_Brick.mngr.register(t)
 })
 
 /**
@@ -316,7 +316,7 @@ eYo.Expr.shortliteral.prototype.validateComponents = function(kvargs) {
 
 /**
  * Get the content for the menu item.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {string} op op is the operator
  * @private
  */
@@ -326,12 +326,12 @@ eYo.Expr.shortliteral.prototype.makeTitle = function (variant) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  * @suppress {globalThis}
 */
-eYo.Brick.Literal.literalPopulateContextMenuFirst_ = function (mngr) {
+eYo.NS_Brick.Literal.literalPopulateContextMenuFirst_ = function (mngr) {
   mngr.populateProperties(this, 'delimiter')
   mngr.separate()
   var current = this.prefix_p
@@ -382,12 +382,12 @@ eYo.Brick.Literal.literalPopulateContextMenuFirst_ = function (mngr) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
 eYo.Expr.shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
-  eYo.Brick.Literal.literalPopulateContextMenuFirst_.call(this, mngr)
+  eYo.NS_Brick.Literal.literalPopulateContextMenuFirst_.call(this, mngr)
   eYo.Expr.shortliteral.superClass_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
@@ -478,10 +478,10 @@ eYo.Expr.longliteral.prototype.validateComponents = function(kvargs) {
   'longbytesliteral',
 ].forEach(t => {
   eYo.Expr[t] = eYo.Expr.longliteral
-  eYo.Brick.mngr.register(t)
+  eYo.NS_Brick.mngr.register(t)
 })
 
-eYo.Brick.Literal.T3s = [
+eYo.NS_Brick.Literal.T3s = [
   eYo.T3.Expr.shortliteral,
   eYo.T3.Expr.longliteral,
   eYo.T3.Expr.numberliteral

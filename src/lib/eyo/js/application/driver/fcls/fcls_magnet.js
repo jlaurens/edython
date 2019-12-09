@@ -11,22 +11,22 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('eYo.NS_Fcls')
 
-eYo.provide('eYo.Fcls.Magnet')
+eYo.provide('eYo.NS_Fcls.Magnet')
 
 eYo.forwardDeclare('eYo.Magnet')
 
 /**
  * Faceless driver for magnets.
  */
-eYo.Fcls.makeDriverClass('Magnet')
+eYo.NS_Fcls.makeDriverClass('Magnet')
 
 /**
  * Hilight the given connection.
  * The default implementation does nothing.
  * @param {eYo.Magnet} magnet
  */
-eYo.Fcls.Magnet.prototype.hilight = eYo.Do.nothing
+eYo.NS_Fcls.Magnet.prototype.hilight = eYo.Do.nothing
 
 console.error('hilight -> focusOn?')

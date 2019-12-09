@@ -11,37 +11,37 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('eYo.NS_Fcls')
 
-eYo.provide('eYo.Fcls.Search')
+eYo.provide('eYo.NS_Fcls.Search')
 
 eYo.forwardDeclare('eYo.Search')
 
 /**
  * Faceless driver for the search pane.
  */
-eYo.Fcls.makeDriverClass('Search')
+eYo.NS_Fcls.makeDriverClass('Search')
 
 /**
  * Initiate the search UI.
  * @param {eYo.Search} search  The search controller we must init the UI of.
  */
-eYo.Fcls.Search.prototype.initUI = eYo.Do.nothing
+eYo.NS_Fcls.Search.prototype.initUI = eYo.Do.nothing
 
 /**
  * Dispose of the search UI.
  * @param {eYo.Search} search  The search controller we must dispose of the UI of.
  */
-eYo.Fcls.Search.prototype.disposeUI = eYo.Do.nothing
+eYo.NS_Fcls.Search.prototype.disposeUI = eYo.Do.nothing
 
 /**
  * Initiate the search UI.
  * @param {eYo.Search} search  The search controller we must init the toolbar of.
  */
-eYo.Fcls.Search.prototype.toolbarInitUI = eYo.Do.nothing
+eYo.NS_Fcls.Search.prototype.toolbarInitUI = eYo.Do.nothing
 
 /**
  * Dispose of the search UI.
  * @param {eYo.Search} search  The search controller we must dispose of the toolbar of.
  */
-eYo.Fcls.Search.prototype.toolbarDisposeUI = eYo.Do.nothing
+eYo.NS_Fcls.Search.prototype.toolbarDisposeUI = eYo.Do.nothing

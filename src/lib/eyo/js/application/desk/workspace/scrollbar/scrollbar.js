@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.UI')
+eYo.require('eYo.NS_UI')
 
 eYo.forwardDeclare('eYo.Board')
 goog.forwardDeclare('goog.dom')
@@ -27,7 +27,7 @@ goog.forwardDeclare('goog.events')
  * @param {string=} opt_class A class to be applied to this scrollbar.
  * @constructor
  */
-eYo.UI.makeClass(eYo, 'Scrollbar', {
+eYo.NS_UI.makeClass(eYo, 'Scrollbar', {
   init(bs, horizontal, opt_class) {
     if (bs instanceof eYo.Scroller) {
       this.scroller_ = bs  
@@ -38,144 +38,142 @@ eYo.UI.makeClass(eYo, 'Scrollbar', {
     this.oldMetrics_ = null
     this.opt_class_ = opt_class  
   },
-  props: {
-    clonable: {
-      viewRect () {
-        new eYo.Rect()
+  clonable: {
+    viewRect () {
+      new eYo.Rect()
+    }
+  },
+  cached: {
+    /**
+     * Width of vertical scrollbar or height of horizontal scrollbar in CSS pixels.
+     * Scrollbars should be larger on touch devices.
+     */
+    thickness: {
+      value: goog.events.BrowserFeature.TOUCH_ENABLED ? 26 : 16
+    },
+  },
+  linked: {
+    /**
+     * Whether the scrollbar handle is visible.
+     * @type {boolean}
+     * @private
+     */
+    visible: {
+      value: true,
+      writable: true,
+      /**
+       * When the status changed?
+       * @param {boolean} before True if was visible.
+       * @param {boolean} after True if will be visible.
+       */
+      didChange (before, after) {
+        this.updateDisplay_()
       }
     },
-    cached: {
+    /**
+     * Whether the board containing this scrollbar is visible.
+     * @type {boolean}
+     * @private
+     */
+    containerVisible: {
+      value: true,
+      writable: true,
+      didChange (before, after) {
+        this.updateDisplay_()
+      }
+    },
+    /**
+     * The position of the mouse along this scrollbar's major axis at the start of
+     * the most recent drag.
+     * Units are CSS pixels, with (0, 0) at the top left of the browser window.
+     * For a horizontal scrollbar this is the x coordinate of the mouse down event;
+     * for a vertical scrollbar it's the y coordinate of the mouse down event.
+     * @type {eYo.Where}
+     */
+    dragStart: {
+      value: 0,
+      writable: true
+    },
+    /**
+     * The offset of the start of the handle from the scrollbar position, in CSS
+     * pixels.
+     * @type {number}
+     * @private
+     */
+    handlePosition: {
+      value: 0,
+      writable: true,
       /**
-       * Width of vertical scrollbar or height of horizontal scrollbar in CSS pixels.
-       * Scrollbars should be larger on touch devices.
+       * Set the offset of the scrollbar's handle from the scrollbar's position, and
+       * change the SVG attribute accordingly.
+       * @param {number} newPosition The new scrollbar handle offset in CSS pixels.
        */
-      thickness: {
-        value: goog.events.BrowserFeature.TOUCH_ENABLED ? 26 : 16
+      validate (before, after) {
+        if (after <= 0 || isNaN(after) || this.viewLength_ < this.handleLength_) {
+          return 0
+        } else {
+          return Math.min(after, this.viewLength_ - this.handleLength_)
+        }
+      },
+      didChange (before, after) {
+        this.ui_driver_mngr.scrollbarUpdateHandle(this)
       },
     },
-    linked: {
+    /**
+     * The length of the scrollbar handle in CSS pixels.
+     * @type {number}
+     * @private
+     */
+    handleLength: {
+      value: 0,
+      validate (before, after) {
+        return Math.min(Math.max(0, after), this.viewLength_)
+      },
       /**
-       * Whether the scrollbar handle is visible.
-       * @type {boolean}
-       * @private
+       * Change the position and the SVG attribute accordingly.
        */
-      visible: {
-        value: true,
-        writable: true,
-        /**
-         * When the status changed?
-         * @param {boolean} before True if was visible.
-         * @param {boolean} after True if will be visible.
-         */
-        didChange (before, after) {
-          this.updateDisplay_()
+      didChange (before, after) {
+        after = Math.min(Math.max(0, after), this.viewLength_)
+        if (this.handlePosition__ + after > this.viewLength_) {
+          this.handlePosition__ = this.viewLength_ - after
         }
+        this.ui_driver_mngr.scrollbarUpdateView(this)
+      }
+    },
+  },
+  computed: {
+    /**
+     * @type{eYo.Board} The scrolled board...
+     * @readonly
+     */
+    board() {
+      return this.owner.board
+    },
+    viewLength_: {
+      get () {
+        var size = this.viewRect_.size
+        return this.horizontal_ ? size.width : size.height
       },
       /**
-       * Whether the board containing this scrollbar is visible.
-       * @type {boolean}
+       * Set the size of the scrollbar's background and change the SVG attribute
+       * accordingly.
+       * @param {number} newSize The new scrollbar background length in CSS pixels.
        * @private
        */
-      containerVisible: {
-        value: true,
-        writable: true,
-        didChange (before, after) {
-          this.updateDisplay_()
-        }
-      },
-      /**
-       * The position of the mouse along this scrollbar's major axis at the start of
-       * the most recent drag.
-       * Units are CSS pixels, with (0, 0) at the top left of the browser window.
-       * For a horizontal scrollbar this is the x coordinate of the mouse down event;
-       * for a vertical scrollbar it's the y coordinate of the mouse down event.
-       * @type {eYo.Where}
-       */
-      dragStart: {
-        value: 0,
-        writable: true
-      },
-      /**
-       * The offset of the start of the handle from the scrollbar position, in CSS
-       * pixels.
-       * @type {number}
-       * @private
-       */
-      handlePosition: {
-        value: 0,
-        writable: true,
-        /**
-         * Set the offset of the scrollbar's handle from the scrollbar's position, and
-         * change the SVG attribute accordingly.
-         * @param {number} newPosition The new scrollbar handle offset in CSS pixels.
-         */
-        validate (before, after) {
-          if (after <= 0 || isNaN(after) || this.viewLength_ < this.handleLength_) {
-            return 0
-          } else {
-            return Math.min(after, this.viewLength_ - this.handleLength_)
-          }
-        },
-        didChange (before, after) {
-          this.ui_driver_mngr.scrollbarUpdateHandle(this)
-        },
-      },
-      /**
-       * The length of the scrollbar handle in CSS pixels.
-       * @type {number}
-       * @private
-       */
-      handleLength: {
-        value: 0,
-        validate (before, after) {
-          return Math.min(Math.max(0, after), this.viewLength_)
-        },
-        /**
-         * Change the position and the SVG attribute accordingly.
-         */
-        didChange (before, after) {
-          after = Math.min(Math.max(0, after), this.viewLength_)
-          if (this.handlePosition__ + after > this.viewLength_) {
-            this.handlePosition__ = this.viewLength_ - after
-          }
+      set (after) {
+        after = Math.max(0, after)
+        var old = this.viewLength_
+        if (after !== old) {
+          var ratio = old ? after / old : 1
+          var size = this.viewRect_.size_
+          this.horizontal_
+          ? (size.width = after)
+          : (size.height = after)
+          this.handlePosition__ *= ratio
+          this.handleLength__ *= ratio
           this.ui_driver_mngr.scrollbarUpdateView(this)
         }
-      },
-    },
-    computed: {
-      /**
-       * @type{eYo.Board} The scrolled board...
-       * @readonly
-       */
-      board() {
-        return this.owner.board
-      },
-      viewLength_: {
-        get () {
-          var size = this.viewRect_.size
-          return this.horizontal_ ? size.width : size.height
-        },
-        /**
-         * Set the size of the scrollbar's background and change the SVG attribute
-         * accordingly.
-         * @param {number} newSize The new scrollbar background length in CSS pixels.
-         * @private
-         */
-        set (after) {
-          after = Math.max(0, after)
-          var old = this.viewLength_
-          if (after !== old) {
-            var ratio = old ? after / old : 1
-            var size = this.viewRect_.size_
-            this.horizontal_
-            ? (size.width = after)
-            : (size.height = after)
-            this.handlePosition__ *= ratio
-            this.handleLength__ *= ratio
-            this.ui_driver_mngr.scrollbarUpdateView(this)
-          }
-        }
-      },
+      }
     },
   },
 })

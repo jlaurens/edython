@@ -19,7 +19,7 @@ eYo.require('eYo.Decorate')
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.T3.All')
-eYo.provide('eYo.Brick.Starred')
+eYo.provide('eYo.NS_Brick.Starred')
 
 /**
  * Convenient check list for starred expressions
@@ -33,7 +33,7 @@ eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.T3.Expr.Check.or_exp
 
 /**
  * Class for a Delegate, starred brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  *
  * Involved types:
  *
@@ -292,5 +292,5 @@ eYo.Expr.Starred.prototype.xmlAttr = function () {
   'or_expr_star_star'
 ].forEach(key => {
   eYo.Expr[key] = eYo.Expr.Starred
-  eYo.Brick.mngr.register(key)
+  eYo.NS_Brick.mngr.register(key)
 })

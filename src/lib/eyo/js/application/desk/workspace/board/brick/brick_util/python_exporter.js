@@ -15,7 +15,7 @@ eYo.require('eYo')
 
 eYo.require('eYo.Field')
 
-eYo.require('eYo.Brick')
+eYo.require('eYo.NS_Brick')
 eYo.provide('eYo.Py.Exporter')
 
 eYo.forwardDeclare('eYo.XRE')
@@ -93,7 +93,7 @@ eYo.Py.Exporter.prototype.linePush = function (s) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.Brick.Dflt} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.NS_Brick.Dflt} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  See the eponym parameter in `eYo.Xml.domToBrick`.
  * @return some python code
  */
@@ -157,7 +157,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.Brick.Dflt} eyo The owner of the receiver, to be converted to python.
+ * @param {eYo.NS_Brick.Dflt} eyo The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -221,7 +221,7 @@ eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.Brick.Dflt} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.NS_Brick.Dflt} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -377,7 +377,7 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
   }
 }
 
-Object.defineProperties(eYo.Brick.Dflt.prototype, {
+Object.defineProperties(eYo.NS_Brick.Dflt.prototype, {
   toString: {
     get () {
       return new eYo.Py.Exporter().export(this, {is_deep: true})

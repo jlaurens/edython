@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.require('eYo.UI')
+eYo.require('eYo.NS_UI')
 
 eYo.forwardDeclare('eYo.Desk')
 
@@ -21,17 +21,15 @@ eYo.forwardDeclare('eYo.Desk')
  * @param {eYo.Desk} desk -  the owning desk.
  * @constructor
  */
-eYo.UI.makeClass(eYo, 'Pane', {
-  props: {
-    computed: {
-      /**
-       * The desk of the receiver.
-       * @type {eYo.Desk}
-       * @readonly
-       */
-      desk () {
-        return this.owner_
-      }
+eYo.NS_UI.makeClass(eYo, 'Pane', {
+  computed: {
+    /**
+     * The desk of the receiver.
+     * @type {eYo.Desk}
+     * @readonly
+     */
+    desk () {
+      return this.owner_
     }
   }
 })

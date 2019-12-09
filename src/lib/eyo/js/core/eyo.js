@@ -337,7 +337,7 @@ eYo.isSubclass = (Sub, Super) => {
  * @name {eYo.makeNS}
  * Make a namespace by subclassing the caller's constructor.
  * @param {Object} [ns] -  namespace owning the result, defaults to the caller.
- * @param {String} key - capitalised name, created object will be `ns[key]`. `key` is required when `ns` is given.
+ * @param {String} key - capitalised name, created object will be `ns[key+'NS']`. `key` is required when `ns` is given.
  * @return {Object}
  */
 eYo.constructor.prototype.makeNS = function (ns, key) {
@@ -359,81 +359,22 @@ eYo.constructor.prototype.makeNS = function (ns, key) {
   var ans = new NS()
   if (ns) {
     eYo.parameterAssert(!!key, 'Missing key')
-    if (ns[key]) {
-      throw new Error(`ns[${key}] already exists.`)
+    var k = key + 'NS'
+    if (ns[k]) {
+      throw new Error(`ns[${k}] already exists.`)
     }
-    Object.defineProperty(ns, key, {
+    Object.defineProperty(ns, k, {
       value: ans,
     })
     Object.defineProperties(ans, {
-      name: { value: `${ns.name}.${key}`, },
+      name: { value: `${ns.name}.${k}`, },
     })
   } else {
     Object.defineProperties(ans, {
-      name: { value: key || "No man's land", },
+      name: { value: k || "No man's land", },
     })
   }
   return ans
 }
 
 eYo.ENABLE_ASSERTS = true
-
-/**
- * The model management.
- * Models are trees with some inheritancy.
- * @name {eYo.Model}
- * @namespace
- */
-eYo.makeNS('Model')
-
-/**
- * Whether the argument is a model object once created with `{...}` syntax.
- * @param {*} what
- */
-eYo.isModel = (what) => {
-  return what && (what.model__ || eYo.isO(what))
-}
-
-/**
- * Make `model` inherit from model `from`.
- * @param {Object} model_  a tree of properties
- * @param {Object} from_  a tree of properties
- */
-eYo.Model.extends = (model, base, ignore) => {
-  var do_it = (model_, base_, ignore) => {
-    // if (eYo.isO(model_) && eYo.isModel(from_)) {
-    //   for (var k in model_) {
-    //     ignore && ignore(k) || do_it(model_[k], from_[k], ignore)
-    //   }
-    //   Object.setPrototypeOf(model_, from_)
-    //   eYo.assert(Object.getPrototypeOf(model_) === from_, `Unexpected ${Object.getPrototypeOf(model_)} !== ${from_}`)
-    //   model_.model__ = model
-    // }
-    if (eYo.isO(model_) && eYo.isO(base_)) {
-      for (var k in base_) {
-        if (ignore && ignore(k)) {
-          continue
-        }
-        var model_d = model_[k]
-        var base_d = base_[k]
-        if (eYo.isO(base_d)) {
-          if (model_d) {
-            if (!eYo.isO(model_d)) {
-              // already defined
-              continue
-            }
-          } else {
-            model_d = model_[k] = {}
-          }
-          // we have an object dictionary, do a mixin
-          do_it(model_d, base_d, ignore)
-        } else if (!model_d) {
-          // it is not a dictionary, do a simple copy when not already set
-          model_[k] = base_d
-        }
-      }
-    }
-  }
-  do_it(model, base, ignore)
-  return
-}

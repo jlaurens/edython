@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.UI')
+eYo.require('eYo.NS_UI')
 
 /**
  * Class for a workspace control.
@@ -34,30 +34,28 @@ eYo.require('eYo.UI')
  * @property {number} MARGIN_SIDE_, Distance between trash can and right edge of board.
  *
  */
-eYo.UI.makeClass(eYo, 'WorkspaceControl', {
-  props: {
-    computed: {
-      workspace () {
-        return this.owner
-      },
-      top () {
-        return this.viewRect_.y
-      }
+eYo.NS_UI.makeClass(eYo, 'WorkspaceControl', {
+  computed: {
+    workspace () {
+      return this.owner
     },
-    clonable: {
-      viewRect () {
-        var ans = new eYo.Rect()
-        ans.width = this.WIDTH_
-        ans.height = this.HEIGHT_
-        return ans
-      }
-    },
-    linked: {
-      WIDTH_: {value: 47},
-      MARGIN_BOTTOM_: {value: 20},
-      MARGIN_SIDE_: {value: 20},
+    top () {
+      return this.viewRect_.y
     }
   },
+  clonable: {
+    viewRect () {
+      var ans = new eYo.Rect()
+      ans.width = this.WIDTH_
+      ans.height = this.HEIGHT_
+      return ans
+    }
+  },
+  linked: {
+    WIDTH_: {value: 47},
+    MARGIN_BOTTOM_: {value: 20},
+    MARGIN_SIDE_: {value: 20},
+  }
 })
 
 /**

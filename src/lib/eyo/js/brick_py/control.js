@@ -14,16 +14,16 @@
 goog.require('goog.ui.Dialog')
 
 eYo.require('eYo.Msg')
-eYo.require('eYo.Brick.Group')
+eYo.require('eYo.NS_Brick.Group')
 goog.require('goog.dom');
-eYo.provide('eYo.Brick.Control')
+eYo.provide('eYo.NS_Brick.Control')
 
 /**
  * Class for a Delegate, control brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.BaseGroup.makeSubclass('Control', {
+eYo.NS_Brick.BaseGroup.makeSubclass('Control', {
   data: {
     restart: {
       init: false,
@@ -42,12 +42,12 @@ eYo.Brick.BaseGroup.makeSubclass('Control', {
       }
     }
   }
-}, eYo.Brick)
+}, eYo.NS_Brick)
 
 /**
  * Update the creation number.
  */
-eYo.Brick.Control.prototype.updateCreation = (() => {
+eYo.NS_Brick.Control.prototype.updateCreation = (() => {
   var creation
   return function () {
     if (goog.isDef(creation)) {
@@ -58,7 +58,7 @@ eYo.Brick.Control.prototype.updateCreation = (() => {
   }
 })()
 
-Object.defineProperties (eYo.Brick.Control.prototype, {
+Object.defineProperties (eYo.NS_Brick.Control.prototype, {
   creation: {
     get() {
       return this.creation__
@@ -78,32 +78,30 @@ Object.defineProperties (eYo.Brick.Control.prototype, {
  * Run the script exported from the brick.
  * @private
  */
-eYo.Brick.Dflt.prototype.runScript = function () {
+eYo.NS_Brick.Dflt.prototype.runScript = function () {
   console.log('Someone should everride this method to really run some script')
 }
 
 /**
  * Class for a Delegate, start_stmt.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Control.makeSubclass('start_stmt', {
+eYo.NS_Brick.Control.makeSubclass('start_stmt', {
   xml: {
     attr: 'start'
   },
-  statement: {
-    left: eYo.NA, // override inherited
-    right: eYo.NA, // override inherited
-    head: {
-      check: eYo.T3.Stmt.start_stmt
-    },
-    foot: {
-      check: eYo.T3.Stmt.start_stmt
-    }
+  left: eYo.NA, // override inherited
+  right: eYo.NA, // override inherited
+  head: {
+    check: eYo.T3.Stmt.start_stmt
+  },
+  foot: {
+    check: eYo.T3.Stmt.start_stmt
   }
 })
 
-Object.defineProperties (eYo.Brick.Control.prototype, {
+Object.defineProperties (eYo.NS_Brick.Control.prototype, {
   /**
    * True for start statements only.
    * @type {Boolean}
@@ -114,6 +112,6 @@ Object.defineProperties (eYo.Brick.Control.prototype, {
   },
 })
 
-eYo.Brick.Control.T3s = [
+eYo.NS_Brick.Control.T3s = [
   eYo.T3.Stmt.start_stmt
 ]

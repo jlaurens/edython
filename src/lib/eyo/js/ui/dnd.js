@@ -19,7 +19,7 @@ eYo.provide('eYo.DnD.Dragger')
 eYo.provide('eYo.DnD.Dropper')
 
 eYo.forwardDeclare('eYo.Motion')
-eYo.forwardDeclare('eYo.Driver')
+eYo.forwardDeclare('eYo.NS_Driver')
 
 /**
  * @name{eYo.DnD}

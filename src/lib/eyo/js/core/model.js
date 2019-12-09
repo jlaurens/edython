@@ -17,7 +17,7 @@ eYo.require('eYo')
 /**
  * The model management.
  * Models are trees with some inheritancy.
- * @name {eYo.Model}
+ * @name {eYo.ModelNS}
  * @namespace
  */
 eYo.makeNS('Model')
@@ -29,185 +29,111 @@ eYo.makeNS('Model')
 eYo.isModel = (what) => {
   return what && (what.model__ || eYo.isO(what))
 }
-/*
-Model template for most objects except bricks.
-Indentation means one level depth in {
-  init () {},
-  dispose () {},
-  ui: {
-    init () {},
-    dispose () {},
-  },
-  owned: IDENTIFIER || [IDENTIFIER] || {
-    key: {
-      value: VALUE,
-      init () {},
-      validate () {},
-      willChange () {},
-      didChange: () {},
-    }
-  },
-  computed: {
-    key: Function / getter || {
-      get: ?Function,
-      set: ?Function,
-      get_: ?Function,
-      set_: ?Function,
-      get__: ?Function,
-      set__: ?Function,
-      validate () {},
-      willChange () {},
-      didChange () {},
-    }
-  },
-  link: {
-    key: {
-      value: VALUE,
-      init () {},
-      get () {},
-      set () {},
-      get_ () {},
-      set_ () {},
-      validate () {},
-      willChange () {},
-      didChange () {},
-    }
-  }, 
-  cached: {
-    key: init Function || {
-      lazy: Boolean,
-      value: VALUE,
-      init () {},
-      validate () {},
-      willChange () {},
-      didChange () {},
-    }
-  },
-  clonable: {
-    key: init Function || {
-      lazy: Boolean,
-      value: VALUE,
-      init () {},
-      validate () {},
-      willChange () {},
-      didChange () {},
-    }
-  },
-}
-Template for Expressions, same thing plus
-{
-  link: BRICK_TYPE,
-  init () {},
-  deinit () {},
-  xml: {
-    types: TYPE || [TYPE], // last is expected
-    attr: '@',
-  },
-  data: {
-    key: {
-      order: VALUE,
-      all: TYPE || [TYPE], // last is expected
-      main: BOOLEAN,
-      init () {} || VALUE, !!! are function supported ?
-      placeholder: STRING,
-      validate () {} || false || true,
-      consolidate () {},
-      validateIncog () {},
-      willChange () {},
-      isChanging () {},
-      didChange () {},
-      willLoad () {},
-      didLoad () {},
-      fromType () {},
-      fromField () {},
-      toField () {},
-      noUndo: true,
-    }
-  },
-  slots: {
-    key: {
-      order: VALUE,
-      fields: {
-        start: '(',
-        end: ')',
-        label: String || {  // last is expected ?????
-          reserved: ':'
-        },
-        bind: {
-          validate: true,
-          endEditing: true,
-          reserved: '.',
-          separator: true,
-          variable: true,
-          willRender () {},
-        },
-      },
-      check:  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
-      promise: eYo.T3.Expr.value_list,
-      validateIncog () {},
-      accept () {},
-      didConnect () {},
-      didDisconnect () {},
-      wrap: TYPE,
-      xml: true || {
-        accept () {},
-      },
-      plugged: eYo.T3.Expr.primary,
-    },
-  },
-  out: BRICK_TYPE || [BRICK_TYPE] || () => {} ||  { // last is expected
-    check:  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
-  },
-}
-For lists: {
-  list: {
-    consolidator: CONSOLIDATOR_TYPE,
-    check:  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
-    unique: BRICK_TYPE,
-    mandatory: NUMBER,
-    presep: STRING,
-    can_comprehension: BOOLEAN,
-    all: BRICK_TYPE || [BRICK_TYPE], // last is expected
-    placeholder: STRING,
+
+/**
+ * Allowed keys by path pattern
+ * @param {String} path - Dot separated path components
+ * @param {String} key - Dotless path components
+ * @return {Boolean} Whether the key is authorized with the given path.
+ */
+eYo.Model.isAllowed = (path, key) => {
+  var allowed = {
+    ['']: [
+      'init', 'deinit', 'dispose', 'ui',
+      'owned', 'computed', 'linked', 'cached', 'clonable', 'link',
+      'xml', 'data', 'slots',
+      'out', 'head', 'left', 'right', 'suite', 'foot'
+    ],
+    [/ui/]: [
+      'init', 'dispose'
+    ],
+    [/owned\.\w+/]: [
+      'value', 'init',
+      'validate', 'willChange', 'didChange'
+    ],
+    [/computed\.\w+/]: [
+      'get', 'set', 'get_', 'set_', 'get__', 'set__',
+      'validate', 'willChange', 'didChange'
+    ],
+    [/linked\.\w+/]: [
+      'value', 'init', 'get', 'set', 'get_', 'set_',
+      'validate', 'willChange', 'didChange'
+    ],
+    [/cached\.\w+/]: [
+      'lazy', 'value', 'init',
+      'validate', 'willChange', 'didChange'
+    ],
+    [/clonable\.\w+/]: [
+      'lazy', 'value', 'init',
+      'validate', 'willChange', 'didChange'
+    ],
+    [/xml/]: [
+      'types', 'attribute'
+    ],
+    [/data\.\w+/]: [
+      'order', // INTEGER
+      'all', // TYPE || [TYPE], // last is expected
+      'main', // BOOLEAN
+      'init', // () => {} || VALUE, !!! are function supported ?
+      'placeholder', // STRING
+      'validate', // () => {} || false || true,
+      'consolidate', // () => {}
+      'validateIncog', // () => {}
+      'willChange', // () => {}
+      'isChanging', // () => {}
+      'didChange', // () => {}
+      'willLoad', // () => {}
+      'didLoad', // () => {}
+      'fromType', // () => {}
+      'fromField', // () => {}
+      'toField', // () => {}
+      'noUndo', // true
+    ],
+    [/slots\.\w+/]: [
+      'order', // INTEGER,
+      'fields', // {},
+      'check', // :  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
+      'promise', // : eYo.T3.Expr.value_list,
+      'validateIncog', //  () {},
+      'accept', //  () {},
+      'didConnect', //  () {},
+      'didDisconnect', //  () {},
+      'wrap', // : TYPE,
+      'xml', // : (() => {} || true) || false||  first expected,
+      'plugged', // : eYo.T3.Expr.primary,
+    ],
+    [/slots\.\w+\.fields\.\w+/]: [
+      'value', // '(',
+      'reserved', // : '.',
+      'separator', // : true,
+      'variable', // : true,
+      'validate', // : true,
+      'endEditing', // : true,
+      'willRender', //  () => {},
+    ],
+    [/slots\.\w+\.xml/]: [
+      'accept', //  () => {},
+    ],
   }
-}
-For Statements: {
-  head: BRICK_TYPE || [BRICK_TYPE] || () => {} || { // last is expected
-    check:  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
-  },
-  left: eYo.NA,
-  right: BRICK_TYPE || [BRICK_TYPE] || () => {} || { // last is expected
-    check: BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
-    fields: {
-      label: { // don't call it 'operator'
-        reserved: STRING,
-        hidden: BOOLEAN,
-      }
+  for (var k in allowed) {
+    if (XRegExp.match(path, k)) {
+      return key in allowed[k]
     }
-  },
-  suite: BRICK_TYPE || [BRICK_TYPE] || () => {} || { // last is expected
-    check:  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
-  },
-  foot: BRICK_TYPE || [BRICK_TYPE] || () => {} || { // last is expected
-    check:  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
-    required: BOOLEAN,
   }
+  return false
 }
-*/
 
 /**
  * @param {Object} model - the tree in which we replace some node by objects
  * @param {Function} handler - a function with signature (path, before): boolean
  */
 eYo.Model.expandShortcuts = (model, handler) => {
-  var expand = (model, path, handler) => {
-    if (eYo.isO(model)) {
-      Object.keys(model).forEach(k => {
-        handler(model, path, k) || expand(model[k], path + '.' + k, handler)
-      })
-    }
+  var do_it = (model, path) => {
+    eYo.isO(model) && Object.keys(model).forEach(k => {
+      handler(model, path, k) || do_it(model[k], path + '.' + k)
+    })
   }
-  expand(model, '', handler)
+  do_it(model, '')
 }
 /**
  * @param {Object} model
@@ -249,6 +175,13 @@ eYo.Model.shortcutsBaseHandler = (model, path, key) => {
         }
       }
     }
+  } else if (path === 'owned') {
+    var before = model[key]
+    if (eYo.isF(before)) {
+      after = { init: before }
+    } else if (!eYo.isO(before)) {
+      after = { value: before }
+    }
   } else if (path === 'computed') {
     var before = model[key]
     if (eYo.isF(before)) {
@@ -277,8 +210,30 @@ eYo.Model.shortcutsBaseHandler = (model, path, key) => {
     if (!goog.isArray(before)) {
       after = [before]
     }
+  } else if (eYo.XRegExp.match(path, /Slots\.\\w+\.fields/)) {
+    var before = model[key]
+    if (eYo.isStr(before)) {
+      after = {
+        value: before
+      }
+    }
+  } else if (eYo.XRegExp.match(path, /Slots\.\\w+\.fields\.\w+/)) {
+    var before = model[key]
+    if (key in ['reserved', 'variable', 'separator']) {
+      if (eYo.isStr(before)) {
+        after = true
+        model.value = before
+      }
+    }
+  } else if (key === 'xml') {
+    var before = model[key]
+    if (eYo.isF(before)) {
+      after = {
+        accept: before
+      }
+    }
   }
-  if (after) {
+  if (after !== eYo.NA) {
     model[key] = after
     return true
   }
@@ -290,6 +245,7 @@ eYo.Model.shortcutsBaseHandler = (model, path, key) => {
  * @param {Object} model - and its model
  * @param {Object} [linkC9r] - and its linked constructor
  */
+/*
 eYo.Model.Handler = (model, C9r, linkC9r) => {
 
   this.model__ = model
@@ -324,83 +280,33 @@ eYo.Model.Handler = (model, C9r, linkC9r) => {
   //     throw new Error(`Invalid attempt to ${action} private "${key}" property`);
   //   }
   // }
-  // */
-  // has (target, key) {
-  //   if (key[0] === '_') {
-  //     return false;
-  //   }
-  //   return key in target;
-  // },
-  // get: function(target, prop, receiver) {
-  //   if (prop === 'secret') {
-  //     return `${target.secret.substr(0, 4)} ... shhhh!`;
-  //   } else {
-  //     return Reflect.get(...arguments);
-  //   }
-  // },
-  // set(obj, prop, value) {
-  //   if ((prop === 'eyeCount') && ((value % 2) !== 0)) {
-  //     console.log('Monsters must have an even number of eyes');
-  //   } else {
-  //     return Reflect.set(...arguments);
-  //   }
-  // },
-  // deleteProperty(target, prop) {
-  //   if (prop in target) {
-  //     delete target[prop];
-  //     console.log(`property removed: ${prop}`);
-  //     // expected output: "property removed: texture"
-  //   }
-  // },
-  // ownKeys (target) {
-  //   return Reflect.ownKeys(target)
-  // },
-  // apply: function(target, thisArg, argumentsList) {
-  //   console.log(`Calculate sum: ${argumentsList}`);
-  //   // expected output: "Calculate sum: 1,2"
-
-  //   return target(argumentsList[0], argumentsList[1]) * 10;
-  // },
-  // construct(target, args) {
-  //   console.log('monster1 constructor called');
-  //   // expected output: "monster1 constructor called"
-
-  //   return new target(...args);
-  // },
-// handler.getPrototypeOf()
-// Une trappe pour Object.getPrototypeOf.
-// handler.setPrototypeOf()
-// Une trappe pour Object.setPrototypeOf.
-// handler.isExtensible()
-// Une trappe pour Object.isExtensible.
-// handler.preventExtensions()
-// Une trappe pour Object.preventExtensions.
-// handler.getOwnPropertyDescriptor()
-// Une trappe pour Object.getOwnPropertyDescriptor.
-// handler.defineProperty()
-// Une trappe pour Object.defineProperty.
-// handler.has()
-// Une trappe pour l'opérateur in.
-// handler.get()
-// Une trappe pour l'accès aux valeurs des propriétés.
-// handler.set()
-// Une trappe pour la définition des valeurs des propriétés.
-// handler.deleteProperty()
-// Une trappe pour l'opérateur delete.
-// handler.ownKeys()
-// Une trappe pour Object.getOwnPropertyNames et Object.getOwnPropertySymbols.
-// handler.apply()
-// Une trappe pour l'appel d'une fonction.
-// handler.construct()
+  // *//*  }
+}
+*/
+/**
+ * Make `model` inherit from model `base`.
+ * @param {Object} model_  a tree of properties
+ * @param {Object} base  a tree of properties
+ */
+eYo.Model.inherits = (model, base) => {
+  var do_it = (model_, base_) => {
+    if (eYo.isO(model_) && eYo.isModel(base_)) {
+      eYo.parameterAssert(!model_.model__, `Already inheritance: ${model}`)
+      Object.keys(model_).forEach(k => {do_it(model_[k], base_[k])})
+      Object.setPrototypeOf(model_, base_)
+      eYo.assert(Object.getPrototypeOf(model_) === base_, `Unexpected ${Object.getPrototypeOf(model_)} !== ${base_}`)
+      model_.model__ = model
+    }
   }
+  do_it(model, base)
 }
 /**
- * Make `model` inherit from model `from`.
+ * Make `model` extend model `base`.
  * @param {Object} model_  a tree of properties
  * @param {Object} from_  a tree of properties
  */
-eYo.Model.extends = (model, base, ignore) => {
-  var do_it = (model_, base_, ignore) => {
+eYo.Model.extends = (model, base) => {
+  var do_it = (model_, base_, path) => {
     // if (eYo.isO(model_) && eYo.isModel(from_)) {
     //   for (var k in model_) {
     //     ignore && ignore(k) || do_it(model_[k], from_[k], ignore)
@@ -411,29 +317,18 @@ eYo.Model.extends = (model, base, ignore) => {
     // }
     if (eYo.isO(model_) && eYo.isO(base_)) {
       for (var k in base_) {
-        if (ignore && ignore(k)) {
-          continue
+        if (!eYo.Model.isAllowed(path, k)) {
+          console.warn(`Attempting to use ${path}.${k} in a model`)
+          return
         }
-        var model_d = model_[k]
-        var base_d = base_[k]
-        if (eYo.isO(base_d)) {
-          if (model_d) {
-            if (!eYo.isO(model_d)) {
-              // already defined
-              continue
-            }
-          } else {
-            model_d = model_[k] = {}
-          }
-          // we have an object dictionary, do a mixin
-          do_it(model_d, base_d, ignore)
-        } else if (!model_d) {
-          // it is not a dictionary, do a simple copy when not already set
-          model_[k] = base_d
+        if (model[k] === eYo.NA) {
+          var after = base[k]
+          model[k] = eYo.isO(after) ? {} : after
         }
+        do_it(model_[k], base_[k], path + '.' + k)
       }
     }
   }
-  do_it(model, base, ignore)
+  do_it(model, base, '')
   return
 }

@@ -11,61 +11,59 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('eYo.NS_Brick')
 
 eYo.require('eYo.Change')
 
-eYo.require('eYo.Brick.List')
+eYo.require('eYo.NS_Brick.List')
 eYo.provide('eYo.Stmt')
 
 eYo.forwardDeclare('eYo.XRE')
 eYo.forwardDeclare('eYo.Msg')
-eYo.forwardDeclare('eYo.Brick.Operator')
+eYo.forwardDeclare('eYo.NS_Brick.Operator')
 
 goog.forwardDeclare('goog.dom')
 
 /**
  * Class for a Delegate, statement brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.makeSubclass('Stmt', {
-  statement: {
-    left: {
-      check: /** @suppress {globalThis} */ function (type) {
-        return this.brick.head || this.brick.foot
-        ? [eYo.T3.Stmt.comment_stmt]
-        : eYo.T3.Stmt.Left.simple_stmt
+eYo.NS_Brick.makeSubclass('Stmt', {
+  left: {
+    check: /** @suppress {globalThis} */ function (type) {
+      return this.brick.head || this.brick.foot
+      ? [eYo.T3.Stmt.comment_stmt]
+      : eYo.T3.Stmt.Left.simple_stmt
+    }
+  },
+  right: {
+    fields: {
+      label: { // don't call it 'operator'
+        reserved: ';',
+        hidden: true
       }
     },
-    right: {
-      fields: {
-        label: { // don't call it 'operator'
-          reserved: ';',
-          hidden: true
-        }
-      },
-      check: /** @suppress {globalThis} */ function (type) {
-        return eYo.T3.Stmt.Right.simple_stmt
-      }
-    },
-    head: {
-      check: /** @suppress {globalThis} */ function (type) {
-        return this.brick.left
-        ? []
-        : null // except start_stmt ? connections must also have an uncheck_
-      }
-    },
-    foot: {
-      check: /** @suppress {globalThis} */ function (type) {
-        return this.brick.left
-        ? []
-        : null
-      }
+    check: /** @suppress {globalThis} */ function (type) {
+      return eYo.T3.Stmt.Right.simple_stmt
+    }
+  },
+  head: {
+    check: /** @suppress {globalThis} */ function (type) {
+      return this.brick.left
+      ? []
+      : null // except start_stmt ? connections must also have an uncheck_
+    }
+  },
+  foot: {
+    check: /** @suppress {globalThis} */ function (type) {
+      return this.brick.left
+      ? []
+      : null
     }
   }
 })
-eYo.Brick.mngr.registerAll(eYo.T3.Stmt, eYo.Stmt, true)
+eYo.NS_Brick.mngr.registerAll(eYo.T3.Stmt, eYo.Stmt, true)
 
 Object.defineProperties(eYo.Stmt.prototype, {
   isStmt: {
@@ -96,7 +94,7 @@ eYo.Stmt.prototype.insertParentWithModel = function (model) {
     var parent
     eYo.Events.disableWrap(
       () => {
-        parent = eYo.Brick.newReady(this, model)
+        parent = eYo.NS_Brick.newReady(this, model)
       },
       () => {
         if (parent) {
@@ -142,7 +140,7 @@ eYo.Stmt.prototype.insertParentWithModel = function (model) {
  */
 eYo.Stmt.prototype.insertBrickAfter = function (belowPrototypeName) {
   return eYo.Events.groupWrap(() => {
-    var below = eYo.Brick.newReady(this, belowPrototypeName)
+    var below = eYo.NS_Brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m
     var targetMagnet = magnet.target
     var magnets = below.magnets
@@ -220,7 +218,7 @@ eYo.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
 
 ;['blank_stmt'].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.comment_stmt
-  eYo.Brick.mngr.register(k)
+  eYo.NS_Brick.mngr.register(k)
 })
 
 Object.defineProperties(eYo.Stmt.comment_stmt.prototype, {
@@ -257,10 +255,10 @@ Object.defineProperties(eYo.Stmt.comment_stmt.prototype, {
 /**
  * Class for a Delegate, non_void_identifier_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
+eYo.NS_Brick.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
   list: {
     check: eYo.T3.Expr.Check.non_void_identifier_list,
     presep: ',',
@@ -383,7 +381,7 @@ eYo.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
 ].forEach((k) => {
   k = k + '_stmt'
   eYo.Stmt[k] = eYo.Stmt.global_stmt
-  eYo.Brick.mngr.register(k)
+  eYo.NS_Brick.mngr.register(k)
 })
 
 /**
@@ -419,7 +417,7 @@ eYo.Stmt.global_stmt.prototype.xmlAttr = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */

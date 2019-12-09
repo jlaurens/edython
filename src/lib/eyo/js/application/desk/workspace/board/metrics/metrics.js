@@ -74,132 +74,130 @@ eYo.forwardDeclare('eYo.Geometry')
  * to display line numbers.
  */
 eYo.makeClass('Metrics', {
-  props: {
-    clonable: {
-      port () {
-        return new eYo.Rect()
-      },
-      view () {
-        return new eYo.Rect()
-      },
-      box () {
-        return new eYo.Rect()
-      },
-      drag_ () {
-        return this.dragDefault.clone
-      },
+  clonable: {
+    port () {
+      return new eYo.Rect()
     },
-    linked: {
-      scale_: {value: 1},
-      numbering_: {
-        didChange (before, after) {
-          this.wrapUpdate(() => this.numbering__ = newValue)
-        },
-        init () {
-          return false
-        }
-      },
-      updateDepth_: {value: 0},
+    view () {
+      return new eYo.Rect()
     },
-    computed: {
-      board () {
-        return this.owner
+    box () {
+      return new eYo.Rect()
+    },
+    drag_ () {
+      return this.dragDefault.clone
+    },
+  },
+  linked: {
+    scale_: {value: 1},
+    numbering_: {
+      didChange (before, after) {
+        this.wrapUpdate(() => this.numbering__ = newValue)
       },
-      options () {
-        return this.board && this.board.options.zoom || {}
-      },
-      /**
-       * The port rect is at least enclosing all the bricks.
-       * In view coordinates.
-       * @type {eYo.Rect} 
-       * @readonly 
-       */
-      portInView () {
-        return this.toView(this.port)
-      },
-      /**
-       * The default scroll value.
-       * 
-       * @type {eYo.Where} 
-       * @readonly 
-       */
-      dragDefault () {
-        return eYo.Where.cl(0*1.5, 0*0.25)
-      },
-      /**
-       * Whether the actual drag value is within the acceptable limits.
-       * 
-       * @type {Boolean} 
-       */
-      dragPastLimits () {
-        var r = this.dragLimits
-        return r && this.drag_.out(r)
-      },
-      /**
-       * The opposite of `drag`.
-       * 
-       * @type {eYo.Where}
-       * @readonly
-       */
-      scroll () {
-        return this.drag.mirror
-      },
-      /**
-       * The minimum port rect in board coordinates,
-       * when the scroll value is default.
-       * 
-       * @type {eYo.Rect} 
-       * @readonly 
-       */
-      minPort: {
-        get () {
-          var ans = this.view
-          ans.origin.set()
-          ans.unscale(this.scale)
-          ans.left = -(this.numbering ? 5 : 3) * eYo.Unit.x
-          ans.top = -eYo.Unit.y
-          return ans
-        }
-      },
-      /**
-       * The scroll limits in view coordinates.
-       * Used for scrolling, gives the limiting values of the `scroll` property.
-       */
-      dragLimits: {
-        get () {
-          var v = this.view
-          v.origin_.set()
-          var ans = this.port.scale(this.scale)
-          var d = ans.right - v.right
-          ans.right = d >= 0 ? d : 0
-          d = ans.left - v.left
-          ans.left = d <= 0 ? d : 0
-          d = ans.bottom - v.bottom
-          ans.bottom = d >= 0 ? d : 0
-          d = ans.top - v.top
-          ans.top = d <= 0 ? d : 0
-          ans.mirror()
-          return ans
-        }
-      },
-      /**
-       * Clone the object.
-       */
-      clone: {
-        get () {
-          var ans = new eYo.Metrics(this)
-          ans.scale_ = this.scale_
-          ans.view = this.view_
-          ans.port = this.port_
-          ans.drag_ = this.drag_
-          ans.box = this.box_
-          return ans
-        }
-      },
-      toString: {
-        get () {
-          return `drag: ${this.drag.toString}, view: ${this.view.toString}, port: ${this.port.toString}`
-        }
+      init () {
+        return false
+      }
+    },
+    updateDepth_: {value: 0},
+  },
+  computed: {
+    board () {
+      return this.owner
+    },
+    options () {
+      return this.board && this.board.options.zoom || {}
+    },
+    /**
+     * The port rect is at least enclosing all the bricks.
+     * In view coordinates.
+     * @type {eYo.Rect} 
+     * @readonly 
+     */
+    portInView () {
+      return this.toView(this.port)
+    },
+    /**
+     * The default scroll value.
+     * 
+     * @type {eYo.Where} 
+     * @readonly 
+     */
+    dragDefault () {
+      return eYo.Where.cl(0*1.5, 0*0.25)
+    },
+    /**
+     * Whether the actual drag value is within the acceptable limits.
+     * 
+     * @type {Boolean} 
+     */
+    dragPastLimits () {
+      var r = this.dragLimits
+      return r && this.drag_.out(r)
+    },
+    /**
+     * The opposite of `drag`.
+     * 
+     * @type {eYo.Where}
+     * @readonly
+     */
+    scroll () {
+      return this.drag.mirror
+    },
+    /**
+     * The minimum port rect in board coordinates,
+     * when the scroll value is default.
+     * 
+     * @type {eYo.Rect} 
+     * @readonly 
+     */
+    minPort: {
+      get () {
+        var ans = this.view
+        ans.origin.set()
+        ans.unscale(this.scale)
+        ans.left = -(this.numbering ? 5 : 3) * eYo.Unit.x
+        ans.top = -eYo.Unit.y
+        return ans
+      }
+    },
+    /**
+     * The scroll limits in view coordinates.
+     * Used for scrolling, gives the limiting values of the `scroll` property.
+     */
+    dragLimits: {
+      get () {
+        var v = this.view
+        v.origin_.set()
+        var ans = this.port.scale(this.scale)
+        var d = ans.right - v.right
+        ans.right = d >= 0 ? d : 0
+        d = ans.left - v.left
+        ans.left = d <= 0 ? d : 0
+        d = ans.bottom - v.bottom
+        ans.bottom = d >= 0 ? d : 0
+        d = ans.top - v.top
+        ans.top = d <= 0 ? d : 0
+        ans.mirror()
+        return ans
+      }
+    },
+    /**
+     * Clone the object.
+     */
+    clone: {
+      get () {
+        var ans = new eYo.Metrics(this)
+        ans.scale_ = this.scale_
+        ans.view = this.view_
+        ans.port = this.port_
+        ans.drag_ = this.drag_
+        ans.box = this.box_
+        return ans
+      }
+    },
+    toString: {
+      get () {
+        return `drag: ${this.drag.toString}, view: ${this.view.toString}, port: ${this.port.toString}`
       }
     }
   }

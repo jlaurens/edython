@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick.Group')
+eYo.require('eYo.NS_Brick.Group')
 
 eYo.require('eYo.Change')
 
-eYo.provide('eYo.Brick.Try')
+eYo.provide('eYo.NS_Brick.Try')
 
 eYo.forwardDeclare('eYo.Msg')
 
@@ -23,10 +23,10 @@ goog.forwardDeclare('goog.dom')
 
 /**
  * Class for a Delegate, try_part brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Group.makeSubclass('try_part', {
+eYo.NS_Brick.Group.makeSubclass('try_part', {
   fields: {
     prefix: 'try'
   }
@@ -34,10 +34,10 @@ eYo.Brick.Group.makeSubclass('try_part', {
 
 /**
  * Class for a Delegate, except_part brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Group.makeSubclass('except_part', {
+eYo.NS_Brick.Group.makeSubclass('except_part', {
   data: {
     variant: {
       all: [
@@ -146,20 +146,18 @@ eYo.Brick.Group.makeSubclass('except_part', {
       }
     }
   },
-  statement: {
-    head: {
-      check: /** @suppress {globalThis} */ function (type) {
-        return type === eYo.T3.Stmt.except_part
-        ? eYo.T3.Stmt.Previous.except_part
-        : eYo.T3.Stmt.Previous.void_except_part
-      }
-    },
-    foot: {
-      check: /** @suppress {globalThis} */ function (type) {
-        return type === eYo.T3.Stmt.except_part
-        ? eYo.T3.Stmt.Next.except_part
-        : eYo.T3.Stmt.Next.void_except_part
-      }
+  head: {
+    check: /** @suppress {globalThis} */ function (type) {
+      return type === eYo.T3.Stmt.except_part
+      ? eYo.T3.Stmt.Previous.except_part
+      : eYo.T3.Stmt.Previous.void_except_part
+    }
+  },
+  foot: {
+    check: /** @suppress {globalThis} */ function (type) {
+      return type === eYo.T3.Stmt.except_part
+      ? eYo.T3.Stmt.Next.except_part
+      : eYo.T3.Stmt.Next.void_except_part
     }
   }
 }, true)
@@ -168,7 +166,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
   'void_except_part'
 ].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.except_part
-  eYo.Brick.mngr.register(k)
+  eYo.NS_Brick.mngr.register(k)
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.
@@ -188,7 +186,7 @@ eYo.Stmt.except_part.prototype.getType = eYo.Change.decorate(
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -223,10 +221,10 @@ eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Class for a Delegate, finally_part brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Group.makeSubclass('finally_part', {
+eYo.NS_Brick.Group.makeSubclass('finally_part', {
   fields: {
     prefix: 'finally'
   }
@@ -333,7 +331,7 @@ eYo.Stmt.makeSubclass('raise_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -436,7 +434,7 @@ eYo.Stmt.makeSubclass('assert_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -463,7 +461,7 @@ eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   return eYo.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
-eYo.Brick.Try.T3s = [
+eYo.NS_Brick.Try.T3s = [
   eYo.T3.Stmt.try_part,
   eYo.T3.Stmt.except_part,
   eYo.T3.Stmt.void_except_part,

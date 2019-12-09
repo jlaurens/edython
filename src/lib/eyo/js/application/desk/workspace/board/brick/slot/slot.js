@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('eYo.Do')
-eYo.require('eYo.UI.Owned2')
+eYo.require('eYo.NS_UI.Owned2')
 eYo.require('eYo.Decorate')
 
 eYo.forwardDeclare('eYo.Where')
@@ -21,7 +21,7 @@ eYo.forwardDeclare('eYo.Magnet')
 
 eYo.forwardDeclare('eYo.Xml')
 eYo.forwardDeclare('eYo.Key')
-eYo.forwardDeclare('eYo.Brick.List')
+eYo.forwardDeclare('eYo.NS_Brick.List')
 
 goog.forwardDeclare('goog.dom');
 
@@ -46,12 +46,12 @@ goog.forwardDeclare('goog.dom');
   // - wrap input
   // - insert input
   // It may contain label fields
- * @param {eYo.Brick.Dflt} brick  The owner is a brick.
+ * @param {eYo.NS_Brick.Dflt} brick  The owner is a brick.
  * @param {string} key  One of the keys in `slots` section of the brick model.
  * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.UI.makeClass(eYo, 'Slot', eYo.UI.Owned2, {
+eYo.NS_UI.makeClass(eYo, 'Slot', eYo.NS_UI.Owned2, {
   init (brick, key, model) {
     eYo.assert(brick, 'Missing slot owner brick')
     eYo.assert(key, 'Missing slot key')
@@ -88,154 +88,152 @@ eYo.UI.makeClass(eYo, 'Slot', eYo.UI.Owned2, {
     var f = eYo.Decorate.reentrant_method.call(this, 'init_model', this.model.init)
     f && (f.call(this))
   },
-  props: {
-    owned: {
-      magnet: {}
+  owned: {
+    magnet: {}
+  },
+  linked: {
+    /**
+     * @property {eYo.Data} data  Bound data.
+     */
+    data: {},
+    visible: { value: true},
+    incog: {
+      init () {
+        return true
+      },
+      set (newValue) {
+        if (this.data) {
+          newValue = this.data.incog
+        } else if (!goog.isDef(newValue)) {
+          newValue = !this.required
+        } else {
+          newValue = !!newValue
+        }
+        var validator = this.slots && this.model.validateIncog
+        if (validator) { // if !this.slots, the receiver is not yet ready
+          newValue = validator.call(this, newValue)
+        }
+        this.brick_.change.wrap(
+          () => {
+            this.incog_ = newValue
+            // forward to the connection
+            var m4t = this.magnet
+            if (m4t) {
+              m4t.incog = newValue
+            }
+          },
+          this,
+          newValue
+        )
+      }    
     },
-    linked: {
-      /**
-       * @property {eYo.Data} data  Bound data.
-       */
-      data: {},
-      visible: { value: true},
-      incog: {
-        init () {
-          return true
-        },
-        set (newValue) {
-          if (this.data) {
-            newValue = this.data.incog
-          } else if (!goog.isDef(newValue)) {
-            newValue = !this.required
-          } else {
-            newValue = !!newValue
-          }
-          var validator = this.slots && this.model.validateIncog
-          if (validator) { // if !this.slots, the receiver is not yet ready
-            newValue = validator.call(this, newValue)
-          }
-          this.brick_.change.wrap(
-            () => {
-              this.incog_ = newValue
-              // forward to the connection
-              var m4t = this.magnet
-              if (m4t) {
-                m4t.incog = newValue
-              }
-            },
-            this,
-            newValue
-          )
-        }    
-      },
-      /**
-       * @readonly
-       * @property {eYo.Brick} brick  the immediate brick in which this is contained
-       */
-      brick: {},
-      key: {},
-      model: {},
-      /**
-       * Get the concrete required status.
-       * For edython.
-       * @param {boolean} newValue
-       */
-      requiredFromModel: {}
+    /**
+     * @readonly
+     * @property {eYo.NS_Brick} brick  the immediate brick in which this is contained
+     */
+    brick: {},
+    key: {},
+    model: {},
+    /**
+     * Get the concrete required status.
+     * For edython.
+     * @param {boolean} newValue
+     */
+    requiredFromModel: {}
+  },
+  computed: {
+    targetBrick: {
+      get () {
+        var m4t = this.magnet
+        return m4t && m4t.targetBrick
+      }
     },
-    computed: {
-      targetBrick: {
-        get () {
-          var m4t = this.magnet
-          return m4t && m4t.targetBrick
-        }
+    whereInBoard: {
+      get () {
+        return this.where.forward(this.brick.ui.whereInBoard)
+      }
+    },
+    whereInBrick: {
+      get () {
+        return this.where
       },
-      whereInBoard: {
-        get () {
-          return this.where.forward(this.brick.ui.whereInBoard)
-        }
+      set (newValue) {
+        this.where_.set(newValue)
+      }
+    },
+    where: {
+      get () {
+        return this.where_.clone
+      }
+    },    
+    recover: {
+      get () {
+        return this.brick_.recover
+      }
+    },
+    xmlKey: {
+      get () {
+        return (this.model.xml && this.model.xml.key) || this.key
+      }
+    },
+    ui: {
+      get () {
+        return this.brick.ui
+      }
+    },
+    unwrappedTarget: {
+      get () {
+        var m4t = this.magnet
+        return m4t && m4t.unwrappedTarget
+      }
+    },
+    requiredIncog: {
+      get () {
+        return this.incog
       },
-      whereInBrick: {
-        get () {
-          return this.where
-        },
-        set (newValue) {
-          this.where_.set(newValue)
-        }
-      },
-      where: {
-        get () {
-          return this.where_.clone
-        }
-      },    
-      recover: {
-        get () {
-          return this.brick_.recover
-        }
-      },
-      xmlKey: {
-        get () {
-          return (this.model.xml && this.model.xml.key) || this.key
-        }
-      },
-      ui: {
-        get () {
-          return this.brick.ui
-        }
-      },
-      unwrappedTarget: {
-        get () {
-          var m4t = this.magnet
-          return m4t && m4t.unwrappedTarget
-        }
-      },
-      requiredIncog: {
-        get () {
-          return this.incog
-        },
-        set (newValue) {
-          this.incog = !(this.required = !!newValue)
-        }
-      },
-      /**
-       * @property {boolean} isRequiredToModel  Get the required status.
-       */
-      isRequiredToModel () {
-        if (this.incog) {
-          return false
-        }
-        if (!this.magnet) {
-          return false
-        }
-        if (!this.magnet.wrapped_ && this.targetBrick) {
-          return true
-        }
-        if (this.required) {
-          return true
-        }
-        if (this.data && this.data.required) {
-          return false
-        }
-        if (this.model.xml && this.model.xml.required) {
-          return true
-        }
+      set (newValue) {
+        this.incog = !(this.required = !!newValue)
+      }
+    },
+    /**
+     * @property {boolean} isRequiredToModel  Get the required status.
+     */
+    isRequiredToModel () {
+      if (this.incog) {
         return false
-      },
-      /**
-       * Get the concrete required status.
-       * For edython.
-       * @param {boolean} newValue
-       */
-      requiredFromSaved () {
-        var t9k = this.targetBrick
-        if (t9k) {
-          if (t9k.wrapped_) {
-            // return true if one of the inputs is connected
-            return t9k.someSlot(slot => !!slot.target)
-          }
-          return true
+      }
+      if (!this.magnet) {
+        return false
+      }
+      if (!this.magnet.wrapped_ && this.targetBrick) {
+        return true
+      }
+      if (this.required) {
+        return true
+      }
+      if (this.data && this.data.required) {
+        return false
+      }
+      if (this.model.xml && this.model.xml.required) {
+        return true
+      }
+      return false
+    },
+    /**
+     * Get the concrete required status.
+     * For edython.
+     * @param {boolean} newValue
+     */
+    requiredFromSaved () {
+      var t9k = this.targetBrick
+      if (t9k) {
+        if (t9k.wrapped_) {
+          // return true if one of the inputs is connected
+          return t9k.someSlot(slot => !!slot.target)
         }
-        return this.requiredFromModel
-      },
+        return true
+      }
+      return this.requiredFromModel
     },
   },
   /**
@@ -358,7 +356,7 @@ eYo.Slot.prototype.save = function (element, opt) {
         // wrapped bricks are just a convenient computational model.
         // For lists only, we do create a further level
         // Actually, every wrapped brick is a list
-        if (t9k instanceof eYo.Brick.List) {
+        if (t9k instanceof eYo.NS_Brick.List) {
           var child = eYo.Xml.brickToDom(t9k, opt)
           if (child.firstElementChild) {
             child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
@@ -427,7 +425,7 @@ eYo.Slot.prototype.load = function (element) {
   this.requiredFromModel = false
   var out
   var t9k = this.targetBrick
-  if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.Brick.List)) {
+  if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.NS_Brick.List)) {
     this.requiredFromModel = true // this is not sure, it depends on how the target read the dom
     out = eYo.Xml.fromDom(t9k, element)
     this.recover.dontResit(element)
@@ -446,7 +444,7 @@ eYo.Slot.prototype.load = function (element) {
             t9k = this.targetBrick
           }
           if (t9k) {
-            if (t9k instanceof eYo.Brick.List) {
+            if (t9k instanceof eYo.NS_Brick.List) {
               // var grandChildren = Array.prototype.slice.call(child.childNodes)
               eYo.Do.forEachElementChild(child, grandChild => {
                 var name = grandChild.getAttribute(eYo.Xml.SLOT)
@@ -580,7 +578,7 @@ eYo.Slot.prototype.forEachField = function (helper) {
 /**
  * Connect the brick or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
  * The slot corresponds to a wrapped list block.
- * @param {eYo.Brick | eYo.Magnet} bm  either a brick or a magnet.
+ * @param {eYo.NS_Brick | eYo.Magnet} bm  either a brick or a magnet.
  * @param {String} [key] an input key. When not given the last free input is used.
  * @return {?eYo.Magnet} the eventual magnet target that was connected.
  */
@@ -608,7 +606,7 @@ eYo.Slot.prototype.listConnect = function (bm, key) {
 /**
  * Connect to the target.
  * For edython.
- * @param {eYo.Brick | eYo.Magnet} bm  The target is either a brick or another magnet.
+ * @param {eYo.NS_Brick | eYo.Magnet} bm  The target is either a brick or another magnet.
  * @return {?eYo.Magnet} the eventual target magnet
  */
 eYo.Slot.prototype.connect = function (bm) {

@@ -11,24 +11,24 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('eYo.NS_Brick')
 
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.Stmt')
-eYo.require('eYo.Brick.List')
+eYo.require('eYo.NS_Brick.List')
 
-eYo.require('eYo.Brick.Primary')
+eYo.require('eYo.NS_Brick.Primary')
 eYo.require('eYo.Tooltip')
 
 eYo.require('eYo.Library')
 eYo.require('eYo.Model.decimal__module')
 
-eYo.provide('eYo.Brick.Decimal')
+eYo.provide('eYo.NS_Brick.Decimal')
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -267,6 +267,6 @@ goog.mixin(eYo.Tooltip.Title, {
   decimal__assigned_prec: 'Modifier la précision des calculs à venir.'
 })
 
-eYo.Brick.Decimal.T3s = [
+eYo.NS_Brick.Decimal.T3s = [
   eYo.T3.Expr.decimal__const
 ]

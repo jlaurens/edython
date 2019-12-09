@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('eYo.NS_Brick')
 
 eYo.require('eYo.Change')
 eYo.require('eYo.Msg')
@@ -24,13 +24,13 @@ eYo.provide('eYo.Expr')
 
 /**
  * Class for a Delegate, value brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Dflt.makeSubclass(eYo.Expr, 'Dflt')
+eYo.NS_Brick.Dflt.makeSubclass(eYo.Expr, 'Dflt')
 
 // Default delegate for all expression bricks
-eYo.Brick.mngr.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
+eYo.NS_Brick.mngr.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
 
 Object.defineProperties(eYo.Expr.Dflt.prototype, {
   isExpr: {
@@ -99,7 +99,7 @@ eYo.Expr.Dflt.prototype.checkOutputType = function (type) {
  * If the parent's output connection is connected,
  * can connect the brick's output connection to it?
  * The connection cannot always establish.
- * @param {eYo.Brick.Dflt} brick  the brick to be replaced
+ * @param {eYo.NS_Brick.Dflt} brick  the brick to be replaced
  */
 eYo.Expr.Dflt.prototype.canReplaceBrick = function (brick) {
   if (brick) {
@@ -121,7 +121,7 @@ eYo.Expr.Dflt.prototype.canReplaceBrick = function (brick) {
  * If the parent's output magnet is connected,
  * connects the brick's output magnet to it.
  * The connection cannot always establish.
- * @param {eYo.Brick.Dflt} brick
+ * @param {eYo.NS_Brick.Dflt} brick
  */
 eYo.Expr.Dflt.prototype.replaceBrick = function (brick) {
   if (this.board && brick && brick.board) {
@@ -225,7 +225,7 @@ eYo.Expr.Dflt.prototype.insertParentWithModel = function (model) {
   var parentSlotName = model.slot || model.input
   var parent
   eYo.Events.disableWrap(() => {
-    parent = eYo.Brick.newReady(this, model)
+    parent = eYo.NS_Brick.newReady(this, model)
   })
   if (!parent) {
     return parent
@@ -338,7 +338,7 @@ eYo.Expr.Dflt.prototype.doConsolidate = function (deep, force) {
 
 /**
  * Class for a Delegate, proper_slice brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('proper_slice', {
@@ -439,7 +439,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
 
 /**
  * Class for a Delegate, conditional_expression brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('conditional_expression', {
@@ -486,7 +486,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__object', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -499,7 +499,7 @@ eYo.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Get the content for the menu item.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {string} op op is the operator
  * @private
  */

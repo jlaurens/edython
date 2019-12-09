@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('eYo.NS_Brick')
 
 eYo.require('eYo.Msg')
 
@@ -19,11 +19,11 @@ eYo.require('eYo.Stmt')
 eYo.require('eYo.Tooltip')
 
 eYo.require('eYo.Library')
-eYo.provide('eYo.Brick.String')
+eYo.provide('eYo.NS_Brick.String')
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -195,6 +195,6 @@ goog.mixin(eYo.Tooltip.Title, {
   string__import_stmt: 'Importer le module string.',
 })
 
-eYo.Brick.String.T3s = [
+eYo.NS_Brick.String.T3s = [
   eYo.T3.Expr.string__const
 ]

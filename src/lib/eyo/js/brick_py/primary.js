@@ -21,10 +21,10 @@ eYo.require('eYo.Model.stdtypes')
 eYo.require('eYo.Model.functions')
 eYo.require('eYo.Msg')
 
-eYo.require('eYo.Brick.Primary')
+eYo.require('eYo.NS_Brick.Primary')
 eYo.require('eYo.Stmt')
 eYo.require('eYo.Protocol.Register')
-eYo.provide('eYo.Brick.Primary')
+eYo.provide('eYo.NS_Brick.Primary')
 
 /**
  * List consolidator for assignment target list. Used in primary, only.
@@ -33,7 +33,7 @@ eYo.provide('eYo.Brick.Primary')
  * Main entry: consolidate
  * @param {String} single - the required type for a single element....
  */
-eYo.Consolidator.List.makeSubclass('Target', {
+eYo.NS_Consolidator.List.makeSubclass('Target', {
   check: null,
   mandatory: 1,
   presep: ',',
@@ -91,10 +91,10 @@ eYo.Consolidator.List.makeSubclass('Target', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {eYo.Brick.Dflt} brick - owner or the receiver.
+ * @param {eYo.NS_Brick.Dflt} brick - owner or the receiver.
  */
-eYo.Consolidator.List.Target.prototype.getIO = function (brick) {
-  var io = eYo.Consolidator.List.Target.superClass_.getIO.call(this, brick)
+eYo.NS_Consolidator.List.Target.prototype.getIO = function (brick) {
+  var io = eYo.NS_Consolidator.List.Target.superClass_.getIO.call(this, brick)
   io.first_starred = io.last = io.max = -1
   io.annotatedInput = eYo.NA
   io.subtype = brick.subtype
@@ -106,7 +106,7 @@ eYo.Consolidator.List.Target.prototype.getIO = function (brick) {
  * there might be unwanted things.
  * @param {object} io
  */
-eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
+eYo.NS_Consolidator.List.Target.prototype.doCleanup = (() => {
   // preparation: walk through the list of inputs and
   // find the first_starred input
   var Type = {
@@ -157,7 +157,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.Consolidator.List.Target.superClass_.doCleanup.call(this, io)
+    eYo.NS_Consolidator.List.Target.superClass_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.first_starred >= 0) {
       // ther must be only one starred
@@ -182,7 +182,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
  * This does not suppose that the list of input has been completely consolidated
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List.Target.prototype.getCheck = (() => {
+eYo.NS_Consolidator.List.Target.prototype.getCheck = (() => {
   var f = io => {
     if (io.i === io.unique) {
       // all subtypes with `unique` elements
@@ -247,8 +247,8 @@ eYo.Consolidator.List.Target.prototype.getCheck = (() => {
  * there might be unwanted things.
  * @param {object} io
  */
-eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
-  eYo.Consolidator.List.Target.superClass_.doFinalize.call(this, io)
+eYo.NS_Consolidator.List.Target.prototype.doFinalize = function (io) {
+  eYo.NS_Consolidator.List.Target.superClass_.doFinalize.call(this, io)
   if (this.setupIO(io, 0)) {
     do {
       io.m4t.incog = io.annotatedInput && io.annotatedInput !== io.slot // will ensure that there is only one annotated input
@@ -260,7 +260,7 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
 /**
  * Class for a Delegate, target_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * This brick appears in
  * - assignment's target slot, types:
  *    - expression_stmt
@@ -302,9 +302,9 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
  * All the types involved are
  * For edython.
  */
-eYo.Brick.List.makeSubclass('target_list', {
+eYo.NS_Brick.List.makeSubclass('target_list', {
   list: {
-    consolidator: eYo.Consolidator.List.Target
+    consolidator: eYo.NS_Consolidator.List.Target
   }
 })
 
@@ -1234,7 +1234,7 @@ eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
   'named_expr'
 ].forEach(k => {
   eYo.Expr[k] = eYo.Expr.primary
-  eYo.Brick.mngr.register(k)
+  eYo.NS_Brick.mngr.register(k)
 })
 
 /**
@@ -1242,7 +1242,7 @@ eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {eYo.Brick.Dflt} brick to be initialized.
+ * @param {eYo.NS_Brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
 eYo.Expr.primary.prototype.init = function () {
@@ -1798,7 +1798,7 @@ eYo.Expr.primary.prototype.getSlot = function (name) {
 
 /**
  * Class for a Delegate, base call statement brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.makeSubclass('pre_call_stmt', {
@@ -1807,7 +1807,7 @@ eYo.Stmt.makeSubclass('pre_call_stmt', {
 
 /**
  * Class for a Delegate, base call statement brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
@@ -1842,7 +1842,7 @@ Object.defineProperties( eYo.Stmt.call_stmt.prototype, {
 
 /**
  * Class for a Delegate, call statement brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.makeSubclass('base_call_stmt', {
@@ -1859,7 +1859,7 @@ eYo.Stmt.base_call_stmt.prototype.getProfile = eYo.Expr.primary.prototype.getPro
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {eYo.Brick.Dflt} brick to be initialized.
+ * @param {eYo.NS_Brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
 eYo.Stmt.base_call_stmt.prototype.init = function () {
@@ -1888,7 +1888,7 @@ Object.defineProperties(eYo.Stmt.base_call_stmt.prototype, {
 
 /**
  * Class for a Delegate, call statement brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.base_call_stmt.makeSubclass('call_stmt', {

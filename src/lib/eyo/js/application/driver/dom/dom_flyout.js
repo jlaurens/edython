@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('eYo.NS_Svg')
 
 eYo.forwardDeclare('eYo.Flyout')
 
 /**
  * Dom driver for the flyout.
  */
-eYo.Dom.makeDriverClass('Flyout', {
+eYo.NS_Dom.makeDriverClass('Flyout', {
     /**
    * Initialize the flyout dom ressources.
    * @param {eYo.Flyout} flyout
@@ -58,7 +58,7 @@ eYo.Dom.makeDriverClass('Flyout', {
  * Default CSS class of the flyout panel.
  * @type {string}
  */
-eYo.Dom.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
+eYo.NS_Dom.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
 
 
 /**
@@ -67,15 +67,15 @@ eYo.Dom.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
  * @return {string} Renderer-specific CSS class.
  * @override
  */
-eYo.Dom.Flyout.prototype.cssClass = function() {
-  return eYo.Dom.FLYOUT_CSS_CLASS
+eYo.NS_Dom.Flyout.prototype.cssClass = function() {
+  return eYo.NS_Dom.FLYOUT_CSS_CLASS
 }
 
 /**
  * Dispose of the given slot's rendering resources.
  * @param {eYo.Flyout} flyout
  */
-eYo.Dom.Flyout.prototype.updateMetrics = function (flyout) {
+eYo.NS_Dom.Flyout.prototype.updateMetrics = function (flyout) {
   var r = flyout.viewRect
   var div = flyout.dom.toolbarDiv_
   div.style.width = `${r.width} px`

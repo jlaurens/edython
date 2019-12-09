@@ -12,11 +12,18 @@
 'use strict'
 
 eYo.require('eYo.Do')
+eYo.require('eYo.Model')
 
 eYo.provide('eYo.Dlgt')
 
 
 delete eYo.Dlgt
+
+/**
+ * All the created delegates.
+ * @package
+ */
+eYo.dlgtByKey__ = Object.create(null)
 
 /**
  * @name {eYo.Dlgt}
@@ -79,13 +86,15 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
     C9r.eyo__ = this
 
     if (model) {
-      this.props_ = new Set()
+      model.eyo__ = this
+      this.props__ = new Set()
       model.linked && this.declareLinked(model.linked)
       model.owned && this.declareOwned(model.owned)
       model.cached && this.declareCached(model.cached)
       model.clonable && this.declareClonable(model.clonable)
       model.computed && this.declareComputed(model.computed)
-  }
+      eYo.Model.inherits(model, this.super && this.super.model)
+    }
   }
   // convenient variable
   var pttp = Dlgt.prototype
@@ -234,7 +243,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
    * f any.
    */
   pttp.declareLinked_ = function (k, model = {}) {
-    eYo.parameterAssert(!this.props_.has(k))
+    eYo.parameterAssert(!this.props__.has(k))
     this.link_.add(k)
     const proto = this.C9r_.prototype
     var k_ = k + '_'
@@ -330,7 +339,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
    * @param {Object} data -  the object used to define the property: key `value` for the initial value, key `willChange` to be called when the property is about to change (signature (before, after) => function, truthy when the change should take place). The returned value is a function called after the change has been made in memory.
    */
   pttp.declareOwned_ = function (k, model = {}) {
-    eYo.parameterAssert(!this.props_.has(k))
+    eYo.parameterAssert(!this.props__.has(k))
     this.owned_.add(k)
     const proto = this.C9r_.prototype
     var k_ = k + '_'
@@ -443,7 +452,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
    * It may take one argument to override the proposed after value.
    */
   pttp.declareCached_ = function (k, model) {
-    eYo.parameterAssert(!this.props_.has(k))
+    eYo.parameterAssert(!this.props__.has(k))
     this.cached_.add(k)
     var proto = this.C9r_.prototype
     var k_ = k + '_'
@@ -539,7 +548,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
    */
   pttp.declareComputed = function (models) {
     Object.keys(models).forEach(k => {
-      eYo.parameterAssert(!this.props_.has(k))
+      eYo.parameterAssert(!this.props__.has(k))
       try {
         const proto = this.C9r_.prototype
         var k_ = k + '_'
@@ -610,7 +619,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
     this.init_ || (this.init_ = Object.create(null))
     var proto = this.C9r_.prototype
     Object.keys(models).forEach(k => { // No `for (var k in models) {...}`, models may change during the loop
-      eYo.parameterAssert(!this.props_.has(k))
+      eYo.parameterAssert(!this.props__.has(k))
       this.clonable_.add(k)
       var model = models[k]
       if (eYo.isF(model)) {
@@ -870,6 +879,7 @@ eYo.constructor.prototype.makeClass = (() => {
       var beginInit = model.init.begin
       endInit = model.init.end
     }
+    delete model.init
     // create the constructor
     if (Super) {
       var C9r = function () {
@@ -922,6 +932,7 @@ eYo.constructor.prototype.makeClass = (() => {
       console.error('WTF')
     }
     var f = C9r.eyo.disposeDecorate (model.dispose)
+    delete model.dispose
     C9r.prototype.dispose = function () {
       try {
         this.dispose = eYo.Do.nothing

@@ -45,7 +45,7 @@ eYo.provide('eYo.Data')
  * Base property constructor.
  * The bounds between the data and the arguments are immutable.
  * For edython.
- * @param {eYo.Brick.Dflt} brick The object owning the data.
+ * @param {eYo.NS_Brick.Dflt} brick The object owning the data.
  * @param {string} key name of the data.
  * @param {Object} model contains methods and properties.
  * It is shared by all data controllers belonging to the same kind

@@ -18,7 +18,7 @@ describe('Brick dragger', function() {
     var type = `simple`
     eYo.T3.Expr[type] = type
     eYo.Expr.Dflt.makeSubclass(type, {})
-    var b3k = eYo.Brick.newReady(eYo.app.board, type)
+    var b3k = eYo.NS_Brick.newReady(eYo.app.board, type)
   })
 })
 

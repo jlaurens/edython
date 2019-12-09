@@ -63,10 +63,8 @@ describe('Owned', function () {
     var ONR = function () {}
     var onr0 = new ONR()
     eYo.makeClass(NS, 'A', eYo.Owned, {
-      props: {
-        owned: {
-          foo () {}
-        }
+      owned: {
+        foo () {}
       }
     })
     var onr1 = new NS.A(onr0)

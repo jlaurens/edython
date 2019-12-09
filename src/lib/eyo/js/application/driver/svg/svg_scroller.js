@@ -11,21 +11,21 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('eYo.NS_Svg')
 
 eYo.forwardDeclare('eYo.Scroller')
 
 /**
  * Svg driver for a scroller.
  */
-eYo.Svg.makeDriverClass('Scroller', {
+eYo.NS_Svg.makeDriverClass('Scroller', {
     /**
    * Inits the scroll bar.
    * @param {eYo.Scroller} scroller
    */
   initUI (pair) {
     var svg = pair.dom.svg
-    var corner = svg.corner_ = eYo.Svg.newElement(
+    var corner = svg.corner_ = eYo.NS_Svg.newElement(
       'rect',
       {
         height: eYo.Scrollbar.thickness,
@@ -33,7 +33,7 @@ eYo.Svg.makeDriverClass('Scroller', {
         class: 'eyo-scrollbar-background'
       }
     )
-    eYo.Dom.insertAfter(
+    eYo.NS_Dom.insertAfter(
       corner,
       pair.board_.dom.svg.canvas_
     )
@@ -54,7 +54,7 @@ eYo.Svg.makeDriverClass('Scroller', {
  * @param {eYo.Scroller} scroller
  * @private
  */
-eYo.Svg.Scroller.prototype.placeCorner = function(pair) {
+eYo.NS_Svg.Scroller.prototype.placeCorner = function(pair) {
   var r = pair.cornerRect_
   var corner = pair.dom.svg.corner_
   corner.setAttribute('x', r.x)

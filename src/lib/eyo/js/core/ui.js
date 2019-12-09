@@ -226,13 +226,13 @@ eYo.Style.MenuIcon = {
 }
 
 eYo.Style.MenuIcon.path = function (g) {
-  var E = eYo.Svg.newElement('g',
+  var E = eYo.NS_Svg.newElement('g',
     {class: 'eyo-menu-icon', opacity: 0.1}, g)
   E.style.fill = eYo.Style.MenuIcon.color
   var h = eYo.Font.height
   var w = eYo.Style.MenuIcon.width
   var r = h / 8
-  eYo.Svg.newElement('rect', {
+  eYo.NS_Svg.newElement('rect', {
     x: '0',
     y: '0',
     rx: r,
@@ -241,13 +241,13 @@ eYo.Style.MenuIcon.path = function (g) {
     height: h,
     fill: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 254 / 255))
   }, E)
-  eYo.Svg.newElement('circle',
+  eYo.NS_Svg.newElement('circle',
     {cx: w / 2, cy: h / 2, r: r},
     E)
-  eYo.Svg.newElement('circle',
+  eYo.NS_Svg.newElement('circle',
     {cx: w / 2, cy: h / 2 - h / 3, r: r},
     E)
-  eYo.Svg.newElement('circle',
+  eYo.NS_Svg.newElement('circle',
     {cx: w / 2, cy: h / 2 + h / 3, r: r},
     E)
   return E

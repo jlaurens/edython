@@ -35,67 +35,65 @@ goog.forwardDeclare('goog.math');
  * @constructor
  */
 eYo.Pane.makeSubclass(eYo, 'Workspace', {
-  props: {
-    owned: {
-      /**
-       * @type {?eYo.Board.Main} newValue 
-       */
-      board () { return new eYo.Board.Main(this) },
-      /**
-       * The flyout.
-       * @type {?eYo.Flyout} 
-       */
-      flyout () { return new eYo.Flyout(this) },
-      /**
-       * The undo/redo manager
-       * @type {?eYo.Backer} 
-       */
-      backer () { return new eYo.Backer(this) },
-      /**
-       * The workspace's trashCan (if any).
-       * @type {eYo.TrashCan}
-       */
-      trashCan () { return new eYo.TrashCan(this) },
-      /**
-       * The main focus manager.
-       * @type {?eYo.Focus.Main} 
-       */
-      focus () { return new eYo.Focus.Main(this) },
-      zoomer () { return new eYo.Zoomer(this) },
+  owned: {
+    /**
+     * @type {?eYo.Board.Main} newValue 
+     */
+    board () { return new eYo.Board.Main(this) },
+    /**
+     * The flyout.
+     * @type {?eYo.Flyout} 
+     */
+    flyout () { return new eYo.Flyout(this) },
+    /**
+     * The undo/redo manager
+     * @type {?eYo.Backer} 
+     */
+    backer () { return new eYo.Backer(this) },
+    /**
+     * The workspace's trashCan (if any).
+     * @type {eYo.TrashCan}
+     */
+    trashCan () { return new eYo.TrashCan(this) },
+    /**
+     * The main focus manager.
+     * @type {?eYo.Focus.Main} 
+     */
+    focus () { return new eYo.Focus.Main(this) },
+    zoomer () { return new eYo.Zoomer(this) },
+  },
+  clonable: {
+    /** @type {!eYo.Rect} */
+    viewRect () {
+      new eYo.Rect()
+    }
+  },
+  linked: {
+    scale () {
+      return this.options.zoom.startScale || 1
     },
-    clonable: {
-      /** @type {!eYo.Rect} */
-      viewRect () {
-        new eYo.Rect()
+  },
+  computed: {
+    /**
+     * The workspace's desk.
+     * @type {!eYo.Desk}
+     * @private
+     */
+    desk: {
+      get () {
+        return this.owner
       }
     },
-    linked: {
-      scale () {
-        return this.options.zoom.startScale || 1
-      },
+    /**
+     * The workspace's workspace.
+     * @type {!eYo.Workspace}
+     * @private
+     */
+    workspace: {
+      get () {
+        return this
+      }
     },
-    computed: {
-      /**
-       * The workspace's desk.
-       * @type {!eYo.Desk}
-       * @private
-       */
-      desk: {
-        get () {
-          return this.owner
-        }
-      },
-      /**
-       * The workspace's workspace.
-       * @type {!eYo.Workspace}
-       * @private
-       */
-      workspace: {
-        get () {
-          return this
-        }
-      },
-    }
   },
   ui: {
     /**
@@ -105,7 +103,7 @@ eYo.Pane.makeSubclass(eYo, 'Workspace', {
       this.recordDeleteAreas()
       this.layout()  
     }
-  }
+  },
 })
 
 /**

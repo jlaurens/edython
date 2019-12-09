@@ -13,13 +13,13 @@
 
 eYo.require('eYo.Expr')
 
-eYo.provide('eYo.Brick.Range')
+eYo.provide('eYo.NS_Brick.Range')
 
 eYo.T3.Expr.builtin__range_expr = 'eyo:builtin__range_expr'
 
 /**
  * Class for a Delegate, range brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
@@ -171,7 +171,7 @@ eYo.Expr.builtin__range_expr.prototype.xmlAttr = function () {
   return 'range'
 }
 
-eYo.Brick.Range.T3s = [
+eYo.NS_Brick.Range.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.builtin__range_expr
 ]

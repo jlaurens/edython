@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('eYo.NS_Svg')
 
 eYo.forwardDeclare('eYo.Scrollbar')
 
 /**
  * Svg driver for a scrollbar.
  */
-eYo.Svg.makeDriverClass('Scrollbar', {
+eYo.NS_Svg.makeDriverClass('Scrollbar', {
     /**
    * Initializes the scrollbar SVG ressources.
    * @param {eYo.Scrollbar} scrollbar
@@ -39,25 +39,25 @@ eYo.Svg.makeDriverClass('Scrollbar', {
     if (opt_class) {
       className += ' ' + opt_class
     }
-    var root = svg.root_ = eYo.Svg.newElement(
+    var root = svg.root_ = eYo.NS_Svg.newElement(
       'svg',
       {
         class: className,
         preserveAspectRatio: 'xMinYMin slice'
       }
     )
-    var g = svg.group_ = eYo.Svg.newElement(
+    var g = svg.group_ = eYo.NS_Svg.newElement(
       'g',
       {},
       root
     )
-    var background = svg.background_ = eYo.Svg.newElement(
+    var background = svg.background_ = eYo.NS_Svg.newElement(
       'rect',
       { class: 'eyo-scrollbar-background'},
       g
     )
     var radius = Math.floor((eYo.Scrollbar.thickness - 5) / 2)
-    var handle = svg.handle_ = eYo.Svg.newElement(
+    var handle = svg.handle_ = eYo.NS_Svg.newElement(
       'rect',
       {
         class: 'eyo-scrollbar-handle',
@@ -80,17 +80,17 @@ eYo.Svg.makeDriverClass('Scrollbar', {
       scrollbar.lengthAttribute_ = 'height'
       scrollbar.positionAttribute_ = 'y'
     }
-    eYo.Dom.insertAfter(
+    eYo.NS_Dom.insertAfter(
       root,
       scrollbar.board_.dom.svg.root_
     )
     var bound = dom.bound
-    bound.bar_mousedown = eYo.Dom.bindEvent(
+    bound.bar_mousedown = eYo.NS_Dom.bindEvent(
       background,
       'mousedown',
       this.scrollbarOnBar_mousedown.bind(scrollbar)
     )
-    bound.handle_mousedown = eYo.Dom.bindEvent(
+    bound.handle_mousedown = eYo.NS_Dom.bindEvent(
       handle,
       'mousedown',
       this.scrollbarOnHandle_mousedown.bind(scrollbar)
@@ -119,7 +119,7 @@ eYo.Svg.makeDriverClass('Scrollbar', {
  * @param {eYo.Scrollbar} scrollbar
  * @param {Boolean} show
  */
-eYo.Svg.Scrollbar.prototype.updateDisplay = function(scrollbar, show) {
+eYo.NS_Svg.Scrollbar.prototype.updateDisplay = function(scrollbar, show) {
   scrollbar.dom.svg.root_.setAttribute('display', show ? 'block' : 'none')
 }
 
@@ -127,7 +127,7 @@ eYo.Svg.Scrollbar.prototype.updateDisplay = function(scrollbar, show) {
  * Update the handle of the scroll bar, position and dimensions at the same time.
  * @param {eYo.Scrollbar} scrollbar
  */
-eYo.Svg.Scrollbar.prototype.updateHandle = function(scrollbar) {
+eYo.NS_Svg.Scrollbar.prototype.updateHandle = function(scrollbar) {
   var handle = scrollbar.dom.svg.handle_
   handle.setAttribute(
     scrollbar.lengthAttribute_,
@@ -143,7 +143,7 @@ eYo.Svg.Scrollbar.prototype.updateHandle = function(scrollbar) {
  * Update the view of the scroll bar, position and dimensions at the same time.
  * @param {eYo.Scrollbar} scrollbar
  */
-eYo.Svg.Scrollbar.prototype.updateView = function(scrollbar) {
+eYo.NS_Svg.Scrollbar.prototype.updateView = function(scrollbar) {
   var svg = scrollbar.dom.svg
 }
 
@@ -151,7 +151,7 @@ eYo.Svg.Scrollbar.prototype.updateView = function(scrollbar) {
  * Place the scroll bar.
  * @param {eYo.Scrollbar} scrollbar
  */
-eYo.Svg.Scrollbar.prototype.place = function(scrollbar) {
+eYo.NS_Svg.Scrollbar.prototype.place = function(scrollbar) {
   var r = scrollbar.viewRect
   scrollbar.dom.svg.root_.setAttribute('viewBox', `${r.x_min} ${r.y_min} ${r.width} ${r.height}`)
 }
@@ -163,10 +163,10 @@ eYo.Svg.Scrollbar.prototype.place = function(scrollbar) {
  * @this {eYo.Scrollbar}
  * @private
  */
-eYo.Svg.Scrollbar.prototype.onHandle_mousedown = function(e) {
+eYo.NS_Svg.Scrollbar.prototype.onHandle_mousedown = function(e) {
   this.board_.markFocused()
   this.cleanUp_()
-  if (eYo.Dom.isRightButton(e)) {
+  if (eYo.NS_Dom.isRightButton(e)) {
     // Right-click.
     // Scrollbars have no context menu.
     e.stopPropagation()
@@ -186,19 +186,19 @@ eYo.Svg.Scrollbar.prototype.onHandle_mousedown = function(e) {
     this.dragLength_ = rect.height - this.handleLength_
   }
   var bound = this.dom.bound
-  bound.mouseup = eYo.Dom.bindEvent(
+  bound.mouseup = eYo.NS_Dom.bindEvent(
     document,
     'mouseup',
     this,
     this.ui_driver_mngr.scrollbarOn_mouseup
   )
-  bound.mousemove = eYo.Dom.bindEvent(
+  bound.mousemove = eYo.NS_Dom.bindEvent(
     document,
     'mousemove',
     this,
     this.ui_driver_mngr.scrollbarOn_mousemove
   )
-  eYo.Dom.gobbleEvent(e)
+  eYo.NS_Dom.gobbleEvent(e)
 }
 
 /**
@@ -206,7 +206,7 @@ eYo.Svg.Scrollbar.prototype.onHandle_mousedown = function(e) {
  * @param {Event} e Mouse up event.
  * @this {eYo.Scrollbar}
  */
-eYo.Svg.Scrollbar.prototype.on_mousemove = function(e) {
+eYo.NS_Svg.Scrollbar.prototype.on_mousemove = function(e) {
   var currentMouse = this.horizontal_ ? e.clientX : e.clientY
   var ratio = this.dragLength_ ? (currentMouse - this.dragMin_) / this.dragLength_ : 0
   if (ratio < 0) {
@@ -215,7 +215,7 @@ eYo.Svg.Scrollbar.prototype.on_mousemove = function(e) {
     ratio = 1
   }
   this.board_.doRelativeScroll({[this.horizontal_ ? 'x' : 'y']: ratio})
-  eYo.Dom.gobbleEvent(e)
+  eYo.NS_Dom.gobbleEvent(e)
 }
 
 /**
@@ -223,9 +223,9 @@ eYo.Svg.Scrollbar.prototype.on_mousemove = function(e) {
  * @param {Event} e Mouse up event.
  * @this {eYo.Scrollbar}
  */
-eYo.Svg.Scrollbar.prototype.on_mouseup = function() {
+eYo.NS_Svg.Scrollbar.prototype.on_mouseup = function() {
   // Tell the board to clean up now that the board is done moving.
-  eYo.Dom.clearTouchIdentifier()
+  eYo.NS_Dom.clearTouchIdentifier()
   this.cleanUp_()
 }
 
@@ -235,15 +235,15 @@ eYo.Svg.Scrollbar.prototype.on_mouseup = function() {
  * @param {eYo.Scrollbar}
  * @private
  */
-eYo.Svg.Scrollbar.prototype.cleanUp = function(scrollbar) {
+eYo.NS_Svg.Scrollbar.prototype.cleanUp = function(scrollbar) {
   eYo.app.hideChaff()
   var bound = scrollbar.dom.bound
   if (bound.mouseup) {
-    eYo.Dom.unbindEvent(bound.mouseup)
+    eYo.NS_Dom.unbindEvent(bound.mouseup)
     bound.mouseup = null
   }
   if (bound.mousemove) {
-    eYo.Dom.unbindEvent(bound.mousemove)
+    eYo.NS_Dom.unbindEvent(bound.mousemove)
     bound.mousemove = null
   }
 }
@@ -255,12 +255,12 @@ eYo.Svg.Scrollbar.prototype.cleanUp = function(scrollbar) {
  * @this {eYo.Scrollbar}
  * @private
  */
-eYo.Svg.Scrollbar.prototype.onBar_mousedown = function(e) {
+eYo.NS_Svg.Scrollbar.prototype.onBar_mousedown = function(e) {
   var board = this.board_
   board.markFocused()
-  eYo.Dom.clearTouchIdentifier()  // This is really a click.
+  eYo.NS_Dom.clearTouchIdentifier()  // This is really a click.
   this.cleanUp_()
-  if (eYo.Dom.isRightButton(e)) {
+  if (eYo.NS_Dom.isRightButton(e)) {
     // Right-click.
     // Scrollbars have no context menu.
     e.stopPropagation()
@@ -279,5 +279,5 @@ eYo.Svg.Scrollbar.prototype.onBar_mousedown = function(e) {
     // Increase the scrollbar's value by a page.
     board.scrollPage(false)
   }
-  eYo.Dom.gobbleEvent(e)
+  eYo.NS_Dom.gobbleEvent(e)
 }

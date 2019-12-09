@@ -15,10 +15,10 @@ eYo.require('eYo.Stmt')
 
 eYo.require('eYo.Msg')
 
-eYo.require('eYo.Brick.List')
+eYo.require('eYo.NS_Brick.List')
 goog.require('goog.dom')
 
-eYo.provide('eYo.Brick.Yield')
+eYo.provide('eYo.NS_Brick.Yield')
 
 /**
  * Class for a Delegate, yield_expr.
@@ -158,9 +158,9 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
- * @this {eYo.Brick}
+ * @this {eYo.NS_Brick}
  * @private
  */
 eYo.Expr.yield_expr.populateContextMenuFirst_ = function (mngr) {
@@ -195,7 +195,7 @@ eYo.Expr.yield_expr.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
  * @private
  */
@@ -215,7 +215,7 @@ eYo.Stmt.makeSubclass('yield_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.NS_Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
  * @private
  */
@@ -224,7 +224,7 @@ eYo.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   return eYo.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
-eYo.Brick.Yield.T3s = [
+eYo.NS_Brick.Yield.T3s = [
   eYo.T3.Expr.yield_expr,
   eYo.T3.Stmt.yield_stmt
 ]

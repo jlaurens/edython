@@ -326,9 +326,7 @@ describe ('Dlgt', function () {
     })
     it ('Make: super: null', function () {
       eYo.makeClass(NS, 'A', {
-        props: {
-           link: ['foo', 'bar'],
-        },
+         link: ['foo', 'bar'],
       })
       chai.assert(NS.A)
       const a = new NS.A()
@@ -356,9 +354,7 @@ describe ('Dlgt', function () {
         init () {
           flag_A += 1
         },
-        props: {
-          link: ['foo'],
-        },
+        link: ['foo'],
       })
       chai.assert(NS.A.eyo.link_.has('foo'))
       chai.assert(!NS.A.eyo.link_.has('bar'))
@@ -369,9 +365,7 @@ describe ('Dlgt', function () {
         init () {
           flag_AB += 1
         },
-        props: {
-          link: ['bar'],
-        },
+        link: ['bar'],
       })
       chai.assert(NS.A.eyo.link_.has('foo'))
       chai.assert(!NS.A.eyo.link_.has('bar'))
@@ -390,53 +384,43 @@ describe ('Dlgt', function () {
         init () {
           flag_A += 1
         },
-        props: {
-          link: ['foo'],
-       },
-     })
-      var flag_B = 0
-      eYo.makeClass('B', {
-        owner: NS,
-        super: null,
-        init () {
-          flag_B += 1
-        },
-        props: {
-          link: ['foo'],
-       },
-     })
-      var flag_AA = 0
-      eYo.makeClass('AA', {
-        owner: NS.A,
-        super: NS.A,
-        init () {
-          flag_AA += 1
-        },
-        props: {
-          link: ['bar'],
-       },
-     })
-      var flag_AB = 0
-      eYo.makeClass('AB', {
-        owner: NS.A,
-        super: NS.A,
-        init () {
-          flag_AB += 1
-        },
-        props: {
-          link: ['bar'],
-       },
-     })
-      var flag_BA = 0
-      eYo.makeClass('BA', {
-        owner: NS.B,
-        super: NS.B,
-        init () {
-          flag_BA += 1
-        },
-        props: {
-           link: ['bar'],
-        },
+        link: ['foo'],
+     },
+   })
+    var flag_B = 0
+    eYo.makeClass('B', {
+      owner: NS,
+      super: null,
+      init () {
+        flag_B += 1
+        link: ['foo'],
+     },
+   })
+    var flag_AA = 0
+    eYo.makeClass('AA', {
+      owner: NS.A,
+      super: NS.A,
+      init () {
+        flag_AA += 1
+        link: ['bar'],
+     },
+   })
+    var flag_AB = 0
+    eYo.makeClass('AB', {
+      owner: NS.A,
+      super: NS.A,
+      init () {
+        flag_AB += 1
+        link: ['bar'],
+     },
+   })
+    var flag_BA = 0
+    eYo.makeClass('BA', {
+      owner: NS.B,
+      super: NS.B,
+      init () {
+        flag_BA += 1
+         link: ['bar'],
       })
       var flag_BB = 0
       eYo.makeClass('BB', {
@@ -445,9 +429,7 @@ describe ('Dlgt', function () {
         init () {
           flag_BB += 1
         },
-        props: {
-           link: ['bar'],
-        },
+         link: ['bar'],
       })
       var aa = new NS.A.AA()
       chai.assert(flag_A === 1)
@@ -481,9 +463,7 @@ describe ('Dlgt', function () {
         init () {
           flag_B += 1
         },
-        props: {
-           link: ['foo', 'bar'],
-        },
+         link: ['foo', 'bar'],
       })
       chai.assert(NS.A.B.superClass_.constructor === NS.A)
       var ab = new NS.A.B()
@@ -495,9 +475,7 @@ describe ('Dlgt', function () {
         init () {
           flag_B += 1
         },
-        props: {
-           link: ['foo', 'bar'],
-        },
+         link: ['foo', 'bar'],
       })
       var ab = new NS.A.B()
       chai.assert(flag_A === 2)
@@ -750,9 +728,7 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-           link: ['foo', 'bar'],
-        },
+         link: ['foo', 'bar'],
       })
       chai.assert(NS.A.eyo.C9r === NS.A)
       chai.expect(() => {
@@ -783,18 +759,16 @@ describe ('Dlgt', function () {
         init (value) {
           this.foo__ = value
         },
-        props: {
-          linked: {
-            foo: {
-              willChange (before, after) {
-                test.call(this, before, after)
-                return () => {
-                  flag = 421
-                }
-              },
-              didChange: test
-            }
-          },
+        linked: {
+          foo: {
+            willChange (before, after) {
+              test.call(this, before, after)
+              return () => {
+                flag = 421
+              }
+            },
+            didChange: test
+          }
         },
       })
       NS.A.prototype.fooWillChange = NS.A.prototype.fooDidChange = test
@@ -810,14 +784,12 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          cached: {
-            foo: {
-              init () {
-                return flag
-              }
+        cached: {
+          foo: {
+            init () {
+              return flag
             }
-          },
+          }
         },
       })
       var a1 = new NS.A()
@@ -834,12 +806,10 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          cached: {
-            foo () {
-              return flag
-            }
-          },
+        cached: {
+          foo () {
+            return flag
+          }
         },
       })
       var a1 = new NS.A()
@@ -859,37 +829,33 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          cached: {
-            foo1: {
-              init () {
-                return flag_A1
-              }
-            },
-            foo2: {
-              init () {
-                return flag_A2
-              }
+        cached: {
+          foo1: {
+            init () {
+              return flag_A1
             }
           },
+          foo2: {
+            init () {
+              return flag_A2
+            }
+          }
         },
       })
       eYo.makeClass('B', {
         owner: NS,
         super: null,
-        props: {
-          cached: {
-            foo1: {
-              init () {
-                return flag_B1
-              }
-            },
-            foo2: {
-              init () {
-                return flag_B2
-              }
+        cached: {
+          foo1: {
+            init () {
+              return flag_B1
             }
           },
+          foo2: {
+            init () {
+              return flag_B2
+            }
+          }
         },
       })
       var a = new NS.A()
@@ -924,26 +890,22 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          cached: {
-            foo1: {
-              init () {
-                return flag_1
-              }
+        cached: {
+          foo1: {
+            init () {
+              return flag_1
             }
-          },
+          }
         },
       })
       eYo.makeClass('AB', {
         owner: NS.A,
-        props: {
-          cached: {
-            foo2: {
-              init () {
-                return flag_2
-              }
+        cached: {
+          foo2: {
+            init () {
+              return flag_2
             }
-          },
+          }
         },
       })
       var ab = new NS.A.AB()
@@ -966,18 +928,16 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          cached: {
-            foo: {
-              init () {
-                return flag
-              },
-              forget (forgetter) {
-                flag += 100
-                forgetter()
-              }
+        cached: {
+          foo: {
+            init () {
+              return flag
+            },
+            forget (forgetter) {
+              flag += 100
+              forgetter()
             }
-          },
+          }
         },
       })
       var a = new NS.A()
@@ -991,14 +951,12 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          cached: {
-            foo: {
-              init () {
-                return flag
-              }
+        cached: {
+          foo: {
+            init () {
+              return flag
             }
-          },
+          }
         },
       })
       var a = new NS.A()
@@ -1012,24 +970,22 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          cached: {
-            foo: {
-              init () {
-                return flag
-              },
-              update (before, after, updater) {
-                flag = 0
-                if (before === 421) {
-                  flag += 1
-                }
-                if (after === 123) {
-                  flag += 10
-                }
-                updater()
+        cached: {
+          foo: {
+            init () {
+              return flag
+            },
+            update (before, after, updater) {
+              flag = 0
+              if (before === 421) {
+                flag += 1
               }
+              if (after === 123) {
+                flag += 10
+              }
+              updater()
             }
-          },
+          }
         },
       })
       var a = new NS.A()
@@ -1044,17 +1000,15 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          cached: {
-            foo: {
-              init () {
-                return flag
-              },
-              update (before, after, updater) {
-                updater(flag+100)
-              }
+        cached: {
+          foo: {
+            init () {
+              return flag
+            },
+            update (before, after, updater) {
+              updater(flag+100)
             }
-          },
+          }
         },
       })
       var a = new NS.A()
@@ -1069,9 +1023,7 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          owned: ['foo']
-        },
+        owned: ['foo']
       })
       var a = new NS.A()
       chai.expect(() => {a.foo = 1}).to.throw()
@@ -1101,9 +1053,7 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          owned: ['foo']
-        },
+        owned: ['foo']
       })
       var a1 = new NS.A()
       var a2 = new NS.A()
@@ -1144,9 +1094,7 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          owned: ['foo1', 'foo2']
-        },
+        owned: ['foo1', 'foo2']
       })
       var a = new NS.A()
       var B = function () {}
@@ -1191,15 +1139,11 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          owned: ['foo']
-        },
+        owned: ['foo']
       })
       eYo.makeClass('AB', {
         owner: NS.A,
-        props: {
-          owned: ['bar']
-        },
+        owned: ['bar']
       })
       var a = new NS.A()
       var ab = new NS.A.AB()
@@ -1270,23 +1214,21 @@ describe ('Dlgt', function () {
         init (value) {
           this.foo__ = value
         },
-        props: {
-          owned: {
-            foo: {
-              willChange (before, after) {
-                console.warn
-                after && test.call(this, before, after)
-                return () => {
-                  flag += 100
-                }
-              },
-              didChange: test,
-              disposer (foo) {
-                console.warn("HERE")
-                flag += foo
+        owned: {
+          foo: {
+            willChange (before, after) {
+              console.warn
+              after && test.call(this, before, after)
+              return () => {
+                flag += 100
               }
+            },
+            didChange: test,
+            disposer (foo) {
+              console.warn("HERE")
+              flag += foo
             }
-          },
+          }
         },
       })
       NS.A.prototype.fooWillChange = NS.A.prototype.fooDidChange = test
@@ -1315,13 +1257,11 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          clonable: {
-            foo () {
-              return new B()
-            }
+        clonable: {
+          foo () {
+            return new B()
           }
-        },
+        }
       })
       B.prototype.dispose = function () {
         this.disposed_ = true
@@ -1389,21 +1329,19 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-        props: {
-          clonable: {
-            foo: {
-              init () {
-                return foo_before
-              },
-              willChange (before, after) {
-                test.call(this, before, after)
-                return () => {
-                  flag = 421
-                }
-              },
-              didChange: test
-            }
-          },
+        clonable: {
+          foo: {
+            init () {
+              return foo_before
+            },
+            willChange (before, after) {
+              test.call(this, before, after)
+              return () => {
+                flag = 421
+              }
+            },
+            didChange: test
+          }
         },
       })
       NS.A.prototype.fooWillChange = NS.A.prototype.fooDidChange = test
@@ -1421,17 +1359,15 @@ describe ('Dlgt', function () {
         key: 'A',
         owner: NS,
         super: null,
-        props: props,
-      }
     }
-    it ('No collision: link + cached', function () {
-      chai.expect(() => {
-        eYo.makeClass(params({
-          link: ['foo'],
-          cached: {
-            foo () {}
-          }
-        }))
+  }
+  it ('No collision: link + cached', function () {
+    chai.expect(() => {
+      eYo.makeClass(params({
+        link: ['foo'],
+        cached: {
+          foo () {}
+        }
       }).to.throw()
     })
     it ('No collision: link + owned', function () {
@@ -1489,65 +1425,62 @@ describe ('Dlgt', function () {
     var ns
     var make = (k, Super, props) => {
       eYo.isF(Super) ? ns.makeClass(k, Super, {
-        props: props,
-      }) : ns.makeClass(k, {
-        props: Super,
+    }) : ns.makeClass(k, Super)
+  }
+  var makeA = (props) => {
+    make ('A', props)
+  }
+  var makeAB = (props) => {
+    make ('AB', ns.A, props)
+  }
+  var props = {
+    owned: ['foo'],
+    cached: {
+      foo () {}
+    },
+    clonable: {
+      foo () {}
+    },
+    linked: ['foo'],
+  }
+  var ok = () => {
+    new ns.AB()
+  }
+  var okThrow = () => {
+    chai.expect(ok).to.throw()
+  }
+  var expect = {
+    owned: {
+      owned: okThrow,
+      cached: okThrow,
+      clonable: okThrow,
+      linked: ok,
+    },
+    cached: {
+      owned: okThrow,
+      cached: okThrow,
+      clonable: okThrow,
+      linked: ok,
+    },
+    clonable: {
+      owned: okThrow,
+      cached: okThrow,
+      clonable: okThrow,
+      linked: ok,
+    },
+    linked: {
+      owned: ok,
+      cached: ok,
+      clonable: ok,
+      linked: ok,
+    },
+  }
+  Object.keys(props).forEach(l => {
+    Object.keys(props).forEach(r => {
+      ns = eYo.makeNS()
+      makeA({
+        [l]: props[l]
       })
-    }
-    var makeA = (props) => {
-      make ('A', props)
-    }
-    var makeAB = (props) => {
-      make ('AB', ns.A, props)
-    }
-    var props = {
-      owned: ['foo'],
-      cached: {
-        foo () {}
-      },
-      clonable: {
-        foo () {}
-      },
-      linked: ['foo'],
-    }
-    var ok = () => {
-      new ns.AB()
-    }
-    var okThrow = () => {
-      chai.expect(ok).to.throw()
-    }
-    var expect = {
-      owned: {
-        owned: okThrow,
-        cached: okThrow,
-        clonable: okThrow,
-        linked: ok,
-      },
-      cached: {
-        owned: okThrow,
-        cached: okThrow,
-        clonable: okThrow,
-        linked: ok,
-      },
-      clonable: {
-        owned: okThrow,
-        cached: okThrow,
-        clonable: okThrow,
-        linked: ok,
-      },
-      linked: {
-        owned: ok,
-        cached: ok,
-        clonable: ok,
-        linked: ok,
-      },
-    }
-    Object.keys(props).forEach(l => {
-      Object.keys(props).forEach(r => {
-        ns = eYo.makeNS()
-        makeA({
-          [l]: props[l]
-        })
         makeAB({
           [r]: props[r]
         })
@@ -1559,17 +1492,15 @@ describe ('Dlgt', function () {
     var flag = 123
     var ns = eYo.makeNS()
     ns.makeClass('C', {
-      props: {
-        computed: {
-          foo () {
-            return 10 * flag + 1
-          },
+      computed: {
+        foo () {
+          return 10 * flag + 1
         },
-        cached: {
-          bar () {
-            return flag
-          }
-        },
+      },
+      cached: {
+        bar () {
+          return flag
+        }
       },
     })
     flag = 421
@@ -1596,18 +1527,14 @@ describe ('Dlgt', function () {
     eYo.makeClass('A', {
       owner: NS,
       super: null,
-      props: {
-        owned: {
-          foo () {}
-        }
+      owned: {
+        foo () {}
       }
     })
     eYo.makeClass('AB', {
       owner: NS.A,
-      props: {
-        owned: {
-          bar () {}
-        }
+      owned: {
+        bar () {}
       }
     })
     var a = new NS.A()
@@ -1626,18 +1553,14 @@ describe ('Dlgt', function () {
     eYo.makeClass('A', {
       owner: NS,
       super: null,
-      props: {
-        cached: {
-          foo () {return 1}
-        }
+      cached: {
+        foo () {return 1}
       }
     })
     eYo.makeClass('AB', {
       owner: NS.A,
-      props: {
-        cached: {
-          bar () {return 10}
-        }
+      cached: {
+        bar () {return 10}
       }
     })
     var a = new NS.A()
@@ -1653,15 +1576,11 @@ describe ('Dlgt', function () {
     eYo.makeClass('A', {
       owner: NS,
       super: null,
-      props: {
-        link: ['foo']
-      }
+      link: ['foo']
     })
     eYo.makeClass('AB', {
       owner: NS.A,
-      props: {
-        link: ['bar']
-      }
+      link: ['bar']
     })
     var a = new NS.A()
     a.foo_ = 1
@@ -1679,23 +1598,19 @@ describe ('Dlgt', function () {
     eYo.makeClass('A', {
       owner: NS,
       super: null,
-      props: {
-        clonable: {
-          foo () {
-            return new B()
-          }
+      clonable: {
+        foo () {
+          return new B()
         }
-      },
+      }
     })
     eYo.makeClass('AB', {
       owner: NS.A,
-      props: {
-        clonable: {
-          bar () {
-            return new B()
-          }
+      clonable: {
+        bar () {
+          return new B()
         }
-      },
+      }
     })
     var B = function (value) {
       this.value_ = value

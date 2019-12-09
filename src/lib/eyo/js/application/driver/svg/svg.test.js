@@ -1,10 +1,10 @@
 describe('Svg driver', function() {
   it ('Svg: Basic', function () {
-    chai.assert(eYo.Svg)
-    chai.assert(eYo.Svg.Mngr)
-    chai.assert(eYo.Svg.makeDriverClass)
-    chai.assert(eYo.Svg.makeMngrClass)
-    chai.assert(eYo.Svg.Dflt)
+    chai.assert(eYo.NS_Svg)
+    chai.assert(eYo.NS_Svg.Mngr)
+    chai.assert(eYo.NS_Svg.makeDriverClass)
+    chai.assert(eYo.NS_Svg.makeMngrClass)
+    chai.assert(eYo.NS_Svg.Dflt)
   })
 })
 
