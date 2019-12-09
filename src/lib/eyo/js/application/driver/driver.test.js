@@ -14,7 +14,7 @@ describe('Driver', function() {
     chai.assert(eYo.isF(d.disposeUI))
   })
   it ('Driver: makeMngrClass', function () {
-    var ns = eYo.ns.Driver.ns.make()
+    var ns = eYo.ns.Driver.make()
     ns.makeMngrClass()
     chai.assert(ns.Mngr)
     chai.assert(ns.Mngr.eyo.C9r === ns.Mngr)
@@ -26,7 +26,7 @@ describe('Driver', function() {
     ns.makeMngrClass(ns.A)
   })
   it ('Driver: manager', function () {
-    var ns = eYo.ns.Driver.ns.make()
+    var ns = eYo.ns.Driver.make()
     ns.makeMngrClass()
     var onr = {}
     onr.mngr = new ns.Mngr(onr)
@@ -34,7 +34,7 @@ describe('Driver', function() {
     chai.assert(onr.mngr.owner === onr)
   })
   it ('Driver: makeDriverClass basic', function () {
-    var ns = eYo.ns.Driver.ns.make()
+    var ns = eYo.ns.Driver.make()
     ns.makeMngrClass()
     ns.makeDriverClass({
       key: 'Foo',
@@ -49,7 +49,7 @@ describe('Driver', function() {
     }).to.not.throw()
   })
   it ('Driver: makeDriverClass inherits', function () {
-    var ns = eYo.ns.Driver.ns.make()
+    var ns = eYo.ns.Driver.make()
     ns.makeMngrClass()
     var flag
     NS.Dflt = function () {

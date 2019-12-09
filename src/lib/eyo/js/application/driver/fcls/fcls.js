@@ -17,7 +17,7 @@ eYo.require('eYo.ns.Driver')
  * @name {eYo.ns.Fcls}
  * @namespace
  */
-eYo.ns.Driver.ns.make(eYo, 'Fcls')
+eYo.ns.Driver.make('Fcls')
 
 /**
  * @name {eYo.ns.Fcls.Mngr}

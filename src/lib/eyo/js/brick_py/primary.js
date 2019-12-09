@@ -13,7 +13,7 @@
 
 eYo.require('eYo.Expr')
 
-eYo.require('eYo.Protocol')
+eYo.require('eYo.ns.Protocol')
 eYo.require('eYo.Change')
 
 eYo.require('eYo.ns.Model.stdtypes')
@@ -23,7 +23,7 @@ eYo.require('eYo.Msg')
 
 eYo.require('eYo.ns.Brick.Primary')
 eYo.require('eYo.Stmt')
-eYo.require('eYo.Protocol.Register')
+eYo.require('eYo.ns.Protocol.Register')
 eYo.provide('eYo.ns.Brick.Primary')
 
 /**
@@ -1206,7 +1206,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
   },
 }, true)
 
-eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
+eYo.ns.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
   return !brick.isInFlyout
 })
 

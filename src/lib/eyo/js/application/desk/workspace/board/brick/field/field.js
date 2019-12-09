@@ -11,7 +11,7 @@
  */
 'use strict';
 
-eYo.require('eYo.Protocol')
+eYo.require('eYo.ns.Protocol')
 eYo.require('eYo.ns.UI.Owned2')
 
 eYo.provide('eYo.Field')

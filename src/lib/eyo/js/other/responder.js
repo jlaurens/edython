@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.Protocol')
+eYo.require('eYo.ns.Protocol')
 eYo.require('eYo.Owned')
 
 eYo.provide('eYo.Responder')

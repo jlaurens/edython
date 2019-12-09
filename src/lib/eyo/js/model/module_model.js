@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.Protocol.Register')
+eYo.require('eYo.ns.Protocol.Register')
 eYo.require('eYo.ns.Model')
 
 eYo.provide('eYo.ns.Model.Item')
@@ -128,7 +128,7 @@ eYo.ns.Model.Item = function (model) {
 }
 
 // Each model loaded comes here
-eYo.Protocol.add(eYo.ns.Model.Item, 'Register', 'module')
+eYo.ns.Protocol.add(eYo.ns.Model.Item, 'Register', 'module')
 
 /**
  * Each item has a link to the model it belongs to.

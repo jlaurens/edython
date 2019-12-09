@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('eYo.ns.UI.Owned2')
-eYo.require('eYo.Protocol')
+eYo.require('eYo.ns.Protocol')
 
 eYo.provide('eYo.Magnets')
 eYo.provide('eYo.Magnet')

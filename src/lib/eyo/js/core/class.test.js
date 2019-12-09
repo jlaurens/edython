@@ -1523,7 +1523,7 @@ describe ('Dlgt', function () {
       a.foo__
     }).to.throw()
   })
-  it ('Constructor: forEachOwned', function () {
+  it ('Constructor: ownedForEach', function () {
     eYo.makeClass('A', {
       owner: NS,
       super: null,
@@ -1543,13 +1543,13 @@ describe ('Dlgt', function () {
     ab.foo_ = {value: 1}
     ab.bar_ = {value: 10}
     var flag = 0
-    a.forEachOwned(x => flag += x.value)
+    a.ownedForEach(x => flag += x.value)
     chai.assert(flag === 1)
     flag = 0
-    ab.forEachOwned(x => flag += x.value)
+    ab.ownedForEach(x => flag += x.value)
     chai.assert(flag === 11)
   })
-  it ('Constructor: forEachCached', function () {
+  it ('Constructor: cachedForEach', function () {
     eYo.makeClass('A', {
       owner: NS,
       super: null,
@@ -1566,13 +1566,13 @@ describe ('Dlgt', function () {
     var a = new NS.A()
     var ab = new NS.A.AB()
     var flag = 0
-    a.forEachCached(x => flag += x)
+    a.cachedForEach(x => flag += x)
     chai.assert(flag === 1)
     flag = 0
-    ab.forEachCached(x => flag += x)
+    ab.cachedForEach(x => flag += x)
     chai.assert(flag === 11)
   })
-  it ('Constructor: forEachLink', function () {
+  it ('Constructor: linkedForEach', function () {
     eYo.makeClass('A', {
       owner: NS,
       super: null,
@@ -1585,16 +1585,16 @@ describe ('Dlgt', function () {
     var a = new NS.A()
     a.foo_ = 1
     var flag = 0
-    a.forEachLink(x => flag += x)
+    a.linkedForEach(x => flag += x)
     chai.assert(flag === 1)
     var ab = new NS.A.AB()
     ab.foo_ = 1
     ab.bar_ = 10
     flag = 0
-    ab.forEachLink(x => flag += x)
+    ab.linkedForEach(x => flag += x)
     chai.assert(flag === 11)
   })
-  it ('Constructor: forEachClonable', function () {
+  it ('Constructor: clonableForEach', function () {
     eYo.makeClass('A', {
       owner: NS,
       super: null,
@@ -1633,7 +1633,7 @@ describe ('Dlgt', function () {
     a.foo_ = new B(1)
     chai.assert(a.foo.value_ === 1)
     var flag = 0
-    a.forEachClonable(x => flag += x.value_)
+    a.clonableForEach(x => flag += x.value_)
     chai.assert(flag === 1)
     var ab = new NS.A.AB()
     ab.foo_ = new B(1)
@@ -1641,7 +1641,7 @@ describe ('Dlgt', function () {
     ab.bar_ = new B(10)
     chai.assert(ab.bar.value_ === 10)
     flag = 0
-    ab.forEachClonable(x => flag += x.value_)
+    ab.clonableForEach(x => flag += x.value_)
     chai.assert(flag === 11)
   })
   it ('Constructor: makeSubclass', function () {

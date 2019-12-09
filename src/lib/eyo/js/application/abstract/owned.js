@@ -37,7 +37,7 @@ eYo.Dlgt.prototype.addApp = function () {
       return this.owner__.app
     },
     forget () {
-      this.forEachOwned(k => {
+      this.ownedForEach(k => {
         var x = this[k]
         x && x.appForget && x.appForget()
       })
@@ -60,7 +60,7 @@ eYo.Dflt.makeSubclass('Owned', {
     owner: {
       didChange (before, after) {
         this.appForget() // do not update, may be the owner is not complete
-        this.forEachOwned(x => {
+        this.ownedForEach(x => {
           x.appForget && x.appForget()
         })
       }
@@ -72,7 +72,7 @@ eYo.Dflt.makeSubclass('Owned', {
         return this.owner && this.owner.app
       },
       didChange (before, after) {
-        this.forEachOwned(x => {
+        this.ownedForEach(x => {
           x.appForget && x.appForget()
         })
       },

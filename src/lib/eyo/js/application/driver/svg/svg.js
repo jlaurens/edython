@@ -20,7 +20,7 @@ eYo.require('eYo.Decorate')
  * @name{eYo.ns.Svg}
  * @namespace
  */
-eYo.ns.Driver.ns.make(eYo, 'Svg')
+eYo.ns.Driver.make('Svg')
 
 eYo.forwardDeclare('eYo.T3.Profile')
 eYo.forwardDeclare('eYo.ns.Svg.Brick')

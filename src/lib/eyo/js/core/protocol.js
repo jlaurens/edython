@@ -11,23 +11,20 @@
  */
 'use strict'
 
-eYo.require('eYo')
+eYo.require('eYo.ns')
 
-eYo.provide('eYo.Protocol')
+eYo.ns.make('Protocol')
 
 /**
  * Enhance the prototype with the given methods and properties.
  * Only new methods are allowed.
  */
-eYo.Protocol.add = function () {
-  var args = Array.prototype.slice.call(arguments)
-  var proto = args.shift()
-  var base = args.shift()
+eYo.ns.Protocol.add = function (proto, base, ...args) {
   if (eYo.isStr(base)) {
-    base = eYo.Protocol[base]
+    base = eYo.ns.Protocol[base]
   }
   if (goog.isFunction(base)) {
-    base = base.apply(proto, args)
+    base = base.call(proto, ...args)
   }
   if (base.methods) {
     var key

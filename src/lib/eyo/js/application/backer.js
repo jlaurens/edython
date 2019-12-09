@@ -13,7 +13,7 @@
 
 eYo.require('eYo.Owned')
 
-eYo.require('eYo.Protocol.ChangeCount')
+eYo.require('eYo.ns.Protocol.ChangeCount')
 eYo.provide('eYo.Backer')
 
 eYo.forwardDeclare('eYo.Events')
@@ -38,7 +38,7 @@ eYo.Backer = function (owner) {
 }
 goog.inherits(eYo.Backer, eYo.Owned)
 
-eYo.Protocol.add(eYo.Backer.prototype, 'ChangeCount')
+eYo.ns.Protocol.add(eYo.Backer.prototype, 'ChangeCount')
 
 Object.defineProperties(eYo.Backer.prototype, {
   /**

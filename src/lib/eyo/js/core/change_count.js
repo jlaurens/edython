@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.Protocol')
+eYo.require('eYo.ns.Protocol')
 
-eYo.provide('eYo.Protocol.ChangeCount')
+eYo.provide('eYo.ns.Protocol.ChangeCount')
 
 eYo.forwardDeclare('eYo.Events')
 
-eYo.Protocol.ChangeCount = {
+eYo.ns.Protocol.ChangeCount = {
   methods: {},
   properties: {}
 }
@@ -27,7 +27,7 @@ eYo.Protocol.ChangeCount = {
  * Should be sent when the document is saved.
  * `this.resetChangeCount()` must be sent at initialization time by the constructor.
  */
-eYo.Protocol.ChangeCount.methods.resetChangeCount = function () {
+eYo.ns.Protocol.ChangeCount.methods.resetChangeCount = function () {
   this.changeCount_ = 0
 }
 
@@ -36,7 +36,7 @@ eYo.Protocol.ChangeCount.methods.resetChangeCount = function () {
  * @param {eYo.Event} event  The current event fired.
  * @param {Boolean} redo  Whether (re)doing, id est not undoing.
  */
-eYo.Protocol.ChangeCount.methods.updateChangeCount = function (event, redo) {
+eYo.ns.Protocol.ChangeCount.methods.updateChangeCount = function (event, redo) {
   if (event.type == eYo.Events.UI) {
     return
   }
@@ -50,7 +50,7 @@ eYo.Protocol.ChangeCount.methods.updateChangeCount = function (event, redo) {
 /**
  * Read only change count property.
  */
-eYo.Protocol.ChangeCount.properties.changeCount = {
+eYo.ns.Protocol.ChangeCount.properties.changeCount = {
   get () {
     return this.changeCount_
   }

@@ -4,8 +4,9 @@ Namespaces are used to collect pieces of code with a common purpose.
 
 ## Singletons
 Namespaces are singletons, which means that their constructor is not available as is, only through the instances.
+
 ## The name
-Each namespace is refered as `eYo.NS.Foo`, it is the value of its `name` property.
+Each namespace is refered as `eYo.ns.Foo`, it is the value of its `name` property.
 
 ## Creation
 
@@ -27,5 +28,6 @@ Here is a list of various namespaces created at initialization time, by key.
 | `Svg` | For Svg drivers |
 
 
+## Comments
+Technically the root namespace is `eYo`.
 
--

@@ -38,7 +38,7 @@ eYo.ns.UI.Dflt.makeSubclass('Owned2', {
   }
 })
 
-eYo.Assert(!!eYo.ns.UI.Owned2, 'MISSED/FAILURE...')
+eYo.assert(!!eYo.ns.UI.Owned2, 'MISSED/FAILURE...')
 eYo.forwardDeclare('eYo.ns.Brick')
 eYo.forwardDeclare('eYo.ns.Brick.UI')
 eYo.forwardDeclare('eYo.Slot')

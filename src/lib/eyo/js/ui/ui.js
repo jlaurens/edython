@@ -72,7 +72,7 @@ eYo.ns.UI.Dlgt.prototype.addApp = function () {
       return this.owner__.app
     },
     forget () {
-      this.forEachOwned(k => {
+      this.ownedForEach(k => {
         var x = this[k]
         x && x.appForget && x.appForget()
       })
@@ -109,7 +109,7 @@ eYo.Owned.makeSubclass(eYo.ns.UI, 'Dflt', {
       }
     },
     didChange () {
-      this.forEachOwned(x => {
+      this.ownedForEach(x => {
         x.ui_driverUpdate && x.ui_driverUpdate()
       })
     }

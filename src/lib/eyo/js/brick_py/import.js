@@ -13,7 +13,7 @@
 
 eYo.require('eYo.Stmt')
 
-eYo.require('eYo.Protocol')
+eYo.require('eYo.ns.Protocol')
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.ns.Brick.List')
@@ -276,7 +276,7 @@ eYo.Stmt.makeSubclass('import_stmt', {
   }
 }, true)
 
-eYo.Protocol.add(eYo.Stmt, 'Register', 'Import', function (delegate) {
+eYo.ns.Protocol.add(eYo.Stmt, 'Register', 'Import', function (delegate) {
   return !delegate.isInFlyout
 })
 

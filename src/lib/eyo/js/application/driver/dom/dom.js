@@ -18,7 +18,7 @@ eYo.require('eYo.ns.Fcls')
  * @namespace
  */
 
-eYo.ns.Driver.ns.make(eYo, 'Dom')
+eYo.ns.Driver.make('Dom')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')

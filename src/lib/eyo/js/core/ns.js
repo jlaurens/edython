@@ -23,6 +23,7 @@ eYo.provide('eYo.ns')
 eYo.ns = (() => {
   var NS = function() {}
   var ans = new NS()
+  eYo.inherits(NS, eYo.constructor)
   Object.defineProperties(ans, {
     name: { value: 'eYo.ns' }, 
   })

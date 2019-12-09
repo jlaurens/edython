@@ -11,17 +11,17 @@
  */
 'use strict'
 
-eYo.require('eYo.Protocol')
+eYo.require('eYo.ns.Protocol')
 
-eYo.provide('eYo.Protocol.Register')
+eYo.provide('eYo.ns.Protocol.Register')
 
-eYo.Protocol.Register = function (key, filter) {
+eYo.ns.Protocol.Register = function (key, filter) {
   var ans = {
     methods: {},
     properties: {}
   }
   var registered = []
-  ans.methods['register' + key.charAt(0).toUpperCase() + key.slice(1)] = function (object) {
+  ans.methods[key + 'Register'] = function (object) {
     if (filter(object)) {
       var i = registered.indexOf(object)
       if (i < 0) {
@@ -29,16 +29,16 @@ eYo.Protocol.Register = function (key, filter) {
       }
     }
   }
-  ans.methods['unregister' + key.charAt(0).toUpperCase() + key.slice(1)] = function (object) {
+  ans.methods[key + 'Unregister'] = function (object) {
     var i = registered.indexOf(object)
     if (i>=0) {
       registered.splice(i)
     }
   }
-  ans.methods['forEach' + key.charAt(0).toUpperCase() + key.slice(1)] = function (handler) {
+  ans.methods[key + 'ForEach'] = function (handler) {
     registered.forEach(handler, this)
   }
-  ans.methods['some' + key.charAt(0).toUpperCase() + key.slice(1)] = function (handler) {
+  ans.methods[key + 'Some'] = function (handler) {
     registered.some(handler, this)
   }
   return ans

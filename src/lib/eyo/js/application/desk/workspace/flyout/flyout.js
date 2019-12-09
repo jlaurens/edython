@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.Protocol')
+eYo.require('eYo.ns.Protocol')
 eYo.require('eYo.ns.UI')
 eYo.require('eYo.Unit')
 eYo.require('eYo.Events')
