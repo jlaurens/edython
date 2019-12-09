@@ -6,22 +6,22 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview eYo.Model is a collection of models for modules.
+ * @fileoverview eYo.ns.Model is a collection of models for modules.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
 eYo.require('eYo.Protocol.Register')
-eYo.require('eYo.Model')
+eYo.require('eYo.ns.Model')
 
-eYo.provide('eYo.Model.Item')
-eYo.provide('eYo.Model.Module')
+eYo.provide('eYo.ns.Model.Item')
+eYo.provide('eYo.ns.Model.Module')
 
 
 /**
  * @constructor
  */
-eYo.Model.Module = function (name, url) {
+eYo.ns.Model.Module = function (name, url) {
   Object.defineProperties(this,{
     name: {
       value: name
@@ -39,9 +39,9 @@ eYo.Model.Module = function (name, url) {
  * @param {String|Number} key  The key or index of the item
  * @return {?Object} return the model object for that item, if any.
  */
-eYo.Model.Module.prototype.setData = function (data) {
+eYo.ns.Model.Module.prototype.setData = function (data) {
   this.data = data
-  var a = eYo.Model.Item.types = eYo.Model.Item.types.concat(data.types)
+  var a = eYo.ns.Model.Item.types = eYo.ns.Model.Item.types.concat(data.types)
   for(var i=0; i<a.length; ++i) {
     for(var j=i+1; j<a.length; ++j) {
       if(a[i] === a[j]) {
@@ -56,7 +56,7 @@ eYo.Model.Module.prototype.setData = function (data) {
  * @param {String|Number} key  The key or index of the item
  * @return {?Object} return the model object for that item, if any.
  */
-eYo.Model.Module.prototype.getItem = function (key) {
+eYo.ns.Model.Module.prototype.getItem = function (key) {
   if (!goog.isNumber(key)) {
     key = this.data.by_name[key]
   }
@@ -70,7 +70,7 @@ eYo.Model.Module.prototype.getItem = function (key) {
  * @param {String} key  The name of the category
  * @return {!Array} the list of item indices with the given category (possibly void).
  */
-eYo.Model.Module.prototype.getItemsInCategory = function (category, type) {
+eYo.ns.Model.Module.prototype.getItemsInCategory = function (category, type) {
   var ra = this.data.by_category[category] || []
   if (eYo.isStr(type)) {
     type = this.data.type.indexOf(type)
@@ -93,7 +93,7 @@ eYo.Model.Module.prototype.getItemsInCategory = function (category, type) {
  * Sends a message for each ordered item with the give type
  * @param {String} key  The name of the category
  */
-eYo.Model.Module.prototype.forEachItemWithType = function (type, handler) {
+eYo.ns.Model.Module.prototype.forEachItemWithType = function (type, handler) {
   if (eYo.isStr(type)) {
     var ra = this.items_by_type[type]
     if (!ra) {
@@ -113,7 +113,7 @@ eYo.Model.Module.prototype.forEachItemWithType = function (type, handler) {
  * Item constuctor
  * @param {*} model
  */
-eYo.Model.Item = function (model) {
+eYo.ns.Model.Item = function (model) {
   var key
   for (key in model) {
     Object.defineProperty(
@@ -128,14 +128,14 @@ eYo.Model.Item = function (model) {
 }
 
 // Each model loaded comes here
-eYo.Protocol.add(eYo.Model.Item, 'Register', 'module')
+eYo.Protocol.add(eYo.ns.Model.Item, 'Register', 'module')
 
 /**
  * Each item has a link to the model it belongs to.
  */
-eYo.Model.Item.prototype.module = new eYo.Model.Module()
+eYo.ns.Model.Item.prototype.module = new eYo.ns.Model.Module()
 
-Object.defineProperties(eYo.Model.Item.prototype, {
+Object.defineProperties(eYo.ns.Model.Item.prototype, {
   isMethod: {
     get () {
       return this.type === eYo.Key.METHOD
@@ -190,7 +190,7 @@ Object.defineProperties(eYo.Model.Item.prototype, {
  * Other model data are more complex...
  * Is it used ?
  */
-eYo.Model.Item.data = {
+eYo.ns.Model.Item.data = {
   types: [
     '.'
   ]
@@ -199,16 +199,16 @@ eYo.Model.Item.data = {
 /**
  * Collect here all the types
  */
-eYo.Model.Item.types = []
+eYo.ns.Model.Item.types = []
 
 /**
  * Each item has a type_ and a type property.
  * The former is overriden by the model given at creation time.
  */
-eYo.Model.Item.prototype.type_ = 0
+eYo.ns.Model.Item.prototype.type_ = 0
 
 Object.defineProperties(
-  eYo.Model.Item.prototype,
+  eYo.ns.Model.Item.prototype,
   {
     type: {
       get () {

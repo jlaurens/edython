@@ -11,16 +11,16 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Dom')
+eYo.require('eYo.ns.Dom')
 
-eYo.provide('eYo.NS_Dom.Application')
+eYo.provide('eYo.ns.Dom.Application')
 
 eYo.forwardDeclare('eYo.Application')
 
 /**
  * Dom driver for application.
  */
-eYo.NS_Dom.makeDriverClass('Application', {
+eYo.ns.Dom.makeDriverClass('Application', {
   /**
    * Initialize the application's dom ressources.
    * @param {eYo.Application} app

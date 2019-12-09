@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.Model')
-eYo.require('eYo.Model.Module')
+eYo.require('eYo.ns.Model')
+eYo.require('eYo.ns.Model.Module')
 
-eYo.require('eYo.Model.Item')
-eYo.provide('eYo.Model.functions.Item')
-eYo.provide('eYo.Model.functions')
+eYo.require('eYo.ns.Model.Item')
+eYo.provide('eYo.ns.Model.functions.Item')
+eYo.provide('eYo.ns.Model.functions')
 
-eYo.Model.functions = new eYo.Model.Module('functions', 'https://docs.python.org/3.6/library/functions.html')
+eYo.ns.Model.functions = new eYo.ns.Model.Module('functions', 'https://docs.python.org/3.6/library/functions.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.Model.functions.Item = function (model) {
-  eYo.Model.functions.Item.superClass_.constructor.call(this, model)
+eYo.ns.Model.functions.Item = function (model) {
+  eYo.ns.Model.functions.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.Model.functions.Item
+var Item = eYo.ns.Model.functions.Item
 
-goog.inherits(Item, eYo.Model.Item)
+goog.inherits(Item, eYo.ns.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.Model.functions
+Item.prototype.module = eYo.ns.Model.functions
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.Model.functions.setData({
+eYo.ns.Model.functions.setData({
   categories: [
     'built-in-functions'
   ],

@@ -1,8 +1,8 @@
 describe('Brick constructor delegate', function() {
   it(`BCD: Basic`, function() {
-    chai.assert(eYo.NS_Brick.Dlgt)
+    chai.assert(eYo.ns.Brick.Dlgt)
     var c9r = function () {}
-    var eyo = new eYo.NS_Brick.Dlgt(c9r, 'Foo', {})
+    var eyo = new eYo.ns.Brick.Dlgt(c9r, 'Foo', {})
     chai.assert(eyo)
     chai.assert(eyo.name_ === 'Foo')
     chai.assert(eyo.types)
@@ -94,7 +94,7 @@ describe('Group magnets', function () {
   before(function() {
     var type = 'test_group_magnets'
     eYo.T3.Stmt[type] = type
-    eYo.NS_Brick.Group.makeSubclass(type, {
+    eYo.ns.Brick.Group.makeSubclass(type, {
       left: { check: type },
       right: { check: type },
     })  

@@ -14,16 +14,16 @@
 goog.require('goog.ui.Dialog')
 
 eYo.require('eYo.Msg')
-eYo.require('eYo.NS_Brick.Group')
+eYo.require('eYo.ns.Brick.Group')
 goog.require('goog.dom');
-eYo.provide('eYo.NS_Brick.Control')
+eYo.provide('eYo.ns.Brick.Control')
 
 /**
  * Class for a Delegate, control brick.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.BaseGroup.makeSubclass('Control', {
+eYo.ns.Brick.BaseGroup.makeSubclass('Control', {
   data: {
     restart: {
       init: false,
@@ -42,12 +42,12 @@ eYo.NS_Brick.BaseGroup.makeSubclass('Control', {
       }
     }
   }
-}, eYo.NS_Brick)
+}, eYo.ns.Brick)
 
 /**
  * Update the creation number.
  */
-eYo.NS_Brick.Control.prototype.updateCreation = (() => {
+eYo.ns.Brick.Control.prototype.updateCreation = (() => {
   var creation
   return function () {
     if (goog.isDef(creation)) {
@@ -58,7 +58,7 @@ eYo.NS_Brick.Control.prototype.updateCreation = (() => {
   }
 })()
 
-Object.defineProperties (eYo.NS_Brick.Control.prototype, {
+Object.defineProperties (eYo.ns.Brick.Control.prototype, {
   creation: {
     get() {
       return this.creation__
@@ -78,16 +78,16 @@ Object.defineProperties (eYo.NS_Brick.Control.prototype, {
  * Run the script exported from the brick.
  * @private
  */
-eYo.NS_Brick.Dflt.prototype.runScript = function () {
+eYo.ns.Brick.Dflt.prototype.runScript = function () {
   console.log('Someone should everride this method to really run some script')
 }
 
 /**
  * Class for a Delegate, start_stmt.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.Control.makeSubclass('start_stmt', {
+eYo.ns.Brick.Control.makeSubclass('start_stmt', {
   xml: {
     attr: 'start'
   },
@@ -101,7 +101,7 @@ eYo.NS_Brick.Control.makeSubclass('start_stmt', {
   }
 })
 
-Object.defineProperties (eYo.NS_Brick.Control.prototype, {
+Object.defineProperties (eYo.ns.Brick.Control.prototype, {
   /**
    * True for start statements only.
    * @type {Boolean}
@@ -112,6 +112,6 @@ Object.defineProperties (eYo.NS_Brick.Control.prototype, {
   },
 })
 
-eYo.NS_Brick.Control.T3s = [
+eYo.ns.Brick.Control.T3s = [
   eYo.T3.Stmt.start_stmt
 ]

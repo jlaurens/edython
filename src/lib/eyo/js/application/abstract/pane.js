@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_UI')
+eYo.require('eYo.ns.UI')
 
 eYo.forwardDeclare('eYo.Desk')
 
@@ -21,7 +21,7 @@ eYo.forwardDeclare('eYo.Desk')
  * @param {eYo.Desk} desk -  the owning desk.
  * @constructor
  */
-eYo.NS_UI.makeClass(eYo, 'Pane', {
+eYo.ns.UI.makeClass(eYo, 'Pane', {
   computed: {
     /**
      * The desk of the receiver.

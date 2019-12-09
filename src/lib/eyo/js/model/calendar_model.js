@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.Model')
-eYo.require('eYo.Model.Module')
+eYo.require('eYo.ns.Model')
+eYo.require('eYo.ns.Model.Module')
 
-eYo.require('eYo.Model.Item')
-eYo.provide('eYo.Model.calendar__module.Item')
-eYo.provide('eYo.Model.calendar__module')
+eYo.require('eYo.ns.Model.Item')
+eYo.provide('eYo.ns.Model.calendar__module.Item')
+eYo.provide('eYo.ns.Model.calendar__module')
 
-eYo.Model.calendar__module = new eYo.Model.Module('calendar__module', 'https://docs.python.org/3.6/library/calendar.html')
+eYo.ns.Model.calendar__module = new eYo.ns.Model.Module('calendar__module', 'https://docs.python.org/3.6/library/calendar.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.Model.calendar__module.Item = function (model) {
-  eYo.Model.calendar__module.Item.superClass_.constructor.call(this, model)
+eYo.ns.Model.calendar__module.Item = function (model) {
+  eYo.ns.Model.calendar__module.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.Model.calendar__module.Item
+var Item = eYo.ns.Model.calendar__module.Item
 
-goog.inherits(Item, eYo.Model.Item)
+goog.inherits(Item, eYo.ns.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.Model.calendar__module
+Item.prototype.module = eYo.ns.Model.calendar__module
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.Model.calendar__module.setData({
+eYo.ns.Model.calendar__module.setData({
   categories: [
     'module-calendar'
   ],

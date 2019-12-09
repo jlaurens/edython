@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Svg')
+eYo.require('eYo.ns.Svg')
 
 eYo.forwardDeclare('eYo.Zoomer')
 
 /**
  * Svg driver for the zoomer.
  */
-eYo.NS_Svg.makeDriverClass('Zoomer', {
+eYo.ns.Svg.makeDriverClass('Zoomer', {
     /**
    * Initialize the board's controls.
    * @param {eYo.Zoomer} constrols
@@ -51,7 +51,7 @@ eYo.NS_Svg.makeDriverClass('Zoomer', {
           clip-path="url(#eyo-zoom-reset-clip-path837493)"></image>
     </g>
     */
-    g = svg.zoom_ = eYo.NS_Svg.newElement(
+    g = svg.zoom_ = eYo.ns.Svg.newElement(
     'g',
       {class: 'eyo-zoom'},
       svg.group_
@@ -59,12 +59,12 @@ eYo.NS_Svg.makeDriverClass('Zoomer', {
     var rnd = String(Math.random()).substring(2)
     var clip;
 
-    clip = eYo.NS_Svg.newElement(
+    clip = eYo.ns.Svg.newElement(
       'clipPath',
       {id: 'eyo-zoomout-clip-path' + rnd},
       g
     )
-    eYo.NS_Svg.newElement(
+    eYo.ns.Svg.newElement(
       'rect',
       {
         width: 32,
@@ -73,7 +73,7 @@ eYo.NS_Svg.makeDriverClass('Zoomer', {
       },
       clip
     )
-    var zoomoutSvg = eYo.NS_Svg.newElement(
+    var zoomoutSvg = eYo.ns.Svg.newElement(
       'image',
       {
         width: eYo.SPRITE.width,
@@ -85,23 +85,23 @@ eYo.NS_Svg.makeDriverClass('Zoomer', {
       g
     )
     zoomoutSvg.setAttributeNS(
-      eYo.NS_Dom.XLINK_NS,
+      eYo.ns.Dom.XLINK_NS,
       'xlink:href',
       board.options.pathToMedia + eYo.SPRITE.url
     )
-    clip = eYo.NS_Svg.newElement(
+    clip = eYo.ns.Svg.newElement(
       'clipPath',
       {
         id: 'eyo-zoomin-clip-path' + rnd
       },
       g
     )
-    eYo.NS_Svg.newElement(
+    eYo.ns.Svg.newElement(
       'rect',
       {width: 32, height: 32, y: 43},
       clip
     )
-    var zoominSvg = eYo.NS_Svg.newElement(
+    var zoominSvg = eYo.ns.Svg.newElement(
       'image',
       {
         width: eYo.SPRITE.width,
@@ -113,21 +113,21 @@ eYo.NS_Svg.makeDriverClass('Zoomer', {
       g
     )
     zoominSvg.setAttributeNS(
-      eYo.NS_Dom.XLINK_NS,
+      eYo.ns.Dom.XLINK_NS,
       'xlink:href',
       board.options.pathToMedia + eYo.SPRITE.url
     )
-    clip = eYo.NS_Svg.newElement(
+    clip = eYo.ns.Svg.newElement(
       'clipPath',
       {id: 'eyo-zoom-reset-clip-path' + rnd},
       g
     )
-    eYo.NS_Svg.newElement(
+    eYo.ns.Svg.newElement(
       'rect',
       {width: 32, height: 32},
       clip
     )
-    var zoomresetSvg = eYo.NS_Svg.newElement(
+    var zoomresetSvg = eYo.ns.Svg.newElement(
       'image',
       {
         width: eYo.SPRITE.width,
@@ -137,41 +137,41 @@ eYo.NS_Svg.makeDriverClass('Zoomer', {
       g
     )
     zoomresetSvg.setAttributeNS(
-      eYo.NS_Dom.XLINK_NS,
+      eYo.ns.Dom.XLINK_NS,
       'xlink:href',
       board.options.pathToMedia + eYo.SPRITE.url
     )
     // Attach event listeners.
     var bound = dom.bound
-    bound.zoomreset = eYo.NS_Dom.bindEvent(
+    bound.zoomreset = eYo.ns.Dom.bindEvent(
       zoomresetSvg,
       'mousedown',
       e => {
         board.markFocused()
         board.scale = board.options.zoom.startScale
         board.scrollCenter()
-        eYo.NS_Dom.clearTouchIdentifier()  // Don't block future drags.
-        eYo.NS_Dom.gobbleEvent(e)
+        eYo.ns.Dom.clearTouchIdentifier()  // Don't block future drags.
+        eYo.ns.Dom.gobbleEvent(e)
       }
     )
-    bound.zoomin = eYo.NS_Dom.bindEvent(
+    bound.zoomin = eYo.ns.Dom.bindEvent(
       zoominSvg,
       'mousedown',
       e => {
         board.markFocused()
         board.zoomCenter(1)
-        eYo.NS_Dom.clearTouchIdentifier()  // Don't block future drags.
-        eYo.NS_Dom.gobbleEvent(e)
+        eYo.ns.Dom.clearTouchIdentifier()  // Don't block future drags.
+        eYo.ns.Dom.gobbleEvent(e)
       }
     )
-    bound.zoomout = eYo.NS_Dom.bindEvent(
+    bound.zoomout = eYo.ns.Dom.bindEvent(
       zoomoutSvg,
       'mousedown',
       e => {
         board.markFocused();
         board.zoomCenter(-1)
-        eYo.NS_Dom.clearTouchIdentifier()  // Don't block future drags.
-        eYo.NS_Dom.gobbleEvent(e)
+        eYo.ns.Dom.clearTouchIdentifier()  // Don't block future drags.
+        eYo.ns.Dom.gobbleEvent(e)
       }
     )
     return g
@@ -190,9 +190,9 @@ eYo.NS_Svg.makeDriverClass('Zoomer', {
     }
     var bound = dom.bound
     // Attach event listeners.
-    bound.zoomreset = eYo.NS_Dom.unbindEvent(bound.zoomreset)
-    bound.zoomin = eYo.NS_Dom.unbindEvent(bound.zoomin)
-    bound.zoomout = eYo.NS_Dom.unbindEvent(bound.zoomout)
+    bound.zoomreset = eYo.ns.Dom.unbindEvent(bound.zoomreset)
+    bound.zoomin = eYo.ns.Dom.unbindEvent(bound.zoomin)
+    bound.zoomout = eYo.ns.Dom.unbindEvent(bound.zoomout)
     goog.dom.removeNode(svg.zoom_)
     svg.zoom_ = null
   },
@@ -202,7 +202,7 @@ eYo.NS_Svg.makeDriverClass('Zoomer', {
  * Position of the zoom controls.
  * @param {eYo.Zoomer} controls
  */
-eYo.NS_Svg.Zoomer.prototype.place = function(controls) {
+eYo.ns.Svg.Zoomer.prototype.place = function(controls) {
   controls.board_.dom.svg.zoom_.setAttribute(
     'transform',
     `translate(${controls.left_},${controls.top_})`

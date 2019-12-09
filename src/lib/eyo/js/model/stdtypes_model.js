@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.Model')
-eYo.require('eYo.Model.Module')
+eYo.require('eYo.ns.Model')
+eYo.require('eYo.ns.Model.Module')
 
-eYo.require('eYo.Model.Item')
-eYo.provide('eYo.Model.stdtypes.Item')
-eYo.provide('eYo.Model.stdtypes')
+eYo.require('eYo.ns.Model.Item')
+eYo.provide('eYo.ns.Model.stdtypes.Item')
+eYo.provide('eYo.ns.Model.stdtypes')
 
-eYo.Model.stdtypes = new eYo.Model.Module('stdtypes', 'https://docs.python.org/3.6/library/stdtypes.html')
+eYo.ns.Model.stdtypes = new eYo.ns.Model.Module('stdtypes', 'https://docs.python.org/3.6/library/stdtypes.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.Model.stdtypes.Item = function (model) {
-  eYo.Model.stdtypes.Item.superClass_.constructor.call(this, model)
+eYo.ns.Model.stdtypes.Item = function (model) {
+  eYo.ns.Model.stdtypes.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.Model.stdtypes.Item
+var Item = eYo.ns.Model.stdtypes.Item
 
-goog.inherits(Item, eYo.Model.Item)
+goog.inherits(Item, eYo.ns.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.Model.stdtypes
+Item.prototype.module = eYo.ns.Model.stdtypes
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.Model.stdtypes.setData({
+eYo.ns.Model.stdtypes.setData({
   categories: [
     'additional-methods-on-integer-types',
     'additional-methods-on-float',

@@ -11,26 +11,26 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Brick')
+eYo.require('eYo.ns.Brick')
 
-eYo.require('eYo.Model.turtle__module')
+eYo.require('eYo.ns.Model.turtle__module')
 
 eYo.require('eYo.Stmt')
 
-eYo.require('eYo.NS_Brick.List')
+eYo.require('eYo.ns.Brick.List')
 
-eYo.require('eYo.NS_Brick.Primary')
+eYo.require('eYo.ns.Brick.Primary')
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.Tooltip')
 eYo.require('eYo.Library')
-eYo.provide('eYo.NS_Brick.Turtle')
+eYo.provide('eYo.ns.Brick.Turtle')
 
 eYo.T3.Stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
 
 /**
  * Class for a Delegate, turtle setup statement brick.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.makeSubclass('turtle__setup_stmt', {
@@ -232,6 +232,6 @@ goog.mixin(eYo.Tooltip.Title, {
   turtle__setup_stmt: 'Réglages du module turtle propres à edython',
 })
 
-eYo.NS_Brick.Turtle.T3s = [
+eYo.ns.Brick.Turtle.T3s = [
   eYo.T3.Stmt.turtle__setup_stmt
 ]

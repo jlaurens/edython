@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_UI')
+eYo.require('eYo.ns.UI')
 
 eYo.require('eYo.Decorate')
 eYo.provide('eYo.Board')
@@ -58,7 +58,7 @@ eYo.Board = function(owner) {
   /**
    * List of currently highlighted bricks.  Brick highlighting is often used to
    * visually mark bricks currently being executed.
-   * @type !Array.<!eYo.NS_Brick>
+   * @type !Array.<!eYo.ns.Brick>
    * @private
    */
   this.highlightedBricks_ = []
@@ -73,7 +73,7 @@ eYo.Board = function(owner) {
    */
   this.error = eYo.NA
 }
-goog.inherits(eYo.Board, eYo.NS_UI.Dflt)
+goog.inherits(eYo.Board, eYo.ns.UI.Dflt)
 
 Object.defineProperties(eYo.Board.prototype, {
   list: {
@@ -118,7 +118,7 @@ eYo.Board.Main = function(owner, options) {
   this.board_ = new eYo.Board(this, {
     backgroundClass: 'eyo-board-dragger-background'
   })
-  this.brickDragger_ = new eYo.BrickNSDragger(this)
+  this.brickDragger_ = new eYo.BrickDragger(this)
 }
 goog.inherits(eYo.Board.Main, eYo.Board)
 
@@ -566,7 +566,7 @@ eYo.Board.SCAN_ANGLE = 3
  * Finds the top-level bricks and returns them.  Bricks are optionally sorted
  * by position; top to bottom.
  * @param {boolean} ordered Sort the list if true.
- * @return {!Array.<!eYo.NS_Brick>} The top-level brick objects.
+ * @return {!Array.<!eYo.ns.Brick>} The top-level brick objects.
  */
 eYo.Board.prototype.getTopBricks = function(ordered) {
   // Copy the topBricks_ list.
@@ -613,10 +613,10 @@ eYo.Board.Main.prototype.clear = function() {
  *     type-specific functions for this brick.
  * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @return {!eYo.NS_Brick} The created brick.
+ * @return {!eYo.ns.Brick} The created brick.
  */
 eYo.Board.prototype.newBrick = function (prototypeName, opt_id) {
-  return eYo.NS_Brick.mngr.create(this, prototypeName, opt_id)
+  return eYo.ns.Brick.mngr.create(this, prototypeName, opt_id)
 }
 
 /**
@@ -642,7 +642,7 @@ eYo.Board.prototype.removeChangeListener = function(func) {
  * Find the brick on this board with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of brick to find.
- * @return {eYo.NS_Brick} The sought after brick or null if not found.
+ * @return {eYo.ns.Brick} The sought after brick or null if not found.
  */
 eYo.Board.prototype.getBrickById = eYo.Board.prototype.getBrickById = function(id) {
   return this.list_.getBrickById(id)
@@ -743,7 +743,7 @@ Object.defineProperties(eYo.Board.prototype, {
   },
   /**
    * Find all bricks in board.  No particular order.
-   * @return {!Array.<!eYo.NS_Brick>} Array of bricks.
+   * @return {!Array.<!eYo.ns.Brick>} Array of bricks.
    */
   allBricks: {
     get () {
@@ -1436,7 +1436,7 @@ eYo.Board.prototype.fromUTF8ByteArray = function (bytes) {
 
 /**
  * Add a brick to the board.
- * @param {eYo.NS_Brick.Dflt} brick
+ * @param {eYo.ns.Brick.Dflt} brick
  * @param {String} opt_id
  */
 eYo.Board.prototype.addBrick = function (brick, opt_id) {
@@ -1450,7 +1450,7 @@ eYo.Board.prototype.addBrick = function (brick, opt_id) {
 
 /**
  * Remove a brick from the board.
- * @param {eYo.NS_Brick.Dflt} brick
+ * @param {eYo.ns.Brick.Dflt} brick
  * @param {Function} [f]
  */
 eYo.Board.prototype.removeBrick = function (brick, f) {

@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.Model')
-eYo.require('eYo.Model.Module')
+eYo.require('eYo.ns.Model')
+eYo.require('eYo.ns.Model.Module')
 
-eYo.require('eYo.Model.Item')
-eYo.provide('eYo.Model.reprlib__module.Item')
-eYo.provide('eYo.Model.reprlib__module')
+eYo.require('eYo.ns.Model.Item')
+eYo.provide('eYo.ns.Model.reprlib__module.Item')
+eYo.provide('eYo.ns.Model.reprlib__module')
 
-eYo.Model.reprlib__module = new eYo.Model.Module('reprlib__module', 'https://docs.python.org/3.6/library/reprlib.html')
+eYo.ns.Model.reprlib__module = new eYo.ns.Model.Module('reprlib__module', 'https://docs.python.org/3.6/library/reprlib.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.Model.reprlib__module.Item = function (model) {
-  eYo.Model.reprlib__module.Item.superClass_.constructor.call(this, model)
+eYo.ns.Model.reprlib__module.Item = function (model) {
+  eYo.ns.Model.reprlib__module.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.Model.reprlib__module.Item
+var Item = eYo.ns.Model.reprlib__module.Item
 
-goog.inherits(Item, eYo.Model.Item)
+goog.inherits(Item, eYo.ns.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.Model.reprlib__module
+Item.prototype.module = eYo.ns.Model.reprlib__module
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.Model.reprlib__module.setData({
+eYo.ns.Model.reprlib__module.setData({
   categories: [
     'module-reprlib',
     'repr-objects'

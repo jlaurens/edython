@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Brick.List')
+eYo.require('eYo.ns.Brick.List')
 
-eYo.provide('eYo.NS_Brick.Argument')
+eYo.provide('eYo.ns.Brick.Argument')
 
 
 /**
@@ -39,19 +39,19 @@ keyword_item         ::=  identifier "=" expression
  * RULE 2 : expression << "**" expression
  * RULE 3 : "*" expression << "**" expression
  */
-eYo.NS_Consolidator.List.makeSubclass('Arguments', {
+eYo.ns.Consolidator.List.makeSubclass('Arguments', {
   check: null,
   presep: ',',
   mandatory: 0
-}, eYo.NS_Consolidator.List, eYo.NS_Consolidator)
+}, eYo.ns.Consolidator.List, eYo.ns.Consolidator)
 
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {eYo.NS_Brick.Dflt} brick - owner or the receiver.
+ * @param {eYo.ns.Brick.Dflt} brick - owner or the receiver.
  */
-eYo.NS_Consolidator.Arguments.prototype.getIO = function (brick) {
-  var io = eYo.NS_Consolidator.Arguments.superClass_.getIO.call(this, brick)
+eYo.ns.Consolidator.Arguments.prototype.getIO = function (brick) {
+  var io = eYo.ns.Consolidator.Arguments.superClass_.getIO.call(this, brick)
   io.last_expression = io.last_positional = io.unique = -Infinity
   io.first_keyword_star_star = io.first_star_star = Infinity
   return io
@@ -62,7 +62,7 @@ eYo.NS_Consolidator.Arguments.prototype.getIO = function (brick) {
  * there might be unwanted things.
  * @param {object} io
  */
-eYo.NS_Consolidator.Arguments.prototype.doCleanup = (() => {
+eYo.ns.Consolidator.Arguments.prototype.doCleanup = (() => {
   // preparation: walk through the list of inputs and
   // find the key inputs
   var Type = {
@@ -129,7 +129,7 @@ eYo.NS_Consolidator.Arguments.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.NS_Consolidator.Arguments.superClass_.doCleanup.call(this, io)
+    eYo.ns.Consolidator.Arguments.superClass_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.unique !== -Infinity) {
       // remove whatever comes before and after the io.unique
@@ -152,7 +152,7 @@ eYo.NS_Consolidator.Arguments.prototype.doCleanup = (() => {
  * This does not suppose that the list of input has been completely consolidated
  * @param {Object} io parameter.
  */
-eYo.NS_Consolidator.Arguments.prototype.getCheck = (() => {
+eYo.ns.Consolidator.Arguments.prototype.getCheck = (() => {
   var cache = {}
   return function (io) {
     var can_expression, can_expression_star, can_expression_star_star, can_keyword, can_comprehension
@@ -208,10 +208,10 @@ eYo.NS_Consolidator.Arguments.prototype.getCheck = (() => {
 /**
  * Class for a Delegate, argument_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.List.makeSubclass('argument_list', {
+eYo.ns.Brick.List.makeSubclass('argument_list', {
   data: {
     ary: {
       order: 200,
@@ -246,7 +246,7 @@ eYo.NS_Brick.List.makeSubclass('argument_list', {
     }
   },
   list: {
-    consolidator: eYo.NS_Consolidator.Arguments,
+    consolidator: eYo.ns.Consolidator.Arguments,
     presep: ','
   }
 })
@@ -254,7 +254,7 @@ eYo.NS_Brick.List.makeSubclass('argument_list', {
 /**
  * Class for a Delegate, argument_list_comprehensive brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
@@ -263,7 +263,7 @@ eYo.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
   }
 })
 
-eYo.NS_Brick.Argument.T3s = [
+eYo.ns.Brick.Argument.T3s = [
   // eYo.T3.Expr.identifier_valued,
   eYo.T3.Expr.argument_list,
   eYo.T3.Expr.argument_list_comprehensive

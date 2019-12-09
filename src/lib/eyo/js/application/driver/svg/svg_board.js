@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Svg')
+eYo.require('eYo.ns.Svg')
 
 eYo.forwardDeclare('eYo.Board')
 
 /**
  * Svg driver for boards.
  */
-eYo.NS_Svg.makeDriverClass('Board', {
+eYo.ns.Svg.makeDriverClass('Board', {
     /**
    * Initialize the board dom ressources.
    * @param {eYo.Board} board

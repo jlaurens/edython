@@ -31,13 +31,13 @@ describe('eYo Tests', function () {
     it ('Inheritance 1', function () {
       var base = {a: 421}
       var model = {}
-      eYo.Model.extends(model, base)
+      eYo.ns.Model.extends(model, base)
       chai.assert(model.a === 421)
     })
     it ('Inheritance 2', function () {
       var base = {a: {aa: 421}}
       var model = {}
-      eYo.Model.extends(model, base)
+      eYo.ns.Model.extends(model, base)
       chai.assert(model.a.aa === 421)
     })
     it ('Inheritance 3', function () {
@@ -51,7 +51,7 @@ describe('eYo Tests', function () {
           ab: 123
         }
       }
-      eYo.Model.extends(model, base)
+      eYo.ns.Model.extends(model, base)
       chai.assert(model.a.aa === 421)
       chai.assert(model.a.ab === 123)
     })
@@ -75,8 +75,8 @@ describe('eYo Tests', function () {
           ab: 421
         }
       }
-      eYo.Model.extends(model, base)
-      eYo.Model.extends(submodel, model)
+      eYo.ns.Model.extends(model, base)
+      eYo.ns.Model.extends(submodel, model)
       chai.assert(submodel.a.aa.aaa === 421)
       chai.assert(submodel.a.ab === 421)
       chai.assert(submodel.b === 421)

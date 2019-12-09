@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Dom')
+eYo.require('eYo.ns.Dom')
 
 eYo.forwardDeclare('eYo.Desk')
 
 /**
  * Dom driver for boards.
  */
-eYo.NS_Dom.makeDriverClass('Desk', {
+eYo.ns.Dom.makeDriverClass('Desk', {
   /**
    * Initialize the desk dom ressources.
    * @param {eYo.Desk} desk
@@ -38,10 +38,10 @@ eYo.NS_Dom.makeDriverClass('Desk', {
       throw 'Error: container is not in current document.'
     }
     var div = dom.div_ || (dom.div_= container)
-    eYo.NS_Dom.bindEvent(
+    eYo.ns.Dom.bindEvent(
       container,
       'contextmenu',
-      e => eYo.NS_Dom.isTargetInput(e) || e.preventDefault()
+      e => eYo.ns.Dom.isTargetInput(e) || e.preventDefault()
     )
     // var d = dom.div_ = goog.dom.createDom(
     //   goog.dom.TagName.DIV,
@@ -69,5 +69,5 @@ eYo.NS_Dom.makeDriverClass('Desk', {
  * Place the desk div.
  * @param {eYo.Desk} desk
  */
-eYo.NS_Dom.Desk.prototype.place = function(desk) {
+eYo.ns.Dom.Desk.prototype.place = function(desk) {
 }

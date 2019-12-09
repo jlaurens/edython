@@ -19,7 +19,7 @@ eYo.require('eYo.T3')
 
 eYo.require('eYo.XRE')
 
-eYo.require('eYo.Model')
+eYo.require('eYo.ns.Model')
 eYo.require('eYo.Do')
 eYo.provide('eYo.T3.Profile')
 
@@ -58,7 +58,7 @@ eYo.Do.readOnlyMixin(
  * create one on the first call if the module knows it.
  * @param {*} identifier
  */
-eYo.Model.Module.prototype.getProfile = function(identifier) {
+eYo.ns.Model.Module.prototype.getProfile = function(identifier) {
   var ans = this.profiles[identifier]
   if (ans) {
     return ans
@@ -298,7 +298,7 @@ var setup = (() => {
       if ((ans = profiles[module])) {
         return ans
       }
-      var M = eYo.Model[module] || eYo.Model[module + '__module']
+      var M = eYo.ns.Model[module] || eYo.ns.Model[module + '__module']
       if (M) {
         return (profiles[module] = M.getProfile(candidate))
       }
@@ -374,7 +374,7 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
         : module
       : null
     if (holder) {
-      var M = eYo.Model[holder] || eYo.Model[holder + '__module']
+      var M = eYo.ns.Model[holder] || eYo.ns.Model[holder + '__module']
       var ans = M && (M.getProfile(candidate))
     } else {
       ans = eYo.T3.Profile.getReference(candidate) || eYo.T3.Profile.getInModule(candidate)
@@ -569,7 +569,7 @@ eYo.T3.Profile.getReference = function (identifier) {
     'stdtypes',
     'datamodel'
   ].some((ref) => {
-    var M = eYo.Model[ref]
+    var M = eYo.ns.Model[ref]
     ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true
@@ -608,7 +608,7 @@ eYo.T3.Profile.getInModule = function (identifier) {
     'cmath',
     'string'
   ].some(module => {
-    var M = eYo.Model[module + '__module']
+    var M = eYo.ns.Model[module + '__module']
     ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true

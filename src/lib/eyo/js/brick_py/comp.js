@@ -13,13 +13,13 @@
 
 eYo.require('eYo')
 
-eYo.require('eYo.NS_Brick.List')
+eYo.require('eYo.ns.Brick.List')
 
-eYo.provide('eYo.NS_Brick.Comprehension')
+eYo.provide('eYo.ns.Brick.Comprehension')
 
 /**
  * Class for a Delegate, comprehension value brick.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('comprehension', {
@@ -103,7 +103,7 @@ eYo.Expr.comprehension.prototype.getBaseType = function () {
 
 ;['dict_comprehension'].forEach(k => {
   eYo.Expr[k] = eYo.Expr.comprehension
-  eYo.NS_Brick.mngr.register(k)
+  eYo.ns.Brick.mngr.register(k)
 })
 
 /**
@@ -117,7 +117,7 @@ eYo.Expr.comprehension.prototype.xmlAttr = function () {
 
 /**
  * Class for a Delegate, comp_for brick.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('comp_for', {
@@ -141,7 +141,7 @@ eYo.Expr.Dflt.makeSubclass('comp_for', {
 
 /**
  * Class for a Delegate, comp_if brick.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('comp_if', {
@@ -159,10 +159,10 @@ eYo.Expr.Dflt.makeSubclass('comp_if', {
 /**
  * Class for a Delegate, comp_iter_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.List.makeSubclass('comp_iter_list', {
+eYo.ns.Brick.List.makeSubclass('comp_iter_list', {
   list: {
     check: eYo.T3.Expr.Check.comp_iter,
     mandatory: 0,
@@ -172,7 +172,7 @@ eYo.NS_Brick.List.makeSubclass('comp_iter_list', {
 
 /**
  * Class for a Delegate, key_datum brick.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('key_datum', {
@@ -193,7 +193,7 @@ eYo.Expr.Dflt.makeSubclass('key_datum', {
   }
 }, true)
 
-eYo.NS_Brick.Comprehension.T3s = [
+eYo.ns.Brick.Comprehension.T3s = [
   eYo.T3.Expr.comprehension,
   eYo.T3.Expr.comp_for,
   eYo.T3.Expr.comp_if,

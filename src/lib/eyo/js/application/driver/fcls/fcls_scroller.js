@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Fcls')
+eYo.require('eYo.ns.Fcls')
 
-eYo.provide('eYo.NS_Fcls.Scroller')
+eYo.provide('eYo.ns.Fcls.Scroller')
 
 eYo.forwardDeclare('eYo.Scroller')
 
 /**
  * Shared application driver.
  */
-eYo.NS_Fcls.makeDriverClass('Scroller')
+eYo.ns.Fcls.makeDriverClass('Scroller')

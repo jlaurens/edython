@@ -15,7 +15,7 @@ eYo.require('eYo')
 
 eYo.provide('eYo.List')
 
-eYo.forwardDeclare('eYo.NS_Brick')
+eYo.forwardDeclare('eYo.ns.Brick')
 eYo.forwardDeclare('eYo.DB')
 
 goog.forwardDeclare('goog.array')
@@ -36,7 +36,7 @@ eYo.List = function(db) {
    * The top bricks are all the bricks with no parent.
    * They are owned by a board.
    * They are ordered by line number.
-   * @type {!Array.<!eYo.NS_Brick>}
+   * @type {!Array.<!eYo.ns.Brick>}
    * @private
    */
   this.bricks_ = []
@@ -65,7 +65,7 @@ eYo.List.prototype.clear = function() {
  * Find the brick on this list with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of brick to find.
- * @return {eYo.NS_Brick} The sought after brick or null if not found.
+ * @return {eYo.ns.Brick} The sought after brick or null if not found.
  */
 eYo.List.prototype.getBrickById = function(id) {
   var b3k = this.db_.byId(id)
@@ -87,7 +87,7 @@ Object.defineProperties(eYo.List.prototype, {
   /**
    * Returns the list of bricks as an array
    * of bricks sorted by position; top to bottom.
-   * @return {!Array<!eYo.NS_Brick>} The top-level brick objects.
+   * @return {!Array<!eYo.ns.Brick>} The top-level brick objects.
    */
   bricks: {
     get () {
@@ -97,7 +97,7 @@ Object.defineProperties(eYo.List.prototype, {
   /**
    * Get all the bricks in list, top ones and their children.
    * No particular order.
-   * @return {!Array<!eYo.NS_Brick>} Array of bricks.
+   * @return {!Array<!eYo.ns.Brick>} Array of bricks.
    */
   all: {
     get () {
@@ -119,7 +119,7 @@ Object.defineProperties(eYo.List.prototype, {
  * If `opt_id` is provided and is not the id
  * of an already existing brick, then it will be the `id` of the added brick once added.
  * If the `opt_id` is already used or is not provided, then a new id is created.
- * @param {eYo.NS_Brick.Dflt} brick
+ * @param {eYo.ns.Brick.Dflt} brick
  * @param {string} opt_id
  */
 eYo.List.prototype.add = function (brick, opt_id) {
@@ -159,7 +159,7 @@ eYo.List.prototype.add = function (brick, opt_id) {
 /**
  * Remove a brick from the receiver.
  * Throws if the brick is not in the list.
- * @param {eYo.NS_Brick.Dflt} brick
+ * @param {eYo.ns.Brick.Dflt} brick
  */
 eYo.List.prototype.remove = function (brick) {
   if (!goog.array.remove(this.bricks_, brick)) {

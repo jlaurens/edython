@@ -16,7 +16,7 @@ eYo.require('eYo')
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.T3')
-eYo.require('eYo.NS_Brick')
+eYo.require('eYo.ns.Brick')
 eYo.require('eYo.MenuItem')
 eYo.require('eYo.Separator')
 goog.require('goog.dom');
@@ -220,7 +220,7 @@ eYo.MenuManager.prototype.addRemoveChild = function (menuItem, render = true) {
 /**
  * Records the brick and the event.
  * Removes all the previous menu items.
- * @param {eYo.NS_Brick=} brick The brick.
+ * @param {eYo.ns.Brick=} brick The brick.
  * @param {Event=} e Mouse event.
  * @private
  */
@@ -239,7 +239,7 @@ eYo.MenuManager.prototype.init = function (brick = eYo.NA, e = eYo.NA) {
 /**
  * Show the context menu for the given brick.
  * This is not for subclassers.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {Event} e Mouse event.
  * @private
  */
@@ -332,11 +332,11 @@ eYo.ID.HELP = 'HELP'
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.NS_Brick.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.ns.Brick.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
   mngr.shouldSeparate()
   mngr.populate_movable_parent(this)
 }
@@ -346,17 +346,17 @@ eYo.NS_Brick.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.NS_Brick.Dflt.prototype.populateContextMenuMiddle_ = function (mngr) {
+eYo.ns.Brick.Dflt.prototype.populateContextMenuMiddle_ = function (mngr) {
   return false
 }
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.NS_Brick.Dflt.prototype.populateContextMenuLast_ = function (mngr) {
+eYo.ns.Brick.Dflt.prototype.populateContextMenuLast_ = function (mngr) {
   return mngr.populateLast(this)
 }
 
@@ -530,7 +530,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.NS_Brick.Dflt.prototype.handleMenuItemActionFirst = function (mngr, event) {
+eYo.ns.Brick.Dflt.prototype.handleMenuItemActionFirst = function (mngr, event) {
   return mngr.handleAction_movable_parent(this, event)
 }
 
@@ -540,18 +540,18 @@ eYo.NS_Brick.Dflt.prototype.handleMenuItemActionFirst = function (mngr, event) {
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.NS_Brick.Dflt.prototype.handleMenuItemActionMiddle = function (mngr, event) {
+eYo.ns.Brick.Dflt.prototype.handleMenuItemActionMiddle = function (mngr, event) {
   return false
 }
 
 /**
  * Handle the selection of an item in the context dropdown menu.
  * Intended to be overriden.
- * @param {eYo.NS_Brick.Dflt} brick
+ * @param {eYo.ns.Brick.Dflt} brick
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.NS_Brick.Dflt.prototype.handleMenuItemActionLast = function (mngr, event) {
+eYo.ns.Brick.Dflt.prototype.handleMenuItemActionLast = function (mngr, event) {
   return mngr.handleActionLast(this, event)
 }
 
@@ -559,7 +559,7 @@ eYo.NS_Brick.Dflt.prototype.handleMenuItemActionLast = function (mngr, event) {
  * Handle the selection of an item in the context dropdown menu.
  * Default implementation mimics Blockly behaviour.
  * Unlikely to be overriden.
- * @param {eYo.NS_Brick.Dflt} brick
+ * @param {eYo.ns.Brick.Dflt} brick
  * @param {goog.events.Event} event The event containing as target
  * the MenuItem selected within menu.
  */
@@ -627,7 +627,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -638,7 +638,7 @@ eYo.MenuManager.prototype.populateVariable_ = function (brick) {
 /**
  * Handle the selection of an item in the first part of the context dropdown menu.
  * Default implementation returns false.
- * @param {eYo.NS_Brick.Dflt} brick The Menu component clicked.
+ * @param {eYo.ns.Brick.Dflt} brick The Menu component clicked.
  * @param {goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
@@ -655,14 +655,14 @@ eYo.MenuManager.prototype.handleAction_movable_parent = function (brick, event) 
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.handleAction_movable_parent_module = eYo.MenuManager.prototype.handleAction_movable_parent
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
@@ -847,7 +847,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
  * Only for expressions.
  * `model.type` is the type of the to be inserted parent brick.
  * `model.slot` is the slot where the actual brick should be connected.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {Object} model the type of the parent to be and target slot.
  * @private
  */
@@ -860,7 +860,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
   }
   /** @suppress {accessControls} */
   var outCheck = m4t.check_
-  var D = eYo.NS_Brick.mngr.getModel(model.type).slots
+  var D = eYo.ns.Brick.mngr.getModel(model.type).slots
   // if the brick which type is model.type has no slot
   // no chance to insert anything, pass away
   if (D) {
@@ -893,7 +893,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
         this.addInsertChild(MI)
         return true
       } else if (d && d.wrap && !parent_subtype) {
-        var list = eYo.NS_Brick.mngr.getModel(d.wrap).list
+        var list = eYo.ns.Brick.mngr.getModel(d.wrap).list
         if (!list) {
           if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
             key = d.key || K
@@ -942,7 +942,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
  * Only for expressions.
  * type is the type of the to be inserted parent brick.
  * This parent might be inserted up to the top.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {string} type the type of the parent to be.
  * @private
  */
@@ -970,7 +970,7 @@ eYo.MenuManager.prototype.populate_insert_parent = function (brick, model, top) 
 /**
  * Populate the context menu for the given brick.
  * Only for expressions.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {string|Object} model the subtype is for example the input name through which parent and children are connected.
  * @private
  * @return true if an item were added to the remove menu
@@ -1002,7 +1002,7 @@ eYo.MenuManager.prototype.populate_replace_parent = function (brick, model) {
 /**
  * Populate the context menu for the given brick.
  * Only for statements.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.populate_before_after = function (brick) {
@@ -1031,7 +1031,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
   ]
   var /** !eYo.Magnet */ m4t, sep
   var F_after = /** @suppress{accessControls} */ (targetM4t, type) => {
-    var b3k = eYo.NS_Brick.newReady(brick, type)
+    var b3k = eYo.ns.Brick.newReady(brick, type)
     var yorn = b3k.head_m &&
     b3k.head_m.checkType_(m4t) &&
     (!targetM4t || (b3k.foot_m && (targetM4t.checkType_(b3k.foot_m))))
@@ -1047,7 +1047,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     return false
   }
   var F_before = /** @suppress{accessControls} */ (target, type) => {
-    var b3k = eYo.NS_Brick.newReady(brick, type)
+    var b3k = eYo.ns.Brick.newReady(brick, type)
     var yorn = b3k.foot_m &&
     b3k.foot_m.checkType_(m4t) &&
     (!target || (b3k.head_m && (target.checkType_(b3k.head_m))))
@@ -1091,7 +1091,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
 /**
  * Populate the context menu for the given brick.
  * Only for expressions.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.populate_movable_parent = function (brick) {
@@ -1146,7 +1146,7 @@ eYo.MenuManager.prototype.populate_movable_parent = function (brick) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.populateProperties = function (brick, key) {

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_UI')
+eYo.require('eYo.ns.UI')
 
 /**
  * Class for a workspace control.
@@ -34,7 +34,7 @@ eYo.require('eYo.NS_UI')
  * @property {number} MARGIN_SIDE_, Distance between trash can and right edge of board.
  *
  */
-eYo.NS_UI.makeClass(eYo, 'WorkspaceControl', {
+eYo.ns.UI.makeClass(eYo, 'WorkspaceControl', {
   computed: {
     workspace () {
       return this.owner

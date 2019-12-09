@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Brick.Group')
+eYo.require('eYo.ns.Brick.Group')
 
 eYo.require('eYo.XRE')
 
 eYo.require('eYo.Msg')
-eYo.require('eYo.NS_Brick.Primary')
+eYo.require('eYo.ns.Brick.Primary')
 eYo.require('eYo.MenuItem')
 goog.require('goog.dom');
-eYo.provide('eYo.NS_Brick.Proc')
+eYo.provide('eYo.ns.Brick.Proc')
 
 eYo.Do.readOnlyMixin(eYo.XRE, {
   decorator: XRegExp(`^@?
@@ -351,7 +351,7 @@ Object.defineProperties(eYo.Stmt.decorator_stmt.prototype, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @override
  */
@@ -417,7 +417,7 @@ eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, funcdef_part.
  * For edython.
  */
-eYo.NS_Brick.Group.makeSubclass('funcdef_part', {
+eYo.ns.Brick.Group.makeSubclass('funcdef_part', {
   data: {
     variant: {
       all: [null, eYo.Key.TYPE],
@@ -471,7 +471,7 @@ eYo.NS_Brick.Group.makeSubclass('funcdef_part', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -507,7 +507,7 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  * Class for a Delegate, classdef_part brick.
  * For edython.
  */
-eYo.NS_Brick.Group.makeSubclass('classdef_part', {
+eYo.ns.Brick.Group.makeSubclass('classdef_part', {
   data: {
     variant: {
       all: [eYo.Key.NONE, eYo.Key.N_ARY],
@@ -561,7 +561,7 @@ eYo.NS_Brick.Group.makeSubclass('classdef_part', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -588,7 +588,7 @@ eYo.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
   return eYo.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
-eYo.NS_Brick.Proc.T3s = [
+eYo.ns.Brick.Proc.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Stmt.decorator_stmt,
   eYo.T3.Stmt.funcdef_part,

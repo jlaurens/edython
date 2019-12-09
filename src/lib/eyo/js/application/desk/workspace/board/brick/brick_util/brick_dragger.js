@@ -17,8 +17,8 @@ eYo.require('eYo')
 eYo.require('eYo.Change')
 eYo.provide('eYo.BrickDragger')
 
-eYo.forwardDeclare('eYo.NS_Dom')
-eYo.forwardDeclare('eYo.NS_Brick')
+eYo.forwardDeclare('eYo.ns.Dom')
+eYo.forwardDeclare('eYo.ns.Brick')
 eYo.forwardDeclare('eYo.Board')
 eYo.forwardDeclare('eYo.Events.BrickMove')
 
@@ -28,11 +28,11 @@ eYo.forwardDeclare('eYo.Events.BrickMove')
  * @param {eYo.Board} destination The board to drag on.
  * @constructor
  */
-eYo.BrickNSDragger = function(destination) {
+eYo.BrickDragger = function(destination) {
   this.destination_ = destination
 }
 
-Object.defineProperties(eYo.BrickNSDragger.prototype, {
+Object.defineProperties(eYo.BrickDragger.prototype, {
   /**
    * The associate drag surface
    * @type{eYo.BrickNSDragSurface}
@@ -90,7 +90,7 @@ Object.defineProperties(eYo.BrickNSDragger.prototype, {
   }
 })
 
-Object.defineProperties(eYo.BrickNSDragger.prototype, {
+Object.defineProperties(eYo.BrickDragger.prototype, {
   desk: {
     get () {
       return this.destination_.desk
@@ -111,7 +111,7 @@ Object.defineProperties(eYo.BrickNSDragger.prototype, {
 /**
  * Sever all links from this object.
  */
-eYo.BrickNSDragger.prototype.dispose = function() {
+eYo.BrickDragger.prototype.dispose = function() {
   this.availableMagnets_.length = 0
   this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = null
   this.destination = null
@@ -133,9 +133,9 @@ eYo.BrickNSDragger.prototype.dispose = function() {
  * When the center of the brick will gout out the visible area,
  * we scroll the brick board to keep it back.
  * @param {eYo.Motion} motion  The motion initiating the eventual drag.
- * @return {eYo.NS_Brick}  The target brick of the drag event, if any.
+ * @return {eYo.ns.Brick}  The target brick of the drag event, if any.
  */
-eYo.BrickNSDragger.prototype.start = function(motion) {
+eYo.BrickDragger.prototype.start = function(motion) {
   if (this.brick_) {
     return this.brick_
   }
@@ -175,7 +175,7 @@ eYo.BrickNSDragger.prototype.start = function(motion) {
   }
   /**
    * The top brick in the stack that is being dragged.
-   * @type {!eYo.NS_Brick}
+   * @type {!eYo.ns.Brick}
    * @private
    */
   this.brick_ = targetBrick.focusOn()
@@ -280,11 +280,11 @@ eYo.BrickNSDragger.prototype.start = function(motion) {
  * If the answer is `{x: -15, y: 0}`, we just have to scroll the board
  * 15 units to the right and the brick is visible.
  * For edython.
- * @param {eYo.NS_Brick.Dflt} brick The new location of the receiver, the actual location when eYo.NA.
+ * @param {eYo.ns.Brick.Dflt} brick The new location of the receiver, the actual location when eYo.NA.
  * @param {Object} [newLoc] The new location of the receiver, the actual location when eYo.NA.
  * @return {{x: number, y: number}|eYo.NA}
  */
-eYo.BrickNSDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
+eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
   var ui = brick.ui
   var board = brick.board
   if (!board) {
@@ -329,7 +329,7 @@ eYo.BrickNSDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
  * @param {eYo.Where} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  */
-eYo.BrickNSDragger.prototype.drag = function() {
+eYo.BrickDragger.prototype.drag = function() {
   var xyNew = this.xyNew_
   var b3k = this.brick_
   var d = this.getOffsetFromVisible(b3k, xyNew)
@@ -359,7 +359,7 @@ eYo.BrickNSDragger.prototype.drag = function() {
  * @param {eYo.Where} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  */
-eYo.BrickNSDragger.prototype.end = (() => {
+eYo.BrickDragger.prototype.end = (() => {
   /**
    * Fire a move event at the end of a brick drag.
    * @private
@@ -405,7 +405,7 @@ eYo.BrickNSDragger.prototype.end = (() => {
 /**
  * Reset motion.
  */
-eYo.BrickNSDragger.prototype.clearMotion = function() {
+eYo.BrickDragger.prototype.clearMotion = function() {
   this.motion_ = null
 }
 
@@ -413,7 +413,7 @@ eYo.BrickNSDragger.prototype.clearMotion = function() {
  * Connect to the closest magnet and render the results.
  * This should be called at the end of a drag.
  */
-eYo.BrickNSDragger.prototype.connect = function() {
+eYo.BrickDragger.prototype.connect = function() {
   if (this.target_) {
     // Connect the two magnets
     this.magnet_.connect(this.target_)
@@ -433,7 +433,7 @@ eYo.BrickNSDragger.prototype.connect = function() {
 /**
  * Update highlighted connections based on the most recent move location.
  */
-eYo.BrickNSDragger.prototype.update = function() {
+eYo.BrickDragger.prototype.update = function() {
   var deleteRect = this.deleteRect_ = this.destination.inDeleteArea(this.motion_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null

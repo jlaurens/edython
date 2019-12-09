@@ -12,13 +12,13 @@
 'use strict'
 
 eYo.require('eYo.Protocol')
-eYo.require('eYo.NS_UI')
+eYo.require('eYo.ns.UI')
 eYo.require('eYo.Unit')
 eYo.require('eYo.Events')
 
 eYo.forwardDeclare('eYo.Library')
 eYo.forwardDeclare('eYo.Style')
-eYo.forwardDeclare('eYo.NS_Brick')
+eYo.forwardDeclare('eYo.ns.Brick')
 eYo.forwardDeclare('eYo.FlyoutToolbar')
 eYo.forwardDeclare('eYo.Tooltip')
 eYo.forwardDeclare('eYo.MenuRenderer')
@@ -76,7 +76,7 @@ eYo.forwardDeclare('eYo.MenuButtonRenderer')
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.NS_UI.makeClass(eYo, 'Flyout', {
+eYo.ns.UI.makeClass(eYo, 'Flyout', {
   owned: {
     search () {
       return new eYo.Search(this)
@@ -270,7 +270,7 @@ eYo.NS_UI.makeClass(eYo, 'Flyout', {
     this.listeners_ = []
     /**
      * List of bricks that should always be disabled.
-     * @type {!Array.<!eYo.NS_Brick>}
+     * @type {!Array.<!eYo.ns.Brick>}
      * @private
      */
     this.permanentlyDisabled_ = []
@@ -462,13 +462,13 @@ eYo.Flyout.prototype.on_wheel = function(e) {
     var metrics = this.board.metrics
     metrics.drag = metrics.drag.forward({x: 0, y: delta})
   }
-  eYo.NS_Dom.gobbleEvent(e)
+  eYo.ns.Dom.gobbleEvent(e)
 }
 
 /**
  * Create a copy of this brick on the board.
- * @param {eYo.NS_Brick.Dflt} originalBrick The brick to copy from the flyout.
- * @return {eYo.NS_Brick} The newly created brick, or null if something
+ * @param {eYo.ns.Brick.Dflt} originalBrick The brick to copy from the flyout.
+ * @return {eYo.ns.Brick} The newly created brick, or null if something
  *     went wrong with deserialization.
  */
 eYo.Flyout.prototype.createBrick = function(originalBrick) {
@@ -610,8 +610,8 @@ console.error('IN PROGRESS')
  * Copy a brick from the flyout to the board and position it correctly.
  * Edython adds a full rendering process.
  * No rendering is made while bricks are dragging.
- * @param {eYo.NS_Brick.Dflt} srcBrick The flyout brick to copy.
- * @return {!eYo.NS_Brick} The new brick in the main board.
+ * @param {eYo.ns.Brick.Dflt} srcBrick The flyout brick to copy.
+ * @return {!eYo.ns.Brick} The new brick in the main board.
  * @private
  */
 eYo.Flyout.prototype.placeNewBrick_ = function(srcBrick) {

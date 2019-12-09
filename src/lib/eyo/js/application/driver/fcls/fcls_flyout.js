@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Fcls')
+eYo.require('eYo.ns.Fcls')
 
-eYo.provide('eYo.NS_Fcls.Flyout')
+eYo.provide('eYo.ns.Fcls.Flyout')
 
 eYo.forwardDeclare('eYo.Flyout')
 
 /**
  * Shared application driver.
  */
-eYo.NS_Fcls.makeDriverClass('Flyout')
+eYo.ns.Fcls.makeDriverClass('Flyout')

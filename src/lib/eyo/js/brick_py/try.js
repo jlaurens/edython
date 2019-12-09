@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Brick.Group')
+eYo.require('eYo.ns.Brick.Group')
 
 eYo.require('eYo.Change')
 
-eYo.provide('eYo.NS_Brick.Try')
+eYo.provide('eYo.ns.Brick.Try')
 
 eYo.forwardDeclare('eYo.Msg')
 
@@ -23,10 +23,10 @@ goog.forwardDeclare('goog.dom')
 
 /**
  * Class for a Delegate, try_part brick.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.Group.makeSubclass('try_part', {
+eYo.ns.Brick.Group.makeSubclass('try_part', {
   fields: {
     prefix: 'try'
   }
@@ -34,10 +34,10 @@ eYo.NS_Brick.Group.makeSubclass('try_part', {
 
 /**
  * Class for a Delegate, except_part brick.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.Group.makeSubclass('except_part', {
+eYo.ns.Brick.Group.makeSubclass('except_part', {
   data: {
     variant: {
       all: [
@@ -166,7 +166,7 @@ eYo.NS_Brick.Group.makeSubclass('except_part', {
   'void_except_part'
 ].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.except_part
-  eYo.NS_Brick.mngr.register(k)
+  eYo.ns.Brick.mngr.register(k)
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.
@@ -186,7 +186,7 @@ eYo.Stmt.except_part.prototype.getType = eYo.Change.decorate(
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -221,10 +221,10 @@ eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Class for a Delegate, finally_part brick.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.Group.makeSubclass('finally_part', {
+eYo.ns.Brick.Group.makeSubclass('finally_part', {
   fields: {
     prefix: 'finally'
   }
@@ -331,7 +331,7 @@ eYo.Stmt.makeSubclass('raise_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -434,7 +434,7 @@ eYo.Stmt.makeSubclass('assert_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -461,7 +461,7 @@ eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   return eYo.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
-eYo.NS_Brick.Try.T3s = [
+eYo.ns.Brick.Try.T3s = [
   eYo.T3.Stmt.try_part,
   eYo.T3.Stmt.except_part,
   eYo.T3.Stmt.void_except_part,

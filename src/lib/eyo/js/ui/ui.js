@@ -11,35 +11,36 @@
  */
 'use strict'
 
+eYo.require('eYo.ns')
 eYo.require('eYo.Dlgt')
 eYo.require('eYo.Owned')
 
-// eYo.provide('eYo.NS_UI')
+// eYo.provide('eYo.ns.UI')
 
 /**
  * Class for loading, storing, and playing audio.
- * @name {eYo.NS_UI}
+ * @name {eYo.ns.UI}
  * @namespace
  */
 
- eYo.makeNS('UI')
+ eYo.ns.make('UI')
 
 /**
- * @name {eYo.NS_UI.Dlgt}
+ * @name {eYo.ns.UI.Dlgt}
  * @param {Function} c9r -  constructor
  * @param {String} key -  key
  * @param {Object} key -  model
  * @constructor
  * Constructor delegate subclass
  */
-eYo.Dlgt.makeSubclass(eYo.NS_UI)
+eYo.Dlgt.makeSubclass(eYo.ns.UI)
 
 /**
  * Make the dispose function.
  * @override
  */
-eYo.NS_UI.Dlgt.prototype.disposeDecorate = function (f) {
-  return eYo.NS_UI.Dlgt.superClass_.disposeDecorate.call(this, function () {
+eYo.ns.UI.Dlgt.prototype.disposeDecorate = function (f) {
+  return eYo.ns.UI.Dlgt.superClass_.disposeDecorate.call(this, function () {
     this.disposeUI()
     f && f.apply(this, arguments)
   })
@@ -49,7 +50,7 @@ eYo.NS_UI.Dlgt.prototype.disposeDecorate = function (f) {
  * Helper to make the `initUI` method based on the given function.
  * @param {Function} [f]  a function with at least one argument.
  */
-eYo.NS_UI.Dlgt.prototype.initUIDecorate = function (f) {
+eYo.ns.UI.Dlgt.prototype.initUIDecorate = function (f) {
   return f
 }
 
@@ -57,7 +58,7 @@ eYo.NS_UI.Dlgt.prototype.initUIDecorate = function (f) {
  * Helps to make the `disposeUI` method based on the given function.
  * @param {Function} [f]  a function with at least one argument.
  */
-eYo.NS_UI.Dlgt.prototype.disposeUIDecorate = function (f) {
+eYo.ns.UI.Dlgt.prototype.disposeUIDecorate = function (f) {
   return f
 }
 
@@ -65,7 +66,7 @@ eYo.NS_UI.Dlgt.prototype.disposeUIDecorate = function (f) {
  * Add the cached `app` property to the associate constructor.
  * NYU.
  */
-eYo.NS_UI.Dlgt.prototype.addApp = function () {
+eYo.ns.UI.Dlgt.prototype.addApp = function () {
   this.declareCached_('app', {
     get () {
       return this.owner__.app
@@ -83,18 +84,18 @@ eYo.NS_UI.Dlgt.prototype.addApp = function () {
 /**
  * Class for a basic object with a UI driver.
  * 
- * @name {eYo.NS_UI.Dflt}
+ * @name {eYo.ns.UI.Dflt}
  * @constructor
- * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.NS_Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.ns.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  * @readonly
  * @property {Boolean} hasUI, Whether the receiver is faceless.
  * @readonly
  * @property {eYo.Options} options, The owner's overall options.
  * @readonly
- * @property {eYo.NS_Driver.Mngr}ui_driver_mngr,  The ui driver manager used for rendering.
+ * @property {eYo.ns.Driver.Mngr}ui_driver_mngr,  The ui driver manager used for rendering.
  */
-eYo.Owned.makeSubclass(eYo.NS_UI, 'Dflt', {
+eYo.Owned.makeSubclass(eYo.ns.UI, 'Dflt', {
   init: {
     begin () {
       this.disposeUI = eYo.Do.nothing
@@ -126,20 +127,20 @@ eYo.Owned.makeSubclass(eYo.NS_UI, 'Dflt', {
   }
 })
 
-eYo.assert(eYo.NS_UI.Dflt, 'MISSING eYo.NS_UI.Dflt')
+eYo.assert(eYo.ns.UI.Dflt, 'MISSING eYo.ns.UI.Dflt')
 
 /**
  * Update the cached `ui_driver` each time the app object changes.
  * 
  */
-eYo.NS_UI.Dflt.prototype.appDidChange = function () {
-  var super_ = eYo.NS_UI.Dflt.superClass_.appDidChange
+eYo.ns.UI.Dflt.prototype.appDidChange = function () {
+  var super_ = eYo.ns.UI.Dflt.superClass_.appDidChange
   super_ && super_.call(this)
   this.ui_driverUpdate()
 }
 
-eYo.NS_UI.Dflt.prototype.ownerDidChange = function (before, after) {
-  var super_ = eYo.NS_UI.Dflt.superClass_.ownerDidChange
+eYo.ns.UI.Dflt.prototype.ownerDidChange = function (before, after) {
+  var super_ = eYo.ns.UI.Dflt.superClass_.ownerDidChange
   super_ && super_call(this, before, after)
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA
   if (after instanceof eYo.Slot) {
@@ -148,26 +149,26 @@ eYo.NS_UI.Dflt.prototype.ownerDidChange = function (before, after) {
   } else if (after instanceof eYo.Magnet) {
     this.magnet_ = after
     this.brick_ = after.brick
-  } else if (after instanceof eYo.NS_Brick.Dflt) {
+  } else if (after instanceof eYo.ns.Brick.Dflt) {
     this.brick_ = after
   }
 }
 
  /**
-  * @name {eYo.NS_UI.makeClass}
+  * @name {eYo.ns.UI.makeClass}
  * Constructor maker.
  * The delegate of the constructor has convenient methods
  * named `initUIDecorate` and `disposeUIDecorate` to
  * make the `initUI` and `disposeUI` methods of the prototype.
  * @param {Object} [ns] -  A namespace. Defaults to `eYo`.
  * @param {String} key -  The key.
- * @param {Function} [Super] -  The eventual super class. There is no default value. If given, it must be a subclass of `eYo.NS_UI.Dflt`.
- * @param {Function} [Dlgt] -  The constructor's delegate class. Defaults to the constructor of `Super`'s delegate if any. Must be a subclass of `eYo.NS_UI.Dlgt`.
+ * @param {Function} [Super] -  The eventual super class. There is no default value. If given, it must be a subclass of `eYo.ns.UI.Dflt`.
+ * @param {Function} [Dlgt] -  The constructor's delegate class. Defaults to the constructor of `Super`'s delegate if any. Must be a subclass of `eYo.ns.UI.Dlgt`.
  * @param {Object} model -  The dictionary of parameters.
  * @return {Function} the created constructor.
  */
-eYo.NS_UI.constructor.prototype.makeClass = function (ns, key, Super, Dlgt, model) {
-  var C9r = eYo.NS_UI.constructor.superClass_.makeClass.apply(this, arguments)
+eYo.ns.UI.constructor.prototype.makeClass = function (ns, key, Super, Dlgt, model) {
+  var C9r = eYo.ns.UI.constructor.superClass_.makeClass.apply(this, arguments)
   var eyo = C9r.eyo
   model = eyo.model // arguments may have changed
   var ui = model.ui

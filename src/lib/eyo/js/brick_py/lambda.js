@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Brick.List')
-eYo.require('eYo.NS_Brick.Primary')
+eYo.require('eYo.ns.Brick.List')
+eYo.require('eYo.ns.Brick.Primary')
 
 eYo.require('eYo.Magnet')
 goog.require('goog.dom');
-eYo.provide('eYo.NS_Brick.Lambda')
-eYo.provide('eYo.NS_Brick.Parameter')
+eYo.provide('eYo.ns.Brick.Lambda')
+eYo.provide('eYo.ns.Brick.Parameter')
 
 /**
  * List consolidator for parameter list.
@@ -35,23 +35,23 @@ eYo.provide('eYo.NS_Brick.Parameter')
  *    must also have a default value...
  * All the inputs are connectedÒ.
  */
-// eYo.NS_Consolidator.Parameter = function() {
-//   eYo.NS_Consolidator.Parameter.superClass_.constructor.call(this, eYo.NS_Consolidator.Parameter.data)
+// eYo.ns.Consolidator.Parameter = function() {
+//   eYo.ns.Consolidator.Parameter.superClass_.constructor.call(this, eYo.ns.Consolidator.Parameter.data)
 // }
-// goog.require(eYo.NS_Consolidator.List)
-// goog.inherits(eYo.NS_Consolidator.Parameter, eYo.NS_Consolidator.List)
+// goog.require(eYo.ns.Consolidator.List)
+// goog.inherits(eYo.ns.Consolidator.Parameter, eYo.ns.Consolidator.List)
 
-// eYo.NS_Consolidator.Parameter.data = {
+// eYo.ns.Consolidator.Parameter.data = {
 //   check: eYo.T3.Expr.Check.primary,
 //   mandatory: 0,
 //   presep: ',',
 // }
 
-eYo.NS_Consolidator.List.makeSubclass('Parameter', {
+eYo.ns.Consolidator.List.makeSubclass('Parameter', {
   check: null,
   mandatory: 0,
   presep: ','
-}, eYo.NS_Consolidator.List, eYo.NS_Consolidator)
+}, eYo.ns.Consolidator.List, eYo.ns.Consolidator)
 /**
  * Consolidate a connected input but the first one.
  * Does nothing if this is the last input of '**' type.
@@ -59,7 +59,7 @@ eYo.NS_Consolidator.List.makeSubclass('Parameter', {
  * @return yes exactly if there are more input
  * @override
  */
-eYo.NS_Consolidator.Parameter.prototype.consolidate_connected = function (io) {
+eYo.ns.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
   if (io.i + 1 === io.list.length) {
     var check = io.m4t.target.check_
     if (!check || goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
@@ -67,16 +67,16 @@ eYo.NS_Consolidator.Parameter.prototype.consolidate_connected = function (io) {
       return false
     }
   }
-  return eYo.NS_Consolidator.Parameter.superClass_.consolidate_connected.call(this, io)
+  return eYo.ns.Consolidator.Parameter.superClass_.consolidate_connected.call(this, io)
 }
 
 /**
  * Prepare io, just before walking through the input list for example.
  * Subclassers may add their own stuff to io.
- * @param {eYo.NS_Brick.Dflt} brick owner of the receiver
+ * @param {eYo.ns.Brick.Dflt} brick owner of the receiver
  */
-eYo.NS_Consolidator.Parameter.prototype.getIO = function (brick) {
-  var io = eYo.NS_Consolidator.Parameter.superClass_.getIO.call(this, brick)
+eYo.ns.Consolidator.Parameter.prototype.getIO = function (brick) {
+  var io = eYo.ns.Consolidator.Parameter.superClass_.getIO.call(this, brick)
   io.first_star_star = io.first_star = io.first_default = io.last_default = -1
   return io
 }
@@ -85,7 +85,7 @@ eYo.NS_Consolidator.Parameter.prototype.getIO = function (brick) {
  * Once the whole list has been managed,
  * there might be unwanted things.
  */
-eYo.NS_Consolidator.Parameter.prototype.doCleanup = (() => {
+eYo.ns.Consolidator.Parameter.prototype.doCleanup = (() => {
   // preparation: walk through the list of inputs and
   // find the key inputs
   var Type = {
@@ -159,7 +159,7 @@ eYo.NS_Consolidator.Parameter.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.NS_Consolidator.Parameter.superClass_.doCleanup.call(this, io)
+    eYo.ns.Consolidator.Parameter.superClass_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     // there must be an only one
     // first remove all the extra ** parameters
@@ -248,7 +248,7 @@ eYo.NS_Consolidator.Parameter.prototype.doCleanup = (() => {
  * This does not suppose that the list of input has been completely consolidated
  * @param {Object} io parameter.
  */
-eYo.NS_Consolidator.Parameter.prototype.getCheck = (() => {
+eYo.ns.Consolidator.Parameter.prototype.getCheck = (() => {
   var cache = {}
   return function (io) {
     var can_star_star = (io.first_star_star < 0 && io.i + 3 > io.list.length) ||
@@ -295,12 +295,12 @@ eYo.NS_Consolidator.Parameter.prototype.getCheck = (() => {
 /**
  * Class for a Delegate, parameter_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.List.makeSubclass('parameter_list', {
+eYo.ns.Brick.List.makeSubclass('parameter_list', {
   list: {
-    consolidator: eYo.NS_Consolidator.Parameter
+    consolidator: eYo.ns.Consolidator.Parameter
   }
 })
 
@@ -313,7 +313,7 @@ eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
   var F = (modifier, flags, msg) => {
     var b3k
     eYo.Events.disableWrap(() => {
-      b3k = eYo.NS_Brick.newReady(this, eYo.T3.Expr.identifier)
+      b3k = eYo.ns.Brick.newReady(this, eYo.T3.Expr.identifier)
       b3k.change.wrap(
         function() { // `this` is `y`
           this.modifier_p = modifier
@@ -333,7 +333,7 @@ eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
           mngr.addInsertChild(mngr.newMenuItem(
             content,
             () => {
-              var b3k = eYo.NS_Brick.newReady(this, eYo.T3.Expr.identifier)
+              var b3k = eYo.ns.Brick.newReady(this, eYo.T3.Expr.identifier)
               eYo.Events.groupWrap(() => { // `this` is catched
                 b3k.change.wrap(
                   function () { // `this` is `b3k`
@@ -371,7 +371,7 @@ eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
  * expression. Whenever one of the connections connects or disconnects,
  * the checking policy changes accordingly. See the `updateLambdaCheck`
  * method of the connection's delegate.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('lambda', {
@@ -422,7 +422,7 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
   'lambda_expr_nocond'
 ].forEach((key) => {
   eYo.Expr[key] = eYo.Expr.lambda
-  eYo.NS_Brick.mngr.register(key)
+  eYo.ns.Brick.mngr.register(key)
 })
 
 /**
@@ -468,7 +468,7 @@ eYo.Magnet.prototype.consolidateType = function () {
     (cond_in ? [eYo.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.T3.Expr.lambda_expr_nocond] : [])
 }
 
-eYo.NS_Brick.Lambda.T3s = [
+eYo.ns.Brick.Lambda.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.parameter_list,
   eYo.T3.Expr.lambda

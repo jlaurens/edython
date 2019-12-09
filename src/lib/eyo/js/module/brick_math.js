@@ -11,20 +11,20 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Brick')
+eYo.require('eYo.ns.Brick')
 
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.Stmt')
-eYo.require('eYo.NS_Brick.List')
+eYo.require('eYo.ns.Brick.List')
 
-eYo.require('eYo.NS_Brick.Primary')
+eYo.require('eYo.ns.Brick.Primary')
 eYo.require('eYo.Tooltip')
 
 eYo.require('eYo.Library')
-eYo.require('eYo.Model.math__module')
+eYo.require('eYo.ns.Model.math__module')
 
-eYo.provide('eYo.NS_Brick.Math')
+eYo.provide('eYo.ns.Brick.Math')
 
 ;(function () {
 
@@ -213,7 +213,7 @@ goog.mixin(eYo.Tooltip.Title, {
   math__import_stmt: 'Importer le module math',
 })
 
-eYo.NS_Brick.Math.T3s = [
+eYo.ns.Brick.Math.T3s = [
   eYo.T3.Stmt.math__import_stmt,
   eYo.T3.Expr.math__call_expr,
   eYo.T3.Stmt.math__call_stmt,

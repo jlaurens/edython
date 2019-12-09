@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('eYo.Do')
-eYo.require('eYo.Model')
+eYo.require('eYo.ns.Model')
 
 eYo.provide('eYo.Dlgt')
 
@@ -93,7 +93,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
       model.cached && this.declareCached(model.cached)
       model.clonable && this.declareClonable(model.clonable)
       model.computed && this.declareComputed(model.computed)
-      eYo.Model.inherits(model, this.super && this.super.model)
+      eYo.ns.Model.inherits(model, this.super && this.super.model)
     }
   }
   // convenient variable

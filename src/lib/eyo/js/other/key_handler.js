@@ -19,7 +19,7 @@ eYo.provide('eYo.KeyHandler')
 eYo.provide('eYo.KeyHandlerMenu')
 
 eYo.forwardDeclare('eYo.XRE')
-eYo.forwardDeclare('eYo.NS_Dom')
+eYo.forwardDeclare('eYo.ns.Dom')
 eYo.forwardDeclare('eYo.Navigate')
 eYo.forwardDeclare('eYo.MenuItem')
 eYo.forwardDeclare('eYo.Separator')
@@ -104,11 +104,11 @@ eYo.KeyHandler = (() => {
         return
       }
     } else if (k === 'backspace') {
-      eYo.NS_Dom.gobbleEvent(e)
+      eYo.ns.Dom.gobbleEvent(e)
       K = eYo.NA
     }
     if (me.updateMenu(K)) {
-      eYo.NS_Dom.gobbleEvent(e)
+      eYo.ns.Dom.gobbleEvent(e)
       return true
     }
     return false
@@ -436,20 +436,20 @@ eYo.KeyHandler = (() => {
       }
     } else if (k === 'enter' || k === 'return') {
       if ((brick = eYo.app.focusMngr.brick)) {
-        eYo.NS_Dom.gobbleEvent(e)
+        eYo.ns.Dom.gobbleEvent(e)
         return
       }
     }
     if ((brick = eYo.app.focusMngr.brick)) {
       if (K === ' ') {
-        eYo.NS_Dom.gobbleEvent(e)
+        eYo.ns.Dom.gobbleEvent(e)
         eYo.MenuManager.shared().showMenu(brick, event)
         return
       }
       keys_ = []
       me.populateMenu(K)
       if (menu_.getChildCount()) {
-        eYo.NS_Dom.gobbleEvent(e)
+        eYo.ns.Dom.gobbleEvent(e)
         if (!menu_.inDocument_) {
           menu_.render()
         }
@@ -498,7 +498,7 @@ eYo.KeyHandler = (() => {
         menu_.highlightFirst()
       } else {
         var F = f => {
-          eYo.NS_Dom.gobbleEvent(e)
+          eYo.ns.Dom.gobbleEvent(e)
           f()
         }
         switch (k) {
@@ -511,8 +511,8 @@ eYo.KeyHandler = (() => {
     } else {
       // B is not always a brick!
       F = f => {
-        eYo.NS_Dom.gobbleEvent(e)
-        var brick = eYo.NS_Brick.getBestBrick(eYo.app.board, f)
+        eYo.ns.Dom.gobbleEvent(e)
+        var brick = eYo.ns.Brick.getBestBrick(eYo.app.board, f)
         if (brick) {
           brick.focusOn().scrollToVisible()
         }

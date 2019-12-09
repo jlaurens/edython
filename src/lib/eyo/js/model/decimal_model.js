@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.Model')
-eYo.require('eYo.Model.Module')
+eYo.require('eYo.ns.Model')
+eYo.require('eYo.ns.Model.Module')
 
-eYo.require('eYo.Model.Item')
-eYo.provide('eYo.Model.decimal__module.Item')
-eYo.provide('eYo.Model.decimal__module')
+eYo.require('eYo.ns.Model.Item')
+eYo.provide('eYo.ns.Model.decimal__module.Item')
+eYo.provide('eYo.ns.Model.decimal__module')
 
-eYo.Model.decimal__module = new eYo.Model.Module('decimal__module', 'https://docs.python.org/3.6/library/decimal.html')
+eYo.ns.Model.decimal__module = new eYo.ns.Model.Module('decimal__module', 'https://docs.python.org/3.6/library/decimal.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.Model.decimal__module.Item = function (model) {
-  eYo.Model.decimal__module.Item.superClass_.constructor.call(this, model)
+eYo.ns.Model.decimal__module.Item = function (model) {
+  eYo.ns.Model.decimal__module.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.Model.decimal__module.Item
+var Item = eYo.ns.Model.decimal__module.Item
 
-goog.inherits(Item, eYo.Model.Item)
+goog.inherits(Item, eYo.ns.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.Model.decimal__module
+Item.prototype.module = eYo.ns.Model.decimal__module
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.Model.decimal__module.setData({
+eYo.ns.Model.decimal__module.setData({
   categories: [
     'decimal-objects',
     'context-objects',

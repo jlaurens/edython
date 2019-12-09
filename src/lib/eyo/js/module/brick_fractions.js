@@ -11,18 +11,18 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Brick')
+eYo.require('eYo.ns.Brick')
 
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.Stmt')
-eYo.require('eYo.NS_Brick.List')
+eYo.require('eYo.ns.Brick.List')
 
-eYo.require('eYo.NS_Brick.Primary')
+eYo.require('eYo.ns.Brick.Primary')
 eYo.require('eYo.Tooltip')
 
 eYo.require('eYo.Library')
-eYo.provide('eYo.NS_Brick.Fractions')
+eYo.provide('eYo.ns.Brick.Fractions')
 
 /*
     'Fraction': 0,
@@ -133,6 +133,6 @@ goog.mixin(eYo.Tooltip.Title, {
   fractions__import_stmt: 'Importer le module fractions',
 })
 
-eYo.NS_Brick.Fractions.T3s = [
+eYo.ns.Brick.Fractions.T3s = [
   eYo.T3.Fraction
 ]

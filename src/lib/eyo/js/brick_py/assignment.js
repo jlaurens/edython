@@ -16,11 +16,11 @@ eYo.require('eYo')
 eYo.require('eYo.Stmt')
 
 eYo.provide('eYo.Stmt.assignment_stmt')
-eYo.provide('eYo.NS_Brick.Assignment')
+eYo.provide('eYo.ns.Brick.Assignment')
 
 eYo.forwardDeclare('eYo.Msg')
-eYo.forwardDeclare('eYo.NS_Brick.Primary')
-eYo.forwardDeclare('eYo.NS_Brick.List')
+eYo.forwardDeclare('eYo.ns.Brick.Primary')
+eYo.forwardDeclare('eYo.ns.Brick.List')
 goog.forwardDeclare('goog.dom')
 
 /**
@@ -330,7 +330,7 @@ eYo.Stmt.makeSubclass('assignment_stmt', {
   'augmented_assignment_stmt'
 ].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.assignment_stmt
-  eYo.NS_Brick.mngr.register(k)
+  eYo.ns.Brick.mngr.register(k)
 })
 
 
@@ -363,7 +363,7 @@ eYo.Stmt.assignment_stmt.prototype.getType = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -400,7 +400,7 @@ eYo.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Used only in assignment statement as wrapped value,
  * and in primary as promised value.
  */
-eYo.NS_Brick.List.makeSubclass('value_list', {
+eYo.ns.Brick.List.makeSubclass('value_list', {
   list: (() => {
     /*
      * For each given type, returns the list of brick types that can be unique.
@@ -486,7 +486,7 @@ eYo.NS_Brick.List.makeSubclass('value_list', {
           eYo.T3.Expr.named_call_expr
         ].indexOf(subtype) < 0 ? [] : null)
       },
-      consolidator: eYo.NS_Consolidator.List,
+      consolidator: eYo.ns.Consolidator.List,
       mandatory: 1,
       presep: ','
     }
@@ -549,11 +549,11 @@ eYo.Expr.value_list.prototype.getSubtype = function () {
   return (t && (this.subtype_ = t.type)) || this.subtype_
 }
 
-eYo.NS_Brick.List.makeSubclass('augassigned_list', () => {
+eYo.ns.Brick.List.makeSubclass('augassigned_list', () => {
   var D = {
     check: eYo.T3.Expr.Check.expression,
     unique: eYo.T3.Expr.yield_expr,
-    consolidator: eYo.NS_Consolidator.List,
+    consolidator: eYo.ns.Consolidator.List,
     mandatory: 1,
     presep: ','
   }
@@ -567,7 +567,7 @@ eYo.NS_Brick.List.makeSubclass('augassigned_list', () => {
 
 // /**
 //  * Populate the context menu for the given brick.
-//  * @param {eYo.NS_Brick.Dflt} brick The brick.
+//  * @param {eYo.ns.Brick.Dflt} brick The brick.
 //  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
 //  * @private
 //  */
@@ -612,7 +612,7 @@ eYo.NS_Brick.List.makeSubclass('augassigned_list', () => {
 //   return eYo.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 // }
 
-eYo.NS_Brick.Assignment.T3s = [
+eYo.ns.Brick.Assignment.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.yield_expr,
   eYo.T3.Expr.target_list,

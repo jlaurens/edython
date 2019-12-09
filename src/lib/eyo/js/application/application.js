@@ -24,7 +24,7 @@ eYo.forwardDeclare('eYo.Css')
 eYo.forwardDeclare('eYo.Focus')
 eYo.forwardDeclare('eYo.Motion')
 eYo.forwardDeclare('eYo.Desk')
-eYo.forwardDeclare('eYo.NS_Driver')
+eYo.forwardDeclare('eYo.ns.Driver')
 eYo.forwardDeclare('eYo.Audio')
 
 /**
@@ -42,7 +42,7 @@ eYo.forwardDeclare('eYo.Audio')
  * @property {eYo.Desk} desk
  * @readonly
  * The ui drivers manager.
- * @property {eYo.NS_Driver.Mngr} ui_driver_mngr
+ * @property {eYo.ns.Driver.Mngr} ui_driver_mngr
  */
 eYo.makeClass('Application', {
   init : {
@@ -117,7 +117,7 @@ eYo.Application.prototype.initUI = function() {
   this.initUI = eYo.Do.nothing
   delete this.disposeUI
   this.audio__ = new eYo.Audio(this, this.options.pathToMedia)
-  var d = this.ui_driver_mngr__ = new eYo.NS_Svg.Mngr(this)
+  var d = this.ui_driver_mngr__ = new eYo.ns.Svg.Mngr(this)
   d.initUI(this)
   this.desk.initUI()
 }
@@ -151,7 +151,7 @@ eYo.Application.prototype.paste = () => {
 /**
  * Delete this brick and the next ones if requested.
  * For edython.
- * @param {eYo.NS_Brick.Dflt} block The brick to delete.
+ * @param {eYo.ns.Brick.Dflt} block The brick to delete.
  * @param {boolean} deep
  */
 eYo.Application.prototype.deleteBrick = (brick, deep) => {
@@ -186,7 +186,7 @@ eYo.Application.prototype.deleteBrick = (brick, deep) => {
 
 /**
  * Copy a brick onto the local clipboard.
- * @param {eYo.NS_Brick.Dflt} brick Brick to be copied.
+ * @param {eYo.ns.Brick.Dflt} brick Brick to be copied.
  * @private
  */
 eYo.Application.prototype.copyBrick = (brick, deep) => {

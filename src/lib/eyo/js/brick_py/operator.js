@@ -13,7 +13,7 @@
 
 eYo.require('eYo.Expr')
 
-eYo.provide('eYo.NS_Brick.Operator')
+eYo.provide('eYo.ns.Brick.Operator')
 
 /**
  * Class for a Delegate, [...] op ... brick.
@@ -148,7 +148,7 @@ eYo.T3.Expr.Check.binary.forEach(t => {
   if (t !== eYo.T3.Expr.any) {
     t = t.substring(4)
     eYo.Expr[t] = eYo.Expr.binary
-    eYo.NS_Brick.mngr.register(t)
+    eYo.ns.Brick.mngr.register(t)
   }
 })
 
@@ -161,7 +161,7 @@ eYo.T3.Expr.Check.binary.forEach(t => {
   'object_comparison'
 ].forEach(t => {
   eYo.Expr[t] = eYo.Expr.binary
-  eYo.NS_Brick.mngr.register(t)
+  eYo.ns.Brick.mngr.register(t)
 })
 
 /**
@@ -361,7 +361,7 @@ eYo.Expr.Dflt.makeSubclass('unary', {
   'not_test'
 ].forEach((k) => {
   eYo.Expr[k] = eYo.Expr.unary
-  eYo.NS_Brick.mngr.register(k)
+  eYo.ns.Brick.mngr.register(k)
 })
 
 /**
@@ -414,7 +414,7 @@ eYo.Expr.unary.getTypeForOperator = function (op) {
   return eYo.T3.Expr.unset
 }
 
-eYo.NS_Brick.Operator.T3s = [
+eYo.ns.Brick.Operator.T3s = [
   eYo.T3.Expr.u_expr,
   eYo.T3.Expr.m_expr,
   eYo.T3.Expr.a_expr,

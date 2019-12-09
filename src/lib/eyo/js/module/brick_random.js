@@ -11,26 +11,26 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Brick')
+eYo.require('eYo.ns.Brick')
 
-eYo.require('eYo.NS_Brick.Range')
+eYo.require('eYo.ns.Brick.Range')
 
-eYo.require('eYo.Model.random__module')
+eYo.require('eYo.ns.Model.random__module')
 
 eYo.require('eYo.Stmt')
 
-eYo.require('eYo.NS_Brick.List')
-eYo.require('eYo.NS_Brick.Primary')
+eYo.require('eYo.ns.Brick.List')
+eYo.require('eYo.ns.Brick.Primary')
 eYo.require('eYo.Tooltip')
 
 eYo.require('eYo.Library')
-eYo.provide('eYo.NS_Brick.Random')
+eYo.provide('eYo.ns.Brick.Random')
 
 eYo.T3.Expr.random__randrange = 'eyo:random__randrange'
 
 /**
  * Class for a Delegate, random range brick.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
@@ -313,6 +313,6 @@ goog.mixin(eYo.Tooltip.Title, {
   random__setstate: 'Mettre l\'état du générateur aléatoire à la valeur donnée'
 })
 
-eYo.NS_Brick.Random.T3s = [
+eYo.ns.Brick.Random.T3s = [
   eYo.T3.Expr.random__randrange,
 ]

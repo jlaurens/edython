@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Dom.Search')
+eYo.require('eYo.ns.Dom.Search')
 
 eYo.forwardDeclare('eYo.Search')
 // eYo.forwardDeclare('eYo.SearchToolbar')
@@ -19,7 +19,7 @@ eYo.forwardDeclare('eYo.Search')
 /**
  * Svg driver for the search pane.
  */
-eYo.NS_Svg.makeDriverClass('Search', {
+eYo.ns.Svg.makeDriverClass('Search', {
     /**
    * Initializes the search SVG ressources.
    * @param {eYo.Search} search
@@ -28,7 +28,7 @@ eYo.NS_Svg.makeDriverClass('Search', {
     if (search.dom) {
       return
     }
-    var dom = eYo.NS_Svg.superClass_.searchInit.call(this, search)
+    var dom = eYo.ns.Svg.superClass_.searchInit.call(this, search)
     var svg = dom.svg = Object.create(null)
     /*
     <svg class="eyo-search">
@@ -38,10 +38,10 @@ eYo.NS_Svg.makeDriverClass('Search', {
       <g class="eyo-board">...</g>
     </svg>
     */
-    var root = svg.root_ = eYo.NS_Svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
+    var root = svg.root_ = eYo.ns.Svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
     x.dataset && (x.dataset.type = 'search board')
 
-    var background = svg.background_ = eYo.NS_Svg.newElement('path', {
+    var background = svg.background_ = eYo.ns.Svg.newElement('path', {
       class: 'eyo-search-background'
     }, root)
   // Bad design: code reuse: options
@@ -75,7 +75,7 @@ eYo.NS_Svg.makeDriverClass('Search', {
     goog.dom.removeNode(dom.svg.root_)
     dom.svg.root_ = null
     dom.svg = null
-    eYo.NS_Svg.superClass_.searchDispose.call(this, search)
+    eYo.ns.Svg.superClass_.searchDispose.call(this, search)
   }
 })
 
@@ -84,7 +84,7 @@ eYo.NS_Svg.makeDriverClass('Search', {
  * @param {eYo.Search} search
  * @param {Boolean} show
  */
-eYo.NS_Svg.Search.prototype.displaySet = function (search, show) {
+eYo.ns.Svg.Search.prototype.displaySet = function (search, show) {
   !show && eYo.Tooltip.hideAll(search.dom.svg.root_)
   search.dom.svg.root_.style.display = show ? 'block' : 'none'
 }
@@ -93,7 +93,7 @@ eYo.NS_Svg.Search.prototype.displaySet = function (search, show) {
  * Get the display attribute.
  * @param {eYo.Search} search
  */
-eYo.NS_Svg.Search.prototype.displayGet = function (search) {
+eYo.ns.Svg.Search.prototype.displayGet = function (search) {
   return search.dom.svg.root_.style.display !== 'none'
 }
 
@@ -101,7 +101,7 @@ eYo.NS_Svg.Search.prototype.displayGet = function (search) {
  * Update the view based on coordinates calculated in position().
  * @param {eYo.Search} search
  */
-eYo.NS_Svg.Search.prototype.place = function (search) {
+eYo.ns.Svg.Search.prototype.place = function (search) {
   var rect = search.viewRect
   var div = search.dom.div_
   div.style.width = `${rect.width}px`
@@ -133,7 +133,7 @@ eYo.NS_Svg.Search.prototype.place = function (search) {
  * @param {eYo.Search} search
  * @private
  */
-eYo.NS_Svg.Search.prototype.update = function(search) {
+eYo.ns.Svg.Search.prototype.update = function(search) {
   var width = search.width
   var height = search.height
   var top_margin = eYo.Search.TOP_MARGIN
@@ -156,9 +156,9 @@ eYo.NS_Svg.Search.prototype.update = function(search) {
  * The 'rect' listeners have been removed.
  * @param {eYo.Search} search
  */
-eYo.NS_Svg.Search.prototype.removeAllBrickListeners = function(search) {
+eYo.ns.Svg.Search.prototype.removeAllBrickListeners = function(search) {
   // Delete all the event listeners.
-  search.listeners_.forEach(l => eYo.NS_Dom.unbindEvent(l))
+  search.listeners_.forEach(l => eYo.ns.Dom.unbindEvent(l))
   search.listeners_.length = 0
 }
 
@@ -167,29 +167,29 @@ eYo.NS_Svg.Search.prototype.removeAllBrickListeners = function(search) {
  * Listeners work only when the search authorizes it.
  * The 'rect' listeners have been removed.
  * @param {eYo.Search} search
- * @param {eYo.NS_Brick.Dflt} brick The block to add listeners for.
+ * @param {eYo.ns.Brick.Dflt} brick The block to add listeners for.
  */
-eYo.NS_Svg.Search.prototype.addListeners = function(search, brick) {
+eYo.ns.Svg.Search.prototype.addListeners = function(search, brick) {
   var g = brick.dom.svg.group_
-  search.listeners_.push(eYo.NS_Dom.bindEvent(
+  search.listeners_.push(eYo.ns.Dom.bindEvent(
     g,
     'mousedown',
     null,
     e => eYo.app.motion.handleFlyoutStart(e, search, brick)
   ))
-  search.listeners_.push(eYo.NS_Dom.bindEvent(
+  search.listeners_.push(eYo.ns.Dom.bindEvent(
     g,
     'mouseover',
     brick,
     brick.addSelect
   ))
-  search.listeners_.push(eYo.NS_Dom.bindEvent(
+  search.listeners_.push(eYo.ns.Dom.bindEvent(
     g,
     'mouseleave',
     brick,
     brick.removeFocus
   ))
-  search.listeners_.push(eYo.NS_Dom.bindEvent(
+  search.listeners_.push(eYo.ns.Dom.bindEvent(
     g,
     'mouseout',
     brick,
@@ -201,9 +201,9 @@ eYo.NS_Svg.Search.prototype.addListeners = function(search, brick) {
  * Add a `mouseover` listener to deselect all bricks.
  * @param {eYo.Search} search
  */
-eYo.NS_Svg.Search.prototype.listen_mouseover = function(search) {
+eYo.ns.Svg.Search.prototype.listen_mouseover = function(search) {
   search.listeners_.push(
-    eYo.NS_Dom.bindEvent(
+    eYo.ns.Dom.bindEvent(
     search.dom.svg.background_,
     'mouseover',
     null,
@@ -217,20 +217,20 @@ eYo.NS_Svg.Search.prototype.listen_mouseover = function(search) {
  * Add a `wheel` and `mousdown` listener to scroll.
  * @param {eYo.Search} search
  */
-eYo.NS_Svg.Search.prototype.bindScrollEvents = function(search) {
+eYo.ns.Svg.Search.prototype.bindScrollEvents = function(search) {
   var bound = search.dom.bound
   if (bound.drag_wheel) {
     return
   }
   var svg = search.dom.svg
-  bound.drag_wheel = eYo.NS_Dom.bindEvent(
+  bound.drag_wheel = eYo.ns.Dom.bindEvent(
     svg.group_,
     'wheel',
     null,
     this.searchOn_wheel.bind(search)
   )
   // Dragging the search up and down.
-  bound.drag_mousedown = eYo.NS_Dom.bindEvent(
+  bound.drag_mousedown = eYo.ns.Dom.bindEvent(
     svg.background_,
     'mousedown',
     null,
@@ -243,7 +243,7 @@ eYo.NS_Svg.Search.prototype.bindScrollEvents = function(search) {
  * @param {Event} e Mouse down event.
  * @private
  */
-eYo.NS_Svg.Search.prototype.on_mousedown = function(e) {
+eYo.ns.Svg.Search.prototype.on_mousedown = function(e) {
   eYo.app.motion.handleFlyoutStart(e, this)
   
 }
@@ -251,7 +251,7 @@ eYo.NS_Svg.Search.prototype.on_mousedown = function(e) {
 /**
  * Svg driver for the search tool bar.
  */
-eYo.NS_Svg.makeDriverClass('SearchToolbar', {
+eYo.ns.Svg.makeDriverClass('SearchToolbar', {
   /**
    * Initializes the search toolbar SVG ressources.
    * @param {eYo.SearchToolbar} searchToolbar
@@ -285,8 +285,8 @@ eYo.NS_Svg.makeDriverClass('SearchToolbar', {
       goog.dom.TagName.DIV,
       goog.getCssName(cssClass, 'control')
     )
-    svg.root_ = eYo.NS_Svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
-    svg.pathControl_ = eYo.NS_Svg.newElement('path', {
+    svg.root_ = eYo.ns.Svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
+    svg.pathControl_ = eYo.ns.Svg.newElement('path', {
       id: 'p-search-control'
     }, dom.svg)
     if (eYo.Application && eYo.app.searchDropDown) {
@@ -378,25 +378,25 @@ eYo.NS_Svg.makeDriverClass('SearchToolbar', {
     }
     div.appendChild(dom.control_)
     var bound = dom.bound
-    bound.mousedown = eYo.NS_Dom.bindEvent(
+    bound.mousedown = eYo.ns.Dom.bindEvent(
       dom.control_,
       'mousedown',
       search,
       search.on_mousedown
     )
-    bound.mouseenter = eYo.NS_Dom.bindEvent(
+    bound.mouseenter = eYo.ns.Dom.bindEvent(
       dom.control_,
       'mouseenter',
       search,
       search.on_mouseenter
     )
-    bound.mouseleave = eYo.NS_Dom.bindEvent(
+    bound.mouseleave = eYo.ns.Dom.bindEvent(
       dom.control_,
       'mouseleave',
       search,
       search.on_mouseleave
     )
-    bound.mouseup = eYo.NS_Dom.bindEvent(
+    bound.mouseup = eYo.ns.Dom.bindEvent(
       dom.control_,
       'mouseup',
       search,

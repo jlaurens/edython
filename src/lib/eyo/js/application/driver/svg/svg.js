@@ -11,23 +11,23 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Dom')
+eYo.require('eYo.ns.Dom')
 
 eYo.require('eYo.Decorate')
 
 /**
  * A namespace.
- * @name{eYo.NS_Svg}
+ * @name{eYo.ns.Svg}
  * @namespace
  */
-eYo.NS_Driver.makeNS(eYo, 'Svg')
+eYo.ns.Driver.ns.make(eYo, 'Svg')
 
 eYo.forwardDeclare('eYo.T3.Profile')
-eYo.forwardDeclare('eYo.NS_Svg.Brick')
-eYo.forwardDeclare('eYo.NS_Svg.Slot')
-eYo.forwardDeclare('eYo.NS_Svg.Field')
+eYo.forwardDeclare('eYo.ns.Svg.Brick')
+eYo.forwardDeclare('eYo.ns.Svg.Slot')
+eYo.forwardDeclare('eYo.ns.Svg.Field')
 eYo.forwardDeclare('eYo.Slot')
-eYo.forwardDeclare('eYo.NS_Brick')
+eYo.forwardDeclare('eYo.ns.Brick')
 eYo.forwardDeclare('eYo.Style')
 
 goog.forwardDeclare('goog.userAgent')
@@ -36,13 +36,13 @@ goog.forwardDeclare('goog.userAgent')
  * The Svg delegate.
  * @constructor
  */
-eYo.NS_Driver.Dlgt.makeSubclass(eYo.NS_Svg)
+eYo.ns.Driver.Dlgt.makeSubclass(eYo.ns.Svg)
 
 /**
- * @name {eYo.NS_Svg.Mngr}
+ * @name {eYo.ns.Svg.Mngr}
  * The manager constructor of all the svg drivers.
  */
-eYo.NS_Svg.makeMngrClass({
+eYo.ns.Svg.makeMngrClass({
   initUIMake (f) {
     return function (object, ...rest) {
       var dom = object.dom
@@ -72,9 +72,9 @@ eYo.NS_Svg.makeMngrClass({
  * @param {Element} parent Optional parent on which to append the element.
  * @return {!SVGElement} Newly created SVG element.
  */
-eYo.NS_Svg.newElement = function(name, attrs, parent) {
+eYo.ns.Svg.newElement = function(name, attrs, parent) {
   var e = /** @type {!SVGElement} */
-      document.createElementNS(eYo.NS_Dom.SVG_NS, name)
+      document.createElementNS(eYo.ns.Dom.SVG_NS, name)
   for (var key in attrs) {
     var value = attrs[key]
     value && e.setAttribute(key, value)
@@ -95,11 +95,11 @@ eYo.NS_Svg.newElement = function(name, attrs, parent) {
  * @param {string} className.
  * @return {!SVGElement} Newly created SVG element.
  */
-eYo.NS_Svg.newElementSvg = function(parent, className) {
-  return eYo.NS_Svg.newElement('svg', {
-    xmlns: eYo.NS_Dom.SVG_NS,
-    'xmlns:html': eYo.NS_Dom.HTML_NS,
-    'xmlns:xlink': eYo.NS_Dom.XLINK_NS,
+eYo.ns.Svg.newElementSvg = function(parent, className) {
+  return eYo.ns.Svg.newElement('svg', {
+    xmlns: eYo.ns.Dom.SVG_NS,
+    'xmlns:html': eYo.ns.Dom.HTML_NS,
+    'xmlns:xlink': eYo.ns.Dom.XLINK_NS,
     version: '1.1',
     class: className | ''
   },
@@ -109,17 +109,17 @@ eYo.NS_Svg.newElementSvg = function(parent, className) {
 /**
  * Regular expressions.
  */
-Object.defineProperties(eYo.NS_Svg, {
+Object.defineProperties(eYo.ns.Svg, {
   TRANSLATE_REGEX_: { value: /translate\s*\(\s*([-+\d.,e]+)([ ,]\s*([-+\d.,e]+)\s*\))/ },
   TRANSLATE_2D_REGEX_: { value: /transform\s*:\s*translate\s*\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ },
   TRANSLATE_3D_REGEX_: { value: /transform\s*:\s*translate3d\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ }
 })
 
 /**
- * @name{eYo.NS_Svg.Dflt}
+ * @name{eYo.ns.Svg.Dflt}
  * @constructor
  */
-eYo.Dflt.makeSubclass(eYo.NS_Svg)
+eYo.Dflt.makeSubclass(eYo.ns.Svg)
 
 /**
  * Return the coordinates of the top-left corner of this element relative to
@@ -128,7 +128,7 @@ eYo.Dflt.makeSubclass(eYo.NS_Svg)
  * @param {Element} element SVG element to find the coordinates of.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
-eYo.NS_Svg.Dflt.prototype.xyInParent = function(element) {
+eYo.ns.Svg.Dflt.prototype.xyInParent = function(element) {
   var xy = new eYo.Where()
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
@@ -141,7 +141,7 @@ eYo.NS_Svg.Dflt.prototype.xyInParent = function(element) {
   }
   // Second, check for transform="translate(...)" attribute.
   var transform = element.getAttribute('transform')
-  var r = transform && (transform.match(eYo.NS_Svg.TRANSLATE_REGEX_))
+  var r = transform && (transform.match(eYo.ns.Svg.TRANSLATE_REGEX_))
   if (r) {
     xy.x += parseFloat(r[1])
     if (r[3]) {
@@ -151,10 +151,10 @@ eYo.NS_Svg.Dflt.prototype.xyInParent = function(element) {
   // Then check for style = transform: translate(...) or translate3d(...)
   var style = element.getAttribute('style');
   if (style && style.indexOf('translate') > -1) {
-    var styleComponents = style.match(eYo.NS_Svg.TRANSLATE_2D_REGEX_)
+    var styleComponents = style.match(eYo.ns.Svg.TRANSLATE_2D_REGEX_)
     // Try transform3d if 2d transform wasn't there.
     if (!styleComponents) {
-      styleComponents = style.match(eYo.NS_Svg.TRANSLATE_3D_REGEX_)
+      styleComponents = style.match(eYo.ns.Svg.TRANSLATE_3D_REGEX_)
     }
     if (styleComponents) {
       xy.x += parseFloat(styleComponents[1])
@@ -170,7 +170,7 @@ eYo.NS_Svg.Dflt.prototype.xyInParent = function(element) {
  * Add tooltip to an element
  * @param {String} key
  */
-eYo.NS_Svg.Dflt.prototype.addTooltip = function (el, title, options) {
+eYo.ns.Svg.Dflt.prototype.addTooltip = function (el, title, options) {
   if (eYo.isStr(title)) {
     el.setAttribute('title', title)
     tippy(el, options)
@@ -185,7 +185,7 @@ eYo.NS_Svg.Dflt.prototype.addTooltip = function (el, title, options) {
  * @param {string} txt The text to yield_expr
  * @return {string}
  */
-eYo.NS_Svg.getCssClassForText = function (txt) {
+eYo.ns.Svg.getCssClassForText = function (txt) {
   switch (eYo.T3.Profile.get(txt, null).raw) {
   case eYo.T3.Expr.reserved_identifier:
   case eYo.T3.Expr.reserved_keyword:
@@ -205,7 +205,7 @@ eYo.NS_Svg.getCssClassForText = function (txt) {
  * @param {Element} element DOM element to remove attribute from.
  * @param {string} attributeName Name of attribute to remove.
  */
-eYo.NS_Svg.removeAttribute = (element, attributeName) => {
+eYo.ns.Svg.removeAttribute = (element, attributeName) => {
   // goog.userAgent.isVersion is deprecated, but the replacement is
   // goog.userAgent.isVersionOrHigher.
   if (goog.userAgent.IE && goog.userAgent.isVersion('10.0')) {
@@ -219,7 +219,7 @@ eYo.NS_Svg.removeAttribute = (element, attributeName) => {
  * Get the cumulated affine transform of an element.
  * @param {*} element
  */
-eYo.NS_Svg.getAffineTransform = (() => {
+eYo.ns.Svg.getAffineTransform = (() => {
   var getAffineTransform = (str) => {
     var values = str.split(/\s*,\s*|\)\s*|.*\(/)
     if (values.length > 8) {
@@ -255,8 +255,8 @@ eYo.NS_Svg.getAffineTransform = (() => {
  * Get the cumulated affine transform of an element.
  * @param {*} element
  */
-eYo.NS_Svg.getTransformCorrection = element => {
-  var A = eYo.NS_Svg.getAffineTransform(element)
+eYo.ns.Svg.getTransformCorrection = element => {
+  var A = eYo.ns.Svg.getAffineTransform(element)
   if (A) {
     var B = A.createInverse()
     if (B) {
@@ -276,7 +276,7 @@ eYo.NS_Svg.getTransformCorrection = element => {
  * @param {Element} element SVG element to find the coordinates of.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
-eYo.NS_Svg.getRelativeWhere = function(element) {
+eYo.ns.Svg.getRelativeWhere = function(element) {
   var xy = new eYo.Where()
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
@@ -289,7 +289,7 @@ eYo.NS_Svg.getRelativeWhere = function(element) {
   }
   // Second, check for transform="translate(...)" attribute.
   var transform = element.getAttribute('transform')
-  var r = transform && transform.match(eYo.NS_Svg.getRelativeWhere.Where_REGEX_)
+  var r = transform && transform.match(eYo.ns.Svg.getRelativeWhere.Where_REGEX_)
   if (r) {
     xy.x += parseFloat(r[1])
     if (r[3]) {
@@ -299,10 +299,10 @@ eYo.NS_Svg.getRelativeWhere = function(element) {
   // Then check for style = transform: translate(...) or translate3d(...)
   var style = element.getAttribute('style')
   if (style && style.indexOf('translate') > -1) {
-    var styleComponents = style.match(eYo.NS_Svg.getRelativeWhere.Where_2D_REGEX_)
+    var styleComponents = style.match(eYo.ns.Svg.getRelativeWhere.Where_2D_REGEX_)
     // Try transform3d if 2d transform wasn't there.
     if (!styleComponents) {
-      styleComponents = style.match(eYo.NS_Svg.getRelativeWhere.Where_3D_REGEX_)
+      styleComponents = style.match(eYo.ns.Svg.getRelativeWhere.Where_3D_REGEX_)
     }
     if (styleComponents) {
       xy.x += parseFloat(styleComponents[1])
@@ -320,12 +320,12 @@ eYo.NS_Svg.getRelativeWhere = function(element) {
  * @return {!number} number represending the scale applied to the element.
  * @private
  */
-eYo.NS_Svg.getScale_ = function(element) {
+eYo.ns.Svg.getScale_ = function(element) {
   var scale = 1
   var transform = element.getAttribute('transform')
   if (transform) {
     var transformComponents =
-        transform.match(eYo.NS_Svg.getScale_REGEXP_)
+        transform.match(eYo.ns.Svg.getScale_REGEXP_)
     if (transformComponents && transformComponents[0]) {
       scale = parseFloat(transformComponents[1])
     }
@@ -358,7 +358,7 @@ goog.style.MATRIX_TRANSLATION_REGEX_ = /matrix\([0-9\.,-]+, [0-9\.,\-]+, [0-9\.,
  * @type {!RegExp}
  * @private
  */
-eYo.NS_Svg.getRelativeWhere.Where_REGEX_ =
+eYo.ns.Svg.getRelativeWhere.Where_REGEX_ =
 /translate\(\s*([-+\d.,e]+)([ ,]\s*([-+\d.,e]+)\s*\))/
 
 /**
@@ -367,7 +367,7 @@ eYo.NS_Svg.getRelativeWhere.Where_REGEX_ =
  * @type {!RegExp}
  * @private
  */
-eYo.NS_Svg.getScale_REGEXP_ = /scale\(\s*([-+\d.,e]+)\s*\)/
+eYo.ns.Svg.getScale_REGEXP_ = /scale\(\s*([-+\d.,e]+)\s*\)/
 
 /**
  * Static regex to pull the x,y,z values out of a translate3d() style property.
@@ -375,7 +375,7 @@ eYo.NS_Svg.getScale_REGEXP_ = /scale\(\s*([-+\d.,e]+)\s*\)/
  * @type {!RegExp}
  * @private
  */
-eYo.NS_Svg.getRelativeWhere.Where_3D_REGEX_ =
+eYo.ns.Svg.getRelativeWhere.Where_3D_REGEX_ =
   /transform:\s*translate3d\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/
 
 /**
@@ -384,5 +384,5 @@ eYo.NS_Svg.getRelativeWhere.Where_3D_REGEX_ =
  * @type {!RegExp}
  * @private
  */
-eYo.NS_Svg.getRelativeWhere.Where_2D_REGEX_ =
+eYo.ns.Svg.getRelativeWhere.Where_2D_REGEX_ =
   /transform:\s*translate\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/

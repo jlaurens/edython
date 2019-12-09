@@ -16,22 +16,22 @@ eYo.require('eYo.Expr')
 eYo.require('eYo.Change')
 
 eYo.require('eYo.Decorate')
-eYo.require('eYo.NS_Consolidator.List')
-eYo.provide('eYo.NS_Brick.List')
+eYo.require('eYo.ns.Consolidator.List')
+eYo.provide('eYo.ns.Brick.List')
 
 /**
  * Class for a Delegate, list value brick.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('List', {
   init: function () {
-    this.slotList_ = new Proxy(this, eYo.NS_Brick.List.slotsHandler)
+    this.slotList_ = new Proxy(this, eYo.ns.Brick.List.slotsHandler)
   },
   list: {}
-}, eYo.NS_Brick)
+}, eYo.ns.Brick)
 
-eYo.NS_Brick.List.slotsHandler = {
+eYo.ns.Brick.List.slotsHandler = {
   get: function (brick, k) {
     if (k === 'length') {
       var slot = brick.slotAtHead
@@ -139,8 +139,8 @@ eYo.NS_Brick.List.slotsHandler = {
  * @param {Boolean} [dontCreate] Whether the receiver should create slots on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
-eYo.NS_Brick.List.prototype.getSlot = function (name, dontCreate) {
-  var slot = eYo.NS_Brick.List.superClass_.getSlot.call(this, name)
+eYo.ns.Brick.List.prototype.getSlot = function (name, dontCreate) {
+  var slot = eYo.ns.Brick.List.superClass_.getSlot.call(this, name)
   if (!slot) {
     this.createConsolidator()
     slot = this.consolidator.getSlot(this, name, dontCreate)
@@ -153,16 +153,16 @@ eYo.NS_Brick.List.prototype.getSlot = function (name, dontCreate) {
  *
  * @param {boolean} force
  */
-eYo.NS_Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
+eYo.ns.Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
   'createConsolidator',
   function (force) {
   var type = this.type
   if (!type) {
     console.error('unexpected void type')
   }
-  var D = eYo.NS_Brick.mngr.getModel(type).list
+  var D = eYo.ns.Brick.mngr.getModel(type).list
   eYo.assert(D, '`model`.list is missing in ' + type)
-  var C10r = this.consolidatorConstructor || D.consolidator || eYo.NS_Consolidator.List
+  var C10r = this.consolidatorConstructor || D.consolidator || eYo.ns.Consolidator.List
   if (this.consolidator) {
     if (this.consolidator.constructor !== C10r) {
       this.consolidator = new C10r(D)
@@ -186,8 +186,8 @@ eYo.NS_Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
  * @param {eYo.Magnet} oldTargetM4t.
  * @param {eYo.Magnet} targetOldM4t
  */
-eYo.NS_Brick.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.NS_Brick.List.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+eYo.ns.Brick.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+  eYo.ns.Brick.List.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   if (m4t.isOutput) {
     this.createConsolidator(true)
   }
@@ -200,7 +200,7 @@ eYo.NS_Brick.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM
  *
  * @param {Brick} brick
  */
-eYo.NS_Brick.List.prototype.doConsolidate = (() => {
+eYo.ns.Brick.List.prototype.doConsolidate = (() => {
   // this is a one shot function
   /**
    * Consolidate the slots.
@@ -216,7 +216,7 @@ eYo.NS_Brick.List.prototype.doConsolidate = (() => {
       return
     }
     force = true  // always force consolidation because of the dynamics
-    if (eYo.NS_Brick.List.superClass_.doConsolidate.call(this, deep, force)) {
+    if (eYo.ns.Brick.List.superClass_.doConsolidate.call(this, deep, force)) {
       return !this.connectionsIncog && (this.consolidator.consolidate(this, deep, force))
     }
   }
@@ -227,14 +227,14 @@ eYo.NS_Brick.List.prototype.doConsolidate = (() => {
   }
 }) ()
 
-// eYo.NS_Brick.List.prototype.consolidator = eYo.NA
+// eYo.ns.Brick.List.prototype.consolidator = eYo.NA
 
 /**
  * Clear the list af all items.
  * For edython.
  * @private
  */
-eYo.NS_Brick.List.prototype.removeItems = function () {
+eYo.ns.Brick.List.prototype.removeItems = function () {
   eYo.Events.groupWrap(() => {
     this.forEachSlot(slot => {
       var m4t = slot.magnet
@@ -253,7 +253,7 @@ eYo.NS_Brick.List.prototype.removeItems = function () {
  * Force to recompute the chain tile.
  * For edython.
  */
-eYo.NS_Brick.List.prototype.changeInputDone = function () {
+eYo.ns.Brick.List.prototype.changeInputDone = function () {
   this.forEachSlot(slot => {
     var t9k = slot.targetBrick
     t9k && (t9k.changeDone())
@@ -261,7 +261,7 @@ eYo.NS_Brick.List.prototype.changeInputDone = function () {
   this.changeDone()
 }
 
-Object.defineProperties(eYo.NS_Brick.List.prototype, {
+Object.defineProperties(eYo.ns.Brick.List.prototype, {
   firstTarget: {
     get () {
       var t
@@ -274,10 +274,10 @@ Object.defineProperties(eYo.NS_Brick.List.prototype, {
 /**
  * Class for a Delegate, optional expression_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.List.makeSubclass('optional_expression_list', {
+eYo.ns.Brick.List.makeSubclass('optional_expression_list', {
   list: {
     check: eYo.T3.Expr.Check.expression,
     mandatory: 0,
@@ -288,10 +288,10 @@ eYo.NS_Brick.List.makeSubclass('optional_expression_list', {
 /**
  * Class for a Delegate, non_void_expression_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.List.makeSubclass('non_void_expression_list', {
+eYo.ns.Brick.List.makeSubclass('non_void_expression_list', {
   list: {
     check: eYo.T3.Expr.Check.expression,
     mandatory: 1,
@@ -302,10 +302,10 @@ eYo.NS_Brick.List.makeSubclass('non_void_expression_list', {
 /**
  * Class for a Delegate, slice_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.List.makeSubclass('slice_list', {
+eYo.ns.Brick.List.makeSubclass('slice_list', {
   list: {
     check: eYo.T3.Expr.Check.slice_item,
     mandatory: 1,
@@ -316,10 +316,10 @@ eYo.NS_Brick.List.makeSubclass('slice_list', {
 /**
  * Class for a Delegate, with_item_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.List.makeSubclass('with_item_list', {
+eYo.ns.Brick.List.makeSubclass('with_item_list', {
   list: {
     check: eYo.T3.Expr.Check.with_item,
     mandatory: 1,
@@ -330,7 +330,7 @@ eYo.NS_Brick.List.makeSubclass('with_item_list', {
 /**
  * Class for a Delegate, enclosure brick.
  * This brick is for subclassing only.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  * There are 4 kinds of enclosure lists:
  * 1) parent_form and generator expression
@@ -359,7 +359,7 @@ eYo.NS_Brick.List.makeSubclass('with_item_list', {
  * 2) singleton set_display: replacement for the unique connection: same as above
  * 3) singleton dict_display: replacement for the unique connection: same as above
  */
-eYo.NS_Brick.List.makeSubclass('enclosure', {
+eYo.ns.Brick.List.makeSubclass('enclosure', {
   data: {
     variant: {
       order: 0,
@@ -555,10 +555,10 @@ eYo.Expr.enclosure.prototype.getBaseType = function () {
 'dict_display',
 'one_dict_display'].forEach(k => {
   eYo.Expr[k] = eYo.Expr.enclosure
-  eYo.NS_Brick.mngr.register(k)
+  eYo.ns.Brick.mngr.register(k)
 })
 
-eYo.NS_Brick.List.T3s = [
+eYo.ns.Brick.List.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.comprehension,
   eYo.T3.Expr.dict_comprehension,

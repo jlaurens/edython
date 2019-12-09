@@ -11,16 +11,16 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Driver')
+eYo.require('eYo.ns.Driver')
 
 /**
- * @name {eYo.NS_Fcls}
+ * @name {eYo.ns.Fcls}
  * @namespace
  */
-eYo.NS_Driver.makeNS(eYo, 'Fcls')
+eYo.ns.Driver.ns.make(eYo, 'Fcls')
 
 /**
- * @name {eYo.NS_Fcls.Mngr}
+ * @name {eYo.ns.Fcls.Mngr}
  * The manager of all the faceless drivers.
  */
-eYo.NS_Fcls.makeMngrClass()
+eYo.ns.Fcls.makeMngrClass()

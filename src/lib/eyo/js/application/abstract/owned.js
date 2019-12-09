@@ -23,7 +23,7 @@ eYo.forwardDeclare('eYo.Desk')
 eYo.forwardDeclare('eYo.Workspace')
 eYo.forwardDeclare('eYo.Flyout')
 eYo.forwardDeclare('eYo.Board')
-eYo.forwardDeclare('eYo.NS_Brick')
+eYo.forwardDeclare('eYo.ns.Brick')
 eYo.forwardDeclare('eYo.Slot')
 eYo.forwardDeclare('eYo.Magnet')
 
@@ -49,7 +49,7 @@ eYo.Dlgt.prototype.addApp = function () {
 /**
  * Class for a basic object.
  * 
- * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.NS_Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.ns.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
 eYo.Dflt.makeSubclass('Owned', {

@@ -13,7 +13,7 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_UI')
+eYo.require('eYo.ns.UI')
 eYo.require('eYo.Decorate')
 
 eYo.forwardDeclare('eYo.Application')
@@ -29,7 +29,7 @@ goog.forwardDeclare('goog.math');
  * @param {eYo.Application|Object} owner Owner application.
  * @constructor
  */
-eYo.NS_UI.makeClass(eYo, 'Desk', {
+eYo.ns.UI.makeClass(eYo, 'Desk', {
   owned: {
     /**
      * Terminal.

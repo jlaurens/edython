@@ -12,15 +12,15 @@
  */
 'use strict'
 
-eYo.require('eYo')
+eYo.require('eYo.ns')
 
 /**
  * The model management.
  * Models are trees with some inheritancy.
- * @name {eYo.ModelNS}
+ * @name {eYo.ns.ModelNS}
  * @namespace
  */
-eYo.makeNS('Model')
+eYo.ns.make('Model')
 
 /**
  * Whether the argument is a model object once created with `{...}` syntax.
@@ -36,7 +36,7 @@ eYo.isModel = (what) => {
  * @param {String} key - Dotless path components
  * @return {Boolean} Whether the key is authorized with the given path.
  */
-eYo.Model.isAllowed = (path, key) => {
+eYo.ns.Model.isAllowed = (path, key) => {
   var allowed = {
     ['']: [
       'init', 'deinit', 'dispose', 'ui',
@@ -127,7 +127,7 @@ eYo.Model.isAllowed = (path, key) => {
  * @param {Object} model - the tree in which we replace some node by objects
  * @param {Function} handler - a function with signature (path, before): boolean
  */
-eYo.Model.expandShortcuts = (model, handler) => {
+eYo.ns.Model.expandShortcuts = (model, handler) => {
   var do_it = (model, path) => {
     eYo.isO(model) && Object.keys(model).forEach(k => {
       handler(model, path, k) || do_it(model[k], path + '.' + k)
@@ -140,7 +140,7 @@ eYo.Model.expandShortcuts = (model, handler) => {
  * @param {String} path
  * @param {String} key
  */
-eYo.Model.shortcutsBaseHandler = (model, path, key) => {
+eYo.ns.Model.shortcutsBaseHandler = (model, path, key) => {
   var ensureCheck = (x) => {
     if (eYo.isArray(x)) {
       return function () {
@@ -246,7 +246,7 @@ eYo.Model.shortcutsBaseHandler = (model, path, key) => {
  * @param {Object} [linkC9r] - and its linked constructor
  */
 /*
-eYo.Model.Handler = (model, C9r, linkC9r) => {
+eYo.ns.Model.Handler = (model, C9r, linkC9r) => {
 
   this.model__ = model
   return {
@@ -288,7 +288,7 @@ eYo.Model.Handler = (model, C9r, linkC9r) => {
  * @param {Object} model_  a tree of properties
  * @param {Object} base  a tree of properties
  */
-eYo.Model.inherits = (model, base) => {
+eYo.ns.Model.inherits = (model, base) => {
   var do_it = (model_, base_) => {
     if (eYo.isO(model_) && eYo.isModel(base_)) {
       eYo.parameterAssert(!model_.model__, `Already inheritance: ${model}`)
@@ -305,7 +305,7 @@ eYo.Model.inherits = (model, base) => {
  * @param {Object} model_  a tree of properties
  * @param {Object} from_  a tree of properties
  */
-eYo.Model.extends = (model, base) => {
+eYo.ns.Model.extends = (model, base) => {
   var do_it = (model_, base_, path) => {
     // if (eYo.isO(model_) && eYo.isModel(from_)) {
     //   for (var k in model_) {
@@ -317,7 +317,7 @@ eYo.Model.extends = (model, base) => {
     // }
     if (eYo.isO(model_) && eYo.isO(base_)) {
       for (var k in base_) {
-        if (!eYo.Model.isAllowed(path, k)) {
+        if (!eYo.ns.Model.isAllowed(path, k)) {
           console.warn(`Attempting to use ${path}.${k} in a model`)
           return
         }

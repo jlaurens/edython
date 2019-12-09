@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.NS_Svg')
+eYo.require('eYo.ns.Svg')
 
 eYo.forwardDeclare('eYo.TrashCan')
 
 /**
  * Svg driver fro the trash can.
  */
-eYo.NS_Svg.makeDriverClass('TrashCan', {
+eYo.ns.Svg.makeDriverClass('TrashCan', {
     /**
    * Initialize the trash can SVG ressources.
    * @param {eYo.TrashCan} trashCan
@@ -43,23 +43,23 @@ eYo.NS_Svg.makeDriverClass('TrashCan', {
           clip-path="url(#eyo-trash-lid-clip-837493)"></image>
     </g>
     */
-    var g = svg.group_ = eYo.NS_Svg.newElement(
+    var g = svg.group_ = eYo.ns.Svg.newElement(
       'g',
       {class: 'eyo-trash'},
       null
     )
     var rnd = String(Math.random()).substring(2)
-    var clip = eYo.NS_Svg.newElement(
+    var clip = eYo.ns.Svg.newElement(
       'clipPath',
       {id: 'eyo-trash-body-clip-' + rnd},
       g
     )
-    eYo.NS_Svg.newElement('rect', {
+    eYo.ns.Svg.newElement('rect', {
       width: trashCan.WIDTH_,
       height: trashCan.BODY_HEIGHT_,
       y: trashCan.LID_HEIGHT_
     }, clip)
-    var body = eYo.NS_Svg.newElement('image', {
+    var body = eYo.ns.Svg.newElement('image', {
       width: Blockly.SPRITE.width,
       x: -trashCan.SPRITE_LEFT_,
       height: Blockly.SPRITE.height,
@@ -68,16 +68,16 @@ eYo.NS_Svg.makeDriverClass('TrashCan', {
     }, g)
     var url = trashCan.board_.options.pathToMedia + Blockly.SPRITE.url
     body.setAttributeNS(
-      eYo.NS_Dom.XLINK_NS,
+      eYo.ns.Dom.XLINK_NS,
       'xlink:href',
       url
     )
-    clip = eYo.NS_Svg.newElement(
+    clip = eYo.ns.Svg.newElement(
       'clipPath',
       {id: 'eyo-trash-lid-clip-' + rnd},
       g
     )
-    eYo.NS_Svg.newElement(
+    eYo.ns.Svg.newElement(
       'rect',
       {
         width: trashCan.WIDTH_,
@@ -85,7 +85,7 @@ eYo.NS_Svg.makeDriverClass('TrashCan', {
       },
       clip
     )
-    var lid = svg.lid_ = eYo.NS_Svg.newElement(
+    var lid = svg.lid_ = eYo.ns.Svg.newElement(
       'image',
       {
         width: Blockly.SPRITE.width,
@@ -97,11 +97,11 @@ eYo.NS_Svg.makeDriverClass('TrashCan', {
       g
     )
     lid.setAttributeNS(
-      eYo.NS_Dom.XLINK_NS,
+      eYo.ns.Dom.XLINK_NS,
       'xlink:href',
       url
     )
-    dom.bound.mouseup = eYo.NS_Dom.bindEvent(
+    dom.bound.mouseup = eYo.ns.Dom.bindEvent(
       g,
       'mouseup',
       null,
@@ -121,7 +121,7 @@ eYo.NS_Svg.makeDriverClass('TrashCan', {
     if (dom) {
       goog.Timer.clear(dom.lidTask)
       dom.lidTask = 0
-      eYo.NS_Dom.clearBoundEvents(trashCan)
+      eYo.ns.Dom.clearBoundEvents(trashCan)
       var svg = dom.svg
       if (svg) {
         goog.dom.removeNode(svg.group_)
@@ -136,7 +136,7 @@ eYo.NS_Svg.makeDriverClass('TrashCan', {
 /**
  * Inspect the contents of the trash.
  */
-eYo.NS_Svg.TrashCan.prototype.on_mouseup = function(trashCan) {
+eYo.ns.Svg.TrashCan.prototype.on_mouseup = function(trashCan) {
   var brd = trashCan.board
   if (brd.startDrag.backward(brd.drag).magnitude > eYo.Motion.DRAG_RADIUS) {
     return
@@ -147,7 +147,7 @@ eYo.NS_Svg.TrashCan.prototype.on_mouseup = function(trashCan) {
  * Initializes the trashCan SVG ressources.
  * @param {eYo.TrashCan} trashCan
  */
-eYo.NS_Svg.TrashCan.prototype.place = function(trashCan) {
+eYo.ns.Svg.TrashCan.prototype.place = function(trashCan) {
   var r = trashCan.viewRect
   trashCan.dom.svg.group_.setAttribute(
     'transform',
@@ -160,7 +160,7 @@ eYo.NS_Svg.TrashCan.prototype.place = function(trashCan) {
  * @param {eYo.TrashCan} trashCan
  * @private
  */
-eYo.NS_Svg.TrashCan.prototype.openGet = function(trashCan) {
+eYo.ns.Svg.TrashCan.prototype.openGet = function(trashCan) {
   return trashCan.dom.isOpen
 }
 
@@ -170,7 +170,7 @@ eYo.NS_Svg.TrashCan.prototype.openGet = function(trashCan) {
  * @param {boolean} state True if open.
  * @private
  */
-eYo.NS_Svg.TrashCan.prototype.openSet = function(trashCan, state) {
+eYo.ns.Svg.TrashCan.prototype.openSet = function(trashCan, state) {
   var dom = trashCan.dom
   if (dom.isOpen == state) {
     return
@@ -185,7 +185,7 @@ eYo.NS_Svg.TrashCan.prototype.openSet = function(trashCan, state) {
  * Rotate the lid open or closed by one step.  Then wait and recurse.
  * @param {eYo.TrashCan} trashCan
  */
-eYo.NS_Svg.TrashCan.prototype.animate = function(trashCan) {
+eYo.ns.Svg.TrashCan.prototype.animate = function(trashCan) {
   var dom = trashCan.dom
   var svg = dom.svg
   svg.state_ += dom.isOpen ? 0.2 : -0.2
@@ -208,7 +208,7 @@ eYo.NS_Svg.TrashCan.prototype.animate = function(trashCan) {
  * Return the deletion rectangle for the given trash can.
  * @param {eYo.TrashCan} trashCan
  */
-eYo.NS_Svg.TrashCan.prototype.clientRect = function(trashCan) {
+eYo.ns.Svg.TrashCan.prototype.clientRect = function(trashCan) {
   var svg = trashCan.dom.svg
   var rect = svg.group_.getBoundingClientRect()
   var left = rect.left + trashCan.SPRITE_LEFT_ - trashCan.MARGIN_HOTSPOT_

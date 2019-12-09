@@ -16,9 +16,9 @@ eYo.require('eYo.Stmt')
 eYo.require('eYo.Protocol')
 eYo.require('eYo.Msg')
 
-eYo.require('eYo.NS_Brick.List')
+eYo.require('eYo.ns.Brick.List')
 goog.require('goog.dom');
-eYo.provide('eYo.NS_Brick.Import')
+eYo.provide('eYo.ns.Brick.Import')
 
 /// //////////////     module_as      ///////////////////
 /*
@@ -36,10 +36,10 @@ module_name ::= identifier
 /**
  * Class for a Delegate, non_void_module_as_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.List.makeSubclass('non_void_module_as_list', {
+eYo.ns.Brick.List.makeSubclass('non_void_module_as_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_module_as_list,
     mandatory: 1,
@@ -50,10 +50,10 @@ eYo.NS_Brick.List.makeSubclass('non_void_module_as_list', {
 /**
  * Class for a Delegate, non_void_import_identifier_as_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.NS_Brick.create(...) is preferred.
+ * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.NS_Brick.List.makeSubclass('non_void_import_identifier_as_list', {
+eYo.ns.Brick.List.makeSubclass('non_void_import_identifier_as_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_import_identifier_as_list,
     mandatory: 1,
@@ -335,7 +335,7 @@ eYo.Stmt.import_stmt.prototype.getMenuTarget = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.NS_Brick.Dflt} brick The brick.
+ * @param {eYo.ns.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -397,7 +397,7 @@ eYo.Stmt.makeSubclass('future_statement', {
   }
 }, true)
 
-eYo.NS_Brick.Import.T3s = [
+eYo.ns.Brick.Import.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.non_void_module_as_list,
   eYo.T3.Expr.non_void_import_identifier_as_list,

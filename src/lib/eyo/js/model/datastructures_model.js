@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.Model')
-eYo.require('eYo.Model.Module')
+eYo.require('eYo.ns.Model')
+eYo.require('eYo.ns.Model.Module')
 
-eYo.require('eYo.Model.Item')
-eYo.provide('eYo.Model.datastructures.Item')
-eYo.provide('eYo.Model.datastructures')
+eYo.require('eYo.ns.Model.Item')
+eYo.provide('eYo.ns.Model.datastructures.Item')
+eYo.provide('eYo.ns.Model.datastructures')
 
-eYo.Model.datastructures = new eYo.Model.Module('datastructures', 'https://docs.python.org/3.6/library/datastructures.html')
+eYo.ns.Model.datastructures = new eYo.ns.Model.Module('datastructures', 'https://docs.python.org/3.6/library/datastructures.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.Model.datastructures.Item = function (model) {
-  eYo.Model.datastructures.Item.superClass_.constructor.call(this, model)
+eYo.ns.Model.datastructures.Item = function (model) {
+  eYo.ns.Model.datastructures.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.Model.datastructures.Item
+var Item = eYo.ns.Model.datastructures.Item
 
-goog.inherits(Item, eYo.Model.Item)
+goog.inherits(Item, eYo.ns.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.Model.datastructures
+Item.prototype.module = eYo.ns.Model.datastructures
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.Model.datastructures.setData({
+eYo.ns.Model.datastructures.setData({
   categories: [
     'more-on-lists'
   ],

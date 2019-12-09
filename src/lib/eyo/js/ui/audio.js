@@ -15,7 +15,7 @@ eYo.require('eYo')
 
 eYo.provide('eYo.Audio')
 
-eYo.forwardDeclare('eYo.NS_Dom')
+eYo.forwardDeclare('eYo.ns.Dom')
 goog.forwardDeclare('goog.userAgent')
 
 /**
@@ -45,7 +45,7 @@ eYo.Audio = function(pathToMedia) {
   var self = this
   var unbindSounds = () => {
     while (soundBinds.length) {
-      eYo.NS_Dom.unbindEvent(soundBinds.pop())
+      eYo.ns.Dom.unbindEvent(soundBinds.pop())
     }
     self.preload()
   }
@@ -54,12 +54,12 @@ eYo.Audio = function(pathToMedia) {
   // really something that happens on a click, not a drag, so that's not
   // necessary.
 
-  soundBinds = [eYo.NS_Dom.bindEvent(
+  soundBinds = [eYo.ns.Dom.bindEvent(
     document,
     'mousemove',
     unbindSounds,
     {noCaptureIdentifier: true}
-  ), eYo.NS_Dom.bindEvent(
+  ), eYo.ns.Dom.bindEvent(
     document,
     'touchstart',
     unbindSounds,

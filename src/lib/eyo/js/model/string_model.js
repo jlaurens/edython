@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.Model')
-eYo.require('eYo.Model.Module')
+eYo.require('eYo.ns.Model')
+eYo.require('eYo.ns.Model.Module')
 
-eYo.require('eYo.Model.Item')
-eYo.provide('eYo.Model.string__module.Item')
-eYo.provide('eYo.Model.string__module')
+eYo.require('eYo.ns.Model.Item')
+eYo.provide('eYo.ns.Model.string__module.Item')
+eYo.provide('eYo.ns.Model.string__module')
 
-eYo.Model.string__module = new eYo.Model.Module('string__module', 'https://docs.python.org/3.6/library/string.html')
+eYo.ns.Model.string__module = new eYo.ns.Model.Module('string__module', 'https://docs.python.org/3.6/library/string.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.Model.string__module.Item = function (model) {
-  eYo.Model.string__module.Item.superClass_.constructor.call(this, model)
+eYo.ns.Model.string__module.Item = function (model) {
+  eYo.ns.Model.string__module.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.Model.string__module.Item
+var Item = eYo.ns.Model.string__module.Item
 
-goog.inherits(Item, eYo.Model.Item)
+goog.inherits(Item, eYo.ns.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.Model.string__module
+Item.prototype.module = eYo.ns.Model.string__module
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.Model.string__module.setData({
+eYo.ns.Model.string__module.setData({
   categories: [
     'string-constants',
     'custom-string-formatting',
