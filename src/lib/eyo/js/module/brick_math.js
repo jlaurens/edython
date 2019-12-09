@@ -32,7 +32,7 @@ eYo.provide('eYo.ns.Brick.Math')
     var key = 'math__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.ns.T3.Expr.call_expr,
       data: {
         name: name,
         holder: 'math',
@@ -45,7 +45,7 @@ eYo.provide('eYo.ns.Brick.Math')
     var key = 'math__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.attributeref,
+      type: eYo.ns.T3.Expr.attributeref,
       data: {
         name: name,
         holder: 'math',
@@ -56,7 +56,7 @@ eYo.provide('eYo.ns.Brick.Math')
   }
 eYo.Library.basic_math__module = [
   {
-    type: eYo.T3.Stmt.import_stmt,
+    type: eYo.ns.T3.Stmt.import_stmt,
     data: {
       variant: eYo.Key.FROM_MODULE_IMPORT_STAR,
       from: 'math'
@@ -116,7 +116,7 @@ eYo.Library.basic_math__module = [
     var key = 'math__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.ns.T3.Expr.call_expr,
       data: {
         name: name,
         holder: 'math',
@@ -129,7 +129,7 @@ eYo.Library.basic_math__module = [
     var key = 'math__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.attributeref,
+      type: eYo.ns.T3.Expr.attributeref,
       data: {
         name: name,
         holder: 'math',
@@ -140,7 +140,7 @@ eYo.Library.basic_math__module = [
   }
 eYo.Library.math__module = [
   {
-    type: eYo.T3.Stmt.import_stmt,
+    type: eYo.ns.T3.Stmt.import_stmt,
     data: {
       variant: eYo.Key.IMPORT
     },
@@ -148,7 +148,7 @@ eYo.Library.math__module = [
       import_module: {
         slots: {
           O: {
-            type: eYo.T3.Expr.identifier,
+            type: eYo.ns.T3.Expr.identifier,
             data: 'math',
           },
         },
@@ -214,8 +214,8 @@ goog.mixin(eYo.Tooltip.Title, {
 })
 
 eYo.ns.Brick.Math.T3s = [
-  eYo.T3.Stmt.math__import_stmt,
-  eYo.T3.Expr.math__call_expr,
-  eYo.T3.Stmt.math__call_stmt,
-  eYo.T3.Expr.math__const
+  eYo.ns.T3.Stmt.math__import_stmt,
+  eYo.ns.T3.Expr.math__call_expr,
+  eYo.ns.T3.Stmt.math__call_stmt,
+  eYo.ns.T3.Expr.math__const
 ]

@@ -35,8 +35,8 @@ eYo.Stmt.makeSubclass('BaseGroup', {
   right: {
     check: /** @suppress {globalThis} */ function (type) {
       return this.brick.suite
-      ? [eYo.T3.Stmt.comment_stmt]
-      : eYo.T3.Stmt.Right.simple_stmt
+      ? [eYo.ns.T3.Stmt.comment_stmt]
+      : eYo.ns.T3.Stmt.Right.simple_stmt
     },
     fields: {
       label: { // don't call it 'operator'
@@ -90,15 +90,15 @@ eYo.ns.Brick.Group.makeSubclass('Branch', {
         this.brick.if_d.incog = newValue === eYo.Key.ELSE
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Stmt.while_part) {
+        if (type === eYo.ns.T3.Stmt.while_part) {
           this.set(eYo.Key.WHILE)
-        } else if (type === eYo.T3.Stmt.elif_part) {
+        } else if (type === eYo.ns.T3.Stmt.elif_part) {
           this.set(eYo.Key.ELIF)
-        } else if (type === eYo.T3.Stmt.else_part) {
+        } else if (type === eYo.ns.T3.Stmt.else_part) {
           this.set(eYo.Key.ELSE)
-        } else if (type === eYo.T3.Stmt.try_else_part) {
+        } else if (type === eYo.ns.T3.Stmt.try_else_part) {
           this.set(eYo.Key.ELSE)
-        } else if (type === eYo.T3.Stmt.last_else_part) {
+        } else if (type === eYo.ns.T3.Stmt.last_else_part) {
           this.set(eYo.Key.ELSE)
         } else {
           this.set(eYo.Key.IF)
@@ -137,17 +137,17 @@ eYo.ns.Brick.Group.makeSubclass('Branch', {
           endEditing: true
         }
       },
-      check: eYo.T3.Expr.Check.namedexpr_test
+      check: eYo.ns.T3.Expr.Check.namedexpr_test
     }
   },
   head: {
     check: /** @suppress {globalThis} */ function (type) {
-      return eYo.T3.Stmt.Previous[type.substring(4)]
+      return eYo.ns.T3.Stmt.Previous[type.substring(4)]
     }
   },
   foot: {
     check: /** @suppress {globalThis} */ function (type) {
-      return eYo.T3.Stmt.Next[type.substring(4)]
+      return eYo.ns.T3.Stmt.Next[type.substring(4)]
     }
   }
 })
@@ -171,7 +171,7 @@ eYo.ns.Brick.Group.Branch.prototype.xmlAttr = function () {
  * At least, the type may change to a value when no connection is connected.
  */
 eYo.ns.Brick.Group.Branch.prototype.getBaseType = function () {
-  var T3 = eYo.T3.Stmt
+  var T3 = eYo.ns.T3.Stmt
   var type = {
     [eYo.Key.IF]: T3.if_part,
     [eYo.Key.ELIF]: T3.elif_part,
@@ -298,14 +298,14 @@ eYo.ns.Brick.Group.makeSubclass('for_part', {
       fields: {
         label: 'for'
       },
-      wrap: eYo.T3.Expr.target_list
+      wrap: eYo.ns.T3.Expr.target_list
     },
     in: {
       order: 2,
       fields: {
         label: 'in'
       },
-      wrap: eYo.T3.Expr.expression_list
+      wrap: eYo.ns.T3.Expr.expression_list
     }
   }
 }, true)
@@ -322,16 +322,16 @@ eYo.ns.Brick.Group.makeSubclass('with_part', {
       fields: {
         label: 'with'
       },
-      wrap: eYo.T3.Expr.with_item_list
+      wrap: eYo.ns.T3.Expr.with_item_list
     }
   }
 }, true)
 
 eYo.ns.Brick.Group.T3s = [
-  eYo.T3.Stmt.if_part,
-  eYo.T3.Stmt.elif_part,
-  eYo.T3.Stmt.else_part,
-  eYo.T3.Stmt.while_part,
-  eYo.T3.Stmt.with_part,
-  eYo.T3.Stmt.for_part
+  eYo.ns.T3.Stmt.if_part,
+  eYo.ns.T3.Stmt.elif_part,
+  eYo.ns.T3.Stmt.else_part,
+  eYo.ns.T3.Stmt.while_part,
+  eYo.ns.T3.Stmt.with_part,
+  eYo.ns.T3.Stmt.for_part
 ]

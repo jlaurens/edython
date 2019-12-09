@@ -16,7 +16,7 @@ describe('Brick dragger', function() {
   })
   it ('Create block', function () {
     var type = `simple`
-    eYo.T3.Expr[type] = type
+    eYo.ns.T3.Expr[type] = type
     eYo.Expr.Dflt.makeSubclass(type, {})
     var b3k = eYo.ns.Brick.newReady(eYo.app.board, type)
   })

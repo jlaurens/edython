@@ -279,7 +279,7 @@ Object.defineProperties(eYo.ns.Brick.List.prototype, {
  */
 eYo.ns.Brick.List.makeSubclass('optional_expression_list', {
   list: {
-    check: eYo.T3.Expr.Check.expression,
+    check: eYo.ns.T3.Expr.Check.expression,
     mandatory: 0,
     presep: ','
   }
@@ -293,7 +293,7 @@ eYo.ns.Brick.List.makeSubclass('optional_expression_list', {
  */
 eYo.ns.Brick.List.makeSubclass('non_void_expression_list', {
   list: {
-    check: eYo.T3.Expr.Check.expression,
+    check: eYo.ns.T3.Expr.Check.expression,
     mandatory: 1,
     presep: ','
   }
@@ -307,7 +307,7 @@ eYo.ns.Brick.List.makeSubclass('non_void_expression_list', {
  */
 eYo.ns.Brick.List.makeSubclass('slice_list', {
   list: {
-    check: eYo.T3.Expr.Check.slice_item,
+    check: eYo.ns.T3.Expr.Check.slice_item,
     mandatory: 1,
     presep: ','
   }
@@ -321,7 +321,7 @@ eYo.ns.Brick.List.makeSubclass('slice_list', {
  */
 eYo.ns.Brick.List.makeSubclass('with_item_list', {
   list: {
-    check: eYo.T3.Expr.Check.with_item,
+    check: eYo.ns.T3.Expr.Check.with_item,
     mandatory: 1,
     presep: ','
   }
@@ -376,11 +376,11 @@ eYo.ns.Brick.List.makeSubclass('enclosure', {
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         return {
-          [eYo.T3.Expr.enclosure]: eYo.Key.PAR,
-          [eYo.T3.Expr.parenth_form]: eYo.Key.PAR,
-          [eYo.T3.Expr.parenth_target_list]: eYo.Key.PAR,
-          [eYo.T3.Expr.list_display]: eYo.Key.SQB,
-          [eYo.T3.Expr.bracket_target_list]: eYo.Key.SQB
+          [eYo.ns.T3.Expr.enclosure]: eYo.Key.PAR,
+          [eYo.ns.T3.Expr.parenth_form]: eYo.Key.PAR,
+          [eYo.ns.T3.Expr.parenth_target_list]: eYo.Key.PAR,
+          [eYo.ns.T3.Expr.list_display]: eYo.Key.SQB,
+          [eYo.ns.T3.Expr.bracket_target_list]: eYo.Key.SQB
         } [type] || eYo.Key.BRACE
       }
     }
@@ -391,27 +391,27 @@ eYo.ns.Brick.List.makeSubclass('enclosure', {
   },
   list: (() => {
     var unique = {
-      [eYo.T3.Expr.parenth_form]: eYo.T3.Expr.Check.enclosure_list_unique,
-      [eYo.T3.Expr.parenth_target_list]: eYo.T3.Expr.Check.enclosure_list_unique,
-      [eYo.T3.Expr.list_display]: [eYo.T3.Expr.comprehension],
-      [eYo.T3.Expr.bracket_target_list]: [eYo.T3.Expr.comprehension],
-      [eYo.T3.Expr.one_set_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension],
-      [eYo.T3.Expr.set_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension],
-      [eYo.T3.Expr.one_dict_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension],
-      [eYo.T3.Expr.dict_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension],
-      [eYo.T3.Expr.void_dict_display]: [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension]
+      [eYo.ns.T3.Expr.parenth_form]: eYo.ns.T3.Expr.Check.enclosure_list_unique,
+      [eYo.ns.T3.Expr.parenth_target_list]: eYo.ns.T3.Expr.Check.enclosure_list_unique,
+      [eYo.ns.T3.Expr.list_display]: [eYo.ns.T3.Expr.comprehension],
+      [eYo.ns.T3.Expr.bracket_target_list]: [eYo.ns.T3.Expr.comprehension],
+      [eYo.ns.T3.Expr.one_set_display]: [eYo.ns.T3.Expr.comprehension, eYo.ns.T3.Expr.dict_comprehension],
+      [eYo.ns.T3.Expr.set_display]: [eYo.ns.T3.Expr.comprehension, eYo.ns.T3.Expr.dict_comprehension],
+      [eYo.ns.T3.Expr.one_dict_display]: [eYo.ns.T3.Expr.comprehension, eYo.ns.T3.Expr.dict_comprehension],
+      [eYo.ns.T3.Expr.dict_display]: [eYo.ns.T3.Expr.comprehension, eYo.ns.T3.Expr.dict_comprehension],
+      [eYo.ns.T3.Expr.void_dict_display]: [eYo.ns.T3.Expr.comprehension, eYo.ns.T3.Expr.dict_comprehension]
     }
     var check = {
-      [eYo.T3.Expr.parenth_form]: eYo.T3.Expr.Check.starred_item_38,
-      [eYo.T3.Expr.list_display]: eYo.T3.Expr.Check.starred_item_38,
-      [eYo.T3.Expr.parenth_target_list]: eYo.T3.Expr.Check.starred_item_38,
-      [eYo.T3.Expr.bracket_target_list]: eYo.T3.Expr.Check.starred_item_38,
-      [eYo.T3.Expr.one_set_display]: eYo.T3.Expr.Check.starred_item,
-      [eYo.T3.Expr.set_display]: eYo.T3.Expr.Check.starred_item,
-      [eYo.T3.Expr.one_dict_display]: eYo.T3.Expr.Check.key_datum_all,
-      [eYo.T3.Expr.dict_display]: eYo.T3.Expr.Check.key_datum_all
+      [eYo.ns.T3.Expr.parenth_form]: eYo.ns.T3.Expr.Check.starred_item_38,
+      [eYo.ns.T3.Expr.list_display]: eYo.ns.T3.Expr.Check.starred_item_38,
+      [eYo.ns.T3.Expr.parenth_target_list]: eYo.ns.T3.Expr.Check.starred_item_38,
+      [eYo.ns.T3.Expr.bracket_target_list]: eYo.ns.T3.Expr.Check.starred_item_38,
+      [eYo.ns.T3.Expr.one_set_display]: eYo.ns.T3.Expr.Check.starred_item,
+      [eYo.ns.T3.Expr.set_display]: eYo.ns.T3.Expr.Check.starred_item,
+      [eYo.ns.T3.Expr.one_dict_display]: eYo.ns.T3.Expr.Check.key_datum_all,
+      [eYo.ns.T3.Expr.dict_display]: eYo.ns.T3.Expr.Check.key_datum_all
     }
-    check[eYo.T3.Expr.void_dict_display] = goog.array.concat(eYo.T3.Expr.Check.starred_item, eYo.T3.Expr.Check.key_datum_all)
+    check[eYo.ns.T3.Expr.void_dict_display] = goog.array.concat(eYo.ns.T3.Expr.Check.starred_item, eYo.ns.T3.Expr.Check.key_datum_all)
     var me = {
       unique: (type) => {
         return unique[type]
@@ -423,18 +423,18 @@ eYo.ns.Brick.List.makeSubclass('enclosure', {
       presep: ','
     }
     var all = Object.create(null)
-    ;[eYo.T3.Expr.parenth_form,
-      eYo.T3.Expr.parenth_target_list,
-      eYo.T3.Expr.list_display,
-      eYo.T3.Expr.bracket_target_list,
-      eYo.T3.Expr.set_display,
-      eYo.T3.Expr.dict_display].forEach(k => {
+    ;[eYo.ns.T3.Expr.parenth_form,
+      eYo.ns.T3.Expr.parenth_target_list,
+      eYo.ns.T3.Expr.list_display,
+      eYo.ns.T3.Expr.bracket_target_list,
+      eYo.ns.T3.Expr.set_display,
+      eYo.ns.T3.Expr.dict_display].forEach(k => {
       all[k] = goog.array.concat(me.unique(k), me.check(k))
     })
-    all[eYo.T3.Expr.void_dict_display] = all[eYo.T3.Expr.one_set_display] = all[eYo.T3.Expr.one_dict_display] = goog.array.concat(
-      me.unique(eYo.T3.Expr.one_set_display),
-      me.check(eYo.T3.Expr.dict_display),
-      me.check(eYo.T3.Expr.set_display))
+    all[eYo.ns.T3.Expr.void_dict_display] = all[eYo.ns.T3.Expr.one_set_display] = all[eYo.ns.T3.Expr.one_dict_display] = goog.array.concat(
+      me.unique(eYo.ns.T3.Expr.one_set_display),
+      me.check(eYo.ns.T3.Expr.dict_display),
+      me.check(eYo.ns.T3.Expr.set_display))
     me.all = (type) => {
       return all [type]
     }
@@ -478,7 +478,7 @@ eYo.Expr.enclosure.prototype.getProfile = eYo.Change.decorate(
         return {ans: this.someSlot(slot => {
             var t = slot.targetBrick
             if (t && (t = t.out_m.check_)) {
-              return t.some(x => eYo.T3.Expr.Check.target.indexOf(x) >= 0)
+              return t.some(x => eYo.ns.T3.Expr.Check.target.indexOf(x) >= 0)
             }
           })
           ? target
@@ -487,32 +487,32 @@ eYo.Expr.enclosure.prototype.getProfile = eYo.Change.decorate(
       }
       var variant = this.variant_p
       if (variant === eYo.Key.PAR) {
-        return f(eYo.T3.Expr.parenth_target_list, eYo.T3.Expr.parenth_form)
+        return f(eYo.ns.T3.Expr.parenth_target_list, eYo.ns.T3.Expr.parenth_form)
       }
       if (variant === eYo.Key.SQB) {
-        return f(eYo.T3.Expr.bracket_target_list, eYo.T3.Expr.list_display)
+        return f(eYo.ns.T3.Expr.bracket_target_list, eYo.ns.T3.Expr.list_display)
       }
       var target = this.firstTarget
       if (target) {
-        if (target.type === eYo.T3.Expr.comprehension) {
-          return {ans: eYo.T3.Expr.set_display}
-        } else if (target.type === eYo.T3.Expr.dict_comprehension) {
-          return {ans: eYo.T3.Expr.dict_display}
+        if (target.type === eYo.ns.T3.Expr.comprehension) {
+          return {ans: eYo.ns.T3.Expr.set_display}
+        } else if (target.type === eYo.ns.T3.Expr.dict_comprehension) {
+          return {ans: eYo.ns.T3.Expr.dict_display}
         } else if (this.slots.length === 3) {
-            if (this.model.list.all(eYo.T3.Expr.set_display).indexOf(target.type) >= 0) {
-              return {ans: eYo.T3.Expr.one_set_display}
+            if (this.model.list.all(eYo.ns.T3.Expr.set_display).indexOf(target.type) >= 0) {
+              return {ans: eYo.ns.T3.Expr.one_set_display}
             } else {
-              return {ans: eYo.T3.Expr.one_dict_display}
+              return {ans: eYo.ns.T3.Expr.one_dict_display}
             }
-        } else if (this.model.list.all(eYo.T3.Expr.set_display).indexOf(target.type) >= 0) {
-          return {ans: eYo.T3.Expr.set_display}
+        } else if (this.model.list.all(eYo.ns.T3.Expr.set_display).indexOf(target.type) >= 0) {
+          return {ans: eYo.ns.T3.Expr.set_display}
         } else {
-          return {ans: eYo.T3.Expr.dict_display}
+          return {ans: eYo.ns.T3.Expr.dict_display}
         }
       }
-      return {ans: eYo.T3.Expr.void_dict_display}
+      return {ans: eYo.ns.T3.Expr.void_dict_display}
     }
-    return {ans: eYo.T3.Expr.parenth_form}
+    return {ans: eYo.ns.T3.Expr.parenth_form}
   }
 )
 
@@ -522,16 +522,16 @@ eYo.Expr.enclosure.prototype.getProfile = eYo.Change.decorate(
  * @param {Object} profile
  */
 eYo.Expr.enclosure.prototype.getOutCheck = function (profile) {
-  if (profile === eYo.T3.Expr.parenth_target_list) {
-    return [eYo.T3.Expr.parenth_target_list, eYo.T3.Expr.parenth_form]
-  } else if (profile === eYo.T3.Expr.bracket_target_list) {
-    return [eYo.T3.Expr.bracket_target_list, eYo.T3.Expr.list_display]
-  } else if (profile === eYo.T3.Expr.void_dict_display) {
-    return [profile, eYo.T3.Expr.dict_display]
-  } else if (profile === eYo.T3.Expr.one_dict_display) {
-    return [profile, eYo.T3.Expr.dict_display]
-  } else if (profile === eYo.T3.Expr.one_set_display) {
-    return [profile, eYo.T3.Expr.set_display]
+  if (profile === eYo.ns.T3.Expr.parenth_target_list) {
+    return [eYo.ns.T3.Expr.parenth_target_list, eYo.ns.T3.Expr.parenth_form]
+  } else if (profile === eYo.ns.T3.Expr.bracket_target_list) {
+    return [eYo.ns.T3.Expr.bracket_target_list, eYo.ns.T3.Expr.list_display]
+  } else if (profile === eYo.ns.T3.Expr.void_dict_display) {
+    return [profile, eYo.ns.T3.Expr.dict_display]
+  } else if (profile === eYo.ns.T3.Expr.one_dict_display) {
+    return [profile, eYo.ns.T3.Expr.dict_display]
+  } else if (profile === eYo.ns.T3.Expr.one_set_display) {
+    return [profile, eYo.ns.T3.Expr.set_display]
   } else {
     return [profile]
   }
@@ -559,21 +559,21 @@ eYo.Expr.enclosure.prototype.getBaseType = function () {
 })
 
 eYo.ns.Brick.List.T3s = [
-  eYo.T3.Expr.identifier,
-  eYo.T3.Expr.comprehension,
-  eYo.T3.Expr.dict_comprehension,
-  eYo.T3.Expr.key_datum,
-  eYo.T3.Expr.optional_expression_list,
-  eYo.T3.Expr.parenth_form,
-  eYo.T3.Expr.parenth_target_list,
-  eYo.T3.Expr.list_display,
-  eYo.T3.Expr.bracket_target_list,
-  eYo.T3.Expr.void_dict_display,
-  eYo.T3.Expr.one_set_display,
-  eYo.T3.Expr.set_display,
-  eYo.T3.Expr.one_dict_display,
-  eYo.T3.Expr.dict_display,
-  eYo.T3.Expr.slice_list,
-  eYo.T3.Expr.dict_display,
-  eYo.T3.Expr.with_item_list
+  eYo.ns.T3.Expr.identifier,
+  eYo.ns.T3.Expr.comprehension,
+  eYo.ns.T3.Expr.dict_comprehension,
+  eYo.ns.T3.Expr.key_datum,
+  eYo.ns.T3.Expr.optional_expression_list,
+  eYo.ns.T3.Expr.parenth_form,
+  eYo.ns.T3.Expr.parenth_target_list,
+  eYo.ns.T3.Expr.list_display,
+  eYo.ns.T3.Expr.bracket_target_list,
+  eYo.ns.T3.Expr.void_dict_display,
+  eYo.ns.T3.Expr.one_set_display,
+  eYo.ns.T3.Expr.set_display,
+  eYo.ns.T3.Expr.one_dict_display,
+  eYo.ns.T3.Expr.dict_display,
+  eYo.ns.T3.Expr.slice_list,
+  eYo.ns.T3.Expr.dict_display,
+  eYo.ns.T3.Expr.with_item_list
 ]

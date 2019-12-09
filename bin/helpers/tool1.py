@@ -15,9 +15,9 @@ class Foo:
   #re_provide = re.compile(r"^\s*eYo.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
   #eYo.Consolidator.makeClass('Dlgt')
-  re_make = re.compile(r"""^\s*(?:(?P<makeClass>[\w.]+)\.make(?:Driver)?Class|(?P<makeSubclass>[\w.]+)\.makeSubclass|(?P<makeNS>eYo\.NS\.[\w.]*make))\s*\(\s*(?P<ns>[\w.]+)?(?:\s*,\s*)?(?:(?:'|")(?P<what>[\w.]+)(?:'|"))?.*""")
+  re_make = re.compile(r"""^\s*(?:(?P<makeClass>[\w.]+)\.make(?:Driver)?Class|(?P<makeSubclass>[\w.]+)\.makeSubclass|(?P<makeNS>eYo\.ns\.[\w.]*make))\s*\(\s*(?P<ns>[\w.]+)?(?:\s*,\s*)?(?:(?:'|")(?P<what>[\w.]+)(?:'|"))?.*""")
 
-  assert re.match(re_make, "eYo.NS.make('Brick')"), 'BAD re_make 2'
+  assert re.match(re_make, "eYo.ns.make('Brick')"), 'BAD re_make 2'
 
   pathByProvided = {}
   nsByClass = {}
@@ -55,7 +55,7 @@ class Foo:
           else:
             continue
           if makeNS:
-            what = 'eYo.NS' + what
+            what = 'eYo.ns' + what
             provided.add(what)
             namespaced.add(what)
           elif makeClass:

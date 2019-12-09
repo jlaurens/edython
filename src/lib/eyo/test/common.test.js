@@ -106,13 +106,13 @@ eYo.Test.C9r = (brick, k) => {
 }
 
 eYo.Test.brick = (brick, t, str) => {
-  t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
+  t = eYo.ns.T3.Stmt[t] || eYo.ns.T3.Expr[t] || t
   chai.assert(brick, `MISSING DLGT TYPE ${t || ''}`)
   chai.assert(!t || (brick.type === t), `MISSED TYPE ${str || ''} ${brick.type} === ${t}`)
 }
 
 eYo.Test.new_brick = (t, tt, str, headless) => {
-  var type = t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
+  var type = t = eYo.ns.T3.Stmt[t] || eYo.ns.T3.Expr[t] || t
   var brick = eYo.ns.Brick.newReady(eYo.app.board, type)
   eYo.Test.brick(brick, tt, str)
   if (!headless) {
@@ -371,7 +371,7 @@ eYo.Test.list_connect = (brick, key, target, name) => {
  */
 eYo.Test.subtype = (brick, t) => {
   chai.assert(brick, 'MISSING d')
-  t = eYo.T3.Expr[t] || eYo.T3.Stmt[t] || t
+  t = eYo.ns.T3.Expr[t] || eYo.ns.T3.Stmt[t] || t
   chai.assert(t, 'UNKNOWN subtype')
   chai.assert(brick.subtype === t, `MISSED subtype ${brick.type}: ${brick.subtype} === ${t}`)
 }
@@ -432,7 +432,7 @@ eYo.Test.same_list_length = (dlgt1, dlgt2, key) => {
  * Create a new identifier brick
  */
 eYo.Test.newIdentifier = (str) => {
-  var brick = eYo.ns.Brick.newReady(eYo.app.board, eYo.T3.Expr.identifier)
+  var brick = eYo.ns.Brick.newReady(eYo.app.board, eYo.ns.T3.Expr.identifier)
   brick.target_p = str
   eYo.Test.brick(brick, 'identifier')
   eYo.Test.data_value(brick, 'target', str)

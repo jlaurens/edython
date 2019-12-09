@@ -124,7 +124,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
       this.use_print = true
     }
   }
-  if (brick.type === eYo.T3.Stmt.import_stmt && !brick.disabled) {
+  if (brick.type === eYo.ns.T3.Stmt.import_stmt && !brick.disabled) {
     var importedModules = brick.importedModules
     if (importedModules && importedModules['turtle']) {
       this.use_turtle = true

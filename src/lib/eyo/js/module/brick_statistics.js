@@ -45,7 +45,7 @@ eYo.provide('eYo.ns.Brick.Statistics')
     var key = 'statistics__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.ns.T3.Expr.call_expr,
       data: {
         name: name,
         holder: 'statistics',
@@ -57,7 +57,7 @@ eYo.provide('eYo.ns.Brick.Statistics')
 
 eYo.Library.basic_statistics__module = [
   {
-    type: eYo.T3.Stmt.import_stmt,
+    type: eYo.ns.T3.Stmt.import_stmt,
     from_p: 'statistics',
     variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
     title: 'statistics__import_stmt'
@@ -80,7 +80,7 @@ eYo.Library.basic_statistics__module = [
     var key = 'statistics__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.ns.T3.Expr.call_expr,
       data: {
         name: name,
         holder: 'statistics',
@@ -92,12 +92,12 @@ eYo.Library.basic_statistics__module = [
 
 eYo.Library.statistics__module = [
   {
-    type: eYo.T3.Stmt.import_stmt,
+    type: eYo.ns.T3.Stmt.import_stmt,
     variant_p: eYo.Key.IMPORT,
     import_module_s: {
       slots: {
         O: {
-          type: eYo.T3.Expr.identifier,
+          type: eYo.ns.T3.Expr.identifier,
           data: 'statistics'
         }
       }
@@ -124,5 +124,5 @@ goog.mixin(eYo.Tooltip.Title, {
 })
 
 eYo.ns.Brick.Fractions.T3s = [
-  eYo.T3.Fraction
+  eYo.ns.T3.Fraction
 ]

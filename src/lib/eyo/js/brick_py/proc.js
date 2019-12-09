@@ -128,9 +128,9 @@ eYo.Stmt.makeSubclass('decorator_stmt', {
     },
     name: {
       all: [ // accepted types
-        eYo.T3.Expr.dotted_name,
-        eYo.T3.Expr.identifier,
-        eYo.T3.Expr.unset
+        eYo.ns.T3.Expr.dotted_name,
+        eYo.ns.T3.Expr.identifier,
+        eYo.ns.T3.Expr.unset
       ],
       init: '',
       placeholder: /** @suppress {globalThis} */ function () {
@@ -140,7 +140,7 @@ eYo.Stmt.makeSubclass('decorator_stmt', {
         : eYo.Msg.Placeholder.DECORATOR
       },
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.T3.Profile.get(newValue, null)
+        var p5e = eYo.ns.T3.Profile.get(newValue, null)
         if (this.getAll().indexOf(p5e.expr) >= 0) {
           return {validated: newValue}
         }
@@ -164,13 +164,13 @@ eYo.Stmt.makeSubclass('decorator_stmt', {
     },
     decorator: {
       all: [ // accepted types
-        eYo.T3.Expr.dotted_name,
-        eYo.T3.Expr.identifier,
-        eYo.T3.Expr.unset
+        eYo.ns.T3.Expr.dotted_name,
+        eYo.ns.T3.Expr.identifier,
+        eYo.ns.T3.Expr.unset
       ],
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.T3.Profile.get(newValue, null)
+        var p5e = eYo.ns.T3.Profile.get(newValue, null)
         if (this.getAll().indexOf(p5e.expr) >= 0 || this.getAll().indexOf(p5e.base) >= 0) {
           return {validated: newValue}
         }
@@ -323,7 +323,7 @@ eYo.Stmt.makeSubclass('decorator_stmt', {
         start: '(',
         end: ')'
       },
-      promise: eYo.T3.Expr.argument_list,
+      promise: eYo.ns.T3.Expr.argument_list,
       didLoad: /** @suppress {globalThis} */ function () {
         var t = this.targetBrick // may be null ?
         if (t && t.children_.length) {
@@ -431,9 +431,9 @@ eYo.ns.Brick.Group.makeSubclass('funcdef_part', {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.T3.Profile.get(newValue, null)
-        return p5e.expr === eYo.T3.Expr.identifier
-          || p5e.expr === eYo.T3.Expr.unset
+        var p5e = eYo.ns.T3.Profile.get(newValue, null)
+        return p5e.expr === eYo.ns.T3.Expr.identifier
+          || p5e.expr === eYo.ns.T3.Expr.unset
           ? {validated: newValue}
           : null
       },
@@ -457,14 +457,14 @@ eYo.ns.Brick.Group.makeSubclass('funcdef_part', {
         start: '(',
         end: ')'
       },
-      wrap: eYo.T3.Expr.parameter_list
+      wrap: eYo.ns.T3.Expr.parameter_list
     },
     type: {
       order: 3,
       fields: {
         label: '->'
       },
-      check: eYo.T3.Expr.Check.expression
+      check: eYo.ns.T3.Expr.Check.expression
     }
   }
 }, true)
@@ -522,9 +522,9 @@ eYo.ns.Brick.Group.makeSubclass('classdef_part', {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.T3.Profile.get(newValue, null)
-        return p5e.expr === eYo.T3.Expr.identifier
-          || p5e.expr === eYo.T3.Expr.unset
+        var p5e = eYo.ns.T3.Profile.get(newValue, null)
+        return p5e.expr === eYo.ns.T3.Expr.identifier
+          || p5e.expr === eYo.ns.T3.Expr.unset
           ? {validated: newValue}
           : null
       },
@@ -549,7 +549,7 @@ eYo.ns.Brick.Group.makeSubclass('classdef_part', {
         start: '(',
         end: ')'
       },
-      wrap: eYo.T3.Expr.argument_list,
+      wrap: eYo.ns.T3.Expr.argument_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.N_ARY
@@ -589,8 +589,8 @@ eYo.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
 }
 
 eYo.ns.Brick.Proc.T3s = [
-  eYo.T3.Expr.identifier,
-  eYo.T3.Stmt.decorator_stmt,
-  eYo.T3.Stmt.funcdef_part,
-  eYo.T3.Stmt.classdef_part
+  eYo.ns.T3.Expr.identifier,
+  eYo.ns.T3.Stmt.decorator_stmt,
+  eYo.ns.T3.Stmt.funcdef_part,
+  eYo.ns.T3.Stmt.classdef_part
 ]

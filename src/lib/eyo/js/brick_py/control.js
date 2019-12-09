@@ -94,10 +94,10 @@ eYo.ns.Brick.Control.makeSubclass('start_stmt', {
   left: eYo.NA, // override inherited
   right: eYo.NA, // override inherited
   head: {
-    check: eYo.T3.Stmt.start_stmt
+    check: eYo.ns.T3.Stmt.start_stmt
   },
   foot: {
-    check: eYo.T3.Stmt.start_stmt
+    check: eYo.ns.T3.Stmt.start_stmt
   }
 })
 
@@ -113,5 +113,5 @@ Object.defineProperties (eYo.ns.Brick.Control.prototype, {
 })
 
 eYo.ns.Brick.Control.T3s = [
-  eYo.T3.Stmt.start_stmt
+  eYo.ns.T3.Stmt.start_stmt
 ]

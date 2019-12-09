@@ -42,7 +42,7 @@ eYo.provide('eYo.ns.Brick.Parameter')
 // goog.inherits(eYo.ns.Consolidator.Parameter, eYo.ns.Consolidator.List)
 
 // eYo.ns.Consolidator.Parameter.data = {
-//   check: eYo.T3.Expr.Check.primary,
+//   check: eYo.ns.T3.Expr.Check.primary,
 //   mandatory: 0,
 //   presep: ',',
 // }
@@ -62,7 +62,7 @@ eYo.ns.Consolidator.List.makeSubclass('Parameter', {
 eYo.ns.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
   if (io.i + 1 === io.list.length) {
     var check = io.m4t.target.check_
-    if (!check || goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
+    if (!check || goog.array.contains(check, eYo.ns.T3.Expr.parameter_star_star)) {
       // do not add a separator after
       return false
     }
@@ -107,13 +107,13 @@ eYo.ns.Consolidator.Parameter.prototype.doCleanup = (() => {
     }
     var check = target.check_
     if (check) {
-      if (goog.array.contains(check, eYo.T3.Expr.star)) {
+      if (goog.array.contains(check, eYo.ns.T3.Expr.star)) {
         return Type.star
-      } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star)) {
+      } else if (goog.array.contains(check, eYo.ns.T3.Expr.parameter_star)) {
         return Type.star
-      } else if (goog.array.contains(check, eYo.T3.Expr.parameter_star_star)) {
+      } else if (goog.array.contains(check, eYo.ns.T3.Expr.parameter_star_star)) {
         return Type.star_star
-      } else if (goog.array.contains(check, eYo.T3.Expr.identifier_valued)) {
+      } else if (goog.array.contains(check, eYo.ns.T3.Expr.identifier_valued)) {
         return Type.default
       } else {
         return Type.parameter
@@ -275,18 +275,18 @@ eYo.ns.Consolidator.Parameter.prototype.getCheck = (() => {
     }
     out = []
     if (can_parameter) {
-      out = eYo.T3.Expr.Check.parameter.slice()
+      out = eYo.ns.T3.Expr.Check.parameter.slice()
     }
     if (can_default) {
-      out.push(eYo.T3.Expr.identifier_valued)
-      out.push(eYo.T3.Expr.identifier_annotated_valued)
+      out.push(eYo.ns.T3.Expr.identifier_valued)
+      out.push(eYo.ns.T3.Expr.identifier_annotated_valued)
     }
     if (can_star) {
-      out.push(eYo.T3.Expr.star)
-      out.push(eYo.T3.Expr.parameter_star)
+      out.push(eYo.ns.T3.Expr.star)
+      out.push(eYo.ns.T3.Expr.parameter_star)
     }
     if (can_star_star) {
-      out.push(eYo.T3.Expr.parameter_star_star)
+      out.push(eYo.ns.T3.Expr.parameter_star_star)
     }
     return (cache[K] = out)
   }
@@ -313,7 +313,7 @@ eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
   var F = (modifier, flags, msg) => {
     var b3k
     eYo.Events.disableWrap(() => {
-      b3k = eYo.ns.Brick.newReady(this, eYo.T3.Expr.identifier)
+      b3k = eYo.ns.Brick.newReady(this, eYo.ns.T3.Expr.identifier)
       b3k.change.wrap(
         function() { // `this` is `y`
           this.modifier_p = modifier
@@ -333,7 +333,7 @@ eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
           mngr.addInsertChild(mngr.newMenuItem(
             content,
             () => {
-              var b3k = eYo.ns.Brick.newReady(this, eYo.T3.Expr.identifier)
+              var b3k = eYo.ns.Brick.newReady(this, eYo.ns.T3.Expr.identifier)
               eYo.Events.groupWrap(() => { // `this` is catched
                 b3k.change.wrap(
                   function () { // `this` is `b3k`
@@ -381,7 +381,7 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
       fields: {
         label: 'lambda'
       },
-      wrap: eYo.T3.Expr.parameter_list
+      wrap: eYo.ns.T3.Expr.parameter_list
     },
     expression: {
       order: 3,
@@ -392,11 +392,11 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
         var m4t = this.brick.out_m.target
         if (m4t) {
           // does the target accept general expression in lambda
-          if (m4t.check_ && m4t.check_.indexOf(eYo.T3.Expr.lambda_expr) < 0) {
-            return eYo.T3.Expr.Check.expression_nocond
+          if (m4t.check_ && m4t.check_.indexOf(eYo.ns.T3.Expr.lambda_expr) < 0) {
+            return eYo.ns.T3.Expr.Check.expression_nocond
           }
         }
-        return eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)
+        return eYo.ns.T3.Expr.Check.expression.concat(eYo.ns.T3.Expr.Check.expression_nocond)
       }
     }
   },
@@ -408,10 +408,10 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
       var nocond_in = true // nocond are accepted by default
       var targetM4t = m4tIn.target
       if (targetM4t && targetM4t.check_) {
-        cond_in = eYo.T3.Expr.Check.expression.some(t => targetM4t.check_.indexOf(t) >= 0)
-        nocond_in = eYo.T3.Expr.Check.expression_nocond.some(t => targetM4t.check_.indexOf(t) >= 0)
+        cond_in = eYo.ns.T3.Expr.Check.expression.some(t => targetM4t.check_.indexOf(t) >= 0)
+        nocond_in = eYo.ns.T3.Expr.Check.expression_nocond.some(t => targetM4t.check_.indexOf(t) >= 0)
       }
-      return (cond_in ? [eYo.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.T3.Expr.lambda_expr_nocond] : [])
+      return (cond_in ? [eYo.ns.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.ns.T3.Expr.lambda_expr_nocond] : [])
     }
   }
 }, true)
@@ -439,21 +439,21 @@ eYo.Magnet.prototype.consolidateType = function () {
   var target = m4tOut.target
   if (target) {
     // does the target accept general expression in lambda
-    nocond_only_out = target.check_ && (target.check_.indexOf(eYo.T3.Expr.lambda_expr)) < 0
+    nocond_only_out = target.check_ && (target.check_.indexOf(eYo.ns.T3.Expr.lambda_expr)) < 0
   }
   var cond_in = true // cond are accepted by default
   var nocond_in = true // nocond not accepted by default
   target = m4tIn.target
   if (target) {
     cond_in = false
-    for (var i = 0, t; (t = eYo.T3.Expr.Check.expression[++i]);) {
+    for (var i = 0, t; (t = eYo.ns.T3.Expr.Check.expression[++i]);) {
       if (!target.check_ || target.check_.indexOf(t) >= 0) {
         cond_in = true
         break
       }
     }
     nocond_in = false
-    for (i = 0; (t = eYo.T3.Expr.Check.expression_nocond[++i]);) {
+    for (i = 0; (t = eYo.ns.T3.Expr.Check.expression_nocond[++i]);) {
       if (!target.check_ || target.check_.indexOf(t) >= 0) {
         nocond_in = true
         break
@@ -462,14 +462,14 @@ eYo.Magnet.prototype.consolidateType = function () {
   }
   // better design if we use the subtype ?
   m4tIn.check = nocond_only_out
-    ? eYo.T3.Expr.Check.expression_nocond
-    : eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.expression_nocond)
+    ? eYo.ns.T3.Expr.Check.expression_nocond
+    : eYo.ns.T3.Expr.Check.expression.concat(eYo.ns.T3.Expr.Check.expression_nocond)
   m4tOut.check = 
-    (cond_in ? [eYo.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.T3.Expr.lambda_expr_nocond] : [])
+    (cond_in ? [eYo.ns.T3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.ns.T3.Expr.lambda_expr_nocond] : [])
 }
 
 eYo.ns.Brick.Lambda.T3s = [
-  eYo.T3.Expr.identifier,
-  eYo.T3.Expr.parameter_list,
-  eYo.T3.Expr.lambda
+  eYo.ns.T3.Expr.identifier,
+  eYo.ns.T3.Expr.parameter_list,
+  eYo.ns.T3.Expr.lambda
 ]

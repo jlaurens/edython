@@ -105,7 +105,7 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
           placeholder: eYo.Msg.Placeholder.EXPRESSION
         }
       },
-      wrap: eYo.T3.Expr.non_void_expression_list,
+      wrap: eYo.ns.T3.Expr.non_void_expression_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.EXPRESSION
@@ -133,7 +133,7 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
           placeholder: eYo.Msg.Placeholder.EXPRESSION
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.ns.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM
@@ -210,7 +210,7 @@ eYo.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
  * For edython.
  */
 eYo.Stmt.makeSubclass('yield_stmt', {
-  link: eYo.T3.Expr.yield_expr
+  link: eYo.ns.T3.Expr.yield_expr
 }, true)
 
 /**
@@ -225,6 +225,6 @@ eYo.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
 }
 
 eYo.ns.Brick.Yield.T3s = [
-  eYo.T3.Expr.yield_expr,
-  eYo.T3.Stmt.yield_stmt
+  eYo.ns.T3.Expr.yield_expr,
+  eYo.ns.T3.Stmt.yield_stmt
 ]

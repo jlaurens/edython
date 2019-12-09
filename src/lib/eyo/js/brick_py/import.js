@@ -41,7 +41,7 @@ module_name ::= identifier
  */
 eYo.ns.Brick.List.makeSubclass('non_void_module_as_list', {
   list: {
-    check: eYo.T3.Expr.Check.non_void_module_as_list,
+    check: eYo.ns.T3.Expr.Check.non_void_module_as_list,
     mandatory: 1,
     presep: ','
   }
@@ -55,7 +55,7 @@ eYo.ns.Brick.List.makeSubclass('non_void_module_as_list', {
  */
 eYo.ns.Brick.List.makeSubclass('non_void_import_identifier_as_list', {
   list: {
-    check: eYo.T3.Expr.Check.non_void_import_identifier_as_list,
+    check: eYo.ns.T3.Expr.Check.non_void_import_identifier_as_list,
     mandatory: 1,
     presep: ',',
     placeholder: eYo.Msg.Placeholder.IDENTIFIER
@@ -91,12 +91,12 @@ eYo.Stmt.makeSubclass('import_stmt', {
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.T3.Profile.get(newValue)
-        return p5e === eYo.T3.Profile.void
-        || p5e.raw === eYo.T3.Expr.builtin__name
-        || p5e.expr === eYo.T3.Expr.identifier
-        || p5e.expr === eYo.T3.Expr.parent_module
-        || p5e.expr === eYo.T3.Expr.dotted_name
+        var p5e = eYo.ns.T3.Profile.get(newValue)
+        return p5e === eYo.ns.T3.Profile.void
+        || p5e.raw === eYo.ns.T3.Expr.builtin__name
+        || p5e.expr === eYo.ns.T3.Expr.identifier
+        || p5e.expr === eYo.ns.T3.Expr.parent_module
+        || p5e.expr === eYo.ns.T3.Expr.dotted_name
         || newValue === '...'
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
@@ -120,13 +120,13 @@ eYo.Stmt.makeSubclass('import_stmt', {
       init:'',
       placeholder: eYo.Msg.Placeholder.MODULE,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.T3.Profile.get(newValue, null)
+        var p5e = eYo.ns.T3.Profile.get(newValue, null)
         var variant = this.brick.variant_p
-        return p5e === eYo.T3.Profile.void
-        || p5e.expr === eYo.T3.Expr.identifier
-        || p5e.expr === eYo.T3.Expr.dotted_name
+        return p5e === eYo.ns.T3.Profile.void
+        || p5e.expr === eYo.ns.T3.Expr.identifier
+        || p5e.expr === eYo.ns.T3.Expr.dotted_name
         || ((variant !== eYo.Key.FROM_MODULE_IMPORT_STAR)
-          && (p5e.expr === eYo.T3.Expr.parent_module || newValue === '...'))
+          && (p5e.expr === eYo.ns.T3.Expr.parent_module || newValue === '...'))
             ? {validated: newValue} : null
       },
       synchronize: true,
@@ -147,9 +147,9 @@ eYo.Stmt.makeSubclass('import_stmt', {
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.T3.Profile.get(newValue)
-        return p5e === eYo.T3.Profile.void
-        || p5e.expr === eYo.T3.Expr.identifier
+        var p5e = eYo.ns.T3.Profile.get(newValue)
+        return p5e === eYo.ns.T3.Profile.void
+        || p5e.expr === eYo.ns.T3.Expr.identifier
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
@@ -178,7 +178,7 @@ eYo.Stmt.makeSubclass('import_stmt', {
           endEditing: true
         }
       },
-      promise: eYo.T3.Expr.non_void_module_as_list,
+      promise: eYo.ns.T3.Expr.non_void_module_as_list,
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         var parent = this.brick.parent
         parent && (parent.variant_p = eYo.Key.IMPORT)
@@ -197,14 +197,14 @@ eYo.Stmt.makeSubclass('import_stmt', {
         var v = this.brick.variant_p
         return v === eYo.Key.FROM_MODULE_IMPORT_STAR
         ? [
-          eYo.T3.Expr.unset,
-          eYo.T3.Expr.identifier,
-          eYo.T3.Expr.dotted_name
+          eYo.ns.T3.Expr.unset,
+          eYo.ns.T3.Expr.identifier,
+          eYo.ns.T3.Expr.dotted_name
         ] : [
-          eYo.T3.Expr.unset,
-          eYo.T3.Expr.identifier,
-          eYo.T3.Expr.dotted_name,
-          eYo.T3.Expr.parent_module
+          eYo.ns.T3.Expr.unset,
+          eYo.ns.T3.Expr.identifier,
+          eYo.ns.T3.Expr.dotted_name,
+          eYo.ns.T3.Expr.parent_module
         ]
       },
       didLoad: /** @suppress {globalThis} */ function () {
@@ -236,7 +236,7 @@ eYo.Stmt.makeSubclass('import_stmt', {
           endEditing: true
         }
       },
-      promise: eYo.T3.Expr.non_void_import_identifier_as_list,
+      promise: eYo.ns.T3.Expr.non_void_import_identifier_as_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM_MODULE_IMPORT
@@ -307,9 +307,9 @@ eYo.Stmt.import_stmt.prototype.importedModules = function () {
     // non_void_import_identifier_as_list
     this.import_b.forEachSlot(slot => {
       var t9k = slot.targetBrick
-      if (t9k.type === eYo.T3.Expr.identifier) {
+      if (t9k.type === eYo.ns.T3.Expr.identifier) {
         modules[t9k.target_p] = t9k.target_p
-      } else if (t9k.type === eYo.T3.Expr.identifier_as) {
+      } else if (t9k.type === eYo.ns.T3.Expr.identifier_as) {
         modules[t9k.target_p] = t9k.alias_p
       } else { // when connected to an 'any' brick
         var any = t9k.expression_p
@@ -392,15 +392,15 @@ eYo.Stmt.makeSubclass('future_statement', {
           reserved: 'from __future__ import'
         }
       },
-      wrap: eYo.T3.Expr.non_void_import_identifier_as_list
+      wrap: eYo.ns.T3.Expr.non_void_import_identifier_as_list
     }
   }
 }, true)
 
 eYo.ns.Brick.Import.T3s = [
-  eYo.T3.Expr.identifier,
-  eYo.T3.Expr.non_void_module_as_list,
-  eYo.T3.Expr.non_void_import_identifier_as_list,
-  eYo.T3.Stmt.import_stmt,
-  eYo.T3.Stmt.future_statement
+  eYo.ns.T3.Expr.identifier,
+  eYo.ns.T3.Expr.non_void_module_as_list,
+  eYo.ns.T3.Expr.non_void_import_identifier_as_list,
+  eYo.ns.T3.Stmt.import_stmt,
+  eYo.ns.T3.Stmt.future_statement
 ]

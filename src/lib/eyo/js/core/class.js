@@ -15,7 +15,7 @@ eYo.require('eYo.Do')
 eYo.require('eYo.ns.Model')
 
 eYo.provide('eYo.Dlgt')
-
+delete eYo.Dlgt
 
 /**
  * @name {eYo.ns.Class}
@@ -51,7 +51,7 @@ eYo.ns.Class.dlgtByKey__ = Object.create(null)
  * @property {Set<String>} cached_ - Set of cached identifiers. Lazy initializer.
  */
 Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
-  value (ns, key, C9r, model) {
+  value: function (ns, key, C9r, model) {
     if (eYo.isStr(ns)) {
       model = C9r
       C9r = key
@@ -101,6 +101,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
     }
   }
 })
+
 // convenient variable
 Object.defineProperties(eYo.Dlgt.prototype, {
   C9r: eYo.Do.propertyR(function () {

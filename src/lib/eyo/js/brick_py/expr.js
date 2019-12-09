@@ -17,7 +17,7 @@ eYo.require('eYo.Change')
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.Decorate')
-eYo.require('eYo.T3.All')
+eYo.require('eYo.ns.T3.All')
 goog.require('goog.dom');
 
 eYo.provide('eYo.Expr')
@@ -30,7 +30,7 @@ eYo.provide('eYo.Expr')
 eYo.ns.Brick.Dflt.makeSubclass(eYo.Expr, 'Dflt')
 
 // Default delegate for all expression bricks
-eYo.ns.Brick.mngr.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
+eYo.ns.Brick.mngr.registerAll(eYo.ns.T3.Expr, eYo.Expr.Dflt, true)
 
 Object.defineProperties(eYo.Expr.Dflt.prototype, {
   isExpr: {
@@ -177,7 +177,7 @@ eYo.Expr.Dflt.prototype.awaitable = function () {
     return true
   }
   do {
-    if (parent.type === eYo.T3.Stmt.funcdef_part) {
+    if (parent.type === eYo.ns.T3.Stmt.funcdef_part) {
       return !!parent.async_
     }
   } while ((parent = parent.parent))
@@ -403,7 +403,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.ns.T3.Expr.Check.expression,
       optional: true
     },
     upper_bound: {
@@ -414,7 +414,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.ns.T3.Expr.Check.expression,
       optional: true
     },
     stride: {
@@ -426,7 +426,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.ns.T3.Expr.Check.expression,
       optional: true,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
@@ -446,21 +446,21 @@ eYo.Expr.Dflt.makeSubclass('conditional_expression', {
   slots: {
     expression: {
       order: 1,
-      check: eYo.T3.Expr.Check.or_test_all
+      check: eYo.ns.T3.Expr.Check.or_test_all
     },
     if: {
       order: 2,
       fields: {
         label: 'if'
       },
-      check: eYo.T3.Expr.Check.or_test_all
+      check: eYo.ns.T3.Expr.Check.or_test_all
     },
     else: {
       order: 3,
       fields: {
         label: 'else'
       },
-      check: eYo.T3.Expr.Check.expression
+      check: eYo.ns.T3.Expr.Check.expression
     }
   }
 }, true)
@@ -530,9 +530,9 @@ eYo.Expr.Dflt.makeSubclass('any', {
 }, true)
 
 eYo.Expr.T3s = [
-  eYo.T3.Expr.proper_slice,
-  eYo.T3.Expr.conditional_expression,
-  eYo.T3.Expr.starred_expression,
-  eYo.T3.Expr.builtin__object,
-  eYo.T3.Expr.any
+  eYo.ns.T3.Expr.proper_slice,
+  eYo.ns.T3.Expr.conditional_expression,
+  eYo.ns.T3.Expr.starred_expression,
+  eYo.ns.T3.Expr.builtin__object,
+  eYo.ns.T3.Expr.any
 ]

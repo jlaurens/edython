@@ -2,7 +2,7 @@ eYo.Test.no_brick_type = true
 
 describe('Expression shape', function () {
   var type = 'test_shape_out'
-  eYo.T3.Expr[type] = type
+  eYo.ns.T3.Expr[type] = type
   eYo.Expr.Dflt.makeSubclass(type, {
     out: {
       check: null
@@ -34,7 +34,7 @@ describe('Expression shape', function () {
 
 describe('Statement shape', function () {
   var type = 'test_shape_stmt'
-  eYo.T3.Stmt[type] = type
+  eYo.ns.T3.Stmt[type] = type
   eYo.Stmt.makeSubclass(type, {}) 
   chai.assert(eYo.Stmt.test_shape_stmt)
   var b
@@ -68,7 +68,7 @@ describe('Statement shape', function () {
 
 describe('Group shape', function () {
   var type = 'test_shape_part'
-  eYo.T3.Stmt[type] = type
+  eYo.ns.T3.Stmt[type] = type
   eYo.ns.Brick.Group.makeSubclass(type, {}) 
   chai.assert(eYo.Stmt.test_shape_part)
   var b

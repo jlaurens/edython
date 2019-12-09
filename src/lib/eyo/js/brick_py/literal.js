@@ -61,12 +61,12 @@ eYo.ns.Brick.Literal.makeSubclass('numberliteral', {
   data: {
     type: {
       all: [
-        eYo.T3.Expr.unset,
-        eYo.T3.Expr.integer,
-        eYo.T3.Expr.floatnumber,
-        eYo.T3.Expr.imagnumber
+        eYo.ns.T3.Expr.unset,
+        eYo.ns.T3.Expr.integer,
+        eYo.ns.T3.Expr.floatnumber,
+        eYo.ns.T3.Expr.imagnumber
       ],
-      init: eYo.T3.Expr.integer,
+      init: eYo.ns.T3.Expr.integer,
       noUndo: true,
       xml: false
     },
@@ -76,14 +76,14 @@ eYo.ns.Brick.Literal.makeSubclass('numberliteral', {
       placeholder: 0,
       validate: /** @suppress {globalThis} */ function (newValue) {
         var types = this.brick.type_d.getAll()
-        var p5e = eYo.T3.Profile.get(newValue, null)
-        return ((types.indexOf(p5e.expr) >= 0 || p5e.raw === eYo.T3.Expr.unset) && {validated: newValue}) || null
+        var p5e = eYo.ns.T3.Profile.get(newValue, null)
+        return ((types.indexOf(p5e.expr) >= 0 || p5e.raw === eYo.ns.T3.Expr.unset) && {validated: newValue}) || null
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
         this.didChange(oldValue, newValue)
         var type = newValue
-          ? eYo.T3.Profile.get(newValue, null).expr
-          : eYo.T3.Expr.integer
+          ? eYo.ns.T3.Profile.get(newValue, null).expr
+          : eYo.ns.T3.Expr.integer
         this.brick.type_p = type
       },
       synchronize: true,
@@ -134,11 +134,11 @@ eYo.ns.Brick.Literal.makeSubclass('shortliteral', {
   data: {
     subtype: {
       all: [
-        eYo.T3.Expr.shortstringliteral,
-        eYo.T3.Expr.shortformattedliteral,
-        eYo.T3.Expr.shortbytesliteral
+        eYo.ns.T3.Expr.shortstringliteral,
+        eYo.ns.T3.Expr.shortformattedliteral,
+        eYo.ns.T3.Expr.shortbytesliteral
       ],
-      init: eYo.T3.Expr.shortstringliteral,
+      init: eYo.ns.T3.Expr.shortstringliteral,
       synchronize: /** @this{eYo.Data} */ function (newValue) {
         // synchronize the placeholder text
         var p = this.content_p
@@ -185,7 +185,7 @@ eYo.ns.Brick.Literal.makeSubclass('shortliteral', {
     content: { // not saved
       placeholder: /** @suppress {globalThis} */ function () {
         var subtype = this.brick.subtype_p
-        return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.longbytesliteral
+        return subtype === eYo.ns.T3.Expr.shortbytesliteral || subtype === eYo.ns.T3.Expr.longbytesliteral
           ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
       },
       didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
@@ -219,10 +219,10 @@ eYo.ns.Brick.Literal.makeSubclass('shortliteral', {
           }
           return false
         }
-        if (F(eYo.XRE.shortstringliteralSingle, eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortformattedliteral) ||
-        F(eYo.XRE.shortstringliteralDouble, eYo.T3.Expr.shortstringliteral, eYo.T3.Expr.shortformattedliteral) ||
-        F(eYo.XRE.shortbytesliteralSingle, eYo.T3.Expr.shortbytesliteral) ||
-        F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)) {
+        if (F(eYo.XRE.shortstringliteralSingle, eYo.ns.T3.Expr.shortstringliteral, eYo.ns.T3.Expr.shortformattedliteral) ||
+        F(eYo.XRE.shortstringliteralDouble, eYo.ns.T3.Expr.shortstringliteral, eYo.ns.T3.Expr.shortformattedliteral) ||
+        F(eYo.XRE.shortbytesliteralSingle, eYo.ns.T3.Expr.shortbytesliteral) ||
+        F(eYo.XRE.shortbytesliteralDouble, eYo.ns.T3.Expr.shortbytesliteral)) {
           this.brick.removeError(eYo.Key.VALUE)
         } else if (newValue && newValue.length) {
           this.brick.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
@@ -238,7 +238,7 @@ eYo.ns.Brick.Literal.makeSubclass('shortliteral', {
         }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Expr.shortformattedliteral) {
+        if (type === eYo.ns.T3.Expr.shortformattedliteral) {
           this.doChange(`f''`)
         } else {
           this.doChange(`''`)
@@ -308,10 +308,10 @@ eYo.Expr.shortliteral.prototype.validateComponents = function(kvargs) {
   var delimiter = kvargs.delimiter || this.delimiter_p
   var content = kvargs.content || this.content_p
   var value = `${prefix}${delimiter}${content}${delimiter}`
-  return (!!XRegExp.exec(value, eYo.XRE.shortbytesliteralSingle) && eYo.T3.Expr.shortbytesliteral) ||
-  (!!XRegExp.exec(value, eYo.XRE.shortbytesliteralDouble) && eYo.T3.Expr.shortbytesliteral) ||
-  (!!XRegExp.exec(value, eYo.XRE.shortstringliteralSingle) && eYo.T3.Expr.shortstringliteral) ||
-  (!!XRegExp.exec(value, eYo.XRE.shortstringliteralDouble) && eYo.T3.Expr.shortstringliteral)
+  return (!!XRegExp.exec(value, eYo.XRE.shortbytesliteralSingle) && eYo.ns.T3.Expr.shortbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.shortbytesliteralDouble) && eYo.ns.T3.Expr.shortbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.shortstringliteralSingle) && eYo.ns.T3.Expr.shortstringliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.shortstringliteralDouble) && eYo.ns.T3.Expr.shortstringliteral)
 }
 
 /**
@@ -401,11 +401,11 @@ eYo.Expr.shortliteral.makeSubclass('longliteral', {
   data: {
     subtype: {
       all: [
-        eYo.T3.Expr.longstringliteral,
-        eYo.T3.Expr.longformattedliteral,
-        eYo.T3.Expr.longbytesliteral
+        eYo.ns.T3.Expr.longstringliteral,
+        eYo.ns.T3.Expr.longformattedliteral,
+        eYo.ns.T3.Expr.longbytesliteral
       ],
-      init: eYo.T3.Expr.longstringliteral
+      init: eYo.ns.T3.Expr.longstringliteral
     },
     delimiter: {
       all: ["'''", '"""'],
@@ -428,10 +428,10 @@ eYo.Expr.shortliteral.makeSubclass('longliteral', {
           }
           return false
         }
-        if (F(eYo.XRE.longstringliteralSingle, eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longformattedliteral) ||
-        F(eYo.XRE.longstringliteralDouble, eYo.T3.Expr.longstringliteral, eYo.T3.Expr.longformattedliteral) ||
-        F(eYo.XRE.longbytesliteralSingle, eYo.T3.Expr.longbytesliteral) ||
-        F(eYo.XRE.longbytesliteralDouble, eYo.T3.Expr.longbytesliteral)) {
+        if (F(eYo.XRE.longstringliteralSingle, eYo.ns.T3.Expr.longstringliteral, eYo.ns.T3.Expr.longformattedliteral) ||
+        F(eYo.XRE.longstringliteralDouble, eYo.ns.T3.Expr.longstringliteral, eYo.ns.T3.Expr.longformattedliteral) ||
+        F(eYo.XRE.longbytesliteralSingle, eYo.ns.T3.Expr.longbytesliteral) ||
+        F(eYo.XRE.longbytesliteralDouble, eYo.ns.T3.Expr.longbytesliteral)) {
           this.brick.removeError(eYo.Key.VALUE)
         } else if (newValue && newValue.length) {
           this.brick.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
@@ -439,7 +439,7 @@ eYo.Expr.shortliteral.makeSubclass('longliteral', {
         }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.T3.Expr.longformattedliteral) {
+        if (type === eYo.ns.T3.Expr.longformattedliteral) {
           this.doChange(`f''''''`)
         } else {
           this.doChange(`''''''`)
@@ -466,10 +466,10 @@ eYo.Expr.longliteral.prototype.validateComponents = function(kvargs) {
   var delimiter = kvargs.delimiter || this.delimiter_p
   var content = kvargs.content || this.content_p
   var value = `${prefix}${delimiter}${content}${delimiter}`
-  return (!!XRegExp.exec(value, eYo.XRE.longbytesliteralSingle) && eYo.T3.Expr.longbytesliteral) ||
-  (!!XRegExp.exec(value, eYo.XRE.longbytesliteralDouble) && eYo.T3.Expr.longbytesliteral) ||
-  (!!XRegExp.exec(value, eYo.XRE.longstringliteralSingle) && eYo.T3.Expr.longstringliteral) ||
-  (!!XRegExp.exec(value, eYo.XRE.longstringliteralDouble) && eYo.T3.Expr.longstringliteral)
+  return (!!XRegExp.exec(value, eYo.XRE.longbytesliteralSingle) && eYo.ns.T3.Expr.longbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.longbytesliteralDouble) && eYo.ns.T3.Expr.longbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.longstringliteralSingle) && eYo.ns.T3.Expr.longstringliteral) ||
+  (!!XRegExp.exec(value, eYo.XRE.longstringliteralDouble) && eYo.ns.T3.Expr.longstringliteral)
 }
 
 ;[
@@ -482,7 +482,7 @@ eYo.Expr.longliteral.prototype.validateComponents = function(kvargs) {
 })
 
 eYo.ns.Brick.Literal.T3s = [
-  eYo.T3.Expr.shortliteral,
-  eYo.T3.Expr.longliteral,
-  eYo.T3.Expr.numberliteral
+  eYo.ns.T3.Expr.shortliteral,
+  eYo.ns.T3.Expr.longliteral,
+  eYo.ns.T3.Expr.numberliteral
 ]

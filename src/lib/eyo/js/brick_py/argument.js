@@ -85,13 +85,13 @@ eYo.ns.Consolidator.Arguments.prototype.doCleanup = (() => {
     }
     var check = target.check_
     if (check) {
-      if (goog.array.contains(check, eYo.T3.Expr.comprehension)) {
+      if (goog.array.contains(check, eYo.ns.T3.Expr.comprehension)) {
         return Type.COMPREHENSION
-      } else if (goog.array.contains(check, eYo.T3.Expr.expression_star_star)) {
+      } else if (goog.array.contains(check, eYo.ns.T3.Expr.expression_star_star)) {
         return Type.STAR_STAR
-      } else if (goog.array.contains(check, eYo.T3.Expr.expression_star)) {
+      } else if (goog.array.contains(check, eYo.ns.T3.Expr.expression_star)) {
         return Type.STAR
-      } else if (goog.array.contains(check, eYo.T3.Expr.identifier_valued)) {
+      } else if (goog.array.contains(check, eYo.ns.T3.Expr.identifier_valued)) {
         return Type.KEYWORD
       } else {
         return Type.ARGUMENT
@@ -187,19 +187,19 @@ eYo.ns.Consolidator.Arguments.prototype.getCheck = (() => {
     }
     out = []
     if (can_expression) {
-      out = eYo.T3.Expr.Check.expression.slice()
+      out = eYo.ns.T3.Expr.Check.expression.slice()
     }
     if (can_expression_star) {
-      out.push(eYo.T3.Expr.expression_star)
+      out.push(eYo.ns.T3.Expr.expression_star)
     }
     if (can_keyword) {
-      out.push(eYo.T3.Expr.identifier_valued)
+      out.push(eYo.ns.T3.Expr.identifier_valued)
     }
     if (can_expression_star_star) {
-      out.push(eYo.T3.Expr.expression_star_star)
+      out.push(eYo.ns.T3.Expr.expression_star_star)
     }
     if (can_comprehension) {
-      out.push(eYo.T3.Expr.comprehension)
+      out.push(eYo.ns.T3.Expr.comprehension)
     }
     return (cache[K] = out)
   }
@@ -264,7 +264,7 @@ eYo.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
 })
 
 eYo.ns.Brick.Argument.T3s = [
-  // eYo.T3.Expr.identifier_valued,
-  eYo.T3.Expr.argument_list,
-  eYo.T3.Expr.argument_list_comprehensive
+  // eYo.ns.T3.Expr.identifier_valued,
+  eYo.ns.T3.Expr.argument_list,
+  eYo.ns.T3.Expr.argument_list_comprehensive
 ]

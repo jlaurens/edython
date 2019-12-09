@@ -120,7 +120,7 @@ eYo.provide('eYo.ns.Brick.CMath')
 //     pentary: null,
 //   },
 //   out: {
-//     check: [eYo.T3.Expr.cmath__const, eYo.T3.Expr.builtin__object]
+//     check: [eYo.ns.T3.Expr.cmath__const, eYo.ns.T3.Expr.builtin__object]
 //   }
 // })
 
@@ -130,7 +130,7 @@ eYo.provide('eYo.ns.Brick.CMath')
     var key = 'cmath__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.ns.T3.Expr.call_expr,
       data: {
         name: name,
         holder: 'cmath',
@@ -143,7 +143,7 @@ eYo.provide('eYo.ns.Brick.CMath')
     var key = 'cmath__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.ns.T3.Expr.call_expr,
       data: {
         name: name,
         holder: 'cmath',
@@ -155,30 +155,30 @@ eYo.provide('eYo.ns.Brick.CMath')
 
 eYo.Library.basic_cmath__module = [
   {
-    type: eYo.T3.Expr.call_expr,
+    type: eYo.ns.T3.Expr.call_expr,
     data: {
       name: 'complex',
       dotted: 0
     }
   },
   {
-    type: eYo.T3.Expr.attributeref,
+    type: eYo.ns.T3.Expr.attributeref,
     name_p: 'real',
     dotted_p: 1
   },
   {
-    type: eYo.T3.Expr.attributeref,
+    type: eYo.ns.T3.Expr.attributeref,
     name_p: 'imag',
     dotted_p: 1
   },
   {
-    type: eYo.T3.Expr.call_expr,
+    type: eYo.ns.T3.Expr.call_expr,
     name_p: 'conjugate',
     ary_p: 0,
     dotted: 1
   },
   {
-    type: eYo.T3.Stmt.import_stmt,
+    type: eYo.ns.T3.Stmt.import_stmt,
     from_p: 'cmath',
     variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR
   },
@@ -206,7 +206,7 @@ F = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.call_expr,
+    type: eYo.ns.T3.Expr.call_expr,
     data: {
       name: name,
       holder: 'cmath',
@@ -219,7 +219,7 @@ F_k = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.attributeref,
+    type: eYo.ns.T3.Expr.attributeref,
     data: {
       name: name,
       holder: 'cmath',
@@ -231,28 +231,28 @@ F_k = (name, title) => {
 
 eYo.Library.cmath__module = [
   {
-    type: eYo.T3.Expr.call_expr,
+    type: eYo.ns.T3.Expr.call_expr,
     data: {
       name: 'complex',
       dotted: 0
     }
   },
   {
-    type: eYo.T3.Expr.attributeref,
+    type: eYo.ns.T3.Expr.attributeref,
     data: {
       name: 'real',
       dotted: 1
     }
   },
   {
-    type: eYo.T3.Expr.attributeref,
+    type: eYo.ns.T3.Expr.attributeref,
     data: {
       name: 'imag',
       dotted: 1
     }
   },
   {
-    type: eYo.T3.Expr.call_expr,
+    type: eYo.ns.T3.Expr.call_expr,
     data: {
       name: 'conjugate',
       ary: 0,
@@ -260,7 +260,7 @@ eYo.Library.cmath__module = [
     }
   },
   {
-    type: eYo.T3.Stmt.import_stmt,
+    type: eYo.ns.T3.Stmt.import_stmt,
     data: {
       variant: eYo.Key.IMPORT
     },
@@ -268,7 +268,7 @@ eYo.Library.cmath__module = [
       import_module: {
         slots: {
           O: {
-            type: eYo.T3.Expr.identifier,
+            type: eYo.ns.T3.Expr.identifier,
             data: 'cmath',
           },
         },
@@ -319,5 +319,5 @@ goog.mixin(eYo.Tooltip.Title, {
 })
 
 eYo.ns.Brick.CMath.T3s = [
-  eYo.T3.Expr.cmath__const
+  eYo.ns.T3.Expr.cmath__const
 ]

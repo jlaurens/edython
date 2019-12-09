@@ -160,7 +160,7 @@ describe('Current Field', function () {
   var b_1
   before(function() {
     var type = 'test_stmt_span_reserved'
-    eYo.T3.Stmt[type] = type
+    eYo.ns.T3.Stmt[type] = type
     eYo.Stmt.makeSubclass(type, {
       fields: {
         FIELD: {
@@ -192,7 +192,7 @@ describe('Current Span statements', function () {
   var b_1, s_1, b_2, s_2, b_3, s_3
   before(function() {
     var type = 'test_stmt_span'
-    eYo.T3.Stmt[type] = type
+    eYo.ns.T3.Stmt[type] = type
     eYo.Stmt.makeSubclass(type, {
       fields: {
         FIELD: {

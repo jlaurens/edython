@@ -29,8 +29,8 @@ eYo.Expr.Dflt.makeSubclass('comprehension', {
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.T3.Profile.get(newValue)
-        return type.expr === eYo.T3.Expr.identifier
+        var type = eYo.ns.T3.Profile.get(newValue)
+        return type.expr === eYo.ns.T3.Expr.identifier
         ? {validated: newValue} : null
       },
       synchronize: true,
@@ -46,7 +46,7 @@ eYo.Expr.Dflt.makeSubclass('comprehension', {
   slots: {
     expression: {
       order: 1,
-      check: eYo.T3.Expr.Check.expression_key_datum,
+      check: eYo.ns.T3.Expr.Check.expression_key_datum,
       fields: {
         bind: {
           validate: true,
@@ -59,18 +59,18 @@ eYo.Expr.Dflt.makeSubclass('comprehension', {
       fields: {
         label: 'for'
       },
-      wrap: eYo.T3.Expr.target_list
+      wrap: eYo.ns.T3.Expr.target_list
     },
     in: {
       order: 3,
       fields: {
         label: 'in'
       },
-      check: eYo.T3.Expr.Check.or_test_all
+      check: eYo.ns.T3.Expr.Check.or_test_all
     },
     for_if: {
       order: 4,
-      wrap: eYo.T3.Expr.comp_iter_list
+      wrap: eYo.ns.T3.Expr.comp_iter_list
     }
   },
   out: {
@@ -80,13 +80,13 @@ eYo.Expr.Dflt.makeSubclass('comprehension', {
       var eyo = this.brick
       var b = eyo.expression_b
       if (b) {
-        if (b.type === eYo.T3.Expr.key_datum || b.type === eYo.T3.Expr.identifier_annotated) {
-          return [eYo.T3.Expr.dict_comprehension]
+        if (b.type === eYo.ns.T3.Expr.key_datum || b.type === eYo.ns.T3.Expr.identifier_annotated) {
+          return [eYo.ns.T3.Expr.dict_comprehension]
         }
       } else if (!eyo.expression_p.length) {
-        return [eYo.T3.Expr.comprehension, eYo.T3.Expr.dict_comprehension]
+        return [eYo.ns.T3.Expr.comprehension, eYo.ns.T3.Expr.dict_comprehension]
       }
-      return [eYo.T3.Expr.comprehension]
+      return [eYo.ns.T3.Expr.comprehension]
     }
   }
 }, true)
@@ -98,7 +98,7 @@ eYo.Expr.Dflt.makeSubclass('comprehension', {
  */
 eYo.Expr.comprehension.prototype.getBaseType = function () {
   var check = this.out_m.check_
-  return (check && check[0]) || eYo.T3.Expr.comprehension
+  return (check && check[0]) || eYo.ns.T3.Expr.comprehension
 }
 
 ;['dict_comprehension'].forEach(k => {
@@ -127,14 +127,14 @@ eYo.Expr.Dflt.makeSubclass('comp_for', {
       fields: {
         label: 'for'
       },
-      wrap: eYo.T3.Expr.target_list
+      wrap: eYo.ns.T3.Expr.target_list
     },
     in: {
       order: 2,
       fields: {
         label: 'in'
       },
-      check: eYo.T3.Expr.Check.or_test_all
+      check: eYo.ns.T3.Expr.Check.or_test_all
     }
   }
 }, true)
@@ -151,7 +151,7 @@ eYo.Expr.Dflt.makeSubclass('comp_if', {
       fields: {
         label: 'if'
       },
-      check: eYo.T3.Expr.Check.expression_nocond
+      check: eYo.ns.T3.Expr.Check.expression_nocond
     }
   }
 }, true)
@@ -164,7 +164,7 @@ eYo.Expr.Dflt.makeSubclass('comp_if', {
  */
 eYo.ns.Brick.List.makeSubclass('comp_iter_list', {
   list: {
-    check: eYo.T3.Expr.Check.comp_iter,
+    check: eYo.ns.T3.Expr.Check.comp_iter,
     mandatory: 0,
     presep: ''
   }
@@ -179,7 +179,7 @@ eYo.Expr.Dflt.makeSubclass('key_datum', {
   slots: {
     key: {
       order: 1,
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.ns.T3.Expr.Check.expression,
       placeholder: eYo.Msg.Placeholder.KEY
     },
     datum: {
@@ -187,18 +187,18 @@ eYo.Expr.Dflt.makeSubclass('key_datum', {
       fields: {
         label: ':'
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.ns.T3.Expr.Check.expression,
       placeholder: eYo.Msg.Placeholder.VALUE
     }
   }
 }, true)
 
 eYo.ns.Brick.Comprehension.T3s = [
-  eYo.T3.Expr.comprehension,
-  eYo.T3.Expr.comp_for,
-  eYo.T3.Expr.comp_if,
-  eYo.T3.Expr.comp_iter_list,
-  eYo.T3.Expr.dict_comprehension,
-  eYo.T3.Expr.identifier,
-  eYo.T3.Expr.key_datum,
+  eYo.ns.T3.Expr.comprehension,
+  eYo.ns.T3.Expr.comp_for,
+  eYo.ns.T3.Expr.comp_if,
+  eYo.ns.T3.Expr.comp_iter_list,
+  eYo.ns.T3.Expr.dict_comprehension,
+  eYo.ns.T3.Expr.identifier,
+  eYo.ns.T3.Expr.key_datum,
 ]

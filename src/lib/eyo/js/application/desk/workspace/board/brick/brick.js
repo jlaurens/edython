@@ -33,7 +33,7 @@ eYo.forwardDeclare('eYo.Expr')
 eYo.forwardDeclare('eYo.Stmt')
 
 eYo.forwardDeclare('eYo.XRE')
-eYo.forwardDeclare('eYo.T3')
+eYo.forwardDeclare('eYo.ns.T3')
 eYo.forwardDeclare('eYo.Where')
 eYo.forwardDeclare('eYo.Do')
 
@@ -1331,7 +1331,7 @@ eyo_dflt_pttp__.setupType = function (optNewType) {
   if (this.type_ === optNewType) {
     return
   }
-  if (optNewType === eYo.T3.Expr.unset) {
+  if (optNewType === eYo.ns.T3.Expr.unset) {
     console.error('C\'est une erreur!')
   }
   optNewType && (this.constructor.eyo.types.indexOf(optNewType) >= 0) && (this.pythonType_ = this.type_ = optNewType)
@@ -2275,7 +2275,7 @@ eYo.ns.Brick.newReady = (() => {
         brick = board.newBrick(model, id) // can undo
         brick.setDataWithType(model)
       } else if (eYo.isStr(model) || goog.isNumber(model)) {
-        var p5e = eYo.T3.Profile.get(model, null)
+        var p5e = eYo.ns.T3.Profile.get(model, null)
         var f = p5e => {
           var ans
           if (p5e.expr && (ans = board.newBrick(p5e.expr, id))) {
@@ -2285,8 +2285,8 @@ eYo.ns.Brick.newReady = (() => {
           } else if (p5e.stmt && (ans = board.newBrick(p5e.stmt, id))) {
             p5e.stmt && (ans.setDataWithType(p5e.stmt))
             dataModel = {data: model}
-          } else if (goog.isNumber(model)  && (ans = board.newBrick(eYo.T3.Expr.numberliteral, id))) {
-            ans.setDataWithType(eYo.T3.Expr.numberliteral)
+          } else if (goog.isNumber(model)  && (ans = board.newBrick(eYo.ns.T3.Expr.numberliteral, id))) {
+            ans.setDataWithType(eYo.ns.T3.Expr.numberliteral)
             dataModel = {data: model.toString()}
           } else {
             console.warn('No brick for model:', model)
@@ -2433,7 +2433,7 @@ eyo_dflt_pttp__.insertBrickWithModel = function (model, m4t) {
     return null
   }
   // get the type:
-  var p5e = eYo.T3.Profile.get(model, null)
+  var p5e = eYo.ns.T3.Profile.get(model, null)
   if (!p5e.isVoid && !p5e.isUnset) {
     if (m4t) {
       if (m4t.isHead || m4t.isLeft || m4t.isRight || m4t.isSuite || m4t.isFoot) {
@@ -2479,7 +2479,7 @@ eyo_dflt_pttp__.insertBrickWithModel = function (model, m4t) {
             eYo.Events.groupWrap(() => {
               var b4s = model.split(',').map(x => {
                 var model = x.trim()
-                var p5e = eYo.T3.Profile.get(model, null)
+                var p5e = eYo.ns.T3.Profile.get(model, null)
                 console.warn('MODEL:', model)
                 console.warn('PROFILE:', p5e)
                 return {
@@ -3013,7 +3013,7 @@ eyo_pttp__.makeSubclass = function (ns, key, Super, Dlgt, register = false, mode
 
 
 
-  eYo.ns.Brick.mngr.register_(eYo.T3.Expr[key] || eYo.T3.Stmt[key] || key, C9r)
+  eYo.ns.Brick.mngr.register_(eYo.ns.T3.Expr[key] || eYo.ns.T3.Stmt[key] || key, C9r)
   if (goog.isFunction(model)) {
     model = model()
   }
@@ -3047,14 +3047,14 @@ eyo_pttp__.makeSubclass = function (ns, key, Super, Dlgt, register = false, mode
         model = m
       }
     }
-    var t = eYo.T3.Expr[key]
+    var t = eYo.ns.T3.Expr[key]
     if (t) {
       if (!model.out) {
         model.out = Object.create(null)
       }
       model.out.check = eYo.Decorate.arrayFunction(model.out.check || t)
       model.statement && (model.statement = eYo.NA)
-    } else if ((t = eYo.T3.Stmt[key])) {
+    } else if ((t = eYo.ns.T3.Stmt[key])) {
       var statement = model.statement || (model.statement = Object.create(null))
       var f = (k, type) => {
         var s = statement[k]
@@ -3064,7 +3064,7 @@ eyo_pttp__.makeSubclass = function (ns, key, Super, Dlgt, register = false, mode
           if (s.check || goog.isNull(s.check)) {
             s.check = eYo.Decorate.arrayFunction(s.check)
           } else {
-            var ch = eYo.T3.Stmt[type][key]
+            var ch = eYo.ns.T3.Stmt[type][key]
             if (ch) {
               s.check = eYo.Decorate.arrayFunction()
             }
@@ -3156,8 +3156,8 @@ eYo.ns.Brick.constructor.prototype.makeClass = function (ns, key, Super, Dlgt, r
     Dlgt = Super
     Super = key
     key = ns
-    ns = (eYo.T3.Expr[key] && eYo.Expr) ||
-    (eYo.T3.Stmt[key] && eYo.Stmt) ||
+    ns = (eYo.ns.T3.Expr[key] && eYo.Expr) ||
+    (eYo.ns.T3.Stmt[key] && eYo.Stmt) ||
     eYo.ns.Brick
   }
   if (!goog.isBoolean(register)) {
@@ -3242,14 +3242,14 @@ eYo.ns.Brick.constructor.prototype.makeClass = function (ns, key, Super, Dlgt, r
    */
   mngr.register = function (key) {
     var prototypeName
-    if ((prototypeName = eYo.T3.Expr[key])) {
+    if ((prototypeName = eYo.ns.T3.Expr[key])) {
       var C9r = eYo.ns.Brick[key]
-      var available = eYo.T3.Expr.Available
-    } else if ((prototypeName = eYo.T3.Stmt[key])) {
+      var available = eYo.ns.T3.Expr.Available
+    } else if ((prototypeName = eYo.ns.T3.Stmt[key])) {
       C9r = eYo.ns.Brick[key]
-      available = eYo.T3.Stmt.Available
+      available = eYo.ns.T3.Stmt.Available
     } else {
-      throw new Error('Unknown brick eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
+      throw new Error('Unknown brick eYo.ns.T3.Expr or eYo.ns.T3.Stmt key: ' + key)
     }
     mngr.register_(prototypeName, C9r)
     available.push(prototypeName)
@@ -3284,23 +3284,23 @@ eYo.ns.Brick.constructor.prototype.makeClass = function (ns, key, Super, Dlgt, r
  * @param{string} [key]  key is the last component of the brick type as a dotted name.
  */
 eYo.ns.Brick.mngr.register = function (key) {
-  var prototypeName = eYo.T3.Expr[key]
+  var prototypeName = eYo.ns.T3.Expr[key]
   var c9r, available
   if (prototypeName) {
     c9r = eYo.Expr[key]
-    available = eYo.T3.Expr.Available
-  } else if ((prototypeName = eYo.T3.Stmt[key])) {
+    available = eYo.ns.T3.Expr.Available
+  } else if ((prototypeName = eYo.ns.T3.Stmt[key])) {
     // console.log('Registering statement', key)
     c9r = eYo.Stmt[key]
-    available = eYo.T3.Stmt.Available
+    available = eYo.ns.T3.Stmt.Available
   } else {
-    throw new Error('Unknown brick eYo.T3.Expr or eYo.T3.Stmt key: ' + key)
+    throw new Error('Unknown brick eYo.ns.T3.Expr or eYo.ns.T3.Stmt key: ' + key)
   }
   eYo.ns.Brick.mngr.register_(prototypeName, c9r)
   available.push(prototypeName)
 }
 
 // register this delegate for all the T3 types
-eYo.ns.Brick.mngr.registerAll(eYo.T3.Expr, eYo.ns.Brick.Dflt)
-eYo.ns.Brick.mngr.registerAll(eYo.T3.Stmt, eYo.ns.Brick.Dflt)
+eYo.ns.Brick.mngr.registerAll(eYo.ns.T3.Expr, eYo.ns.Brick.Dflt)
+eYo.ns.Brick.mngr.registerAll(eYo.ns.T3.Stmt, eYo.ns.Brick.Dflt)
 

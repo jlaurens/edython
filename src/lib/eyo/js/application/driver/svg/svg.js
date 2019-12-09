@@ -22,7 +22,7 @@ eYo.require('eYo.Decorate')
  */
 eYo.ns.Driver.make('Svg')
 
-eYo.forwardDeclare('eYo.T3.Profile')
+eYo.forwardDeclare('eYo.ns.T3.Profile')
 eYo.forwardDeclare('eYo.ns.Svg.Brick')
 eYo.forwardDeclare('eYo.ns.Svg.Slot')
 eYo.forwardDeclare('eYo.ns.Svg.Field')
@@ -186,11 +186,11 @@ eYo.ns.Svg.Dflt.prototype.addTooltip = function (el, title, options) {
  * @return {string}
  */
 eYo.ns.Svg.getCssClassForText = function (txt) {
-  switch (eYo.T3.Profile.get(txt, null).raw) {
-  case eYo.T3.Expr.reserved_identifier:
-  case eYo.T3.Expr.reserved_keyword:
+  switch (eYo.ns.T3.Profile.get(txt, null).raw) {
+  case eYo.ns.T3.Expr.reserved_identifier:
+  case eYo.ns.T3.Expr.reserved_keyword:
     return 'eyo-code-reserved'
-  case eYo.T3.Expr.builtin__name:
+  case eYo.ns.T3.Expr.builtin__name:
     return 'eyo-code-builtin'
   default:
     return 'eyo-code'

@@ -78,10 +78,10 @@ eYo.ns.Brick.Group.makeSubclass('except_part', {
       placeholder: eYo.Msg.Placeholder.ALIAS,
       synchronize: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.T3.Profile.get(newValue).expr
-        return type === eYo.T3.Expr.unset
-        || type === eYo.T3.Expr.identifier
-        || type === eYo.T3.Expr.builtin__name
+        var type = eYo.ns.T3.Profile.get(newValue).expr
+        return type === eYo.ns.T3.Expr.unset
+        || type === eYo.ns.T3.Expr.identifier
+        || type === eYo.ns.T3.Expr.builtin__name
         ? {validated: newValue}
         : null
       },
@@ -110,7 +110,7 @@ eYo.ns.Brick.Group.makeSubclass('except_part', {
           endEditing: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.ns.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.brick.variant_p === eYo.Key.NONE && this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.EXPRESSION
@@ -134,7 +134,7 @@ eYo.ns.Brick.Group.makeSubclass('except_part', {
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         return this.brick.variant_p !== eYo.Key.ALIASED
       },
-      check: eYo.T3.Expr.identifier,
+      check: eYo.ns.T3.Expr.identifier,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.ALIASED
@@ -148,16 +148,16 @@ eYo.ns.Brick.Group.makeSubclass('except_part', {
   },
   head: {
     check: /** @suppress {globalThis} */ function (type) {
-      return type === eYo.T3.Stmt.except_part
-      ? eYo.T3.Stmt.Previous.except_part
-      : eYo.T3.Stmt.Previous.void_except_part
+      return type === eYo.ns.T3.Stmt.except_part
+      ? eYo.ns.T3.Stmt.Previous.except_part
+      : eYo.ns.T3.Stmt.Previous.void_except_part
     }
   },
   foot: {
     check: /** @suppress {globalThis} */ function (type) {
-      return type === eYo.T3.Stmt.except_part
-      ? eYo.T3.Stmt.Next.except_part
-      : eYo.T3.Stmt.Next.void_except_part
+      return type === eYo.ns.T3.Stmt.except_part
+      ? eYo.ns.T3.Stmt.Next.except_part
+      : eYo.ns.T3.Stmt.Next.void_except_part
     }
   }
 }, true)
@@ -177,8 +177,8 @@ eYo.Stmt.except_part.prototype.getType = eYo.Change.decorate(
   function () {
     this.setupType(
       this.variant_p === eYo.Key.NONE
-      ? eYo.T3.Stmt.void_except_part
-      : eYo.T3.Stmt.except_part
+      ? eYo.ns.T3.Stmt.void_except_part
+      : eYo.ns.T3.Stmt.except_part
     )
     return this.type
   }
@@ -298,7 +298,7 @@ eYo.Stmt.makeSubclass('raise_stmt', {
           endEditing: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.ns.T3.Expr.Check.expression,
       xml: {
         load: /** @suppress {globalThis} */ function (element, opt) {
           this.load(element, opt)
@@ -319,7 +319,7 @@ eYo.Stmt.makeSubclass('raise_stmt', {
           endEditing: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.ns.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM
@@ -411,7 +411,7 @@ eYo.Stmt.makeSubclass('assert_stmt', {
           placeholder: eYo.Msg.Placeholder.EXPRESSION
         }
       },
-      check: eYo.T3.Expr.Check.expression
+      check: eYo.ns.T3.Expr.Check.expression
     },
     expression2: {
       order: 2,
@@ -422,7 +422,7 @@ eYo.Stmt.makeSubclass('assert_stmt', {
           placeholder: eYo.Msg.Placeholder.EXPRESSION
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.ns.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.BINARY
@@ -462,10 +462,10 @@ eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
 }
 
 eYo.ns.Brick.Try.T3s = [
-  eYo.T3.Stmt.try_part,
-  eYo.T3.Stmt.except_part,
-  eYo.T3.Stmt.void_except_part,
-  eYo.T3.Stmt.finally_part,
-  eYo.T3.Stmt.raise_stmt,
-  eYo.T3.Stmt.assert_stmt
+  eYo.ns.T3.Stmt.try_part,
+  eYo.ns.T3.Stmt.except_part,
+  eYo.ns.T3.Stmt.void_except_part,
+  eYo.ns.T3.Stmt.finally_part,
+  eYo.ns.T3.Stmt.raise_stmt,
+  eYo.ns.T3.Stmt.assert_stmt
 ]

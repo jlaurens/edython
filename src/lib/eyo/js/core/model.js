@@ -93,14 +93,14 @@ eYo.ns.Model.isAllowed = (path, key) => {
       'order', // INTEGER,
       'fields', // {},
       'check', // :  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
-      'promise', // : eYo.T3.Expr.value_list,
+      'promise', // : eYo.ns.T3.Expr.value_list,
       'validateIncog', //  () {},
       'accept', //  () {},
       'didConnect', //  () {},
       'didDisconnect', //  () {},
       'wrap', // : TYPE,
       'xml', // : (() => {} || true) || false||  first expected,
-      'plugged', // : eYo.T3.Expr.primary,
+      'plugged', // : eYo.ns.T3.Expr.primary,
     ],
     [/slots\.\w+\.fields\.\w+/]: [
       'value', // '(',

@@ -18,18 +18,18 @@ eYo.require('eYo.Change')
 eYo.require('eYo.Decorate')
 eYo.require('eYo.Msg')
 
-eYo.require('eYo.T3.All')
+eYo.require('eYo.ns.T3.All')
 eYo.provide('eYo.ns.Brick.Starred')
 
 /**
  * Convenient check list for starred expressions
  */
-eYo.T3.Expr.Check._expression_or_parameter = eYo.T3.Expr.Check.expression.concat(eYo.T3.Expr.Check.parameter)
+eYo.ns.T3.Expr.Check._expression_or_parameter = eYo.ns.T3.Expr.Check.expression.concat(eYo.ns.T3.Expr.Check.parameter)
 
 /**
  * Convenient check list for starred expressions
  */
-eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.T3.Expr.Check.or_expr_all.concat(eYo.T3.Expr.Check.parameter).concat(eYo.T3.Expr.Check.target)
+eYo.ns.T3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.ns.T3.Expr.Check.or_expr_all.concat(eYo.ns.T3.Expr.Check.parameter).concat(eYo.ns.T3.Expr.Check.target)
 
 /**
  * Class for a Delegate, starred brick.
@@ -51,14 +51,14 @@ eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.T3.Expr.Check.or_exp
 eYo.Expr.Dflt.makeSubclass('Starred', {
   xml: {
     types: [
-      eYo.T3.Expr.star_expr,
-      eYo.T3.Expr.expression_star,
-      eYo.T3.Expr.expression_star_star,
-      eYo.T3.Expr.or_expr_star_star,
-      eYo.T3.Expr.target_star,
-      eYo.T3.Expr.star,
-      eYo.T3.Expr.parameter_star,
-      eYo.T3.Expr.parameter_star_star
+      eYo.ns.T3.Expr.star_expr,
+      eYo.ns.T3.Expr.expression_star,
+      eYo.ns.T3.Expr.expression_star_star,
+      eYo.ns.T3.Expr.or_expr_star_star,
+      eYo.ns.T3.Expr.target_star,
+      eYo.ns.T3.Expr.star,
+      eYo.ns.T3.Expr.parameter_star,
+      eYo.ns.T3.Expr.parameter_star_star
     ]
   },
   data: {
@@ -76,7 +76,7 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         // the `didLoad` will be performed afterwards.
-        this.set(type === eYo.T3.Expr.star ? eYo.Key.STAR : eYo.Key.NONE)
+        this.set(type === eYo.ns.T3.Expr.star ? eYo.Key.STAR : eYo.Key.NONE)
       },
       xml: false
     },
@@ -92,19 +92,19 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
         }
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        /* if (type === eYo.T3.Expr.star) {
+        /* if (type === eYo.ns.T3.Expr.star) {
           this.set('*')
-        } else if (type === eYo.T3.Expr.target_star) {
+        } else if (type === eYo.ns.T3.Expr.target_star) {
           this.set('*')
-        } else if (type === eYo.T3.Expr.parameter_star) {
+        } else if (type === eYo.ns.T3.Expr.parameter_star) {
           this.set('*')
-        } else if (type === eYo.T3.Expr.star_expr) {
+        } else if (type === eYo.ns.T3.Expr.star_expr) {
           this.set('*')
-        } else */ if (type === eYo.T3.Expr.parameter_star_star) {
+        } else */ if (type === eYo.ns.T3.Expr.parameter_star_star) {
           this.set('**')
-        } else if (type === eYo.T3.Expr.expression_star_star) {
+        } else if (type === eYo.ns.T3.Expr.expression_star_star) {
           this.set('**')
-        } else if (type === eYo.T3.Expr.or_expr_star_star) {
+        } else if (type === eYo.ns.T3.Expr.or_expr_star_star) {
           this.set('**')
         } else {
           this.set('*')
@@ -118,17 +118,17 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
       init: '',
       placeholder: /** @suppress {globalThis} */ function () {
         var t = this.owner && this.brick.type
-        if (t === eYo.T3.Expr.parameter_star || t === eYo.T3.Expr.parameter_star_star || t === eYo.T3.Expr.target_star) {
+        if (t === eYo.ns.T3.Expr.parameter_star || t === eYo.ns.T3.Expr.parameter_star_star || t === eYo.ns.T3.Expr.target_star) {
           return eYo.Msg.Placeholder.NAME
         } else {
           return eYo.Msg.Placeholder.EXPRESSION
         }
       },
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.T3.Profile.get(newValue, null)
-        return p5e.expr === eYo.T3.Expr.unset
-        || p5e.expr === eYo.T3.Expr.identifier
-        || p5e.expr === eYo.T3.Expr.dotted_name
+        var p5e = eYo.ns.T3.Profile.get(newValue, null)
+        return p5e.expr === eYo.ns.T3.Expr.unset
+        || p5e.expr === eYo.ns.T3.Expr.identifier
+        || p5e.expr === eYo.ns.T3.Expr.dotted_name
           ? {validated: newValue}
           : null
       },
@@ -150,7 +150,7 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         // the `didLoad` will be performed afterwards.
-        this.required_from_type = type !== eYo.T3.Expr.star
+        this.required_from_type = type !== eYo.ns.T3.Expr.star
       },
       didLoad: /** @suppress {globalThis} */ function () {
         this.brick.variant_p = this.required_from_type || this.isRequiredFromModel()
@@ -175,8 +175,8 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
       },
       check: /** @suppress {globalThis} */ function (type) {
         return this.brick.modifier_p === '*'
-          ? eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target
-          : eYo.T3.Expr.Check._expression_or_parameter
+          ? eYo.ns.T3.Expr.Check._or_expr_all_or_parameter_or_target
+          : eYo.ns.T3.Expr.Check._expression_or_parameter
       },
       didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
         if (eYo.Events.recordingUndo) {
@@ -190,49 +190,49 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
       // retrieve the brick
       var brick = this.brick
       if (brick.variant_p === eYo.Key.STAR) {
-        return [eYo.T3.Expr.star]
+        return [eYo.ns.T3.Expr.star]
       }
       var b = brick.modified_b
       var types = []
       if (brick.modifier_p === '*') {
         if (b) {
           var tt = b.type
-          if (goog.array.contains(eYo.T3.Expr.Check.or_expr_all, tt)) {
-            types.push(eYo.T3.Expr.star_expr)
+          if (goog.array.contains(eYo.ns.T3.Expr.Check.or_expr_all, tt)) {
+            types.push(eYo.ns.T3.Expr.star_expr)
           }
-          if (goog.array.contains(eYo.T3.Expr.Check.expression, tt)) {
-            types.push(eYo.T3.Expr.expression_star)
+          if (goog.array.contains(eYo.ns.T3.Expr.Check.expression, tt)) {
+            types.push(eYo.ns.T3.Expr.expression_star)
           }
-          if (goog.array.contains(eYo.T3.Expr.Check.target, tt)) {
-            types.push(eYo.T3.Expr.target_star)
+          if (goog.array.contains(eYo.ns.T3.Expr.Check.target, tt)) {
+            types.push(eYo.ns.T3.Expr.target_star)
           }
-          if (goog.array.contains(eYo.T3.Expr.Check.parameter, tt)) {
-            types.push(eYo.T3.Expr.parameter_star)
+          if (goog.array.contains(eYo.ns.T3.Expr.Check.parameter, tt)) {
+            types.push(eYo.ns.T3.Expr.parameter_star)
           }
           return types
         }
-        return [eYo.T3.Expr.star_expr,
-          eYo.T3.Expr.expression_star,
-          eYo.T3.Expr.target_star,
-          eYo.T3.Expr.parameter_star
+        return [eYo.ns.T3.Expr.star_expr,
+          eYo.ns.T3.Expr.expression_star,
+          eYo.ns.T3.Expr.target_star,
+          eYo.ns.T3.Expr.parameter_star
         ]
       }
       if(b) {
         tt = b.type
-        if (goog.array.contains(eYo.T3.Expr.Check.or_expr_all, tt)) {
-          types.push(eYo.T3.Expr.or_expr_star_star)
+        if (goog.array.contains(eYo.ns.T3.Expr.Check.or_expr_all, tt)) {
+          types.push(eYo.ns.T3.Expr.or_expr_star_star)
         }
-        if (goog.array.contains(eYo.T3.Expr.Check.expression, tt)) {
-          types.push(eYo.T3.Expr.expression_star_star)
+        if (goog.array.contains(eYo.ns.T3.Expr.Check.expression, tt)) {
+          types.push(eYo.ns.T3.Expr.expression_star_star)
         }
-        if (goog.array.contains(eYo.T3.Expr.Check.parameter, tt)) {
-          types.push(eYo.T3.Expr.parameter_star_star)
+        if (goog.array.contains(eYo.ns.T3.Expr.Check.parameter, tt)) {
+          types.push(eYo.ns.T3.Expr.parameter_star_star)
         }
         return types
       }
-      return [eYo.T3.Expr.or_expr_star_star,
-        eYo.T3.Expr.expression_star_star,
-        eYo.T3.Expr.parameter_star_star
+      return [eYo.ns.T3.Expr.or_expr_star_star,
+        eYo.ns.T3.Expr.expression_star_star,
+        eYo.ns.T3.Expr.parameter_star_star
       ]
     }
   }

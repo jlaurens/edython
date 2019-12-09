@@ -256,12 +256,12 @@ eYo.ns.Svg.Field.prototype.setVisualAttribute = function (field) {
   var e = field.dom.textElement_
   if (e) {
     var f = txt => {
-      switch (eYo.T3.Profile.get(txt, null).raw) {
-        case eYo.T3.Expr.reserved_identifier:
-        case eYo.T3.Expr.reserved_keyword:
-        case eYo.T3.Expr.known_identifier:
+      switch (eYo.ns.T3.Profile.get(txt, null).raw) {
+        case eYo.ns.T3.Expr.reserved_identifier:
+        case eYo.ns.T3.Expr.reserved_keyword:
+        case eYo.ns.T3.Expr.known_identifier:
           return 'eyo-code-reserved'
-        case eYo.T3.Expr.builtin__name:
+        case eYo.ns.T3.Expr.builtin__name:
           return 'eyo-code-builtin'
         default:
           return 'eyo-code'

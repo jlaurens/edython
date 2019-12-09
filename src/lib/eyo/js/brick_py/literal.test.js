@@ -36,7 +36,7 @@ describe('Literals(String)', function() {
     it(`${Ts[0]}`, function() {
       var d = eYo.Test.new_brick(Ts[0])
       eYo.Test.brick(d, Ts[1])
-      eYo.Test.expect_out_check(d, eYo.T3.Stmt[Ts[1]] || eYo.T3.Expr[Ts[1]] || Ts[1])
+      eYo.Test.expect_out_check(d, eYo.ns.T3.Stmt[Ts[1]] || eYo.ns.T3.Expr[Ts[1]] || Ts[1])
       eYo.Test.code(d, Ts[0])
       d.dispose()
     })
