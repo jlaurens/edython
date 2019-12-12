@@ -11,18 +11,18 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('Brick')
 
-eYo.require('eYo.Msg')
+eYo.require('Msg')
 
-eYo.require('eYo.Stmt')
-eYo.require('eYo.Brick.List')
+eYo.require('Stmt')
+eYo.require('Brick.List')
 
-eYo.require('eYo.Brick.Primary')
-eYo.require('eYo.Tooltip')
+eYo.require('Brick.Primary')
+eYo.require('Tooltip')
 
-eYo.require('eYo.Library')
-eYo.provide('eYo.Brick.Statistics')
+eYo.require('Library')
+eYo.provide('Brick.Statistics')
 
 /*
     'pstdev': 7,

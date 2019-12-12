@@ -11,8 +11,8 @@
  */
 'use strict'
 
-eYo.require('eYo.Protocol.Register')
-eYo.require('eYo.Model')
+eYo.require('Protocol.Register')
+eYo.require('Model')
 
 /**
  * @name {eYo.Model.Module}

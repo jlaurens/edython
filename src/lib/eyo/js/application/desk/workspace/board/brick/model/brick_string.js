@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('Brick')
 
-eYo.require('eYo.Msg')
+eYo.require('Msg')
 
-eYo.require('eYo.Stmt')
-eYo.require('eYo.Tooltip')
+eYo.require('Stmt')
+eYo.require('Tooltip')
 
-eYo.require('eYo.Library')
-eYo.provide('eYo.Brick.String')
+eYo.require('Library')
+eYo.provide('Brick.String')
 
 /**
  * Populate the context menu for the given brick.

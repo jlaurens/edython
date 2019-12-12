@@ -11,19 +11,19 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('Brick')
 
-eYo.require('eYo.Msg')
+eYo.require('Msg')
 
-eYo.require('eYo.Brick.List')
+eYo.require('Brick.List')
 
-eYo.require('eYo.Brick.Primary')
-eYo.require('eYo.Tooltip')
+eYo.require('Brick.Primary')
+eYo.require('Tooltip')
 
-eYo.require('eYo.Library')
-eYo.require('eYo.Model.functions')
+eYo.require('Library')
+eYo.require('Module.functions')
 
-eYo.provide('eYo.Brick.Functions')
+eYo.provide('Brick.Functions')
 
 /**
  * Add the conjugate, imag and real names

@@ -15,14 +15,14 @@
  */
 'use strict'
 
-eYo.require('eYo.T3')
+eYo.require('T3')
 
-eYo.require('eYo.XRE')
+eYo.require('XRE')
 
-eYo.require('eYo.Model')
-eYo.require('eYo.Do')
+eYo.require('Model')
+eYo.require('Do')
 
-eYo.provide('eYo.T3.Profile')
+eYo.provide('T3.Profile')
 
 eYo.Do.readOnlyMixin(
   eYo.T3.Expr,

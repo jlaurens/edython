@@ -11,20 +11,20 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('Brick')
 
-eYo.require('eYo.Model.turtle__module')
+eYo.require('Module.turtle__module')
 
-eYo.require('eYo.Stmt')
+eYo.require('Stmt')
 
-eYo.require('eYo.Brick.List')
+eYo.require('Brick.List')
 
-eYo.require('eYo.Brick.Primary')
-eYo.require('eYo.Msg')
+eYo.require('Brick.Primary')
+eYo.require('Msg')
 
-eYo.require('eYo.Tooltip')
-eYo.require('eYo.Library')
-eYo.provide('eYo.Brick.Turtle')
+eYo.require('Tooltip')
+eYo.require('Library')
+eYo.provide('Brick.Turtle')
 
 eYo.T3.Stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
 

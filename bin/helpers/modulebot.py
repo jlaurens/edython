@@ -68,6 +68,10 @@ import string
 import ast
 import sys
 
+path_root = pathlib.Path(__file__).parent.parent.parent
+path_helpers = path_root / 'build/helpers'
+path_module = path_root / f'src/lib/eyo/js/module'
+
 parent_map = None
 
 def do_one_module(module, **kwargs):
@@ -686,11 +690,10 @@ eYo.provide('Module.{{key}}', new eYo.Module.Dflt('{{key}}', '{{url}}'))
 })()
 
 """
-        def __init__(self, path_root, key):
+        def __init__(self, key):
             self.key = key
-            self.path_root = path_root
-            self.path_in = path_root / 'build/helpers/{}.html'.format(key)
-            self.path_out = path_root / 'src/lib/eyo/js/module/' / (key + '.js')
+            self.path_in = path_helpers / f'{key}.html'
+            self.path_out = path_module / f'module_{key}.js'
             self.items_by_name = {}
             self.items = []
             self.categories = {}
@@ -970,7 +973,7 @@ eYo.provide('Module.{{key}}', new eYo.Module.Dflt('{{key}}', '{{url}}'))
                     if verbose:
                         print(contents)
 
-    model = Model(pathlib.Path(__file__).parent.parent.parent, module)
+    model = Model(module)
     model.do_import()
     model.do_prepare()
     model.do_export()
