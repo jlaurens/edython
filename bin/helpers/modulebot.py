@@ -667,7 +667,6 @@ eYo.provide('Module.{{key}}', new eYo.Module.Dflt('{{key}}', '{{url}}'))
   var Item = function (model) {
     eYo.Module.Item.call(this, model)
   }
-
   goog.inherits(Item, eYo.Module.Item)
 
   /**

@@ -135,18 +135,25 @@ eYo.isSubclass = (Sub, Super) => {
  */
 eYo.constructor.prototype.provide = (name) => {
   var ns = eYo
-  var f = (first, second, ...rest) => {
+  var f = (first, second, ...args) => {
     if (first) {
       if (!ns[first]) {
         if (eYo.isStr(second)) {
           ns = ns.makeNS(first)
           f(second, ...args)
         } else {
-          ns = second
+          ns = second || ns.makeNS(first)
         }
       }
     }
   }
+  var args = name.split('.')
+  var first = args.shift()
+  if (first === 'eYo') {
+    return
+  }
+  var second = args.shift()
+  f(first, second, ...args)
 }
 
 /**

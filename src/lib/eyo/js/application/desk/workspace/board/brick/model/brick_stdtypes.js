@@ -22,7 +22,7 @@ eYo.require('Brick.Primary')
 eYo.require('Tooltip')
 
 eYo.require('Library')
-eYo.require('Module.stdtypes')
+eYo.require('Module.stdtypes__module')
 
 eYo.provide('Brick.Stdtypes')
 
@@ -33,13 +33,13 @@ eYo.provide('Brick.Stdtypes')
  */
 
 ;(function () {
-  var M = eYo.Model.stdtypes
+  var M = eYo.Module.stdtypes__module
   var d = M.data
   var n = d.items.length
   var t = d.types.indexOf('method')
   var c = d.categories.indexOf('lists')
 
-  var names = [
+  ;[
     'append',
     'clear',
     'copy',
@@ -48,8 +48,7 @@ eYo.provide('Brick.Stdtypes')
     'pop',
     'remove',
     'reverse'
-  ]
-  names.forEach((name) => {
+  ].forEach((name) => {
     d.by_name[name] = n
     d.by_type[t].push(n)
     ++n
@@ -114,5 +113,5 @@ eYo.provide('Brick.Stdtypes')
     type_: t,
     ary: 0
   }))
-
+  
 }) ()

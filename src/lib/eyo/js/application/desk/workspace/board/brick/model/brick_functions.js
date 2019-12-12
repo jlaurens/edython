@@ -32,7 +32,7 @@ eYo.provide('Brick.Functions')
  */
 
 ;(function () {
-  var M = eYo.Model.functions
+  var M = eYo.Module.functions__model
   var d = M.data
   var n = d.items.length
   var t = d.types.length

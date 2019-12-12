@@ -15,10 +15,18 @@ eYo.require('Protocol.Register')
 eYo.require('Model')
 
 /**
- * @name {eYo.Model.Module}
+ * @name {eYo.Module}
+ * @namespace
+ */
+eYo.makeNS('Module')
+
+/**
+ * @name {eYo.Module.Dflt}
+ * @param {String} name - the name of this constructor
+ * @param {String} url - the url of the module (in the python documentation)
  * @constructor
  */
-eYo.Model.makeClass('Module', {
+eYo.Dflt.makeSubclass(eYo.Module, {
   init(name, url) {
     this.name_ = name
     this.url_ = url
@@ -59,7 +67,7 @@ eYo.Model.makeClass('Module', {
  * @name{eYo.Model.Item}
  * @param {*} instance_model
  */
-eYo.Model.makeClass('Item', {
+eYo.Module.makeClass('Item', {
   init (model) {
     for (var key in model) {
       Object.defineProperty(
@@ -112,14 +120,14 @@ eYo.Model.makeClass('Item', {
   }
 })
 
-eYo.assert(eYo.Model.Item, 'FAILED')
+eYo.assert(eYo.Module.Item, 'FAILED')
 
 /**
  * Get the item with the given key
  * @param {String|Number} key  The key or index of the item
  * @return {?Object} return the model object for that item, if any.
  */
-eYo.Model.Module.prototype.getItem = function (key) {
+eYo.Module.Dflt.prototype.getItem = function (key) {
   if (!goog.isNumber(key)) {
     key = this.data.by_name[key]
   }
@@ -133,7 +141,7 @@ eYo.Model.Module.prototype.getItem = function (key) {
  * @param {String} key  The name of the category
  * @return {!Array} the list of item indices with the given category (possibly void).
  */
-eYo.Model.Module.prototype.getItemsInCategory = function (category, type) {
+eYo.Module.Dflt.prototype.getItemsInCategory = function (category, type) {
   var ra = this.data.by_category[category] || []
   if (eYo.isStr(type)) {
     type = this.data.type.indexOf(type)
@@ -156,7 +164,7 @@ eYo.Model.Module.prototype.getItemsInCategory = function (category, type) {
  * Sends a message for each ordered item with the give type
  * @param {String} key  The name of the category
  */
-eYo.Model.Module.prototype.forEachItemWithType = function (type, handler) {
+eYo.Module.Dflt.prototype.forEachItemWithType = function (type, handler) {
   if (eYo.isStr(type)) {
     var ra = this.items_by_type[type]
     if (!ra) {
@@ -170,27 +178,27 @@ eYo.Model.Module.prototype.forEachItemWithType = function (type, handler) {
 }
 
 // Each model loaded comes here
-eYo.Protocol.add(eYo.Model.Item, 'Register', 'module')
+eYo.Protocol.add(eYo.Module.Item, 'Register', 'module')
 
 /**
  * Each item has a link to the module it belongs to.
  */
-eYo.Model.Item.prototype.module = new eYo.Model.Module()
+eYo.Module.Item.prototype.module = new eYo.Module.Dflt()
 
 /**
  * Collect here all the types
  * @type {Array<String>}
  */
-eYo.Model.item_types = []
+eYo.Module.item_types = []
 
 /**
  * Each item has a type_ and a type property.
  * The former is overriden by the model given at creation time.
  */
-eYo.Model.Item.prototype.type_ = 0
+eYo.Module.Item.prototype.type_ = 0
 
 Object.defineProperties(
-  eYo.Model.Item.prototype,
+  eYo.Module.Item.prototype,
   {
     type: {
       get () {

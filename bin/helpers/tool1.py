@@ -11,7 +11,7 @@ pathBuild.mkdir(parents=True, exist_ok=True)
 
 class Foo:
 
-  re_provide = re.compile(r"^\s*(?:eYo|goog)\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)\s*\('(?P<what>[^']+)'\)[;\s]*(?://.*)?$")
+  re_provide = re.compile(r"^\s*(?:eYo|goog)\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)\s*\('(?P<what>[^']+)'.*\)[;\s]*(?://.*)?$")
   #re_provide = re.compile(r"^\s*eYo.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
   #eYo.Consolidator.makeClass('Dlgt')
@@ -34,6 +34,7 @@ class Foo:
       subclassed = set()
       namespaced = set()
       if path.stem == 'eyo':
+        provided.add('eYo')
         def base_require(l):
           pass
       else:
@@ -78,7 +79,7 @@ class Foo:
         m = self.re_provide.match(l)
         if m:
           what = m.group('what')
-          if not what.startswith('eYo.'):
+          if not what.startswith('eYo') and not what.startswith('goog.'):
             what = 'eYo.' + what
           if m.group('provide'):
             provided.add(what)
