@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Model')
-eYo.require('eYo.ns.Model.Module')
+eYo.require('eYo.Model')
+eYo.require('eYo.Model.Module')
 
-eYo.require('eYo.ns.Model.Item')
-eYo.provide('eYo.ns.Model.datamodel.Item')
-eYo.provide('eYo.ns.Model.datamodel')
+eYo.require('eYo.Model.Item')
+eYo.provide('eYo.Model.datamodel.Item')
+eYo.provide('eYo.Model.datamodel')
 
-eYo.ns.Model.datamodel = new eYo.ns.Model.Module('datamodel', 'https://docs.python.org/3.6/library/datamodel.html')
+eYo.Model.datamodel = new eYo.Model.Module('datamodel', 'https://docs.python.org/3.6/library/datamodel.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.ns.Model.datamodel.Item = function (model) {
-  eYo.ns.Model.datamodel.Item.superClass_.constructor.call(this, model)
+eYo.Model.datamodel.Item = function (model) {
+  eYo.Model.datamodel.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.ns.Model.datamodel.Item
+var Item = eYo.Model.datamodel.Item
 
-goog.inherits(Item, eYo.ns.Model.Item)
+goog.inherits(Item, eYo.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.ns.Model.datamodel
+Item.prototype.module = eYo.Model.datamodel
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.ns.Model.datamodel.setData({
+eYo.Model.datamodel.setData({
   categories: [
     'frame-objects',
     'basic-customization',

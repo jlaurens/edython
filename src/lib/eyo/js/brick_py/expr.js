@@ -11,26 +11,26 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Brick')
+eYo.require('eYo.Brick')
 
 eYo.require('eYo.Change')
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.Decorate')
-eYo.require('eYo.ns.T3.All')
+eYo.require('eYo.T3.All')
 goog.require('goog.dom');
 
 eYo.provide('eYo.Expr')
 
 /**
  * Class for a Delegate, value brick.
- * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.ns.Brick.Dflt.makeSubclass(eYo.Expr, 'Dflt')
+eYo.Brick.Dflt.makeSubclass(eYo.Expr, 'Dflt')
 
 // Default delegate for all expression bricks
-eYo.ns.Brick.mngr.registerAll(eYo.ns.T3.Expr, eYo.Expr.Dflt, true)
+eYo.Brick.mngr.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
 
 Object.defineProperties(eYo.Expr.Dflt.prototype, {
   isExpr: {
@@ -99,7 +99,7 @@ eYo.Expr.Dflt.prototype.checkOutputType = function (type) {
  * If the parent's output connection is connected,
  * can connect the brick's output connection to it?
  * The connection cannot always establish.
- * @param {eYo.ns.Brick.Dflt} brick  the brick to be replaced
+ * @param {eYo.Brick.Dflt} brick  the brick to be replaced
  */
 eYo.Expr.Dflt.prototype.canReplaceBrick = function (brick) {
   if (brick) {
@@ -121,7 +121,7 @@ eYo.Expr.Dflt.prototype.canReplaceBrick = function (brick) {
  * If the parent's output magnet is connected,
  * connects the brick's output magnet to it.
  * The connection cannot always establish.
- * @param {eYo.ns.Brick.Dflt} brick
+ * @param {eYo.Brick.Dflt} brick
  */
 eYo.Expr.Dflt.prototype.replaceBrick = function (brick) {
   if (this.board && brick && brick.board) {
@@ -177,7 +177,7 @@ eYo.Expr.Dflt.prototype.awaitable = function () {
     return true
   }
   do {
-    if (parent.type === eYo.ns.T3.Stmt.funcdef_part) {
+    if (parent.type === eYo.T3.Stmt.funcdef_part) {
       return !!parent.async_
     }
   } while ((parent = parent.parent))
@@ -225,7 +225,7 @@ eYo.Expr.Dflt.prototype.insertParentWithModel = function (model) {
   var parentSlotName = model.slot || model.input
   var parent
   eYo.Events.disableWrap(() => {
-    parent = eYo.ns.Brick.newReady(this, model)
+    parent = eYo.Brick.newReady(this, model)
   })
   if (!parent) {
     return parent
@@ -338,7 +338,7 @@ eYo.Expr.Dflt.prototype.doConsolidate = function (deep, force) {
 
 /**
  * Class for a Delegate, proper_slice brick.
- * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('proper_slice', {
@@ -403,7 +403,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.ns.T3.Expr.Check.expression,
+      check: eYo.T3.Expr.Check.expression,
       optional: true
     },
     upper_bound: {
@@ -414,7 +414,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.ns.T3.Expr.Check.expression,
+      check: eYo.T3.Expr.Check.expression,
       optional: true
     },
     stride: {
@@ -426,7 +426,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.ns.T3.Expr.Check.expression,
+      check: eYo.T3.Expr.Check.expression,
       optional: true,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
@@ -439,28 +439,28 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
 
 /**
  * Class for a Delegate, conditional_expression brick.
- * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('conditional_expression', {
   slots: {
     expression: {
       order: 1,
-      check: eYo.ns.T3.Expr.Check.or_test_all
+      check: eYo.T3.Expr.Check.or_test_all
     },
     if: {
       order: 2,
       fields: {
         label: 'if'
       },
-      check: eYo.ns.T3.Expr.Check.or_test_all
+      check: eYo.T3.Expr.Check.or_test_all
     },
     else: {
       order: 3,
       fields: {
         label: 'else'
       },
-      check: eYo.ns.T3.Expr.Check.expression
+      check: eYo.T3.Expr.Check.expression
     }
   }
 }, true)
@@ -486,7 +486,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__object', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -499,7 +499,7 @@ eYo.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Get the content for the menu item.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {string} op op is the operator
  * @private
  */
@@ -530,9 +530,9 @@ eYo.Expr.Dflt.makeSubclass('any', {
 }, true)
 
 eYo.Expr.T3s = [
-  eYo.ns.T3.Expr.proper_slice,
-  eYo.ns.T3.Expr.conditional_expression,
-  eYo.ns.T3.Expr.starred_expression,
-  eYo.ns.T3.Expr.builtin__object,
-  eYo.ns.T3.Expr.any
+  eYo.T3.Expr.proper_slice,
+  eYo.T3.Expr.conditional_expression,
+  eYo.T3.Expr.starred_expression,
+  eYo.T3.Expr.builtin__object,
+  eYo.T3.Expr.any
 ]

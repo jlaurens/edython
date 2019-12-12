@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.UI')
+eYo.require('eYo.UI')
 
 eYo.forwardDeclare('eYo.Board')
 goog.forwardDeclare('goog.dom')
@@ -27,7 +27,7 @@ goog.forwardDeclare('goog.events')
  * @param {string=} opt_class A class to be applied to this scrollbar.
  * @constructor
  */
-eYo.ns.UI.makeClass(eYo, 'Scrollbar', {
+eYo.UI.makeClass(eYo, 'Scrollbar', {
   init(bs, horizontal, opt_class) {
     if (bs instanceof eYo.Scroller) {
       this.scroller_ = bs  

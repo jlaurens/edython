@@ -6,42 +6,123 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview eYo.ns.Model is a collection of models for modules.
+ * @fileoverview eYo.Model is a collection of models for modules.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-eYo.require('eYo.ns.Protocol.Register')
-eYo.require('eYo.ns.Model')
+eYo.require('eYo.Protocol.Register')
+eYo.require('eYo.Model')
 
-eYo.provide('eYo.ns.Model.Item')
-eYo.provide('eYo.ns.Model.Module')
+eYo.provide('eYo.Model.Item')
 
 
 /**
+ * @name {eYo.Model.Module}
  * @constructor
  */
-eYo.ns.Model.Module = function (name, url) {
-  Object.defineProperties(this,{
-    name: {
-      value: name
+eYo.Model.makeClass('Module', {
+  init(name, url) {
+    this.name_ = name
+    this.url_ = url
+  },
+  linked: {
+    value: {},
+    url: {},
+    profiles () {
+      return Object.create(null)
     },
-    url: {
-      value: url
+    items_by_type () {
+      return Object.create(null)
+    },
+  }
+})
+
+/**
+ * Item constuctor
+ * @param {*} model
+ */
+eYo.Model.makeClass('Item', {
+  init (model) {
+    for (var key in model) {
+      Object.defineProperty(
+        this,
+        key,
+        {
+          value: model[key]
+        }
+      )
     }
-  })
-  this.profiles = {}
-  this.items_by_type = {}
+  },
+  computed: {
+    isMethod () {
+      return this.type === eYo.Key.METHOD
+    },
+    isFunction () {
+      return this.type === eYo.Key.FUNCTION
+    },
+    isClass () {
+      return this.type === eYo.Key.CLASS
+    },
+    model () {
+      throw 'RENAMED property: model -> module'
+    },
+    ary_max () {
+      var ary = eYo.isNA(this.ary)
+        ? Infinity
+        : this.ary
+      this.signatures && (this.signatures.forEach((signature) => {
+        if (ary < signature.ary) {
+          ary = signature.ary
+        }
+      }))
+      return ary
+    },
+    mandatory_min () {
+      var mandatory = eYo.isNA(this.mandatory)
+        ? this.ary || 0
+        : this.mandatory
+      this.signatures && (this.signatures.forEach((signature) => {
+        var candidate = eYo.isNA(signature.mandatory)
+          ? signature.ary
+          : signature.mandatory
+        if (mandatory > candidate) {
+          mandatory = candidate
+        }
+      }))
+      return mandatory
+    }
+  }
+})
+
+x = {
+  value: {
+    types: [
+      '.'
+    ]
+  },
+  didChange (before, after) {
+    var a = eYo.Model.item_types = eYo.Model.item_types.concat(data.types)
+    // remove duplicates
+    for(var i=0; i<a.length; ++i) {
+      for(var j=i+1; j<a.length; ++j) {
+        if(a[i] === a[j]) {
+          a.splice(j--, 1)
+        }
+      }
+    }
+  },
 }
+eYo.Model.Item.data = 
 
 /**
  * Set the data object and registers the given type.
- * @param {String|Number} key  The key or index of the item
- * @return {?Object} return the model object for that item, if any.
+ * @param {Object} data - The data object
  */
-eYo.ns.Model.Module.prototype.setData = function (data) {
+eYo.Model.Module.prototype.setData = function (data) {
   this.data = data
-  var a = eYo.ns.Model.Item.types = eYo.ns.Model.Item.types.concat(data.types)
+  var a = eYo.Model.item_types = eYo.Model.item_types.concat(data.types)
+  // remove duplicates
   for(var i=0; i<a.length; ++i) {
     for(var j=i+1; j<a.length; ++j) {
       if(a[i] === a[j]) {
@@ -56,7 +137,7 @@ eYo.ns.Model.Module.prototype.setData = function (data) {
  * @param {String|Number} key  The key or index of the item
  * @return {?Object} return the model object for that item, if any.
  */
-eYo.ns.Model.Module.prototype.getItem = function (key) {
+eYo.Model.Module.prototype.getItem = function (key) {
   if (!goog.isNumber(key)) {
     key = this.data.by_name[key]
   }
@@ -70,7 +151,7 @@ eYo.ns.Model.Module.prototype.getItem = function (key) {
  * @param {String} key  The name of the category
  * @return {!Array} the list of item indices with the given category (possibly void).
  */
-eYo.ns.Model.Module.prototype.getItemsInCategory = function (category, type) {
+eYo.Model.Module.prototype.getItemsInCategory = function (category, type) {
   var ra = this.data.by_category[category] || []
   if (eYo.isStr(type)) {
     type = this.data.type.indexOf(type)
@@ -93,122 +174,41 @@ eYo.ns.Model.Module.prototype.getItemsInCategory = function (category, type) {
  * Sends a message for each ordered item with the give type
  * @param {String} key  The name of the category
  */
-eYo.ns.Model.Module.prototype.forEachItemWithType = function (type, handler) {
+eYo.Model.Module.prototype.forEachItemWithType = function (type, handler) {
   if (eYo.isStr(type)) {
     var ra = this.items_by_type[type]
     if (!ra) {
       ra = this.items_by_type[type] = []
-      for (var i = 0; i < this.data.items.length; i++) {
-        var item = this.data.items[i]
-        if (item.type === type) {
-          ra.push(item)
-        }
-      }
+      this.data.items.forEach(item => {
+        if (item.type === type) { ra.push(item) }
+      })
     }
     ra.forEach(handler)
   }
 }
 
-/**
- * Item constuctor
- * @param {*} model
- */
-eYo.ns.Model.Item = function (model) {
-  var key
-  for (key in model) {
-    Object.defineProperty(
-      this,
-      key,
-      {
-        value: model[key]
-      }
-    )
-  }
-  // goog.object.extend(this, model)
-}
-
 // Each model loaded comes here
-eYo.ns.Protocol.add(eYo.ns.Model.Item, 'Register', 'module')
+eYo.Protocol.add(eYo.Model.Item, 'Register', 'module')
 
 /**
  * Each item has a link to the model it belongs to.
  */
-eYo.ns.Model.Item.prototype.module = new eYo.ns.Model.Module()
-
-Object.defineProperties(eYo.ns.Model.Item.prototype, {
-  isMethod: {
-    get () {
-      return this.type === eYo.Key.METHOD
-    }
-  },
-  isFunction: {
-    get () {
-      return this.type === eYo.Key.FUNCTION
-    }
-  },
-  isClass: {
-    get () {
-      return this.type === eYo.Key.CLASS
-    }
-  },
-  model: {
-    get() {
-      throw 'RENAMED property: model -> module'
-    }
-  },
-  ary_max: {
-    get () {
-      var ary = goog.isDef(this.ary)
-        ? this.ary
-        : Infinity
-      this.signatures && (this.signatures.forEach((signature) => {
-        if (ary < signature.ary) {
-          ary = signature.ary
-        }
-      }))
-      return ary
-    }
-  },
-  mandatory_min: {
-    get () {
-      var mandatory = goog.isDef(this.mandatory)
-        ? this.mandatory
-        : this.ary || 0
-      this.signatures && (this.signatures.forEach((signature) => {
-        var candidate = goog.isDef(signature.mandatory)
-          ? signature.mandatory
-          : signature.ary
-        if (mandatory > candidate) {
-          mandatory = candidate
-        }
-      }))
-      return mandatory
-    }
-  }
-})
-/**
- * Other model data are more complex...
- * Is it used ?
- */
-eYo.ns.Model.Item.data = {
-  types: [
-    '.'
-  ]
-}
+eYo.Model.Item.prototype.module = new eYo.Model.Module()
 
 /**
  * Collect here all the types
+ * @type {Array<String>}
  */
-eYo.ns.Model.Item.types = []
+eYo.Model.item_types = []
 
 /**
  * Each item has a type_ and a type property.
  * The former is overriden by the model given at creation time.
  */
-eYo.ns.Model.Item.prototype.type_ = 0
+eYo.Model.Item.prototype.type_ = 0
 
 Object.defineProperties(
-  eYo.ns.Model.Item.prototype,
+  eYo.Model.Item.prototype,
   {
     type: {
       get () {

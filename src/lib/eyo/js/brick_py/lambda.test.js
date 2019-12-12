@@ -4,7 +4,7 @@ describe('Lambda', function() {
 
   describe('parameter_list', function() {
     it(`f(a[:…][=…])`, function() {
-      var b3k = eYo.Test.new_brick(eYo.ns.T3.Expr.lambda)
+      var b3k = eYo.Test.new_brick(eYo.T3.Expr.lambda)
       var d = b3k.parameters_b
       var a = eYo.Test.new_brick('a')
       assert(d.lastSlot.connect(a), 'MISSING 1')
@@ -56,7 +56,7 @@ describe('Lambda', function() {
               }[v]
             }
             it (`f(a${parameter(v1)}, d${parameter(v2)}, c${parameter(v3)})`, function () {
-              var b3k = eYo.Test.new_brick(eYo.ns.T3.Expr.lambda)
+              var b3k = eYo.Test.new_brick(eYo.T3.Expr.lambda)
               var t = b3k.parameters_b
               var a = eYo.Test.new_brick('a')
               assert(t.lastSlot.connect(a), 'MISSING 1')

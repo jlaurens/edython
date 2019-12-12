@@ -15,8 +15,8 @@ eYo.require('eYo')
 
 eYo.require('eYo.Msg')
 
-eYo.require('eYo.ns.T3')
-eYo.require('eYo.ns.Brick')
+eYo.require('eYo.T3')
+eYo.require('eYo.Brick')
 eYo.require('eYo.MenuItem')
 eYo.require('eYo.Separator')
 goog.require('goog.dom');
@@ -220,7 +220,7 @@ eYo.MenuManager.prototype.addRemoveChild = function (menuItem, render = true) {
 /**
  * Records the brick and the event.
  * Removes all the previous menu items.
- * @param {eYo.ns.Brick=} brick The brick.
+ * @param {eYo.Brick=} brick The brick.
  * @param {Event=} e Mouse event.
  * @private
  */
@@ -239,7 +239,7 @@ eYo.MenuManager.prototype.init = function (brick = eYo.NA, e = eYo.NA) {
 /**
  * Show the context menu for the given brick.
  * This is not for subclassers.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {Event} e Mouse event.
  * @private
  */
@@ -332,11 +332,11 @@ eYo.ID.HELP = 'HELP'
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.ns.Brick.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.Brick.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
   mngr.shouldSeparate()
   mngr.populate_movable_parent(this)
 }
@@ -346,17 +346,17 @@ eYo.ns.Brick.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.ns.Brick.Dflt.prototype.populateContextMenuMiddle_ = function (mngr) {
+eYo.Brick.Dflt.prototype.populateContextMenuMiddle_ = function (mngr) {
   return false
 }
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.ns.Brick.Dflt.prototype.populateContextMenuLast_ = function (mngr) {
+eYo.Brick.Dflt.prototype.populateContextMenuLast_ = function (mngr) {
   return mngr.populateLast(this)
 }
 
@@ -530,7 +530,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.ns.Brick.Dflt.prototype.handleMenuItemActionFirst = function (mngr, event) {
+eYo.Brick.Dflt.prototype.handleMenuItemActionFirst = function (mngr, event) {
   return mngr.handleAction_movable_parent(this, event)
 }
 
@@ -540,18 +540,18 @@ eYo.ns.Brick.Dflt.prototype.handleMenuItemActionFirst = function (mngr, event) {
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.ns.Brick.Dflt.prototype.handleMenuItemActionMiddle = function (mngr, event) {
+eYo.Brick.Dflt.prototype.handleMenuItemActionMiddle = function (mngr, event) {
   return false
 }
 
 /**
  * Handle the selection of an item in the context dropdown menu.
  * Intended to be overriden.
- * @param {eYo.ns.Brick.Dflt} brick
+ * @param {eYo.Brick.Dflt} brick
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.ns.Brick.Dflt.prototype.handleMenuItemActionLast = function (mngr, event) {
+eYo.Brick.Dflt.prototype.handleMenuItemActionLast = function (mngr, event) {
   return mngr.handleActionLast(this, event)
 }
 
@@ -559,7 +559,7 @@ eYo.ns.Brick.Dflt.prototype.handleMenuItemActionLast = function (mngr, event) {
  * Handle the selection of an item in the context dropdown menu.
  * Default implementation mimics Blockly behaviour.
  * Unlikely to be overriden.
- * @param {eYo.ns.Brick.Dflt} brick
+ * @param {eYo.Brick.Dflt} brick
  * @param {goog.events.Event} event The event containing as target
  * the MenuItem selected within menu.
  */
@@ -627,7 +627,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -638,7 +638,7 @@ eYo.MenuManager.prototype.populateVariable_ = function (brick) {
 /**
  * Handle the selection of an item in the first part of the context dropdown menu.
  * Default implementation returns false.
- * @param {eYo.ns.Brick.Dflt} brick The Menu component clicked.
+ * @param {eYo.Brick.Dflt} brick The Menu component clicked.
  * @param {goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
@@ -655,14 +655,14 @@ eYo.MenuManager.prototype.handleAction_movable_parent = function (brick, event) 
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.handleAction_movable_parent_module = eYo.MenuManager.prototype.handleAction_movable_parent
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
@@ -679,12 +679,12 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
     )
   }
   switch (type) {
-  case eYo.ns.T3.Expr.parent_module:
+  case eYo.T3.Expr.parent_module:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('.', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
     )
-  case eYo.ns.T3.Expr.attributeref:
+  case eYo.T3.Expr.attributeref:
     switch (subtype) {
     case eYo.Key.ROOT:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -700,19 +700,19 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
         goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
       )
     }
-  case eYo.ns.T3.Expr.key_datum:
+  case eYo.T3.Expr.key_datum:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN(': ', 'eyo-code'),
       eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
     )
-  case eYo.ns.T3.Expr.identifier_valued:
+  case eYo.T3.Expr.identifier_valued:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('= ', 'eyo-code'),
       eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
     )
-  case eYo.ns.T3.Expr.proper_slice:
+  case eYo.T3.Expr.proper_slice:
     switch (subtype) {
     case eYo.Key.LOWER_BOUND:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -741,7 +741,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
         goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
       )
     }
-  case eYo.ns.T3.Expr.expression_as_name:
+  case eYo.T3.Expr.expression_as_name:
     switch (subtype) {
     case eYo.Key.AS:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -757,81 +757,81 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
         goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
       )
     }
-  case eYo.ns.T3.Expr.slicing:
+  case eYo.T3.Expr.slicing:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('[', 'eyo-code'),
       eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
       eYo.Do.createSPAN(']', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
     )
-  case eYo.ns.T3.Expr.call_expr:
-  case eYo.ns.T3.Expr.decorator_call_expr:
+  case eYo.T3.Expr.call_expr:
+  case eYo.T3.Expr.decorator_call_expr:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('(', 'eyo-code'),
       eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
       eYo.Do.createSPAN(')', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
     )
-  case eYo.ns.T3.Expr.funcdef_typed:
+  case eYo.T3.Expr.funcdef_typed:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('->', 'eyo-code'),
       eYo.Do.createSPAN(' …', 'eyo-code-placeholder'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
     )
-  case eYo.ns.T3.Expr.dotted_name_as:
-  case eYo.ns.T3.Expr.identifier_as:
+  case eYo.T3.Expr.dotted_name_as:
+  case eYo.T3.Expr.identifier_as:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('as', 'eyo-code-reserved'),
       eYo.Do.createSPAN(' alias', 'eyo-code-placeholder')
     )
-  case eYo.ns.T3.Expr.u_expr:
+  case eYo.T3.Expr.u_expr:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('-', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
     )
-  case eYo.ns.T3.Expr.imagnumber:
+  case eYo.T3.Expr.imagnumber:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('j', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
     )
-  case eYo.ns.T3.Expr.parenth_form:
+  case eYo.T3.Expr.parenth_form:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('(', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AND + ' '),
       eYo.Do.createSPAN(')', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AROUND)
     )
-  case eYo.ns.T3.Expr.list_display:
+  case eYo.T3.Expr.list_display:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('[', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AND + ' '),
       eYo.Do.createSPAN(']', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AROUND)
     )
-  case eYo.ns.T3.Expr.set_display:
-  case eYo.ns.T3.Expr.dict_display:
+  case eYo.T3.Expr.set_display:
+  case eYo.T3.Expr.dict_display:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('{', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AND + ' '),
       eYo.Do.createSPAN('}', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.Msg.AROUND)
     )
-  case eYo.ns.T3.Stmt.if_part: return Stmt1('if')
-  case eYo.ns.T3.Stmt.elif_part: return Stmt1('elif')
-  case eYo.ns.T3.Stmt.for_part: return Stmt1('for')
-  case eYo.ns.T3.Stmt.while_part: return Stmt1('while')
-  case eYo.ns.T3.Stmt.try_part: return Stmt2('try')
-  case eYo.ns.T3.Stmt.except_part: return Stmt1('except')
-  case eYo.ns.T3.Stmt.void_except_part:return Stmt2('except')
-  case eYo.ns.T3.Stmt.else_part:return Stmt2('else')
-  case eYo.ns.T3.Stmt.finally_part:return Stmt2('finally')
-  case eYo.ns.T3.Stmt.with_part: return Stmt1('with')
-  case eYo.ns.T3.Stmt.expression_stmt:
+  case eYo.T3.Stmt.if_part: return Stmt1('if')
+  case eYo.T3.Stmt.elif_part: return Stmt1('elif')
+  case eYo.T3.Stmt.for_part: return Stmt1('for')
+  case eYo.T3.Stmt.while_part: return Stmt1('while')
+  case eYo.T3.Stmt.try_part: return Stmt2('try')
+  case eYo.T3.Stmt.except_part: return Stmt1('except')
+  case eYo.T3.Stmt.void_except_part:return Stmt2('except')
+  case eYo.T3.Stmt.else_part:return Stmt2('else')
+  case eYo.T3.Stmt.finally_part:return Stmt2('finally')
+  case eYo.T3.Stmt.with_part: return Stmt1('with')
+  case eYo.T3.Stmt.expression_stmt:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('#', 'eyo-code-reserved'),
       eYo.Do.createSPAN(' comment', 'eyo-code-placeholder')
     )
-  case eYo.ns.T3.Stmt.assignment_stmt:
+  case eYo.T3.Stmt.assignment_stmt:
     return goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-placeholder',
       goog.dom.createTextNode('name'),
       eYo.Do.createSPAN(' = ', 'eyo-code-reserved'),
@@ -847,7 +847,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
  * Only for expressions.
  * `model.type` is the type of the to be inserted parent brick.
  * `model.slot` is the slot where the actual brick should be connected.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {Object} model the type of the parent to be and target slot.
  * @private
  */
@@ -860,7 +860,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
   }
   /** @suppress {accessControls} */
   var outCheck = m4t.check_
-  var D = eYo.ns.Brick.mngr.getModel(model.type).slots
+  var D = eYo.Brick.mngr.getModel(model.type).slots
   // if the brick which type is model.type has no slot
   // no chance to insert anything, pass away
   if (D) {
@@ -893,7 +893,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
         this.addInsertChild(MI)
         return true
       } else if (d && d.wrap && !parent_subtype) {
-        var list = eYo.ns.Brick.mngr.getModel(d.wrap).list
+        var list = eYo.Brick.mngr.getModel(d.wrap).list
         if (!list) {
           if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
             key = d.key || K
@@ -942,7 +942,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
  * Only for expressions.
  * type is the type of the to be inserted parent brick.
  * This parent might be inserted up to the top.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {string} type the type of the parent to be.
  * @private
  */
@@ -970,7 +970,7 @@ eYo.MenuManager.prototype.populate_insert_parent = function (brick, model, top) 
 /**
  * Populate the context menu for the given brick.
  * Only for expressions.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {string|Object} model the subtype is for example the input name through which parent and children are connected.
  * @private
  * @return true if an item were added to the remove menu
@@ -1002,36 +1002,36 @@ eYo.MenuManager.prototype.populate_replace_parent = function (brick, model) {
 /**
  * Populate the context menu for the given brick.
  * Only for statements.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.populate_before_after = function (brick) {
   // Disable undo registration for a while
   var Ts = [
-    eYo.ns.T3.Stmt.if_part,
-    eYo.ns.T3.Stmt.elif_part,
-    eYo.ns.T3.Stmt.for_part,
-    eYo.ns.T3.Stmt.while_part,
-    eYo.ns.T3.Stmt.try_part,
-    eYo.ns.T3.Stmt.except_part,
-    eYo.ns.T3.Stmt.void_except_part,
-    eYo.ns.T3.Stmt.else_part,
-    eYo.ns.T3.Stmt.finally_part,
-    eYo.ns.T3.Stmt.with_part
-    // eYo.ns.T3.Stmt.decorator_stmt,
-    // eYo.ns.T3.Stmt.funcdef_part,
-    // eYo.ns.T3.Stmt.classdef_part,
-    // eYo.ns.T3.Stmt.import_stmt,
+    eYo.T3.Stmt.if_part,
+    eYo.T3.Stmt.elif_part,
+    eYo.T3.Stmt.for_part,
+    eYo.T3.Stmt.while_part,
+    eYo.T3.Stmt.try_part,
+    eYo.T3.Stmt.except_part,
+    eYo.T3.Stmt.void_except_part,
+    eYo.T3.Stmt.else_part,
+    eYo.T3.Stmt.finally_part,
+    eYo.T3.Stmt.with_part
+    // eYo.T3.Stmt.decorator_stmt,
+    // eYo.T3.Stmt.funcdef_part,
+    // eYo.T3.Stmt.classdef_part,
+    // eYo.T3.Stmt.import_stmt,
   ]
   var Us = [
-    eYo.ns.T3.Stmt.comment_any, // defined
-    eYo.ns.T3.Stmt.assignment_stmt,
-    eYo.ns.T3.Stmt.print_stmt, // JL defined?
-    eYo.ns.T3.Stmt.builtin__input_stmt// JL defined?
+    eYo.T3.Stmt.comment_any, // defined
+    eYo.T3.Stmt.assignment_stmt,
+    eYo.T3.Stmt.print_stmt, // JL defined?
+    eYo.T3.Stmt.builtin__input_stmt// JL defined?
   ]
   var /** !eYo.Magnet */ m4t, sep
   var F_after = /** @suppress{accessControls} */ (targetM4t, type) => {
-    var b3k = eYo.ns.Brick.newReady(brick, type)
+    var b3k = eYo.Brick.newReady(brick, type)
     var yorn = b3k.head_m &&
     b3k.head_m.checkType_(m4t) &&
     (!targetM4t || (b3k.foot_m && (targetM4t.checkType_(b3k.foot_m))))
@@ -1047,7 +1047,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     return false
   }
   var F_before = /** @suppress{accessControls} */ (target, type) => {
-    var b3k = eYo.ns.Brick.newReady(brick, type)
+    var b3k = eYo.Brick.newReady(brick, type)
     var yorn = b3k.foot_m &&
     b3k.foot_m.checkType_(m4t) &&
     (!target || (b3k.head_m && (target.checkType_(b3k.head_m))))
@@ -1091,7 +1091,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
 /**
  * Populate the context menu for the given brick.
  * Only for expressions.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.populate_movable_parent = function (brick) {
@@ -1109,36 +1109,36 @@ eYo.MenuManager.prototype.populate_movable_parent = function (brick) {
     }
   }
   F([
-    eYo.ns.T3.Expr.u_expr,
-    [eYo.ns.T3.Expr.call_expr, eYo.Key.ROOT],
-    eYo.ns.T3.Expr.slicing,
-    [eYo.ns.T3.Expr.attributeref, eYo.Key.ATTRIBUTE],
-    [eYo.ns.T3.Expr.attributeref, eYo.Key.ROOT],
-    [eYo.ns.T3.Expr.decorator_call_expr, eYo.Key.NAME],
-    eYo.ns.T3.Expr.imagnumber
+    eYo.T3.Expr.u_expr,
+    [eYo.T3.Expr.call_expr, eYo.Key.ROOT],
+    eYo.T3.Expr.slicing,
+    [eYo.T3.Expr.attributeref, eYo.Key.ATTRIBUTE],
+    [eYo.T3.Expr.attributeref, eYo.Key.ROOT],
+    [eYo.T3.Expr.decorator_call_expr, eYo.Key.NAME],
+    eYo.T3.Expr.imagnumber
   ], true)
   F([
-    [eYo.ns.T3.Expr.expression_as_name, eYo.Key.AS],
-    [eYo.ns.T3.Expr.expression_as_name, eYo.Key.EXPRESSION]
+    [eYo.T3.Expr.expression_as_name, eYo.Key.AS],
+    [eYo.T3.Expr.expression_as_name, eYo.Key.EXPRESSION]
   ])
   this.shouldSeparateInsert()
   this.shouldSeparateRemove()
   F([
-    eYo.ns.T3.Expr.parenth_form,
-    eYo.ns.T3.Expr.list_display,
-    eYo.ns.T3.Expr.set_display,
-    eYo.ns.T3.Expr.dict_display,
-    [eYo.ns.T3.Expr.funcdef_part, eYo.Key.DEFINITION]
+    eYo.T3.Expr.parenth_form,
+    eYo.T3.Expr.list_display,
+    eYo.T3.Expr.set_display,
+    eYo.T3.Expr.dict_display,
+    [eYo.T3.Expr.funcdef_part, eYo.Key.DEFINITION]
   ], true)
   F([
-    eYo.ns.T3.Expr.parent_module,
-    eYo.ns.T3.Expr.dotted_name_as,
-    eYo.ns.T3.Expr.identifier_as,
-    [eYo.ns.T3.Expr.key_datum, eYo.Key.NAME],
-    [eYo.ns.T3.Expr.identifier, eYo.Key.NAME],
-    [eYo.ns.T3.Expr.proper_slice, eYo.Key.UPPER_BOUND],
-    [eYo.ns.T3.Expr.proper_slice, eYo.Key.STRIDE],
-    [eYo.ns.T3.Expr.proper_slice, eYo.Key.LOWER_BOUND]
+    eYo.T3.Expr.parent_module,
+    eYo.T3.Expr.dotted_name_as,
+    eYo.T3.Expr.identifier_as,
+    [eYo.T3.Expr.key_datum, eYo.Key.NAME],
+    [eYo.T3.Expr.identifier, eYo.Key.NAME],
+    [eYo.T3.Expr.proper_slice, eYo.Key.UPPER_BOUND],
+    [eYo.T3.Expr.proper_slice, eYo.Key.STRIDE],
+    [eYo.T3.Expr.proper_slice, eYo.Key.LOWER_BOUND]
   ])
 }
 
@@ -1146,7 +1146,7 @@ eYo.MenuManager.prototype.populate_movable_parent = function (brick) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.populateProperties = function (brick, key) {

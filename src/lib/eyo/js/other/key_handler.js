@@ -19,7 +19,7 @@ eYo.provide('eYo.KeyHandler')
 eYo.provide('eYo.KeyHandlerMenu')
 
 eYo.forwardDeclare('eYo.XRE')
-eYo.forwardDeclare('eYo.ns.Dom')
+eYo.forwardDeclare('eYo.Dom')
 eYo.forwardDeclare('eYo.Navigate')
 eYo.forwardDeclare('eYo.MenuItem')
 eYo.forwardDeclare('eYo.Separator')
@@ -104,11 +104,11 @@ eYo.KeyHandler = (() => {
         return
       }
     } else if (k === 'backspace') {
-      eYo.ns.Dom.gobbleEvent(e)
+      eYo.Dom.gobbleEvent(e)
       K = eYo.NA
     }
     if (me.updateMenu(K)) {
-      eYo.ns.Dom.gobbleEvent(e)
+      eYo.Dom.gobbleEvent(e)
       return true
     }
     return false
@@ -436,20 +436,20 @@ eYo.KeyHandler = (() => {
       }
     } else if (k === 'enter' || k === 'return') {
       if ((brick = eYo.app.focusMngr.brick)) {
-        eYo.ns.Dom.gobbleEvent(e)
+        eYo.Dom.gobbleEvent(e)
         return
       }
     }
     if ((brick = eYo.app.focusMngr.brick)) {
       if (K === ' ') {
-        eYo.ns.Dom.gobbleEvent(e)
+        eYo.Dom.gobbleEvent(e)
         eYo.MenuManager.shared().showMenu(brick, event)
         return
       }
       keys_ = []
       me.populateMenu(K)
       if (menu_.getChildCount()) {
-        eYo.ns.Dom.gobbleEvent(e)
+        eYo.Dom.gobbleEvent(e)
         if (!menu_.inDocument_) {
           menu_.render()
         }
@@ -498,7 +498,7 @@ eYo.KeyHandler = (() => {
         menu_.highlightFirst()
       } else {
         var F = f => {
-          eYo.ns.Dom.gobbleEvent(e)
+          eYo.Dom.gobbleEvent(e)
           f()
         }
         switch (k) {
@@ -511,8 +511,8 @@ eYo.KeyHandler = (() => {
     } else {
       // B is not always a brick!
       F = f => {
-        eYo.ns.Dom.gobbleEvent(e)
-        var brick = eYo.ns.Brick.getBestBrick(eYo.app.board, f)
+        eYo.Dom.gobbleEvent(e)
+        var brick = eYo.Brick.getBestBrick(eYo.app.board, f)
         if (brick) {
           brick.focusOn().scrollToVisible()
         }
@@ -564,52 +564,52 @@ eYo.KeyHandler.makeSlicing = function (model) {
   this.handleModel(model)
 }
 
-eYo.KeyHandler.register('if', eYo.ns.T3.Stmt.if_part)
+eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
 
 ;(function () {
 
   var Ks = {
-    'start': eYo.ns.T3.Stmt.start_stmt,
-    'if': eYo.ns.T3.Stmt.if_part,
-    'elif': eYo.ns.T3.Stmt.elif_part,
-    'else': eYo.ns.T3.Stmt.else_part,
-    class: eYo.ns.T3.Stmt.classdef_part,
+    'start': eYo.T3.Stmt.start_stmt,
+    'if': eYo.T3.Stmt.if_part,
+    'elif': eYo.T3.Stmt.elif_part,
+    'else': eYo.T3.Stmt.else_part,
+    class: eYo.T3.Stmt.classdef_part,
     'except': {
-      type: eYo.ns.T3.Stmt.except_part,
+      type: eYo.T3.Stmt.except_part,
       variant_p: eYo.Key.NONE
     },
     'except …': {
-      type: eYo.ns.T3.Stmt.except_part,
+      type: eYo.T3.Stmt.except_part,
       variant_p: eYo.Key.EXPRESSION
     },
     'except … as …': {
-      type: eYo.ns.T3.Stmt.except_part,
+      type: eYo.T3.Stmt.except_part,
       variant_p: eYo.Key.ALIASED
     },
-    'finally': eYo.ns.T3.Stmt.finally_part,
-    'for': eYo.ns.T3.Stmt.for_part,
-    '@': eYo.ns.T3.Stmt.decorator_stmt,
-    'def': eYo.ns.T3.Stmt.funcdef_part,
-    'import': eYo.ns.T3.Stmt.import_stmt,
-    'try': eYo.ns.T3.Stmt.try_part,
-    'while': eYo.ns.T3.Stmt.while_part,
-    'with': eYo.ns.T3.Stmt.with_part,
-    'lambda': eYo.ns.T3.Expr.lambda,
-    '… if … else …': eYo.ns.T3.Expr.conditional_expression,
-    'identifier': eYo.ns.T3.Expr.identifier,
-    'name': eYo.ns.T3.Expr.identifier,
+    'finally': eYo.T3.Stmt.finally_part,
+    'for': eYo.T3.Stmt.for_part,
+    '@': eYo.T3.Stmt.decorator_stmt,
+    'def': eYo.T3.Stmt.funcdef_part,
+    'import': eYo.T3.Stmt.import_stmt,
+    'try': eYo.T3.Stmt.try_part,
+    'while': eYo.T3.Stmt.while_part,
+    'with': eYo.T3.Stmt.with_part,
+    'lambda': eYo.T3.Expr.lambda,
+    '… if … else …': eYo.T3.Expr.conditional_expression,
+    'identifier': eYo.T3.Expr.identifier,
+    'name': eYo.T3.Expr.identifier,
     'not …': function (key) {
       var eyo = eYo.app.focusMngr.brick
       if (eyo) {
         var parent = eyo.surround
-        if (parent && parent.board.options.smartUnary && (parent.type === eYo.ns.T3.Expr.not_test)) {
+        if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
           eyo.replaceBrick(parent)
           return
         }
         if (eYo.Focus.magnet) {
-          eyo.insertBrickWithModel(eYo.ns.T3.Expr.not_test)
+          eyo.insertBrickWithModel(eYo.T3.Expr.not_test)
         } else {
-          eyo.insertParentWithModel(eYo.ns.T3.Expr.not_test)
+          eyo.insertParentWithModel(eYo.T3.Expr.not_test)
         }
       }
     },
@@ -617,11 +617,11 @@ eYo.KeyHandler.register('if', eYo.ns.T3.Stmt.if_part)
       var eyo = eYo.app.focusMngr.brick
       if (eyo) {
         var parent = eyo.surround
-        if (parent && parent.board.options.smartUnary && (parent.type === eYo.ns.T3.Expr.u_expr) && parent.operator_p === '+') {
+        if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_p === '+') {
           return
         }
         var model = {
-          type: eYo.ns.T3.Expr.u_expr,
+          type: eYo.T3.Expr.u_expr,
           operator_p: '+'
         }
         if (eYo.Focus.magnet) {
@@ -642,12 +642,12 @@ eYo.KeyHandler.register('if', eYo.ns.T3.Stmt.if_part)
       var brick = eYo.app.focusMngr.brick
       if (brick) {
         var parent = eyo.surround
-        if (parent && parent.board.options.smartUnary && (parent.type === eYo.ns.T3.Expr.u_expr) && parent.operator_ === op) {
+        if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {
           brick.replaceBrick(parent)
           return
         }
         var model = {
-          type: eYo.ns.T3.Expr.u_expr,
+          type: eYo.T3.Expr.u_expr,
           operator_p: op
         }
         eYo.Focus.magnet
@@ -671,59 +671,59 @@ eYo.KeyHandler.register('if', eYo.ns.T3.Stmt.if_part)
 
   Ks = {
     '+': {
-      type: eYo.ns.T3.Expr.a_expr,
+      type: eYo.T3.Expr.a_expr,
       operator_p: '+',
       slot: eYo.Key.LHS
     },
     '-': {
-      type: eYo.ns.T3.Expr.a_expr,
+      type: eYo.T3.Expr.a_expr,
       operator_p: '-',
       slot: eYo.Key.LHS
     },
     '*': {
-      type: eYo.ns.T3.Expr.m_expr,
+      type: eYo.T3.Expr.m_expr,
       operator_p: '*',
       slot: eYo.Key.LHS
     },
     '//': {
-      type: eYo.ns.T3.Expr.m_expr,
+      type: eYo.T3.Expr.m_expr,
       operator_p: '//',
       slot: eYo.Key.LHS
     },
     '/': {
-      type: eYo.ns.T3.Expr.m_expr,
+      type: eYo.T3.Expr.m_expr,
       operator_p: '/',
       slot: eYo.Key.LHS
     },
     '%': {
-      type: eYo.ns.T3.Expr.m_expr,
+      type: eYo.T3.Expr.m_expr,
       operator_p: '%',
       slot: eYo.Key.LHS
     },
     '@': {
-      type: eYo.ns.T3.Expr.m_expr,
+      type: eYo.T3.Expr.m_expr,
       operator_p: '@',
       slot: eYo.Key.LHS
     },
     '**': {
-      type: eYo.ns.T3.Expr.power,
+      type: eYo.T3.Expr.power,
       slot: eYo.Key.LHS
     },
     '<<': {
-      type: eYo.ns.T3.Expr.shift_expr,
+      type: eYo.T3.Expr.shift_expr,
       operator_p: '<<',
       slot: eYo.Key.LHS
     },
     '>>': {
-      type: eYo.ns.T3.Expr.shift_expr,
+      type: eYo.T3.Expr.shift_expr,
       operator_p: '>>',
       slot: eYo.Key.LHS
     },
-    '&': eYo.ns.T3.Expr.and_expr,
-    '^': eYo.ns.T3.Expr.xor_expr,
-    '|': eYo.ns.T3.Expr.or_expr,
-    'or': eYo.ns.T3.Expr.or_test,
-    'and': eYo.ns.T3.Expr.and_test
+    '&': eYo.T3.Expr.and_expr,
+    '^': eYo.T3.Expr.xor_expr,
+    '|': eYo.T3.Expr.or_expr,
+    'or': eYo.T3.Expr.or_test,
+    'and': eYo.T3.Expr.and_test
   }
   for (K in Ks) {
     eYo.KeyHandler.register('… ' + K + ' …', Ks[K])
@@ -731,173 +731,173 @@ eYo.KeyHandler.register('if', eYo.ns.T3.Stmt.if_part)
   Ks = ['True', 'False', 'None', '...']
   for (var i = 0; (K = Ks[i++]);) {
     eYo.KeyHandler.register(K, {
-      type: eYo.ns.T3.Expr.builtin__object,
+      type: eYo.T3.Expr.builtin__object,
       data: K
     })
   }
   Ks = ['is', 'is not', 'in', 'not in']
   for (i = 0; (K = Ks[i++]);) {
     eYo.KeyHandler.register('… ' + K + ' …', {
-      type: eYo.ns.T3.Expr.object_comparison,
+      type: eYo.T3.Expr.object_comparison,
       operator_p: K
     })
   }
   Ks = ['<', '>', '==', '>=', '<=', '!=']
   for (i = 0; (K = Ks[i++]);) {
     eYo.KeyHandler.register('… ' + K + ' …', {
-      type: eYo.ns.T3.Expr.number_comparison,
+      type: eYo.T3.Expr.number_comparison,
       operator_p: K
     })
   }
 
   Ks = {
-    '… = …': eYo.ns.T3.Stmt.assignment_stmt,
-    '…:… = …': eYo.ns.T3.Stmt.annotated_assignment_stmt,
-    'start': eYo.ns.T3.Stmt.start_stmt,
-    'assert …': eYo.ns.T3.Stmt.assert_stmt,
-    'pass': eYo.ns.T3.Stmt.pass_stmt,
-    'break': eYo.ns.T3.Stmt.break_stmt,
-    'continue': eYo.ns.T3.Stmt.continue_stmt,
-    'del …': eYo.ns.T3.Stmt.del_stmt,
-    'return …': eYo.ns.T3.Stmt.return_stmt,
-    'yield …': eYo.ns.T3.Stmt.yield_stmt,
-    'raise': eYo.ns.T3.Stmt.raise_stmt,
+    '… = …': eYo.T3.Stmt.assignment_stmt,
+    '…:… = …': eYo.T3.Stmt.annotated_assignment_stmt,
+    'start': eYo.T3.Stmt.start_stmt,
+    'assert …': eYo.T3.Stmt.assert_stmt,
+    'pass': eYo.T3.Stmt.pass_stmt,
+    'break': eYo.T3.Stmt.break_stmt,
+    'continue': eYo.T3.Stmt.continue_stmt,
+    'del …': eYo.T3.Stmt.del_stmt,
+    'return …': eYo.T3.Stmt.return_stmt,
+    'yield …': eYo.T3.Stmt.yield_stmt,
+    'raise': eYo.T3.Stmt.raise_stmt,
     'raise …': {
-      type: eYo.ns.T3.Stmt.raise_stmt,
+      type: eYo.T3.Stmt.raise_stmt,
       variant_p: eYo.Key.EXPRESSION
     },
     'raise … from …': {
-      type: eYo.ns.T3.Stmt.raise_stmt,
+      type: eYo.T3.Stmt.raise_stmt,
       variant_p: eYo.Key.FROM
     },
-    // 'from future import …': eYo.ns.T3.Stmt.future_statement,
-    'import …': eYo.ns.T3.Stmt.import_stmt,
-    '# comment': eYo.ns.T3.Stmt.comment_stmt,
-    'global …': eYo.ns.T3.Stmt.global_stmt,
-    'nonlocal …': eYo.ns.T3.Stmt.nonlocal_stmt,
-    '@decorator': eYo.ns.T3.Stmt.decorator_stmt,
+    // 'from future import …': eYo.T3.Stmt.future_statement,
+    'import …': eYo.T3.Stmt.import_stmt,
+    '# comment': eYo.T3.Stmt.comment_stmt,
+    'global …': eYo.T3.Stmt.global_stmt,
+    'nonlocal …': eYo.T3.Stmt.nonlocal_stmt,
+    '@decorator': eYo.T3.Stmt.decorator_stmt,
     '"""…"""(stmt)': {
-      type: eYo.ns.T3.Stmt.docstring_stmt,
+      type: eYo.T3.Stmt.docstring_stmt,
       delimiter_p: '"""'
     },
     "'''…'''(stmt)": {
-      type: eYo.ns.T3.Stmt.docstring_stmt,
+      type: eYo.T3.Stmt.docstring_stmt,
       delimiter_p: "'''"
     },
     '"""…"""': {
-      type: eYo.ns.T3.Expr.longliteral,
+      type: eYo.T3.Expr.longliteral,
       delimiter_p: '"""'
     },
     "'''…'''": {
-      type: eYo.ns.T3.Expr.longliteral,
+      type: eYo.T3.Expr.longliteral,
       delimiter_p: "'''"
     },
     "'…'": {
-      type: eYo.ns.T3.Expr.shortliteral,
+      type: eYo.T3.Expr.shortliteral,
       delimiter_p: "'"
     },
     '"…"': {
-      type: eYo.ns.T3.Expr.shortliteral,
+      type: eYo.T3.Expr.shortliteral,
       delimiter_p: '"'
     },
     'print(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'print'
     },
     'input(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'input'
     },
     'range(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'range'
     },
     'int(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'int'
     },
     'float(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'float'
     },
     'complex(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'complex'
     },
     'list(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'list'
     },
     'set(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'set'
     },
     'len(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'len'
     },
     'min(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'min'
     },
     'max(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'max'
     },
     'sum(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'sum'
     },
     'pow(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'pow'
     },
     'trunc(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'trunc'
     },
     'abs(…)': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'abs'
     },
     '….conjugate()': {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: 'conjugate',
       dotted_p: 1
     },
     'f(…)': {
       action: eYo.KeyHandler.makeCall,
       model: {
-        type: eYo.ns.T3.Expr.call_expr,
+        type: eYo.T3.Expr.call_expr,
         name_p: ''
       }
     },
     'x[…]': {
       action: eYo.KeyHandler.makeSlicing,
       model: {
-        type: eYo.ns.T3.Expr.slicing,
+        type: eYo.T3.Expr.slicing,
         parent: true
       }
     },
-    'module as alias': eYo.ns.T3.Expr.dotted_name_as,
+    'module as alias': eYo.T3.Expr.dotted_name_as,
     '(…)': {
-      type: eYo.ns.T3.Expr.parenth_form,
+      type: eYo.T3.Expr.parenth_form,
       parent: true
     },
     '[…]': {
-      type: eYo.ns.T3.Expr.list_display,
+      type: eYo.T3.Expr.list_display,
       parent: true
     },
     '…:…': {
-      type: eYo.ns.T3.Expr.proper_slice,
+      type: eYo.T3.Expr.proper_slice,
       parent: true
     },
     '{…:…}': {
-      type: eYo.ns.T3.Expr.dict_display,
+      type: eYo.T3.Expr.dict_display,
       parent: true
     },
     '{…}': {
-      type: eYo.ns.T3.Expr.set_display,
+      type: eYo.T3.Expr.set_display,
       parent: true
     }
   }
@@ -910,7 +910,7 @@ eYo.KeyHandler.register('if', eYo.ns.T3.Stmt.if_part)
   Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=', '>>=', '<<=', '&=', '^=', '|=']
   for (i = 0; (K = Ks[i++]);) {
     eYo.KeyHandler.register('… ' + K + ' …', {
-      type: eYo.ns.T3.Stmt.augmented_assignment_stmt,
+      type: eYo.T3.Stmt.augmented_assignment_stmt,
       operator: K
     })
   }
@@ -919,7 +919,7 @@ eYo.KeyHandler.register('if', eYo.ns.T3.Stmt.if_part)
   Ks = ['real', 'imag']
   for (i = 0; (K = Ks[i++]);) {
     eYo.KeyHandler.register('… ' + K + ' …', {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: K
     })
   }

@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Model')
-eYo.require('eYo.ns.Model.Module')
+eYo.require('eYo.Model')
+eYo.require('eYo.Model.Module')
 
-eYo.require('eYo.ns.Model.Item')
-eYo.provide('eYo.ns.Model.math__module.Item')
-eYo.provide('eYo.ns.Model.math__module')
+eYo.require('eYo.Model.Item')
+eYo.provide('eYo.Model.math__module.Item')
+eYo.provide('eYo.Model.math__module')
 
-eYo.ns.Model.math__module = new eYo.ns.Model.Module('math__module', 'https://docs.python.org/3.6/library/math.html')
+eYo.Model.math__module = new eYo.Model.Module('math__module', 'https://docs.python.org/3.6/library/math.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.ns.Model.math__module.Item = function (model) {
-  eYo.ns.Model.math__module.Item.superClass_.constructor.call(this, model)
+eYo.Model.math__module.Item = function (model) {
+  eYo.Model.math__module.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.ns.Model.math__module.Item
+var Item = eYo.Model.math__module.Item
 
-goog.inherits(Item, eYo.ns.Model.Item)
+goog.inherits(Item, eYo.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.ns.Model.math__module
+Item.prototype.module = eYo.Model.math__module
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.ns.Model.math__module.setData({
+eYo.Model.math__module.setData({
   categories: [
     'number-theoretic-and-representation-functions',
     'power-and-logarithmic-functions',

@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Model')
-eYo.require('eYo.ns.Model.Module')
+eYo.require('eYo.Model')
+eYo.require('eYo.Model.Module')
 
-eYo.require('eYo.ns.Model.Item')
-eYo.provide('eYo.ns.Model.bisect__module.Item')
-eYo.provide('eYo.ns.Model.bisect__module')
+eYo.require('eYo.Model.Item')
+eYo.provide('eYo.Model.bisect__module.Item')
+eYo.provide('eYo.Model.bisect__module')
 
-eYo.ns.Model.bisect__module = new eYo.ns.Model.Module('bisect__module', 'https://docs.python.org/3.6/library/bisect.html')
+eYo.Model.bisect__module = new eYo.Model.Module('bisect__module', 'https://docs.python.org/3.6/library/bisect.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.ns.Model.bisect__module.Item = function (model) {
-  eYo.ns.Model.bisect__module.Item.superClass_.constructor.call(this, model)
+eYo.Model.bisect__module.Item = function (model) {
+  eYo.Model.bisect__module.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.ns.Model.bisect__module.Item
+var Item = eYo.Model.bisect__module.Item
 
-goog.inherits(Item, eYo.ns.Model.Item)
+goog.inherits(Item, eYo.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.ns.Model.bisect__module
+Item.prototype.module = eYo.Model.bisect__module
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.ns.Model.bisect__module.setData({
+eYo.Model.bisect__module.setData({
   categories: [
     'module-bisect'
   ],

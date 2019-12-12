@@ -230,7 +230,7 @@ class Formatter:
         :return:
         """
         template = '  {:<25} : /*   ::= {:<50} ({}) */ "eyo:{}",'
-        self.append('eYo.ns.T3.Expr = {')
+        self.append('eYo.T3.Expr = {')
         self.append('// core expressions')
         for t in self.get_expressions():
             if not t.is_list and not t.is_wrapper:
@@ -251,7 +251,7 @@ class Formatter:
 
     def feed_statements(self):
         template = '  {:<25}: /*   ::= {:<50} ({}) */ "eyo:{}",'
-        self.append('eYo.ns.T3.Stmt = {')
+        self.append('eYo.T3.Stmt = {')
         self.append('// part statements')
         for t in self.get_statements():
             if t.is_part:
@@ -270,13 +270,13 @@ class Formatter:
         self.append('// aliases')
         for t in self.Ts:
             if t.alias and t.name != t.alias.name:
-                self.append('eYo.ns.T3.Expr.{} = eYo.ns.T3.Expr.{}'.format(t.name, t.alias.name))
+                self.append('eYo.T3.Expr.{} = eYo.T3.Expr.{}'.format(t.name, t.alias.name))
 
     def feed_alias_checks(self):
         self.append('// alias checks')
         for t in self.Ts:
             if t.alias and t.name != t.alias.name:
-                self.append('eYo.ns.T3.Expr.Check.{} = eYo.ns.T3.Expr.Check.{}'.format(t.name, t.alias.name))
+                self.append('eYo.T3.Expr.Check.{} = eYo.T3.Expr.Check.{}'.format(t.name, t.alias.name))
 
     def feed_special_aliases(self):
         self.append('// special aliases, some types that change naming across the documentation')
@@ -284,11 +284,11 @@ class Formatter:
             'or_expr_star': 'star_expr',
         }
         for k, v in special.items():
-            self.append('eYo.ns.T3.Expr.{} = eYo.ns.T3.Expr.{}'.format(k, v))
+            self.append('eYo.T3.Expr.{} = eYo.T3.Expr.{}'.format(k, v))
 
     def feed_expression_checks(self):
-        self.append('eYo.ns.T3.Expr.Check = {')
-        template = '    eYo.ns.T3.Expr.{},'
+        self.append('eYo.T3.Expr.Check = {')
+        template = '    eYo.T3.Expr.{},'
         for t in self.get_expressions():
             checks = t.get_checks()
             if (not t.alias or t.name == t.alias.name) and not t.same_checks and len(checks):
@@ -301,12 +301,12 @@ class Formatter:
         self.append('\n// same checks')
         for t in self.get_expressions():
             if t.same_checks:
-                self.append('eYo.ns.T3.Expr.Check.{} = eYo.ns.T3.Expr.Check.{}'.format(t.name, t.same_checks.name))
+                self.append('eYo.T3.Expr.Check.{} = eYo.T3.Expr.Check.{}'.format(t.name, t.same_checks.name))
 
     def feed_statement_pnlr(self, label, attr):
-        self.append('eYo.ns.T3.Stmt.{} = {{'.format(label))
-        template = '    eYo.ns.T3.Stmt.{},'
-        template_name = '    eYo.ns.T3.Stmt.{}+"."+eYo.Key.{},'
+        self.append('eYo.T3.Stmt.{} = {{'.format(label))
+        template = '    eYo.T3.Stmt.{},'
+        template_name = '    eYo.T3.Stmt.{}+"."+eYo.Key.{},'
         for t in self.get_statements():
             try:
                 ts = getattr(t, attr)
@@ -332,9 +332,9 @@ class Formatter:
         # Only for the simple_stmt
         attr = 'is_right_of'
         label = 'Left'
-        self.append('eYo.ns.T3.Stmt.{} = {{'.format(label))
-        template = '    eYo.ns.T3.Stmt.{},'
-        template_name = '    eYo.ns.T3.Stmt.{}+"."+eYo.Key.{},'
+        self.append('eYo.T3.Stmt.{} = {{'.format(label))
+        template = '    eYo.T3.Stmt.{},'
+        template_name = '    eYo.T3.Stmt.{}+"."+eYo.Key.{},'
         t = list(t for t in self.get_statements() if t.name == 'simple_stmt')[0]
         try:
             ts = getattr(t, attr)
@@ -351,9 +351,9 @@ class Formatter:
         # Only for the simple_stmt
         attr = 'is_left_of'
         label = 'Right'
-        self.append('eYo.ns.T3.Stmt.{} = {{'.format(label))
-        template = '    eYo.ns.T3.Stmt.{},'
-        template_name = '    eYo.ns.T3.Stmt.{}+"."+eYo.Key.{},'
+        self.append('eYo.T3.Stmt.{} = {{'.format(label))
+        template = '    eYo.T3.Stmt.{},'
+        template_name = '    eYo.T3.Stmt.{}+"."+eYo.Key.{},'
         t = list(t for t in self.get_statements() if t.name == 'simple_stmt')[0]
         try:
             ts = getattr(t, attr)
@@ -367,25 +367,25 @@ class Formatter:
         self.append('}\n')
 
     def feed_statement_any(self):
-        self.append('eYo.ns.T3.Stmt.Any = [ // count {}'.format(len(self.get_statements())))
-        template = '    eYo.ns.T3.Stmt.{},'
+        self.append('eYo.T3.Stmt.Any = [ // count {}'.format(len(self.get_statements())))
+        template = '    eYo.T3.Stmt.{},'
         for t in self.get_statements():
             self.append(template.format(t.name))
         self.append(']\n')
 
     def feed_expression_available(self):
-        self.append('eYo.ns.T3.Expr.Available = []')
+        self.append('eYo.T3.Expr.Available = []')
 
     def feed_statement_available(self):
-        self.append('eYo.ns.T3.Stmt.Available = []')
+        self.append('eYo.T3.Stmt.Available = []')
 
     def feed_xml_tags(self):
-        self.append('''eYo.ns.T3.Xml = {
+        self.append('''eYo.T3.Xml = {
     toDom: {},
 }''')
         from_dom = {}
         Ts = [t for t in self.get_statements() if t.to_dom and len(t.to_dom) == 1]
-        self.append('eYo.ns.T3.Xml.toDom.Stmt = {{ // count {}'.format(len(Ts)))
+        self.append('eYo.T3.Xml.toDom.Stmt = {{ // count {}'.format(len(Ts)))
         template = "    {}: '{}',"
         for t in Ts:
             k = t.to_dom[0]
@@ -396,7 +396,7 @@ class Formatter:
         self.append('}\n')
 
         Ts = [t for t in self.get_expressions() if t.to_dom and len(t.to_dom) == 1]
-        self.append('eYo.ns.T3.Xml.toDom.Expr = {{ // count {}'.format(len(Ts)))
+        self.append('eYo.T3.Xml.toDom.Expr = {{ // count {}'.format(len(Ts)))
         template = "    {}: '{}',"
         for t in Ts:
             k = t.to_dom[0]
@@ -407,17 +407,17 @@ class Formatter:
         self.append('}\n')
 
         Ts = [(k, v) for k, v in from_dom.items()]
-        self.append('eYo.ns.T3.Xml.fromDom = {{ // count {}'.format(len(Ts)))
+        self.append('eYo.T3.Xml.fromDom = {{ // count {}'.format(len(Ts)))
         template = "    {}: {},"
         for k,v in Ts:
             if len(v) == 1:
                 t = v[0]
                 prefix = 'Stmt' if t.is_stmt else 'Expr'
-                self.append(template.format(k, 'eYo.ns.T3.' + prefix + '.' + t.name))
+                self.append(template.format(k, 'eYo.T3.' + prefix + '.' + t.name))
             else:
                 ra = []
                 for t in v:
-                    ra.append('eYo.ns.T3.'+('Stmt' if t.is_stmt else 'Expr') + '.' + t.name)
+                    ra.append('eYo.T3.'+('Stmt' if t.is_stmt else 'Expr') + '.' + t.name)
                 self.append(template.format(k, '[' + ', '.join(ra) + ']'))
         self.append('}\n')
 
@@ -427,7 +427,7 @@ class Formatter:
 goog.require('eYo')
       
 /**
- * @name {eYo.ns.T3}
+ * @name {eYo.T3}
  * @namespace
  **/
 
@@ -467,66 +467,66 @@ eYo.make('T3')
         :return: None
         """
         self.append("""/**
- * @name eYo.ns.T3.All
+ * @name eYo.T3.All
  * @namespace
  **/
 
-goog.provide('eYo.ns.T3.All')
+goog.provide('eYo.T3.All')
 
-goog.require('eYo.ns.T3')
+goog.require('eYo.T3')
 
 """)
         Ts = sorted((t for t in self.get_expressions() if not t.ignored), key=lambda t: t.name)
-        self.append('eYo.ns.T3.All = {}')
-        template = '    eYo.ns.T3.Expr.{},'
+        self.append('eYo.T3.All = {}')
+        template = '    eYo.T3.Expr.{},'
         TTs = [t for t in Ts if not t.is_list and not t.is_wrapper]
-        self.append('eYo.ns.T3.All.core_expressions = [ // count {}'.format(len(TTs)))
+        self.append('eYo.T3.All.core_expressions = [ // count {}'.format(len(TTs)))
         for t in TTs:
             self.append(template.format(t.name))
         self.append(']')
         TTs = [t for t in Ts if t.is_list]
-        self.append('eYo.ns.T3.All.lists = [ // count {}'.format(len(TTs)))
+        self.append('eYo.T3.All.lists = [ // count {}'.format(len(TTs)))
         for t in TTs:
             self.append(template.format(t.name))
         self.append(']')
         TTs = [t for t in Ts if t.is_wrapper and not t.alias]
-        self.append('eYo.ns.T3.All.wrappers = [ // count {}'.format(len(TTs)))
+        self.append('eYo.T3.All.wrappers = [ // count {}'.format(len(TTs)))
         for t in TTs:
             self.append(template.format(t.name))
         self.append(']')
         Ts = sorted(self.get_statements(), key=lambda t: t.name)
-        template = '    eYo.ns.T3.Stmt.{},'
+        template = '    eYo.T3.Stmt.{},'
         TTs = [t for t in Ts if t.is_part]
-        self.append('eYo.ns.T3.All.part_statements = [ // count {}'.format(len(TTs)))
+        self.append('eYo.T3.All.part_statements = [ // count {}'.format(len(TTs)))
         for t in TTs:
             self.append(template.format(t.name))
         self.append(']')
         TTs = [t for t in Ts if t.is_part and not t.is_compound]
-        self.append('eYo.ns.T3.All.simple_statements = [ // count {}'.format(len(TTs)))
+        self.append('eYo.T3.All.simple_statements = [ // count {}'.format(len(TTs)))
         for t in TTs:
             self.append(template.format(t.name))
         self.append(']')
         TTs = [t for t in Ts if t.is_compound]
-        self.append('eYo.ns.T3.All.compound_statements = [ // count {}'.format(len(TTs)))
+        self.append('eYo.T3.All.compound_statements = [ // count {}'.format(len(TTs)))
         for t in TTs:
             self.append(template.format(t.name))
         self.append(']')
         self.append('''
-eYo.ns.T3.All.containsStatement = function(type) {
-  return eYo.ns.T3.All.part_statements.indexOf(type)>=0
-  || eYo.ns.T3.All.simple_statements.indexOf(type)>=0
-  || eYo.ns.T3.All.compound_statements.indexOf(type)>=0
+eYo.T3.All.containsStatement = function(type) {
+  return eYo.T3.All.part_statements.indexOf(type)>=0
+  || eYo.T3.All.simple_statements.indexOf(type)>=0
+  || eYo.T3.All.compound_statements.indexOf(type)>=0
 }
 
-eYo.ns.T3.All.containsExpression = function(type) {
-  return eYo.ns.T3.All.core_expressions.indexOf(type)>=0
-  || eYo.ns.T3.All.lists.indexOf(type)>=0
-  || eYo.ns.T3.All.wrappers.indexOf(type)>=0
+eYo.T3.All.containsExpression = function(type) {
+  return eYo.T3.All.core_expressions.indexOf(type)>=0
+  || eYo.T3.All.lists.indexOf(type)>=0
+  || eYo.T3.All.wrappers.indexOf(type)>=0
 }
 
-eYo.ns.T3.All.contains = function(type) {
-  return eYo.ns.T3.All.containsStatement(type)
-  || eYo.ns.T3.All.containsExpression(type)
+eYo.T3.All.contains = function(type) {
+  return eYo.T3.All.containsStatement(type)
+  || eYo.T3.All.containsExpression(type)
 }
 
 ''')

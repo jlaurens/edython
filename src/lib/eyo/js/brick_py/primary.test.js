@@ -3,7 +3,7 @@ console.log('RUNNING PRIMARY BLOCK TESTS')
 describe('Initialize from models', function () {
   it ('identifier: custom', function () {
     var d = eYo.Test.new_brick({
-      type: eYo.ns.T3.Expr.identifier,
+      type: eYo.T3.Expr.identifier,
       target_p: 'abc'
     })
     eYo.Test.brick(d, 'identifier')
@@ -11,12 +11,12 @@ describe('Initialize from models', function () {
   })
   it ('identifier: open', function () {
     var d = eYo.Test.new_brick({
-      type: eYo.ns.T3.Expr.identifier,
+      type: eYo.T3.Expr.identifier,
       target_p: 'open'
     })
     eYo.Test.brick(d, 'named_call_expr')
     d.dispose()
-    d = eYo.Test.new_brick(eYo.ns.T3.Expr.identifier)
+    d = eYo.Test.new_brick(eYo.T3.Expr.identifier)
     eYo.Test.brick(d, 'identifier')
     d.target_p = 'open'
     eYo.Test.brick(d, 'named_call_expr')
@@ -26,7 +26,7 @@ describe('Initialize from models', function () {
   })
   it ('identifier: open', function () {
     var d = eYo.Test.new_brick({
-      type: eYo.ns.T3.Expr.identifier,
+      type: eYo.T3.Expr.identifier,
       target_p: 'abc'
     })
     d.alias_p = 'alias'
@@ -35,7 +35,7 @@ describe('Initialize from models', function () {
   })
   it ('annotated', function () {
     var d = eYo.Test.new_brick({
-      type: eYo.ns.T3.Expr.primary,
+      type: eYo.T3.Expr.primary,
       target_p: 'x',
       annotated_p: 'str'
     })
@@ -44,7 +44,7 @@ describe('Initialize from models', function () {
   })
   it ('aliased', function () {
     var d = eYo.Test.new_brick({
-      type: eYo.ns.T3.Expr.primary,
+      type: eYo.T3.Expr.primary,
       target_p: 'x',
       alias_p: 'alias'
     })
@@ -195,7 +195,7 @@ describe('Copy/Paste', function() {
       d.dispose()
     })
   })
-  var md = eYo.ns.Brick.mngr.getModel(eYo.ns.T3.Expr.identifier).data
+  var md = eYo.Brick.mngr.getModel(eYo.T3.Expr.identifier).data
   var f = (k) => {
     var w = {
       holder: ['NONE', ['abc']],
@@ -236,13 +236,13 @@ describe('Copy/Paste', function() {
 // don't forget to test creation with a string
 
 describe('Primary variant', function() {
-  var Vs = eYo.ns.Brick.mngr.getModel(eYo.ns.T3.Expr.identifier).data.variant.all
+  var Vs = eYo.Brick.mngr.getModel(eYo.T3.Expr.identifier).data.variant.all
   Vs.some(to => {
-    var d = eYo.Test.new_brick(eYo.ns.T3.Expr.identifier)
+    var d = eYo.Test.new_brick(eYo.T3.Expr.identifier)
     d.variant_p = to
     Vs.some(from => {
       it(`${from} -> ${to}`, function() {
-        var dd = eYo.Test.new_brick(eYo.ns.T3.Expr.identifier)
+        var dd = eYo.Test.new_brick(eYo.T3.Expr.identifier)
         dd.variant_p = from
         dd.variant_p = to
         eYo.Test.same(dd, d)
@@ -503,9 +503,9 @@ describe('Primary slots', function() {
     it(`value_list checks 1/2: ${t}`, function () {
       var da = eYo.Test.new_brick(t)
       var m = da.value_b.model.list
-      var unique = m.unique(eYo.ns.T3.Expr.value_list, da.type)
-      var check = m.check(eYo.ns.T3.Expr.value_list, da.type)
-      var all = m.all(eYo.ns.T3.Expr.value_list, da.type)
+      var unique = m.unique(eYo.T3.Expr.value_list, da.type)
+      var check = m.check(eYo.T3.Expr.value_list, da.type)
+      var all = m.all(eYo.T3.Expr.value_list, da.type)
       if(da.value_s.incog) {
         if (unique !== null) {
           console.error('UNIK', unique)
@@ -526,7 +526,7 @@ describe('Primary slots', function() {
         chai.assert(chai.expect(goog.array.concat(unique, check)).eql(all), `BAD CHECK (0)`)
         unique.forEach(tt => {
           var d = eYo.Test.new_brick(tt)
-          if (tt === eYo.ns.T3.Expr.assignment_chain) {
+          if (tt === eYo.T3.Expr.assignment_chain) {
             var dc = eYo.Test.new_brick(tt)
             dc.variant_p = eYo.Key.SLICING
             chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
@@ -544,7 +544,7 @@ describe('Primary slots', function() {
         })
         check.forEach(tt => {
           var d = eYo.Test.new_brick(tt)
-          if (tt === eYo.ns.T3.Expr.assignment_chain) {
+          if (tt === eYo.T3.Expr.assignment_chain) {
             var dc = eYo.Test.new_brick(tt)
             dc.variant_p = eYo.Key.SLICING
             chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
@@ -566,9 +566,9 @@ describe('Primary slots', function() {
     it(`value_list checks 2/2: ${t}`, function () {
       var da = eYo.Test.new_brick(t)
       var m = da.value_b.model.list
-      var unique = m.unique(eYo.ns.T3.Expr.value_list, da.type)
-      var check = m.check(eYo.ns.T3.Expr.value_list, da.type)
-      var all = m.all(eYo.ns.T3.Expr.value_list, da.type)
+      var unique = m.unique(eYo.T3.Expr.value_list, da.type)
+      var check = m.check(eYo.T3.Expr.value_list, da.type)
+      var all = m.all(eYo.T3.Expr.value_list, da.type)
       if(da.value_s.incog) {
         chai.assert(unique === null, `MISSING UNIQUE NULL ${da.type}, ${da.subtype}`)
         chai.assert(check === null, `MISSING CHECK NULL ${da.type}, ${da.subtype}`)
@@ -586,7 +586,7 @@ describe('Primary slots', function() {
         chai.assert(chai.expect(goog.array.concat(unique, check)).eql(all), `BAD CHECK (0)`)
         unique.forEach(tt => {
           var d = eYo.Test.new_brick(tt)
-          if (tt === eYo.ns.T3.Expr.assignment_chain) {
+          if (tt === eYo.T3.Expr.assignment_chain) {
             var dc = eYo.Test.new_brick(tt)
             dc.variant_p = eYo.Key.SLICING
             chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
@@ -604,7 +604,7 @@ describe('Primary slots', function() {
         })
         check.forEach(tt => {
           var d = eYo.Test.new_brick(tt)
-          if (tt === eYo.ns.T3.Expr.assignment_chain) {
+          if (tt === eYo.T3.Expr.assignment_chain) {
             var dc = eYo.Test.new_brick(tt)
             dc.variant_p = eYo.Key.SLICING
             chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
@@ -680,14 +680,14 @@ describe('Primary slots', function() {
 })
 
 describe('Primary types', function() {
-  var d = eYo.Test.new_brick(eYo.ns.T3.Expr.identifier)
+  var d = eYo.Test.new_brick(eYo.T3.Expr.identifier)
   var ctor_key = d.constructor.key
   d.dispose()
   var f = (k1, k2) => {
     it(`types ${k1}/${k2 || k1}`, function() {
-      var t1 = eYo.ns.T3.Expr[k1]
+      var t1 = eYo.T3.Expr[k1]
       chai.assert(t1, `UNKNOWN ${k1}`)
-      var t2 = eYo.ns.T3.Expr[k2 || k1]
+      var t2 = eYo.T3.Expr[k2 || k1]
       chai.assert(t2, `UNKNOWN ${k2}`)
       var d = eYo.Test.new_brick(t1, t2)
       chai.assert(d, `MISSING ${t1}`)
@@ -727,7 +727,7 @@ describe('Primary(Compatibility)', function() {
     console.error(dom)
     f = (t, expected) => {
       dom.setAttribute(eYo.Key.EYO, t)
-      expected = eYo.ns.T3.Expr[expected] || eYo.ns.T3.Expr.identifier_valued
+      expected = eYo.T3.Expr[expected] || eYo.T3.Expr.identifier_valued
       var d2 = eYo.Test.new_brick(dom)
       eYo.Test.brick(d2, expected)
       chai.assert(d2.value_s, `MISSING VALUE SLOT ${t}`)
@@ -753,7 +753,7 @@ describe('Primary(value_list)', function() {
     dd.dispose()
   })
   it('void unwrapped', function() {
-    var d = eYo.Test.new_brick(eYo.ns.T3.Expr.value_list)
+    var d = eYo.Test.new_brick(eYo.T3.Expr.value_list)
     chai.assert(d, 'MISSED')
     chai.assert(Object.keys(d.slots).length === 1)
     var model = d.consolidator.model
@@ -882,7 +882,7 @@ describe('Primary(DEFINED)', function() {
     var d = eYo.Test.new_brick('identifier_valued')
     var rhs_a = 'a'
     eYo.Test.list_connect(d, 'value', eYo.Test.new_brick(rhs_a))
-    var dd = eYo.Test.new_brick(eYo.ns.T3.Stmt.assignment_stmt)
+    var dd = eYo.Test.new_brick(eYo.T3.Stmt.assignment_stmt)
     eYo.Test.list_connect(dd, 'value', d)
     eYo.Test.brick(d, 'assignment_chain')
     eYo.Test.brick(dd, 'assignment_stmt')
@@ -917,7 +917,7 @@ describe('Primary(Assignment)', function() {
       eYo.Test.brick(d1, k)
     }
     f('identifier_valued')
-    var dd = eYo.Test.new_brick(eYo.ns.T3.Expr.call_expr)
+    var dd = eYo.Test.new_brick(eYo.T3.Expr.call_expr)
     eYo.Test.list_connect(dd, 'n_ary', d)
     f('identifier_valued')
     dd.dispose(true)
@@ -948,7 +948,7 @@ describe('Primary(Assignment)', function() {
 
 describe('Primary(Expression Assignment)', function() {
   it('basic', function() {
-    var d = eYo.Test.new_brick(eYo.ns.T3.Expr.named_expr)
+    var d = eYo.Test.new_brick(eYo.T3.Expr.named_expr)
     eYo.Test.variant(d, 'COL_VALUED')
     chai.assert(d.value_s.label_f.getValue() === ':=')
     d.dispose()
@@ -988,7 +988,7 @@ describe('Primary(ANNOTATED)', function() {
     dd.dotted_d.set(1)
     dd.holder_d.set('x')
     eYo.Test.brick(dd, 'dotted_name')
-    chai.assert(eYo.ns.T3.Expr.Check.augtarget.indexOf(dd.type) >= 0, 'MISSED AUGTARGET')
+    chai.assert(eYo.T3.Expr.Check.augtarget.indexOf(dd.type) >= 0, 'MISSED AUGTARGET')
     f('identifier_annotated', dd, 'augtarget_annotated')
     dd.dispose()
     dd = eYo.Test.new_brick(421)

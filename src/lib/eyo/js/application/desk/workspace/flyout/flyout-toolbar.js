@@ -39,19 +39,19 @@ eYo.FlyoutToolbar = function(flyout, switcher) {
  */
 eYo.FlyoutToolbar.prototype.dispose = function() {
   if (this.onButtonDownWrapper_) {
-    eYo.ns.Dom.unbindEvent(this.onButtonDownWrapper_)
+    eYo.Dom.unbindEvent(this.onButtonDownWrapper_)
     this.onButtonDownWrapper_ = eYo.NA
   }
   if (this.onButtonEnterWrapper_) {
-    eYo.ns.Dom.unbindEvent(this.onButtonEnterWrapper_);
+    eYo.Dom.unbindEvent(this.onButtonEnterWrapper_);
     this.onButtonEnterWrapper_ = eYo.NA
   }
   if (this.onButtonLeaveWrapper_) {
-    eYo.ns.Dom.unbindEvent(this.onButtonLeaveWrapper_);
+    eYo.Dom.unbindEvent(this.onButtonLeaveWrapper_);
     this.onButtonLeaveWrapper_ = eYo.NA
   }
   if (this.onButtonUpWrapper_) {
-    eYo.ns.Dom.unbindEvent(this.onButtonUpWrapper_);
+    eYo.Dom.unbindEvent(this.onButtonUpWrapper_);
     this.onButtonUpWrapper_ = eYo.NA
   }
   if (this.selectControl_) {
@@ -93,7 +93,7 @@ eYo.FlyoutToolbar.prototype.onButtonDown_ = function(e) {
   this.isDown = true
   window.addEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonEnter_(e)
-  eYo.ns.Dom.gobbleEvent(e)
+  eYo.Dom.gobbleEvent(e)
 }
 
 /**
@@ -132,7 +132,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
     this.flyout_.slide()
     this.onButtonLeave_(e)
     eYo.app.cancelMotion()
-    eYo.ns.Dom.gobbleEvent(e)
+    eYo.Dom.gobbleEvent(e)
   }
 };
 // Sometimes this error has poped up.
@@ -148,7 +148,7 @@ eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonLeave_(e)
   eYo.app.cancelMotion()
-  eYo.ns.Dom.gobbleEvent(e)
+  eYo.Dom.gobbleEvent(e)
 }
 
 /**

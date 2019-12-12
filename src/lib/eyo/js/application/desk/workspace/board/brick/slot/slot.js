@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('eYo.Do')
-eYo.require('eYo.ns.UI.Owned2')
+eYo.require('eYo.UI.Owned2')
 eYo.require('eYo.Decorate')
 
 eYo.forwardDeclare('eYo.Where')
@@ -21,7 +21,7 @@ eYo.forwardDeclare('eYo.Magnet')
 
 eYo.forwardDeclare('eYo.Xml')
 eYo.forwardDeclare('eYo.Key')
-eYo.forwardDeclare('eYo.ns.Brick.List')
+eYo.forwardDeclare('eYo.Brick.List')
 
 goog.forwardDeclare('goog.dom');
 
@@ -46,12 +46,12 @@ goog.forwardDeclare('goog.dom');
   // - wrap input
   // - insert input
   // It may contain label fields
- * @param {eYo.ns.Brick.Dflt} brick  The owner is a brick.
+ * @param {eYo.Brick.Dflt} brick  The owner is a brick.
  * @param {string} key  One of the keys in `slots` section of the brick model.
  * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.ns.UI.makeClass(eYo, 'Slot', eYo.ns.UI.Owned2, {
+eYo.UI.makeClass(eYo, 'Slot', eYo.UI.Owned2, {
   init (brick, key, model) {
     eYo.assert(brick, 'Missing slot owner brick')
     eYo.assert(key, 'Missing slot key')
@@ -129,7 +129,7 @@ eYo.ns.UI.makeClass(eYo, 'Slot', eYo.ns.UI.Owned2, {
     },
     /**
      * @readonly
-     * @property {eYo.ns.Brick} brick  the immediate brick in which this is contained
+     * @property {eYo.Brick} brick  the immediate brick in which this is contained
      */
     brick: {},
     key: {},
@@ -356,7 +356,7 @@ eYo.Slot.prototype.save = function (element, opt) {
         // wrapped bricks are just a convenient computational model.
         // For lists only, we do create a further level
         // Actually, every wrapped brick is a list
-        if (t9k instanceof eYo.ns.Brick.List) {
+        if (t9k instanceof eYo.Brick.List) {
           var child = eYo.Xml.brickToDom(t9k, opt)
           if (child.firstElementChild) {
             child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
@@ -425,7 +425,7 @@ eYo.Slot.prototype.load = function (element) {
   this.requiredFromModel = false
   var out
   var t9k = this.targetBrick
-  if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.ns.Brick.List)) {
+  if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.Brick.List)) {
     this.requiredFromModel = true // this is not sure, it depends on how the target read the dom
     out = eYo.Xml.fromDom(t9k, element)
     this.recover.dontResit(element)
@@ -444,7 +444,7 @@ eYo.Slot.prototype.load = function (element) {
             t9k = this.targetBrick
           }
           if (t9k) {
-            if (t9k instanceof eYo.ns.Brick.List) {
+            if (t9k instanceof eYo.Brick.List) {
               // var grandChildren = Array.prototype.slice.call(child.childNodes)
               eYo.Do.forEachElementChild(child, grandChild => {
                 var name = grandChild.getAttribute(eYo.Xml.SLOT)
@@ -578,7 +578,7 @@ eYo.Slot.prototype.forEachField = function (helper) {
 /**
  * Connect the brick or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
  * The slot corresponds to a wrapped list block.
- * @param {eYo.ns.Brick | eYo.Magnet} bm  either a brick or a magnet.
+ * @param {eYo.Brick | eYo.Magnet} bm  either a brick or a magnet.
  * @param {String} [key] an input key. When not given the last free input is used.
  * @return {?eYo.Magnet} the eventual magnet target that was connected.
  */
@@ -606,7 +606,7 @@ eYo.Slot.prototype.listConnect = function (bm, key) {
 /**
  * Connect to the target.
  * For edython.
- * @param {eYo.ns.Brick | eYo.Magnet} bm  The target is either a brick or another magnet.
+ * @param {eYo.Brick | eYo.Magnet} bm  The target is either a brick or another magnet.
  * @return {?eYo.Magnet} the eventual target magnet
  */
 eYo.Slot.prototype.connect = function (bm) {

@@ -11,74 +11,74 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Fcls')
+eYo.require('eYo.Fcls')
 
-eYo.provide('eYo.ns.Fcls.Field')
+eYo.provide('eYo.Fcls.Field')
 
 eYo.forwardDeclare('eYo.Field')
 
 /**
  * Faceless driver for fields.
  */
-eYo.ns.Fcls.makeDriverClass('Field')
+eYo.Fcls.makeDriverClass('Field')
 
 /**
  * Set the location.
  * @param {eYo.Field} field
  * @param {*} where
  */
-eYo.ns.Fcls.Field.prototype.moveTo = eYo.Do.nothing
+eYo.Fcls.Field.prototype.moveTo = eYo.Do.nothing
 
 /**
  * The field text will change.
  * @param {eYo.Field} field  the node the driver acts on
  */
-eYo.ns.Fcls.Field.prototype.textRemove = eYo.Do.nothing
+eYo.Fcls.Field.prototype.textRemove = eYo.Do.nothing
 
 /**
  * Display the field text.
  * @param {eYo.Field} field  the node the driver acts on
  */
-eYo.ns.Fcls.Field.prototype.textCreate = eYo.Do.nothing
+eYo.Fcls.Field.prototype.textCreate = eYo.Do.nothing
 
 /**
  * Set the visual effects of the field.
  * @param {*} field
  */
-eYo.ns.Fcls.Field.prototype.setVisualAttribute = eYo.Do.nothing
+eYo.Fcls.Field.prototype.setVisualAttribute = eYo.Do.nothing
 
 /**
  * Set the visual effects of the field.
  * @param {*} field
  */
-eYo.ns.Fcls.Field.prototype.inlineEditorResize = eYo.Do.nothing
+eYo.Fcls.Field.prototype.inlineEditorResize = eYo.Do.nothing
 
 /**
  * Whether the field is displayed.
  * @param {eYo.Field} field  the field to query about
  */
-eYo.ns.Fcls.Field.prototype.displayedGet = eYo.Do.nothing
+eYo.Fcls.Field.prototype.displayedGet = eYo.Do.nothing
 
 /**
  * Display/hide the given field.
  * @param {eYo.Field} field  the field the driver acts on
  * @param {boolean} yorn
  */
-eYo.ns.Fcls.Field.prototype.displayedSet = eYo.Do.nothing
+eYo.Fcls.Field.prototype.displayedSet = eYo.Do.nothing
 
 /**
  * Display/hide the given field, according to its `visible` status.
  * @param {eYo.Field} field  the field the driver acts on
  * @param {boolean} yorn
  */
-eYo.ns.Fcls.Field.prototype.displayedUpdate = eYo.Do.nothing
+eYo.Fcls.Field.prototype.displayedUpdate = eYo.Do.nothing
 
 /**
  * Callback at widget disposal.
  * Forwards to the driver.
  * @param {*} field
  */
-eYo.ns.Fcls.Field.prototype.widgetDisposeCallback = function (field) {
+eYo.Fcls.Field.prototype.widgetDisposeCallback = function (field) {
   return eYo.Do.nothing
 }
 
@@ -88,7 +88,7 @@ eYo.ns.Fcls.Field.prototype.widgetDisposeCallback = function (field) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.ns.Fcls.Field.prototype.makeReserved = eYo.Do.nothing
+eYo.Fcls.Field.prototype.makeReserved = eYo.Do.nothing
 
 /**
  * Make the given field an error.
@@ -96,7 +96,7 @@ eYo.ns.Fcls.Field.prototype.makeReserved = eYo.Do.nothing
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.ns.Fcls.Field.prototype.makeError = eYo.Do.nothing
+eYo.Fcls.Field.prototype.makeError = eYo.Do.nothing
 
 /**
  * Make the given field a placeholder.
@@ -104,7 +104,7 @@ eYo.ns.Fcls.Field.prototype.makeError = eYo.Do.nothing
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.ns.Fcls.Field.prototype.makePlaceholder = eYo.Do.nothing
+eYo.Fcls.Field.prototype.makePlaceholder = eYo.Do.nothing
 
 /**
  * Make the given field a comment.
@@ -112,4 +112,4 @@ eYo.ns.Fcls.Field.prototype.makePlaceholder = eYo.Do.nothing
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.ns.Fcls.Field.prototype.makeComment = eYo.Do.nothing
+eYo.Fcls.Field.prototype.makeComment = eYo.Do.nothing

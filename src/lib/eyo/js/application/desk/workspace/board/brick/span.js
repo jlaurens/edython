@@ -37,7 +37,7 @@ eYo.require('eYo')
 eYo.provide('eYo.Span')
 
 eYo.forwardDeclare('eYo.Unit')
-eYo.forwardDeclare('eYo.ns.Brick')
+eYo.forwardDeclare('eYo.Brick')
 
 /**
  * Class for a Span object.
@@ -47,7 +47,7 @@ eYo.forwardDeclare('eYo.ns.Brick')
  * The state is always in a consistent state.
  * However, the span state may not be consistent with the brick state.
  * For edython.
- * @param {eYo.ns.Brick.Dflt} brick The brick owning the span.
+ * @param {eYo.Brick.Dflt} brick The brick owning the span.
  * @constructor
  */
 eYo.Span = function (brick) {
@@ -97,7 +97,7 @@ Object.defineProperty(eYo.Span, 'tabWidth', {
 Object.defineProperties(eYo.Span.prototype, {
   /**
    * @readonly
-   * @property {eYo.ns.Brick} brick - The owning brick
+   * @property {eYo.Brick} brick - The owning brick
    */
   brick: {
     get () {

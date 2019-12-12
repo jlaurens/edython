@@ -643,7 +643,7 @@ Example of `dt` for the turtle module, method synonyms.
         prefix_ = """/**
  * edython
  *
- * Copyright 2018 Jérôme LAURENS.
+ * Copyright 2019 Jérôme LAURENS.
  *
  * License EUPL-1.2
  */
@@ -654,14 +654,14 @@ Example of `dt` for the turtle module, method synonyms.
  */
 'use strict'
 
+goog.require('eYo.ns.Model')
+goog.require('eYo.ns.Module')
+goog.require('eYo.ns.Model.Item')
+
 goog.provide('eYo.Model.{{key}}')
 goog.provide('eYo.Model.{{key}}.Item')
 
-goog.require('eYo.Model')
-goog.require('eYo.Model.Module')
-goog.require('eYo.Model.Item')
-
-eYo.Model.{{key}} = new eYo.Model.Module('{{key}}', '{{url}}')
+eYo.Model.{{key}} = new eYo.ns.Module.Model('{{key}}', '{{url}}')
 
 /**
  * @constructor

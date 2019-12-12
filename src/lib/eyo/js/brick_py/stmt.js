@@ -11,30 +11,30 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Brick')
+eYo.require('eYo.Brick')
 
 eYo.require('eYo.Change')
 
-eYo.require('eYo.ns.Brick.List')
+eYo.require('eYo.Brick.List')
 eYo.provide('eYo.Stmt')
 
 eYo.forwardDeclare('eYo.XRE')
 eYo.forwardDeclare('eYo.Msg')
-eYo.forwardDeclare('eYo.ns.Brick.Operator')
+eYo.forwardDeclare('eYo.Brick.Operator')
 
 goog.forwardDeclare('goog.dom')
 
 /**
  * Class for a Delegate, statement brick.
- * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.ns.Brick.makeSubclass('Stmt', {
+eYo.Brick.makeSubclass('Stmt', {
   left: {
     check: /** @suppress {globalThis} */ function (type) {
       return this.brick.head || this.brick.foot
-      ? [eYo.ns.T3.Stmt.comment_stmt]
-      : eYo.ns.T3.Stmt.Left.simple_stmt
+      ? [eYo.T3.Stmt.comment_stmt]
+      : eYo.T3.Stmt.Left.simple_stmt
     }
   },
   right: {
@@ -45,7 +45,7 @@ eYo.ns.Brick.makeSubclass('Stmt', {
       }
     },
     check: /** @suppress {globalThis} */ function (type) {
-      return eYo.ns.T3.Stmt.Right.simple_stmt
+      return eYo.T3.Stmt.Right.simple_stmt
     }
   },
   head: {
@@ -63,7 +63,7 @@ eYo.ns.Brick.makeSubclass('Stmt', {
     }
   }
 })
-eYo.ns.Brick.mngr.registerAll(eYo.ns.T3.Stmt, eYo.Stmt, true)
+eYo.Brick.mngr.registerAll(eYo.T3.Stmt, eYo.Stmt, true)
 
 Object.defineProperties(eYo.Stmt.prototype, {
   isStmt: {
@@ -94,7 +94,7 @@ eYo.Stmt.prototype.insertParentWithModel = function (model) {
     var parent
     eYo.Events.disableWrap(
       () => {
-        parent = eYo.ns.Brick.newReady(this, model)
+        parent = eYo.Brick.newReady(this, model)
       },
       () => {
         if (parent) {
@@ -140,7 +140,7 @@ eYo.Stmt.prototype.insertParentWithModel = function (model) {
  */
 eYo.Stmt.prototype.insertBrickAfter = function (belowPrototypeName) {
   return eYo.Events.groupWrap(() => {
-    var below = eYo.ns.Brick.newReady(this, belowPrototypeName)
+    var below = eYo.Brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m
     var targetMagnet = magnet.target
     var magnets = below.magnets
@@ -162,7 +162,7 @@ eYo.Stmt.prototype.insertBrickAfter = function (belowPrototypeName) {
  * Class for a Delegate, comment_stmt.
  * For edython.
  */
-eYo.Stmt.makeSubclass(eYo.ns.T3.Stmt.comment_stmt, {
+eYo.Stmt.makeSubclass(eYo.T3.Stmt.comment_stmt, {
   data: {
     variant: {
       all: [
@@ -177,7 +177,7 @@ eYo.Stmt.makeSubclass(eYo.ns.T3.Stmt.comment_stmt, {
         b3k.comment_d.requiredIncog = newValue !== eYo.Key.BLANK
       },
       fromType: /** @suppress {globalThis} */ function (type) {
-        if (type === eYo.ns.T3.Stmt.blank_stmt) {
+        if (type === eYo.T3.Stmt.blank_stmt) {
           // expression statement defaults to a python comment line
           // but it should change because of the 'comment_stmt' below
           this.doChange(eYo.Key.BLANK)
@@ -218,7 +218,7 @@ eYo.Stmt.makeSubclass(eYo.ns.T3.Stmt.comment_stmt, {
 
 ;['blank_stmt'].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.comment_stmt
-  eYo.ns.Brick.mngr.register(k)
+  eYo.Brick.mngr.register(k)
 })
 
 Object.defineProperties(eYo.Stmt.comment_stmt.prototype, {
@@ -228,7 +228,7 @@ Object.defineProperties(eYo.Stmt.comment_stmt.prototype, {
    */
   isComment: {
     get () {
-      return this.type === eYo.ns.T3.Stmt.comment_stmt
+      return this.type === eYo.T3.Stmt.comment_stmt
     }
   },
   /**
@@ -237,7 +237,7 @@ Object.defineProperties(eYo.Stmt.comment_stmt.prototype, {
    */
   isBlank: {
     get () {
-      return this.type === eYo.ns.T3.Stmt.blank_stmt
+      return this.type === eYo.T3.Stmt.blank_stmt
     }
   },
   /**
@@ -255,12 +255,12 @@ Object.defineProperties(eYo.Stmt.comment_stmt.prototype, {
 /**
  * Class for a Delegate, non_void_identifier_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.ns.Brick.List.makeSubclass(eYo.ns.T3.Expr.non_void_identifier_list, {
+eYo.Brick.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
   list: {
-    check: eYo.ns.T3.Expr.Check.non_void_identifier_list,
+    check: eYo.T3.Expr.Check.non_void_identifier_list,
     presep: ',',
     mandatory: 1
   }
@@ -270,7 +270,7 @@ eYo.ns.Brick.List.makeSubclass(eYo.ns.T3.Expr.non_void_identifier_list, {
  * Class for a Delegate, global_stmt.
  * For edython.
  */
-eYo.Stmt.makeSubclass(eYo.ns.T3.Stmt.global_stmt, {
+eYo.Stmt.makeSubclass(eYo.T3.Stmt.global_stmt, {
   data: {
     variant: {
       all: [
@@ -299,12 +299,12 @@ eYo.Stmt.makeSubclass(eYo.ns.T3.Stmt.global_stmt, {
       },
       fromType: /** @suppress {globalThis} */ function (type) {
         this.set({
-          [eYo.ns.T3.Stmt.pass_stmt]: eYo.Key.PASS,
-          [eYo.ns.T3.Stmt.continue_stmt]: eYo.Key.CONTINUE,[eYo.ns.T3.Stmt.break_stmt]: eYo.Key.BREAK,
-          [eYo.ns.T3.Stmt.global_stmt]: eYo.Key.GLOBAL,
-          [eYo.ns.T3.Stmt.nonlocal_stmt]: eYo.Key.NONLOCAL,
-          [eYo.ns.T3.Stmt.del_stmt]: eYo.Key.DEL,
-          [eYo.ns.T3.Stmt.return_stmt]: eYo.Key.RETURN
+          [eYo.T3.Stmt.pass_stmt]: eYo.Key.PASS,
+          [eYo.T3.Stmt.continue_stmt]: eYo.Key.CONTINUE,[eYo.T3.Stmt.break_stmt]: eYo.Key.BREAK,
+          [eYo.T3.Stmt.global_stmt]: eYo.Key.GLOBAL,
+          [eYo.T3.Stmt.nonlocal_stmt]: eYo.Key.NONLOCAL,
+          [eYo.T3.Stmt.del_stmt]: eYo.Key.DEL,
+          [eYo.T3.Stmt.return_stmt]: eYo.Key.RETURN
         } [type])
       }
     }
@@ -317,7 +317,7 @@ eYo.Stmt.makeSubclass(eYo.ns.T3.Stmt.global_stmt, {
   slots: {
     identifiers: {
       order: 1,
-      promise: eYo.ns.T3.Expr.non_void_identifier_list,
+      promise: eYo.T3.Expr.non_void_identifier_list,
       xml: {
         key: 'list',
         save: /** @suppress {globalThis} */ function (element) {
@@ -336,7 +336,7 @@ eYo.Stmt.makeSubclass(eYo.ns.T3.Stmt.global_stmt, {
     },
     del: {
       order: 2,
-      wrap: eYo.ns.T3.Expr.target_list,
+      wrap: eYo.T3.Expr.target_list,
       xml: {
         key: 'list',
         save: /** @suppress {globalThis} */ function (element) {
@@ -353,7 +353,7 @@ eYo.Stmt.makeSubclass(eYo.ns.T3.Stmt.global_stmt, {
     },
     return: {
       order: 3,
-      wrap: eYo.ns.T3.Expr.optional_expression_list,
+      wrap: eYo.T3.Expr.optional_expression_list,
       xml: {
         key: 'list',
         save: /** @suppress {globalThis} */ function (element) {
@@ -381,7 +381,7 @@ eYo.Stmt.makeSubclass(eYo.ns.T3.Stmt.global_stmt, {
 ].forEach((k) => {
   k = k + '_stmt'
   eYo.Stmt[k] = eYo.Stmt.global_stmt
-  eYo.ns.Brick.mngr.register(k)
+  eYo.Brick.mngr.register(k)
 })
 
 /**
@@ -393,13 +393,13 @@ eYo.Stmt.global_stmt.prototype.getType = eYo.Change.decorate(
   function () {
     this.setupType(
       {
-        [eYo.Key.PASS]: eYo.ns.T3.Stmt.pass_stmt,
-        [eYo.Key.CONTINUE]: eYo.ns.T3.Stmt.continue_stmt,
-        [eYo.Key.BREAK]: eYo.ns.T3.Stmt.break_stmt,
-        [eYo.Key.GLOBAL]: eYo.ns.T3.Stmt.global_stmt,
-        [eYo.Key.NONLOCAL]: eYo.ns.T3.Stmt.nonlocal_stmt,
-        [eYo.Key.DEL]: eYo.ns.T3.Stmt.del_stmt,
-        [eYo.Key.RETURN]: eYo.ns.T3.Stmt.return_stmt
+        [eYo.Key.PASS]: eYo.T3.Stmt.pass_stmt,
+        [eYo.Key.CONTINUE]: eYo.T3.Stmt.continue_stmt,
+        [eYo.Key.BREAK]: eYo.T3.Stmt.break_stmt,
+        [eYo.Key.GLOBAL]: eYo.T3.Stmt.global_stmt,
+        [eYo.Key.NONLOCAL]: eYo.T3.Stmt.nonlocal_stmt,
+        [eYo.Key.DEL]: eYo.T3.Stmt.del_stmt,
+        [eYo.Key.RETURN]: eYo.T3.Stmt.return_stmt
       } [this.variant_p]
     )
     return this.type
@@ -417,7 +417,7 @@ eYo.Stmt.global_stmt.prototype.xmlAttr = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -464,7 +464,7 @@ eYo.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * For edython.
  */
 eYo.Stmt.makeSubclass('docstring_stmt', {
-  link: eYo.ns.T3.Expr.longliteral
+  link: eYo.T3.Expr.longliteral
 }, true)
 
 Object.defineProperties(eYo.Stmt.docstring_stmt.prototype, {
@@ -480,13 +480,13 @@ Object.defineProperties(eYo.Stmt.docstring_stmt.prototype, {
 })
 
 eYo.Stmt.T3s = [
-  eYo.ns.T3.Stmt.comment_stmt,
-  eYo.ns.T3.Stmt.pass_stmt,
-  eYo.ns.T3.Stmt.break_stmt,
-  eYo.ns.T3.Stmt.continue_stmt,
-  eYo.ns.T3.Stmt.global_stmt,
-  eYo.ns.T3.Stmt.nonlocal_stmt,
-  eYo.ns.T3.Stmt.docstring__stmt,
-  eYo.ns.T3.Stmt.del_stmt,
-  eYo.ns.T3.Stmt.return_stmt
+  eYo.T3.Stmt.comment_stmt,
+  eYo.T3.Stmt.pass_stmt,
+  eYo.T3.Stmt.break_stmt,
+  eYo.T3.Stmt.continue_stmt,
+  eYo.T3.Stmt.global_stmt,
+  eYo.T3.Stmt.nonlocal_stmt,
+  eYo.T3.Stmt.docstring__stmt,
+  eYo.T3.Stmt.del_stmt,
+  eYo.T3.Stmt.return_stmt
 ]

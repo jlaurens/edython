@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Svg')
+eYo.require('eYo.Svg')
 
 eYo.forwardDeclare('eYo.Application')
 
 /**
  * Svg driver for application.
  */
-eYo.ns.Svg.makeDriverClass('Application')
+eYo.Svg.makeDriverClass('Application')

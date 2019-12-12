@@ -11,26 +11,26 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Brick')
+eYo.require('eYo.Brick')
 
-eYo.require('eYo.ns.Model.turtle__module')
+eYo.require('eYo.Model.turtle__module')
 
 eYo.require('eYo.Stmt')
 
-eYo.require('eYo.ns.Brick.List')
+eYo.require('eYo.Brick.List')
 
-eYo.require('eYo.ns.Brick.Primary')
+eYo.require('eYo.Brick.Primary')
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.Tooltip')
 eYo.require('eYo.Library')
-eYo.provide('eYo.ns.Brick.Turtle')
+eYo.provide('eYo.Brick.Turtle')
 
-eYo.ns.T3.Stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
+eYo.T3.Stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
 
 /**
  * Class for a Delegate, turtle setup statement brick.
- * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.makeSubclass('turtle__setup_stmt', {
@@ -44,7 +44,7 @@ eYo.Stmt.makeSubclass('turtle__setup_stmt', {
     var key = 'turtle__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       data: {
         name: name,
         holder: 'turtle',
@@ -57,7 +57,7 @@ eYo.Stmt.makeSubclass('turtle__setup_stmt', {
     var key = 'turtle__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.ns.T3.Stmt.call_stmt,
+      type: eYo.T3.Stmt.call_stmt,
       data: {
         name: name,
         holder: 'turtle',
@@ -68,11 +68,11 @@ eYo.Stmt.makeSubclass('turtle__setup_stmt', {
   }
   eYo.Library.basic_turtle__module = [
     {
-      type: eYo.ns.T3.Stmt.import_stmt,
+      type: eYo.T3.Stmt.import_stmt,
       variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
       from_p: 'turtle'
     },
-    eYo.ns.T3.Stmt.turtle__setup_stmt,
+    eYo.T3.Stmt.turtle__setup_stmt,
     F_stmt('done', 'Terminer'),
     F_stmt('forward', 'Avancer de la distance donnée'),
     F_stmt('backward', 'Reculer de la distance donnée'),
@@ -116,7 +116,7 @@ eYo.Stmt.makeSubclass('turtle__setup_stmt', {
     var key = 'turtle__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       name_p: name,
       holder_placeholder: 'T',
       dotted_p: 1,
@@ -127,7 +127,7 @@ eYo.Stmt.makeSubclass('turtle__setup_stmt', {
     var key = 'turtle__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.ns.T3.Stmt.call_stmt,
+      type: eYo.T3.Stmt.call_stmt,
       name_p: name,
       holder_placeholder: 'T',
       dotted_p: 1,
@@ -136,25 +136,25 @@ eYo.Stmt.makeSubclass('turtle__setup_stmt', {
   }
   eYo.Library.turtle__module = [
     {
-      type: eYo.ns.T3.Stmt.import_stmt,
+      type: eYo.T3.Stmt.import_stmt,
       variant_p: eYo.Key.IMPORT,
       import_module_s: {
         slots: {
           O: {
-            type: eYo.ns.T3.Expr.identifier_as,
+            type: eYo.T3.Expr.identifier_as,
             name_p: 'turtle',
             alias_placeholder: 'T'
           }
         }
       }
     },
-    eYo.ns.T3.Stmt.turtle__setup_stmt,
+    eYo.T3.Stmt.turtle__setup_stmt,
     {
-      type: eYo.ns.T3.Stmt.assignment_stmt,
+      type: eYo.T3.Stmt.assignment_stmt,
       value_s: {
         slots: {
           O: {
-            type: eYo.ns.T3.Expr.call_expr,
+            type: eYo.T3.Expr.call_expr,
             name_p: 'Turtle',
             holder_p: 'turtle',
             dotted_p: 1
@@ -163,7 +163,7 @@ eYo.Stmt.makeSubclass('turtle__setup_stmt', {
       },
     },
     {
-      type: eYo.ns.T3.Stmt.call_stmt,
+      type: eYo.T3.Stmt.call_stmt,
       name_p: 'done',
       holder_p: 'turtle',
       dotted_p: 1,
@@ -204,11 +204,11 @@ eYo.Stmt.makeSubclass('turtle__setup_stmt', {
     F_stmt('dot', 'Dessine un point de taille et de couleur donnée.'),
     F_stmt('stamp', 'Reproduit l\'image de la tortue.'),
     {
-      type: eYo.ns.T3.Stmt.assignment_stmt,
+      type: eYo.T3.Stmt.assignment_stmt,
       value_s: {
         slots: {
           O: {
-            type: eYo.ns.T3.Expr.call_expr,
+            type: eYo.T3.Expr.call_expr,
             data: {
               name: 'stamp',
               holder: 'turtle',
@@ -232,6 +232,6 @@ goog.mixin(eYo.Tooltip.Title, {
   turtle__setup_stmt: 'Réglages du module turtle propres à edython',
 })
 
-eYo.ns.Brick.Turtle.T3s = [
-  eYo.ns.T3.Stmt.turtle__setup_stmt
+eYo.Brick.Turtle.T3s = [
+  eYo.T3.Stmt.turtle__setup_stmt
 ]

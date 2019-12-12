@@ -34,37 +34,37 @@ describe ('Dlgt', function () {
     chai.assert(eYo.Dflt)
   })
   describe('makeNS', function () {
-    it ('eYo.ns.make(...)', function () {
-      var NS = eYo.ns.make()
+    it ('eYo.makeNS(...)', function () {
+      var NS = eYo.makeNS()
       chai.assert(NS.makeClass)
       chai.assert(NS.makeNS)
-      eYo.ns.make('Foo')
+      eYo.makeNS('Foo')
       chai.assert(eYo.Foo)
       chai.assert(eYo.Foo.makeNS)
       chai.assert(eYo.Foo.makeClass)
-      eYo.ns.make(NS, 'Foo')
+      eYo.makeNS(NS, 'Foo')
       chai.assert(NS.Foo)
       chai.assert(NS.Foo.makeNS)
       chai.assert(NS.Foo.makeClass)
     })
-    it ('NS.ns.make(...)', function () {
-      var NS = eYo.ns.make()
+    it ('NS.makeNS(...)', function () {
+      var NS = eYo.makeNS()
       chai.expect(() => {
-        NS.ns.make()
+        NS.makeNS()
       }).not.to.throw()
-      NS.ns.make('Foo')
+      NS.makeNS('Foo')
       chai.assert(NS.Foo)
       chai.assert(NS.Foo.makeNS)
       chai.assert(NS.Foo.makeClass)
-      var NS_ = eYo.ns.make()
+      var NS_ = eYo.makeNS()
       NS_['Foo'] = 421
       NS_.Foo = 123
       chai.expect(() => {
-        NS.ns.make(NS_, 'Foo')
+        NS.makeNS(NS_, 'Foo')
       }).to.throw()
       delete NS_.Foo
       chai.expect(() => {
-        NS.ns.make(NS_, 'Foo')
+        NS.makeNS(NS_, 'Foo')
       }).not.to.throw()
     })
     it ("eYo.makeClass('A1')", function () {
@@ -83,7 +83,7 @@ describe ('Dlgt', function () {
 
     })
     it ("NS.makeClass('A')", function () {
-      var NS = eYo.ns.make()
+      var NS = eYo.makeNS()
       NS.makeClass('A')
       chai.assert(NS.A)
       chai.assert(!NS.A.superClass_)
@@ -99,7 +99,7 @@ describe ('Dlgt', function () {
       delete eYo.B
     })
     it ("eYo.makeClass(ns, 'A', super, dlgt, model)", function () {
-      var ns = eYo.ns.make()
+      var ns = eYo.makeNS()
       ns.constructor.prototype.Dlgt = 421
       chai.assert(!eYo.hasOwnProperty(ns, 'Dflt'))
       eYo.Dflt.makeSubclass(ns, 'Dflt')
@@ -274,7 +274,7 @@ describe ('Dlgt', function () {
       })
     })
     // it ('NS.makeClass', function () {
-    //   var NS = eYo.ns.make()
+    //   var NS = eYo.makeNS()
     //   NS.k__ = 'NS'
     //   var getArgs = (Super, Dlgt, withModel) => {
     //     // console.warn('eYo.makeClass:', "'A'", Super && Super.k__ || 'NA', Dlgt && Dlgt.k__ || 'NA', withModel ? 'model' : 'NA'])
@@ -1477,7 +1477,7 @@ describe ('Dlgt', function () {
   }
   Object.keys(props).forEach(l => {
     Object.keys(props).forEach(r => {
-      ns = eYo.ns.make()
+      ns = eYo.makeNS()
       makeA({
         [l]: props[l]
       })
@@ -1490,7 +1490,7 @@ describe ('Dlgt', function () {
   })
   it ('Computed', function () {
     var flag = 123
-    var ns = eYo.ns.make()
+    var ns = eYo.makeNS()
     ns.makeClass('C', {
       computed: {
         foo () {

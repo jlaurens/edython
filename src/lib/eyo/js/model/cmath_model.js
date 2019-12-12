@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Model')
-eYo.require('eYo.ns.Model.Module')
+eYo.require('eYo.Model')
+eYo.require('eYo.Model.Module')
 
-eYo.require('eYo.ns.Model.Item')
-eYo.provide('eYo.ns.Model.cmath__module.Item')
-eYo.provide('eYo.ns.Model.cmath__module')
+eYo.require('eYo.Model.Item')
+eYo.provide('eYo.Model.cmath__module.Item')
+eYo.provide('eYo.Model.cmath__module')
 
-eYo.ns.Model.cmath__module = new eYo.ns.Model.Module('cmath__module', 'https://docs.python.org/3.6/library/cmath.html')
+eYo.Model.cmath__module = new eYo.Model.Module('cmath__module', 'https://docs.python.org/3.6/library/cmath.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.ns.Model.cmath__module.Item = function (model) {
-  eYo.ns.Model.cmath__module.Item.superClass_.constructor.call(this, model)
+eYo.Model.cmath__module.Item = function (model) {
+  eYo.Model.cmath__module.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.ns.Model.cmath__module.Item
+var Item = eYo.Model.cmath__module.Item
 
-goog.inherits(Item, eYo.ns.Model.Item)
+goog.inherits(Item, eYo.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.ns.Model.cmath__module
+Item.prototype.module = eYo.Model.cmath__module
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.ns.Model.cmath__module.setData({
+eYo.Model.cmath__module.setData({
   categories: [
     'conversions-to-and-from-polar-coordinates',
     'power-and-logarithmic-functions',

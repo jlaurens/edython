@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Model')
-eYo.require('eYo.ns.Model.Module')
+eYo.require('eYo.Model')
+eYo.require('eYo.Model.Module')
 
-eYo.require('eYo.ns.Model.Item')
-eYo.provide('eYo.ns.Model.weakref__module.Item')
-eYo.provide('eYo.ns.Model.weakref__module')
+eYo.require('eYo.Model.Item')
+eYo.provide('eYo.Model.weakref__module.Item')
+eYo.provide('eYo.Model.weakref__module')
 
-eYo.ns.Model.weakref__module = new eYo.ns.Model.Module('weakref__module', 'https://docs.python.org/3.6/library/weakref.html')
+eYo.Model.weakref__module = new eYo.Model.Module('weakref__module', 'https://docs.python.org/3.6/library/weakref.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.ns.Model.weakref__module.Item = function (model) {
-  eYo.ns.Model.weakref__module.Item.superClass_.constructor.call(this, model)
+eYo.Model.weakref__module.Item = function (model) {
+  eYo.Model.weakref__module.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.ns.Model.weakref__module.Item
+var Item = eYo.Model.weakref__module.Item
 
-goog.inherits(Item, eYo.ns.Model.Item)
+goog.inherits(Item, eYo.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.ns.Model.weakref__module
+Item.prototype.module = eYo.Model.weakref__module
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.ns.Model.weakref__module.setData({
+eYo.Model.weakref__module.setData({
   categories: [
     'module-weakref'
   ],

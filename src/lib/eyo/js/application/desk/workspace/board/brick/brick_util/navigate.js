@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Brick')
+eYo.require('eYo.Brick')
 
 eYo.require('eYo.Focus')
 eYo.provide('eYo.Navigate')
 
 /**
  * Tab navigation.
- * @param {eYo.ns.Brick.Dflt} [brick]  Brick.
+ * @param {eYo.Brick.Dflt} [brick]  Brick.
  * @param {Object} [opt] Optional key value arguments.
  */
 eYo.Navigate.doTab = (() => {
@@ -83,9 +83,9 @@ eYo.Navigate.doTab = (() => {
  * For edython.
  * @param {eYo.Board} board .
  * @param {function(point): number} weight is a function.
- * @return {?eYo.ns.Brick}
+ * @return {?eYo.Brick}
  */
-eYo.ns.Brick.getBestBrick = function (board, weight) {
+eYo.Brick.getBestBrick = function (board, weight) {
   var smallest = Infinity
   var best
   board.bricks_.forEach(top => {
@@ -105,7 +105,7 @@ eYo.ns.Brick.getBestBrick = function (board, weight) {
  * @param {(point, point) -> number} distance is a function.
  * @return None
  */
-eYo.ns.Brick.Dflt.prototype.getBestBrick = function (distance) {
+eYo.Brick.Dflt.prototype.getBestBrick = function (distance) {
   const box_a = this.ui.boundingBox
   var smallest = {}
   var best

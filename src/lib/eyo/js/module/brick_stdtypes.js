@@ -11,20 +11,20 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Brick')
+eYo.require('eYo.Brick')
 
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.Stmt')
-eYo.require('eYo.ns.Brick.List')
+eYo.require('eYo.Brick.List')
 
-eYo.require('eYo.ns.Brick.Primary')
+eYo.require('eYo.Brick.Primary')
 eYo.require('eYo.Tooltip')
 
 eYo.require('eYo.Library')
-eYo.require('eYo.ns.Model.stdtypes')
+eYo.require('eYo.Model.stdtypes')
 
-eYo.provide('eYo.ns.Brick.Stdtypes')
+eYo.provide('eYo.Brick.Stdtypes')
 
 /**
  * Add the conjugate, imag and real names
@@ -33,7 +33,7 @@ eYo.provide('eYo.ns.Brick.Stdtypes')
  */
 
 ;(function () {
-  var M = eYo.ns.Model.stdtypes
+  var M = eYo.Model.stdtypes
   var d = M.data
   var n = d.items.length
   var t = d.types.indexOf('method')

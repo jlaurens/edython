@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Model')
-eYo.require('eYo.ns.Model.Module')
+eYo.require('eYo.Model')
+eYo.require('eYo.Model.Module')
 
-eYo.require('eYo.ns.Model.Item')
-eYo.provide('eYo.ns.Model.collections.abc__module.Item')
-eYo.provide('eYo.ns.Model.collections.abc__module')
+eYo.require('eYo.Model.Item')
+eYo.provide('eYo.Model.collections.abc__module.Item')
+eYo.provide('eYo.Model.collections.abc__module')
 
-eYo.ns.Model.collections.abc__module = new eYo.ns.Model.Module('collections.abc__module', 'https://docs.python.org/3.6/library/collections.abc.html')
+eYo.Model.collections.abc__module = new eYo.Model.Module('collections.abc__module', 'https://docs.python.org/3.6/library/collections.abc.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.ns.Model.collections.abc__module.Item = function (model) {
-  eYo.ns.Model.collections.abc__module.Item.superClass_.constructor.call(this, model)
+eYo.Model.collections.abc__module.Item = function (model) {
+  eYo.Model.collections.abc__module.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.ns.Model.collections.abc__module.Item
+var Item = eYo.Model.collections.abc__module.Item
 
-goog.inherits(Item, eYo.ns.Model.Item)
+goog.inherits(Item, eYo.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.ns.Model.collections.abc__module
+Item.prototype.module = eYo.Model.collections.abc__module
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.ns.Model.collections.abc__module.setData({
+eYo.Model.collections.abc__module.setData({
   categories: [
     'collections-abstract-base-classes'
   ],

@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Protocol')
+eYo.require('eYo.Protocol')
 
-eYo.provide('eYo.ns.Protocol.Register')
+eYo.provide('eYo.Protocol.Register')
 
-eYo.ns.Protocol.Register = function (key, filter) {
+eYo.Protocol.Register = function (key, filter) {
   var ans = {
     methods: {},
     properties: {}

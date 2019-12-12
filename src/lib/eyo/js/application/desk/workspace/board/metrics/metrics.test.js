@@ -22,7 +22,7 @@ describe('Basic metrics IN PROGRESS', function () {
     div1.style.width = `${metrics.view_.width}px`
     div1.style.height = `${metrics.view_.height}px`
     div1.style.overflow = 'hidden'
-    var svg = eYo.ns.Svg.newElementSvg(div1, 'eyo-svg')
+    var svg = eYo.Svg.newElementSvg(div1, 'eyo-svg')
     svg.style.position='absolute'
     svg.setAttribute('preserveAspectRatio', 'xMinYMin slice')
     var content = metrics.port_
@@ -36,7 +36,7 @@ describe('Basic metrics IN PROGRESS', function () {
     svg.setAttribute('height', `${content.height}px`)
     svg.style.transform = `translate(${content.x}px,${content.y}px)`
     for (var i = -1 ; i < 11 ; i++) {
-      eYo.ns.Svg.newElement('rect', {
+      eYo.Svg.newElement('rect', {
         x: 8 * i * eYo.Unit.x,
         y: 2 * i * eYo.Unit.y,
         width: 8 * eYo.Unit.x,
@@ -44,7 +44,7 @@ describe('Basic metrics IN PROGRESS', function () {
         fill: 'yellow'
       },
       svg)
-      eYo.ns.Svg.newElement('rect', {
+      eYo.Svg.newElement('rect', {
         x: 8 * (i + 1) * eYo.Unit.x,
         y: 2 * i * eYo.Unit.y,
         width: 8 * eYo.Unit.x,
@@ -52,7 +52,7 @@ describe('Basic metrics IN PROGRESS', function () {
         fill: 'green'
       },
       svg)
-      eYo.ns.Svg.newElement('rect', {
+      eYo.Svg.newElement('rect', {
         x: 8 * i * eYo.Unit.x,
         y: 2 * (i + 1) * eYo.Unit.y,
         width: 8 * eYo.Unit.x,
@@ -61,7 +61,7 @@ describe('Basic metrics IN PROGRESS', function () {
       },
       svg)
     }
-    eYo.ns.Svg.newElement('circle',
+    eYo.Svg.newElement('circle',
     {cx: 20, cy: 13, r: 10, fill: 'red'},
     svg)
   })
@@ -78,7 +78,7 @@ describe('Basic metrics IN PROGRESS', function () {
     div1.style.width = `${metrics.view_.width}px`
     div1.style.height = `${metrics.view_.height}px`
     div1.style.overflow = 'hidden'
-    var svg = eYo.ns.Svg.newElementSvg(div1, 'eyo-svg')
+    var svg = eYo.Svg.newElementSvg(div1, 'eyo-svg')
     svg.style.position='absolute'
     svg.setAttribute('preserveAspectRatio', 'xMinYMin slice')
     var content = metrics.port_
@@ -92,7 +92,7 @@ describe('Basic metrics IN PROGRESS', function () {
     svg.setAttribute('height', `${content.height}px`)
     svg.style.transform = `translate(${content.x}px,${content.y}px)`
     for (var i = -1 ; i < 11 ; i++) {
-      eYo.ns.Svg.newElement('rect', {
+      eYo.Svg.newElement('rect', {
         x: 8 * i * eYo.Unit.x,
         y: 2 * i * eYo.Unit.y,
         width: 8 * eYo.Unit.x,
@@ -100,7 +100,7 @@ describe('Basic metrics IN PROGRESS', function () {
         fill: 'yellow'
       },
       svg)
-      eYo.ns.Svg.newElement('rect', {
+      eYo.Svg.newElement('rect', {
         x: 8 * (i + 1) * eYo.Unit.x,
         y: 2 * i * eYo.Unit.y,
         width: 8 * eYo.Unit.x,
@@ -108,7 +108,7 @@ describe('Basic metrics IN PROGRESS', function () {
         fill: 'green'
       },
       svg)
-      eYo.ns.Svg.newElement('rect', {
+      eYo.Svg.newElement('rect', {
         x: 8 * i * eYo.Unit.x,
         y: 2 * (i + 1) * eYo.Unit.y,
         width: 8 * eYo.Unit.x,
@@ -117,7 +117,7 @@ describe('Basic metrics IN PROGRESS', function () {
       },
       svg)
     }
-    eYo.ns.Svg.newElement('circle',
+    eYo.Svg.newElement('circle',
     {cx: 20, cy: 13, r: 10, fill: 'red'},
     svg)
   })

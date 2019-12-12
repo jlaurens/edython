@@ -332,3 +332,38 @@ eYo.called = (what) => {
 eYo.isSubclass = (Sub, Super) => {
   return !!Super && !!Sub && eYo.isF(Super) && (Sub === Super || Sub.prototype instanceof Super)
 }
+
+
+/**
+ * @name {eYo.makeNS}
+ * Make a namespace by subclassing the caller's constructor.
+ * @param {!Object} ns - a namespace, created object will be `ns[key]`. Defaults to the receiver.
+ * @param {String} key - sentencecase name, created object will be `ns[key]`.
+ * @return {Object}
+ */
+eYo.constructor.prototype.makeNS = function (ns, key) {
+  if (eYo.isStr(ns)) {
+    eYo.parameterAssert(!key, 'Unexpected key argument')
+    key = ns
+    ns = eYo
+  }
+  var Super = this.constructor
+  var NS = function () {
+    Super.call(this)
+  }
+  eYo.inherits(NS, Super)
+  Object.defineProperty(NS.prototype, 'super', {
+    value: this,
+  })
+  var ans = new NS()
+  if (ns[key]) {
+    throw new Error(`ns[${key}] already exists.`)
+  }
+  Object.defineProperty(ns, key, {
+    value: ans,
+  })
+  Object.defineProperties(ans, {
+    name: { value: `${ns.name}.${key}` },
+  })
+  return ans
+}

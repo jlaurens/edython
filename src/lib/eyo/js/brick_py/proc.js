@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Brick.Group')
+eYo.require('eYo.Brick.Group')
 
 eYo.require('eYo.XRE')
 
 eYo.require('eYo.Msg')
-eYo.require('eYo.ns.Brick.Primary')
+eYo.require('eYo.Brick.Primary')
 eYo.require('eYo.MenuItem')
 goog.require('goog.dom');
-eYo.provide('eYo.ns.Brick.Proc')
+eYo.provide('eYo.Brick.Proc')
 
 eYo.Do.readOnlyMixin(eYo.XRE, {
   decorator: XRegExp(`^@?
@@ -128,9 +128,9 @@ eYo.Stmt.makeSubclass('decorator_stmt', {
     },
     name: {
       all: [ // accepted types
-        eYo.ns.T3.Expr.dotted_name,
-        eYo.ns.T3.Expr.identifier,
-        eYo.ns.T3.Expr.unset
+        eYo.T3.Expr.dotted_name,
+        eYo.T3.Expr.identifier,
+        eYo.T3.Expr.unset
       ],
       init: '',
       placeholder: /** @suppress {globalThis} */ function () {
@@ -140,7 +140,7 @@ eYo.Stmt.makeSubclass('decorator_stmt', {
         : eYo.Msg.Placeholder.DECORATOR
       },
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.ns.T3.Profile.get(newValue, null)
+        var p5e = eYo.T3.Profile.get(newValue, null)
         if (this.getAll().indexOf(p5e.expr) >= 0) {
           return {validated: newValue}
         }
@@ -164,13 +164,13 @@ eYo.Stmt.makeSubclass('decorator_stmt', {
     },
     decorator: {
       all: [ // accepted types
-        eYo.ns.T3.Expr.dotted_name,
-        eYo.ns.T3.Expr.identifier,
-        eYo.ns.T3.Expr.unset
+        eYo.T3.Expr.dotted_name,
+        eYo.T3.Expr.identifier,
+        eYo.T3.Expr.unset
       ],
       init: '',
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.ns.T3.Profile.get(newValue, null)
+        var p5e = eYo.T3.Profile.get(newValue, null)
         if (this.getAll().indexOf(p5e.expr) >= 0 || this.getAll().indexOf(p5e.base) >= 0) {
           return {validated: newValue}
         }
@@ -323,7 +323,7 @@ eYo.Stmt.makeSubclass('decorator_stmt', {
         start: '(',
         end: ')'
       },
-      promise: eYo.ns.T3.Expr.argument_list,
+      promise: eYo.T3.Expr.argument_list,
       didLoad: /** @suppress {globalThis} */ function () {
         var t = this.targetBrick // may be null ?
         if (t && t.children_.length) {
@@ -351,7 +351,7 @@ Object.defineProperties(eYo.Stmt.decorator_stmt.prototype, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @override
  */
@@ -417,7 +417,7 @@ eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, funcdef_part.
  * For edython.
  */
-eYo.ns.Brick.Group.makeSubclass('funcdef_part', {
+eYo.Brick.Group.makeSubclass('funcdef_part', {
   data: {
     variant: {
       all: [null, eYo.Key.TYPE],
@@ -431,9 +431,9 @@ eYo.ns.Brick.Group.makeSubclass('funcdef_part', {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.ns.T3.Profile.get(newValue, null)
-        return p5e.expr === eYo.ns.T3.Expr.identifier
-          || p5e.expr === eYo.ns.T3.Expr.unset
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        return p5e.expr === eYo.T3.Expr.identifier
+          || p5e.expr === eYo.T3.Expr.unset
           ? {validated: newValue}
           : null
       },
@@ -457,21 +457,21 @@ eYo.ns.Brick.Group.makeSubclass('funcdef_part', {
         start: '(',
         end: ')'
       },
-      wrap: eYo.ns.T3.Expr.parameter_list
+      wrap: eYo.T3.Expr.parameter_list
     },
     type: {
       order: 3,
       fields: {
         label: '->'
       },
-      check: eYo.ns.T3.Expr.Check.expression
+      check: eYo.T3.Expr.Check.expression
     }
   }
 }, true)
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -507,7 +507,7 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  * Class for a Delegate, classdef_part brick.
  * For edython.
  */
-eYo.ns.Brick.Group.makeSubclass('classdef_part', {
+eYo.Brick.Group.makeSubclass('classdef_part', {
   data: {
     variant: {
       all: [eYo.Key.NONE, eYo.Key.N_ARY],
@@ -522,9 +522,9 @@ eYo.ns.Brick.Group.makeSubclass('classdef_part', {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var p5e = eYo.ns.T3.Profile.get(newValue, null)
-        return p5e.expr === eYo.ns.T3.Expr.identifier
-          || p5e.expr === eYo.ns.T3.Expr.unset
+        var p5e = eYo.T3.Profile.get(newValue, null)
+        return p5e.expr === eYo.T3.Expr.identifier
+          || p5e.expr === eYo.T3.Expr.unset
           ? {validated: newValue}
           : null
       },
@@ -549,7 +549,7 @@ eYo.ns.Brick.Group.makeSubclass('classdef_part', {
         start: '(',
         end: ')'
       },
-      wrap: eYo.ns.T3.Expr.argument_list,
+      wrap: eYo.T3.Expr.argument_list,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.N_ARY
@@ -561,7 +561,7 @@ eYo.ns.Brick.Group.makeSubclass('classdef_part', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -588,9 +588,9 @@ eYo.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
   return eYo.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
-eYo.ns.Brick.Proc.T3s = [
-  eYo.ns.T3.Expr.identifier,
-  eYo.ns.T3.Stmt.decorator_stmt,
-  eYo.ns.T3.Stmt.funcdef_part,
-  eYo.ns.T3.Stmt.classdef_part
+eYo.Brick.Proc.T3s = [
+  eYo.T3.Expr.identifier,
+  eYo.T3.Stmt.decorator_stmt,
+  eYo.T3.Stmt.funcdef_part,
+  eYo.T3.Stmt.classdef_part
 ]

@@ -11,22 +11,22 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Brick')
+eYo.require('eYo.Brick')
 
 eYo.require('eYo.Msg')
 
 eYo.require('eYo.Stmt')
-eYo.require('eYo.ns.Brick.List')
+eYo.require('eYo.Brick.List')
 
-eYo.require('eYo.ns.Brick.Primary')
+eYo.require('eYo.Brick.Primary')
 eYo.require('eYo.Tooltip')
 
 eYo.require('eYo.Library')
-eYo.provide('eYo.ns.Brick.CMath')
+eYo.provide('eYo.Brick.CMath')
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -34,7 +34,7 @@ eYo.provide('eYo.ns.Brick.CMath')
 //   var brick = this
 //   // populate the menu with the functions in the same category
 //   var name_get = brick.name_d.get()
-//   var model = eYo.ns.Model.cmath__module
+//   var model = eYo.Model.cmath__module
 //   var item_get = model.getItem(name_get)
 //   var items = model.getItemsInCategory(item_get.category)
 //   var module = brick.data.fromFlag.get() ? '' : 'cmath.'
@@ -71,8 +71,8 @@ eYo.provide('eYo.ns.Brick.CMath')
 //     var category = categories[i]
 //     if (i !== item_get.category) {
 //       var menuItem = mngr.newMenuItem(contents[category] || category, function () {
-//         var items = eYo.ns.Model.cmath__module.getItemsInCategory(i)
-//         var item = eYo.ns.Model.cmath__module.getItem(items[0])
+//         var items = eYo.Model.cmath__module.getItemsInCategory(i)
+//         var item = eYo.Model.cmath__module.getItem(items[0])
 //         eyo.name_d.set(item.names[0])
 //       })
 //       mngr.addChild(menuItem, true)
@@ -89,7 +89,7 @@ eYo.provide('eYo.ns.Brick.CMath')
 //  * Class for a Delegate, cmath constant brick.
 //  * As call is already a reserved message in javascript,
 //  * we use call_expr instead.
-//  * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
+//  * Not normally called directly, eYo.Brick.create(...) is preferred.
 //  * For edython.
 //  */
 // eYo.Expr.cmath__call_expr.makeSubclass('cmath__const', {
@@ -120,7 +120,7 @@ eYo.provide('eYo.ns.Brick.CMath')
 //     pentary: null,
 //   },
 //   out: {
-//     check: [eYo.ns.T3.Expr.cmath__const, eYo.ns.T3.Expr.builtin__object]
+//     check: [eYo.T3.Expr.cmath__const, eYo.T3.Expr.builtin__object]
 //   }
 // })
 
@@ -130,7 +130,7 @@ eYo.provide('eYo.ns.Brick.CMath')
     var key = 'cmath__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       data: {
         name: name,
         holder: 'cmath',
@@ -143,7 +143,7 @@ eYo.provide('eYo.ns.Brick.CMath')
     var key = 'cmath__'+name
     title && (eYo.Tooltip.Title[key] = title)
     return {
-      type: eYo.ns.T3.Expr.call_expr,
+      type: eYo.T3.Expr.call_expr,
       data: {
         name: name,
         holder: 'cmath',
@@ -155,30 +155,30 @@ eYo.provide('eYo.ns.Brick.CMath')
 
 eYo.Library.basic_cmath__module = [
   {
-    type: eYo.ns.T3.Expr.call_expr,
+    type: eYo.T3.Expr.call_expr,
     data: {
       name: 'complex',
       dotted: 0
     }
   },
   {
-    type: eYo.ns.T3.Expr.attributeref,
+    type: eYo.T3.Expr.attributeref,
     name_p: 'real',
     dotted_p: 1
   },
   {
-    type: eYo.ns.T3.Expr.attributeref,
+    type: eYo.T3.Expr.attributeref,
     name_p: 'imag',
     dotted_p: 1
   },
   {
-    type: eYo.ns.T3.Expr.call_expr,
+    type: eYo.T3.Expr.call_expr,
     name_p: 'conjugate',
     ary_p: 0,
     dotted: 1
   },
   {
-    type: eYo.ns.T3.Stmt.import_stmt,
+    type: eYo.T3.Stmt.import_stmt,
     from_p: 'cmath',
     variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR
   },
@@ -206,7 +206,7 @@ F = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.ns.T3.Expr.call_expr,
+    type: eYo.T3.Expr.call_expr,
     data: {
       name: name,
       holder: 'cmath',
@@ -219,7 +219,7 @@ F_k = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.Tooltip.Title[key] = title)
   return {
-    type: eYo.ns.T3.Expr.attributeref,
+    type: eYo.T3.Expr.attributeref,
     data: {
       name: name,
       holder: 'cmath',
@@ -231,28 +231,28 @@ F_k = (name, title) => {
 
 eYo.Library.cmath__module = [
   {
-    type: eYo.ns.T3.Expr.call_expr,
+    type: eYo.T3.Expr.call_expr,
     data: {
       name: 'complex',
       dotted: 0
     }
   },
   {
-    type: eYo.ns.T3.Expr.attributeref,
+    type: eYo.T3.Expr.attributeref,
     data: {
       name: 'real',
       dotted: 1
     }
   },
   {
-    type: eYo.ns.T3.Expr.attributeref,
+    type: eYo.T3.Expr.attributeref,
     data: {
       name: 'imag',
       dotted: 1
     }
   },
   {
-    type: eYo.ns.T3.Expr.call_expr,
+    type: eYo.T3.Expr.call_expr,
     data: {
       name: 'conjugate',
       ary: 0,
@@ -260,7 +260,7 @@ eYo.Library.cmath__module = [
     }
   },
   {
-    type: eYo.ns.T3.Stmt.import_stmt,
+    type: eYo.T3.Stmt.import_stmt,
     data: {
       variant: eYo.Key.IMPORT
     },
@@ -268,7 +268,7 @@ eYo.Library.cmath__module = [
       import_module: {
         slots: {
           O: {
-            type: eYo.ns.T3.Expr.identifier,
+            type: eYo.T3.Expr.identifier,
             data: 'cmath',
           },
         },
@@ -318,6 +318,6 @@ goog.mixin(eYo.Tooltip.Title, {
   cmath__import_stmt: 'Importer le module cmath',
 })
 
-eYo.ns.Brick.CMath.T3s = [
-  eYo.ns.T3.Expr.cmath__const
+eYo.Brick.CMath.T3s = [
+  eYo.T3.Expr.cmath__const
 ]

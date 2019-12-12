@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Dom')
+eYo.require('eYo.Dom')
 
 eYo.forwardDeclare('eYo.Search')
 
 /**
  * Dom driver for the search pane.
  */
-eYo.ns.Dom.makeDriverClass('Search', {
+eYo.Dom.makeDriverClass('Search', {
     /**
    * Initialize the search dom ressources.
    * @param {eYo.Search} search
@@ -58,7 +58,7 @@ eYo.ns.Dom.makeDriverClass('Search', {
  * Default CSS class of the search panel.
  * @type {string}
  */
-eYo.ns.Dom.SEARCH_CSS_CLASS = goog.getCssName('eyo-search')
+eYo.Dom.SEARCH_CSS_CLASS = goog.getCssName('eyo-search')
 
 
 /**
@@ -67,15 +67,15 @@ eYo.ns.Dom.SEARCH_CSS_CLASS = goog.getCssName('eyo-search')
  * @return {string} Renderer-specific CSS class.
  * @override
  */
-eYo.ns.Dom.Search.prototype.cssClass = function() {
-  return eYo.ns.Dom.SEARCH_CSS_CLASS
+eYo.Dom.Search.prototype.cssClass = function() {
+  return eYo.Dom.SEARCH_CSS_CLASS
 }
 
 /**
  * Dispose of the given slot's rendering resources.
  * @param {eYo.Search} search
  */
-eYo.ns.Dom.Search.prototype.updateMetrics = function (search) {
+eYo.Dom.Search.prototype.updateMetrics = function (search) {
   var r = search.viewRect
   var div = search.dom.toolbarDiv_
   div.style.width = `${r.width} px`

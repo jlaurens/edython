@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Model')
-eYo.require('eYo.ns.Model.Module')
+eYo.require('eYo.Model')
+eYo.require('eYo.Model.Module')
 
-eYo.require('eYo.ns.Model.Item')
-eYo.provide('eYo.ns.Model.fractions__module.Item')
-eYo.provide('eYo.ns.Model.fractions__module')
+eYo.require('eYo.Model.Item')
+eYo.provide('eYo.Model.fractions__module.Item')
+eYo.provide('eYo.Model.fractions__module')
 
-eYo.ns.Model.fractions__module = new eYo.ns.Model.Module('fractions__module', 'https://docs.python.org/3.6/library/fractions.html')
+eYo.Model.fractions__module = new eYo.Model.Module('fractions__module', 'https://docs.python.org/3.6/library/fractions.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.ns.Model.fractions__module.Item = function (model) {
-  eYo.ns.Model.fractions__module.Item.superClass_.constructor.call(this, model)
+eYo.Model.fractions__module.Item = function (model) {
+  eYo.Model.fractions__module.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.ns.Model.fractions__module.Item
+var Item = eYo.Model.fractions__module.Item
 
-goog.inherits(Item, eYo.ns.Model.Item)
+goog.inherits(Item, eYo.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.ns.Model.fractions__module
+Item.prototype.module = eYo.Model.fractions__module
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.ns.Model.fractions__module.setData({
+eYo.Model.fractions__module.setData({
   categories: [
     'module-fractions'
   ],

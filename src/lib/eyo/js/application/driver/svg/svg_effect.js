@@ -11,20 +11,20 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Svg')
-eYo.require('eYo.ns.Brick')
+eYo.require('eYo.Svg')
+eYo.require('eYo.Brick')
 
 // eYo.forwardDeclare('eYo.Effect')
 
 /**
  * Svg driver for brick effects
  */
-eYo.ns.Svg.makeDriverClass('Effect')
+eYo.Svg.makeDriverClass('Effect')
 
 /**
  * Play some UI effects (sound, animation) when disposing of a brick.
  */
-eYo.ns.Svg.Effect.prototype.brickDispose = (() => {
+eYo.Svg.Effect.prototype.brickDispose = (() => {
   /*
   * Animate a cloned brick and eventually dispose of it.
   * @param {Element} clone SVG element to animate and dispose of.
@@ -68,9 +68,9 @@ eYo.ns.Svg.Effect.prototype.brickDispose = (() => {
 
 /**
  * Make the given field reserved or not, to emphasize reserved keywords.
- * @param {eYo.ns.Brick.Dflt} brick  the brick the driver acts on
+ * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.ns.Svg.Effect.prototype.brickConnect = (() => {
+eYo.Svg.Effect.prototype.brickConnect = (() => {
   /*
    * Expand a ripple around a connection.
    * @param {Element} ripple Element to animate.
@@ -94,7 +94,7 @@ eYo.ns.Svg.Effect.prototype.brickConnect = (() => {
     var xy = w.ui_driver_mngr.boardElementWhere(/** @type {!Element} */ g)
     if (brick.isExpr) {
       var h = brick.span.height * w.scale / 2
-      var ripple = eYo.ns.Svg.newElement(
+      var ripple = eYo.Svg.newElement(
         'circle',
         {
           class: 'bricklyHighlightedConnectionPathH',
@@ -106,8 +106,8 @@ eYo.ns.Svg.Effect.prototype.brickConnect = (() => {
       )
     } else {
     // Determine the absolute coordinates of the inferior brick.
-      var steps = eYo.ns.Svg.magnetHighlightedPath_.attributes['d'].value
-      ripple = eYo.ns.Svg.newElement(
+      var steps = eYo.Svg.magnetHighlightedPath_.attributes['d'].value
+      ripple = eYo.Svg.newElement(
         'path',
         {
           class: 'bricklyHighlightedConnectionPath',
@@ -125,7 +125,7 @@ eYo.ns.Svg.Effect.prototype.brickConnect = (() => {
 /**
  * Play some UI effects (sound, animation) when disconnecting a brick.
  */
-eYo.ns.Svg.Effect.prototype.brickDisconnect = (() => {
+eYo.Svg.Effect.prototype.brickDisconnect = (() => {
   /*
    * Animate a brief wiggle of a disconnected brick.
    * @param {Element} group SVG element to animate.
@@ -175,7 +175,7 @@ eYo.ns.Svg.Effect.prototype.brickDisconnect = (() => {
  * Stop the disconnect UI animation immediately.
  * @private
  */
-eYo.ns.Svg.Effect.prototype.brickStop = function() {
+eYo.Svg.Effect.prototype.brickStop = function() {
   var svg = this.svg_
   if (svg) {
     var g = this.group_

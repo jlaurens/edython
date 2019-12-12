@@ -11,7 +11,7 @@ describe('Field', function () {
   ]
   RA.forEach(X => {
     var type = `one_slot_one_field_${X[0]}`
-    eYo.ns.T3.Expr[type] = type
+    eYo.T3.Expr[type] = type
     eYo.Expr.Dflt.makeSubclass(type, {
       slots: {
         SLOT: {

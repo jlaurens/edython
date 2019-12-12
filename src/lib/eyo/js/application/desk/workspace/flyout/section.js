@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Protocol')
+eYo.require('eYo.Protocol')
 
 eYo.provide('eYo.Section')
 

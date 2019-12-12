@@ -22,4 +22,4 @@ eYo.provide('eYo.Variable')
  * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.ns.UI.makeClass('Variable', eYo.Pane)
+eYo.UI.makeClass('Variable', eYo.Pane)

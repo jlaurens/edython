@@ -13,13 +13,13 @@
 
 eYo.require('eYo.Expr')
 
-eYo.provide('eYo.ns.Brick.Range')
+eYo.provide('eYo.Brick.Range')
 
-eYo.ns.T3.Expr.builtin__range_expr = 'eyo:builtin__range_expr'
+eYo.T3.Expr.builtin__range_expr = 'eyo:builtin__range_expr'
 
 /**
  * Class for a Delegate, range brick.
- * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
@@ -107,7 +107,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
           placeholder: 0
         }
       },
-      check: eYo.ns.T3.Expr.Check.argument_any
+      check: eYo.T3.Expr.Check.argument_any
     },
     sep: {
       order: 20,
@@ -127,7 +127,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
           placeholder: 0
         }
       },
-      check: eYo.ns.T3.Expr.Check.argument_any
+      check: eYo.T3.Expr.Check.argument_any
     },
     step: {
       order: 40,
@@ -143,7 +143,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
           placeholder: 0
         }
       },
-      check: eYo.ns.T3.Expr.Check.argument_any
+      check: eYo.T3.Expr.Check.argument_any
     },
     close: {
       order: 100,
@@ -157,8 +157,8 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
   },
   out: {
     check: [
-      eYo.ns.T3.Expr.builtin__range_expr,
-      eYo.ns.T3.Expr.call_expr
+      eYo.T3.Expr.builtin__range_expr,
+      eYo.T3.Expr.call_expr
     ]
   }
 }, true)
@@ -171,7 +171,7 @@ eYo.Expr.builtin__range_expr.prototype.xmlAttr = function () {
   return 'range'
 }
 
-eYo.ns.Brick.Range.T3s = [
-  eYo.ns.T3.Expr.identifier,
-  eYo.ns.T3.Expr.builtin__range_expr
+eYo.Brick.Range.T3s = [
+  eYo.T3.Expr.identifier,
+  eYo.T3.Expr.builtin__range_expr
 ]

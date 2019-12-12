@@ -12,23 +12,23 @@
 'use strict'
 
 eYo.require('eYo.Do')
-eYo.require('eYo.ns.Model')
+eYo.require('eYo.Model')
 
 eYo.provide('eYo.Dlgt')
 delete eYo.Dlgt
 
 /**
- * @name {eYo.ns.Class}
+ * @name {eYo.Class}
  * @namespace
  * The class namespace, general purpose namespace for class constructors management.
  */
-eYo.ns.make('Class')
+eYo.makeNS('Class')
 
 /**
  * All the created delegates.
  * @package
  */
-eYo.ns.Class.dlgtByKey__ = Object.create(null)
+eYo.Class.dlgtByKey__ = Object.create(null)
 
 /**
  * @name {eYo.Dlgt}
@@ -97,7 +97,7 @@ Object.defineProperty(eYo.constructor.prototype, 'Dlgt', {
       model.cached && this.declareCached(model.cached)
       model.clonable && this.declareClonable(model.clonable)
       model.computed && this.declareComputed(model.computed)
-      eYo.ns.Model.inherits(model, this.super && this.super.model)
+      eYo.Model.inherits(model, this.super && this.super.model)
     }
   }
 })
@@ -827,7 +827,7 @@ eYo.constructor.prototype.makeClass = (() => {
       Dlgt = Super
       Super = key
       key = ns
-      ns = Super && Super.eyo && Super.eyo.ns || this
+      ns = Super && Super.eyo && Super.eYo || this
     } else {
       eYo.parameterAssert(eYo.isStr(key), '`key` is not a string')
     }

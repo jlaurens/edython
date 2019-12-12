@@ -17,8 +17,8 @@ eYo.require('eYo')
 eYo.require('eYo.Change')
 eYo.provide('eYo.BrickDragger')
 
-eYo.forwardDeclare('eYo.ns.Dom')
-eYo.forwardDeclare('eYo.ns.Brick')
+eYo.forwardDeclare('eYo.Dom')
+eYo.forwardDeclare('eYo.Brick')
 eYo.forwardDeclare('eYo.Board')
 eYo.forwardDeclare('eYo.Events.BrickMove')
 
@@ -133,7 +133,7 @@ eYo.BrickDragger.prototype.dispose = function() {
  * When the center of the brick will gout out the visible area,
  * we scroll the brick board to keep it back.
  * @param {eYo.Motion} motion  The motion initiating the eventual drag.
- * @return {eYo.ns.Brick}  The target brick of the drag event, if any.
+ * @return {eYo.Brick}  The target brick of the drag event, if any.
  */
 eYo.BrickDragger.prototype.start = function(motion) {
   if (this.brick_) {
@@ -175,7 +175,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
   }
   /**
    * The top brick in the stack that is being dragged.
-   * @type {!eYo.ns.Brick}
+   * @type {!eYo.Brick}
    * @private
    */
   this.brick_ = targetBrick.focusOn()
@@ -280,7 +280,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
  * If the answer is `{x: -15, y: 0}`, we just have to scroll the board
  * 15 units to the right and the brick is visible.
  * For edython.
- * @param {eYo.ns.Brick.Dflt} brick The new location of the receiver, the actual location when eYo.NA.
+ * @param {eYo.Brick.Dflt} brick The new location of the receiver, the actual location when eYo.NA.
  * @param {Object} [newLoc] The new location of the receiver, the actual location when eYo.NA.
  * @return {{x: number, y: number}|eYo.NA}
  */

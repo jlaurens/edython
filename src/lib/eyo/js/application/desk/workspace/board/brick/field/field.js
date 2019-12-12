@@ -11,8 +11,8 @@
  */
 'use strict';
 
-eYo.require('eYo.ns.Protocol')
-eYo.require('eYo.ns.UI.Owned2')
+eYo.require('eYo.Protocol')
+eYo.require('eYo.UI.Owned2')
 
 eYo.provide('eYo.Field')
 
@@ -26,7 +26,7 @@ eYo.provide('eYo.FieldInput')
 
 /**
  * Abstract class for text fields.
- * @param {eYo.ns.Brick|eYo.Slot|eYo.Magnet} bsim The owner of the field.
+ * @param {eYo.Brick|eYo.Slot|eYo.Magnet} bsim The owner of the field.
  * @param {string} text The initial content of the field.
  * @constructor
  */
@@ -40,7 +40,7 @@ eYo.Field = function (bsm, name, text) {
   this.disposeUI = eYo.Do.nothing
   bsm.hasUI && this.initUI()
 }
-goog.inherits(eYo.Field, eYo.ns.UI.Owned2)
+goog.inherits(eYo.Field, eYo.UI.Owned2)
 
 Object.defineProperties(eYo.Field, {
   STATUS_NONE: { value: '' }, // names correspond to `eyo-code-...` css class names
@@ -52,7 +52,7 @@ Object.defineProperties(eYo.Field, {
 /**
  * Create all the fields from the given model.
  * For edython.
- * @param {eYo.Slot|!eYo.Magnet|!eYo.ns.Brick} owner
+ * @param {eYo.Slot|!eYo.Magnet|!eYo.Brick} owner
  * @param {Object} fieldsModel
  */
 eYo.Field.makeFields = (() => {
@@ -297,7 +297,7 @@ eYo.Field.makeFields = (() => {
 
 /**
  * 
- * @param {eYo.ns.Brick|eYo.Slot}
+ * @param {eYo.Brick|eYo.Slot}
  */
 eYo.Field.disposeFields = owner => {
   var fields = owner.fields
@@ -551,7 +551,7 @@ eYo.Field.prototype.willRender = function () {
 /**
  * Class for a non-editable field.
  * The only purpose is to start with a different height.
- * @param {eYo.ns.Brick|eYo.Slot} bsi The owner of the field.
+ * @param {eYo.Brick|eYo.Slot} bsi The owner of the field.
  * @param {string} name The required name of the field
  * @param {string} text The initial content of the field.
  * @extends {eYo.Field}
@@ -565,7 +565,7 @@ goog.inherits(eYo.FieldLabel, eYo.Field)
 
 /**
  * Class for an editable code field.
- * @param {eYo.ns.Brick|eYo.Slot} bsi The owner of the field.
+ * @param {eYo.Brick|eYo.Slot} bsi The owner of the field.
  * @param {string=} name
  * @param {string} text The initial content of the field.
  * @extends {eYo.Field}

@@ -13,7 +13,7 @@
 
 eYo.require('eYo')
 
-eYo.require('eYo.ns.Brick')
+eYo.require('eYo.Brick')
 
 eYo.provide('eYo.Tooltip')
 

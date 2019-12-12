@@ -106,14 +106,14 @@ eYo.Test.C9r = (brick, k) => {
 }
 
 eYo.Test.brick = (brick, t, str) => {
-  t = eYo.ns.T3.Stmt[t] || eYo.ns.T3.Expr[t] || t
+  t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
   chai.assert(brick, `MISSING DLGT TYPE ${t || ''}`)
   chai.assert(!t || (brick.type === t), `MISSED TYPE ${str || ''} ${brick.type} === ${t}`)
 }
 
 eYo.Test.new_brick = (t, tt, str, headless) => {
-  var type = t = eYo.ns.T3.Stmt[t] || eYo.ns.T3.Expr[t] || t
-  var brick = eYo.ns.Brick.newReady(eYo.app.board, type)
+  var type = t = eYo.T3.Stmt[t] || eYo.T3.Expr[t] || t
+  var brick = eYo.Brick.newReady(eYo.app.board, type)
   eYo.Test.brick(brick, tt, str)
   if (!headless) {
     brick.render()
@@ -161,7 +161,7 @@ eYo.Test.basic = (ra, str) => {
 'alias'])
 */
 eYo.Test.incog = (brick, keys) => {
-  var M = eYo.ns.Brick.mngr.getModel(brick.type)
+  var M = eYo.Brick.mngr.getModel(brick.type)
   Object.keys(M.slots).forEach(k => {
     var yorn = keys.indexOf(k) >= 0
     chai.assert(!brick[`${k}_s`].incog === yorn, `${yorn ? 'MISSING' : 'UNEXPECTED'} ${k.toUpperCase()} INCOG`)
@@ -194,7 +194,7 @@ eYo.Test.all_variants = (d, required) => {
 
 eYo.Test.linearizeCode_ = s => s.replace(/(?:\r\n|\r|\n)/g, '\\n').replace(/\s+/g, ' ').replace(/(\*) /g, '$1').replace(/(\s|\\n)+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{|:|\*\*|->|,|}|\+|-|=|#)\s*/g, '$1').replace(/(#)  +/g, '$1 ')
 
-Object.defineProperties(eYo.ns.Brick.Dflt.prototype, {
+Object.defineProperties(eYo.Brick.Dflt.prototype, {
   linearizedCode: {
     get () {
       return eYo.Test.linearizeCode_(this.toString)
@@ -297,7 +297,7 @@ eYo.Test.data_save = (brick, key, value, ignore) => {
     var attr = dom.getAttribute(d.attributeName)
     chai.assert(attr === null, `UNEXPECTED ATTRIBUTE ${d.attributeName}: ${attr}`)
   } else {
-    var d = eYo.ns.Brick.newReady(brick, dom)
+    var d = eYo.Brick.newReady(brick, dom)
     chai.assert(d, 'MISSING dd from dom')
     var saved = d[`${key}_p`]
     d.dispose()
@@ -371,7 +371,7 @@ eYo.Test.list_connect = (brick, key, target, name) => {
  */
 eYo.Test.subtype = (brick, t) => {
   chai.assert(brick, 'MISSING d')
-  t = eYo.ns.T3.Expr[t] || eYo.ns.T3.Stmt[t] || t
+  t = eYo.T3.Expr[t] || eYo.T3.Stmt[t] || t
   chai.assert(t, 'UNKNOWN subtype')
   chai.assert(brick.subtype === t, `MISSED subtype ${brick.type}: ${brick.subtype} === ${t}`)
 }
@@ -382,9 +382,9 @@ eYo.Test.subtype = (brick, t) => {
 eYo.Test.copy_paste = (brick, opts) => {
   chai.assert(brick, 'MISSING d')
   var dom = eYo.Xml.brickToDom(brick)
-  var dd = eYo.ns.Brick.newReady(brick, dom)
+  var dd = eYo.Brick.newReady(brick, dom)
   eYo.Test.same(brick, dd)
-  var M = eYo.ns.Brick.mngr.getModel(brick.type)
+  var M = eYo.Brick.mngr.getModel(brick.type)
   Object.keys(M.slots).forEach(k => {
     var key = `${k}_s`
     chai.assert(brick[key].incog === dd[key].incog, `INCONSISTENT INCOG for key ${k}`)
@@ -432,7 +432,7 @@ eYo.Test.same_list_length = (dlgt1, dlgt2, key) => {
  * Create a new identifier brick
  */
 eYo.Test.newIdentifier = (str) => {
-  var brick = eYo.ns.Brick.newReady(eYo.app.board, eYo.ns.T3.Expr.identifier)
+  var brick = eYo.Brick.newReady(eYo.app.board, eYo.T3.Expr.identifier)
   brick.target_p = str
   eYo.Test.brick(brick, 'identifier')
   eYo.Test.data_value(brick, 'target', str)

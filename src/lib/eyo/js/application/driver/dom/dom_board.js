@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Dom')
+eYo.require('eYo.Dom')
 
 eYo.forwardDeclare('eYo.Board')
 
 /**
  * Dom driver for boards.
  */
-eYo.ns.Dom.makeDriverClass('Board', {
+eYo.Dom.makeDriverClass('Board', {
   /**
    * Initialize the board dom ressources.
    * @param {eYo.Board} board

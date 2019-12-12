@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Svg')
-eYo.require('eYo.ns.Dom.Desk')
+eYo.require('eYo.Svg')
+eYo.require('eYo.Dom.Desk')
 
 eYo.forwardDeclare('eYo.Desk')
 
 /**
  * Svg driver for desk.
  */
-eYo.ns.Svg.makeDriverClass('Desk', {
+eYo.Svg.makeDriverClass('Desk', {
   /**
    * Initialize the desk SVG ressources.
    * @param {eYo.Desk} desk
@@ -34,12 +34,12 @@ eYo.ns.Svg.makeDriverClass('Desk', {
  * Bind the resize element.
  * @param {eYo.Board} board
  */
-eYo.ns.Svg.Desk.prototype.bind_resize = function (desk) {
+eYo.Svg.Desk.prototype.bind_resize = function (desk) {
   var bound = desk.dom.bound || Object.create(null)
   if (bound.resize) {
     return
   }
-  bound.resize = eYo.ns.Dom.bindEvent(
+  bound.resize = eYo.Dom.bindEvent(
     window,
     'resize',
     null,
@@ -57,7 +57,7 @@ eYo.ns.Svg.Desk.prototype.bind_resize = function (desk) {
  * @param {eYo.Desk} mode  The display mode for bricks.
  * @param {String} mode  The display mode for bricks.
  */
-eYo.ns.Svg.Desk.prototype.setBrickDisplayMode = function (desk, mode) {
+eYo.Svg.Desk.prototype.setBrickDisplayMode = function (desk, mode) {
   var div = desk.dom.div_
   var old = desk.currentBrickDisplayMode
   old && (goog.dom.classlist.remove(div, `eyo-${old}`))
@@ -72,7 +72,7 @@ eYo.ns.Svg.Desk.prototype.setBrickDisplayMode = function (desk, mode) {
  * (e.g. on a window resize/device orientation change).
  * @param {eYo.Desk} desk A desk.
  */
-eYo.ns.Svg.Desk.prototype.updateMetrics = function(desk) {
+eYo.Svg.Desk.prototype.updateMetrics = function(desk) {
   // After the change, the selection should be visible if it was.
   desk.viewRect = desk.dom.div_.getBoundingClientRect()
   console.error('desk size', desk.dom.div_.getBoundingClientRect())
@@ -87,12 +87,12 @@ eYo.ns.Svg.Desk.prototype.updateMetrics = function(desk) {
  *     eYo.NA.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
-eYo.ns.Svg.Desk.prototype.whereElement = function(desk, element) {
+eYo.Svg.Desk.prototype.whereElement = function(desk, element) {
   var ans = new eYo.Where()
   var div = desk.dom.div_
   while (element && element !== div) {
-    ans.scale(eYo.ns.Svg.getScale_(element))
-    .forward(eYo.ns.Svg.getRelativeWhere(element))
+    ans.scale(eYo.Svg.getScale_(element))
+    .forward(eYo.Svg.getRelativeWhere(element))
     element = element.parentNode
   }
   return ans
@@ -103,6 +103,6 @@ eYo.ns.Svg.Desk.prototype.whereElement = function(desk, element) {
  * @param {eYo.Desk} desk
  * @return {!Element} The desk's SVG group.
  */
-eYo.ns.Svg.Desk.prototype.installFlyout = function(desk) {
+eYo.Svg.Desk.prototype.installFlyout = function(desk) {
 }
 

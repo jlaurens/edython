@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Svg')
+eYo.require('eYo.Svg')
 
 eYo.forwardDeclare('eYo.Slot')
 
 /**
  * Svg driver for slots.
  */
-eYo.ns.Svg.makeDriverClass('Slot', {
+eYo.Svg.makeDriverClass('Slot', {
     /**
    * Prepare the given slot.
    * @param {eYo.Slot} slot to be prepared.
@@ -26,7 +26,7 @@ eYo.ns.Svg.makeDriverClass('Slot', {
   initUI (slot) {
     var dom = this._initUI(slot)
     var svg = dom.svg = Object.create(null)
-    var g = svg.group_ = eYo.ns.Svg.newElement('g', {
+    var g = svg.group_ = eYo.Svg.newElement('g', {
       class: 'eyo-slot'
     }, null)
     g.dataset && (g.dataset.slot = slot.key)
@@ -53,7 +53,7 @@ eYo.ns.Svg.makeDriverClass('Slot', {
  * Whether the slot is displayed.
  * @param {Object} slot  the slot to query about
  */
-eYo.ns.Svg.Slot.prototype.displayedGet = function (slot) {
+eYo.Svg.Slot.prototype.displayedGet = function (slot) {
   var g = slot.dom.svg.group_
   return g.style.display !== 'none'
 }
@@ -63,7 +63,7 @@ eYo.ns.Svg.Slot.prototype.displayedGet = function (slot) {
  * @param {Object} slot  the slot the driver acts on
  * @param {boolean} yorn
  */
-eYo.ns.Svg.Slot.prototype.displayedSet = function (slot, yorn) {
+eYo.Svg.Slot.prototype.displayedSet = function (slot, yorn) {
   var g = slot.dom.svg.group_
   if (yorn) {
     g.removeAttribute('display')
@@ -77,7 +77,7 @@ eYo.ns.Svg.Slot.prototype.displayedSet = function (slot, yorn) {
  * @param {Object} slot  the slot the driver acts on
  * @param {boolean} yorn
  */
-eYo.ns.Svg.Slot.prototype.displayedUpdate = function (slot) {
+eYo.Svg.Slot.prototype.displayedUpdate = function (slot) {
   this.displayedSet(slot, slot.visible)
 }
 
@@ -85,7 +85,7 @@ eYo.ns.Svg.Slot.prototype.displayedUpdate = function (slot) {
  * Dispose of the given slot's rendering resources.
  * @param {eYo.Slot} slot
  */
-eYo.ns.Svg.Slot.prototype.display = function (slot) {
+eYo.Svg.Slot.prototype.display = function (slot) {
   var g = slot.dom && slot.dom.svg.group_
   eYo.assert(g, 'Slot with no root', slot.brick.type, slot.key)
   if (slot.incog) {

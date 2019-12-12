@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Fcls')
+eYo.require('eYo.Fcls')
 
-eYo.provide('eYo.ns.Fcls.Application')
+eYo.provide('eYo.Fcls.Application')
 
 eYo.forwardDeclare('eYo.Application')
 
 /**
  * Shared application driver.
  */
-eYo.ns.Fcls.makeDriverClass('Application')
+eYo.Fcls.makeDriverClass('Application')

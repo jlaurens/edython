@@ -11,25 +11,25 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.UI')
+eYo.require('eYo.UI')
 
 /**
  * Class for a basic object indirectly owned by a brick.
  * 
- * @name {eYo.ns.UI.Owned2}
+ * @name {eYo.UI.Owned2}
  * @constructor
- * @param {eYo.ns.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
+ * @param {eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
  * @readonly
- * @property {eYo.ns.Brick.UI} ui  The ui object used for rendering.
+ * @property {eYo.Brick.UI} ui  The ui object used for rendering.
  * @readonly
- * @property {eYo.ns.Brick} slot  The brick.
+ * @property {eYo.Brick} slot  The brick.
  * @readonly
  * @property {eYo.Slot} slot  The slot.
  * @readonly
  * @property {eYo.Magnet} slot  The magnet.
  */
 
-eYo.ns.UI.Dflt.makeSubclass('Owned2', {
+eYo.UI.Dflt.makeSubclass('Owned2', {
   linked: ['slot', 'brick', 'magnet'],
   computed: {
     ui () {
@@ -38,9 +38,9 @@ eYo.ns.UI.Dflt.makeSubclass('Owned2', {
   }
 })
 
-eYo.assert(!!eYo.ns.UI.Owned2, 'MISSED/FAILURE...')
-eYo.forwardDeclare('eYo.ns.Brick')
-eYo.forwardDeclare('eYo.ns.Brick.UI')
+eYo.assert(!!eYo.UI.Owned2, 'MISSED/FAILURE...')
+eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('eYo.Brick.UI')
 eYo.forwardDeclare('eYo.Slot')
 eYo.forwardDeclare('eYo.Magnet')
 

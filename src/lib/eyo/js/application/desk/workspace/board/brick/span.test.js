@@ -24,7 +24,7 @@ describe('Span expression', function () {
     s_s = b_s.span
     chai.assert(b_s.isStmt, 'MISSED')
     var type = 'test_group_span'
-    eYo.ns.Brick.Group.makeSubclass(type, {
+    eYo.Brick.Group.makeSubclass(type, {
       out: {
         check: null
       }
@@ -160,7 +160,7 @@ describe('Current Field', function () {
   var b_1
   before(function() {
     var type = 'test_stmt_span_reserved'
-    eYo.ns.T3.Stmt[type] = type
+    eYo.T3.Stmt[type] = type
     eYo.Stmt.makeSubclass(type, {
       fields: {
         FIELD: {
@@ -192,7 +192,7 @@ describe('Current Span statements', function () {
   var b_1, s_1, b_2, s_2, b_3, s_3
   before(function() {
     var type = 'test_stmt_span'
-    eYo.ns.T3.Stmt[type] = type
+    eYo.T3.Stmt[type] = type
     eYo.Stmt.makeSubclass(type, {
       fields: {
         FIELD: {

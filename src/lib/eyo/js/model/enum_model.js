@@ -12,33 +12,33 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Model')
-eYo.require('eYo.ns.Model.Module')
+eYo.require('eYo.Model')
+eYo.require('eYo.Model.Module')
 
-eYo.require('eYo.ns.Model.Item')
-eYo.provide('eYo.ns.Model.enum__module.Item')
-eYo.provide('eYo.ns.Model.enum__module')
+eYo.require('eYo.Model.Item')
+eYo.provide('eYo.Model.enum__module.Item')
+eYo.provide('eYo.Model.enum__module')
 
-eYo.ns.Model.enum__module = new eYo.ns.Model.Module('enum__module', 'https://docs.python.org/3.6/library/enum.html')
+eYo.Model.enum__module = new eYo.Model.Module('enum__module', 'https://docs.python.org/3.6/library/enum.html')
 
 /**
  * @constructor
  * @param {*} model
  */
-eYo.ns.Model.enum__module.Item = function (model) {
-  eYo.ns.Model.enum__module.Item.superClass_.constructor.call(this, model)
+eYo.Model.enum__module.Item = function (model) {
+  eYo.Model.enum__module.Item.superClass_.constructor.call(this, model)
 }
 
 ;(function () {
 
-var Item = eYo.ns.Model.enum__module.Item
+var Item = eYo.Model.enum__module.Item
 
-goog.inherits(Item, eYo.ns.Model.Item)
+goog.inherits(Item, eYo.Model.Item)
 
 /**
  * module
  */
-Item.prototype.module = eYo.ns.Model.enum__module
+Item.prototype.module = eYo.Model.enum__module
 
 Object.defineProperties(
   Item.prototype,
@@ -53,7 +53,7 @@ Object.defineProperties(
   }
 )
 
-eYo.ns.Model.enum__module.setData({
+eYo.Model.enum__module.setData({
   categories: [
     'module-contents',
     'ensuring-unique-enumeration-values'

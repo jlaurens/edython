@@ -11,83 +11,83 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Fcls')
+eYo.require('eYo.Fcls')
 
-eYo.provide('eYo.ns.Fcls.Focus')
+eYo.provide('eYo.Fcls.Focus')
 
 /**
  * Faceless driver for Focus managers.
  */
-eYo.ns.Fcls.makeDriverClass('Focus')
+eYo.Fcls.makeDriverClass('Focus')
 
 /**
  * Init the main focus manager.
  * @param {eYo.Focus.Main} mainMngr  The main focus manager
  */
-eYo.ns.Fcls.Focus.prototype.mainInitUI = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.mainInitUI = eYo.Do.nothing
 
 /**
  * Init the main focus manager.
  * @param {eYo.Focus.Main} mainMngr  The main focus manager
  */
-eYo.ns.Fcls.Focus.prototype.mainDisposeUI = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.mainDisposeUI = eYo.Do.nothing
 
 /**
  * Init a standard focus manager.
  * @param {eYo.Focus.Mngr} mngr  The standard focus manager
  */
-eYo.ns.Fcls.Focus.prototype.mngrInitUI = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.mngrInitUI = eYo.Do.nothing
 
 /**
  * Init a standard focus manager.
  * @param {eYo.Focus.Mngr} mngr  The standard focus manager
  */
-eYo.ns.Fcls.Focus.prototype.mngrDisposeUI = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.mngrDisposeUI = eYo.Do.nothing
 
 /**
  * Focus on a board.
  * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus on a board.
  */
-eYo.ns.Fcls.Focus.prototype.onBoard = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.onBoard = eYo.Do.nothing
 
 /**
  * Focus off a board.
  * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus off a board.
  */
-eYo.ns.Fcls.Focus.prototype.offBoard = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.offBoard = eYo.Do.nothing
 
 /**
  * Focus on a board.
  * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus on a brick.
  */
-eYo.ns.Fcls.Focus.prototype.brickOn = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.brickOn = eYo.Do.nothing
 
 /**
  * Focus off a brick.
  * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus off a brick.
  */
-eYo.ns.Fcls.Focus.prototype.brickOff = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.brickOff = eYo.Do.nothing
 
 /**
  * Focus on a field.
  * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus on a field.
  */
-eYo.ns.Fcls.Focus.prototype.fieldOn = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.fieldOn = eYo.Do.nothing
 
 /**
  * Focus off a field.
  * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus off a field.
  */
-eYo.ns.Fcls.Focus.prototype.fieldOff = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.fieldOff = eYo.Do.nothing
 
 /**
  * Focus on a magnet.
  * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus on a magnet.
  */
-eYo.ns.Fcls.Focus.prototype.magnetOn = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.magnetOn = eYo.Do.nothing
 
 /**
  * Focus off a magnet.
  * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus off a magnet.
  */
-eYo.ns.Fcls.Focus.prototype.magnetOff = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.magnetOff = eYo.Do.nothing

@@ -11,19 +11,19 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Brick')
+eYo.require('eYo.Brick')
 
 eYo.require('eYo.Msg')
 
-eYo.require('eYo.ns.Brick.List')
+eYo.require('eYo.Brick.List')
 
-eYo.require('eYo.ns.Brick.Primary')
+eYo.require('eYo.Brick.Primary')
 eYo.require('eYo.Tooltip')
 
 eYo.require('eYo.Library')
-eYo.require('eYo.ns.Model.functions')
+eYo.require('eYo.Model.functions')
 
-eYo.provide('eYo.ns.Brick.Functions')
+eYo.provide('eYo.Brick.Functions')
 
 /**
  * Add the conjugate, imag and real names
@@ -32,7 +32,7 @@ eYo.provide('eYo.ns.Brick.Functions')
  */
 
 ;(function () {
-  var M = eYo.ns.Model.functions
+  var M = eYo.Model.functions
   var d = M.data
   var n = d.items.length
   var t = d.types.length

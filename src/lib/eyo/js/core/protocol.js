@@ -11,17 +11,17 @@
  */
 'use strict'
 
-eYo.require('eYo.ns')
+eYo.require('eYo')
 
-eYo.ns.make('Protocol')
+eYo.makeNS('Protocol')
 
 /**
  * Enhance the prototype with the given methods and properties.
  * Only new methods are allowed.
  */
-eYo.ns.Protocol.add = function (proto, base, ...args) {
+eYo.Protocol.add = function (proto, base, ...args) {
   if (eYo.isStr(base)) {
-    base = eYo.ns.Protocol[base]
+    base = eYo.Protocol[base]
   }
   if (goog.isFunction(base)) {
     base = base.call(proto, ...args)

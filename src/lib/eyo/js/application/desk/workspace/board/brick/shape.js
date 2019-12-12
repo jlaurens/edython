@@ -456,7 +456,7 @@ eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
 
 /**
  * create a shape with the given brick.
- * @param {eYo.ns.Brick!} brick  Brick
+ * @param {eYo.Brick!} brick  Brick
  */
 eYo.Shape.newWithBrick = function(brick) {
   return new eYo.Shape().initWithBrick(brick)
@@ -464,7 +464,7 @@ eYo.Shape.newWithBrick = function(brick) {
 
 /**
  * Create a path definition with the given brick.
- * @param {eYo.ns.Brick!} brick  A brick.
+ * @param {eYo.Brick!} brick  A brick.
  * @param {Object} opt  options.
  * @return {String!} A path definition.
  */
@@ -474,12 +474,12 @@ eYo.Shape.definitionWithBrick = function(brick, opt) {
 
 /**
  * Inits a shape with the given brick.
- * @param {eYo.ns.Brick!} brick  Brick
+ * @param {eYo.Brick!} brick  Brick
  */
 eYo.Shape.prototype.initWithBrick = (() => {
   /**
    * Inits a shape with the given brick.
-   * @param {eYo.ns.Brick!} brick  Brick
+   * @param {eYo.Brick!} brick  Brick
    * @return {!Object} The receiver.
    */
   var initWithStatementBrick = function(brick, opt) {
@@ -524,7 +524,7 @@ eYo.Shape.prototype.initWithBrick = (() => {
 
   /**
    * Inits a shape with the given brick.
-   * @param {eYo.ns.Brick!} brick
+   * @param {eYo.Brick!} brick
    * @return {!Object} The receiver.
    */
   var initWithGroupBrick = function(brick, opt) {
@@ -577,8 +577,8 @@ eYo.Shape.prototype.initWithBrick = (() => {
   /**
    * Inits a shape with the given expression brick.
    * The left part of the shape may be special.
-   * @param {eYo.ns.Brick!} brick
-   * @return {eYo.ns.Brick!} The receiver.
+   * @param {eYo.Brick!} brick
+   * @return {eYo.Brick!} The receiver.
    */
   var initWithExpressionBrick = function(brick, opt) {
     var width = brick.span.width

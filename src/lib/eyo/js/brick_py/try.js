@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.ns.Brick.Group')
+eYo.require('eYo.Brick.Group')
 
 eYo.require('eYo.Change')
 
-eYo.provide('eYo.ns.Brick.Try')
+eYo.provide('eYo.Brick.Try')
 
 eYo.forwardDeclare('eYo.Msg')
 
@@ -23,10 +23,10 @@ goog.forwardDeclare('goog.dom')
 
 /**
  * Class for a Delegate, try_part brick.
- * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.ns.Brick.Group.makeSubclass('try_part', {
+eYo.Brick.Group.makeSubclass('try_part', {
   fields: {
     prefix: 'try'
   }
@@ -34,10 +34,10 @@ eYo.ns.Brick.Group.makeSubclass('try_part', {
 
 /**
  * Class for a Delegate, except_part brick.
- * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.ns.Brick.Group.makeSubclass('except_part', {
+eYo.Brick.Group.makeSubclass('except_part', {
   data: {
     variant: {
       all: [
@@ -78,10 +78,10 @@ eYo.ns.Brick.Group.makeSubclass('except_part', {
       placeholder: eYo.Msg.Placeholder.ALIAS,
       synchronize: true,
       validate: /** @suppress {globalThis} */ function (newValue) {
-        var type = eYo.ns.T3.Profile.get(newValue).expr
-        return type === eYo.ns.T3.Expr.unset
-        || type === eYo.ns.T3.Expr.identifier
-        || type === eYo.ns.T3.Expr.builtin__name
+        var type = eYo.T3.Profile.get(newValue).expr
+        return type === eYo.T3.Expr.unset
+        || type === eYo.T3.Expr.identifier
+        || type === eYo.T3.Expr.builtin__name
         ? {validated: newValue}
         : null
       },
@@ -110,7 +110,7 @@ eYo.ns.Brick.Group.makeSubclass('except_part', {
           endEditing: true
         }
       },
-      check: eYo.ns.T3.Expr.Check.expression,
+      check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.brick.variant_p === eYo.Key.NONE && this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.EXPRESSION
@@ -134,7 +134,7 @@ eYo.ns.Brick.Group.makeSubclass('except_part', {
       validateIncog: /** @suppress {globalThis} */ function (newValue) {
         return this.brick.variant_p !== eYo.Key.ALIASED
       },
-      check: eYo.ns.T3.Expr.identifier,
+      check: eYo.T3.Expr.identifier,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.ALIASED
@@ -148,16 +148,16 @@ eYo.ns.Brick.Group.makeSubclass('except_part', {
   },
   head: {
     check: /** @suppress {globalThis} */ function (type) {
-      return type === eYo.ns.T3.Stmt.except_part
-      ? eYo.ns.T3.Stmt.Previous.except_part
-      : eYo.ns.T3.Stmt.Previous.void_except_part
+      return type === eYo.T3.Stmt.except_part
+      ? eYo.T3.Stmt.Previous.except_part
+      : eYo.T3.Stmt.Previous.void_except_part
     }
   },
   foot: {
     check: /** @suppress {globalThis} */ function (type) {
-      return type === eYo.ns.T3.Stmt.except_part
-      ? eYo.ns.T3.Stmt.Next.except_part
-      : eYo.ns.T3.Stmt.Next.void_except_part
+      return type === eYo.T3.Stmt.except_part
+      ? eYo.T3.Stmt.Next.except_part
+      : eYo.T3.Stmt.Next.void_except_part
     }
   }
 }, true)
@@ -166,7 +166,7 @@ eYo.ns.Brick.Group.makeSubclass('except_part', {
   'void_except_part'
 ].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.except_part
-  eYo.ns.Brick.mngr.register(k)
+  eYo.Brick.mngr.register(k)
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.
@@ -177,8 +177,8 @@ eYo.Stmt.except_part.prototype.getType = eYo.Change.decorate(
   function () {
     this.setupType(
       this.variant_p === eYo.Key.NONE
-      ? eYo.ns.T3.Stmt.void_except_part
-      : eYo.ns.T3.Stmt.except_part
+      ? eYo.T3.Stmt.void_except_part
+      : eYo.T3.Stmt.except_part
     )
     return this.type
   }
@@ -186,7 +186,7 @@ eYo.Stmt.except_part.prototype.getType = eYo.Change.decorate(
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -221,10 +221,10 @@ eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Class for a Delegate, finally_part brick.
- * Not normally called directly, eYo.ns.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.ns.Brick.Group.makeSubclass('finally_part', {
+eYo.Brick.Group.makeSubclass('finally_part', {
   fields: {
     prefix: 'finally'
   }
@@ -298,7 +298,7 @@ eYo.Stmt.makeSubclass('raise_stmt', {
           endEditing: true
         }
       },
-      check: eYo.ns.T3.Expr.Check.expression,
+      check: eYo.T3.Expr.Check.expression,
       xml: {
         load: /** @suppress {globalThis} */ function (element, opt) {
           this.load(element, opt)
@@ -319,7 +319,7 @@ eYo.Stmt.makeSubclass('raise_stmt', {
           endEditing: true
         }
       },
-      check: eYo.ns.T3.Expr.Check.expression,
+      check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM
@@ -331,7 +331,7 @@ eYo.Stmt.makeSubclass('raise_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -411,7 +411,7 @@ eYo.Stmt.makeSubclass('assert_stmt', {
           placeholder: eYo.Msg.Placeholder.EXPRESSION
         }
       },
-      check: eYo.ns.T3.Expr.Check.expression
+      check: eYo.T3.Expr.Check.expression
     },
     expression2: {
       order: 2,
@@ -422,7 +422,7 @@ eYo.Stmt.makeSubclass('assert_stmt', {
           placeholder: eYo.Msg.Placeholder.EXPRESSION
         }
       },
-      check: eYo.ns.T3.Expr.Check.expression,
+      check: eYo.T3.Expr.Check.expression,
       didLoad: /** @suppress {globalThis} */ function () {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.BINARY
@@ -434,7 +434,7 @@ eYo.Stmt.makeSubclass('assert_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.ns.Brick.Dflt} brick The brick.
+ * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -461,11 +461,11 @@ eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   return eYo.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
-eYo.ns.Brick.Try.T3s = [
-  eYo.ns.T3.Stmt.try_part,
-  eYo.ns.T3.Stmt.except_part,
-  eYo.ns.T3.Stmt.void_except_part,
-  eYo.ns.T3.Stmt.finally_part,
-  eYo.ns.T3.Stmt.raise_stmt,
-  eYo.ns.T3.Stmt.assert_stmt
+eYo.Brick.Try.T3s = [
+  eYo.T3.Stmt.try_part,
+  eYo.T3.Stmt.except_part,
+  eYo.T3.Stmt.void_except_part,
+  eYo.T3.Stmt.finally_part,
+  eYo.T3.Stmt.raise_stmt,
+  eYo.T3.Stmt.assert_stmt
 ]

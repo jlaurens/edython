@@ -16,14 +16,14 @@ eYo.require('eYo')
 eYo.provide('eYo.Motion')
 
 eYo.forwardDeclare('eYo.Board')
-eYo.forwardDeclare('eYo.ns.Brick')
+eYo.forwardDeclare('eYo.Brick')
 eYo.forwardDeclare('eYo.Field')
 eYo.forwardDeclare('eYo.Magnet')
 
 eYo.forwardDeclare('eYo.DnD')
 eYo.forwardDeclare('eYo.Scaler')
 
-eYo.forwardDeclare('eYo.ns.Dom')
+eYo.forwardDeclare('eYo.Dom')
 
 
 /*
@@ -155,7 +155,7 @@ Object.defineProperties(eYo.Motion.prototype, {
   /**
    * The field that the motion started on,
    * or null if it did not start on a field.
-   * @type {eYo.ns.Brick}
+   * @type {eYo.Brick}
    * @private
    */
   field_: {
@@ -167,7 +167,7 @@ Object.defineProperties(eYo.Motion.prototype, {
    * The brick that the motion started on,
    * including the field's brick if it started on a field,
    * or null if it did not start on a brick.
-   * @type {eYo.ns.Brick}
+   * @type {eYo.Brick}
    * @private
    */
   brick_: {
@@ -184,7 +184,7 @@ Object.defineProperties(eYo.Motion.prototype, {
    * If the motion started in the flyout,
    * this is the root brick of the brick group
    * that was clicked or dragged.
-   * @type {eYo.ns.Brick}
+   * @type {eYo.Brick}
    * @private
    */
   targetBrick_: {
@@ -408,9 +408,9 @@ eYo.Motion.prototype.reset = function() {
     this.touchIDs_.length = 0
     this.touchID_ = null
     this.startDistance_ = 0
-    eYo.ns.Dom.clearTouchIdentifier()
+    eYo.Dom.clearTouchIdentifier()
     Blockly.Tooltip.unblock()
-    eYo.ns.Dom.unbindMouseEvents(this)
+    eYo.Dom.unbindMouseEvents(this)
     this.pidCancel_ = this.pidLong_ = this.pidHandle_ = 0
     this.event__ = null
     this.abortCapture()
@@ -475,11 +475,11 @@ Object.defineProperties(eYo.Motion, {
  * If the return value is true, the caller should prevent default
  * event handling, it should not otherwise.
  * @param {Event} e A mouse/pointer down or touch start event.
- * @param {eYo.ns.Brick|eYo.Board} [starter] The object that received the starting event, either a board or a brick.
+ * @param {eYo.Brick|eYo.Board} [starter] The object that received the starting event, either a board or a brick.
  * @return {Object} Whether the start is successfull
  */
 eYo.Motion.prototype.captureStart = function(e, starter) {
-  if (eYo.ns.Dom.isTargetInput(e)) {
+  if (eYo.Dom.isTargetInput(e)) {
     this.cancel()
     return
   }
@@ -505,7 +505,7 @@ eYo.Motion.prototype.captureStart = function(e, starter) {
     board.updateScreenCalculationsIfScrolled()
     board.markFocused()  
     capturer.call(this)
-    eYo.ns.Dom.gobbleEvent(e)
+    eYo.Dom.gobbleEvent(e)
     return eYo.Motion.CAPTURE_STARTED
   }
   return eYo.Motion.CAPTURE_IGNORED
@@ -625,7 +625,7 @@ eYo.Motion.prototype.captureStartMoreMouse_ = function(e) {
   if (e.type === 'mousedown') {
     this.event__ = e
     this.willHandleClick_()
-    eYo.ns.Dom.gobbleEvent(e)
+    eYo.Dom.gobbleEvent(e)
   }
 }
 
@@ -688,7 +688,7 @@ eYo.Motion.prototype.captureStartMoreTouch_ = function(e) {
       this.startDistance_ = xy1st.distance(xy2nd) // Screen coordinates ?
       // Simply ignore any supplemental touch:
       this.captureStart = eYo.Do.nothing
-      eYo.ns.Dom.gobbleEvent(e)
+      eYo.Dom.gobbleEvent(e)
     }
   }
 }
@@ -707,7 +707,7 @@ eYo.Motion.prototype.captureTouchMove_ = function(e) {
       // - touchmove and not in WebKit xor 
       // - gesturemove and in WebKit
       if (this.scaler_.start() || this.dndmngr_.start()) {
-        eYo.ns.Dom.gobbleEvent(e)
+        eYo.Dom.gobbleEvent(e)
         this.abortLongPress_()
         this.abortHandle_()
         this.captureTouchMove_ = this.captureTouchDragOrScale_
@@ -745,7 +745,7 @@ eYo.Motion.prototype.captureTouchDragOrScale_ = function(e) {
   if (e.type === 'touchmove' || e.type === 'gesturemove') {
     this.event__ = e
     if (e.scale) {
-      eYo.ns.Dom.gobbleEvent(e)
+      eYo.Dom.gobbleEvent(e)
       this.scaler_.update() || this.dndmngr_.update()
     }
   }
@@ -759,7 +759,7 @@ eYo.Motion.prototype.captureTouchEnd_ = function(e) {
   this.event__ = e
   if (this.scaler_.end() || this.dndmngr_.end()) {
     this.reset()
-    eYo.ns.Dom.gobbleEvent(e)
+    eYo.Dom.gobbleEvent(e)
   } else {
     var changedTouch = e.changedTouches.item(0)
     this.touchIDs_ = this.touchIDs_.filter(x => x != changedTouch.identifier)
@@ -790,7 +790,7 @@ eYo.Motion.prototype.captureStartMoreTouchNoMove_ = function(e) {
       this.touchIDs_.push(touch2nd.identifier)
       // Simply ignore any supplemental touch:
       this.captureStart = eYo.Do.nothing
-      eYo.ns.Dom.gobbleEvent(e)
+      eYo.Dom.gobbleEvent(e)
     }
   }
 }
@@ -801,7 +801,7 @@ eYo.Motion.prototype.captureStartMoreTouchNoMove_ = function(e) {
  */
 eYo.Motion.prototype.captureTouchCancel_ = function(e) {
   this.cancel()
-  eYo.ns.Dom.gobbleEvent(e)
+  eYo.Dom.gobbleEvent(e)
 }
 
 /**
@@ -867,7 +867,7 @@ eYo.Motion.prototype.handleLongPress = function(e) {
   } else if ((b = this.board_)) {
     b.showContextMenu_(e)
   }
-  eYo.ns.Dom.gobbleEvent(e)
+  eYo.Dom.gobbleEvent(e)
   this.reset()
 }
 

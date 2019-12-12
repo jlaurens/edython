@@ -15,7 +15,7 @@ eYo.require('eYo')
 
 eYo.require('eYo.Field')
 
-eYo.require('eYo.ns.Brick')
+eYo.require('eYo.Brick')
 eYo.provide('eYo.Py.Exporter')
 
 eYo.forwardDeclare('eYo.XRE')
@@ -93,7 +93,7 @@ eYo.Py.Exporter.prototype.linePush = function (s) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.ns.Brick.Dflt} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.Brick.Dflt} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  See the eponym parameter in `eYo.Xml.domToBrick`.
  * @return some python code
  */
@@ -124,7 +124,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
       this.use_print = true
     }
   }
-  if (brick.type === eYo.ns.T3.Stmt.import_stmt && !brick.disabled) {
+  if (brick.type === eYo.T3.Stmt.import_stmt && !brick.disabled) {
     var importedModules = brick.importedModules
     if (importedModules && importedModules['turtle']) {
       this.use_turtle = true
@@ -157,7 +157,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.ns.Brick.Dflt} eyo The owner of the receiver, to be converted to python.
+ * @param {eYo.Brick.Dflt} eyo The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -221,7 +221,7 @@ eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.ns.Brick.Dflt} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.Brick.Dflt} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -377,7 +377,7 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
   }
 }
 
-Object.defineProperties(eYo.ns.Brick.Dflt.prototype, {
+Object.defineProperties(eYo.Brick.Dflt.prototype, {
   toString: {
     get () {
       return new eYo.Py.Exporter().export(this, {is_deep: true})
