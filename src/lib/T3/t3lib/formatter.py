@@ -431,7 +431,7 @@ goog.require('eYo')
  * @namespace
  **/
 
-eYo.make('T3')
+eYo.makeNS('T3')
 
 """)
         self.feed_statements()
