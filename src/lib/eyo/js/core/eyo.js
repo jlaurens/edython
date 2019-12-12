@@ -74,19 +74,19 @@ eYo.provide = (name) => {
  * @param {String} name
  */
 eYo.require = (name) => {
-  goog.require(/* Type: String*/name)
+  goog.require(/* Type: String*/name.includes('.') ? name : 'eYo.' + name)
 }
 
 eYo.forwardDeclare = (name) => {
-  goog.forwardDeclare(/* Type: String*/name)
+  goog.forwardDeclare(/* Type: String*/name.includes('.') ? name : 'eYo.' + name)
 }
 
 eYo.provide('eYo')
 
-eYo.provide('eYo.Version')
-eYo.provide('eYo.Session')
+eYo.provide('Version')
+eYo.provide('Session')
 
-eYo.forwardDeclare('eYo.Application')
+eYo.forwardDeclare('Application')
 
 /**
  * The default error handler.
