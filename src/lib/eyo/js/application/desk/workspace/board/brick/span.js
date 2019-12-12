@@ -32,10 +32,10 @@
  */
 'use strict'
 
-eYo.provide('eYo.Span')
+eYo.provide('Span')
 
-eYo.forwardDeclare('eYo.Unit')
-eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('Unit')
+eYo.forwardDeclare('Brick')
 
 /**
  * Class for a Span object.

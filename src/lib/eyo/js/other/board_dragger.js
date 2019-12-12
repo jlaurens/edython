@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.provide('eYo.BoardDragger')
+eYo.provide('BoardDragger')
 
 /**
  * Class for a board dragger. Set some scrollbar according to the drag delta. The scrollbar depends on whether the board is in a flyout.

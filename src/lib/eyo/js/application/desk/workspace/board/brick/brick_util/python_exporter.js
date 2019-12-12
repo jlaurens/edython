@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.Field')
+eYo.require('Field')
 
-eYo.require('eYo.Brick')
-eYo.provide('eYo.Py.Exporter')
+eYo.require('Brick')
+eYo.provide('Py.Exporter')
 
-eYo.forwardDeclare('eYo.XRE')
-eYo.forwardDeclare('eYo.Slot')
+eYo.forwardDeclare('XRE')
+eYo.forwardDeclare('Slot')
 
 /**
  * Python code generator.

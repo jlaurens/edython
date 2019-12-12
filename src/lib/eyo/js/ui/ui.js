@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Factory')
-eYo.require('eYo.Factory.Owned')
+eYo.require('Factory')
+eYo.require('Factory.Owned')
 
-// eYo.provide('eYo.UI')
+// eYo.provide('UI')
 
 /**
  * Class for loading, storing, and playing audio.

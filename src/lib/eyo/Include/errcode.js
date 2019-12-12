@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.provide('eYo.E')
+eYo.makeNS('E')
 
 Object.defineProperties(eYo.E, {
   OK: {get () {return 10}}, /* No error */

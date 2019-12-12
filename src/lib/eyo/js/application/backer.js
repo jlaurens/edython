@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.Factory.Owned')
+eYo.require('Factory.Owned')
 
-eYo.require('eYo.Protocol.ChangeCount')
-eYo.provide('eYo.Backer')
+eYo.require('Protocol.ChangeCount')
+eYo.provide('Backer')
 
-eYo.forwardDeclare('eYo.Events')
-eYo.forwardDeclare('eYo.Application')
+eYo.forwardDeclare('Events')
+eYo.forwardDeclare('Application')
 
 /**
  * @param {Object} owner

@@ -11,17 +11,17 @@
  */
 'use strict'
 
-eYo.require('eYo.Do')
-eYo.require('eYo.UI.Owned2')
-eYo.require('eYo.Decorate')
+eYo.require('Do')
+eYo.require('UI.Owned2')
+eYo.require('Decorate')
 
-eYo.forwardDeclare('eYo.Where')
-eYo.forwardDeclare('eYo.Field')
-eYo.forwardDeclare('eYo.Magnet')
+eYo.forwardDeclare('Where')
+eYo.forwardDeclare('Field')
+eYo.forwardDeclare('Magnet')
 
-eYo.forwardDeclare('eYo.Xml')
-eYo.forwardDeclare('eYo.Key')
-eYo.forwardDeclare('eYo.Brick.List')
+eYo.forwardDeclare('Xml')
+eYo.forwardDeclare('Key')
+eYo.forwardDeclare('Brick.List')
 
 goog.forwardDeclare('goog.dom');
 

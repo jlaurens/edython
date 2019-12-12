@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('Fcls')
 
-eYo.provide('eYo.Fcls.Desk')
+eYo.provide('Fcls.Desk')
 
-eYo.forwardDeclare('eYo.Desk')
+eYo.forwardDeclare('Desk')
 
 /**
  * Shared application driver.

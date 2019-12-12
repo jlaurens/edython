@@ -11,20 +11,20 @@
  */
 'use strict'
 
-eYo.require('eYo.Expr')
+eYo.require('Expr')
 
-eYo.require('eYo.Protocol')
-eYo.require('eYo.Change')
+eYo.require('Protocol')
+eYo.require('Change')
 
-eYo.require('eYo.Model.stdtypes')
+eYo.require('Model.stdtypes')
 
-eYo.require('eYo.Model.functions')
-eYo.require('eYo.Msg')
+eYo.require('Model.functions')
+eYo.require('Msg')
 
-eYo.require('eYo.Brick.Primary')
-eYo.require('eYo.Stmt')
-eYo.require('eYo.Protocol.Register')
-eYo.provide('eYo.Brick.Primary')
+eYo.require('Brick.Primary')
+eYo.require('Stmt')
+eYo.require('Protocol.Register')
+eYo.provide('Brick.Primary')
 
 /**
  * List consolidator for assignment target list. Used in primary, only.

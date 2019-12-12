@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('Fcls')
 
-eYo.provide('eYo.Fcls.Zoomer')
+eYo.provide('Fcls.Zoomer')
 
-eYo.forwardDeclare('eYo.Zoomer')
+eYo.forwardDeclare('Zoomer')
 
 /**
  * Faceless driver for the zoomer.

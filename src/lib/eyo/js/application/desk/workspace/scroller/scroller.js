@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.UI')
+eYo.require('UI')
 
-eYo.provide('eYo.Scroller')
+eYo.provide('Scroller')
 
-eYo.forwardDeclare('eYo.Board')
+eYo.forwardDeclare('Board')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')

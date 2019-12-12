@@ -20,7 +20,7 @@
 goog.require('goog.dom');
 
 goog.require('goog.ui.SubMenuRenderer')
-eYo.provide('eYo.SubMenuRenderer')
+eYo.provide('SubMenuRenderer')
 
 /**
  * Default renderer for {@link goog.ui.SubMenu}s.  Each item has the following

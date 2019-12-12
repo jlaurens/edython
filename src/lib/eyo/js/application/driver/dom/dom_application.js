@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Dom')
+eYo.require('Dom')
 
-eYo.provide('eYo.Dom.Application')
+eYo.provide('Dom.Application')
 
-eYo.forwardDeclare('eYo.Application')
+eYo.forwardDeclare('Application')
 
 /**
  * Dom driver for application.

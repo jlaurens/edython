@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('Svg')
 
-eYo.forwardDeclare('eYo.Flyout')
+eYo.forwardDeclare('Flyout')
 
 /**
  * Dom driver for the flyout.

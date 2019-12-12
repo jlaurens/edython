@@ -10,7 +10,7 @@
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 
-eYo.provide('eYo.font-face')
+eYo.provide('font-face')
 
 /**
 * Setup the font style, amongst others.

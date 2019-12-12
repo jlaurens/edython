@@ -12,10 +12,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Pane')
+eYo.require('Pane')
 
-eYo.require('eYo.Decorate')
-eYo.provide('eYo.Graphic')
+eYo.require('Decorate')
+eYo.provide('Graphic')
 
 /**
  * Class for a graphic environment.

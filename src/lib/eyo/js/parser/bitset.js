@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.provide('eYo.BitSet')
+eYo.provide('BitSet')
 
 /* Bitset primitives used by the parser generator *-/
 

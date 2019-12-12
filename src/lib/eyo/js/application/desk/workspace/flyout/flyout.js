@@ -11,18 +11,18 @@
  */
 'use strict'
 
-eYo.require('eYo.Protocol')
-eYo.require('eYo.UI')
-eYo.require('eYo.Unit')
-eYo.require('eYo.Events')
+eYo.require('Protocol')
+eYo.require('UI')
+eYo.require('Unit')
+eYo.require('Events')
 
-eYo.forwardDeclare('eYo.Library')
-eYo.forwardDeclare('eYo.Style')
-eYo.forwardDeclare('eYo.Brick')
-eYo.forwardDeclare('eYo.FlyoutToolbar')
-eYo.forwardDeclare('eYo.Tooltip')
-eYo.forwardDeclare('eYo.MenuRenderer')
-eYo.forwardDeclare('eYo.MenuButtonRenderer')
+eYo.forwardDeclare('Library')
+eYo.forwardDeclare('Style')
+eYo.forwardDeclare('Brick')
+eYo.forwardDeclare('FlyoutToolbar')
+eYo.forwardDeclare('Tooltip')
+eYo.forwardDeclare('MenuRenderer')
+eYo.forwardDeclare('MenuButtonRenderer')
 
 /**
  * @type {eYo.Flyout}

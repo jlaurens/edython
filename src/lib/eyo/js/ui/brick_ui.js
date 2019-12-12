@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.Factory.Owned')
-eYo.require('eYo.Brick')
-eYo.require('eYo.Change')
+eYo.require('Factory.Owned')
+eYo.require('Brick')
+eYo.require('Change')
 
-eYo.provide('eYo.Brick.UI')
+eYo.provide('Brick.UI')
 
-eYo.forwardDeclare('eYo.Svg.Brick')
+eYo.forwardDeclare('Svg.Brick')
 
 /**
  * Class for a Render.

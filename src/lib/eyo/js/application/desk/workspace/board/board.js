@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.UI')
+eYo.require('UI')
 
-eYo.require('eYo.Decorate')
-eYo.provide('eYo.Board')
+eYo.require('Decorate')
+eYo.provide('Board')
 
-eYo.forwardDeclare('eYo.Workspace')
+eYo.forwardDeclare('Workspace')
 
-eYo.forwardDeclare('eYo.Metrics')
+eYo.forwardDeclare('Metrics')
 
 goog.forwardDeclare('goog.array')
 goog.forwardDeclare('goog.math')

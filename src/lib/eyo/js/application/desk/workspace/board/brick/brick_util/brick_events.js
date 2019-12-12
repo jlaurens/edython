@@ -11,16 +11,16 @@
  */
 'use strict'
 
-eYo.require('eYo.Events')
-eYo.require('eYo.Events.Abstract')
+eYo.require('Events')
+eYo.require('Events.Abstract')
 
-eYo.require('eYo.Data')
+eYo.require('Data')
 
-eYo.provide('eYo.Events.BrickMove')
-eYo.provide('eYo.Events.BrickDelete')
-eYo.provide('eYo.Events.BrickBase')
-eYo.provide('eYo.Events.BrickCreate')
-eYo.provide('eYo.Events.BrickChange')
+eYo.provide('Events.BrickMove')
+eYo.provide('Events.BrickDelete')
+eYo.provide('Events.BrickBase')
+eYo.provide('Events.BrickCreate')
+eYo.provide('Events.BrickChange')
 
 
 goog.forwardDeclare('goog.array')

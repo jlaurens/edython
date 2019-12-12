@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('eYo.GMR')
-eYo.require('eYo.TKN')
+eYo.require('GMR')
+eYo.require('TKN')
 
-eYo.provide('eYo.GMR.Accel')
+eYo.provide('GMR.Accel')
 
 /* Parser accelerator module */
 

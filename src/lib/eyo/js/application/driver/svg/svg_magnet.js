@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('Svg')
 
-eYo.forwardDeclare('eYo.Magnet')
+eYo.forwardDeclare('Magnet')
 
 /**
  * Svg driver for magnets.

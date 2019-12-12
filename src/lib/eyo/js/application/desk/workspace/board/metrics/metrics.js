@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Factory.Owned')
+eYo.require('Factory.Owned')
 
-eYo.forwardDeclare('eYo.Board')
-eYo.forwardDeclare('eYo.Geometry')
+eYo.forwardDeclare('Board')
+eYo.forwardDeclare('Geometry')
 
 /**
  * The `content` rect is enclosing all the bricks.

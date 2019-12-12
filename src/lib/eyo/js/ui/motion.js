@@ -11,17 +11,17 @@
  */
 'use strict'
 
-eYo.provide('eYo.Motion')
+eYo.provide('Motion')
 
-eYo.forwardDeclare('eYo.Board')
-eYo.forwardDeclare('eYo.Brick')
-eYo.forwardDeclare('eYo.Field')
-eYo.forwardDeclare('eYo.Magnet')
+eYo.forwardDeclare('Board')
+eYo.forwardDeclare('Brick')
+eYo.forwardDeclare('Field')
+eYo.forwardDeclare('Magnet')
 
-eYo.forwardDeclare('eYo.DnD')
-eYo.forwardDeclare('eYo.Scaler')
+eYo.forwardDeclare('DnD')
+eYo.forwardDeclare('Scaler')
 
-eYo.forwardDeclare('eYo.Dom')
+eYo.forwardDeclare('Dom')
 
 
 /*

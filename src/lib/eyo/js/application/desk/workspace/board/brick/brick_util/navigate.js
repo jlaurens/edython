@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('Brick')
 
-eYo.require('eYo.Focus')
-eYo.provide('eYo.Navigate')
+eYo.require('Focus')
+eYo.provide('Navigate')
 
 /**
  * Tab navigation.

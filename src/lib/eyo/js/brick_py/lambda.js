@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick.List')
-eYo.require('eYo.Brick.Primary')
+eYo.require('Brick.List')
+eYo.require('Brick.Primary')
 
-eYo.require('eYo.Magnet')
+eYo.require('Magnet')
 goog.require('goog.dom');
-eYo.provide('eYo.Brick.Lambda')
-eYo.provide('eYo.Brick.Parameter')
+eYo.provide('Brick.Lambda')
+eYo.provide('Brick.Parameter')
 
 /**
  * List consolidator for parameter list.

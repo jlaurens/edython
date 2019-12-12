@@ -32,12 +32,12 @@
  */
 'use strict'
 
-eYo.require('eYo.XRE')
+eYo.require('XRE')
 
-eYo.require('eYo.Decorate')
+eYo.require('Decorate')
 goog.require('goog.dom')
 
-eYo.provide('eYo.Data')
+eYo.provide('Data')
 
 /**
  * Base property constructor.

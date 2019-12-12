@@ -12,10 +12,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Pane')
+eYo.require('Pane')
 
-eYo.require('eYo.Decorate')
-eYo.provide('eYo.Template')
+eYo.require('Decorate')
+eYo.provide('Template')
 
 /**
  * Class for a template environment.

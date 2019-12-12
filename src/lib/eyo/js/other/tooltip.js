@@ -11,9 +11,9 @@
  */
 'use strict';
 
-eYo.require('eYo.Brick')
+eYo.require('Brick')
 
-eYo.provide('eYo.Tooltip')
+eYo.provide('Tooltip')
 
 /**
  * Add a tooltip programatically to an element

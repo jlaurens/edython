@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.provide('eYo.Options')
+eYo.provide('Options')
 
-eYo.forwardDeclare('eYo.Flyout')
+eYo.forwardDeclare('Flyout')
 
 
 /**

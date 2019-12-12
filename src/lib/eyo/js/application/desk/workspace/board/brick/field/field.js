@@ -11,18 +11,18 @@
  */
 'use strict';
 
-eYo.require('eYo.Protocol')
-eYo.require('eYo.UI.Owned2')
+eYo.require('Protocol')
+eYo.require('UI.Owned2')
 
-eYo.provide('eYo.Field')
+eYo.provide('Field')
 
-eYo.provide('eYo.FieldLabel')
+eYo.provide('FieldLabel')
 
-eYo.forwardDeclare('eYo.Size')
-eYo.forwardDeclare('eYo.Events')
+eYo.forwardDeclare('Size')
+eYo.forwardDeclare('Events')
 
 
-eYo.provide('eYo.FieldInput')
+eYo.provide('FieldInput')
 
 /**
  * Abstract class for text fields.

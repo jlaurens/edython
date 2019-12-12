@@ -13,7 +13,7 @@
 
 eYo.makeNS('Decorate')
 
-eYo.forwardDeclare('eYo.Do')
+eYo.forwardDeclare('Do')
 
 /**
  * Decorate the function to be reentrant.

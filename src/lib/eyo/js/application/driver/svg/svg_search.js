@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Dom.Search')
+eYo.require('Dom.Search')
 
-eYo.forwardDeclare('eYo.Search')
-// eYo.forwardDeclare('eYo.SearchToolbar')
+eYo.forwardDeclare('Search')
+// eYo.forwardDeclare('SearchToolbar')
 
 /**
  * Svg driver for the search pane.

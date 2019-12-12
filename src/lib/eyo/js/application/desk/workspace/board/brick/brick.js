@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.Decorate')
-eYo.require('eYo.Do')
-eYo.require('eYo.UI')
-eYo.require('eYo.Model')
+eYo.require('Decorate')
+eYo.require('Do')
+eYo.require('UI')
+eYo.require('Model')
 
-eYo.require('eYo.Change')
-eYo.require('eYo.Data')
+eYo.require('Change')
+eYo.require('Data')
 
 /**
  * The namespace is expected to contain everything about bricks.
@@ -27,24 +27,24 @@ eYo.require('eYo.Data')
  */
 eYo.UI.makeNS('Brick')
 
-// eYo.provide('eYo.Brick.Dflt')
+// eYo.provide('Brick.Dflt')
 
-eYo.forwardDeclare('eYo.Expr')
-eYo.forwardDeclare('eYo.Stmt')
+eYo.forwardDeclare('Expr')
+eYo.forwardDeclare('Stmt')
 
-eYo.forwardDeclare('eYo.XRE')
-eYo.forwardDeclare('eYo.T3')
-eYo.forwardDeclare('eYo.Where')
-eYo.forwardDeclare('eYo.Do')
+eYo.forwardDeclare('XRE')
+eYo.forwardDeclare('T3')
+eYo.forwardDeclare('Where')
+eYo.forwardDeclare('Do')
 
-eYo.forwardDeclare('eYo.Events')
-eYo.forwardDeclare('eYo.Span')
-eYo.forwardDeclare('eYo.Field')
-eYo.forwardDeclare('eYo.Slot')
-eYo.forwardDeclare('eYo.Magnets')
-eYo.forwardDeclare('eYo.Expr')
-eYo.forwardDeclare('eYo.Stmt')
-eYo.forwardDeclare('eYo.Focus')
+eYo.forwardDeclare('Events')
+eYo.forwardDeclare('Span')
+eYo.forwardDeclare('Field')
+eYo.forwardDeclare('Slot')
+eYo.forwardDeclare('Magnets')
+eYo.forwardDeclare('Expr')
+eYo.forwardDeclare('Stmt')
+eYo.forwardDeclare('Focus')
 
 /**
  * Brick manager.

@@ -28,18 +28,6 @@ var eYo = (() => {
 })()
 
 /**
- * Contrary to goog.inherits, does not erase the childC9r.prototype.
- * IE<11
- * @param {Function} childC9r
- * @param {Function} superC9r
- */
-eYo.inherits = function (childC9r, superC9r) {
-  childC9r.superClass_ = superC9r.prototype
-  Object.setPrototypeOf(childC9r.prototype, superC9r.prototype)
-  childC9r.prototype.constructor = childC9r
-}
-
-/**
  * Reference to the global object.
  * https://www.ecma-international.org/ecma-262/9.0/index.html#sec-global-object
  *
@@ -62,31 +50,161 @@ eYo.global =
     self;
 
 /**
+ * Whether the argument is a string.
+ * @param {*} what
+ */
+eYo.isStr = (what) => {
+  return typeof what === 'string'
+}
+
+/**
+ * Whether the argument is a dictionary.
+ * @param {*} what
+ */
+eYo.isD = (what) => {
+  return !(goog.isNull(what) || goog.isBoolean(what) || goog.isNumber(what) || eYo.isStr(what) || eYo.isF(what) || goog.isArray(what))
+}
+
+/**
+ * Whether the argument is an object created with `{...}` syntax.
+ * @param {*} what
+ */
+eYo.isO = (() => {
+  var pttp = Object.getPrototypeOf({})
+  return (what) => {
+    return what && Object.getPrototypeOf(what) === pttp
+  }
+})()
+
+/**
+ * Whether the argument is `eYo.NA`.
+ * @param {*} what
+ */
+eYo.isNA = (what) => {
+  return what === eYo.NA
+}
+
+/**
+ * Whether the argument is not `undefined`.
+ * @param {*} what
+ */
+eYo.isDef = (what) => {
+  return what !== eYo.NA
+}
+
+/**
+ * Whether the argument is a function.
+ * @param {*} what
+ * @return {!Boolean}
+ */
+eYo.isF = (what) => {
+  return typeof what === 'function' && !!what.call
+}
+
+/**
+ * Returns the argument if its a function, `eYo.NA` otherwise.
+ * @param {*} what
+ * @return {Function|eYo.NA}
+ */
+eYo.asF = (what) => {
+  return typeof what === 'function' && !!what.call ? what : eYo.NA
+}
+
+/**
+ * Returns the evaluated argument if its a function,
+ * the argument itself otherwise.
+ * @param {*} what
+ * @return {Function|eYo.NA}
+ */
+eYo.called = (what) => {
+  return eYo.isF(what) ? what() : what
+}
+
+/**
+ * Whether sub_ is a subclass of Super, or equals to Super...
+ * @param {Function} Sub
+ * @param {Function} Super
+ * @return {Boolean}
+ */
+eYo.isSubclass = (Sub, Super) => {
+  return !!Super && !!Sub && eYo.isF(Super) && (Sub === Super || Sub.prototype instanceof Super)
+}
+
+/**
  * @param {String} name
  */
-eYo.provide = (name) => {
-  if (name.includes('.') || !eYo.global[name]) {
-    goog.provide(/* Type: String*/name)
+eYo.constructor.prototype.provide = (name) => {
+  var ns = eYo
+  var f = (first, second, ...rest) => {
+    if (first) {
+      if (!ns[first]) {
+        if (eYo.isStr(second)) {
+          ns = ns.makeNS(first)
+          f(second, ...args)
+        } else {
+          ns = second
+        }
+      }
+    }
   }
 }
 
 /**
  * @param {String} name
  */
-eYo.require = (name) => {
+eYo.constructor.prototype.require = (name) => {
   goog.require(/* Type: String*/name.includes('.') ? name : 'eYo.' + name)
 }
 
-eYo.forwardDeclare = (name) => {
+eYo.constructor.prototype.forwardDeclare = (name) => {
   goog.forwardDeclare(/* Type: String*/name.includes('.') ? name : 'eYo.' + name)
 }
 
-eYo.provide('eYo')
+/**
+ * @name {eYo.makeNS}
+ * Make a namespace by subclassing the caller's constructor.
+ * @param {!Object} ns - a namespace, created object will be `ns[key]`. Defaults to the receiver.
+ * @param {String} key - sentencecase name, created object will be `ns[key]`.
+ * @return {Object}
+ */
+eYo.constructor.prototype.makeNS = function (ns, key) {
+  if (eYo.isStr(ns)) {
+    eYo.parameterAssert(!key, 'Unexpected key argument')
+    key = ns
+    ns = eYo
+  }
+  var Super = this.constructor
+  var NS = function () {
+    Super.call(this)
+  }
+  eYo.inherits(NS, Super)
+  Object.defineProperty(NS.prototype, 'super', {
+    value: this,
+  })
+  var ans = new NS()
+  if (ns[key]) {
+    throw new Error(`ns[${key}] already exists.`)
+  }
+  Object.defineProperty(ns, key, {
+    value: ans,
+  })
+  Object.defineProperties(ans, {
+    name: { value: `${ns.name}.${key}` },
+  })
+  return ans
+}
 
-eYo.provide('Version')
-eYo.provide('Session')
-
-eYo.forwardDeclare('Application')
+/**
+ * Contrary to goog.inherits, does not erase the childC9r.prototype.
+ * IE<11
+ * @param {Function} childC9r
+ * @param {Function} superC9r
+ */
+eYo.inherits = function (childC9r, superC9r) {
+  childC9r.superClass_ = superC9r.prototype
+  Object.setPrototypeOf(childC9r.prototype, superC9r.prototype)
+  childC9r.prototype.constructor = childC9r
+}
 
 /**
  * The default error handler.
@@ -188,8 +306,12 @@ eYo.throw = (what) => {
  * @name {eYo.NA}
  */
 
-eYo.Version = Object.create(null)
-eYo.Session = Object.create(null)
+eYo.provide('eYo')
+
+eYo.provide('Version')
+eYo.provide('Session')
+
+eYo.forwardDeclare('Application')
 
 Object.defineProperties(eYo.Version, {
   /** @define {number} */
@@ -251,119 +373,3 @@ eYo.setup = (() => {
 
 eYo.Temp = Object.create(null)
 eYo.Debug = Object.create(null)
-
-/**
- * Whether the argument is a string.
- * @param {*} what
- */
-eYo.isStr = (what) => {
-  return typeof what === 'string'
-}
-
-/**
- * Whether the argument is a dictionary.
- * @param {*} what
- */
-eYo.isD = (what) => {
-  return !(goog.isNull(what) || goog.isBoolean(what) || goog.isNumber(what) || eYo.isStr(what) || eYo.isF(what) || goog.isArray(what))
-}
-
-/**
- * Whether the argument is an object created with `{...}` syntax.
- * @param {*} what
- */
-eYo.isO = (() => {
-  var pttp = Object.getPrototypeOf({})
-  return (what) => {
-    return what && Object.getPrototypeOf(what) === pttp
-  }
-})()
-
-/**
- * Whether the argument is `eYo.NA`.
- * @param {*} what
- */
-eYo.isNA = (what) => {
-  return what === eYo.NA
-}
-
-/**
- * Whether the argument is not `undefined`.
- * @param {*} what
- */
-eYo.isDef = (what) => {
-  return what !== eYo.NA
-}
-
-/**
- * Whether the argument is a function.
- * @param {*} what
- * @return {!Boolean}
- */
-eYo.isF = (what) => {
-  return typeof what === 'function' && !!what.call
-}
-
-/**
- * Returns the argument if its a function, `eYo.NA` otherwise.
- * @param {*} what
- * @return {Function|eYo.NA}
- */
-eYo.asF = (what) => {
-  return typeof what === 'function' && !!what.call ? what : eYo.NA
-}
-
-/**
- * Returns the evaluated argument if its a function,
- * the argument itself otherwise.
- * @param {*} what
- * @return {Function|eYo.NA}
- */
-eYo.called = (what) => {
-  return eYo.isF(what) ? what() : what
-}
-
-/**
- * Whether sub_ is a subclass of Super, or equals to Super...
- * @param {Function} Sub
- * @param {Function} Super
- * @return {Boolean}
- */
-eYo.isSubclass = (Sub, Super) => {
-  return !!Super && !!Sub && eYo.isF(Super) && (Sub === Super || Sub.prototype instanceof Super)
-}
-
-
-/**
- * @name {eYo.makeNS}
- * Make a namespace by subclassing the caller's constructor.
- * @param {!Object} ns - a namespace, created object will be `ns[key]`. Defaults to the receiver.
- * @param {String} key - sentencecase name, created object will be `ns[key]`.
- * @return {Object}
- */
-eYo.constructor.prototype.makeNS = function (ns, key) {
-  if (eYo.isStr(ns)) {
-    eYo.parameterAssert(!key, 'Unexpected key argument')
-    key = ns
-    ns = eYo
-  }
-  var Super = this.constructor
-  var NS = function () {
-    Super.call(this)
-  }
-  eYo.inherits(NS, Super)
-  Object.defineProperty(NS.prototype, 'super', {
-    value: this,
-  })
-  var ans = new NS()
-  if (ns[key]) {
-    throw new Error(`ns[${key}] already exists.`)
-  }
-  Object.defineProperty(ns, key, {
-    value: ans,
-  })
-  Object.defineProperties(ans, {
-    name: { value: `${ns.name}.${key}` },
-  })
-  return ans
-}

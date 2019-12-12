@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('Fcls')
 
-eYo.provide('eYo.Fcls.Flyout')
+eYo.provide('Fcls.Flyout')
 
-eYo.forwardDeclare('eYo.Flyout')
+eYo.forwardDeclare('Flyout')
 
 /**
  * Shared application driver.

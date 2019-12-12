@@ -11,12 +11,12 @@
  */
 'use strict'
 
-eYo.require('eYo.Do')
+eYo.require('Do')
 
-eYo.require('eYo.E')
-eYo.require('eYo.TKN')
-eYo.require('eYo.Node')
-eYo.provide('eYo.Scan')
+eYo.require('E')
+eYo.require('TKN')
+eYo.require('Node')
+eYo.provide('Scan')
 
 /* Scan implementation */
 

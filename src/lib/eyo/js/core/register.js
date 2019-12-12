@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Protocol')
+eYo.require('Protocol')
 
-eYo.provide('eYo.Protocol.Register')
+eYo.provide('Protocol.Register')
 
 eYo.Protocol.Register = function (key, filter) {
   var ans = {

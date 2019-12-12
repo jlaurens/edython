@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('Svg')
 
-eYo.forwardDeclare('eYo.TrashCan')
+eYo.forwardDeclare('TrashCan')
 
 /**
  * Svg driver fro the trash can.

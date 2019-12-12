@@ -13,9 +13,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Pane')
+eYo.require('Pane')
 
-eYo.provide('eYo.Terminal')
+eYo.provide('Terminal')
 
 /**
  * Class for a terminal.

@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('Svg')
 
-eYo.forwardDeclare('eYo.Flyout')
-eYo.forwardDeclare('eYo.FlyoutToolbar')
+eYo.forwardDeclare('Flyout')
+eYo.forwardDeclare('FlyoutToolbar')
 
 /**
  * Svg driver for the flyout

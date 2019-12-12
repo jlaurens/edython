@@ -16,10 +16,10 @@
  * @namespace
  **/
 
-eYo.require('eYo.Do')
-eYo.provide('eYo.ID')
+eYo.require('Do')
+eYo.provide('ID')
 
-eYo.provide('eYo.Const')
+eYo.provide('Const')
 
 eYo.assert(XRegExp, 'load XRegExp before')
 
@@ -46,7 +46,7 @@ eYo.Const.Field = {
   NCSTR: 'NCSTR'
 }
 
-eYo.provide('eYo.Key')
+eYo.provide('Key')
 
 eYo.Key = {}
 

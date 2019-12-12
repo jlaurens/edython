@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.Stmt')
+eYo.require('Stmt')
 
-eYo.require('eYo.Msg')
+eYo.require('Msg')
 
-eYo.require('eYo.Brick.List')
+eYo.require('Brick.List')
 goog.require('goog.dom')
 
-eYo.provide('eYo.Brick.Yield')
+eYo.provide('Brick.Yield')
 
 /**
  * Class for a Delegate, yield_expr.

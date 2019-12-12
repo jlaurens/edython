@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('Fcls')
 
-eYo.provide('eYo.Fcls.Slot')
+eYo.provide('Fcls.Slot')
 
-eYo.forwardDeclare('eYo.Slot')
+eYo.forwardDeclare('Slot')
 
 /**
  * Faceless driver for slots.

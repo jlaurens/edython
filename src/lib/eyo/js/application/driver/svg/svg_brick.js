@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
-eYo.require('eYo.Dom.Brick')
+eYo.require('Svg')
+eYo.require('Dom.Brick')
 
-eYo.forwardDeclare('eYo.Brick')
-eYo.forwardDeclare('eYo.Focus')
+eYo.forwardDeclare('Brick')
+eYo.forwardDeclare('Focus')
 goog.forwardDeclare('goog.dom')
 
 /**

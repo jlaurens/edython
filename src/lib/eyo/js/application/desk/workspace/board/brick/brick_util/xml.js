@@ -27,15 +27,15 @@
  */
 'use strict'
 
-eYo.require('eYo.Const')
+eYo.require('Const')
 
-eYo.require('eYo.XRE')
-eYo.require('eYo.T3')
-eYo.require('eYo.Brick')
+eYo.require('XRE')
+eYo.require('T3')
+eYo.require('Brick')
 
 goog.require('goog.dom');
 
-eYo.provide('eYo.Xml')
+eYo.provide('Xml')
 
 eYo.Xml = Object.create({
   URN: 'urn:edython:',
@@ -75,30 +75,30 @@ eYo.Xml = Object.create({
   EDYTHON: 'edython', // tag name
 })
 
-eYo.provide('eYo.Xml.Text')
-eYo.provide('eYo.Xml.Assignment')
-eYo.provide('eYo.Xml.Starred')
-eYo.provide('eYo.Xml.Literal')
-eYo.provide('eYo.Xml.Comparison')
-eYo.provide('eYo.Xml.Data')
-eYo.provide('eYo.Xml.Primary')
-eYo.provide('eYo.Xml.Recover')
-eYo.provide('eYo.Xml.Group')
-eYo.provide('eYo.Xml.Compatibility')
-eYo.provide('eYo.Xml.Call')
+eYo.provide('Xml.Text')
+eYo.provide('Xml.Assignment')
+eYo.provide('Xml.Starred')
+eYo.provide('Xml.Literal')
+eYo.provide('Xml.Comparison')
+eYo.provide('Xml.Data')
+eYo.provide('Xml.Primary')
+eYo.provide('Xml.Recover')
+eYo.provide('Xml.Group')
+eYo.provide('Xml.Compatibility')
+eYo.provide('Xml.Call')
 
 // Next are used to let the compiler know that we need them
-eYo.forwardDeclare('eYo.Brick.Functions');
-eYo.forwardDeclare('eYo.Brick.Stdtypes');
-eYo.forwardDeclare('eYo.Brick.Random');
-eYo.forwardDeclare('eYo.Brick.Math');
-eYo.forwardDeclare('eYo.Brick.CMath');
-eYo.forwardDeclare('eYo.Brick.Turtle');
-eYo.forwardDeclare('eYo.Brick.Decimal');
-eYo.forwardDeclare('eYo.Brick.Fractions');
-eYo.forwardDeclare('eYo.Brick.Statistics');
-eYo.forwardDeclare('eYo.Brick.Range')
-eYo.forwardDeclare('eYo.Expr')
+eYo.forwardDeclare('Brick.Functions');
+eYo.forwardDeclare('Brick.Stdtypes');
+eYo.forwardDeclare('Brick.Random');
+eYo.forwardDeclare('Brick.Math');
+eYo.forwardDeclare('Brick.CMath');
+eYo.forwardDeclare('Brick.Turtle');
+eYo.forwardDeclare('Brick.Decimal');
+eYo.forwardDeclare('Brick.Fractions');
+eYo.forwardDeclare('Brick.Statistics');
+eYo.forwardDeclare('Brick.Range')
+eYo.forwardDeclare('Expr')
 
 /**
  * Converts a DOM structure into plain text.
@@ -254,7 +254,7 @@ eYo.Xml.domToBoard = function (xml, owner) {
   return newBlockIds
 }
 
-goog.exportSymbol('eYo.Xml.domToBoard', eYo.Xml.domToBoard)
+goog.exportSymbol('Xml.domToBoard', eYo.Xml.domToBoard)
 
 /**
  * Create a new brick, with full contents.
@@ -359,9 +359,9 @@ eYo.Xml.brickToDom = (() => {
   }
 }) ()
 
-goog.exportSymbol('eYo.Xml.brickToDom', eYo.Xml.brickToDom)
+goog.exportSymbol('Xml.brickToDom', eYo.Xml.brickToDom)
 
-eYo.require('eYo.Brick.Group')
+eYo.require('Brick.Group')
 
 /**
  * The xml tag name of this brick, as it should appear in the saved data.
@@ -373,9 +373,9 @@ eYo.Brick.Dflt.prototype.xmlAttr = function () {
   return attr || (this.type && this.type.substring(4)) || eYo.Key.PLACEHOLDER
 }
 
-eYo.require('eYo.Brick.List')
+eYo.require('Brick.List')
 
-eYo.require('eYo.Brick.Literal')
+eYo.require('Brick.Literal')
 
 /**
  * The xml tag name of this brick, as it should appear in the saved data.
@@ -389,7 +389,7 @@ eYo.Brick.List.prototype.xmlAttr = function () {
     : eYo.Brick.List.superClass_.xmlAttr.call(this)
 }
 
-eYo.require('eYo.Brick.Primary')
+eYo.require('Brick.Primary')
 
 /**
  * Convert the brick's value to a text dom element.
@@ -419,9 +419,9 @@ eYo.Xml.Text.fromDom = function (brick, element) {
   )
 }
 
-eYo.require('eYo.Brick.Assignment')
+eYo.require('Brick.Assignment')
 
-eYo.require('eYo.Brick.Starred')
+eYo.require('Brick.Starred')
 /**
  * Try to create a Literal brick from the given element.
  * @param {Element} element dom element to be completed.
@@ -473,7 +473,7 @@ eYo.Xml.Literal.domToComplete = (() => {
   }
 }) ()
 
-eYo.require('eYo.Brick.Operator')
+eYo.require('Brick.Operator')
 
 /**
  * Save the brick's data.
@@ -657,7 +657,7 @@ eYo.Xml.stringToBrick = function (string, owner) {
   return brick
 }
 
-eYo.require('eYo.Brick.Group')
+eYo.require('Brick.Group')
 
 /**
  * Recover nodes from a possibly corrupted xml data.
@@ -950,7 +950,7 @@ eYo.Xml.domToBrick = (() => {
   }
 })()
 
-goog.exportSymbol('eYo.Xml.domToBrick', eYo.Xml.domToBrick)
+goog.exportSymbol('Xml.domToBrick', eYo.Xml.domToBrick)
 
 /**
  * Decode a brick subtree from XML.
@@ -1013,7 +1013,7 @@ eYo.Xml.fromDom = function (brick, element) {
                 targetM4t.connect(m4t)
               }
             } else {
-              console.error('eYo.Xml.fromDom: Ignoring', child)
+              console.error('Xml.fromDom: Ignoring', child)
             }
           } else if (slot) {
             console.error('Missing connection')

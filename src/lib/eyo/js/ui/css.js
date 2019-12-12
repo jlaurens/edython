@@ -15,14 +15,14 @@
  * @name eYo.Css
  * @namespace
  */
-eYo.require('eYo.Style')
+eYo.require('Style')
 
-eYo.provide('eYo.Css')
+eYo.provide('Css')
 
 
-eYo.forwardDeclare('eYo.Unit')
-eYo.forwardDeclare('eYo.font-face')
-eYo.forwardDeclare('eYo.Shape')
+eYo.forwardDeclare('Unit')
+eYo.forwardDeclare('font-face')
+eYo.forwardDeclare('Shape')
 goog.forwardDeclare('goog.cssom');
 
 eYo.Css.insertRuleAt = (() => {

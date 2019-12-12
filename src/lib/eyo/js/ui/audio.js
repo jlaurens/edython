@@ -11,9 +11,8 @@
  */
 'use strict'
 
-eYo.provide('eYo.Audio')
+eYo.require('Dom')
 
-eYo.forwardDeclare('eYo.Dom')
 goog.forwardDeclare('goog.userAgent')
 
 /**
@@ -21,76 +20,77 @@ goog.forwardDeclare('goog.userAgent')
  * @param {String} pathToMedia
  * @constructor
  */
-eYo.Audio = function(pathToMedia) {
-  /**
-   * Database of pre-loaded sounds.
-   * @private
-   * @const
-   */
-  this.sounds_ = Object.create(null)
-  try {
-    this.tester_ = new Audio()
-    this.load(pathToMedia, 'click')
-    this.load(pathToMedia, 'disconnect')
-    this.load(pathToMedia, 'delete')
-  } catch(e) {
-    return
-  }
-
-  // Android ignores any sound not loaded as a result of a user action.
-  // Bind temporary hooks that preload the sounds.
-  var soundBinds
-  var self = this
-  var unbindSounds = () => {
-    while (soundBinds.length) {
-      eYo.Dom.unbindEvent(soundBinds.pop())
+eYo.Dom.Audio.makeClass('Audio', {
+  init(pathToMedia) {
+    /**
+     * Database of pre-loaded sounds.
+     * @private
+     * @const
+     */
+    this.sounds_ = Object.create(null)
+    try {
+      this.tester_ = new Audio()
+      this.load(pathToMedia, 'click')
+      this.load(pathToMedia, 'disconnect')
+      this.load(pathToMedia, 'delete')
+    } catch(e) {
+      return
     }
-    self.preload()
-  }
-  // These are bound on mouse/touch events with Blockly.bindEventWithChecks_, so
-  // they restrict the touch identifier that will be recognized.  But this is
-  // really something that happens on a click, not a drag, so that's not
-  // necessary.
 
-  soundBinds = [eYo.Dom.bindEvent(
-    document,
-    'mousemove',
-    unbindSounds,
-    {noCaptureIdentifier: true}
-  ), eYo.Dom.bindEvent(
-    document,
-    'touchstart',
-    unbindSounds,
-    {noCaptureIdentifier: true}
-  )]
-}
+    // Android ignores any sound not loaded as a result of a user action.
+    // Bind temporary hooks that preload the sounds.
+    var soundBinds
+    var self = this
+    var unbindSounds = () => {
+      while (soundBinds.length) {
+        eYo.Dom.Audio.unbindEvent(soundBinds.pop())
+      }
+      self.preload()
+    }
+    // These are bound on mouse/touch events with Blockly.bindEventWithChecks_, so
+    // they restrict the touch identifier that will be recognized.  But this is
+    // really something that happens on a click, not a drag, so that's not
+    // necessary.
 
-Object.defineProperties(eYo.Audio.prototype, {
+    soundBinds = [eYo.Dom.Audio.bindEvent(
+      document,
+      'mousemove',
+      unbindSounds,
+      {noCaptureIdentifier: true}
+    ), eYo.Dom.bindEvent(
+      document,
+      'touchstart',
+      unbindSounds,
+      {noCaptureIdentifier: true}
+    )]
+  },
   /**
-   * Time that the last sound was played.
-   * @type {Date}
-   * @private
+   * Dispose of this audio manager.
    */
-  lastPlay_: { value: null, writable: true }
+  dispose () {
+    this.sounds_ = null
+    this.tester_ = null
+  },
+  linked: {
+    /**
+     * Time that the last sound was played.
+     * @type {Date}
+     * @private
+     */
+    lastPlay: { value: null, writable: true },
+  }
 })
 
 /**
  * Play a sound at least this amount of milliseconds.
  */
-eYo.Audio.SOUND_LIMIT = 100
+eYo.Dom.Audio.SOUND_LIMIT = 100
 
 /**
  * Default volume.
  */
-eYo.Audio.SOUND_VOLUME = 0.5
+eYo.Dom.Audio.SOUND_VOLUME = 0.5
 
-/**
- * Dispose of this audio manager.
- */
-eYo.Audio.prototype.dispose = function() {
-  this.sounds_ = null
-  this.tester_ = null
-}
 
 /**
  * Load an audio file.  Cache it, ready for playing.
@@ -99,7 +99,7 @@ eYo.Audio.prototype.dispose = function() {
  *   Filenames include path from Blockly's root.  File extensions matter.
  * @param {string} name Name of sound.
  */
-eYo.Audio.prototype.load = function(pathToMedia, name) {
+eYo.Dom.Audio.prototype.load = function(pathToMedia, name) {
   var base = pathToMedia + name + '.'
   ;[ 'mp3', 'ogg', 'wav' ].some(ext => {
     if (this.tester_.canPlayType('audio/' + ext)) {
@@ -115,7 +115,7 @@ eYo.Audio.prototype.load = function(pathToMedia, name) {
 /**
  * Preload all the audio files so that they play quickly when asked for.
  */
-eYo.Audio.prototype.preload = function() {
+eYo.Dom.Audio.prototype.preload = function() {
   if (eYo.Test && !eYo.Test.audio) {
     return
   }
@@ -135,12 +135,12 @@ eYo.Audio.prototype.preload = function() {
  * @param {string} name Name of sound.
  * @param {number=} opt_volume Volume of sound (0-1).
  */
-eYo.Audio.prototype.play = function(name, opt_volume) {
+eYo.Dom.Audio.prototype.play = function(name, opt_volume) {
   var sound = this.sounds_[name]
   if (sound) {
     // Don't play one sound on top of another, setTimeout?
     var now = new Date
-    if (this.lastPlay_ && now - this.lastPlay_ < eYo.Audio.SOUND_LIMIT) {
+    if (this.lastPlay_ && now - this.lastPlay_ < eYo.Dom.Audio.SOUND_LIMIT) {
       return
     }
     this.lastPlay_ = now
@@ -155,7 +155,7 @@ eYo.Audio.prototype.play = function(name, opt_volume) {
     } else {
       mySound = sound.cloneNode()
     }
-    mySound.volume = (opt_volume === eYo.NA ? eYo.Audio.SOUND_VOLUME : opt_volume)
+    mySound.volume = (opt_volume === eYo.NA ? eYo.Dom.Audio.SOUND_VOLUME : opt_volume)
     mySound.play()
   }
 }

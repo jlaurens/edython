@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('Fcls')
 
-eYo.provide('eYo.Fcls.Field')
+eYo.provide('Fcls.Field')
 
-eYo.forwardDeclare('eYo.Field')
+eYo.forwardDeclare('Field')
 
 /**
  * Faceless driver for fields.

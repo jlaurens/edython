@@ -12,13 +12,13 @@
 'use strict'
 
 
-eYo.require('eYo.Change')
-eYo.provide('eYo.BrickDragger')
+eYo.require('Change')
+eYo.provide('BrickDragger')
 
-eYo.forwardDeclare('eYo.Dom')
-eYo.forwardDeclare('eYo.Brick')
-eYo.forwardDeclare('eYo.Board')
-eYo.forwardDeclare('eYo.Events.BrickMove')
+eYo.forwardDeclare('Dom')
+eYo.forwardDeclare('Brick')
+eYo.forwardDeclare('Board')
+eYo.forwardDeclare('Events.BrickMove')
 
 /**
  * Class for a brick dragger.  It moves bricks around the board when they

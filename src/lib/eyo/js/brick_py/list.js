@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.Expr')
+eYo.require('Expr')
 
-eYo.require('eYo.Change')
+eYo.require('Change')
 
-eYo.require('eYo.Decorate')
-eYo.require('eYo.Consolidator.List')
-eYo.provide('eYo.Brick.List')
+eYo.require('Decorate')
+eYo.require('Consolidator.List')
+eYo.provide('Brick.List')
 
 /**
  * Class for a Delegate, list value brick.

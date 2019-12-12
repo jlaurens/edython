@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Protocol')
+eYo.require('Protocol')
 
-eYo.provide('eYo.Protocol.ChangeCount')
+eYo.provide('Protocol.ChangeCount')
 
-eYo.forwardDeclare('eYo.Events')
+eYo.forwardDeclare('Events')
 
 eYo.Protocol.ChangeCount = {
   methods: {},

@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('Fcls')
 
-eYo.provide('eYo.Fcls.Search')
+eYo.provide('Fcls.Search')
 
-eYo.forwardDeclare('eYo.Search')
+eYo.forwardDeclare('Search')
 
 /**
  * Faceless driver for the search pane.

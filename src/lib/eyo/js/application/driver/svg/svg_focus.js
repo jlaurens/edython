@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('Svg')
 
-eYo.forwardDeclare('eYo.Focus')
+eYo.forwardDeclare('Focus')
 
 console.error('NYI')
 

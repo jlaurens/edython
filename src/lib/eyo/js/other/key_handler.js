@@ -11,17 +11,17 @@
  */
 'use strict'
 
-eYo.require('eYo.PopupMenu')
+eYo.require('PopupMenu')
 
-eYo.provide('eYo.KeyHandler')
+eYo.provide('KeyHandler')
 
-eYo.provide('eYo.KeyHandlerMenu')
+eYo.provide('KeyHandlerMenu')
 
-eYo.forwardDeclare('eYo.XRE')
-eYo.forwardDeclare('eYo.Dom')
-eYo.forwardDeclare('eYo.Navigate')
-eYo.forwardDeclare('eYo.MenuItem')
-eYo.forwardDeclare('eYo.Separator')
+eYo.forwardDeclare('XRE')
+eYo.forwardDeclare('Dom')
+eYo.forwardDeclare('Navigate')
+eYo.forwardDeclare('MenuItem')
+eYo.forwardDeclare('Separator')
 
 eYo.KeyHandlerMenu = function (opt_domHelper, opt_renderer) {
   eYo.KeyHandlerMenu.superClass_.constructor.call(this, opt_domHelper, opt_renderer)

@@ -11,12 +11,12 @@
  */
 'use strict'
 
-eYo.require('eYo.GMR.Init')
+eYo.require('GMR.Init')
 
-eYo.require('eYo.Parser')
-eYo.require('eYo.Scan')
-eYo.require('eYo.E')
-eYo.provide('eYo.ParseTok')
+eYo.require('Parser')
+eYo.require('Scan')
+eYo.require('E')
+eYo.provide('ParseTok')
 
   ;(function(){
 

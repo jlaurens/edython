@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.E')
+eYo.require('E')
 
-eYo.require('eYo.Do')
-eYo.require('eYo.TKN')
-eYo.provide('eYo.GMR')
+eYo.require('Do')
+eYo.require('TKN')
+eYo.provide('GMR')
 
 /* Grammar implementation *-/
 

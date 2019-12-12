@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Section')
+eYo.require('Section')
 
-eYo.provide('eYo.Search')
+eYo.provide('Search')
 
 /**
  * Class for a flyout.

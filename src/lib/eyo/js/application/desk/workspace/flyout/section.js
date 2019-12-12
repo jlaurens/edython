@@ -12,9 +12,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Protocol')
+eYo.require('Protocol')
 
-eYo.provide('eYo.Section')
+eYo.provide('Section')
 
 /**
  * Class for a flyout's section.

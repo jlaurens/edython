@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Dom')
+eYo.require('Dom')
 
-eYo.forwardDeclare('eYo.Search')
+eYo.forwardDeclare('Search')
 
 /**
  * Dom driver for the search pane.

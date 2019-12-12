@@ -13,9 +13,9 @@
 
 console.error('In progress')
 
-eYo.require('eYo.Factory.Owned')
+eYo.require('Factory.Owned')
 
-eYo.provide('eYo.Clipboard')
+eYo.provide('Clipboard')
 
 /**
  * 

@@ -11,12 +11,12 @@
  */
 'use strict'
 
-eYo.require('eYo.Scan')
+eYo.require('Scan')
 
-eYo.require('eYo.E')
+eYo.require('E')
 
 eYo.provide('stack')
-eYo.provide('eYo.Parser')
+eYo.provide('Parser')
 
 /* Parser implementation */
 

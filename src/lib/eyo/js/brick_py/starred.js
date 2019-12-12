@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.require('eYo.Expr')
+eYo.require('Expr')
 
-eYo.require('eYo.Change')
+eYo.require('Change')
 
-eYo.require('eYo.Decorate')
-eYo.require('eYo.Msg')
+eYo.require('Decorate')
+eYo.require('Msg')
 
-eYo.require('eYo.T3.All')
-eYo.provide('eYo.Brick.Starred')
+eYo.require('T3.All')
+eYo.provide('Brick.Starred')
 
 /**
  * Convenient check list for starred expressions

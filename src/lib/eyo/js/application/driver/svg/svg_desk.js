@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
-eYo.require('eYo.Dom.Desk')
+eYo.require('Svg')
+eYo.require('Dom.Desk')
 
-eYo.forwardDeclare('eYo.Desk')
+eYo.forwardDeclare('Desk')
 
 /**
  * Svg driver for desk.

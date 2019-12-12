@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Data')
+eYo.require('Data')
 
-eYo.provide('eYo.Data.Test')
+eYo.provide('Data.Test')
 
 eYo.Data.Test.run = function () {
   for (var x in eYo.Data.Test) {

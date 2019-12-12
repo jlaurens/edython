@@ -18,10 +18,10 @@
  * @namespace
  **/
 
-eYo.provide('eYo.T3.Expr')
-eYo.provide('eYo.T3.Stmt')
+eYo.provide('T3.Expr')
+eYo.provide('T3.Stmt')
 
-eYo.provide('eYo.T3')
+eYo.provide('T3')
 
 eYo.T3.Stmt = {
 // part statements

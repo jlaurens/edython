@@ -78,6 +78,8 @@ class Foo:
         m = self.re_provide.match(l)
         if m:
           what = m.group('what')
+          if not what.startswith('eYo.'):
+            what = 'eYo.' + what
           if m.group('provide'):
             provided.add(what)
           elif m.group('require'):

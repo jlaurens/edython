@@ -12,9 +12,9 @@
  */
 'use strict'
 
-eYo.require('eYo.UI')
+eYo.require('UI')
 
-eYo.forwardDeclare('eYo.Desk')
+eYo.forwardDeclare('Desk')
 
 /**
  * The main focus manager.

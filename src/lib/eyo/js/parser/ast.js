@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('eYo.E')
-eYo.require('eYo.TKN')
+eYo.require('E')
+eYo.require('TKN')
 
-eYo.provide('eYo.AST')
+eYo.provide('AST')
 /*
  * This file includes functions to transform a concrete syntax tree (CST) to
  * an abstract syntax tree (AST). The main function is PyAST_FromNode().

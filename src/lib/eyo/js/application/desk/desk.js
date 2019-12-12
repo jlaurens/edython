@@ -13,12 +13,12 @@
  */
 'use strict'
 
-eYo.require('eYo.UI')
-eYo.require('eYo.Decorate')
+eYo.require('UI')
+eYo.require('Decorate')
 
-eYo.forwardDeclare('eYo.Application')
-eYo.forwardDeclare('eYo.Backer')
-eYo.forwardDeclare('eYo.Options')
+eYo.forwardDeclare('Application')
+eYo.forwardDeclare('Backer')
+eYo.forwardDeclare('Options')
 
 goog.forwardDeclare('goog.array');
 goog.forwardDeclare('goog.math');

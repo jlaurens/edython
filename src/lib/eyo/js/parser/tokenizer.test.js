@@ -7,7 +7,7 @@ describe('Tokenizer', function() {
     it('goog should be available', function() {
       assert(goog);
     });
-    it('eYo.Scan should be available', function() {
+    it('Scan should be available', function() {
       assert(eYo.Scan);
     });
   });

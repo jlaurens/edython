@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('Fcls')
 
-eYo.provide('eYo.Fcls.Brick')
+eYo.provide('Fcls.Brick')
 
-eYo.forwardDeclare('eYo.Brick')
+eYo.forwardDeclare('Brick')
 
 /**
  * Faceless driver for bricks.

@@ -12,9 +12,9 @@
  */
 'use strict'
 
-eYo.provide('eYo.Scaler')
+eYo.provide('Scaler')
 
-eYo.forwardDeclare('eYo.Motion')
+eYo.forwardDeclare('Motion')
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.

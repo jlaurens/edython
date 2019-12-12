@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.UI.Owned2')
-eYo.require('eYo.Protocol')
+eYo.require('UI.Owned2')
+eYo.require('Protocol')
 
-eYo.provide('eYo.Magnets')
-eYo.provide('eYo.Magnet')
+eYo.provide('Magnets')
+eYo.provide('Magnet')
 
-eYo.forwardDeclare('eYo.Do')
-eYo.forwardDeclare('eYo.Where')
+eYo.forwardDeclare('Do')
+eYo.forwardDeclare('Where')
 
 
 /**

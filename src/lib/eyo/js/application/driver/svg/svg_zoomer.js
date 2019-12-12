@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('Svg')
 
-eYo.forwardDeclare('eYo.Zoomer')
+eYo.forwardDeclare('Zoomer')
 
 /**
  * Svg driver for the zoomer.

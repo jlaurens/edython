@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('Svg')
 
-eYo.forwardDeclare('eYo.BrickDragger')
+eYo.forwardDeclare('BrickDragger')
 
 /**
  * Svg driver for a brick dragger.

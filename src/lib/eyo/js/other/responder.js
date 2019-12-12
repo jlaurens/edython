@@ -11,12 +11,12 @@
  */
 'use strict'
 
-eYo.require('eYo.Protocol')
-eYo.require('eYo.Factory.Owned')
+eYo.require('Protocol')
+eYo.require('Factory.Owned')
 
-eYo.provide('eYo.Responder')
+eYo.provide('Responder')
 
-eYo.forwardDeclare('eYo.Dom')
+eYo.forwardDeclare('Dom')
 
 
 /*

@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Expr')
+eYo.require('Expr')
 
-eYo.provide('eYo.Brick.Operator')
+eYo.provide('Brick.Operator')
 
 /**
  * Class for a Delegate, [...] op ... brick.

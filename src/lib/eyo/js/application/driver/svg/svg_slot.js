@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('Svg')
 
-eYo.forwardDeclare('eYo.Slot')
+eYo.forwardDeclare('Slot')
 
 /**
  * Svg driver for slots.

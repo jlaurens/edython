@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.T3')
+eYo.require('T3')
 
-eYo.require('eYo.Const')
-eYo.require('eYo.Tooltip')
-eYo.provide('eYo.Library')
+eYo.require('Const')
+eYo.require('Tooltip')
+eYo.provide('Library')
 
 /**
  * Flyout list of node models by category.

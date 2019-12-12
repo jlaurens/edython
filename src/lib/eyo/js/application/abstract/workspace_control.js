@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.UI')
+eYo.require('UI')
 
 /**
  * Class for a workspace control.

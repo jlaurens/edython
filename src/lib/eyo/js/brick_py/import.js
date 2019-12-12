@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.Stmt')
+eYo.require('Stmt')
 
-eYo.require('eYo.Protocol')
-eYo.require('eYo.Msg')
+eYo.require('Protocol')
+eYo.require('Msg')
 
-eYo.require('eYo.Brick.List')
+eYo.require('Brick.List')
 goog.require('goog.dom');
-eYo.provide('eYo.Brick.Import')
+eYo.provide('Brick.Import')
 
 /// //////////////     module_as      ///////////////////
 /*

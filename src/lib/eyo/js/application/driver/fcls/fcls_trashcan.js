@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('Fcls')
 
-eYo.provide('eYo.Fcls.TrashCan')
+eYo.provide('Fcls.TrashCan')
 
-eYo.forwardDeclare('eYo.TrashCan')
+eYo.forwardDeclare('TrashCan')
 
 /**
  * Faceless driver for the trash can.

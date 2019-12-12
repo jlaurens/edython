@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.WorkspaceControl')
+eYo.require('WorkspaceControl')
 
 /**
  * Class for a trash can.

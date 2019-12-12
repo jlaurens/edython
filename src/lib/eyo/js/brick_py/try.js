@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick.Group')
+eYo.require('Brick.Group')
 
-eYo.require('eYo.Change')
+eYo.require('Change')
 
-eYo.provide('eYo.Brick.Try')
+eYo.provide('Brick.Try')
 
-eYo.forwardDeclare('eYo.Msg')
+eYo.forwardDeclare('Msg')
 
 goog.forwardDeclare('goog.dom')
 

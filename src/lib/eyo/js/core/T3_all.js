@@ -18,9 +18,9 @@
  * @namespace
  **/
 
-eYo.require('eYo.T3')
+eYo.require('T3')
 
-eYo.provide('eYo.T3.All')
+eYo.provide('T3.All')
 
 
 eYo.T3.All = {}

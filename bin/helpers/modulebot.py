@@ -362,7 +362,6 @@ def do_one_module(module, **kwargs):
             elif len(self.arguments) < len(arguments):
                 self.arguments = arguments
 
-
     class Argument:
 
         def __init__(self, owner, name):
@@ -656,33 +655,31 @@ Example of `dt` for the turtle module, method synonyms.
 
 eYo.require('Module')
 
-eYo.provide('Module.{{key}}')
+eYo.provide('Module.{{key}}', new eYo.Module.Dflt('{{key}}', '{{url}}'))
 
-eYo.Module.{{key}} = new eYo.Module.Dflt('{{key}}', '{{url}}')
+;(function () {
 
-eYo.Temp.x = (() => {
-
-/* Singleton constructor */
-var Item = function (model) {
-  eYo.Module.{{key}}.Item.superClass_.constructor.call(this, model)
-}
-
-goog.inherits(Item, eYo.Module.Item)
-
-/**
- * module
- */
-Item.prototype.module = eYo.Module.{{key}}
-
-Object.defineProperties(Item.prototype, {
-  url: {
-    get() {
-      return this.href
-        ? this.module.url + this.href
-        : this.module.url
-    }
+  /* Singleton constructor */
+  var Item = function (model) {
+    eYo.Module.Item.call(this, model)
   }
-})
+
+  goog.inherits(Item, eYo.Module.Item)
+
+  /**
+  * module
+  */
+  Item.prototype.module = eYo.Module.{{key}}
+
+  Object.defineProperties(Item.prototype, {
+    url: {
+      get() {
+        return this.href
+          ? this.module.url + this.href
+          : this.module.url
+      }
+    }
+  })
 """
         suffix_ = """
 
@@ -693,13 +690,13 @@ Object.defineProperties(Item.prototype, {
             self.key = key
             self.path_root = path_root
             self.path_in = path_root / 'build/helpers/{}.html'.format(key)
-            self.path_out = path_root / 'src/lib/eyo/js/model/{}_model.js'.format(key)
+            self.path_out = path_root / 'src/lib/eyo/js/module/' / (key + '.js')
             self.items_by_name = {}
             self.items = []
             self.categories = {}
             self.types = {}
             self.depth = 0
-            self.url = f"https://docs.python.org/{version}/library/{self.key}.html"
+            self.url = f"https://docs.python.org/{version}/library/{key}.html"
 
         def process_dl(self, dl):
             if dl.attrib['class'] == 'docutils':

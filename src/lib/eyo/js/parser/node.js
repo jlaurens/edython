@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.E')
+eYo.require('E')
 
-eYo.provide('eYo.Node')
+eYo.provide('Node')
 
 /* Parse tree node implementation *-/
 

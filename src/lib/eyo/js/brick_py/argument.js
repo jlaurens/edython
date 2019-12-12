@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick.List')
+eYo.require('Brick.List')
 
-eYo.provide('eYo.Brick.Argument')
+eYo.provide('Brick.Argument')
 
 
 /**

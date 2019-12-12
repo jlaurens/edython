@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('Fcls')
 
 /**
  * @name {eYo.Dom}

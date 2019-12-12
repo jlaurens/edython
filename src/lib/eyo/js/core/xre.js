@@ -16,9 +16,9 @@
  * @namespace
  **/
 
-eYo.require('eYo.Do')
+eYo.require('Do')
 
-eYo.provide('eYo.XRE')
+eYo.provide('XRE')
 
 eYo.assert(XRegExp, 'load XRegExp before')
 

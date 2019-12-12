@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.Driver')
+eYo.require('Driver')
 
 /**
  * @name {eYo.Fcls}

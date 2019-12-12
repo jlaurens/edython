@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.provide('eYo.Font')
-eYo.provide('eYo.Padding')
+eYo.provide('Font')
+eYo.provide('Padding')
 
-eYo.provide('eYo.Style')
+eYo.provide('Style')
 
-eYo.forwardDeclare('eYo.Unit')
-eYo.forwardDeclare('eYo.font-face')
-eYo.forwardDeclare('eYo.Shape')
+eYo.forwardDeclare('Unit')
+eYo.forwardDeclare('font-face')
+eYo.forwardDeclare('Shape')
 goog.forwardDeclare('goog.cssom');
 
 /**

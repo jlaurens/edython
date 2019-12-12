@@ -19,7 +19,7 @@ goog.require('goog.array')
 
 eYo.makeNS('Events')
 
-eYo.provide('eYo.Events.Abstract')
+eYo.provide('Events.Abstract')
 
 Object.defineProperties(eYo.Events, {
   /**

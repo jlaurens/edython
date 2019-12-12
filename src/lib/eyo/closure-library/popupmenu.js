@@ -11,7 +11,7 @@
 
 goog.require('goog.ui.PopupMenu')
 
-eYo.provide('eYo.PopupMenu')
+eYo.provide('PopupMenu')
 
 /**
  * A basic menu class.

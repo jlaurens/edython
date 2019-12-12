@@ -15,10 +15,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('Svg')
 
-eYo.provide('eYo.Svg.BrickDragSurface')
-eYo.provide('eYo.Svg.BoardDragSurface')
+eYo.provide('Svg.BrickDragSurface')
+eYo.provide('Svg.BoardDragSurface')
 
 /**
  * Class for a drag surface for the currently dragged block. This is a separate

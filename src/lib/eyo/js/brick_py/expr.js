@@ -11,16 +11,16 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('Brick')
 
-eYo.require('eYo.Change')
-eYo.require('eYo.Msg')
+eYo.require('Change')
+eYo.require('Msg')
 
-eYo.require('eYo.Decorate')
-eYo.require('eYo.T3.All')
+eYo.require('Decorate')
+eYo.require('T3.All')
 goog.require('goog.dom');
 
-eYo.provide('eYo.Expr')
+eYo.provide('Expr')
 
 /**
  * Class for a Delegate, value brick.

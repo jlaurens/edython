@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.provide('eYo.Change')
+eYo.provide('Change')
 
 /**
  * @param{Object} owner

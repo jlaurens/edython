@@ -11,16 +11,16 @@
  */
 'use strict'
 
-eYo.require('eYo.Do')
-eYo.provide('eYo.Where')
-eYo.provide('eYo.Size')
-eYo.provide('eYo.Rect')
+eYo.require('Do')
+eYo.provide('Where')
+eYo.provide('Size')
+eYo.provide('Rect')
 
-eYo.provide('eYo.Unit')
+eYo.provide('Unit')
 
-eYo.provide('eYo.Geometry')
+eYo.provide('Geometry')
 
-eYo.forwardDeclare('eYo.Font')
+eYo.forwardDeclare('Font')
 
 /**
  * unit

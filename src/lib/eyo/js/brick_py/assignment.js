@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.Stmt')
+eYo.require('Stmt')
 
-eYo.provide('eYo.Stmt.assignment_stmt')
-eYo.provide('eYo.Brick.Assignment')
+eYo.provide('Stmt.assignment_stmt')
+eYo.provide('Brick.Assignment')
 
-eYo.forwardDeclare('eYo.Msg')
-eYo.forwardDeclare('eYo.Brick.Primary')
-eYo.forwardDeclare('eYo.Brick.List')
+eYo.forwardDeclare('Msg')
+eYo.forwardDeclare('Brick.Primary')
+eYo.forwardDeclare('Brick.List')
 goog.forwardDeclare('goog.dom')
 
 /**

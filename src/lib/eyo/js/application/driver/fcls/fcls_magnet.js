@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('Fcls')
 
-eYo.provide('eYo.Fcls.Magnet')
+eYo.provide('Fcls.Magnet')
 
-eYo.forwardDeclare('eYo.Magnet')
+eYo.forwardDeclare('Magnet')
 
 /**
  * Faceless driver for magnets.

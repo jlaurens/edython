@@ -13,10 +13,10 @@
 
 goog.require('goog.ui.Dialog')
 
-eYo.require('eYo.Msg')
-eYo.require('eYo.Brick.Group')
+eYo.require('Msg')
+eYo.require('Brick.Group')
 goog.require('goog.dom');
-eYo.provide('eYo.Brick.Control')
+eYo.provide('Brick.Control')
 
 /**
  * Class for a Delegate, control brick.

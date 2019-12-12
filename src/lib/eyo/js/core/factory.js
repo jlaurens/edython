@@ -11,8 +11,8 @@
  */
 'use strict'
 
-eYo.require('eYo.Do')
-eYo.require('eYo.Model')
+eYo.require('Do')
+eYo.require('Model')
 
 /**
  * @name {eYo.Factory}

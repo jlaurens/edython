@@ -24,13 +24,13 @@
  * eYo: 'goog' changed to 'eYo' in class names.
  */
 
-eYo.require('eYo.MenuRenderer')
+eYo.require('MenuRenderer')
 
 goog.require('goog.ui.Menu')
 
 goog.require('goog.dom')
 
-eYo.provide('eYo.Menu')
+eYo.provide('Menu')
 
 // TODO(robbyw): Reverse constructor argument order for consistency.
 /**

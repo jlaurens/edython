@@ -12,10 +12,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Pane')
+eYo.require('Pane')
 
-eYo.require('eYo.Decorate')
-eYo.provide('eYo.Turtle')
+eYo.require('Decorate')
+eYo.provide('Turtle')
 
 /**
  * Class for a turtle graphic environment.

@@ -12,7 +12,7 @@
  */
 
 goog.require('goog.ui.MenuRenderer')
-eYo.provide('eYo.MenuRenderer')
+eYo.provide('MenuRenderer')
 
 /**
  * Default renderer for {@link eYo.Menu}s, based on {@link

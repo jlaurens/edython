@@ -12,20 +12,20 @@
  */
 'use strict'
 
-eYo.require('eYo.Do')
-eYo.require('eYo.Decorate')
-eYo.require('eYo.Factory')
+eYo.require('Do')
+eYo.require('Decorate')
+eYo.require('Factory')
 
-eYo.provide('eYo.Application')
+eYo.provide('Application')
 delete eYo.Application
 
-eYo.forwardDeclare('eYo.Css')
+eYo.forwardDeclare('Css')
 
-eYo.forwardDeclare('eYo.Focus')
-eYo.forwardDeclare('eYo.Motion')
-eYo.forwardDeclare('eYo.Desk')
-eYo.forwardDeclare('eYo.Driver')
-eYo.forwardDeclare('eYo.Audio')
+eYo.forwardDeclare('Focus')
+eYo.forwardDeclare('Motion')
+eYo.forwardDeclare('Desk')
+eYo.forwardDeclare('Driver')
+eYo.forwardDeclare('Audio')
 
 /**
  * Main application object.
@@ -116,7 +116,7 @@ Object.defineProperties(eYo.Application.prototype, {
 eYo.Application.prototype.initUI = function() {
   this.initUI = eYo.Do.nothing
   delete this.disposeUI
-  this.audio__ = new eYo.Audio(this, this.options.pathToMedia)
+  this.audio__ = new eYo.Dom.Audio(this, this.options.pathToMedia)
   var d = this.ui_driver_mngr__ = new eYo.Svg.Mngr(this)
   d.initUI(this)
   this.desk.initUI()

@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('eYo.Node')
+eYo.require('Node')
 
-eYo.require('eYo.TKN')
+eYo.require('TKN')
 
-eYo.require('eYo.GMR')
-eYo.require('eYo.Brick.Primary')
+eYo.require('GMR')
+eYo.require('Brick.Primary')
 
-eYo.provide('eYo.Node.Brick')
+eYo.provide('Node.Brick')
 
 /**
  * Converts the receiver to a visual brick.

@@ -34,7 +34,7 @@ describe ('Dlgt', function () {
     chai.assert(eYo.Dflt)
   })
   describe('makeNS', function () {
-    it ('eYo.makeNS(...)', function () {
+    it ('makeNS(...)', function () {
       var NS = eYo.makeNS()
       chai.assert(NS.makeClass)
       chai.assert(NS.makeNS)
@@ -225,14 +225,14 @@ describe ('Dlgt', function () {
         return Dlgt || eYo.Dlgt
       }
     }
-    it ('eYo.makeClass', function () {
+    it ('makeClass', function () {
       var n = 0
       var getKey = () => {
         ++n
         return `A_${n}`
       }
       var getArgs = (ns, Super, Dlgt, withModel) => {
-        // console.warn('eYo.makeClass:', [ns && ns.k__ || 'NA', "'A'", Super && Super.k__ || 'NA', Dlgt && Dlgt.k__ || 'NA', withModel ? 'model' : 'NA'])
+        // console.warn('makeClass:', [ns && ns.k__ || 'NA', "'A'", Super && Super.k__ || 'NA', Dlgt && Dlgt.k__ || 'NA', withModel ? 'model' : 'NA'])
         var args = [] // one element for `this`
         ns && args.push(ns)
         args.push(getKey())
@@ -256,7 +256,7 @@ describe ('Dlgt', function () {
               flag_A = expected_A = 0
               var args = getArgs(ns, Super, Dlgt, withModel)
               if (DlgtX) {
-                // console.warn('eYo.makeClass:', [ns && ns.k__ || 'NA', "'A'", Super && Super.k__ || 'NA', Dlgt && Dlgt.k__ || 'NA', withModel ? 'model' : 'NA'])
+                // console.warn('makeClass:', [ns && ns.k__ || 'NA', "'A'", Super && Super.k__ || 'NA', Dlgt && Dlgt.k__ || 'NA', withModel ? 'model' : 'NA'])
                 chai.expect(() => {
                   X = eYo.makeClass.apply(null, args)
                 }, `OK eYo.makeClass: ${ns && ns.k__ || 'NA'}, 'A', ${Super && Super.k__ || 'NA'}, ${Dlgt && Dlgt.k__ || 'NA'}, ${withModel ? 'model' : 'NA'}`).not.to.throw()
@@ -277,7 +277,7 @@ describe ('Dlgt', function () {
     //   var NS = eYo.makeNS()
     //   NS.k__ = 'NS'
     //   var getArgs = (Super, Dlgt, withModel) => {
-    //     // console.warn('eYo.makeClass:', "'A'", Super && Super.k__ || 'NA', Dlgt && Dlgt.k__ || 'NA', withModel ? 'model' : 'NA'])
+    //     // console.warn('makeClass:', "'A'", Super && Super.k__ || 'NA', Dlgt && Dlgt.k__ || 'NA', withModel ? 'model' : 'NA'])
     //     var args = []
     //     args.push('A')
     //     Super && args.push(Super)
@@ -299,7 +299,7 @@ describe ('Dlgt', function () {
     //           }).not.to.throw()
     //           test()
     //         } else {
-    //           // console.warn('eYo.makeClass:', "'A'", Super && Super.k__ || 'NA', Dlgt && Dlgt.k__ || 'NA', withModel ? 'model' : 'NA'])
+    //           // console.warn('makeClass:', "'A'", Super && Super.k__ || 'NA', Dlgt && Dlgt.k__ || 'NA', withModel ? 'model' : 'NA'])
     //           chai.expect(() => {
     //             NS.makeClass.apply(null, args)
     //           }, `NS.makeClass: 'A', ${Super && Super.k__ || 'NA'}, ${Dlgt && Dlgt.k__ || 'NA'}, ${withModel ? 'model' : 'NA'}`).to.throw()
@@ -543,7 +543,7 @@ describe ('Dlgt', function () {
       chai.assert(flag === 11)
     })
   })
-  describe ('eYo.makeClass', function () {
+  describe ('makeClass', function () {
     var testX = (X, Super, Dlgt) => {
       chai.assert(X)
       chai.assert(X.eyo)

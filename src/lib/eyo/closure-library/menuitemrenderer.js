@@ -30,9 +30,9 @@
 goog.require('goog.ui.MenuItemRenderer')
 goog.require('goog.ui.MenuSeparatorRenderer')
 
-eYo.require('eYo.Style')
+eYo.require('Style')
 
-eYo.provide('eYo.MenuItemRenderer')
+eYo.provide('MenuItemRenderer')
 
 /**
  * Sets the css class of the control renderer.

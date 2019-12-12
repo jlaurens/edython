@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Fcls')
+eYo.require('Fcls')
 
-eYo.provide('eYo.Fcls.Focus')
+eYo.provide('Fcls.Focus')
 
 /**
  * Faceless driver for Focus managers.

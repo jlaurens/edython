@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Node')
+eYo.require('Node')
 
-eYo.provide('eYo.Node.List')
+eYo.provide('Node.List')
 
 /* List a node on a file *-/
 

@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Dom')
+eYo.require('Dom')
 
-eYo.require('eYo.Decorate')
+eYo.require('Decorate')
 
 /**
  * A namespace.
@@ -22,13 +22,13 @@ eYo.require('eYo.Decorate')
  */
 eYo.Driver.makeNS('Svg')
 
-eYo.forwardDeclare('eYo.T3.Profile')
-eYo.forwardDeclare('eYo.Svg.Brick')
-eYo.forwardDeclare('eYo.Svg.Slot')
-eYo.forwardDeclare('eYo.Svg.Field')
-eYo.forwardDeclare('eYo.Slot')
-eYo.forwardDeclare('eYo.Brick')
-eYo.forwardDeclare('eYo.Style')
+eYo.forwardDeclare('T3.Profile')
+eYo.forwardDeclare('Svg.Brick')
+eYo.forwardDeclare('Svg.Slot')
+eYo.forwardDeclare('Svg.Field')
+eYo.forwardDeclare('Slot')
+eYo.forwardDeclare('Brick')
+eYo.forwardDeclare('Style')
 
 goog.forwardDeclare('goog.userAgent')
 

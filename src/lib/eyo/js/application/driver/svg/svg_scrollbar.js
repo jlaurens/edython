@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
+eYo.require('Svg')
 
-eYo.forwardDeclare('eYo.Scrollbar')
+eYo.forwardDeclare('Scrollbar')
 
 /**
  * Svg driver for a scrollbar.

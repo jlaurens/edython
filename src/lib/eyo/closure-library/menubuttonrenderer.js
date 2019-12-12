@@ -20,7 +20,7 @@
 
 goog.require('goog.ui.MenuButtonRenderer')
 
-eYo.provide('eYo.MenuButtonRenderer')
+eYo.provide('MenuButtonRenderer')
 
 /**
  * Renderer for {@link goog.ui.MenuButton}s.  This implementation overrides

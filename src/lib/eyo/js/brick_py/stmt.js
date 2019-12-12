@@ -11,16 +11,16 @@
  */
 'use strict'
 
-eYo.require('eYo.Brick')
+eYo.require('Brick')
 
-eYo.require('eYo.Change')
+eYo.require('Change')
 
-eYo.require('eYo.Brick.List')
-eYo.provide('eYo.Stmt')
+eYo.require('Brick.List')
+eYo.provide('Stmt')
 
-eYo.forwardDeclare('eYo.XRE')
-eYo.forwardDeclare('eYo.Msg')
-eYo.forwardDeclare('eYo.Brick.Operator')
+eYo.forwardDeclare('XRE')
+eYo.forwardDeclare('Msg')
+eYo.forwardDeclare('Brick.Operator')
 
 goog.forwardDeclare('goog.dom')
 

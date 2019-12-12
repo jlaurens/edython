@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.provide('eYo.MsgPack')
+eYo.provide('MsgPack')
 
-eYo.provide('eYo.Msg')
+eYo.provide('Msg')
 
 /** @export */ eYo.Msg.RENAME = 'Renommer'
 
@@ -46,7 +46,7 @@ eYo.Msg.CONNECT_MAIN_BLOCK_DLG_TOOLTIP = 'Exécuter les instructions de ce bloc 
 
 /** @export */ eYo.Msg.RENAME_VARIABLE_TITLE = "Renommer la variable '%1' en :"
 
-eYo.provide('eYo.Msg.Placeholder')
+eYo.provide('Msg.Placeholder')
 
 /** @export */ eYo.Msg.Placeholder.STRING = 'Du texte ici'
 

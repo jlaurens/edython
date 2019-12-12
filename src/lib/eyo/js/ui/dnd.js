@@ -12,12 +12,12 @@
  */
 'use strict'
 
-eYo.provide('eYo.DnD')
-eYo.provide('eYo.DnD.Dragger')
-eYo.provide('eYo.DnD.Dropper')
+eYo.provide('DnD')
+eYo.provide('DnD.Dragger')
+eYo.provide('DnD.Dropper')
 
-eYo.forwardDeclare('eYo.Motion')
-eYo.forwardDeclare('eYo.Driver')
+eYo.forwardDeclare('Motion')
+eYo.forwardDeclare('Driver')
 
 /**
  * @name{eYo.DnD}

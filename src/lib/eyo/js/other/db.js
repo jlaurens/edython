@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.provide('eYo.DB')
+eYo.provide('DB')
 
 /**
  * Database of all identified object.

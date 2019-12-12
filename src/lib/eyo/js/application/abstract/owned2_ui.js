@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.UI')
+eYo.require('UI')
 
 /**
  * Class for a basic object indirectly owned by a brick.
@@ -39,8 +39,8 @@ eYo.UI.Dflt.makeSubclass('Owned2', {
 })
 
 eYo.assert(!!eYo.UI.Owned2, 'MISSED/FAILURE...')
-eYo.forwardDeclare('eYo.Brick')
-eYo.forwardDeclare('eYo.Brick.UI')
-eYo.forwardDeclare('eYo.Slot')
-eYo.forwardDeclare('eYo.Magnet')
+eYo.forwardDeclare('Brick')
+eYo.forwardDeclare('Brick.UI')
+eYo.forwardDeclare('Slot')
+eYo.forwardDeclare('Magnet')
 

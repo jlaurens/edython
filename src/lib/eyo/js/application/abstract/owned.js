@@ -11,21 +11,21 @@
  */
 'use strict'
 
-eYo.require('eYo.Decorate')
-eYo.require('eYo.Factory')
+eYo.require('Decorate')
+eYo.require('Factory')
 
-// eYo.provide('eYo.Factory.Owned')
+// eYo.provide('Factory.Owned')
 
 // Possible owner
-eYo.forwardDeclare('eYo.Application')
+eYo.forwardDeclare('Application')
 // Possible owned
-eYo.forwardDeclare('eYo.Desk')
-eYo.forwardDeclare('eYo.Workspace')
-eYo.forwardDeclare('eYo.Flyout')
-eYo.forwardDeclare('eYo.Board')
-eYo.forwardDeclare('eYo.Brick')
-eYo.forwardDeclare('eYo.Slot')
-eYo.forwardDeclare('eYo.Magnet')
+eYo.forwardDeclare('Desk')
+eYo.forwardDeclare('Workspace')
+eYo.forwardDeclare('Flyout')
+eYo.forwardDeclare('Board')
+eYo.forwardDeclare('Brick')
+eYo.forwardDeclare('Slot')
+eYo.forwardDeclare('Magnet')
 
 /**
  * Add the cached `app` property to the associate constructor.

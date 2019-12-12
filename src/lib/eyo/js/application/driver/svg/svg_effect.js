@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Svg')
-eYo.require('eYo.Brick')
+eYo.require('Svg')
+eYo.require('Brick')
 
-// eYo.forwardDeclare('eYo.Effect')
+// eYo.forwardDeclare('Effect')
 
 /**
  * Svg driver for brick effects

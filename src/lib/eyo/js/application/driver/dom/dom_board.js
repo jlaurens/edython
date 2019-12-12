@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('eYo.Dom')
+eYo.require('Dom')
 
-eYo.forwardDeclare('eYo.Board')
+eYo.forwardDeclare('Board')
 
 /**
  * Dom driver for boards.

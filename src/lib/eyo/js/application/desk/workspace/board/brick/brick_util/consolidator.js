@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('eYo.Decorate')
-eYo.require('eYo.Factory')
+eYo.require('Decorate')
+eYo.require('Factory')
 
-// eYo.provide('eYo.Consolidator')
+// eYo.provide('Consolidator')
 
 /**
  * @name {eYo.Consolidator}
@@ -22,13 +22,13 @@ eYo.require('eYo.Factory')
  */
 eYo.makeNS('Consolidator')
 
-// eYo.provide('eYo.Consolidator.Dflt')
-// eYo.provide('eYo.Consolidator.Dlgt')
-// eYo.provide('eYo.Consolidator.List')
+// eYo.provide('Consolidator.Dflt')
+// eYo.provide('Consolidator.Dlgt')
+// eYo.provide('Consolidator.List')
 
-eYo.forwardDeclare('eYo.Brick')
-eYo.forwardDeclare('eYo.Do')
-eYo.forwardDeclare('eYo.Slot')
+eYo.forwardDeclare('Brick')
+eYo.forwardDeclare('Do')
+eYo.forwardDeclare('Slot')
 
 console.error('Manage reentrant_ more carefully')
 
