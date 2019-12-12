@@ -9,8 +9,6 @@
  * @fileoverview The goog.ui.PopupMenu with custom class, at least.
  */
 
-eYo.require('eYo')
-
 goog.require('goog.ui.PopupMenu')
 
 eYo.provide('eYo.PopupMenu')

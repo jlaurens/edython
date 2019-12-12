@@ -11,7 +11,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
 eYo.require('eYo.Scan')
 
 eYo.require('eYo.E')

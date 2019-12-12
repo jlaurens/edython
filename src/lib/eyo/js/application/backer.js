@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.Owned')
+eYo.require('eYo.Factory.Owned')
 
 eYo.require('eYo.Protocol.ChangeCount')
 eYo.provide('eYo.Backer')
@@ -36,7 +36,7 @@ eYo.Backer = function (owner) {
    */
   this.redoStack_ = []
 }
-goog.inherits(eYo.Backer, eYo.Owned)
+goog.inherits(eYo.Backer, eYo.Factory.Owned)
 
 eYo.Protocol.add(eYo.Backer.prototype, 'ChangeCount')
 

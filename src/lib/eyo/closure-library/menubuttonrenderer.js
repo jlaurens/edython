@@ -18,8 +18,6 @@
  * @author attila@google.com (Attila Bodis)
  */
 
-eYo.require('eYo')
-
 goog.require('goog.ui.MenuButtonRenderer')
 
 eYo.provide('eYo.MenuButtonRenderer')

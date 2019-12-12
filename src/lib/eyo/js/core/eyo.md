@@ -34,9 +34,12 @@ Here is a list of various namespaces created at initialization time, by key.
 
 | key | purpose |
 |-----|---------|
+| `Do` | For various tools |
 | `Protocol` | For protocol management |
-| `Class` | For class management |
+| `Decorate` | For decorator management |
 | `Model` | For model management |
+| `Factory` | For class management |
+| `Events` | For events management |
 | `T3` | For brick types |
 | `Brick` | For bricks |
 | `UI` | For user interface |

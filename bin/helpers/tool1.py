@@ -33,9 +33,16 @@ class Foo:
       classed = set()
       subclassed = set()
       namespaced = set()
+      if path.stem == 'eyo':
+        def base_require(l):
+          pass
+      else:
+        def base_require(l):
+          if re.search('^\s*eYo', l):
+            required.add('eYo')
+
       for l in f.readlines():
-        if re.search('eYo.Driver.Dlgt.makeSubclass\(eYo.Svg\)', l):
-          print('FOUND...')
+        base_require(l)
         m = self.re_make.match(l)
         if m:
           makeClass = m.group('makeClass')

@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
 eYo.require('eYo.Geometry')
 
 eYo.provide('eYo.Shape')

@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('eYo.Protocol')
-eYo.require('eYo.Owned')
+eYo.require('eYo.Factory.Owned')
 
 eYo.provide('eYo.Responder')
 
@@ -55,7 +55,7 @@ eYo.Responder = function(desk, e) {
   this.change_ = new eYo.Change()
 
 }
-goog.inherits(eYo.Responder, eYo.Owned)
+goog.inherits(eYo.Responder, eYo.Factory.Owned)
 
 /**
  * Sever all links from this object.

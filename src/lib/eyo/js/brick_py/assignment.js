@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
 eYo.require('eYo.Stmt')
 
 eYo.provide('eYo.Stmt.assignment_stmt')

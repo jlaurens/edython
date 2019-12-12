@@ -11,9 +11,8 @@
  */
 'use strict'
 
-eYo.require('eYo')
 eYo.require('eYo.Decorate')
-eYo.require('eYo.Dlgt')
+eYo.require('eYo.Factory')
 
 // eYo.provide('eYo.Consolidator')
 

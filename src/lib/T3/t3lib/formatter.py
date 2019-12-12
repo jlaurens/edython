@@ -423,8 +423,6 @@ class Formatter:
 
     def get_T3_data(self):
         self.append("""
-
-goog.require('eYo')
       
 /**
  * @name {eYo.T3}

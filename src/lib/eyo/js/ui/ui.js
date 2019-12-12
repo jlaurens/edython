@@ -11,9 +11,8 @@
  */
 'use strict'
 
-eYo.require('eYo')
-eYo.require('eYo.Dlgt')
-eYo.require('eYo.Owned')
+eYo.require('eYo.Factory')
+eYo.require('eYo.Factory.Owned')
 
 // eYo.provide('eYo.UI')
 
@@ -95,7 +94,7 @@ eYo.UI.Dlgt.prototype.addApp = function () {
  * @readonly
  * @property {eYo.Driver.Mngr}ui_driver_mngr,  The ui driver manager used for rendering.
  */
-eYo.Owned.makeSubclass(eYo.UI, 'Dflt', {
+eYo.Factory.Owned.makeSubclass(eYo.UI, 'Dflt', {
   init: {
     begin () {
       this.disposeUI = eYo.Do.nothing

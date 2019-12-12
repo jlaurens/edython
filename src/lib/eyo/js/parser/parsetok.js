@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
 eYo.require('eYo.GMR.Init')
 
 eYo.require('eYo.Parser')

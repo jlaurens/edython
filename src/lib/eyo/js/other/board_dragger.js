@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
 eYo.provide('eYo.BoardDragger')
 
 /**

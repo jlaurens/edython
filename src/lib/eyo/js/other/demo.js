@@ -11,8 +11,6 @@
  */
 'use strict';
 
-eYo.require('eYo')
-
 eYo.require('eYo.Xml')
 eYo.provide('eYo.Demo');
 

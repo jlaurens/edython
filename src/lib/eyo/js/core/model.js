@@ -12,8 +12,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
 /**
  * The model management.
  * Models are trees with some inheritancy.

@@ -11,8 +11,6 @@
  * @author jerome.laurens@u-bourgogne.fr
  */
 
-eYo.require('eYo')
-
 goog.require('goog.ui.MenuRenderer')
 eYo.provide('eYo.MenuRenderer')
 

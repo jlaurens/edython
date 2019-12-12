@@ -1,0 +1,11 @@
+<!-- Created by `npm run eyo:prepare` -->
+      <script src="ROOT_PLACE_HOLDER/brick_cmath.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/brick_decimal.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/brick_fractions.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/brick_functions.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/brick_math.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/brick_random.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/brick_statistics.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/brick_stdtypes.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/brick_string.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/brick_turtle.test.js" charset="utf-8"></script>

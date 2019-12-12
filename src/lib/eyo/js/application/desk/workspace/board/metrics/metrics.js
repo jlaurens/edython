@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.Owned')
+eYo.require('eYo.Factory.Owned')
 
 eYo.forwardDeclare('eYo.Board')
 eYo.forwardDeclare('eYo.Geometry')

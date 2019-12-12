@@ -130,7 +130,7 @@ eYo.Driver.constructor.prototype.makeDriverClass = function (key, Super, driverM
  * Owns instances of `eYo.Driver.Dflt`'s descendants.
  * @param {Object} owner
  */
-eYo.Owned.makeSubclass(eYo.Driver, 'Mngr', {
+eYo.Factory.Owned.makeSubclass(eYo.Driver, 'Mngr', {
   init () {
     this.initDrivers()
   }
@@ -142,7 +142,7 @@ eYo.Owned.makeSubclass(eYo.Driver, 'Mngr', {
  * @param {Object} owner
  * @property {eYo.Driver.Mgt} mngr,  the owning driver manager
  */
-eYo.Owned.makeSubclass(eYo.Driver, 'Dflt', {
+eYo.Factory.Owned.makeSubclass(eYo.Driver, 'Dflt', {
   computed: {
     mngr () {
       return this.owner

@@ -32,8 +32,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
 eYo.require('eYo.XRE')
 
 eYo.require('eYo.Decorate')

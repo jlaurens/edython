@@ -13,7 +13,7 @@
 
 console.error('In progress')
 
-eYo.require('eYo.Owned')
+eYo.require('eYo.Factory.Owned')
 
 eYo.provide('eYo.Clipboard')
 

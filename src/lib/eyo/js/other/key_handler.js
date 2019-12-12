@@ -11,7 +11,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
 eYo.require('eYo.PopupMenu')
 
 eYo.provide('eYo.KeyHandler')

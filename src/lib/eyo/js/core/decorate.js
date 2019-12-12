@@ -11,9 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
-eYo.provide('eYo.Decorate')
+eYo.makeNS('Decorate')
 
 eYo.forwardDeclare('eYo.Do')
 

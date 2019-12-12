@@ -15,10 +15,9 @@
  * Events fired as a result of actions in Edython.
  * @namespace eYo.Events
  */
-eYo.require('eYo')
 goog.require('goog.array')
 
-eYo.provide('eYo.Events')
+eYo.makeNS('Events')
 
 eYo.provide('eYo.Events.Abstract')
 

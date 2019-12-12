@@ -10,8 +10,6 @@
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 
-eYo.require('eYo')
-
 eYo.provide('eYo.font-face')
 
  /**

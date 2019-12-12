@@ -11,8 +11,6 @@
  */
 'use strict';
 
-eYo.require('eYo')
-
 eYo.require('eYo.Brick')
 
 eYo.provide('eYo.Tooltip')

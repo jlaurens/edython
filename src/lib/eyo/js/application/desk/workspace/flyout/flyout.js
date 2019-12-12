@@ -307,7 +307,7 @@ eYo.UI.makeClass(eYo, 'Flyout', {
       var d = this.ui_driver_mngr
       this.toolbar_ && d.toolbarDisposeUI(this.toolbar_)
       d.disposeUI(this)
-      eYo.Flyout.eyo.disposeOwned(this, 'scrollbar_')
+      eYo.Flyout.eyo.ownedDispose(this, 'scrollbar_')
     }
   },
 })

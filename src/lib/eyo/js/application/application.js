@@ -14,7 +14,7 @@
 
 eYo.require('eYo.Do')
 eYo.require('eYo.Decorate')
-eYo.require('eYo.Dlgt')
+eYo.require('eYo.Factory')
 
 eYo.provide('eYo.Application')
 delete eYo.Application

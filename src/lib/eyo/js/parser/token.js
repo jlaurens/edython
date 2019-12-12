@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
 eYo.provide('eYo.TKN')
 
 eYo.TKN.ISTERMINAL = x => x < eYo.TKN.NT_OFFSET

@@ -265,9 +265,9 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/parser/token.js" \
 --js "src/lib/eyo/js/core/font.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/brick_dragger.js" \
---js "src/lib/eyo/js/core/class.js" \
 --js "src/lib/eyo/js/core/const.js" \
 --js "src/lib/eyo/js/ui/css.js" \
+--js "src/lib/eyo/js/core/factory.js" \
 --js "src/lib/eyo/js/parser/grammar.js" \
 --js "src/lib/eyo/js/core/geometry.js" \
 --js "src/lib/eyo/js/parser/node.js" \
@@ -279,9 +279,9 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/application.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/consolidator.js" \
 --js "src/lib/eyo/js/core/events.js" \
+--js "src/lib/eyo/js/application/abstract/owned.js" \
 --js "src/lib/eyo/Python/graminit.js" \
 --js "src/lib/eyo/js/model/module_model.js" \
---js "src/lib/eyo/js/application/abstract/owned.js" \
 --js "src/lib/eyo/js/parser/tokenizer.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/search.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/shape.js" \

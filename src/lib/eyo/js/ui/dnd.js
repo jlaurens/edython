@@ -12,8 +12,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
 eYo.provide('eYo.DnD')
 eYo.provide('eYo.DnD.Dragger')
 eYo.provide('eYo.DnD.Dropper')

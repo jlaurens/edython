@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo.Owned')
+eYo.require('eYo.Factory.Owned')
 eYo.require('eYo.Brick')
 eYo.require('eYo.Change')
 
@@ -56,7 +56,7 @@ eYo.Brick.UI = function(brick) {
   this.xy_ = new eYo.Where()
   this.updateBrickWrapped()
 }
-goog.inherits(eYo.Brick.UI, eYo.Owned)
+goog.inherits(eYo.Brick.UI, eYo.Factory.Owned)
 
 Object.defineProperties(eYo.Brick.UI.prototype, {
   

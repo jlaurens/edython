@@ -32,8 +32,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
 eYo.provide('eYo.Span')
 
 eYo.forwardDeclare('eYo.Unit')

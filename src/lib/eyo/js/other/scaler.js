@@ -12,7 +12,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
 eYo.provide('eYo.Scaler')
 
 eYo.forwardDeclare('eYo.Motion')

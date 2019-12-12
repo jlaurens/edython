@@ -11,7 +11,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
 eYo.provide('eYo.MsgPack')
 
 eYo.provide('eYo.Msg')

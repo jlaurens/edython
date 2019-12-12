@@ -10,6 +10,6 @@ eyo_path = project_path / 'src/lib/eyo'
 
 for p in eyo_path.glob('**/*.js'):
   name = p.name
-  if name.startswith('svg_'):
-    q = p.with_name(name[4:])
+  if name.endwith('__model.js'):
+    q = p.with_name(name[:-10]+'__module.js')
     p.rename(q)

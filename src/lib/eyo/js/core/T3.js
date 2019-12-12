@@ -18,7 +18,6 @@
  * @namespace
  **/
 
-eYo.require('eYo')
 eYo.provide('eYo.T3.Expr')
 eYo.provide('eYo.T3.Stmt')
 

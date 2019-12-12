@@ -11,10 +11,7 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
-eYo.provide('eYo.Do')
-
+eYo.makeNS('Do')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.math.AffineTransform')

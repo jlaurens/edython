@@ -27,8 +27,6 @@
  */
 'use strict'
 
-eYo.require('eYo')
-
 eYo.require('eYo.Const')
 
 eYo.require('eYo.XRE')

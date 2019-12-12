@@ -12,9 +12,9 @@
 'use strict'
 
 eYo.require('eYo.Decorate')
-eYo.require('eYo.Dlgt')
+eYo.require('eYo.Factory')
 
-// eYo.provide('eYo.Owned')
+// eYo.provide('eYo.Factory.Owned')
 
 // Possible owner
 eYo.forwardDeclare('eYo.Application')
@@ -49,10 +49,10 @@ eYo.Dlgt.prototype.addApp = function () {
 /**
  * Class for a basic object.
  * 
- * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Expr|eYo.Stmt|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
-eYo.Dflt.makeSubclass('Owned', {
+eYo.Factory.makeClass('Owned', eYo.Dflt, {
   init (owner) {
     this.owner_ = owner
   },
@@ -114,4 +114,4 @@ eYo.Dflt.makeSubclass('Owned', {
   },
 })
 
-eYo.assert(eYo.Owned, 'MISSING eYo.Owned')
+eYo.assert(eYo.Factory.Owned, 'MISSING eYo.Factory.Owned')

@@ -12,8 +12,6 @@
 'use strict'
 
 
-eYo.require('eYo')
-
 eYo.require('eYo.Change')
 eYo.provide('eYo.BrickDragger')
 
