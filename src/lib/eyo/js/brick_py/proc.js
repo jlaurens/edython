@@ -50,7 +50,7 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
  * Class for a Delegate, decorator.
  * For edython.
  */
-eYo.Stmt.makeSubclass('decorator_stmt', {
+eYo.Stmt.makeClass('decorator_stmt', {
   xml: {
     attr: '@'
   },

@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.require('UI')
+eYo.require('C9r.UI')
 
 eYo.forwardDeclare('Desk')
 
@@ -21,7 +21,7 @@ eYo.forwardDeclare('Desk')
  * @param {eYo.Desk} desk -  the owning desk.
  * @constructor
  */
-eYo.UI.makeClass(eYo, 'Pane', {
+eYo.C9r.UI.makeClass(eYo, 'Pane', {
   computed: {
     /**
      * The desk of the receiver.

@@ -1,9 +1,50 @@
-# Class models for Edython
+# Edython's class management
+
+Various `makeClass` function are utilities to create class objects with 
+properties and methods given in an object.
+The idea is to use a rather straightforward syntax.
+
+## Where the classes are stored,
+
+Classes are spread between various name spaces.
+Each class belongs to exactly one of the known namespaces.
+
+## Class extensions
+
+Each class is extended through a property named `eyo`.
+This name is sufficiently weird to avoid collisions.
+Each `eyo` object is an instance of `eYo.Dlgt` or one of its
+subclasses.
+
+This extension knows the namespace owning the class.
+It also knows the unique string identifying the class: its name.
+The name is exactly the string as it appears in javascript to reference the class.
+
+## Model
+
+New classes are built with models.
+A model allows to declare properties and to customize standard methods in a rather straightforward manner.
+
+The model used to create a class is stored in its `eyo` delegate.
+
+The model stored is not exactly the argument given to the `makeClass` function.
+
+A model is a tree, based on objects.
+
+## Subclassing and model
+
+If `Foo` inherits from `Bar`, then model of `Foo` also from the model of `Bar`.
+
+## Base classes
+
+Each namespace `ns` contains `ns.Dflt` which is the root class for all thge classes in that namespace. It also contains `ns.Dlgt` which the root class of the constructor delegats in that namespace.
+
+## Class models for Edython
 
 In progress.
 See also the class documentation.
 
-## A model is a tree
+### A model is a tree
 ```
 base = {
   foo: {
@@ -12,7 +53,7 @@ base = {
 }
 ```
 
-## Model inheritance
+### Model inheritance
 
 Given
 
@@ -35,13 +76,13 @@ They are used to create an eponym method in the newly created prototype.
 This methods calls the inherited one if any, such that the method of the
 to be inherited model is really used.
 
-## model persistency
+### model persistency
 
 A selection of the model content is stored in the delegate of the constructor. For example, both `init` and `dispose` functions are not recorded in the delegate.
 
-## Model content
+### Model content
 
-### Owned properties dictionary
+#### Owned properties dictionary
 An owned property is an owned object. It will receive `init` and `dispose` messages.
 
 ```
@@ -61,10 +102,10 @@ Owned property dictionary ::= {
 }
 ```
 
-### `init` and `dispose` functions
+#### `init` and `dispose` functions
 
 
-### General objects
+#### General objects
 Model template for most objects except bricks.
 
 ```
@@ -127,7 +168,7 @@ base_template = {
   },
 }
 ```
-### Bricks
+#### Bricks
 
 Template for Statements, same thing plus
 
@@ -216,7 +257,7 @@ model_stmt = {
 }
 ```
 
-### Expressions
+#### Expressions
 
 Expressions are statements with an `out` magnet.
 
@@ -227,7 +268,7 @@ model_expr = {
   },
 }
 ```
-### Lists
+#### Lists
 
 Lists are expressions with a consolidator.
 ```

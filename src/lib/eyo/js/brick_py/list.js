@@ -13,7 +13,7 @@
 
 eYo.require('Expr')
 
-eYo.require('Change')
+eYo.require('C9r.Change')
 
 eYo.require('Decorate')
 eYo.require('Consolidator.List')
@@ -160,7 +160,7 @@ eYo.Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
   if (!type) {
     console.error('unexpected void type')
   }
-  var D = eYo.Brick.mngr.getModel(type).list
+  var D = eYo.C9r.Model.forKey(type).list
   eYo.assert(D, '`model`.list is missing in ' + type)
   var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
   if (this.consolidator) {
@@ -468,7 +468,7 @@ Object.defineProperties(eYo.Expr.enclosure.prototype, {
  * getProfile.
  * @return {!Object} with `ans` key.
  */
-eYo.Expr.enclosure.prototype.getProfile = eYo.Change.decorate(
+eYo.Expr.enclosure.prototype.getProfile = eYo.C9r.decorateChange(
   'getProfile',
   function () {
     // this may be called very very early when

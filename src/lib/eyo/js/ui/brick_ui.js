@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Factory.Owned')
+eYo.require('C9r.Owned')
 eYo.require('Brick')
-eYo.require('Change')
+eYo.require('C9r.Change')
 
 eYo.provide('Brick.UI')
 
@@ -56,7 +56,7 @@ eYo.Brick.UI = function(brick) {
   this.xy_ = new eYo.Where()
   this.updateBrickWrapped()
 }
-goog.inherits(eYo.Brick.UI, eYo.Factory.Owned)
+goog.inherits(eYo.Brick.UI, eYo.C9r.Owned)
 
 Object.defineProperties(eYo.Brick.UI.prototype, {
   
@@ -725,7 +725,7 @@ eYo.Brick.UI.prototype.draw_ = function (recorder) {
  * @param {*} recorder
  * @protected
  */
-eYo.Brick.UI.prototype.alignRightEdges_ = eYo.Change.decorate(
+eYo.Brick.UI.prototype.alignRightEdges_ = eYo.C9r.decorateChange(
   'alignRightEdges_',
   function (recorder) {
     if (this.brick.parent || !this.brick.isStmt || !this.rendered || !this.brick.board || !this.brick.hasUI) {

@@ -69,7 +69,7 @@ eYo.Brick.List.makeSubclass('non_void_import_identifier_as_list', {
  * The value property is used to store the module.
  * For edython.
  */
-eYo.Stmt.makeSubclass('import_stmt', {
+eYo.Stmt.makeClass('import_stmt', {
   data: {
     variant: {
       all: [
@@ -383,7 +383,7 @@ eYo.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, future_statement.
  * For edython.
  */
-eYo.Stmt.makeSubclass('future_statement', {
+eYo.Stmt.makeClass('future_statement', {
   slots: {
     list: {
       order: 1,

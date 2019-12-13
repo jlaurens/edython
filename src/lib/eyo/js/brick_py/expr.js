@@ -11,26 +11,32 @@
  */
 'use strict'
 
-eYo.require('Brick')
+eYo.require('Stmt')
 
-eYo.require('Change')
+eYo.require('C9r.Change')
 eYo.require('Msg')
 
 eYo.require('Decorate')
 eYo.require('T3.All')
 goog.require('goog.dom');
 
-eYo.provide('Expr')
+/**
+ * @name{eYo.Expr}
+ * @namespace
+ */
+eYo.Stmt.makeNS(eYo, 'Expr')
 
 /**
+ * @name {eYo.Expr.Dflt}
+ * @constructor
  * Class for a Delegate, value brick.
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Dflt.makeSubclass(eYo.Expr, 'Dflt')
+eYo.Stmt.Dflt.makeSubclass(eYo.Expr)
 
 // Default delegate for all expression bricks
-eYo.Brick.mngr.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
+eYo.Brick.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
 
 Object.defineProperties(eYo.Expr.Dflt.prototype, {
   isExpr: {
@@ -63,7 +69,7 @@ eYo.Expr.Dflt.prototype.changeDone = function (deep) {
  * This should be used instead of direct brick querying.
  * @return {String} The type of the receiver's brick.
  */
-eYo.Expr.Dflt.prototype.getType = eYo.Change.decorate(
+eYo.Expr.Dflt.prototype.getType = eYo.C9r.decorateChange(
   'getType',
   function () {
     return {

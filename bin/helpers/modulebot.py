@@ -906,7 +906,7 @@ eYo.provide('Module.{{key}}', new eYo.Module.Dflt('{{key}}', '{{url}}'))
             with io.StringIO() as self.f:
             # with path_out.open('w', encoding='utf-8') as f:
                 self.raw_print(self.prefix_)
-                self.down_print('eYo.Module.{{key}}.data = {')
+                self.down_print('eYo.Module.{{key}}.data_ = {')
                 self.down_print('categories: [')
                 separator = ''
                 for category in list(x[0] for x in sorted(list((k,v) for k,v in self.categories.items()), key= lambda x: x[1])):

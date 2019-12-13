@@ -22,4 +22,4 @@ eYo.provide('Terminal')
  * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.UI.makeClass('Terminal', eYo.Pane)
+eYo.C9r.UI.makeClass('Terminal', eYo.Pane)

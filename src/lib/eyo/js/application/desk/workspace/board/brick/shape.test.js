@@ -35,7 +35,7 @@ describe('Expression shape', function () {
 describe('Statement shape', function () {
   var type = 'test_shape_stmt'
   eYo.T3.Stmt[type] = type
-  eYo.Stmt.makeSubclass(type, {}) 
+  eYo.Stmt.makeClass(type, {}) 
   chai.assert(eYo.Stmt.test_shape_stmt)
   var b
   before(function() {

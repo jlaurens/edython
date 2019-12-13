@@ -20,7 +20,7 @@ goog.forwardDeclare('goog.userAgent')
  * @param {String} pathToMedia
  * @constructor
  */
-eYo.Dom.Audio.makeClass('Audio', {
+eYo.Dom.makeClass('Audio', {
   init(pathToMedia) {
     /**
      * Database of pre-loaded sounds.
@@ -94,7 +94,7 @@ eYo.Dom.Audio.SOUND_VOLUME = 0.5
 
 /**
  * Load an audio file.  Cache it, ready for playing.
- * @param {Array.<string>} filenames List of file types in decreasing order of
+ * @param {Array<string>} filenames List of file types in decreasing order of
  *   preference (i.e. increasing size).  E.g. ['media/go.mp3', 'media/go.wav']
  *   Filenames include path from Blockly's root.  File extensions matter.
  * @param {string} name Name of sound.

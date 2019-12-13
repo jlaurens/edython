@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('Protocol')
-eYo.require('UI')
+eYo.require('C9r.UI')
 eYo.require('Unit')
 eYo.require('Events')
 
@@ -76,7 +76,7 @@ eYo.forwardDeclare('MenuButtonRenderer')
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.UI.makeClass(eYo, 'Flyout', {
+eYo.C9r.UI.makeClass(eYo, 'Flyout', {
   owned: {
     search () {
       return new eYo.Search(this)
@@ -257,20 +257,20 @@ eYo.UI.makeClass(eYo, 'Flyout', {
     })
     /**
      * Opaque data that can be passed to unbindEvent.
-     * @type {!Array.<!Array>}
+     * @type {!Array<!Array>}
      * @private
      */
     this.eventWrappers_ = []
     /**
      * List of event listeners.
      * Array of opaque data that can be passed to unbindEvent.
-     * @type {!Array.<!Array>}
+     * @type {!Array<!Array>}
      * @private
      */
     this.listeners_ = []
     /**
      * List of bricks that should always be disabled.
-     * @type {!Array.<!eYo.Brick>}
+     * @type {!Array<!eYo.Brick>}
      * @private
      */
     this.permanentlyDisabled_ = []
@@ -490,8 +490,8 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
 
 /**
  * Lay out the bricks in the flyout.
- * @param {Array.<!Object>} contents The bricks and buttons to lay out.
- * @param {Array.<number>} gaps The visible gaps between bricks.
+ * @param {Array<!Object>} contents The bricks and buttons to lay out.
+ * @param {Array<number>} gaps The visible gaps between bricks.
  * @private
  */
 eYo.Flyout.prototype.layout_ = function(contents) {

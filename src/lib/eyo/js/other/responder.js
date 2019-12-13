@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('Protocol')
-eYo.require('Factory.Owned')
+eYo.require('C9r.Owned')
 
 eYo.provide('Responder')
 
@@ -52,10 +52,10 @@ eYo.Responder = function(desk, e) {
    */
   this.cachedPoints_ = Object.create(null)
 
-  this.change_ = new eYo.Change()
+  this.change_ = new eYo.C9r.Change()
 
 }
-goog.inherits(eYo.Responder, eYo.Factory.Owned)
+goog.inherits(eYo.Responder, eYo.C9r.Owned)
 
 /**
  * Sever all links from this object.

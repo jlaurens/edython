@@ -12,9 +12,9 @@
 'use strict'
 
 eYo.require('Decorate')
-eYo.require('Factory')
+eYo.require('C9r')
 
-// eYo.provide('Factory.Owned')
+// eYo.provide('C9r.Owned')
 
 // Possible owner
 eYo.forwardDeclare('Application')
@@ -52,7 +52,7 @@ eYo.Dlgt.prototype.addApp = function () {
  * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Expr|eYo.Stmt|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
-eYo.Factory.makeClass('Owned', eYo.Dflt, {
+eYo.C9r.makeClass('Owned', eYo.Dflt, {
   init (owner) {
     this.owner_ = owner
   },
@@ -114,4 +114,4 @@ eYo.Factory.makeClass('Owned', eYo.Dflt, {
   },
 })
 
-eYo.assert(eYo.Factory.Owned, 'MISSING eYo.Factory.Owned')
+eYo.assert(eYo.C9r.Owned, 'MISSING eYo.C9r.Owned')

@@ -14,10 +14,7 @@
 
 eYo.require('Do')
 eYo.require('Decorate')
-eYo.require('Factory')
-
-eYo.provide('Application')
-delete eYo.Application
+eYo.require('C9r')
 
 eYo.forwardDeclare('Css')
 
@@ -25,7 +22,7 @@ eYo.forwardDeclare('Focus')
 eYo.forwardDeclare('Motion')
 eYo.forwardDeclare('Desk')
 eYo.forwardDeclare('Driver')
-eYo.forwardDeclare('Audio')
+eYo.forwardDeclare('Dom.Audio')
 
 /**
  * Main application object.
@@ -45,24 +42,21 @@ eYo.forwardDeclare('Audio')
  * @property {eYo.Driver.Mngr} ui_driver_mngr
  */
 eYo.makeClass('Application', {
-  init : {
-    begin () {
-      this.disposeUI = eYo.Do.nothing
-    },
-    end (options) {
-      this.options_ = new eYo.Options(options || {})
-    }
+  init (options) {
+    this.options_ = new eYo.Options(options || {})
+  },
+  /**
+   * Dispose of the audio and the motion.
+   */
+  dispose () {
+    this.disposeUI()
   },
   owned: {
-    motion: {
-      init () {
-        return new eYo.Motion(this)
-      }
+    motion () {
+      return new eYo.Motion(this)
     },
-    desk: {
-      init () {
-        return new eYo.Desk(this)
-      }
+    desk () {
+      return new eYo.Desk(this)
     },
     options: {},
     audio: {},
@@ -70,43 +64,36 @@ eYo.makeClass('Application', {
     ui_driver_mngr: {
       willChange(before, after) {
         if (before) {
-          this.disposeUI()
+          this.disposeUI && this.disposeUI()
         }
         return function (before, after) {
-          this.initUI()
+          this.initUI && this.initUI()
         }
       }
     },
   },
-})
-
-Object.defineProperties(eYo.Application.prototype, {
-  /**
-   * The application of the receiver (returns itself).
-   * @readonly
-   */
-  app: {
-    get () {
+  computed: {
+    /**
+     * The application of the receiver (returns itself).
+     * @readonly
+     */
+    app () {
       return this
     },
-  },
-  /**
-   * Is the user currently dragging a brick or scrolling a board?
-   * @type {boolean} True if currently dragging or scrolling.
-   */
-  isDragging: {
-    get () {
+    /**
+     * Is the user currently dragging a brick or scrolling a board?
+     * @type {boolean} True if currently dragging or scrolling.
+     */
+    isDragging () {
       return this.motion__.isDragging
-    }
-  },
-  /**
-   * Whether the receiver is faceless.
-   * @type {Boolean}
-   */
-  hasUI: {
-    get () {
+    },
+    /**
+     * Whether the receiver is faceless.
+     * @type {Boolean}
+     */
+    hasUI () {
       return !this.initUI || this.initUI === eYo.Do.nothing
-    }
+    },
   },
 })
 
@@ -130,15 +117,6 @@ eYo.Application.prototype.disposeUI = function() {
   this.desk.disposeUI()
   this.ui_driver_mngr_ = null
   delete this.initUI
-}
-
-/**
- * Dispose of the audio and the motion.
- */
-eYo.Application.prototype.dispose = function() {
-  this.dispose = eYo.Do.nothing
-  this.disposeUI()
-  eYo.Property.dispose(this, 'desk', 'motion', 'audio', 'clipboard')
 }
 
 /**

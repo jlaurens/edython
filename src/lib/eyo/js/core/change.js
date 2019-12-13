@@ -11,72 +11,64 @@
  */
 'use strict'
 
-eYo.provide('Change')
-
 /**
+ * @name {eYo.C9r.Change}
+ * @constructor
  * @param{Object} owner
  */
-eYo.Change = function (owner) {
-  this.owner_ = owner
-  this.reset()
-}
+eYo.C9r.makeClass('Change', {
+  init (owner) {
+    this.owner_ = owner
+    this.reset()
+  },
+  /**
+   * Sever the links.
+   */
+  dispose () {
+    this.owner_ = this.save_ = this.cache_ = null
+  },
+  linked: {
+    /** the count is incremented each time a change occurs,
+     * even when undoing.
+     * Some lengthy actions may be shortened when the count
+     * has not changed since the last time it was performed
+     */
+    count: { value: 0 },
+    /** the step is the count, except that it is freezed
+     * according to the owner property `changeStepFreezed`
+     */
+    step: { value: 0 },
+    /** The level indicates cascading changes
+     * Some actions that are performed when something changes
+     * should not be performed while there is a pending change.
+     * The level is incremented before the change and
+     * decremented after the change (see `change.wrap`)
+     * If we have
+     * A change (level 1) => B change (level 2) => C change (level 3)
+     * Such level aware actions are not performed when B and C
+     * have changed because the level is positive (respectivelly 1 and 2), * a contrario they are performed when the A has changed because
+     * the level is 0.
+     */
+    level: { value: 0},
+    cache: {},
+    save: {}
+  },
+})
 
 /**
  * Sever the links.
  */
-eYo.Change.prototype.reset = function () {
+eYo.C9r.Change.prototype.reset = function () {
   this.count = this.step = this.level = 0
   // Some operations are performed only when there is a change
   // In order to decide whether to run or do nothing,
   // we have to store the last change count when the operation was
-  // last performed. See `eYo.Change.decorate` decorator.
+  // last performed. See `eYo.C9r.decorateChange` decorator.
   this.save_ = Object.create(null)
   // When these operations return values, they are cached below
   // until they are computed once again.
   this.cache_ = Object.create(null)
 }
-
-/**
- * Sever the links.
- */
-eYo.Change.prototype.dispose = function () {
-  this.owner_ = this.save_ = this.cache_ = null
-}
-
-Object.defineProperties(eYo.Change.prototype, {
-  /** the count is incremented each time a change occurs,
-   * even when undoing.
-   * Some lengthy actions may be shortened when the count
-   * has not changed since the last time it was performed
-   */
-  count: { value: 0, writable: true},
-  /** the step is the count, except that it is freezed
-   * according to the owner property `changeStepFreezed`
-   */
-  step: { value: 0, writable: true},
-  /** The level indicates cascading changes
-   * Some actions that are performed when something changes
-   * should not be performed while there is a pending change.
-   * The level is incremented before the change and
-   * decremented after the change (see `change.wrap`)
-   * If we have
-   * A change (level 1) => B change (level 2) => C change (level 3)
-   * Such level aware actions are not performed when B and C
-   * have changed because the level is positive (respectivelly 1 and 2), * a contrario they are performed when the A has changed because
-   * the level is 0.
-   */
-  level: { value: 0, writable: true},
-  cache: {
-    get () {
-      return this.cache_
-    }
-  },
-  save: {
-    get () {
-      return this.save_
-    }
-  }
-})
 
 /**
  * Decorate of change count hooks.
@@ -92,7 +84,7 @@ Object.defineProperties(eYo.Change.prototype, {
  * @param {Function} do_it  must return something.
  * @return {!Function}
  */
-eYo.Change.decorate = function (key, do_it) {
+eYo.C9r.decorateChange = function (key, do_it) {
   eYo.assert(goog.isFunction(do_it), 'do_it MUST be a function')
   return function() {
     var c = this.change
@@ -111,7 +103,7 @@ eYo.Change.decorate = function (key, do_it) {
 /**
  * Increment the level.
  */
-eYo.Change.prototype.begin = function () {
+eYo.C9r.Change.prototype.begin = function () {
   ++this.level
   var O = this.owner_
   O.onChangeBegin && O.onChangeBegin(arguments)
@@ -125,7 +117,7 @@ eYo.Change.prototype.begin = function () {
  * This is the only place where consolidation should occur.
  * For edython.
  */
-eYo.Change.prototype.end = function () {
+eYo.C9r.Change.prototype.end = function () {
   --this.level
   if (this.level === 0) {
     this.done()
@@ -146,7 +138,7 @@ eYo.Change.prototype.end = function () {
  * to cache the return value.
  * For edython.
  */
-eYo.Change.prototype.done = function () {
+eYo.C9r.Change.prototype.done = function () {
   ++ this.count
   var O = this.owner_
   if (!O.changeStepFreeze) {
@@ -163,7 +155,7 @@ eYo.Change.prototype.done = function () {
  * @param {*} rest
  * @return {*} whatever `do_it` returns.
  */
-eYo.Change.prototype.wrap = function () {
+eYo.C9r.Change.prototype.wrap = function () {
   var ans
   var func = arguments[0]
   if (func) {

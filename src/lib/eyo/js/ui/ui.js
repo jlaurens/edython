@@ -11,35 +11,34 @@
  */
 'use strict'
 
-eYo.require('Factory')
-eYo.require('Factory.Owned')
+eYo.require('C9r.Owned')
 
-// eYo.provide('UI')
+// eYo.provide('C9r.UI')
 
 /**
  * Class for loading, storing, and playing audio.
- * @name {eYo.UI}
+ * @name {eYo.C9r.UI}
  * @namespace
  */
 
- eYo.makeNS('UI')
+ eYo.C9r.makeNS('UI')
 
 /**
- * @name {eYo.UI.Dlgt}
+ * @name {eYo.C9r.UI.Dlgt}
  * @param {Function} c9r -  constructor
  * @param {String} key -  key
  * @param {Object} key -  model
  * @constructor
  * Constructor delegate subclass
  */
-eYo.Dlgt.makeSubclass(eYo.UI)
+eYo.Dlgt.makeSubclass(eYo.C9r.UI)
 
 /**
  * Make the dispose function.
  * @override
  */
-eYo.UI.Dlgt.prototype.disposeDecorate = function (f) {
-  return eYo.UI.Dlgt.superClass_.disposeDecorate.call(this, function () {
+eYo.C9r.UI.Dlgt.prototype.disposeDecorate = function (f) {
+  return eYo.C9r.UI.Dlgt.superClass_.disposeDecorate.call(this, function () {
     this.disposeUI()
     f && f.apply(this, arguments)
   })
@@ -49,7 +48,7 @@ eYo.UI.Dlgt.prototype.disposeDecorate = function (f) {
  * Helper to make the `initUI` method based on the given function.
  * @param {Function} [f]  a function with at least one argument.
  */
-eYo.UI.Dlgt.prototype.initUIDecorate = function (f) {
+eYo.C9r.UI.Dlgt.prototype.initUIDecorate = function (f) {
   return f
 }
 
@@ -57,7 +56,7 @@ eYo.UI.Dlgt.prototype.initUIDecorate = function (f) {
  * Helps to make the `disposeUI` method based on the given function.
  * @param {Function} [f]  a function with at least one argument.
  */
-eYo.UI.Dlgt.prototype.disposeUIDecorate = function (f) {
+eYo.C9r.UI.Dlgt.prototype.disposeUIDecorate = function (f) {
   return f
 }
 
@@ -65,7 +64,7 @@ eYo.UI.Dlgt.prototype.disposeUIDecorate = function (f) {
  * Add the cached `app` property to the associate constructor.
  * NYU.
  */
-eYo.UI.Dlgt.prototype.addApp = function () {
+eYo.C9r.UI.Dlgt.prototype.addApp = function () {
   this.declareCached_('app', {
     get () {
       return this.owner__.app
@@ -83,7 +82,7 @@ eYo.UI.Dlgt.prototype.addApp = function () {
 /**
  * Class for a basic object with a UI driver.
  * 
- * @name {eYo.UI.Dflt}
+ * @name {eYo.C9r.UI.Dflt}
  * @constructor
  * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
@@ -94,7 +93,7 @@ eYo.UI.Dlgt.prototype.addApp = function () {
  * @readonly
  * @property {eYo.Driver.Mngr}ui_driver_mngr,  The ui driver manager used for rendering.
  */
-eYo.Factory.Owned.makeSubclass(eYo.UI, 'Dflt', {
+eYo.C9r.Owned.makeSubclass(eYo.C9r.UI, 'Dflt', {
   init: {
     begin () {
       this.disposeUI = eYo.Do.nothing
@@ -126,20 +125,20 @@ eYo.Factory.Owned.makeSubclass(eYo.UI, 'Dflt', {
   }
 })
 
-eYo.assert(eYo.UI.Dflt, 'MISSING eYo.UI.Dflt')
+eYo.assert(eYo.C9r.UI.Dflt, 'MISSING eYo.C9r.UI.Dflt')
 
 /**
  * Update the cached `ui_driver` each time the app object changes.
  * 
  */
-eYo.UI.Dflt.prototype.appDidChange = function () {
-  var super_ = eYo.UI.Dflt.superClass_.appDidChange
+eYo.C9r.UI.Dflt.prototype.appDidChange = function () {
+  var super_ = eYo.C9r.UI.Dflt.superClass_.appDidChange
   super_ && super_.call(this)
   this.ui_driverUpdate()
 }
 
-eYo.UI.Dflt.prototype.ownerDidChange = function (before, after) {
-  var super_ = eYo.UI.Dflt.superClass_.ownerDidChange
+eYo.C9r.UI.Dflt.prototype.ownerDidChange = function (before, after) {
+  var super_ = eYo.C9r.UI.Dflt.superClass_.ownerDidChange
   super_ && super_call(this, before, after)
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA
   if (after instanceof eYo.Slot) {
@@ -154,20 +153,20 @@ eYo.UI.Dflt.prototype.ownerDidChange = function (before, after) {
 }
 
  /**
-  * @name {eYo.UI.makeClass}
+  * @name {eYo.C9r.UI.makeClass}
  * Constructor maker.
  * The delegate of the constructor has convenient methods
  * named `initUIDecorate` and `disposeUIDecorate` to
  * make the `initUI` and `disposeUI` methods of the prototype.
  * @param {Object} [ns] -  A namespace. Defaults to `eYo`.
  * @param {String} key -  The key.
- * @param {Function} [Super] -  The eventual super class. There is no default value. If given, it must be a subclass of `eYo.UI.Dflt`.
- * @param {Function} [Dlgt] -  The constructor's delegate class. Defaults to the constructor of `Super`'s delegate if any. Must be a subclass of `eYo.UI.Dlgt`.
+ * @param {Function} [Super] -  The eventual super class. There is no default value. If given, it must be a subclass of `eYo.C9r.UI.Dflt`.
+ * @param {Function} [Dlgt] -  The constructor's delegate class. Defaults to the constructor of `Super`'s delegate if any. Must be a subclass of `eYo.C9r.UI.Dlgt`.
  * @param {Object} model -  The dictionary of parameters.
  * @return {Function} the created constructor.
  */
-eYo.UI.constructor.prototype.makeClass = function (ns, key, Super, Dlgt, model) {
-  var C9r = eYo.UI.constructor.superClass_.makeClass.apply(this, arguments)
+eYo.C9r.UI.pttp.makeClass = function (ns, key, Super, Dlgt, model) {
+  var C9r = eYo.C9r.UI.constructor.superClass_.makeClass.apply(this, arguments)
   var eyo = C9r.eyo
   model = eyo.model // arguments may have changed
   var ui = model.ui
@@ -175,26 +174,26 @@ eYo.UI.constructor.prototype.makeClass = function (ns, key, Super, Dlgt, model) 
     console.error('BREAK HERE')
     C9r = eYo.makeClass(ns, key, Super, Dlgt, model)
   }
-  var f = eyo.initUIDecorate(ui && ui.dispose)
+  var f = eyo.initUIDecorate(ui && ui.init)
   C9r.prototype.initUI = function (...args) {
     try {
       this.initUI = eYo.Do.nothing
-      var super_ = C9r.superClass_
-      !!super_ && !!super_.initUI && !!super_.initUI.call(this, ...args)
-      this.ui_driver.init(this, ...args)
-      f && f.apply(this, ...args)
+      var Super = C9r.superClass_
+      !!Super && !!Super.initUI && !!Super.initUI.call(this, ...args)
+      this.ui_driver.initUI(this, ...args)
+      f && f.super_call(this, ...args)
     } finally {
       delete this.initUI
     }
   }
-  var f = eyo.disposeUIDecorate (ui && ui.init)
+  var f = eyo.disposeUIDecorate (ui && ui.dispose)
   C9r.prototype.disposeUI = function (...args) {
     try {
       this.disposeUI = eYo.Do.nothing
-      f && f.apply(this, arguments)
-      this.ui_driver.disposeInstance(this)
-      var super_ = C9r.superClass_
-      !!super_ && !!super_.disposeUI && !!super_.disposeUI.apply(this, arguments)
+      f && f.call(this, ...args)
+      this.ui_driver.disposeUI(this, ...args)
+      var Super = C9r.superClass_
+      !!Super && !!Super.disposeUI && !!Super.disposeUI.call(this, ...args)
     } finally {
       delete this.disposeUI
     }

@@ -13,17 +13,16 @@
 
 eYo.require('Expr')
 
-eYo.require('Protocol')
-eYo.require('Change')
+eYo.require('Protocol.Register')
+eYo.require('C9r.Change')
 
-eYo.require('Model.stdtypes')
+eYo.require('Module.stdtypes')
+eYo.require('Module.functions')
 
-eYo.require('Model.functions')
 eYo.require('Msg')
 
 eYo.require('Brick.Primary')
 eYo.require('Stmt')
-eYo.require('Protocol.Register')
 eYo.provide('Brick.Primary')
 
 /**
@@ -1297,7 +1296,7 @@ eYo.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_method(
  * This has not been tested despite it is essential.
  * @return {!Object}.
  */
-eYo.Expr.primary.prototype.getProfile = eYo.Change.decorate(
+eYo.Expr.primary.prototype.getProfile = eYo.C9r.decorateChange(
   'getProfile',
   function () {
       // this may be called very very early when
@@ -1801,7 +1800,7 @@ eYo.Expr.primary.prototype.getSlot = function (name) {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.makeSubclass('pre_call_stmt', {
+eYo.Stmt.makeClass('pre_call_stmt', {
   link: eYo.T3.Expr.primary
 }, eYo.Stmt)
 
@@ -1845,7 +1844,7 @@ Object.defineProperties( eYo.Stmt.call_stmt.prototype, {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.makeSubclass('base_call_stmt', {
+eYo.Stmt.makeClass('base_call_stmt', {
   link: eYo.T3.Expr.primary
 }, eYo.Stmt, true)
 

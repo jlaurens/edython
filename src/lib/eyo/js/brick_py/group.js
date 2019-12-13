@@ -25,7 +25,7 @@ eYo.provide('Brick.Group')
  * Base group is subclassed into Group and Control.
  * For edython.
  */
-eYo.Stmt.makeSubclass('BaseGroup', {
+eYo.Stmt.makeClass('BaseGroup', {
   head: {
     check: /** @suppress {globalThis} */ function (type) {
       return null

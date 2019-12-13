@@ -42,6 +42,8 @@ Here is a list of various namespaces created at initialization time, by key.
 | `Events` | For events management |
 | `T3` | For brick types |
 | `Brick` | For bricks |
+| `Stmt` | For statement bricks |
+| `Expr` | For expression bricks |
 | `UI` | For user interface |
 | `Consolidator` | For list consolidation |
 | `Driver` | For UI drivers |

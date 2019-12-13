@@ -11,15 +11,16 @@
  */
 'use strict'
 
-eYo.provide('DB')
-
 /**
  * Database of all identified object.
+ * @name {eYo.DB}
  * @constructor
  */
-eYo.DB = function() {
-  this.byID_ = Object.create(null)
-}
+eYo.makeClass('DB', {
+  init () {
+    this.byID_ = Object.create(null)
+  }
+})
 
 /**
  * Database of all identified boards.
@@ -28,7 +29,6 @@ eYo.DB = function() {
 eYo.DB.prototype.add = function(object) {
   this.byID_[object.id] = object
 }
-
 
 /**
  * Database of all identified boards.

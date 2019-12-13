@@ -13,7 +13,7 @@
 
 eYo.require('Expr')
 
-eYo.require('Change')
+eYo.require('C9r.Change')
 
 eYo.require('Decorate')
 eYo.require('Msg')
@@ -242,7 +242,7 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Expr.Starred.prototype.getType = eYo.Change.decorate(
+eYo.Expr.Starred.prototype.getType = eYo.C9r.decorateChange(
   'getType',
   function () {
     var check = this.out_m.check_

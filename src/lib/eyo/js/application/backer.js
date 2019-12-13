@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('Factory.Owned')
+eYo.require('C9r.Owned')
 
 eYo.require('Protocol.ChangeCount')
 eYo.provide('Backer')
@@ -26,17 +26,17 @@ eYo.forwardDeclare('Application')
 eYo.Backer = function (owner) {
   eYo.Backer.superClass_.constructor.call(this, owner)
   /**
-   * @type {!Array.<!eYo.Events.Abstract>}
+   * @type {!Array<!eYo.Events.Abstract>}
    * @protected
    */
   this.undoStack_ = []
   /**
-   * @type {!Array.<!eYo.Events.Abstract>}
+   * @type {!Array<!eYo.Events.Abstract>}
    * @protected
    */
   this.redoStack_ = []
 }
-goog.inherits(eYo.Backer, eYo.Factory.Owned)
+goog.inherits(eYo.Backer, eYo.C9r.Owned)
 
 eYo.Protocol.add(eYo.Backer.prototype, 'ChangeCount')
 

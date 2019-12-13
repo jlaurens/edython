@@ -4,7 +4,7 @@ describe('Grammar', function() {
   describe('Creation', function() {
     it('test', function() {
       assert(eYo.GMR)
-      var g = eYo.GMR.newgrammar()
+      var g = new eYo.GMR.Book()
       assert(g)
     })
   })

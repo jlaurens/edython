@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('Decorate')
-eYo.require('Factory')
+eYo.require('C9r')
 
 // eYo.provide('Consolidator')
 

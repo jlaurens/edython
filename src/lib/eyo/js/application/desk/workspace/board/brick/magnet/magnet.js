@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('UI.Owned2')
+eYo.require('C9r.UI.Owned2')
 eYo.require('Protocol')
 
 eYo.provide('Magnets')
@@ -162,7 +162,7 @@ eYo.Magnet = function (bs, type, model) {
     }
   }
 }
-goog.inherits(eYo.Magnet, eYo.UI.Owned2)
+goog.inherits(eYo.Magnet, eYo.C9r.UI.Owned2)
 
 // Magnet types
 Object.defineProperties(eYo.Magnet, {
@@ -1585,7 +1585,7 @@ eYo.Magnet.prototype.hideAll = function() {
  * Type checking does not apply, since this function is used for bumping.
  * @param {number} maxLimit The maximum radius to another connection, in
  *     board units.
- * @return {!Array.<!eYo.Magnet>} List of magnets.
+ * @return {!Array<!eYo.Magnet>} List of magnets.
  * @private
  */
 eYo.Magnet.prototype.neighbours_ = function(maxLimit) {

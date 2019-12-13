@@ -11,15 +11,17 @@
  */
 'use strict'
 
-eYo.provide('Font')
-eYo.provide('Padding')
-
-eYo.provide('Style')
+/**
+ * @name{eYo.Padding}
+ * @namespace
+ */
+eYo.provide('Padding', Object.create(null))
 
 eYo.forwardDeclare('Unit')
 eYo.forwardDeclare('font-face')
 eYo.forwardDeclare('Shape')
-goog.forwardDeclare('goog.cssom');
+goog.forwardDeclare('goog.cssom')
+goog.forwardDeclare('goog.color')
 
 /**
  * The richness of brick colours, regardless of the hue.
@@ -42,10 +44,14 @@ eYo.hueToRgb = function (hue) {
   return goog.color.hsvToHex(hue, eYo.HSV_SATURATION, eYo.HSV_VALUE * 255)
 }
 
-eYo.Style = {
+/**
+ * @name{eYo.Style}
+ * @namespace
+ */
+eYo.provide('Style', {
   weight: x => x / (1 + x), // 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
   SEP_SPACE_X: 0
-}
+})
 
 ;(function () {
   var g = {
@@ -75,14 +81,19 @@ eYo.Style = {
     }
   )
 })()
+
+/**
+ * @name{eYo.Font}
+ * @namespace
+ */
+eYo.provide('Font', {
+  familyMono: 'DejaVuSansMono,monospace',
+  familySans: 'DejaVuSans,sans-serif'
+})
+
 /**
  * Point size of text.
  */
-eYo.Font = {
-  familyMono: 'DejaVuSansMono,monospace',
-  familySans: 'DejaVuSans,sans-serif'
-}
-
 Object.defineProperties(eYo.Font, {
   size: {
     get () {

@@ -44,7 +44,7 @@ goog.forwardDeclare('goog.dom')
  * or a augtarget_annotated which is a particular case of key_datum.
  * For edython.
  */
-eYo.Stmt.makeSubclass('assignment_stmt', {
+eYo.Stmt.makeClass('assignment_stmt', {
   data: {
     variant: {
       all: [

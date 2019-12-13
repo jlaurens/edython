@@ -12,7 +12,7 @@
 'use strict'
 
 
-eYo.require('Change')
+eYo.require('C9r.Change')
 eYo.provide('BrickDragger')
 
 eYo.forwardDeclare('Dom')
@@ -72,7 +72,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
    * 
    */
   xyDelta_: {
-    get: eYo.Change.decorate('xyDeltaBrickDragger', function () {
+    get: eYo.C9r.decorateChange('xyDeltaBrickDragger', function () {
       return {ans: this.destination.fromPixelUnit(this.motion_.xyDelta_)}
     }),
   },
@@ -183,7 +183,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
    * other bricks.  This includes all open connections on the top brick, as well
    * as the last connection on the brick stack.
    * Does not change during a drag.
-   * @type {!Array.<!eYo.Magnet>}
+   * @type {!Array<!eYo.Magnet>}
    * @private
    */
   this.availableMagnets_ = targetBrick.getMagnets_(false)

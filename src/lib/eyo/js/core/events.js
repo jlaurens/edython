@@ -185,9 +185,9 @@ eYo.Events.groupWrap = (f, g) => {
 
 /**
  * Filter the queued events and merge duplicates.
- * @param {Array.<!eYo.Events.Abstract>} queueIn Array of events.
+ * @param {Array<!eYo.Events.Abstract>} queueIn Array of events.
  * @param {boolean} forward True if forward (redo), false if backward (undo).
- * @return {!Array.<!eYo.Events.Abstract>} Array of filtered events.
+ * @return {!Array<!eYo.Events.Abstract>} Array of filtered events.
  */
 eYo.Events.filter = function(queueIn, forward) {
   if (!forward) {

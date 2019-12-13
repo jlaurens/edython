@@ -6,13 +6,10 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview eYo.Model is a collection of models for modules.
+ * @fileoverview eYo.Module is a collection of models for modules.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
-
-eYo.require('Protocol.Register')
-eYo.require('Model')
 
 /**
  * @name {eYo.Module}
@@ -48,7 +45,7 @@ eYo.Dflt.makeSubclass(eYo.Module, {
        * @param {Object} after - The data object after the change
        */
       didChange (before, after) {
-        var a = eYo.Model.item_types = eYo.Model.item_types.concat(after.types)
+        var a = eYo.Module.item_types = eYo.Module.item_types.concat(after.types)
         // remove duplicates
         for(var i=0; i<a.length; ++i) {
           for(var j=i+1; j<a.length; ++j) {
@@ -64,7 +61,7 @@ eYo.Dflt.makeSubclass(eYo.Module, {
 
 /**
  * Item constuctor
- * @name{eYo.Model.Item}
+ * @name{eYo.Module.Item}
  * @param {*} instance_model
  */
 eYo.Module.makeClass('Item', {

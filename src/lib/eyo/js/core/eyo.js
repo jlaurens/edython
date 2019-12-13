@@ -17,8 +17,13 @@
  * @namespace
  */
 var eYo = (() => {
-  var eYo = function() {}
-  var ans = new eYo()
+  var EYO = function() {}
+  var ans = new EYO()
+  Object.defineProperty(EYO.prototype, 'pttp', {
+    get () {
+      return this.constructor.prototype
+    }
+  })
   var NA
   Object.defineProperties(ans, {
     NA: { value: NA },
@@ -133,7 +138,7 @@ eYo.isSubclass = (Sub, Super) => {
 /**
  * @param {String} name
  */
-eYo.constructor.prototype.provide = (name) => {
+eYo.constructor.prototype.provide = (name, value) => {
   var ns = eYo
   var f = (first, second, ...args) => {
     if (first) {
@@ -142,30 +147,32 @@ eYo.constructor.prototype.provide = (name) => {
           ns = ns.makeNS(first)
           f(second, ...args)
         } else {
-          ns = second || ns.makeNS(first)
+          (ns[first] = second) || ns.makeNS(ns, first)
         }
-      }
+      } else if (eYo.isStr(second)) {
+        ns = ns[first]
+        f(second, ...args)
+      } 
     }
   }
   var args = name.split('.')
-  var first = args.shift()
-  if (first === 'eYo') {
+  if (args[0] === 'eYo') {
     return
   }
-  var second = args.shift()
-  f(first, second, ...args)
+  f(...args, value)
 }
 
 /**
  * @param {String} name
  */
 eYo.constructor.prototype.require = (name) => {
-  goog.require(/* Type: String*/name.includes('.') ? name : 'eYo.' + name)
+  var ns = eYo
+  name.split('.').forEach(k => {
+    eYo.assert((ns = ns[k]), `Missing required ${name}`)
+  })
 }
 
-eYo.constructor.prototype.forwardDeclare = (name) => {
-  goog.forwardDeclare(/* Type: String*/name.includes('.') ? name : 'eYo.' + name)
-}
+eYo.constructor.prototype.forwardDeclare = (name) => {}
 
 /**
  * @name {eYo.makeNS}
@@ -178,7 +185,10 @@ eYo.constructor.prototype.makeNS = function (ns, key) {
   if (eYo.isStr(ns)) {
     eYo.parameterAssert(!key, 'Unexpected key argument')
     key = ns
-    ns = eYo
+    ns = this
+  }
+  if (ns[key] !== eYo.NA) {
+    throw new Error(`${ns.name}[${key}] already exists.`)
   }
   var Super = this.constructor
   var NS = function () {
@@ -189,9 +199,6 @@ eYo.constructor.prototype.makeNS = function (ns, key) {
     value: this,
   })
   var ans = new NS()
-  if (ns[key]) {
-    throw new Error(`ns[${key}] already exists.`)
-  }
   Object.defineProperty(ns, key, {
     value: ans,
   })
@@ -226,6 +233,8 @@ eYo.DEFAULT_ERROR_HANDLER = function(e) {
  * @private {function(!eYo.AssertionError)}
  */
 eYo.errorHandler_ = eYo.DEFAULT_ERROR_HANDLER
+
+eYo.ENABLE_ASSERTS = true
 
 /**
  * Checks if the condition evaluates to true.

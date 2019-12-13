@@ -522,15 +522,28 @@ eYo.Do.nothing = () => {}
 /**
  * Function frequently used.
  */
-eYo.Do.noGetter = function () {
-  throw new Error('Forbidden getter')
+eYo.Do.noGetter = function (msg) {
+  return msg === 'name_'
+  ? function () {
+    throw new Error(`Forbidden name_ getter`)
+  } : msg 
+    ? function () {
+      throw new Error(`Forbidden getter: ${msg}`)
+    } : function () {
+      throw new Error('Forbidden getter...')
+    }
 }
 
 /**
  * function frequently used.
  */
-eYo.Do.noSetter = function () {
-  throw new Error('Forbidden setter')
+eYo.Do.noSetter = function (msg) {
+  return msg
+  ? function () {
+    throw new Error(`Forbidden setter: ${msg}`)
+  } : function () {
+    throw new Error('Forbidden setter')
+  }
 }
 
 /**
@@ -539,7 +552,7 @@ eYo.Do.noSetter = function () {
 eYo.Do.propertyR = (getter) => {
   return {
     get: getter,
-    set: eYo.Do.noSetter,
+    set: eYo.Do.noSetter(),
   }
 }
 

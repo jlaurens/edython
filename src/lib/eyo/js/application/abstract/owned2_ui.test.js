@@ -27,13 +27,13 @@ describe ('Tests: owned2_ui', function () {
     chai.assert(eYo.Magnet === NS.Magnet)
   }
   it ('Owned2_ui: basic', function () {
-    chai.assert(eYo.UI.Dflt)
+    chai.assert(eYo.C9r.UI.Dflt)
   })
   it ('Owned2_ui: ', function () {
     wrapper(() => {
       var onr = new eYo.Brick.Dflt()
       chai.assert(onr)
-      var ond = new eYo.UI.Owned2(onr)
+      var ond = new eYo.C9r.UI.Owned2(onr)
       chai.assert(ond)
       chai.assert(ond.brick === onr)
       console.warn(ond.brick, ond.slot, ond.magnet)

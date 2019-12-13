@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.provide('Motion')
-
 eYo.forwardDeclare('Board')
 eYo.forwardDeclare('Brick')
 eYo.forwardDeclare('Field')
@@ -23,7 +21,6 @@ eYo.forwardDeclare('Scaler')
 
 eYo.forwardDeclare('Dom')
 
-
 /*
  * Note: In this file "start" refers to touchstart,
  * mousedown, and pointerstart events.
@@ -32,6 +29,8 @@ eYo.forwardDeclare('Dom')
 // TODO: Consider touchcancel/pointercancel.
 
 /**
+ * @name{eYo.Motion}
+ * @constructor
  * Class for one motion.
  * There should be only one active motion at a time.
  * Actually, the topmost object, eYo.Application, is managing this motion.
@@ -39,348 +38,288 @@ eYo.forwardDeclare('Dom')
  * @param {eYo.Application} desktop The top application where the event occured.
  * @constructor
  */
-eYo.Motion = function(desktop) {
-  
-  /**
-   * The desktop owning this motion.
-   * @type {!eYo.Application}
-   * @private
-   */
-  this.desktop_ = desktop
+eYo.makeClass('Motion', {
+  init (desktop) {
+    /**
+     * The desktop owning this motion.
+     * @type {!eYo.Application}
+     * @private
+     */
+    this.desktop_ = desktop
 
-  this.touchIDs_ = []
+    this.touchIDs_ = []
 
-  this.dndmngr_ = new eYo.DnD.Mngr(this)
-  this.scaler_ = new eYo.Scaler(this)
+    this.dndmngr_ = new eYo.DnD.Mngr(this)
+    this.scaler_ = new eYo.Scaler(this)
 
-  this.change_ = new eYo.Change()
+    this.change_ = new eYo.C9r.Change()
 
-}
-
-Object.defineProperties(eYo.Motion, {
-  /**
-   * The latency between 2 mouse down/up events,
-   * in order to recognize a (multi) click event.
-   * @type {number}
-   */
-  DOUBLE_LATENCY: {
-    value: 350,
-    writable: true
   },
   /**
-   * The latency between 2 mouse down/up events,
-   * in order to recognize a (multi) click event.
-   * @type {number}
+   * Sever all links from this object.
    */
-  LONG_PRESS_LATENCY: {
-    value: 500,
-    writable: true
+  dispose () {
+    this.reset()
+    this.touchIDs_ = null
+    this.change_ = null
+    this.desktop_ = null
+    this.dndmngr_.dispose()
+    this.dndmngr_ = null
+    this.scaler_.dispose()
+    this.scaler_ = null
   },
-  /**
-   * The latency between 2 mouse down/up events,
-   * in order to recognize a (multi) click event.
-   * @type {number}
-   */
-  CANCEL_LATENCY: {
-    value: 15000,
-    writable: true
+  CONST: {
+    /**
+     * The latency between 2 mouse down/up events,
+     * in order to recognize a (multi) click event.
+     * @type {number}
+     */
+    DOUBLE_LATENCY: 350,
+    /**
+     * The latency between 2 mouse down/up events,
+     * in order to recognize a (multi) click event.
+     * @type {number}
+     */
+    LONG_PRESS_LATENCY: 500,
+    /**
+     * The latency between 2 mouse down/up events,
+     * in order to recognize a (multi) click event.
+     * @type {number}
+     */
+    CANCEL_LATENCY: 15000,
+    /**
+     * Number of pixels the mouse must move before a drag starts.
+     */
+    DRAG_RADIUS: 5,
+    /**
+     * Number of pixels the mouse must move before a drag/scroll starts from the
+     * flyout.  Because the drag-intention is determined when this is reached, it is
+     * larger than DRAG_RADIUS so that the drag-direction is clearer.
+     */
+    FLYOUT_DRAG_RADIUS: 10,
+    /**
+     * A multiplier used to convert the motion scale to a zoom in delta.
+     * @const
+     */
+    ZOOM_IN_FACTOR: 5,
+    /**
+     * A multiplier used to convert the motion scale to a zoom out delta.
+     * @const
+     */
+    ZOOM_OUT_FACTOR: 6,
+    /**
+     * If the scale is bigger than this limit, a zoom out occurs.
+     * @const
+     */
+    ZOOM_IN_LIMIT: 1.05,
+    /**
+     * If the scale is less than this limit, a zoom out occurs.
+     * @const
+     */
+    ZOOM_OUT_LIMIT: 0.95,
+    /**
+     * When dragging a block out of a stack, split the stack in two (true), or drag
+     * out the block healing the stack (false).
+     * @const
+     */
+    DRAG_STACK: true,
+    /**
+     * NYD.
+     * @const
+     */
+    SNAP_RADIUS: 20,
+    DELETE_AREA_NONE: null,
+    /**
+     * ENUM representing that an event is in the delete area of the trash can.
+     * @const
+     */
+    DELETE_AREA_TRASH: 1,
+    /**
+     * ENUM representing that an event is in the delete area of the flyout or
+     * flyout.
+     * @const
+     */
+    DELETE_AREA_TOOLBOX: 2,
+    CAPTURE_IGNORED: 0,
+    CAPTURE_STARTED: 1,
+    CAPTURE_UPDATING: 2,
   },
-  /**
-   * Number of pixels the mouse must move before a drag starts.
-   */
-  DRAG_RADIUS: { value: 5},
-  /**
-   * Number of pixels the mouse must move before a drag/scroll starts from the
-   * flyout.  Because the drag-intention is determined when this is reached, it is
-   * larger than DRAG_RADIUS so that the drag-direction is clearer.
-   */
-  FLYOUT_DRAG_RADIUS: { value: 10},
-  /**
-   * A multiplier used to convert the motion scale to a zoom in delta.
-   * @const
-   */
-  ZOOM_IN_FACTOR: { value: 5 },
-  /**
-   * A multiplier used to convert the motion scale to a zoom out delta.
-   * @const
-   */
-  ZOOM_OUT_FACTOR: { value: 6 },
-  /**
-   * If the scale is bigger than this limit, a zoom out occurs.
-   * @const
-   */
-  ZOOM_IN_LIMIT: { value: 1.05 },
-  /**
-   * If the scale is less than this limit, a zoom out occurs.
-   * @const
-   */
-  ZOOM_OUT_LIMIT: { value: 0.95 },
-  /**
-   * When dragging a block out of a stack, split the stack in two (true), or drag
-   * out the block healing the stack (false).
-   * @const
-   */
-  DRAG_STACK: { value: true },
-  /**
-   * NYD.
-   * @const
-   */
-  SNAP_RADIUS: { value: 20 },
-  DELETE_AREA_NONE: { value: null },
-  /**
-   * ENUM representing that an event is in the delete area of the trash can.
-   * @const
-   */
-  DELETE_AREA_TRASH: { value: 1 },
-  /**
-   * ENUM representing that an event is in the delete area of the flyout or
-   * flyout.
-   * @const
-   */
-  DELETE_AREA_TOOLBOX: { value: 2 },
-})
-
-Object.defineProperties(eYo.Motion.prototype, {
-  /**
-   * The desktop.
-   * @type {eYo.Application}
-   */
-  desktop: {
-    get () {
-      return this.desktop_
-    }
+  linked:  {
+    /**
+     * The desktop.
+     * @type {eYo.Application}
+     */
+    desktop: {},
+    /**
+     * The board the motion started on,
+     * including the brick's board if it started on a brick,
+     * or null if it did not start on a brick.
+     * @type {eYo.Board}
+     * @private
+     */
+    starter: {},
+    event: {},
+    /**
+     * The position of the mouse when the motion started.
+     * Units are css pixels, with (0, 0) at the top left of
+     * the browser window (mouseEvent clientX/Y).
+     * @type {eYo.Where}
+     */
+    xyStart: {
+      value: null
+    },
+    /**
+     * How far the mouse has moved during this drag, in pixel units.
+     * (0, 0) is at this.xyStart_.
+     * @type {eYo.Where}
+     * @private
+     */
+    xyDelta: {
+      value: null
+    },
+    /**
+     * Boolean used internally to break a cycle in disposal.
+     * @type {boolean}
+     * @private
+    */
+    isEnding_: {
+      value: false
+    },
+    /**
+     * This is the ratio between the starting distance between the touch points
+     * and the most recent distance between the touch points.
+     * Scales between 0 and 1 mean the most recent zoom was a zoom out.
+     * Scales above 1.0 mean the most recent zoom was a zoom in.
+     * @type {number}
+     * @private
+     */
+    previousScale: {
+      value: 0
+    },
+    /**
+     * The starting distance between two touch points.
+     * @type {number}
+     * @private
+     */
+    startDistance: {
+      value: 0
+    },
+    pidLong: {
+      value: 0,
+      willChange(before, after) {
+        clearTimeout(before)
+      },
+    },
+    pidCancel: {
+      value: 0,
+      willChange(before, after) {
+        clearTimeout(before)
+      },
+    },
+    pidHandle: {
+      value: 0,
+      willChange(before, after) {
+        clearTimeout(before)
+      },
+    },
+    startBrick: {
+      /*
+       * Dragging should start for selected blocks only.
+       */
+      validate (brick) {
+        if (!this.brick_) {
+          var candidate
+          var selected = eYo.app.focusMngr.brick
+          do {
+            candidate = brick
+          } while (brick.isExpr && (selected !== brick) && (brick = brick.parent))
+          return candidate.isInFlyout && candidate.root || candidate
+        }
+      },
+    },
   },
-  /**
-   * The field that the motion started on,
-   * or null if it did not start on a field.
-   * @type {eYo.Brick}
-   * @private
-   */
-  field_: {
-    get () {
+  computed:  {
+    /**
+     * The field that the motion started on,
+     * or null if it did not start on a field.
+     * @type {eYo.Brick}
+     * @private
+     */
+    field () {
       return this.starter__ && this.starter__.isField && this.starter__
-    }
-  },
-  /**
-   * The brick that the motion started on,
-   * including the field's brick if it started on a field,
-   * or null if it did not start on a brick.
-   * @type {eYo.Brick}
-   * @private
-   */
-  brick_: {
-    get () {
+    },
+    /**
+     * The brick that the motion started on,
+     * including the field's brick if it started on a field,
+     * or null if it did not start on a brick.
+     * @type {eYo.Brick}
+     * @private
+     */
+    brick () {
       return this.starter__ && (
         this.starter__.isBrick?
           this.starter__.wrapper:
           this.field_.brick.wrapper
       )
-    }
-  },
-  /**
-   * The brick that this motion targets.
-   * If the motion started in the flyout,
-   * this is the root brick of the brick group
-   * that was clicked or dragged.
-   * @type {eYo.Brick}
-   * @private
-   */
-  targetBrick_: {
-    get () {
+    },
+    /**
+     * The brick that this motion targets.
+     * If the motion started in the flyout,
+     * this is the root brick of the brick group
+     * that was clicked or dragged.
+     * @type {eYo.Brick}
+     * @private
+     */
+    targetBrick_ () {
       var b3k = this.brick_
       return b3k && (b3k.inLibrary ? b3k.root: b3k)
-    }
-  },
-  /**
-   * The board the motion started on,
-   * including the brick's board if it started on a brick,
-   * or null if it did not start on a brick.
-   * @type {eYo.Board}
-   * @private
-   */
-  board_: {
-    get () {
+    },
+    /**
+     * The board the motion started on,
+     * including the brick's board if it started on a brick,
+     * or null if it did not start on a brick.
+     * @type {eYo.Board}
+     * @private
+     */
+    board () {
       return this.starter__ && (
         this.starter__.isBoard?
           this.starter__:
           (this.field_ || this.brick_).board
       )
-    }
-  },
-  /**
-   * The board the motion started on,
-   * including the brick's board if it started on a brick,
-   * or null if it did not start on a brick.
-   * @type {eYo.Board}
-   * @private
-   */
-  starter_: {
-    value: null
-  },
-  /**
-   * @private
-   */
-  event_: {
-    value: null
-  },
-  event: {
-    get () {
-      return this.event__
-    }
-  },
-})
-
-Object.defineProperties(eYo.Motion.prototype, {
-  /**
-   * The position of the mouse when the motion started.
-   * Units are css pixels, with (0, 0) at the top left of
-   * the browser window (mouseEvent clientX/Y).
-   * @type {eYo.Where}
-   */
-  xyStart_: {
-    value: null
-  },
-  /**
-   * How far the mouse has moved during this drag, in pixel units.
-   * (0, 0) is at this.xyStart_.
-   * @type {eYo.Where}
-   * @private
-   */
-  xyDelta_: {
-    value: null
-  },
-  /**
-   * Boolean for whether or not this motion is a multi-touch motion.
-   * @type {boolean}
-   * @private
-   */
-  multiTouch: {
-    get () {
-      return this.touchIDs.length > 1
-    }
-  },
-  /**
-   * The flyout of the board the motion started on, if any.
-   * @type {eYo.Flyout}
-   * @private
-   */
-  flyout: {
-    get () {
-      return this.board_ && this.board_.flyout
-    }
-  },
-  /**
-   * Boolean used internally to break a cycle in disposal.
-   * @type {boolean}
-   * @private
-  */
-  isEnding_: {
-    value: false
-  },
-})
-
-Object.defineProperties(eYo.Motion.prototype, {
-  /**
-   * This is the ratio between the starting distance between the touch points
-   * and the most recent distance between the touch points.
-   * Scales between 0 and 1 mean the most recent zoom was a zoom out.
-   * Scales above 1.0 mean the most recent zoom was a zoom in.
-   * @type {number}
-   * @private
-   */
-  previousScale_: {
-    value: 0
-  },
-  /**
-   * The starting distance between two touch points.
-   * @type {number}
-   * @private
-   */
-  startDistance_: {
-    value: 0
-  },
-})
-
-Object.defineProperties(eYo.Motion.prototype, {
-  pidLong__: {
-    value: 0
-  },
-  pidLong_: {
-    get () {
-      return this.pidLong__
     },
-    set (newValue) {
-      clearTimeout(this.pidLong__)
-      this.pidLong__ = newValue
-    }
-  },
-  pidCancel__: {
-    value: 0
-  },
-  pidCancel_: {
-    get () {
-      return this.pidCancel__
-    },
-    set (newValue) {
-      clearTimeout(this.pidCancel__)
-      this.pidCancel__ = newValue
-    }
-  },
-  pidHandle__: {
-    value: 0
-  },
-  pidHandle_: {
-    get () {
-      return this.pidHandle__
-    },
-    set (newValue) {
-      clearTimeout(this.pidHandle__)
-      this.pidHandle__ = newValue
-    }
-  },
-})
-
-Object.defineProperties(eYo.Motion.prototype, {
-  /**
-   * Position of the receiver's event in the board.
-   * @type {eYo.Where}
-   * @readonly
-   */
-  where: {
-    get () {
-      return new eYo.Where(this.event_)
-    }
-  },
-})
-
-Object.defineProperties(eYo.Motion.prototype, {
-  startBrick__: {
-    get () {
-      return this.brick_
-    },
-    /*
-     * Dragging should start for selected blocks only.
+    /**
+     * Boolean for whether or not this motion is a multi-touch motion.
+     * @type {boolean}
+     * @private
      */
-    set (brick) {
-      if (!this.brick_) {
-        var candidate
-        var selected = eYo.app.focusMngr.brick
-        do {
-          candidate = brick
-        } while (brick.isExpr && (selected !== brick) && (brick = brick.parent))
-        this.brick_ = candidate
-        candidate.isInFlyout && (candidate = candidate.root)
-        this.brick_ = candidate
-      }
-    }
-  },
-  /**
-   * General purpose ui_driver_mngr from the creator board.
-   */
-  ui_driver_mngr: {
-    get () {
+    multiTouch () {
+      return this.touchIDs.length > 1
+    },
+    /**
+     * The flyout of the board the motion started on, if any.
+     * @type {eYo.Flyout}
+     * @private
+     */
+    flyout () {
+      return this.board_ && this.board_.flyout
+    },
+    /**
+     * General purpose ui_driver_mngr from the creator board.
+     */
+    ui_driver_mngr () {
       return this.board_.ui_driver_mngr
-    }
+    },
+    /**
+     * Position of the receiver's event in the board.
+     * @type {eYo.Where}
+     * @readonly
+     */
+    where: {
+      get () {
+        return new eYo.Where(this.event_)
+      }
+    },
   },
 })
 
@@ -418,20 +357,6 @@ eYo.Motion.prototype.reset = function() {
   return this
 }
 
-/**
- * Sever all links from this object.
- */
-eYo.Motion.prototype.dispose = function() {
-  this.reset()
-  this.touchIDs_ = null
-  this.change_ = null
-  this.desktop_ = null
-  this.dndmngr_.dispose()
-  this.dndmngr_ = null
-  this.scaler_.dispose()
-  this.scaler_ = null
-}
-
 Object.defineProperties(eYo.Motion.prototype, {
   /**
    * @private
@@ -457,12 +382,6 @@ Object.defineProperties(eYo.Motion.prototype, {
   abortCaptureUp_: {
     value: eYo.Do.nothing
   },
-})
-
-Object.defineProperties(eYo.Motion, {
-  CAPTURE_IGNORED: {value: 0},
-  CAPTURE_STARTED: {value: 1},
-  CAPTURE_UPDATING: {value: 2},
 })
 
 /**

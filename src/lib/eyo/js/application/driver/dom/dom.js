@@ -18,7 +18,7 @@ eYo.require('Fcls')
  * @namespace
  */
 
-eYo.Driver.makeNS('Dom')
+eYo.Driver.makeNS(eYo, 'Dom')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
@@ -151,7 +151,7 @@ eYo.Dom.isRightButton = e => {
  *     simultaneous touches.
  * @param {boolean=} opt.noPreventDefault True if triggering on this event
  *     should prevent the default handler.  False by default.
- * @return {!Array.<!Array>} Opaque data that can be passed to unbindEvent.
+ * @return {!Array<!Array>} Opaque data that can be passed to unbindEvent.
  */
 eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
   if (goog.isFunction(thisObject)) {
@@ -211,7 +211,7 @@ eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
 
 /**
  * Unbind one or more events event from a function call.
- * @param {Array.<!Array>} bindData Opaque data from bindEvent.
+ * @param {Array<!Array>} bindData Opaque data from bindEvent.
  *     This list is emptied during the course of calling this function.
  * @return {!Function} The function call.
  */
@@ -262,7 +262,7 @@ eYo.Dom.unbindMouseEvents = function(listener) {
  * @param {Event} e A mouse event or a touch event with one or more changed
  * touches.
  * @param {Function} f A function to be executed for each event, signature (<!Event>e) -> eYo.NA.
- * @return {!Array.<!Event>} An array of mouse or touch events.  Each touch
+ * @return {!Array<!Event>} An array of mouse or touch events.  Each touch
  *     event will have exactly one changed touch.
  */
 eYo.Dom.forEachTouch = (e, f) => {

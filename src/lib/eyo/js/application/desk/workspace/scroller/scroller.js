@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('UI')
+eYo.require('C9r.UI')
 
 eYo.provide('Scroller')
 
@@ -41,7 +41,7 @@ eYo.Scroller = function(board) {
   this.disposeUI = eYo.Do.nothing
   board.hasUI && this.initUI()
 }
-goog.inherits(eYo.Scroller, eYo.UI.Dflt)
+goog.inherits(eYo.Scroller, eYo.C9r.UI.Dflt)
 
 Object.defineProperties(eYo.Scroller.prototype, {
   /**

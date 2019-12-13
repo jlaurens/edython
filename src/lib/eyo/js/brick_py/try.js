@@ -13,7 +13,7 @@
 
 eYo.require('Brick.Group')
 
-eYo.require('Change')
+eYo.require('C9r.Change')
 
 eYo.provide('Brick.Try')
 
@@ -172,7 +172,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Stmt.except_part.prototype.getType = eYo.Change.decorate(
+eYo.Stmt.except_part.prototype.getType = eYo.C9r.decorateChange(
   'getType',
   function () {
     this.setupType(
@@ -234,7 +234,7 @@ eYo.Brick.Group.makeSubclass('finally_part', {
  * Class for a Delegate, raise_stmt.
  * For edython.
  */
-eYo.Stmt.makeSubclass('raise_stmt', {
+eYo.Stmt.makeClass('raise_stmt', {
   data: {
     variant: {
       all: [
@@ -368,7 +368,7 @@ eYo.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, assert_stmt.
  * For edython.
  */
-eYo.Stmt.makeSubclass('assert_stmt', {
+eYo.Stmt.makeClass('assert_stmt', {
   data: {
     variant: {
       all: [

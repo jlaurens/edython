@@ -12,19 +12,14 @@
  */
 'use strict'
 
-eYo.provide('DnD')
-eYo.provide('DnD.Dragger')
-eYo.provide('DnD.Dropper')
-
-eYo.forwardDeclare('Motion')
-eYo.forwardDeclare('Driver')
-
 /**
  * @name{eYo.DnD}
  * @namespace
  */
+eYo.provide('DnD')
 
-eYo.DnD = Object.create(null)
+eYo.forwardDeclare('Motion')
+eYo.forwardDeclare('Driver')
 
 /**
  * Main drag and drop manager.
@@ -32,57 +27,53 @@ eYo.DnD = Object.create(null)
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param{eYo.Motion} [motion] -  the owning motion
  */
-eYo.DnD.Mngr = function (motion) {
-  this.motion_ = motion
-  /** the dragger_ that started a drag, not owned */
-  this.dragger_ = null
-  /** Make the UI */
-  this.ui_driver_mngr.dndMngrInit(this)
-  /** The list of draggers_, owned */
-  this.draggers_ = [
-    new eYo.DnD.Dragger.Board(this),
-    new eYo.DnD.Dragger.DraftBoard(this),
-    new eYo.DnD.Dragger.LibraryBoard(this),
-    new eYo.DnD.Dragger.Brick(this),
-    new eYo.DnD.Dragger.DraftBrick(this),
-    new eYo.DnD.Dragger.LibraryBrick(this),
-  ]
-  /** the dropper_ that started a possible drop, not owned */
-  this.dropper_ = null
-  /** The list of droppers, owned */
-  this.droppers_ = [
-    new eYo.DnD.Dropper.Board(this),
-    new eYo.DnD.Dropper.Brick(this),
-  ]
-}
-
-Object.defineProperties(eYo.DnD.Mngr.prototype, {
-  ui_driver_mngr: {
-    get () {
-      return this.motion.ui_driver_mngr
-    }
+eYo.DnD.makeClass('Mngr', {
+  init (motion) {
+    this.motion_ = motion
+    /** the dragger_ that started a drag, not owned */
+    this.dragger_ = null
+    /** Make the UI */
+    this.ui_driver_mngr.dndMngrInit(this)
+    /** The list of draggers_, owned */
+    this.draggers_ = [
+      new eYo.DnD.Dragger.Board(this),
+      new eYo.DnD.Dragger.DraftBoard(this),
+      new eYo.DnD.Dragger.LibraryBoard(this),
+      new eYo.DnD.Dragger.Brick(this),
+      new eYo.DnD.Dragger.DraftBrick(this),
+      new eYo.DnD.Dragger.LibraryBrick(this),
+    ]
+    /** the dropper_ that started a possible drop, not owned */
+    this.dropper_ = null
+    /** The list of droppers, owned */
+    this.droppers_ = [
+      new eYo.DnD.Dropper.Board(this),
+      new eYo.DnD.Dropper.Brick(this),
+    ]
   },
-  active_: {
-    get () {
+  /**
+   * Main drag and drop manager.
+   * It maintains a list of draggers and droppers
+   * * @param{eYo.Application} [desktop] -  the owning desktop
+   */
+  dispose () {
+    this.cancel()
+    this.draggers_.foreach(d => d.dispose())
+    this.draggers_ = null
+    this.droppers_.foreach(d => d.dispose())
+    this.droppers_ = null
+    this.ui_driver_mngr.dndMngrDispose(this)
+    this.motion_ = null
+  },
+  computed: {
+    ui_driver_mngr () {
+      return this.motion.ui_driver_mngr
+    },
+    active_ () {
       return !!this.dragger_
-    }
+    },
   }
 })
-
-/**
- * Main drag and drop manager.
- * It maintains a list of draggers and droppers
- * * @param{eYo.Application} [desktop] -  the owning desktop
- */
-eYo.DnD.Mngr.prototype.dispose = function () {
-  this.cancel()
-  this.draggers_.foreach(d => d.dispose())
-  this.draggers_ = null
-  this.droppers_.foreach(d => d.dispose())
-  this.droppers_ = null
-  this.ui_driver_mngr.dndMngrDispose(this)
-  this.motion_ = null
-}
 
 /**
  * Ask one of its draggers to initate a dragging operation.
@@ -173,35 +164,31 @@ eYo.DnD.Mngr.prototype.addDropper = function (dropper) {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.DnD.Dragger} manager -  the owning drag and drop manager.
  */
-eYo.DnD.Dragger = function (manager) {
-  this.manager_ = manager
-}
-
-/**
- * Sever all the links.
- */
-eYo.DnD.Dragger.prototype.dispose = function () {
-  this.cancel()
-  this.manager_ = null
-}
-
-Object.defineProperties(eYo.DnD.Dragger.prototype, {
-  motion_: {
-    get () {
-      return this.manager_.motion_
-    }
-  },
-  ui_driver_mngr: {
-    get () {
-      return this.manager_.ui_driver_mngr
-    }
+eYo.DnD.makeClass('Dragger', {
+  init (manager) {
+    this.manager_ = manager
   },
   /**
-   * Whether started
+   * Sever all the links.
    */
-  started_: {
-    value: false
-  }
+  dispose () {
+    this.cancel()
+    this.manager_ = null
+  },
+  computed: {
+    motion () {
+      return this.manager_.motion_
+    },
+    ui_driver_mngr () {
+      return this.manager_.ui_driver_mngr
+    },
+    /**
+     * Whether started
+     */
+    started: {
+      value: false
+    }
+  },
 })
 
 /**

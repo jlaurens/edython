@@ -123,6 +123,6 @@ goog.mixin(eYo.Tooltip.Title, {
   statistics__import_stmt: 'Importer le module statistics',
 })
 
-eYo.Brick.Fractions.T3s = [
-  eYo.T3.Fraction
+eYo.Brick.Statistics.T3s = [
+  eYo.T3.Statistics
 ]

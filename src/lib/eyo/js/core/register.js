@@ -13,8 +13,6 @@
 
 eYo.require('Protocol')
 
-eYo.provide('Protocol.Register')
-
 eYo.Protocol.Register = function (key, filter) {
   var ans = {
     methods: {},

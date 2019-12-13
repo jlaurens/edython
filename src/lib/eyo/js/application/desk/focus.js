@@ -22,7 +22,7 @@
  **/
 
 eYo.require('Decorate')
-eYo.require('Factory.Owned')
+eYo.require('C9r.Owned')
 
 eYo.require('Do')
 eYo.require('Board')
@@ -58,7 +58,7 @@ eYo.Focus.Main = function (desk) {
   this.disposeUI = eYo.Do.nothing
   this.hasUI && this.initUI()
 }
-goog.inherits(eYo.Focus.Main, eYo.Factory.Owned)
+goog.inherits(eYo.Focus.Main, eYo.C9r.Owned)
 
 Object.defineProperties(eYo.Focus.Main.prototype, {
   /**
@@ -204,7 +204,7 @@ eYo.Focus.Mngr = function (board, main) {
   this.disposeUI = eYo.Do.nothing
   this.hasUI && this.initUI()
 }
-goog.inherits(eYo.Focus.Mngr, eYo.Factory.Owned)
+goog.inherits(eYo.Focus.Mngr, eYo.C9r.Owned)
 
 /**
  * Sever all the links and let the main focus manager forget the receiver.

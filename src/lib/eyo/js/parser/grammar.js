@@ -15,7 +15,12 @@ eYo.require('E')
 
 eYo.require('Do')
 eYo.require('TKN')
-eYo.provide('GMR')
+
+/**
+ * @name{eYo.GMR}
+ * @namespace
+ */
+eYo.makeNS('GMR')
 
 /* Grammar implementation *-/
 
@@ -28,27 +33,29 @@ eYo.provide('GMR')
 #include "grammar.h"
 */
 
-eYo.GMR = function (dfas, labels, start) {
-  this.g_dfa = dfas || []
-  this.g_start = start
-  this.g_ll = {}
-  this.g_ll.ll_label = labels || []
-  Object.defineProperties(this.g_ll, {
-    ll_nlabels: {
-      get () {
-        return this.ll_label.length
+/**
+ * A grammar book contains the grammar...
+ */
+eYo.GMR.makeClass('Book', {
+  init (dfas, labels, start) {
+    this.g_dfa = dfas || []
+    this.g_start = start
+    this.g_ll = {}
+    this.g_ll.ll_label = labels || []
+    Object.defineProperties(this.g_ll, {
+      ll_nlabels: {
+        get () {
+          return this.ll_label.length
+        }
       }
-    }
-  })
-  this.g_accel = 0
-}
-
-Object.defineProperties(eYo.GMR.prototype, {
-  g_ndfas: {
-    get () {
+    })
+    this.g_accel = 0
+  },
+  computed: {
+    g_ndfas () {
       return this.g_dfa.length
-    }
-  }
+    },
+  },
 })
 
 /* Grammar interface */
@@ -63,10 +70,12 @@ typedef struct {
 } label
 */
 
-eYo.GMR.Label = function (type, str) {
-  this.lb_type = type
-  this.lb_str = str
-}
+eYo.GMR.makeClass('Label', {
+  init (type, str) {
+    this.lb_type = type
+    this.lb_str = str
+  },
+})
 
 /*
 eYo.GMR.EMPTY = 0         /* Label number 0 is by definition the empty label *-/
@@ -86,10 +95,12 @@ typedef struct {
 } arc
 */
 
-eYo.GMR.Arc = function(lbl, arrow) {
-  this.a_lbl = lbl
-  this.a_arrow = arrow
-}
+eYo.GMR.makeClass('Arc', {
+  init (lbl, arrow) {
+    this.a_lbl = lbl
+    this.a_arrow = arrow
+  },
+})
 
 /* A state in a DFA *-/
 
@@ -105,19 +116,18 @@ typedef struct {
 } state
 */
 
-eYo.GMR.State = function (arcs) {
-  this.s_arc = arcs || []
-  this.s_lower = 0
-  this.s_upper = 0
-  this.s_accel = null
-  this.s_accept = 0
-}
-
-Object.defineProperties(eYo.GMR.State.prototype, {
-  s_narcs: {
-    get() {
+eYo.GMR.makeClass('State', {
+  init (arcs) {
+    this.s_arc = arcs || []
+    this.s_lower = 0
+    this.s_upper = 0
+    this.s_accel = null
+    this.s_accept = 0
+  },
+  computed: {
+    s_narcs () {
       return this.s_arc.length
-    }
+    },
   }
 })
 
@@ -133,23 +143,22 @@ typedef struct {
 } dfa
 */
 
-eYo.GMR.DFA = function (type, name, initial, states, first) {
-  /*
-  {256, "single_input", 0, 3, states_0,
-     "\004\050\340\000\004\000\000\000\024\174\022\016\204\045\000\041\000\000\014\211\362\041\010"},
-     */
-  this.d_type = type
-  this.d_name = name
-  this.d_initial = initial
-  this.d_state = states
-  this.d_first = first
-}
-
-Object.defineProperties(eYo.GMR.DFA.prototype, {
-  d_nstates: {
-    get () {
+eYo.GMR.makeClass('DFA', {
+  init (type, name, initial, states, first) {
+    /*
+    {256, "single_input", 0, 3, states_0,
+      "\004\050\340\000\004\000\000\000\024\174\022\016\204\045\000\041\000\000\014\211\362\041\010"},
+      */
+    this.d_type = type
+    this.d_name = name
+    this.d_initial = initial
+    this.d_state = states
+    this.d_first = first
+  },
+  computed: {
+    d_nstates () {
       return this.d_state.length
-    }
+    },
   }
 })
 
@@ -193,21 +202,21 @@ grammar * */
 
 eYo.GMR.newgrammar = (/* int */ start) =>
 {
-  return new eYo.GMR(null, null, start)
+  return new eYo.GMR.Book(null, null, start)
 }
 
 /* dfa * */
 eYo.GMR.adddfa = (/* grammar * */ g, /* int */ type, /* const char * */ name) =>
 {
-    var /* dfa * */ d = {}
-    g.g_dfa.push(d)
-    d.d_type = type
-    d.d_name = name
-    d.d_nstates = 0
-    d.d_state = []
-    d.d_initial = -1
-    d.d_first = null
-    return d; /* Only use while fresh! */
+  var /* dfa * */ d = {}
+  g.g_dfa.push(d)
+  d.d_type = type
+  d.d_name = name
+  d.d_nstates = 0
+  d.d_state = []
+  d.d_initial = -1
+  d.d_first = null
+  return d; /* Only use while fresh! */
 }
 
 /* int */

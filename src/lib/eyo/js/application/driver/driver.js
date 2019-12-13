@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('UI')
+eYo.require('C9r.UI')
 
 /**
  * @name {eYo.Driver}
@@ -24,7 +24,7 @@ eYo.makeNS('Driver')
  * @name {eYo.Driver.Dlgt}
  * @param {Function} constructor
  */
-eYo.UI.Dlgt.makeSubclass(eYo.Driver)
+eYo.C9r.UI.Dlgt.makeSubclass(eYo.Driver)
 
 /**
  * Contructor delegate for the driver manager.
@@ -130,7 +130,7 @@ eYo.Driver.constructor.prototype.makeDriverClass = function (key, Super, driverM
  * Owns instances of `eYo.Driver.Dflt`'s descendants.
  * @param {Object} owner
  */
-eYo.Factory.Owned.makeSubclass(eYo.Driver, 'Mngr', {
+eYo.C9r.Owned.makeSubclass(eYo.Driver, 'Mngr', {
   init () {
     this.initDrivers()
   }
@@ -142,7 +142,7 @@ eYo.Factory.Owned.makeSubclass(eYo.Driver, 'Mngr', {
  * @param {Object} owner
  * @property {eYo.Driver.Mgt} mngr,  the owning driver manager
  */
-eYo.Factory.Owned.makeSubclass(eYo.Driver, 'Dflt', {
+eYo.C9r.Owned.makeSubclass(eYo.Driver, 'Dflt', {
   computed: {
     mngr () {
       return this.owner

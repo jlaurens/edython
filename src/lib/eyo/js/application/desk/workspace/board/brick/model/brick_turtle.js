@@ -33,7 +33,7 @@ eYo.T3.Stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.makeSubclass('turtle__setup_stmt', {
+eYo.Stmt.makeClass('turtle__setup_stmt', {
   fields: {
     label: 'edython.turtleSetup()'
   }

@@ -169,7 +169,7 @@ eYo.Xml.boardToDom = function(board, opt) {
  * This is a copy with a tiny formal modification.
  * @param {Element} xml XML DOM.
  * @param {*} owner The board or the parent brick.
- * @return {Array.<string>} An array containing new brick IDs.
+ * @return {Array<string>} An array containing new brick IDs.
  */
 eYo.Xml.domToBoard = function (xml, owner) {
   var board = owner.board || owner
@@ -596,8 +596,8 @@ eYo.Xml.registerAllTags = function () {
       if (!type.startsWith || type.startsWith('.')) {
         continue
       }
-      var c9r = eYo.Brick.mngr.get(type)
-      var model = eYo.Brick.mngr.getModel(type)
+      var C9r = eYo.C9r.forType(type)
+      var model = eYo.C9r.Model.forType(type)
       var xml = model && model.xml
       var attr = xml && xml.attr
       if (!eYo.isStr(attr)) {
@@ -623,9 +623,9 @@ eYo.Xml.registerAllTags = function () {
         eYo.T3.Xml.fromDom[attr] = type
       }
       // register the reverse
-      if (c9r) {
+      if (C9r) {
         // console.warn('REGISTER XML ATTR:', c9r.eyo.key, eYo.T3.Xml.toDom[mode][key], attr, key)
-        c9r.eyo.xmlAttr = eYo.T3.Xml.toDom[mode][key] || attr || key // ERROR ? Dynamic tag name ?
+        C9r.eyo.xmlAttr = eYo.T3.Xml.toDom[mode][key] || attr || key // ERROR ? Dynamic tag name ?
       }
     }
   }
@@ -788,7 +788,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
     types: []
   }
   where.Available.forEach(function(type) {
-    var data = eYo.Brick.getModel(type).data
+    var data = eYo.C9r.Model.forType(type).data
     var match = 0
     attributeNames.forEach(function (name) {
       if (data[name]) {
@@ -900,7 +900,7 @@ eYo.Xml.domToBrick = (() => {
                 var where = dom.tagName.toLowerCase() === eYo.Xml.EXPR ? eYo.T3.Expr : eYo.T3.Stmt
                 for (var i = 0; i < prototypeName.length; i++) {
                   var candidate = prototypeName[i]
-                  var C9r = eYo.Brick.mngr.get(candidate)
+                  var C9r = eYo.C9r.Model.forType(candidate)
                   if (C9r && where[C9r.eyo.key]) {
                     return candidate
                   }
@@ -917,7 +917,7 @@ eYo.Xml.domToBrick = (() => {
           }
           prototypeName = 'eyo:'+name
           var solid = prototypeName + ''
-          var controller = eYo.Brick.mngr.get(solid)
+          var controller = eYo.C9r.Model.forType(solid)
           if (controller) {
             if (controller.eyo && goog.isFunction(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, board, id)
@@ -925,7 +925,7 @@ eYo.Xml.domToBrick = (() => {
               return controller.domToBrick(dom, board, id)
             }
             brick = eYo.Brick.newReady(board, solid, id)
-          } else if ((controller = eYo.Brick.mngr.get(prototypeName))) {
+          } else if ((controller = eYo.C9r.Model.forType(prototypeName))) {
             if (controller.eyo && goog.isFunction(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, board, id)
             } else if (goog.isFunction(controller.domToBrick)) {
@@ -977,10 +977,10 @@ eYo.Xml.fromDom = function (brick, element) {
         goog.isFunction(controller.fromDom)) ||
         ((controller = this.xml) &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = eYo.Brick.mngr.get(this.type)) &&
+        ((controller = eYo.C9r.Model.forType(this.type)) &&
         (controller = controller.xml) &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = eYo.Brick.mngr.get(this.type)) &&
+        ((controller = eYo.C9r.Model.forType(this.type)) &&
         goog.isFunction(controller.fromDom))) {
       eYo.Do.tryFinally(() => {
         this.controller_fromDom_locked = true
@@ -1179,14 +1179,14 @@ eYo.Xml.Comparison.domToComplete = function (element, owner) {
     var op = element.getAttribute(eYo.Xml.OPERATOR)
     var C9r, model
     var type = eYo.T3.Expr.number_comparison
-    if ((C9r = eYo.Brick.mngr.get(type))
+    if ((C9r = eYo.C9r.Model.forType(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && (model.all.indexOf(op) >= 0)) {
       var b3k = eYo.Brick.newReady(owner, type, id)
     } else if ((type = eYo.T3.Expr.object_comparison)
-      && (C9r = eYo.Brick.mngr.get(type))
+      && (C9r = eYo.C9r.Model.forType(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all

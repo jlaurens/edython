@@ -11,13 +11,53 @@ pathBuild.mkdir(parents=True, exist_ok=True)
 
 class Foo:
 
-  re_provide = re.compile(r"^\s*(?:eYo|goog)\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)\s*\('(?P<what>[^']+)'.*\)[;\s]*(?://.*)?$")
+  re_provide = re.compile(r"""^\s*
+  (?:eYo|goog)\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)
+  \s*\(\s*
+  (?:'|")(?P<what>[^'"]+)(?:'|")
+  .*""", re.X)
   #re_provide = re.compile(r"^\s*eYo.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
-  #eYo.Consolidator.makeClass('Dlgt')
-  re_make = re.compile(r"""^\s*(?:(?P<makeClass>[\w.]+)\.make(?:Driver)?Class|(?P<makeSubclass>[\w.]+)\.makeSubclass|(?P<makeNS>eYo\.[\w.]*makeNS))\s*\(\s*(?P<ns>[\w.]+)?(?:\s*,\s*)?(?:(?:'|")(?P<what>[\w.]+)(?:'|"))?.*""")
+  # eYo.Foo.makeNS(ns, 'BAR')
+  #eYo.Consolidator.makeClass(ns, 'Dlgt', ...
+  re_make = re.compile(r"""^\s*
+  (?P<NS>eYo(?:\.[A-Z][\w0-9_]*)*)
+  \.make(?:Driver)?(?P<what>Class|NS)\s*\(\s*
+  (?P<suite>.*)""", re.X)
 
   assert re.match(re_make, "eYo.makeNS('Brick')"), 'BAD re_make 2'
+
+  # eYo.Foo.makeSubclass(ns, 'bar')
+  re_makeSubclass = re.compile(r"""^\s*
+  (?P<NS>eYo(?:\.[A-Z][\w0-9_]*)*)
+  \.(?P<Super>[A-Z][\w0-9_]*)
+  \.makeSubclass\s*\(\s*
+  (?P<suite>.*)""", re.X)
+
+  re_arg_ns = re.compile(r"""^
+  (?P<ns>eYo(?:\.[A-Z][\w0-9_]*)*)
+  (?:\s*,\s*)?
+  (?P<suite>.*)""", re.X)
+
+  re_arg_T3 = re.compile(r"""^
+  eYo\.T3\.(?:Stmt|Expr)\.(?P<type>[a-z][\w_]*)
+  (?:\s*,\s*)?
+  (?P<suite>.*)""", re.X)
+
+  re_arg_key = re.compile(r"""^
+  (?:'|")(?P<key>[^'"]+)(?:'|")
+  .*""", re.X)
+
+  re_assignment = re.compile(r"""^\s*
+  (?P<assigned>(?P<ns>eYo(?:\.[A-Z][\w0-9_]*)*)\.[A-Z][\w0-9_]*)
+  \s*=(?!=).*""", re.X)
+
+  # eYo.Protocol.add(eYo.Module.Item, 'Register', 'module')
+  re_protocol = re.compile(r"""^\s*
+  eYo\.Protocol\.add\s*\(\s*eYo(?:\.[A-Z]\w*)*
+  \s*,\s*
+  (?:'|")(?P<Key>[^'"]+)(?:'|")
+  .*""", re.X)
 
   pathByProvided = {}
   nsByClass = {}
@@ -41,52 +81,78 @@ class Foo:
         def base_require(l):
           if re.search('^\s*eYo', l):
             required.add('eYo')
-
       for l in f.readlines():
         base_require(l)
+        m = self.re_protocol.match(l)
+        if m:
+          K = m.group('Key')
+          required.add(f'eYo.Protocol.{K}')
+          continue
+        m = self.re_assignment.match(l)
+        if m:
+          required.add(m.group('ns'))
+          provided.add(m.group('assigned'))
+          continue
+        ns = key = None
+        def parse_args(suite):
+          nonlocal ns, key
+          m = self.re_arg_T3.match(suite)
+          if m:
+            key = m.group('type')
+            suite = m.group('suite')
+          m = self.re_arg_T3.match(suite)
+          if m:
+            key = m.group('type')
+            suite = m.group('suite')
+          m = self.re_arg_ns.match(suite)
+          if m:
+            ns = m.group('ns')
+            suite = m.group('suite')
+          m = self.re_arg_ns.match(suite)
+          if m:
+            ns = m.group('ns')
+            suite = m.group('suite')
+          m = self.re_arg_key.match(suite)
+          if m:
+            key = m.group('key')
         m = self.re_make.match(l)
         if m:
-          makeClass = m.group('makeClass')
-          makeSubclass = m.group('makeSubclass')
-          makeNS = m.group('makeNS')
-          ns = m.group('ns')
-          what = m.group('what')
-          if re.search('eYo.Driver.Dlgt.makeSubclass(eYo.Svg)', l):
-          # eYo.Driver.Dlgt.makeSubclass(eYo.Svg)
-          #if makeSubclass is 'eYo.Driver.Dlgt' and ns is 'eYo.Svg':
-            print('FOUND', makeSubclass, what)
-            exit(-1)
-          if what:
-            what = '.' + what
-          elif makeSubclass:
-            what = pathlib.Path(makeSubclass).suffix
+          if m.group('what') != 'NS':
+            required.add('eYo.C9r')
+          NS = m.group('NS')
+          required.add(NS)
+          parse_args(m.group('suite'))
+          if ns:
+            required.add(ns)
+            provided.add(f'{ns}.{key}')
           else:
-            continue
-          if makeNS:
-            what = 'eYo' + what
-            provided.add(what)
-            namespaced.add(what)
-          elif makeClass:
-            what = (ns if ns else makeClass) + what
-            provided.add(what)
-            classed.add(what)
-            self.nsByClass[what] = ns if ns else makeClass
-          elif ns:
-            what = ns + what
-            provided.add(what)
+            provided.add(f'{NS}.{key}')
+          continue
+        m = self.re_makeSubclass.match(l)
+        if m:
+          required.add('eYo.C9r')
+          NS = m.group('NS')
+          required.add(NS)
+          key = m.group('Super')
+          parse_args(m.group('suite'))
+          if ns:
+            required.add(ns)
+            provided.add(f'{ns}.{key}')
           else:
-            subclassed.add((makeSubclass, what))
+            provided.add(f'{NS}.{key}')
+          continue
         m = self.re_provide.match(l)
         if m:
           what = m.group('what')
-          if not what.startswith('eYo') and not what.startswith('goog.'):
-            what = 'eYo.' + what
+          if not what.startswith('goog'):
+            what = 'eYo.' + m.group('what')
           if m.group('provide'):
             provided.add(what)
           elif m.group('require'):
             required.add(what)
           else:
             forwarded.add(what)
+        continue
       for p in provided:
         if p in self.pathByProvided:
           raise f'''At least two providers for {p}:

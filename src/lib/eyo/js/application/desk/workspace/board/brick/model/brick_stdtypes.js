@@ -22,7 +22,7 @@ eYo.require('Brick.Primary')
 eYo.require('Tooltip')
 
 eYo.require('Library')
-eYo.require('Module.stdtypes__module')
+eYo.require('Module.stdtypes')
 
 eYo.provide('Brick.Stdtypes')
 
@@ -33,7 +33,7 @@ eYo.provide('Brick.Stdtypes')
  */
 
 ;(function () {
-  var M = eYo.Module.stdtypes__module
+  var M = eYo.Module.stdtypes
   var d = M.data
   var n = d.items.length
   var t = d.types.indexOf('method')
@@ -113,5 +113,5 @@ eYo.provide('Brick.Stdtypes')
     type_: t,
     ary: 0
   }))
-  
+
 }) ()

@@ -34,7 +34,7 @@ eYo.List = function(db) {
    * The top bricks are all the bricks with no parent.
    * They are owned by a board.
    * They are ordered by line number.
-   * @type {!Array.<!eYo.Brick>}
+   * @type {!Array<!eYo.Brick>}
    * @private
    */
   this.bricks_ = []

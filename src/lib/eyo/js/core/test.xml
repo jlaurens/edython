@@ -1,6 +1,7 @@
 <!-- Created by `npm run eyo:prepare` -->
       <script src="ROOT_PLACE_HOLDER/T3.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/T3_all.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/c9r.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/change.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/change_count.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/const.test.js" charset="utf-8"></script>
@@ -9,10 +10,8 @@
     <script src="ROOT_PLACE_HOLDER/do.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/events.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/eyo.test.js" charset="utf-8"></script>
-    <script src="ROOT_PLACE_HOLDER/factory.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/font.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/geometry.test.js" charset="utf-8"></script>
-    <script src="ROOT_PLACE_HOLDER/model.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/protocol.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/register.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/ui.test.js" charset="utf-8"></script>

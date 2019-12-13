@@ -20,13 +20,12 @@ eYo.provide('BitSet')
 
 bitset */
 
-eYo.BitSet = function(nbits) {
-  this.ra = new Uint8Array(1 + Math.floor((nbits - 1) / 8))
-}
-
 eYo.BitSet.newbitset = (nbits) =>
 {
-  var ss = new eYo.BitSet(nbits)
+  var BitSet = function(nbits) {
+    this.ra = new Uint8Array(1 + Math.floor((nbits - 1) / 8))
+  }
+  var ss = new BitSet(nbits)
   return ss;
 }
 

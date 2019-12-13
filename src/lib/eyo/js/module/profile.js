@@ -19,10 +19,15 @@ eYo.require('T3')
 
 eYo.require('XRE')
 
-eYo.require('Model')
+eYo.require('Module')
+
 eYo.require('Do')
 
-eYo.provide('T3.Profile')
+/**
+ * @name{eYo.T3.Profile}
+ * @namespace
+ */
+eYo.T3.makeNS('Profile')
 
 eYo.Do.readOnlyMixin(
   eYo.T3.Expr,
@@ -61,14 +66,14 @@ eYo.Do.readOnlyMixin(
  * create one on the first call if the module knows it.
  * @param {*} identifier
  */
-eYo.Model.Module.prototype.getProfile = function(identifier) {
+eYo.Module.Dflt.prototype.getProfile = function(identifier) {
   var ans = this.profiles[identifier]
   if (ans) {
     return ans
   }
   var item = this.getItem(identifier)
   if (item) {
-    ans = new eYo.T3.Profile(this, {
+    ans = new eYo.T3.Profile.Dflt(this, {
       raw: eYo.T3.Expr.known_identifier,
       expr: eYo.T3.Expr.identifier,
       name: identifier,
@@ -91,31 +96,71 @@ eYo.Model.Module.prototype.getProfile = function(identifier) {
  * @param {*} model  a dictionary
  * @constructor
  */
-eYo.T3.Profile = function (owner, model) {
-  this.owner = owner
-  var m = {
-    isVoid: false,
-    isUnset: false,
-    raw: eYo.T3.Expr.unset,
-    expr: eYo.T3.Expr.unset,
-    stmt: eYo.T3.Expr.unset,
-    prefixDots: eYo.NA,
-    base: eYo.NA,
-    name: eYo.NA,
-    module: eYo.NA,
-    holder: eYo.NA,
-    item: eYo.NA,
-    type: eYo.NA,
-    prefixDots: eYo.NA
-  }
-  if (model) {
-    var methods = model.methods
-    var properties = model.properties || (!methods && model)
-    goog.mixin(m, properties)
-    var key, value
-    var f = (key) => {
-      value = m[key]
-      if (eYo.isStr(value)) {
+eYo.T3.Profile.makeClass('Dflt', {
+  init (owner, model) {
+    this.owner = owner
+    var m = {
+      isVoid: false,
+      isUnset: false,
+      raw: eYo.T3.Expr.unset,
+      expr: eYo.T3.Expr.unset,
+      stmt: eYo.T3.Expr.unset,
+      prefixDots: eYo.NA,
+      base: eYo.NA,
+      name: eYo.NA,
+      module: eYo.NA,
+      holder: eYo.NA,
+      item: eYo.NA,
+      type: eYo.NA,
+      prefixDots: eYo.NA
+    }
+    if (model) {
+      var methods = model.methods
+      var properties = model.properties || (!methods && model)
+      goog.mixin(m, properties)
+      var key, value
+      var f = (key) => {
+        value = m[key]
+        if (eYo.isStr(value)) {
+          Object.defineProperty(
+            this,
+            key,
+            {
+              value: value
+            }
+          )
+        } else if (goog.isFunction(value)) {
+          Object.defineProperty(
+            this,
+            key,
+            {
+              get: value
+            }
+          )
+        }
+        delete m[key]
+      }
+      f('raw')
+      f('expr')
+      f('stmt')
+      f('type')
+      var f = (key) => {
+        value = m[key]
+        Object.defineProperty(
+          this,
+          key,
+          {
+            value: eYo.isStr(value) ? value : eYo.NA
+          }
+        )
+        delete m[key]
+      }
+      f('base')
+      f('name')
+      f('holder')
+      f('module')
+      key = 'item'
+      if ((value = m[key])) {
         Object.defineProperty(
           this,
           key,
@@ -123,81 +168,43 @@ eYo.T3.Profile = function (owner, model) {
             value: value
           }
         )
-      } else if (goog.isFunction(value)) {
-        Object.defineProperty(
-          this,
-          key,
-          {
-            get: value
-          }
-        )
+        delete m[key]
       }
-      delete m[key]
-    }
-    f('raw')
-    f('expr')
-    f('stmt')
-    f('type')
-    var f = (key) => {
-      value = m[key]
       Object.defineProperty(
         this,
-        key,
+        'model',
         {
-          value: eYo.isStr(value) ? value : eYo.NA
+          get () {
+            console.error('FORBIDDEN access to `model` property.')
+            return this.item
+          }
         }
       )
-      delete m[key]
-    }
-    f('base')
-    f('name')
-    f('holder')
-    f('module')
-    key = 'item'
-    if ((value = m[key])) {
-      Object.defineProperty(
-        this,
-        key,
-        {
-          value: value
-        }
-      )
-      delete m[key]
-    }
-    Object.defineProperty(
-      this,
-      'model',
-      {
-        get () {
-          console.error('FORBIDDEN access to `model` property.')
-          return this.item
+      for (key in m) {
+        var value = m[key]
+        if (goog.isFunction(value)) {
+          Object.defineProperty(
+            this,
+            key,
+            {
+              get: value
+            }
+          )
+        } else {
+          Object.defineProperty(
+            this,
+            key,
+            {
+              value: value
+            }
+          )
         }
       }
-    )
-    for (key in m) {
-      var value = m[key]
-      if (goog.isFunction(value)) {
-        Object.defineProperty(
-          this,
-          key,
-          {
-            get: value
-          }
-        )
-      } else {
-        Object.defineProperty(
-          this,
-          key,
-          {
-            value: value
-          }
-        )
-      }
+    } else {
+      eYo.Do.readOnlyMixin(this, m)
     }
-  } else {
-    eYo.Do.readOnlyMixin(this, m)
-  }
-}
+  },
+})
 
 /**
  * The profile of identifiers.
@@ -208,41 +215,38 @@ eYo.T3.Profile = function (owner, model) {
  * @param {*} model  a dictionary of properties
  * @constructor
  */
-eYo.T3.Profile.Dotted = function (owner, profile, model) {
-  eYo.T3.Profile.Base.superClass_.constructor.call(this, owner)
-  this.profile = profile
-  if (model) {
-    var key, value
-    for (key in model) {
-      var value = model[key]
-      Object.defineProperty(
-        this,
-        key,
-        goog.isFunction(value)
-        ? {
-          get: value
-        }
-        : {
-          value: value
-        }
-      )
+eYo.T3.Profile.makeClass('Dotted', {
+  init (owner, profile, model) {
+    this.profile = profile
+    if (model) {
+      for (var key in model) {
+        var value = model[key]
+        Object.defineProperty(
+          this,
+          key,
+          goog.isFunction(value)
+          ? {
+            get: value
+          }
+          : {
+            value: value
+          }
+        )
+      }
     }
+  },
+  computed: {
+    isVoid () { return this.profile.isVoid },
+    isUnset() { return this.profile.isUnset },
+    raw () { return this.profile.raw },
+    expr () { return this.profile.expr },
+    stmt () { return this.profile.stmt },
+    name () { return this.profile.name },
+    item () { return this.profile.item },
+    type () { return this.profile.type },
   }
-}
+})
 
-Object.defineProperties(
-  eYo.T3.Profile.Dotted.prototype,
-  {
-    isVoid: { get() { return this.profile.isVoid } },
-    isUnset: { get () { return this.profile.isUnset } },
-    raw: { get () { return this.profile.raw } },
-    expr: { get () { return this.profile.expr } },
-    stmt: { get () { return this.profile.stmt } },
-    name: { get () { return this.profile.name } },
-    item: { get () { return this.profile.item } },
-    type: { get () { return this.profile.type } }
-  }
-)
 /**
  * Basic readonly profile properties
  */
@@ -262,13 +266,14 @@ eYo.T3.Profile.prototype.type = eYo.NA
  *
  * @param {String} identifier
  */
-eYo.T3.Profiles = function (identifier) {
-  this.identifier = identifier
-  this.profiles = {}
-}
+eYo.T3.makeClass('Profiles', {
+  init (identifier) {
+    this.identifier = identifier
+    this.profiles = {}
+  },
+})
 
-
-var setup = (() => {
+;(function () {
 
   var byIdentifier = {}
 
@@ -301,7 +306,7 @@ var setup = (() => {
       if ((ans = profiles[module])) {
         return ans
       }
-      var M = eYo.Model[module] || eYo.Model[module + '__module']
+      var M = eYo.C9r.Model[module] || eYo.C9r.Model[module + '__module']
       if (M) {
         return (profiles[module] = M.getProfile(candidate))
       }
@@ -333,20 +338,20 @@ eYo.Do.readOnlyMixin(
   eYo.T3.Profile,
   {
     /* Default void profile */
-    void: new eYo.T3.Profile(null, {
+    void: new eYo.T3.Profile.Dflt(null, {
       isVoid: true
     }),
     /* Profile for an unset identifier */
-    unset: new eYo.T3.Profile(null, {
+    unset: new eYo.T3.Profile.Dflt(null, {
       expr: eYo.T3.Expr.identifier,
       isUnset: true
     }),
     /* Profile for an integer */
-    integer: new eYo.T3.Profile(null, {
+    integer: new eYo.T3.Profile.Dflt(null, {
       expr: eYo.T3.Expr.integer
     }),
     /* Profile for a float number */
-    floatnumber: new eYo.T3.Profile(null, {
+    floatnumber: new eYo.T3.Profile.Dflt(null, {
       expr: eYo.T3.Expr.floatnumber
     })
   }
@@ -377,7 +382,7 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
         : module
       : null
     if (holder) {
-      var M = eYo.Model[holder] || eYo.Model[holder + '__module']
+      var M = eYo.C9r.Model[holder] || eYo.C9r.Model[holder + '__module']
       var ans = M && (M.getProfile(candidate))
     } else {
       ans = eYo.T3.Profile.getReference(candidate) || eYo.T3.Profile.getInModule(candidate)
@@ -385,7 +390,7 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
     var item = ans && ans.item
     var mdl = item && item.module
     mdl = mdl && (mdl.name.split('__'))[0]
-    return new eYo.T3.Profile(null, {
+    return new eYo.T3.Profile.Dflt(null, {
       raw: m.dots
         ? eYo.T3.Expr.custom_parent_module
         : m.holder
@@ -430,7 +435,7 @@ eYo.T3.Profile.getIdentifier = function (candidate, module) {
       : m.valued
         ? eYo.T3.Expr.identifier_valued
         : eYo.T3.Expr.identifier
-    return new eYo.T3.Profile(null, {
+    return new eYo.T3.Profile.Dflt(null, {
       raw: r,
       expr: x,
       name: m.name,
@@ -456,7 +461,7 @@ eYo.T3.Profile.getAnnotatedValued = function (candidate, module) {
       ? eYo.T3.Expr.identifier_annotated_valued
       : eYo.T3.Expr.identifier_annotated
     : eYo.T3.Expr.identifier_valued
-    return new eYo.T3.Profile(null, {
+    return new eYo.T3.Profile.Dflt(null, {
       raw: t,
       expr: t,
       name: m.name,
@@ -476,7 +481,7 @@ eYo.T3.Profile.getLiteral = function (candidate) {
   // is it a number ?
   var match = XRegExp.exec(candidate, eYo.XRE.integer)
   if (match) {
-    return new eYo.T3.Profile(null, {
+    return new eYo.T3.Profile.Dflt(null, {
       raw: eYo.T3.custom_literal,
       expr: eYo.T3.Expr.integer,
       type: match.bininteger
@@ -489,13 +494,13 @@ eYo.T3.Profile.getLiteral = function (candidate) {
     })
   }
   if (!!XRegExp.exec(candidate, eYo.XRE.floatnumber)) {
-    return new eYo.T3.Profile(null, {
+    return new eYo.T3.Profile.Dflt(null, {
       raw: eYo.T3.custom_literal,
       expr: eYo.T3.Expr.floatnumber
     })
   }
   if (!!XRegExp.exec(candidate, eYo.XRE.imagnumber)) {
-    return new eYo.T3.Profile(null, {
+    return new eYo.T3.Profile.Dflt(null, {
       raw: eYo.T3.custom_literal,
       expr: eYo.T3.Expr.imagnumber
     })
@@ -572,7 +577,7 @@ eYo.T3.Profile.getReference = function (identifier) {
     'stdtypes',
     'datamodel'
   ].some((ref) => {
-    var M = eYo.Model[ref]
+    var M = eYo.C9r.Model[ref]
     ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true
@@ -585,7 +590,7 @@ eYo.T3.Profile.getReference = function (identifier) {
     eYo.Key.STATICMETHOD,
     eYo.Key.CLASSMETHOD
   ].indexOf(identifier) >= 0) {
-    return new eYo.T3.Profile(null,  {
+    return new eYo.T3.Profile.Dflt(null,  {
       expr: eYo.T3.Expr.identifier,
       raw: eYo.T3.Expr.reserved_identifier,
       stmt: eYo.T3.Stmt.decorator_stmt
@@ -611,7 +616,7 @@ eYo.T3.Profile.getInModule = function (identifier) {
     'cmath',
     'string'
   ].some(module => {
-    var M = eYo.Model[module + '__module']
+    var M = eYo.C9r.Model[module + '__module']
     ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true
@@ -629,7 +634,7 @@ eYo.T3.Profile.getInModule = function (identifier) {
  */
 eYo.T3.Profile.getShort = function (identifier) {
   if (['(', ')', '[', ']', '{', '}', ',', ':', ';'].indexOf(identifier) >= 0) {
-    return new eYo.T3.Profile(null, {
+    return new eYo.T3.Profile.Dflt(null, {
       raw: eYo.T3.Expr.const
     })
   }
@@ -677,7 +682,7 @@ eYo.T3.Profile.getReserved = function (identifier) {
     goog.mixin(out, {
       raw: eYo.T3.Expr.reserved_keyword
     })
-    return new eYo.T3.Profile(null, out)
+    return new eYo.T3.Profile.Dflt(null, out)
   }
   if ((out = {
     class: eYo.T3.Stmt.classdef_part,
@@ -706,7 +711,7 @@ eYo.T3.Profile.getReserved = function (identifier) {
       stmt: out,
       isReserved: true
     }
-    return new eYo.T3.Profile(null, out)
+    return new eYo.T3.Profile.Dflt(null, out)
   }
   if ((out = {
     is: eYo.T3.Expr.object_comparison,
@@ -721,11 +726,11 @@ eYo.T3.Profile.getReserved = function (identifier) {
       expr: out,
       isReserved: true
     }
-    return new eYo.T3.Profile(null, out)
+    return new eYo.T3.Profile.Dflt(null, out)
   }
   // reserved identifiers
   if (['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'].indexOf(identifier) >= 0) {
-    return new eYo.T3.Profile(null, {
+    return new eYo.T3.Profile.Dflt(null, {
       raw: eYo.T3.Expr.reserved_identifier,
       expr: eYo.T3.Expr.builtin__object
     })

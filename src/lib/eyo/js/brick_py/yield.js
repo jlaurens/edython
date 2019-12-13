@@ -209,7 +209,7 @@ eYo.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, yield_stmt.
  * For edython.
  */
-eYo.Stmt.makeSubclass('yield_stmt', {
+eYo.Stmt.makeClass('yield_stmt', {
   link: eYo.T3.Expr.yield_expr
 }, true)
 

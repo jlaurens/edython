@@ -1,10 +1,13 @@
 <!-- Created by `npm run eyo:prepare` -->
       <script src="ROOT_PLACE_HOLDER/argument.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/assignment.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/comment.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/comp.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/control.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/docstring.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/expr.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/final.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/global.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/group.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/import.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/lambda.test.js" charset="utf-8"></script>

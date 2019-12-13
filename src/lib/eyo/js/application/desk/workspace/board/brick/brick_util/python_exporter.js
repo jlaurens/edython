@@ -12,9 +12,9 @@
 'use strict'
 
 eYo.require('Field')
-
 eYo.require('Brick')
-eYo.provide('Py.Exporter')
+
+eYo.provide('Py')
 
 eYo.forwardDeclare('XRE')
 eYo.forwardDeclare('Slot')
@@ -25,9 +25,11 @@ eYo.forwardDeclare('Slot')
  * @param {string} [One] indentation, defaults to 4 spaces.
  * @constructor
  */
-eYo.Py.Exporter = function (oneIndent) {
-  this.oneIndent = oneIndent || this.constructor.indent
-}
+eYo.Py.makeClass('Exporter', {
+  init (oneIndent) {
+    this.oneIndent = oneIndent || this.constructor.indent
+  },
+})
 
 /**
  * Default indentation.

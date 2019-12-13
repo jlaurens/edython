@@ -161,7 +161,7 @@ eYo.Test.basic = (ra, str) => {
 'alias'])
 */
 eYo.Test.incog = (brick, keys) => {
-  var M = eYo.Brick.mngr.getModel(brick.type)
+  var M = eYo.C9r.Model.forKey(brick.type)
   Object.keys(M.slots).forEach(k => {
     var yorn = keys.indexOf(k) >= 0
     chai.assert(!brick[`${k}_s`].incog === yorn, `${yorn ? 'MISSING' : 'UNEXPECTED'} ${k.toUpperCase()} INCOG`)
@@ -384,7 +384,7 @@ eYo.Test.copy_paste = (brick, opts) => {
   var dom = eYo.Xml.brickToDom(brick)
   var dd = eYo.Brick.newReady(brick, dom)
   eYo.Test.same(brick, dd)
-  var M = eYo.Brick.mngr.getModel(brick.type)
+  var M = eYo.C9r.Model.forKey(brick.type)
   Object.keys(M.slots).forEach(k => {
     var key = `${k}_s`
     chai.assert(brick[key].incog === dd[key].incog, `INCONSISTENT INCOG for key ${k}`)

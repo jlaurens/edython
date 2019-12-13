@@ -858,7 +858,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
   }
   /** @suppress {accessControls} */
   var outCheck = m4t.check_
-  var D = eYo.Brick.mngr.getModel(model.type).slots
+  var D = eYo.C9r.Model.forKey(model.type).slots
   // if the brick which type is model.type has no slot
   // no chance to insert anything, pass away
   if (D) {
@@ -891,7 +891,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
         this.addInsertChild(MI)
         return true
       } else if (d && d.wrap && !parent_subtype) {
-        var list = eYo.Brick.mngr.getModel(d.wrap).list
+        var list = eYo.C9r.Model.forKey(d.wrap).list
         if (!list) {
           if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
             key = d.key || K
