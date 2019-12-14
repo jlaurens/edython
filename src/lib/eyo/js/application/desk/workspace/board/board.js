@@ -37,8 +37,10 @@ goog.forwardDeclare('goog.math')
 eYo.C9r.UI.Dflt.makeSubclass(eYo.Board, {
   linked: {
     /**
-     * `true` if the board is visible and `false` if it's headless.
-     * @type {Boolean}
+     * The render status of a board.
+     * Returns `true` for visible boards and `false` for non-visible,
+     * or headless, boards.
+     * @type {boolean}
      */
     rendered: false,
     /**
@@ -535,14 +537,6 @@ eYo.Board.DB.prototype.add = function(board) {
 eYo.Board.DB.byId = function(id) {
   return this.byID_[id]
 }
-
-/**
- * The render status of an SVG board.
- * Returns `true` for visible boards and `false` for non-visible,
- * or headless, boards.
- * @type {boolean}
- */
-eYo.Board.Dflt.prototype.rendered = true;
 
 /**
  * Whether this board has resizes enabled.

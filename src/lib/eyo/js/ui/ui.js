@@ -37,7 +37,7 @@ eYo.Dlgt.makeSubclass(eYo.C9r.UI)
  * Make the dispose function.
  * @override
  */
-eYo.C9r.UI.Dlgt.prototype.disposeDecorate = function (f) {
+eYo.C9r.UI.Dlgt_p.disposeDecorate = function (f) {
   return eYo.C9r.UI.Dlgt.superClass_.disposeDecorate.call(this, function () {
     this.disposeUI()
     f && f.apply(this, arguments)
@@ -48,7 +48,7 @@ eYo.C9r.UI.Dlgt.prototype.disposeDecorate = function (f) {
  * Helper to make the `initUI` method based on the given function.
  * @param {Function} [f]  a function with at least one argument.
  */
-eYo.C9r.UI.Dlgt.prototype.initUIDecorate = function (f) {
+eYo.C9r.UI.Dlgt_p.initUIDecorate = function (f) {
   return f
 }
 
@@ -56,7 +56,7 @@ eYo.C9r.UI.Dlgt.prototype.initUIDecorate = function (f) {
  * Helps to make the `disposeUI` method based on the given function.
  * @param {Function} [f]  a function with at least one argument.
  */
-eYo.C9r.UI.Dlgt.prototype.disposeUIDecorate = function (f) {
+eYo.C9r.UI.Dlgt_p.disposeUIDecorate = function (f) {
   return f
 }
 
@@ -64,7 +64,7 @@ eYo.C9r.UI.Dlgt.prototype.disposeUIDecorate = function (f) {
  * Add the cached `app` property to the associate constructor.
  * NYU.
  */
-eYo.C9r.UI.Dlgt.prototype.addApp = function () {
+eYo.C9r.UI.Dlgt_p.addApp = function () {
   this.declareCached_('app', {
     get () {
       return this.owner__.app
@@ -165,7 +165,7 @@ eYo.C9r.UI.Dflt.prototype.ownerDidChange = function (before, after) {
  * @param {Object} model -  The dictionary of parameters.
  * @return {Function} the created constructor.
  */
-eYo.C9r.UI.pttp.makeClass = function (ns, key, Super, Dlgt, model) {
+eYo.C9r.UI_p.makeClass = function (ns, key, Super, Dlgt, model) {
   var C9r = eYo.C9r.UI.constructor.superClass_.makeClass.apply(this, arguments)
   var eyo = C9r.eyo
   model = eyo.model // arguments may have changed

@@ -1,5 +1,6 @@
 {
   "git.ignoreLimitWarning": true,
   "python.linting.pylintEnabled": false,
-  "search.usePCRE2": true
+  "search.usePCRE2": true,
+  "python.pythonPath": "/usr/local/bin/python3.6"
 }

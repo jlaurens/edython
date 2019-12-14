@@ -20,6 +20,7 @@ For example, the namespace `eYo.Model` is an instance of a subclass of `eYo`'s c
 
 ## Singletons
 Namespaces are singletons, which means that their constructor is not available as is, only through the instances.
+However, singletons'constructors may be strict subclasses of other singleton's constructors.
 
 ## The name
 Each namespace is refered as `eYo.Foo`, it is the value of its `name` property.

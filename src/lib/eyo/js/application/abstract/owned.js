@@ -31,7 +31,7 @@ eYo.forwardDeclare('Magnet')
  * Add the cached `app` property to the associate constructor.
  * NYU.
  */
-eYo.Dlgt.prototype.addApp = function () {
+eYo.Dlgt_p.addApp = function () {
   this.declareCached_('app', {
     get () {
       return this.owner__.app

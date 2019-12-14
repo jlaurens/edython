@@ -19,7 +19,7 @@
 var eYo = (() => {
   var EYO = function() {}
   var ans = new EYO()
-  Object.defineProperty(EYO.prototype, 'pttp', {
+  Object.defineProperty(EYO.prototype, '_p', {
     get () {
       return this.constructor.prototype
     }
@@ -177,6 +177,7 @@ eYo.constructor.prototype.forwardDeclare = (name) => {}
 /**
  * @name {eYo.makeNS}
  * Make a namespace by subclassing the caller's constructor.
+ * Will create 'foo' namespace together with an 'foo_p' property to access the prototype.
  * @param {!Object} ns - a namespace, created object will be `ns[key]`. Defaults to the receiver.
  * @param {String} key - sentencecase name, created object will be `ns[key]`.
  * @return {Object}
@@ -199,8 +200,10 @@ eYo.constructor.prototype.makeNS = function (ns, key) {
     value: this,
   })
   var ans = new NS()
-  Object.defineProperty(ns, key, {
-    value: ans,
+  Object.defineProperties(ns, {
+    [key]: { value: ans, },
+    [key + '_p']: { value: ans.prototype, },
+    [key + '_s']: { value: Super.prototype, },
   })
   Object.defineProperties(ans, {
     name: { value: `${ns.name}.${key}` },
