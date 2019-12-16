@@ -41,7 +41,7 @@ eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
     dotted: {
       order: 200,
       init: 0,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var validated
         if (eYo.isStr(newValue)) {
           if (newValue.length) {
@@ -58,11 +58,11 @@ eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
         }
         : {}
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         this.requiredIncog = newValue > 0
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         var p = this.brick.profile_p
         var item = p && p.p5e && p.p5e.item
         if (item) {
@@ -75,10 +75,10 @@ eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
           this.doChange(1)
         }
       },
-      fromField: /** @suppress {globalThis} */ function (value) {
+      fromField (value) /** @suppress {globalThis} */ {
         this.fromField(value.length)
       },
-      toField: /** @suppress {globalThis} */ function (value) {
+      toField (value) /** @suppress {globalThis} */ {
         var txt = ''
         for (var i = 0; (i < this.get()); i++) {
           txt += '.'
@@ -86,7 +86,7 @@ eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
         return txt
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           if (this.get()) {
             this.save(element, opt)
           }

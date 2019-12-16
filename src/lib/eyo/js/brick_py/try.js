@@ -26,7 +26,7 @@ goog.forwardDeclare('goog.dom')
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Group.makeSubclass('try_part', {
+eYo.Stmt.Group.makeSubclass('try_part', {
   fields: {
     prefix: 'try'
   }
@@ -37,7 +37,7 @@ eYo.Brick.Group.makeSubclass('try_part', {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Group.makeSubclass('except_part', {
+eYo.Stmt.Group.makeSubclass('except_part', {
   data: {
     variant: {
       all: [
@@ -46,7 +46,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
         eYo.Key.ALIASED
       ],
       init: eYo.Key.NONE,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         var b3k = this.brick
         b3k.expression_d.requiredIncog = newValue !== eYo.Key.NONE
@@ -60,12 +60,12 @@ eYo.Brick.Group.makeSubclass('except_part', {
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           this.required = this.brick.variant_p !== eYo.Key.NONE
           this.save(element, opt)
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (this.requiredFromSaved && b3k.variant_p !== eYo.Key.ALIASED) {
           b3k.variant_p = eYo.Key.EXPRESSION
@@ -77,7 +77,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
       init: '',
       placeholder: eYo.Msg.Placeholder.ALIAS,
       synchronize: true,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var type = eYo.T3.Profile.get(newValue).expr
         return type === eYo.T3.Expr.unset
         || type === eYo.T3.Expr.identifier
@@ -86,12 +86,12 @@ eYo.Brick.Group.makeSubclass('except_part', {
         : null
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           this.required = this.brick.variant_p === eYo.Key.ALIASED
           this.save(element, opt)
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.ALIASED
         }
@@ -111,7 +111,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.brick.variant_p === eYo.Key.NONE && this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.EXPRESSION
         }
@@ -131,11 +131,11 @@ eYo.Brick.Group.makeSubclass('except_part', {
           variable: true
         }
       },
-      validateIncog: /** @suppress {globalThis} */ function (newValue) {
+      validateIncog (newValue) /** @suppress {globalThis} */ {
         return this.brick.variant_p !== eYo.Key.ALIASED
       },
       check: eYo.T3.Expr.identifier,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.ALIASED
         }
@@ -147,14 +147,14 @@ eYo.Brick.Group.makeSubclass('except_part', {
     }
   },
   head: {
-    check: /** @suppress {globalThis} */ function (type) {
+    check (type) /** @suppress {globalThis} */ {
       return type === eYo.T3.Stmt.except_part
       ? eYo.T3.Stmt.Previous.except_part
       : eYo.T3.Stmt.Previous.void_except_part
     }
   },
   foot: {
-    check: /** @suppress {globalThis} */ function (type) {
+    check (type) /** @suppress {globalThis} */ {
       return type === eYo.T3.Stmt.except_part
       ? eYo.T3.Stmt.Next.except_part
       : eYo.T3.Stmt.Next.void_except_part
@@ -166,7 +166,7 @@ eYo.Brick.Group.makeSubclass('except_part', {
   'void_except_part'
 ].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.except_part
-  eYo.Brick.mngr.register(k)
+  eYo.C9r.register(k)
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.
@@ -224,7 +224,7 @@ eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Group.makeSubclass('finally_part', {
+eYo.Stmt.Group.makeSubclass('finally_part', {
   fields: {
     prefix: 'finally'
   }
@@ -243,7 +243,7 @@ eYo.Stmt.makeClass('raise_stmt', {
         eYo.Key.FROM
       ],
       init: eYo.Key.NONE,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         var b3k = this.brick
         b3k.expression_d.requiredIncog = newValue !== eYo.Key.NONE
@@ -257,12 +257,12 @@ eYo.Stmt.makeClass('raise_stmt', {
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           this.required = this.brick.variant_p !== eYo.Key.NONE
           this.save(element, opt)
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.EXPRESSION
         }
@@ -274,12 +274,12 @@ eYo.Stmt.makeClass('raise_stmt', {
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           this.required = this.brick.variant_p === eYo.Key.FROM
           this.save(element, opt)
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM
         }
@@ -300,11 +300,11 @@ eYo.Stmt.makeClass('raise_stmt', {
       },
       check: eYo.T3.Expr.Check.expression,
       xml: {
-        load: /** @suppress {globalThis} */ function (element, opt) {
+        load (element, opt) /** @suppress {globalThis} */ {
           this.load(element, opt)
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved && this.brick.variant_p === eYo.Key.NONE) {
           this.brick.variant_p = eYo.Key.EXPRESSION
         }
@@ -320,7 +320,7 @@ eYo.Stmt.makeClass('raise_stmt', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM
         }
@@ -376,7 +376,7 @@ eYo.Stmt.makeClass('assert_stmt', {
         eYo.Key.BINARY
       ],
       init: eYo.Key.UNARY,
-      synchronize: /** @suppress {globalThis} */ function (newValue){
+      synchronize (newValue) /** @suppress {globalThis} */{
         this.synchronize(newValue)
         this.brick.expression2_d.incog = newValue !== eYo.Key.BINARY
       }
@@ -389,12 +389,12 @@ eYo.Stmt.makeClass('assert_stmt', {
       init: '',
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           this.required = this.brick.variant_p === eYo.Key.BINARY
           this.save(element, opt)
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.BINARY
         }
@@ -423,7 +423,7 @@ eYo.Stmt.makeClass('assert_stmt', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.BINARY
         }

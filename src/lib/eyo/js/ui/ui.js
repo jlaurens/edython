@@ -93,7 +93,7 @@ eYo.C9r.UI.Dlgt_p.addApp = function () {
  * @readonly
  * @property {eYo.Driver.Mngr}ui_driver_mngr,  The ui driver manager used for rendering.
  */
-eYo.C9r.Owned.makeSubclass(eYo.C9r.UI, 'Dflt', {
+eYo.C9r.UI.makeDflt({
   init: {
     begin () {
       this.disposeUI = eYo.Do.nothing
@@ -104,13 +104,13 @@ eYo.C9r.Owned.makeSubclass(eYo.C9r.UI, 'Dflt', {
       init () {
         var mngr = this.ui_driver_mngr
         return mngr && mngr.driver(this)
+      },
+      didChange () {
+        this.ownedForEach(x => {
+          x.ui_driverUpdate && x.ui_driverUpdate()
+        })
       }
     },
-    didChange () {
-      this.ownedForEach(x => {
-        x.ui_driverUpdate && x.ui_driverUpdate()
-      })
-    }
   },
   computed: {
     hasUI () {
@@ -165,33 +165,31 @@ eYo.C9r.UI.Dflt.prototype.ownerDidChange = function (before, after) {
  * @param {Object} model -  The dictionary of parameters.
  * @return {Function} the created constructor.
  */
-eYo.C9r.UI_p.makeClass = function (ns, key, Super, Dlgt, model) {
+eYo.C9r.UI._p.makeClass = function (ns, key, Super, Dlgt, model) {
   var C9r = eYo.C9r.UI.constructor.superClass_.makeClass.apply(this, arguments)
   var eyo = C9r.eyo
   model = eyo.model // arguments may have changed
   var ui = model.ui
-  if (!eYo.isF(eyo.initUIDecorate)) {
-    console.error('BREAK HERE')
-    C9r = eYo.makeClass(ns, key, Super, Dlgt, model)
-  }
-  var f = eyo.initUIDecorate(ui && ui.init)
+  var f = eyo.initUIDecorate
+  var ff = ui && ui.init && f(ui.init)
   C9r.prototype.initUI = function (...args) {
     try {
       this.initUI = eYo.Do.nothing
       var Super = C9r.superClass_
       !!Super && !!Super.initUI && !!Super.initUI.call(this, ...args)
-      this.ui_driver.initUI(this, ...args)
-      f && f.super_call(this, ...args)
+      this.ui_driver.doInitUI(this, ...args)
+      ff && ff.call(this, ...args)
     } finally {
       delete this.initUI
     }
   }
-  var f = eyo.disposeUIDecorate (ui && ui.dispose)
+  var f = eyo.disposeUIDecorate
+  var ff = ui && ui.dispose && f(ui.dispose)
   C9r.prototype.disposeUI = function (...args) {
     try {
       this.disposeUI = eYo.Do.nothing
-      f && f.call(this, ...args)
-      this.ui_driver.disposeUI(this, ...args)
+      ff && ff.call(this, ...args)
+      this.ui_driver.doDisposeUI(this, ...args)
       var Super = C9r.superClass_
       !!Super && !!Super.disposeUI && !!Super.disposeUI.call(this, ...args)
     } finally {

@@ -42,7 +42,7 @@ eYo.Svg.makeDriverClass('Slot', {
    * Dispose of the given slot's rendering resources.
    * @param {eYo.Slot} slot
    */
-  disposeUIMake (slot) {
+  disposeMake (slot) {
     goog.dom.removeNode(slot.dom.svg.group_)
     slot.dom.svg.group_ = null
     slot.dom.svg = null

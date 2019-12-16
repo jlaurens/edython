@@ -30,7 +30,7 @@ eYo.require('C9r.UI')
  */
 
 eYo.C9r.UI.Dflt.makeSubclass('Owned2', {
-  linked: ['slot', 'brick', 'magnet'],
+  valued: ['slot', 'brick', 'magnet'],
   computed: {
     ui () {
       return this.brick.ui

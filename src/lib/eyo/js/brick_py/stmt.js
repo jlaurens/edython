@@ -24,11 +24,17 @@ eYo.forwardDeclare('Brick.Operator')
 eYo.Brick.makeNS(eYo, 'Stmt')
 
 /**
+ * @name {eYo.Stmt.Dlgt}
+ * @constructor
+ */
+eYo.Stmt.makeDlgt()
+
+/**
  * Class for a Delegate, statement brick.
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.makeClass('Dflt', {
+eYo.Stmt.makeDflt({
   left /** @suppress {globalThis} */ (type) {
     return this.brick.head || this.brick.foot
     ? [eYo.T3.Stmt.comment_stmt]
@@ -65,7 +71,8 @@ eYo.Stmt.makeClass('Dflt', {
     },
   }
 })
-eYo.Brick.registerAll(eYo.T3.Stmt, eYo.Stmt, true)
+
+eYo.Brick.registerAll(eYo.T3.Stmt, eYo.Stmt.Dflt, true)
 
 /**
  * Insert a brick above.
@@ -76,7 +83,7 @@ eYo.Brick.registerAll(eYo.T3.Stmt, eYo.Stmt, true)
  * @param {Object} model
  * @return the created brick
  */
-eYo.Stmt.prototype.insertParentWithModel = function (model) {
+eYo.Stmt._p.insertParentWithModel = function (model) {
   var magnet = this.head_m
   if (magnet) {
     var parent
@@ -126,7 +133,7 @@ eYo.Stmt.prototype.insertParentWithModel = function (model) {
  * @param {string} belowPrototypeName
  * @return the created brick
  */
-eYo.Stmt.prototype.insertBrickAfter = function (belowPrototypeName) {
+eYo.Stmt._p.insertBrickAfter = function (belowPrototypeName) {
   return eYo.Events.groupWrap(() => {
     var below = eYo.Brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m

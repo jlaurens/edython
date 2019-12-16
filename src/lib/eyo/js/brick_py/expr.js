@@ -33,7 +33,7 @@ eYo.Stmt.makeNS(eYo, 'Expr')
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.Dflt.makeSubclass(eYo.Expr)
+eYo.Expr.makeDflt()
 
 // Default delegate for all expression bricks
 eYo.Brick.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
@@ -356,7 +356,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
       ],
       init: eYo.Key.NONE,
       validate: true,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         this.brick.stride_d.requiredIncog = newValue === eYo.Key.STRIDE
       },
@@ -366,7 +366,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
       init: '',
       synchronize: true,
       placeholder: 'min',
-      python: /** @suppress {globalThis} */ function () {
+      python () /** @suppress {globalThis} */ {
         return this.get()
       }
     },
@@ -374,7 +374,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
       init: '',
       synchronize: true,
       placeholder: 'end',
-      python: /** @suppress {globalThis} */ function () {
+      python () /** @suppress {globalThis} */ {
         return this.get()
       }
     },
@@ -382,17 +382,17 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
       init: '',
       synchronize: true,
       placeholder: 'step',
-      python: /** @suppress {globalThis} */ function () {
+      python () /** @suppress {globalThis} */ {
         return this.get()
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           if (this.brick.variant_p === eYo.Key.STRIDE) {
             this.save(element, opt)
           }
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.STRIDE
         }
@@ -434,7 +434,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
       },
       check: eYo.T3.Expr.Check.expression,
       optional: true,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.STRIDE
         }

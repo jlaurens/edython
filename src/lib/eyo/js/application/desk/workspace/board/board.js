@@ -35,7 +35,7 @@ goog.forwardDeclare('goog.math')
  * @constructor
  */
 eYo.C9r.UI.Dflt.makeSubclass(eYo.Board, {
-  linked: {
+  valued: {
     /**
      * The render status of a board.
      * Returns `true` for visible boards and `false` for non-visible,
@@ -334,7 +334,7 @@ eYo.Board.Dflt.makeSubclass('Main', {
       return this.board_
     },
   },
-  linked: {
+  valued: {
     /**
      * @type {!Array<!Function>}
      * @private

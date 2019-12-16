@@ -369,12 +369,12 @@ eYo.Brick.List.makeSubclass('enclosure', {
         eYo.Key.BRACE
       ],
       init: eYo.Key.PAR,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         var b3k = this.brick
         b3k.prefix_f.text = newValue[0]
         b3k.suffix_f.text = newValue[1]
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         return {
           [eYo.T3.Expr.enclosure]: eYo.Key.PAR,
           [eYo.T3.Expr.parenth_form]: eYo.Key.PAR,
@@ -441,7 +441,7 @@ eYo.Brick.List.makeSubclass('enclosure', {
     return me
   }) (),
   out: {
-    check: /** @suppress {globalThis} */ function (type, subtype) {
+    check (type, subtype) /** @suppress {globalThis} */ {
       // retrieve the brick
       var brick = this.brick
       var p5e = brick.profile_p
@@ -499,12 +499,12 @@ eYo.Expr.enclosure.prototype.getProfile = eYo.C9r.decorateChange(
         } else if (target.type === eYo.T3.Expr.dict_comprehension) {
           return {ans: eYo.T3.Expr.dict_display}
         } else if (this.slots.length === 3) {
-            if (this.model.list.all(eYo.T3.Expr.set_display).indexOf(target.type) >= 0) {
+            if (this.model.all(eYo.T3.Expr.set_display).indexOf(target.type) >= 0) {
               return {ans: eYo.T3.Expr.one_set_display}
             } else {
               return {ans: eYo.T3.Expr.one_dict_display}
             }
-        } else if (this.model.list.all(eYo.T3.Expr.set_display).indexOf(target.type) >= 0) {
+        } else if (this.model.all(eYo.T3.Expr.set_display).indexOf(target.type) >= 0) {
           return {ans: eYo.T3.Expr.set_display}
         } else {
           return {ans: eYo.T3.Expr.dict_display}
@@ -555,7 +555,7 @@ eYo.Expr.enclosure.prototype.getBaseType = function () {
 'dict_display',
 'one_dict_display'].forEach(k => {
   eYo.Expr[k] = eYo.Expr.enclosure
-  eYo.Brick.mngr.register(k)
+  eYo.C9r.register(k)
 })
 
 eYo.Brick.List.T3s = [

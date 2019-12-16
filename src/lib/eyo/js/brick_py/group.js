@@ -13,12 +13,11 @@
 
 eYo.require('Stmt')
 
-eYo.require('Msg')
+eYo.forwardDeclare('Msg')
 
-eYo.require('Expr')
-goog.require('goog.dom')
+goog.forwardDeclare('goog.dom')
 
-eYo.provide('Brick.Group')
+eYo.provide('Stmt.Group')
 
 /**
  * Class for a Delegate, base group statement brick.
@@ -26,14 +25,12 @@ eYo.provide('Brick.Group')
  * For edython.
  */
 eYo.Stmt.makeClass('BaseGroup', {
-  head: {
-    check: /** @suppress {globalThis} */ function (type) {
-      return null
-    }
+  head (type) /** @suppress {globalThis} */ {
+    return null
   },
   left: eYo.NA,
   right: {
-    check: /** @suppress {globalThis} */ function (type) {
+    check (type) /** @suppress {globalThis} */ {
       return this.brick.suite
       ? [eYo.T3.Stmt.comment_stmt]
       : eYo.T3.Stmt.Right.simple_stmt
@@ -45,22 +42,17 @@ eYo.Stmt.makeClass('BaseGroup', {
       }
     }
   },
-  suite: {
-    check: /** @suppress {globalThis} */ function (type) {
-      return this.brick.right
-      ? []
-      : null
-    }
+  suite (type) /** @suppress {globalThis} */ {
+    return this.brick.right
+    ? []
+    : null
   },
-  foot: {
-    check: /** @suppress {globalThis} */ function (type) {
-      return null
-    }
+  foot (type) /** @suppress {globalThis} */ {
+    return null
+  },
+  valued: {
+    isGroup: true,
   }
-}, eYo.Brick)
-
-Object.defineProperties(eYo.Brick.BaseGroup.prototype, {
-  isGroup: {value: true, writable: true}
 })
 
 /**
@@ -68,14 +60,14 @@ Object.defineProperties(eYo.Brick.BaseGroup.prototype, {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.BaseGroup.makeSubclass('Group', {}, eYo.Brick)
+eYo.Stmt.BaseGroup.makeSubclass('Group')
 
 /**
  * Class for a Delegate, if_part brick.
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Group.makeSubclass('Branch', {
+eYo.Stmt.Group.makeSubclass('Branch', {
   data: {
     variant: {
       all: [
@@ -85,11 +77,11 @@ eYo.Brick.Group.makeSubclass('Branch', {
         eYo.Key.WHILE
       ],
       init: eYo.Key.IF,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         this.brick.if_d.incog = newValue === eYo.Key.ELSE
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Stmt.while_part) {
           this.set(eYo.Key.WHILE)
         } else if (type === eYo.T3.Stmt.elif_part) {
@@ -105,13 +97,13 @@ eYo.Brick.Group.makeSubclass('Branch', {
         }
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
         },
-        load: /** @suppress {globalThis} */ function (element) {
+        load (element) /** @suppress {globalThis} */ {
           this.brick.variant_p = element.getAttribute(eYo.Key.EYO)
         },
       },
-      isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) { // same code for primary bricks
+      isChanging (oldValue, newValue) /** @suppress {globalThis} */ { // same code for primary bricks
         this.brick.consolidateType()
         this.brick.consolidateMagnets()
         this.duringChange(oldValue, newValue)
@@ -140,16 +132,12 @@ eYo.Brick.Group.makeSubclass('Branch', {
       check: eYo.T3.Expr.Check.namedexpr_test
     }
   },
-  head: {
-    check: /** @suppress {globalThis} */ function (type) {
-      return eYo.T3.Stmt.Previous[type.substring(4)]
-    }
+  head (type) /** @suppress {globalThis} */ {
+    return eYo.T3.Stmt.Previous[type.substring(4)]
   },
-  foot: {
-    check: /** @suppress {globalThis} */ function (type) {
-      return eYo.T3.Stmt.Next[type.substring(4)]
-    }
-  }
+  foot (type) /** @suppress {globalThis} */ {
+    return eYo.T3.Stmt.Next[type.substring(4)]
+  },
 })
 
 /**
@@ -157,7 +145,7 @@ eYo.Brick.Group.makeSubclass('Branch', {
  * For edython.
  * @return {String}
  */
-eYo.Brick.Group.Branch.prototype.xmlAttr = function () {
+eYo.Stmt.Branch.prototype.xmlAttr = function () {
   return this.variant_p
 }
 
@@ -170,7 +158,7 @@ eYo.Brick.Group.Branch.prototype.xmlAttr = function () {
  * Each type change may imply a disconnection.
  * At least, the type may change to a value when no connection is connected.
  */
-eYo.Brick.Group.Branch.prototype.getBaseType = function () {
+eYo.Stmt.Branch.prototype.getBaseType = function () {
   var T3 = eYo.T3.Stmt
   var type = {
     [eYo.Key.IF]: T3.if_part,
@@ -210,7 +198,7 @@ eYo.Brick.Group.Branch.prototype.getBaseType = function () {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
@@ -240,9 +228,8 @@ eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   'try_else',
   'last_else'
 ].forEach(name => {
-  var key = name + '_part'
-  eYo.Stmt[key] = eYo.Brick.Group.Branch
-  eYo.Brick.mngr.register(key)
+  var k = name + '_part'
+  eYo.C9r.register(k, eYo.Stmt[k] = eYo.Stmt.Branch)
 })
 
 /**
@@ -251,8 +238,8 @@ eYo.Brick.Group.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
  * @param {Brick} brick
  * @private
  */
-eYo.Brick.Group.prototype.willRender_ = function (recorder) {
-  eYo.Brick.Group.superClass_.willRender_.call(this, recorder)
+eYo.Stmt.Group.prototype.willRender_ = function (recorder) {
+  eYo.Stmt.Group.superClass_.willRender_.call(this, recorder)
   var field = this.async_f
   if (field) {
     field.visible = this.async_
@@ -265,7 +252,7 @@ eYo.Brick.Group.prototype.willRender_ = function (recorder) {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Brick.Group.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.Stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
   if (this.async_f) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('async', 'eyo-code-reserved'),
@@ -283,7 +270,7 @@ eYo.Brick.Group.prototype.populateContextMenuFirst_ = function (mngr) {
       mngr.shouldSeparateInsert()
     }
   }
-  return eYo.Brick.Group.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.Group.superClass_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -291,7 +278,7 @@ eYo.Brick.Group.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Group.makeSubclass('for_part', {
+eYo.Stmt.Group.makeSubclass('for_part', true, {
   slots: {
     for: {
       order: 1,
@@ -308,14 +295,14 @@ eYo.Brick.Group.makeSubclass('for_part', {
       wrap: eYo.T3.Expr.expression_list
     }
   }
-}, true)
+})
 
 /**
  * Class for a Delegate, with_part brick.
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Group.makeSubclass('with_part', {
+eYo.Stmt.Group.makeSubclass('with_part', true, {
   slots: {
     with: {
       order: 1,
@@ -325,9 +312,9 @@ eYo.Brick.Group.makeSubclass('with_part', {
       wrap: eYo.T3.Expr.with_item_list
     }
   }
-}, true)
+})
 
-eYo.Brick.Group.T3s = [
+eYo.Stmt.Group.T3s = [
   eYo.T3.Stmt.if_part,
   eYo.T3.Stmt.elif_part,
   eYo.T3.Stmt.else_part,

@@ -46,7 +46,7 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.global_stmt, {
         eYo.Key.RETURN
       ],
       init: eYo.Key.PASS,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         var b3k = this.brick
         b3k.identifiers_s.incog = newValue !== eYo.Key.GLOBAL && newValue !== eYo.Key.NONLOCAL
@@ -54,13 +54,13 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.global_stmt, {
         b3k.return_s.incog = newValue !== eYo.Key.RETURN
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
         },
-        load: /** @suppress {globalThis} */ function (element) {
+        load (element) /** @suppress {globalThis} */ {
           this.brick.variant_p = element.getAttribute(eYo.Key.EYO)
         }
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         this.set({
           [eYo.T3.Stmt.pass_stmt]: eYo.Key.PASS,
           [eYo.T3.Stmt.continue_stmt]: eYo.Key.CONTINUE,[eYo.T3.Stmt.break_stmt]: eYo.Key.BREAK,
@@ -83,13 +83,13 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.global_stmt, {
       promise: eYo.T3.Expr.non_void_identifier_list,
       xml: {
         key: 'list',
-        save: /** @suppress {globalThis} */ function (element) {
+        save (element) /** @suppress {globalThis} */ {
           var variant = this.brick.variant_p
           if (variant === eYo.Key.GLOBAL || variant === eYo.Key.NONLOCAL) {
             this.save(element)
           }
         },
-        load: /** @suppress {globalThis} */ function (element) {
+        load (element) /** @suppress {globalThis} */ {
           var variant = this.brick.variant_p
           if (variant === eYo.Key.GLOBAL || variant === eYo.Key.NONLOCAL) {
             this.load(element)
@@ -102,12 +102,12 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.global_stmt, {
       wrap: eYo.T3.Expr.target_list,
       xml: {
         key: 'list',
-        save: /** @suppress {globalThis} */ function (element) {
+        save (element) /** @suppress {globalThis} */ {
           if (this.brick.variant_p === eYo.Key.DEL) {
             this.save(element)
           }
         },
-        load: /** @suppress {globalThis} */ function (element) {
+        load (element) /** @suppress {globalThis} */ {
           if (this.brick.variant_p === eYo.Key.DEL) {
             this.load(element)
           }
@@ -119,12 +119,12 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.global_stmt, {
       wrap: eYo.T3.Expr.optional_expression_list,
       xml: {
         key: 'list',
-        save: /** @suppress {globalThis} */ function (element) {
+        save (element) /** @suppress {globalThis} */ {
           if (this.brick.variant_p === eYo.Key.RETURN) {
             this.save(element)
           }
         },
-        load: /** @suppress {globalThis} */ function (element) {
+        load (element) /** @suppress {globalThis} */ {
           if (this.brick.variant_p === eYo.Key.RETURN) {
             this.load(element)
           }
@@ -144,7 +144,7 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.global_stmt, {
 ].forEach((k) => {
   k = k + '_stmt'
   eYo.Stmt[k] = eYo.Stmt.global_stmt
-  eYo.Brick.mngr.register(k)
+  eYo.C9r.register(k)
 })
 
 /**

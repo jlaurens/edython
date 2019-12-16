@@ -453,7 +453,7 @@ eYo.Field.prototype.dispose = function() {
  * Ensure that the field is ready.
  */
 eYo.Field.prototype.initUI = function () {
-  this.ui_driver_mngr.initUI(this)
+  this.ui_driver_mngr.doInitUI(this)
   this.initUI = eYo.Do.nothing
   delete this.disposeUI
 }

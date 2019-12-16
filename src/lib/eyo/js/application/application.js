@@ -105,7 +105,7 @@ eYo.Application.prototype.initUI = function() {
   delete this.disposeUI
   this.audio__ = new eYo.Dom.Audio(this, this.options.pathToMedia)
   var d = this.ui_driver_mngr__ = new eYo.Svg.Mngr(this)
-  d.initUI(this)
+  d.objectInitUI(this)
   this.desk.initUI()
 }
 

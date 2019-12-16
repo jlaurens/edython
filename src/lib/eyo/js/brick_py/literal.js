@@ -74,12 +74,12 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
       init: '',
       main: true,
       placeholder: 0,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var types = this.brick.type_d.getAll()
         var p5e = eYo.T3.Profile.get(newValue, null)
         return ((types.indexOf(p5e.expr) >= 0 || p5e.raw === eYo.T3.Expr.unset) && {validated: newValue}) || null
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         var type = newValue
           ? eYo.T3.Profile.get(newValue, null).expr
@@ -99,7 +99,7 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
     }
   },
   out: {
-    check: /** @suppress {globalThis} */ function (type) {
+    check (type) /** @suppress {globalThis} */ {
       return [type]
     }
   }
@@ -111,7 +111,7 @@ eYo.Brick.Literal.makeSubclass('numberliteral', {
   'imagnumber'
 ].forEach(key => {
   eYo.Expr[key] = eYo.Expr.numberliteral
-  eYo.Brick.mngr.register(key)
+  eYo.C9r.register(key)
 })
 
 /**
@@ -183,16 +183,16 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
       xml: false,
     },
     content: { // not saved
-      placeholder: /** @suppress {globalThis} */ function () {
+      placeholder () /** @suppress {globalThis} */ {
         var subtype = this.brick.subtype_p
         return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.longbytesliteral
           ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         this.brick.value_d.consolidate()
       },
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         return ((!goog.isDef(this.brick.content_p) || this.brick.validateComponents({
           content: newValue
         })) && {validated: newValue}) || null
@@ -229,7 +229,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
       },
-      consolidate: /** @suppress {globalThis} */ function () {
+      consolidate () /** @suppress {globalThis} */ {
         var prefix = this.brick.prefix_p
         var delimiter = this.brick.delimiter_p
         var content = this.brick.content_p
@@ -237,7 +237,7 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
           this.set('' + prefix + delimiter + content + delimiter)
         }
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Expr.shortformattedliteral) {
           this.doChange(`f''`)
         } else {
@@ -257,10 +257,10 @@ eYo.Brick.Literal.makeSubclass('shortliteral', {
       reserved: ''
     },
     content: { // this is the only really unordered field
-      startEditing: /** @suppress {globalThis} */ function () {
+      startEditing () /** @suppress {globalThis} */ {
         this.brick.end_f.visible = false
       },
-      endEditing: /** @suppress {globalThis} */ function () {
+      endEditing () /** @suppress {globalThis} */ {
         this.data.set(this.getValue())
         this.brick.end_f.visible = true
       },
@@ -414,7 +414,7 @@ eYo.Expr.shortliteral.makeSubclass('longliteral', {
     value: {
       init: "''''''",
       main: true,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         var b3k = this.brick
         var F = (xre, type, formatted) => {
@@ -438,7 +438,7 @@ eYo.Expr.shortliteral.makeSubclass('longliteral', {
           (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
         }
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Expr.longformattedliteral) {
           this.doChange(`f''''''`)
         } else {

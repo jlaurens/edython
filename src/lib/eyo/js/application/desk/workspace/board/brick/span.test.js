@@ -24,7 +24,7 @@ describe('Span expression', function () {
     s_s = b_s.span
     chai.assert(b_s.isStmt, 'MISSED')
     var type = 'test_group_span'
-    eYo.Brick.Group.makeSubclass(type, {
+    eYo.Stmt.Group.makeSubclass(type, {
       out: {
         check: null
       }

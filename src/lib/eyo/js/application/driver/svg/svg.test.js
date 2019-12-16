@@ -3,7 +3,7 @@ describe('Svg driver', function() {
     chai.assert(eYo.Svg)
     chai.assert(eYo.Svg.Mngr)
     chai.assert(eYo.Svg.makeDriverClass)
-    chai.assert(eYo.Svg.makeMngrClass)
+    chai.assert(eYo.Svg.makeMngr)
     chai.assert(eYo.Svg.Dflt)
   })
 })

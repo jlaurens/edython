@@ -12,13 +12,12 @@
 'use strict'
 
 eYo.require('Stmt')
+eYo.require('Brick.List')
 
-eYo.provide('Stmt.assignment_stmt')
 eYo.provide('Brick.Assignment')
 
 eYo.forwardDeclare('Msg')
 eYo.forwardDeclare('Brick.Primary')
-eYo.forwardDeclare('Brick.List')
 goog.forwardDeclare('goog.dom')
 
 /**
@@ -57,14 +56,14 @@ eYo.Stmt.makeClass('assignment_stmt', {
       ],
       init: eYo.Key.EXPRESSION,
       xml: false,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         var b3k = this.brick
         b3k.target_d.requiredIncog = newValue !== eYo.Key.VALUED && newValue !== eYo.Key.EXPRESSION
         b3k.annotated_d.requiredIncog = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
         b3k.value_d.requiredIncog = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED || newValue === eYo.Key.VALUED || newValue === eYo.Key.EXPRESSION
       },
-      isChanging: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      isChanging (oldValue, newValue) /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (newValue === eYo.Key.VALUED) {
             b3k.operator_p = ''
@@ -74,7 +73,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
         b3k.consolidateType()
         this.duringChange(oldValue, newValue)
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Stmt.expression_stmt) {
           // expression statement defaults to a python comment line
           // but it should change because of the 'comment_stmt' below
@@ -87,7 +86,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
           this.doChange(eYo.Key.TARGET_VALUED)
         }
       },
-      consolidate: /** @suppress {globalThis} */ function () {
+      consolidate () /** @suppress {globalThis} */ {
         var b3k = this.brick
         var t = b3k.target_s.unwrappedTarget
         if (t && (t.type === eYo.T3.Expr.identifier_annotated || t.type === eYo.T3.Expr.augtarget_annotated)) {
@@ -108,7 +107,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
         eYo.T3.Expr.identifier,
         eYo.T3.Expr.dotted_name
       ],
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(newValue, null)
         return this.model.subtypes.indexOf(p5e.expr) >= 0
         ? {validated: newValue}
@@ -117,11 +116,11 @@ eYo.Stmt.makeClass('assignment_stmt', {
       synchronize: true,
       allwaysBoundField: true,
       xml: {
-        getAttribute: /** @suppress {globalThis} */ function (element) {
+        getAttribute (element) /** @suppress {globalThis} */ {
           return element.getAttribute('name') // 'target' was named 'name' prior to 0.2.x
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
           var v = b3k.variant_p
@@ -136,11 +135,11 @@ eYo.Stmt.makeClass('assignment_stmt', {
     annotated: {
       init: '',
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         return {validated: newValue}
       },
       synchronize: true,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         var b3k = this.brick
         var v = b3k.variant_p
         if (this.requiredFromSaved) {
@@ -157,10 +156,10 @@ eYo.Stmt.makeClass('assignment_stmt', {
       /* One of Visual Studio Code extensions gobbles this line */
       init: '',
       all: ['', '=', '+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='],
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.brick.value_s.label_f.text = newValue
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         var b3k = this.brick
         b3k.numberOperator_p = newValue
@@ -170,7 +169,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
         }
       },
       validate: true,
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Stmt.augmented_assignment_stmt && (this.value_ === '' || this.value_ === '=')) {
           this.doChange('+=')
         }
@@ -182,7 +181,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
       init: '',
       noUndo: true,
       xml: false,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         if (oldValue && (newValue !== oldValue)) {
           var b3k = this.brick
@@ -196,7 +195,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
       init: '',
       noUndo: true,
       xml: false,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         if (oldValue && (newValue !== oldValue)) {
           var b3k = this.brick
@@ -210,7 +209,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
       validate: false,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           var v = this.brick.variant_p
           if (v === eYo.Key.TARGET_VALUED || v === eYo.Key.ANNOTATED_VALUED) {
             this.required = false
@@ -218,7 +217,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
           }
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
           var v = b3k.variant_p
@@ -230,7 +229,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
         }
       },
       synchronize: true,
-      validateIncog: /** @suppress {globalThis} */ function (newValue) {
+      validateIncog (newValue) /** @suppress {globalThis} */ {
         var v = this.brick.variant_p
         return v !== eYo.Key.TARGET_VALUED && v !== eYo.Key.ANNOTATED_VALUED && v !== eYo.Key.VALUED && v !== eYo.Key.EXPRESSION
       }
@@ -247,7 +246,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
         }
       },
       wrap: eYo.T3.Expr.target_list,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
           var v = b3k.variant_p
@@ -259,7 +258,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
         }
       },
       xml: {
-        accept: /** @suppress {globalThis} */ function (attribute) {
+        accept (attribute) /** @suppress {globalThis} */ {
           return attribute === 'name'
         } // for old name
       }
@@ -281,7 +280,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
       xml: {
         attr: ':'
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
           var v = b3k.variant_p
@@ -306,7 +305,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
         }
       },
       wrap: eYo.T3.Expr.value_list,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
           var v = b3k.variant_p
@@ -327,10 +326,8 @@ eYo.Stmt.makeClass('assignment_stmt', {
   'annotated_assignment_stmt',
   'augmented_assignment_stmt'
 ].forEach(k => {
-  eYo.Stmt[k] = eYo.Stmt.assignment_stmt
-  eYo.Brick.mngr.register(k)
+  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.Stmt.assignment_stmt))
 })
-
 
 /**
  * getType.

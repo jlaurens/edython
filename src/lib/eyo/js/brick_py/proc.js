@@ -62,7 +62,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.Key.DELETER
       ],
       init: null,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         // the property change may echo into a decorator change
         this.didChange(oldValue, newValue)
         if (newValue === eYo.Key.GETTER) {
@@ -76,7 +76,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
           this.brick.decorator_p = this.brick.saved_p + '.' + newValue
         }
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         this.incog = newValue === eYo.Key.GETTER
         // update the placeholder for the name field.
@@ -93,7 +93,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.Key.N_ARY // custom name with arguments
       ],
       init: eYo.Key.NONE,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         if (newValue !== eYo.Key.PROPERTY) {
           this.brick.property_p = eYo.Key.GETTER
@@ -105,13 +105,13 @@ eYo.Stmt.makeClass('decorator_stmt', {
           this.brick.mainChooser_p = newValue
         }
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) { // would variants synchronize?
+      synchronize (newValue) /** @suppress {globalThis} */ { // would variants synchronize?
         this.incog = newValue !== eYo.Key.N_ARY
         this.synchronize(newValue)
         this.brick.n_ary_s.incog = newValue !== eYo.Key.N_ARY
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           if (this.get() === eYo.Key.N_ARY) {
             var b = this.brick.n_ary_b
             if (b && !b.children_.length) {
@@ -133,20 +133,20 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.T3.Expr.unset
       ],
       init: '',
-      placeholder: /** @suppress {globalThis} */ function () {
+      placeholder () /** @suppress {globalThis} */ {
         var b3k = this.brick
         return b3k.variant_p === eYo.Key.PROPERTY && b3k.property_p !== eYo.Key.GETTER
         ? eYo.Msg.Placeholder.IDENTIFIER
         : eYo.Msg.Placeholder.DECORATOR
       },
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(newValue, null)
         if (this.getAll().indexOf(p5e.expr) >= 0) {
           return {validated: newValue}
         }
         return null
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         var b3k = this.brick
         var p = b3k.property_p
@@ -155,7 +155,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
         }
         b3k.decorator_p = newValue || ''
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         var d = this.field.ui_driver_mngr
         d && (d.setVisualAttribute(this.field, newValue))
@@ -169,14 +169,14 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.T3.Expr.unset
       ],
       init: '',
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(newValue, null)
         if (this.getAll().indexOf(p5e.expr) >= 0 || this.getAll().indexOf(p5e.base) >= 0) {
           return {validated: newValue}
         }
         return null
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         var b3k = this.brick
         var m = XRegExp.exec(newValue, eYo.XRE.decorator)
@@ -235,7 +235,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.Key.PROPERTY // @property
       ],
       init: null,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         if (newValue === eYo.Key.NONE) {
           this.brick.variant_p = eYo.Key.NONE
@@ -257,7 +257,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.Key.DELETER
       ],
       init: null,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         switch(newValue) {
           case eYo.Key.NONE:
@@ -296,7 +296,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
           endEditing: true,
           variable: true,
           // left_space: true,
-          css_class: /** @suppress {globalThis} */ function () {
+          css_class () /** @suppress {globalThis} */ {
             return [
               eYo.Key.PROPERTY,
               eYo.Key.STATICMETHOD,
@@ -324,7 +324,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
         end: ')'
       },
       promise: eYo.T3.Expr.argument_list,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         var t = this.targetBrick // may be null ?
         if (t && t.children_.length) {
           this.brick.variant_p = eYo.Key.N_ARY
@@ -417,12 +417,12 @@ eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, funcdef_part.
  * For edython.
  */
-eYo.Brick.Group.makeSubclass('funcdef_part', {
+eYo.Stmt.Group.makeSubclass('funcdef_part', {
   data: {
     variant: {
       all: [null, eYo.Key.TYPE],
       init: null,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         this.brick.type_s.requiredIncog = newValue === eYo.Key.TYPE
       }
@@ -430,7 +430,7 @@ eYo.Brick.Group.makeSubclass('funcdef_part', {
     name: {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(newValue, null)
         return p5e.expr === eYo.T3.Expr.identifier
           || p5e.expr === eYo.T3.Expr.unset
@@ -507,12 +507,12 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  * Class for a Delegate, classdef_part brick.
  * For edython.
  */
-eYo.Brick.Group.makeSubclass('classdef_part', {
+eYo.Stmt.Group.makeSubclass('classdef_part', {
   data: {
     variant: {
       all: [eYo.Key.NONE, eYo.Key.N_ARY],
       init: eYo.Key.NONE,
-      synchronize: /** @suppress {globalThis} */ function (newValue){
+      synchronize (newValue) /** @suppress {globalThis} */{
         this.synchronize(newValue)
         this.brick.n_ary_s.requiredIncog = newValue === eYo.Key.N_ARY
       },
@@ -521,7 +521,7 @@ eYo.Brick.Group.makeSubclass('classdef_part', {
     name: {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(newValue, null)
         return p5e.expr === eYo.T3.Expr.identifier
           || p5e.expr === eYo.T3.Expr.unset
@@ -550,7 +550,7 @@ eYo.Brick.Group.makeSubclass('classdef_part', {
         end: ')'
       },
       wrap: eYo.T3.Expr.argument_list,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.N_ARY
         }

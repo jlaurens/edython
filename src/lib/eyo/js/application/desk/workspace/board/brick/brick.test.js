@@ -94,7 +94,7 @@ describe('Group magnets', function () {
   before(function() {
     var type = 'test_group_magnets'
     eYo.T3.Stmt[type] = type
-    eYo.Brick.Group.makeSubclass(type, {
+    eYo.Stmt.Group.makeSubclass(type, {
       left: { check: type },
       right: { check: type },
     })  

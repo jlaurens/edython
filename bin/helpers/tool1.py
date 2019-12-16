@@ -90,8 +90,10 @@ class Foo:
           continue
         m = self.re_assignment.match(l)
         if m:
-          required.add(m.group('ns'))
-          provided.add(m.group('assigned'))
+          ns = m.group('ns')
+          if not re.search(r'_[ps]\b', ns):
+            required.add(ns)
+            provided.add(m.group('assigned'))
           continue
         ns = key = None
         def parse_args(suite):

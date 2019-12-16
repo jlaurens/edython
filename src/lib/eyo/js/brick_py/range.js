@@ -34,7 +34,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
         eYo.Key.STEP
       ],
       init: eYo.Key.NONE,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         this.brick.start_d.incog = newValue === eYo.Key.NONE
         this.brick.sep_s.incog = newValue === eYo.Key.NONE
@@ -47,13 +47,13 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
       synchronize: true,
       init: '',
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save (element) /** @suppress {globalThis} */ {
           if (this.brick.variant_p !== eYo.Key.NONE) {
             this.save(element)
           }
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         this.didLoad()
         if (this.requiredFromSaved && newValue !== eYo.Key.STEP) {
           this.brick.variant_p = eYo.Key.START
@@ -70,13 +70,13 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
       placeholder: 1,
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element) {
+        save (element) /** @suppress {globalThis} */ {
           if (this.brick.variant_p === eYo.Key.STEP) {
             this.save(element)
           }
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         this.didLoad()
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.STEP

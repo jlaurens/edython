@@ -40,10 +40,12 @@ keyword_item         ::=  identifier "=" expression
  * RULE 3 : "*" expression << "**" expression
  */
 eYo.Consolidator.List.makeSubclass('Arguments', {
-  check: null,
-  presep: ',',
-  mandatory: 0
-}, eYo.Consolidator.List, eYo.Consolidator)
+  list: {
+    check: null,
+    mandatory: 0,
+    presep: ',',
+  },
+})
 
 /**
  * Prepare io, just before walking through the input list.
@@ -218,10 +220,10 @@ eYo.Brick.List.makeSubclass('argument_list', {
       init: Infinity,
       xml: false,
       noUndo: true,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         return {validated: goog.isNumber(newValue) ? newValue : Infinity}
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         this.brick.change.wrap(
           function () {
@@ -235,7 +237,7 @@ eYo.Brick.List.makeSubclass('argument_list', {
       init: 0,
       xml: false,
       noUndo: true,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         this.brick.change.wrap(
           function () {

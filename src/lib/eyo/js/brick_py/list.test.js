@@ -86,7 +86,7 @@ describe('Enclosure connections', function() {
     eYo.Test.input_length(d, 1)
     eYo.Test.brick(d, 'set_display')
     // replace by any other unique
-    var list = d.model.list
+    var list = d.model
     var unique = list.unique(d.type)
     unique.forEach(t => {
       var dd2 = eYo.Test.new_brick(t)

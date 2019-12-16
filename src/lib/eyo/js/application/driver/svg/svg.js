@@ -20,7 +20,7 @@ eYo.require('Decorate')
  * @name{eYo.Svg}
  * @namespace
  */
-eYo.Driver.makeNS(eYo, 'Svg')
+eYo.Dom.makeNS(eYo, 'Svg')
 
 eYo.forwardDeclare('T3.Profile')
 eYo.forwardDeclare('Svg.Brick')
@@ -36,32 +36,34 @@ goog.forwardDeclare('goog.userAgent')
  * The Svg delegate.
  * @constructor
  */
-eYo.Driver.Dlgt.makeSubclass(eYo.Svg)
+eYo.Dom.Dlgt.makeSubclass(eYo.Svg)
 
 /**
  * @name {eYo.Svg.Mngr}
  * The manager constructor of all the svg drivers.
  */
-eYo.Svg.makeMngrClass({
-  initUIMake (f) {
-    return function (object, ...rest) {
-      var dom = object.dom
-      if (dom && !dom.svg) {
-        dom.svg = Object.create(null)
-        f && f.apply(object, rest)
-        return dom
+eYo.Svg.makeMngr({
+  ui: {
+    initMake (f) {
+      return function (object, ...rest) {
+        var dom = object.dom
+        if (dom && !dom.svg) {
+          dom.svg = Object.create(null)
+          f && f.apply(object, rest)
+          return dom
+        }
       }
-    }
-  },
-  disposeUIMake (f) {
-    return function (object, ...rest) {
-      var dom = object.dom
-      if (dom && dom.svg) {
-        f && f.apply(object, rest)
-        dom.svg = null
-        cls.superClass_.disposeUI.apply(object, ...rest)
+    },
+    disposeMake (f) {
+      return function (object, ...rest) {
+        var dom = object.dom
+        if (dom && dom.svg) {
+          f && f.apply(object, rest)
+          dom.svg = null
+          cls.superClass_.disposeUI.apply(object, ...rest)
+        }
       }
-    }
+    },
   },
 })
 
@@ -72,7 +74,7 @@ eYo.Svg.makeMngrClass({
  * @param {Element} parent Optional parent on which to append the element.
  * @return {!SVGElement} Newly created SVG element.
  */
-eYo.Svg.newElement = function(name, attrs, parent) {
+eYo.Svg._p.newElement = function(name, attrs, parent) {
   var e = /** @type {!SVGElement} */
       document.createElementNS(eYo.Dom.SVG_NS, name)
   for (var key in attrs) {
@@ -95,7 +97,7 @@ eYo.Svg.newElement = function(name, attrs, parent) {
  * @param {string} className.
  * @return {!SVGElement} Newly created SVG element.
  */
-eYo.Svg.newElementSvg = function(parent, className) {
+eYo.Svg._p.newElementSvg = function(parent, className) {
   return eYo.Svg.newElement('svg', {
     xmlns: eYo.Dom.SVG_NS,
     'xmlns:html': eYo.Dom.HTML_NS,
@@ -119,7 +121,7 @@ Object.defineProperties(eYo.Svg, {
  * @name{eYo.Svg.Dflt}
  * @constructor
  */
-eYo.Dflt.makeSubclass(eYo.Svg)
+eYo.Dom.Dflt.makeSubclass(eYo.Svg)
 
 /**
  * Return the coordinates of the top-left corner of this element relative to
@@ -128,7 +130,7 @@ eYo.Dflt.makeSubclass(eYo.Svg)
  * @param {Element} element SVG element to find the coordinates of.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
-eYo.Svg.Dflt.prototype.xyInParent = function(element) {
+eYo.Svg.Dflt_p.xyInParent = function(element) {
   var xy = new eYo.Where()
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
@@ -170,7 +172,7 @@ eYo.Svg.Dflt.prototype.xyInParent = function(element) {
  * Add tooltip to an element
  * @param {String} key
  */
-eYo.Svg.Dflt.prototype.addTooltip = function (el, title, options) {
+eYo.Svg.Dflt_p.addTooltip = function (el, title, options) {
   if (eYo.isStr(title)) {
     el.setAttribute('title', title)
     tippy(el, options)

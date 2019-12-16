@@ -24,12 +24,12 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.comment_stmt, {
       ],
       init: eYo.Key.COMMENT,
       xml: false,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         var b3k = this.brick
         b3k.comment_d.requiredIncog = newValue !== eYo.Key.BLANK
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Stmt.blank_stmt) {
           // expression statement defaults to a python comment line
           // but it should change because of the 'comment_stmt' below
@@ -43,7 +43,7 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.comment_stmt, {
       order: 1000000,
       init: '',
       placeholder: eYo.Msg.Placeholder.COMMENT,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
       },
       synchronize: true,
@@ -94,5 +94,5 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.comment_stmt, {
 
 ;['blank_stmt'].forEach(k => {
   eYo.Stmt[k] = eYo.Stmt.comment_stmt
-  eYo.Brick.mngr.register(k)
+  eYo.C9r.register(k)
 })

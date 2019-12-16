@@ -48,10 +48,12 @@ eYo.provide('Brick.Parameter')
 // }
 
 eYo.Consolidator.List.makeSubclass('Parameter', {
-  check: null,
-  mandatory: 0,
-  presep: ','
-}, eYo.Consolidator.List, eYo.Consolidator)
+  list: {
+    check: null,
+    mandatory: 0,
+    presep: ','
+  },
+})
 /**
  * Consolidate a connected input but the first one.
  * Does nothing if this is the last input of '**' type.
@@ -388,7 +390,7 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
       fields: {
         label: ':'
       },
-      check: /** @suppress {globalThis} */ function (type) {
+      check (type) /** @suppress {globalThis} */ {
         var m4t = this.brick.out_m.target
         if (m4t) {
           // does the target accept general expression in lambda
@@ -401,7 +403,7 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
     }
   },
   out: {
-    check: /** @suppress {globalThis} */ function (type) {
+    check (type) /** @suppress {globalThis} */ {
       var eyo = this.brick // does it always exist ?
       var m4tIn = eyo.expression_s.magnet
       var cond_in = true // cond are accepted by default
@@ -422,7 +424,7 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
   'lambda_expr_nocond'
 ].forEach((key) => {
   eYo.Expr[key] = eYo.Expr.lambda
-  eYo.Brick.mngr.register(key)
+  eYo.C9r.register(key)
 })
 
 /**

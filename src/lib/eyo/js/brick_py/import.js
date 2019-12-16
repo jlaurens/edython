@@ -78,7 +78,7 @@ eYo.Stmt.makeClass('import_stmt', {
         eYo.Key.FROM_MODULE_IMPORT_STAR
       ],
       init: eYo.Key.IMPORT,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         var b3k = this.brick
         b3k.import_module_d.requiredIncog = newValue === eYo.Key.IMPORT
@@ -90,7 +90,7 @@ eYo.Stmt.makeClass('import_stmt', {
     import_module: {
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(newValue)
         return p5e === eYo.T3.Profile.void
         || p5e.raw === eYo.T3.Expr.builtin__name
@@ -101,7 +101,7 @@ eYo.Stmt.makeClass('import_stmt', {
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         if (newValue) {
           this.brick.variant_p = eYo.Key.IMPORT
@@ -109,7 +109,7 @@ eYo.Stmt.makeClass('import_stmt', {
       },
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           if (!this.brick.import_module_s.unwrappedTarget) {
             this.save(element, opt)
           }
@@ -119,7 +119,7 @@ eYo.Stmt.makeClass('import_stmt', {
     from: {
       init:'',
       placeholder: eYo.Msg.Placeholder.MODULE,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(newValue, null)
         var variant = this.brick.variant_p
         return p5e === eYo.T3.Profile.void
@@ -130,7 +130,7 @@ eYo.Stmt.makeClass('import_stmt', {
             ? {validated: newValue} : null
       },
       synchronize: true,
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         if (newValue) {
           var b3k = this.brick
@@ -146,14 +146,14 @@ eYo.Stmt.makeClass('import_stmt', {
     import: {
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(newValue)
         return p5e === eYo.T3.Profile.void
         || p5e.expr === eYo.T3.Expr.identifier
         ? {validated: newValue} : null
         // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         if (newValue) {
           this.brick.variant_p = eYo.Key.FROM_MODULE_IMPORT
@@ -161,7 +161,7 @@ eYo.Stmt.makeClass('import_stmt', {
       },
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           if (!this.brick.import_s.unwrappedTarget) {
             this.save(element, opt)
           }
@@ -179,7 +179,7 @@ eYo.Stmt.makeClass('import_stmt', {
         }
       },
       promise: eYo.T3.Expr.non_void_module_as_list,
-      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         var parent = this.brick.parent
         parent && (parent.variant_p = eYo.Key.IMPORT)
       }
@@ -193,7 +193,7 @@ eYo.Stmt.makeClass('import_stmt', {
           variable: true // change this to/with a `module` data
         }
       },
-      check: /** @suppress {globalThis} */ function (type) {
+      check (type) /** @suppress {globalThis} */ {
         var v = this.brick.variant_p
         return v === eYo.Key.FROM_MODULE_IMPORT_STAR
         ? [
@@ -207,7 +207,7 @@ eYo.Stmt.makeClass('import_stmt', {
           eYo.T3.Expr.parent_module
         ]
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
           if (b3k.variant_p === eYo.Key.IMPORT) {
@@ -218,7 +218,7 @@ eYo.Stmt.makeClass('import_stmt', {
           }
         }
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         var O = this.brick
         if (b3k.variant_p === eYo.Key.IMPORT) {
           // STAR of not ?
@@ -237,12 +237,12 @@ eYo.Stmt.makeClass('import_stmt', {
         }
       },
       promise: eYo.T3.Expr.non_void_import_identifier_as_list,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM_MODULE_IMPORT
         }
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         var parent = this.brick.parent
         parent && (parent.variant_p = eYo.Key.FROM_MODULE_IMPORT)
       }
@@ -255,12 +255,12 @@ eYo.Stmt.makeClass('import_stmt', {
         }
       },
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           if (this.brick.variant_p === eYo.Key.FROM_MODULE_IMPORT_STAR) {
             element.setAttribute('star', 'true')
           }
         },
-        load: /** @suppress {globalThis} */ function (element) {
+        load (element) /** @suppress {globalThis} */ {
           if (element.getAttribute('star') === 'true') {
             this.brick.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
           }
@@ -268,10 +268,10 @@ eYo.Stmt.makeClass('import_stmt', {
       }
     }
   },
-  init: /** @suppress {globalThis} */ function () {
+  init () /** @suppress {globalThis} */ {
     eYo.Stmt.registerImport(this)
   },
-  deinit: /** @suppress {globalThis} */ function () {
+  deinit () /** @suppress {globalThis} */ {
     eYo.Stmt.unregisterImport(this)
   }
 }, true)

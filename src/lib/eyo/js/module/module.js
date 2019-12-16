@@ -28,7 +28,7 @@ eYo.Dflt.makeSubclass(eYo.Module, {
     this.name_ = name
     this.url_ = url
   },
-  linked: {
+  valued: {
     value: {},
     url: {},
     profiles () {

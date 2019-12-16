@@ -39,7 +39,7 @@ eYo.Driver.Dlgt.makeSubclass('DlgtMngr', {
   init () {
     console.warn('INIT DlgtMngr')
   },
-  linked: {
+  valued: {
     driverNames () {
       return new Set()
     }
@@ -52,7 +52,7 @@ eYo.Driver.Dlgt.makeSubclass('DlgtMngr', {
  * wrapping the model's eponym methods, if any.
  * The owner will have a dafault driver named `Dflt`,
  * which is expected to be the ancestor of all drivers.
- * @param {String} key - a (capitalized) word, the name of the subclass (last component)
+ * @param {String} key - a (titlecased) word, the name of the subclass (last component)
  * @param {Function} [Super] - the super class of the driver constructor,
  * defaults to the owner's super_'s key property or the owner's `Dflt`.
  * @param {Object} driverModel
@@ -63,43 +63,46 @@ eYo.Driver.Dlgt.makeSubclass('DlgtMngr', {
  * - initUI: an optional function with signature (object, ...)->eYo.NA
  * - disposeUI: an optional function with signature (object)->eYo.NA
  */
-eYo.Driver.DlgtMngr.prototype.makeDriverClass = function (key, Super, driverModel) {
+eYo.Driver.DlgtMngr_p.makeDriverClass = function (key, Super, driverModel) {
+  var ns = this.ns
   if (!eYo.isSubclass(Super, eYo.Driver.Dflt)) {
     eYo.parameterAssert(!driverModel, 'Unexpected model')
     driverModel = Super
-    Super = this.ns.super[key] || this.ns.Dflt
+    Super = ns.super[key] || ns.Dflt
   }
-  var Driver = eYo.makeClass(this.ns, key, Super, eYo.Driver.Dlgt, driverModel)
+  var Driver = eYo.makeClass(ns, key, Super, ns.Dlgt, driverModel)
   this.driverNames.add(key)
-  var proto = Driver.prototype
-  proto.initUI = function (object, ...rest) {
-    Super.initUI.apply(this, arguments)
-    f = this.model.initUIMake
-    var ff = driverModel.initUI
+  var _p = Driver.prototype
+  var ns_ui = this.model.ui
+  var d_ui = Driver.eyo.model.ui
+  _p.doInitUI = function () {
+    Super.prototype.doInitUI && Super.prototype.doInitUI.apply(this, arguments)
+    var f = ns_ui && ns_ui.initMake
+    var ff = d_ui && d_ui.doInit
     f = (f && f(ff)) || ff
-    return f && f.apply(object, rest)
+    return f && f.apply(this, arguments)
   }
-  proto.disposeUI = function (object, ...rest) {
-    var f = this.model.disposeUIMake
-    var ff = driverModel.initUI
+  _p.doDisposeUI = function () {
+    var f = ns_ui && ns_ui.disposeMake
+    var ff = d_ui && d_ui.doDispose
     f = (f && f(ff)) || ff
-    f && f.apply(object, rest)
-    Super.disposeUI.apply(this, arguments)
+    f && f.apply(this, arguments)
+    Super.prototype.doDisposeUI && Super.prototype.doDisposeUI.apply(this, arguments)
   }
 }
 
 /**
- * Usage: `eYo.Driver.makeMngrClass(model)`.
+ * Usage: `eYo.Driver.makeMngr(model)`.
  * Actual implementation with Fcls, Dom and Svg drivers.
  * {Code: ns.Mngr} is instantiated by the main application object.
  ** @param {Object} [mngrModel] -  model used for creation
  * @return {Function} a constructor equals to ns.Mngr
  */
-eYo.Driver.constructor.prototype.makeMngrClass = function (mngrModel) {
+eYo.Driver._p.makeMngr = function (mngrModel) {
   if (this === eYo.Driver) {
     return
   }
-  var Mngr = this.super.Mngr.makeSubclass(this, 'Mngr', this.DlgtMngr, mngrModel)
+  var Mngr = this.makeClass(this.super.Mngr, this.DlgtMngr, mngrModel)
   const pttp = Mngr.prototype
   pttp.initDrivers = function () {
     Mngr.eyo.driverNames.forEach(name => {
@@ -112,7 +115,7 @@ eYo.Driver.constructor.prototype.makeMngrClass = function (mngrModel) {
 }
 
 /**
- * Usage: `eYo.Driver.makeMngrClass(model)`.
+ * Usage: `eYo.Driver.makeDriverClass(model)`.
  * Actual implementation with Fcls, Dom and Svg drivers.
  * {Code: ns.Mngr} is instantiated by the main application object.
  * @param {String} key -  The key of the driver
@@ -120,7 +123,7 @@ eYo.Driver.constructor.prototype.makeMngrClass = function (mngrModel) {
  * @param {Object} [mngrModel] -  model used for creation
  * @return {Function} a constructor equals to this.Mngr[key]
  */
-eYo.Driver.constructor.prototype.makeDriverClass = function (key, Super, driverModel) {
+eYo.Driver._p.makeDriverClass = function (key, Super, driverModel) {
   return this.Mngr.eyo.makeDriverClass(key, Super, driverModel)
 }
 

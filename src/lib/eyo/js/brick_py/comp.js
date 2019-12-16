@@ -26,14 +26,14 @@ eYo.Expr.Dflt.makeSubclass('comprehension', {
       order: 1,
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var type = eYo.T3.Profile.get(newValue)
         return type.expr === eYo.T3.Expr.identifier
         ? {validated: newValue} : null
       },
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           if (!this.brick.expression_b) {
             this.save(element, opt)
           }
@@ -72,7 +72,7 @@ eYo.Expr.Dflt.makeSubclass('comprehension', {
     }
   },
   out: {
-    check: /** @suppress {globalThis} */ function (type) {
+    check (type) /** @suppress {globalThis} */ {
       // `this` is a magnet
       // we do not take the type argument into account
       var eyo = this.brick
@@ -101,7 +101,7 @@ eYo.Expr.comprehension.prototype.getBaseType = function () {
 
 ;['dict_comprehension'].forEach(k => {
   eYo.Expr[k] = eYo.Expr.comprehension
-  eYo.Brick.mngr.register(k)
+  eYo.C9r.register(k)
 })
 
 /**

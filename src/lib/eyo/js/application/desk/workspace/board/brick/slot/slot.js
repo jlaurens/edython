@@ -91,7 +91,7 @@ eYo.C9r.UI.makeClass(eYo, 'Slot', eYo.C9r.UI.Owned2, {
   owned: {
     magnet: {}
   },
-  linked: {
+  valued: {
     /**
      * @property {eYo.Data} data  Bound data.
      */

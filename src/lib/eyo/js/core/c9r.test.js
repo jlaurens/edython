@@ -1,7 +1,5 @@
 const NS = Object.create(null)
 
-NS.k__ = 'NS'
-
 NS.test_link = (x, foo, bar) => {
   const foo_ = foo + '_'
   const foo__ = foo + '__'
@@ -24,71 +22,165 @@ NS.test_link = (x, foo, bar) => {
   chai.assert(x[foo__] === eYo.NA && x[foo_] === eYo.NA && x[foo] === eYo.NA)
   chai.assert(x[bar__] === eYo.NA && x[bar_] === eYo.NA && x[bar] === eYo.NA)
 }
+NS.clearClass = (ns, Class) => {
+  delete ns[Class]
+  delete ns[Class + '_p']
+  delete ns[Class + '_s']
+}
+describe ('Tests: C9r', function () {
+  this.timeout(10000)
+  var ns = eYo.makeNS()
+  ns.makeDlgt()
+  ns.makeDflt()
+  it ('C9r: basic', function () {
+    chai.assert(eYo.makeClass)
+    chai.assert(eYo.Dlgt)
+    chai.assert(eYo.Dflt)
+    chai.assert(eYo.isNS(ns))
+    chai.assert(eYo.isF(ns.Dlgt))
+    chai.assert(eYo.isF(ns.Dflt))
+    chai.assert(eYo.isSubclass(ns.Dflt, eYo.Dflt))
+    chai.assert(eYo.isSubclass(ns.Dlgt, eYo.Dlgt))
+    chai.assert(ns.Dlft.eyo.constructor === ns.Dlgt)
+    chai.assert(ns.Dlgt.eyo.constructor === ns.Dlgt)
+  })
+  describe('C9r: makeClass', function () {
+    it ("eYo.makeClass('A')", function () {
+      var A = eYo.makeClass('A')
+      chai.assert(A)
+      chai.assert(!A.constructor.superClass_)
+      chai.assert(A.eyo.constructor === eYo.Dlgt)
+      chai.assert(eYo.isF(A.makeSubclass))
+      NS.clearClass(eYo, 'A')
+    })
+    it ("ns.makeClass('A')", function () {
+      var ns = eYo.makeNS()
+      ns.makeClass('A')
+      chai.assert(eYo.isF(ns.A))
+      chai.assert(ns.A.eyo.name.endsWith('.A'))
+      chai.assert(ns.A.eyo.ns === ns)
+      chai.assert(ns.A.eyo.constructor === ns.Dlgt)
+      chai.assert(ns.A_p === ns.A.prototype)
+      chai.assert(ns.A_s === ns.Dflt.prototype)
+    })
+    it ("ns.A.makeSubclass('AB')", function () {
+      var ns = eYo.makeNS()
+      ns.makeClass('A')
+      ns.A.makeSubclass('AB')
+      chai.assert(eYo.isF(ns.AB))
+      chai.assert(ns.AB.eyo.name.endsWith('.AB'))
+      chai.assert(ns.AB.eyo.ns === ns)
+      chai.assert(ns.AB_p === ns.AB.prototype)
+      chai.assert(ns.AB_s === ns.A.prototype)
+      chai.assert(eYo.isSubclass(ns.AB, ns.A))
+      chai.assert(eYo.isSubclass(ns.AB.eyo.constructor, ns.A.eyo.constructor))
+    })
+
+  })
+})
+describe('C9r.Model', function () {
+  it ('C9r.Model: Basics', function () {
+    var base = {a: 421}
+    var model = {}
+    eYo.C9r.Model.extends(model, base)
+    chai.assert(model.a === 421)
+  })
+  it ('Inheritance 1', function () {
+    var base = {a: 421}
+    var model = {}
+    eYo.C9r.Model.extends(model, base)
+    chai.assert(model.a === 421)
+  })
+  it ('Inheritance 2', function () {
+    var base = {a: {aa: 421}}
+    var model = {}
+    eYo.C9r.Model.extends(model, base)
+    chai.assert(model.a.aa === 421)
+  })
+  it ('Inheritance 3', function () {
+    var base = {
+      a: {
+        aa: 421
+      }
+    }
+    var model = {
+      a: {
+        ab: 123
+      }
+    }
+    eYo.C9r.Model.extends(model, base)
+    chai.assert(model.a.aa === 421)
+    chai.assert(model.a.ab === 123)
+  })
+  it ('Inheritance 4', function () {
+    var base = {
+      a: {
+        aa: 421
+      }
+    }
+    var model = {
+      a: {
+        aa: {
+          aaa: 421
+        },
+        ab: 123
+      },
+      b: 421,
+    }
+    var submodel = {
+      a: {
+        ab: 421
+      }
+    }
+    eYo.C9r.Model.extends(model, base)
+    eYo.C9r.Model.extends(submodel, model)
+    chai.assert(submodel.a.aa.aaa === 421)
+    chai.assert(submodel.a.ab === 421)
+    chai.assert(submodel.b === 421)
+  })
+})
 
 describe ('Dlgt', function () {
   this.timeout(10000); 
-  it ('Basic', function () {
-    chai.assert(eYo.makeClass)
-    chai.assert(eYo.makeNS)
-    chai.assert(eYo.Dlgt)
-    chai.assert(eYo.Dflt)
-  })
   describe('makeNS', function () {
     it ('makeNS(...)', function () {
-      var NS = eYo.makeNS()
-      chai.assert(NS.makeClass)
-      chai.assert(NS.makeNS)
+      var ns = eYo.makeNS()
+      chai.assert(ns.makeNS)
+      chai.assert(ns.makeClass)
+      chai.assert(ns.super === eYo)
       eYo.makeNS('Foo')
       chai.assert(eYo.Foo)
       chai.assert(eYo.Foo.makeNS)
       chai.assert(eYo.Foo.makeClass)
-      eYo.makeNS(NS, 'Foo')
-      chai.assert(NS.Foo)
-      chai.assert(NS.Foo.makeNS)
-      chai.assert(NS.Foo.makeClass)
+      chai.assert(eYo.Foo.super === eYo)
+      chai.assert(eYo.Foo.name === 'eYo.Foo')
+      delete eYo.Foo
+      eYo.makeNS(ns, 'Foo')
+      chai.assert(ns.Foo)
+      chai.assert(ns.Foo.makeNS)
+      chai.assert(ns.Foo.makeClass)
+      chai.assert(ns.Foo.super === eYo)
+      chai.assert(ns.Foo.name === 'ns.Foo')
     })
     it ('NS.makeNS(...)', function () {
-      var NS = eYo.makeNS()
+      var ns = eYo.makeNS()
       chai.expect(() => {
-        NS.makeNS()
+        ns.makeNS()
       }).not.to.throw()
-      NS.makeNS('Foo')
-      chai.assert(NS.Foo)
-      chai.assert(NS.Foo.makeNS)
-      chai.assert(NS.Foo.makeClass)
-      var NS_ = eYo.makeNS()
-      NS_['Foo'] = 421
-      NS_.Foo = 123
-      chai.expect(() => {
-        NS.makeNS(NS_, 'Foo')
-      }).to.throw()
-      delete NS_.Foo
-      chai.expect(() => {
-        NS.makeNS(NS_, 'Foo')
-      }).not.to.throw()
-    })
-    it ("eYo.makeClass('A1')", function () {
-      var A = eYo.makeClass('A1')
-      chai.assert(A)
-      chai.assert(!A.constructor.superClass_)
-      chai.assert(A.eyo.constructor === eYo.Dlgt)
-      chai.assert(A.eyo.makeSubclass)
-      delete eYo.A
-    /* @param {Object} [ns] -  A namespace. Defaults to the caller, eg `eYo`.
-     * @param {String} key -  The key.
-     * @param {Function} [Super] -  The eventual super class. There is no default value. Give a falsy value if you do not want inheritance.
-     * @param {Function} [Dlgt] -  The constructor's delegate class. Defaults to the `super_`'s delegate. Must be a subclass of `eYo.Dlgt`.
-     * @param {Object} [model] -  The dictionary of parameters.
-     */
-
-    })
-    it ("NS.makeClass('A')", function () {
-      var NS = eYo.makeNS()
-      NS.makeClass('A')
-      chai.assert(NS.A)
-      chai.assert(!NS.A.superClass_)
-      chai.assert(NS.A.eyo.constructor === eYo.Dlgt)
-      // chai.assert(false)
+      ns.makeNS('Foo')
+      chai.assert(ns.Foo)
+      chai.assert(ns.Foo.makeNS)
+      chai.assert(ns.Foo.makeClass)
+      chai.assert(ns.Foo.super === ns)
+      chai.assert(ns.Foo.name === 'ns.Foo')
+      var ns = eYo.makeNS()
+      ns['Bar'] = 421
+      ns.Bar = 123
+      chai.expect(() => { ns.makeNS('Bar') }).to.throw()
+      chai.expect(() => { eYo.makeNS(ns, 'Bar') }).to.throw()
+      delete ns.Bar
+      chai.expect(() => { ns.makeNS('Bar') }).not.to.throw()
+      chai.expect(() => { eYo.makeNS(ns, 'Bar') }).not.to.throw()
     })
     it ("...makeSubclass('B')", function () {
       var A = eYo.makeClass('A2')
@@ -100,7 +192,7 @@ describe ('Dlgt', function () {
     })
     it ("eYo.makeClass(ns, 'A', super, dlgt, model)", function () {
       var ns = eYo.makeNS()
-      ns.constructor.prototype.Dlgt = 421
+      ns._p.Dlgt = 421
       chai.assert(!eYo.hasOwnProperty(ns, 'Dflt'))
       eYo.Dflt.makeSubclass(ns, 'Dflt')
       chai.assert(ns.Dflt)
@@ -326,7 +418,7 @@ describe ('Dlgt', function () {
     })
     it ('Make: super: null', function () {
       eYo.makeClass(NS, 'A', {
-         link: ['foo', 'bar'],
+         valued: ['foo', 'bar'],
       })
       chai.assert(NS.A)
       const a = new NS.A()
@@ -354,7 +446,7 @@ describe ('Dlgt', function () {
         init () {
           flag_A += 1
         },
-        link: ['foo'],
+        valued: ['foo'],
       })
       chai.assert(NS.A.eyo.linked_.has('foo'))
       chai.assert(!NS.A.eyo.linked_.has('bar'))
@@ -365,7 +457,7 @@ describe ('Dlgt', function () {
         init () {
           flag_AB += 1
         },
-        link: ['bar'],
+        valued: ['bar'],
       })
       chai.assert(NS.A.eyo.linked_.has('foo'))
       chai.assert(!NS.A.eyo.linked_.has('bar'))
@@ -384,17 +476,17 @@ describe ('Dlgt', function () {
         init () {
           flag_A += 1
         },
-        link: ['foo'],
-     },
-   })
+        valued: ['foo'],
+      })
+    })
     var flag_B = 0
     eYo.makeClass('B', {
       owner: NS,
       super: null,
       init () {
         flag_B += 1
-        link: ['foo'],
-     },
+      valued: ['foo'],
+     })
    })
     var flag_AA = 0
     eYo.makeClass('AA', {
@@ -402,7 +494,7 @@ describe ('Dlgt', function () {
       super: NS.A,
       init () {
         flag_AA += 1
-        link: ['bar'],
+        valued: ['bar'],
      },
    })
     var flag_AB = 0
@@ -411,7 +503,7 @@ describe ('Dlgt', function () {
       super: NS.A,
       init () {
         flag_AB += 1
-        link: ['bar'],
+        valued: ['bar'],
      },
    })
     var flag_BA = 0
@@ -420,7 +512,7 @@ describe ('Dlgt', function () {
       super: NS.B,
       init () {
         flag_BA += 1
-         link: ['bar'],
+         valued: ['bar'],
       })
       var flag_BB = 0
       eYo.makeClass('BB', {
@@ -429,7 +521,7 @@ describe ('Dlgt', function () {
         init () {
           flag_BB += 1
         },
-         link: ['bar'],
+         valued: ['bar'],
       })
       var aa = new NS.A.AA()
       chai.assert(flag_A === 1)
@@ -463,7 +555,7 @@ describe ('Dlgt', function () {
         init () {
           flag_B += 1
         },
-         link: ['foo', 'bar'],
+         valued: ['foo', 'bar'],
       })
       chai.assert(NS.A.B.superClass_.constructor === NS.A)
       var ab = new NS.A.B()
@@ -475,7 +567,7 @@ describe ('Dlgt', function () {
         init () {
           flag_B += 1
         },
-         link: ['foo', 'bar'],
+         valued: ['foo', 'bar'],
       })
       var ab = new NS.A.B()
       chai.assert(flag_A === 2)
@@ -728,7 +820,7 @@ describe ('Dlgt', function () {
       eYo.makeClass('A', {
         owner: NS,
         super: null,
-         link: ['foo', 'bar'],
+         valued: ['foo', 'bar'],
       })
       chai.assert(NS.A.eyo.C9r === NS.A)
       chai.expect(() => {
@@ -759,7 +851,7 @@ describe ('Dlgt', function () {
         init (value) {
           this.foo__ = value
         },
-        linked: {
+        valued: {
           foo: {
             willChange (before, after) {
               test.call(this, before, after)
@@ -1364,7 +1456,7 @@ describe ('Dlgt', function () {
   it ('No collision: link + cached', function () {
     chai.expect(() => {
       eYo.makeClass(params({
-        link: ['foo'],
+        valued: ['foo'],
         cached: {
           foo () {}
         }
@@ -1373,7 +1465,7 @@ describe ('Dlgt', function () {
     it ('No collision: link + owned', function () {
       chai.expect(() => {
         eYo.makeClass(params({
-          link: ['foo'],
+          valued: ['foo'],
           owned: ['foo'],
         }))
       }).to.throw()
@@ -1381,7 +1473,7 @@ describe ('Dlgt', function () {
     it ('No collision: link + clonable', function () {
       chai.expect(() => {
         eYo.makeClass(params({
-          link: ['foo'],
+          valued: ['foo'],
           clonable: {
             foo () {}
           },
@@ -1441,7 +1533,7 @@ describe ('Dlgt', function () {
     clonable: {
       foo () {}
     },
-    linked: ['foo'],
+    valued: ['foo'],
   }
   var ok = () => {
     new ns.AB()
@@ -1454,25 +1546,25 @@ describe ('Dlgt', function () {
       owned: okThrow,
       cached: okThrow,
       clonable: okThrow,
-      linked: ok,
+      valued: ok,
     },
     cached: {
       owned: okThrow,
       cached: okThrow,
       clonable: okThrow,
-      linked: ok,
+      valued: ok,
     },
     clonable: {
       owned: okThrow,
       cached: okThrow,
       clonable: okThrow,
-      linked: ok,
+      valued: ok,
     },
-    linked: {
+    valued: {
       owned: ok,
       cached: ok,
       clonable: ok,
-      linked: ok,
+      valued: ok,
     },
   }
   Object.keys(props).forEach(l => {
@@ -1576,11 +1668,11 @@ describe ('Dlgt', function () {
     eYo.makeClass('A', {
       owner: NS,
       super: null,
-      link: ['foo']
+      valued: ['foo']
     })
     eYo.makeClass('AB', {
       owner: NS.A,
-      link: ['bar']
+      valued: ['bar']
     })
     var a = new NS.A()
     a.foo_ = 1

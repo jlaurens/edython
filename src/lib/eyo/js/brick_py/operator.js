@@ -25,18 +25,18 @@ eYo.Expr.Dflt.makeSubclass('binary', {
   data: {
     operator: { // only one field with that key,
       init: '+',
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var m = eYo.Expr.binary.getTypeForOperator(newValue)
         return m !== eYo.T3.Expr.unset
           ? {validated: newValue}
           : null
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         var d = this.field.ui_driver_mngr
         d && (d.makeReserved(this.field, ['in', 'or', 'and'].indexOf(newValue) >= 0))
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Expr.m_expr) {
           this.set('*')
         } else if (type === eYo.T3.Expr.a_expr) {
@@ -77,7 +77,7 @@ eYo.Expr.Dflt.makeSubclass('binary', {
       fields: {
         bind: {
           endEditing: true,
-          placeholder: /** @suppress {globalThis} */ function () {
+          placeholder () /** @suppress {globalThis} */ {
             var type = this.brick.type
             return {
               [eYo.T3.Expr.m_expr]: 1,
@@ -95,7 +95,7 @@ eYo.Expr.Dflt.makeSubclass('binary', {
           }
         }
       },
-      check: /** @suppress {globalThis} */ function (type) {
+      check (type) /** @suppress {globalThis} */ {
         var m = eYo.Expr.binary.getOperatorModelForType(type)
         if (!m) {
           console.error('NO MODEL FOR', type)
@@ -113,7 +113,7 @@ eYo.Expr.Dflt.makeSubclass('binary', {
         bind: {
           order: 2,
           endEditing: true,
-          placeholder: /** @suppress {globalThis} */ function () {
+          placeholder () /** @suppress {globalThis} */ {
             var type = this.brick.type
             return {
               [eYo.T3.Expr.m_expr]: 1,
@@ -131,14 +131,14 @@ eYo.Expr.Dflt.makeSubclass('binary', {
           }
         }
       },
-      check: /** @suppress {globalThis} */ function (type) {
+      check (type) /** @suppress {globalThis} */ {
         var m = eYo.Expr.binary.getOperatorModelForType(type)
         return m && m.rhs
       }
     }
   },
   out: {
-    check: /** @suppress {globalThis} */ function (type) {
+    check (type) /** @suppress {globalThis} */ {
       return type
     }
   }
@@ -302,18 +302,18 @@ eYo.Expr.Dflt.makeSubclass('unary', {
     operator: {
       all: ['-', '+', '~', 'not'],
       init: '-',
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var m = eYo.Expr.unary.getTypeForOperator(newValue)
         return m !== eYo.T3.Expr.unset
           ? {validated: newValue}
           : null
       },
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         var d = this.field.ui_driver_mngr
         d && (d.makeReserved(this.field, newValue === 'not'))
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Expr.not_test) {
           this.set('not')
         }
@@ -321,7 +321,7 @@ eYo.Expr.Dflt.makeSubclass('unary', {
     },
     rhs: {
       init: '',
-      placeholder: /** @suppress {globalThis} */ function (type) {
+      placeholder (type) /** @suppress {globalThis} */ {
         return type === eYo.T3.Expr.not_test
          ? 'test'
          : 1
@@ -343,14 +343,14 @@ eYo.Expr.Dflt.makeSubclass('unary', {
           endEditing: true
         }
       },
-      check: /** @suppress {globalThis} */ function (type) {
+      check (type) /** @suppress {globalThis} */ {
         var m = eYo.Expr.unary.getOperatorModelForType(type)
         return m && m.rhs
       }
     }
   },
   out: {
-    check: /** @suppress {globalThis} */ function (type) {
+    check (type) /** @suppress {globalThis} */ {
       return type
     }
   }
@@ -361,7 +361,7 @@ eYo.Expr.Dflt.makeSubclass('unary', {
   'not_test'
 ].forEach((k) => {
   eYo.Expr[k] = eYo.Expr.unary
-  eYo.Brick.mngr.register(k)
+  eYo.C9r.register(k)
 })
 
 /**

@@ -23,4 +23,4 @@ eYo.Driver.makeNS(eYo, 'Fcls')
  * @name {eYo.Fcls.Mngr}
  * The manager of all the faceless drivers.
  */
-eYo.Fcls.makeMngrClass()
+eYo.Fcls.makeMngr()

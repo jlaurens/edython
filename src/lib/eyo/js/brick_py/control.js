@@ -16,14 +16,15 @@ goog.require('goog.ui.Dialog')
 eYo.require('Msg')
 eYo.require('Brick.Group')
 goog.require('goog.dom');
-eYo.provide('Brick.Control')
+
+eYo.provide('Stmt.Control')
 
 /**
  * Class for a Delegate, control brick.
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.BaseGroup.makeSubclass('Control', {
+eYo.Stmt.BaseGroup.makeSubclass('Control', {
   data: {
     restart: {
       init: false,
@@ -40,14 +41,14 @@ eYo.Brick.BaseGroup.makeSubclass('Control', {
           }
         }
       }
-    }
-  }
-}, eYo.Brick)
+    },
+  },
+})
 
 /**
  * Update the creation number.
  */
-eYo.Brick.Control.prototype.updateCreation = (() => {
+eYo.Stmt.Control.prototype.updateCreation = (() => {
   var creation
   return function () {
     if (goog.isDef(creation)) {
@@ -58,7 +59,8 @@ eYo.Brick.Control.prototype.updateCreation = (() => {
   }
 })()
 
-Object.defineProperties (eYo.Brick.Control.prototype, {
+Object.defineProperties (eYo.Stmt.Control.prototype, {
+  
   creation: {
     get() {
       return this.creation__
@@ -87,21 +89,17 @@ eYo.Brick.Dflt.prototype.runScript = function () {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.Control.makeSubclass('start_stmt', {
+eYo.Stmt.Control.makeSubclass('start_stmt', {
   xml: {
     attr: 'start'
   },
   left: eYo.NA, // override inherited
   right: eYo.NA, // override inherited
-  head: {
-    check: eYo.T3.Stmt.start_stmt
-  },
-  foot: {
-    check: eYo.T3.Stmt.start_stmt
-  }
+  head: eYo.T3.Stmt.start_stmt,
+  foot: eYo.T3.Stmt.start_stmt,
 })
 
-Object.defineProperties (eYo.Brick.Control.prototype, {
+Object.defineProperties (eYo.Stmt.Control.prototype, {
   /**
    * True for start statements only.
    * @type {Boolean}
@@ -112,6 +110,6 @@ Object.defineProperties (eYo.Brick.Control.prototype, {
   },
 })
 
-eYo.Brick.Control.T3s = [
+eYo.Stmt.Control.T3s = [
   eYo.T3.Stmt.start_stmt
 ]

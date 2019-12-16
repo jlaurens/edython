@@ -66,7 +66,7 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
       order: 98,
       all: [eYo.Key.NONE, eYo.Key.STAR],
       init: eYo.Key.NONE, // not a lonely '*'
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         var b3k = this.brick
         b3k.modified_d.incog = newValue === eYo.Key.STAR
@@ -74,7 +74,7 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
           b3k.modifier_p = '*'
         }
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         // the `didLoad` will be performed afterwards.
         this.set(type === eYo.T3.Expr.star ? eYo.Key.STAR : eYo.Key.NONE)
       },
@@ -84,14 +84,14 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
       order: 99,
       all: ['*', '**'],
       init: '*',
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         var b3k = this.brick
         if (newValue !== '*') {
           b3k.variant_p = eYo.Key.NONE
         }
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         /* if (type === eYo.T3.Expr.star) {
           this.set('*')
         } else if (type === eYo.T3.Expr.target_star) {
@@ -116,7 +116,7 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
     },
     modified: {
       init: '',
-      placeholder: /** @suppress {globalThis} */ function () {
+      placeholder () /** @suppress {globalThis} */ {
         var t = this.owner && this.brick.type
         if (t === eYo.T3.Expr.parameter_star || t === eYo.T3.Expr.parameter_star_star || t === eYo.T3.Expr.target_star) {
           return eYo.Msg.Placeholder.NAME
@@ -124,7 +124,7 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
           return eYo.Msg.Placeholder.EXPRESSION
         }
       },
-      validate: /** @suppress {globalThis} */ function (newValue) {
+      validate (newValue) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(newValue, null)
         return p5e.expr === eYo.T3.Expr.unset
         || p5e.expr === eYo.T3.Expr.identifier
@@ -132,7 +132,7 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
           ? {validated: newValue}
           : null
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
         if (newValue.length) {
           this.brick.variant_p = eYo.Key.NONE
@@ -140,19 +140,19 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
       },
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           this.required = this.brick.variant_p !== eYo.Key.STAR && this.brick.modifier_p === '*'
           this.save(element, opt)
         },
-        load: /** @suppress {globalThis} */ function (element, opt) {
+        load (element, opt) /** @suppress {globalThis} */ {
           this.load(element, opt)
         }
       },
-      fromType: /** @suppress {globalThis} */ function (type) {
+      fromType (type) /** @suppress {globalThis} */ {
         // the `didLoad` will be performed afterwards.
         this.required_from_type = type !== eYo.T3.Expr.star
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         this.brick.variant_p = this.required_from_type || this.isRequiredFromModel()
           ? eYo.Key.NONE
           : eYo.Key.STAR
@@ -173,12 +173,12 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
           endEditing: true
         }
       },
-      check: /** @suppress {globalThis} */ function (type) {
+      check (type) /** @suppress {globalThis} */ {
         return this.brick.modifier_p === '*'
           ? eYo.T3.Expr.Check._or_expr_all_or_parameter_or_target
           : eYo.T3.Expr.Check._expression_or_parameter
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         if (eYo.Events.recordingUndo) {
           this.brick.variant_p = eYo.Key.NONE
         }
@@ -186,7 +186,7 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
     }
   },
   out: {
-    check: /** @suppress {globalThis} */ function (type) {
+    check (type) /** @suppress {globalThis} */ {
       // retrieve the brick
       var brick = this.brick
       if (brick.variant_p === eYo.Key.STAR) {
@@ -292,5 +292,5 @@ eYo.Expr.Starred.prototype.xmlAttr = function () {
   'or_expr_star_star'
 ].forEach(key => {
   eYo.Expr[key] = eYo.Expr.Starred
-  eYo.Brick.mngr.register(key)
+  eYo.C9r.register(key)
 })

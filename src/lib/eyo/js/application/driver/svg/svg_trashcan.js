@@ -19,117 +19,119 @@ eYo.forwardDeclare('TrashCan')
  * Svg driver fro the trash can.
  */
 eYo.Svg.makeDriverClass('TrashCan', {
+  ui: {
     /**
-   * Initialize the trash can SVG ressources.
-   * @param {eYo.TrashCan} trashCan
-   * @param {Object} [options]
-   * @return {!Element} The trash can's SVG group.
-   */
-  initUI (trashCan, options) {
-    var dom = trashCan.dom
-    var svg = dom.svg = Object.create(null)
-    svg.state_ = svg.left_ = svg.top_ = 0
-    /* Here's the markup that will be generated:
-    <g class="eyo-trash">
-      <clippath id="eyo-trash-body-clip-837493">
-        <rect width="47" height="45" y="15"></rect>
-      </clippath>
-      <image width="64" height="92" y="-32" xlink:href="media/sprites.png"
-          clip-path="url(#eyo-trash-body-clip-837493)"></image>
-      <clippath id="eyo-trash-lid-clip-837493">
-        <rect width="47" height="15"></rect>
-      </clippath>
-      <image width="84" height="92" y="-32" xlink:href="media/sprites.png"
-          clip-path="url(#eyo-trash-lid-clip-837493)"></image>
-    </g>
-    */
-    var g = svg.group_ = eYo.Svg.newElement(
-      'g',
-      {class: 'eyo-trash'},
-      null
-    )
-    var rnd = String(Math.random()).substring(2)
-    var clip = eYo.Svg.newElement(
-      'clipPath',
-      {id: 'eyo-trash-body-clip-' + rnd},
-      g
-    )
-    eYo.Svg.newElement('rect', {
-      width: trashCan.WIDTH_,
-      height: trashCan.BODY_HEIGHT_,
-      y: trashCan.LID_HEIGHT_
-    }, clip)
-    var body = eYo.Svg.newElement('image', {
-      width: Blockly.SPRITE.width,
-      x: -trashCan.SPRITE_LEFT_,
-      height: Blockly.SPRITE.height,
-      y: -trashCan.SPRITE_TOP_,
-      'clip-path': 'url(#eyo-trash-body-clip-' + rnd + ')'
-    }, g)
-    var url = trashCan.board_.options.pathToMedia + Blockly.SPRITE.url
-    body.setAttributeNS(
-      eYo.Dom.XLINK_NS,
-      'xlink:href',
-      url
-    )
-    clip = eYo.Svg.newElement(
-      'clipPath',
-      {id: 'eyo-trash-lid-clip-' + rnd},
-      g
-    )
-    eYo.Svg.newElement(
-      'rect',
-      {
+     * Initialize the trash can SVG ressources.
+     * @param {eYo.TrashCan} trashCan
+     * @param {Object} [options]
+     * @return {!Element} The trash can's SVG group.
+     */
+    init (trashCan, options) {
+      var dom = trashCan.dom
+      var svg = dom.svg = Object.create(null)
+      svg.state_ = svg.left_ = svg.top_ = 0
+      /* Here's the markup that will be generated:
+      <g class="eyo-trash">
+        <clippath id="eyo-trash-body-clip-837493">
+          <rect width="47" height="45" y="15"></rect>
+        </clippath>
+        <image width="64" height="92" y="-32" xlink:href="media/sprites.png"
+            clip-path="url(#eyo-trash-body-clip-837493)"></image>
+        <clippath id="eyo-trash-lid-clip-837493">
+          <rect width="47" height="15"></rect>
+        </clippath>
+        <image width="84" height="92" y="-32" xlink:href="media/sprites.png"
+            clip-path="url(#eyo-trash-lid-clip-837493)"></image>
+      </g>
+      */
+      var g = svg.group_ = eYo.Svg.newElement(
+        'g',
+        {class: 'eyo-trash'},
+        null
+      )
+      var rnd = String(Math.random()).substring(2)
+      var clip = eYo.Svg.newElement(
+        'clipPath',
+        {id: 'eyo-trash-body-clip-' + rnd},
+        g
+      )
+      eYo.Svg.newElement('rect', {
         width: trashCan.WIDTH_,
-        height: trashCan.LID_HEIGHT_
-      },
-      clip
-    )
-    var lid = svg.lid_ = eYo.Svg.newElement(
-      'image',
-      {
+        height: trashCan.BODY_HEIGHT_,
+        y: trashCan.LID_HEIGHT_
+      }, clip)
+      var body = eYo.Svg.newElement('image', {
         width: Blockly.SPRITE.width,
         x: -trashCan.SPRITE_LEFT_,
         height: Blockly.SPRITE.height,
         y: -trashCan.SPRITE_TOP_,
-        'clip-path': 'url(#eyo-trash-lid-clip-' + rnd + ')'
-      },
-      g
-    )
-    lid.setAttributeNS(
-      eYo.Dom.XLINK_NS,
-      'xlink:href',
-      url
-    )
-    dom.bound.mouseup = eYo.Dom.bindEvent(
-      g,
-      'mouseup',
-      null,
-      this.trashCanOn_mouseup.bind(trashCan)
-    )
-    svg = trashCan.board_.dom.svg
-    svg.group_.insertBefore(g, svg.canvas_)
-    
-    return g
-  },
-  /**
-   * Initializes the trash can SVG ressources.
-   * @param {eYo.TrashCan} trashCan
-   */
-  disposeUIMake (trashCan) {
-    var dom = trashCan.dom
-    if (dom) {
-      goog.Timer.clear(dom.lidTask)
-      dom.lidTask = 0
-      eYo.Dom.clearBoundEvents(trashCan)
-      var svg = dom.svg
-      if (svg) {
-        goog.dom.removeNode(svg.group_)
-        svg.group_ = null
-        svg.lid_ = null
+        'clip-path': 'url(#eyo-trash-body-clip-' + rnd + ')'
+      }, g)
+      var url = trashCan.board_.options.pathToMedia + Blockly.SPRITE.url
+      body.setAttributeNS(
+        eYo.Dom.XLINK_NS,
+        'xlink:href',
+        url
+      )
+      clip = eYo.Svg.newElement(
+        'clipPath',
+        {id: 'eyo-trash-lid-clip-' + rnd},
+        g
+      )
+      eYo.Svg.newElement(
+        'rect',
+        {
+          width: trashCan.WIDTH_,
+          height: trashCan.LID_HEIGHT_
+        },
+        clip
+      )
+      var lid = svg.lid_ = eYo.Svg.newElement(
+        'image',
+        {
+          width: Blockly.SPRITE.width,
+          x: -trashCan.SPRITE_LEFT_,
+          height: Blockly.SPRITE.height,
+          y: -trashCan.SPRITE_TOP_,
+          'clip-path': 'url(#eyo-trash-lid-clip-' + rnd + ')'
+        },
+        g
+      )
+      lid.setAttributeNS(
+        eYo.Dom.XLINK_NS,
+        'xlink:href',
+        url
+      )
+      dom.bound.mouseup = eYo.Dom.bindEvent(
+        g,
+        'mouseup',
+        null,
+        this.trashCanOn_mouseup.bind(trashCan)
+      )
+      svg = trashCan.board_.dom.svg
+      svg.group_.insertBefore(g, svg.canvas_)
+      
+      return g
+    },
+    /**
+     * Initializes the trash can SVG ressources.
+     * @param {eYo.TrashCan} trashCan
+     */
+    dispose (trashCan) {
+      var dom = trashCan.dom
+      if (dom) {
+        goog.Timer.clear(dom.lidTask)
+        dom.lidTask = 0
+        eYo.Dom.clearBoundEvents(trashCan)
+        var svg = dom.svg
+        if (svg) {
+          goog.dom.removeNode(svg.group_)
+          svg.group_ = null
+          svg.lid_ = null
+        }
+        this._disposeUI(trashCan)
       }
-      this._disposeUI(trashCan)
-    }
+    },
   },
 })
 

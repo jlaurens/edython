@@ -56,7 +56,7 @@ eYo.C9r.makeClass('Owned', eYo.Dflt, {
   init (owner) {
     this.owner_ = owner
   },
-  linked: {
+  valued: {
     owner: {
       didChange (before, after) {
         this.appForget() // do not update, may be the owner is not complete

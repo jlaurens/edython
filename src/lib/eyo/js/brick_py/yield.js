@@ -36,7 +36,7 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
         eYo.Key.FROM,
       ],
       init: eYo.Key.NONE,
-      synchronize: /** @suppress {globalThis} */ function (newValue) {
+      synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
         var b3k = this.brick
         b3k.from_d.requiredIncog = newValue === eYo.Key.FROM
@@ -51,13 +51,13 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
       placeholder: eYo.Msg.Placeholder.EXPR,
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           if (!this.brick.expression_s.unwrappedTarget) {
             this.save(element, opt)
           }
         }
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (newValue) {
           b3k.variant_p = eYo.Key.EXPRESSION
@@ -71,12 +71,12 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
       init: '',
       synchronize: true,
       xml: {
-        save: /** @suppress {globalThis} */ function (element, opt) {
+        save (element, opt) /** @suppress {globalThis} */ {
           this.required = this.brick.variant_p !== eYo.Key.NONE
           this.save(element, opt)
         }
       },
-      didChange: /** @suppress {globalThis} */ function (oldValue, newValue) {
+      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (newValue || b3k.from_b) {
           b3k.variant_p = eYo.Key.FROM
@@ -86,7 +86,7 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
           b3k.variant_p = eYo.Key.NONE
         }
       },
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM
         }
@@ -106,18 +106,18 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
         }
       },
       wrap: eYo.T3.Expr.non_void_expression_list,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.EXPRESSION
         }
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         if (this.isSlot) {
           var parent = this.brick.parent
           parent && (parent.variant_p = eYo.Key.EXPRESSION)
         }
       },
-      didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
+      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
         if (this.isSlot) {
           var parent = this.brick.parent
           parent && (parent.variant_p = parent.expression_s.unwrappedTarget || parent.expression_p ? eYo.Key.EXPRESSION : eYo.Key.NONE)
@@ -134,15 +134,15 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
         }
       },
       check: eYo.T3.Expr.Check.expression,
-      didLoad: /** @suppress {globalThis} */ function () {
+      didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.variant_p = eYo.Key.FROM
         }
       },
-      didConnect: /** @suppress {globalThis} */ function (oldTargetM4t, targetOldM4t) {
+      didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         this.brick.variant_p = eYo.Key.FROM
       },
-      didDisconnect: /** @suppress {globalThis} */ function (oldTargetM4t) {
+      didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
         var O = this.brick
         if (b3k.from_p) {
           b3k.variant_p = eYo.Key.FROM

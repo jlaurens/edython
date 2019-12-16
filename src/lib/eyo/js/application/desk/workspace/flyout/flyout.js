@@ -201,7 +201,7 @@ eYo.C9r.UI.makeClass(eYo, 'Flyout', {
       return this.anchor_ === eYo.Flyout.AT_RIGHT
     },
   },
-  linked: {
+  valued: {
     closed: {value: false},
     autoClose: {value: false},
     /**

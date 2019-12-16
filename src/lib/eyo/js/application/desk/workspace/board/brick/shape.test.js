@@ -69,7 +69,7 @@ describe('Statement shape', function () {
 describe('Group shape', function () {
   var type = 'test_shape_part'
   eYo.T3.Stmt[type] = type
-  eYo.Brick.Group.makeSubclass(type, {}) 
+  eYo.Stmt.Group.makeSubclass(type, {}) 
   chai.assert(eYo.Stmt.test_shape_part)
   var b
   before(function() {

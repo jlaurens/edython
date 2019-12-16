@@ -34,27 +34,29 @@ eYo.Driver.Dlgt.makeSubclass(eYo.Dom)
  * The manager of all the dom drivers.
  * The dom drivers are uncomplete drivers.
  */
-eYo.Dom.makeMngrClass({
-  initUIMake (f) {
-    return function () {
-      if (object.dom) {
-        return
-      }
-      var dom = object.dom = Object.create(null)
-      dom.bound = Object.create(null)
-      f && f.apply(object, rest)
-      return dom
-    }
-  },
-  disposeUIMake (f) {
-    return function (object, ...rest) {
-      var dom = object.dom
-      if (dom) {
-        eYo.Dom.clearBoundEvents(object)
+eYo.Dom.makeMngr({
+  ui: {
+    initMake (f) {
+      return function () {
+        if (object.dom) {
+          return
+        }
+        var dom = object.dom = Object.create(null)
+        dom.bound = Object.create(null)
         f && f.apply(object, rest)
-        object.dom = dom.bound = null
+        return dom
       }
-    }
+    },
+    disposeMake (f) {
+      return function (object, ...rest) {
+        var dom = object.dom
+        if (dom) {
+          eYo.Dom.clearBoundEvents(object)
+          f && f.apply(object, rest)
+          object.dom = dom.bound = null
+        }
+      }
+    },
   },
 })
 

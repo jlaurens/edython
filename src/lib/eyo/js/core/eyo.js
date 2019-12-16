@@ -67,7 +67,7 @@ eYo.isStr = (what) => {
  * @param {*} what
  */
 eYo.isD = (what) => {
-  return !(goog.isNull(what) || goog.isBoolean(what) || goog.isNumber(what) || eYo.isStr(what) || eYo.isF(what) || goog.isArray(what))
+  return !(goog.isNull(what) || goog.isBoolean(what) || goog.isNumber(what) || eYo.isStr(what) || eYo.isF(what) || eYo.isRA(what))
 }
 
 /**
@@ -95,6 +95,23 @@ eYo.isNA = (what) => {
  */
 eYo.isDef = (what) => {
   return what !== eYo.NA
+}
+
+/**
+ * Whether the argument is na array.
+ * @param {*} what
+ */
+eYo.isRA = (what) => {
+  return Array.isArray(what)
+}
+
+/**
+ * Whether the argument is a function.
+ * @param {*} what
+ * @return {!Boolean}
+ */
+eYo.isNS = (what) => {
+  return what && eYo.isSubclass(what.constructor, eYo.constructor)
 }
 
 /**
@@ -138,7 +155,7 @@ eYo.isSubclass = (Sub, Super) => {
 /**
  * @param {String} name
  */
-eYo.constructor.prototype.provide = (name, value) => {
+eYo._p.provide = (name, value) => {
   var ns = eYo
   var f = (first, second, ...args) => {
     if (first) {
@@ -165,14 +182,14 @@ eYo.constructor.prototype.provide = (name, value) => {
 /**
  * @param {String} name
  */
-eYo.constructor.prototype.require = (name) => {
+eYo._p.require = (name) => {
   var ns = eYo
   name.split('.').forEach(k => {
     eYo.assert((ns = ns[k]), `Missing required ${name}`)
   })
 }
 
-eYo.constructor.prototype.forwardDeclare = (name) => {}
+eYo._p.forwardDeclare = (name) => {}
 
 /**
  * @name {eYo.makeNS}
@@ -182,13 +199,13 @@ eYo.constructor.prototype.forwardDeclare = (name) => {}
  * @param {String} key - sentencecase name, created object will be `ns[key]`.
  * @return {Object}
  */
-eYo.constructor.prototype.makeNS = function (ns, key) {
+eYo._p.makeNS = function (ns, key) {
   if (eYo.isStr(ns)) {
     eYo.parameterAssert(!key, 'Unexpected key argument')
     key = ns
     ns = this
   }
-  if (ns[key] !== eYo.NA) {
+  if (ns && ns[key] !== eYo.NA) {
     throw new Error(`${ns.name}[${key}] already exists.`)
   }
   var Super = this.constructor
@@ -200,13 +217,13 @@ eYo.constructor.prototype.makeNS = function (ns, key) {
     value: this,
   })
   var ans = new NS()
-  Object.defineProperties(ns, {
+  ns && Object.defineProperties(ns, {
     [key]: { value: ans, },
     [key + '_p']: { value: ans.prototype, },
     [key + '_s']: { value: Super.prototype, },
   })
   Object.defineProperties(ans, {
-    name: { value: `${ns.name}.${key}` },
+    name: { value: ns ? `${ns.name}.${key}` : key || "No man's land" },
   })
   return ans
 }

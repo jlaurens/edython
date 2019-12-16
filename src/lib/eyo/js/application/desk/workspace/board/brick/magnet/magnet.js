@@ -118,7 +118,7 @@ eYo.Magnets.prototype.initUI = function () {
   this.initUI = eYo.Do.nothing // one shot function
   for (var k in this) { 
     var m = this[k]
-    m && m.initUI && (m.initUI())
+    m && m.initUI && m.initUI()
   }
 }
 
@@ -802,7 +802,7 @@ eYo.Magnet.prototype.initUI = function () {
   this.inDB_ = !this.hidden_
   if (this.isSuperior) {
     var t9k = this.targetBrick
-    t9k && (t9k.initUI())
+    t9k && t9k.initUI()
   }
   this.forEachField(f => f.initUI())
 }

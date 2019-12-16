@@ -71,7 +71,7 @@ eYo.Dom.makeClass('Audio', {
     this.sounds_ = null
     this.tester_ = null
   },
-  linked: {
+  valued: {
     /**
      * Time that the last sound was played.
      * @type {Date}

@@ -27,7 +27,7 @@ eYo.C9r.makeClass('Change', {
   dispose () {
     this.owner_ = this.save_ = this.cache_ = null
   },
-  linked: {
+  valued: {
     /** the count is incremented each time a change occurs,
      * even when undoing.
      * Some lengthy actions may be shortened when the count

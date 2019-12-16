@@ -144,7 +144,7 @@ eYo.makeClass('Motion', {
     CAPTURE_STARTED: 1,
     CAPTURE_UPDATING: 2,
   },
-  linked:  {
+  valued:  {
     /**
      * The desktop.
      * @type {eYo.Application}
