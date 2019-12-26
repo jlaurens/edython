@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('C9r.UI.Owned2')
+eYo.require('C9r.Owned2')
 eYo.require('Protocol')
 
 eYo.provide('Magnets')
@@ -162,7 +162,7 @@ eYo.Magnet = function (bs, type, model) {
     }
   }
 }
-goog.inherits(eYo.Magnet, eYo.C9r.UI.Owned2)
+goog.inherits(eYo.Magnet, eYo.C9r.Owned2)
 
 // Magnet types
 Object.defineProperties(eYo.Magnet, {

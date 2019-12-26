@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('C9r.UI')
+eYo.require('C9r')
 eYo.require('Decorate')
 
 eYo.makeNS('Board')
@@ -34,7 +34,7 @@ goog.forwardDeclare('goog.math')
  * @param {eYo.Desk|eYo.Workspace|eYo.Section} owner.
  * @constructor
  */
-eYo.C9r.UI.Dflt.makeSubclass(eYo.Board, {
+eYo.C9r.Dflt.makeSubclass(eYo.Board, {
   valued: {
     /**
      * The render status of a board.

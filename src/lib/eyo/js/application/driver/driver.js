@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('C9r.UI')
+eYo.require('C9r')
 
 /**
  * @name {eYo.Driver}
@@ -24,7 +24,7 @@ eYo.makeNS('Driver')
  * @name {eYo.Driver.Dlgt}
  * @param {Function} constructor
  */
-eYo.C9r.UI.Dlgt.makeSubclass(eYo.Driver)
+eYo.C9r.Dlgt.makeSubclass(eYo.Driver)
 
 /**
  * Contructor delegate for the driver manager.

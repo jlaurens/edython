@@ -15,7 +15,7 @@
 eYo.require('Do')
 eYo.require('Decorate')
 
-eYo.require('C9r.UI')
+eYo.require('C9r')
 
 eYo.forwardDeclare('Css')
 
@@ -42,7 +42,7 @@ eYo.forwardDeclare('Dom.Audio')
  * The ui drivers manager.
  * @property {eYo.Driver.Mngr} ui_driver_mngr
  */
-eYo.makeClass('Application', eYo.C9r.UI.Dflt, {
+eYo.makeClass('Application', eYo.C9r.Dflt, {
   init (options) {
     this.options_ = new eYo.Options(options || {})
   },

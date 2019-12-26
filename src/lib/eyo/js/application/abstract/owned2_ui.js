@@ -11,12 +11,12 @@
  */
 'use strict'
 
-eYo.require('C9r.UI')
+eYo.require('C9r')
 
 /**
  * Class for a basic object indirectly owned by a brick.
  * 
- * @name {eYo.C9r.UI.Owned2}
+ * @name {eYo.C9r.Owned2}
  * @constructor
  * @param {eYo.Brick|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
  * @readonly
@@ -29,7 +29,7 @@ eYo.require('C9r.UI')
  * @property {eYo.Magnet} slot  The magnet.
  */
 
-eYo.C9r.UI.Dflt.makeSubclass('Owned2', {
+eYo.C9r.Dflt.makeSubclass('Owned2', {
   valued: ['slot', 'brick', 'magnet'],
   computed: {
     ui () {
@@ -38,7 +38,7 @@ eYo.C9r.UI.Dflt.makeSubclass('Owned2', {
   }
 })
 
-eYo.assert(!!eYo.C9r.UI.Owned2, 'MISSED/FAILURE...')
+eYo.assert(!!eYo.C9r.Owned2, 'MISSED/FAILURE...')
 eYo.forwardDeclare('Brick')
 eYo.forwardDeclare('Brick.UI')
 eYo.forwardDeclare('Slot')

@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('Protocol')
-eYo.require('C9r.UI')
+eYo.require('C9r')
 eYo.require('Unit')
 eYo.require('Events')
 
@@ -76,7 +76,7 @@ eYo.forwardDeclare('MenuButtonRenderer')
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.C9r.UI.makeClass(eYo, 'Flyout', {
+eYo.C9r.makeClass(eYo, 'Flyout', {
   owned: {
     search () {
       return new eYo.Search(this)

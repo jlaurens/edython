@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('C9r.UI')
+eYo.require('C9r')
 
 /**
  * Class for a workspace control.
@@ -34,7 +34,7 @@ eYo.require('C9r.UI')
  * @property {number} MARGIN_SIDE_, Distance between trash can and right edge of board.
  *
  */
-eYo.C9r.UI.Dflt.makeSubclass(eYo, 'WorkspaceControl', {
+eYo.C9r.Dflt.makeSubclass(eYo, 'WorkspaceControl', {
   computed: {
     workspace () {
       return this.owner

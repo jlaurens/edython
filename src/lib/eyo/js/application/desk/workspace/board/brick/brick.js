@@ -13,7 +13,7 @@
 
 eYo.require('Decorate')
 eYo.require('Do')
-eYo.require('C9r.UI')
+eYo.require('C9r')
 eYo.require('C9r.Model')
 
 eYo.require('C9r.Change')
@@ -25,7 +25,7 @@ eYo.require('Data')
  * @name {eYo.Brick}
  * @namespace
  */
-eYo.C9r.UI.makeNS(eYo,'Brick')
+eYo.C9r.makeNS(eYo,'Brick')
 
 // eYo.provide('Brick.Dflt')
 
