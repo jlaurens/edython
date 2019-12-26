@@ -21,7 +21,7 @@ eYo.forwardDeclare('Magnet')
 
 eYo.forwardDeclare('Xml')
 eYo.forwardDeclare('Key')
-eYo.forwardDeclare('Brick.List')
+eYo.forwardDeclare('Expr.List')
 
 goog.forwardDeclare('goog.dom');
 
@@ -356,7 +356,7 @@ eYo.Slot.prototype.save = function (element, opt) {
         // wrapped bricks are just a convenient computational model.
         // For lists only, we do create a further level
         // Actually, every wrapped brick is a list
-        if (t9k instanceof eYo.Brick.List) {
+        if (t9k instanceof eYo.Expr.List) {
           var child = eYo.Xml.brickToDom(t9k, opt)
           if (child.firstElementChild) {
             child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
@@ -425,7 +425,7 @@ eYo.Slot.prototype.load = function (element) {
   this.requiredFromModel = false
   var out
   var t9k = this.targetBrick
-  if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.Brick.List)) {
+  if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.Expr.List)) {
     this.requiredFromModel = true // this is not sure, it depends on how the target read the dom
     out = eYo.Xml.fromDom(t9k, element)
     this.recover.dontResit(element)
@@ -444,7 +444,7 @@ eYo.Slot.prototype.load = function (element) {
             t9k = this.targetBrick
           }
           if (t9k) {
-            if (t9k instanceof eYo.Brick.List) {
+            if (t9k instanceof eYo.Expr.List) {
               // var grandChildren = Array.prototype.slice.call(child.childNodes)
               eYo.Do.forEachElementChild(child, grandChild => {
                 var name = grandChild.getAttribute(eYo.Xml.SLOT)

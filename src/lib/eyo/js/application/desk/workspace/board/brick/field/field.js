@@ -31,7 +31,7 @@ eYo.provide('FieldInput')
  * @constructor
  */
 eYo.Field = function (bsm, name, text) {
-  eYo.Field.superClass_.constructor.call(this, bsm)
+  eYo.Field.superProto_.constructor.call(this, bsm)
   this.name_ = name
   this.size_ = new eYo.Size()
   this.text_ = text
@@ -446,7 +446,7 @@ Object.defineProperties(eYo.Field.prototype, {
  */
 eYo.Field.prototype.dispose = function() {
   this.disposeUI()
-  eYo.Field.superClass_.dispose.call(this)
+  eYo.Field.superProto_.dispose.call(this)
 }
 
 /**
@@ -559,7 +559,7 @@ eYo.Field.prototype.willRender = function () {
  */
 eYo.FieldLabel = function (bsi, name, text) {
   this.isLabel = true
-  eYo.FieldLabel.superClass_.constructor.call(this, bsi, name, text)
+  eYo.FieldLabel.superProto_.constructor.call(this, bsi, name, text)
 }
 goog.inherits(eYo.FieldLabel, eYo.Field)
 
@@ -573,7 +573,7 @@ goog.inherits(eYo.FieldLabel, eYo.Field)
  */
 eYo.FieldInput = function (bsi, name, text) {
   eYo.assert(name, 'missing name for an editable field')
-  eYo.FieldInput.superClass_.constructor.call(this, bsi, name, text)
+  eYo.FieldInput.superProto_.constructor.call(this, bsi, name, text)
   this.editable = true
 }
 goog.inherits(eYo.FieldInput, eYo.Field)
@@ -582,7 +582,7 @@ goog.inherits(eYo.FieldInput, eYo.Field)
  * Dispose of the delegate.
  */
 // eYo.FieldInput.prototype.dispose = function () {
-//   eYo.FieldInput.superClass_.dispose.call(this)
+//   eYo.FieldInput.superProto_.dispose.call(this)
 // }
 
 /**

@@ -448,7 +448,7 @@ eYo.Board.Main.prototype.clear = function() {
   if (!existingGroup) {
     eYo.Events.group = true
   }
-  eYo.Board.Main.superClass_.clear.call(this)
+  eYo.Board.Main.superProto_.clear.call(this)
   if (!existingGroup) {
     eYo.Events.group = false
   }

@@ -24,7 +24,7 @@ eYo.forwardDeclare('MenuItem')
 eYo.forwardDeclare('Separator')
 
 eYo.KeyHandlerMenu = function (opt_domHelper, opt_renderer) {
-  eYo.KeyHandlerMenu.superClass_.constructor.call(this, opt_domHelper, opt_renderer)
+  eYo.KeyHandlerMenu.superProto_.constructor.call(this, opt_domHelper, opt_renderer)
 }
 goog.inherits(eYo.KeyHandlerMenu, eYo.PopupMenu)
 
@@ -39,7 +39,7 @@ goog.inherits(eYo.KeyHandlerMenu, eYo.PopupMenu)
  */
 eYo.KeyHandlerMenu.prototype.handleKeyEventInternal = function (e) {
   // Give the highlighted control the chance to handle the key event.
-  if (eYo.KeyHandlerMenu.superClass_.handleKeyEventInternal.call(this, e)) {
+  if (eYo.KeyHandlerMenu.superProto_.handleKeyEventInternal.call(this, e)) {
     return true
   }
   return this.handleMenuKeyEvent(e)

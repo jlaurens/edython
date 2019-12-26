@@ -37,7 +37,7 @@ eYo.forwardDeclare('Dom')
  * @constructor
  */
 eYo.Responder = function(desk, e) {
-  eYo.Responder.superClass_.constructor.call(this, desk)
+  eYo.Responder.superProto_.constructor.call(this, desk)
   /**
    * The event that most recently updated this responder.
    * @type {!Event}
@@ -73,7 +73,7 @@ eYo.Responder.prototype.dispose = function() {
   this.flyout_ = null
   this.brickDragger_ && (this.brickDragger_ = this.brickDragger_.clearMotion())
   this.boardDragger_ && (this.boardDragger_ = this.boardDragger_.clearMotion())
-  eYo.Responder.superClass_.dispose.call(this)
+  eYo.Responder.superProto_.dispose.call(this)
 }
 
 Object.defineProperties(eYo.Responder.prototype, {

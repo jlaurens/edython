@@ -28,7 +28,7 @@ eYo.Svg.makeDriverClass('Search', {
     if (search.dom) {
       return
     }
-    var dom = eYo.Svg.superClass_.searchInit.call(this, search)
+    var dom = eYo.Svg.superProto_.searchInit.call(this, search)
     var svg = dom.svg = Object.create(null)
     /*
     <svg class="eyo-search">
@@ -75,7 +75,7 @@ eYo.Svg.makeDriverClass('Search', {
     goog.dom.removeNode(dom.svg.root_)
     dom.svg.root_ = null
     dom.svg = null
-    eYo.Svg.superClass_.searchDispose.call(this, search)
+    eYo.Svg.superProto_.searchDispose.call(this, search)
   }
 })
 

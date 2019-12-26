@@ -26,7 +26,7 @@ goog.forwardDeclare('goog.events')
  * @constructor
  */
 eYo.Scroller = function(board) {
-  eYo.Scroller.superClass_.constructor.call(this, board)
+  eYo.Scroller.superProto_.constructor.call(this, board)
   this.hScroll = new eYo.Scrollbar(
     this,
     true,
@@ -123,7 +123,7 @@ eYo.Scroller.prototype.dispose = function() {
   this.vScroll = null
   this.cornerRect_.dispose()
   this.cornerRect_ = null
-  eYo.Scroller.superClass_.dispose.call(this)
+  eYo.Scroller.superProto_.dispose.call(this)
 }
 
 /**

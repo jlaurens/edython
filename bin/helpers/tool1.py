@@ -26,6 +26,7 @@ class Foo:
   (?P<suite>.*)""", re.X)
 
   assert re.match(re_make, "eYo.makeNS('Brick')"), 'BAD re_make 2'
+  assert re.match(re_make, "eYo.DnD.makeClass('Mngr', {"), 'BAD re_make 3'
 
   # eYo.Foo.makeSubclass(ns, 'bar')
   re_makeSubclass = re.compile(r"""^\s*
@@ -183,6 +184,7 @@ def buildDeps(library, library_name):
 
     for k in Foo.nsByClass:
       print(k, '->', Foo.nsByClass[k])
+
     print('----------------------')
     for foo in foos:
       for x in foo.subclassed:
@@ -211,7 +213,10 @@ def buildDeps(library, library_name):
         provide += ']'
         require += ']'
         relative = foo.path.relative_to(pathRoot)
-        dependency_lines.append("eYo.addDependency('" + relative.as_posix() + "', " + provide + ', ' + require + ', {});\n')
+        dependency = f"eYo.addDependency('{relative.as_posix()}', {provide}, {require}, {{}});\n"
+        dependency_lines.append(dependency)
+        if foo.path.stem == 'dnd':
+          print('********* dnd: dependency', dependency)
 
     p_out = pathBuild / (library_name+'_deps.js')
     print('Writing dependencies in\n   ', p_out)
@@ -221,6 +226,7 @@ def buildDeps(library, library_name):
     print('Writing requirements in\n   ', p_out)
     requirement_lines = sorted(requirement_lines)
     p_out.write_text('\n'.join(requirement_lines))
+
 print('Step 1:')
 print('=======')
 print('Building eyo deps')

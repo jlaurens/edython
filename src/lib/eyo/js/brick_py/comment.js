@@ -93,6 +93,5 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.comment_stmt, {
 })
 
 ;['blank_stmt'].forEach(k => {
-  eYo.Stmt[k] = eYo.Stmt.comment_stmt
-  eYo.C9r.register(k)
+  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.Stmt.comment_stmt))
 })

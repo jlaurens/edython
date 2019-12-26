@@ -21,7 +21,7 @@ eYo.provide('Clipboard')
  * 
  */
 eYo.Clipboard = function (owner) {
-  eYo.Clipboard.superClass_.constructor.call(this, owner)
+  eYo.Clipboard.superProto_.constructor.call(this, owner)
 }
 
 Object.defineProperties(eYo.Clipboard, {
@@ -57,5 +57,5 @@ Object.defineProperties(eYo.Clipboard, {
  * Dispose of the resources.
  */
 eYo.Clipboard.prototype.dispose = function () {
-  eYo.Clipboard.superClass_.dispose.call(this)
+  eYo.Clipboard.superProto_.dispose.call(this)
 }

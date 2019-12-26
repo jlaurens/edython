@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('Brick.Group')
+eYo.require('Stmt.Group')
 
 eYo.require('C9r.Change')
 
@@ -165,8 +165,7 @@ eYo.Stmt.Group.makeSubclass('except_part', {
 ;[
   'void_except_part'
 ].forEach(k => {
-  eYo.Stmt[k] = eYo.Stmt.except_part
-  eYo.C9r.register(k)
+  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.Stmt.except_part))
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.
@@ -216,7 +215,7 @@ eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
   ), eYo.Key.ALIASED
   )
   mngr.shouldSeparate()
-  return eYo.Stmt.except_part.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.except_part.superProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -361,7 +360,7 @@ eYo.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   ), eYo.Key.FROM
   )
   mngr.shouldSeparate()
-  return eYo.Stmt.raise_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.raise_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -458,7 +457,7 @@ eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   ), eYo.Key.BINARY
   )
   mngr.shouldSeparate()
-  return eYo.Stmt.assert_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.assert_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 eYo.Brick.Try.T3s = [

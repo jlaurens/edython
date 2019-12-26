@@ -32,6 +32,8 @@ describe('Driver', function() {
   it ('Driver: manager', function () {
     var ns = eYo.Driver.makeNS()
     ns.makeMngr()
+    chai.assert(ns.Mngr)
+    chai.assert(ns.Mngr.eyo.constructor === ns.DlgtMngr)
     var onr = {}
     onr.mngr = new ns.Mngr(onr)
     chai.assert(onr.mngr)

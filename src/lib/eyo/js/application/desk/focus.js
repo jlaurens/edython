@@ -49,7 +49,7 @@ eYo.Focus = Object.create(null)
  * @constructor
  */
 eYo.Focus.Main = function (desk) {
-  eYo.Focus.Main.superClass_.constructor.call(this, desk)
+  eYo.Focus.Main.superProto_.constructor.call(this, desk)
   /**
    * The various focus managers associate to each board of the desk.
    * @type{Array<eYo.Focus.Mngr>}
@@ -168,7 +168,7 @@ eYo.Focus.Main.prototype.dispose = function () {
   this.mngrs_.foreach(mngr => mngr.dispose())
   this.mngrs_.length = 0
   this.mngrs_ = null
-  eYo.Focus.Main.superClass_.dispose.call(this)
+  eYo.Focus.Main.superProto_.dispose.call(this)
 }
 
 /**
@@ -198,7 +198,7 @@ eYo.Focus.Main.prototype.disposeUI = function() {
  * @constructor
  */
 eYo.Focus.Mngr = function (board, main) {
-  eYo.Focus.Mngr.superClass_.constructor.call(this, board)
+  eYo.Focus.Mngr.superProto_.constructor.call(this, board)
   this.main_ = main
   main.mngrs_.push(this)
   this.disposeUI = eYo.Do.nothing
@@ -217,7 +217,7 @@ eYo.Focus.Mngr.prototype.dispose = function () {
     m.mngr_ = null
   }
   this.main_ = null
-  eYo.Focus.Mngr.superClass_.dispose.call(this)
+  eYo.Focus.Mngr.superProto_.dispose.call(this)
 }
 
 /**

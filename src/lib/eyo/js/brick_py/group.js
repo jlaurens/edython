@@ -17,14 +17,13 @@ eYo.forwardDeclare('Msg')
 
 goog.forwardDeclare('goog.dom')
 
-eYo.provide('Stmt.Group')
-
 /**
+ * @name{eYo.Stmt.Group}
  * Class for a Delegate, base group statement brick.
  * Base group is subclassed into Group and Control.
  * For edython.
  */
-eYo.Stmt.makeClass('BaseGroup', {
+eYo.Stmt.Dflt.makeSubclass('Group', {
   head (type) /** @suppress {globalThis} */ {
     return null
   },
@@ -54,13 +53,6 @@ eYo.Stmt.makeClass('BaseGroup', {
     isGroup: true,
   }
 })
-
-/**
- * Class for a Delegate, statement brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
- * For edython.
- */
-eYo.Stmt.BaseGroup.makeSubclass('Group')
 
 /**
  * Class for a Delegate, if_part brick.
@@ -217,7 +209,7 @@ eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   F(2)
   F(3)
   mngr.shouldSeparate()
-  return eYo.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.global_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 ;[
@@ -229,7 +221,7 @@ eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   'last_else'
 ].forEach(name => {
   var k = name + '_part'
-  eYo.C9r.register(k, eYo.Stmt[k] = eYo.Stmt.Branch)
+  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.Stmt.Branch))
 })
 
 /**
@@ -239,7 +231,7 @@ eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
  * @private
  */
 eYo.Stmt.Group.prototype.willRender_ = function (recorder) {
-  eYo.Stmt.Group.superClass_.willRender_.call(this, recorder)
+  eYo.Stmt.Group.superProto_.willRender_.call(this, recorder)
   var field = this.async_f
   if (field) {
     field.visible = this.async_
@@ -270,7 +262,7 @@ eYo.Stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
       mngr.shouldSeparateInsert()
     }
   }
-  return eYo.Stmt.Group.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.Group.superProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**

@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('Stmt')
-eYo.require('Brick.List')
+eYo.require('Expr.List')
 
 /// /////// gobal/nonlocal statement
 /**
@@ -21,7 +21,7 @@ eYo.require('Brick.List')
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
+eYo.Expr.List.makeSubclass(eYo.T3.Expr.non_void_identifier_list, {
   list: {
     check: eYo.T3.Expr.Check.non_void_identifier_list,
     presep: ',',
@@ -143,8 +143,7 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.global_stmt, {
   'return'
 ].forEach((k) => {
   k = k + '_stmt'
-  eYo.Stmt[k] = eYo.Stmt.global_stmt
-  eYo.C9r.register(k)
+  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.Stmt.global_stmt))
 })
 
 /**
@@ -219,5 +218,5 @@ eYo.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   F(5)
   F(6)
   mngr.shouldSeparate()
-  return eYo.Stmt.global_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.global_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
 }

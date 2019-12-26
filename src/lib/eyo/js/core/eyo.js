@@ -16,21 +16,20 @@
  * @name {eYo}
  * @namespace
  */
-var eYo = (() => {
+{
   var EYO = function() {}
-  var ans = new EYO()
+  var eYo = new EYO()
   Object.defineProperty(EYO.prototype, '_p', {
     get () {
       return this.constructor.prototype
     }
   })
   var NA
-  Object.defineProperties(ans, {
+  Object.defineProperties(eYo, {
     NA: { value: NA },
     name: { value: 'eYo' }, 
   })
-  return ans
-})()
+}
 
 /**
  * Reference to the global object.
@@ -164,7 +163,7 @@ eYo._p.provide = (name, value) => {
           ns = ns.makeNS(first)
           f(second, ...args)
         } else {
-          (ns[first] = second) || ns.makeNS(ns, first)
+          (ns[first] = second) || ns.makeNS(first)
         }
       } else if (eYo.isStr(second)) {
         ns = ns[first]
@@ -199,9 +198,10 @@ eYo._p.forwardDeclare = (name) => {}
  * @param {String} key - sentencecase name, created object will be `ns[key]`.
  * @return {Object}
  */
-eYo._p.makeNS = function (ns, key) {
+eYo._p.makeNS = function (ns, key, model) {
   if (eYo.isStr(ns)) {
-    eYo.parameterAssert(!key, 'Unexpected key argument')
+    eYo.parameterAssert(!model, 'Unexpected model argument')
+    model = key
     key = ns
     ns = this
   }
@@ -216,6 +216,13 @@ eYo._p.makeNS = function (ns, key) {
   Object.defineProperty(NS.prototype, 'super', {
     value: this,
   })
+  if (model) {
+    for (var k in model) {
+      Object.defineProperty(NS.prototype, k, {
+        value: model[k]
+      })
+    }
+  }
   var ans = new NS()
   ns && Object.defineProperties(ns, {
     [key]: { value: ans, },
@@ -235,7 +242,8 @@ eYo._p.makeNS = function (ns, key) {
  * @param {Function} superC9r
  */
 eYo.inherits = function (childC9r, superC9r) {
-  childC9r.superClass_ = superC9r.prototype
+  childC9r.superC9r_ = superC9r
+  childC9r.superProto_ = superC9r.prototype
   Object.setPrototypeOf(childC9r.prototype, superC9r.prototype)
   childC9r.prototype.constructor = childC9r
 }

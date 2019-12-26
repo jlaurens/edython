@@ -38,7 +38,7 @@ eYo.Dlgt.makeSubclass(eYo.C9r.UI)
  * @override
  */
 eYo.C9r.UI.Dlgt_p.disposeDecorate = function (f) {
-  return eYo.C9r.UI.Dlgt.superClass_.disposeDecorate.call(this, function () {
+  return eYo.C9r.UI.Dlgt.superProto_.disposeDecorate.call(this, function () {
     this.disposeUI()
     f && f.apply(this, arguments)
   })
@@ -132,13 +132,13 @@ eYo.assert(eYo.C9r.UI.Dflt, 'MISSING eYo.C9r.UI.Dflt')
  * 
  */
 eYo.C9r.UI.Dflt.prototype.appDidChange = function () {
-  var super_ = eYo.C9r.UI.Dflt.superClass_.appDidChange
+  var super_ = eYo.C9r.UI.Dflt.superProto_.appDidChange
   super_ && super_.call(this)
   this.ui_driverUpdate()
 }
 
 eYo.C9r.UI.Dflt.prototype.ownerDidChange = function (before, after) {
-  var super_ = eYo.C9r.UI.Dflt.superClass_.ownerDidChange
+  var super_ = eYo.C9r.UI.Dflt.superProto_.ownerDidChange
   super_ && super_call(this, before, after)
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA
   if (after instanceof eYo.Slot) {
@@ -166,7 +166,7 @@ eYo.C9r.UI.Dflt.prototype.ownerDidChange = function (before, after) {
  * @return {Function} the created constructor.
  */
 eYo.C9r.UI._p.makeClass = function (ns, key, Super, Dlgt, model) {
-  var C9r = eYo.C9r.UI.constructor.superClass_.makeClass.apply(this, arguments)
+  var C9r = eYo.C9r.UI.constructor.superProto_.makeClass.apply(this, arguments)
   var eyo = C9r.eyo
   model = eyo.model // arguments may have changed
   var ui = model.ui
@@ -175,7 +175,7 @@ eYo.C9r.UI._p.makeClass = function (ns, key, Super, Dlgt, model) {
   C9r.prototype.initUI = function (...args) {
     try {
       this.initUI = eYo.Do.nothing
-      var Super = C9r.superClass_
+      var Super = C9r.superProto_
       !!Super && !!Super.initUI && !!Super.initUI.call(this, ...args)
       this.ui_driver.doInitUI(this, ...args)
       ff && ff.call(this, ...args)
@@ -190,7 +190,7 @@ eYo.C9r.UI._p.makeClass = function (ns, key, Super, Dlgt, model) {
       this.disposeUI = eYo.Do.nothing
       ff && ff.call(this, ...args)
       this.ui_driver.doDisposeUI(this, ...args)
-      var Super = C9r.superClass_
+      var Super = C9r.superProto_
       !!Super && !!Super.disposeUI && !!Super.disposeUI.call(this, ...args)
     } finally {
       delete this.disposeUI

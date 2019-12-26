@@ -101,7 +101,7 @@ class HTML:
       ans = ans.replace('PATH_ROOT/', root)
     return ans
 
-  def body(root):
+  def body(root, eyo):
     return f'''    <link rel="stylesheet" href="{root}node_modules/mocha/mocha.css">
   </head>
   <body style="background-color: snow">
@@ -110,7 +110,7 @@ class HTML:
     <script src="{root}node_modules/mocha/mocha.js"></script>
     <script src="{root}node_modules/chai/chai.js"></script>
     <script>mocha.setup('bdd')</script>
-    <script src="{root}test/common.test.js"></script>
+    <script src="{eyo}test/common.test.js"></script>
 '''
 
   def test(basename):
@@ -144,40 +144,44 @@ describe ('Tests: {js.stem}', function () {{
   print('... DONE')
   return 0
 
-def updateWebTests(path_eyo, path_deps):
+def updateWebTests():
 
   print('Updating web tests...')
   tests = [x for x in path_root.rglob('*.test.js')
     if x.is_file()]
   for path_test in tests:
-    relative = path_test.relative_to(path_root)
-    print(relative)
-    root = '../' * (len(relative.parts) - 1)
-    path_base = path_test.with_suffix('').with_suffix('')
-    basename = path_base.stem
-    lines = [
-      HTML.head(root),
-      HTML.deps(path_deps, root),
-      HTML.body(root),
-    ]
-    basename = path_base.stem
-    lines.append(HTML.test(basename))
-    lines.append(HTML.mocha(root))
     try:
-      path_in = path_base.with_suffix('.in.xml')
-      with path_in.open('r', encoding='utf-8') as f:
-        s = f.read()
-        lines.append(s)
+      relative = path_test.relative_to(path_eyo)
+      eyo = '../' * (len(relative.parts) - 1)
+      relative = path_test.relative_to(path_root)
+      print(relative)
+      root = '../' * (len(relative.parts) - 1)
+      path_base = path_test.with_suffix('').with_suffix('')
+      basename = path_base.stem
+      lines = [
+        HTML.head(root),
+        HTML.deps(path_deps, root),
+        HTML.body(root, eyo),
+      ]
+      basename = path_base.stem
+      lines.append(HTML.test(basename))
+      lines.append(HTML.mocha(root))
+      try:
+        path_in = path_base.with_suffix('.in.xml')
+        with path_in.open('r', encoding='utf-8') as f:
+          s = f.read()
+          lines.append(s)
+      except: pass
+      lines.append(f'''</body>
+  </html>
+  ''')
+      path_out = path_base.with_suffix('.test.html')
+      path_out.write_text(''.join(lines), encoding='utf-8')
     except: pass
-    lines.append(f'''</body>
-</html>
-''')
-    path_out = path_base.with_suffix('.test.html')
-    path_out.write_text(''.join(lines), encoding='utf-8')
   print('... DONE')
   return 0
 
-def updateWebTestWrappers(path_eyo, path_deps):
+def updateWebTestWrappers():
   '''In each directory, 
   1) we create a `test.xml` file that lists all
   the `*.test.js` files in there.
@@ -209,10 +213,14 @@ def updateWebTestWrappers(path_eyo, path_deps):
       lines = [
         HTML.head(root),
         HTML.deps(path_deps, root),
-        HTML.body(root),
       ]
       for f in tests:
-        lines.append(HTML.script(f.relative_to(path_test)))
+        try:
+          relative = f.relative_to(path_eyo)
+          eyo = '../' * len(relative.parts)
+          lines.append(HTML.body(root, eyo)),
+          lines.append(HTML.script(f.relative_to(path_test)))
+        except: pass
       lines.append(HTML.mocha(root))
       for f in tests:
         try:
@@ -238,9 +246,11 @@ def updateWebTestWrappers(path_eyo, path_deps):
       lines = [
         HTML.head(root),
         HTML.deps(path_deps, root),
-        HTML.body(root),
       ]
       for f in tests:
+        relative = f.relative_to(path_eyo)
+        eyo = '../' * len(relative.parts)
+        lines.append(HTML.body(root, eyo))
         lines.append(HTML.script(f.relative_to(path_test)))
       lines.append(HTML.mocha(root))
       for f in tests:
@@ -280,9 +290,9 @@ out = updateTest(path_root / 'test' / 'import.js',
                      path_helpers / 'deps-test-import.txt')
 
 path_deps = path_helpers / 'deps-web-test.txt'
-out = updateWebTests(path_eyo, path_deps)
+out = updateWebTests()
 
-out = updateWebTestWrappers(path_eyo, path_deps)
+out = updateWebTestWrappers()
 
 try:
     out = updateWeb(path_root / 'sandbox' / 'html' / 'toolbox.html',

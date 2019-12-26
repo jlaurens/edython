@@ -17,21 +17,22 @@ eYo.require('C9r.Change')
 
 eYo.require('Decorate')
 eYo.require('Consolidator.List')
-eYo.provide('Brick.List')
 
 /**
+ * @name{eYo.Expr.List}
+ * @constructor
  * Class for a Delegate, list value brick.
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
 eYo.Expr.Dflt.makeSubclass('List', {
   init: function () {
-    this.slotList_ = new Proxy(this, eYo.Brick.List.slotsHandler)
+    this.slotList_ = new Proxy(this, eYo.Expr.List.slotsHandler)
   },
   list: {}
-}, eYo.Brick)
+})
 
-eYo.Brick.List.slotsHandler = {
+eYo.Expr.List.slotsHandler = {
   get: function (brick, k) {
     if (k === 'length') {
       var slot = brick.slotAtHead
@@ -139,8 +140,8 @@ eYo.Brick.List.slotsHandler = {
  * @param {Boolean} [dontCreate] Whether the receiver should create slots on the fly.
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
-eYo.Brick.List.prototype.getSlot = function (name, dontCreate) {
-  var slot = eYo.Brick.List.superClass_.getSlot.call(this, name)
+eYo.Expr.List.prototype.getSlot = function (name, dontCreate) {
+  var slot = eYo.Expr.List.superProto_.getSlot.call(this, name)
   if (!slot) {
     this.createConsolidator()
     slot = this.consolidator.getSlot(this, name, dontCreate)
@@ -153,7 +154,7 @@ eYo.Brick.List.prototype.getSlot = function (name, dontCreate) {
  *
  * @param {boolean} force
  */
-eYo.Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
+eYo.Expr.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
   'createConsolidator',
   function (force) {
   var type = this.type
@@ -186,8 +187,8 @@ eYo.Brick.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
  * @param {eYo.Magnet} oldTargetM4t.
  * @param {eYo.Magnet} targetOldM4t
  */
-eYo.Brick.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.Brick.List.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+eYo.Expr.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+  eYo.Expr.List.superProto_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   if (m4t.isOutput) {
     this.createConsolidator(true)
   }
@@ -200,7 +201,7 @@ eYo.Brick.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t)
  *
  * @param {Brick} brick
  */
-eYo.Brick.List.prototype.doConsolidate = (() => {
+eYo.Expr.List.prototype.doConsolidate = (() => {
   // this is a one shot function
   /**
    * Consolidate the slots.
@@ -216,7 +217,7 @@ eYo.Brick.List.prototype.doConsolidate = (() => {
       return
     }
     force = true  // always force consolidation because of the dynamics
-    if (eYo.Brick.List.superClass_.doConsolidate.call(this, deep, force)) {
+    if (eYo.Expr.List.superProto_.doConsolidate.call(this, deep, force)) {
       return !this.connectionsIncog && (this.consolidator.consolidate(this, deep, force))
     }
   }
@@ -227,14 +228,14 @@ eYo.Brick.List.prototype.doConsolidate = (() => {
   }
 }) ()
 
-// eYo.Brick.List.prototype.consolidator = eYo.NA
+// eYo.Expr.List.prototype.consolidator = eYo.NA
 
 /**
  * Clear the list af all items.
  * For edython.
  * @private
  */
-eYo.Brick.List.prototype.removeItems = function () {
+eYo.Expr.List.prototype.removeItems = function () {
   eYo.Events.groupWrap(() => {
     this.forEachSlot(slot => {
       var m4t = slot.magnet
@@ -253,7 +254,7 @@ eYo.Brick.List.prototype.removeItems = function () {
  * Force to recompute the chain tile.
  * For edython.
  */
-eYo.Brick.List.prototype.changeInputDone = function () {
+eYo.Expr.List.prototype.changeInputDone = function () {
   this.forEachSlot(slot => {
     var t9k = slot.targetBrick
     t9k && (t9k.changeDone())
@@ -261,7 +262,7 @@ eYo.Brick.List.prototype.changeInputDone = function () {
   this.changeDone()
 }
 
-Object.defineProperties(eYo.Brick.List.prototype, {
+Object.defineProperties(eYo.Expr.List.prototype, {
   firstTarget: {
     get () {
       var t
@@ -277,7 +278,7 @@ Object.defineProperties(eYo.Brick.List.prototype, {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.List.makeSubclass('optional_expression_list', {
+eYo.Expr.List.makeSubclass('optional_expression_list', {
   list: {
     check: eYo.T3.Expr.Check.expression,
     mandatory: 0,
@@ -291,7 +292,7 @@ eYo.Brick.List.makeSubclass('optional_expression_list', {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.List.makeSubclass('non_void_expression_list', {
+eYo.Expr.List.makeSubclass('non_void_expression_list', {
   list: {
     check: eYo.T3.Expr.Check.expression,
     mandatory: 1,
@@ -305,7 +306,7 @@ eYo.Brick.List.makeSubclass('non_void_expression_list', {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.List.makeSubclass('slice_list', {
+eYo.Expr.List.makeSubclass('slice_list', {
   list: {
     check: eYo.T3.Expr.Check.slice_item,
     mandatory: 1,
@@ -319,7 +320,7 @@ eYo.Brick.List.makeSubclass('slice_list', {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.List.makeSubclass('with_item_list', {
+eYo.Expr.List.makeSubclass('with_item_list', {
   list: {
     check: eYo.T3.Expr.Check.with_item,
     mandatory: 1,
@@ -359,7 +360,7 @@ eYo.Brick.List.makeSubclass('with_item_list', {
  * 2) singleton set_display: replacement for the unique connection: same as above
  * 3) singleton dict_display: replacement for the unique connection: same as above
  */
-eYo.Brick.List.makeSubclass('enclosure', {
+eYo.Expr.List.makeSubclass('enclosure', {
   data: {
     variant: {
       order: 0,
@@ -444,24 +445,20 @@ eYo.Brick.List.makeSubclass('enclosure', {
     check (type, subtype) /** @suppress {globalThis} */ {
       // retrieve the brick
       var brick = this.brick
-      var p5e = brick.profile_p
+      var p5e = brick.profile
       return brick.getOutCheck(p5e)
     }
-  }
-})
-
-Object.defineProperties(eYo.Expr.enclosure.prototype, {
-  profile_p : {
-    get () {
-      var p = this.getProfile()
-      return this.profile_ === p
-        ? this.profile_
-        : (this.profile_ = p)
-    },
-    set (newValue) {
-      this.profile_ = newValue
+  },
+  value: {
+    profile : {
+      get () {
+        var p = this.getProfile()
+        return this.profile__ === p
+          ? this.profile__
+          : (this.profile__ = p)
+      }
     }
-  }
+  },
 })
 
 /**
@@ -543,7 +540,7 @@ eYo.Expr.enclosure.prototype.getOutCheck = function (profile) {
  * As side effect, the subtype is set.
  */
 eYo.Expr.enclosure.prototype.getBaseType = function () {
-  return this.profile_p
+  return this.profile
 }
 ;['parenth_form',
 'parenth_target_list',
@@ -554,11 +551,10 @@ eYo.Expr.enclosure.prototype.getBaseType = function () {
 'set_display',
 'dict_display',
 'one_dict_display'].forEach(k => {
-  eYo.Expr[k] = eYo.Expr.enclosure
-  eYo.C9r.register(k)
+  eYo.C9r.register(k, (eYo.Expr[k] = eYo.Expr.enclosure))
 })
 
-eYo.Brick.List.T3s = [
+eYo.Expr.List.T3s = [
   eYo.T3.Expr.identifier,
   eYo.T3.Expr.comprehension,
   eYo.T3.Expr.dict_comprehension,

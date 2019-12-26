@@ -4,6 +4,7 @@
     <script src="ROOT_PLACE_HOLDER/fcls_board.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/fcls_brick.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/fcls_desk.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/fcls_dndMngr.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/fcls_draft.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/fcls_field.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/fcls_flyout.test.js" charset="utf-8"></script>

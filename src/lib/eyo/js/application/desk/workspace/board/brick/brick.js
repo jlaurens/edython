@@ -2271,7 +2271,7 @@ eYo.Brick.DEBUG = Object.create(null)
           // very special management for tuple input
           if ((otherM4t = eYo.Focus.magnet) && eYo.isStr(model)) {
             var otherBrick = otherM4t.brick
-            if (otherBrick instanceof eYo.Brick.List && otherM4t.isSlot) {
+            if (otherBrick instanceof eYo.Expr.List && otherM4t.isSlot) {
               eYo.Events.groupWrap(() => {
                 var b4s = model.split(',').map(x => {
                   var model = x.trim()
@@ -2765,7 +2765,7 @@ eYo.Brick._p.doMakeClass = function (ns, key, Super, Dlgt, register, model) {
     console.error('WHERE IS EYO???')
   }
   register && eYo.C9r.register(C9r)
-  console.warn('NEW BRICK CLASS', C9r.eyo.name)
+  // console.warn('NEW BRICK CLASS', C9r.eyo.name)
   return C9r
 }
 
@@ -2802,6 +2802,7 @@ eYo.Brick.Dlgt_p.makeSubclassDecorate = (f) => {
       console.error('BREAK HERE!')
     }
     if (ns && !eYo.isNS(ns)) {
+      eYo.parameterAssert(!model, `Unexpected model(1) ${model}`)
       model = register
       register = Dlgt
       Dlgt = key
@@ -2809,16 +2810,19 @@ eYo.Brick.Dlgt_p.makeSubclassDecorate = (f) => {
       ns = eYo.NA
     }
     if (!eYo.isStr(key)) {
+      eYo.parameterAssert(!model, `Unexpected model(2) ${model}`)
       model = register
       register = Dlgt
       Dlgt = key
       key = eYo.NA
     }
     if (goog.isBoolean(Dlgt)) {
+      eYo.parameterAssert(!model, `Unexpected model(3) ${model}`)
       model = register
       register = Dlgt
       Dlgt = eYo.NA
     } else if (!goog.isBoolean(register)) {
+      eYo.parameterAssert(!model, `Unexpected model(4) ${model}`)
       model = register
       register = false
     }
@@ -2849,7 +2853,7 @@ eYo.Brick.Dlgt_p.makeSubclassDecorate = (f) => {
  * @param {Object} [model]
  * @return the constructor created
  */
-eYo.Brick.Dlgt_p.makeSubclass = eYo.Brick.Dlgt_p.makeSubclassDecorate(eYo.Brick.doMakeClass).bind(eYo.Brick.Dlgt.eyo)
+eYo.Brick.Dlgt_p.makeSubclass = eYo.Brick.Dlgt_p.makeSubclassDecorate(eYo.Brick.doMakeClass)
 
 eYo.Brick.registerAll = function (typesByKey, C9r, fake) {
   for (var k in typesByKey) {

@@ -24,10 +24,16 @@ goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
 
 /**
- * The Svg delegate.
+ * @name{eYo.Dom.Dlgt}
+ * The Dom default class.
  * @constructor
  */
-eYo.Driver.Dlgt.makeSubclass(eYo.Dom)
+/**
+ * @name{eYo.Dom.Dflt}
+ * The Dom delegate default class.
+ * @constructor
+ */
+eYo.Dom.makeDflt()
 
 /**
  * @type {eYo.Dom.Mngr}

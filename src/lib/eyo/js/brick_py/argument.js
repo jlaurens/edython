@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('Brick.List')
+eYo.require('Expr.List')
 
 eYo.provide('Brick.Argument')
 
@@ -53,7 +53,7 @@ eYo.Consolidator.List.makeSubclass('Arguments', {
  * @param {eYo.Brick.Dflt} brick - owner or the receiver.
  */
 eYo.Consolidator.Arguments.prototype.getIO = function (brick) {
-  var io = eYo.Consolidator.Arguments.superClass_.getIO.call(this, brick)
+  var io = eYo.Consolidator.Arguments.superProto_.getIO.call(this, brick)
   io.last_expression = io.last_positional = io.unique = -Infinity
   io.first_keyword_star_star = io.first_star_star = Infinity
   return io
@@ -131,7 +131,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.Consolidator.Arguments.superClass_.doCleanup.call(this, io)
+    eYo.Consolidator.Arguments.superProto_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.unique !== -Infinity) {
       // remove whatever comes before and after the io.unique
@@ -213,7 +213,7 @@ eYo.Consolidator.Arguments.prototype.getCheck = (() => {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.List.makeSubclass('argument_list', {
+eYo.Expr.List.makeSubclass('argument_list', {
   data: {
     ary: {
       order: 200,

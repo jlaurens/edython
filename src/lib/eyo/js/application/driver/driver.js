@@ -37,7 +37,7 @@ eYo.C9r.UI.Dlgt.makeSubclass(eYo.Driver)
  */
 eYo.Driver.Dlgt.makeSubclass('DlgtMngr', {
   init () {
-    console.warn('INIT DlgtMngr')
+//    console.warn('INIT DlgtMngr')
   },
   valued: {
     driverNames () {
@@ -103,7 +103,7 @@ eYo.Driver._p.makeMngr = function (mngrModel) {
     return
   }
   var Mngr = this.makeClass(this.super.Mngr, this.DlgtMngr, mngrModel)
-  const pttp = Mngr.prototype
+    const pttp = Mngr.prototype
   pttp.initDrivers = function () {
     Mngr.eyo.driverNames.forEach(name => {
       var n = name[0].toLowerCase() + name.substr(1)

@@ -6,5 +6,8 @@ describe('Dom driver', function() {
     chai.assert(eYo.Dom.makeMngr)
     chai.assert(eYo.Dom.Dflt)
   })
+  it ("eYo.Dom.makeDriverClass('A')", function () {
+    chai.assert(eYo.Dom.makeDriverClass('A'))
+  })
 })
 

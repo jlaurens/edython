@@ -17,9 +17,9 @@ eYo.require('Module.turtle__module')
 
 eYo.require('Stmt')
 
-eYo.require('Brick.List')
+eYo.require('Expr.List')
 
-eYo.require('Brick.Primary')
+eYo.require('Expr.Primary')
 eYo.require('Msg')
 
 eYo.require('Tooltip')

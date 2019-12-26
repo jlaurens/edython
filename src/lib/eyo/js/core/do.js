@@ -557,6 +557,16 @@ eYo.Do.propertyR = (getter) => {
 }
 
 /**
+ * function frequently used.
+ */
+eYo.Do.propertyW = (setter) => {
+  return {
+    get: eYo.Do.noGetter(),
+    set: setter,
+  }
+}
+
+/**
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
  * @param {Function} [try_f]

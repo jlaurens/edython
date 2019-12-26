@@ -16,7 +16,7 @@ eYo.require('Node')
 eYo.require('TKN')
 
 eYo.require('GMR')
-eYo.require('Brick.Primary')
+eYo.require('Expr.Primary')
 
 eYo.provide('Node.Brick')
 

@@ -1,7 +1,7 @@
 /*
  * edython
  *
- * Copyright 2018 Jérôme LAURENS.
+ * Copyright 2019 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -14,7 +14,8 @@
 
 eYo.require('Do')
 eYo.require('Decorate')
-eYo.require('C9r')
+
+eYo.require('C9r.UI')
 
 eYo.forwardDeclare('Css')
 
@@ -41,7 +42,7 @@ eYo.forwardDeclare('Dom.Audio')
  * The ui drivers manager.
  * @property {eYo.Driver.Mngr} ui_driver_mngr
  */
-eYo.makeClass('Application', {
+eYo.makeClass('Application', eYo.C9r.UI.Dflt, {
   init (options) {
     this.options_ = new eYo.Options(options || {})
   },
@@ -132,7 +133,7 @@ eYo.Application.prototype.paste = () => {
  * @param {eYo.Brick.Dflt} block The brick to delete.
  * @param {boolean} deep
  */
-eYo.Application.prototype.deleteBrick = (brick, deep) => {
+eYo.Application.prototype.deleteBrick = function (brick, deep) {
   if (brick && brick.deletable && !brick.board.readOnly) {
     if (brick.hasFocus) {
       // prepare a connection or a block to be selected
@@ -167,7 +168,7 @@ eYo.Application.prototype.deleteBrick = (brick, deep) => {
  * @param {eYo.Brick.Dflt} brick Brick to be copied.
  * @private
  */
-eYo.Application.prototype.copyBrick = (brick, deep) => {
+eYo.Application.prototype.copyBrick = function (brick, deep) {
   var xml = eYo.Xml.brickToDom(brick, {noId: true, noNext: !deep})
   // Copy only the selected brick and internal bricks.
   // Encode start position in XML.
@@ -176,7 +177,7 @@ eYo.Application.prototype.copyBrick = (brick, deep) => {
   xml.setAttribute('y', xy.y)
   eYo.Clipboard.xml = xml
   eYo.Clipboard.source = brick.board
-  eYo.app.didCopyBrick && (eYo.app.didCopyBrick(brick, xml))
+  this.didCopyBrick && (this.didCopyBrick(brick, xml))
 }
 
 /**

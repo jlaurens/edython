@@ -51,7 +51,7 @@ eYo.forwardDeclare('Svg.Brick')
  * @property {Object}  whereInBoard  the coordinates relative to the surface.
  */
 eYo.Brick.UI = function(brick) {
-  eYo.Brick.UI.superClass_.constructor.call(this, brick)
+  eYo.Brick.UI.superProto_.constructor.call(this, brick)
   this.down = this.up = false
   this.xy_ = new eYo.Where()
   this.updateBrickWrapped()

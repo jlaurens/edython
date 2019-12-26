@@ -22,6 +22,8 @@ eYo.forwardDeclare('Motion')
 eYo.forwardDeclare('Driver')
 
 /**
+ * @name{eYo.DnD.Mngr}
+ * @constructor
  * Main drag and drop manager.
  * It maintains a list of draggers and droppers.
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
@@ -29,9 +31,12 @@ eYo.forwardDeclare('Driver')
  */
 eYo.DnD.makeClass('Mngr', {
   init (motion) {
+    if (!motion) {
+      console.error('BREAK HERE!')
+    }
     this.motion_ = motion
     /** the dragger_ that started a drag, not owned */
-    this.dragger_ = null
+    this.dragger_ = eYo.NA
     /** Make the UI */
     this.ui_driver_mngr.dndMngrInit(this)
     /** The list of draggers_, owned */
@@ -44,7 +49,7 @@ eYo.DnD.makeClass('Mngr', {
       new eYo.DnD.Dragger.LibraryBrick(this),
     ]
     /** the dropper_ that started a possible drop, not owned */
-    this.dropper_ = null
+    this.dropper_ = eYo.NA
     /** The list of droppers, owned */
     this.droppers_ = [
       new eYo.DnD.Dropper.Board(this),
@@ -59,11 +64,11 @@ eYo.DnD.makeClass('Mngr', {
   dispose () {
     this.cancel()
     this.draggers_.foreach(d => d.dispose())
-    this.draggers_ = null
+    this.draggers_ = eYo.NA
     this.droppers_.foreach(d => d.dispose())
-    this.droppers_ = null
+    this.droppers_ = eYo.NA
     this.ui_driver_mngr.dndMngrDispose(this)
-    this.motion_ = null
+    this.motion_ = eYo.NA
   },
   computed: {
     ui_driver_mngr () {
@@ -237,14 +242,14 @@ eYo.DnD.Dragger.prototype.complete = eYo.DnD.Dragger.prototype.reset
  * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.Board = function (manager) {
-  eYo.DnD.Dragger.Board.superClass_.constructor.call(this, manager)
+  eYo.DnD.Dragger.Board.superProto_.constructor.call(this, manager)
 }
 goog.inherits(eYo.DnD.Dragger.Board, eYo.DnD.Dragger)
 /**
  * Sever all the links.
  */
 eYo.DnD.Dragger.Board.prototype.dispose = function () {
-  eYo.DnD.Dragger.Board.superClass_.dispose.call(this)
+  eYo.DnD.Dragger.Board.superProto_.dispose.call(this)
 }
 
 Object.defineProperties(eYo.DnD.Dragger.Board.prototype, {
@@ -255,7 +260,7 @@ Object.defineProperties(eYo.DnD.Dragger.Board.prototype, {
  * @return {Boolean} true is a drag operation did start
  */
 eYo.DnD.Dragger.Board.prototype.start = function () {
-  return eYo.DnD.Dragger.Board.superClass_.start.call(this)
+  return eYo.DnD.Dragger.Board.superProto_.start.call(this)
 }
 
 /**
@@ -263,7 +268,7 @@ eYo.DnD.Dragger.Board.prototype.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.DnD.Dragger.Board.prototype.update = function () {
-  return eYo.DnD.Dragger.Board.superClass_.update.call(this)
+  return eYo.DnD.Dragger.Board.superProto_.update.call(this)
 }
 
 /**
@@ -271,7 +276,7 @@ eYo.DnD.Dragger.Board.prototype.update = function () {
  * @return {Boolean} true is a drag operation did cancel
  */
 eYo.DnD.Dragger.Board.prototype.cancel = function () {
-  return eYo.DnD.Dragger.Board.superClass_.update.cancel(this)
+  return eYo.DnD.Dragger.Board.superProto_.update.cancel(this)
 }
 
 /**
@@ -279,7 +284,7 @@ eYo.DnD.Dragger.Board.prototype.cancel = function () {
  * @return {Boolean} true is a drag operation did reset
  */
 eYo.DnD.Dragger.Board.prototype.reset = function () {
-  return eYo.DnD.Dragger.Board.superClass_.update.reset(this)
+  return eYo.DnD.Dragger.Board.superProto_.update.reset(this)
 }
 
 /**
@@ -287,7 +292,7 @@ eYo.DnD.Dragger.Board.prototype.reset = function () {
  * @return {Boolean} true is a drag operation did complete
  */
 eYo.DnD.Dragger.Board.prototype.complete = function () {
-  return eYo.DnD.Dragger.Board.superClass_.update.complete(this)
+  return eYo.DnD.Dragger.Board.superProto_.update.complete(this)
 }
 
 /*******/
@@ -297,7 +302,7 @@ eYo.DnD.Dragger.Board.prototype.complete = function () {
  * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.DraftBoard = function (manager) {
-  eYo.DnD.Dragger.DraftBoard.superClass_.constructor.call(this, manager)
+  eYo.DnD.Dragger.DraftBoard.superProto_.constructor.call(this, manager)
 }
 goog.inherits(eYo.DnD.Dragger.DraftBoard, eYo.DnD.Dragger)
 
@@ -305,7 +310,7 @@ goog.inherits(eYo.DnD.Dragger.DraftBoard, eYo.DnD.Dragger)
  * Sever all the links.
  */
 eYo.DnD.Dragger.DraftBoard.prototype.dispose = function () {
-  eYo.DnD.Dragger.DraftBoard.superClass_.dispose.call(this)
+  eYo.DnD.Dragger.DraftBoard.superProto_.dispose.call(this)
 }
 
 Object.defineProperties(eYo.DnD.Dragger.DraftBoard.prototype, {
@@ -316,7 +321,7 @@ Object.defineProperties(eYo.DnD.Dragger.DraftBoard.prototype, {
  * @return {Boolean} true is a drag operation did start
  */
 eYo.DnD.Dragger.DraftBoard.prototype.start = function () {
-  return eYo.DnD.Dragger.DraftBoard.superClass_.start.complete(this)
+  return eYo.DnD.Dragger.DraftBoard.superProto_.start.complete(this)
 }
 
 /**
@@ -324,7 +329,7 @@ eYo.DnD.Dragger.DraftBoard.prototype.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.DnD.Dragger.DraftBoard.prototype.update = function () {
-  return eYo.DnD.Dragger.DraftBoard.superClass_.update.call(this)
+  return eYo.DnD.Dragger.DraftBoard.superProto_.update.call(this)
 }
 
 /**
@@ -332,7 +337,7 @@ eYo.DnD.Dragger.DraftBoard.prototype.update = function () {
  * @return {Boolean} true is a drag operation did cancel
  */
 eYo.DnD.Dragger.DraftBoard.prototype.cancel = function () {
-  return eYo.DnD.Dragger.DraftBoard.superClass_.cancel.call(this)
+  return eYo.DnD.Dragger.DraftBoard.superProto_.cancel.call(this)
 }
 
 /**
@@ -340,7 +345,7 @@ eYo.DnD.Dragger.DraftBoard.prototype.cancel = function () {
  * @return {Boolean} true is a drag operation did reset
  */
 eYo.DnD.Dragger.DraftBoard.prototype.reset = function () {
-  return eYo.DnD.Dragger.DraftBoard.superClass_.reset.call(this)
+  return eYo.DnD.Dragger.DraftBoard.superProto_.reset.call(this)
 }
 
 /**
@@ -348,7 +353,7 @@ eYo.DnD.Dragger.DraftBoard.prototype.reset = function () {
  * @return {Boolean} true is a drag operation did complete
  */
 eYo.DnD.Dragger.DraftBoard.prototype.complete = function () {
-  return eYo.DnD.Dragger.DraftBoard.superClass_.complete.call(this)
+  return eYo.DnD.Dragger.DraftBoard.superProto_.complete.call(this)
 }
 
 /*******/
@@ -358,7 +363,7 @@ eYo.DnD.Dragger.DraftBoard.prototype.complete = function () {
  * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.LibraryBoard = function (manager) {
-  eYo.DnD.Dragger.LibraryBoard.superClass_.constructor.call(this, manager)
+  eYo.DnD.Dragger.LibraryBoard.superProto_.constructor.call(this, manager)
 }
 goog.inherits(eYo.DnD.Dragger.LibraryBoard, eYo.DnD.Dragger)
 
@@ -366,7 +371,7 @@ goog.inherits(eYo.DnD.Dragger.LibraryBoard, eYo.DnD.Dragger)
  * Sever all the links.
  */
 eYo.DnD.Dragger.LibraryBoard.prototype.dispose = function () {
-  eYo.DnD.Dragger.LibraryBoard.superClass_.dispose.call(this)
+  eYo.DnD.Dragger.LibraryBoard.superProto_.dispose.call(this)
 }
 
 Object.defineProperties(eYo.DnD.Dragger.LibraryBoard.prototype, {
@@ -377,7 +382,7 @@ Object.defineProperties(eYo.DnD.Dragger.LibraryBoard.prototype, {
  * @return {Boolean} true is a drag operation did start
  */
 eYo.DnD.Dragger.LibraryBoard.prototype.start = function () {
-  return eYo.DnD.Dragger.LibraryBoard.superClass_.start.complete(this)
+  return eYo.DnD.Dragger.LibraryBoard.superProto_.start.complete(this)
 }
 
 /**
@@ -385,7 +390,7 @@ eYo.DnD.Dragger.LibraryBoard.prototype.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.DnD.Dragger.LibraryBoard.prototype.update = function () {
-  return eYo.DnD.Dragger.LibraryBoard.superClass_.update.call(this)
+  return eYo.DnD.Dragger.LibraryBoard.superProto_.update.call(this)
 }
 
 /**
@@ -393,7 +398,7 @@ eYo.DnD.Dragger.LibraryBoard.prototype.update = function () {
  * @return {Boolean} true is a drag operation did cancel
  */
 eYo.DnD.Dragger.LibraryBoard.prototype.cancel = function () {
-  return eYo.DnD.Dragger.LibraryBoard.superClass_.cancel.call(this)
+  return eYo.DnD.Dragger.LibraryBoard.superProto_.cancel.call(this)
 }
 
 /**
@@ -401,7 +406,7 @@ eYo.DnD.Dragger.LibraryBoard.prototype.cancel = function () {
  * @return {Boolean} true is a drag operation did reset
  */
 eYo.DnD.Dragger.LibraryBoard.prototype.reset = function () {
-  return eYo.DnD.Dragger.LibraryBoard.superClass_.reset.call(this)
+  return eYo.DnD.Dragger.LibraryBoard.superProto_.reset.call(this)
 }
 
 /**
@@ -409,7 +414,7 @@ eYo.DnD.Dragger.LibraryBoard.prototype.reset = function () {
  * @return {Boolean} true is a drag operation did complete
  */
 eYo.DnD.Dragger.LibraryBoard.prototype.complete = function () {
-  return eYo.DnD.Dragger.LibraryBoard.superClass_.complete.call(this)
+  return eYo.DnD.Dragger.LibraryBoard.superProto_.complete.call(this)
 }
 
 /*******/
@@ -419,7 +424,7 @@ eYo.DnD.Dragger.LibraryBoard.prototype.complete = function () {
  * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.Brick = function (manager) {
-  eYo.DnD.Dragger.Brick.superClass_.constructor.call(this, manager)
+  eYo.DnD.Dragger.Brick.superProto_.constructor.call(this, manager)
 }
 goog.inherits(eYo.DnD.Dragger.Brick, eYo.DnD.Dragger)
 
@@ -427,7 +432,7 @@ goog.inherits(eYo.DnD.Dragger.Brick, eYo.DnD.Dragger)
  * Sever all the links.
  */
 eYo.DnD.Dragger.Brick.prototype.dispose = function () {
-  eYo.DnD.Dragger.Board.superClass_.dispose.call(this)
+  eYo.DnD.Dragger.Board.superProto_.dispose.call(this)
 }
 
 Object.defineProperties(eYo.DnD.Dragger.Brick.prototype, {
@@ -438,7 +443,7 @@ Object.defineProperties(eYo.DnD.Dragger.Brick.prototype, {
  * @return {Boolean} true is a drag operation did start
  */
 eYo.DnD.Dragger.Brick.prototype.start = function () {
-  return eYo.DnD.Dragger.Brick.superClass_.start.call(this)
+  return eYo.DnD.Dragger.Brick.superProto_.start.call(this)
 }
 
 /**
@@ -446,7 +451,7 @@ eYo.DnD.Dragger.Brick.prototype.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.DnD.Dragger.Brick.prototype.update = function () {
-  return eYo.DnD.Dragger.Brick.superClass_.update.call(this)
+  return eYo.DnD.Dragger.Brick.superProto_.update.call(this)
 }
 
 /**
@@ -454,7 +459,7 @@ eYo.DnD.Dragger.Brick.prototype.update = function () {
  * @return {Boolean} true is a drag operation did cancel
  */
 eYo.DnD.Dragger.Brick.prototype.cancel = function () {
-  return eYo.DnD.Dragger.Brick.superClass_.cancel.call(this)
+  return eYo.DnD.Dragger.Brick.superProto_.cancel.call(this)
 }
 
 /**
@@ -462,7 +467,7 @@ eYo.DnD.Dragger.Brick.prototype.cancel = function () {
  * @return {Boolean} true is a drag operation did reset
  */
 eYo.DnD.Dragger.Brick.prototype.reset = function () {
-  return eYo.DnD.Dragger.Brick.superClass_.reset.call(this)
+  return eYo.DnD.Dragger.Brick.superProto_.reset.call(this)
 }
 
 /**
@@ -470,7 +475,7 @@ eYo.DnD.Dragger.Brick.prototype.reset = function () {
  * @return {Boolean} true is a drag operation did complete
  */
 eYo.DnD.Dragger.Brick.prototype.complete = function () {
-  return eYo.DnD.Dragger.Brick.superClass_.complete.call(this)
+  return eYo.DnD.Dragger.Brick.superProto_.complete.call(this)
 }
 
 /*******/
@@ -480,7 +485,7 @@ eYo.DnD.Dragger.Brick.prototype.complete = function () {
  * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.LibraryBrick = function (manager) {
-  eYo.DnD.Dragger.LibraryBrick.superClass_.constructor.call(this, manager)
+  eYo.DnD.Dragger.LibraryBrick.superProto_.constructor.call(this, manager)
 }
 goog.inherits(eYo.DnD.Dragger.Board, eYo.DnD.Dragger)
 
@@ -488,7 +493,7 @@ goog.inherits(eYo.DnD.Dragger.Board, eYo.DnD.Dragger)
  * Sever all the links.
  */
 eYo.DnD.Dragger.LibraryBrick.prototype.dispose = function () {
-  eYo.DnD.Dragger.LibraryBrick.superClass_.dispose.call(this)
+  eYo.DnD.Dragger.LibraryBrick.superProto_.dispose.call(this)
 }
 
 Object.defineProperties(eYo.DnD.Dragger.LibraryBrick.prototype, {
@@ -499,7 +504,7 @@ Object.defineProperties(eYo.DnD.Dragger.LibraryBrick.prototype, {
  * @return {Boolean} true is a drag operation did start
  */
 eYo.DnD.Dragger.LibraryBrick.prototype.start = function () {
-  return eYo.DnD.Dragger.LibraryBrick.superClass_.start.call(this)
+  return eYo.DnD.Dragger.LibraryBrick.superProto_.start.call(this)
 }
 
 /**
@@ -507,7 +512,7 @@ eYo.DnD.Dragger.LibraryBrick.prototype.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.DnD.Dragger.LibraryBrick.prototype.update = function () {
-  return eYo.DnD.Dragger.LibraryBrick.superClass_.update.call(this)
+  return eYo.DnD.Dragger.LibraryBrick.superProto_.update.call(this)
 }
 
 /**
@@ -515,7 +520,7 @@ eYo.DnD.Dragger.LibraryBrick.prototype.update = function () {
  * @return {Boolean} true is a drag operation did cancel
  */
 eYo.DnD.Dragger.LibraryBrick.prototype.cancel = function () {
-  return eYo.DnD.Dragger.LibraryBrick.superClass_.cancel.call(this)
+  return eYo.DnD.Dragger.LibraryBrick.superProto_.cancel.call(this)
 }
 
 /**
@@ -523,7 +528,7 @@ eYo.DnD.Dragger.LibraryBrick.prototype.cancel = function () {
  * @return {Boolean} true is a drag operation did reset
  */
 eYo.DnD.Dragger.LibraryBrick.prototype.reset = function () {
-  return eYo.DnD.Dragger.LibraryBrick.superClass_.reset.call(this)
+  return eYo.DnD.Dragger.LibraryBrick.superProto_.reset.call(this)
 }
 
 /**
@@ -531,7 +536,7 @@ eYo.DnD.Dragger.LibraryBrick.prototype.reset = function () {
  * @return {Boolean} true is a drag operation did complete
  */
 eYo.DnD.Dragger.LibraryBrick.prototype.complete = function () {
-  return eYo.DnD.Dragger.LibraryBrick.superClass_.complete.call(this)
+  return eYo.DnD.Dragger.LibraryBrick.superProto_.complete.call(this)
 }
 
 /*******/
@@ -541,7 +546,7 @@ eYo.DnD.Dragger.LibraryBrick.prototype.complete = function () {
  * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dragger.DraftBrick = function (manager) {
-  eYo.DnD.Dragger.DraftBrick.superClass_.constructor.call(this, manager)
+  eYo.DnD.Dragger.DraftBrick.superProto_.constructor.call(this, manager)
 }
 goog.inherits(eYo.DnD.Dragger.Board, eYo.DnD.Dragger)
 
@@ -549,7 +554,7 @@ goog.inherits(eYo.DnD.Dragger.Board, eYo.DnD.Dragger)
  * Sever all the links.
  */
 eYo.DnD.Dragger.DraftBrick.prototype.dispose = function () {
-  eYo.DnD.Dragger.DraftBrick.superClass_.dispose.call(this)
+  eYo.DnD.Dragger.DraftBrick.superProto_.dispose.call(this)
 }
 
 Object.defineProperties(eYo.DnD.Dragger.DraftBrick.prototype, {
@@ -560,7 +565,7 @@ Object.defineProperties(eYo.DnD.Dragger.DraftBrick.prototype, {
  * @return {Boolean} true is a drag operation did start
  */
 eYo.DnD.Dragger.DraftBrick.prototype.start = function () {
-  return eYo.DnD.Dragger.DraftBrick.superClass_.start.call(this)
+  return eYo.DnD.Dragger.DraftBrick.superProto_.start.call(this)
 }
 
 /**
@@ -568,7 +573,7 @@ eYo.DnD.Dragger.DraftBrick.prototype.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.DnD.Dragger.DraftBrick.prototype.update = function () {
-  return eYo.DnD.Dragger.DraftBrick.superClass_.update.call(this)
+  return eYo.DnD.Dragger.DraftBrick.superProto_.update.call(this)
 }
 
 /**
@@ -576,7 +581,7 @@ eYo.DnD.Dragger.DraftBrick.prototype.update = function () {
  * @return {Boolean} true is a drag operation did cancel
  */
 eYo.DnD.Dragger.DraftBrick.prototype.cancel = function () {
-  return eYo.DnD.Dragger.DraftBrick.superClass_.cancel.call(this)
+  return eYo.DnD.Dragger.DraftBrick.superProto_.cancel.call(this)
 }
 
 /**
@@ -584,7 +589,7 @@ eYo.DnD.Dragger.DraftBrick.prototype.cancel = function () {
  * @return {Boolean} true is a drag operation did reset
  */
 eYo.DnD.Dragger.DraftBrick.prototype.reset = function () {
-  return eYo.DnD.Dragger.DraftBrick.superClass_.reset.call(this)
+  return eYo.DnD.Dragger.DraftBrick.superProto_.reset.call(this)
 }
 
 /**
@@ -592,7 +597,7 @@ eYo.DnD.Dragger.DraftBrick.prototype.reset = function () {
  * @return {Boolean} true is a drag operation did complete
  */
 eYo.DnD.Dragger.DraftBrick.prototype.complete = function () {
-  return eYo.DnD.Dragger.DraftBrick.superClass_.complete.call(this)
+  return eYo.DnD.Dragger.DraftBrick.superProto_.complete.call(this)
 }
 
 /*******/
@@ -674,7 +679,7 @@ eYo.DnD.Dropper.prototype.complete = eYo.DnD.Dropper.prototype.reset
  * @param {eYo.DnD.Dropper} manager -  the owning drag and drop manager.
  */
 eYo.DnD.Dropper.Board = function (manager) {
-  eYo.DnD.Dropper.Board.superClass_.constructor.call(this, manager)
+  eYo.DnD.Dropper.Board.superProto_.constructor.call(this, manager)
 }
 goog.inherits(eYo.DnD.Dropper.Board, eYo.DnD.Dropper)
 
@@ -683,7 +688,7 @@ goog.inherits(eYo.DnD.Dropper.Board, eYo.DnD.Dropper)
  */
 eYo.DnD.Dropper.Board.prototype.dispose = function () {
   this.cancel()
-  eYo.DnD.Dropper.Board.superClass_.dispose.call(this, manager)
+  eYo.DnD.Dropper.Board.superProto_.dispose.call(this, manager)
 }
 
 Object.defineProperties(eYo.DnD.Dropper.Board.prototype, {
@@ -694,7 +699,7 @@ Object.defineProperties(eYo.DnD.Dropper.Board.prototype, {
  * @return {Boolean} true is a drop operation did start
  */
 eYo.DnD.Dropper.Board.prototype.start = function () {
-  return eYo.DnD.Dropper.Board.superClass_.start.call(this)
+  return eYo.DnD.Dropper.Board.superProto_.start.call(this)
 }
 
 /**
@@ -702,7 +707,7 @@ eYo.DnD.Dropper.Board.prototype.start = function () {
  * @return {Boolean} true is a drop operation did update
  */
 eYo.DnD.Dropper.Board.prototype.update = function () {
-  return eYo.DnD.Dropper.Board.superClass_.update.call(this)
+  return eYo.DnD.Dropper.Board.superProto_.update.call(this)
 }
 
 /**
@@ -710,7 +715,7 @@ eYo.DnD.Dropper.Board.prototype.update = function () {
  * @return {Boolean} true is a drop operation did cancel
  */
 eYo.DnD.Dropper.Board.prototype.cancel = function () {
-  return eYo.DnD.Dropper.Board.superClass_.cancel.call(this)
+  return eYo.DnD.Dropper.Board.superProto_.cancel.call(this)
 }
 
 /**
@@ -718,7 +723,7 @@ eYo.DnD.Dropper.Board.prototype.cancel = function () {
  * @return {Boolean} true is a drop operation did reset
  */
 eYo.DnD.Dropper.Board.prototype.reset = function () {
-  return eYo.DnD.Dropper.Board.superClass_.reset.call(this)
+  return eYo.DnD.Dropper.Board.superProto_.reset.call(this)
 }
 
 /**
@@ -726,7 +731,7 @@ eYo.DnD.Dropper.Board.prototype.reset = function () {
  * @return {Boolean} true is a drop operation did complete
  */
 eYo.DnD.Dropper.Board.prototype.complete = function () {
-  return eYo.DnD.Dropper.Board.superClass_.complete.call(this)
+  return eYo.DnD.Dropper.Board.superProto_.complete.call(this)
 }
 
 /*******/

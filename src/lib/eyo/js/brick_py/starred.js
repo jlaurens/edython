@@ -266,7 +266,7 @@ eYo.Expr.Starred.prototype.xmlAttr = function () {
 //  * @param {eYo.Magnet} targetOldM4t that was connected to the old target connection.
 //  */
 // eYo.Expr.Starred.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-//   eYo.Expr.Starred.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+//   eYo.Expr.Starred.superProto_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
 //   if (m4t === this.modified_s.magnet) {
 
 //   }
@@ -278,7 +278,7 @@ eYo.Expr.Starred.prototype.xmlAttr = function () {
 //  * @param {eYo.Magnet} oldTargetM4t that was connected to m4t
 //  */
 // eYo.Expr.Starred.prototype.didDisconnect = function (m4t, oldTargetM4t) {
-//   eYo.Expr.Starred.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
+//   eYo.Expr.Starred.superProto_.didDisconnect.call(this, m4t, oldTargetM4t)
 // }
 
 ;[
@@ -290,7 +290,6 @@ eYo.Expr.Starred.prototype.xmlAttr = function () {
   'parameter_star',
   'parameter_star_star',
   'or_expr_star_star'
-].forEach(key => {
-  eYo.Expr[key] = eYo.Expr.Starred
-  eYo.C9r.register(key)
+].forEach(k => {
+  eYo.C9r.register(k, (eYo.Expr[k] = eYo.Expr.Starred))
 })

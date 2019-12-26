@@ -15,7 +15,7 @@ eYo.require('Stmt')
 
 eYo.require('Msg')
 
-eYo.require('Brick.List')
+eYo.require('Expr.List')
 goog.require('goog.dom')
 
 eYo.provide('Brick.Yield')
@@ -202,7 +202,7 @@ eYo.Expr.yield_expr.populateContextMenuFirst_ = function (mngr) {
 eYo.Expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
   var brick = this
   var yorn = eYo.Expr.yield_expr.populateContextMenuFirst_.call(this, mngr)
-  return eYo.Expr.yield_expr.superClass_.populateContextMenuFirst_.call(this, mngr) || yorn
+  return eYo.Expr.yield_expr.superProto_.populateContextMenuFirst_.call(this, mngr) || yorn
 }
 
 /**
@@ -221,7 +221,7 @@ eYo.Stmt.makeClass('yield_stmt', {
  */
 eYo.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   eYo.Expr.yield_expr.populateContextMenuFirst_.call(this, mngr)
-  return eYo.Stmt.yield_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.yield_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 eYo.Brick.Yield.T3s = [

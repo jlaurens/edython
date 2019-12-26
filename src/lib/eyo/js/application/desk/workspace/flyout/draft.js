@@ -27,6 +27,6 @@ eYo.forwardDeclare('Application')
  * @constructor
  */
 eYo.Draft = function(owner, options) {
-  eYo.Draft.superClass_.call(this, owner, options)
+  eYo.Draft.superProto_.call(this, owner, options)
 }
 goog.inherits(eYo.Draft, eYo.Board)

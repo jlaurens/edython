@@ -12,12 +12,12 @@
 'use strict'
 
 eYo.require('Stmt')
-eYo.require('Brick.List')
+eYo.require('Expr.List')
 
 eYo.provide('Brick.Assignment')
 
 eYo.forwardDeclare('Msg')
-eYo.forwardDeclare('Brick.Primary')
+eYo.forwardDeclare('Expr.Primary')
 goog.forwardDeclare('goog.dom')
 
 /**
@@ -386,7 +386,7 @@ eYo.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     mngr.addChild(menuItem, true)
     mngr.shouldSeparate()
   }
-  eYo.Stmt.assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
+  eYo.Stmt.assignment_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -395,7 +395,7 @@ eYo.Stmt.assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Used only in assignment statement as wrapped value,
  * and in primary as promised value.
  */
-eYo.Brick.List.makeSubclass('value_list', {
+eYo.Expr.List.makeSubclass('value_list', {
   list: (() => {
     /*
      * For each given type, returns the list of brick types that can be unique.
@@ -544,7 +544,7 @@ eYo.Expr.value_list.prototype.getSubtype = function () {
   return (t && (this.subtype_ = t.type)) || this.subtype_
 }
 
-eYo.Brick.List.makeSubclass('augassigned_list', () => {
+eYo.Expr.List.makeSubclass('augassigned_list', () => {
   var D = {
     check: eYo.T3.Expr.Check.expression,
     unique: eYo.T3.Expr.yield_expr,
@@ -604,7 +604,7 @@ eYo.Brick.List.makeSubclass('augassigned_list', () => {
 //   })
 //   mngr.addChild(menuItem, true)
 //   mngr.shouldSeparate()
-//   return eYo.Stmt.augmented_assignment_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
+//   return eYo.Stmt.augmented_assignment_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
 // }
 
 eYo.Brick.Assignment.T3s = [

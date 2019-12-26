@@ -22,7 +22,7 @@ eYo.provide('Section')
  * @constructor
  */
 eYo.Section = function(owner) {
-  eYo.Section.superClass_.constructor.call(this, owner)
+  eYo.Section.superProto_.constructor.call(this, owner)
 }
 
 Object.defineProperties(eYo.Section.prototype, {
@@ -55,7 +55,7 @@ eYo.Section.prototype.dispose = function() {
   this.disposeUI()
   this.toolbar_ = null
   this.dispose = eYo.Do.nothing
-  eYo.Section.superClass_.dispose.call(this)
+  eYo.Section.superProto_.dispose.call(this)
 }
 
 /**
@@ -82,7 +82,7 @@ eYo.Section.prototype.disposeUI = function () {
  * @constructor
  */
 eYo.Section.Single = function(owner) {
-  eYo.Section.Single.superClass_.constructor.call(this, owner)
+  eYo.Section.Single.superProto_.constructor.call(this, owner)
   this.board_ = new eYo.Board(this)
 }
 goog.inherits(eYo.Section.Single, eYo.Section)
@@ -94,7 +94,7 @@ goog.inherits(eYo.Section.Single, eYo.Section)
 eYo.Section.Single.prototype.dispose = function() {
   this.board_.dispose()
   this.board_ = null
-  eYo.Section.Single.superClass_.dispose.call()
+  eYo.Section.Single.superProto_.dispose.call()
   this.dispose = eYo.Do.nothing
 }
 
@@ -102,7 +102,7 @@ eYo.Section.Single.prototype.dispose = function() {
  * Make the UI
  */
 eYo.Section.Single.prototype.initUI = function () {
-  eYo.Section.Single.superClass_.initUI.call(this)
+  eYo.Section.Single.superProto_.initUI.call(this)
   this.board_.initUI()
   delete this.disposeUI
   this.initUI = eYo.Do.nothing
@@ -112,7 +112,7 @@ eYo.Section.Single.prototype.initUI = function () {
  * Make the UI
  */
 eYo.Section.Single.prototype.disposeUI = function () {
-  eYo.Section.Single.superClass_.disposeUI.call(this)
+  eYo.Section.Single.superProto_.disposeUI.call(this)
   this.board_.disposeUI()
   delete this.initUI
   this.disposeUI = eYo.Do.nothing

@@ -141,7 +141,7 @@ eYo.Magnets.prototype.initUI = function () {
  * @constructor
  */
 eYo.Magnet = function (bs, type, model) {
-  eYo.Magnet.superClass_.constructor.call(this, bs)
+  eYo.Magnet.superProto_.constructor.call(this, bs)
   if (this.slot) {
     this.name_ = this.slot.key
   }
@@ -338,7 +338,7 @@ eYo.Magnet.prototype.dispose = function (healStack) {
   this.ui_driver_mngr && this.ui_driver_mngr.disposeUI(this)
   eYo.Field.disposeFields(this)
   this.where_ = this.model_ = eYo.NA
-  eYo.Magnet.superClass_.dispose.call(this)
+  eYo.Magnet.superProto_.dispose.call(this)
 }
 
 // private properties

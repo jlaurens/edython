@@ -1,3 +1,11 @@
+describe("Group", function () {
+  it ("Group: Basic", function () {
+    chai.assert(eYo.Test)
+    chai.assert(eYo.Stmt.Group)
+    chai.assert(eYo.isSubclass(eYo.Stmt.Group, eYo.Stmt.Dflt))
+  })
+})
+
 describe('Simple statement and group', function () {
   it(`Comment statement and group`, function () {
     eYo.Test.setItUp()

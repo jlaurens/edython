@@ -11,12 +11,12 @@
  */
 'use strict'
 
-eYo.require('Brick.Group')
+eYo.require('Stmt.Group')
 
 eYo.require('XRE')
 
 eYo.require('Msg')
-eYo.require('Brick.Primary')
+eYo.require('Expr.Primary')
 eYo.require('MenuItem')
 goog.require('goog.dom');
 eYo.provide('Brick.Proc')
@@ -410,7 +410,7 @@ eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     })
   }
   mngr.shouldSeparate()
-  return eYo.Stmt.decorator_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.decorator_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -496,7 +496,7 @@ eYo.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
     goog.dom.createTextNode('(…) -> …')
   ), variants[1])
   mngr.shouldSeparate()
-  return eYo.Stmt.funcdef_part.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.funcdef_part.superProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /*
@@ -585,7 +585,7 @@ eYo.Stmt.classdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
     goog.dom.createTextNode('(…)')
   ), variants[1])
   mngr.shouldSeparate()
-  return eYo.Stmt.classdef_part.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.classdef_part.superProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 eYo.Brick.Proc.T3s = [

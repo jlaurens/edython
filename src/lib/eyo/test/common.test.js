@@ -1,13 +1,53 @@
+console.error('COMMON 0', eYo.Test)
+{
+  var options = {
+    collapse : true,
+    comments : false,
+    disable : true,
+    maxBlocks : Infinity,
+    trashcan : false,
+    horizontalLayout : false,
+    // toolboxPosition : 'end',
+    css : true,
+    media : '../../src/lib/blockly/media/',
+    // rtl : false, meaningless
+    scrollbars : true,
+    sounds : false,
+    oneBasedIndex : true,
+  }
+  console.error('COMMON 0a', eYo.Test)
+  try {
+    eYo.app = new eYo.Application(options)
+  } catch(e) {
+    console.error(e)
+    throw e
+  }
+  console.error('COMMON 0b', eYo.app)
+  /* Inject your workspace
+  var workspace = Blockly.inject('eyoDiv', options)
+  eYo.setup(workspace)
+  workspace.eyo.options = {
+    noLeftSeparator: true,
+    noDynamicList: false,
+    smartUnary: true,
+  }
+  */
+}
+console.error('COMMON 1', eYo.Test)
+
+chai.assert(eYo.app, `MISSING eYo.app`)
+console.error('COMMON 2', eYo.Test)
+
 setTimeout(() => {
   describe('PREPARE', function() {
     it('Blockly', function() {
-      chai.assert(Blockly, `MISSING Blockly`)
       chai.assert(eYo.Node.prototype.toBrick, `MISSING toBrick`)
     })
   })
 }, 0)
 
 eYo.Test = Object.create(null)
+console.error('COMMON', eYo.Test)
 
 eYo.Test.makeTestDesk = (id) => {
   var div0 = document.querySelector('#eyo-desk')
@@ -146,7 +186,7 @@ eYo.Test.basic = (ra, str) => {
       })
     })
   })
-  }
+}
 
 /** Usage
   eYo.Test.incog(brick,

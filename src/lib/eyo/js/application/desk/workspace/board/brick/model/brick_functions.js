@@ -15,9 +15,9 @@ eYo.require('Brick')
 
 eYo.require('Msg')
 
-eYo.require('Brick.List')
+eYo.require('Expr.List')
 
-eYo.require('Brick.Primary')
+eYo.require('Expr.Primary')
 eYo.require('Tooltip')
 
 eYo.require('Library')
@@ -31,8 +31,8 @@ eYo.provide('Brick.Functions')
  * by `modulebot.py`.
  */
 
-;(function () {
-  var M = eYo.Module.functions__model
+{
+  var M = eYo.Module.functions
   var d = M.data
   var n = d.items.length
   var t = d.types.length
@@ -69,4 +69,4 @@ eYo.provide('Brick.Functions')
     category: c,
     type_: t + 1
   }))
-}) ()
+}

@@ -74,7 +74,7 @@ Object.defineProperties(eYo.TrashCan.prototype, {
  * Move the trash can to the bottom-right corner.
  */
 eYo.TrashCan.prototype.place = function(bottom) {
-  eYo.TrashCan.superClass_.place.call(this, bottom)
+  eYo.TrashCan.superProto_.place.call(this, bottom)
   this.ui_driver.place(this)
 }
 console.error('NYI: what does the inherited place do?')

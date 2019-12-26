@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('Expr')
+eYo.require('Expr.List')
 
 eYo.require('Protocol.Register')
 eYo.require('C9r.Change')
@@ -21,11 +21,11 @@ eYo.require('Module.functions')
 
 eYo.require('Msg')
 
-eYo.require('Brick.Primary')
-eYo.require('Stmt')
-eYo.provide('Brick.Primary')
+eYo.provide('Expr.Primary')
 
 /**
+ * @name{eYo.Consolidator.Target}
+ * @constructor
  * List consolidator for assignment target list. Used in primary, only.
  * There are different situations depending on the type of the
  * brick enclosing the list.
@@ -94,8 +94,8 @@ eYo.Consolidator.List.makeSubclass('Target', {
  * Subclassers may add their own stuff to io.
  * @param {eYo.Brick.Dflt} brick - owner or the receiver.
  */
-eYo.Consolidator.List.Target.prototype.getIO = function (brick) {
-  var io = eYo.Consolidator.List.Target.superClass_.getIO.call(this, brick)
+eYo.Consolidator.Target.prototype.getIO = function (brick) {
+  var io = eYo.Consolidator.Target.superProto_.getIO.call(this, brick)
   io.first_starred = io.last = io.max = -1
   io.annotatedInput = eYo.NA
   io.subtype = brick.subtype
@@ -107,7 +107,7 @@ eYo.Consolidator.List.Target.prototype.getIO = function (brick) {
  * there might be unwanted things.
  * @param {object} io
  */
-eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
+eYo.Consolidator.Target.prototype.doCleanup = (() => {
   // preparation: walk through the list of inputs and
   // find the first_starred input
   var Type = {
@@ -158,7 +158,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.Consolidator.List.Target.superClass_.doCleanup.call(this, io)
+    eYo.Consolidator.Target.superProto_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.first_starred >= 0) {
       // ther must be only one starred
@@ -183,7 +183,7 @@ eYo.Consolidator.List.Target.prototype.doCleanup = (() => {
  * This does not suppose that the list of input has been completely consolidated
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List.Target.prototype.getCheck = (() => {
+eYo.Consolidator.Target.prototype.getCheck = (() => {
   var f = io => {
     if (io.i === io.unique) {
       // all subtypes with `unique` elements
@@ -248,15 +248,14 @@ eYo.Consolidator.List.Target.prototype.getCheck = (() => {
  * there might be unwanted things.
  * @param {object} io
  */
-eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
-  eYo.Consolidator.List.Target.superClass_.doFinalize.call(this, io)
+eYo.Consolidator.Target.prototype.doFinalize = function (io) {
+  eYo.Consolidator.Target.superProto_.doFinalize.call(this, io)
   if (this.setupIO(io, 0)) {
     do {
       io.m4t.incog = io.annotatedInput && io.annotatedInput !== io.slot // will ensure that there is only one annotated input
     } while (this.nextSlot(io))
   }
 }
-
 
 /**
  * Class for a Delegate, target_list brick.
@@ -303,9 +302,9 @@ eYo.Consolidator.List.Target.prototype.doFinalize = function (io) {
  * All the types involved are
  * For edython.
  */
-eYo.Brick.List.makeSubclass('target_list', {
+eYo.Expr.List.makeSubclass('target_list', {
   list: {
-    consolidator: eYo.Consolidator.List.Target
+    consolidator: eYo.Consolidator.Target
   }
 })
 
@@ -352,7 +351,7 @@ eYo.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
       ;(x = x.target_s) && (x.bindField.visible = true)
     }
   }
-  eYo.Expr.target_list.superClass_.didDisconnect.call(this, m4t, oldTargetM4t)
+  eYo.Expr.target_list.superProto_.didDisconnect.call(this, m4t, oldTargetM4t)
 }
 
 /**
@@ -363,7 +362,7 @@ eYo.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
  * @param {eYo.Magnet} targetOldM4t
  */
 eYo.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.Expr.target_list.superClass_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+  eYo.Expr.target_list.superProto_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   // BEWARE: the brick is NOT consolidated
   if (m4t.isSlot) {
     var parent = this.parent
@@ -588,7 +587,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
         b3k.target_s.bindField.optional_ = newValue > 0
       },
       fromType (type) /** @suppress {globalThis} */ {
-        var p = this.brick.profile_p
+        var p = this.brick.profile
         var item = p.p5e && p.p5e.item
         if (item) {
           if (item.type === 'method') {
@@ -874,7 +873,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
         this.didChange(oldValue, newValue)
         var b3k = this.brick
         b3k.updateProfile()
-        var item = b3k.item_p
+        var item = b3k.item
         if (item) {
           // console.log('p.p5e.item', p.p5e.item.type, p.p5e.item)
           if (item.type === 'method' && b3k.dotted_p === 0) {
@@ -912,7 +911,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
       validate (newValue) /** @suppress {globalThis} */ {
         // returns a `Number` or `Infinity`
         var validated
-        var item = this.brick.item_p
+        var item = this.brick.item
         if (item) {
           validated = newValue
         } else {
@@ -944,7 +943,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
           if (this.brick.variant_p === eYo.Key.CALL_EXPR && this.get() !== Infinity) {
-            var profile = this.brick.profile_p
+            var profile = this.brick.profile
             if (profile && profile.p5e && (profile.p5e.raw === eYo.T3.Expr.known_identifier)) {
               return
             }
@@ -959,7 +958,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
       validate (newValue) /** @suppress {globalThis} */ {
         // returns a `Number` or `0`
         var validated
-        var item = this.brick.item_p
+        var item = this.brick.item
         if (item) {
           validated = newValue
         } else {
@@ -988,8 +987,8 @@ eYo.Expr.Dflt.makeSubclass('primary', {
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          if (this.brick.profile_p && this.brick.variant_p === eYo.Key.CALL_EXPR && this.get()) {
-            var profile = this.brick.profile_p
+          if (this.brick.profile && this.brick.variant_p === eYo.Key.CALL_EXPR && this.get()) {
+            var profile = this.brick.profile
             if (profile && profile.p5e && (profile.p5e.raw === eYo.T3.Expr.known_identifier)) {
               return
             }
@@ -1042,7 +1041,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
           variable: true,
           willRender () /** @suppress {globalThis} */ {
             this.willRender()
-            var item = this.brick.item_p
+            var item = this.brick.item
             var reserved = item && item.module && (item.module.name === 'functions' || item.module.name === 'stdtypes' || item.module.name === 'datamodel')
             var d = this.ui_driver_mngr
             d && (d.makeReserved(this, reserved))
@@ -1205,7 +1204,28 @@ eYo.Expr.Dflt.makeSubclass('primary', {
   deinit () /** @suppress {globalThis} */ {
     eYo.Expr.unregisterPrimary(this)
   },
-}, true)
+  valued: {
+    profile : {
+      get () {
+        var p5e = this.getProfile()
+        return this.profile_ === p5e
+          ? this.profile_
+          : (this.profile_ = p5e) // this should never happen
+      },
+      set (newValue) {
+        this.profile_ = newValue
+      }
+    },
+  },
+  computed: {
+    item : {
+      get () {
+        var p5e = this.profile.p5e
+        return p5e && p5e.item
+      }
+    }
+  }
+})
 
 eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
   return !brick.isInFlyout
@@ -1234,8 +1254,11 @@ eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
   'assignment_chain',
   'named_expr'
 ].forEach(k => {
-  eYo.Expr[k] = eYo.Expr.primary
-  eYo.C9r.register(k)
+  if (eYo.Expr[k]) {
+    console.warn('BREAK HERE!')
+  }
+  console.warn(k)
+  eYo.C9r.register(k, (eYo.Expr[k] = eYo.Expr.primary))
 })
 
 /**
@@ -1247,29 +1270,9 @@ eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
  * For subclassers eventually
  */
 eYo.Expr.primary.prototype.init = function () {
-  eYo.Expr.primary.superClass_.init.call(this)
+  eYo.Expr.primary.superProto_.init.call(this)
   this.profile_ = eYo.NA
 }
-
-Object.defineProperties( eYo.Expr.primary.prototype, {
-  profile_p : {
-    get () {
-      var p5e = this.getProfile()
-      return this.profile_ === p5e
-        ? this.profile_
-        : (this.profile_ = p5e) // this should never happen
-    },
-    set (newValue) {
-      this.profile_ = newValue
-    }
-  },
-  item_p : {
-    get () {
-      var p5e = this.profile_p.p5e
-      return p5e && p5e.item
-    }
-  }
-})
 
 /**
  * updateProfile.
@@ -1278,7 +1281,7 @@ eYo.Expr.primary.prototype.updateProfile = eYo.Decorate.reentrant_method(
   'updateProfile',
   function () {
     ++this.change.count
-    var p5e = this.profile_p.p5e
+    var p5e = this.profile.p5e
     this.subtype_p = p5e && p5e.raw
     var item = p5e && p5e.item
     if (item) {
@@ -1347,7 +1350,7 @@ eYo.Expr.primary.prototype.getProfile = eYo.C9r.decorateChange(
           check: check,
           slot: type
         }
-        var p = t9k.profile_p
+        var p = t9k.profile
         if (p) {
           ans.identifier = p.identifier
           ans.module = p.module
@@ -1385,7 +1388,7 @@ eYo.Expr.primary.prototype.getProfile = eYo.C9r.decorateChange(
             slot: type,
             target: t9k
           }
-          p = t9k.profile_p
+          p = t9k.profile
           if (p) {
             var base = p.module
               ? p.module + '.' + p.identifier
@@ -1437,7 +1440,7 @@ eYo.Expr.primary.prototype.getProfile = eYo.C9r.decorateChange(
  * the brick type has changed.
  */
 eYo.Expr.primary.prototype.consolidateMagnets = function () {
-  eYo.Expr.primary.superClass_.consolidateMagnets.call(this)
+  eYo.Expr.primary.superProto_.consolidateMagnets.call(this)
   this.target_s.magnet.hidden = this.variant_p === eYo.Key.NONE && this.dotted_p === 0
 }
 
@@ -1465,11 +1468,11 @@ eYo.Expr.primary.prototype.getOutCheck = function () {
   var f = function () {
   // there is no validation here
   // simple cases first, variant based
-  var profile = this.profile_p
+  var profile = this.profile
   if (!profile) {
     console.warn('NO PROFILE, is it normal?')
     this.changeDone()
-    profile = this.profile_p
+    profile = this.profile
     if (!profile) {
       console.error('NO PROFILE')
     }
@@ -1778,7 +1781,7 @@ eYo.Expr.primary.prototype.getSubtype = function () {
  * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.Expr.primary.prototype.getSlot = function (name) {
-  var slot = eYo.Expr.primary.superClass_.getSlot.call(this, name)
+  var slot = eYo.Expr.primary.superProto_.getSlot.call(this, name)
   if (!slot) {
     // we suppose that ary is set
     var f = (slot) => {
@@ -1802,16 +1805,16 @@ eYo.Expr.primary.prototype.getSlot = function (name) {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.makeClass('pre_call_stmt', {
+eYo.Stmt.makeClass('base_call_stmt', {
   link: eYo.T3.Expr.primary
-}, eYo.Stmt)
+})
 
 /**
  * Class for a Delegate, base call statement brick.
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
+eYo.Stmt.base_call_stmt.makeSubclass('call_stmt', {
   data: {
     variant: {
       init: eYo.Key.CALL_EXPR,
@@ -1819,41 +1822,30 @@ eYo.Stmt.pre_call_stmt.makeSubclass('call_stmt', {
         return {validated: eYo.Key.CALL_EXPR}
       }
     }
-  }
-}, eYo.Stmt, true)
-
-Object.defineProperties( eYo.Stmt.call_stmt.prototype, {
-  profile_p : {
-    get () {
-      return this.profile_ === this.getProfile()
-        ? this.profile_
-        : (this.profile_ = this.getProfile()) // this should never happen
-    },
-    set (newValue) {
-      this.profile_ = newValue
-    }
   },
-  item_p : {
-    get () {
-      var p5e = this.profile_p.p5e
-      return p5e && p5e.item
+  valued: {
+    profile : {
+      get () {
+        var p = this.getProfile()
+        return this.profile__ === p
+          ? this.profile__
+          : (this.profile__ = p) // this should never happen
+      }
+    },
+  },
+  computed: {
+    item : {
+      get () {
+        var p5e = this.profile.p5e
+        return p5e && p5e.item
+      }
     }
   }
 })
 
-/**
- * Class for a Delegate, call statement brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
- * For edython.
- */
-eYo.Stmt.makeClass('base_call_stmt', {
-  link: eYo.T3.Expr.primary
-}, eYo.Stmt, true)
+eYo.Stmt.call_stmt.prototype.updateProfile = eYo.Expr.primary.prototype.updateProfile
 
-eYo.Stmt.base_call_stmt.prototype.updateProfile = eYo.Expr.primary.prototype.updateProfile
-
-eYo.Stmt.base_call_stmt.prototype.getProfile = eYo.Expr.primary.prototype.getProfile
-
+eYo.Stmt.call_stmt.prototype.getProfile = eYo.Expr.primary.prototype.getProfile
 
 /**
  * Initialize a brick.
@@ -1863,37 +1855,10 @@ eYo.Stmt.base_call_stmt.prototype.getProfile = eYo.Expr.primary.prototype.getPro
  * @param {eYo.Brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
-eYo.Stmt.base_call_stmt.prototype.init = function () {
-  eYo.Stmt.base_call_stmt.superClass_.init.call(this)
-  this.profile_p = eYo.NA
+eYo.Stmt.call_stmt.prototype.init = function () {
+  eYo.Stmt.call_stmt.superProto_.init.call(this)
+  this.profile = eYo.NA
 }
-
-Object.defineProperties(eYo.Stmt.base_call_stmt.prototype, {
-  profile_p: {
-    get () {
-      return this.profile_ === this.getProfile()
-        ? this.profile_
-        : (this.profile_ = this.getProfile()) // this should never happen
-    },
-    set (newValue) {
-      this.profile_ = newValue
-    }
-  },
-  item_p: {
-    get () {
-      var p5e = this.profile_p.p5e
-      return p5e && p5e.item
-    }
-  }
-})
-
-/**
- * Class for a Delegate, call statement brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
- * For edython.
- */
-eYo.Stmt.base_call_stmt.makeSubclass('call_stmt', {
-}, true)
 
 eYo.Expr.primary.T3s = [
   eYo.T3.Expr.primary,

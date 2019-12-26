@@ -99,8 +99,10 @@ class DDB:
                           else:
                             assert self.by_provide.get(p) is None, 'Same provide appears twice at least ' + p + ', ' + path.as_posix()
                             self.by_provide[p] = dep
+                          if p == 'eYo.Dnd.Mngr':
+                            print('YOUPI')
                     elif global_args.verbose:
-                        print('Ignored:', line.rstrip())
+                      print('Ignored:', line.rstrip())
         self.deps.sort(key = lambda x: ' ' + x.file_name if not x.file_name.startswith('src/lib/eyo') else x.file_name)
 
     def getDep(self, provide):

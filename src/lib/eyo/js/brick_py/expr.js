@@ -57,7 +57,7 @@ Object.defineProperties(eYo.Expr.Dflt.prototype, {
  * @param {*} deep  Whether to propagate the message to children.
  */
 eYo.Expr.Dflt.prototype.changeDone = function (deep) {
-  eYo.Expr.Dflt.superClass_.changeDone.call(this, deep)
+  eYo.Expr.Dflt.superProto_.changeDone.call(this, deep)
   var parent = this.parent
   parent && parent.changeDone()
 }
@@ -161,7 +161,7 @@ eYo.Expr.Dflt.prototype.replaceBrick = function (brick) {
  * @private
  */
 eYo.Expr.Dflt.prototype.willRender_ = function (recorder) {
-  eYo.Expr.Dflt.superClass_.willRender_.call(this, recorder)
+  eYo.Expr.Dflt.superProto_.willRender_.call(this, recorder)
   var field = this.await_f
   if (field) {
     field.visible = this.await_
@@ -196,7 +196,7 @@ eYo.Expr.Dflt.prototype.awaitable = function () {
  * @private
  */
 eYo.Expr.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var yorn = eYo.Expr.Dflt.superClass_.populateContextMenuFirst_.call(this, mngr)
+  var yorn = eYo.Expr.Dflt.superProto_.populateContextMenuFirst_.call(this, mngr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.Do.createSPAN('await', 'eyo-code-reserved'),
@@ -336,7 +336,7 @@ eYo.Expr.Dflt.prototype.insertParentWithModel = function (model) {
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
 eYo.Expr.Dflt.prototype.doConsolidate = function (deep, force) {
-  if (eYo.Expr.Dflt.superClass_.doConsolidate.call(this, deep, force)) {
+  if (eYo.Expr.Dflt.superProto_.doConsolidate.call(this, deep, force)) {
     var parent = this.parent
     return (parent && parent.consolidate()) || true
   }
@@ -499,7 +499,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__object', {
 eYo.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
   mngr.populateProperties(this, 'value')
   mngr.shouldSeparateInsert()
-  eYo.Expr.builtin__object.superClass_.populateContextMenuFirst_.call(this, mngr)
+  eYo.Expr.builtin__object.superProto_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 

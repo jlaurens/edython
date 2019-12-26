@@ -22,7 +22,7 @@ eYo.provide('Search')
  * @constructor
  */
 eYo.Search = function(owner) {
-  eYo.Search.superClass_.constructor.call(this.owner)
+  eYo.Search.superProto_.constructor.call(this.owner)
   this.board_ = new eYo.Board(this, {})
   this.initUI()
 }

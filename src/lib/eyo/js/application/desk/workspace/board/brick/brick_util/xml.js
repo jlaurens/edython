@@ -35,9 +35,7 @@ eYo.require('Brick')
 
 goog.require('goog.dom');
 
-eYo.provide('Xml')
-
-eYo.Xml = Object.create({
+eYo.makeNS('Xml', {
   URN: 'urn:edython:',
   XMLNS: 'urn:edython:0.2',
   PYTHON: 'python',
@@ -322,7 +320,7 @@ eYo.Brick.newReady = (() => {
  */
 eYo.Xml.brickToDom = (() => {
   var brickToDom = function (brick, opt) {
-    if (brick.target_is_wrapped_ && !(brick instanceof eYo.Brick.List)) {
+    if (brick.target_is_wrapped_ && !(brick instanceof eYo.Expr.List)) {
       // a wrapped brick does not create a new element on its own
       // it only can populate an already existing xml node.
       // Except for list nodes.
@@ -361,7 +359,7 @@ eYo.Xml.brickToDom = (() => {
 
 goog.exportSymbol('Xml.brickToDom', eYo.Xml.brickToDom)
 
-eYo.require('Brick.Group')
+eYo.require('Stmt.Group')
 
 /**
  * The xml tag name of this brick, as it should appear in the saved data.
@@ -373,9 +371,9 @@ eYo.Brick.Dflt.prototype.xmlAttr = function () {
   return attr || (this.type && this.type.substring(4)) || eYo.Key.PLACEHOLDER
 }
 
-eYo.require('Brick.List')
+eYo.require('Expr.List')
 
-eYo.require('Brick.Literal')
+eYo.require('Expr.Literal')
 
 /**
  * The xml tag name of this brick, as it should appear in the saved data.
@@ -383,13 +381,13 @@ eYo.require('Brick.Literal')
  * For edython.
  * @return !String
  */
-eYo.Brick.List.prototype.xmlAttr = function () {
+eYo.Expr.List.prototype.xmlAttr = function () {
   return this.wrapped_
     ? eYo.Xml.LIST
-    : eYo.Brick.List.superClass_.xmlAttr.call(this)
+    : eYo.Expr.List.superProto_.xmlAttr.call(this)
 }
 
-eYo.require('Brick.Primary')
+eYo.require('Expr.Primary')
 
 /**
  * Convert the brick's value to a text dom element.
@@ -657,7 +655,7 @@ eYo.Xml.stringToBrick = function (string, owner) {
   return brick
 }
 
-eYo.require('Brick.Group')
+eYo.require('Stmt.Group')
 
 /**
  * Recover nodes from a possibly corrupted xml data.
@@ -996,7 +994,7 @@ eYo.Xml.fromDom = function (brick, element) {
       eYo.Xml.Data.fromDom(this, element)
       // read slot
       this.forEachSlot(slot => slot.load(element))
-      if (this instanceof eYo.Brick.List) {
+      if (this instanceof eYo.Expr.List) {
         eYo.Do.forEachElementChild(element, child => {
           var name = child.getAttribute(eYo.Xml.SLOT)
           var slot = this.getSlot(name)

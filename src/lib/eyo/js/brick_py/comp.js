@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('Brick.List')
+eYo.require('Expr.List')
 
 eYo.provide('Brick.Comprehension')
 
@@ -100,8 +100,7 @@ eYo.Expr.comprehension.prototype.getBaseType = function () {
 }
 
 ;['dict_comprehension'].forEach(k => {
-  eYo.Expr[k] = eYo.Expr.comprehension
-  eYo.C9r.register(k)
+  eYo.C9r.register(k, (eYo.Expr[k] = eYo.Expr.comprehension))
 })
 
 /**
@@ -160,36 +159,13 @@ eYo.Expr.Dflt.makeSubclass('comp_if', {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.List.makeSubclass('comp_iter_list', {
+eYo.Expr.List.makeSubclass('comp_iter_list', {
   list: {
     check: eYo.T3.Expr.Check.comp_iter,
     mandatory: 0,
     presep: ''
   }
 })
-
-/**
- * Class for a Delegate, key_datum brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
- * For edython.
- */
-eYo.Expr.Dflt.makeSubclass('key_datum', {
-  slots: {
-    key: {
-      order: 1,
-      check: eYo.T3.Expr.Check.expression,
-      placeholder: eYo.Msg.Placeholder.KEY
-    },
-    datum: {
-      order: 2,
-      fields: {
-        label: ':'
-      },
-      check: eYo.T3.Expr.Check.expression,
-      placeholder: eYo.Msg.Placeholder.VALUE
-    }
-  }
-}, true)
 
 eYo.Brick.Comprehension.T3s = [
   eYo.T3.Expr.comprehension,
@@ -198,5 +174,4 @@ eYo.Brick.Comprehension.T3s = [
   eYo.T3.Expr.comp_iter_list,
   eYo.T3.Expr.dict_comprehension,
   eYo.T3.Expr.identifier,
-  eYo.T3.Expr.key_datum,
 ]

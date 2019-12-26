@@ -19,8 +19,8 @@ eYo.require('Module.random__module')
 
 eYo.require('Stmt')
 
-eYo.require('Brick.List')
-eYo.require('Brick.Primary')
+eYo.require('Expr.List')
+eYo.require('Expr.Primary')
 eYo.require('Tooltip')
 
 eYo.require('Library')
@@ -63,8 +63,7 @@ eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
         this.requiredIncog = newValue > 0
       },
       fromType (type) /** @suppress {globalThis} */ {
-        var p = this.brick.profile_p
-        var item = p && p.p5e && p.p5e.item
+        var item = this.brick.item
         if (item) {
           if (item.type === 'method') {
             this.doChange(1)

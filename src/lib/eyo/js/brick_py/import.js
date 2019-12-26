@@ -16,7 +16,7 @@ eYo.require('Stmt')
 eYo.require('Protocol')
 eYo.require('Msg')
 
-eYo.require('Brick.List')
+eYo.require('Expr.List')
 goog.require('goog.dom');
 eYo.provide('Brick.Import')
 
@@ -39,7 +39,7 @@ module_name ::= identifier
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.List.makeSubclass('non_void_module_as_list', {
+eYo.Expr.List.makeSubclass('non_void_module_as_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_module_as_list,
     mandatory: 1,
@@ -53,7 +53,7 @@ eYo.Brick.List.makeSubclass('non_void_module_as_list', {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.List.makeSubclass('non_void_import_identifier_as_list', {
+eYo.Expr.List.makeSubclass('non_void_import_identifier_as_list', {
   list: {
     check: eYo.T3.Expr.Check.non_void_import_identifier_as_list,
     mandatory: 1,
@@ -374,7 +374,7 @@ eYo.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     eYo.Do.createSPAN('import *', 'eyo-code-reserved')
   ), eYo.Key.FROM_MODULE_IMPORT_STAR)
   mngr.shouldSeparate()
-  return eYo.Stmt.import_stmt.superClass_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.Stmt.import_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /// //////// future

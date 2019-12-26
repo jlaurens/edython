@@ -4,5 +4,6 @@
     <script src="ROOT_PLACE_HOLDER/dom_board.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/dom_brick.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/dom_desk.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/dom_dndMngr.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/dom_flyout.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/dom_search.test.js" charset="utf-8"></script>

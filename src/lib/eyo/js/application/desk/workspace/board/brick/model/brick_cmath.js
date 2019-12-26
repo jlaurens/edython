@@ -16,9 +16,9 @@ eYo.require('Brick')
 eYo.require('Msg')
 
 eYo.require('Stmt')
-eYo.require('Brick.List')
+eYo.require('Expr.List')
 
-eYo.require('Brick.Primary')
+eYo.require('Expr.Primary')
 eYo.require('Tooltip')
 
 eYo.require('Library')

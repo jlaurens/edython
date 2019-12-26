@@ -11,8 +11,8 @@
  */
 'use strict'
 
-eYo.require('Brick.List')
-eYo.require('Brick.Primary')
+eYo.require('Expr.List')
+eYo.require('Expr.Primary')
 
 eYo.require('Magnet')
 goog.require('goog.dom');
@@ -36,7 +36,7 @@ eYo.provide('Brick.Parameter')
  * All the inputs are connectedÒ.
  */
 // eYo.Consolidator.Parameter = function() {
-//   eYo.Consolidator.Parameter.superClass_.constructor.call(this, eYo.Consolidator.Parameter.data)
+//   eYo.Consolidator.Parameter.superProto_.constructor.call(this, eYo.Consolidator.Parameter.data)
 // }
 // goog.require(eYo.Consolidator.List)
 // goog.inherits(eYo.Consolidator.Parameter, eYo.Consolidator.List)
@@ -69,7 +69,7 @@ eYo.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
       return false
     }
   }
-  return eYo.Consolidator.Parameter.superClass_.consolidate_connected.call(this, io)
+  return eYo.Consolidator.Parameter.superProto_.consolidate_connected.call(this, io)
 }
 
 /**
@@ -78,7 +78,7 @@ eYo.Consolidator.Parameter.prototype.consolidate_connected = function (io) {
  * @param {eYo.Brick.Dflt} brick owner of the receiver
  */
 eYo.Consolidator.Parameter.prototype.getIO = function (brick) {
-  var io = eYo.Consolidator.Parameter.superClass_.getIO.call(this, brick)
+  var io = eYo.Consolidator.Parameter.superProto_.getIO.call(this, brick)
   io.first_star_star = io.first_star = io.first_default = io.last_default = -1
   return io
 }
@@ -161,7 +161,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.Consolidator.Parameter.superClass_.doCleanup.call(this, io)
+    eYo.Consolidator.Parameter.superProto_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     // there must be an only one
     // first remove all the extra ** parameters
@@ -300,7 +300,7 @@ eYo.Consolidator.Parameter.prototype.getCheck = (() => {
  * Not normally called directly, eYo.Brick.create(...) is preferred.
  * For edython.
  */
-eYo.Brick.List.makeSubclass('parameter_list', {
+eYo.Expr.List.makeSubclass('parameter_list', {
   list: {
     consolidator: eYo.Consolidator.Parameter
   }
@@ -361,7 +361,7 @@ eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
   F('*', 0, '*…')
   F('**', 0, '**…')
   mngr.shouldSeparateInsert()
-  eYo.Expr.parameter_list.superClass_.populateContextMenuFirst_.call(this, mngr)
+  eYo.Expr.parameter_list.superProto_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -422,9 +422,8 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
   // 'if',
   'lambda_expr',
   'lambda_expr_nocond'
-].forEach((key) => {
-  eYo.Expr[key] = eYo.Expr.lambda
-  eYo.C9r.register(key)
+].forEach(k => {
+  eYo.C9r.register(k, (eYo.Expr[k] = eYo.Expr.lambda))
 })
 
 /**
@@ -432,7 +431,7 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
  * For edython.
  */
 eYo.Magnet.prototype.consolidateType = function () {
-  eYo.Magnet.superClass_.consolidateType.call(this)
+  eYo.Magnet.superProto_.consolidateType.call(this)
   var brick = this.brick
   var m4tOut = brick.out_m
   var slot = brick.getSlot(eYo.Key.EXPRESSION)

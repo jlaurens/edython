@@ -1,7 +1,7 @@
 /**
  * edython
  *
- * Copyright 2018 Jérôme LAURENS.
+ * Copyright 2019 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -53,7 +53,7 @@ eYo.provide('Style', {
   SEP_SPACE_X: 0
 })
 
-;(function () {
+{
   var g = {
     get () {
       return Math.round(8000 * eYo.Style.weight(eYo.Font.size / 10)) / 1000
@@ -80,7 +80,7 @@ eYo.provide('Style', {
       v: g
     }
   )
-})()
+}
 
 /**
  * @name{eYo.Font}

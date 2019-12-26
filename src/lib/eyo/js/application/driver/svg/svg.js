@@ -60,7 +60,7 @@ eYo.Svg.makeMngr({
         if (dom && dom.svg) {
           f && f.apply(object, rest)
           dom.svg = null
-          cls.superClass_.disposeUI.apply(object, ...rest)
+          cls.superProto_.disposeUI.apply(object, ...rest)
         }
       }
     },
