@@ -27,7 +27,8 @@
   var NA
   Object.defineProperties(eYo, {
     NA: { value: NA },
-    name: { value: 'eYo' }, 
+    name: { value: 'eYo' },
+    INVALID: {value: new function () {}, writable: false}
   })
 }
 
@@ -73,12 +74,12 @@ eYo.isD = (what) => {
  * Whether the argument is an object created with `{...}` syntax.
  * @param {*} what
  */
-eYo.isO = (() => {
-  var pttp = Object.getPrototypeOf({})
-  return (what) => {
+{
+  let pttp = Object.getPrototypeOf({})
+  eYo.isO = (what) => {
     return what && Object.getPrototypeOf(what) === pttp
   }
-})()
+}
 
 /**
  * Whether the argument is `eYo.NA`.
@@ -86,6 +87,14 @@ eYo.isO = (() => {
  */
 eYo.isNA = (what) => {
   return what === eYo.NA
+}
+
+/**
+ * Whether the argument is not `eYo.INVALID`.
+ * @param {*} what
+ */
+eYo.isVALID = (what) => {
+  return what !== eYo.INVALID
 }
 
 /**
@@ -191,6 +200,19 @@ eYo._p.require = (name) => {
 eYo._p.forwardDeclare = (name) => {}
 
 /**
+ * Contrary to goog.inherits, does not erase the childC9r.prototype.
+ * IE<11
+ * @param {Function} childC9r
+ * @param {Function} superC9r
+ */
+eYo.inherits = function (childC9r, superC9r) {
+  childC9r.superC9r_ = superC9r
+  childC9r.superProto_ = superC9r.prototype
+  Object.setPrototypeOf(childC9r.prototype, superC9r.prototype)
+  childC9r.prototype.constructor = childC9r
+}
+
+/**
  * @name {eYo.makeNS}
  * Make a namespace by subclassing the caller's constructor.
  * Will create 'foo' namespace together with an 'foo_p' property to access the prototype.
@@ -233,19 +255,6 @@ eYo._p.makeNS = function (ns, key, model) {
     name: { value: ns ? `${ns.name}.${key}` : key || "No man's land" },
   })
   return ans
-}
-
-/**
- * Contrary to goog.inherits, does not erase the childC9r.prototype.
- * IE<11
- * @param {Function} childC9r
- * @param {Function} superC9r
- */
-eYo.inherits = function (childC9r, superC9r) {
-  childC9r.superC9r_ = superC9r
-  childC9r.superProto_ = superC9r.prototype
-  Object.setPrototypeOf(childC9r.prototype, superC9r.prototype)
-  childC9r.prototype.constructor = childC9r
 }
 
 /**

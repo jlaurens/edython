@@ -90,16 +90,15 @@ eYo.Stmt.makeClass('import_stmt', {
     import_module: {
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
-      validate (newValue) /** @suppress {globalThis} */ {
-        var p5e = eYo.T3.Profile.get(newValue)
+      validate (after) /** @suppress {globalThis} */ {
+        var p5e = eYo.T3.Profile.get(after)
         return p5e === eYo.T3.Profile.void
         || p5e.raw === eYo.T3.Expr.builtin__name
         || p5e.expr === eYo.T3.Expr.identifier
         || p5e.expr === eYo.T3.Expr.parent_module
         || p5e.expr === eYo.T3.Expr.dotted_name
-        || newValue === '...'
-        ? {validated: newValue} : null
-        // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
+        || after === '...'
+        ? after : eYo.INVALID
       },
       didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)
@@ -119,15 +118,15 @@ eYo.Stmt.makeClass('import_stmt', {
     from: {
       init:'',
       placeholder: eYo.Msg.Placeholder.MODULE,
-      validate (newValue) /** @suppress {globalThis} */ {
-        var p5e = eYo.T3.Profile.get(newValue, null)
+      validate (after) /** @suppress {globalThis} */ {
+        var p5e = eYo.T3.Profile.get(after, null)
         var variant = this.brick.variant_p
         return p5e === eYo.T3.Profile.void
         || p5e.expr === eYo.T3.Expr.identifier
         || p5e.expr === eYo.T3.Expr.dotted_name
         || ((variant !== eYo.Key.FROM_MODULE_IMPORT_STAR)
-          && (p5e.expr === eYo.T3.Expr.parent_module || newValue === '...'))
-            ? {validated: newValue} : null
+          && (p5e.expr === eYo.T3.Expr.parent_module || after === '...'))
+            ? after: eYo.INVALID
       },
       synchronize: true,
       didChange (oldValue, newValue) /** @suppress {globalThis} */ {
@@ -146,16 +145,15 @@ eYo.Stmt.makeClass('import_stmt', {
     import: {
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
-      validate (newValue) /** @suppress {globalThis} */ {
-        var p5e = eYo.T3.Profile.get(newValue)
+      validate (after) /** @suppress {globalThis} */ {
+        var p5e = eYo.T3.Profile.get(after)
         return p5e === eYo.T3.Profile.void
         || p5e.expr === eYo.T3.Expr.identifier
-        ? {validated: newValue} : null
-        // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
+        ? after: eYo.INVALID
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        if (newValue) {
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        if (after) {
           this.brick.variant_p = eYo.Key.FROM_MODULE_IMPORT
         }
       },

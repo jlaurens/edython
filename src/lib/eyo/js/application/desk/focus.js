@@ -144,7 +144,7 @@ Object.defineProperties(eYo.Focus.Main.prototype, {
   },
   /**
    * The magnet that has current focus, if any
-   * @type {?eYo.Magnet}
+   * @type {!eYo.Magnet.Dflt}
    */
   magnet: {
     get () {
@@ -307,7 +307,7 @@ Object.defineProperties(eYo.Focus.Mngr.prototype, {
   },
   /**
    * Takes care of consistency between the magnet and the brick.
-   * @type{eYo.Magnet}
+   * @type{eYo.Magnet.Dflt}
    * @private
    */
   magnet_: {
@@ -344,7 +344,7 @@ Object.defineProperties(eYo.Focus.Mngr.prototype, {
   },
   /**
    * Takes care of consistency between the magnet and the brick.
-   * @type{eYo.Magnet}
+   * @type{eYo.Magnet.Dflt}
    */
   magnet: {
     get () {
@@ -485,7 +485,7 @@ Object.defineProperties(eYo.Brick.Dflt_p, {
   },
 })
 
-Object.defineProperties(eYo.Magnet.prototype, {
+Object.defineProperties(eYo.Magnet.Dflt_p, {
   focusMngr_: {
     get () {
       return this.board_.focusMngr_
@@ -506,7 +506,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
   },
 })
 
-Object.defineProperties(eYo.Field.prototype, {
+Object.defineProperties(eYo.Field.Dflt_p, {
   focusMngr_: {
     get () {
       return this.board_.focusMngr_
@@ -555,7 +555,7 @@ eYo.Brick.Dflt_p.focusOn = function (noBoard) {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Field.prototype.focusOn = function (noBoard) {
+eYo.Field.Dflt_p.focusOn = function (noBoard) {
   !noBoard && (this.focusMain_.board = this.board)
   return !!(eYo.Focus.field = this)
 }
@@ -568,7 +568,7 @@ eYo.Field.prototype.focusOn = function (noBoard) {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Magnet.prototype.focusOn = function (noBoard) {
+eYo.Magnet.Dflt_p.focusOn = function (noBoard) {
   !noBoard && (this.focusMain_.board = this.board)
   return !!(eYo.Focus.magnet = this)
 }
@@ -595,7 +595,7 @@ eYo.Brick.Dflt_p.focusOff = function () {
  * `focusOff` is used from click handling methods.
  * Does nothing if the receiver is not selected.
  */
-eYo.Magnet.prototype.focusOff = function () {
+eYo.Magnet.Dflt_p.focusOff = function () {
   this.hasFocus && (this.focusMngr_.magnet = null)
 }
 
@@ -603,6 +603,6 @@ eYo.Magnet.prototype.focusOff = function () {
  * Focus off this field.
  * `focusOff` is used from click handling methods.
  */
-eYo.Field.prototype.focusOff = function () {
+eYo.Field.Dflt_p.focusOff = function () {
   this.hasFocus && (this.focusMngr_.field = null)
 }

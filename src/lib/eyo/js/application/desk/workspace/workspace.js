@@ -62,7 +62,7 @@ eYo.Pane.makeSubclass(eYo, 'Workspace', {
     focus () { return new eYo.Focus.Main(this) },
     zoomer () { return new eYo.Zoomer(this) },
   },
-  clonable: {
+  cloned: {
     /** @type {!eYo.Rect} */
     viewRect () {
       new eYo.Rect()

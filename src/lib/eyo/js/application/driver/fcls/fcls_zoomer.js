@@ -26,10 +26,10 @@ eYo.Fcls.makeDriverClass('Zoomer')
  * Initiate the zoomer UI.
  * @param {eYo.Zoomer} trashCan  The zoomer we must initialize the UI.
  */
-eYo.Fcls.Zoomer.prototype.initUI = eYo.Do.nothing
+eYo.Fcls.Zoomer.prototype.doInitUI = eYo.Do.nothing
 
 /**
  * Dispose of the zoomer UI.
  * @param {eYo.Zoomer} zoomer  The zoomer we must dispose the UI of.
  */
-eYo.Fcls.Zoomer.prototype.disposeUI = eYo.Do.nothing
+eYo.Fcls.Zoomer.prototype.doDisposeUI = eYo.Do.nothing

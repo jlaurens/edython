@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('Do')
-eYo.require('C9r.Owned2')
+eYo.require('C9r.BSMOwned')
 eYo.require('Decorate')
 
 eYo.forwardDeclare('Where')
@@ -51,7 +51,7 @@ goog.forwardDeclare('goog.dom');
  * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.Owned2, {
+eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
   init (brick, key, model) {
     eYo.assert(brick, 'Missing slot owner brick')
     eYo.assert(key, 'Missing slot key')
@@ -73,7 +73,7 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.Owned2, {
     }
     model.setup_ || setupModel(model)
     if (goog.isDefAndNotNull(model.check)) {
-      this.magnet_ = new eYo.Magnet(this, eYo.Magnet.IN, model)
+      this.magnet_ = new eYo.Magnet.Dflt(this, eYo.Magnet.IN, model)
       if (model.wrap) {
         this.magnet_.wrapped = model.wrap   
       } else if (model.promise) {
@@ -578,9 +578,9 @@ eYo.Slot.prototype.forEachField = function (helper) {
 /**
  * Connect the brick or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
  * The slot corresponds to a wrapped list block.
- * @param {eYo.Brick | eYo.Magnet} bm  either a brick or a magnet.
+ * @param {eYo.Brick | eYo.Magnet.Dflt} bm  either a brick or a magnet.
  * @param {String} [key] an input key. When not given the last free input is used.
- * @return {?eYo.Magnet} the eventual magnet target that was connected.
+ * @return {?eYo.Magnet.Dflt} the eventual magnet target that was connected.
  */
 eYo.Slot.prototype.listConnect = function (bm, key) {
   var t9k = this.targetBrick
@@ -606,8 +606,8 @@ eYo.Slot.prototype.listConnect = function (bm, key) {
 /**
  * Connect to the target.
  * For edython.
- * @param {eYo.Brick | eYo.Magnet} bm  The target is either a brick or another magnet.
- * @return {?eYo.Magnet} the eventual target magnet
+ * @param {eYo.Brick | eYo.Magnet.Dflt} bm  The target is either a brick or another magnet.
+ * @return {?eYo.Magnet.Dflt} the eventual target magnet
  */
 eYo.Slot.prototype.connect = function (bm) {
   var m4t = this.magnet

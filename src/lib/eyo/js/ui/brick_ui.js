@@ -1682,9 +1682,9 @@ eYo.Brick.UI.prototype.removeStatusFocus_ = function () {
 /**
  * Did connect some brick's connection to another connection.
  * When connecting locked bricks, select the receiver.
- * @param {eYo.Magnet} m4t what has been connected in the brick
- * @param {eYo.Magnet} oldTargetM4t what was previously connected in the brick
- * @param {eYo.Magnet} targetOldM4t what was previously connected to the new targetConnection
+ * @param {eYo.Magnet.Dflt} m4t what has been connected in the brick
+ * @param {eYo.Magnet.Dflt} oldTargetM4t what was previously connected in the brick
+ * @param {eYo.Magnet.Dflt} targetOldM4t what was previously connected to the new targetConnection
  */
 eYo.Brick.UI.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   if (m4t.isOutput) {
@@ -1694,8 +1694,8 @@ eYo.Brick.UI.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
 
 /**
  * Converse of the preceeding.
- * @param {eYo.Magnet} m4t what has been connected in the brick
- * @param {eYo.Magnet} oldTargetM4t what was previously connected in the brick
+ * @param {eYo.Magnet.Dflt} m4t what has been connected in the brick
+ * @param {eYo.Magnet.Dflt} oldTargetM4t what was previously connected in the brick
  */
 eYo.Brick.UI.prototype.didDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isOutput) {

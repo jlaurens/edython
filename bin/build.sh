@@ -269,9 +269,8 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/core/T3_all.js" \
 --js "src/lib/eyo/js/application/application.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/board.js" \
---js "src/lib/eyo/js/core/change.js" \
 --js "src/lib/eyo/js/application/abstract/owned.js" \
---js "src/lib/eyo/js/application/abstract/owned2_ui.js" \
+--js "src/lib/eyo/js/core/change.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/consolidator.js" \
 --js "src/lib/eyo/js/core/xre.js" \
 --js "src/lib/eyo/js/other/db.js" \

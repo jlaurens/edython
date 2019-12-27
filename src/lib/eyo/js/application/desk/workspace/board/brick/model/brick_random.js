@@ -41,22 +41,20 @@ eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
     dotted: {
       order: 200,
       init: 0,
-      validate (newValue) /** @suppress {globalThis} */ {
+      validate (after) /** @suppress {globalThis} */ {
         var validated
-        if (eYo.isStr(newValue)) {
-          if (newValue.length) {
-            validated = Math.max(0, Math.floor(Number(newValue)))
+        if (eYo.isStr(after)) {
+          if (after.length) {
+            validated = Math.max(0, Math.floor(Number(after)))
           } else {
             validated = Infinity
           }
-        } else if (goog.isNumber(newValue)) {
-          validated = Math.max(0, Math.floor(newValue))
+        } else if (goog.isNumber(after)) {
+          validated = Math.max(0, Math.floor(after))
         }
         return goog.isDef(validated) && validated <= 1
-        ? {
-          validated: validated
-        }
-        : {}
+        ? validated
+        : eYo.INVALID
       },
       didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         this.didChange(oldValue, newValue)

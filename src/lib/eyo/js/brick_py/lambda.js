@@ -430,7 +430,7 @@ eYo.Expr.Dflt.makeSubclass('lambda', {
  * The output check may change depending on the content.
  * For edython.
  */
-eYo.Magnet.prototype.consolidateType = function () {
+eYo.Magnet.Dflt_p.consolidateType = function () {
   eYo.Magnet.superProto_.consolidateType.call(this)
   var brick = this.brick
   var m4tOut = brick.out_m

@@ -45,6 +45,8 @@ eYo.forwardDeclare('Dom.Audio')
 eYo.makeClass('Application', eYo.C9r.Dflt, {
   init (options) {
     this.options_ = new eYo.Options(options || {})
+    let Mngr = this.options_.UIDriverMngr
+    this.ui_driver_mngr = new (Mngr || eYo.Fcls.Mngr)() // depending on the options!!!
   },
   /**
    * Dispose of the audio and the motion.
@@ -64,11 +66,9 @@ eYo.makeClass('Application', eYo.C9r.Dflt, {
     clipboard: {},
     ui_driver_mngr: {
       willChange(before, after) {
-        if (before) {
-          this.disposeUI && this.disposeUI()
-        }
+        before && this.disposeUI()
         return function (before, after) {
-          this.initUI && this.initUI()
+          this.initUI()
         }
       }
     },
@@ -93,7 +93,7 @@ eYo.makeClass('Application', eYo.C9r.Dflt, {
      * @type {Boolean}
      */
     hasUI () {
-      return !this.initUI || this.initUI === eYo.Do.nothing
+      return this.initUI === eYo.Do.nothing
     },
   },
 })
@@ -101,7 +101,7 @@ eYo.makeClass('Application', eYo.C9r.Dflt, {
 /**
  * Make the UI.
  */
-eYo.Application.prototype.initUI = function() {
+eYo.Application_p.initUI = function() {
   this.initUI = eYo.Do.nothing
   delete this.disposeUI
   this.audio__ = new eYo.Dom.Audio(this, this.options.pathToMedia)
@@ -113,7 +113,7 @@ eYo.Application.prototype.initUI = function() {
 /**
  * Dispose of the UI related resources.
  */
-eYo.Application.prototype.disposeUI = function() {
+eYo.Application_p.disposeUI = function() {
   this.disposeUI = eYo.Do.nothing
   this.desk.disposeUI()
   this.ui_driver_mngr_ = null
@@ -124,7 +124,7 @@ eYo.Application.prototype.disposeUI = function() {
  * Paste a brick from the local clipboard.
  * @private
  */
-eYo.Application.prototype.paste = () => {
+eYo.Application_p.paste = () => {
 }
 
 /**
@@ -133,7 +133,7 @@ eYo.Application.prototype.paste = () => {
  * @param {eYo.Brick.Dflt} block The brick to delete.
  * @param {boolean} deep
  */
-eYo.Application.prototype.deleteBrick = function (brick, deep) {
+eYo.Application_p.deleteBrick = function (brick, deep) {
   if (brick && brick.deletable && !brick.board.readOnly) {
     if (brick.hasFocus) {
       // prepare a connection or a block to be selected
@@ -168,7 +168,7 @@ eYo.Application.prototype.deleteBrick = function (brick, deep) {
  * @param {eYo.Brick.Dflt} brick Brick to be copied.
  * @private
  */
-eYo.Application.prototype.copyBrick = function (brick, deep) {
+eYo.Application_p.copyBrick = function (brick, deep) {
   var xml = eYo.Xml.brickToDom(brick, {noId: true, noNext: !deep})
   // Copy only the selected brick and internal bricks.
   // Encode start position in XML.
@@ -186,7 +186,7 @@ eYo.Application.prototype.copyBrick = function (brick, deep) {
  * @private
  * @return {Boolean} true if copied, false otherwise
  */
-eYo.Application.prototype.doCopy = function(optNoNext) {
+eYo.Application_p.doCopy = function(optNoNext) {
   var brick = this.focusMngr.brick
   if (brick) {
     this.copyBrick(brick, !optNoNext)
@@ -198,7 +198,7 @@ eYo.Application.prototype.doCopy = function(optNoNext) {
  * Send the selected brick to the front.
  * This is a job for the renderer.
  */
-eYo.Application.prototype.doFront = function() {
+eYo.Application_p.doFront = function() {
   var b3k = this.focusMngr.brick
   if (b3k) {
     b3k.ui.sendToFront()
@@ -208,7 +208,7 @@ eYo.Application.prototype.doFront = function() {
 /**
  * Send the selected brick to the back.
  */
-eYo.Application.prototype.doBack = function() {
+eYo.Application_p.doBack = function() {
   var b3k = this.focusMngr.brick
   if (b3k) {
     b3k.ui.sendToBack()
@@ -218,7 +218,7 @@ eYo.Application.prototype.doBack = function() {
 /**
  * Scroll the board to show the selected brick.
  */
-eYo.Application.prototype.doFocus = function() {
+eYo.Application_p.doFocus = function() {
   var b3k = this.focusMngr.brick
   if (b3k) {
     b3k.board.scrollBrickTopLeft(b3k.id)
@@ -228,4 +228,4 @@ eYo.Application.prototype.doFocus = function() {
 /**
  * Close tooltips, context menus, dropdown selections, etc.
  */
-eYo.Application.prototype.hideChaff = eYo.Do.nothing
+eYo.Application_p.hideChaff = eYo.Do.nothing

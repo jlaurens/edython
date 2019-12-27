@@ -197,7 +197,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
    * The connection that would connect to this.target_ if this brick
    * were released immediately.
    * Updated on every mouse move.
-   * @type {eYo.Magnet}
+   * @type {eYo.Magnet.Dflt}
    * @private
    */
   this.magnet_ = null
@@ -205,7 +205,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
   /**
    * The target magnet that this brick would connect to if released immediately.
    * Updated on every mouse move.
-   * @type {eYo.Magnet}
+   * @type {eYo.Magnet.Dflt}
    * @private
    */
   this.target_ = null

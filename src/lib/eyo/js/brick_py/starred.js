@@ -124,17 +124,17 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
           return eYo.Msg.Placeholder.EXPRESSION
         }
       },
-      validate (newValue) /** @suppress {globalThis} */ {
-        var p5e = eYo.T3.Profile.get(newValue, null)
+      validate (after) /** @suppress {globalThis} */ {
+        var p5e = eYo.T3.Profile.get(after, null)
         return p5e.expr === eYo.T3.Expr.unset
         || p5e.expr === eYo.T3.Expr.identifier
         || p5e.expr === eYo.T3.Expr.dotted_name
-          ? {validated: newValue}
-          : null
+          ? after
+          : eYo.INVALID
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        if (newValue.length) {
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        if (after.length) {
           this.brick.variant_p = eYo.Key.NONE
         }
       },
@@ -261,9 +261,9 @@ eYo.Expr.Starred.prototype.xmlAttr = function () {
 
 // /**
 //  * Did connect this brick's connection from another connection.
-//  * @param {eYo.Magnet} m4t
-//  * @param {eYo.Magnet} oldTargetM4t that was connected to connection
-//  * @param {eYo.Magnet} targetOldM4t that was connected to the old target connection.
+//  * @param {eYo.Magnet.Dflt} m4t
+//  * @param {eYo.Magnet.Dflt} oldTargetM4t that was connected to connection
+//  * @param {eYo.Magnet.Dflt} targetOldM4t that was connected to the old target connection.
 //  */
 // eYo.Expr.Starred.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
 //   eYo.Expr.Starred.superProto_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
@@ -274,8 +274,8 @@ eYo.Expr.Starred.prototype.xmlAttr = function () {
 
 // /**
 //  * Did disconnect this brick's connection from another connection.
-//  * @param {eYo.Magnet} m4t
-//  * @param {eYo.Magnet} oldTargetM4t that was connected to m4t
+//  * @param {eYo.Magnet.Dflt} m4t
+//  * @param {eYo.Magnet.Dflt} oldTargetM4t that was connected to m4t
 //  */
 // eYo.Expr.Starred.prototype.didDisconnect = function (m4t, oldTargetM4t) {
 //   eYo.Expr.Starred.superProto_.didDisconnect.call(this, m4t, oldTargetM4t)

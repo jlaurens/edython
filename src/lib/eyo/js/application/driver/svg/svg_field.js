@@ -83,7 +83,7 @@ eYo.Svg.makeDriverClass('Field', {
  * @param {*} field
  * @param {*} where
  */
-eYo.Svg.Field.prototype.moveTo = function (field, where) {
+eYo.Svg.Field_p.moveTo = function (field, where) {
   var g = field.dom.svg.group_
   g.setAttribute('transform',
   `translate(${where.x}, ${where.y + eYo.Padding.t})`)
@@ -93,7 +93,7 @@ eYo.Svg.Field.prototype.moveTo = function (field, where) {
  * Update the with.
  * @param {*} field
  */
-eYo.Svg.Field.prototype.updateWidth = function (field) {
+eYo.Svg.Field_p.updateWidth = function (field) {
   var svg = field.dom.svg
   if (!svg) {
     return
@@ -107,7 +107,7 @@ eYo.Svg.Field.prototype.updateWidth = function (field) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Svg.Field.prototype.makeError = function (field, yorn) {
+eYo.Svg.Field_p.makeError = function (field, yorn) {
   var root = field.dom.svg.group_
   if (root) {
     (yorn
@@ -124,7 +124,7 @@ eYo.Svg.Field.prototype.makeError = function (field, yorn) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Svg.Field.prototype.makeReserved = function (field, yorn) {
+eYo.Svg.Field_p.makeReserved = function (field, yorn) {
   var g = field.dom.svg.group_
   if (g) {
     (yorn
@@ -141,7 +141,7 @@ eYo.Svg.Field.prototype.makeReserved = function (field, yorn) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.Svg.Field.prototype.makePlaceholder = function (field, yorn) {
+eYo.Svg.Field_p.makePlaceholder = function (field, yorn) {
   var g = field.dom.svg.group_
   g && (yorn
     ? goog.dom.classlist.add
@@ -154,7 +154,7 @@ eYo.Svg.Field.prototype.makePlaceholder = function (field, yorn) {
  * @param {eYo.Field} field
  * @param {boolean} yorn
  */
-eYo.Svg.Field.prototype.makeComment = function (field, yorn) {
+eYo.Svg.Field_p.makeComment = function (field, yorn) {
   var g = field.dom.svg.group_
   g && (yorn
     ? goog.dom.classlist.add
@@ -167,7 +167,7 @@ eYo.Svg.Field.prototype.makeComment = function (field, yorn) {
  * Whether the field is displayed.
  * @param {Object} field  the field to query about
  */
-eYo.Svg.Field.prototype.displayedGet = function (field) {
+eYo.Svg.Field_p.displayedGet = function (field) {
   var g = field.dom.svg.group_
   return g.style.display !== 'none'
 }
@@ -177,7 +177,7 @@ eYo.Svg.Field.prototype.displayedGet = function (field) {
  * @param {Object} field  the field the driver acts on
  * @param {boolean} yorn
  */
-eYo.Svg.Field.prototype.displayedSet = function (field, yorn) {
+eYo.Svg.Field_p.displayedSet = function (field, yorn) {
   var g = field.dom.svg.group_
   if (yorn) {
     g.removeAttribute('display')
@@ -191,7 +191,7 @@ eYo.Svg.Field.prototype.displayedSet = function (field, yorn) {
  * @param {Object} field  the field the driver acts on
  * @param {boolean} yorn
  */
-eYo.Svg.Field.prototype.displayedUpdate = function (field) {
+eYo.Svg.Field_p.displayedUpdate = function (field) {
   this.displayedSet(field, field.visible)
 }
 
@@ -199,7 +199,7 @@ eYo.Svg.Field.prototype.displayedUpdate = function (field) {
  * Add or remove the UI indicating if this field is editable or not.
  * @param {eYo.Field} field
  */
-eYo.Svg.Field.prototype.updateEditable = function(field) {
+eYo.Svg.Field_p.updateEditable = function(field) {
   var g = field.dom && field.dom.svg && field.dom.svg.group_
   if (!field.editable || !g) {
     // Not editable or already disposed
@@ -221,7 +221,7 @@ eYo.Svg.Field.prototype.updateEditable = function(field) {
  * Remove the children of the text element.
  * @param {Object} field  the node the driver acts on
  */
-eYo.Svg.Field.prototype.textRemove = function (field) {
+eYo.Svg.Field_p.textRemove = function (field) {
   goog.dom.removeChildren(/** @type {!Element} */ (field.dom.textElement_))
 }
 
@@ -230,7 +230,7 @@ eYo.Svg.Field.prototype.textRemove = function (field) {
  * Add a text node to the text element.
  * @param {Object} field  the node the driver acts on
  */
-eYo.Svg.Field.prototype.textCreate = function (field) {
+eYo.Svg.Field_p.textCreate = function (field) {
   var textNode = document.createTextNode(field.text)
   field.dom.textElement_.appendChild(textNode)
 }
@@ -240,7 +240,7 @@ eYo.Svg.Field.prototype.textCreate = function (field) {
  * Add a text node to the text element.
  * @param {Object} field  the node the driver acts on
  */
-eYo.Svg.Field.prototype.textUpdate = function (field) {
+eYo.Svg.Field_p.textUpdate = function (field) {
   var text = field.dom.svg.textElement_
   // text.textContent = field.text
   goog.dom.removeChildren(/** @type {!Element} */ text)
@@ -252,7 +252,7 @@ eYo.Svg.Field.prototype.textUpdate = function (field) {
  * Set the visual effects of the field.
  * @param {*} field
  */
-eYo.Svg.Field.prototype.setVisualAttribute = function (field) {
+eYo.Svg.Field_p.setVisualAttribute = function (field) {
   var e = field.dom.textElement_
   if (e) {
     var f = txt => {
@@ -278,7 +278,7 @@ eYo.Svg.Field.prototype.setVisualAttribute = function (field) {
  * @return {!eYo.Where} Object with `.x` and `.y` properties.
  * @private
  */
-eYo.Svg.Field.prototype.getAbsoluteWhere_ = function(field) {
+eYo.Svg.Field_p.getAbsoluteWhere_ = function(field) {
   return goog.style.getPageOffset(field.dom.borderRect_)
 }
 
@@ -293,7 +293,7 @@ eYo.Svg.NBSP = '\u00A0';
  * @return {string} Displayed text.
  * @private
  */
-eYo.Svg.Field.prototype.getDisplayText_ = function(field) {
+eYo.Svg.Field_p.getDisplayText_ = function(field) {
   var text = field.text_
   if (!text) {
     // Prevent the field from disappearing if empty.

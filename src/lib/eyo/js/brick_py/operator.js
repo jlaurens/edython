@@ -25,11 +25,11 @@ eYo.Expr.Dflt.makeSubclass('binary', {
   data: {
     operator: { // only one field with that key,
       init: '+',
-      validate (newValue) /** @suppress {globalThis} */ {
-        var m = eYo.Expr.binary.getTypeForOperator(newValue)
+      validate (after) /** @suppress {globalThis} */ {
+        var m = eYo.Expr.binary.getTypeForOperator(after)
         return m !== eYo.T3.Expr.unset
-          ? {validated: newValue}
-          : null
+          ? after
+          : eYo.INVALID
       },
       synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)
@@ -300,11 +300,11 @@ eYo.Expr.Dflt.makeSubclass('unary', {
     operator: {
       all: ['-', '+', '~', 'not'],
       init: '-',
-      validate (newValue) /** @suppress {globalThis} */ {
-        var m = eYo.Expr.unary.getTypeForOperator(newValue)
+      validate (after) /** @suppress {globalThis} */ {
+        var m = eYo.Expr.unary.getTypeForOperator(after)
         return m !== eYo.T3.Expr.unset
-          ? {validated: newValue}
-          : null
+          ? after
+          : eYo.INVALID
       },
       synchronize (newValue) /** @suppress {globalThis} */ {
         this.synchronize(newValue)

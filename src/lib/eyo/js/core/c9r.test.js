@@ -737,13 +737,13 @@ describe ('Dlgt', function () {
     it (`eYo.makeClass('...', Super|eYo.Dflt, {...}?)`, function () {
       var Super = function () {}
       Super.eyo = new eYo.Dlgt(eYo, Super, {})
-      chai.assert(!Super.prototype.beginInit)
-      chai.assert(!Super.prototype.endInit)
+      chai.assert(!Super.prototype.initBegin)
+      chai.assert(!Super.prototype.initEnd)
       var ns = eYo.makeNS()
       ns.makeDflt()
       eYo.makeClass(ns, 'A', Super)
-      chai.assert(Super.prototype.beginInit === eYo.Do.nothing)
-      chai.assert(Super.prototype.endInit === eYo.Do.nothing)
+      chai.assert(Super.prototype.initBegin === eYo.Do.nothing)
+      chai.assert(Super.prototype.initEnd === eYo.Do.nothing)
       chai.assert(ns.A.eyo.super === Super.eyo)
       testX(ns.A, Super, ns.Dlgt)
     })
@@ -1331,7 +1331,7 @@ describe ('Dlgt', function () {
         this.value_ = value
       }
       eYo.makeClass(ns, 'A', null, {
-        clonable: {
+        cloned: {
           foo () {
             return new B()
           }
@@ -1402,7 +1402,7 @@ describe ('Dlgt', function () {
         chai.assert(after === foo_after)
       }
       eYo.makeClass(ns, 'A', null, {
-        clonable: {
+        cloned: {
           foo: {
             init () {
               return foo_before
@@ -1447,12 +1447,12 @@ describe ('Dlgt', function () {
         })
       }).to.throw()
     })
-    it ('No collision: valued + clonable', function () {
+    it ('No collision: valued + cloned', function () {
       var ns = eYo.makeNS()
       chai.expect(() => {
         eYo.makeClass(ns, 'A', null, {
           valued: ['foo'],
-          clonable: {
+          cloned: {
             foo () {}
           },
         })
@@ -1469,25 +1469,25 @@ describe ('Dlgt', function () {
         })
       }).to.throw()
     })
-    it ('No collision: cached + clonable', function () {
+    it ('No collision: cached + cloned', function () {
       var ns = eYo.makeNS()
       chai.expect(() => {
         eYo.makeClass(ns, 'A', null, {
           cached: {
             foo () {}
           },
-          clonable: {
+          cloned: {
             foo () {}
           },
         })
       }).to.throw()
     })
-    it ('No collision: owned + clonable', function () {
+    it ('No collision: owned + cloned', function () {
       var ns = eYo.makeNS()
       chai.expect(() => {
         eYo.makeClass(ns, 'A', null, {
           owned: ['foo'],
-          clonable: {
+          cloned: {
             foo () {}
           },
         })
@@ -1532,7 +1532,7 @@ describe ('Dlgt', function () {
       cached: {
         foo () {}
       },
-      clonable: {
+      cloned: {
         foo () {}
       },
       valued: ['foo'],
@@ -1547,25 +1547,25 @@ describe ('Dlgt', function () {
       owned: {
         owned: ok,
         cached: ok,
-        clonable: ok,
+        cloned: ok,
         valued: ok,
       },
       cached: {
         owned: ok,
         cached: ok,
-        clonable: ok,
+        cloned: ok,
         valued: ok,
       },
-      clonable: {
+      cloned: {
         owned: ok,
         cached: ok,
-        clonable: ok,
+        cloned: ok,
         valued: ok,
       },
       valued: {
         owned: ok,
         cached: ok,
-        clonable: ok,
+        cloned: ok,
         valued: ok,
       },
     }
@@ -1689,17 +1689,17 @@ describe ('Dlgt', function () {
     ab.valuedForEach(x => flag += x)
     chai.assert(flag === 11)
   })
-  it ('Constructor: clonableForEach', function () {
+  it ('Constructor: clonedForEach', function () {
     var ns = eYo.makeNS()
     eYo.makeClass(ns, 'A', null, {
-      clonable: {
+      cloned: {
         foo () {
           return new B()
         }
       }
     })
     eYo.makeClass(ns, 'AB', ns.A, {
-      clonable: {
+      cloned: {
         bar () {
           return new B()
         }
@@ -1726,7 +1726,7 @@ describe ('Dlgt', function () {
     a.foo_ = new B(1)
     chai.assert(a.foo.value_ === 1)
     var flag = 0
-    a.clonableForEach(x => flag += x.value_)
+    a.clonedForEach(x => flag += x.value_)
     chai.assert(flag === 1)
     var ab = new ns.AB()
     ab.foo_ = new B(1)
@@ -1734,7 +1734,7 @@ describe ('Dlgt', function () {
     ab.bar_ = new B(10)
     chai.assert(ab.bar.value_ === 10)
     flag = 0
-    ab.clonableForEach(x => flag += x.value_)
+    ab.clonedForEach(x => flag += x.value_)
     chai.assert(flag === 11)
   })
   it ('Constructor: makeSubclass', function () {

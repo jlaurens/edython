@@ -43,7 +43,7 @@ eYo.C9r.Dflt.makeSubclass(eYo, 'WorkspaceControl', {
       return this.viewRect_.y
     }
   },
-  clonable: {
+  cloned: {
     viewRect () {
       var ans = new eYo.Rect()
       ans.width = this.WIDTH_

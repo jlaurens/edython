@@ -77,13 +77,13 @@ eYo.Stmt.Group.makeSubclass('except_part', {
       init: '',
       placeholder: eYo.Msg.Placeholder.ALIAS,
       synchronize: true,
-      validate (newValue) /** @suppress {globalThis} */ {
-        var type = eYo.T3.Profile.get(newValue).expr
+      validate (after) /** @suppress {globalThis} */ {
+        var type = eYo.T3.Profile.get(after).expr
         return type === eYo.T3.Expr.unset
         || type === eYo.T3.Expr.identifier
         || type === eYo.T3.Expr.builtin__name
-        ? {validated: newValue}
-        : null
+        ? after
+        : eYo.INVALID
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {

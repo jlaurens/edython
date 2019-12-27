@@ -139,26 +139,23 @@ eYo.Stmt.makeClass('decorator_stmt', {
         ? eYo.Msg.Placeholder.IDENTIFIER
         : eYo.Msg.Placeholder.DECORATOR
       },
-      validate (newValue) /** @suppress {globalThis} */ {
-        var p5e = eYo.T3.Profile.get(newValue, null)
-        if (this.getAll().indexOf(p5e.expr) >= 0) {
-          return {validated: newValue}
-        }
-        return null
+      validate (after) /** @suppress {globalThis} */ {
+        var p5e = eYo.T3.Profile.get(after, null)
+        return this.getAll().indexOf(p5e.expr) >= 0 ? after : eYo.INVALID
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
         var b3k = this.brick
         var p = b3k.property_p
         if (p && p !== eYo.Key.GETTER) {
-          newValue = newValue + '.' + p
+          after = after + '.' + p
         }
-        b3k.decorator_p = newValue || ''
+        b3k.decorator_p = after || ''
       },
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
         var d = this.field.ui_driver_mngr
-        d && (d.setVisualAttribute(this.field, newValue))
+        d && (d.setVisualAttribute(this.field, after))
       },
       xml: false
     },
@@ -169,17 +166,14 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.T3.Expr.unset
       ],
       init: '',
-      validate (newValue) /** @suppress {globalThis} */ {
-        var p5e = eYo.T3.Profile.get(newValue, null)
-        if (this.getAll().indexOf(p5e.expr) >= 0 || this.getAll().indexOf(p5e.base) >= 0) {
-          return {validated: newValue}
-        }
-        return null
+      validate (after) /** @suppress {globalThis} */ {
+        var p5e = eYo.T3.Profile.get(after, null)
+        return this.getAll().indexOf(p5e.expr) >= 0 || this.getAll().indexOf(p5e.base) >= 0 ? after: eYo.INVALID
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
         var b3k = this.brick
-        var m = XRegExp.exec(newValue, eYo.XRE.decorator)
+        var m = XRegExp.exec(after, eYo.XRE.decorator)
         if (m) {
           if (m.setter) {
             b3k.target_p = b3k.saved_p = m.property_name
@@ -213,12 +207,12 @@ eYo.Stmt.makeClass('decorator_stmt', {
               if (b3k.variant_p !== eYo.Key.N_ARY) {
                 b3k.variant_p = eYo.Key.NONE
               }
-              b3k.target_p = b3k.saved_p = newValue
+              b3k.target_p = b3k.saved_p = after
               b3k.mainChooser_p = eYo.Key.NONE
             }
           }
         } else {
-          b3k.target_p = newValue
+          b3k.target_p = after
           b3k.property_p = eYo.Key.GETTER
           b3k.mainChooser_p = eYo.Key.NONE
           b3k.chooser_p = eYo.Key.NONE
@@ -235,14 +229,14 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.Key.PROPERTY // @property
       ],
       init: null,
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        if (newValue === eYo.Key.NONE) {
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        if (after === eYo.Key.NONE) {
           this.brick.variant_p = eYo.Key.NONE
           this.brick.decorator_p = this.brick.saved_p || ''
         } else {
           this.brick.chooser_p = eYo.Key.NONE
-          this.brick.decorator_p = newValue || ''
+          this.brick.decorator_p = after || ''
         }
       },
       synchronize: false,
@@ -430,12 +424,12 @@ eYo.Stmt.Group.makeSubclass('funcdef_part', {
     name: {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
-      validate (newValue) /** @suppress {globalThis} */ {
-        var p5e = eYo.T3.Profile.get(newValue, null)
+      validate (after) /** @suppress {globalThis} */ {
+        var p5e = eYo.T3.Profile.get(after, null)
         return p5e.expr === eYo.T3.Expr.identifier
           || p5e.expr === eYo.T3.Expr.unset
-          ? {validated: newValue}
-          : null
+          ? after
+          : eYo.INVALID
       },
       synchronize: true
     }
@@ -521,12 +515,12 @@ eYo.Stmt.Group.makeSubclass('classdef_part', {
     name: {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
-      validate (newValue) /** @suppress {globalThis} */ {
-        var p5e = eYo.T3.Profile.get(newValue, null)
+      validate (after) /** @suppress {globalThis} */ {
+        var p5e = eYo.T3.Profile.get(after, null)
         return p5e.expr === eYo.T3.Expr.identifier
           || p5e.expr === eYo.T3.Expr.unset
-          ? {validated: newValue}
-          : null
+          ? after
+          : eYo.INVALID
       },
       synchronize: true
     }

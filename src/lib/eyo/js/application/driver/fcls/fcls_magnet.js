@@ -25,7 +25,7 @@ eYo.Fcls.makeDriverClass('Magnet')
 /**
  * Hilight the given connection.
  * The default implementation does nothing.
- * @param {eYo.Magnet} magnet
+ * @param {eYo.Magnet.Dflt} magnet
  */
 eYo.Fcls.Magnet.prototype.hilight = eYo.Do.nothing
 

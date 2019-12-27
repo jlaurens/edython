@@ -11,276 +11,120 @@
  */
 'use strict'
 
-eYo.require('C9r.Owned2')
+eYo.require('C9r.BSMOwned')
 eYo.require('Protocol')
 
-eYo.provide('Magnets')
 eYo.provide('Magnet')
 
 eYo.forwardDeclare('Do')
 eYo.forwardDeclare('Where')
 
-
-/**
- *
- * @param {eYo.Brick.Dflt} brick  brick is the owner
- */
-eYo.Magnets = function (brick) {
-  // configure the connections
-  var model = brick.model
-  var D
-  if ((D = model.out) && Object.keys(D).length) {
-    this.out_ = new eYo.Magnet(brick, eYo.Magnet.OUT, D)
-  } else if ((D = model.statement) && Object.keys(D).length) {
-    if (D.head && goog.isDefAndNotNull(D.head.check)) {
-      this.high_ = new eYo.Magnet(brick, eYo.Magnet.HEAD, D.head)
-    }
-    if (D.foot && goog.isDefAndNotNull(D.foot.check)) {
-      this.foot_ = new eYo.Magnet(brick, eYo.Magnet.FOOT, D.foot)
-    }
-    if (D.suite && goog.isDefAndNotNull(D.suite.check)) {
-      this.suite_ = new eYo.Magnet(brick, eYo.Magnet.FOOT, D.suite)
-    }
-    if (D.left && goog.isDefAndNotNull(D.left.check)) {
-      this.left_ = new eYo.Magnet(brick, eYo.Magnet.LEFT, D.left)
-    }
-    if (D.right && goog.isDefAndNotNull(D.right.check)) {
-      this.right_ = new eYo.Magnet(brick, eYo.Magnet.RIGHT, D.right)
-    }
-  }
-}
-
-Object.defineProperties(eYo.Magnets.prototype, {
-  out: {
-    get () {
-      return this.out_
-    },
-    enumerable: true
-  },
-  head: {
-    get () {
-      return this.high_
-    },
-    enumerable: true
-  },
-  left: {
-    get () {
-      return this.left_
-    },
-    enumerable: true
-  },
-  right: {
-    get () {
-      return this.right_
-    },
-    enumerable: true
-  },
-  suite: {
-    get () {
-      return this.suite_
-    },
-    enumerable: true
-  },
-  foot: {
-    get () {
-      return this.foot_
-    },
-    enumerable: true
-  }
-})
-
-/**
- * Dispose of all the ressources that blockly does not have.
- * This is an intermediate design.
- */
-eYo.Magnets.prototype.dispose = function () {
-  if (this.out_) {
-    this.out_.dispose()
-    this.out_ = eYo.NA
-  } else {
-    this.head_ && this.head_.dispose()
-    this.head_ = eYo.NA
-    this.left_ && this.left_.dispose()
-    this.left_ = eYo.NA
-    this.right_ && this.right_.dispose()
-    this.right_ = eYo.NA
-    this.suite_ && this.suite_.dispose()
-    this.suite_ = eYo.NA
-    this.foot_ && this.foot_.dispose()
-    this.foot_ = eYo.NA
-  }
-}
-
-/**
- * `initUI` the magnets.
- */
-eYo.Magnets.prototype.initUI = function () {
-  this.initUI = eYo.Do.nothing // one shot function
-  for (var k in this) { 
-    var m = this[k]
-    m && m.initUI && m.initUI()
-  }
-}
-
-/**
- * Class for a magnet.
- * 
- * @param {eYo.Brick|eYo.Slot} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
- * @param {String} type  the type of this magnet
- * @param {Object} model  the model of this magnet
- * @readonly
- * @property {*} node  the node if any
- * @property {boolean} startOfLine  whether the connection is a slot connection starting a line.
- * @property {boolean} startOfStatement  whether the connection is a slot connection starting a brick.
- * @readonly
- * @property {string} type  the type of the connection
- * @readonly
- * @property {boolean} targetIsMissing  whether a target is missing
- * @readonly
- * @property {boolean} isSuperior  whether the connection is superior, true if connection faces down or right, false otherwise.
- * @constructor
- */
-eYo.Magnet = function (bs, type, model) {
-  eYo.Magnet.superProto_.constructor.call(this, bs)
-  if (this.slot) {
-    this.name_ = this.slot.key
-  }
-  this.type_ = type
-  this.model_ = model
-  this.optional_ = this.model_.optional
-  this.incog_ = this.hidden_ = model.hidden
-  eYo.Field.makeFields(this, model.fields)
-  this.where_ = new eYo.Where()
-  this.reentrant_ = {}
-  this.targetIsMissing = false
-  if (!this.brick.isInFlyout) {
-    var DB = this.magnetDB_
-    if (DB) {
-      this.db_ = DB[this.type]
-      this.dbOpposite_ = DB[this.opposite_type]
-      this.hidden = false
-    }
-  }
-}
-goog.inherits(eYo.Magnet, eYo.C9r.Owned2)
-
 // Magnet types
-Object.defineProperties(eYo.Magnet, {
+Object.defineProperties(eYo.Magnet._p, {
   IN: { value: 1 },
   OUT: { value: 6 },
   HEAD: { value: 2 },
   FOOT: { value: 5 },
   LEFT: { value: 3 },
   RIGHT: { value: 4 },
-/**
- * Constants for checking whether two connections are compatible.
- */
+  OPPOSITE_TYPE: {
+    [eYo.Magnet.IN]: eYo.Magnet.OUT,
+    [eYo.Magnet.OUT]: eYo.Magnet.IN,
+    [eYo.Magnet.FOOT]: eYo.Magnet.HEAD,
+    [eYo.Magnet.HEAD]: eYo.Magnet.FOOT,
+    [eYo.Magnet.RIGHT]: eYo.Magnet.LEFT,
+    [eYo.Magnet.LEFT]: eYo.Magnet.RIGHT,
+  },
+  /**
+  * Constants for checking whether two connections are compatible.
+  */
   CAN_CONNECT: { value: 0},
   REASON_SELF_CONNECTION: { value: 1},
   REASON_WRONG_TYPE: { value: 2},
   REASON_TARGET_NULL: { value: 3},
   REASON_CHECKS_FAILED: { value: 4},
-  REASON_DIFFERENT_WORKSPACES: { value: 5}
+  REASON_DIFFERENT_WORKSPACES: { value: 5},
 })
 
-eYo.Magnet.OPPOSITE_TYPE = {
-  [eYo.Magnet.IN]: eYo.Magnet.OUT,
-  [eYo.Magnet.OUT]: eYo.Magnet.IN,
-  [eYo.Magnet.FOOT]: eYo.Magnet.HEAD,
-  [eYo.Magnet.HEAD]: eYo.Magnet.FOOT,
-  [eYo.Magnet.RIGHT]: eYo.Magnet.LEFT,
-  [eYo.Magnet.LEFT]: eYo.Magnet.RIGHT
-}
 
-/**
- * Database of magnets.
- * Magnets are stored in order of their vertical component.  This way
- * connections in an area may be looked up quickly using a binary search.
- * @constructor
- */
-eYo.Magnet.DB = function() {
-}
-eYo.Magnet.DB.prototype = new Array()
-/**
- * Don't inherit the constructor from Array.
- * @type {!Function}
- */
-eYo.Magnet.DB.constructor = eYo.Magnet.DB
-
-/**
- * Initialize a set of connection DBs for a specified board.
- * @param {eYo.Board} board The board this DB is for.
- */
-eYo.Magnet.DB.init = (board) => {
-  // Create four databases, one for each connection type.
-  var dbList = []
-  dbList[eYo.Magnet.IN] = new eYo.Magnet.DB()
-  dbList[eYo.Magnet.OUT] = new eYo.Magnet.DB()
-  dbList[eYo.Magnet.HEAD] = new eYo.Magnet.DB()
-  dbList[eYo.Magnet.LEFT] = new eYo.Magnet.DB()
-  dbList[eYo.Magnet.RIGHT] = new eYo.Magnet.DB()
-  dbList[eYo.Magnet.FOOT] = new eYo.Magnet.DB()
-  board.magnetDBList = dbList
-}
-
-/**
- * Initialize a set of connection DBs for a specified board.
- * @param {eYo.Board} board The board containing the DB to disose of.
- */
-eYo.Magnet.DB.dispose = (board) => {
-  board.magnetDBList = null
-}
-
-/**
- * Finds a candidate position for inserting this magnet into the list.
- * This will be in the correct y order
- * but makes no guarantees about ordering in the x axis.
- * @param {float} y  The y coordinate of the magnet to add.
- * @return {number} The candidate index.
- * @private
- */
-eYo.Magnet.DB.prototype.findIndex_ = function(y) {
-  if (!this.length) {
-    return 0;
-  }
-  var min = 0
-  var max = this.length
-  while (min < max) {
-    var mid = Math.floor((min + max) / 2)
-    if (this[mid].y < y) {
-      min = mid + 1
-    } else if (this[mid].y > y) {
-      max = mid
-    } else {
-      min = mid
-      break
-    }
-  }
-  return min
-}
-
-/**
- * Add a magnet to the database. Do not look for duplicates.
- * @param {eYo.Magnet} magnet The magnet to be added.
- */
-eYo.Magnet.DB.prototype.addMagnet_ = function(magnet) {
-  var magnetIndex = this.findIndex_(magnet.y)
-  this.splice(magnetIndex, 0, magnet)
-}
-
-/**
- * Remove a magnet from the database. Do not look for duplicates.
- * @param {eYo.Magnet} magnet The magnet to be remove.
- */
-eYo.Magnet.DB.prototype.removeMagnet_ = (() => {
-  /*
-   * Find the given connection.
-   * Starts by doing a binary search to find the approximate location, then
-   *     linearly searches nearby for the exact connection.
-   * @param {eYo.Connection} conn The connection to find.
-   * @return {number} The index of the connection, or -1 if the connection was
-   *     not found.
+// Database of magnets
+{
+  /**
+   * Database of magnets.
+   * Magnets are stored in order of their vertical component.  This way
+   * connections in an area may be looked up quickly using a binary search.
+   * @constructor
    */
+  let DB = function () {}
+
+  DB.prototype = new Array()
+  /**
+   * Don't inherit the constructor from Array.
+   * @type {!Function}
+   */
+  DB.constructor = DB
+
+  /**
+   * Initialize a set of connection DBs for a specified board.
+   * @param {eYo.Board} board The board this DB is for.
+   */
+  eYo.Magnet.initDB = (board) => {
+    // Create four databases, one for each connection type.
+    var dbList = []
+    dbList[eYo.Magnet.IN] = new eYo.Magnet.DB()
+    dbList[eYo.Magnet.OUT] = new eYo.Magnet.DB()
+    dbList[eYo.Magnet.HEAD] = new eYo.Magnet.DB()
+    dbList[eYo.Magnet.LEFT] = new eYo.Magnet.DB()
+    dbList[eYo.Magnet.RIGHT] = new eYo.Magnet.DB()
+    dbList[eYo.Magnet.FOOT] = new eYo.Magnet.DB()
+    board.magnetDBList = dbList
+  }
+
+  /**
+   * Finds a candidate position for inserting this magnet into the list.
+   * This will be in the correct y order
+   * but makes no guarantees about ordering in the x axis.
+   * @param {float} y  The y coordinate of the magnet to add.
+   * @return {number} The candidate index.
+   * @private
+   */
+  DB.prototype.findIndex_ = function(y) {
+    if (!this.length) {
+      return 0;
+    }
+    var min = 0
+    var max = this.length
+    while (min < max) {
+      var mid = Math.floor((min + max) / 2)
+      if (this[mid].y < y) {
+        min = mid + 1
+      } else if (this[mid].y > y) {
+        max = mid
+      } else {
+        min = mid
+        break
+      }
+    }
+    return min
+  }
+
+  /**
+   * Add a magnet to the database. Do not look for duplicates.
+   * @param {eYo.Magnet.Dflt} magnet The magnet to be added.
+   */
+  DB.prototype.addMagnet_ = function(magnet) {
+    var magnetIndex = this.findIndex_(magnet.y)
+    this.splice(magnetIndex, 0, magnet)
+  }
+
+  /*
+  * Find the given connection.
+  * Starts by doing a binary search to find the approximate location, then
+  *     linearly searches nearby for the exact connection.
+  * @param {eYo.Connection} conn The connection to find.
+  * @return {number} The index of the connection, or -1 if the connection was
+  *     not found.
+  */
   var findMagnet = (db, magnet) => {
     if (!db.length) {
       return -1
@@ -308,130 +152,208 @@ eYo.Magnet.DB.prototype.removeMagnet_ = (() => {
     }
     return -1
   }
-  return function(magnet) {
+  /**
+   * Remove a magnet from the database. Do not look for duplicates.
+   * @param {eYo.Magnet.Dflt} magnet The magnet to be remove.
+   */
+  DB.prototype.removeMagnet_ = function(magnet) {
     var magnetIndex = findMagnet(this, magnet)
     magnetIndex >= 0 && (this.splice(magnetIndex, 1))
   }
-})()
-
-/**
- * Dispose of the ressources.
- * @param {Boolean} [healStack]  Dispose of the inferior target iff healStack is a falsy value
- */
-eYo.Magnet.prototype.dispose = function (healStack) {
-  var t9k = this.targetBrick
-  if (t9k) {
-    if (this.isSuperior && (this.wrapped_ || !healStack)) {
-      t9k.dispose()
-    } else {
-      this.disconnect()
-    }
-    this.disconnect()
-  }
-  if (this.wrapped_) {
-    this.brick.removeWrapperMagnet(this)
-    this.wrapped_ = eYo.NA
-  }
-  this.promised_ = eYo.NA
-  this.inDB_ = false
-  this.db_ = this.dbOpposite_ = null
-  this.ui_driver_mngr && this.ui_driver_mngr.disposeUI(this)
-  eYo.Field.disposeFields(this)
-  this.where_ = this.model_ = eYo.NA
-  eYo.Magnet.superProto_.dispose.call(this)
 }
 
-// private properties
-Object.defineProperties(eYo.Magnet.prototype, {
-  model_: { value: eYo.NA, writable: true},
-  type_: { value: eYo.NA, writable: true},
-  hidden_: { value: eYo.NA, writable: true},
-  wrapped_: { value: eYo.NA, writable: true},
-  promised_: { value: eYo.NA, writable: true},
-  check_: {value: eYo.NA, writable: true},
-  name_: { value: eYo.NA, writable: true},
-  visible_: { value: eYo.NA, writable: true},
+/**
+ * Initialize a set of connection DBs for a specified board.
+ * @param {eYo.Board} board The board containing the DB to disose of.
+ */
+eYo.Magnet.disposeDB = (board) => {
+  board.magnetDBList = null
+}
+
+/**
+ * @name{eYo.Magnet.S}
+ * @param {eYo.Brick.Dflt} brick  brick is the owner
+ */
+eYo.Magnet.makeClass('S', {
+  init (brick) {
+    // configure the connections
+    var model = brick.model
+    var D
+    if ((D = model.out) && Object.keys(D).length) {
+      this.out_ = new eYo.Magnet.Dflt(brick, eYo.Magnet.OUT, D)
+    } else if ((D = model.statement) && Object.keys(D).length) {
+      if (D.head && goog.isDefAndNotNull(D.head.check)) {
+        this.high_ = new eYo.Magnet.Dflt(brick, eYo.Magnet.HEAD, D.head)
+      }
+      if (D.foot && goog.isDefAndNotNull(D.foot.check)) {
+        this.foot_ = new eYo.Magnet.Dflt(brick, eYo.Magnet.FOOT, D.foot)
+      }
+      if (D.suite && goog.isDefAndNotNull(D.suite.check)) {
+        this.suite_ = new eYo.Magnet.Dflt(brick, eYo.Magnet.FOOT, D.suite)
+      }
+      if (D.left && goog.isDefAndNotNull(D.left.check)) {
+        this.left_ = new eYo.Magnet.Dflt(brick, eYo.Magnet.LEFT, D.left)
+      }
+      if (D.right && goog.isDefAndNotNull(D.right.check)) {
+        this.right_ = new eYo.Magnet.Dflt(brick, eYo.Magnet.RIGHT, D.right)
+      }
+    }
+  },
+  owned: ['out', 'head', 'left', 'right', 'suite', 'foot'],
+  valued: {
+    inDB: {
+      validate (after) {
+        return !!after
+      },
+      didChange (before, after) {
+        var db = this.db_
+        if (db) {
+          after
+          ? db.addMagnet_(this)
+          : db.removeMagnet_(this)
+        }
+      }
+    },
+    db: {},
+    dbOpposite: {},
+  },
 })
 
-// computed private properties
-Object.defineProperties(eYo.Magnet.prototype, {
-  magnetDB_: {
-    get () {
-      return this.board.magnetDBList
+/**
+ * Class for a magnet.
+ * 
+ * @param {eYo.Brick|eYo.Slot} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {String} type  the type of this magnet
+ * @param {Object} model  the model of this magnet
+ * @readonly
+ * @property {*} node  the node if any
+ * @property {boolean} startOfLine  whether the connection is a slot connection starting a line.
+ * @property {boolean} startOfStatement  whether the connection is a slot connection starting a brick.
+ * @readonly
+ * @property {string} type  the type of the connection
+ * @readonly
+ * @property {boolean} targetIsMissing  whether a target is missing
+ * @readonly
+ * @property {boolean} isSuperior  whether the connection is superior, true if connection faces down or right, false otherwise.
+ * @constructor
+ */
+eYo.Magnet.makeClass('Dflt', eYo.C9r.BSMOwned, {
+  init (bs, type, model) {
+    if (this.slot) {
+      this.name_ = this.slot.key
     }
-  },
-  optional_: {value: false, writable: true},
-})
-
-// computed public properties
-Object.defineProperties(eYo.Magnet.prototype, {
-  name: {
-    get () {
-      return this.name_
-    }
-  },
-  wrapped: {
-    get () {
-      return this.wrapped_
-    },
-    set (newValue) {
-      if (this.target) {
-        throw "ALREADY A WRAPPED BLOCK"
+    this.type_ = type
+    this.model_ = model
+    this.optional_ = this.model_.optional
+    this.incog_ = this.hidden_ = model.hidden
+    eYo.Field.makeFields(this, model.fields)
+    this.reentrant_ = {}
+    this.targetIsMissing = false
+    if (!this.brick.isInFlyout) {
+      var DB = this.magnetDB_
+      if (DB) {
+        this.db_ = DB[this.type]
+        this.dbOpposite_ = DB[this.opposite_type]
+        this.hidden = false
       }
-      this.wrapped_ = newValue
-      this.promised_ = null
-      newValue && (this.brick.addWrapperMagnet(this))
-      this.hidden = true
     }
   },
-  promised: {
-    get () {
-      return this.promised_
-    },
-    set (newValue) {
-      if (this.target) {
-        throw "ALREADY A WRAPPED BLOCK"
+  /**
+   * Dispose of the ressources.
+   * @param {Boolean} [healStack]  Dispose of the inferior target iff healStack is a falsy value
+   */
+  dispose: function (healStack) {
+    var t9k = this.targetBrick
+    if (t9k) {
+      if (this.isSuperior && (this.wrapped_ || !healStack)) {
+        t9k.dispose()
       }
-      this.promised_ = newValue
-      this.wrapped_ && (this.brick.removeWrapperMagnet(this))
-      this.wrapped_ = null
-      this.hidden = true
+      this.disconnect()
     }
-  },
-  model: {
-    get () {
-      return this.model_
+    if (this.wrapped_) {
+      this.brick.removeWrapperMagnet(this)
+      this.wrapped_ = eYo.NA
     }
+    eYo.Field.disposeFields(this)
   },
-  where: {
-    get () {
-      return this.where_
-    }
-  },
-  type: {
-    get () {
-      return this.type_
-    }
-  },
-  opposite_type: {
-    get () {
-      return eYo.Magnet.OPPOSITE_TYPE[this.type_]
-    }
-  },
-  visible: {
-    get () {
-      return this.visible_
-    },
-    set (newValue) {
-      if (this.visible_ !== newValue) {
-        newValue ? this.unhideAll() : this.hideAll()
+  valued: {
+    optional: {value: false},
+    model: { value: eYo.NA},
+    type: { value: eYo.NA},
+    opposite_type: { value: eYo.NA},
+    hidden: { value: eYo.NA},
+    check: {value: eYo.NA},
+    name: { value: eYo.NA},
+    visible: {
+      didChange (before, after) {
+        after ? this.unhideAll() : this.hideAll()
         var t9k = this.targetBrick
-        t9k && (t9k.ui.visible = newValue)
+        t9k && (t9k.ui.visible = after)
       }
+    },
+    wrapped: {
+      validate (after) {
+        if (this.target) {
+          throw "ALREADY A WRAPPED BLOCK"
+        }
+        return after
+      },
+      didChange (before, after) {
+        this.promised_ = eYo.NA
+        after && (this.brick.addWrapperMagnet(this))
+        this.hidden = true
+      }
+    },
+    promised: {
+      validate (after) {
+        if (this.target) {
+          throw "ALREADY A WRAPPED BLOCK"
+        }
+        return after
+      },
+      didChange (before, after) {
+        this.wrapped_ && (this.brick.removeWrapperMagnet(this))
+        this.wrapped_ = eYo.NA
+        this.hidden = true
+      }
+    },
+    hidden: {
+      validate (after) {
+        // Incog magnets must stay hidden
+        return !after && this.incog_ ? eYo.INVALID : after
+      },
+      didChange(before, after) {
+        this.inDB_ = !after
+      }
+    },
+  },
+  cloned: {
+    where () {
+      new eYo.Where()
     }
   },
-  typeName: {
-    get () {
+  computed: {
+    /**
+     * The right magnet is just at the right... Not used.
+     * @private
+     */
+    right: {
+      get () {
+        var slot = this.slot
+        if (slot) {
+          if ((slot = slot.next) && (slot = slot.some(slot => !slot.incog && slot.magnet && !slot.magnet.hidden))) {
+            return slot.magnet
+          }
+        }
+        if ((m4t = this.brick.out_m) && (m4t = m4t.target)) {
+          return m4t.right
+        }
+      }
+    },
+    magnetDB () {
+      return this.board.magnetDBList
+    },
+    typeName () {
       return {
         [eYo.Magnet.IN]: 'in',
         [eYo.Magnet.OUT]: 'out',
@@ -440,26 +362,15 @@ Object.defineProperties(eYo.Magnet.prototype, {
         [eYo.Magnet.LEFT]: 'left',
         [eYo.Magnet.RIGHT]: 'right'
       } [this.type]
-    }
-  },
-  isSuperior: {
-    get () { // the source 'owns' the target
-      return this.isSlot || this.isFoot || this.isRight
-    }
-  },
-  hidden: {
-    get () {
-      return this.hidden_
     },
-    set(hidden) {
-      if (!hidden && this.incog_) {
-        // Incog magnets must stay hidden
-        return
-      }
-      this.hidden_ = hidden
-      this.inDB_ = !hidden
-    }
+    isSuperior () { // the source 'owns' the target
+      return this.isSlot || this.isFoot || this.isRight
+    },
   },
+})
+
+// computed public properties
+Object.defineProperties(eYo.Magnet.Dflt_p, {
   c: { // in text units
     get () {
       return this.slot
@@ -699,7 +610,7 @@ Object.defineProperties(eYo.Magnet.prototype, {
   /**
    * Return the black target.
    * Traverses the white bricks
-   * @return {?eYo.Magnet}
+   * @return {?eYo.Magnet.Dflt}
    * @private
    */
   blackTarget: {
@@ -762,42 +673,25 @@ Object.defineProperties(eYo.Magnet.prototype, {
   }
 })
 
-Object.defineProperties(eYo.Magnet.prototype, {
-  inDB__: { value: false, writable: true },
-  inDB_: {
-    get () {
-      return this.inDB__
-    },
-    set (newValue) {
-      var db = this.db_
-      if (db && this.inDB__ !== (newValue = !!newValue)) {
-        ;(this.inDB__ = newValue)
-          ? db.addMagnet_(this)
-          : db.removeMagnet_(this)
-      }
-    }
-  }
-})
-
 /**
  * Whether the connection is a separator.
  * Used in lists.
  */
-eYo.Magnet.prototype.s7r_ = false
+eYo.Magnet.Dflt_p.s7r_ = false
 
 /**
  * execute the given function for the fields.
  * For edython.
  * @param {function} helper
  */
-eYo.Magnet.prototype.forEachField = function (helper) {
+eYo.Magnet.Dflt_p.forEachField = function (helper) {
   this.fields && (Object.values(this.fields).forEach(f => helper(f)))
 }
 
 /**
  * `initUI` the target brick when superior and the fields.
  */
-eYo.Magnet.prototype.initUI = function () {
+eYo.Magnet.Dflt_p.initUI = function () {
   this.initUI = eYo.Do.nothing // one shot function
   this.inDB_ = !this.hidden_
   if (this.isSuperior) {
@@ -810,12 +704,12 @@ eYo.Magnet.prototype.initUI = function () {
 /**
  * `consolidate` the target brick.
  */
-eYo.Magnet.prototype.consolidate = function (deep, force) {
+eYo.Magnet.Dflt_p.consolidate = function (deep, force) {
   var t9k = this.targetBrick
   t9k && (t9k.consolidate(deep, force))
 }
 
-Object.defineProperty(eYo.Magnet.prototype, 'incog', {
+Object.defineProperty(eYo.Magnet.Dflt_p, 'incog', {
   /**
    * Get the incognito state.
    */
@@ -859,7 +753,7 @@ Object.defineProperty(eYo.Magnet.prototype, 'incog', {
  * @param {String} prototypeName
  * @return {Object} Object with an `ans` property.
  */
-eYo.Magnet.prototype.completeWrap = eYo.Decorate.reentrant_method(
+eYo.Magnet.Dflt_p.completeWrap = eYo.Decorate.reentrant_method(
   'completeWrap',
   function () {
     if (!this.wrapped_) {
@@ -885,7 +779,7 @@ eYo.Magnet.prototype.completeWrap = eYo.Decorate.reentrant_method(
 /**
  * Complete with a promised brick.
  */
-eYo.Magnet.prototype.completePromise = function () {
+eYo.Magnet.Dflt_p.completePromise = function () {
   if (this.promised_) {
     // console.error('PROMISE CLOSED')
     this.wrapped_ = this.promised_
@@ -897,7 +791,7 @@ eYo.Magnet.prototype.completePromise = function () {
 /**
  * Break the connection by unplugging a source brick. This is high because it calls unplug.
  */
-eYo.Magnet.prototype.break = function () {
+eYo.Magnet.Dflt_p.break = function () {
   var brick = this.isSuperior ? this.targetBrick : this.brick
   brick && (brick.unplug())
 }
@@ -905,9 +799,9 @@ eYo.Magnet.prototype.break = function () {
 /**
  * Will connect.
  * Forwards to the model.
- * @param {eYo.Magnet} targetM4t
+ * @param {eYo.Magnet.Dflt} targetM4t
  */
-eYo.Magnet.prototype.willConnect = function (targetM4t) {
+eYo.Magnet.Dflt_p.willConnect = function (targetM4t) {
   var m = this.model
   var f = eYo.Decorate.reentrant_method.call(this, 'model_willConnect',m && m.willConnect)
   if (f) {
@@ -919,12 +813,12 @@ eYo.Magnet.prototype.willConnect = function (targetM4t) {
 /**
  * Did connect.
  * Increment the brick step.
- * @param {eYo.Magnet} oldTargetM4t
+ * @param {eYo.Magnet.Dflt} oldTargetM4t
  *     what was previously connected to the receiver
- * @param {eYo.Magnet} targetOldM4t
+ * @param {eYo.Magnet.Dflt} targetOldM4t
  *     what was previously connected to the actual receiver's target
  */
-eYo.Magnet.prototype.didConnect = function (oldTargetM4t, targetOldM4t) {
+eYo.Magnet.Dflt_p.didConnect = function (oldTargetM4t, targetOldM4t) {
   this.targetIsMissing = false
   // No need to increment step for the old magnets because
   // if any, they were already disconnected and
@@ -946,7 +840,7 @@ eYo.Magnet.prototype.didConnect = function (oldTargetM4t, targetOldM4t) {
  * The model should call back.
  * This can be overriden at brick creation time.
  */
-eYo.Magnet.prototype.willDisconnect = function () {
+eYo.Magnet.Dflt_p.willDisconnect = function () {
   var f = this.model.willDisconnect
   if (goog.isFunction(f)) {
     eYo.Decorate.reentrant_method('willDisconnect',f).apply(this, arguments)
@@ -960,12 +854,12 @@ eYo.Magnet.prototype.willDisconnect = function () {
 /**
  * Did disconnect.
  * Increment the brick step.
- * @param {eYo.Magnet} oldTargetM4t
+ * @param {eYo.Magnet.Dflt} oldTargetM4t
  *     what was previously connected to the receiver
- * @param {eYo.Magnet} targetOldM4t
+ * @param {eYo.Magnet.Dflt} targetOldM4t
  *     what was previously connected to the old receiver's target
  */
-eYo.Magnet.prototype.didDisconnect = function (oldTargetM4t, targetOldM4t) {
+eYo.Magnet.Dflt_p.didDisconnect = function (oldTargetM4t, targetOldM4t) {
   // No need to increment step for the old connections because
   // if any, they were already disconnected and
   // the step has already been incremented then.
@@ -985,7 +879,7 @@ eYo.Magnet.prototype.didDisconnect = function (oldTargetM4t, targetOldM4t) {
  * The defaults implements asks the model then sets the check_ property.
  * Called by `consolidateMagnets`.
  */
-eYo.Magnet.prototype.updateCheck = function () {
+eYo.Magnet.Dflt_p.updateCheck = function () {
   var b = this.brick
   if(b.change.level > 1 || this.changeCount_ === b.change.count) {
     return
@@ -1002,7 +896,7 @@ eYo.Magnet.prototype.updateCheck = function () {
  * whatever its source brick status may be.
  * @return a connection, possibly eYo.NA
  */
-eYo.Magnet.prototype.getMagnetAbove = function () {
+eYo.Magnet.Dflt_p.getMagnetAbove = function () {
   var ans = this.brick.head
   if (ans) {
     var m5s = ans.magnets
@@ -1022,7 +916,7 @@ eYo.Magnet.prototype.getMagnetAbove = function () {
  * Get the connection of the same kind on the brick below.
  * @return a magnet, possibly eYo.NA
  */
-eYo.Magnet.prototype.getMagnetBelow = function () {
+eYo.Magnet.Dflt_p.getMagnetBelow = function () {
   var ans = this.brick.foot
   if (ans) {
     var m5s = ans.magnets
@@ -1043,12 +937,12 @@ eYo.Magnet.prototype.getMagnetBelow = function () {
  *
  * @param {eYo.Brick.Dflt} eyo
  */
-eYo.Magnet.prototype.connectSmart = (() => {
+eYo.Magnet.Dflt_p.connectSmart = (() => {
 
   /**
    * Establish a connection with a brick.
    * @param {eYo.Brick.Dflt} brick
-   * @return {!eYo.Magnet}
+   * @return {!eYo.Magnet.Dflt}
    */
   var connectToHead = function (brick) {
     this.connect(brick.head_m)
@@ -1058,7 +952,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
   /**
    * Establish a connection with a brick.
    * @param {eYo.Brick.Dflt} brick
-   * @return {!eYo.Magnet}
+   * @return {!eYo.Magnet.Dflt}
    */
   var connectToLeft = function (brick) {
     this.connect(brick.left_m)
@@ -1068,7 +962,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
   /**
    * Establish a connection with a brick.
    * @param {eYo.Brick.Dflt} brick
-   * @return {!eYo.Magnet}
+   * @return {!eYo.Magnet.Dflt}
    */
   var connectToRight = function (brick) {
     this.connect(brick.right_m)
@@ -1078,7 +972,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
   /**
    * Establish a connection with a brick.
    * @param {eYo.Brick.Dflt} brick
-   * @return {!eYo.Magnet}
+   * @return {!eYo.Magnet.Dflt}
    */
   var connectToFoot = function (brick) {
     this.connect(brick.foot_m)
@@ -1124,7 +1018,7 @@ eYo.Magnet.prototype.connectSmart = (() => {
  * @param {Number} c The column index.
  * @param {Number} l The line index.
  */
-eYo.Magnet.prototype.setOffset = function(c = 0, l = 0) {
+eYo.Magnet.Dflt_p.setOffset = function(c = 0, l = 0) {
   if (goog.isDef(c.c) && goog.isDef(c.l)) {
     l = c.l
     c = c.c
@@ -1143,13 +1037,13 @@ eYo.Magnet.prototype.setOffset = function(c = 0, l = 0) {
  * The type checking mechanism is fine grained compared to blockly's.
  * The check_ is used more precisely.
  * For example, elif bricks cannot connect to the suite connection, only the next connection.
- * @param {eYo.Magnet} other Magnet to compare against.
+ * @param {eYo.Magnet.Dflt} other Magnet to compare against.
  * @param {Boolean} [force]  checks even if a connection is hidden or incog.
  * @return {boolean} True if the connections share a type.
  * @private
  * @suppress {accessControls}
  */
-eYo.Magnet.prototype.checkType_ = function (other, force) {
+eYo.Magnet.Dflt_p.checkType_ = function (other, force) {
   if (!eYo.Events.recordingUndo) {
     // we are undoing or redoing
     // we will most certainly reach a state that was valid
@@ -1233,7 +1127,7 @@ eYo.Magnet.prototype.checkType_ = function (other, force) {
  * (English only). Intended to on be used in console logs and errors.
  * @return {string} The description.
  */
-eYo.Magnet.prototype.toString = function() {
+eYo.Magnet.Dflt_p.toString = function() {
   var msg
   var b3k = this.brick
   if (!b3k) {
@@ -1285,7 +1179,7 @@ eYo.Magnet.prototype.toString = function() {
  * @private
  * @suppress {accessControls}
  */
-eYo.Magnet.prototype.connect_ = function (childM4t) {
+eYo.Magnet.Dflt_p.connect_ = function (childM4t) {
   // `this` is actually the superior magnet
   var parentM4t = this
   var parent = parentM4t.brick
@@ -1310,7 +1204,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
         * Find the first free magnet in the given brick
         * that positively checks type with the given potential target magnet.
         * @param {eYo.Brick.Dflt} brick The brick.
-        * @param {eYo.Magnet} child The inferior brick.
+        * @param {eYo.Magnet.Dflt} child The inferior brick.
         * @private
         * @suppress {accessControls}
         */
@@ -1496,7 +1390,7 @@ eYo.Magnet.prototype.connect_ = function (childM4t) {
 /**
  * Tighten_ the magnet and its target.
  */
-eYo.Magnet.prototype.tighten = function() {
+eYo.Magnet.Dflt_p.tighten = function() {
   var m4t = this.target
   if (m4t) {
     var xy = m4t.whereInBoard
@@ -1512,19 +1406,19 @@ eYo.Magnet.prototype.tighten = function() {
  * and is not forced.
  * @param {Boolean} force  flag
  */
-eYo.Magnet.prototype.scrollToVisible = function (force) {
+eYo.Magnet.Dflt_p.scrollToVisible = function (force) {
   this.brick.scrollToVisible(force)
 }
 
 /**
  * Move the brick(s) belonging to the connection to a point where they don't
  * visually interfere with the specified connection.
- * @param {eYo.Magnet} m4t The connection to move away
+ * @param {eYo.Magnet.Dflt} m4t The connection to move away
  *     from.
  * @private
  * @suppress {accessControls}
  */
-eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
+eYo.Magnet.Dflt_p.bumpAwayFrom_ = function (m4t) {
   var brick = this.brick
   if (!brick.board || brick.board.desk.desktop.isDragging) {
     return
@@ -1570,7 +1464,7 @@ eYo.Magnet.prototype.bumpAwayFrom_ = function (m4t) {
  * Hide this connection, as well as all down-stream connections on any brick
  * attached to this connection.  This happens when a brick is collapsed.
  */
-eYo.Magnet.prototype.hideAll = function() {
+eYo.Magnet.Dflt_p.hideAll = function() {
   this.hidden = true
   var t9k = this.targetBrick
   if (t9k) {
@@ -1588,15 +1482,15 @@ eYo.Magnet.prototype.hideAll = function() {
  * @return {!Array<!eYo.Magnet>} List of magnets.
  * @private
  */
-eYo.Magnet.prototype.neighbours_ = function(maxLimit) {
-  return this.dbOpposite_.getNeighbours(this, maxLimit);
-};
+eYo.Magnet.Dflt_p.neighbours_ = function(maxLimit) {
+  return this.dbOpposite.getNeighbours(this, maxLimit)
+}
 
 /**
  * Unhide the receiver, as well as all down-stream magnets on any brick
  * attached to it.  This happens when a brick is expanded.
  */
-eYo.Magnet.prototype.unhideAll = function() {
+eYo.Magnet.Dflt_p.unhideAll = function() {
   this.hidden = false
   if (this.isSuperior) {
     var t9k = this.targetBrick
@@ -1607,20 +1501,8 @@ eYo.Magnet.prototype.unhideAll = function() {
 }
 
 // Position
-
-/**
- * Find the closest compatible connection to this connection.
- * All parameters are in board units.
- * @param {eYo.Where} maxLimit The maximum radius to another connection.
- * @param {eYo.Where} dxy Horizontal offset between this connection's location
- *     in the database and the current location (as a result of dragging).
- * @return {!{connection: ?eYo.Magnet, radius: number}} Contains two
- *     properties: 'connection' which is either another connection or null,
- *     and 'radius' which is the distance.
- * @suppress{accessControls}
- */
-eYo.Magnet.prototype.closest = (() => {
-  /*
+{
+  /**
    * Find the closest compatible connection to this connection.
    * @param {eYo.Connection} conn The connection searching for a compatible
    *     mate.
@@ -1667,13 +1549,24 @@ eYo.Magnet.prototype.closest = (() => {
     // If there were no valid connections, bestConnection will be null.
     return {magnet: bestMagnet, radius: bestRadius}
   }
-  return function (maxLimit, dxy) {
+  /**
+   * Find the closest compatible connection to this connection.
+   * All parameters are in board units.
+   * @param {eYo.Where} maxLimit The maximum radius to another connection.
+   * @param {eYo.Where} dxy Horizontal offset between this connection's location
+   *     in the database and the current location (as a result of dragging).
+   * @return {!{connection: ?eYo.Magnet, radius: number}} Contains two
+   *     properties: 'connection' which is either another connection or null,
+   *     and 'radius' which is the distance.
+   * @suppress{accessControls}
+   */
+  eYo.Magnet.Dflt_p.closest =  function (maxLimit, dxy) {
     if (this.hidden_) {
       return {}
     }
     return searchForClosest(this.dbOpposite_, this, maxLimit, dxy)
   }
-})()
+}
 
 /**
  * Move this magnet to the location given by its offset within the brick and
@@ -1681,7 +1574,7 @@ eYo.Magnet.prototype.closest = (() => {
  * @param {eYo.Where} blockTL The location of the top left corner
  *     of the brick, in board coordinates.
  */
-eYo.Magnet.prototype.moveToOffset = function(blockTL) {
+eYo.Magnet.Dflt_p.moveToOffset = function(blockTL) {
   this.moveTo(blockTL.forward(this.where))
 }
 
@@ -1689,7 +1582,7 @@ eYo.Magnet.prototype.moveToOffset = function(blockTL) {
  * Change the magnet's global coordinates.
  * @param {eYo.Where} here
  */
-eYo.Magnet.prototype.moveTo = function(here) {
+eYo.Magnet.Dflt_p.moveTo = function(here) {
   if (!this.where.equals(here) || (!here.x && !here.y)) {
     // Remove it from its old location in the database (if already present)
     this.inDB_ = false
@@ -1704,27 +1597,22 @@ eYo.Magnet.prototype.moveTo = function(here) {
  * Relative move with respect to the actual position.
  * @param {eYo.Where} dxy Change to coordinates, in board units.
  */
-eYo.Magnet.prototype.moveBy = function(dxy) {
+eYo.Magnet.Dflt_p.moveBy = function(dxy) {
   this.moveTo(this.where.forward(dxy))
 }
 
 /**
  * Returns the distance between this magnet and another magnet in
  * board units.
- * @param {eYo.Magnet} other The other connection to measure
+ * @param {eYo.Magnet.Dflt} other The other connection to measure
  *     the distance to.
  * @return {number} The distance between magnets, in board units.
  */
-eYo.Magnet.prototype.distance = function(other) {
+eYo.Magnet.Dflt_p.distance = function(other) {
   return this.where.distance(other.where)
 }
 
-/**
- * Disconnect this magnet from its target.
- * @return{Boolean} true iff there was a connection.
- */
-eYo.Magnet.prototype.disconnect = (() => {
-  // Closure
+{
   var parentM4t, parent, childM4t, child, unwrappedM4t
   var unlink = () => {
     // the work starts here
@@ -1740,7 +1628,11 @@ eYo.Magnet.prototype.disconnect = (() => {
     childM4t.target_ = null
     child.parent_ = null // Beware of the underscore here too !!!
   }
-  return function() {
+  /**
+   * Disconnect this magnet from its target.
+   * @return{Boolean} true iff there was a connection.
+   */
+  eYo.Magnet.Dflt_p.disconnect = function() {
     if (this.isSuperior) {
       // Superior brick.
       parentM4t = this
@@ -1819,14 +1711,13 @@ eYo.Magnet.prototype.disconnect = (() => {
     child.parent = null
     return true
   }
- }) ()
-
+}
 
 /**
  * Connect the receiver to another magnet.
- * @param {eYo.Magnet} other  The magnet to connect to.
+ * @param {eYo.Magnet.Dflt} other  The magnet to connect to.
  */
-eYo.Magnet.prototype.connect = function(other) {
+eYo.Magnet.Dflt_p.connect = function(other) {
   if (this.target === other) {
     return;
   }
@@ -1857,12 +1748,12 @@ eYo.Magnet.prototype.connect = function(other) {
 /**
  * Checks whether the current connection can connect with the target
  * connection.
- * @param {eYo.Magnet} target Magnet to check compatibility with.
+ * @param {eYo.Magnet.Dflt} target Magnet to check compatibility with.
  * @return {number} eYo.Magnet.CAN_CONNECT if the connection is legal,
  *    an error code otherwise.
  * @private
  */
-eYo.Magnet.prototype.canConnectWithReason_ = function(target) {
+eYo.Magnet.Dflt_p.canConnectWithReason_ = function(target) {
   if (!target) {
     return eYo.Magnet.REASON_TARGET_NULL
   }
@@ -1888,11 +1779,11 @@ eYo.Magnet.prototype.canConnectWithReason_ = function(target) {
 /**
  * Check if the two connections can be dragged to connect to each other.
  * A sealed connection is never allowed.
- * @param {eYo.Magnet} candidate A nearby connection to check.
+ * @param {eYo.Magnet.Dflt} candidate A nearby connection to check.
  * @param {Boolean} [ignoreDistance]
  * @return {boolean} True if the connection is allowed, false otherwise.
  */
-eYo.Magnet.prototype.isConnectionAllowed = function (candidate, maxRadius) {
+eYo.Magnet.Dflt_p.isConnectionAllowed = function (candidate, maxRadius) {
   if (this.wrapped_ || candidate.wrapped_) {
     return false
   }
@@ -1932,21 +1823,3 @@ eYo.Magnet.prototype.isConnectionAllowed = function (candidate, maxRadius) {
 
   return true
 }
-
-Object.defineProperty(eYo.Magnet.prototype, 'right', {
-  /**
-   * The right magnet is just at the right... Not used.
-   * @private
-   */
-  get () {
-    var slot = this.slot
-    if (slot) {
-      if ((slot = slot.next) && (slot = slot.some(slot => !slot.incog && slot.magnet && !slot.magnet.hidden))) {
-        return slot.magnet
-      }
-    }
-    if ((m4t = this.brick.out_m) && (m4t = m4t.target)) {
-      return m4t.right
-    }
-  }
-})

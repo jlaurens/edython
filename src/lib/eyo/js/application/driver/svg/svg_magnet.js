@@ -22,7 +22,7 @@ eYo.Svg.makeDriverClass('Magnet')
 
 /**
  * Hilight the given magnet.
- * @param {eYo.Magnet} m4t
+ * @param {eYo.Magnet.Dflt} m4t
  */
 eYo.Svg.Magnet.prototype.hilight = function (m4t) {
   if (!m4t.board) {

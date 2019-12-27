@@ -26,13 +26,13 @@ eYo.Fcls.makeDriverClass('TrashCan')
  * Initiate the trash can UI.
  * @param {eYo.TrashCan} trashCan  The trash can we must initialize the UI.
  */
-// eYo.Fcls.TrashCan.prototype.initUI = eYo.Do.nothing
+// eYo.Fcls.TrashCan.prototype.doInitUI = eYo.Do.nothing
 
 /**
  * Dispose of the trash can UI.
  * @param {eYo.TrashCan} trashCan  The trash can we must dispose the UI of.
  */
-// eYo.Fcls.TrashCan.prototype.disposeUI = eYo.Do.nothing
+// eYo.Fcls.TrashCan.prototype.doDisposeUI = eYo.Do.nothing
 
 /**
  * Is the given trash can open.

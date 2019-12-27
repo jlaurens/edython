@@ -41,7 +41,7 @@ eYo.forwardDeclare('Events')
 eYo.forwardDeclare('Span')
 eYo.forwardDeclare('Field')
 eYo.forwardDeclare('Slot')
-eYo.forwardDeclare('Magnets')
+eYo.forwardDeclare('Magnet.S')
 eYo.forwardDeclare('Expr')
 eYo.forwardDeclare('Stmt')
 eYo.forwardDeclare('Focus')
@@ -183,14 +183,15 @@ eYo.Brick.makeDflt({
     isGroup: false,
     depth: 0,
     incog: {
-      validate(newValue) {
-        if (!this.incog__ === !newValue) {
+      validate(after) {
+        if (!this.incog__ === !after) {
           return this.incog__
         }
         if (this.disabled) {
           // enable the brick before enabling its connections
           return this.incog__
         }
+        return after
       },
       /**
        * Change the incog status.
@@ -1492,7 +1493,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * For subclassers eventually
    */
   _p.makeMagnets = function () {
-    this.magnets_ = new eYo.Magnets(this)
+    this.magnets_ = new eYo.Magnet.Dflts(this)
   }
 
   /**
@@ -1669,7 +1670,7 @@ eYo.Brick.DEBUG = Object.create(null)
 
   /**
    * Adds a magnet to later wrapping.
-   * @param {eYo.Magnet} magnet  The magnet that should connect to a wrapped brick.
+   * @param {eYo.Magnet.Dflt} magnet  The magnet that should connect to a wrapped brick.
    */
   _p.addWrapperMagnet = function (magnet) {
     magnet && (this.wrappedMagnets.push(magnet))
@@ -1677,7 +1678,7 @@ eYo.Brick.DEBUG = Object.create(null)
 
   /**
    * Adds a magnet to later wrapping.
-   * @param {eYo.Magnet} magnet  The magnet that should connect to a wrapped brick.
+   * @param {eYo.Magnet.Dflt} magnet  The magnet that should connect to a wrapped brick.
    */
   _p.removeWrapperMagnet = function (magnet) {
     var i = this.wrappedMagnets.indexOf(magnet)
@@ -1739,17 +1740,17 @@ eYo.Brick.DEBUG = Object.create(null)
 
   /**
    * Will connect this brick's connection to another connection.
-   * @param {eYo.Magnet} m4t
-   * @param {eYo.Magnet} childM4t
+   * @param {eYo.Magnet.Dflt} m4t
+   * @param {eYo.Magnet.Dflt} childM4t
    */
   _p.willConnect = function (m4t, childM4t) {
   }
 
   /**
    * Did connect this brick's magnet to another magnet.
-   * @param {eYo.Magnet} m4t what has been connected in the brick
-   * @param {eYo.Magnet} oldTargetM4t what was previously connected in the brick
-   * @param {eYo.Magnet} targetOldM4t what was previously connected to the new magnet
+   * @param {eYo.Magnet.Dflt} m4t what has been connected in the brick
+   * @param {eYo.Magnet.Dflt} oldTargetM4t what was previously connected in the brick
+   * @param {eYo.Magnet.Dflt} targetOldM4t what was previously connected to the new magnet
    */
   _p.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
     // new connections change the span properties of the superior block.
@@ -1771,15 +1772,15 @@ eYo.Brick.DEBUG = Object.create(null)
 
   /**
    * Will disconnect this brick's connection.
-   * @param {eYo.Magnet} m4t
+   * @param {eYo.Magnet.Dflt} m4t
    */
   _p.willDisconnect = function (m4t) {
   }
 
   /**
    * Did disconnect this receiver's magnet from another magnet.
-   * @param {eYo.Magnet} m4t  
-   * @param {eYo.Magnet} oldTargetM4t  that was connected to m4t
+   * @param {eYo.Magnet.Dflt} m4t  
+   * @param {eYo.Magnet.Dflt} oldTargetM4t  that was connected to m4t
    */
   _p.didDisconnect = function (m4t, oldTargetM4t) {
     // how many bricks/line did I remove in the superior brick?
@@ -2221,7 +2222,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * Insert a brick of the given type.
    * For edython.
    * @param {Object|string} model
-   * @param {eYo.Magnet} m4t
+   * @param {eYo.Magnet.Dflt} m4t
    * @return {?eYo.Brick} the brick that was inserted
    */
   _p.insertBrickWithModel = function (model, m4t) {

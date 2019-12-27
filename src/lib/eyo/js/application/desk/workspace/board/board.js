@@ -51,7 +51,7 @@ eYo.C9r.Dflt.makeSubclass(eYo.Board, {
      */
     highlightedBricks: [],
   },
-  clonable: {
+  cloned: {
         /**
      * @type {!Object}
      * @private
@@ -211,7 +211,7 @@ eYo.C9r.Dflt.makeSubclass(eYo.Board, {
     this.listeners_.length = 0
     this.clear()
     
-    eYo.Magnet.DB.dispose(this)
+    eYo.Magnet.disposeDB(this)
 
     this.options = null
 
@@ -256,8 +256,9 @@ eYo.Board.Dflt.makeSubclass('Main', {
      * @param{?eYo.Flyout}
      */
     flyout: {
-      validate (newValue) {
-        eYo.assert(!newValue || this.isMain, 'Only main boards may have flyouts')
+      validate (after) {
+        eYo.assert(!after || this.isMain, 'Only main boards may have flyouts')
+        return after
       },
     },
     zoomer: {},

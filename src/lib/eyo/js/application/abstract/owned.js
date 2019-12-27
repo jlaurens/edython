@@ -28,53 +28,42 @@ eYo.forwardDeclare('Slot')
 eYo.forwardDeclare('Magnet')
 
 /**
- * Add the cached `app` property to the associate constructor.
- * NYU.
- */
-eYo.Dlgt_p.addApp = function () {
-  this.declareCached_('app', {
-    get () {
-      return this.owner__.app
-    },
-    forget () {
-      this.ownedForEach(k => {
-        var x = this[k]
-        x && x.appForget && x.appForget()
-      })
-//      this.ui_driverForget && this.ui_driverForget()
-    }
-  })
-}
-
-/**
  * Class for a basic object.
  * 
- * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Expr|eYo.Stmt|eYo.Slot|eYo.Magnet} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Expr|eYo.Stmt|eYo.Slot|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
-eYo.C9r.makeClass('Owned', eYo.Dflt, {
+eYo.C9r.makeClass('Owned', {
   init (owner) {
     this.owner_ = owner
   },
   valued: {
     owner: {
       didChange (before, after) {
-        this.appForget() // do not update, may be the owner is not complete
+        this.appForget() // do not update, may be the owner is not yet complete
         this.ownedForEach(x => {
           x.appForget && x.appForget()
         })
+      },
+      consolidate(after) {
+        if (after.hasUI) {
+          this.initUI()
+        } else {
+          this.disposeUI()
+        }
       }
     }
   },
   cached: {
     app: {
       init () {
-        return this.owner && this.owner.app
+        let o = this.owner ; return o && o.app
       },
-      didChange (before, after) {
+      forget (forgetter) {
         this.ownedForEach(x => {
           x.appForget && x.appForget()
         })
+        forgetter()
       },
     }
   },
@@ -85,7 +74,7 @@ eYo.C9r.makeClass('Owned', eYo.Dflt, {
      * @type {eYo.Desk}
      */
     desk () {
-      return this.app.desk
+      let a = this.app ; return a && a.desk
     },
     /**
      * The desk's flyout...
@@ -93,7 +82,7 @@ eYo.C9r.makeClass('Owned', eYo.Dflt, {
      * @type {eYo.Flyout}
      */
     flyout () {
-      return this.desk.flyout
+      let d = this.desk ; return d && d.flyout
     },
     /**
      * The desk's board
@@ -101,7 +90,7 @@ eYo.C9r.makeClass('Owned', eYo.Dflt, {
      * @type {eYo.Board}
      */
     board () {
-      return this.desk.board
+      let d = this.desk ; return d && d.board
     },
     /**
      * The owner's workspace...
@@ -109,9 +98,54 @@ eYo.C9r.makeClass('Owned', eYo.Dflt, {
      * @type {eYo.Workspace}
      */
     workspace () {
-      return this.desk.workspace
+      let d = this.desk ; return d && d.workspace
     },
   },
 })
 
 eYo.assert(eYo.C9r.Owned, 'MISSING eYo.C9r.Owned')
+
+/**
+ * Class for a basic object indirectly owned by a brick.
+ * 
+ * @name {eYo.C9r.BSMOwned}
+ * @constructor
+ * @param {eYo.Brick|eYo.Slot|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
+ * @readonly
+ * @property {eYo.Brick.UI} ui  The ui object used for rendering.
+ * @readonly
+ * @property {eYo.Brick} brick  The brick.
+ * @readonly
+ * @property {eYo.Slot} slot  The slot.
+ * @readonly
+ * @property {eYo.Magnet.Dflt} magnet  The magnet.
+ */
+
+eYo.C9r.Owned.makeSubclass('BSMOwned', {
+  valued: ['slot', 'brick', 'magnet'],
+  computed: {
+    ui () {
+      return this.brick.ui
+    }
+  }
+})
+
+eYo.assert(!!eYo.C9r.BSMOwned && !!eYo.C9r.BSMOwned_p, 'MISSED/FAILURE...')
+
+eYo.forwardDeclare('Brick')
+eYo.forwardDeclare('Brick.UI')
+eYo.forwardDeclare('Slot')
+eYo.forwardDeclare('Magnet')
+
+eYo.C9r.BSMOwned_p.ownerDidChange = function (before, after) {
+  this.slot_ = this.brick_ = this.magnet_ = eYo.NA
+  if (after instanceof eYo.Slot) {
+    this.slot_ = after
+    this.brick_ = after.brick
+  } else if (after instanceof eYo.Magnet.Dflt) {
+    this.magnet_ = after
+    this.brick_ = after.brick
+  } else if (after instanceof eYo.Brick.Dflt) {
+    this.brick_ = after
+  }
+}

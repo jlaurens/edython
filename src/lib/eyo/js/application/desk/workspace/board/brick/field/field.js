@@ -12,35 +12,12 @@
 'use strict';
 
 eYo.require('Protocol')
-eYo.require('C9r.Owned2')
+eYo.require('C9r.BSMOwned')
 
 eYo.provide('Field')
 
-eYo.provide('FieldLabel')
-
 eYo.forwardDeclare('Size')
 eYo.forwardDeclare('Events')
-
-
-eYo.provide('FieldInput')
-
-/**
- * Abstract class for text fields.
- * @param {eYo.Brick|eYo.Slot|eYo.Magnet} bsim The owner of the field.
- * @param {string} text The initial content of the field.
- * @constructor
- */
-eYo.Field = function (bsm, name, text) {
-  eYo.Field.superProto_.constructor.call(this, bsm)
-  this.name_ = name
-  this.size_ = new eYo.Size()
-  this.text_ = text
-  this.reentrant_ = {}
-  Object.defineProperty(bsm, `${name}_f`, { value: this})
-  this.disposeUI = eYo.Do.nothing
-  bsm.hasUI && this.initUI()
-}
-goog.inherits(eYo.Field, eYo.C9r.Owned2)
 
 Object.defineProperties(eYo.Field, {
   STATUS_NONE: { value: '' }, // names correspond to `eyo-code-...` css class names
@@ -49,16 +26,7 @@ Object.defineProperties(eYo.Field, {
   STATUS_BUILTIN: { value: 'builtin' },
 })
 
-/**
- * Create all the fields from the given model.
- * For edython.
- * @param {eYo.Slot|!eYo.Magnet|!eYo.Brick} owner
- * @param {Object} fieldsModel
- */
-eYo.Field.makeFields = (() => {
-  // This is a closure
-  // default helper functions for an editable field bound to a data object
-  // `this` is an instance of  eYo.FieldInput
+{
   var startEditing = function () {
   }
   var endEditing = function () {
@@ -108,7 +76,7 @@ eYo.Field.makeFields = (() => {
    * Make a field from a given model
    * @param {String} name 
    * @param {Object} model 
-   * @return {eYo.FieldLabel|eYo.FieldVariable|eYo.FieldInput}
+   * @return {eYo.FieldLabel|eYo.FieldVariable|eYo.Field.Input}
    */
   var makeField = (owner, name, model) => {
     var field
@@ -118,7 +86,7 @@ eYo.Field.makeFields = (() => {
       setupModel(model)
       if (model.edit || model.endEditing || model.startEditing) {
         // this is an editable field
-        field = new eYo.FieldInput(owner, name, model.edit || '')
+        field = new eYo.Field.Input(owner, name, model.edit || '')
       } else if (goog.isDefAndNotNull(model.value)) {
         // this is just a label field
         field = new eYo.FieldLabel(owner, name, model.value || '')
@@ -150,10 +118,16 @@ eYo.Field.makeFields = (() => {
       return
     }
     field.nextField = eYo.NA // debug step
-
     return field
   }
-  return function (owner, fieldsModel) {
+
+  /**
+   * Create all the fields from the given model.
+   * For edython.
+   * @param {eYo.Slot|!eYo.Magnet|!eYo.Brick} owner
+   * @param {Object} fieldsModel
+   */
+  eYo.Field.makeFields = (owner, fieldsModel) => {
     owner.fields = owner.fields || Object.create(null)
     // field maker
     // Serious things here
@@ -293,7 +267,7 @@ eYo.Field.makeFields = (() => {
     owner.fieldAtStart && delete owner.fieldAtStart.eyoLast_
     owner.toEndField && delete owner.toEndField.eyoLast_
   }
-}) ()
+}
 
 /**
  * 
@@ -306,178 +280,131 @@ eYo.Field.disposeFields = owner => {
   Object.values(fields).forEach(f => f.dispose())
 }
 
-// Private properties with default values
-Object.defineProperties(eYo.Field.prototype, {
-  name_: { value: eYo.NA, writable: true },
-  text__: { value: '', writable: true },
-  visible_: { value: true, writable: true },
-})
-
-// Private computed properties
-Object.defineProperties(eYo.Field.prototype, {
-  text_: {
-    get () {
-      return this.text__
+/**
+ * Abstract class for text fields.
+ * @param {eYo.Brick|eYo.Slot|eYo.Magnet.Dflt} bsim The owner of the field.
+ * @param {string} text The initial content of the field.
+ * @constructor
+ */
+eYo.Field.makeClass('Dflt', eYo.C9r.BSMOwned, {
+  init (bsm, name, text) {
+    this.name_ = name
+    this.text_ = text
+    this.reentrant_ = {}
+    Object.defineProperty(bsm, `${name}_f`, { value: this})
+    console.warn('Defer next line to the owner ?')
+    bsm.hasUI && this.initUI()
+  },
+  value: {
+    text: {
+      /**
+       * 
+       */
+      set (newValue) {
+        if (!goog.isDef(newValue)) {
+          // No change if null.
+          return;
+        }
+        if (this.text__ === newValue) {
+          return
+        }
+        eYo.Events.fireBrickChange(this.brick, 'field', this.name, this.text__, newValue)
+        this.size.setFromText(this.text__ = newValue)
+        this.placeholder__ = !newValue || !newValue.length
+      },
+    },
+    visible: { value: true },
+    status: { value: eYo.Field.STATUS_NONE }, // one of STATUS_... above
+    isEditing: { value: false },
+    editable: { value: false },
+    model: { value: eYo.NA },
+    /**
+     * The name of field must be unique within a brick.
+     * This is necessary for proper undo management.
+     * Static label fields are named for practical use.
+     * @readonly
+     * @type {String} The name of the field
+     */
+    name: {},
+    /**
+     * @readonly
+     * @type {String} The text of the field.
+     */
+    text: {
+      validate (after) {
+        return after ? String(after) : eYo.INVALID
+      },
+      set_ (after) {
+        this.brick.change.wrap(() => this.text__ = after)
+      }
     },
     /**
-     * 
+     * Is the field visible, or hidden due to the block being collapsed?
+     * @type {boolean}
+     * @private
      */
-    set (newValue) {
-      if (!goog.isDef(newValue)) {
-        // No change if null.
-        return;
-      }
-      if (this.text__ === newValue) {
-        return
-      }
-      eYo.Events.fireBrickChange(this.brick, 'field', this.name, this.text__, newValue)
-      this.size.setFromText(this.text__ = newValue)
-      this.placeholder__ = !newValue || !newValue.length
-    }
-  }
-})
-
-// Public properties with default values
-Object.defineProperties(eYo.Field.prototype, {
-  status: { value: eYo.Field.STATUS_NONE, writable: true }, // one of STATUS_... above
-  isEditing: { value: false, writable: true},
-  editable: { value: false, writable: true },
-  model: { value: eYo.NA, writable: true,},
-})
-
-// Public readonly computed properties
-Object.defineProperties(eYo.Field.prototype, {
-  /**
-   * The name of field must be unique within a brick.
-   * This is necessary for proper undo management.
-   * Static label fields are named for practical use.
-   * @readonly
-   * @type {String} The name of the field
-   */
-  name: { get () { return this.name_ } },
-  /**
-   * @readonly
-   * @type {eYo.Size} The size of the field
-   */
-  size: { get () { return this.size_ } },
-  /**
-   * @readonly
-   * @type {String} The text of the field.
-   */
-  text: {
-    get () { return this.text_ },
-    set (newText) {
-      if (newText === null) {
-        // No change if null.
-        return;
-      }
-      newText = String(newText)
-      if (newText === this.text__) {
-        // No change.
-        return
-      }
-      this.brick.change.wrap(() => this.text_ = newText)
-    }
+    visible: {
+      /**
+       * Sets whether this editable field is visible or not.
+       * @param {boolean} after True if visible.
+       */
+      didChange (before, after) {
+        var d = this.ui_driver_mngr
+        d && (d.displayedUpdate(this))
+        if (this.brick.rendered) {
+          this.brick.render()
+          after && (this.brick.ui.bumpNeighbours_())
+        }
+      },
+    },
+    css_class: {},
   },
-  /**
-   * @readonly
-   * @type {String} The text of the field.
-   */
-  displayText: { get () { return this.text_ } },
-  /**
-   * Is the field visible, or hidden due to the block being collapsed?
-   * @type {boolean}
-   * @private
-   */
-  visible: {
-    get () { return this.visible_ },
+  cloned: {
     /**
-     * Sets whether this editable field is visible or not.
-     * @param {boolean} visible True if visible.
+     * @readonly
+     * @type {eYo.Size} The size of the field
      */
-    set (visible) {
-      if (this.visible_ === visible) {
-        return;
-      }
-      this.visible_ = visible
-      var d = this.ui_driver_mngr
-      d && (d.displayedUpdate(this))
-      if (this.brick.rendered) {
-        this.brick.render()
-        visible && (this.brick.ui.bumpNeighbours_())
-      }
-    }
+    size () {
+      return new eYo.Size()
+    },
   },
-  /**
-   * Check whether this field is currently editable.
-   * Text labels are not editable and are not serialized to XML.
-   * Editable fields are serialized, but may exist on locked brick.
-   * @return {boolean} whether this field is editable and on an editable brick
-   */
-  isCurrentlyEditable: {
-    get () {
+  computed: {
+    /**
+     * @readonly
+     * @type {String} The text of the field.
+     */
+    displayText () { return this.text_ },
+    /**
+     * Check whether this field is currently editable.
+     * Text labels are not editable and are not serialized to XML.
+     * Editable fields are serialized, but may exist on locked brick.
+     * @return {boolean} whether this field is editable and on an editable brick
+     */
+    isCurrentlyEditable () {
       return this.editable && this.brick.editable
-    }
-  },
-  css_class: {
-    get () {
-      return this.css_class_
-    }
-  },
-  isComment: {
-    get () {
+    },
+    isComment () {
       return this.status === eYo.Field.STATUS_COMMENT
-    }
-  },
-  isReserved: {
-    get () {
+    },
+    isReserved () {
       return this.status === eYo.Field.STATUS_RESERVED
-    }
-  },
-  isBuiltin: {
-    get () {
+    },
+    isBuiltin () {
       return this.status === eYo.Field.STATUS_BUILTIN
-    }
+    },
   },
 })
-
-/**
- * Dispose of all DOM objects belonging to this editable field.
- */
-eYo.Field.prototype.dispose = function() {
-  this.disposeUI()
-  eYo.Field.superProto_.dispose.call(this)
-}
-
-/**
- * Ensure that the field is ready.
- */
-eYo.Field.prototype.initUI = function () {
-  this.ui_driver_mngr.doInitUI(this)
-  this.initUI = eYo.Do.nothing
-  delete this.disposeUI
-}
-
-/**
- * Dispose of all DOM objects belonging to this editable field.
- */
-eYo.Field.prototype.disposeUI = function() {
-  this.ui_driver_mngr.disposeUI(this)
-  this.disposeUI = eYo.Do.nothing
-  delete this.initUI
-}
 
 /**
  * Initializes the model of the field after it has been installed on a block.
  * No-op by default.
  */
-eYo.Field.prototype.initModel = function() {
-}
+eYo.Field.Dflt_p.initModel = eYo.Do.nothing
 
 /**
  * Whether the field of the receiver starts with a separator.
  */
-eYo.Field.prototype.startsWithSeparator = function () {
+eYo.Field.Dflt_p.startsWithSeparator = function () {
   // if the text is void, it can not change whether
   // the last character was a letter or not
   var text = this.text
@@ -501,7 +428,7 @@ eYo.Field.prototype.startsWithSeparator = function () {
  * Saves the computed width in a property.
  * @private
  */
-eYo.Field.prototype.render_ = function() {
+eYo.Field.Dflt_p.render_ = function() {
   if (!this.visible_) {
     this.size_.width = 0
     return
@@ -514,7 +441,7 @@ eYo.Field.prototype.render_ = function() {
 /**
  * Updates the width of the field in the UI.
  **/
-eYo.Field.prototype.updateWidth = function() {
+eYo.Field.Dflt_p.updateWidth = function() {
   var d = this.ui_driver_mngr
   d && (d.updateWidth(this))
 }
@@ -526,16 +453,16 @@ eYo.Field.prototype.updateWidth = function() {
  * @param {String} txt
  * @return {String}
  */
-eYo.Field.prototype.validate = function (txt) {
+eYo.Field.Dflt_p.validate = function (txt) {
   var v = this.data.validate(goog.isDef(txt) ? txt : this.text)
-  return v === null ? v : (goog.isDef(v) && goog.isDef(v.validated) ? v.validated : txt)
+  return eYo.isVALID(v) ? v : null
 }
 
 /**
  * Will render the field.
  * We should call `this.willRender()` from the model.
  */
-eYo.Field.prototype.willRender = function () {
+eYo.Field.Dflt_p.willRender = function () {
   var f = this.model && (eYo.Decorate.reentrant_method.call(this, 'model_willRender', this.model.willRender))
   if (f) {
     f.call(this)
@@ -557,11 +484,11 @@ eYo.Field.prototype.willRender = function () {
  * @extends {eYo.Field}
  * @constructor
  */
-eYo.FieldLabel = function (bsi, name, text) {
-  this.isLabel = true
-  eYo.FieldLabel.superProto_.constructor.call(this, bsi, name, text)
-}
-goog.inherits(eYo.FieldLabel, eYo.Field)
+eYo.Field.Dflt.makeSubclass('Label', {
+  init (bsi, name, text) {
+    this.isLabel = true
+  },
+})
 
 /**
  * Class for an editable code field.
@@ -571,53 +498,38 @@ goog.inherits(eYo.FieldLabel, eYo.Field)
  * @extends {eYo.Field}
  * @constructor
  */
-eYo.FieldInput = function (bsi, name, text) {
-  eYo.assert(name, 'missing name for an editable field')
-  eYo.FieldInput.superProto_.constructor.call(this, bsi, name, text)
-  this.editable = true
-}
-goog.inherits(eYo.FieldInput, eYo.Field)
-
-/**
- * Dispose of the delegate.
- */
-// eYo.FieldInput.prototype.dispose = function () {
-//   eYo.FieldInput.superProto_.dispose.call(this)
-// }
-
-/**
- * css class for both the text element and html input.
- */
-eYo.FieldInput.prototype.css_class_ = 'eyo-code'
-
-// Private properties
-Object.defineProperties(eYo.FieldInput.prototype, {
-  placeholderText_: { value: eYo.NA, writable: true },
-})
-
-Object.defineProperties(eYo.FieldInput.prototype, {
-  /**
-   * Get the text from this field as displayed on screen.
-   * @return {string} Currently displayed text.
-   * @private
-   * @suppress{accessControls}
-   */
-  displayText: {
-    get () {
+eYo.Field.Dflt.makeSubclass('Input', {
+  init (bsi, name, text) {
+    eYo.assert(name, 'missing name for an editable field')
+    this.editable = true
+  },
+  valued: {
+    /**
+     * css class for both the text element and html input.
+     */
+    css_class: 'eyo-code',
+    placeholderText: '',
+  },
+  computed: {
+    /**
+     * Get the text from this field as displayed on screen.
+     * @return {string} Currently displayed text.
+     * @private
+     * @suppress{accessControls}
+     */
+    displayText () {
       if (!this.isEditing && !this.text_.length &&(this.isPlaceholder || (this.data && (this.data.placeholder || this.data.model.placeholder)))) {
         return this.getPlaceholderText()
       }
       return this.text 
-    }
-  },
-  /**
-   * Whether the field text corresponds to a placeholder.
-   */
-  isPlaceholder: {
-    get () {
+    },
+    /**
+     * Whether the field text corresponds to a placeholder.
+     */
+    isPlaceholder () {
       return !!this.model.placeholder
-    }
-  }
+    },
+  },
 })
 
 /**
@@ -627,7 +539,7 @@ Object.defineProperties(eYo.FieldInput.prototype, {
  * @return {string} Currently displayed text.
  * @private
  */
-eYo.FieldInput.prototype.getPlaceholderText = function (clear) {
+eYo.Field.Input_p.getPlaceholderText = function (clear) {
   if (clear) {
     this.placeholderText_ = eYo.NA
   } else if (this.placeholderText_) {

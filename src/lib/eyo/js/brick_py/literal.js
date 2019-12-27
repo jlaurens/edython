@@ -71,15 +71,15 @@ eYo.Expr.Literal.makeSubclass('numberliteral', {
       init: '',
       main: true,
       placeholder: 0,
-      validate (newValue) /** @suppress {globalThis} */ {
+      validate (after) /** @suppress {globalThis} */ {
         var types = this.brick.type_d.getAll()
-        var p5e = eYo.T3.Profile.get(newValue, null)
-        return ((types.indexOf(p5e.expr) >= 0 || p5e.raw === eYo.T3.Expr.unset) && {validated: newValue}) || null
+        var p5e = eYo.T3.Profile.get(after, null)
+        return types.indexOf(p5e.expr) >= 0 || p5e.raw === eYo.T3.Expr.unset ? after : eYo.INVALID
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        var type = newValue
-          ? eYo.T3.Profile.get(newValue, null).expr
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        var type = after
+          ? eYo.T3.Profile.get(after, null).expr
           : eYo.T3.Expr.integer
         this.brick.type_p = type
       },
@@ -163,17 +163,17 @@ eYo.Expr.Literal.makeSubclass('shortliteral', {
         'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
         'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
       init: '',
-      didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
+      didChange (before, after) { /** @this{eYo.Data} */
+        this.didChange(before, after)
         this.brick.value_d.consolidate()
       },
-      validate: /** @this{eYo.Data} */ function (newValue) {
-        return (!goog.isDef(this.brick.content_p) || this.brick.validateComponents({
-          prefix: newValue}
-        )) && {validated: newValue}
+      validate (before) { /** @this{eYo.Data} */
+        return !goog.isDef(this.brick.content_p) || this.brick.validateComponents({
+          prefix: before}
+        ) ? before : eYo.INVALID
       },
-      synchronize: /** @this{eYo.Data} */ function (newValue) {
-        this.incog = !newValue || !newValue.length
+      synchronize (after) { /** @this{eYo.Data} */ 
+        this.incog = !after || !after.length
         this.synchronize()
       },
       xml: false,
@@ -184,28 +184,28 @@ eYo.Expr.Literal.makeSubclass('shortliteral', {
         return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.longbytesliteral
           ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
         this.brick.value_d.consolidate()
       },
-      validate (newValue) /** @suppress {globalThis} */ {
-        return ((!goog.isDef(this.brick.content_p) || this.brick.validateComponents({
-          content: newValue
-        })) && {validated: newValue}) || null
+      validate (after) /** @suppress {globalThis} */ {
+        return !goog.isDef(this.brick.content_p) || this.brick.validateComponents({
+          content: after
+        }) ? after : eYo.INVALID
       },
       synchronize: true
     },
     value: {
       init: "''",
       main: true,
-      validate: /** @this{eYo.Data} */ function (newValue) {
-        return eYo.isStr(newValue)? {validated: newValue}: null
+      validate (after) { /** @this{eYo.Data} */
+        return eYo.isStr(after)? after: eYo.INVALID
       },
-      didChange: /** @this{eYo.Data} */ function (oldValue, newValue) {
-        this.didChange(oldValue, newValue)
+      didChange (before, after) {/** @this{eYo.Data} */ 
+        this.didChange(before, after)
         var b3k = this.brick
         var F = (xre, type, formatted) => {
-          var m = XRegExp.exec(newValue, xre)
+          var m = XRegExp.exec(after, xre)
           if (m) {
             b3k.prefix_p = m.prefix || ''
             b3k.delimiter_p = m.delimiter || "'"
@@ -220,9 +220,9 @@ eYo.Expr.Literal.makeSubclass('shortliteral', {
         F(eYo.XRE.shortbytesliteralSingle, eYo.T3.Expr.shortbytesliteral) ||
         F(eYo.XRE.shortbytesliteralDouble, eYo.T3.Expr.shortbytesliteral)) {
           this.brick.removeError(eYo.Key.VALUE)
-        } else if (newValue && newValue.length) {
+        } else if (after && after.length) {
           this.brick.setError(eYo.Key.VALUE, 'Bad string|bytes literal: ' +
-          (newValue.length > 11 ? newValue.substr(0, 10) + '…' : newValue))
+          (after.length > 11 ? after.substr(0, 10) + '…' : after))
         }
       },
       consolidate () /** @suppress {globalThis} */ {

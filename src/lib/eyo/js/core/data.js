@@ -341,8 +341,7 @@ eYo.Data.prototype.validate = function (newValue) {
     return eYo.Decorate.whenAns(f.apply(this, arguments))
   }
   var all = this.getAll()
-  return ((this.model.validate === false || !all || all.indexOf(newValue) >= 0)
-  && {validated: newValue}) || null
+  return this.model.validate === false || !all || all.indexOf(newValue) >= 0 ? newValue : eYo.INVALID
 }
 
 /**
@@ -432,7 +431,7 @@ eYo.Data.prototype.fromText = function (txt, validate = true) {
     this.doChange(txt, false)
   } else if (this.value_ !== txt) {
     var v7d = this.validate(txt)
-    if (!v7d || !goog.isDef((v7d = v7d.validated))) {
+    if (!v7d || !eYo.isVALID(v7d)) {
       this.error = true
       v7d = txt
     } else {
@@ -467,7 +466,7 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
     this.set(txt)
   } else if (this.value_ !== txt) {
     var v7d = this.validate(txt)
-    if (!v7d || !goog.isDef((v7d = v7d.validated))) {
+    if (!v7d || !eYo.isVALID(v7d)) {
       this.error = true
       v7d = txt
     } else {
@@ -738,13 +737,13 @@ eYo.Data.prototype.filter = function (newValue) {
  * @param {Object} newValue
  * @param {Boolean} noRender
  */
-eYo.Data.prototype.set = function (newValue, validate = true) {
-  newValue = this.filter(newValue)
-  if ((this.value_ === newValue) || ( validate && (!(newValue = this.validate(newValue)) || !goog.isDef(newValue = newValue.validated)))) {
+eYo.Data.prototype.set = function (after, validate = true) {
+  after = this.filter(after)
+  if ((this.value_ === after) || (validate && (!eYo.isVALID(after = this.validate(after))))) {
     return false
   }
   this.error = false
-  this.setTrusted(newValue)
+  this.setTrusted(after)
   return true
 }
 
@@ -971,7 +970,8 @@ eYo.Data.prototype.load = function (element) {
           txt = ''
           this.setRequiredFromModel(true)
         } else if (txt) {
-          this.setRequiredFromModel(this.validate(txt).validated)
+          let v7d = this.validate(txt)
+          this.setRequiredFromModel(eYo.isVALID(v7d) ? v7d : '')
         }
         this.fromText(txt, false) // do not validate, there might be an error while saving, please check
       }

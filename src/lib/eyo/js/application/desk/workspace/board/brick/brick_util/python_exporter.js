@@ -303,7 +303,7 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
       eYo.XRE.operator.test(tail) ||
       tail === ';' ||
       tail === ',' ||
-      (tail === '.' && (!(field instanceof eYo.FieldInput)))
+      (tail === '.' && (!(field instanceof eYo.Field.Input)))
       this.starSymbol = ((this.isFirst || !this.wasContinue || this.wasLeftParenth) && (['*', '@', '+', '-', '~', '.'].indexOf(text) >= 0)) || text === '**'
       this.isFirst = false
       this.wasSeparatorField = this.isSeparatorField
@@ -397,7 +397,7 @@ Object.defineProperties(eYo.Brick.Dflt.prototype, {
  * @private
  * @suppress{accessControls}
  */
-eYo.Field.prototype.getPythonText_ = function() {
+eYo.Field.Dflt_p.getPythonText_ = function() {
   return this.text
 }
 
@@ -407,12 +407,12 @@ eYo.Field.prototype.getPythonText_ = function() {
  * @private
  * @suppress{accessControls}
  */
-eYo.FieldInput.prototype.getPythonText_ = function () {
+eYo.Field.Input_p.getPythonText_ = function () {
   if (this.model.variable) {
     var candidate = this.text_ || ''
     return !XRegExp.match(candidate, /\s/) && candidate || (!this.optional_ && '<MISSING NAME>')  
   }
-  var t = eYo.FieldInput.superProto_.getPythonText_.call(this)
+  var t = eYo.Field.Input.superProto_.getPythonText_.call(this)
   if (!t.length && !this.optional_) {
     if (!this.model.canEmpty && (this.placeholder || (this.data && this.data.placeholder))) {
       var t = `<missing ${this.getPlaceholderText().trim()}>`.toUpperCase()

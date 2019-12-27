@@ -14,6 +14,10 @@
 eYo.require('Do')
 eYo.require('T3')
 
+eYo.forwardDeclare('Brick')
+eYo.forwardDeclare('Slot')
+eYo.forwardDeclare('Magnet')
+
 /**
  * Management of constructors and models.
  * Models are trees with some inheritancy.
@@ -49,16 +53,24 @@ eYo.C9r.isModel = (what) => {
   var allowed = {
     ['^$']: [
       'init', 'deinit', 'dispose', 'ui',
-      'owned', 'computed', 'valued', 'cached', 'clonable', 'link',
+      'owned', 'computed', 'valued', 'cached', 'cloned', 'link',
       'xml', 'data', 'slots',
       'out', 'head', 'left', 'right', 'suite', 'foot'
+    ],
+    ['^init$']: [
+      'begin',
+      'end',
+    ],
+    ['^dispose$']: [
+      'begin',
+      'end',
     ],
     data: '^\\w+$',
     owned: '^\\w+$',
     computed: '^\\w+$',
     valued: '^\\w+$',
     cached: '^\\w+$',
-    clonable: '^\\w+$',
+    cloned: '^\\w+$',
     ['^xml$']: [
       'attr', 'types', 'attribute',
     ],
@@ -75,15 +87,15 @@ eYo.C9r.isModel = (what) => {
     ],
     ['^valued\\.\\w+$']: [
       'value', 'init', 'get', 'set', 'get_', 'set_',
-      'validate', 'willChange', 'didChange'
+      'validate', 'willChange', 'didChange', 'consolidate',
     ],
     ['^cached\\.\\w+$']: [
       'lazy', 'value', 'init',
-      'validate', 'willChange', 'didChange'
+      'validate', 'willChange', 'didChange', 'forget',
     ],
-    ['^clonable\\.\\w+$']: [
+    ['^cloned\\.\\w+$']: [
       'lazy', 'value', 'init',
-      'validate', 'willChange', 'didChange'
+      'validate', 'willChange', 'didChange',
     ],
     ['^data\\.\\w+$']: [
       'order', // INTEGER
@@ -227,7 +239,7 @@ eYo.C9r.Model.shortcutsBaseHandler = (model, path, key) => {
         get: before
       }
     }
-  } else if (['valued', 'cached', 'clonable'].includes(path)) {
+  } else if (['valued', 'cached', 'cloned'].includes(path)) {
     var before = model[key]
     if (eYo.isF(before)) {
       after = {
@@ -271,7 +283,7 @@ eYo.C9r.Model.shortcutsBaseHandler = (model, path, key) => {
         model.value = before
       }
     }
-  } else if (XRegExp.match(path, /(?:computed|valued|cached|clonable|owned|CONST)\.\\w+/)) {
+  } else if (XRegExp.match(path, /(?:computed|valued|cached|cloned|owned|CONST)\.\\w+/)) {
     var before = model[key]
     if (!eYo.isO(before)) {
       after = {
@@ -505,7 +517,7 @@ eYo.C9r.register = function (key, C9r) {
  * @readonly
  * @property {Set<String>} owned__ - Set of owned identifiers. Lazy initializer.
  * @readonly
- * @property {Set<String>} clonable__ - Set of clonable identifiers. Lazy initializer.
+ * @property {Set<String>} cloned__ - Set of cloned identifiers. Lazy initializer.
  * @readonly
  * @property {Set<String>} cached__ - Set of cached identifiers. Lazy initializer.
  * @readonly
@@ -564,7 +576,7 @@ Object.defineProperties(eYo._p, {
         model.valued && this.valuedDeclare(model.valued)
         model.owned && this.ownedDeclare(model.owned)
         model.cached && this.cachedDeclare(model.cached)
-        model.clonable && this.clonableDeclare(model.clonable)
+        model.cloned && this.clonedDeclare(model.cloned)
         model.computed && this.computedDeclare(model.computed)
         // eYo.C9r.Model.inherits(model, this.super && this.super.model)
       }
@@ -628,7 +640,7 @@ Object.defineProperties(eYo.Dlgt_p, {
   }),
 })
 
-;['owned', 'clonable', 'valued', 'cached', 'computed'].forEach(k => {
+;['owned', 'cloned', 'valued', 'cached', 'computed'].forEach(k => {
   var k_ = k + '_'
   var k__ = k + '__'
   Object.defineProperty(eYo.Dlgt_p, k_, {
@@ -656,7 +668,7 @@ Object.defineProperties(eYo.Dlgt_p, {
 })
 
 /**
- * Initialize an instance with valued, cached, owned and clonable properties.
+ * Initialize an instance with valued, cached, owned and cloned properties.
  * Default implementation forwards to super.
  * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
  */
@@ -675,7 +687,7 @@ eYo.Dlgt_p.initInstance = function (object) {
   }
   this.valuedForEach(f)
   this.ownedForEach(f)
-  this.clonableForEach(f) 
+  this.clonedForEach(f) 
 }
 
 /**
@@ -686,7 +698,7 @@ eYo.Dlgt_p.disposeInstance = function (object) {
   this.valuedClear_(object)
   this.cachedForget_(object)
   this.ownedDispose_(object)
-  this.clonableDispose_(object)
+  this.clonedDispose_(object)
 }
 
 /**
@@ -757,7 +769,8 @@ eYo.Dlgt_p.CONSTDeclare = function (k, model = {}) {
 eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
   eYo.parameterAssert(!this.props__.has(k))
   this.valued_.add(k)
-  const proto = this.C9r_.prototype
+  let C9r = this.C9r_
+  let proto = C9r.prototype
   var k_ = k + '_'
   var k__ = k + '__'
   this.registerInit(k, model)
@@ -802,6 +815,35 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
   this.descriptors__[k] = eYo.Do.propertyR(model.get || function () {
     return this[k_]
   })
+  this.consolidatorMake(k, model)
+}
+
+/**
+ * Add a valued properties.
+ * The receiver is not the owner.
+ * @param {Object} constructor -  Its prototype object gains a storage named `foo__` and both getters and setters for `foo_`.
+ * The initial value is `eYo.NA`.
+ * @param {Array<String>} names names of the link to add
+ */
+eYo.Dlgt_p.consolidatorMake = function (k, model) {
+  let C9r = this.C9r_
+  let proto = C9r.prototype
+  let consolidators = this.consolidators__ || (this.consolidators__ = Object.create(null))
+  let kC = k+'Consolidate'
+  proto[kC] = consolidators[k] = model.consolidate
+  ? function () {
+    let Super = C9r.superProto_[kC]
+    !!Super && Super.apply(this, arguments)
+    model.consolidate.call(this, arguments)
+    this.ownedForEach(x => {
+      let f = x[kC] ; f && f.apply(this, arguments)
+    })
+    this.valuedForEach(x => {
+      let f = x[kC] ; f && f.apply(this, arguments)
+    })
+  } : function () {
+    this[k_] = eYo.NA
+  }
 }
 
 /**
@@ -923,6 +965,7 @@ eYo.Dlgt_p.ownedDeclare_ = function (k, model = {}) {
   this.descriptors__[k] = eYo.Do.propertyR(model.get || function () {
     return this[k_]
   })
+  this.consolidatorMake(k, model)
 }
 
 /**
@@ -970,6 +1013,7 @@ eYo.Dlgt_p.ownedDispose_ = function (object, ...params) {
  * (computed from the `init`) and the updater which is the function
  * that effectively set the new value.
  * It may take one argument to override the proposed after value.
+ * If key is `foo`, then a `fooForget` and a `fooUpdate` method are created automatically.
  */
 eYo.Dlgt_p.cachedDeclare_ = function (k, model) {
   eYo.parameterAssert(!this.props__.has(k))
@@ -1015,8 +1059,8 @@ eYo.Dlgt_p.cachedDeclare_ = function (k, model) {
       }
     }
   })
-  this.forget_ || (this.forget_ = Object.create(null))
-  proto[k+'Forget'] = this.forget_[k] = model.forget
+  this.cachedForgetters__ || (this.cachedForgetters__ = Object.create(null))
+  proto[k+'Forget'] = this.cachedForgetters__[k] = model.forget
   ? function () {
     model.forget.call(this, () => {
       this[k_] = eYo.NA
@@ -1024,8 +1068,8 @@ eYo.Dlgt_p.cachedDeclare_ = function (k, model) {
   } : function () {
     this[k_] = eYo.NA
   }
-  this.updateCached_ || (this.updateCached_ = Object.create(null))
-  proto[k+'Update'] = this.updateCached_[k] = model.update
+  this.cachedUpdaters__ || (this.cachedUpdaters__ = Object.create(null))
+  proto[k+'Update'] = this.cachedUpdaters__[k] = model.update
   ? function (after) {
     var before = this[k__]
     eYo.isDef(after) || (after = init.call(this))
@@ -1061,7 +1105,16 @@ eYo.Dlgt_p.cachedDeclare = function (many) {
  */
 eYo.Dlgt_p.cachedForget_ = function () {
   this.cachedForEach(n => {
-    this.forget_[n].call(this)
+    this.cachedForgetters__[n].call(this)
+  })
+}
+
+/**
+ * Forget all the cached valued.
+ */
+eYo.Dlgt_p.cachedUpdate_ = function () {
+  this.cachedForEach(n => {
+    this.cachedUpdaters__[n].call(this)
   })
 }
 
@@ -1125,17 +1178,17 @@ eYo.Dlgt_p.computedDeclare = function (models) {
 }
 
 /**
- * Add a 3 levels clonable property to a prototype.
- * `foo` is a clonable object means that `foo.clone` is a clone of `foo`
+ * Add a 3 levels cloned property to a prototype.
+ * `foo` is a cloned object means that `foo.clone` is a clone of `foo`
  * and `foo.set(bar)` will set `foo` properties according to `bar`.
  * @param {Map<String, Function|Object>} models,  the key => Function mapping.
  */
-eYo.Dlgt_p.clonableDeclare = function (models) {
+eYo.Dlgt_p.clonedDeclare = function (models) {
   this.init_ || (this.init_ = Object.create(null))
   var proto = this.C9r_.prototype
   Object.keys(models).forEach(k => { // No `for (var k in models) {...}`, models may change during the loop
     eYo.parameterAssert(!this.props__.has(k))
-    this.clonable_.add(k)
+    this.cloned_.add(k)
     var model = models[k]
     if (eYo.isF(model)) {
       var init = model
@@ -1234,8 +1287,8 @@ eYo.Dlgt_p.clonableDeclare = function (models) {
  * @param {Object} object - the object that owns the property
  * @param {Array<string>} names -  a list of names
  */
-eYo.Dlgt_p.clonableDispose_ = function (object) {
-  this.clonableForEach(k => {
+eYo.Dlgt_p.clonedDispose_ = function (object) {
+  this.clonedForEach(k => {
     var k__ = k + '__'
     var x = object[k__]
     if (x) {
@@ -1429,10 +1482,10 @@ eYo._p.makeClassDecorate = (f) => {
   eYo._p.doMakeClass = function (ns, key, Super, Dlgt, model) {
   // prepare init methods
     if (eYo.isF(model.init)) {
-      var endInit = model.init
+      var initEnd = model.init
     } else if (model.init) {
-      var beginInit = model.init.begin
-      endInit = model.init.end
+      var initBegin = model.init.begin
+      initEnd = model.init.end
     }
     delete model.init
     if (Super) {
@@ -1452,15 +1505,15 @@ eYo._p.makeClassDecorate = (f) => {
       }
       eYo.inherits(C9r, Super)
       eYo.assert(eYo.isSubclass(C9r, Super), 'MISSED inheritance)')
-      Super.prototype.beginInit || (Super.prototype.beginInit = eYo.Do.nothing)
-      beginInit && (C9r.prototype.beginInit = function () {
-        Super.prototype.beginInit.apply(this, arguments)
-        beginInit.apply(this, arguments)
+      Super.prototype.initBegin || (Super.prototype.initBegin = eYo.Do.nothing)
+      initBegin && (C9r.prototype.initBegin = function () {
+        Super.prototype.initBegin.apply(this, arguments)
+        initBegin.apply(this, arguments)
       })
-      Super.prototype.endInit || (Super.prototype.endInit = eYo.Do.nothing)
-      endInit && (C9r.prototype.endInit = function () {
-        Super.prototype.endInit.apply(this, arguments)
-        endInit.apply(this, arguments)
+      Super.prototype.initEnd || (Super.prototype.initEnd = eYo.Do.nothing)
+      initEnd && (C9r.prototype.initEnd = function () {
+        Super.prototype.initEnd.apply(this, arguments)
+        initEnd.apply(this, arguments)
       })
       // store the constructor
       ns && Object.defineProperties(ns, {
@@ -1482,12 +1535,12 @@ eYo._p.makeClassDecorate = (f) => {
         [key]: { value: C9r},
         [key + '_p']: { value: C9r.prototype },
       })
-      C9r.prototype.beginInit = beginInit || eYo.Do.nothing
-      C9r.prototype.endInit = endInit || eYo.Do.nothing
+      C9r.prototype.initBegin = initBegin || eYo.Do.nothing
+      C9r.prototype.initEnd = initEnd || eYo.Do.nothing
     }
     makeDlgt(ns, key, C9r, Dlgt, model)
     // create the iterators
-    ;['owned', 'clonable', 'valued', 'cached', 'computed'].forEach(k => {
+    ;['owned', 'cloned', 'valued', 'cached', 'computed'].forEach(k => {
       var name = k + 'ForEach'
       C9r.prototype[name] = function (f) {
         C9r.eyo[name].call(C9r.eyo, (k) => {
@@ -1495,17 +1548,6 @@ eYo._p.makeClassDecorate = (f) => {
           return eYo.isNA(x) || f(x)
         })
       }
-      // name = 'some' + K
-      // c9r.prototype[name] = function (f) {
-      //   var super_ = c9r.superProto_
-      //   if (super_) {
-      //     var g = super_[name]
-      //   }
-      //   return g && get.call(this, f) || c9r.eyo[name].call(c9r.eyo, (k) => {
-      //     var x = this[k]
-      //     return x && f(x)
-      //   })
-      // }
     })
     if (!C9r.eyo.disposeDecorate) {
       console.error('BREAK HERE WTF')
@@ -1515,25 +1557,33 @@ eYo._p.makeClassDecorate = (f) => {
         console.error('BREAK HERE!')
       }
       this.init = eYo.Do.nothing
-      this.beginInit.apply(this, arguments)
+      this.initBegin.apply(this, arguments)
       C9r.eyo__.initInstance(this)
-      this.endInit.apply(this, arguments)
+      this.initEnd.apply(this, arguments)
       delete this.init
     }
-    var f = C9r.eyo.disposeDecorate (model.dispose)
+    if (eYo.isF(model.dispose)) {
+      var disposeEnd = model.dispose
+    } else if (model.dispose) {
+      var disposeBegin = model.dispose.begin
+      disposeEnd = model.dispose.end
+    }
+    
+    var f = C9r.eyo.disposeDecorate (disposeBegin)
     delete model.dispose
     C9r.prototype.dispose = function () {
       try {
         this.dispose = eYo.Do.nothing
+        this.disposeUI()
         f && f.apply(this, arguments)
         C9r.eyo.disposeInstance(this)
+        disposeEnd && disposeEnd.apply(this, arguments)
         var Super = C9r.superProto_
         !!Super && !!Super.dispose && !!Super.dispose.apply(this, arguments)
       } finally {
         delete this.dispose
       }
     }
-
     try {
       Object.defineProperty(ns._p, key, {value: C9r})
     } catch(e) {
@@ -1556,7 +1606,7 @@ eYo._p.makeClassDecorate = (f) => {
         this.ui_driver.doInitUI(this, ...args)
         ff && ff.call(this, ...args)
       } finally {
-        delete this.initUI
+        delete this.disposeUI
       }
     }
     var f = eyo.disposeUIDecorate
@@ -1569,7 +1619,7 @@ eYo._p.makeClassDecorate = (f) => {
         var Super = C9r.superProto_
         !!Super && !!Super.disposeUI && !!Super.disposeUI.call(this, ...args)
       } finally {
-        delete this.disposeUI
+        delete this.initUI
       }
     }
     return C9r
@@ -1689,7 +1739,7 @@ eYo._p.makeDflt = function (Dlgt, model) {
  * @name {eYo.Dflt}
  * @constructor
  */
-eYo.makeDflt({
+eYo.makeClass('Dflt', {
   init() {
     this.disposeUI = eYo.Do.nothing // will be used by subclassers
   },
@@ -1699,10 +1749,11 @@ eYo.makeDflt({
         var mngr = this.ui_driver_mngr
         return mngr && mngr.driver(this)
       },
-      didChange () {
+      forget (forgetter) {
         this.ownedForEach(x => {
-          x.ui_driverUpdate && x.ui_driverUpdate()
+          x.ui_driverForget && x.ui_driverForget()
         })
+        forgetter()
       }
     },
   },
@@ -1714,8 +1765,10 @@ eYo.makeDflt({
       return this.owner.options
     },
     ui_driver_mngr () {
-      return this.hasUI && this.app && this.app.ui_driver_mngr
-    },          
+      if (this.hasUI) {
+        let a = this.app ; return a && a.ui_driver_mngr
+      }
+    },
   },
 })
 
@@ -1726,7 +1779,7 @@ eYo.Dflt_p.disposeUI = eYo.Do.nothing
  * Helper to make the `initUI` method based on the given function.
  * @param {Function} [f]  a function with at least one argument.
  */
-eYo.C9r.Dlgt_p.initUIDecorate = function (f) {
+eYo.Dlgt_p.initUIDecorate = function (f) {
   return f
 }
 
@@ -1734,51 +1787,7 @@ eYo.C9r.Dlgt_p.initUIDecorate = function (f) {
  * Helps to make the `disposeUI` method based on the given function.
  * @param {Function} [f]  a function with at least one argument.
  */
-eYo.C9r.Dlgt_p.disposeUIDecorate = function (f) {
+eYo.Dlgt_p.disposeUIDecorate = function (f) {
   return f
 }
 
-
-/**
- * Add the cached `app` property to the associate constructor.
- * NYU.
- */
-eYo.C9.Dlgt_p.addApp = function () {
-  this.declareCached_('app', {
-    get () {
-      return this.owner__.app
-    },
-    forget () {
-      this.ownedForEach(k => {
-        var x = this[k]
-        x && x.appForget && x.appForget()
-      })
-      this.ui_driverForget && this.ui_driverForget()
-    }
-  })
-}
-
-/**
- * Update the cached `ui_driver` each time the app object changes.
- * 
- */
-eYo.C9r.Dflt_p.appDidChange = function () {
-  var super_ = eYo.C9r.Dflt.superProto_.appDidChange
-  super_ && super_.call(this)
-  this.ui_driverUpdate()
-}
-
-eYo.C9r.Dflt_p.ownerDidChange = function (before, after) {
-  var super_ = eYo.C9r.Dflt.superProto_.ownerDidChange
-  super_ && super_call(this, before, after)
-  this.slot_ = this.brick_ = this.magnet_ = eYo.NA
-  if (after instanceof eYo.Slot) {
-    this.slot_ = after
-    this.brick_ = after.brick
-  } else if (after instanceof eYo.Magnet) {
-    this.magnet_ = after
-    this.brick_ = after.brick
-  } else if (after instanceof eYo.Brick.Dflt) {
-    this.brick_ = after
-  }
-}

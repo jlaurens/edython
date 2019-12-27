@@ -43,8 +43,8 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.comment_stmt, {
       order: 1000000,
       init: '',
       placeholder: eYo.Msg.Placeholder.COMMENT,
-      validate (newValue) /** @suppress {globalThis} */ {
-        return {validated: XRegExp.exec(newValue, eYo.XRE.comment).value || ''}
+      validate (after) /** @suppress {globalThis} */ {
+        return XRegExp.exec(after, eYo.XRE.comment).value || ''
       },
       synchronize: true,
       getPlaceholderText: eYo.Msg.Placeholder.COMMENT

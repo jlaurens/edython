@@ -183,9 +183,9 @@ eYo.Expr.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
 
 /**
  * Hook point.
- * @param {eYo.Magnet} m4t.
- * @param {eYo.Magnet} oldTargetM4t.
- * @param {eYo.Magnet} targetOldM4t
+ * @param {eYo.Magnet.Dflt} m4t.
+ * @param {eYo.Magnet.Dflt} oldTargetM4t.
+ * @param {eYo.Magnet.Dflt} targetOldM4t
  */
 eYo.Expr.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.Expr.List.superProto_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)

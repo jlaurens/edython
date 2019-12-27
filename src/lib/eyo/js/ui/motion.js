@@ -40,33 +40,13 @@ eYo.forwardDeclare('Dom')
  */
 eYo.makeClass('Motion', {
   init (desktop) {
-    /**
-     * The desktop owning this motion.
-     * @type {!eYo.Application}
-     * @private
-     */
     this.desktop_ = desktop
-
-    this.touchIDs_ = []
-
-    this.dndmngr_ = new eYo.DnD.Mngr(this)
-    this.scaler_ = new eYo.Scaler(this)
-
-    this.change_ = new eYo.C9r.Change()
-
   },
   /**
-   * Sever all links from this object.
+   * Reset and sever all links from this object.
    */
   dispose () {
     this.reset()
-    this.touchIDs_ = null
-    this.change_ = null
-    this.desktop_ = null
-    this.dndmngr_.dispose()
-    this.dndmngr_ = null
-    this.scaler_.dispose()
-    this.scaler_ = null
   },
   CONST: {
     /**
@@ -144,12 +124,26 @@ eYo.makeClass('Motion', {
     CAPTURE_STARTED: 1,
     CAPTURE_UPDATING: 2,
   },
+  owned: {
+    scaler () {
+      return new eYo.Scaler(this)
+    },
+    dndmngr () {
+      return new eYo.DnD.Mngr(this)
+    },
+    change () {
+      return new eYo.C9r.Change()
+    }
+  },
   valued:  {
     /**
      * The desktop.
      * @type {eYo.Application}
      */
-    desktop: {},
+    desktop: eYo.NA,
+    touchIDs () {
+      return []
+    },
     /**
      * The board the motion started on,
      * including the brick's board if it started on a brick,
@@ -157,34 +151,28 @@ eYo.makeClass('Motion', {
      * @type {eYo.Board}
      * @private
      */
-    starter: {},
-    event: {},
+    starter: eYo.NA,
+    event: eYo.NA,
     /**
      * The position of the mouse when the motion started.
      * Units are css pixels, with (0, 0) at the top left of
      * the browser window (mouseEvent clientX/Y).
      * @type {eYo.Where}
      */
-    xyStart: {
-      value: null
-    },
+    xyStart: eYo.NA,
     /**
      * How far the mouse has moved during this drag, in pixel units.
      * (0, 0) is at this.xyStart_.
      * @type {eYo.Where}
      * @private
      */
-    xyDelta: {
-      value: null
-    },
+    xyDelta: eYo.NA,
     /**
      * Boolean used internally to break a cycle in disposal.
      * @type {boolean}
      * @private
     */
-    isEnding_: {
-      value: false
-    },
+    isEnding_: false,
     /**
      * This is the ratio between the starting distance between the touch points
      * and the most recent distance between the touch points.
@@ -193,17 +181,13 @@ eYo.makeClass('Motion', {
      * @type {number}
      * @private
      */
-    previousScale: {
-      value: 0
-    },
+    previousScale: 0,
     /**
      * The starting distance between two touch points.
      * @type {number}
      * @private
      */
-    startDistance: {
-      value: 0
-    },
+    startDistance: 0,
     pidLong: {
       value: 0,
       willChange(before, after) {
@@ -222,23 +206,26 @@ eYo.makeClass('Motion', {
         clearTimeout(before)
       },
     },
+    clickCount: 0,
+    event: eYo.NA,
+    shouldSelect: eYo.NA,
     startBrick: {
       /*
        * Dragging should start for selected blocks only.
        */
-      validate (brick) {
-        if (!this.brick_) {
+      validate (after) {
+        if (!this.brick) {
           var candidate
-          var selected = eYo.app.focusMngr.brick
+          let selected = eYo.app.focusMngr.brick
           do {
-            candidate = brick
-          } while (brick.isExpr && (selected !== brick) && (brick = brick.parent))
+            candidate = after
+          } while (after.isExpr && (selected !== after) && (after = after.parent))
           return candidate.isInFlyout && candidate.root || candidate
         }
       },
     },
   },
-  computed:  {
+  computed: {
     /**
      * The field that the motion started on,
      * or null if it did not start on a field.
@@ -270,8 +257,8 @@ eYo.makeClass('Motion', {
      * @type {eYo.Brick}
      * @private
      */
-    targetBrick_ () {
-      var b3k = this.brick_
+    targetBrick () {
+      var b3k = this.brick
       return b3k && (b3k.inLibrary ? b3k.root: b3k)
     },
     /**
@@ -302,23 +289,21 @@ eYo.makeClass('Motion', {
      * @private
      */
     flyout () {
-      return this.board_ && this.board_.flyout
+      let b3d = this.board ; return b3d && b3d.flyout
     },
     /**
      * General purpose ui_driver_mngr from the creator board.
      */
     ui_driver_mngr () {
-      return this.board_.ui_driver_mngr
+      let b3d = this.board ; return b3d && b3d.ui_driver_mngr
     },
     /**
      * Position of the receiver's event in the board.
      * @type {eYo.Where}
      * @readonly
      */
-    where: {
-      get () {
-        return new eYo.Where(this.event_)
-      }
+    where () {
+      return new eYo.Where(this.event)
     },
   },
 })
@@ -337,7 +322,7 @@ eYo.Motion.prototype.update = function(e) {
  * @return {eYo.Motion} the receiver
  */
 eYo.Motion.prototype.reset = function() {
-  if (this.event_) {
+  if (this.event) {
     this.change_.reset()
     this.dndmngr_.reset()
     this.scaler_.reset()
@@ -349,7 +334,7 @@ eYo.Motion.prototype.reset = function() {
     Blockly.Tooltip.unblock()
     eYo.Dom.unbindMouseEvents(this)
     this.pidCancel_ = this.pidLong_ = this.pidHandle_ = 0
-    this.event__ = null
+    this.event_ = null
     this.abortCapture()
     this.clickCount_ = 0
     this.shouldSelect_ = null
@@ -401,7 +386,7 @@ eYo.Motion.prototype.captureStart = function(e, starter) {
     return
   }
   if (this.event_) {
-    return eYo.Motion.CAPTURE_UPDATING
+    return this.CAPTURE_UPDATING
   }
   this.abortCapture_()
   var capturer = {
@@ -415,7 +400,7 @@ eYo.Motion.prototype.captureStart = function(e, starter) {
     this.pidCancel_ = setTimeout(() => {
       this.pidCancel__ = 0
       this.cancel()
-    }, eYo.Motion.CANCEL_LATENCY)
+    }, this.CANCEL_LATENCY)
     this.event__ = e
     this.ui_driver_mngr.disconnectStop()
     var board = this.board_
@@ -423,9 +408,9 @@ eYo.Motion.prototype.captureStart = function(e, starter) {
     board.markFocused()  
     capturer.call(this)
     eYo.Dom.gobbleEvent(e)
-    return eYo.Motion.CAPTURE_STARTED
+    return this.CAPTURE_STARTED
   }
-  return eYo.Motion.CAPTURE_IGNORED
+  return this.CAPTURE_IGNORED
 }
 
 /**
@@ -493,8 +478,8 @@ eYo.Motion.prototype.captureMouseMove_ = function(e) {
   this.xyDelta_ = this.where.backward(this.xyStart_)
   var delta = this.xyDelta_.magnitude
   var limit = this.flyout
-  ? eYo.Motion.FLYOUT_DRAG_RADIUS
-  : eYo.Motion.DRAG_RADIUS
+  ? this.FLYOUT_DRAG_RADIUS
+  : this.DRAG_RADIUS
   if (delta > limit) {
     this.brick_ && this.brick_.focusOn()
     this.abortLongPress_()
@@ -631,15 +616,15 @@ eYo.Motion.prototype.captureTouchMove_ = function(e) {
       }
       /*
       if (!this.scaler_.update()) {
-        if (e.scale > eYo.Motion.ZOOM_IN_LIMIT || e.scale < eYo.Motion.ZOOM_OUT_LIMIT) {
+        if (e.scale > this.ZOOM_IN_LIMIT || e.scale < this.ZOOM_OUT_LIMIT) {
           this.scaler_.start()
         }
       } else if (!this.dndmngr_.update()) {
         this.xyDelta_ = this.where.backward(this.xyStart_)
         var delta = this.xyDelta_.magnitude
         var limit = this.flyout
-        ? eYo.Motion.FLYOUT_DRAG_RADIUS
-        : eYo.Motion.DRAG_RADIUS
+        ? this.FLYOUT_DRAG_RADIUS
+        : this.DRAG_RADIUS
         if (delta > limit) {
           this.brick_ && this.brick_.focusOn()
           this.abortLongPress_()
@@ -762,7 +747,7 @@ eYo.Motion.prototype.willLongPress = function (e) {
     setTimeout(() => {
       this.reset()
     })
-  }, eYo.Motion.LONG_PRESS_LATENCY)
+  }, this.LONG_PRESS_LATENCY)
 }
 
 /**
@@ -778,10 +763,10 @@ eYo.Motion.prototype.abortLongPress_ = function () {
  * @param {Event} e A mouse move or touch move event.
  */
 eYo.Motion.prototype.handleLongPress = function(e) {
-  var b = this.targetBrick_
+  var b = this.targetBrick
   if (b) {
     b.ui.showContextMenu_(e)
-  } else if ((b = this.board_)) {
+  } else if ((b = this.board)) {
     b.showContextMenu_(e)
   }
   eYo.Dom.gobbleEvent(e)
@@ -812,7 +797,7 @@ eYo.Motion.prototype.willHandleClick_ = function(e) {
   this.pidHandle_ = setTimeout(() => {
     this.pidHandle__ = 0
     this.handleClick_()
-  }, eYo.Motion.DOUBLE_LATENCY)  
+  }, this.DOUBLE_LATENCY)  
 }
 
 /**
@@ -845,7 +830,7 @@ eYo.Motion.prototype.handleClickBoard_ = function() {
  * @private
  */
 eYo.Motion.prototype.handleClickField_ = eYo.Motion.prototype.handleClickBrick_ = function() {
-  var b = this.targetBrick_
+  var b = this.targetBrick
   if (b) {
     if (this.clickCount_>1) {
       b.open()

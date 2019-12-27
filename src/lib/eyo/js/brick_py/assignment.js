@@ -107,11 +107,11 @@ eYo.Stmt.makeClass('assignment_stmt', {
         eYo.T3.Expr.identifier,
         eYo.T3.Expr.dotted_name
       ],
-      validate (newValue) /** @suppress {globalThis} */ {
-        var p5e = eYo.T3.Profile.get(newValue, null)
+      validate (after) /** @suppress {globalThis} */ {
+        var p5e = eYo.T3.Profile.get(after, null)
         return this.model.subtypes.indexOf(p5e.expr) >= 0
-        ? {validated: newValue}
-        : null
+        ? after
+        : eYo.INVALID
       },
       synchronize: true,
       allwaysBoundField: true,
@@ -135,9 +135,6 @@ eYo.Stmt.makeClass('assignment_stmt', {
     annotated: {
       init: '',
       placeholder: eYo.Msg.Placeholder.EXPRESSION,
-      validate (newValue) /** @suppress {globalThis} */ {
-        return {validated: newValue}
-      },
       synchronize: true,
       didLoad () /** @suppress {globalThis} */ {
         var b3k = this.brick

@@ -319,8 +319,8 @@ eYo.Expr.target_list.prototype.getSubtype = function () {
 
 /**
  * Did disconnect this brick's connection from another connection.
- * @param {eYo.Magnet} m4t
- * @param {eYo.Magnet} oldTargetM4t that was connected to blockConnection
+ * @param {eYo.Magnet.Dflt} m4t
+ * @param {eYo.Magnet.Dflt} oldTargetM4t that was connected to blockConnection
  */
 eYo.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isSlot) {
@@ -357,9 +357,9 @@ eYo.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
 /**
  * Hook.
  * If more that 2 bricks are connected, the variant is target_valued.
- * @param {eYo.Magnet} m4t.
- * @param {eYo.Magnet} oldTargetM4t.
- * @param {eYo.Magnet} targetOldM4t
+ * @param {eYo.Magnet.Dflt} m4t.
+ * @param {eYo.Magnet.Dflt} oldTargetM4t.
+ * @param {eYo.Magnet.Dflt} targetOldM4t
  */
 eYo.Expr.target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.Expr.target_list.superProto_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
@@ -561,30 +561,28 @@ eYo.Expr.Dflt.makeSubclass('primary', {
     dotted: {
       order: 200,
       init: 0,
-      validate (newValue) /** @suppress {globalThis} */ {
+      validate (after) /** @suppress {globalThis} */ {
         var validated
-        if (eYo.isStr(newValue)) {
-          if (newValue.length) {
-            validated = Math.max(0, Math.floor(Number(newValue)))
+        if (eYo.isStr(after)) {
+          if (after.length) {
+            validated = Math.max(0, Math.floor(Number(after)))
           } else {
             validated = Infinity
           }
-        } else if (goog.isNumber(newValue)) {
-          validated = Math.max(0, Math.floor(newValue))
+        } else if (goog.isNumber(after)) {
+          validated = Math.max(0, Math.floor(after))
         }
         return goog.isDef(validated)
-        ? {
-          validated: validated
-        }
-        : {}
+        ? validated
+        : eYo.INVALID
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        this.requiredIncog = newValue > 0
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        this.requiredIncog = after > 0
         var b3k = this.brick
-        b3k.holder_d.requiredIncog = newValue === 1
+        b3k.holder_d.requiredIncog = after === 1
         b3k.updateProfile()
-        b3k.target_s.bindField.optional_ = newValue > 0
+        b3k.target_s.bindField.optional_ = after > 0
       },
       fromType (type) /** @suppress {globalThis} */ {
         var p = this.brick.profile
@@ -623,17 +621,16 @@ eYo.Expr.Dflt.makeSubclass('primary', {
       init: '', // will be saved only when not built in
       synchronize: true,
       placeholder: eYo.Msg.Placeholder.UNSET,
-      validate (newValue) /** @suppress {globalThis} */ {
-        var p5e = eYo.T3.Profile.get(newValue, null)
-        return !newValue
+      validate (after) /** @suppress {globalThis} */ {
+        var p5e = eYo.T3.Profile.get(after, null)
+        return !after
         || p5e.expr === eYo.T3.Expr.unset
         || p5e.expr === eYo.T3.Expr.identifier
         || p5e.expr === eYo.T3.Expr.builtin__name
         || p5e.expr === eYo.T3.Expr.dotted_name
         || p5e.expr === eYo.T3.Expr.attributeref
         || p5e.expr === eYo.T3.Expr.parent_module
-        ? {validated: newValue} : null
-        // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
+        ? after: eYo.INVALID
       },
       didChange (oldValue, newValue) /** @suppress {globalThis} */ {
         // first change the dotted data to unincog the holder
@@ -667,13 +664,13 @@ eYo.Expr.Dflt.makeSubclass('primary', {
       init: '',
       placeholder: eYo.Msg.Placeholder.ALIAS,
       synchronize: true,
-      validate (newValue) /** @suppress {globalThis} */ {
-        var type = eYo.T3.Profile.get(newValue).expr
+      validate (after) /** @suppress {globalThis} */ {
+        var type = eYo.T3.Profile.get(after).expr
         return type === eYo.T3.Expr.unset
         || type === eYo.T3.Expr.identifier
         || type === eYo.T3.Expr.builtin__name
-        ? {validated: newValue}
-        : null
+        ? after
+        : eYo.INVALID
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
@@ -859,18 +856,17 @@ eYo.Expr.Dflt.makeSubclass('primary', {
       main: true,
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
-      validate (newValue) /** @suppress {globalThis} */ {
-        var type = eYo.T3.Profile.get(newValue)
+      validate (after) /** @suppress {globalThis} */ {
+        var type = eYo.T3.Profile.get(after)
         return type === eYo.T3.Profile.void
         || type.raw === eYo.T3.Expr.builtin__name
         || type.expr === eYo.T3.Expr.identifier
         || type.expr === eYo.T3.Expr.parent_module
         || type.expr === eYo.T3.Expr.dotted_name
-        ? {validated: newValue} : null
-        // return this.getAll().indexOf(newValue) < 0? null : {validated: newValue} // what about the future ?
+        ? after: eYo.INVALID
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
         var b3k = this.brick
         b3k.updateProfile()
         var item = b3k.item
@@ -908,35 +904,35 @@ eYo.Expr.Dflt.makeSubclass('primary', {
     ary: {
       order: 20001,
       init: Infinity,
-      validate (newValue) /** @suppress {globalThis} */ {
+      validate (after) /** @suppress {globalThis} */ {
         // returns a `Number` or `Infinity`
         var validated
         var item = this.brick.item
         if (item) {
-          validated = newValue
+          validated = after
         } else {
-          if (eYo.isStr(newValue)) {
-            if (newValue.length) {
-              validated = Math.max(0, Math.floor(Number(newValue)))
+          if (eYo.isStr(after)) {
+            if (after.length) {
+              validated = Math.max(0, Math.floor(Number(after)))
             } else {
               validated = Infinity
             }
-          } else if (goog.isNumber(newValue)) {
-            validated = Math.max(0, Math.floor(newValue))
+          } else if (goog.isNumber(after)) {
+            validated = Math.max(0, Math.floor(after))
           }
         }
-        return {validated: validated}
+        return validated
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
+      didChange (before, after) /** @suppress {globalThis} */ {
         // First change the ary of the arguments list, then change the ary of the delegate.
         // That way undo events are recorded in the correct order.
-        this.didChange(oldValue, newValue)
+        this.didChange(before, after)
         var target = this.brick.n_ary_b
         if (target) {
-          target.ary_p = newValue
+          target.ary_p = after
         }
-        ;(newValue < this.brick.mandatory_p) && (this.brick.mandatory_p = newValue)
-        if (goog.isDefAndNotNull(newValue)) {
+        ;(after < this.brick.mandatory_p) && (this.brick.mandatory_p = after)
+        if (goog.isDefAndNotNull(after)) {
           this.brick.variant_p = eYo.Key.CALL_EXPR
         }
       },
@@ -955,33 +951,33 @@ eYo.Expr.Dflt.makeSubclass('primary', {
     mandatory: {
       order: 20002,
       init: 0,
-      validate (newValue) /** @suppress {globalThis} */ {
+      validate (after) /** @suppress {globalThis} */ {
         // returns a `Number` or `0`
         var validated
         var item = this.brick.item
         if (item) {
-          validated = newValue
+          validated = after
         } else {
-          if (eYo.isStr(newValue)) {
-            if (newValue.length) {
-              validated = Math.max(0, Math.floor(Number(newValue)))
+          if (eYo.isStr(after)) {
+            if (after.length) {
+              validated = Math.max(0, Math.floor(Number(after)))
             } else {
               validated = 0
             }
-          } else if (goog.isNumber(newValue)) {
-            validated = Math.max(0, Math.floor(newValue))
+          } else if (goog.isNumber(after)) {
+            validated = Math.max(0, Math.floor(after))
           }
         }
-        return {validated: validated}
+        return validated
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
         var target = this.brick.n_ary_b
         if (target) {
-          target.mandatory_p = newValue
+          target.mandatory_p = after
         }
-        ;(newValue > this.brick.ary_p) && (this.brick.ary_p = newValue)
-        if (goog.isDefAndNotNull(newValue)) {
+        ;(after > this.brick.ary_p) && (this.brick.ary_p = after)
+        if (goog.isDefAndNotNull(after)) {
           this.brick.variant_p = eYo.Key.CALL_EXPR
         }
       },
@@ -1818,8 +1814,8 @@ eYo.Stmt.base_call_stmt.makeSubclass('call_stmt', {
   data: {
     variant: {
       init: eYo.Key.CALL_EXPR,
-      validate: function (newValue) {
-        return {validated: eYo.Key.CALL_EXPR}
+      validate (newValue) {
+        return eYo.Key.CALL_EXPR
       }
     }
   },

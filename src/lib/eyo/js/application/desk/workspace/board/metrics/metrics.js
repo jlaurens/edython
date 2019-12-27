@@ -74,7 +74,7 @@ eYo.forwardDeclare('Geometry')
  * to display line numbers.
  */
 eYo.makeClass('Metrics', {
-  clonable: {
+  cloned: {
     port () {
       return new eYo.Rect()
     },

@@ -26,10 +26,10 @@ eYo.Expr.Dflt.makeSubclass('comprehension', {
       order: 1,
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
-      validate (newValue) /** @suppress {globalThis} */ {
-        var type = eYo.T3.Profile.get(newValue)
+      validate (after) /** @suppress {globalThis} */ {
+        var type = eYo.T3.Profile.get(after)
         return type.expr === eYo.T3.Expr.identifier
-        ? {validated: newValue} : null
+        ? after : eYo.INVALID
       },
       synchronize: true,
       xml: {

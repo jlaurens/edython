@@ -140,6 +140,16 @@ eYo.C9r.Owned.makeSubclass(eYo.Driver, 'Mngr', {
 })
 
 /**
+ * @name{driver}
+ * Returns a default driver, whetever object is given in argument.
+ * To be subclassed.
+ * @param {*} object,  the object for which a driver is required.
+ */
+eYo.Driver.Mngr_p.driver = function (object) {
+  return new eYo.Driver.Dflt()
+}
+
+/**
  * @name {eYo.Driver.Dflt}
  * Default convenient driver, to be subclassed.
  * @param {Object} owner
@@ -158,7 +168,7 @@ eYo.C9r.Owned.makeSubclass(eYo.Driver, 'Dflt', {
  * @param {*} object
  * @return {Boolean}
  */
-eYo.Driver.Dflt.prototype.initUI = function (unused) {
+eYo.Driver.Dflt.prototype.doInitUI = function (unused) {
   return true
 }
 
@@ -166,7 +176,7 @@ eYo.Driver.Dflt.prototype.initUI = function (unused) {
  * Dispose of the UI.
  * @param {*} object
  */
-eYo.Driver.Dflt.prototype.disposeUI = function (unused) {
+eYo.Driver.Dflt.prototype.doDisposeUI = function (unused) {
   return true
 }
 
