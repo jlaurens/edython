@@ -46,7 +46,7 @@ eYo.makeClass('Application', eYo.C9r.Dflt, {
   init (options) {
     this.options_ = new eYo.Options(options || {})
     let Mngr = this.options_.UIDriverMngr
-    this.ui_driver_mngr = new (Mngr || eYo.Fcls.Mngr)() // depending on the options!!!
+    this.ui_driver_mngr_ = new (Mngr || eYo.Fcls.Mngr)(this) // depending on the options!!!
   },
   /**
    * Dispose of the audio and the motion.
@@ -67,9 +67,9 @@ eYo.makeClass('Application', eYo.C9r.Dflt, {
     ui_driver_mngr: {
       willChange(before, after) {
         before && this.disposeUI()
-        return function (before, after) {
+        return after ? function (before, after) {
           this.initUI()
-        }
+        } : eYo.NA
       }
     },
   },
@@ -87,13 +87,6 @@ eYo.makeClass('Application', eYo.C9r.Dflt, {
      */
     isDragging () {
       return this.motion__.isDragging
-    },
-    /**
-     * Whether the receiver is faceless.
-     * @type {Boolean}
-     */
-    hasUI () {
-      return this.initUI === eYo.Do.nothing
     },
   },
 })

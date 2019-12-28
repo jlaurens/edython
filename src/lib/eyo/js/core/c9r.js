@@ -538,6 +538,7 @@ Object.defineProperties(eYo._p, {
         eYo.parameterAssert(eYo.isNS(ns), 'Bad namespace')
       }
       if (!eYo.isStr(key)) {
+        eYo.parameterAssert(!model, `Unexpected model: ${model}`)
         model = C9r
         C9r = key
         key = eYo.NA
@@ -597,6 +598,15 @@ Object.defineProperties(eYo.Dlgt_p, {
   C9r: eYo.Do.propertyR(function () {
     return this.C9r_
   }),
+  C9r_p: eYo.Do.propertyR(function () {
+    return this.C9r__.prototype
+  }),
+  C9r_s: eYo.Do.propertyR(function () {
+    return this.C9r__.superProto_
+  }),
+  C9r_S: eYo.Do.propertyR(function () {
+    return this.C9r__.superC9r_
+  }),
   C9r_: {
     get () {
       return this.C9r__
@@ -635,8 +645,8 @@ Object.defineProperties(eYo.Dlgt_p, {
     set: eYo.Do.noSetter('name__'),
   },
   super: eYo.Do.propertyR(function () {
-    var C9r = this.C9r.superProto_
-    return C9r && C9r.constructor.eyo__
+    var s = this.C9r_S
+    return s && s.eyo__
   }),
 })
 
@@ -659,7 +669,6 @@ Object.defineProperties(eYo.Dlgt_p, {
   var name = k + 'ForEach'
   eYo.Dlgt_p[name] = function (f) {
     this[k__] && this[k__].forEach(f)
-    this
   }
   // name = 'some' + K
   // pttp[name] = function (f) {
@@ -677,12 +686,12 @@ eYo.Dlgt_p.initInstance = function (object) {
     console.error('BREAK HERE!')
   }
   for (var k in this.descriptors__) {
-    Object.hasOwnProperty(object, k) || Object.defineProperty(object, k, this.descriptors__[k])
+    object.hasOwnProperty(k) || Object.defineProperty(object, k, this.descriptors__[k])
   }
   var f = k => {
     var init = this.init_ && this.init_[k] || object[k+'Init']
     if (init) {
-      object[k + '__'] = init.call(this)
+      object[k + '__'] = init.call(object)
     }
   }
   this.valuedForEach(f)
@@ -746,7 +755,7 @@ eYo.Dlgt_p.CONSTDeclare = function (k, model = {}) {
         // writable: false,
       }
     }
-    if (eYo.Do.hasOwnProperty(m, 'value')) {
+    if (m.hasOwnProperty('value')) {
       return m
     }
     return {
@@ -770,12 +779,12 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
   eYo.parameterAssert(!this.props__.has(k))
   this.valued_.add(k)
   let C9r = this.C9r_
-  let proto = C9r.prototype
+  let C9r_p = C9r.prototype
   var k_ = k + '_'
   var k__ = k + '__'
   this.registerInit(k, model)
   try {
-    Object.defineProperty(proto, k__, {
+    Object.defineProperty(C9r_p, k__, {
       value: eYo.isO(model) ? model.value : model,
       writable: true
     })
@@ -783,7 +792,7 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
     console.error(`FAILURE: value property ${k__}`)
   }
   try {
-    Object.defineProperty(proto, k_, {
+    Object.defineProperty(C9r_p, k_, {
       get: model.get_ || function () {
         return this[k__]
       },
@@ -827,10 +836,10 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
  */
 eYo.Dlgt_p.consolidatorMake = function (k, model) {
   let C9r = this.C9r_
-  let proto = C9r.prototype
+  let C9r_p = C9r.prototype
   let consolidators = this.consolidators__ || (this.consolidators__ = Object.create(null))
   let kC = k+'Consolidate'
-  proto[kC] = consolidators[k] = model.consolidate
+  C9r_p[kC] = consolidators[k] = model.consolidate
   ? function () {
     let Super = C9r.superProto_[kC]
     !!Super && Super.apply(this, arguments)
@@ -1419,8 +1428,8 @@ eYo._p.makeClassDecorate = (f) => {
       if (key.startsWith('eyo:')) {
         key = key.substring(4)
       }
-      eYo.parameterAssert(!eYo.Do.hasOwnProperty(ns, key), `${key} is already a property of ns: ${ns.name}`)
-      eYo.parameterAssert(!eYo.Do.hasOwnProperty(ns._p, key), `${key} is already a property of ns: ${ns.name}`)
+      eYo.parameterAssert(!ns.hasOwnProperty(key), `${key} is already a property of ns: ${ns.name}`)
+      eYo.parameterAssert(!ns._p.hasOwnProperty(key), `${key} is already a property of ns: ${ns.name}`)
     }
     eYo.parameterAssert(model, 'Unexpected void model')
     if (eYo.isSubclass(ns.Dflt, Super)) {
@@ -1436,7 +1445,7 @@ eYo._p.makeClassDecorate = (f) => {
       }
       if (eYo.isSubclass(ns.Dlgt, Dlgt)) {
         Dlgt = ns.Dlgt
-      } else if (Dlgt.eyo.key.endsWith('Mngr')) {
+      } else if (Dlgt && Dlgt.eyo && Dlgt.eyo.key.endsWith('Mngr')) {
         // pass
       } else if (ns.Dlgt && !eYo.isSubclass(Dlgt, ns.Dlgt)) {
         Dlgt = ns.Dlgt
@@ -1447,7 +1456,7 @@ eYo._p.makeClassDecorate = (f) => {
 }
 
 {
-  let makeDlgt = (ns, key, C9r, Dlgt, model) => {
+  let createDlgt = (ns, key, C9r, Dlgt, model) => {
     Object.defineProperties(C9r, {
       eyo: eYo.Do.propertyR(function () {
         return this.eyo__
@@ -1456,13 +1465,97 @@ eYo._p.makeClassDecorate = (f) => {
           return this.eyo__
       }),
     })
-    C9r.eyo__ = new Dlgt(ns, key, C9r, model)
     Object.defineProperty(C9r.prototype, 'eyo', eYo.Do.propertyR(function () {
       return this.constructor.eyo__
     }))
+    return (C9r.eyo__ = new Dlgt(ns, key, C9r, model))
   }
   // the Dlgt is its own Dlgt
-  makeDlgt(eYo, 'Dlgt', eYo.Dlgt, eYo.Dlgt, {})
+  createDlgt(eYo, 'Dlgt', eYo.Dlgt, eYo.Dlgt, {})
+
+  let re = {
+    init: XRegExp(/^function \S*\([^,]*initer/),
+    dispose: XRegExp(/^function \S*\([^,]*disposer/)
+  }
+
+  /**
+   * Make the init method.
+   */
+  eYo.Dlgt_p.makeInit = function () {
+    let init = this.model.init
+    let C9r_s = this.C9r_s
+    let init_s = C9r_s && C9r_s.init
+    let initInstance = this.initInstance.bind(this)
+    if (init) {
+      if (XRegExp.match(init.toString(), re.init)) {
+        if (init_s) {
+          var f = function (...args) {
+            try {
+              this.init = eYo.Do.nothing
+              init.call(this, () => {
+                init_s.call(this, ...args)              
+                initInstance(this)
+              }, ...args)
+            } finally {
+              delete this.dispose
+            }
+          }
+        } else {
+          f = function (...args) {
+            try {
+              this.init = eYo.Do.nothing
+              init.call(this, () => {
+                initInstance(this)
+              }, ...args)
+            } finally {
+              delete this.dispose
+            }
+          }
+        }
+      } else if (init_s) {
+        f = function (...args) {
+          try {
+            this.init = eYo.Do.nothing
+            init_s.call(this, ...args)
+            init.call(this, ...args)
+            initInstance(this)
+          } finally {
+            delete this.dispose
+          }
+        }
+      } else {
+        f = function (...args) {
+          try {
+            this.init = eYo.Do.nothing
+            init.call(this, ...args)
+            initInstance(this)
+          } finally {
+            delete this.dispose
+          }
+        }
+      }
+    } else if (init_s) {
+      f = function (...args) {
+        try {
+          this.init = eYo.Do.nothing
+          init_s.call(this, ...args)
+          initInstance(this) 
+        } finally {
+          delete this.dispose
+        }
+      }
+    } else {
+      f = function () {
+        try {
+          this.init = eYo.Do.nothing
+          initInstance(this) 
+        } finally {
+          delete this.dispose
+        }
+      }
+    }
+    this.C9r_p.init = f
+  }
 
   /**
    * @name{eYo.doMakeClass}
@@ -1480,15 +1573,8 @@ eYo._p.makeClassDecorate = (f) => {
    * @return {Function} the created constructor.
    */
   eYo._p.doMakeClass = function (ns, key, Super, Dlgt, model) {
-  // prepare init methods
-    if (eYo.isF(model.init)) {
-      var initEnd = model.init
-    } else if (model.init) {
-      var initBegin = model.init.begin
-      initEnd = model.init.end
-    }
-    delete model.init
     if (Super) {
+      var Super_p = Super.prototype
       // create the constructor
       var C9r = function () {
         // Class
@@ -1504,22 +1590,13 @@ eYo._p.makeClassDecorate = (f) => {
         }
       }
       eYo.inherits(C9r, Super)
+      var C9r_p = C9r.prototype
       eYo.assert(eYo.isSubclass(C9r, Super), 'MISSED inheritance)')
-      Super.prototype.initBegin || (Super.prototype.initBegin = eYo.Do.nothing)
-      initBegin && (C9r.prototype.initBegin = function () {
-        Super.prototype.initBegin.apply(this, arguments)
-        initBegin.apply(this, arguments)
-      })
-      Super.prototype.initEnd || (Super.prototype.initEnd = eYo.Do.nothing)
-      initEnd && (C9r.prototype.initEnd = function () {
-        Super.prototype.initEnd.apply(this, arguments)
-        initEnd.apply(this, arguments)
-      })
       // store the constructor
       ns && Object.defineProperties(ns, {
         [key]: { value: C9r},
-        [key + '_p']: { value: C9r.prototype },
-        [key + '_s']: { value: Super.prototype },
+        [key + '_p']: { value: C9r_p },
+        [key + '_s']: { value: Super_p },
       })
     } else {
       // create the constructor
@@ -1530,60 +1607,18 @@ eYo._p.makeClassDecorate = (f) => {
         }
         this.init.apply(this, arguments)
       }
+      C9r_p = C9r.prototype
       // store the constructor
       ns && Object.defineProperties(ns, {
         [key]: { value: C9r},
-        [key + '_p']: { value: C9r.prototype },
+        [key + '_p']: { value: C9r_p },
       })
-      C9r.prototype.initBegin = initBegin || eYo.Do.nothing
-      C9r.prototype.initEnd = initEnd || eYo.Do.nothing
     }
-    makeDlgt(ns, key, C9r, Dlgt, model)
-    // create the iterators
-    ;['owned', 'cloned', 'valued', 'cached', 'computed'].forEach(k => {
-      var name = k + 'ForEach'
-      C9r.prototype[name] = function (f) {
-        C9r.eyo[name].call(C9r.eyo, (k) => {
-          var x = this[k]
-          return eYo.isNA(x) || f(x)
-        })
-      }
-    })
-    if (!C9r.eyo.disposeDecorate) {
-      console.error('BREAK HERE WTF')
+    var eyo = createDlgt(ns, key, C9r, Dlgt, model)
+    if (!eyo.disposeDecorate) {
+      console.error('BREAK HERE!')
     }
-    C9r.prototype.init = function () {
-      if (!this) {
-        console.error('BREAK HERE!')
-      }
-      this.init = eYo.Do.nothing
-      this.initBegin.apply(this, arguments)
-      C9r.eyo__.initInstance(this)
-      this.initEnd.apply(this, arguments)
-      delete this.init
-    }
-    if (eYo.isF(model.dispose)) {
-      var disposeEnd = model.dispose
-    } else if (model.dispose) {
-      var disposeBegin = model.dispose.begin
-      disposeEnd = model.dispose.end
-    }
-    
-    var f = C9r.eyo.disposeDecorate (disposeBegin)
-    delete model.dispose
-    C9r.prototype.dispose = function () {
-      try {
-        this.dispose = eYo.Do.nothing
-        this.disposeUI()
-        f && f.apply(this, arguments)
-        C9r.eyo.disposeInstance(this)
-        disposeEnd && disposeEnd.apply(this, arguments)
-        var Super = C9r.superProto_
-        !!Super && !!Super.dispose && !!Super.dispose.apply(this, arguments)
-      } finally {
-        delete this.dispose
-      }
-    }
+    model = eyo.model // arguments may have changed
     try {
       Object.defineProperty(ns._p, key, {value: C9r})
     } catch(e) {
@@ -1592,36 +1627,243 @@ eYo._p.makeClassDecorate = (f) => {
     C9r.makeSubclass = function (ns, key, Dlgt, model) {
       return C9r.eyo.makeSubclass(ns, key, Dlgt, model)
     }
+    // prepare init/dispose methods
+    eyo.makeInit()
+    // if (model.init) {
+    //   if (XRegExp.match(model.init.toString(), re.init)) {
+    //     if (Super && Super_p.init) {
+    //       var f = function (...args) {
+    //         try {
+    //           this.init = eYo.Do.nothing
+    //           model.init.call(this, () => {
+    //             Super_p.init.call(this, ...args)              
+    //             eyo.initInstance(this)
+    //           }, ...args)
+    //         } finally {
+    //           delete this.dispose
+    //         }
+    //       }
+    //     } else {
+    //       f = function (...args) {
+    //         try {
+    //           this.init = eYo.Do.nothing
+    //           model.init.call(this, () => {
+    //             eyo.initInstance(this)
+    //           }, ...args)
+    //         } finally {
+    //           delete this.dispose
+    //         }
+    //       }
+    //     }
+    //   } else if (Super && Super_p.init) {
+    //     f = function (...args) {
+    //       try {
+    //         this.init = eYo.Do.nothing
+    //         Super_p.init.call(this, ...args)
+    //         model.init.call(this, ...args)
+    //         eyo.initInstance(this)
+    //       } finally {
+    //         delete this.dispose
+    //       }
+    //     }
+    //   } else {
+    //     f = function (...args) {
+    //       try {
+    //         this.init = eYo.Do.nothing
+    //         model.init.call(this, ...args)
+    //         eyo.initInstance(this)
+    //       } finally {
+    //         delete this.dispose
+    //       }
+    //     }
+    //   }
+    // } else if (Super && Super_p.init) {
+    //   f = function (...args) {
+    //     try {
+    //       this.init = eYo.Do.nothing
+    //       Super_p.init.call(this, ...args)
+    //       eyo.initInstance(this) 
+    //     } finally {
+    //       delete this.dispose
+    //     }
+    //   }
+    // } else {
+    //   f = function () {
+    //     try {
+    //       this.init = eYo.Do.nothing
+    //       eyo.initInstance(this) 
+    //     } finally {
+    //       delete this.dispose
+    //     }
+    //   }
+    // }
+    // C9r_p.init = f
+    var f
+    if (model.dispose) {
+      if (XRegExp.match(model.dispose.toString(), re.dispose)) {
+        if (Super && Super_p.dispose) {
+          f = function (...args) {
+            try {
+              this.dispose = eYo.Do.nothing
+              this.disposeUI(...args)
+              model.dispose.call(this, () => {
+                eyo.disposeInstance(this)
+                Super_p.dispose.call(this, ...args)              
+              }, ...args)
+            } finally {
+              delete this.init
+            }
+          }
+        } else {
+          f = function (...args) {
+            try {
+              this.dispose = eYo.Do.nothing
+              this.disposeUI(...args)
+              model.dispose.call(this, () => {
+                eyo.disposeInstance(this)              
+              }, ...args)
+            } finally {
+              delete this.init
+            }
+          }
+        }
+      } else if (Super && Super_p.dispose) {
+        f = function (...args) {
+          try {
+            this.dispose = eYo.Do.nothing
+            this.disposeUI(...args)
+            model.dispose.call(this, ...args)
+            eyo.disposeInstance(this)
+            Super_p.dispose.call(this, ...args)
+          } finally {
+            delete this.init
+          }
+        }
+      } else {
+        f = function (...args) {
+          try {
+            this.dispose = eYo.Do.nothing
+            this.disposeUI(...args)
+            model.dispose.call(this, ...args)
+            eyo.disposeInstance(this)
+          } finally {
+            delete this.init
+          }
+        }
+      }
+    } else if (Super && Super_p.dispose) {
+      f = function (...args) {
+        try {
+          this.dispose = eYo.Do.nothing
+          this.disposeUI(...args)
+          eyo.disposeInstance(this)
+          Super_p.dispose.call(this, ...args)
+        } finally {
+          delete this.init
+        }
+      }
+    } else {
+      f = function (...args) {
+        try {
+          this.dispose = eYo.Do.nothing
+          this.disposeUI(...args)
+          eyo.disposeInstance(this)
+        } finally {
+          delete this.init
+        }
+      }
+    }
+    C9r_p.dispose = f
     // console.warn('NEW CLASS', C9r.eyo.name)
-    var eyo = C9r.eyo
-    model = eyo.model // arguments may have changed
     var ui = model.ui
-    var f = eyo.initUIDecorate
-    var ff = ui && ui.init && f(ui.init)
-    C9r.prototype.initUI = function (...args) {
-      try {
-        this.initUI = eYo.Do.nothing
-        var Super = C9r.superProto_
-        !!Super && !!Super.initUI && !!Super.initUI.call(this, ...args)
+    if (ui && ui.init) {
+      if (XRegExp.match(ui.init.toString(), re.init)) {
+        if (Super && Super_p.initUI) {
+          f = function (...args) {
+            ui.init.call(this, () => {
+              Super_p.initUI.call(this, ...args)              
+              this.ui_driver.doInitUI(this, ...args)
+            }, ...args)
+          }
+        } else {
+          f = function (...args) {
+            ui.init.call(this, () => {
+              this.ui_driver.doInitUI(this, ...args)
+            }, ...args)
+          }
+        }
+      } else if (Super && Super_p.initUI) {
+        f = function (...args) {
+          Super_p.initUI.call(this, ...args)
+          this.ui_driver.doInitUI(this, ...args)
+          ui.init.apply(this, arguments)  
+        }
+      } else {
+        f = function (...args) {
+          this.ui_driver.doInitUI(this, ...args)
+          ui.init.apply(this, arguments)  
+        }
+      }
+    } else if (Super && Super_p.initUI) {
+      f = function (...args) {
+        Super_p.initUI.call(this, ...args)
         this.ui_driver.doInitUI(this, ...args)
-        ff && ff.call(this, ...args)
-      } finally {
-        delete this.disposeUI
+      }
+    } else {
+      f = function (...args) {
+        this.ui_driver.doInitUI(this, ...args)
       }
     }
-    var f = eyo.disposeUIDecorate
-    var ff = ui && ui.dispose && f(ui.dispose)
-    C9r.prototype.disposeUI = function (...args) {
-      try {
-        this.disposeUI = eYo.Do.nothing
-        ff && ff.call(this, ...args)
+    C9r_p.initUI = f
+    if (ui && ui.dispose) {
+      if (XRegExp.match(ui.dispose.toString(), re.dispose)) {
+        if (Super && Super_p.disposeUI) {
+          f = function (...args) {
+            ui.dispose.call(this, () => {
+              Super_p.disposeUI.call(this, ...args)              
+              this.ui_driver.doDisposeUI(this, ...args)
+            }, ...args)
+          }
+        } else {
+          f = function (...args) {
+            ui.dispose.call(this, () => {
+              this.ui_driver.doDisposeUI(this, ...args)
+            }, ...args)
+          }
+        }
+      } else if (Super && Super_p.disposeUI) {
+        f = function (...args) {
+          Super_p.disposeUI.call(this, ...args)
+          this.ui_driver.doDisposeUI(this, ...args)
+          ui.dispose.apply(this, arguments)  
+        }
+      } else {
+        f = function (...args) {
+          this.ui_driver.doDisposeUI(this, ...args)
+          ui.dispose.apply(this, arguments)  
+        }
+      }
+    } else if (Super && Super_p.disposeUI) {
+      f = function (...args) {
+        Super_p.disposeUI.call(this, ...args)
         this.ui_driver.doDisposeUI(this, ...args)
-        var Super = C9r.superProto_
-        !!Super && !!Super.disposeUI && !!Super.disposeUI.call(this, ...args)
-      } finally {
-        delete this.initUI
+      }
+    } else {
+      f = function (...args) {
+        this.ui_driver.doDisposeUI(this, ...args)
       }
     }
+    C9r_p.disposeUI = f
+    // create the iterators
+    ;['owned', 'cloned', 'valued', 'cached', 'computed'].forEach(k => {
+      var name = k + 'ForEach'
+      C9r_p[name] = function (f) {
+        C9r.eyo[name].call(C9r.eyo, (k) => {
+          var x = this[k]
+          return eYo.isNA(x) || f(x)
+        })
+      }
+    })
     return C9r
   }
 }
@@ -1723,7 +1965,7 @@ eYo._p.makeDlgt = function (key, Super, model) {
  * @param {Object} [model] - the model
  */
 eYo._p.makeDflt = function (Dlgt, model) {
-  if (!eYo.Do.hasOwnProperty(this, 'Dlgt')) {
+  if (!this.hasOwnProperty('Dlgt')) {
     this.makeDlgt()
   }
   if (!eYo.isSubclass(Dlgt, eYo.Dlgt)) {
@@ -1740,6 +1982,9 @@ eYo._p.makeDflt = function (Dlgt, model) {
  * @constructor
  */
 eYo.makeClass('Dflt', {
+  /**
+   * Initializer.
+   */
   init() {
     this.disposeUI = eYo.Do.nothing // will be used by subclassers
   },
@@ -1747,7 +1992,7 @@ eYo.makeClass('Dflt', {
     ui_driver: {
       init () {
         var mngr = this.ui_driver_mngr
-        return mngr && mngr.driver(this)
+        return mngr && mngr.driver(this) || (new eYo.Driver.Dflt())
       },
       forget (forgetter) {
         this.ownedForEach(x => {
@@ -1761,9 +2006,6 @@ eYo.makeClass('Dflt', {
     hasUI () {
       return !this.initUI || this.initUI === eYo.Do.nothing
     },
-    options () {
-      return this.owner.options
-    },
     ui_driver_mngr () {
       if (this.hasUI) {
         let a = this.app ; return a && a.ui_driver_mngr
@@ -1774,20 +2016,4 @@ eYo.makeClass('Dflt', {
 
 eYo.Dflt_p.initUI = eYo.Do.nothing
 eYo.Dflt_p.disposeUI = eYo.Do.nothing
-
-/**
- * Helper to make the `initUI` method based on the given function.
- * @param {Function} [f]  a function with at least one argument.
- */
-eYo.Dlgt_p.initUIDecorate = function (f) {
-  return f
-}
-
-/**
- * Helps to make the `disposeUI` method based on the given function.
- * @param {Function} [f]  a function with at least one argument.
- */
-eYo.Dlgt_p.disposeUIDecorate = function (f) {
-  return f
-}
 

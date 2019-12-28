@@ -1253,7 +1253,7 @@ eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
   if (eYo.Expr[k]) {
     console.warn('BREAK HERE!')
   }
-  console.warn(k)
+//  console.warn(k)
   eYo.C9r.register(k, (eYo.Expr[k] = eYo.Expr.primary))
 })
 

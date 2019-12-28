@@ -59,7 +59,7 @@ eYo.C9r.makeClass('Change', {
  * Sever the links.
  */
 eYo.C9r.Change.prototype.reset = function () {
-  this.count = this.step = this.level = 0
+  this.count_ = this.step_ = this.level_ = 0
   // Some operations are performed only when there is a change
   // In order to decide whether to run or do nothing,
   // we have to store the last change count when the operation was

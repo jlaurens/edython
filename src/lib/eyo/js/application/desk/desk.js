@@ -20,6 +20,12 @@ eYo.forwardDeclare('Application')
 eYo.forwardDeclare('Backer')
 eYo.forwardDeclare('Options')
 
+eYo.forwardDeclare('Terminal')
+eYo.forwardDeclare('Turtle')
+eYo.forwardDeclare('Graphic')
+eYo.forwardDeclare('Variable')
+eYo.forwardDeclare('Workspace')
+
 goog.forwardDeclare('goog.array');
 goog.forwardDeclare('goog.math');
 
@@ -29,7 +35,7 @@ goog.forwardDeclare('goog.math');
  * @param {eYo.Application|Object} owner Owner application.
  * @constructor
  */
-eYo.C9r.makeClass(eYo, 'Desk', {
+eYo.C9r.Owned.makeSubclass(eYo, 'Desk', {
   owned: {
     /**
      * Terminal.

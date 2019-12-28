@@ -35,15 +35,18 @@ eYo.forwardDeclare('Magnet')
  */
 eYo.C9r.makeClass('Owned', {
   init (owner) {
+    eYo.parameterAssert(owner, 'Missing owner!')
     this.owner_ = owner
   },
   valued: {
     owner: {
       didChange (before, after) {
-        this.appForget() // do not update, may be the owner is not yet complete
-        this.ownedForEach(x => {
-          x.appForget && x.appForget()
-        })
+        if (before) {
+          this.appForget() // do not update, may be the owner is not yet complete
+          this.ownedForEach(x => {
+            x.appForget && x.appForget()
+          })  
+        }
       },
       consolidate(after) {
         if (after.hasUI) {
@@ -68,6 +71,12 @@ eYo.C9r.makeClass('Owned', {
     }
   },
   computed: {
+    /**
+     * Options
+     */
+    options () {
+      return this.owner.options
+    },
     /**
      * The app's desk
      * @readonly

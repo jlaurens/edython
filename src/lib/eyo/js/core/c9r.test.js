@@ -25,6 +25,22 @@ NS.test_valued = (x, foo, bar) => {
   chai.assert(x[bar__] === eYo.NA && x[bar_] === eYo.NA && x[bar] === eYo.NA)
 }
 describe ('POC', function () {
+  this.timeout(10000)
+  it ('initer', function () {
+    var flag = 123
+    var model = {
+      foo (initer) {
+        initer()
+      },
+      bar (initializer) {
+        initializer || (flag = 321)
+      }
+    }
+    var str = model.foo.toString()
+    chai.assert(XRegExp.match(str, /^function \S*\([^,]*initer/))
+    var str = model.bar.toString()
+    chai.assert(!XRegExp.match(str, /^function \S*\([^,]*initer/))
+  })
   it ('delete', function () {
     var ns = eYo.makeNS()
     chai.assert(!ns.Foo)
@@ -35,7 +51,6 @@ describe ('POC', function () {
   })
 })
 describe ('Tests: C9r', function () {
-  this.timeout(10000)
   it ('C9r: basic', function () {
     chai.assert(eYo.makeClass)
     chai.assert(eYo.makeNS)
@@ -569,7 +584,7 @@ describe ('Dlgt', function () {
       chai.assert(flag_B === 10)
       NS.test_valued(ab, 'foo', 'bar')
     })
-    it ('Make: init begin/end shortcuts', function () {
+    it ('Make: initer shortcuts 1', function () {
       var ns = eYo.makeNS()
       var flag = 0
       var make = (init) => {
@@ -583,27 +598,32 @@ describe ('Dlgt', function () {
         flag = 421
       })
       chai.assert(flag === 421)
-      make({
-        begin () {
-          flag = 123
+      make(function (initer) {
+        flag = 123
+        initer ()
+        flag += 421
+      })
+      chai.assert(flag === 544)
+    })
+    it ('Make: initer shortcuts 2', function () {
+      var ns = eYo.makeNS()
+      var flag = 0
+      eYo.makeClass(ns, 'A', null, {
+        init () {
+          flag += 123
         }
       })
+      new ns.A()
       chai.assert(flag === 123)
-      make({
-        end () {
-          flag = 421
-        }
-      })
-      chai.assert(flag === 421)
-      make({
-        begin () {
-          flag = 123
-        },
-        end () {
+      ns.A.makeSubclass('AB', {
+        init ( initer) {
+          flag *= 1000
+          initer ()
           flag += 421
         }
       })
-      chai.assert(flag === 544)
+      new ns.AB()
+      chai.assert(flag === 123544)
     })
     it ('Make: dispose', function () {
       var ns = eYo.makeNS()
@@ -619,6 +639,12 @@ describe ('Dlgt', function () {
         }
       })
       flag = 0
+      chai.expect(() => {
+        new ns.A().dispose(1)
+      }).to.throw()
+      ns.A_p.ui_driver = {
+        doDisposeUI: eYo.Do.nothing
+      }
       new ns.A().dispose(1)
       chai.assert(flag === 1)
       flag = 0
@@ -737,13 +763,9 @@ describe ('Dlgt', function () {
     it (`eYo.makeClass('...', Super|eYo.Dflt, {...}?)`, function () {
       var Super = function () {}
       Super.eyo = new eYo.Dlgt(eYo, Super, {})
-      chai.assert(!Super.prototype.initBegin)
-      chai.assert(!Super.prototype.initEnd)
       var ns = eYo.makeNS()
       ns.makeDflt()
       eYo.makeClass(ns, 'A', Super)
-      chai.assert(Super.prototype.initBegin === eYo.Do.nothing)
-      chai.assert(Super.prototype.initEnd === eYo.Do.nothing)
       chai.assert(ns.A.eyo.super === Super.eyo)
       testX(ns.A, Super, ns.Dlgt)
     })
@@ -1105,6 +1127,9 @@ describe ('Dlgt', function () {
       eYo.makeClass(ns, 'A', null, {
         owned: ['foo']
       })
+      ns.A_p.ui_driver = {
+        doDisposeUI: eYo.Do.nothing
+      }
       var a = new ns.A()
       chai.expect(() => {a.foo = 1}).to.throw()
       var B = function () {}
@@ -1306,6 +1331,9 @@ describe ('Dlgt', function () {
           }
         },
       })
+      ns.A_p.ui_driver = {
+        doDisposeUI: eYo.Do.nothing
+      }
       ns.A.prototype.fooWillChange = ns.A.prototype.fooDidChange = test
       var a = new ns.A(foo_before)
       chai.assert(a.foo === foo_before)
@@ -1320,7 +1348,7 @@ describe ('Dlgt', function () {
       foo_after = eYo.NA
       flag = 0
       a.dispose(123)
-      console.warn(flag)
+//      console.warn(flag)
       chai.assert(flag === 1100)
     })
   })
@@ -1337,6 +1365,9 @@ describe ('Dlgt', function () {
           }
         }
       })
+      ns.A_p.ui_driver = {
+        doDisposeUI: eYo.Do.nothing
+      }
       B.prototype.dispose = function () {
         this.disposed_ = true
       }
@@ -1570,9 +1601,9 @@ describe ('Dlgt', function () {
       },
     }
     Object.keys(props).forEach(a => {
-      console.warn(`TEST a: ${a}...`)
+//      console.warn(`TEST a: ${a}...`)
       Object.keys(props).forEach(ab => {
-        console.warn(`TEST ab: ${ab}...`)
+//        console.warn(`TEST ab: ${ab}...`)
         ns = eYo.makeNS()
         makeA({
           [a]: props[a]
@@ -1581,7 +1612,7 @@ describe ('Dlgt', function () {
           [ab]: props[ab]
         })
         expect[a][ab]()
-        console.warn(`TEST ab: ${ab}... DONE`)
+//        console.warn(`TEST ab: ${ab}... DONE`)
       })
     })
   })
@@ -1643,9 +1674,9 @@ describe ('Dlgt', function () {
     a.ownedForEach(x => flag += x.value)
     chai.assert(flag === 1)
     flag = 0
-    ab.ownedForEach(x => console.warn(x.value))
+//    ab.ownedForEach(x => console.warn(x.value))
     ab.ownedForEach(x => flag += x.value)
-    console.warn(flag)
+//    console.warn(flag)
     chai.assert(flag === 11)
   })
   it ('Constructor: cachedForEach', function () {
@@ -1753,7 +1784,7 @@ describe ('Dlgt', function () {
     })
     chai.assert(ns.AB.superProto_ === ns.A.prototype)
     flag = 0
-    var ab = new ns.AB()
+    new ns.AB()
     chai.assert(flag === 11)
   })
   it ('Constructor: eyo setter', function () {
@@ -1770,8 +1801,8 @@ describe ('Dlgt', function () {
   it ('Constructor: dlgt key', function () {
     var ns = eYo.makeNS()
     var flag = 0
-    var dlgt = function (key, c9r, model) {
-      eYo.Dlgt.call(this, key, c9r, model)
+    var dlgt = function (ns, key, c9r, model) {
+      eYo.Dlgt.call(this, ns, key, c9r, model)
       flag += 1
     }
     eYo.inherits(dlgt, eYo.Dlgt)

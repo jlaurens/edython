@@ -13,7 +13,7 @@
  */
 'use strict'
 
-eYo.require('Pane')
+eYo.require('C9r.Pane')
 eYo.require('Decorate')
 
 eYo.forwardDeclare('Flyout')
@@ -34,7 +34,7 @@ goog.forwardDeclare('goog.math');
  * @param {eYo.Application|Object} owner Owner application.
  * @constructor
  */
-eYo.Pane.makeSubclass(eYo, 'Workspace', {
+eYo.makeClass('Workspace', eYo.C9r.Pane, {
   owned: {
     /**
      * @type {?eYo.Board.Main} newValue 

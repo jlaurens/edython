@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.require('C9r')
+eYo.require('C9r.Owned')
 
 eYo.forwardDeclare('Desk')
 
@@ -21,7 +21,7 @@ eYo.forwardDeclare('Desk')
  * @param {eYo.Desk} desk -  the owning desk.
  * @constructor
  */
-eYo.C9r.makeClass(eYo, 'Pane', {
+eYo.C9r.Owned.makeSubclass('Pane', {
   computed: {
     /**
      * The desk of the receiver.
@@ -38,14 +38,14 @@ eYo.C9r.makeClass(eYo, 'Pane', {
  * Layout the receiver.
  * The default implementation does nothing.
  */
-eYo.Pane.prototype.layout = eYo.Do.nothing
+eYo.C9r.Pane_p.layout = eYo.Do.nothing
 
 /**
  * Update the metrics of the receiver.
  */
-eYo.Pane.prototype.updateMetrics = eYo.Do.nothing
+eYo.C9r.Pane_p.updateMetrics = eYo.Do.nothing
 
 /**
  * Place the receiver.
  */
-eYo.Pane.prototype.place = eYo.Do.nothing
+eYo.C9r.Pane_p.place = eYo.Do.nothing

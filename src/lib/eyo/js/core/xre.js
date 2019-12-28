@@ -25,16 +25,17 @@ eYo.assert(XRegExp, 'load XRegExp before')
 XRegExp.install('astral')// python supports astral
 
 eYo.Do.readOnlyMixin(eYo.XRE, {
-    id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
-    s3d: XRegExp(`^(?:eyo:)?(?<core>.*?)$`),
-    event_data: XRegExp(`^eyo:data:(?<key>.*?)$`),
-    operator: XRegExp(`^[+\\-/%*@<>&^|=#]$`),
-    delimiter: XRegExp(`^[.,;:\\(\\)\\[\\]\\{\\}\\[\\]'"]$`),
-    comment: XRegExp(`^(?<value>[^\\r\\n]*)`),
-    upper: XRegExp(`^[A-Z_]*$`),
-    white_space: XRegExp('\\t|\\f|\\p{Zs}|\\p{Zl}')
-  })
-
+  id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
+  s3d: XRegExp(`^(?:eyo:)?(?<core>.*?)$`),
+  event_data: XRegExp(`^eyo:data:(?<key>.*?)$`),
+  operator: XRegExp(`^[+\\-/%*@<>&^|=#]$`),
+  delimiter: XRegExp(`^[.,;:\\(\\)\\[\\]\\{\\}\\[\\]'"]$`),
+  comment: XRegExp(`^(?<value>[^\\r\\n]*)`),
+  upper: XRegExp(`^[A-Z_]*$`),
+  white_space: XRegExp('\\t|\\f|\\p{Zs}|\\p{Zl}'),
+})
+  
+  
 eYo.Do.readOnlyMixin(eYo.XRE, {
   integer: XRegExp(
     `^(?<sign>-)?(?:
@@ -299,11 +300,3 @@ eYo.assert('0e0'.match(RE.exponentfloat), 'FAILURE')
 eYo.assert('0e+0'.match(RE.exponentfloat), 'FAILURE')
 eYo.assert('0e-0'.match(RE.exponentfloat), 'FAILURE')
 */
-
-eYo.Const.Event = {
-  DATA: 'eyo:data:',
-  property: 'eyo:property',
-  locked: 'eyo:locked',
-  asynced: 'eyo:asynced'
-}
-

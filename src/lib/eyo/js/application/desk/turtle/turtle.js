@@ -12,14 +12,14 @@
  */
 'use strict'
 
-eYo.require('Pane')
+eYo.require('C9r.Pane')
 
 eYo.require('Decorate')
-eYo.provide('Turtle')
 
 /**
+ * @name {eYo.Turtle}
  * Class for a turtle graphic environment.
  * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.C9r.makeClass('Turtle', eYo.Pane)
+eYo.makeClass('Turtle', eYo.C9r.Pane)

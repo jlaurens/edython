@@ -1,8 +1,8 @@
 NS = Object.create(null)
 describe ('Tests: pane', function () {
   it ('Pane: basic', function () {
-    chai.assert(eYo.Pane)
-    chai.assert(eYo.Pane.eyo)
-    chai.assert(eYo.Pane.makeSubclass)
+    chai.assert(eYo.C9r.Pane)
+    chai.assert(eYo.C9r.Pane.eyo)
+    chai.assert(eYo.C9r.Pane.makeSubclass)
   })
 })

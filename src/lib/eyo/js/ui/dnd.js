@@ -70,16 +70,13 @@ eYo.DnD.makeClass('Mngr', eYo.C9r.Owned, {
    * It maintains a list of draggers and droppers
    * * @param{eYo.Application} [desktop] -  the owning desktop
    */
-  dispose: {
-    begin () {
-      this.cancel()
-    },
-    end () {
-      this.draggers_.length = 0
-      this.draggers_ = eYo.NA
-      this.droppers_.length = 0
-      this.droppers_ = eYo.NA  
-    }
+  dispose (disposer) {
+    this.cancel()
+    disposer()
+    this.draggers_.length = 0
+    this.draggers_ = eYo.NA
+    this.droppers_.length = 0
+    this.droppers_ = eYo.NA
   },
   owned: 'motion',
   valued: 'dragger',
@@ -194,7 +191,7 @@ eYo.DnD.Mngr_p.addDropper = function (dropper) {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.DnD.Dragger.makeDflt(eYo.C9r.Owned, {
+eYo.DnD.Dragger.makeClass('Dflt', eYo.C9r.Owned, {
   /**
    * Sever all the links.
    */
@@ -555,7 +552,7 @@ eYo.DnD.Dragger.DraftBrick_p.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.DnD.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.DnD.makeDflt(eYo.C9r.Owned, {
+eYo.DnD.Dropper.makeClass('Dflt', eYo.C9r.Owned, {
   /**
    * Sever all the links.
    */

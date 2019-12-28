@@ -12,18 +12,18 @@
  */
 'use strict'
 
-eYo.require('Pane')
+eYo.require('C9r.Pane')
 
 eYo.require('Decorate')
-eYo.provide('Template')
 
 /**
+ * @name {eYo.Template}
  * Class for a template environment.
  * To be subclassed.
  * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.C9r.makeClass('Template', eYo.Pane)
+eYo.makeClass('Template', eYo.C9r.Pane)
 
 /**
  * Update the metrics of the receiver.

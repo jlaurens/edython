@@ -217,3 +217,11 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   BRACE: '{}', // also used in xml eyo attribute
 
 })
+
+eYo.Const.Event = {
+  DATA: 'eyo:data:',
+  property: 'eyo:property',
+  locked: 'eyo:locked',
+  asynced: 'eyo:asynced'
+}
+
