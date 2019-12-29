@@ -64,7 +64,12 @@ eYo.C9r.noSetter = function (msg) {
 /**
  * function frequently used.
  */
-eYo.C9r.descriptorR = (getter, msg) => {
+eYo.C9r.descriptorR = (msg, getter) => {
+  if (!eYo.isStr(msg)) {
+    eYo.parameterAssert(!getter, `Unexpected getter: ${getter}`)
+    getter = msg
+    msg = eYo.NA
+  }
   return {
     get: getter,
     set: eYo.C9r.noSetter(msg),
@@ -74,7 +79,12 @@ eYo.C9r.descriptorR = (getter, msg) => {
 /**
  * function frequently used.
  */
-eYo.C9r.descriptorW = (setter, msg) => {
+eYo.C9r.descriptorW = (msg, setter) => {
+  if (!eYo.isStr(msg)) {
+    eYo.parameterAssert(!setter, `Unexpected setter: ${setter}`)
+    setter = msg
+    msg = eYo.NA
+  }
   return {
     get: eYo.C9r.noGetter(msg),
     set: setter,
