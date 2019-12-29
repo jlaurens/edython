@@ -215,8 +215,6 @@ def buildDeps(library, library_name):
         relative = foo.path.relative_to(pathRoot)
         dependency = f"eYo.addDependency('{relative.as_posix()}', {provide}, {require}, {{}});\n"
         dependency_lines.append(dependency)
-        if foo.path.stem == 'dnd':
-          print('********* dnd: dependency', dependency)
 
     p_out = pathBuild / (library_name+'_deps.js')
     print('Writing dependencies in\n   ', p_out)

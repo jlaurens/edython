@@ -28,17 +28,13 @@ eYo.Dom.makeDriverClass('Audio', {
      * @private
      * @const
      */
-    audio.sounds_ = Object.create(null)
-    let pathToMedia = audio.options.pathToMedia
     try {
-      audio.tester_ = new Audio()
-      this.load(audio, pathToMedia, 'click')
-      this.load(pathToMedia, 'disconnect')
-      this.load(pathToMedia, 'delete')
+      this.load(audio, 'click')
+      this.load(audio, 'disconnect')
+      this.load(audio, 'delete')
     } catch(e) {
       return
     }
-
     // Android ignores any sound not loaded as a result of a user action.
     // Bind temporary hooks that preload the sounds.
     var soundBinds
@@ -66,13 +62,6 @@ eYo.Dom.makeDriverClass('Audio', {
       {noCaptureIdentifier: true}
     )]
   },
-  /**
-   * Dispose of this audio manager.
-   */
-  dispose () {
-    this.sounds_ = null
-    this.tester_ = null
-  },
   valued: {
     /**
      * Time that the last sound was played.
@@ -80,19 +69,24 @@ eYo.Dom.makeDriverClass('Audio', {
      * @private
      */
     lastPlay: { value: null, writable: true },
+    tester () {
+      return new Audio()
+    },
+    sounds () {
+      return Object.create(null)
+    },
+  },
+  CONST: {
+    /**
+     * Play a sound at least this amount of milliseconds.
+     */
+    SOUND_LIMIT: 100,
+    /**
+     * Default volume.
+     */
+    SOUND_VOLUME: 0.5,
   }
 })
-
-/**
- * Play a sound at least this amount of milliseconds.
- */
-eYo.Dom.Audio.SOUND_LIMIT = 100
-
-/**
- * Default volume.
- */
-eYo.Dom.Audio.SOUND_VOLUME = 0.5
-
 
 /**
  * Load an audio file.  Cache it, ready for playing.
@@ -101,11 +95,11 @@ eYo.Dom.Audio.SOUND_VOLUME = 0.5
  *   Filenames include path from Blockly's root.  File extensions matter.
  * @param {string} name Name of sound.
  */
-eYo.Dom.Audio.prototype.load = function(audio, name) {
+eYo.Dom.Audio_p.load = function(audio, name) {
   let pathToMedia = audio.pathToMedia
   var base = pathToMedia + name + '.'
   ;[ 'mp3', 'ogg', 'wav' ].some(ext => {
-    if (this.tester_.canPlayType('audio/' + ext)) {
+    if (this.tester.canPlayType('audio/' + ext)) {
       var sound = new Audio(base + ext)
       if (sound && sound.play) {
         this.sounds_[name] = sound
@@ -118,11 +112,11 @@ eYo.Dom.Audio.prototype.load = function(audio, name) {
 /**
  * Preload all the audio files so that they play quickly when asked for.
  */
-eYo.Dom.Audio.prototype.preload = function() {
+eYo.Dom.Audio_p.preload = function() {
   if (eYo.Test && !eYo.Test.audio) {
     return
   }
-  Object.values(this.sounds_).some(sound => {
+  Object.values(this.sounds).some(sound => {
     sound.volume = 0.01
     sound.play().catch(()=>{})
     sound.pause()
@@ -138,12 +132,12 @@ eYo.Dom.Audio.prototype.preload = function() {
  * @param {string} name Name of sound.
  * @param {number=} opt_volume Volume of sound (0-1).
  */
-eYo.Dom.Audio.prototype.play = function(name, opt_volume) {
+eYo.Dom.Audio_p.play = function(audio, name, opt_volume) {
   var sound = this.sounds_[name]
   if (sound) {
     // Don't play one sound on top of another, setTimeout?
     var now = new Date
-    if (this.lastPlay_ && now - this.lastPlay_ < eYo.Dom.Audio.SOUND_LIMIT) {
+    if (this.lastPlay_ && now - this.lastPlay_ < this.SOUND_LIMIT) {
       return
     }
     this.lastPlay_ = now
@@ -158,7 +152,7 @@ eYo.Dom.Audio.prototype.play = function(name, opt_volume) {
     } else {
       mySound = sound.cloneNode()
     }
-    mySound.volume = (opt_volume === eYo.NA ? eYo.Dom.Audio.SOUND_VOLUME : opt_volume)
+    mySound.volume = (opt_volume === eYo.NA ? this.SOUND_VOLUME : opt_volume)
     mySound.play()
   }
 }

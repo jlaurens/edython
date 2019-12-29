@@ -260,7 +260,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/core/font.js" \
 --js "src/lib/eyo/js/core/c9r.js" \
 --js "src/lib/eyo/js/core/const.js" \
---js "src/lib/eyo/js/ui/css.js" \
+--js "src/lib/eyo/js/application/ui/css.js" \
 --js "src/lib/eyo/js/core/geometry.js" \
 --js "src/lib/eyo/js/parser/node.js" \
 --js "src/lib/eyo/js/core/change_count.js" \
@@ -275,13 +275,13 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/consolidator.js" \
 --js "src/lib/eyo/js/other/db.js" \
 --js "src/lib/eyo/js/application/desk/desk.js" \
---js "src/lib/eyo/js/ui/dnd.js" \
+--js "src/lib/eyo/js/application/ui/dnd.js" \
 --js "src/lib/eyo/js/parser/grammar.js" \
 --js "src/lib/eyo/js/application/driver/driver.js" \
 --js "src/lib/eyo/js/core/events.js" \
 --js "src/lib/eyo/js/application/desk/graphic/graphic.js" \
 --js "src/lib/eyo/js/module/module.js" \
---js "src/lib/eyo/js/ui/motion.js" \
+--js "src/lib/eyo/js/application/ui/motion.js" \
 --js "src/lib/eyo/js/parser/tokenizer.js" \
 --js "src/lib/eyo/js/application/desk/workspace/scrollbar/scrollbar.js" \
 --js "src/lib/eyo/js/application/desk/workspace/scroller/scroller.js" \
@@ -314,7 +314,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/turtle/turtle.js" \
 --js "src/lib/eyo/js/application/desk/variable/variable.js" \
 --js "src/lib/eyo/js/application/desk/workspace/workspace.js" \
---js "src/lib/eyo/js/ui/audio.js" \
+--js "src/lib/eyo/js/application/driver/dom/dom_audio.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom_brick.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom_desk.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom_search.js" \
@@ -325,7 +325,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/core/data.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/brick_events.js" \
---js "src/lib/eyo/js/ui/brick_ui.js" \
+--js "src/lib/eyo/js/application/ui/brick_ui.js" \
 --js "src/lib/eyo/js/application/desk/focus.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/python_exporter.js" \
 --js "src/lib/eyo/js/brick_py/stmt.js" \
