@@ -55,14 +55,16 @@ eYo.makeClass('Application', eYo.C9r.Dflt, {
     this.disposeUI()
   },
   owned: {
+    options: {},
     motion () {
       return new eYo.Motion(this)
     },
     desk () {
       return new eYo.Desk(this)
     },
-    options: {},
-    audio: {},
+    audio () {
+      return new eYo.Audio(this)
+    },
     clipboard: {},
     ui_driver_mngr: {
       willChange(before, after) {
@@ -90,28 +92,6 @@ eYo.makeClass('Application', eYo.C9r.Dflt, {
     },
   },
 })
-
-/**
- * Make the UI.
- */
-eYo.Application_p.initUI = function() {
-  this.initUI = eYo.Do.nothing
-  delete this.disposeUI
-  this.audio__ = new eYo.Dom.Audio(this, this.options.pathToMedia)
-  var d = this.ui_driver_mngr__ = new eYo.Svg.Mngr(this)
-  d.objectInitUI(this)
-  this.desk.initUI()
-}
-
-/**
- * Dispose of the UI related resources.
- */
-eYo.Application_p.disposeUI = function() {
-  this.disposeUI = eYo.Do.nothing
-  this.desk.disposeUI()
-  this.ui_driver_mngr_ = null
-  delete this.initUI
-}
 
 /**
  * Paste a brick from the local clipboard.

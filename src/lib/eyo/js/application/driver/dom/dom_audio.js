@@ -16,22 +16,23 @@ eYo.require('C9r.Owned')
 goog.forwardDeclare('goog.userAgent')
 
 /**
+ * @name {eYo.Dom.Audio}
  * Class for loading, storing, and playing audio.
  * @param {String} pathToMedia
  * @constructor
  */
-eYo.makeClass('Audio', eYo.C9r.Owned, {
-  init(owner) {
+eYo.Dom.makeDriverClass('Audio', {
+  initUI(audio) {
     /**
      * Database of pre-loaded sounds.
      * @private
      * @const
      */
-    this.sounds_ = Object.create(null)
-    let pathToMedia = owner.options.pathToMedia
+    audio.sounds_ = Object.create(null)
+    let pathToMedia = audio.options.pathToMedia
     try {
-      this.tester_ = new Audio()
-      this.load(pathToMedia, 'click')
+      audio.tester_ = new Audio()
+      this.load(audio, pathToMedia, 'click')
       this.load(pathToMedia, 'disconnect')
       this.load(pathToMedia, 'delete')
     } catch(e) {
@@ -100,7 +101,8 @@ eYo.Dom.Audio.SOUND_VOLUME = 0.5
  *   Filenames include path from Blockly's root.  File extensions matter.
  * @param {string} name Name of sound.
  */
-eYo.Dom.Audio.prototype.load = function(pathToMedia, name) {
+eYo.Dom.Audio.prototype.load = function(audio, name) {
+  let pathToMedia = audio.pathToMedia
   var base = pathToMedia + name + '.'
   ;[ 'mp3', 'ogg', 'wav' ].some(ext => {
     if (this.tester_.canPlayType('audio/' + ext)) {
