@@ -45,8 +45,6 @@ eYo.forwardDeclare('Dom.Audio')
 eYo.makeClass('Application', eYo.C9r.Dflt, {
   init (options) {
     this.options_ = new eYo.Options(options || {})
-    let Mngr = this.options_.UIDriverMngr
-    this.ui_driver_mngr_ = new (Mngr || eYo.Fcls.Mngr)(this) // depending on the options!!!
   },
   /**
    * Dispose of the audio and the motion.
@@ -67,6 +65,10 @@ eYo.makeClass('Application', eYo.C9r.Dflt, {
     },
     clipboard: {},
     ui_driver_mngr: {
+      init () {
+        let Mngr = this.options.UIDriverMngr
+        this.ui_driver_mngr_ = new (Mngr || eYo.Fcls.Mngr)(this) // depending on the options!!!
+      },
       willChange(before, after) {
         before && this.disposeUI()
         return after ? function (before, after) {

@@ -270,7 +270,7 @@ eYo.Board.Dflt.makeSubclass('Main', {
      * @type {boolean}
      */
     isDragger () {
-      return this.owner_ instanceof eYo.Board
+      return this.owner_ instanceof eYo.Board.Dflt
     },
     /**
      * Is this board belonging to a flyout?
