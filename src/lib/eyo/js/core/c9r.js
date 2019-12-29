@@ -34,70 +34,72 @@ eYo.makeNS('C9r')
  */
 eYo.C9r.makeNS('Model')
 
-/**
- * Function frequently used.
- */
-eYo.C9r.noGetter = function (msg) {
-  return msg === 'name_'
-  ? function () {
-    throw new Error(`Forbidden name_ getter`)
-  } : msg 
+{
+  /**
+   * Function frequently used.
+   */
+  let noGetter = function (msg) {
+    return msg === 'name_'
     ? function () {
-      throw new Error(`Forbidden getter: ${msg}`)
+      throw new Error(`Forbidden name_ getter`)
+    } : msg 
+      ? function () {
+        throw new Error(`Forbidden getter: ${msg}`)
+      } : function () {
+        throw new Error('Forbidden getter...')
+      }
+  }
+
+  /**
+   * function frequently used.
+   */
+  let noSetter = function (msg) {
+    return msg
+    ? function () {
+      throw new Error(`Forbidden setter: ${msg}`)
     } : function () {
-      throw new Error('Forbidden getter...')
+      throw new Error('Forbidden setter')
     }
-}
+  }
 
-/**
- * function frequently used.
- */
-eYo.C9r.noSetter = function (msg) {
-  return msg
-  ? function () {
-    throw new Error(`Forbidden setter: ${msg}`)
-  } : function () {
-    throw new Error('Forbidden setter')
+  /**
+   * function frequently used.
+   */
+  eYo.C9r.descriptorR = (msg, getter) => {
+    if (!eYo.isStr(msg)) {
+      eYo.parameterAssert(!getter, `Unexpected getter: ${getter}`)
+      getter = msg
+      msg = eYo.NA
+    }
+    return {
+      get: getter,
+      set: noSetter(msg),
+    }
   }
-}
 
-/**
- * function frequently used.
- */
-eYo.C9r.descriptorR = (msg, getter) => {
-  if (!eYo.isStr(msg)) {
-    eYo.parameterAssert(!getter, `Unexpected getter: ${getter}`)
-    getter = msg
-    msg = eYo.NA
+  /**
+   * function frequently used.
+   */
+  eYo.C9r.descriptorW = (msg, setter) => {
+    if (!eYo.isStr(msg)) {
+      eYo.parameterAssert(!setter, `Unexpected setter: ${setter}`)
+      setter = msg
+      msg = eYo.NA
+    }
+    return {
+      get: noGetter(msg),
+      set: setter,
+    }
   }
-  return {
-    get: getter,
-    set: eYo.C9r.noSetter(msg),
-  }
-}
 
-/**
- * function frequently used.
- */
-eYo.C9r.descriptorW = (msg, setter) => {
-  if (!eYo.isStr(msg)) {
-    eYo.parameterAssert(!setter, `Unexpected setter: ${setter}`)
-    setter = msg
-    msg = eYo.NA
-  }
-  return {
-    get: eYo.C9r.noGetter(msg),
-    set: setter,
-  }
-}
-
-/**
- * function frequently used.
- */
-eYo.C9r.descriptorNORW = (msg) => {
-  return {
-    get: eYo.C9r.noGetter(msg),
-    set: eYo.C9r.noSetter(msg),
+  /**
+   * function frequently used.
+   */
+  eYo.C9r.descriptorNORW = (msg) => {
+    return {
+      get: noGetter(msg),
+      set: noSetter(msg),
+    }
   }
 }
 
@@ -703,14 +705,8 @@ Object.defineProperties(eYo.Dlgt_p, {
   name: eYo.C9r.descriptorR(function () {
     return this.ns__ && this.key && `${this.ns__.name}.${this.key}` || this.key
   }),
-  name_: {
-    get: eYo.C9r.noGetter('name_'),
-    set: eYo.C9r.noSetter('name_'),
-  },
-  name__: {
-    get: eYo.C9r.noGetter('name__'),
-    set: eYo.C9r.noSetter('name__'),
-  },
+  name_: eYo.C9r.descriptorNORW('name_'),
+  name__: eYo.C9r.descriptorNORW('name__'),
   super: eYo.C9r.descriptorR(function () {
     var s = this.C9r_S
     return s && s.eyo__
@@ -1235,10 +1231,7 @@ eYo.Dlgt_p.computedDeclare = function (models) {
           set: set,
         } : eYo.C9r.descriptorR(get)
         : set
-        ? eYo.C9r.descriptorW(set) : {
-          get: eYo.C9r.noGetter(k),
-          set: eYo.C9r.noSetter(k),
-        }
+        ? eYo.C9r.descriptorW(set) : eYo.C9r.descriptorNORW(k),
       )
       k = k__
       get = model.get__
@@ -1248,10 +1241,7 @@ eYo.Dlgt_p.computedDeclare = function (models) {
           get: get,
           set: set,
         } : eYo.C9r.descriptorR(get)
-        : set ? eYo.C9r.descriptorW(set) : {
-          get: eYo.C9r.noGetter(k),
-          set: eYo.C9r.noSetter(k),
-        }
+        : set ? eYo.C9r.descriptorW(set) : eYo.C9r.descriptorNORW(k),
       )
     } catch (e) {
       console.warn(`Computed property problem, ${k}, ${this.name_}, ${e}`)
