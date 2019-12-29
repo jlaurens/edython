@@ -520,53 +520,6 @@ eYo.Do.ifDef = function (object, fallout) {
 eYo.Do.nothing = () => {}
 
 /**
- * Function frequently used.
- */
-eYo.Do.noGetter = function (msg) {
-  return msg === 'name_'
-  ? function () {
-    throw new Error(`Forbidden name_ getter`)
-  } : msg 
-    ? function () {
-      throw new Error(`Forbidden getter: ${msg}`)
-    } : function () {
-      throw new Error('Forbidden getter...')
-    }
-}
-
-/**
- * function frequently used.
- */
-eYo.Do.noSetter = function (msg) {
-  return msg
-  ? function () {
-    throw new Error(`Forbidden setter: ${msg}`)
-  } : function () {
-    throw new Error('Forbidden setter')
-  }
-}
-
-/**
- * function frequently used.
- */
-eYo.Do.propertyR = (getter) => {
-  return {
-    get: getter,
-    set: eYo.Do.noSetter(),
-  }
-}
-
-/**
- * function frequently used.
- */
-eYo.Do.propertyW = (setter) => {
-  return {
-    get: eYo.Do.noGetter(),
-    set: setter,
-  }
-}
-
-/**
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
  * @param {Function} [try_f]

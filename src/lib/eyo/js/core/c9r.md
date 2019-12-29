@@ -156,9 +156,9 @@ base_template = {
       didChange () {},
     }
   },
-  clonable: {
+  cloned: {
     key: init Function || {
-      lazy: Boolean,
+      lazy: Boolean, // NYI
       value: VALUE,
       init () {},
       validate () {},
@@ -168,6 +168,15 @@ base_template = {
   },
 }
 ```
+NB: there is a possible need for a consolidation layer.
+The purpose is to separate the allocation and the initialization.
+Allocation should be used to declare various variables whereas initialization should be used to give values.
+The problem is circular initialization.
+One possibility is to use an |order| field like for brick models.
+Another possibility is to use a (possibly external) code analyzer 
+to detect which property should be initialized first.
+Subclassing may help in the sense that inherited properties should be setup first. The question is about property enumeration that must be ordered. There should be as many enumerations as possible orders.
+
 #### Bricks
 
 Template for Statements, same thing plus
