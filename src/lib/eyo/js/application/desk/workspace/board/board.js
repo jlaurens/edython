@@ -81,6 +81,11 @@ eYo.C9r.Dflt.makeSubclass(eYo.Board, {
         return this.getRecover()
       }
     },
+    draggerBoard () {
+      if (!this.isDragger) {
+        return new eYo.DnD.Dragger.Board(this)
+      }
+    },
   },
   computed: {
     /**
@@ -196,9 +201,6 @@ eYo.C9r.Dflt.makeSubclass(eYo.Board, {
     },
   },
   init (owner) {    
-    if (!this.isDragger) {
-      this.boardDragger_ = new eYo.BoardDragger(this)
-    }
     /**
      * @type {*}
      */
@@ -240,8 +242,8 @@ eYo.Board.Dflt.makeSubclass('Main', {
         backgroundClass: 'eyo-board-dragger-background'
       })
     },
-    boardDragger: {},
-    brickDragger () {
+    draggerBoard: {},
+    draggerBrick () {
       return new eYo.BrickDragger(this)
     },
     /**
@@ -270,7 +272,7 @@ eYo.Board.Dflt.makeSubclass('Main', {
      * @type {boolean}
      */
     isDragger () {
-      return this.owner_ instanceof eYo.Board.Dflt
+      return this.owner__ instanceof eYo.Board.Dflt
     },
     /**
      * Is this board belonging to a flyout?
@@ -278,13 +280,13 @@ eYo.Board.Dflt.makeSubclass('Main', {
      * @type {boolean}
      */
     readOnly () {
-      return this.owner_ instanceof eYo.Flyout
+      return this.owner__ instanceof eYo.Flyout
     },
     /**
      * The dragger, if relevant.
      */
     dragger () {
-      return this.draggable && this.boardDragger_
+      return this.draggable && this.draggerBoard_
     },
     /**
      * Is this board visible
@@ -292,7 +294,7 @@ eYo.Board.Dflt.makeSubclass('Main', {
      */
     visible: {
       get () {
-        return this.ui_driver_mngr.visibleGet(this)
+        return this.ui_driver.visibleGet(this)
       },
       /**
        * Toggles the visibility of the board.
@@ -310,11 +312,11 @@ eYo.Board.Dflt.makeSubclass('Main', {
         if (this.flyout_) {
           this.flyout_.containerVisible = after
         }
-        this.ui_driver_mngr.visibleSet(this, after)
+        this.ui_driver.visibleSet(this, after)
         if (after) {
           this.render()
         } else {
-          eYo.app.hideChaff()
+          this.app.hideChaff()
         }
       }
     },

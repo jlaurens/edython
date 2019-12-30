@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview brickDragger rendering delegate.
+ * @fileoverview draggerBrick rendering delegate.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -20,8 +20,8 @@ eYo.forwardDeclare('BrickDragger')
  */
 eYo.Svg.makeDriverClass('BrickDragger', {
     /**
-   * Initializes the brickDragger SVG ressources.
-   * @param {eYo.brickDragger} brickDragger
+   * Initializes the draggerBrick SVG ressources.
+   * @param {eYo.draggerBrick} draggerBrick
    */
   initUI (dragger) {
     var dom = dragger.dom
@@ -30,10 +30,10 @@ eYo.Svg.makeDriverClass('BrickDragger', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {eYo.brickDragger} brickDragger
+   * @param {eYo.draggerBrick} draggerBrick
    */
-  disposeUI (brickDragger) {
-    var svg = brickDragger.dom.svg
+  disposeUI (draggerBrick) {
+    var svg = draggerBrick.dom.svg
     if (svg) {
       svg.dragSurface = null
       dom.svg = null
@@ -43,22 +43,22 @@ eYo.Svg.makeDriverClass('BrickDragger', {
 
 /**
  * Start dragging.
- * @param {eYo.brickDragger} brickDragger
+ * @param {eYo.draggerBrick} draggerBrick
  */
-eYo.Svg.BrickDragger.prototype.start = function (brickDragger) {
+eYo.Svg.BrickDragger.prototype.start = function (draggerBrick) {
   // Move the brick dragged to the drag surface
   // The translation for drag surface bricks,
   // is equal to the current relative-to-surface position,
   // to keep the position in sync as it moves on/off the surface.
-  var brick = brickDragger.brick_
+  var brick = draggerBrick.brick_
   var board = brick.board
-  var main = brickDragger.destination
+  var main = draggerBrick.destination
   var stl = main.board_.dom.div_.style
   stl.display = 'block'
-  var bds = brickDragger.dragSurface
+  var bds = draggerBrick.dragSurface
   // Execute the move on the top-level SVG component
   if (bds) {
-    bds.start(brickDragger)
+    bds.start(draggerBrick)
   } else {
     
   }
@@ -69,7 +69,7 @@ eYo.Svg.BrickDragger.prototype.start = function (brickDragger) {
   var svg = board.dom.svg
   var canvas = svg.canvas_
   var matrix = canvas.getScreenCTM().inverse()
-  var rect = brickDragger.desk
+  var rect = draggerBrick.desk
   var point = svg.root_.createSVGPoint()
   point.x = rect.top
   point.y = rect.left

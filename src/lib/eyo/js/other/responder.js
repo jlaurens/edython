@@ -71,8 +71,8 @@ eYo.Responder.prototype.dispose = function() {
   eYo.Dom.unbindMouseEvents(this)
   this.startBrick_ = this.targetBrick_ = null
   this.flyout_ = null
-  this.brickDragger_ && (this.brickDragger_ = this.brickDragger_.clearMotion())
-  this.boardDragger_ && (this.boardDragger_ = this.boardDragger_.clearMotion())
+  this.draggerBrick_ && (this.draggerBrick_ = this.draggerBrick_.clearMotion())
+  this.draggerBoard_ && (this.draggerBoard_ = this.draggerBoard_.clearMotion())
   eYo.Responder.superProto_.dispose.call(this)
 }
 
@@ -198,7 +198,7 @@ Object.defineProperties(eYo.Responder.prototype, {
    * @type {eYo.BrickDragger}
    * @private
    */
-  brickDragger_: {
+  draggerBrick_: {
     value: null,
     writable: true
   },
@@ -209,7 +209,7 @@ Object.defineProperties(eYo.Responder.prototype, {
    * @type {eYo.BoardDragger}
    * @private
    */
-  boardDragger_: {
+  draggerBoard_: {
     value: null,
     writable: true
   },
@@ -305,7 +305,7 @@ Object.defineProperties(eYo.Responder.prototype, {
      */
   dragging: {
     get () {
-      return this.boardDragger_ || this.brickDragger_
+      return this.draggerBoard_ || this.draggerBrick_
     }
   },
   event: {
@@ -449,13 +449,13 @@ eYo.Responder.prototype.update_ = function(e) {
  * @private
  */
 eYo.Responder.prototype.updateDraggingBrick_ = function() {
-  var dragger = this.owner_.brickDragger_
+  var dragger = this.owner_.draggerBrick_
   var board = this.flyout_
   ? this.flyout_.desk.board
   : this.board_
   if (board && (this.targetBrick_ = dragger.start(this))) {
     this.startBrick_ = null
-    this.brickDragger_ = dragger
+    this.draggerBrick_ = dragger
     this.board_ = board
     board.updateScreenCalculationsIfScrolled()
     console.log('updateDraggingBrick_: ', this.xyDelta_)
@@ -476,8 +476,8 @@ eYo.Responder.prototype.updateDraggingBoard_ = function() {
     this.flyout_
     ? this.flyout_.board_
     : this.board_
-  if (board && (this.boardDragger_ = board.dragger)) {
-    this.boardDragger_.start(this)
+  if (board && (this.draggerBoard_ = board.dragger)) {
+    this.draggerBoard_.start(this)
   }
 }
 
@@ -489,9 +489,9 @@ eYo.Responder.prototype.on_mousemove = (() => {
   var move = function (self, e) {
     self.update_(e)
     var d
-    if ((d = self.boardDragger_)) {
+    if ((d = self.draggerBoard_)) {
       d.drag()
-    } else if ((d = self.brickDragger_)) {
+    } else if ((d = self.draggerBrick_)) {
       d.drag() // sometimes it failed when in Blockly
     }
     eYo.Dom.gobbleEvent(e) 
@@ -550,12 +550,12 @@ eYo.Responder.prototype.on_mouseup = function(e) {
     // priority than boards.
     // The ordering within drags does not matter, because the three types of
     // dragging are exclusive.
-    if (this.brickDragger_) {
-      this.brickDragger_.end()
-      this.brickDragger_ = null
-    } else if (this.boardDragger_) {
-      this.boardDragger_.end()
-      this.boardDragger_ = null
+    if (this.draggerBrick_) {
+      this.draggerBrick_.end()
+      this.draggerBrick_ = null
+    } else if (this.draggerBoard_) {
+      this.draggerBoard_.end()
+      this.draggerBoard_ = null
     } else if (this.startBrick_) {
       console.error('doBrickClick_')
       this.startBrick_.hasFocus ? this.doBrickClick_() : this.doBoardClick_()
@@ -579,10 +579,10 @@ eYo.Responder.prototype.cancel = function() {
     return
   }
   eYo.Dom.longStop_()
-  if (this.brickDragger_) {
-    this.brickDragger_.end()
-  } else if (this.boardDragger_) {
-    this.boardDragger_.end()
+  if (this.draggerBrick_) {
+    this.draggerBrick_.end()
+  } else if (this.draggerBoard_) {
+    this.draggerBoard_.end()
   }
   this.dispose()
 }

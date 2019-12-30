@@ -261,7 +261,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
     b3k.moveBy(this.xyDelta)
     b3k.ui.disconnectEffect()
   }
-  d.brickDraggerStart(this)
+  d.draggerBrickStart(this)
   this.drag()
   return targetBrick
 }
@@ -369,7 +369,7 @@ eYo.BrickDragger.prototype.end = (() => {
   }
   return function(e, delta) {
     this.drag(delta)
-    this.ui_driver_mngr.brickDraggerEnd(this)
+    this.ui_driver_mngr.draggerBrickEnd(this)
     var b3k = this.brick_
     if (this.wouldDelete_) {
       if (!this.motion_.flyout_) {

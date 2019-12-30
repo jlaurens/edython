@@ -15,16 +15,13 @@ eYo.require('C9r.Owned')
 eYo.require('Brick')
 eYo.require('C9r.Change')
 
-eYo.provide('Brick.UI')
-
 eYo.forwardDeclare('Svg.Brick')
+eYo.forwardDeclare('Dom.Brick')
 
 /**
  * Class for a Render.
  * For edython.
  * @param {eYo.Brick.Dflt} brick  brick is the owning object.
- * @readonly
- * @property {eYo.Brick} brick - The brick owning the receiver.
  * @readonly
  * @property {object} change - The change property of the receiver.
  * @readonly
@@ -50,130 +47,54 @@ eYo.forwardDeclare('Svg.Brick')
  * @readonly
  * @property {Object}  whereInBoard  the coordinates relative to the surface.
  */
-eYo.Brick.UI = function(brick) {
-  eYo.Brick.UI.superProto_.constructor.call(this, brick)
-  this.down = this.up = false
-  this.xy_ = new eYo.Where()
-  this.updateBrickWrapped()
-}
-goog.inherits(eYo.Brick.UI, eYo.C9r.Owned)
-
-Object.defineProperties(eYo.Brick.UI.prototype, {
-  
-})
-
-/**
- * The default implementation forwards to the driver.
- */
-eYo.Brick.UI.prototype.dispose = function () {
-  if (this.xy_) {
-    this.driver.brickDispose(this.brick)
-    this.brick = null
-    this.xy_.dispose()
-    this.xy_= null
-  }
-}
-
-Object.defineProperties(eYo.Brick.UI, {
-  /**
-   * Delay in ms between trigger and bumping unconnected block out of alignment.
-   */
-  BUMP_DELAY: { value: 250 },
-})
-
-// computed properties
-Object.defineProperties(eYo.Brick.UI.prototype, {
-  brick: {
-    get() {
-      return this.brick
-    }
+eYo.Brick.makeClass('UI', eYo.C9r.Owned, {
+  init (brick) {
+    eYo.Brick.UI.superProto_.constructor.call(this, brick)
+    this.down = this.up = false
+    this.xy_ = new eYo.Where()
+    this.updateBrickWrapped()
   },
-  // brick: {
-  //   get() {
-  //     return this.brick__
-  //   },
-  //   set (newValue) {
-  //     if (!newValue) {
-  //       console.error('BREAK HERE')
-  //     }
-  //     this.brick__ = newValue
-  //   }
-  // },
-  board: {
-    get () {
-      return this.brick.board
-    }
+  cloned: {
+    /**
+     * Position of the receiver in the board.
+     * @type {eYo.Where}
+     * @readonly
+     */
+    xy () { return new eYo.Where() },
+    /**
+     * Position of the receiver in the board.
+     * @type {eYo.Where}
+     * @readonly
+     */
+    where () { return new eYo.Where() },
   },
-  change: {
-    get() {
-      return this.brick.change
-    }
-  },
-  driver: {
-    get() {
-      return this.brick.board.ui_driver_mngr
-    }
-  },
-  reentrant_: {
-    get() {
-      return this.brick.reentrant_
-    }
-  },
-  span: {
-    get() {
-      return this.brick.span
-    }
-  },
-  hasLeftEdge: {
-    get () {
+  computed: {
+    brick () { return this.owner },
+    board () { return this.brick.board },
+    change () { return this.brick.change },
+    driver () {
+      return this.brick.ui_driver
+    },
+    reentrant_ () { return this.brick.reentrant_ },
+    span () { return this.brick.span },
+    hasLeftEdge () {
       return !this.brick.wrapped_ && !this.brick.locked_
-    }
-  },
-  hasRightEdge: {
-    get () {
+    },
+    hasRightEdge () {
       return !this.brick.wrapped_ && !this.brick.locked_
-    }
-  },
-  minBrickW: {
-    get () {
+    },
+    minBrickW () {
       return this.brick.isStmt ? eYo.Span.INDENT : 0
-    }
-  },
-  bBox: {
-    get () {
+    },
+    bBox () {
       return this.rendered && (this.driver.brickGetBBox(this.brick))
-    }
-  },
-  hasSelect: {
-    get () {
+    },
+    hasSelect () {
       return this.rendered && (this.driver.brickHasFocus(this.brick))
-    }
-  },
-  /**
-   * Position of the receiver in the board.
-   * @type {eYo.Where}
-   * @readonly
-   */
-  xy: {
-    get () {
-      return this.xy_.clone
     },
-    set (newValue) {
-      this.xy_.set(newValue)
-    }
   },
-  /**
-   * Position of the receiver in the board.
-   * @type {eYo.Where}
-   * @readonly
-   */
-  where: {
-    get () {
-      return this.xy_.clone
-    },
-    set (newValue) {
-      this.xy_.set(newValue)
-    }
+  CONST: {
+    BUMP_DELAY: 250,
   }
 })
 
@@ -183,16 +104,16 @@ Object.defineProperties(eYo.Brick.UI.prototype, {
  * @return {boolean=} true if an rendering message was sent, false othrwise.
  */
 eYo.Brick.UI.prototype.drawFoot_ = function (recorder) {
-  var magnet = this.brick.foot_m
-  if (!magnet) {
+  var m4t = this.brick.foot_m
+  if (!m4t) {
     return
   }
   m4t.setOffset(0, this.span.l)
-  var t9k = magnet.targetBrick
+  var t9k = m4t.targetBrick
   if (!t9k) {
     return
   }
-  magnet.tighten()
+  m4t.tighten()
   var do_it = !t9k.ui.rendered ||
   (!this.up &&
     !eYo.Magnet.disconnectedParent &&
@@ -1552,7 +1473,7 @@ eYo.Brick.UI.prototype.connectEffect = function () {
  * This must take place while the brick is still in a consistent state.
  */
 eYo.Brick.UI.prototype.disposeEffect = function () {
-  this.board.audio.play('delete');
+  this.audio.play('delete');
   this.driver.brickDisposeEffect(this.brick)
 }
 
@@ -2161,7 +2082,8 @@ eYo.Brick.UI.prototype.on_mouseup = function (e) {
       }
     }
   }
-  eYo.app.didTouchBrick && (eYo.app.didTouchBrick(eYo.app.focusMngr.brick))
+  let a = this.app
+  a.didTouchBrick && a.didTouchBrick(a.focusMngr.brick)
 }
 
 /**

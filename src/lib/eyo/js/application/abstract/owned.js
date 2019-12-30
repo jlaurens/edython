@@ -78,6 +78,14 @@ eYo.C9r.makeClass('Owned', {
       return this.owner.options
     },
     /**
+     * The app's audio manager
+     * @readonly
+     * @type {eYo.Audio}
+     */
+    audio () {
+      let a = this.app ; return a && a.audio
+    },
+    /**
      * The app's desk
      * @readonly
      * @type {eYo.Desk}
