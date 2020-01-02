@@ -66,7 +66,7 @@ eYo.Stmt.makeClass('turtle__setup_stmt', {
       title: key
     }
   }
-  eYo.Library.basic_turtle__module = [
+  eYo.Library.DATA.basic_turtle__module = [
     {
       type: eYo.T3.Stmt.import_stmt,
       variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
@@ -134,7 +134,7 @@ eYo.Stmt.makeClass('turtle__setup_stmt', {
       title: key
     }
   }
-  eYo.Library.turtle__module = [
+  eYo.Library.DATA.turtle__module = [
     {
       type: eYo.T3.Stmt.import_stmt,
       variant_p: eYo.Key.IMPORT,

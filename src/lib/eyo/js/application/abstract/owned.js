@@ -150,7 +150,6 @@ eYo.C9r.Owned.makeSubclass('BSMOwned', {
 eYo.assert(!!eYo.C9r.BSMOwned && !!eYo.C9r.BSMOwned_p, 'MISSED/FAILURE...')
 
 eYo.forwardDeclare('Brick')
-eYo.forwardDeclare('Brick.UI')
 eYo.forwardDeclare('Slot')
 eYo.forwardDeclare('Magnet')
 

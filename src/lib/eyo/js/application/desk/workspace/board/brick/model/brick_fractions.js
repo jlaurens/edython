@@ -63,7 +63,7 @@ eYo.provide('Brick.Fractions')
     }
   }
 
-eYo.Library.basic_fractions__module = [
+eYo.Library.DATA.basic_fractions__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
@@ -100,7 +100,7 @@ F = function (name, title) {
   }
 }
 
-eYo.Library.fractions__module = [
+eYo.Library.DATA.fractions__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.IMPORT,

@@ -36,11 +36,11 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
         eYo.Key.FROM,
       ],
       init: eYo.Key.NONE,
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
         var b3k = this.brick
-        b3k.from_d.requiredIncog = newValue === eYo.Key.FROM
-        b3k.expression_d.requiredIncog = newValue === eYo.Key.EXPRESSION
+        b3k.from_d.requiredIncog = after === eYo.Key.FROM
+        b3k.expression_d.requiredIncog = after === eYo.Key.EXPRESSION
       },
       xml: false
     },
@@ -57,9 +57,9 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
           }
         }
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
+      didChange (before, after) /** @suppress {globalThis} */ {
         var b3k = this.brick
-        if (newValue) {
+        if (after) {
           b3k.variant_p = eYo.Key.EXPRESSION
         } else if (!b3k.expression_s.unwrappedTarget) {
           b3k.variant_p = eYo.Key.NONE
@@ -76,9 +76,9 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
           this.save(element, opt)
         }
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
+      didChange (before, after) /** @suppress {globalThis} */ {
         var b3k = this.brick
-        if (newValue || b3k.from_b) {
+        if (after || b3k.from_b) {
           b3k.variant_p = eYo.Key.FROM
         } else if (b3k.expression_p || (b3k.expression_b && b3k.expression_b.unwrappedTarget)) {
           b3k.variant_p = eYo.Key.EXPRESSION

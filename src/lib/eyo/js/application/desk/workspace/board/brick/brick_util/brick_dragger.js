@@ -45,11 +45,11 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
     get () {
       return this.brick__
     },
-    set (newValue) {
-      if (newValue && newValue.ans) {
+    set (after) {
+      if (after && after.ans) {
         throw 'UNEXPECTED'
       }
-      this.brick__ = newValue
+      this.brick__ = after
     }
   },
   brick: {
@@ -259,7 +259,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
       (healStack && b3k.foot_m && b3k.foot_m.target)) {
     b3k.unplug(healStack)
     b3k.moveBy(this.xyDelta)
-    b3k.ui.disconnectEffect()
+    b3k.disconnectEffect()
   }
   d.draggerBrickStart(this)
   this.drag()
@@ -341,8 +341,7 @@ eYo.BrickDragger.prototype.drag = function() {
   } else {
     this.ui_driver_mngr.brickSetOffsetDuringDrag(b3k, xyNew)
   }
-  this.brick_.ui.setDeleteStyle(this.wouldDelete_)
-  
+  this.brick_.ui_driver.deleteStyleSet(this.wouldDelete_)
   this.update()
 
   var trashCan = this.destination.trashCan
@@ -386,7 +385,7 @@ eYo.BrickDragger.prototype.end = (() => {
         eYo.Events.fireBrickCreate(b3k, true) 
       }
       fireMoveEvent(this)
-      b3k.ui.scheduleSnapAndBump()
+      b3k.ui_driver.scheduleSnapAndBump(b3k)
     }
     var trashCan = this.destination.trashCan
     if (trashCan) {
@@ -420,11 +419,11 @@ eYo.BrickDragger.prototype.connect = function() {
       // Determine which connection is inferior (lower in the source stack).
       var inferiorM4t = this.magnet_.isSuperior ?
           this.target_ : this.magnet_
-      inferiorM4t.brick.ui.connectEffect()
+      inferiorM4t.brick.connectEffect()
       // Bring the just-edited stack to the front.
-      this.brick_.root.ui.sendToFront()
+      this.brick_.root.sendToFront()
     }
-    this.target_ && this.target_.ui.removeBrickHilight_()
+    this.target_ && this.target_.ui.hilightAdd_()
   }
 }
 
@@ -445,7 +444,7 @@ eYo.BrickDragger.prototype.update = function() {
     }
   })
   if (oldTarget && oldTarget != this.target_) {
-    oldTarget.ui.removeBrickHilight_()
+    oldTarget.ui.hilightAdd_()
   }
   // Prefer connecting over dropping into the trash can, but prefer dragging to
   // the flyout over connecting to other bricks.
@@ -457,10 +456,10 @@ eYo.BrickDragger.prototype.update = function() {
 
   // Get rid of highlighting so we don't send mixed messages.
   if (wouldDelete && this.target_) {
-    this.target_.ui.removeBrickHilight_()
+    this.target_.ui.hilightAdd_()
     this.target_ = null
   }
   if (!wouldDelete && this.target_ && oldTarget != this.target_) {
-    this.target_.ui.addBrickHilight_()
+    this.target_.hilightAdd_()
   }
 }

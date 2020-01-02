@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('Fcls')
+eYo.require('Fcfl')
 
 /**
  * @name {eYo.Dom}
  * @namespace
  */
 
-eYo.Driver.makeNS(eYo, 'Dom')
+eYo.Fcfl.makeNS(eYo, 'Dom')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')

@@ -91,7 +91,7 @@ eYo.provide('Brick.Decimal')
     'FloatOperation': 30
 
     */
-eYo.Library.basic_decimal__module = [
+eYo.Library.DATA.basic_decimal__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     from_p: 'decimal',
@@ -189,7 +189,7 @@ eYo.Library.basic_decimal__module = [
     }
   }
 
-eYo.Library.decimal__module = [
+eYo.Library.DATA.decimal__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     import_module_s: {

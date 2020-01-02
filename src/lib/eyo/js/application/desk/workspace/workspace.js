@@ -37,7 +37,7 @@ goog.forwardDeclare('goog.math');
 eYo.makeClass('Workspace', eYo.C9r.Pane, {
   owned: {
     /**
-     * @type {?eYo.Board.Main} newValue 
+     * @type {?eYo.Board.Main} 
      */
     board () { return new eYo.Board.Main(this) },
     /**

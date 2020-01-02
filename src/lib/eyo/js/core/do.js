@@ -445,7 +445,7 @@ eYo.Do.stringToDom = function (string) {
  * @param {*} handler
  * @param {*} thisArg
  */
-eYo.Do.forEachChild = function (element, handler, thisArg) {
+eYo.Do.childForEach = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
   children.forEach(handler, thisArg)
 }
@@ -518,6 +518,13 @@ eYo.Do.ifDef = function (object, fallout) {
  * Void function frequently used.
  */
 eYo.Do.nothing = () => {}
+
+/**
+ * Void function frequently used.
+ */
+eYo.Do.NYI = () => {
+  throw new Error('This is not yet implemented, possibly a pure abstract method that needs subclassing.')
+}
 
 /**
  * A wrapper creator.

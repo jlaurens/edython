@@ -84,7 +84,7 @@ eYo.Expr.List.slotsHandler = {
     } else if (k === 'map') {
       return function (f) {
         var ans = []
-        brick.forEachSlot(slot => {
+        brick.slotForEach(slot => {
           ans.push(f(slot))
         })
         return ans
@@ -237,7 +237,7 @@ eYo.Expr.List.prototype.doConsolidate = (() => {
  */
 eYo.Expr.List.prototype.removeItems = function () {
   eYo.Events.groupWrap(() => {
-    this.forEachSlot(slot => {
+    this.slotForEach(slot => {
       var m4t = slot.magnet
       var t9k = m4t.targetBrick
       if (t9k) {
@@ -255,7 +255,7 @@ eYo.Expr.List.prototype.removeItems = function () {
  * For edython.
  */
 eYo.Expr.List.prototype.changeInputDone = function () {
-  this.forEachSlot(slot => {
+  this.slotForEach(slot => {
     var t9k = slot.targetBrick
     t9k && (t9k.changeDone())
   })
@@ -266,7 +266,7 @@ Object.defineProperties(eYo.Expr.List.prototype, {
   firstTarget: {
     get () {
       var t
-      this.someSlot(slot => (t = slot.targetBrick))
+      this.slotSome(slot => (t = slot.targetBrick))
       return t
     }
   }
@@ -370,10 +370,10 @@ eYo.Expr.List.makeSubclass('enclosure', {
         eYo.Key.BRACE
       ],
       init: eYo.Key.PAR,
-      synchronize (newValue) /** @suppress {globalThis} */ {
+      synchronize (after) /** @suppress {globalThis} */ {
         var b3k = this.brick
-        b3k.prefix_f.text = newValue[0]
-        b3k.suffix_f.text = newValue[1]
+        b3k.prefix_f.text = after[0]
+        b3k.suffix_f.text = after[1]
       },
       fromType (type) /** @suppress {globalThis} */ {
         return {
@@ -472,7 +472,7 @@ eYo.Expr.enclosure.prototype.getProfile = eYo.C9r.decorateChange(
     // neither `data` nor `slots` may exist yet
     if (this.data && this.slots) {
       var f = (target, no_target) => {
-        return {ans: this.someSlot(slot => {
+        return {ans: this.slotSome(slot => {
             var t = slot.targetBrick
             if (t && (t = t.out_m.check_)) {
               return t.some(x => eYo.T3.Expr.Check.target.indexOf(x) >= 0)

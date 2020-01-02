@@ -694,7 +694,7 @@ eYo.Responder.prototype.doBrickClick_ = function() {
         eYo.Events.group = true
       }
       var newBrick = this.flyout_.createBrick(this.targetBrick_)
-      newBrick.ui.scheduleSnapAndBump()
+      newBrick.ui_driver.scheduleSnapAndBump(newBrick)
     }
   }
   this.bringBrickToFront_()
@@ -720,6 +720,6 @@ eYo.Responder.prototype.doBoardClick_ = function() {
 eYo.Responder.prototype.bringBrickToFront_ = function() {
   // Bricks in the flyout don't overlap, so skip the work.
   if (this.targetBrick_ && !this.flyout_) {
-    this.targetBrick_.ui.sendToFront()
+    this.targetBrick_.sendToFront()
   }
 }

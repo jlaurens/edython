@@ -42,9 +42,9 @@ eYo.Events.fireBrickCreate = function (brick, group) {
  * Convenient shortcut.
  * @param {eYo.Brick.Dflt} brick  The newly created brick.
  */
-eYo.Events.fireBrickChange = function (brick, element, name, oldValue, newValue) {
+eYo.Events.fireBrickChange = function (brick, element, name, before, after) {
   if (eYo.Events.enabled) {
-    eYo.Events.fire(new eYo.Events.BrickChange(brick, element, name, oldValue, newValue))
+    eYo.Events.fire(new eYo.Events.BrickChange(brick, element, name, before, after))
   }
 }
 
@@ -97,17 +97,17 @@ Object.defineProperties(eYo.Events.BrickBase.prototype, {
  * @param {eYo.Brick.Dflt} brick The changed brick.
  * @param {string} element One of 'field', 'collapsed', 'disabled', etc.
  * @param {string} [name] Name of slot or field affected, or null.
- * @param {*} oldValue Previous value of element.
- * @param {*} newValue New value of element.
+ * @param {*} before - Previous value of element.
+ * @param {*} after - New value of element.
  * @extends {eYo.Events.BrickBase}
  * @constructor
  */
-eYo.Events.BrickChange = function(brick, element, name, oldValue, newValue) {
+eYo.Events.BrickChange = function(brick, element, name, before, after) {
   eYo.Events.BrickChange.superProto_.constructor.call(this, brick)
   this.element = element
   this.name = name
-  this.oldValue = oldValue
-  this.newValue = newValue
+  this.before = before
+  this.after = after
 }
 goog.inherits(eYo.Events.BrickChange, eYo.Events.BrickBase)
 
@@ -123,7 +123,7 @@ Object.defineProperties(eYo.Events.BrickChange.prototype, {
    */
   isNull: {
     get () {
-      return this.oldValue == this.newValue
+      return this.before == this.after
     }
   },
 })
@@ -138,7 +138,7 @@ eYo.Events.BrickChange.prototype.run = function(redo) {
     console.warn("Can't change non-existent brick: " + this.brickId);
     return;
   }
-  var value = redo ? this.newValue : this.oldValue;
+  var value = redo ? this.after : this.before;
   switch (this.element) {
     case 'field':
       var field = brick.getField(this.name)
@@ -415,29 +415,29 @@ eYo.Events.BrickMove.prototype.run = function(forward) {
  *        No brick is disconnected, no other move event is recorded.
  *    undo/redo stacks : [..., reconnect brick, data undo change]/[]
  * This is the reason why we consolidate the type before the undo change is recorded.
- * @param {Object} newValue
+ * @param {Object} after
  * @param {Boolean} noRender
  */
 eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
   'setTrusted_',
-  function (newValue) {
-    var oldValue = this.value_
-    if (oldValue !== newValue) {
+  function (after) {
+    var before = this.value_
+    if (before !== after) {
       this.brick.change.wrap(() => { // catch `this`
         eYo.Events.groupWrap(() => { // catch `this`
-          this.beforeChange(oldValue, newValue)
+          this.beforeChange(before, after)
           try {
-            this.value_ = newValue
-            this.duringChange(oldValue, newValue)
+            this.value_ = after
+            this.duringChange(before, after)
           } catch(err) {
             console.error(err)
             throw err
           } finally {
             if (!this.noUndo) {
               eYo.Events.fireBrickChange(
-                this.brick, eYo.Const.Event.DATA + this.key, null, oldValue, newValue)
+                this.brick, eYo.Const.Event.DATA + this.key, null, before, after)
             }
-            this.afterChange(oldValue, newValue)
+            this.afterChange(before, after)
           }
         })
       })
@@ -448,7 +448,7 @@ eYo.Data.prototype.setTrusted_ = eYo.Decorate.reentrant_method(
 /**
  * set the value of the property without any validation.
  * This is overriden by the events module.
- * @param {Object} newValue
+ * @param {Object} after
  * @param {Boolean} noRender
  */
 eYo.Data.prototype.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted_)

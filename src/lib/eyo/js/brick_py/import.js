@@ -78,19 +78,19 @@ eYo.Stmt.makeClass('import_stmt', {
         eYo.Key.FROM_MODULE_IMPORT_STAR
       ],
       init: eYo.Key.IMPORT,
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
         var b3k = this.brick
-        b3k.import_module_d.requiredIncog = newValue === eYo.Key.IMPORT
-        b3k.from_d.requiredIncog = newValue !== eYo.Key.IMPORT
-        b3k.import_d.requiredIncog = newValue === eYo.Key.FROM_MODULE_IMPORT
-        b3k.import_star_s.requiredIncog = newValue === eYo.Key.FROM_MODULE_IMPORT_STAR
+        b3k.import_module_d.requiredIncog = after === eYo.Key.IMPORT
+        b3k.from_d.requiredIncog = after !== eYo.Key.IMPORT
+        b3k.import_d.requiredIncog = after === eYo.Key.FROM_MODULE_IMPORT
+        b3k.import_star_s.requiredIncog = after === eYo.Key.FROM_MODULE_IMPORT_STAR
       }
     },
     import_module: {
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(after)
         return p5e === eYo.T3.Profile.void
         || p5e.raw === eYo.T3.Expr.builtin__name
@@ -100,9 +100,9 @@ eYo.Stmt.makeClass('import_stmt', {
         || after === '...'
         ? after : eYo.INVALID
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        if (newValue) {
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        if (after) {
           this.brick.variant_p = eYo.Key.IMPORT
         }
       },
@@ -118,7 +118,7 @@ eYo.Stmt.makeClass('import_stmt', {
     from: {
       init:'',
       placeholder: eYo.Msg.Placeholder.MODULE,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(after, null)
         var variant = this.brick.variant_p
         return p5e === eYo.T3.Profile.void
@@ -129,9 +129,9 @@ eYo.Stmt.makeClass('import_stmt', {
             ? after: eYo.INVALID
       },
       synchronize: true,
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        if (newValue) {
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        if (after) {
           var b3k = this.brick
           if (b3k.variant_p === eYo.Key.IMPORT) {
             // STAR of not ?
@@ -145,7 +145,7 @@ eYo.Stmt.makeClass('import_stmt', {
     import: {
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(after)
         return p5e === eYo.T3.Profile.void
         || p5e.expr === eYo.T3.Expr.identifier
@@ -283,8 +283,8 @@ Object.defineProperties(eYo.Stmt.import_stmt.prototype, {
     get () {
       return this.variant_p === eYo.Key.FROM_MODULE_IMPORT_STAR
     },
-    set(newValue) {
-      if (newValue) {
+    set(after) {
+      if (after) {
         this.variant_p = eYo.Key.FROM_MODULE_IMPORT_STAR
       } else if (this.variant_p === eYo.Key.FROM_MODULE_IMPORT_STAR) {
         this.variant_p = eYo.Key.FROM_MODULE_IMPORT
@@ -303,7 +303,7 @@ eYo.Stmt.import_stmt.prototype.importedModules = function () {
   var v = this.variant_p
   if (v === eYo.Key.IMPORT) {
     // non_void_import_identifier_as_list
-    this.import_b.forEachSlot(slot => {
+    this.import_b.slotForEach(slot => {
       var t9k = slot.targetBrick
       if (t9k.type === eYo.T3.Expr.identifier) {
         modules[t9k.target_p] = t9k.target_p

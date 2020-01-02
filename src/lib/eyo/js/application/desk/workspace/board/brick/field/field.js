@@ -300,17 +300,17 @@ eYo.Field.makeClass('Dflt', eYo.C9r.BSMOwned, {
       /**
        * 
        */
-      set (newValue) {
-        if (!goog.isDef(newValue)) {
+      set (after) {
+        if (!goog.isDef(after)) {
           // No change if null.
           return;
         }
-        if (this.text__ === newValue) {
+        if (this.text__ === after) {
           return
         }
-        eYo.Events.fireBrickChange(this.brick, 'field', this.name, this.text__, newValue)
-        this.size.setFromText(this.text__ = newValue)
-        this.placeholder__ = !newValue || !newValue.length
+        eYo.Events.fireBrickChange(this.brick, 'field', this.name, this.text__, after)
+        this.size.setFromText(this.text__ = after)
+        this.placeholder__ = !after || !after.length
       },
     },
     visible: { value: true },
@@ -331,7 +331,7 @@ eYo.Field.makeClass('Dflt', eYo.C9r.BSMOwned, {
      * @type {String} The text of the field.
      */
     text: {
-      validate (after) {
+      validate (before, after) {
         return after ? String(after) : eYo.INVALID
       },
       set_ (after) {
@@ -349,11 +349,11 @@ eYo.Field.makeClass('Dflt', eYo.C9r.BSMOwned, {
        * @param {boolean} after True if visible.
        */
       didChange (before, after) {
-        var d = this.ui_driver_mngr
+        var d = this.ui_driver
         d && (d.displayedUpdate(this))
         if (this.brick.rendered) {
           this.brick.render()
-          after && (this.brick.ui.bumpNeighbours_())
+          after && (this.brick.bumpNeighbours_())
         }
       },
     },

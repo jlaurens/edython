@@ -78,17 +78,15 @@ eYo.Svg.Focus.prototype.offBoard = function (mngr) {
 eYo.Svg.Focus.prototype.brickOn = function (mngr) {
   var b = mngr.brick
   if (b) {
-    b.ui.sendToFront()
-    var ui = b.ui
+    b.sendToFront()
     // This seems a bit complicated
-    ui.updateShape()
-    ui.addFocus()
+    b.updateShape()
     if (mngr.field || mngr.magnet) {
-      ui.removeBrickHilight_()
+      b.hilightAdd_()
     } else {
-      ui.addBrickHilight_()
+      b.hilightAdd_()
     }
-    ui.addStatusFocus_()
+    b.statusFocusAdd_()
   }
 }
 
@@ -102,10 +100,10 @@ eYo.Svg.Focus.prototype.brickOff = function (mngr) {
     // unselect/unhilight the previous brick
     var ui = b.ui
     // This seems a bit complicated
-    ui.removeFocus()
-    ui.removeBrickHilight_()
-    ui.removeMagnet_()
-    ui.removeStatusFocus_()
+    ui.focusRemove()
+    ui.hilightAdd_()
+    ui.magnetRemove_()
+    ui.statusFocusRemove_()
   }
 }
 
@@ -119,8 +117,8 @@ eYo.Svg.Focus.prototype.fieldOn = function (mngr) {
     var b = mngr.brick
     if (b) {
       var ui = b.ui
-      ui.removeBrickHilight_()
-      ui.removeMagnet_(mngr.magnet)
+      ui.hilightAdd_()
+      ui.magnetRemove_(mngr.magnet)
     }
   }
 }
@@ -133,7 +131,7 @@ eYo.Svg.Focus.prototype.fieldOff = function (mngr) {
   var b = mngr.brick
   if (b) {
     var ui = b.ui
-    ui.addBrickHilight_()
+    ui.hilightAdd_()
   }
 }
 
@@ -146,9 +144,8 @@ eYo.Svg.Focus.prototype.magnetOn = function (mngr) {
   if (m) {
     var b = mngr.brick
     if (b) {
-      var ui = b.ui
-      ui.removeBrickHilight_()
-      ui.addMagnet_(m)
+      b.hilightAdd_()
+      b.magnetAdd_(m)
     }
   }
 }
@@ -161,8 +158,8 @@ eYo.Svg.Focus.prototype.magnetOff = function (mngr) {
   var b = mngr.brick
   if (b) {
     var ui = b.ui
-    ui.addBrickHilight_()
-    ui.removeMagnet_()
+    ui.hilightAdd_()
+    ui.magnetRemove_()
   }
 }
 

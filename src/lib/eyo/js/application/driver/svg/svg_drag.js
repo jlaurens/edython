@@ -104,8 +104,8 @@ Object.defineProperties(eYo.Svg.BrickDragSurface.prototype, {
     get () {
       return this.where_
     },
-    set (newValue) {
-      this.where_.set(newValue)
+    set (after) {
+      this.where_.set(after)
       var x = this.where_.x.toFixed(0)
       var y = this.where_.y.toFixed(0)
       // This is a work-around to prevent a the blocks from rendering

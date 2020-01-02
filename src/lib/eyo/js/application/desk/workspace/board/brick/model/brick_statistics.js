@@ -55,7 +55,7 @@ eYo.provide('Brick.Statistics')
     }
   }
 
-eYo.Library.basic_statistics__module = [
+eYo.Library.DATA.basic_statistics__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     from_p: 'statistics',
@@ -90,7 +90,7 @@ eYo.Library.basic_statistics__module = [
     }
   }
 
-eYo.Library.statistics__module = [
+eYo.Library.DATA.statistics__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.IMPORT,

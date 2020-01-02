@@ -53,7 +53,7 @@ eYo.provide('Brick.CMath')
     }
   }
 
-eYo.Library.basic_cmath__module = [
+eYo.Library.DATA.basic_cmath__module = [
   {
     type: eYo.T3.Expr.call_expr,
     data: {
@@ -129,7 +129,7 @@ F_k = (name, title) => {
   }
 }
 
-eYo.Library.cmath__module = [
+eYo.Library.DATA.cmath__module = [
   {
     type: eYo.T3.Expr.call_expr,
     data: {

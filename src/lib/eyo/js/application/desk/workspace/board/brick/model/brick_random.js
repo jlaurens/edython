@@ -41,7 +41,7 @@ eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
     dotted: {
       order: 200,
       init: 0,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var validated
         if (eYo.isStr(after)) {
           if (after.length) {
@@ -56,9 +56,9 @@ eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
         ? validated
         : eYo.INVALID
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        this.requiredIncog = newValue > 0
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        this.requiredIncog = after > 0
       },
       fromType (type) /** @suppress {globalThis} */ {
         var item = this.brick.item
@@ -154,7 +154,7 @@ eYo.Expr.random__randrange.prototype.xmlAttr = function () {
       title: key
     }
   }
-eYo.Library.basic_random__module = [
+eYo.Library.DATA.basic_random__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     data: {
@@ -248,7 +248,7 @@ F_s = function (name, title) {
     title: key
   }
 }
-eYo.Library.random__module = [
+eYo.Library.DATA.random__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.IMPORT,

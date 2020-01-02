@@ -349,19 +349,19 @@ eYo.Svg.Flyout.prototype.addListeners = function(flyout, brick) {
     g,
     'mouseover',
     brick,
-    brick.addSelect
+    brick.selectAdd
   ))
   flyout.listeners_.push(eYo.Dom.bindEvent(
     g,
     'mouseleave',
     brick,
-    brick.removeFocus
+    brick.focusRemove
   ))
   flyout.listeners_.push(eYo.Dom.bindEvent(
     g,
     'mouseout',
     brick,
-    brick.removeFocus
+    brick.focusRemove
   ))
 }
 
@@ -376,7 +376,7 @@ eYo.Svg.Flyout.prototype.listen_mouseover = function(flyout) {
     'mouseover',
     null,
     () => {
-      flyout.board_.topBricks.forEach(b3k => b3k.removeFocus)
+      flyout.board_.topBricks.forEach(b3k => b3k.focusRemove)
     }
   ))
 }

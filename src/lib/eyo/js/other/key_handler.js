@@ -129,7 +129,7 @@ eYo.KeyHandler = (() => {
         main.set(model)
         return
       }
-      if (eyo.forEachData(d => {
+      if (eyo.dataForEach(d => {
         if (!d.incog && d.validate(model)) {
           d.doChange(model)
           return true
@@ -167,7 +167,7 @@ eYo.KeyHandler = (() => {
           // we try to select another one, with possibly the same type
           // First we take a look at B : is there an unconnected input connection
           var doFirst = (eyo, type) => {
-            return eyo.someSlotMagnet(m4t => {
+            return eyo.slotSomeMagnet(m4t => {
               if (m4t.type === type) {
                 var t9k = m4t.targetBrick
                 if (!m4t.hidden_ && !t9k && (!m4t.source || !m4t.source.bindField)) {
@@ -192,7 +192,7 @@ eYo.KeyHandler = (() => {
         // no selected magnet
         var parent = eyo
         do {
-          if (parent.someSlotMagnet(m4t => {
+          if (parent.slotSomeMagnet(m4t => {
             if (m4t.isSlot && !m4t.optional_ && !m4t.target && !m4t.hidden_) {
               m4t.focusOn()
               return true

@@ -11,22 +11,12 @@
  */
 'use strict'
 
-eYo.require('Board')
-
-eYo.provide('Draft')
-
-goog.forwardDeclare('goog.array');
-goog.forwardDeclare('goog.math');
-
-eYo.forwardDeclare('Application')
-
+eYo.require('Section')
 
 /**
+ * @name {eYo.Draft}
  * Class for a draft board.
  * @param {eYo.Desk | eYo.Flyout | eYo.Board} owner Any board belongs to either a desk (the main board), a flyout (the flyout board) or another board (the brick dragger board). We allways have `this === owner.board`, which means that each kind of owner may have only one board.
  * @constructor
  */
-eYo.Draft = function(owner, options) {
-  eYo.Draft.superProto_.call(this, owner, options)
-}
-goog.inherits(eYo.Draft, eYo.Board)
+eYo.Section.makeClass(eYo, 'Draft')

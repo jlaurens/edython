@@ -181,19 +181,19 @@ eYo.Svg.Search.prototype.addListeners = function(search, brick) {
     g,
     'mouseover',
     brick,
-    brick.addSelect
+    brick.selectAdd
   ))
   search.listeners_.push(eYo.Dom.bindEvent(
     g,
     'mouseleave',
     brick,
-    brick.removeFocus
+    brick.focusRemove
   ))
   search.listeners_.push(eYo.Dom.bindEvent(
     g,
     'mouseout',
     brick,
-    brick.removeFocus
+    brick.focusRemove
   ))
 }
 
@@ -208,7 +208,7 @@ eYo.Svg.Search.prototype.listen_mouseover = function(search) {
     'mouseover',
     null,
     () => {
-      search.board_.topBricks.forEach(b3k => b3k.removeFocus)
+      search.board_.topBricks.forEach(b3k => b3k.focusRemove)
     }
   ))
 }

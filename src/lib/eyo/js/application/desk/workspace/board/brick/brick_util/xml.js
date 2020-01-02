@@ -480,7 +480,7 @@ eYo.require('Brick.Operator')
  * @param {Object} [opt]
  */
 eYo.Brick.Dflt.prototype.saveData = function (element, opt) {
-  this.forEachData(data => data.save(element, opt))
+  this.dataForEach(data => data.save(element, opt))
 }
 
 /**
@@ -490,7 +490,7 @@ eYo.Brick.Dflt.prototype.saveData = function (element, opt) {
  * @param {Object} [opt]
  */
 eYo.Brick.Dflt.prototype.saveSlots = function (element, opt) {
-  this.forEachSlot(slot => slot.save(element, opt))
+  this.slotForEach(slot => slot.save(element, opt))
 }
 
 /**
@@ -503,7 +503,7 @@ eYo.Xml.Data.fromDom = function (brick, element) {
   var hasText
   brick.change.wrap(
     function () { // `this` is `brick`
-      this.forEachData(data => {
+      this.dataForEach(data => {
         data.load(element)
         // Consistency section, to be removed
         var xml = data.model.xml
@@ -993,7 +993,7 @@ eYo.Xml.fromDom = function (brick, element) {
     } else {
       eYo.Xml.Data.fromDom(this, element)
       // read slot
-      this.forEachSlot(slot => slot.load(element))
+      this.slotForEach(slot => slot.load(element))
       if (this instanceof eYo.Expr.List) {
         eYo.Do.forEachElementChild(element, child => {
           var name = child.getAttribute(eYo.Xml.SLOT)

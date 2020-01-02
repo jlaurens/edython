@@ -29,16 +29,16 @@ Object.defineProperties(eYo.Clipboard, {
     get () {
       return this.dom_
     },
-    set (newValue) {
-      this.dom_ = newValue
+    set (after) {
+      this.dom_ = after
     }
   },
   sourceBoard: {
     get () {
       return this.sourceBoard_
     },
-    set (newValue) {
-      this.sourceBoard_ = newValue
+    set (after) {
+      this.sourceBoard_ = after
     }
   },
   desk: {

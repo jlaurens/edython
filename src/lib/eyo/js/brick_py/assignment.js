@@ -56,22 +56,22 @@ eYo.Stmt.makeClass('assignment_stmt', {
       ],
       init: eYo.Key.EXPRESSION,
       xml: false,
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
         var b3k = this.brick
-        b3k.target_d.requiredIncog = newValue !== eYo.Key.VALUED && newValue !== eYo.Key.EXPRESSION
-        b3k.annotated_d.requiredIncog = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
-        b3k.value_d.requiredIncog = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED || newValue === eYo.Key.VALUED || newValue === eYo.Key.EXPRESSION
+        b3k.target_d.requiredIncog = after !== eYo.Key.VALUED && after !== eYo.Key.EXPRESSION
+        b3k.annotated_d.requiredIncog = after === eYo.Key.ANNOTATED || after === eYo.Key.ANNOTATED_VALUED
+        b3k.value_d.requiredIncog = after === eYo.Key.TARGET_VALUED || after === eYo.Key.ANNOTATED_VALUED || after === eYo.Key.VALUED || after === eYo.Key.EXPRESSION
       },
-      isChanging (oldValue, newValue) /** @suppress {globalThis} */ {
+      isChanging (before, after) /** @suppress {globalThis} */ {
         var b3k = this.brick
-        if (newValue === eYo.Key.VALUED) {
+        if (after === eYo.Key.VALUED) {
             b3k.operator_p = ''
         } else if (b3k.operator_p === '') {
           b3k.operator_p = '='
         }
         b3k.consolidateType()
-        this.duringChange(oldValue, newValue)
+        this.duringChange(before, after)
       },
       fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Stmt.expression_stmt) {
@@ -153,14 +153,14 @@ eYo.Stmt.makeClass('assignment_stmt', {
       /* One of Visual Studio Code extensions gobbles this line */
       init: '',
       all: ['', '=', '+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='],
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.brick.value_s.label_f.text = newValue
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.brick.value_s.label_f.text = after
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
         var b3k = this.brick
-        b3k.numberOperator_p = newValue
-        b3k.bitwiseOperator_p = newValue
+        b3k.numberOperator_p = after
+        b3k.bitwiseOperator_p = after
         if (this.number || this.bitwise) {
           b3k.variant_p = eYo.Key.TARGET_VALUED
         }
@@ -178,13 +178,11 @@ eYo.Stmt.makeClass('assignment_stmt', {
       init: '',
       noUndo: true,
       xml: false,
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        if (oldValue && (newValue !== oldValue)) {
-          var b3k = this.brick
-          b3k.operator_p = newValue
-          b3k.operator_d.number = (b3k.operator_p === this.value_)
-        }
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        var b3k = this.brick
+        b3k.operator_p = after
+        b3k.operator_d.number = (b3k.operator_p === this.value_)
       },
     },
     bitwiseOperator: {
@@ -192,11 +190,11 @@ eYo.Stmt.makeClass('assignment_stmt', {
       init: '',
       noUndo: true,
       xml: false,
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        if (oldValue && (newValue !== oldValue)) {
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        if (before && (after !== before)) {
           var b3k = this.brick
-          b3k.operator_p = newValue
+          b3k.operator_p = after
           b3k.operator_d.bitwise = (b3k.operator_p === this.value_)
         }
       },
@@ -226,7 +224,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
         }
       },
       synchronize: true,
-      validateIncog (newValue) /** @suppress {globalThis} */ {
+      validateIncog (after) /** @suppress {globalThis} */ {
         var v = this.brick.variant_p
         return v !== eYo.Key.TARGET_VALUED && v !== eYo.Key.ANNOTATED_VALUED && v !== eYo.Key.VALUED && v !== eYo.Key.EXPRESSION
       }

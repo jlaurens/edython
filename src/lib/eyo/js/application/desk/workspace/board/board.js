@@ -13,6 +13,7 @@
 
 eYo.require('C9r')
 eYo.require('Decorate')
+eYo.require('List')
 
 eYo.makeNS('Board')
 
@@ -69,19 +70,14 @@ eYo.C9r.Dflt.makeSubclass(eYo.Board, {
      * @private
      */
     list () {
-      return new eYo.List()
+      return new eYo.List(this)
     },
     /**
      * @type {eYo.Scrollbar | eYo.Scroller}
      * @readonly
      */
     scrollbar: {},
-    recover: {
-      get () {
-        return this.getRecover()
-      }
-    },
-    draggerBoard () {
+    board () {
       if (!this.isDragger) {
         return new eYo.DnD.Dragger.Board(this)
       }
@@ -96,6 +92,9 @@ eYo.C9r.Dflt.makeSubclass(eYo.Board, {
     workspace () {
       return this.owner
     },
+    recover () {
+      return this.getRecover()
+    },
     scale: {
       get () {
         return this.metrics__.scale
@@ -105,8 +104,8 @@ eYo.C9r.Dflt.makeSubclass(eYo.Board, {
        * zoom options are required
        * @param {number} newScale Zoom factor.
        */
-      set (newValue) {
-        this.metrics__.scale = newValue
+      set (after) {
+        this.metrics__.scale = after
       }
     },
     drag: {
@@ -115,10 +114,10 @@ eYo.C9r.Dflt.makeSubclass(eYo.Board, {
       },
       /**
        * Set the board's scroll vector.
-       * @param {eYo.Size} newValue Scroll factor.
+       * @param {eYo.Size} after Scroll factor.
        */
-      set (newValue) {
-        this.metrics__.drag = newValue
+      set (after) {
+        this.metrics__.drag = after
       }
     },
     /**
@@ -208,7 +207,6 @@ eYo.C9r.Dflt.makeSubclass(eYo.Board, {
   },
   dispose () {
     // Stop rerendering.
-    this.disposeUI()
     this.cancelMotion()
     this.listeners_.length = 0
     this.clear()
@@ -238,11 +236,10 @@ eYo.Board.Dflt.makeSubclass('Main', {
   },
   owned: {
     board () {
-      return new eYo.Board(this, {
+      return new eYo.Board.Dflt(this, {
         backgroundClass: 'eyo-board-dragger-background'
       })
     },
-    draggerBoard: {},
     draggerBrick () {
       return new eYo.BrickDragger(this)
     },
@@ -258,7 +255,7 @@ eYo.Board.Dflt.makeSubclass('Main', {
      * @param{?eYo.Flyout}
      */
     flyout: {
-      validate (after) {
+      validate (before, after) {
         eYo.assert(!after || this.isMain, 'Only main boards may have flyouts')
         return after
       },
@@ -286,7 +283,7 @@ eYo.Board.Dflt.makeSubclass('Main', {
      * The dragger, if relevant.
      */
     dragger () {
-      return this.draggable && this.draggerBoard_
+      return this.draggable && this.board
     },
     /**
      * Is this board visible
@@ -327,14 +324,6 @@ eYo.Board.Dflt.makeSubclass('Main', {
      */
     main () {
       return this
-    },
-    /**
-     * The board used for brick dragging.
-     * @readonly
-     * @type {eYo.Board}
-     */
-    draggerBoard () {
-      return this.board_
     },
   },
   valued: {
@@ -1207,20 +1196,20 @@ eYo.Board.Dflt.prototype.fromPixelUnit = function(xy) {
   return new eYo.Where(xy).unscale(this.scale)
 }
 
-/**
- *
- */
-eYo.Board.Dflt.prototype.getRecover = (() => {
+{
   var get = function () {
-    return this.recover_
+    return this.recover__
   }
-  return function () {
-    eYo.assert(!this.recover_, 'Collision: this.recover_')
-    this.recover_ = new eYo.Xml.Recover(this)
+  /**
+   *
+   */
+  eYo.Board.Dflt.prototype.getRecover = function () {
+    eYo.assert(!this.recover__, 'Collision: this.recover_')
+    this.recover__ = new eYo.Xml.Recover(this)
     this.getRecover = get
-    return this.recover_
+    return this.recover__
   }
-}) ()
+}
 
 /**
  * Add the nodes from string to the board.
@@ -1287,7 +1276,7 @@ eYo.Board.Dflt.prototype.fromUTF8ByteArray = function (bytes) {
  */
 eYo.Board.Dflt.prototype.addBrick = function (brick, opt_id) {
   this.change.wrap(() => {
-    this.list_.add(brick, opt_id)
+    this.list.add(brick, opt_id)
     this.hasUI && brick.initUI()
     brick.move()
   })
@@ -1297,7 +1286,7 @@ eYo.Board.Dflt.prototype.addBrick = function (brick, opt_id) {
 /**
  * Remove a brick from the board.
  * @param {eYo.Brick.Dflt} brick
- * @param {Function} [f]
+ * @param {Function} [f] - to be executed after ech brick is removed
  */
 eYo.Board.Dflt.prototype.removeBrick = function (brick, f) {
   this.change.wrap(() => {
@@ -1412,21 +1401,21 @@ eYo.Board.Dflt.prototype.scrollBrickTopLeft = function(id) {
     console.warn('Tried to scroll a non-scrollable board.')
     return;
   }
-  var brick = this.getBrickById(id)
-  if (!brick) {
+  var b3k = this.getBrickById(id)
+  if (!b3k) {
     return
   }
-  if (!brick.isStmt) {
-    brick = brick.stmtParent || brick.root
+  if (!b3k.isStmt) {
+    b3k = b3k.stmtParent || b3k.root
   }
   // `where` is in board coordinates.
   
   // Scrolling to here will put the brick line in the top-left corner of the
   // visible board.
   var metrics = this.metrics_
-  this.moveTo(brick.xy
+  this.moveTo(b3k.xy
     // Find the top left of the brick in board units.
-    .forward(1/2 + brick.depth * eYo.Span.INDENT, 1/4)
+    .forward(1/2 + b3k.depth * eYo.Span.INDENT, 1/4)
     .scale(-this.scale)
     .backward(metrics.view.origin)
   )
@@ -1437,7 +1426,7 @@ eYo.Board.Dflt.prototype.scrollBrickTopLeft = function(id) {
  * @param {eYo.Events.Abstract} event Event to fire.
  */
 eYo.Board.Dflt.prototype.eventDidFireChange = function(event) {
-  const task = () => {
+  let task = () => {
       this.listeners_.forEach(f => f(event))
     }
   if (this.backer_) {

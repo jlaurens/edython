@@ -323,7 +323,7 @@ eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
         }
       )
     })
-    this.forEachSlotReverse((slot) => {
+    this.slotForEachReverse((slot) => {
       var m4t = slot.magnet
       if (m4t && !m4t.target) {
         if (m4t.checkType_(b3k.out_m)) {

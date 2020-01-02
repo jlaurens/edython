@@ -213,7 +213,7 @@ eYo.makeClass('Motion', {
       /*
        * Dragging should start for selected blocks only.
        */
-      validate (after) {
+      validate (before, after) {
         if (!this.brick) {
           var candidate
           let selected = eYo.app.focusMngr.brick
@@ -842,7 +842,7 @@ eYo.Motion.prototype.handleClickField_ = eYo.Motion.prototype.handleClickBrick_ 
             eYo.Events.group = true
           }
           var newBrick = this.flyout_.createBrick(b)
-          newBrick.ui.scheduleSnapAndBump()
+          newBrick.ui_driver.scheduleSnapAndBump(newBrick)
           eYo.Events.group = false
           return true
         }

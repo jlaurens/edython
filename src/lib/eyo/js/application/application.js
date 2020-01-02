@@ -176,7 +176,7 @@ eYo.Application_p.doCopy = function(optNoNext) {
 eYo.Application_p.doFront = function() {
   var b3k = this.focusMngr.brick
   if (b3k) {
-    b3k.ui.sendToFront()
+    b3k.sendToFront()
   }
 }
 

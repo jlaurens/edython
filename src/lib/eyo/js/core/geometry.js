@@ -65,32 +65,32 @@ eYo.Where.property_c_ = {
   get () {
     return this.c_
   },
-  set (newValue) {
-    this.c_ = Math.round(2 * newValue) / 2
+  set (after) {
+    this.c_ = Math.round(2 * after) / 2
   }
 }
 eYo.Where.property_l_ = {
   get () {
     return this.l_
   },
-  set (newValue) {
-    this.l_ = Math.round(4 * newValue) / 4
+  set (after) {
+    this.l_ = Math.round(4 * after) / 4
   }
 }
 eYo.Where.property_x_ = {
   get () {
     return this.c_ * eYo.Unit.x
   },
-  set (newValue) {
-    this.c_ = newValue / eYo.Unit.x
+  set (after) {
+    this.c_ = after / eYo.Unit.x
   }
 }
 eYo.Where.property_y_ = {
   get () {
     return this.l_ * eYo.Unit.y
   },
-  set (newValue) {
-    this.l_ = newValue / eYo.Unit.y
+  set (after) {
+    this.l_ = after / eYo.Unit.y
   }
 }
 
@@ -100,16 +100,16 @@ Object.defineProperties(eYo.Where.prototype, {
   //   get () {
   //     return this.c__ / 10000
   //   },
-  //   set (newValue) {
-  //     this.c__ = Math.round(10000 * newValue)
+  //   set (after) {
+  //     this.c__ = Math.round(10000 * after)
   //   }
   // },
   // l_: {
   //   get () {
   //     return this.l__ / 10000
   //   },
-  //   set (newValue) {
-  //     this.l__ = Math.round(10000 * newValue)
+  //   set (after) {
+  //     this.l__ = Math.round(10000 * after)
   //   }
   // },
   c: eYo.Where.property_c_,
@@ -405,32 +405,32 @@ Object.defineProperties(eYo.Rect.prototype, {
     get () {
       return this.origin_.c
     },
-    set (newValue) {
-      this.origin_.c = newValue
+    set (after) {
+      this.origin_.c = after
     }
   },
   l: {
     get () {
       return this.origin_.l
     },
-    set (newValue) {
-      this.origin_.l = newValue
+    set (after) {
+      this.origin_.l = after
     }
   },
   w: {
     get () {
       return this.size_.w
     },
-    set (newValue) {
-      this.size_.w = newValue
+    set (after) {
+      this.size_.w = after
     }
   },
   h: {
     get () {
       return this.size_.h
     },
-    set (newValue) {
-      this.size_.h = newValue
+    set (after) {
+      this.size_.h = after
     }
   },
   // basic properties in board dimensions
@@ -438,32 +438,32 @@ Object.defineProperties(eYo.Rect.prototype, {
     get () {
       return this.origin_.x
     },
-    set (newValue) {
-      this.origin_.x = newValue
+    set (after) {
+      this.origin_.x = after
     }
   },
   y: {
     get () {
       return this.origin_.y
     },
-    set (newValue) {
-      this.origin_.y = newValue
+    set (after) {
+      this.origin_.y = after
     }
   },
   width: {
     get () {
       return this.size_.width
     },
-    set (newValue) {
-      this.size_.width = newValue
+    set (after) {
+      this.size_.width = after
     }
   },
   height: {
     get () {
       return this.size_.height
     },
-    set (newValue) {
-      this.size_.height = newValue
+    set (after) {
+      this.size_.height = after
     }
   },
   // convenient setters and getters
@@ -472,10 +472,10 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.origin_.c_
     },
     /**
-     * @param {Number} newValue 
+     * @param {Number} after 
      */
-    set (newValue) {
-      this.c = newValue
+    set (after) {
+      this.c = after
     }
   },
   c_mid: {
@@ -483,18 +483,18 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.c + this.w / 2
     },
     /**
-     * @param {Number} newValue 
+     * @param {Number} after 
      */
-    set (newValue) {
-      this.c = newValue - this.w / 2
+    set (after) {
+      this.c = after - this.w / 2
     }
   },
   c_max: {
     get () {
       return this.c + this.w
     },
-    set (newValue) {
-      this.c = newValue - this.w
+    set (after) {
+      this.c = after - this.w
     }
   },
   l_min: {
@@ -503,26 +503,26 @@ Object.defineProperties(eYo.Rect.prototype, {
     },
     /**
      * The height does not change, `l_max` changes accordingly.
-     * @param {Number} newValue 
+     * @param {Number} after 
      */
-    set (newValue) {
-      this.l = newValue
+    set (after) {
+      this.l = after
     }
   },
   l_mid: {
     get () {
       return this.l + this.h / 2
     },
-    set (newValue) {
-      this.l = newValue - this.h / 2
+    set (after) {
+      this.l = after - this.h / 2
     }
   },
   l_max: {
     get () {
       return this.l + this.h
     },
-    set (newValue) {
-      this.l = newValue - this.h
+    set (after) {
+      this.l = after - this.h
     }
   },
   // Convenient setters in board coordinates
@@ -530,48 +530,48 @@ Object.defineProperties(eYo.Rect.prototype, {
     get () {
       return this.x
     },
-    set (newValue) {
-      this.x = newValue
+    set (after) {
+      this.x = after
     }
   },
   x_mid: {
     get () {
       return this.x + this.width / 2
     },
-    set (newValue) {
-      this.x = newValue - this.width / 2
+    set (after) {
+      this.x = after - this.width / 2
     }
   },
   x_max: {
     get () {
       return this.x + this.width
     },
-    set (newValue) {
-      this.x = newValue - this.width
+    set (after) {
+      this.x = after - this.width
     }
   },
   y_min: {
     get () {
       return this.y
     },
-    set (newValue) {
-      this.y = newValue
+    set (after) {
+      this.y = after
     }
   },
   y_mid: {
     get () {
       return this.y + this.height / 2
     },
-    set (newValue) {
-      this.y = newValue - this.height / 2
+    set (after) {
+      this.y = after - this.height / 2
     }
   },
   y_max: {
     get () {
       return this.y + this.height
     },
-    set (newValue) {
-      this.y = newValue - this.height
+    set (after) {
+      this.y = after - this.height
     }
   },
   //// The setters change the width, but does not change the `right`
@@ -579,9 +579,9 @@ Object.defineProperties(eYo.Rect.prototype, {
     get () {
       return this.origin_.x
     },
-    set (newValue) {
-      this.width = this.x_max - newValue
-      this.x_min = newValue
+    set (after) {
+      this.width = this.x_max - after
+      this.x_min = after
     }
   },
   top: {
@@ -590,11 +590,11 @@ Object.defineProperties(eYo.Rect.prototype, {
     },
     /**
      * The height does not change.
-     * @param {Number} newValue 
+     * @param {Number} after 
      */
-    set (newValue) {
-      this.height = this.y_max - newValue
-      this.y_min = newValue
+    set (after) {
+      this.height = this.y_max - after
+      this.y_min = after
     }
   },
   right: {
@@ -605,8 +605,8 @@ Object.defineProperties(eYo.Rect.prototype, {
      * Change the width, not the `left`.
      * No negative width.
      */
-    set (newValue) {
-      this.width = Math.max(0, newValue - this.left)
+    set (after) {
+      this.width = Math.max(0, after - this.left)
     }
   },
   bottom: {
@@ -617,8 +617,8 @@ Object.defineProperties(eYo.Rect.prototype, {
      * Change the height, not the `top`.
      * No negative height.
      */
-    set (newValue) {
-      this.height = Math.max(0, newValue - this.top)
+    set (after) {
+      this.height = Math.max(0, after - this.top)
     }
   },
   // Composed
@@ -626,27 +626,27 @@ Object.defineProperties(eYo.Rect.prototype, {
     get () {
       return new eYo.Where(this.origin_)
     },
-    set (newValue) {
-      this.origin_.x = newValue.x
-      this.origin_.y = newValue.y
+    set (after) {
+      this.origin_.x = after.x
+      this.origin_.y = after.y
     }
   },
   topLeft: {
     get () {
       return new eYo.Where(this.origin_)
     },
-    set (newValue) {
-      this.origin_.x = newValue.x
-      this.origin_.y = newValue.y
+    set (after) {
+      this.origin_.x = after.x
+      this.origin_.y = after.y
     }
   },
   bottomRight: {
     get () {
       return new eYo.Where(this.origin_).forward(this.size_)
     },
-    set (newValue) {
-      this.x_max = newValue.x
-      this.y_max = newValue.y
+    set (after) {
+      this.x_max = after.x
+      this.y_max = after.y
     }
   },
   center: {
@@ -656,17 +656,17 @@ Object.defineProperties(eYo.Rect.prototype, {
     /**
      * Change the origin but keeps the size.
      */
-    set (newValue) {
-      this.origin_ = newValue.addvance(this.size_.unscale(-2))
+    set (after) {
+      this.origin_ = after.addvance(this.size_.unscale(-2))
     }
   },
   size: {
     get () {
       return new eYo.Size(this.size_)
     },
-    set (newValue) {
-      this.size_.width = newValue.width
-      this.size_.height = newValue.height
+    set (after) {
+      this.size_.width = after.width
+      this.size_.height = after.height
     }
   },
   /**
@@ -935,8 +935,8 @@ eYo.Rect.prototype.tie = function (tied, to, from) {
         var c = tied.origin_.c_
         return (from.c && from.c(c)) || c
       },
-      set (newValue) {
-        tied.origin_.c_ = (to.c && to.c(newValue)) || newValue
+      set (after) {
+        tied.origin_.c_ = (to.c && to.c(after)) || after
       }
     },
     l_: {
@@ -944,8 +944,8 @@ eYo.Rect.prototype.tie = function (tied, to, from) {
         var l = tied.origin_.l_
         return (from.l && from.l(l)) || l
       },
-      set (newValue) {
-        tied.origin_.l_ = (to.l && to.l(newValue)) || newValue
+      set (after) {
+        tied.origin_.l_ = (to.l && to.l(after)) || after
       }
     },
     h_: {
@@ -953,8 +953,8 @@ eYo.Rect.prototype.tie = function (tied, to, from) {
         var c = tied.size_.c_
         return (from.c && from.c(c)) || c
       },
-      set (newValue) {
-        tied.size_.c_ = (to.c && to.c(newValue)) || newValue
+      set (after) {
+        tied.size_.c_ = (to.c && to.c(after)) || after
       }
     },
     w_: {
@@ -962,8 +962,8 @@ eYo.Rect.prototype.tie = function (tied, to, from) {
         var l = tied.size_.l_
         return (from.l && from.l(l)) || l
       },
-      set (newValue) {
-        tied.size_.l_ = (to.l && to.l(newValue)) || newValue
+      set (after) {
+        tied.size_.l_ = (to.l && to.l(after)) || after
       }
     }
   })

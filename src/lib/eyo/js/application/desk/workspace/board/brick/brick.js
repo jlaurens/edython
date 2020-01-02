@@ -119,7 +119,7 @@ eYo.Brick.makeDflt({
         f(this.head_m)
           || f(this.left_m)
             || f(this.out_m)
-        this.parent_ = newParent
+        this.parent__ = newParent
         this.parentDidChange(oldParent)
       },
       /**
@@ -139,7 +139,7 @@ eYo.Brick.makeDflt({
           // Remove this brick from the old parent_'s child list.
           goog.array.remove(this.parent__.children__, this)
           this.parent__ = null
-          this.ui.setParent(null)
+          this.ui_driver.parentSet(null)
         } else {
           // Remove this brick from the board's list of top-most bricks.
           this.board.removeBrick(this)
@@ -151,7 +151,7 @@ eYo.Brick.makeDflt({
         } else {
           this.board.addBrick(this)
         }
-        newParent && (this.ui.setParent(newParent))
+        newParent && (this.ui_driver.parentSet(newParent))
       }
     },
     inputList: eYo.NA,
@@ -183,13 +183,13 @@ eYo.Brick.makeDflt({
     isGroup: false,
     depth: 0,
     incog: {
-      validate(after) {
-        if (!this.incog__ === !after) {
-          return this.incog__
+      validate (before, after) {
+        if (!before === !after) {
+          return before
         }
         if (this.disabled) {
           // enable the brick before enabling its connections
-          return this.incog__
+          return before
         }
         return after
       },
@@ -200,7 +200,7 @@ eYo.Brick.makeDflt({
        * @param {Boolean} incog
        */
       didChange(before, after) {
-        this.forEachSlot(slot => slot.incog = after) // with incog validator
+        this.slotForEach(slot => slot.incog = after) // with incog validator
         var m4t = this.suite_m
         m4t && (m4t.incog = after)
         this.consolidate() // no deep consolidation because connected blocs were consolidated during slot's or connection's incog setter
@@ -271,7 +271,7 @@ eYo.Brick.makeDflt({
                     // be computed once again
                     if (!next.checkType_(previous)) {
                       b3k.unplug()
-                      b3k.ui.bumpNeighbours_()
+                      b3k.bumpNeighbours_()
                     }
                     break
                   }
@@ -307,7 +307,7 @@ eYo.Brick.makeDflt({
                     if (!next.checkType_(previous)) {
                       b3k = previous.brick
                       b3k.unplug()
-                      b3k.ui.bumpNeighbours_()
+                      b3k.bumpNeighbours_()
                     }
                     break
                   }
@@ -317,7 +317,7 @@ eYo.Brick.makeDflt({
           }
         }, () => {
           this.changeDone()
-          this.ui && (this.ui.updateDisabled())
+          this.updateDisabled()
           this.render()
         })
       }
@@ -333,7 +333,7 @@ eYo.Brick.makeDflt({
     collapsed: {
       willChange(before, after) {
         // Show/hide the next statement inputs.
-        this.forEachSlot(slot => slot.visible = !after)
+        this.slotForEach(slot => slot.visible = !after)
         eYo.Events.fireBrickChange(
             this, 'collapsed', null, before, after)
       },
@@ -435,9 +435,9 @@ eYo.Brick.makeDflt({
         var m = this.out_m
         return m && m.targetBrick
       },
-      set (newValue) {
+      set (after) {
         var m = this.out_m
-        m && (m.targetBrick = newValue)
+        m && (m.targetBrick = after)
       }
     },
     head: {
@@ -445,9 +445,9 @@ eYo.Brick.makeDflt({
         var m = this.head_m
         return m && m.targetBrick
       },
-      set (newValue) {
+      set (after) {
         var m = this.head_m
-        m && (m.targetBrick = newValue)
+        m && (m.targetBrick = after)
       }
     },
     left: {
@@ -455,9 +455,9 @@ eYo.Brick.makeDflt({
         var m = this.left_m
         return m && m.targetBrick
       },
-      set (newValue) {
+      set (after) {
         var m = this.left_m
-        m && (m.targetBrick = newValue)
+        m && (m.targetBrick = after)
       }
     },
     right: {
@@ -465,9 +465,9 @@ eYo.Brick.makeDflt({
         var m = this.right_m
         return m && m.targetBrick
       },
-      set (newValue) {
+      set (after) {
         var m = this.right_m
-        m && (m.targetBrick = newValue)
+        m && (m.targetBrick = after)
       }
     },
     suite: {
@@ -475,9 +475,9 @@ eYo.Brick.makeDflt({
         var m = this.suite_m
         return m && m.targetBrick
       },
-      set (newValue) {
+      set (after) {
         var m = this.suite_m
-        m && (m.targetBrick = newValue)
+        m && (m.targetBrick = after)
       }
     },
     foot: {
@@ -485,9 +485,9 @@ eYo.Brick.makeDflt({
         var m = this.foot_m
         return m && m.targetBrick
       },
-      set (newValue) {
+      set (after) {
         var m = this.foot_m
-        m && (m.targetBrick = newValue)
+        m && (m.targetBrick = after)
       }
     },
     leftMost () {
@@ -698,7 +698,7 @@ eYo.Brick.makeDflt({
       if (!this.wrapped_) {
         ans.push(this)
       }
-      this.forEachChild(b => ans.push.apply(ans, b.wrappedDescendants))
+      this.childForEach(b => ans.push.apply(ans, b.wrappedDescendants))
       return ans    
     },
     out_m () { return this.magnets.out },
@@ -764,7 +764,7 @@ eYo.Brick.makeDflt({
           // now make the bounds between data and fields
           this.makeBounds()
           // initialize the data
-          this.forEachData(data => data.init())
+          this.dataForEach(data => data.init())
           // At this point the state value may not be consistent
           this.consolidate()
           // but now it should be
@@ -820,7 +820,7 @@ eYo.Brick.makeDflt({
 })
 
 // convenient namespace for debugging
-eYo.Brick.DEBUG = Object.create(null)
+eYo.Brick.DEBUG_ = Object.create(null)
 
 {
   let _p = eYo.Brick.Dflt.prototype
@@ -861,7 +861,7 @@ eYo.Brick.DEBUG = Object.create(null)
    */
   _p.onChangeDone = function (deep) {
     if (deep) {
-      this.forEachChild(b3k => b3k.changeDone(deep))
+      this.childForEach(b3k => b3k.changeDone(deep))
     }
   }
 
@@ -896,15 +896,15 @@ eYo.Brick.DEBUG = Object.create(null)
   /**
    * Set the value wrapping in a `changeBegin`/`changeEnd`
    * group call of the owner.
-   * @param {Object} newValue
+   * @param {Object} after
    * @param {Boolean} notUndoable
    */
-  eYo.Data.prototype.doChange = function (newValue, validate) {
-    if (newValue !== this.get()) {
+  eYo.Data.prototype.doChange = function (after, validate) {
+    if (after !== this.get()) {
       this.brick.change.wrap(
         this.set,
         this,
-        newValue,
+        after,
         validate
       )
     }
@@ -916,8 +916,8 @@ eYo.Brick.DEBUG = Object.create(null)
    * then use the model's method if any.
    */
   _p.willLoad = function () {
-    this.forEachData(data => data.willLoad())
-    this.forEachSlot(slot => slot.willLoad())
+    this.dataForEach(data => data.willLoad())
+    this.slotForEach(slot => slot.willLoad())
     var willLoad = this.model.willLoad
     if (eYo.isF(willLoad)) {
       willLoad.call(this)
@@ -928,8 +928,8 @@ eYo.Brick.DEBUG = Object.create(null)
    * Called when data and slots have loaded.
    */
   _p.didLoad = function () {
-    this.forEachData(data => data.didLoad())
-    this.forEachSlot(slot => slot.didLoad())
+    this.dataForEach(data => data.didLoad())
+    this.slotForEach(slot => slot.didLoad())
     var didLoad = this.model.didLoad
     if (eYo.isF(didLoad)) {
       didLoad.call(this)
@@ -947,13 +947,13 @@ eYo.Brick.DEBUG = Object.create(null)
   _p.equals = function (rhs) {
     var equals = rhs && (this.type == rhs.type)
     if (equals) {
-      this.forEachData(data => {
+      this.dataForEach(data => {
         var r_data = rhs.data[data.key]
         equals = r_data && (data.get() == r_data.get() || (data.incog && r_data.incog))
         return equals // breaks if false
       })
       if (equals) {
-        this.forEachSlot(slot => {
+        this.slotForEach(slot => {
           var r_slot = rhs.slots[slot.key]
           if (slot.incog) {
             equals = !r_slot || r_slot.incog
@@ -1083,27 +1083,9 @@ eYo.Brick.DEBUG = Object.create(null)
    * @param {function} helper
    * @return {Object} The first slot for which helper returns true
    */
-  _p.someSlot = function (helper) {
+  _p.slotSome = function (helper) {
     var slot = this.slotAtHead
     return slot && slot.some(helper)
-  }
-
-  // various forEach convenient methods
-  /**
-   * execute the given function for the fields.
-   * For edython.
-   * @param {function} helper
-   */
-  _p.forEachField = function (helper) {
-    Object.values(this.fields).forEach(f => helper(f))
-  }
-
-  /**
-   * Execute the helper for each child.
-   * Works on a shallow copy of `children__`.
-   */
-  _p.forEachChild = function (helper) {
-    this.children__.slice().forEach((b, i, ra) => helper(b, i, ra))
   }
 
   /**
@@ -1112,7 +1094,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * @param {function} helper
    * @return {boolean} whether there was an slot to act upon or a valid helper
    */
-  _p.forEachSlot = function (helper) {
+  _p.slotForEach = function (helper) {
     var slot = this.slotAtHead
     slot && slot.forEach(helper)
   }
@@ -1122,7 +1104,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * For edython.
    * @param {function} helper
    */
-  _p.forEachSlotReverse = function (helper) {
+  _p.slotForEachReverse = function (helper) {
     var slot = this.slotAtHead
     if (slot) {
       while(slot.next) {
@@ -1132,15 +1114,22 @@ eYo.Brick.DEBUG = Object.create(null)
     }
   }
 
+  // various forEach convenient methods
   /**
-   * execute the given function for the head slot of the receiver and its next sibling. Stops as soon as the helper returns a truthy value.
+   * execute the given function for the fields.
    * For edython.
    * @param {function} helper
-   * @return {boolean} whether there was an slot to act upon or a valid helper
    */
-  _p.someSlot = function (helper) {
-    var slot = this.slotAtHead
-    return slot && (slot.some(helper))
+  _p.fieldForEach = function (helper) {
+    Object.values(this.fields).forEach(f => helper(f))
+  }
+
+  /**
+   * Execute the helper for each child.
+   * Works on a shallow copy of `children__`.
+   */
+  _p.childForEach = function (helper) {
+    this.children__.slice().forEach((b, i, ra) => helper(b, i, ra))
   }
 
   /**
@@ -1150,7 +1139,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * @param {function} helper
    * @return {boolean} whether there was a data to act upon or a valid helper
    */
-  _p.forEachData = function (helper) {
+  _p.dataForEach = function (helper) {
     var data = this.headData
     if (data && eYo.isF(helper)) {
       var last
@@ -1163,11 +1152,20 @@ eYo.Brick.DEBUG = Object.create(null)
 
   /**
    * Execute the helper for each magnet, either superior or inferior.
-   * @param {Function} helper  helper is a function with signature (eYo.Magnet) -> eYo.NA
+   * @param {Boolean} all - Optional. Partial bypass when false or not rendered. 
+   * @param {Function} helper - helper is a function with signature (eYo.Magnet) -> eYo.NA
    */
-  _p.forEachMagnet = function (helper) {
-    Object.values(this.magnets).forEach(helper)
-    this.forEachSlot(s => s.magnet && helper(s.magnet))
+  _p.magnetForEach = function (all, helper) {
+    if (!helper) {
+      helper = all
+      all = true
+    }
+    if (all || this.ui.rendered) {
+      Object.values(this.magnets).forEach(helper)
+      if (all || !this.collapsed_) {
+        this.slotForEach(s => s.magnet && helper(s.magnet))
+      }
+    }
   }
 
   /**
@@ -1176,7 +1174,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * @param {Function} helper  helper has signature `(brick, depth) -> eYo.NA`
    * @return the truthy value from the helper.
    */
-  _p.forEachStatement = function (helper) {
+  _p.stmtForEach = function (helper) {
     var e8r = this.statementEnumerator()
     var b3k
     while ((b3k = e8r.next)) {
@@ -1203,7 +1201,7 @@ eYo.Brick.DEBUG = Object.create(null)
         data.field = slot.bind_f
         if (!data.field) {
           var candidate
-          slot.forEachField(f => {
+          slot.fieldForEach(f => {
             if (f.editable) {
               eYo.assert(!candidate, 'Ambiguous slot <-> data bound (too many editable fields)')
               candidate = f
@@ -1213,7 +1211,7 @@ eYo.Brick.DEBUG = Object.create(null)
       } else if ((data.field = this.fields[k])) {
         data.slot = null
       } else {
-        this.someSlot(slot => {
+        this.slotSome(slot => {
           if ((data.field = slot.fields[k])) {
             eYo.assert(!slot.data, `Ambiguous slot <-> data bound ${data.key}, ${slot.data && slot.data.key}`)
             data.slot = slot
@@ -1240,7 +1238,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * @param {String} type
    */
   _p.setDataWithType = function (type) {
-    this.forEachData(data => data.setWithType(type))
+    this.dataForEach(data => data.setWithType(type))
   }
 
   /**
@@ -1250,7 +1248,7 @@ eYo.Brick.DEBUG = Object.create(null)
    */
   _p.setDataWithModel = function (model, noCheck) {
     var done = false
-    this.forEachData(data => data.setRequiredFromModel(false))
+    this.dataForEach(data => data.setRequiredFromModel(false))
     this.change.wrap(() => {
       var data_in = model.data
       if (eYo.isStr(data_in) || goog.isNumber(data_in)) {
@@ -1260,11 +1258,11 @@ eYo.Brick.DEBUG = Object.create(null)
           d.setRequiredFromModel(true)
           done = true
         } else {
-          this.forEachData(d => {
+          this.dataForEach(d => {
             if (d.model.xml !== false && !d.incog && d.validate(data_in)) {
               // if (done) {
               //   console.error('Ambiguous model', this.type, data_in)
-              //   this.forEachData(d => {
+              //   this.dataForEach(d => {
               //     if (d.model.xml !== false && !d.incog && d.validate(data_in)) {
               //       console.log('candidate:', d.key)
               //     }
@@ -1278,7 +1276,7 @@ eYo.Brick.DEBUG = Object.create(null)
           })
         }
       } else if (goog.isDef(data_in)) {
-        this.forEachData(data => {
+        this.dataForEach(data => {
           var k = data.key
           if (eYo.Do.hasOwnProperty(data_in, k)) {
             data.set(data_in[k])
@@ -1308,7 +1306,7 @@ eYo.Brick.DEBUG = Object.create(null)
           }
         }
       }
-      this.forEachData(data => {
+      this.dataForEach(data => {
         var k = data.key + '_p'
         if (eYo.Do.hasOwnProperty(model, k)) {
           data.set(model[k])
@@ -1358,8 +1356,8 @@ eYo.Brick.DEBUG = Object.create(null)
       }
     }
     this.data_ = data
-    // now we can use `forEachData`
-    this.forEachData(d => {
+    // now we can use `dataForEach`
+    this.dataForEach(d => {
       Object.defineProperty(d.brick, d.key + '_d', { value: d })
       if (d.model.main === true) {
         eYo.assert(!data.main, 'Only one main data please')
@@ -1381,7 +1379,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * This is why the one shot.
    */
   _p.synchronizeData = function () {
-    this.forEachData(data => data.synchronize())
+    this.dataForEach(data => data.synchronize())
     this.synchronizeData = eYo.Do.nothing
   }
 
@@ -1389,7 +1387,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * Disposing of the data ressources.
    */
   _p.disposeData = function () {
-    this.forEachData(data => data.dispose())
+    this.dataForEach(data => data.dispose())
     this.data_ = eYo.NA
   }
 
@@ -1484,7 +1482,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * @param {Boolean} [healStack]  Dispose of the inferior target iff healStack is a falsy value
    */
   _p.disposeSlots = function (healStack) {
-    this.forEachSlot(slot => slot.dispose(healStack))
+    this.slotForEach(slot => slot.dispose(healStack))
     this.slots_ = null
   }
 
@@ -1533,7 +1531,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * May be used at the end of an initialization process.
    */
   _p.synchronizeSlots = function () {
-    this.forEachSlot(slot => slot.synchronize())
+    this.slotForEach(slot => slot.synchronize())
   }
 
   /**
@@ -1545,7 +1543,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * @param {string} [type] Name of the new type.
    */
   _p.consolidateData = function () {
-    this.forEachData(data => data.consolidate())
+    this.dataForEach(data => data.consolidate())
   }
 
   /**
@@ -1558,7 +1556,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * @param {Boolean} [force]
    */
   _p.consolidateSlots = function (deep, force) {
-    this.forEachSlot(slot => slot.consolidate(deep, force))
+    this.slotForEach(slot => slot.consolidate(deep, force))
     // some child bricks may be disconnected as side effect
   }
 
@@ -1602,7 +1600,7 @@ eYo.Brick.DEBUG = Object.create(null)
     var f = m4t => {
       m4t && (m4t.updateCheck())
     }
-    this.forEachSlot(slot => f(slot.magnet))
+    this.slotForEach(slot => f(slot.magnet))
     var m5s = this.magnets
     if (m5s.out) {
       f(m5s.out)
@@ -1645,7 +1643,7 @@ eYo.Brick.DEBUG = Object.create(null)
         }
       }
     }
-    animate && this.ui_ && (this.ui_.disposeEffect())
+    animate && (this.disposeEffect())
   }
 
   /**
@@ -1717,9 +1715,13 @@ eYo.Brick.DEBUG = Object.create(null)
    */
   _p.duringBrickWrapped = function () {
     eYo.assert(!this.uiHasSelect, 'Deselect brick before')
-    this.ui && (this.ui.updateBrickWrapped())
+    this.updateWrapped()
   }
 
+  /**
+   * The default implementation forwards to the driver.
+   */
+  eYo.Driver.makeForwarder(_p, 'updateWrapped')
 
   /**
    * The default implementation is false.
@@ -1735,7 +1737,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * @private
    */
   _p.duringBrickUnwrapped = function () {
-    this.ui && (this.ui.updateBrickWrapped())
+    this.updateWrapped()
   }
 
   /**
@@ -1762,7 +1764,7 @@ eYo.Brick.DEBUG = Object.create(null)
       this.span.black = 0
       this.span.addSuite(t9k.span.l)
     } else if (m4t.isRight) {
-      this.span.resetPadding() && b.ui.updateShape()
+      this.span.resetPadding() && b.updateShape()
     }
     this.consolidateType()
     if (m4t.isSlot && m4t.hasFocus) {
@@ -1840,8 +1842,8 @@ eYo.Brick.DEBUG = Object.create(null)
    * @param {Function} helper
    * @return {Object} returns the first connection for which helper returns true or the helper return value
    */
-  _p.someSlotMagnet = function (helper) {
-    return this.someSlot(slot => {
+  _p.slotSomeMagnet = function (helper) {
+    return this.slotSome(slot => {
       var m4t = slot.magnet
       return m4t && (helper(m4t))
     })
@@ -1890,7 +1892,7 @@ eYo.Brick.DEBUG = Object.create(null)
    */
   _p.getSlotMagnets = function () {
     var ra = []
-    this.forEachSlot(slot => slot.magnet && (ra.push(slot.magnet)))
+    this.slotForEach(slot => slot.magnet && (ra.push(slot.magnet)))
     return ra
   }
 
@@ -1944,7 +1946,7 @@ eYo.Brick.DEBUG = Object.create(null)
     if (all || this.ui.rendered) {
       Object.values(this.magnets).forEach(m4t => ans.push(m4t))
       if (all || !this.collapsed_) {
-        this.forEachSlot(slot => ans.push(slot.magnet))
+        this.slotForEach(slot => ans.push(slot.magnet))
       }
     }
     return ans
@@ -1968,29 +1970,27 @@ eYo.Brick.DEBUG = Object.create(null)
   }
 
   /**
+   * @name{moveTo}
    * Move a brick to an offset in board coordinates.
    * @param {eYo.Where} xy Offset in board units.
    * @param {Boolean} snap Whether we should snap to the grid.
    */
-  _p.moveTo = function (xy, snap) {
-    this.ui.moveTo(xy, snap)
-  }
+  eYo.Driver.makeForwarder(_p, 'moveTo')
 
   /**
    * Move a brick assuming according to its `xy` property.
    */
   _p.move = function () {
-    this.ui.moveTo(this.xy)
+    this.driver.moveTo(this, this.xy)
   }
 
   /**
+   * @name {moveBy}
    * Move a brick by a relative offset in board coordinates.
    * @param {number} dxy Offset in board units.
    * @param {boolean} snap Whether we should snap to grid.
    */
-  _p.moveBy = function (dxy, snap) {
-    this.ui.moveBy(dxy, snap)
-  }
+  eYo.Driver.makeForwarder(_p, 'moveBy')
 
   /**
    * Render the brick.
@@ -1998,13 +1998,15 @@ eYo.Brick.DEBUG = Object.create(null)
    */
   // deleted bricks are rendered during deletion
   // this should be avoided
-  _p.render = eYo.Do.nothing
-
   /**
    * Render the brick. Real function.
    */
   _p.render_ = function () {
-    this.ui.render()
+    this.ui_driver.render(this)
+  }
+  _p.updateDisabled_ = function () {
+    this.ui_driver.updateDisabled_(this)
+    this.children.forEach(child => child.updateDisabled())
   }
 
   _p.packedQuotes = true
@@ -2016,9 +2018,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * in the proper domain of the dom tree.
    * @param {eYo.Brick.Dflt} newParent to be connected.
    */
-  _p.parentWillChange = function (newParent) {
-    this.ui.parentWillChange(newParent)
-  }
+  _p.parentWillChange = eYo.Do.nothing
 
   /**
    * Called when the parent will just change.
@@ -2026,9 +2026,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * in the proper domain of the dom tree.
    * @param {eYo.Brick.Dflt} oldParent that was disConnected.
    */
-  _p.parentDidChange = function (oldParent) {
-    this.ui.parentDidChange(newParent)
-  }
+  _p.parentDidChange = eYo.Do.nothing
 
   /**
    * Returns the named field from a brick.
@@ -2046,7 +2044,7 @@ eYo.Brick.DEBUG = Object.create(null)
         if (f(slot.fields)) return ans
       } while ((slot = slot.next))
     }
-    this.someSlot(slot => slot.fieldRow.some(f => (f.name === name) && (ans = f)))
+    this.slotSome(slot => slot.fieldRow.some(f => (f.name === name) && (ans = f)))
     return ans
   }
 
@@ -2076,7 +2074,7 @@ eYo.Brick.DEBUG = Object.create(null)
    * @return {eYo.Slot} The slot object, or null if input does not exist. Input that are disabled are skipped.
    */
   _p.getSlot = function (name) {
-    return this.someSlot(slot => slot.name === name)
+    return this.slotSome(slot => slot.name === name)
   }
 
   /**
@@ -2161,16 +2159,16 @@ eYo.Brick.DEBUG = Object.create(null)
   _p.initUI = function () {
     this.change.wrap(() => {
       this.ui_ = new eYo.Brick.UI(this)
-      this.forEachField(field => field.initUI())
-      this.forEachSlot(slot => slot.initUI())
+      this.fieldForEach(field => field.initUI())
+      this.slotForEach(slot => slot.initUI())
       ;[this.suite_m,
         this.right_m,
         this.foot_m
       ].forEach(m => m && m.initUI())
-      this.forEachData(data => data.synchronize()) // data is no longer headless
+      this.dataForEach(data => data.synchronize()) // data is no longer headless
       this.magnets.initUI()
-      this.ui.updateShape()
-      this.render = eYo.Brick.Dflt.prototype.render_
+      this.updateShape()
+      delete this.render
     })
     this.initUI = eYo.Do.nothing
     delete this.disposeUI
@@ -2182,8 +2180,8 @@ eYo.Brick.DEBUG = Object.create(null)
   _p.disposeUI = function (healStack, animate) {
     this.change.wrap(() => {
       this.render = eYo.Do.nothing
-      this.forEachField(field => field.disposeUI())
-      this.forEachSlot(slot => slot.disposeUI())
+      this.fieldForEach(field => field.disposeUI())
+      this.slotForEach(slot => slot.disposeUI())
       this.magnets.disposeUI()
       this.ui_.dispose()
       this.ui_ = null
@@ -2262,7 +2260,7 @@ eYo.Brick.DEBUG = Object.create(null)
               }, () => {
                 eYo.app.focusMngr.brick = candidate
                 candidate.render()
-                candidate.ui.bumpNeighbours_()
+                candidate.bumpNeighbours_()
               })
             })
           })
@@ -2294,7 +2292,7 @@ eYo.Brick.DEBUG = Object.create(null)
                   if ((m4t = candidate.out_m) && m4t.checkType_(otherM4t)) {
                     fin()
                     var next = false
-                    otherBrick.someSlotMagnet(m4t => {
+                    otherBrick.slotSomeMagnet(m4t => {
                       if (next) {
                         otherM4t = m4t
                         return true
@@ -2352,7 +2350,7 @@ eYo.Brick.DEBUG = Object.create(null)
           // When not eYo.NA, the returned magnet can connect to m4t.
           var findM4t = b3k => {
             var otherM4t, t9k
-            otherM4t = b3k.someSlotMagnet(foundM4t => {
+            otherM4t = b3k.slotSomeMagnet(foundM4t => {
               if (foundM4t.isSlot) {
                 if ((t9k = foundM4t.targetBrick)) {
                   if (!(foundM4t = findM4t(t9k))) {
@@ -2397,7 +2395,7 @@ eYo.Brick.DEBUG = Object.create(null)
               }
               m4t.connect(otherM4t)
               if (targetM4t) {
-                targetM4t.brick.ui.bumpNeighbours_()
+                targetM4t.brick.bumpNeighbours_()
               }
             })
           }
@@ -2435,7 +2433,7 @@ eYo.Brick.DEBUG = Object.create(null)
     }
     // list all the input for a non optional connection with no target
     var m4t, target
-    return !this.someSlot(slot => {
+    return !this.slotSome(slot => {
       if ((m4t = slot.magnet) && !m4t.disabled_) {
         if ((target = m4t.target)) {
           if (!target.canLock()) {
@@ -2458,7 +2456,7 @@ eYo.Brick.DEBUG = Object.create(null)
     }
     // list all the slots for a non optional connection with no target
     var m4t, t9k
-    return this.someSlot(slot => {
+    return this.slotSome(slot => {
       if ((m4t = slot.magnet)) {
         if ((t9k = m4t.targetBrick)) {
           if (t9k.canUnlock()) {
@@ -2488,7 +2486,7 @@ eYo.Brick.DEBUG = Object.create(null)
     // list all the slots for connections with a target
     var m4t
     var t9k
-    this.forEachSlot(slot => {
+    this.slotForEach(slot => {
       if ((m4t = slot.magnet)) {
         if ((t9k = m4t.targetBrick)) {
           ans += t9k.lock()
@@ -2499,7 +2497,7 @@ eYo.Brick.DEBUG = Object.create(null)
       }
     })
     // maybe redundant calls here
-    this.forEachSlot(slot => {
+    this.slotForEach(slot => {
       if ((m4t = slot.magnet)) {
         if ((t9k = m4t.targetBrick)) {
           ans += t9k.lock()
@@ -2544,7 +2542,7 @@ eYo.Brick.DEBUG = Object.create(null)
     this.locked_ = false
     // list all the input for connections with a target
     var m4t, t9k
-    this.forEachSlot(slot => {
+    this.slotForEach(slot => {
       if ((m4t = slot.magnet)) {
         if ((!shallow || m4t.isSlot) && (t9k = m4t.targetBrick)) {
           ans += t9k.unlock(shallow)
@@ -2567,13 +2565,6 @@ eYo.Brick.DEBUG = Object.create(null)
   _p.inVisibleArea = function () {
     var area = this.ui && this.ui.distanceVisible
     return area && !area.x && !area.y
-  }
-
-  /**
-   * Play some UI effects (sound, ripple) after a connection has been established.
-   */
-  _p.connectionUiEffect = function() {
-    this.ui.connectEffect()
   }
 }
 /**
@@ -2902,6 +2893,33 @@ eYo.Do.defineSlotProperty = (object, k) => {
       throw "NO SUCH KEY, BREAK HERE"
     }
   })
+}
+
+/**
+ * Update the receiver's shape.
+ * Default implementation just forwards to the driver.
+ */
+eYo.Driver.makeForwarder(eYo.Brick.Dflt_p, 'updateShape')
+
+/**
+ * The default implementation forwards to the driver.
+ */
+eYo.Brick.Dflt_p.connectEffect = function () {
+  this.audio.play('click')
+  var b = this.board
+  if (b.scale < 1) {
+    return // Too small to care about visual effects.
+  }
+  this.driver.connectEffect(this)
+}
+
+/**
+ * The default implementation forwards to the driver.
+ * This must take place while the brick is still in a consistent state.
+ */
+eYo.Brick.Dflt_p.disposeEffect = function () {
+  this.audio.play('delete')
+  this.driver.disposeEffect(this)
 }
 
 // register this delegate for all the T3 types

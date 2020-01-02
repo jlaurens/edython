@@ -105,20 +105,20 @@ Object.defineProperties(eYo.Font, {
       return this.ascent_
     },
     /**
-     * `newValue` is truncated to the `1/32th`
+     * `after` is truncated to the `1/32th`
      * such that half value is still exact
      * when used in pixel dimension.
-     * @param {Number} newValue 
+     * @param {Number} after 
      */
-    set (newValue) {
-      newValue = Math.round(32 * newValue) / 32
-      if (newValue !== this.ascent_) {
-        this.ascent_ = newValue
-        newValue *= 32 / 1556 // = 16 / 778 = 8 / 389
-        this.descent_ = Math.round(492 * newValue) / 32
-        this.xHeight_ = Math.round(1120 * newValue) / 32
-        this.space_ = Math.round(1233 * newValue) / 32
-        this.totalAscent_ = Math.round(2048 * newValue) / 32
+    set (after) {
+      after = Math.round(32 * after) / 32
+      if (after !== this.ascent_) {
+        this.ascent_ = after
+        after *= 32 / 1556 // = 16 / 778 = 8 / 389
+        this.descent_ = Math.round(492 * after) / 32
+        this.xHeight_ = Math.round(1120 * after) / 32
+        this.space_ = Math.round(1233 * after) / 32
+        this.totalAscent_ = Math.round(2048 * after) / 32
       }
     }
   },

@@ -54,7 +54,7 @@ eYo.provide('Brick.Math')
       title: key
     }
   }
-eYo.Library.basic_math__module = [
+eYo.Library.DATA.basic_math__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     data: {
@@ -138,7 +138,7 @@ eYo.Library.basic_math__module = [
       title: key
     }
   }
-  eYo.Library.math__module = [
+  eYo.Library.DATA.math__module = [
     {
       type: eYo.T3.Stmt.import_stmt,
       data: {

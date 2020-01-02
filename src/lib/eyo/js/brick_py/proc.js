@@ -62,23 +62,23 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.Key.DELETER
       ],
       init: null,
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
+      didChange (before, after) /** @suppress {globalThis} */ {
         // the property change may echo into a decorator change
-        this.didChange(oldValue, newValue)
-        if (newValue === eYo.Key.GETTER) {
+        this.didChange(before, after)
+        if (after === eYo.Key.GETTER) {
           var variant = this.brick.variant_p
           if (variant === eYo.Key.NONE || variant === eYo.Key.N_ARY) {
             this.brick.decorator_p = this.brick.saved_p || ''
           } else {
             this.brick.decorator_p = variant || ''
           }
-        } else if (newValue) {
-          this.brick.decorator_p = this.brick.saved_p + '.' + newValue
+        } else if (after) {
+          this.brick.decorator_p = this.brick.saved_p + '.' + after
         }
       },
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
-        this.incog = newValue === eYo.Key.GETTER
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
+        this.incog = after === eYo.Key.GETTER
         // update the placeholder for the name field.
         this.brick.name_d.field.getPlaceholderText(true)
       },
@@ -93,22 +93,22 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.Key.N_ARY // custom name with arguments
       ],
       init: eYo.Key.NONE,
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        if (newValue !== eYo.Key.PROPERTY) {
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        if (after !== eYo.Key.PROPERTY) {
           this.brick.property_p = eYo.Key.GETTER
         }
-        if (newValue === eYo.Key.N_ARY) {
+        if (after === eYo.Key.N_ARY) {
           this.brick.chooser_p = eYo.Key.N_ARY
           this.brick.mainChooser_p = eYo.Key.NONE
         } else {
-          this.brick.mainChooser_p = newValue
+          this.brick.mainChooser_p = after
         }
       },
-      synchronize (newValue) /** @suppress {globalThis} */ { // would variants synchronize?
-        this.incog = newValue !== eYo.Key.N_ARY
-        this.synchronize(newValue)
-        this.brick.n_ary_s.incog = newValue !== eYo.Key.N_ARY
+      synchronize (after) /** @suppress {globalThis} */ { // would variants synchronize?
+        this.incog = after !== eYo.Key.N_ARY
+        this.synchronize(after)
+        this.brick.n_ary_s.incog = after !== eYo.Key.N_ARY
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
@@ -139,7 +139,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
         ? eYo.Msg.Placeholder.IDENTIFIER
         : eYo.Msg.Placeholder.DECORATOR
       },
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(after, null)
         return this.getAll().indexOf(p5e.expr) >= 0 ? after : eYo.INVALID
       },
@@ -166,7 +166,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.T3.Expr.unset
       ],
       init: '',
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(after, null)
         return this.getAll().indexOf(p5e.expr) >= 0 || this.getAll().indexOf(p5e.base) >= 0 ? after: eYo.INVALID
       },
@@ -251,9 +251,9 @@ eYo.Stmt.makeClass('decorator_stmt', {
         eYo.Key.DELETER
       ],
       init: null,
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        switch(newValue) {
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        switch(after) {
           case eYo.Key.NONE:
           this.brick.variant_p = eYo.Key.NONE
           this.brick.decorator_p = this.brick.saved_p || ''
@@ -268,7 +268,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
           case eYo.Key.SETTER:
           case eYo.Key.DELETER:
           this.brick.mainChooser_p = eYo.Key.NONE
-          this.brick.decorator_p = this.brick.saved_p + '.' + newValue
+          this.brick.decorator_p = this.brick.saved_p + '.' + after
           break
         }
       },
@@ -416,15 +416,15 @@ eYo.Stmt.Group.makeSubclass('funcdef_part', {
     variant: {
       all: [null, eYo.Key.TYPE],
       init: null,
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
-        this.brick.type_s.requiredIncog = newValue === eYo.Key.TYPE
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
+        this.brick.type_s.requiredIncog = after === eYo.Key.TYPE
       }
     },
     name: {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(after, null)
         return p5e.expr === eYo.T3.Expr.identifier
           || p5e.expr === eYo.T3.Expr.unset
@@ -506,16 +506,16 @@ eYo.Stmt.Group.makeSubclass('classdef_part', {
     variant: {
       all: [eYo.Key.NONE, eYo.Key.N_ARY],
       init: eYo.Key.NONE,
-      synchronize (newValue) /** @suppress {globalThis} */{
-        this.synchronize(newValue)
-        this.brick.n_ary_s.requiredIncog = newValue === eYo.Key.N_ARY
+      synchronize (after) /** @suppress {globalThis} */{
+        this.synchronize(after)
+        this.brick.n_ary_s.requiredIncog = after === eYo.Key.N_ARY
       },
       xml: false
     },
     name: {
       init: '',
       placeholder: eYo.Msg.Placeholder.IDENTIFIER,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(after, null)
         return p5e.expr === eYo.T3.Expr.identifier
           || p5e.expr === eYo.T3.Expr.unset

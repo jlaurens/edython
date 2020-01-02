@@ -28,7 +28,7 @@
   Object.defineProperties(eYo, {
     NA: { value: NA },
     name: { value: 'eYo' },
-    INVALID: {value: new function () {}, writable: false}
+    INVALID: {value: new function () {}, writable: false},
   })
 }
 

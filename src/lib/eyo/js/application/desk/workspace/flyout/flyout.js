@@ -76,24 +76,22 @@ eYo.forwardDeclare('MenuButtonRenderer')
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.C9r.makeClass(eYo, 'Flyout', {
+eYo.C9r.Owned.makeSubclass(eYo, 'Flyout', {
   owned: {
     search () {
-      return new eYo.Search(this)
+      return new eYo.Section.Search(this)
     },
     library () {
       return new eYo.Library(this)
     },
     draft () {
-      return new eYo.Draft(this)
-    }
+      return new eYo.Section.Draft(this)
+    },
+    toolbar: eYo.NA,
   },
   computed: {
     workspace () {
       return this.owner
-    },
-    toolbar () {
-      return this.toolbar_
     },
     /**
      * This size and anchor of the receiver and wrapped
@@ -105,9 +103,9 @@ eYo.C9r.makeClass(eYo, 'Flyout', {
         ans.anchor = this.anchor_
         return ans
       },
-      set (newValue) {
-        if (!newValue.equals(this.viewRect_.size)) {
-          this.viewRect_.size = newValue
+      set (after) {
+        if (!after.equals(this.viewRect_.size)) {
+          this.viewRect_.size = after
           this.sizeChanged()
         }
       }
@@ -140,8 +138,8 @@ eYo.C9r.makeClass(eYo, 'Flyout', {
       get () {
         return this.viewRect_.origin
       },
-      set (newValue) {
-        this.viewRect_.origin = newValue
+      set (after) {
+        this.viewRect_.origin = after
       }
     },
     /**
@@ -155,9 +153,9 @@ eYo.C9r.makeClass(eYo, 'Flyout', {
       get_ () {
         return this.viewRect_.size_.width
       },
-      set_ (newValue) {
-        if (this.viewRect_.size_.width !== newValue) {
-          this.viewRect_.size_.width = newValue
+      set_ (after) {
+        if (this.viewRect_.size_.width !== after) {
+          this.viewRect_.size_.width = after
           this.desk.board.layout()
         }
       }
@@ -170,12 +168,9 @@ eYo.C9r.makeClass(eYo, 'Flyout', {
       get () {
         return this.viewRect_.size_.height
       },
-      get_ () {
-        return this.viewRect_.size_.height
-      },
-      set_ (newValue) {
-        if (this.viewRect_.size_.height !== newValue) {
-          this.viewRect_.size_.height = newValue
+      set_ (after) {
+        if (this.viewRect_.size_.height !== after) {
+          this.viewRect_.size_.height = after
           this.desk.board.layout()
         }
       }
@@ -210,7 +205,7 @@ eYo.C9r.makeClass(eYo, 'Flyout', {
      */
     visible: {
       value: true,
-      didChange (previous, next) {
+      didChange (before, after) {
         this.updateDisplay_()
       }
     },
@@ -220,7 +215,7 @@ eYo.C9r.makeClass(eYo, 'Flyout', {
      */
     containerVisible: {
       value: true,
-      didChange (previous, next) {
+      didChange (before, after) {
         this.updateDisplay_()
       }
      },
@@ -234,55 +229,14 @@ eYo.C9r.makeClass(eYo, 'Flyout', {
     // First
     if (!this.autoClose) {
       this.filterWrapper_ = this.filterForCapacity_.bind(this)
-      owner.board.addChangeListener(this.filterWrapper_)
-    }
-    var flyoutOptions = this.options
-    /**
-     * Position of the flyout relative to the board.
-     * @type {number}
-     * @private
-     */
-    this.anchor_ = flyoutOptions.anchor || eYo.Flyout.AT_RIGHT
-    /**
-     * Position and dimensions of the flyout in the workspace.
-     * @type {number}
-     * @private
-     */
-    this.viewRect__ = new eYo.Rect().tie(board.metrics_.view, {
-      l: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
-      h: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
-    }, {
-      l: (newValue) => newValue - eYo.Flyout.TOOLBAR_HEIGHT,
-      h: (newValue) => newValue + eYo.Flyout.TOOLBAR_HEIGHT,
-    })
-    /**
-     * Opaque data that can be passed to unbindEvent.
-     * @type {!Array<!Array>}
-     * @private
-     */
-    this.eventWrappers_ = []
-    /**
-     * List of event listeners.
-     * Array of opaque data that can be passed to unbindEvent.
-     * @type {!Array<!Array>}
-     * @private
-     */
-    this.listeners_ = []
-    /**
-     * List of bricks that should always be disabled.
-     * @type {!Array<!eYo.Brick>}
-     * @private
-     */
-    this.permanentlyDisabled_ = []
-    if (flyoutOptions.autoClose) {
-      this.autoClose = true
+      this.board.addChangeListener(this.filterWrapper_)
     }
   },
   /**
    * Dispose of this flyout.
    */
   dispose () {
-    if (!this.filterWrapper_) {
+    if (!!this.filterWrapper_) {
       this.owner.removeChangeListener(this.filterWrapper_)
     }
   },
@@ -308,6 +262,66 @@ eYo.C9r.makeClass(eYo, 'Flyout', {
       this.toolbar_ && d.toolbarDisposeUI(this.toolbar_)
       d.disposeUI(this)
       eYo.Flyout.eyo.ownedDispose(this, 'scrollbar_')
+    }
+  },
+  valued: {
+    /**
+     * Position of the flyout relative to the board.
+     * @type {number}
+     * @private
+     */
+    anchor_ () {
+      return options.anchor || eYo.Flyout.AT_RIGHT
+    },
+    /**
+     * Opaque data that can be passed to unbindEvent.
+     * @type {!Array<!Array>}
+     * @private
+     */
+    eventWrapper: [],
+    /**
+     * Opaque data.
+     * @private
+     */
+    filterWrapper: eYo.NA,
+    /**
+     * List of event listeners.
+     * Array of opaque data that can be passed to unbindEvent.
+     * @type {!Array<!Array>}
+     * @private
+     */
+    listeners: [],
+    /**
+     * List of bricks that should always be disabled.
+     * @type {!Array<!eYo.Brick>}
+     * @private
+     */
+    permanentlyDisabled: [],
+  },
+  cached: {
+    autoClose () {
+      return this.options.autoClose
+    },
+  },
+  cloned: {
+    /**
+     * Position and dimensions of the flyout in the workspace.
+     * @type {number}
+     * @private
+     */
+    viewRect () {
+      return new eYo.Rect().tie(this.board.metrics_.view, {
+        l: (after) => after + eYo.Flyout.TOOLBAR_HEIGHT,
+        h: (after) => after - eYo.Flyout.TOOLBAR_HEIGHT,
+      }, {
+        l: (after) => after - eYo.Flyout.TOOLBAR_HEIGHT,
+        h: (after) => after + eYo.Flyout.TOOLBAR_HEIGHT,
+      })
+    },
+  },
+  computed: {
+    board () {
+      return this.owner.board
     }
   },
 })

@@ -25,16 +25,16 @@ eYo.Expr.Dflt.makeSubclass('binary', {
   data: {
     operator: { // only one field with that key,
       init: '+',
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var m = eYo.Expr.binary.getTypeForOperator(after)
         return m !== eYo.T3.Expr.unset
           ? after
           : eYo.INVALID
       },
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
         var d = this.field.ui_driver_mngr
-        d && (d.makeReserved(this.field, ['in', 'or', 'and'].indexOf(newValue) >= 0))
+        d && (d.makeReserved(this.field, ['in', 'or', 'and'].indexOf(after) >= 0))
       },
       fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Expr.m_expr) {
@@ -300,16 +300,16 @@ eYo.Expr.Dflt.makeSubclass('unary', {
     operator: {
       all: ['-', '+', '~', 'not'],
       init: '-',
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var m = eYo.Expr.unary.getTypeForOperator(after)
         return m !== eYo.T3.Expr.unset
           ? after
           : eYo.INVALID
       },
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
         var d = this.field.ui_driver_mngr
-        d && (d.makeReserved(this.field, newValue === 'not'))
+        d && (d.makeReserved(this.field, after === 'not'))
       },
       fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Expr.not_test) {

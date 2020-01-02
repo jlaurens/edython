@@ -112,7 +112,7 @@ Object.defineProperties(eYo.Magnet._p, {
    * Add a magnet to the database. Do not look for duplicates.
    * @param {eYo.Magnet.Dflt} magnet The magnet to be added.
    */
-  DB.prototype.addMagnet_ = function(magnet) {
+  DB.prototype.magnetAdd_ = function(magnet) {
     var magnetIndex = this.findIndex_(magnet.y)
     this.splice(magnetIndex, 0, magnet)
   }
@@ -156,7 +156,7 @@ Object.defineProperties(eYo.Magnet._p, {
    * Remove a magnet from the database. Do not look for duplicates.
    * @param {eYo.Magnet.Dflt} magnet The magnet to be remove.
    */
-  DB.prototype.removeMagnet_ = function(magnet) {
+  DB.prototype.magnetRemove_ = function(magnet) {
     var magnetIndex = findMagnet(this, magnet)
     magnetIndex >= 0 && (this.splice(magnetIndex, 1))
   }
@@ -202,15 +202,15 @@ eYo.Magnet.makeClass('S', {
   owned: ['out', 'head', 'left', 'right', 'suite', 'foot'],
   valued: {
     inDB: {
-      validate (after) {
+      validate (before, after) {
         return !!after
       },
       didChange (before, after) {
         var db = this.db_
         if (db) {
           after
-          ? db.addMagnet_(this)
-          : db.removeMagnet_(this)
+          ? db.magnetAdd_(this)
+          : db.magnetRemove_(this)
         }
       }
     },
@@ -292,7 +292,7 @@ eYo.Magnet.makeClass('Dflt', eYo.C9r.BSMOwned, {
       }
     },
     wrapped: {
-      validate (after) {
+      validate (before, after) {
         if (this.target) {
           throw "ALREADY A WRAPPED BLOCK"
         }
@@ -305,7 +305,7 @@ eYo.Magnet.makeClass('Dflt', eYo.C9r.BSMOwned, {
       }
     },
     promised: {
-      validate (after) {
+      validate (before, after) {
         if (this.target) {
           throw "ALREADY A WRAPPED BLOCK"
         }
@@ -318,7 +318,7 @@ eYo.Magnet.makeClass('Dflt', eYo.C9r.BSMOwned, {
       }
     },
     hidden: {
-      validate (after) {
+      validate (before, after) {
         // Incog magnets must stay hidden
         return !after && this.incog_ ? eYo.INVALID : after
       },
@@ -396,10 +396,10 @@ Object.defineProperties(eYo.Magnet.Dflt_p, {
       ? this.slot.whereInBrick.forward(this.where)
       : new eYo.Where(this.where)
     },
-    set (newValue) {
+    set (after) {
       this.where_.set(this.slot
-        ? newValue.backward(this.slot.whereInBrick)
-        : newValue
+        ? after.backward(this.slot.whereInBrick)
+        : after
       )
     }
   },
@@ -412,8 +412,8 @@ Object.defineProperties(eYo.Magnet.Dflt_p, {
     get () {
       return this.whereInBrick.forward(this.brick.ui.whereInBoard)
     },
-    set (newValue) {
-      this.whereInBrick = new eYo.Where(newValue).backward(this.brick.ui.whereInBoard)
+    set (after) {
+      this.whereInBrick = new eYo.Where(after).backward(this.brick.ui.whereInBoard)
     }
   },
   x: { // in board coordinates
@@ -445,13 +445,13 @@ Object.defineProperties(eYo.Magnet.Dflt_p, {
       return this.target_
     },
     /**
-     * Connect the receiver to the newValue, if any, otherwise disconnects the receiver.
-     * @param {eYo.Brick.Dflt} [newValue] 
+     * Connect the receiver to the after, if any, otherwise disconnects the receiver.
+     * @param {eYo.Brick.Dflt} [after] 
      */
-    set (newValue) {
-      if (newValue) {
+    set (after) {
+      if (after) {
         this.target_ && (this.disconnect())
-        this.connect(newValue)
+        this.connect(after)
       } else {
         this.disconnect()
       }
@@ -462,12 +462,12 @@ Object.defineProperties(eYo.Magnet.Dflt_p, {
       var t = this.target
       return t && t.brick
     },
-    set (newValue) {
-      if (newValue !== this.targetBrick && newValue !== this.brick) {
+    set (after) {
+      if (after !== this.targetBrick && after !== this.brick) {
         this.disconnect()
       }
-      if (newValue) {
-        this.connectSmart(newValue)
+      if (after) {
+        this.connectSmart(after)
       }
     }
   },
@@ -523,7 +523,7 @@ Object.defineProperties(eYo.Magnet.Dflt_p, {
       if (t9k && !this.checkType_(this.target)) {
         ;(this.isSuperior ? t9k : brick).unplug()
         // Bump away.
-        brick.ui.bumpNeighbours_()
+        brick.bumpNeighbours_()
       }
       brick.changeDone()
       t9k && (t9k.changeDone()) // there was once a `consolidate(false, true)` here.
@@ -599,7 +599,7 @@ Object.defineProperties(eYo.Magnet.Dflt_p, {
     get () {
       var t = this.targetBrick
       var f = t => {
-        return t && (!t.wrapped_ || t.someSlot(slot => {
+        return t && (!t.wrapped_ || t.slotSome(slot => {
           var m4t = slot.magnet
           return f(t = m4t && m4t.targetBrick)
         }))
@@ -684,7 +684,7 @@ eYo.Magnet.Dflt_p.s7r_ = false
  * For edython.
  * @param {function} helper
  */
-eYo.Magnet.Dflt_p.forEachField = function (helper) {
+eYo.Magnet.Dflt_p.fieldForEach = function (helper) {
   this.fields && (Object.values(this.fields).forEach(f => helper(f)))
 }
 
@@ -698,7 +698,7 @@ eYo.Magnet.Dflt_p.initUI = function () {
     var t9k = this.targetBrick
     t9k && t9k.initUI()
   }
-  this.forEachField(f => f.initUI())
+  this.fieldForEach(f => f.initUI())
 }
 
 /**
@@ -722,27 +722,27 @@ Object.defineProperty(eYo.Magnet.Dflt_p, 'incog', {
    * @param {boolean} incog
    * @return {boolean} whether changes have been made
    */
-  set (newValue) {
-    if (this.incog_ && newValue) {
+  set (after) {
+    if (this.incog_ && after) {
       // things were unlikely to change since
       // the last time the connections have been disabled
       return
     }
-    newValue = !!newValue
-    var change = this.incog_ !== newValue
+    after = !!after
+    var change = this.incog_ !== after
     if (change) {
       this.brick.changeDone()
     }
-    if (!newValue && this.promised_) {
+    if (!after && this.promised_) {
       this.completePromise()
     }
-    if (newValue || !this.wrapped_) {
+    if (after || !this.wrapped_) {
       // We cannot disable wrapped connections
-      this.incog_ = this.hidden = newValue
+      this.incog_ = this.hidden = after
     }
     var t9k = this.targetBrick
     if (t9k) {
-      t9k.incog = newValue
+      t9k.incog = after
     }  
   }
 })
@@ -1209,7 +1209,7 @@ eYo.Magnet.Dflt_p.connect_ = function (childM4t) {
         * @suppress {accessControls}
         */
         var freeMagnet = (brick, magnet) => {
-          return brick.someSlot(slot => {
+          return brick.slotSome(slot => {
             var ans = slot.magnet
             if (ans) {
               if (brick = ans.targetBrick) {
@@ -1297,7 +1297,7 @@ eYo.Magnet.Dflt_p.connect_ = function (childM4t) {
           // just in case the check_ has changed in between
           // which might be the case for the else_part bricks
           if (oldChildT4t.isOutput) {
-            child.someSlot(slot => {
+            child.slotSome(slot => {
               if (!slot.incog) {
                 var m4t, t9k
                 if ((m4t = slot.magnet)) {
@@ -1388,7 +1388,7 @@ eYo.Magnet.Dflt_p.connect_ = function (childM4t) {
 }
 
 /**
- * Tighten_ the magnet and its target.
+ * Tighten the magnet and its target.
  */
 eYo.Magnet.Dflt_p.tighten = function() {
   var m4t = this.target
@@ -1446,7 +1446,7 @@ eYo.Magnet.Dflt_p.bumpAwayFrom_ = function (m4t) {
   }
   // Raise it to the top for extra visibility.
   var selected = root.hasFocus
-  selected || root.ui.addSelect()
+  selected || root.selectAdd()
   var dxy = eYo.Where.xy(eYo.Motion.SNAP_RADIUS, eYo.Motion.SNAP_RADIUS).backward(this.xy)
   if (reverse) {
     // When reversing a bump due to an uneditable brick, bump up.
@@ -1457,7 +1457,7 @@ eYo.Magnet.Dflt_p.bumpAwayFrom_ = function (m4t) {
     dxy.x += m4t.targetBrick.width
   }
   root.moveBy(dxy)
-  selected || root.ui.removeFocus()
+  selected || root.ui.focusRemove()
 }
 
 /**

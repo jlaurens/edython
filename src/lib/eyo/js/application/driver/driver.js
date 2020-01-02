@@ -203,3 +203,11 @@ eYo.Driver.Dflt.prototype.doDisposeUI = function (unused) {
   return true
 }
 
+/**
+ * Convenient method to make simple driver forwarders.
+ */
+eYo.Driver.makeForwarder = (pttp, key) => {
+  pttp[key] = function (...args) {
+    return this.driver[key](this, ...args)
+  }
+}

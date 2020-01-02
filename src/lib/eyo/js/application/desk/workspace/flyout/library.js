@@ -12,15 +12,14 @@
 'use strict'
 
 eYo.require('T3')
+eYo.require('Section')
 
 eYo.require('Const')
 eYo.require('Tooltip')
-eYo.provide('Library')
 
-/**
- * Flyout list of node models by category.
- */
-eYo.Library = {
+eYo.Section.makeClass(eYo, 'Library')
+
+eYo.Library.DATA = {
   test: [
     {
       type: eYo.T3.Stmt.expression_stmt,

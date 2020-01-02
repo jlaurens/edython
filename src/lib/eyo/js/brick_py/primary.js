@@ -325,7 +325,7 @@ eYo.Expr.target_list.prototype.getSubtype = function () {
 eYo.Expr.target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isSlot) {
     var other = false
-    if (this.someSlot(slot => {
+    if (this.slotSome(slot => {
       if (slot.magnet) {
         var t9k = slot.targetBrick
         if (t9k) {
@@ -561,7 +561,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
     dotted: {
       order: 200,
       init: 0,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var validated
         if (eYo.isStr(after)) {
           if (after.length) {
@@ -621,7 +621,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
       init: '', // will be saved only when not built in
       synchronize: true,
       placeholder: eYo.Msg.Placeholder.UNSET,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(after, null)
         return !after
         || p5e.expr === eYo.T3.Expr.unset
@@ -632,13 +632,13 @@ eYo.Expr.Dflt.makeSubclass('primary', {
         || p5e.expr === eYo.T3.Expr.parent_module
         ? after: eYo.INVALID
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
+      didChange (before, after) /** @suppress {globalThis} */ {
         // first change the dotted data to unincog the holder
         var b3k = this.brick
-        if (newValue) {
+        if (after) {
           b3k.dotted_p = 1
         }
-        this.didChange(oldValue, newValue)
+        this.didChange(before, after)
         b3k.updateProfile()
       },
       xml: {
@@ -664,7 +664,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
       init: '',
       placeholder: eYo.Msg.Placeholder.ALIAS,
       synchronize: true,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var type = eYo.T3.Profile.get(after).expr
         return type === eYo.T3.Expr.unset
         || type === eYo.T3.Expr.identifier
@@ -683,8 +683,8 @@ eYo.Expr.Dflt.makeSubclass('primary', {
           this.brick.variant_p = eYo.Key.ALIASED
         }
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        if (newValue) {
+      didChange (before, after) /** @suppress {globalThis} */ {
+        if (after) {
           this.brick.variant_p = eYo.Key.ALIASED
         }
       }
@@ -720,12 +720,12 @@ eYo.Expr.Dflt.makeSubclass('primary', {
         }
       },
       synchronize: true,
-      validateIncog (newValue) /** @suppress {globalThis} */ {
+      validateIncog (after) /** @suppress {globalThis} */ {
         var v = this.brick.variant_p
         return v !== eYo.Key.ANNOTATED && v !== eYo.Key.ANNOTATED_VALUED
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        if (newValue) {
+      didChange (before, after) /** @suppress {globalThis} */ {
+        if (after) {
           var b3k = this.brick
           b3k.variant_p = b3k.value_p || b3k.value_s.unwrappedTarget
           ? eYo.Key.ANNOTATED_VALUED
@@ -750,9 +750,9 @@ eYo.Expr.Dflt.makeSubclass('primary', {
           return element.getAttribute('definition') // 'value' was named 'definition' prior to 0.2.x
         }
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-         if (newValue === eYo.Key.NONE) {
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+         if (after === eYo.Key.NONE) {
            console.error('UNEXPECTED')
          }
       },
@@ -768,7 +768,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
         }
       },
       synchronize: true,
-      validateIncog (newValue) /** @suppress {globalThis} */ {
+      validateIncog (after) /** @suppress {globalThis} */ {
         var v = this.brick.variant_p
         return v !== eYo.Key.TARGET_VALUED && v !== eYo.Key.ANNOTATED_VALUED && v !== eYo.Key.TARGET_VALUED && v !== eYo.Key.COL_VALUED
       }
@@ -786,10 +786,10 @@ eYo.Expr.Dflt.makeSubclass('primary', {
         eYo.Key.COL_VALUED, // foo := bar
       ],
       init: eYo.Key.NONE,
-      isChanging (oldValue, newValue) /** @suppress {globalThis} */ {
+      isChanging (before, after) /** @suppress {globalThis} */ {
         this.brick.consolidateType()
         this.brick.consolidateMagnets()
-        this.duringChange(oldValue, newValue)
+        this.duringChange(before, after)
       },
       fromType (type) /** @suppress {globalThis} */ {
         var b3k = this.brick
@@ -830,24 +830,24 @@ eYo.Expr.Dflt.makeSubclass('primary', {
           this.doChange(eYo.Key.NONE)
         }
       },
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
         var b3k = this.brick
-        b3k.alias_d.requiredIncog = newValue === eYo.Key.ALIASED
-        b3k.value_d.requiredIncog = newValue === eYo.Key.TARGET_VALUED || newValue === eYo.Key.ANNOTATED_VALUED || newValue === eYo.Key.COL_VALUED
+        b3k.alias_d.requiredIncog = after === eYo.Key.ALIASED
+        b3k.value_d.requiredIncog = after === eYo.Key.TARGET_VALUED || after === eYo.Key.ANNOTATED_VALUED || after === eYo.Key.COL_VALUED
         var s = b3k.value_s
-        s && (s.label_f.text = newValue === eYo.Key.COL_VALUED ? ':=' : '=')
-        b3k.annotated_d.requiredIncog = newValue === eYo.Key.ANNOTATED || newValue === eYo.Key.ANNOTATED_VALUED
+        s && (s.label_f.text = after === eYo.Key.COL_VALUED ? ':=' : '=')
+        b3k.annotated_d.requiredIncog = after === eYo.Key.ANNOTATED || after === eYo.Key.ANNOTATED_VALUED
 
         var b = b3k.target_b // t9k may not yet exist
         if (b) {
           b.createConsolidator(true) // unique is special
         }
-        b3k.n_ary_s.incog = newValue !== eYo.Key.CALL_EXPR
+        b3k.n_ary_s.incog = after !== eYo.Key.CALL_EXPR
         if (!b3k.n_ary_s.incog && (b = b3k.n_ary_b)) {
           b.createConsolidator(true)
         }
-        b3k.slicing_s.incog = newValue !== eYo.Key.SLICING
+        b3k.slicing_s.incog = after !== eYo.Key.SLICING
       },
       xml: false
     },
@@ -856,7 +856,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
       main: true,
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var type = eYo.T3.Profile.get(after)
         return type === eYo.T3.Profile.void
         || type.raw === eYo.T3.Expr.builtin__name
@@ -904,7 +904,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
     ary: {
       order: 20001,
       init: Infinity,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         // returns a `Number` or `Infinity`
         var validated
         var item = this.brick.item
@@ -951,7 +951,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
     mandatory: {
       order: 20002,
       init: 0,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         // returns a `Number` or `0`
         var validated
         var item = this.brick.item
@@ -1146,7 +1146,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
         end: ')'
       },
       promise: eYo.T3.Expr.argument_list_comprehensive,
-      validateIncog (newValue) /** @suppress {globalThis} */ {
+      validateIncog (after) /** @suppress {globalThis} */ {
         return this.brick.variant_p !== eYo.Key.CALL_EXPR
       }
     },
@@ -1157,7 +1157,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
         end: ']'
       },
       promise: eYo.T3.Expr.slice_list,
-      validateIncog (newValue) /** @suppress {globalThis} */ {
+      validateIncog (after) /** @suppress {globalThis} */ {
         return this.brick.variant_p !== eYo.Key.SLICING
       }
     },
@@ -1171,7 +1171,7 @@ eYo.Expr.Dflt.makeSubclass('primary', {
           variable: true
         }
       },
-      validateIncog (newValue) /** @suppress {globalThis} */ {
+      validateIncog (after) /** @suppress {globalThis} */ {
         return this.brick.variant_p !== eYo.Key.ALIASED
       },
       check: [eYo.T3.Expr.identifier, eYo.T3.Expr.unset],
@@ -1208,8 +1208,8 @@ eYo.Expr.Dflt.makeSubclass('primary', {
           ? this.profile_
           : (this.profile_ = p5e) // this should never happen
       },
-      set (newValue) {
-        this.profile_ = newValue
+      set (after) {
+        this.profile_ = after
       }
     },
   },
@@ -1501,7 +1501,7 @@ eYo.Expr.primary.prototype.getOutCheck = function () {
     if (!eYo.T3.Expr.Check.slice_only) {
       eYo.T3.Expr.Check.slice_only = eYo.T3.Expr.Check.slice_list.filter(i => eYo.T3.Expr.Check.expression.indexOf(i) < 0)
     }
-    if (this.someSlot(slot => {
+    if (this.slotSome(slot => {
       var t = slot.targetBrick
       return t && (t.checkOutputType(eYo.T3.Expr.Check.slice_only))
     })) {
@@ -1814,7 +1814,7 @@ eYo.Stmt.base_call_stmt.makeSubclass('call_stmt', {
   data: {
     variant: {
       init: eYo.Key.CALL_EXPR,
-      validate (newValue) {
+      validate (after) {
         return eYo.Key.CALL_EXPR
       }
     }

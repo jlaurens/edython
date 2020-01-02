@@ -147,33 +147,33 @@ Object.defineProperties(eYo.Data.prototype, {
     /**
      * Disabled data correspond to disabled input.
      * Changing this value will cause an UI synchronization and a change count.
-     * @param {Object} newValue  When not defined, replaced by `!this.required`
+     * @param {Object} after  When not defined, replaced by `!this.required`
      * @return {boolean} whether changes have been made
      */
-    set (newValue) {
-      if (!goog.isDef(newValue)) {
-        newValue = !this.required
+    set (after) {
+      if (!goog.isDef(after)) {
+        after = !this.required
       } else {
-        newValue = !!newValue
+        after = !!after
       }
       var validator = this.model.validateIncog
       if (validator) {
-        newValue = validator.call(this, newValue)
+        after = validator.call(this, after)
       }
-      if (this.incog_ !== newValue) {
+      if (this.incog_ !== after) {
         this.change.wrap(
           () => { // catch `this`
-            this.incog_ = newValue
-            this.slot && (this.slot.incog = newValue)
-            this.field && (this.field.visible = !newValue)
+            this.incog_ = after
+            this.slot && (this.slot.incog = after)
+            this.field && (this.field.visible = !after)
           }
         )
       }
     }
   },
   requiredIncog: {
-    set (newValue) {
-      this.incog = !(this.required = newValue)
+    set (after) {
+      this.incog = !(this.required = after)
     }
   }
 })
@@ -196,25 +196,25 @@ eYo.Data.prototype.get = function () {
 
 /**
  * Set the value with no extra task except hooks before, during and after the change.
- * @param {Object} newValue
+ * @param {Object} after
  * @param {Boolean} notUndoable
  */
-eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
-  var oldValue = this.value_
-  if (oldValue !== newValue) {
+eYo.Data.prototype.rawSet = function (after, notUndoable) {
+  var before = this.value_
+  if (before !== after) {
     this.change.begin()
-    this.beforeChange(oldValue, newValue)
+    this.beforeChange(before, after)
     try {
-      if (newValue === eYo.Key.Comment) {
+      if (after === eYo.Key.Comment) {
         console.error('BACK TO COMMENT')
       }
-      this.value_ = newValue
-      this.duringChange(oldValue, newValue)
+      this.value_ = after
+      this.duringChange(before, after)
     } catch (err) {
       console.error(err)
       throw err
     } finally {
-      this.afterChange(oldValue, newValue)
+      this.afterChange(before, after)
       this.change.end() // may render
     }
   }
@@ -226,25 +226,25 @@ eYo.Data.prototype.rawSet = function (newValue, notUndoable) {
  * No such thing here.
  * If the given value is an index, use instead the corresponding
  * item in the `getAll()` array.
- * @param {Object} newValue
+ * @param {Object} after
  */
-eYo.Data.prototype.internalSet = function (newValue) {
-  if (eYo.isStr(newValue)) {
-    var x = this.model[newValue]
-    !x || !goog.isFucntion(newValue) || (newValue = x)
+eYo.Data.prototype.internalSet = function (after) {
+  if (eYo.isStr(after)) {
+    var x = this.model[after]
+    !x || !goog.isFucntion(after) || (after = x)
   }
-  if (goog.isNumber(newValue)) {
+  if (goog.isNumber(after)) {
     x = this.getAll()
-    if (x && goog.isDefAndNotNull((x = x[newValue]))) {
-      newValue = x
+    if (x && goog.isDefAndNotNull((x = x[after]))) {
+      after = x
     }
   }
-  this.rawSet(newValue)
+  this.rawSet(after)
 }
 
 /**
  * Init the value of the property.
- * If `newValue` is defined, it is used as is and nothing more is performed.
+ * If `after` is defined, it is used as is and nothing more is performed.
  * Otherwise, if the model contains:
  * `init: foo,`
  * then the initial value will be based on `foo`,
@@ -252,11 +252,11 @@ eYo.Data.prototype.internalSet = function (newValue) {
  * If `foo` is a function, it is evaluated.
  * Within the scope of this model function `this` is the receiver
  * and `this.init(foo)` may be used to initialize the data.
- * @param {Object} newValue
+ * @param {Object} after
  */
-eYo.Data.prototype.init = function (newValue) {
-  if (goog.isDef(newValue)) {
-    this.internalSet(newValue)
+eYo.Data.prototype.init = function (after) {
+  if (goog.isDef(after)) {
+    this.internalSet(after)
     return
   }
   var init = this.model.init
@@ -333,20 +333,20 @@ eYo.Data.prototype.isNone = function () {
 /**
  * Validates the value of the property
  * May be overriden by the model.
- * @param {Object} newValue
+ * @param {Object} after
  */
-eYo.Data.prototype.validate = function (newValue) {
+eYo.Data.prototype.validate = function (after) {
   var f = eYo.Decorate.reentrant_method.call(this, 'model_validate', this.model.validate)
   if (f) {
     return eYo.Decorate.whenAns(f.apply(this, arguments))
   }
   var all = this.getAll()
-  return this.model.validate === false || !all || all.indexOf(newValue) >= 0 ? newValue : eYo.INVALID
+  return this.model.validate === false || !all || all.indexOf(after) >= 0 ? after : eYo.INVALID
 }
 
 /**
  * Returns the text representation of the data.
- * @param {Object} [newValue]
+ * @param {Object} [after]
  */
 eYo.Data.prototype.toText = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toText', this.model.toText)
@@ -363,7 +363,7 @@ eYo.Data.prototype.toText = function () {
 /**
  * Returns the text representation of the data.
  * Called during synchronization.
- * @param {Object} [newValue]
+ * @param {Object} [after]
  */
 eYo.Data.prototype.toField = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toField', this.model.toField || this.model.toText)
@@ -519,68 +519,68 @@ eYo.Data.decoratedChange = function (key, do_it) {
 
 /**
  * Will change the value of the property.
- * The signature is `willChange(oldValue, newValue) → void`
+ * The signature is `willChange(before, after) → void`
  * May be overriden by the model.
- * @param {Object} oldValue
- * @param {Object} newValue
+ * @param {Object} before
+ * @param {Object} after
  * @return eYo.NA
  */
 eYo.Data.prototype.willChange = eYo.Data.decoratedChange('willChange')
 
 /**
  * When unchange the value of the property.
- * The signature is `didUnchange(newValue, oldValue) → void`
+ * The signature is `didUnchange(after, before) → void`
  * May be overriden by the model.
  * Replaces `willChange` when undoing.
- * @param {Object} newValue
- * @param {Object} oldValue
+ * @param {Object} after
+ * @param {Object} before
  * @return eYo.NA
  */
 eYo.Data.prototype.didUnchange = eYo.Data.decoratedChange('didUnchange')
 
 /**
  * Did change the value of the property.
- * The signature is `didChange( oldValue, newValue ) → void`
+ * The signature is `didChange( before, after ) → void`
  * May be overriden by the model.
- * @param {Object} oldValue
- * @param {Object} newValue
+ * @param {Object} before
+ * @param {Object} after
  * @return eYo.NA
  */
 eYo.Data.prototype.didChange = eYo.Data.decoratedChange('didChange')
 
 /**
  * Will unchange the value of the property.
- * The signature is `willUnchange( oldValue, newValue ) → void`.
+ * The signature is `willUnchange( before, after ) → void`.
  * Replaces `didChange` while undoing.
  * May be overriden by the model.
- * @param {Object} oldValue
- * @param {Object} newValue
+ * @param {Object} before
+ * @param {Object} after
  * @return eYo.NA
  */
 eYo.Data.prototype.willUnchange = eYo.Data.decoratedChange('willUnchange')
 
 /**
  * Before the didChange message is sent.
- * The signature is `isChanging( oldValue, newValue ) → void`
+ * The signature is `isChanging( before, after ) → void`
  * May be overriden by the model.
  * No undo message is yet sent but the data has recorded the new value.
  * Other object may change to conform to this new state,
  * before undo events are posted.
- * @param {Object} oldValue
- * @param {Object} newValue
+ * @param {Object} before
+ * @param {Object} after
  * @return eYo.NA
  */
 eYo.Data.prototype.isChanging = eYo.Data.decoratedChange('isChanging')
 
 /**
  * Before the didUnchange message is sent.
- * The signature is `isUnchanging( oldValue, newValue ) → void`
+ * The signature is `isUnchanging( before, after ) → void`
  * May be overriden by the model.
  * No undo message is yet sent but the data has recorded the new value.
  * Other object may change to conform to this new state,
  * before undo events are posted.
- * @param {Object} oldValue
- * @param {Object} newValue
+ * @param {Object} before
+ * @param {Object} after
  * @return eYo.NA
  */
 eYo.Data.prototype.isUnchanging = eYo.Data.decoratedChange('isUnchanging')
@@ -588,12 +588,12 @@ eYo.Data.prototype.isUnchanging = eYo.Data.decoratedChange('isUnchanging')
 /**
  * Before change the value of the property.
  * Branch to `willChange` or `willUnchange`.
- * @param {Object} oldValue
- * @param {Object} newValue
+ * @param {Object} before
+ * @param {Object} after
  * @return eYo.NA
  */
-eYo.Data.prototype.beforeChange = function(oldValue, newValue) {
-  ;(!eYo.Events.recordingUndo ? this.willChange : this.willUnchange).call(this, oldValue, newValue)
+eYo.Data.prototype.beforeChange = function(before, after) {
+  ;(!eYo.Events.recordingUndo ? this.willChange : this.willUnchange).call(this, before, after)
 }
 
 /**
@@ -602,11 +602,11 @@ eYo.Data.prototype.beforeChange = function(oldValue, newValue) {
  * but all the consequences are not yet managed.
  * In particular, no undo management has been recorded.
  * Branch to `isChanging` or `isUnchanging`.
- * @param {Object} oldValue
- * @param {Object} newValue
+ * @param {Object} before
+ * @param {Object} after
  * @return eYo.NA
  */
-eYo.Data.prototype.duringChange = function(oldValue, newValue) {
+eYo.Data.prototype.duringChange = function(before, after) {
   ;(!eYo.Events.recordingUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
 }
 
@@ -614,13 +614,13 @@ eYo.Data.prototype.duringChange = function(oldValue, newValue) {
  * After change the value of the property.
  * Branch to `didChange` or `didUnchange`.
  * `synchronize` in fine.
- * @param {Object} oldValue
- * @param {Object} newValue
+ * @param {Object} before
+ * @param {Object} after
  * @return eYo.NA
  */
-eYo.Data.prototype.afterChange = function(oldValue, newValue) {
+eYo.Data.prototype.afterChange = function(before, after) {
   ;(eYo.Events.recordingUndo ? this.didChange : this.didUnchange).apply(this, arguments)
-  this.synchronize(newValue)
+  this.synchronize(after)
 }
 
 /**
@@ -640,11 +640,11 @@ eYo.Data.prototype.noUndo = eYo.NA
  * `synchronize: true`, and
  * synchronize: function() { this.synchronize()} are equivalent.
  * Raises when not bound to some field or slot, in the non model variant.
- * @param {Object} newValue
+ * @param {Object} after
  */
-eYo.Data.prototype.synchronize = function (newValue) {
-  if (!goog.isDef(newValue)) {
-    newValue = this.get()
+eYo.Data.prototype.synchronize = function (after) {
+  if (!goog.isDef(after)) {
+    after = this.get()
   }
   var d = this.ui_driver_mngr
   if (!d) {
@@ -676,24 +676,24 @@ eYo.Data.prototype.synchronize = function (newValue) {
     }
   } else if (this.model.synchronize) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_synchronize', this.model.synchronize)
-    f && (f.call(this, newValue))
+    f && (f.call(this, after))
   }
 }
 
 /**
  * set the value of the property without any validation.
  * This is overriden by the events module.
- * @param {Object} newValue
+ * @param {Object} after
  * @param {Boolean} noRender
  */
- eYo.Data.prototype.setTrusted_ = function (newValue) {
-  this.internalSet(newValue)
+ eYo.Data.prototype.setTrusted_ = function (after) {
+  this.internalSet(after)
 }
 
 /**
  * set the value of the property without any validation.
  * This is overriden by the events module.
- * @param {Object} newValue
+ * @param {Object} after
  * @param {Boolean} noRender
  */
 eYo.Data.prototype.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted_)
@@ -704,29 +704,29 @@ eYo.Data.prototype.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Dat
  * If the value is a number, change to the corresponding item
  * in the `getAll()` array.
  * If there is a model function with that name, use it instead.
- * @param {Object} newValue
+ * @param {Object} after
  */
-eYo.Data.prototype.filter = function (newValue) {
+eYo.Data.prototype.filter = function (after) {
   // tricky argument management
-  // Used when newValue is an uppercase string
+  // Used when after is an uppercase string
   var f = eYo.Decorate.reentrant_method.call(this, 'model_filter',this.model.filter)
   if (f) {
     return eYo.Decorate.whenAns(f.apply(this, arguments))
   }
   if (this.model.filter === true) {
-    if (eYo.isStr(newValue)) {
-      if (newValue === newValue.toUpperCase()) {
-        var x = eYo.Key[newValue]
-        !x || (newValue = x)
+    if (eYo.isStr(after)) {
+      if (after === after.toUpperCase()) {
+        var x = eYo.Key[after]
+        !x || (after = x)
       }
-    } else if (goog.isNumber(newValue)) {
+    } else if (goog.isNumber(after)) {
       x = this.getAll()
-      if (x && goog.isDefAndNotNull((x = x[newValue]))) {
-        newValue = x
+      if (x && goog.isDefAndNotNull((x = x[after]))) {
+        after = x
       }
     }
   }
-  return newValue
+  return after
 }
 
 /**
@@ -734,12 +734,12 @@ eYo.Data.prototype.filter = function (newValue) {
  * with validation, undo and synchronization.
  * Undo management and synchronization only occur when
  * the old value and the new value are not the same.
- * @param {Object} newValue
+ * @param {Object} after
  * @param {Boolean} noRender
  */
 eYo.Data.prototype.set = function (after, validate = true) {
   after = this.filter(after)
-  if ((this.value_ === after) || (validate && (!eYo.isVALID(after = this.validate(after))))) {
+  if ((this.value_ === after) || (validate && (!eYo.isVALID(after = this.validate (before, after))))) {
     return false
   }
   this.error = false
@@ -754,24 +754,24 @@ Object.defineProperty(eYo.Data, 'incog', {
   /**
    * Disabled data correspond to disabled input.
    * Changing this value will cause an UI synchronization but no change count.
-   * @param {Boolean} newValue  When not defined, replaced by `!this.required`
+   * @param {Boolean} after  When not defined, replaced by `!this.required`
    */
-  set (newValue) {
-    if (!goog.isDef(newValue)) {
-      newValue = !this.required
+  set (after) {
+    if (!goog.isDef(after)) {
+      after = !this.required
     } else {
-      newValue = !!newValue
+      after = !!after
     }
     var validator = this.model.validateIncog
     if (validator) {
-      newValue = validator.call(this, newValue)
+      after = validator.call(this, after)
     }
-    if (this.incog_ !== newValue) {
-      this.incog_ = newValue
+    if (this.incog_ !== after) {
+      this.incog_ = after
       if (this.slot) {
-        this.slot.incog = newValue
+        this.slot.incog = after
       } else {
-        this.field && (this.field.visible = !newValue)
+        this.field && (this.field.visible = !after)
       }
     }
   }
@@ -800,16 +800,16 @@ eYo.Data.prototype.isActive = function () {
 
 /**
  * Set the value of the main field eventually given by its key.
- * @param {Object} newValue
+ * @param {Object} after
  * @param {string|null} fieldKey  of the input holder in the ui object
  * @param {boolean} noUndo  true when no undo tracking should be performed.
  * @private
  */
-eYo.Data.prototype.setMainFieldValue = function (newValue, fieldKey, noUndo) {
+eYo.Data.prototype.setMainFieldValue = function (after, fieldKey, noUndo) {
   var field = this.fields[fieldKey || this.key]
   if (field) {
     eYo.Events.disableWrap(() => {
-      field.text = newValue
+      field.text = after
     })
   }
 }
@@ -1011,8 +1011,8 @@ eYo.Data.prototype.didLoad = function () {
  * When some data is required, an `?` might be used instead of nothing
  * For edython.
  */
-eYo.Data.prototype.setRequiredFromModel = function (newValue) {
-  this.required_from_model = newValue
+eYo.Data.prototype.setRequiredFromModel = function (after) {
+  this.required_from_model = after
 }
 
 /**

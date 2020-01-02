@@ -130,8 +130,8 @@ Object.defineProperties(eYo.Span.prototype, {
     get () {
       return this.c_
     },
-    set (newValue) {
-      this.setPadding(newValue - this.c_min_)
+    set (after) {
+      this.setPadding(after - this.c_min_)
     }
   },
   /**
@@ -143,8 +143,8 @@ Object.defineProperties(eYo.Span.prototype, {
     get () {
       return this.c_min_
     },
-    set (newValue) {
-      this.addC(newValue - this.c_min_)
+    set (after) {
+      this.addC(after - this.c_min_)
     }
   },
   /**
@@ -154,8 +154,8 @@ Object.defineProperties(eYo.Span.prototype, {
     get () {
       return this.c_padding_
     },
-    set (newValue) {
-      this.setPadding(newValue)
+    set (after) {
+      this.setPadding(after)
     }
   },
   /**
@@ -187,8 +187,8 @@ Object.defineProperties(eYo.Span.prototype, {
     get () {
       return this.main_ // 1 or more
     },
-    set (newValue) {
-      this.addMain(newValue - this.main_)
+    set (after) {
+      this.addMain(after - this.main_)
     }
   },
   /** 
@@ -198,8 +198,8 @@ Object.defineProperties(eYo.Span.prototype, {
     get () {
       return this.header_
     },
-    set (newValue) {
-      this.addHeader(newValue - this.header_)
+    set (after) {
+      this.addHeader(after - this.header_)
     }
   },
   /**
@@ -209,8 +209,8 @@ Object.defineProperties(eYo.Span.prototype, {
     get () {
       return this.footer_
     },
-    set (newValue) {
-      this.addFooter(newValue - this.footer_)
+    set (after) {
+      this.addFooter(after - this.footer_)
     }
   },
   /**
@@ -268,8 +268,8 @@ Object.defineProperties(eYo.Span.prototype, {
     get () {
       return this.foot_
     },
-    set (newValue) {
-      this.addFoot(newValue - this.foot_)
+    set (after) {
+      this.addFoot(after - this.foot_)
     }
   },
   /**
@@ -283,8 +283,8 @@ Object.defineProperties(eYo.Span.prototype, {
     get () {
       return this.suite_
     },
-    set (newValue) {
-      this.addSuite(newValue - this.suite_)
+    set (after) {
+      this.addSuite(after - this.suite_)
     }
   },
 })

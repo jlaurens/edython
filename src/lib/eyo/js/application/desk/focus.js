@@ -31,87 +31,67 @@ eYo.require('Brick')
 eYo.require('Magnet')
 eYo.require('Field')
 
+/**
+ * @name{eYo.Focus}
+ * @namespace
+ */
 eYo.provide('Focus')
 
 eYo.forwardDeclare('Desk')
 goog.forwardDeclare('goog.math')
 
-/**
- * @name{eYo.Focus}
- * @namespace
- */
-
-eYo.Focus = Object.create(null)
 
 /**
  * The main focus manager.
  * @param {eYo.Desk} desk -  the owning desk.
  * @constructor
  */
-eYo.Focus.Main = function (desk) {
-  eYo.Focus.Main.superProto_.constructor.call(this, desk)
-  /**
-   * The various focus managers associate to each board of the desk.
-   * @type{Array<eYo.Focus.Mngr>}
-   */
-  this.mngrs_ = []
-  this.disposeUI = eYo.Do.nothing
-  this.hasUI && this.initUI()
-}
-goog.inherits(eYo.Focus.Main, eYo.C9r.Owned)
+eYo.Focus.makeClass('Main', eYo.C9r.Owned, {
+  owned: {
+    /**
+     * The manager that has current focus
+     * @type {?eYo.Focus.Mngr}
+     */
+    mngrs: [],
+  },
+  computed: {
+    /**
+     * The desk of the receiver.
+     * @type {eYo.Desk}
+     * @readonly
+     */
+    desk: {
+      get () {
+        return this.owner
+      },
+    },
+    /**
+     * The board that has current focus, if any
+     * @type {?eYo.Board}
+     */
+    board: {
+      get () {
+        return this.mngr && this.mngr.board
+      },
+      set (board) {
+        if (board !== this.board) {
+          this.hasUI && this.ui_driver.offBoard(this)
+          this.mngr_ = board && board.focusMngr
+          this.hasUI && this.ui_driver.onBoard(this)
+        }
+      }
+    },
+  },
+  valued: {
+    /**
+     * The manager that has current focus
+     * @type {?eYo.Focus.Mngr}
+     */
+    mngr: eYo.NA,
+  }
+})
 
 Object.defineProperties(eYo.Focus.Main.prototype, {
-  /**
-   * The desk of the receiver.
-   * @type {eYo.Desk}
-   * @readonly
-   */
-  desk: {
-    get () {
-      return this.owner_
-    },
-  },
-  /**
-   * The manager that has current focus
-   * @type {?eYo.Focus.Mngr}
-  * @private
-    */
-  mngr_: {
-    value: null
-  },
-  /**
-   * The manager that has current focus
-   * @type {?eYo.Focus.Mngr}
-   */
-  mngr: {
-    get () {
-      return this.mngr_
-    }
-  },
-  /**
-   * The board that has current focus, if any
-   * @type {?eYo.Board}
-   * @private
-   */
-  board_: {
-    value: null
-  },
-  /**
-   * The board that has current focus, if any
-   * @type {?eYo.Board}
-   */
-  board: {
-    get () {
-      return this.mngr_ && this.mngr_.board
-    },
-    set (board) {
-      if (board && this.mngr_ && board !== this.mngr_.board) {
-        this.hasUI && this.ui_driver_mngr.offBoard(this)
-        this.mngr_ = board.focusMngr
-        this.hasUI && this.ui_driver_mngr.onBoard(this)
-      }
-    }
-  },
   /**
    * The brick that has current focus, if any
    * @type {?eYo.Brick}
@@ -120,10 +100,10 @@ Object.defineProperties(eYo.Focus.Main.prototype, {
     get () {
       return this.mngr_ && this.mngr_.brick
     },
-    set (newValue) {
-      if (newValue && this.mngr_ && newValue !== this.mngr_.brick) {
-        this.mngr_ = newValue.focusMngr
-        this.mngr_.brick = newValue
+    set (after) {
+      if (after && this.mngr_ && after !== this.mngr_.brick) {
+        this.mngr_ = after.focusMngr
+        this.mngr_.brick = after
       }
     }
   },
@@ -135,10 +115,10 @@ Object.defineProperties(eYo.Focus.Main.prototype, {
     get () {
       return this.mngr_ && this.mngr_.field
     },
-    set (newValue) {
-      if (newValue && this.mngr_ && newValue !== this.mngr_.field) {
-        this.mngr_ = newValue.focusMngr
-        this.mngr_.field = newValue
+    set (after) {
+      if (after && this.mngr_ && after !== this.mngr_.field) {
+        this.mngr_ = after.focusMngr
+        this.mngr_.field = after
       }
     }
   },
@@ -150,26 +130,14 @@ Object.defineProperties(eYo.Focus.Main.prototype, {
     get () {
       return this.mngr_ && this.mngr_.magnet
     },
-    set (newValue) {
-      if (newValue && this.mngr_ && newValue !== this.mngr_.magnet) {
-        this.mngr_ = newValue.focusMngr
-        this.mngr_.magnet = newValue
+    set (after) {
+      if (after && this.mngr_ && after !== this.mngr_.magnet) {
+        this.mngr_ = after.focusMngr
+        this.mngr_.magnet = after
       }
     }
   },
 })
-
-/**
- * Sever all the links including the focus managers.
- */
-eYo.Focus.Main.prototype.dispose = function () {
-  this.disposeUI()
-  this.mngr_ = null
-  this.mngrs_.foreach(mngr => mngr.dispose())
-  this.mngrs_.length = 0
-  this.mngrs_ = null
-  eYo.Focus.Main.superProto_.dispose.call(this)
-}
 
 /**
  * Make the UI. Called by the owner.
@@ -258,11 +226,11 @@ Object.defineProperties(eYo.Focus.Mngr.prototype, {
     get () {
       return this.brick__
     },
-    set (newValue) {
-      if (newValue && !newValue.board) return
+    set (after) {
+      if (after && !after.board) return
       this.magnet_ = null
       this.field_ = null
-      this.brick_ = newValue
+      this.brick_ = after
     }
   },
   /**
@@ -479,8 +447,8 @@ Object.defineProperties(eYo.Brick.Dflt_p, {
     get() {
       return this === this.focusMngr_.brick__
     },
-    set (newValue) {
-      newValue ? this.focusOn() : this.focusOff()
+    set (after) {
+      after ? this.focusOn() : this.focusOff()
     }
   },
 })
@@ -500,8 +468,8 @@ Object.defineProperties(eYo.Magnet.Dflt_p, {
     get() {
       return this === this.focusMngr_.magnet__
     },
-    set (newValue) {
-      newValue ? this.focusOn() : this.focusOff()
+    set (after) {
+      after ? this.focusOn() : this.focusOff()
     }
   },
 })
@@ -521,8 +489,8 @@ Object.defineProperties(eYo.Field.Dflt_p, {
     get() {
       return this === this.focusMngr_.field__
     },
-    set (newValue) {
-      newValue ? this.focusOn() : this.focusOff()
+    set (after) {
+      after ? this.focusOn() : this.focusOff()
     }
   },
 })

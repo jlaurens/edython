@@ -46,11 +46,11 @@ eYo.Stmt.Group.makeSubclass('except_part', {
         eYo.Key.ALIASED
       ],
       init: eYo.Key.NONE,
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
         var b3k = this.brick
-        b3k.expression_d.requiredIncog = newValue !== eYo.Key.NONE
-        b3k.alias_d.requiredIncog = newValue === eYo.Key.ALIASED
+        b3k.expression_d.requiredIncog = after !== eYo.Key.NONE
+        b3k.alias_d.requiredIncog = after === eYo.Key.ALIASED
       },
       xml: false
     },
@@ -77,7 +77,7 @@ eYo.Stmt.Group.makeSubclass('except_part', {
       init: '',
       placeholder: eYo.Msg.Placeholder.ALIAS,
       synchronize: true,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var type = eYo.T3.Profile.get(after).expr
         return type === eYo.T3.Expr.unset
         || type === eYo.T3.Expr.identifier
@@ -131,7 +131,7 @@ eYo.Stmt.Group.makeSubclass('except_part', {
           variable: true
         }
       },
-      validateIncog (newValue) /** @suppress {globalThis} */ {
+      validateIncog (after) /** @suppress {globalThis} */ {
         return this.brick.variant_p !== eYo.Key.ALIASED
       },
       check: eYo.T3.Expr.identifier,
@@ -242,11 +242,11 @@ eYo.Stmt.makeClass('raise_stmt', {
         eYo.Key.FROM
       ],
       init: eYo.Key.NONE,
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
         var b3k = this.brick
-        b3k.expression_d.requiredIncog = newValue !== eYo.Key.NONE
-        b3k.from_d.requiredIncog = newValue === eYo.Key.FROM
+        b3k.expression_d.requiredIncog = after !== eYo.Key.NONE
+        b3k.from_d.requiredIncog = after === eYo.Key.FROM
       },
       xml: false
     },
@@ -375,9 +375,9 @@ eYo.Stmt.makeClass('assert_stmt', {
         eYo.Key.BINARY
       ],
       init: eYo.Key.UNARY,
-      synchronize (newValue) /** @suppress {globalThis} */{
-        this.synchronize(newValue)
-        this.brick.expression2_d.incog = newValue !== eYo.Key.BINARY
+      synchronize (after) /** @suppress {globalThis} */{
+        this.synchronize(after)
+        this.brick.expression2_d.incog = after !== eYo.Key.BINARY
       }
     },
     expression: {

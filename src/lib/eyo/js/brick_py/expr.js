@@ -256,7 +256,7 @@ eYo.Expr.Dflt.prototype.insertParentWithModel = function (model) {
     // find the first parent's connection that can accept brick
     var findM4t = y => {
       var foundM4t, t9k
-      y.someSlot(slot => {
+      y.slotSome(slot => {
         var m4t = slot.magnet
         if (m4t) {
           var candidate
@@ -314,7 +314,7 @@ eYo.Expr.Dflt.prototype.insertParentWithModel = function (model) {
       parentInputM4t.connect(outputM4t)
       parent.render()
       if (bumper) {
-        bumper.ui.bumpNeighbours_()
+        bumper.bumpNeighbours_()
       }
     })
   } else {
@@ -356,9 +356,9 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
       ],
       init: eYo.Key.NONE,
       validate: true,
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
-        this.brick.stride_d.requiredIncog = newValue === eYo.Key.STRIDE
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
+        this.brick.stride_d.requiredIncog = after === eYo.Key.STRIDE
       },
       xml: false
     },

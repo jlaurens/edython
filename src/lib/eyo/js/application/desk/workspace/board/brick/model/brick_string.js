@@ -77,7 +77,7 @@ eYo.provide('Brick.String')
     template: 21,
     'capwords': 22
   */
-eYo.Library.basic_string__module = [
+eYo.Library.DATA.basic_string__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
@@ -143,7 +143,7 @@ eYo.Library.basic_string__module = [
     }
   }
 
-eYo.Library.string__module = [
+eYo.Library.DATA.string__module = [
   {
     type: eYo.T3.Stmt.import_stmt,
     variant_p: eYo.Key.IMPORT,

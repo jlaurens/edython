@@ -84,21 +84,41 @@ eYo.makeClass('Metrics', {
     box () {
       return new eYo.Rect()
     },
-    drag_ () {
-      return this.dragDefault.clone
-    },
   },
   valued: {
-    scale_: {value: 1},
-    numbering_: {
-      didChange (before, after) {
-        this.wrapUpdate(() => this.numbering__ = newValue)
+    numbering: {
+      set__ (after) {
+        this.wrapUpdate(() => this.numbering__ = after)
       },
       init () {
         return false
       }
     },
-    updateDepth_: {value: 0},
+    updateDepth: 0,
+    scale: {
+      init () {
+        return 1
+      },
+      validate (before, after) {
+        if (after <= 0) {
+          after = 1
+        }
+        if (this.scale !== after) {
+          var options = this.options
+          if (options && options.maxScale &&
+            after > options.maxScale) {
+              after = options.maxScale
+          } else if (options && options.minScale &&
+            after < options.minScale) {
+              after = options.minScale
+          }
+          return after
+        }
+      },
+      didChange (before, after) {
+        this.board && this.board.didScale()
+      }
+    },
   },
   computed: {
     board () {
@@ -150,135 +170,83 @@ eYo.makeClass('Metrics', {
      * @type {eYo.Rect} 
      * @readonly 
      */
-    minPort: {
-      get () {
-        var ans = this.view
-        ans.origin.set()
-        ans.unscale(this.scale)
-        ans.left = -(this.numbering ? 5 : 3) * eYo.Unit.x
-        ans.top = -eYo.Unit.y
-        return ans
-      }
+    minPort () {
+      var ans = this.view
+      ans.origin.set()
+      ans.unscale(this.scale)
+      ans.left = -(this.numbering ? 5 : 3) * eYo.Unit.x
+      ans.top = -eYo.Unit.y
+      return ans
     },
     /**
      * The scroll limits in view coordinates.
      * Used for scrolling, gives the limiting values of the `scroll` property.
      */
-    dragLimits: {
-      get () {
-        var v = this.view
-        v.origin_.set()
-        var ans = this.port.scale(this.scale)
-        var d = ans.right - v.right
-        ans.right = d >= 0 ? d : 0
-        d = ans.left - v.left
-        ans.left = d <= 0 ? d : 0
-        d = ans.bottom - v.bottom
-        ans.bottom = d >= 0 ? d : 0
-        d = ans.top - v.top
-        ans.top = d <= 0 ? d : 0
-        ans.mirror()
-        return ans
-      }
+    dragLimits () {
+      var v = this.view
+      v.origin_.set()
+      var ans = this.port.scale(this.scale)
+      var d = ans.right - v.right
+      ans.right = d >= 0 ? d : 0
+      d = ans.left - v.left
+      ans.left = d <= 0 ? d : 0
+      d = ans.bottom - v.bottom
+      ans.bottom = d >= 0 ? d : 0
+      d = ans.top - v.top
+      ans.top = d <= 0 ? d : 0
+      ans.mirror()
+      return ans
     },
     /**
      * Clone the object.
      */
-    clone: {
-      get () {
-        var ans = new eYo.Metrics(this)
-        ans.scale_ = this.scale_
-        ans.view = this.view_
-        ans.port = this.port_
-        ans.drag_ = this.drag_
-        ans.box = this.box_
-        return ans
-      }
-    },
-    toString: {
-      get () {
-        return `drag: ${this.drag.toString}, view: ${this.view.toString}, port: ${this.port.toString}`
-      }
-    }
-  }
-})
-
-Object.defineProperties(eYo.Metrics.prototype, {
-    /**
-   * When this point is (0,0) the view topleft corner
-   * and the (0,0) point in the port are exactly
-   * at the same location on screen.
-   * The drag div is translated by `drag•(i,j)` with respect to the view.
-   * 
-   * @type {eYo.Where} 
-   */
-  drag: {
-    /**
-     * This is the private `drag_` property projected
-     * on the admissible set of values.
-     * @return {eYo.Where}
-     */
-    get () {
-      var ans = this.drag_
-      var r = this.dragLimits
-      if (r) {
-        if (ans.x < r.x) {
-          // console.error(`${ans.x} < ${r.x}`)
-          ans.x = r.x
-        }
-        if (ans.x > r.x_max) {
-          // console.error(`${ans.x} > ${r.x_max}`)
-          ans.x = r.x_max
-        }
-        if (ans.y < r.y) {
-          // console.error(`${ans.y} < ${r.y}`)
-          ans.y = r.y
-        }
-        if (ans.y > r.y_max) {
-          // console.error(`${ans.y} > ${r.y_max}`)
-          ans.y = r.y_max
-        }
-      }
+    clone () {
+      var ans = new eYo.Metrics()
+      ans.scale_ = this.scale_
+      ans.view_ = this.view_
+      ans.port_ = this.port_
+      ans.drag_ = this.drag_
+      ans.box_ = this.box_
       return ans
     },
+    toString () {
+      return `drag: ${this.drag.toString}, view: ${this.view.toString}, port: ${this.port.toString}`
+    },
+  },
+  owned: {
     /**
+     * When this point is (0,0) the view topleft corner
+     * and the (0,0) point in the port are exactly
+     * at the same location on screen.
+     * The drag div is translated by `drag•(i,j)` with respect to the view.
      * 
-     * @param {eYo.Where} newValue 
+     * @type {eYo.Where} 
      */
-    set (newValue) {
-      this.drag__ = newValue
-    }
-  },
-  scale: {
-    get () {
-      return this.scale_
-    },
-    set (newValue) {
-      if (newValue <= 0) {
-        newValue = 1
-      }
-      if (this.scale_ !== newValue) {
-        var options = this.options
-        if (options && options.maxScale &&
-          newValue > options.maxScale) {
-            newValue = options.maxScale
-        } else if (options && options.minScale &&
-          newValue < options.minScale) {
-            newValue = options.minScale
+    drag: {
+      get () {
+        var ans = (this.drag__ || this.dragDefault).clone
+        var r = this.dragLimits
+        if (r) {
+          if (ans.x < r.x) {
+            // console.error(`${ans.x} < ${r.x}`)
+            ans.x = r.x
+          }
+          if (ans.x > r.x_max) {
+            // console.error(`${ans.x} > ${r.x_max}`)
+            ans.x = r.x_max
+          }
+          if (ans.y < r.y) {
+            // console.error(`${ans.y} < ${r.y}`)
+            ans.y = r.y
+          }
+          if (ans.y > r.y_max) {
+            // console.error(`${ans.y} > ${r.y_max}`)
+            ans.y = r.y_max
+          }
         }
-        this.scale__ = newValue
-        this.board && this.board.didScale()
-      }
-    }
-  },
-  numbering: {
-    get () {
-      return this.numbering_
+        return ans
+      },
     },
-    set (newValue) {
-      if (this.numbering_ !== newValue) {
-      }
-    }
   },
 })
 

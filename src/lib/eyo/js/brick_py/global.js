@@ -46,12 +46,12 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.global_stmt, {
         eYo.Key.RETURN
       ],
       init: eYo.Key.PASS,
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
         var b3k = this.brick
-        b3k.identifiers_s.incog = newValue !== eYo.Key.GLOBAL && newValue !== eYo.Key.NONLOCAL
-        b3k.del_s.incog = newValue !== eYo.Key.DEL
-        b3k.return_s.incog = newValue !== eYo.Key.RETURN
+        b3k.identifiers_s.incog = after !== eYo.Key.GLOBAL && after !== eYo.Key.NONLOCAL
+        b3k.del_s.incog = after !== eYo.Key.DEL
+        b3k.return_s.incog = after !== eYo.Key.RETURN
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {

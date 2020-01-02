@@ -101,29 +101,29 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
       init () {
         return true
       },
-      set (newValue) {
+      set (after) {
         if (this.data) {
-          newValue = this.data.incog
-        } else if (!goog.isDef(newValue)) {
-          newValue = !this.required
+          after = this.data.incog
+        } else if (!goog.isDef(after)) {
+          after = !this.required
         } else {
-          newValue = !!newValue
+          after = !!after
         }
         var validator = this.slots && this.model.validateIncog
         if (validator) { // if !this.slots, the receiver is not yet ready
-          newValue = validator.call(this, newValue)
+          after = validator.call(this, after)
         }
         this.brick_.change.wrap(
           () => {
-            this.incog_ = newValue
+            this.incog_ = after
             // forward to the connection
             var m4t = this.magnet
             if (m4t) {
-              m4t.incog = newValue
+              m4t.incog = after
             }
           },
           this,
-          newValue
+          after
         )
       }    
     },
@@ -137,7 +137,7 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
     /**
      * Get the concrete required status.
      * For edython.
-     * @param {boolean} newValue
+     * @param {boolean} after
      */
     requiredFromModel: {}
   },
@@ -157,8 +157,8 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
       get () {
         return this.where
       },
-      set (newValue) {
-        this.where_.set(newValue)
+      set (after) {
+        this.where_.set(after)
       }
     },
     where: {
@@ -191,8 +191,8 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
       get () {
         return this.incog
       },
-      set (newValue) {
-        this.incog = !(this.required = !!newValue)
+      set (after) {
+        this.incog = !(this.required = !!after)
       }
     },
     /**
@@ -222,14 +222,14 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
     /**
      * Get the concrete required status.
      * For edython.
-     * @param {boolean} newValue
+     * @param {boolean} after
      */
     requiredFromSaved () {
       var t9k = this.targetBrick
       if (t9k) {
         if (t9k.wrapped_) {
           // return true if one of the inputs is connected
-          return t9k.someSlot(slot => !!slot.target)
+          return t9k.slotSome(slot => !!slot.target)
         }
         return true
       }
@@ -255,7 +255,7 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
      * No data change.
      */
     init () {
-      this.forEachField(f => f.initUI())
+      this.fieldForEach(f => f.initUI())
     },
     /**
      * UI management.
@@ -263,7 +263,7 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
      * No data change.
      */
     dispose () {
-      this.forEachField(f => f.disposeUI())
+      this.fieldForEach(f => f.disposeUI())
     },
   },
 })
@@ -271,7 +271,7 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
 /**
  * Clean the required status, changing the value if necessary.
  * For edython.
- * @param {boolean} newValue
+ * @param {boolean} after
  */
 eYo.Slot.prototype.whenRequiredFromModel = function (helper) {
   if (this.isRequiredFromModel) {
@@ -313,14 +313,14 @@ eYo.Slot.prototype.consolidate = function (deep, force) {
  * For edython.
  */
 eYo.Slot.prototype.synchronize = function () {
-  var d = this.ui_driver_mngr
+  var d = this.ui_driver
   if (!d) {
     return
   }
-  var newValue = this.incog
-  this.visible = !newValue
+  var after = this.incog
+  this.visible = !after
   if (this.visible) {
-    this.forEachField(field => field.text.length > 0 && (field.visible = true))
+    this.fieldForEach(field => field.text.length > 0 && (field.visible = true))
   }
   d.displayedUpdate(this)
 }
@@ -571,7 +571,7 @@ eYo.Slot.prototype.some = function (helper) {
  * For edython.
  * @param {function} helper
  */
-eYo.Slot.prototype.forEachField = function (helper) {
+eYo.Slot.prototype.fieldForEach = function (helper) {
   this.fields && (Object.values(this.fields).forEach(f => helper(f)))
 }
 

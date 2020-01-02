@@ -14,6 +14,9 @@
 
 eYo.require('Protocol')
 
+/**
+ * @name {eYo.Section}
+ */
 eYo.provide('Section')
 
 /**
@@ -21,99 +24,27 @@ eYo.provide('Section')
  * @param {eYo.Flyout} owner  The owning flyout.
  * @constructor
  */
-eYo.Section = function(owner) {
-  eYo.Section.superProto_.constructor.call(this, owner)
-}
-
-Object.defineProperties(eYo.Section.prototype, {
-  /**
-   * The owning flyout
-   * @type {eYo.Flyout}
-   * @readonly
-   */
-  flyout: { 
-    get () {
-      return this.owner_
-    }
+eYo.Section.makeClass('Dflt', eYo.C9r.Owner, {
+  computed: {
+    /**
+     * The owning flyout
+     * @type {eYo.Flyout}
+     * @readonly
+     */
+    flyout: { 
+      get () {
+        return this.owner_
+      }
+    },
   },
-  /**
-   * The toolbar
-   * @readonly
-   */
-  toolbar: {
-    get () {
-      return this.toolbar_
-    }
-  }
+  owned: {
+    /**
+     * The toolbar
+     * @readonly
+     */
+    toolbar: eYo.NA,
+    board () {
+      return new eYo.Board.Dflt(this)
+    },
+  },
 })
-
-/**
- * Dispose of this section.
- * Sever all links.
- */
-eYo.Section.prototype.dispose = function() {
-  this.disposeUI()
-  this.toolbar_ = null
-  this.dispose = eYo.Do.nothing
-  eYo.Section.superProto_.dispose.call(this)
-}
-
-/**
- * Make the UI
- */
-eYo.Section.prototype.initUI = function () {
-  this.toolbar_.initUI()
-  delete this.disposeUI
-  this.initUI = eYo.Do.nothing
-}
-
-/**
- * Make the UI
- */
-eYo.Section.prototype.disposeUI = function () {
-  this.toolbar_.disposeUI()
-  delete this.initUI
-  this.disposeUI = eYo.Do.nothing
-}
-
-/**
- * Class for a flyout's section with one board.
- * @param {eYo.Flyout} owner  The owning flyout.
- * @constructor
- */
-eYo.Section.Single = function(owner) {
-  eYo.Section.Single.superProto_.constructor.call(this, owner)
-  this.board_ = new eYo.Board(this)
-}
-goog.inherits(eYo.Section.Single, eYo.Section)
-
-/**
- * Dispose of this section.
- * Sever all links.
- */
-eYo.Section.Single.prototype.dispose = function() {
-  this.board_.dispose()
-  this.board_ = null
-  eYo.Section.Single.superProto_.dispose.call()
-  this.dispose = eYo.Do.nothing
-}
-
-/**
- * Make the UI
- */
-eYo.Section.Single.prototype.initUI = function () {
-  eYo.Section.Single.superProto_.initUI.call(this)
-  this.board_.initUI()
-  delete this.disposeUI
-  this.initUI = eYo.Do.nothing
-}
-
-/**
- * Make the UI
- */
-eYo.Section.Single.prototype.disposeUI = function () {
-  eYo.Section.Single.superProto_.disposeUI.call(this)
-  this.board_.disposeUI()
-  delete this.initUI
-  this.disposeUI = eYo.Do.nothing
-}

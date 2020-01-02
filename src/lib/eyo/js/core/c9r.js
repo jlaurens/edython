@@ -39,10 +39,7 @@ eYo.C9r.makeNS('Model')
    * Function frequently used.
    */
   let noGetter = function (msg) {
-    return msg === 'name_'
-    ? function () {
-      throw new Error(`Forbidden name_ getter`)
-    } : msg 
+    return msg 
       ? function () {
         throw new Error(`Forbidden getter: ${msg}`)
       } : function () {
@@ -639,15 +636,9 @@ Object.defineProperties(eYo._p, {
         model.eyo__ = this
         this.props__ = new Set()
         var s = this.super
-
         this.descriptors__ = Object.create(null)
         s && goog.mixin(this.descriptors__, s.descriptors__)
-        model.CONST && this.CONSTDeclare(model.CONST)
-        model.valued && this.valuedDeclare(model.valued)
-        model.owned && this.ownedDeclare(model.owned)
-        model.cached && this.cachedDeclare(model.cached)
-        model.cloned && this.clonedDeclare(model.cloned)
-        model.computed && this.computedDeclare(model.computed)
+        this.modelDeclare(model)
         // eYo.C9r.Model.inherits(model, this.super && this.super.model)
       }
     }
@@ -809,6 +800,20 @@ eYo.Dlgt_p.registerDisposer = function (k, model) {
     !this.disposer_ && (this.disposer_ = Object.create(null))
     this.disposer_[k] = disposer
   } 
+}
+
+/**
+ * Add a CONST property.
+ * The receiver is not the owner.
+ * @param {Object} model - Object, like for |makeClass|.
+ */
+eYo.Dlgt_p.modelDeclare = function (model) {
+  model.CONST && this.CONSTDeclare(model.CONST)
+  model.valued && this.valuedDeclare(model.valued)
+  model.owned && this.ownedDeclare(model.owned)
+  model.cached && this.cachedDeclare(model.cached)
+  model.cloned && this.clonedDeclare(model.cloned)
+  model.computed && this.computedDeclare(model.computed)
 }
 
 /**
@@ -1076,7 +1081,12 @@ eYo.Dlgt_p.ownedDispose_ = function (object, ...params) {
     var x = object[k__]
     if (x) {
       object[k_] = eYo.NA
-      x.dispose(...params)
+      if (x.forEach) {
+        x.forEach(xx => xx.dispose(...params))
+        x.length = 0
+      } else {
+        x.dispose(...params)
+      }
     }
   })
 }
@@ -2050,3 +2060,22 @@ eYo.makeClass('Dflt', {
 eYo.Dflt_p.initUI = eYo.Do.nothing
 eYo.Dflt_p.disposeUI = eYo.Do.nothing
 
+/**
+ * Convenient way to append code to an already existing method.
+ * This allows to define a method in different places.
+ * @param {Object} object - Object
+ * @param {String} key - Looking for or crating |Object[key]|
+ * @param {Function} f - the function we will append
+ */
+eYo.C9r.appendToMethod = (object, key, f) => {
+  let old = object[key]
+  if (old && old !== eYo.Do.nothing) {
+    eYo.parameterAsert(eYo.isF(old), `Expecting a function ${old}`)
+    object[key] = function () {
+      old.apply(this, arguments)
+      f.apply(this, arguments)
+    }
+  } else {
+    object[key] = f
+  }
+}

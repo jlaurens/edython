@@ -61,9 +61,9 @@ Object.defineProperties(eYo.Scroller.prototype, {
     get () {
       return this.hScroll.containerVisible || this.vScroll.containerVisible
     },
-    set (newValue) {
-      this.hScroll.containerVisible = newValue
-      this.vScroll.containerVisible = newValue
+    set (after) {
+      this.hScroll.containerVisible = after
+      this.vScroll.containerVisible = after
     }
   },
   /**

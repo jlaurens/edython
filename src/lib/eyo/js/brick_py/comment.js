@@ -24,10 +24,10 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.comment_stmt, {
       ],
       init: eYo.Key.COMMENT,
       xml: false,
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
         var b3k = this.brick
-        b3k.comment_d.requiredIncog = newValue !== eYo.Key.BLANK
+        b3k.comment_d.requiredIncog = after !== eYo.Key.BLANK
       },
       fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.T3.Stmt.blank_stmt) {
@@ -43,7 +43,7 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.comment_stmt, {
       order: 1000000,
       init: '',
       placeholder: eYo.Msg.Placeholder.COMMENT,
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         return XRegExp.exec(after, eYo.XRE.comment).value || ''
       },
       synchronize: true,

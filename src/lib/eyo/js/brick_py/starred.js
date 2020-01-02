@@ -66,11 +66,11 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
       order: 98,
       all: [eYo.Key.NONE, eYo.Key.STAR],
       init: eYo.Key.NONE, // not a lonely '*'
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
         var b3k = this.brick
-        b3k.modified_d.incog = newValue === eYo.Key.STAR
-        if (newValue === eYo.Key.STAR) {
+        b3k.modified_d.incog = after === eYo.Key.STAR
+        if (after === eYo.Key.STAR) {
           b3k.modifier_p = '*'
         }
       },
@@ -84,10 +84,10 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
       order: 99,
       all: ['*', '**'],
       init: '*',
-      didChange (oldValue, newValue) /** @suppress {globalThis} */ {
-        this.didChange(oldValue, newValue)
+      didChange (before, after) /** @suppress {globalThis} */ {
+        this.didChange(before, after)
         var b3k = this.brick
-        if (newValue !== '*') {
+        if (after !== '*') {
           b3k.variant_p = eYo.Key.NONE
         }
       },
@@ -124,7 +124,7 @@ eYo.Expr.Dflt.makeSubclass('Starred', {
           return eYo.Msg.Placeholder.EXPRESSION
         }
       },
-      validate (after) /** @suppress {globalThis} */ {
+      validate (before, after) /** @suppress {globalThis} */ {
         var p5e = eYo.T3.Profile.get(after, null)
         return p5e.expr === eYo.T3.Expr.unset
         || p5e.expr === eYo.T3.Expr.identifier

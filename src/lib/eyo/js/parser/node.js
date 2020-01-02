@@ -151,9 +151,9 @@ Object.defineProperties(eYo.Node.prototype, {
       }
       throw 'Unexpected situation'
     },
-    set (newValue) {
-      this.next_ = newValue || null
-      newValue && (newValue.previous = this)
+    set (after) {
+      this.next_ = after || null
+      after && (after.previous = this)
     }
   },
   n0: {

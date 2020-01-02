@@ -34,11 +34,11 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
         eYo.Key.STEP
       ],
       init: eYo.Key.NONE,
-      synchronize (newValue) /** @suppress {globalThis} */ {
-        this.synchronize(newValue)
-        this.brick.start_d.incog = newValue === eYo.Key.NONE
-        this.brick.sep_s.incog = newValue === eYo.Key.NONE
-        this.brick.step_d.incog = newValue !== eYo.Key.STEP
+      synchronize (after) /** @suppress {globalThis} */ {
+        this.synchronize(after)
+        this.brick.start_d.incog = after === eYo.Key.NONE
+        this.brick.sep_s.incog = after === eYo.Key.NONE
+        this.brick.step_d.incog = after !== eYo.Key.STEP
       },
       xml: false
     },
@@ -55,7 +55,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
       },
       didLoad () /** @suppress {globalThis} */ {
         this.didLoad()
-        if (this.requiredFromSaved && newValue !== eYo.Key.STEP) {
+        if (this.requiredFromSaved && after !== eYo.Key.STEP) {
           this.brick.variant_p = eYo.Key.START
         }
       }

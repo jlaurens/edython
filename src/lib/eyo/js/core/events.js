@@ -230,7 +230,7 @@ eYo.Events.filter = function(queueIn, forward) {
           event.element == lastEvent.element &&
           event.name == lastEvent.name) {
         // Merge change events.
-        lastEvent.newValue = event.newValue
+        lastEvent.after = event.after
       } else {
         // Collision: newer events should merge into this event to maintain order
         hash[key] = event
