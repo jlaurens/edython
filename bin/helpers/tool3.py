@@ -110,6 +110,8 @@ class HTML:
     <script src="{root}node_modules/mocha/mocha.js"></script>
     <script src="{root}node_modules/chai/chai.js"></script>
     <script>mocha.setup('bdd')</script>
+    <script>eYo.path_root = '{root}'</script>
+    <script>eYo.path_eyo = '{eyo}'</script>
     <script src="{eyo}test/common.test.js"></script>
 '''
 

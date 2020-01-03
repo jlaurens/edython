@@ -152,7 +152,24 @@ eYo.C9r.Owned.makeSubclass(eYo.Driver, 'Mngr', {
   },
   owned: {
     allPurposeDriver () {
-      return new this.eyo.ns.Dflt (this)
+      let handler = {
+        get (obj, prop) {
+          try {
+            return obj[prop]
+          } catch (e) {
+            console.error(e)
+            return eYo.Do.nothing
+          }
+        },
+        set (obj, prop, value) {
+          try {
+            obj[prop] = value
+          } catch (e) {
+            console.error(e)
+          }
+        }
+      }
+      return new Proxy(new this.eyo.ns.Dflt (this), handler)
     }
   },
   valued: {

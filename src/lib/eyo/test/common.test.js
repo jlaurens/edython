@@ -14,12 +14,7 @@
     sounds : false,
     oneBasedIndex : true,
   }
-  try {
-    eYo.app = new eYo.Application(options)
-  } catch(e) {
-    console.error(e)
-    throw e
-  }
+  eYo.app = new eYo.Application(options)
   /* Inject your workspace
   var workspace = Blockly.inject('eyoDiv', options)
   eYo.setup(workspace)
