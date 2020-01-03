@@ -213,12 +213,11 @@ eYo.makeClass('Motion', {
       /*
        * Dragging should start for selected blocks only.
        */
-      validate (before, after) {
+      validate (after) {
         if (!this.brick) {
-          var candidate
           let selected = eYo.app.focusMngr.brick
           do {
-            candidate = after
+            var candidate = after
           } while (after.isExpr && (selected !== after) && (after = after.parent))
           return candidate.isInFlyout && candidate.root || candidate
         }

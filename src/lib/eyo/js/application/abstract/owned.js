@@ -40,7 +40,7 @@ eYo.C9r.makeClass('Owned', {
   },
   valued: {
     owner: {
-      didChange (before, after) {
+      didChange (before, after) /** @suppress {globalThis} */ {
         if (before) {
           this.appForget() // do not update, may be the owner is not yet complete
           this.ownedForEach(x => {
@@ -48,7 +48,7 @@ eYo.C9r.makeClass('Owned', {
           })  
         }
       },
-      consolidate(after) {
+      consolidate (after) {
         if (after.hasUI) {
           this.initUI()
         } else {
@@ -80,7 +80,7 @@ eYo.C9r.makeClass('Owned', {
     /**
      * The app's audio manager
      * @readonly
-     * @type {eYo.Audio}
+     * @type {eYo.Dom.Audio}
      */
     audio () {
       let a = this.app ; return a && a.audio

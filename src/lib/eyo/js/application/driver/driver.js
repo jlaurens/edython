@@ -129,7 +129,7 @@ eYo.Driver._p.makeMngr = function (mngrModel) {
 
 /**
  * Usage: `eYo.Driver.makeDriverClass(model)`.
- * Actual implementation with Fcls, Dom and Svg drivers.
+ * Actual implementation with Fcls, Fcfl, Dom and Svg drivers.
  * {Code: ns.Mngr} is instantiated by the main application object.
  * @param {String} key -  The key of the driver
  * @param {Object} [Super] -  The ancestor of the driver
@@ -152,7 +152,7 @@ eYo.C9r.Owned.makeSubclass(eYo.Driver, 'Mngr', {
   },
   owned: {
     allPurposeDriver () {
-      return new eYo.Driver.Dflt (this)
+      return new this.eyo.ns.Dflt (this)
     }
   },
   valued: {

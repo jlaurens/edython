@@ -41,7 +41,7 @@ eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
     dotted: {
       order: 200,
       init: 0,
-      validate (before, after) /** @suppress {globalThis} */ {
+      validate (after) /** @suppress {globalThis} */ {
         var validated
         if (eYo.isStr(after)) {
           if (after.length) {
@@ -56,8 +56,8 @@ eYo.Expr.builtin__range_expr.makeSubclass('random__randrange', {
         ? validated
         : eYo.INVALID
       },
-      didChange (before, after) /** @suppress {globalThis} */ {
-        this.didChange(before, after)
+      didChange (builtin, after) /** @suppress {globalThis} */ {
+        builtin()
         this.requiredIncog = after > 0
       },
       fromType (type) /** @suppress {globalThis} */ {

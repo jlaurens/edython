@@ -251,12 +251,50 @@ eYo.C9r.Model.consolidate = (model, handler) => {
   }
   do_it(model, '')
 }
+
 /**
+ * Expands a data model.
  * @param {Object} model
- * @param {String} path
  * @param {String} key
+ * @return {Object}
  */
-eYo.C9r.Model.shortcutsBaseHandler = (model, path, key) => {
+eYo.C9r.Model.dataHandler = eYo.Do.nothing
+
+{
+  let re = XRegExp(/^function\s*\S*\s*\(\s*(?<before>\s*,\s*before\b)/)
+
+  /**
+   * Expands a data model.
+   * @param {Object} model
+   * @param {String} key
+   * @return {Object}
+   */
+  eYo.C9r.Model.propertyHandler = (model, key) => {
+    model = model[key]
+    ;['willChange', 'isChanging', 'didChange', 'validate'].forEach(k => {
+      var f = model[k]
+      if (eYo.isF(f)) {
+        var m = XRegExp.match(f.toString(), re)
+        if (m) {
+          if (m.before) {
+            ff = (object) => {
+              object[k] = f
+            }
+          } else {
+            ff = (object) => {
+              object[k] = function (before, after) {
+                f.call(this, after)
+              }
+            }
+          }
+          model[k] = ff
+        }
+      }
+    })
+  }
+}
+
+{
   var ensureRAF = (x) => {
     if (eYo.isRA(x)) {
       return function () {
@@ -270,104 +308,97 @@ eYo.C9r.Model.shortcutsBaseHandler = (model, path, key) => {
       }
     }
   }
-  var after
-  if (path === '') {
-    if (['owned', 'valued'].includes(key)) {
+  /**
+   * @param {Object} model
+   * @param {String} path
+   * @param {String} key
+   */
+  eYo.C9r.Model.shortcutsBaseHandler = (model, path, key) => {
+    var after
+    if (path === '') {
+      if (['owned', 'valued'].includes(key)) {
+        var before = model[key]
+        if (eYo.isStr(before)) {
+          after = {[before]: {}}
+        } else if (goog.isArray(before)) {
+          after = {}
+          before.forEach(k => {
+            after[k] = {}
+          })
+        }
+      } else if (['out', 'head', 'left', 'right', 'suite', 'foot'].includes(key)) {
+        // BRICK_TYPE || [BRICK_TYPE] || () => {}
+        var before = model[key]
+        if (!eYo.isO(before)) {
+          after = {
+            check: ensureRAF(before)
+          }
+        }
+      }
+    } else if (path === 'computed') {
+      var before = model[key]
+      if (eYo.isF(before)) {
+        after = {
+          get: before
+        }
+      }
+    } else if (['owned', 'CONST', 'valued', 'cached', 'cloned'].includes(path)) {
+      var before = model[key]
+      if (eYo.isF(before)) {
+        after = { init: before }
+      } else if (!eYo.isO(before)) {
+        after = { value: before }
+      } else if (before) {
+        eYo.C9r.Model.propertyHandler(model, key)
+      }
+    } else if (['out', 'head', 'left', 'right', 'suite', 'foot'].includes(path)) {
+      if (key === 'check') {
+        // BRICK_TYPE || [BRICK_TYPE] || () => {}
+        after = ensureRAF(model[key])
+      }
+    } else if (path === 'data') {
+      eYo.C9r.Model.dataHandler(model, key)
+    } else if (path === 'list') {
+      if (['check', 'unique', 'all'].includes(key)) {
+        // BRICK_TYPE || [BRICK_TYPE] || () => {}
+        after = ensureRAF(model[key])
+      }
+    } else if (key === 'all') {
+      var before = model[key]
+      if (!goog.isArray(before)) {
+        after = [before]
+      }
+    } else if (key === 'list') {
+      var before = model[key]
+      before.ary || (before.ary = Infinity)
+    } else if (XRegExp.match(path, /slots\.\w+\.fields/)) {
       var before = model[key]
       if (eYo.isStr(before)) {
-        after = {[before]: {}}
-      } else if (goog.isArray(before)) {
-        after = {}
-        before.forEach(k => {
-          after[k] = {}
-        })
-      }
-    } else if (['out', 'head', 'left', 'right', 'suite', 'foot'].includes(key)) {
-      // BRICK_TYPE || [BRICK_TYPE] || () => {}
-      var before = model[key]
-      if (!eYo.isO(before)) {
         after = {
-          check: ensureRAF(before)
+          value: before
+        }
+      }
+    } else if (XRegExp.match(path, /slots\.\w+\.fields\.\w+/)) {
+      var before = model[key]
+      if (['reserved', 'variable', 'separator'].includes(key)) {
+        if (eYo.isStr(before)) {
+          after = true
+          model.value = before
+        }
+      }
+    } else if (key === 'xml') {
+      var before = model[key]
+      if (eYo.isF(before)) {
+        after = {
+          accept: before
         }
       }
     }
-  } else if (path === 'owned') {
-    var before = model[key]
-    if (eYo.isF(before)) {
-      after = { init: before }
-    } else if (!eYo.isO(before)) {
-      after = { value: before }
+    if (after !== eYo.NA) {
+      model[key] = after
+      // console.warn(path, key)
+      return true
     }
-  } else if (path === 'computed') {
-    var before = model[key]
-    if (eYo.isF(before)) {
-      after = {
-        get: before
-      }
-    }
-  } else if (['valued', 'cached', 'cloned'].includes(path)) {
-    var before = model[key]
-    if (eYo.isF(before)) {
-      after = {
-        init: before
-      }
-    } else if (!eYo.isO(before)) {
-      after = {
-        value: before
-      }
-    }
-  } else if (['out', 'head', 'left', 'right', 'suite', 'foot'].includes(path)) {
-    if (key === 'check') {
-      // BRICK_TYPE || [BRICK_TYPE] || () => {}
-      after = ensureRAF(model[key])
-    }
-  } else if (path === 'list') {
-    if (['check', 'unique', 'all'].includes(key)) {
-      // BRICK_TYPE || [BRICK_TYPE] || () => {}
-      after = ensureRAF(model[key])
-    }
-  } else if (key === 'all') {
-    var before = model[key]
-    if (!goog.isArray(before)) {
-      after = [before]
-    }
-  } else if (key === 'list') {
-    var before = model[key]
-    before.ary || (before.ary = Infinity)
-  } else if (XRegExp.match(path, /slots\.\\w+\.fields/)) {
-    var before = model[key]
-    if (eYo.isStr(before)) {
-      after = {
-        value: before
-      }
-    }
-  } else if (XRegExp.match(path, /slots\.\\w+\.fields\\.\\w+/)) {
-    var before = model[key]
-    if (['reserved', 'variable', 'separator'].includes(key)) {
-      if (eYo.isStr(before)) {
-        after = true
-        model.value = before
-      }
-    }
-  } else if (XRegExp.match(path, /(?:computed|valued|cached|cloned|owned|CONST)\.\\w+/)) {
-    var before = model[key]
-    if (!eYo.isO(before)) {
-      after = {
-        value: before
-      }
-    }
-  } else if (key === 'xml') {
-    var before = model[key]
-    if (eYo.isF(before)) {
-      after = {
-        accept: before
-      }
-    }
-  }
-  if (after !== eYo.NA) {
-    model[key] = after
-    // console.warn(path, key)
-    return true
   }
 }
 /**
@@ -789,22 +820,21 @@ eYo.Dlgt_p.registerInit = function (k, model) {
 }
 
 /**
- * Register the `disposer` method  in the model, to be used when necessary.
+ * Register the `dispose` method  in the model, to be used when necessary.
  * See the `ownedDispose` method for more informations.
  * @param {String} k name of the ley to add
- * @param {Object} model Object with `disposer` key, eventually.
+ * @param {Object} model Object with `dispose` key, eventually.
  */
-eYo.Dlgt_p.registerDisposer = function (k, model) {
-  var disposer = eYo.isF(model.disposer) && model.disposer
-  if (disposer) {
+eYo.Dlgt_p.registerDispose = function (k, model) {
+  var dispose = eYo.isF(model.dispose) && model.dispose
+  if (dispose) {
     !this.disposer_ && (this.disposer_ = Object.create(null))
-    this.disposer_[k] = disposer
+    this.disposer_[k] = dispose
   } 
 }
 
 /**
- * Add a CONST property.
- * The receiver is not the owner.
+ * Declare the given model.
  * @param {Object} model - Object, like for |makeClass|.
  */
 eYo.Dlgt_p.modelDeclare = function (model) {
@@ -875,9 +905,13 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
       set: model.set_ || function (after) {
         var before = this[k__]
         var f = model.validate
-        f && (after = f.call(this, before, after))
+        if (f && (after = f.call(this, before, after)) === eYo.INVALID) {
+          return
+        }
         f = this[k + 'Validate']
-        f && (after = f.call(this, before, after))
+        if (f && (after = f.call(this, before, after)) === eYo.INVALID) {
+          return
+        }
         if (before !== after) {
           f = model.willChange
           if (!f || (f = f.call(this, before, after))) {
@@ -989,7 +1023,7 @@ eYo.Dlgt_p.ownedDeclare_ = function (k, model = {}) {
   var k_ = k + '_'
   var k__ = k + '__'
   this.registerInit(k, model)
-  this.registerDisposer(k, model)
+  this.registerDispose(k, model)
   Object.defineProperties(proto, {
     [k__]: {value: model.value || eYo.NA, writable: true},
     [k_]: {
@@ -1010,9 +1044,13 @@ eYo.Dlgt_p.ownedDeclare_ = function (k, model = {}) {
       : function (after) {
         var before = this[k__]
         var f = model && model.validate
-        f && (after = f.call(this, before, after))
-        var ff = this[k + 'Validate']
-        ff && (after = ff.call(this, before, after))
+        if (f && (after = f.call(this, before, after)) === eYo.INVALID) {
+          return
+        }
+        f = this[k + 'Validate']
+        if (f && (after = f.call(this, before, after)) === eYo.INVALID) {
+          return
+        }
         if(before !== after) {
           var f = model.willChange
           if (!f || (f = f.call(this, before, after))) {
@@ -1129,9 +1167,13 @@ eYo.Dlgt_p.cachedDeclare_ = function (k, model) {
       set (after) {
         var before = this[k__]
         var f = model && model.validate
-        f && (after = f.call(this, before, after))
+        if (f && (after = f.call(this, before, after)) === eYo.INVALID) {
+          return
+        }
         var ff = this[k + 'Validate']
-        ff && (after = ff.call(this, before, after))
+        if (ff && (after = ff.call(this, before, after)) === eYo.INVALID) {
+          return
+        }
         if (before !== after) {
           f = model && model.willChange
           if (!f || (f = f.call(this, before, after))) {
@@ -1299,9 +1341,13 @@ eYo.Dlgt_p.clonedDeclare = function (models) {
               this[k__] = after.clone
             }
             var f = model.validate
-            f && (after = f.validate(before, after))
+            if (f && (after = f.validate(before, after)) === eYo.INVALID) {
+              return
+            }
             f = this[k + 'Validate']
-            f && (after = f.validate(before, after))
+            if (f && (after = f.validate(before, after)) === eYo.INVALID) {
+              return
+            }
             f = model.willChange
             if (!f || (f = f.call(this, before, after))) {
               var ff = this[k + 'WillChange']
@@ -1326,9 +1372,13 @@ eYo.Dlgt_p.clonedDeclare = function (models) {
             return
           }
           var f = model.validate
-          f && (after = f.validate(before, after))
+          if (f && (after = f.validate(before, after)) === eYo.INVALID) {
+            return
+          }
           f = this[k + 'Validate']
-          f && (after = f.validate(before, after))
+          if (f && (after = f.validate(before, after)) === eYo.INVALID) {
+            return
+          }
           f = model.willChange
           if (!f || (f = f(before, after))) {
             var ff = this[k + 'WillChange']
@@ -1549,8 +1599,8 @@ eYo._p.makeClassDecorate = (f) => {
   createDlgt(eYo, 'Dlgt', eYo.Dlgt, eYo.Dlgt, {})
 
   let re = {
-    init: XRegExp(/^function \S*\([^,]*initer/),
-    dispose: XRegExp(/^function \S*\([^,]*disposer/)
+    init: XRegExp(/^function \S*\([^,]*\binit\b/),
+    dispose: XRegExp(/^function \S*\([^,]*\bdispose\b/)
   }
 
   /**
@@ -1895,18 +1945,20 @@ eYo._p.makeClassDecorate = (f) => {
     // prepare init/dispose methods
     eyo.makeInit()
     eyo.makeDispose()
-    eyo.makeInitUI()
-    eyo.makeDisposeUI()
-    // create the iterators
-    ;['owned', 'cloned', 'valued', 'cached', 'computed'].forEach(k => {
-      var name = k + 'ForEach'
-      C9r_p[name] = function (f) {
-        C9r.eyo[name].call(C9r.eyo, (k) => {
-          var x = this[k]
-          return eYo.isNA(x) || f(x)
-        })
-      }
-    })
+    if (!key.startsWith('Dlgt')) {
+      eyo.makeInitUI()
+      eyo.makeDisposeUI()
+      // create the iterators for Dflt subclasses
+      ;['owned', 'cloned', 'valued', 'cached', 'computed'].forEach(k => {
+        var name = k + 'ForEach'
+        C9r_p[name] = function (f) {
+          C9r.eyo[name].call(C9r.eyo, (k) => {
+            var x = this[k]
+            return eYo.isNA(x) || f(x)
+          })
+        }
+      })
+    }
     return C9r
   }
 }

@@ -205,7 +205,7 @@ eYo.C9r.Owned.makeSubclass(eYo, 'Flyout', {
      */
     visible: {
       value: true,
-      didChange (before, after) {
+      didChange (before, after) /** @suppress {globalThis} */ {
         this.updateDisplay_()
       }
     },
@@ -215,7 +215,7 @@ eYo.C9r.Owned.makeSubclass(eYo, 'Flyout', {
      */
     containerVisible: {
       value: true,
-      didChange (before, after) {
+      didChange (before, after) /** @suppress {globalThis} */ {
         this.updateDisplay_()
       }
      },

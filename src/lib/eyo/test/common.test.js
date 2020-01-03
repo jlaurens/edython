@@ -1,4 +1,3 @@
-console.error('COMMON 0', eYo.Test)
 {
   var options = {
     collapse : true,
@@ -15,14 +14,12 @@ console.error('COMMON 0', eYo.Test)
     sounds : false,
     oneBasedIndex : true,
   }
-  console.error('COMMON 0a', eYo.Test)
   try {
     eYo.app = new eYo.Application(options)
   } catch(e) {
     console.error(e)
     throw e
   }
-  console.error('COMMON 0b', eYo.app)
   /* Inject your workspace
   var workspace = Blockly.inject('eyoDiv', options)
   eYo.setup(workspace)
@@ -33,21 +30,18 @@ console.error('COMMON 0', eYo.Test)
   }
   */
 }
-console.error('COMMON 1', eYo.Test)
 
 chai.assert(eYo.app, `MISSING eYo.app`)
-console.error('COMMON 2', eYo.Test)
 
 setTimeout(() => {
   describe('PREPARE', function() {
-    it('Blockly', function() {
+    it('toBrick', function() {
       chai.assert(eYo.Node.prototype.toBrick, `MISSING toBrick`)
     })
   })
 }, 0)
 
 eYo.Test = Object.create(null)
-console.error('COMMON', eYo.Test)
 
 eYo.Test.makeTestDesk = (id) => {
   var div0 = document.querySelector('#eyo-desk')
@@ -116,10 +110,10 @@ eYo.Test.makeDesk = options => {
       container: 'eyo-desk',
       zoom: {},
     })
-    if (options.container && (document.getElementById(options.container) ||
-    document.querySelector(options.container))) {
-      eYo.app.makeDesk(options)
-    }
+    // if (options.container && (document.getElementById(options.container) ||
+    // document.querySelector(options.container))) {
+    //   eYo.app.makeDesk(options)
+    // }
   }
 }
 

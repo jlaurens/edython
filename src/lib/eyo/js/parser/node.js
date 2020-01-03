@@ -13,7 +13,7 @@
 
 eYo.require('E')
 
-eYo.provide('Node')
+eYo.forwardDeclare('Node_Brick')
 
 /* Parse tree node implementation *-/
 
@@ -37,176 +37,122 @@ node * */
  * @readonly
  * @property {string} name  name is the human readable type of the node.
  */
-eYo.Node = function (scan, type, subtype) {
-  if (type === eYo.NA || type === eYo.TKN.ERRORTOKEN) {
-    console.error('WTF')
-  }
-  this.scan = scan
-  this.type = type
-  this.subtype = subtype
-  this.start = scan.start
-  this.start_string = scan.start_string
-  this.start_comment = scan.start_comment
-  scan.start_string = scan.start_comment = eYo.NA
-  this.end = scan.start = scan.end
-  if (scan.first_lineno) {
-    this.lineno = scan.first_lineno
-    this.end_lineno = scan.lineno
-    scan.first_lineno = eYo.NA
-  } else {
-    this.lineno = scan.lineno
-  }
-  this.n_child = [];
-}
-
-eYo.Node.prototype.be_keyword = function () {
-  this.is_keyword = true
-  return this
-}
-
-eYo.Node.prototype.be_close = function (open) {
-  if (open) {
-    this.open = open
-    open.close = this
-  }
-  return this
-}
-
-// eYo.Node.prototype.parent = null
-// eYo.Node.prototype.children = null
-
-Object.defineProperties(eYo.Node.prototype, {
-  name: {
-    get () {
+eYo.makeClass('Node', {
+  init (scan, type, subtype) {
+    if (type === eYo.NA || type === eYo.TKN.ERRORTOKEN) {
+      console.error('WTF')
+    }
+    this.scan = scan
+    this.type = type
+    this.subtype = subtype
+    this.start = scan.start
+    this.start_string = scan.start_string
+    this.start_comment = scan.start_comment
+    scan.start_string = scan.start_comment = eYo.NA
+    this.end = scan.start = scan.end
+    if (scan.first_lineno) {
+      this.lineno = scan.first_lineno
+      this.end_lineno = scan.lineno
+      scan.first_lineno = eYo.NA
+    } else {
+      this.lineno = scan.lineno
+    }
+    this.n_child = [];
+  },
+  computed:   {
+    name () {
       return eYo.TKN._NT_NAMES[this.n_type - eYo.TKN.NT_OFFSET] || eYo.TKN._NAMES[this.n_type]
-    }
-  },
-  str: {
-    get () {
+    },
+    str () {
       return this.scan.str
-    }
-  },
-  content: {
-    get () {
+    },
+    content () {
       if (this._content) {
         return this._content
       }
       return (this._content = this.str.substring(this.start, this.end))
-    }
-  },
-  comment: {
-    get () {
+    },
+    comment () {
       if (this._comment) {
         return this._comment
       }
       return (this._comment = this.str.substring(this.start_comment, this.end))
-    }
-  },
-  string: {
-    get () {
+    },
+    string () {
       if (this._string) {
         return this._string
       }
-      if (this.start_string !== eYo.NA) {
-        return (this._string = this.str.substring(this.start_string, this.end))
-      }
-      return (this._string = this.content)
-    }
-  },
-  n_type: {
-    get () {
-      return this.type
-    }
-  },
-  n_str: {
-    get () {
-      return this.content
-    }
-  },
-  n_comment: {
-    get () {
-      return this.comment
-    }
-  },
-  n_lineno: {
-    get () {
-      return this.lineno
-    }
-  },
-  n_nchildren: {
-    get () {
-      return this.n_child.length
-    }
-  },
-  next: {
-    get () {
-      if (this.next_ !== eYo.NA) {
-        return this.next_
-      }
-      if (this.type === eYo.TKN.ENDMARKER) {
-        return (this.next_ = null)
-      }
-      if (this.scan.last === this) {
-        return (this.next = this.scan.nextToken())
-      }
-      throw 'Unexpected situation'
+      return (this._string = eYo.isNA(this.start_string)
+      ? this.content
+      : this.str.substring(this.start_string, this.end))
     },
-    set (after) {
-      this.next_ = after || null
-      after && (after.previous = this)
-    }
-  },
-  n0: {
-    get () {
-      return this.n0_
-    }
-  },
-  n1: {
-    get () {
+    n_type () {
+      return this.type
+    },
+    n_str () {
+      return this.content
+    },
+    n_comment () {
+      return this.comment
+    },
+    n_lineno () {
+      return this.lineno
+    },
+    n_nchildren () {
+      return this.n_child.length
+    },
+    next: {
+      get () {
+        if (this.next_ !== eYo.NA) {
+          return this.next_
+        }
+        if (this.type === eYo.TKN.ENDMARKER) {
+          return (this.next_ = null)
+        }
+        if (this.scan.last === this) {
+          return (this.next = this.scan.nextToken())
+        }
+        throw 'Unexpected situation'
+      },
+      set (after) {
+        this.next_ = after || null
+        after && (after.previous = this)
+      }
+    },
+    n0: {
+      get () {
+        return this.n0_
+      }
+    },
+    n1 () {
       return this.n0_.sibling
-    }
-  },
-  n2: {
-    get () {
+    },
+    n2 () {
       return this.n_child[2]
-    }
-  },
-  n3: {
-    get () {
+    },
+    n3 () {
       return this.n_child[3]
-    }
-  },
-  n4: {
-    get () {
+    },
+    n4 () {
       return this.n_child[4]
-    }
-  },
-  n5: {
-    get () {
+    },
+    n5 () {
       return this.n_child[5]
-    }
-  },
-  n6: {
-    get () {
+    },
+    n6 () {
       return this.n_child[6]
-    }
-  },
-  comments: {
-    get () {
-      if (this.comments_) {
-        return this.comments_
+    },
+    comments: {
+      get () {
+        if (this.comments_) {
+          return this.comments_
+        }
+        if (this.acceptComments) {
+          return (this.comments_ = [])
+        }
       }
-      if (this.acceptComments) {
-        return (this.comments_ = [])
-      }
-    }
-  },
-  acceptComments: {
-    get () {
-    }
-  },
-  acceptComments: {
-    get () {
+    },
+    acceptComments () {
       if (this.acceptComments_ !== eYo.NA) {
         return this.acceptComments_
       } else if ([ // statements
@@ -406,15 +352,31 @@ Object.defineProperties(eYo.Node.prototype, {
         }
         return this.acceptComments_ = false
       }
-    }
-  }
+    },
+  },
 })
+
+eYo.Node_p.be_keyword = function () {
+  this.is_keyword = true
+  return this
+}
+
+eYo.Node_p.be_close = function (open) {
+  if (open) {
+    this.open = open
+    open.close = this
+  }
+  return this
+}
+
+// eYo.Node_p.parent = null
+// eYo.Node_p.children = null
 
 /**
  * Add a comment to the node or one of its ancestors.
  * @param {eYo.Node} comment  the comment node token to add.
  */
-eYo.Node.prototype.pushComment = function (comment) {
+eYo.Node_p.pushComment = function (comment) {
   var n = this
   while (!n.acceptComments) {
     var p = n.parent

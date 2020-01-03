@@ -356,8 +356,8 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
       ],
       init: eYo.Key.NONE,
       validate: true,
-      didChange (before, after) /** @suppress {globalThis} */ {
-        this.didChange(before, after)
+      didChange (builtin, after) /** @suppress {globalThis} */ {
+        builtin()
         this.brick.stride_d.requiredIncog = after === eYo.Key.STRIDE
       },
       xml: false

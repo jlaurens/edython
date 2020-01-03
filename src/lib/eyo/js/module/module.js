@@ -44,7 +44,7 @@ eYo.Dflt.makeSubclass(eYo.Module, {
        * @param {Object} before - The data object before the change
        * @param {Object} after - The data object after the change
        */
-      didChange (before, after) {
+      didChange (before, after) /** @suppress {globalThis} */ {
         var a = eYo.Module.item_types = eYo.Module.item_types.concat(after.types)
         // remove duplicates
         for(var i=0; i<a.length; ++i) {

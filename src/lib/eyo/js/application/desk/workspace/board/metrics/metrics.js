@@ -99,7 +99,7 @@ eYo.makeClass('Metrics', {
       init () {
         return 1
       },
-      validate (before, after) {
+      validate (after) /** @suppress {globalThis} */ {
         if (after <= 0) {
           after = 1
         }
@@ -112,10 +112,10 @@ eYo.makeClass('Metrics', {
             after < options.minScale) {
               after = options.minScale
           }
-          return after
         }
+        return after
       },
-      didChange (before, after) {
+      didChange () /** @suppress {globalThis} */ {
         this.board && this.board.didScale()
       }
     },

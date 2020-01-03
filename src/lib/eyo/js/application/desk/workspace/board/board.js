@@ -255,8 +255,8 @@ eYo.Board.Dflt.makeSubclass('Main', {
      * @param{?eYo.Flyout}
      */
     flyout: {
-      validate (before, after) {
-        eYo.assert(!after || this.isMain, 'Only main boards may have flyouts')
+      validate (after) {
+        eYo.parameterAssert(!after || this.isMain, 'Only main boards may have flyouts')
         return after
       },
     },

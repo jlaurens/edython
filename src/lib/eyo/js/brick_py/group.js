@@ -69,8 +69,8 @@ eYo.Stmt.Group.makeSubclass('Branch', {
         eYo.Key.WHILE
       ],
       init: eYo.Key.IF,
-      synchronize (after) /** @suppress {globalThis} */ {
-        this.synchronize(after)
+      synchronize (builtin, after) /** @suppress {globalThis} */ {
+        builtin()
         this.brick.if_d.incog = after === eYo.Key.ELSE
       },
       fromType (type) /** @suppress {globalThis} */ {
@@ -95,10 +95,10 @@ eYo.Stmt.Group.makeSubclass('Branch', {
           this.brick.variant_p = element.getAttribute(eYo.Key.EYO)
         },
       },
-      isChanging (before, after) /** @suppress {globalThis} */ { // same code for primary bricks
+      isChanging (builtin) /** @suppress {globalThis} */ { // same code for primary bricks
         this.brick.consolidateType()
         this.brick.consolidateMagnets()
-        this.duringChange(before, after)
+        builtin()
       },
     },
     if: {

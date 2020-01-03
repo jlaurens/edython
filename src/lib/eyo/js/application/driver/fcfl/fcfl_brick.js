@@ -27,7 +27,7 @@ eYo.Brick.eyo.modelDeclare({
     down: false,
     up: false,
     dragging: {
-      didChange (before, after) {
+      didChange (before, after) /** @suppress {globalThis} */ {
         this.ui_driver.draggingSet(this, after)      
       }
     },

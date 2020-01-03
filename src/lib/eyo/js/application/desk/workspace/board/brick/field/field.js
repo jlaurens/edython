@@ -27,9 +27,9 @@ Object.defineProperties(eYo.Field, {
 })
 
 {
-  var startEditing = function () {
+  let startEditing = function () {
   }
-  var endEditing = function () {
+  let endEditing = function () {
     var data = this.data
     eYo.assert(data, `No data bound to field ${this.name}/${this.brick.type}`)
     var result = this.validate(this.text)
@@ -40,7 +40,7 @@ Object.defineProperties(eYo.Field, {
     }
   }
   // Change some `... = true,` entries to real functions
-  var setupModel = model => {
+  let setupModel = model => {
     // no need to setup the model each time we create a new brick
     if (model.setup_) {
       return
@@ -78,7 +78,7 @@ Object.defineProperties(eYo.Field, {
    * @param {Object} model 
    * @return {eYo.FieldLabel|eYo.FieldVariable|eYo.Field.Input}
    */
-  var makeField = (owner, name, model) => {
+  let makeField = (owner, name, model) => {
     var field
     if (eYo.isStr(model)) {
       field = new eYo.FieldLabel(owner, name, model)
@@ -295,8 +295,27 @@ eYo.Field.makeClass('Dflt', eYo.C9r.BSMOwned, {
     console.warn('Defer next line to the owner ?')
     bsm.hasUI && this.initUI()
   },
-  value: {
+  valued: {
+    visible: true,
+    status: eYo.Field.STATUS_NONE, // one of STATUS_... above
+    isEditing: false,
+    editable: false,
+    model: eYo.NA,
+    /**
+     * The name of field must be unique within a brick.
+     * This is necessary for proper undo management.
+     * Static label fields are named for practical use.
+     * @readonly
+     * @type {String} The name of the field
+     */
+    name: '',
+    /**
+     * @type {String} The text of the field.
+     */
     text: {
+      validate (after) {
+        return after ? String(after) : eYo.INVALID
+      },
       /**
        * 
        */
@@ -309,34 +328,9 @@ eYo.Field.makeClass('Dflt', eYo.C9r.BSMOwned, {
           return
         }
         eYo.Events.fireBrickChange(this.brick, 'field', this.name, this.text__, after)
-        this.size.setFromText(this.text__ = after)
+        this.brick.change.wrap(() => this.size.setFromText(this.text__ = after))
         this.placeholder__ = !after || !after.length
       },
-    },
-    visible: { value: true },
-    status: { value: eYo.Field.STATUS_NONE }, // one of STATUS_... above
-    isEditing: { value: false },
-    editable: { value: false },
-    model: { value: eYo.NA },
-    /**
-     * The name of field must be unique within a brick.
-     * This is necessary for proper undo management.
-     * Static label fields are named for practical use.
-     * @readonly
-     * @type {String} The name of the field
-     */
-    name: {},
-    /**
-     * @readonly
-     * @type {String} The text of the field.
-     */
-    text: {
-      validate (before, after) {
-        return after ? String(after) : eYo.INVALID
-      },
-      set_ (after) {
-        this.brick.change.wrap(() => this.text__ = after)
-      }
     },
     /**
      * Is the field visible, or hidden due to the block being collapsed?
@@ -348,12 +342,12 @@ eYo.Field.makeClass('Dflt', eYo.C9r.BSMOwned, {
        * Sets whether this editable field is visible or not.
        * @param {boolean} after True if visible.
        */
-      didChange (before, after) {
+      didChange (after) /** @suppress {globalThis} */ {
         var d = this.ui_driver
-        d && (d.displayedUpdate(this))
+        d && d.displayedUpdate(this)
         if (this.brick.rendered) {
           this.brick.render()
-          after && (this.brick.bumpNeighbours_())
+          after && this.brick.bumpNeighbours_()
         }
       },
     },
@@ -455,7 +449,7 @@ eYo.Field.Dflt_p.updateWidth = function() {
  */
 eYo.Field.Dflt_p.validate = function (txt) {
   var v = this.data.validate(goog.isDef(txt) ? txt : this.text)
-  return eYo.isVALID(v) ? v : null
+  return eYo.isVALID(v) ? v : eYo.NA
 }
 
 /**

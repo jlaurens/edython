@@ -34,8 +34,8 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
         eYo.Key.STEP
       ],
       init: eYo.Key.NONE,
-      synchronize (after) /** @suppress {globalThis} */ {
-        this.synchronize(after)
+      synchronize (builtin, after) /** @suppress {globalThis} */ {
+        builtin()
         this.brick.start_d.incog = after === eYo.Key.NONE
         this.brick.sep_s.incog = after === eYo.Key.NONE
         this.brick.step_d.incog = after !== eYo.Key.STEP

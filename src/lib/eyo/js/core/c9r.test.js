@@ -26,20 +26,20 @@ NS.test_valued = (x, foo, bar) => {
 }
 describe ('POC', function () {
   this.timeout(10000)
-  it ('initer', function () {
+  it ('init', function () {
     var flag = 123
     var model = {
-      foo (initer) {
-        initer()
+      foo (init) {
+        init()
       },
       bar (initializer) {
         initializer || (flag = 321)
       }
     }
     var str = model.foo.toString()
-    chai.assert(XRegExp.match(str, /^function \S*\([^,]*initer/))
+    chai.assert(XRegExp.match(str, /^function \S*\([^,]*init\b/))
     var str = model.bar.toString()
-    chai.assert(!XRegExp.match(str, /^function \S*\([^,]*initer/))
+    chai.assert(!XRegExp.match(str, /^function \S*\([^,]*init\b/))
   })
   it ('delete', function () {
     var ns = eYo.makeNS()
@@ -51,11 +51,36 @@ describe ('POC', function () {
   })
 })
 describe ('Tests: C9r', function () {
+  this.timeout(10000)
   it ('C9r: basic', function () {
     chai.assert(eYo.makeClass)
     chai.assert(eYo.makeNS)
     chai.assert(eYo.Dlgt)
     chai.assert(eYo.Dflt)
+  })
+  describe('C9r: Model', function () {
+    it('eYo.C9r.Model.consolidate(…)', function () {
+      var model = {
+        owned: {
+          drag: {
+            get () {
+              return this.drag__
+            },
+          },
+        },
+      }
+      eYo.C9r.Model.consolidate(model)
+      chai.assert(eYo.isF(model.owned.drag.get))
+      var model = {
+        owned: {
+          drag () {
+            return this.drag__
+          },
+        },
+      }
+      eYo.C9r.Model.consolidate(model)
+      chai.assert(eYo.isF(model.owned.drag.init))
+    })
   })
   describe('C9r: makeNS', function () {
     if ('makeNS: Basics', function () {
@@ -111,7 +136,6 @@ describe ('Tests: C9r', function () {
     })
   })
   describe('C9r: makeClass', function () {
-    this.timeout(10000)
     it ("ns.makeClass('Dlgt')", function () {
       var ns = eYo.makeNS()
       chai.assert(ns.Dlgt === eYo.Dlgt)
@@ -584,7 +608,7 @@ describe ('Dlgt', function () {
       chai.assert(flag_B === 10)
       NS.test_valued(ab, 'foo', 'bar')
     })
-    it ('Make: initer shortcuts 1', function () {
+    it ('Make: init shortcuts 1', function () {
       var ns = eYo.makeNS()
       var flag = 0
       var make = (init) => {
@@ -598,14 +622,14 @@ describe ('Dlgt', function () {
         flag = 421
       })
       chai.assert(flag === 421)
-      make(function (initer) {
+      make(function (init) {
         flag = 123
-        initer ()
+        init ()
         flag += 421
       })
       chai.assert(flag === 544)
     })
-    it ('Make: initer shortcuts 2', function () {
+    it ('Make: init shortcuts 2', function () {
       var ns = eYo.makeNS()
       var flag = 0
       eYo.makeClass(ns, 'A', null, {
@@ -616,9 +640,9 @@ describe ('Dlgt', function () {
       new ns.A()
       chai.assert(flag === 123)
       ns.A.makeSubclass('AB', {
-        init ( initer) {
+        init ( init) {
           flag *= 1000
-          initer ()
+          init ()
           flag += 421
         }
       })
@@ -1296,6 +1320,28 @@ describe ('Dlgt', function () {
       test(eYo.NA, bar, foo)
       ab.foo_ = foo
       test(eYo.NA, foo, eYo.NA, bar)
+    })
+    it ('Owned: init 0', function () {
+      var ns = eYo.makeNS()
+      ns.makeClass('A', {
+        owned: {
+          foo: {
+            init () {
+              return 421
+            },
+          }
+        },
+      })
+      chai.assert(new ns.A().foo === 421)
+    })
+    it ('Owned: init 1', function () {
+      var ns = eYo.makeNS()
+      ns.makeClass('A', {
+        owned: {
+          foo: 421
+        },
+      })
+      chai.assert(new ns.A().foo === 421)
     })
     it ('Owned: hooks', function () {
       var ns = eYo.makeNS()

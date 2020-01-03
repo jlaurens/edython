@@ -10,7 +10,7 @@ describe('Driver', function() {
     chai.assert(eYo.isF(eYo.Driver.makeDriverClass))
   })
   it ('Driver: Dflt', function () {
-    var d = new eYo.Driver.Dflt()
+    var d = new eYo.Driver.Dflt(NS)
     chai.assert(d)
     chai.assert(eYo.isF(d.initUI))
     chai.assert(eYo.isF(d.disposeUI))
@@ -38,13 +38,14 @@ describe('Driver', function() {
     onr.mngr = new ns.Mngr(onr)
     chai.assert(onr.mngr)
     chai.assert(onr.mngr.owner === onr)
+    chai.assert(onr.mngr.allPurposeDriver)
   })
   it ('Driver: makeDriverClass basic', function () {
     var ns = eYo.Driver.makeNS()
     ns.makeMngr()
     ns.makeDriverClass('Foo')
     chai.assert(eYo.isF(ns.Foo))
-    var foo = new ns.Foo()
+    var foo = new ns.Foo(NS)
     chai.assert(foo.doInitUI)
     chai.assert(!foo.doInitUI())
     chai.expect(() => {
@@ -63,7 +64,7 @@ describe('Driver', function() {
     ns.makeDriverClass('Foo')
     chai.assert(eYo.isF(ns.Foo))
     flag = 0
-    new ns.Foo()
+    new ns.Foo(NS)
     chai.assert(flag === 421)
   })
   it ('Driver: makeDriverClass inherits (2)', function () {
@@ -71,25 +72,25 @@ describe('Driver', function() {
     var ns = eYo.Driver.makeNS()
     ns.makeMngr()
     ns.makeDriverClass('Foo', {
-      init (x) {
+      init (owner, x) {
         flag += x
       },
     })
     chai.assert(eYo.isF(ns.Foo))
     flag = 0
-    new ns.Foo(1)
+    new ns.Foo(NS, 1)
     chai.assert(flag === 1)
     ns.makeNS('A')
     ns.A.makeMngr()
     chai.assert(ns.A.super === ns)
     ns.A.makeDriverClass('Foo', {
-      init (x) {
+      init (owner, x) {
         flag += 10*x
       },
     })
     chai.assert(eYo.isF(ns.A.Foo))
     flag = 0
-    new ns.A.Foo(1)
+    new ns.A.Foo(NS, 1)
     console.warn('flag', flag)
     chai.assert(flag === 11)
   })
@@ -109,13 +110,12 @@ describe('Driver', function() {
           return true
         },
         doDispose (what) {
-          console.error('I AM COLD')
           flag += 100 * what
         }
       },
     })
     flag = 0
-    var foo = new ns.Foo()
+    var foo = new ns.Foo(NS)
     chai.assert(flag === 1)
     chai.assert(foo.doInitUI && foo.doInitUI(2))
     chai.assert(flag === 21)
@@ -127,7 +127,7 @@ describe('Driver', function() {
     var flag
     ns.makeMngr()
     ns.makeDriverClass('Foo', {
-      init (x = 1) {
+      init (owner, x = 1) {
         flag += 1 * x
       },
       ui: {
@@ -141,7 +141,7 @@ describe('Driver', function() {
       },
     })
     ns.makeDriverClass('Bar', {
-      init (x = 1) {
+      init (owner, x = 1) {
         flag += 1000 * x
       },
       ui: {
@@ -155,13 +155,13 @@ describe('Driver', function() {
       },
     })
     flag = 0
-    var foo = new ns.Foo()
+    var foo = new ns.Foo(NS)
     chai.assert(flag === 1)
     chai.assert(foo.doInitUI())
     chai.assert(flag === 11)
     foo.doDisposeUI()
     chai.assert(flag === 111)
-    var bar = new ns.Bar()
+    var bar = new ns.Bar(NS)
     chai.assert(flag === 1111)
     chai.assert(bar.doInitUI())
     chai.assert(flag === 11111)

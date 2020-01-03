@@ -1,6 +1,7 @@
 NS = Object.create(null)
 describe ('Tests: audio', function () {
+  this.timeout(10000)
   it ('Audio: basic', function () {
-    chai.assert(false, 'NOT YET IMPLEMENTED')
+    chai.assert(eYo.Audio)
   })
 })

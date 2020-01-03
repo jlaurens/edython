@@ -46,8 +46,8 @@ eYo.Stmt.Group.makeSubclass('except_part', {
         eYo.Key.ALIASED
       ],
       init: eYo.Key.NONE,
-      synchronize (after) /** @suppress {globalThis} */ {
-        this.synchronize(after)
+      synchronize (builtin, after) /** @suppress {globalThis} */ {
+        builtin()
         var b3k = this.brick
         b3k.expression_d.requiredIncog = after !== eYo.Key.NONE
         b3k.alias_d.requiredIncog = after === eYo.Key.ALIASED
@@ -77,7 +77,7 @@ eYo.Stmt.Group.makeSubclass('except_part', {
       init: '',
       placeholder: eYo.Msg.Placeholder.ALIAS,
       synchronize: true,
-      validate (before, after) /** @suppress {globalThis} */ {
+      validate (after) /** @suppress {globalThis} */ {
         var type = eYo.T3.Profile.get(after).expr
         return type === eYo.T3.Expr.unset
         || type === eYo.T3.Expr.identifier
@@ -131,7 +131,7 @@ eYo.Stmt.Group.makeSubclass('except_part', {
           variable: true
         }
       },
-      validateIncog (after) /** @suppress {globalThis} */ {
+      validateIncog () /** @suppress {globalThis} */ {
         return this.brick.variant_p !== eYo.Key.ALIASED
       },
       check: eYo.T3.Expr.identifier,
@@ -242,8 +242,8 @@ eYo.Stmt.makeClass('raise_stmt', {
         eYo.Key.FROM
       ],
       init: eYo.Key.NONE,
-      synchronize (after) /** @suppress {globalThis} */ {
-        this.synchronize(after)
+      synchronize (builtin, after) /** @suppress {globalThis} */ {
+        builtin()
         var b3k = this.brick
         b3k.expression_d.requiredIncog = after !== eYo.Key.NONE
         b3k.from_d.requiredIncog = after === eYo.Key.FROM
@@ -375,8 +375,8 @@ eYo.Stmt.makeClass('assert_stmt', {
         eYo.Key.BINARY
       ],
       init: eYo.Key.UNARY,
-      synchronize (after) /** @suppress {globalThis} */{
-        this.synchronize(after)
+      synchronize (builtin, after) /** @suppress {globalThis} */{
+        builtin()
         this.brick.expression2_d.incog = after !== eYo.Key.BINARY
       }
     },

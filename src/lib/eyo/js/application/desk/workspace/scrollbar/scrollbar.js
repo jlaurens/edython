@@ -66,7 +66,7 @@ eYo.C9r.makeClass(eYo, 'Scrollbar', {
        * @param {boolean} before True if was visible.
        * @param {boolean} after True if will be visible.
        */
-      didChange (before, after) {
+      didChange (before, after) /** @suppress {globalThis} */ {
         this.updateDisplay_()
       }
     },
@@ -78,7 +78,7 @@ eYo.C9r.makeClass(eYo, 'Scrollbar', {
     containerVisible: {
       value: true,
       writable: true,
-      didChange (before, after) {
+      didChange (before, after) /** @suppress {globalThis} */ {
         this.updateDisplay_()
       }
     },
@@ -108,15 +108,15 @@ eYo.C9r.makeClass(eYo, 'Scrollbar', {
        * change the SVG attribute accordingly.
        * @param {number} newPosition The new scrollbar handle offset in CSS pixels.
        */
-      validate (before, after) {
+      validate (after) {
         if (after <= 0 || isNaN(after) || this.viewLength_ < this.handleLength_) {
           return 0
         } else {
           return Math.min(after, this.viewLength_ - this.handleLength_)
         }
       },
-      didChange (before, after) {
-        this.ui_driver_mngr.scrollbarUpdateHandle(this)
+      didChange () /** @suppress {globalThis} */ {
+        this.ui_driver.updateHandle(this)
       },
     },
     /**
@@ -126,13 +126,13 @@ eYo.C9r.makeClass(eYo, 'Scrollbar', {
      */
     handleLength: {
       value: 0,
-      validate (before, after) {
+      validate (after) {
         return Math.min(Math.max(0, after), this.viewLength_)
       },
       /**
        * Change the position and the SVG attribute accordingly.
        */
-      didChange (before, after) {
+      didChange (before, after) /** @suppress {globalThis} */ {
         after = Math.min(Math.max(0, after), this.viewLength_)
         if (this.handlePosition__ + after > this.viewLength_) {
           this.handlePosition__ = this.viewLength_ - after

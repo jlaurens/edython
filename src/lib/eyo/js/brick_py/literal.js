@@ -71,13 +71,13 @@ eYo.Expr.Literal.makeSubclass('numberliteral', {
       init: '',
       main: true,
       placeholder: 0,
-      validate (before, after) /** @suppress {globalThis} */ {
+      validate (after) /** @suppress {globalThis} */ {
         var types = this.brick.type_d.getAll()
         var p5e = eYo.T3.Profile.get(after, null)
         return types.indexOf(p5e.expr) >= 0 || p5e.raw === eYo.T3.Expr.unset ? after : eYo.INVALID
       },
-      didChange (before, after) /** @suppress {globalThis} */ {
-        this.didChange(before, after)
+      didChange (builtin, after) /** @suppress {globalThis} */ {
+        builtin()
         var type = after
           ? eYo.T3.Profile.get(after, null).expr
           : eYo.T3.Expr.integer
@@ -135,7 +135,7 @@ eYo.Expr.Literal.makeSubclass('shortliteral', {
         eYo.T3.Expr.shortbytesliteral
       ],
       init: eYo.T3.Expr.shortstringliteral,
-      synchronize: /** @this{eYo.Data} */ function (after) {
+      synchronize: /** @this{eYo.Data.Dflt} */ function (after) {
         // synchronize the placeholder text
         var p = this.content_p
         if (!p || !p.length) {
@@ -147,12 +147,12 @@ eYo.Expr.Literal.makeSubclass('shortliteral', {
     delimiter: {
       all: ["'", '"'],
       init: '"',
-      didChange: /** @this{eYo.Data} */ function (before, after) {
-        this.didChange(before, after)
+      didChange (builtin) /** @this{eYo.Data.Dflt} */ {
+        builtin()
         this.brick.value_d.consolidate()
       },
-      synchronize: /** @this{eYo.Data} */ function (after) {
-        this.synchronize(after)
+      synchronize (builtin) /** @this{eYo.Data.Dflt} */ {
+        builtin()
         var f4s = this.brick.fields
         f4s.start.text = f4s.end.text = this.toText()
       },
@@ -163,18 +163,18 @@ eYo.Expr.Literal.makeSubclass('shortliteral', {
         'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
         'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
       init: '',
-      didChange (before, after) { /** @this{eYo.Data} */
-        this.didChange(before, after)
+      didChange (builtin) /** @suppress {globalThis} */ { /** @this{eYo.Data.Dflt} */
+      builtin()
         this.brick.value_d.consolidate()
       },
-      validate (before) { /** @this{eYo.Data} */
+      validate (after) { /** @this{eYo.Data.Dflt} */
         return !goog.isDef(this.brick.content_p) || this.brick.validateComponents({
-          prefix: before}
-        ) ? before : eYo.INVALID
+          prefix: after}
+        ) ? after : eYo.INVALID
       },
-      synchronize (after) { /** @this{eYo.Data} */ 
+      synchronize (builtin, after) { /** @this{eYo.Data.Dflt} */ 
         this.incog = !after || !after.length
-        this.synchronize()
+        builtin()
       },
       xml: false,
     },
@@ -184,11 +184,11 @@ eYo.Expr.Literal.makeSubclass('shortliteral', {
         return subtype === eYo.T3.Expr.shortbytesliteral || subtype === eYo.T3.Expr.longbytesliteral
           ? eYo.Msg.Placeholder.BYTES : eYo.Msg.Placeholder.STRING
       },
-      didChange (before, after) /** @suppress {globalThis} */ {
-        this.didChange(before, after)
+      didChange (builtin) /** @suppress {globalThis} */ {
+        builtin()
         this.brick.value_d.consolidate()
       },
-      validate (before, after) /** @suppress {globalThis} */ {
+      validate (after) /** @suppress {globalThis} */ {
         return !goog.isDef(this.brick.content_p) || this.brick.validateComponents({
           content: after
         }) ? after : eYo.INVALID
@@ -198,11 +198,11 @@ eYo.Expr.Literal.makeSubclass('shortliteral', {
     value: {
       init: "''",
       main: true,
-      validate (before, after) { /** @this{eYo.Data} */
+      validate (after) { /** @this{eYo.Data.Dflt} */
         return eYo.isStr(after)? after: eYo.INVALID
       },
-      didChange (before, after) {/** @this{eYo.Data} */ 
-        this.didChange(before, after)
+      didChange (builtin, after) /** @suppress {globalThis} */ {/** @this{eYo.Data.Dflt} */ 
+      builtin()
         var b3k = this.brick
         var F = (xre, type, formatted) => {
           var m = XRegExp.exec(after, xre)
@@ -409,8 +409,8 @@ eYo.Expr.shortliteral.makeSubclass('longliteral', {
     value: {
       init: "''''''",
       main: true,
-      didChange (before, after) /** @suppress {globalThis} */ {
-        this.didChange(before, after)
+      didChange (builtin, after) /** @suppress {globalThis} */ {
+        builtin()
         var b3k = this.brick
         var F = (xre, type, formatted) => {
           var m = XRegExp.exec(after, xre)

@@ -46,8 +46,8 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.global_stmt, {
         eYo.Key.RETURN
       ],
       init: eYo.Key.PASS,
-      synchronize (after) /** @suppress {globalThis} */ {
-        this.synchronize(after)
+      synchronize (builtin, after) /** @suppress {globalThis} */ {
+        builtin()
         var b3k = this.brick
         b3k.identifiers_s.incog = after !== eYo.Key.GLOBAL && after !== eYo.Key.NONLOCAL
         b3k.del_s.incog = after !== eYo.Key.DEL

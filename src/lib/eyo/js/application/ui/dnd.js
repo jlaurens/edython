@@ -70,9 +70,9 @@ eYo.DnD.makeClass('Mngr', eYo.C9r.Owned, {
    * It maintains a list of draggers and droppers
    * * @param{eYo.Application} [desktop] -  the owning desktop
    */
-  dispose (disposer) {
+  dispose (dispose) {
     this.cancel()
-    disposer()
+    dispose()
     this.draggers_.length = 0
     this.draggers_ = eYo.NA
     this.droppers_.length = 0

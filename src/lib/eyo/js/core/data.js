@@ -32,12 +32,112 @@
  */
 'use strict'
 
+eYo.require('C9r.Owned')
+eYo.require('Do')
 eYo.require('XRE')
 
 eYo.require('Decorate')
 goog.require('goog.dom')
 
-eYo.provide('Data')
+/**
+ * @name {eYo.Data.Dflt}
+ * @namespace
+ */
+eYo.C9r.makeNS(eYo, 'Data')
+
+eYo.Data.makeDlgt()
+
+eYo.Do.readOnlyMixin(eYo.XRE, {
+  function_builtin_before: XRegExp('^function[^(]*\\(\\s*(?<builtin>\\bbuiltin\\b)?(?:\\s*,\\s*)?(?<before>\\bbefore\\b)?'),
+})
+
+/**
+ * Expands a data model.
+ * @param {Object} model
+ * @param {String} key
+ * @return {Object}
+ */
+eYo.C9r.Model.dataHandler = (model, key) => {
+  model = model[key]
+  let methods = []
+  for (const [key, value] of Object.entries({
+    willChange: 'beforeChange',
+    isChanging: 'duringChanging',
+    didChange: 'afterChange',
+    synchronize: 'synchronize',
+    validate: 'validate',
+    validateIncog: 'validateIncog',
+  })) { ((k, kk) => {
+      var f = model[k]
+      if (eYo.isF(f)) {
+        var m = XRegExp.exec(f.toString(), eYo.XRE.function_builtin_before)
+        if (m) {
+          var builtin = m.builtin
+          var before = m.before
+          if (builtin) {
+            if (before) {
+              var ff = (object) => {
+                let builtin = eYo.asF(object[kk])
+                object[k] = builtin
+                ? function (before, after) {
+                  f.call(this, () => {
+                    builtin.call(this, before, after)
+                  }, before, after)
+                } : function (before, after) {
+                  f.call(this, eYo.Do.nothing, before, after)
+                }
+              }
+            } else {
+              ff = (object) => {
+                let builtin = eYo.asF(object[kk])
+                object[k] = builtin
+                ? function (before, after) {
+                  f.call(this, () => {
+                    builtin.call(this, before, after)
+                  }, after)
+                } : function (before, after) {
+                  f.call(this, eYo.Do.nothing, after)
+                }
+              }
+            }
+          } else if (before) {
+            ff = (object) => {
+              object[k] = f
+            }
+          } else {
+            ff = (object) => {
+              object[k] = function (before, after) {
+                f.call(this, after)
+              }
+            }
+          }
+        } else {
+          ff = (object) => {
+            object[k] = f
+          }
+        }
+        methods.push(ff)
+      }
+    }) (key, value)
+  }
+  model['.methods'] = methods
+  if (model.validateIncog && !eYo.isF(model.validateIncog)) {
+    delete model.validateIncog
+  }
+}
+
+/**
+ * Initialize the instance.
+ * Calls the inherited method, then adds methods defined by the model.
+ * The methods are managed by the |dataHandler| method of the |eYo.C9r.Model|.
+ * @param {Object} object - The object to initialize.
+ */
+eYo.Data.Dlgt_p.initInstance = function (object) {
+  eYo.Data.Dlgt_s.initInstance(object)
+  object.model['.methods'].forEach(f => {
+    f(object)
+  })
+}
 
 /**
  * Base property constructor.
@@ -50,138 +150,114 @@ eYo.provide('Data')
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.Data = function (brick, key, model) {
-  eYo.assert(brick, 'Missing brick')
-  eYo.assert(key, 'Missing key')
-  eYo.assert(model, 'Missing model')
-  this.reentrant_ = {},
-  this.key = key,
-  this.upperKey = key[0].toUpperCase() + key.slice(1),
-  this.model = goog.isObject(model) ? model: (model = {init: model})
-  this.name = 'eyo:' + (model.name || key).toLowerCase()
-  this.noUndo = !!model.noUndo
-  this.brick_ = brick // circular reference
-  this.value_ = /** Object|null */ eYo.NA
-  this.incog_ = false
-  var xml = model.xml
-  if (goog.isDefAndNotNull(xml) || xml !== false) {
-    this.attributeName = (xml && xml.attribute) || key
-  }
-  if (!model.setup_) {
-    model.setup_ = true
-    if (!goog.isFunction(model.didLoad)) {
-      delete model.didLoad
+eYo.Data.makeClass('Dflt', eYo.C9r.Owned, {
+  init (brick, key, model) {
+    eYo.parameterAssert(brick, 'Missing brick')
+    eYo.parameterAssert(key, 'Missing key')
+    eYo.parameterAssert(model, 'Missing model')
+    this.reentrant_ = {}
+    this.key_ = key
+    this.model_ = model
+    model = this.model
+    this.name = 'eyo:' + (model.name || key).toLowerCase()
+    this.noUndo = !!model.noUndo
+    var xml = model.xml
+    if (goog.isDefAndNotNull(xml) || xml !== false) {
+      this.attributeName = (xml && xml.attribute) || key
     }
-    if (goog.isDefAndNotNull(xml)) {
-      if (!goog.isFunction(xml.toText)) {
-        delete xml.toText
+    if (!model.setup_) {
+      model.setup_ = true
+      if (!goog.isFunction(model.didLoad)) {
+        delete model.didLoad
       }
-      if (!goog.isFunction(xml.fromText)) {
-        delete xml.fromText
+      if (goog.isDefAndNotNull(xml)) {
+        if (!goog.isFunction(xml.toText)) {
+          delete xml.toText
+        }
+        if (!goog.isFunction(xml.fromText)) {
+          delete xml.fromText
+        }
+        if (!goog.isFunction(xml.toField)) {
+          delete xml.toField
+        }
+        if (!goog.isFunction(xml.fromField)) {
+          delete xml.fromField
+        }
+        if (!goog.isFunction(xml.save)) {
+          delete xml.save
+        }
+        if (!goog.isFunction(xml.load)) {
+          delete xml.load
+        }
+      } else if (key === 'variant' || key === 'option' || key === 'subtype') {
+        model.xml = false
       }
-      if (!goog.isFunction(xml.toField)) {
-        delete xml.toField
-      }
-      if (!goog.isFunction(xml.fromField)) {
-        delete xml.fromField
-      }
-      if (!goog.isFunction(xml.save)) {
-        delete xml.save
-      }
-      if (!goog.isFunction(xml.load)) {
-        delete xml.load
-      }
-    } else if (key === 'variant' || key === 'option' || key === 'subtype') {
-      model.xml = false
-    }
-    if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
-      delete model.validateIncog
-    }
-  }
-}
-
-/**
- * Dispose of the receiver's resources
- */
-eYo.Data.prototype.dispose = function () {
-  this.brick_ = this.value_ = eYo.NA
-}
-
-// Public properties
-Object.defineProperties(eYo.Data.prototype, {
-  brick: {
-    get () {
-      return this.brick_
     }
   },
-  change: {
-    get () {
-      return this.brick_.change
-    }
-  },
-  brickType: {
-    get  () {
-      return this.brick_.type
-    }
-  },
-  data: {
-    get  () {
-      return this.brick_.data
-    }
-  },
-  ui: {
-    get () {
-      return this.brick_.ui
-    }
-  },
-  ui_driver_mngr: {
-    get () {
-      var ui = this.ui
-      return ui && ui.driver
-    }
-  },
-  incog: {
-    get () {
-      return this.incog_
+  computed: {
+    brick () {
+      return this.owner_
     },
-    /**
-     * Disabled data correspond to disabled input.
-     * Changing this value will cause an UI synchronization and a change count.
-     * @param {Object} after  When not defined, replaced by `!this.required`
-     * @return {boolean} whether changes have been made
-     */
-    set (after) {
-      if (!goog.isDef(after)) {
-        after = !this.required
-      } else {
-        after = !!after
+    change () {
+      return this.brick.change
+    },
+    brickType () {
+      return this.brick.type
+    },
+    data () {
+      return this.brick.data
+    },
+    ui () {
+      return this.brick.ui
+    },
+    ui_driver () {
+      return this.brick.ui_driver
+    },
+  },
+  valued: {
+    key: eYo.NA,
+    value: eYo.NA,
+    incog: {
+      value: false,
+      /**
+       * Disabled data correspond to disabled input.
+       * Changing this value will cause an UI synchronization and a change count.
+       * @param {Object} after  When not defined, replaced by `!this.required`
+       * @return {boolean} whether changes have been made
+       */
+      set (after) {
+        if (!goog.isDef(after)) {
+          after = !this.required
+        } else {
+          after = !!after
+        }
+        var validator = this.model.validateIncog
+        if (validator) {
+          after = validator.call(this, after)
+        }
+        if (this.incog_ !== after) {
+          this.change.wrap(
+            () => { // catch `this`
+              this.incog_ = after
+              this.slot && (this.slot.incog = after)
+              this.field && (this.field.visible = !after)
+            }
+          )
+        }
       }
-      var validator = this.model.validateIncog
-      if (validator) {
-        after = validator.call(this, after)
-      }
-      if (this.incog_ !== after) {
-        this.change.wrap(
-          () => { // catch `this`
-            this.incog_ = after
-            this.slot && (this.slot.incog = after)
-            this.field && (this.field.visible = !after)
-          }
-        )
+    },
+    requiredIncog: {
+      set (after) {
+        this.incog = !(this.required = after)
       }
     }
   },
-  requiredIncog: {
-    set (after) {
-      this.incog = !(this.required = after)
-    }
-  }
 })
 
 /**
  * Get the value of the data
  */
-eYo.Data.prototype.get = function () {
+eYo.Data.Dflt_p.get = function () {
   if (!goog.isDef(this.value_)) {
     var f = eYo.Decorate.reentrant_method.call(this,
       'get',
@@ -199,7 +275,7 @@ eYo.Data.prototype.get = function () {
  * @param {Object} after
  * @param {Boolean} notUndoable
  */
-eYo.Data.prototype.rawSet = function (after, notUndoable) {
+eYo.Data.Dflt_p.rawSet = function (after, notUndoable) {
   var before = this.value_
   if (before !== after) {
     this.change.begin()
@@ -210,9 +286,6 @@ eYo.Data.prototype.rawSet = function (after, notUndoable) {
       }
       this.value_ = after
       this.duringChange(before, after)
-    } catch (err) {
-      console.error(err)
-      throw err
     } finally {
       this.afterChange(before, after)
       this.change.end() // may render
@@ -228,10 +301,10 @@ eYo.Data.prototype.rawSet = function (after, notUndoable) {
  * item in the `getAll()` array.
  * @param {Object} after
  */
-eYo.Data.prototype.internalSet = function (after) {
+eYo.Data.Dflt_p.internalSet = function (after) {
   if (eYo.isStr(after)) {
     var x = this.model[after]
-    !x || !goog.isFucntion(after) || (after = x)
+    !x || !eYo.isF(after) || (after = x)
   }
   if (goog.isNumber(after)) {
     x = this.getAll()
@@ -254,7 +327,7 @@ eYo.Data.prototype.internalSet = function (after) {
  * and `this.init(foo)` may be used to initialize the data.
  * @param {Object} after
  */
-eYo.Data.prototype.init = function (after) {
+eYo.Data.Dflt_p.init = function (after) {
   if (goog.isDef(after)) {
     this.internalSet(after)
     return
@@ -295,7 +368,7 @@ eYo.Data.prototype.init = function (after) {
  * The model is asked for a method.
  * @param {Object} type
  */
-eYo.Data.prototype.setWithType = function (type) {
+eYo.Data.Dflt_p.setWithType = function (type) {
   var f = eYo.Decorate.reentrant_method.call(
     this,
     'model_fromType',
@@ -312,12 +385,12 @@ eYo.Data.prototype.setWithType = function (type) {
  * Do not use this directly because this can be a function.
  * Always use `getAll` instead.
  */
-eYo.Data.prototype.all = eYo.NA
+eYo.Data.Dflt_p.all = eYo.NA
 
 /**
  * Get all the values.
  */
-eYo.Data.prototype.getAll = function () {
+eYo.Data.Dflt_p.getAll = function () {
   var all = this.model.all
   return (goog.isArray(all) && all) || (goog.isFunction(all) && (goog.isArray(all = all()) && all))
 }
@@ -326,7 +399,7 @@ eYo.Data.prototype.getAll = function () {
  * Whether the data value is eYo.Key.NONE.
  * @return {Boolean}
  */
-eYo.Data.prototype.isNone = function () {
+eYo.Data.Dflt_p.isNone = function () {
   return this.get() === eYo.Key.NONE
 }
 
@@ -335,7 +408,7 @@ eYo.Data.prototype.isNone = function () {
  * May be overriden by the model.
  * @param {Object} after
  */
-eYo.Data.prototype.validate = function (after) {
+eYo.Data.Dflt_p.validate = function (after) {
   var f = eYo.Decorate.reentrant_method.call(this, 'model_validate', this.model.validate)
   if (f) {
     return eYo.Decorate.whenAns(f.apply(this, arguments))
@@ -348,7 +421,7 @@ eYo.Data.prototype.validate = function (after) {
  * Returns the text representation of the data.
  * @param {Object} [after]
  */
-eYo.Data.prototype.toText = function () {
+eYo.Data.Dflt_p.toText = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toText', this.model.toText)
   var result = this.get()
   if (f) {
@@ -365,7 +438,7 @@ eYo.Data.prototype.toText = function () {
  * Called during synchronization.
  * @param {Object} [after]
  */
-eYo.Data.prototype.toField = function () {
+eYo.Data.Dflt_p.toField = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'toField', this.model.toField || this.model.toText)
   var result = this.get()
   if (f) {
@@ -411,7 +484,7 @@ eYo.Data.prototype.toField = function () {
  * @param {Object} txt
  * @param {boolean=} dontValidate
  */
-eYo.Data.prototype.fromText = function (txt, validate = true) {
+eYo.Data.Dflt_p.fromText = function (txt, validate = true) {
   if (!this.model_fromText_lock) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_fromText', this.model.fromText)
     if (f) {
@@ -452,7 +525,7 @@ eYo.Data.prototype.fromText = function (txt, validate = true) {
  * @param {Object} txt
  * @param {boolean=} dontValidate
  */
-eYo.Data.prototype.fromField = function (txt, dontValidate) {
+eYo.Data.Dflt_p.fromField = function (txt, dontValidate) {
   if (!this.model_fromField_lock) {
     var f = eYo.Decorate.reentrant_method.call(this, 'model_fromField', this.model.fromField || this.model.fromText)
     if (f) {
@@ -477,47 +550,6 @@ eYo.Data.prototype.fromField = function (txt, dontValidate) {
 }
 
 /**
- * Decorate of change hooks.
- * Returns a function with signature is `foo(before, after) → void`
- * `foo` is overriden by the model.
- * The model `foo` can call the builtin `foo` with `this.foo(...)`.
- * @param {Object} key -
- * @param {Object} do_it
- * @return eYo.NA
- */
-eYo.Data.decoratedChange = function (key, do_it) {
-  var model_lock = 'model_' + key
-  return function(before, after) {
-    if (!this.reentrant_[model_lock]) {
-      var model_do_it = this.model[key]
-      if (goog.isFunction(model_do_it)) {
-        try {
-          this.reentrant_[model_lock] = true
-          model_do_it.apply(this, arguments)
-        } catch (err) {
-          console.error(err)
-          throw err
-        } finally {
-          delete this.reentrant_[model_lock]
-        }
-        return
-      }
-    }
-    if (!this.reentrant_[key] && goog.isFunction(do_it)) {
-      try {
-        this.reentrant_[key] = true
-        do_it.apply(this, arguments)
-      } catch (err) {
-        console.error(err)
-        throw err
-      } finally {
-        delete this.reentrant_[key]
-      }
-    }
-  }
-}
-
-/**
  * Will change the value of the property.
  * The signature is `willChange(before, after) → void`
  * May be overriden by the model.
@@ -525,7 +557,7 @@ eYo.Data.decoratedChange = function (key, do_it) {
  * @param {Object} after
  * @return eYo.NA
  */
-eYo.Data.prototype.willChange = eYo.Data.decoratedChange('willChange')
+eYo.Data.Dflt_p.willChange = eYo.Do.nothing
 
 /**
  * When unchange the value of the property.
@@ -536,7 +568,7 @@ eYo.Data.prototype.willChange = eYo.Data.decoratedChange('willChange')
  * @param {Object} before
  * @return eYo.NA
  */
-eYo.Data.prototype.didUnchange = eYo.Data.decoratedChange('didUnchange')
+eYo.Data.Dflt_p.didUnchange = eYo.Do.nothing
 
 /**
  * Did change the value of the property.
@@ -546,7 +578,7 @@ eYo.Data.prototype.didUnchange = eYo.Data.decoratedChange('didUnchange')
  * @param {Object} after
  * @return eYo.NA
  */
-eYo.Data.prototype.didChange = eYo.Data.decoratedChange('didChange')
+eYo.Data.Dflt_p.didChange = eYo.Do.nothing
 
 /**
  * Will unchange the value of the property.
@@ -557,7 +589,7 @@ eYo.Data.prototype.didChange = eYo.Data.decoratedChange('didChange')
  * @param {Object} after
  * @return eYo.NA
  */
-eYo.Data.prototype.willUnchange = eYo.Data.decoratedChange('willUnchange')
+eYo.Data.Dflt_p.willUnchange = eYo.Do.nothing
 
 /**
  * Before the didChange message is sent.
@@ -570,7 +602,7 @@ eYo.Data.prototype.willUnchange = eYo.Data.decoratedChange('willUnchange')
  * @param {Object} after
  * @return eYo.NA
  */
-eYo.Data.prototype.isChanging = eYo.Data.decoratedChange('isChanging')
+eYo.Data.Dflt_p.isChanging = eYo.Do.nothing
 
 /**
  * Before the didUnchange message is sent.
@@ -583,7 +615,7 @@ eYo.Data.prototype.isChanging = eYo.Data.decoratedChange('isChanging')
  * @param {Object} after
  * @return eYo.NA
  */
-eYo.Data.prototype.isUnchanging = eYo.Data.decoratedChange('isUnchanging')
+eYo.Data.Dflt_p.isUnchanging = eYo.Do.nothing
 
 /**
  * Before change the value of the property.
@@ -592,7 +624,7 @@ eYo.Data.prototype.isUnchanging = eYo.Data.decoratedChange('isUnchanging')
  * @param {Object} after
  * @return eYo.NA
  */
-eYo.Data.prototype.beforeChange = function(before, after) {
+eYo.Data.Dflt_p.beforeChange = function(before, after) {
   ;(!eYo.Events.recordingUndo ? this.willChange : this.willUnchange).call(this, before, after)
 }
 
@@ -606,7 +638,7 @@ eYo.Data.prototype.beforeChange = function(before, after) {
  * @param {Object} after
  * @return eYo.NA
  */
-eYo.Data.prototype.duringChange = function(before, after) {
+eYo.Data.Dflt_p.duringChange = function(before, after) {
   ;(!eYo.Events.recordingUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
 }
 
@@ -618,16 +650,16 @@ eYo.Data.prototype.duringChange = function(before, after) {
  * @param {Object} after
  * @return eYo.NA
  */
-eYo.Data.prototype.afterChange = function(before, after) {
-  ;(eYo.Events.recordingUndo ? this.didChange : this.didUnchange).apply(this, arguments)
-  this.synchronize(after)
+eYo.Data.Dflt_p.afterChange = function(before, after) {
+  ;(eYo.Events.recordingUndo ? this.didChange : this.didUnchange).call(before, after)
+  this.synchronize(before, after)
 }
 
 /**
  * Wether a value change fires an undo event.
  * May be overriden by the javascript model.
  */
-eYo.Data.prototype.noUndo = eYo.NA
+eYo.Data.Dflt_p.noUndo = eYo.NA
 
 /**
  * Synchronize the value of the property with the UI.
@@ -642,16 +674,16 @@ eYo.Data.prototype.noUndo = eYo.NA
  * Raises when not bound to some field or slot, in the non model variant.
  * @param {Object} after
  */
-eYo.Data.prototype.synchronize = function (after) {
-  if (!goog.isDef(after)) {
-    after = this.get()
-  }
-  var d = this.ui_driver_mngr
+eYo.Data.Dflt_p.synchronize = function (before, after) {
+  var d = this.ui_driver
   if (!d) {
     return
   }
-  if (this.reentrant_['model_synchronize'] || this.model.synchronize === true) {
-    eYo.assert(this.field || this.slot || this.model.synchronize, 'No field nor slot bound. ' + this.key + '/' + this.brickType)
+  if (!goog.isDef(after)) {
+    after = this.get()
+  }
+  if (this.model.synchronize === true) {
+    eYo.assert(this.field || this.slot || this.model.synchronize, `No field nor slot bound. ${this.key}/${this.brickType}`)
     var field = this.field
     if (field) {
       if (this.incog) {
@@ -669,14 +701,11 @@ eYo.Data.prototype.synchronize = function (after) {
           } else {
             field.visible = true
           }
-          var d = field.ui_driver_mngr
+          var d = field.ui_driver
           d && (d.makeError(field))
         })
       }
     }
-  } else if (this.model.synchronize) {
-    var f = eYo.Decorate.reentrant_method.call(this, 'model_synchronize', this.model.synchronize)
-    f && (f.call(this, after))
   }
 }
 
@@ -686,7 +715,7 @@ eYo.Data.prototype.synchronize = function (after) {
  * @param {Object} after
  * @param {Boolean} noRender
  */
- eYo.Data.prototype.setTrusted_ = function (after) {
+ eYo.Data.Dflt_p.setTrusted_ = function (after) {
   this.internalSet(after)
 }
 
@@ -696,7 +725,7 @@ eYo.Data.prototype.synchronize = function (after) {
  * @param {Object} after
  * @param {Boolean} noRender
  */
-eYo.Data.prototype.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Data.prototype.setTrusted_)
+eYo.Data.Dflt_p.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Data.Dflt_p.setTrusted_)
 
 /**
  * If the value is an uppercase string,
@@ -706,7 +735,7 @@ eYo.Data.prototype.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Dat
  * If there is a model function with that name, use it instead.
  * @param {Object} after
  */
-eYo.Data.prototype.filter = function (after) {
+eYo.Data.Dflt_p.filter = function (after) {
   // tricky argument management
   // Used when after is an uppercase string
   var f = eYo.Decorate.reentrant_method.call(this, 'model_filter',this.model.filter)
@@ -737,7 +766,7 @@ eYo.Data.prototype.filter = function (after) {
  * @param {Object} after
  * @param {Boolean} noRender
  */
-eYo.Data.prototype.set = function (after, validate = true) {
+eYo.Data.Dflt_p.set = function (after, validate = true) {
   after = this.filter(after)
   if ((this.value_ === after) || (validate && (!eYo.isVALID(after = this.validate (before, after))))) {
     return false
@@ -782,8 +811,8 @@ Object.defineProperty(eYo.Data, 'incog', {
  * Should be overriden by the model.
  * Reentrant management here of the model action.
  */
-eYo.Data.prototype.consolidate = function () {
-  if (this.brick_.change.level) {
+eYo.Data.Dflt_p.consolidate = function () {
+  if (this.brick.change.level) {
     return
   }
   var f = eYo.Decorate.reentrant_method.call(this, 'model_consolidate', this.model.consolidate)
@@ -794,7 +823,7 @@ eYo.Data.prototype.consolidate = function () {
  * An active data is not explicitely disabled, and does contain text.
  * @private
  */
-eYo.Data.prototype.isActive = function () {
+eYo.Data.Dflt_p.isActive = function () {
   return !!this.required || (!this.incog_ && (eYo.isStr(this.value_) && this.value_.length))
 }
 
@@ -805,7 +834,7 @@ eYo.Data.prototype.isActive = function () {
  * @param {boolean} noUndo  true when no undo tracking should be performed.
  * @private
  */
-eYo.Data.prototype.setMainFieldValue = function (after, fieldKey, noUndo) {
+eYo.Data.Dflt_p.setMainFieldValue = function (after, fieldKey, noUndo) {
   var field = this.fields[fieldKey || this.key]
   if (field) {
     eYo.Events.disableWrap(() => {
@@ -825,7 +854,7 @@ eYo.Data.prototype.setMainFieldValue = function (after, fieldKey, noUndo) {
  * @param {Element} element the persistent element.
  * @param {Object} [opt]  See eponym parameter in `eYo.Xml.brickToDom`.
  */
-eYo.Data.prototype.save = function (element, opt) {
+eYo.Data.Dflt_p.save = function (element, opt) {
   var xml = this.model.xml
   if (xml === false) {
     // only few data need not be saved
@@ -884,7 +913,7 @@ eYo.Data.prototype.save = function (element, opt) {
  * For edython.
  * @param {String} txt the new placeholder.
  */
-eYo.Data.prototype.customizePlaceholder = function (txt) {
+eYo.Data.Dflt_p.customizePlaceholder = function (txt) {
   if (txt === this.model.placeholder) {
     return
   }
@@ -906,7 +935,7 @@ eYo.Data.prototype.customizePlaceholder = function (txt) {
  * For edython.
  * @param {Element} xml the persistent element.
  */
-eYo.Data.prototype.load = function (element) {
+eYo.Data.Dflt_p.load = function (element) {
   this.loaded_ = false
   var xml = this.model.xml
   if (xml === false) {
@@ -986,7 +1015,7 @@ eYo.Data.prototype.load = function (element) {
  * Before all the data and slots will load.
  * For edython.
  */
-eYo.Data.prototype.willLoad = function () {
+eYo.Data.Dflt_p.willLoad = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'model_willLoad',this.model.willLoad)
   if (f) {
     f.apply(this, arguments)
@@ -998,7 +1027,7 @@ eYo.Data.prototype.willLoad = function () {
  * When all the data and slots have been loaded.
  * For edython.
  */
-eYo.Data.prototype.didLoad = function () {
+eYo.Data.Dflt_p.didLoad = function () {
   var f = eYo.Decorate.reentrant_method.call(this, 'model_didLoad',this.model.didLoad)
   if (f) {
     f.apply(this, arguments)
@@ -1011,7 +1040,7 @@ eYo.Data.prototype.didLoad = function () {
  * When some data is required, an `?` might be used instead of nothing
  * For edython.
  */
-eYo.Data.prototype.setRequiredFromModel = function (after) {
+eYo.Data.Dflt_p.setRequiredFromModel = function (after) {
   this.required_from_model = after
 }
 
@@ -1019,7 +1048,7 @@ eYo.Data.prototype.setRequiredFromModel = function (after) {
  * Get the required status.
  * For edython.
  */
-eYo.Data.prototype.isRequiredFromModel = function () {
+eYo.Data.Dflt_p.isRequiredFromModel = function () {
   return this.required_from_model
 }
 
@@ -1027,7 +1056,7 @@ eYo.Data.prototype.isRequiredFromModel = function () {
  * Get the concrete required status.
  * For edython.
  */
-eYo.Data.prototype.isRequiredFromSaved = function () {
+eYo.Data.Dflt_p.isRequiredFromSaved = function () {
   return this.isRequiredFromModel() || this.get().length || this.required_from_type
 }
 
@@ -1036,7 +1065,7 @@ eYo.Data.prototype.isRequiredFromSaved = function () {
  * For edython.
  * @param {function()} helper
  */
-eYo.Data.prototype.whenRequiredFromModel = function (helper) {
+eYo.Data.Dflt_p.whenRequiredFromModel = function (helper) {
   if (this.isRequiredFromModel()) {
     this.setRequiredFromModel(false)
     if (goog.isFunction(helper)) {
@@ -1051,7 +1080,7 @@ eYo.Data.prototype.whenRequiredFromModel = function (helper) {
  * For edython.
  * @param {function()} helper
  */
-eYo.Data.prototype.whenRequiredFromSaved = function (helper) {
+eYo.Data.Dflt_p.whenRequiredFromSaved = function (helper) {
   if (this.requiredFromSaved) {
     this.setRequiredFromModel(false)
     if (goog.isFunction(helper)) {

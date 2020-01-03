@@ -202,10 +202,10 @@ eYo.Magnet.makeClass('S', {
   owned: ['out', 'head', 'left', 'right', 'suite', 'foot'],
   valued: {
     inDB: {
-      validate (before, after) {
+      validate (after) {
         return !!after
       },
-      didChange (before, after) {
+      didChange (after) /** @suppress {globalThis} */ {
         var db = this.db_
         if (db) {
           after
@@ -285,44 +285,44 @@ eYo.Magnet.makeClass('Dflt', eYo.C9r.BSMOwned, {
     check: {value: eYo.NA},
     name: { value: eYo.NA},
     visible: {
-      didChange (before, after) {
+      didChange (before, after) /** @suppress {globalThis} */ {
         after ? this.unhideAll() : this.hideAll()
         var t9k = this.targetBrick
         t9k && (t9k.ui.visible = after)
       }
     },
     wrapped: {
-      validate (before, after) {
+      validate (after) {
         if (this.target) {
           throw "ALREADY A WRAPPED BLOCK"
         }
         return after
       },
-      didChange (before, after) {
+      didChange (after) /** @suppress {globalThis} */ {
         this.promised_ = eYo.NA
-        after && (this.brick.addWrapperMagnet(this))
+        after && this.brick.addWrapperMagnet(this)
         this.hidden = true
       }
     },
     promised: {
-      validate (before, after) {
+      validate (after) {
         if (this.target) {
           throw "ALREADY A WRAPPED BLOCK"
         }
         return after
       },
-      didChange (before, after) {
-        this.wrapped_ && (this.brick.removeWrapperMagnet(this))
+      didChange () /** @suppress {globalThis} */ {
+        this.wrapped_ && this.brick.removeWrapperMagnet(this)
         this.wrapped_ = eYo.NA
         this.hidden = true
       }
     },
     hidden: {
-      validate (before, after) {
+      validate (after) {
         // Incog magnets must stay hidden
         return !after && this.incog_ ? eYo.INVALID : after
       },
-      didChange(before, after) {
+      didChange(after) {
         this.inDB_ = !after
       }
     },

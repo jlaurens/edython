@@ -26,7 +26,7 @@ eYo.Expr.Dflt.makeSubclass('comprehension', {
       order: 1,
       init: '',
       placeholder: eYo.Msg.Placeholder.TERM,
-      validate (before, after) /** @suppress {globalThis} */ {
+      validate (after) /** @suppress {globalThis} */ {
         var type = eYo.T3.Profile.get(after)
         return type.expr === eYo.T3.Expr.identifier
         ? after : eYo.INVALID

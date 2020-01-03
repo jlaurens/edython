@@ -93,7 +93,7 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
   },
   valued: {
     /**
-     * @property {eYo.Data} data  Bound data.
+     * @property {eYo.Data.Dflt} data  Bound data.
      */
     data: {},
     visible: { value: true},

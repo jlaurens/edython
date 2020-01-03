@@ -106,21 +106,21 @@ eYo.Brick.makeDflt({
       /**
        * Set parent of this brick to be a new brick or null.
        * Beware, we cannot replace an already existing parent!
-       * @param {eYo.Brick.Dflt} [newParent] New parent brick.
+       * @param {eYo.Brick.Dflt} [after] New parent brick.
        */
-      set_ (newParent) {
-        var oldParent = this.parent__
-        if (newParent === oldParent) {
-          return;
+      set_ (after) {
+        var before = this.parent__
+        if (after === before) {
+          return
         }
         // First disconnect from parent, if any
-        this.parentWillChange(newParent)
+        this.parentWillChange(after)
         var f = m4t => m4t && m4t.disconnect()
         f(this.head_m)
           || f(this.left_m)
             || f(this.out_m)
-        this.parent__ = newParent
-        this.parentDidChange(oldParent)
+        this.parent__ = after
+        this.parentDidChange(before)
       },
       /**
        * Set parent__ of this brick to be a new brick or null.
@@ -129,10 +129,10 @@ eYo.Brick.makeDflt({
        * are parent and child from each other.
        * The converse is not true.
        * 
-       * @param {eYo.Brick.Dflt} [newParent] New parent_ brick.
+       * @param {eYo.Brick.Dflt} [after] New parent_ brick.
        */
-      set__ (newParent) {
-        if (newParent === this.parent__) {
+      set__ (after) {
+        if (after === this.parent__) {
           return;
         }
         if (this.parent__) {
@@ -144,14 +144,14 @@ eYo.Brick.makeDflt({
           // Remove this brick from the board's list of top-most bricks.
           this.board.removeBrick(this)
         }
-        this.parent__ = newParent
-        if (newParent) {
+        this.parent__ = after
+        if (after) {
           // Add this brick to the new parent_'s child list.
-          newParent.children__.push(this)
+          after.children__.push(this)
         } else {
           this.board.addBrick(this)
         }
-        newParent && (this.ui_driver.parentSet(newParent))
+        after && (this.ui_driver.parentSet(after))
       }
     },
     inputList: eYo.NA,
@@ -199,7 +199,7 @@ eYo.Brick.makeDflt({
        * The connections must be explicitely hidden when the brick is incog.
        * @param {Boolean} incog
        */
-      didChange(before, after) {
+      didChange(after) {
         this.slotForEach(slot => slot.incog = after) // with incog validator
         var m4t = this.suite_m
         m4t && (m4t.incog = after)
@@ -337,7 +337,7 @@ eYo.Brick.makeDflt({
         eYo.Events.fireBrickChange(
             this, 'collapsed', null, before, after)
       },
-      didChange(before, after) {
+      didChange() {
         this.render()
       }
     },
@@ -767,8 +767,6 @@ eYo.Brick.makeDflt({
           this.dataForEach(data => data.init())
           // At this point the state value may not be consistent
           this.consolidate()
-          // but now it should be
-          this.model.init && (this.model.init.call(this))
         })
       })
       // Now we are ready to work
@@ -899,7 +897,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
    * @param {Object} after
    * @param {Boolean} notUndoable
    */
-  eYo.Data.prototype.doChange = function (after, validate) {
+  eYo.Data.Dflt_p.doChange = function (after, validate) {
     if (after !== this.get()) {
       this.brick.change.wrap(
         this.set,
@@ -1337,7 +1335,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
         var model = dataModel[k]
         if (model) {
           // null models are used to neutralize the inherited data
-          var d = new eYo.Data(this, k, model)
+          var d = new eYo.Data.Dflt(this, k, model)
           data[k] = d
           for (var i = 0, dd; (dd = byOrder[i]); ++i) {
             if (dd.model.order > d.model.order) {

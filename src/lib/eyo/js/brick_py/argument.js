@@ -220,11 +220,11 @@ eYo.Expr.List.makeSubclass('argument_list', {
       init: Infinity,
       xml: false,
       noUndo: true,
-      validate (before, after) /** @suppress {globalThis} */ {
+      validate (after) /** @suppress {globalThis} */ {
         return goog.isNumber(after) ? after : Infinity
       },
-      didChange (before, after) /** @suppress {globalThis} */ {
-        this.didChange(before, after)
+      didChange (builtin) /** @suppress {globalThis} */ {
+        builtin()
         this.brick.change.wrap(
           function () {
             this.createConsolidator(true)
@@ -237,8 +237,8 @@ eYo.Expr.List.makeSubclass('argument_list', {
       init: 0,
       xml: false,
       noUndo: true,
-      didChange (before, after) /** @suppress {globalThis} */ {
-        this.didChange(before, after)
+      didChange (builtin) /** @suppress {globalThis} */ {
+        builtin()
         this.brick.change.wrap(
           function () {
             this.createConsolidator(true)

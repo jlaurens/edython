@@ -36,8 +36,8 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
         eYo.Key.FROM,
       ],
       init: eYo.Key.NONE,
-      synchronize (after) /** @suppress {globalThis} */ {
-        this.synchronize(after)
+      synchronize (builtin, after) /** @suppress {globalThis} */ {
+        builtin()
         var b3k = this.brick
         b3k.from_d.requiredIncog = after === eYo.Key.FROM
         b3k.expression_d.requiredIncog = after === eYo.Key.EXPRESSION

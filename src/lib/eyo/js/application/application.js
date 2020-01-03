@@ -23,7 +23,7 @@ eYo.forwardDeclare('Focus')
 eYo.forwardDeclare('Motion')
 eYo.forwardDeclare('Desk')
 eYo.forwardDeclare('Driver')
-eYo.forwardDeclare('Dom.Audio')
+eYo.forwardDeclare('Audio')
 
 /**
  * Main application object.

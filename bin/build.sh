@@ -262,7 +262,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/core/const.js" \
 --js "src/lib/eyo/js/application/ui/css.js" \
 --js "src/lib/eyo/js/core/geometry.js" \
---js "src/lib/eyo/js/parser/node.js" \
 --js "src/lib/eyo/js/core/change_count.js" \
 --js "src/lib/eyo/js/core/register.js" \
 --js "src/lib/eyo/js/core/T3_all.js" \
@@ -280,12 +279,13 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/graphic/graphic.js" \
 --js "src/lib/eyo/js/module/module.js" \
 --js "src/lib/eyo/js/application/ui/motion.js" \
---js "src/lib/eyo/js/parser/tokenizer.js" \
+--js "src/lib/eyo/js/parser/node.js" \
 --js "src/lib/eyo/js/application/desk/workspace/scrollbar/scrollbar.js" \
 --js "src/lib/eyo/js/application/desk/workspace/scroller/scroller.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/section.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/shape.js" \
 --js "src/lib/eyo/js/application/abstract/workspace_control.js" \
+--js "src/lib/eyo/js/application/ui/audio.js" \
 --js "src/lib/eyo/js/application/backer.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/brick_dragger.js" \
 --js "src/lib/eyo/js/application/abstract/pane.js" \
@@ -303,7 +303,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/module/module_random.js" \
 --js "src/lib/eyo/js/module/module_stdtypes.js" \
 --js "src/lib/eyo/js/module/module_turtle.js" \
---js "src/lib/eyo/js/parser/parser.js" \
+--js "src/lib/eyo/js/parser/tokenizer.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/search.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/slot/slot.js" \
 --js "src/lib/eyo/js/module/profile.js" \
@@ -311,12 +311,12 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/zoomer/zoomer.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/board.js" \
 --js "src/lib/eyo/js/application/driver/fcfl/fcfl.js" \
+--js "src/lib/eyo/js/parser/parser.js" \
 --js "src/lib/eyo/js/application/desk/terminal/terminal.js" \
 --js "src/lib/eyo/js/application/desk/turtle/turtle.js" \
 --js "src/lib/eyo/js/application/desk/variable/variable.js" \
 --js "src/lib/eyo/js/application/desk/workspace/workspace.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom.js" \
---js "src/lib/eyo/js/application/driver/dom/dom_audio.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom_brick.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom_desk.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom_search.js" \
@@ -363,6 +363,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/model/brick_stdtypes.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/model/brick_turtle.js" \
 --js "src/lib/eyo/closure-library/menurenderer.js" \
+--js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/node_brick.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/xml.js" \
 --js "src/lib/eyo/closure-library/menubuttonrenderer.js" \
 --js "src/lib/eyo/closure-library/popupmenu.js" \
