@@ -8,13 +8,13 @@
     horizontalLayout : false,
     // toolboxPosition : 'end',
     css : true,
-    media : '../../src/lib/blockly/media/',
+    media : `${eYo.path_eyo}media/`,
     // rtl : false, meaningless
     scrollbars : true,
     sounds : false,
     oneBasedIndex : true,
   }
-  eYo.app = new eYo.Application(options)
+  eYo.app = new eYo.App.Dflt(options)
   /* Inject your workspace
   var workspace = Blockly.inject('eyoDiv', options)
   eYo.setup(workspace)

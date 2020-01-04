@@ -16,9 +16,8 @@
 eYo.require('C9r')
 eYo.require('Decorate')
 
-eYo.forwardDeclare('Application')
+eYo.forwardDeclare('App')
 eYo.forwardDeclare('Backer')
-eYo.forwardDeclare('Options')
 
 eYo.forwardDeclare('Terminal')
 eYo.forwardDeclare('Turtle')
@@ -32,7 +31,7 @@ goog.forwardDeclare('goog.math');
 /**
  * Class for a desk.
  * This is the structure above the panes but below the application.
- * @param {eYo.Application|Object} owner Owner application.
+ * @param {eYo.App.Dflt|Object} owner Owner application.
  * @constructor
  */
 eYo.C9r.Owned.makeSubclass(eYo, 'Desk', {

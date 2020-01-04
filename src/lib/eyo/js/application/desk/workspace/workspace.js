@@ -17,10 +17,9 @@ eYo.require('C9r.Pane')
 eYo.require('Decorate')
 
 eYo.forwardDeclare('Flyout')
-eYo.forwardDeclare('Application')
+eYo.forwardDeclare('App')
 eYo.forwardDeclare('Backer')
 eYo.forwardDeclare('Scrollbar')
-eYo.forwardDeclare('Options')
 
 goog.forwardDeclare('goog.array');
 goog.forwardDeclare('goog.math');
@@ -31,7 +30,7 @@ goog.forwardDeclare('goog.math');
  * The workspace has 3+n boards:
  * - the board one where bricks are dropped to be executed,
  * - the 2+n in the flyout,
- * @param {eYo.Application|Object} owner Owner application.
+ * @param {eYo.App.Dflt|Object} owner Owner application.
  * @constructor
  */
 eYo.makeClass('Workspace', eYo.C9r.Pane, {

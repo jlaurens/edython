@@ -107,22 +107,15 @@ eYo.Driver._p.makeMngr = function (mngrModel) {
   }
   let Super = this.super.Mngr
   var Mngr = this.makeClass(Super, this.DlgtMngr, mngrModel)
-  let pttp = Mngr.prototype
-  let initDrivers = Super && Super.prototype.initDrivers
-  if (initDrivers) {
-    pttp.initDrivers = function () {
-      Mngr.eyo.driverNames.forEach(name => {
-        // do not override
-        this.drivers[N] || (this.drivers[N] = new this.eyo.ns[N](this))
-      })
-      initDrivers.call(this)
+  Mngr.prototype.initDrivers = function () {
+    if (!this.drivers) {
+      console.error('BREAK HERE!')
     }
-  } else {
-    pttp.initDrivers = function () {
-      Mngr.eyo.driverNames.forEach(N => {
-        this.drivers[N] || (this.drivers[N] = new this.eyo.ns[N](this))
-      })
-    }
+    Mngr.eyo.driverNames.forEach(N => {
+      // do not override
+      this.drivers[N] || (this.drivers[N] = new this.eyo.ns[N](this))
+    })
+    Super.prototype.initDrivers.call(this)
   }
   return Mngr
 }
@@ -146,35 +139,34 @@ eYo.Driver._p.makeDriverClass = function (key, Super, driverModel) {
  * Owns instances of `eYo.Driver.Dflt`'s descendants.
  * @param {Object} owner
  */
-eYo.C9r.Owned.makeSubclass(eYo.Driver, 'Mngr', {
-  init () {
-    this.initDrivers()
-  },
+eYo.Driver.makeClass('Mngr', eYo.C9r.Owned, eYo.Driver.DlgtMngr,  {
   owned: {
     allPurposeDriver () {
       let handler = {
         get (obj, prop) {
-          try {
+          if (prop in obj) {
             return obj[prop]
-          } catch (e) {
-            console.error(e)
-            return eYo.Do.nothing
           }
+          throw new Error(`Missing driver property named ${prop} in object ${obj}`)
         },
         set (obj, prop, value) {
-          try {
+          if (prop in obj) {
             obj[prop] = value
-          } catch (e) {
-            console.error(e)
           }
+          throw new Error(`Missing driver property named ${prop} in object ${obj}`)
         }
       }
       return new Proxy(new this.eyo.ns.Dflt (this), handler)
     }
   },
   valued: {
-    drivers () {
-      return Object.create(null)
+    drivers: {
+      init () {
+        return Object.create(null)
+      },
+      didChange (after) {
+        after && this.initDrivers()
+      },
     }
   },
 })
@@ -187,6 +179,15 @@ eYo.C9r.Owned.makeSubclass(eYo.Driver, 'Mngr', {
  */
 eYo.Driver.Mngr_p.driver = function (object) {
   return this.drivers[object.eyo.key] || this.allPurposeDriver
+}
+
+/**
+ * Initialize all the drivers.
+ */
+eYo.Driver.Mngr_p.initDrivers = function () {
+  eYo.Driver.Mngr.eyo.driverNames.forEach(N => {
+    this.drivers[N] || (this.drivers[N] = new this.eyo.ns[N](this))
+  })
 }
 
 /**

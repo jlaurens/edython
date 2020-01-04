@@ -17,7 +17,7 @@ eYo.require('C9r')
 // eYo.provide('C9r.Owned')
 
 // Possible owner
-eYo.forwardDeclare('Application')
+eYo.forwardDeclare('App')
 // Possible owned
 eYo.forwardDeclare('Desk')
 eYo.forwardDeclare('Workspace')
@@ -30,7 +30,7 @@ eYo.forwardDeclare('Magnet')
 /**
  * Class for a basic object.
  * 
- * @param {eYo.Application|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Expr|eYo.Stmt|eYo.Slot|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.App.Dflt|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Expr|eYo.Stmt|eYo.Slot|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
 eYo.C9r.makeClass('Owned', {

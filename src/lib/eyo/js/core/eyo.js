@@ -140,6 +140,18 @@ eYo.asF = (what) => {
   return typeof what === 'function' && !!what.call ? what : eYo.NA
 }
 
+
+/**
+ * Returns the receiver if it is defined, the fallout otherwise.
+ * Defined means not |eYo.NA|.
+ * @param {*} object - Whathever may be defined
+ * @param {*} [fallout] - Optional fallout when |object| is not defined.
+ * @return {*}
+ */
+eYo.asDef = function (object, fallout) {
+  return eYo.isNA(object) ? fallout : object
+}
+
 /**
  * Returns the evaluated argument if its a function,
  * the argument itself otherwise.
@@ -364,7 +376,7 @@ eYo.provide('eYo')
 eYo.provide('Version')
 eYo.provide('Session')
 
-eYo.forwardDeclare('Application')
+eYo.forwardDeclare('App')
 
 Object.defineProperties(eYo.Version, {
   /** @define {number} */

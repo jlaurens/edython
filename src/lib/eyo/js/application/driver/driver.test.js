@@ -168,5 +168,11 @@ describe('Driver', function() {
     bar.doDisposeUI()
     chai.assert(flag === 111111)
   })
+  it ('Driver: new', function () {
+    let owner = {}
+    let mngr = new eYo.Driver.Mngr(owner)
+    chai.assert(mngr)
+    chai.assert(mngr.drivers)
+  })
 })
 

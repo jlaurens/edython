@@ -33,9 +33,9 @@ eYo.forwardDeclare('Dom')
  * @constructor
  * Class for one motion.
  * There should be only one active motion at a time.
- * Actually, the topmost object, eYo.Application, is managing this motion.
+ * Actually, the topmost object, eYo.App.Dflt, is managing this motion.
  * 
- * @param {eYo.Application} desktop The top application where the event occured.
+ * @param {eYo.App.Dflt} desktop The top application where the event occured.
  * @constructor
  */
 eYo.makeClass('Motion', {
@@ -138,7 +138,7 @@ eYo.makeClass('Motion', {
   valued:  {
     /**
      * The desktop.
-     * @type {eYo.Application}
+     * @type {eYo.App.Dflt}
      */
     desktop: eYo.NA,
     touchIDs () {

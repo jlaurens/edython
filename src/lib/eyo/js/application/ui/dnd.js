@@ -68,7 +68,7 @@ eYo.DnD.makeClass('Mngr', eYo.C9r.Owned, {
   /**
    * Main drag and drop manager.
    * It maintains a list of draggers and droppers
-   * * @param{eYo.Application} [desktop] -  the owning desktop
+   * * @param{eYo.App.Dflt} [desktop] -  the owning desktop
    */
   dispose (dispose) {
     this.cancel()

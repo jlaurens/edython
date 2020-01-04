@@ -29,7 +29,7 @@ eYo.forwardDeclare('Dom')
 /**
  * Class for one responder.
  * There should be only one active responder at a time.
- * Actually, the topmost object, eYo.Application, is managing this responder.
+ * Actually, the topmost object, eYo.App.Dflt, is managing this responder.
  * The responder has different delegates to handle different events.
  * 
  * @param {Event} e The event that kicked off this responder.

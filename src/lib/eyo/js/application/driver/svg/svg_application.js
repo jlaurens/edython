@@ -13,9 +13,9 @@
 
 eYo.require('Svg')
 
-eYo.forwardDeclare('Application')
+eYo.forwardDeclare('App')
 
 /**
  * Svg driver for application.
  */
-eYo.Svg.makeDriverClass('Application')
+eYo.Svg.makeDriverClass('App')

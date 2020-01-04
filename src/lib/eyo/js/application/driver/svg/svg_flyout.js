@@ -134,13 +134,13 @@ eYo.Svg.makeDriverClass('FlyoutToolbar', {
     svg.pathControl_ = eYo.Svg.newElement('path', {
       id: 'p-flyout-control'
     }, dom.svg)
-    if (eYo.Application && eYo.app.flyoutDropDown) {
+    if (eYo.App.Dflt && eYo.app.flyoutDropDown) {
       dom.select_general_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select'),
         eYo.app.flyoutDropDown
       )
-    } else if (eYo.Application && eYo.app.flyoutDropDownGeneral && eYo.app.flyoutDropDownModule) {
+    } else if (eYo.App.Dflt && eYo.app.flyoutDropDownGeneral && eYo.app.flyoutDropDownModule) {
       dom.select_general_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-general'),

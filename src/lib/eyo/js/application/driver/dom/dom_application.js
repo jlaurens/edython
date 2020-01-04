@@ -15,15 +15,15 @@ eYo.require('Dom')
 
 eYo.provide('Dom.Application')
 
-eYo.forwardDeclare('Application')
+eYo.forwardDeclare('App')
 
 /**
  * Dom driver for application.
  */
-eYo.Dom.makeDriverClass('Application', {
+eYo.Dom.makeDriverClass('App', {
   /**
    * Initialize the application's dom ressources.
-   * @param {eYo.Application} app
+   * @param {eYo.App.Dflt} app
    * @param {Function} [f]
    * @return {!Element} The desk's dom repository.
    */
@@ -46,7 +46,7 @@ eYo.Dom.makeDriverClass('Application', {
   },
   /**
    * Dispose of the application dom resources.
-   * @param {eYo.Application} app
+   * @param {eYo.App.Dflt} app
    */
   disposeUI (app) {
     var dom = app.dom

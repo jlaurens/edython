@@ -16,7 +16,7 @@ eYo.require('C9r.Owned')
 eYo.require('Protocol.ChangeCount')
 
 eYo.forwardDeclare('Events')
-eYo.forwardDeclare('Application')
+eYo.forwardDeclare('App')
 
 /**
  * @param {Object} owner

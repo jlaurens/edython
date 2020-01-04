@@ -33,7 +33,7 @@ Object.defineProperties(eYo.Scaler.prototype, {
 /**
  * Main drag and drop manager.
  * It maintains a list of draggers and droppers
- * * @param{eYo.Application} [desktop] -  the owning desktop
+ * * @param{eYo.App.Dflt} [desktop] -  the owning desktop
  */
 eYo.Scaler.prototype.dispose = function () {
   this.motion_ = null

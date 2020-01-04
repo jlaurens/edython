@@ -289,13 +289,13 @@ eYo.Svg.makeDriverClass('SearchToolbar', {
     svg.pathControl_ = eYo.Svg.newElement('path', {
       id: 'p-search-control'
     }, dom.svg)
-    if (eYo.Application && eYo.app.searchDropDown) {
+    if (eYo.App.Dflt && eYo.app.searchDropDown) {
       dom.select_general_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select'),
         eYo.app.searchDropDown
       )
-    } else if (eYo.Application && eYo.app.searchDropDownGeneral && eYo.app.searchDropDownModule) {
+    } else if (eYo.App.Dflt && eYo.app.searchDropDownGeneral && eYo.app.searchDropDownModule) {
       dom.select_general_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-general'),

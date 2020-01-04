@@ -575,11 +575,11 @@ eYo.Dom.on_keydown = e => {
       if (e.keyCode == 67) {
         // 'c' for copy.
         eYo.app.hideChaff()
-        eYo.Application.copyBrick(eYo.app.focusMngr.brick, deep)
+        eYo.App.Dflt.copyBrick(eYo.app.focusMngr.brick, deep)
       } else if (e.keyCode == 88 && !eYo.app.focusMngr.brick.board.readOnly) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.Application.copyBrick(eYo.app.focusMngr.brick, deep)
+        eYo.App.Dflt.copyBrick(eYo.app.focusMngr.brick, deep)
         eYo.app.deleteBrick(eYo.app.focusMngr.brick, deep)
       }
     }

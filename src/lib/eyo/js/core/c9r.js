@@ -2087,7 +2087,7 @@ eYo.makeClass('Dflt', {
     ui_driver: {
       init () {
         var mngr = this.ui_driver_mngr
-        return mngr && mngr.driver(this) || (new eYo.Driver.Dflt())
+        return mngr && mngr.driver(this)
       },
       forget (forgetter) {
         this.ownedForEach(x => {
@@ -2098,13 +2098,21 @@ eYo.makeClass('Dflt', {
     },
   },
   computed: {
+    /**
+     * Whether the receiver's UI has been intialized.
+     * 
+     * @type {Boolean}
+     */
     hasUI () {
       return !this.initUI || this.initUI === eYo.Do.nothing
     },
+    /**
+     * The driver manager shared by all the instances in the app.
+     * @type {eYo.Driver.Mngr}
+     */
     ui_driver_mngr () {
-      if (this.hasUI) {
-        let a = this.app ; return a && a.ui_driver_mngr
-      }
+      let a = this.app
+      return a && a.ui_driver_mngr
     },
   },
 })
