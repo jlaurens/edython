@@ -844,6 +844,7 @@ eYo.Dlgt_p.modelDeclare = function (model) {
   model.cached && this.cachedDeclare(model.cached)
   model.cloned && this.clonedDeclare(model.cloned)
   model.computed && this.computedDeclare(model.computed)
+  model.called && this.calledDeclare(model.called)
 }
 
 /**
@@ -1258,7 +1259,7 @@ eYo.Dlgt_p.computedDeclare = function (models) {
 //  console.warn('computedDeclare:', this.name, Object.keys(models))
   Object.keys(models).forEach(k => {
 //    console.warn('computedDeclare -> ', k)
-    const proto = this.C9r_.prototype
+    const proto = this.C9r_p
     var k_ = k + '_'
     var k__ = k + '__'
     eYo.parameterAssert(k && !this.props__.has(k), `ERROR: ${k} is already a property of ${this.name}`)
@@ -1301,6 +1302,20 @@ eYo.Dlgt_p.computedDeclare = function (models) {
     }
   })
 //  console.warn('computedDeclare: SUCCESS')
+}
+
+/**
+ * Add methods to the associate prototype.
+ * @param {Map<String, Function>} models,  the key => Function mapping.
+ */
+eYo.Dlgt_p.calledDeclare = function (model) {
+  let p = this.C9r_p
+  Object.keys(model).forEach(k => {
+    eYo.assert(!eYo.Do.hasOwnProperty(p, k))
+    let f = model[k]
+    eYo.assert(!eYo.isF(f))
+    p[k] = f // maybe some post processing here
+  })
 }
 
 /**

@@ -13,7 +13,7 @@
 
 eYo.require('C9r.Owned')
 
-eYo.require('Protocol.ChangeCount')
+eYo.require('ChangeCount')
 
 eYo.forwardDeclare('Events')
 eYo.forwardDeclare('App')
@@ -22,24 +22,18 @@ eYo.forwardDeclare('App')
  * @param {Object} owner
  * @constructor
  */
-eYo.C9r.Owned.makeSubclass(eYo, 'Backer', {
-  init () {
+eYo.makeClass('Backer', eYo.C9r.Owned, {
+  valued: {
     /**
      * @type {!Array<!eYo.Events.Abstract>}
      * @protected
      */
-    this.undoStack_ = []
+    undoStack: [],
     /**
      * @type {!Array<!eYo.Events.Abstract>}
      * @protected
      */
-    this.redoStack_ = []
-  },
-  /**
-   * Dispose of this desk's backer.
-   */
-  dispose: function() {
-    this.undoStack_ = this.redoStack_ = null
+    redoStack: [],
   },
   CONST: {
     /**
@@ -52,56 +46,52 @@ eYo.C9r.Owned.makeSubclass(eYo, 'Backer', {
     /**
      * Data to create an undo menu item.
      */
-    undoMenuItemData: {
-      get () {
-        return {
-          text: eYo.Msg.UNDO,
-          enabled: this.undoStack_.length > 0,
-          callback: this.undo.bind(this, false)
-        }
+    undoMenuItemData () {
+      return {
+        text: eYo.Msg.UNDO,
+        enabled: this.undoStack_.length > 0,
+        callback: this.undo.bind(this, false)
       }
     },
     /**
      * Data to create a redo menu item.
      */
-    redoMenuItemData: {
-      get () {
-        return {
-          text: eYo.Msg.REDO,
-          enabled: this.redoStack_.length > 0,
-          callback: this.undo.bind(this, true)
-        }
+    redoMenuItemData () {
+      return {
+        text: eYo.Msg.REDO,
+        enabled: this.redoStack_.length > 0,
+        callback: this.undo.bind(this, true)
       }
     }
   },
 })
 
-eYo.Protocol.add(eYo.Backer.prototype, 'ChangeCount')
+eYo.Backer.eyo.changeCountAdd()
 
 /**
  * Clear the undo/redo stacks.
  */
-eYo.Backer.prototype.clear = function() {
-  this.undoStack_.length = 0
-  this.redoStack_.length = 0
+eYo.Backer_p.clear = function() {
+  this.undoStack.length = 0
+  this.redoStack.length = 0
   // Stop any events already in the firing queue from being undoable.
   eYo.Events.clearPendingUndo()
-  toLinuxArchString.didClearUndo()
+  this.didClearUndo()
 }
 
 /**
  * Clear the undo/redo stacks.
  * Forwards to the owner.
  */
-eYo.Backer.prototype.didClearUndo = function() {
-  this.owner && this.owner.didClearUndo && (this.owner.didClearUndo())
+eYo.Backer_p.didClearUndo = function() {
+  this.app.didClearUndo && this.app.didClearUndo()
 }
 
 /**
  * Undo or redo the previous action.
  * @param {boolean} redo False if undo, true if redo.
  */
-eYo.Backer.prototype.undo = function(redo) {
+eYo.Backer_p.undo = function(redo) {
   var inputStack = redo ? this.redoStack_ : this.undoStack_
   var outputStack = redo ? this.undoStack_ : this.redoStack_
   while (true) {
@@ -154,8 +144,8 @@ eYo.Backer.prototype.undo = function(redo) {
  * Forwards to the owner.
  * @param {boolean} redo False if undo, true if redo.
  */
-eYo.Backer.prototype.didProcessUndo = function(redo) {
-  this.owner_ && this.owner_.didProcessUndo && this.owner_.didProcessUndo(redo)
+eYo.Backer_p.didProcessUndo = function(redo) {
+  this.app.didProcessUndo && this.app.didProcessUndo(redo)
 }
 
 /**
@@ -164,7 +154,7 @@ eYo.Backer.prototype.didProcessUndo = function(redo) {
  * @param {eYo.Event} event The event.
  * @param {function} task what is wrapped.
  */
-eYo.Backer.prototype.eventDidFireChange = function(event, task) {
+eYo.Backer_p.eventDidFireChange = function(event, task) {
   if (event.toUndoStack) {
     this.undoStack_.push(event)
     this.redoStack_.length = 0
@@ -185,15 +175,14 @@ eYo.Backer.prototype.eventDidFireChange = function(event, task) {
  * Message sent when an undo has been pushed.
  * Forwards to the owner.
  */
-eYo.Backer.prototype.didPushUndo = function() {
-  this.owner_ && this.owner_.didUnshiftUndo && (this.owner_.didUnshiftUndo())
+eYo.Backer_p.didPushUndo = function() {
+  this.app.didUnshiftUndo && this.app.didUnshiftUndo()
 }
 
 /**
  * Message sent when an undo has been unshifted.
  * Forwards to the owner.
  */
-eYo.Backer.prototype.didUnshiftUndo = function() {
-  this.owner_ && this.owner_.didUnshiftUndo && (this.owner_.didUnshiftUndo())
+eYo.Backer_p.didUnshiftUndo = function() {
+  this.app.didUnshiftUndo && this.app.didUnshiftUndo()
 }
-

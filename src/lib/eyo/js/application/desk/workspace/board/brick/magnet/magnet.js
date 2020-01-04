@@ -12,7 +12,6 @@
 'use strict'
 
 eYo.require('C9r.BSMOwned')
-eYo.require('Protocol')
 
 eYo.provide('Magnet')
 

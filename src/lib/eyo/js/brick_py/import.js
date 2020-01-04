@@ -13,7 +13,6 @@
 
 eYo.require('Stmt')
 
-eYo.require('Protocol')
 eYo.require('Msg')
 
 eYo.require('Expr.List')
@@ -267,15 +266,15 @@ eYo.Stmt.makeClass('import_stmt', {
     }
   },
   init () /** @suppress {globalThis} */ {
-    eYo.Stmt.registerImport(this)
+    eYo.Stmt.importRegister(this)
   },
   deinit () /** @suppress {globalThis} */ {
-    eYo.Stmt.unregisterImport(this)
+    eYo.Stmt.importUnregister(this)
   }
 }, true)
 
-eYo.Protocol.add(eYo.Stmt, 'Register', 'Import', function (delegate) {
-  return !delegate.isInFlyout
+eYo.Do.Register.add(eYo.Stmt, 'import', function (b3k) {
+  return !b3k.isInFlyout
 })
 
 Object.defineProperties(eYo.Stmt.import_stmt.prototype, {

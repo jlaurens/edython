@@ -12,10 +12,11 @@
  */
 'use strict'
 
-eYo.require('Protocol')
+eYo.require('C9r.Owned')
 
 /**
  * @name {eYo.Section}
+ * @namespace
  */
 eYo.provide('Section')
 
@@ -24,7 +25,7 @@ eYo.provide('Section')
  * @param {eYo.Flyout} owner  The owning flyout.
  * @constructor
  */
-eYo.Section.makeClass('Dflt', eYo.C9r.Owner, {
+eYo.Section.makeClass('Dflt', eYo.C9r.Owned, {
   computed: {
     /**
      * The owning flyout

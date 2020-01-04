@@ -13,7 +13,6 @@
 
 eYo.require('Expr.List')
 
-eYo.require('Protocol.Register')
 eYo.require('C9r.Change')
 
 eYo.require('Module.stdtypes')
@@ -1223,8 +1222,8 @@ eYo.Expr.Dflt.makeSubclass('primary', {
   }
 })
 
-eYo.Protocol.add(eYo.Expr, 'Register', 'primary', function (brick) {
-  return !brick.isInFlyout
+eYo.Do.Register.add(eYo.Expr, 'primary', function (b3k) {
+  return !b3k.isInFlyout
 })
 
 ;[

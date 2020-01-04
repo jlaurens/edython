@@ -11,7 +11,6 @@
  */
 'use strict'
 
-eYo.require('Protocol')
 eYo.require('C9r')
 eYo.require('Unit')
 eYo.require('Events')

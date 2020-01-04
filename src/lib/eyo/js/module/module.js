@@ -175,7 +175,7 @@ eYo.Module.Dflt.prototype.forEachItemWithType = function (type, handler) {
 }
 
 // Each model loaded comes here
-eYo.Protocol.add(eYo.Module.Item, 'Register', 'module')
+eYo.Do.Register.add(eYo.Module.Item, 'Register', 'module')
 
 /**
  * Each item has a link to the module it belongs to.

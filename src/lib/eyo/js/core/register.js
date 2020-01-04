@@ -11,33 +11,42 @@
  */
 'use strict'
 
-eYo.require('Protocol')
+eYo.provide('Do.Register')
 
-eYo.Protocol.Register = function (key, filter) {
-  var ans = {
-    methods: {},
-    properties: {}
-  }
-  var registered = []
-  ans.methods[key + 'Register'] = function (object) {
-    if (filter(object)) {
-      var i = registered.indexOf(object)
-      if (i < 0) {
-        registered.push(object)
+/**
+ * Adds a `fooRegister` and a `fooUnregister` method to the given object, as soon as `foo` ois the given key. `fooForEach` and `fooSome` iterators are provided too.
+ * Only new methods are allowed.
+ * @param {Object} object - the object to extend
+ * @param {String} key - The unique key prefixing the added methods
+ * @param {Function} filter - The function to filter out objects before registering.
+ */
+eYo.Do.Register.add = function (object, key, filter) {
+  let registered = []
+  let model = {
+    [key + 'Register']: function (object) {
+      if (filter(object)) {
+        let i = registered.indexOf(object)
+        if (i < 0) {
+          registered.push(object)
+        }
       }
-    }
+    },
+    [key + 'Unregister']: function (object) {
+      var i = registered.indexOf(object)
+      if (i>=0) {
+        registered.splice(i)
+      }
+    },
+    [key + 'ForEach']: function (handler) {
+      registered.forEach(handler, this)
+    },
+    [key + 'Some']: function (handler) {
+      registered.some(handler, this)
+    },
   }
-  ans.methods[key + 'Unregister'] = function (object) {
-    var i = registered.indexOf(object)
-    if (i>=0) {
-      registered.splice(i)
-    }
-  }
-  ans.methods[key + 'ForEach'] = function (handler) {
-    registered.forEach(handler, this)
-  }
-  ans.methods[key + 'Some'] = function (handler) {
-    registered.some(handler, this)
-  }
-  return ans
+  Object.keys(model).forEach(k => {
+    eYo.assert(!eYo.Do.hasOwnProperty(object, k))
+    let f = model[k]
+    object[k] = f // maybe some post processing here
+  })
 }

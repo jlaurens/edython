@@ -11,7 +11,6 @@
  */
 'use strict';
 
-eYo.require('Protocol')
 eYo.require('C9r.BSMOwned')
 
 eYo.provide('Field')
