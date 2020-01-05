@@ -26,4 +26,14 @@ describe('eYo Tests', function () {
     chai.assert(eYo.NA === undefined)
     chai.assert(eYo.NA === x)
   })
+  it ('eYo.MYSTIQUE', function () {
+    let M = eYo.MYSTIQUE
+    chai.assert(M)
+    chai.expect(() => {
+      M()
+    }).not.to.throw()
+    chai.assert(M.foo === M)
+    M.bar = 421
+    chai.expect(M === M.bar)
+  })
 })

@@ -809,7 +809,7 @@ eYo.Dlgt_p.disposeInstance = function (object) {
  * @param {Object} model - Object with `init` key, eventually.
  */
 eYo.Dlgt_p.registerInit = function (k, model) {
-  if (!model) {
+  if (eYo.isNA(model)) {
     console.error('BREAK HERE!')
   }
   var init = (eYo.isF(model) && model) || (eYo.isF(model.init) && model.init)
@@ -1313,7 +1313,7 @@ eYo.Dlgt_p.calledDeclare = function (model) {
   Object.keys(model).forEach(k => {
     eYo.assert(!eYo.Do.hasOwnProperty(p, k))
     let f = model[k]
-    eYo.assert(!eYo.isF(f))
+    eYo.assert(eYo.isF(f), `Got ${f}instead of a function`)
     p[k] = f // maybe some post processing here
   })
 }

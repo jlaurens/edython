@@ -28,8 +28,23 @@
   Object.defineProperties(eYo, {
     NA: { value: NA },
     name: { value: 'eYo' },
-    INVALID: {value: new function () {}, writable: false},
+    INVALID: {value: new function () {}},
+    MYSTIQUE: {
+      value: new Proxy(function foo () {}, {
+        get (target) {
+          return eYo.MYSTIQUE
+        },
+        set (target, prop, value) {},
+        apply (target, thisArg, argumentsList) {
+          return eYo.MYSTIQUE
+        },
+        construct(target, args) {
+          return eYo.MYSTIQUE
+        },
+      })
+    }
   })
+
 }
 
 /**

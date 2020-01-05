@@ -11,6 +11,8 @@
  */
 'use strict'
 
+eYo.require('Do.Register')
+
 /**
  * @name {eYo.Module}
  * @namespace

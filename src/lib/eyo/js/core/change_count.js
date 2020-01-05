@@ -11,6 +11,7 @@
  */
 'use strict'
 
+eYo.require('C9r')
 eYo.provide('ChangeCount')
 
 eYo.Dlgt_p.changeCountAdd = function () {

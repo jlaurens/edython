@@ -246,9 +246,9 @@ java -jar "$COMPILER"\
 --js "src/lib/blockly/core/toolbox.js" \
 --js "src/lib/eyo/js/core/eyo.js" \
 --js "src/lib/eyo/js/parser/bitset.js" \
---js "src/lib/eyo/js/core/change_count.js" \
 --js "src/lib/eyo/js/core/decorate.js" \
 --js "src/lib/eyo/js/core/do.js" \
+--js "src/lib/eyo/js/core/register.js" \
 --js "src/lib/eyo/Include/errcode.js" \
 --js "src/lib/eyo/js/core/ui.js" \
 --js "src/lib/eyo/msg/js/base.js" \
@@ -266,6 +266,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/application.js" \
 --js "src/lib/eyo/js/application/abstract/owned.js" \
 --js "src/lib/eyo/js/core/change.js" \
+--js "src/lib/eyo/js/core/change_count.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/consolidator.js" \
 --js "src/lib/eyo/js/other/db.js" \
 --js "src/lib/eyo/js/application/desk/desk.js" \
