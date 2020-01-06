@@ -98,8 +98,8 @@ eYo.BoardDragger.prototype.start = function(Motion) {
    * @package
    */
   this.xyStart_ = new eYo.Where()
-  if (eYo.app.focusMngr.brick) {
-    eYo.app.focusMngr.brick.focusOff()
+  if (eYo.app.focus_mngr.brick) {
+    eYo.app.focus_mngr.brick.focusOff()
   }
 }
 

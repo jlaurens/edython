@@ -53,17 +53,17 @@ eYo.Focus.makeClass('Main', eYo.C9r.Owned, {
       get () {
         return this.mngr && this.mngr.board
       },
-      set (board) {
-        if (board !== this.board) {
-          this.hasUI && this.ui_driver.offBoard(this)
-          this.mngr_ = board && board.focusMngr || eYo.NA
-          this.hasUI && this.ui_driver.onBoard(this)
+      set (after) {
+        if (after !== this.board) {
+          this.hasUI && this.ui_driver.boardOff(this)
+          this.mngr_ = after && after.focus_mngr || eYo.NA
+          this.hasUI && this.ui_driver.boardOn(this)
         }
       }
     },
     /**
      * The brick that has current focus, if any
-     * @type {?eYo.Brick}
+     * @type {?eYo.Brick.Dflt}
      */
     brick: {
       get () {
@@ -71,7 +71,7 @@ eYo.Focus.makeClass('Main', eYo.C9r.Owned, {
       },
       set (after) {
         if (after && this.mngr_ && after !== this.mngr_.brick) {
-          this.mngr_ = after.focusMngr
+          this.mngr_ = after.focus_mngr
           this.mngr_.brick = after
         }
       }
@@ -86,7 +86,7 @@ eYo.Focus.makeClass('Main', eYo.C9r.Owned, {
       },
       set (after) {
         if (after && this.mngr_ && after !== this.mngr_.field) {
-          this.mngr_ = after.focusMngr
+          this.mngr_ = after.focus_mngr
           this.mngr_.field = after
         }
       }
@@ -101,7 +101,7 @@ eYo.Focus.makeClass('Main', eYo.C9r.Owned, {
       },
       set (after) {
         if (after && this.mngr_ && after !== this.mngr_.magnet) {
-          this.mngr_ = after.focusMngr
+          this.mngr_ = after.focus_mngr
           this.mngr_.magnet = after
         }
       }
@@ -113,28 +113,26 @@ eYo.Focus.makeClass('Main', eYo.C9r.Owned, {
      * @type {?eYo.Focus.Mngr}
      */
     mngr: eYo.NA,
-    /**
-     * The manager that may have the current focus
-     * @type {?Array<eYo.Focus.Mngr>}
-     */
-    mngrs: [],
   },
   ui: {
     init () {
-      this.mngrs_.forEach(m => m.initUI())
+      this.mngrForEach(m => m.initUI())
     },
     dispose () {
-      this.mngrs_.foreach(m => m.disposeUI())
+      this.mngrForEach(m => m.disposeUI())
     },
   }
 })
+
+// Each newly created focus manager comes here
+eYo.Do.Register.add(eYo.Focus.Main, 'mngr')
 
 /**
  * Dispose of the 
  */
 eYo.Focus.Main_p.mngrWillDispose = function (mngr) {
-  this.mngrs_ = this.mngrs_.filter(m => m !== mngr)
-  if (mthis.mngr_ === mngr) {
+  this.mngrUnregister(mngr)
+  if (this.mngr_ === mngr) {
     this.mngr_ = null
   }
 }
@@ -146,7 +144,7 @@ eYo.Focus.Main_p.mngrWillDispose = function (mngr) {
  */
 eYo.Focus.makeClass('Mngr', eYo.C9r.Owned, {
   init () {
-    this.main.mngrs.push(this)
+    this.focus_main.mngrRegister(this)
   },
   computed: {
     /**
@@ -162,17 +160,12 @@ eYo.Focus.makeClass('Mngr', eYo.C9r.Owned, {
   },
   valued: {
     /**
-     * @type{eYo.Brick}
+     * Focus only on wrappers.
+     * @type{eYo.Brick.Dflt}
      */
     brick: {
       validate (after) {
-        if (after) {
-          var wrapper = after.wrapper
-          if (wrapper) {
-            return wrapper
-          }
-        }
-        return after
+        return after && after.wrapper || after
       },
       willChange() {
         this.hasUI && this.ui_driver.brickOff(this)
@@ -240,9 +233,6 @@ eYo.Focus.makeClass('Mngr', eYo.C9r.Owned, {
      * @private
      */
     field: {
-      get () {
-        return field__
-      },
       willChange (after) {
         this.ui_driver.fieldOff(this)
         this.magnet_ = null
@@ -327,12 +317,12 @@ eYo.C9r.Owned.eyo.modelDeclare({
 
 eYo.Brick.Dflt.eyo.modelDeclare({
   computed: {
-    focusMngr () {
-      return this.board.focusMngr
+    focus_mngr () {
+      return this.board.focus_mngr
     },
     hasFocus: {
       get() {
-        return this === this.focusMngr.brick
+        return this === this.focus_mngr.brick
       },
       set (after) {
         after ? this.focusOn() : this.focusOff()
@@ -343,12 +333,12 @@ eYo.Brick.Dflt.eyo.modelDeclare({
 
 eYo.Magnet.Dflt.eyo.modelDeclare({
   computed: {
-    focusMngr () {
-      return this.board.focusMngr
+    focus_mngr () {
+      return this.board.focus_mngr
     },
     hasFocus: {
       get() {
-        return this === this.focusMngr.magnet
+        return this === this.focus_mngr.magnet
       },
       set (after) {
         after ? this.focusOn() : this.focusOff()
@@ -359,12 +349,12 @@ eYo.Magnet.Dflt.eyo.modelDeclare({
 
 eYo.Field.Dflt.eyo.modelDeclare({
   computed: {
-    focusMngr () {
-      return this.board.focusMngr
+    focus_mngr () {
+      return this.board.focus_mngr
     },
     hasFocus: {
       get() {
-        return this === this.focusMngr.field
+        return this === this.focus_mngr.field
       },
       set (after) {
         after ? this.focusOn() : this.focusOff()
@@ -391,7 +381,7 @@ eYo.Board.Dflt_p.focusOn = function () {
  */
 eYo.Brick.Dflt_p.focusOn = function (noBoard) {
   noBoard || this.board.focusOn()
-  return !!(this.focusMngr.brick = this)
+  return !!(this.focus_mngr.brick = this)
 }
 
 /**
@@ -403,7 +393,7 @@ eYo.Brick.Dflt_p.focusOn = function (noBoard) {
  */
 eYo.Field.Dflt_p.focusOn = function (noBoard) {
   noBoard || this.board.focusOn()
-  return !!(this.focusMngr.field = this)
+  return !!(this.focus_mngr.field = this)
 }
 
 /**
@@ -416,7 +406,7 @@ eYo.Field.Dflt_p.focusOn = function (noBoard) {
  */
 eYo.Magnet.Dflt_p.focusOn = function (noBoard) {
   noBoard || this.board.focusOn()
-  return !!(this.focusMngr.magnet = this)
+  return !!(this.focus_mngr.magnet = this)
 }
 
 /**
@@ -432,7 +422,7 @@ eYo.Board.Dflt_p.focusOff = function () {
  * `focusOff` is used from click handling methods.
  */
 eYo.Brick.Dflt_p.focusOff = function () {
-  this.hasFocus && (this.focusMngr.brick = eYo.NA)
+  this.hasFocus && (this.focus_mngr.brick = eYo.NA)
 }
 
 /**
@@ -442,7 +432,7 @@ eYo.Brick.Dflt_p.focusOff = function () {
  * Does nothing if the receiver is not selected.
  */
 eYo.Magnet.Dflt_p.focusOff = function () {
-  this.hasFocus && (this.focusMngr.magnet = eYo.NA)
+  this.hasFocus && (this.focus_mngr.magnet = eYo.NA)
 }
 
 /**
@@ -450,5 +440,5 @@ eYo.Magnet.Dflt_p.focusOff = function () {
  * `focusOff` is used from click handling methods.
  */
 eYo.Field.Dflt_p.focusOff = function () {
-  this.hasFocus && (this.focusMngr.field = eYo.NA)
+  this.hasFocus && (this.focus_mngr.field = eYo.NA)
 }

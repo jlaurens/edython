@@ -30,7 +30,7 @@ eYo.forwardDeclare('Magnet')
 /**
  * Class for a basic object.
  * 
- * @param {eYo.App.Dflt|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Expr|eYo.Stmt|eYo.Slot|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.App.Dflt|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Expr|eYo.Stmt|eYo.Slot.Dflt|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
 eYo.C9r.makeClass('Owned', {
@@ -131,13 +131,13 @@ eYo.assert(eYo.C9r.Owned, 'MISSING eYo.C9r.Owned')
  * 
  * @name {eYo.C9r.BSMOwned}
  * @constructor
- * @param {eYo.Brick|eYo.Slot|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
+ * @param {eYo.Brick|eYo.Slot.Dflt|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
  * @readonly
  * @property {eYo.Brick.UI} ui  The ui object used for rendering.
  * @readonly
- * @property {eYo.Brick} brick  The brick.
+ * @property {eYo.Brick.Dflt} brick  The brick.
  * @readonly
- * @property {eYo.Slot} slot  The slot.
+ * @property {eYo.Slot.Dflt} slot  The slot.
  * @readonly
  * @property {eYo.Magnet.Dflt} magnet  The magnet.
  */
@@ -159,7 +159,7 @@ eYo.forwardDeclare('Magnet')
 
 eYo.C9r.BSMOwned_p.ownerDidChange = function (before, after) {
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA
-  if (after instanceof eYo.Slot) {
+  if (after instanceof eYo.Slot.Dflt) {
     this.slot_ = after
     this.brick_ = after.brick
   } else if (after instanceof eYo.Magnet.Dflt) {

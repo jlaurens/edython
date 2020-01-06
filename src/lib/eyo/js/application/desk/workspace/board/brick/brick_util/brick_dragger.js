@@ -131,7 +131,7 @@ eYo.BrickDragger.prototype.dispose = function() {
  * When the center of the brick will gout out the visible area,
  * we scroll the brick board to keep it back.
  * @param {eYo.Motion} motion  The motion initiating the eventual drag.
- * @return {eYo.Brick}  The target brick of the drag event, if any.
+ * @return {eYo.Brick.Dflt}  The target brick of the drag event, if any.
  */
 eYo.BrickDragger.prototype.start = function(motion) {
   if (this.brick_) {
@@ -173,7 +173,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
   }
   /**
    * The top brick in the stack that is being dragged.
-   * @type {!eYo.Brick}
+   * @type {!eYo.Brick.Dflt}
    * @private
    */
   this.brick_ = targetBrick.focusOn()

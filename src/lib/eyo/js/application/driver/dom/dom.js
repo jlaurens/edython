@@ -538,7 +538,7 @@ eYo.Dom.on_keydown = e => {
   }
   // var deleteBrick = false;
   if (e.keyCode == 9) {
-    if (eYo.Navigate.doTab(eYo.app.focusMngr.brick, {
+    if (eYo.Navigate.doTab(eYo.app.focus_mngr.brick, {
         left: e.shiftKey,
         fast: e.altKey || e.ctrlKey || e.metaKey
       })) {
@@ -557,16 +557,16 @@ eYo.Dom.on_keydown = e => {
     if (eYo.app.desktop.isDragging) {
       return;
     }
-    if (eYo.app.focusMngr.brick && eYo.app.focusMngr.brick.deletable) {
-      eYo.app.deleteBrick(eYo.app.focusMngr.brick, e.altKey || e.ctrlKey || e.metaKey);
+    if (eYo.app.focus_mngr.brick && eYo.app.focus_mngr.brick.deletable) {
+      eYo.app.deleteBrick(eYo.app.focus_mngr.brick, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
     if (eYo.app.desktop.isDragging) {
       return;
     }
-    if (eYo.app.focusMngr.brick &&
-        eYo.app.focusMngr.brick.deletable && eYo.app.focusMngr.brick.movable) {
+    if (eYo.app.focus_mngr.brick &&
+        eYo.app.focus_mngr.brick.deletable && eYo.app.focus_mngr.brick.movable) {
       // Eyo: 1 meta key for shallow copy, more for deep copy
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable bricks. The next step
@@ -575,12 +575,12 @@ eYo.Dom.on_keydown = e => {
       if (e.keyCode == 67) {
         // 'c' for copy.
         eYo.app.hideChaff()
-        eYo.App.Dflt.copyBrick(eYo.app.focusMngr.brick, deep)
-      } else if (e.keyCode == 88 && !eYo.app.focusMngr.brick.board.readOnly) {
+        eYo.App.Dflt.copyBrick(eYo.app.focus_mngr.brick, deep)
+      } else if (e.keyCode == 88 && !eYo.app.focus_mngr.brick.board.readOnly) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.App.Dflt.copyBrick(eYo.app.focusMngr.brick, deep)
-        eYo.app.deleteBrick(eYo.app.focusMngr.brick, deep)
+        eYo.App.Dflt.copyBrick(eYo.app.focus_mngr.brick, deep)
+        eYo.app.deleteBrick(eYo.app.focus_mngr.brick, deep)
       }
     }
     if (e.keyCode == 86) {
@@ -594,10 +594,10 @@ eYo.Dom.on_keydown = e => {
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBrick && !eYo.app.focusMngr.brick.board.readOnly) {
+  // if (deleteBrick && !eYo.app.focus_mngr.brick.board.readOnly) {
   //   eYo.Events.group = true
   //   eYo.app.hideChaff();
-  //   eYo.app.focusMngr.brick.dispose(/* heal */ true, true);
+  //   eYo.app.focus_mngr.brick.dispose(/* heal */ true, true);
   //   eYo.Events.group = false
   // }
 };

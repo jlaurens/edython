@@ -175,7 +175,7 @@ eYo.Svg.Search.prototype.addListeners = function(search, brick) {
     g,
     'mousedown',
     null,
-    e => eYo.app.motion.handleFlyoutStart(e, search, brick)
+    e => search.app.motion.handleFlyoutStart(e, search, brick)
   ))
   search.listeners_.push(eYo.Dom.bindEvent(
     g,
@@ -289,22 +289,22 @@ eYo.Svg.makeDriverClass('SearchToolbar', {
     svg.pathControl_ = eYo.Svg.newElement('path', {
       id: 'p-search-control'
     }, dom.svg)
-    if (eYo.App.Dflt && eYo.app.searchDropDown) {
+    if (ftb.app && ftb.app.searchDropDown) {
       dom.select_general_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select'),
         eYo.app.searchDropDown
       )
-    } else if (eYo.App.Dflt && eYo.app.searchDropDownGeneral && eYo.app.searchDropDownModule) {
+    } else if (ftb.app && ftb.app.searchDropDownGeneral && ftb.app.searchDropDownModule) {
       dom.select_general_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-general'),
-        eYo.app.searchDropDownGeneral
+        ftb.app.searchDropDownGeneral
       )
       dom.select_module_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-module'),
-        eYo.app.searchDropDownModule
+        ftb.app.searchDropDownModule
       )
     } else {
       dom.select_general_ = goog.dom.createDom(

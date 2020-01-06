@@ -181,7 +181,7 @@ eYo.Consolidator.List_p.willBeConnected = function (io) {
  * io is properly set up at the end.
  * @param {Object} io parameter.
  * @param {number} i When eYo.NA, take io.i
- * @return {eYo.Slot}, the slot inserted.
+ * @return {eYo.Slot.Dflt}, the slot inserted.
  */
 eYo.Consolidator.List_p.insertPlaceholder = function (io, i) {
   if (goog.isNumber(i)) {
@@ -195,7 +195,7 @@ eYo.Consolidator.List_p.insertPlaceholder = function (io, i) {
       this.will_connect_ = this.brick.will_connect_ = false
     }
   }
-  var slot = new eYo.Slot(io.brick, '!', model)
+  var slot = new eYo.Slot.Dflt(io.brick, '!', model)
   io.list.splice(io.i, 0, slot)
   io.edited = true
   this.setupIO(io)
@@ -678,7 +678,7 @@ eYo.Consolidator.List_p.consolidate = eYo.Decorate.reentrant_method('consolidate
  * @param {eYo.Brick.Dflt} brick
  * @param {String} name The name of the slot.
  * @param {Boolean} [dontCreate] Whether the receiver should create slots on the fly.
- * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
+ * @return {eYo.Slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.Consolidator.List_p.getSlot = function (brick, name, dontCreate) {
   // name = eYo.Do.Name.getNormalized(name) not here

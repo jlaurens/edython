@@ -386,7 +386,7 @@ eYo.Board.Dflt.prototype.didScale = function() {
   // } else {
   //   this.move()
   // }
-  // eYo.app.hideChaff()
+  // this.app.hideChaff()
   // if (this.flyout_) {
   //   // Resize flyout.
   //   this.flyout_.reflow()
@@ -451,7 +451,7 @@ eYo.Board.Main.prototype.clear = function() {
  * @param {string} type - The type form `eYo.T3`.
  * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @return {!eYo.Brick} The created brick.
+ * @return {!eYo.Brick.Dflt} The created brick.
  */
 eYo.Board.Dflt.prototype.newBrick = function (type, opt_id) {
   var C9r = eYo.C9r.forType(type)
@@ -483,7 +483,7 @@ eYo.Board.Dflt.prototype.removeChangeListener = function(func) {
  * Find the brick on this board with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of brick to find.
- * @return {eYo.Brick} The sought after brick or null if not found.
+ * @return {eYo.Brick.Dflt} The sought after brick or null if not found.
  */
 eYo.Board.Dflt.prototype.getBrickById = eYo.Board.Dflt.prototype.getBrickById = function(id) {
   return this.list_.getBrickById(id)

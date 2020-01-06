@@ -481,7 +481,7 @@ eYo.Flyout.prototype.on_wheel = function(e) {
 /**
  * Create a copy of this brick on the board.
  * @param {eYo.Brick.Dflt} originalBrick The brick to copy from the flyout.
- * @return {eYo.Brick} The newly created brick, or null if something
+ * @return {eYo.Brick.Dflt} The newly created brick, or null if something
  *     went wrong with deserialization.
  */
 eYo.Flyout.prototype.createBrick = function(originalBrick) {
@@ -490,7 +490,7 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
   eYo.Events.disableWrap(() => {
     newBrick = this.placeNewBrick_(originalBrick)
     // Close the flyout.
-    eYo.app.hideChaff()
+    this.app.hideChaff()
   })
   eYo.Events.fireBrickCreate(newBrick, true)
   if (this.autoClose) {
@@ -624,7 +624,7 @@ console.error('IN PROGRESS')
  * Edython adds a full rendering process.
  * No rendering is made while bricks are dragging.
  * @param {eYo.Brick.Dflt} srcBrick The flyout brick to copy.
- * @return {!eYo.Brick} The new brick in the main board.
+ * @return {!eYo.Brick.Dflt} The new brick in the main board.
  * @private
  */
 eYo.Flyout.prototype.placeNewBrick_ = function(srcBrick) {

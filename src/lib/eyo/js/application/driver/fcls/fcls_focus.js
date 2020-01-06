@@ -40,21 +40,21 @@ eYo.Fcls.Focus.prototype.mngrInitUI = eYo.Do.nothing
 
 /**
  * Init a standard focus manager.
- * @param {eYo.Focus.Mngr} mngr  The standard focus manager
+ * @param {eYo.Focus.Main} mngr  The standard focus manager
  */
 eYo.Fcls.Focus.prototype.mngrDisposeUI = eYo.Do.nothing
 
 /**
  * Focus on a board.
- * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus on a board.
+ * @param {eYo.Focus.Main} mngr  The main focus manager that should put focus on a board.
  */
-eYo.Fcls.Focus.prototype.onBoard = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.boardOn = eYo.Do.nothing
 
 /**
  * Focus off a board.
- * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus off a board.
+ * @param {eYo.Focus.Main} mngr  The main focus manager that should put focus off a board.
  */
-eYo.Fcls.Focus.prototype.offBoard = eYo.Do.nothing
+eYo.Fcls.Focus.prototype.boardOff = eYo.Do.nothing
 
 /**
  * Focus on a board.

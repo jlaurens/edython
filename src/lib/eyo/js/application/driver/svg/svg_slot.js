@@ -21,7 +21,7 @@ eYo.forwardDeclare('Slot')
 eYo.Svg.makeDriverClass('Slot', {
     /**
    * Prepare the given slot.
-   * @param {eYo.Slot} slot to be prepared.
+   * @param {eYo.Slot.Dflt} slot to be prepared.
    */
   initUI (slot) {
     var dom = this._initUI(slot)
@@ -40,7 +40,7 @@ eYo.Svg.makeDriverClass('Slot', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {eYo.Slot} slot
+   * @param {eYo.Slot.Dflt} slot
    */
   disposeMake (slot) {
     goog.dom.removeNode(slot.dom.svg.group_)
@@ -83,7 +83,7 @@ eYo.Svg.Slot.prototype.displayedUpdate = function (slot) {
 
 /**
  * Dispose of the given slot's rendering resources.
- * @param {eYo.Slot} slot
+ * @param {eYo.Slot.Dflt} slot
  */
 eYo.Svg.Slot.prototype.display = function (slot) {
   var g = slot.dom && slot.dom.svg.group_

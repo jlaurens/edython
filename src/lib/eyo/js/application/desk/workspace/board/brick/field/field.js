@@ -123,7 +123,7 @@ Object.defineProperties(eYo.Field, {
   /**
    * Create all the fields from the given model.
    * For edython.
-   * @param {eYo.Slot|!eYo.Magnet|!eYo.Brick} owner
+   * @param {eYo.Slot.Dflt|!eYo.Magnet|!eYo.Brick.Dflt} owner
    * @param {Object} fieldsModel
    */
   eYo.Field.makeFields = (owner, fieldsModel) => {
@@ -136,7 +136,7 @@ Object.defineProperties(eYo.Field, {
       var model = fieldsModel[name]
       var field = makeField(owner, name, model)
       if (field) {
-        if (name === eYo.Key.BIND && owner instanceof eYo.Slot) {
+        if (name === eYo.Key.BIND && owner instanceof eYo.Slot.Dflt.Dflt) {
           owner.bindField = field
         }
         owner.fields[name] = field
@@ -270,18 +270,18 @@ Object.defineProperties(eYo.Field, {
 
 /**
  * 
- * @param {eYo.Brick|eYo.Slot}
+ * @param {eYo.Brick|eYo.Slot.Dflt}
  */
 eYo.Field.disposeFields = owner => {
   var fields = owner.fields
   owner.fieldAtStart = owner.toEndField = owner.fields = eYo.NA
-  ;(owner instanceof eYo.Slot) && (owner.bindField = eYo.NA)
+  ;(owner instanceof eYo.Slot.Dflt) && (owner.bindField = eYo.NA)
   Object.values(fields).forEach(f => f.dispose())
 }
 
 /**
  * Abstract class for text fields.
- * @param {eYo.Brick|eYo.Slot|eYo.Magnet.Dflt} bsim The owner of the field.
+ * @param {eYo.Brick|eYo.Slot.Dflt|eYo.Magnet.Dflt} bsim The owner of the field.
  * @param {string} text The initial content of the field.
  * @constructor
  */
@@ -471,7 +471,7 @@ eYo.Field.Dflt_p.willRender = function () {
 /**
  * Class for a non-editable field.
  * The only purpose is to start with a different height.
- * @param {eYo.Brick|eYo.Slot} bsi The owner of the field.
+ * @param {eYo.Brick|eYo.Slot.Dflt} bsi The owner of the field.
  * @param {string} name The required name of the field
  * @param {string} text The initial content of the field.
  * @extends {eYo.Field}
@@ -485,7 +485,7 @@ eYo.Field.Dflt.makeSubclass('Label', {
 
 /**
  * Class for an editable code field.
- * @param {eYo.Brick|eYo.Slot} bsi The owner of the field.
+ * @param {eYo.Brick|eYo.Slot.Dflt} bsi The owner of the field.
  * @param {string=} name
  * @param {string} text The initial content of the field.
  * @extends {eYo.Field}

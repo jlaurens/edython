@@ -31,8 +31,8 @@
     INVALID: {value: new function () {}},
     MYSTIQUE: {
       value: new Proxy(function foo () {}, {
-        get (target) {
-          return eYo.MYSTIQUE
+        get (target, prop) {
+          return !prop.startsWith('is') && !prop.startsWith('has') && eYo.MYSTIQUE
         },
         set (target, prop, value) {},
         apply (target, thisArg, argumentsList) {

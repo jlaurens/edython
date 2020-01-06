@@ -138,7 +138,7 @@ eYo.Expr.List.slotsHandler = {
  * Fetches the named slot object, getSlot.
  * @param {String} name The name of the slot.
  * @param {Boolean} [dontCreate] Whether the receiver should create slots on the fly.
- * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
+ * @return {eYo.Slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.Expr.List.prototype.getSlot = function (name, dontCreate) {
   var slot = eYo.Expr.List.superProto_.getSlot.call(this, name)

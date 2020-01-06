@@ -1823,7 +1823,7 @@ eYo.Fcfl.Brick._p.on_mouseup = function (brick, e) {
         }
       }
     }
-  } else if ((b3k = eYo.app.focusMngr.brick) && (ee = b3k.ui.selectMouseDownEvent)) {
+  } else if ((b3k = eYo.app.focus_mngr.brick) && (ee = b3k.ui.selectMouseDownEvent)) {
     b3k.ui.selectMouseDownEvent = null
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
@@ -1842,7 +1842,7 @@ eYo.Fcfl.Brick._p.on_mouseup = function (brick, e) {
     }
   }
   let a = brick.app
-  a.didTouchBrick && a.didTouchBrick(a.focusMngr.brick)
+  a.didTouchBrick && a.didTouchBrick(a.focus_mngr.brick)
 }
 
 /**

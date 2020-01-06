@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Focus driver.
+ * @fileoverview Focus driver both for `Main` and `Mngr` instances.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -51,9 +51,9 @@ eYo.Svg.Focus.prototype.mngrDisposeUI = eYo.Do.nothing
 console.error("CSS flag missing in board's dom")
 /**
  * Focus on a board.
- * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus on a board.
+ * @param {eYo.Focus.Main} mngr - The main focus manager that should put focus on a board.
  */
-eYo.Svg.Focus.prototype.onBoard = function (mngr) {
+eYo.Svg.Focus.prototype.boardOn = function (mngr) {
   var b = mngr.board
   if (b) {
     // add a css style
@@ -62,9 +62,9 @@ eYo.Svg.Focus.prototype.onBoard = function (mngr) {
 
 /**
  * Focus off a board.
- * @param {eYo.Focus.Mngr} mngr  The focus manager that should put focus off a board.
+ * @param {eYo.Focus.Main} mngr - The main focus manager that should put focus off a board.
  */
-eYo.Svg.Focus.prototype.offBoard = function (mngr) {
+eYo.Svg.Focus.prototype.boardOff = function (mngr) {
   var b = mngr.board
   if (b) {
     // remove a css style

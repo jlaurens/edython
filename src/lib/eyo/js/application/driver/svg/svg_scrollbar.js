@@ -236,7 +236,7 @@ eYo.Svg.Scrollbar.prototype.on_mouseup = function() {
  * @private
  */
 eYo.Svg.Scrollbar.prototype.cleanUp = function(scrollbar) {
-  eYo.app.hideChaff()
+  scrollbar.app.hideChaff()
   var bound = scrollbar.dom.bound
   if (bound.mouseup) {
     eYo.Dom.unbindEvent(bound.mouseup)

@@ -134,22 +134,22 @@ eYo.Svg.makeDriverClass('FlyoutToolbar', {
     svg.pathControl_ = eYo.Svg.newElement('path', {
       id: 'p-flyout-control'
     }, dom.svg)
-    if (eYo.App.Dflt && eYo.app.flyoutDropDown) {
+    if (eYo.App.Dflt && ftb.app.flyoutDropDown) {
       dom.select_general_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select'),
-        eYo.app.flyoutDropDown
+        ftb.app.flyoutDropDown
       )
-    } else if (eYo.App.Dflt && eYo.app.flyoutDropDownGeneral && eYo.app.flyoutDropDownModule) {
+    } else if (eYo.App.Dflt && ftb.app.flyoutDropDownGeneral && ftb.app.flyoutDropDownModule) {
       dom.select_general_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-general'),
-        eYo.app.flyoutDropDownGeneral
+        ftb.app.flyoutDropDownGeneral
       )
       dom.select_module_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-module'),
-        eYo.app.flyoutDropDownModule
+        ftb.app.flyoutDropDownModule
       )
     } else {
       dom.select_general_ = goog.dom.createDom(
@@ -343,7 +343,7 @@ eYo.Svg.Flyout.prototype.addListeners = function(flyout, brick) {
     g,
     'mousedown',
     null,
-    e => eYo.app.motion.handleFlyoutStart(e, flyout, brick)
+    e => flyout.app.motion.handleFlyoutStart(e, flyout, brick)
   ))
   flyout.listeners_.push(eYo.Dom.bindEvent(
     g,

@@ -14,16 +14,28 @@
 eYo.provide('Do.Register')
 
 /**
- * Adds a `fooRegister` and a `fooUnregister` method to the given object, as soon as `foo` ois the given key. `fooForEach` and `fooSome` iterators are provided too.
+ * Adds a `fooRegister` and a `fooUnregister` method to the given object, as soon as `foo` is the given key. `fooForEach` and `fooSome` iterators are provided too.
  * Only new methods are allowed.
- * @param {Object} object - the object to extend
+ * @param {Object} object - the object to extend, either a constructor (a function) or an instance.
  * @param {String} key - The unique key prefixing the added methods
  * @param {Function} filter - The function to filter out objects before registering.
  */
 eYo.Do.Register.add = function (object, key, filter) {
-  let registered = []
+  if (eYo.isF(object)) {
+    object.eyo.modelDeclare({
+      valued: {
+        [key + 'Registered'] () {
+          return []
+        }
+      }
+    })
+    object = object.prototype
+  } else {
+    Object.defineProperty(object, key + 'Registered', {value: []})
+  }
   let model = {
     [key + 'Register']: function (object) {
+      let registered = this[key + 'Registered']
       if (filter(object)) {
         let i = registered.indexOf(object)
         if (i < 0) {
@@ -32,16 +44,17 @@ eYo.Do.Register.add = function (object, key, filter) {
       }
     },
     [key + 'Unregister']: function (object) {
+      let registered = this[key + 'Registered']
       var i = registered.indexOf(object)
       if (i>=0) {
         registered.splice(i)
       }
     },
     [key + 'ForEach']: function (handler) {
-      registered.forEach(handler, this)
+      this[key + 'Registered'].forEach(handler, this)
     },
     [key + 'Some']: function (handler) {
-      registered.some(handler, this)
+      this[key + 'Registered'].some(handler, this)
     },
   }
   Object.keys(model).forEach(k => {

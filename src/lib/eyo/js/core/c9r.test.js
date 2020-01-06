@@ -49,6 +49,14 @@ describe ('POC', function () {
     delete ns.Foo
     chai.assert(!ns.Foo)
   })
+  it ('Object.defineProperty(…, …, {value: []})', function () {
+    let F = function () {}
+    Object.defineProperty(F.prototype, 'foo', {value: []})
+    let a = new F()
+    let b = new F()
+    a.foo.push(421)
+    chai.assert(b.foo.pop() === 421)
+  })
 })
 describe ('Tests: C9r', function () {
   this.timeout(10000)

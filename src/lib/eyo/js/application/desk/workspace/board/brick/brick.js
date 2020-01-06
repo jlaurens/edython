@@ -22,7 +22,7 @@ eYo.require('Data')
 /**
  * The namespace is expected to contain everything about bricks.
  * Hopefully.
- * @name {eYo.Brick}
+ * @name {eYo.Brick.Dflt}
  * @namespace
  */
 eYo.C9r.makeNS(eYo,'Brick')
@@ -41,7 +41,7 @@ eYo.forwardDeclare('Events')
 eYo.forwardDeclare('Span')
 eYo.forwardDeclare('Field')
 eYo.forwardDeclare('Slot')
-eYo.forwardDeclare('Magnet.S')
+eYo.forwardDeclare('Magnet')
 eYo.forwardDeclare('Expr')
 eYo.forwardDeclare('Stmt')
 eYo.forwardDeclare('Focus')
@@ -585,7 +585,7 @@ eYo.Brick.makeDflt({
     /**
      * Return the topmost enclosing brick in this brick's tree.
      * May return `this`.
-     * @return {!eYo.Brick} The root brick.
+     * @return {!eYo.Brick.Dflt} The root brick.
      */
     root () {
       var ans = this
@@ -597,7 +597,7 @@ eYo.Brick.makeDflt({
     },
     /**
      * Return the statement after the receiver.
-     * @return {!eYo.Brick} The root brick.
+     * @return {!eYo.Brick.Dflt} The root brick.
      */
     after () {
       var b3k = this.isStmt ? this : this.stmtParent
@@ -624,7 +624,7 @@ eYo.Brick.makeDflt({
     /**
      * Return the enclosing brick in this brick's tree
      * which is a control. May be null. May be different from the `root`.
-     * @return {?eYo.Brick} The root brick.
+     * @return {?eYo.Brick.Dflt} The root brick.
      */
     rootControl () {
       var ans = this
@@ -1419,7 +1419,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
           } else {
             continue
           }
-        } else if (goog.isObject(model) && (slot = new eYo.Slot(this, k, model))) {
+        } else if (goog.isObject(model) && (slot = new eYo.Slot.Dflt(this, k, model))) {
           eYo.assert(!goog.isDef(slots[k]),
             `Duplicate slot key ${k}/${this.type}`)
           slots[k] = slot
@@ -1470,7 +1470,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
    * For subclassers eventually
    */
   _p.makeMagnets = function () {
-    this.magnets_ = new eYo.Magnet.Dflts(this)
+    this.magnets_ = new eYo.Magnet.S(this)
   }
 
   /**
@@ -1478,8 +1478,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
    * For subclassers eventually
    */
   _p.disposeMagnets = function () {
-    this.magnets_.dispose()
-    this.magnets_ = eYo.NA
+    this.magnets_ = this.magnets_.dispose()
   }
 
   /**
@@ -1889,7 +1888,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
   /**
    * Connect the magnet of the `lastSlot`, to the given expression brick/magnet/type.
    * @param {eYo.Brick|eYo.Magnet|String} bdct  brick, magnet or type
-   * @return {?eYo.Brick}  The connected brick, if any.
+   * @return {?eYo.Brick.Dflt}  The connected brick, if any.
    */
   _p.connectLast = function (bmt) {
     var other = (bmt.magnets && bmt.out_m) || (bmt instanceof eYo.Magnet && bmt) || eYo.Brick.newReady(this, bmt).out_m
@@ -2050,7 +2049,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
   /**
    * Fetches the named slot object.
    * @param {String} name The name of the input.
-   * @return {eYo.Slot} The slot object, or null if input does not exist. Input that are disabled are skipped.
+   * @return {eYo.Slot.Dflt} The slot object, or null if input does not exist. Input that are disabled are skipped.
    */
   _p.getSlot = function (name) {
     return this.slotSome(slot => slot.name === name)
@@ -2189,7 +2188,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
    * The connection cannot always establish.
    * The holes are filled.
    * @param {Object} model - for subclassers
-   * @return {?eYo.Brick} the created brick
+   * @return {?eYo.Brick.Dflt} the created brick
    */
   _p.insertParentWithModel = function (model) {
     eYo.assert(false, 'Must be subclassed')
@@ -2200,7 +2199,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
    * For edython.
    * @param {Object|string} model
    * @param {eYo.Magnet.Dflt} m4t
-   * @return {?eYo.Brick} the brick that was inserted
+   * @return {?eYo.Brick.Dflt} the brick that was inserted
    */
   _p.insertBrickWithModel = function (model, m4t) {
     if (!model) {
@@ -2237,7 +2236,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
                 prepare && (prepare())
                 otherM4t.connect(m4t)
               }, () => {
-                eYo.app.focusMngr.brick = candidate
+                this.app.focus_mngr.brick = candidate
                 candidate.render()
                 candidate.bumpNeighbours_()
               })

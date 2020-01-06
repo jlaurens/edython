@@ -637,7 +637,7 @@ eYo.Xml.registerAllTags = function () {
  *
  * @param {String} string a serialized dom element.
  * @param {*} owner board or brick.
- * @return {?eYo.Brick} The root brick created, if any.
+ * @return {?eYo.Brick.Dflt} The root brick created, if any.
  */
 eYo.Xml.stringToBrick = function (string, owner) {
   var brick
@@ -744,8 +744,8 @@ eYo.Xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
  * and parse the children separately with `recoverDom`
  *
  * @param {Element} dom XML dom element.
- * @param {eYo.Board | eYo.Brick} owner either the board or a brick.
- * @return {!eYo.Brick} The root brick created.
+ * @param {eYo.Board | eYo.Brick.Dflt} owner either the board or a brick.
+ * @return {!eYo.Brick.Dflt} The root brick created.
  */
 eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
   var board = owner.board
@@ -854,7 +854,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
  *
  * @param {Element} xmlBrick XML brick element.
  * @param {*} owner The board or the owning brick.
- * @return {!eYo.Brick} The root brick created.
+ * @return {!eYo.Brick.Dflt} The root brick created.
  */
 eYo.Xml.domToBrick = (() => {
   var domToBrick = function (dom, owner) {

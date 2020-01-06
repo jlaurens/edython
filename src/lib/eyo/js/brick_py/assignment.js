@@ -254,7 +254,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
         accept (attribute) /** @suppress {globalThis} */ {
           return attribute === 'name'
         } // for old name
-      }
+      },
     },
     annotated: {
       order: 2,

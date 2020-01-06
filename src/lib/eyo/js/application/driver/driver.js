@@ -40,8 +40,8 @@ eYo.Driver.Dlgt.makeSubclass('DlgtMngr', {
 //    console.warn('INIT DlgtMngr')
   },
   valued: {
-    driverNames () {
-      return new Set()
+    driverC9rByName () {
+      return Object.create(null)
     }
   }
 })
@@ -74,7 +74,7 @@ eYo.Driver.DlgtMngr_p.makeDriverClass = function (key, Super, driverModel) {
     Super = ns.Dflt
   }
   var Driver = eYo.makeClass(ns, key, Super, ns.Dlgt, driverModel)
-  this.driverNames.add(key)
+  this.driverC9rByName[Driver.eyo.name] = Driver
   var _p = Driver.prototype
   var m_ui = this.model.ui
   var d_ui = Driver.eyo.model.ui
@@ -111,10 +111,10 @@ eYo.Driver._p.makeMngr = function (mngrModel) {
     if (!this.drivers) {
       console.error('BREAK HERE!')
     }
-    Mngr.eyo.driverNames.forEach(N => {
+    for (let [name, Driver] in Object.entries(Mngr.eyo.driverC9rByName)) {
       // do not override
-      this.drivers[N] || (this.drivers[N] = new this.eyo.ns[N](this))
-    })
+      this.drivers[name] || (this.drivers[name] = new Driver(this))
+    }
     Super.prototype.initDrivers.call(this)
   }
   return Mngr
@@ -173,21 +173,35 @@ eYo.Driver.makeClass('Mngr', eYo.C9r.Owned, eYo.Driver.DlgtMngr,  {
 
 /**
  * @name{driver}
- * Returns a default driver, whetever object is given in argument.
- * To be subclassed.
- * @param {*} object,  the object for which a driver is required.
+ * Returns a driver, based on the given object's constructor name.
+ * If the receiver is `eYo.Fcfl.Mngr` and the object's constructor name is `Foo.Bar` then the returned driver is an instance of `eYo.Fcfl.Foo.Bar`, `eYo.Fcfl.Foo` as soon as it is a driver constructor, otherwise it is the all purpose driver.
+ * @param {*} object - the object for which a driver is required.
+ * @return {eYo.Driver.Dflt}
  */
 eYo.Driver.Mngr_p.driver = function (object) {
-  return this.drivers[object.eyo.key] || this.allPurposeDriver
+  var components = object.eyo.name.split('.')
+  while (true) {
+    var driver = this.drivers[name]
+    if (driver) {
+      return driver
+    }
+    components.pop()
+    if (components.length) {
+      name = components.join('.')
+      continue
+    }
+    return this.allPurposeDriver
+  }
 }
 
 /**
  * Initialize all the drivers.
  */
 eYo.Driver.Mngr_p.initDrivers = function () {
-  eYo.Driver.Mngr.eyo.driverNames.forEach(N => {
-    this.drivers[N] || (this.drivers[N] = new this.eyo.ns[N](this))
-  })
+  for (let [name, Driver] in Object.entries(eYo.Driver.Mngr.eyo.driverC9rByName)) {
+    // do not override
+    this.drivers[name] || (this.drivers[name] = new Driver(this))
+  }
 }
 
 /**

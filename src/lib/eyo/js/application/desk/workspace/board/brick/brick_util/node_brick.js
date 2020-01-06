@@ -672,7 +672,7 @@ eYo.Node_p.subscriptlistInBrick = eYo.Node_p.do_list
 
 /**
  * `this` is binary expression.
- * @param {eYo.Board|eYo.Brick} owner
+ * @param {eYo.Board|eYo.Brick.Dflt} owner
  * @param {String} type
  * @param {String} op
  */

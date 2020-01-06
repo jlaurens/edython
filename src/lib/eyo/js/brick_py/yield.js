@@ -143,7 +143,7 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
         this.brick.variant_p = eYo.Key.FROM
       },
       didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
-        var O = this.brick
+        var b3k = this.brick
         if (b3k.from_p) {
           b3k.variant_p = eYo.Key.FROM
         } else if (b3k.expression_p || (b3k.expression_b && b3k.expression_b.unwrappedTarget)) {
@@ -160,7 +160,7 @@ eYo.Expr.Dflt.makeSubclass('yield_expr', {
  * Populate the context menu for the given brick.
  * @param {eYo.Brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
- * @this {eYo.Brick}
+ * @this {eYo.Brick.Dflt}
  * @private
  */
 eYo.Expr.yield_expr.populateContextMenuFirst_ = function (mngr) {

@@ -1773,7 +1773,7 @@ eYo.Expr.primary.prototype.getSubtype = function () {
  * @param {Brick} brick
  * @param {String} name The name of the input.
  * @param {Boolean} [dontCreate] Whether the receiver should create inputs on the fly.
- * @return {eYo.Slot} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
+ * @return {eYo.Slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.Expr.primary.prototype.getSlot = function (name) {
   var slot = eYo.Expr.primary.superProto_.getSlot.call(this, name)

@@ -193,8 +193,11 @@ eYo.C9r.isModel = (what) => {
       'promise', // : eYo.T3.Expr.value_list,
       'validateIncog', //  () {},
       'accept', //  () {},
+      'willConnect', //  () {},
+      'willDisconnect', //  () {},
       'didConnect', //  () {},
       'didDisconnect', //  () {},
+      'consolidate', // () {},
       'wrap', // : TYPE,
       'xml', // : (() => {} || true) || false||  first expected,
       'plugged', // : eYo.T3.Expr.primary,
@@ -259,6 +262,15 @@ eYo.C9r.Model.consolidate = (model, handler) => {
  * @return {Object}
  */
 eYo.C9r.Model.dataHandler = eYo.Do.nothing
+
+/**
+ * Expands a magnet model.
+ * @param {Object} model
+ * @param {String} key
+ * @return {Object}
+ */
+eYo.C9r.Model.magnetHandler = eYo.Do.nothing
+
 
 {
   let re = XRegExp(/^function\s*\S*\s*\(\s*(?<before>\s*,\s*before\b)/)
@@ -329,6 +341,7 @@ eYo.C9r.Model.dataHandler = eYo.Do.nothing
       } else if (['out', 'head', 'left', 'right', 'suite', 'foot'].includes(key)) {
         // BRICK_TYPE || [BRICK_TYPE] || () => {}
         var before = model[key]
+        eYo.C9r.Model.magnetHandler(before)
         if (!eYo.isO(before)) {
           after = {
             check: ensureRAF(before)
@@ -358,6 +371,8 @@ eYo.C9r.Model.dataHandler = eYo.Do.nothing
       }
     } else if (path === 'data') {
       eYo.C9r.Model.dataHandler(model, key)
+    } else if (path === 'slots') {
+      eYo.C9r.Model.magnetHandler(model[key])
     } else if (path === 'list') {
       if (['check', 'unique', 'all'].includes(key)) {
         // BRICK_TYPE || [BRICK_TYPE] || () => {}

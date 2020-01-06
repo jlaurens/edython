@@ -93,7 +93,7 @@ eYo.List_p.clear = function() {
  * Find the brick on this list with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of brick to find.
- * @return {eYo.Brick} The sought after brick or null if not found.
+ * @return {eYo.Brick.Dflt} The sought after brick or null if not found.
  */
 eYo.List_p.getBrickById = function(id) {
   var b3k = this.db.byId(id)

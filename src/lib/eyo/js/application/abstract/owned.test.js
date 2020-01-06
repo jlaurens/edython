@@ -88,9 +88,9 @@ describe('Owned', function () {
 describe ('Tests: BSMOwned', function () {
   var wrapper = f => 
   NS.Brick = eYo.Brick
-  NS.Slot = eYo.Slot
+  NS.Slot = eYo.Slot.Dflt
   NS.Magnet = eYo.Magnet
-  eYo.Brick = eYo.Slot = eYo.Magnet = eYo.NA
+  eYo.Brick = eYo.Slot.Dflt = eYo.Magnet = eYo.NA
   var ff = k => {
     eYo.makeClass(k, {
       owned: ['foo']
@@ -100,16 +100,16 @@ describe ('Tests: BSMOwned', function () {
     ff('Slot')
     chai.assert(eYo.Brick)
     chai.assert(eYo.Magnet)
-    chai.assert(eYo.Slot)
+    chai.assert(eYo.Slot.Dflt)
     chai.assert(eYo.Brick !== NS.Brick)
-    chai.assert(eYo.Slot !== NS.Slot)
+    chai.assert(eYo.Slot.Dflt !== NS.Slot)
     chai.assert(eYo.Magnet !== NS.Magnet)
     f()
     eYo.Brick = NS.Brick
-    eYo.Slot = NS.Slot
+    eYo.Slot.Dflt = NS.Slot
     eYo.Magnet = NS.Magnet
     chai.assert(eYo.Brick === NS.Brick)
-    chai.assert(eYo.Slot === NS.Slot)
+    chai.assert(eYo.Slot.Dflt === NS.Slot)
     chai.assert(eYo.Magnet === NS.Magnet)
   }
   it ('BSMOwned: basic', function () {

@@ -44,7 +44,7 @@ eYo.Svg.Desk.prototype.bind_resize = function (desk) {
     'resize',
     null,
     () => {
-      eYo.app.hideChaff()
+      desk.app.hideChaff()
       desk.updateMetrics()
     }
   )

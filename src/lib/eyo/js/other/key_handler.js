@@ -15,18 +15,13 @@ eYo.require('PopupMenu')
 
 eYo.provide('KeyHandler')
 
-eYo.provide('KeyHandlerMenu')
-
 eYo.forwardDeclare('XRE')
 eYo.forwardDeclare('Dom')
 eYo.forwardDeclare('Navigate')
 eYo.forwardDeclare('MenuItem')
 eYo.forwardDeclare('Separator')
 
-eYo.KeyHandlerMenu = function (opt_domHelper, opt_renderer) {
-  eYo.KeyHandlerMenu.superProto_.constructor.call(this, opt_domHelper, opt_renderer)
-}
-goog.inherits(eYo.KeyHandlerMenu, eYo.PopupMenu)
+eYo.KeyHandler.makeClass('Menu', eYo.PopupMenu)
 
 /**
  * Attempts to handle a keyboard event; returns true if the event was handled,
@@ -37,9 +32,9 @@ goog.inherits(eYo.KeyHandlerMenu, eYo.PopupMenu)
  * @return {boolean} Whether the event was handled by the container (or one of
  *     its children).
  */
-eYo.KeyHandlerMenu.prototype.handleKeyEventInternal = function (e) {
+eYo.KeyHandler.Menu_p.handleKeyEventInternal = function (e) {
   // Give the highlighted control the chance to handle the key event.
-  if (eYo.KeyHandlerMenu.superProto_.handleKeyEventInternal.call(this, e)) {
+  if (eYo.KeyHandler.Menu.superProto_.handleKeyEventInternal.call(this, e)) {
     return true
   }
   return this.handleMenuKeyEvent(e)
@@ -58,7 +53,7 @@ eYo.KeyHandler = (() => {
   var shortcuts_ = [] // an array of {key: ..., model: ...} objects
   var current_ = []
   var target_
-  var menu_ = new eYo.KeyHandlerMenu(/* eYo.NA, ContextMenuRenderer */)
+  var menu_ = new eYo.KeyHandler.Menu(/* eYo.NA, ContextMenuRenderer */)
   menu_.eyo = me
   /**
  * Setup the shared key handler.
@@ -114,7 +109,7 @@ eYo.KeyHandler = (() => {
   }
   me.handleFirstMenuItemAction = function (model) {
     // first check to see if the selected brick can handle the model
-    var eyo = eYo.app.focusMngr.brick
+    var eyo = eYo.app.focus_mngr.brick
     var m4t = eYo.Focus.magnet
     if (eyo && !m4t) {
       var D = model.data
@@ -154,7 +149,7 @@ eYo.KeyHandler = (() => {
       model.action.call(me, model.model)
       return
     }
-    var eyo = eYo.app.focusMngr.brick
+    var eyo = eYo.app.focus_mngr.brick
     if (eyo) {
       var m4t = eYo.Focus.magnet
       var newB = m4t && (eyo.insertBrickWithModel(model, m4t))
@@ -434,12 +429,12 @@ eYo.KeyHandler = (() => {
         return
       }
     } else if (k === 'enter' || k === 'return') {
-      if ((brick = eYo.app.focusMngr.brick)) {
+      if ((brick = eYo.app.focus_mngr.brick)) {
         eYo.Dom.gobbleEvent(e)
         return
       }
     }
-    if ((brick = eYo.app.focusMngr.brick)) {
+    if ((brick = eYo.app.focus_mngr.brick)) {
       if (K === ' ') {
         eYo.Dom.gobbleEvent(e)
         eYo.MenuManager.shared().showMenu(brick, event)
@@ -556,7 +551,7 @@ eYo.KeyHandler.makeCall = function (model) {
 }
 
 /**
- * Turn the selected brick into a slicing, or inert a slicing
+ * Turn the selected brick into a slicing, or insert a slicing
  * @param {*} model
  */
 eYo.KeyHandler.makeSlicing = function (model) {
@@ -565,9 +560,7 @@ eYo.KeyHandler.makeSlicing = function (model) {
 
 eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
 
-;(function () {
-
-  var Ks = {
+for (const [K, V] of Object.entries({
     'start': eYo.T3.Stmt.start_stmt,
     'if': eYo.T3.Stmt.if_part,
     'elif': eYo.T3.Stmt.elif_part,
@@ -598,7 +591,7 @@ eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
     'identifier': eYo.T3.Expr.identifier,
     'name': eYo.T3.Expr.identifier,
     'not …': function (key) {
-      var eyo = eYo.app.focusMngr.brick
+      var eyo = eYo.app.focus_mngr.brick
       if (eyo) {
         var parent = eyo.surround
         if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.not_test)) {
@@ -613,7 +606,7 @@ eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
       }
     },
     '+…': function (key) {
-      var eyo = eYo.app.focusMngr.brick
+      var eyo = eYo.app.focus_mngr.brick
       if (eyo) {
         var parent = eyo.surround
         if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_p === '+') {
@@ -630,296 +623,287 @@ eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
         }
       }
     }
-  }
-  var K
-  for (K in Ks) {
-    eYo.KeyHandler.register(K, Ks[K])
-  }
+})) {
+  eYo.KeyHandler.register(K, V)
+}
 
-  Ks = (() => {
-    var F = (key, op) => {
-      var brick = eYo.app.focusMngr.brick
-      if (brick) {
-        var parent = eyo.surround
-        if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {
-          brick.replaceBrick(parent)
-          return
-        }
-        var model = {
-          type: eYo.T3.Expr.u_expr,
-          operator_p: op
-        }
-        eYo.Focus.magnet
-          ? brick.insertBrickWithModel(model)
-          : brick.insertParentWithModel(model)
+{
+  var F = (key, op) => {
+    var brick = eYo.app.focus_mngr.brick
+    if (brick) {
+      var parent = eyo.surround
+      if (parent && parent.board.options.smartUnary && (parent.type === eYo.T3.Expr.u_expr) && parent.operator_ === op) {
+        brick.replaceBrick(parent)
+        return
       }
+      var model = {
+        type: eYo.T3.Expr.u_expr,
+        operator_p: op
+      }
+      eYo.Focus.magnet
+        ? brick.insertBrickWithModel(model)
+        : brick.insertParentWithModel(model)
     }
-    return {
-      '-': function (key) {
-        return F(key, '-')
-      },
-      '~': function (key) {
-        return F(key, '~')
-      }
+  }
+  for (const [K, V] of Object.entries({
+    '-': function (key) {
+      return F(key, '-')
+    },
+    '~': function (key) {
+      return F(key, '~')
     }
-  })()
-
-  for (K in Ks) {
-    eYo.KeyHandler.register(K + '…', Ks[K])
-  }
-
-  Ks = {
-    '+': {
-      type: eYo.T3.Expr.a_expr,
-      operator_p: '+',
-      slot: eYo.Key.LHS
-    },
-    '-': {
-      type: eYo.T3.Expr.a_expr,
-      operator_p: '-',
-      slot: eYo.Key.LHS
-    },
-    '*': {
-      type: eYo.T3.Expr.m_expr,
-      operator_p: '*',
-      slot: eYo.Key.LHS
-    },
-    '//': {
-      type: eYo.T3.Expr.m_expr,
-      operator_p: '//',
-      slot: eYo.Key.LHS
-    },
-    '/': {
-      type: eYo.T3.Expr.m_expr,
-      operator_p: '/',
-      slot: eYo.Key.LHS
-    },
-    '%': {
-      type: eYo.T3.Expr.m_expr,
-      operator_p: '%',
-      slot: eYo.Key.LHS
-    },
-    '@': {
-      type: eYo.T3.Expr.m_expr,
-      operator_p: '@',
-      slot: eYo.Key.LHS
-    },
-    '**': {
-      type: eYo.T3.Expr.power,
-      slot: eYo.Key.LHS
-    },
-    '<<': {
-      type: eYo.T3.Expr.shift_expr,
-      operator_p: '<<',
-      slot: eYo.Key.LHS
-    },
-    '>>': {
-      type: eYo.T3.Expr.shift_expr,
-      operator_p: '>>',
-      slot: eYo.Key.LHS
-    },
-    '&': eYo.T3.Expr.and_expr,
-    '^': eYo.T3.Expr.xor_expr,
-    '|': eYo.T3.Expr.or_expr,
-    'or': eYo.T3.Expr.or_test,
-    'and': eYo.T3.Expr.and_test
-  }
-  for (K in Ks) {
-    eYo.KeyHandler.register('… ' + K + ' …', Ks[K])
-  }
-  Ks = ['True', 'False', 'None', '...']
-  for (var i = 0; (K = Ks[i++]);) {
-    eYo.KeyHandler.register(K, {
-      type: eYo.T3.Expr.builtin__object,
-      data: K
-    })
-  }
-  Ks = ['is', 'is not', 'in', 'not in']
-  for (i = 0; (K = Ks[i++]);) {
-    eYo.KeyHandler.register('… ' + K + ' …', {
-      type: eYo.T3.Expr.object_comparison,
-      operator_p: K
-    })
-  }
-  Ks = ['<', '>', '==', '>=', '<=', '!=']
-  for (i = 0; (K = Ks[i++]);) {
-    eYo.KeyHandler.register('… ' + K + ' …', {
-      type: eYo.T3.Expr.number_comparison,
-      operator_p: K
-    })
-  }
-
-  Ks = {
-    '… = …': eYo.T3.Stmt.assignment_stmt,
-    '…:… = …': eYo.T3.Stmt.annotated_assignment_stmt,
-    'start': eYo.T3.Stmt.start_stmt,
-    'assert …': eYo.T3.Stmt.assert_stmt,
-    'pass': eYo.T3.Stmt.pass_stmt,
-    'break': eYo.T3.Stmt.break_stmt,
-    'continue': eYo.T3.Stmt.continue_stmt,
-    'del …': eYo.T3.Stmt.del_stmt,
-    'return …': eYo.T3.Stmt.return_stmt,
-    'yield …': eYo.T3.Stmt.yield_stmt,
-    'raise': eYo.T3.Stmt.raise_stmt,
-    'raise …': {
-      type: eYo.T3.Stmt.raise_stmt,
-      variant_p: eYo.Key.EXPRESSION
-    },
-    'raise … from …': {
-      type: eYo.T3.Stmt.raise_stmt,
-      variant_p: eYo.Key.FROM
-    },
-    // 'from future import …': eYo.T3.Stmt.future_statement,
-    'import …': eYo.T3.Stmt.import_stmt,
-    '# comment': eYo.T3.Stmt.comment_stmt,
-    'global …': eYo.T3.Stmt.global_stmt,
-    'nonlocal …': eYo.T3.Stmt.nonlocal_stmt,
-    '@decorator': eYo.T3.Stmt.decorator_stmt,
-    '"""…"""(stmt)': {
-      type: eYo.T3.Stmt.docstring_stmt,
-      delimiter_p: '"""'
-    },
-    "'''…'''(stmt)": {
-      type: eYo.T3.Stmt.docstring_stmt,
-      delimiter_p: "'''"
-    },
-    '"""…"""': {
-      type: eYo.T3.Expr.longliteral,
-      delimiter_p: '"""'
-    },
-    "'''…'''": {
-      type: eYo.T3.Expr.longliteral,
-      delimiter_p: "'''"
-    },
-    "'…'": {
-      type: eYo.T3.Expr.shortliteral,
-      delimiter_p: "'"
-    },
-    '"…"': {
-      type: eYo.T3.Expr.shortliteral,
-      delimiter_p: '"'
-    },
-    'print(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'print'
-    },
-    'input(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'input'
-    },
-    'range(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'range'
-    },
-    'int(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'int'
-    },
-    'float(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'float'
-    },
-    'complex(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'complex'
-    },
-    'list(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'list'
-    },
-    'set(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'set'
-    },
-    'len(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'len'
-    },
-    'min(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'min'
-    },
-    'max(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'max'
-    },
-    'sum(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'sum'
-    },
-    'pow(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'pow'
-    },
-    'trunc(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'trunc'
-    },
-    'abs(…)': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'abs'
-    },
-    '….conjugate()': {
-      type: eYo.T3.Expr.call_expr,
-      name_p: 'conjugate',
-      dotted_p: 1
-    },
-    'f(…)': {
-      action: eYo.KeyHandler.makeCall,
-      model: {
-        type: eYo.T3.Expr.call_expr,
-        name_p: ''
-      }
-    },
-    'x[…]': {
-      action: eYo.KeyHandler.makeSlicing,
-      model: {
-        type: eYo.T3.Expr.slicing,
-        parent: true
-      }
-    },
-    'module as alias': eYo.T3.Expr.dotted_name_as,
-    '(…)': {
-      type: eYo.T3.Expr.parenth_form,
-      parent: true
-    },
-    '[…]': {
-      type: eYo.T3.Expr.list_display,
-      parent: true
-    },
-    '…:…': {
-      type: eYo.T3.Expr.proper_slice,
-      parent: true
-    },
-    '{…:…}': {
-      type: eYo.T3.Expr.dict_display,
-      parent: true
-    },
-    '{…}': {
-      type: eYo.T3.Expr.set_display,
-      parent: true
-    }
+  })) {
+    eYo.KeyHandler.register(K + '…', V)
   }
   console.warn('Implement support for `key` in range above')
   console.warn('Problem when there can be both a statement and an expression for the same shortcut')
-  for (K in Ks) {
-    eYo.KeyHandler.register(K, Ks[K])
-  }
 
-  Ks = ['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=', '>>=', '<<=', '&=', '^=', '|=']
-  for (i = 0; (K = Ks[i++]);) {
-    eYo.KeyHandler.register('… ' + K + ' …', {
-      type: eYo.T3.Stmt.augmented_assignment_stmt,
-      operator: K
-    })
-  }
+}
 
-  // cmath
-  Ks = ['real', 'imag']
-  for (i = 0; (K = Ks[i++]);) {
-    eYo.KeyHandler.register('… ' + K + ' …', {
+for (const [K, V] of Object.entries({
+  '+': {
+    type: eYo.T3.Expr.a_expr,
+    operator_p: '+',
+    slot: eYo.Key.LHS
+  },
+  '-': {
+    type: eYo.T3.Expr.a_expr,
+    operator_p: '-',
+    slot: eYo.Key.LHS
+  },
+  '*': {
+    type: eYo.T3.Expr.m_expr,
+    operator_p: '*',
+    slot: eYo.Key.LHS
+  },
+  '//': {
+    type: eYo.T3.Expr.m_expr,
+    operator_p: '//',
+    slot: eYo.Key.LHS
+  },
+  '/': {
+    type: eYo.T3.Expr.m_expr,
+    operator_p: '/',
+    slot: eYo.Key.LHS
+  },
+  '%': {
+    type: eYo.T3.Expr.m_expr,
+    operator_p: '%',
+    slot: eYo.Key.LHS
+  },
+  '@': {
+    type: eYo.T3.Expr.m_expr,
+    operator_p: '@',
+    slot: eYo.Key.LHS
+  },
+  '**': {
+    type: eYo.T3.Expr.power,
+    slot: eYo.Key.LHS
+  },
+  '<<': {
+    type: eYo.T3.Expr.shift_expr,
+    operator_p: '<<',
+    slot: eYo.Key.LHS
+  },
+  '>>': {
+    type: eYo.T3.Expr.shift_expr,
+    operator_p: '>>',
+    slot: eYo.Key.LHS
+  },
+  '&': eYo.T3.Expr.and_expr,
+  '^': eYo.T3.Expr.xor_expr,
+  '|': eYo.T3.Expr.or_expr,
+  'or': eYo.T3.Expr.or_test,
+  'and': eYo.T3.Expr.and_test
+})) {
+  eYo.KeyHandler.register(`… ${K} …`, V)
+}
+
+;['True', 'False', 'None', '...'].forEach(K => {
+  eYo.KeyHandler.register(K, {
+    type: eYo.T3.Expr.builtin__object,
+    data: K
+  })
+})
+
+;['is', 'is not', 'in', 'not in'].forEach(K => {
+  eYo.KeyHandler.register(`… ${K} …`, {
+    type: eYo.T3.Expr.object_comparison,
+    operator_p: K
+  })
+})
+
+;['<', '>', '==', '>=', '<=', '!='].forEach(K => {
+  eYo.KeyHandler.register(`… ${K} …`, {
+    type: eYo.T3.Expr.number_comparison,
+    operator_p: K
+  })
+})
+
+for (const [K, V] of Object.entries({
+  '… = …': eYo.T3.Stmt.assignment_stmt,
+  '…:… = …': eYo.T3.Stmt.annotated_assignment_stmt,
+  'start': eYo.T3.Stmt.start_stmt,
+  'assert …': eYo.T3.Stmt.assert_stmt,
+  'pass': eYo.T3.Stmt.pass_stmt,
+  'break': eYo.T3.Stmt.break_stmt,
+  'continue': eYo.T3.Stmt.continue_stmt,
+  'del …': eYo.T3.Stmt.del_stmt,
+  'return …': eYo.T3.Stmt.return_stmt,
+  'yield …': eYo.T3.Stmt.yield_stmt,
+  'raise': eYo.T3.Stmt.raise_stmt,
+  'raise …': {
+    type: eYo.T3.Stmt.raise_stmt,
+    variant_p: eYo.Key.EXPRESSION
+  },
+  'raise … from …': {
+    type: eYo.T3.Stmt.raise_stmt,
+    variant_p: eYo.Key.FROM
+  },
+  // 'from future import …': eYo.T3.Stmt.future_statement,
+  'import …': eYo.T3.Stmt.import_stmt,
+  '# comment': eYo.T3.Stmt.comment_stmt,
+  'global …': eYo.T3.Stmt.global_stmt,
+  'nonlocal …': eYo.T3.Stmt.nonlocal_stmt,
+  '@decorator': eYo.T3.Stmt.decorator_stmt,
+  '"""…"""(stmt)': {
+    type: eYo.T3.Stmt.docstring_stmt,
+    delimiter_p: '"""'
+  },
+  "'''…'''(stmt)": {
+    type: eYo.T3.Stmt.docstring_stmt,
+    delimiter_p: "'''"
+  },
+  '"""…"""': {
+    type: eYo.T3.Expr.longliteral,
+    delimiter_p: '"""'
+  },
+  "'''…'''": {
+    type: eYo.T3.Expr.longliteral,
+    delimiter_p: "'''"
+  },
+  "'…'": {
+    type: eYo.T3.Expr.shortliteral,
+    delimiter_p: "'"
+  },
+  '"…"': {
+    type: eYo.T3.Expr.shortliteral,
+    delimiter_p: '"'
+  },
+  'print(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'print'
+  },
+  'input(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'input'
+  },
+  'range(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'range'
+  },
+  'int(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'int'
+  },
+  'float(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'float'
+  },
+  'complex(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'complex'
+  },
+  'list(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'list'
+  },
+  'set(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'set'
+  },
+  'len(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'len'
+  },
+  'min(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'min'
+  },
+  'max(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'max'
+  },
+  'sum(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'sum'
+  },
+  'pow(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'pow'
+  },
+  'trunc(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'trunc'
+  },
+  'abs(…)': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'abs'
+  },
+  '….conjugate()': {
+    type: eYo.T3.Expr.call_expr,
+    name_p: 'conjugate',
+    dotted_p: 1
+  },
+  'f(…)': {
+    action: eYo.KeyHandler.makeCall,
+    model: {
       type: eYo.T3.Expr.call_expr,
-      name_p: K
-    })
+      name_p: ''
+    }
+  },
+  'x[…]': {
+    action: eYo.KeyHandler.makeSlicing,
+    model: {
+      type: eYo.T3.Expr.slicing,
+      parent: true
+    }
+  },
+  'module as alias': eYo.T3.Expr.dotted_name_as,
+  '(…)': {
+    type: eYo.T3.Expr.parenth_form,
+    parent: true
+  },
+  '[…]': {
+    type: eYo.T3.Expr.list_display,
+    parent: true
+  },
+  '…:…': {
+    type: eYo.T3.Expr.proper_slice,
+    parent: true
+  },
+  '{…:…}': {
+    type: eYo.T3.Expr.dict_display,
+    parent: true
+  },
+  '{…}': {
+    type: eYo.T3.Expr.set_display,
+    parent: true
   }
+})) {
+  eYo.KeyHandler.register(K, V)
+}
+
+;['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=', '>>=', '<<=', '&=', '^=', '|='].forEach(K => {
+  eYo.KeyHandler.register(`… ${K} …`, {
+    type: eYo.T3.Stmt.augmented_assignment_stmt,
+    operator: K
+  })
+})
+// cmath
+;['real', 'imag'].forEach(K => {
+  eYo.KeyHandler.register(`… ${K} …`, {
+    type: eYo.T3.Expr.call_expr,
+    name_p: K
+  })
 })

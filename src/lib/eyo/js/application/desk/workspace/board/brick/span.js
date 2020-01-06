@@ -95,7 +95,7 @@ Object.defineProperty(eYo.Span, 'tabWidth', {
 Object.defineProperties(eYo.Span.prototype, {
   /**
    * @readonly
-   * @property {eYo.Brick} brick - The owning brick
+   * @property {eYo.Brick.Dflt} brick - The owning brick
    */
   brick: {
     get () {

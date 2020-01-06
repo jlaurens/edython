@@ -133,11 +133,6 @@ eYo.C9r.Dflt.makeSubclass(eYo, 'Motion', {
     }
   },
   valued:  {
-    /**
-     * The desktop.
-     * @type {eYo.App.Dflt}
-     */
-    desktop: eYo.NA,
     touchIDs () {
       return []
     },
@@ -212,7 +207,7 @@ eYo.C9r.Dflt.makeSubclass(eYo, 'Motion', {
        */
       validate (after) {
         if (!this.brick) {
-          let selected = eYo.app.focusMngr.brick
+          let selected = this.app.focus_mngr.brick
           do {
             var candidate = after
           } while (after.isExpr && (selected !== after) && (after = after.parent))
@@ -225,7 +220,7 @@ eYo.C9r.Dflt.makeSubclass(eYo, 'Motion', {
     /**
      * The field that the motion started on,
      * or null if it did not start on a field.
-     * @type {eYo.Brick}
+     * @type {eYo.Brick.Dflt}
      * @private
      */
     field () {
@@ -235,7 +230,7 @@ eYo.C9r.Dflt.makeSubclass(eYo, 'Motion', {
      * The brick that the motion started on,
      * including the field's brick if it started on a field,
      * or null if it did not start on a brick.
-     * @type {eYo.Brick}
+     * @type {eYo.Brick.Dflt}
      * @private
      */
     brick () {
@@ -250,7 +245,7 @@ eYo.C9r.Dflt.makeSubclass(eYo, 'Motion', {
      * If the motion started in the flyout,
      * this is the root brick of the brick group
      * that was clicked or dragged.
-     * @type {eYo.Brick}
+     * @type {eYo.Brick.Dflt}
      * @private
      */
     targetBrick () {
@@ -446,8 +441,8 @@ eYo.Motion_p.captureMouseStart_ = function() {
   // select the brick if any
   // and prepare a click motion
   if (this.brick_) {
-    if (this.brick_.isDescendantOf(eYo.app.focusMngr.brick) && this.event_.altKey) {
-      this.shouldSelect_ = eYo.app.focusMngr.brick.parent
+    if (this.brick_.isDescendantOf(eYo.app.focus_mngr.brick) && this.event_.altKey) {
+      this.shouldSelect_ = eYo.app.focus_mngr.brick.parent
     } else {
       this.shouldSelect_ = this.brick_.selected ? null: this.brick_
     }
@@ -815,7 +810,7 @@ eYo.Motion_p.handleClickBoard_ = function() {
   if (this.clickCount_>1) {
     this.board_.close()
   } else {
-    eYo.app.focusMngr.brick && eYo.app.focusMngr.brick.focusOff()
+    eYo.app.focus_mngr.brick && eYo.app.focus_mngr.brick.focusOff()
   }
 }
 
@@ -842,7 +837,7 @@ eYo.Motion_p.handleClickField_ = eYo.Motion_p.handleClickBrick_ = function() {
           return true
         }
       } 
-      eYo.app.focusMngr.brick = this.shouldSelect_
+      eYo.app.focus_mngr.brick = this.shouldSelect_
     }
     return true
   }
@@ -854,6 +849,6 @@ eYo.Motion_p.handleClickField_ = eYo.Motion_p.handleClickBrick_ = function() {
  * @private
  */
 eYo.Motion_p.handleClickBoard_ = function() {
-  eYo.app.focusMngr.brick && eYo.app.focusMngr.brick.focusOff()
+  eYo.app.focus_mngr.brick && eYo.app.focus_mngr.brick.focusOff()
   return true
 }

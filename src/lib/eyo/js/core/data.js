@@ -864,13 +864,6 @@ eYo.Data.Dflt_p.save = function (element, opt) {
   }
   if (!this.incog || xml && eYo.Do.valueOf(xml.force, this)) {
     // in general, data should be saved
-    if (xml) {
-      var f = eYo.Decorate.reentrant_method.call(this, 'xml_save', xml.save)
-      if (f) {
-        f.apply(this, arguments)
-        return
-      }
-    }
     var required = this.required || (xml && xml.required)
     var isText = xml && xml.text
     var txt = this.toText()
@@ -940,13 +933,6 @@ eYo.Data.Dflt_p.load = function (element) {
     return
   }
   if (element) {
-    if (xml) {
-      var f = eYo.Decorate.reentrant_method.call(this, 'xml_load', xml.load)
-      if (f) {
-        f.apply(this, arguments)
-        return
-      }
-    }
     var required = this.required
     var isText = xml && xml.text
     this.setRequiredFromModel(false)
@@ -981,14 +967,6 @@ eYo.Data.Dflt_p.load = function (element) {
       }
     }
     if (goog.isDefAndNotNull(txt)) {
-      if (xml) {
-        f = eYo.Decorate.reentrant_method.call(this, 'xml_willLoad', xml.willLoad)
-        if (f) {
-          eYo.Decorate.whenAns(f.call(this, txt), ans => {
-            txt = ans
-          })
-        }
-      }
       if (required && txt === '?') {
         txt = ''
         this.setRequiredFromModel(true)
@@ -1014,7 +992,7 @@ eYo.Data.Dflt_p.load = function (element) {
  * For edython.
  */
 eYo.Data.Dflt_p.willLoad = function () {
-  var f = eYo.Decorate.reentrant_method.call(this, 'model_willLoad',this.model.willLoad)
+  var f =  this.model.willLoad
   if (f) {
     f.apply(this, arguments)
     return
@@ -1026,7 +1004,7 @@ eYo.Data.Dflt_p.willLoad = function () {
  * For edython.
  */
 eYo.Data.Dflt_p.didLoad = function () {
-  var f = eYo.Decorate.reentrant_method.call(this, 'model_didLoad',this.model.didLoad)
+  var f =  this.model.didLoad
   if (f) {
     f.apply(this, arguments)
     return

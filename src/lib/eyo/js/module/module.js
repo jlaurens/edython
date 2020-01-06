@@ -18,7 +18,7 @@ eYo.require('Do.Register')
  * @namespace
  */
 eYo.makeNS('Module')
-
+console.error('NYI')
 /**
  * @name {eYo.Module.Dflt}
  * @param {String} name - the name of this constructor
@@ -177,7 +177,7 @@ eYo.Module.Dflt.prototype.forEachItemWithType = function (type, handler) {
 }
 
 // Each model loaded comes here
-eYo.Do.Register.add(eYo.Module.Item, 'Register', 'module')
+eYo.Do.Register.add(eYo.Module.Item, 'module')
 
 /**
  * Each item has a link to the module it belongs to.

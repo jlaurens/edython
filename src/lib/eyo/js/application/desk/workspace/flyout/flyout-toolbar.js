@@ -25,7 +25,7 @@ eYo.provide('FlyoutToolbar')
  */
 eYo.FlyoutToolbar = function(flyout, switcher) {
   this.flyout_ = flyout
-  this.switcher_ = switcher || eYo.app.flyoutToolbarSwitcher
+  this.switcher_ = switcher || this.app.flyoutToolbarSwitcher
   if (this.switcher_) {
     goog.dom.removeNode(this.switcher_)
   }
@@ -129,7 +129,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
     }
     this.flyout_.slide()
     this.onButtonLeave_(e)
-    eYo.app.cancelMotion()
+    this.app.cancelMotion()
     eYo.Dom.gobbleEvent(e)
   }
 };
@@ -145,7 +145,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
 eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonLeave_(e)
-  eYo.app.cancelMotion()
+  this.app.cancelMotion()
   eYo.Dom.gobbleEvent(e)
 }
 
