@@ -213,6 +213,7 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
  * @return {Object}
  */
 eYo.C9r.Model.magnetHandler = (model) => {
+  eYo.parameterAssert(model)
   let methods = []
   ;['willConnect', 'didConnect', 'willDisconnect', 'didDisconnect'].forEach(k => {
     var f = model[k]
@@ -352,7 +353,27 @@ eYo.Magnet.makeClass('Dflt', eYo.C9r.BSMOwned, {
     type: eYo.NA,
     opposite_type: eYo.NA,
     hidden: eYo.NA,
-    check: eYo.NA,
+    check: {
+      validate (after) {
+        return goog.isArray(after) ? after : after && [after]
+      },
+      didChange () {
+        var brick = this.brick
+        var t9k = this.targetBrick
+        if (t9k && !this.checkType_(this.target)) {
+          ;(this.isSuperior ? t9k : brick).unplug()
+          // Bump away.
+          brick.bumpNeighbours_()
+        }
+        brick.changeDone()
+        t9k && t9k.changeDone() // there was once a `consolidate(false, true)` here.
+      }
+    },
+    /**
+     * Whether the connection is a separator.
+     * Used in lists.
+     */
+    s7r: false,
     name: eYo.NA,
     visible: {
       didChange (after) /** @suppress {globalThis} */ {
@@ -704,29 +725,6 @@ eYo.Magnet.Dflt.eyo.modelDeclare({
       return magnet
     },
   },
-  valued: {
-    check: {
-      validate (after) {
-        return goog.isArray(after) ? after : after && [after]
-      },
-      didChange () {
-        var brick = this.brick
-        var t9k = this.targetBrick
-        if (t9k && !this.checkType_(this.target)) {
-          ;(this.isSuperior ? t9k : brick).unplug()
-          // Bump away.
-          brick.bumpNeighbours_()
-        }
-        brick.changeDone()
-        t9k && t9k.changeDone() // there was once a `consolidate(false, true)` here.
-      }
-    },
-    /**
-     * Whether the connection is a separator.
-     * Used in lists.
-     */
-    s7r: false,
-  }
 })
 
 

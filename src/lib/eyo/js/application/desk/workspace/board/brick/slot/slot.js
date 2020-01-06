@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.Provide('Slot')
+eYo.provide('Slot')
 
 eYo.require('Do')
 eYo.require('C9r.BSMOwned')
@@ -162,9 +162,18 @@ eYo.C9r.BSMOwned.makeSubclass(eYo.Slot, 'Dflt', {
       var m4t = this.magnet
       return m4t && m4t.targetBrick
     },
+    /**
+     * Position of the receiver in its board
+     * @readonly
+     * @property {Number}
+     */
     whereInBoard () {
       return this.where.forward(this.brick.ui.whereInBoard)
     },
+    /**
+     * Position of the receiver in its brick.
+     * @property {Number}
+     */
     whereInBrick: {
       get () {
         return this.where
@@ -182,6 +191,9 @@ eYo.C9r.BSMOwned.makeSubclass(eYo.Slot, 'Dflt', {
     ui () {
       return this.brick.ui
     },
+    /**
+     * Convenience shortcut.
+     */
     unwrappedTarget () {
       var m4t = this.magnet
       return m4t && m4t.unwrappedTarget
@@ -195,7 +207,7 @@ eYo.C9r.BSMOwned.makeSubclass(eYo.Slot, 'Dflt', {
       }
     },
     /**
-     * @property {boolean} isRequiredToModel  Get the required status.
+     * @property {boolean} isRequiredToModel - Get the required status.
      */
     isRequiredToModel () {
       if (this.incog) {

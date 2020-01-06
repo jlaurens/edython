@@ -1618,7 +1618,7 @@ describe ('Dlgt', function () {
     it ('C9r: No setter', function () {
       var ns = eYo.makeNS()
       ns.makeDflt()
-      var A = ns.Dflt.makeSubclass('A', {
+      ns.Dflt.makeSubclass('A', {
         owned: 'foo'
       })
       chai.expect(() => {
@@ -1635,6 +1635,7 @@ describe ('Dlgt', function () {
         owned: {
           foo () {
             flag += 421
+            return 421
           }
         },
       })
@@ -1642,13 +1643,17 @@ describe ('Dlgt', function () {
         owned: {
           foo () {
             flag += 123
+            return 123
           }
         },
       })
-      new ns.A()
+      var a = new ns.A()
       chai.assert(flag === 421)
-      new ns.AA()
-      chai.assert(flag === 544)
+      chai.assert(a.foo === 421)
+      flag = 0
+      var aa = new ns.AA()
+      chai.assert(flag === 544, `Unexpected flag: ${flag}`)
+      chai.assert(aa.foo === 123)
     })
     it ('C9r: POC Override rules for properties', function () {
       var ns = eYo.makeNS()

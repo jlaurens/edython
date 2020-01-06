@@ -13,7 +13,7 @@
 
 eYo.require('Dom')
 
-eYo.provide('Dom.Application')
+eYo.provide('Dom.App')
 
 eYo.forwardDeclare('App')
 

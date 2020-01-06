@@ -21,7 +21,7 @@ eYo.forwardDeclare('Navigate')
 eYo.forwardDeclare('MenuItem')
 eYo.forwardDeclare('Separator')
 
-eYo.KeyHandler.makeClass('Menu', eYo.PopupMenu)
+eYo.KeyHandler.makeClass('Menu')
 
 /**
  * Attempts to handle a keyboard event; returns true if the event was handled,
@@ -54,7 +54,7 @@ eYo.KeyHandler = (() => {
   var current_ = []
   var target_
   var menu_ = new eYo.KeyHandler.Menu(/* eYo.NA, ContextMenuRenderer */)
-  menu_.eyo = me
+  // menu_.eyo = me
   /**
  * Setup the shared key handler.
  * For edython.

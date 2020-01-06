@@ -11,10 +11,6 @@
  */
 'use strict'
 
-eYo.require('Fcls')
-
-eYo.provide('Fcls.Application')
-
 eYo.forwardDeclare('App')
 
 /**

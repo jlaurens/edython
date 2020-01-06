@@ -32,7 +32,7 @@ eYo.require('Field')
  */
 eYo.provide('Focus')
 
-eYo.forwardDeclare('Application')
+eYo.forwardDeclare('App')
 goog.forwardDeclare('goog.math')
 
 /**

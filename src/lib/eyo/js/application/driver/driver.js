@@ -180,18 +180,16 @@ eYo.Driver.makeClass('Mngr', eYo.C9r.Owned, eYo.Driver.DlgtMngr,  {
  */
 eYo.Driver.Mngr_p.driver = function (object) {
   var components = object.eyo.name.split('.')
-  while (true) {
+  components.unshift()
+  while (components.length) {
+    name = components.join('.')
     var driver = this.drivers[name]
     if (driver) {
       return driver
     }
     components.pop()
-    if (components.length) {
-      name = components.join('.')
-      continue
-    }
-    return this.allPurposeDriver
   }
+  return this.allPurposeDriver
 }
 
 /**

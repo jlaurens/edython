@@ -341,8 +341,9 @@ eYo.C9r.Model.magnetHandler = eYo.Do.nothing
       } else if (['out', 'head', 'left', 'right', 'suite', 'foot'].includes(key)) {
         // BRICK_TYPE || [BRICK_TYPE] || () => {}
         var before = model[key]
-        eYo.C9r.Model.magnetHandler(before)
-        if (!eYo.isO(before)) {
+        if (eYo.isO(before)) {
+          eYo.C9r.Model.magnetHandler(before)
+        } else {
           after = {
             check: ensureRAF(before)
           }
@@ -372,7 +373,7 @@ eYo.C9r.Model.magnetHandler = eYo.Do.nothing
     } else if (path === 'data') {
       eYo.C9r.Model.dataHandler(model, key)
     } else if (path === 'slots') {
-      eYo.C9r.Model.magnetHandler(model[key])
+      eYo.C9r.Model.magnetHandler(model)
     } else if (path === 'list') {
       if (['check', 'unique', 'all'].includes(key)) {
         // BRICK_TYPE || [BRICK_TYPE] || () => {}
@@ -911,7 +912,7 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
       writable: true,
     })
   } catch(e) {
-    console.error(`FAILURE: value property ${k__}`)
+    console.error(`FAILURE: value property ${k__} in ${this.name}`)
   }
   try {
     Object.defineProperty(C9r_p, k_, {
@@ -946,7 +947,7 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
       configurable: !!model.configurable,
     })
   } catch(e) {
-    console.error(`FAILURE: value property ${k_}`)
+    console.error(`FAILURE: value property ${k_} in ${this.name}`)
   }
   this.descriptors__[k] = eYo.C9r.descriptorR(model.get || function () {
     return this[k_]

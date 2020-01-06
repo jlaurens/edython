@@ -368,5 +368,6 @@ import_file("src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/xm
 import_file("src/lib/eyo/closure-library/menubuttonrenderer.js")
 import_file("src/lib/eyo/closure-library/popupmenu.js")
 import_file("src/lib/eyo/closure-library/submenurenderer.js")
+import_file("src/lib/eyo/js/other/key_handler.js")
 import_file("src/lib/eyo/js/application/desk/workspace/flyout/flyout-toolbar.js")
 // DYNAMIC DEPS END

@@ -366,6 +366,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/closure-library/menubuttonrenderer.js" \
 --js "src/lib/eyo/closure-library/popupmenu.js" \
 --js "src/lib/eyo/closure-library/submenurenderer.js" \
+--js "src/lib/eyo/js/other/key_handler.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/flyout-toolbar.js" \
   --js_output_file "build/base/edython.js"\
   -O BUNDLE
