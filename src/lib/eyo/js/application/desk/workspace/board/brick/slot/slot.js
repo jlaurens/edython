@@ -101,10 +101,10 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
       init () {
         return true
       },
-      set (after) {
+      validate (after) {
         if (this.data) {
           after = this.data.incog
-        } else if (!goog.isDef(after)) {
+        } else if (!eYo.isNA(after)) {
           after = !this.required
         } else {
           after = !!after
@@ -113,19 +113,18 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
         if (validator) { // if !this.slots, the receiver is not yet ready
           after = validator.call(this, after)
         }
-        this.brick_.change.wrap(
-          () => {
-            this.incog_ = after
-            // forward to the connection
-            var m4t = this.magnet
-            if (m4t) {
-              m4t.incog = after
-            }
-          },
-          this,
-          after
-        )
-      }    
+        return after
+      },
+      set (after) {
+        this.brick_.change.wrap(() => {
+          this.incog_ = after
+          // forward to the connection
+          var m4t = this.magnet
+          if (m4t) {
+            m4t.incog = after
+          }
+        })
+      },
     },
     /**
      * @readonly
@@ -142,16 +141,12 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
     requiredFromModel: {}
   },
   computed: {
-    targetBrick: {
-      get () {
-        var m4t = this.magnet
-        return m4t && m4t.targetBrick
-      }
+    targetBrick () {
+      var m4t = this.magnet
+      return m4t && m4t.targetBrick
     },
-    whereInBoard: {
-      get () {
-        return this.where.forward(this.brick.ui.whereInBoard)
-      }
+    whereInBoard () {
+      return this.where.forward(this.brick.ui.whereInBoard)
     },
     whereInBrick: {
       get () {
@@ -166,26 +161,18 @@ eYo.C9r.makeClass(eYo, 'Slot', eYo.C9r.BSMOwned, {
         return this.where_.clone
       }
     },    
-    recover: {
-      get () {
-        return this.brick_.recover
-      }
+    recover () {
+      return this.brick_.recover
     },
-    xmlKey: {
-      get () {
-        return (this.model.xml && this.model.xml.key) || this.key
-      }
+    xmlKey () {
+      return (this.model.xml && this.model.xml.key) || this.key
     },
-    ui: {
-      get () {
-        return this.brick.ui
-      }
+    ui () {
+      return this.brick.ui
     },
-    unwrappedTarget: {
-      get () {
-        var m4t = this.magnet
-        return m4t && m4t.unwrappedTarget
-      }
+    unwrappedTarget () {
+      var m4t = this.magnet
+      return m4t && m4t.unwrappedTarget
     },
     requiredIncog: {
       get () {

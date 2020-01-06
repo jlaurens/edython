@@ -316,12 +316,10 @@ eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
     var b3k
     eYo.Events.disableWrap(() => {
       b3k = eYo.Brick.newReady(this, eYo.T3.Expr.identifier)
-      b3k.change.wrap(
-        function() { // `this` is `y`
-          this.modifier_p = modifier
-          this.variant_p = flags
-        }
-      )
+      b3k.change.wrap(() => {
+        b3k.modifier_p = modifier
+        b3k.variant_p = flags
+      })
     })
     this.slotForEachReverse((slot) => {
       var m4t = slot.magnet
@@ -336,14 +334,12 @@ eYo.Expr.parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
             content,
             () => {
               var b3k = eYo.Brick.newReady(this, eYo.T3.Expr.identifier)
-              eYo.Events.groupWrap(() => { // `this` is catched
-                b3k.change.wrap(
-                  function () { // `this` is `b3k`
-                    this.modifier_p = modifier
-                    this.variant_p = flags
-                    m4t.connect(b3k.out_m)
-                  }
-                )
+              eYo.Events.groupWrap(() => {
+                b3k.change.wrap(() => {
+                  b3k.modifier_p = modifier
+                  b3k.variant_p = flags
+                  m4t.connect(b3k.out_m)
+                })
               })
             }
           ))

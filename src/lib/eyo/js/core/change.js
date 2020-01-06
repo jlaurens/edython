@@ -16,16 +16,9 @@
  * @constructor
  * @param{Object} owner
  */
-eYo.C9r.makeClass('Change', {
-  init (owner) {
-    this.owner_ = owner
+eYo.C9r.Owned.makeSubclass('Change', {
+  init () {
     this.reset()
-  },
-  /**
-   * Sever the links.
-   */
-  dispose () {
-    this.owner_ = this.save_ = this.cache_ = null
   },
   valued: {
     /** the count is incremented each time a change occurs,
@@ -33,11 +26,11 @@ eYo.C9r.makeClass('Change', {
      * Some lengthy actions may be shortened when the count
      * has not changed since the last time it was performed
      */
-    count: { value: 0 },
+    count: 0,
     /** the step is the count, except that it is freezed
      * according to the owner property `changeStepFreezed`
      */
-    step: { value: 0 },
+    step: 0,
     /** The level indicates cascading changes
      * Some actions that are performed when something changes
      * should not be performed while there is a pending change.
@@ -49,7 +42,7 @@ eYo.C9r.makeClass('Change', {
      * have changed because the level is positive (respectivelly 1 and 2), * a contrario they are performed when the A has changed because
      * the level is 0.
      */
-    level: { value: 0},
+    level: 0,
     cache: {},
     save: {}
   },
@@ -58,7 +51,7 @@ eYo.C9r.makeClass('Change', {
 /**
  * Sever the links.
  */
-eYo.C9r.Change.prototype.reset = function () {
+eYo.C9r.Change_p.reset = function () {
   this.count_ = this.step_ = this.level_ = 0
   // Some operations are performed only when there is a change
   // In order to decide whether to run or do nothing,
@@ -103,8 +96,8 @@ eYo.C9r.decorateChange = function (key, do_it) {
 /**
  * Increment the level.
  */
-eYo.C9r.Change.prototype.begin = function () {
-  ++this.level
+eYo.C9r.Change_p.begin = function () {
+  ++this.level_
   var O = this.owner_
   O.onChangeBegin && O.onChangeBegin(arguments)
 }
@@ -117,12 +110,12 @@ eYo.C9r.Change.prototype.begin = function () {
  * This is the only place where consolidation should occur.
  * For edython.
  */
-eYo.C9r.Change.prototype.end = function () {
-  --this.level
+eYo.C9r.Change_p.end = function () {
+  --this.level_
+  var O = this.owner_
+  O.onChangeEnd && O.onChangeEnd(arguments)
   if (this.level === 0) {
     this.done()
-    var O = this.owner_
-    O.onChangeEnd && O.onChangeEnd(arguments)
   }
 }
 
@@ -138,11 +131,11 @@ eYo.C9r.Change.prototype.end = function () {
  * to cache the return value.
  * For edython.
  */
-eYo.C9r.Change.prototype.done = function () {
-  ++ this.count
+eYo.C9r.Change_p.done = function () {
+  ++ this.count_
   var O = this.owner_
   if (!O.changeStepFreeze) {
-    this.step = this.count
+    this.step_ = this.count
   }
   O.onChangeDone && O.onChangeDone(arguments)
 }
@@ -151,21 +144,14 @@ eYo.C9r.Change.prototype.done = function () {
  * Begin a mutation.
  * For edython.
  * @param {Function} do_it
- * @param {*} thisObject
- * @param {*} rest
  * @return {*} whatever `do_it` returns.
  */
-eYo.C9r.Change.prototype.wrap = function () {
-  var ans
-  var func = arguments[0]
-  if (func) {
-    var args = Array.prototype.slice.call(arguments, 1)
+eYo.C9r.Change_p.wrap = function (do_it) {
+  let ans
+  if (do_it) {
     try {
       this.begin()
-      func && (ans = func.apply(this.owner_, args))
-    } catch (err) {
-      console.error(err)
-      throw err
+      ans = do_it()
     } finally {
       this.end()
     }

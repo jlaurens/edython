@@ -58,7 +58,7 @@ eYo.makeClass('Workspace', eYo.C9r.Pane, {
      * The main focus manager.
      * @type {?eYo.Focus.Main} 
      */
-    focus () { return new eYo.Focus.Main(this) },
+    focus_main () { return new eYo.Focus.Main(this) },
     zoomer () { return new eYo.Zoomer(this) },
   },
   cloned: {

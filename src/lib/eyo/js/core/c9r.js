@@ -893,7 +893,7 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
   try {
     Object.defineProperty(C9r_p, k__, {
       value: eYo.isO(model) ? model.value : model,
-      writable: true
+      writable: true,
     })
   } catch(e) {
     console.error(`FAILURE: value property ${k__}`)
@@ -928,6 +928,7 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
           }
         }
       },
+      configurable: !!model.configurable,
     })
   } catch(e) {
     console.error(`FAILURE: value property ${k_}`)
@@ -1084,6 +1085,7 @@ eYo.Dlgt_p.ownedDeclare_ = function (k, model = {}) {
           }
         }
       },
+      configurable: !!model.configurable,
     }
   })
   this.descriptors__[k] = eYo.C9r.descriptorR(model.get || function () {
@@ -1189,7 +1191,8 @@ eYo.Dlgt_p.cachedDeclare_ = function (k, model) {
             ff && ff.call(this, before, after)
           }
         }
-      }
+      },
+      configurable: !!model.configurable,
     }
   })
   this.cachedForgetters__ || (this.cachedForgetters__ = Object.create(null))

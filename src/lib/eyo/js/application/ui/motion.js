@@ -129,7 +129,7 @@ eYo.C9r.Dflt.makeSubclass(eYo, 'Motion', {
       return new eYo.DnD.Mngr(this)
     },
     change () {
-      return new eYo.C9r.Change()
+      return new eYo.C9r.Change(this)
     }
   },
   valued:  {

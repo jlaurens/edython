@@ -236,13 +236,11 @@ eYo.Data.makeClass('Dflt', eYo.C9r.Owned, {
           after = validator.call(this, after)
         }
         if (this.incog_ !== after) {
-          this.change.wrap(
-            () => { // catch `this`
-              this.incog_ = after
-              this.slot && (this.slot.incog = after)
-              this.field && (this.field.visible = !after)
-            }
-          )
+          this.change.wrap(() => {
+            this.incog_ = after
+            this.slot && (this.slot.incog = after)
+            this.field && (this.field.visible = !after)
+          })
         }
       }
     },
@@ -812,7 +810,7 @@ Object.defineProperty(eYo.Data, 'incog', {
  * Reentrant management here of the model action.
  */
 eYo.Data.Dflt_p.consolidate = function () {
-  if (this.brick.change.level) {
+  if (this.change.level) {
     return
   }
   var f = eYo.Decorate.reentrant_method.call(this, 'model_consolidate', this.model.consolidate)

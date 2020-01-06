@@ -170,6 +170,10 @@ eYo.App.parseZoom_ = function(options) {
  * @readonly
  * The ui drivers manager.
  * @property {eYo.Driver.Mngr} ui_driver_mngr
+ * @readonly
+ * The main focus manager.
+ * @property {eYo.Focus.Main} focus_main
+ *
  */
 eYo.App.makeDflt({
   init (options) {
@@ -182,7 +186,7 @@ eYo.App.makeDflt({
     this.disposeUI()
   },
   owned: {
-    options: {},
+    options: eYo.NA,
     motion () {
       return new eYo.Motion(this)
     },
@@ -192,17 +196,20 @@ eYo.App.makeDflt({
     audio () {
       return new eYo.Audio(this)
     },
+    focus_main () {
+      return new eYo.Focus.Main(this)
+    },
     clipboard: {},
     ui_driver_mngr: {
       init () {
         let UI = this.options.UI || 'Fcls'
         return new eYo[UI].Mngr(this)
       },
-      willChange(before, after) {
+      willChange(before) {
         before && this.disposeUI()
-        return after ? function () {
-          this.initUI()
-        } : eYo.NA
+      },
+      didChange(before, after) {
+        after && this.initUI()
       }
     },
   },
@@ -291,7 +298,7 @@ eYo.App.Dflt_p.copyBrick = function (brick, deep) {
  * @return {Boolean} true if copied, false otherwise
  */
 eYo.App.Dflt_p.doCopy = function(optNoNext) {
-  var brick = this.focusMngr.brick
+  var brick = this.focus_main.brick
   if (brick) {
     this.copyBrick(brick, !optNoNext)
     return true
@@ -303,7 +310,7 @@ eYo.App.Dflt_p.doCopy = function(optNoNext) {
  * This is a job for the renderer.
  */
 eYo.App.Dflt_p.doFront = function() {
-  var b3k = this.focusMngr.brick
+  var b3k = this.focus_main.brick
   if (b3k) {
     b3k.sendToFront()
   }
@@ -313,7 +320,7 @@ eYo.App.Dflt_p.doFront = function() {
  * Send the selected brick to the back.
  */
 eYo.App.Dflt_p.doBack = function() {
-  var b3k = this.focusMngr.brick
+  var b3k = this.focus_main.brick
   if (b3k) {
     b3k.ui.sendToBack()
   }
@@ -323,7 +330,7 @@ eYo.App.Dflt_p.doBack = function() {
  * Scroll the board to show the selected brick.
  */
 eYo.App.Dflt_p.doFocus = function() {
-  var b3k = this.focusMngr.brick
+  var b3k = this.focus_main.brick
   if (b3k) {
     b3k.board.scrollBrickTopLeft(b3k.id)
   }

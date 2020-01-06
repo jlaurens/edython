@@ -501,19 +501,17 @@ eYo.Brick.Dflt.prototype.saveSlots = function (element, opt) {
  */
 eYo.Xml.Data.fromDom = function (brick, element) {
   var hasText
-  brick.change.wrap(
-    function () { // `this` is `brick`
-      this.dataForEach(data => {
-        data.load(element)
-        // Consistency section, to be removed
-        var xml = data.model.xml
-        if (hasText && xml && xml.text) {
-          console.log(`Only one text node ${data.key}/${brick.type}`)
-        }
-        hasText = hasText || (xml && xml.text)
-      })
-    }
-  )
+  brick.change.wrap(() => { // `this` is `brick`
+    brick.dataForEach(data => {
+      data.load(element)
+      // Consistency section, to be removed
+      var xml = data.model.xml
+      if (hasText && xml && xml.text) {
+        console.log(`Only one text node ${data.key}/${brick.type}`)
+      }
+      hasText = hasText || (xml && xml.text)
+    })
+  })
 }
 
 /**
@@ -965,29 +963,29 @@ goog.exportSymbol('Xml.domToBrick', eYo.Xml.domToBrick)
  */
 eYo.Xml.fromDom = function (brick, element) {
   // headless please
-  brick.change.wrap(function () { // `this` is `brick`
+  brick.change.wrap(() => { // `this` is `brick`
   //    console.log('Brick created from dom:', xmlBrick, brick.type, brick.id)
   // then fill it based on the xml data
     this.willLoad()
     var conclude // will run at the end if any
-    var controller = this
-    if (!this.controller_fromDom_locked && (controller &&
+    var controller = brick
+    if (!brick.controller_fromDom_locked && (controller &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = this.xml) &&
+        ((controller = brick.xml) &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = eYo.C9r.Model.forType(this.type)) &&
+        ((controller = eYo.C9r.Model.forType(brick.type)) &&
         (controller = controller.xml) &&
         goog.isFunction(controller.fromDom)) ||
-        ((controller = eYo.C9r.Model.forType(this.type)) &&
+        ((controller = eYo.C9r.Model.forType(brick.type)) &&
         goog.isFunction(controller.fromDom))) {
       eYo.Do.tryFinally(() => {
-        this.controller_fromDom_locked = true
-        out = controller.fromDom(this, element)
+        brick.controller_fromDom_locked = true
+        out = controller.fromDom(brick, element)
       }, () => {
-        delete this.controller_fromDom_locked
+        delete brick.controller_fromDom_locked
         var state = element.getAttribute(eYo.Xml.STATE)
         if (state && state.toLowerCase() === eYo.Xml.LOCKED) {
-          this.lock()
+          brick.lock()
         }
       })
     } else {

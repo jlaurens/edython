@@ -332,7 +332,7 @@ eYo.Field.makeClass('Dflt', eYo.C9r.BSMOwned, {
       },
     },
     /**
-     * Is the field visible, or hidden due to the block being collapsed?
+     * Is the field visible, or hidden due to the brick being collapsed?
      * @type {boolean}
      * @private
      */
@@ -426,7 +426,7 @@ eYo.Field.Dflt_p.render_ = function() {
     this.size_.width = 0
     return
   }
-  var d = this.ui_driver_mngr
+  var d = this.ui_driver
   d && (d.textRemove(field), d.textCreate(field))
   this.updateWidth()
 }

@@ -10,16 +10,11 @@
  * @fileoverview Focus utilities for edython.
  * Each board has a focus manager, which remembers the object with focus,
  * either a brick, a magnet or a field.
- * The main focus manager belongs to the desk owning all the boards.
+ * The main focus manager belongs to the application owning all the boards.
  * It takes care of remembering which board has the focus.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
-
-/**
- * @name eYo.Focus
- * @namespace
- **/
 
 eYo.require('Decorate')
 eYo.require('C9r.Owned')
@@ -37,26 +32,19 @@ eYo.require('Field')
  */
 eYo.provide('Focus')
 
-eYo.forwardDeclare('Desk')
+eYo.forwardDeclare('Application')
 goog.forwardDeclare('goog.math')
 
-
 /**
- * The main focus manager is uniquely owned by the desk.
+ * @name {eYo.Focus.Main}
+ * @constructor
+ * The main focus manager is uniquely owned by the application.
  * It maintains a list of focus managers associated to boards.
- * @param {eYo.Desk} desk -  the owning desk.
+ * @param {eYo.App} app -  the owning application.
  * @constructor
  */
 eYo.Focus.makeClass('Main', eYo.C9r.Owned, {
   computed: {
-    /**
-     * The desk of the receiver.
-     * @type {eYo.Desk}
-     * @readonly
-     */
-    desk () {
-      return this.owner
-    },
     /**
      * The board that has current focus, if any
      * @type {eYo.Board}
@@ -68,7 +56,7 @@ eYo.Focus.makeClass('Main', eYo.C9r.Owned, {
       set (board) {
         if (board !== this.board) {
           this.hasUI && this.ui_driver.offBoard(this)
-          this.mngr_ = board && board.focusMngr
+          this.mngr_ = board && board.focusMngr || eYo.NA
           this.hasUI && this.ui_driver.onBoard(this)
         }
       }
@@ -142,6 +130,15 @@ eYo.Focus.makeClass('Main', eYo.C9r.Owned, {
 })
 
 /**
+ * Dispose of the 
+ */
+eYo.Focus.Main_p.mngrWillDispose = function (mngr) {
+  this.mngrs_ = this.mngrs_.filter(m => m !== mngr)
+  if (mthis.mngr_ === mngr) {
+    this.mngr_ = null
+  }
+}
+/**
  * Create a standard focus manager, managed by a main focus manager.
  * @param {eYo.Board} board -  the owner of the focus object.
  * @param {eYo.Focus.Main} main -  The main focus manager.
@@ -159,160 +156,116 @@ eYo.Focus.makeClass('Mngr', eYo.C9r.Owned, {
     board () {
       return this.owner__
     },
-    main () {
-      return this.board.desk.focus
+    focus_main () {
+      return this.app.focus_main
     },
   },
-  dispose () {
-    var m = this.main_
-    m.mngrs_ = m.mngrs_.filter(m => m !== this)
-    if (m.mngr_ === this) {
-      m.mngr_ = null
-    }
-    this.main_ = null
-  },
-})
-
-Object.defineProperties(eYo.Focus.Mngr.prototype, {
-  /**
-   * @type{eYo.Brick}
-   */
-  brick: {
-    validate (after) {
-      if (after) {
-        var wrapper = after.wrapper
-        if (wrapper) {
-          return wrapper
-        }
-      }
-      return after
-    },
-    willChange() {
-      this.hasUI && this.ui_driver.brickOff(this)
-    },
-    didChange(after) {
-      if (after) {
-        if (this.magnet__) {
-          var b3k = this.magnet__.brick
-          if (b3k && after !== b3k.wrapper) {
-            this.magnet_ = null
-          }
-        }
-        if (this.field__) {
-          var b3k = this.field__.brick
-          if (b3k && after !== b3k.wrapper) {
-            this.field__ = null
-          }
-        }
-        this.hasUI && this.ui_driver_mngr.brickOn(this)
-        this.didAdd()
-      } else {
-        this.magnet_ = null
-        this.field_ = null
-        this.didRemove()
-      }
-    },
-  },
-  /**
-   * Takes care of consistency between the magnet and the brick.
-   * @type{eYo.Magnet.Dflt}
-   * @private
-   */
-  magnet_: {
-    get () {
-      return magnet__
-    },
-    set (magnet) {
-      if (magnet !== this.magnet__) {
-        this.hasUI && this.ui_driver_mngr.magnetOff(this)
-        if (magnet) {
-          var b3k = magnet.brick
-          if (b3k !== this.brick__) {
-            // if the connection visually belongs to 2 bricks, select the top left most
-            if (magnet.isHead && magnet.target) {
-              var wrapper = magnet.targetBrick.wrapper
-              magnet = magnet.target
-            } else {
-              wrapper = b3k.wrapper
-            }
-            if (wrapper && wrapper !== b3k) {
-              this.brick_ = wrapper
-              this.magnet__ = magnet
-              return
-            }
-            this.magnet__ = magnet
-            this.brick_ = b3k
-          }
-        } else {
-          this.magnet__ = magnet
-        }
-        this.hasUI && this.ui_driver_mngr.magnetOn(this)
-      }
-    }
-  },
-  /**
-   * Takes care of consistency between the magnet and the brick.
-   * @type{eYo.Magnet.Dflt}
-   */
-  magnet: {
-    get () {
-      return magnet__
-    },
-    validate(after) {
-      if (after) {
-        if (!after.board) return eYo.INVALID
-        if (after.hidden_) {
-          console.error('Do not select a hidden connection')
-          return eYo.INVALID
-        }
-        var b3k = after.brick
-        if (b3k) {
-          if (b3k.locked_) {
-            return eYo.INVALID
-          }
-          if (after.isSlot) {
-            // Do not select a connection with a target, select the target instead
-            var t9k = after.targetBrick
-            if (t9k) {
-              this.brick_ =  t9k
-              return eYo.INVALID
-            }
+  valued: {
+    /**
+     * @type{eYo.Brick}
+     */
+    brick: {
+      validate (after) {
+        if (after) {
+          var wrapper = after.wrapper
+          if (wrapper) {
+            return wrapper
           }
         }
         return after
-      }
+      },
+      willChange() {
+        this.hasUI && this.ui_driver.brickOff(this)
+      },
+      didChange(after) {
+        if (after) {
+          if (this.magnet__) {
+            var b3k = this.magnet__.brick
+            if (b3k && after !== b3k.wrapper) {
+              this.magnet_ = null
+            }
+          }
+          if (this.field__) {
+            var b3k = this.field__.brick
+            if (b3k && after !== b3k.wrapper) {
+              this.field__ = null
+            }
+          }
+          this.hasUI && this.ui_driver_mngr.brickOn(this)
+          this.didAdd()
+        } else {
+          this.magnet_ = null
+          this.field_ = null
+          this.didRemove()
+        }
+      },
     },
-    willChange() {
-      this.field_ = null
+    /**
+     * Takes care of consistency between the magnet and the brick.
+     * @type{eYo.Magnet.Dflt}
+     */
+    magnet: {
+      willChange() {
+        this.hasUI && this.ui_driver.magnetOff(this)
+        this.field_ = null
+      },
+      validate(after) {
+        if (after) {
+          if (!after.board) return eYo.INVALID
+          if (after.hidden_) {
+            console.error('Do not select a hidden connection')
+            return eYo.INVALID
+          }
+          var b3k = after.brick
+          if (b3k && b3k.locked_) {
+            return eYo.INVALID
+          }
+          // if the connection visually belongs to 2 bricks, select the top left most
+          if ((after.isHead || after.isSlot) && after.target) {
+            after = after.target
+          }
+          return after
+        }
+      },
+      didChange (after) {
+        if (after) {
+          this.brick_ = after.brick.wrapper
+        }
+        this.hasUI && this.ui_driver.magnetOn(this)
+      },
+    },
+    /**
+     * Takes care of consistency between the field and the brick.
+     * @type{eYo.Field}
+     * @private
+     */
+    field: {
+      get () {
+        return field__
+      },
+      willChange (after) {
+        this.ui_driver.fieldOff(this)
+        this.magnet_ = null
+        if (after) {
+          var b3k = after.brick
+          if (b3k !== this.brick) {
+            this.brick_ = eYo.NA
+          }
+        }
+      },
+      didChange (after) {
+        if (after) {
+          if (!this.brick) {
+            this.brick_ = after.brick
+          }
+          this.ui_driver.fieldOn(this)
+        }
+      },
     },
   },
-  /**
-   * Takes care of consistency between the field and the brick.
-   * @type{eYo.Field}
-   * @private
-   */
-  field: {
-    get () {
-      return field__
-    },
-    willChange (after) {
-      this.ui_driver.fieldOff(this)
-      this.magnet_ = null
-      if (after) {
-        var b3k = after.brick
-        if (b3k !== this.brick) {
-          this.brick_ = eYo.NA
-        }
-      }
-    },
-    didChange (after) {
-      if (after) {
-        if (!this.brick) {
-          this.brick_ = after.brick
-        }
-        this.ui_driver.fieldOn(this)
-      }
-    },
+  dispose (builtin) {
+    this.focus_main.mngrWillDispose(this)
+    builtin()
   },
 })
 
@@ -320,26 +273,26 @@ Object.defineProperties(eYo.Focus.Mngr.prototype, {
  * Scroll the focused brick to visible.
  * UI related.
  */
-eYo.Focus.Mngr.prototype.scrollToVisible = function (force) {
+eYo.Focus.Mngr_p.scrollToVisible = function (force) {
   this.brick && this.brick.scrollToVisible(force)
 }
 
 /**
  * Hook.
  */
-eYo.Focus.Mngr.prototype.didAdd = eYo.Do.nothing
+eYo.Focus.Mngr_p.didAdd = eYo.Do.nothing
 
 /**
  * Hook.
  */
-eYo.Focus.Mngr.prototype.didRemove = eYo.Do.nothing
+eYo.Focus.Mngr_p.didRemove = eYo.Do.nothing
 
 /**
  * Select one of the given bricks.
  * @param {Array<eYo.BrickNSs>} bricks
  * @param {Boolean} force
  */
-eYo.Focus.Mngr.prototype.selectOneBrickOf = function (bricks, force) {
+eYo.Focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
   var select
   bricks = bricks.slice()
   var f = brick => {
@@ -363,13 +316,19 @@ eYo.Focus.Mngr.prototype.selectOneBrickOf = function (bricks, force) {
 }
 
 
+eYo.C9r.Owned.eyo.modelDeclare({
+  computed: {
+    focus_main () {
+      this.app.focus_main
+    },
+  }
+})
+
+
 eYo.Brick.Dflt.eyo.modelDeclare({
   computed: {
     focusMngr () {
       return this.board.focusMngr
-    },
-    focusMain () {
-      this.board.focusMain
     },
     hasFocus: {
       get() {
@@ -387,9 +346,6 @@ eYo.Magnet.Dflt.eyo.modelDeclare({
     focusMngr () {
       return this.board.focusMngr
     },
-    focusMain () {
-      this.board.focusMain
-    },
     hasFocus: {
       get() {
         return this === this.focusMngr.magnet
@@ -405,9 +361,6 @@ eYo.Field.Dflt.eyo.modelDeclare({
   computed: {
     focusMngr () {
       return this.board.focusMngr
-    },
-    focusMain () {
-      return this.board.focusMain
     },
     hasFocus: {
       get() {
@@ -425,7 +378,7 @@ eYo.Field.Dflt.eyo.modelDeclare({
  * @return {Boolean} Whether the receiver gained focus.
  */
 eYo.Board.Dflt_p.focusOn = function () {
-  return !!(this.focusMain.board = this)
+  return !!(this.focus_main.board = this)
 }
 
 /**
@@ -470,7 +423,7 @@ eYo.Magnet.Dflt_p.focusOn = function (noBoard) {
  * Focus off this board.
  */
 eYo.Board.Dflt_p.focusOff = function () {
-  this.focusMain.board = eYo.NA
+  this.focus_main.board = eYo.NA
 }
 
 /**

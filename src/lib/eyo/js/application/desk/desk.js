@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Desk model.
+ * @fileoverview Desk programming model.
  * The desk is the top object containing bricks.
  * 
  * @author jerome.laurens@u-bourgogne.fr
@@ -14,7 +14,6 @@
 'use strict'
 
 eYo.require('C9r')
-eYo.require('Decorate')
 
 eYo.forwardDeclare('App')
 eYo.forwardDeclare('Backer')
@@ -70,13 +69,6 @@ eYo.C9r.Owned.makeSubclass(eYo, 'Desk', {
      */
     workspace () {
       return new eYo.Workspace(this)
-    },
-    /**
-     * Main focus manager.
-     * @type{eYo.Focus.Main}
-     */
-    focus () {
-      return new eYo.Focus.Main(this)
     },
   },
   computed: {

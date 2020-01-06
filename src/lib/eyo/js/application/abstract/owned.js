@@ -58,6 +58,10 @@ eYo.C9r.makeClass('Owned', {
     }
   },
   cached: {
+    /**
+     * The root application
+     * @type {eYo.App}
+     */
     app: {
       init () {
         let o = this.owner ; return o && o.app
@@ -68,7 +72,7 @@ eYo.C9r.makeClass('Owned', {
         })
         forgetter()
       },
-    }
+    },
   },
   computed: {
     /**

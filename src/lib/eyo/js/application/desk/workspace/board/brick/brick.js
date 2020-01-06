@@ -871,24 +871,8 @@ eYo.Brick.DEBUG_ = Object.create(null)
    * This is the only place where consolidation should occur.
    * For edython.
    */
-  _p.onChangeEnd = function () {
+  _p.onChangeDone = function () {
     this.render()
-  }
-
-  /**
-   * Ends a mutation.
-   * When a change is complete at the top level,
-   * the change count is incremented and the receiver
-   * is consolidated.
-   * This is the only place where consolidation should occur.
-   * For edython.
-   */
-  _p.changeEnd = function () {
-    --this.change_.level
-    if (this.change_.level === 0) {
-      this.change.done()
-      this.onChangeEnd(arguments)
-    }
   }
 
   /**
@@ -899,12 +883,9 @@ eYo.Brick.DEBUG_ = Object.create(null)
    */
   eYo.Data.Dflt_p.doChange = function (after, validate) {
     if (after !== this.get()) {
-      this.brick.change.wrap(
-        this.set,
-        this,
-        after,
-        validate
-      )
+      this.brick.change.wrap(() => {
+        this.set(after, validate)
+      })
     }
   }
 
@@ -2615,47 +2596,45 @@ eYo.Brick.newReady = (() => {
         }
       }
     }
-    brick && brick.change.wrap(
-      function () { // `this` is `brick`
-        this.willLoad()
-        this.setDataWithModel(dataModel)
-        var Vs = model.slots
-        for (var k in Vs) {
-          if (eYo.Do.hasOwnProperty(Vs, k)) {
-            var slot = this.slots[k]
-            if (slot && slot.magnet) {
-              var t9k = slot.targetBrick
-              var V = Vs[k]
-              var b3k = processModel(board, V, null, t9k)
-              if (!t9k && b3k && b3k.out_m) {
-                b3k.change.wrap(() => {
-                  slot && (slot.incog = false)
-                  b3k.out_m.connect(slot.magnet)
-                })
-              }
-            }
-          }
-        }
-        // now bricks and slots have been set
-        this.didLoad()
-        if (brick.foot_m) {
-          var footModel = dataModel.next
-          if (footModel) {
-            var b3k = processModel(board, footModel)
-            if (b3k && b3k.head_m) {
-              try {
-                brick.foot_m.connect(b3k.head_m)
-              } catch (err) {
-                console.error(err)
-                throw err
-              } finally {
-                // do nothing
-              }
+    brick && brick.change.wrap(() => { // `this` is `brick`
+      brick.willLoad()
+      brick.setDataWithModel(dataModel)
+      var Vs = model.slots
+      for (var k in Vs) {
+        if (eYo.Do.hasOwnProperty(Vs, k)) {
+          var slot = brick.slots[k]
+          if (slot && slot.magnet) {
+            var t9k = slot.targetBrick
+            var V = Vs[k]
+            var b3k = processModel(board, V, null, t9k)
+            if (!t9k && b3k && b3k.out_m) {
+              b3k.change.wrap(() => {
+                slot && (slot.incog = false)
+                b3k.out_m.connect(slot.magnet)
+              })
             }
           }
         }
       }
-    )
+      // now bricks and slots have been set
+      brick.didLoad()
+      if (brick.foot_m) {
+        var footModel = dataModel.next
+        if (footModel) {
+          var b3k = processModel(board, footModel)
+          if (b3k && b3k.head_m) {
+            try {
+              brick.foot_m.connect(b3k.head_m)
+            } catch (err) {
+              console.error(err)
+              throw err
+            } finally {
+              // do nothing
+            }
+          }
+        }
+      }
+    })
     return brick
   }
   return function (owner, model, id) {

@@ -225,11 +225,9 @@ eYo.Expr.List.makeSubclass('argument_list', {
       },
       didChange (builtin) /** @suppress {globalThis} */ {
         builtin()
-        this.brick.change.wrap(
-          function () {
-            this.createConsolidator(true)
-          }
-        )
+        this.change.wrap(() => {
+          this.brick.createConsolidator(true)
+        })
       }
     },
     mandatory: {
@@ -239,11 +237,9 @@ eYo.Expr.List.makeSubclass('argument_list', {
       noUndo: true,
       didChange (builtin) /** @suppress {globalThis} */ {
         builtin()
-        this.brick.change.wrap(
-          function () {
-            this.createConsolidator(true)
-          }
-        )
+        this.change.wrap(() => {
+          this.brick.createConsolidator(true)
+        })
       }
     }
   },
