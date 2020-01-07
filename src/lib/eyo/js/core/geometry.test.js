@@ -1,7 +1,13 @@
 describe ('Geometry', function () {
+  it ('Geometry: Basic', function () {
+    chai.assert(eYo.Where)
+    chai.assert(eYo.Size)
+    chai.assert(eYo.Rect)
+  })
   describe('where', function () {
-    it ('Basic', function () {
+    it ('new eYo.Where', function () {
       var w1 = new eYo.Where()
+      console.error(w1.toString)
       chai.assert(!['c', 'l', 'x', 'y'].some(k => w1[k] != 0))
       w1.c = 1.23
       chai.assert(w1.c == 1 && w1.x == eYo.Unit.x)

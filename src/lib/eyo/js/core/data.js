@@ -40,16 +40,12 @@ eYo.require('Decorate')
 goog.require('goog.dom')
 
 /**
- * @name {eYo.Data.Dflt}
+ * @name {eYo.Data}
  * @namespace
  */
 eYo.C9r.makeNS(eYo, 'Data')
 
 eYo.Data.makeDlgt()
-
-eYo.Do.readOnlyMixin(eYo.XRE, {
-  function_builtin_before: XRegExp('^function[^(]*\\(\\s*(?<builtin>\\bbuiltin\\b)?(?:\\s*,\\s*)?(?<before>\\bbefore\\b)?'),
-})
 
 /**
  * Expands a data model.
@@ -60,7 +56,7 @@ eYo.Do.readOnlyMixin(eYo.XRE, {
 eYo.C9r.Model.dataHandler = (model, key) => {
   model = model[key]
   let methods = []
-  for (const [key, value] of Object.entries({
+  for (let [key, value] of Object.entries({
     willChange: 'beforeChange',
     isChanging: 'duringChanging',
     didChange: 'afterChange',
@@ -167,26 +163,26 @@ eYo.Data.makeClass('Dflt', eYo.C9r.Owned, {
     }
     if (!model.setup_) {
       model.setup_ = true
-      if (!goog.isFunction(model.didLoad)) {
+      if (!eYo.isF(model.didLoad)) {
         delete model.didLoad
       }
       if (goog.isDefAndNotNull(xml)) {
-        if (!goog.isFunction(xml.toText)) {
+        if (!eYo.isF(xml.toText)) {
           delete xml.toText
         }
-        if (!goog.isFunction(xml.fromText)) {
+        if (!eYo.isF(xml.fromText)) {
           delete xml.fromText
         }
-        if (!goog.isFunction(xml.toField)) {
+        if (!eYo.isF(xml.toField)) {
           delete xml.toField
         }
-        if (!goog.isFunction(xml.fromField)) {
+        if (!eYo.isF(xml.fromField)) {
           delete xml.fromField
         }
-        if (!goog.isFunction(xml.save)) {
+        if (!eYo.isF(xml.save)) {
           delete xml.save
         }
-        if (!goog.isFunction(xml.load)) {
+        if (!eYo.isF(xml.load)) {
           delete xml.load
         }
       } else if (key === 'variant' || key === 'option' || key === 'subtype') {
@@ -257,11 +253,11 @@ eYo.Data.makeClass('Dflt', eYo.C9r.Owned, {
  */
 eYo.Data.Dflt_p.get = function () {
   if (!goog.isDef(this.value_)) {
-    var f = eYo.Decorate.reentrant_method.call(this,
+    var f = eYo.Decorate.reentrant_method(this,
       'get',
       this.init
     )
-    f && (eYo.Decorate.whenAns(f.apply(this, arguments), (ans) => {
+    f && (eYo.whenVALID(f.apply(this, arguments), (ans) => {
       this.internalSet(ans)
     }))
   }
@@ -331,14 +327,14 @@ eYo.Data.Dflt_p.init = function (after) {
     return
   }
   var init = this.model.init
-  var f = eYo.Decorate.reentrant_method.call(
+  var f = eYo.Decorate.reentrant_method(
     this,
     'model_init',
     this.model.init
   )
   try {
     if (f) {
-      eYo.Decorate.whenAns(f.apply(this, arguments), (ans) => {
+      eYo.whenVALID(f.apply(this, arguments), (ans) => {
         this.internalSet(ans)
       })
       return
@@ -350,9 +346,6 @@ eYo.Data.Dflt_p.init = function (after) {
     if (all && all.length) {
       this.internalSet(all[0])
     }
-  } catch (err) {
-    console.error(err)
-    throw err
   } finally {
     if (!goog.isDef(this.value_)) {
       console.error('THIS SHOULD BE DEFINED', this.key, this.brickType)
@@ -367,12 +360,12 @@ eYo.Data.Dflt_p.init = function (after) {
  * @param {Object} type
  */
 eYo.Data.Dflt_p.setWithType = function (type) {
-  var f = eYo.Decorate.reentrant_method.call(
+  var f = eYo.Decorate.reentrant_method(
     this,
     'model_fromType',
     this.model.fromType
   )
-  f && (eYo.Decorate.whenAns(f.apply(this, arguments), (ans) => {
+  f && (eYo.whenVALID(f.apply(this, arguments), (ans) => {
     this.internalSet(ans)
   }))
 }
@@ -390,7 +383,7 @@ eYo.Data.Dflt_p.all = eYo.NA
  */
 eYo.Data.Dflt_p.getAll = function () {
   var all = this.model.all
-  return (goog.isArray(all) && all) || (goog.isFunction(all) && (goog.isArray(all = all()) && all))
+  return (goog.isArray(all) && all) || (eYo.isF(all) && (goog.isArray(all = all()) && all))
 }
 
 /**
@@ -407,9 +400,9 @@ eYo.Data.Dflt_p.isNone = function () {
  * @param {Object} after
  */
 eYo.Data.Dflt_p.validate = function (after) {
-  var f = eYo.Decorate.reentrant_method.call(this, 'model_validate', this.model.validate)
+  var f = eYo.Decorate.reentrant_method(this, 'model_validate', this.model.validate)
   if (f) {
-    return eYo.Decorate.whenAns(f.apply(this, arguments))
+    return eYo.whenVALID(f.apply(this, arguments))
   }
   var all = this.getAll()
   return this.model.validate === false || !all || all.indexOf(after) >= 0 ? after : eYo.INVALID
@@ -420,10 +413,10 @@ eYo.Data.Dflt_p.validate = function (after) {
  * @param {Object} [after]
  */
 eYo.Data.Dflt_p.toText = function () {
-  var f = eYo.Decorate.reentrant_method.call(this, 'toText', this.model.toText)
+  var f = eYo.Decorate.reentrant_method(this, 'toText', this.model.toText)
   var result = this.get()
   if (f) {
-    return eYo.Decorate.whenAns(f.call(this, result))
+    return eYo.whenVALID(f.call(this, result))
   }
   if (goog.isNumber(result)) {
     result = result.toString()
@@ -437,10 +430,10 @@ eYo.Data.Dflt_p.toText = function () {
  * @param {Object} [after]
  */
 eYo.Data.Dflt_p.toField = function () {
-  var f = eYo.Decorate.reentrant_method.call(this, 'toField', this.model.toField || this.model.toText)
+  var f = eYo.Decorate.reentrant_method(this, 'toField', this.model.toField || this.model.toText)
   var result = this.get()
   if (f) {
-    return eYo.Decorate.whenAns(f.call(this))
+    return eYo.whenVALID(f.call(this))
   }
   if (goog.isNumber(result)) {
     result = result.toString()
@@ -484,9 +477,9 @@ eYo.Data.Dflt_p.toField = function () {
  */
 eYo.Data.Dflt_p.fromText = function (txt, validate = true) {
   if (!this.model_fromText_lock) {
-    var f = eYo.Decorate.reentrant_method.call(this, 'model_fromText', this.model.fromText)
+    var f = eYo.Decorate.reentrant_method(this, 'model_fromText', this.model.fromText)
     if (f) {
-      eYo.Decorate.whenAns(f.apply(this, arguments), ans => {
+      eYo.whenVALID(f.apply(this, arguments), ans => {
         this.doChange(ans, validate)
       })
       return
@@ -525,9 +518,9 @@ eYo.Data.Dflt_p.fromText = function (txt, validate = true) {
  */
 eYo.Data.Dflt_p.fromField = function (txt, dontValidate) {
   if (!this.model_fromField_lock) {
-    var f = eYo.Decorate.reentrant_method.call(this, 'model_fromField', this.model.fromField || this.model.fromText)
+    var f = eYo.Decorate.reentrant_method(this, 'model_fromField', this.model.fromField || this.model.fromText)
     if (f) {
-      eYo.Decorate.whenAns(f.call(this), ans => {
+      eYo.whenVALID(f.call(this), ans => {
         this.fromField(ans, dontValidate)
       })
       return
@@ -736,9 +729,9 @@ eYo.Data.Dflt_p.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Data.D
 eYo.Data.Dflt_p.filter = function (after) {
   // tricky argument management
   // Used when after is an uppercase string
-  var f = eYo.Decorate.reentrant_method.call(this, 'model_filter',this.model.filter)
+  var f = eYo.Decorate.reentrant_method(this, 'model_filter',this.model.filter)
   if (f) {
-    return eYo.Decorate.whenAns(f.apply(this, arguments))
+    return eYo.whenVALID(f.apply(this, arguments))
   }
   if (this.model.filter === true) {
     if (eYo.isStr(after)) {
@@ -813,7 +806,7 @@ eYo.Data.Dflt_p.consolidate = function () {
   if (this.change.level) {
     return
   }
-  var f = eYo.Decorate.reentrant_method.call(this, 'model_consolidate', this.model.consolidate)
+  var f = eYo.Decorate.reentrant_method(this, 'model_consolidate', this.model.consolidate)
   f && (f.apply(this, arguments))
 }
 
@@ -954,7 +947,7 @@ eYo.Data.Dflt_p.load = function (element) {
         }
       }
     } else {
-      txt = (this.model.xml && (goog.isFunction(this.model.xml.getAttribute))
+      txt = (this.model.xml && (eYo.isF(this.model.xml.getAttribute))
         && (this.model.xml.getAttribute.call(this, element)) ||element.getAttribute(this.attributeName))
       if (!goog.isDefAndNotNull(txt)) {
         txt = element.getAttribute(`${this.attributeName}_${eYo.Key.PLACEHOLDER}`)
@@ -1044,7 +1037,7 @@ eYo.Data.Dflt_p.isRequiredFromSaved = function () {
 eYo.Data.Dflt_p.whenRequiredFromModel = function (helper) {
   if (this.isRequiredFromModel()) {
     this.setRequiredFromModel(false)
-    if (goog.isFunction(helper)) {
+    if (eYo.isF(helper)) {
       helper.call(this)
     }
     return true
@@ -1059,7 +1052,7 @@ eYo.Data.Dflt_p.whenRequiredFromModel = function (helper) {
 eYo.Data.Dflt_p.whenRequiredFromSaved = function (helper) {
   if (this.requiredFromSaved) {
     this.setRequiredFromModel(false)
-    if (goog.isFunction(helper)) {
+    if (eYo.isF(helper)) {
       helper.call(this)
     }
     return true

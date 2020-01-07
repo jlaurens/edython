@@ -162,12 +162,12 @@ eYo.Dom.isRightButton = e => {
  * @return {!Array<!Array>} Opaque data that can be passed to unbindEvent.
  */
 eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
-  if (goog.isFunction(thisObject)) {
+  if (eYo.isF(thisObject)) {
     opt = callback
     callback = thisObject
     thisObject = null
   }
-  eYo.assert(goog.isFunction(callback))
+  eYo.assert(eYo.isF(callback))
   var handled = false
   var wrapFunc = e => {
     var noCaptureIdentifier = opt && opt.noCaptureIdentifier
@@ -245,7 +245,7 @@ eYo.Dom.bindMouseEvents = (listener, element, opt) => {
     'mouseup'
   ].forEach(k => {
     var f = listener['on_' + k + ((opt && opt.suffix) || '')]
-    if (goog.isFunction(f)) {
+    if (eYo.isF(f)) {
       var ans = eYo.Dom.bindEvent(element, k, listener, f, opt)
       if (opt && opt.willUnbind) {
         var ra = listener.bind_data_ || (listener.bind_data_ = [])

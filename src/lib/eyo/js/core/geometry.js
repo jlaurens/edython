@@ -12,9 +12,7 @@
 'use strict'
 
 eYo.require('Do')
-eYo.provide('Where')
 eYo.provide('Size')
-eYo.provide('Rect')
 
 eYo.provide('Unit')
 
@@ -26,138 +24,170 @@ eYo.forwardDeclare('Font')
  * unit
  */
 
-Object.defineProperties(
-  eYo.Unit,
-  {
-    x: {
-      get () {
-        return eYo.Font.space
-      }
-    },
-    y: {
-      get () {
-        return eYo.Font.lineHeight
-      }
-    },
-    rem: {
-      get () {
-        return parseFloat(getComputedStyle(document.documentElement).fontSize)
-      }
-    }
-  }
-)
+Object.defineProperties( eYo.Unit, {
+  x () {
+    return eYo.Font.space
+  },
+  y () {
+    return eYo.Font.lineHeight
+  },
+  rem () {
+    return parseFloat(getComputedStyle(document.documentElement).fontSize)
+  },
+})
 // x, y, with, height are in pixels
 // c, l, w, h are in text units
 
 /**
- * `where` is modelling a plane point that stores its data in text units.
+ * `where` is modelling a planar point that stores its coordinates in text units. When `snap` is true, the coordinates are snapped to half integers horizontally and quarter integers vertically.
+ * @name {eYo.Where}
+ * @constructor
+ * @param {Number} c - Horizontal coordinates, or another planar object.
  */
-eYo.Where = function(c, l) {
-  this.set(c, l)
-}
-
-/**
- * Dispose of the receive resources.
- */
-eYo.Where.prototype.dispose = eYo.Do.nothing
-
-eYo.Where.property_c_ = {
-  get () {
-    return this.c_
+eYo.makeClass('Where', {
+  init (c, l, snap) {
+    if (c === true || c === false) {
+      this.snap_ = c
+      c = l
+      l = snap
+    } else if (l === true || l === false) {
+      this.snap_ = l
+      l = snap
+    } else {
+      this.snap_ = c && !!c.snap || !!snap
+    }
+    this.set(c, l)
   },
-  set (after) {
-    this.c_ = Math.round(2 * after) / 2
-  }
-}
-eYo.Where.property_l_ = {
-  get () {
-    return this.l_
+  valued: {
+    /**
+     * Horizontal position in text unit
+     * @type {Number}
+     */
+    c: {
+      init: 0,
+      validate (after) {
+        return this.snap_ ? Math.round(2 * after) / 2 : after
+      },
+      configurable: true,
+    },
+    /**
+     * Vertical position in text unit
+     * @type {Number}
+     */
+    l: {
+      init: 0,
+      validate (after) {
+        return this.snap_ ? Math.round(4 * after) / 4 : after
+      },
+      configurable: true,
+    },
   },
-  set (after) {
-    this.l_ = Math.round(4 * after) / 4
-  }
-}
-eYo.Where.property_x_ = {
-  get () {
-    return this.c_ * eYo.Unit.x
-  },
-  set (after) {
-    this.c_ = after / eYo.Unit.x
-  }
-}
-eYo.Where.property_y_ = {
-  get () {
-    return this.l_ * eYo.Unit.y
-  },
-  set (after) {
-    this.l_ = after / eYo.Unit.y
-  }
-}
-
-// Overdefined, for better understanding
-Object.defineProperties(eYo.Where.prototype, {
-  // c_: {
-  //   get () {
-  //     return this.c__ / 10000
-  //   },
-  //   set (after) {
-  //     this.c__ = Math.round(10000 * after)
-  //   }
-  // },
-  // l_: {
-  //   get () {
-  //     return this.l__ / 10000
-  //   },
-  //   set (after) {
-  //     this.l__ = Math.round(10000 * after)
-  //   }
-  // },
-  c: eYo.Where.property_c_,
-  l: eYo.Where.property_l_,
-  dc: eYo.Where.property_c_,
-  dl: eYo.Where.property_l_,
-  w: eYo.Where.property_c_,
-  h: eYo.Where.property_l_,
-  x: eYo.Where.property_x_,
-  y: eYo.Where.property_y_,
-  w: eYo.Where.property_c_,
-  h: eYo.Where.property_l_,
-  width: eYo.Where.property_x_,
-  height: eYo.Where.property_y_,
-  dx: eYo.Where.property_x_,
-  dy: eYo.Where.property_y_,
-  /**
-   * Euclidian magnitude between points.
-   * @return {number} non negative number
-   */
-  magnitude: {
-    get () {
+  computed: {
+    /**
+     * Horizontal position in pixels
+     * @type {Number}
+     */
+    x: {
+      get () {
+        return this.c_ * eYo.Unit.x
+      },
+      set_ (after) {
+        this.c_ = after / eYo.Unit.x
+      }
+    },
+    /**
+     * Vertical position in pixels
+     * @type {Number}
+     */
+    y: {
+      get () {
+        return this.l_ * eYo.Unit.x
+      },
+      set_ (after) {
+        this.l_ = after / eYo.Unit.x
+      }
+    },
+    /**
+     * Euclidian magnitude between points.
+     * @return {number} non negative number
+     */
+    magnitude () {
       var dx = this.x
       var dy = this.y
       return Math.sqrt(dx * dx + dy * dy)
-    }
-  },
-  /**
-   * clone the receiver.
-   * @type {eYo.Where}
-   */
-  clone: {
-    get () {
+    },
+    /**
+     * clone the receiver.
+     * @type {eYo.Where}
+     */
+    clone () {
       return new eYo.Where(this)
-    }
-  },
-  /**
-   * Euclidian distance between points.
-   * @param {eYo.Where} other
-   * @return {number} non negative number
-   */
-  toString: {
-    get () {
+    },
+    /**
+     * Euclidian distance between points.
+     * @param {eYo.Where} other
+     * @return {number} non negative number
+     */
+    toString () {
       return `eYo.Where(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
-    }
-  }
-
+    },
+  },
 })
+
+// Overdefined, for better understanding
+{
+  var c = Object.getOwnPropertyDescriptor(eYo.Where_p, 'c_')
+  var l = Object.getOwnPropertyDescriptor(eYo.Where_p, 'l_')
+  var x = Object.getOwnPropertyDescriptor(eYo.Where_p, 'x_')
+  var y = Object.getOwnPropertyDescriptor(eYo.Where_p, 'y_')
+  Object.defineProperties(eYo.Where_p, {
+    /**
+     * Horizontal offset in text unit
+     * @type {Number}
+     */
+    dc_: c,
+    /**
+     * Vertical offset in text unit
+     * @type {Number}
+     */
+    dl_: l,
+    /**
+     * Horizontal dimension in text unit
+     * @type {Number}
+     */
+    w_: c,
+    /**
+     * Vertical dimension in text unit
+     * @type {Number}
+     */
+    h_: l,
+    /**
+     * Horizontal offset in pixels
+     * @type {Number}
+     */
+    dx_: x,
+    /**
+     * Vertical offset in pixels
+     * @type {Number}
+     */
+    dy_: y,
+    /**
+     * Horizontal dimension in pixels
+     * @type {Number}
+     */
+    width_: x,
+    /**
+     * Vertical dimension in pixels
+     * @type {Number}
+     */
+    height_: y,
+  })
+  let d = eYo.Where.eyo.descriptors__
+  d['dc'] = d['w'] = eYo.C9r.descriptorR(function () { return this.c})
+  d['dl'] = d['h'] = eYo.C9r.descriptorR(function () { return this.l})
+  d['dx'] = d['width'] = eYo.C9r.descriptorR(function () { return this.x})
+  d['dy'] = d['height'] = eYo.C9r.descriptorR(function () { return this.y})
+}
 
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
@@ -165,29 +195,29 @@ Object.defineProperties(eYo.Where.prototype, {
  * @param {Number} [l]
  * @return {eYo.Where} The receiver
  */
-eYo.Where.prototype.set = function (c = 0, l = 0) {
-  if (goog.isDef(c.x) && goog.isDef(c.y)) {
-    this.x = c.x
-    this.y = c.y
+eYo.Where_p.set = function (c = 0, l = 0) {
+  if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
+    this.x_ = c.x
+    this.y_ = c.y
     return this
-  } else if (goog.isDef(c.clientX) && goog.isDef(c.clientY)) {
-    this.x = c.clientX
-    this.y = c.clientY
+  } else if (eYo.isDef(c.clientX) && eYo.isDef(c.clientY)) {
+    this.x_ = c.clientX
+    this.y_ = c.clientY
     return this
-  } else if (goog.isDef(c.width) && goog.isDef(c.height)) {
-    this.x = c.width
-    this.y = c.height
+  } else if (eYo.isDef(c.width) && eYo.isDef(c.height)) {
+    this.x_ = c.width
+    this.y_ = c.height
     return this
   }
-  this.c = c
-  this.l = l
+  this.c_ = c
+  this.l_ = l
   return this
 }
 
 /**
  * Test equality between the receiver and the rhs.
  */
-eYo.Where.prototype.equals = function (rhs) {
+eYo.Where_p.equals = function (rhs) {
   return rhs instanceof eYo.Where && this.c_ == rhs.c_ && this.l_ == rhs.l_
 }
 
@@ -197,13 +227,22 @@ eYo.Where.prototype.equals = function (rhs) {
  * @param {Number} y  y coordinate
  * @return {eYo.Where} The receiver
  */
-eYo.Where.prototype.xySet = function (x = 0, y = 0) {
-  if (goog.isDef(x.x) && goog.isDef(x.y)) {
-    y = x.y
-    x = x.x
+eYo.Where_p.xySet = function (x = 0, y = 0) {
+  if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
+    this.x_ = x.x
+    this.y_ = x.y
+    return this
+  } else if (eYo.isDef(x.clientX) && eYo.isDef(x.clientY)) {
+    this.x_ = x.clientX
+    this.y_ = x.clientY
+    return this
+  } else if (eYo.isDef(x.width) && eYo.isDef(x.height)) {
+    this.x_ = x.width
+    this.y_ = x.height
+    return this
   }
-  this.x = x
-  this.y = y
+  this.x_ = x
+  this.y_ = y
   return this
 }
 
@@ -213,18 +252,32 @@ eYo.Where.prototype.xySet = function (x = 0, y = 0) {
  * @param {Number} y  y coordinate
  * @return {eYo.Where} The receiver
  */
-eYo.Where.xy = function (x = 0, y = 0) {
-  return new eYo.Where().xySet(x, y)
+eYo.Where.xy = function (x, y, snap) {
+  var y
+  if (x === true || x === false) {
+    var _ = x
+    x = y
+    y = snap
+    snap = _
+  } else if (y === true || y === false) {
+    var _ = y
+    y = snap
+    snap = _
+  } else {
+    snap = !!x.snap || !!snap
+  }
+return new eYo.Where(snap).xySet(x, y)
 }
 
 /**
  * Convenient creator in text units.
- * @param {Number} c  c coordinate
- * @param {Number} l  l coordinate
+ * @param {Number} [c] - c coordinate. Defaults to 0.
+ * @param {Number} [l] - l coordinate. Defaults to 0.
+ * @param {Boolean} [snap] - snap flag. Defaults to false.
  * @return {eYo.Where} The receiver
  */
-eYo.Where.cl = function (c = 0, l = 0) {
-  return new eYo.Where().set(c, l)
+eYo.Where.cl = function (c, l, snap) {
+  return new eYo.Where(c, l, snap)
 }
 
 /**
@@ -233,14 +286,14 @@ eYo.Where.cl = function (c = 0, l = 0) {
  * @param {number} l
  * @return {eYo.Where} c
  */
-eYo.Where.prototype.forward = function (c = 0, l = 0) {
-  if (goog.isDef(c.x) && goog.isDef(c.y)) {
-    this.x += c.x
-    this.y += c.y
+eYo.Where_p.forward = function (c = 0, l = 0) {
+  if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
+    this.x_ += c.x
+    this.y_ += c.y
     return this
   }
-  this.c += c
-  this.l += l
+  this.c_ += c
+  this.l_ += l
   return this
 }
 
@@ -250,14 +303,14 @@ eYo.Where.prototype.forward = function (c = 0, l = 0) {
  * @param {number} l
  * @return {eYo.Where} c
  */
-eYo.Where.prototype.backward = function (c = 0, l = 0) {
-  if (goog.isDef(c.x) && goog.isDef(c.y)) {
-    this.x -= c.x
-    this.y -= c.y
+eYo.Where_p.backward = function (c = 0, l = 0) {
+  if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
+    this.x_ -= c.x
+    this.y_ -= c.y
     return this
   }
-  this.c -= c
-  this.l -= l
+  this.c_ -= c
+  this.l_ -= l
   return this
 }
 
@@ -268,51 +321,52 @@ eYo.Where.prototype.backward = function (c = 0, l = 0) {
  * @param {number} l
  * @return {eYo.Where} c
  */
-eYo.Where.prototype.xyAdvance = function (x = 0, y = 0) {
-  if (goog.isDef(x.x) && goog.isDef(x.y)) {
+eYo.Where_p.xyAdvance = function (x = 0, y = 0) {
+  if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     y = x.y
     x = x.x
   }
-  this.x += x
-  this.y += y
+  this.x_ += x
+  this.y_ += y
   return this
 }
 
 /**
  * Scale the receiver.
  * @param {Number | Object} scaleX
- * @param {Number} [scaleY] or scaleX
- * @return {!eYo.Where} the receiver
+ * @param {Number} [scaleY] - Defaults to
+ * @return {eYo.Where} the receiver
  */
-eYo.Where.prototype.scale = function (scaleX, scaleY) {
+eYo.Where_p.scale = function (scaleX, scaleY) {
   if (scaleX.x) {
     this.c_ *= scaleX.x
-    this.l_ *= scaleX.y || scaleX.x
+    this.l_ *= (scaleX.y || scaleX.x)
   } else if (scaleX.y) {
     this.c_ *= scaleX.y
     this.l_ *= scaleX.y
   } else {
     this.c_ *= scaleX
-    this.l_ *= scaleY || scaleX
+    this.l_ *= (scaleY || scaleX)
   }
   return this
 }
 
 /**
  * Unscale the receiver.
- * @param {Number} scale  Must not be 0.
- * @return {!eYo.Where} the receiver
+ * @param {Number | Object} scaleX
+ * @param {Number} [scaleY] - Defaults to scaleX
+ * @return {eYo.Where} the receiver
  */
-eYo.Where.prototype.unscale = function (scaleX, scaleY) {
+eYo.Where_p.unscale = function (scaleX, scaleY) {
   if (scaleX.x) {
     this.c_ /= scaleX.x
-    this.l_ /= scaleX.y || scaleX.x
+    this.l_ /= (scaleX.y || scaleX.x)
   } else if (scaleX.y) {
     this.c_ /= scaleX.y
     this.l_ /= scaleX.y
   } else {
     this.c_ /= scaleX
-    this.l_ /= scaleY || scaleX
+    this.l_ /= (scaleY || scaleX)
   }
   return this
 }
@@ -322,7 +376,7 @@ eYo.Where.prototype.unscale = function (scaleX, scaleY) {
  * @param {eYo.Where} other
  * @return {number} non negative number
  */
-eYo.Where.prototype.distance = function (other) {
+eYo.Where_p.distance = function (other) {
   var dx = this.x - other.x
   var dy = this.y - other.y
   return Math.sqrt(dx * dx + dy * dy)
@@ -331,9 +385,9 @@ eYo.Where.prototype.distance = function (other) {
 /**
  * Test container.
  * @param {eYo.Rect} rect
- * @return {number} non negative number
+ * @return {Boolean}
  */
-eYo.Where.prototype.in = function (rect) {
+eYo.Where_p.in = function (rect) {
   return this.c_ >= rect.c_min
     && this.c_ <= rect.c_max
     && this.l_ >= rect.l_min
@@ -342,10 +396,11 @@ eYo.Where.prototype.in = function (rect) {
 
 /**
  * Test container.
+ * Opposite of `in`, except for the rect boundary. A point of the rect boundary is in and out the rect.
  * @param {eYo.Rect} rect
  * @return {number} non negative number
  */
-eYo.Where.prototype.out = function (rect) {
+eYo.Where_p.out = function (rect) {
   return this.c_ <= rect.c_min
     || this.c_ >= rect.c_max
     || this.l_ <= rect.l_min
@@ -353,7 +408,7 @@ eYo.Where.prototype.out = function (rect) {
 }
 
 /**
- * `Size` is also a Point and a Where.
+ * `Size` is a synonym of Where.
  */
 eYo.Size = eYo.Where
 
@@ -362,7 +417,7 @@ eYo.Size = eYo.Where
  * @param {String!} s
  * @return {eYo.Size} the receiver.
  */
-eYo.Size.prototype.setFromText = function (txt) {
+eYo.Where_p.setFromText = function (txt) {
   var lines = txt.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/)
   var c = 0
   lines.forEach(l => (c < l.length) && (c = l.length) )
@@ -374,12 +429,12 @@ eYo.Size.prototype.setFromText = function (txt) {
  * Sets from the given text.
  * @param {String!} s
  */
-eYo.Size.sizeOfText = function (txt) {
+eYo.Do.sizeOfText = function (txt) {
   return new eYo.Size().setFromText(txt)
 }
 
 /**
- * `Rect` stores its data in text units.
+ * `Rect` stores its coordinates in text units.
  * Class for representing rectangular regions.
  * @param {number} c Left, in text units.
  * @param {number} l Top, in text units.
@@ -387,15 +442,16 @@ eYo.Size.sizeOfText = function (txt) {
  * @param {number} h Height, in text units.
  * @struct
  * @constructor
- * @implements {goog.math.IRect}
  */
-eYo.Rect = function(c, l, w, h) {
-  this.origin_ = new eYo.Where()
-  this.size_ = new eYo.Size()
-  this.set(c, l, w, h)
-}
+eYo.makeClass('Rect', {
+  init (c, l, w, h, snap) {
+    this.origin_ = new eYo.Where()
+    this.size_ = new eYo.Size()
+    this.set(c, l, w, h, snap)
+  }
+})
 
-Object.defineProperties(eYo.Rect.prototype, {
+Object.defineProperties(eYo.Rect_p, {
   // Basic properties in text dimensions.
   // When in text dimensions,
   // setters round their arguments to half width and quarter height.
@@ -406,7 +462,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.origin_.c
     },
     set (after) {
-      this.origin_.c = after
+      this.origin_.c_ = after
     }
   },
   l: {
@@ -414,7 +470,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.origin_.l
     },
     set (after) {
-      this.origin_.l = after
+      this.origin_.l_ = after
     }
   },
   w: {
@@ -422,7 +478,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.size_.w
     },
     set (after) {
-      this.size_.w = after
+      this.size_.w_ = after
     }
   },
   h: {
@@ -430,7 +486,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.size_.h
     },
     set (after) {
-      this.size_.h = after
+      this.size_.h_ = after
     }
   },
   // basic properties in board dimensions
@@ -439,7 +495,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.origin_.x
     },
     set (after) {
-      this.origin_.x = after
+      this.origin_.x_ = after
     }
   },
   y: {
@@ -447,7 +503,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.origin_.y
     },
     set (after) {
-      this.origin_.y = after
+      this.origin_.y_ = after
     }
   },
   width: {
@@ -455,7 +511,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.size_.width
     },
     set (after) {
-      this.size_.width = after
+      this.size_.width_ = after
     }
   },
   height: {
@@ -463,19 +519,19 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.size_.height
     },
     set (after) {
-      this.size_.height = after
+      this.size_.height_ = after
     }
   },
   // convenient setters and getters
   c_min: {
     get () {
-      return this.origin_.c_
+      return this.c
     },
     /**
      * @param {Number} after 
      */
     set (after) {
-      this.c = after
+      this.c_ = after
     }
   },
   c_mid: {
@@ -486,7 +542,7 @@ Object.defineProperties(eYo.Rect.prototype, {
      * @param {Number} after 
      */
     set (after) {
-      this.c = after - this.w / 2
+      this.c_ = after - this.w / 2
     }
   },
   c_max: {
@@ -494,7 +550,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.c + this.w
     },
     set (after) {
-      this.c = after - this.w
+      this.c_ = after - this.w
     }
   },
   l_min: {
@@ -506,7 +562,7 @@ Object.defineProperties(eYo.Rect.prototype, {
      * @param {Number} after 
      */
     set (after) {
-      this.l = after
+      this.l_ = after
     }
   },
   l_mid: {
@@ -514,7 +570,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.l + this.h / 2
     },
     set (after) {
-      this.l = after - this.h / 2
+      this.l_ = after - this.h / 2
     }
   },
   l_max: {
@@ -522,7 +578,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.l + this.h
     },
     set (after) {
-      this.l = after - this.h
+      this.l_ = after - this.h
     }
   },
   // Convenient setters in board coordinates
@@ -531,7 +587,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.x
     },
     set (after) {
-      this.x = after
+      this.x_ = after
     }
   },
   x_mid: {
@@ -539,7 +595,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.x + this.width / 2
     },
     set (after) {
-      this.x = after - this.width / 2
+      this.x_ = after - this.width / 2
     }
   },
   x_max: {
@@ -547,7 +603,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.x + this.width
     },
     set (after) {
-      this.x = after - this.width
+      this.x_ = after - this.width
     }
   },
   y_min: {
@@ -555,7 +611,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.y
     },
     set (after) {
-      this.y = after
+      this.y_ = after
     }
   },
   y_mid: {
@@ -563,7 +619,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.y + this.height / 2
     },
     set (after) {
-      this.y = after - this.height / 2
+      this.y_ = after - this.height / 2
     }
   },
   y_max: {
@@ -571,7 +627,7 @@ Object.defineProperties(eYo.Rect.prototype, {
       return this.y + this.height
     },
     set (after) {
-      this.y = after - this.height
+      this.y_ = after - this.height
     }
   },
   //// The setters change the width, but does not change the `right`
@@ -581,7 +637,7 @@ Object.defineProperties(eYo.Rect.prototype, {
     },
     set (after) {
       this.width = this.x_max - after
-      this.x_min = after
+      this.x_min_ = after
     }
   },
   top: {
@@ -594,7 +650,7 @@ Object.defineProperties(eYo.Rect.prototype, {
      */
     set (after) {
       this.height = this.y_max - after
-      this.y_min = after
+      this.y_min_ = after
     }
   },
   right: {
@@ -606,7 +662,7 @@ Object.defineProperties(eYo.Rect.prototype, {
      * No negative width.
      */
     set (after) {
-      this.width = Math.max(0, after - this.left)
+      this.width_ = Math.max(0, after - this.left)
     }
   },
   bottom: {
@@ -618,7 +674,7 @@ Object.defineProperties(eYo.Rect.prototype, {
      * No negative height.
      */
     set (after) {
-      this.height = Math.max(0, after - this.top)
+      this.height_ = Math.max(0, after - this.top)
     }
   },
   // Composed
@@ -627,8 +683,8 @@ Object.defineProperties(eYo.Rect.prototype, {
       return new eYo.Where(this.origin_)
     },
     set (after) {
-      this.origin_.x = after.x
-      this.origin_.y = after.y
+      this.origin_.x_ = after.x
+      this.origin_.y_ = after.y
     }
   },
   topLeft: {
@@ -636,8 +692,8 @@ Object.defineProperties(eYo.Rect.prototype, {
       return new eYo.Where(this.origin_)
     },
     set (after) {
-      this.origin_.x = after.x
-      this.origin_.y = after.y
+      this.origin_.x_ = after.x
+      this.origin_.y_ = after.y
     }
   },
   bottomRight: {
@@ -645,8 +701,8 @@ Object.defineProperties(eYo.Rect.prototype, {
       return new eYo.Where(this.origin_).forward(this.size_)
     },
     set (after) {
-      this.x_max = after.x
-      this.y_max = after.y
+      this.x_max_ = after.x
+      this.y_max_ = after.y
     }
   },
   center: {
@@ -665,53 +721,45 @@ Object.defineProperties(eYo.Rect.prototype, {
       return new eYo.Size(this.size_)
     },
     set (after) {
-      this.size_.width = after.width
-      this.size_.height = after.height
+      this.size_.width_ = after.width
+      this.size_.height_ = after.height
     }
   },
   /**
    * clone the receiver.
    * @type {eYo.Rect}
    */
-  clone: {
-    get () {
-      return new eYo.Rect(this)
-    }
+  clone () {
+    return new eYo.Rect(this)
   },
   /**
    * String representation of the receiver.
    * @return {String} a string
    */
-  toString: {
-      get () {
-      return `eYo.Rect(origin: ${this.origin_.toString}, size: ${this.size_.toString})`
-    }
+  toString () {
+    return `eYo.Rect(origin: ${this.origin_.toString}, size: ${this.size_.toString})`
   },
   /**
    * Width of the draft part of the board.
    * @return {number} non negative number
    */
-  draft: {
-    get () {
-      return Math.max(0, -this.x)
-    }
+  draft () {
+    return Math.max(0, -this.x)
   },
   /**
    * Width of the main part of the board.
    * `0` when in flyout.
    * @return {number} non negative number
    */
-  main: {
-    get () {
-      return Math.min(this.width, this.width + this.x)
-    }
-  }
+  main () {
+    return Math.min(this.width, this.width + this.x)
+  },
 })
 
 /**
  * Dispose of the receiver's resources.
  */
-eYo.Rect.prototype.dispose = eYo.Do.nothing
+eYo.Rect_p.dispose = eYo.Do.nothing
 
 /**
  * set the `Rect`.
@@ -722,21 +770,21 @@ eYo.Rect.prototype.dispose = eYo.Do.nothing
  * @param{?Number} h
  * @return {eYo.Rect} The receiver
  */
-eYo.Rect.prototype.set = function (c = 0, l = 0, w = 0, h = 0) {
-  if (goog.isDef(c.left) && goog.isDef(c.right) && goog.isDef(c.top) && goog.isDef(c.bottom)) {
+eYo.Rect_p.set = function (c = 0, l = 0, w = 0, h = 0, snap) {
+  if (eYo.isDef(c.left) && eYo.isDef(c.right) && eYo.isDef(c.top) && eYo.isDef(c.bottom)) {
     // properties are evaluated twice
-    this.left = c.left
-    this.right = c.right
-    this.top = c.top
-    this.bottom = c.bottom
-  } else if (goog.isDef(c.x) && goog.isDef(c.y)) {
-    this.origin = c
-    if (goog.isDef(c.size)) {
-      this.size = c.size
-    } else if (goog.isDef(l.x) && goog.isDef(l.y)) {
-      this.size = l
-    } else if (goog.isDef(l.width) && goog.isDef(l.height)) {
-      this.size = l
+    this.left_ = c.left
+    this.right_ = c.right
+    this.top_ = c.top
+    this.bottom_ = c.bottom
+  } else if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
+    this.origin_ = c
+    if (eYo.isDef(c.size)) {
+      this.size_ = c.size
+    } else if (eYo.isDef(l.x) && eYo.isDef(l.y)) {
+      this.size_ = l
+    } else if (eYo.isDef(l.width) && eYo.isDef(l.height)) {
+      this.size_ = l
     } else {
       this.size_.x = l
       this.size_.y = w
@@ -744,13 +792,13 @@ eYo.Rect.prototype.set = function (c = 0, l = 0, w = 0, h = 0) {
   } else {
     this.origin_.c_ = c
     this.origin_.l_ = l
-    if (goog.isDef(w.x) && goog.isDef(w.y)) {
-      this.size = w
-    } else if (goog.isDef(w.width) && goog.isDef(w.height)) {
-      this.size = w
+    if (eYo.isDef(w.x) && eYo.isDef(w.y)) {
+      this.size_ = w
+    } else if (eYo.isDef(w.width) && eYo.isDef(w.height)) {
+      this.size_ = w
     } else {
-      this.size_.x = w
-      this.size_.y = h
+      this.size_.x_ = w
+      this.size_.y_ = h
     }
   }
   return this
@@ -764,8 +812,8 @@ eYo.Rect.prototype.set = function (c = 0, l = 0, w = 0, h = 0) {
  * @param {Number} height  y coordinate
  * @return {eYo.Rect} The receiver
  */
-eYo.Rect.prototype.xySet = function (x = 0, y = 0, width = 0, height = 0) {
-  if (goog.isDef(x.x) && goog.isDef(x.y)) {
+eYo.Rect_p.xySet = function (x = 0, y = 0, width = 0, height = 0) {
+  if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     this.origin_.set(x)
     this.size_.xySet(y, width)
   } else {
@@ -781,7 +829,7 @@ eYo.Rect.prototype.xySet = function (x = 0, y = 0, width = 0, height = 0) {
  * @param {number} l
  * @return {eYo.Rect}
  */
-eYo.Rect.prototype.forward = function (c = 0, l = 0) {
+eYo.Rect_p.forward = function (c = 0, l = 0) {
   this.origin_.forward(c, l)
   return this
 }
@@ -792,7 +840,7 @@ eYo.Rect.prototype.forward = function (c = 0, l = 0) {
  * @param {number} l
  * @return {eYo.Rect}
  */
-eYo.Rect.prototype.backward = function (c = 0, l = 0) {
+eYo.Rect_p.backward = function (c = 0, l = 0) {
   this.origin_.backward(c, l)
   return this
 }
@@ -813,7 +861,7 @@ eYo.Rect.xy = function (x = 0, y = 0, width = 0, height = 0) {
  * Test equality between the receiver and the rhs.
  * @param {eYo.Rect} rhs
  */
-eYo.Rect.prototype.equals = function (rhs) {
+eYo.Rect_p.equals = function (rhs) {
   return rhs instanceof eYo.Rect && this.origin_.equals(rhs.origin_) && this.size_.equals(rhs.size_)
 }
 
@@ -823,7 +871,7 @@ eYo.Rect.prototype.equals = function (rhs) {
  * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
  * @return {!eYo.Rect} the receiver
  */
-eYo.Rect.prototype.scale = function (scaleX, scaleY) {
+eYo.Rect_p.scale = function (scaleX, scaleY) {
   this.origin_.scale(scaleX, scaleY)
   this.size_.scale(scaleX, scaleY)
   return this
@@ -835,7 +883,7 @@ eYo.Rect.prototype.scale = function (scaleX, scaleY) {
  * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
  * @return {!eYo.Rect} the receiver
  */
-eYo.Rect.prototype.unscale = function (scaleX, scaleY) {
+eYo.Rect_p.unscale = function (scaleX, scaleY) {
   this.origin_.unscale(scaleX, scaleY)
   this.size_.unscale(scaleX, scaleY)
   return this
@@ -845,10 +893,10 @@ eYo.Rect.prototype.unscale = function (scaleX, scaleY) {
  * Mirror the receiver vertically and horizontally.
  * @return {!eYo.Rect} the receiver
  */
-eYo.Rect.prototype.mirror = function () {
+eYo.Rect_p.mirror = function () {
   // size does not change, only max <-> -min
-  this.x_max = -this.x
-  this.y_max = -this.y
+  this.x_max_ = -this.x
+  this.y_max_ = -this.y
   return this
 }
 
@@ -861,28 +909,28 @@ eYo.Rect.prototype.mirror = function () {
  * @param {Number} [dy_max]
  * @return {!eYo.Rect} the receiver
  */
-eYo.Rect.prototype.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
-  if (!goog.isDef(dx_min)) {
+eYo.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
+  if (!eYo.isDef(dx_min)) {
     dx_min = dx_max = eYo.Unit.x / 2
     dy_min = dy_max = eYo.Unit.y / 4
-  } else if (goog.isDef(dx_min.x)) {
+  } else if (eYo.isDef(dx_min.x)) {
     dy_min = dy_max = dx_min.y
     dx_min = dx_max = dx_min.x
   } else {
-    if (!goog.isDef(dy_min)) {
+    if (!eYo.isDef(dy_min)) {
       dy_min = dx_min
     }
-    if (!goog.isDef(dx_max)) {
+    if (!eYo.isDef(dx_max)) {
       dx_max = dx_min
     }
-    if (!goog.isDef(dy_max)) {
+    if (!eYo.isDef(dy_max)) {
       dy_max = dy_min
     }
   }
-  this.x_min += dx_min
-  this.x_max -= dx_min + dx_max
-  this.y_min += dy_min
-  this.y_max -= dy_min + dy_max
+  this.x_min_ += dx_min
+  this.x_max_ -= dx_min + dx_max
+  this.y_min_ += dy_min
+  this.y_max_ -= dy_min + dy_max
   return this
 }
 
@@ -895,78 +943,28 @@ eYo.Rect.prototype.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
  * @param {Number} [dy_max]
  * @return {!eYo.Rect} the receiver
  */
-eYo.Rect.prototype.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
-  if (!goog.isDef(dx_min)) {
+eYo.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
+  if (!eYo.isDef(dx_min)) {
     dx_min = dx_max = eYo.Unit.x / 2
     dy_min = dy_max = eYo.Unit.y / 4
-  } else if (goog.isDef(dx_min.x)) {
+  } else if (eYo.isDef(dx_min.x)) {
     dy_min = dy_max = dx_min.y
     dx_min = dx_max = dx_min.x
   } else {
-    if (!goog.isDef(dy_min)) {
+    if (!eYo.isDef(dy_min)) {
       dy_min = dx_min
     }
-    if (!goog.isDef(dx_max)) {
+    if (!eYo.isDef(dx_max)) {
       dx_max = dx_min
     }
-    if (!goog.isDef(dy_max)) {
+    if (!eYo.isDef(dy_max)) {
       dy_max = dy_min
     }
   }
-  this.x_min -= dx_min
-  this.x_max += dx_min + dx_max
-  this.y_min -= dy_min
-  this.y_max += dy_min + dy_max
-  return this
-}
-
-/**
- * Tie the two rectangles such that modifying one of them
- * automatically changes the other one accordingly.
- * @param {eYo.Rect} tied  A tied rect.
- * @param {Object} to
- * @param {Object} from
- * @return {!eYo.Rect} the receiver
- */
-eYo.Rect.prototype.tie = function (tied, to, from) {
-  Object.defineProperties(this, {
-    c_: {
-      get () {
-        var c = tied.origin_.c_
-        return (from.c && from.c(c)) || c
-      },
-      set (after) {
-        tied.origin_.c_ = (to.c && to.c(after)) || after
-      }
-    },
-    l_: {
-      get () {
-        var l = tied.origin_.l_
-        return (from.l && from.l(l)) || l
-      },
-      set (after) {
-        tied.origin_.l_ = (to.l && to.l(after)) || after
-      }
-    },
-    h_: {
-      get () {
-        var c = tied.size_.c_
-        return (from.c && from.c(c)) || c
-      },
-      set (after) {
-        tied.size_.c_ = (to.c && to.c(after)) || after
-      }
-    },
-    w_: {
-      get () {
-        var l = tied.size_.l_
-        return (from.l && from.l(l)) || l
-      },
-      set (after) {
-        tied.size_.l_ = (to.l && to.l(after)) || after
-      }
-    }
-  })
+  this.x_min_ -= dx_min
+  this.x_max_ += dx_min + dx_max
+  this.y_min_ -= dy_min
+  this.y_max_ += dy_min + dy_max
   return this
 }
 
@@ -976,12 +974,17 @@ eYo.Rect.prototype.tie = function (tied, to, from) {
  * @param {Number} [y]
  * @return {Boolean}
  */
-eYo.Rect.prototype.xyContains = function (x, y) {
-  var c = x.c
-  var l = x.l
-  if (!goog.isDef(c) || !goog.isDef(l)) {
-    c = x / eYo.Unit.x
-    l = y / eYo.Unit.y
+eYo.Rect_p.xyContains = function (x, y) {
+  if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
+    var c = x.x / eYo.Unit.x
+    var l = y.x / eYo.Unit.y
+  } else {
+    c = x.c
+    l = x.l
+    if (!eYo.isDef(x.c) || !eYo.isDef(x.l)) {
+      c = x / eYo.Unit.x
+      l = y / eYo.Unit.y
+    }
   }
   return c >= this.c_min && c <= this.c_max
     && l >= this.l_min && l <= this.l_max
@@ -992,22 +995,22 @@ eYo.Rect.prototype.xyContains = function (x, y) {
  * @param {eYo.Rect} rect
  * @return {eYo.Rect} the receiver
  */
-eYo.Rect.prototype.union = function (rect) {
+eYo.Rect_p.union = function (rect) {
   var a = rect.x
   if (a < this.x) {
-    this.x = a
+    this.x_ = a
   }
   a = rect.right
   if (this.right < a) {
-    this.right = a
+    this.right_ = a
   }
   a = rect.y
   if (a < this.y) {
-    this.y = a
+    this.y_ = a
   }
   a = rect.bottom
   if (this.bottom < a) {
-    this.bottom = a
+    this.bottom_ = a
   }
   return this
 }
@@ -1049,7 +1052,7 @@ eYo.Rect.difference = function(a, b) {
   // Subtract off any area on top where A extends past B
   if (b.top > a.top) {
     var r = ans[0] = new eYo.Rect(a)
-    r.height = b.top - a.top
+    r.height_ = b.top - a.top
     top = b.top
     // If we're moving the top down, we also need to subtract the height diff.
     height -= b.top - a.top
@@ -1060,8 +1063,8 @@ eYo.Rect.difference = function(a, b) {
   // b.top < a_bottom <= b_bottom
   if (b_bottom < a_bottom) {
     r = ans[1] = new eYo.Rect(a)
-    r.y = b_bottom
-    r.height = a_bottom - b_bottom
+    r.y_ = b_bottom
+    r.height_ = a_bottom - b_bottom
     height = b_bottom - top
   }
   if (b.right <= a.left) {
@@ -1082,8 +1085,8 @@ eYo.Rect.difference = function(a, b) {
   // b.left <= a.left < b.right
   if (a.left < b.left) {
     r = ans[2] = new eYo.Rect(a)
-    r.width = b.left - a.left
-    r.height = height
+    r.width_ = b.left - a.left
+    r.height_ = height
   }
   // Subtract any area on right where A extends past B
   // We have b.left < a.right and only one of
@@ -1117,5 +1120,5 @@ eYo.Rect.intersection = function(a, b) {
       return ans
     }
   }
-  return null
+  return eYo.NA
 }

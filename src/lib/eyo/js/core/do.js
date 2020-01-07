@@ -14,7 +14,6 @@
 eYo.makeNS('Do')
 
 goog.forwardDeclare('goog.dom')
-goog.forwardDeclare('goog.math.AffineTransform')
 
 eYo.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
 
@@ -318,11 +317,11 @@ eYo.Do.Name = (() => {
 })()
 
 eYo.Do.ensureArray = eYo.Do.ensureFunctionOrArray = function (object) {
-  return goog.isArray(object) || goog.isFunction(object) ? object : (object ? [object] : object)
+  return goog.isArray(object) || eYo.isF(object) ? object : (object ? [object] : object)
 }
 
 eYo.Do.ensureFunction = function (object) {
-  return goog.isFunction(object)
+  return eYo.isF(object)
     ? object
     : function () {
         return object
@@ -370,7 +369,7 @@ eYo.Do.Enumerator = (list, filter) => {
     next: {
       get () {
         while ((me.here_ = next_())) {
-          if (!goog.isFunction(filter) || filter(me.here_)) {
+          if (!eYo.isF(filter) || filter(me.here_)) {
             break
           }
         }
@@ -507,7 +506,7 @@ eYo.Do.forEachElementChild = function (element, handler, thisArg) {
 }
 
 eYo.Do.valueOf = function (f, thisObject) {
-  return goog.isFunction(f) ? f.call(thisObject) : f
+  return eYo.isF(f) ? f.call(thisObject) : f
 }
 
 /**
@@ -581,7 +580,7 @@ eYo.Do.readOnlyMixin = (object, props) => {
   for (key in props) {
     eYo.assert(!eYo.Do.hasOwnProperty(object, key), 'Duplicate keys are forbidden: ' + key)
     var value = props[key]
-    var prop = goog.isFunction(value)
+    var prop = eYo.isF(value)
     ? { get: value }
     : { value: value }
     Object.defineProperty(
@@ -609,4 +608,12 @@ eYo.Do.readOnlyMixin = (object, props) => {
     }
     return id.join('')
   }
+}
+
+/**
+ * @param {String} str - the base string
+ */
+eYo.Do.toTitleCase = (str) => {
+  eYo.parameterAssert(eYo.isStr(str))
+  return str.length ? str[0].toUpperCase()+str.substr(1) : str
 }

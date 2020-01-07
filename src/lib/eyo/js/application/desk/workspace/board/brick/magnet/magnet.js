@@ -202,10 +202,6 @@ eYo.Magnet.makeClass('S', {
   owned: ['out', 'head', 'left', 'right', 'suite', 'foot'],
 })
 
-eYo.Do.readOnlyMixin(eYo.XRE, {
-  function_builtin: XRegExp('^function[^(]*\\(\\s*(?<builtin>\\bbuiltin\\b)'),
-})
-
 /**
  * Expands a magnet model.
  * @param {Object} model
@@ -839,7 +835,7 @@ eYo.Magnet.Dflt_p.break = function () {
  */
 eYo.Magnet.Dflt_p.willConnect = function (targetM4t) {
   var m = this.model
-  var f = eYo.Decorate.reentrant_method.call(this, 'model_willConnect',m && m.willConnect)
+  var f = eYo.Decorate.reentrant_method(this, 'model_willConnect', m && m.willConnect)
   if (f) {
     f.apply(this, arguments)
     return
@@ -860,7 +856,7 @@ eYo.Magnet.Dflt_p.didConnect = function (oldTargetM4t, targetOldM4t) {
   // if any, they were already disconnected and
   // the step has already been incremented then.
   var m = this.model
-  var f = eYo.Decorate.reentrant_method.call(this, 'model_didConnect',m && m.didConnect)
+  var f = eYo.Decorate.reentrant_method(this, 'model_didConnect', m && m.didConnect)
   if (f) {
     f.apply(this, arguments)
     return
@@ -878,7 +874,7 @@ eYo.Magnet.Dflt_p.didConnect = function (oldTargetM4t, targetOldM4t) {
  */
 eYo.Magnet.Dflt_p.willDisconnect = function () {
   var f = this.model.willDisconnect
-  if (goog.isFunction(f)) {
+  if (eYo.isF(f)) {
     eYo.Decorate.reentrant_method('willDisconnect',f).apply(this, arguments)
     return
   }
@@ -901,7 +897,7 @@ eYo.Magnet.Dflt_p.didDisconnect = function (oldTargetM4t, targetOldM4t) {
   // the step has already been incremented then.
   if (!this.reentrant_.didDisconnect) {
     var f = this.model && this.model.didDisconnect
-    if (goog.isFunction(f)) {
+    if (eYo.isF(f)) {
       this.reentrant_.didDisconnect = true
       f.call(this, oldTargetM4t, targetOldM4t)
       this.reentrant_.didDisconnect = false

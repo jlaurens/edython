@@ -157,29 +157,30 @@ eYo.Expr.List.prototype.getSlot = function (name, dontCreate) {
 eYo.Expr.List.prototype.createConsolidator = eYo.Decorate.reentrant_method(
   'createConsolidator',
   function (force) {
-  var type = this.type
-  if (!type) {
-    console.error('unexpected void type')
-  }
-  var D = eYo.C9r.Model.forKey(type).list
-  eYo.assert(D, '`model`.list is missing in ' + type)
-  var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
-  if (this.consolidator) {
-    if (this.consolidator.constructor !== C10r) {
+    var type = this.type
+    if (!type) {
+      console.error('unexpected void type')
+    }
+    var D = eYo.C9r.Model.forKey(type).list
+    eYo.assert(D, '`model`.list is missing in ' + type)
+    var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.List
+    if (this.consolidator) {
+      if (this.consolidator.constructor !== C10r) {
+        this.consolidator = new C10r(D)
+        eYo.assert(this.consolidator, `Could not create the consolidator ${type}`)
+      } else {
+        this.consolidator.init(D)
+      }
+      if (force) {
+        this.consolidate()
+      }
+    } else {
       this.consolidator = new C10r(D)
       eYo.assert(this.consolidator, `Could not create the consolidator ${type}`)
-    } else {
-      this.consolidator.init(D)
-    }
-    if (force) {
       this.consolidate()
     }
-  } else {
-    this.consolidator = new C10r(D)
-    eYo.assert(this.consolidator, `Could not create the consolidator ${type}`)
-    this.consolidate()
   }
-})
+)
 
 /**
  * Hook point.

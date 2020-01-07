@@ -196,14 +196,14 @@ eYo.C9r.Owned.makeSubclass(eYo, 'Flyout', {
     },
   },
   valued: {
-    closed: {value: false},
-    autoClose: {value: false},
+    closed: false,
+    autoClose: false,
     /**
      * Is the flyout visible?
      * @type {boolean} True if visible.
      */
     visible: {
-      value: true,
+      init: true,
       didChange (before, after) /** @suppress {globalThis} */ {
         this.updateDisplay_()
       }
@@ -213,16 +213,16 @@ eYo.C9r.Owned.makeSubclass(eYo, 'Flyout', {
      * @type {boolean}
      */
     containerVisible: {
-      value: true,
+      init: true,
       didChange (before, after) /** @suppress {globalThis} */ {
         this.updateDisplay_()
       }
      },
-    dragAngleLimit: {value: 70},
+    dragAngleLimit: 70,
     /**
      * @type {Number} where the flyout is anchored.
      */
-    anchor: {},
+    anchor: eYo.NA,
   },
   init (owner) {
     // First
@@ -309,7 +309,7 @@ eYo.C9r.Owned.makeSubclass(eYo, 'Flyout', {
      * @private
      */
     viewRect () {
-      return new eYo.Rect().tie(this.board.metrics_.view, {
+      return new eYo.RectProxy(this.board.metrics_.view, {
         l: (after) => after + eYo.Flyout.TOOLBAR_HEIGHT,
         h: (after) => after - eYo.Flyout.TOOLBAR_HEIGHT,
       }, {
@@ -427,7 +427,7 @@ eYo.Flyout.prototype.show = function(model) {
           }
         }
         // this is the part specific to edython
-        if (goog.isFunction(xml)) {
+        if (eYo.isF(xml)) {
           // xml is either a function that returns an array of objects
           // or a function that creates brick.
           var ra = xml(createOneBrick)

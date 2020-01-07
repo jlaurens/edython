@@ -32,12 +32,11 @@
  */
 'use strict'
 
-eYo.provide('Span')
-
 eYo.forwardDeclare('Unit')
 eYo.forwardDeclare('Brick')
 
 /**
+ * @name {eYo.Span}
  * Class for a Span object.
  * A span object stores various dimensions of a brick, in text units.
  * Each node has a span object.
@@ -48,34 +47,176 @@ eYo.forwardDeclare('Brick')
  * @param {eYo.Brick.Dflt} brick The brick owning the span.
  * @constructor
  */
-eYo.Span = function (brick) {
-  this.brick_ = brick
-  this.c_min_init_ = brick.wrapped_
-    ? 0
-    : brick.isGroup
-      ? 2 * eYo.Span.INDENT + 1
-      : brick.isStmt
-        ? eYo.Span.INDENT + 1
-        : 2
-  this.c_min_ = this.c_min_init_
-  this.c_ = this.c_min_ + this.c_padding
-  this.l_ = this.header_ + this.main_ + this.hole_ + this.suite_ + this.footer_
-}
-
-// default private property values
-Object.defineProperties(eYo.Span.prototype, {
-  brick_: { value: eYo.NA, writable: true },
-  c_min_: { value: 2, writable: true },
-  c_padding_: { value: 0, writable: true },
-  l_: { value: 1, writable: true },
-  header_: { value: 0, writable: true },
-  main_: { value: 1, writable: true },
-  hole_: { value: 0, writable: true },
-  footer_: { value: 0, writable: true },
-  suite_: { value: 0, writable: true },
-  foot_: { value: 0, writable: true }
+eYo.makeClass('Span', eYo.C9r.Owned, {
+  init (brick) {
+    this.c_min_init_ = brick.wrapped_
+      ? 0
+      : brick.isGroup
+        ? 2 * eYo.Span.INDENT + 1
+        : brick.isStmt
+          ? eYo.Span.INDENT + 1
+          : 2
+    this.c_min_ = this.c_min_init_
+    this.c_ = this.c_min_ + this.c_padding
+    this.l_ = this.header_ + this.main_ + this.hole_ + this.suite_ + this.footer_
+  },
+  computed: {
+    /**
+     * @readonly
+     * @property {eYo.Brick.Dflt} brick - The owning brick
+     */
+    brick () {
+      return this.brick_
+    },
+    /**
+      * @readonly
+      * @property {number} width  The full width, in board coordinates, computed based on `c`.
+      */
+    width: {
+      get () {
+        return this.c * eYo.Unit.x
+      },
+      set (after) {
+        this.c_ = after / eYo.Unit.x
+      }
+    },
+    /**
+      * @property {number} x  Synonym of `width`.
+      */
+    x: {
+      get () {
+        return this.width
+      },
+      set (after) {
+        this.width_ = after
+      }
+    },
+  },
+  valued: {
+    /**
+     * This is the total number of columns in that block.
+     * At least two.
+     * @readonly
+     * @property {number} c - The full number of columns
+     */
+    c: {
+      get () {
+        return this.c_
+      },
+      set (after) {
+        this.setPadding(after - this.c_min_)
+      }
+    },
+    /**
+     * The minimum number of columns, at least `this.c_min_init`.
+     * @readonly
+     * @property {number} c_min - The minimum number of columns
+     */
+    c_min: {
+      get () {
+        return this.c_min_
+      },
+      set (after) {
+        this.addC(after - this.c_min_)
+      }
+    },
+    /**
+     * @property {number} c_padding - The extra padding at the right
+     */
+    c_padding: {
+      get () {
+        return this.c_padding_
+      },
+      set (after) {
+        this.setPadding(after)
+      }
+    },
+    /**
+     * @property {number} right  The number of right columns
+     */
+    right: {
+      value: 0,
+      writable: true
+    },
+    /**
+     * The main count is the number of main lines in statements.
+     * A statement has one main line in general.
+     * When there is a doc string inside the statement,
+     * the main line might be bigger:
+     * ```
+     * print('abc')
+     * ```
+     * has exactly one main line whereas
+     * ```
+     * print('''foo
+     * bar''')
+     * ```
+     * has exactly two main lines.
+     * When there is more than one main line,
+     * the horizontal siblings may have header and footer counts.
+     * @property {number} main - The number of main lines
+     */
+    main: {
+      get () {
+        return this.main_ // 1 or more
+      },
+      set (after) {
+        this.addMain(after - this.main_)
+      }
+    },
+    /** 
+     * @property {number} header - The number of header lines
+     */
+    header: {
+      get () {
+        return this.header_
+      },
+      set (after) {
+        this.addHeader(after - this.header_)
+      }
+    },
+    /**
+     * @property {number} footer - The number of footer lines
+     */
+    footer: {
+      get () {
+        return this.footer_
+      },
+      set (after) {
+        this.addFooter(after - this.footer_)
+      }
+    },
+    /**
+     * This is the total number of lines in that block.
+     * At least one.
+     * @property {number} l - The full number of lines
+     * @readonly
+     */
+    l: {
+      get () {
+        return this.l_
+      }
+    },
+    /**
+     * @readonly
+     * @property {number} height - The height, in board coordinates.
+     */
+    height: {
+      get () {
+        return this.l_ * eYo.Unit.y
+      }
+    },
+    /**
+     * @readonly
+     * @property {number} y  Synonym of `height`.
+     */
+    y: {
+      get () {
+        return this.height
+      }
+    }
+  },
 })
-
 
 /**
  * @type {Number} positive number of indentation spaces.
@@ -92,157 +233,7 @@ Object.defineProperty(eYo.Span, 'tabWidth', {
 })
 
 // Public readonly properties
-Object.defineProperties(eYo.Span.prototype, {
-  /**
-   * @readonly
-   * @property {eYo.Brick.Dflt} brick - The owning brick
-   */
-  brick: {
-    get () {
-      return this.brick_
-    }
-  },
-  /**
-  * @readonly
-  * @property {number} width  The full width, in board coordinates, computed based on `c`.
-  */
-  width: {
-    get () {
-      return this.c * eYo.Unit.x
-    }
-  },
-  /**
-  * @readonly
-  * @property {number} x  Synonym of `width`.
-  */
-  x: {
-    get () {
-      return this.width
-    }
-  },
-  /**
-   * This is the total number of columns in that block.
-   * At least two.
-   * @readonly
-   * @property {number} c - The full number of columns
-   */
-  c: {
-    get () {
-      return this.c_
-    },
-    set (after) {
-      this.setPadding(after - this.c_min_)
-    }
-  },
-  /**
-   * The minimum number of columns, at least `this.c_min_init`.
-   * @readonly
-   * @property {number} c_min - The minimum number of columns
-   */
-  c_min: {
-    get () {
-      return this.c_min_
-    },
-    set (after) {
-      this.addC(after - this.c_min_)
-    }
-  },
-  /**
-   * @property {number} c_padding - The extra padding at the right
-   */
-  c_padding: {
-    get () {
-      return this.c_padding_
-    },
-    set (after) {
-      this.setPadding(after)
-    }
-  },
-  /**
-   * @property {number} right  The number of right columns
-   */
-  right: {
-    value: 0,
-    writable: true
-  },
-  /**
-   * The main count is the number of main lines in statements.
-   * A statement has one main line in general.
-   * When there is a doc string inside the statement,
-   * the main line might be bigger:
-   * ```
-   * print('abc')
-   * ```
-   * has exactly one main line whereas
-   * ```
-   * print('''foo
-   * bar''')
-   * ```
-   * has exactly two main lines.
-   * When there is more than one main line,
-   * the horizontal siblings may have header and footer counts.
-   * @property {number} main - The number of main lines
-   */
-  main: {
-    get () {
-      return this.main_ // 1 or more
-    },
-    set (after) {
-      this.addMain(after - this.main_)
-    }
-  },
-  /** 
-   * @property {number} header - The number of header lines
-   */
-  header: {
-    get () {
-      return this.header_
-    },
-    set (after) {
-      this.addHeader(after - this.header_)
-    }
-  },
-  /**
-   * @property {number} footer - The number of footer lines
-   */
-  footer: {
-    get () {
-      return this.footer_
-    },
-    set (after) {
-      this.addFooter(after - this.footer_)
-    }
-  },
-  /**
-   * This is the total number of lines in that block.
-   * At least one.
-   * @property {number} l - The full number of lines
-   * @readonly
-   */
-  l: {
-    get () {
-      return this.l_
-    }
-  },
-  /**
-   * @readonly
-   * @property {number} height - The height, in board coordinates.
-   */
-  height: {
-    get () {
-      return this.l_ * eYo.Unit.y
-    }
-  },
-  /**
-   * @readonly
-   * @property {number} y  Synonym of `height`.
-   */
-  y: {
-    get () {
-      return this.height
-    }
-  }
-})
+  Object.defineProperties(eYo.Span.prototype, )
 
 // Public computed properties:
 Object.defineProperties(eYo.Span.prototype, {
@@ -298,19 +289,19 @@ eYo.Span.prototype.dispose = function () {
 
 // computed private properties
 Object.defineProperties(eYo.Span.prototype, {
-  parentSpan_: {
+  parentSpan: {
     get () {
       var p = this.brick.parent
       return p && p.span
     }
   },
-  rightSpan_: {
+  rightSpan: {
     get () {
       var b3k = this.brick.right
       return b3k && b3k.span
     }
   },
-  leftSpan_: {
+  leftSpan: {
     get () {
       var b3k = this.brick.left
       return b3k && b3k.span

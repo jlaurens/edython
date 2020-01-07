@@ -22,7 +22,6 @@ eYo.forwardDeclare('Backer')
 eYo.forwardDeclare('Scrollbar')
 
 goog.forwardDeclare('goog.array');
-goog.forwardDeclare('goog.math');
 
 /**
  * Class for a workspace.

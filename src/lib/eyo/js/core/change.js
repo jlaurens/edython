@@ -78,7 +78,7 @@ eYo.C9r.Change_p.reset = function () {
  * @return {!Function}
  */
 eYo.C9r.decorateChange = function (key, do_it) {
-  eYo.assert(goog.isFunction(do_it), 'do_it MUST be a function')
+  eYo.assert(eYo.isF(do_it), 'do_it MUST be a function')
   return function() {
     var c = this.change
     if (c.save_[key] === c.count) {

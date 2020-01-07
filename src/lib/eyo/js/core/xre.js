@@ -286,17 +286,9 @@ bytesescapeseq ::=  "\" <any ASCII character>
 
 */
 
-/*
-eYo.assert('1234567890123456789123'.match(RE.decinteger), 'FAILURE')
-eYo.assert(!'01234567890123456789123'.match(RE.decinteger), 'FAILURE')
-eYo.assert('00000'.match(RE.decinteger), 'FAILURE')
-eYo.assert('0o0007'.match(RE.octinteger), 'FAILURE')
-eYo.assert('0x0007'.match(RE.hexinteger), 'FAILURE')
-eYo.assert('0b0001'.match(RE.bininteger), 'FAILURE')
-eYo.assert('12345.'.match(RE.pointfloat), 'FAILURE')
-eYo.assert('012345.'.match(RE.pointfloat), 'FAILURE')
-eYo.assert('.0'.match(RE.pointfloat), 'FAILURE')
-eYo.assert('0e0'.match(RE.exponentfloat), 'FAILURE')
-eYo.assert('0e+0'.match(RE.exponentfloat), 'FAILURE')
-eYo.assert('0e-0'.match(RE.exponentfloat), 'FAILURE')
-*/
+eYo.Do.readOnlyMixin(eYo.XRE, {
+  function_builtin_before: XRegExp('^function[^(]*\\(\\s*(?<builtin>\\bbuiltin\\b)?(?:\\s*,\\s*)?(?<before>\\bbefore\\b)?'),
+  function_before: XRegExp('^function\\b[^(]*\\(\\s*\\bbefore\\b'),
+  function_builtin: XRegExp('^function\\b[^(]*\\(\\s*\\bbuiltin\\b'),
+  function_builtin_after: XRegExp('^function\\b[^(]*\\(\\s*\\bbuiltin\\b\\s*,\\s*\\bafter\\b'),
+})

@@ -80,7 +80,7 @@ eYo.C9r.BSMOwned.makeSubclass(eYo.Slot, 'Dflt', {
     this.model_ = model
     var setupModel = model => {
       model.setup_ = true
-      if (model.validateIncog && !goog.isFunction(model.validateIncog)) {
+      if (model.validateIncog && !eYo.isF(model.validateIncog)) {
         delete model.validateIncog
       }
     }
@@ -292,7 +292,7 @@ eYo.C9r.BSMOwned.makeSubclass(eYo.Slot, 'Dflt', {
 eYo.Slot.Dflt_p.whenRequiredFromModel = function (helper) {
   if (this.isRequiredFromModel) {
     this.isRequiredFromModel = false
-    if (goog.isFunction(helper)) {
+    if (eYo.isF(helper)) {
       helper.call(this)
     }
     return true
@@ -430,7 +430,7 @@ eYo.Slot.Dflt_p.load = function (element) {
   // find the xml child with the proper slot attribute
     eYo.Do.someElementChild(element, child => {
       var attribute = child.getAttribute(eYo.Xml.SLOT)
-      if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && goog.isFunction(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {
+      if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && eYo.isF(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {
         this.recover.dontResit(child)
         if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
           this.requiredFromModel = true
@@ -498,7 +498,7 @@ eYo.Slot.Dflt_p.load = function (element) {
  */
 eYo.Slot.Dflt_p.willLoad = eYo.Decorate.reentrant_method('willLoad', function () {
   let f = this.model.willLoad
-  if (f) {
+  if (eYo.isF(f)) {
     f.apply(this, arguments)
   }
 })
@@ -511,7 +511,7 @@ eYo.Slot.Dflt_p.willLoad = eYo.Decorate.reentrant_method('willLoad', function ()
  */
 eYo.Slot.Dflt_p.didLoad = eYo.Decorate.reentrant_method('didLoad', function () {
   let f = this.model.didLoad
-  if (f) {
+  if (eYo.isF(f)) {
     f.apply(this, arguments)
   }
 })
@@ -539,7 +539,7 @@ eYo.Slot.Dflt_p.forEach = function (helper) {
  */
 eYo.Slot.Dflt_p.forEachPrevious = function (helper) {
   var slot = this
-  if (goog.isFunction(helper)) {
+  if (eYo.isF(helper)) {
     do {
       helper(slot)
     } while ((slot = slot.previous))
@@ -556,7 +556,7 @@ eYo.Slot.Dflt_p.forEachPrevious = function (helper) {
  */
 eYo.Slot.Dflt_p.some = function (helper) {
   var slot = this
-  if (goog.isFunction(helper)) {
+  if (eYo.isF(helper)) {
     do {
       if (helper(slot)) {
         return slot

@@ -25,7 +25,6 @@ eYo.forwardDeclare('Variable')
 eYo.forwardDeclare('Workspace')
 
 goog.forwardDeclare('goog.array');
-goog.forwardDeclare('goog.math');
 
 /**
  * Class for a desk.

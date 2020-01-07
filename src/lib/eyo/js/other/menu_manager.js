@@ -306,7 +306,7 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
       }
       me.alreadyListened = true
       var model = event.target && event.target.model_
-      if (goog.isFunction(model)) {
+      if (eYo.isF(model)) {
         model(event)
       } else {
         target.handleMenuItemActionFirst(me, event) ||
@@ -473,7 +473,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     this.addChild(menuItem, true)
   }
   // help
-  var url = goog.isFunction(brick.helpUrl) ? brick.helpUrl() : brick.helpUrl
+  var url = eYo.isF(brick.helpUrl) ? brick.helpUrl() : brick.helpUrl
   menuItem = this.newMenuItem(
     eYo.Msg.HELP,
     {action: eYo.ID.HELP,
@@ -563,7 +563,7 @@ eYo.Brick.Dflt.prototype.handleMenuItemActionLast = function (mngr, event) {
  */
 eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
   var model = event.target.model_
-  if (goog.isFunction(model)) {
+  if (eYo.isF(model)) {
     setTimeout(function () {
       model(brick, event)
     }, 100)
@@ -642,7 +642,7 @@ eYo.MenuManager.prototype.populateVariable_ = function (brick) {
  */
 eYo.MenuManager.prototype.handleAction_movable_parent = function (brick, event) {
   var model = event.target.model_
-  if (goog.isFunction(model)) {
+  if (eYo.isF(model)) {
     setTimeout(function () {
       model(brick, event)
     }, 100)
@@ -906,7 +906,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
         }
         // the wrapped brick is a list
         var listCheck = list.all || list.check || (list.consolidator && list.consolidator.model && list.consolidator.model.check)
-        check = goog.isFunction(listCheck)
+        check = eYo.isF(listCheck)
           ? listCheck.call(model.type)
           : listCheck
         if (outCheck && check) {

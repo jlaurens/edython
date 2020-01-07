@@ -925,6 +925,32 @@ describe ('Dlgt', function () {
     })
   })
   describe('C9r: Properties', function () {
+    it ('Handler', function () {
+      var ns = eYo.makeNS()
+      var flag = 0
+      eYo.makeClass(ns, 'A', {
+        valued: {
+          foo: {
+            value: 0,
+            validate (after) {
+              flag += after
+            },
+            willChange (after) {
+              flag += 100 * after
+            },
+            isChanging (after) {
+              flag += 10000 * after
+            },
+            didChange (after) {
+              flag += 1000000 * after
+            },
+          },
+        },
+      })
+      let a = new ns.A()
+      a.foo = 69
+      chai.assert(flag === 69696969)
+    })
     describe('C9r: Cached', function () {
       it ('Cached: Basic', function () {
         var ns = eYo.makeNS()

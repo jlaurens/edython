@@ -16,9 +16,10 @@
  * @name {eYo}
  * @namespace
  */
-{
+var eYo
+(() => {
   var EYO = function() {}
-  var eYo = new EYO()
+  eYo = new EYO()
   Object.defineProperty(EYO.prototype, '_p', {
     get () {
       return this.constructor.prototype
@@ -45,7 +46,7 @@
     }
   })
 
-}
+})()
 
 /**
  * Reference to the global object.
@@ -105,6 +106,25 @@ eYo.isNA = (what) => {
 }
 
 /**
+ * Whether the argument is not `undefined`.
+ * @param {*} what
+ */
+eYo.isDef = (what) => {
+  return what !== eYo.NA
+}
+
+/**
+ * Returns the receiver if it is defined, the fallout otherwise.
+ * Defined means not |eYo.NA|.
+ * @param {*} object - Whathever may be defined
+ * @param {*} [fallout] - Optional fallout when |object| is not defined.
+ * @return {*}
+ */
+eYo.asDef = function (object, fallout) {
+  return eYo.isNA(object) ? fallout : object
+}
+
+/**
  * Whether the argument is not `eYo.INVALID`.
  * @param {*} what
  */
@@ -112,12 +132,19 @@ eYo.isVALID = (what) => {
   return what !== eYo.INVALID
 }
 
+
 /**
- * Whether the argument is not `undefined`.
- * @param {*} what
+ * Calls `helper` if the `ans` is valid.
+ * `ans` may be the output of a reentrant method.
+ * @param {*} ans
+ * @param {function} [f]
+ * @return The result of the call to `f`, when `f` is defined,
+ * `ans` if it is valid, `eYo.NA` otherwise.
  */
-eYo.isDef = (what) => {
-  return what !== eYo.NA
+eYo.whenVALID = function(ans, f) {
+  if (eYo.isVALID(ans)) {
+    return (f && f(ans)) || ans
+  }
 }
 
 /**
@@ -153,18 +180,6 @@ eYo.isF = (what) => {
  */
 eYo.asF = (what) => {
   return typeof what === 'function' && !!what.call ? what : eYo.NA
-}
-
-
-/**
- * Returns the receiver if it is defined, the fallout otherwise.
- * Defined means not |eYo.NA|.
- * @param {*} object - Whathever may be defined
- * @param {*} [fallout] - Optional fallout when |object| is not defined.
- * @return {*}
- */
-eYo.asDef = function (object, fallout) {
-  return eYo.isNA(object) ? fallout : object
 }
 
 /**
@@ -426,12 +441,12 @@ eYo.setup = (() => {
     i11rsTail = eYo.NA
   }
   me.register = (when, i11r, key) => {
-    if (goog.isFunction(when)) {
+    if (eYo.isF(when)) {
       key = i11r
       i11r = when
       when = i11rsHead.length
     } else {
-      eYo.assert(goog.isFunction(i11r))
+      eYo.assert(eYo.isF(i11r))
       eYo.assert(goog.isNumber(when))
     }
     if (when < 0) {
@@ -453,3 +468,25 @@ eYo.setup = (() => {
 
 eYo.Temp = Object.create(null)
 eYo.Debug = Object.create(null)
+
+/**
+ * Object disposer.
+ * @param {Object} what
+ */
+eYo.disposeObject = (what) => {
+  if (what) {
+    if (what.eyo) {
+      what.dispose()
+    } else if (eYo.isRa(what)) {
+      try {
+        what.forEach(eYo.disposeObject)
+      } finally {
+        what.length = 0
+      }
+    } else {
+      for (var k in what) {
+        eYo.disposeObject(what[k])
+      }
+    }
+  }
+}

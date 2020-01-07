@@ -14,6 +14,7 @@
 eYo.require('Dom')
 
 eYo.require('Decorate')
+goog.forwardDeclare('goog.math.AffineTransform')
 
 /**
  * A namespace.

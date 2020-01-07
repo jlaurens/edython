@@ -2,6 +2,9 @@
       <script src="ROOT_PLACE_HOLDER/T3.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/T3_all.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/c9r.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/c9r_dlgt.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/c9r_model.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/c9r_prop.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/change.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/change_count.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/const.test.js" charset="utf-8"></script>
@@ -12,6 +15,7 @@
     <script src="ROOT_PLACE_HOLDER/eyo.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/font.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/geometry.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/proxy.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/register.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/ui.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/xre.test.js" charset="utf-8"></script>

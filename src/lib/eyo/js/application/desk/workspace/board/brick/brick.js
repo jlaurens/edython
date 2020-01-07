@@ -2259,7 +2259,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
                     model,
                     p5e
                   }
-                }).filter(({p5e}) => !p5e.isVoid && !p5e.isUnset).map(x => {
+                }).filter(p5e => !p5e.isVoid && !p5e.isUnset).map(x => {
                   var ans = eYo.Brick.newReady(this, x.model)
                   ans.setDataWithModel(x.model)
                   console.error('BRICK', ans)

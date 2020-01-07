@@ -23,38 +23,31 @@ eYo.forwardDeclare('Do')
  * @param {Boolean} [raw]
  * @return {Object | *} An object which `ans` property is the value returned by f when called. When `raw` is true, the value returned by f is returned.
  */
-eYo.Decorate.reentrant_method = function(key, f, raw) {
-  return (!this || !this.reentrant_ || !this.reentrant_[key])
-    && (goog.isFunction(f))
-      && function() {
-        if (this.reentrant_[key]) {
-          return {}
-        }
-        this.reentrant_[key] = true
-        var ans
-        try {
-          ans = f.apply(this, arguments)
-        } catch (err) {
-          console.error(err)
-          throw err
-        } finally {
-          this.reentrant_[key] = false
-          return raw ? ans : {ans: ans}
-        }
-      }
-}
-
-/**
- * Calls `helper` if the `call_result` has an `ans` property.
- * `call_result` is the output of a reentrant method
- * @param {string} key
- * @param {function} [f]
- * @return The result of the call to `f`, when `f` is defined,
- * the `ans` property of `call_result` otherwise.
- */
-eYo.Decorate.whenAns = function(call_result, f) {
-  if (goog.isDef(call_result.ans)) {
-    return (f && f(call_result.ans)) || call_result.ans
+eYo.Decorate.reentrant_method = (object, key, f) => {
+  if (!eYo.isStr(object)) {
+    if (!object || !object.reentrant_ || object.reentrant_[key]) {
+      return
+    }
+  } else {
+    eYo.parameterAssert(eYo.isNA(f))
+    f = key
+    key = object
+  }
+  if (!eYo.isF(f)) {
+    return
+  }
+  return function(..._) {
+    if (this.reentrant_[key]) {
+      return eYo.INVALID
+    }
+    this.reentrant_[key] = true
+    var ans
+    try {
+      ans = f.call(this, ..._)
+    } finally {
+      this.reentrant_[key] = false
+      return ans
+    }
   }
 }
 
@@ -65,10 +58,10 @@ eYo.Decorate.whenAns = function(call_result, f) {
  * @return The result of the call to `f`.
  */
 eYo.Decorate.benchmark = function (key, f) {
-  return function () {
+  return function (...args) {
     const startTime = performance.now()
     try {
-      return f.apply(this, arguments)
+      return f.call(this, ...args)
     } finally {
       const duration = performance.now() - startTime
       if (duration > 50) {
@@ -84,7 +77,7 @@ eYo.Decorate.benchmark = function (key, f) {
  * @return object when a function else a function with signature f() -> []
  */
 eYo.Decorate.arrayFunction = object => {
-  var did = goog.isFunction(object)
+  var did = eYo.isF(object)
     ? object
     : goog.isArray(object)
       ? () => object

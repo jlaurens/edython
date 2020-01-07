@@ -6,6 +6,18 @@ describe('Svg driver', function() {
     chai.assert(eYo.Svg.makeMngr)
     chai.assert(eYo.Svg.Dflt)
   })
+  it ('Svg Dlgt: Drivers', function () {
+    for (let [name, Driver] of Object.entries(eYo.Svg.Mngr.eyo.driverC9rByName)) {
+      console.warn(`${name} -> ${Driver.eyo.name}`)
+    }
+  })
+  it ('Svg: Drivers', function () {
+    let onr = {}
+    let mngr = new eYo.Svg.Mngr(onr)
+    for (let [name, Driver] of Object.entries(mngr.drivers)) {
+      console.log(`${name} -> ${Driver.eyo.name}`)
+    }
+  })
 })
 
 

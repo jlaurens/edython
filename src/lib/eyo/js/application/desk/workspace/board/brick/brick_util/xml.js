@@ -328,14 +328,14 @@ eYo.Xml.brickToDom = (() => {
     }
     var controller = brick
     if ((controller &&
-      goog.isFunction(controller.brickToDom)) ||
+      eYo.isF(controller.brickToDom)) ||
       ((controller = brick.xml) &&
-      goog.isFunction(controller.brickToDom)) ||
+      eYo.isF(controller.brickToDom)) ||
       ((controller = brick.constructor) &&
       (controller = controller.xml) &&
-      goog.isFunction(controller.brickToDom)) ||
+      eYo.isF(controller.brickToDom)) ||
       ((controller = brick.constructor) &&
-      goog.isFunction(controller.brickToDom))) {
+      eYo.isF(controller.brickToDom))) {
       var element = controller.brickToDom(brick, opt)
     } else {
       var attr = brick.xmlAttr()
@@ -545,10 +545,10 @@ eYo.Xml.toDom = function (brick, element, opt) {
     })
   }
   var controller = brick
-  if ((controller && goog.isFunction(controller.toDom)) ||
-    ((controller = brick.xml) && goog.isFunction(controller.toDom)) ||
-    ((controller = brick.constructor.xml) && goog.isFunction(controller.toDom)) ||
-    ((controller = brick.constructor) && goog.isFunction(controller.toDom))) {
+  if ((controller && eYo.isF(controller.toDom)) ||
+    ((controller = brick.xml) && eYo.isF(controller.toDom)) ||
+    ((controller = brick.constructor.xml) && eYo.isF(controller.toDom)) ||
+    ((controller = brick.constructor) && eYo.isF(controller.toDom))) {
     return controller.toDom(brick, element, opt)
   } else {
     var optNoNext = opt && opt.noNext
@@ -858,7 +858,7 @@ eYo.Xml.Recover.prototype.domToBrick = function (dom, owner) {
  */
 eYo.Xml.domToBrick = (() => {
   var domToBrick = function (dom, owner) {
-    if (!goog.isFunction(dom.getAttribute)) {
+    if (!eYo.isF(dom.getAttribute)) {
       return eYo.NA
     }
     var id = dom.getAttribute('id')
@@ -915,16 +915,16 @@ eYo.Xml.domToBrick = (() => {
           var solid = prototypeName + ''
           var controller = eYo.C9r.Model.forType(solid)
           if (controller) {
-            if (controller.eyo && goog.isFunction(controller.eyo.domToBrick)) {
+            if (controller.eyo && eYo.isF(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, board, id)
-            } else if (goog.isFunction(controller.domToBrick)) {
+            } else if (eYo.isF(controller.domToBrick)) {
               return controller.domToBrick(dom, board, id)
             }
             brick = eYo.Brick.newReady(board, solid, id)
           } else if ((controller = eYo.C9r.Model.forType(prototypeName))) {
-            if (controller.eyo && goog.isFunction(controller.eyo.domToBrick)) {
+            if (controller.eyo && eYo.isF(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, board, id)
-            } else if (goog.isFunction(controller.domToBrick)) {
+            } else if (eYo.isF(controller.domToBrick)) {
               return controller.domToBrick(dom, board, id)
             }
             brick = eYo.Brick.newReady(board, prototypeName, id)
@@ -970,14 +970,14 @@ eYo.Xml.fromDom = function (brick, element) {
     var conclude // will run at the end if any
     var controller = brick
     if (!brick.controller_fromDom_locked && (controller &&
-        goog.isFunction(controller.fromDom)) ||
+        eYo.isF(controller.fromDom)) ||
         ((controller = brick.xml) &&
-        goog.isFunction(controller.fromDom)) ||
+        eYo.isF(controller.fromDom)) ||
         ((controller = eYo.C9r.Model.forType(brick.type)) &&
         (controller = controller.xml) &&
-        goog.isFunction(controller.fromDom)) ||
+        eYo.isF(controller.fromDom)) ||
         ((controller = eYo.C9r.Model.forType(brick.type)) &&
-        goog.isFunction(controller.fromDom))) {
+        eYo.isF(controller.fromDom))) {
       eYo.Do.tryFinally(() => {
         brick.controller_fromDom_locked = true
         out = controller.fromDom(brick, element)

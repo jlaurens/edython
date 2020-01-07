@@ -47,26 +47,26 @@ Object.defineProperties(eYo.Field, {
     model.setup_ = true
     if (model.startEditing === true) {
       model.startEditing = startEditing
-    } else if (model.startEditing && !goog.isFunction(model.startEditing)) {
+    } else if (model.startEditing && !eYo.isF(model.startEditing)) {
       delete model.startEditing
     }
     if (model.endEditing === true) {
       model.endEditing = endEditing
-    } else if (model.endEditing && !goog.isFunction(model.endEditing)) {
+    } else if (model.endEditing && !eYo.isF(model.endEditing)) {
       delete model.endEditing
     }
-    if (!goog.isFunction(model.didLoad)) {
+    if (!eYo.isF(model.didLoad)) {
       delete model.didLoad
     }
-    if (!goog.isFunction(model.willRender)) {
+    if (!eYo.isF(model.willRender)) {
       delete model.willRender
     }
     var xml = model.xml
     if (xml) {
-      if (!goog.isFunction(xml.save)) {
+      if (!eYo.isF(xml.save)) {
         delete xml.save
       }
-      if (!goog.isFunction(xml.load)) {
+      if (!eYo.isF(xml.load)) {
         delete xml.load
       }
     }
@@ -456,7 +456,7 @@ eYo.Field.Dflt_p.validate = function (txt) {
  * We should call `this.willRender()` from the model.
  */
 eYo.Field.Dflt_p.willRender = function () {
-  var f = this.model && (eYo.Decorate.reentrant_method.call(this, 'model_willRender', this.model.willRender))
+  var f = this.model && (eYo.Decorate.reentrant_method(this, 'model_willRender', this.model.willRender))
   if (f) {
     f.call(this)
   } else {

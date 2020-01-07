@@ -129,7 +129,7 @@ eYo.Consolidator.List_p.getMandatory = function (io) {
     if (d) {
       return d.get()
     }
-    if (goog.isFunction(this.model.mandatory)) {
+    if (eYo.isF(this.model.mandatory)) {
       return this.model.mandatory(io.brick.type, io.brick.subtype)
     }
   }
@@ -400,7 +400,7 @@ eYo.Consolidator.List_p.consolidate_single = function (io) {
 eYo.Consolidator.List_p.makeUnique = function (io) {
   if (!this.reentrant_.makeUnique) {
     var f = this.model.makeUnique
-    if (goog.isFunction(f)) {
+    if (eYo.isF(f)) {
       this.reentrant_.makeUnique = true
       try {
         if (f.call(this, io)) {
@@ -686,7 +686,7 @@ eYo.Consolidator.List_p.getSlot = function (brick, name, dontCreate) {
     return null
   }
   this.consolidate(brick)
-  var f = eYo.Decorate.reentrant_method.call(this, 'consolidate', function () {
+  var f = eYo.Decorate.reentrant_method(this, 'consolidate', function () {
     var j = -1
     var io = this.getIO(brick)
     do {
@@ -741,7 +741,7 @@ eYo.Consolidator.List_p.getSlot = function (brick, name, dontCreate) {
     // this.doAry(io)
     return slot
   })
-  return eYo.Decorate.whenAns(f.call(this))
+  return eYo.whenVALID(f.call(this))
 }
 
 /**

@@ -17,7 +17,6 @@ eYo.forwardDeclare('Brick')
 eYo.forwardDeclare('DB')
 
 goog.forwardDeclare('goog.array')
-goog.forwardDeclare('goog.math')
 
 /**
  * Class for a brick list.

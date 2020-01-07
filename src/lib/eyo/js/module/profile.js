@@ -129,7 +129,7 @@ eYo.T3.Profile.makeClass('Dflt', {
               value: value
             }
           )
-        } else if (goog.isFunction(value)) {
+        } else if (eYo.isF(value)) {
           Object.defineProperty(
             this,
             key,
@@ -182,7 +182,7 @@ eYo.T3.Profile.makeClass('Dflt', {
       )
       for (key in m) {
         var value = m[key]
-        if (goog.isFunction(value)) {
+        if (eYo.isF(value)) {
           Object.defineProperty(
             this,
             key,
@@ -224,7 +224,7 @@ eYo.T3.Profile.makeClass('Dotted', {
         Object.defineProperty(
           this,
           key,
-          goog.isFunction(value)
+          eYo.isF(value)
           ? {
             get: value
           }

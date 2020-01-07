@@ -97,7 +97,7 @@ eYo.makeClass('Metrics', {
     updateDepth: 0,
     scale: {
       init () {
-        return 1
+        return new eYo.Where()
       },
       validate (after) /** @suppress {globalThis} */ {
         if (after <= 0) {
@@ -254,7 +254,7 @@ eYo.makeClass('Metrics', {
  * Update the board.
  */
 eYo.Metrics.prototype.update = function () {
-  this.board_ && this.board_.metricsDidChange()
+  this.board && this.board.metricsDidChange()
 }
 
 /**

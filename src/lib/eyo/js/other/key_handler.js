@@ -70,7 +70,7 @@ eYo.KeyHandler = (() => {
   me.register = function (key, model) {
     // manage duplicates
     if (key.length) {
-      eYo.assert(eYo.isStr(model) || goog.isFunction(model) || goog.isFunction(model.action) || eYo.isStr(model.type), 'No model to register for ' + key)
+      eYo.assert(eYo.isStr(model) || eYo.isF(model) || eYo.isF(model.action) || eYo.isStr(model.type), 'No model to register for ' + key)
       for (var i = 0, s; (s = shortcuts_[i]); i++) {
         if (s.key === key) {
           shortcuts_[i] = {
@@ -145,7 +145,7 @@ eYo.KeyHandler = (() => {
   me.handleModel = function (model) {
     // if key is a number, then create a number brick
     // otherwise, take the first model and pass it to handleModel
-    if (goog.isFunction(model.action)) {
+    if (eYo.isF(model.action)) {
       model.action.call(me, model.model)
       return
     }
@@ -465,7 +465,7 @@ eYo.KeyHandler = (() => {
                   var key = targetModel.key
                   var model = targetModel.model || targetModel
                   if (key) {
-                    if (goog.isFunction(model)) {
+                    if (eYo.isF(model)) {
                       model(key)
                       return
                     }
@@ -560,7 +560,7 @@ eYo.KeyHandler.makeSlicing = function (model) {
 
 eYo.KeyHandler.register('if', eYo.T3.Stmt.if_part)
 
-for (const [K, V] of Object.entries({
+for (let [K, V] of Object.entries({
     'start': eYo.T3.Stmt.start_stmt,
     'if': eYo.T3.Stmt.if_part,
     'elif': eYo.T3.Stmt.elif_part,
@@ -645,7 +645,7 @@ for (const [K, V] of Object.entries({
         : brick.insertParentWithModel(model)
     }
   }
-  for (const [K, V] of Object.entries({
+  for (let [K, V] of Object.entries({
     '-': function (key) {
       return F(key, '-')
     },
@@ -660,7 +660,7 @@ for (const [K, V] of Object.entries({
 
 }
 
-for (const [K, V] of Object.entries({
+for (let [K, V] of Object.entries({
   '+': {
     type: eYo.T3.Expr.a_expr,
     operator_p: '+',
@@ -740,7 +740,7 @@ for (const [K, V] of Object.entries({
   })
 })
 
-for (const [K, V] of Object.entries({
+for (let [K, V] of Object.entries({
   '… = …': eYo.T3.Stmt.assignment_stmt,
   '…:… = …': eYo.T3.Stmt.annotated_assignment_stmt,
   'start': eYo.T3.Stmt.start_stmt,

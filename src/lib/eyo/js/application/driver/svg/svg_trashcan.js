@@ -14,6 +14,7 @@
 eYo.require('Svg')
 
 eYo.forwardDeclare('TrashCan')
+goog.forwardDeclare('goog.math')
 
 /**
  * Svg driver fro the trash can.

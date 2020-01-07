@@ -74,7 +74,10 @@ eYo.Driver.DlgtMngr_p.makeDriverClass = function (key, Super, driverModel) {
     Super = ns.Dflt
   }
   var Driver = eYo.makeClass(ns, key, Super, ns.Dlgt, driverModel)
-  this.driverC9rByName[Driver.eyo.name] = Driver
+  var x = Driver.eyo.name.split('.')
+  x.shift()
+  x = x.join('.')
+  this.driverC9rByName[x] = Driver
   var _p = Driver.prototype
   var m_ui = this.model.ui
   var d_ui = Driver.eyo.model.ui
@@ -111,7 +114,7 @@ eYo.Driver._p.makeMngr = function (mngrModel) {
     if (!this.drivers) {
       console.error('BREAK HERE!')
     }
-    for (let [name, Driver] in Object.entries(Mngr.eyo.driverC9rByName)) {
+    for (let [name, Driver] of Object.entries(Mngr.eyo.driverC9rByName)) {
       // do not override
       this.drivers[name] || (this.drivers[name] = new Driver(this))
     }
@@ -196,7 +199,7 @@ eYo.Driver.Mngr_p.driver = function (object) {
  * Initialize all the drivers.
  */
 eYo.Driver.Mngr_p.initDrivers = function () {
-  for (let [name, Driver] in Object.entries(eYo.Driver.Mngr.eyo.driverC9rByName)) {
+  for (let [name, Driver] of Object.entries(eYo.Driver.Mngr.eyo.driverC9rByName)) {
     // do not override
     this.drivers[name] || (this.drivers[name] = new Driver(this))
   }
