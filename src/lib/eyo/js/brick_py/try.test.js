@@ -9,8 +9,8 @@ describe('TRY statements', function() {
   ].forEach(Ts => {
     it(`Basic ${Ts[0]} statement`, function() {
       var d = eYo.Test.new_brick(Ts[0], Ts[1] || Ts[0])
-      eYo.Test.code(d, Ts[2])
-      eYo.Test.all_variants(d)
+      eYo.Test.Code(d, Ts[2])
+      eYo.Test.All_variants(d)
       d.dispose()
     })
   })
@@ -22,8 +22,8 @@ describe('TRY ONLY', function() {
   ].forEach(Ts => {
     it(`Basic ${Ts[0]} statement`, function() {
       var d = eYo.Test.new_brick(Ts[0], Ts[1] || Ts[0])
-      eYo.Test.code(d, Ts[2])
-      eYo.Test.all_variants(d)
+      eYo.Test.Code(d, Ts[2])
+      eYo.Test.All_variants(d)
       d.dispose()
     })
   })

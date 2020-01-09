@@ -11,17 +11,17 @@
  */
 'use strict'
 
-eYo.require('C9r.Owned')
+eYo.require('c9r.owned')
 
 goog.forwardDeclare('goog.userAgent')
 
 /**
- * @name {eYo.Dom.Audio}
+ * @name {eYo.dom.Audio}
  * Class for loading, storing, and playing audio.
  * @param {String} pathToMedia
  * @constructor
  */
-eYo.Dom.makeDriverClass('Audio', {
+eYo.dom.makeDriverClass('Audio', {
   initUI(audio) {
     /**
      * Database of pre-loaded sounds.
@@ -41,7 +41,7 @@ eYo.Dom.makeDriverClass('Audio', {
     var self = this
     var unbindSounds = () => {
       while (soundBinds.length) {
-        eYo.Dom.unbindEvent(soundBinds.pop())
+        eYo.dom.unbindEvent(soundBinds.pop())
       }
       self.preload()
     }
@@ -50,12 +50,12 @@ eYo.Dom.makeDriverClass('Audio', {
     // really something that happens on a click, not a drag, so that's not
     // necessary.
 
-    soundBinds = [eYo.Dom.bindEvent(
+    soundBinds = [eYo.dom.BindEvent(
       document,
       'mousemove',
       unbindSounds,
       {noCaptureIdentifier: true}
-    ), eYo.Dom.bindEvent(
+    ), eYo.dom.BindEvent(
       document,
       'touchstart',
       unbindSounds,
@@ -95,7 +95,7 @@ eYo.Dom.makeDriverClass('Audio', {
  *   Filenames include path from Blockly's root.  File extensions matter.
  * @param {string} name Name of sound.
  */
-eYo.Dom.Audio_p.load = function(audio, name) {
+eYo.dom.Audio_p.load = function(audio, name) {
   let pathToMedia = audio.pathToMedia
   var base = pathToMedia + name + '.'
   ;[ 'mp3', 'ogg', 'wav' ].some(ext => {
@@ -112,8 +112,8 @@ eYo.Dom.Audio_p.load = function(audio, name) {
 /**
  * Preload all the audio files so that they play quickly when asked for.
  */
-eYo.Dom.Audio_p.preload = function() {
-  if (eYo.Test && !eYo.Test.audio) {
+eYo.dom.Audio_p.preload = function() {
+  if (eYo.Test && !eYo.Test.Audio) {
     return
   }
   Object.values(this.sounds).some(sound => {
@@ -132,7 +132,7 @@ eYo.Dom.Audio_p.preload = function() {
  * @param {string} name Name of sound.
  * @param {number=} opt_volume Volume of sound (0-1).
  */
-eYo.Dom.Audio_p.play = function(audio, name, opt_volume) {
+eYo.dom.Audio_p.play = function(audio, name, opt_volume) {
   var sound = this.sounds_[name]
   if (sound) {
     // Don't play one sound on top of another, setTimeout?

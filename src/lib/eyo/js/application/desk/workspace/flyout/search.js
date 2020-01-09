@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('Section')
+eYo.require('section')
 
 /**
  * Class for a search section.

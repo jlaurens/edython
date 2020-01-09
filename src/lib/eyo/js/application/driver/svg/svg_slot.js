@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Svg')
+eYo.require('svg')
 
-eYo.forwardDeclare('Slot')
+eYo.forwardDeclare('slot')
 
 /**
  * Svg driver for slots.
@@ -33,7 +33,7 @@ eYo.Svg.makeDriverClass('Slot', {
     if (slot.previous) {
       goog.dom.insertSiblingAfter(g, slot.previous.dom.svg.group_)
     } else {
-      eYo.assert(slot.brick.slotAtHead === slot, 'Unexpected head slot not at head')
+      eYo.Assert(slot.brick.slotAtHead === slot, 'Unexpected head slot not at head')
       goog.dom.appendChild(slot.brick.dom.svg.group_, g)
     }
     this.displayedUpdate(slot)
@@ -87,7 +87,7 @@ eYo.Svg.Slot.prototype.displayedUpdate = function (slot) {
  */
 eYo.Svg.Slot.prototype.display = function (slot) {
   var g = slot.dom && slot.dom.svg.group_
-  eYo.assert(g, 'Slot with no root', slot.brick.type, slot.key)
+  eYo.Assert(g, 'Slot with no root', slot.brick.type, slot.key)
   if (slot.incog) {
     g.setAttribute('display', 'none')
   } else {

@@ -15,39 +15,39 @@
  * Class for a Delegate, comment_stmt.
  * For edython.
  */
-eYo.Stmt.makeClass(eYo.T3.Stmt.comment_stmt, {
+eYo.Stmt.makeClass(eYo.t3.stmt.Comment_stmt, {
   data: {
     variant: {
       all: [
-        eYo.Key.COMMENT, // A comment only
-        eYo.Key.BLANK // blank line
+        eYo.key.COMMENT, // A comment only
+        eYo.key.BLANK // blank line
       ],
-      init: eYo.Key.COMMENT,
+      init: eYo.key.COMMENT,
       xml: false,
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var b3k = this.brick
-        b3k.comment_d.requiredIncog = after !== eYo.Key.BLANK
+        b3k.comment_d.requiredIncog = after !== eYo.key.BLANK
       },
       fromType (type) /** @suppress {globalThis} */ {
-        if (type === eYo.T3.Stmt.blank_stmt) {
+        if (type === eYo.t3.Stmt.Blank_stmt) {
           // expression statement defaults to a python comment line
           // but it should change because of the 'comment_stmt' below
-          this.doChange(eYo.Key.BLANK)
+          this.doChange(eYo.key.BLANK)
         } else {
-          this.doChange(eYo.Key.COMMENT)
+          this.doChange(eYo.key.COMMENT)
         }
       }
     },
     comment: {
       order: 1000000,
       init: '',
-      placeholder: eYo.Msg.Placeholder.COMMENT,
+      placeholder: eYo.msg.placeholder.COMMENT,
       validate (after) /** @suppress {globalThis} */ {
-        return XRegExp.exec(after, eYo.XRE.comment).value || ''
+        return XRegExp.exec(after, eYo.xre.Comment).value || ''
       },
       synchronize: true,
-      getPlaceholderText: eYo.Msg.Placeholder.COMMENT
+      getPlaceholderText: eYo.msg.placeholder.COMMENT
     }
   },
   slots: {
@@ -73,14 +73,14 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.comment_stmt, {
      * @property {Boolean} whether the receiver is a comment.
      */
     isComment () {
-      return this.type === eYo.T3.Stmt.comment_stmt
+      return this.type === eYo.t3.Stmt.Comment_stmt
     },
     /**
      * @readonly
      * @property {Boolean} whether the receiver is a blank statement: a line consisting of only white spaces, if any.
      */
     isBlank () {
-      return this.type === eYo.T3.Stmt.blank_stmt
+      return this.type === eYo.t3.Stmt.Blank_stmt
     },
     /**
      * @readonly
@@ -93,5 +93,5 @@ eYo.Stmt.makeClass(eYo.T3.Stmt.comment_stmt, {
 })
 
 ;['blank_stmt'].forEach(k => {
-  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.Stmt.comment_stmt))
+  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.stmt.comment_stmt))
 })

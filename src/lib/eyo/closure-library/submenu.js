@@ -14,12 +14,12 @@
  * @see ../demos/submenus2.html
  */
 
-eYo.require('MenuRenderer')
+eYo.require('menuRenderer')
 
 goog.require('goog.dom');
 
 goog.require('goog.ui.SubMenu')
-eYo.provide('SubMenu')
+eYo.provide('subMenu')
 
 /**
  * Class representing a submenu that can be added as an item to other menus.
@@ -49,7 +49,7 @@ goog.tagUnsealableClass(eYo.SubMenu)
  * @private
  * @suppress{accessControls}
  */
-eYo.SubMenu.prototype.setSubMenuVisible_ = function (visible) {
+eYo.subMenu.prototype.SetSubMenuVisible_ = function (visible) {
   // Unhighlighting the menuitems if closing the menu so the event handlers can
   // determine the correct state.
   var subMenu = this.getMenu()
@@ -64,7 +64,7 @@ eYo.SubMenu.prototype.setSubMenuVisible_ = function (visible) {
       goog.ui.Component.State.OPENED, visible))
   if (visible !== this.menuIsVisible_) {
     goog.dom.classlist.enable(
-      eYo.assert(this.getElement()),
+      eYo.Assert(this.getElement()),
       subMenu.getRenderer().getCssClass() + '-open', visible)
   }
   if (visible !== subMenu.isVisible()) {

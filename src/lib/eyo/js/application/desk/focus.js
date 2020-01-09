@@ -16,23 +16,23 @@
  */
 'use strict'
 
-eYo.require('Decorate')
-eYo.require('C9r.Owned')
+eYo.require('decorate')
+eYo.require('c9r.owned')
 
-eYo.require('Do')
-eYo.require('Board')
+eYo.require('do')
+eYo.require('board')
 
-eYo.require('Brick')
-eYo.require('Magnet')
-eYo.require('Field')
+eYo.require('brick')
+eYo.require('magnet')
+eYo.require('field')
 
 /**
  * @name{eYo.Focus}
  * @namespace
  */
-eYo.provide('Focus')
+eYo.provide('focus')
 
-eYo.forwardDeclare('App')
+eYo.forwardDeclare('app')
 
 /**
  * @name {eYo.Focus.Main}
@@ -124,12 +124,12 @@ eYo.Focus.makeClass('Main', eYo.C9r.Owned, {
 })
 
 // Each newly created focus manager comes here
-eYo.Do.Register.add(eYo.Focus.Main, 'mngr')
+eYo.do.register.Add(eYo.Focus.Main, 'mngr')
 
 /**
  * Dispose of the 
  */
-eYo.Focus.Main_p.mngrWillDispose = function (mngr) {
+eYo.Focus.Main_p.MngrWillDispose = function (mngr) {
   this.mngrUnregister(mngr)
   if (this.mngr_ === mngr) {
     this.mngr_ = null
@@ -262,26 +262,26 @@ eYo.Focus.makeClass('Mngr', eYo.C9r.Owned, {
  * Scroll the focused brick to visible.
  * UI related.
  */
-eYo.Focus.Mngr_p.scrollToVisible = function (force) {
+eYo.Focus.Mngr_p.ScrollToVisible = function (force) {
   this.brick && this.brick.scrollToVisible(force)
 }
 
 /**
  * Hook.
  */
-eYo.Focus.Mngr_p.didAdd = eYo.Do.nothing
+eYo.Focus.Mngr_p.didAdd = eYo.do.nothing
 
 /**
  * Hook.
  */
-eYo.Focus.Mngr_p.didRemove = eYo.Do.nothing
+eYo.Focus.Mngr_p.didRemove = eYo.do.nothing
 
 /**
  * Select one of the given bricks.
  * @param {Array<eYo.BrickNSs>} bricks
  * @param {Boolean} force
  */
-eYo.Focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
+eYo.Focus.Mngr_p.SelectOneBrickOf = function (bricks, force) {
   var select
   bricks = bricks.slice()
   var f = brick => {
@@ -366,7 +366,7 @@ eYo.Field.Dflt.eyo.modelDeclare({
  * Focus on this board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Board.Dflt_p.focusOn = function () {
+eYo.Board.Dflt_p.FocusOn = function () {
   return !!(this.focus_main.board = this)
 }
 
@@ -378,7 +378,7 @@ eYo.Board.Dflt_p.focusOn = function () {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Brick.Dflt_p.focusOn = function (noBoard) {
+eYo.Brick.Dflt_p.FocusOn = function (noBoard) {
   noBoard || this.board.focusOn()
   return !!(this.focus_mngr.brick = this)
 }
@@ -390,7 +390,7 @@ eYo.Brick.Dflt_p.focusOn = function (noBoard) {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Field.Dflt_p.focusOn = function (noBoard) {
+eYo.Field.Dflt_p.FocusOn = function (noBoard) {
   noBoard || this.board.focusOn()
   return !!(this.focus_mngr.field = this)
 }
@@ -403,7 +403,7 @@ eYo.Field.Dflt_p.focusOn = function (noBoard) {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Magnet.Dflt_p.focusOn = function (noBoard) {
+eYo.Magnet.Dflt_p.FocusOn = function (noBoard) {
   noBoard || this.board.focusOn()
   return !!(this.focus_mngr.magnet = this)
 }
@@ -411,7 +411,7 @@ eYo.Magnet.Dflt_p.focusOn = function (noBoard) {
 /**
  * Focus off this board.
  */
-eYo.Board.Dflt_p.focusOff = function () {
+eYo.Board.Dflt_p.FocusOff = function () {
   this.focus_main.board = eYo.NA
 }
 
@@ -420,7 +420,7 @@ eYo.Board.Dflt_p.focusOff = function () {
  * If there is a selected connection, it is removed.
  * `focusOff` is used from click handling methods.
  */
-eYo.Brick.Dflt_p.focusOff = function () {
+eYo.Brick.Dflt_p.FocusOff = function () {
   this.hasFocus && (this.focus_mngr.brick = eYo.NA)
 }
 
@@ -430,7 +430,7 @@ eYo.Brick.Dflt_p.focusOff = function () {
  * `focusOff` is used from click handling methods.
  * Does nothing if the receiver is not selected.
  */
-eYo.Magnet.Dflt_p.focusOff = function () {
+eYo.Magnet.Dflt_p.FocusOff = function () {
   this.hasFocus && (this.focus_mngr.magnet = eYo.NA)
 }
 
@@ -438,6 +438,6 @@ eYo.Magnet.Dflt_p.focusOff = function () {
  * Focus off this field.
  * `focusOff` is used from click handling methods.
  */
-eYo.Field.Dflt_p.focusOff = function () {
+eYo.Field.Dflt_p.FocusOff = function () {
   this.hasFocus && (this.focus_mngr.field = eYo.NA)
 }

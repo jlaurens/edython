@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Svg')
+eYo.require('svg')
 
-eYo.forwardDeclare('Field')
+eYo.forwardDeclare('field')
 
 // field management
 
@@ -52,12 +52,12 @@ eYo.Svg.makeDriverClass('Field', {
       /** @type {!Element} */
       svg.textElement_ = eYo.Svg.newElement('text', {
         class: field.css_class,
-        y: eYo.Font.totalAscent
+        y: eYo.font.totalAscent
       }, g)
     } else {
       g = svg.group_ = svg.textElement_ = eYo.Svg.newElement('text', {
         class: field.css_class,
-        y: eYo.Font.totalAscent
+        y: eYo.font.totalAscent
       }, g)
     }
     g.dataset && (g.dataset.field = field.name)
@@ -86,7 +86,7 @@ eYo.Svg.makeDriverClass('Field', {
 eYo.Svg.Field_p.moveTo = function (field, where) {
   var g = field.dom.svg.group_
   g.setAttribute('transform',
-  `translate(${where.x}, ${where.y + eYo.Padding.t})`)
+  `translate(${where.x}, ${where.y + eYo.padding.t})`)
 }
 
 /**
@@ -252,16 +252,16 @@ eYo.Svg.Field_p.textUpdate = function (field) {
  * Set the visual effects of the field.
  * @param {*} field
  */
-eYo.Svg.Field_p.setVisualAttribute = function (field) {
+eYo.svg.Field_p.SetVisualAttribute = function (field) {
   var e = field.dom.textElement_
   if (e) {
     var f = txt => {
-      switch (eYo.T3.Profile.get(txt, null).raw) {
-        case eYo.T3.Expr.reserved_identifier:
-        case eYo.T3.Expr.reserved_keyword:
-        case eYo.T3.Expr.known_identifier:
+      switch (eYo.t3.profile.get(txt, null).raw) {
+        case eYo.t3.Expr.reserved_identifier:
+        case eYo.t3.Expr.reserved_keyword:
+        case eYo.t3.Expr.known_identifier:
           return 'eyo-code-reserved'
-        case eYo.T3.Expr.builtin__name:
+        case eYo.t3.Expr.Builtin__name:
           return 'eyo-code-builtin'
         default:
           return 'eyo-code'

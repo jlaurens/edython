@@ -1,6 +1,6 @@
 describe('Brick dragger', function() {
   it('Register listener', function () {
-    var visibleArea = eYo.app.desk.dom.div_.getBoundingClientRect()
+    var visibleArea = eYo.App.Desk.dom.div_.getBoundingClientRect()
     console.log('visibleArea', visibleArea)
     window.addEventListener(
       'mousemove',
@@ -16,9 +16,9 @@ describe('Brick dragger', function() {
   })
   it ('Create block', function () {
     var type = `simple`
-    eYo.T3.Expr[type] = type
-    eYo.Expr.Dflt.makeSubclass(type, {})
-    var b3k = eYo.Brick.newReady(eYo.app.board, type)
+    eYo.t3.Expr[type] = type
+    eYo.expr.Dflt.makeSubclass(type, {})
+    var b3k = eYo.Brick.newReady(eYo.App.Board, type)
   })
 })
 

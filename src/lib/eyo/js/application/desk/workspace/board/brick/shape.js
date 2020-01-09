@@ -11,12 +11,12 @@
  */
 'use strict'
 
-eYo.require('Geometry')
+eYo.require('geometry')
 
-eYo.provide('Shape')
+eYo.provide('shape')
 
-eYo.forwardDeclare('Unit')
-eYo.forwardDeclare('Padding')
+eYo.forwardDeclare('unit')
+eYo.forwardDeclare('padding')
 goog.forwardDeclare('goog.color')
 
 /**
@@ -27,7 +27,7 @@ eYo.Shape = function () {
   // allways start from the top left
 }
 
-eYo.Shape.shared = new eYo.Shape()
+eYo.shape.Shared = new eYo.shape()
 
 eYo.Shape.Style = {
   Hilighted: {
@@ -63,8 +63,8 @@ eYo.Shape.Style = {
 Object.defineProperties(eYo.Shape.prototype, {
   min_expr_radius: {
     get () {
-      var w = eYo.Unit.x
-      var h = eYo.Unit.y / 2
+      var w = eYo.unit.x
+      var h = eYo.unit.y / 2
       return (w ** 2 + h ** 2) / 2 / w
     }
   },
@@ -76,13 +76,13 @@ Object.defineProperties(eYo.Shape.prototype, {
   caret_width: {
     get () {
       var r = this.expr_radius
-      var h = eYo.Unit.y / 2
+      var h = eYo.unit.y / 2
       return r - Math.sqrt(r**2 - h**2)
     }
   },
   max_caret_extra: {
     get () {
-      return eYo.Unit.x - this.caret_width / 2
+      return eYo.unit.x - this.caret_width / 2
     }
   },
   caret_extra: { // half the H width
@@ -99,7 +99,7 @@ Object.defineProperties(eYo.Shape.prototype, {
   },
   stmt_radius: {
     get () {
-      return (eYo.Unit.y - this.caret_height) / 2
+      return (eYo.unit.y - this.caret_height) / 2
     }
   },
   hilighted_width: {
@@ -117,7 +117,7 @@ Object.defineProperties(eYo.Shape.prototype, {
 /**
  * begin
  */
-eYo.Shape.prototype.begin = function () {
+eYo.Shape.prototype.Begin = function () {
   this.steps = []
   this.cursor.set()
   this.dc = this.dl = 0
@@ -126,7 +126,7 @@ eYo.Shape.prototype.begin = function () {
 /**
  * z
  */
-eYo.Shape.prototype.z = eYo.Shape.prototype.Z = function () {
+eYo.Shape.prototype.z = eYo.shape.prototype.Z = function () {
   this.steps.push('z')
 }
 
@@ -192,7 +192,7 @@ eYo.Shape.prototype.m = function (is_brick, c = 0, l = 0) {
     l = c.y
     c = c.x
   }
-  this.push('m', `${this.format(c * eYo.Unit.x)},${this.format(l * eYo.Unit.y)}`)
+  this.push('m', `${this.format(c * eYo.unit.x)},${this.format(l * eYo.unit.y)}`)
   this.cursor.forward(c, l)
 }
 
@@ -219,7 +219,7 @@ eYo.Shape.prototype.M = function (is_brick, c = 0, l = 0) {
     l = c.y
     c = c.x
   }
-  this.push('M', `${this.format(c * eYo.Unit.x)},${this.format(l * eYo.Unit.y)}`)
+  this.push('M', `${this.format(c * eYo.unit.x)},${this.format(l * eYo.unit.y)}`)
   this.cursor.set(c, l)
 }
 
@@ -242,7 +242,7 @@ eYo.Shape.prototype.l = function (is_brick, c = 0, l = 0) {
     l = c
     c = is_brick
   }
-  this.push(`l ${this.format(c * eYo.Unit.x)},'${this.format(l * eYo.Unit.y)}`)
+  this.push(`l ${this.format(c * eYo.unit.x)},'${this.format(l * eYo.unit.y)}`)
   this.cursor.forward(c, l)
 }
 
@@ -265,7 +265,7 @@ eYo.Shape.prototype.L = function (is_brick, c = 0, l = 0) {
     l = c
     c = is_brick
   }
-  this.push(`L ${this.format(c * eYo.Unit.x)},${this.format(l * eYo.Unit.y)}`)
+  this.push(`L ${this.format(c * eYo.unit.x)},${this.format(l * eYo.unit.y)}`)
   this.cursor.set(c, l)
 }
 
@@ -285,7 +285,7 @@ eYo.Shape.prototype.h = function (is_brick = false, c = 0) {
     c = is_brick
   }
   if (c) {
-    this.push(`h ${this.format(c * eYo.Unit.x)}`)
+    this.push(`h ${this.format(c * eYo.unit.x)}`)
     this.cursor.c += c
   }
 }
@@ -306,7 +306,7 @@ eYo.Shape.prototype.H = function (is_brick = false, c = 0) {
     c = is_brick
   }
   if (this.cursor.c !== c) {
-    this.push(`H ${this.format(c * eYo.Unit.x)}`)
+    this.push(`H ${this.format(c * eYo.unit.x)}`)
     this.cursor.c = c
   }
 }
@@ -327,7 +327,7 @@ eYo.Shape.prototype.v = function (is_brick, l) {
     l = is_brick
   }
   if (l) {
-    this.push(`v ${this.format(l * eYo.Unit.y)}`)
+    this.push(`v ${this.format(l * eYo.unit.y)}`)
     this.cursor.l += l
   }
 }
@@ -348,7 +348,7 @@ eYo.Shape.prototype.V = function (is_brick, l) {
     l = is_brick
   }
   if (this.cursor.l !== l) {
-    this.push(`V ${this.format(l * eYo.Unit.y)}`)
+    this.push(`V ${this.format(l * eYo.unit.y)}`)
     this.cursor.l = l
   }
 }
@@ -439,7 +439,7 @@ eYo.Shape.prototype.half_circle = function (r, clockwise, part) {
  * @param {Boolean} left
  * @param {Boolean} down
  */
-eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
+eYo.Shape.prototype.Arc = function (h, r = true, left = true, down = true) {
   if (r === true || r === false) {
     down = left
     left = r
@@ -467,7 +467,7 @@ eYo.Shape.newWithBrick = function(brick) {
  * @return {String!} A path definition.
  */
 eYo.Shape.definitionWithBrick = function(brick, opt) {
-  return eYo.Shape.shared.initWithBrick(brick, opt).definition
+  return eYo.shape.Shared.initWithBrick(brick, opt).definition
 }
 
 /**
@@ -486,8 +486,8 @@ eYo.Shape.prototype.initWithBrick = (() => {
     var c = s.c
     var l = s.l
     var r_xy = this.stmt_radius
-    var r_c = r_xy / eYo.Unit.x
-    var r_l = r_xy / eYo.Unit.y
+    var r_c = r_xy / eYo.unit.x
+    var r_l = r_xy / eYo.unit.y
     var r_s = s.rightSpan
     if (r_s) {
       this.M(c - 1 / 2 + r_c)
@@ -538,8 +538,8 @@ eYo.Shape.prototype.initWithBrick = (() => {
     var c = s.c
     var l = s.l
     var r_xy = this.stmt_radius
-    var r_c = r_xy / eYo.Unit.x
-    var r_l = r_xy / eYo.Unit.y
+    var r_c = r_xy / eYo.unit.x
+    var r_l = r_xy / eYo.unit.y
     var r_s = s.rightSpan
     if (r_s) {
       this.M(c - 1/2 + r_c, 0)
@@ -581,19 +581,19 @@ eYo.Shape.prototype.initWithBrick = (() => {
   var initWithExpressionBrick = function(brick, opt) {
     var width = brick.span.width
     var dd = this.caret_extra
-    var h = eYo.Unit.y / 2
+    var h = eYo.unit.y / 2
     var r = this.expr_radius
     var dx = Math.sqrt(r**2 - this.caret_height**2 / 4) -  Math.sqrt(r**2 - h**2)
-    this.M(true, width - eYo.Unit.x / 2 - dx + dd / 2)
+    this.M(true, width - eYo.unit.x / 2 - dx + dd / 2)
     brick.span.l > 1 && (this.V(brick.span.l - 1))
-    this.arc(eYo.Unit.y, false, true)
+    this.arc(eYo.unit.y, false, true)
     var parent
     if (brick.startOfStatement && (parent = brick.parent)) {
       if ((parent = brick.stmtParent)) {
         if (parent.foot) {
           this.H(1/2)
         } else {
-          this.H(true, eYo.Unit.x / 2 + this.stmt_radius)
+          this.H(true, eYo.unit.x / 2 + this.stmt_radius)
           this.quarter_circle(this.stmt_radius, true, 2)
         }
         if (parent.head) {
@@ -603,14 +603,14 @@ eYo.Shape.prototype.initWithBrick = (() => {
           this.quarter_circle(this.stmt_radius, true, 3)
         }
       } else {
-        this.H(true, dx + eYo.Unit.x / 2 - dd / 2)
-        this.arc(eYo.Unit.y, true, false)
+        this.H(true, dx + eYo.unit.x / 2 - dd / 2)
+        this.arc(eYo.unit.y, true, false)
         this.V(0)
       }
     } else {
-      this.H(true, dx + eYo.Unit.x / 2 - dd / 2)
-      brick.span.l > 1 && (this.V(eYo.Unit.y))
-      this.arc(eYo.Unit.y, true, false)
+      this.H(true, dx + eYo.unit.x / 2 - dd / 2)
+      brick.span.l > 1 && (this.V(eYo.unit.y))
+      this.arc(eYo.unit.y, true, false)
     }
     return this
   }
@@ -662,7 +662,7 @@ eYo.Shape.newWithMagnet = function(magnet) {
  * @return {String!} A path definition.
  */
 eYo.Shape.definitionWithMagnet = function(m4t, opt) {
-  return eYo.Shape.shared.initWithMagnet(m4t, opt).definition
+  return eYo.shape.Shared.initWithMagnet(m4t, opt).definition
 }
 
 /**
@@ -689,9 +689,9 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
     var y = where.y
     this.width = magnet.w
     if (magnet.startOfStatement) {
-      magnet.shape = eYo.Key.LEFT
+      magnet.shape = eYo.key.LEFT
     }
-    var shape = magnet.shape || magnet.side || eYo.Key.NONE
+    var shape = magnet.shape || magnet.side || eYo.key.NONE
   } else {
     x = 0
     y = 0
@@ -709,46 +709,46 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
     } else if (magnet.isOutput) {
       this.push(brick.ui.driver.pathValueDef_(magnet))
     } else { // statement connection
-      var w = brick.span.width - eYo.Unit.x / 2
+      var w = brick.span.width - eYo.unit.x / 2
       if (magnet.isHead) {
         this.m(true, w - 4 * r, -r)
         this.half_circle(r, true, 3)
-        this.h(true, -w + eYo.Unit.x - eYo.Padding.l + 8 * r)
+        this.h(true, -w + eYo.unit.x - eYo.padding.l + 8 * r)
         this.half_circle(r, true, 1)
       } else if (magnet.isFoot) {
         if (brick.span.l > 1) { // this is not clean design, really?
-          this.m(true, eYo.Span.tabWidth, brick.span.height - r)
+          this.m(true, eYo.Span.TAB_WIDTH, brick.span.height - r)
           this.half_circle(r, true, 3)
-          this.h(true, -eYo.Span.tabWidth + 4 * r + eYo.Unit.x - eYo.Padding.l)
+          this.h(true, -eYo.Span.TAB_WIDTH + 4 * r + eYo.unit.x - eYo.padding.l)
           this.half_circle(r, true, 1)
         } else {
-          this.m(true, w - 4 * r, eYo.Unit.y - r)
+          this.m(true, w - 4 * r, eYo.unit.y - r)
           this.half_circle(r, true, 3)
-          this.h(true, -w + eYo.Unit.x - eYo.Padding.l + 8 * r)
+          this.h(true, -w + eYo.unit.x - eYo.padding.l + 8 * r)
           this.half_circle(r, true, 1)
         }
       } else if (magnet.isSuite) {
-        this.m(true, w - 4 * r, -r + eYo.Unit.y)
+        this.m(true, w - 4 * r, -r + eYo.unit.y)
         this.half_circle(r, true, 3)
-        this.h(true, eYo.Span.tabWidth - w + eYo.Unit.x / 2 + 8 * r)
+        this.h(true, eYo.Span.TAB_WIDTH - w + eYo.unit.x / 2 + 8 * r)
         this.half_circle(r, true, 1)
       } else {
-        this.M(true, (magnet.isLeft ? eYo.Unit.x / 2 : w) + r, eYo.Unit.y - 4 * r)
+        this.M(true, (magnet.isLeft ? eYo.unit.x / 2 : w) + r, eYo.unit.y - 4 * r)
         this.half_circle(r, false, 0)
-        this.v(true, - eYo.Unit.y + 8 * r)
+        this.v(true, - eYo.unit.y + 8 * r)
         this.half_circle(r, false, 2)
       }
     }
   } else if (magnet && magnet.isLeft) {
-    this.M(true, eYo.Unit.x / 2 + r, eYo.Unit.y - 4 * r)
+    this.M(true, eYo.unit.x / 2 + r, eYo.unit.y - 4 * r)
     this.half_circle(r, true, 0)
-    this.v(true, - eYo.Unit.y + 8 * r)
+    this.v(true, - eYo.unit.y + 8 * r)
     this.half_circle(r, true, 2)
     this.z()
   } else if (magnet && magnet.isRight) {
-    this.M(true, eYo.Unit.x / 2 + r, eYo.Unit.y - 4 * r)
+    this.M(true, eYo.unit.x / 2 + r, eYo.unit.y - 4 * r)
     this.half_circle(r, true, 0)
-    this.v(true, - eYo.Unit.y + 8 * r)
+    this.v(true, - eYo.unit.y + 8 * r)
     this.half_circle(r, true, 2)
     this.z()
   } else if (magnet && magnet.bindField && !magnet.ignoreBindField) {
@@ -756,9 +756,9 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
       ? Math.max(this.width, 1)
       : 2)
     var w = this.width - 1
-    this.M(true, x + (w + 1 / 2) * eYo.Unit.x - dd, y + (eYo.Unit.y - this.caret_height)/ 2)
+    this.M(true, x + (w + 1 / 2) * eYo.unit.x - dd, y + (eYo.unit.y - this.caret_height)/ 2)
     this.arc(this.caret_height, false, true)
-    this.h(true, - w * eYo.Unit.x + 2 * dd)
+    this.h(true, - w * eYo.unit.x + 2 * dd)
     if (magnet && magnet.startOfStatement) {
       this.v(true, -this.caret_height)
     } else {
@@ -767,29 +767,29 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
   } else if (this.width > 1) {
     var dd = 2 * this.caret_extra
     var p_h = this.caret_height
-    this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x - dd / 2, y + (eYo.Unit.y - p_h)/ 2)
+    this.M(true, x + (this.width - 1 / 2) * eYo.unit.x - dd / 2, y + (eYo.unit.y - p_h)/ 2)
     this.arc(this.caret_height, false, true)
-    this.h(true, (1 - this.width) * eYo.Unit.x + dd)
+    this.h(true, (1 - this.width) * eYo.unit.x + dd)
     if (magnet && magnet.startOfStatement) {
       this.v(true, -this.caret_height)
     } else {
       this.arc(this.caret_height, true, false)
     }
-  } else if (shape === eYo.Key.LEFT) {
-    this.M(true, x + eYo.Unit.x / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
+  } else if (shape === eYo.key.LEFT) {
+    this.M(true, x + eYo.unit.x / 2, y + (eYo.unit.y - this.caret_height)/ 2)
     this.h(true, dd / 2)
     this.arc(this.caret_height, false, true)
     this.h(true, -dd / 2)
-  } else if (shape === eYo.Key.RIGHT) {
+  } else if (shape === eYo.key.RIGHT) {
     // logically unreachable code
-    this.M(true, x + eYo.Unit.x / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
+    this.M(true, x + eYo.unit.x / 2, y + (eYo.unit.y - this.caret_height)/ 2)
     this.h(true, -dd / 2)
     this.arc(this.caret_height, true, true)
     this.h(true, dd / 2)
   } else {
-    this.M(true, x + (this.width - 1 / 2) * eYo.Unit.x + dd / 2, y + (eYo.Unit.y - this.caret_height)/ 2)
+    this.M(true, x + (this.width - 1 / 2) * eYo.unit.x + dd / 2, y + (eYo.unit.y - this.caret_height)/ 2)
     this.arc(this.caret_height, false, true)
-    this.h(true, (1 - this.width) * eYo.Unit.x - dd)
+    this.h(true, (1 - this.width) * eYo.unit.x - dd)
     this.arc(this.caret_height, !magnet || !magnet.isAfterRightEdge, false)
   }
   this.end()
@@ -804,13 +804,13 @@ eYo.Shape.prototype.initWithMagnet = function(magnet, opt) {
  */
 eYo.Shape.prototype.initForPlay = function (cursor, isContour) {
   this.begin()
-  var lh = eYo.Unit.y / 2
+  var lh = eYo.unit.y / 2
   var ratio = 1.618
   var blh = lh * ratio
   var y = lh * Math.sqrt(1 - (ratio / 2) ** 2)
-  var d = cursor.x + eYo.Unit.x + blh / 2 + eYo.Unit.x - eYo.Padding.l
+  var d = cursor.x + eYo.unit.x + blh / 2 + eYo.unit.x - eYo.padding.l
   if (isContour) {
-    var dr = eYo.Padding.t / 2
+    var dr = eYo.padding.t / 2
     var r = 2 * y / Math.sqrt(3) + dr
     this.M(true, d + 2 * y / Math.sqrt(3) + dr, lh)
     this.arc({x: -r, y: -r}, r, true)
@@ -832,8 +832,8 @@ eYo.Shape.prototype.initForPlay = function (cursor, isContour) {
  * @return {String!} A path definition.
  */
 eYo.Shape.definitionForPlayIcon = function(cursor) {
-  eYo.Shape.shared.initForPlay(cursor, false)
-  return eYo.Shape.shared.definition
+  eYo.shape.Shared.initForPlay(cursor, false)
+  return eYo.shape.Shared.definition
 }
 
 /**
@@ -842,6 +842,6 @@ eYo.Shape.definitionForPlayIcon = function(cursor) {
  * @return {String!} A path definition.
  */
 eYo.Shape.definitionForPlayContour = function(cursor) {
-  eYo.Shape.shared.initForPlay(cursor, true)
-  return eYo.Shape.shared.definition
+  eYo.shape.Shared.initForPlay(cursor, true)
+  return eYo.shape.Shared.definition
 }

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('WorkspaceControl')
+eYo.require('workspaceControl')
 
 /**
  * Class for a trash can.
@@ -67,14 +67,14 @@ Object.defineProperties(eYo.TrashCan.prototype, {
    * @type {number}
    * @private
    */
-  HEIGHT_: {value: eYo.TrashCan.prototype.BODY_HEIGHT_ + eYo.TrashCan.prototype.LID_HEIGHT_},
+  HEIGHT_: {value: eYo.TrashCan.prototype.BODY_HEIGHT_ + eYo.trashCan.prototype.LID_HEIGHT_},
 })
 
 /**
  * Move the trash can to the bottom-right corner.
  */
 eYo.TrashCan.prototype.place = function(bottom) {
-  eYo.TrashCan.superProto_.place.call(this, bottom)
+  eYo.TrashCan.SuperProto_.place.Call(this, bottom)
   this.ui_driver.place(this)
 }
 console.error('NYI: what does the inherited place do?')
@@ -90,6 +90,6 @@ eYo.TrashCan.prototype.getClientRect = function() {
  * Flip the lid shut.
  * Called externally after a drag.
  */
-eYo.TrashCan.prototype.close = function() {
+eYo.TrashCan.prototype.Close = function() {
   this.ui_driver.openSet(this, false)
 }

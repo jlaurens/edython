@@ -11,10 +11,10 @@ describe('Brick constructor delegate', function() {
 
 describe('Create', function() {
   it(`Basic`, function() {
-    eYo.Test.setItUp()
+    eYo.Test.SetItUp()
     var b3k = eYo.Test.new_brick('identifier')
     chai.assert(b3k.change.count !== eYo.NA, 'MISSED 3')
-    chai.assert(eYo.app.board.getBrickById(b3k.id) === b3k, 'Unknown as top block')
+    chai.assert(eYo.App.Board.getBrickById(b3k.id) === b3k, 'Unknown as top block')
     b3k.dispose()
     eYo.Test.tearItDown()
   })
@@ -23,11 +23,11 @@ describe('Create', function() {
 describe('One brick (ALIASED)', function () {
   it (`white space before 'as'`, function () {
     var b3k = eYo.Test.new_brick({
-      type: eYo.T3.Expr.identifier,
+      type: eYo.t3.Expr.identifier,
       target_p: 'abc',
       alias_p: 'cde'
     })
-    eYo.Test.code(b3k, 'abc as cde')
+    eYo.Test.Code(b3k, 'abc as cde')
     b3k.dispose()
   })
 })
@@ -36,7 +36,7 @@ describe('Statement magnets', function () {
   var b_1, b_2
   before(function() {
     var type = 'test_stmt_magnets'
-    eYo.T3.Stmt[type] = type
+    eYo.t3.Stmt[type] = type
     eYo.Stmt.makeSubclass(type, {
       left: { check: type },
       right: { check: type },
@@ -93,7 +93,7 @@ describe('Group magnets', function () {
   var b_1, b_2
   before(function() {
     var type = 'test_group_magnets'
-    eYo.T3.Stmt[type] = type
+    eYo.t3.Stmt[type] = type
     eYo.Stmt.Group.makeSubclass(type, {
       left: { check: type },
       right: { check: type },

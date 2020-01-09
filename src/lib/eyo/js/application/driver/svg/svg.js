@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Dom')
+eYo.require('dom')
 
-eYo.require('Decorate')
+eYo.require('decorate')
 goog.forwardDeclare('goog.math.AffineTransform')
 
 /**
@@ -21,15 +21,15 @@ goog.forwardDeclare('goog.math.AffineTransform')
  * @name{eYo.Svg}
  * @namespace
  */
-eYo.Dom.makeNS(eYo, 'Svg')
+eYo.dom.makeNS(eYo, 'svg')
 
-eYo.forwardDeclare('T3.Profile')
-eYo.forwardDeclare('Svg.Brick')
-eYo.forwardDeclare('Svg.Slot')
-eYo.forwardDeclare('Svg.Field')
-eYo.forwardDeclare('Slot')
-eYo.forwardDeclare('Brick')
-eYo.forwardDeclare('Style')
+eYo.forwardDeclare('t3.profile')
+eYo.forwardDeclare('svg.brick')
+eYo.forwardDeclare('svg.slot')
+eYo.forwardDeclare('svg.field')
+eYo.forwardDeclare('slot')
+eYo.forwardDeclare('brick')
+eYo.forwardDeclare('style')
 
 goog.forwardDeclare('goog.userAgent')
 
@@ -37,11 +37,19 @@ goog.forwardDeclare('goog.userAgent')
  * The Svg delegate.
  * @constructor
  */
-eYo.Dom.Dlgt.makeSubclass(eYo.Svg)
+eYo.dom.Dlgt.makeSubclass(eYo.Svg)
 
 /**
+ * @name {eYo.Svg.Dlgt}
+ * @constructor
+ */
+/**
+ * @name {eYo.Svg.Dflt}
+ * @constructor
+ */
+/**
  * @name {eYo.Svg.Mngr}
- * The manager constructor of all the svg drivers.
+ * @constructor
  */
 eYo.Svg.makeMngr({
   ui: {
@@ -77,7 +85,7 @@ eYo.Svg.makeMngr({
  */
 eYo.Svg._p.newElement = function(name, attrs, parent) {
   var e = /** @type {!SVGElement} */
-      document.createElementNS(eYo.Dom.SVG_NS, name)
+      document.createElementNS(eYo.dom.SVG_NS, name)
   for (var key in attrs) {
     var value = attrs[key]
     value && e.setAttribute(key, value)
@@ -100,9 +108,9 @@ eYo.Svg._p.newElement = function(name, attrs, parent) {
  */
 eYo.Svg._p.newElementSvg = function(parent, className) {
   return eYo.Svg.newElement('svg', {
-    xmlns: eYo.Dom.SVG_NS,
-    'xmlns:html': eYo.Dom.HTML_NS,
-    'xmlns:xlink': eYo.Dom.XLINK_NS,
+    xmlns: eYo.dom.SVG_NS,
+    'xmlns:html': eYo.dom.HTML_NS,
+    'xmlns:xlink': eYo.dom.XLINK_NS,
     version: '1.1',
     class: className | ''
   },
@@ -117,12 +125,6 @@ Object.defineProperties(eYo.Svg, {
   TRANSLATE_2D_REGEX_: { value: /transform\s*:\s*translate\s*\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ },
   TRANSLATE_3D_REGEX_: { value: /transform\s*:\s*translate3d\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ }
 })
-
-/**
- * @name{eYo.Svg.Dflt}
- * @constructor
- */
-eYo.Dom.Dflt.makeSubclass(eYo.Svg)
 
 /**
  * Return the coordinates of the top-left corner of this element relative to
@@ -173,7 +175,7 @@ eYo.Svg.Dflt_p.xyInParent = function(element) {
  * Add tooltip to an element
  * @param {String} key
  */
-eYo.Svg.Dflt_p.addTooltip = function (el, title, options) {
+eYo.Svg.Dflt_p.AddTooltip = function (el, title, options) {
   if (eYo.isStr(title)) {
     el.setAttribute('title', title)
     tippy(el, options)
@@ -189,11 +191,11 @@ eYo.Svg.Dflt_p.addTooltip = function (el, title, options) {
  * @return {string}
  */
 eYo.Svg.getCssClassForText = function (txt) {
-  switch (eYo.T3.Profile.get(txt, null).raw) {
-  case eYo.T3.Expr.reserved_identifier:
-  case eYo.T3.Expr.reserved_keyword:
+  switch (eYo.t3.profile.get(txt, null).raw) {
+  case eYo.t3.Expr.reserved_identifier:
+  case eYo.t3.Expr.reserved_keyword:
     return 'eyo-code-reserved'
-  case eYo.T3.Expr.builtin__name:
+  case eYo.t3.Expr.Builtin__name:
     return 'eyo-code-builtin'
   default:
     return 'eyo-code'

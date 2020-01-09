@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.require('Svg')
+eYo.require('svg')
 
 /**
  * @name {eYo.Svg.Dnd}
  * Faceless driver for the zoomer.
  */
-eYo.provide('Svg.Dnd')
+eYo.provide('svg.dnd')
 
-eYo.forwardDeclare('DnD.Mngr')
+eYo.forwardDeclare('dnd.mngr')
 
 /**
  * Faceless driver for the zoomer.

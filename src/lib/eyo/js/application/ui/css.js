@@ -15,14 +15,14 @@
  * @name eYo.Css
  * @namespace
  */
-eYo.require('Style')
+eYo.require('style')
 
-eYo.provide('Css')
+eYo.provide('css')
 
 
-eYo.forwardDeclare('Unit')
+eYo.forwardDeclare('unit')
 eYo.forwardDeclare('font-face')
-eYo.forwardDeclare('Shape')
+eYo.forwardDeclare('shape')
 goog.forwardDeclare('goog.cssom');
 
 eYo.Css.insertRuleAt = (() => {
@@ -59,7 +59,7 @@ eYo.Css.insertRuleAt = (() => {
   }
 })()
 
-eYo.setup.register(-1, () => {
+eYo.Setup.register(-1, () => {
   eYo.Css.insertRuleAt('body {background: orange;}')
 })
 
@@ -103,7 +103,7 @@ eYo.Css.inject = (hasCss, pathToMedia) => {
   var cssTextNode = document.createTextNode(text);
   cssNode.appendChild(cssTextNode);
   Blockly.Css.styleSheet_ = cssNode.sheet;
-  Blockly.Css.inject = eYo.Do.nothing
+  Blockly.Css.inject = eYo.do.nothing
 }
 
 /**
@@ -437,19 +437,19 @@ eYo.Css.CONTENT = path => {
 .eyo-code-comment,
 .eyo-code-placeholder,
 .eyo-sharp-group{
-  ${eYo.Font.style};
+  ${eYo.font.Style};
 }
 .eyo-error.eyo-path-selected,
 .eyo-error.eyo-path-hilighted,
 .eyo-error.eyo-path-shape,
 .eyo-error.eyo-path-contour,
 .eyo-error.eyo-path-inner {
-  stroke:${eYo.Style.Path.Error.colour};
+  stroke:${eYo.Style.Path.Error.Colour};
   stroke-width: ${eYo.Style.Path.Error.width}px;
 }
 .eyo-path-selected,
 .eyo-path-hilighted {
-  stroke: ${eYo.Style.Path.Hilighted.colour};
+  stroke: ${eYo.Style.Path.Hilighted.Colour};
   fill: none;
 }
 .eyo-path-hilighted {
@@ -457,25 +457,25 @@ eYo.Css.CONTENT = path => {
 }
 .eyo-select .eyo-path-contour.eyo-error,
 .eyo-select .eyo-path-inner.eyo-error {
-  stroke: ${eYo.Style.Path.Error.colour};
+  stroke: ${eYo.Style.Path.Error.Colour};
 }
 .eyo-checkbox-icon-rect {
-  stroke: ${eYo.Shape.Style.colour.light};
+  stroke: ${eYo.Shape.Style.Colour.light};
   stroke-width: ${eYo.Shape.Style.width.light}px;
   fill: white;
 }
 .eyo-checkbox-icon-rect {
-  stroke: ${eYo.Shape.Style.colour.light};
+  stroke: ${eYo.Shape.Style.Colour.light};
   stroke-width: ${eYo.Shape.Style.width.light}px;
   fill: white;
 }
 .eyo-medium .eyo-checkbox-icon-rect {
-  stroke: ${eYo.Shape.Style.colour.medium};
+  stroke: ${eYo.Shape.Style.Colour.medium};
   stroke-width: ${eYo.Shape.Style.width.medium}px;
   fill: white;
 }
 .eyo-dark .eyo-checkbox-icon-rect {
-  stroke: ${eYo.Shape.Style.colour.dark};
+  stroke: ${eYo.Shape.Style.Colour.dark};
   stroke-width: ${eYo.Shape.Style.width.dark}px;
   fill: white;
 }
@@ -492,7 +492,7 @@ eYo.Css.CONTENT = path => {
   fill-opacity:0.92
 }
 .eyo-path-bbox {
-  stroke: ${eYo.Style.Path.bbox_colour};
+  stroke: ${eYo.Style.Path.Bbox_colour};
   stroke-width: ${eYo.Shape.Style.width.light}px;
   fill: none;
 }
@@ -508,7 +508,7 @@ eYo.Css.CONTENT = path => {
 .eyo-path-inner,
 .eyo-path-collapsed,
 .eyo-path-play-contour {
-  stroke: ${eYo.Shape.Style.colour.light};
+  stroke: ${eYo.Shape.Style.Colour.light};
   stroke-width: ${eYo.Shape.Style.width.light}px;
   fill: none;
   pointer-events: all;
@@ -518,7 +518,7 @@ eYo.Css.CONTENT = path => {
 .eyo-medium .eyo-path-inner,
 .eyo-medium .eyo-path-collapsed,
 .eyo-medium .eyo-path-play-contour {
-  stroke: ${eYo.Shape.Style.colour.medium};
+  stroke: ${eYo.Shape.Style.Colour.medium};
   stroke-width: ${eYo.Shape.Style.width.medium}px;
   fill: none;
   pointer-events: all;
@@ -528,7 +528,7 @@ eYo.Css.CONTENT = path => {
 .eyo-dark .eyo-path-inner,
 .eyo-dark .eyo-path-collapsed,
 .eyo-dark .eyo-path-play-contour {
-  stroke: ${eYo.Shape.Style.colour.dark};
+  stroke: ${eYo.Shape.Style.Colour.dark};
   stroke-width: ${eYo.Shape.Style.width.dark}px;
   fill: none;
   pointer-events: all;
@@ -595,20 +595,20 @@ text.eyo-code-comment {
     `.eyo-select.eyo-expr .eyo-path-contour,
 .eyo-select.eyo-stmt .eyo-path-contour,
 .eyo-select.eyo-expr .eyo-path-inner {
-  stroke: ${eYo.Style.Path.Hilighted.colour};
+  stroke: ${eYo.Style.Path.Hilighted.Colour};
 }
 .eyo-select.eyo-stmt>.eyo-path-contour,
 .eyo-select.eyo-stmt>.eyo-path-inner,
 .eyo-select.eyo-stmt>.eyo-expr .eyo-path-contour,
 .eyo-select.eyo-stmt>.eyo-expr .eyo-path-inner {
-  stroke: ${eYo.Style.Path.Hilighted.colour};
+  stroke: ${eYo.Style.Path.Hilighted.Colour};
 }
 .eyo-code-placeholder,
 .eyo-code-comment {
   font-style: oblique;
 }
 .eyo-hilighted-magnet-path{
-  stroke: ${eYo.Style.Path.Hilighted.colour};
+  stroke: ${eYo.Style.Path.Hilighted.Colour};
   stroke-width: ${eYo.Style.Path.Hilighted.width}px;
   fill: none;
 }`,

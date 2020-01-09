@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('Field')
-eYo.require('Brick')
+eYo.require('field')
+eYo.require('brick')
 
-eYo.provide('Py')
+eYo.provide('py')
 
-eYo.forwardDeclare('XRE')
-eYo.forwardDeclare('Slot')
+eYo.forwardDeclare('xre')
+eYo.forwardDeclare('slot')
 
 /**
  * Python code generator.
@@ -25,7 +25,7 @@ eYo.forwardDeclare('Slot')
  * @param {string} [One] indentation, defaults to 4 spaces.
  * @constructor
  */
-eYo.Py.makeClass('Exporter', {
+eYo.py.makeClass('Exporter', {
   init (oneIndent) {
     this.oneIndent = oneIndent || this.constructor.indent
   },
@@ -35,12 +35,12 @@ eYo.Py.makeClass('Exporter', {
  * Default indentation.
  * For edython.
  */
-eYo.Py.Exporter.indent = '    '
+eYo.py.Exporter.indent = '    '
 
 /**
  * Indent, must be balanced by a dedent.
  */
-eYo.Py.Exporter.prototype.indent_ = function (str) {
+eYo.py.Exporter.prototype.indent_ = function (str) {
   this.indents.push(this.indent)
   this.indent += str || this.oneIndent
 }
@@ -48,14 +48,14 @@ eYo.Py.Exporter.prototype.indent_ = function (str) {
 /**
  * dedent, must be balanced by an indent.
  */
-eYo.Py.Exporter.prototype.dedent_ = function () {
+eYo.py.Exporter.prototype.dedent_ = function () {
   this.indent = this.indents.pop()
 }
 
 /**
  * Insert a newline_ array.
  */
-eYo.Py.Exporter.prototype.newline_ = function () {
+eYo.py.Exporter.prototype.newline_ = function () {
   this.line && (this.lines.push(this.line.join('')))
   this.lineShouldAddBoard = false
   this.line = [this.indent]
@@ -73,7 +73,7 @@ eYo.Py.Exporter.prototype.newline_ = function () {
  * For edython.
  * @param {String} s  the string to be appended to the line.
  */
-eYo.Py.Exporter.prototype.addBoard = function () {
+eYo.py.Exporter.prototype.AddBoard = function () {
   this.line.length > 1 && (this.lineShouldAddBoard = true) // this line contains at least one indentation string
 }
 
@@ -82,7 +82,7 @@ eYo.Py.Exporter.prototype.addBoard = function () {
  * For edython.
  * @param {String} s  the string to be appended to the line.
  */
-eYo.Py.Exporter.prototype.linePush = function (s) {
+eYo.py.Exporter.prototype.linePush = function (s) {
   if (this.lineShouldAddBoard) {
     this.lineShouldAddBoard = false
     this.line.push(' ')
@@ -94,10 +94,10 @@ eYo.Py.Exporter.prototype.linePush = function (s) {
  * Convert the brick to python code.
  * For edython.
  * @param {eYo.Brick.Dflt} brick The owner of the receiver, to be converted to python.
- * @param {Object} [opt]  See the eponym parameter in `eYo.Xml.domToBrick`.
+ * @param {Object} [opt]  See the eponym parameter in `eYo.xml.domToBrick`.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
+eYo.py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
   if (brick.async_) {
     if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol) {
       // add a separation
@@ -115,16 +115,16 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
   } else if (brick.parenth_p) {
     this.linePush('(')
   }
-  if (brick instanceof eYo.Expr.primary) {
-    if (brick.dotted_p === 0 && brick.target_p === 'print' && brick.variant_p === eYo.Key.CALL_EXPR) {
+  if (brick instanceof eYo.expr.primary) {
+    if (brick.dotted_p === 0 && brick.target_p === 'print' && brick.variant_p === eYo.key.CALL_EXPR) {
       this.use_print = true
     }
-  } else if (brick instanceof eYo.Stmt.call_stmt) {
+  } else if (brick instanceof eYo.Stmt.Call_stmt) {
     if (brick.dotted_p === 0 && brick.target_p === 'print') {
       this.use_print = true
     }
   }
-  if (brick.type === eYo.T3.Stmt.import_stmt && !brick.disabled) {
+  if (brick.type === eYo.t3.Stmt.import_stmt && !brick.disabled) {
     var importedModules = brick.importedModules
     if (importedModules && importedModules['turtle']) {
       this.use_turtle = true
@@ -161,7 +161,7 @@ eYo.Py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
+eYo.py.Exporter.prototype.exportBrick_ = function (brick, opt) {
   var is_deep = !brick.isControl && opt.is_deep
   if (!brick.out_m) {
     if (brick.disabled) {
@@ -179,7 +179,7 @@ eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
     this.exportField_(rightM4t.label_f)
     var f = () => {
       if ((t9k = m4t.targetBrick)) {
-        eYo.Do.tryFinally(() => {
+        eYo.do.tryFinally(() => {
           opt.is_deep = true
           this.newline_()
           this.exportBrick_(t9k, opt)
@@ -195,7 +195,7 @@ eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
     if (brick.isControl) {
       f()
     } else {
-      eYo.Do.makeWrapper(() => {
+      eYo.do.makeWrapper(() => {
         this.indent_()
       }, () => {
         this.dedent_()
@@ -225,7 +225,7 @@ eYo.Py.Exporter.prototype.exportBrick_ = function (brick, opt) {
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
-eYo.Py.Exporter.prototype.export = function (brick, opt) {
+eYo.py.Exporter.prototype.export = function (brick, opt) {
   this.line = eYo.NA
   this.lines = []
   this.indents = []
@@ -237,8 +237,8 @@ eYo.Py.Exporter.prototype.export = function (brick, opt) {
   this.missing_statements = []
   this.missing_expressions = []
   this.newline_()
-  eYo.Events.groupWrap(() => {
-    eYo.Do.tryFinally(() => {
+  eYo.events.groupWrap(() => {
+    eYo.do.tryFinally(() => {
       ++this.depth
       this.expression = []
       this.exportBrick_(brick, opt)
@@ -260,16 +260,16 @@ eYo.Py.Exporter.prototype.export = function (brick, opt) {
  * @param {eYo.Field}
  * @private
  */
-eYo.Py.Exporter.prototype.exportField_ = function (field) {
+eYo.py.Exporter.prototype.exportField_ = function (field) {
   if (field.visible) {
     var text = field.getPythonText_()
     if (!text.length) {
       var d = field.data
       if (d) {
         if (goog.isDef(d.model.python)) {
-          text = eYo.Do.valueOf(d.model.python, d) || ''
+          text = eYo.do.valueOf(d.model.python, d) || ''
         } else if (!field.optional_ && goog.isDef(d.model.placeholder)) {
-          text = eYo.Do.valueOf(d.model.placeholder, d) || ''
+          text = eYo.do.valueOf(d.model.placeholder, d) || ''
         }
       }
     }
@@ -282,25 +282,25 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
         this.addBoard()
       } else if (this.wasRightParenth) {
         // do not always add white space
-        if (eYo.XRE.id_continue.test(head)) {
+        if (eYo.xre.id_continue.test(head)) {
           this.addBoard()
         }
-      } else if (this.wasColon && (eYo.XRE.id_continue.test(head) || head === '[')) {
+      } else if (this.wasColon && (eYo.xre.id_continue.test(head) || head === '[')) {
         // add a separation
         this.addBoard()
-      } else if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol && text !== '**' && (eYo.XRE.operator.test(head) || head === '.' || eYo.XRE.id_continue.test(head))) {
+      } else if (!this.isSeparatorField && !this.wasSeparatorField  && this.shouldSeparateField && !this.starSymbol && text !== '**' && (eYo.xre.operator.test(head) || head === '.' || eYo.xre.id_continue.test(head))) {
         // add a separation
         this.addBoard()
-      } else if (field.isLabel && eYo.XRE.id_continue.test(head)) {
+      } else if (field.isLabel && eYo.xre.id_continue.test(head)) {
         // add a separation here too
         this.addBoard()
       }
       this.linePush(text)
-      var isContinue = eYo.XRE.tail_continue.test(text) // what about surrogate pairs ?
+      var isContinue = eYo.xre.tail_continue.test(text) // what about surrogate pairs ?
       var tail = text[text.length - 1]
       this.wasColon = tail === ':'
       this.shouldSeparateField = isContinue ||
-      eYo.XRE.operator.test(tail) ||
+      eYo.xre.operator.test(tail) ||
       tail === ';' ||
       tail === ',' ||
       (tail === '.' && (!(field instanceof eYo.Field.Input)))
@@ -321,7 +321,7 @@ eYo.Py.Exporter.prototype.exportField_ = function (field) {
  * @param {Object} opt
  * @private
  */
-eYo.Py.Exporter.prototype.exportSlot_ = function (slot, opt) {
+eYo.py.Exporter.prototype.exportSlot_ = function (slot, opt) {
   if (slot && slot.visible) {
     var m4t = slot.magnet
     if (m4t) {
@@ -347,7 +347,7 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot, opt) {
  * @param {eYo.Slot.Dflt} slot
  * @private
  */
-eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
+eYo.py.Exporter.prototype.exportSlot_ = function (slot) {
   if (slot.incog) {
     return
   }
@@ -380,7 +380,7 @@ eYo.Py.Exporter.prototype.exportSlot_ = function (slot) {
 Object.defineProperties(eYo.Brick.Dflt.prototype, {
   toString: {
     get () {
-      return new eYo.Py.Exporter().export(this, {is_deep: true})
+      return new eYo.py.Exporter().export(this, {is_deep: true})
     }
   },
   toLinearString: {
@@ -412,7 +412,7 @@ eYo.Field.Input_p.getPythonText_ = function () {
     var candidate = this.text_ || ''
     return !XRegExp.match(candidate, /\s/) && candidate || (!this.optional_ && '<MISSING NAME>')  
   }
-  var t = eYo.Field.Input.superProto_.getPythonText_.call(this)
+  var t = eYo.Field.Input.SuperProto_.getPythonText_.Call(this)
   if (!t.length && !this.optional_) {
     if (!this.model.canEmpty && (this.placeholder || (this.data && this.data.placeholder))) {
       var t = `<missing ${this.getPlaceholderText().trim()}>`.toUpperCase()

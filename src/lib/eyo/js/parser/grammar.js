@@ -11,16 +11,16 @@
  */
 'use strict'
 
-eYo.require('E')
+eYo.require('e')
 
-eYo.require('Do')
-eYo.require('TKN')
+eYo.require('do')
+eYo.require('tkn')
 
 /**
- * @name{eYo.GMR}
+ * @name{eYo.gmr}
  * @namespace
  */
-eYo.makeNS('GMR')
+eYo.makeNS('gmr')
 
 /* Grammar implementation *-/
 
@@ -36,7 +36,7 @@ eYo.makeNS('GMR')
 /**
  * A grammar book contains the grammar...
  */
-eYo.GMR.makeClass('Book', {
+eYo.gmr.makeClass('Book', {
   init (dfas, labels, start) {
     this.g_dfa = dfas || []
     this.g_start = start
@@ -70,7 +70,7 @@ typedef struct {
 } label
 */
 
-eYo.GMR.makeClass('Label', {
+eYo.gmr.makeClass('Label', {
   init (type, str) {
     this.lb_type = type
     this.lb_str = str
@@ -78,7 +78,7 @@ eYo.GMR.makeClass('Label', {
 })
 
 /*
-eYo.GMR.EMPTY = 0         /* Label number 0 is by definition the empty label *-/
+eYo.gmr.EMPTY = 0         /* Label number 0 is by definition the empty label *-/
 
 /* A list of labels *-/
 
@@ -95,7 +95,7 @@ typedef struct {
 } arc
 */
 
-eYo.GMR.makeClass('Arc', {
+eYo.gmr.makeClass('Arc', {
   init (lbl, arrow) {
     this.a_lbl = lbl
     this.a_arrow = arrow
@@ -116,7 +116,7 @@ typedef struct {
 } state
 */
 
-eYo.GMR.makeClass('State', {
+eYo.gmr.makeClass('State', {
   init (arcs) {
     this.s_arc = arcs || []
     this.s_lower = 0
@@ -143,7 +143,7 @@ typedef struct {
 } dfa
 */
 
-eYo.GMR.makeClass('DFA', {
+eYo.gmr.makeClass('DFA', {
   init (type, name, initial, states, first) {
     /*
     {256, "single_input", 0, 3, states_0,
@@ -200,14 +200,12 @@ extern int Py_DEBUG
 
 grammar * */
 
-eYo.GMR.newgrammar = (/* int */ start) =>
-{
-  return new eYo.GMR.Book(null, null, start)
+eYo.gmr.newgrammar = (/* int */ start) => {
+  return new eYo.gmr.Book(null, null, start)
 }
 
 /* dfa * */
-eYo.GMR.adddfa = (/* grammar * */ g, /* int */ type, /* const char * */ name) =>
-{
+eYo.gmr.Adddfa = (/* grammar * */ g, /* int */ type, /* const char * */ name) => {
   var /* dfa * */ d = {}
   g.g_dfa.push(d)
   d.d_type = type
@@ -220,24 +218,21 @@ eYo.GMR.adddfa = (/* grammar * */ g, /* int */ type, /* const char * */ name) =>
 }
 
 /* int */
-eYo.GMR.addstate = (/* dfa * */ d) =>
-{
-  var /* state * */ s = new eYo.GMR.State()
+eYo.gmr.Addstate = (/* dfa * */ d) => {
+  var /* state * */ s = new eYo.gmr.State()
   d.d_state.push(state)
   ++d.d_nstates
   return d.d_state.length - 1
 }
 
 /* void */
-eYo.GMR.addarc = (/* dfa * */ d, /* int */ from, /* int */ to, /* int */ lbl) =>
-{
+eYo.gmr.Addarc = (/* dfa * */ d, /* int */ from, /* int */ to, /* int */ lbl) => {
   s = d.d_state[from]
-  s.s_arc.push(new eYo.GMR.Arc(lbl, to))
+  s.s_arc.push(new eYo.gmr.Arc(lbl, to))
 }
 
 /* int */
-eYo.GMR.addlabel = (/* labellist * */ ll, /* int */ type, /* const char * */ str) =>
-{
+eYo.gmr.Addlabel = (/* labellist * */ ll, /* int */ type, /* const char * */ str) => {
   var /* int */ i
   for (i = 0; i < ll.length; i++) {
     if (ll[i].lb_type === type && ll[i].lb_str === str) {
@@ -245,15 +240,14 @@ eYo.GMR.addlabel = (/* labellist * */ ll, /* int */ type, /* const char * */ str
     }
   }
   var /* label * */ lb = {}
-  ll.push(new eYo.GMR.Label(type, str))
+  ll.push(new eYo.gmr.Label(type, str))
   return ll.length - 1
 }
 
 /* Same, but rather dies than adds *-/
 
 int */
-eYo.GMR.findlabel = (/* labellist * */ ll, /* int */ type, /* const char * */ str) =>
-{
+eYo.gmr.findlabel = (/* labellist * */ ll, /* int */ type, /* const char * */ str) => {
   var i
 
   for (i = 0; i < ll.length; i++) {
@@ -273,22 +267,22 @@ eYo.GMR.findlabel = (/* labellist * */ ll, /* int */ type, /* const char * */ st
 static void translabel(grammar *, label *)
 
 void */
-// eYo.GMR.translatelabels = (/* grammar * */ g) =>
+// eYo.gmr.translatelabels = (/* grammar * */ g) =>
 // {
 //   /* Don't translate EMPTY */
-//   for (var i = eYo.GMR.EMPTY+1; i < g.g_ll.length; i++) {
-//     eYo.GMR.translabel(g, g.g_ll[i])
+//   for (var i = eYo.gmr.EMPTY+1; i < g.g_ll.length; i++) {
+//     eYo.gmr.translabel(g, g.g_ll[i])
 //   }
 // }
 
-eYo.Do.isalpha = c => XRegExp.exec(c, eYo.Scan.XRE.letter, 0, true)
-eYo.Do.Py_CHARMASK = c => c & 0xff
+eYo.do.isalpha = c => XRegExp.exec(c, eYo.Scan.XRE.letter, 0, true)
+eYo.do.Py_CHARMASK = c => c & 0xff
 
 /* static void */
-// eYo.GMR.translabel = (/* grammar * */ g, /* label * */ lb) =>
+// eYo.gmr.translabel = (/* grammar * */ g, /* label * */ lb) =>
 // {
 //   var i
-//   if (lb.lb_type === eYo.TKN.NAME) {
+//   if (lb.lb_type === eYo.tkn.NAME) {
 //     for (i = 0; i < g.g_ndfas; i++) {
 //       if (lb.lb_str === g.g_dfa[i].d_name) {
 //         lb.lb_type = g.g_dfa[i].d_type
@@ -296,8 +290,8 @@ eYo.Do.Py_CHARMASK = c => c & 0xff
 //         return
 //       }
 //     }
-//     for (i = 0; i < eYo.TKN.N_TOKENS; i++) {
-//       if (lb.lb_str === eYo.TKN._NAMES[i]) {
+//     for (i = 0; i < eYo.tkn.N_TOKENS; i++) {
+//       if (lb.lb_str === eYo.tkn._NAMES[i]) {
 //         lb.lb_type = i
 //         lb.lb_str = null
 //         return
@@ -306,14 +300,14 @@ eYo.Do.Py_CHARMASK = c => c & 0xff
 //     console.log("Can't translate NAME label '%s'\n", lb.lb_str)
 //     return
 //   }
-//   if (lb.lb_type === eYo.TKN.STRING) {
-//     if (eYo.Do.isalpha(eYo.Do.Py_CHARMASK(lb.lb_str[1])) ||
+//   if (lb.lb_type === eYo.tkn.STRING) {
+//     if (eYo.do.isalpha(eYo.do.Py_CHARMASK(lb.lb_str[1])) ||
 //       lb.lb_str[1] === '_') {
 //       var /* size_t */ name_len
 //       if (eYo.Const.Py_DEBUG) {
 //         console.log("Label %s is a keyword\n", lb.lb_str)
 //       }
-//       lb.lb_type = eYo.TKN.NAME
+//       lb.lb_type = eYo.tkn.NAME
 //       name_len = str.indexOf("'", 1)
 //       if (name_len < 0) {
 //         lb.lb_str = str
@@ -322,8 +316,8 @@ eYo.Do.Py_CHARMASK = c => c & 0xff
 //       }
 //     }
 //     else if (lb.lb_str[2] === lb.lb_str[0]) {
-//       var type = eYo.TKN.PyToken_OneChar(lb.lb_str[1])
-//       if (type !== eYo.TKN.OP) {
+//       var type = eYo.tkn.PyToken_OneChar(lb.lb_str[1])
+//       if (type !== eYo.tkn.OP) {
 //         lb.lb_type = type
 //         lb.lb_str = null
 //       }
@@ -332,9 +326,9 @@ eYo.Do.Py_CHARMASK = c => c & 0xff
 //       }
 //     }
 //     else if (lb.lb_str[2] && lb.lb_str[3] === lb.lb_str[0]) {
-//         var type = eYo.TKN.PyToken_TwoChars(lb.lb_str[1],
+//         var type = eYo.tkn.PyToken_TwoChars(lb.lb_str[1],
 //                                     lb.lb_str[2])
-//         if (type !== eYo.TKN.OP) {
+//         if (type !== eYo.tkn.OP) {
 //             lb.lb_type = type
 //             lb.lb_str = null
 //         }
@@ -343,10 +337,10 @@ eYo.Do.Py_CHARMASK = c => c & 0xff
 //         }
 //     }
 //     else if (lb.lb_str[2] && lb.lb_str[3] && lb.lb_str[4] === lb.lb_str[0]) {
-//         var type = eYo.TKN.PyToken_ThreeChars(lb.lb_str[1],
+//         var type = eYo.tkn.PyToken_ThreeChars(lb.lb_str[1],
 //                                             lb.lb_str[2],
 //                                             lb.lb_str[3])
-//         if (type !== eYo.TKN.OP) {
+//         if (type !== eYo.tkn.OP) {
 //             lb.lb_type = type
 //             lb.lb_str = null
 //         }
@@ -361,7 +355,7 @@ eYo.Do.Py_CHARMASK = c => c & 0xff
 //   }
 //   else {
 //     console.log("Can't translate label '%s'\n",
-//             eYo.GMR.PyGrammar_LabelRepr(lb))
+//             eYo.gmr.PyGrammar_LabelRepr(lb))
 //   }
 // }
 
@@ -372,31 +366,29 @@ eYo.Do.Py_CHARMASK = c => c & 0xff
 /* Return the DFA for the given type */
 
 /* dfa * */
-eYo.GMR.PyGrammar_FindDFA = (/* grammar * */ g, /* int */ type) =>
-{
-  var /* dfa * */ d = g.g_dfa[type - eYo.TKN.NT_OFFSET]
+eYo.gmr.PyGrammar_FindDFA = (/* grammar * */ g, /* int */ type) => {
+  var /* dfa * */ d = g.g_dfa[type - eYo.tkn.NT_OFFSET]
   if (!d) {
     console.error('WTF')
   }
-  eYo.assert(d.d_type === type, `${d.d_type} === ${type}`)
+  eYo.Assert(d.d_type === type, `${d.d_type} === ${type}`)
   return d
 }
 
 /* const char * */
-eYo.GMR.PyGrammar_LabelRepr = (/* label * */ lb) =>
-{
-  if (lb.lb_type === eYo.TKN.ENDMARKER) {
+eYo.gmr.PyGrammar_LabelRepr = (/* label * */ lb) => {
+  if (lb.lb_type === eYo.tkn.ENDMARKER) {
     return "EMPTY"
-  } else if (eYo.TKN.ISNONTERMINAL(lb.lb_type)) {
+  } else if (eYo.tkn.ISNONTERMINAL(lb.lb_type)) {
     if (lb.lb_str === null) {
       return `NT${lb.lb_type}`
     } else {
       return lb.lb_str
     }
   }
-  else if (lb.lb_type < eYo.TKN.N_TOKENS) {
+  else if (lb.lb_type < eYo.tkn.N_TOKENS) {
     if (lb.lb_str === null)
-      return eYo.TKN._NAMES[lb.lb_type]
+      return eYo.tkn._NAMES[lb.lb_type]
     else {
       return `${lb.lb_type}(${lb.lb_str})`
     }

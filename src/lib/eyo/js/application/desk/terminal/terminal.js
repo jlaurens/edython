@@ -13,7 +13,7 @@
  */
 'use strict'
 
-eYo.require('C9r.Pane')
+eYo.require('c9r.pane')
 
 /**
  * @name {eYo.Terminal}

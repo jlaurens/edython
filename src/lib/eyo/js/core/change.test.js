@@ -1,7 +1,7 @@
 NS = Object.create(null)
 describe ('Tests: change', function () {
   it ('Change: basic', function () {
-    chai.assert(eYo.C9r.Change)
+    chai.assert(eYo.c9r.Change)
   })
   it ('Change: begin', function () {
     var flag = 0
@@ -16,7 +16,7 @@ describe ('Tests: change', function () {
         flag += 10000
       },
     }
-    let change = new eYo.C9r.Change(onr)
+    let change = new eYo.c9r.Change(onr)
     change.begin()
     chai.assert(flag === 1)
     change.end()

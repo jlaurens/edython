@@ -13,49 +13,20 @@
 
 console.error('In progress')
 
-eYo.require('C9r.Owned')
-
-eYo.provide('Clipboard')
-
 /**
  * 
  */
-eYo.Clipboard = function (owner) {
-  eYo.Clipboard.superProto_.constructor.call(this, owner)
-}
-
-Object.defineProperties(eYo.Clipboard, {
-  dom: {
-    get () {
-      return this.dom_
-    },
-    set (after) {
-      this.dom_ = after
-    }
+eYo.makeClass('Clipboard', eYo.C9r.Owned, {
+  valued: {
+    dom: eYo.isNA,
+    sourceBoard: eYo.isNA,
   },
-  sourceBoard: {
-    get () {
-      return this.sourceBoard_
-    },
-    set (after) {
-      this.sourceBoard_ = after
-    }
-  },
-  desk: {
-    get () {
+  computed: {
+    desk () {
       return this.sourceBoard_.desk
-    }
-  },
-  board: {
-    get () {
+    },
+    board () {
       return this.sourceBoard_.desk.board
-    }
-  }
+    },
+  },
 })
-
-/**
- * Dispose of the resources.
- */
-eYo.Clipboard.prototype.dispose = function () {
-  eYo.Clipboard.superProto_.dispose.call(this)
-}

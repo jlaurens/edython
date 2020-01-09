@@ -11,19 +11,19 @@
  */
 'use strict'
 
-eYo.provide('Slot')
+eYo.provide('slot')
 
-eYo.require('Do')
-eYo.require('C9r.BSMOwned')
-eYo.require('Decorate')
+eYo.require('do')
+eYo.require('c9r.bsmOwned')
+eYo.require('decorate')
 
-eYo.forwardDeclare('Where')
-eYo.forwardDeclare('Field')
-eYo.forwardDeclare('Magnet')
+eYo.forwardDeclare('where')
+eYo.forwardDeclare('field')
+eYo.forwardDeclare('magnet')
 
-eYo.forwardDeclare('Xml')
-eYo.forwardDeclare('Key')
-eYo.forwardDeclare('Expr.List')
+eYo.forwardDeclare('xml')
+eYo.forwardDeclare('key')
+eYo.forwardDeclare('expr.list')
 
 goog.forwardDeclare('goog.dom');
 
@@ -32,7 +32,7 @@ eYo.Slot.makeDlgt()
 /**
  * Initialize the instance.
  * Calls the inherited method, then adds methods defined by the model.
- * The methods are managed by the |dataHandler| method of the |eYo.C9r.Model|.
+ * The methods are managed by the |dataHandler| method of the |eYo.C9r.model|.
  * @param {Object} object - The object to initialize.
  */
 eYo.Slot.Dlgt_p.initInstance = function (object) {
@@ -68,12 +68,12 @@ eYo.Slot.Dlgt_p.initInstance = function (object) {
  * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.C9r.BSMOwned.makeSubclass(eYo.Slot, 'Dflt', {
+eYo.C9r.BsmOwned.makeSubclass(eYo.Slot, 'Dflt', {
   init (brick, key, model) {
-    eYo.assert(brick, 'Missing slot owner brick')
-    eYo.assert(key, 'Missing slot key')
-    eYo.assert(model, 'Missing slot model')
-    eYo.assert(!eYo.isNA(model.order), 'Missing slot model order')
+    eYo.Assert(brick, 'Missing slot owner brick')
+    eYo.Assert(key, 'Missing slot key')
+    eYo.Assert(model, 'Missing slot model')
+    eYo.Assert(!eYo.isNA(model.order), 'Missing slot model order')
     
     this.reentrant_ = {}
     this.key_ = key
@@ -86,7 +86,7 @@ eYo.C9r.BSMOwned.makeSubclass(eYo.Slot, 'Dflt', {
     }
     model.setup_ || setupModel(model)
     if (!eYo.isNA(model.check)) {
-      this.magnet_ = new eYo.Magnet.Dflt(this, eYo.Magnet.IN, model)
+      this.magnet_ = new eYo.Magnet.Dflt(this, eYo.magnet.IN, model)
       if (model.wrap) {
         this.magnet_.wrapped = model.wrap   
       } else if (model.promise) {
@@ -104,7 +104,7 @@ eYo.C9r.BSMOwned.makeSubclass(eYo.Slot, 'Dflt', {
   },
   valued: {
     /**
-     * @property {eYo.Data.Dflt} data  Bound data.
+     * @property {eYo.data.Dflt} data  Bound data.
      */
     data: eYo.NA,
     visible: true,
@@ -306,7 +306,7 @@ eYo.Slot.Dflt_p.whenRequiredFromModel = function (helper) {
  * @param {Boolean} deep whether to consolidate connected bricks.
  * @param {Boolean} force whether to force synchronization.
  */
-eYo.Slot.Dflt_p.consolidate = function (deep, force) {
+eYo.Slot.Dflt_p.Consolidate = function (deep, force) {
   var m4t = this.magnet
   if (m4t) {
     m4t.incog = this.incog
@@ -323,7 +323,7 @@ eYo.Slot.Dflt_p.consolidate = function (deep, force) {
  * Called only by `synchronizeSlots`.
  * For edython.
  */
-eYo.Slot.Dflt_p.synchronize = function () {
+eYo.Slot.Dflt_p.Synchronize = function () {
   var d = this.ui_driver
   if (!d) {
     return
@@ -341,11 +341,11 @@ eYo.Slot.Dflt_p.synchronize = function () {
  * List all the available data and converts them to xml.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {Object} [opt]  See eponym parameter in `eYo.Xml.brickToDom`.
+ * @param {Object} [opt]  See eponym parameter in `eYo.xml.BrickToDom`.
  * @return a dom element, void lists may return nothing
  * @this a brick
  */
-eYo.Slot.Dflt_p.save = function (element, opt) {
+eYo.Slot.Dflt_p.Save = function (element, opt) {
   if (this.incog) {
     return
   }
@@ -360,21 +360,21 @@ eYo.Slot.Dflt_p.save = function (element, opt) {
         // wrapped bricks are just a convenient computational model.
         // For lists only, we do create a further level
         // Actually, every wrapped brick is a list
-        if (t9k instanceof eYo.Expr.List) {
-          var child = eYo.Xml.brickToDom(t9k, opt)
+        if (t9k instanceof eYo.expr.list) {
+          var child = eYo.xml.BrickToDom(t9k, opt)
           if (child.firstElementChild) {
-            child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
+            child.setAttribute(eYo.xml.SLOT, this.xmlKey)
             goog.dom.appendChild(element, child)
             return child
           }
         } else {
           // let the target populate the given element
-          return eYo.Xml.toDom(t9k, element, opt)
+          return eYo.xml.toDom(t9k, element, opt)
         }
       } else {
-        child = eYo.Xml.brickToDom(t9k, opt)
+        child = eYo.xml.BrickToDom(t9k, opt)
         if (child.firstElementChild || child.hasAttributes()) {
-          child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
+          child.setAttribute(eYo.xml.SLOT, this.xmlKey)
           goog.dom.appendChild(element, child)
           return child
         }
@@ -392,10 +392,10 @@ eYo.Slot.Dflt_p.save = function (element, opt) {
  * @param {Element} element a dom element in which to save the receiver
  * @param {Object} opt
  */
-eYo.Slot.Dflt_p.saveRequired = function (element) {
-  var child = goog.dom.createDom(eYo.Xml.EXPR)
-  child.setAttribute(eYo.Key.EYO, eYo.Key.PLACEHOLDER)
-  child.setAttribute(eYo.Xml.SLOT, this.xmlKey)
+eYo.Slot.Dflt_p.SaveRequired = function (element) {
+  var child = goog.dom.createDom(eYo.xml.EXPR)
+  child.setAttribute(eYo.key.EYO, eYo.key.PLACEHOLDER)
+  child.setAttribute(eYo.xml.SLOT, this.xmlKey)
   goog.dom.appendChild(element, child)
 }
 
@@ -422,17 +422,17 @@ eYo.Slot.Dflt_p.load = function (element) {
   this.requiredFromModel = false
   var out
   var t9k = this.targetBrick
-  if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.Expr.List)) {
+  if (t9k && t9k.wrapped_ && !(t9k instanceof eYo.expr.list)) {
     this.requiredFromModel = true // this is not sure, it depends on how the target read the dom
-    out = eYo.Xml.fromDom(t9k, element)
+    out = eYo.xml.fromDom(t9k, element)
     this.recover.dontResit(element)
   } else {
   // find the xml child with the proper slot attribute
-    eYo.Do.someElementChild(element, child => {
-      var attribute = child.getAttribute(eYo.Xml.SLOT)
+    eYo.do.SomeElementChild(element, child => {
+      var attribute = child.getAttribute(eYo.xml.SLOT)
       if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && eYo.isF(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {
         this.recover.dontResit(child)
-        if (child.getAttribute(eYo.Key.EYO) === eYo.Key.PLACEHOLDER) {
+        if (child.getAttribute(eYo.key.EYO) === eYo.key.PLACEHOLDER) {
           this.requiredFromModel = true
           out = true
         } else {
@@ -441,18 +441,18 @@ eYo.Slot.Dflt_p.load = function (element) {
             t9k = this.targetBrick
           }
           if (t9k) {
-            if (t9k instanceof eYo.Expr.List) {
+            if (t9k instanceof eYo.expr.list) {
               // var grandChildren = Array.prototype.slice.call(child.childNodes)
-              eYo.Do.forEachElementChild(child, grandChild => {
-                var name = grandChild.getAttribute(eYo.Xml.SLOT)
+              eYo.do.forEachElementChild(child, grandChild => {
+                var name = grandChild.getAttribute(eYo.xml.SLOT)
                 var slot = t9k.getSlot(name)
                 if (slot) {
                   if (slot.magnet) {
                     var grand_t_brick = slot.target
                     if ((grand_t_brick)) {
-                      eYo.Xml.fromDom(grand_t_brick, grandChild)
+                      eYo.xml.fromDom(grand_t_brick, grandChild)
                       this.recover.dontResit(grandChild)
-                    } else if ((grand_t_brick = eYo.Xml.domToBrick(grandChild, this.brick_))) {
+                    } else if ((grand_t_brick = eYo.xml.domToBrick(grandChild, this.brick_))) {
                       var t_m4t = grand_t_brick.out_m
                       if (t_m4t && t_m4t.checkType_(slot.magnet, true)) {
                         t_m4t.connect(slot.magnet)
@@ -467,10 +467,10 @@ eYo.Slot.Dflt_p.load = function (element) {
               })
               out = true
             } else {
-              out = eYo.Xml.fromDom(t9k, child)
+              out = eYo.xml.fromDom(t9k, child)
             }
             this.recover.dontResit(child)
-          } else if ((t9k = eYo.Xml.domToBrick(child, this.brick_))) {
+          } else if ((t9k = eYo.xml.domToBrick(child, this.brick_))) {
             var m5s = t9k.magnets
             // we could create a brick from that child element
             // then connect it
@@ -496,7 +496,7 @@ eYo.Slot.Dflt_p.load = function (element) {
  * When all the slots and data have been loaded.
  * For edython.
  */
-eYo.Slot.Dflt_p.willLoad = eYo.Decorate.reentrant_method('willLoad', function () {
+eYo.Slot.Dflt_p.willLoad = eYo.decorate.reentrant_method('willLoad', function () {
   let f = this.model.willLoad
   if (eYo.isF(f)) {
     f.apply(this, arguments)
@@ -509,7 +509,7 @@ eYo.Slot.Dflt_p.willLoad = eYo.Decorate.reentrant_method('willLoad', function ()
  * and possibly once when the saved representation has been loaded.
  * For edython.
  */
-eYo.Slot.Dflt_p.didLoad = eYo.Decorate.reentrant_method('didLoad', function () {
+eYo.Slot.Dflt_p.didLoad = eYo.decorate.reentrant_method('didLoad', function () {
   let f = this.model.didLoad
   if (eYo.isF(f)) {
     f.apply(this, arguments)
@@ -554,7 +554,7 @@ eYo.Slot.Dflt_p.forEachPrevious = function (helper) {
  * @param {function} helper
  * @return {?Object} The slot that returned true, eventually.
  */
-eYo.Slot.Dflt_p.some = function (helper) {
+eYo.Slot.Dflt_p.Some = function (helper) {
   var slot = this
   if (eYo.isF(helper)) {
     do {
@@ -570,7 +570,7 @@ eYo.Slot.Dflt_p.some = function (helper) {
  * For edython.
  * @param {function} helper
  */
-eYo.Slot.Dflt_p.fieldForEach = function (helper) {
+eYo.Slot.Dflt_p.FieldForEach = function (helper) {
   this.fields && (Object.values(this.fields).forEach(f => helper(f)))
 }
 
@@ -608,7 +608,7 @@ eYo.Slot.Dflt_p.listConnect = function (bm, key) {
  * @param {eYo.Brick | eYo.Magnet.Dflt} bm  The target is either a brick or another magnet.
  * @return {?eYo.Magnet.Dflt} the eventual target magnet
  */
-eYo.Slot.Dflt_p.connect = function (bm) {
+eYo.Slot.Dflt_p.Connect = function (bm) {
   var m4t = this.magnet
   if(m4t && bm) {
     var other = (bm.magnets && bm.out_m) || bm
@@ -624,10 +624,10 @@ eYo.Slot.Dflt_p.connect = function (bm) {
  * One shot in case of success.
  * @return {Boolean} whether the complete was successfull
  */
-eYo.Slot.Dflt_p.completePromise = function () {
+eYo.Slot.Dflt_p.CompletePromise = function () {
   var m4t = this.magnet
   if (m4t && m4t.completePromise()) {
-    this.completePromise = eYo.Do.nothing
+    this.completePromise = eYo.do.nothing
     return true
   }
 }

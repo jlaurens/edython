@@ -4,9 +4,9 @@ const NS = Object.create(null)
 
 describe ('Tests: data', function () {
   this.timeout(10000)
-  it ('eYo.XRE.function_builtin_before', function () {
+  it ('eYo.xre.function_builtin_before', function () {
     let test = (s, builtin, before) => {
-      let m = XRegExp.exec(s, eYo.XRE.function_builtin_before)
+      let m = XRegExp.exec(s, eYo.xre.function_builtin_before)
       chai.assert(m)
       chai.assert(!m.builtin === !builtin, `${m.builtin}`)
       chai.assert(!m.before === !before, `${m.before}`)
@@ -17,11 +17,11 @@ describe ('Tests: data', function () {
     test('function ( after ) ...', false, false)
   })
   it ('Data: basic', function () {
-    chai.assert(eYo.Data, 'NOT YET IMPLEMENTED')
+    chai.assert(eYo.data, 'NOT YET IMPLEMENTED')
   })
-  it ('eYo.C9r.Model.dataHandler: #', function () {
+  it ('eYo.C9r.model.dataHandler: #', function () {
     let test = (model, n) => {
-      eYo.C9r.Model.dataHandler({
+      eYo.C9r.model.dataHandler({
         foo: model
       }, 'foo')
       var methods = model['.methods']
@@ -35,7 +35,7 @@ describe ('Tests: data', function () {
     test({synchronize () {}}, 1)
     test({willChange () {}, didChange () {}}, 2)
   })
-  it ('eYo.C9r.Model.dataHandler: object', function () {
+  it ('eYo.C9r.model.dataHandler: object', function () {
     var flag
     let test = (f, n) => {
       flag = 0
@@ -44,7 +44,7 @@ describe ('Tests: data', function () {
           willChange: f
         }
       }
-      eYo.C9r.Model.dataHandler(model, 'foo')
+      eYo.C9r.model.dataHandler(model, 'foo')
       var O = {}
       model.foo['.methods'].forEach(f => {
         f(O)

@@ -11,7 +11,7 @@
 
 goog.require('goog.ui.PopupMenu')
 
-eYo.provide('PopupMenu')
+eYo.provide('popupMenu')
 
 /**
  * A basic menu class.
@@ -21,9 +21,9 @@ eYo.provide('PopupMenu')
  * @extends {goog.ui.Menu}
  * @constructor
  */
-eYo.PopupMenu = function (optDomHelper, optRenderer) {
+eYo.popupMenu = function (optDomHelper, optRenderer) {
   goog.ui.PopupMenu.call(this, optDomHelper,
     optRenderer || /** goog.ui.MenuRenderer */ eYo.MenuRenderer.getInstance())
 }
-goog.inherits(eYo.PopupMenu, goog.ui.PopupMenu)
-goog.tagUnsealableClass(eYo.PopupMenu)
+goog.inherits(eYo.popupMenu, goog.ui.PopupMenu)
+goog.tagUnsealableClass(eYo.popupMenu)

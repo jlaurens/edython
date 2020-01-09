@@ -16,12 +16,12 @@
  * @namespace
  **/
 
-eYo.require('Do')
-eYo.provide('ID')
+eYo.require('do')
+eYo.provide('id')
 
-eYo.provide('Const')
+eYo.provide('const')
 
-eYo.assert(XRegExp, 'load XRegExp before')
+eYo.Assert(XRegExp, 'load XRegExp before')
 
 eYo.Const = {
   ABOVE: 'ABOVE', // not for brick definition
@@ -46,11 +46,11 @@ eYo.Const.Field = {
   NCSTR: 'NCSTR'
 }
 
-eYo.provide('Key')
+eYo.provide('key')
 
-eYo.Key = {}
+eYo.key = {}
 
-eYo.Do.readOnlyMixin(eYo.Key, {
+eYo.do.readOnlyMixin(eYo.key, {
   EYO: 'eyo',
   PLACEHOLDER: 'placeholder', // this MUST be in lower case
   TERM: 'term', // this MUST be in lower case
@@ -157,7 +157,7 @@ eYo.Do.readOnlyMixin(eYo.Key, {
   VAR: 'VAR',
   ANN: 'ANN',
   DFT: 'DFT',
-  ID: 'ID',
+  ID: 'id',
   // model variants keys
   NAME: 'name',
   DOTTED_NAME: 'dotted_name',

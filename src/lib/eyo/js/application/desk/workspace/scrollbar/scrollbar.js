@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('C9r')
+eYo.require('c9r')
 
-eYo.forwardDeclare('Board')
+eYo.forwardDeclare('board')
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
 
@@ -307,7 +307,7 @@ eYo.Scrollbar.prototype.updateDisplay_ = function() {
  * Forwards to the driver.
  * @private
  */
-eYo.Scrollbar.prototype.cleanUp_ = function() {
+eYo.Scrollbar.prototype.CleanUp_ = function() {
   this.ui_driver_mngr.scrollbarCleanUp(this)
 }
 

@@ -12,7 +12,7 @@
 'use strict'
 
 /**
- * @name {eYo.C9r.Change}
+ * @name {eYo.c9r.Change}
  * @constructor
  * @param{Object} owner
  */
@@ -51,7 +51,7 @@ eYo.C9r.Owned.makeSubclass('Change', {
 /**
  * Sever the links.
  */
-eYo.C9r.Change_p.reset = function () {
+eYo.c9r.Change_p.reset = function () {
   this.count_ = this.step_ = this.level_ = 0
   // Some operations are performed only when there is a change
   // In order to decide whether to run or do nothing,
@@ -78,7 +78,7 @@ eYo.C9r.Change_p.reset = function () {
  * @return {!Function}
  */
 eYo.C9r.decorateChange = function (key, do_it) {
-  eYo.assert(eYo.isF(do_it), 'do_it MUST be a function')
+  eYo.Assert(eYo.isF(do_it), 'do_it MUST be a function')
   return function() {
     var c = this.change
     if (c.save_[key] === c.count) {
@@ -96,7 +96,7 @@ eYo.C9r.decorateChange = function (key, do_it) {
 /**
  * Increment the level.
  */
-eYo.C9r.Change_p.begin = function () {
+eYo.c9r.Change_p.Begin = function () {
   ++this.level_
   var O = this.owner_
   O.onChangeBegin && O.onChangeBegin(arguments)
@@ -110,7 +110,7 @@ eYo.C9r.Change_p.begin = function () {
  * This is the only place where consolidation should occur.
  * For edython.
  */
-eYo.C9r.Change_p.end = function () {
+eYo.c9r.Change_p.end = function () {
   --this.level_
   var O = this.owner_
   O.onChangeEnd && O.onChangeEnd(arguments)
@@ -131,7 +131,7 @@ eYo.C9r.Change_p.end = function () {
  * to cache the return value.
  * For edython.
  */
-eYo.C9r.Change_p.done = function () {
+eYo.c9r.Change_p.done = function () {
   ++ this.count_
   var O = this.owner_
   if (!O.changeStepFreeze) {
@@ -146,7 +146,7 @@ eYo.C9r.Change_p.done = function () {
  * @param {Function} do_it
  * @return {*} whatever `do_it` returns.
  */
-eYo.C9r.Change_p.wrap = function (do_it) {
+eYo.c9r.Change_p.wrap = function (do_it) {
   let ans
   if (do_it) {
     try {

@@ -11,12 +11,11 @@
  */
 'use strict'
 
-eYo.require('Scan')
+eYo.require('scan')
 
-eYo.require('E')
+eYo.require('e')
 
-eYo.provide('stack')
-eYo.provide('Parser')
+eYo.provide('parser')
 
 /* Parser implementation */
 
@@ -33,7 +32,6 @@ eYo.provide('Parser')
 #include "errcode.h"
 #include "graminit.h"
 
-
 #ifdef Py_DEBUG
 extern int Py_DEBUG
 #define D(x) if (!Py_DEBUG); else x
@@ -42,7 +40,7 @@ extern int Py_DEBUG
 #endif
 */
 
-;(function(){
+;(() => {
 
   var stack = function () {
     this.s_base = []
@@ -69,8 +67,7 @@ extern int Py_DEBUG
   var s_empty = s => 0 === s.s_base.length
 
   /* static int */
-  var s_push = (/* stack * */ s, /* dfa * */ d, /* node * */ parent) =>
-  {
+  var s_push = (/* stack * */ s, /* dfa * */ d, /* node * */ parent) => {
     var top = {}
     s.s_base.push(top)
     top.s_dfa = d
@@ -79,8 +76,7 @@ extern int Py_DEBUG
     return 0
   }
 
-  var s_pop = (/* stack * */ s) =>
-  {
+  var s_pop = (/* stack * */ s) => {
     if (s_empty(s)) {
       throw "s_pop: parser stack underflow -- FATAL"
     }
@@ -90,11 +86,10 @@ extern int Py_DEBUG
   /* PARSER CREATION */
 
   /* parser_state * */
-  eYo.Parser.PyParser_New = (scan, /* grammar * */ g, /* int */ start) =>
-  {
+  eYo.parser.PyParser_New = (scan, /* grammar * */ g, /* int */ start) => {
     var /* parser_state * */ ps = {}
     if (!g.g_accel) {
-      eYo.GMR.PyGrammar_AddAccelerators(g)
+      eYo.gmr.PyGrammar_AddAccelerators(g)
     }
     ps.p_grammar = g
     var s = ps.p_stack = new stack()
@@ -103,22 +98,20 @@ extern int Py_DEBUG
   // #endif
   ps.p_tree = s.last_tkn = new eYo.Node(scan, start)
     // s_reset(ps.p_stack)
-    s_push(s, eYo.GMR.PyGrammar_FindDFA(g, start), ps.p_tree)
+    s_push(s, eYo.gmr.PyGrammar_FindDFA(g, start), ps.p_tree)
     return ps
   }
 
   /* void */
-  eYo.Parser.PyParser_Delete = (/* parser_state * */ ps) =>
-  {
+  eYo.parser.PyParser_Delete = (/* parser_state * */ ps) => {
     throw 'NO CALL'
   }
 
   /* PARSER STACK OPERATIONS */
 
   /* static int */
-  var shift = (/* stack * */ s, child, /* int */ newstate) =>
-  {
-    // eYo.assert(!s_empty(s))
+  var shift = (/* stack * */ s, child, /* int */ newstate) => {
+    // eYo.Assert(!s_empty(s))
     var err = eYo.Node.PyNode_AddChild_(s.s_top.s_parent, child)
     if (err) {
       return err
@@ -128,9 +121,8 @@ extern int Py_DEBUG
   }
 
   /* static int */
-  var push = (/* stack * */ s, tkn, type, /* dfa * */ d, /* int */ newstate) =>
-  {
-    // eYo.assert(!s_empty(s))
+  var push = (/* stack * */ s, tkn, type, /* dfa * */ d, /* int */ newstate) => {
+    // eYo.Assert(!s_empty(s))
     var child = s.last_tkn = new eYo.Node(tkn.scan, type)
     child.lineno = tkn.lineno
     child.end_lineno = tkn.end_lineno
@@ -147,14 +139,13 @@ extern int Py_DEBUG
   /* PARSER PROPER */
 
   /* static int */
-  var classify = (/* parser_state * */ ps, /* int */ type, /* const char * */ str) =>
-  {
+  var classify = (/* parser_state * */ ps, /* int */ type, /* const char * */ str) => {
     var ll_label = ps.p_grammar.g_ll.ll_label
     var n = ll_label.length
-    if (type === eYo.TKN.NAME) {
+    if (type === eYo.tkn.NAME) {
       for (var i = 0; i < n; i++) {
         var l = ll_label[i]
-        if (l.lb_type !== eYo.TKN.NAME || l.lb_str == null ||
+        if (l.lb_type !== eYo.tkn.NAME || l.lb_str == null ||
           l.lb_str[0] != str[0] || l.lb_str !== str) {
           continue
         }
@@ -179,17 +170,16 @@ extern int Py_DEBUG
     return -1
   }
 
-  eYo.Parser.PyParser_AddToken = (/* parser_state * */ps, tkn) =>
-  {
+  eYo.parser.PyParser_AddToken = (/* parser_state * */ps, tkn) => {
     if (eYo.Const.Py_DEBUG) {
-      console.log("Token %s/'%s' ... ", eYo.TKN._NAMES[tkn.n_type], tkn.n_str)
+      console.log("Token %s/'%s' ... ", eYo.tkn._NAMES[tkn.n_type], tkn.n_str)
     }
     var ans = {}
 
     /* Find out which label this token is */
     var ilabel = classify(ps, tkn.n_type, tkn.n_str)
     if (ilabel < 0) {
-      ans.error = eYo.E.SYNTAX
+      ans.error = eYo.e.SYNTAX
       return ans
     }
 
@@ -199,7 +189,7 @@ extern int Py_DEBUG
       var /* dfa * */ d = ps.p_stack.s_top.s_dfa
       var /* state * */ s = d.d_state[ps.p_stack.s_top.s_state]
       if (eYo.Const.Py_DEBUG) {
-        console.log(` DFA '${d.d_name}', state ${ps.p_stack.s_top.s_state}, label ${ilabel}, tkn ${eYo.TKN._NAMES[tkn.n_type]}`)
+        console.log(` DFA '${d.d_name}', state ${ps.p_stack.s_top.s_state}, label ${ilabel}, tkn ${eYo.tkn._NAMES[tkn.n_type]}`)
       }
 
       /* Check accelerator */
@@ -208,15 +198,15 @@ extern int Py_DEBUG
         if (x != -1) {
           if (x & (1<<7)) {
             /* Push non-terminal */
-            var nt = (x >> 8) + eYo.TKN.NT_OFFSET
-            // if (nt === eYo.GMR.func_body_suite && !(ps.p_flags & PyCF_TYPE_COMMENTS)) {
+            var nt = (x >> 8) + eYo.tkn.NT_OFFSET
+            // if (nt === eYo.gmr.func_body_suite && !(ps.p_flags & PyCF_TYPE_COMMENTS)) {
             //     /* When parsing type comments is not requested,
             //        we can provide better errors about bad indentation
             //        by using 'suite' for the body of a funcdef *-/
             //     D(console.log(" [switch func_body_suite to suite]"))
             //     nt = suite
             // }
-            var d1 = eYo.GMR.PyGrammar_FindDFA(ps.p_grammar, nt)
+            var d1 = eYo.gmr.PyGrammar_FindDFA(ps.p_grammar, nt)
             var arrow = x & ((1<<7)-1)
             if (eYo.Const.Py_DEBUG) {
               console.log(` Push '${d1.d_name}', -> ${arrow}`)
@@ -242,12 +232,12 @@ extern int Py_DEBUG
               if (eYo.Const.Py_DEBUG) {
                 console.log(" Accept.")
               }
-              ans.error = eYo.E.DONE
+              ans.error = eYo.e.DONE
               return ans
             }
             d = ps.p_stack.s_top.s_dfa
           }
-          ans.error = eYo.E.OK
+          ans.error = eYo.e.OK
           return ans
         }
       }
@@ -261,7 +251,7 @@ extern int Py_DEBUG
           if (eYo.Const.Py_DEBUG) {
             console.log(" Error: bottom of stack.")
           }
-          ans.error = eYo.E.SYNTAX
+          ans.error = eYo.e.SYNTAX
           return ans
         }
         continue
@@ -277,7 +267,7 @@ extern int Py_DEBUG
       } else {
         ans.expected = -1
       }
-      ans.error = eYo.E.SYNTAX
+      ans.error = eYo.e.SYNTAX
       return ans
     }
   }
@@ -285,40 +275,38 @@ extern int Py_DEBUG
   /* DEBUG OUTPUT */
 
   /* void */
-  eYo.GMR.dumptree = (/* grammar * */ g, /* node * */ n) =>
-  {
+  eYo.gmr.dumptree = (/* grammar * */ g, /* node * */ n) => {
     if (!n) {
       console.log("NIL")
     } else {
-      if (eYo.TKN.ISNONTERMINAL(n.n_type)) {
-        console.log(`${eYo.TKN._NT_NAMES[n.n_type - eYo.TKN.NT_OFFSET]}`)
+      if (eYo.tkn.ISNONTERMINAL(n.n_type)) {
+        console.log(`${eYo.tkn._NT_NAMES[n.n_type - eYo.tkn.NT_OFFSET]}`)
         console.log("(")
         for (var i = 0; i < n.n_nchildren; i++) {
           if (i > 0) {
             console.log(",")
           }
-          eYo.GMR.dumptree(g, n.n_child[i])
+          eYo.gmr.dumptree(g, n.n_child[i])
         }
         console.log(")")
       } else {
-        console.log(`${eYo.TKN._NAMES[n.n_type]}, ${n.n_str}`)
+        console.log(`${eYo.tkn._NAMES[n.n_type]}, ${n.n_str}`)
       }
     }
   }
 
   /* void */
-  eYo.GMR.showtree = (/* grammar * */ g, /* node * */ n) =>
-  {
+  eYo.gmr.Showtree = (/* grammar * */ g, /* node * */ n) => {
     if (!n) {
       return
     }
-    if (eYo.TKN.ISNONTERMINAL(n.n_type)) {
+    if (eYo.tkn.ISNONTERMINAL(n.n_type)) {
       for (var i = 0; i < n.n_nchildren; i++) {
-        eYo.GMR.showtree(g, n.n_child[i])
+        eYo.gmr.Showtree(g, n.n_child[i])
       }
-    } else if (eYo.TKN.ISTERMINAL(n.n_type)) {
-      console.log("%s", eYo.TKN._NAMES[n.n_type])
-      if (n.n_type === eYo.TKN.NUMBER || n.n_type === eYo.TKN.NAME) {
+    } else if (eYo.tkn.ISTERMINAL(n.n_type)) {
+      console.log("%s", eYo.tkn._NAMES[n.n_type])
+      if (n.n_type === eYo.tkn.NUMBER || n.n_type === eYo.tkn.NAME) {
         console.log("(%s)", n.n_str)
       }
       console.log(" ")
@@ -329,14 +317,13 @@ extern int Py_DEBUG
   }
 
   /* void */
-  eYo.Parser.printtree = (/* parser_state * */ ps) =>
-  {
+  eYo.parser.printtree = (/* parser_state * */ ps) => {
     if (eYo.Const.Py_DEBUG) {
       console.log("Parse tree:\n")
-      eYo.GMR.dumptree(ps.p_grammar, ps.p_tree)
+      eYo.gmr.dumptree(ps.p_grammar, ps.p_tree)
       console.log("\n")
       console.log("Tokens:\n")
-      eYo.GMR.showtree(ps.p_grammar, ps.p_tree)
+      eYo.gmr.Showtree(ps.p_grammar, ps.p_tree)
       console.log("\n")
     }
     console.log("Listing:\n")
@@ -371,7 +358,7 @@ extern int Py_DEBUG
   the empty string should be outlawed (there are other ways to put loops
   or optional parts in the language).  To avoid the need to construct
   FIRST sets, we can require that all but the last alternative of a rule
-  eYo.Parser. = (really: arc going out of a DFA's state) => must begin with a terminal
+  eYo.parser. = (really: arc going out of a DFA's state) => must begin with a terminal
   symbol.
 
   As an example, consider this grammar:
@@ -388,7 +375,7 @@ extern int Py_DEBUG
 
   The parse tree generated for the input a+b is:
 
-  eYo.Parser. = (expr: (term: (NAME: a)), (OP: +), (term: (NAME: b))) =>
+  eYo.parser. = (expr: (term: (NAME: a)), (OP: +), (term: (NAME: b))) =>
 
   */
 

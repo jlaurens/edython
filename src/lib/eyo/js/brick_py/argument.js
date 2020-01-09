@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Expr.List')
+eYo.require('expr.list')
 
-eYo.provide('Brick.Argument')
+eYo.provide('brick.argument')
 
 
 /**
@@ -39,7 +39,7 @@ keyword_item         ::=  identifier "=" expression
  * RULE 2 : expression << "**" expression
  * RULE 3 : "*" expression << "**" expression
  */
-eYo.Consolidator.List.makeSubclass('Arguments', {
+eYo.Consolidator.list.makeSubclass('Arguments', {
   list: {
     check: null,
     mandatory: 0,
@@ -53,7 +53,7 @@ eYo.Consolidator.List.makeSubclass('Arguments', {
  * @param {eYo.Brick.Dflt} brick - owner or the receiver.
  */
 eYo.Consolidator.Arguments.prototype.getIO = function (brick) {
-  var io = eYo.Consolidator.Arguments.superProto_.getIO.call(this, brick)
+  var io = eYo.Consolidator.Arguments.SuperProto_.getIO.Call(this, brick)
   io.last_expression = io.last_positional = io.unique = -Infinity
   io.first_keyword_star_star = io.first_star_star = Infinity
   return io
@@ -87,13 +87,13 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
     }
     var check = target.check_
     if (check) {
-      if (goog.array.contains(check, eYo.T3.Expr.comprehension)) {
+      if (goog.array.contains(check, eYo.t3.Expr.Comprehension)) {
         return Type.COMPREHENSION
-      } else if (goog.array.contains(check, eYo.T3.Expr.expression_star_star)) {
+      } else if (goog.array.contains(check, eYo.t3.Expr.expression_star_star)) {
         return Type.STAR_STAR
-      } else if (goog.array.contains(check, eYo.T3.Expr.expression_star)) {
+      } else if (goog.array.contains(check, eYo.t3.Expr.expression_star)) {
         return Type.STAR
-      } else if (goog.array.contains(check, eYo.T3.Expr.identifier_valued)) {
+      } else if (goog.array.contains(check, eYo.t3.Expr.identifier_valued)) {
         return Type.KEYWORD
       } else {
         return Type.ARGUMENT
@@ -131,7 +131,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.Consolidator.Arguments.superProto_.doCleanup.call(this, io)
+    eYo.Consolidator.Arguments.SuperProto_.doCleanup.Call(this, io)
     setupFirst.call(this, io)
     if (io.unique !== -Infinity) {
       // remove whatever comes before and after the io.unique
@@ -189,19 +189,19 @@ eYo.Consolidator.Arguments.prototype.getCheck = (() => {
     }
     out = []
     if (can_expression) {
-      out = eYo.T3.Expr.Check.expression.slice()
+      out = eYo.t3.Expr.Check.expression.Slice()
     }
     if (can_expression_star) {
-      out.push(eYo.T3.Expr.expression_star)
+      out.push(eYo.t3.Expr.expression_star)
     }
     if (can_keyword) {
-      out.push(eYo.T3.Expr.identifier_valued)
+      out.push(eYo.t3.Expr.identifier_valued)
     }
     if (can_expression_star_star) {
-      out.push(eYo.T3.Expr.expression_star_star)
+      out.push(eYo.t3.Expr.expression_star_star)
     }
     if (can_comprehension) {
-      out.push(eYo.T3.Expr.comprehension)
+      out.push(eYo.t3.Expr.Comprehension)
     }
     return (cache[K] = out)
   }
@@ -210,10 +210,10 @@ eYo.Consolidator.Arguments.prototype.getCheck = (() => {
 /**
  * Class for a Delegate, argument_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Expr.List.makeSubclass('argument_list', {
+eYo.expr.list.makeSubclass('argument_list', {
   data: {
     ary: {
       order: 200,
@@ -252,17 +252,17 @@ eYo.Expr.List.makeSubclass('argument_list', {
 /**
  * Class for a Delegate, argument_list_comprehensive brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Expr.argument_list.makeSubclass('argument_list_comprehensive', {
+eYo.expr.Argument_list.makeSubclass('argument_list_comprehensive', {
   list: {
     can_comprehension: true
   }
 })
 
 eYo.Brick.Argument.T3s = [
-  // eYo.T3.Expr.identifier_valued,
-  eYo.T3.Expr.argument_list,
-  eYo.T3.Expr.argument_list_comprehensive
+  // eYo.t3.Expr.identifier_valued,
+  eYo.t3.Expr.Argument_list,
+  eYo.t3.Expr.Argument_list_comprehensive
 ]

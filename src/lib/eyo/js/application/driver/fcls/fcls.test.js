@@ -1,14 +1,14 @@
 describe('Fcls driver', function() {
   this.timeout(10000)
   it ('Fcls: Basics', function () {
-    chai.assert(eYo.Fcls)
-    chai.assert(eYo.Fcls.Mngr)
-    chai.assert(eYo.Fcls.Mngr.eyo)
-    chai.assert(eYo.Fcls.Mngr.eyo.constructor === eYo.Fcls.DlgtMngr)
+    chai.assert(eYo.fcls)
+    chai.assert(eYo.fcls.Mngr)
+    chai.assert(eYo.fcls.Mngr.eyo)
+    chai.assert(eYo.fcls.Mngr.eyo.Constructor === eYo.fcls.DlgtMngr)
   })
-  it ('new eYo.Fcls.Mngr(…)', function () {
+  it ('new eYo.fcls.Mngr(…)', function () {
     let owner = {}
-    let mngr = new eYo.Fcls.Mngr(owner)
+    let mngr = new eYo.fcls.Mngr(owner)
     chai.assert(mngr)
     chai.assert(mngr.allPurposeDriver)
     chai.assert(mngr.drivers)

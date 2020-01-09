@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('MenuRenderer')
-eYo.forwardDeclare('FlyoutToolbar')
+eYo.require('menuRenderer')
+eYo.forwardDeclare('flyoutToolbar')
 
-eYo.require('MenuButtonRenderer')
+eYo.require('menuButtonRenderer')
 goog.require('goog.dom')
 goog.require('goog.ui.Select')
-eYo.provide('FlyoutToolbar')
+eYo.provide('flyoutToolbar')
 
 /**
  * Class for a flyout toolbar.
@@ -37,19 +37,19 @@ eYo.FlyoutToolbar = function(flyout, switcher) {
  */
 eYo.FlyoutToolbar.prototype.dispose = function() {
   if (this.onButtonDownWrapper_) {
-    eYo.Dom.unbindEvent(this.onButtonDownWrapper_)
+    eYo.dom.unbindEvent(this.onButtonDownWrapper_)
     this.onButtonDownWrapper_ = eYo.NA
   }
   if (this.onButtonEnterWrapper_) {
-    eYo.Dom.unbindEvent(this.onButtonEnterWrapper_);
+    eYo.dom.unbindEvent(this.onButtonEnterWrapper_);
     this.onButtonEnterWrapper_ = eYo.NA
   }
   if (this.onButtonLeaveWrapper_) {
-    eYo.Dom.unbindEvent(this.onButtonLeaveWrapper_);
+    eYo.dom.unbindEvent(this.onButtonLeaveWrapper_);
     this.onButtonLeaveWrapper_ = eYo.NA
   }
   if (this.onButtonUpWrapper_) {
-    eYo.Dom.unbindEvent(this.onButtonUpWrapper_);
+    eYo.dom.unbindEvent(this.onButtonUpWrapper_);
     this.onButtonUpWrapper_ = eYo.NA
   }
   if (this.selectControl_) {
@@ -75,8 +75,8 @@ eYo.FlyoutToolbar.prototype.doSelectGeneral = function (e) {
 }
 
 // toolbar height
-eYo.FlyoutToolbar.prototype.MARGIN = eYo.Padding.t
-eYo.FlyoutToolbar.prototype.HEIGHT = 2 * (eYo.Font.lineHeight + 2 * eYo.FlyoutToolbar.prototype.MARGIN)
+eYo.FlyoutToolbar.prototype.MARGIN = eYo.padding.t
+eYo.FlyoutToolbar.prototype.HEIGHT = 2 * (eYo.font.lineHeight + 2 * eYo.FlyoutToolbar.prototype.MARGIN)
 
 eYo.FlyoutToolbar.prototype.BUTTON_RADIUS = eYo.FlyoutToolbar.prototype.HEIGHT / 4
 // left margin
@@ -91,7 +91,7 @@ eYo.FlyoutToolbar.prototype.onButtonDown_ = function(e) {
   this.isDown = true
   window.addEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonEnter_(e)
-  eYo.Dom.gobbleEvent(e)
+  eYo.dom.gobbleEvent(e)
 }
 
 /**
@@ -130,7 +130,7 @@ eYo.FlyoutToolbar.prototype.onButtonUp_ = function(e) {
     this.flyout_.slide()
     this.onButtonLeave_(e)
     this.app.cancelMotion()
-    eYo.Dom.gobbleEvent(e)
+    eYo.dom.gobbleEvent(e)
   }
 };
 // Sometimes this error has poped up.
@@ -146,7 +146,7 @@ eYo.FlyoutToolbar.prototype.notOnButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonLeave_(e)
   this.app.cancelMotion()
-  eYo.Dom.gobbleEvent(e)
+  eYo.dom.gobbleEvent(e)
 }
 
 /**
@@ -162,8 +162,8 @@ eYo.FlyoutToolbar.prototype.layout = function(width, height) {
   }
   var height = this.HEIGHT
   var margin = this.MARGIN
-  var big_radius = 1.25 * eYo.Unit.rem
-  var radius = 1.125 * eYo.Unit.rem
+  var big_radius = 1.25 * eYo.unit.rem
+  var radius = 1.125 * eYo.unit.rem
   var h = radius * 0.75
 
   this.div_.style.width = width + 'px'

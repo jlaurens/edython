@@ -12,13 +12,13 @@
  */
 'use strict'
 
-eYo.require('C9r.Owned')
+eYo.require('c9r.owned')
 
 /**
  * @name {eYo.Section}
  * @namespace
  */
-eYo.provide('Section')
+eYo.provide('section')
 
 /**
  * Class for a flyout's section.

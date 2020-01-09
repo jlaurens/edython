@@ -1,16 +1,16 @@
 
 describe('Python exporter', function() {
-  var g = eYo.GMR._PyParser_Grammar
+  var g = eYo.gmr._PyParser_Grammar
 
   var f = (str) => {
     var err_ret = {}
-    var n = eYo.Parser.PyParser_ParseString(str, g, eYo.TKN.file_input, err_ret)
-    var d = n.toBrick(eYo.app.board)
+    var n = eYo.parser.PyParser_ParseString(str, g, eYo.tkn.file_input, err_ret)
+    var d = n.toBrick(eYo.App.Board)
     if (!d) {
-      eYo.GMR.showtree(g, n)
+      eYo.gmr.Showtree(g, n)
     }
     chai.assert(d, `WHERE IS THE BLOCK ${n.type}/${n.name}`)
-    eYo.Test.code(d, str)
+    eYo.Test.Code(d, str)
     d.dispose()
   }
 

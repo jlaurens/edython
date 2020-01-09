@@ -17,7 +17,7 @@
  * @namespace
  */
 var eYo
-(() => {
+;(() => {
   var EYO = function() {}
   eYo = new EYO()
   Object.defineProperty(EYO.prototype, '_p', {
@@ -90,12 +90,12 @@ eYo.isD = (what) => {
  * Whether the argument is an object created with `{...}` syntax.
  * @param {*} what
  */
-{
-  let pttp = Object.getPrototypeOf({})
+;(() => {
+  let _p = Object.getPrototypeOf({})
   eYo.isO = (what) => {
-    return what && Object.getPrototypeOf(what) === pttp
+    return what && Object.getPrototypeOf(what) === _p
   }
-}
+}) ()
 
 /**
  * Whether the argument is `eYo.NA`.
@@ -120,7 +120,7 @@ eYo.isDef = (what) => {
  * @param {*} [fallout] - Optional fallout when |object| is not defined.
  * @return {*}
  */
-eYo.asDef = function (object, fallout) {
+eYo.AsDef = function (object, fallout) {
   return eYo.isNA(object) ? fallout : object
 }
 
@@ -161,7 +161,7 @@ eYo.isRA = (what) => {
  * @return {!Boolean}
  */
 eYo.isNS = (what) => {
-  return what && eYo.isSubclass(what.constructor, eYo.constructor)
+  return what && eYo.isSubclass(what.constructor, eYo.Constructor)
 }
 
 /**
@@ -178,7 +178,7 @@ eYo.isF = (what) => {
  * @param {*} what
  * @return {Function|eYo.NA}
  */
-eYo.asF = (what) => {
+eYo.AsF = (what) => {
   return typeof what === 'function' && !!what.call ? what : eYo.NA
 }
 
@@ -188,7 +188,7 @@ eYo.asF = (what) => {
  * @param {*} what
  * @return {Function|eYo.NA}
  */
-eYo.called = (what) => {
+eYo.Called = (what) => {
   return eYo.isF(what) ? what() : what
 }
 
@@ -235,7 +235,7 @@ eYo._p.provide = (name, value) => {
 eYo._p.require = (name) => {
   var ns = eYo
   name.split('.').forEach(k => {
-    eYo.assert((ns = ns[k]), `Missing required ${name}`)
+    eYo.Assert((ns = ns[k]), `Missing required ${name}`)
   })
 }
 
@@ -264,7 +264,7 @@ eYo.inherits = function (childC9r, superC9r) {
  */
 eYo._p.makeNS = function (ns, key, model) {
   if (eYo.isStr(ns)) {
-    eYo.parameterAssert(!model, 'Unexpected model argument')
+    eYo.ParameterAssert(!model, 'Unexpected model argument')
     model = key
     key = ns
     ns = this
@@ -288,11 +288,13 @@ eYo._p.makeNS = function (ns, key, model) {
     }
   }
   var ans = new NS()
-  ns && Object.defineProperties(ns, {
-    [key]: { value: ans, },
-    [key + '_p']: { value: ans.prototype, },
-    [key + '_s']: { value: Super.prototype, },
-  })
+  if (ns) {
+    Object.defineProperties(ns, {
+      [key]: { value: ans, },
+      [key + '_p']: { value: ans.prototype, },
+      [key + '_s']: { value: Super.prototype, },
+    })
+  }
   Object.defineProperties(ans, {
     name: { value: ns ? `${ns.name}.${key}` : key || "No man's land" },
   })
@@ -313,7 +315,7 @@ eYo.DEFAULT_ERROR_HANDLER = function(e) {
  */
 eYo.errorHandler_ = eYo.DEFAULT_ERROR_HANDLER
 
-eYo.ENABLE_ASSERTS = true
+eYo.eNABLE_ASSERTS = true
 
 /**
  * Checks if the condition evaluates to true.
@@ -325,8 +327,8 @@ eYo.ENABLE_ASSERTS = true
  * @throws {eYo.AssertionError} When the condition evaluates to false.
  * @closurePrimitive {asserts.truthy}
  */
-eYo.assert = function(condition, message, ...args) {
-  if (eYo.ENABLE_ASSERTS && !condition) {
+eYo.Assert = function(condition, message, ...args) {
+  if (eYo.eNABLE_ASSERTS && !condition) {
     var e = new eYo.AssertionError(message, ...args);
     eYo.errorHandler_(e);
   }
@@ -343,7 +345,7 @@ eYo.assert = function(condition, message, ...args) {
  * @final
  */
 eYo.AssertionError = function(pattern, ...args) {
-  this.message = eYo.subs_(pattern, ...args)
+  this.message = eYo.Subs_(pattern, ...args)
   this.stack = Error().stack
   /**
    * The message pattern used to format the error message. Error handlers can
@@ -365,7 +367,7 @@ eYo.AssertionError.prototype.name = "AssertionError"
  *     {@code %s} has been replaced by an argument from `subs`.
  * @private
  */
-eYo.subs_ = function(pattern, ...subs) {
+eYo.Subs_ = function(pattern, ...subs) {
   var splitParts = pattern.split('%s')
   var returnString = ''
   // Replace up to the last split part. We are inserting in the
@@ -384,8 +386,8 @@ eYo.subs_ = function(pattern, ...subs) {
  * @param {Boolean} what
  * @param {String} [str]
  */
-eYo.parameterAssert = (what, str) => {
-  eYo.assert(what, str ? `Bad parameter - ${str}` : "Bad parameter")
+eYo.ParameterAssert = (what, str) => {
+  eYo.Assert(what, str ? `Bad parameter - ${str}` : "Bad parameter")
 }
 
 /**
@@ -403,12 +405,12 @@ eYo.throw = (what) => {
 
 eYo.provide('eYo')
 
-eYo.provide('Version')
-eYo.provide('Session')
+eYo.provide('version')
+eYo.provide('session')
 
-eYo.forwardDeclare('App')
+eYo.forwardDeclare('app')
 
-Object.defineProperties(eYo.Version, {
+Object.defineProperties(eYo.version, {
   /** @define {number} */
   MAJOR: { value: 0 },
 
@@ -431,7 +433,7 @@ Object.defineProperties(eYo.Version, {
 /**
  * Setup.
  */
-eYo.setup = (() => {
+eYo.Setup = (() => {
   var i11rsHead = []
   var i11rsTail = []
   var me = () => {
@@ -446,8 +448,8 @@ eYo.setup = (() => {
       i11r = when
       when = i11rsHead.length
     } else {
-      eYo.assert(eYo.isF(i11r))
-      eYo.assert(goog.isNumber(when))
+      eYo.Assert(eYo.isF(i11r))
+      eYo.Assert(goog.isNumber(when))
     }
     if (when < 0) {
       when = i11rsTail.length + 1 + when
@@ -476,8 +478,8 @@ eYo.Debug = Object.create(null)
 eYo.disposeObject = (what) => {
   if (what) {
     if (what.eyo) {
-      what.dispose()
-    } else if (eYo.isRa(what)) {
+      eYo.isF(what.dispose) && what.dispose()
+    } else if (eYo.isRA(what)) {
       try {
         what.forEach(eYo.disposeObject)
       } finally {
@@ -485,7 +487,9 @@ eYo.disposeObject = (what) => {
       }
     } else {
       for (var k in what) {
-        eYo.disposeObject(what[k])
+        if (Object.hasOwnProperty(what, k)) {
+          eYo.disposeObject(what[k])
+        }
       }
     }
   }

@@ -1,4 +1,4 @@
-describe ('Geometry', function () {
+describe ('geometry', function () {
   it ('Geometry: Basic', function () {
     chai.assert(eYo.Where)
     chai.assert(eYo.Size)
@@ -10,14 +10,14 @@ describe ('Geometry', function () {
       console.error(w1.toString)
       chai.assert(!['c', 'l', 'x', 'y'].some(k => w1[k] != 0))
       w1.c = 1.23
-      chai.assert(w1.c == 1 && w1.x == eYo.Unit.x)
-      var a = w1.x = 4.21 * eYo.Unit.x
+      chai.assert(w1.c == 1 && w1.x == eYo.unit.x)
+      var a = w1.x = 4.21 * eYo.unit.x
       chai.assert(w1.c == 4.21 && w1.x == a)
       w1.l = 3.21
-      chai.assert(w1.l == 3.25 && w1.y == 3.25 * eYo.Unit.y)
+      chai.assert(w1.l == 3.25 && w1.y == 3.25 * eYo.unit.y)
       w1.l = 3.31
-      chai.assert(w1.l == 3.25 && w1.y == 3.25 * eYo.Unit.y)
-      a = w1.y = 1.24 * eYo.Unit.y
+      chai.assert(w1.l == 3.25 && w1.y == 3.25 * eYo.unit.y)
+      a = w1.y = 1.24 * eYo.unit.y
       chai.assert(w1.l == 1.24 && w1.y == a)
     })
     it('Mutation', function () {
@@ -49,7 +49,7 @@ describe ('Geometry', function () {
       chai.assert(w1.equals(w2) && w2.equals(w1), `MISSED ${w1.toString}.equals(${w2.toString})`)
     })
   })
-  describe('Size', function () {
+  describe('size', function () {
     it('setFromText', function() {
       var s = new eYo.Size(0,0)
       chai.assert(s.c === 0 && s.l === 0, '0')

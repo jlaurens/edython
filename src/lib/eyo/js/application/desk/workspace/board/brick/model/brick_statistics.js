@@ -11,18 +11,18 @@
  */
 'use strict'
 
-eYo.require('Brick')
+eYo.require('brick')
 
-eYo.require('Msg')
+eYo.require('msg')
 
-eYo.require('Stmt')
-eYo.require('Expr.List')
+eYo.require('stmt')
+eYo.require('expr.list')
 
-eYo.require('Expr.Primary')
-eYo.require('Tooltip')
+eYo.require('expr.primary')
+eYo.require('tooltip')
 
-eYo.require('Library')
-eYo.provide('Brick.Statistics')
+eYo.require('library')
+eYo.provide('brick.statistics')
 
 /*
     'pstdev': 7,
@@ -43,9 +43,9 @@ eYo.provide('Brick.Statistics')
 
   var F = (name, title) => {
     var key = 'statistics__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.t3.Expr.Call_expr,
       data: {
         name: name,
         holder: 'statistics',
@@ -55,11 +55,11 @@ eYo.provide('Brick.Statistics')
     }
   }
 
-eYo.Library.DATA.basic_statistics__module = [
+eYo.Library.DATA.Basic_statistics__module = [
   {
-    type: eYo.T3.Stmt.import_stmt,
+    type: eYo.t3.Stmt.import_stmt,
     from_p: 'statistics',
-    variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
+    variant_p: eYo.key.FROM_MODULE_IMPORT_STAR,
     title: 'statistics__import_stmt'
   },
   F('mode', 'Mode de l\'argument, une séquence ou un itérateur, en tant que valeur représentative.'),
@@ -78,9 +78,9 @@ eYo.Library.DATA.basic_statistics__module = [
 
   var F = (name, title) => {
     var key = 'statistics__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.t3.Expr.Call_expr,
       data: {
         name: name,
         holder: 'statistics',
@@ -90,14 +90,14 @@ eYo.Library.DATA.basic_statistics__module = [
     }
   }
 
-eYo.Library.DATA.statistics__module = [
+eYo.Library.DATA.Statistics__module = [
   {
-    type: eYo.T3.Stmt.import_stmt,
-    variant_p: eYo.Key.IMPORT,
+    type: eYo.t3.Stmt.import_stmt,
+    variant_p: eYo.key.IMPORT,
     import_module_s: {
       slots: {
         O: {
-          type: eYo.T3.Expr.identifier,
+          type: eYo.t3.Expr.identifier,
           data: 'statistics'
         }
       }
@@ -119,10 +119,10 @@ eYo.Library.DATA.statistics__module = [
 
 })()
 
-goog.mixin(eYo.Tooltip.Title, {
+goog.mixin(eYo.tooltip.Title, {
   statistics__import_stmt: 'Importer le module statistics',
 })
 
 eYo.Brick.Statistics.T3s = [
-  eYo.T3.Statistics
+  eYo.t3.Statistics
 ]

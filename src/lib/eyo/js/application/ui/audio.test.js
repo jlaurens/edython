@@ -16,7 +16,7 @@ describe ('Tests: audio', function () {
   it ('app.audio.play', function () {
     let options = {
       media : `${eYo.path_eyo}media/`,
-      UI: 'Dom',
+      UI: 'dom',
     }
       let app = new eYo.App.Dflt({
 

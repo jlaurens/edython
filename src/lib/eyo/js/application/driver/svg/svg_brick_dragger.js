@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Svg')
+eYo.require('svg')
 
-eYo.forwardDeclare('BrickDragger')
+eYo.forwardDeclare('brickDragger')
 
 /**
  * Svg driver for a brick dragger.
@@ -45,7 +45,7 @@ eYo.Svg.makeDriverClass('BrickDragger', {
  * Start dragging.
  * @param {eYo.draggerBrick} draggerBrick
  */
-eYo.Svg.BrickDragger.prototype.start = function (draggerBrick) {
+eYo.svg.BrickDragger.prototype.Start = function (draggerBrick) {
   // Move the brick dragged to the drag surface
   // The translation for drag surface bricks,
   // is equal to the current relative-to-surface position,

@@ -16,8 +16,8 @@ console.warn('THIS MUST BE AN EXPRESSION')
  * Class for a Delegate, docstring_stmt.
  * For edython.
  */
-eYo.Stmt.makeClass(eYo.T3.Stmt.docstring_stmt, {
-  link: eYo.T3.Expr.longliteral,
+eYo.Stmt.makeClass(eYo.t3.stmt.docstring_stmt, {
+  link: eYo.t3.Expr.longliteral,
   computed: {
     /**
      * @readonly

@@ -11,28 +11,28 @@
  */
 'use strict'
 
-eYo.require('Brick')
+eYo.require('brick')
 
-eYo.require('Focus')
-eYo.provide('Navigate')
+eYo.require('focus')
+eYo.provide('navigate')
 
 /**
  * Tab navigation.
  * @param {eYo.Brick.Dflt} [brick]  Brick.
  * @param {Object} [opt] Optional key value arguments.
  */
-eYo.Navigate.doTab = (() => {
+eYo.navigate.doTab = (() => {
   var magnet
   var accept = m4t => {
     return m4t && !m4t.incog && !m4t.hidden && m4t.isSlot && m4t
   }
   var doLeft = b3k => {
-    if (!(magnet = eYo.Focus.magnet) || magnet.incog || !(magnet = b3k.out_m || b3k.ui.lastRenderedMagnet || (b3k.stmtParent || b3k.root).ui.lastRenderedMagnet)) {
+    if (!(magnet = eYo.Focus.Magnet) || magnet.incog || !(magnet = b3k.out_m || b3k.ui.lastRenderedMagnet || (b3k.stmtParent || b3k.root).ui.lastRenderedMagnet)) {
       return
     }
     var m4t = magnet
     while ((m4t = m4t.renderedLeft)) {
-      if ((eYo.Focus.magnet = accept(m4t))) {
+      if ((eYo.Focus.Magnet = accept(m4t))) {
         return
       }
     }
@@ -41,18 +41,18 @@ eYo.Navigate.doTab = (() => {
       m4t = magnet
     }
     do {
-      if ((eYo.Focus.magnet = accept(m4t))) {
+      if ((eYo.Focus.Magnet = accept(m4t))) {
         return
       }
     } while ((m4t = m4t.renderedLeft))
   }
   var doRight = b3k => {
-    if (!(magnet = eYo.Focus.magnet) || magnet.incog || !(magnet = b3k.out_m || b3k.ui.firstRenderedMagnet || (b3k.stmtParent || b3k.root).ui.firstRenderedMagnet)) {
+    if (!(magnet = eYo.Focus.Magnet) || magnet.incog || !(magnet = b3k.out_m || b3k.ui.firstRenderedMagnet || (b3k.stmtParent || b3k.root).ui.firstRenderedMagnet)) {
       return
     }
     var m4t = magnet
     while ((m4t = m4t.renderedRight)) {
-      if ((eYo.Focus.magnet = accept(m4t))) {
+      if ((eYo.Focus.Magnet = accept(m4t))) {
         return
       }
     }
@@ -61,7 +61,7 @@ eYo.Navigate.doTab = (() => {
       m4t = magnet
     }
     do {
-      if ((eYo.Focus.magnet = accept(m4t))) {
+      if ((eYo.Focus.Magnet = accept(m4t))) {
         return
       }
     } while ((m4t = m4t.renderedRight))
@@ -134,23 +134,23 @@ eYo.Brick.Dflt.prototype.getBestBrick = function (distance) {
  * For edython.
  * @return None
  */
-eYo.Focus.chooseLeft = () => {
+eYo.Focus.ChooseLeft = () => {
   const b3k = this.app.focus_mngr.brick
   if (!b3k) {
     return
   }
-  var m4t = eYo.Focus.magnet
+  var m4t = eYo.Focus.Magnet
   if (m4t) {
     if (m4t.isSlot || m4t.isOutput) {
-      eYo.Focus.magnet = null
+      eYo.Focus.Magnet = null
       b3k.wrapper.focusOn().scrollToVisible()
       return
     } else if (m4t.isSuite) {
-      eYo.Focus.magnet = null
-      eYo.Focus.scrollToVisible()
+      eYo.Focus.Magnet = null
+      eYo.Focus.ScrollToVisible()
       return
     } else {
-      eYo.Focus.magnet = null
+      eYo.Focus.Magnet = null
       ;(b3k.group || b3k.root).focusOn().scrollToVisible()
       return
     }
@@ -181,7 +181,7 @@ eYo.Focus.chooseLeft = () => {
       minor: b.foot - b.head
     }
   })
-  eYo.Focus.magnet = null
+  eYo.Focus.Magnet = null
   ;(target || root).focusOn().scrollToVisible()
 }
 /**
@@ -190,16 +190,16 @@ eYo.Focus.chooseLeft = () => {
  * For edython.
  * @return yorn
  */
-eYo.Focus.chooseRight = function () {
+eYo.Focus.ChooseRight = function () {
   const eyo = this.app.focus_mngr.brick
   if (!eyo) {
     return
   }
-  var m4t = eYo.Focus.magnet
+  var m4t = eYo.Focus.Magnet
   if (m4t) {
     if (m4t.isSlot || m4t.isOutput) {
-      eYo.Focus.magnet = null
-      eYo.Focus.scrollToVisible()
+      eYo.Focus.Magnet = null
+      eYo.Focus.ScrollToVisible()
       return
     } else if (m4t.isFoot) {
       if (eyo.isGroup) {
@@ -215,8 +215,8 @@ eYo.Focus.chooseRight = function () {
     } else if (m4t.isSuite) {
       // select a top brick
     } else {
-      eYo.Focus.magnet = null
-      eYo.Focus.scrollToVisible()
+      eYo.Focus.Magnet = null
+      eYo.Focus.ScrollToVisible()
       return
     }
   } else if ((m4t = eyo.suite_m)) {
@@ -241,7 +241,7 @@ eYo.Focus.chooseRight = function () {
       minor: b.foot - b.head
     }
   })
-  eYo.Focus.magnet = null
+  eYo.Focus.Magnet = null
   ;(target || root).focusOn().scrollToVisible()
 }
 
@@ -250,12 +250,12 @@ eYo.Focus.chooseRight = function () {
  * For edython.
  * @return None
  */
-eYo.Focus.chooseAbove = function () {
+eYo.Focus.ChooseAbove = function () {
   var eyo = this.app.focus_mngr.brick
   if (!eyo) {
     return
   }
-  var m4t = eYo.Focus.magnet
+  var m4t = eYo.Focus.Magnet
   if (m4t) {
     if (m4t.isHead) {
       var target = m4t.target
@@ -310,12 +310,12 @@ eYo.Focus.chooseAbove = function () {
  * For edython.
  * @return None
  */
-eYo.Focus.chooseBelow = () => {
+eYo.Focus.ChooseBelow = () => {
   var brick = this.app.focus_mngr.brick
   if (!brick) {
     return
   }
-  var m4t = eYo.Focus.magnet
+  var m4t = eYo.Focus.Magnet
   var b3k
   if (m4t) {
     if (m4t.isFoot) {
@@ -337,8 +337,8 @@ eYo.Focus.chooseBelow = () => {
         return
       }
     } else if (m4t.isHead) {
-      eYo.Focus.magnet = null
-      eYo.Focus.scrollToVisible()
+      eYo.Focus.Magnet = null
+      eYo.Focus.ScrollToVisible()
       return
     }
   } else if ((m4t = brick.foot_m) || ((brick = brick.stmtParent) && (m4t = brick.foot_m))) {
@@ -375,13 +375,13 @@ eYo.Focus.chooseBelow = () => {
  * For edython.
  * @return None
  */
-eYo.Focus.chooseNext = () => {
+eYo.Focus.ChooseNext = () => {
   var b3k = this.app.focus_mngr.brick
   if (!b3k) {
     return
   }
   if ((b3k = b3k.next)) {
     b3k.focusOn()
-    eYo.Focus.scrollToVisible()
+    eYo.Focus.ScrollToVisible()
   }
 }

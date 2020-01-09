@@ -11,17 +11,17 @@
  */
 'use strict'
 
-eYo.require('Fcls')
+eYo.require('fcls')
 
 /**
- * @name {eYo.Fcls.Dnd}
+ * @name {eYo.fcls.Dnd}
  * Faceless driver for the zoomer.
  */
-eYo.provide('Fcls.Dnd')
+eYo.provide('fcls.dnd')
 
-eYo.forwardDeclare('DnD.Mngr')
+eYo.forwardDeclare('dnd.mngr')
 
 /**
  * Faceless driver for the zoomer.
  */
-eYo.Fcls.makeDriverClass('Dnd')
+eYo.fcls.makeDriverClass('Dnd')

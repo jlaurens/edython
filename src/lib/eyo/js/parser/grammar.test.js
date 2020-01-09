@@ -3,8 +3,8 @@ describe('Grammar', function() {
 
   describe('Creation', function() {
     it('test', function() {
-      assert(eYo.GMR)
-      var g = new eYo.GMR.Book()
+      assert(eYo.gmr)
+      var g = new eYo.gmr.Book()
       assert(g)
     })
   })

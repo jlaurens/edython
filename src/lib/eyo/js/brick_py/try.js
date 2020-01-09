@@ -11,19 +11,19 @@
  */
 'use strict'
 
-eYo.require('Stmt.Group')
+eYo.require('stmt.group')
 
-eYo.require('C9r.Change')
+eYo.require('c9r.change')
 
-eYo.provide('Brick.Try')
+eYo.provide('brick.try')
 
-eYo.forwardDeclare('Msg')
+eYo.forwardDeclare('msg')
 
 goog.forwardDeclare('goog.dom')
 
 /**
  * Class for a Delegate, try_part brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.Group.makeSubclass('try_part', {
@@ -34,66 +34,66 @@ eYo.Stmt.Group.makeSubclass('try_part', {
 
 /**
  * Class for a Delegate, except_part brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.Group.makeSubclass('except_part', {
   data: {
     variant: {
       all: [
-        eYo.Key.NONE,
-        eYo.Key.EXPRESSION,
-        eYo.Key.ALIASED
+        eYo.key.NONE,
+        eYo.key.EXPRESSION,
+        eYo.key.ALIASED
       ],
-      init: eYo.Key.NONE,
+      init: eYo.key.NONE,
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var b3k = this.brick
-        b3k.expression_d.requiredIncog = after !== eYo.Key.NONE
-        b3k.alias_d.requiredIncog = after === eYo.Key.ALIASED
+        b3k.expression_d.requiredIncog = after !== eYo.key.NONE
+        b3k.alias_d.requiredIncog = after === eYo.key.ALIASED
       },
       xml: false
     },
     expression: {
       order: 200,
       init: '',
-      placeholder: eYo.Msg.Placeholder.EXPRESSION,
+      placeholder: eYo.msg.placeholder.EXPRESSION,
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p !== eYo.Key.NONE
+          this.required = this.brick.variant_p !== eYo.key.NONE
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         var b3k = this.brick
-        if (this.requiredFromSaved && b3k.variant_p !== eYo.Key.ALIASED) {
-          b3k.variant_p = eYo.Key.EXPRESSION
+        if (this.requiredFromSaved && b3k.variant_p !== eYo.key.ALIASED) {
+          b3k.variant_p = eYo.key.EXPRESSION
         }
       }
     },
     alias: {
       order: 400,
       init: '',
-      placeholder: eYo.Msg.Placeholder.ALIAS,
+      placeholder: eYo.msg.placeholder.ALIAS,
       synchronize: true,
       validate (after) /** @suppress {globalThis} */ {
-        var type = eYo.T3.Profile.get(after).expr
-        return type === eYo.T3.Expr.unset
-        || type === eYo.T3.Expr.identifier
-        || type === eYo.T3.Expr.builtin__name
+        var type = eYo.t3.profile.get(after).expr
+        return type === eYo.t3.Expr.unset
+        || type === eYo.t3.Expr.identifier
+        || type === eYo.t3.Expr.Builtin__name
         ? after
         : eYo.INVALID
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p === eYo.Key.ALIASED
+          this.required = this.brick.variant_p === eYo.key.ALIASED
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.Key.ALIASED
+          this.brick.variant_p = eYo.key.ALIASED
         }
       }
     }
@@ -110,15 +110,15 @@ eYo.Stmt.Group.makeSubclass('except_part', {
           endEditing: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.t3.Expr.Check.expression,
       didLoad () /** @suppress {globalThis} */ {
-        if (this.brick.variant_p === eYo.Key.NONE && this.requiredFromSaved) {
-          this.brick.variant_p = eYo.Key.EXPRESSION
+        if (this.brick.variant_p === eYo.key.NONE && this.requiredFromSaved) {
+          this.brick.variant_p = eYo.key.EXPRESSION
         }
       },
       didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
         var O = this.brick
-        b3k.variant_p === eYo.Key.ALIASED || (b3k.variant_p = eYo.Key.EXPRESSION)
+        b3k.variant_p === eYo.key.ALIASED || (b3k.variant_p = eYo.key.EXPRESSION)
       }
     },
     alias: {
@@ -132,32 +132,32 @@ eYo.Stmt.Group.makeSubclass('except_part', {
         }
       },
       validateIncog () /** @suppress {globalThis} */ {
-        return this.brick.variant_p !== eYo.Key.ALIASED
+        return this.brick.variant_p !== eYo.key.ALIASED
       },
-      check: eYo.T3.Expr.identifier,
+      check: eYo.t3.Expr.identifier,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.Key.ALIASED
+          this.brick.variant_p = eYo.key.ALIASED
         }
       },
       didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
         var O = this.brick
-        b3k.variant_p = eYo.Key.ALIASED
+        b3k.variant_p = eYo.key.ALIASED
       }
     }
   },
   head: {
     check (type) /** @suppress {globalThis} */ {
-      return type === eYo.T3.Stmt.except_part
-      ? eYo.T3.Stmt.Previous.except_part
-      : eYo.T3.Stmt.Previous.void_except_part
+      return type === eYo.t3.Stmt.except_part
+      ? eYo.t3.Stmt.Previous.except_part
+      : eYo.t3.Stmt.Previous.void_except_part
     }
   },
   foot: {
     check (type) /** @suppress {globalThis} */ {
-      return type === eYo.T3.Stmt.except_part
-      ? eYo.T3.Stmt.Next.except_part
-      : eYo.T3.Stmt.Next.void_except_part
+      return type === eYo.t3.Stmt.except_part
+      ? eYo.t3.Stmt.Next.except_part
+      : eYo.t3.Stmt.Next.void_except_part
     }
   }
 }, true)
@@ -165,7 +165,7 @@ eYo.Stmt.Group.makeSubclass('except_part', {
 ;[
   'void_except_part'
 ].forEach(k => {
-  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.Stmt.except_part))
+  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.stmt.except_part))
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.
@@ -175,9 +175,9 @@ eYo.Stmt.except_part.prototype.getType = eYo.C9r.decorateChange(
   'getType',
   function () {
     this.setupType(
-      this.variant_p === eYo.Key.NONE
-      ? eYo.T3.Stmt.void_except_part
-      : eYo.T3.Stmt.except_part
+      this.variant_p === eYo.key.NONE
+      ? eYo.t3.Stmt.void_except_part
+      : eYo.t3.Stmt.except_part
     )
     return this.type
   }
@@ -200,27 +200,27 @@ eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
     goog.dom.createTextNode('except:')
-  ), eYo.Key.NONE
+  ), eYo.key.NONE
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.Do.createSPAN('except ', 'eyo-code-reserved'),
+    eYo.do.CreateSPAN('except ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…:')
-  ), eYo.Key.EXPRESSION
+  ), eYo.key.EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.Do.createSPAN('except', 'eyo-code-reserved'),
+    eYo.do.CreateSPAN('except', 'eyo-code-reserved'),
     goog.dom.createTextNode(' … '),
-    eYo.Do.createSPAN(' as', 'eyo-code-reserved'),
+    eYo.do.CreateSPAN(' as', 'eyo-code-reserved'),
     goog.dom.createTextNode(' …:')
-  ), eYo.Key.ALIASED
+  ), eYo.key.ALIASED
   )
   mngr.shouldSeparate()
-  return eYo.Stmt.except_part.superProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.except_part.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 }
 
 /**
  * Class for a Delegate, finally_part brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.Group.makeSubclass('finally_part', {
@@ -237,50 +237,50 @@ eYo.Stmt.makeClass('raise_stmt', {
   data: {
     variant: {
       all: [
-        eYo.Key.NONE,
-        eYo.Key.EXPRESSION,
-        eYo.Key.FROM
+        eYo.key.NONE,
+        eYo.key.EXPRESSION,
+        eYo.key.FROM
       ],
-      init: eYo.Key.NONE,
+      init: eYo.key.NONE,
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var b3k = this.brick
-        b3k.expression_d.requiredIncog = after !== eYo.Key.NONE
-        b3k.from_d.requiredIncog = after === eYo.Key.FROM
+        b3k.expression_d.requiredIncog = after !== eYo.key.NONE
+        b3k.from_d.requiredIncog = after === eYo.key.FROM
       },
       xml: false
     },
     expression: {
       order: 200,
       init: '',
-      placeholder: eYo.Msg.Placeholder.EXPRESSION,
+      placeholder: eYo.msg.placeholder.EXPRESSION,
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p !== eYo.Key.NONE
+          this.required = this.brick.variant_p !== eYo.key.NONE
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.Key.EXPRESSION
+          this.brick.variant_p = eYo.key.EXPRESSION
         }
       }
     },
     from: {
       order: 400,
       init: '',
-      placeholder: eYo.Msg.Placeholder.EXPRESSION,
+      placeholder: eYo.msg.placeholder.EXPRESSION,
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p === eYo.Key.FROM
+          this.required = this.brick.variant_p === eYo.key.FROM
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.Key.FROM
+          this.brick.variant_p = eYo.key.FROM
         }
       }
     }
@@ -297,15 +297,15 @@ eYo.Stmt.makeClass('raise_stmt', {
           endEditing: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.t3.Expr.Check.expression,
       xml: {
         load (element, opt) /** @suppress {globalThis} */ {
           this.load(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved && this.brick.variant_p === eYo.Key.NONE) {
-          this.brick.variant_p = eYo.Key.EXPRESSION
+        if (this.requiredFromSaved && this.brick.variant_p === eYo.key.NONE) {
+          this.brick.variant_p = eYo.key.EXPRESSION
         }
       }
     },
@@ -318,10 +318,10 @@ eYo.Stmt.makeClass('raise_stmt', {
           endEditing: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.t3.Expr.Check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.Key.FROM
+          this.brick.variant_p = eYo.key.FROM
         }
       }
     }
@@ -345,22 +345,22 @@ eYo.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
     goog.dom.createTextNode('raise')
-  ), eYo.Key.NONE
+  ), eYo.key.NONE
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.Do.createSPAN('raise ', 'eyo-code-reserved'),
+    eYo.do.CreateSPAN('raise ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…')
-  ), eYo.Key.EXPRESSION
+  ), eYo.key.EXPRESSION
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.Do.createSPAN('raise', 'eyo-code-reserved'),
+    eYo.do.CreateSPAN('raise', 'eyo-code-reserved'),
     goog.dom.createTextNode(' … '),
-    eYo.Do.createSPAN(' from', 'eyo-code-reserved'),
+    eYo.do.CreateSPAN(' from', 'eyo-code-reserved'),
     goog.dom.createTextNode(' …')
-  ), eYo.Key.FROM
+  ), eYo.key.FROM
   )
   mngr.shouldSeparate()
-  return eYo.Stmt.raise_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.raise_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 }
 
 /**
@@ -371,13 +371,13 @@ eYo.Stmt.makeClass('assert_stmt', {
   data: {
     variant: {
       all: [
-        eYo.Key.UNARY,
-        eYo.Key.BINARY
+        eYo.key.UNARY,
+        eYo.key.BINARY
       ],
-      init: eYo.Key.UNARY,
+      init: eYo.key.UNARY,
       synchronize (builtin, after) /** @suppress {globalThis} */{
         builtin()
-        this.brick.expression2_d.incog = after !== eYo.Key.BINARY
+        this.brick.expression2_d.incog = after !== eYo.key.BINARY
       }
     },
     expression: {
@@ -389,13 +389,13 @@ eYo.Stmt.makeClass('assert_stmt', {
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p === eYo.Key.BINARY
+          this.required = this.brick.variant_p === eYo.key.BINARY
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.Key.BINARY
+          this.brick.variant_p = eYo.key.BINARY
         }
       }
     }
@@ -407,10 +407,10 @@ eYo.Stmt.makeClass('assert_stmt', {
         prefix: 'assert',
         bind: {
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.EXPRESSION
+          placeholder: eYo.msg.placeholder.EXPRESSION
         }
       },
-      check: eYo.T3.Expr.Check.expression
+      check: eYo.t3.Expr.Check.expression
     },
     expression2: {
       order: 2,
@@ -418,13 +418,13 @@ eYo.Stmt.makeClass('assert_stmt', {
         label: ',',
         bind: {
           endEditing: true,
-          placeholder: eYo.Msg.Placeholder.EXPRESSION
+          placeholder: eYo.msg.placeholder.EXPRESSION
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.t3.Expr.Check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.Key.BINARY
+          this.brick.variant_p = eYo.key.BINARY
         }
       }
     }
@@ -437,7 +437,7 @@ eYo.Stmt.makeClass('assert_stmt', {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.Stmt.Assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.variant_p
   var F = (content, key) => {
     var menuItem = mngr.newMenuItem(content, () => {
@@ -447,24 +447,24 @@ eYo.Stmt.assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     menuItem.setEnabled(key !== current)
   }
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.Do.createSPAN('assert ', 'eyo-code-reserved'),
+    eYo.do.CreateSPAN('assert ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…')
-  ), eYo.Key.UNARY
+  ), eYo.key.UNARY
   )
   F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.Do.createSPAN('assert ', 'eyo-code-reserved'),
+    eYo.do.CreateSPAN('assert ', 'eyo-code-reserved'),
     goog.dom.createTextNode('…, …')
-  ), eYo.Key.BINARY
+  ), eYo.key.BINARY
   )
   mngr.shouldSeparate()
-  return eYo.Stmt.assert_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.Assert_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 }
 
-eYo.Brick.Try.T3s = [
-  eYo.T3.Stmt.try_part,
-  eYo.T3.Stmt.except_part,
-  eYo.T3.Stmt.void_except_part,
-  eYo.T3.Stmt.finally_part,
-  eYo.T3.Stmt.raise_stmt,
-  eYo.T3.Stmt.assert_stmt
+eYo.Brick.try.T3s = [
+  eYo.t3.Stmt.try_part,
+  eYo.t3.Stmt.except_part,
+  eYo.t3.Stmt.void_except_part,
+  eYo.t3.Stmt.finally_part,
+  eYo.t3.Stmt.raise_stmt,
+  eYo.t3.Stmt.Assert_stmt
 ]

@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.forwardDeclare('Board')
-eYo.forwardDeclare('Brick')
-eYo.forwardDeclare('Field')
-eYo.forwardDeclare('Magnet')
+eYo.forwardDeclare('board')
+eYo.forwardDeclare('brick')
+eYo.forwardDeclare('field')
+eYo.forwardDeclare('magnet')
 
-eYo.forwardDeclare('DnD')
-eYo.forwardDeclare('Scaler')
+eYo.forwardDeclare('dnd')
+eYo.forwardDeclare('scaler')
 
-eYo.forwardDeclare('Dom')
+eYo.forwardDeclare('dom')
 
 /*
  * Note: In this file "start" refers to touchstart,
@@ -126,10 +126,10 @@ eYo.C9r.Dflt.makeSubclass(eYo, 'Motion', {
       return new eYo.Scaler(this)
     },
     dndmngr () {
-      return new eYo.DnD.Mngr(this)
+      return new eYo.Dnd.Mngr(this)
     },
     change () {
-      return new eYo.C9r.Change(this)
+      return new eYo.c9r.Change(this)
     }
   },
   valued:  {
@@ -321,9 +321,9 @@ eYo.Motion_p.reset = function() {
     this.touchIDs_.length = 0
     this.touchID_ = null
     this.startDistance_ = 0
-    eYo.Dom.clearTouchIdentifier()
+    eYo.dom.ClearTouchIdentifier()
     Blockly.Tooltip.unblock()
-    eYo.Dom.unbindMouseEvents(this)
+    eYo.dom.unbindMouseEvents(this)
     this.pidCancel_ = this.pidLong_ = this.pidHandle_ = 0
     this.event_ = null
     this.abortCapture()
@@ -338,25 +338,25 @@ Object.defineProperties(eYo.Motion_p, {
    * @private
    */
   abortCaptureMove_: {
-    value: eYo.Do.nothing
+    value: eYo.do.nothing
   },
   /**
    * @private
    */
   abortCaptureGestureMove_: {
-    value: eYo.Do.nothing
+    value: eYo.do.nothing
   },
   /**
    * @private
    */
   abortCaptureCancel_: {
-    value: eYo.Do.nothing
+    value: eYo.do.nothing
   },
   /**
    * @private
    */
   abortCaptureUp_: {
-    value: eYo.Do.nothing
+    value: eYo.do.nothing
   },
 })
 
@@ -371,8 +371,8 @@ Object.defineProperties(eYo.Motion_p, {
  * @param {eYo.Brick|eYo.Board} [starter] - The object that received the starting event, either a board or a brick.
  * @return {Object} Whether the start is successfull
  */
-eYo.Motion_p.captureStart = function(e, starter) {
-  if (eYo.Dom.isTargetInput(e)) {
+eYo.Motion_p.CaptureStart = function(e, starter) {
+  if (eYo.dom.isTargetInput(e)) {
     this.cancel()
     return this.CAPTURE_IGNORED
   }
@@ -397,7 +397,7 @@ eYo.Motion_p.captureStart = function(e, starter) {
     board.updateScreenCalculationsIfScrolled()
     board.markFocused()  
     capturer.call(this)
-    eYo.Dom.gobbleEvent(e)
+    eYo.dom.gobbleEvent(e)
     return this.CAPTURE_STARTED
   }
   return this.CAPTURE_IGNORED
@@ -408,7 +408,7 @@ eYo.Motion_p.captureStart = function(e, starter) {
  * Remove custom capture method overrides.
  * @private
  */
-eYo.Motion_p.abortCapture_ = function(e) {
+eYo.Motion_p.AbortCapture_ = function(e) {
   this.abortCaptureUp_()
   this.abortCaptureMove_()
   this.abortCaptureGestureMove_()
@@ -422,7 +422,7 @@ eYo.Motion_p.abortCapture_ = function(e) {
  * Start capturing a mouse motion.
  * @private
  */
-eYo.Motion_p.captureMouseStart_ = function() {
+eYo.Motion_p.CaptureMouseStart_ = function() {
   if (this.event_.pointerType === 'mouse') {
     return // this will be tracked as mouse event
   }
@@ -441,8 +441,8 @@ eYo.Motion_p.captureMouseStart_ = function() {
   // select the brick if any
   // and prepare a click motion
   if (this.brick_) {
-    if (this.brick_.isDescendantOf(eYo.app.focus_mngr.brick) && this.event_.altKey) {
-      this.shouldSelect_ = eYo.app.focus_mngr.brick.parent
+    if (this.brick_.isDescendantOf(eYo.App.Focus_mngr.Brick) && this.event_.altKey) {
+      this.shouldSelect_ = eYo.App.Focus_mngr.Brick.parent
     } else {
       this.shouldSelect_ = this.brick_.selected ? null: this.brick_
     }
@@ -463,7 +463,7 @@ eYo.Motion_p.captureMouseStart_ = function() {
  * Capturing a mouse move event.
  * @private
  */
-eYo.Motion_p.captureMouseMove_ = function(e) {
+eYo.Motion_p.CaptureMouseMove_ = function(e) {
   this.event__ = e
   this.xyDelta_ = this.where.backward(this.xyStart_)
   var delta = this.xyDelta_.magnitude
@@ -483,7 +483,7 @@ eYo.Motion_p.captureMouseMove_ = function(e) {
  * A dragging operation has started, any move of the device
  * is applied to the dndmngr.
  */
-eYo.Motion_p.captureMouseDrag_ = function(e) {
+eYo.Motion_p.CaptureMouseDrag_ = function(e) {
   this.event__ = e
   this.xyDelta_ = this.where.backward(this.xyStart_)
   this.dndmngr_.update()
@@ -493,7 +493,7 @@ eYo.Motion_p.captureMouseDrag_ = function(e) {
  * Eventually end capturing a mouse motion.
  * @private
  */
-eYo.Motion_p.captureMouseUp_ = function(e) {
+eYo.Motion_p.CaptureMouseUp_ = function(e) {
   if (this.dragging) {
     this.captureMouseDrag_(e)
     this.dndmngr_.complete()
@@ -513,11 +513,11 @@ eYo.Motion_p.captureMouseUp_ = function(e) {
  * Update the receiver's event.
  * @private
  */
-eYo.Motion_p.captureStartMoreMouse_ = function(e) {
+eYo.Motion_p.CaptureStartMoreMouse_ = function(e) {
   if (e.type === 'mousedown') {
     this.event__ = e
     this.willHandleClick_()
-    eYo.Dom.gobbleEvent(e)
+    eYo.dom.gobbleEvent(e)
   }
 }
 
@@ -528,7 +528,7 @@ eYo.Motion_p.captureStartMoreMouse_ = function(e) {
  * 
  * @private
  */
-eYo.Motion_p.captureTouchStart_ = function() {
+eYo.Motion_p.CaptureTouchStart_ = function() {
   var captureMove = e => {
     this.captureTouchMove_(e)
   }
@@ -567,7 +567,7 @@ eYo.Motion_p.captureTouchStart_ = function() {
  * 
  * @private
  */
-eYo.Motion_p.captureStartMoreTouch_ = function(e) {
+eYo.Motion_p.CaptureStartMoreTouch_ = function(e) {
   if (e.type === 'touchstart') {
     this.event__ = e
     var list = e.changedTouches
@@ -579,8 +579,8 @@ eYo.Motion_p.captureStartMoreTouch_ = function(e) {
       var xy2nd = new eYo.Where(touch2nd)
       this.startDistance_ = xy1st.distance(xy2nd) // Screen coordinates ?
       // Simply ignore any supplemental touch:
-      this.captureStart = eYo.Do.nothing
-      eYo.Dom.gobbleEvent(e)
+      this.captureStart = eYo.do.nothing
+      eYo.dom.gobbleEvent(e)
     }
   }
 }
@@ -591,7 +591,7 @@ eYo.Motion_p.captureStartMoreTouch_ = function(e) {
  * 
  * @private
  */
-eYo.Motion_p.captureTouchMove_ = function(e) {
+eYo.Motion_p.CaptureTouchMove_ = function(e) {
   if (e.type === 'touchmove' || e.type === 'gesturemove') {
     this.event__ = e
     if (e.scale) {
@@ -599,7 +599,7 @@ eYo.Motion_p.captureTouchMove_ = function(e) {
       // - touchmove and not in WebKit xor 
       // - gesturemove and in WebKit
       if (this.scaler_.start() || this.dndmngr_.start()) {
-        eYo.Dom.gobbleEvent(e)
+        eYo.dom.gobbleEvent(e)
         this.abortLongPress_()
         this.abortHandle_()
         this.captureTouchMove_ = this.captureTouchDragOrScale_
@@ -633,11 +633,11 @@ eYo.Motion_p.captureTouchMove_ = function(e) {
  * 
  * @private
  */
-eYo.Motion_p.captureTouchDragOrScale_ = function(e) {
+eYo.Motion_p.CaptureTouchDragOrScale_ = function(e) {
   if (e.type === 'touchmove' || e.type === 'gesturemove') {
     this.event__ = e
     if (e.scale) {
-      eYo.Dom.gobbleEvent(e)
+      eYo.dom.gobbleEvent(e)
       this.scaler_.update() || this.dndmngr_.update()
     }
   }
@@ -647,11 +647,11 @@ eYo.Motion_p.captureTouchDragOrScale_ = function(e) {
  * Capturing a touch end.
  * @private
  */
-eYo.Motion_p.captureTouchEnd_ = function(e) {
+eYo.Motion_p.CaptureTouchEnd_ = function(e) {
   this.event__ = e
   if (this.scaler_.end() || this.dndmngr_.end()) {
     this.reset()
-    eYo.Dom.gobbleEvent(e)
+    eYo.dom.gobbleEvent(e)
   } else {
     var changedTouch = e.changedTouches.item(0)
     this.touchIDs_ = this.touchIDs_.filter(x => x != changedTouch.identifier)
@@ -673,7 +673,7 @@ eYo.Motion_p.captureTouchEnd_ = function(e) {
  * 
  * @private
  */
-eYo.Motion_p.captureStartMoreTouchNoMove_ = function(e) {
+eYo.Motion_p.CaptureStartMoreTouchNoMove_ = function(e) {
   if (e.type === 'touchstart') {
     this.event__ = e
     var list = e.changedTouches
@@ -681,8 +681,8 @@ eYo.Motion_p.captureStartMoreTouchNoMove_ = function(e) {
       var touch2nd = list.item(0)
       this.touchIDs_.push(touch2nd.identifier)
       // Simply ignore any supplemental touch:
-      this.captureStart = eYo.Do.nothing
-      eYo.Dom.gobbleEvent(e)
+      this.captureStart = eYo.do.nothing
+      eYo.dom.gobbleEvent(e)
     }
   }
 }
@@ -691,16 +691,16 @@ eYo.Motion_p.captureStartMoreTouchNoMove_ = function(e) {
  * Capturing a touch cancel.
  * @private
  */
-eYo.Motion_p.captureTouchCancel_ = function(e) {
+eYo.Motion_p.CaptureTouchCancel_ = function(e) {
   this.cancel()
-  eYo.Dom.gobbleEvent(e)
+  eYo.dom.gobbleEvent(e)
 }
 
 /**
  * Capturing a touch cancel.
  * @private
  */
-eYo.Motion_p.cancel = function(e) {
+eYo.Motion_p.Cancel = function(e) {
   this.abortCancel_()
   this.scaler_.cancel() || this.dndmngr_.cancel()
   this.reset()
@@ -744,7 +744,7 @@ eYo.Motion_p.willLongPress = function (e) {
  * Kill the queued long-press task.
  * @private
  */
-eYo.Motion_p.abortLongPress_ = function () {
+eYo.Motion_p.AbortLongPress_ = function () {
   this.pidLong_ = 0
 }
 
@@ -759,7 +759,7 @@ eYo.Motion_p.handleLongPress = function(e) {
   } else if ((b = this.board)) {
     b.showContextMenu_(e)
   }
-  eYo.Dom.gobbleEvent(e)
+  eYo.dom.gobbleEvent(e)
   this.reset()
 }
 
@@ -767,7 +767,7 @@ eYo.Motion_p.handleLongPress = function(e) {
  * Kill the queued cancel task.
  * @private
  */
-eYo.Motion_p.abortCancel_ = function () {
+eYo.Motion_p.AbortCancel_ = function () {
   this.pidCancel_ = 0
 }
 
@@ -775,7 +775,7 @@ eYo.Motion_p.abortCancel_ = function () {
  * Kill the queued handle task.
  * @private
  */
-eYo.Motion_p.abortHandle_ = function () {
+eYo.Motion_p.AbortHandle_ = function () {
   this.pidHandle_ = 0
 }
 
@@ -810,7 +810,7 @@ eYo.Motion_p.handleClickBoard_ = function() {
   if (this.clickCount_>1) {
     this.board_.close()
   } else {
-    eYo.app.focus_mngr.brick && eYo.app.focus_mngr.brick.focusOff()
+    eYo.App.Focus_mngr.Brick && eYo.App.focus_mngr.Brick.focusOff()
   }
 }
 
@@ -819,7 +819,7 @@ eYo.Motion_p.handleClickBoard_ = function() {
  * @return {Boolean} whether the click was handled
  * @private
  */
-eYo.Motion_p.handleClickField_ = eYo.Motion_p.handleClickBrick_ = function() {
+eYo.Motion_p.handleClickField_ = eYo.motion_p.handleClickBrick_ = function() {
   var b = this.targetBrick
   if (b) {
     if (this.clickCount_>1) {
@@ -828,16 +828,16 @@ eYo.Motion_p.handleClickField_ = eYo.Motion_p.handleClickBrick_ = function() {
       if (this.flyout_ && this.flyout_.autoClose) {
         // Brick click in an autoclosing flyout.
         if (!b.disabled) {
-          if (!eYo.Events.group) {
-            eYo.Events.group = true
+          if (!eYo.events.group) {
+            eYo.events.group = true
           }
           var newBrick = this.flyout_.createBrick(b)
           newBrick.ui_driver.scheduleSnapAndBump(newBrick)
-          eYo.Events.group = false
+          eYo.events.group = false
           return true
         }
       } 
-      eYo.app.focus_mngr.brick = this.shouldSelect_
+      eYo.App.Focus_mngr.Brick = this.shouldSelect_
     }
     return true
   }
@@ -849,6 +849,6 @@ eYo.Motion_p.handleClickField_ = eYo.Motion_p.handleClickBrick_ = function() {
  * @private
  */
 eYo.Motion_p.handleClickBoard_ = function() {
-  eYo.app.focus_mngr.brick && eYo.app.focus_mngr.brick.focusOff()
+  eYo.App.Focus_mngr.Brick && eYo.App.focus_mngr.Brick.focusOff()
   return true
 }

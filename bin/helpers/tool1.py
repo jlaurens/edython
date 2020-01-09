@@ -21,27 +21,27 @@ class Foo:
   # eYo.Foo.makeNS(ns, 'BAR')
   #eYo.Consolidator.makeClass(ns, 'Dlgt', ...
   re_make = re.compile(r"""^\s*
-  (?P<NS>eYo(?:\.[A-Z][\w0-9_]*)*)
+  (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
   \.make(?:Driver)?(?P<what>Class|NS)\s*\(\s*
   (?P<suite>.*)""", re.X)
 
   assert re.match(re_make, "eYo.makeNS('Brick')"), 'BAD re_make 2'
-  assert re.match(re_make, "eYo.DnD.makeClass('Mngr', {"), 'BAD re_make 3'
+  assert re.match(re_make, "eYo.dnd.makeClass('Mngr', {"), 'BAD re_make 3'
 
   # eYo.Foo.makeSubclass(ns, 'bar')
   re_makeSubclass = re.compile(r"""^\s*
-  (?P<NS>eYo(?:\.[A-Z][\w0-9_]*)*)
-  \.(?P<Super>[A-Z][\w0-9_]*)
+  (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
+  \.(?P<Super>[a-z][\w0-9_]*)
   \.makeSubclass\s*\(\s*
   (?P<suite>.*)""", re.X)
 
   re_arg_ns = re.compile(r"""^
-  (?P<ns>eYo(?:\.[A-Z][\w0-9_]*)*)
+  (?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)
   (?:\s*,\s*)?
   (?P<suite>.*)""", re.X)
 
   re_arg_T3 = re.compile(r"""^
-  eYo\.T3\.(?:Stmt|Expr)\.(?P<type>[a-z][\w_]*)
+  eYo\.t3\.(?:stmt|expr)\.(?P<type>[a-z][\w_]*)
   (?:\s*,\s*)?
   (?P<suite>.*)""", re.X)
 
@@ -50,12 +50,12 @@ class Foo:
   .*""", re.X)
 
   re_assignment = re.compile(r"""^\s*
-  (?P<assigned>(?P<ns>eYo(?:\.[A-Z][\w0-9_]*)*)\.[A-Z][\w0-9_]*)
+  (?P<assigned>(?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)\.[a-z][\w0-9_]*)
   \s*=(?!=).*""", re.X)
 
   # eYo.Protocol.add(eYo.Module.Item, 'Register', 'module')
   re_protocol = re.compile(r"""^\s*
-  eYo\.Protocol\.add\s*\(\s*eYo(?:\.[A-Z]\w*)*
+  eYo\.protocol\.add\s*\(\s*eYo(?:\.[a-z]\w*)*
   \s*,\s*
   (?:'|")(?P<Key>[^'"]+)(?:'|")
   .*""", re.X)
@@ -80,8 +80,10 @@ class Foo:
           pass
       else:
         def base_require(l):
-          if re.search('^\s*eYo', l):
+          if re.search(r'^\s*eYo', l):
             required.add('eYo')
+          if re.search(r'^\s*eYo\.C9r\.', l):
+            required.add('eYo.C9r')
       for l in f.readlines():
         base_require(l)
         m = self.re_protocol.match(l)

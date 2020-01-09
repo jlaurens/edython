@@ -12,11 +12,11 @@
 'use strict'
 
 /**
- * @name{eYo.Proxy}
+ * @name{eYo.proxy}
  * @namespace
  **/
 
-eYo.provide('Proxy')
+eYo.provide('proxy')
 
 /**
  * Returns a Proxy to the tied rectangle.
@@ -26,7 +26,7 @@ eYo.provide('Proxy')
  * @param {Map<key, Function>} fromTied -
  * @return {Proxy} the receiver
  */
-eYo.Proxy.tied = function (tied, toTied, fromTied) {
+eYo.proxy.tied = function (tied, toTied, fromTied) {
   let handler = {
     get (object, prop) {
       let f = fromTied[prop]

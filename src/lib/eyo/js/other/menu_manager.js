@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.require('Msg')
+eYo.require('msg')
 
-eYo.require('T3')
-eYo.require('Brick')
-eYo.require('MenuItem')
-eYo.require('Separator')
+eYo.require('t3')
+eYo.require('brick')
+eYo.require('menuItem')
+eYo.require('separator')
 goog.require('goog.dom');
-eYo.require('Py.Exporter')
-eYo.provide('MenuManager')
+eYo.require('py.exporter')
+eYo.provide('menuManager')
 
 /**
  * Shared context menu manager.
@@ -27,11 +27,11 @@ eYo.provide('MenuManager')
  * @constructor
  */
 eYo.MenuManager = function () {
-  this.menu = new eYo.PopupMenu(/* eYo.NA, ContextMenuRenderer */)
-  this.insertSubmenu = new eYo.SubMenu(eYo.Msg.ADD)
-  this.insertBeforeSubmenu = new eYo.SubMenu(eYo.Msg.ADD_BEFORE)
-  this.insertAfterSubmenu = new eYo.SubMenu(eYo.Msg.ADD_AFTER)
-  this.removeSubmenu = new eYo.SubMenu(eYo.Msg.REMOVE)
+  this.menu = new eYo.popupMenu(/* eYo.NA, ContextMenuRenderer */)
+  this.insertSubmenu = new eYo.SubMenu(eYo.msg.ADD)
+  this.insertBeforeSubmenu = new eYo.SubMenu(eYo.msg.ADD_BEFORE)
+  this.insertAfterSubmenu = new eYo.SubMenu(eYo.msg.ADD_AFTER)
+  this.removeSubmenu = new eYo.SubMenu(eYo.msg.REMOVE)
   this.didSeparate_ = false
   this.shouldSeparate_ = false
   this.didSeparateInsert_ = false
@@ -44,7 +44,7 @@ eYo.MenuManager = function () {
   this.shouldSeparateRemove_ = false
 }
 
-eYo.MenuManager.shared = (() => {
+eYo.MenuManager.Shared = (() => {
   var out
   return function () {
     return out || (out = new eYo.MenuManager())
@@ -55,7 +55,7 @@ eYo.MenuManager.shared = (() => {
  * Get the menu, in case clients may want to populate it directly.
  * Each manager has its own menu.
  */
-eYo.MenuManager.prototype.menu = eYo.NA
+eYo.menuManager.prototype.Menu = eYo.NA
 
 /**
  * Create a new menu item.
@@ -69,7 +69,7 @@ eYo.MenuManager.prototype.newMenuItem = function (content, action) {
 /**
  * Add a separator.
  */
-eYo.MenuManager.prototype.separate = function (render = true) {
+eYo.MenuManager.prototype.Separate = function (render = true) {
   this.shouldSeparate_ = false
   if (this.menu.getChildCount()) {
     this.menu.addChild(new eYo.Separator(), render)
@@ -80,7 +80,7 @@ eYo.MenuManager.prototype.separate = function (render = true) {
 /**
  * Add a separator.
  */
-eYo.MenuManager.prototype.separateInsert = function (render = true) {
+eYo.MenuManager.prototype.SeparateInsert = function (render = true) {
   this.shouldSeparateInsert_ = false
   if (this.insertSubmenu.getItemCount()) {
     this.addInsertChild(new eYo.Separator(), render)
@@ -91,7 +91,7 @@ eYo.MenuManager.prototype.separateInsert = function (render = true) {
 /**
  * Add a separator.
  */
-eYo.MenuManager.prototype.separateInsertBefore = function (render = true) {
+eYo.MenuManager.prototype.SeparateInsertBefore = function (render = true) {
   this.shouldSeparateInsertBefore_ = false
   if (this.insertBeforeSubmenu.getItemCount()) {
     this.addInsertBeforeChild(new eYo.Separator(), render)
@@ -102,7 +102,7 @@ eYo.MenuManager.prototype.separateInsertBefore = function (render = true) {
 /**
  * Add a separator.
  */
-eYo.MenuManager.prototype.separateInsertAfter = function (render = true) {
+eYo.MenuManager.prototype.SeparateInsertAfter = function (render = true) {
   this.shouldSeparateInsertAfter_ = false
   if (this.insertAfterSubmenu.getItemCount()) {
     this.addInsertAfterChild(new eYo.Separator(), render)
@@ -113,7 +113,7 @@ eYo.MenuManager.prototype.separateInsertAfter = function (render = true) {
 /**
  * Add a separator.
  */
-eYo.MenuManager.prototype.separateRemove = function (render = true) {
+eYo.MenuManager.prototype.SeparateRemove = function (render = true) {
   this.shouldSeparateRemove_ = false
   if (this.removeSubmenu.getItemCount()) {
     this.addRemoveChild(new eYo.Separator(), render)
@@ -124,7 +124,7 @@ eYo.MenuManager.prototype.separateRemove = function (render = true) {
 /**
  * Whether a separator should be inserted before any forthcoming menu item.
  */
-eYo.MenuManager.prototype.shouldSeparate = function (yorn = true) {
+eYo.MenuManager.prototype.ShouldSeparate = function (yorn = true) {
   this.shouldSeparate_ = !this.didSeparate_ && (this.shouldSeparate_ || yorn)
   // console.log('shouldSeparate_', yorn, this.shouldSeparate_)
 }
@@ -132,7 +132,7 @@ eYo.MenuManager.prototype.shouldSeparate = function (yorn = true) {
 /**
  * Whether a separator should be inserted before any forthcoming menu item.
  */
-eYo.MenuManager.prototype.shouldSeparateInsert = function (yorn = true) {
+eYo.MenuManager.prototype.ShouldSeparateInsert = function (yorn = true) {
   this.shouldSeparateInsert_ = !this.didSeparateInsert_ && (this.shouldSeparateInsert_ || yorn)
   // console.log('shouldSeparate_', yorn, this.shouldSeparate_)
 }
@@ -140,14 +140,14 @@ eYo.MenuManager.prototype.shouldSeparateInsert = function (yorn = true) {
 /**
  * Whether a separator should be inserted before any forthcoming menu item.
  */
-eYo.MenuManager.prototype.shouldSeparateRemove = function (yorn = true) {
+eYo.MenuManager.prototype.ShouldSeparateRemove = function (yorn = true) {
   this.shouldSeparateRemove_ = !this.didSeparateRemove_ && (this.shouldSeparateRemove_ || yorn)
 }
 
 /**
  * Whether a separator should be inserted before any forthcoming menu item.
  */
-eYo.MenuManager.prototype.shouldSeparateInsertBefore = function (yorn = true) {
+eYo.MenuManager.prototype.ShouldSeparateInsertBefore = function (yorn = true) {
   this.shouldSeparateInsertBefore_ = !this.didSeparateInsertBefore_ && (this.shouldSeparateInsertBefore_ || yorn)
   // console.log('shouldSeparateBefore_', yorn, this.shouldSeparateBefore_)
 }
@@ -155,7 +155,7 @@ eYo.MenuManager.prototype.shouldSeparateInsertBefore = function (yorn = true) {
 /**
  * Whether a separator should be inserted before any forthcoming menu item.
  */
-eYo.MenuManager.prototype.shouldSeparateInsertAfter = function (yorn = true) {
+eYo.MenuManager.prototype.ShouldSeparateInsertAfter = function (yorn = true) {
   this.shouldSeparateInsertAfter_ = !this.didSeparateInsertAfter_ && (this.shouldSeparateInsertAfter_ || yorn)
   // console.log('shouldSeparateAfter_', yorn, this.shouldSeparateAfter_)
 }
@@ -163,7 +163,7 @@ eYo.MenuManager.prototype.shouldSeparateInsertAfter = function (yorn = true) {
 /**
  * Add a menu item.
  */
-eYo.MenuManager.prototype.addChild = function (menuItem, render = true) {
+eYo.MenuManager.prototype.AddChild = function (menuItem, render = true) {
   if (this.shouldSeparate_) {
     // console.log('Did separate')
     this.separate(render)
@@ -175,7 +175,7 @@ eYo.MenuManager.prototype.addChild = function (menuItem, render = true) {
 /**
  * Add a menu item to the insert submenu.
  */
-eYo.MenuManager.prototype.addInsertChild = function (menuItem, render = true) {
+eYo.MenuManager.prototype.AddInsertChild = function (menuItem, render = true) {
   if (this.shouldSeparateInsert_) {
     // console.log('Did separate')
     this.separateInsert(render)
@@ -187,7 +187,7 @@ eYo.MenuManager.prototype.addInsertChild = function (menuItem, render = true) {
 /**
  * Add a menu item to the insert submenu.
  */
-eYo.MenuManager.prototype.addInsertBeforeChild = function (menuItem, render = true) {
+eYo.MenuManager.prototype.AddInsertBeforeChild = function (menuItem, render = true) {
   if (this.shouldSeparateInsertBefore_) {
     // console.log('Did separate')
     this.separateInsertBefore(render)
@@ -199,7 +199,7 @@ eYo.MenuManager.prototype.addInsertBeforeChild = function (menuItem, render = tr
 /**
  * Add a menu item to the insert submenu.
  */
-eYo.MenuManager.prototype.addInsertAfterChild = function (menuItem, render = true) {
+eYo.MenuManager.prototype.AddInsertAfterChild = function (menuItem, render = true) {
   if (this.shouldSeparateInsertAfter_) {
     // console.log('Did separate')
     this.separateInsertAfter(render)
@@ -211,7 +211,7 @@ eYo.MenuManager.prototype.addInsertAfterChild = function (menuItem, render = tru
 /**
  * Add a menu item to the remove submenu.
  */
-eYo.MenuManager.prototype.addRemoveChild = function (menuItem, render = true) {
+eYo.MenuManager.prototype.AddRemoveChild = function (menuItem, render = true) {
   this.removeSubmenu.addItem(menuItem)
 }
 
@@ -241,7 +241,7 @@ eYo.MenuManager.prototype.init = function (brick = eYo.NA, e = eYo.NA) {
  * @param {Event} e Mouse event.
  * @private
  */
-eYo.MenuManager.prototype.showMenu = function (brick, e) {
+eYo.MenuManager.prototype.ShowMenu = function (brick, e) {
   if (this.menu.isVisible()) {
     this.menu.hide()
     return
@@ -253,7 +253,7 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
       if (brick.hasFocus) {
         // if the brick was already selected,
         // try to select an input connection
-        eYo.Focus.magnet = brick.ui.lastSelectedMagnet__
+        eYo.Focus.Magnet = brick.ui.lastSelectedMagnet__
       }
     }
   }
@@ -319,14 +319,14 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
   eyo.ui.showMenu(this.menu)
 }
 
-eYo.ID.DUPLICATE_BLOCK = 'DUPLICATE_BLOCK'
-eYo.ID.REMOVE_COMMENT = 'REMOVE_COMMENT'
-eYo.ID.ADD_COMMENT = 'ADD_COMMENT'
-eYo.ID.EXPAND_BLOCK = 'EXPAND_BLOCK'
-eYo.ID.COLLAPSE_BLOCK = 'COLLAPSE_BLOCK'
-eYo.ID.TOGGLE_ENABLE_BLOCK = 'TOGGLE_ENABLE_BLOCK'
-eYo.ID.DELETE_BLOCK = 'DELETE_BLOCK'
-eYo.ID.HELP = 'HELP'
+eYo.id.DUPLICATE_BLOCK = 'DUPLICATE_BLOCK'
+eYo.id.REMOVE_COMMENT = 'REMOVE_COMMENT'
+eYo.id.ADD_COMMENT = 'ADD_COMMENT'
+eYo.id.EXPAND_BLOCK = 'EXPAND_BLOCK'
+eYo.id.COLLAPSE_BLOCK = 'COLLAPSE_BLOCK'
+eYo.id.TOGGLE_ENABLE_BLOCK = 'TOGGLE_ENABLE_BLOCK'
+eYo.id.DELETE_BLOCK = 'DELETE_BLOCK'
+eYo.id.HELP = 'HELP'
 
 /**
  * Populate the context menu for the given brick.
@@ -365,32 +365,32 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
   var menuItem
   if (brick.movable && !brick.isInFlyout) {
     if (brick.canUnlock()) {
-      menuItem = this.newMenuItem(eYo.Msg.UNLOCK_BLOCK,
+      menuItem = this.newMenuItem(eYo.msg.UNLOCK_BLOCK,
         function (event) {
-          eYo.Events.group = true
+          eYo.events.group = true
           try {
             brick.unlock()
           } catch (err) {
             console.error(err)
             throw err
           } finally {
-            eYo.Events.group = false
+            eYo.events.group = false
           }
         }
       )
       this.addChild(menuItem, true)
     }
     if (brick.canLock()) {
-      menuItem = this.newMenuItem(eYo.Msg.LOCK_BLOCK,
+      menuItem = this.newMenuItem(eYo.msg.LOCK_BLOCK,
         function (event) {
-          eYo.Events.group = true
+          eYo.events.group = true
           try {
             brick.lock()
           } catch (err) {
             console.error(err)
             throw err
           } finally {
-            eYo.Events.group = false
+            eYo.events.group = false
           }
         }
       )
@@ -400,8 +400,8 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
   if (brick.deletable && brick.movable && !brick.isInFlyout) {
     // Option to duplicate this brick.
     menuItem = this.newMenuItem(
-      eYo.Msg.DUPLICATE_BLOCK,
-      {action: eYo.ID.DUPLICATE_BLOCK,
+      eYo.msg.DUPLICATE_BLOCK,
+      {action: eYo.id.DUPLICATE_BLOCK,
         target: brick})
     this.addChild(menuItem, true)
     if (brick.descendants.length > brick.board.remainingCapacity) {
@@ -413,13 +413,13 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     // Option to add/remove a comment.
     if (brick.comment) { // .comment is never set
       menuItem = this.newMenuItem(
-        eYo.Msg.REMOVE_COMMENT,
-        {action: eYo.ID.REMOVE_COMMENT,
+        eYo.msg.REMOVE_COMMENT,
+        {action: eYo.id.REMOVE_COMMENT,
           target: brick})
     } else {
       menuItem = this.newMenuItem(
-        eYo.Msg.ADD_COMMENT,
-        {action: eYo.ID.ADD_COMMENT,
+        eYo.msg.ADD_COMMENT,
+        {action: eYo.id.ADD_COMMENT,
           target: brick})
     }
     menuItem.setEnabled(false && !goog.userAgent.IE && !brick.out_m)
@@ -428,14 +428,14 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
   if (brick.board.options.collapse) {
     if (brick.collapsed_) {
       menuItem = this.newMenuItem(
-        eYo.Msg.EXPAND_BLOCK,
-        {action: eYo.ID.EXPAND_BLOCK,
+        eYo.msg.EXPAND_BLOCK,
+        {action: eYo.id.EXPAND_BLOCK,
           target: brick})
       menuItem.setEnabled(true)
     } else {
       menuItem = this.newMenuItem(
-        eYo.Msg.COLLAPSE_BLOCK,
-        {action: eYo.ID.COLLAPSE_BLOCK,
+        eYo.msg.COLLAPSE_BLOCK,
+        {action: eYo.id.COLLAPSE_BLOCK,
           target: brick})
       menuItem.setEnabled(brick.getStatementCount() > 2)
     }
@@ -444,8 +444,8 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
   if (brick.board.options.disable) {
     menuItem = this.newMenuItem(
       brick.disabled
-        ? eYo.Msg.ENABLE_BLOCK : eYo.Msg.DISABLE_BLOCK,
-      {action: eYo.ID.TOGGLE_ENABLE_BLOCK,
+        ? eYo.msg.ENABLE_BLOCK : eYo.msg.DISABLE_BLOCK,
+      {action: eYo.id.TOGGLE_ENABLE_BLOCK,
         target: brick})
     menuItem.setEnabled(!brick.out_m)
     this.addChild(menuItem, true)
@@ -465,9 +465,9 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
       descendantCount -= foot.getWrappedDescendants().length
     }
     menuItem = this.newMenuItem(
-      descendantCount === 1 ? eYo.Msg.DELETE_BLOCK
-        : eYo.Msg.DELETE_X_BLOCKS.replace('{0}', String(descendantCount)),
-      {action: eYo.ID.DELETE_BLOCK,
+      descendantCount === 1 ? eYo.msg.DELETE_BLOCK
+        : eYo.msg.DELETE_X_BLOCKS.replace('{0}', String(descendantCount)),
+      {action: eYo.id.DELETE_BLOCK,
         target: brick})
     menuItem.setEnabled(true)
     this.addChild(menuItem, true)
@@ -475,8 +475,8 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
   // help
   var url = eYo.isF(brick.helpUrl) ? brick.helpUrl() : brick.helpUrl
   menuItem = this.newMenuItem(
-    eYo.Msg.HELP,
-    {action: eYo.ID.HELP,
+    eYo.msg.HELP,
+    {action: eYo.id.HELP,
       target: brick})
   menuItem.setEnabled(!!url)
   this.addChild(menuItem, true)
@@ -484,8 +484,8 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
 
   menuItem = this.newMenuItem(
     brick.getPythonType(), (event) => {
-      var xmlDom = eYo.Xml.brickToDom(brick, true)
-      var xmlText = eYo.Xml.domToText(xmlDom)
+      var xmlDom = eYo.xml.BrickToDom(brick, true)
+      var xmlText = eYo.xml.domToText(xmlDom)
       console.log(xmlText)
     }
   )
@@ -496,7 +496,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     brick.getPythonType() + ' python code',
     function (b, e) {
       console.log('Python code for', brick.type)
-      var p = new eYo.Py.Exporter()
+      var p = new eYo.py.Exporter()
       console.log(p.export(brick))
     })
   menuItem.setEnabled(true)
@@ -506,7 +506,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     brick.getPythonType() + ' python code (deep)',
     function (b, e) {
       console.log('Python code for', brick.type)
-      var p = new eYo.Py.Exporter()
+      var p = new eYo.py.Exporter()
       console.log(p.export(brick, {is_deep: true}))
       brick.runScript()
     })
@@ -571,32 +571,32 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
   }
   var target = model.target || brick
   switch (model.action) {
-  case eYo.ID.DUPLICATE_BLOCK:
+  case eYo.id.DUPLICATE_BLOCK:
     Blockly.duplicate_(target)
     return true
-  case eYo.ID.REMOVE_COMMENT:
+  case eYo.id.REMOVE_COMMENT:
     target.setCommentText(null)
     return true
-  case eYo.ID.ADD_COMMENT:
+  case eYo.id.ADD_COMMENT:
     target.setCommentText('')
     return true
-  case eYo.ID.EXPAND_BLOCK:
+  case eYo.id.EXPAND_BLOCK:
     target.setCollapsed(false)
     return true
-  case eYo.ID.COLLAPSE_BLOCK:
+  case eYo.id.COLLAPSE_BLOCK:
     target.setCollapsed(true)
     return true
-  case eYo.ID.TOGGLE_ENABLE_BLOCK:
+  case eYo.id.TOGGLE_ENABLE_BLOCK:
     target.disabled = !target.disabled
     return true
-  case eYo.ID.DELETE_BLOCK:
+  case eYo.id.DELETE_BLOCK:
     var unwrapped = target
     var parent
     while (unwrapped.wrapped_ && (parent = unwrapped.surround)) {
       unwrapped = parent
     }
     // unwrapped is the topmost brick or the first unwrapped parent
-    eYo.Events.group = true
+    eYo.events.group = true
     var returnState = false
     try {
       if (target.hasFocus && target !== unwrapped) {
@@ -614,10 +614,10 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
       console.error(err)
       throw err
     } finally {
-      eYo.Events.group = false
+      eYo.events.group = false
     }
     return returnState
-  case eYo.ID.HELP:
+  case eYo.id.HELP:
     target.showHelp_()
     return true
   }
@@ -656,7 +656,7 @@ eYo.MenuManager.prototype.handleAction_movable_parent = function (brick, event) 
  * @param {eYo.Brick.Dflt} brick The brick.
  * @private
  */
-eYo.MenuManager.prototype.handleAction_movable_parent_module = eYo.MenuManager.prototype.handleAction_movable_parent
+eYo.MenuManager.prototype.handleAction_movable_parent_module = eYo.menuManager.prototype.handleAction_movable_parent
 
 /**
  * Populate the context menu for the given brick.
@@ -666,173 +666,173 @@ eYo.MenuManager.prototype.handleAction_movable_parent_module = eYo.MenuManager.p
 eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
   var Stmt1 = (key) => {
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN(key, 'eyo-code-reserved'),
-      eYo.Do.createSPAN(' … ', 'eyo-code-placeholder'),
-      eYo.Do.createSPAN(':', 'eyo-code-reserved')
+      eYo.do.CreateSPAN(key, 'eyo-code-reserved'),
+      eYo.do.CreateSPAN(' … ', 'eyo-code-placeholder'),
+      eYo.do.CreateSPAN(':', 'eyo-code-reserved')
     )
   }
   var Stmt2 = (key) => {
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN(key + ':', 'eyo-code-reserved')
+      eYo.do.CreateSPAN(key + ':', 'eyo-code-reserved')
     )
   }
   switch (type) {
-  case eYo.T3.Expr.parent_module:
+  case eYo.t3.Expr.parent_module:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('.', 'eyo-code'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
+      eYo.do.CreateSPAN('.', 'eyo-code'),
+      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
     )
-  case eYo.T3.Expr.attributeref:
+  case eYo.t3.Expr.Attributeref:
     switch (subtype) {
-    case eYo.Key.ROOT:
+    case eYo.key.ROOT:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        eYo.Do.createSPAN('.', 'eyo-code'),
-        eYo.Do.createSPAN('attribute', 'eyo-code-placeholder'),
-        goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
+        eYo.do.CreateSPAN('.', 'eyo-code'),
+        eYo.do.CreateSPAN('attribute', 'eyo-code-placeholder'),
+        goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
       )
-      // case eYo.Key.ATTRIBUTE:
+      // case eYo.key.ATTRIBUTE:
     default:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        eYo.Do.createSPAN('primary', 'eyo-code-placeholder'),
-        eYo.Do.createSPAN('.', 'eyo-code'),
-        goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
+        eYo.do.CreateSPAN('primary', 'eyo-code-placeholder'),
+        eYo.do.CreateSPAN('.', 'eyo-code'),
+        goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
       )
     }
-  case eYo.T3.Expr.key_datum:
+  case eYo.t3.Expr.key_datum:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN(': ', 'eyo-code'),
-      eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
+      eYo.do.CreateSPAN(': ', 'eyo-code'),
+      eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
+      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.T3.Expr.identifier_valued:
+  case eYo.t3.Expr.identifier_valued:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('= ', 'eyo-code'),
-      eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
+      eYo.do.CreateSPAN('= ', 'eyo-code'),
+      eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
+      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.T3.Expr.proper_slice:
+  case eYo.t3.Expr.Proper_slice:
     switch (subtype) {
-    case eYo.Key.LOWER_BOUND:
+    case eYo.key.LOWER_BOUND:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        eYo.Do.createSPAN(':', 'eyo-code'),
-        eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
-        eYo.Do.createSPAN(':', 'eyo-code'),
-        eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
-        goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
+        eYo.do.CreateSPAN(':', 'eyo-code'),
+        eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
+        eYo.do.CreateSPAN(':', 'eyo-code'),
+        eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
+        goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
       )
-    case eYo.Key.UPPER_BOUND:
+    case eYo.key.UPPER_BOUND:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
-        eYo.Do.createSPAN(':', 'eyo-code'),
-        goog.dom.createTextNode(' ' + eYo.Msg.AND + ' '),
-        eYo.Do.createSPAN(':', 'eyo-code'),
-        eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
-        goog.dom.createTextNode(' ' + eYo.Msg.AROUND)
+        eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
+        eYo.do.CreateSPAN(':', 'eyo-code'),
+        goog.dom.createTextNode(' ' + eYo.msg.AND + ' '),
+        eYo.do.CreateSPAN(':', 'eyo-code'),
+        eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
+        goog.dom.createTextNode(' ' + eYo.msg.AROUND)
       )
-    case eYo.Key.STRIDE:
+    case eYo.key.STRIDE:
     default:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
-        eYo.Do.createSPAN(':', 'eyo-code'),
-        eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
-        eYo.Do.createSPAN(':', 'eyo-code'),
-        goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
+        eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
+        eYo.do.CreateSPAN(':', 'eyo-code'),
+        eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
+        eYo.do.CreateSPAN(':', 'eyo-code'),
+        goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
       )
     }
-  case eYo.T3.Expr.expression_as_name:
+  case eYo.t3.Expr.expression_as_name:
     switch (subtype) {
-    case eYo.Key.AS:
+    case eYo.key.AS:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        eYo.Do.createSPAN('expression ', 'eyo-code-placeholder'),
-        eYo.Do.createSPAN('as', 'eyo-code-reserved'),
-        goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
+        eYo.do.CreateSPAN('expression ', 'eyo-code-placeholder'),
+        eYo.do.CreateSPAN('as', 'eyo-code-reserved'),
+        goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
       )
-    case eYo.Key.EXPRESSION:
+    case eYo.key.EXPRESSION:
     default:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-        eYo.Do.createSPAN('as', 'eyo-code-reserved'),
-        eYo.Do.createSPAN(' name', 'eyo-code-placeholder'),
-        goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
+        eYo.do.CreateSPAN('as', 'eyo-code-reserved'),
+        eYo.do.CreateSPAN(' name', 'eyo-code-placeholder'),
+        goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
       )
     }
-  case eYo.T3.Expr.slicing:
+  case eYo.t3.Expr.Slicing:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('[', 'eyo-code'),
-      eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
-      eYo.Do.createSPAN(']', 'eyo-code'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
+      eYo.do.CreateSPAN('[', 'eyo-code'),
+      eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
+      eYo.do.CreateSPAN(']', 'eyo-code'),
+      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.T3.Expr.call_expr:
-  case eYo.T3.Expr.decorator_call_expr:
+  case eYo.t3.Expr.Call_expr:
+  case eYo.t3.Expr.decorator_call_expr:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('(', 'eyo-code'),
-      eYo.Do.createSPAN('…', 'eyo-code-placeholder'),
-      eYo.Do.createSPAN(')', 'eyo-code'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
+      eYo.do.CreateSPAN('(', 'eyo-code'),
+      eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
+      eYo.do.CreateSPAN(')', 'eyo-code'),
+      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.T3.Expr.funcdef_typed:
+  case eYo.t3.Expr.funcdef_typed:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('->', 'eyo-code'),
-      eYo.Do.createSPAN(' …', 'eyo-code-placeholder'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
+      eYo.do.CreateSPAN('->', 'eyo-code'),
+      eYo.do.CreateSPAN(' …', 'eyo-code-placeholder'),
+      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.T3.Expr.dotted_name_as:
-  case eYo.T3.Expr.identifier_as:
+  case eYo.t3.Expr.Dotted_name_as:
+  case eYo.t3.Expr.identifier_as:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('as', 'eyo-code-reserved'),
-      eYo.Do.createSPAN(' alias', 'eyo-code-placeholder')
+      eYo.do.CreateSPAN('as', 'eyo-code-reserved'),
+      eYo.do.CreateSPAN(' alias', 'eyo-code-placeholder')
     )
-  case eYo.T3.Expr.u_expr:
+  case eYo.t3.Expr.u_expr:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('-', 'eyo-code'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
+      eYo.do.CreateSPAN('-', 'eyo-code'),
+      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
     )
-  case eYo.T3.Expr.imagnumber:
+  case eYo.t3.Expr.imagnumber:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('j', 'eyo-code'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_RIGHT)
+      eYo.do.CreateSPAN('j', 'eyo-code'),
+      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.T3.Expr.parenth_form:
+  case eYo.t3.Expr.parenth_form:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('(', 'eyo-code'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AND + ' '),
-      eYo.Do.createSPAN(')', 'eyo-code'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AROUND)
+      eYo.do.CreateSPAN('(', 'eyo-code'),
+      goog.dom.createTextNode(' ' + eYo.msg.AND + ' '),
+      eYo.do.CreateSPAN(')', 'eyo-code'),
+      goog.dom.createTextNode(' ' + eYo.msg.AROUND)
     )
-  case eYo.T3.Expr.list_display:
+  case eYo.t3.Expr.list_display:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('[', 'eyo-code'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AND + ' '),
-      eYo.Do.createSPAN(']', 'eyo-code'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AROUND)
+      eYo.do.CreateSPAN('[', 'eyo-code'),
+      goog.dom.createTextNode(' ' + eYo.msg.AND + ' '),
+      eYo.do.CreateSPAN(']', 'eyo-code'),
+      goog.dom.createTextNode(' ' + eYo.msg.AROUND)
     )
-  case eYo.T3.Expr.set_display:
-  case eYo.T3.Expr.dict_display:
+  case eYo.t3.Expr.Set_display:
+  case eYo.t3.Expr.dict_display:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('{', 'eyo-code'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AND + ' '),
-      eYo.Do.createSPAN('}', 'eyo-code'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AROUND)
+      eYo.do.CreateSPAN('{', 'eyo-code'),
+      goog.dom.createTextNode(' ' + eYo.msg.AND + ' '),
+      eYo.do.CreateSPAN('}', 'eyo-code'),
+      goog.dom.createTextNode(' ' + eYo.msg.AROUND)
     )
-  case eYo.T3.Stmt.if_part: return Stmt1('if')
-  case eYo.T3.Stmt.elif_part: return Stmt1('elif')
-  case eYo.T3.Stmt.for_part: return Stmt1('for')
-  case eYo.T3.Stmt.while_part: return Stmt1('while')
-  case eYo.T3.Stmt.try_part: return Stmt2('try')
-  case eYo.T3.Stmt.except_part: return Stmt1('except')
-  case eYo.T3.Stmt.void_except_part:return Stmt2('except')
-  case eYo.T3.Stmt.else_part:return Stmt2('else')
-  case eYo.T3.Stmt.finally_part:return Stmt2('finally')
-  case eYo.T3.Stmt.with_part: return Stmt1('with')
-  case eYo.T3.Stmt.expression_stmt:
+  case eYo.t3.Stmt.if_part: return Stmt1('if')
+  case eYo.t3.Stmt.elif_part: return Stmt1('elif')
+  case eYo.t3.Stmt.for_part: return Stmt1('for')
+  case eYo.t3.Stmt.while_part: return Stmt1('while')
+  case eYo.t3.Stmt.try_part: return Stmt2('try')
+  case eYo.t3.Stmt.except_part: return Stmt1('except')
+  case eYo.t3.Stmt.void_except_part:return Stmt2('except')
+  case eYo.t3.Stmt.else_part:return Stmt2('else')
+  case eYo.t3.Stmt.finally_part:return Stmt2('finally')
+  case eYo.t3.Stmt.with_part: return Stmt1('with')
+  case eYo.t3.Stmt.expression_stmt:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('#', 'eyo-code-reserved'),
-      eYo.Do.createSPAN(' comment', 'eyo-code-placeholder')
+      eYo.do.CreateSPAN('#', 'eyo-code-reserved'),
+      eYo.do.CreateSPAN(' comment', 'eyo-code-placeholder')
     )
-  case eYo.T3.Stmt.assignment_stmt:
+  case eYo.t3.Stmt.Assignment_stmt:
     return goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-placeholder',
       goog.dom.createTextNode('name'),
-      eYo.Do.createSPAN(' = ', 'eyo-code-reserved'),
+      eYo.do.CreateSPAN(' = ', 'eyo-code-reserved'),
       goog.dom.createTextNode('value')
     )
   default:
@@ -858,7 +858,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
   }
   /** @suppress {accessControls} */
   var outCheck = m4t.check_
-  var D = eYo.C9r.Model.forKey(model.type).slots
+  var D = eYo.C9r.model.forKey(model.type).slots
   // if the brick which type is model.type has no slot
   // no chance to insert anything, pass away
   if (D) {
@@ -891,7 +891,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
         this.addInsertChild(MI)
         return true
       } else if (d && d.wrap && !parent_subtype) {
-        var list = eYo.C9r.Model.forKey(d.wrap).list
+        var list = eYo.C9r.model.forKey(d.wrap).list
         if (!list) {
           if (!outCheck || goog.array.contains(outCheck, d.wrap)) {
             key = d.key || K
@@ -1006,26 +1006,26 @@ eYo.MenuManager.prototype.populate_replace_parent = function (brick, model) {
 eYo.MenuManager.prototype.populate_before_after = function (brick) {
   // Disable undo registration for a while
   var Ts = [
-    eYo.T3.Stmt.if_part,
-    eYo.T3.Stmt.elif_part,
-    eYo.T3.Stmt.for_part,
-    eYo.T3.Stmt.while_part,
-    eYo.T3.Stmt.try_part,
-    eYo.T3.Stmt.except_part,
-    eYo.T3.Stmt.void_except_part,
-    eYo.T3.Stmt.else_part,
-    eYo.T3.Stmt.finally_part,
-    eYo.T3.Stmt.with_part
-    // eYo.T3.Stmt.decorator_stmt,
-    // eYo.T3.Stmt.funcdef_part,
-    // eYo.T3.Stmt.classdef_part,
-    // eYo.T3.Stmt.import_stmt,
+    eYo.t3.Stmt.if_part,
+    eYo.t3.Stmt.elif_part,
+    eYo.t3.Stmt.for_part,
+    eYo.t3.Stmt.while_part,
+    eYo.t3.Stmt.try_part,
+    eYo.t3.Stmt.except_part,
+    eYo.t3.Stmt.void_except_part,
+    eYo.t3.Stmt.else_part,
+    eYo.t3.Stmt.finally_part,
+    eYo.t3.Stmt.with_part
+    // eYo.t3.Stmt.decorator_stmt,
+    // eYo.t3.Stmt.funcdef_part,
+    // eYo.t3.Stmt.Classdef_part,
+    // eYo.t3.Stmt.import_stmt,
   ]
   var Us = [
-    eYo.T3.Stmt.comment_any, // defined
-    eYo.T3.Stmt.assignment_stmt,
-    eYo.T3.Stmt.print_stmt, // JL defined?
-    eYo.T3.Stmt.builtin__input_stmt// JL defined?
+    eYo.t3.Stmt.Comment_any, // defined
+    eYo.t3.Stmt.Assignment_stmt,
+    eYo.t3.Stmt.print_stmt, // JL defined?
+    eYo.t3.Stmt.Builtin__input_stmt// JL defined?
   ]
   var /** !eYo.Magnet */ m4t, sep
   var F_after = /** @suppress{accessControls} */ (targetM4t, type) => {
@@ -1060,7 +1060,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     }
     return false
   }
-  eYo.Events.disableWrap(() => {
+  eYo.events.disableWrap(() => {
     if ((m4t = brick.foot_m)) {
       var target = m4t.target
       for (var _ = 0, type; (type = Us[_++]);) {
@@ -1107,36 +1107,36 @@ eYo.MenuManager.prototype.populate_movable_parent = function (brick) {
     }
   }
   F([
-    eYo.T3.Expr.u_expr,
-    [eYo.T3.Expr.call_expr, eYo.Key.ROOT],
-    eYo.T3.Expr.slicing,
-    [eYo.T3.Expr.attributeref, eYo.Key.ATTRIBUTE],
-    [eYo.T3.Expr.attributeref, eYo.Key.ROOT],
-    [eYo.T3.Expr.decorator_call_expr, eYo.Key.NAME],
-    eYo.T3.Expr.imagnumber
+    eYo.t3.Expr.u_expr,
+    [eYo.t3.Expr.Call_expr, eYo.key.ROOT],
+    eYo.t3.Expr.Slicing,
+    [eYo.t3.Expr.Attributeref, eYo.key.ATTRIBUTE],
+    [eYo.t3.Expr.Attributeref, eYo.key.ROOT],
+    [eYo.t3.Expr.decorator_call_expr, eYo.key.NAME],
+    eYo.t3.Expr.imagnumber
   ], true)
   F([
-    [eYo.T3.Expr.expression_as_name, eYo.Key.AS],
-    [eYo.T3.Expr.expression_as_name, eYo.Key.EXPRESSION]
+    [eYo.t3.Expr.expression_as_name, eYo.key.AS],
+    [eYo.t3.Expr.expression_as_name, eYo.key.EXPRESSION]
   ])
   this.shouldSeparateInsert()
   this.shouldSeparateRemove()
   F([
-    eYo.T3.Expr.parenth_form,
-    eYo.T3.Expr.list_display,
-    eYo.T3.Expr.set_display,
-    eYo.T3.Expr.dict_display,
-    [eYo.T3.Expr.funcdef_part, eYo.Key.DEFINITION]
+    eYo.t3.Expr.parenth_form,
+    eYo.t3.Expr.list_display,
+    eYo.t3.Expr.Set_display,
+    eYo.t3.Expr.dict_display,
+    [eYo.t3.Expr.funcdef_part, eYo.key.DEFINITION]
   ], true)
   F([
-    eYo.T3.Expr.parent_module,
-    eYo.T3.Expr.dotted_name_as,
-    eYo.T3.Expr.identifier_as,
-    [eYo.T3.Expr.key_datum, eYo.Key.NAME],
-    [eYo.T3.Expr.identifier, eYo.Key.NAME],
-    [eYo.T3.Expr.proper_slice, eYo.Key.UPPER_BOUND],
-    [eYo.T3.Expr.proper_slice, eYo.Key.STRIDE],
-    [eYo.T3.Expr.proper_slice, eYo.Key.LOWER_BOUND]
+    eYo.t3.Expr.parent_module,
+    eYo.t3.Expr.Dotted_name_as,
+    eYo.t3.Expr.identifier_as,
+    [eYo.t3.Expr.key_datum, eYo.key.NAME],
+    [eYo.t3.Expr.identifier, eYo.key.NAME],
+    [eYo.t3.Expr.Proper_slice, eYo.key.UPPER_BOUND],
+    [eYo.t3.Expr.Proper_slice, eYo.key.STRIDE],
+    [eYo.t3.Expr.Proper_slice, eYo.key.LOWER_BOUND]
   ])
 }
 

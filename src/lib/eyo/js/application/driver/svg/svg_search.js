@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('Dom.Search')
+eYo.require('dom.search')
 
-eYo.forwardDeclare('Search')
-// eYo.forwardDeclare('SearchToolbar')
+eYo.forwardDeclare('search')
+// eYo.forwardDeclare('searchToolbar')
 
 /**
  * Svg driver for the search pane.
@@ -28,7 +28,7 @@ eYo.Svg.makeDriverClass('Search', {
     if (search.dom) {
       return
     }
-    var dom = eYo.Svg.superProto_.searchInit.call(this, search)
+    var dom = eYo.svg.SuperProto_.SearchInit.Call(this, search)
     var svg = dom.svg = Object.create(null)
     /*
     <svg class="eyo-search">
@@ -45,7 +45,7 @@ eYo.Svg.makeDriverClass('Search', {
       class: 'eyo-search-background'
     }, root)
   // Bad design: code reuse: options
-    this.addTooltip(background, eYo.Tooltip.getTitle('search'), {
+    this.addTooltip(background, eYo.tooltip.getTitle('search'), {
       position: 'right',
       theme: 'light bordered',
       flipDuration: 0,
@@ -62,7 +62,7 @@ eYo.Svg.makeDriverClass('Search', {
         }
       },
       onShow: x => {
-        eYo.Tooltip.hideAll(background)
+        eYo.tooltip.hideAll(background)
       }
     })
   },
@@ -75,7 +75,7 @@ eYo.Svg.makeDriverClass('Search', {
     goog.dom.removeNode(dom.svg.root_)
     dom.svg.root_ = null
     dom.svg = null
-    eYo.Svg.superProto_.searchDispose.call(this, search)
+    eYo.svg.SuperProto_.SearchDispose.Call(this, search)
   }
 })
 
@@ -85,7 +85,7 @@ eYo.Svg.makeDriverClass('Search', {
  * @param {Boolean} show
  */
 eYo.Svg.Search.prototype.displaySet = function (search, show) {
-  !show && eYo.Tooltip.hideAll(search.dom.svg.root_)
+  !show && eYo.tooltip.hideAll(search.dom.svg.root_)
   search.dom.svg.root_.style.display = show ? 'block' : 'none'
 }
 
@@ -158,7 +158,7 @@ eYo.Svg.Search.prototype.update = function(search) {
  */
 eYo.Svg.Search.prototype.removeAllBrickListeners = function(search) {
   // Delete all the event listeners.
-  search.listeners_.forEach(l => eYo.Dom.unbindEvent(l))
+  search.listeners_.forEach(l => eYo.dom.unbindEvent(l))
   search.listeners_.length = 0
 }
 
@@ -169,27 +169,27 @@ eYo.Svg.Search.prototype.removeAllBrickListeners = function(search) {
  * @param {eYo.Search} search
  * @param {eYo.Brick.Dflt} brick The block to add listeners for.
  */
-eYo.Svg.Search.prototype.addListeners = function(search, brick) {
+eYo.Svg.Search.prototype.AddListeners = function(search, brick) {
   var g = brick.dom.svg.group_
-  search.listeners_.push(eYo.Dom.bindEvent(
+  search.listeners_.push(eYo.dom.BindEvent(
     g,
     'mousedown',
     null,
     e => search.app.motion.handleFlyoutStart(e, search, brick)
   ))
-  search.listeners_.push(eYo.Dom.bindEvent(
+  search.listeners_.push(eYo.dom.BindEvent(
     g,
     'mouseover',
     brick,
     brick.selectAdd
   ))
-  search.listeners_.push(eYo.Dom.bindEvent(
+  search.listeners_.push(eYo.dom.BindEvent(
     g,
     'mouseleave',
     brick,
     brick.focusRemove
   ))
-  search.listeners_.push(eYo.Dom.bindEvent(
+  search.listeners_.push(eYo.dom.BindEvent(
     g,
     'mouseout',
     brick,
@@ -203,7 +203,7 @@ eYo.Svg.Search.prototype.addListeners = function(search, brick) {
  */
 eYo.Svg.Search.prototype.listen_mouseover = function(search) {
   search.listeners_.push(
-    eYo.Dom.bindEvent(
+    eYo.dom.BindEvent(
     search.dom.svg.background_,
     'mouseover',
     null,
@@ -217,20 +217,20 @@ eYo.Svg.Search.prototype.listen_mouseover = function(search) {
  * Add a `wheel` and `mousdown` listener to scroll.
  * @param {eYo.Search} search
  */
-eYo.Svg.Search.prototype.bindScrollEvents = function(search) {
+eYo.Svg.Search.prototype.BindScrollEvents = function(search) {
   var bound = search.dom.bound
   if (bound.drag_wheel) {
     return
   }
   var svg = search.dom.svg
-  bound.drag_wheel = eYo.Dom.bindEvent(
+  bound.drag_wheel = eYo.dom.BindEvent(
     svg.group_,
     'wheel',
     null,
     this.searchOn_wheel.bind(search)
   )
   // Dragging the search up and down.
-  bound.drag_mousedown = eYo.Dom.bindEvent(
+  bound.drag_mousedown = eYo.dom.BindEvent(
     svg.background_,
     'mousedown',
     null,
@@ -244,7 +244,7 @@ eYo.Svg.Search.prototype.bindScrollEvents = function(search) {
  * @private
  */
 eYo.Svg.Search.prototype.on_mousedown = function(e) {
-  eYo.app.motion.handleFlyoutStart(e, this)
+  eYo.App.Motion.handleFlyoutStart(e, this)
   
 }
 
@@ -293,7 +293,7 @@ eYo.Svg.makeDriverClass('SearchToolbar', {
       dom.select_general_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select'),
-        eYo.app.searchDropDown
+        eYo.App.SearchDropDown
       )
     } else if (ftb.app && ftb.app.searchDropDownGeneral && ftb.app.searchDropDownModule) {
       dom.select_general_ = goog.dom.createDom(
@@ -311,17 +311,17 @@ eYo.Svg.makeDriverClass('SearchToolbar', {
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-general')
       )
-      select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-      // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+      select = new goog.ui.Select(null, new eYo.Menu(), eYo.menuButtonRenderer.getInstance())
+      // select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'test'))
       // select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+      select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'basic'))
+      select.addItem(new eYo.MenuItem(eYo.msg.INTERMEDIATE, 'intermediate'))
+      select.addItem(new eYo.MenuItem(eYo.msg.ADVANCED, 'advanced'))
+      select.addItem(new eYo.MenuItem(eYo.msg.EXPERT, 'expert'))
       select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
+      select.addItem(new eYo.MenuItem(eYo.msg.BRANCHING, 'branching'))
+      select.addItem(new eYo.MenuItem(eYo.msg.LOOPING, 'looping'))
+      select.addItem(new eYo.MenuItem(eYo.msg.FUNCTION, 'function'))
       select.setSelectedIndex(0)
       select.render(dom.select_general_)
       search.listenableKey = select.listen(
@@ -334,17 +334,17 @@ eYo.Svg.makeDriverClass('SearchToolbar', {
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-module')
       )
-      var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-      // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+      var select = new goog.ui.Select(null, new eYo.Menu(), eYo.menuButtonRenderer.getInstance())
+      // select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'test'))
       // select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+      select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'basic'))
+      select.addItem(new eYo.MenuItem(eYo.msg.INTERMEDIATE, 'intermediate'))
+      select.addItem(new eYo.MenuItem(eYo.msg.ADVANCED, 'advanced'))
+      select.addItem(new eYo.MenuItem(eYo.msg.EXPERT, 'expert'))
       select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
+      select.addItem(new eYo.MenuItem(eYo.msg.BRANCHING, 'branching'))
+      select.addItem(new eYo.MenuItem(eYo.msg.LOOPING, 'looping'))
+      select.addItem(new eYo.MenuItem(eYo.msg.FUNCTION, 'function'))
       select.setSelectedIndex(0)
       select.render(dom.select_module_)
       search.listenableKey = select.listen(
@@ -378,25 +378,25 @@ eYo.Svg.makeDriverClass('SearchToolbar', {
     }
     div.appendChild(dom.control_)
     var bound = dom.bound
-    bound.mousedown = eYo.Dom.bindEvent(
+    bound.mousedown = eYo.dom.BindEvent(
       dom.control_,
       'mousedown',
       search,
       search.on_mousedown
     )
-    bound.mouseenter = eYo.Dom.bindEvent(
+    bound.mouseenter = eYo.dom.BindEvent(
       dom.control_,
       'mouseenter',
       search,
       search.on_mouseenter
     )
-    bound.mouseleave = eYo.Dom.bindEvent(
+    bound.mouseleave = eYo.dom.BindEvent(
       dom.control_,
       'mouseleave',
       search,
       search.on_mouseleave
     )
-    bound.mouseup = eYo.Dom.bindEvent(
+    bound.mouseup = eYo.dom.BindEvent(
       dom.control_,
       'mouseup',
       search,

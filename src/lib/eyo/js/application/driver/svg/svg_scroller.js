@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Svg')
+eYo.require('svg')
 
-eYo.forwardDeclare('Scroller')
+eYo.forwardDeclare('scroller')
 
 /**
  * Svg driver for a scroller.
@@ -33,7 +33,7 @@ eYo.Svg.makeDriverClass('Scroller', {
         class: 'eyo-scrollbar-background'
       }
     )
-    eYo.Dom.insertAfter(
+    eYo.dom.insertAfter(
       corner,
       pair.board_.dom.svg.canvas_
     )

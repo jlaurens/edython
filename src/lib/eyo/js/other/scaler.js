@@ -12,37 +12,29 @@
  */
 'use strict'
 
-eYo.provide('Scaler')
-
-eYo.forwardDeclare('Motion')
+eYo.forwardDeclare('motion')
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param{eYo.Motion} [motion] -  the owning motion
+ * @constructor
+ * @property {eYo.Motion} motion - the motion used to create this scaler
+ * @property {Boolean} active - whether the receiver is active
  */
-eYo.Scaler = function (motion) {
-  this.motion_ = motion
-}
-
-Object.defineProperties(eYo.Scaler.prototype, {
-  active_: {
-    value: false
-  }
+eYo.C9r.makeClass(eYo, 'Scaler', {
+  init (motion) {
+    this.motion_ = motion
+  },
+  value: {
+    active: false,
+    motion: eYo.isNA,
+  },
 })
-
-/**
- * Main drag and drop manager.
- * It maintains a list of draggers and droppers
- * * @param{eYo.App.Dflt} [desktop] -  the owning desktop
- */
-eYo.Scaler.prototype.dispose = function () {
-  this.motion_ = null
-}
 
 /**
  * @return {Boolean} Whether a scale operation did start.
  */
-eYo.Scaler.prototype.start = function () {
+eYo.Scaler_p.Start = function () {
   this.cancel()
 }
 
@@ -50,19 +42,19 @@ eYo.Scaler.prototype.start = function () {
  * Update a scale operation.
  * @return {Boolean} Whether a drag operation did update.
  */
-eYo.Scaler.prototype.update = function () {
+eYo.Scaler_p.update = function () {
 }
 
 /**
  * Cancel a scaling operation.
  * @return {Boolean} Whether a scale operation did cancel.
  */
-eYo.Scaler.prototype.cancel = function () {
+eYo.Scaler_p.Cancel = function () {
 }
 
 /**
  * Conclude a scale operation.
  * @return {!Boolean} Whether the scale opertion did conclude.
  */
-eYo.Scaler.prototype.complete = function () {
+eYo.Scaler_p.Complete = function () {
 }

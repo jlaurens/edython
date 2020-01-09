@@ -11,25 +11,25 @@
  */
 'use strict'
 
-eYo.require('Do')
-eYo.provide('Size')
+eYo.require('do')
+eYo.provide('size')
 
-eYo.provide('Unit')
+eYo.provide('unit')
 
-eYo.provide('Geometry')
+eYo.provide('geometry')
 
-eYo.forwardDeclare('Font')
+eYo.forwardDeclare('font')
 
 /**
  * unit
  */
 
-Object.defineProperties( eYo.Unit, {
+Object.defineProperties( eYo.unit, {
   x () {
-    return eYo.Font.space
+    return eYo.font.Space
   },
   y () {
-    return eYo.Font.lineHeight
+    return eYo.font.lineHeight
   },
   rem () {
     return parseFloat(getComputedStyle(document.documentElement).fontSize)
@@ -89,10 +89,10 @@ eYo.makeClass('Where', {
      */
     x: {
       get () {
-        return this.c_ * eYo.Unit.x
+        return this.c_ * eYo.unit.x
       },
       set_ (after) {
-        this.c_ = after / eYo.Unit.x
+        this.c_ = after / eYo.unit.x
       }
     },
     /**
@@ -101,10 +101,10 @@ eYo.makeClass('Where', {
      */
     y: {
       get () {
-        return this.l_ * eYo.Unit.x
+        return this.l_ * eYo.unit.x
       },
       set_ (after) {
-        this.l_ = after / eYo.Unit.x
+        this.l_ = after / eYo.unit.x
       }
     },
     /**
@@ -135,7 +135,7 @@ eYo.makeClass('Where', {
 })
 
 // Overdefined, for better understanding
-{
+;(() => {
   var c = Object.getOwnPropertyDescriptor(eYo.Where_p, 'c_')
   var l = Object.getOwnPropertyDescriptor(eYo.Where_p, 'l_')
   var x = Object.getOwnPropertyDescriptor(eYo.Where_p, 'x_')
@@ -187,7 +187,7 @@ eYo.makeClass('Where', {
   d['dl'] = d['h'] = eYo.C9r.descriptorR(function () { return this.l})
   d['dx'] = d['width'] = eYo.C9r.descriptorR(function () { return this.x})
   d['dy'] = d['height'] = eYo.C9r.descriptorR(function () { return this.y})
-}
+}) ()
 
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
@@ -195,7 +195,7 @@ eYo.makeClass('Where', {
  * @param {Number} [l]
  * @return {eYo.Where} The receiver
  */
-eYo.Where_p.set = function (c = 0, l = 0) {
+eYo.Where_p.Set = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ = c.x
     this.y_ = c.y
@@ -276,7 +276,7 @@ return new eYo.Where(snap).xySet(x, y)
  * @param {Boolean} [snap] - snap flag. Defaults to false.
  * @return {eYo.Where} The receiver
  */
-eYo.Where.cl = function (c, l, snap) {
+eYo.Where.Cl = function (c, l, snap) {
   return new eYo.Where(c, l, snap)
 }
 
@@ -303,7 +303,7 @@ eYo.Where_p.forward = function (c = 0, l = 0) {
  * @param {number} l
  * @return {eYo.Where} c
  */
-eYo.Where_p.backward = function (c = 0, l = 0) {
+eYo.Where_p.Backward = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ -= c.x
     this.y_ -= c.y
@@ -337,7 +337,7 @@ eYo.Where_p.xyAdvance = function (x = 0, y = 0) {
  * @param {Number} [scaleY] - Defaults to
  * @return {eYo.Where} the receiver
  */
-eYo.Where_p.scale = function (scaleX, scaleY) {
+eYo.Where_p.Scale = function (scaleX, scaleY) {
   if (scaleX.x) {
     this.c_ *= scaleX.x
     this.l_ *= (scaleX.y || scaleX.x)
@@ -417,7 +417,7 @@ eYo.Size = eYo.Where
  * @param {String!} s
  * @return {eYo.Size} the receiver.
  */
-eYo.Where_p.setFromText = function (txt) {
+eYo.Where_p.SetFromText = function (txt) {
   var lines = txt.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/)
   var c = 0
   lines.forEach(l => (c < l.length) && (c = l.length) )
@@ -429,7 +429,7 @@ eYo.Where_p.setFromText = function (txt) {
  * Sets from the given text.
  * @param {String!} s
  */
-eYo.Do.sizeOfText = function (txt) {
+eYo.do.SizeOfText = function (txt) {
   return new eYo.Size().setFromText(txt)
 }
 
@@ -759,7 +759,7 @@ Object.defineProperties(eYo.Rect_p, {
 /**
  * Dispose of the receiver's resources.
  */
-eYo.Rect_p.dispose = eYo.Do.nothing
+eYo.Rect_p.dispose = eYo.do.nothing
 
 /**
  * set the `Rect`.
@@ -770,7 +770,7 @@ eYo.Rect_p.dispose = eYo.Do.nothing
  * @param{?Number} h
  * @return {eYo.Rect} The receiver
  */
-eYo.Rect_p.set = function (c = 0, l = 0, w = 0, h = 0, snap) {
+eYo.Rect_p.Set = function (c = 0, l = 0, w = 0, h = 0, snap) {
   if (eYo.isDef(c.left) && eYo.isDef(c.right) && eYo.isDef(c.top) && eYo.isDef(c.bottom)) {
     // properties are evaluated twice
     this.left_ = c.left
@@ -840,7 +840,7 @@ eYo.Rect_p.forward = function (c = 0, l = 0) {
  * @param {number} l
  * @return {eYo.Rect}
  */
-eYo.Rect_p.backward = function (c = 0, l = 0) {
+eYo.Rect_p.Backward = function (c = 0, l = 0) {
   this.origin_.backward(c, l)
   return this
 }
@@ -871,7 +871,7 @@ eYo.Rect_p.equals = function (rhs) {
  * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
  * @return {!eYo.Rect} the receiver
  */
-eYo.Rect_p.scale = function (scaleX, scaleY) {
+eYo.Rect_p.Scale = function (scaleX, scaleY) {
   this.origin_.scale(scaleX, scaleY)
   this.size_.scale(scaleX, scaleY)
   return this
@@ -902,7 +902,7 @@ eYo.Rect_p.mirror = function () {
 
 /**
  * Inset the receiver.
- * Default values are `eYo.Unit.x / 2` and `eYo.Unit.y / 4`
+ * Default values are `eYo.unit.x / 2` and `eYo.unit.y / 4`
  * @param {Number|eYo.Where} [dx_min]
  * @param {Number} [dy_min]
  * @param {Number} [dx_max]
@@ -911,8 +911,8 @@ eYo.Rect_p.mirror = function () {
  */
 eYo.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
   if (!eYo.isDef(dx_min)) {
-    dx_min = dx_max = eYo.Unit.x / 2
-    dy_min = dy_max = eYo.Unit.y / 4
+    dx_min = dx_max = eYo.unit.x / 2
+    dy_min = dy_max = eYo.unit.y / 4
   } else if (eYo.isDef(dx_min.x)) {
     dy_min = dy_max = dx_min.y
     dx_min = dx_max = dx_min.x
@@ -936,7 +936,7 @@ eYo.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
 
 /**
  * outset the receiver.
- * Default values are `eYo.Unit.x / 2` and `eYo.Unit.y / 4`
+ * Default values are `eYo.unit.x / 2` and `eYo.unit.y / 4`
  * @param {Number|eYo.Where} [dx_min]
  * @param {Number} [dy_min]
  * @param {Number} [dx_max]
@@ -945,8 +945,8 @@ eYo.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
  */
 eYo.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
   if (!eYo.isDef(dx_min)) {
-    dx_min = dx_max = eYo.Unit.x / 2
-    dy_min = dy_max = eYo.Unit.y / 4
+    dx_min = dx_max = eYo.unit.x / 2
+    dy_min = dy_max = eYo.unit.y / 4
   } else if (eYo.isDef(dx_min.x)) {
     dy_min = dy_max = dx_min.y
     dx_min = dx_max = dx_min.x
@@ -976,14 +976,14 @@ eYo.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
  */
 eYo.Rect_p.xyContains = function (x, y) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
-    var c = x.x / eYo.Unit.x
-    var l = y.x / eYo.Unit.y
+    var c = x.x / eYo.unit.x
+    var l = y.x / eYo.unit.y
   } else {
     c = x.c
     l = x.l
     if (!eYo.isDef(x.c) || !eYo.isDef(x.l)) {
-      c = x / eYo.Unit.x
-      l = y / eYo.Unit.y
+      c = x / eYo.unit.x
+      l = y / eYo.unit.y
     }
   }
   return c >= this.c_min && c <= this.c_max

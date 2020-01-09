@@ -1,5 +1,5 @@
-// This is also a basic test for eYo.Test.basic
-eYo.Test.basic(
+// This is also a basic test for eYo.Test.Basic
+eYo.Test.Basic(
   [
     ['start_stmt', null, null],
     ['start_stmt', 'start_stmt', null],

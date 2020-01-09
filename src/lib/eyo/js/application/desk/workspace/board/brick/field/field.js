@@ -11,12 +11,12 @@
  */
 'use strict';
 
-eYo.require('C9r.BSMOwned')
+eYo.require('c9r.bsmOwned')
 
-eYo.provide('Field')
+eYo.provide('field')
 
-eYo.forwardDeclare('Size')
-eYo.forwardDeclare('Events')
+eYo.forwardDeclare('size')
+eYo.forwardDeclare('events')
 
 Object.defineProperties(eYo.Field, {
   STATUS_NONE: { value: '' }, // names correspond to `eyo-code-...` css class names
@@ -25,12 +25,12 @@ Object.defineProperties(eYo.Field, {
   STATUS_BUILTIN: { value: 'builtin' },
 })
 
-{
+;(() => {
   let startEditing = function () {
   }
   let endEditing = function () {
     var data = this.data
-    eYo.assert(data, `No data bound to field ${this.name}/${this.brick.type}`)
+    eYo.Assert(data, `No data bound to field ${this.name}/${this.brick.type}`)
     var result = this.validate(this.text)
     if (result) {
       data.fromField(result)
@@ -75,7 +75,7 @@ Object.defineProperties(eYo.Field, {
    * Make a field from a given model
    * @param {String} name 
    * @param {Object} model 
-   * @return {eYo.FieldLabel|eYo.FieldVariable|eYo.Field.Input}
+   * @return {eYo.FieldLabel|eYo.fieldVariable|eYo.field.Input}
    */
   let makeField = (owner, name, model) => {
     var field
@@ -131,16 +131,16 @@ Object.defineProperties(eYo.Field, {
     // field maker
     // Serious things here
     var brick = owner.brick || owner
-    eYo.assert(brick, 'Missing brick while making fields')
+    eYo.Assert(brick, 'Missing brick while making fields')
     for (var name in fieldsModel) {
       var model = fieldsModel[name]
       var field = makeField(owner, name, model)
       if (field) {
-        if (name === eYo.Key.BIND && owner instanceof eYo.Slot.Dflt.Dflt) {
+        if (name === eYo.key.BIND && owner instanceof eYo.Slot.Dflt.Dflt) {
           owner.bindField = field
         }
         owner.fields[name] = field
-        eYo.assert(field.brick, 'Missing field brick while making fields')
+        eYo.Assert(field.brick, 'Missing field brick while making fields')
       }
     }
     // now order
@@ -154,7 +154,7 @@ Object.defineProperties(eYo.Field, {
       field = owner.fields[name]
       var order = field.order__
       if (order) {
-        eYo.assert(!goog.isDefAndNotNull(byOrder[order]),
+        eYo.Assert(!goog.isDefAndNotNull(byOrder[order]),
         'Fields with the same order  %s = %s / %s',
         byOrder[order] && byOrder[order].name || 'NOTHING', field.name, owner.getBrick().type)
         byOrder[order] = field
@@ -248,9 +248,9 @@ Object.defineProperties(eYo.Field, {
       return startField
     }
     owner.fieldAtStart = chain.apply(this, fromStart)
-    owner.fieldAtStart = chain(eYo.Key.MODIFIER, eYo.Key.PREFIX, eYo.Key.START, eYo.Key.LABEL, eYo.Key.SEPARATOR, owner.fieldAtStart)
+    owner.fieldAtStart = chain(eYo.key.MODIFIER, eYo.key.PREFIX, eYo.key.START, eYo.key.LABEL, eYo.key.SEPARATOR, owner.fieldAtStart)
     owner.toEndField = chain.apply(this, toEnd)
-    owner.toEndField = chain(owner.toEndField, eYo.Key.END, eYo.Key.SUFFIX, eYo.Key.COMMENT_MARK, eYo.Key.COMMENT)
+    owner.toEndField = chain(owner.toEndField, eYo.key.END, eYo.key.SUFFIX, eYo.key.COMMENT_MARK, eYo.key.COMMENT)
     // we have exhausted all the fields that are already ordered
     // either explicitely or not
     // Remove from unordered what has been ordered so far
@@ -260,13 +260,13 @@ Object.defineProperties(eYo.Field, {
         unordered.splice(j, 1)
       }
     }
-    eYo.assert(unordered.length < 2,
+    eYo.Assert(unordered.length < 2,
       `Too many unordered fields in ${name}/${JSON.stringify(model)}`)
     unordered[0] && (owner.fieldAtStart = chain(owner.fieldAtStart, unordered[0]))
     owner.fieldAtStart && delete owner.fieldAtStart.eyoLast_
     owner.toEndField && delete owner.toEndField.eyoLast_
   }
-}
+}) ()
 
 /**
  * 
@@ -285,7 +285,7 @@ eYo.Field.disposeFields = owner => {
  * @param {string} text The initial content of the field.
  * @constructor
  */
-eYo.Field.makeClass('Dflt', eYo.C9r.BSMOwned, {
+eYo.Field.makeClass('Dflt', eYo.C9r.BsmOwned, {
   init (bsm, name, text) {
     this.name_ = name
     this.text_ = text
@@ -326,7 +326,7 @@ eYo.Field.makeClass('Dflt', eYo.C9r.BSMOwned, {
         if (this.text__ === after) {
           return
         }
-        eYo.Events.fireBrickChange(this.brick, 'field', this.name, this.text__, after)
+        eYo.events.fireBrickChange(this.brick, 'field', this.name, this.text__, after)
         this.brick.change.wrap(() => this.size.setFromText(this.text__ = after))
         this.placeholder__ = !after || !after.length
       },
@@ -392,20 +392,20 @@ eYo.Field.makeClass('Dflt', eYo.C9r.BSMOwned, {
  * Initializes the model of the field after it has been installed on a block.
  * No-op by default.
  */
-eYo.Field.Dflt_p.initModel = eYo.Do.nothing
+eYo.Field.Dflt_p.initModel = eYo.do.nothing
 
 /**
  * Whether the field of the receiver starts with a separator.
  */
-eYo.Field.Dflt_p.startsWithSeparator = function () {
+eYo.Field.Dflt_p.StartsWithSeparator = function () {
   // if the text is void, it can not change whether
   // the last character was a letter or not
   var text = this.text
   if (text.length) {
     if (this.name === 'separator'
       || (this.model && this.model.separator)
-      || eYo.XRE.operator.test(text[0])
-      || eYo.XRE.delimiter.test(text[0])
+      || eYo.xre.operator.test(text[0])
+      || eYo.xre.delimiter.test(text[0])
       || text[0] === '.'
       || text[0] === ':'
       || text[0] === ','
@@ -456,7 +456,7 @@ eYo.Field.Dflt_p.validate = function (txt) {
  * We should call `this.willRender()` from the model.
  */
 eYo.Field.Dflt_p.willRender = function () {
-  var f = this.model && (eYo.Decorate.reentrant_method(this, 'model_willRender', this.model.willRender))
+  var f = this.model && (eYo.decorate.reentrant_method(this, 'model_willRender', this.model.willRender))
   if (f) {
     f.call(this)
   } else {
@@ -493,7 +493,7 @@ eYo.Field.Dflt.makeSubclass('Label', {
  */
 eYo.Field.Dflt.makeSubclass('Input', {
   init (bsi, name, text) {
-    eYo.assert(name, 'missing name for an editable field')
+    eYo.Assert(name, 'missing name for an editable field')
     this.editable = true
   },
   valued: {
@@ -544,7 +544,7 @@ eYo.Field.Input_p.getPlaceholderText = function (clear) {
       if (goog.isNumber(placeholder)) {
         return placeholder.toString()
       }
-      placeholder = eYo.Do.valueOf(placeholder, this)
+      placeholder = eYo.do.valueOf(placeholder, this)
       if (placeholder) {
         placeholder = placeholder.toString()
         if (placeholder.length > 1) {
@@ -554,6 +554,6 @@ eYo.Field.Input_p.getPlaceholderText = function (clear) {
       return placeholder
     }
     var data = this.data
-    return (this.placeholderText_ = ph(data && data.model) || ph(this.model) || eYo.Msg.Placeholder.CODE)
+    return (this.placeholderText_ = ph(data && data.model) || ph(this.model) || eYo.msg.placeholder.CODE)
   }
 }

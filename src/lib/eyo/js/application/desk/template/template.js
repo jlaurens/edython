@@ -12,9 +12,9 @@
  */
 'use strict'
 
-eYo.require('C9r.Pane')
+eYo.require('c9r.pane')
 
-eYo.require('Decorate')
+eYo.require('decorate')
 
 /**
  * @name {eYo.Template}

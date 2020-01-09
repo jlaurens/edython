@@ -1,14 +1,14 @@
 describe('node brick', function () {
-  var g = eYo.GMR._PyParser_Grammar
+  var g = eYo.gmr._PyParser_Grammar
 
   console.log('RUNNING NODE/BLOCK TESTS')
 //   describe('NAME', function() {
 //     this.timeout(5000)
 //     it('NAME', function() {
-//       eYo.Test.setItUp()
+//       eYo.Test.SetItUp()
 //       var err_ret = {}
-//       var n = eYo.Parser.PyParser_ParseString('abc', g, eYo.TKN.file_input, err_ret)
-//       var d = n.toBrick(eYo.app.board)
+//       var n = eYo.parser.PyParser_ParseString('abc', g, eYo.tkn.file_input, err_ret)
+//       var d = n.toBrick(eYo.App.Board)
 //       chai.assert(d, 'MISSING BLOCK')
 //       d.dispose()
 //       eYo.Test.tearItDown()
@@ -27,7 +27,7 @@ describe('node brick', function () {
       str_s.forEach(str => {
         var f = (() => {
           return function() {
-            eYo.Test.source(str)
+            eYo.Test.Source(str)
           }
         })()
         it(str, f)
@@ -3554,9 +3554,9 @@ describe('node brick', function () {
 
 //   describe('File input', function() {
 //     it('setup.py', function() {
-//       chai.assert(eYo.Parser.PyParser_ParseString)
+//       chai.assert(eYo.parser.PyParser_ParseString)
 //       var err_ret = {}
-//       var n = eYo.Parser.PyParser_ParseString(src, g, eYo.TKN.file_input, err_ret)
+//       var n = eYo.parser.PyParser_ParseString(src, g, eYo.tkn.file_input, err_ret)
 //       chai.assert(n, `FAILURE ${err_ret.error}, ${err_ret.expected}, ${err_ret.lineno}, "${err_ret.text}"`)
 //     });
 //   });

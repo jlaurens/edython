@@ -11,16 +11,16 @@
  */
 'use strict'
 
-eYo.require('Dom')
+eYo.require('dom')
 
-eYo.provide('Dom.App')
+eYo.provide('dom.app')
 
-eYo.forwardDeclare('App')
+eYo.forwardDeclare('app')
 
 /**
  * Dom driver for application.
  */
-eYo.Dom.makeDriverClass('App', {
+eYo.dom.makeDriverClass('App', {
   /**
    * Initialize the application's dom ressources.
    * @param {eYo.App.Dflt} app

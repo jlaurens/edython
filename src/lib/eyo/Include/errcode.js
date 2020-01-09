@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.makeNS('E')
+eYo.makeNS('e')
 
-Object.defineProperties(eYo.E, {
+Object.defineProperties(eYo.e, {
   OK: {get () {return 10}}, /* No error */
   EOF: {get () {return 11}}, /* End Of File */
   INTR: {get () {return 12}}, /* Interrupted */

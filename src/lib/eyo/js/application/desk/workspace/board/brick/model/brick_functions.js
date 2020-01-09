@@ -11,19 +11,19 @@
  */
 'use strict'
 
-eYo.require('Brick')
+eYo.require('brick')
 
-eYo.require('Msg')
+eYo.require('msg')
 
-eYo.require('Expr.List')
+eYo.require('expr.list')
 
-eYo.require('Expr.Primary')
-eYo.require('Tooltip')
+eYo.require('expr.primary')
+eYo.require('tooltip')
 
-eYo.require('Library')
+eYo.require('library')
 eYo.require('Module.functions')
 
-eYo.provide('Brick.Functions')
+eYo.provide('brick.functions')
 
 /**
  * Add the conjugate, imag and real names
@@ -31,8 +31,8 @@ eYo.provide('Brick.Functions')
  * by `modulebot.py`.
  */
 
-{
-  var M = eYo.Module.functions
+;(() => {
+  var M = eYo.module.functions
   var d = M.data
   var n = d.items.length
   var t = d.types.length
@@ -69,4 +69,4 @@ eYo.provide('Brick.Functions')
     category: c,
     type_: t + 1
   }))
-}
+}) ()

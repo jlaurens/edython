@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('Svg')
-eYo.require('Dom.Brick')
+eYo.require('svg')
+eYo.require('dom.brick')
 
-eYo.forwardDeclare('Brick')
-eYo.forwardDeclare('Focus')
+eYo.forwardDeclare('brick')
+eYo.forwardDeclare('focus')
 goog.forwardDeclare('goog.dom')
 
 /**
@@ -104,11 +104,11 @@ eYo.Svg.makeDriverClass('Brick', {
     }
     goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
     if (!brick.board.options.readOnly) {
-      eYo.Dom.bindMouseEvents(brick.ui, g)
+      eYo.dom.BindMouseEvents(brick.ui, g)
       // I could not achieve to use only one binding
       // With 2 bindings all the mouse events are catched,
       // but some, not all?, are catched twice.
-      eYo.Dom.bindMouseEvents(brick.ui, svg.pathContour_)
+      eYo.dom.BindMouseEvents(brick.ui, svg.pathContour_)
     }
     if (brick.isExpr) {
       goog.dom.classlist.add(svg.groupShape_, 'eyo-expr')
@@ -139,7 +139,7 @@ eYo.Svg.makeDriverClass('Brick', {
           'd',
           eYo.Shape.definitionForPlayIcon({x: 0, y: 0})
         )
-        dom.bound.mousedown = eYo.Dom.bindEvent(
+        dom.bound.mousedown = eYo.dom.BindEvent(
           svg.pathPlayIcon_,
           'mousedown',
           null,
@@ -241,7 +241,7 @@ eYo.Svg.Brick_p.withBBox = true
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.contourAboveParent_ = function (brick) {
+eYo.Svg.ContourAboveParent_ = function (brick) {
   return !brick.isExpr
 }
 
@@ -288,28 +288,28 @@ eYo.Svg.Brick_p.pathDef_ = function (brick) {
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.Brick_p.pathControlDef_ = eYo.Svg.Brick_p.pathDef_
+eYo.Svg.Brick_p.pathControlDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Statement brick path.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.Brick_p.pathStatementDef_ = eYo.Svg.Brick_p.pathDef_
+eYo.Svg.Brick_p.pathStatementDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Brick path.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.Brick_p.pathGroupShapeDef_ = eYo.Svg.Brick_p.pathDef_
+eYo.Svg.Brick_p.pathGroupShapeDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Brick path.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.Brick_p.pathValueDef_ = eYo.Svg.Brick_p.pathDef_
+eYo.Svg.Brick_p.pathValueDef_ = eYo.svg.Brick_p.pathDef_
 
 
 /**
@@ -317,28 +317,28 @@ eYo.Svg.Brick_p.pathValueDef_ = eYo.Svg.Brick_p.pathDef_
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.Brick_p.pathContourDef_ = eYo.Svg.Brick_p.pathDef_
+eYo.Svg.Brick_p.pathContourDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Highlighted brick outline. Default implementation forwards to pathDef_.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.Brick_p.pathHilightDef_ = eYo.Svg.Brick_p.pathDef_
+eYo.Svg.Brick_p.pathHilightDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Brick outline. Default implementation forwards to pathDef_.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.Brick_p.pathShapeDef_ = eYo.Svg.Brick_p.pathDef_
+eYo.Svg.Brick_p.pathShapeDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Brick path when collapsed.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.Brick_p.pathCollapsedDef_ = eYo.Svg.Brick_p.pathDef_
+eYo.Svg.Brick_p.pathCollapsedDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Highlighted magnet outline.
@@ -349,8 +349,8 @@ eYo.Svg.Brick_p.pathCollapsedDef_ = eYo.Svg.Brick_p.pathDef_
  * @private
  */
 eYo.Svg.Brick_p.pathMagnetDef_ = function (brick) {
-  return eYo.Focus.magnet
-  ? eYo.Shape.definitionWithMagnet(eYo.Focus.magnet, {hilight: true})
+  return eYo.Focus.Magnet
+  ? eYo.Shape.definitionWithMagnet(eYo.Focus.Magnet, {hilight: true})
   : ''
 }
 
@@ -405,7 +405,7 @@ eYo.Svg.Brick_p.willRender = function (brick, recorder) {
  * @param {*} recorder
  * @private
  */
-eYo.Svg.Brick_p.didRender = eYo.Do.nothing
+eYo.Svg.Brick_p.didRender = eYo.do.nothing
 
 /**
  * Compute the paths of the brick depending on its size.
@@ -506,7 +506,7 @@ eYo.Svg.Brick_p.updateDisabled = function (brick) {
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @param {Object} menu  the menu to be displayed
  */
-eYo.Svg.Brick_p.menuShow = function (brick, menu) {
+eYo.Svg.Brick_p.MenuShow = function (brick, menu) {
   var svg = brick.dom
   var bBox = this.getBBox(brick)
   var scaledHeight = bBox.height * brick.board.scale
@@ -574,7 +574,7 @@ eYo.Svg.Brick_p.parentDidChange = function (brick, oldParent) {
     brick.ui.placeMagnets_()
     var p_svg = newParent.dom.svg
     p_svg.group_.appendChild(g)
-    if (eYo.Svg.contourAboveParent_(brick)) {
+    if (eYo.Svg.ContourAboveParent_(brick)) {
       goog.dom.appendChild(p_svg.groupContour_, svg.groupContour_)
     } else {
       goog.dom.insertChildAt(p_svg.groupContour_, svg.groupContour_, 0)
@@ -618,7 +618,7 @@ eYo.Svg.Brick_p.updateWrapped = function (brick) {
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.Brick_p.sendToFront = function (brick) {
+eYo.svg.Brick_p.SendToFront = function (brick) {
   var b3k = brick
   var parent
   while ((parent = b3k.surround)) {
@@ -654,7 +654,7 @@ eYo.Svg.Brick_p.sendToFront = function (brick) {
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Svg.Brick_p.sendToBack = function (brick) {
+eYo.svg.Brick_p.SendToBack = function (brick) {
   var b3k = brick
   var parent
   while ((parent = b3k.surround)) {
@@ -689,7 +689,7 @@ eYo.Svg.Brick_p.place = function(brick) {
  * @param {eYo.Brick.Dflt} brick  the brick.
  * @param {eYo.Where} dxy  in board coordinates.
  */
-eYo.Svg.Brick_p.setOffsetDuringDrag = function(brick, dxy) {
+eYo.svg.Brick_p.SetOffsetDuringDrag = function(brick, dxy) {
   var svg = brick.dom.svg
   var g = svg.group_
   g.translate_ = `translate(${dxy.x},${dxy.y})`
@@ -701,7 +701,7 @@ eYo.Svg.Brick_p.setOffsetDuringDrag = function(brick, dxy) {
  * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.Svg.Brick_p.whereInParent = function (brick) {
+eYo.Svg.Brick_p.WhereInParent = function (brick) {
   return this.xyInParent(brick.dom.svg.group_)
 }
 
@@ -714,7 +714,7 @@ eYo.Svg.Brick_p.whereInParent = function (brick) {
  * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.Svg.Brick_p.whereInBoard = function (brick) {
+eYo.Svg.Brick_p.WhereInBoard = function (brick) {
   var ans = new eYo.Where()
   var bds = brick.board.dom.svg.brickDragSurface
   var current = bds.brickGroup
@@ -740,7 +740,7 @@ eYo.Svg.Brick_p.whereInBoard = function (brick) {
  * @return {!eYo.Where} Object with .x and .y properties in
  *     desk coordinates.
  */
-eYo.Svg.Brick_p.whereInDesk = function (brick) {
+eYo.Svg.Brick_p.WhereInDesk = function (brick) {
   var ans = new eYo.Where()
   var bds = brick.board.dom.svg.brickDragSurface
   var bdsRoot = bds.dom.svg.root_
@@ -757,7 +757,7 @@ eYo.Svg.Brick_p.whereInDesk = function (brick) {
  * Add the hilight path_.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.addHilight = function (brick) {
+eYo.Svg.Brick_p.AddHilight = function (brick) {
   var svg = brick.dom.svg
   if (!svg.pathHilight_.parentNode) {
     svg.group_.appendChild(svg.pathHilight_)
@@ -776,7 +776,7 @@ eYo.Svg.Brick_p.hilightRemove = function (brick) {
  * Add the select path.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.selectAdd = function (brick) {
+eYo.svg.Brick_p.SelectAdd = function (brick) {
   var svg = brick.dom.svg
   if (!svg.pathSelect_.parentNode) {
     if (svg.pathHilight_.parentNode) {
@@ -793,7 +793,7 @@ eYo.Svg.Brick_p.selectAdd = function (brick) {
  * Remove the select path.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.selectRemove = function (brick) {
+eYo.svg.Brick_p.SelectRemove = function (brick) {
   goog.dom.removeNode(brick.dom.svg.pathSelect_)
 }
 
@@ -801,7 +801,7 @@ eYo.Svg.Brick_p.selectRemove = function (brick) {
  * Add the hilight path_ to the dom.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.magnetAdd = function (brick) {
+eYo.Svg.Brick_p.MagnetAdd = function (brick) {
   var svg = brick.dom.svg
   if (!svg.pathMagnet_.parentNode) {
     svg.group_.appendChild(svg.pathMagnet_)
@@ -812,7 +812,7 @@ eYo.Svg.Brick_p.magnetAdd = function (brick) {
  * Remove the select path from the dom.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.magnetRemove = function (brick) {
+eYo.Svg.Brick_p.MagnetRemove = function (brick) {
   goog.dom.removeNode(brick.dom.svg.pathMagnet_)
 }
 
@@ -820,7 +820,7 @@ eYo.Svg.Brick_p.magnetRemove = function (brick) {
  * The svg group has an `eyo-top` class.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.statusTopAdd = function (brick) {
+eYo.svg.Brick_p.StatusTopAdd = function (brick) {
   goog.dom.classlist.add(brick.dom.svg.group_, 'eyo-top')
 }
 
@@ -828,7 +828,7 @@ eYo.Svg.Brick_p.statusTopAdd = function (brick) {
  * The svg group has no `eyo-top` class.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.statusTopRemove = function (brick) {
+eYo.svg.Brick_p.StatusTopRemove = function (brick) {
   goog.dom.classlist.remove(brick.dom.svg.group_, 'eyo-top')
 }
 
@@ -836,7 +836,7 @@ eYo.Svg.Brick_p.statusTopRemove = function (brick) {
  * The svg group has an `eyo-select` class.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.statusFocusAdd = function (brick) {
+eYo.svg.Brick_p.StatusFocusAdd = function (brick) {
   var svg = brick.dom.svg
   var g = svg.group_
   if (goog.dom.classlist.contains(g, 'eyo-select')) {
@@ -853,7 +853,7 @@ eYo.Svg.Brick_p.statusFocusAdd = function (brick) {
  * The svg group has an `eyo-select` class.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.statusFocusRemove = function (brick) {
+eYo.svg.Brick_p.StatusFocusRemove = function (brick) {
   var svg = brick.dom.svg
   var g = svg.group_
   goog.dom.classlist.remove(g, 'eyo-select')
@@ -902,7 +902,7 @@ eYo.Svg.Brick_p.drawSharp = function (brick, visible) {
     var children = goog.dom.getChildren(g)
     var length = children.length
     if (!length) {
-      var y = eYo.Font.totalAscent
+      var y = eYo.font.totalAscent
       var text = eYo.Svg.newElement('text',
         {x: 0, y: y},
         g)
@@ -911,7 +911,7 @@ eYo.Svg.Brick_p.drawSharp = function (brick, visible) {
     }
     var expected = brick.getStatementCount()
     while (length < expected) {
-      y = eYo.Font.totalAscent + length * eYo.Unit.y
+      y = eYo.font.totalAscent + length * eYo.unit.y
       text = eYo.Svg.newElement('text',
         {x: 0, y: y},
         g)
@@ -922,7 +922,7 @@ eYo.Svg.Brick_p.drawSharp = function (brick, visible) {
       text = children[--length]
       g.removeChild(text)
     }
-    g.setAttribute('transform', `translate(${io.cursor.x},${eYo.Padding.t})`)
+    g.setAttribute('transform', `translate(${io.cursor.x},${eYo.padding.t})`)
     g.style.display = 'block'
   } else {
     goog.dom.removeChildren(g)
@@ -935,7 +935,7 @@ eYo.Svg.Brick_p.drawSharp = function (brick, visible) {
  * @param {eYo.Brick.Dflt} mode  The brick to edit.
  * @param {Boolean} dragging  The display mode for bocks.
  */
-eYo.Svg.Brick_p.setDragging = (brick, dragging) => {
+eYo.svg.Brick_p.SetDragging = (brick, dragging) => {
   var svg = brick.dom.svg
   var g = svg.group_
   if (dragging) {
@@ -989,15 +989,15 @@ eYo.Svg.Brick_p.parentSet = function (brick, parent) {
  * @param {String} key
  * @param {Object} [options]
  */
-eYo.Svg.Brick_p.addTooltip = function (brick, key, options) {
+eYo.Svg.Brick_p.AddTooltip = function (brick, key, options) {
   var g = brick.dom.group
   goog.mixin(options, {
     onShow(instance) {
-      g && g.parentNode && (eYo.Tooltip.hideAll(g.parentNode))
+      g && g.parentNode && (eYo.tooltip.hideAll(g.parentNode))
     }
   })
   var model = brick.constructor.eyo.model
-  var title = eYo.Tooltip.getTitle(key || model.tooltip || brick.tooltipKey || brick.type.substring(4))
+  var title = eYo.tooltip.getTitle(key || model.tooltip || brick.tooltipKey || brick.type.substring(4))
   if (title) {
     this.addTooltip(g, title, options)
   }

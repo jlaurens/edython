@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.provide('Do.Register')
+eYo.provide('do.register')
 
 /**
  * Adds a `fooRegister` and a `fooUnregister` method to the given object, as soon as `foo` is the given key. `fooForEach` and `fooSome` iterators are provided too.
@@ -20,7 +20,7 @@ eYo.provide('Do.Register')
  * @param {String} key - The unique key prefixing the added methods
  * @param {Function} filter - The function to filter out objects before registering.
  */
-eYo.Do.Register.add = function (object, key, filter) {
+eYo.do.register.Add = function (object, key, filter) {
   if (eYo.isF(object)) {
     object.eyo.modelDeclare({
       valued: {
@@ -58,7 +58,7 @@ eYo.Do.Register.add = function (object, key, filter) {
     },
   }
   Object.keys(model).forEach(k => {
-    eYo.assert(!eYo.Do.hasOwnProperty(object, k))
+    eYo.Assert(!eYo.do.hasOwnProperty(object, k))
     let f = model[k]
     object[k] = f // maybe some post processing here
   })

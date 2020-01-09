@@ -1,11 +1,11 @@
-describe('App', function() {
+describe('app', function() {
   it ('Application: Basic', function () {
     chai.assert(eYo.App.Dflt)
     let app = new eYo.App.Dflt()
     chai.assert(app)
   })
   it ('Application: UI', function () {
-    ;['Fcls', 'Fcfl', 'Dom', 'Svg'].forEach((UI) => {
+    ;['fcls', 'fcfl', 'dom', 'svg'].forEach((UI) => {
       let options = {
         UI: UI
       }

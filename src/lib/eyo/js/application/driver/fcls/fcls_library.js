@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('Fcls')
+eYo.require('fcls')
 
-eYo.provide('Fcls.Library')
+eYo.provide('fcls.library')
 
-eYo.forwardDeclare('Library')
+eYo.forwardDeclare('library')
 
 /**
  * Shared application driver.
  */
-eYo.Fcls.makeDriverClass('Library')
+eYo.fcls.makeDriverClass('Library')

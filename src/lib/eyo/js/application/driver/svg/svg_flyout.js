@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('Svg')
+eYo.require('svg')
 
-eYo.forwardDeclare('Flyout')
-eYo.forwardDeclare('FlyoutToolbar')
+eYo.forwardDeclare('flyout')
+eYo.forwardDeclare('flyoutToolbar')
 
 /**
  * Svg driver for the flyout
@@ -42,7 +42,7 @@ eYo.Svg.makeDriverClass('Flyout', {
       class: 'eyo-flyout-background'
     }, root)
   // Bad design: code reuse: options
-    this.addTooltip(background, eYo.Tooltip.getTitle('flyout'), {
+    this.addTooltip(background, eYo.tooltip.getTitle('flyout'), {
       position: 'right',
       theme: 'light bordered',
       flipDuration: 0,
@@ -59,7 +59,7 @@ eYo.Svg.makeDriverClass('Flyout', {
         }
       },
       onShow: x => {
-        eYo.Tooltip.hideAll(background)
+        eYo.tooltip.hideAll(background)
       }
     })
   },
@@ -81,7 +81,7 @@ eYo.Svg.makeDriverClass('Flyout', {
  * @param {Boolean} show
  */
 eYo.Svg.Flyout.prototype.displaySet = function (flyout, show) {
-  !show && eYo.Tooltip.hideAll(flyout.dom.svg.root_)
+  !show && eYo.tooltip.hideAll(flyout.dom.svg.root_)
   flyout.dom.svg.root_.style.display = show ? 'block' : 'none'
 }
 
@@ -156,17 +156,17 @@ eYo.Svg.makeDriverClass('FlyoutToolbar', {
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-general')
       )
-      select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-      // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+      select = new goog.ui.Select(null, new eYo.Menu(), eYo.menuButtonRenderer.getInstance())
+      // select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'test'))
       // select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+      select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'basic'))
+      select.addItem(new eYo.MenuItem(eYo.msg.INTERMEDIATE, 'intermediate'))
+      select.addItem(new eYo.MenuItem(eYo.msg.ADVANCED, 'advanced'))
+      select.addItem(new eYo.MenuItem(eYo.msg.EXPERT, 'expert'))
       select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
+      select.addItem(new eYo.MenuItem(eYo.msg.BRANCHING, 'branching'))
+      select.addItem(new eYo.MenuItem(eYo.msg.LOOPING, 'looping'))
+      select.addItem(new eYo.MenuItem(eYo.msg.FUNCTION, 'function'))
       select.setSelectedIndex(0)
       select.render(dom.select_general_)
       flyout.listenableKey = select.listen(
@@ -179,17 +179,17 @@ eYo.Svg.makeDriverClass('FlyoutToolbar', {
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-module')
       )
-      var select = new goog.ui.Select(null, new eYo.Menu(), eYo.MenuButtonRenderer.getInstance())
-      // select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'test'))
+      var select = new goog.ui.Select(null, new eYo.Menu(), eYo.menuButtonRenderer.getInstance())
+      // select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'test'))
       // select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.Msg.BASIC, 'basic'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.INTERMEDIATE, 'intermediate'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.ADVANCED, 'advanced'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.EXPERT, 'expert'))
+      select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'basic'))
+      select.addItem(new eYo.MenuItem(eYo.msg.INTERMEDIATE, 'intermediate'))
+      select.addItem(new eYo.MenuItem(eYo.msg.ADVANCED, 'advanced'))
+      select.addItem(new eYo.MenuItem(eYo.msg.EXPERT, 'expert'))
       select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.Msg.BRANCHING, 'branching'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.LOOPING, 'looping'))
-      select.addItem(new eYo.MenuItem(eYo.Msg.FUNCTION, 'function'))
+      select.addItem(new eYo.MenuItem(eYo.msg.BRANCHING, 'branching'))
+      select.addItem(new eYo.MenuItem(eYo.msg.LOOPING, 'looping'))
+      select.addItem(new eYo.MenuItem(eYo.msg.FUNCTION, 'function'))
       select.setSelectedIndex(0)
       select.render(dom.select_module_)
       flyout.listenableKey = select.listen(
@@ -223,25 +223,25 @@ eYo.Svg.makeDriverClass('FlyoutToolbar', {
     }
     div.appendChild(dom.control_)
     var bound = dom.bound
-    bound.mousedown = eYo.Dom.bindEvent(
+    bound.mousedown = eYo.dom.BindEvent(
       dom.control_,
       'mousedown',
       flyout,
       flyout.on_mousedown.bind(flyout)
     )
-    bound.mouseenter = eYo.Dom.bindEvent(
+    bound.mouseenter = eYo.dom.BindEvent(
       dom.control_,
       'mouseenter',
       flyout,
       flyout.on_mouseenter.bind(flyout)
     )
-    bound.mouseleave = eYo.Dom.bindEvent(
+    bound.mouseleave = eYo.dom.BindEvent(
       dom.control_,
       'mouseleave',
       flyout,
       flyout.on_mouseleave.bind(flyout)
     )
-    bound.mouseup = eYo.Dom.bindEvent(
+    bound.mouseup = eYo.dom.BindEvent(
       dom.control_,
       'mouseup',
       flyout,
@@ -326,7 +326,7 @@ eYo.Svg.Flyout.prototype.update = function(flyout) {
  */
 eYo.Svg.Flyout.prototype.removeAllBrickListeners = function(flyout) {
   // Delete all the event listeners.
-  flyout.listeners_.forEach(l => eYo.Dom.unbindEvent(l))
+  flyout.listeners_.forEach(l => eYo.dom.unbindEvent(l))
   flyout.listeners_.length = 0
 }
 
@@ -337,27 +337,27 @@ eYo.Svg.Flyout.prototype.removeAllBrickListeners = function(flyout) {
  * @param {eYo.Flyout} flyout
  * @param {eYo.Brick.Dflt} brick The block to add listeners for.
  */
-eYo.Svg.Flyout.prototype.addListeners = function(flyout, brick) {
+eYo.Svg.Flyout.prototype.AddListeners = function(flyout, brick) {
   var g = brick.dom.svg.group_
-  flyout.listeners_.push(eYo.Dom.bindEvent(
+  flyout.listeners_.push(eYo.dom.BindEvent(
     g,
     'mousedown',
     null,
     e => flyout.app.motion.handleFlyoutStart(e, flyout, brick)
   ))
-  flyout.listeners_.push(eYo.Dom.bindEvent(
+  flyout.listeners_.push(eYo.dom.BindEvent(
     g,
     'mouseover',
     brick,
     brick.selectAdd
   ))
-  flyout.listeners_.push(eYo.Dom.bindEvent(
+  flyout.listeners_.push(eYo.dom.BindEvent(
     g,
     'mouseleave',
     brick,
     brick.focusRemove
   ))
-  flyout.listeners_.push(eYo.Dom.bindEvent(
+  flyout.listeners_.push(eYo.dom.BindEvent(
     g,
     'mouseout',
     brick,
@@ -371,7 +371,7 @@ eYo.Svg.Flyout.prototype.addListeners = function(flyout, brick) {
  */
 eYo.Svg.Flyout.prototype.listen_mouseover = function(flyout) {
   flyout.listeners_.push(
-    eYo.Dom.bindEvent(
+    eYo.dom.BindEvent(
     flyout.dom.svg.background_,
     'mouseover',
     null,
@@ -385,20 +385,20 @@ eYo.Svg.Flyout.prototype.listen_mouseover = function(flyout) {
  * Add a `wheel` and `mousdown` listener to scroll.
  * @param {eYo.Flyout} flyout
  */
-eYo.Svg.Flyout.prototype.bindScrollEvents = function(flyout) {
+eYo.Svg.Flyout.prototype.BindScrollEvents = function(flyout) {
   var bound = flyout.dom.bound
   if (bound.drag_wheel) {
     return
   }
   var svg = flyout.dom.svg
-  bound.drag_wheel = eYo.Dom.bindEvent(
+  bound.drag_wheel = eYo.dom.BindEvent(
     svg.group_,
     'wheel',
     null,
     this.on_wheel.bind(flyout)
   )
   // Dragging the flyout up and down.
-  bound.drag_mousedown = eYo.Dom.bindEvent(
+  bound.drag_mousedown = eYo.dom.BindEvent(
     svg.background_,
     'mousedown',
     null,

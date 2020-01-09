@@ -11,18 +11,18 @@
  */
 'use strict'
 
-eYo.require('Brick')
+eYo.require('brick')
 
-eYo.require('Msg')
+eYo.require('msg')
 
-eYo.require('Stmt')
-eYo.require('Expr.List')
+eYo.require('stmt')
+eYo.require('expr.list')
 
-eYo.require('Expr.Primary')
-eYo.require('Tooltip')
+eYo.require('expr.primary')
+eYo.require('tooltip')
 
-eYo.require('Library')
-eYo.provide('Brick.Fractions')
+eYo.require('library')
+eYo.provide('brick.fractions')
 
 /*
     'Fraction': 0,
@@ -40,9 +40,9 @@ eYo.provide('Brick.Fractions')
 
   var F = (name, title) => {
     var key = 'fractions__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.t3.Expr.Call_expr,
       name_p: name,
       holder_p: 'fractions',
       dotted_p: 0,
@@ -52,7 +52,7 @@ eYo.provide('Brick.Fractions')
 
   var F_instance = (name, type, title) => {
     var key = 'fractions__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
       type: type,
       data: {
@@ -63,36 +63,36 @@ eYo.provide('Brick.Fractions')
     }
   }
 
-eYo.Library.DATA.basic_fractions__module = [
+eYo.Library.DATA.Basic_fractions__module = [
   {
-    type: eYo.T3.Stmt.import_stmt,
-    variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
+    type: eYo.t3.Stmt.import_stmt,
+    variant_p: eYo.key.FROM_MODULE_IMPORT_STAR,
     from_p: 'fractions',
     title: 'fractions__import_stmt'
   },
   F('Fraction', 'Créer une fraction à partir d\'un ou deux nombres'),
   {
-    type: eYo.T3.Stmt.assignment_stmt,
+    type: eYo.t3.Stmt.Assignment_stmt,
     value_s: {
       slots: {
         O: F('Fraction')
       }
     }
   },
-  F_instance('numerator', eYo.T3.Expr.attributeref, 'Le numérateur d\'une fraction'),
-  F_instance('denominator', eYo.T3.Expr.attributeref, 'Le dénominateur d\'une fraction'),
-  F_instance('limit_denominator', eYo.T3.Expr.call_expr, 'Approximation d\'une fraction avec dénominateur maximal')
+  F_instance('numerator', eYo.t3.Expr.Attributeref, 'Le numérateur d\'une fraction'),
+  F_instance('denominator', eYo.t3.Expr.Attributeref, 'Le dénominateur d\'une fraction'),
+  F_instance('limit_denominator', eYo.t3.Expr.Call_expr, 'Approximation d\'une fraction avec dénominateur maximal')
 ]
 
-goog.mixin(eYo.Tooltip.Title, {
+goog.mixin(eYo.tooltip.Title, {
   fractions__import_stmt: 'Importer le module fractions'
 })
 
 F = function (name, title) {
   var key = 'fractions__'+name
-  title && (eYo.Tooltip.Title[key] = title)
+  title && (eYo.tooltip.Title[key] = title)
   return {
-    type: eYo.T3.Expr.call_expr,
+    type: eYo.t3.Expr.Call_expr,
     name_p: name,
     holder_p: 'fractions',
     dotted_p: 1,
@@ -102,12 +102,12 @@ F = function (name, title) {
 
 eYo.Library.DATA.fractions__module = [
   {
-    type: eYo.T3.Stmt.import_stmt,
-    variant_p: eYo.Key.IMPORT,
+    type: eYo.t3.Stmt.import_stmt,
+    variant_p: eYo.key.IMPORT,
     import_module_s: {
       slots: {
         O: {
-          type: eYo.T3.Expr.identifier,
+          type: eYo.t3.Expr.identifier,
           data: 'fractions'
         }
       }
@@ -115,24 +115,24 @@ eYo.Library.DATA.fractions__module = [
   },
   F('Fraction'),
   {
-    type: eYo.T3.Stmt.assignment_stmt,
+    type: eYo.t3.Stmt.Assignment_stmt,
     assigned_s: {
       slots: {
         'O': F('Fraction')
       }
     }
   },
-  F_instance('numerator', eYo.T3.Expr.attributeref),
-  F_instance('denominator', eYo.T3.Expr.attributeref),
-  F_instance('limit_denominator', eYo.T3.Expr.call_expr)
+  F_instance('numerator', eYo.t3.Expr.Attributeref),
+  F_instance('denominator', eYo.t3.Expr.Attributeref),
+  F_instance('limit_denominator', eYo.t3.Expr.Call_expr)
 ]
 
 })()
 
-goog.mixin(eYo.Tooltip.Title, {
+goog.mixin(eYo.tooltip.Title, {
   fractions__import_stmt: 'Importer le module fractions',
 })
 
-eYo.Brick.Fractions.T3s = [
-  eYo.T3.Fraction
+eYo.Brick.fractions.T3s = [
+  eYo.t3.Fraction
 ]

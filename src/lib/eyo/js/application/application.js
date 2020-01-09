@@ -12,20 +12,20 @@
  */
 'use strict'
 
-eYo.require('Do')
-eYo.require('Decorate')
+eYo.require('do')
+eYo.require('decorate')
 
-eYo.require('C9r')
+eYo.require('c9r')
 
-eYo.C9r.makeNS(eYo, 'App')
+eYo.C9r.makeNS(eYo, 'app')
 
-eYo.forwardDeclare('Css')
+eYo.forwardDeclare('css')
 
-eYo.forwardDeclare('Focus')
-eYo.forwardDeclare('Motion')
-eYo.forwardDeclare('Desk')
-eYo.forwardDeclare('Driver')
-eYo.forwardDeclare('Audio')
+eYo.forwardDeclare('focus')
+eYo.forwardDeclare('motion')
+eYo.forwardDeclare('desk')
+eYo.forwardDeclare('driver')
+eYo.forwardDeclare('audio')
 
 /**
  * @name {eYo.App.Options}
@@ -82,32 +82,32 @@ eYo.App.makeClass('Options', eYo.Dflt, {
       var hasDisable = false
       var hasSounds = false
     } else {
-      var hasTrashcan = eYo.asDef(options.trashCan, true)
-      var hasCollapse = eYo.asDef(options.collapse, true)
-      var hasDisable = eYo.asDef(options.disable, true)
-      var hasSounds = eYo.asDef(options.sounds, true)
+      var hasTrashcan = eYo.AsDef(options.trashCan, true)
+      var hasCollapse = eYo.AsDef(options.collapse, true)
+      var hasDisable = eYo.AsDef(options.disable, true)
+      var hasSounds = eYo.AsDef(options.sounds, true)
     }
     this.readOnly = readOnly
     this.hasTrashcan = hasTrashcan
     this.collapse = hasCollapse
     this.disable = hasDisable
     this.hasSounds = hasSounds
-    this.hasScrollbars = eYo.asDef(options.scrollbars, true)
+    this.hasScrollbars = eYo.AsDef(options.scrollbars, true)
     this.maxBricks = options.maxBricks || Infinity
-    this.hasCss = eYo.asDef(options.css, true)
-    this.noLeftSeparator = eYo.asDef(options.noLeftSeparator, true)
-    this.noDynamicList = eYo.asDef(options.noDynamicList, false)
-    this.smartUnary = eYo.asDef(options.smartUnary, true)
-    this.flyoutAnchor = eYo.asDef(options.flyoutAnchor, eYo.Flyout.AT_RIGHT)
-    this.container = eYo.asDef(options.container, 'eyo-desk')
-    this.backgroundClass = eYo.asDef(options.backgroundClass,'eyo-main-board-background')
+    this.hasCss = eYo.AsDef(options.css, true)
+    this.noLeftSeparator = eYo.AsDef(options.noLeftSeparator, true)
+    this.noDynamicList = eYo.AsDef(options.noDynamicList, false)
+    this.smartUnary = eYo.AsDef(options.smartUnary, true)
+    this.flyoutAnchor = eYo.AsDef(options.flyoutAnchor, eYo.Flyout.AT_RIGHT)
+    this.container = eYo.AsDef(options.container, 'eyo-desk')
+    this.backgroundClass = eYo.AsDef(options.backgroundClass,'eyo-main-board-background')
     var pathToMedia = options.media || './static/media'
     // Strip off any trailing slash (either Unix or Windows).
     pathToMedia = pathToMedia.replace(/[\\\/]$/, '')
     this.pathToMedia = pathToMedia
     this.zoom = eYo.App.parseZoom_(options)
     this.faceless = false
-    this.UI = eYo.asDef(options.UI, 'Fcls')
+    this.UI = eYo.AsDef(options.UI, 'fcls')
   }
 })
 
@@ -169,7 +169,7 @@ eYo.App.parseZoom_ = function(options) {
  * @property {eYo.Desk} desk
  * @readonly
  * The ui drivers manager.
- * @property {eYo.Driver.Mngr} ui_driver_mngr
+ * @property {eYo.driver.Mngr} ui_driver_mngr
  * @readonly
  * The main focus manager.
  * @property {eYo.Focus.Main} focus_main
@@ -202,7 +202,7 @@ eYo.App.makeDflt({
     clipboard: {},
     ui_driver_mngr: {
       init () {
-        let UI = this.options.UI || 'Fcls'
+        let UI = this.options.UI || 'fcls'
         return new eYo[UI].Mngr(this)
       },
       willChange(before) {
@@ -255,7 +255,7 @@ eYo.App.Dflt_p.deleteBrick = function (brick, deep) {
         var t9k = m4t.targetBrick
       }
     }
-    eYo.Events.groupWrap(() => {
+    eYo.events.groupWrap(() => {
       this.hideChaff()
       if (deep) {
         do {
@@ -279,15 +279,15 @@ eYo.App.Dflt_p.deleteBrick = function (brick, deep) {
  * @param {eYo.Brick.Dflt} brick Brick to be copied.
  * @private
  */
-eYo.App.Dflt_p.copyBrick = function (brick, deep) {
-  var xml = eYo.Xml.brickToDom(brick, {noId: true, noNext: !deep})
+eYo.App.Dflt_p.CopyBrick = function (brick, deep) {
+  var xml = eYo.xml.BrickToDom(brick, {noId: true, noNext: !deep})
   // Copy only the selected brick and internal bricks.
   // Encode start position in XML.
   var xy = brick.xy
   xml.setAttribute('x', xy.x)
   xml.setAttribute('y', xy.y)
   eYo.Clipboard.xml = xml
-  eYo.Clipboard.source = brick.board
+  eYo.Clipboard.Source = brick.board
   this.didCopyBrick && (this.didCopyBrick(brick, xml))
 }
 
@@ -339,4 +339,4 @@ eYo.App.Dflt_p.doFocus = function() {
 /**
  * Close tooltips, context menus, dropdown selections, etc.
  */
-eYo.App.Dflt_p.hideChaff = eYo.Do.nothing
+eYo.App.Dflt_p.hideChaff = eYo.do.nothing

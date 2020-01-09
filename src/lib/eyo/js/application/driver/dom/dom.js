@@ -11,36 +11,36 @@
  */
 'use strict'
 
-eYo.require('Fcfl')
+eYo.require('fcfl')
 
 /**
- * @name {eYo.Dom}
+ * @name {eYo.dom}
  * @namespace
  */
 
-eYo.Fcfl.makeNS(eYo, 'Dom')
+eYo.fcfl.makeNS(eYo, 'dom')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
 
 /**
- * @name{eYo.Dom.Dlgt}
+ * @name{eYo.dom.Dlgt}
  * The Dom default class.
  * @constructor
  */
 /**
- * @name{eYo.Dom.Dflt}
+ * @name{eYo.dom.Dflt}
  * The Dom delegate default class.
  * @constructor
  */
-eYo.Dom.makeDflt()
+eYo.dom.makeDflt()
 
 /**
- * @type {eYo.Dom.Mngr}
+ * @type {eYo.dom.Mngr}
  * The manager of all the dom drivers.
  * The dom drivers are uncomplete drivers.
  */
-eYo.Dom.makeMngr({
+eYo.dom.makeMngr({
   ui: {
     initMake (f) {
       return function () {
@@ -57,7 +57,7 @@ eYo.Dom.makeMngr({
       return function (object, ...rest) {
         var dom = object.dom
         if (dom) {
-          eYo.Dom.clearBoundEvents(object)
+          eYo.dom.ClearBoundEvents(object)
           f && f.apply(object, rest)
           object.dom = dom.bound = null
         }
@@ -70,7 +70,7 @@ eYo.Dom.makeMngr({
  * The document scroll.
  * @return {eYo.Where}
  */
-eYo.Dom.getDocumentScroll = () => {
+eYo.dom.getDocumentScroll = () => {
   return eYo.Where.xy(goog.dom.getDocumentScroll())
 }
 
@@ -79,9 +79,9 @@ eYo.Dom.getDocumentScroll = () => {
  * in conjunction with mouse events.
  * @type {Object}
  */
-eYo.Dom.TOUCH_MAP = Object.create(null)
+eYo.dom.TOUCH_MAP = Object.create(null)
 if (window && window.PointerEvent) {
-  Object.defineProperties(eYo.Dom.TOUCH_MAP, {
+  Object.defineProperties(eYo.dom.TOUCH_MAP, {
     mousedown: { value: ['pointerdown'] },
     mouseenter: { value: ['pointerenter'] },
     mouseleave: { value: ['pointerleave'] },
@@ -93,7 +93,7 @@ if (window && window.PointerEvent) {
     touchcancel: { value: ['pointercancel'] }
   })
 } else if (goog.events.BrowserFeature.TOUCH_ENABLED) {
-  Object.defineProperties(eYo.Dom.TOUCH_MAP, {
+  Object.defineProperties(eYo.dom.TOUCH_MAP, {
     mousedown: { value: ['touchstart'] },
     mousemove: { value: ['touchmove'] },
     mouseup: { value: ['touchend', 'touchcancel'] },
@@ -107,7 +107,7 @@ if (window && window.PointerEvent) {
  * @param {Element} node The node which the CSS transform should be applied.
  * @param {string} transform The value of the CSS `transform` property.
  */
-eYo.Dom.setCssTransform = function(node, transform) {
+eYo.dom.SetCssTransform = function(node, transform) {
   node.style['transform'] = transform
   node.style['-webkit-transform'] = transform // 2014
 }
@@ -119,7 +119,7 @@ eYo.Dom.setCssTransform = function(node, transform) {
  * @param {Element} before Existing element to precede new node.
  * @private
  */
-eYo.Dom.insertAfter = function(node, before) {
+eYo.dom.insertAfter = function(node, before) {
   var parent = before.parentNode
   if (!parent) {
     throw 'Reference node has no parent.'
@@ -137,7 +137,7 @@ eYo.Dom.insertAfter = function(node, before) {
  * @param {Event} e Mouse event.
  * @return {boolean} True if right-click.
  */
-eYo.Dom.isRightButton = e => {
+eYo.dom.isRightButton = e => {
   if (e.ctrlKey && goog.userAgent.MAC) {
     // Control-clicking on Mac OS X is treated as a right-click.
     // WebKit on Mac OS X fails to change button to 2 (but Gecko does).
@@ -161,20 +161,20 @@ eYo.Dom.isRightButton = e => {
  *     should prevent the default handler.  False by default.
  * @return {!Array<!Array>} Opaque data that can be passed to unbindEvent.
  */
-eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
+eYo.dom.BindEvent = (node, name, thisObject, callback, opt) => {
   if (eYo.isF(thisObject)) {
     opt = callback
     callback = thisObject
     thisObject = null
   }
-  eYo.assert(eYo.isF(callback))
+  eYo.Assert(eYo.isF(callback))
   var handled = false
   var wrapFunc = e => {
     var noCaptureIdentifier = opt && opt.noCaptureIdentifier
     // Handle each touch point separately.  If the event was a mouse event, this
     // will hand back an array with one element, which we're fine handling.
-    eYo.Dom.forEachTouch(e, event => {
-      if (noCaptureIdentifier || eYo.Dom.shouldHandleEvent(event)) {
+    eYo.dom.forEachTouch(e, event => {
+      if (noCaptureIdentifier || eYo.dom.ShouldHandleEvent(event)) {
         if (/^touch/i.test(event.type)) {
           // Map the touch event's properties to the event.
           var p = event.changedTouches[0]
@@ -189,8 +189,8 @@ eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
     })
   }
   var bindData = []
-  if (window && window.PointerEvent && (name in eYo.Dom.TOUCH_MAP)) {
-    eYo.Dom.TOUCH_MAP[name].forEach(type => {
+  if (window && window.PointerEvent && (name in eYo.dom.TOUCH_MAP)) {
+    eYo.dom.TOUCH_MAP[name].forEach(type => {
       node.addEventListener(type, wrapFunc, false)
       bindData.push([node, type, wrapFunc])
     })
@@ -198,7 +198,7 @@ eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
     node.addEventListener(name, wrapFunc, false)
     bindData.push([node, name, wrapFunc])
     // Add equivalent touch event.
-    if (name in eYo.Dom.TOUCH_MAP) {
+    if (name in eYo.dom.TOUCH_MAP) {
       var touchWrapFunc = e => {
         wrapFunc(e)
         // Calling preventDefault stops the browser from scrolling/zooming the
@@ -208,7 +208,7 @@ eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
           e.preventDefault()
         }
       }
-      eYo.Dom.TOUCH_MAP[name].forEach(type => {
+      eYo.dom.TOUCH_MAP[name].forEach(type => {
         node.addEventListener(type, touchWrapFunc, false)
         bindData.push([node, type, touchWrapFunc])
       })
@@ -223,7 +223,7 @@ eYo.Dom.bindEvent = (node, name, thisObject, callback, opt) => {
  *     This list is emptied during the course of calling this function.
  * @return {!Function} The function call.
  */
-eYo.Dom.unbindEvent = bindData => {
+eYo.dom.unbindEvent = bindData => {
   while (bindData.length) {
     var d = bindData.pop()
     var func = d[2]
@@ -238,7 +238,7 @@ eYo.Dom.unbindEvent = bindData => {
  * @param {Element} element A mouse down or touch start event.
  * @param {Object} [opt]  Option data: suffix, option flags: willUnbind, and bindEventWithChecks_'s options
  */
-eYo.Dom.bindMouseEvents = (listener, element, opt) => {
+eYo.dom.BindMouseEvents = (listener, element, opt) => {
   [
     'mousedown',
     'mousemove',
@@ -246,7 +246,7 @@ eYo.Dom.bindMouseEvents = (listener, element, opt) => {
   ].forEach(k => {
     var f = listener['on_' + k + ((opt && opt.suffix) || '')]
     if (eYo.isF(f)) {
-      var ans = eYo.Dom.bindEvent(element, k, listener, f, opt)
+      var ans = eYo.dom.BindEvent(element, k, listener, f, opt)
       if (opt && opt.willUnbind) {
         var ra = listener.bind_data_ || (listener.bind_data_ = [])
         ra.push(ans)
@@ -259,8 +259,8 @@ eYo.Dom.bindMouseEvents = (listener, element, opt) => {
  * Bind mouse events.
  * @param {Event} e A mouse down or touch start event.
  */
-eYo.Dom.unbindMouseEvents = function(listener) {
-  listener.bind_data_ && listener.bind_data_.forEach(data => eYo.Dom.unbindEvent(data))
+eYo.dom.unbindMouseEvents = function(listener) {
+  listener.bind_data_ && listener.bind_data_.forEach(data => eYo.dom.unbindEvent(data))
 }
 
 
@@ -273,7 +273,7 @@ eYo.Dom.unbindMouseEvents = function(listener) {
  * @return {!Array<!Event>} An array of mouse or touch events.  Each touch
  *     event will have exactly one changed touch.
  */
-eYo.Dom.forEachTouch = (e, f) => {
+eYo.dom.forEachTouch = (e, f) => {
   if (e.changedTouches) {
     e.changedTouches.forEach(t => {
       var newEvent = {
@@ -293,10 +293,10 @@ eYo.Dom.forEachTouch = (e, f) => {
 /**
  * @param {eYo.Brick|eYo.Board|eYo.Flyout}
  */
-eYo.Dom.clearBoundEvents = (bbf) => {
+eYo.dom.ClearBoundEvents = (bbf) => {
   var dom = bbf.dom || bbf.dom
   var bound = dom = dom.bound
-  bound && Object.values(bound).forEach(item => eYo.Dom.unbindEvent(item))
+  bound && Object.values(bound).forEach(item => eYo.dom.unbindEvent(item))
 }
 
 /**
@@ -307,8 +307,8 @@ eYo.Dom.clearBoundEvents = (bbf) => {
  * @return {boolean} True if this event should be passed through to the
  *     registered handler; false if it should be blocked.
  */
-eYo.Dom.shouldHandleEvent = e => {
-  return !eYo.Dom.isMouseOrTouchEvent(e) || eYo.Dom.checkTouchIdentifier(e)
+eYo.dom.ShouldHandleEvent = e => {
+  return !eYo.dom.isMouseOrTouchEvent(e) || eYo.dom.CheckTouchIdentifier(e)
 }
 
 /**
@@ -316,7 +316,7 @@ eYo.Dom.shouldHandleEvent = e => {
  * @param {Event} e An event.
  * @return {boolean} true if it is a touch event; false otherwise.
  */
-eYo.Dom.isTouchEvent = e => {
+eYo.dom.isTouchEvent = e => {
   return /^touch|^pointer/i.test(e.type)
 }
 
@@ -325,7 +325,7 @@ eYo.Dom.isTouchEvent = e => {
  * @param {Event} e An event.
  * @return {boolean} true if it is a touch event; false otherwise.
  */
-eYo.Dom.isMouseOrTouchEvent = e => {
+eYo.dom.isMouseOrTouchEvent = e => {
   return /^mouse|^touch|^pointer/i.test(e.type)
 }
 
@@ -341,18 +341,18 @@ eYo.Dom.isMouseOrTouchEvent = e => {
  * @return {boolean} Whether the identifier on the event matches the current
  *     saved identifier.
  */
-eYo.Dom.checkTouchIdentifier = (() => {
+eYo.dom.CheckTouchIdentifier = (() => {
   var touchIdentifier = null
   /**
    * Clear the touch identifier that tracks which touch stream to pay attention
    * to.  This ends the current drag/motion and allows other pointers to be
    * captured.
    */
-  eYo.Dom.clearTouchIdentifier = function() {
+  eYo.dom.ClearTouchIdentifier = function() {
     touchIdentifier = null
   }
   return e => {
-    var identifier = eYo.Dom.touchIdentifierFromEvent(e)
+    var identifier = eYo.dom.touchIdentifierFromEvent(e)
 
     // if (Blockly.touchIdentifier_ )is insufficient because Android touch
     // identifiers may be zero.
@@ -381,7 +381,7 @@ eYo.Dom.checkTouchIdentifier = (() => {
  * @return {string} The touch identifier from the first changed touch, if
  *     defined.  Otherwise 'mouse'.
  */
-eYo.Dom.touchIdentifierFromEvent = e => {
+eYo.dom.touchIdentifierFromEvent = e => {
   var x
   return e.pointerId != eYo.NA
   ? e.pointerId
@@ -394,7 +394,7 @@ eYo.Dom.touchIdentifierFromEvent = e => {
  * Prevents default behavior and stop propagation.
  * @param {Event} e
  */
-eYo.Dom.gobbleEvent = e => {
+eYo.dom.gobbleEvent = e => {
   e.preventDefault()
   e.stopPropagation()
 }
@@ -404,7 +404,7 @@ eYo.Dom.gobbleEvent = e => {
  * @param {Event} e An event.
  * @return {boolean} True if text input.
  */
-eYo.Dom.isTargetInput = e => {
+eYo.dom.isTargetInput = e => {
   return e.target.type == 'textarea' || e.target.type == 'text' ||
          e.target.type == 'number' || e.target.type == 'email' ||
          e.target.type == 'password' || e.target.type == 'search' ||
@@ -412,7 +412,7 @@ eYo.Dom.isTargetInput = e => {
          e.target.isContentEditable
 }
 
-Object.defineProperties(eYo.Dom, {
+Object.defineProperties(eYo.dom, {
   /**
    * Length in ms for a touch to become a long press.
    */
@@ -490,33 +490,33 @@ Object.defineProperties(eYo.Dom, {
  * understand a concept of focus on the SVG image.
  * @private
  */
-eYo.Dom.bindDocumentEvents = (() => {
+eYo.dom.BindDocumentEvents = (() => {
   var already
   return () => {
     if (!already) {
-      eYo.Dom.bindEvent(
+      eYo.dom.BindEvent(
         document,
         'keydown',
-        eYo.Dom.on_keydown
+        eYo.dom.on_keydown
       )
       // longStop needs to run to stop the context menu from showing up.  It
       // should run regardless of what other touch event handlers have run.
-      eYo.Dom.bindEvent(
+      eYo.dom.BindEvent(
         document,
         'touchend',
-        eYo.Dom.longStop_
+        eYo.dom.longStop_
       )
-      eYo.Dom.bindEvent(
+      eYo.dom.BindEvent(
         document,
         'touchcancel',
-        eYo.Dom.longStop_
+        eYo.dom.longStop_
       )
       // Some iPad versions don't fire resize after portrait to landscape change.
       if (goog.userAgent.IPAD) {
-        eYo.Dom.bindEvent(
+        eYo.dom.BindEvent(
           window,
           'orientationchange',
-          e => eYo.app.desk.layout() // TODO(#397): Fix for multiple boards.
+          e => eYo.App.Desk.layout() // TODO(#397): Fix for multiple boards.
         )
       }
     }
@@ -530,23 +530,23 @@ eYo.Dom.bindDocumentEvents = (() => {
  * @param {Event} e Key down event.
  * @private
  */
-eYo.Dom.on_keydown = e => {
-  if (eYo.app.board.options.readOnly || eYo.Dom.isTargetInput(e)) {
+eYo.dom.on_keydown = e => {
+  if (eYo.App.Board.Options.readOnly || eYo.dom.isTargetInput(e)) {
     // No key actions on readonly boards.
     // When focused on an HTML text input widget, don't trap any keys.
     return
   }
   // var deleteBrick = false;
   if (e.keyCode == 9) {
-    if (eYo.Navigate.doTab(eYo.app.focus_mngr.brick, {
+    if (eYo.navigate.doTab(eYo.App.Focus_mngr.Brick, {
         left: e.shiftKey,
         fast: e.altKey || e.ctrlKey || e.metaKey
       })) {
-      eYo.Dom.gobbleEvent(e)
+      eYo.dom.gobbleEvent(e)
     }
   } else if (e.keyCode == 27) {
     // Pressing esc closes the context menu.
-    eYo.app.hideChaff()
+    eYo.App.hideChaff()
   } else if (e.keyCode == 8 || e.keyCode == 46) {
     // Delete or backspace.
     // Stop the browser from going back to the previous page.
@@ -554,19 +554,19 @@ eYo.Dom.on_keydown = e => {
     // data loss.
     e.preventDefault()
     // Don't delete while dragging.  Jeez.
-    if (eYo.app.desktop.isDragging) {
+    if (eYo.App.Desktop.isDragging) {
       return;
     }
-    if (eYo.app.focus_mngr.brick && eYo.app.focus_mngr.brick.deletable) {
-      eYo.app.deleteBrick(eYo.app.focus_mngr.brick, e.altKey || e.ctrlKey || e.metaKey);
+    if (eYo.App.Focus_mngr.Brick && eYo.App.focus_mngr.Brick.deletable) {
+      eYo.App.deleteBrick(eYo.App.Focus_mngr.Brick, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
-    if (eYo.app.desktop.isDragging) {
+    if (eYo.App.Desktop.isDragging) {
       return;
     }
-    if (eYo.app.focus_mngr.brick &&
-        eYo.app.focus_mngr.brick.deletable && eYo.app.focus_mngr.brick.movable) {
+    if (eYo.App.Focus_mngr.Brick &&
+        eYo.App.Focus_mngr.Brick.deletable && eYo.App.focus_mngr.Brick.movable) {
       // Eyo: 1 meta key for shallow copy, more for deep copy
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable bricks. The next step
@@ -574,31 +574,31 @@ eYo.Dom.on_keydown = e => {
       // bricks on the board.
       if (e.keyCode == 67) {
         // 'c' for copy.
-        eYo.app.hideChaff()
-        eYo.App.Dflt.copyBrick(eYo.app.focus_mngr.brick, deep)
-      } else if (e.keyCode == 88 && !eYo.app.focus_mngr.brick.board.readOnly) {
+        eYo.App.hideChaff()
+        eYo.App.Dflt.CopyBrick(eYo.App.Focus_mngr.Brick, deep)
+      } else if (e.keyCode == 88 && !eYo.App.Focus_mngr.Brick.Board.readOnly) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.App.Dflt.copyBrick(eYo.app.focus_mngr.brick, deep)
-        eYo.app.deleteBrick(eYo.app.focus_mngr.brick, deep)
+        eYo.App.Dflt.CopyBrick(eYo.App.Focus_mngr.Brick, deep)
+        eYo.App.deleteBrick(eYo.App.Focus_mngr.Brick, deep)
       }
     }
     if (e.keyCode == 86) {
       // 'v' for paste.
-      eYo.app.board.paste()
+      eYo.App.Board.paste()
     } else if (e.keyCode == 90) {
       // 'z' for undo 'Z' is for redo.
-      eYo.app.hideChaff()
-      eYo.app.desk.undo(e.shiftKey)
+      eYo.App.hideChaff()
+      eYo.App.Desk.undo(e.shiftKey)
     }
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBrick && !eYo.app.focus_mngr.brick.board.readOnly) {
-  //   eYo.Events.group = true
-  //   eYo.app.hideChaff();
-  //   eYo.app.focus_mngr.brick.dispose(/* heal */ true, true);
-  //   eYo.Events.group = false
+  // if (deleteBrick && !eYo.App.Focus_mngr.Brick.Board.readOnly) {
+  //   eYo.events.group = true
+  //   eYo.App.hideChaff();
+  //   eYo.App.Focus_mngr.Brick.dispose(/* heal */ true, true);
+  //   eYo.events.group = false
   // }
 };
 

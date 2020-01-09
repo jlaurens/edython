@@ -13,13 +13,13 @@
  */
 'use strict'
 
-eYo.require('C9r.Pane')
-eYo.require('Decorate')
+eYo.require('c9r.pane')
+eYo.require('decorate')
 
-eYo.forwardDeclare('Flyout')
-eYo.forwardDeclare('App')
-eYo.forwardDeclare('Backer')
-eYo.forwardDeclare('Scrollbar')
+eYo.forwardDeclare('flyout')
+eYo.forwardDeclare('app')
+eYo.forwardDeclare('backer')
+eYo.forwardDeclare('scrollbar')
 
 goog.forwardDeclare('goog.array');
 

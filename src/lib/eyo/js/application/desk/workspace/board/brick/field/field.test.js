@@ -1,6 +1,6 @@
-describe('Field', function () {
+describe('field', function () {
   chai.assert(eYo.Test)
-  chai.assert(eYo.Expr.Dflt.makeSubclass)
+  chai.assert(eYo.expr.Dflt.makeSubclass)
 
   eYo.Test.FIELD = 'field'
   var RA = [
@@ -11,8 +11,8 @@ describe('Field', function () {
   ]
   RA.forEach(X => {
     var type = `one_slot_one_field_${X[0]}`
-    eYo.T3.Expr[type] = type
-    eYo.Expr.Dflt.makeSubclass(type, {
+    eYo.t3.Expr[type] = type
+    eYo.expr.Dflt.makeSubclass(type, {
       slots: {
         SLOT: {
           order: 1,
@@ -25,7 +25,7 @@ describe('Field', function () {
   })
   describe('Headless', function () {
     beforeEach(function() {
-      eYo.Test.setItUp()
+      eYo.Test.SetItUp()
     })
     afterEach(function() {
       eYo.Test.tearItDown()

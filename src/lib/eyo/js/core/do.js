@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.makeNS('Do')
+eYo.makeNS('do')
 
 goog.forwardDeclare('goog.dom')
 
-eYo.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
+eYo.Assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
 
 // Object.keys polyfill
 // http://tokenposts.blogspot.com/2012/04/javascript-objectkeys-browser.html
@@ -32,7 +32,7 @@ if (!Object.keys) Object.keys = function(o) {
 //  ** Changes all matching rules in all style sheets
 //  ** https://stackoverflow.com/questions/7657363/changing-global-css-styles-from-javascript
 //  */
-// eYo.Do.replaceRuleProperty = function (selectorText, propertyName, value, priority) {
+// eYo.do.replaceRuleProperty = function (selectorText, propertyName, value, priority) {
 //   var sheets = document.styleSheets
 //   for (var i = 0, iLen = sheets.length; i < iLen; i++) {
 //     var sheet = sheets[i]
@@ -52,7 +52,7 @@ if (!Object.keys) Object.keys = function(o) {
 //   }
 // }
 
-eYo.Do.Name = (() => {
+eYo.do.Name = (() => {
   // characters are in ]MIN, MAX[
   var MIN = 32
   var MAX = 127
@@ -316,11 +316,11 @@ eYo.Do.Name = (() => {
   return me
 })()
 
-eYo.Do.ensureArray = eYo.Do.ensureFunctionOrArray = function (object) {
+eYo.do.ensureArray = eYo.do.ensureFunctionOrArray = function (object) {
   return goog.isArray(object) || eYo.isF(object) ? object : (object ? [object] : object)
 }
 
-eYo.Do.ensureFunction = function (object) {
+eYo.do.ensureFunction = function (object) {
   return eYo.isF(object)
     ? object
     : function () {
@@ -328,7 +328,7 @@ eYo.Do.ensureFunction = function (object) {
       }
 }
 
-eYo.Do.createSPAN = function (text, css) {
+eYo.do.CreateSPAN = function (text, css) {
   return goog.dom.createDom(goog.dom.TagName.SPAN, css || null,
     goog.dom.createTextNode(text)
   )
@@ -341,7 +341,7 @@ eYo.Do.createSPAN = function (text, css) {
  * @param {function(Object): boolean} filter an optional filter.
  * @return {Object} an enumerator
  */
-eYo.Do.Enumerator = (list, filter) => {
+eYo.do.Enumerator = (list, filter) => {
   if (!list) {
     return
   }
@@ -409,7 +409,7 @@ eYo.Do.Enumerator = (list, filter) => {
  * @param {string} key
  * @return {boolean}
  */
-eYo.Do.hasOwnProperty = function (object, key) {
+eYo.do.hasOwnProperty = function (object, key) {
   return object && key && (Object.prototype.hasOwnProperty.call(object, key))
 }
 
@@ -421,7 +421,7 @@ eYo.Do.hasOwnProperty = function (object, key) {
  * @param {string} string
  * @return {'Element'}
  */
-eYo.Do.stringToDom = function (string) {
+eYo.do.StringToDom = function (string) {
   var parser = new DOMParser();
   var parsererrorNS = parser.parseFromString('>', 'application/xml').getElementsByTagName("parsererror")[0].namespaceURI
   var stringToDom = function (string) {
@@ -434,7 +434,7 @@ eYo.Do.stringToDom = function (string) {
     }
     return dom;
   }
-  eYo.Do.stringToDom = stringToDom
+  eYo.do.StringToDom = stringToDom
   return stringToDom(string)
 }
 
@@ -444,7 +444,7 @@ eYo.Do.stringToDom = function (string) {
  * @param {*} handler
  * @param {*} thisArg
  */
-eYo.Do.childForEach = function (element, handler, thisArg) {
+eYo.do.ChildForEach = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
   children.forEach(handler, thisArg)
 }
@@ -455,7 +455,7 @@ eYo.Do.childForEach = function (element, handler, thisArg) {
  * @param {*} handler
  * @param {*} thisArg
  */
-eYo.Do.someChild = function (element, handler, thisArg) {
+eYo.do.SomeChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
   return children.some(handler, thisArg)
 }
@@ -466,7 +466,7 @@ eYo.Do.someChild = function (element, handler, thisArg) {
  * @param {*} handler
  * @param {*} thisArg
  */
-eYo.Do.forEachElementChild = function (element, handler, thisArg) {
+eYo.do.forEachElementChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
   children.forEach((child, index, item) => {
     if (child.nodeType === Node.ELEMENT_NODE) {
@@ -481,7 +481,7 @@ eYo.Do.forEachElementChild = function (element, handler, thisArg) {
  * @param {*} handler
  * @param {*} thisArg
  */
-eYo.Do.someElementChild = function (element, handler, thisArg) {
+eYo.do.SomeElementChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
   return children.some((child, index, item) => {
     if (child.nodeType === Node.ELEMENT_NODE) {
@@ -496,7 +496,7 @@ eYo.Do.someElementChild = function (element, handler, thisArg) {
  * @param {*} handler
  * @param {*} thisArg
  */
-eYo.Do.forEachElementChild = function (element, handler, thisArg) {
+eYo.do.forEachElementChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
   return children.forEach((child, index, array) => {
     if (child.nodeType === Node.ELEMENT_NODE) {
@@ -505,19 +505,19 @@ eYo.Do.forEachElementChild = function (element, handler, thisArg) {
   }, this)
 }
 
-eYo.Do.valueOf = function (f, thisObject) {
+eYo.do.valueOf = function (f, thisObject) {
   return eYo.isF(f) ? f.call(thisObject) : f
 }
 
 /**
  * Void function frequently used.
  */
-eYo.Do.nothing = () => {}
+eYo.do.nothing = () => {}
 
 /**
  * Void function frequently used.
  */
-eYo.Do.NYI = () => {
+eYo.do.NYI = () => {
   throw new Error('This is not yet implemented, possibly a pure abstract method that needs subclassing.')
 }
 
@@ -528,7 +528,7 @@ eYo.Do.NYI = () => {
  * @param {Function} [finally_f]
  * @return whatever returns try_f
  */
-eYo.Do.tryFinally = function (try_f, finally_f) {
+eYo.do.tryFinally = function (try_f, finally_f) {
   try {
     return try_f()
   }  catch (err) {
@@ -547,11 +547,11 @@ eYo.Do.tryFinally = function (try_f, finally_f) {
  * @param {Function} [begin_finally_f]
  * @param {Function} [end_finally_f]
  */
-eYo.Do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
+eYo.do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
   return (try_f, finally_f) => {
     start_f && (start_f())
     var ans
-    eYo.Do.tryFinally(() => {
+    eYo.do.tryFinally(() => {
       ans = try_f()
     }, () => {
       begin_finally_f && (begin_finally_f())
@@ -575,10 +575,10 @@ eYo.Do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
  * @param {*} object
  * @param {*} props
  */
-eYo.Do.readOnlyMixin = (object, props) => {
+eYo.do.readOnlyMixin = (object, props) => {
   var key
   for (key in props) {
-    eYo.assert(!eYo.Do.hasOwnProperty(object, key), 'Duplicate keys are forbidden: ' + key)
+    eYo.Assert(!eYo.do.hasOwnProperty(object, key), 'Duplicate keys are forbidden: ' + key)
     var value = props[key]
     var prop = eYo.isF(value)
     ? { get: value }
@@ -591,7 +591,7 @@ eYo.Do.readOnlyMixin = (object, props) => {
   }
 }
 
-{
+;(() => {
   // remove characters '`:()[]{}' for convenience
   var soup = '!#$%*+,-./;=?@^_|~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   /**
@@ -599,7 +599,7 @@ eYo.Do.readOnlyMixin = (object, props) => {
    * 87 characters ^ 20, length > 128 bits (better than a UUID).
    * @return {string} A globally unique ID string.
    */
-  eYo.Do.genUid = () => {
+  eYo.do.genUid = () => {
     let soupLength = soup.length
     let id = []
     var i = 20
@@ -608,12 +608,12 @@ eYo.Do.readOnlyMixin = (object, props) => {
     }
     return id.join('')
   }
-}
+}) ()
 
 /**
  * @param {String} str - the base string
  */
-eYo.Do.toTitleCase = (str) => {
-  eYo.parameterAssert(eYo.isStr(str))
+eYo.do.toTitleCase = (str) => {
+  eYo.ParameterAssert(eYo.isStr(str))
   return str.length ? str[0].toUpperCase()+str.substr(1) : str
 }

@@ -11,6 +11,22 @@ describe ('Tests: Property', function () {
       p.value = 421
     }).to.throw()
     p.value_ = 421
-    chai.assert(p.value = 421)
+    chai.assert(p.value === 421)
+  })
+  it('Property: dispose', function () {
+    var flag = 0
+    let onr = {}
+    let p = new eYo.C9r.Prop(onr, 'foo', {})
+    let value = {
+      eyo: true,
+      dispose () {
+        flag = 421
+      }
+    }
+    p.value_ = value
+    chai.assert(p.value === value)
+    p.dispose()
+    chai.assert(eYo.isNA(p.value))
+    chai.assert(flag === 421)
   })
 })

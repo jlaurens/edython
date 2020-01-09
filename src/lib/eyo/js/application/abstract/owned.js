@@ -11,31 +11,31 @@
  */
 'use strict'
 
-eYo.require('Decorate')
-eYo.require('C9r')
+eYo.require('decorate')
+eYo.require('c9r')
 
-// eYo.provide('C9r.Owned')
+// eYo.provide('c9r.owned')
 
 // Possible owner
-eYo.forwardDeclare('App')
+eYo.forwardDeclare('app')
 // Possible owned
-eYo.forwardDeclare('Desk')
-eYo.forwardDeclare('Workspace')
-eYo.forwardDeclare('Flyout')
-eYo.forwardDeclare('Board')
-eYo.forwardDeclare('Brick')
-eYo.forwardDeclare('Slot')
-eYo.forwardDeclare('Magnet')
+eYo.forwardDeclare('desk')
+eYo.forwardDeclare('workspace')
+eYo.forwardDeclare('flyout')
+eYo.forwardDeclare('board')
+eYo.forwardDeclare('brick')
+eYo.forwardDeclare('slot')
+eYo.forwardDeclare('magnet')
 
 /**
  * Class for a basic object.
  * 
- * @param {eYo.App.Dflt|eYo.Desk|eYo.Flyout|eYo.Board|eYo.Expr|eYo.Stmt|eYo.Slot.Dflt|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.App.Dflt|eYo.Desk|eYo.Flyout|eYo.Board|eYo.expr|eYo.Stmt|eYo.Slot.Dflt|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
 eYo.C9r.makeClass('Owned', {
   init (owner) {
-    eYo.parameterAssert(owner, 'Missing owner!')
+    eYo.ParameterAssert(owner, 'Missing owner!')
     this.owner_ = owner
   },
   valued: {
@@ -84,7 +84,7 @@ eYo.C9r.makeClass('Owned', {
     /**
      * The app's audio manager
      * @readonly
-     * @type {eYo.Dom.Audio}
+     * @type {eYo.dom.Audio}
      */
     audio () {
       let a = this.app ; return a && a.audio
@@ -124,12 +124,12 @@ eYo.C9r.makeClass('Owned', {
   },
 })
 
-eYo.assert(eYo.C9r.Owned, 'MISSING eYo.C9r.Owned')
+eYo.Assert(eYo.C9r.Owned, 'MISSING eYo.c9r.owned')
 
 /**
  * Class for a basic object indirectly owned by a brick.
  * 
- * @name {eYo.C9r.BSMOwned}
+ * @name {eYo.C9r.BsmOwned}
  * @constructor
  * @param {eYo.Brick|eYo.Slot.Dflt|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
  * @readonly
@@ -151,13 +151,13 @@ eYo.C9r.Owned.makeSubclass('BSMOwned', {
   }
 })
 
-eYo.assert(!!eYo.C9r.BSMOwned && !!eYo.C9r.BSMOwned_p, 'MISSED/FAILURE...')
+eYo.Assert(!!eYo.C9r.BsmOwned && !!eYo.c9r.BsmOwned_p, 'MISSED/FAILURE...')
 
-eYo.forwardDeclare('Brick')
-eYo.forwardDeclare('Slot')
-eYo.forwardDeclare('Magnet')
+eYo.forwardDeclare('brick')
+eYo.forwardDeclare('slot')
+eYo.forwardDeclare('magnet')
 
-eYo.C9r.BSMOwned_p.ownerDidChange = function (before, after) {
+eYo.C9r.BsmOwned_p.ownerDidChange = function (before, after) {
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA
   if (after instanceof eYo.Slot.Dflt) {
     this.slot_ = after

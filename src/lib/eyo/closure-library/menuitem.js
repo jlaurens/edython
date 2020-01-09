@@ -19,14 +19,14 @@
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 
-eYo.require('MenuItemRenderer')
+eYo.require('menuItemRenderer')
 goog.require('goog.dom');
 
 goog.require('goog.ui.MenuItem')
 
 goog.require('goog.ui.Separator')
-eYo.provide('MenuItem')
-eYo.provide('Separator')
+eYo.provide('menuItem')
+eYo.provide('separator')
 
 // goog.forwardDeclare('goog.ui.Menu'); // circular
 
@@ -156,7 +156,7 @@ goog.tagUnsealableClass(eYo.MenuItem)
  * @extends {goog.ui.Control}
  */
 eYo.Separator = function (optRenderer, optDomHelper) {
-  eYo.Separator.superClass_.constructor.call(
+  eYo.separator.SuperClass_.constructor.Call(
     this, optRenderer || eYo.MenuSeparatorRenderer.getInstance(),
     optDomHelper)
 }

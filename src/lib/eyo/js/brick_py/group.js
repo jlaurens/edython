@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Stmt')
+eYo.require('stmt')
 
-eYo.forwardDeclare('Msg')
+eYo.forwardDeclare('msg')
 
 goog.forwardDeclare('goog.dom')
 
@@ -23,7 +23,7 @@ goog.forwardDeclare('goog.dom')
  * Base group is subclassed into Group and Control.
  * For edython.
  */
-eYo.Stmt.Dflt.makeSubclass('Group', {
+eYo.Stmt.Dflt.makeSubclass('group', {
   head (type) /** @suppress {globalThis} */ {
     return null
   },
@@ -31,8 +31,8 @@ eYo.Stmt.Dflt.makeSubclass('Group', {
   right: {
     check (type) /** @suppress {globalThis} */ {
       return this.brick.suite
-      ? [eYo.T3.Stmt.comment_stmt]
-      : eYo.T3.Stmt.Right.simple_stmt
+      ? [eYo.t3.Stmt.Comment_stmt]
+      : eYo.t3.stmt.Right.Simple_stmt
     },
     fields: {
       label: { // don't call it 'operator'
@@ -56,43 +56,43 @@ eYo.Stmt.Dflt.makeSubclass('Group', {
 
 /**
  * Class for a Delegate, if_part brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.Group.makeSubclass('Branch', {
+eYo.Stmt.Group.makeSubclass('branch', {
   data: {
     variant: {
       all: [
-        eYo.Key.IF,
-        eYo.Key.ELIF,
-        eYo.Key.ELSE,
-        eYo.Key.WHILE
+        eYo.key.IF,
+        eYo.key.ELIF,
+        eYo.key.ELSE,
+        eYo.key.WHILE
       ],
-      init: eYo.Key.IF,
+      init: eYo.key.IF,
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
-        this.brick.if_d.incog = after === eYo.Key.ELSE
+        this.brick.if_d.incog = after === eYo.key.ELSE
       },
       fromType (type) /** @suppress {globalThis} */ {
-        if (type === eYo.T3.Stmt.while_part) {
-          this.set(eYo.Key.WHILE)
-        } else if (type === eYo.T3.Stmt.elif_part) {
-          this.set(eYo.Key.ELIF)
-        } else if (type === eYo.T3.Stmt.else_part) {
-          this.set(eYo.Key.ELSE)
-        } else if (type === eYo.T3.Stmt.try_else_part) {
-          this.set(eYo.Key.ELSE)
-        } else if (type === eYo.T3.Stmt.last_else_part) {
-          this.set(eYo.Key.ELSE)
+        if (type === eYo.t3.Stmt.while_part) {
+          this.set(eYo.key.WHILE)
+        } else if (type === eYo.t3.Stmt.elif_part) {
+          this.set(eYo.key.ELIF)
+        } else if (type === eYo.t3.Stmt.else_part) {
+          this.set(eYo.key.ELSE)
+        } else if (type === eYo.t3.Stmt.try_else_part) {
+          this.set(eYo.key.ELSE)
+        } else if (type === eYo.t3.Stmt.last_else_part) {
+          this.set(eYo.key.ELSE)
         } else {
-          this.set(eYo.Key.IF)
+          this.set(eYo.key.IF)
         }
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
         },
         load (element) /** @suppress {globalThis} */ {
-          this.brick.variant_p = element.getAttribute(eYo.Key.EYO)
+          this.brick.variant_p = element.getAttribute(eYo.key.EYO)
         },
       },
       isChanging (builtin) /** @suppress {globalThis} */ { // same code for primary bricks
@@ -103,7 +103,7 @@ eYo.Stmt.Group.makeSubclass('Branch', {
     },
     if: {
       init: '',
-      placeholder: eYo.Msg.Placeholder.CONDITION,
+      placeholder: eYo.msg.placeholder.CONDITION,
       validate: false, // use the python interpreter to validate this
       synchronize: true,
     }
@@ -121,14 +121,14 @@ eYo.Stmt.Group.makeSubclass('Branch', {
           endEditing: true
         }
       },
-      check: eYo.T3.Expr.Check.namedexpr_test
+      check: eYo.t3.Expr.Check.namedexpr_test
     }
   },
   head (type) /** @suppress {globalThis} */ {
-    return eYo.T3.Stmt.Previous[type.substring(4)]
+    return eYo.t3.Stmt.Previous[type.substring(4)]
   },
   foot (type) /** @suppress {globalThis} */ {
-    return eYo.T3.Stmt.Next[type.substring(4)]
+    return eYo.t3.Stmt.Next[type.substring(4)]
   },
 })
 
@@ -151,11 +151,11 @@ eYo.Stmt.Branch.prototype.xmlAttr = function () {
  * At least, the type may change to a value when no connection is connected.
  */
 eYo.Stmt.Branch.prototype.getBaseType = function () {
-  var T3 = eYo.T3.Stmt
+  var T3 = eYo.t3.Stmt
   var type = {
-    [eYo.Key.IF]: T3.if_part,
-    [eYo.Key.ELIF]: T3.elif_part,
-    [eYo.Key.WHILE]: T3.while_part
+    [eYo.key.IF]: T3.if_part,
+    [eYo.key.ELIF]: T3.elif_part,
+    [eYo.key.WHILE]: T3.while_part
   } [this.variant_p]
   if (!type) {
     var targetMagnet
@@ -196,7 +196,7 @@ eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   var F = (i) => {
     var key = variants[i]
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.Do.createSPAN(key, 'eyo-code-reserved')
+      eYo.do.CreateSPAN(key, 'eyo-code-reserved')
     )
     var menuItem = mngr.newMenuItem(content, () => {
       this.variant_p = key
@@ -209,7 +209,7 @@ eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   F(2)
   F(3)
   mngr.shouldSeparate()
-  return eYo.Stmt.global_stmt.superProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.global_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 }
 
 ;[
@@ -221,7 +221,7 @@ eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   'last_else'
 ].forEach(name => {
   var k = name + '_part'
-  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.Stmt.Branch))
+  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.stmt.Branch))
 })
 
 /**
@@ -231,7 +231,7 @@ eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
  * @private
  */
 eYo.Stmt.Group.prototype.willRender_ = function (recorder) {
-  eYo.Stmt.Group.superProto_.willRender_.call(this, recorder)
+  eYo.stmt.Group.SuperProto_.willRender_.Call(this, recorder)
   var field = this.async_f
   if (field) {
     field.visible = this.async_
@@ -247,8 +247,8 @@ eYo.Stmt.Group.prototype.willRender_ = function (recorder) {
 eYo.Stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
   if (this.async_f) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('async', 'eyo-code-reserved'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
+      eYo.do.CreateSPAN('async', 'eyo-code-reserved'),
+      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
     )
     if (this.async_) {
       mngr.addRemoveChild(mngr.newMenuItem(content, () => {
@@ -262,12 +262,12 @@ eYo.Stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
       mngr.shouldSeparateInsert()
     }
   }
-  return eYo.Stmt.Group.superProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.Group.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 }
 
 /**
  * Class for a Delegate, for_part brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.Group.makeSubclass('for_part', true, {
@@ -277,21 +277,21 @@ eYo.Stmt.Group.makeSubclass('for_part', true, {
       fields: {
         label: 'for'
       },
-      wrap: eYo.T3.Expr.target_list
+      wrap: eYo.t3.Expr.Target_list
     },
     in: {
       order: 2,
       fields: {
         label: 'in'
       },
-      wrap: eYo.T3.Expr.expression_list
+      wrap: eYo.t3.Expr.expression_list
     }
   }
 })
 
 /**
  * Class for a Delegate, with_part brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.Group.makeSubclass('with_part', true, {
@@ -301,16 +301,16 @@ eYo.Stmt.Group.makeSubclass('with_part', true, {
       fields: {
         label: 'with'
       },
-      wrap: eYo.T3.Expr.with_item_list
+      wrap: eYo.t3.Expr.with_item_list
     }
   }
 })
 
 eYo.Stmt.Group.T3s = [
-  eYo.T3.Stmt.if_part,
-  eYo.T3.Stmt.elif_part,
-  eYo.T3.Stmt.else_part,
-  eYo.T3.Stmt.while_part,
-  eYo.T3.Stmt.with_part,
-  eYo.T3.Stmt.for_part
+  eYo.t3.Stmt.if_part,
+  eYo.t3.Stmt.elif_part,
+  eYo.t3.Stmt.else_part,
+  eYo.t3.Stmt.while_part,
+  eYo.t3.Stmt.with_part,
+  eYo.t3.Stmt.for_part
 ]

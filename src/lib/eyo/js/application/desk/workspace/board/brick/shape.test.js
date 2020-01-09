@@ -2,13 +2,13 @@ eYo.Test.no_brick_type = true
 
 describe('Expression shape', function () {
   var type = 'test_shape_out'
-  eYo.T3.Expr[type] = type
-  eYo.Expr.Dflt.makeSubclass(type, {
+  eYo.t3.Expr[type] = type
+  eYo.expr.Dflt.makeSubclass(type, {
     out: {
       check: null
     }
   }) 
-  chai.assert(eYo.Expr.test_shape_out)
+  chai.assert(eYo.expr.test_shape_out)
   var b
   beforeEach(function() {
     b = eYo.Test.new_brick(type)
@@ -19,8 +19,8 @@ describe('Expression shape', function () {
       d: eYo.Shape.definitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',
-      transform: `translate(${c * eYo.Unit.x},${l * eYo.Unit.y})`
-    }, eYo.app.board.dom.svg.canvas_)
+      transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`
+    }, eYo.App.Board.dom.Svg.Canvas_)
   }
   it('column', function() {
     createPath(b, 1, 0.5)
@@ -34,7 +34,7 @@ describe('Expression shape', function () {
 
 describe('Statement shape', function () {
   var type = 'test_shape_stmt'
-  eYo.T3.Stmt[type] = type
+  eYo.t3.Stmt[type] = type
   eYo.Stmt.makeClass(type, {}) 
   chai.assert(eYo.Stmt.test_shape_stmt)
   var b
@@ -47,8 +47,8 @@ describe('Statement shape', function () {
       d: eYo.Shape.definitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',
-      transform: `translate(${c * eYo.Unit.x},${l * eYo.Unit.y})`
-    }, eYo.app.board.dom.svg.canvas_)
+      transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`
+    }, eYo.App.Board.dom.Svg.Canvas_)
   }
   it('column', function() {
     createPath(b, 1, 2)
@@ -68,7 +68,7 @@ describe('Statement shape', function () {
 
 describe('Group shape', function () {
   var type = 'test_shape_part'
-  eYo.T3.Stmt[type] = type
+  eYo.t3.Stmt[type] = type
   eYo.Stmt.Group.makeSubclass(type, {}) 
   chai.assert(eYo.Stmt.test_shape_part)
   var b
@@ -81,8 +81,8 @@ describe('Group shape', function () {
       d: eYo.Shape.definitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',
-      transform: `translate(${c * eYo.Unit.x},${l * eYo.Unit.y})`
-    }, eYo.app.board.dom.svg.canvas_)
+      transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`
+    }, eYo.App.Board.dom.Svg.Canvas_)
   }
   it('column', function() {
     b.span.suite += 2

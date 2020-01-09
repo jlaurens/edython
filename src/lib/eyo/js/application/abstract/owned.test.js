@@ -2,7 +2,7 @@ NS = Object.create(null)
 
 describe('Owned', function () {
   it ('Owned: Basic', function () {
-    chai.assert(eYo.C9r.Owned && eYo.C9r.Owned.eyo)
+    chai.assert(eYo.C9r.Owned && eYo.c9r.owned.eyo)
   })
   it ('Owned: new', function () {
     var ONR = function () {}
@@ -95,9 +95,9 @@ describe ('Tests: BSMOwned', function () {
     eYo.makeClass(k, {
       owned: ['foo']
     })
-    ff('Brick')
-    ff('Magnet')
-    ff('Slot')
+    ff('brick')
+    ff('magnet')
+    ff('slot')
     chai.assert(eYo.Brick)
     chai.assert(eYo.Magnet)
     chai.assert(eYo.Slot.Dflt)
@@ -119,7 +119,7 @@ describe ('Tests: BSMOwned', function () {
     wrapper(() => {
       var onr = new eYo.Brick.Dflt()
       chai.assert(onr)
-      var ond = new eYo.C9r.BSMOwned(onr)
+      var ond = new eYo.C9r.BsmOwned(onr)
       chai.assert(ond)
       chai.assert(ond.brick === onr)
       console.warn(ond.brick, ond.slot, ond.magnet)

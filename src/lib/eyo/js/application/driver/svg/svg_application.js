@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Svg')
+eYo.require('svg')
 
-eYo.forwardDeclare('App')
+eYo.forwardDeclare('app')
 
 /**
  * Svg driver for application.

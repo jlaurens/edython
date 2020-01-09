@@ -11,17 +11,17 @@
  */
 'use strict'
 
-eYo.require('Dom')
+eYo.require('dom')
 
 /**
- * @name {eYo.Dom.Dnd}
+ * @name {eYo.dom.Dnd}
  * Faceless driver for the zoomer.
  */
-eYo.provide('Dom.Dnd')
+eYo.provide('dom.dnd')
 
-eYo.forwardDeclare('DnD.Mngr')
+eYo.forwardDeclare('dnd.mngr')
 
 /**
  * Faceless driver for the zoomer.
  */
-eYo.Dom.makeDriverClass('Dnd')
+eYo.dom.makeDriverClass('Dnd')

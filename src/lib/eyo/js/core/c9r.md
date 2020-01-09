@@ -4,21 +4,32 @@ Various `makeClass` function are utilities to create class objects with
 properties and methods given in an object.
 The idea is to use a rather straightforward syntax.
 
-## Where the classes are stored,
-
-Classes are spread between various name spaces.
-Each class belongs to exactly one of the known namespaces.
-
 ## Class extensions
 
 Each class is extended through a property named `eyo`.
 This name is sufficiently weird to avoid collisions.
-Each `eyo` object is an instance of `eYo.Dlgt` or one of its
+Each class is a descendant of `eYo.C9r.Dflt` whereas `eyo` object is an instance of `eYo.C9r.Dlgt` or one of its
 subclasses.
 
 This extension knows the namespace owning the class.
 It also knows the unique string identifying the class: its name.
 The name is exactly the string as it appears in javascript to reference the class.
+
+## Where the classes are stored,
+
+Classes are spread between various name spaces.
+Each class belongs to exactly one of the known namespaces.
+
+A namespace is an instance of some unexposed constructor,
+this is why it is named lowercased.
+
+A namespace `eYo.foo` may inherit from another namespace `eYo.bar`
+in the sense that the former's constructor is a subclass of the latter's one.
+
+TO BE CONTINUED.
+
+In general, a namespace `eYo.foo` owns two default classes.
+
 
 ## Model
 

@@ -11,20 +11,22 @@
  */
 'use strict'
 
-eYo.require('C9r')
+eYo.require('c9r')
 
 /**
- * @name {eYo.Driver}
+ * @name {eYo.driver}
  * @namespace
  */
-eYo.makeNS('Driver')
+eYo.makeNS('driver')
 
 /**
  * Contructor delegate.
- * @name {eYo.Driver.Dlgt}
+ * @name {eYo.driver.Dlgt}
  * @param {Function} constructor
  */
-eYo.C9r.Dlgt.makeSubclass(eYo.Driver)
+eYo.driver.makeDlgt(eYo.C9r.Dlgt)
+
+eYo.driver.Dlgt.eyo.makeInitInstance()
 
 /**
  * Contructor delegate for the driver manager.
@@ -32,10 +34,10 @@ eYo.C9r.Dlgt.makeSubclass(eYo.Driver)
  * adapted to a certain context.
  * Each context is represented by a namespace.
  * 
- * @name {eYo.Driver.DlgtMngr}
+ * @name {eYo.driver.DlgtMngr}
  * @param {Function} constructor
  */
-eYo.Driver.Dlgt.makeSubclass('DlgtMngr', {
+eYo.driver.Dlgt.makeSubclass('DlgtMngr', {
   init () {
 //    console.warn('INIT DlgtMngr')
   },
@@ -45,6 +47,8 @@ eYo.Driver.Dlgt.makeSubclass('DlgtMngr', {
     }
   }
 })
+
+eYo.driver.DlgtMngr.eyo.makeInitInstance()
 
 /**
  * Convenient driver constructor maker.
@@ -59,14 +63,14 @@ eYo.Driver.Dlgt.makeSubclass('DlgtMngr', {
  * An object with various keys:
  * - owner: An object owning the class, basically a namespace object.
  * If the owner is `Foo` and the key is 'Bar', the created constructor
- * is `Foo.Bar`. Actually used with `eYo` as owner, 'Dom' or 'Svg' as key.
+ * is `Foo.Bar`. Actually used with `eYo` as owner, 'dom' or 'svg' as key.
  * - doInitUI: an optional function with signature (object, ...)->eYo.NA
  * - doDisposeUI: an optional function with signature (object)->eYo.NA
  */
-eYo.Driver.DlgtMngr_p.makeDriverClass = function (key, Super, driverModel) {
+eYo.driver.DlgtMngr_p.makeDriverClass = function (key, Super, driverModel) {
   var ns = this.ns
-  if (!eYo.isSubclass(Super, eYo.Driver.Dflt)) {
-    eYo.parameterAssert(!driverModel, 'Unexpected model')
+  if (!eYo.isSubclass(Super, eYo.driver.Dflt)) {
+    eYo.ParameterAssert(!driverModel, 'Unexpected model')
     driverModel = Super
     Super = ns.super[key] || ns.Dflt
   }
@@ -98,15 +102,18 @@ eYo.Driver.DlgtMngr_p.makeDriverClass = function (key, Super, driverModel) {
 }
 
 /**
- * Usage: `eYo.Driver.makeMngr(model)`.
+ * Usage: `eYo.driver.makeMngr(model)`.
  * Actual implementation with Fcls, Dom and Svg drivers.
  * {Code: ns.Mngr} is instantiated by the main application object.
  ** @param {Object} [mngrModel] -  model used for creation
  * @return {Function} a constructor equals to ns.Mngr
  */
-eYo.Driver._p.makeMngr = function (mngrModel) {
-  if (this === eYo.Driver) {
+eYo.driver._p.makeMngr = function (mngrModel) {
+  if (this === eYo.driver) {
     return
+  }
+  if (!this.hasOwnProperty('Dflt')) {
+    this.makeDflt()
   }
   let Super = this.super.Mngr
   var Mngr = this.makeClass(Super, this.DlgtMngr, mngrModel)
@@ -124,7 +131,7 @@ eYo.Driver._p.makeMngr = function (mngrModel) {
 }
 
 /**
- * Usage: `eYo.Driver.makeDriverClass(model)`.
+ * Usage: `eYo.driver.makeDriverClass(model)`.
  * Actual implementation with Fcls, Fcfl, Dom and Svg drivers.
  * {Code: ns.Mngr} is instantiated by the main application object.
  * @param {String} key -  The key of the driver
@@ -132,17 +139,17 @@ eYo.Driver._p.makeMngr = function (mngrModel) {
  * @param {Object} [mngrModel] -  model used for creation
  * @return {Function} a constructor equals to this.Mngr[key]
  */
-eYo.Driver._p.makeDriverClass = function (key, Super, driverModel) {
+eYo.driver._p.makeDriverClass = function (key, Super, driverModel) {
   return this.Mngr.eyo.makeDriverClass(key, Super, driverModel)
 }
 
 /**
- * @name {eYo.Driver.Mngr}
+ * @name {eYo.driver.Mngr}
  * Default driver manager, abstract class to be subclassed.
- * Owns instances of `eYo.Driver.Dflt`'s descendants.
+ * Owns instances of `eYo.driver.Dflt`'s descendants.
  * @param {Object} owner
  */
-eYo.Driver.makeClass('Mngr', eYo.C9r.Owned, eYo.Driver.DlgtMngr,  {
+eYo.driver.makeClass('Mngr', eYo.C9r.Owned, eYo.driver.DlgtMngr,  {
   owned: {
     allPurposeDriver () {
       let handler = {
@@ -177,11 +184,11 @@ eYo.Driver.makeClass('Mngr', eYo.C9r.Owned, eYo.Driver.DlgtMngr,  {
 /**
  * @name{driver}
  * Returns a driver, based on the given object's constructor name.
- * If the receiver is `eYo.Fcfl.Mngr` and the object's constructor name is `Foo.Bar` then the returned driver is an instance of `eYo.Fcfl.Foo.Bar`, `eYo.Fcfl.Foo` as soon as it is a driver constructor, otherwise it is the all purpose driver.
+ * If the receiver is `eYo.fcfl.Mngr` and the object's constructor name is `Foo.Bar` then the returned driver is an instance of `eYo.fcfl.Foo.Bar`, `eYo.fcfl.Foo` as soon as it is a driver constructor, otherwise it is the all purpose driver.
  * @param {*} object - the object for which a driver is required.
- * @return {eYo.Driver.Dflt}
+ * @return {eYo.driver.Dflt}
  */
-eYo.Driver.Mngr_p.driver = function (object) {
+eYo.driver.Mngr_p.driver = function (object) {
   var components = object.eyo.name.split('.')
   components.unshift()
   while (components.length) {
@@ -198,20 +205,20 @@ eYo.Driver.Mngr_p.driver = function (object) {
 /**
  * Initialize all the drivers.
  */
-eYo.Driver.Mngr_p.initDrivers = function () {
-  for (let [name, Driver] of Object.entries(eYo.Driver.Mngr.eyo.driverC9rByName)) {
+eYo.driver.Mngr_p.initDrivers = function () {
+  for (let [name, Driver] of Object.entries(eYo.driver.Mngr.eyo.driverC9rByName)) {
     // do not override
     this.drivers[name] || (this.drivers[name] = new Driver(this))
   }
 }
 
 /**
- * @name {eYo.Driver.Dflt}
+ * @name {eYo.driver.Dflt}
  * Default convenient driver, to be subclassed.
  * @param {Object} owner
- * @property {eYo.Driver.Mgt} mngr,  the owning driver manager
+ * @property {eYo.driver.Mgt} mngr,  the owning driver manager
  */
-eYo.C9r.Owned.makeSubclass(eYo.Driver, 'Dflt', {
+eYo.driver.makeDflt(eYo.C9r.Owned, {
   computed: {
     mngr () {
       return this.owner
@@ -224,7 +231,7 @@ eYo.C9r.Owned.makeSubclass(eYo.Driver, 'Dflt', {
  * @param {*} object
  * @return {Boolean}
  */
-eYo.Driver.Dflt.prototype.doInitUI = function (unused) {
+eYo.driver.Dflt.prototype.doInitUI = function (unused) {
   return true
 }
 
@@ -232,14 +239,14 @@ eYo.Driver.Dflt.prototype.doInitUI = function (unused) {
  * Dispose of the UI.
  * @param {*} object
  */
-eYo.Driver.Dflt.prototype.doDisposeUI = function (unused) {
+eYo.driver.Dflt.prototype.doDisposeUI = function (unused) {
   return true
 }
 
 /**
  * Convenient method to make simple driver forwarders.
  */
-eYo.Driver.makeForwarder = (pttp, key) => {
+eYo.driver.makeForwarder = (pttp, key) => {
   pttp[key] = function (...args) {
     return this.driver[key](this, ...args)
   }

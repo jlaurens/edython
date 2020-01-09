@@ -13,15 +13,15 @@
 
 /**
  * Events fired as a result of actions in Edython.
- * @namespace eYo.Events
+ * @namespace eYo.events
  */
 goog.require('goog.array')
 
-eYo.makeNS('Events')
+eYo.makeNS('events')
 
-eYo.provide('Events.Abstract')
+eYo.provide('events.abstract')
 
-Object.defineProperties(eYo.Events, {
+Object.defineProperties(eYo.events, {
   /**
    * Name of event that creates a block.
    * @const
@@ -80,7 +80,7 @@ Object.defineProperties(eYo.Events, {
    */
   group: {
     get () {
-      return eYo.Events.group_
+      return eYo.events.group_
     },
     /**
      * Start or stop a group.
@@ -91,18 +91,18 @@ Object.defineProperties(eYo.Events, {
       var level = 0
       return state => {
         if (eYo.isStr(state)) {
-          eYo.Events.group_ = state
+          eYo.events.group_ = state
           level = 1
         } else if (state) {
           if (!level++) {
-            eYo.Events.group_ = eYo.Do.genUid()
+            eYo.events.group_ = eYo.do.genUid()
           }
         } else {
           if (level > 1) {
             --level
           } else if (level) {
             --level
-            eYo.Events.group_ = ''
+            eYo.events.group_ = ''
           }
         }
       }
@@ -116,9 +116,9 @@ Object.defineProperties(eYo.Events, {
  * @param {Function} try_f
  * @param {Function} [finally_f]
  */
-eYo.Events.enableWrap = eYo.Do.makeWrapper(
-  eYo.Events.enable,
-  eYo.Events.disable
+eYo.events.enableWrap = eYo.do.makeWrapper(
+  eYo.events.enable,
+  eYo.events.disable
 )
 
 /**
@@ -127,9 +127,9 @@ eYo.Events.enableWrap = eYo.Do.makeWrapper(
  * @param {Function} try_f
  * @param {Function} [finally_f]
  */
-eYo.Events.disableWrap = eYo.Do.makeWrapper(
-  eYo.Events.disable,
-  eYo.Events.enable
+eYo.events.disableWrap = eYo.do.makeWrapper(
+  eYo.events.disable,
+  eYo.events.enable
 )
 
 /**
@@ -137,13 +137,13 @@ eYo.Events.disableWrap = eYo.Do.makeWrapper(
  * @param {Function} try_f
  * @param {Function} [finally_f]
  */
-eYo.Events.groupWrap = (f, g) => {
-  eYo.Do.makeWrapper(
+eYo.events.groupWrap = (f, g) => {
+  eYo.do.makeWrapper(
     () => {
-      eYo.Events.group = true
+      eYo.events.group = true
     },
     () => {
-      eYo.Events.group = false
+      eYo.events.group = false
     },
   g)(f)
 }
@@ -152,19 +152,19 @@ eYo.Events.groupWrap = (f, g) => {
   var FIRE_QUEUE_ = []
   /**
    * Create a custom event and fire it.
-   * @param {eYo.Events.Abstract} event Custom data for event.
+   * @param {eYo.events.Abstract} event Custom data for event.
    */
-  eYo.Events.fire = function(event) {
-    if (!eYo.Events.enabled) {
+  eYo.events.fire = function(event) {
+    if (!eYo.events.enabled) {
       return
     }
     if (!FIRE_QUEUE_.length) {
       // First event added; schedule a firing of the event queue.
       setTimeout(() => {
-        var queue = eYo.Events.filter(FIRE_QUEUE_, true)
+        var queue = eYo.events.filter(FIRE_QUEUE_, true)
         FIRE_QUEUE_.length = 0
         queue.forEach(event => {
-          var board = eYo.Board.byId(event.boardId)
+          var board = eYo.Board.ById(event.boardId)
           if (board) {
             board.eventDidFireChange(event)
           }
@@ -178,26 +178,26 @@ eYo.Events.groupWrap = (f, g) => {
    * Modify pending undo events so that when they are fired they don't land
    * in the undo stack.  Called by eYo.Backer's clear.
    */
-  eYo.Events.clearPendingUndo = function() {
+  eYo.events.ClearPendingUndo = function() {
     FIRE_QUEUE_.forEach(event => (event.toUndoStack = false))
   }
 })()
 
 /**
  * Filter the queued events and merge duplicates.
- * @param {Array<!eYo.Events.Abstract>} queueIn Array of events.
+ * @param {Array<!eYo.events.Abstract>} queueIn Array of events.
  * @param {boolean} forward True if forward (redo), false if backward (undo).
- * @return {!Array<!eYo.Events.Abstract>} Array of filtered events.
+ * @return {!Array<!eYo.events.Abstract>} Array of filtered events.
  */
-eYo.Events.filter = function(queueIn, forward) {
+eYo.events.filter = function(queueIn, forward) {
   if (!forward) {
     // is it a create/move/delete sequence we are about to undo?
     if (queueIn.length === 3) {
       var first = queueIn[0]
       var last = queueIn[queueIn.length-1]
       if (!first.isNull && !last.isNull
-          && first.type === eYo.Events.DELETE
-          && last.type === eYo.Events.CREATE
+          && first.type === eYo.events.DELETE
+          && last.type === eYo.events.CREATE
           && first.boardId === last.boardId
           && first.group === last.group
           && first.brickId === last.brickId) {
@@ -221,12 +221,12 @@ eYo.Events.filter = function(queueIn, forward) {
       if (!lastEvent) {
         hash[key] = event
         mergedQueue.push(event)
-      } else if (event.type == eYo.Events.BLOCK_MOVE) {
+      } else if (event.type == eYo.events.BLOCK_MOVE) {
         // Merge move events.
         lastEvent.newParentId = event.newParentId;
         lastEvent.newInputName = event.newInputName;
         lastEvent.newCoordinate = event.newCoordinate;
-      } else if (event.type == eYo.Events.BLOCK_CHANGE &&
+      } else if (event.type == eYo.events.BLOCK_CHANGE &&
           event.element == lastEvent.element &&
           event.name == lastEvent.name) {
         // Merge change events.
@@ -250,16 +250,16 @@ eYo.Events.filter = function(queueIn, forward) {
 /**
  * Stop sending events.  Every call to this function MUST also call enable.
  */
-eYo.Events.disable = function() {
-  eYo.Events.disabled_++
+eYo.events.disable = function() {
+  eYo.events.disabled_++
 };
 
 /**
  * Start sending events.  Unless events were already disabled when the
  * corresponding call to disable was made.
  */
-eYo.Events.enable = function() {
-  eYo.Events.disabled_--
+eYo.events.enable = function() {
+  eYo.events.disabled_--
 }
 
 /**
@@ -267,12 +267,12 @@ eYo.Events.enable = function() {
  * Use this on applications where all bricks should be connected to a top brick.
  * Recommend setting the 'disable' option to 'false' in the config so that
  * users don't try to reenable disabled orphan bricks.
- * @param {eYo.Events.Abstract} event Custom data for event.
+ * @param {eYo.events.Abstract} event Custom data for event.
  */
-eYo.Events.disableOrphans = function(event) {
-  if (event.type === eYo.Events.BRICK_MOVE ||
-      event.type === eYo.Events.BRICK_CREATE) {
-    var board = eYo.Board.byId(event.boardId)
+eYo.events.disableOrphans = function(event) {
+  if (event.type === eYo.events.BRICK_MOVE ||
+      event.type === eYo.events.BRICK_CREATE) {
+    var board = eYo.Board.ById(event.boardId)
     var brick = board.getBrickById(event.brickId)
     if (brick) {
       if (brick.parent && !brick.parent.disabled) {
@@ -292,7 +292,7 @@ eYo.Events.disableOrphans = function(event) {
  * Abstract class for an event.
  * @constructor
  */
-eYo.Events.Abstract = function(board) {
+eYo.events.Abstract = function(board) {
   /**
    * The board identifier for this event.
    * @type {string|eYo.NA}
@@ -305,16 +305,16 @@ eYo.Events.Abstract = function(board) {
    * perspective, and should be undone together.
    * @type {string}
    */
-  this.group = eYo.Events.group
+  this.group = eYo.events.group
 
   /**
    * Sets whether the event should be added to the undo stack.
    * @type {boolean}
    */
-  this.toUndoStack = eYo.Events.recordingUndo
+  this.toUndoStack = eYo.events.recordingUndo
 }
 
-Object.defineProperties(eYo.Events.Abstract.prototype, {
+Object.defineProperties(eYo.events.Abstract.prototype, {
   /**
    * Does this event record any change of state?
    * @return {boolean} True if null, false if something changed.
@@ -332,7 +332,7 @@ Object.defineProperties(eYo.Events.Abstract.prototype, {
    */
   board: {
     get () {
-      var board = eYo.Board.byId(this.boardId)
+      var board = eYo.Board.ById(this.boardId)
       if (!board) {
         throw Error('Board is null. Event must have been generated from real' +
           ' Edython events.')
@@ -346,5 +346,5 @@ Object.defineProperties(eYo.Events.Abstract.prototype, {
  * Run an event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
-eYo.Events.Abstract.prototype.run = eYo.Do.nothing
+eYo.events.Abstract.prototype.run = eYo.do.nothing
 

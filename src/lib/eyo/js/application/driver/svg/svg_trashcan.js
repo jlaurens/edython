@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Svg')
+eYo.require('svg')
 
-eYo.forwardDeclare('TrashCan')
+eYo.forwardDeclare('trashCan')
 goog.forwardDeclare('goog.math')
 
 /**
@@ -70,7 +70,7 @@ eYo.Svg.makeDriverClass('TrashCan', {
       }, g)
       var url = trashCan.board_.options.pathToMedia + Blockly.SPRITE.url
       body.setAttributeNS(
-        eYo.Dom.XLINK_NS,
+        eYo.dom.XLINK_NS,
         'xlink:href',
         url
       )
@@ -99,11 +99,11 @@ eYo.Svg.makeDriverClass('TrashCan', {
         g
       )
       lid.setAttributeNS(
-        eYo.Dom.XLINK_NS,
+        eYo.dom.XLINK_NS,
         'xlink:href',
         url
       )
-      dom.bound.mouseup = eYo.Dom.bindEvent(
+      dom.bound.mouseup = eYo.dom.BindEvent(
         g,
         'mouseup',
         null,
@@ -123,7 +123,7 @@ eYo.Svg.makeDriverClass('TrashCan', {
       if (dom) {
         goog.Timer.clear(dom.lidTask)
         dom.lidTask = 0
-        eYo.Dom.clearBoundEvents(trashCan)
+        eYo.dom.ClearBoundEvents(trashCan)
         var svg = dom.svg
         if (svg) {
           goog.dom.removeNode(svg.group_)
@@ -188,7 +188,7 @@ eYo.Svg.TrashCan.prototype.openSet = function(trashCan, state) {
  * Rotate the lid open or closed by one step.  Then wait and recurse.
  * @param {eYo.TrashCan} trashCan
  */
-eYo.Svg.TrashCan.prototype.animate = function(trashCan) {
+eYo.Svg.TrashCan.prototype.Animate = function(trashCan) {
   var dom = trashCan.dom
   var svg = dom.svg
   svg.state_ += dom.isOpen ? 0.2 : -0.2
@@ -211,7 +211,7 @@ eYo.Svg.TrashCan.prototype.animate = function(trashCan) {
  * Return the deletion rectangle for the given trash can.
  * @param {eYo.TrashCan} trashCan
  */
-eYo.Svg.TrashCan.prototype.clientRect = function(trashCan) {
+eYo.Svg.TrashCan.prototype.ClientRect = function(trashCan) {
   var svg = trashCan.dom.svg
   var rect = svg.group_.getBoundingClientRect()
   var left = rect.left + trashCan.SPRITE_LEFT_ - trashCan.MARGIN_HOTSPOT_

@@ -3,7 +3,7 @@ describe('Tokenizer', function() {
 
   console.log('RUNNING TOKENIZER TESTS')
 
-  describe('Scan', function() {
+  describe('scan', function() {
     it('goog should be available', function() {
       assert(goog);
     });
@@ -63,7 +63,7 @@ describe('Tokenizer', function() {
       scan.nextToken()
       assert(!scan.error, `<${scan.error}>`)
       assert(scan.tokens.length === this.done, `${scan.tokens.length} === ${this.done}`)
-      assert(scan.last.type === eYo.TKN[key], `${scan.last.type} === ${eYo.TKN[key]}`)
+      assert(scan.last.type === eYo.tkn[key], `${scan.last.type} === ${eYo.tkn[key]}`)
       assert(scan.last.string === this.nextStr, `<${scan.last.string}> === <${this.nextStr}>`)
       do_it && (do_it.call(this, scan))
     }
@@ -75,7 +75,7 @@ describe('Tokenizer', function() {
     scan.init(str)
     while (scan.nextToken()) {}
     assert(!scan.errorCount, `errorCount: <${scan.errorCount}>`)
-    assert(scan.last.type === eYo.TKN.ENDMARKER, `${scan.last.type} === eYo.TKN.ENDMARKER`)
+    assert(scan.last.type === eYo.tkn.ENDMARKER, `${scan.last.type} === eYo.tkn.ENDMARKER`)
   }
   Object.defineProperties(Tester.prototype, {
     nextKey: {

@@ -1,12 +1,12 @@
 const NS = Object.create(null)
 
-describe ('Do', function () {
+describe ('do', function () {
   it ('BASIC: Do', function () {
-    chai.assert(eYo.Do)
+    chai.assert(eYo.do)
   })
-  it ('eYo.Do.toTitleCase', function () {
-    chai.assert(eYo.Do.toTitleCase('') === '')
-    chai.assert(eYo.Do.toTitleCase('a') === 'A')
-    chai.assert(eYo.Do.toTitleCase('abc') === 'Abc')
+  it ('eYo.do.toTitleCase', function () {
+    chai.assert(eYo.do.toTitleCase('') === '')
+    chai.assert(eYo.do.toTitleCase('a') === 'A')
+    chai.assert(eYo.do.toTitleCase('abc') === 'Abc')
   })
 })

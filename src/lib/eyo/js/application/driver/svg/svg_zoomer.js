@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Svg')
+eYo.require('svg')
 
-eYo.forwardDeclare('Zoomer')
+eYo.forwardDeclare('zoomer')
 
 /**
  * Svg driver for the zoomer.
@@ -85,7 +85,7 @@ eYo.Svg.makeDriverClass('Zoomer', {
       g
     )
     zoomoutSvg.setAttributeNS(
-      eYo.Dom.XLINK_NS,
+      eYo.dom.XLINK_NS,
       'xlink:href',
       board.options.pathToMedia + eYo.SPRITE.url
     )
@@ -113,7 +113,7 @@ eYo.Svg.makeDriverClass('Zoomer', {
       g
     )
     zoominSvg.setAttributeNS(
-      eYo.Dom.XLINK_NS,
+      eYo.dom.XLINK_NS,
       'xlink:href',
       board.options.pathToMedia + eYo.SPRITE.url
     )
@@ -137,41 +137,41 @@ eYo.Svg.makeDriverClass('Zoomer', {
       g
     )
     zoomresetSvg.setAttributeNS(
-      eYo.Dom.XLINK_NS,
+      eYo.dom.XLINK_NS,
       'xlink:href',
       board.options.pathToMedia + eYo.SPRITE.url
     )
     // Attach event listeners.
     var bound = dom.bound
-    bound.zoomreset = eYo.Dom.bindEvent(
+    bound.zoomreset = eYo.dom.BindEvent(
       zoomresetSvg,
       'mousedown',
       e => {
         board.markFocused()
         board.scale = board.options.zoom.startScale
         board.scrollCenter()
-        eYo.Dom.clearTouchIdentifier()  // Don't block future drags.
-        eYo.Dom.gobbleEvent(e)
+        eYo.dom.ClearTouchIdentifier()  // Don't block future drags.
+        eYo.dom.gobbleEvent(e)
       }
     )
-    bound.zoomin = eYo.Dom.bindEvent(
+    bound.zoomin = eYo.dom.BindEvent(
       zoominSvg,
       'mousedown',
       e => {
         board.markFocused()
         board.zoomCenter(1)
-        eYo.Dom.clearTouchIdentifier()  // Don't block future drags.
-        eYo.Dom.gobbleEvent(e)
+        eYo.dom.ClearTouchIdentifier()  // Don't block future drags.
+        eYo.dom.gobbleEvent(e)
       }
     )
-    bound.zoomout = eYo.Dom.bindEvent(
+    bound.zoomout = eYo.dom.BindEvent(
       zoomoutSvg,
       'mousedown',
       e => {
         board.markFocused();
         board.zoomCenter(-1)
-        eYo.Dom.clearTouchIdentifier()  // Don't block future drags.
-        eYo.Dom.gobbleEvent(e)
+        eYo.dom.ClearTouchIdentifier()  // Don't block future drags.
+        eYo.dom.gobbleEvent(e)
       }
     )
     return g
@@ -190,9 +190,9 @@ eYo.Svg.makeDriverClass('Zoomer', {
     }
     var bound = dom.bound
     // Attach event listeners.
-    bound.zoomreset = eYo.Dom.unbindEvent(bound.zoomreset)
-    bound.zoomin = eYo.Dom.unbindEvent(bound.zoomin)
-    bound.zoomout = eYo.Dom.unbindEvent(bound.zoomout)
+    bound.zoomreset = eYo.dom.unbindEvent(bound.zoomreset)
+    bound.zoomin = eYo.dom.unbindEvent(bound.zoomin)
+    bound.zoomout = eYo.dom.unbindEvent(bound.zoomout)
     goog.dom.removeNode(svg.zoom_)
     svg.zoom_ = null
   },

@@ -11,28 +11,28 @@
  */
 'use strict'
 
-eYo.require('Brick')
+eYo.require('brick')
 
-eYo.require('Msg')
+eYo.require('msg')
 
-eYo.require('Stmt')
-eYo.require('Expr.List')
+eYo.require('stmt')
+eYo.require('expr.list')
 
-eYo.require('Expr.Primary')
-eYo.require('Tooltip')
+eYo.require('expr.primary')
+eYo.require('tooltip')
 
-eYo.require('Library')
+eYo.require('library')
 eYo.require('Module.math__module')
 
-eYo.provide('Brick.Math')
+eYo.provide('brick.math')
 
-{
+;(() => {
 
   var F = (name, title) => {
     var key = 'math__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.t3.Expr.Call_expr,
       data: {
         name: name,
         holder: 'math',
@@ -43,9 +43,9 @@ eYo.provide('Brick.Math')
   }
   var F_k = (name, title) => {
     var key = 'math__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.attributeref,
+      type: eYo.t3.Expr.Attributeref,
       data: {
         name: name,
         holder: 'math',
@@ -54,11 +54,11 @@ eYo.provide('Brick.Math')
       title: key
     }
   }
-eYo.Library.DATA.basic_math__module = [
+eYo.Library.DATA.Basic_math__module = [
   {
-    type: eYo.T3.Stmt.import_stmt,
+    type: eYo.t3.Stmt.import_stmt,
     data: {
-      variant: eYo.Key.FROM_MODULE_IMPORT_STAR,
+      variant: eYo.key.FROM_MODULE_IMPORT_STAR,
       from: 'math'
     }
   },
@@ -114,9 +114,9 @@ eYo.Library.DATA.basic_math__module = [
 
   var F = (name, title) => {
     var key = 'math__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.t3.Expr.Call_expr,
       data: {
         name: name,
         holder: 'math',
@@ -127,9 +127,9 @@ eYo.Library.DATA.basic_math__module = [
   }
   var F_k = (name, title) => {
     var key = 'math__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.attributeref,
+      type: eYo.t3.Expr.Attributeref,
       data: {
         name: name,
         holder: 'math',
@@ -140,15 +140,15 @@ eYo.Library.DATA.basic_math__module = [
   }
   eYo.Library.DATA.math__module = [
     {
-      type: eYo.T3.Stmt.import_stmt,
+      type: eYo.t3.Stmt.import_stmt,
       data: {
-        variant: eYo.Key.IMPORT
+        variant: eYo.key.IMPORT
       },
       slots: {
         import_module: {
           slots: {
             O: {
-              type: eYo.T3.Expr.identifier,
+              type: eYo.t3.Expr.identifier,
               data: 'math',
             },
           },
@@ -207,15 +207,15 @@ eYo.Library.DATA.basic_math__module = [
     F('lgamma', 'Logarithme népérien de la fonction Gamma')
   ]
 
-}
+}) ()
 
-goog.mixin(eYo.Tooltip.Title, {
+goog.mixin(eYo.tooltip.Title, {
   math__import_stmt: 'Importer le module math',
 })
 
-eYo.Brick.Math.T3s = [
-  eYo.T3.Stmt.math__import_stmt,
-  eYo.T3.Expr.math__call_expr,
-  eYo.T3.Stmt.math__call_stmt,
-  eYo.T3.Expr.math__const
+eYo.Brick.math.T3s = [
+  eYo.t3.Stmt.math__import_stmt,
+  eYo.t3.Expr.math__call_expr,
+  eYo.t3.Stmt.math__call_stmt,
+  eYo.t3.Expr.math__const
 ]

@@ -661,7 +661,7 @@ eYo.require('Module')
 
 eYo.provide('Module.{{key}}', new eYo.Module.Dflt('{{key}}', '{{url}}'))
 
-{
+;(() => {
   /* Singleton constructor */
   var Item = eYo.Module.{{key}}.Item = function (model) {
     eYo.Module.Item.call(this, model)
@@ -685,7 +685,7 @@ eYo.provide('Module.{{key}}', new eYo.Module.Dflt('{{key}}', '{{url}}'))
 """
         suffix_ = """
 
-}
+}) ()
 
 """
         def __init__(self, key):

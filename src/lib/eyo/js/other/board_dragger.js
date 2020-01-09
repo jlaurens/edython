@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.provide('BoardDragger')
+eYo.provide('boardDragger')
 
 /**
  * Class for a board dragger. Set some scrollbar according to the drag delta. The scrollbar depends on whether the board is in a flyout.
@@ -64,7 +64,7 @@ eYo.BoardDragger.prototype.isActive_ = false
  * @param {eYo.Motion} Motion
  * @return {Boolean} started or not
  */
-eYo.BoardDragger.prototype.start = function(Motion) {
+eYo.BoardDragger.prototype.Start = function(Motion) {
   if (this.isActive_) {
     // The drag has already started, nothing more to do.
     // This can happen if the user starts a drag, mouses up outside of the
@@ -98,15 +98,15 @@ eYo.BoardDragger.prototype.start = function(Motion) {
    * @package
    */
   this.xyStart_ = new eYo.Where()
-  if (eYo.app.focus_mngr.brick) {
-    eYo.app.focus_mngr.brick.focusOff()
+  if (eYo.App.Focus_mngr.Brick) {
+    eYo.App.focus_mngr.Brick.FocusOff()
   }
 }
 
 /**
  * Reset Motion.
  */
-eYo.BoardDragger.prototype.clearMotion = function() {
+eYo.BoardDragger.prototype.ClearMotion = function() {
   this.motion_ = null
 }
 

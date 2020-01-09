@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('Fcfl')
-eYo.require('Brick')
+eYo.require('fcfl')
+eYo.require('brick')
 
 /**
  * Facefull driver for bricks.
  */
-eYo.Fcfl.makeDriverClass('Brick')
+eYo.fcfl.makeDriverClass('Brick')
 
 eYo.Brick.eyo.modelDeclare({
   valued: {
@@ -90,7 +90,7 @@ eYo.Brick.eyo.modelDeclare({
  * @param {*} recorder
  * @return {boolean=} true if an rendering message was sent, false otherwise.
  */
-eYo.Fcfl.Brick._p.drawFoot_ = function (io) {
+eYo.fcfl.Brick._p.drawFoot_ = function (io) {
   let brick = io.brick
   var m4t = brick.foot_m
   if (!m4t) {
@@ -106,7 +106,7 @@ eYo.Fcfl.Brick._p.drawFoot_ = function (io) {
   (!brick.up &&
     !eYo.Magnet.disconnectedParent &&
     !eYo.Magnet.disconnectedChild&&
-    !eYo.Magnet.connectedParent)
+    !eYo.Magnet.ConnectedParent)
   if (do_it) {
     try {
       t9k.down = true
@@ -125,7 +125,7 @@ eYo.Fcfl.Brick._p.drawFoot_ = function (io) {
  * @param {*} io
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.Fcfl.Brick._p.renderRight_ = function (io) {
+eYo.fcfl.Brick._p.renderRight_ = function (io) {
   let brick = io.brick
   brick.span.right = 0
   var m4t = brick.right_m
@@ -183,7 +183,7 @@ eYo.Fcfl.Brick._p.renderRight_ = function (io) {
  * @param {*} recorder
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.Fcfl.Brick._p.renderSuite_ = function (io) {
+eYo.fcfl.Brick._p.renderSuite_ = function (io) {
   let brick = io.brick
   var m4t = brick.suite_m
   if (!m4t) {
@@ -222,7 +222,7 @@ eYo.Fcfl.Brick._p.renderSuite_ = function (io) {
  *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
  * @return {boolean=} true if an rendering message was sent, false otherwise.
  */
-eYo.Fcfl.Brick._p.drawParent_ = function (io, bbbl) {
+eYo.fcfl.Brick._p.drawParent_ = function (io, bbbl) {
   let brick = io.brick
   // `this` is a brick
   if (bbbl === false || brick.down) {
@@ -232,7 +232,7 @@ eYo.Fcfl.Brick._p.drawParent_ = function (io, bbbl) {
   // when the render message did not come from above!
   var parent = brick.parent
   if (parent) {
-    var justConnected = eYo.Magnet.connectedParent && brick.out_m === eYo.Magnet.connectedParent.target
+    var justConnected = eYo.Magnet.ConnectedParent && brick.out_m === eYo.magnet.connectedParent.Target
     if (!parent.down) {
       try {
         parent.up = true
@@ -268,7 +268,7 @@ eYo.Fcfl.Brick._p.drawParent_ = function (io, bbbl) {
   }
 }
 
-eYo.Fcfl.Brick._p.longRender_ = eYo.Decorate.reentrant_method(
+eYo.fcfl.Brick._p.longRender_ = eYo.decorate.reentrant_method(
   'longRender_',
   function (bbbl, recorder) {
     let brick = recorder.brick
@@ -295,7 +295,7 @@ eYo.Fcfl.Brick._p.longRender_ = eYo.Decorate.reentrant_method(
       this.didRender_(brick, io)
     } finally {
       if (eYo.Brick.DEBUG_StartTrackingRender &&  eYo.Brick.DEBUG_Prefix.length) {
-        eYo.Brick.DEBUG_Prefix = eYo.Brick.DEBUG_Prefix.substring(1)
+        eYo.Brick.DEBUG_Prefix = eYo.Brick.DEBUG_Prefix.Substring(1)
       }
     }
   }
@@ -310,18 +310,18 @@ eYo.Fcfl.Brick._p.longRender_ = eYo.Decorate.reentrant_method(
  * @param {boolean=} bbbl If false, just render this brick.
  *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
  */
-eYo.Fcfl.Brick._p.render = function (brick, bbbl, recorder) {
+eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
   if (!brick.hasUI || brick.rendered === false) { // brick.rendered === eYo.NA is OK
     return
   }
   if (!brick.isEditing && (brick.dragging_ || brick.change.level || !brick.board)) {
     return
   }
-  this.drawPending_(recorder, !brick.wrapped_ && eYo.Key.LEFT)
+  this.drawPending_(recorder, !brick.wrapped_ && eYo.key.LEFT)
   // rendering is very special when this is just a matter of
   // statement connection
   if (brick.rendered) {
-    if (eYo.Magnet.disconnectedChild && brick.head_m === eYo.Magnet.disconnectedChild) {
+    if (eYo.Magnet.disconnectedChild && brick.head_m === eYo.magnet.disconnectedChild) {
       // this is the child one
       var io = this.willShortRender_(brick, recorder)
       this.layoutMagnets_(io)
@@ -331,7 +331,7 @@ eYo.Fcfl.Brick._p.render = function (brick, bbbl, recorder) {
       brick.change.save.render = brick.change.count
       this.drawParent_(io, bbbl) || this.alignRightEdges_(io) // will they have a parent meanwhile?
       return
-    } else if (eYo.Magnet.disconnectedParent && brick.foot_m === eYo.Magnet.disconnectedParent) {
+    } else if (eYo.Magnet.disconnectedParent && brick.foot_m === eYo.magnet.disconnectedParent) {
       // this is the parent one
       // but it may belong to a suite
       var io = this.willShortRender_(brick, recorder)
@@ -342,8 +342,8 @@ eYo.Fcfl.Brick._p.render = function (brick, bbbl, recorder) {
       brick.change.save.render = brick.change.count
       this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       return
-    } else if (eYo.Magnet.connectedParent) {
-      if (brick.head_m && eYo.Magnet.connectedParent === brick.head_m.target) {
+    } else if (eYo.Magnet.ConnectedParent) {
+      if (brick.head_m && eYo.Magnet.ConnectedParent === brick.head_m.target) {
         var io = this.willShortRender_(brick, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
@@ -351,7 +351,7 @@ eYo.Fcfl.Brick._p.render = function (brick, bbbl, recorder) {
         brick.updateShape()
         brick.change.save.render = brick.change.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
-      } else if (brick.foot_m && eYo.Magnet.connectedParent === brick.foot_m) {
+      } else if (brick.foot_m && eYo.Magnet.ConnectedParent === brick.foot_m) {
         var io = this.willShortRender_(brick, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
@@ -359,7 +359,7 @@ eYo.Fcfl.Brick._p.render = function (brick, bbbl, recorder) {
         brick.updateShape()
         brick.change.save.render = brick.change.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
-      } else if (brick.suite_m && eYo.Magnet.connectedParent === brick.suite_m) {
+      } else if (brick.suite_m && eYo.Magnet.ConnectedParent === brick.suite_m) {
         var io = this.willShortRender_(brick, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
@@ -382,7 +382,7 @@ eYo.Fcfl.Brick._p.render = function (brick, bbbl, recorder) {
       // parent has no output magnet or has no parent.
       recorder && (recorder.field.last = eYo.NA)
       if (!parent.down) {
-        if (eYo.Magnet.connectedParent && eYo.Magnet.connectedParent.brick === this) {
+        if (eYo.Magnet.ConnectedParent && eYo.magnet.connectedParent.Brick === this) {
           try {
             parent.up = true
             parent.render(bbbl, recorder)
@@ -416,7 +416,7 @@ eYo.Fcfl.Brick._p.render = function (brick, bbbl, recorder) {
  * @param {*} recorder
  * @private
  */
-eYo.Fcfl.Brick._p.willShortRender_ = function (brick, recorder) {
+eYo.fcfl.Brick._p.willShortRender_ = function (brick, recorder) {
   return this.newDrawRecorder_(brick, recorder)
 }
 
@@ -427,9 +427,9 @@ eYo.Fcfl.Brick._p.willShortRender_ = function (brick, recorder) {
  * @param {eYo.Where} xy - The xy coordinate of the translation in board units.
  * @param {Boolean} snap Whether we should snap to the grid.
  */
-eYo.Fcfl.Brick._p.moveTo = function(brick, xy, snap) {
+eYo.fcfl.Brick._p.moveTo = function(brick, xy, snap) {
   if (snap && brick.board && !brick.board.dragging && !brick.parent && !brick.isInFlyout) {
-    xy = eYo.Where.cl(xy.c, xy.l)
+    xy = eYo.Where.Cl(xy.c, xy.l)
   }
   brick.xy_ = xy
   this.place(brick)
@@ -442,12 +442,12 @@ eYo.Fcfl.Brick._p.moveTo = function(brick, xy, snap) {
  * @param {number} dxy Offset in board units.
  * @param {Boolean} snap Whether we should snap to the grid.
  */
-eYo.Fcfl.Brick._p.moveBy = function(brick, dxy, snap) {
+eYo.fcfl.Brick._p.moveBy = function(brick, dxy, snap) {
   var xy = brick.xy.forward(dxy)
   if (brick.parent || brick.desk.desktop.isDragging) {
     this.moveTo(brick, xy)
   } else {
-    eYo.Events.fireBrickMove(brick, () => {
+    eYo.events.fireBrickMove(brick, () => {
       this.moveTo(brick, xy, snap)
       brick.board.resizePort(brick)
     })
@@ -460,14 +460,14 @@ eYo.Fcfl.Brick._p.moveBy = function(brick, dxy, snap) {
  * @param {*} recorder
  * @private
  */
-eYo.Fcfl.Brick._p.willRender_ = function (brick, recorder) {
+eYo.fcfl.Brick._p.willRender_ = function (brick, recorder) {
   brick.consolidate()
 }
 
 /**
  * Update all of the connections on this with the new locations.  * @private
  */
-eYo.Fcfl.Brick._p.renderMoveMagnets_ = function(brick) {
+eYo.fcfl.Brick._p.renderMoveMagnets_ = function(brick) {
   var xy = brick.whereInBoard
   var f = m4t => {
     if (m4t) {
@@ -503,7 +503,7 @@ eYo.Fcfl.Brick._p.renderMoveMagnets_ = function(brick) {
  * Update all of the connections on this with the new locations.
  * @private
  */
-eYo.Fcfl.Brick._p.placeMagnets_ = function(brick) {
+eYo.fcfl.Brick._p.placeMagnets_ = function(brick) {
   var xy = brick.whereInBoard
   var f = m4t => {
     if (m4t) {
@@ -540,7 +540,7 @@ eYo.Fcfl.Brick._p.placeMagnets_ = function(brick) {
  * @param {*} recorder
  * @private
  */
-eYo.Fcfl.Brick._p.renderMove_ = function (io) {
+eYo.fcfl.Brick._p.renderMove_ = function (io) {
   let brick = io.brick
   this.renderMoveMagnets_(brick)
 }
@@ -550,7 +550,7 @@ eYo.Fcfl.Brick._p.renderMove_ = function (io) {
  * @param {*} recorder
  * @private
  */
-eYo.Fcfl.Brick._p.layoutMagnets_ = function (recorder) {
+eYo.fcfl.Brick._p.layoutMagnets_ = function (recorder) {
   let brick = recorder.brick
   var m5s = brick.magnets
   var m4t = m5s.out
@@ -581,7 +581,7 @@ eYo.Fcfl.Brick._p.layoutMagnets_ = function (recorder) {
  * @param {*} recorder - 
  * @private
  */
-eYo.Fcfl.Brick._p.draw_ = function (recorder) {
+eYo.fcfl.Brick._p.draw_ = function (recorder) {
   let brick = recorder.brick
   if (this.canDraw(brick)) {
     try {
@@ -605,7 +605,7 @@ eYo.Fcfl.Brick._p.draw_ = function (recorder) {
  * @param {*} recorder
  * @protected
  */
-eYo.Fcfl.Brick._p.alignRightEdges_ = eYo.C9r.decorateChange(
+eYo.fcfl.Brick._p.AlignRightEdges_ = eYo.C9r.decorateChange(
   'alignRightEdges_',
   function (recorder) {
     let brick = recorder.brick
@@ -649,7 +649,7 @@ eYo.Fcfl.Brick._p.alignRightEdges_ = eYo.C9r.decorateChange(
  * of that rendering process.
  * @private
  */
-eYo.Fcfl.Brick._p.newDrawRecorder_ = function (brick, recorder) {
+eYo.fcfl.Brick._p.newDrawRecorder_ = function (brick, recorder) {
   var io = {
     brick: brick,
     steps: [],
@@ -696,7 +696,7 @@ eYo.Fcfl.Brick._p.newDrawRecorder_ = function (brick, recorder) {
  * @return {!Object} a local recorder
  * @private
  */
-eYo.Fcfl.Brick._p.drawModelBegin_ = function (recorder) {
+eYo.fcfl.Brick._p.drawModelBegin_ = function (recorder) {
   let brick = recorder.brick
   brick.ui.parentIsShort = false
   brick.ui.isShort = false
@@ -751,7 +751,7 @@ eYo.Fcfl.Brick._p.drawModelBegin_ = function (recorder) {
  * @param {Object} [io]
  * @private
  */
-eYo.Fcfl.Brick._p.drawModel_ = function (io) {
+eYo.fcfl.Brick._p.drawModel_ = function (io) {
   let brick = io.brick
   this.fieldDrawFrom_(brick.fieldAtStart, io)
   if ((io.slot = brick.slotAtHead)) {
@@ -768,7 +768,7 @@ eYo.Fcfl.Brick._p.drawModel_ = function (io) {
  * @param {Object} [recorder]
  * @private
  */
-eYo.Fcfl.Brick._p.drawModelEnd_ = function (brick, io) {
+eYo.fcfl.Brick._p.drawModelEnd_ = function (brick, io) {
   // and now some space for the right edge, if any
   let f = io.common.field
   if (!brick.wrapped_) {
@@ -850,7 +850,7 @@ eYo.Fcfl.Brick._p.drawModelEnd_ = function (brick, io) {
  * @param io
  * @private
  */
-eYo.Fcfl.Brick._p.slotDraw_ = function (io) {
+eYo.fcfl.Brick._p.SlotDraw_ = function (io) {
   var slot = io.slot
   // if (!slot) {
   //   return
@@ -879,7 +879,7 @@ eYo.Fcfl.Brick._p.slotDraw_ = function (io) {
  * @param io
  * @private
  */
-eYo.Fcfl.Brick._p.drawSharp_ = function (io) {
+eYo.fcfl.Brick._p.drawSharp_ = function (io) {
   let brick = io.brick
   if (brick.isControl) { // Not very clean, used as hook before rendering the comment fields.
     io.cursor.c += 4
@@ -899,7 +899,7 @@ eYo.Fcfl.Brick._p.drawSharp_ = function (io) {
  * @param {Boolean} visible - the brick the driver acts on
  * @private
  */
-eYo.Fcfl.Brick._p.drawSharp = eYo.Do.nothing
+eYo.fcfl.Brick._p.drawSharp = eYo.do.nothing
 
 /**
  * Render the given field, when defined.
@@ -910,7 +910,7 @@ eYo.Fcfl.Brick._p.drawSharp = eYo.Do.nothing
  * @param {Object} io An input/output recorder.
  * @private
  */
-eYo.Fcfl.Brick._p.drawField_ = function (field, io) {
+eYo.fcfl.Brick._p.drawField_ = function (field, io) {
   let brick = io.brick
   var c = io.cursor.c
   field.displayedUpdate()
@@ -960,7 +960,7 @@ eYo.Fcfl.Brick._p.drawField_ = function (field, io) {
           } else if (head === '.' && !io.common.field.afterBlack) {
             io.cursor.c -= 1
           } else if (io.common.field.afterBlack
-            && (eYo.XRE.operator.test(head) || head === '=' || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
+            && (eYo.xre.operator.test(head) || head === '=' || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
             io.cursor.c += 1
           } else if (io.common.field.shouldSeparate
               && (!field.startsWithSeparator()
@@ -972,15 +972,15 @@ eYo.Fcfl.Brick._p.drawField_ = function (field, io) {
         io.common.field.wasStarLike = (io.common.field.canStarLike && (['*', '@', '+', '-', '~', '.'].indexOf(tail) >= 0))
         io.common.field.canStarLike = false
         io.common.field.shouldSeparate = !io.common.field.wasStarLike
-          && (eYo.XRE.id_continue.test(tail)
-            || eYo.XRE.operator.test(tail)
+          && (eYo.xre.id_continue.test(tail)
+            || eYo.xre.operator.test(tail)
             || tail === ':'
             || tail === '='
             || tail === '#'
             || tail === ','
             || (tail === '.'
               && (!(field instanceof eYo.FieldLabel))))
-        io.common.field.afterBlack = !eYo.XRE.white_space.test(tail)
+        io.common.field.afterBlack = !eYo.xre.white_space.test(tail)
         io.common.field.afterCaret = false
         // place the field at the right position:
       }
@@ -1024,7 +1024,7 @@ eYo.Fcfl.Brick._p.drawField_ = function (field, io) {
  * @param {Object} io An input/output recorder.
  * @private
  */
-eYo.Fcfl.Brick._p.fieldDrawFrom_ = function (field, io) {
+eYo.fcfl.Brick._p.FieldDrawFrom_ = function (field, io) {
   if (field) {
     do {
       this.drawField_(field, io)
@@ -1042,7 +1042,7 @@ eYo.Fcfl.Brick._p.fieldDrawFrom_ = function (field, io) {
  * @return {Number}  The advance of the cursor (in columns)
  * @private
  */
-eYo.Fcfl.Brick._p.drawFields_ = function (io, only_prefix) {
+eYo.fcfl.Brick._p.drawFields_ = function (io, only_prefix) {
   var current = io.cursor.c
   io.slot.fieldForEach(field => {
     if (!!only_prefix === !field.suffix) {
@@ -1094,7 +1094,7 @@ eYo.Fcfl.Brick._p.drawFields_ = function (io, only_prefix) {
  * @param {Object} [io] the input/output argument.
  * @private
  */
-eYo.Fcfl.Brick._p.drawEnding_ = function (io, isLast = false, inStatement = false) {
+eYo.fcfl.Brick._p.drawEnding_ = function (io, isLast = false, inStatement = false) {
   if (io) {
     var isLastInExpression = isLast && !inStatement
     var isLastInStatement = isLast && inStatement
@@ -1132,8 +1132,8 @@ eYo.Fcfl.Brick._p.drawEnding_ = function (io, isLast = false, inStatement = fals
         b3k.updateShape()
         var m4t = b3k.ui.rightCaret
         if (m4t) {
-          m4t.side = eYo.Key.RIGHT
-          m4t.shape = eYo.Key.NONE
+          m4t.side = eYo.key.RIGHT
+          m4t.shape = eYo.key.NONE
           m4t.ui.isLastInStatement =isLastInStatement
           var d = eYo.Shape.definitionWithMagnet(m4t) // depends on the shape and the side
           var brick = m4t.brick
@@ -1162,12 +1162,12 @@ eYo.Fcfl.Brick._p.drawEnding_ = function (io, isLast = false, inStatement = fals
  * @param {String} [shape] Which is the shape.
  * @private
  */
-eYo.Fcfl.Brick._p.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.Key.NONE) {
+eYo.fcfl.Brick._p.drawPending_ = function (io, side = eYo.key.NONE, shape = eYo.key.NONE) {
   if (io) {
     var m4t = io.common.pending
     if (m4t) {
       m4t.side = side
-      m4t.shape = io.ui.isLastInStatement ? eYo.Key.Right : shape
+      m4t.shape = io.ui.isLastInStatement ? eYo.key.Right : shape
       var shp = eYo.Shape.newWithMagnet(m4t)
       var b3k = m4t.brick
       if (io.brick === b3k) {
@@ -1183,7 +1183,7 @@ eYo.Fcfl.Brick._p.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.
       }
       if (shp.width) {
         // should we advance the cursor?
-        if (m4t.side === eYo.Key.NONE) {
+        if (m4t.side === eYo.key.NONE) {
           io.cursor.forward(shp.width)
           io.common.startOfLine = io.common.startOfStatement = false
         }
@@ -1204,7 +1204,7 @@ eYo.Fcfl.Brick._p.drawPending_ = function (io, side = eYo.Key.NONE, shape = eYo.
  * @param {Object} io the input/output argument.
  * @private
  */
-eYo.Fcfl.Brick._p.drawInputMagnet_ = function (io) {
+eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
   var m4t = io.magnet
   m4t.renderedRight = eYo.NA
   m4t.renderedLeft = io.common.magnetDone
@@ -1299,7 +1299,7 @@ eYo.Fcfl.Brick._p.drawInputMagnet_ = function (io) {
         m4t.startOfLine = io.common.startOfLine
         m4t.startOfStatement = io.common.startOfStatement
         if (m4t.s7r_) {
-          m4t.side = eYo.Key.NONE
+          m4t.side = eYo.key.NONE
           var ending = io.common.ending.slice(-1)[0]
           if (ending && !ending.ui.rightCaret) {
             // an expression brick with a right end has been rendered
@@ -1358,7 +1358,7 @@ eYo.Fcfl.Brick._p.drawInputMagnet_ = function (io) {
  * Forwards to the driver.
  * @protected
  */
-eYo.Driver.makeForwarder(eYo.Brick.Dflt_p, 'updateShape')
+eYo.driver.makeForwarder(eYo.Brick.Dflt_p, 'updateShape')
 
 /**
  * Update the shape of the brick.
@@ -1366,14 +1366,14 @@ eYo.Driver.makeForwarder(eYo.Brick.Dflt_p, 'updateShape')
  * @param {eYo.Brick.Dflt} brick - The brick of which the shape would need an update
  * @protected
  */
-eYo.Fcfl.Brick._p.updateShape = eYo.Do.nothing
+eYo.fcfl.Brick._p.updateShape = eYo.do.nothing
 
 /**
  * Hide the brick.
  * Forwards to the driver.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.Fcfl.Brick._p.hide = function (brick) {
+eYo.fcfl.Brick._p.hide = function (brick) {
   this.displayedSet(brick, false)
 }
 
@@ -1382,7 +1382,7 @@ eYo.Fcfl.Brick._p.hide = function (brick) {
  * This must take place while the brick is still in a consistent state.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.Fcfl.Brick._p.disposeEffect = function (brick) {
+eYo.fcfl.Brick._p.disposeEffect = function (brick) {
   missing implementation
 }
 
@@ -1392,7 +1392,7 @@ eYo.Fcfl.Brick._p.disposeEffect = function (brick) {
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  * @param {*} menu
  */
-eYo.Fcfl.Brick._p.showMenu = function (brick, menu) {
+eYo.fcfl.Brick._p.ShowMenu = function (brick, menu) {
   this.MenuShow(brick, menu)
 }
 
@@ -1406,7 +1406,7 @@ eYo.Fcfl.Brick._p.showMenu = function (brick, menu) {
  * @param {eYo.Magnet.Dflt} oldTargetM4t what was previously connected in the brick
  * @param {eYo.Magnet.Dflt} targetOldM4t what was previously connected to the new targetConnection
  */
-eYo.Fcfl.Brick._p.didConnect = function (brick, m4t, oldTargetM4t, targetOldM4t) {
+eYo.fcfl.Brick._p.didConnect = function (brick, m4t, oldTargetM4t, targetOldM4t) {
   if (m4t.isOutput) {
     m4t.brick.statusTopRemove_()
   }
@@ -1418,7 +1418,7 @@ eYo.Fcfl.Brick._p.didConnect = function (brick, m4t, oldTargetM4t, targetOldM4t)
  * @param {eYo.Magnet.Dflt} m4t what has been connected in the brick
  * @param {eYo.Magnet.Dflt} oldTargetM4t what was previously connected in the brick
  */
-eYo.Fcfl.Brick._p.didDisconnect = function (brick, m4t, oldTargetM4t) {
+eYo.fcfl.Brick._p.didDisconnect = function (brick, m4t, oldTargetM4t) {
   if (m4t.isOutput) {
     m4t.brick.statusTopAdd_()
   }
@@ -1433,13 +1433,13 @@ eYo.Fcfl.Brick._p.didDisconnect = function (brick, m4t, oldTargetM4t) {
  * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.Fcls.Brick._p.whereInParent = eYo.Do.NYI
+eYo.fcls.Brick._p.WhereInParent = eYo.do.NYI
 
-eYo.Fcls.Brick._p.xyInParent = eYo.Do.NYI
+eYo.fcls.Brick._p.xyInParent = eYo.do.NYI
 
-eYo.Fcls.Brick._p.whereInBoard = eYo.Do.NYI
+eYo.fcls.Brick._p.WhereInBoard = eYo.do.NYI
 
-eYo.Fcls.Brick._p.xyInDesk = eYo.Do.NYI
+eYo.fcls.Brick._p.xyInDesk = eYo.do.NYI
 
 /**
  * Returns the coordinates of a bounding rect describing the dimensions of the brick.
@@ -1450,7 +1450,7 @@ eYo.Fcls.Brick._p.xyInDesk = eYo.Do.NYI
  * @return {!eYo.Rect}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-eYo.Fcfl.Brick._p.boundingRect = function (brick) {
+eYo.fcfl.Brick._p.BoundingRect = function (brick) {
   return new eYo.Rect(
     brick.whereInBoard,
     brick.size
@@ -1460,7 +1460,7 @@ eYo.Fcfl.Brick._p.boundingRect = function (brick) {
  * The size
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.Fcfl.Brick._p.size = function (brick) {
+eYo.fcfl.Brick._p.Size = function (brick) {
   return brick.size
 }
 /**
@@ -1471,7 +1471,7 @@ eYo.Fcfl.Brick._p.size = function (brick) {
  * @return {!goog.math.Box}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-eYo.Fcfl.Brick._p.boundingBox = function (brick) {
+eYo.fcfl.Brick._p.BoundingBox = function (brick) {
   return this.boundingRect(brick).toBox()
 }
   
@@ -1480,18 +1480,18 @@ eYo.Fcfl.Brick._p.boundingBox = function (brick) {
  * delay.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.Fcfl.Brick._p.scheduleSnapAndBump = function(brick) {
+eYo.fcfl.Brick._p.ScheduleSnapAndBump = function(brick) {
   // Ensure that any snap and bump are part of this move's event group.
-  var group = eYo.Events.group
+  var group = eYo.events.group
   setTimeout(() => {
-    eYo.Events.group = group
+    eYo.events.group = group
     this.snapToGrid(brick)
-    eYo.Events.group = false
+    eYo.events.group = false
   }, eYo.Brick.Dflt.BUMP_DELAY / 2)
   setTimeout(() => {
-    eYo.Events.group = group
+    eYo.events.group = group
     this.bumpNeighbours_(brick)
-    eYo.Events.group = false
+    eYo.events.group = false
   }, eYo.Brick.Dflt.BUMP_DELAY)
 }
 
@@ -1499,7 +1499,7 @@ eYo.Fcfl.Brick._p.scheduleSnapAndBump = function(brick) {
  * Snap the given brick to the nearest grid point.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.Fcfl.Brick._p.snapToGrid = function(brick) {
+eYo.fcfl.Brick._p.SnapToGrid = function(brick) {
   if (!brick.board || brick.board.dragging || brick.parent || brick.isInFlyout) {
     return
   }
@@ -1513,7 +1513,7 @@ eYo.Fcfl.Brick._p.snapToGrid = function(brick) {
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  * @private
  */
-eYo.Fcfl.Brick._p.bumpNeighbours_ = function(brick) {
+eYo.fcfl.Brick._p.BumpNeighbours_ = function(brick) {
   if (!brick.board || brick.board.dragging) {
     return;  // Don't bump blocks during a drag.
   }
@@ -1554,13 +1554,13 @@ eYo.Fcfl.Brick._p.bumpNeighbours_ = function(brick) {
  * @param {Object} e in general a mouse down event
  * @return {Object|eYo.NA|null}
  */
-eYo.Fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
+eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   var brd = brick.board
   if (!brd) {
     return
   }
   // if we clicked on a field, no connection returned
-  if (eYo.app.motion.field) {
+  if (eYo.App.Motion.Field) {
     return
   }
   var rect = brick.boundingRect // in board coordinates
@@ -1576,9 +1576,9 @@ eYo.Fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
             return targetM4t
           }
           R = new eYo.Rect(
-            magnet.x + eYo.Unit.x / 2,
+            magnet.x + eYo.unit.x / 2,
             magnet.y,
-            target.width - eYo.Unit.x,
+            target.width - eYo.unit.x,
             target.height
           )
           if (xy.in(R)) {
@@ -1588,23 +1588,23 @@ eYo.Fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
         if (magnet.slot && magnet.slot.bindField) {
           R = new eYo.Rect(
             magnet.x,
-            magnet.y + eYo.Padding.t,
-            magnet.w * eYo.Unit.x,
-            eYo.Font.height
+            magnet.y + eYo.padding.t,
+            magnet.w * eYo.unit.x,
+            eYo.font.height
           )
         } else if (magnet.optional_ || magnet.s7r_) {
           R = new eYo.Rect(
-            magnet.x - eYo.Unit.x / 4,
-            magnet.y + eYo.Padding.t,
-            1.5 * eYo.Unit.x,
-            eYo.Font.height
+            magnet.x - eYo.unit.x / 4,
+            magnet.y + eYo.padding.t,
+            1.5 * eYo.unit.x,
+            eYo.font.height
           )
         } else {
           R = new eYo.Rect(
-            magnet.x + eYo.Unit.x / 4,
-            magnet.y + eYo.Padding.t,
-            (magnet.w - 1 / 2) * eYo.Unit.x,
-            eYo.Font.height
+            magnet.x + eYo.unit.x / 4,
+            magnet.y + eYo.padding.t,
+            (magnet.w - 1 / 2) * eYo.unit.x,
+            eYo.font.height
           )
         }
         if (xy.in(R)) {
@@ -1614,8 +1614,8 @@ eYo.Fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
         R = new eYo.Rect(
           magnet.x,
           magnet.y - eYo.Style.Path.width,
-          eYo.Span.tabWidth,
-          1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
+          eYo.Span.TAB_WIDTH,
+          1.5 * eYo.padding.t + 2 * eYo.Style.Path.width
         )
         if (xy.in(R)) {
           return magnet
@@ -1630,26 +1630,26 @@ eYo.Fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
       magnet.x,
       magnet.y - 2 * eYo.Style.Path.width,
       rect.width,
-      1.5 * eYo.Padding.t + 2 * eYo.Style.Path.width
+      1.5 * eYo.padding.t + 2 * eYo.Style.Path.width
     )
     if (xy.in(R)) {
       return magnet
     }
   }
   if ((magnet = brick.foot_m) && !magnet.hidden) {
-    if (rect.height > eYo.Unit.y) { // Not the cleanest design
+    if (rect.height > eYo.unit.y) { // Not the cleanest design
       R = new eYo.Rect(
         magnet.x,
-        magnet.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
-        eYo.Span.tabWidth + eYo.Style.Path.r, // R U sure?
-        1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
+        magnet.y - 1.5 * eYo.padding.B - eYo.Style.Path.width,
+        eYo.Span.TAB_WIDTH + eYo.Style.Path.r, // R U sure?
+        1.5 * eYo.padding.B + 2 * eYo.Style.Path.width
       )
     } else {
       R = new eYo.Rect(
         magnet.x,
-        magnet.y - 1.5 * eYo.Padding.b - eYo.Style.Path.width,
+        magnet.y - 1.5 * eYo.padding.B - eYo.Style.Path.width,
         rect.width,
-        1.5 * eYo.Padding.b + 2 * eYo.Style.Path.width
+        1.5 * eYo.padding.B + 2 * eYo.Style.Path.width
       )
     }
     if (xy.in(R)) {
@@ -1659,10 +1659,10 @@ eYo.Fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   if ((magnet = brick.suite_m) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new eYo.Rect(
-      magnet.x + eYo.Unit.x / 2 - r,
+      magnet.x + eYo.unit.x / 2 - r,
       magnet.y + r,
       2 * r,
-      eYo.Unit.y - 2 * r // R U sure?
+      eYo.unit.y - 2 * r // R U sure?
     )
     if (xy.in(R)) {
       return magnet
@@ -1671,10 +1671,10 @@ eYo.Fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   if ((magnet = brick.left_m) && !magnet.hidden) {
     var r = eYo.Style.Path.Hilighted.width
     R = new eYo.Rect(
-      magnet.x + eYo.Unit.x / 2 - r,
+      magnet.x + eYo.unit.x / 2 - r,
       magnet.y + r,
       2 * r,
-      eYo.Unit.y - 2 * r // R U sure?
+      eYo.unit.y - 2 * r // R U sure?
     )
     if (xy.in(R)) {
       return magnet
@@ -1682,10 +1682,10 @@ eYo.Fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   }
   if ((magnet = brick.right_m) && !magnet.hidden) {
     R = new eYo.Rect(
-      magnet.x + eYo.Unit.x / 2 - r,
+      magnet.x + eYo.unit.x / 2 - r,
       magnet.y + r,
       2 * r,
-      eYo.Unit.y - 2 * r // R U sure?
+      eYo.unit.y - 2 * r // R U sure?
     )
     if (xy.in(R)) {
       return magnet
@@ -1699,14 +1699,14 @@ eYo.Fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
  * @param {boolean} enable True if the delete cursor should be shown, false
  *     otherwise.
  */
-eYo.Fcfl.Brick._p.deleteStyleSet = eYo.Do.nothing
+eYo.fcfl.Brick._p.deleteStyleSet = eYo.do.nothing
 
 /**
  * Hilight the given connection.
  * The default implementation forwards to the driver.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.Driver.makeForwarder(eYo.Brick.Dflt_p, 'deleteStyleSet')
+eYo.driver.makeForwarder(eYo.Brick.Dflt_p, 'deleteStyleSet')
 
 /**
  * Handle a mousedown on an SVG brick.
@@ -1727,7 +1727,7 @@ eYo.Driver.makeForwarder(eYo.Brick.Dflt_p, 'deleteStyleSet')
  * @param {Event} e Mouse down event or touch start event.
  * @private
  */
-eYo.Fcfl.Brick._p.on_mousedown = function (brick, e) {
+eYo.fcfl.Brick._p.on_mousedown = function (brick, e) {
   var brick = this
   if (brick.locked_) {
     var parent = brick.parent
@@ -1738,7 +1738,7 @@ eYo.Fcfl.Brick._p.on_mousedown = function (brick, e) {
   if (brick.ui.parentIsShort && !brick.hasFocus) {
     parent = brick.parent
     if (!parent.hasFocus) {
-      eYo.app.motion.handleBrickStart(e, brick)
+      eYo.App.Motion.handleBrickStart(e, brick)
       return
     }
   }
@@ -1762,10 +1762,10 @@ eYo.Fcfl.Brick._p.on_mousedown = function (brick, e) {
   // Next is not good design
   // remove any selected connection, if any
   // but remember it for a contextual menu
-  t9k.ui.lastSelectedMagnet__ = eYo.Focus.magnet
+  t9k.ui.lastSelectedMagnet__ = eYo.Focus.Magnet
   // Prepare the mouseUp event for an eventual connection selection
   t9k.ui.lastMouseDownEvent = t9k.hasFocus ? e : null
-  eYo.app.motion.handleBrickStart(e, t9k)
+  eYo.App.Motion.handleBrickStart(e, t9k)
 }
 
 /**
@@ -1776,7 +1776,7 @@ eYo.Fcfl.Brick._p.on_mousedown = function (brick, e) {
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  * @param {Event} e Mouse down event or touch start event.
  */
-eYo.Fcfl.Brick._p.on_mouseup = function (brick, e) {
+eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
   const magnet = this.getMagnetForEvent(brick, e)
   var b3k
   var t9k = magnet
@@ -1803,7 +1803,7 @@ eYo.Fcfl.Brick._p.on_mouseup = function (brick, e) {
           // and there is a candidate selection
           if (magnet.hasFocus) {
             // unselect
-            eYo.Focus.magnet = null
+            eYo.Focus.Magnet = null
           } else if (magnet !== t9k.ui.lastSelectedMagnet__) {
             if (magnet.isSlot) {
               if (!magnet.targetBrick) {
@@ -1813,17 +1813,17 @@ eYo.Fcfl.Brick._p.on_mouseup = function (brick, e) {
               magnet.focusOn()
             }
           } else {
-            eYo.Focus.magnet = null
+            eYo.Focus.Magnet = null
           }
-        } else if (eYo.Focus.magnet) {
-          eYo.Focus.magnet = null
+        } else if (eYo.Focus.Magnet) {
+          eYo.Focus.Magnet = null
         } else if (t9k.ui.selectMouseDownEvent) {
           // (brick.hasFocus ? this : brick.stmtParent) || t9k.root
           t9k.ui.selectMouseDownEvent = null
         }
       }
     }
-  } else if ((b3k = eYo.app.focus_mngr.brick) && (ee = b3k.ui.selectMouseDownEvent)) {
+  } else if ((b3k = eYo.App.Focus_mngr.Brick) && (ee = b3k.ui.selectMouseDownEvent)) {
     b3k.ui.selectMouseDownEvent = null
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
@@ -1851,12 +1851,12 @@ eYo.Fcfl.Brick._p.on_mouseup = function (brick, e) {
  * @param {Event} e Mouse event.
  * @private
  */
-eYo.Fcfl.Brick._p.showContextMenu_ = function (brick, e) {
+eYo.fcfl.Brick._p.ShowContextMenu_ = function (brick, e) {
   // this part is copied as is from the parent's implementation. Is it relevant ?
   if (brick.board.options.readOnly || !brick.contextMenu) {
     return
   }
-  eYo.MenuManager.shared().showMenu(brick, e)
+  eYo.MenuManager.Shared().showMenu(brick, e)
 }
 
 /**
@@ -1864,7 +1864,7 @@ eYo.Fcfl.Brick._p.showContextMenu_ = function (brick, e) {
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.Fcls.Brick_p.canDraw = function (brick) {
+eYo.fcls.Brick_p.CanDraw = function (brick) {
   return true
 }
 
@@ -1873,4 +1873,4 @@ eYo.Fcls.Brick_p.canDraw = function (brick) {
  * Default implementation does nothing.
  * @param {eYo.Brick.Dflt} brick The brick to place.
  */
-eYo.Fcfl.Brick_p.place = eYo.Do.nothing
+eYo.fcfl.Brick_p.place = eYo.do.nothing

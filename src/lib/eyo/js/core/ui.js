@@ -12,14 +12,14 @@
 'use strict'
 
 /**
- * @name{eYo.Padding}
+ * @name{eYo.padding}
  * @namespace
  */
-eYo.provide('Padding', Object.create(null))
+eYo.provide('padding', Object.create(null))
 
-eYo.forwardDeclare('Unit')
+eYo.forwardDeclare('unit')
 eYo.forwardDeclare('font-face')
-eYo.forwardDeclare('Shape')
+eYo.forwardDeclare('shape')
 goog.forwardDeclare('goog.cssom')
 goog.forwardDeclare('goog.color')
 
@@ -48,19 +48,19 @@ eYo.hueToRgb = function (hue) {
  * @name{eYo.Style}
  * @namespace
  */
-eYo.provide('Style', {
+eYo.provide('style', {
   weight: x => x / (1 + x), // 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
   SEP_SPACE_X: 0
 })
 
-{
+;(() => {
   var g = {
     get () {
-      return Math.round(8000 * eYo.Style.weight(eYo.Font.size / 10)) / 1000
+      return Math.round(8000 * eYo.Style.weight(eYo.font.size / 10)) / 1000
     }
   }
   Object.defineProperties(
-    eYo.Padding,
+    eYo.padding,
     {
       l: g,
       r: g,
@@ -69,24 +69,24 @@ eYo.provide('Style', {
   )
   g = {
     get () {
-      return Math.round(6000 * eYo.Style.weight(eYo.Font.size / 10) / 1000)
+      return Math.round(6000 * eYo.Style.weight(eYo.font.size / 10) / 1000)
     }
   }
   Object.defineProperties(
-    eYo.Padding,
+    eYo.padding,
     {
       t: g,
       b: g,
       v: g
     }
   )
-}
+}) ()
 
 /**
- * @name{eYo.Font}
+ * @name{eYo.font}
  * @namespace
  */
-eYo.provide('Font', {
+eYo.provide('font', {
   familyMono: 'DejaVuSansMono,monospace',
   familySans: 'DejaVuSans,sans-serif'
 })
@@ -94,7 +94,7 @@ eYo.provide('Font', {
 /**
  * Point size of text.
  */
-Object.defineProperties(eYo.Font, {
+Object.defineProperties(eYo.font, {
   size: {
     get () {
       return this.ascent
@@ -149,7 +149,7 @@ Object.defineProperties(eYo.Font, {
   },
   lineHeight: {
     get () {
-      return this.height + eYo.Padding.t + eYo.Padding.b
+      return this.height + eYo.padding.t + eYo.padding.B
     }
   },
   style: {
@@ -164,31 +164,31 @@ Object.defineProperties(eYo.Font, {
   }
 })
 
-eYo.Font.ascent = 13
+eYo.font.Ascent = 13
 
 /**
  * Offset of the text editor.
  */
-eYo.EditorOffset = {x: 0, y: 0}
+eYo.editorOffset = {x: 0, y: 0}
 
 /**
  * Setupt the offset of the text editor.
  */
-eYo.setup.register(() => {
+eYo.Setup.register(() => {
   var ELECTRON = {x: 1, y: 2}
   var CHROME = {x: 1, y: 1}
   var GECKO = {x: 0, y: -1}
   var WEBKIT = {x: 1, y: -1}
   if (goog.userAgent.GECKO) {
-    eYo.EditorOffset = GECKO
+    eYo.editorOffset = GECKO
   } else if (goog.userAgent.WEBKIT) {
     var userAgent = goog.userAgent.getNavigator().userAgent
     if (userAgent && userAgent.search('Electron/') >= 0) {
-      eYo.EditorOffset = ELECTRON
+      eYo.editorOffset = ELECTRON
     } else if (userAgent && userAgent.search('Chrome') >= 0) {
-      eYo.EditorOffset = CHROME
+      eYo.editorOffset = CHROME
     } else {
-      eYo.EditorOffset = WEBKIT
+      eYo.editorOffset = WEBKIT
     }
   }
 }, 'Editor offset')
@@ -210,14 +210,14 @@ Object.defineProperty(
   'r',
   {
     get () {
-      return eYo.Padding.v + eYo.Font.descent / 2
+      return eYo.padding.v + eYo.font.descent / 2
     }
   }
 )
 
 eYo.Style.MenuItem = {
-  'padding-h': eYo.Padding.t,
-  'padding-v': eYo.Padding.t
+  'padding-h': eYo.padding.t,
+  'padding-v': eYo.padding.t
 }
 eYo.Style.CheckBox = {
   'padding': 1.5// px
@@ -231,15 +231,15 @@ eYo.Style.Edit = {
 }
 
 eYo.Style.MenuIcon = {
-  width: eYo.Font.space,
+  width: eYo.font.Space,
   color: 'black'
 }
 
 eYo.Style.MenuIcon.path = function (g) {
   var E = eYo.Svg.newElement('g',
     {class: 'eyo-menu-icon', opacity: 0.1}, g)
-  E.style.fill = eYo.Style.MenuIcon.color
-  var h = eYo.Font.height
+  E.style.fill = eYo.Style.MenuIcon.Color
+  var h = eYo.font.height
   var w = eYo.Style.MenuIcon.width
   var r = h / 8
   eYo.Svg.newElement('rect', {

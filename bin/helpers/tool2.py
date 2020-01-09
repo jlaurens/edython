@@ -163,7 +163,7 @@ Required:
         print(*sorted([x for x in todo_required if x.startswith('eYo')]), sep = '\n')
     # todo_required contains a list of all the required keys.
     done = set()
-    assert 'eYo.Flyout' in todo_required, 'FAILURE (todo_required)'
+    assert 'eYo.flyout' in todo_required, 'FAILURE (todo_required)'
     #
     while len(todo_required):
         # get an element from todo_required and move it to done

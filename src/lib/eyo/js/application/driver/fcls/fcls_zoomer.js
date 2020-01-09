@@ -11,25 +11,25 @@
  */
 'use strict'
 
-eYo.require('Fcls')
+eYo.require('fcls')
 
-eYo.provide('Fcls.Zoomer')
+eYo.provide('fcls.zoomer')
 
-eYo.forwardDeclare('Zoomer')
+eYo.forwardDeclare('zoomer')
 
 /**
  * Faceless driver for the zoomer.
  */
-eYo.Fcls.makeDriverClass('Zoomer')
+eYo.fcls.makeDriverClass('Zoomer')
 
 /**
  * Initiate the zoomer UI.
  * @param {eYo.Zoomer} trashCan  The zoomer we must initialize the UI.
  */
-eYo.Fcls.Zoomer.prototype.doInitUI = eYo.Do.nothing
+eYo.fcls.Zoomer.prototype.doInitUI = eYo.do.nothing
 
 /**
  * Dispose of the zoomer UI.
  * @param {eYo.Zoomer} zoomer  The zoomer we must dispose the UI of.
  */
-eYo.Fcls.Zoomer.prototype.doDisposeUI = eYo.Do.nothing
+eYo.fcls.Zoomer.prototype.doDisposeUI = eYo.do.nothing

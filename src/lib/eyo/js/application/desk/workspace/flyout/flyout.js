@@ -11,17 +11,17 @@
  */
 'use strict'
 
-eYo.require('C9r')
-eYo.require('Unit')
-eYo.require('Events')
+eYo.require('c9r')
+eYo.require('unit')
+eYo.require('events')
 
-eYo.forwardDeclare('Library')
-eYo.forwardDeclare('Style')
-eYo.forwardDeclare('Brick')
-eYo.forwardDeclare('FlyoutToolbar')
-eYo.forwardDeclare('Tooltip')
-eYo.forwardDeclare('MenuRenderer')
-eYo.forwardDeclare('MenuButtonRenderer')
+eYo.forwardDeclare('library')
+eYo.forwardDeclare('style')
+eYo.forwardDeclare('brick')
+eYo.forwardDeclare('flyoutToolbar')
+eYo.forwardDeclare('tooltip')
+eYo.forwardDeclare('menuRenderer')
+eYo.forwardDeclare('menuButtonRenderer')
 
 /**
  * @type {eYo.Flyout}
@@ -260,7 +260,7 @@ eYo.C9r.Owned.makeSubclass(eYo, 'Flyout', {
       var d = this.ui_driver_mngr
       this.toolbar_ && d.toolbarDisposeUI(this.toolbar_)
       d.disposeUI(this)
-      eYo.Flyout.eyo.ownedDispose(this, 'scrollbar_')
+      eYo.Flyout.eyo.OwnedDispose(this, 'scrollbar_')
     }
   },
   valued: {
@@ -328,7 +328,7 @@ eYo.C9r.Owned.makeSubclass(eYo, 'Flyout', {
 /**
  * When the size of the receiver did change.
  */
-eYo.Flyout.prototype.sizeChanged = function() {
+eYo.Flyout.prototype.SizeChanged = function() {
   this.desk.board.layout()
   this.search_.layout()
   this.library_.layout()
@@ -344,15 +344,15 @@ Object.defineProperties(eYo.Flyout, {
    * @const
    */
   SCROLLBAR_PADDING: {value: 2},
-  TOP_MARGIN: {value: 0}, // 4 * eYo.Unit.rem
+  TOP_MARGIN: {value: 0}, // 4 * eYo.unit.rem
   BOTTOM_MARGIN: {value: 16}, // scroll bar width
-  TOOLBAR_HEIGHT : {value: Math.round(2 * eYo.Unit.y)},
+  TOOLBAR_HEIGHT : {value: Math.round(2 * eYo.unit.y)},
   /**
    * Margin around the edges of the bricks.
    * @type {number}
    * @const
    */
-  MARGIN : {value: eYo.Unit.rem / 4},
+  MARGIN : {value: eYo.unit.rem / 4},
   /**
    * This size and anchor of the receiver and wrapped
    * in an object with eponym keys.
@@ -394,10 +394,10 @@ eYo.Flyout.prototype.hide = function() {
  * More tagnames accepted.
  * @param {Array|string} model List of bricks to show.
  */
-eYo.Flyout.prototype.show = function(model) {
+eYo.Flyout.prototype.Show = function(model) {
   this.board_.setResizesEnabled(false)
   this.hide()
-  eYo.Events.disableWrap(() => {
+  eYo.events.disableWrap(() => {
     // Delete any bricks from a previous showing.
     this.board_.topBricks.forEach(brick => brick.dispose())
     // Create the bricks to be shown in this flyout.
@@ -407,7 +407,7 @@ eYo.Flyout.prototype.show = function(model) {
       if (xml.tagName) {
         var tagName = xml.tagName.toUpperCase()
         if (tagName.startsWith('EYO:')) {
-          var curBrick = eYo.Xml.domToBrick(xml, this.board_)
+          var curBrick = eYo.xml.domToBrick(xml, this.board_)
           if (curBrick.disabled) {
             // Record bricks that were initially disabled.
             // Do not enable these bricks as a result of capacity filtering.
@@ -475,7 +475,7 @@ eYo.Flyout.prototype.on_wheel = function(e) {
     var metrics = this.board.metrics
     metrics.drag = metrics.drag.forward({x: 0, y: delta})
   }
-  eYo.Dom.gobbleEvent(e)
+  eYo.dom.gobbleEvent(e)
 }
 
 /**
@@ -484,15 +484,15 @@ eYo.Flyout.prototype.on_wheel = function(e) {
  * @return {eYo.Brick.Dflt} The newly created brick, or null if something
  *     went wrong with deserialization.
  */
-eYo.Flyout.prototype.createBrick = function(originalBrick) {
+eYo.Flyout.prototype.CreateBrick = function(originalBrick) {
   this.desk.board.setResizesEnabled(false)
   var newBrick
-  eYo.Events.disableWrap(() => {
+  eYo.events.disableWrap(() => {
     newBrick = this.placeNewBrick_(originalBrick)
     // Close the flyout.
     this.app.hideChaff()
   })
-  eYo.Events.fireBrickCreate(newBrick, true)
+  eYo.events.fireBrickCreate(newBrick, true)
   if (this.autoClose) {
     this.hide()
   } else {
@@ -518,14 +518,14 @@ eYo.Flyout.prototype.layout_ = function(contents) {
     brick.render()
     brick.moveTo(where)
     this.ui_driver_mngr.addListeners(this, brick)
-    where.y += brick.size.height + eYo.Unit.y / 4
+    where.y += brick.size.height + eYo.unit.y / 4
   })
 }
 
 /**
  * Scroll the flyout to the top.
  */
-eYo.Flyout.prototype.scrollToStart = function() {
+eYo.Flyout.prototype.ScrollToStart = function() {
   var board = this.board
   var metrics = board.metrics_
   metrics.drag.set()
@@ -629,14 +629,14 @@ console.error('IN PROGRESS')
  */
 eYo.Flyout.prototype.placeNewBrick_ = function(srcBrick) {
   // Create the new brick by cloning the brick in the flyout (via XML).
-  var xml = eYo.Xml.brickToDom(srcBrick)
+  var xml = eYo.xml.BrickToDom(srcBrick)
   // The target board would normally resize during domToBrick, which will
   // lead to weird (AKA buggy) jumps.  Save it for terminateDrag.
   var targetBoard = this.desk.board
   targetBoard.setResizesEnabled(false)
   // Using domToBrick instead of domToBoard means that the new brick will be
   // placed at position (0, 0) in main board units.
-  var brick = eYo.Xml.domToBrick(xml, targetBoard)
+  var brick = eYo.xml.domToBrick(xml, targetBoard)
   var xy = this.board_.originInApplication
   .forward(
     srcBrick.whereInBoard.scale(this.board_.scale)
@@ -666,7 +666,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
   }
   this.slide_locked = true
   this.visible = true
-  eYo.Tooltip.hideAll(this.dom.svg.group_)
+  eYo.tooltip.hideAll(this.dom.svg.group_)
   var rect = this.viewRect_
   var x_min = rect.x_min
   var x_max = rect.x_max
@@ -704,7 +704,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
       this.desk_.recordDeleteAreas()
       this.slideOneStep(steps[n_steps])
       this.didSlide(close)
-      this.abortSlide = eYo.Do.nothing
+      this.abortSlide = eYo.do.nothing
     } else {
       rect.x = positions[n]
       this.ui_driver_mngr.place(this)
@@ -727,7 +727,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
  * @param {Boolean} [close]  close corresponds to the final state.
  * When not given, toggle the closed state.
  */
-eYo.Flyout.prototype.slide = function(close) {
+eYo.Flyout.prototype.Slide = function(close) {
   this.doSlide(close)
 }
 
@@ -735,7 +735,7 @@ eYo.Flyout.prototype.slide = function(close) {
  * Subclassers will add there stuff here.
  * @param {number} step betwwen 0 and 1.
  */
-eYo.Flyout.prototype.slideOneStep = function(step) {
+eYo.Flyout.prototype.SlideOneStep = function(step) {
 }
 
 /**
@@ -769,7 +769,7 @@ eYo.Flyout.prototype.updateMetrics = function() {
   var view = this.desk.board.metrics.view
   var r = this.viewRect_
   r.size_.height = view.height
-  r.size_.width = Math.min(view.width / 3, Math.max(this.board.metrics.port.width, eYo.Unit.x * 10))
+  r.size_.width = Math.min(view.width / 3, Math.max(this.board.metrics.port.width, eYo.unit.x * 10))
   var where = this.atRight ? view.right : view.left
   if (!this.closed === !this.atRight) {
     r.origin_.x_min = where

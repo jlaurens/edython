@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.require('C9r')
+eYo.require('c9r')
 
-eYo.provide('Scroller')
+eYo.provide('scroller')
 
-eYo.forwardDeclare('Board')
+eYo.forwardDeclare('board')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
@@ -26,7 +26,7 @@ goog.forwardDeclare('goog.events')
  * @constructor
  */
 eYo.Scroller = function(board) {
-  eYo.Scroller.superProto_.constructor.call(this, board)
+  eYo.Scroller.SuperProto_.constructor.Call(this, board)
   this.hScroll = new eYo.Scrollbar(
     this,
     true,
@@ -38,7 +38,7 @@ eYo.Scroller = function(board) {
     'eyo-main-board-scrollbar'
   )
   this.cornerRect_ = new eYo.Rect()
-  this.disposeUI = eYo.Do.nothing
+  this.disposeUI = eYo.do.nothing
   board.hasUI && this.initUI()
 }
 goog.inherits(eYo.Scroller, eYo.C9r.Dflt)
@@ -85,7 +85,7 @@ Object.defineProperties(eYo.Scroller.prototype, {
  */
 eYo.Scroller.prototype.initUI = function () {
   this.ui_driver_mngr.scrollerInit(this)
-  this.initUI = eYo.Do.nothing
+  this.initUI = eYo.do.nothing
   delete this.disposeUI
 }
 
@@ -98,7 +98,7 @@ eYo.Scroller.prototype.disposeUI = function () {
   this.hScroll.disposeUI()
   this.vScroll.disposeUI()
   this.ui_driver_mngr.scrollerDispose(this)
-  this.disposeUI = eYo.Do.nothing
+  this.disposeUI = eYo.do.nothing
   delete this.initUI
 }
 
@@ -123,7 +123,7 @@ eYo.Scroller.prototype.dispose = function() {
   this.vScroll = null
   this.cornerRect_.dispose()
   this.cornerRect_ = null
-  eYo.Scroller.superProto_.dispose.call(this)
+  eYo.Scroller.SuperProto_.dispose.Call(this)
 }
 
 /**

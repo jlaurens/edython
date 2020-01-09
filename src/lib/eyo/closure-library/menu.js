@@ -24,13 +24,13 @@
  * eYo: 'goog' changed to 'eYo' in class names.
  */
 
-eYo.require('MenuRenderer')
+eYo.require('menuRenderer')
 
 goog.require('goog.ui.Menu')
 
 goog.require('goog.dom')
 
-eYo.provide('Menu')
+eYo.provide('menu')
 
 // TODO(robbyw): Reverse constructor argument order for consistency.
 /**
@@ -42,7 +42,7 @@ eYo.provide('Menu')
  * @extends {goog.ui.Container}
  */
 eYo.Menu = function (optDomHelper, optRenderer) {
-  eYo.Menu.superClass_.constructor.call(
+  eYo.Menu.SuperClass_.constructor.Call(
     /** goog.ui.Menu */ this, optDomHelper,
     optRenderer || eYo.MenuRenderer.getInstance())
 }

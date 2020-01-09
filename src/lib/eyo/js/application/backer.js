@@ -11,12 +11,12 @@
  */
 'use strict'
 
-eYo.require('C9r.Owned')
+eYo.require('c9r.owned')
 
-eYo.require('ChangeCount')
+eYo.require('changeCount')
 
-eYo.forwardDeclare('Events')
-eYo.forwardDeclare('App')
+eYo.forwardDeclare('events')
+eYo.forwardDeclare('app')
 
 /**
  * @param {Object} owner
@@ -25,12 +25,12 @@ eYo.forwardDeclare('App')
 eYo.makeClass('Backer', eYo.C9r.Owned, {
   valued: {
     /**
-     * @type {!Array<!eYo.Events.Abstract>}
+     * @type {!Array<!eYo.events.Abstract>}
      * @protected
      */
     undoStack: [],
     /**
-     * @type {!Array<!eYo.Events.Abstract>}
+     * @type {!Array<!eYo.events.Abstract>}
      * @protected
      */
     redoStack: [],
@@ -48,7 +48,7 @@ eYo.makeClass('Backer', eYo.C9r.Owned, {
      */
     undoMenuItemData () {
       return {
-        text: eYo.Msg.UNDO,
+        text: eYo.msg.UNDO,
         enabled: this.undoStack_.length > 0,
         callback: this.undo.bind(this, false)
       }
@@ -58,7 +58,7 @@ eYo.makeClass('Backer', eYo.C9r.Owned, {
      */
     redoMenuItemData () {
       return {
-        text: eYo.Msg.REDO,
+        text: eYo.msg.REDO,
         enabled: this.redoStack_.length > 0,
         callback: this.undo.bind(this, true)
       }
@@ -66,16 +66,16 @@ eYo.makeClass('Backer', eYo.C9r.Owned, {
   },
 })
 
-eYo.Backer.eyo.changeCountAdd()
+eYo.Backer.eyo.ChangeCountAdd()
 
 /**
  * Clear the undo/redo stacks.
  */
-eYo.Backer_p.clear = function() {
+eYo.Backer_p.Clear = function() {
   this.undoStack.length = 0
   this.redoStack.length = 0
   // Stop any events already in the firing queue from being undoable.
-  eYo.Events.clearPendingUndo()
+  eYo.events.ClearPendingUndo()
   this.didClearUndo()
 }
 
@@ -107,15 +107,15 @@ eYo.Backer_p.undo = function(redo) {
         events.push(inputStack.pop())
       }
     }
-    events = eYo.Events.filter(events, redo)
+    events = eYo.events.filter(events, redo)
     if (events.length) {
       // Push these popped events on the opposite stack.
       events.forEach((event) => {
         outputStack.push(event)
       })
-      eYo.Events.recordingUndo = false
+      eYo.events.recordingUndo = false
       var Bs = []
-      eYo.Do.tryFinally(() => { // try
+      eYo.do.tryFinally(() => { // try
         if (this.rendered) {
           events.forEach(event => {
             var b3k = this.getBrickById(event.brickId)
@@ -130,7 +130,7 @@ eYo.Backer_p.undo = function(redo) {
           this.updateChangeCount(event, redo)
         })
       }, () => { // finally
-        eYo.Events.recordingUndo = true
+        eYo.events.recordingUndo = true
         Bs.forEach(B => B.change.end())
         this.didProcessUndo(redo)
       })
@@ -151,7 +151,7 @@ eYo.Backer_p.didProcessUndo = function(redo) {
 /**
  * The given event di fire a change.
  * Called by board's eventDidFireChange.
- * @param {eYo.Event} event The event.
+ * @param {eYo.event} event The event.
  * @param {function} task what is wrapped.
  */
 eYo.Backer_p.eventDidFireChange = function(event, task) {

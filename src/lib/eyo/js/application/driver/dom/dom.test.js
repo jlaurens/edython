@@ -1,13 +1,13 @@
 describe('Dom driver', function() {
   it ('Dom: Basic', function () {
-    chai.assert(eYo.Dom)
-    chai.assert(eYo.Dom.Mngr)
-    chai.assert(eYo.Dom.makeDriverClass)
-    chai.assert(eYo.Dom.makeMngr)
-    chai.assert(eYo.Dom.Dflt)
+    chai.assert(eYo.dom)
+    chai.assert(eYo.dom.Mngr)
+    chai.assert(eYo.dom.makeDriverClass)
+    chai.assert(eYo.dom.makeMngr)
+    chai.assert(eYo.dom.Dflt)
   })
-  it ("eYo.Dom.makeDriverClass('A')", function () {
-    chai.assert(eYo.Dom.makeDriverClass('A'))
+  it ("eYo.dom.makeDriverClass('A')", function () {
+    chai.assert(eYo.dom.makeDriverClass('A'))
   })
 })
 

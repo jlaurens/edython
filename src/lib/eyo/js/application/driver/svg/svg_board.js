@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Svg')
+eYo.require('svg')
 
-eYo.forwardDeclare('Board')
+eYo.forwardDeclare('board')
 
 /**
  * Svg driver for boards.

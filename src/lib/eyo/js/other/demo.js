@@ -11,6 +11,6 @@
  */
 'use strict';
 
-eYo.require('Xml')
-eYo.provide('Demo');
+eYo.require('xml')
+eYo.provide('demo');
 

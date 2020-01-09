@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('C9r')
+eYo.require('c9r')
 
 /**
  * Class for a workspace control.

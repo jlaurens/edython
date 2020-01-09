@@ -11,9 +11,9 @@
  */
 'use strict';
 
-eYo.require('Brick')
+eYo.require('brick')
 
-eYo.provide('Tooltip')
+eYo.provide('tooltip')
 
 /**
  * Add a tooltip programatically to an element
@@ -22,7 +22,7 @@ eYo.provide('Tooltip')
  * @param {String} title tooltip string content.
  * @param {Object} [option.]
  */
-eYo.Tooltip.add = function (el, title, options) {
+eYo.tooltip.Add = function (el, title, options) {
   if (eYo.isStr(title)) {
     el.setAttribute('title', title)
     tippy(el, options)
@@ -34,7 +34,7 @@ eYo.Tooltip.add = function (el, title, options) {
 /**
  * Shared options for tippy.
  */
-eYo.Tooltip.options = {
+eYo.tooltip.Options = {
   theme: 'light bordered',
   flipDuration: 0,
   inertia: true,
@@ -57,8 +57,8 @@ eYo.Tooltip.options = {
  * @param {Element} el Dom reference element target of the tooltip.
  * @param {String} title tooltip string content.
  */
-eYo.Tooltip.getTitle = function (key) {
-  return eYo.Tooltip.Title[key] || key
+eYo.tooltip.getTitle = function (key) {
+  return eYo.tooltip.Title[key] || key
 }
 
 /**
@@ -66,7 +66,7 @@ eYo.Tooltip.getTitle = function (key) {
  * @param {Element} el The element containing the objects of which
  we want to hide the tooltip.
  */
-eYo.Tooltip.hideAll = function (el) {
+eYo.tooltip.hideAll = function (el) {
   // hide tips
   var tips = Array.from(el.querySelectorAll('[data-tippy]'), el => el._tippy)
   var i = 0
@@ -76,7 +76,7 @@ eYo.Tooltip.hideAll = function (el) {
   }
 }
 
-eYo.Tooltip.Title = {
+eYo.tooltip.Title = {
   flyout: 'Glisser des blocs vers l\'espace de travail et les connecter à d\'autres blocs',
   start_stmt: 'Bloc de contrôle, indique le point de départ d\'un programme',
   shortliteral: 'Texte court',

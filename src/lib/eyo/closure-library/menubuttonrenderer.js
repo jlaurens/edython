@@ -20,7 +20,7 @@
 
 goog.require('goog.ui.MenuButtonRenderer')
 
-eYo.provide('MenuButtonRenderer')
+eYo.provide('menuButtonRenderer')
 
 /**
  * Renderer for {@link goog.ui.MenuButton}s.  This implementation overrides
@@ -30,7 +30,7 @@ eYo.provide('MenuButtonRenderer')
  * @extends {goog.ui.CustomButtonRenderer}
  */
 eYo.MenuButtonRenderer = function() {
-  eYo.MenuButtonRenderer.superClass_.constructor.call(this);
+  eYo.MenuButtonRenderer.SuperClass_.constructor.Call(this);
 };
 goog.inherits(eYo.MenuButtonRenderer, goog.ui.MenuButtonRenderer);
 goog.addSingletonGetter(eYo.MenuButtonRenderer);
@@ -68,7 +68,7 @@ eYo.MenuButtonRenderer.prototype.getCssClass = function() {
  * @return {!Element} Root element for the button.
  * @override
  */
-eYo.MenuButtonRenderer.prototype.createDom = function(control) {
+eYo.MenuButtonRenderer.prototype.CreateDom = function(control) {
   var button = /** @type {goog.ui.Button} */ (control);
   var classNames = this.getClassNames(button);
   var buttonElement = button.getDomHelper().createDom(
@@ -101,13 +101,13 @@ eYo.MenuButtonRenderer.prototype.createDom = function(control) {
  * @return {Element} Pseudo-rounded-corner box containing the content.
  * @override
  */
-eYo.MenuButtonRenderer.prototype.createButton = function(content, dom) {
+eYo.MenuButtonRenderer.prototype.CreateButton = function(content, dom) {
   var cssClass = this.getCssClass()
   var dropdown = dom.createDom(
     goog.dom.TagName.DIV,
     goog.getCssName(cssClass, 'dropdown'))
   var svg = eYo.Svg.newElementSvg(dropdown)
-  var h = eYo.Font.lineHeight / 9 * 4
+  var h = eYo.font.lineHeight / 9 * 4
   svg.style.width = h
   svg.style.height = h * 0.866
   var path = eYo.Svg.newElement('path', {
@@ -132,7 +132,7 @@ eYo.MenuButtonRenderer.prototype.createButton = function(content, dom) {
   );
 };
 
-eYo.setup.register(() => {
+eYo.Setup.register(() => {
   eYo.Css.insertRuleAt('.eyo-menu-button {',
       'background: white;',
       'box-sizing: border-box;',
@@ -167,7 +167,7 @@ eYo.setup.register(() => {
     'padding-right: 30px;',
     '}')
   eYo.Css.insertRuleAt('.eyo-menu-button-caption {',
-    eYo.Font.menuStyle,
+    eYo.font.MenuStyle,
     'white-space: nowrap;',
     'overflow: hidden;',
     'text-overflow: ellipsis;',
@@ -175,7 +175,7 @@ eYo.setup.register(() => {
   eYo.Css.insertRuleAt('.eyo-menu-button-dropdown {',
     'position: absolute;',
     'right: 10px;',
-    'top: ', ''+(eYo.Font.lineHeight/2), 'px;',
+    'top: ', ''+(eYo.font.lineHeight/2), 'px;',
     'width: 20px;',
   '}')
   eYo.Css.insertRuleAt('.eyo-menu-button-dropdown svg {',

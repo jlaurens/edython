@@ -6,276 +6,343 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview eYo.Propertyerty is a class for a property controller.
+ * @fileoverview eYo.C9r.Property is a class for a property controller.
  * It extends the JS property design by providing some hooks before and after changes.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-eYo.forwardDeclare('Do')
-eYo.forwardDeclare('XRE')
-eYo.forwardDeclare('Decorate')
+eYo.forwardDeclare('do')
+eYo.forwardDeclare('xre')
+eYo.forwardDeclare('decorate')
 
-{
-  /**
-   * Expands a property model.
-   * @param {Object} model
-   * @return {Object}
-   */
-  let modelHandler = (model) => {
-    if (model['.initers']) {
-      return
-    }
-    let initers = model['.initers'] = []
-    ;['validate', 'willChange', 'atChange', 'didChange'].forEach(k => {
-      var f = model[k]
-      if (eYo.isF(f)) {
-        if (!XRegExp.match(f.toString(), eYo.XRE.function_before)) {
-          f = function (before, after) {
-            f.call(this, after)
+Object.defineProperties(eYo.C9r, {
+  BEFORE: {value: 'willChange'},
+  DURING: {value: 'atChange'},
+  AFTER: {value: 'didChange'},
+})
+
+Object.defineProperties(eYo.C9r, {
+  CHANGE_HOOKS: {value: [eYo.C9r.BEFORE, eYo.c9r.DURING, eYo.c9r.AFTER]},
+})
+
+/**
+ * Expands a property model.
+ * @param {Object} model
+ * @return {Object}
+ */
+eYo.C9r.PropModelHandler = (model) => {
+  if (model['.initers']) {
+    return
+  }
+  let initers = model['.initers'] = []
+  eYo.C9r.CHANGE_HOOKS.forEach(when => {
+    var f = model[when]
+    if (eYo.isF(f)) {
+      initers.push(XRegExp.match(f.toString(), eYo.xre.function_before)
+      ? object => {
+        object[when] = function (before, after) {
+          let old = this[when]
+          try {
+            this[when] = eYo.do.nothing
+            f.call(this, before, after)
+            this.fireObservers(when, before, after)
+          } finally {
+            this[when] = old
           }
         }
-        f = eYo.Decorate.reentrant_method(k, f)
-        initers.push(object => {
-          object[k] = function (before, after) {
-            try {
-              this[k] = eYo.Do.nothing
-              f.call(this, before, after)  
-            } finally {
-              delete this[k]
-            }
-          }
-        })
-      } else if (f) {
-        throw new Error(`Unexpected model value ${k} -> ${f}`)
-      }
-    })
-    var f = model.init
-    if (eYo.isF(f)) {
-      initers.push(object => {
-        object.init = function () {
+      } : object => {
+        object[when] = function (before, after) {
+          let old = this[when]
           try {
-            this.init = eYo.Do.nothing
-            this.setStored(f.call(this)) // first time
+            this[when] = eYo.do.nothing
+            f.call(this, after)  
+            this.fireObservers(when, before, after)
           } finally {
-            this.init = function () {
-              let old = this.init
-              try {
-                this.init = eYo.Do.nothing
-                this.setValue(f.call(this)) // further times
-              } finally {
-                this.init = old
-              }    
-            }
+            this[when] = old
           }
         }
       })
-    } else if (eYo.isDef(f)) {
+    } else if (f) {
+      throw new Error(`Unexpected model value ${when} -> ${f}`)
+    } else {
       initers.push(object => {
-        object.init = function () {
-          this.setStored(f)
+        object[when] = function (before, after) {
+          let old = this[when]
+          try {
+            this[when] = eYo.do.nothing
+            this.fireObservers(when, before, after)
+          } finally {
+            this[when] = old
+          }
+        }
+      })
+    }
+  })
+  var f = model.validate
+  if (eYo.isF(f)) {
+    initers.push(XRegExp.match(f.toString(), eYo.xre.function_before)
+    ? object => {
+      object.validate = function (before, after) {
+        let old = this.validate
+        try {
+          this.validate = eYo.do.nothing
+          f.call(this, before, after)  
+        } finally {
+          this.validate = old
+        }
+      }
+    } : object => {
+      object.validate = function (before, after) {
+        let old = this.validate
+        try {
+          this.validate = eYo.do.nothing
+          f.call(this, after)  
+        } finally {
+          this.validate = old
+        }
+      }
+    })
+  } else if (f) {
+    throw new Error(`Unexpected model value ${k} -> ${f}`)
+  }
+  var f = model.init
+  if (eYo.isF(f)) {
+    initers.push(object => {
+      object.init = function () {
+        try {
+          this.init = eYo.do.nothing
+          this.setStored(f.call(this)) // first time
+        } finally {
           this.init = function () {
             let old = this.init
             try {
-              this.init = eYo.Do.nothing
-              this.setValue(f) // further times
+              this.init = eYo.do.nothing
+              this.setValue(f.call(this)) // further times
             } finally {
               this.init = old
             }    
           }
         }
+      }
+    })
+  } else if (eYo.isDef(f)) {
+    initers.push(object => {
+      object.init = function () {
+        this.setStored(f)
+        this.init = function () {
+          let old = this.init
+          try {
+            this.init = eYo.do.nothing
+            this.setValue(f) // further times
+          } finally {
+            this.init = old
+          }    
+        }
+      }
+    })
+  }
+  f = model.get
+  if (eYo.isF(f)) {
+    if (XRegExp.match(f.toString(), eYo.xre.function_builtin)) {
+      initers.push((object) => {
+        let builtin = object.getValue.bind(object)
+        object.getValue = function () {
+          try {
+            this.getValue = eYo.do.nothing
+            return f.call(this, builtin)
+          } finally {
+            delete this.getValue
+          }
+        }
+      })
+    } else {
+      initers.push((object) => {
+        object.getValue = function () {
+          try {
+            this.getValue = eYo.do.nothing
+            return f.call(this)
+          } finally {
+            delete this.getValue
+          }
+        }
       })
     }
-    f = model.get
-    if (eYo.isF(f)) {
-      if (XRegExp.match(f.toString(), eYo.XRE.function_builtin)) {
-        initers.push((object) => {
-          let builtin = object.getValue.bind(object)
-          object.getValue = function () {
-            try {
-              this.getValue = eYo.Do.nothing
-              return f.call(this, builtin)
-            } finally {
-              delete this.getValue
-            }
-          }
-        })
-      } else {
-        initers.push((object) => {
-          object.getValue = function () {
-            try {
-              this.getValue = eYo.Do.nothing
-              return f.call(this)
-            } finally {
-              delete this.getValue
-            }
-          }
-        })
-      }
-    } else {
-      eYo.parameterAssert(!f)
-      if (model.lazy) {
-        initers.push((object) => {
-          object.getValue = function () {
-            try {
-              this.getValue = eYo.Do.nothing
-              var ans = this.getStore()
-              if (!eYo.isDef(ans)) {
-                this.init() // possibly a second call
-                ans = this.getStore()
-              }
-              return ans
-            } finally {
-              delete this.getValue
-            }
-          }
-        })
-      }
-    }
-    f = model.set
-    if (eYo.isF(f)) {
-      if (XRegExp.match(f.toString(), eYo.XRE.function_builtin_after)) {
-        initers.push((object) => {
-          let builtin = object.setValue.bind(object)
-          object.setValue = function (after) {
-            try {
-              this.setValue = eYo.Do.nothing
-              return f.call(this, builtin, after)
-            } finally {
-              delete this.setValue
-            }
-          }
-        })
-      } else {
-        initers.push((object) => {
-          object.setValue = function (after) {
-            try {
-              this.setValue = eYo.Do.nothing
-              return f.call(this, after)
-            } finally {
-              delete this.setValue
-            }
-          }
-        })
-      }
-    } else {
-      eYo.parameterAssert(!f)
-    }
-    f = model.get_
-    if (eYo.isF(f)) {
-      if (XRegExp.match(f.toString(), eYo.XRE.function_builtin)) {
-        initers.push((object) => {
-          let builtin = object.getStored.bind(object)
-          object.getStored = function () {
-            try {
-              this.getStored = eYo.Do.nothing
-              return f.call(this, builtin)
-            } finally {
-              delete this.getStored
-            }
-          }
-        })
-      } else {
-        initers.push((object) => {
-          object.getStored = function () {
-            try {
-              this.getStored = eYo.Do.nothing
-              return f.call(this)
-            } finally {
-              delete this.getStored
-            }
-          }
-        })
-      }
-    } else {
-      eYo.parameterAssert(!f)
-    }
-    f = model.set_
-    if (eYo.isF(f)) {
-      if (XRegExp.match(f.toString(), eYo.XRE.function_builtin_after)) {
-        initers.push((object) => {
-          let builtin = object.setStored.bind(object)
-          object.setStored = function (after) {
-            try {
-              this.setStored = eYo.Do.nothing
-              return f.call(this, builtin, after)
-            } finally {
-              delete this.setStored
-            }
-          }
-        })
-      } else {
-        initers.push((object) => {
-          object.setStored = function (after) {
-            try {
-              this.setStored = eYo.Do.nothing
-              return f.call(this, after)
-            } finally {
-              delete this.setStored
-            }
-          }
-        })
-      }
-    } else {
-      eYo.parameterAssert(!f)
-    }
-    f = model.dispose
-    if (model.dispose === false) {
+  } else {
+    eYo.ParameterAssert(!f)
+    if (model.lazy) {
       initers.push((object) => {
-        object.disposeStored = eYo.Do.nothing
+        object.getValue = function () {
+          try {
+            this.getValue = eYo.do.nothing
+            var ans = this.getStored()
+            if (!eYo.isDef(ans)) {
+              this.init() // possibly a second call
+              ans = this.getStored()
+            }
+            return ans
+          } finally {
+            delete this.getValue
+          }
+        }
       })
     }
   }
-
-  /**
-   * Base property constructor.
-   * The bounds between the property and the arguments are immutable.
-   * For edython.
-   * @param {*} owner - The object owning the property.
-   * @param {string} key - name of the property.
-   * @param {Object} model - contains methods and properties.
-   * It is shared by all property controllers belonging to the same kind
-   * of owner. Great care should be taken when editing this model.
-   * @constructor
-   */
-  eYo.C9r.makeClass('Prop', {
-    init (owner, key, model) {
-      eYo.parameterAssert(owner, 'Missing owner')
-      eYo.parameterAssert(key, 'Missing key')
-      eYo.parameterAssert(model, 'Missing model')
-      this.owner_ = owner
-      this.key_ = key
-      this.model_ = model
-      this.reentrant_ = Object.create(null)
-      this.stored__ = eYo.NA
-      Object.defineProperties(this, {
-        value: eYo.descriptorR(
-          `Unexpected setter ${key} in ${owner}'s property`,
-          eYo.Property.prototype._getValue
-        ),
-        owner: eYo.descriptorR(
-          `Unexpected ….owner = …, ${owner}'s property`,
-          function () { return this.owner_ }
-        ),
-        owner: eYo.descriptorR(
-          `Unexpected ….key = …, ${owner}'s property`,
-          function () { return this.key_ }
-        ),
-        owner: eYo.descriptorR(
-          `Unexpected ….model = …, ${owner}'s property`,
-          function () { return this.model_ }
-        ),
+  f = model.set
+  if (eYo.isF(f)) {
+    if (XRegExp.match(f.toString(), eYo.xre.function_builtin_after)) {
+      initers.push((object) => {
+        let builtin = object.setValue.bind(object)
+        object.setValue = function (after) {
+          try {
+            this.setValue = eYo.do.nothing
+            return f.call(this, builtin, after)
+          } finally {
+            delete this.setValue
+          }
+        }
       })
-      modelHandler(model)
-      model['.initers'].forEach(f => f(this))
-    },
-    dispose () {
-      this.disposeStored()
-      this.removeObservers()
-      this.reentrant_ = this.key_ = this.owner_ = this.model_ = eYo.NA
-    },
-  })
-eYo.assert(eYo.C9r.Prop)
+    } else {
+      initers.push((object) => {
+        object.setValue = function (after) {
+          try {
+            this.setValue = eYo.do.nothing
+            return f.call(this, after)
+          } finally {
+            delete this.setValue
+          }
+        }
+      })
+    }
+  } else {
+    eYo.ParameterAssert(!f)
+  }
+  f = model.get_
+  if (eYo.isF(f)) {
+    if (XRegExp.match(f.toString(), eYo.xre.function_builtin)) {
+      initers.push((object) => {
+        let builtin = object.getStored.bind(object)
+        object.getStored = function () {
+          try {
+            this.getStored = eYo.do.nothing
+            return f.call(this, builtin)
+          } finally {
+            delete this.getStored
+          }
+        }
+      })
+    } else {
+      initers.push((object) => {
+        object.getStored = function () {
+          try {
+            this.getStored = eYo.do.nothing
+            return f.call(this)
+          } finally {
+            delete this.getStored
+          }
+        }
+      })
+    }
+  } else {
+    eYo.ParameterAssert(!f)
+  }
+  f = model.set_
+  if (eYo.isF(f)) {
+    if (XRegExp.match(f.toString(), eYo.xre.function_builtin_after)) {
+      initers.push((object) => {
+        let builtin = object.setStored.bind(object)
+        object.setStored = function (after) {
+          try {
+            this.setStored = eYo.do.nothing
+            return f.call(this, builtin, after)
+          } finally {
+            delete this.setStored
+          }
+        }
+      })
+    } else {
+      initers.push((object) => {
+        object.setStored = function (after) {
+          try {
+            this.setStored = eYo.do.nothing
+            return f.call(this, after)
+          } finally {
+            delete this.setStored
+          }
+        }
+      })
+    }
+  } else {
+    eYo.ParameterAssert(!f)
+  }
+  f = model.dispose
+  if (model.dispose === false) {
+    initers.push((object) => {
+      object.disposeStored = eYo.do.nothing
+    })
+  }
+}
+
+/**
+ * @name {eYo.C9r.DlgtProp}
+ * @constructor
+ */
+eYo.C9r.Dlgt.makeSubclass('DlgtProp')
+
+eYo.C9r.DlgtProp_p.makeValidate = function () {
+}
+
+/**
+ * Base property constructor.
+ * The bounds between the property and the arguments are immutable.
+ * For edython.
+ * @param {*} owner - The object owning the property.
+ * @param {string} key - name of the property.
+ * @param {Object} model - contains methods and properties.
+ * It is shared by all property controllers belonging to the same kind
+ * of owner. Great care should be taken when editing this model.
+ * @constructor
+ */
+eYo.C9r.makeClass('Prop', eYo.c9r.DlgtProp, {
+  init (owner, key, model) {
+    eYo.ParameterAssert(owner, 'Missing owner')
+    eYo.ParameterAssert(key, 'Missing key')
+    eYo.ParameterAssert(model, 'Missing model')
+    this.owner_ = owner
+    this.key_ = key
+    this.model_ = model
+    this.reentrant_ = Object.create(null)
+    this.stored__ = eYo.NA
+    Object.defineProperties(this, {
+      value: eYo.C9r.descriptorR(
+        `Unexpected setter ${key} in ${owner}'s property`,
+        eYo.C9r.Prop.prototype._getValue
+      ),
+      owner: eYo.C9r.descriptorR(
+        `Unexpected ….owner = …, ${owner}'s property`,
+        function () { return this.owner_ }
+      ),
+      owner: eYo.C9r.descriptorR(
+        `Unexpected ….key = …, ${owner}'s property`,
+        function () { return this.key_ }
+      ),
+      owner: eYo.C9r.descriptorR(
+        `Unexpected ….model = …, ${owner}'s property`,
+        function () { return this.model_ }
+      ),
+    })
+    eYo.C9r.PropModelHandler(model)
+    model['.initers'].forEach(f => f(this))
+  },
+  dispose () {
+    this.disposeStored()
+    this.removeObservers()
+    this.reentrant_ = this.key_ = this.owner_ = this.model_ = eYo.NA
+  },
+})
+eYo.Assert(eYo.C9r.Prop)
+
+;(() => {
   let _p = eYo.C9r.Prop.prototype
 
   /**
@@ -313,56 +380,17 @@ eYo.assert(eYo.C9r.Prop)
   })
 
   /**
-   * Initialize the value of the property.
-   */
-  _p.init = function () {
-    let f = this.model_.init
-    if (f) {
-      try {
-        this.init = eYo.Do.nothing
-        this.value__ = eYo.whenVALID(f.call(this))
-      } finally {
-        delete this.init
-        if (!eYo.isDef(this.value__)) {
-          console.error('THIS SHOULD BE DEFINED', this.key_)
-        }
-      }
-    }
-  }
-
-  /**
-   * Validates the value of the property
-   * Forwards to the model.
+   * Fallback to validate the value of the property;
+   * Default implementation just returns `after`.
+   * @param {Object} before
    * @param {Object} after
    */
   _p.validate = function (before, after) {
-    var f = this.model_.validate
-    if (f) {
-      try {
-        this.validate = eYo.nothing
-        return f.call(this, before, after)
-      } finally {
-        delete this.validate
-      }
-    }
     return after
   }
   
-  let change = (k) => {
-    return function (before, after) {
-      var f = this.model_[k]
-      if (f) {
-        try {
-          this[k] = eYo.nothing
-          f.call(this, before, after)
-          return true
-        } finally {
-          delete this[k]
-        }
-      }
-    }
-  }
   /**
+   * @name{willChange}
    * Before changing the value of the property.
    * The signature is `willChange([before], after) → Boolean`
    * May be overriden by the model.
@@ -370,9 +398,8 @@ eYo.assert(eYo.C9r.Prop)
    * @param {Object} after
    * @return {Boolean} true when performed
    */
-  _p.beforeChange = change('willChange')
-
   /**
+   * @name{atChange}
    * When changing the value of the property.
    * The signature is `atChange( [before], after ) → Boolean`
    * May be overriden by the model.
@@ -380,9 +407,8 @@ eYo.assert(eYo.C9r.Prop)
    * @param {Object} after
    * @return {Boolean} true when performed
    */
-  _p.duringChange = change('atChange')
-
   /**
+   * @name{didChange}
    * Did change the value of the property.
    * The signature is `didChange( [before], after ) → Boolean`
    * May be overriden by the model.
@@ -390,7 +416,16 @@ eYo.assert(eYo.C9r.Prop)
    * @param {Object} after
    * @return {Boolean} true when performed
    */
-  _p.afterChange = change('didChange')
+  eYo.C9r.CHANGE_HOOKS.forEach(when => {
+    _p[when] = function (before, after) {
+      try {
+        this[when] = eYo.do.nothing
+        this.fireObservers(when, before, after)
+      } finally {
+        delete this[when]
+      }
+    }
+  })
 
   /**
    * Used multiple times.
@@ -405,7 +440,7 @@ eYo.assert(eYo.C9r.Prop)
    * @private
    */
   _p.getValue = function () {
-    return this.getStore()
+    return this.getStored()
   }
 
   /**
@@ -413,7 +448,7 @@ eYo.assert(eYo.C9r.Prop)
    * @private
    */
   _p.getStored = function () {
-    return stored__
+    return this.stored__
   }
 
   /**
@@ -422,25 +457,25 @@ eYo.assert(eYo.C9r.Prop)
    * @param {*} after - the new value after the change.
    */
   _p.setValue = function (after) {
-    var f = this.model.set
+    var f = this.model_.set
     if (f) {
       try {
-        this.setValue = eYo.Do.nothing
+        this.setValue = eYo.do.nothing
         f.call(after)
       } finally {
         delete this.setValue
       }
     } else {
-      after = this.validate(after)
+      var before = this.value__
+      after = this.validate(before, after)
       if (eYo.isVALID(after)) {
-        var before = this.value__
         if (before !== after) {
-          this.beforeChange(before, after)
+          this.willChange(before, after)
           try {
             this.setStored(after)
-            this.duringChange(before, after)
+            this.atChange(before, after)
           } finally {
-            this.afterChange(before, after)
+            this.didChange(before, after)
           }
         }    
       }
@@ -453,10 +488,10 @@ eYo.assert(eYo.C9r.Prop)
    * @param {*} after - the new value after the change.
    */
   _p.setStored = function (after) {
-    var f = this.model.set_
+    var f = this.model_.set_
     if (f) {
       try {
-        this.setStored = eYo.Do.nothing
+        this.setStored = eYo.do.nothing
         f.call(after)
       } finally {
         delete this.setValue
@@ -466,24 +501,18 @@ eYo.assert(eYo.C9r.Prop)
     }
   }
 
-  Object.defineProperties(eYo.Property, {
-    BEFORE: {value: '.before'},
-    DURING: {value: '.during'},
-    AFTER: {value: '.after'},
-  })
-
   /**
    * Add the observer
    * @param {Function} f - function ([before], after) => void. arguments must ont have another name. No `this` for the callback.
    * @param {String} when - One of 'before', 'during', 'after'
    * @return {*} The callback, to be used for removing the observer.
    */
-  _p.addObserver = function (callback, when = eYo.Property.AFTER) {
-    eYo.parameterAssert(eYo.isF(callback))
-    eYo.parameterAssert([eYo.Property.BEFORE, eYo.Property.DURING, eYo.Property.AFTER].includes(when))
+  _p.addObserver = function (callback, when = eYo.C9r.AFTER) {
+    eYo.ParameterAssert(eYo.isF(callback))
+    eYo.ParameterAssert(eYo.C9r.CHANGE_HOOKS.includes(when))
     let byWhen = this.observersByWhen__ || (this.observersByWhen__ = {})
     let observers = byWhen[when] || (byWhen[when] = [])
-    if (!XRegExp.match(callback.toString(), eYo.XRE.function_before)) {
+    if (!XRegExp.match(callback.toString(), eYo.xre.function_before)) {
       let wrapper = (before, after) => {
         callback.call(this, after)
       }
@@ -502,8 +531,8 @@ eYo.assert(eYo.C9r.Prop)
    * @return {*} The callback, to be used for adding the observer again.
    */
   _p.removeObserver = function (callback, when) {
-    eYo.parameterAssert(!callback || eYo.isF(callback))
-    eYo.parameterAssert(!when || [eYo.Property.BEFORE, eYo.Property.DURING, eYo.Property.AFTER].includes(when))
+    eYo.ParameterAssert(!callback || eYo.isF(callback))
+    eYo.ParameterAssert(!when || eYo.C9r.CHANGE_HOOKS.includes(when))
     let byWhen = this.observersByWhen__
     if (byWhen) {
       if (when) {
@@ -512,7 +541,7 @@ eYo.assert(eYo.C9r.Prop)
           byWhen[when] = observers.filter(x => x !== callback && x.eyo !== callback)
         }
       } else {
-        [eYo.Property.BEFORE, eYo.Property.DURING, eYo.Property.AFTER].forEach(when => {
+        eYo.C9r.CHANGE_HOOKS.forEach(when => {
           let observers = byWhen[when]
           if (observers) {
             byWhen[when] = observers.filter(x => x !== callback && x.eyo !== callback)
@@ -529,7 +558,7 @@ eYo.assert(eYo.C9r.Prop)
   _p.removeObservers = function () {
     let byWhen = this.observersByWhen__
     if (byWhen) {
-      [eYo.Property.BEFORE, eYo.Property.DURING, eYo.Property.AFTER].forEach(when => {
+      eYo.C9r.CHANGE_HOOKS.forEach(when => {
         let observers = byWhen[when]
         if (observers) {
           observers.length = 0
@@ -537,4 +566,19 @@ eYo.assert(eYo.C9r.Prop)
       })
     }
   }
-}
+
+  /**
+   * Fire the observers.
+   * @param {*} when - One of `eYo.C9r.BEFORE`, `eYo.c9r.DURING`, `eYo.c9r.AFTER`
+   * @param {*} before - the value before
+   * @param {*} after - the value after
+   */
+  _p.fireObservers = function (when, before, after) {
+    let byWhen = this.observersByWhen__
+    if (byWhen) {
+      let observers = byWhen[when]
+      observers && observers.forEach(f => f(before, after))
+    }
+  }
+
+}) ()

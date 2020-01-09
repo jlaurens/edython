@@ -11,8 +11,8 @@
  */
 'use strict'
 
-eYo.require('Decorate')
-eYo.require('C9r')
+eYo.require('decorate')
+eYo.require('c9r')
 
 /**
  * @name {eYo.Consolidator}
@@ -20,9 +20,9 @@ eYo.require('C9r')
  */
 eYo.makeNS('Consolidator')
 
-eYo.forwardDeclare('Brick')
-eYo.forwardDeclare('Do')
-eYo.forwardDeclare('Slot')
+eYo.forwardDeclare('brick')
+eYo.forwardDeclare('do')
+eYo.forwardDeclare('slot')
 
 console.error('Manage reentrant_ more carefully')
 
@@ -64,8 +64,8 @@ eYo.Consolidator.makeClass('Dflt', {
   init (model) {
     var D = this.model
     model && goog.mixin(D, model)
-    eYo.assert(goog.isDef(D.check), 'Consolidators must check their objects')
-    D.check = eYo.Decorate.arrayFunction(D.check)
+    eYo.Assert(goog.isDef(D.check), 'Consolidators must check their objects')
+    D.check = eYo.decorate.ArrayFunction(D.check)
     this.model_ = D
   },
 })
@@ -75,7 +75,7 @@ eYo.Consolidator.makeClass('Dflt', {
  * Removes empty place holders
  * @param {eYo.Brick.Dflt} brick - to be consolidated....
  */
-eYo.Consolidator.Dflt_p.consolidate = eYo.Do.nothing
+eYo.Consolidator.Dflt_p.Consolidate = eYo.do.nothing
 
 /**
  * List consolidator.
@@ -88,7 +88,7 @@ eYo.Consolidator.Dflt_p.consolidate = eYo.Do.nothing
  * of the slot, which means that naming should be done
  * dynamically.
  */
-eYo.Consolidator.Dflt.makeSubclass('List', {
+eYo.Consolidator.Dflt.makeSubclass('list', {
   /**
    * Initialize the list consolidator.
    * @param {Object} d model.
@@ -97,7 +97,7 @@ eYo.Consolidator.Dflt.makeSubclass('List', {
     var D = this.model
     var DD = this.constructor.eyo.model 
     DD && DD.list && goog.mixin(DD.list)
-    eYo.C9r.Model.consolidate({list: D})
+    eYo.c9r.model.Consolidate({list: D})
   }
 })
 
@@ -106,7 +106,7 @@ eYo.Consolidator.Dflt.makeSubclass('List', {
  * Asks the list
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.getAry = function (io) {
+eYo.Consolidator.list_p.getAry = function (io) {
   if (io.brick) {
     var d = io.brick.ary_d
     if (d) {
@@ -123,7 +123,7 @@ eYo.Consolidator.List_p.getAry = function (io) {
  * Asks the list
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.getMandatory = function (io) {
+eYo.Consolidator.list_p.getMandatory = function (io) {
   if (io.brick) {
    var d = io.brick.mandatory_d
     if (d) {
@@ -143,13 +143,13 @@ eYo.Consolidator.List_p.getMandatory = function (io) {
  * Called when the slot list has changed and or the index has changed.
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.setupIO = function (io, i) {
+eYo.Consolidator.list_p.SetupIO = function (io, i) {
   if (i !== eYo.NA) {
     io.i = i
   }
   if ((io.slot = io.list[io.i])) {
     io.m4t = io.slot.magnet
-    eYo.assert(!io.slot || !!io.m4t, 'List items must have a magnet')
+    eYo.Assert(!io.slot || !!io.m4t, 'List items must have a magnet')
     return true
   } else {
     io.m4t = null
@@ -162,7 +162,7 @@ eYo.Consolidator.List_p.setupIO = function (io, i) {
  * @param {Object} io parameter.
  * @return boolean, false when at end
  */
-eYo.Consolidator.List_p.nextSlot = function (io) {
+eYo.Consolidator.list_p.nextSlot = function (io) {
   ++io.i
   return this.setupIO(io)
 }
@@ -172,7 +172,7 @@ eYo.Consolidator.List_p.nextSlot = function (io) {
  * @param {Object} io parameter.
  * @return boolean, true when connected.
  */
-eYo.Consolidator.List_p.willBeConnected = function (io) {
+eYo.Consolidator.list_p.willBeConnected = function (io) {
   return io.slot && (io.m4t.target || io.m4t.will_connect_)
 }
 
@@ -183,7 +183,7 @@ eYo.Consolidator.List_p.willBeConnected = function (io) {
  * @param {number} i When eYo.NA, take io.i
  * @return {eYo.Slot.Dflt}, the slot inserted.
  */
-eYo.Consolidator.List_p.insertPlaceholder = function (io, i) {
+eYo.Consolidator.list_p.insertPlaceholder = function (io, i) {
   if (goog.isNumber(i)) {
     io.i = i
   }
@@ -209,7 +209,7 @@ eYo.Consolidator.List_p.insertPlaceholder = function (io, i) {
  * @param {Object} io parameter.
  * @return boolean, whether the io is at end.
  */
-eYo.Consolidator.List_p.disposeAtI = function (io, i) {
+eYo.Consolidator.list_p.disposeAtI = function (io, i) {
   if (!goog.isNumber(i)) {
     i = io.i
   }
@@ -230,7 +230,7 @@ eYo.Consolidator.List_p.disposeAtI = function (io, i) {
  * In all other situations, return `check`.
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.getCheck = function (io) {
+eYo.Consolidator.list_p.getCheck = function (io) {
   if (this.model.all) {
     if (io.unique >= 0 || io.list.length === 1) {
       // a single brick or no brick at all
@@ -251,7 +251,7 @@ eYo.Consolidator.List_p.getCheck = function (io) {
  * Finalize the current slot as a placeholder.
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.doFinalizePlaceholder = function (io, name = eYo.NA, optional = false) {
+eYo.Consolidator.list_p.doFinalizePlaceholder = function (io, name = eYo.NA, optional = false) {
   io.slot.lst_n = io.n
   io.slot.lst_presep = io.presep
   io.slot.lst_postsep = io.postsep
@@ -274,7 +274,7 @@ eYo.Consolidator.List_p.doFinalizePlaceholder = function (io, name = eYo.NA, opt
  * Finalize the current slot as a separator.
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.doFinalizeSeparator = function (io, extreme, name) {
+eYo.Consolidator.list_p.doFinalizeSeparator = function (io, extreme, name) {
   io.slot.lst_presep = io.presep || ''
   io.slot.lst_postsep = io.postsep || ''
   if (name && name.length) {
@@ -319,7 +319,7 @@ eYo.Consolidator.List_p.doFinalizeSeparator = function (io, extreme, name) {
  * @param {Object} io parameter.
  * @return yes exactly if there are more slots
  */
-eYo.Consolidator.List_p.consolidate_connected = function (io) {
+eYo.consolidator.list_p.Consolidate_connected = function (io) {
   // ensure that there is one slot after,
   // which is not connected
   if (!this.nextSlot(io) || this.willBeConnected(io)) {
@@ -335,7 +335,7 @@ eYo.Consolidator.List_p.consolidate_connected = function (io) {
  * @param {Object} io parameter.
  * @return true exactly if there are more slots
  */
-eYo.Consolidator.List_p.consolidate_first_connected = function (io) {
+eYo.consolidator.list_p.Consolidate_first_connected = function (io) {
   // let subclassers catch this if they want to.
   if (!this.consolidate_single(io)) {
     // nothing more to consolidate
@@ -364,7 +364,7 @@ eYo.Consolidator.List_p.consolidate_first_connected = function (io) {
  * @param {Object} io parameter.
  * @return yes exactly if there are more slots
  */
-eYo.Consolidator.List_p.consolidate_single = function (io) {
+eYo.consolidator.list_p.Consolidate_single = function (io) {
   if (io.unique >= 0) {
     // remove whatever precedes it, even the very first separator
     var j = io.i
@@ -397,7 +397,7 @@ eYo.Consolidator.List_p.consolidate_single = function (io) {
  * `null` is deliberately returned and tested for development reasons.
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.makeUnique = function (io) {
+eYo.Consolidator.list_p.makeUnique = function (io) {
   if (!this.reentrant_.makeUnique) {
     var f = this.model.makeUnique
     if (eYo.isF(f)) {
@@ -427,7 +427,7 @@ eYo.Consolidator.List_p.makeUnique = function (io) {
  * @param {Object} io parameter.
  * @param {boolean} gobble whether to gobble intermediate slot.
  */
-eYo.Consolidator.List_p.walk_to_next_connected = function (io, gobble) {
+eYo.Consolidator.list_p.walk_to_next_connected = function (io, gobble) {
   // things are different if one of the inputs is connected
   while (io.slot) {
     if (this.willBeConnected(io)) {
@@ -455,7 +455,7 @@ eYo.Consolidator.List_p.walk_to_next_connected = function (io, gobble) {
  * create of if none exists.
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.consolidate_unconnected = function (io) {
+eYo.consolidator.list_p.Consolidate_unconnected = function (io) {
   // remove any separator up to the first placeholder
   // This is because the placeholder may have been connected
   // before, undoing will be easier.
@@ -482,7 +482,7 @@ eYo.Consolidator.List_p.consolidate_unconnected = function (io) {
         --io.i
         this.setupIO(io)
         this.doFinalizePlaceholder(io,
-          eYo.Do.Name.middle_name, !this.getMandatory(io))
+          eYo.do.Name.middle_name, !this.getMandatory(io))
         return
       }
       // unreachable code
@@ -490,7 +490,7 @@ eYo.Consolidator.List_p.consolidate_unconnected = function (io) {
     // create a slot
     this.insertPlaceholder(io)
     this.doFinalizePlaceholder(io,
-      eYo.Do.Name.middle_name, !this.getMandatory(io))
+      eYo.do.Name.middle_name, !this.getMandatory(io))
   } else {
     // remove everything
     while (this.setupIO(io, 0)) {
@@ -506,7 +506,7 @@ eYo.Consolidator.List_p.consolidate_unconnected = function (io) {
  * Default implementation does nothing.
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.doCleanup = function (io) {
+eYo.Consolidator.list_p.doCleanup = function (io) {
 }
 
 /**
@@ -514,7 +514,7 @@ eYo.Consolidator.List_p.doCleanup = function (io) {
  * remove the excedent.
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.doAry = function (io) {
+eYo.Consolidator.list_p.doAry = function (io) {
   var ary = this.getAry(io)
   if (ary < Infinity) {
     this.setupIO(io, 0)
@@ -557,15 +557,15 @@ eYo.Consolidator.List_p.doAry = function (io) {
  * set the separator property when not connected.
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.doFinalize = function (io) {
+eYo.Consolidator.list_p.doFinalize = function (io) {
   this.setupIO(io, 0)
   if (io.list.length === 1) {
     this.doFinalizePlaceholder(io, eYo.NA, !this.getMandatory(io))
     return
   }
-  var previous = eYo.Do.Name.min_name
+  var previous = eYo.do.Name.min_name
   var next = io.list[io.i + 1].name
-  var name = eYo.Do.Name.getBetween(previous, next)
+  var name = eYo.do.Name.getBetween(previous, next)
   this.doFinalizeSeparator(io, true, name)
   this.nextSlot(io)
   this.doFinalizePlaceholder(io)
@@ -573,12 +573,12 @@ eYo.Consolidator.List_p.doFinalize = function (io) {
   while (this.nextSlot(io)) {
     if (io.i === io.list.length - 1) {
       // last separator
-      next = eYo.Do.Name.max_name
-      name = eYo.Do.Name.getBetween(previous, next)
+      next = eYo.do.Name.max_name
+      name = eYo.do.Name.getBetween(previous, next)
       this.doFinalizeSeparator(io, true, name)
     } else {
       next = io.list[io.i + 1].name
-      name = eYo.Do.Name.getBetween(previous, next)
+      name = eYo.do.Name.getBetween(previous, next)
       this.doFinalizeSeparator(io, false, name)
       previous = next
       this.nextSlot(io)
@@ -591,7 +591,7 @@ eYo.Consolidator.List_p.doFinalize = function (io) {
  * In order to prepare rendering, add some information to the inputs.
  * @param {Object} io parameter.
  */
-eYo.Consolidator.List_p.doLink = function (io) {
+eYo.Consolidator.list_p.doLink = function (io) {
   this.setupIO(io, 0)
   var wasSeparator = false
   var previous = eYo.NA
@@ -621,7 +621,7 @@ eYo.Consolidator.List_p.doLink = function (io) {
  * Subclassers may add their own stuff to io.
  * @param {Object} io - parameters....
  */
-eYo.Consolidator.List_p.getIO = function (brick) {
+eYo.Consolidator.list_p.getIO = function (brick) {
   var unwrapped = brick.wrapper
   var io = {
     brick: brick,
@@ -648,7 +648,7 @@ eYo.Consolidator.List_p.getIO = function (brick) {
  * @param {eYo.Brick.Dflt} brick - to be consolidated.
  * @param {boolean} force - true if no shortcut is allowed.
  */
-eYo.Consolidator.List_p.consolidate = eYo.Decorate.reentrant_method('consolidate', function (brick, force) {
+eYo.consolidator.list_p.Consolidate = eYo.decorate.reentrant_method('consolidate', function (brick, force) {
   // do not consolidate while changing or not in a board
   if (brick.change.level || !brick.board) {
     return
@@ -680,13 +680,13 @@ eYo.Consolidator.List_p.consolidate = eYo.Decorate.reentrant_method('consolidate
  * @param {Boolean} [dontCreate] Whether the receiver should create slots on the fly.
  * @return {eYo.Slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
-eYo.Consolidator.List_p.getSlot = function (brick, name, dontCreate) {
-  // name = eYo.Do.Name.getNormalized(name) not here
+eYo.Consolidator.list_p.getSlot = function (brick, name, dontCreate) {
+  // name = eYo.do.Name.getNormalized(name) not here
   if (!name || !name.length) {
     return null
   }
   this.consolidate(brick)
-  var f = eYo.Decorate.reentrant_method(this, 'consolidate', function () {
+  var f = eYo.decorate.reentrant_method(this, 'consolidate', function () {
     var j = -1
     var io = this.getIO(brick)
     do {
@@ -694,7 +694,7 @@ eYo.Consolidator.List_p.getSlot = function (brick, name, dontCreate) {
         io.presep = io.slot.lst_presep || io.presep
         io.postsep = io.slot.lst_postsep || io.postsep
         if (!io.m4t.s7r_) {
-          var o = eYo.Do.Name.getOrder(io.slot.name, name)
+          var o = eYo.do.Name.getOrder(io.slot.name, name)
           if (!o) {
             return io.slot
           }
@@ -751,7 +751,7 @@ eYo.Consolidator.List_p.getSlot = function (brick, name, dontCreate) {
  * @param {Object} type - string or array of strings
  * @return the next keyword item slot, eYo.NA when at end.
  */
-eYo.Consolidator.List_p.nextSlotForType = function (io, type) {
+eYo.Consolidator.list_p.nextSlotForType = function (io, type) {
   var filter = goog.isArray(type)
     ? (check) => {
       for (var i = 0; i < type.length; i++) {
@@ -779,7 +779,7 @@ eYo.Consolidator.List_p.nextSlotForType = function (io, type) {
  * @param {Object} type - string or array of strings
  * @return the next keyword item slot, eYo.NA when at end.
  */
-eYo.Consolidator.List_p.hasInputForType = function (brick, type) {
+eYo.Consolidator.list_p.hasInputForType = function (brick, type) {
   var io = this.getIO(brick)
   return !!this.nextSlotForType(io, type)
 }

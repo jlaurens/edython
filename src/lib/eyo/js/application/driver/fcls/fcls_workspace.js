@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.require('Fcls')
+eYo.require('fcls')
 
-eYo.provide('Fcls.Workspace')
+eYo.provide('fcls.workspace')
 
-eYo.forwardDeclare('Workspace')
+eYo.forwardDeclare('workspace')
 
 /**
  * Shared application driver.
  */
-eYo.Fcls.makeDriverClass('Workspace')
+eYo.fcls.makeDriverClass('Workspace')

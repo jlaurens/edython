@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('C9r.Owned')
+eYo.require('c9r.owned')
 
-eYo.forwardDeclare('Board')
-eYo.forwardDeclare('Geometry')
+eYo.forwardDeclare('board')
+eYo.forwardDeclare('geometry')
 
 /**
  * The `content` rect is enclosing all the bricks.
@@ -143,7 +143,7 @@ eYo.makeClass('Metrics', {
      * @readonly 
      */
     dragDefault () {
-      return eYo.Where.cl(0*1.5, 0*0.25)
+      return eYo.Where.Cl(0*1.5, 0*0.25)
     },
     /**
      * Whether the actual drag value is within the acceptable limits.
@@ -174,8 +174,8 @@ eYo.makeClass('Metrics', {
       var ans = this.view
       ans.origin.set()
       ans.unscale(this.scale)
-      ans.left = -(this.numbering ? 5 : 3) * eYo.Unit.x
-      ans.top = -eYo.Unit.y
+      ans.left = -(this.numbering ? 5 : 3) * eYo.unit.x
+      ans.top = -eYo.unit.y
       return ans
     },
     /**

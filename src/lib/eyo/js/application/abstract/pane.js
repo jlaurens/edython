@@ -12,9 +12,9 @@
  */
 'use strict'
 
-eYo.require('C9r.Owned')
+eYo.require('c9r.owned')
 
-eYo.forwardDeclare('Desk')
+eYo.forwardDeclare('desk')
 
 /**
  * The main focus manager.
@@ -38,14 +38,14 @@ eYo.C9r.Owned.makeSubclass('Pane', {
  * Layout the receiver.
  * The default implementation does nothing.
  */
-eYo.C9r.Pane_p.layout = eYo.Do.nothing
+eYo.C9r.Pane_p.layout = eYo.do.nothing
 
 /**
  * Update the metrics of the receiver.
  */
-eYo.C9r.Pane_p.updateMetrics = eYo.Do.nothing
+eYo.C9r.Pane_p.updateMetrics = eYo.do.nothing
 
 /**
  * Place the receiver.
  */
-eYo.C9r.Pane_p.place = eYo.Do.nothing
+eYo.C9r.Pane_p.place = eYo.do.nothing

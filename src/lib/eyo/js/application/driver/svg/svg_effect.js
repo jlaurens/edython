@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('Svg')
-eYo.require('Brick')
+eYo.require('svg')
+eYo.require('brick')
 
-// eYo.forwardDeclare('Effect')
+// eYo.forwardDeclare('effect')
 
 /**
  * Svg driver for brick effects
@@ -24,7 +24,7 @@ eYo.Svg.makeDriverClass('Effect')
 /**
  * Play some UI effects (sound, animation) when disposing of a brick.
  */
-eYo.Svg.Effect.prototype.brickDispose = (() => {
+eYo.Svg.Effect.prototype.BrickDispose = (() => {
   /*
   * Animate a cloned brick and eventually dispose of it.
   * @param {Element} clone SVG element to animate and dispose of.
@@ -70,7 +70,7 @@ eYo.Svg.Effect.prototype.brickDispose = (() => {
  * Make the given field reserved or not, to emphasize reserved keywords.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Effect.prototype.brickConnect = (() => {
+eYo.Svg.Effect.prototype.BrickConnect = (() => {
   /*
    * Expand a ripple around a connection.
    * @param {Element} ripple Element to animate.
@@ -106,7 +106,7 @@ eYo.Svg.Effect.prototype.brickConnect = (() => {
       )
     } else {
     // Determine the absolute coordinates of the inferior brick.
-      var steps = eYo.Svg.magnetHighlightedPath_.attributes['d'].value
+      var steps = eYo.Svg.MagnetHighlightedPath_.Attributes['d'].value
       ripple = eYo.Svg.newElement(
         'path',
         {
@@ -125,7 +125,7 @@ eYo.Svg.Effect.prototype.brickConnect = (() => {
 /**
  * Play some UI effects (sound, animation) when disconnecting a brick.
  */
-eYo.Svg.Effect.prototype.brickDisconnect = (() => {
+eYo.Svg.Effect.prototype.BrickDisconnect = (() => {
   /*
    * Animate a brief wiggle of a disconnected brick.
    * @param {Element} group SVG element to animate.
@@ -175,7 +175,7 @@ eYo.Svg.Effect.prototype.brickDisconnect = (() => {
  * Stop the disconnect UI animation immediately.
  * @private
  */
-eYo.Svg.Effect.prototype.brickStop = function() {
+eYo.Svg.Effect.prototype.BrickStop = function() {
   var svg = this.svg_
   if (svg) {
     var g = this.group_

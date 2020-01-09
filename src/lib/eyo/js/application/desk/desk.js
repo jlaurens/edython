@@ -13,16 +13,16 @@
  */
 'use strict'
 
-eYo.require('C9r')
+eYo.require('c9r')
 
-eYo.forwardDeclare('App')
-eYo.forwardDeclare('Backer')
+eYo.forwardDeclare('app')
+eYo.forwardDeclare('backer')
 
-eYo.forwardDeclare('Terminal')
-eYo.forwardDeclare('Turtle')
-eYo.forwardDeclare('Graphic')
-eYo.forwardDeclare('Variable')
-eYo.forwardDeclare('Workspace')
+eYo.forwardDeclare('terminal')
+eYo.forwardDeclare('turtle')
+eYo.forwardDeclare('graphic')
+eYo.forwardDeclare('variable')
+eYo.forwardDeclare('workspace')
 
 goog.forwardDeclare('goog.array');
 

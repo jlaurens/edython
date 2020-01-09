@@ -67,7 +67,7 @@ describe ('Tests: C9r', function () {
     chai.assert(eYo.Dflt)
   })
   describe('C9r: Model', function () {
-    it('eYo.C9r.Model.consolidate(…)', function () {
+    it('eYo.c9r.model.Consolidate(…)', function () {
       var model = {
         owned: {
           drag: {
@@ -77,7 +77,7 @@ describe ('Tests: C9r', function () {
           },
         },
       }
-      eYo.C9r.Model.consolidate(model)
+      eYo.c9r.model.Consolidate(model)
       chai.assert(eYo.isF(model.owned.drag.get))
       var model = {
         owned: {
@@ -86,7 +86,7 @@ describe ('Tests: C9r', function () {
           },
         },
       }
-      eYo.C9r.Model.consolidate(model)
+      eYo.c9r.model.Consolidate(model)
       chai.assert(eYo.isF(model.owned.drag.init))
     })
   })
@@ -402,7 +402,7 @@ describe ('Tests: C9r', function () {
     })
   })
 })
-describe('C9r.Model', function () {
+describe('c9r.model', function () {
   this.timeout(10000); 
   it ('C9r.Model: POC', function () {
     chai.assert(XRegExp.match('abc', /abc/))
@@ -414,21 +414,21 @@ describe('C9r.Model', function () {
       chai.assert(XRegExp(k).test('abc'))
     }
   })
-  it ('eYo.C9r.Model.isAllowed(path, k)', function () {
-    chai.assert(eYo.C9r.Model.isAllowed('', 'init'))
-    chai.assert(eYo.C9r.Model.isAllowed('owned', 'abc'))
-    chai.assert(eYo.C9r.Model.isAllowed('owned.abc', 'validate'))
+  it ('eYo.C9r.model.isAllowed(path, k)', function () {
+    chai.assert(eYo.C9r.model.isAllowed('', 'init'))
+    chai.assert(eYo.C9r.model.isAllowed('owned', 'abc'))
+    chai.assert(eYo.C9r.model.isAllowed('owned.abc', 'validate'))
   })
   it ('Inheritance 1', function () {
     var base = {init: 421}
     var model = {}
-    eYo.C9r.Model.extends(model, base)
+    eYo.C9r.model.extends(model, base)
     chai.assert(model.init === 421)
   })
   it ('Inheritance 2', function () {
     var base = {xml: {attr: 421}}
     var model = {}
-    eYo.C9r.Model.extends(model, base)
+    eYo.C9r.model.extends(model, base)
     chai.assert(model.xml.attr === 421)
   })
   it ('Inheritance 3', function () {
@@ -442,7 +442,7 @@ describe('C9r.Model', function () {
         types: 123
       }
     }
-    eYo.C9r.Model.extends(model, base)
+    eYo.C9r.model.extends(model, base)
     chai.assert(model.xml.attr === 421)
     chai.assert(model.xml.types === 123)
   })
@@ -466,8 +466,8 @@ describe('C9r.Model', function () {
         ab: 421
       }
     }
-    eYo.C9r.Model.extends(model, base)
-    eYo.C9r.Model.extends(submodel, model)
+    eYo.C9r.model.extends(model, base)
+    eYo.C9r.model.extends(submodel, model)
     chai.assert(submodel.data.aa.xml === 421)
     chai.assert(submodel.data.ab === 421)
     chai.assert(submodel.owned === 421)
@@ -675,7 +675,7 @@ describe ('Dlgt', function () {
         new ns.A().dispose(1)
       }).to.throw()
       ns.A_p.ui_driver = {
-        doDisposeUI: eYo.Do.nothing
+        doDisposeUI: eYo.do.nothing
       }
       new ns.A().dispose(1)
       chai.assert(flag === 1)
@@ -1187,7 +1187,7 @@ describe ('Dlgt', function () {
           owned: ['foo']
         })
         ns.A_p.ui_driver = {
-          doDisposeUI: eYo.Do.nothing
+          doDisposeUI: eYo.do.nothing
         }
         var a = new ns.A()
         chai.expect(() => {a.foo = 1}).to.throw()
@@ -1413,7 +1413,7 @@ describe ('Dlgt', function () {
           },
         })
         ns.A_p.ui_driver = {
-          doDisposeUI: eYo.Do.nothing
+          doDisposeUI: eYo.do.nothing
         }
         ns.A.prototype.fooWillChange = ns.A.prototype.fooDidChange = test
         var a = new ns.A(foo_before)
@@ -1447,7 +1447,7 @@ describe ('Dlgt', function () {
           }
         })
         ns.A_p.ui_driver = {
-          doDisposeUI: eYo.Do.nothing
+          doDisposeUI: eYo.do.nothing
         }
         B.prototype.dispose = function () {
           this.disposed_ = true
@@ -1913,7 +1913,7 @@ describe ('Dlgt', function () {
     var ns = eYo.makeNS()
     var flag = 0
     var dlgt = function (ns, key, c9r, model) {
-      eYo.Dlgt.call(this, ns, key, c9r, model)
+      eYo.Dlgt.Call(this, ns, key, c9r, model)
       flag += 1
     }
     eYo.inherits(dlgt, eYo.Dlgt)

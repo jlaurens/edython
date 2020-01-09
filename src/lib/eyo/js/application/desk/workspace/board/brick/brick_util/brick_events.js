@@ -11,16 +11,16 @@
  */
 'use strict'
 
-eYo.require('Events')
-eYo.require('Events.Abstract')
+eYo.require('events')
+eYo.require('events.abstract')
 
-eYo.require('Data')
+eYo.require('data')
 
-eYo.provide('Events.BrickMove')
-eYo.provide('Events.BrickDelete')
-eYo.provide('Events.BrickBase')
-eYo.provide('Events.BrickCreate')
-eYo.provide('Events.BrickChange')
+eYo.provide('events.brickMove')
+eYo.provide('events.brickDelete')
+eYo.provide('events.brickBase')
+eYo.provide('events.brickCreate')
+eYo.provide('events.brickChange')
 
 
 goog.forwardDeclare('goog.array')
@@ -31,10 +31,10 @@ goog.forwardDeclare('goog.dom')
  * @param {eYo.Brick.Dflt} brick  The newly created brick.
  * @param {Boolean|String} [group]  eventually set a group.
  */
-eYo.Events.fireBrickCreate = function (brick, group) {
-  if (eYo.Events.enabled) {
-    goog.isDef(group) && (eYo.Events.group = group)
-    eYo.Events.fire(new eYo.Events.BrickCreate(brick))
+eYo.events.fireBrickCreate = function (brick, group) {
+  if (eYo.events.enabled) {
+    goog.isDef(group) && (eYo.events.group = group)
+    eYo.events.fire(new eYo.events.BrickCreate(brick))
   }
 }
 
@@ -42,9 +42,9 @@ eYo.Events.fireBrickCreate = function (brick, group) {
  * Convenient shortcut.
  * @param {eYo.Brick.Dflt} brick  The newly created brick.
  */
-eYo.Events.fireBrickChange = function (brick, element, name, before, after) {
-  if (eYo.Events.enabled) {
-    eYo.Events.fire(new eYo.Events.BrickChange(brick, element, name, before, after))
+eYo.events.fireBrickChange = function (brick, element, name, before, after) {
+  if (eYo.events.enabled) {
+    eYo.events.fire(new eYo.events.BrickChange(brick, element, name, before, after))
   }
 }
 
@@ -53,14 +53,14 @@ eYo.Events.fireBrickChange = function (brick, element, name, before, after) {
  * @param {eYo.Brick.Dflt} brick  The moved brick.
  * @param {Function} move  the move action, signature: (event) -> void
  */
-eYo.Events.fireBrickMove = (brick, move) => {
-  if (eYo.Events.enabled) {
-    var event = new eYo.Events.BrickMove(brick)
+eYo.events.fireBrickMove = (brick, move) => {
+  if (eYo.events.enabled) {
+    var event = new eYo.events.BrickMove(brick)
     try {
       move(event)
     } finally {
       event.recordNew()
-      eYo.Events.fire(event)
+      eYo.events.fire(event)
     }
   } else {
     move()
@@ -70,20 +70,20 @@ eYo.Events.fireBrickMove = (brick, move) => {
 /**
  * Abstract class for a brick event.
  * @param {eYo.Brick.Dflt} brick The brick this event corresponds to.
- * @extends {eYo.Events.Abstract}
+ * @extends {eYo.events.Abstract}
  * @constructor
  */
-eYo.Events.BrickBase = function(brick) {
-  eYo.Events.BrickBase.superProto_.constructor.call(this, brick.board)
+eYo.events.BrickBase = function(brick) {
+  eYo.events.BrickBase.SuperProto_.constructor.Call(this, brick.board)
   /**
    * The brick id for the brick this event pertains to
    * @type {string}
    */
   this.brickId = brick.id
 }
-goog.inherits(eYo.Events.BrickBase, eYo.Events.Abstract);
+goog.inherits(eYo.events.BrickBase, eYo.events.Abstract);
 
-Object.defineProperties(eYo.Events.BrickBase.prototype, {
+Object.defineProperties(eYo.events.BrickBase.prototype, {
   brick: {
     get () {
       var board = this.board
@@ -99,24 +99,24 @@ Object.defineProperties(eYo.Events.BrickBase.prototype, {
  * @param {string} [name] Name of slot or field affected, or null.
  * @param {*} before - Previous value of element.
  * @param {*} after - New value of element.
- * @extends {eYo.Events.BrickBase}
+ * @extends {eYo.events.BrickBase}
  * @constructor
  */
-eYo.Events.BrickChange = function(brick, element, name, before, after) {
-  eYo.Events.BrickChange.superProto_.constructor.call(this, brick)
+eYo.events.BrickChange = function(brick, element, name, before, after) {
+  eYo.events.BrickChange.SuperProto_.constructor.Call(this, brick)
   this.element = element
   this.name = name
   this.before = before
   this.after = after
 }
-goog.inherits(eYo.Events.BrickChange, eYo.Events.BrickBase)
+goog.inherits(eYo.events.BrickChange, eYo.events.BrickBase)
 
-Object.defineProperties(eYo.Events.BrickChange.prototype, {
+Object.defineProperties(eYo.events.BrickChange.prototype, {
   /**
    * Type of this event.
    * @type {string}
    */
-  type: { value: eYo.Events.BRICK_CHANGE },
+  type: { value: eYo.events.BRICK_CHANGE },
   /**
    * Does this event record any change of state?
    * @return {boolean} True if something changed.
@@ -132,7 +132,7 @@ Object.defineProperties(eYo.Events.BrickChange.prototype, {
  * Run a change event.
  * @param {boolean} redo True if run forward, false if run backward (undo).
  */
-eYo.Events.BrickChange.prototype.run = function(redo) {
+eYo.events.BrickChange.prototype.run = function(redo) {
   var brick = this.brick
   if (!brick) {
     console.warn("Can't change non-existent brick: " + this.brickId);
@@ -165,38 +165,38 @@ eYo.Events.BrickChange.prototype.run = function(redo) {
 /**
  * Class for a brick creation event.
  * @param {eYo.Brick.Dflt} brick The created brick.
- * @extends {eYo.Events.BrickBase}
+ * @extends {eYo.events.BrickBase}
  * @constructor
  */
-eYo.Events.BrickCreate = function(brick) {
-  eYo.Events.BrickCreate.superProto_.constructor.call(this, brick)
+eYo.events.BrickCreate = function(brick) {
+  eYo.events.BrickCreate.SuperProto_.constructor.Call(this, brick)
   if (brick.board.rendered) {
-    this.xml = eYo.Xml.brickToDomWithWhere(brick)
+    this.xml = eYo.xml.BrickToDomWithWhere(brick)
   } else {
-    this.xml = eYo.Xml.brickToDom(brick)
+    this.xml = eYo.xml.BrickToDom(brick)
   }
   this.ids = brick.descendantIds
 }
-goog.inherits(eYo.Events.BrickCreate, eYo.Events.BrickBase)
+goog.inherits(eYo.events.BrickCreate, eYo.events.BrickBase)
 
-Object.defineProperties(eYo.Events.BrickCreate.prototype, {
+Object.defineProperties(eYo.events.BrickCreate.prototype, {
   /**
    * Type of this event.
    * @type {string}
    */
-  type: { value: eYo.Events.BRICK_CREATE },
+  type: { value: eYo.events.BRICK_CREATE },
 })
 
 /**
  * Run a creation event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
-eYo.Events.BrickCreate.prototype.run = function(forward) {
+eYo.events.BrickCreate.prototype.run = function(forward) {
   var board = this.board
   if (forward) {
     var xml = goog.dom.createDom('xml')
     xml.appendChild(this.xml)
-    eYo.Xml.domToBoard(xml, board)
+    eYo.xml.domToBoard(xml, board)
   } else {
     this.ids.forEach(id => {
       var brick = board.getBrickById(id)
@@ -213,37 +213,37 @@ eYo.Events.BrickCreate.prototype.run = function(forward) {
 /**
  * Class for a brick deletion event.
  * @param {eYo.Brick.Dflt} brick The deleted brick.
- * @extends {eYo.Events.BrickBase}
+ * @extends {eYo.events.BrickBase}
  * @constructor
  */
-eYo.Events.BrickDelete = function(brick) {
+eYo.events.BrickDelete = function(brick) {
   if (brick.parent) {
     throw 'Connected bricks cannot be deleted.'
   }
-  eYo.Events.BrickDelete.superProto_.constructor.call(this, brick)
+  eYo.events.BrickDelete.SuperProto_.constructor.Call(this, brick)
 
   if (brick.board.rendered) {
-    this.oldXml = eYo.Xml.brickToDomWithWhere(brick)
+    this.oldXml = eYo.xml.BrickToDomWithWhere(brick)
   } else {
-    this.oldXml = eYo.Xml.brickToDom(brick)
+    this.oldXml = eYo.xml.BrickToDom(brick)
   }
   this.ids = brick.descendantIds
 }
-goog.inherits(eYo.Events.BrickDelete, eYo.Events.BrickBase)
+goog.inherits(eYo.events.BrickDelete, eYo.events.BrickBase)
 
-Object.defineProperties(eYo.Events.BrickDelete.prototype, {
+Object.defineProperties(eYo.events.BrickDelete.prototype, {
   /**
    * Type of this event.
    * @type {string}
    */
-  type: { value: eYo.Events.BRICK_DELETE },
+  type: { value: eYo.events.BRICK_DELETE },
 })
 
 /**
  * Run a deletion event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
-eYo.Events.BrickDelete.prototype.run = function(forward) {
+eYo.events.BrickDelete.prototype.run = function(forward) {
   var board = this.board
   if (forward) {
     this.ids.forEach(id => {
@@ -258,32 +258,32 @@ eYo.Events.BrickDelete.prototype.run = function(forward) {
   } else {
     var xml = goog.dom.createDom('xml')
     xml.appendChild(this.oldXml)
-    eYo.Xml.domToBoard(xml, board)
+    eYo.xml.domToBoard(xml, board)
   }
 }
 
 /**
  * Class for a brick move event.  Created before the move.
  * @param {eYo.Brick.Dflt} brick The moved brick.
- * @extends {eYo.Events.BrickBase}
+ * @extends {eYo.events.BrickBase}
  * @constructor
  */
-eYo.Events.BrickMove = function(brick) {
-  eYo.Events.BrickMove.superProto_.constructor.call(this, brick)
+eYo.events.BrickMove = function(brick) {
+  eYo.events.BrickMove.SuperProto_.constructor.Call(this, brick)
   var location = this.currentLocation_
   this.oldParentId = location.parentId
   this.oldName = location.name
   this.oldLeft = location.left
   this.oldCoordinate = location.coordinate
 };
-goog.inherits(eYo.Events.BrickMove, eYo.Events.BrickBase)
+goog.inherits(eYo.events.BrickMove, eYo.events.BrickBase)
 
-Object.defineProperties(eYo.Events.BrickMove.prototype, {
+Object.defineProperties(eYo.events.BrickMove.prototype, {
   /**
    * Type of this event.
    * @type {string}
    */
-  type: { value: eYo.Events.BRICK_MOVE },
+  type: { value: eYo.events.BRICK_MOVE },
   /**
    * Returns the parentId and slot if the brick is connected,
    *   or the where location if disconnected.
@@ -326,7 +326,7 @@ Object.defineProperties(eYo.Events.BrickMove.prototype, {
 /**
  * Record the brick's new location.  Called after the move.
  */
-eYo.Events.BrickMove.prototype.recordNew = function() {
+eYo.events.BrickMove.prototype.recordNew = function() {
   var location = this.currentLocation_
   this.newParentId = location.parentId
   this.newName = location.name
@@ -338,7 +338,7 @@ eYo.Events.BrickMove.prototype.recordNew = function() {
  * Run a move event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
-eYo.Events.BrickMove.prototype.run = function(forward) {
+eYo.events.BrickMove.prototype.run = function(forward) {
   var brick = this.brick
   if (!brick) {
     console.warn("Can't move non-existent brick: " + this.brickId)
@@ -418,13 +418,13 @@ eYo.Events.BrickMove.prototype.run = function(forward) {
  * @param {Object} after
  * @param {Boolean} noRender
  */
-eYo.Data.Dflt_p.setTrusted_ = eYo.Decorate.reentrant_method(
+eYo.data.Dflt_p.SetTrusted_ = eYo.decorate.reentrant_method(
   'setTrusted_',
   function (after) {
     var before = this.value_
     if (before !== after) {
       this.brick.change.wrap(() => { // catch `this`
-        eYo.Events.groupWrap(() => { // catch `this`
+        eYo.events.groupWrap(() => { // catch `this`
           this.beforeChange(before, after)
           try {
             this.value_ = after
@@ -434,7 +434,7 @@ eYo.Data.Dflt_p.setTrusted_ = eYo.Decorate.reentrant_method(
             throw err
           } finally {
             if (!this.noUndo) {
-              eYo.Events.fireBrickChange(
+              eYo.events.fireBrickChange(
                 this.brick, eYo.Const.Event.DATA + this.key, null, before, after)
             }
             this.afterChange(before, after)
@@ -451,19 +451,19 @@ eYo.Data.Dflt_p.setTrusted_ = eYo.Decorate.reentrant_method(
  * @param {Object} after
  * @param {Boolean} noRender
  */
-eYo.Data.Dflt_p.setTrusted = eYo.Decorate.reentrant_method('trusted', eYo.Data.Dflt_p.setTrusted_)
+eYo.data.Dflt_p.SetTrusted = eYo.decorate.reentrant_method('trusted', eYo.data.Dflt_p.setTrusted_)
 
 /*
 function (try_f, finally_f) {
   try {
-    eYo.Events.group = true
+    eYo.events.group = true
     return try_f.call(this)
   } catch (err) {
     console.error(err)
     throw err
   } finally {
     finally_f && (finally_f.call(this))
-    eYo.Events.group = false
+    eYo.events.group = false
   }
 }
 */

@@ -15,22 +15,22 @@
  */
 'use strict'
 
-eYo.require('T3')
+eYo.require('t3')
 
-eYo.require('XRE')
+eYo.require('xre')
 
-eYo.require('Module')
+eYo.require('module')
 
-eYo.require('Do')
+eYo.require('do')
 
 /**
- * @name{eYo.T3.Profile}
+ * @name{eYo.t3.profile}
  * @namespace
  */
-eYo.T3.makeNS('Profile')
+eYo.t3.makeNS('Profile')
 
-eYo.Do.readOnlyMixin(
-  eYo.T3.Expr,
+eYo.do.readOnlyMixin(
+  eYo.t3.Expr,
   {
     reserved_identifier: '.reserved identifier',
     reserved_keyword: '.reserved keyword',
@@ -53,8 +53,8 @@ eYo.Do.readOnlyMixin(
   }
 )
 
-eYo.Do.readOnlyMixin(
-  eYo.T3.Stmt,
+eYo.do.readOnlyMixin(
+  eYo.t3.Stmt,
   {
     control: '.control statement',
     placehoder: '.placeholder',
@@ -66,23 +66,23 @@ eYo.Do.readOnlyMixin(
  * create one on the first call if the module knows it.
  * @param {*} identifier
  */
-eYo.Module.Dflt.prototype.getProfile = function(identifier) {
+eYo.module.Dflt.prototype.getProfile = function(identifier) {
   var ans = this.profiles[identifier]
   if (ans) {
     return ans
   }
   var item = this.getItem(identifier)
   if (item) {
-    ans = new eYo.T3.Profile.Dflt(this, {
-      raw: eYo.T3.Expr.known_identifier,
-      expr: eYo.T3.Expr.identifier,
+    ans = new eYo.t3.profile.Dflt(this, {
+      raw: eYo.t3.Expr.known_identifier,
+      expr: eYo.t3.Expr.identifier,
       name: identifier,
       item: item
     })
     this.profiles[identifier] = ans
     return ans
   }
-  return eYo.T3.Profile.void
+  return eYo.t3.profile.void
 }
 
 /**
@@ -92,19 +92,19 @@ eYo.Module.Dflt.prototype.getProfile = function(identifier) {
  * or simply a dict of properties.
  * When a dictionary has not a `methods` key,
  * it is considered a properties dictionary.
- * @param {eYo.T3.Profiles} [owner]  a dictionary
+ * @param {eYo.t3.Profiles} [owner]  a dictionary
  * @param {*} model  a dictionary
  * @constructor
  */
-eYo.T3.Profile.makeClass('Dflt', {
+eYo.t3.profile.makeClass('Dflt', {
   init (owner, model) {
     this.owner = owner
     var m = {
       isVoid: false,
       isUnset: false,
-      raw: eYo.T3.Expr.unset,
-      expr: eYo.T3.Expr.unset,
-      stmt: eYo.T3.Expr.unset,
+      raw: eYo.t3.Expr.unset,
+      expr: eYo.t3.Expr.unset,
+      stmt: eYo.t3.Expr.unset,
       prefixDots: eYo.NA,
       base: eYo.NA,
       name: eYo.NA,
@@ -201,7 +201,7 @@ eYo.T3.Profile.makeClass('Dflt', {
         }
       }
     } else {
-      eYo.Do.readOnlyMixin(this, m)
+      eYo.do.readOnlyMixin(this, m)
     }
   },
 })
@@ -210,12 +210,12 @@ eYo.T3.Profile.makeClass('Dflt', {
  * The profile of identifiers.
  * Based on a default profile.
  * Mainly for dotted names.
- * @param {eYo.T3.Profiles} [owner]  a dictionary
- * @param {eYo.T3.Profile} profile  another profile
+ * @param {eYo.t3.Profiles} [owner]  a dictionary
+ * @param {eYo.t3.profile} profile  another profile
  * @param {*} model  a dictionary of properties
  * @constructor
  */
-eYo.T3.Profile.makeClass('Dotted', {
+eYo.t3.profile.makeClass('Dotted', {
   init (owner, profile, model) {
     this.profile = profile
     if (model) {
@@ -251,22 +251,22 @@ eYo.T3.Profile.makeClass('Dotted', {
  * Basic readonly profile properties
  */
 /*
-eYo.T3.Profile.prototype.isUnset = False
-eYo.T3.Profile.prototype.isVoid = False
-eYo.T3.Profile.prototype.raw = eYo.NA
-eYo.T3.Profile.prototype.expr = eYo.NA
-eYo.T3.Profile.prototype.stmt = eYo.NA
-eYo.T3.Profile.prototype.name = eYo.NA
-eYo.T3.Profile.prototype.module = eYo.NA
-eYo.T3.Profile.prototype.item = eYo.NA
-eYo.T3.Profile.prototype.type = eYo.NA
+eYo.t3.profile.prototype.isUnset = False
+eYo.t3.profile.prototype.isVoid = False
+eYo.t3.profile.prototype.raw = eYo.NA
+eYo.t3.profile.prototype.expr = eYo.NA
+eYo.t3.profile.prototype.Stmt = eYo.NA
+eYo.t3.profile.prototype.name = eYo.NA
+eYo.t3.profile.prototype.module = eYo.NA
+eYo.t3.profile.prototype.Item = eYo.NA
+eYo.t3.profile.prototype.type = eYo.NA
 */
 
 /**
  *
  * @param {String} identifier
  */
-eYo.T3.makeClass('Profiles', {
+eYo.t3.makeClass('Profiles', {
   init (identifier) {
     this.identifier = identifier
     this.profiles = {}
@@ -282,23 +282,23 @@ eYo.T3.makeClass('Profiles', {
    * For edython.
    * @param {String} candidate
    * @param {String} [module]  the module or holder
-   * @return {!eYo.T3} the type of this candidate, possible keys are `name`, `expr`, `stmt`.
+   * @return {!eYo.t3} the type of this candidate, possible keys are `name`, `expr`, `stmt`.
    */
-  eYo.T3.Profile.get = function (candidate, module) {
+  eYo.t3.profile.get = function (candidate, module) {
     if (goog.isNumber(candidate)) {
       return candidate === Math.floor(candidate)
-      ? eYo.T3.Profile.integer
-      : eYo.T3.Profile.floatnumber
+      ? eYo.t3.profile.integer
+      : eYo.t3.profile.floatnumber
     }
     if (!candidate || !eYo.isStr(candidate)) {
-      return eYo.T3.Profile.void
+      return eYo.t3.profile.void
     }
     if (!candidate.length) {
-      return eYo.T3.Profile.unset
+      return eYo.t3.profile.unset
     }
     // first literals
     var ans
-    if ((ans = eYo.T3.Profile.getLiteral(candidate))) {
+    if ((ans = eYo.t3.profile.getLiteral(candidate))) {
       return ans
     }
     var profiles = byIdentifier[candidate] || (byIdentifier[candidate] = {})
@@ -306,7 +306,7 @@ eYo.T3.makeClass('Profiles', {
       if ((ans = profiles[module])) {
         return ans
       }
-      var M = eYo.C9r.Model[module] || eYo.C9r.Model[module + '__module']
+      var M = eYo.C9r.model[module] || eYo.c9r.model[module + '__module']
       if (M) {
         return (profiles[module] = M.getProfile(candidate))
       }
@@ -315,44 +315,44 @@ eYo.T3.makeClass('Profiles', {
     if (ans) {
       return ans
     }
-    if ((ans = eYo.T3.Profile.getReference(candidate)) && !ans.isVoid) {
+    if ((ans = eYo.t3.profile.getReference(candidate)) && !ans.isVoid) {
       return (profiles['.builtin'] = ans)
     }
-    if ((ans = eYo.T3.Profile.getReserved(candidate)) && !ans.isVoid) {
+    if ((ans = eYo.t3.profile.getReserved(candidate)) && !ans.isVoid) {
       return (profiles['.builtin'] = ans)
     }
-    if ((ans = eYo.T3.Profile.getShort(candidate)) && !ans.isVoid) {
+    if ((ans = eYo.t3.profile.getShort(candidate)) && !ans.isVoid) {
       return (profiles['.builtin'] = ans)
     }
-    if ((ans = eYo.T3.Profile.getDotted(candidate, module)) && !ans.isVoid) {
+    if ((ans = eYo.t3.profile.getDotted(candidate, module)) && !ans.isVoid) {
       return ans
     }
-    if ((ans = eYo.T3.Profile.getIdentifier(candidate, module)) && !ans.isVoid) {
+    if ((ans = eYo.t3.profile.getIdentifier(candidate, module)) && !ans.isVoid) {
       return ans
     }
-    return eYo.T3.Profile.void
+    return eYo.t3.profile.void
   }
 }) ()
 
-eYo.Do.readOnlyMixin(
-  eYo.T3.Profile,
+eYo.do.readOnlyMixin(
+  eYo.t3.profile,
   {
     /* Default void profile */
-    void: new eYo.T3.Profile.Dflt(null, {
+    void: new eYo.t3.profile.Dflt(null, {
       isVoid: true
     }),
     /* Profile for an unset identifier */
-    unset: new eYo.T3.Profile.Dflt(null, {
-      expr: eYo.T3.Expr.identifier,
+    unset: new eYo.t3.profile.Dflt(null, {
+      expr: eYo.t3.Expr.identifier,
       isUnset: true
     }),
     /* Profile for an integer */
-    integer: new eYo.T3.Profile.Dflt(null, {
-      expr: eYo.T3.Expr.integer
+    integer: new eYo.t3.profile.Dflt(null, {
+      expr: eYo.t3.Expr.integer
     }),
     /* Profile for a float number */
-    floatnumber: new eYo.T3.Profile.Dflt(null, {
-      expr: eYo.T3.Expr.floatnumber
+    floatnumber: new eYo.t3.profile.Dflt(null, {
+      expr: eYo.t3.Expr.floatnumber
     })
   }
 )
@@ -361,19 +361,19 @@ eYo.Do.readOnlyMixin(
  * Returns a profile if `candidate` is a dotted name
  * For edython.
  * @param {String} candidate
- * @return {!eYo.T3} the profile of this candidate.
+ * @return {!eYo.t3} the profile of this candidate.
  */
-eYo.T3.Profile.getDotted = function (candidate, module) {
-  var m = XRegExp.exec(candidate, eYo.XRE.dotted_name)
+eYo.t3.profile.getDotted = function (candidate, module) {
+  var m = XRegExp.exec(candidate, eYo.xre.Dotted_name)
   if (m) {
     var first = m.dots ? m.dots.length : 0
     var base
     if (m.holder) {
-      base = eYo.T3.Expr.dotted_name
+      base = eYo.t3.Expr.Dotted_name
     } else if (m.name) {
-      base = eYo.T3.Expr.identifier
+      base = eYo.t3.Expr.identifier
     } else {
-      base = eYo.T3.Expr.unset
+      base = eYo.t3.Expr.unset
     }
     candidate = m.name
     var holder = module
@@ -382,25 +382,25 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
         : module
       : null
     if (holder) {
-      var M = eYo.C9r.Model[holder] || eYo.C9r.Model[holder + '__module']
+      var M = eYo.C9r.model[holder] || eYo.c9r.model[holder + '__module']
       var ans = M && (M.getProfile(candidate))
     } else {
-      ans = eYo.T3.Profile.getReference(candidate) || eYo.T3.Profile.getInModule(candidate)
+      ans = eYo.t3.profile.getReference(candidate) || eYo.t3.profile.getInModule(candidate)
     }
     var item = ans && ans.item
     var mdl = item && item.module
     mdl = mdl && (mdl.name.split('__'))[0]
-    return new eYo.T3.Profile.Dflt(null, {
+    return new eYo.t3.profile.Dflt(null, {
       raw: m.dots
-        ? eYo.T3.Expr.custom_parent_module
+        ? eYo.t3.Expr.Custom_parent_module
         : m.holder
-          ? eYo.T3.Expr.custom_dotted_name
-          : (ans && ans.raw) || eYo.T3.Expr.custom_identifier,
+          ? eYo.t3.Expr.Custom_dotted_name
+          : (ans && ans.raw) || eYo.t3.Expr.Custom_identifier,
       expr: m.dots
-        ? eYo.T3.Expr.parent_module
+        ? eYo.t3.Expr.parent_module
         : m.holder
-          ? eYo.T3.Expr.dotted_name
-          : eYo.T3.Expr.identifier,
+          ? eYo.t3.Expr.Dotted_name
+          : eYo.t3.Expr.identifier,
       prefixDots: first,
       base: base,
       name: candidate,
@@ -416,26 +416,26 @@ eYo.T3.Profile.getDotted = function (candidate, module) {
  * possibly with an named attribute or a named value.
  * For edython.
  * @param {String} candidate
- * @return {!eYo.T3} the profile of this candidate.
+ * @return {!eYo.t3} the profile of this candidate.
  */
-eYo.T3.Profile.getIdentifier = function (candidate, module) {
-  var m = XRegExp.exec(candidate, eYo.XRE.identifier_annotated_valued)
+eYo.t3.profile.getIdentifier = function (candidate, module) {
+  var m = XRegExp.exec(candidate, eYo.xre.identifier_annotated_valued)
   if (m) {
     var r = m.annotated
     ? m.valued
-      ? eYo.T3.Expr.identifier_annotated_valued
-      : eYo.T3.Expr.identifier_annotated
+      ? eYo.t3.Expr.identifier_annotated_valued
+      : eYo.t3.Expr.identifier_annotated
     : m.valued
-      ? eYo.T3.Expr.identifier_valued
-      : eYo.T3.Expr.custom_identifier
+      ? eYo.t3.Expr.identifier_valued
+      : eYo.t3.Expr.Custom_identifier
     var x = m.annotated
       ? m.valued
-        ? eYo.T3.Expr.identifier_annotated_valued
-        : eYo.T3.Expr.identifier_annotated
+        ? eYo.t3.Expr.identifier_annotated_valued
+        : eYo.t3.Expr.identifier_annotated
       : m.valued
-        ? eYo.T3.Expr.identifier_valued
-        : eYo.T3.Expr.identifier
-    return new eYo.T3.Profile.Dflt(null, {
+        ? eYo.t3.Expr.identifier_valued
+        : eYo.t3.Expr.identifier
+    return new eYo.t3.profile.Dflt(null, {
       raw: r,
       expr: x,
       name: m.name,
@@ -450,18 +450,18 @@ eYo.T3.Profile.getIdentifier = function (candidate, module) {
  * Returns a profile if `candidate` is a name with a name annotation or a name definition
  * For edython.
  * @param {String} candidate
- * @return {!eYo.T3} the profile of this candidate.
+ * @return {!eYo.t3} the profile of this candidate.
  */
-eYo.T3.Profile.getAnnotatedValued = function (candidate, module) {
-  var m = XRegExp.exec(candidate, eYo.XRE.name_annotated_valued)
+eYo.t3.profile.getAnnotatedValued = function (candidate, module) {
+  var m = XRegExp.exec(candidate, eYo.xre.name_annotated_valued)
   if (m) {
     var valued = m.valued_a || m.valued
     var t = valued
     ? m.annotated
-      ? eYo.T3.Expr.identifier_annotated_valued
-      : eYo.T3.Expr.identifier_annotated
-    : eYo.T3.Expr.identifier_valued
-    return new eYo.T3.Profile.Dflt(null, {
+      ? eYo.t3.Expr.identifier_annotated_valued
+      : eYo.t3.Expr.identifier_annotated
+    : eYo.t3.Expr.identifier_valued
+    return new eYo.t3.profile.Dflt(null, {
       raw: t,
       expr: t,
       name: m.name,
@@ -475,91 +475,91 @@ eYo.T3.Profile.getAnnotatedValued = function (candidate, module) {
  * Returns a profile if `candidate` is a literal
  * For edython.
  * @param {String} candidate
- * @return {!eYo.T3} the profile of this candidate.
+ * @return {!eYo.t3} the profile of this candidate.
  */
-eYo.T3.Profile.getLiteral = function (candidate) {
+eYo.t3.profile.getLiteral = function (candidate) {
   // is it a number ?
-  var match = XRegExp.exec(candidate, eYo.XRE.integer)
+  var match = XRegExp.exec(candidate, eYo.xre.integer)
   if (match) {
-    return new eYo.T3.Profile.Dflt(null, {
-      raw: eYo.T3.custom_literal,
-      expr: eYo.T3.Expr.integer,
+    return new eYo.t3.profile.Dflt(null, {
+      raw: eYo.t3.Custom_literal,
+      expr: eYo.t3.Expr.integer,
       type: match.bininteger
-        ? eYo.T3.Expr.bininteger
+        ? eYo.t3.Expr.Bininteger
         : match.octinteger
-          ? eYo.T3.Expr.octinteger
+          ? eYo.t3.Expr.octinteger
           : match.hexinteger
-            ? eYo.T3.Expr.octinteger
-            : eYo.T3.Expr.decinteger
+            ? eYo.t3.Expr.octinteger
+            : eYo.t3.Expr.decinteger
     })
   }
-  if (!!XRegExp.exec(candidate, eYo.XRE.floatnumber)) {
-    return new eYo.T3.Profile.Dflt(null, {
-      raw: eYo.T3.custom_literal,
-      expr: eYo.T3.Expr.floatnumber
+  if (!!XRegExp.exec(candidate, eYo.xre.floatnumber)) {
+    return new eYo.t3.profile.Dflt(null, {
+      raw: eYo.t3.Custom_literal,
+      expr: eYo.t3.Expr.floatnumber
     })
   }
-  if (!!XRegExp.exec(candidate, eYo.XRE.imagnumber)) {
-    return new eYo.T3.Profile.Dflt(null, {
-      raw: eYo.T3.custom_literal,
-      expr: eYo.T3.Expr.imagnumber
+  if (!!XRegExp.exec(candidate, eYo.xre.imagnumber)) {
+    return new eYo.t3.profile.Dflt(null, {
+      raw: eYo.t3.Custom_literal,
+      expr: eYo.t3.Expr.imagnumber
     })
   }
-  if (!!XRegExp.exec(candidate, eYo.XRE.shortbytesliteralSingle)) {
+  if (!!XRegExp.exec(candidate, eYo.xre.ShortbytesliteralSingle)) {
     return {
-      raw: eYo.T3.Expr.shortbytesliteral,
-      expr: eYo.T3.Expr.shortliteral,
-      type: eYo.T3.Expr.singleQuoted
+      raw: eYo.t3.Expr.Shortbytesliteral,
+      expr: eYo.t3.Expr.Shortliteral,
+      type: eYo.t3.Expr.SingleQuoted
     }
   }
-  if (!!XRegExp.exec(candidate, eYo.XRE.shortbytesliteralDouble)) {
+  if (!!XRegExp.exec(candidate, eYo.xre.ShortbytesliteralDouble)) {
     return {
-      raw: eYo.T3.Expr.shortbytesliteral,
-      expr: eYo.T3.Expr.shortliteral,
-      type: eYo.T3.Expr.doubleQuoted
+      raw: eYo.t3.Expr.Shortbytesliteral,
+      expr: eYo.t3.Expr.Shortliteral,
+      type: eYo.t3.Expr.doubleQuoted
     }
   }
   var m
-  if ((m = XRegExp.exec(candidate, eYo.XRE.shortstringliteralSingle))) {
+  if ((m = XRegExp.exec(candidate, eYo.xre.ShortstringliteralSingle))) {
     return {
-      raw: m.formatted ? eYo.T3.Expr.shortformattedliteral : eYo.T3.Expr.shortstringliteral,
-      expr: m.formatted ? eYo.T3.Expr.shortformattedliteral : eYo.T3.Expr.shortstringliteral,
-      type: eYo.T3.Expr.singleQuoted
+      raw: m.formatted ? eYo.t3.Expr.Shortformattedliteral : eYo.t3.Expr.shortstringliteral,
+      expr: m.formatted ? eYo.t3.Expr.Shortformattedliteral : eYo.t3.Expr.shortstringliteral,
+      type: eYo.t3.Expr.SingleQuoted
     }
   }
-  if ((m = XRegExp.exec(candidate, eYo.XRE.shortstringliteralDouble))) {
+  if ((m = XRegExp.exec(candidate, eYo.xre.ShortstringliteralDouble))) {
     return {
-      raw: m.formatted ? eYo.T3.Expr.shortformattedliteral : eYo.T3.Expr.shortstringliteral,
-      expr: m.formatted ? eYo.T3.Expr.shortformattedliteral : eYo.T3.Expr.shortstringliteral,
-      type: eYo.T3.Expr.doubleQuoted
+      raw: m.formatted ? eYo.t3.Expr.Shortformattedliteral : eYo.t3.Expr.shortstringliteral,
+      expr: m.formatted ? eYo.t3.Expr.Shortformattedliteral : eYo.t3.Expr.shortstringliteral,
+      type: eYo.t3.Expr.doubleQuoted
     }
   }
-  if (!!XRegExp.exec(candidate, eYo.XRE.longbytesliteralSingle)) {
+  if (!!XRegExp.exec(candidate, eYo.xre.longbytesliteralSingle)) {
     return {
-      raw: eYo.T3.Expr.longbytesliteral,
-      expr: eYo.T3.Expr.longliteral,
-      type: eYo.T3.Expr.singleQuoted
+      raw: eYo.t3.Expr.longbytesliteral,
+      expr: eYo.t3.Expr.longliteral,
+      type: eYo.t3.Expr.SingleQuoted
     }
   }
-  if (!!XRegExp.exec(candidate, eYo.XRE.longbytesliteralDouble)) {
+  if (!!XRegExp.exec(candidate, eYo.xre.longbytesliteralDouble)) {
     return {
-      raw: eYo.T3.Expr.longbytesliteral,
-      expr: eYo.T3.Expr.longliteral,
-      type: eYo.T3.Expr.doubleQuoted
+      raw: eYo.t3.Expr.longbytesliteral,
+      expr: eYo.t3.Expr.longliteral,
+      type: eYo.t3.Expr.doubleQuoted
     }
   }
-  if ((m = XRegExp.exec(candidate, eYo.XRE.longstringliteralSingle))) {
+  if ((m = XRegExp.exec(candidate, eYo.xre.longstringliteralSingle))) {
     return {
-      raw: m.formatted ? eYo.T3.Expr.longformattedliteral : eYo.T3.Expr.longstringliteral,
-      expr: m.formatted ? eYo.T3.Expr.longformattedliteral : eYo.T3.Expr.longstringliteral,
-      type: eYo.T3.Expr.singleQuoted
+      raw: m.formatted ? eYo.t3.Expr.longformattedliteral : eYo.t3.Expr.longstringliteral,
+      expr: m.formatted ? eYo.t3.Expr.longformattedliteral : eYo.t3.Expr.longstringliteral,
+      type: eYo.t3.Expr.SingleQuoted
     }
   }
-  if ((m = XRegExp.exec(candidate, eYo.XRE.longstringliteralDouble))) {
+  if ((m = XRegExp.exec(candidate, eYo.xre.longstringliteralDouble))) {
     return {
-      raw: m.formatted ? eYo.T3.Expr.longformattedliteral : eYo.T3.Expr.longstringliteral,
-      expr: m.formatted ? eYo.T3.Expr.longformattedliteral : eYo.T3.Expr.longstringliteral,
-      type: eYo.T3.Expr.doubleQuoted
+      raw: m.formatted ? eYo.t3.Expr.longformattedliteral : eYo.t3.Expr.longstringliteral,
+      expr: m.formatted ? eYo.t3.Expr.longformattedliteral : eYo.t3.Expr.longstringliteral,
+      type: eYo.t3.Expr.doubleQuoted
     }
   }
 }
@@ -568,16 +568,16 @@ eYo.T3.Profile.getLiteral = function (candidate) {
  * Returns a profile if `identifier` is a reserved keyword/identifier
  * For edython.
  * @param {String} identifier
- * @return {!eYo.T3} the profile of this identifier when a reference.
+ * @return {!eYo.t3} the profile of this identifier when a reference.
  */
-eYo.T3.Profile.getReference = function (identifier) {
+eYo.t3.profile.getReference = function (identifier) {
   var ans
   if ([
     'functions',
     'stdtypes',
     'datamodel'
   ].some((ref) => {
-    var M = eYo.C9r.Model[ref]
+    var M = eYo.C9r.model[ref]
     ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true
@@ -586,14 +586,14 @@ eYo.T3.Profile.getReference = function (identifier) {
     return ans
   }
   if ([
-    eYo.Key.PROPERTY,
-    eYo.Key.STATICMETHOD,
-    eYo.Key.CLASSMETHOD
+    eYo.key.PROPERTY,
+    eYo.key.STATICMETHOD,
+    eYo.key.CLASSMETHOD
   ].indexOf(identifier) >= 0) {
-    return new eYo.T3.Profile.Dflt(null,  {
-      expr: eYo.T3.Expr.identifier,
-      raw: eYo.T3.Expr.reserved_identifier,
-      stmt: eYo.T3.Stmt.decorator_stmt
+    return new eYo.t3.profile.Dflt(null,  {
+      expr: eYo.t3.Expr.identifier,
+      raw: eYo.t3.Expr.reserved_identifier,
+      stmt: eYo.t3.Stmt.decorator_stmt
     })
   }
 }
@@ -602,9 +602,9 @@ eYo.T3.Profile.getReference = function (identifier) {
  * Returns a profile if `identifier` is a known module's keyword/identifier
  * For edython.
  * @param {String} identifier
- * @return {!eYo.T3} the profile of this identifier when a reference.
+ * @return {!eYo.t3} the profile of this identifier when a reference.
  */
-eYo.T3.Profile.getInModule = function (identifier) {
+eYo.t3.profile.getInModule = function (identifier) {
   var ans
   if ([
     'turtle',
@@ -616,7 +616,7 @@ eYo.T3.Profile.getInModule = function (identifier) {
     'cmath',
     'string'
   ].some(module => {
-    var M = eYo.C9r.Model[module + '__module']
+    var M = eYo.C9r.model[module + '__module']
     ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true
@@ -630,12 +630,12 @@ eYo.T3.Profile.getInModule = function (identifier) {
  * Returns a profile if `identifier` is a delimiter
  * For edython.
  * @param {String} identifier
- * @return {!eYo.T3} the profile of this identifier when reserved.
+ * @return {!eYo.t3} the profile of this identifier when reserved.
  */
-eYo.T3.Profile.getShort = function (identifier) {
+eYo.t3.profile.getShort = function (identifier) {
   if (['(', ')', '[', ']', '{', '}', ',', ':', ';'].indexOf(identifier) >= 0) {
-    return new eYo.T3.Profile.Dflt(null, {
-      raw: eYo.T3.Expr.const
+    return new eYo.t3.profile.Dflt(null, {
+      raw: eYo.t3.Expr.Const
     })
   }
 }
@@ -644,95 +644,95 @@ eYo.T3.Profile.getShort = function (identifier) {
  * Returns a profile if `identifier` is a reference keyword/identifier
  * For edython.
  * @param {String} identifier
- * @return {!eYo.T3} the profile of this identifier when reserved.
+ * @return {!eYo.t3} the profile of this identifier when reserved.
  */
-eYo.T3.Profile.getReserved = function (identifier) {
+eYo.t3.profile.getReserved = function (identifier) {
   // reserved keywords
   var out
   if ((out = {
     for: {
-      expr: eYo.T3.Expr.comp_for,
-      stmt: eYo.T3.Stmt.for_part
+      expr: eYo.t3.Expr.Comp_for,
+      stmt: eYo.t3.Stmt.for_part
     },
     from: {
-      expr: eYo.T3.Expr.yield_expr,
-      stmt: eYo.T3.Stmt.import_stmt
+      expr: eYo.t3.Expr.yield_expr,
+      stmt: eYo.t3.Stmt.import_stmt
     },
     nonlocal: {
-      stmt: eYo.T3.Stmt.nonlocal
+      stmt: eYo.t3.Stmt.nonlocal
     },
     global: {
-      stmt: eYo.T3.Stmt.global_stmt
+      stmt: eYo.t3.Stmt.global_stmt
     },
     del: {
-      stmt: eYo.T3.Stmt.del_stmt
+      stmt: eYo.t3.Stmt.del_stmt
     },
     return: {
-      stmt: eYo.T3.Stmt.return_stmt
+      stmt: eYo.t3.Stmt.return_stmt
     },
     as: {
-      expr: eYo.T3.Expr.identifier,
-      stmt: eYo.T3.Stmt.except_part
+      expr: eYo.t3.Expr.identifier,
+      stmt: eYo.t3.Stmt.except_part
     },
     yield: {
-      expr: eYo.T3.Expr.yield_expr,
-      stmt: eYo.T3.Stmt.yield_stmt
+      expr: eYo.t3.Expr.yield_expr,
+      stmt: eYo.t3.Stmt.yield_stmt
     }
   } [identifier])) {
     goog.mixin(out, {
-      raw: eYo.T3.Expr.reserved_keyword
+      raw: eYo.t3.Expr.reserved_keyword
     })
-    return new eYo.T3.Profile.Dflt(null, out)
+    return new eYo.t3.profile.Dflt(null, out)
   }
   if ((out = {
-    class: eYo.T3.Stmt.classdef_part,
-    finally: eYo.T3.Stmt.finally_part,
-    return: eYo.T3.Stmt.return_stmt,
-    continue: eYo.T3.Stmt.continue_stmt,
-    try: eYo.T3.Stmt.try_part,
-    def: eYo.T3.Stmt.funcdef_part,
-    while: eYo.T3.Stmt.while_part,
-    del: eYo.T3.Stmt.del_stmt,
-    with: eYo.T3.Stmt.with_part,
-    elif: eYo.T3.Stmt.elif_part,
-    if: eYo.T3.Stmt.if_part,
-    assert: eYo.T3.Stmt.assert_stmt,
-    else: eYo.T3.Stmt.else_part,
-    import: eYo.T3.Stmt.import_stmt,
-    pass: eYo.T3.Stmt.pass_stmt,
-    break: eYo.T3.Stmt.break_stmt,
-    except: eYo.T3.Stmt.except_part,
-    raise: eYo.T3.Stmt.raise_stmt,
-    await: eYo.T3.Stmt.await_stmt,
-    async: eYo.T3.Stmt.async_stmt
+    class: eYo.t3.Stmt.Classdef_part,
+    finally: eYo.t3.Stmt.finally_part,
+    return: eYo.t3.Stmt.return_stmt,
+    continue: eYo.t3.Stmt.Continue_stmt,
+    try: eYo.t3.Stmt.try_part,
+    def: eYo.t3.Stmt.funcdef_part,
+    while: eYo.t3.Stmt.while_part,
+    del: eYo.t3.Stmt.del_stmt,
+    with: eYo.t3.Stmt.with_part,
+    elif: eYo.t3.Stmt.elif_part,
+    if: eYo.t3.Stmt.if_part,
+    assert: eYo.t3.Stmt.Assert_stmt,
+    else: eYo.t3.Stmt.else_part,
+    import: eYo.t3.Stmt.import_stmt,
+    pass: eYo.t3.Stmt.pass_stmt,
+    break: eYo.t3.Stmt.Break_stmt,
+    except: eYo.t3.Stmt.except_part,
+    raise: eYo.t3.Stmt.raise_stmt,
+    await: eYo.t3.Stmt.Await_stmt,
+    async: eYo.t3.Stmt.Async_stmt
   } [identifier])) {
     out = {
-      raw: eYo.T3.Expr.reserved_keyword,
+      raw: eYo.t3.Expr.reserved_keyword,
       stmt: out,
       isReserved: true
     }
-    return new eYo.T3.Profile.Dflt(null, out)
+    return new eYo.t3.profile.Dflt(null, out)
   }
   if ((out = {
-    is: eYo.T3.Expr.object_comparison,
-    lambda: eYo.T3.Expr.lambda,
-    and: eYo.T3.Expr.and_expr,
-    not: eYo.T3.Expr.not_test,
-    or: eYo.T3.Expr.or_expr,
-    in: eYo.T3.Expr.object_comparison
+    is: eYo.t3.Expr.object_comparison,
+    lambda: eYo.t3.Expr.lambda,
+    and: eYo.t3.Expr.And_expr,
+    not: eYo.t3.Expr.not_test,
+    or: eYo.t3.Expr.or_expr,
+    in: eYo.t3.Expr.object_comparison
   } [identifier])) {
     out = {
-      raw: eYo.T3.Expr.reserved_keyword,
+      raw: eYo.t3.Expr.reserved_keyword,
       expr: out,
       isReserved: true
     }
-    return new eYo.T3.Profile.Dflt(null, out)
+    return new eYo.t3.profile.Dflt(null, out)
   }
   // reserved identifiers
   if (['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'].indexOf(identifier) >= 0) {
-    return new eYo.T3.Profile.Dflt(null, {
-      raw: eYo.T3.Expr.reserved_identifier,
-      expr: eYo.T3.Expr.builtin__object
+    return new eYo.t3.profile.Dflt(null, {
+      raw: eYo.t3.Expr.reserved_identifier,
+      expr: eYo.t3.Expr.Builtin__object
     })
   }
 }

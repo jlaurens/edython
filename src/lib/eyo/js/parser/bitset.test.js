@@ -4,7 +4,7 @@ describe('BitSet(Create)', function() {
   console.log('RUNNING BITSET TESTS')
 
   describe('BitSet(Create)', function() {
-    it('Size', function() {
+    it('size', function() {
       var ss
       ss = eYo.BitSet.newbitset(0)
       assert(ss.ra.length === 0)

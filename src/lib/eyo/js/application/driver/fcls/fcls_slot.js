@@ -11,27 +11,27 @@
  */
 'use strict'
 
-eYo.require('Fcls')
+eYo.require('fcls')
 
-eYo.provide('Fcls.Slot')
+eYo.provide('fcls.slot')
 
-eYo.forwardDeclare('Slot')
+eYo.forwardDeclare('slot')
 
 /**
  * Faceless driver for slots.
  */
-eYo.Fcls.makeDriverClass('Slot')
+eYo.fcls.makeDriverClass('Slot')
 
 /**
  * Whether the slot is displayed.
  * @param {eYo.Slot.Dflt} slot  the slot to query about
  */
-eYo.Fcls.Slot.prototype.displayedGet = eYo.Do.nothing
+eYo.fcls.Slot.prototype.displayedGet = eYo.do.nothing
 
 /**
  * Display/hide the given slot.
  * @param {eYo.Slot.Dflt} slot  the slot the driver acts on
  * @param {boolean} yorn
  */
-eYo.Fcls.Slot.prototype.displayedSet = eYo.Do.nothing
+eYo.fcls.Slot.prototype.displayedSet = eYo.do.nothing
 

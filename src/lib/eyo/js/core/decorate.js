@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.makeNS('Decorate')
+eYo.makeNS('decorate')
 
-eYo.forwardDeclare('Do')
+eYo.forwardDeclare('do')
 
 /**
  * Decorate the function to be reentrant.
@@ -23,13 +23,13 @@ eYo.forwardDeclare('Do')
  * @param {Boolean} [raw]
  * @return {Object | *} An object which `ans` property is the value returned by f when called. When `raw` is true, the value returned by f is returned.
  */
-eYo.Decorate.reentrant_method = (object, key, f) => {
+eYo.decorate.reentrant_method = (object, key, f) => {
   if (!eYo.isStr(object)) {
     if (!object || !object.reentrant_ || object.reentrant_[key]) {
       return
     }
   } else {
-    eYo.parameterAssert(eYo.isNA(f))
+    eYo.ParameterAssert(eYo.isNA(f))
     f = key
     key = object
   }
@@ -57,7 +57,7 @@ eYo.Decorate.reentrant_method = (object, key, f) => {
  * @param {function} f
  * @return The result of the call to `f`.
  */
-eYo.Decorate.benchmark = function (key, f) {
+eYo.decorate.Benchmark = function (key, f) {
   return function (...args) {
     const startTime = performance.now()
     try {
@@ -76,7 +76,7 @@ eYo.Decorate.benchmark = function (key, f) {
  * @param {Object} [object]
  * @return object when a function else a function with signature f() -> []
  */
-eYo.Decorate.arrayFunction = object => {
+eYo.decorate.ArrayFunction = object => {
   var did = eYo.isF(object)
     ? object
     : goog.isArray(object)

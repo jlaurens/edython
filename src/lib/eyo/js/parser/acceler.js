@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('GMR')
-eYo.require('TKN')
+eYo.require('gmr')
+eYo.require('tkn')
 
-eYo.provide('GMR.Accel')
+eYo.provide('gmr.accel')
 
 /* Parser accelerator module */
 
@@ -40,8 +40,7 @@ static void fixstate(/* grammar * *-/ , state *)
 ;(function(){
 
   /* void */
-  eYo.GMR.PyGrammar_AddAccelerators = (/* grammar * */ g) =>
-  {
+  eYo.gmr.PyGrammar_AddAccelerators = (/* grammar * */ g) => {
     for (var i = g.g_ndfas; --i >= 0; d++) {
       var d = g.g_dfa[i]
       fixdfa(g, d)
@@ -50,8 +49,7 @@ static void fixstate(/* grammar * *-/ , state *)
   }
 
   /* void */
-  eYo.GMR.PyGrammar_RemoveAccelerators = (/* grammar * */ g) =>
-  {
+  eYo.gmr.PyGrammar_RemoveAccelerators = (/* grammar * */ g) => {
     g.g_accel = 0
     for (var i = g.g_ndfas; --i >= 0;) {
       var d = g.g_dfa[i]
@@ -63,8 +61,7 @@ static void fixstate(/* grammar * *-/ , state *)
   }
 
   /* static void */
-  var fixdfa = (/* grammar * */ g, /* dfa * */ d) =>
-  {
+  var fixdfa = (/* grammar * */ g, /* dfa * */ d) => {
     for (var j = 0; j < d.d_nstates; j++) {
       var s = d.d_state[j]
       if (eYo.Const.Py_DEBUG) {
@@ -76,8 +73,7 @@ static void fixstate(/* grammar * *-/ , state *)
   }
 
   /* static void */
-  var fixstate = (/* grammar * */ g, /* state * */ s) =>
-  {
+  var fixstate = (/* grammar * */ g, /* state * */ s) => {
     var nl = g.g_ll.ll_nlabels
     s.s_accept = 0
     var accel = new Int16Array(nl)
@@ -94,9 +90,9 @@ static void fixstate(/* grammar * *-/ , state *)
         console.log("XXX too many states!")
         continue
       }
-      if (eYo.TKN.ISNONTERMINAL(type)) {
-        var d1 = eYo.GMR.PyGrammar_FindDFA(g, type)
-        if (type - eYo.TKN.NT_OFFSET >= (1 << 7)) {
+      if (eYo.tkn.ISNONTERMINAL(type)) {
+        var d1 = eYo.gmr.PyGrammar_FindDFA(g, type)
+        if (type - eYo.tkn.NT_OFFSET >= (1 << 7)) {
           console.log("XXX too high nonterminal number!")
             continue
         }
@@ -106,7 +102,7 @@ static void fixstate(/* grammar * *-/ , state *)
               console.log("XXX ambiguity!")
             }
             accel[ibit] = a.a_arrow | (1 << 7) |
-                ((type - eYo.TKN.NT_OFFSET) << 8)
+                ((type - eYo.tkn.NT_OFFSET) << 8)
           }
         }
       }

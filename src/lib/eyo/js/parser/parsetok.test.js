@@ -1,7 +1,7 @@
 describe('Test', function() {
   var assert = chai.assert
 
-  var g = eYo.GMR._PyParser_Grammar
+  var g = eYo.gmr._PyParser_Grammar
 
   console.log('RUNNING PARSETOK TESTS')
 
@@ -12,13 +12,13 @@ describe('Test', function() {
   }
 
   it('test', function() {
-    assert(eYo.Parser.PyParser_ParseString)
+    assert(eYo.parser.PyParser_ParseString)
     var err_ret = {}
-    var n = eYo.Parser.PyParser_ParseString('', g, eYo.TKN.single_input, err_ret)
-    assert(err_ret.error === eYo.E.DONE, 'ERROR')
-    n_test(n, eYo.TKN.single_input, null)
+    var n = eYo.parser.PyParser_ParseString('', g, eYo.tkn.Single_input, err_ret)
+    assert(err_ret.error === eYo.e.DONE, 'ERROR')
+    n_test(n, eYo.tkn.Single_input, null)
     n = n.n_child[0]
-    n_test(n, eYo.TKN.NEWLINE, '')
+    n_test(n, eYo.tkn.NEWLINE, '')
 //    eYo.Node.PyNode_ListTree(n)
   })
 
@@ -28,13 +28,13 @@ describe('Test', function() {
         var f = (() => {
           return function() {
             var err_ret = {}
-            var n = eYo.Parser.PyParser_ParseString(str, g, eYo.TKN.single_input, err_ret)
+            var n = eYo.parser.PyParser_ParseString(str, g, eYo.tkn.Single_input, err_ret)
             // eYo.Node.PyNode_ListTree(n)
-            n_test(n, eYo.TKN.single_input, null)
-            assert(err_ret.error === eYo.E.DONE, `ERROR: ${err_ret.error}`)
-            // n_test(n, eYo.TKN.single_input, null)
+            n_test(n, eYo.tkn.Single_input, null)
+            assert(err_ret.error === eYo.e.DONE, `ERROR: ${err_ret.error}`)
+            // n_test(n, eYo.tkn.Single_input, null)
             // n = n.n_child[0]
-            // n_test(n, eYo.TKN.ENDMARKER, '')
+            // n_test(n, eYo.tkn.ENDMARKER, '')
           }
         })()
         it(str, f)
@@ -3508,9 +3508,9 @@ describe('Test', function() {
 
   describe('File input', function() {
     it('setup.py', function() {
-      assert(eYo.Parser.PyParser_ParseString)
+      assert(eYo.parser.PyParser_ParseString)
       var err_ret = {}
-      var n = eYo.Parser.PyParser_ParseString(src, g, eYo.TKN.file_input, err_ret)
+      var n = eYo.parser.PyParser_ParseString(src, g, eYo.tkn.file_input, err_ret)
       assert(n, `FAILURE ${err_ret.error}, ${err_ret.expected}, ${err_ret.lineno}, "${err_ret.text}"`)
     });
   });

@@ -30,9 +30,9 @@
 goog.require('goog.ui.MenuItemRenderer')
 goog.require('goog.ui.MenuSeparatorRenderer')
 
-eYo.require('Style')
+eYo.require('style')
 
-eYo.provide('MenuItemRenderer')
+eYo.provide('menuItemRenderer')
 
 /**
  * Sets the css class of the control renderer.
@@ -50,7 +50,7 @@ eYo.provide('MenuItemRenderer')
  *
  * @param {...Object} [rest]
  */
-eYo.Style.setControlRendererCssClass = (() => {
+eYo.style.SetControlRendererCssClass = (() => {
   var helper = (name, dict) => {
     var RA = []
     for (var k in dict) {
@@ -103,7 +103,7 @@ eYo.MenuSeparatorRenderer = function () {
 goog.inherits(eYo.MenuSeparatorRenderer, goog.ui.MenuSeparatorRenderer)
 goog.addSingletonGetter(eYo.MenuSeparatorRenderer)
 
-eYo.Style.setControlRendererCssClass(
+eYo.style.SetControlRendererCssClass(
   eYo.MenuSeparatorRenderer,
   'eyo-menuseparator',
   { 'border-top': '1px solid #ccc',
@@ -133,12 +133,12 @@ goog.addSingletonGetter(eYo.MenuItemRenderer)
  * @return {Element} Root element for the item.
  * @override
  */
-eYo.MenuItemRenderer.prototype.createDom = function (item) {
-  var element = eYo.MenuItemRenderer.superClass_.createDom.call(this, item)
+eYo.MenuItemRenderer.prototype.CreateDom = function (item) {
+  var element = eYo.MenuItemRenderer.SuperClass_.createDom.Call(this, item)
   return element
 }
 
-eYo.Style.setControlRendererCssClass(
+eYo.style.SetControlRendererCssClass(
   eYo.MenuItemRenderer,
   'eyo-menuitem',
   'content',
@@ -159,13 +159,13 @@ eYo.Style.setControlRendererCssClass(
  * @override
  */
 eYo.MenuItemRenderer.prototype.getClassForState = function (state) {
-  return eYo.MenuItemRenderer.superClass_.getClassForState.call(
+  return eYo.MenuItemRenderer.SuperClass_.getClassForState.Call(
     this, state)
 }
 
 
-eYo.setup.register(() => {
+eYo.Setup.register(() => {
   eYo.Css.insertRuleAt('.eyo-menuitem-content {',
-      eYo.Font.menuStyle,
+      eYo.font.MenuStyle,
   '}')
 })

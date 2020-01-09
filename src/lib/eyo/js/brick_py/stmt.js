@@ -11,17 +11,17 @@
  */
 'use strict'
 
-eYo.require('Brick')
+eYo.require('brick')
 
-eYo.forwardDeclare('XRE')
-eYo.forwardDeclare('Msg')
-eYo.forwardDeclare('Brick.Operator')
+eYo.forwardDeclare('xre')
+eYo.forwardDeclare('msg')
+eYo.forwardDeclare('brick.operator')
 
 /**
  * @name {eYo.Stmt}
  * @namespace
  */
-eYo.Brick.makeNS(eYo, 'Stmt')
+eYo.Brick.makeNS(eYo, 'stmt')
 
 /**
  * @name {eYo.Stmt.Dlgt}
@@ -31,14 +31,14 @@ eYo.Stmt.makeDlgt()
 
 /**
  * Class for a Delegate, statement brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
 eYo.Stmt.makeDflt({
   left /** @suppress {globalThis} */ (type) {
     return this.brick.head || this.brick.foot
-    ? [eYo.T3.Stmt.comment_stmt]
-    : eYo.T3.Stmt.Left.simple_stmt
+    ? [eYo.t3.Stmt.Comment_stmt]
+    : eYo.t3.stmt.Left.Simple_stmt
   },
   right: {
     fields: {
@@ -48,7 +48,7 @@ eYo.Stmt.makeDflt({
       }
     },
     check /** @suppress {globalThis} */ (type) {
-      return eYo.T3.Stmt.Right.simple_stmt
+      return eYo.t3.stmt.Right.Simple_stmt
     }
   },
   head /** @suppress {globalThis} */ (type) {
@@ -72,7 +72,7 @@ eYo.Stmt.makeDflt({
   }
 })
 
-eYo.Brick.registerAll(eYo.T3.Stmt, eYo.Stmt.Dflt, true)
+eYo.Brick.registerAll(eYo.t3.Stmt, eYo.stmt.Dflt, true)
 
 /**
  * Insert a brick above.
@@ -87,7 +87,7 @@ eYo.Stmt._p.insertParentWithModel = function (model) {
   var magnet = this.head_m
   if (magnet) {
     var parent
-    eYo.Events.disableWrap(
+    eYo.events.disableWrap(
       () => {
         parent = eYo.Brick.newReady(this, model)
       },
@@ -95,8 +95,8 @@ eYo.Stmt._p.insertParentWithModel = function (model) {
         if (parent) {
           var p_magnet = parent.foot_m
           if (p_magnet && magnet.checkType_(p_magnet)) {
-            eYo.Events.groupWrap(() => {
-              eYo.Events.fireBrickCreate(parent)
+            eYo.events.groupWrap(() => {
+              eYo.events.fireBrickCreate(parent)
               var targetMagnet = magnet.target
               if (targetMagnet) {
                 targetMagnet.disconnect()
@@ -134,7 +134,7 @@ eYo.Stmt._p.insertParentWithModel = function (model) {
  * @return the created brick
  */
 eYo.Stmt._p.insertBrickAfter = function (belowPrototypeName) {
-  return eYo.Events.groupWrap(() => {
+  return eYo.events.groupWrap(() => {
     var below = eYo.Brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m
     var targetMagnet = magnet.target

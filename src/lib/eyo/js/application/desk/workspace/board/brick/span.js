@@ -32,8 +32,8 @@
  */
 'use strict'
 
-eYo.forwardDeclare('Unit')
-eYo.forwardDeclare('Brick')
+eYo.forwardDeclare('unit')
+eYo.forwardDeclare('brick')
 
 /**
  * @name {eYo.Span}
@@ -66,7 +66,7 @@ eYo.makeClass('Span', eYo.C9r.Owned, {
      * @property {eYo.Brick.Dflt} brick - The owning brick
      */
     brick () {
-      return this.brick_
+      return this.owner_
     },
     /**
       * @readonly
@@ -74,10 +74,10 @@ eYo.makeClass('Span', eYo.C9r.Owned, {
       */
     width: {
       get () {
-        return this.c * eYo.Unit.x
+        return this.c * eYo.unit.x
       },
       set (after) {
-        this.c_ = after / eYo.Unit.x
+        this.c_ = after / eYo.unit.x
       }
     },
     /**
@@ -91,6 +91,42 @@ eYo.makeClass('Span', eYo.C9r.Owned, {
         this.width_ = after
       }
     },
+    parentSpan () {
+      var p = this.brick.parent
+      return p && p.span
+    },
+    rightSpan () {
+      var b3k = this.brick.right
+      return b3k && b3k.span
+    },
+    leftSpan () {
+      var b3k = this.brick.left
+      return b3k && b3k.span
+    },
+    /**
+     * @readonly
+     * @property {number} height - The height, in board coordinates.
+     */
+    height: {
+      get () {
+        return this.l_ * eYo.unit.y
+      },
+      set_ (after) {
+        this.l_ =  after / eYo.unit.y
+      },
+    },
+    /**
+     * @readonly
+     * @property {number} y  Synonym of `height`.
+     */
+    y: {
+      get () {
+        return this.height
+      },
+      set_ (after) {
+        this.height_ = after
+      },
+    },
   },
   valued: {
     /**
@@ -100,9 +136,7 @@ eYo.makeClass('Span', eYo.C9r.Owned, {
      * @property {number} c - The full number of columns
      */
     c: {
-      get () {
-        return this.c_
-      },
+      init: 0,
       set (after) {
         this.setPadding(after - this.c_min_)
       }
@@ -113,9 +147,7 @@ eYo.makeClass('Span', eYo.C9r.Owned, {
      * @property {number} c_min - The minimum number of columns
      */
     c_min: {
-      get () {
-        return this.c_min_
-      },
+      init: 0,
       set (after) {
         this.addC(after - this.c_min_)
       }
@@ -124,9 +156,7 @@ eYo.makeClass('Span', eYo.C9r.Owned, {
      * @property {number} c_padding - The extra padding at the right
      */
     c_padding: {
-      get () {
-        return this.c_padding_
-      },
+      init: 0,
       set (after) {
         this.setPadding(after)
       }
@@ -134,10 +164,7 @@ eYo.makeClass('Span', eYo.C9r.Owned, {
     /**
      * @property {number} right  The number of right columns
      */
-    right: {
-      value: 0,
-      writable: true
-    },
+    right: 0,
     /**
      * The main count is the number of main lines in statements.
      * A statement has one main line in general.
@@ -157,9 +184,7 @@ eYo.makeClass('Span', eYo.C9r.Owned, {
      * @property {number} main - The number of main lines
      */
     main: {
-      get () {
-        return this.main_ // 1 or more
-      },
+      init: 1, // 1 or more
       set (after) {
         this.addMain(after - this.main_)
       }
@@ -168,9 +193,7 @@ eYo.makeClass('Span', eYo.C9r.Owned, {
      * @property {number} header - The number of header lines
      */
     header: {
-      get () {
-        return this.header_
-      },
+      init: 0,
       set (after) {
         this.addHeader(after - this.header_)
       }
@@ -179,9 +202,7 @@ eYo.makeClass('Span', eYo.C9r.Owned, {
      * @property {number} footer - The number of footer lines
      */
     footer: {
-      get () {
-        return this.footer_
-      },
+      init: 0,
       set (after) {
         this.addFooter(after - this.footer_)
       }
@@ -192,29 +213,38 @@ eYo.makeClass('Span', eYo.C9r.Owned, {
      * @property {number} l - The full number of lines
      * @readonly
      */
-    l: {
-      get () {
-        return this.l_
-      }
+    l: 0,
+    /**
+     * If we have a suite, we do not have a header nor a footer.
+     * It is the responsibility of the caller to verify that
+     * there is no right block, except a one line comment.
+     * @property {number} suite - The number of suite lines
+     */
+    suite: {
+      init: 0,
+      set (after) {
+        this.addSuite(after - this.suite_)
+      },
     },
     /**
+     * Groups need a suite, but may not be provided with one.
+     * The hole count is used to display a hole,
+     * where bricks should be connected.
+     * If groups have a right connection, they have no suite
+     * hence no suite hole.
      * @readonly
-     * @property {number} height - The height, in board coordinates.
+     * @property {number} hole - The number of hole lines
      */
-    height: {
-      get () {
-        return this.l_ * eYo.Unit.y
-      }
-    },
+    hole: 0,
     /**
-     * @readonly
-     * @property {number} y  Synonym of `height`.
+     * @property {number} foot - The number of foot lines
      */
-    y: {
-      get () {
-        return this.height
-      }
-    }
+    foot: {
+      init: 0,
+      set (after) {
+        this.addFoot(after - this.foot_)
+      },
+    },
   },
 })
 
@@ -226,86 +256,9 @@ eYo.Span.INDENT = 4
 /**
  * The tab width in board unit.
  */
-Object.defineProperty(eYo.Span, 'tabWidth', {
+Object.defineProperty(eYo.Span, 'TAB_WIDTH', {
   get () {
-    return eYo.Span.INDENT * eYo.Unit.x
-  }
-})
-
-// Public readonly properties
-  Object.defineProperties(eYo.Span.prototype, )
-
-// Public computed properties:
-Object.defineProperties(eYo.Span.prototype, {
-  /**
-   * Groups need a suite, but may not be provided with one.
-   * The hole count is used to display a hole,
-   * where bricks should be connected.
-   * If groups have a right connection, they have no suite
-   * hence no suite hole.
-   * @readonly
-   * @property {number} hole - The number of hole lines
-   */
-  hole: {
-    get () {
-      return this.hole_ // 0 or 1
-    }
-  },
-  /**
-   * @readonly
-   * @property {number} foot - The number of foot lines
-   */
-  foot: {
-    get () {
-      return this.foot_
-    },
-    set (after) {
-      this.addFoot(after - this.foot_)
-    }
-  },
-  /**
-   * If we have a suite, we do not have a header nor a footer.
-   * It is the responsibility of the caller to verify that
-   * there is no right block, except a one line comment.
-   * @readonly
-   * @property {number} suite - The number of suite lines
-   */
-  suite: {
-    get () {
-      return this.suite_
-    },
-    set (after) {
-      this.addSuite(after - this.suite_)
-    }
-  },
-})
-
-/**
- * Dispose of the receiver's resources.
- */
-eYo.Span.prototype.dispose = function () {
-  this.brick_ = eYo.NA
-}
-
-// computed private properties
-Object.defineProperties(eYo.Span.prototype, {
-  parentSpan: {
-    get () {
-      var p = this.brick.parent
-      return p && p.span
-    }
-  },
-  rightSpan: {
-    get () {
-      var b3k = this.brick.right
-      return b3k && b3k.span
-    }
-  },
-  leftSpan: {
-    get () {
-      var b3k = this.brick.left
-      return b3k && b3k.span
-    }
+    return eYo.Span.INDENT * eYo.unit.x
   }
 })
 
@@ -314,7 +267,7 @@ Object.defineProperties(eYo.Span.prototype, {
  * Used to align the right edges of statement blocks.
  * @param {Number} padding  the new value of the padding, a non negative number.
  */
-eYo.Span.prototype.setPadding = function (padding) {
+eYo.Span_p.SetPadding = function (padding) {
   if (padding>=0) {
     var right = this.rightSpan
     if (right) {
@@ -339,7 +292,7 @@ eYo.Span.prototype.setPadding = function (padding) {
  * Reset the padding to 0.
  * @result {Boolean}  true iff there was a positive padding.
  */
-eYo.Span.prototype.resetPadding = function () {
+eYo.Span_p.resetPadding = function () {
   if (this.c_padding_ > 0) {
     this.setPadding(0)
     return true
@@ -349,7 +302,7 @@ eYo.Span.prototype.resetPadding = function () {
 /**
  * Reset the column counts to initial values.
  */
-eYo.Span.prototype.resetC = function () {
+eYo.Span_p.resetC = function () {
   this.c_min_ = this.c_min_init_
   this.c_padding_ = 0
   var c = this.c_min_ + this.c_padding_
@@ -362,7 +315,7 @@ eYo.Span.prototype.resetC = function () {
  * The suite bricks, if any, influence the padding.
  * @param {Number} delta  the difference from the old value to value and the old one.
  */
-eYo.Span.prototype.addC = function (delta) {
+eYo.Span_p.AddC = function (delta) {
   if (this.c_min_ + delta < this.c_min_init_) {
     delta = this.c_min_init_ - this.c_min_
   }
@@ -384,7 +337,7 @@ eYo.Span.prototype.addC = function (delta) {
  * The suite bricks, if any, influence the padding.
  * @param {Number} delta  the difference from the old value to value and the old one.
  */
-eYo.Span.prototype.addL = function (delta) {
+eYo.Span_p.AddL = function (delta) {
   if (delta) {
     this.l_ += delta
   }
@@ -394,7 +347,7 @@ eYo.Span.prototype.addL = function (delta) {
  * Convenient method
  * @param {Object} delta  the value to add to the ressource.
  */
-eYo.Span.prototype.reset = function (where) {
+eYo.Span_p.reset = function (where) {
   console.error('WHAT IS THE PURPOSE ?')
 }
 
@@ -402,7 +355,7 @@ eYo.Span.prototype.reset = function (where) {
  * Convenient method
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.Span.prototype.resetL = function () {
+eYo.Span_p.resetL = function () {
   this.main_ = 1
   this.header_ = this.suite_ = this.footer_ = 0
   var b = this.brick_
@@ -422,7 +375,7 @@ eYo.Span.prototype.resetL = function () {
  * 3) the left connection changes
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.Span.prototype.addHeader = function (delta) {
+eYo.Span_p.AddHeader = function (delta) {
   if (delta) {
     this.header_ += delta
     this.l_ += delta
@@ -444,7 +397,7 @@ eYo.Span.prototype.addHeader = function (delta) {
  * and possibly to the head.
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.Span.prototype.addMain = function (delta) {
+eYo.Span_p.AddMain = function (delta) {
   if (delta) {
     this.main_ += delta
     this.l_ += delta
@@ -462,7 +415,7 @@ eYo.Span.prototype.addMain = function (delta) {
  * Convenient method
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.Span.prototype.addLeft_ = function (delta) {
+eYo.Span_p.AddLeft_ = function (delta) {
   var left = this.leftSpan
   if (left) {
     left.addFooter(delta)
@@ -475,7 +428,7 @@ eYo.Span.prototype.addLeft_ = function (delta) {
  * Convenient method
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.Span.prototype.addParent_ = function (delta) {
+eYo.Span_p.AddParent_ = function (delta) {
   var parent = this.parentSpan
   if (parent) {
     this.brick.isTop
@@ -492,7 +445,7 @@ eYo.Span.prototype.addParent_ = function (delta) {
  * 3) The right connection changes
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.Span.prototype.addFooter = function (delta) {
+eYo.Span_p.AddFooter = function (delta) {
   if (delta) {
     this.footer_ += delta
     this.l_ += delta
@@ -508,7 +461,7 @@ eYo.Span.prototype.addFooter = function (delta) {
  * @param {Number} delta  the value to add to the ressource.
  * Actually it can only be 1 or -1.
  */
-eYo.Span.prototype.addFoot = function (delta) {
+eYo.Span_p.AddFoot = function (delta) {
   if (delta) {
     this.foot_ += delta
     this.addParent_(delta)
@@ -520,7 +473,7 @@ eYo.Span.prototype.addFoot = function (delta) {
  * @param {Number} delta  the value to add to the ressource.
  * Actually it can only be 1 or -1.
  */
-eYo.Span.prototype.addSuite = function (delta) {
+eYo.Span_p.AddSuite = function (delta) {
   var b = this.brick
   if (delta && b.isGroup) {
     this.suite_ += delta

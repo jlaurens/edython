@@ -823,7 +823,7 @@ tok_get(struct tok_state *tok, char **p_start, char **p_end)
                     c = tok_nextc(tok);
                     goto fraction;
                 }
-                else if (c == 'e' || c == 'E') {
+                else if (c == 'e' || c == 'e') {
                     goto exponent;
                 }
                 else if (c == 'j' || c == 'J') {
@@ -858,7 +858,7 @@ tok_get(struct tok_state *tok, char **p_start, char **p_end)
                         }
                     }
                 }
-                if (c == 'e' || c == 'E') {
+                if (c == 'e' || c == 'e') {
                     int e;
                   exponent:
                     e = c;

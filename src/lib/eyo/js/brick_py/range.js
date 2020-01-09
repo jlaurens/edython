@@ -11,34 +11,34 @@
  */
 'use strict'
 
-eYo.require('Expr')
+eYo.require('expr')
 
-eYo.provide('Brick.Range')
+eYo.provide('brick.range')
 
-eYo.T3.Expr.builtin__range_expr = 'eyo:builtin__range_expr'
+eYo.t3.Expr.Builtin__range_expr = 'eyo:builtin__range_expr'
 
 /**
  * Class for a Delegate, range brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
+eYo.expr.Dflt.makeSubclass('builtin__range_expr', {
   xml: {
     attr: 'range',
   },
   data: {
     variant: {
       all:[
-        eYo.Key.NONE,
-        eYo.Key.START,
-        eYo.Key.STEP
+        eYo.key.NONE,
+        eYo.key.START,
+        eYo.key.STEP
       ],
-      init: eYo.Key.NONE,
+      init: eYo.key.NONE,
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
-        this.brick.start_d.incog = after === eYo.Key.NONE
-        this.brick.sep_s.incog = after === eYo.Key.NONE
-        this.brick.step_d.incog = after !== eYo.Key.STEP
+        this.brick.start_d.incog = after === eYo.key.NONE
+        this.brick.sep_s.incog = after === eYo.key.NONE
+        this.brick.step_d.incog = after !== eYo.key.STEP
       },
       xml: false
     },
@@ -48,15 +48,15 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
       init: '',
       xml: {
         save (element) /** @suppress {globalThis} */ {
-          if (this.brick.variant_p !== eYo.Key.NONE) {
+          if (this.brick.variant_p !== eYo.key.NONE) {
             this.save(element)
           }
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         this.didLoad()
-        if (this.requiredFromSaved && after !== eYo.Key.STEP) {
-          this.brick.variant_p = eYo.Key.START
+        if (this.requiredFromSaved && after !== eYo.key.STEP) {
+          this.brick.variant_p = eYo.key.START
         }
       }
     },
@@ -71,7 +71,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
       synchronize: true,
       xml: {
         save (element) /** @suppress {globalThis} */ {
-          if (this.brick.variant_p === eYo.Key.STEP) {
+          if (this.brick.variant_p === eYo.key.STEP) {
             this.save(element)
           }
         }
@@ -79,7 +79,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
       didLoad () /** @suppress {globalThis} */ {
         this.didLoad()
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.Key.STEP
+          this.brick.variant_p = eYo.key.STEP
         }
       }
     }
@@ -107,7 +107,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
           placeholder: 0
         }
       },
-      check: eYo.T3.Expr.Check.argument_any
+      check: eYo.t3.Expr.Check.Argument_any
     },
     sep: {
       order: 20,
@@ -127,7 +127,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
           placeholder: 0
         }
       },
-      check: eYo.T3.Expr.Check.argument_any
+      check: eYo.t3.Expr.Check.Argument_any
     },
     step: {
       order: 40,
@@ -143,7 +143,7 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
           placeholder: 0
         }
       },
-      check: eYo.T3.Expr.Check.argument_any
+      check: eYo.t3.Expr.Check.Argument_any
     },
     close: {
       order: 100,
@@ -157,8 +157,8 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
   },
   out: {
     check: [
-      eYo.T3.Expr.builtin__range_expr,
-      eYo.T3.Expr.call_expr
+      eYo.t3.Expr.Builtin__range_expr,
+      eYo.t3.Expr.Call_expr
     ]
   }
 }, true)
@@ -167,11 +167,11 @@ eYo.Expr.Dflt.makeSubclass('builtin__range_expr', {
  * The xml `eyo` attribute of this brick, as it should appear in the saved data.
  * For edython.
  */
-eYo.Expr.builtin__range_expr.prototype.xmlAttr = function () {
+eYo.expr.Builtin__range_expr.prototype.xmlAttr = function () {
   return 'range'
 }
 
-eYo.Brick.Range.T3s = [
-  eYo.T3.Expr.identifier,
-  eYo.T3.Expr.builtin__range_expr
+eYo.Brick.range.T3s = [
+  eYo.t3.Expr.identifier,
+  eYo.t3.Expr.Builtin__range_expr
 ]

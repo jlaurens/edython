@@ -12,13 +12,13 @@
 'use strict'
 
 
-eYo.require('C9r.Change')
-eYo.provide('BrickDragger')
+eYo.require('c9r.change')
+eYo.provide('brickDragger')
 
-eYo.forwardDeclare('Dom')
-eYo.forwardDeclare('Brick')
-eYo.forwardDeclare('Board')
-eYo.forwardDeclare('Events.BrickMove')
+eYo.forwardDeclare('dom')
+eYo.forwardDeclare('brick')
+eYo.forwardDeclare('board')
+eYo.forwardDeclare('events.brickMove')
 
 /**
  * Class for a brick dragger.  It moves bricks around the board when they
@@ -133,7 +133,7 @@ eYo.BrickDragger.prototype.dispose = function() {
  * @param {eYo.Motion} motion  The motion initiating the eventual drag.
  * @return {eYo.Brick.Dflt}  The target brick of the drag event, if any.
  */
-eYo.BrickDragger.prototype.start = function(motion) {
+eYo.BrickDragger.prototype.Start = function(motion) {
   if (this.brick_) {
     return this.brick_
   }
@@ -165,7 +165,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
     // so that the same event group is used for brick
     // creation and brick dragging.
     // The start brick is no longer relevant, because this is a drag.
-    eYo.Events.disableWrap(() => {
+    eYo.events.disableWrap(() => {
       targetBrick = flyout.createBrick(targetBrick)
     })
   } else if (!targetBrick.movable) {
@@ -230,7 +230,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
   /**
    * Which delete area the mouse pointer is over, if any.
    * One of {@link eYo.Motion.DELETE_AREA_TRASH},
-   * {@link eYo.Motion.DELETE_AREA_TOOLBOX}, or {@link eYo.Motion.DELETE_AREA_NONE}.
+   * {@link eYo.Motion.DELETE_AREA_TOOLBOX}, or {@link eYo.motion.DELETE_AREA_NONE}.
    * @type {?number}
    * @private
    */
@@ -244,10 +244,10 @@ eYo.BrickDragger.prototype.start = function(motion) {
    */
   this.xyStart_ = this.brick_.xy
 
-  eYo.Focus.magnet = null
+  eYo.Focus.Magnet = null
   
-  if (!eYo.Events.group) {
-    eYo.Events.group = true
+  if (!eYo.events.group) {
+    eYo.events.group = true
   }
   this.destination.setResizesEnabled(false)
   var d = this.ui_driver_mngr
@@ -362,7 +362,7 @@ eYo.BrickDragger.prototype.end = (() => {
    * @private
    */
   var fireMoveEvent = self => {
-    eYo.Events.fireBrickMove(self.brick_, event => {
+    eYo.events.fireBrickMove(self.brick_, event => {
       event.oldCoordinate = self.xyStart_
     })
   }
@@ -382,7 +382,7 @@ eYo.BrickDragger.prototype.end = (() => {
       this.connect()
       b3k.render()
       if (this.motion_.flyout_) {
-        eYo.Events.fireBrickCreate(b3k, true) 
+        eYo.events.fireBrickCreate(b3k, true) 
       }
       fireMoveEvent(this)
       b3k.ui_driver.scheduleSnapAndBump(b3k)
@@ -393,7 +393,7 @@ eYo.BrickDragger.prototype.end = (() => {
     }
     this.destination.setResizesEnabled(true)
 
-    eYo.Events.group = false
+    eYo.events.group = false
     this.availableMagnets_.length = 0
     this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = this.clearMotion()
   }
@@ -402,7 +402,7 @@ eYo.BrickDragger.prototype.end = (() => {
 /**
  * Reset motion.
  */
-eYo.BrickDragger.prototype.clearMotion = function() {
+eYo.BrickDragger.prototype.ClearMotion = function() {
   this.motion_ = null
 }
 
@@ -410,7 +410,7 @@ eYo.BrickDragger.prototype.clearMotion = function() {
  * Connect to the closest magnet and render the results.
  * This should be called at the end of a drag.
  */
-eYo.BrickDragger.prototype.connect = function() {
+eYo.BrickDragger.prototype.Connect = function() {
   if (this.target_) {
     // Connect the two magnets
     this.magnet_.connect(this.target_)

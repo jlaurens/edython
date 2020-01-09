@@ -26,37 +26,37 @@ describe('Basic metrics IN PROGRESS', function () {
     svg.style.position='absolute'
     svg.setAttribute('preserveAspectRatio', 'xMinYMin slice')
     var content = metrics.port_
-    content.origin = eYo.Where.cl(-8, -2)
-    content.size = eYo.Where.cl(80, 20)
+    content.origin = eYo.Where.Cl(-8, -2)
+    content.size = eYo.Where.Cl(80, 20)
     svg.setAttribute('viewBox', `${content.x} ${content.y} ${content.width} ${content.height}`)
     metrics.scale_ = 1.1
-    metrics.drag = eYo.Where.cl(4, 2)
+    metrics.drag = eYo.Where.Cl(4, 2)
     content = metrics.portInView
     svg.setAttribute('width', `${content.width}px`)
     svg.setAttribute('height', `${content.height}px`)
     svg.style.transform = `translate(${content.x}px,${content.y}px)`
     for (var i = -1 ; i < 11 ; i++) {
       eYo.Svg.newElement('rect', {
-        x: 8 * i * eYo.Unit.x,
-        y: 2 * i * eYo.Unit.y,
-        width: 8 * eYo.Unit.x,
-        height: 2 * eYo.Unit.y,
+        x: 8 * i * eYo.unit.x,
+        y: 2 * i * eYo.unit.y,
+        width: 8 * eYo.unit.x,
+        height: 2 * eYo.unit.y,
         fill: 'yellow'
       },
       svg)
       eYo.Svg.newElement('rect', {
-        x: 8 * (i + 1) * eYo.Unit.x,
-        y: 2 * i * eYo.Unit.y,
-        width: 8 * eYo.Unit.x,
-        height: 2 * eYo.Unit.y,
+        x: 8 * (i + 1) * eYo.unit.x,
+        y: 2 * i * eYo.unit.y,
+        width: 8 * eYo.unit.x,
+        height: 2 * eYo.unit.y,
         fill: 'green'
       },
       svg)
       eYo.Svg.newElement('rect', {
-        x: 8 * i * eYo.Unit.x,
-        y: 2 * (i + 1) * eYo.Unit.y,
-        width: 8 * eYo.Unit.x,
-        height: 2 * eYo.Unit.y,
+        x: 8 * i * eYo.unit.x,
+        y: 2 * (i + 1) * eYo.unit.y,
+        width: 8 * eYo.unit.x,
+        height: 2 * eYo.unit.y,
         fill: 'red'
       },
       svg)
@@ -82,37 +82,37 @@ describe('Basic metrics IN PROGRESS', function () {
     svg.style.position='absolute'
     svg.setAttribute('preserveAspectRatio', 'xMinYMin slice')
     var content = metrics.port_
-    content.origin = eYo.Where.cl(-8, -2)
-    content.size = eYo.Where.cl(80, 20)
+    content.origin = eYo.Where.Cl(-8, -2)
+    content.size = eYo.Where.Cl(80, 20)
     svg.setAttribute('viewBox', `${content.x} ${content.y} ${content.width} ${content.height}`)
     metrics.scale_ = 1.5
-    metrics.drag = eYo.Where.cl(4, 2)
+    metrics.drag = eYo.Where.Cl(4, 2)
     content = metrics.portInView
     svg.setAttribute('width', `${content.width}px`)
     svg.setAttribute('height', `${content.height}px`)
     svg.style.transform = `translate(${content.x}px,${content.y}px)`
     for (var i = -1 ; i < 11 ; i++) {
       eYo.Svg.newElement('rect', {
-        x: 8 * i * eYo.Unit.x,
-        y: 2 * i * eYo.Unit.y,
-        width: 8 * eYo.Unit.x,
-        height: 2 * eYo.Unit.y,
+        x: 8 * i * eYo.unit.x,
+        y: 2 * i * eYo.unit.y,
+        width: 8 * eYo.unit.x,
+        height: 2 * eYo.unit.y,
         fill: 'yellow'
       },
       svg)
       eYo.Svg.newElement('rect', {
-        x: 8 * (i + 1) * eYo.Unit.x,
-        y: 2 * i * eYo.Unit.y,
-        width: 8 * eYo.Unit.x,
-        height: 2 * eYo.Unit.y,
+        x: 8 * (i + 1) * eYo.unit.x,
+        y: 2 * i * eYo.unit.y,
+        width: 8 * eYo.unit.x,
+        height: 2 * eYo.unit.y,
         fill: 'green'
       },
       svg)
       eYo.Svg.newElement('rect', {
-        x: 8 * i * eYo.Unit.x,
-        y: 2 * (i + 1) * eYo.Unit.y,
-        width: 8 * eYo.Unit.x,
-        height: 2 * eYo.Unit.y,
+        x: 8 * i * eYo.unit.x,
+        y: 2 * (i + 1) * eYo.unit.y,
+        width: 8 * eYo.unit.x,
+        height: 2 * eYo.unit.y,
         fill: 'red'
       },
       svg)
@@ -137,7 +137,7 @@ describe('Basic metrics IN PROGRESS', function () {
   })
   it ('desk: metrics scaling', function () {
     var desk = new eYo.Desk({})
-    chai.assert(desk !== eYo.app.Desk)
+    chai.assert(desk !== eYo.App.Desk)
     var board = desk.board
     var before = board.metrics
     board.metrics_.scale = 0.5

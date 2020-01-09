@@ -20,7 +20,7 @@
 goog.require('goog.dom');
 
 goog.require('goog.ui.SubMenuRenderer')
-eYo.provide('SubMenuRenderer')
+eYo.provide('subMenuRenderer')
 
 /**
  * Default renderer for {@link goog.ui.SubMenu}s.  Each item has the following
@@ -71,10 +71,10 @@ eYo.SubMenuRenderer.prototype.getCssClass = function () {
  * @return {!Element} Root element for the item.
  * @override
  */
-eYo.SubMenuRenderer.prototype.createDom = function (control) {
+eYo.SubMenuRenderer.prototype.CreateDom = function (control) {
   var subMenu = /** @type {goog.ui.SubMenu} */ (control)
   var element =
-    eYo.SubMenuRenderer.superClass_.createDom.call(this, subMenu)
+    eYo.subMenuRenderer.SuperClass_.createDom.Call(this, subMenu)
   goog.dom.classlist.remove(element, goog.ui.SubMenuRenderer.CSS_CLASS)
   return element
 }
@@ -96,7 +96,7 @@ eYo.SubMenuRenderer.prototype.createDom = function (control) {
 //   var subMenu = /** @type {goog.ui.SubMenu} */ (control)
 //   element =
 //       goog.ui.SubMenuRenderer.superClass_.decorate.call(this, subMenu, element)
-//   eYo.assert(element)
+//   eYo.Assert(element)
 //   goog.dom.classlist.add(element, goog.ui.SubMenuRenderer.CSS_CLASS)
 //   this.addArrow_(subMenu, element)
 //
@@ -125,7 +125,7 @@ eYo.SubMenuRenderer.prototype.createDom = function (control) {
  *     set as the item's content.
  * @override
  */
-eYo.SubMenuRenderer.prototype.setContent = function (element, content) {
+eYo.subMenuRenderer.prototype.SetContent = function (element, content) {
   // Save the submenu arrow element, if present.
   var contentElement = this.getContentElement(element)
   var arrowElement = contentElement && contentElement.lastChild
@@ -165,7 +165,7 @@ goog.ui.SubMenuRenderer.prototype.initializeDom = function (control) {
     element.appendChild(arrow)
   }
   var subMenuElement = subMenu.getElement()
-  eYo.assert(
+  eYo.Assert(
     subMenuElement, 'The sub menu DOM element cannot be null.')
   goog.a11y.aria.setState(
     subMenuElement, goog.a11y.aria.State.HASPOPUP, 'true')
@@ -213,7 +213,7 @@ goog.ui.SubMenuRenderer.prototype.addArrow_ = function (subMenu, element) {
 //   var leftArrow = goog.ui.SubMenuRenderer.LEFT_ARROW_
 //   var rightArrow = goog.ui.SubMenuRenderer.RIGHT_ARROW_
 //
-//   eYo.assert(arrow)
+//   eYo.Assert(arrow)
 //
 //   if (subMenu.isRightToLeft()) {
 //     goog.dom.classlist.add(arrow, goog.getCssName('goog-submenu-arrow-rtl'))
@@ -228,8 +228,8 @@ goog.ui.SubMenuRenderer.prototype.addArrow_ = function (subMenu, element) {
 //   }
 // }
 
-eYo.setup.register(() => {
+eYo.Setup.register(() => {
   eYo.Css.insertRuleAt('.eyo-submenu-content {',
-      eYo.Font.menuStyle,
+      eYo.font.MenuStyle,
   '}')
 })

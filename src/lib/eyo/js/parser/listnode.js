@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('Node')
+eYo.require('node')
 
-eYo.provide('Node.List')
+eYo.provide('node.list')
 
 /* List a node on a file *-/
 
@@ -27,8 +27,7 @@ static void listnode(FILE *, node *);
 */
 ;(function(){
 /* void */
-  eYo.Node.PyNode_ListTree = (/* node * */ n) =>
-  {
+  eYo.Node.PyNode_ListTree = (/* node * */ n) => {
     listnode(/*stdout, */n);
   }
 
@@ -36,30 +35,28 @@ static void listnode(FILE *, node *);
   var level, atbol
 
   // static void
-  var listnode = (/* FILE *fp, node * */ n) =>
-  {
+  var listnode = (/* FILE *fp, node * */ n) => {
     level = 0;
     atbol = 1;
     list1node(/*fp, */n);
   }
 
   // static void
-  var list1node = (/* FILE *fp, node * */ n) =>
-  {
+  var list1node = (/* FILE *fp, node * */ n) => {
     if (!n) {
       return;
     }
-    if (eYo.TKN.ISNONTERMINAL(n.n_type)) {
+    if (eYo.tkn.ISNONTERMINAL(n.n_type)) {
         for (var i = 0; i < n.n_nchildren; i++) {
           list1node(/*fp, */n.n_child[i])
         }
     }
-    else if (eYo.TKN.ISTERMINAL(n.n_type)) {
+    else if (eYo.tkn.ISTERMINAL(n.n_type)) {
       switch (n.n_type) {
-      case eYo.TKN.INDENT:
+      case eYo.tkn.INDENT:
         ++level;
         break;
-      case eYo.TKN.DEDENT:
+      case eYo.tkn.DEDENT:
         --level;
         break;
       default:
@@ -69,14 +66,14 @@ static void listnode(FILE *, node *);
           }
           atbol = 0;
         }
-        if (n.n_type === eYo.TKN.NEWLINE) {
+        if (n.n_type === eYo.tkn.NEWLINE) {
           if (n.n_str) {
-            console.log(`<${n.n_str}>(${eYo.TKN._NAMES[n.n_type]})`)
+            console.log(`<${n.n_str}>(${eYo.tkn._NAMES[n.n_type]})`)
           }
           console.log("\n")
           atbol = 1
         } else {
-          console.log(`<${n.n_str}>(${eYo.TKN._NAMES[n.n_type]}) `)
+          console.log(`<${n.n_str}>(${eYo.tkn._NAMES[n.n_type]}) `)
         }
         break;
       }

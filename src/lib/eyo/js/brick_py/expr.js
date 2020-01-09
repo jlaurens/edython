@@ -11,34 +11,34 @@
  */
 'use strict'
 
-eYo.require('Stmt')
+eYo.require('stmt')
 
-eYo.require('C9r.Change')
-eYo.require('Msg')
+eYo.require('c9r.change')
+eYo.require('msg')
 
-eYo.require('Decorate')
-eYo.require('T3.All')
+eYo.require('decorate')
+eYo.require('t3.all')
 goog.require('goog.dom');
 
 /**
- * @name{eYo.Expr}
+ * @name{eYo.expr}
  * @namespace
  */
-eYo.Stmt.makeNS(eYo, 'Expr')
+eYo.Stmt.makeNS(eYo, 'expr')
 
 /**
- * @name {eYo.Expr.Dflt}
+ * @name {eYo.expr.Dflt}
  * @constructor
  * Class for a Delegate, value brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Expr.makeDflt()
+eYo.expr.makeDflt()
 
 // Default delegate for all expression bricks
-eYo.Brick.registerAll(eYo.T3.Expr, eYo.Expr.Dflt, true)
+eYo.Brick.registerAll(eYo.t3.Expr, eYo.expr.Dflt, true)
 
-Object.defineProperties(eYo.Expr.Dflt.prototype, {
+Object.defineProperties(eYo.expr.Dflt.prototype, {
   isExpr: {
     value: true
   },
@@ -56,8 +56,8 @@ Object.defineProperties(eYo.Expr.Dflt.prototype, {
  * For edython.
  * @param {*} deep  Whether to propagate the message to children.
  */
-eYo.Expr.Dflt.prototype.changeDone = function (deep) {
-  eYo.Expr.Dflt.superProto_.changeDone.call(this, deep)
+eYo.expr.Dflt.prototype.ChangeDone = function (deep) {
+  eYo.expr.Dflt.SuperProto_.ChangeDone.Call(this, deep)
   var parent = this.parent
   parent && parent.changeDone()
 }
@@ -69,7 +69,7 @@ eYo.Expr.Dflt.prototype.changeDone = function (deep) {
  * This should be used instead of direct brick querying.
  * @return {String} The type of the receiver's brick.
  */
-eYo.Expr.Dflt.prototype.getType = eYo.C9r.decorateChange(
+eYo.expr.Dflt.prototype.getType = eYo.C9r.decorateChange(
   'getType',
   function () {
     return {
@@ -85,7 +85,7 @@ eYo.Expr.Dflt.prototype.getType = eYo.C9r.decorateChange(
  * @param {String} type
  * @return {Boolean}
  */
-eYo.Expr.Dflt.prototype.checkOutputType = function (type) {
+eYo.expr.Dflt.prototype.CheckOutputType = function (type) {
   var m4t = this.out_m
   if (m4t.check_) {
     if (type.indexOf) {
@@ -107,7 +107,7 @@ eYo.Expr.Dflt.prototype.checkOutputType = function (type) {
  * The connection cannot always establish.
  * @param {eYo.Brick.Dflt} brick  the brick to be replaced
  */
-eYo.Expr.Dflt.prototype.canReplaceBrick = function (brick) {
+eYo.expr.Dflt.prototype.CanReplaceBrick = function (brick) {
   if (brick) {
     var m4t = brick.out_m
     if (!m4t) {
@@ -129,10 +129,10 @@ eYo.Expr.Dflt.prototype.canReplaceBrick = function (brick) {
  * The connection cannot always establish.
  * @param {eYo.Brick.Dflt} brick
  */
-eYo.Expr.Dflt.prototype.replaceBrick = function (brick) {
+eYo.expr.Dflt.prototype.replaceBrick = function (brick) {
   if (this.board && brick && brick.board) {
-    eYo.Events.groupWrap(() => {
-      eYo.Do.tryFinally(() => {
+    eYo.events.groupWrap(() => {
+      eYo.do.tryFinally(() => {
         var my_m4t = this.out_m
         my_m4t.disconnect()
         var its_m4t = brick.out_m
@@ -160,8 +160,8 @@ eYo.Expr.Dflt.prototype.replaceBrick = function (brick) {
  * The print statement needs some preparation before drawing.
  * @private
  */
-eYo.Expr.Dflt.prototype.willRender_ = function (recorder) {
-  eYo.Expr.Dflt.superProto_.willRender_.call(this, recorder)
+eYo.expr.Dflt.prototype.willRender_ = function (recorder) {
+  eYo.expr.Dflt.SuperProto_.willRender_.Call(this, recorder)
   var field = this.await_f
   if (field) {
     field.visible = this.await_
@@ -174,7 +174,7 @@ eYo.Expr.Dflt.prototype.willRender_ = function (recorder) {
  * are awaitable
  * @return yes or no
  */
-eYo.Expr.Dflt.prototype.awaitable = function () {
+eYo.expr.Dflt.prototype.Awaitable = function () {
   if (!this.await_f) {
     return false
   }
@@ -183,7 +183,7 @@ eYo.Expr.Dflt.prototype.awaitable = function () {
     return true
   }
   do {
-    if (parent.type === eYo.T3.Stmt.funcdef_part) {
+    if (parent.type === eYo.t3.Stmt.funcdef_part) {
       return !!parent.async_
     }
   } while ((parent = parent.parent))
@@ -195,12 +195,12 @@ eYo.Expr.Dflt.prototype.awaitable = function () {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Expr.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var yorn = eYo.Expr.Dflt.superProto_.populateContextMenuFirst_.call(this, mngr)
+eYo.expr.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
+  var yorn = eYo.expr.Dflt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
-      eYo.Do.createSPAN('await', 'eyo-code-reserved'),
-      goog.dom.createTextNode(' ' + eYo.Msg.AT_THE_LEFT)
+      eYo.do.CreateSPAN('await', 'eyo-code-reserved'),
+      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
     )
     if (this.await_) {
       mngr.shouldSeparateRemove()
@@ -227,10 +227,10 @@ eYo.Expr.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
  * @param {Object} model
  * @return the created brick
  */
-eYo.Expr.Dflt.prototype.insertParentWithModel = function (model) {
+eYo.expr.Dflt.prototype.insertParentWithModel = function (model) {
   var parentSlotName = model.slot || model.input
   var parent
-  eYo.Events.disableWrap(() => {
+  eYo.events.disableWrap(() => {
     parent = eYo.Brick.newReady(this, model)
   })
   if (!parent) {
@@ -240,18 +240,18 @@ eYo.Expr.Dflt.prototype.insertParentWithModel = function (model) {
     // start by the slots
     var slot = parent.slots[model.slot]
     var parentSlot = slot
-    eYo.assert(parentSlot, 'No input named ' + model.slot)
+    eYo.Assert(parentSlot, 'No input named ' + model.slot)
     var parentInputM4t = parentSlot.magnet
-    eYo.assert(parentInputM4t, 'Unexpected dummy input ' + model.slot+ ' in ' + parent.type)
-  } else if ((parentSlot = parent.getSlot(eYo.Key.LIST, true))) {
+    eYo.Assert(parentInputM4t, 'Unexpected dummy input ' + model.slot+ ' in ' + parent.type)
+  } else if ((parentSlot = parent.getSlot(eYo.key.LIST, true))) {
     var list = parentSlot.targetBrick
-    eYo.assert(list, 'Missing list brick inside ' + this.type)
+    eYo.Assert(list, 'Missing list brick inside ' + this.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh
     // get the middle input.
-    parentSlot = list.getSlot(eYo.Do.Name.middle_name)
+    parentSlot = list.getSlot(eYo.do.Name.middle_name)
     parentInputM4t = parentSlot.magnet
-    eYo.assert(parentInputM4t, 'Unexpected dummy input ' + parentSlotName)
+    eYo.Assert(parentInputM4t, 'Unexpected dummy input ' + parentSlotName)
   } else {
     // find the first parent's connection that can accept brick
     var findM4t = y => {
@@ -283,8 +283,8 @@ eYo.Expr.Dflt.prototype.insertParentWithModel = function (model) {
   // Next connections should be connected
   var outputM4t = this.out_m
   if (parentInputM4t && parentInputM4t.checkType_(outputM4t)) {
-    eYo.Events.groupWrap(() => { // `this` is catched
-      eYo.Events.fireBrickCreate(parent)
+    eYo.events.groupWrap(() => { // `this` is catched
+      eYo.events.fireBrickCreate(parent)
       var targetM4t = parentInputM4t.target
       if (targetM4t) {
         console.log('input already connected, disconnect and dispose target')
@@ -335,8 +335,8 @@ eYo.Expr.Dflt.prototype.insertParentWithModel = function (model) {
  * @param {Boolean} force
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
-eYo.Expr.Dflt.prototype.doConsolidate = function (deep, force) {
-  if (eYo.Expr.Dflt.superProto_.doConsolidate.call(this, deep, force)) {
+eYo.expr.Dflt.prototype.doConsolidate = function (deep, force) {
+  if (eYo.expr.Dflt.SuperProto_.doConsolidate.Call(this, deep, force)) {
     var parent = this.parent
     return (parent && parent.consolidate()) || true
   }
@@ -344,21 +344,21 @@ eYo.Expr.Dflt.prototype.doConsolidate = function (deep, force) {
 
 /**
  * Class for a Delegate, proper_slice brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Expr.Dflt.makeSubclass('proper_slice', {
+eYo.expr.Dflt.makeSubclass('proper_slice', {
   data: {
     variant: {
       all: [
-        eYo.Key.NONE,
-        eYo.Key.STRIDE
+        eYo.key.NONE,
+        eYo.key.STRIDE
       ],
-      init: eYo.Key.NONE,
+      init: eYo.key.NONE,
       validate: true,
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
-        this.brick.stride_d.requiredIncog = after === eYo.Key.STRIDE
+        this.brick.stride_d.requiredIncog = after === eYo.key.STRIDE
       },
       xml: false
     },
@@ -387,14 +387,14 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          if (this.brick.variant_p === eYo.Key.STRIDE) {
+          if (this.brick.variant_p === eYo.key.STRIDE) {
             this.save(element, opt)
           }
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.Key.STRIDE
+          this.brick.variant_p = eYo.key.STRIDE
         }
       }
     }
@@ -409,7 +409,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.t3.Expr.Check.expression,
       optional: true
     },
     upper_bound: {
@@ -420,7 +420,7 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.t3.Expr.Check.expression,
       optional: true
     },
     stride: {
@@ -432,11 +432,11 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.T3.Expr.Check.expression,
+      check: eYo.t3.Expr.Check.expression,
       optional: true,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.Key.STRIDE
+          this.brick.variant_p = eYo.key.STRIDE
         }
       }
     }
@@ -445,28 +445,28 @@ eYo.Expr.Dflt.makeSubclass('proper_slice', {
 
 /**
  * Class for a Delegate, conditional_expression brick.
- * Not normally called directly, eYo.Brick.create(...) is preferred.
+ * Not normally called directly, eYo.Brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Expr.Dflt.makeSubclass('conditional_expression', {
+eYo.expr.Dflt.makeSubclass('conditional_expression', {
   slots: {
     expression: {
       order: 1,
-      check: eYo.T3.Expr.Check.or_test_all
+      check: eYo.t3.Expr.Check.or_test_all
     },
     if: {
       order: 2,
       fields: {
         label: 'if'
       },
-      check: eYo.T3.Expr.Check.or_test_all
+      check: eYo.t3.Expr.Check.or_test_all
     },
     else: {
       order: 3,
       fields: {
         label: 'else'
       },
-      check: eYo.T3.Expr.Check.expression
+      check: eYo.t3.Expr.Check.expression
     }
   }
 }, true)
@@ -475,7 +475,7 @@ eYo.Expr.Dflt.makeSubclass('conditional_expression', {
  * Class for a Delegate, builtin object.
  * For edython.
  */
-eYo.Expr.Dflt.makeSubclass('builtin__object', {
+eYo.expr.Dflt.makeSubclass('builtin__object', {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
@@ -496,10 +496,10 @@ eYo.Expr.Dflt.makeSubclass('builtin__object', {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.expr.Builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
   mngr.populateProperties(this, 'value')
   mngr.shouldSeparateInsert()
-  eYo.Expr.builtin__object.superProto_.populateContextMenuFirst_.call(this, mngr)
+  eYo.expr.Builtin__object.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
   return true
 }
 
@@ -509,19 +509,19 @@ eYo.Expr.builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
  * @param {string} op op is the operator
  * @private
  */
-eYo.Expr.builtin__object.prototype.makeTitle = function (op) {
-  return eYo.Do.createSPAN(op, 'eyo-code-reserved')
+eYo.expr.Builtin__object.prototype.makeTitle = function (op) {
+  return eYo.do.CreateSPAN(op, 'eyo-code-reserved')
 }
 
 /**
  * Class for a Delegate, any object.
  * For edython.
  */
-eYo.Expr.Dflt.makeSubclass('any', {
+eYo.expr.Dflt.makeSubclass('any', {
   data: {
     expression: {
       init: '',
-      placeholder: eYo.Msg.Placeholder.EXPRESSION,
+      placeholder: eYo.msg.placeholder.EXPRESSION,
       synchronize: true
     }
   },
@@ -535,10 +535,10 @@ eYo.Expr.Dflt.makeSubclass('any', {
   }
 }, true)
 
-eYo.Expr.T3s = [
-  eYo.T3.Expr.proper_slice,
-  eYo.T3.Expr.conditional_expression,
-  eYo.T3.Expr.starred_expression,
-  eYo.T3.Expr.builtin__object,
-  eYo.T3.Expr.any
+eYo.expr.T3s = [
+  eYo.t3.Expr.Proper_slice,
+  eYo.t3.Expr.Conditional_expression,
+  eYo.t3.Expr.Starred_expression,
+  eYo.t3.Expr.Builtin__object,
+  eYo.t3.Expr.Any
 ]

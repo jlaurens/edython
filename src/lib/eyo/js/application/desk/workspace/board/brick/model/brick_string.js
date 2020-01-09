@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.require('Brick')
+eYo.require('brick')
 
-eYo.require('Msg')
+eYo.require('msg')
 
-eYo.require('Stmt')
-eYo.require('Tooltip')
+eYo.require('stmt')
+eYo.require('tooltip')
 
-eYo.require('Library')
-eYo.provide('Brick.String')
+eYo.require('library')
+eYo.provide('brick.string')
 
 /**
  * Populate the context menu for the given brick.
@@ -32,9 +32,9 @@ eYo.provide('Brick.String')
 
   var F = (name, title, holder = 'formatter') => {
     var key = 'string__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.t3.Expr.Call_expr,
       name_p: name,
       holder_p: holder,
       dotted_p: 1,
@@ -43,9 +43,9 @@ eYo.provide('Brick.String')
   }
   var F_k = (name, title) => {
     var key = 'string__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.identifier,
+      type: eYo.t3.Expr.identifier,
       name_p: name,
       holder_p: 'string',
       dotted_p: 0,
@@ -77,10 +77,10 @@ eYo.provide('Brick.String')
     template: 21,
     'capwords': 22
   */
-eYo.Library.DATA.basic_string__module = [
+eYo.Library.DATA.Basic_string__module = [
   {
-    type: eYo.T3.Stmt.import_stmt,
-    variant_p: eYo.Key.FROM_MODULE_IMPORT_STAR,
+    type: eYo.t3.Stmt.import_stmt,
+    variant_p: eYo.key.FROM_MODULE_IMPORT_STAR,
     from_p: 'string',
     title: 'string__import_stmt'
   },
@@ -93,11 +93,11 @@ eYo.Library.DATA.basic_string__module = [
   F_k('printable', 'Une chaîne composée des caractères imprimables'),
   F_k('whitespace', 'Une chaîne composée des caractères d\'espacement'),
   {
-    type: eYo.T3.Stmt.assignment_stmt,
+    type: eYo.t3.Stmt.Assignment_stmt,
     value_s: {
       slots: {
         O: {
-          type: eYo.T3.Expr.call_expr,
+          type: eYo.t3.Expr.Call_expr,
           name_p: 'Formatter',
           holder_p: 'string',
           dotted_p: 0
@@ -118,9 +118,9 @@ eYo.Library.DATA.basic_string__module = [
 
   var F = (name, title) => {
     var key = 'string__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.call_expr,
+      type: eYo.t3.Expr.Call_expr,
       data: {
         name: name,
         holder: 'string',
@@ -131,9 +131,9 @@ eYo.Library.DATA.basic_string__module = [
   }
   var F_k = (name, title) => {
     var key = 'string__'+name
-    title && (eYo.Tooltip.Title[key] = title)
+    title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.T3.Expr.attributeref,
+      type: eYo.t3.Expr.Attributeref,
       data: {
         name: name,
         holder: 'string',
@@ -143,14 +143,14 @@ eYo.Library.DATA.basic_string__module = [
     }
   }
 
-eYo.Library.DATA.string__module = [
+eYo.Library.DATA.String__module = [
   {
-    type: eYo.T3.Stmt.import_stmt,
-    variant_p: eYo.Key.IMPORT,
+    type: eYo.t3.Stmt.import_stmt,
+    variant_p: eYo.key.IMPORT,
     import_module_s: {
       slots: {
         O: {
-          type: eYo.T3.Expr.identifier,
+          type: eYo.t3.Expr.identifier,
           name_p: 'string'
         }
       }
@@ -166,11 +166,11 @@ eYo.Library.DATA.string__module = [
   F_k('printable', 'Une chaîne composée des caractères imprimables'),
   F_k('whitespace', 'Une chaîne composée des caractères d\'espacement'),
   {
-    type: eYo.T3.Stmt.assignment_stmt,
+    type: eYo.t3.Stmt.Assignment_stmt,
     value_s: {
       slots: {
         O: {
-          type: eYo.T3.Expr.call_expr,
+          type: eYo.t3.Expr.Call_expr,
           name_p: 'Formatter',
           holder_p: 'string',
           dotted_p: 1
@@ -191,10 +191,10 @@ eYo.Library.DATA.string__module = [
 
 })()
 
-goog.mixin(eYo.Tooltip.Title, {
+goog.mixin(eYo.tooltip.Title, {
   string__import_stmt: 'Importer le module string.',
 })
 
 eYo.Brick.String.T3s = [
-  eYo.T3.Expr.string__const
+  eYo.t3.Expr.String__const
 ]

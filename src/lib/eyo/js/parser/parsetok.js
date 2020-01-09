@@ -11,12 +11,12 @@
  */
 'use strict'
 
-eYo.require('GMR.Init')
+eYo.require('gmr.init')
 
-eYo.require('Parser')
-eYo.require('Scan')
-eYo.require('E')
-eYo.provide('ParseTok')
+eYo.require('parser')
+eYo.require('scan')
+eYo.require('e')
+eYo.provide('parseTok')
 
   ;(function(){
 
@@ -37,8 +37,7 @@ eYo.provide('ParseTok')
 
   /* Parse input coming from a string.  Return error code, print some errors. *-/
   node * */
-  eYo.Parser.PyParser_ParseString = (/* const char * */s, /* grammar * */g, /* int */ start, /* perrdetail * */ err_ret) =>
-  {
+  eYo.parser.PyParser_ParseString = (/* const char * */s, /* grammar * */g, /* int */ start, /* perrdetail * */ err_ret) => {
     var scan = new eYo.Scan()
     initerr(err_ret)
     scan.init(s, start)
@@ -104,7 +103,7 @@ eYo.provide('ParseTok')
       if (filename_str != NULL) {
           filename = PyUnicode_DecodeFSDefault(filename_str);
           if (filename == NULL) {
-              err_ret.error = eYo.E.ERROR;
+              err_ret.error = eYo.e.ERROR;
               return NULL;
           }
       }
@@ -121,21 +120,20 @@ eYo.provide('ParseTok')
 
   /* static node * */
   var parsetok = (/*struct tok_state **/scan, /*grammar * */g, /*int*/ start, /*perrdetail * */err_ret/*,
-          int *flags*/) =>
-  {
-    var /*parser_state * */ ps = eYo.Parser.PyParser_New(scan, g, start)
+          int *flags*/) => {
+    var /*parser_state * */ ps = eYo.parser.PyParser_New(scan, g, start)
     var /* node * */ parent
     var /*growable_int_array*/ type_ignores = []
     var tkn = scan.first
 
     for (;;) {
       console.error('ERASE ME tkn.name:', tkn.name)
-      if (tkn.type === eYo.TKN.ERRORTOKEN) {
+      if (tkn.type === eYo.tkn.ERRORTOKEN) {
           err_ret.error = tkn.error;
           break;
       }
 
-      if (tkn.type === eYo.TKN.TYPE_IGNORE) {
+      if (tkn.type === eYo.tkn.TYPE_IGNORE) {
         type_ignores.push(tkn.lineno)
         if((tkn = tkn.next)) {
           continue
@@ -143,7 +141,7 @@ eYo.provide('ParseTok')
           break
         }
       }
-      if (tkn.n_type === eYo.TKN.COMMENT) {
+      if (tkn.n_type === eYo.tkn.COMMENT) {
         var comment = new eYo.Node(tkn.scan, tkn.n_type)
         comment.lineno = tkn.lineno
         comment.end_lineno = tkn.end_lineno
@@ -156,12 +154,12 @@ eYo.provide('ParseTok')
         break
       } else {
         ps.p_stack.last_tkn = tkn
-        var ans = eYo.Parser.PyParser_AddToken(ps, /*(int)type, str,
+        var ans = eYo.parser.PyParser_AddToken(ps, /*(int)type, str,
         linen0, c0l_offset, tkn.linen0, end_col_0ffset, */ tkn)
         err_ret.error = ans.error
         err_ret.expected = ans.expected
-        if (err_ret.error !== eYo.E.OK) {
-          if (err_ret.error !== eYo.E.DONE) {
+        if (err_ret.error !== eYo.e.OK) {
+          if (err_ret.error !== eYo.e.DONE) {
             err_ret.token = tkn.type
           }
           break
@@ -173,17 +171,17 @@ eYo.provide('ParseTok')
       }
       break
     }
-    if (err_ret.error === eYo.E.DONE) {
+    if (err_ret.error === eYo.e.DONE) {
       parent = ps.p_tree;
       ps.p_tree = null
-      if (parent.n_type === eYo.TKN.file_input) {
+      if (parent.n_type === eYo.tkn.file_input) {
         /* Put type_ignore nodes in the ENDMARKER of file_input. */
         var /* int */ num = parent.n_nchildren
         var /* node * */ ch = parent.n_child[num - 1]
-        eYo.assert(ch.n_type === eYo.TKN.ENDMARKER);
+        eYo.Assert(ch.n_type === eYo.tkn.ENDMARKER);
 
         for (var i = 0; i < type_ignores.length; i++) {
-            eYo.Do.PyNode_AddChild(ch, eYo.TKN.TYPE_IGNORE, null,
+            eYo.do.PyNode_AddChild(ch, eYo.tkn.TYPE_IGNORE, null,
             type_ignores[i], 0,
             type_ignores[i], 0);
         }
@@ -192,12 +190,12 @@ eYo.provide('ParseTok')
           is a single statement by looking at what is left in the
           buffer after parsing.  Trailing whitespace and comments
           are OK.  */
-      if (start === eYo.TKN.single_input) {
+      if (start === eYo.tkn.Single_input) {
         var t = scan.nextToken()
         while (t) {
-          if (t.type !== eYo.TKN.COMMENT && t.type !== eYo.TKN.NEWLINE && t.type !== eYo.TKN.ENDMARKER) {
-            err_ret.error = eYo.E.BADSINGLE
-            console.error('UNEXPECTED', t.type, eYo.TKN._NAMES[t.type])
+          if (t.type !== eYo.tkn.COMMENT && t.type !== eYo.tkn.NEWLINE && t.type !== eYo.tkn.ENDMARKER) {
+            err_ret.error = eYo.e.BADSINGLE
+            console.error('UNEXPECTED', t.type, eYo.tkn._NAMES[t.type])
             break
           }
           t = t.next
@@ -210,8 +208,8 @@ eYo.provide('ParseTok')
     // PyParser_Delete(ps);
 
     if (!n)*/ {
-      if (scan.done === eYo.E.EOF)
-        err_ret.error = eYo.E.EOF // logically unreachable
+      if (scan.done === eYo.e.EOF)
+        err_ret.error = eYo.e.EOF // logically unreachable
       err_ret.lineno = scan.last.lineno
       err_ret.text = scan.last.content
     }
@@ -223,9 +221,8 @@ eYo.provide('ParseTok')
   }
 
   /* static int */
-  var initerr = (/*perrdetail **/err_ret) =>
-  {
-    err_ret.error = eYo.E.OK;
+  var initerr = (/*perrdetail **/err_ret) => {
+    err_ret.error = eYo.e.OK;
     err_ret.lineno = 0;
     err_ret.offset = 0;
     err_ret.text = null;
@@ -233,7 +230,7 @@ eYo.provide('ParseTok')
     err_ret.expected = -1;
     err_ret.filename = '<string>'
     if (err_ret.filename === null) {
-        err_ret.error = eYo.E.ERROR;
+        err_ret.error = eYo.e.ERROR;
         return -1;
     }
     return 0;

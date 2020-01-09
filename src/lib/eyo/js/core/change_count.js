@@ -11,17 +11,17 @@
  */
 'use strict'
 
-eYo.require('C9r')
-eYo.provide('ChangeCount')
+eYo.require('c9r')
+eYo.provide('changeCount')
 
-eYo.Dlgt_p.changeCountAdd = function () {
+eYo.Dlgt_p.ChangeCountAdd = function () {
   this.modelDeclare({
     valued: {
       changeCount: 0,
     },
     called: {
       updateChangeCount (event, redo) {
-        if (event.type == eYo.Events.UI) {
+        if (event.type == eYo.events.UI) {
           return
         }
         if (redo) {

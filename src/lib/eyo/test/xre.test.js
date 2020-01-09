@@ -1,5 +1,5 @@
-describe('XRE', function() {
-  var xre = eYo.XRE.identifier_annotated_valued
+describe('xre', function() {
+  var xre = eYo.xre.identifier_annotated_valued
   ;[
     {},
     {annotated: true},

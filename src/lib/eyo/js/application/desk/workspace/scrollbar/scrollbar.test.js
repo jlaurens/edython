@@ -1,12 +1,12 @@
-describe('Scrollbar', function() {
+describe('scrollbar', function() {
   describe ('Visibility', function () {
-    eYo.T3.Expr
+    eYo.t3.Expr
     it ('simple', function () {
       var type = `simple`
-      eYo.T3.Expr[type] = type
-      eYo.Expr.Dflt.makeSubclass(type, {})
-      var b1 = eYo.Brick.newReady(eYo.app.board, type)
-      var b2 = eYo.Brick.newReady(eYo.app.board, type)
+      eYo.t3.Expr[type] = type
+      eYo.expr.Dflt.makeSubclass(type, {})
+      var b1 = eYo.Brick.newReady(eYo.App.Board, type)
+      var b2 = eYo.Brick.newReady(eYo.App.Board, type)
       b2.moveTo(eYo.Where.xy(-5, 90))
     })
   })

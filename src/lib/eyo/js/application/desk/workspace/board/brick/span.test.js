@@ -6,7 +6,7 @@ describe('Span expression', function () {
   var b, s, b_g, s_g, b_s, s_s
   before(function() {
     var type = 'test_expr_span'
-    eYo.Expr.Dflt.makeSubclass(type, {
+    eYo.expr.Dflt.makeSubclass(type, {
       out: {
         check: null
       }
@@ -34,7 +34,7 @@ describe('Span expression', function () {
     chai.assert(b_g.isGroup, 'MISSED')
   })
   it('(add|reset)C', function() {
-    var test = c => eYo.Test.span(b, {
+    var test = c => eYo.Test.Span(b, {
       c_min: c,
       c: c,
     })
@@ -52,7 +52,7 @@ describe('Span expression', function () {
     test(2)
   })
   it ('(re)setPadding', function () {
-    var test = p => eYo.Test.span(b, {
+    var test = p => eYo.Test.Span(b, {
       c_padding: p,
       c: 2 + p,
     })
@@ -69,7 +69,7 @@ describe('Span expression', function () {
     test(0)
   })
   it ('addHeader', function () {
-    var test = h => eYo.Test.span(b, {
+    var test = h => eYo.Test.Span(b, {
       header: h,
       l: 1 + h,
     })
@@ -89,7 +89,7 @@ describe('Span expression', function () {
     test(0)
   })
   it ('addMain', function () {
-    var test = h => eYo.Test.span(b, {
+    var test = h => eYo.Test.Span(b, {
       main: 1 + h,
       l: 1 + h,
     })
@@ -109,7 +109,7 @@ describe('Span expression', function () {
     test(0)
   })
   it ('addFooter', function () {
-    var test = h => eYo.Test.span(b, {
+    var test = h => eYo.Test.Span(b, {
       footer: h,
       l: 1 + h,
     })
@@ -130,7 +130,7 @@ describe('Span expression', function () {
   })
   it ('addSuite', function () {
     console.error(b_g.span)
-    var test = h => eYo.Test.span(b_g, {
+    var test = h => eYo.Test.Span(b_g, {
       suite: h,
       l: Math.max(2, 1 + h),
     })
@@ -160,7 +160,7 @@ describe('Current Field', function () {
   var b_1
   before(function() {
     var type = 'test_stmt_span_reserved'
-    eYo.T3.Stmt[type] = type
+    eYo.t3.Stmt[type] = type
     eYo.Stmt.makeClass(type, {
       fields: {
         FIELD: {
@@ -175,7 +175,7 @@ describe('Current Field', function () {
     chai.assert(b_1.isStmt, 'MISSED')
   })
   it ('FIELD: 1234', function () {
-    var test = (b, c, m) => eYo.Test.span(b, {
+    var test = (b, c, m) => eYo.Test.Span(b, {
       c_min: c,
       main: m,
     })
@@ -192,7 +192,7 @@ describe('Current Span statements', function () {
   var b_1, s_1, b_2, s_2, b_3, s_3
   before(function() {
     var type = 'test_stmt_span'
-    eYo.T3.Stmt[type] = type
+    eYo.t3.Stmt[type] = type
     eYo.Stmt.makeClass(type, {
       fields: {
         FIELD: {
@@ -213,7 +213,7 @@ describe('Current Span statements', function () {
     chai.assert(b_3.isStmt, 'MISSED')
   })
   it ('left+middle+right', function () {
-    var test = (b, h, m, f) => eYo.Test.span(b, {
+    var test = (b, h, m, f) => eYo.Test.Span(b, {
       header: h,
       main: m,
       footer: f
