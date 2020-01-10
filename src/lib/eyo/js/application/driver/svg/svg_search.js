@@ -244,7 +244,7 @@ eYo.Svg.Search.prototype.BindScrollEvents = function(search) {
  * @private
  */
 eYo.Svg.Search.prototype.on_mousedown = function(e) {
-  eYo.App.Motion.handleFlyoutStart(e, this)
+  eYo.app.Motion.handleFlyoutStart(e, this)
   
 }
 
@@ -293,7 +293,7 @@ eYo.Svg.makeDriverClass('SearchToolbar', {
       dom.select_general_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select'),
-        eYo.App.SearchDropDown
+        eYo.app.SearchDropDown
       )
     } else if (ftb.app && ftb.app.searchDropDownGeneral && ftb.app.searchDropDownModule) {
       dom.select_general_ = goog.dom.createDom(

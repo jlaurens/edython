@@ -22,4 +22,4 @@ eYo.require('decorate')
  * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.makeClass('Turtle', eYo.C9r.Pane)
+eYo.makeClass('Turtle', eYo.c9r.Pane)

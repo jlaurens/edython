@@ -15,10 +15,10 @@ describe ('with_part', function () {
     eYo.Test.Brick(d, 'with_part')
     eYo.Test.Code(d, 'with <MISSING INPUT>:\n    <MISSING STATEMENT>')
     var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
-    dd.target_p = 'abc'
+    dd.Target_p = 'abc'
     eYo.Test.list_connect(d, 'with', dd)
     eYo.Test.Code(d, 'with abc:\n    <MISSING STATEMENT>')
-    dd.alias_p = 'cba'
+    dd.Alias_p = 'cba'
     eYo.Test.Code(d, 'with abc as cba:\n    <MISSING STATEMENT>')
     d.dispose()
   })

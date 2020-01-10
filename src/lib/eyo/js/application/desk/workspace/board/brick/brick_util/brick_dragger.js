@@ -72,7 +72,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
    * 
    */
   xyDelta_: {
-    get: eYo.C9r.decorateChange('xyDeltaBrickDragger', function () {
+    get: eYo.c9r.decorateChange('xyDeltaBrickDragger', function () {
       return {ans: this.destination.fromPixelUnit(this.motion_.xyDelta_)}
     }),
   },

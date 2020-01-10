@@ -5,7 +5,7 @@ describe ('Tests: audio', function () {
     chai.assert(eYo.Audio)
   })
   it ('Audio: basic properties', function () {
-    let app = new eYo.App.Dflt()
+    let app = new eYo.app.Dflt()
     chai.assert(app.audio)
     chai.assert(app.audio.app === app)
     chai.assert(app.ui_driver_mngr)
@@ -18,7 +18,7 @@ describe ('Tests: audio', function () {
       media : `${eYo.path_eyo}media/`,
       UI: 'dom',
     }
-      let app = new eYo.App.Dflt({
+      let app = new eYo.app.Dflt({
 
     })
     app.audio.play('click')

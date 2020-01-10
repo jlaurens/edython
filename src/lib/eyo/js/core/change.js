@@ -16,7 +16,7 @@
  * @constructor
  * @param{Object} owner
  */
-eYo.C9r.Owned.makeSubclass('Change', {
+eYo.c9r.Owned.makeSubclass('Change', {
   init () {
     this.reset()
   },
@@ -56,7 +56,7 @@ eYo.c9r.Change_p.reset = function () {
   // Some operations are performed only when there is a change
   // In order to decide whether to run or do nothing,
   // we have to store the last change count when the operation was
-  // last performed. See `eYo.C9r.decorateChange` decorator.
+  // last performed. See `eYo.c9r.decorateChange` decorator.
   this.save_ = Object.create(null)
   // When these operations return values, they are cached below
   // until they are computed once again.
@@ -77,7 +77,7 @@ eYo.c9r.Change_p.reset = function () {
  * @param {Function} do_it  must return something.
  * @return {!Function}
  */
-eYo.C9r.decorateChange = function (key, do_it) {
+eYo.c9r.decorateChange = function (key, do_it) {
   eYo.Assert(eYo.isF(do_it), 'do_it MUST be a function')
   return function() {
     var c = this.change
@@ -96,7 +96,7 @@ eYo.C9r.decorateChange = function (key, do_it) {
 /**
  * Increment the level.
  */
-eYo.c9r.Change_p.Begin = function () {
+eYo.c9r.Change_p.begin = function () {
   ++this.level_
   var O = this.owner_
   O.onChangeBegin && O.onChangeBegin(arguments)

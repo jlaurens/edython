@@ -17,7 +17,7 @@ describe('Comprehension', function() {
   })
   it('comprehension', function() {
     var d = eYo.Test.new_brick('comprehension')
-    d.expression_p = 'x'
+    d.Expression_p = 'x'
     eYo.Test.expect_out_check(d, eYo.t3.Expr.Comprehension)
     eYo.Test.Brick(d, 'comprehension')
     d.dispose()

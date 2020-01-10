@@ -24,7 +24,7 @@ eYo.makeNS('driver')
  * @name {eYo.driver.Dlgt}
  * @param {Function} constructor
  */
-eYo.driver.makeDlgt(eYo.C9r.Dlgt)
+eYo.driver.makeDlgt(eYo.c9r.Dlgt)
 
 eYo.driver.Dlgt.eyo.makeInitInstance()
 
@@ -149,7 +149,7 @@ eYo.driver._p.makeDriverClass = function (key, Super, driverModel) {
  * Owns instances of `eYo.driver.Dflt`'s descendants.
  * @param {Object} owner
  */
-eYo.driver.makeClass('Mngr', eYo.C9r.Owned, eYo.driver.DlgtMngr,  {
+eYo.driver.makeClass('Mngr', eYo.c9r.Owned, eYo.driver.DlgtMngr,  {
   owned: {
     allPurposeDriver () {
       let handler = {
@@ -218,7 +218,7 @@ eYo.driver.Mngr_p.initDrivers = function () {
  * @param {Object} owner
  * @property {eYo.driver.Mgt} mngr,  the owning driver manager
  */
-eYo.driver.makeDflt(eYo.C9r.Owned, {
+eYo.driver.makeDflt(eYo.c9r.Owned, {
   computed: {
     mngr () {
       return this.owner

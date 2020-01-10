@@ -48,7 +48,7 @@ eYo.expr.Dflt.makeSubclass('builtin__range_expr', {
       init: '',
       xml: {
         save (element) /** @suppress {globalThis} */ {
-          if (this.brick.variant_p !== eYo.key.NONE) {
+          if (this.brick.Variant_p !== eYo.key.NONE) {
             this.save(element)
           }
         }
@@ -56,7 +56,7 @@ eYo.expr.Dflt.makeSubclass('builtin__range_expr', {
       didLoad () /** @suppress {globalThis} */ {
         this.didLoad()
         if (this.requiredFromSaved && after !== eYo.key.STEP) {
-          this.brick.variant_p = eYo.key.START
+          this.brick.Variant_p = eYo.key.START
         }
       }
     },
@@ -71,7 +71,7 @@ eYo.expr.Dflt.makeSubclass('builtin__range_expr', {
       synchronize: true,
       xml: {
         save (element) /** @suppress {globalThis} */ {
-          if (this.brick.variant_p === eYo.key.STEP) {
+          if (this.brick.Variant_p === eYo.key.STEP) {
             this.save(element)
           }
         }
@@ -79,7 +79,7 @@ eYo.expr.Dflt.makeSubclass('builtin__range_expr', {
       didLoad () /** @suppress {globalThis} */ {
         this.didLoad()
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.STEP
+          this.brick.Variant_p = eYo.key.STEP
         }
       }
     }

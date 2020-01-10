@@ -45,7 +45,7 @@ eYo.fcls.Field.Dflt_p.textCreate = eYo.do.nothing
  * Set the visual effects of the field.
  * @param {*} field
  */
-eYo.fcls.Field.Dflt_p.SetVisualAttribute = eYo.do.nothing
+eYo.fcls.Field.Dflt_p.setVisualAttribute = eYo.do.nothing
 
 /**
  * Set the visual effects of the field.

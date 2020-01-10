@@ -29,10 +29,10 @@ goog.forwardDeclare('goog.array');
 /**
  * Class for a desk.
  * This is the structure above the panes but below the application.
- * @param {eYo.App.Dflt|Object} owner Owner application.
+ * @param {eYo.app.Dflt|Object} owner Owner application.
  * @constructor
  */
-eYo.C9r.Owned.makeSubclass(eYo, 'Desk', {
+eYo.c9r.Owned.makeSubclass(eYo, 'Desk', {
   owned: {
     /**
      * Terminal.

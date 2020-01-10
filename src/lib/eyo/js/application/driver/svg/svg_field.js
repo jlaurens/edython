@@ -45,7 +45,7 @@ eYo.Svg.makeDriverClass('Field', {
       dom.borderRect_ = eYo.Svg.newElement('rect', {
         rx: 4,
         ry: 4,
-        x: -eYo.Style.SEP_SPACE_X / 2,
+        x: -eYo.style.SEP_SPACE_X / 2,
         y: 0,
         height: 16
       }, g)
@@ -99,7 +99,7 @@ eYo.Svg.Field_p.updateWidth = function (field) {
     return
   }
   var width = field.size.width
-  svg.borderRect_.setAttribute('width', width + eYo.Style.SEP_SPACE_X)
+  svg.borderRect_.setAttribute('width', width + eYo.style.SEP_SPACE_X)
 }
 
 /**
@@ -252,7 +252,7 @@ eYo.Svg.Field_p.textUpdate = function (field) {
  * Set the visual effects of the field.
  * @param {*} field
  */
-eYo.svg.Field_p.SetVisualAttribute = function (field) {
+eYo.svg.Field_p.setVisualAttribute = function (field) {
   var e = field.dom.textElement_
   if (e) {
     var f = txt => {

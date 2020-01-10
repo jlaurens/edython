@@ -97,7 +97,7 @@ static void fixstate(/* grammar * *-/ , state *)
             continue
         }
         for (var ibit = 0; ibit < g.g_ll.ll_nlabels; ibit++) {
-          if (eYo.BitSet.testbit(d1.d_first, ibit)) {
+          if (eYo.bitSet.testbit(d1.d_first, ibit)) {
             if (accel[ibit] != -1) {
               console.log("XXX ambiguity!")
             }

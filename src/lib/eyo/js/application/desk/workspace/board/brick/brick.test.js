@@ -14,7 +14,7 @@ describe('Create', function() {
     eYo.Test.SetItUp()
     var b3k = eYo.Test.new_brick('identifier')
     chai.assert(b3k.change.count !== eYo.NA, 'MISSED 3')
-    chai.assert(eYo.App.Board.getBrickById(b3k.id) === b3k, 'Unknown as top block')
+    chai.assert(eYo.app.Board.getBrickById(b3k.id) === b3k, 'Unknown as top block')
     b3k.dispose()
     eYo.Test.tearItDown()
   })

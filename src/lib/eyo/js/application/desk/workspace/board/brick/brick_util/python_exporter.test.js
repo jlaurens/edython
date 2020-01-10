@@ -5,7 +5,7 @@ describe('Python exporter', function() {
   var f = (str) => {
     var err_ret = {}
     var n = eYo.parser.PyParser_ParseString(str, g, eYo.tkn.file_input, err_ret)
-    var d = n.toBrick(eYo.App.Board)
+    var d = n.toBrick(eYo.app.Board)
     if (!d) {
       eYo.gmr.Showtree(g, n)
     }

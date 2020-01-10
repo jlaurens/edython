@@ -137,7 +137,7 @@ describe('Basic metrics IN PROGRESS', function () {
   })
   it ('desk: metrics scaling', function () {
     var desk = new eYo.Desk({})
-    chai.assert(desk !== eYo.App.Desk)
+    chai.assert(desk !== eYo.app.Desk)
     var board = desk.board
     var before = board.metrics
     board.metrics_.scale = 0.5

@@ -45,7 +45,7 @@ eYo.expr.Dflt.makeSubclass('literal', {
  */
 eYo.expr.literal.prototype.SaveData = function (element, opt) {
   eYo.expr.literal.superProto_.SaveData.Apply(this, arguments)
-  if (this.value_p == '') {
+  if (this.Value_p == '') {
     element.setAttribute(eYo.key.PLACEHOLDER, this.value_d.model.placeholder)
   }
 }
@@ -81,7 +81,7 @@ eYo.expr.literal.makeSubclass('numberliteral', {
         var type = after
           ? eYo.t3.profile.get(after, null).expr
           : eYo.t3.Expr.integer
-        this.brick.type_p = type
+        this.brick.Type_p = type
       },
       synchronize: true,
       xml: {
@@ -107,7 +107,7 @@ eYo.expr.literal.makeSubclass('numberliteral', {
   'floatnumber',
   'imagnumber'
 ].forEach(k => {
-  eYo.C9r.register(k, (eYo.expr[k] = eYo.expr.numberliteral))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.numberliteral))
 })
 
 /**
@@ -118,7 +118,7 @@ eYo.expr.literal.makeSubclass('numberliteral', {
  * @constructor
  */
 eYo.expr.numberliteral.prototype.getBaseType = function () {
-  return this.type_p
+  return this.Type_p
 }
 
 /**
@@ -137,7 +137,7 @@ eYo.expr.literal.makeSubclass('shortliteral', {
       init: eYo.t3.Expr.Shortstringliteral,
       synchronize: /** @this{eYo.data.Dflt} */ function (after) {
         // synchronize the placeholder text
-        var p = this.content_p
+        var p = this.Content_p
         if (!p || !p.length) {
           this.brick.content_d.field.getPlaceholderText(true)
         }
@@ -168,7 +168,7 @@ eYo.expr.literal.makeSubclass('shortliteral', {
         this.brick.value_d.consolidate()
       },
       validate (after) { /** @this{eYo.data.Dflt} */
-        return !goog.isDef(this.brick.content_p) || this.brick.validateComponents({
+        return !goog.isDef(this.brick.Content_p) || this.brick.validateComponents({
           prefix: after}
         ) ? after : eYo.INVALID
       },
@@ -180,7 +180,7 @@ eYo.expr.literal.makeSubclass('shortliteral', {
     },
     content: { // not saved
       placeholder () /** @suppress {globalThis} */ {
-        var subtype = this.brick.subtype_p
+        var subtype = this.brick.Subtype_p
         return subtype === eYo.t3.Expr.Shortbytesliteral || subtype === eYo.t3.Expr.longbytesliteral
           ? eYo.msg.placeholder.BYTES : eYo.msg.placeholder.STRING
       },
@@ -189,7 +189,7 @@ eYo.expr.literal.makeSubclass('shortliteral', {
         this.brick.value_d.consolidate()
       },
       validate (after) /** @suppress {globalThis} */ {
-        return !goog.isDef(this.brick.content_p) || this.brick.validateComponents({
+        return !goog.isDef(this.brick.Content_p) || this.brick.validateComponents({
           content: after
         }) ? after : eYo.INVALID
       },
@@ -207,10 +207,10 @@ eYo.expr.literal.makeSubclass('shortliteral', {
         var F = (xre, type, formatted) => {
           var m = XRegExp.exec(after, xre)
           if (m) {
-            b3k.prefix_p = m.prefix || ''
-            b3k.delimiter_p = m.delimiter || "'"
-            b3k.content_p = m.content || ''
-            b3k.subtype_p = m.formatted ? (formatted || type) : type
+            b3k.Prefix_p = m.prefix || ''
+            b3k.Delimiter_p = m.delimiter || "'"
+            b3k.Content_p = m.content || ''
+            b3k.Subtype_p = m.formatted ? (formatted || type) : type
             return true
           }
           return false
@@ -226,9 +226,9 @@ eYo.expr.literal.makeSubclass('shortliteral', {
         }
       },
       consolidate () /** @suppress {globalThis} */ {
-        var prefix = this.brick.prefix_p
-        var delimiter = this.brick.delimiter_p
-        var content = this.brick.content_p
+        var prefix = this.brick.Prefix_p
+        var delimiter = this.brick.Delimiter_p
+        var content = this.brick.Content_p
         if (goog.isDef(prefix) && goog.isDef(delimiter) && goog.isDef(content)) {
           this.set('' + prefix + delimiter + content + delimiter)
         }
@@ -268,7 +268,7 @@ eYo.expr.literal.makeSubclass('shortliteral', {
   },
   out: {
     check: /** @suppress globalThis */ function () {
-      return [this.brick.subtype_p]
+      return [this.brick.Subtype_p]
     }
   }
 })
@@ -278,7 +278,7 @@ eYo.expr.literal.makeSubclass('shortliteral', {
   'shortformattedliteral',
   'shortbytesliteral',
 ].forEach(k => {
-  eYo.C9r.register(k, (eYo.expr[k] = eYo.expr.Shortliteral))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Shortliteral))
 })
 
 /**
@@ -288,7 +288,7 @@ eYo.expr.literal.makeSubclass('shortliteral', {
  *     type-specific functions for this brick.
  */
 eYo.expr.Shortliteral.prototype.getBaseType = function () {
-  return this.subtype_p
+  return this.Subtype_p
 }
 
 /**
@@ -299,9 +299,9 @@ eYo.expr.Shortliteral.prototype.getBaseType = function () {
  * @constructor
  */
 eYo.expr.Shortliteral.prototype.validateComponents = function(kvargs) {
-  var prefix = kvargs.prefix || this.prefix_p
-  var delimiter = kvargs.delimiter || this.delimiter_p
-  var content = kvargs.content || this.content_p
+  var prefix = kvargs.prefix || this.Prefix_p
+  var delimiter = kvargs.delimiter || this.Delimiter_p
+  var content = kvargs.content || this.Content_p
   var value = `${prefix}${delimiter}${content}${delimiter}`
   return (!!XRegExp.exec(value, eYo.xre.ShortbytesliteralSingle) && eYo.t3.Expr.shortbytesliteral) ||
   (!!XRegExp.exec(value, eYo.xre.ShortbytesliteralDouble) && eYo.t3.Expr.shortbytesliteral) ||
@@ -329,7 +329,7 @@ eYo.expr.Shortliteral.prototype.makeTitle = function (variant) {
 eYo.expr.literal.literalPopulateContextMenuFirst_ = function (mngr) {
   mngr.populateProperties(this, 'delimiter')
   mngr.separate()
-  var current = this.prefix_p
+  var current = this.Prefix_p
   var can_b = this.validateComponents({
     prefix: 'b'
   })
@@ -343,7 +343,7 @@ eYo.expr.literal.literalPopulateContextMenuFirst_ = function (mngr) {
         goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
       )
       return mngr.newMenuItem(title, () => {
-        this.prefix_p = prefix
+        this.Prefix_p = prefix
       })
     }
   }
@@ -415,10 +415,10 @@ eYo.expr.Shortliteral.makeSubclass('longliteral', {
         var F = (xre, type, formatted) => {
           var m = XRegExp.exec(after, xre)
           if (m) {
-            b3k.prefix_p = m.prefix || ''
-            b3k.delimiter_p = m.delimiter || "'''"
-            b3k.content_p = m.content || ''
-            b3k.subtype_p = m.formatted ? (formatted || type) : type
+            b3k.Prefix_p = m.prefix || ''
+            b3k.Delimiter_p = m.delimiter || "'''"
+            b3k.Content_p = m.content || ''
+            b3k.Subtype_p = m.formatted ? (formatted || type) : type
             return true
           }
           return false
@@ -444,7 +444,7 @@ eYo.expr.Shortliteral.makeSubclass('longliteral', {
   },
   out: {
     check: /** @suppress globalThis */ function () {
-      return [this.brick.subtype_p]
+      return [this.brick.Subtype_p]
     }
   }
 })
@@ -457,9 +457,9 @@ eYo.expr.Shortliteral.makeSubclass('longliteral', {
  * @constructor
  */
 eYo.expr.longliteral.prototype.validateComponents = function(kvargs) {
-  var prefix = kvargs.prefix || this.prefix_p
-  var delimiter = kvargs.delimiter || this.delimiter_p
-  var content = kvargs.content || this.content_p
+  var prefix = kvargs.prefix || this.Prefix_p
+  var delimiter = kvargs.delimiter || this.Delimiter_p
+  var content = kvargs.content || this.Content_p
   var value = `${prefix}${delimiter}${content}${delimiter}`
   return (!!XRegExp.exec(value, eYo.xre.longbytesliteralSingle) && eYo.t3.Expr.longbytesliteral) ||
   (!!XRegExp.exec(value, eYo.xre.longbytesliteralDouble) && eYo.t3.Expr.longbytesliteral) ||
@@ -472,7 +472,7 @@ eYo.expr.longliteral.prototype.validateComponents = function(kvargs) {
   'longformattedliteral',
   'longbytesliteral',
 ].forEach(k => {
-  eYo.C9r.register(k, (eYo.expr[k] = eYo.expr.longliteral))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.longliteral))
 })
 
 eYo.expr.literal.T3s = [

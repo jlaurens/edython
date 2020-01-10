@@ -69,7 +69,7 @@ eYo.expr.Dflt.prototype.ChangeDone = function (deep) {
  * This should be used instead of direct brick querying.
  * @return {String} The type of the receiver's brick.
  */
-eYo.expr.Dflt.prototype.getType = eYo.C9r.decorateChange(
+eYo.expr.Dflt.prototype.getType = eYo.c9r.decorateChange(
   'getType',
   function () {
     return {
@@ -205,12 +205,12 @@ eYo.expr.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
     if (this.await_) {
       mngr.shouldSeparateRemove()
       mngr.addRemoveChild(mngr.newMenuItem(content, () => {
-        this.await_p = false
+        this.Await_p = false
       }))
     } else {
       mngr.shouldSeparateInsert()
       mngr.addInsertChild(mngr.newMenuItem(content, () => {
-        this.await_p = true
+        this.Await_p = true
       }))
     }
   }
@@ -387,14 +387,14 @@ eYo.expr.Dflt.makeSubclass('proper_slice', {
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          if (this.brick.variant_p === eYo.key.STRIDE) {
+          if (this.brick.Variant_p === eYo.key.STRIDE) {
             this.save(element, opt)
           }
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.STRIDE
+          this.brick.Variant_p = eYo.key.STRIDE
         }
       }
     }
@@ -436,7 +436,7 @@ eYo.expr.Dflt.makeSubclass('proper_slice', {
       optional: true,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.STRIDE
+          this.brick.Variant_p = eYo.key.STRIDE
         }
       }
     }

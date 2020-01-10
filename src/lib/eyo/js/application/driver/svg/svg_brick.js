@@ -506,7 +506,7 @@ eYo.Svg.Brick_p.updateDisabled = function (brick) {
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @param {Object} menu  the menu to be displayed
  */
-eYo.Svg.Brick_p.MenuShow = function (brick, menu) {
+eYo.Svg.Brick_p.menuShow = function (brick, menu) {
   var svg = brick.dom
   var bBox = this.getBBox(brick)
   var scaledHeight = bBox.height * brick.board.scale
@@ -618,7 +618,7 @@ eYo.Svg.Brick_p.updateWrapped = function (brick) {
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.svg.Brick_p.SendToFront = function (brick) {
+eYo.svg.Brick_p.sendToFront = function (brick) {
   var b3k = brick
   var parent
   while ((parent = b3k.surround)) {
@@ -654,7 +654,7 @@ eYo.svg.Brick_p.SendToFront = function (brick) {
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.svg.Brick_p.SendToBack = function (brick) {
+eYo.svg.Brick_p.sendToBack = function (brick) {
   var b3k = brick
   var parent
   while ((parent = b3k.surround)) {
@@ -689,7 +689,7 @@ eYo.Svg.Brick_p.place = function(brick) {
  * @param {eYo.Brick.Dflt} brick  the brick.
  * @param {eYo.Where} dxy  in board coordinates.
  */
-eYo.svg.Brick_p.SetOffsetDuringDrag = function(brick, dxy) {
+eYo.svg.Brick_p.setOffsetDuringDrag = function(brick, dxy) {
   var svg = brick.dom.svg
   var g = svg.group_
   g.translate_ = `translate(${dxy.x},${dxy.y})`
@@ -701,7 +701,7 @@ eYo.svg.Brick_p.SetOffsetDuringDrag = function(brick, dxy) {
  * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.Svg.Brick_p.WhereInParent = function (brick) {
+eYo.Svg.Brick_p.whereInParent = function (brick) {
   return this.xyInParent(brick.dom.svg.group_)
 }
 
@@ -714,7 +714,7 @@ eYo.Svg.Brick_p.WhereInParent = function (brick) {
  * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.Svg.Brick_p.WhereInBoard = function (brick) {
+eYo.Svg.Brick_p.whereInBoard = function (brick) {
   var ans = new eYo.Where()
   var bds = brick.board.dom.svg.brickDragSurface
   var current = bds.brickGroup
@@ -740,7 +740,7 @@ eYo.Svg.Brick_p.WhereInBoard = function (brick) {
  * @return {!eYo.Where} Object with .x and .y properties in
  *     desk coordinates.
  */
-eYo.Svg.Brick_p.WhereInDesk = function (brick) {
+eYo.Svg.Brick_p.whereInDesk = function (brick) {
   var ans = new eYo.Where()
   var bds = brick.board.dom.svg.brickDragSurface
   var bdsRoot = bds.dom.svg.root_
@@ -757,7 +757,7 @@ eYo.Svg.Brick_p.WhereInDesk = function (brick) {
  * Add the hilight path_.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.AddHilight = function (brick) {
+eYo.Svg.Brick_p.addHilight = function (brick) {
   var svg = brick.dom.svg
   if (!svg.pathHilight_.parentNode) {
     svg.group_.appendChild(svg.pathHilight_)
@@ -776,7 +776,7 @@ eYo.Svg.Brick_p.hilightRemove = function (brick) {
  * Add the select path.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.svg.Brick_p.SelectAdd = function (brick) {
+eYo.svg.Brick_p.selectAdd = function (brick) {
   var svg = brick.dom.svg
   if (!svg.pathSelect_.parentNode) {
     if (svg.pathHilight_.parentNode) {
@@ -793,7 +793,7 @@ eYo.svg.Brick_p.SelectAdd = function (brick) {
  * Remove the select path.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.svg.Brick_p.SelectRemove = function (brick) {
+eYo.svg.Brick_p.selectRemove = function (brick) {
   goog.dom.removeNode(brick.dom.svg.pathSelect_)
 }
 
@@ -801,7 +801,7 @@ eYo.svg.Brick_p.SelectRemove = function (brick) {
  * Add the hilight path_ to the dom.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.MagnetAdd = function (brick) {
+eYo.Svg.Brick_p.magnetAdd = function (brick) {
   var svg = brick.dom.svg
   if (!svg.pathMagnet_.parentNode) {
     svg.group_.appendChild(svg.pathMagnet_)
@@ -812,7 +812,7 @@ eYo.Svg.Brick_p.MagnetAdd = function (brick) {
  * Remove the select path from the dom.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.Svg.Brick_p.MagnetRemove = function (brick) {
+eYo.Svg.Brick_p.magnetRemove = function (brick) {
   goog.dom.removeNode(brick.dom.svg.pathMagnet_)
 }
 
@@ -820,7 +820,7 @@ eYo.Svg.Brick_p.MagnetRemove = function (brick) {
  * The svg group has an `eyo-top` class.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.svg.Brick_p.StatusTopAdd = function (brick) {
+eYo.svg.Brick_p.statusTopAdd = function (brick) {
   goog.dom.classlist.add(brick.dom.svg.group_, 'eyo-top')
 }
 
@@ -828,7 +828,7 @@ eYo.svg.Brick_p.StatusTopAdd = function (brick) {
  * The svg group has no `eyo-top` class.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.svg.Brick_p.StatusTopRemove = function (brick) {
+eYo.svg.Brick_p.statusTopRemove = function (brick) {
   goog.dom.classlist.remove(brick.dom.svg.group_, 'eyo-top')
 }
 
@@ -836,7 +836,7 @@ eYo.svg.Brick_p.StatusTopRemove = function (brick) {
  * The svg group has an `eyo-select` class.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.svg.Brick_p.StatusFocusAdd = function (brick) {
+eYo.svg.Brick_p.statusFocusAdd = function (brick) {
   var svg = brick.dom.svg
   var g = svg.group_
   if (goog.dom.classlist.contains(g, 'eyo-select')) {
@@ -853,7 +853,7 @@ eYo.svg.Brick_p.StatusFocusAdd = function (brick) {
  * The svg group has an `eyo-select` class.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  */
-eYo.svg.Brick_p.StatusFocusRemove = function (brick) {
+eYo.svg.Brick_p.statusFocusRemove = function (brick) {
   var svg = brick.dom.svg
   var g = svg.group_
   goog.dom.classlist.remove(g, 'eyo-select')
@@ -935,7 +935,7 @@ eYo.Svg.Brick_p.drawSharp = function (brick, visible) {
  * @param {eYo.Brick.Dflt} mode  The brick to edit.
  * @param {Boolean} dragging  The display mode for bocks.
  */
-eYo.svg.Brick_p.SetDragging = (brick, dragging) => {
+eYo.svg.Brick_p.setDragging = (brick, dragging) => {
   var svg = brick.dom.svg
   var g = svg.group_
   if (dragging) {
@@ -989,7 +989,7 @@ eYo.Svg.Brick_p.parentSet = function (brick, parent) {
  * @param {String} key
  * @param {Object} [options]
  */
-eYo.Svg.Brick_p.AddTooltip = function (brick, key, options) {
+eYo.Svg.Brick_p.addTooltip = function (brick, key, options) {
   var g = brick.dom.group
   goog.mixin(options, {
     onShow(instance) {

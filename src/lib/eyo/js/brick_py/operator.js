@@ -147,7 +147,7 @@ eYo.expr.Dflt.makeSubclass('binary', {
 eYo.t3.Expr.Check.Binary.forEach(k => {
   if (k !== eYo.t3.Expr.Any) {
     k = k.substring(4)
-    eYo.C9r.register(k, (eYo.expr[k] = eYo.expr.Binary))
+    eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Binary))
   }
 })
 
@@ -159,7 +159,7 @@ eYo.t3.Expr.Check.Binary.forEach(k => {
   'number_comparison',
   'object_comparison'
 ].forEach(k => {
-  eYo.C9r.register(k, (eYo.expr[k] = eYo.expr.Binary))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Binary))
 })
 
 /**
@@ -278,7 +278,7 @@ eYo.expr.Binary.prototype.xmlAttr = function () {
  * For edython.
  */
 eYo.expr.Binary.prototype.getBaseType = function () {
-  return this.constructor.getTypeForOperator(this.operator_p)
+  return this.constructor.getTypeForOperator(this.Operator_p)
 }
 
 eYo.t3.Expr.unary = 'eyo:unary' // don't forget it !
@@ -358,7 +358,7 @@ eYo.expr.Dflt.makeSubclass('unary', {
   'u_expr',
   'not_test'
 ].forEach(k => {
-  eYo.C9r.register(k, (eYo.expr[k] = eYo.expr.unary))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.unary))
 })
 
 /**
@@ -383,7 +383,7 @@ eYo.expr.unary.getOperatorModelForType = function (type) {
  * @return a dictionary
  */
 eYo.expr.unary.prototype.getOperatorModel = function () {
-  var op = this.operator_p
+  var op = this.Operator_p
   return eYo.expr.unary.getOperatorModel(op)
 }
 
@@ -393,7 +393,7 @@ eYo.expr.unary.prototype.getOperatorModel = function () {
  * For edython.
  */
 eYo.expr.unary.prototype.getBaseType = function () {
-  return this.constructor.getTypeForOperator(this.operator_p)
+  return this.constructor.getTypeForOperator(this.Operator_p)
 }
 
 /**

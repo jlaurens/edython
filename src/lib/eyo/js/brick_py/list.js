@@ -161,9 +161,9 @@ eYo.expr.list.prototype.CreateConsolidator = eYo.decorate.reentrant_method(
     if (!type) {
       console.error('unexpected void type')
     }
-    var D = eYo.C9r.model.forKey(type).list
+    var D = eYo.c9r.model.forKey(type).list
     eYo.Assert(D, '`model`.list is missing in ' + type)
-    var C10r = this.consolidatorConstructor || D.consolidator || eYo.Consolidator.list
+    var C10r = this.consolidatorConstructor || D.consolidator || eYo.consolidator.list
     if (this.consolidator) {
       if (this.consolidator.constructor !== C10r) {
         this.consolidator = new C10r(D)
@@ -466,7 +466,7 @@ eYo.expr.list.makeSubclass('enclosure', {
  * getProfile.
  * @return {!Object} with `ans` key.
  */
-eYo.expr.enclosure.prototype.getProfile = eYo.C9r.decorateChange(
+eYo.expr.enclosure.prototype.getProfile = eYo.c9r.decorateChange(
   'getProfile',
   function () {
     // this may be called very very early when
@@ -483,7 +483,7 @@ eYo.expr.enclosure.prototype.getProfile = eYo.C9r.decorateChange(
           : no_target
         }
       }
-      var variant = this.variant_p
+      var variant = this.Variant_p
       if (variant === eYo.key.PAR) {
         return f(eYo.t3.Expr.parenth_target_list, eYo.t3.Expr.parenth_form)
       }
@@ -552,7 +552,7 @@ eYo.expr.enclosure.prototype.getBaseType = function () {
 'set_display',
 'dict_display',
 'one_dict_display'].forEach(k => {
-  eYo.C9r.register(k, (eYo.expr[k] = eYo.expr.enclosure))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.enclosure))
 })
 
 eYo.expr.list.T3s = [

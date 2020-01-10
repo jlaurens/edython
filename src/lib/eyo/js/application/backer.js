@@ -22,7 +22,7 @@ eYo.forwardDeclare('app')
  * @param {Object} owner
  * @constructor
  */
-eYo.makeClass('Backer', eYo.C9r.Owned, {
+eYo.makeClass('Backer', eYo.c9r.Owned, {
   valued: {
     /**
      * @type {!Array<!eYo.events.Abstract>}
@@ -71,7 +71,7 @@ eYo.Backer.eyo.ChangeCountAdd()
 /**
  * Clear the undo/redo stacks.
  */
-eYo.Backer_p.Clear = function() {
+eYo.Backer_p.clear = function() {
   this.undoStack.length = 0
   this.redoStack.length = 0
   // Stop any events already in the firing queue from being undoable.

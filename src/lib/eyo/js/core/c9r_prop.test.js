@@ -1,11 +1,11 @@
 describe ('Tests: Property', function () {
   this.timeout(10000)
   it ('Property: Basic', function () {
-    chai.assert(eYo.C9r.Prop)
+    chai.assert(eYo.c9r.Prop)
   })
   it('Property: {}', function () {
     let onr = {}
-    let p = new eYo.C9r.Prop(onr, 'foo', {})
+    let p = new eYo.c9r.Prop(onr, 'foo', {})
     chai.assert(eYo.isNA(p.value))
     chai.expect(() => {
       p.value = 421
@@ -16,7 +16,7 @@ describe ('Tests: Property', function () {
   it('Property: dispose', function () {
     var flag = 0
     let onr = {}
-    let p = new eYo.C9r.Prop(onr, 'foo', {})
+    let p = new eYo.c9r.Prop(onr, 'foo', {})
     let value = {
       eyo: true,
       dispose () {

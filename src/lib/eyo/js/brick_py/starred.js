@@ -71,7 +71,7 @@ eYo.expr.Dflt.makeSubclass('starred', {
         var b3k = this.brick
         b3k.modified_d.incog = after === eYo.key.STAR
         if (after === eYo.key.STAR) {
-          b3k.modifier_p = '*'
+          b3k.Modifier_p = '*'
         }
       },
       fromType (type) /** @suppress {globalThis} */ {
@@ -88,7 +88,7 @@ eYo.expr.Dflt.makeSubclass('starred', {
         builtin()
         var b3k = this.brick
         if (after !== '*') {
-          b3k.variant_p = eYo.key.NONE
+          b3k.Variant_p = eYo.key.NONE
         }
       },
       fromType (type) /** @suppress {globalThis} */ {
@@ -135,13 +135,13 @@ eYo.expr.Dflt.makeSubclass('starred', {
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         if (after.length) {
-          this.brick.variant_p = eYo.key.NONE
+          this.brick.Variant_p = eYo.key.NONE
         }
       },
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p !== eYo.key.STAR && this.brick.modifier_p === '*'
+          this.required = this.brick.Variant_p !== eYo.key.STAR && this.brick.Modifier_p === '*'
           this.save(element, opt)
         },
         load (element, opt) /** @suppress {globalThis} */ {
@@ -153,7 +153,7 @@ eYo.expr.Dflt.makeSubclass('starred', {
         this.required_from_type = type !== eYo.t3.Expr.Star
       },
       didLoad () /** @suppress {globalThis} */ {
-        this.brick.variant_p = this.required_from_type || this.isRequiredFromModel()
+        this.brick.Variant_p = this.required_from_type || this.isRequiredFromModel()
           ? eYo.key.NONE
           : eYo.key.STAR
         this.required_from_type = false
@@ -174,13 +174,13 @@ eYo.expr.Dflt.makeSubclass('starred', {
         }
       },
       check (type) /** @suppress {globalThis} */ {
-        return this.brick.modifier_p === '*'
+        return this.brick.Modifier_p === '*'
           ? eYo.t3.Expr.Check._or_expr_all_or_parameter_or_target
           : eYo.t3.Expr.Check._expression_or_parameter
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         if (eYo.events.recordingUndo) {
-          this.brick.variant_p = eYo.key.NONE
+          this.brick.Variant_p = eYo.key.NONE
         }
       }
     }
@@ -189,12 +189,12 @@ eYo.expr.Dflt.makeSubclass('starred', {
     check (type) /** @suppress {globalThis} */ {
       // retrieve the brick
       var brick = this.brick
-      if (brick.variant_p === eYo.key.STAR) {
+      if (brick.Variant_p === eYo.key.STAR) {
         return [eYo.t3.Expr.Star]
       }
       var b = brick.modified_b
       var types = []
-      if (brick.modifier_p === '*') {
+      if (brick.Modifier_p === '*') {
         if (b) {
           var tt = b.type
           if (goog.array.contains(eYo.t3.Expr.Check.or_expr_all, tt)) {
@@ -242,7 +242,7 @@ eYo.expr.Dflt.makeSubclass('starred', {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.expr.Starred.prototype.getType = eYo.C9r.decorateChange(
+eYo.expr.Starred.prototype.getType = eYo.c9r.decorateChange(
   'getType',
   function () {
     var check = this.out_m.check_
@@ -256,7 +256,7 @@ eYo.expr.Starred.prototype.getType = eYo.C9r.decorateChange(
  * @return {String}
  */
 eYo.expr.Starred.prototype.xmlAttr = function () {
-  return this.modifier_p
+  return this.Modifier_p
 }
 
 // /**
@@ -291,5 +291,5 @@ eYo.expr.Starred.prototype.xmlAttr = function () {
   'parameter_star_star',
   'or_expr_star_star'
 ].forEach(k => {
-  eYo.C9r.register(k, (eYo.expr[k] = eYo.expr.Starred))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Starred))
 })

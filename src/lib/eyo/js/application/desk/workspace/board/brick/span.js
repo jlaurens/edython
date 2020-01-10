@@ -47,7 +47,7 @@ eYo.forwardDeclare('brick')
  * @param {eYo.Brick.Dflt} brick The brick owning the span.
  * @constructor
  */
-eYo.makeClass('Span', eYo.C9r.Owned, {
+eYo.makeClass('Span', eYo.c9r.Owned, {
   init (brick) {
     this.c_min_init_ = brick.wrapped_
       ? 0
@@ -267,7 +267,7 @@ Object.defineProperty(eYo.Span, 'TAB_WIDTH', {
  * Used to align the right edges of statement blocks.
  * @param {Number} padding  the new value of the padding, a non negative number.
  */
-eYo.Span_p.SetPadding = function (padding) {
+eYo.Span_p.setPadding = function (padding) {
   if (padding>=0) {
     var right = this.rightSpan
     if (right) {
@@ -315,7 +315,7 @@ eYo.Span_p.resetC = function () {
  * The suite bricks, if any, influence the padding.
  * @param {Number} delta  the difference from the old value to value and the old one.
  */
-eYo.Span_p.AddC = function (delta) {
+eYo.Span_p.addC = function (delta) {
   if (this.c_min_ + delta < this.c_min_init_) {
     delta = this.c_min_init_ - this.c_min_
   }
@@ -337,7 +337,7 @@ eYo.Span_p.AddC = function (delta) {
  * The suite bricks, if any, influence the padding.
  * @param {Number} delta  the difference from the old value to value and the old one.
  */
-eYo.Span_p.AddL = function (delta) {
+eYo.Span_p.addL = function (delta) {
   if (delta) {
     this.l_ += delta
   }
@@ -375,7 +375,7 @@ eYo.Span_p.resetL = function () {
  * 3) the left connection changes
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.Span_p.AddHeader = function (delta) {
+eYo.Span_p.addHeader = function (delta) {
   if (delta) {
     this.header_ += delta
     this.l_ += delta
@@ -397,7 +397,7 @@ eYo.Span_p.AddHeader = function (delta) {
  * and possibly to the head.
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.Span_p.AddMain = function (delta) {
+eYo.Span_p.addMain = function (delta) {
   if (delta) {
     this.main_ += delta
     this.l_ += delta
@@ -415,7 +415,7 @@ eYo.Span_p.AddMain = function (delta) {
  * Convenient method
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.Span_p.AddLeft_ = function (delta) {
+eYo.Span_p.addLeft_ = function (delta) {
   var left = this.leftSpan
   if (left) {
     left.addFooter(delta)
@@ -428,7 +428,7 @@ eYo.Span_p.AddLeft_ = function (delta) {
  * Convenient method
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.Span_p.AddParent_ = function (delta) {
+eYo.Span_p.addParent_ = function (delta) {
   var parent = this.parentSpan
   if (parent) {
     this.brick.isTop
@@ -445,7 +445,7 @@ eYo.Span_p.AddParent_ = function (delta) {
  * 3) The right connection changes
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.Span_p.AddFooter = function (delta) {
+eYo.Span_p.addFooter = function (delta) {
   if (delta) {
     this.footer_ += delta
     this.l_ += delta
@@ -461,7 +461,7 @@ eYo.Span_p.AddFooter = function (delta) {
  * @param {Number} delta  the value to add to the ressource.
  * Actually it can only be 1 or -1.
  */
-eYo.Span_p.AddFoot = function (delta) {
+eYo.Span_p.addFoot = function (delta) {
   if (delta) {
     this.foot_ += delta
     this.addParent_(delta)
@@ -473,7 +473,7 @@ eYo.Span_p.AddFoot = function (delta) {
  * @param {Number} delta  the value to add to the ressource.
  * Actually it can only be 1 or -1.
  */
-eYo.Span_p.AddSuite = function (delta) {
+eYo.Span_p.addSuite = function (delta) {
   var b = this.brick
   if (delta && b.isGroup) {
     this.suite_ += delta

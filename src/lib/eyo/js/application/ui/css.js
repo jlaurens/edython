@@ -12,7 +12,7 @@
 'use strict'
 
 /**
- * @name eYo.Css
+ * @name eYo.css
  * @namespace
  */
 eYo.require('style')
@@ -25,7 +25,7 @@ eYo.forwardDeclare('font-face')
 eYo.forwardDeclare('shape')
 goog.forwardDeclare('goog.cssom');
 
-eYo.Css.insertRuleAt = (() => {
+eYo.css.insertRuleAt = (() => {
   var style, sheet
   var getSheet = () => {
     if (!sheet) {
@@ -60,14 +60,14 @@ eYo.Css.insertRuleAt = (() => {
 })()
 
 eYo.Setup.register(-1, () => {
-  eYo.Css.insertRuleAt('body {background: orange;}')
+  eYo.css.insertRuleAt('body {background: orange;}')
 })
 
 /**
  * List of cursors.
  * @enum {string}
  */
-eYo.Css.Cursor = {
+eYo.css.Cursor = {
   OPEN: 'handopen',
   CLOSED: 'handclosed',
   DELETE: 'handdelete'
@@ -90,11 +90,11 @@ Blockly.Css.styleSheet_ = null;
  *     (providing CSS becomes the document's responsibility).
  * @param {string} pathToMedia Path from page to the Blockly media directory.
  */
-eYo.Css.inject = (hasCss, pathToMedia) => {
+eYo.css.inject = (hasCss, pathToMedia) => {
   // Placeholder for cursor rule.  Must be first rule (index 0).
   var text = '.eyo-draggable {}\n'
   if (hasCss) {
-    text += eYo.Css.CONTENT(pathToMedia).join('\n')
+    text += eYo.css.CONTENT(pathToMedia).join('\n')
   }
   // Inject CSS tag at start of head.
   var cssNode = document.createElement('style');
@@ -109,7 +109,7 @@ eYo.Css.inject = (hasCss, pathToMedia) => {
 /**
  * Array making up the CSS content for Edython.
  */
-eYo.Css.CONTENT = path => {
+eYo.css.CONTENT = path => {
   return [/* So bricks in drag surface disappear at edges */
     `#eyo-desk {
   height: 100%;
@@ -444,20 +444,20 @@ eYo.Css.CONTENT = path => {
 .eyo-error.eyo-path-shape,
 .eyo-error.eyo-path-contour,
 .eyo-error.eyo-path-inner {
-  stroke:${eYo.Style.Path.Error.Colour};
-  stroke-width: ${eYo.Style.Path.Error.width}px;
+  stroke:${eYo.style.Path.Error.Colour};
+  stroke-width: ${eYo.style.Path.Error.width}px;
 }
 .eyo-path-selected,
 .eyo-path-hilighted {
-  stroke: ${eYo.Style.Path.Hilighted.Colour};
+  stroke: ${eYo.style.Path.Hilighted.Colour};
   fill: none;
 }
 .eyo-path-hilighted {
-  stroke-width: ${eYo.Style.Path.Hilighted.width}px;
+  stroke-width: ${eYo.style.Path.Hilighted.width}px;
 }
 .eyo-select .eyo-path-contour.eyo-error,
 .eyo-select .eyo-path-inner.eyo-error {
-  stroke: ${eYo.Style.Path.Error.Colour};
+  stroke: ${eYo.style.Path.Error.Colour};
 }
 .eyo-checkbox-icon-rect {
   stroke: ${eYo.Shape.Style.Colour.light};
@@ -492,7 +492,7 @@ eYo.Css.CONTENT = path => {
   fill-opacity:0.92
 }
 .eyo-path-bbox {
-  stroke: ${eYo.Style.Path.Bbox_colour};
+  stroke: ${eYo.style.Path.Bbox_colour};
   stroke-width: ${eYo.Shape.Style.width.light}px;
   fill: none;
 }
@@ -595,21 +595,21 @@ text.eyo-code-comment {
     `.eyo-select.eyo-expr .eyo-path-contour,
 .eyo-select.eyo-stmt .eyo-path-contour,
 .eyo-select.eyo-expr .eyo-path-inner {
-  stroke: ${eYo.Style.Path.Hilighted.Colour};
+  stroke: ${eYo.style.Path.Hilighted.Colour};
 }
 .eyo-select.eyo-stmt>.eyo-path-contour,
 .eyo-select.eyo-stmt>.eyo-path-inner,
 .eyo-select.eyo-stmt>.eyo-expr .eyo-path-contour,
 .eyo-select.eyo-stmt>.eyo-expr .eyo-path-inner {
-  stroke: ${eYo.Style.Path.Hilighted.Colour};
+  stroke: ${eYo.style.Path.Hilighted.Colour};
 }
 .eyo-code-placeholder,
 .eyo-code-comment {
   font-style: oblique;
 }
 .eyo-hilighted-magnet-path{
-  stroke: ${eYo.Style.Path.Hilighted.Colour};
-  stroke-width: ${eYo.Style.Path.Hilighted.width}px;
+  stroke: ${eYo.style.Path.Hilighted.Colour};
+  stroke-width: ${eYo.style.Path.Hilighted.width}px;
   fill: none;
 }`,
 `.eyo-main-board-background {

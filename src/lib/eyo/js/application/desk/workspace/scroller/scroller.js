@@ -41,7 +41,7 @@ eYo.Scroller = function(board) {
   this.disposeUI = eYo.do.nothing
   board.hasUI && this.initUI()
 }
-goog.inherits(eYo.Scroller, eYo.C9r.Dflt)
+goog.inherits(eYo.Scroller, eYo.c9r.Dflt)
 
 Object.defineProperties(eYo.Scroller.prototype, {
   /**

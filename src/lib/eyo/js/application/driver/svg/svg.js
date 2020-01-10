@@ -175,7 +175,7 @@ eYo.Svg.Dflt_p.xyInParent = function(element) {
  * Add tooltip to an element
  * @param {String} key
  */
-eYo.Svg.Dflt_p.AddTooltip = function (el, title, options) {
+eYo.Svg.Dflt_p.addTooltip = function (el, title, options) {
   if (eYo.isStr(title)) {
     el.setAttribute('title', title)
     tippy(el, options)

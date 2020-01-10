@@ -30,10 +30,10 @@ eYo.forwardDeclare('magnet')
 /**
  * Class for a basic object.
  * 
- * @param {eYo.App.Dflt|eYo.Desk|eYo.Flyout|eYo.Board|eYo.expr|eYo.Stmt|eYo.Slot.Dflt|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.app.Dflt|eYo.Desk|eYo.Flyout|eYo.Board|eYo.expr|eYo.Stmt|eYo.Slot.Dflt|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
-eYo.C9r.makeClass('Owned', {
+eYo.c9r.makeClass('Owned', {
   init (owner) {
     eYo.ParameterAssert(owner, 'Missing owner!')
     this.owner_ = owner
@@ -60,7 +60,7 @@ eYo.C9r.makeClass('Owned', {
   cached: {
     /**
      * The root application
-     * @type {eYo.App}
+     * @type {eYo.app}
      */
     app: {
       init () {
@@ -124,12 +124,12 @@ eYo.C9r.makeClass('Owned', {
   },
 })
 
-eYo.Assert(eYo.C9r.Owned, 'MISSING eYo.c9r.owned')
+eYo.Assert(eYo.c9r.Owned, 'MISSING eYo.c9r.owned')
 
 /**
  * Class for a basic object indirectly owned by a brick.
  * 
- * @name {eYo.C9r.BsmOwned}
+ * @name {eYo.c9r.BSMOwned}
  * @constructor
  * @param {eYo.Brick|eYo.Slot.Dflt|eYo.Magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
  * @readonly
@@ -142,7 +142,7 @@ eYo.Assert(eYo.C9r.Owned, 'MISSING eYo.c9r.owned')
  * @property {eYo.Magnet.Dflt} magnet  The magnet.
  */
 
-eYo.C9r.Owned.makeSubclass('BSMOwned', {
+eYo.c9r.Owned.makeSubclass('BSMOwned', {
   valued: ['slot', 'brick', 'magnet'],
   computed: {
     ui () {
@@ -151,13 +151,13 @@ eYo.C9r.Owned.makeSubclass('BSMOwned', {
   }
 })
 
-eYo.Assert(!!eYo.C9r.BsmOwned && !!eYo.c9r.BsmOwned_p, 'MISSED/FAILURE...')
+eYo.Assert(!!eYo.c9r.BSMOwned && !!eYo.c9r.BSMOwned_p, 'MISSED/FAILURE...')
 
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('slot')
 eYo.forwardDeclare('magnet')
 
-eYo.C9r.BsmOwned_p.ownerDidChange = function (before, after) {
+eYo.c9r.BSMOwned_p.ownerDidChange = function (before, after) {
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA
   if (after instanceof eYo.Slot.Dflt) {
     this.slot_ = after

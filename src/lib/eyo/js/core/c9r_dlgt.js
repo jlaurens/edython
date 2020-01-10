@@ -14,17 +14,17 @@
 /**
  * The model management.
  * Models are trees with some inheritancy.
- * @name {eYo.C9r.model}
+ * @name {eYo.c9r.model}
  * @namespace
  */
-eYo.C9r.makeNS('DlgtImpl')
+eYo.c9r.makeNS('dlgtImpl')
 
 /**
  * Initialize an instance with valued, cached, owned and cloned properties.
  * Default implementation forwards to super.
  * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
  */
-eYo.C9r.Dlgt_p.makeInitInstance = function () {
+eYo.c9r.Dlgt_p.makeInitInstance = function () {
   this.C9r_p.initInstance = function (object) {
     if (!object) {
       console.error('BREAK HERE!')
@@ -105,7 +105,7 @@ eYo.Dlgt_p.modelDeclare = function (model) {
  * @param {Object} model Object with `value` keys,
  * f any.
  */
-eYo.Dlgt_p.CONSTDeclare = function (k, model = {}) {
+eYo.Dlgt_p.cONSTDeclare = function (k, model = {}) {
   var f = (m) => {
     if (m.unique) {
       return {
@@ -184,7 +184,7 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
   } catch(e) {
     console.error(`FAILURE: value property ${k_} in ${this.name}`)
   }
-  this.descriptors__[k] = eYo.C9r.descriptorR(model.get || function () {
+  this.descriptors__[k] = eYo.c9r.descriptorR(model.get || function () {
     return this[k_]
   })
   this.consolidatorMake(k, model)
@@ -197,7 +197,7 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
  * The initial value is `eYo.NA`.
  * @param {Array<String>} names names of the link to add
  */
-eYo.Dlgt_p.ConsolidatorMake = function (k, model) {
+eYo.Dlgt_p.consolidatorMake = function (k, model) {
   let C9r = this.C9r_
   let C9r_p = C9r.prototype
   let consolidators = this.consolidators__ || (this.consolidators__ = Object.create(null))
@@ -269,7 +269,7 @@ eYo.Dlgt_p.valuedClear_ = function (object) {
  * @param {String} k name of the owned to add
  * @param {Object} data -  the object used to define the property: key `value` for the initial value, key `willChange` to be called when the property is about to change (signature (before, after) => function, truthy when the change should take place). The returned value is a function called after the change has been made in memory.
  */
-eYo.Dlgt_p.OwnedDeclare_ = function (k, model = {}) {
+eYo.Dlgt_p.ownedDeclare_ = function (k, model = {}) {
   eYo.ParameterAssert(!this.props__.has(k))
   this.owned_.add(k)
   const proto = this.C9r_.prototype
@@ -339,7 +339,7 @@ eYo.Dlgt_p.OwnedDeclare_ = function (k, model = {}) {
       configurable: !!model.configurable,
     }
   })
-  this.descriptors__[k] = eYo.C9r.descriptorR(model.get || function () {
+  this.descriptors__[k] = eYo.c9r.descriptorR(model.get || function () {
     return this[k_]
   })
   this.consolidatorMake(k, model)
@@ -350,7 +350,7 @@ eYo.Dlgt_p.OwnedDeclare_ = function (k, model = {}) {
  * The receiver is the owner.
  * @param {Object} many  key -> data map.
  */
-eYo.Dlgt_p.OwnedDeclare = function (many) {
+eYo.Dlgt_p.ownedDeclare = function (many) {
   if (many.forEach) {
     many.forEach(k => {
       this.ownedDeclare_(k)
@@ -366,7 +366,7 @@ eYo.Dlgt_p.OwnedDeclare = function (many) {
  * Dispose in the given object, the properties given by their main name.
  * @param {Object} object - the object that owns the property. The other parameters are forwarded to the dispose method.
  */
-eYo.Dlgt_p.OwnedDispose_ = function (object, ...params) {
+eYo.Dlgt_p.ownedDispose_ = function (object, ...params) {
   this.ownedForEach(k => {
     var k_ = k + '_'
     var k__ = k + '__'
@@ -397,7 +397,7 @@ eYo.Dlgt_p.OwnedDispose_ = function (object, ...params) {
  * It may take one argument to override the proposed after value.
  * If key is `foo`, then a `fooForget` and a `fooUpdate` method are created automatically.
  */
-eYo.Dlgt_p.CachedDeclare_ = function (k, model) {
+eYo.Dlgt_p.cachedDeclare_ = function (k, model) {
   eYo.ParameterAssert(!this.props__.has(k))
   this.cached_.add(k)
   var proto = this.C9r_.prototype
@@ -472,7 +472,7 @@ eYo.Dlgt_p.CachedDeclare_ = function (k, model) {
       this[k_] = after
     }
   }
-  this.descriptors__[k] = eYo.C9r.descriptorR(model.get || function () {
+  this.descriptors__[k] = eYo.c9r.descriptorR(model.get || function () {
     return this[k_]
   })
 }
@@ -481,7 +481,7 @@ eYo.Dlgt_p.CachedDeclare_ = function (k, model) {
  * Add 3 levels cached properties to a prototype.
  * @param {Object} many -  the K => V mapping to which we apply `cachedDeclare_(K, V)`.
  */
-eYo.Dlgt_p.CachedDeclare = function (many) {
+eYo.Dlgt_p.cachedDeclare = function (many) {
   Object.keys(many).forEach(n => {
     this.cachedDeclare_(n, many[n])
   })
@@ -490,7 +490,7 @@ eYo.Dlgt_p.CachedDeclare = function (many) {
 /**
  * Forget all the cached valued.
  */
-eYo.Dlgt_p.CachedForget_ = function () {
+eYo.Dlgt_p.cachedForget_ = function () {
   this.cachedForEach(n => {
     this.cachedForgetters__[n].call(this)
   })
@@ -499,7 +499,7 @@ eYo.Dlgt_p.CachedForget_ = function () {
 /**
  * Forget all the cached valued.
  */
-eYo.Dlgt_p.CachedUpdate_ = function () {
+eYo.Dlgt_p.cachedUpdate_ = function () {
   this.cachedForEach(n => {
     this.cachedUpdaters__[n].call(this)
   })
@@ -509,7 +509,7 @@ eYo.Dlgt_p.CachedUpdate_ = function () {
  * Add computed properties to a prototype.
  * @param {Map<String, Function>} models,  the key => Function mapping.
  */
-eYo.Dlgt_p.ComputedDeclare = function (models) {
+eYo.Dlgt_p.computedDeclare = function (models) {
 //  console.warn('computedDeclare:', this.name, Object.keys(models))
   Object.keys(models).forEach(k => {
 //    console.warn('computedDeclare -> ', k)
@@ -527,12 +527,12 @@ eYo.Dlgt_p.ComputedDeclare = function (models) {
         Object.defineProperty(proto, k, get ? {
             get: get,
             set: set,
-          } : eYo.C9r.descriptorW(k, set),
+          } : eYo.c9r.descriptorW(k, set),
         )
       } else {
         this.descriptors__[k] = get
-        ? eYo.C9r.descriptorR(k, get)
-        : eYo.C9r.descriptorNORW(k)
+        ? eYo.c9r.descriptorR(k, get)
+        : eYo.c9r.descriptorNORW(k)
       }
       k = k_
       get = eYo.AsF(model.get_) || function () {
@@ -542,9 +542,9 @@ eYo.Dlgt_p.ComputedDeclare = function (models) {
       Object.defineProperty(proto, k, get ? set ? {
           get: get,
           set: set,
-        } : eYo.C9r.descriptorR(get)
+        } : eYo.c9r.descriptorR(get)
         : set
-        ? eYo.C9r.descriptorW(set) : eYo.c9r.descriptorNORW(k),
+        ? eYo.c9r.descriptorW(set) : eYo.c9r.descriptorNORW(k),
       )
       k = k__
       get = model.get__
@@ -553,8 +553,8 @@ eYo.Dlgt_p.ComputedDeclare = function (models) {
         ? set ? {
           get: get,
           set: set,
-        } : eYo.C9r.descriptorR(get)
-        : set ? eYo.C9r.descriptorW(set) : eYo.c9r.descriptorNORW(k),
+        } : eYo.c9r.descriptorR(get)
+        : set ? eYo.c9r.descriptorW(set) : eYo.c9r.descriptorNORW(k),
       )
     } catch (e) {
       console.warn(`Computed property problem, ${k}, ${this.name_}, ${e}`)
@@ -568,7 +568,7 @@ eYo.Dlgt_p.ComputedDeclare = function (models) {
  * Add methods to the associate prototype.
  * @param {Map<String, Function>} models,  the key => Function mapping.
  */
-eYo.Dlgt_p.CalledDeclare = function (model) {
+eYo.Dlgt_p.calledDeclare = function (model) {
   let p = this.C9r_p
   Object.keys(model).forEach(k => {
     eYo.Assert(!eYo.do.hasOwnProperty(p, k))
@@ -584,7 +584,7 @@ eYo.Dlgt_p.CalledDeclare = function (model) {
  * and `foo.set(bar)` will set `foo` properties according to `bar`.
  * @param {Map<String, Function|Object>} models,  the key => Function mapping.
  */
-eYo.Dlgt_p.ClonedDeclare = function (models) {
+eYo.Dlgt_p.clonedDeclare = function (models) {
   this.init_ || (this.init_ = Object.create(null))
   var proto = this.C9r_.prototype
   Object.keys(models).forEach(k => { // No `for (var k in models) {...}`, models may change during the loop
@@ -685,7 +685,7 @@ eYo.Dlgt_p.ClonedDeclare = function (models) {
         },
       },
     })
-    this.descriptors__[k] = eYo.C9r.descriptorR(model.get || function () {
+    this.descriptors__[k] = eYo.c9r.descriptorR(model.get || function () {
       return this[k_]
     })
   })
@@ -696,7 +696,7 @@ eYo.Dlgt_p.ClonedDeclare = function (models) {
  * @param {Object} object - the object that owns the property
  * @param {Array<string>} names -  a list of names
  */
-eYo.Dlgt_p.ClonedDispose_ = function (object) {
+eYo.Dlgt_p.clonedDispose_ = function (object) {
   this.clonedForEach(k => {
     var k__ = k + '__'
     var x = object[k__]

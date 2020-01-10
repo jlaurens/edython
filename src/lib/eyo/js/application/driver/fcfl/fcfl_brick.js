@@ -605,7 +605,7 @@ eYo.fcfl.Brick._p.draw_ = function (recorder) {
  * @param {*} recorder
  * @protected
  */
-eYo.fcfl.Brick._p.AlignRightEdges_ = eYo.C9r.decorateChange(
+eYo.fcfl.Brick._p.alignRightEdges_ = eYo.c9r.decorateChange(
   'alignRightEdges_',
   function (recorder) {
     let brick = recorder.brick
@@ -850,7 +850,7 @@ eYo.fcfl.Brick._p.drawModelEnd_ = function (brick, io) {
  * @param io
  * @private
  */
-eYo.fcfl.Brick._p.SlotDraw_ = function (io) {
+eYo.fcfl.Brick._p.slotDraw_ = function (io) {
   var slot = io.slot
   // if (!slot) {
   //   return
@@ -1024,7 +1024,7 @@ eYo.fcfl.Brick._p.drawField_ = function (field, io) {
  * @param {Object} io An input/output recorder.
  * @private
  */
-eYo.fcfl.Brick._p.FieldDrawFrom_ = function (field, io) {
+eYo.fcfl.Brick._p.fieldDrawFrom_ = function (field, io) {
   if (field) {
     do {
       this.drawField_(field, io)
@@ -1392,7 +1392,7 @@ eYo.fcfl.Brick._p.disposeEffect = function (brick) {
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  * @param {*} menu
  */
-eYo.fcfl.Brick._p.ShowMenu = function (brick, menu) {
+eYo.fcfl.Brick._p.showMenu = function (brick, menu) {
   this.MenuShow(brick, menu)
 }
 
@@ -1433,11 +1433,11 @@ eYo.fcfl.Brick._p.didDisconnect = function (brick, m4t, oldTargetM4t) {
  * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.fcls.Brick._p.WhereInParent = eYo.do.NYI
+eYo.fcls.Brick._p.whereInParent = eYo.do.NYI
 
 eYo.fcls.Brick._p.xyInParent = eYo.do.NYI
 
-eYo.fcls.Brick._p.WhereInBoard = eYo.do.NYI
+eYo.fcls.Brick._p.whereInBoard = eYo.do.NYI
 
 eYo.fcls.Brick._p.xyInDesk = eYo.do.NYI
 
@@ -1450,7 +1450,7 @@ eYo.fcls.Brick._p.xyInDesk = eYo.do.NYI
  * @return {!eYo.Rect}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-eYo.fcfl.Brick._p.BoundingRect = function (brick) {
+eYo.fcfl.Brick._p.boundingRect = function (brick) {
   return new eYo.Rect(
     brick.whereInBoard,
     brick.size
@@ -1460,7 +1460,7 @@ eYo.fcfl.Brick._p.BoundingRect = function (brick) {
  * The size
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcfl.Brick._p.Size = function (brick) {
+eYo.fcfl.Brick._p.size = function (brick) {
   return brick.size
 }
 /**
@@ -1471,7 +1471,7 @@ eYo.fcfl.Brick._p.Size = function (brick) {
  * @return {!goog.math.Box}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-eYo.fcfl.Brick._p.BoundingBox = function (brick) {
+eYo.fcfl.Brick._p.boundingBox = function (brick) {
   return this.boundingRect(brick).toBox()
 }
   
@@ -1480,7 +1480,7 @@ eYo.fcfl.Brick._p.BoundingBox = function (brick) {
  * delay.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcfl.Brick._p.ScheduleSnapAndBump = function(brick) {
+eYo.fcfl.Brick._p.scheduleSnapAndBump = function(brick) {
   // Ensure that any snap and bump are part of this move's event group.
   var group = eYo.events.group
   setTimeout(() => {
@@ -1499,7 +1499,7 @@ eYo.fcfl.Brick._p.ScheduleSnapAndBump = function(brick) {
  * Snap the given brick to the nearest grid point.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcfl.Brick._p.SnapToGrid = function(brick) {
+eYo.fcfl.Brick._p.snapToGrid = function(brick) {
   if (!brick.board || brick.board.dragging || brick.parent || brick.isInFlyout) {
     return
   }
@@ -1513,7 +1513,7 @@ eYo.fcfl.Brick._p.SnapToGrid = function(brick) {
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  * @private
  */
-eYo.fcfl.Brick._p.BumpNeighbours_ = function(brick) {
+eYo.fcfl.Brick._p.bumpNeighbours_ = function(brick) {
   if (!brick.board || brick.board.dragging) {
     return;  // Don't bump blocks during a drag.
   }
@@ -1560,7 +1560,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
     return
   }
   // if we clicked on a field, no connection returned
-  if (eYo.App.Motion.Field) {
+  if (eYo.app.Motion.Field) {
     return
   }
   var rect = brick.boundingRect // in board coordinates
@@ -1613,9 +1613,9 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
       } else if (magnet.isFoot || magnet.isSuite) {
         R = new eYo.Rect(
           magnet.x,
-          magnet.y - eYo.Style.Path.width,
+          magnet.y - eYo.style.Path.width,
           eYo.Span.TAB_WIDTH,
-          1.5 * eYo.padding.t + 2 * eYo.Style.Path.width
+          1.5 * eYo.padding.t + 2 * eYo.style.Path.width
         )
         if (xy.in(R)) {
           return magnet
@@ -1628,9 +1628,9 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   } else if ((magnet = brick.head_m) && !magnet.hidden) {
     R = new eYo.Rect(
       magnet.x,
-      magnet.y - 2 * eYo.Style.Path.width,
+      magnet.y - 2 * eYo.style.Path.width,
       rect.width,
-      1.5 * eYo.padding.t + 2 * eYo.Style.Path.width
+      1.5 * eYo.padding.t + 2 * eYo.style.Path.width
     )
     if (xy.in(R)) {
       return magnet
@@ -1640,16 +1640,16 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
     if (rect.height > eYo.unit.y) { // Not the cleanest design
       R = new eYo.Rect(
         magnet.x,
-        magnet.y - 1.5 * eYo.padding.B - eYo.Style.Path.width,
-        eYo.Span.TAB_WIDTH + eYo.Style.Path.r, // R U sure?
-        1.5 * eYo.padding.B + 2 * eYo.Style.Path.width
+        magnet.y - 1.5 * eYo.padding.B - eYo.style.Path.width,
+        eYo.Span.TAB_WIDTH + eYo.style.Path.r, // R U sure?
+        1.5 * eYo.padding.B + 2 * eYo.style.Path.width
       )
     } else {
       R = new eYo.Rect(
         magnet.x,
-        magnet.y - 1.5 * eYo.padding.B - eYo.Style.Path.width,
+        magnet.y - 1.5 * eYo.padding.B - eYo.style.Path.width,
         rect.width,
-        1.5 * eYo.padding.B + 2 * eYo.Style.Path.width
+        1.5 * eYo.padding.B + 2 * eYo.style.Path.width
       )
     }
     if (xy.in(R)) {
@@ -1657,7 +1657,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
     }
   }
   if ((magnet = brick.suite_m) && !magnet.hidden) {
-    var r = eYo.Style.Path.Hilighted.width
+    var r = eYo.style.Path.Hilighted.width
     R = new eYo.Rect(
       magnet.x + eYo.unit.x / 2 - r,
       magnet.y + r,
@@ -1669,7 +1669,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
     }
   }
   if ((magnet = brick.left_m) && !magnet.hidden) {
-    var r = eYo.Style.Path.Hilighted.width
+    var r = eYo.style.Path.Hilighted.width
     R = new eYo.Rect(
       magnet.x + eYo.unit.x / 2 - r,
       magnet.y + r,
@@ -1738,7 +1738,7 @@ eYo.fcfl.Brick._p.on_mousedown = function (brick, e) {
   if (brick.ui.parentIsShort && !brick.hasFocus) {
     parent = brick.parent
     if (!parent.hasFocus) {
-      eYo.App.Motion.handleBrickStart(e, brick)
+      eYo.app.Motion.handleBrickStart(e, brick)
       return
     }
   }
@@ -1765,7 +1765,7 @@ eYo.fcfl.Brick._p.on_mousedown = function (brick, e) {
   t9k.ui.lastSelectedMagnet__ = eYo.Focus.Magnet
   // Prepare the mouseUp event for an eventual connection selection
   t9k.ui.lastMouseDownEvent = t9k.hasFocus ? e : null
-  eYo.App.Motion.handleBrickStart(e, t9k)
+  eYo.app.Motion.handleBrickStart(e, t9k)
 }
 
 /**
@@ -1823,7 +1823,7 @@ eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
         }
       }
     }
-  } else if ((b3k = eYo.App.Focus_mngr.Brick) && (ee = b3k.ui.selectMouseDownEvent)) {
+  } else if ((b3k = eYo.app.Focus_mngr.Brick) && (ee = b3k.ui.selectMouseDownEvent)) {
     b3k.ui.selectMouseDownEvent = null
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
@@ -1851,7 +1851,7 @@ eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
  * @param {Event} e Mouse event.
  * @private
  */
-eYo.fcfl.Brick._p.ShowContextMenu_ = function (brick, e) {
+eYo.fcfl.Brick._p.showContextMenu_ = function (brick, e) {
   // this part is copied as is from the parent's implementation. Is it relevant ?
   if (brick.board.options.readOnly || !brick.contextMenu) {
     return
@@ -1864,7 +1864,7 @@ eYo.fcfl.Brick._p.ShowContextMenu_ = function (brick, e) {
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.fcls.Brick_p.CanDraw = function (brick) {
+eYo.fcls.Brick_p.canDraw = function (brick) {
   return true
 }
 

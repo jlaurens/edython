@@ -25,7 +25,7 @@ eYo.require('data')
  * @name {eYo.Brick.Dflt}
  * @namespace
  */
-eYo.C9r.makeNS(eYo,'brick')
+eYo.c9r.makeNS(eYo,'brick')
 
 // eYo.provide('brick.dflt')
 
@@ -542,7 +542,7 @@ eYo.Brick.makeDflt({
      * It is updated in the right alignment method.
      */
     size: {
-      get: eYo.C9r.decorateChange('full_HW__', function() {
+      get: eYo.c9r.decorateChange('full_HW__', function() {
         var height = this.span.height
         var minWidth = this.span.width
         var width = minWidth
@@ -1007,7 +1007,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
    */
   _p.consolidate = eYo.decorate.reentrant_method(
     'consolidate',
-    eYo.C9r.decorateChange(
+    eYo.c9r.decorateChange(
       'consolidate',
       function (deep, force) {
         this.doConsolidate(deep, force)
@@ -1035,7 +1035,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
    * @return {String} The subtype of the receiver's brick.
    */
   _p.getSubtype = function () {
-    return this.variant_p
+    return this.Variant_p
   }
 
   /**
@@ -1404,7 +1404,7 @@ eYo.Brick.DEBUG_ = Object.create(null)
         var insert = model.insert
         var slot, next
         if (insert) {
-          var model = eYo.C9r.model.forKey(insert)
+          var model = eYo.c9r.model.forKey(insert)
           if (model) {
             if ((slot = feedSlots.call(this, model.slots))) {
               next = slot
@@ -2562,10 +2562,10 @@ eYo.Brick.newReady = (() => {
   var processModel = (board, model, id, brick) => {
     var dataModel = model // may change below
     if (!brick) {
-      if (eYo.C9r.model.forType(model.type)) {
+      if (eYo.c9r.model.forType(model.type)) {
         brick = board.newBrick(model.type, id)
         brick.setDataWithType(model.type)
-      } else if (eYo.C9r.model.forType(model)) {
+      } else if (eYo.c9r.model.forType(model)) {
         brick = board.newBrick(model, id) // can undo
         brick.setDataWithType(model)
       } else if (eYo.isStr(model) || goog.isNumber(model)) {
@@ -2732,7 +2732,7 @@ eYo.Brick._p.doMakeClass = function (ns, key, Super, Dlgt, register, model) {
   if (!C9r.eyo) {
     console.error('WHERE IS EYO???')
   }
-  register && eYo.C9r.register(C9r)
+  register && eYo.c9r.register(C9r)
   // console.warn('NEW BRICK CLASS', C9r.eyo.name)
   return C9r
 }
@@ -2828,11 +2828,11 @@ eYo.Brick.registerAll = function (typesByKey, C9r, fake) {
     var type = typesByKey[k]
     if (eYo.isStr(type)) {
       //        console.log('Registering', k)
-      eYo.C9r.register(type, C9r)
+      eYo.c9r.register(type, C9r)
       if (fake) {
         type = type.replace('eyo:', 'eyo:fake_')
         //          console.log('Registering', k)
-        eYo.C9r.register(type, C9r)
+        eYo.c9r.register(type, C9r)
       }
     }
   }
@@ -2880,7 +2880,7 @@ eYo.driver.makeForwarder(eYo.Brick.Dflt_p, 'updateShape')
 /**
  * The default implementation forwards to the driver.
  */
-eYo.Brick.Dflt_p.ConnectEffect = function () {
+eYo.Brick.Dflt_p.connectEffect = function () {
   this.audio.play('click')
   var b = this.board
   if (b.scale < 1) {

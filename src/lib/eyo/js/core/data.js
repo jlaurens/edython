@@ -43,7 +43,7 @@ goog.require('goog.dom')
  * @name {eYo.data}
  * @namespace
  */
-eYo.C9r.makeNS(eYo, 'data')
+eYo.c9r.makeNS(eYo, 'data')
 
 eYo.data.makeDlgt()
 
@@ -53,7 +53,7 @@ eYo.data.makeDlgt()
  * @param {String} key
  * @return {Object}
  */
-eYo.C9r.model.dataHandler = (model, key) => {
+eYo.c9r.model.dataHandler = (model, key) => {
   model = model[key]
   let methods = []
   for (let [key, value] of Object.entries({
@@ -125,7 +125,7 @@ eYo.C9r.model.dataHandler = (model, key) => {
 /**
  * Initialize the instance.
  * Calls the inherited method, then adds methods defined by the model.
- * The methods are managed by the |dataHandler| method of the |eYo.C9r.model|.
+ * The methods are managed by the |dataHandler| method of the |eYo.c9r.model|.
  * @param {Object} object - The object to initialize.
  */
 eYo.data.Dlgt_p.initInstance = function (object) {
@@ -146,7 +146,7 @@ eYo.data.Dlgt_p.initInstance = function (object) {
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.data.makeClass('Dflt', eYo.C9r.Owned, {
+eYo.data.makeClass('Dflt', eYo.c9r.Owned, {
   init (brick, key, model) {
     eYo.ParameterAssert(brick, 'Missing brick')
     eYo.ParameterAssert(key, 'Missing key')
@@ -359,7 +359,7 @@ eYo.data.Dflt_p.init = function (after) {
  * The model is asked for a method.
  * @param {Object} type
  */
-eYo.data.Dflt_p.SetWithType = function (type) {
+eYo.data.Dflt_p.setWithType = function (type) {
   var f = eYo.decorate.reentrant_method(
     this,
     'model_fromType',
@@ -376,7 +376,7 @@ eYo.data.Dflt_p.SetWithType = function (type) {
  * Do not use this directly because this can be a function.
  * Always use `getAll` instead.
  */
-eYo.data.Dflt_p.All = eYo.NA
+eYo.data.Dflt_p.all = eYo.NA
 
 /**
  * Get all the values.
@@ -615,7 +615,7 @@ eYo.data.Dflt_p.isUnchanging = eYo.do.nothing
  * @param {Object} after
  * @return eYo.NA
  */
-eYo.data.Dflt_p.BeforeChange = function(before, after) {
+eYo.data.Dflt_p.beforeChange = function(before, after) {
   ;(!eYo.events.recordingUndo ? this.willChange : this.willUnchange).call(this, before, after)
 }
 
@@ -641,7 +641,7 @@ eYo.data.Dflt_p.duringChange = function(before, after) {
  * @param {Object} after
  * @return eYo.NA
  */
-eYo.data.Dflt_p.AfterChange = function(before, after) {
+eYo.data.Dflt_p.afterChange = function(before, after) {
   ;(eYo.events.recordingUndo ? this.didChange : this.didUnchange).call(before, after)
   this.synchronize(before, after)
 }
@@ -665,7 +665,7 @@ eYo.data.Dflt_p.noUndo = eYo.NA
  * Raises when not bound to some field or slot, in the non model variant.
  * @param {Object} after
  */
-eYo.data.Dflt_p.Synchronize = function (before, after) {
+eYo.data.Dflt_p.synchronize = function (before, after) {
   var d = this.ui_driver
   if (!d) {
     return
@@ -688,7 +688,7 @@ eYo.data.Dflt_p.Synchronize = function (before, after) {
           field.text = this.toField()
           if (this.slot && this.slot.data === this) {
             this.slot.incog = false
-            field.visible = !this.slot.unwrappedTarget && (!eYo.App.noBoundField || this.model.allwaysBoundField || this.get().length)
+            field.visible = !this.slot.unwrappedTarget && (!eYo.app.noBoundField || this.model.allwaysBoundField || this.get().length)
           } else {
             field.visible = true
           }
@@ -706,7 +706,7 @@ eYo.data.Dflt_p.Synchronize = function (before, after) {
  * @param {Object} after
  * @param {Boolean} noRender
  */
- eYo.data.Dflt_p.SetTrusted_ = function (after) {
+ eYo.data.Dflt_p.setTrusted_ = function (after) {
   this.internalSet(after)
 }
 
@@ -716,7 +716,7 @@ eYo.data.Dflt_p.Synchronize = function (before, after) {
  * @param {Object} after
  * @param {Boolean} noRender
  */
-eYo.data.Dflt_p.SetTrusted = eYo.decorate.reentrant_method('trusted', eYo.data.Dflt_p.setTrusted_)
+eYo.data.Dflt_p.setTrusted = eYo.decorate.reentrant_method('trusted', eYo.data.Dflt_p.setTrusted_)
 
 /**
  * If the value is an uppercase string,
@@ -757,7 +757,7 @@ eYo.data.Dflt_p.filter = function (after) {
  * @param {Object} after
  * @param {Boolean} noRender
  */
-eYo.data.Dflt_p.Set = function (after, validate = true) {
+eYo.data.Dflt_p.set = function (after, validate = true) {
   after = this.filter(after)
   if ((this.value_ === after) || (validate && (!eYo.isVALID(after = this.validate (before, after))))) {
     return false
@@ -802,7 +802,7 @@ Object.defineProperty(eYo.data, 'incog', {
  * Should be overriden by the model.
  * Reentrant management here of the model action.
  */
-eYo.data.Dflt_p.Consolidate = function () {
+eYo.data.Dflt_p.consolidate = function () {
   if (this.change.level) {
     return
   }
@@ -825,7 +825,7 @@ eYo.data.Dflt_p.isActive = function () {
  * @param {boolean} noUndo  true when no undo tracking should be performed.
  * @private
  */
-eYo.data.Dflt_p.SetMainFieldValue = function (after, fieldKey, noUndo) {
+eYo.data.Dflt_p.setMainFieldValue = function (after, fieldKey, noUndo) {
   var field = this.fields[fieldKey || this.key]
   if (field) {
     eYo.events.disableWrap(() => {
@@ -845,7 +845,7 @@ eYo.data.Dflt_p.SetMainFieldValue = function (after, fieldKey, noUndo) {
  * @param {Element} element the persistent element.
  * @param {Object} [opt]  See eponym parameter in `eYo.xml.BrickToDom`.
  */
-eYo.data.Dflt_p.Save = function (element, opt) {
+eYo.data.Dflt_p.save = function (element, opt) {
   var xml = this.model.xml
   if (xml === false) {
     // only few data need not be saved
@@ -897,7 +897,7 @@ eYo.data.Dflt_p.Save = function (element, opt) {
  * For edython.
  * @param {String} txt the new placeholder.
  */
-eYo.data.Dflt_p.CustomizePlaceholder = function (txt) {
+eYo.data.Dflt_p.customizePlaceholder = function (txt) {
   if (txt === this.model.placeholder) {
     return
   }
@@ -1009,7 +1009,7 @@ eYo.data.Dflt_p.didLoad = function () {
  * When some data is required, an `?` might be used instead of nothing
  * For edython.
  */
-eYo.data.Dflt_p.SetRequiredFromModel = function (after) {
+eYo.data.Dflt_p.setRequiredFromModel = function (after) {
   this.required_from_model = after
 }
 

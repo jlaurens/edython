@@ -5,7 +5,7 @@ describe('Statement', function () {
 
   var test_connection_db = () => {
     for (var i = 1; i < eYo.Magnet.RIGHT; i++) {
-      chai.assert(eYo.App.Board.MagnetDBList[i].length === 0, `Unexpected connection ${i}`)
+      chai.assert(eYo.app.Board.MagnetDBList[i].length === 0, `Unexpected connection ${i}`)
     }
   }
 
@@ -14,7 +14,7 @@ describe('Statement', function () {
       eYo.Test.SetItUp()
       test_connection_db()
       var d = eYo.Test.new_brick('comment_stmt')
-      // d.comment_p = 'abc'
+      // d.Comment_p = 'abc'
       var m5s = d.magnets
       ;[
         m5s.head,
@@ -45,8 +45,8 @@ describe('Statement', function () {
       test_connection_db()
       var d1 = eYo.Test.new_brick('comment_stmt')
       var d2 = eYo.Test.new_brick('comment_stmt')
-      // d1.comment_p = 'abc'
-      // d2.comment_p = 'cde'
+      // d1.Comment_p = 'abc'
+      // d2.Comment_p = 'cde'
       // d2.moveBy(eYo.Where.xy(100,20))
       ;[
         ['high', 'low'],
@@ -94,8 +94,8 @@ describe('Statement', function () {
       eYo.Test.Brick(d, 'comment_stmt')
       eYo.Test.C9r(d, 'comment_stmt')
       var d1 = eYo.Test.new_brick('comment_stmt')
-      d.comment_p = 'abc'
-      d1.comment_p = 'cde'
+      d.Comment_p = 'abc'
+      d1.Comment_p = 'cde'
       d1.moveBy(eYo.Where.xy(100,20))
       d1.right_m.focusOn()
       // d1.dispose()

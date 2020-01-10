@@ -60,9 +60,9 @@ eYo.expr.Dflt.makeSubclass('yield_expr', {
       didChange (before, after) /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (after) {
-          b3k.variant_p = eYo.key.EXPRESSION
+          b3k.Variant_p = eYo.key.EXPRESSION
         } else if (!b3k.expression_s.unwrappedTarget) {
-          b3k.variant_p = eYo.key.NONE
+          b3k.Variant_p = eYo.key.NONE
         }
       }
     },
@@ -72,23 +72,23 @@ eYo.expr.Dflt.makeSubclass('yield_expr', {
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p !== eYo.key.NONE
+          this.required = this.brick.Variant_p !== eYo.key.NONE
           this.save(element, opt)
         }
       },
       didChange (before, after) /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (after || b3k.from_b) {
-          b3k.variant_p = eYo.key.FROM
-        } else if (b3k.expression_p || (b3k.expression_b && b3k.expression_b.unwrappedTarget)) {
-          b3k.variant_p = eYo.key.EXPRESSION
+          b3k.Variant_p = eYo.key.FROM
+        } else if (b3k.Expression_p || (b3k.expression_b && b3k.expression_b.unwrappedTarget)) {
+          b3k.Variant_p = eYo.key.EXPRESSION
         } else {
-          b3k.variant_p = eYo.key.NONE
+          b3k.Variant_p = eYo.key.NONE
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.FROM
+          this.brick.Variant_p = eYo.key.FROM
         }
       }
     }
@@ -108,19 +108,19 @@ eYo.expr.Dflt.makeSubclass('yield_expr', {
       wrap: eYo.t3.Expr.non_void_expression_list,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.EXPRESSION
+          this.brick.Variant_p = eYo.key.EXPRESSION
         }
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         if (this.isSlot) {
           var parent = this.brick.parent
-          parent && (parent.variant_p = eYo.key.EXPRESSION)
+          parent && (parent.Variant_p = eYo.key.EXPRESSION)
         }
       },
       didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
         if (this.isSlot) {
           var parent = this.brick.parent
-          parent && (parent.variant_p = parent.expression_s.unwrappedTarget || parent.expression_p ? eYo.key.EXPRESSION : eYo.key.NONE)
+          parent && (parent.Variant_p = parent.expression_s.unwrappedTarget || parent.Expression_p ? eYo.key.EXPRESSION : eYo.key.NONE)
         }
       }
     },
@@ -136,20 +136,20 @@ eYo.expr.Dflt.makeSubclass('yield_expr', {
       check: eYo.t3.Expr.Check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.FROM
+          this.brick.Variant_p = eYo.key.FROM
         }
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
-        this.brick.variant_p = eYo.key.FROM
+        this.brick.Variant_p = eYo.key.FROM
       },
       didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
         var b3k = this.brick
-        if (b3k.from_p) {
-          b3k.variant_p = eYo.key.FROM
-        } else if (b3k.expression_p || (b3k.expression_b && b3k.expression_b.unwrappedTarget)) {
-          b3k.variant_p = eYo.key.EXPRESSION
+        if (b3k.From_p) {
+          b3k.Variant_p = eYo.key.FROM
+        } else if (b3k.Expression_p || (b3k.expression_b && b3k.expression_b.unwrappedTarget)) {
+          b3k.Variant_p = eYo.key.EXPRESSION
         } else {
-          b3k.variant_p = eYo.key.NONE
+          b3k.Variant_p = eYo.key.NONE
         }
       }
     }
@@ -168,10 +168,10 @@ eYo.expr.yield_expr.populateContextMenuFirst_ = function (mngr) {
   if (brick.locked_) {
     return
   }
-  var current = this.variant_p
+  var current = this.Variant_p
   var F = (content, k) => {
     var menuItem = mngr.newMenuItem(content, () => {
-      this.variant_p = k
+      this.Variant_p = k
     })
     mngr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)

@@ -35,7 +35,7 @@ goog.forwardDeclare('goog.math')
  * @param {eYo.Desk|eYo.Workspace|eYo.Section} owner.
  * @constructor
  */
-eYo.C9r.Dflt.makeSubclass(eYo.Board, {
+eYo.c9r.Dflt.makeSubclass(eYo.Board, {
   valued: {
     /**
      * The render status of a board.
@@ -79,7 +79,7 @@ eYo.C9r.Dflt.makeSubclass(eYo.Board, {
     scrollbar: {},
     board () {
       if (!this.isDragger) {
-        return new eYo.Dnd.Dragger.Board(this)
+        return new eYo.dnd.Dragger.Board(this)
       }
     },
   },
@@ -454,7 +454,7 @@ eYo.Board.Main.prototype.Clear = function() {
  * @return {!eYo.Brick.Dflt} The created brick.
  */
 eYo.Board.Dflt.prototype.newBrick = function (type, opt_id) {
-  var C9r = eYo.C9r.forType(type)
+  var C9r = eYo.c9r.forType(type)
   eYo.Assert(C9r, 'No class for ' + type)
   var b3k = new C9r(this, type, opt_id)
   return b3k

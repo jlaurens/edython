@@ -413,7 +413,7 @@ eYo.xml.text.toDom = function (brick, element) {
  * @return a dom element
  */
 eYo.xml.text.fromDom = function (brick, element) {
-  return eYo.do.SomeChild(element, child => child.nodeType === Node.TEXT_NODE && (brick.value_p = child.nodeValue)
+  return eYo.do.SomeChild(element, child => child.nodeType === Node.TEXT_NODE && (brick.Value_p = child.nodeValue)
   )
 }
 
@@ -592,8 +592,8 @@ eYo.xml.registerAllTags = function () {
       if (!type.startsWith || type.startsWith('.')) {
         continue
       }
-      var C9r = eYo.C9r.forType(type)
-      var model = eYo.C9r.model.forType(type)
+      var C9r = eYo.c9r.forType(type)
+      var model = eYo.c9r.model.forType(type)
       var xml = model && model.xml
       var attr = xml && xml.attr
       if (!eYo.isStr(attr)) {
@@ -784,7 +784,7 @@ eYo.xml.recover.prototype.domToBrick = function (dom, owner) {
     types: []
   }
   where.Available.forEach(function(type) {
-    var data = eYo.C9r.model.forType(type).data
+    var data = eYo.c9r.model.forType(type).data
     var match = 0
     attributeNames.forEach(function (name) {
       if (data[name]) {
@@ -896,7 +896,7 @@ eYo.xml.domToBrick = (() => {
                 var where = dom.tagName.toLowerCase() === eYo.xml.EXPR ? eYo.t3.Expr : eYo.t3.Stmt
                 for (var i = 0; i < prototypeName.length; i++) {
                   var candidate = prototypeName[i]
-                  var C9r = eYo.C9r.model.forType(candidate)
+                  var C9r = eYo.c9r.model.forType(candidate)
                   if (C9r && where[C9r.eyo.key]) {
                     return candidate
                   }
@@ -913,7 +913,7 @@ eYo.xml.domToBrick = (() => {
           }
           prototypeName = 'eyo:'+name
           var solid = prototypeName + ''
-          var controller = eYo.C9r.model.forType(solid)
+          var controller = eYo.c9r.model.forType(solid)
           if (controller) {
             if (controller.eyo && eYo.isF(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, board, id)
@@ -921,7 +921,7 @@ eYo.xml.domToBrick = (() => {
               return controller.domToBrick(dom, board, id)
             }
             brick = eYo.Brick.newReady(board, solid, id)
-          } else if ((controller = eYo.C9r.model.forType(prototypeName))) {
+          } else if ((controller = eYo.c9r.model.forType(prototypeName))) {
             if (controller.eyo && eYo.isF(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, board, id)
             } else if (eYo.isF(controller.domToBrick)) {
@@ -973,10 +973,10 @@ eYo.xml.fromDom = function (brick, element) {
         eYo.isF(controller.fromDom)) ||
         ((controller = brick.xml) &&
         eYo.isF(controller.fromDom)) ||
-        ((controller = eYo.C9r.model.forType(brick.type)) &&
+        ((controller = eYo.c9r.model.forType(brick.type)) &&
         (controller = controller.xml) &&
         eYo.isF(controller.fromDom)) ||
-        ((controller = eYo.C9r.model.forType(brick.type)) &&
+        ((controller = eYo.c9r.model.forType(brick.type)) &&
         eYo.isF(controller.fromDom))) {
       eYo.do.tryFinally(() => {
         brick.controller_fromDom_locked = true
@@ -1131,8 +1131,8 @@ eYo.expr.primary.prototype.xmlAttr = function () {
  */
 eYo.Stmt.Assignment_stmt.prototype.xmlAttr = function () {
   return this.type === eYo.t3.Stmt.Augmented_assignment_stmt
-  ? this.operator_p
-  : this.type === eYo.t3.Stmt.Annotated_stmt || this.variant_p === eYo.key.NONE || this.variant_p === eYo.key.VALUED || this.variant_p === eYo.key.EXPRESSION
+  ? this.Operator_p
+  : this.type === eYo.t3.Stmt.Annotated_stmt || this.Variant_p === eYo.key.NONE || this.Variant_p === eYo.key.VALUED || this.Variant_p === eYo.key.EXPRESSION
     ? 'x'
     : '='
 }
@@ -1152,11 +1152,11 @@ eYo.xml.Assignment.domToComplete = function (element, owner) {
       return brick
     } else if (['+=', '-=', '*=', '/=', '//=', '%=', '**=', '@=', '<<=', '>>=', '&=', '^=', '|='].indexOf(prototypeName) >= 0) {
       brick = eYo.Brick.newReady(owner, eYo.t3.Stmt.Augmented_assignment_stmt, id)
-      brick.operator_p = prototypeName
+      brick.Operator_p = prototypeName
       return brick
     } else if (prototypeName === '=') {
       brick = eYo.Brick.newReady(owner, eYo.t3.Stmt.Assignment_stmt, id)
-      brick.operator_p = prototypeName
+      brick.Operator_p = prototypeName
       return brick
     }
   }
@@ -1175,14 +1175,14 @@ eYo.xml.Comparison.domToComplete = function (element, owner) {
     var op = element.getAttribute(eYo.xml.OPERATOR)
     var C9r, model
     var type = eYo.t3.Expr.number_comparison
-    if ((C9r = eYo.C9r.model.forType(type))
+    if ((C9r = eYo.c9r.model.forType(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && (model.all.indexOf(op) >= 0)) {
       var b3k = eYo.Brick.newReady(owner, type, id)
     } else if ((type = eYo.t3.Expr.object_comparison)
-      && (C9r = eYo.C9r.model.forType(type))
+      && (C9r = eYo.c9r.model.forType(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all

@@ -104,7 +104,7 @@ Object.defineProperties(eYo.Shape.prototype, {
   },
   hilighted_width: {
     get () {
-      return eYo.Style.Path.Hilighted.width / 2
+      return eYo.style.Path.Hilighted.width / 2
     }
   },
   definition: {

@@ -66,14 +66,14 @@ eYo.Stmt.makeClass('decorator_stmt', {
         // the property change may echo into a decorator change
         builtin()
         if (after === eYo.key.GETTER) {
-          var variant = this.brick.variant_p
+          var variant = this.brick.Variant_p
           if (variant === eYo.key.NONE || variant === eYo.key.N_ARY) {
-            this.brick.decorator_p = this.brick.saved_p || ''
+            this.brick.Decorator_p = this.brick.Saved_p || ''
           } else {
-            this.brick.decorator_p = variant || ''
+            this.brick.Decorator_p = variant || ''
           }
         } else if (after) {
-          this.brick.decorator_p = this.brick.saved_p + '.' + after
+          this.brick.Decorator_p = this.brick.Saved_p + '.' + after
         }
       },
       synchronize (builtin, after) /** @suppress {globalThis} */ {
@@ -96,13 +96,13 @@ eYo.Stmt.makeClass('decorator_stmt', {
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         if (after !== eYo.key.PROPERTY) {
-          this.brick.property_p = eYo.key.GETTER
+          this.brick.Property_p = eYo.key.GETTER
         }
         if (after === eYo.key.N_ARY) {
-          this.brick.chooser_p = eYo.key.N_ARY
-          this.brick.mainChooser_p = eYo.key.NONE
+          this.brick.Chooser_p = eYo.key.N_ARY
+          this.brick.MainChooser_p = eYo.key.NONE
         } else {
-          this.brick.mainChooser_p = after
+          this.brick.MainChooser_p = after
         }
       },
       synchronize (builtin, after) /** @suppress {globalThis} */ { // would variants synchronize?
@@ -135,7 +135,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
       init: '',
       placeholder () /** @suppress {globalThis} */ {
         var b3k = this.brick
-        return b3k.variant_p === eYo.key.PROPERTY && b3k.property_p !== eYo.key.GETTER
+        return b3k.Variant_p === eYo.key.PROPERTY && b3k.Property_p !== eYo.key.GETTER
         ? eYo.msg.placeholder.IDENTIFIER
         : eYo.msg.placeholder.DECORATOR
       },
@@ -146,11 +146,11 @@ eYo.Stmt.makeClass('decorator_stmt', {
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var b3k = this.brick
-        var p = b3k.property_p
+        var p = b3k.Property_p
         if (p && p !== eYo.key.GETTER) {
           after = after + '.' + p
         }
-        b3k.decorator_p = after || ''
+        b3k.Decorator_p = after || ''
       },
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
@@ -176,46 +176,46 @@ eYo.Stmt.makeClass('decorator_stmt', {
         var m = XRegExp.exec(after, eYo.xre.decorator)
         if (m) {
           if (m.setter) {
-            b3k.target_p = b3k.saved_p = m.property_name
-            if (b3k.variant_p === eYo.key.N_ARY) {
-              b3k.variant_p = eYo.key.NONE
+            b3k.Target_p = b3k.Saved_p = m.property_name
+            if (b3k.Variant_p === eYo.key.N_ARY) {
+              b3k.Variant_p = eYo.key.NONE
             }
-            b3k.property_p = eYo.key.SETTER
-            b3k.mainChooser_p = eYo.key.NONE
-            b3k.chooser_p = eYo.key.SETTER
+            b3k.Property_p = eYo.key.SETTER
+            b3k.MainChooser_p = eYo.key.NONE
+            b3k.Chooser_p = eYo.key.SETTER
           } else if(m.deleter) {
-            b3k.target_p = b3k.saved_p = m.property_name
-            if (b3k.variant_p === eYo.key.N_ARY) {
-              b3k.variant_p = eYo.key.NONE
+            b3k.Target_p = b3k.Saved_p = m.property_name
+            if (b3k.Variant_p === eYo.key.N_ARY) {
+              b3k.Variant_p = eYo.key.NONE
             }
-            b3k.property_p = eYo.key.DELETER
-            b3k.mainChooser_p = eYo.key.NONE
-            b3k.chooser_p = eYo.key.DELETER
+            b3k.Property_p = eYo.key.DELETER
+            b3k.MainChooser_p = eYo.key.NONE
+            b3k.Chooser_p = eYo.key.DELETER
           } else {
-            b3k.property_p = eYo.key.GETTER
-            b3k.chooser_p = eYo.key.NONE
+            b3k.Property_p = eYo.key.GETTER
+            b3k.Chooser_p = eYo.key.NONE
             if (m.property) {
-              b3k.variant_p = b3k.target_p = eYo.key.PROPERTY
-              b3k.mainChooser_p = eYo.key.PROPERTY
+              b3k.Variant_p = b3k.Target_p = eYo.key.PROPERTY
+              b3k.MainChooser_p = eYo.key.PROPERTY
             } else if (m.staticmethod) {
-              b3k.variant_p = b3k.target_p = eYo.key.STATICMETHOD
-              b3k.mainChooser_p = eYo.key.STATICMETHOD
+              b3k.Variant_p = b3k.Target_p = eYo.key.STATICMETHOD
+              b3k.MainChooser_p = eYo.key.STATICMETHOD
             } else if (m.classmethod) {
-              b3k.variant_p = b3k.target_p = eYo.key.CLASSMETHOD
-              b3k.mainChooser_p = eYo.key.CLASSMETHOD
+              b3k.Variant_p = b3k.Target_p = eYo.key.CLASSMETHOD
+              b3k.MainChooser_p = eYo.key.CLASSMETHOD
             } else {
-              if (b3k.variant_p !== eYo.key.N_ARY) {
-                b3k.variant_p = eYo.key.NONE
+              if (b3k.Variant_p !== eYo.key.N_ARY) {
+                b3k.Variant_p = eYo.key.NONE
               }
-              b3k.target_p = b3k.saved_p = after
-              b3k.mainChooser_p = eYo.key.NONE
+              b3k.Target_p = b3k.Saved_p = after
+              b3k.MainChooser_p = eYo.key.NONE
             }
           }
         } else {
-          b3k.target_p = after
-          b3k.property_p = eYo.key.GETTER
-          b3k.mainChooser_p = eYo.key.NONE
-          b3k.chooser_p = eYo.key.NONE
+          b3k.Target_p = after
+          b3k.Property_p = eYo.key.GETTER
+          b3k.MainChooser_p = eYo.key.NONE
+          b3k.Chooser_p = eYo.key.NONE
         }
       },
       synchronize: true,
@@ -232,11 +232,11 @@ eYo.Stmt.makeClass('decorator_stmt', {
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         if (after === eYo.key.NONE) {
-          this.brick.variant_p = eYo.key.NONE
-          this.brick.decorator_p = this.brick.saved_p || ''
+          this.brick.Variant_p = eYo.key.NONE
+          this.brick.Decorator_p = this.brick.Saved_p || ''
         } else {
-          this.brick.chooser_p = eYo.key.NONE
-          this.brick.decorator_p = after || ''
+          this.brick.Chooser_p = eYo.key.NONE
+          this.brick.Decorator_p = after || ''
         }
       },
       synchronize: false,
@@ -255,20 +255,20 @@ eYo.Stmt.makeClass('decorator_stmt', {
         builtin()
         switch(after) {
           case eYo.key.NONE:
-          this.brick.variant_p = eYo.key.NONE
-          this.brick.decorator_p = this.brick.saved_p || ''
+          this.brick.Variant_p = eYo.key.NONE
+          this.brick.Decorator_p = this.brick.Saved_p || ''
           break
           case eYo.key.N_ARY:
-          if(this.brick.variant_p !== eYo.key.NONE) {
-            this.brick.decorator_p = this.brick.saved_p || ''
+          if(this.brick.Variant_p !== eYo.key.NONE) {
+            this.brick.Decorator_p = this.brick.Saved_p || ''
           }
-          this.brick.variant_p = eYo.key.N_ARY
-          this.brick.mainChooser_p = eYo.key.NONE
+          this.brick.Variant_p = eYo.key.N_ARY
+          this.brick.MainChooser_p = eYo.key.NONE
           break
           case eYo.key.SETTER:
           case eYo.key.DELETER:
-          this.brick.mainChooser_p = eYo.key.NONE
-          this.brick.decorator_p = this.brick.saved_p + '.' + after
+          this.brick.MainChooser_p = eYo.key.NONE
+          this.brick.Decorator_p = this.brick.Saved_p + '.' + after
           break
         }
       },
@@ -295,7 +295,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
               eYo.key.PROPERTY,
               eYo.key.STATICMETHOD,
               eYo.key.CLASSMETHOD
-            ].indexOf(this.brick.decorator_p) >= 0
+            ].indexOf(this.brick.Decorator_p) >= 0
             ? 'eyo-code-reserved'
             : 'eyo-code'
           }
@@ -321,7 +321,7 @@ eYo.Stmt.makeClass('decorator_stmt', {
       didLoad () /** @suppress {globalThis} */ {
         var t = this.targetBrick // may be null ?
         if (t && t.children_.length) {
-          this.brick.variant_p = eYo.key.N_ARY
+          this.brick.Variant_p = eYo.key.N_ARY
         }
       }
     }
@@ -350,14 +350,14 @@ Object.defineProperties(eYo.Stmt.decorator_stmt.prototype, {
  * @override
  */
 eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var variant_p = this.variant_p
+  var variant_p = this.Variant_p
   if (variant_p !== eYo.key.NONE) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('@', 'eyo-code-reserved'),
       eYo.do.CreateSPAN(eYo.msg.placeholder.DECORATOR, 'eyo-code-placeholder')
     )
     mngr.addChild(mngr.newMenuItem(content, () => {
-      this.chooser_p = eYo.key.NONE
+      this.Chooser_p = eYo.key.NONE
     }))
   }
   var builtins = [
@@ -366,10 +366,10 @@ eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     eYo.key.PROPERTY
   ]
   builtins.forEach((builtin) => {
-    if (builtin !== this.target_p) {
+    if (builtin !== this.Target_p) {
       var content = eYo.do.CreateSPAN('@' + builtin, 'eyo-code-reserved')
       mngr.addChild(mngr.newMenuItem(content, () => {
-          this.chooser_p = builtin
+          this.Chooser_p = builtin
         }
       ))
     }
@@ -381,16 +381,16 @@ eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
       eYo.do.CreateSPAN('(…)', 'eyo-code')
     )
     mngr.addChild(mngr.newMenuItem(content, () => {
-      this.chooser_p = eYo.key.N_ARY
+      this.Chooser_p = eYo.key.N_ARY
     }))
   }
-  if (this.decorator_p.length) {
+  if (this.Decorator_p.length) {
     builtins = [
       eYo.key.SETTER,
       eYo.key.DELETER
     ]
     builtins.forEach((builtin) => {
-      if (builtin !== this.property_p) {
+      if (builtin !== this.Property_p) {
         var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
           eYo.do.CreateSPAN('@', 'eyo-code-reserved'),
           eYo.do.CreateSPAN(eYo.msg.placeholder.IDENTIFIER, 'eyo-code-placeholder'),
@@ -398,7 +398,7 @@ eYo.Stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
           eYo.do.CreateSPAN(builtin, 'eyo-code-reserved')
         )
         mngr.addChild(mngr.newMenuItem(content, () => {
-          this.chooser_p = builtin
+          this.Chooser_p = builtin
         }))
       }
     })
@@ -471,10 +471,10 @@ eYo.Stmt.Group.makeSubclass('funcdef_part', {
  */
 eYo.Stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
   var variants = this.variant_d.getAll()
-  var variant = this.variant_p
+  var variant = this.Variant_p
   var F = (content, key) => {
     var menuItem = mngr.newMenuItem(content, () => {
-      this.variant_p = key
+      this.Variant_p = key
     })
     mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== variant)
@@ -546,7 +546,7 @@ eYo.Stmt.Group.makeSubclass('classdef_part', {
       wrap: eYo.t3.Expr.Argument_list,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.N_ARY
+          this.brick.Variant_p = eYo.key.N_ARY
         }
       }
     }
@@ -564,7 +564,7 @@ eYo.Stmt.Classdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
   var variant = this.variant_d.get()
   var F = (content, key) => {
     var menuItem = mngr.newMenuItem(content, () => {
-      this.variant_p = key
+      this.Variant_p = key
     })
     mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== variant)

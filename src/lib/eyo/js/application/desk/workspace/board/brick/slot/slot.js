@@ -32,7 +32,7 @@ eYo.Slot.makeDlgt()
 /**
  * Initialize the instance.
  * Calls the inherited method, then adds methods defined by the model.
- * The methods are managed by the |dataHandler| method of the |eYo.C9r.model|.
+ * The methods are managed by the |dataHandler| method of the |eYo.c9r.model|.
  * @param {Object} object - The object to initialize.
  */
 eYo.Slot.Dlgt_p.initInstance = function (object) {
@@ -68,7 +68,7 @@ eYo.Slot.Dlgt_p.initInstance = function (object) {
  * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.C9r.BsmOwned.makeSubclass(eYo.Slot, 'Dflt', {
+eYo.c9r.BSMOwned.makeSubclass(eYo.Slot, 'Dflt', {
   init (brick, key, model) {
     eYo.Assert(brick, 'Missing slot owner brick')
     eYo.Assert(key, 'Missing slot key')
@@ -306,14 +306,14 @@ eYo.Slot.Dflt_p.whenRequiredFromModel = function (helper) {
  * @param {Boolean} deep whether to consolidate connected bricks.
  * @param {Boolean} force whether to force synchronization.
  */
-eYo.Slot.Dflt_p.Consolidate = function (deep, force) {
+eYo.Slot.Dflt_p.consolidate = function (deep, force) {
   var m4t = this.magnet
   if (m4t) {
     m4t.incog = this.incog
     m4t.wrapped_ && (m4t.hidden = true) // Don't ever connect any brick to this
     var v
     if ((v = this.model.check)) {
-      m4t.check = v.call(m4t, m4t.brick.type, m4t.brick.variant_p)
+      m4t.check = v.call(m4t, m4t.brick.type, m4t.brick.Variant_p)
     }
   }
 }
@@ -323,7 +323,7 @@ eYo.Slot.Dflt_p.Consolidate = function (deep, force) {
  * Called only by `synchronizeSlots`.
  * For edython.
  */
-eYo.Slot.Dflt_p.Synchronize = function () {
+eYo.Slot.Dflt_p.synchronize = function () {
   var d = this.ui_driver
   if (!d) {
     return
@@ -345,7 +345,7 @@ eYo.Slot.Dflt_p.Synchronize = function () {
  * @return a dom element, void lists may return nothing
  * @this a brick
  */
-eYo.Slot.Dflt_p.Save = function (element, opt) {
+eYo.Slot.Dflt_p.save = function (element, opt) {
   if (this.incog) {
     return
   }
@@ -392,7 +392,7 @@ eYo.Slot.Dflt_p.Save = function (element, opt) {
  * @param {Element} element a dom element in which to save the receiver
  * @param {Object} opt
  */
-eYo.Slot.Dflt_p.SaveRequired = function (element) {
+eYo.Slot.Dflt_p.saveRequired = function (element) {
   var child = goog.dom.createDom(eYo.xml.EXPR)
   child.setAttribute(eYo.key.EYO, eYo.key.PLACEHOLDER)
   child.setAttribute(eYo.xml.SLOT, this.xmlKey)
@@ -554,7 +554,7 @@ eYo.Slot.Dflt_p.forEachPrevious = function (helper) {
  * @param {function} helper
  * @return {?Object} The slot that returned true, eventually.
  */
-eYo.Slot.Dflt_p.Some = function (helper) {
+eYo.Slot.Dflt_p.some = function (helper) {
   var slot = this
   if (eYo.isF(helper)) {
     do {
@@ -570,7 +570,7 @@ eYo.Slot.Dflt_p.Some = function (helper) {
  * For edython.
  * @param {function} helper
  */
-eYo.Slot.Dflt_p.FieldForEach = function (helper) {
+eYo.Slot.Dflt_p.fieldForEach = function (helper) {
   this.fields && (Object.values(this.fields).forEach(f => helper(f)))
 }
 
@@ -608,7 +608,7 @@ eYo.Slot.Dflt_p.listConnect = function (bm, key) {
  * @param {eYo.Brick | eYo.Magnet.Dflt} bm  The target is either a brick or another magnet.
  * @return {?eYo.Magnet.Dflt} the eventual target magnet
  */
-eYo.Slot.Dflt_p.Connect = function (bm) {
+eYo.Slot.Dflt_p.connect = function (bm) {
   var m4t = this.magnet
   if(m4t && bm) {
     var other = (bm.magnets && bm.out_m) || bm
@@ -624,7 +624,7 @@ eYo.Slot.Dflt_p.Connect = function (bm) {
  * One shot in case of success.
  * @return {Boolean} whether the complete was successfull
  */
-eYo.Slot.Dflt_p.CompletePromise = function () {
+eYo.Slot.Dflt_p.completePromise = function () {
   var m4t = this.magnet
   if (m4t && m4t.completePromise()) {
     this.completePromise = eYo.do.nothing

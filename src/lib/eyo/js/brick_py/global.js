@@ -57,7 +57,7 @@ eYo.Stmt.makeClass(eYo.t3.stmt.global_stmt, {
         save (element, opt) /** @suppress {globalThis} */ {
         },
         load (element) /** @suppress {globalThis} */ {
-          this.brick.variant_p = element.getAttribute(eYo.key.EYO)
+          this.brick.Variant_p = element.getAttribute(eYo.key.EYO)
         }
       },
       fromType (type) /** @suppress {globalThis} */ {
@@ -84,13 +84,13 @@ eYo.Stmt.makeClass(eYo.t3.stmt.global_stmt, {
       xml: {
         key: 'list',
         save (element) /** @suppress {globalThis} */ {
-          var variant = this.brick.variant_p
+          var variant = this.brick.Variant_p
           if (variant === eYo.key.GLOBAL || variant === eYo.key.NONLOCAL) {
             this.save(element)
           }
         },
         load (element) /** @suppress {globalThis} */ {
-          var variant = this.brick.variant_p
+          var variant = this.brick.Variant_p
           if (variant === eYo.key.GLOBAL || variant === eYo.key.NONLOCAL) {
             this.load(element)
           }
@@ -103,12 +103,12 @@ eYo.Stmt.makeClass(eYo.t3.stmt.global_stmt, {
       xml: {
         key: 'list',
         save (element) /** @suppress {globalThis} */ {
-          if (this.brick.variant_p === eYo.key.DEL) {
+          if (this.brick.Variant_p === eYo.key.DEL) {
             this.save(element)
           }
         },
         load (element) /** @suppress {globalThis} */ {
-          if (this.brick.variant_p === eYo.key.DEL) {
+          if (this.brick.Variant_p === eYo.key.DEL) {
             this.load(element)
           }
         }
@@ -120,12 +120,12 @@ eYo.Stmt.makeClass(eYo.t3.stmt.global_stmt, {
       xml: {
         key: 'list',
         save (element) /** @suppress {globalThis} */ {
-          if (this.brick.variant_p === eYo.key.RETURN) {
+          if (this.brick.Variant_p === eYo.key.RETURN) {
             this.save(element)
           }
         },
         load (element) /** @suppress {globalThis} */ {
-          if (this.brick.variant_p === eYo.key.RETURN) {
+          if (this.brick.Variant_p === eYo.key.RETURN) {
             this.load(element)
           }
         }
@@ -143,14 +143,14 @@ eYo.Stmt.makeClass(eYo.t3.stmt.global_stmt, {
   'return'
 ].forEach((k) => {
   k = k + '_stmt'
-  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.stmt.global_stmt))
+  eYo.c9r.register(k, (eYo.Stmt[k] = eYo.stmt.global_stmt))
 })
 
 /**
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Stmt.global_stmt.prototype.getType = eYo.C9r.decorateChange(
+eYo.Stmt.global_stmt.prototype.getType = eYo.c9r.decorateChange(
   'getType',
   function () {
     this.setupType(
@@ -162,7 +162,7 @@ eYo.Stmt.global_stmt.prototype.getType = eYo.C9r.decorateChange(
         [eYo.key.NONLOCAL]: eYo.t3.Stmt.nonlocal_stmt,
         [eYo.key.DEL]: eYo.t3.Stmt.del_stmt,
         [eYo.key.RETURN]: eYo.t3.Stmt.return_stmt
-      } [this.variant_p]
+      } [this.Variant_p]
     )
     return this.type
   }
@@ -174,7 +174,7 @@ eYo.Stmt.global_stmt.prototype.getType = eYo.C9r.decorateChange(
  * @return !String
  */
 eYo.Stmt.global_stmt.prototype.xmlAttr = function () {
-  return this.variant_p
+  return this.Variant_p
 }
 
 /**
@@ -184,7 +184,7 @@ eYo.Stmt.global_stmt.prototype.xmlAttr = function () {
  * @private
  */
 eYo.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var current = this.variant_p
+  var current = this.Variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
     var key = variants[i]
@@ -192,7 +192,7 @@ eYo.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
       eYo.do.CreateSPAN(key, 'eyo-code-reserved')
     )
     var menuItem = mngr.newMenuItem(content, () => {
-      this.variant_p = key
+      this.Variant_p = key
     })
     mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
@@ -208,7 +208,7 @@ eYo.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
       eYo.do.CreateSPAN(' …', 'eyo-code-placeholder')
     )
     var menuItem = mngr.newMenuItem(content, () => {
-      this.variant_p = key
+      this.Variant_p = key
     })
     mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)

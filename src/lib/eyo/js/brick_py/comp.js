@@ -81,7 +81,7 @@ eYo.expr.Dflt.makeSubclass('comprehension', {
         if (b.type === eYo.t3.Expr.key_datum || b.type === eYo.t3.Expr.identifier_annotated) {
           return [eYo.t3.Expr.dict_comprehension]
         }
-      } else if (!eyo.expression_p.length) {
+      } else if (!eyo.Expression_p.length) {
         return [eYo.t3.Expr.Comprehension, eYo.t3.Expr.dict_comprehension]
       }
       return [eYo.t3.Expr.Comprehension]
@@ -100,7 +100,7 @@ eYo.expr.Comprehension.prototype.getBaseType = function () {
 }
 
 ;['dict_comprehension'].forEach(k => {
-  eYo.C9r.register(k, (eYo.expr[k] = eYo.expr.comprehension))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.comprehension))
 })
 
 /**

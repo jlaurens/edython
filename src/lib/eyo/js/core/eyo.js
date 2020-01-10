@@ -161,7 +161,7 @@ eYo.isRA = (what) => {
  * @return {!Boolean}
  */
 eYo.isNS = (what) => {
-  return what && eYo.isSubclass(what.constructor, eYo.Constructor)
+  return what && eYo.isSubclass(what.constructor, eYo.constructor)
 }
 
 /**

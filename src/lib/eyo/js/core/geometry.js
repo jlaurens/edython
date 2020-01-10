@@ -183,10 +183,10 @@ eYo.makeClass('Where', {
     height_: y,
   })
   let d = eYo.Where.eyo.descriptors__
-  d['dc'] = d['w'] = eYo.C9r.descriptorR(function () { return this.c})
-  d['dl'] = d['h'] = eYo.C9r.descriptorR(function () { return this.l})
-  d['dx'] = d['width'] = eYo.C9r.descriptorR(function () { return this.x})
-  d['dy'] = d['height'] = eYo.C9r.descriptorR(function () { return this.y})
+  d['dc'] = d['w'] = eYo.c9r.descriptorR(function () { return this.c})
+  d['dl'] = d['h'] = eYo.c9r.descriptorR(function () { return this.l})
+  d['dx'] = d['width'] = eYo.c9r.descriptorR(function () { return this.x})
+  d['dy'] = d['height'] = eYo.c9r.descriptorR(function () { return this.y})
 }) ()
 
 /**
@@ -195,7 +195,7 @@ eYo.makeClass('Where', {
  * @param {Number} [l]
  * @return {eYo.Where} The receiver
  */
-eYo.Where_p.Set = function (c = 0, l = 0) {
+eYo.Where_p.set = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ = c.x
     this.y_ = c.y
@@ -303,7 +303,7 @@ eYo.Where_p.forward = function (c = 0, l = 0) {
  * @param {number} l
  * @return {eYo.Where} c
  */
-eYo.Where_p.Backward = function (c = 0, l = 0) {
+eYo.Where_p.backward = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ -= c.x
     this.y_ -= c.y
@@ -337,7 +337,7 @@ eYo.Where_p.xyAdvance = function (x = 0, y = 0) {
  * @param {Number} [scaleY] - Defaults to
  * @return {eYo.Where} the receiver
  */
-eYo.Where_p.Scale = function (scaleX, scaleY) {
+eYo.Where_p.scale = function (scaleX, scaleY) {
   if (scaleX.x) {
     this.c_ *= scaleX.x
     this.l_ *= (scaleX.y || scaleX.x)
@@ -417,7 +417,7 @@ eYo.Size = eYo.Where
  * @param {String!} s
  * @return {eYo.Size} the receiver.
  */
-eYo.Where_p.SetFromText = function (txt) {
+eYo.Where_p.setFromText = function (txt) {
   var lines = txt.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/)
   var c = 0
   lines.forEach(l => (c < l.length) && (c = l.length) )
@@ -770,7 +770,7 @@ eYo.Rect_p.dispose = eYo.do.nothing
  * @param{?Number} h
  * @return {eYo.Rect} The receiver
  */
-eYo.Rect_p.Set = function (c = 0, l = 0, w = 0, h = 0, snap) {
+eYo.Rect_p.set = function (c = 0, l = 0, w = 0, h = 0, snap) {
   if (eYo.isDef(c.left) && eYo.isDef(c.right) && eYo.isDef(c.top) && eYo.isDef(c.bottom)) {
     // properties are evaluated twice
     this.left_ = c.left
@@ -840,7 +840,7 @@ eYo.Rect_p.forward = function (c = 0, l = 0) {
  * @param {number} l
  * @return {eYo.Rect}
  */
-eYo.Rect_p.Backward = function (c = 0, l = 0) {
+eYo.Rect_p.backward = function (c = 0, l = 0) {
   this.origin_.backward(c, l)
   return this
 }
@@ -871,7 +871,7 @@ eYo.Rect_p.equals = function (rhs) {
  * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
  * @return {!eYo.Rect} the receiver
  */
-eYo.Rect_p.Scale = function (scaleX, scaleY) {
+eYo.Rect_p.scale = function (scaleX, scaleY) {
   this.origin_.scale(scaleX, scaleY)
   this.size_.scale(scaleX, scaleY)
   return this

@@ -15,19 +15,19 @@
 eYo.require('c9r')
 
 /**
- * @name{eYo.Dnd}
+ * @name{eYo.dnd}
  * @namespace
  */
 eYo.provide('dnd')
 
 /**
- * @name{eYo.Dnd.Dragger}
+ * @name{eYo.dnd.Dragger}
  * @namespace
  */
 eYo.provide('dnd.dragger')
 
 /**
- * @name{eYo.Dnd.Dropper}
+ * @name{eYo.dnd.Dropper}
  * @namespace
  */
 eYo.provide('dnd.dropper')
@@ -36,39 +36,39 @@ eYo.forwardDeclare('motion')
 eYo.forwardDeclare('driver')
 
 /**
- * @name{eYo.Dnd.Mngr}
+ * @name{eYo.dnd.Mngr}
  * @constructor
  * Main drag and drop manager.
  * It maintains a list of draggers and droppers.
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param{eYo.Motion} [motion] -  the owning motion
  */
-eYo.Dnd.makeClass('Mngr', eYo.C9r.Owned, {
+eYo.dnd.makeClass('Mngr', eYo.c9r.Owned, {
   init (owner, motion) {
     this.motion_ = motion
     /** the dragger_ that started a drag, not owned */
     this.dragger_ = eYo.NA
     /** The list of draggers_, owned */
     this.draggers_ = [
-      new eYo.Dnd.Dragger.Board(this),
-      new eYo.Dnd.Dragger.DraftBoard(this),
-      new eYo.Dnd.Dragger.LibraryBoard(this),
-      new eYo.Dnd.Dragger.Brick(this),
-      new eYo.Dnd.Dragger.DraftBrick(this),
-      new eYo.Dnd.Dragger.LibraryBrick(this),
+      new eYo.dnd.Dragger.Board(this),
+      new eYo.dnd.Dragger.DraftBoard(this),
+      new eYo.dnd.Dragger.LibraryBoard(this),
+      new eYo.dnd.Dragger.Brick(this),
+      new eYo.dnd.Dragger.DraftBrick(this),
+      new eYo.dnd.Dragger.LibraryBrick(this),
     ]
     /** the dropper_ that started a possible drop, not owned */
     this.dropper_ = eYo.NA
     /** The list of droppers, owned */
     this.droppers_ = [
-      new eYo.Dnd.Dropper.Board(this),
-      new eYo.Dnd.Dropper.Brick(this),
+      new eYo.dnd.Dropper.Board(this),
+      new eYo.dnd.Dropper.Brick(this),
     ]
   },
   /**
    * Main drag and drop manager.
    * It maintains a list of draggers and droppers
-   * * @param{eYo.App.Dflt} [desktop] -  the owning desktop
+   * * @param{eYo.app.Dflt} [desktop] -  the owning desktop
    */
   dispose (dispose) {
     this.cancel()
@@ -93,8 +93,8 @@ eYo.Dnd.makeClass('Mngr', eYo.C9r.Owned, {
   }
 })
 
-eYo.Dnd.Mngr_p.OwnedForEach = function (f) {
-  eYo.Dnd.Mngr_s.OwnedForEach(f)
+eYo.dnd.Mngr_p.ownedForEach = function (f) {
+  eYo.dnd.Mngr_s.OwnedForEach(f)
   if (!this.draggers_) {
     console.error('BREAK HERE!!!')
   }
@@ -105,7 +105,7 @@ eYo.Dnd.Mngr_p.OwnedForEach = function (f) {
  * Ask one of its draggers to initate a dragging operation.
  * @return {Boolean} Whether a drag operation did start.
  */
-eYo.Dnd.Mngr_p.Start = function () {
+eYo.dnd.Mngr_p.start = function () {
   this.cancel()
   if ((this.dragger_ = this.draggers_.some(d => d.start()))) {
     return this.update()
@@ -117,7 +117,7 @@ eYo.Dnd.Mngr_p.Start = function () {
  * Forwards to the current dragger, then to all its droppers.
  * @return {Boolean} Whether a drag operation did update.
  */
-eYo.Dnd.Mngr_p.update = function () {
+eYo.dnd.Mngr_p.update = function () {
   if (this.dragger_) {
     this.dragger_.update()
     this.droppers_.forEach(d => d.update())
@@ -131,7 +131,7 @@ eYo.Dnd.Mngr_p.update = function () {
  * Forwards to the current dragger.
  * @return {Boolean} Whether a drag operation did cancel.
  */
-eYo.Dnd.Mngr_p.Cancel = function () {
+eYo.dnd.Mngr_p.cancel = function () {
   if (this.dragger_) {
     this.dragger_.cancel()
     this.droppers_.foreach(d => d.cancel())
@@ -145,7 +145,7 @@ eYo.Dnd.Mngr_p.Cancel = function () {
  * Forwards to the current dragger.
  * @return {Boolean} Whether a drag operation did reset.
  */
-eYo.Dnd.Mngr_p.reset = function () {
+eYo.dnd.Mngr_p.reset = function () {
   if (this.dragger_) {
     this.dragger_.reset()
     this.droppers_.foreach(d => d.reset())
@@ -159,7 +159,7 @@ eYo.Dnd.Mngr_p.reset = function () {
  * Forwards to the current dragger, then to all its droppers.
  * @return {Boolean} Whether a drag operation did complete.
  */
-eYo.Dnd.Mngr_p.Complete = function () {
+eYo.dnd.Mngr_p.complete = function () {
   if (this.dragger_) {
     this.droppers_.foreach(d => d.update())
     this.dropper_.complete()
@@ -171,27 +171,27 @@ eYo.Dnd.Mngr_p.Complete = function () {
 
 /**
  * Add a dragger.
- * @param {eYo.Dnd.Dragger} dragger
+ * @param {eYo.dnd.Dragger} dragger
  */
-eYo.Dnd.Mngr_p.AddDragger = function (dragger) {
+eYo.dnd.Mngr_p.addDragger = function (dragger) {
   this.draggers_.push(dragger)
 }
 
 /**
  * Add a dropper.
  */
-eYo.Dnd.Mngr_p.AddDropper = function (dropper) {
+eYo.dnd.Mngr_p.addDropper = function (dropper) {
   this.droppers_.push(dropper)
 }
 
 /*******/
 
 /**
- * @name {eYo.Dnd.Dragger.Dflt}
+ * @name {eYo.dnd.Dragger.Dflt}
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.Dnd.Mngr} manager -  the owning drag and drop manager.
+ * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.Dnd.Dragger.makeClass('Dflt', eYo.C9r.Owned, {
+eYo.dnd.Dragger.makeClass('Dflt', eYo.c9r.Owned, {
   /**
    * Sever all the links.
    */
@@ -216,7 +216,7 @@ eYo.Dnd.Dragger.makeClass('Dflt', eYo.C9r.Owned, {
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
-eYo.Dnd.Dragger.Dflt_p.Start = function () {
+eYo.dnd.Dragger.Dflt_p.start = function () {
   return (this.started_ = true)
 }
 
@@ -224,7 +224,7 @@ eYo.Dnd.Dragger.Dflt_p.Start = function () {
  * Update a drag operation.
  * @return {Boolean} true if a drag operation did update
  */
-eYo.Dnd.Dragger.Dflt_p.update = function () {
+eYo.dnd.Dragger.Dflt_p.update = function () {
   return this.started_
 }
 
@@ -232,13 +232,13 @@ eYo.Dnd.Dragger.Dflt_p.update = function () {
  * Cancel a drag operation.
  * @return {Boolean} true is a drag operation did cancel
  */
-eYo.Dnd.Dragger.Dflt_p.Cancel = eYo.dnd.Dragger.Dflt_p.update
+eYo.dnd.Dragger.Dflt_p.cancel = eYo.dnd.Dragger.Dflt_p.update
 
 /**
  * Reset a drag operation.
  * @return {Boolean} true is a drag operation did reset
  */
-eYo.Dnd.Dragger.Dflt_p.reset = function () {
+eYo.dnd.Dragger.Dflt_p.reset = function () {
   if (this.started_) {
     this.started_ = false
     return true
@@ -249,310 +249,310 @@ eYo.Dnd.Dragger.Dflt_p.reset = function () {
  * Complete a drag operation.
  * @return {Boolean} true is a drag operation did complete
  */
-eYo.Dnd.Dragger.Dflt_p.Complete = eYo.dnd.Dragger.Dflt_p.reset
+eYo.dnd.Dragger.Dflt_p.complete = eYo.dnd.Dragger.Dflt_p.reset
 
 /********/
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.Dnd.Mngr} manager -  the owning drag and drop manager.
+ * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.Dnd.Dragger.makeClass('Board')
+eYo.dnd.Dragger.makeClass('Board')
 
 /**
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
-eYo.Dnd.Dragger.Board_p.Start = function () {
-  return eYo.Dnd.Dragger.Board_s.Start.Call(this)
+eYo.dnd.Dragger.Board_p.start = function () {
+  return eYo.dnd.Dragger.Board_s.Start.Call(this)
 }
 
 /**
  * Update a drag operation.
  * @return {Boolean} true is a drag operation did update
  */
-eYo.Dnd.Dragger.Board_p.update = function () {
-  return eYo.Dnd.Dragger.Board_s.update.Call(this)
+eYo.dnd.Dragger.Board_p.update = function () {
+  return eYo.dnd.Dragger.Board_s.update.Call(this)
 }
 
 /**
  * Cancel a drag operation.
  * @return {Boolean} true is a drag operation did cancel
  */
-eYo.Dnd.Dragger.Board_p.Cancel = function () {
-  return eYo.Dnd.Dragger.Board_s.update.Cancel(this)
+eYo.dnd.Dragger.Board_p.cancel = function () {
+  return eYo.dnd.Dragger.Board_s.update.Cancel(this)
 }
 
 /**
  * Reset a drag operation.
  * @return {Boolean} true is a drag operation did reset
  */
-eYo.Dnd.Dragger.Board_p.reset = function () {
-  return eYo.Dnd.Dragger.Board_s.update.reset(this)
+eYo.dnd.Dragger.Board_p.reset = function () {
+  return eYo.dnd.Dragger.Board_s.update.reset(this)
 }
 
 /**
  * Complete a drag operation.
  * @return {Boolean} true is a drag operation did complete
  */
-eYo.Dnd.Dragger.Board_p.Complete = function () {
-  return eYo.Dnd.Dragger.Board_s.update.Complete(this)
+eYo.dnd.Dragger.Board_p.complete = function () {
+  return eYo.dnd.Dragger.Board_s.update.Complete(this)
 }
 
 /*******/
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.Dnd.Mngr} manager -  the owning drag and drop manager.
+ * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.Dnd.Dragger.makeClass('DraftBoard')
+eYo.dnd.Dragger.makeClass('DraftBoard')
 
 /**
  * Sever all the links.
  */
-eYo.Dnd.Dragger.DraftBoard.prototype.dispose = function () {
-  eYo.Dnd.Dragger.DraftBoard.SuperProto_.dispose.Call(this)
+eYo.dnd.Dragger.DraftBoard.prototype.dispose = function () {
+  eYo.dnd.Dragger.DraftBoard.SuperProto_.dispose.Call(this)
 }
 
 /**
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
-eYo.Dnd.Dragger.DraftBoard.prototype.Start = function () {
-  return eYo.Dnd.Dragger.DraftBoard.superProto_.Start.Complete(this)
+eYo.dnd.Dragger.DraftBoard.prototype.Start = function () {
+  return eYo.dnd.Dragger.DraftBoard.superProto_.Start.Complete(this)
 }
 
 /**
  * Update a drag operation.
  * @return {Boolean} true is a drag operation did update
  */
-eYo.Dnd.Dragger.DraftBoard.prototype.update = function () {
-  return eYo.Dnd.Dragger.DraftBoard.SuperProto_.update.Call(this)
+eYo.dnd.Dragger.DraftBoard.prototype.update = function () {
+  return eYo.dnd.Dragger.DraftBoard.SuperProto_.update.Call(this)
 }
 
 /**
  * Cancel a drag operation.
  * @return {Boolean} true is a drag operation did cancel
  */
-eYo.Dnd.Dragger.DraftBoard.prototype.Cancel = function () {
-  return eYo.Dnd.Dragger.DraftBoard.SuperProto_.cancel.Call(this)
+eYo.dnd.Dragger.DraftBoard.prototype.Cancel = function () {
+  return eYo.dnd.Dragger.DraftBoard.SuperProto_.cancel.Call(this)
 }
 
 /**
  * Reset a drag operation.
  * @return {Boolean} true is a drag operation did reset
  */
-eYo.Dnd.Dragger.DraftBoard.prototype.reset = function () {
-  return eYo.Dnd.Dragger.DraftBoard.SuperProto_.reset.Call(this)
+eYo.dnd.Dragger.DraftBoard.prototype.reset = function () {
+  return eYo.dnd.Dragger.DraftBoard.SuperProto_.reset.Call(this)
 }
 
 /**
  * Complete a drag operation.
  * @return {Boolean} true is a drag operation did complete
  */
-eYo.Dnd.Dragger.DraftBoard.prototype.Complete = function () {
-  return eYo.Dnd.Dragger.DraftBoard.SuperProto_.complete.Call(this)
+eYo.dnd.Dragger.DraftBoard.prototype.Complete = function () {
+  return eYo.dnd.Dragger.DraftBoard.SuperProto_.complete.Call(this)
 }
 
 /*******/
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.Dnd.Mngr} manager -  the owning drag and drop manager.
+ * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.Dnd.Dragger.makeClass('LibraryBoard')
+eYo.dnd.Dragger.makeClass('LibraryBoard')
 
 /**
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
-eYo.Dnd.Dragger.LibraryBoard.prototype.Start = function () {
-  return eYo.Dnd.Dragger.LibraryBoard.superProto_.Start.Complete(this)
+eYo.dnd.Dragger.LibraryBoard.prototype.Start = function () {
+  return eYo.dnd.Dragger.LibraryBoard.superProto_.Start.Complete(this)
 }
 
 /**
  * Update a drag operation.
  * @return {Boolean} true is a drag operation did update
  */
-eYo.Dnd.Dragger.LibraryBoard.prototype.update = function () {
-  return eYo.Dnd.Dragger.LibraryBoard.SuperProto_.update.Call(this)
+eYo.dnd.Dragger.LibraryBoard.prototype.update = function () {
+  return eYo.dnd.Dragger.LibraryBoard.SuperProto_.update.Call(this)
 }
 
 /**
  * Cancel a drag operation.
  * @return {Boolean} true is a drag operation did cancel
  */
-eYo.Dnd.Dragger.LibraryBoard.prototype.Cancel = function () {
-  return eYo.Dnd.Dragger.LibraryBoard.SuperProto_.cancel.Call(this)
+eYo.dnd.Dragger.LibraryBoard.prototype.Cancel = function () {
+  return eYo.dnd.Dragger.LibraryBoard.SuperProto_.cancel.Call(this)
 }
 
 /**
  * Reset a drag operation.
  * @return {Boolean} true is a drag operation did reset
  */
-eYo.Dnd.Dragger.LibraryBoard.prototype.reset = function () {
-  return eYo.Dnd.Dragger.LibraryBoard.SuperProto_.reset.Call(this)
+eYo.dnd.Dragger.LibraryBoard.prototype.reset = function () {
+  return eYo.dnd.Dragger.LibraryBoard.SuperProto_.reset.Call(this)
 }
 
 /**
  * Complete a drag operation.
  * @return {Boolean} true is a drag operation did complete
  */
-eYo.Dnd.Dragger.LibraryBoard.prototype.Complete = function () {
-  return eYo.Dnd.Dragger.LibraryBoard.SuperProto_.complete.Call(this)
+eYo.dnd.Dragger.LibraryBoard.prototype.Complete = function () {
+  return eYo.dnd.Dragger.LibraryBoard.SuperProto_.complete.Call(this)
 }
 
 /*******/
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.Dnd.Mngr} manager -  the owning drag and drop manager.
+ * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.Dnd.Dragger.makeClass('Brick')
+eYo.dnd.Dragger.makeClass('Brick')
 
 /**
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
-eYo.Dnd.Dragger.Brick_p.Start = function () {
-  return eYo.Dnd.Dragger.Brick.superProto_.Start.Call(this)
+eYo.dnd.Dragger.Brick_p.start = function () {
+  return eYo.dnd.Dragger.Brick.superProto_.Start.Call(this)
 }
 
 /**
  * Update a drag operation.
  * @return {Boolean} true is a drag operation did update
  */
-eYo.Dnd.Dragger.Brick_p.update = function () {
-  return eYo.Dnd.Dragger.Brick.SuperProto_.update.Call(this)
+eYo.dnd.Dragger.Brick_p.update = function () {
+  return eYo.dnd.Dragger.Brick.SuperProto_.update.Call(this)
 }
 
 /**
  * Cancel a drag operation.
  * @return {Boolean} true is a drag operation did cancel
  */
-eYo.Dnd.Dragger.Brick_p.Cancel = function () {
-  return eYo.Dnd.Dragger.Brick.SuperProto_.cancel.Call(this)
+eYo.dnd.Dragger.Brick_p.cancel = function () {
+  return eYo.dnd.Dragger.Brick.SuperProto_.cancel.Call(this)
 }
 
 /**
  * Reset a drag operation.
  * @return {Boolean} true is a drag operation did reset
  */
-eYo.Dnd.Dragger.Brick_p.reset = function () {
-  return eYo.Dnd.Dragger.Brick.SuperProto_.reset.Call(this)
+eYo.dnd.Dragger.Brick_p.reset = function () {
+  return eYo.dnd.Dragger.Brick.SuperProto_.reset.Call(this)
 }
 
 /**
  * Complete a drag operation.
  * @return {Boolean} true is a drag operation did complete
  */
-eYo.Dnd.Dragger.Brick_p.Complete = function () {
-  return eYo.Dnd.Dragger.Brick.SuperProto_.complete.Call(this)
+eYo.dnd.Dragger.Brick_p.complete = function () {
+  return eYo.dnd.Dragger.Brick.SuperProto_.complete.Call(this)
 }
 
 /*******/
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.Dnd.Mngr} manager -  the owning drag and drop manager.
+ * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.Dnd.Dragger.makeClass('LibraryBrick')
+eYo.dnd.Dragger.makeClass('LibraryBrick')
 
 /**
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
-eYo.Dnd.Dragger.LibraryBrick_p.Start = function () {
-  return eYo.Dnd.Dragger.LibraryBrick.superProto_.Start.Call(this)
+eYo.dnd.Dragger.LibraryBrick_p.start = function () {
+  return eYo.dnd.Dragger.LibraryBrick.superProto_.Start.Call(this)
 }
 
 /**
  * Update a drag operation.
  * @return {Boolean} true is a drag operation did update
  */
-eYo.Dnd.Dragger.LibraryBrick_p.update = function () {
-  return eYo.Dnd.Dragger.LibraryBrick.SuperProto_.update.Call(this)
+eYo.dnd.Dragger.LibraryBrick_p.update = function () {
+  return eYo.dnd.Dragger.LibraryBrick.SuperProto_.update.Call(this)
 }
 
 /**
  * Cancel a drag operation.
  * @return {Boolean} true is a drag operation did cancel
  */
-eYo.Dnd.Dragger.LibraryBrick_p.Cancel = function () {
-  return eYo.Dnd.Dragger.LibraryBrick.SuperProto_.cancel.Call(this)
+eYo.dnd.Dragger.LibraryBrick_p.cancel = function () {
+  return eYo.dnd.Dragger.LibraryBrick.SuperProto_.cancel.Call(this)
 }
 
 /**
  * Reset a drag operation.
  * @return {Boolean} true is a drag operation did reset
  */
-eYo.Dnd.Dragger.LibraryBrick_p.reset = function () {
-  return eYo.Dnd.Dragger.LibraryBrick.SuperProto_.reset.Call(this)
+eYo.dnd.Dragger.LibraryBrick_p.reset = function () {
+  return eYo.dnd.Dragger.LibraryBrick.SuperProto_.reset.Call(this)
 }
 
 /**
  * Complete a drag operation.
  * @return {Boolean} true is a drag operation did complete
  */
-eYo.Dnd.Dragger.LibraryBrick_p.Complete = function () {
-  return eYo.Dnd.Dragger.LibraryBrick.SuperProto_.complete.Call(this)
+eYo.dnd.Dragger.LibraryBrick_p.complete = function () {
+  return eYo.dnd.Dragger.LibraryBrick.SuperProto_.complete.Call(this)
 }
 
 /*******/
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.Dnd.Mngr} manager -  the owning drag and drop manager.
+ * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.Dnd.Dragger.makeClass('DraftBrick')
+eYo.dnd.Dragger.makeClass('DraftBrick')
 
 /**
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
-eYo.Dnd.Dragger.DraftBrick_p.Start = function () {
-  return eYo.Dnd.Dragger.DraftBrick.superProto_.Start.Call(this)
+eYo.dnd.Dragger.DraftBrick_p.start = function () {
+  return eYo.dnd.Dragger.DraftBrick.superProto_.Start.Call(this)
 }
 
 /**
  * Update a drag operation.
  * @return {Boolean} true is a drag operation did update
  */
-eYo.Dnd.Dragger.DraftBrick_p.update = function () {
-  return eYo.Dnd.Dragger.DraftBrick.SuperProto_.update.Call(this)
+eYo.dnd.Dragger.DraftBrick_p.update = function () {
+  return eYo.dnd.Dragger.DraftBrick.SuperProto_.update.Call(this)
 }
 
 /**
  * Cancel a drag operation.
  * @return {Boolean} true is a drag operation did cancel
  */
-eYo.Dnd.Dragger.DraftBrick_p.Cancel = function () {
-  return eYo.Dnd.Dragger.DraftBrick.SuperProto_.cancel.Call(this)
+eYo.dnd.Dragger.DraftBrick_p.cancel = function () {
+  return eYo.dnd.Dragger.DraftBrick.SuperProto_.cancel.Call(this)
 }
 
 /**
  * Reset a drag operation.
  * @return {Boolean} true is a drag operation did reset
  */
-eYo.Dnd.Dragger.DraftBrick_p.reset = function () {
-  return eYo.Dnd.Dragger.DraftBrick.SuperProto_.reset.Call(this)
+eYo.dnd.Dragger.DraftBrick_p.reset = function () {
+  return eYo.dnd.Dragger.DraftBrick.SuperProto_.reset.Call(this)
 }
 
 /**
  * Complete a drag operation.
  * @return {Boolean} true is a drag operation did complete
  */
-eYo.Dnd.Dragger.DraftBrick_p.Complete = function () {
-  return eYo.Dnd.Dragger.DraftBrick.SuperProto_.complete.Call(this)
+eYo.dnd.Dragger.DraftBrick_p.complete = function () {
+  return eYo.dnd.Dragger.DraftBrick.SuperProto_.complete.Call(this)
 }
 
 /*******/
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.Dnd.Mngr} manager -  the owning drag and drop manager.
+ * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.Dnd.Dropper.makeClass('Dflt', eYo.C9r.Owned, {
+eYo.dnd.Dropper.makeClass('Dflt', eYo.c9r.Owned, {
   /**
    * Sever all the links.
    */
@@ -576,7 +576,7 @@ eYo.Dnd.Dropper.makeClass('Dflt', eYo.C9r.Owned, {
  * Start a drop operation.
  * @return {Boolean} true is a drop operation did start
  */
-eYo.Dnd.Dropper.Dflt_p.Start = function () {
+eYo.dnd.Dropper.Dflt_p.start = function () {
   return (this.started_ = true)
 }
 
@@ -584,7 +584,7 @@ eYo.Dnd.Dropper.Dflt_p.Start = function () {
  * Update a drop operation.
  * @return {Boolean} true is a drop operation did update
  */
-eYo.Dnd.Dropper.Dflt_p.update = function () {
+eYo.dnd.Dropper.Dflt_p.update = function () {
   return this.started_
 }
 
@@ -592,13 +592,13 @@ eYo.Dnd.Dropper.Dflt_p.update = function () {
  * Cancel a drop operation.
  * @return {Boolean} true is a drop operation did cancel
  */
-eYo.Dnd.Dropper.Dflt_p.Cancel = eYo.dnd.Dropper.Dflt_p.update
+eYo.dnd.Dropper.Dflt_p.cancel = eYo.dnd.Dropper.Dflt_p.update
 
 /**
  * Reset a drop operation.
  * @return {Boolean} true is a drop operation did reset
  */
-eYo.Dnd.Dropper.Dflt_p.reset = function () {
+eYo.dnd.Dropper.Dflt_p.reset = function () {
   if (this.started_) {
     this.started_ = false
     return true
@@ -609,102 +609,102 @@ eYo.Dnd.Dropper.Dflt_p.reset = function () {
  * Complete a drop operation.
  * @return {Boolean} true is a drop operation did complete
  */
-eYo.Dnd.Dropper.Dflt_p.Complete = eYo.dnd.Dropper.Dflt_p.reset
+eYo.dnd.Dropper.Dflt_p.complete = eYo.dnd.Dropper.Dflt_p.reset
 
 /*******/
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.Dnd.Mngr} manager -  the owning drag and drop manager.
+ * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.Dnd.Dropper.makeClass('Board')
+eYo.dnd.Dropper.makeClass('Board')
 
 /**
  * Start a drop operation.
  * @return {Boolean} true is a drop operation did start
  */
-eYo.Dnd.Dropper.Board_p.Start = function () {
-  return eYo.Dnd.Dropper.Board_s.Start.Call(this)
+eYo.dnd.Dropper.Board_p.start = function () {
+  return eYo.dnd.Dropper.Board_s.Start.Call(this)
 }
 
 /**
  * Update a drop operation.
  * @return {Boolean} true is a drop operation did update
  */
-eYo.Dnd.Dropper.Board_p.update = function () {
-  return eYo.Dnd.Dropper.Board_s.update.Call(this)
+eYo.dnd.Dropper.Board_p.update = function () {
+  return eYo.dnd.Dropper.Board_s.update.Call(this)
 }
 
 /**
  * Cancel a drop operation.
  * @return {Boolean} true is a drop operation did cancel
  */
-eYo.Dnd.Dropper.Board_p.Cancel = function () {
-  return eYo.Dnd.Dropper.Board_s.cancel.Call(this)
+eYo.dnd.Dropper.Board_p.cancel = function () {
+  return eYo.dnd.Dropper.Board_s.cancel.Call(this)
 }
 
 /**
  * Reset a drop operation.
  * @return {Boolean} true is a drop operation did reset
  */
-eYo.Dnd.Dropper.Board_p.reset = function () {
-  return eYo.Dnd.Dropper.Board_s.reset.Call(this)
+eYo.dnd.Dropper.Board_p.reset = function () {
+  return eYo.dnd.Dropper.Board_s.reset.Call(this)
 }
 
 /**
  * Complete a drop operation.
  * @return {Boolean} true is a drop operation did complete
  */
-eYo.Dnd.Dropper.Board_p.Complete = function () {
-  return eYo.Dnd.Dropper.Board_s.complete.Call(this)
+eYo.dnd.Dropper.Board_p.complete = function () {
+  return eYo.dnd.Dropper.Board_s.complete.Call(this)
 }
 
 /*******/
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param {eYo.Dnd.Mngr} manager -  the owning drag and drop manager.
+ * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.Dnd.Dropper.makeClass('Brick')
+eYo.dnd.Dropper.makeClass('Brick')
 
 /**
  * Start a drop operation.
  * @return {Boolean} true is a drop operation did start
  */
-eYo.Dnd.Dropper.Brick_p.Start = function () {
-  return eYo.Dnd.Dropper.Brick_s.Start.Call(this)
+eYo.dnd.Dropper.Brick_p.start = function () {
+  return eYo.dnd.Dropper.Brick_s.Start.Call(this)
 }
 
 /**
  * Update a drop operation.
  * @return {Boolean} true is a drop operation did update
  */
-eYo.Dnd.Dropper.Brick_p.update = function () {
-  return eYo.Dnd.Dropper.Brick_s.update.Call(this)
+eYo.dnd.Dropper.Brick_p.update = function () {
+  return eYo.dnd.Dropper.Brick_s.update.Call(this)
 }
 
 /**
  * Cancel a drop operation.
  * @return {Boolean} true is a drop operation did cancel
  */
-eYo.Dnd.Dropper.Brick_p.Cancel = function () {
-  return eYo.Dnd.Dropper.Brick_s.cancel.Call(this)
+eYo.dnd.Dropper.Brick_p.cancel = function () {
+  return eYo.dnd.Dropper.Brick_s.cancel.Call(this)
 }
 
 /**
  * Reset a drop operation.
  * @return {Boolean} true is a drop operation did reset
  */
-eYo.Dnd.Dropper.Brick_p.reset = function () {
-  return eYo.Dnd.Dropper.Brick_s.reset.Call(this)
+eYo.dnd.Dropper.Brick_p.reset = function () {
+  return eYo.dnd.Dropper.Brick_s.reset.Call(this)
 }
 
 /**
  * Complete a drop operation.
  * @return {Boolean} true is a drop operation did complete
  */
-eYo.Dnd.Dropper.Brick_p.Complete = function () {
-  return eYo.Dnd.Dropper.Brick_s.complete.Call(this)
+eYo.dnd.Dropper.Brick_p.complete = function () {
+  return eYo.dnd.Dropper.Brick_s.complete.Call(this)
 }
 
 /*******/

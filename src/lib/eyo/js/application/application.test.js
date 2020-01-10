@@ -1,7 +1,7 @@
 describe('app', function() {
   it ('Application: Basic', function () {
-    chai.assert(eYo.App.Dflt)
-    let app = new eYo.App.Dflt()
+    chai.assert(eYo.app.Dflt)
+    let app = new eYo.app.Dflt()
     chai.assert(app)
   })
   it ('Application: UI', function () {
@@ -9,7 +9,7 @@ describe('app', function() {
       let options = {
         UI: UI
       }
-      let app = new eYo.App.Dflt(options)
+      let app = new eYo.app.Dflt(options)
       console.error(app.options)
       chai.assert(app.options.UI === UI)
       chai.assert(app.ui_driver_mngr.constructor === eYo[UI].Mngr)

@@ -43,11 +43,11 @@ describe ('POC', function () {
   })
   it ('delete', function () {
     var ns = eYo.makeNS()
-    chai.assert(!ns.Foo)
-    ns.Foo = 123
-    chai.assert(ns.Foo)
-    delete ns.Foo
-    chai.assert(!ns.Foo)
+    chai.assert(!ns.foo)
+    ns.foo = 123
+    chai.assert(ns.foo)
+    delete ns.foo
+    chai.assert(!ns.foo)
   })
   it ('Object.defineProperty(…, …, {value: []})', function () {
     let F = function () {}
@@ -113,34 +113,34 @@ describe ('Tests: C9r', function () {
       chai.assert(ns.makeClass)
       chai.assert(ns.super === eYo)
       eYo.makeNS(ns, 'Foo')
-      chai.assert(ns.Foo)
-      chai.assert(ns.Foo.makeNS)
-      chai.assert(ns.Foo.makeClass)
-      chai.assert(ns.Foo.super === eYo)
-      chai.assert(ns.Foo.name.endsWith('.Foo'))
+      chai.assert(ns.foo)
+      chai.assert(ns.foo.makeNS)
+      chai.assert(ns.foo.makeClass)
+      chai.assert(ns.foo.super === eYo)
+      chai.assert(ns.foo.name.endsWith('.Foo'))
     })
     it ('ns.makeNS(...)', function () {
       var ns = eYo.makeNS()
       chai.expect(() => { ns.makeNS() }).not.to.throw()
-      ns.makeNS('Foo')
-      chai.assert(ns.Foo)
-      chai.assert(ns.Foo.makeNS)
-      chai.assert(ns.Foo.makeClass)
-      chai.assert(ns.Foo.super === ns)
-      chai.assert(ns.Foo.name.endsWith('.Foo'))
-      chai.assert(!ns.Bar)
-      ns.Bar = 123
-      chai.assert(ns.Bar)
-      chai.expect(() => { ns.makeNS('Bar') }).to.throw()
-      chai.expect(() => { eYo.makeNS(ns, 'Bar') }).to.throw()
-      delete ns.Bar
-      chai.expect(() => { eYo.makeNS(ns, 'Bar') }).not.to.throw()
+      ns.makeNS('foo')
+      chai.assert(ns.foo)
+      chai.assert(ns.foo.makeNS)
+      chai.assert(ns.foo.makeClass)
+      chai.assert(ns.foo.super === ns)
+      chai.assert(ns.foo.name.endsWith('.Foo'))
+      chai.assert(!ns.bar)
+      ns.bar = 123
+      chai.assert(ns.bar)
+      chai.expect(() => { ns.makeNS('bar') }).to.throw()
+      chai.expect(() => { eYo.makeNS(ns, 'bar') }).to.throw()
+      delete ns.bar
+      chai.expect(() => { eYo.makeNS(ns, 'bar') }).not.to.throw()
       var nsbis = eYo.makeNS()
-      nsbis.Bar = 123
-      chai.expect(() => { nsbis.makeNS('Bar') }).to.throw()
+      nsbis.bar = 123
+      chai.expect(() => { nsbis.makeNS('bar') }).to.throw()
       chai.expect(() => { eYo.makeNS(nsbis, 'Bar') }).to.throw()
-      delete nsbis.Bar
-      chai.expect(() => { nsbis.makeNS('Bar') }).not.to.throw()
+      delete nsbis.bar
+      chai.expect(() => { nsbis.makeNS('bar') }).not.to.throw()
     })
   })
   describe('C9r: makeClass', function () {
@@ -414,21 +414,21 @@ describe('c9r.model', function () {
       chai.assert(XRegExp(k).test('abc'))
     }
   })
-  it ('eYo.C9r.model.isAllowed(path, k)', function () {
-    chai.assert(eYo.C9r.model.isAllowed('', 'init'))
-    chai.assert(eYo.C9r.model.isAllowed('owned', 'abc'))
-    chai.assert(eYo.C9r.model.isAllowed('owned.abc', 'validate'))
+  it ('eYo.c9r.model.isAllowed(path, k)', function () {
+    chai.assert(eYo.c9r.model.isAllowed('', 'init'))
+    chai.assert(eYo.c9r.model.isAllowed('owned', 'abc'))
+    chai.assert(eYo.c9r.model.isAllowed('owned.abc', 'validate'))
   })
   it ('Inheritance 1', function () {
     var base = {init: 421}
     var model = {}
-    eYo.C9r.model.extends(model, base)
+    eYo.c9r.model.extends(model, base)
     chai.assert(model.init === 421)
   })
   it ('Inheritance 2', function () {
     var base = {xml: {attr: 421}}
     var model = {}
-    eYo.C9r.model.extends(model, base)
+    eYo.c9r.model.extends(model, base)
     chai.assert(model.xml.attr === 421)
   })
   it ('Inheritance 3', function () {
@@ -442,7 +442,7 @@ describe('c9r.model', function () {
         types: 123
       }
     }
-    eYo.C9r.model.extends(model, base)
+    eYo.c9r.model.extends(model, base)
     chai.assert(model.xml.attr === 421)
     chai.assert(model.xml.types === 123)
   })
@@ -466,8 +466,8 @@ describe('c9r.model', function () {
         ab: 421
       }
     }
-    eYo.C9r.model.extends(model, base)
-    eYo.C9r.model.extends(submodel, model)
+    eYo.c9r.model.extends(model, base)
+    eYo.c9r.model.extends(submodel, model)
     chai.assert(submodel.data.aa.xml === 421)
     chai.assert(submodel.data.ab === 421)
     chai.assert(submodel.owned === 421)

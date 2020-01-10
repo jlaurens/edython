@@ -516,7 +516,7 @@ eYo.dom.BindDocumentEvents = (() => {
         eYo.dom.BindEvent(
           window,
           'orientationchange',
-          e => eYo.App.Desk.layout() // TODO(#397): Fix for multiple boards.
+          e => eYo.app.Desk.layout() // TODO(#397): Fix for multiple boards.
         )
       }
     }
@@ -531,14 +531,14 @@ eYo.dom.BindDocumentEvents = (() => {
  * @private
  */
 eYo.dom.on_keydown = e => {
-  if (eYo.App.Board.Options.readOnly || eYo.dom.isTargetInput(e)) {
+  if (eYo.app.Board.Options.readOnly || eYo.dom.isTargetInput(e)) {
     // No key actions on readonly boards.
     // When focused on an HTML text input widget, don't trap any keys.
     return
   }
   // var deleteBrick = false;
   if (e.keyCode == 9) {
-    if (eYo.navigate.doTab(eYo.App.Focus_mngr.Brick, {
+    if (eYo.navigate.doTab(eYo.app.Focus_mngr.Brick, {
         left: e.shiftKey,
         fast: e.altKey || e.ctrlKey || e.metaKey
       })) {
@@ -546,7 +546,7 @@ eYo.dom.on_keydown = e => {
     }
   } else if (e.keyCode == 27) {
     // Pressing esc closes the context menu.
-    eYo.App.hideChaff()
+    eYo.app.hideChaff()
   } else if (e.keyCode == 8 || e.keyCode == 46) {
     // Delete or backspace.
     // Stop the browser from going back to the previous page.
@@ -554,19 +554,19 @@ eYo.dom.on_keydown = e => {
     // data loss.
     e.preventDefault()
     // Don't delete while dragging.  Jeez.
-    if (eYo.App.Desktop.isDragging) {
+    if (eYo.app.Desktop.isDragging) {
       return;
     }
-    if (eYo.App.Focus_mngr.Brick && eYo.App.focus_mngr.Brick.deletable) {
-      eYo.App.deleteBrick(eYo.App.Focus_mngr.Brick, e.altKey || e.ctrlKey || e.metaKey);
+    if (eYo.app.Focus_mngr.Brick && eYo.app.focus_mngr.Brick.deletable) {
+      eYo.app.deleteBrick(eYo.app.Focus_mngr.Brick, e.altKey || e.ctrlKey || e.metaKey);
     }
   } else if (e.altKey || e.ctrlKey || e.metaKey) {
     // Don't use meta keys during drags.
-    if (eYo.App.Desktop.isDragging) {
+    if (eYo.app.Desktop.isDragging) {
       return;
     }
-    if (eYo.App.Focus_mngr.Brick &&
-        eYo.App.Focus_mngr.Brick.deletable && eYo.App.focus_mngr.Brick.movable) {
+    if (eYo.app.Focus_mngr.Brick &&
+        eYo.app.Focus_mngr.Brick.deletable && eYo.app.focus_mngr.Brick.movable) {
       // Eyo: 1 meta key for shallow copy, more for deep copy
       var deep = (e.altKey ? 1 : 0) + (e.ctrlKey ? 1 : 0) + (e.metaKey ? 1 : 0) > 1
       // Don't allow copying immovable or undeletable bricks. The next step
@@ -574,30 +574,30 @@ eYo.dom.on_keydown = e => {
       // bricks on the board.
       if (e.keyCode == 67) {
         // 'c' for copy.
-        eYo.App.hideChaff()
-        eYo.App.Dflt.CopyBrick(eYo.App.Focus_mngr.Brick, deep)
-      } else if (e.keyCode == 88 && !eYo.App.Focus_mngr.Brick.Board.readOnly) {
+        eYo.app.hideChaff()
+        eYo.app.Dflt.CopyBrick(eYo.app.Focus_mngr.Brick, deep)
+      } else if (e.keyCode == 88 && !eYo.app.Focus_mngr.Brick.Board.readOnly) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.App.Dflt.CopyBrick(eYo.App.Focus_mngr.Brick, deep)
-        eYo.App.deleteBrick(eYo.App.Focus_mngr.Brick, deep)
+        eYo.app.Dflt.CopyBrick(eYo.app.Focus_mngr.Brick, deep)
+        eYo.app.deleteBrick(eYo.app.Focus_mngr.Brick, deep)
       }
     }
     if (e.keyCode == 86) {
       // 'v' for paste.
-      eYo.App.Board.paste()
+      eYo.app.Board.paste()
     } else if (e.keyCode == 90) {
       // 'z' for undo 'Z' is for redo.
-      eYo.App.hideChaff()
-      eYo.App.Desk.undo(e.shiftKey)
+      eYo.app.hideChaff()
+      eYo.app.Desk.undo(e.shiftKey)
     }
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBrick && !eYo.App.Focus_mngr.Brick.Board.readOnly) {
+  // if (deleteBrick && !eYo.app.Focus_mngr.Brick.Board.readOnly) {
   //   eYo.events.group = true
-  //   eYo.App.hideChaff();
-  //   eYo.App.Focus_mngr.Brick.dispose(/* heal */ true, true);
+  //   eYo.app.hideChaff();
+  //   eYo.app.Focus_mngr.Brick.dispose(/* heal */ true, true);
   //   eYo.events.group = false
   // }
 };

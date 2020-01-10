@@ -21,7 +21,7 @@ eYo.forwardDeclare('desk')
  * @param {eYo.Desk} desk -  the owning desk.
  * @constructor
  */
-eYo.C9r.Owned.makeSubclass('Pane', {
+eYo.c9r.Owned.makeSubclass('Pane', {
   computed: {
     /**
      * The desk of the receiver.
@@ -38,14 +38,14 @@ eYo.C9r.Owned.makeSubclass('Pane', {
  * Layout the receiver.
  * The default implementation does nothing.
  */
-eYo.C9r.Pane_p.layout = eYo.do.nothing
+eYo.c9r.Pane_p.layout = eYo.do.nothing
 
 /**
  * Update the metrics of the receiver.
  */
-eYo.C9r.Pane_p.updateMetrics = eYo.do.nothing
+eYo.c9r.Pane_p.updateMetrics = eYo.do.nothing
 
 /**
  * Place the receiver.
  */
-eYo.C9r.Pane_p.place = eYo.do.nothing
+eYo.c9r.Pane_p.place = eYo.do.nothing

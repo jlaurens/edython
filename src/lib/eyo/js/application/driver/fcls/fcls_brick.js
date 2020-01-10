@@ -131,7 +131,7 @@ eYo.fcls.Brick_p.moveTo = eYo.do.nothing
  * @return {!eYo.Where} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.fcls.Brick_p.WhereInBoard = eYo.do.nothing
+eYo.fcls.Brick_p.whereInBoard = eYo.do.nothing
 
 /**
  * The default implementation does nothing.
@@ -143,14 +143,14 @@ eYo.fcls.Brick_p.updateDisabled = eYo.do.nothing
  * The default implementation does nothing.
  * @param {eYo.Brick.Dflt} brick - the node the driver acts on
  */
-eYo.fcls.Brick_p.ConnectEffect = eYo.do.nothing
+eYo.fcls.Brick_p.connectEffect = eYo.do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {eYo.Brick.Dflt} brick - the node the driver acts on
  * @param {Object} menu
  */
-eYo.fcls.Brick_p.MenuShow = eYo.do.nothing
+eYo.fcls.Brick_p.menuShow = eYo.do.nothing
 
 /**
  * The default implementation does nothing.
@@ -168,13 +168,13 @@ eYo.fcls.Brick_p.makeUnwrapped = eYo.do.nothing
  * The default implementation does nothing.
  * @param {eYo.Brick.Dflt} brick - the node the driver acts on
  */
-eYo.fcls.Brick_p.SendToFront = eYo.do.nothing
+eYo.fcls.Brick_p.sendToFront = eYo.do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {eYo.Brick.Dflt} brick - the node the driver acts on
  */
-eYo.fcls.Brick_p.SendToBack = eYo.do.nothing
+eYo.fcls.Brick_p.sendToBack = eYo.do.nothing
 
 /**
  * Add the hilight path_.
@@ -195,7 +195,7 @@ eYo.fcls.Brick_p.hilightAdd_ = eYo.do.nothing
  * Default implementation does nothing.
  * @param {eYo.Brick.Dflt} brick - the node the driver acts on
  */
-eYo.fcls.Brick_p.SelectAdd_ = eYo.do.nothing
+eYo.fcls.Brick_p.selectAdd_ = eYo.do.nothing
 
 /**
  * Remove the select path.
@@ -208,33 +208,33 @@ eYo.fcls.Brick_p.removeSelect_ = eYo.do.nothing
  * The svg group has an `eyo-top` class.
  * @param {eYo.Brick.Dflt} brick - the node the driver acts on
  */
-eYo.fcls.Brick_p.StatusTopAdd_ = eYo.do.nothing
+eYo.fcls.Brick_p.statusTopAdd_ = eYo.do.nothing
 
 /**
  * The default implementation does nothing.
  * @param {eYo.Brick.Dflt} brick - the node the driver acts on
  */
-eYo.fcls.Brick_p.StatusTopRemove_ = eYo.do.nothing
+eYo.fcls.Brick_p.statusTopRemove_ = eYo.do.nothing
 
 /**
  * Default implementation does nothing.
  * @param {eYo.Brick.Dflt} brick - the node the driver acts on
  */
-eYo.fcls.Brick_p.StatusFocusAdd_ = eYo.do.nothing
+eYo.fcls.Brick_p.statusFocusAdd_ = eYo.do.nothing
 
 /**
  * Reverse `nodestatusFocusAdd_`.
  * Default implementation does nothing.
  * @param {eYo.Brick.Dflt} brick - the node the driver acts on
  */
-eYo.fcls.Brick_p.StatusFocusRemove_ = eYo.do.nothing
+eYo.fcls.Brick_p.statusFocusRemove_ = eYo.do.nothing
 
 /**
  * Whether the given brick can draw.
  * @param {eYo.Brick.Dflt} brick  the brick the driver acts on
  * @private
  */
-eYo.fcls.Brick_p.CanDraw = function (brick) {
+eYo.fcls.Brick_p.canDraw = function (brick) {
   return true
 }
 
@@ -279,7 +279,7 @@ eYo.driver.makeForwarder(eYo.Brick.Dflt_p, 'hilightAdd_')
  * Add the select path.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcls.Brick._p.SelectAdd = eYo.do.nothing
+eYo.fcls.Brick._p.selectAdd = eYo.do.nothing
 
 /**
  * The default implementation forwards to the driver.
@@ -290,7 +290,7 @@ eYo.driver.makeForwarder(eYo.Brick.Dflt_p, 'selectAdd')
  * Remove the select path.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcls.Brick._p.SelectAdd = eYo.do.nothing
+eYo.fcls.Brick._p.selectAdd = eYo.do.nothing
 
 /**
  * The default implementation forwards to the driver.
@@ -301,7 +301,7 @@ eYo.driver.makeForwarder(eYo.Brick.Dflt_p, 'selectRemove')
  * Forwards to the |selectRemove|.
 * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
   */
-eYo.fcls.Brick._p.FocusRemove = function (brick) {
+eYo.fcls.Brick._p.focusRemove = function (brick) {
   this.selectRemove(brick)
 }
 
@@ -319,7 +319,7 @@ eYo.driver.makeForwarder(eYo.Brick.Dflt_p, 'magnetAdd_')
  * Add the magnet connection path_.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcls.Brick._p.MagnetAdd_ = eYo.do.nothing
+eYo.fcls.Brick._p.magnetAdd_ = eYo.do.nothing
 
 /**
  * Forwards to the driver.
@@ -330,7 +330,7 @@ eYo.driver.makeForwarder(eYo.Brick.Dflt_p, 'magnetRemove_')
  * In progress.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcls.Brick._p.MagnetRemove_ = eYo.do.nothing
+eYo.fcls.Brick._p.magnetRemove_ = eYo.do.nothing
 
 /**
  * Forwards to the driver.
@@ -341,7 +341,7 @@ eYo.driver.makeForwarder(eYo.Brick.Dflt_p, 'StatusTopAdd')
  * In progress.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcls.Brick._p.StatusTopAdd_ = eYo.do.nothing
+eYo.fcls.Brick._p.statusTopAdd_ = eYo.do.nothing
 
 /**
  * Remove the `top` status.
@@ -352,13 +352,13 @@ eYo.driver.makeForwarder(eYo.Brick.Dflt_p, 'statusTopRemove_')
 /**
  * Remove the `top` status.
  */
-eYo.fcls.Brick._p.StatusTopRemove_ = eYo.do.nothing
+eYo.fcls.Brick._p.statusTopRemove_ = eYo.do.nothing
 
 /**
  * In progress.
  * Forwards to the driver.
  */
-eYo.Brick.Dflt_p.StatusFocusAdd_ = function () {
+eYo.Brick.Dflt_p.statusFocusAdd_ = function () {
   this.ui_driver.statusFocusAdd(this)
   this.slotForEach(slot => {
     slot.fieldForEach(field => {
@@ -371,12 +371,12 @@ eYo.Brick.Dflt_p.StatusFocusAdd_ = function () {
  * In progress.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcls.Brick._p.StatusFocusAdd_ = eYo.do.nothing
+eYo.fcls.Brick._p.statusFocusAdd_ = eYo.do.nothing
 
 /**
  * Reverse `statusFocusAdd_`.
  */
-eYo.Brick.Dflt_p.StatusFocusRemove_ = function (brick) {
+eYo.Brick.Dflt_p.statusFocusRemove_ = function (brick) {
   this.ui_driver.statusSelectRemove(this)
   this.slotForEach(slot => {
     slot.fieldForEach(field => {
@@ -390,7 +390,7 @@ eYo.Brick.Dflt_p.StatusFocusRemove_ = function (brick) {
  * Forwards to the driver and various fields.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcls.Brick._p.StatusFocusRemove_ = eYo.do.nothing
+eYo.fcls.Brick._p.statusFocusRemove_ = eYo.do.nothing
 
 /**
  * Hilight the given connection.
@@ -403,7 +403,7 @@ eYo.driver.makeForwarder(eYo.Brick.Dflt_p, 'magnetHilight')
  * The default implementation forwards to the driver.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcls.Brick._p.MagnetHilight = eYo.do.nothing
+eYo.fcls.Brick._p.magnetHilight = eYo.do.nothing
 
 /**
  * Set the parent.
@@ -419,7 +419,7 @@ eYo.fcls.Brick._p.parentSet = eYo.do.nothing
  */
 eYo.fcls.Brick._p.parentWillChange = eYo.do.nothing
 
-eYo.C9r.AppendToMethod(eYo.Brick.Dflt_p, 'parentWillChange', function (after) {
+eYo.c9r.AppendToMethod(eYo.Brick.Dflt_p, 'parentWillChange', function (after) {
   this.ui_driver.parentWillChange(this, after)
 })
 
@@ -430,7 +430,7 @@ eYo.C9r.AppendToMethod(eYo.Brick.Dflt_p, 'parentWillChange', function (after) {
  */
 eYo.fcls.Brick._p.parentDidChange = eYo.do.nothing
 
-eYo.C9r.AppendToMethod(eYo.Brick.Dflt_p, 'parentDidChange', function (before) {
+eYo.c9r.AppendToMethod(eYo.Brick.Dflt_p, 'parentDidChange', function (before) {
   this.ui_driver.parentDidChange(this, before)
 })
 
@@ -438,7 +438,7 @@ eYo.C9r.AppendToMethod(eYo.Brick.Dflt_p, 'parentDidChange', function (before) {
  * Place the brick correctly.
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcls.Brick._p.ScheduleSnapAndBump = eYo.do.nothing
+eYo.fcls.Brick._p.scheduleSnapAndBump = eYo.do.nothing
 
 /**
  * Bump unconnected blocks out of alignment.  Two blocks which aren't actually
@@ -446,7 +446,7 @@ eYo.fcls.Brick._p.ScheduleSnapAndBump = eYo.do.nothing
  * @private
  * @param {eYo.Brick.Dflt} brick - the brick the driver acts on
  */
-eYo.fcls.Brick._p.BumpNeighbours_ = eYo.do.nothing
+eYo.fcls.Brick._p.bumpNeighbours_ = eYo.do.nothing
 
 /**
  * Hilight the given connection.

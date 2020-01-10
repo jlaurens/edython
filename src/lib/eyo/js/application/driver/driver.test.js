@@ -26,8 +26,8 @@ describe('driver', function() {
     chai.assert(ns.Dflt === eYo.driver.Dflt)
     chai.assert(ns.Dlgt === eYo.driver.Dlgt)
     chai.assert(ns.DlgtMngr === eYo.driver.DlgtMngr)
-    ns.makeNS('A')
-    ns.A.makeMngr()
+    ns.makeNS('a')
+    ns.a.makeMngr()
   })
   it ('Driver: manager', function () {
     var ns = eYo.driver.makeNS()
@@ -80,17 +80,17 @@ describe('driver', function() {
     flag = 0
     new ns.Foo(NS, 1)
     chai.assert(flag === 1)
-    ns.makeNS('A')
-    ns.A.makeMngr()
-    chai.assert(ns.A.super === ns)
-    ns.A.makeDriverClass('Foo', {
+    ns.makeNS('a')
+    ns.a.makeMngr()
+    chai.assert(ns.a.super === ns)
+    ns.a.makeDriverClass('Foo', {
       init (owner, x) {
         flag += 10*x
       },
     })
-    chai.assert(eYo.isF(ns.A.Foo))
+    chai.assert(eYo.isF(ns.a.Foo))
     flag = 0
-    new ns.A.Foo(NS, 1)
+    new ns.a.Foo(NS, 1)
     console.warn('flag', flag)
     chai.assert(flag === 11)
   })

@@ -28,7 +28,7 @@ goog.forwardDeclare('goog.array')
  * @param{?eYo.DB} db
  * @constructor
  */
-eYo.makeClass('list', eYo.C9r.Owned, {
+eYo.makeClass('list', eYo.c9r.Owned, {
   /**
    * Clear the list and sever all the links.
    */
@@ -81,7 +81,7 @@ eYo.makeClass('list', eYo.C9r.Owned, {
 /**
  * Release all the bricks in the list.
  */
-eYo.list_p.Clear = function() {
+eYo.List_p.clear = function() {
   this.bricks_.forEach(b3k => {
     this.db.remove(b3k.id)
   })
@@ -94,7 +94,7 @@ eYo.list_p.Clear = function() {
  * @param {string} id ID of brick to find.
  * @return {eYo.Brick.Dflt} The sought after brick or null if not found.
  */
-eYo.list_p.getBrickById = function(id) {
+eYo.List_p.getBrickById = function(id) {
   var b3k = this.db.byId(id)
   if (b3k) {
     return b3k
@@ -122,7 +122,7 @@ eYo.list_p.getBrickById = function(id) {
  * @param {eYo.Brick.Dflt} brick
  * @param {string} opt_id
  */
-eYo.list_p.Add = function (brick, opt_id) {
+eYo.List_p.add = function (brick, opt_id) {
   var i = 0
   var b_min = this.bricks_[i]
   if (b_min && brick.where.l > b_min.where.l) {
@@ -161,7 +161,7 @@ eYo.list_p.Add = function (brick, opt_id) {
  * Throws if the brick is not in the list.
  * @param {eYo.Brick.Dflt} brick
  */
-eYo.list_p.remove = function (brick) {
+eYo.List_p.remove = function (brick) {
   if (!goog.array.remove(this.bricks_, brick)) {
     throw 'Brick not present in list.'
   }
@@ -200,21 +200,21 @@ eYo.list_p.remove = function (brick) {
    * Children are looked after too.
    * @param {function} f -  (element)=>None: {}
    */
-  eYo.list_p.forEach = forEachMake(b3k=>true)
+  eYo.List_p.forEach = forEachMake(b3k=>true)
   /**
    * Performs a function on each expression brick
    * until one is found for which the answer is a truthy value.
    * Children are looked after too in a deep first traversal.
    * @param {function} f -  (element)=>None: {}
    */
-  eYo.list_p.forEachExpr = forEachMake(b3k=>b3k.isExpr)
+  eYo.List_p.forEachExpr = forEachMake(b3k=>b3k.isExpr)
   /**
    * Performs a function on each statement brick
    * until one is found for which the answer is a truthy value.
    * Children are looked after too in a deep first traversal.
    * @param {function} f -  (element)=>None: {}
    */
-  eYo.list_p.StmtForEach = forEachMake(b3k=>b3k.isStmt)
+  eYo.List_p.stmtForEach = forEachMake(b3k=>b3k.isStmt)
 }) ()
 
 ;(() => {
@@ -252,14 +252,14 @@ eYo.list_p.remove = function (brick) {
    * @param {function} f -  (element)=>Boolean: {}
    * @param {Boolean} deep -  deep first traversal when true, flat traversal otherwise
    */
-  eYo.list_p.Some = someMake(b3k=>true)
+  eYo.List_p.some = someMake(b3k=>true)
   /**
    * Performs a function on each expression brick
    * until one is found for which the answer is a truthy value.
    * Children are looked after too.
    * @param {function} f -  (element)=>Boolean: {}
    */
-  eYo.list_p.SomeExpr = someMake(b3k=>b3k.isExpr)
+  eYo.List_p.someExpr = someMake(b3k=>b3k.isExpr)
   /**
    * Performs a function on each statement brick
    * until one is found for which the answer is a truthy value.
@@ -267,5 +267,5 @@ eYo.list_p.remove = function (brick) {
    * @param {function} f -  (element)=>Boolean: {}
    * @param {Boolean} deep -  deep first traversal when true, flat traversal otherwise
    */
-  eYo.list_p.SomeStmt = someMake(b3k=>b3k.isStmt)
+  eYo.List_p.someStmt = someMake(b3k=>b3k.isStmt)
 }) ()

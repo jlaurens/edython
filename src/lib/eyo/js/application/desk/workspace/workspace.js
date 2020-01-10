@@ -29,10 +29,10 @@ goog.forwardDeclare('goog.array');
  * The workspace has 3+n boards:
  * - the board one where bricks are dropped to be executed,
  * - the 2+n in the flyout,
- * @param {eYo.App.Dflt|Object} owner Owner application.
+ * @param {eYo.app.Dflt|Object} owner Owner application.
  * @constructor
  */
-eYo.makeClass('Workspace', eYo.C9r.Pane, {
+eYo.makeClass('Workspace', eYo.c9r.Pane, {
   owned: {
     /**
      * @type {?eYo.Board.Main} 

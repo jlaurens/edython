@@ -7,7 +7,7 @@
  */
 
 /**
- * @fileoverview Top application class, eYo.App.Dflt is an instance.
+ * @fileoverview Top application class, eYo.app.Dflt is an instance.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -17,7 +17,7 @@ eYo.require('decorate')
 
 eYo.require('c9r')
 
-eYo.C9r.makeNS(eYo, 'app')
+eYo.c9r.makeNS(eYo, 'app')
 
 eYo.forwardDeclare('css')
 
@@ -28,7 +28,7 @@ eYo.forwardDeclare('driver')
 eYo.forwardDeclare('audio')
 
 /**
- * @name {eYo.App.Options}
+ * @name {eYo.app.Options}
  * @constructor
  * Parse the user-specified options, using reasonable defaults where behaviour
  * is unspecified.
@@ -73,7 +73,7 @@ eYo.forwardDeclare('audio')
  *           minScale: 0.1,
  *           scaleSpeed: 1.2}
  */
-eYo.App.makeClass('Options', eYo.Dflt, {
+eYo.app.makeClass('Options', eYo.Dflt, {
   init (options) {
     var readOnly = !!options.readOnly
     if (readOnly) {
@@ -105,7 +105,7 @@ eYo.App.makeClass('Options', eYo.Dflt, {
     // Strip off any trailing slash (either Unix or Windows).
     pathToMedia = pathToMedia.replace(/[\\\/]$/, '')
     this.pathToMedia = pathToMedia
-    this.zoom = eYo.App.parseZoom_(options)
+    this.zoom = eYo.app.parseZoom_(options)
     this.faceless = false
     this.UI = eYo.AsDef(options.UI, 'fcls')
   }
@@ -118,7 +118,7 @@ eYo.App.makeClass('Options', eYo.Dflt, {
  * @return {!Object} A dictionary of normalized options.
  * @private
  */
-eYo.App.parseZoom_ = function(options) {
+eYo.app.parseZoom_ = function(options) {
   var zoom = options.zoom || {}
   var options = {}
   if (zoom.controls === eYo.NA) {
@@ -175,9 +175,9 @@ eYo.App.parseZoom_ = function(options) {
  * @property {eYo.Focus.Main} focus_main
  *
  */
-eYo.App.makeDflt({
+eYo.app.makeDflt({
   init (options) {
-    this.options_ = new eYo.App.Options(options || {})
+    this.options_ = new eYo.app.Options(options || {})
   },
   /**
    * Dispose of the audio and the motion.
@@ -235,7 +235,7 @@ eYo.App.makeDflt({
  * Paste a brick from the local clipboard.
  * @private
  */
-eYo.App.Dflt_p.paste = () => {
+eYo.app.Dflt_p.paste = () => {
 }
 
 /**
@@ -244,7 +244,7 @@ eYo.App.Dflt_p.paste = () => {
  * @param {eYo.Brick.Dflt} block The brick to delete.
  * @param {boolean} deep
  */
-eYo.App.Dflt_p.deleteBrick = function (brick, deep) {
+eYo.app.Dflt_p.deleteBrick = function (brick, deep) {
   if (brick && brick.deletable && !brick.board.readOnly) {
     if (brick.hasFocus) {
       // prepare a connection or a block to be selected
@@ -279,7 +279,7 @@ eYo.App.Dflt_p.deleteBrick = function (brick, deep) {
  * @param {eYo.Brick.Dflt} brick Brick to be copied.
  * @private
  */
-eYo.App.Dflt_p.CopyBrick = function (brick, deep) {
+eYo.app.Dflt_p.copyBrick = function (brick, deep) {
   var xml = eYo.xml.BrickToDom(brick, {noId: true, noNext: !deep})
   // Copy only the selected brick and internal bricks.
   // Encode start position in XML.
@@ -297,7 +297,7 @@ eYo.App.Dflt_p.CopyBrick = function (brick, deep) {
  * @private
  * @return {Boolean} true if copied, false otherwise
  */
-eYo.App.Dflt_p.doCopy = function(optNoNext) {
+eYo.app.Dflt_p.doCopy = function(optNoNext) {
   var brick = this.focus_main.brick
   if (brick) {
     this.copyBrick(brick, !optNoNext)
@@ -309,7 +309,7 @@ eYo.App.Dflt_p.doCopy = function(optNoNext) {
  * Send the selected brick to the front.
  * This is a job for the renderer.
  */
-eYo.App.Dflt_p.doFront = function() {
+eYo.app.Dflt_p.doFront = function() {
   var b3k = this.focus_main.brick
   if (b3k) {
     b3k.sendToFront()
@@ -319,7 +319,7 @@ eYo.App.Dflt_p.doFront = function() {
 /**
  * Send the selected brick to the back.
  */
-eYo.App.Dflt_p.doBack = function() {
+eYo.app.Dflt_p.doBack = function() {
   var b3k = this.focus_main.brick
   if (b3k) {
     b3k.ui.sendToBack()
@@ -329,7 +329,7 @@ eYo.App.Dflt_p.doBack = function() {
 /**
  * Scroll the board to show the selected brick.
  */
-eYo.App.Dflt_p.doFocus = function() {
+eYo.app.Dflt_p.doFocus = function() {
   var b3k = this.focus_main.brick
   if (b3k) {
     b3k.board.scrollBrickTopLeft(b3k.id)
@@ -339,4 +339,4 @@ eYo.App.Dflt_p.doFocus = function() {
 /**
  * Close tooltips, context menus, dropdown selections, etc.
  */
-eYo.App.Dflt_p.hideChaff = eYo.do.nothing
+eYo.app.Dflt_p.hideChaff = eYo.do.nothing

@@ -199,13 +199,13 @@ eYo.Test.incog = (brick, keys) => {
 
 eYo.Test.variant = (d, variant, str) => {
   variant = eYo.key[variant] || variant
-  chai.assert(d.variant_p === variant, `MISSED VARIANT ${str || ''} ${d.variant_p} === ${variant}`)
+  chai.assert(d.Variant_p === variant, `MISSED VARIANT ${str || ''} ${d.Variant_p} === ${variant}`)
 }
 
 eYo.Test.Set_variant = (d, variant, str) => {
   variant = eYo.key[variant] || variant
-  d.variant_p = variant
-  chai.assert(d.variant_p === variant, `MISSED VARIANT ${str || ''} ${d.variant_p} === ${variant}`)
+  d.Variant_p = variant
+  chai.assert(d.Variant_p === variant, `MISSED VARIANT ${str || ''} ${d.Variant_p} === ${variant}`)
 }
 
 /**
@@ -273,7 +273,7 @@ eYo.Test.Same = (d, dd) => {
   chai.assert(d, 'MISSING d')
   chai.assert(dd, 'MISSING dd')
   chai.assert(d.type === dd.type, `BAD TYPE ${d.type} === ${dd.type}`)
-  chai.assert(d.variant_p === dd.variant_p, `BAD VARIANT ${d.variant_p} === ${dd.variant_p}`)
+  chai.assert(d.Variant_p === dd.Variant_p, `BAD VARIANT ${d.Variant_p} === ${dd.Variant_p}`)
 }
 
 /**
@@ -462,7 +462,7 @@ eYo.Test.Same_list_length = (dlgt1, dlgt2, key) => {
  */
 eYo.Test.newIdentifier = (str) => {
   var brick = eYo.Brick.newReady(eYo.App.Board, eYo.t3.Expr.identifier)
-  brick.target_p = str
+  brick.Target_p = str
   eYo.Test.Brick(brick, 'identifier')
   eYo.Test.data_value(brick, 'target', str)
   return brick

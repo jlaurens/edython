@@ -285,7 +285,7 @@ eYo.Field.disposeFields = owner => {
  * @param {string} text The initial content of the field.
  * @constructor
  */
-eYo.Field.makeClass('Dflt', eYo.C9r.BsmOwned, {
+eYo.Field.makeClass('Dflt', eYo.c9r.BSMOwned, {
   init (bsm, name, text) {
     this.name_ = name
     this.text_ = text
@@ -397,7 +397,7 @@ eYo.Field.Dflt_p.initModel = eYo.do.nothing
 /**
  * Whether the field of the receiver starts with a separator.
  */
-eYo.Field.Dflt_p.StartsWithSeparator = function () {
+eYo.Field.Dflt_p.startsWithSeparator = function () {
   // if the text is void, it can not change whether
   // the last character was a letter or not
   var text = this.text

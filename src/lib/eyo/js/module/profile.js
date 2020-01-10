@@ -27,7 +27,7 @@ eYo.require('do')
  * @name{eYo.t3.profile}
  * @namespace
  */
-eYo.t3.makeNS('Profile')
+eYo.t3.makeNS('profile')
 
 eYo.do.readOnlyMixin(
   eYo.t3.Expr,
@@ -306,7 +306,7 @@ eYo.t3.makeClass('Profiles', {
       if ((ans = profiles[module])) {
         return ans
       }
-      var M = eYo.C9r.model[module] || eYo.c9r.model[module + '__module']
+      var M = eYo.c9r.model[module] || eYo.c9r.model[module + '__module']
       if (M) {
         return (profiles[module] = M.getProfile(candidate))
       }
@@ -382,7 +382,7 @@ eYo.t3.profile.getDotted = function (candidate, module) {
         : module
       : null
     if (holder) {
-      var M = eYo.C9r.model[holder] || eYo.c9r.model[holder + '__module']
+      var M = eYo.c9r.model[holder] || eYo.c9r.model[holder + '__module']
       var ans = M && (M.getProfile(candidate))
     } else {
       ans = eYo.t3.profile.getReference(candidate) || eYo.t3.profile.getInModule(candidate)
@@ -577,7 +577,7 @@ eYo.t3.profile.getReference = function (identifier) {
     'stdtypes',
     'datamodel'
   ].some((ref) => {
-    var M = eYo.C9r.model[ref]
+    var M = eYo.c9r.model[ref]
     ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true
@@ -616,7 +616,7 @@ eYo.t3.profile.getInModule = function (identifier) {
     'cmath',
     'string'
   ].some(module => {
-    var M = eYo.C9r.model[module + '__module']
+    var M = eYo.c9r.model[module + '__module']
     ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true

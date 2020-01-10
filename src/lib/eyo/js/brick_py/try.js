@@ -61,14 +61,14 @@ eYo.Stmt.Group.makeSubclass('except_part', {
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p !== eYo.key.NONE
+          this.required = this.brick.Variant_p !== eYo.key.NONE
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         var b3k = this.brick
-        if (this.requiredFromSaved && b3k.variant_p !== eYo.key.ALIASED) {
-          b3k.variant_p = eYo.key.EXPRESSION
+        if (this.requiredFromSaved && b3k.Variant_p !== eYo.key.ALIASED) {
+          b3k.Variant_p = eYo.key.EXPRESSION
         }
       }
     },
@@ -87,13 +87,13 @@ eYo.Stmt.Group.makeSubclass('except_part', {
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p === eYo.key.ALIASED
+          this.required = this.brick.Variant_p === eYo.key.ALIASED
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.ALIASED
+          this.brick.Variant_p = eYo.key.ALIASED
         }
       }
     }
@@ -112,13 +112,13 @@ eYo.Stmt.Group.makeSubclass('except_part', {
       },
       check: eYo.t3.Expr.Check.expression,
       didLoad () /** @suppress {globalThis} */ {
-        if (this.brick.variant_p === eYo.key.NONE && this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.EXPRESSION
+        if (this.brick.Variant_p === eYo.key.NONE && this.requiredFromSaved) {
+          this.brick.Variant_p = eYo.key.EXPRESSION
         }
       },
       didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
         var O = this.brick
-        b3k.variant_p === eYo.key.ALIASED || (b3k.variant_p = eYo.key.EXPRESSION)
+        b3k.Variant_p === eYo.key.ALIASED || (b3k.Variant_p = eYo.key.EXPRESSION)
       }
     },
     alias: {
@@ -132,17 +132,17 @@ eYo.Stmt.Group.makeSubclass('except_part', {
         }
       },
       validateIncog () /** @suppress {globalThis} */ {
-        return this.brick.variant_p !== eYo.key.ALIASED
+        return this.brick.Variant_p !== eYo.key.ALIASED
       },
       check: eYo.t3.Expr.identifier,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.ALIASED
+          this.brick.Variant_p = eYo.key.ALIASED
         }
       },
       didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
         var O = this.brick
-        b3k.variant_p = eYo.key.ALIASED
+        b3k.Variant_p = eYo.key.ALIASED
       }
     }
   },
@@ -165,17 +165,17 @@ eYo.Stmt.Group.makeSubclass('except_part', {
 ;[
   'void_except_part'
 ].forEach(k => {
-  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.stmt.except_part))
+  eYo.c9r.register(k, (eYo.Stmt[k] = eYo.stmt.except_part))
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Stmt.except_part.prototype.getType = eYo.C9r.decorateChange(
+eYo.Stmt.except_part.prototype.getType = eYo.c9r.decorateChange(
   'getType',
   function () {
     this.setupType(
-      this.variant_p === eYo.key.NONE
+      this.Variant_p === eYo.key.NONE
       ? eYo.t3.Stmt.void_except_part
       : eYo.t3.Stmt.except_part
     )
@@ -190,10 +190,10 @@ eYo.Stmt.except_part.prototype.getType = eYo.C9r.decorateChange(
  * @private
  */
 eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
-  var current = this.variant_p
+  var current = this.Variant_p
   var F = (content, k) => {
     var menuItem = mngr.newMenuItem(content, () => {
-      this.variant_p = k
+      this.Variant_p = k
     })
     mngr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
@@ -257,13 +257,13 @@ eYo.Stmt.makeClass('raise_stmt', {
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p !== eYo.key.NONE
+          this.required = this.brick.Variant_p !== eYo.key.NONE
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.EXPRESSION
+          this.brick.Variant_p = eYo.key.EXPRESSION
         }
       }
     },
@@ -274,13 +274,13 @@ eYo.Stmt.makeClass('raise_stmt', {
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p === eYo.key.FROM
+          this.required = this.brick.Variant_p === eYo.key.FROM
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.FROM
+          this.brick.Variant_p = eYo.key.FROM
         }
       }
     }
@@ -304,8 +304,8 @@ eYo.Stmt.makeClass('raise_stmt', {
         }
       },
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved && this.brick.variant_p === eYo.key.NONE) {
-          this.brick.variant_p = eYo.key.EXPRESSION
+        if (this.requiredFromSaved && this.brick.Variant_p === eYo.key.NONE) {
+          this.brick.Variant_p = eYo.key.EXPRESSION
         }
       }
     },
@@ -321,7 +321,7 @@ eYo.Stmt.makeClass('raise_stmt', {
       check: eYo.t3.Expr.Check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.FROM
+          this.brick.Variant_p = eYo.key.FROM
         }
       }
     }
@@ -335,10 +335,10 @@ eYo.Stmt.makeClass('raise_stmt', {
  * @private
  */
 eYo.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var current = this.variant_p
+  var current = this.Variant_p
   var F = (content, k) => {
     var menuItem = mngr.newMenuItem(content, () => {
-      this.variant_p = k
+      this.Variant_p = k
     })
     mngr.addChild(menuItem, true)
     menuItem.setEnabled(k !== current)
@@ -389,13 +389,13 @@ eYo.Stmt.makeClass('assert_stmt', {
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.variant_p === eYo.key.BINARY
+          this.required = this.brick.Variant_p === eYo.key.BINARY
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.BINARY
+          this.brick.Variant_p = eYo.key.BINARY
         }
       }
     }
@@ -424,7 +424,7 @@ eYo.Stmt.makeClass('assert_stmt', {
       check: eYo.t3.Expr.Check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.variant_p = eYo.key.BINARY
+          this.brick.Variant_p = eYo.key.BINARY
         }
       }
     }
@@ -438,10 +438,10 @@ eYo.Stmt.makeClass('assert_stmt', {
  * @private
  */
 eYo.Stmt.Assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var current = this.variant_p
+  var current = this.Variant_p
   var F = (content, key) => {
     var menuItem = mngr.newMenuItem(content, () => {
-      this.variant_p = key
+      this.Variant_p = key
     })
     mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)

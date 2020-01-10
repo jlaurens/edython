@@ -418,7 +418,7 @@ eYo.events.BrickMove.prototype.run = function(forward) {
  * @param {Object} after
  * @param {Boolean} noRender
  */
-eYo.data.Dflt_p.SetTrusted_ = eYo.decorate.reentrant_method(
+eYo.data.Dflt_p.setTrusted_ = eYo.decorate.reentrant_method(
   'setTrusted_',
   function (after) {
     var before = this.value_
@@ -451,7 +451,7 @@ eYo.data.Dflt_p.SetTrusted_ = eYo.decorate.reentrant_method(
  * @param {Object} after
  * @param {Boolean} noRender
  */
-eYo.data.Dflt_p.SetTrusted = eYo.decorate.reentrant_method('trusted', eYo.data.Dflt_p.setTrusted_)
+eYo.data.Dflt_p.setTrusted = eYo.decorate.reentrant_method('trusted', eYo.data.Dflt_p.setTrusted_)
 
 /*
 function (try_f, finally_f) {

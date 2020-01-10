@@ -35,19 +35,19 @@ eYo.provide('brick.parameter')
  *    must also have a default value...
  * All the inputs are connectedÒ.
  */
-// eYo.Consolidator.Parameter = function() {
-//   eYo.Consolidator.Parameter.SuperProto_.constructor.Call(this, eYo.Consolidator.Parameter.data)
+// eYo.consolidator.Parameter = function() {
+//   eYo.consolidator.Parameter.SuperProto_.constructor.Call(this, eYo.consolidator.Parameter.data)
 // }
-// goog.require(eYo.Consolidator.list)
-// goog.inherits(eYo.Consolidator.Parameter, eYo.Consolidator.list)
+// goog.require(eYo.consolidator.list)
+// goog.inherits(eYo.consolidator.Parameter, eYo.consolidator.list)
 
-// eYo.Consolidator.Parameter.data = {
+// eYo.consolidator.Parameter.data = {
 //   check: eYo.t3.Expr.Check.primary,
 //   mandatory: 0,
 //   presep: ',',
 // }
 
-eYo.Consolidator.list.makeSubclass('Parameter', {
+eYo.consolidator.list.makeSubclass('Parameter', {
   list: {
     check: null,
     mandatory: 0,
@@ -61,7 +61,7 @@ eYo.Consolidator.list.makeSubclass('Parameter', {
  * @return yes exactly if there are more input
  * @override
  */
-eYo.Consolidator.Parameter.prototype.Consolidate_connected = function (io) {
+eYo.consolidator.Parameter.prototype.Consolidate_connected = function (io) {
   if (io.i + 1 === io.list.length) {
     var check = io.m4t.target.check_
     if (!check || goog.array.contains(check, eYo.t3.Expr.Parameter_star_star)) {
@@ -69,7 +69,7 @@ eYo.Consolidator.Parameter.prototype.Consolidate_connected = function (io) {
       return false
     }
   }
-  return eYo.Consolidator.Parameter.SuperProto_.consolidate_connected.Call(this, io)
+  return eYo.consolidator.Parameter.SuperProto_.consolidate_connected.Call(this, io)
 }
 
 /**
@@ -77,8 +77,8 @@ eYo.Consolidator.Parameter.prototype.Consolidate_connected = function (io) {
  * Subclassers may add their own stuff to io.
  * @param {eYo.Brick.Dflt} brick owner of the receiver
  */
-eYo.Consolidator.Parameter.prototype.getIO = function (brick) {
-  var io = eYo.Consolidator.Parameter.SuperProto_.getIO.Call(this, brick)
+eYo.consolidator.Parameter.prototype.getIO = function (brick) {
+  var io = eYo.consolidator.Parameter.SuperProto_.getIO.Call(this, brick)
   io.first_star_star = io.first_star = io.first_default = io.last_default = -1
   return io
 }
@@ -87,7 +87,7 @@ eYo.Consolidator.Parameter.prototype.getIO = function (brick) {
  * Once the whole list has been managed,
  * there might be unwanted things.
  */
-eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
+eYo.consolidator.Parameter.prototype.doCleanup = (() => {
   // preparation: walk through the list of inputs and
   // find the key inputs
   var Type = {
@@ -161,7 +161,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.Consolidator.Parameter.SuperProto_.doCleanup.Call(this, io)
+    eYo.consolidator.Parameter.SuperProto_.doCleanup.Call(this, io)
     setupFirst.call(this, io)
     // there must be an only one
     // first remove all the extra ** parameters
@@ -250,7 +250,7 @@ eYo.Consolidator.Parameter.prototype.doCleanup = (() => {
  * This does not suppose that the list of input has been completely consolidated
  * @param {Object} io parameter.
  */
-eYo.Consolidator.Parameter.prototype.getCheck = (() => {
+eYo.consolidator.Parameter.prototype.getCheck = (() => {
   var cache = {}
   return function (io) {
     var can_star_star = (io.first_star_star < 0 && io.i + 3 > io.list.length) ||
@@ -302,7 +302,7 @@ eYo.Consolidator.Parameter.prototype.getCheck = (() => {
  */
 eYo.expr.list.makeSubclass('parameter_list', {
   list: {
-    consolidator: eYo.Consolidator.Parameter
+    consolidator: eYo.consolidator.Parameter
   }
 })
 
@@ -317,8 +317,8 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
     eYo.events.disableWrap(() => {
       b3k = eYo.Brick.newReady(this, eYo.t3.Expr.identifier)
       b3k.change.wrap(() => {
-        b3k.modifier_p = modifier
-        b3k.variant_p = flags
+        b3k.Modifier_p = modifier
+        b3k.Variant_p = flags
       })
     })
     this.slotForEachReverse((slot) => {
@@ -336,8 +336,8 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
               var b3k = eYo.Brick.newReady(this, eYo.t3.Expr.identifier)
               eYo.events.groupWrap(() => {
                 b3k.change.wrap(() => {
-                  b3k.modifier_p = modifier
-                  b3k.variant_p = flags
+                  b3k.Modifier_p = modifier
+                  b3k.Variant_p = flags
                   m4t.connect(b3k.out_m)
                 })
               })
@@ -419,14 +419,14 @@ eYo.expr.Dflt.makeSubclass('lambda', {
   'lambda_expr',
   'lambda_expr_nocond'
 ].forEach(k => {
-  eYo.C9r.register(k, (eYo.expr[k] = eYo.expr.lambda))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.lambda))
 })
 
 /**
  * The output check may change depending on the content.
  * For edython.
  */
-eYo.Magnet.Dflt_p.ConsolidateType = function () {
+eYo.Magnet.Dflt_p.consolidateType = function () {
   eYo.Magnet.SuperProto_.consolidateType.Call(this)
   var brick = this.brick
   var m4tOut = brick.out_m

@@ -112,15 +112,15 @@ eYo.py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
     }
     this.linePush('await ')
     this.shouldSeparateField = false
-  } else if (brick.parenth_p) {
+  } else if (brick.Parenth_p) {
     this.linePush('(')
   }
   if (brick instanceof eYo.expr.primary) {
-    if (brick.dotted_p === 0 && brick.target_p === 'print' && brick.variant_p === eYo.key.CALL_EXPR) {
+    if (brick.Dotted_p === 0 && brick.Target_p === 'print' && brick.Variant_p === eYo.key.CALL_EXPR) {
       this.use_print = true
     }
   } else if (brick instanceof eYo.Stmt.Call_stmt) {
-    if (brick.dotted_p === 0 && brick.target_p === 'print') {
+    if (brick.Dotted_p === 0 && brick.Target_p === 'print') {
       this.use_print = true
     }
   }
@@ -146,10 +146,10 @@ eYo.py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
       this.exportField_(field, opt)
     } while ((field = field.nextField))
   }
-  if (brick.orphan_comma_p) {
+  if (brick.Orphan_comma_p) {
     this.linePush(',')
   }
-  if (brick.parenth_p) {
+  if (brick.Parenth_p) {
     this.linePush(')')
   }
 }

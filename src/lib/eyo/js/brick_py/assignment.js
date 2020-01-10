@@ -66,9 +66,9 @@ eYo.Stmt.makeClass('assignment_stmt', {
       isChanging (builtin, after) /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (after === eYo.key.VALUED) {
-            b3k.operator_p = ''
-        } else if (b3k.operator_p === '') {
-          b3k.operator_p = '='
+            b3k.Operator_p = ''
+        } else if (b3k.Operator_p === '') {
+          b3k.Operator_p = '='
         }
         b3k.consolidateType()
         builtin()
@@ -91,9 +91,9 @@ eYo.Stmt.makeClass('assignment_stmt', {
         var t = b3k.target_s.unwrappedTarget
         if (t && (t.type === eYo.t3.Expr.identifier_annotated || t.type === eYo.t3.Expr.Augtarget_annotated)) {
           // no 2 annotations
-          if (b3k.variant_p === eYo.key.ANNOTATED) {
+          if (b3k.Variant_p === eYo.key.ANNOTATED) {
             this.doChange(eYo.key.TARGET)
-          } else if (b3k.variant_p === eYo.key.ANNOTATED_VALUED) {
+          } else if (b3k.Variant_p === eYo.key.ANNOTATED_VALUED) {
             this.doChange(eYo.key.TARGET_VALUED)
           }
         }
@@ -123,11 +123,11 @@ eYo.Stmt.makeClass('assignment_stmt', {
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
-          var v = b3k.variant_p
+          var v = b3k.Variant_p
           if (v === eYo.key.EXPRESSION) {
-            b3k.variant_p = eYo.key.TARGET
+            b3k.Variant_p = eYo.key.TARGET
           } else if (v === eYo.key.VALUED) {
-            b3k.variant_p = eYo.key.TARGET_VALUED
+            b3k.Variant_p = eYo.key.TARGET_VALUED
           }
         }
       },
@@ -138,13 +138,13 @@ eYo.Stmt.makeClass('assignment_stmt', {
       synchronize: true,
       didLoad () /** @suppress {globalThis} */ {
         var b3k = this.brick
-        var v = b3k.variant_p
+        var v = b3k.Variant_p
         if (this.requiredFromSaved) {
           if (v === eYo.key.VALUED || v === eYo.key.TARGET_VALUED) {
-            b3k.variant_p = eYo.key.ANNOTATED_VALUED
-            b3k.operator_p = '='
+            b3k.Variant_p = eYo.key.ANNOTATED_VALUED
+            b3k.Operator_p = '='
           } else {
-            b3k.variant_p = eYo.key.ANNOTATED
+            b3k.Variant_p = eYo.key.ANNOTATED
           }
         }
       }
@@ -159,10 +159,10 @@ eYo.Stmt.makeClass('assignment_stmt', {
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var b3k = this.brick
-        b3k.numberOperator_p = after
-        b3k.bitwiseOperator_p = after
+        b3k.NumberOperator_p = after
+        b3k.BitwiseOperator_p = after
         if (this.number || this.bitwise) {
-          b3k.variant_p = eYo.key.TARGET_VALUED
+          b3k.Variant_p = eYo.key.TARGET_VALUED
         }
       },
       validate: true,
@@ -181,8 +181,8 @@ eYo.Stmt.makeClass('assignment_stmt', {
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var b3k = this.brick
-        b3k.operator_p = after
-        b3k.operator_d.number = (b3k.operator_p === this.value_)
+        b3k.Operator_p = after
+        b3k.operator_d.number = (b3k.Operator_p === this.value_)
       },
     },
     bitwiseOperator: {
@@ -193,8 +193,8 @@ eYo.Stmt.makeClass('assignment_stmt', {
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var b3k = this.brick
-        b3k.operator_p = after
-        b3k.operator_d.bitwise = (b3k.operator_p === this.value_)
+        b3k.Operator_p = after
+        b3k.operator_d.bitwise = (b3k.Operator_p === this.value_)
       },
     },
     value: {
@@ -203,7 +203,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
       validate: false,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          var v = this.brick.variant_p
+          var v = this.brick.Variant_p
           if (v === eYo.key.TARGET_VALUED || v === eYo.key.ANNOTATED_VALUED) {
             this.required = false
             this.save(element, opt)
@@ -213,17 +213,17 @@ eYo.Stmt.makeClass('assignment_stmt', {
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
-          var v = b3k.variant_p
+          var v = b3k.Variant_p
           if (v === eYo.key.ANNOTATED) {
-            b3k.variant_p = eYo.key.ANNOTATED_VALUED
+            b3k.Variant_p = eYo.key.ANNOTATED_VALUED
           } else if (v !== eYo.key.TARGET_VALUED && v !== eYo.key.ANNOTATED_VALUED && v !== eYo.key.VALUED) {
-            b3k.variant_p = eYo.key.TARGET_VALUED
+            b3k.Variant_p = eYo.key.TARGET_VALUED
           }
         }
       },
       synchronize: true,
       validateIncog () /** @suppress {globalThis} */ {
-        var v = this.brick.variant_p
+        var v = this.brick.Variant_p
         return v !== eYo.key.TARGET_VALUED && v !== eYo.key.ANNOTATED_VALUED && v !== eYo.key.VALUED && v !== eYo.key.EXPRESSION
       }
     }
@@ -242,11 +242,11 @@ eYo.Stmt.makeClass('assignment_stmt', {
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
-          var v = b3k.variant_p
+          var v = b3k.Variant_p
           if (v === eYo.key.EXPRESSION) {
-            this.brick.variant_p = eYo.key.TARGET
+            this.brick.Variant_p = eYo.key.TARGET
           } else if (v === eYo.key.VALUED) {
-            this.brick.variant_p = eYo.key.TARGET_VALUED
+            this.brick.Variant_p = eYo.key.TARGET_VALUED
           }
         }
       },
@@ -276,13 +276,13 @@ eYo.Stmt.makeClass('assignment_stmt', {
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
-          var v = b3k.variant_p
+          var v = b3k.Variant_p
           if (v === eYo.key.TARGET || v === eYo.key.EXPRESSION) {
-            b3k.variant_p = eYo.key.ANNOTATED
+            b3k.Variant_p = eYo.key.ANNOTATED
           } else if (v === eYo.key.VALUED || v === eYo.key.TARGET_VALUED) {
-            b3k.variant_p = eYo.key.ANNOTATED_VALUED
+            b3k.Variant_p = eYo.key.ANNOTATED_VALUED
           } else if (v !== eYo.key.ANNOTATED_VALUED) {
-            b3k.variant_p = eYo.key.ANNOTATED
+            b3k.Variant_p = eYo.key.ANNOTATED
           }
         }
       }
@@ -301,11 +301,11 @@ eYo.Stmt.makeClass('assignment_stmt', {
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
-          var v = b3k.variant_p
+          var v = b3k.Variant_p
           if (v === eYo.key.ANNOTATED) {
-            b3k.variant_p = eYo.key.ANNOTATED_VALUED
+            b3k.Variant_p = eYo.key.ANNOTATED_VALUED
           } else if (v !== eYo.key.EXPRESSION) {
-            b3k.variant_p = eYo.key.TARGET_VALUED
+            b3k.Variant_p = eYo.key.TARGET_VALUED
           }
         }
       }
@@ -319,7 +319,7 @@ eYo.Stmt.makeClass('assignment_stmt', {
   'annotated_assignment_stmt',
   'augmented_assignment_stmt'
 ].forEach(k => {
-  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.stmt.Assignment_stmt))
+  eYo.c9r.register(k, (eYo.Stmt[k] = eYo.stmt.Assignment_stmt))
 })
 
 /**
@@ -327,12 +327,12 @@ eYo.Stmt.makeClass('assignment_stmt', {
  * @return {String} The type of the receiver's brick.
  */
 eYo.Stmt.Assignment_stmt.prototype.getType = function () {
-  var x = this.variant_p
+  var x = this.Variant_p
   if (x === eYo.key.VALUED || x === eYo.key.EXPRESSION) { // not yet consolidated
     return eYo.t3.Stmt.expression_stmt
-  } else if (x === eYo.key.NONE || this.operator_p === '') { // not yet consolidated
+  } else if (x === eYo.key.NONE || this.Operator_p === '') { // not yet consolidated
     return eYo.t3.Stmt.expression_stmt
-  } else if (this.operator_p === '=') { // not an augmented assigment
+  } else if (this.Operator_p === '=') { // not an augmented assigment
     if (x === eYo.key.ANNOTATED) {
       return eYo.t3.Stmt.Annotated_stmt
     }
@@ -356,11 +356,11 @@ eYo.Stmt.Assignment_stmt.prototype.getType = function () {
  * @private
  */
 eYo.Stmt.Assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var target_p = this.target_p
-  var variant_p = this.variant_p
+  var target_p = this.Target_p
+  var variant_p = this.Variant_p
   var F = (content, newVariant) => {
     var menuItem = mngr.newMenuItem(content, () => {
-      this.variant_p = newVariant
+      this.Variant_p = newVariant
     })
     menuItem.setEnabled(newVariant !== variant_p)
     mngr.addChild(menuItem, true)
@@ -474,7 +474,7 @@ eYo.expr.list.makeSubclass('value_list', {
           eYo.t3.Expr.named_call_expr
         ].indexOf(subtype) < 0 ? [] : null)
       },
-      consolidator: eYo.Consolidator.list,
+      consolidator: eYo.consolidator.list,
       mandatory: 1,
       presep: ','
     }
@@ -541,7 +541,7 @@ eYo.expr.list.makeSubclass('augassigned_list', () => {
   var D = {
     check: eYo.t3.Expr.Check.expression,
     unique: eYo.t3.Expr.yield_expr,
-    consolidator: eYo.Consolidator.list,
+    consolidator: eYo.consolidator.list,
     mandatory: 1,
     presep: ','
   }
@@ -562,8 +562,8 @@ eYo.expr.list.makeSubclass('augassigned_list', () => {
 // eYo.Stmt.Augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
 //   var brick = this
 //   var withTarget = this.target_b
-//   var target = this.target_p
-//   var operator = this.operator_p
+//   var target = this.Target_p
+//   var operator = this.Operator_p
 //   var withBitwise = this.operator_d.bitwise
 //   var operators = withBitwise
 //     ? this.bitwiseOperator_d.getAll()
@@ -592,8 +592,8 @@ eYo.expr.list.makeSubclass('augassigned_list', () => {
 //   var content =
 //   eYo.do.CreateSPAN(withBitwise ? '+=, -=, /= …' : '<<=, >>=, &= …', 'eyo-code')
 //   var menuItem = mngr.newMenuItem(content, () => {
-//     this.operator_p = withBitwise
-//       ? this.numberOperator_p : this.bitwiseOperator_p
+//     this.Operator_p = withBitwise
+//       ? this.NumberOperator_p : this.BitwiseOperator_p
 //   })
 //   mngr.addChild(menuItem, true)
 //   mngr.shouldSeparate()

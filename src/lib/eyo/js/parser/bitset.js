@@ -20,7 +20,7 @@ eYo.provide('bitSet')
 
 bitset */
 
-eYo.BitSet.newbitset = (nbits) => {
+eYo.bitSet.newbitset = (nbits) => {
   var BitSet = function(nbits) {
     this.ra = new Uint8Array(1 + Math.floor((nbits - 1) / 8))
   }
@@ -28,12 +28,12 @@ eYo.BitSet.newbitset = (nbits) => {
   return ss;
 }
 
-eYo.BitSet.delbitset = (ss) => {
+eYo.bitSet.delbitset = (ss) => {
   throw 'DO NOT CALL THIS'
 }
 
 // int
-eYo.BitSet.Addbit = (ss, ibit) => {
+eYo.bitSet.Addbit = (ss, ibit) => {
   var i = ss.ra[Math.floor(ibit / 8)]
   var mask = 1 << (ibit % 8)
   if (i & mask) {
@@ -43,13 +43,13 @@ eYo.BitSet.Addbit = (ss, ibit) => {
   return true
 }
 
-eYo.BitSet.testbit = (ss, ibit) => {
+eYo.bitSet.testbit = (ss, ibit) => {
   var i = ss.ra[Math.floor(ibit / 8)]
   var mask = 1 << (ibit % 8)
   return !!(i & mask)
 }
 
-eYo.BitSet.Samebitset = (ss1, ss2, nbits) => {
+eYo.bitSet.Samebitset = (ss1, ss2, nbits) => {
     for (var i = nbits / 8; --i >= 0; ) {
       if (ss1.ra[i] !== ss2.ra[i]) {
         return 0
@@ -58,7 +58,7 @@ eYo.BitSet.Samebitset = (ss1, ss2, nbits) => {
     return 1;
 }
 
-eYo.BitSet.mergebitset = (ss1, ss2, nbits) => {
+eYo.bitSet.mergebitset = (ss1, ss2, nbits) => {
   for (var i = nbits / 8; --i >= 0; ) {
     ss1.ra[i] = ss1.ra[i] | ss2.ra[i]
   }

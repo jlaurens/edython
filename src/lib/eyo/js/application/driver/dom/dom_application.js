@@ -23,7 +23,7 @@ eYo.forwardDeclare('app')
 eYo.dom.makeDriverClass('App', {
   /**
    * Initialize the application's dom ressources.
-   * @param {eYo.App.Dflt} app
+   * @param {eYo.app.Dflt} app
    * @param {Function} [f]
    * @return {!Element} The desk's dom repository.
    */
@@ -31,7 +31,7 @@ eYo.dom.makeDriverClass('App', {
     var dom = app.dom
     var options = app.options
     // Load CSS.
-    eYo.Css.inject(options.hasCss, options.pathToMedia)
+    eYo.css.inject(options.hasCss, options.pathToMedia)
     var container = options.container
     // no UI if no valid container
     if (eYo.isStr(container)) {
@@ -46,7 +46,7 @@ eYo.dom.makeDriverClass('App', {
   },
   /**
    * Dispose of the application dom resources.
-   * @param {eYo.App.Dflt} app
+   * @param {eYo.app.Dflt} app
    */
   disposeUI (app) {
     var dom = app.dom

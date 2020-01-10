@@ -356,12 +356,12 @@ eYo.makeClass('Node', {
   },
 })
 
-eYo.Node_p.Be_keyword = function () {
+eYo.Node_p.be_keyword = function () {
   this.is_keyword = true
   return this
 }
 
-eYo.Node_p.Be_close = function (open) {
+eYo.Node_p.be_close = function (open) {
   if (open) {
     this.open = open
     open.close = this
@@ -370,7 +370,7 @@ eYo.Node_p.Be_close = function (open) {
 }
 
 // eYo.Node_p.parent = null
-// eYo.Node_p.Children = null
+// eYo.Node_p.children = null
 
 /**
  * Add a comment to the node or one of its ancestors.

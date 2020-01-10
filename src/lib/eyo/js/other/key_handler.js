@@ -109,7 +109,7 @@ eYo.keyHandler = (() => {
   }
   me.handleFirstMenuItemAction = function (model) {
     // first check to see if the selected brick can handle the model
-    var eyo = eYo.App.Focus_mngr.Brick
+    var eyo = eYo.app.Focus_mngr.Brick
     var m4t = eYo.Focus.Magnet
     if (eyo && !m4t) {
       var D = model.data
@@ -149,7 +149,7 @@ eYo.keyHandler = (() => {
       model.action.call(me, model.model)
       return
     }
-    var eyo = eYo.App.Focus_mngr.Brick
+    var eyo = eYo.app.Focus_mngr.Brick
     if (eyo) {
       var m4t = eYo.Focus.Magnet
       var newB = m4t && (eyo.insertBrickWithModel(model, m4t))
@@ -429,12 +429,12 @@ eYo.keyHandler = (() => {
         return
       }
     } else if (k === 'enter' || k === 'return') {
-      if ((brick = eYo.App.Focus_mngr.Brick)) {
+      if ((brick = eYo.app.Focus_mngr.Brick)) {
         eYo.dom.gobbleEvent(e)
         return
       }
     }
-    if ((brick = eYo.App.Focus_mngr.Brick)) {
+    if ((brick = eYo.app.Focus_mngr.Brick)) {
       if (K === ' ') {
         eYo.dom.gobbleEvent(e)
         eYo.MenuManager.Shared().showMenu(brick, event)
@@ -506,7 +506,7 @@ eYo.keyHandler = (() => {
       // B is not always a brick!
       F = f => {
         eYo.dom.gobbleEvent(e)
-        var brick = eYo.Brick.getBestBrick(eYo.App.Board, f)
+        var brick = eYo.Brick.getBestBrick(eYo.app.Board, f)
         if (brick) {
           brick.focusOn().scrollToVisible()
         }
@@ -591,7 +591,7 @@ for (let [K, V] of Object.entries({
     'identifier': eYo.t3.Expr.identifier,
     'name': eYo.t3.Expr.identifier,
     'not …': function (key) {
-      var eyo = eYo.App.Focus_mngr.Brick
+      var eyo = eYo.app.Focus_mngr.Brick
       if (eyo) {
         var parent = eyo.surround
         if (parent && parent.board.options.smartUnary && (parent.type === eYo.t3.Expr.not_test)) {
@@ -606,10 +606,10 @@ for (let [K, V] of Object.entries({
       }
     },
     '+…': function (key) {
-      var eyo = eYo.App.Focus_mngr.Brick
+      var eyo = eYo.app.Focus_mngr.Brick
       if (eyo) {
         var parent = eyo.surround
-        if (parent && parent.board.options.smartUnary && (parent.type === eYo.t3.Expr.u_expr) && parent.operator_p === '+') {
+        if (parent && parent.board.options.smartUnary && (parent.type === eYo.t3.Expr.u_expr) && parent.Operator_p === '+') {
           return
         }
         var model = {
@@ -629,7 +629,7 @@ for (let [K, V] of Object.entries({
 
 ;(() => {
   var F = (key, op) => {
-    var brick = eYo.App.Focus_mngr.Brick
+    var brick = eYo.app.Focus_mngr.Brick
     if (brick) {
       var parent = eyo.surround
       if (parent && parent.board.options.smartUnary && (parent.type === eYo.t3.Expr.u_expr) && parent.operator_ === op) {

@@ -92,7 +92,7 @@ eYo.Stmt.Group.makeSubclass('branch', {
         save (element, opt) /** @suppress {globalThis} */ {
         },
         load (element) /** @suppress {globalThis} */ {
-          this.brick.variant_p = element.getAttribute(eYo.key.EYO)
+          this.brick.Variant_p = element.getAttribute(eYo.key.EYO)
         },
       },
       isChanging (builtin) /** @suppress {globalThis} */ { // same code for primary bricks
@@ -138,7 +138,7 @@ eYo.Stmt.Group.makeSubclass('branch', {
  * @return {String}
  */
 eYo.Stmt.Branch.prototype.xmlAttr = function () {
-  return this.variant_p
+  return this.Variant_p
 }
 
 /**
@@ -156,7 +156,7 @@ eYo.Stmt.Branch.prototype.getBaseType = function () {
     [eYo.key.IF]: T3.if_part,
     [eYo.key.ELIF]: T3.elif_part,
     [eYo.key.WHILE]: T3.while_part
-  } [this.variant_p]
+  } [this.Variant_p]
   if (!type) {
     var targetMagnet
     if ((targetMagnet = this.head_m.target)) {
@@ -191,7 +191,7 @@ eYo.Stmt.Branch.prototype.getBaseType = function () {
  * @private
  */
 eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
-  var current = this.variant_p
+  var current = this.Variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
     var key = variants[i]
@@ -199,7 +199,7 @@ eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
       eYo.do.CreateSPAN(key, 'eyo-code-reserved')
     )
     var menuItem = mngr.newMenuItem(content, () => {
-      this.variant_p = key
+      this.Variant_p = key
     })
     mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)
@@ -221,7 +221,7 @@ eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   'last_else'
 ].forEach(name => {
   var k = name + '_part'
-  eYo.C9r.register(k, (eYo.Stmt[k] = eYo.stmt.Branch))
+  eYo.c9r.register(k, (eYo.Stmt[k] = eYo.stmt.Branch))
 })
 
 /**

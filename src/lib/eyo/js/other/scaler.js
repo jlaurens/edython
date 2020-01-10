@@ -21,7 +21,7 @@ eYo.forwardDeclare('motion')
  * @property {eYo.Motion} motion - the motion used to create this scaler
  * @property {Boolean} active - whether the receiver is active
  */
-eYo.C9r.makeClass(eYo, 'Scaler', {
+eYo.c9r.makeClass(eYo, 'Scaler', {
   init (motion) {
     this.motion_ = motion
   },
@@ -34,7 +34,7 @@ eYo.C9r.makeClass(eYo, 'Scaler', {
 /**
  * @return {Boolean} Whether a scale operation did start.
  */
-eYo.Scaler_p.Start = function () {
+eYo.Scaler_p.start = function () {
   this.cancel()
 }
 
@@ -49,12 +49,12 @@ eYo.Scaler_p.update = function () {
  * Cancel a scaling operation.
  * @return {Boolean} Whether a scale operation did cancel.
  */
-eYo.Scaler_p.Cancel = function () {
+eYo.Scaler_p.cancel = function () {
 }
 
 /**
  * Conclude a scale operation.
  * @return {!Boolean} Whether the scale opertion did conclude.
  */
-eYo.Scaler_p.Complete = function () {
+eYo.Scaler_p.complete = function () {
 }

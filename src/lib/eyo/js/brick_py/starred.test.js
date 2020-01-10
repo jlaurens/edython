@@ -27,7 +27,7 @@ describe('Basic Starred', function() {
   ].forEach(args => {
     it(`modified: ${args[0]}/${args[1]}/${args[2]}`, function() {
       var d = eYo.Test.new_brick(args[0])
-      d.modified_p = args[2]
+      d.Modified_p = args[2]
       eYo.Test.Code(d, args[1])
       d.dispose()
     })
@@ -35,38 +35,38 @@ describe('Basic Starred', function() {
   it(`to/from type star`, function() {
     // to and from star only
     var d = eYo.Test.new_brick(eYo.t3.Expr.Star)
-    d.modified_p = 'abc'
+    d.Modified_p = 'abc'
     eYo.Test.Code(d, '*abc')
-    d.variant_p = eYo.key.STAR
+    d.Variant_p = eYo.key.STAR
     eYo.Test.Code(d, '*')
     d.dispose()
 
     d = eYo.Test.new_brick(eYo.t3.Expr.Star)
-    d.modified_p = 'abc'
-    d.modifier_p = '**'
+    d.Modified_p = 'abc'
+    d.Modifier_p = '**'
     eYo.Test.Code(d, '**abc')
-    d.variant_p = eYo.key.STAR
+    d.Variant_p = eYo.key.STAR
     eYo.Test.Code(d, '*')
     d.dispose()
 
     d = eYo.Test.new_brick(eYo.t3.Expr.Star)
     var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
-    dd.target_p = 'cba'
+    dd.Target_p = 'cba'
     eYo.Test.Code(dd, 'cba')
     d.modified_s.connect(dd)
     eYo.Test.Code(d, '*cba')
-    d.variant_p = eYo.key.STAR
+    d.Variant_p = eYo.key.STAR
     eYo.Test.Code(d, '*')
     d.dispose()
 
     d = eYo.Test.new_brick(eYo.t3.Expr.Star)
     var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
-    dd.target_p = 'cba'
-    d.modifier_p = '**'
+    dd.Target_p = 'cba'
+    d.Modifier_p = '**'
     eYo.Test.Code(dd, 'cba')
     d.modified_s.connect(dd)
     eYo.Test.Code(d, '**cba')
-    d.variant_p = eYo.key.STAR
+    d.Variant_p = eYo.key.STAR
     eYo.Test.Code(d, '*')
     d.dispose()
   })
@@ -78,44 +78,44 @@ describe('Basic Starred', function() {
     it(`to/from type ${t}`, function() {
       // to and from star only
       var d = eYo.Test.new_brick(eYo.t3.Expr[t])
-      d.modified_p = 'abc'
-      d.variant_p = eYo.key.STAR
+      d.Modified_p = 'abc'
+      d.Variant_p = eYo.key.STAR
       eYo.Test.Code(d, '*')
-      d.variant_p = eYo.key.NONE
+      d.Variant_p = eYo.key.NONE
       eYo.Test.Code(d, '*abc')
       d.dispose()
 
       d = eYo.Test.new_brick(eYo.t3.Expr[t])
-      d.modified_p = 'abc'
-      d.modifier_p = '**'
+      d.Modified_p = 'abc'
+      d.Modifier_p = '**'
       eYo.Test.Code(d, '**abc')
-      d.modifier_p = '*'
+      d.Modifier_p = '*'
       eYo.Test.Code(d, '*abc')
       d.dispose()
 
       var d = eYo.Test.new_brick(eYo.t3.Expr[t])
-      d.modified_p = 'abc'
+      d.Modified_p = 'abc'
       var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
-      dd.target_p = 'cba'
+      dd.Target_p = 'cba'
       eYo.Test.Code(dd, 'cba')
       d.modified_s.connect(dd)
-      d.variant_p = eYo.key.STAR
+      d.Variant_p = eYo.key.STAR
       eYo.Test.Code(d, '*')
-      d.variant_p = eYo.key.NONE
+      d.Variant_p = eYo.key.NONE
       eYo.Test.Code(d, '*cba')
       dd.dispose()
       eYo.Test.Code(d, '*abc')
       d.dispose()
 
       var d = eYo.Test.new_brick(eYo.t3.Expr[t])
-      d.modified_p = 'abc'
+      d.Modified_p = 'abc'
       var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
-      dd.target_p = 'cba'
+      dd.Target_p = 'cba'
       eYo.Test.Code(dd, 'cba')
       d.modified_s.connect(dd)
-      d.modifier_p = '**'
+      d.Modifier_p = '**'
       eYo.Test.Code(d, '**cba')
-      d.modifier_p = '*'
+      d.Modifier_p = '*'
       eYo.Test.Code(d, '*cba')
       dd.dispose()
       eYo.Test.Code(d, '*abc')
@@ -130,44 +130,44 @@ describe('Basic Starred', function() {
     it(`to/from type ${t}`, function() {
       // to and from star only
       var d = eYo.Test.new_brick(eYo.t3.Expr[t])
-      d.modified_p = 'abc'
-      d.variant_p = eYo.key.STAR
+      d.Modified_p = 'abc'
+      d.Variant_p = eYo.key.STAR
       eYo.Test.Code(d, '*')
-      d.variant_p = eYo.key.NONE
+      d.Variant_p = eYo.key.NONE
       eYo.Test.Code(d, '*abc')
       d.dispose()
 
       d = eYo.Test.new_brick(eYo.t3.Expr[t])
-      d.modified_p = 'abc'
-      d.modifier_p = '**'
+      d.Modified_p = 'abc'
+      d.Modifier_p = '**'
       eYo.Test.Code(d, '**abc')
-      d.modifier_p = '*'
+      d.Modifier_p = '*'
       eYo.Test.Code(d, '*abc')
       d.dispose()
 
       var d = eYo.Test.new_brick(eYo.t3.Expr[t])
-      d.modified_p = 'abc'
+      d.Modified_p = 'abc'
       var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
-      dd.target_p = 'cba'
+      dd.Target_p = 'cba'
       eYo.Test.Code(dd, 'cba')
       d.modified_s.connect(dd)
-      d.variant_p = eYo.key.STAR
+      d.Variant_p = eYo.key.STAR
       eYo.Test.Code(d, '*')
-      d.variant_p = eYo.key.NONE
+      d.Variant_p = eYo.key.NONE
       eYo.Test.Code(d, '*cba')
       dd.dispose()
       eYo.Test.Code(d, '*abc')
       d.dispose()
 
       var d = eYo.Test.new_brick(eYo.t3.Expr[t])
-      d.modified_p = 'abc'
+      d.Modified_p = 'abc'
       var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
-      dd.target_p = 'cba'
+      dd.Target_p = 'cba'
       eYo.Test.Code(dd, 'cba')
       d.modified_s.connect(dd)
-      d.modifier_p = '**'
+      d.Modifier_p = '**'
       eYo.Test.Code(d, '**cba')
-      d.modifier_p = '*'
+      d.Modifier_p = '*'
       eYo.Test.Code(d, '*cba')
       dd.dispose()
       eYo.Test.Code(d, '*abc')

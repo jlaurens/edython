@@ -29,7 +29,7 @@ describe('Enclosure(Basic)', function () {
   ].forEach(args => {
     it(`${args[1]}/${args[0]}`, function() {
       var d = eYo.Test.new_brick('enclosure')
-      d.variant_p = eYo.key[args[1]]
+      d.Variant_p = eYo.key[args[1]]
       eYo.Test.variant(d, args[1])
       eYo.Test.Brick(d, args[0])
       d.dispose()
@@ -108,17 +108,17 @@ describe('Enclosure connections', function() {
     var dd1 = eYo.Test.new_brick('comprehension')
     var slot = d.slotAtHead
     chai.assert(slot.connect(dd1), 'MISSING connection')
-    d.variant_p === eYo.key.SQB
+    d.Variant_p === eYo.key.SQB
     chai.assert(slot.target === dd1, 'LOST CONNECTION')
-    d.variant_p === eYo.key.BRACE
+    d.Variant_p === eYo.key.BRACE
     chai.assert(slot.target === dd1, 'LOST CONNECTION')
-    d.variant_p === eYo.key.PAR
+    d.Variant_p === eYo.key.PAR
     chai.assert(slot.target === dd1, 'LOST CONNECTION')
-    d.variant_p === eYo.key.BRACE
+    d.Variant_p === eYo.key.BRACE
     chai.assert(slot.target === dd1, 'LOST CONNECTION')
-    d.variant_p === eYo.key.SQB
+    d.Variant_p === eYo.key.SQB
     chai.assert(slot.target === dd1, 'LOST CONNECTION')
-    d.variant_p === eYo.key.PAR
+    d.Variant_p === eYo.key.PAR
     chai.assert(slot.target === dd1, 'LOST CONNECTION')
     d.dispose()
   })
@@ -127,7 +127,7 @@ describe('Enclosure connections', function() {
     var dd1 = eYo.Test.new_brick(421)
     var slot = d.slotAtHead
     chai.assert(slot.connect(dd1), 'MISSING connection')
-    d.variant_p === eYo.key.BRACE
+    d.Variant_p === eYo.key.BRACE
     chai.assert(slot.target === dd1, 'LOST CONNECTION')
     d.dispose()
   })

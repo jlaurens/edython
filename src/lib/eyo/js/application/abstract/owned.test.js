@@ -2,18 +2,18 @@ NS = Object.create(null)
 
 describe('Owned', function () {
   it ('Owned: Basic', function () {
-    chai.assert(eYo.C9r.Owned && eYo.c9r.owned.eyo)
+    chai.assert(eYo.c9r.Owned && eYo.c9r.owned.eyo)
   })
   it ('Owned: new', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.C9r.Owned(onr)
+    var o = new eYo.c9r.Owned(onr)
     chai.assert(o.owner === onr)
   })
   it ('Owned: app', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.C9r.Owned(onr)
+    var o = new eYo.c9r.Owned(onr)
     chai.assert(o.owner === onr)
     chai.assert(!o.app)
     onr.app = 421
@@ -23,7 +23,7 @@ describe('Owned', function () {
   it ('Owned: owner change', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.C9r.Owned(onr)
+    var o = new eYo.c9r.Owned(onr)
     onr.app = 421
     chai.assert(o.app === 421)
     onr = new ONR()
@@ -42,7 +42,7 @@ describe('Owned', function () {
   it ('Owned: computed', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.C9r.Owned(onr)
+    var o = new eYo.c9r.Owned(onr)
     chai.assert(o.owner === onr)
     onr.app = {}
     o.appForget()
@@ -62,13 +62,13 @@ describe('Owned', function () {
   it ('Owned: cascade', function () {
     var ONR = function () {}
     var onr0 = new ONR()
-    eYo.makeClass(NS, 'A', eYo.C9r.Owned, {
+    eYo.makeClass(NS, 'A', eYo.c9r.Owned, {
       owned: {
         foo () {}
       }
     })
     var onr1 = new NS.A(onr0)
-    var onr2 = new eYo.C9r.Owned()
+    var onr2 = new eYo.c9r.Owned()
     onr1.foo_ = onr2
     chai.assert(!onr0.app)
     chai.assert(!onr1.app)
@@ -113,13 +113,13 @@ describe ('Tests: BSMOwned', function () {
     chai.assert(eYo.Magnet === NS.Magnet)
   }
   it ('BSMOwned: basic', function () {
-    chai.assert(eYo.C9r.Dflt)
+    chai.assert(eYo.c9r.Dflt)
   })
   it ('BSMOwned: NYI', function () {
     wrapper(() => {
       var onr = new eYo.Brick.Dflt()
       chai.assert(onr)
-      var ond = new eYo.C9r.BsmOwned(onr)
+      var ond = new eYo.c9r.BSMOwned(onr)
       chai.assert(ond)
       chai.assert(ond.brick === onr)
       console.warn(ond.brick, ond.slot, ond.magnet)

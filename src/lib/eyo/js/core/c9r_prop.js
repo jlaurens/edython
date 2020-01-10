@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview eYo.C9r.Property is a class for a property controller.
+ * @fileoverview eYo.c9r.Property is a class for a property controller.
  * It extends the JS property design by providing some hooks before and after changes.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
@@ -16,14 +16,14 @@ eYo.forwardDeclare('do')
 eYo.forwardDeclare('xre')
 eYo.forwardDeclare('decorate')
 
-Object.defineProperties(eYo.C9r, {
+Object.defineProperties(eYo.c9r, {
   BEFORE: {value: 'willChange'},
   DURING: {value: 'atChange'},
   AFTER: {value: 'didChange'},
 })
 
-Object.defineProperties(eYo.C9r, {
-  CHANGE_HOOKS: {value: [eYo.C9r.BEFORE, eYo.c9r.DURING, eYo.c9r.AFTER]},
+Object.defineProperties(eYo.c9r, {
+  CHANGE_HOOKS: {value: [eYo.c9r.BEFORE, eYo.c9r.DURING, eYo.c9r.AFTER]},
 })
 
 /**
@@ -31,12 +31,12 @@ Object.defineProperties(eYo.C9r, {
  * @param {Object} model
  * @return {Object}
  */
-eYo.C9r.PropModelHandler = (model) => {
+eYo.c9r.PropModelHandler = (model) => {
   if (model['.initers']) {
     return
   }
   let initers = model['.initers'] = []
-  eYo.C9r.CHANGE_HOOKS.forEach(when => {
+  eYo.c9r.CHANGE_HOOKS.forEach(when => {
     var f = model[when]
     if (eYo.isF(f)) {
       initers.push(XRegExp.match(f.toString(), eYo.xre.function_before)
@@ -284,12 +284,12 @@ eYo.C9r.PropModelHandler = (model) => {
 }
 
 /**
- * @name {eYo.C9r.DlgtProp}
+ * @name {eYo.c9r.DlgtProp}
  * @constructor
  */
-eYo.C9r.Dlgt.makeSubclass('DlgtProp')
+eYo.c9r.Dlgt.makeSubclass('DlgtProp')
 
-eYo.C9r.DlgtProp_p.makeValidate = function () {
+eYo.c9r.DlgtProp_p.makeValidate = function () {
 }
 
 /**
@@ -303,7 +303,7 @@ eYo.C9r.DlgtProp_p.makeValidate = function () {
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.C9r.makeClass('Prop', eYo.c9r.DlgtProp, {
+eYo.c9r.makeClass('Prop', eYo.c9r.DlgtProp, {
   init (owner, key, model) {
     eYo.ParameterAssert(owner, 'Missing owner')
     eYo.ParameterAssert(key, 'Missing key')
@@ -314,24 +314,24 @@ eYo.C9r.makeClass('Prop', eYo.c9r.DlgtProp, {
     this.reentrant_ = Object.create(null)
     this.stored__ = eYo.NA
     Object.defineProperties(this, {
-      value: eYo.C9r.descriptorR(
+      value: eYo.c9r.descriptorR(
         `Unexpected setter ${key} in ${owner}'s property`,
-        eYo.C9r.Prop.prototype._getValue
+        eYo.c9r.Prop.prototype._getValue
       ),
-      owner: eYo.C9r.descriptorR(
+      owner: eYo.c9r.descriptorR(
         `Unexpected ….owner = …, ${owner}'s property`,
         function () { return this.owner_ }
       ),
-      owner: eYo.C9r.descriptorR(
+      owner: eYo.c9r.descriptorR(
         `Unexpected ….key = …, ${owner}'s property`,
         function () { return this.key_ }
       ),
-      owner: eYo.C9r.descriptorR(
+      owner: eYo.c9r.descriptorR(
         `Unexpected ….model = …, ${owner}'s property`,
         function () { return this.model_ }
       ),
     })
-    eYo.C9r.PropModelHandler(model)
+    eYo.c9r.PropModelHandler(model)
     model['.initers'].forEach(f => f(this))
   },
   dispose () {
@@ -340,10 +340,10 @@ eYo.C9r.makeClass('Prop', eYo.c9r.DlgtProp, {
     this.reentrant_ = this.key_ = this.owner_ = this.model_ = eYo.NA
   },
 })
-eYo.Assert(eYo.C9r.Prop)
+eYo.Assert(eYo.c9r.Prop)
 
 ;(() => {
-  let _p = eYo.C9r.Prop.prototype
+  let _p = eYo.c9r.Prop.prototype
 
   /**
    * Dispose of the stored object, if any.
@@ -416,7 +416,7 @@ eYo.Assert(eYo.C9r.Prop)
    * @param {Object} after
    * @return {Boolean} true when performed
    */
-  eYo.C9r.CHANGE_HOOKS.forEach(when => {
+  eYo.c9r.CHANGE_HOOKS.forEach(when => {
     _p[when] = function (before, after) {
       try {
         this[when] = eYo.do.nothing
@@ -507,9 +507,9 @@ eYo.Assert(eYo.C9r.Prop)
    * @param {String} when - One of 'before', 'during', 'after'
    * @return {*} The callback, to be used for removing the observer.
    */
-  _p.addObserver = function (callback, when = eYo.C9r.AFTER) {
+  _p.addObserver = function (callback, when = eYo.c9r.AFTER) {
     eYo.ParameterAssert(eYo.isF(callback))
-    eYo.ParameterAssert(eYo.C9r.CHANGE_HOOKS.includes(when))
+    eYo.ParameterAssert(eYo.c9r.CHANGE_HOOKS.includes(when))
     let byWhen = this.observersByWhen__ || (this.observersByWhen__ = {})
     let observers = byWhen[when] || (byWhen[when] = [])
     if (!XRegExp.match(callback.toString(), eYo.xre.function_before)) {
@@ -532,7 +532,7 @@ eYo.Assert(eYo.C9r.Prop)
    */
   _p.removeObserver = function (callback, when) {
     eYo.ParameterAssert(!callback || eYo.isF(callback))
-    eYo.ParameterAssert(!when || eYo.C9r.CHANGE_HOOKS.includes(when))
+    eYo.ParameterAssert(!when || eYo.c9r.CHANGE_HOOKS.includes(when))
     let byWhen = this.observersByWhen__
     if (byWhen) {
       if (when) {
@@ -541,7 +541,7 @@ eYo.Assert(eYo.C9r.Prop)
           byWhen[when] = observers.filter(x => x !== callback && x.eyo !== callback)
         }
       } else {
-        eYo.C9r.CHANGE_HOOKS.forEach(when => {
+        eYo.c9r.CHANGE_HOOKS.forEach(when => {
           let observers = byWhen[when]
           if (observers) {
             byWhen[when] = observers.filter(x => x !== callback && x.eyo !== callback)
@@ -558,7 +558,7 @@ eYo.Assert(eYo.C9r.Prop)
   _p.removeObservers = function () {
     let byWhen = this.observersByWhen__
     if (byWhen) {
-      eYo.C9r.CHANGE_HOOKS.forEach(when => {
+      eYo.c9r.CHANGE_HOOKS.forEach(when => {
         let observers = byWhen[when]
         if (observers) {
           observers.length = 0
@@ -569,7 +569,7 @@ eYo.Assert(eYo.C9r.Prop)
 
   /**
    * Fire the observers.
-   * @param {*} when - One of `eYo.C9r.BEFORE`, `eYo.c9r.DURING`, `eYo.c9r.AFTER`
+   * @param {*} when - One of `eYo.c9r.BEFORE`, `eYo.c9r.DURING`, `eYo.c9r.AFTER`
    * @param {*} before - the value before
    * @param {*} after - the value after
    */

@@ -20,7 +20,7 @@ describe('Expression shape', function () {
       stroke: 'firebrick',
       fill: 'aliceblue',
       transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`
-    }, eYo.App.Board.dom.Svg.Canvas_)
+    }, eYo.app.Board.dom.Svg.Canvas_)
   }
   it('column', function() {
     createPath(b, 1, 0.5)
@@ -48,7 +48,7 @@ describe('Statement shape', function () {
       stroke: 'firebrick',
       fill: 'aliceblue',
       transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`
-    }, eYo.App.Board.dom.Svg.Canvas_)
+    }, eYo.app.Board.dom.Svg.Canvas_)
   }
   it('column', function() {
     createPath(b, 1, 2)
@@ -82,7 +82,7 @@ describe('Group shape', function () {
       stroke: 'firebrick',
       fill: 'aliceblue',
       transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`
-    }, eYo.App.Board.dom.Svg.Canvas_)
+    }, eYo.app.Board.dom.Svg.Canvas_)
   }
   it('column', function() {
     b.span.suite += 2

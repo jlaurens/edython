@@ -45,7 +45,7 @@ eYo.hueToRgb = function (hue) {
 }
 
 /**
- * @name{eYo.Style}
+ * @name{eYo.style}
  * @namespace
  */
 eYo.provide('style', {
@@ -56,7 +56,7 @@ eYo.provide('style', {
 ;(() => {
   var g = {
     get () {
-      return Math.round(8000 * eYo.Style.weight(eYo.font.size / 10)) / 1000
+      return Math.round(8000 * eYo.style.weight(eYo.font.size / 10)) / 1000
     }
   }
   Object.defineProperties(
@@ -69,7 +69,7 @@ eYo.provide('style', {
   )
   g = {
     get () {
-      return Math.round(6000 * eYo.Style.weight(eYo.font.size / 10) / 1000)
+      return Math.round(6000 * eYo.style.weight(eYo.font.size / 10) / 1000)
     }
   }
   Object.defineProperties(
@@ -193,7 +193,7 @@ eYo.Setup.register(() => {
   }
 }, 'Editor offset')
 
-eYo.Style.Path = {
+eYo.style.Path = {
   Hilighted: {
     colour: '#f9951b', // #fc3
     width: 2.675, // px
@@ -206,7 +206,7 @@ eYo.Style.Path = {
 }
 
 Object.defineProperty(
-  eYo.Style.Path,
+  eYo.style.Path,
   'r',
   {
     get () {
@@ -215,32 +215,32 @@ Object.defineProperty(
   }
 )
 
-eYo.Style.MenuItem = {
+eYo.style.MenuItem = {
   'padding-h': eYo.padding.t,
   'padding-v': eYo.padding.t
 }
-eYo.Style.CheckBox = {
+eYo.style.CheckBox = {
   'padding': 1.5// px
 }
 
-eYo.Style.Edit = {
+eYo.style.Edit = {
   padding_h: 1,
   padding_v: 0,
   radius: 2,
   width: 0.5
 }
 
-eYo.Style.MenuIcon = {
+eYo.style.MenuIcon = {
   width: eYo.font.Space,
   color: 'black'
 }
 
-eYo.Style.MenuIcon.path = function (g) {
+eYo.style.MenuIcon.path = function (g) {
   var E = eYo.Svg.newElement('g',
     {class: 'eyo-menu-icon', opacity: 0.1}, g)
-  E.style.fill = eYo.Style.MenuIcon.Color
+  E.style.fill = eYo.style.MenuIcon.Color
   var h = eYo.font.height
-  var w = eYo.Style.MenuIcon.width
+  var w = eYo.style.MenuIcon.width
   var r = h / 8
   eYo.Svg.newElement('rect', {
     x: '0',

@@ -39,7 +39,7 @@ keyword_item         ::=  identifier "=" expression
  * RULE 2 : expression << "**" expression
  * RULE 3 : "*" expression << "**" expression
  */
-eYo.Consolidator.list.makeSubclass('Arguments', {
+eYo.consolidator.list.makeSubclass('Arguments', {
   list: {
     check: null,
     mandatory: 0,
@@ -52,8 +52,8 @@ eYo.Consolidator.list.makeSubclass('Arguments', {
  * Subclassers may add their own stuff to io.
  * @param {eYo.Brick.Dflt} brick - owner or the receiver.
  */
-eYo.Consolidator.Arguments.prototype.getIO = function (brick) {
-  var io = eYo.Consolidator.Arguments.SuperProto_.getIO.Call(this, brick)
+eYo.consolidator.Arguments.prototype.getIO = function (brick) {
+  var io = eYo.consolidator.Arguments.SuperProto_.getIO.Call(this, brick)
   io.last_expression = io.last_positional = io.unique = -Infinity
   io.first_keyword_star_star = io.first_star_star = Infinity
   return io
@@ -64,7 +64,7 @@ eYo.Consolidator.Arguments.prototype.getIO = function (brick) {
  * there might be unwanted things.
  * @param {object} io
  */
-eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
+eYo.consolidator.Arguments.prototype.doCleanup = (() => {
   // preparation: walk through the list of inputs and
   // find the key inputs
   var Type = {
@@ -131,7 +131,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.Consolidator.Arguments.SuperProto_.doCleanup.Call(this, io)
+    eYo.consolidator.Arguments.SuperProto_.doCleanup.Call(this, io)
     setupFirst.call(this, io)
     if (io.unique !== -Infinity) {
       // remove whatever comes before and after the io.unique
@@ -154,7 +154,7 @@ eYo.Consolidator.Arguments.prototype.doCleanup = (() => {
  * This does not suppose that the list of input has been completely consolidated
  * @param {Object} io parameter.
  */
-eYo.Consolidator.Arguments.prototype.getCheck = (() => {
+eYo.consolidator.Arguments.prototype.getCheck = (() => {
   var cache = {}
   return function (io) {
     var can_expression, can_expression_star, can_expression_star_star, can_keyword, can_comprehension
@@ -244,7 +244,7 @@ eYo.expr.list.makeSubclass('argument_list', {
     }
   },
   list: {
-    consolidator: eYo.Consolidator.Arguments,
+    consolidator: eYo.consolidator.Arguments,
     presep: ','
   }
 })
