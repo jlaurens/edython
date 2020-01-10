@@ -42,7 +42,7 @@ eYo.forwardDeclare('app')
  * @param {eYo.app} app -  the owning application.
  * @constructor
  */
-eYo.Focus.makeClass('Main', eYo.c9r.Owned, {
+eYo.Focus.makeC9r('Main', eYo.c9r.Owned, {
   computed: {
     /**
      * The board that has current focus, if any
@@ -141,7 +141,7 @@ eYo.Focus.Main_p.mngrWillDispose = function (mngr) {
  * @param {eYo.Focus.Main} main -  The main focus manager.
  * @constructor
  */
-eYo.Focus.makeClass('Mngr', eYo.c9r.Owned, {
+eYo.Focus.makeC9r('Mngr', eYo.c9r.Owned, {
   init () {
     this.focus_main.mngrRegister(this)
   },

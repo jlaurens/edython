@@ -39,7 +39,7 @@ describe('Enclosure(Basic)', function () {
 
 describe('Enclosure connections', function() {
   it(`'()'`, function() {
-    var d = eYo.Test.new_brick(eYo.t3.Expr.enclosure)
+    var d = eYo.Test.new_brick(eYo.t3.expr.enclosure)
     console.error('TYPE', d.type)
     eYo.Test.Brick(d, `parenth_form`) // default type
     eYo.Test.variant(d, 'PAR')

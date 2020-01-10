@@ -26,7 +26,7 @@ goog.forwardDeclare('goog.dom')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeSubclass('Try_part', {
+eYo.stmt.Group.makeInheritedC9r('try_part', {
   fields: {
     prefix: 'try'
   }
@@ -37,7 +37,7 @@ eYo.stmt.Group.makeSubclass('Try_part', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeSubclass('Except_part', {
+eYo.stmt.Group.makeInheritedC9r('except_part', {
   data: {
     variant: {
       all: [
@@ -79,9 +79,9 @@ eYo.stmt.Group.makeSubclass('Except_part', {
       synchronize: true,
       validate (after) /** @suppress {globalThis} */ {
         var type = eYo.t3.profile.get(after).expr
-        return type === eYo.t3.Expr.unset
-        || type === eYo.t3.Expr.identifier
-        || type === eYo.t3.Expr.Builtin__name
+        return type === eYo.t3.expr.unset
+        || type === eYo.t3.expr.identifier
+        || type === eYo.t3.expr.builtin__name
         ? after
         : eYo.INVALID
       },
@@ -110,7 +110,7 @@ eYo.stmt.Group.makeSubclass('Except_part', {
           endEditing: true
         }
       },
-      check: eYo.t3.Expr.Check.expression,
+      check: eYo.t3.expr.check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.brick.Variant_p === eYo.key.NONE && this.requiredFromSaved) {
           this.brick.Variant_p = eYo.key.EXPRESSION
@@ -134,7 +134,7 @@ eYo.stmt.Group.makeSubclass('Except_part', {
       validateIncog () /** @suppress {globalThis} */ {
         return this.brick.Variant_p !== eYo.key.ALIASED
       },
-      check: eYo.t3.Expr.identifier,
+      check: eYo.t3.expr.identifier,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.Variant_p = eYo.key.ALIASED
@@ -148,16 +148,16 @@ eYo.stmt.Group.makeSubclass('Except_part', {
   },
   head: {
     check (type) /** @suppress {globalThis} */ {
-      return type === eYo.t3.Stmt.except_part
-      ? eYo.t3.Stmt.Previous.except_part
-      : eYo.t3.Stmt.Previous.void_except_part
+      return type === eYo.t3.stmt.except_part
+      ? eYo.t3.stmt.previous.except_part
+      : eYo.t3.stmt.previous.void_except_part
     }
   },
   foot: {
     check (type) /** @suppress {globalThis} */ {
-      return type === eYo.t3.Stmt.except_part
-      ? eYo.t3.Stmt.Next.except_part
-      : eYo.t3.Stmt.Next.void_except_part
+      return type === eYo.t3.stmt.except_part
+      ? eYo.t3.stmt.next.except_part
+      : eYo.t3.stmt.next.void_except_part
     }
   }
 }, true)
@@ -176,8 +176,8 @@ eYo.stmt.except_part.prototype.getType = eYo.c9r.decorateChange(
   function () {
     this.setupType(
       this.Variant_p === eYo.key.NONE
-      ? eYo.t3.Stmt.void_except_part
-      : eYo.t3.Stmt.except_part
+      ? eYo.t3.stmt.void_except_part
+      : eYo.t3.stmt.except_part
     )
     return this.type
   }
@@ -223,7 +223,7 @@ eYo.stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeSubclass('Finally_part', {
+eYo.stmt.Group.makeInheritedC9r('finally_part', {
   fields: {
     prefix: 'finally'
   }
@@ -233,7 +233,7 @@ eYo.stmt.Group.makeSubclass('Finally_part', {
  * Class for a Delegate, raise_stmt.
  * For edython.
  */
-eYo.stmt.makeClass('Raise_stmt', {
+eYo.stmt.makeC9r('raise_stmt', {
   data: {
     variant: {
       all: [
@@ -297,7 +297,7 @@ eYo.stmt.makeClass('Raise_stmt', {
           endEditing: true
         }
       },
-      check: eYo.t3.Expr.Check.expression,
+      check: eYo.t3.expr.check.expression,
       xml: {
         load (element, opt) /** @suppress {globalThis} */ {
           this.load(element, opt)
@@ -318,7 +318,7 @@ eYo.stmt.makeClass('Raise_stmt', {
           endEditing: true
         }
       },
-      check: eYo.t3.Expr.Check.expression,
+      check: eYo.t3.expr.check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.Variant_p = eYo.key.FROM
@@ -367,7 +367,7 @@ eYo.stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, assert_stmt.
  * For edython.
  */
-eYo.stmt.makeClass('Assert_stmt', {
+eYo.stmt.makeC9r('assert_stmt', {
   data: {
     variant: {
       all: [
@@ -410,7 +410,7 @@ eYo.stmt.makeClass('Assert_stmt', {
           placeholder: eYo.msg.placeholder.EXPRESSION
         }
       },
-      check: eYo.t3.Expr.Check.expression
+      check: eYo.t3.expr.check.expression
     },
     expression2: {
       order: 2,
@@ -421,7 +421,7 @@ eYo.stmt.makeClass('Assert_stmt', {
           placeholder: eYo.msg.placeholder.EXPRESSION
         }
       },
-      check: eYo.t3.Expr.Check.expression,
+      check: eYo.t3.expr.check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.Variant_p = eYo.key.BINARY
@@ -460,11 +460,11 @@ eYo.stmt.Assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   return eYo.stmt.Assert_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 }
 
-eYo.brick.try.T3s = [
-  eYo.t3.Stmt.try_part,
-  eYo.t3.Stmt.except_part,
-  eYo.t3.Stmt.void_except_part,
-  eYo.t3.Stmt.finally_part,
-  eYo.t3.Stmt.raise_stmt,
-  eYo.t3.Stmt.Assert_stmt
+eYo.brick.try.t3s = [
+  eYo.t3.stmt.try_part,
+  eYo.t3.stmt.except_part,
+  eYo.t3.stmt.void_except_part,
+  eYo.t3.stmt.finally_part,
+  eYo.t3.stmt.raise_stmt,
+  eYo.t3.stmt.assert_stmt
 ]

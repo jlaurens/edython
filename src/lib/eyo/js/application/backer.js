@@ -22,7 +22,7 @@ eYo.forwardDeclare('app')
  * @param {Object} owner
  * @constructor
  */
-eYo.makeClass('Backer', eYo.c9r.Owned, {
+eYo.makeC9r('Backer', eYo.c9r.Owned, {
   valued: {
     /**
      * @type {!Array<!eYo.events.Abstract>}

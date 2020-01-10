@@ -33,7 +33,7 @@ eYo.forwardDeclare('magnet')
  * @param {eYo.app.Dflt|eYo.Desk|eYo.Flyout|eYo.board|eYo.expr|eYo.stmt|eYo.slot.Dflt|eYo.magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @constructor
  */
-eYo.c9r.makeClass('Owned', {
+eYo.c9r.makeC9r('Owned', {
   init (owner) {
     eYo.ParameterAssert(owner, 'Missing owner!')
     this.owner_ = owner
@@ -142,7 +142,7 @@ eYo.Assert(eYo.c9r.Owned, 'MISSING eYo.c9r.Owned')
  * @property {eYo.magnet.Dflt} magnet  The magnet.
  */
 
-eYo.c9r.Owned.makeSubclass('BSMOwned', {
+eYo.c9r.Owned.makeInheritedC9r('BSMOwned', {
   valued: ['slot', 'brick', 'magnet'],
   computed: {
     ui () {

@@ -285,7 +285,7 @@ eYo.Field.disposeFields = owner => {
  * @param {string} text The initial content of the field.
  * @constructor
  */
-eYo.Field.makeClass('Dflt', eYo.c9r.BSMOwned, {
+eYo.Field.makeC9r('Dflt', eYo.c9r.BSMOwned, {
   init (bsm, name, text) {
     this.name_ = name
     this.text_ = text
@@ -477,7 +477,7 @@ eYo.Field.Dflt_p.willRender = function () {
  * @extends {eYo.Field}
  * @constructor
  */
-eYo.Field.Dflt.makeSubclass('Label', {
+eYo.Field.Dflt.makeInheritedC9r('Label', {
   init (bsi, name, text) {
     this.isLabel = true
   },
@@ -491,7 +491,7 @@ eYo.Field.Dflt.makeSubclass('Label', {
  * @extends {eYo.Field}
  * @constructor
  */
-eYo.Field.Dflt.makeSubclass('Input', {
+eYo.Field.Dflt.makeInheritedC9r('Input', {
   init (bsi, name, text) {
     eYo.Assert(name, 'missing name for an editable field')
     this.editable = true

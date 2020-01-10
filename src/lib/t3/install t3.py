@@ -7,6 +7,6 @@ dst = str(parent.parent / 'eyo' / 'core')
 def copy(src):
   shutil.copy2(str(parent / src), dst)
 
-copy('T3.js')
-copy('T3_all.js')
+copy('t3.js')
+copy('t3_all.js')
 print('Done')

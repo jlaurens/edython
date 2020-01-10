@@ -25,7 +25,7 @@ console.error('NYI')
  * @param {String} url - the url of the module (in the python documentation)
  * @constructor
  */
-eYo.Dflt.makeSubclass(eYo.module, {
+eYo.Dflt.makeInheritedC9r(eYo.module, {
   init(name, url) {
     this.name_ = name
     this.url_ = url
@@ -66,7 +66,7 @@ eYo.Dflt.makeSubclass(eYo.module, {
  * @name{eYo.module.Item}
  * @param {*} instance_model
  */
-eYo.module.makeClass('Item', {
+eYo.module.makeC9r('Item', {
   init (model) {
     for (var key in model) {
       Object.defineProperty(

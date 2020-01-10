@@ -16,7 +16,7 @@ console.error('In progress')
 /**
  * 
  */
-eYo.makeClass('Clipboard', eYo.c9r.Owned, {
+eYo.makeC9r('Clipboard', eYo.c9r.Owned, {
   valued: {
     dom: eYo.isNA,
     sourceBoard: eYo.isNA,

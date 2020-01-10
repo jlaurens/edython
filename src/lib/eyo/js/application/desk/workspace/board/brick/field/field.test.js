@@ -1,6 +1,6 @@
 describe('field', function () {
   chai.assert(eYo.Test)
-  chai.assert(eYo.expr.Dflt.makeSubclass)
+  chai.assert(eYo.expr.Dflt.makeInheritedC9r)
 
   eYo.Test.FIELD = 'field'
   var RA = [
@@ -11,8 +11,8 @@ describe('field', function () {
   ]
   RA.forEach(X => {
     var type = `one_slot_one_field_${X[0]}`
-    eYo.t3.Expr[type] = type
-    eYo.expr.Dflt.makeSubclass(type, {
+    eYo.t3.expr[type] = type
+    eYo.expr.Dflt.makeInheritedC9r(type, {
       slots: {
         SLOT: {
           order: 1,

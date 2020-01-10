@@ -19,4 +19,4 @@ eYo.require('section')
  * @param {eYo.Desk | eYo.Flyout | eYo.board} owner Any board belongs to either a desk (the main board), a flyout (the flyout board) or another board (the brick dragger board). We allways have `this === owner.board`, which means that each kind of owner may have only one board.
  * @constructor
  */
-eYo.section.makeClass(eYo, 'Draft')
+eYo.section.makeC9r(eYo, 'Draft')

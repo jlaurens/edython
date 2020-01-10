@@ -86,7 +86,7 @@ eYo.Dlgt_p.registerDispose = function (k, model) {
 
 /**
  * Declare the given model.
- * @param {Object} model - Object, like for |makeClass|.
+ * @param {Object} model - Object, like for |makeC9r|.
  */
 eYo.Dlgt_p.modelDeclare = function (model) {
   model.CONST && this.CONSTDeclare(model.CONST)
@@ -204,7 +204,7 @@ eYo.Dlgt_p.consolidatorMake = function (k, model) {
   let kC = k+'Consolidate'
   C9r_p[kC] = consolidators[k] = model.consolidate
   ? function () {
-    let Super = C9r.superProto_[kC]
+    let Super = C9r.SuperC9r_p[kC]
     !!Super && Super.apply(this, arguments)
     model.consolidate.call(this, arguments)
     this.ownedForEach(x => {

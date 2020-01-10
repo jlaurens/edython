@@ -21,13 +21,13 @@ eYo.provide('brick.operator')
  * Abstract class.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Binary', {
+eYo.expr.Dflt.makeInheritedC9r('Binary', {
   data: {
     operator: { // only one field with that key,
       init: '+',
       validate (after) /** @suppress {globalThis} */ {
         var m = eYo.expr.Binary.getTypeForOperator(after)
-        return m !== eYo.t3.Expr.unset
+        return m !== eYo.t3.expr.unset
           ? after
           : eYo.INVALID
       },
@@ -37,27 +37,27 @@ eYo.expr.Dflt.makeSubclass('Binary', {
         d && (d.makeReserved(this.field, ['in', 'or', 'and'].indexOf(after) >= 0))
       },
       fromType (type) /** @suppress {globalThis} */ {
-        if (type === eYo.t3.Expr.m_expr) {
+        if (type === eYo.t3.expr.m_expr) {
           this.set('*')
-        } else if (type === eYo.t3.Expr.A_expr) {
+        } else if (type === eYo.t3.expr.a_expr) {
           this.set('+')
-        } else if (type === eYo.t3.Expr.or_test) {
+        } else if (type === eYo.t3.expr.or_test) {
           this.set('or')
-        } else if (type === eYo.t3.Expr.And_test) {
+        } else if (type === eYo.t3.expr.and_test) {
           this.set('and')
-        } else if (type === eYo.t3.Expr.power) {
+        } else if (type === eYo.t3.expr.power) {
           this.set('**')
-        } else if (type === eYo.t3.Expr.Shift_expr) {
+        } else if (type === eYo.t3.expr.shift_expr) {
           this.set('<<')
-        } else if (type === eYo.t3.Expr.And_expr) {
+        } else if (type === eYo.t3.expr.and_expr) {
           this.set('&')
-        } else if (type === eYo.t3.Expr.xor_expr) {
+        } else if (type === eYo.t3.expr.xor_expr) {
           this.set('^')
-        } else if (type === eYo.t3.Expr.or_expr) {
+        } else if (type === eYo.t3.expr.or_expr) {
           this.set('|')
-        } else if (type === eYo.t3.Expr.number_comparison) {
+        } else if (type === eYo.t3.expr.number_comparison) {
           this.set('<')
-        } else if (type === eYo.t3.Expr.object_comparison) {
+        } else if (type === eYo.t3.expr.object_comparison) {
           this.set('in')
         }
       }
@@ -80,17 +80,17 @@ eYo.expr.Dflt.makeSubclass('Binary', {
           placeholder () /** @suppress {globalThis} */ {
             var type = this.brick.type
             return {
-              [eYo.t3.Expr.m_expr]: 1,
-              [eYo.t3.Expr.A_expr]: 1,
-              [eYo.t3.Expr.or_test]: 'test',
-              [eYo.t3.Expr.And_test]: 'test',
-              [eYo.t3.Expr.power]: 1,
-              [eYo.t3.Expr.Shift_expr]: 1,
-              [eYo.t3.Expr.And_expr]: 1,
-              [eYo.t3.Expr.xor_expr]: 1,
-              [eYo.t3.Expr.or_expr]: 1,
-              [eYo.t3.Expr.number_comparison]: '1',
-              [eYo.t3.Expr.object_comparison]: 'object'
+              [eYo.t3.expr.m_expr]: 1,
+              [eYo.t3.expr.a_expr]: 1,
+              [eYo.t3.expr.or_test]: 'test',
+              [eYo.t3.expr.and_test]: 'test',
+              [eYo.t3.expr.power]: 1,
+              [eYo.t3.expr.shift_expr]: 1,
+              [eYo.t3.expr.and_expr]: 1,
+              [eYo.t3.expr.xor_expr]: 1,
+              [eYo.t3.expr.or_expr]: 1,
+              [eYo.t3.expr.number_comparison]: '1',
+              [eYo.t3.expr.object_comparison]: 'object'
             } [type]
           }
         }
@@ -116,17 +116,17 @@ eYo.expr.Dflt.makeSubclass('Binary', {
           placeholder () /** @suppress {globalThis} */ {
             var type = this.brick.type
             return {
-              [eYo.t3.Expr.m_expr]: 1,
-              [eYo.t3.Expr.A_expr]: 1,
-              [eYo.t3.Expr.or_test]: 'test',
-              [eYo.t3.Expr.And_test]: 'test',
-              [eYo.t3.Expr.power]: 1,
-              [eYo.t3.Expr.Shift_expr]: 1,
-              [eYo.t3.Expr.And_expr]: 1,
-              [eYo.t3.Expr.xor_expr]: 1,
-              [eYo.t3.Expr.or_expr]: 1,
-              [eYo.t3.Expr.number_comparison]: '1',
-              [eYo.t3.Expr.object_comparison]: 'container'
+              [eYo.t3.expr.m_expr]: 1,
+              [eYo.t3.expr.a_expr]: 1,
+              [eYo.t3.expr.or_test]: 'test',
+              [eYo.t3.expr.and_test]: 'test',
+              [eYo.t3.expr.power]: 1,
+              [eYo.t3.expr.shift_expr]: 1,
+              [eYo.t3.expr.and_expr]: 1,
+              [eYo.t3.expr.xor_expr]: 1,
+              [eYo.t3.expr.or_expr]: 1,
+              [eYo.t3.expr.number_comparison]: '1',
+              [eYo.t3.expr.object_comparison]: 'container'
             } [type]
           }
         }
@@ -144,8 +144,8 @@ eYo.expr.Dflt.makeSubclass('Binary', {
   }
 })
 
-eYo.t3.Expr.Check.Binary.forEach(k => {
-  if (k !== eYo.t3.Expr.Any) {
+eYo.t3.expr.check.Binary.forEach(k => {
+  if (k !== eYo.t3.expr.any) {
     k = k.substring(4)
     eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Binary))
   }
@@ -169,53 +169,53 @@ eYo.t3.Expr.Check.Binary.forEach(k => {
  */
 eYo.expr.Binary.getOperatorModelForType = function (type) {
   return {
-    [eYo.t3.Expr.m_expr]: {
-      lhs: eYo.t3.Expr.Check.m_expr_all,
-      rhs: eYo.t3.Expr.Check.u_expr_all
+    [eYo.t3.expr.m_expr]: {
+      lhs: eYo.t3.expr.check.m_expr_all,
+      rhs: eYo.t3.expr.check.u_expr_all
     },
-    [eYo.t3.Expr.A_expr]: {
-      lhs: eYo.t3.Expr.Check.A_expr_all,
-      rhs: eYo.t3.Expr.Check.m_expr_all
+    [eYo.t3.expr.a_expr]: {
+      lhs: eYo.t3.expr.check.A_expr_all,
+      rhs: eYo.t3.expr.check.m_expr_all
     },
-    [eYo.t3.Expr.or_test]: {
-      lhs: eYo.t3.Expr.Check.or_test_all,
-      rhs: eYo.t3.Expr.Check.And_test_all
+    [eYo.t3.expr.or_test]: {
+      lhs: eYo.t3.expr.check.or_test_all,
+      rhs: eYo.t3.expr.check.And_test_all
     },
-    [eYo.t3.Expr.And_test]: {
-      lhs: eYo.t3.Expr.Check.And_test_all,
-      rhs: eYo.t3.Expr.Check.not_test_all
+    [eYo.t3.expr.and_test]: {
+      lhs: eYo.t3.expr.check.And_test_all,
+      rhs: eYo.t3.expr.check.not_test_all
     },
-    [eYo.t3.Expr.power]: {
-      lhs: eYo.t3.Expr.Check.Await_or_primary,
-      rhs: eYo.t3.Expr.Check.u_expr_all
+    [eYo.t3.expr.power]: {
+      lhs: eYo.t3.expr.check.Await_or_primary,
+      rhs: eYo.t3.expr.check.u_expr_all
     },
-    [eYo.t3.Expr.Shift_expr]: {
-      lhs: eYo.t3.Expr.Check.Shift_expr_all,
-      rhs: eYo.t3.Expr.Check.A_expr_all
+    [eYo.t3.expr.shift_expr]: {
+      lhs: eYo.t3.expr.check.Shift_expr_all,
+      rhs: eYo.t3.expr.check.A_expr_all
     },
-    [eYo.t3.Expr.And_expr]: {
-      lhs: eYo.t3.Expr.Check.And_expr_all,
-      rhs: eYo.t3.Expr.Check.Shift_expr_all
+    [eYo.t3.expr.and_expr]: {
+      lhs: eYo.t3.expr.check.And_expr_all,
+      rhs: eYo.t3.expr.check.Shift_expr_all
     },
-    [eYo.t3.Expr.xor_expr]: {
-      lhs: eYo.t3.Expr.Check.xor_expr_all,
-      rhs: eYo.t3.Expr.Check.And_expr_all
+    [eYo.t3.expr.xor_expr]: {
+      lhs: eYo.t3.expr.check.xor_expr_all,
+      rhs: eYo.t3.expr.check.And_expr_all
     },
-    [eYo.t3.Expr.or_expr]: {
-      lhs: eYo.t3.Expr.Check.or_expr_all,
-      rhs: eYo.t3.Expr.Check.xor_expr_all
+    [eYo.t3.expr.or_expr]: {
+      lhs: eYo.t3.expr.check.or_expr_all,
+      rhs: eYo.t3.expr.check.xor_expr_all
     },
-    [eYo.t3.Expr.Comparison]: {
-      lhs: eYo.t3.Expr.Check.Comparison,
-      rhs: eYo.t3.Expr.Check.Comparison
+    [eYo.t3.expr.comparison]: {
+      lhs: eYo.t3.expr.check.Comparison,
+      rhs: eYo.t3.expr.check.Comparison
     },
-    [eYo.t3.Expr.number_comparison]: {
-      lhs: eYo.t3.Expr.Check.Comparison,
-      rhs: eYo.t3.Expr.Check.Comparison
+    [eYo.t3.expr.number_comparison]: {
+      lhs: eYo.t3.expr.check.Comparison,
+      rhs: eYo.t3.expr.check.Comparison
     },
-    [eYo.t3.Expr.object_comparison]: {
-      lhs: eYo.t3.Expr.Check.Comparison,
-      rhs: eYo.t3.Expr.Check.Comparison
+    [eYo.t3.expr.object_comparison]: {
+      lhs: eYo.t3.expr.check.Comparison,
+      rhs: eYo.t3.expr.check.Comparison
     }
   } [type]
 }
@@ -227,39 +227,39 @@ eYo.expr.Binary.getOperatorModelForType = function (type) {
  */
 eYo.expr.Binary.getTypeForOperator = function (op) {
   if (['*', '//', '/', '%', '@'].indexOf(op) >= 0) {
-    return eYo.t3.Expr.m_expr
+    return eYo.t3.expr.m_expr
   }
   if (['+', '-'].indexOf(op) >= 0) {
-    return eYo.t3.Expr.A_expr
+    return eYo.t3.expr.a_expr
   }
   if (['<', '>', '==', '>=', '<=', '!='].indexOf(op) >= 0) {
-    return eYo.t3.Expr.number_comparison
+    return eYo.t3.expr.number_comparison
   }
   if ('or' === op) {
-    return eYo.t3.Expr.or_test
+    return eYo.t3.expr.or_test
   }
   if ('and' === op) {
-    return eYo.t3.Expr.And_test
+    return eYo.t3.expr.and_test
   }
   if (['is', 'is not', 'in', 'not in'].indexOf(op) >= 0) {
-    return eYo.t3.Expr.object_comparison
+    return eYo.t3.expr.object_comparison
   }
   if ('**' === op) {
-    return eYo.t3.Expr.power
+    return eYo.t3.expr.power
   }
   if (['<<', '>>'].indexOf(op) >= 0) {
-    return eYo.t3.Expr.Shift_expr
+    return eYo.t3.expr.shift_expr
   }
   if ('&' === op) {
-    return eYo.t3.Expr.And_expr
+    return eYo.t3.expr.and_expr
   }
   if ('^' === op) {
-    return eYo.t3.Expr.xor_expr
+    return eYo.t3.expr.xor_expr
   }
   if ('|' === op) {
-    return eYo.t3.Expr.or_expr
+    return eYo.t3.expr.or_expr
   }
-  return eYo.t3.Expr.unset
+  return eYo.t3.expr.unset
 }
 
 /**
@@ -281,18 +281,18 @@ eYo.expr.Binary.prototype.getBaseType = function () {
   return this.constructor.getTypeForOperator(this.Operator_p)
 }
 
-eYo.t3.Expr.unary = 'eyo:unary' // don't forget it !
+eYo.t3.expr.unary = 'eyo:unary' // don't forget it !
 
 /**
  * Class for a Delegate, unary op ... brick.
  * u_expr.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Unary', {
+eYo.expr.Dflt.makeInheritedC9r('Unary', {
   xml: {
     types: [
-      eYo.t3.Expr.u_expr,
-      eYo.t3.Expr.not_test
+      eYo.t3.expr.u_expr,
+      eYo.t3.expr.not_test
     ],
     attr: 'unary'
   },
@@ -302,7 +302,7 @@ eYo.expr.Dflt.makeSubclass('Unary', {
       init: '-',
       validate (after) /** @suppress {globalThis} */ {
         var m = eYo.expr.unary.getTypeForOperator(after)
-        return m !== eYo.t3.Expr.unset
+        return m !== eYo.t3.expr.unset
           ? after
           : eYo.INVALID
       },
@@ -312,7 +312,7 @@ eYo.expr.Dflt.makeSubclass('Unary', {
         d && (d.makeReserved(this.field, after === 'not'))
       },
       fromType (type) /** @suppress {globalThis} */ {
-        if (type === eYo.t3.Expr.not_test) {
+        if (type === eYo.t3.expr.not_test) {
           this.set('not')
         }
       }
@@ -320,7 +320,7 @@ eYo.expr.Dflt.makeSubclass('Unary', {
     rhs: {
       init: '',
       placeholder (type) /** @suppress {globalThis} */ {
-        return type === eYo.t3.Expr.not_test
+        return type === eYo.t3.expr.not_test
          ? 'test'
          : 1
       },
@@ -368,11 +368,11 @@ eYo.expr.Dflt.makeSubclass('Unary', {
  */
 eYo.expr.unary.getOperatorModelForType = function (type) {
   return {
-    [eYo.t3.Expr.u_expr]: {
-      rhs: eYo.t3.Expr.Check.u_expr_all
+    [eYo.t3.expr.u_expr]: {
+      rhs: eYo.t3.expr.check.u_expr_all
     },
-    [eYo.t3.Expr.not_test]: {
-      rhs: eYo.t3.Expr.Check.not_test_all
+    [eYo.t3.expr.not_test]: {
+      rhs: eYo.t3.expr.check.not_test_all
     }
   } [type]
 }
@@ -403,25 +403,25 @@ eYo.expr.unary.prototype.getBaseType = function () {
  */
 eYo.expr.unary.getTypeForOperator = function (op) {
   if (['+', '-', '~'].indexOf(op) >= 0) {
-    return eYo.t3.Expr.u_expr
+    return eYo.t3.expr.u_expr
   }
   if ('not' === op) {
-    return eYo.t3.Expr.not_test
+    return eYo.t3.expr.not_test
   }
-  return eYo.t3.Expr.unset
+  return eYo.t3.expr.unset
 }
 
-eYo.brick.operator.T3s = [
-  eYo.t3.Expr.u_expr,
-  eYo.t3.Expr.m_expr,
-  eYo.t3.Expr.A_expr,
-  eYo.t3.Expr.Shift_expr,
-  eYo.t3.Expr.And_expr,
-  eYo.t3.Expr.xor_expr,
-  eYo.t3.Expr.or_expr,
-  eYo.t3.Expr.number_comparison,
-  eYo.t3.Expr.object_comparison,
-  eYo.t3.Expr.or_test,
-  eYo.t3.Expr.And_test,
-  eYo.t3.Expr.power
+eYo.brick.operator.t3s = [
+  eYo.t3.expr.u_expr,
+  eYo.t3.expr.m_expr,
+  eYo.t3.expr.a_expr,
+  eYo.t3.expr.shift_expr,
+  eYo.t3.expr.and_expr,
+  eYo.t3.expr.xor_expr,
+  eYo.t3.expr.or_expr,
+  eYo.t3.expr.number_comparison,
+  eYo.t3.expr.object_comparison,
+  eYo.t3.expr.or_test,
+  eYo.t3.expr.and_test,
+  eYo.t3.expr.power
 ]

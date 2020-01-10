@@ -18,7 +18,7 @@ eYo.require('WorkspaceControl')
  * @param {eYo.Workspace} workspace Workspace to zoom.
  * @constructor
  */
-eYo.WorkspaceControl.makeSubclass(eYo, 'Zoomer')
+eYo.WorkspaceControl.makeInheritedC9r(eYo, 'Zoomer')
 
 Object.defineProperties(eYo.Zoomer.prototype, {
   HEIGHT_: { value: 110 },

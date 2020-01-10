@@ -62,7 +62,7 @@ describe('Owned', function () {
   it ('Owned: cascade', function () {
     var ONR = function () {}
     var onr0 = new ONR()
-    eYo.makeClass(NS, 'A', eYo.c9r.Owned, {
+    eYo.makeC9r(NS, 'A', eYo.c9r.Owned, {
       owned: {
         foo () {}
       }
@@ -92,7 +92,7 @@ describe ('Tests: BSMOwned', function () {
   NS.Magnet = eYo.magnet
   eYo.brick = eYo.slot.Dflt = eYo.magnet = eYo.NA
   var ff = k => {
-    eYo.makeClass(k, {
+    eYo.makeC9r(k, {
       owned: ['foo']
     })
     ff('brick')

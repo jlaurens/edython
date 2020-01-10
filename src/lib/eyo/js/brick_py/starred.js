@@ -24,12 +24,12 @@ eYo.provide('brick.starred')
 /**
  * Convenient check list for starred expressions
  */
-eYo.t3.Expr.Check._expression_or_parameter = eYo.t3.Expr.Check.expression.Concat(eYo.t3.Expr.Check.Parameter)
+eYo.t3.expr.check._expression_or_parameter = eYo.t3.expr.check.expression.Concat(eYo.t3.expr.check.Parameter)
 
 /**
  * Convenient check list for starred expressions
  */
-eYo.t3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.t3.Expr.Check.or_expr_all.Concat(eYo.t3.Expr.Check.Parameter).concat(eYo.t3.Expr.Check.Target)
+eYo.t3.expr.check._or_expr_all_or_parameter_or_target = eYo.t3.expr.check.or_expr_all.Concat(eYo.t3.expr.check.Parameter).concat(eYo.t3.expr.check.Target)
 
 /**
  * Class for a Delegate, starred brick.
@@ -48,17 +48,17 @@ eYo.t3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.t3.Expr.Check.or_exp
  * For edython.
  */
 
-eYo.expr.Dflt.makeSubclass('Starred', {
+eYo.expr.Dflt.makeInheritedC9r('Starred', {
   xml: {
     types: [
-      eYo.t3.Expr.Star_expr,
-      eYo.t3.Expr.expression_star,
-      eYo.t3.Expr.expression_star_star,
-      eYo.t3.Expr.or_expr_star_star,
-      eYo.t3.Expr.Target_star,
-      eYo.t3.Expr.Star,
-      eYo.t3.Expr.Parameter_star,
-      eYo.t3.Expr.Parameter_star_star
+      eYo.t3.expr.star_expr,
+      eYo.t3.expr.expression_star,
+      eYo.t3.expr.expression_star_star,
+      eYo.t3.expr.or_expr_star_star,
+      eYo.t3.expr.target_star,
+      eYo.t3.expr.star,
+      eYo.t3.expr.parameter_star,
+      eYo.t3.expr.parameter_star_star
     ]
   },
   data: {
@@ -76,7 +76,7 @@ eYo.expr.Dflt.makeSubclass('Starred', {
       },
       fromType (type) /** @suppress {globalThis} */ {
         // the `didLoad` will be performed afterwards.
-        this.set(type === eYo.t3.Expr.Star ? eYo.key.STAR : eYo.key.NONE)
+        this.set(type === eYo.t3.expr.star ? eYo.key.STAR : eYo.key.NONE)
       },
       xml: false
     },
@@ -92,19 +92,19 @@ eYo.expr.Dflt.makeSubclass('Starred', {
         }
       },
       fromType (type) /** @suppress {globalThis} */ {
-        /* if (type === eYo.t3.Expr.Star) {
+        /* if (type === eYo.t3.expr.star) {
           this.set('*')
-        } else if (type === eYo.t3.Expr.Target_star) {
+        } else if (type === eYo.t3.expr.target_star) {
           this.set('*')
-        } else if (type === eYo.t3.Expr.Parameter_star) {
+        } else if (type === eYo.t3.expr.parameter_star) {
           this.set('*')
-        } else if (type === eYo.t3.Expr.Star_expr) {
+        } else if (type === eYo.t3.expr.star_expr) {
           this.set('*')
-        } else */ if (type === eYo.t3.Expr.Parameter_star_star) {
+        } else */ if (type === eYo.t3.expr.parameter_star_star) {
           this.set('**')
-        } else if (type === eYo.t3.Expr.expression_star_star) {
+        } else if (type === eYo.t3.expr.expression_star_star) {
           this.set('**')
-        } else if (type === eYo.t3.Expr.or_expr_star_star) {
+        } else if (type === eYo.t3.expr.or_expr_star_star) {
           this.set('**')
         } else {
           this.set('*')
@@ -118,7 +118,7 @@ eYo.expr.Dflt.makeSubclass('Starred', {
       init: '',
       placeholder () /** @suppress {globalThis} */ {
         var t = this.owner && this.brick.type
-        if (t === eYo.t3.Expr.Parameter_star || t === eYo.t3.Expr.parameter_star_star || t === eYo.t3.Expr.Target_star) {
+        if (t === eYo.t3.expr.parameter_star || t === eYo.t3.expr.parameter_star_star || t === eYo.t3.expr.Target_star) {
           return eYo.msg.placeholder.NAME
         } else {
           return eYo.msg.placeholder.EXPRESSION
@@ -126,9 +126,9 @@ eYo.expr.Dflt.makeSubclass('Starred', {
       },
       validate (after) /** @suppress {globalThis} */ {
         var p5e = eYo.t3.profile.get(after, null)
-        return p5e.expr === eYo.t3.Expr.unset
-        || p5e.expr === eYo.t3.Expr.identifier
-        || p5e.expr === eYo.t3.Expr.Dotted_name
+        return p5e.expr === eYo.t3.expr.unset
+        || p5e.expr === eYo.t3.expr.identifier
+        || p5e.expr === eYo.t3.expr.dotted_name
           ? after
           : eYo.INVALID
       },
@@ -150,7 +150,7 @@ eYo.expr.Dflt.makeSubclass('Starred', {
       },
       fromType (type) /** @suppress {globalThis} */ {
         // the `didLoad` will be performed afterwards.
-        this.required_from_type = type !== eYo.t3.Expr.Star
+        this.required_from_type = type !== eYo.t3.expr.star
       },
       didLoad () /** @suppress {globalThis} */ {
         this.brick.Variant_p = this.required_from_type || this.isRequiredFromModel()
@@ -175,8 +175,8 @@ eYo.expr.Dflt.makeSubclass('Starred', {
       },
       check (type) /** @suppress {globalThis} */ {
         return this.brick.Modifier_p === '*'
-          ? eYo.t3.Expr.Check._or_expr_all_or_parameter_or_target
-          : eYo.t3.Expr.Check._expression_or_parameter
+          ? eYo.t3.expr.check._or_expr_all_or_parameter_or_target
+          : eYo.t3.expr.check._expression_or_parameter
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         if (eYo.events.recordingUndo) {
@@ -190,49 +190,49 @@ eYo.expr.Dflt.makeSubclass('Starred', {
       // retrieve the brick
       var brick = this.brick
       if (brick.Variant_p === eYo.key.STAR) {
-        return [eYo.t3.Expr.Star]
+        return [eYo.t3.expr.star]
       }
       var b = brick.modified_b
       var types = []
       if (brick.Modifier_p === '*') {
         if (b) {
           var tt = b.type
-          if (goog.array.contains(eYo.t3.Expr.Check.or_expr_all, tt)) {
-            types.push(eYo.t3.Expr.Star_expr)
+          if (goog.array.contains(eYo.t3.expr.check.or_expr_all, tt)) {
+            types.push(eYo.t3.expr.star_expr)
           }
-          if (goog.array.contains(eYo.t3.Expr.Check.expression, tt)) {
-            types.push(eYo.t3.Expr.expression_star)
+          if (goog.array.contains(eYo.t3.expr.check.expression, tt)) {
+            types.push(eYo.t3.expr.expression_star)
           }
-          if (goog.array.contains(eYo.t3.Expr.Check.Target, tt)) {
-            types.push(eYo.t3.Expr.Target_star)
+          if (goog.array.contains(eYo.t3.expr.check.Target, tt)) {
+            types.push(eYo.t3.expr.target_star)
           }
-          if (goog.array.contains(eYo.t3.Expr.Check.Parameter, tt)) {
-            types.push(eYo.t3.Expr.Parameter_star)
+          if (goog.array.contains(eYo.t3.expr.check.Parameter, tt)) {
+            types.push(eYo.t3.expr.parameter_star)
           }
           return types
         }
-        return [eYo.t3.Expr.Star_expr,
-          eYo.t3.Expr.expression_star,
-          eYo.t3.Expr.Target_star,
-          eYo.t3.Expr.Parameter_star
+        return [eYo.t3.expr.star_expr,
+          eYo.t3.expr.expression_star,
+          eYo.t3.expr.target_star,
+          eYo.t3.expr.parameter_star
         ]
       }
       if(b) {
         tt = b.type
-        if (goog.array.contains(eYo.t3.Expr.Check.or_expr_all, tt)) {
-          types.push(eYo.t3.Expr.or_expr_star_star)
+        if (goog.array.contains(eYo.t3.expr.check.or_expr_all, tt)) {
+          types.push(eYo.t3.expr.or_expr_star_star)
         }
-        if (goog.array.contains(eYo.t3.Expr.Check.expression, tt)) {
-          types.push(eYo.t3.Expr.expression_star_star)
+        if (goog.array.contains(eYo.t3.expr.check.expression, tt)) {
+          types.push(eYo.t3.expr.expression_star_star)
         }
-        if (goog.array.contains(eYo.t3.Expr.Check.Parameter, tt)) {
-          types.push(eYo.t3.Expr.Parameter_star_star)
+        if (goog.array.contains(eYo.t3.expr.check.Parameter, tt)) {
+          types.push(eYo.t3.expr.parameter_star_star)
         }
         return types
       }
-      return [eYo.t3.Expr.or_expr_star_star,
-        eYo.t3.Expr.expression_star_star,
-        eYo.t3.Expr.Parameter_star_star
+      return [eYo.t3.expr.or_expr_star_star,
+        eYo.t3.expr.expression_star_star,
+        eYo.t3.expr.parameter_star_star
       ]
     }
   }

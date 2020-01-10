@@ -677,12 +677,12 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
     )
   }
   switch (type) {
-  case eYo.t3.Expr.parent_module:
+  case eYo.t3.expr.parent_module:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('.', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
     )
-  case eYo.t3.Expr.Attributeref:
+  case eYo.t3.expr.attributeref:
     switch (subtype) {
     case eYo.key.ROOT:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -698,19 +698,19 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
         goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
       )
     }
-  case eYo.t3.Expr.key_datum:
+  case eYo.t3.expr.key_datum:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN(': ', 'eyo-code'),
       eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
       goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.t3.Expr.identifier_valued:
+  case eYo.t3.expr.identifier_valued:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('= ', 'eyo-code'),
       eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
       goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.t3.Expr.Proper_slice:
+  case eYo.t3.expr.proper_slice:
     switch (subtype) {
     case eYo.key.LOWER_BOUND:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -739,7 +739,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
         goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
       )
     }
-  case eYo.t3.Expr.expression_as_name:
+  case eYo.t3.expr.expression_as_name:
     switch (subtype) {
     case eYo.key.AS:
       return goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -755,81 +755,81 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
         goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
       )
     }
-  case eYo.t3.Expr.Slicing:
+  case eYo.t3.expr.slicing:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('[', 'eyo-code'),
       eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
       eYo.do.CreateSPAN(']', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.t3.Expr.Call_expr:
-  case eYo.t3.Expr.decorator_call_expr:
+  case eYo.t3.expr.call_expr:
+  case eYo.t3.expr.decorator_call_expr:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('(', 'eyo-code'),
       eYo.do.CreateSPAN('…', 'eyo-code-placeholder'),
       eYo.do.CreateSPAN(')', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.t3.Expr.funcdef_typed:
+  case eYo.t3.expr.funcdef_typed:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('->', 'eyo-code'),
       eYo.do.CreateSPAN(' …', 'eyo-code-placeholder'),
       goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.t3.Expr.Dotted_name_as:
-  case eYo.t3.Expr.identifier_as:
+  case eYo.t3.expr.dotted_name_as:
+  case eYo.t3.expr.identifier_as:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('as', 'eyo-code-reserved'),
       eYo.do.CreateSPAN(' alias', 'eyo-code-placeholder')
     )
-  case eYo.t3.Expr.u_expr:
+  case eYo.t3.expr.u_expr:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('-', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
     )
-  case eYo.t3.Expr.imagnumber:
+  case eYo.t3.expr.imagnumber:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('j', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.msg.AT_THE_RIGHT)
     )
-  case eYo.t3.Expr.parenth_form:
+  case eYo.t3.expr.parenth_form:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('(', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.msg.AND + ' '),
       eYo.do.CreateSPAN(')', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.msg.AROUND)
     )
-  case eYo.t3.Expr.list_display:
+  case eYo.t3.expr.list_display:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('[', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.msg.AND + ' '),
       eYo.do.CreateSPAN(']', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.msg.AROUND)
     )
-  case eYo.t3.Expr.Set_display:
-  case eYo.t3.Expr.dict_display:
+  case eYo.t3.expr.set_display:
+  case eYo.t3.expr.dict_display:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('{', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.msg.AND + ' '),
       eYo.do.CreateSPAN('}', 'eyo-code'),
       goog.dom.createTextNode(' ' + eYo.msg.AROUND)
     )
-  case eYo.t3.Stmt.if_part: return Stmt1('if')
-  case eYo.t3.Stmt.elif_part: return Stmt1('elif')
-  case eYo.t3.Stmt.for_part: return Stmt1('for')
-  case eYo.t3.Stmt.while_part: return Stmt1('while')
-  case eYo.t3.Stmt.try_part: return Stmt2('try')
-  case eYo.t3.Stmt.except_part: return Stmt1('except')
-  case eYo.t3.Stmt.void_except_part:return Stmt2('except')
-  case eYo.t3.Stmt.else_part:return Stmt2('else')
-  case eYo.t3.Stmt.finally_part:return Stmt2('finally')
-  case eYo.t3.Stmt.with_part: return Stmt1('with')
-  case eYo.t3.Stmt.expression_stmt:
+  case eYo.t3.stmt.if_part: return Stmt1('if')
+  case eYo.t3.stmt.elif_part: return Stmt1('elif')
+  case eYo.t3.stmt.for_part: return Stmt1('for')
+  case eYo.t3.stmt.while_part: return Stmt1('while')
+  case eYo.t3.stmt.try_part: return Stmt2('try')
+  case eYo.t3.stmt.except_part: return Stmt1('except')
+  case eYo.t3.stmt.void_except_part:return Stmt2('except')
+  case eYo.t3.stmt.else_part:return Stmt2('else')
+  case eYo.t3.stmt.finally_part:return Stmt2('finally')
+  case eYo.t3.stmt.with_part: return Stmt1('with')
+  case eYo.t3.stmt.expression_stmt:
     return goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('#', 'eyo-code-reserved'),
       eYo.do.CreateSPAN(' comment', 'eyo-code-placeholder')
     )
-  case eYo.t3.Stmt.Assignment_stmt:
+  case eYo.t3.stmt.assignment_stmt:
     return goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-placeholder',
       goog.dom.createTextNode('name'),
       eYo.do.CreateSPAN(' = ', 'eyo-code-reserved'),
@@ -1006,26 +1006,26 @@ eYo.MenuManager.prototype.populate_replace_parent = function (brick, model) {
 eYo.MenuManager.prototype.populate_before_after = function (brick) {
   // Disable undo registration for a while
   var Ts = [
-    eYo.t3.Stmt.if_part,
-    eYo.t3.Stmt.elif_part,
-    eYo.t3.Stmt.for_part,
-    eYo.t3.Stmt.while_part,
-    eYo.t3.Stmt.try_part,
-    eYo.t3.Stmt.except_part,
-    eYo.t3.Stmt.void_except_part,
-    eYo.t3.Stmt.else_part,
-    eYo.t3.Stmt.finally_part,
-    eYo.t3.Stmt.with_part
-    // eYo.t3.Stmt.decorator_stmt,
-    // eYo.t3.Stmt.funcdef_part,
-    // eYo.t3.Stmt.Classdef_part,
-    // eYo.t3.Stmt.import_stmt,
+    eYo.t3.stmt.if_part,
+    eYo.t3.stmt.elif_part,
+    eYo.t3.stmt.for_part,
+    eYo.t3.stmt.while_part,
+    eYo.t3.stmt.try_part,
+    eYo.t3.stmt.except_part,
+    eYo.t3.stmt.void_except_part,
+    eYo.t3.stmt.else_part,
+    eYo.t3.stmt.finally_part,
+    eYo.t3.stmt.with_part
+    // eYo.t3.stmt.decorator_stmt,
+    // eYo.t3.stmt.funcdef_part,
+    // eYo.t3.stmt.classdef_part,
+    // eYo.t3.stmt.import_stmt,
   ]
   var Us = [
-    eYo.t3.Stmt.Comment_any, // defined
-    eYo.t3.Stmt.Assignment_stmt,
-    eYo.t3.Stmt.print_stmt, // JL defined?
-    eYo.t3.Stmt.Builtin__input_stmt// JL defined?
+    eYo.t3.stmt.comment_any, // defined
+    eYo.t3.stmt.assignment_stmt,
+    eYo.t3.stmt.print_stmt, // JL defined?
+    eYo.t3.stmt.builtin__input_stmt// JL defined?
   ]
   var /** !eYo.magnet */ m4t, sep
   var F_after = /** @suppress{accessControls} */ (targetM4t, type) => {
@@ -1107,36 +1107,36 @@ eYo.MenuManager.prototype.populate_movable_parent = function (brick) {
     }
   }
   F([
-    eYo.t3.Expr.u_expr,
-    [eYo.t3.Expr.Call_expr, eYo.key.ROOT],
-    eYo.t3.Expr.Slicing,
-    [eYo.t3.Expr.Attributeref, eYo.key.ATTRIBUTE],
-    [eYo.t3.Expr.Attributeref, eYo.key.ROOT],
-    [eYo.t3.Expr.decorator_call_expr, eYo.key.NAME],
-    eYo.t3.Expr.imagnumber
+    eYo.t3.expr.u_expr,
+    [eYo.t3.expr.call_expr, eYo.key.ROOT],
+    eYo.t3.expr.slicing,
+    [eYo.t3.expr.attributeref, eYo.key.ATTRIBUTE],
+    [eYo.t3.expr.attributeref, eYo.key.ROOT],
+    [eYo.t3.expr.decorator_call_expr, eYo.key.NAME],
+    eYo.t3.expr.imagnumber
   ], true)
   F([
-    [eYo.t3.Expr.expression_as_name, eYo.key.AS],
-    [eYo.t3.Expr.expression_as_name, eYo.key.EXPRESSION]
+    [eYo.t3.expr.expression_as_name, eYo.key.AS],
+    [eYo.t3.expr.expression_as_name, eYo.key.EXPRESSION]
   ])
   this.shouldSeparateInsert()
   this.shouldSeparateRemove()
   F([
-    eYo.t3.Expr.parenth_form,
-    eYo.t3.Expr.list_display,
-    eYo.t3.Expr.Set_display,
-    eYo.t3.Expr.dict_display,
-    [eYo.t3.Expr.funcdef_part, eYo.key.DEFINITION]
+    eYo.t3.expr.parenth_form,
+    eYo.t3.expr.list_display,
+    eYo.t3.expr.set_display,
+    eYo.t3.expr.dict_display,
+    [eYo.t3.expr.funcdef_part, eYo.key.DEFINITION]
   ], true)
   F([
-    eYo.t3.Expr.parent_module,
-    eYo.t3.Expr.Dotted_name_as,
-    eYo.t3.Expr.identifier_as,
-    [eYo.t3.Expr.key_datum, eYo.key.NAME],
-    [eYo.t3.Expr.identifier, eYo.key.NAME],
-    [eYo.t3.Expr.Proper_slice, eYo.key.UPPER_BOUND],
-    [eYo.t3.Expr.Proper_slice, eYo.key.STRIDE],
-    [eYo.t3.Expr.Proper_slice, eYo.key.LOWER_BOUND]
+    eYo.t3.expr.parent_module,
+    eYo.t3.expr.dotted_name_as,
+    eYo.t3.expr.identifier_as,
+    [eYo.t3.expr.key_datum, eYo.key.NAME],
+    [eYo.t3.expr.identifier, eYo.key.NAME],
+    [eYo.t3.expr.proper_slice, eYo.key.UPPER_BOUND],
+    [eYo.t3.expr.proper_slice, eYo.key.STRIDE],
+    [eYo.t3.expr.proper_slice, eYo.key.LOWER_BOUND]
   ])
 }
 

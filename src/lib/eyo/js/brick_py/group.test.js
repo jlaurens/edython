@@ -19,10 +19,10 @@ describe('Simple statement and group', function () {
 
 describe ('with_part', function () {
   it (`Basic`, function () {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.with_part)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.with_part)
     eYo.Test.Brick(d, 'with_part')
     eYo.Test.Code(d, 'with <MISSING INPUT>:\n    <MISSING STATEMENT>')
-    var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
+    var dd = eYo.Test.new_brick(eYo.t3.expr.identifier)
     dd.Target_p = 'abc'
     eYo.Test.list_connect(d, 'with', dd)
     eYo.Test.Code(d, 'with abc:\n    <MISSING STATEMENT>')
@@ -54,10 +54,10 @@ describe('for_part', function() {
     eYo.Test.tearItDown()
   })
   // it(`for_part + else_part`, function() {
-  //   var d = eYo.Test.new_brick(eYo.t3.Stmt.for_part)
+  //   var d = eYo.Test.new_brick(eYo.t3.stmt.for_part)
   //   eYo.Test.Brick(d, 'for_part')
   //   eYo.Test.Code(d, 'for <MISSING INPUT> in <MISSING INPUT>:\n    <MISSING STATEMENT>')
-  //   var dd = eYo.Test.new_brick(eYo.t3.Stmt.else_part)
+  //   var dd = eYo.Test.new_brick(eYo.t3.stmt.else_part)
   //   eYo.Test.Brick(dd, 'else_part')
   //   eYo.Test.Code(dd, 'else:\n    <MISSING STATEMENT>')
   //   chai.assert(d.footConnect(dd))

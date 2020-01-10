@@ -32,7 +32,7 @@ eYo.provide('brick.math')
     var key = 'math__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Expr.Call_expr,
+      type: eYo.t3.expr.call_expr,
       data: {
         name: name,
         holder: 'math',
@@ -45,7 +45,7 @@ eYo.provide('brick.math')
     var key = 'math__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Expr.Attributeref,
+      type: eYo.t3.expr.attributeref,
       data: {
         name: name,
         holder: 'math',
@@ -56,7 +56,7 @@ eYo.provide('brick.math')
   }
 eYo.Library.DATA.Basic_math__module = [
   {
-    type: eYo.t3.Stmt.import_stmt,
+    type: eYo.t3.stmt.import_stmt,
     data: {
       variant: eYo.key.FROM_MODULE_IMPORT_STAR,
       from: 'math'
@@ -116,7 +116,7 @@ eYo.Library.DATA.Basic_math__module = [
     var key = 'math__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Expr.Call_expr,
+      type: eYo.t3.expr.call_expr,
       data: {
         name: name,
         holder: 'math',
@@ -129,7 +129,7 @@ eYo.Library.DATA.Basic_math__module = [
     var key = 'math__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Expr.Attributeref,
+      type: eYo.t3.expr.attributeref,
       data: {
         name: name,
         holder: 'math',
@@ -140,7 +140,7 @@ eYo.Library.DATA.Basic_math__module = [
   }
   eYo.Library.DATA.math__module = [
     {
-      type: eYo.t3.Stmt.import_stmt,
+      type: eYo.t3.stmt.import_stmt,
       data: {
         variant: eYo.key.IMPORT
       },
@@ -148,7 +148,7 @@ eYo.Library.DATA.Basic_math__module = [
         import_module: {
           slots: {
             O: {
-              type: eYo.t3.Expr.identifier,
+              type: eYo.t3.expr.identifier,
               data: 'math',
             },
           },
@@ -213,9 +213,9 @@ goog.mixin(eYo.tooltip.Title, {
   math__import_stmt: 'Importer le module math',
 })
 
-eYo.brick.math.T3s = [
-  eYo.t3.Stmt.math__import_stmt,
-  eYo.t3.Expr.math__call_expr,
-  eYo.t3.Stmt.math__call_stmt,
-  eYo.t3.Expr.math__const
+eYo.brick.math.t3s = [
+  eYo.t3.stmt.math__import_stmt,
+  eYo.t3.expr.math__call_expr,
+  eYo.t3.stmt.math__call_stmt,
+  eYo.t3.expr.math__const
 ]

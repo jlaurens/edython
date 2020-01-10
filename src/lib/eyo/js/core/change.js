@@ -16,7 +16,7 @@
  * @constructor
  * @param{Object} owner
  */
-eYo.c9r.Owned.makeSubclass('Change', {
+eYo.c9r.Owned.makeInheritedC9r('Change', {
   init () {
     this.reset()
   },

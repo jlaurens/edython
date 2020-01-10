@@ -21,7 +21,7 @@ eYo.forwardDeclare('Desk')
  * @param {eYo.Desk} desk -  the owning desk.
  * @constructor
  */
-eYo.c9r.Owned.makeSubclass('Pane', {
+eYo.c9r.Owned.makeInheritedC9r('Pane', {
   computed: {
     /**
      * The desk of the receiver.

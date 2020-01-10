@@ -21,9 +21,9 @@ eYo.require('expr.List')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubclass(eYo.t3.Expr.non_void_identifier_list, {
+eYo.expr.List.makeInheritedC9r(eYo.t3.expr.non_void_identifier_list, {
   list: {
-    check: eYo.t3.Expr.Check.non_void_identifier_list,
+    check: eYo.t3.expr.check.non_void_identifier_list,
     presep: ',',
     mandatory: 1
   }
@@ -33,7 +33,7 @@ eYo.expr.List.makeSubclass(eYo.t3.Expr.non_void_identifier_list, {
  * Class for a Delegate, global_stmt.
  * For edython.
  */
-eYo.stmt.makeClass(eYo.t3.stmt.global_stmt, {
+eYo.stmt.makeC9r(eYo.t3.stmt.global_stmt, {
   data: {
     variant: {
       all: [
@@ -62,12 +62,12 @@ eYo.stmt.makeClass(eYo.t3.stmt.global_stmt, {
       },
       fromType (type) /** @suppress {globalThis} */ {
         this.set({
-          [eYo.t3.Stmt.pass_stmt]: eYo.key.PASS,
-          [eYo.t3.Stmt.Continue_stmt]: eYo.key.CONTINUE,[eYo.t3.stmt.Break_stmt]: eYo.key.BREAK,
-          [eYo.t3.Stmt.global_stmt]: eYo.key.GLOBAL,
-          [eYo.t3.Stmt.nonlocal_stmt]: eYo.key.NONLOCAL,
-          [eYo.t3.Stmt.del_stmt]: eYo.key.DEL,
-          [eYo.t3.Stmt.return_stmt]: eYo.key.RETURN
+          [eYo.t3.stmt.pass_stmt]: eYo.key.PASS,
+          [eYo.t3.stmt.continue_stmt]: eYo.key.CONTINUE,[eYo.t3.stmt.Break_stmt]: eYo.key.BREAK,
+          [eYo.t3.stmt.global_stmt]: eYo.key.GLOBAL,
+          [eYo.t3.stmt.nonlocal_stmt]: eYo.key.NONLOCAL,
+          [eYo.t3.stmt.del_stmt]: eYo.key.DEL,
+          [eYo.t3.stmt.return_stmt]: eYo.key.RETURN
         } [type])
       }
     }
@@ -80,7 +80,7 @@ eYo.stmt.makeClass(eYo.t3.stmt.global_stmt, {
   slots: {
     identifiers: {
       order: 1,
-      promise: eYo.t3.Expr.non_void_identifier_list,
+      promise: eYo.t3.expr.non_void_identifier_list,
       xml: {
         key: 'List',
         save (element) /** @suppress {globalThis} */ {
@@ -99,7 +99,7 @@ eYo.stmt.makeClass(eYo.t3.stmt.global_stmt, {
     },
     del: {
       order: 2,
-      wrap: eYo.t3.Expr.Target_list,
+      wrap: eYo.t3.expr.target_list,
       xml: {
         key: 'List',
         save (element) /** @suppress {globalThis} */ {
@@ -116,7 +116,7 @@ eYo.stmt.makeClass(eYo.t3.stmt.global_stmt, {
     },
     return: {
       order: 3,
-      wrap: eYo.t3.Expr.optional_expression_list,
+      wrap: eYo.t3.expr.optional_expression_list,
       xml: {
         key: 'List',
         save (element) /** @suppress {globalThis} */ {
@@ -155,13 +155,13 @@ eYo.stmt.global_stmt.prototype.getType = eYo.c9r.decorateChange(
   function () {
     this.setupType(
       {
-        [eYo.key.PASS]: eYo.t3.Stmt.pass_stmt,
-        [eYo.key.CONTINUE]: eYo.t3.Stmt.Continue_stmt,
-        [eYo.key.BREAK]: eYo.t3.Stmt.Break_stmt,
-        [eYo.key.GLOBAL]: eYo.t3.Stmt.global_stmt,
-        [eYo.key.NONLOCAL]: eYo.t3.Stmt.nonlocal_stmt,
-        [eYo.key.DEL]: eYo.t3.Stmt.del_stmt,
-        [eYo.key.RETURN]: eYo.t3.Stmt.return_stmt
+        [eYo.key.PASS]: eYo.t3.stmt.pass_stmt,
+        [eYo.key.CONTINUE]: eYo.t3.stmt.continue_stmt,
+        [eYo.key.BREAK]: eYo.t3.stmt.break_stmt,
+        [eYo.key.GLOBAL]: eYo.t3.stmt.global_stmt,
+        [eYo.key.NONLOCAL]: eYo.t3.stmt.nonlocal_stmt,
+        [eYo.key.DEL]: eYo.t3.stmt.del_stmt,
+        [eYo.key.RETURN]: eYo.t3.stmt.return_stmt
       } [this.Variant_p]
     )
     return this.type

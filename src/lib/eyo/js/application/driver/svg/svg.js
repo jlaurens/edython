@@ -37,7 +37,7 @@ goog.forwardDeclare('goog.userAgent')
  * The Svg delegate.
  * @constructor
  */
-eYo.dom.Dlgt.makeSubclass(eYo.svg)
+eYo.dom.Dlgt.makeInheritedC9r(eYo.svg)
 
 /**
  * @name {eYo.svg.Dlgt}
@@ -69,7 +69,7 @@ eYo.svg.makeMngr({
         if (dom && dom.svg) {
           f && f.apply(object, rest)
           dom.svg = null
-          cls.superProto_.disposeUI.apply(object, ...rest)
+          cls.SuperC9r_p.disposeUI.apply(object, ...rest)
         }
       }
     },
@@ -192,10 +192,10 @@ eYo.svg.Dflt_p.addTooltip = function (el, title, options) {
  */
 eYo.svg.getCssClassForText = function (txt) {
   switch (eYo.t3.profile.get(txt, null).raw) {
-  case eYo.t3.Expr.reserved_identifier:
-  case eYo.t3.Expr.reserved_keyword:
+  case eYo.t3.expr.reserved_identifier:
+  case eYo.t3.expr.reserved_keyword:
     return 'eyo-code-reserved'
-  case eYo.t3.Expr.Builtin__name:
+  case eYo.t3.expr.builtin__name:
     return 'eyo-code-builtin'
   default:
     return 'eyo-code'

@@ -24,7 +24,7 @@ eYo.forwardDeclare('Graphic')
 eYo.forwardDeclare('Variable')
 eYo.forwardDeclare('Workspace')
 
-goog.forwardDeclare('goog.array');
+goog.forwardDeclare('goog.array')
 
 /**
  * Class for a desk.
@@ -32,7 +32,7 @@ goog.forwardDeclare('goog.array');
  * @param {eYo.app.Dflt|Object} owner Owner application.
  * @constructor
  */
-eYo.c9r.Owned.makeSubclass(eYo, 'Desk', {
+eYo.makeInheritedC9r('Desk', {
   owned: {
     /**
      * Terminal.
@@ -92,7 +92,7 @@ eYo.c9r.Owned.makeSubclass(eYo, 'Desk', {
 /**
  * Make the user interface.
  */
-eYo.Desk.prototype.forEachPane = function (f) {
+eYo.Desk_p.forEachPane = function (f) {
   [
     this.workspace,
     this.terminal,
@@ -105,7 +105,7 @@ eYo.Desk.prototype.forEachPane = function (f) {
 /**
  * Update the metrics and place the components accordingly.
  */
-eYo.Desk.prototype.layout = function() {
+eYo.Desk_p.layout = function() {
   this.updateMetrics()
   this.place()
 }
@@ -122,7 +122,7 @@ eYo.Desk.prototype.layout = function() {
  * 2) Then the board dimensions.
  
  */
-eYo.Desk.prototype.updateMetrics = function() {
+eYo.Desk_p.updateMetrics = function() {
   this.ui_driver.updateMetrics(this)
   this.forEachPane(p => p.updateMetrics())
 }
@@ -130,7 +130,7 @@ eYo.Desk.prototype.updateMetrics = function() {
 /**
  * Place the panes.
  */
-eYo.Desk.prototype.place = function() {
+eYo.Desk_p.place = function() {
   this.ui_driver.place(this)
   this.forEachPane(p => p.place())
 }
@@ -140,7 +140,7 @@ eYo.Desk.prototype.place = function() {
  * @param {Element}
  * @return {eYo.Where}
  */
-eYo.Desk.prototype.xyElementInDesk = function(element) {
+eYo.Desk_p.xyElementInDesk = function(element) {
   return this.ui_driver.whereElement(this, element)
 }
 
@@ -149,6 +149,6 @@ eYo.Desk.prototype.xyElementInDesk = function(element) {
  * because something has changed (e.g. scroll position, window size).
  * @private
  */
-eYo.Desk.prototype.updateScreenCalculations_ = function() {
+eYo.Desk_p.updateScreenCalculations_ = function() {
   this.workspace.recordDeleteAreas()
 }

@@ -15,7 +15,7 @@
  * Class for a Delegate, comment_stmt.
  * For edython.
  */
-eYo.stmt.makeClass(eYo.t3.stmt.Comment_stmt, {
+eYo.stmt.makeC9r(eYo.t3.stmt.comment_stmt, {
   data: {
     variant: {
       all: [
@@ -30,7 +30,7 @@ eYo.stmt.makeClass(eYo.t3.stmt.Comment_stmt, {
         b3k.comment_d.requiredIncog = after !== eYo.key.BLANK
       },
       fromType (type) /** @suppress {globalThis} */ {
-        if (type === eYo.t3.Stmt.Blank_stmt) {
+        if (type === eYo.t3.stmt.blank_stmt) {
           // expression statement defaults to a python comment line
           // but it should change because of the 'comment_stmt' below
           this.doChange(eYo.key.BLANK)
@@ -73,14 +73,14 @@ eYo.stmt.makeClass(eYo.t3.stmt.Comment_stmt, {
      * @property {Boolean} whether the receiver is a comment.
      */
     isComment () {
-      return this.type === eYo.t3.Stmt.Comment_stmt
+      return this.type === eYo.t3.stmt.comment_stmt
     },
     /**
      * @readonly
      * @property {Boolean} whether the receiver is a blank statement: a line consisting of only white spaces, if any.
      */
     isBlank () {
-      return this.type === eYo.t3.Stmt.Blank_stmt
+      return this.type === eYo.t3.stmt.blank_stmt
     },
     /**
      * @readonly

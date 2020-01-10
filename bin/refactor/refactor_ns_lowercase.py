@@ -20,7 +20,7 @@ def refactor():
     lines = []
     with p.open() as f:
       for l in f.readlines():
-        m = re.search(r'\.prototype\.(?=[A-Z].*=.*eYo.do.nothing)', l)
+        m = re.search(r't3\.stmt\.(?=[A-Z])', l)
         if m:
           i = m.span(0)[1]
           l = l[:i] + l[i].lower() + l[i+1:]

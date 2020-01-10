@@ -25,7 +25,7 @@ eYo.forwardDeclare('slot')
  * @param {string} [One] indentation, defaults to 4 spaces.
  * @constructor
  */
-eYo.py.makeClass('Exporter', {
+eYo.py.makeC9r('Exporter', {
   init (oneIndent) {
     this.oneIndent = oneIndent || this.constructor.indent
   },
@@ -124,7 +124,7 @@ eYo.py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
       this.use_print = true
     }
   }
-  if (brick.type === eYo.t3.Stmt.import_stmt && !brick.disabled) {
+  if (brick.type === eYo.t3.stmt.import_stmt && !brick.disabled) {
     var importedModules = brick.importedModules
     if (importedModules && importedModules['Turtle']) {
       this.use_turtle = true

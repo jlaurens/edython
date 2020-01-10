@@ -419,7 +419,7 @@ eYo.fcls.Brick._p.parentSet = eYo.do.nothing
  */
 eYo.fcls.Brick._p.parentWillChange = eYo.do.nothing
 
-eYo.c9r.AppendToMethod(eYo.brick.Dflt_p, 'parentWillChange', function (after) {
+eYo.c9r.appendToMethod(eYo.brick.Dflt_p, 'parentWillChange', function (after) {
   this.ui_driver.parentWillChange(this, after)
 })
 
@@ -430,7 +430,7 @@ eYo.c9r.AppendToMethod(eYo.brick.Dflt_p, 'parentWillChange', function (after) {
  */
 eYo.fcls.Brick._p.parentDidChange = eYo.do.nothing
 
-eYo.c9r.AppendToMethod(eYo.brick.Dflt_p, 'parentDidChange', function (before) {
+eYo.c9r.appendToMethod(eYo.brick.Dflt_p, 'parentDidChange', function (before) {
   this.ui_driver.parentDidChange(this, before)
 })
 

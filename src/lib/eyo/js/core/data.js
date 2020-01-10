@@ -146,7 +146,7 @@ eYo.data.Dlgt_p.initInstance = function (object) {
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.data.makeClass('Dflt', eYo.c9r.Owned, {
+eYo.data.makeC9r('Dflt', eYo.c9r.Owned, {
   init (brick, key, model) {
     eYo.ParameterAssert(brick, 'Missing brick')
     eYo.ParameterAssert(key, 'Missing key')

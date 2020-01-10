@@ -25,7 +25,7 @@ goog.forwardDeclare('goog.dom')
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Literal', {
+eYo.expr.Dflt.makeInheritedC9r('Literal', {
   xml: {
     attr: 'literal',
   },
@@ -44,7 +44,7 @@ eYo.expr.Dflt.makeSubclass('Literal', {
  * @param {Object} [opt]
  */
 eYo.expr.Literal.prototype.saveData = function (element, opt) {
-  eYo.expr.Literal.superProto_.SaveData.Apply(this, arguments)
+  eYo.expr.Literal.SuperC9r_p.SaveData.Apply(this, arguments)
   if (this.Value_p == '') {
     element.setAttribute(eYo.key.PLACEHOLDER, this.value_d.model.placeholder)
   }
@@ -54,16 +54,16 @@ eYo.expr.Literal.prototype.saveData = function (element, opt) {
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.expr.Literal.makeSubclass('Numberliteral', {
+eYo.expr.Literal.makeInheritedC9r('Numberliteral', {
   data: {
     type: {
       all: [
-        eYo.t3.Expr.unset,
-        eYo.t3.Expr.integer,
-        eYo.t3.Expr.floatnumber,
-        eYo.t3.Expr.imagnumber
+        eYo.t3.expr.unset,
+        eYo.t3.expr.integer,
+        eYo.t3.expr.floatnumber,
+        eYo.t3.expr.imagnumber
       ],
-      init: eYo.t3.Expr.integer,
+      init: eYo.t3.expr.integer,
       noUndo: true,
       xml: false
     },
@@ -74,13 +74,13 @@ eYo.expr.Literal.makeSubclass('Numberliteral', {
       validate (after) /** @suppress {globalThis} */ {
         var types = this.brick.type_d.getAll()
         var p5e = eYo.t3.profile.get(after, null)
-        return types.indexOf(p5e.expr) >= 0 || p5e.raw === eYo.t3.Expr.unset ? after : eYo.INVALID
+        return types.indexOf(p5e.expr) >= 0 || p5e.raw === eYo.t3.expr.unset ? after : eYo.INVALID
       },
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var type = after
           ? eYo.t3.profile.get(after, null).expr
-          : eYo.t3.Expr.integer
+          : eYo.t3.expr.integer
         this.brick.Type_p = type
       },
       synchronize: true,
@@ -126,15 +126,15 @@ eYo.expr.numberliteral.prototype.getBaseType = function () {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.expr.Literal.makeSubclass('Shortliteral', {
+eYo.expr.Literal.makeInheritedC9r('Shortliteral', {
   data: {
     subtype: {
       all: [
-        eYo.t3.Expr.Shortstringliteral,
-        eYo.t3.Expr.Shortformattedliteral,
-        eYo.t3.Expr.Shortbytesliteral
+        eYo.t3.expr.shortstringliteral,
+        eYo.t3.expr.shortformattedliteral,
+        eYo.t3.expr.shortbytesliteral
       ],
-      init: eYo.t3.Expr.Shortstringliteral,
+      init: eYo.t3.expr.shortstringliteral,
       synchronize: /** @this{eYo.data.Dflt} */ function (after) {
         // synchronize the placeholder text
         var p = this.Content_p
@@ -181,7 +181,7 @@ eYo.expr.Literal.makeSubclass('Shortliteral', {
     content: { // not saved
       placeholder () /** @suppress {globalThis} */ {
         var subtype = this.brick.Subtype_p
-        return subtype === eYo.t3.Expr.Shortbytesliteral || subtype === eYo.t3.Expr.longbytesliteral
+        return subtype === eYo.t3.expr.shortbytesliteral || subtype === eYo.t3.expr.longbytesliteral
           ? eYo.msg.placeholder.BYTES : eYo.msg.placeholder.STRING
       },
       didChange (builtin) /** @suppress {globalThis} */ {
@@ -215,10 +215,10 @@ eYo.expr.Literal.makeSubclass('Shortliteral', {
           }
           return false
         }
-        if (F(eYo.xre.ShortstringliteralSingle, eYo.t3.Expr.shortstringliteral, eYo.t3.Expr.shortformattedliteral) ||
-        F(eYo.xre.ShortstringliteralDouble, eYo.t3.Expr.shortstringliteral, eYo.t3.Expr.shortformattedliteral) ||
-        F(eYo.xre.ShortbytesliteralSingle, eYo.t3.Expr.shortbytesliteral) ||
-        F(eYo.xre.ShortbytesliteralDouble, eYo.t3.Expr.shortbytesliteral)) {
+        if (F(eYo.xre.ShortstringliteralSingle, eYo.t3.expr.shortstringliteral, eYo.t3.expr.shortformattedliteral) ||
+        F(eYo.xre.ShortstringliteralDouble, eYo.t3.expr.shortstringliteral, eYo.t3.expr.shortformattedliteral) ||
+        F(eYo.xre.ShortbytesliteralSingle, eYo.t3.expr.shortbytesliteral) ||
+        F(eYo.xre.ShortbytesliteralDouble, eYo.t3.expr.shortbytesliteral)) {
           this.brick.removeError(eYo.key.VALUE)
         } else if (after && after.length) {
           this.brick.setError(eYo.key.VALUE, 'Bad string|bytes literal: ' +
@@ -234,7 +234,7 @@ eYo.expr.Literal.makeSubclass('Shortliteral', {
         }
       },
       fromType (type) /** @suppress {globalThis} */ {
-        if (type === eYo.t3.Expr.Shortformattedliteral) {
+        if (type === eYo.t3.expr.shortformattedliteral) {
           this.doChange(`f''`)
         } else {
           this.doChange(`''`)
@@ -303,10 +303,10 @@ eYo.expr.Shortliteral.prototype.validateComponents = function(kvargs) {
   var delimiter = kvargs.delimiter || this.Delimiter_p
   var content = kvargs.content || this.Content_p
   var value = `${prefix}${delimiter}${content}${delimiter}`
-  return (!!XRegExp.exec(value, eYo.xre.ShortbytesliteralSingle) && eYo.t3.Expr.shortbytesliteral) ||
-  (!!XRegExp.exec(value, eYo.xre.ShortbytesliteralDouble) && eYo.t3.Expr.shortbytesliteral) ||
-  (!!XRegExp.exec(value, eYo.xre.ShortstringliteralSingle) && eYo.t3.Expr.shortstringliteral) ||
-  (!!XRegExp.exec(value, eYo.xre.ShortstringliteralDouble) && eYo.t3.Expr.shortstringliteral)
+  return (!!XRegExp.exec(value, eYo.xre.ShortbytesliteralSingle) && eYo.t3.expr.shortbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.xre.ShortbytesliteralDouble) && eYo.t3.expr.shortbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.xre.ShortstringliteralSingle) && eYo.t3.expr.shortstringliteral) ||
+  (!!XRegExp.exec(value, eYo.xre.ShortstringliteralDouble) && eYo.t3.expr.shortstringliteral)
 }
 
 /**
@@ -392,15 +392,15 @@ eYo.expr.Shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.expr.Shortliteral.makeSubclass('Longliteral', {
+eYo.expr.Shortliteral.makeInheritedC9r('Longliteral', {
   data: {
     subtype: {
       all: [
-        eYo.t3.Expr.longstringliteral,
-        eYo.t3.Expr.longformattedliteral,
-        eYo.t3.Expr.longbytesliteral
+        eYo.t3.expr.longstringliteral,
+        eYo.t3.expr.longformattedliteral,
+        eYo.t3.expr.longbytesliteral
       ],
-      init: eYo.t3.Expr.longstringliteral
+      init: eYo.t3.expr.longstringliteral
     },
     delimiter: {
       all: ["'''", '"""'],
@@ -423,10 +423,10 @@ eYo.expr.Shortliteral.makeSubclass('Longliteral', {
           }
           return false
         }
-        if (F(eYo.xre.longstringliteralSingle, eYo.t3.Expr.longstringliteral, eYo.t3.Expr.longformattedliteral) ||
-        F(eYo.xre.longstringliteralDouble, eYo.t3.Expr.longstringliteral, eYo.t3.Expr.longformattedliteral) ||
-        F(eYo.xre.longbytesliteralSingle, eYo.t3.Expr.longbytesliteral) ||
-        F(eYo.xre.longbytesliteralDouble, eYo.t3.Expr.longbytesliteral)) {
+        if (F(eYo.xre.longstringliteralSingle, eYo.t3.expr.longstringliteral, eYo.t3.expr.longformattedliteral) ||
+        F(eYo.xre.longstringliteralDouble, eYo.t3.expr.longstringliteral, eYo.t3.expr.longformattedliteral) ||
+        F(eYo.xre.longbytesliteralSingle, eYo.t3.expr.longbytesliteral) ||
+        F(eYo.xre.longbytesliteralDouble, eYo.t3.expr.longbytesliteral)) {
           this.brick.removeError(eYo.key.VALUE)
         } else if (after && after.length) {
           this.brick.setError(eYo.key.VALUE, 'Bad string|bytes literal: ' +
@@ -434,7 +434,7 @@ eYo.expr.Shortliteral.makeSubclass('Longliteral', {
         }
       },
       fromType (type) /** @suppress {globalThis} */ {
-        if (type === eYo.t3.Expr.longformattedliteral) {
+        if (type === eYo.t3.expr.longformattedliteral) {
           this.doChange(`f''''''`)
         } else {
           this.doChange(`''''''`)
@@ -461,10 +461,10 @@ eYo.expr.longliteral.prototype.validateComponents = function(kvargs) {
   var delimiter = kvargs.delimiter || this.Delimiter_p
   var content = kvargs.content || this.Content_p
   var value = `${prefix}${delimiter}${content}${delimiter}`
-  return (!!XRegExp.exec(value, eYo.xre.longbytesliteralSingle) && eYo.t3.Expr.longbytesliteral) ||
-  (!!XRegExp.exec(value, eYo.xre.longbytesliteralDouble) && eYo.t3.Expr.longbytesliteral) ||
-  (!!XRegExp.exec(value, eYo.xre.longstringliteralSingle) && eYo.t3.Expr.longstringliteral) ||
-  (!!XRegExp.exec(value, eYo.xre.longstringliteralDouble) && eYo.t3.Expr.longstringliteral)
+  return (!!XRegExp.exec(value, eYo.xre.longbytesliteralSingle) && eYo.t3.expr.longbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.xre.longbytesliteralDouble) && eYo.t3.expr.longbytesliteral) ||
+  (!!XRegExp.exec(value, eYo.xre.longstringliteralSingle) && eYo.t3.expr.longstringliteral) ||
+  (!!XRegExp.exec(value, eYo.xre.longstringliteralDouble) && eYo.t3.expr.longstringliteral)
 }
 
 ;[
@@ -475,8 +475,8 @@ eYo.expr.longliteral.prototype.validateComponents = function(kvargs) {
   eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.longliteral))
 })
 
-eYo.expr.Literal.T3s = [
-  eYo.t3.Expr.Shortliteral,
-  eYo.t3.Expr.longliteral,
-  eYo.t3.Expr.numberliteral
+eYo.expr.Literal.t3s = [
+  eYo.t3.expr.shortliteral,
+  eYo.t3.expr.longliteral,
+  eYo.t3.expr.numberliteral
 ]

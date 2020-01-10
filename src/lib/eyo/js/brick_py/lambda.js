@@ -42,12 +42,12 @@ eYo.provide('brick.parameter')
 // goog.inherits(eYo.consolidator.Parameter, eYo.consolidator.List)
 
 // eYo.consolidator.Parameter.data = {
-//   check: eYo.t3.Expr.Check.primary,
+//   check: eYo.t3.expr.check.primary,
 //   mandatory: 0,
 //   presep: ',',
 // }
 
-eYo.consolidator.List.makeSubclass('Parameter', {
+eYo.consolidator.List.makeInheritedC9r('Parameter', {
   list: {
     check: null,
     mandatory: 0,
@@ -64,7 +64,7 @@ eYo.consolidator.List.makeSubclass('Parameter', {
 eYo.consolidator.Parameter.prototype.consolidate_connected = function (io) {
   if (io.i + 1 === io.list.length) {
     var check = io.m4t.target.check_
-    if (!check || goog.array.contains(check, eYo.t3.Expr.Parameter_star_star)) {
+    if (!check || goog.array.contains(check, eYo.t3.expr.parameter_star_star)) {
       // do not add a separator after
       return false
     }
@@ -109,13 +109,13 @@ eYo.consolidator.Parameter.prototype.doCleanup = (() => {
     }
     var check = target.check_
     if (check) {
-      if (goog.array.contains(check, eYo.t3.Expr.Star)) {
+      if (goog.array.contains(check, eYo.t3.expr.star)) {
         return Type.star
-      } else if (goog.array.contains(check, eYo.t3.Expr.Parameter_star)) {
+      } else if (goog.array.contains(check, eYo.t3.expr.parameter_star)) {
         return Type.star
-      } else if (goog.array.contains(check, eYo.t3.Expr.Parameter_star_star)) {
+      } else if (goog.array.contains(check, eYo.t3.expr.parameter_star_star)) {
         return Type.star_star
-      } else if (goog.array.contains(check, eYo.t3.Expr.identifier_valued)) {
+      } else if (goog.array.contains(check, eYo.t3.expr.identifier_valued)) {
         return Type.default
       } else {
         return Type.parameter
@@ -277,18 +277,18 @@ eYo.consolidator.Parameter.prototype.getCheck = (() => {
     }
     out = []
     if (can_parameter) {
-      out = eYo.t3.Expr.Check.Parameter.Slice()
+      out = eYo.t3.expr.check.Parameter.Slice()
     }
     if (can_default) {
-      out.push(eYo.t3.Expr.identifier_valued)
-      out.push(eYo.t3.Expr.identifier_annotated_valued)
+      out.push(eYo.t3.expr.identifier_valued)
+      out.push(eYo.t3.expr.identifier_annotated_valued)
     }
     if (can_star) {
-      out.push(eYo.t3.Expr.Star)
-      out.push(eYo.t3.Expr.Parameter_star)
+      out.push(eYo.t3.expr.star)
+      out.push(eYo.t3.expr.parameter_star)
     }
     if (can_star_star) {
-      out.push(eYo.t3.Expr.Parameter_star_star)
+      out.push(eYo.t3.expr.parameter_star_star)
     }
     return (cache[K] = out)
   }
@@ -300,7 +300,7 @@ eYo.consolidator.Parameter.prototype.getCheck = (() => {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubclass('Parameter_list', {
+eYo.expr.List.makeInheritedC9r('parameter_list', {
   list: {
     consolidator: eYo.consolidator.Parameter
   }
@@ -315,7 +315,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
   var F = (modifier, flags, msg) => {
     var b3k
     eYo.events.disableWrap(() => {
-      b3k = eYo.brick.newReady(this, eYo.t3.Expr.identifier)
+      b3k = eYo.brick.newReady(this, eYo.t3.expr.identifier)
       b3k.change.wrap(() => {
         b3k.Modifier_p = modifier
         b3k.Variant_p = flags
@@ -333,7 +333,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
           mngr.addInsertChild(mngr.newMenuItem(
             content,
             () => {
-              var b3k = eYo.brick.newReady(this, eYo.t3.Expr.identifier)
+              var b3k = eYo.brick.newReady(this, eYo.t3.expr.identifier)
               eYo.events.groupWrap(() => {
                 b3k.change.wrap(() => {
                   b3k.Modifier_p = modifier
@@ -372,14 +372,14 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Lambda', {
+eYo.expr.Dflt.makeInheritedC9r('Lambda', {
   slots: {
     parameters: {
       order: 1,
       fields: {
         label: 'lambda'
       },
-      wrap: eYo.t3.Expr.Parameter_list
+      wrap: eYo.t3.expr.parameter_list
     },
     expression: {
       order: 3,
@@ -390,11 +390,11 @@ eYo.expr.Dflt.makeSubclass('Lambda', {
         var m4t = this.brick.out_m.target
         if (m4t) {
           // does the target accept general expression in lambda
-          if (m4t.check_ && m4t.check_.indexOf(eYo.t3.Expr.lambda_expr) < 0) {
-            return eYo.t3.Expr.Check.expression_nocond
+          if (m4t.check_ && m4t.check_.indexOf(eYo.t3.expr.lambda_expr) < 0) {
+            return eYo.t3.expr.check.expression_nocond
           }
         }
-        return eYo.t3.Expr.Check.expression.Concat(eYo.t3.Expr.Check.expression_nocond)
+        return eYo.t3.expr.check.expression.Concat(eYo.t3.expr.check.expression_nocond)
       }
     }
   },
@@ -406,10 +406,10 @@ eYo.expr.Dflt.makeSubclass('Lambda', {
       var nocond_in = true // nocond are accepted by default
       var targetM4t = m4tIn.target
       if (targetM4t && targetM4t.check_) {
-        cond_in = eYo.t3.Expr.Check.expression.Some(t => targetM4t.check_.indexOf(t) >= 0)
-        nocond_in = eYo.t3.Expr.Check.expression_nocond.Some(t => targetM4t.check_.indexOf(t) >= 0)
+        cond_in = eYo.t3.expr.check.expression.Some(t => targetM4t.check_.indexOf(t) >= 0)
+        nocond_in = eYo.t3.expr.check.expression_nocond.Some(t => targetM4t.check_.indexOf(t) >= 0)
       }
-      return (cond_in ? [eYo.t3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.t3.Expr.lambda_expr_nocond] : [])
+      return (cond_in ? [eYo.t3.expr.lambda_expr] : []).concat(nocond_in ? [eYo.t3.expr.lambda_expr_nocond] : [])
     }
   }
 }, true)
@@ -436,21 +436,21 @@ eYo.magnet.Dflt_p.consolidateType = function () {
   var target = m4tOut.target
   if (target) {
     // does the target accept general expression in lambda
-    nocond_only_out = target.check_ && (target.check_.indexOf(eYo.t3.Expr.lambda_expr)) < 0
+    nocond_only_out = target.check_ && (target.check_.indexOf(eYo.t3.expr.lambda_expr)) < 0
   }
   var cond_in = true // cond are accepted by default
   var nocond_in = true // nocond not accepted by default
   target = m4tIn.target
   if (target) {
     cond_in = false
-    for (var i = 0, t; (t = eYo.t3.Expr.Check.expression[++i]);) {
+    for (var i = 0, t; (t = eYo.t3.expr.check.expression[++i]);) {
       if (!target.check_ || target.check_.indexOf(t) >= 0) {
         cond_in = true
         break
       }
     }
     nocond_in = false
-    for (i = 0; (t = eYo.t3.Expr.Check.expression_nocond[++i]);) {
+    for (i = 0; (t = eYo.t3.expr.check.expression_nocond[++i]);) {
       if (!target.check_ || target.check_.indexOf(t) >= 0) {
         nocond_in = true
         break
@@ -459,14 +459,14 @@ eYo.magnet.Dflt_p.consolidateType = function () {
   }
   // better design if we use the subtype ?
   m4tIn.check = nocond_only_out
-    ? eYo.t3.Expr.Check.expression_nocond
-    : eYo.t3.Expr.Check.expression.Concat(eYo.t3.Expr.Check.expression_nocond)
+    ? eYo.t3.expr.check.expression_nocond
+    : eYo.t3.expr.check.expression.Concat(eYo.t3.expr.check.expression_nocond)
   m4tOut.check = 
-    (cond_in ? [eYo.t3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.t3.Expr.lambda_expr_nocond] : [])
+    (cond_in ? [eYo.t3.expr.lambda_expr] : []).concat(nocond_in ? [eYo.t3.expr.lambda_expr_nocond] : [])
 }
 
-eYo.brick.lambda.T3s = [
-  eYo.t3.Expr.identifier,
-  eYo.t3.Expr.Parameter_list,
-  eYo.t3.Expr.lambda
+eYo.brick.lambda.t3s = [
+  eYo.t3.expr.identifier,
+  eYo.t3.expr.parameter_list,
+  eYo.t3.expr.lambda
 ]

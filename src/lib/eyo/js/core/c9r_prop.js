@@ -287,7 +287,7 @@ eYo.c9r.PropModelHandler = (model) => {
  * @name {eYo.c9r.DlgtProp}
  * @constructor
  */
-eYo.c9r.Dlgt.makeSubclass('DlgtProp')
+eYo.c9r.Dlgt.makeInheritedC9r('DlgtProp')
 
 eYo.c9r.DlgtProp_p.makeValidate = function () {
 }
@@ -303,7 +303,7 @@ eYo.c9r.DlgtProp_p.makeValidate = function () {
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.c9r.makeClass('Prop', eYo.c9r.DlgtProp, {
+eYo.c9r.makeC9r('Prop', eYo.c9r.DlgtProp, {
   init (owner, key, model) {
     eYo.ParameterAssert(owner, 'Missing owner')
     eYo.ParameterAssert(key, 'Missing key')

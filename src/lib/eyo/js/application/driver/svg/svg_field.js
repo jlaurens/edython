@@ -257,11 +257,11 @@ eYo.svg.Field_p.setVisualAttribute = function (field) {
   if (e) {
     var f = txt => {
       switch (eYo.t3.profile.get(txt, null).raw) {
-        case eYo.t3.Expr.reserved_identifier:
-        case eYo.t3.Expr.reserved_keyword:
-        case eYo.t3.Expr.known_identifier:
+        case eYo.t3.expr.reserved_identifier:
+        case eYo.t3.expr.reserved_keyword:
+        case eYo.t3.expr.known_identifier:
           return 'eyo-code-reserved'
-        case eYo.t3.Expr.Builtin__name:
+        case eYo.t3.expr.builtin__name:
           return 'eyo-code-builtin'
         default:
           return 'eyo-code'

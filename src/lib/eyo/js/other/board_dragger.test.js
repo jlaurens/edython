@@ -1,8 +1,8 @@
 describe('Basic  board dragger', function () {
   it ('One block', function () {
     var type = `simple`
-    eYo.t3.Expr[type] = type
-    eYo.expr.Dflt.makeSubclass(type, {})
+    eYo.t3.expr[type] = type
+    eYo.expr.Dflt.makeInheritedC9r(type, {})
     Object.defineProperty(eYo.expr[type].prototype, 'isMain', {
       value: true
     })

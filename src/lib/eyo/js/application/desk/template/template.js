@@ -23,7 +23,7 @@ eYo.require('decorate')
  * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.makeClass('Template', eYo.c9r.Pane)
+eYo.makeC9r('Template', eYo.c9r.Pane)
 
 /**
  * Update the metrics of the receiver.

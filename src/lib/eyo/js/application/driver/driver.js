@@ -37,7 +37,7 @@ eYo.driver.Dlgt.eyo.makeInitInstance()
  * @name {eYo.driver.DlgtMngr}
  * @param {Function} constructor
  */
-eYo.driver.Dlgt.makeSubclass('DlgtMngr', {
+eYo.driver.Dlgt.makeInheritedC9r('DlgtMngr', {
   init () {
 //    console.warn('INIT DlgtMngr')
   },
@@ -77,7 +77,7 @@ eYo.driver.DlgtMngr_p.makeDriverClass = function (key, Super, driverModel) {
   if (!eYo.isSubclass(Super, ns.Dflt)) {
     Super = ns.Dflt
   }
-  var Driver = eYo.makeClass(ns, key, Super, ns.Dlgt, driverModel)
+  var Driver = eYo.makeC9r(ns, key, Super, ns.Dlgt, driverModel)
   var x = Driver.eyo.name.split('.')
   x.shift()
   x = x.join('.')
@@ -116,7 +116,7 @@ eYo.driver._p.makeMngr = function (mngrModel) {
     this.makeDflt()
   }
   let Super = this.super.Mngr
-  var Mngr = this.makeClass(Super, this.DlgtMngr, mngrModel)
+  var Mngr = this.makeC9r(Super, this.DlgtMngr, mngrModel)
   Mngr.prototype.initDrivers = function () {
     if (!this.drivers) {
       console.error('BREAK HERE!')
@@ -149,7 +149,7 @@ eYo.driver._p.makeDriverClass = function (key, Super, driverModel) {
  * Owns instances of `eYo.driver.Dflt`'s descendants.
  * @param {Object} owner
  */
-eYo.driver.makeClass('Mngr', eYo.c9r.Owned, eYo.driver.DlgtMngr,  {
+eYo.driver.makeC9r('Mngr', eYo.c9r.Owned, eYo.driver.DlgtMngr,  {
   owned: {
     allPurposeDriver () {
       let handler = {

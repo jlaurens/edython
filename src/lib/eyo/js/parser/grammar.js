@@ -36,7 +36,7 @@ eYo.makeNS('gmr')
 /**
  * A grammar book contains the grammar...
  */
-eYo.gmr.makeClass('Book', {
+eYo.gmr.makeC9r('Book', {
   init (dfas, labels, start) {
     this.g_dfa = dfas || []
     this.g_start = start
@@ -70,7 +70,7 @@ typedef struct {
 } label
 */
 
-eYo.gmr.makeClass('Label', {
+eYo.gmr.makeC9r('Label', {
   init (type, str) {
     this.lb_type = type
     this.lb_str = str
@@ -95,7 +95,7 @@ typedef struct {
 } arc
 */
 
-eYo.gmr.makeClass('Arc', {
+eYo.gmr.makeC9r('Arc', {
   init (lbl, arrow) {
     this.a_lbl = lbl
     this.a_arrow = arrow
@@ -116,7 +116,7 @@ typedef struct {
 } state
 */
 
-eYo.gmr.makeClass('State', {
+eYo.gmr.makeC9r('State', {
   init (arcs) {
     this.s_arc = arcs || []
     this.s_lower = 0
@@ -143,7 +143,7 @@ typedef struct {
 } dfa
 */
 
-eYo.gmr.makeClass('DFA', {
+eYo.gmr.makeC9r('DFA', {
   init (type, name, initial, states, first) {
     /*
     {256, "single_input", 0, 3, states_0,

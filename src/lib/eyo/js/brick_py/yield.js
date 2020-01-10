@@ -24,7 +24,7 @@ eYo.provide('brick.yield')
  * Class for a Delegate, yield_expr.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Yield_expr', {
+eYo.expr.Dflt.makeInheritedC9r('yield_expr', {
   xml: {
     attr: 'yield'
   },
@@ -105,7 +105,7 @@ eYo.expr.Dflt.makeSubclass('Yield_expr', {
           placeholder: eYo.msg.placeholder.EXPRESSION
         }
       },
-      wrap: eYo.t3.Expr.non_void_expression_list,
+      wrap: eYo.t3.expr.non_void_expression_list,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.Variant_p = eYo.key.EXPRESSION
@@ -133,7 +133,7 @@ eYo.expr.Dflt.makeSubclass('Yield_expr', {
           placeholder: eYo.msg.placeholder.EXPRESSION
         }
       },
-      check: eYo.t3.Expr.Check.expression,
+      check: eYo.t3.expr.check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.Variant_p = eYo.key.FROM
@@ -209,8 +209,8 @@ eYo.expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, yield_stmt.
  * For edython.
  */
-eYo.stmt.makeClass('Yield_stmt', {
-  link: eYo.t3.Expr.yield_expr
+eYo.stmt.makeC9r('yield_stmt', {
+  link: eYo.t3.expr.yield_expr
 }, true)
 
 /**
@@ -224,7 +224,7 @@ eYo.stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   return eYo.stmt.yield_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 }
 
-eYo.brick.yield.T3s = [
-  eYo.t3.Expr.yield_expr,
-  eYo.t3.Stmt.yield_stmt
+eYo.brick.yield.t3s = [
+  eYo.t3.expr.yield_expr,
+  eYo.t3.stmt.yield_stmt
 ]

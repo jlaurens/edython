@@ -20,7 +20,7 @@ eYo.provide('brick.comprehension')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Comprehension', {
+eYo.expr.Dflt.makeInheritedC9r('Comprehension', {
   data: {
     expression: {
       order: 1,
@@ -28,7 +28,7 @@ eYo.expr.Dflt.makeSubclass('Comprehension', {
       placeholder: eYo.msg.placeholder.TERM,
       validate (after) /** @suppress {globalThis} */ {
         var type = eYo.t3.profile.get(after)
-        return type.expr === eYo.t3.Expr.identifier
+        return type.expr === eYo.t3.expr.identifier
         ? after : eYo.INVALID
       },
       synchronize: true,
@@ -44,7 +44,7 @@ eYo.expr.Dflt.makeSubclass('Comprehension', {
   slots: {
     expression: {
       order: 1,
-      check: eYo.t3.Expr.Check.expression_key_datum,
+      check: eYo.t3.expr.check.expression_key_datum,
       fields: {
         bind: {
           validate: true,
@@ -57,18 +57,18 @@ eYo.expr.Dflt.makeSubclass('Comprehension', {
       fields: {
         label: 'for'
       },
-      wrap: eYo.t3.Expr.Target_list
+      wrap: eYo.t3.expr.target_list
     },
     in: {
       order: 3,
       fields: {
         label: 'in'
       },
-      check: eYo.t3.Expr.Check.or_test_all
+      check: eYo.t3.expr.check.or_test_all
     },
     for_if: {
       order: 4,
-      wrap: eYo.t3.Expr.Comp_iter_list
+      wrap: eYo.t3.expr.comp_iter_list
     }
   },
   out: {
@@ -78,13 +78,13 @@ eYo.expr.Dflt.makeSubclass('Comprehension', {
       var eyo = this.brick
       var b = eyo.expression_b
       if (b) {
-        if (b.type === eYo.t3.Expr.key_datum || b.type === eYo.t3.Expr.identifier_annotated) {
-          return [eYo.t3.Expr.dict_comprehension]
+        if (b.type === eYo.t3.expr.key_datum || b.type === eYo.t3.expr.identifier_annotated) {
+          return [eYo.t3.expr.dict_comprehension]
         }
       } else if (!eyo.Expression_p.length) {
-        return [eYo.t3.Expr.Comprehension, eYo.t3.Expr.dict_comprehension]
+        return [eYo.t3.expr.comprehension, eYo.t3.expr.dict_comprehension]
       }
-      return [eYo.t3.Expr.Comprehension]
+      return [eYo.t3.expr.comprehension]
     }
   }
 }, true)
@@ -96,7 +96,7 @@ eYo.expr.Dflt.makeSubclass('Comprehension', {
  */
 eYo.expr.Comprehension.prototype.getBaseType = function () {
   var check = this.out_m.check_
-  return (check && check[0]) || eYo.t3.Expr.Comprehension
+  return (check && check[0]) || eYo.t3.expr.comprehension
 }
 
 ;['dict_comprehension'].forEach(k => {
@@ -117,21 +117,21 @@ eYo.expr.Comprehension.prototype.xmlAttr = function () {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Comp_for', {
+eYo.expr.Dflt.makeInheritedC9r('comp_for', {
   slots: {
     for: {
       order: 1,
       fields: {
         label: 'for'
       },
-      wrap: eYo.t3.Expr.Target_list
+      wrap: eYo.t3.expr.target_list
     },
     in: {
       order: 2,
       fields: {
         label: 'in'
       },
-      check: eYo.t3.Expr.Check.or_test_all
+      check: eYo.t3.expr.check.or_test_all
     }
   }
 }, true)
@@ -141,14 +141,14 @@ eYo.expr.Dflt.makeSubclass('Comp_for', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Comp_if', {
+eYo.expr.Dflt.makeInheritedC9r('comp_if', {
   slots: {
     if: {
       order: 1,
       fields: {
         label: 'if'
       },
-      check: eYo.t3.Expr.Check.expression_nocond
+      check: eYo.t3.expr.check.expression_nocond
     }
   }
 }, true)
@@ -159,19 +159,19 @@ eYo.expr.Dflt.makeSubclass('Comp_if', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubclass('Comp_iter_list', {
+eYo.expr.List.makeInheritedC9r('comp_iter_list', {
   list: {
-    check: eYo.t3.Expr.Check.Comp_iter,
+    check: eYo.t3.expr.check.Comp_iter,
     mandatory: 0,
     presep: ''
   }
 })
 
-eYo.brick.Comprehension.T3s = [
-  eYo.t3.Expr.Comprehension,
-  eYo.t3.Expr.Comp_for,
-  eYo.t3.Expr.Comp_if,
-  eYo.t3.Expr.Comp_iter_list,
-  eYo.t3.Expr.dict_comprehension,
-  eYo.t3.Expr.identifier,
+eYo.brick.Comprehension.t3s = [
+  eYo.t3.expr.comprehension,
+  eYo.t3.expr.comp_for,
+  eYo.t3.expr.comp_if,
+  eYo.t3.expr.comp_iter_list,
+  eYo.t3.expr.dict_comprehension,
+  eYo.t3.expr.identifier,
 ]

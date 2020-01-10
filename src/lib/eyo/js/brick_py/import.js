@@ -38,9 +38,9 @@ module_name ::= identifier
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubclass('Non_void_module_as_list', {
+eYo.expr.List.makeInheritedC9r('non_void_module_as_list', {
   list: {
-    check: eYo.t3.Expr.Check.non_void_module_as_list,
+    check: eYo.t3.expr.check.non_void_module_as_list,
     mandatory: 1,
     presep: ','
   }
@@ -52,9 +52,9 @@ eYo.expr.List.makeSubclass('Non_void_module_as_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubclass('Non_void_import_identifier_as_list', {
+eYo.expr.List.makeInheritedC9r('non_void_import_identifier_as_list', {
   list: {
-    check: eYo.t3.Expr.Check.non_void_import_identifier_as_list,
+    check: eYo.t3.expr.check.non_void_import_identifier_as_list,
     mandatory: 1,
     presep: ',',
     placeholder: eYo.msg.placeholder.IDENTIFIER
@@ -68,7 +68,7 @@ eYo.expr.List.makeSubclass('Non_void_import_identifier_as_list', {
  * The value property is used to store the module.
  * For edython.
  */
-eYo.stmt.makeClass('Import_stmt', {
+eYo.stmt.makeC9r('import_stmt', {
   data: {
     variant: {
       all: [
@@ -92,10 +92,10 @@ eYo.stmt.makeClass('Import_stmt', {
       validate (after) /** @suppress {globalThis} */ {
         var p5e = eYo.t3.profile.get(after)
         return p5e === eYo.t3.profile.void
-        || p5e.raw === eYo.t3.Expr.Builtin__name
-        || p5e.expr === eYo.t3.Expr.identifier
-        || p5e.expr === eYo.t3.Expr.parent_module
-        || p5e.expr === eYo.t3.Expr.Dotted_name
+        || p5e.raw === eYo.t3.expr.builtin__name
+        || p5e.expr === eYo.t3.expr.identifier
+        || p5e.expr === eYo.t3.expr.parent_module
+        || p5e.expr === eYo.t3.expr.dotted_name
         || after === '...'
         ? after : eYo.INVALID
       },
@@ -121,10 +121,10 @@ eYo.stmt.makeClass('Import_stmt', {
         var p5e = eYo.t3.profile.get(after, null)
         var variant = this.brick.Variant_p
         return p5e === eYo.t3.profile.void
-        || p5e.expr === eYo.t3.Expr.identifier
-        || p5e.expr === eYo.t3.Expr.Dotted_name
+        || p5e.expr === eYo.t3.expr.identifier
+        || p5e.expr === eYo.t3.expr.dotted_name
         || ((variant !== eYo.key.FROM_MODULE_IMPORT_STAR)
-          && (p5e.expr === eYo.t3.Expr.parent_module || after === '...'))
+          && (p5e.expr === eYo.t3.expr.parent_module || after === '...'))
             ? after: eYo.INVALID
       },
       synchronize: true,
@@ -147,7 +147,7 @@ eYo.stmt.makeClass('Import_stmt', {
       validate (after) /** @suppress {globalThis} */ {
         var p5e = eYo.t3.profile.get(after)
         return p5e === eYo.t3.profile.void
-        || p5e.expr === eYo.t3.Expr.identifier
+        || p5e.expr === eYo.t3.expr.identifier
         ? after: eYo.INVALID
       },
       didChange (builtin, after) /** @suppress {globalThis} */ {
@@ -175,7 +175,7 @@ eYo.stmt.makeClass('Import_stmt', {
           endEditing: true
         }
       },
-      promise: eYo.t3.Expr.non_void_module_as_list,
+      promise: eYo.t3.expr.non_void_module_as_list,
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         var parent = this.brick.parent
         parent && (parent.Variant_p = eYo.key.IMPORT)
@@ -194,14 +194,14 @@ eYo.stmt.makeClass('Import_stmt', {
         var v = this.brick.Variant_p
         return v === eYo.key.FROM_MODULE_IMPORT_STAR
         ? [
-          eYo.t3.Expr.unset,
-          eYo.t3.Expr.identifier,
-          eYo.t3.Expr.Dotted_name
+          eYo.t3.expr.unset,
+          eYo.t3.expr.identifier,
+          eYo.t3.expr.dotted_name
         ] : [
-          eYo.t3.Expr.unset,
-          eYo.t3.Expr.identifier,
-          eYo.t3.Expr.Dotted_name,
-          eYo.t3.Expr.parent_module
+          eYo.t3.expr.unset,
+          eYo.t3.expr.identifier,
+          eYo.t3.expr.dotted_name,
+          eYo.t3.expr.parent_module
         ]
       },
       didLoad () /** @suppress {globalThis} */ {
@@ -233,7 +233,7 @@ eYo.stmt.makeClass('Import_stmt', {
           endEditing: true
         }
       },
-      promise: eYo.t3.Expr.non_void_import_identifier_as_list,
+      promise: eYo.t3.expr.non_void_import_identifier_as_list,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.Variant_p = eYo.key.FROM_MODULE_IMPORT
@@ -304,9 +304,9 @@ eYo.stmt.import_stmt.prototype.importedModules = function () {
     // non_void_import_identifier_as_list
     this.import_b.slotForEach(slot => {
       var t9k = slot.targetBrick
-      if (t9k.type === eYo.t3.Expr.identifier) {
+      if (t9k.type === eYo.t3.expr.identifier) {
         modules[t9k.Target_p] = t9k.Target_p
-      } else if (t9k.type === eYo.t3.Expr.identifier_as) {
+      } else if (t9k.type === eYo.t3.expr.identifier_as) {
         modules[t9k.Target_p] = t9k.Alias_p
       } else { // when connected to an 'any' brick
         var any = t9k.Expression_p
@@ -380,7 +380,7 @@ eYo.stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, future_statement.
  * For edython.
  */
-eYo.stmt.makeClass('Future_statement', {
+eYo.stmt.makeC9r('future_statement', {
   slots: {
     list: {
       order: 1,
@@ -389,15 +389,15 @@ eYo.stmt.makeClass('Future_statement', {
           reserved: 'from __future__ import'
         }
       },
-      wrap: eYo.t3.Expr.non_void_import_identifier_as_list
+      wrap: eYo.t3.expr.non_void_import_identifier_as_list
     }
   }
 }, true)
 
-eYo.brick.import.T3s = [
-  eYo.t3.Expr.identifier,
-  eYo.t3.Expr.non_void_module_as_list,
-  eYo.t3.Expr.non_void_import_identifier_as_list,
-  eYo.t3.Stmt.import_stmt,
-  eYo.t3.Stmt.future_statement
+eYo.brick.import.t3s = [
+  eYo.t3.expr.identifier,
+  eYo.t3.expr.non_void_module_as_list,
+  eYo.t3.expr.non_void_import_identifier_as_list,
+  eYo.t3.stmt.import_stmt,
+  eYo.t3.stmt.future_statement
 ]

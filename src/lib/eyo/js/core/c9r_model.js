@@ -103,7 +103,7 @@ eYo.c9r.model.Allowed = {
     'order', // INTEGER,
     'fields', // {},
     'check', // :  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
-    'promise', // : eYo.t3.Expr.value_list,
+    'promise', // : eYo.t3.expr.value_list,
     'validateIncog', //  () {},
     'accept', //  () {},
     'willConnect', //  () {},
@@ -113,7 +113,7 @@ eYo.c9r.model.Allowed = {
     'consolidate', // () {},
     'wrap', // : TYPE,
     'xml', // : (() => {} || true) || false||  first expected,
-    'plugged', // : eYo.t3.Expr.primary,
+    'plugged', // : eYo.t3.expr.primary,
   ],
   ['^slots\\.\\w+\.fields\\.\\w+$']: [
     'value', // '(',
@@ -361,7 +361,7 @@ eYo.c9r.model.extends = (model, base) => {
  * @param{String} key - the key used to create the constructor.
  */
 eYo.c9r.model.forKey = (key) => {
-  var C9r = eYo.c9r.ByKey(key)
+  var C9r = eYo.c9r.byKey(key)
   return C9r && C9r.eyo.model
 }
 
@@ -370,7 +370,7 @@ eYo.c9r.model.forKey = (key) => {
  * @param{String} name - the key used to create the constructor.
  */
 eYo.c9r.model.forName = (name) => {
-  var C9r = eYo.c9r.ByName(name)
+  var C9r = eYo.c9r.byName(name)
   return C9r && C9r.eyo.model
 }
 
@@ -379,6 +379,6 @@ eYo.c9r.model.forName = (name) => {
  * @param{String} type - the key used to create the constructor.
  */
 eYo.c9r.model.forType = (type) => {
-  var C9r = eYo.c9r.ByType(type)
+  var C9r = eYo.c9r.byType(type)
   return C9r && C9r.eyo.model
 }

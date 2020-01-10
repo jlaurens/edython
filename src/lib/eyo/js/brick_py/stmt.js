@@ -37,8 +37,8 @@ eYo.stmt.makeDlgt()
 eYo.stmt.makeDflt({
   left /** @suppress {globalThis} */ (type) {
     return this.brick.head || this.brick.foot
-    ? [eYo.t3.Stmt.Comment_stmt]
-    : eYo.t3.stmt.Left.Simple_stmt
+    ? [eYo.t3.stmt.comment_stmt]
+    : eYo.t3.stmt.left.Simple_stmt
   },
   right: {
     fields: {
@@ -48,7 +48,7 @@ eYo.stmt.makeDflt({
       }
     },
     check /** @suppress {globalThis} */ (type) {
-      return eYo.t3.stmt.Right.Simple_stmt
+      return eYo.t3.stmt.right.Simple_stmt
     }
   },
   head /** @suppress {globalThis} */ (type) {
@@ -72,7 +72,7 @@ eYo.stmt.makeDflt({
   }
 })
 
-eYo.brick.registerAll(eYo.t3.Stmt, eYo.stmt.Dflt, true)
+eYo.brick.registerAll(eYo.t3.stmt, eYo.stmt.Dflt, true)
 
 /**
  * Insert a brick above.

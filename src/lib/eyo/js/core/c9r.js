@@ -35,7 +35,7 @@ eYo.makeNS('c9r')
  * @param {String} key - Looking for or crating |Object[key]|
  * @param {Function} f - the function we will append
  */
-eYo.c9r.AppendToMethod = (object, key, f) => {
+eYo.c9r.appendToMethod = (object, key, f) => {
   let old = object[key]
   if (old && old !== eYo.do.nothing) {
     eYo.ParameterAsert(eYo.isF(old), `Expecting a function ${old}`)
@@ -116,26 +116,26 @@ eYo.c9r.descriptorNORW = (msg) => {
  * All the created delegates.
  * @package
  */
-eYo.c9r.ByName__ = Object.create(null)
+eYo.c9r.byName__ = Object.create(null)
 
 /**
  * All the created delegates.
  * @package
  */
-eYo.c9r.ByKey__ = Object.create(null)
+eYo.c9r.byKey__ = Object.create(null)
 
 /**
  * All the created delegates.
  * @package
  */
-eYo.c9r.ByType__ = Object.create(null)
+eYo.c9r.byType__ = Object.create(null)
 
 /**
  * All the created delegates.
  * @param{String} key - the key used to create the constructor.
  */
 eYo.c9r.forKey = (key) => {
-  return eYo.c9r.ByKey__[key]
+  return eYo.c9r.byKey__[key]
 }
 
 /**
@@ -143,7 +143,7 @@ eYo.c9r.forKey = (key) => {
  * @param{String} name - the name used to create the constructor.
  */
 eYo.c9r.forName = (name) => {
-  return eYo.c9r.ByName__[name]
+  return eYo.c9r.byName__[name]
 }
 
 /**
@@ -151,11 +151,11 @@ eYo.c9r.forName = (name) => {
  * @param{String} type - the type used to create the constructor.
  */
 eYo.c9r.forType = (type) => {
-  return eYo.c9r.ByType__[type]
+  return eYo.c9r.byType__[type]
 }
 
 Object.defineProperty(eYo.c9r._p, 'types', eYo.c9r.descriptorR(function () {
-  return Object.keys(eYo.c9r.ByType__)
+  return Object.keys(eYo.c9r.byType__)
 }))
 
 
@@ -178,18 +178,18 @@ eYo.c9r.register = function (key, C9r) {
     key = C9r.eyo.key
   }
   var type
-  if ((type = eYo.t3.Expr[key])) {
-    eYo.t3.Expr.Available.push(type)
-  } else if ((type = eYo.t3.Stmt[key])) {
-    eYo.t3.Stmt.Available.push(type)
+  if ((type = eYo.t3.expr[key])) {
+    eYo.t3.expr.available.push(type)
+  } else if ((type = eYo.t3.stmt[key])) {
+    eYo.t3.stmt.available.push(type)
   }
   var eyo = C9r.eyo
   var key = eyo.key
-  key && (eYo.c9r.ByKey__[key] = C9r)
+  key && (eYo.c9r.byKey__[key] = C9r)
   var name = eyo.name
-  name && (eYo.c9r.ByName__[name] = C9r)
+  name && (eYo.c9r.byName__[name] = C9r)
   if (type) {
-    eYo.c9r.ByType__[type] = C9r
+    eYo.c9r.byType__[type] = C9r
     // cache all the input, output and statement data at the prototype level
     eyo.types.push(type)
   }
@@ -247,7 +247,7 @@ Object.defineProperties(eYo.c9r._p, {
       // compatibility
       // this.constructor should be a subclass of the constructor of the delegate of the super class of C9r, if any
       // 
-      var pttp = C9r.superProto_
+      var pttp = C9r.SuperC9r_p
       if (pttp) {
         let dlgt = pttp.constructor.eyo__
         dlgt && eYo.ParameterAssert(
@@ -274,7 +274,7 @@ Object.defineProperties(eYo.c9r._p, {
         return this.constructor.eyo__
       }))
       if (model) {
-        var type = eYo.t3.Expr[key]
+        var type = eYo.t3.expr[key]
         type && !model.out || (model.out = Object.create(null))
         this.props__ = new Set()
         var s = this.super
@@ -307,10 +307,10 @@ Object.defineProperties(eYo.c9r.Dlgt_p, {
     return this.C9r__.prototype
   }),
   C9r_s: eYo.c9r.descriptorR(function () {
-    return this.C9r__.superProto_
+    return this.C9r__.SuperC9r_p
   }),
   C9r_S: eYo.c9r.descriptorR(function () {
-    return this.C9r__.superC9r_
+    return this.C9r__.SuperC9r
   }),
   C9r_: {
     get () {
@@ -594,12 +594,12 @@ new eYo.c9r.Dlgt(eYo.c9r, 'Dlgt', eYo.c9r.Dlgt, {})
 // ANCHOR Class utility
 {
 /**
- * @name{eYo.doMakeClass}
+ * @name{eYo.doMakeC9r}
  * Make a constructor with an 'eyo__' property.
  * Caveat, constructors must have the same arguments.
  * Use a key->value design if you do not want that.
  * The `params` object has template: `{init: function, dispose: function}`.
- * Each namespace has its own `makeClass` method which creates classes in itself.
+ * Each namespace has its own `makeC9r` method which creates classes in itself.
  * This is not used directly, only decorated.
  * All the given parameters have their normal meaning.
  * @param {Object} ns -  The namespace.
@@ -609,7 +609,7 @@ new eYo.c9r.Dlgt(eYo.c9r, 'Dlgt', eYo.c9r.Dlgt, {})
  * @param {Object|Function} model -  The dictionary of parameters.
  * @return {Function} the created constructor.
  */
-eYo._p.doMakeClass = function (ns, key, Super, Dlgt, model) {
+eYo._p.doMakeC9r = function (ns, key, Super, Dlgt, model) {
   if (Super) {
     var Super_p = Super.prototype
     // create the constructor
@@ -658,9 +658,7 @@ eYo._p.doMakeClass = function (ns, key, Super, Dlgt, model) {
   } catch(e) {
     console.error(`FAILED to define a property: ${ns.name}[${key}], ${e.message}`)
   }
-  C9r.makeSubclass = function (ns, key, Dlgt, model) {
-    return C9r.eyo.makeSubclass(ns, key, Dlgt, model)
-  }
+  C9r.makeInheritedC9r = eyo.makeInheritedC9r.bind(eyo)
   // prepare init/dispose methods
   eyo.makeInit()
   eyo.makeDispose()
@@ -690,9 +688,9 @@ eYo._p.doMakeClass = function (ns, key, Super, Dlgt, model) {
  * @param{Function} f
  * @this{undefined}
  */
-eYo._p.makeClassDecorate = (f) => {
+eYo._p.makeC9rDecorate = (f) => {
   return function (ns, key, Super, Dlgt, model) {
-    // makeClassDecorate
+    // makeC9rDecorate
     if (ns && !eYo.isNS(ns)) {
       eYo.ParameterAssert(!model, `Unexpected model: ${model}`)
       model = Dlgt
@@ -816,12 +814,12 @@ eYo._p.makeClassDecorate = (f) => {
 }
 
 /**
- * @name{eYo.makeClass}
+ * @name{eYo.makeC9r}
  * Make a constructor with an 'eyo__' property.
  * Caveat, constructors must have the same arguments.
  * Use a key->value design if you do not want that.
  * The `params` object has template: `{init: function, dispose: function}`.
- * Each namespace has its own `makeClass` method which creates classes in itself.
+ * Each namespace has its own `makeC9r` method which creates classes in itself.
  * @param {Object} [ns] -  The namespace, defaults to the Super's one or the caller.
  * @param {String} key -  The key.
  * @param {Function} [Super] -  The eventual super class. There is no default value. Must be a subclass of `eYo.Dflt`, when no `Dlgt_`is given but not necessarily with an `eyo`.
@@ -829,20 +827,20 @@ eYo._p.makeClassDecorate = (f) => {
  * @param {Object|Function} [model] -  The dictionary of parameters. Or a function to create such a dictionary. This might be overcomplicated.
  * @return {Function} the created constructor.
  */
-eYo._p.makeClass = eYo.makeClassDecorate(eYo.doMakeClass)
+eYo._p.makeC9r = eYo.makeC9rDecorate(eYo.doMakeC9r)
 
 /**
  * This decorator turns f with signature
  * function (ns, key, Super, Dlgt, model) {}
  * into
  * function ([ns], [key], [Dlgt], [model]) {}.
- * After decoration, a call to the resulting function is equivalent to a makeClass,
+ * After decoration, a call to the resulting function is equivalent to a makeC9r,
  * the Super being the receiver's C9r.
  * Both functions belong to the namespace context,
  * id est `this` is a namespace.
  * @param{Function} f - the function to decorate.
  */
-eYo.c9r.Dlgt_p.makeSubclassDecorate = (f) => {
+eYo.c9r.Dlgt_p.makeInheritedC9rDecorate = (f) => {
   return function (ns, key, Dlgt, model) {
     var Super = this.C9r
     if (ns && !eYo.isNS(ns)) {
@@ -858,7 +856,7 @@ eYo.c9r.Dlgt_p.makeSubclassDecorate = (f) => {
       Dlgt = key
       key = this.key
     }
-    var ff = (this.ns||eYo).makeClassDecorate(f)
+    var ff = (this.ns||eYo).makeC9rDecorate(f)
     return ff.call(this.ns||eYo, ns, key, Super, Dlgt, model)
   }
 }
@@ -872,7 +870,7 @@ eYo.c9r.Dlgt_p.makeSubclassDecorate = (f) => {
  * @param {Object} [model] -  Model object
  * @return {?Function} the constructor created or `eYo.NA` when the receiver has no namespace.
  */
-eYo.c9r.Dlgt_p.makeSubclass = eYo.c9r.Dlgt_p.makeSubclassDecorate(eYo.doMakeClass)
+eYo.c9r.Dlgt_p.makeInheritedC9r = eYo.c9r.Dlgt_p.makeInheritedC9rDecorate(eYo.doMakeC9r)
 
 /**
  * Convenient shortcut to create subclasses.
@@ -883,7 +881,7 @@ eYo.c9r.Dlgt_p.makeSubclass = eYo.c9r.Dlgt_p.makeSubclassDecorate(eYo.doMakeClas
  * @param {Object} [model] -  Model object
  * @return {?Function} the constructor created or `eYo.NA` when the receiver has no namespace.
  */
-eYo.c9r.Dlgt.makeSubclass = eYo.c9r.Dlgt_p.makeSubclass.bind(eYo.c9r.Dlgt.eyo)
+eYo.c9r.Dlgt.makeInheritedC9r = eYo.c9r.Dlgt_p.makeInheritedC9r.bind(eYo.c9r.Dlgt.eyo)
 
 /**
  * Convenient method to create the Dflt class.
@@ -903,7 +901,7 @@ eYo._p.makeDlgt = function (key, Super, model) {
     model = Super
     Super = this.Dlgt
   }
-  return this.makeClass(key, Super, eYo.c9r.Dlgt, model)
+  return this.makeC9r(key, Super, eYo.c9r.Dlgt, model)
 }
 }
 // ANCHOR Dflt
@@ -937,7 +935,7 @@ eYo._p.makeDflt = function (Super, Dlgt, model) {
     Dlgt = this.Dlgt
     Super = this.super && this.super.Dflt
   }
-  return this.makeClass(this, 'Dflt', Super, Dlgt, model || {})
+  return this.makeC9r(this, 'Dflt', Super, Dlgt, model || {})
 }
 
 /**

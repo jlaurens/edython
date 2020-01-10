@@ -1,6 +1,6 @@
 describe('Import statement (BASIC)', function() {
   it(`Variant change effect`, function() {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     eYo.Test.Brick(d, 'import_stmt')
     eYo.Test.variant(d, 'IMPORT')
     eYo.Test.incog(d,
@@ -49,7 +49,7 @@ describe('Import statement (BASIC)', function() {
     'FROM_MODULE_IMPORT_STAR'
   ].forEach(k => {
     it (`Copy/Paste same variant ${k}`, function () {
-      var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+      var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
       eYo.Test.Set_variant(d, k)
       eYo.Test.Copy_paste(d)
       d.dispose()
@@ -59,19 +59,19 @@ describe('Import statement (BASIC)', function() {
 describe('from module import …', function() {
   this.timeout(5000)
   it(`from foo.bar import *`, function () {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     d.From_p = 'foo.bar'
     eYo.Test.data_value(d, 'from', 'foo.bar')
     d.dispose()
   })
   it(`from ... import ?`, function () {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     d.From_p = '...'
     eYo.Test.data_value(d, 'from', '...')
     d.dispose()
   })
   it(`… -> from ? import abc`, function() {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     ;[
       ['IMPORT'],
       ['FROM_MODULE_IMPORT'],
@@ -90,7 +90,7 @@ describe('from module import …', function() {
     d.dispose()
   })
   it(`… -> from ? import <abc>, …`, function() {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     ;[
       ['IMPORT'],
       ['FROM_MODULE_IMPORT'],
@@ -115,7 +115,7 @@ describe('from module import …', function() {
     d.dispose()
   })
   it(`… -> from abc import ?`, function() {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     ;[
       ['IMPORT'],
       ['FROM_MODULE_IMPORT', 'FROM_MODULE_IMPORT', '<MISSING NAME>'],
@@ -134,14 +134,14 @@ describe('from module import …', function() {
     d.dispose()
   })
   it(`… -> from <abc> import ?`, function() {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     ;[
       ['IMPORT'],
       ['FROM_MODULE_IMPORT', 'FROM_MODULE_IMPORT', '<MISSING NAME>'],
       ['FROM_MODULE_IMPORT_STAR']
     ].forEach(args => {
       eYo.Test.Set_variant(d, args[0])
-      var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
+      var dd = eYo.Test.new_brick(eYo.t3.expr.identifier)
       dd.Target_p = 'abc'
       eYo.Test.data_value(dd, 'target', 'abc')
       eYo.Test.Slot_connect(d, 'from', dd)
@@ -154,7 +154,7 @@ describe('from module import …', function() {
     d.dispose()
   })
   it(`… -> from abc import ? <-> from <abc> import ?`, function() {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     ;[
       ['IMPORT'],
       ['FROM_MODULE_IMPORT', 'FROM_MODULE_IMPORT', '<MISSING NAME>'],
@@ -165,7 +165,7 @@ describe('from module import …', function() {
       eYo.Test.data_value(d, 'from', 'abc')
       eYo.Test.variant(d, args[1] || 'FROM_MODULE_IMPORT_STAR')
       eYo.Test.Code(d, `from abc import ${args[2] || '*'}`)
-      var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
+      var dd = eYo.Test.new_brick(eYo.t3.expr.identifier)
       dd.Target_p = 'cde'
       eYo.Test.data_value(dd, 'target', 'cde')
       eYo.Test.Slot_connect(d, 'from', dd)
@@ -180,7 +180,7 @@ describe('from module import …', function() {
 })
 describe('import module', function() {
   it(`import abc -> import ?`, function() {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     ;[
       'IMPORT',
       'FROM_MODULE_IMPORT',
@@ -193,7 +193,7 @@ describe('import module', function() {
       eYo.Test.Code(d, 'import <MISSING NAME>')
       d.Import_module_p = 'abc'
       eYo.Test.Set_variant(d, k)
-      var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
+      var dd = eYo.Test.new_brick(eYo.t3.expr.identifier)
       dd.Target_p = 'bcd'
       eYo.Test.list_connect(d, 'import_module', dd)
       eYo.Test.Code(d, 'import bcd')
@@ -209,14 +209,14 @@ describe('import module', function() {
     d.dispose()
   })
   it (`import abc -> import <bcd> -> …`, function () {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     d.Import_module_p = 'abc'
     eYo.Test.Code(d, 'import abc')
-    var dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
+    var dd = eYo.Test.new_brick(eYo.t3.expr.identifier)
     dd.Target_p = 'bcd'
     eYo.Test.list_connect(d, 'import_module', dd)
     eYo.Test.Code(d, 'import bcd')
-    dd = eYo.Test.new_brick(eYo.t3.Expr.identifier)
+    dd = eYo.Test.new_brick(eYo.t3.expr.identifier)
     dd.Target_p = 'cde'
     eYo.Test.list_connect(d, 'import_module', dd)
     eYo.Test.Code(d, 'import bcd, cde')
@@ -229,7 +229,7 @@ describe('import module', function() {
 })
 describe('Copy/Paste', function () {
   it(`import ?`, function () {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     eYo.Test.Set_variant(d, 'IMPORT')
     eYo.Test.Copy_paste(d)
     d.Import_p = 'abc'
@@ -254,7 +254,7 @@ describe('Copy/Paste', function () {
     d.dispose()
   })
   it(`from … import ?`, function () {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     eYo.Test.Set_variant(d, 'FROM_MODULE_IMPORT')
     eYo.Test.Copy_paste(d)
     d.From_p = 'abc'
@@ -269,7 +269,7 @@ describe('Copy/Paste', function () {
     d.dispose()
   })
   it(`from ? import …`, function () {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     eYo.Test.Set_variant(d, 'FROM_MODULE_IMPORT')
     eYo.Test.Copy_paste(d)
     d.Import_p = 'abc'
@@ -286,7 +286,7 @@ describe('Copy/Paste', function () {
     d.dispose()
   })
   it(`from … import *`, function () {
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.import_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.import_stmt)
     eYo.Test.Set_variant(d, 'FROM_MODULE_IMPORT_STAR')
     eYo.Test.Copy_paste(d)
     d.From_p = 'abc'

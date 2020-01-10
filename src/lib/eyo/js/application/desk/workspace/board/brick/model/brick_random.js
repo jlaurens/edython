@@ -26,14 +26,14 @@ eYo.require('tooltip')
 eYo.require('Library')
 eYo.provide('brick.random')
 
-eYo.t3.Expr.random__randrange = 'eyo:random__randrange'
+eYo.t3.expr.random__randrange = 'eyo:random__randrange'
 
 /**
  * Class for a Delegate, random range brick.
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Builtin__range_expr.makeSubclass('Random__randrange', {
+eYo.expr.Builtin__range_expr.makeInheritedC9r('random__randrange', {
   xml: {
     attr: 'randrange'
   },
@@ -68,7 +68,7 @@ eYo.expr.Builtin__range_expr.makeSubclass('Random__randrange', {
             return
           }
         }
-        if (type === eYo.t3.Expr.Attributeref || type === eYo.t3.Expr.Dotted_name || type === eYo.t3.Expr.parent_module) {
+        if (type === eYo.t3.expr.attributeref || type === eYo.t3.expr.dotted_name || type === eYo.t3.expr.parent_module) {
           this.doChange(1)
         }
       },
@@ -116,7 +116,7 @@ eYo.expr.Builtin__range_expr.makeSubclass('Random__randrange', {
     },
   },
   out: {
-    check: [eYo.t3.Expr.random__randrange, eYo.t3.Expr.Call_expr]
+    check: [eYo.t3.expr.random__randrange, eYo.t3.expr.call_expr]
   }
 }, true)
 
@@ -134,7 +134,7 @@ eYo.expr.random__randrange.prototype.xmlAttr = function () {
     var key = 'random__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Expr.Call_expr,
+      type: eYo.t3.expr.call_expr,
       data: {
         name: name,
         holder: 'random',
@@ -147,7 +147,7 @@ eYo.expr.random__randrange.prototype.xmlAttr = function () {
     var key = 'random__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Stmt.Call_stmt,
+      type: eYo.t3.stmt.call_stmt,
       name_p: name,
       holder_p: 'random',
       dotted_p: 0,
@@ -156,7 +156,7 @@ eYo.expr.random__randrange.prototype.xmlAttr = function () {
   }
 eYo.Library.DATA.Basic_random__module = [
   {
-    type: eYo.t3.Stmt.import_stmt,
+    type: eYo.t3.stmt.import_stmt,
     data: {
       from: 'random',
       variant: eYo.key.FROM_MODULE_IMPORT_STAR
@@ -164,7 +164,7 @@ eYo.Library.DATA.Basic_random__module = [
     title: 'random__import_stmt'
   },
   {
-    type: eYo.t3.Expr.Call_expr,
+    type: eYo.t3.expr.call_expr,
     name_p: 'randint',
     holder_p: 'random',
     binary_s: { // implement 'main' instead of 'binary'
@@ -177,21 +177,21 @@ eYo.Library.DATA.Basic_random__module = [
     var key = 'random__choice'
     eYo.tooltip.Title[key] = 'Choisir aléatoirement un élément dans une liste'
     return {
-      type: eYo.t3.Expr.Call_expr,
+      type: eYo.t3.expr.call_expr,
       data: {
         name: 'choice',
         holder: 'random'
       },
       slots: {
         unary: {
-          type: eYo.t3.Expr.list_display,
+          type: eYo.t3.expr.list_display,
           slots: {
             O: {
-              type: eYo.t3.Expr.Shortliteral,
+              type: eYo.t3.expr.shortliteral,
               data: "'P'"
             },
             f: {
-              type: eYo.t3.Expr.Shortliteral,
+              type: eYo.t3.expr.shortliteral,
               data: "'F'"
             }
           }
@@ -207,14 +207,14 @@ eYo.Library.DATA.Basic_random__module = [
   F('uniform', 'Loi uniforme'),
   F('gauss', 'Loi normale'),
   {
-    type: eYo.t3.Expr.random__randrange,
+    type: eYo.t3.expr.random__randrange,
     title: 'random__randrange'
   },
   F_s('seed', 'Mélanger aléatoirement les éléments dans une liste'),
   // '<x eyo="identifier" name="a"><x eyo="builtin__object" value="None" slot="definition"></x></x>',
   F('getstate', 'Obtenir l\'état du générateur aléatoire, utile pour reproduire les tirages'),
   {
-    type: eYo.t3.Stmt.Call_stmt,
+    type: eYo.t3.stmt.call_stmt,
     data: {
       name: 'setstate',
       holder: 'random'
@@ -226,7 +226,7 @@ F = function (name, title) {
   var key = 'random__'+name
   title && (eYo.tooltip.Title[key] = title)
   return {
-    type: eYo.t3.Expr.Call_expr,
+    type: eYo.t3.expr.call_expr,
     data: {
       name: name,
       holder: 'random',
@@ -239,7 +239,7 @@ F_s = function (name, title) {
   var key = 'random__'+name
   title && (eYo.tooltip.Title[key] = title)
   return {
-    type: eYo.t3.Stmt.Call_stmt,
+    type: eYo.t3.stmt.call_stmt,
     data: {
       name: name,
       holder: 'random',
@@ -250,12 +250,12 @@ F_s = function (name, title) {
 }
 eYo.Library.DATA.random__module = [
   {
-    type: eYo.t3.Stmt.import_stmt,
+    type: eYo.t3.stmt.import_stmt,
     variant_p: eYo.key.IMPORT,
     import_module_s: {
       slots: {
         O: {
-          type: eYo.t3.Expr.identifier,
+          type: eYo.t3.expr.identifier,
           data: 'random'
         }
       }
@@ -263,7 +263,7 @@ eYo.Library.DATA.random__module = [
     title: 'random__import_stmt'
   },
   {
-    type: eYo.t3.Expr.Call_expr,
+    type: eYo.t3.expr.call_expr,
     name_p: 'randint',
     holder_p: 'random',
     binary_s: {
@@ -288,7 +288,7 @@ eYo.Library.DATA.random__module = [
   F('paretovariate', 'Loi de Pareto'),
   F('weibullvariate', 'Distribution de Weibull'),
   {
-    type: eYo.t3.Expr.random__randrange,
+    type: eYo.t3.expr.random__randrange,
     dotted_p: 1,
     title: 'random__randrange'
   },
@@ -310,6 +310,6 @@ goog.mixin(eYo.tooltip.Title, {
   random__setstate: 'Mettre l\'état du générateur aléatoire à la valeur donnée'
 })
 
-eYo.brick.random.T3s = [
-  eYo.t3.Expr.random__randrange,
+eYo.brick.random.t3s = [
+  eYo.t3.expr.random__randrange,
 ]

@@ -74,7 +74,7 @@ describe('Assignment', function() {
     eYo.Test.SetItUp()
     var d1 = eYo.Test.new_brick('assignment_stmt')
     eYo.Test.variant(d1, 'TARGET_VALUED')
-    var d2 = eYo.Test.new_brick(eYo.t3.Expr.Assignment_chain)
+    var d2 = eYo.Test.new_brick(eYo.t3.expr.assignment_chain)
     var input = d1.value_b.lastSlot
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
     chai.assert(input.targetBrick === d2, 'MISSED M4T 2')
@@ -224,7 +224,7 @@ describe('Copy/Paste', function() {
     eYo.Test.SetItUp()
     var d1 = eYo.Test.new_brick('assignment_stmt')
     eYo.Test.variant(d1, 'TARGET_VALUED')
-    var d2 = eYo.Test.new_brick(eYo.t3.Expr.Assignment_chain)
+    var d2 = eYo.Test.new_brick(eYo.t3.expr.assignment_chain)
     var input = d1.value_b.lastSlot
     chai.assert(d1.value_b.connectLast(d2), 'MISSED M4T 1')
     chai.assert(input.targetBrick === d2, 'MISSED M4T 2')
@@ -375,7 +375,7 @@ describe('One brick: annotated_assignment_stmt', function() {
     eYo.Test.SetItUp()
     var d_main = eYo.Test.new_brick('assignment_stmt')
     var annotated = eYo.Test.new_brick({
-      type: eYo.t3.Expr.primary,
+      type: eYo.t3.expr.primary,
       target_p: 'x',
       annotated_p: 'str'
     })
@@ -516,7 +516,7 @@ describe('Initalize with model', function() {
   it(`basic model`, function() {
     eYo.Test.SetItUp()
     var d = eYo.Test.new_brick({
-      type: eYo.t3.Stmt.Augmented_assignment_stmt,
+      type: eYo.t3.stmt.augmented_assignment_stmt,
       operator_p: '+='
     })
     chai.assert(d.Operator_p === '+=', `MISSED '${d.Operator_p}' === '+='`)
@@ -526,10 +526,10 @@ describe('Initalize with model', function() {
 })
 
 describe('Initalize augmented_assignment_stmt', function() {
-  eYo.c9r.model.forKey(eYo.t3.Expr.Augmented_stmt)
+  eYo.c9r.model.forKey(eYo.t3.expr.augmented_stmt)
   it(`basic augmented_assignment_stmt`, function() {
     eYo.Test.SetItUp()
-    var d = eYo.Test.new_brick(eYo.t3.Stmt.Augmented_assignment_stmt)
+    var d = eYo.Test.new_brick(eYo.t3.stmt.augmented_assignment_stmt)
     eYo.Test.data_value(d, 'operator', '+=')
     d.dispose()
     eYo.Test.tearItDown()

@@ -23,7 +23,7 @@ goog.forwardDeclare('goog.dom')
  * Base group is subclassed into Group and Control.
  * For edython.
  */
-eYo.stmt.Dflt.makeSubclass('Group', {
+eYo.stmt.Dflt.makeInheritedC9r('Group', {
   head (type) /** @suppress {globalThis} */ {
     return null
   },
@@ -31,8 +31,8 @@ eYo.stmt.Dflt.makeSubclass('Group', {
   right: {
     check (type) /** @suppress {globalThis} */ {
       return this.brick.suite
-      ? [eYo.t3.Stmt.Comment_stmt]
-      : eYo.t3.stmt.Right.Simple_stmt
+      ? [eYo.t3.stmt.comment_stmt]
+      : eYo.t3.stmt.right.Simple_stmt
     },
     fields: {
       label: { // don't call it 'operator'
@@ -59,7 +59,7 @@ eYo.stmt.Dflt.makeSubclass('Group', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeSubclass('Branch', {
+eYo.stmt.Group.makeInheritedC9r('Branch', {
   data: {
     variant: {
       all: [
@@ -74,15 +74,15 @@ eYo.stmt.Group.makeSubclass('Branch', {
         this.brick.if_d.incog = after === eYo.key.ELSE
       },
       fromType (type) /** @suppress {globalThis} */ {
-        if (type === eYo.t3.Stmt.while_part) {
+        if (type === eYo.t3.stmt.while_part) {
           this.set(eYo.key.WHILE)
-        } else if (type === eYo.t3.Stmt.elif_part) {
+        } else if (type === eYo.t3.stmt.elif_part) {
           this.set(eYo.key.ELIF)
-        } else if (type === eYo.t3.Stmt.else_part) {
+        } else if (type === eYo.t3.stmt.else_part) {
           this.set(eYo.key.ELSE)
-        } else if (type === eYo.t3.Stmt.try_else_part) {
+        } else if (type === eYo.t3.stmt.try_else_part) {
           this.set(eYo.key.ELSE)
-        } else if (type === eYo.t3.Stmt.last_else_part) {
+        } else if (type === eYo.t3.stmt.last_else_part) {
           this.set(eYo.key.ELSE)
         } else {
           this.set(eYo.key.IF)
@@ -121,14 +121,14 @@ eYo.stmt.Group.makeSubclass('Branch', {
           endEditing: true
         }
       },
-      check: eYo.t3.Expr.Check.namedexpr_test
+      check: eYo.t3.expr.check.namedexpr_test
     }
   },
   head (type) /** @suppress {globalThis} */ {
-    return eYo.t3.Stmt.Previous[type.substring(4)]
+    return eYo.t3.stmt.previous[type.substring(4)]
   },
   foot (type) /** @suppress {globalThis} */ {
-    return eYo.t3.Stmt.Next[type.substring(4)]
+    return eYo.t3.stmt.next[type.substring(4)]
   },
 })
 
@@ -151,7 +151,7 @@ eYo.stmt.Branch.prototype.xmlAttr = function () {
  * At least, the type may change to a value when no connection is connected.
  */
 eYo.stmt.Branch.prototype.getBaseType = function () {
-  var T3 = eYo.t3.Stmt
+  var T3 = eYo.t3.stmt
   var type = {
     [eYo.key.IF]: T3.if_part,
     [eYo.key.ELIF]: T3.elif_part,
@@ -270,21 +270,21 @@ eYo.stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeSubclass('For_part', true, {
+eYo.stmt.Group.makeInheritedC9r('for_part', true, {
   slots: {
     for: {
       order: 1,
       fields: {
         label: 'for'
       },
-      wrap: eYo.t3.Expr.Target_list
+      wrap: eYo.t3.expr.target_list
     },
     in: {
       order: 2,
       fields: {
         label: 'in'
       },
-      wrap: eYo.t3.Expr.expression_list
+      wrap: eYo.t3.expr.expression_list
     }
   }
 })
@@ -294,23 +294,23 @@ eYo.stmt.Group.makeSubclass('For_part', true, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeSubclass('With_part', true, {
+eYo.stmt.Group.makeInheritedC9r('with_part', true, {
   slots: {
     with: {
       order: 1,
       fields: {
         label: 'with'
       },
-      wrap: eYo.t3.Expr.with_item_list
+      wrap: eYo.t3.expr.with_item_list
     }
   }
 })
 
-eYo.stmt.Group.T3s = [
-  eYo.t3.Stmt.if_part,
-  eYo.t3.Stmt.elif_part,
-  eYo.t3.Stmt.else_part,
-  eYo.t3.Stmt.while_part,
-  eYo.t3.Stmt.with_part,
-  eYo.t3.Stmt.for_part
+eYo.stmt.Group.t3s = [
+  eYo.t3.stmt.if_part,
+  eYo.t3.stmt.elif_part,
+  eYo.t3.stmt.else_part,
+  eYo.t3.stmt.while_part,
+  eYo.t3.stmt.with_part,
+  eYo.t3.stmt.for_part
 ]

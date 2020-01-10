@@ -36,7 +36,7 @@ eYo.stmt.makeNS(eYo, 'expr')
 eYo.expr.makeDflt()
 
 // Default delegate for all expression bricks
-eYo.brick.registerAll(eYo.t3.Expr, eYo.expr.Dflt, true)
+eYo.brick.registerAll(eYo.t3.expr, eYo.expr.Dflt, true)
 
 Object.defineProperties(eYo.expr.Dflt.prototype, {
   isExpr: {
@@ -183,7 +183,7 @@ eYo.expr.Dflt.prototype.awaitable = function () {
     return true
   }
   do {
-    if (parent.type === eYo.t3.Stmt.funcdef_part) {
+    if (parent.type === eYo.t3.stmt.funcdef_part) {
       return !!parent.async_
     }
   } while ((parent = parent.parent))
@@ -347,7 +347,7 @@ eYo.expr.Dflt.prototype.doConsolidate = function (deep, force) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Proper_slice', {
+eYo.expr.Dflt.makeInheritedC9r('proper_slice', {
   data: {
     variant: {
       all: [
@@ -409,7 +409,7 @@ eYo.expr.Dflt.makeSubclass('Proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.t3.Expr.Check.expression,
+      check: eYo.t3.expr.check.expression,
       optional: true
     },
     upper_bound: {
@@ -420,7 +420,7 @@ eYo.expr.Dflt.makeSubclass('Proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.t3.Expr.Check.expression,
+      check: eYo.t3.expr.check.expression,
       optional: true
     },
     stride: {
@@ -432,7 +432,7 @@ eYo.expr.Dflt.makeSubclass('Proper_slice', {
           canEmpty: true
         }
       },
-      check: eYo.t3.Expr.Check.expression,
+      check: eYo.t3.expr.check.expression,
       optional: true,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
@@ -448,25 +448,25 @@ eYo.expr.Dflt.makeSubclass('Proper_slice', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Conditional_expression', {
+eYo.expr.Dflt.makeInheritedC9r('conditional_expression', {
   slots: {
     expression: {
       order: 1,
-      check: eYo.t3.Expr.Check.or_test_all
+      check: eYo.t3.expr.check.or_test_all
     },
     if: {
       order: 2,
       fields: {
         label: 'if'
       },
-      check: eYo.t3.Expr.Check.or_test_all
+      check: eYo.t3.expr.check.or_test_all
     },
     else: {
       order: 3,
       fields: {
         label: 'else'
       },
-      check: eYo.t3.Expr.Check.expression
+      check: eYo.t3.expr.check.expression
     }
   }
 }, true)
@@ -475,7 +475,7 @@ eYo.expr.Dflt.makeSubclass('Conditional_expression', {
  * Class for a Delegate, builtin object.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Builtin__object', {
+eYo.expr.Dflt.makeInheritedC9r('builtin__object', {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
@@ -517,7 +517,7 @@ eYo.expr.Builtin__object.prototype.makeTitle = function (op) {
  * Class for a Delegate, any object.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('Any', {
+eYo.expr.Dflt.makeInheritedC9r('Any', {
   data: {
     expression: {
       init: '',
@@ -535,10 +535,10 @@ eYo.expr.Dflt.makeSubclass('Any', {
   }
 }, true)
 
-eYo.expr.T3s = [
-  eYo.t3.Expr.Proper_slice,
-  eYo.t3.Expr.Conditional_expression,
-  eYo.t3.Expr.Starred_expression,
-  eYo.t3.Expr.Builtin__object,
-  eYo.t3.Expr.Any
+eYo.expr.t3s = [
+  eYo.t3.expr.proper_slice,
+  eYo.t3.expr.conditional_expression,
+  eYo.t3.expr.starred_expression,
+  eYo.t3.expr.builtin__object,
+  eYo.t3.expr.any
 ]

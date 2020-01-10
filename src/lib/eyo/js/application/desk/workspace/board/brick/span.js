@@ -47,7 +47,7 @@ eYo.forwardDeclare('brick')
  * @param {eYo.brick.Dflt} brick The brick owning the span.
  * @constructor
  */
-eYo.makeClass('Span', eYo.c9r.Owned, {
+eYo.makeC9r('Span', eYo.c9r.Owned, {
   init (brick) {
     this.c_min_init_ = brick.wrapped_
       ? 0

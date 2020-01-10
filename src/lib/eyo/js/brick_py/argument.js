@@ -39,7 +39,7 @@ keyword_item         ::=  identifier "=" expression
  * RULE 2 : expression << "**" expression
  * RULE 3 : "*" expression << "**" expression
  */
-eYo.consolidator.List.makeSubclass('Arguments', {
+eYo.consolidator.List.makeInheritedC9r('Arguments', {
   list: {
     check: null,
     mandatory: 0,
@@ -87,13 +87,13 @@ eYo.consolidator.Arguments.prototype.doCleanup = (() => {
     }
     var check = target.check_
     if (check) {
-      if (goog.array.contains(check, eYo.t3.Expr.Comprehension)) {
+      if (goog.array.contains(check, eYo.t3.expr.comprehension)) {
         return Type.COMPREHENSION
-      } else if (goog.array.contains(check, eYo.t3.Expr.expression_star_star)) {
+      } else if (goog.array.contains(check, eYo.t3.expr.expression_star_star)) {
         return Type.STAR_STAR
-      } else if (goog.array.contains(check, eYo.t3.Expr.expression_star)) {
+      } else if (goog.array.contains(check, eYo.t3.expr.expression_star)) {
         return Type.STAR
-      } else if (goog.array.contains(check, eYo.t3.Expr.identifier_valued)) {
+      } else if (goog.array.contains(check, eYo.t3.expr.identifier_valued)) {
         return Type.KEYWORD
       } else {
         return Type.ARGUMENT
@@ -189,19 +189,19 @@ eYo.consolidator.Arguments.prototype.getCheck = (() => {
     }
     out = []
     if (can_expression) {
-      out = eYo.t3.Expr.Check.expression.Slice()
+      out = eYo.t3.expr.check.expression.Slice()
     }
     if (can_expression_star) {
-      out.push(eYo.t3.Expr.expression_star)
+      out.push(eYo.t3.expr.expression_star)
     }
     if (can_keyword) {
-      out.push(eYo.t3.Expr.identifier_valued)
+      out.push(eYo.t3.expr.identifier_valued)
     }
     if (can_expression_star_star) {
-      out.push(eYo.t3.Expr.expression_star_star)
+      out.push(eYo.t3.expr.expression_star_star)
     }
     if (can_comprehension) {
-      out.push(eYo.t3.Expr.Comprehension)
+      out.push(eYo.t3.expr.comprehension)
     }
     return (cache[K] = out)
   }
@@ -213,7 +213,7 @@ eYo.consolidator.Arguments.prototype.getCheck = (() => {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubclass('Argument_list', {
+eYo.expr.List.makeInheritedC9r('argument_list', {
   data: {
     ary: {
       order: 200,
@@ -255,14 +255,14 @@ eYo.expr.List.makeSubclass('Argument_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Argument_list.makeSubclass('Argument_list_comprehensive', {
+eYo.expr.Argument_list.makeInheritedC9r('argument_list_comprehensive', {
   list: {
     can_comprehension: true
   }
 })
 
-eYo.brick.Argument.T3s = [
-  // eYo.t3.Expr.identifier_valued,
-  eYo.t3.Expr.Argument_list,
-  eYo.t3.Expr.Argument_list_comprehensive
+eYo.brick.Argument.t3s = [
+  // eYo.t3.expr.identifier_valued,
+  eYo.t3.expr.argument_list,
+  eYo.t3.expr.argument_list_comprehensive
 ]

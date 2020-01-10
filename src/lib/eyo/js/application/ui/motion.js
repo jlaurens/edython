@@ -38,7 +38,7 @@ eYo.forwardDeclare('dom')
  * @param {eYo.app.Dflt} application - The top application where the event occured.
  * @constructor
  */
-eYo.c9r.Dflt.makeSubclass(eYo, 'Motion', {
+eYo.c9r.Dflt.makeInheritedC9r(eYo, 'Motion', {
   /**
    * Reset and sever all links from this object.
    */

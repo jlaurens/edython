@@ -50,7 +50,7 @@ eYo.do.readOnlyMixin(eYo.xre, {
  * Class for a Delegate, decorator.
  * For edython.
  */
-eYo.stmt.makeClass('Decorator_stmt', {
+eYo.stmt.makeC9r('decorator_stmt', {
   xml: {
     attr: '@'
   },
@@ -128,9 +128,9 @@ eYo.stmt.makeClass('Decorator_stmt', {
     },
     name: {
       all: [ // accepted types
-        eYo.t3.Expr.Dotted_name,
-        eYo.t3.Expr.identifier,
-        eYo.t3.Expr.unset
+        eYo.t3.expr.dotted_name,
+        eYo.t3.expr.identifier,
+        eYo.t3.expr.unset
       ],
       init: '',
       placeholder () /** @suppress {globalThis} */ {
@@ -161,9 +161,9 @@ eYo.stmt.makeClass('Decorator_stmt', {
     },
     decorator: {
       all: [ // accepted types
-        eYo.t3.Expr.Dotted_name,
-        eYo.t3.Expr.identifier,
-        eYo.t3.Expr.unset
+        eYo.t3.expr.dotted_name,
+        eYo.t3.expr.identifier,
+        eYo.t3.expr.unset
       ],
       init: '',
       validate (after) /** @suppress {globalThis} */ {
@@ -317,7 +317,7 @@ eYo.stmt.makeClass('Decorator_stmt', {
         start: '(',
         end: ')'
       },
-      promise: eYo.t3.Expr.Argument_list,
+      promise: eYo.t3.expr.argument_list,
       didLoad () /** @suppress {globalThis} */ {
         var t = this.targetBrick // may be null ?
         if (t && t.children_.length) {
@@ -411,7 +411,7 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, funcdef_part.
  * For edython.
  */
-eYo.stmt.Group.makeSubclass('Funcdef_part', {
+eYo.stmt.Group.makeInheritedC9r('funcdef_part', {
   data: {
     variant: {
       all: [null, eYo.key.TYPE],
@@ -426,8 +426,8 @@ eYo.stmt.Group.makeSubclass('Funcdef_part', {
       placeholder: eYo.msg.placeholder.IDENTIFIER,
       validate (after) /** @suppress {globalThis} */ {
         var p5e = eYo.t3.profile.get(after, null)
-        return p5e.expr === eYo.t3.Expr.identifier
-          || p5e.expr === eYo.t3.Expr.unset
+        return p5e.expr === eYo.t3.expr.identifier
+          || p5e.expr === eYo.t3.expr.unset
           ? after
           : eYo.INVALID
       },
@@ -451,14 +451,14 @@ eYo.stmt.Group.makeSubclass('Funcdef_part', {
         start: '(',
         end: ')'
       },
-      wrap: eYo.t3.Expr.Parameter_list
+      wrap: eYo.t3.expr.parameter_list
     },
     type: {
       order: 3,
       fields: {
         label: '->'
       },
-      check: eYo.t3.Expr.Check.expression
+      check: eYo.t3.expr.check.expression
     }
   }
 }, true)
@@ -501,7 +501,7 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  * Class for a Delegate, classdef_part brick.
  * For edython.
  */
-eYo.stmt.Group.makeSubclass('Classdef_part', {
+eYo.stmt.Group.makeInheritedC9r('classdef_part', {
   data: {
     variant: {
       all: [eYo.key.NONE, eYo.key.N_ARY],
@@ -517,8 +517,8 @@ eYo.stmt.Group.makeSubclass('Classdef_part', {
       placeholder: eYo.msg.placeholder.IDENTIFIER,
       validate (after) /** @suppress {globalThis} */ {
         var p5e = eYo.t3.profile.get(after, null)
-        return p5e.expr === eYo.t3.Expr.identifier
-          || p5e.expr === eYo.t3.Expr.unset
+        return p5e.expr === eYo.t3.expr.identifier
+          || p5e.expr === eYo.t3.expr.unset
           ? after
           : eYo.INVALID
       },
@@ -543,7 +543,7 @@ eYo.stmt.Group.makeSubclass('Classdef_part', {
         start: '(',
         end: ')'
       },
-      wrap: eYo.t3.Expr.Argument_list,
+      wrap: eYo.t3.expr.argument_list,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           this.brick.Variant_p = eYo.key.N_ARY
@@ -582,9 +582,9 @@ eYo.stmt.Classdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
   return eYo.stmt.classdef_part.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 }
 
-eYo.brick.Proc.T3s = [
-  eYo.t3.Expr.identifier,
-  eYo.t3.Stmt.decorator_stmt,
-  eYo.t3.Stmt.funcdef_part,
-  eYo.t3.Stmt.Classdef_part
+eYo.brick.Proc.t3s = [
+  eYo.t3.expr.identifier,
+  eYo.t3.stmt.decorator_stmt,
+  eYo.t3.stmt.funcdef_part,
+  eYo.t3.stmt.classdef_part
 ]

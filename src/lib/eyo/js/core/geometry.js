@@ -44,7 +44,7 @@ Object.defineProperties( eYo.unit, {
  * @constructor
  * @param {Number} c - Horizontal coordinates, or another planar object.
  */
-eYo.makeClass('Where', {
+eYo.makeC9r('Where', {
   init (c, l, snap) {
     if (c === true || c === false) {
       this.snap_ = c
@@ -443,7 +443,7 @@ eYo.do.SizeOfText = function (txt) {
  * @struct
  * @constructor
  */
-eYo.makeClass('Rect', {
+eYo.makeC9r('Rect', {
   init (c, l, w, h, snap) {
     this.origin_ = new eYo.Where()
     this.size_ = new eYo.Size()

@@ -26,7 +26,7 @@ goog.require('goog.dom');
  */
 ;(() => {
   var creation = 0
-  eYo.stmt.Group.makeSubclass('Control', {
+  eYo.stmt.Group.makeInheritedC9r('Control', {
     data: {
       restart: {
         init: false,
@@ -89,16 +89,16 @@ eYo.brick.Dflt.prototype.runScript = function () {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Control.makeSubclass('Start_stmt', {
+eYo.stmt.Control.makeInheritedC9r('start_stmt', {
   xml: {
     attr: 'start'
   },
   left: eYo.NA, // override inherited
   right: eYo.NA, // override inherited
-  head: eYo.t3.stmt.Start_stmt,
-  foot: eYo.t3.stmt.Start_stmt,
+  head: eYo.t3.stmt.start_stmt,
+  foot: eYo.t3.stmt.start_stmt,
 })
 
-eYo.stmt.Control.T3s = [
-  eYo.t3.stmt.Start_stmt
+eYo.stmt.Control.t3s = [
+  eYo.t3.stmt.start_stmt
 ]

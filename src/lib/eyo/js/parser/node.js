@@ -37,7 +37,7 @@ node * */
  * @readonly
  * @property {string} name  name is the human readable type of the node.
  */
-eYo.makeClass('Node', {
+eYo.makeC9r('Node', {
   init (scan, type, subtype) {
     if (type === eYo.NA || type === eYo.tkn.ERRORTOKEN) {
       console.error('WTF')

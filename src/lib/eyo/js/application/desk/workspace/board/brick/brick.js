@@ -1497,7 +1497,7 @@ eYo.brick.DEBUG_ = Object.create(null)
     if (this.type_ === optNewType) {
       return
     }
-    if (optNewType === eYo.t3.Expr.unset) {
+    if (optNewType === eYo.t3.expr.unset) {
       console.error('C\'est une erreur!')
     }
     optNewType && (this.constructor.eyo.types.indexOf(optNewType) >= 0) && (this.pythonType_ = this.type_ = optNewType)
@@ -2579,8 +2579,8 @@ eYo.brick.newReady = (() => {
           } else if (p5e.stmt && (ans = board.newBrick(p5e.stmt, id))) {
             p5e.stmt && (ans.setDataWithType(p5e.stmt))
             dataModel = {data: model}
-          } else if (goog.isNumber(model)  && (ans = board.newBrick(eYo.t3.Expr.numberliteral, id))) {
-            ans.setDataWithType(eYo.t3.Expr.numberliteral)
+          } else if (goog.isNumber(model)  && (ans = board.newBrick(eYo.t3.expr.numberliteral, id))) {
+            ans.setDataWithType(eYo.t3.expr.numberliteral)
             dataModel = {data: model.toString()}
           } else {
             console.warn('No brick for model:', model)
@@ -2674,7 +2674,7 @@ eYo.do.defineDataProperty = (object, k) => {
  * function ([ns], [key], [Super], [Dlgt], [register], [model]) {...}
  * @param{Function} f
  */
-eYo.brick._p.makeClassDecorate = (f) => {
+eYo.brick._p.makeC9rDecorate = (f) => {
   return function (ns, key, Super, Dlgt, register, model) {
     if (ns && !eYo.isNS(ns)) {
       model = register
@@ -2703,14 +2703,14 @@ eYo.brick._p.makeClassDecorate = (f) => {
       model = register
       register = false
     }
-    return eYo.Brick_s.makeClassDecorate(function(ns, key, Super, Dlgt, model) {
+    return eYo.Brick_s.makeC9rDecorate(function(ns, key, Super, Dlgt, model) {
       return f.call(this, ns, key, Super, Dlgt, register, model)
     }).call(this, ns, key, Super, Dlgt, model)
   }
 }
 
 /**
- * @name{eYo.doMakeClass}
+ * @name{eYo.doMakeC9r}
  * Make a constructor with an 'eyo__' property.
  * Caveat, constructors must have the same arguments.
  * Use a key->value design if you do not want that.
@@ -2724,11 +2724,11 @@ eYo.brick._p.makeClassDecorate = (f) => {
  * @return {Function} the created constructor.
  * @this {*} namepsace
  */
-eYo.brick._p.doMakeClass = function (ns, key, Super, Dlgt, register, model) {
+eYo.brick._p.doMakeC9r = function (ns, key, Super, Dlgt, register, model) {
   if (key.indexOf('eyo:') >= 0) {
     key = key.substring(4)
   }
-  var C9r = eYo.brick.Super.doMakeClass.Call(this, ns, key, Super, Dlgt, model)
+  var C9r = eYo.brick.Super.doMakeC9r.Call(this, ns, key, Super, Dlgt, model)
   if (!C9r.eyo) {
     console.error('WHERE IS EYO???')
   }
@@ -2738,7 +2738,7 @@ eYo.brick._p.doMakeClass = function (ns, key, Super, Dlgt, register, model) {
 }
 
 /**
- * @name{eYo.brick.makeClass}
+ * @name{eYo.brick.makeC9r}
  * Method to create the constructor of a subclass.
  * One constructor, one key.
  * Registers the subclass too.
@@ -2758,13 +2758,13 @@ eYo.brick._p.doMakeClass = function (ns, key, Super, Dlgt, register, model) {
  * @param {Object} [model]
  * @return the constructor created
  */
-eYo.brick._p.makeClass = eYo.brick.makeClassDecorate(eYo.brick.doMakeClass)
+eYo.brick._p.makeC9r = eYo.brick.makeC9rDecorate(eYo.brick.doMakeC9r)
 
 /**
  * @param {Function} f -  The function to decorate.
  * @return {Function} the constructor created or `eYo.NA` when the receiver has no namespace.
  */
-eYo.brick.Dlgt_p.makeSubclassDecorate = (f) => {
+eYo.brick.Dlgt_p.makeInheritedC9rDecorate = (f) => {
   return function (ns, key, Dlgt, register, model) {
     if (!this) {
       console.error('BREAK HERE!')
@@ -2795,7 +2795,7 @@ eYo.brick.Dlgt_p.makeSubclassDecorate = (f) => {
       register = false
     }
     var Super = this.C9r
-    return eYo.Brick_s.makeClassDecorate(function(ns, key, Super, Dlgt, model) {
+    return eYo.Brick_s.makeC9rDecorate(function(ns, key, Super, Dlgt, model) {
       return f(ns, key, Super, Dlgt, register, model)
     }).call(this.ns, ns, key, Super, Dlgt, model)
   }
@@ -2821,7 +2821,7 @@ eYo.brick.Dlgt_p.makeSubclassDecorate = (f) => {
  * @param {Object} [model]
  * @return the constructor created
  */
-eYo.brick.Dlgt_p.makeSubclass = eYo.brick.Dlgt_p.makeSubclassDecorate(eYo.brick.doMakeClass)
+eYo.brick.Dlgt_p.makeInheritedC9r = eYo.brick.Dlgt_p.makeInheritedC9rDecorate(eYo.brick.doMakeC9r)
 
 eYo.brick.registerAll = function (typesByKey, C9r, fake) {
   for (var k in typesByKey) {
@@ -2899,5 +2899,5 @@ eYo.brick.Dflt_p.disposeEffect = function () {
 }
 
 // register this delegate for all the T3 types
-eYo.brick.registerAll(eYo.t3.Expr, eYo.brick.Dflt)
-eYo.brick.registerAll(eYo.t3.Stmt, eYo.brick.Dflt)
+eYo.brick.registerAll(eYo.t3.expr, eYo.brick.Dflt)
+eYo.brick.registerAll(eYo.t3.stmt, eYo.brick.Dflt)

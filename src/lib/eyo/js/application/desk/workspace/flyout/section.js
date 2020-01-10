@@ -25,7 +25,7 @@ eYo.provide('section')
  * @param {eYo.Flyout} owner  The owning flyout.
  * @constructor
  */
-eYo.section.makeClass('Dflt', eYo.c9r.Owned, {
+eYo.section.makeC9r('Dflt', eYo.c9r.Owned, {
   computed: {
     /**
      * The owning flyout

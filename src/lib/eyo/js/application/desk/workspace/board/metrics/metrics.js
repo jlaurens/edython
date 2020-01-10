@@ -73,7 +73,7 @@ eYo.forwardDeclare('geometry')
  * When true, an extra margin at the right of the draft board is added
  * to display line numbers.
  */
-eYo.makeClass('Metrics', {
+eYo.makeC9r('Metrics', {
   cloned: {
     port () {
       return new eYo.Rect()

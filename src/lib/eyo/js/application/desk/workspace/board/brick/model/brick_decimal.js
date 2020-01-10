@@ -39,7 +39,7 @@ eYo.provide('brick.decimal')
     var key = 'decimal__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Expr.Call_expr,
+      type: eYo.t3.expr.call_expr,
       name_p: name,
       holder_p: 'decimal',
       dotted_p: 0,
@@ -50,7 +50,7 @@ eYo.provide('brick.decimal')
     var key = 'decimal__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Expr.identifier,
+      type: eYo.t3.expr.identifier,
       name_p: name,
       holder_p: 'decimal',
       dotted_p: 0,
@@ -93,18 +93,18 @@ eYo.provide('brick.decimal')
     */
 eYo.Library.DATA.Basic_decimal__module = [
   {
-    type: eYo.t3.Stmt.import_stmt,
+    type: eYo.t3.stmt.import_stmt,
     from_p: 'decimal',
     star_p: true,
     title: 'decimal__import_stmt'
   },
   F('Decimal', 'Retourne une représentation d\'un nombre décimal, dans un certain contexte.'),
   {
-    type: eYo.t3.Stmt.Assignment_stmt,
+    type: eYo.t3.stmt.assignment_stmt,
     value_s: {
       slots: {
         O: {
-          type: eYo.t3.Expr.Call_expr,
+          type: eYo.t3.expr.call_expr,
           name_p: 'Decimal',
           holder_p: 'decimal',
           dotted_p: 0,
@@ -119,11 +119,11 @@ eYo.Library.DATA.Basic_decimal__module = [
     title: 'decimal__assigned_from_string'
   },
   {
-    type: eYo.t3.Stmt.Assignment_stmt,
+    type: eYo.t3.stmt.assignment_stmt,
     value_s: {
       slots: {
         O: {
-          type: eYo.t3.Expr.Call_expr,
+          type: eYo.t3.expr.call_expr,
           name_p: 'Decimal',
           holder_p: 'decimal',
           dotted_p: 0,
@@ -138,13 +138,13 @@ eYo.Library.DATA.Basic_decimal__module = [
     title: 'decimal__assigned_from_float'
   },
   {
-    type: eYo.t3.Stmt.Assignment_stmt,
+    type: eYo.t3.stmt.assignment_stmt,
     target_s: {
       slots: {
         O: {
-          type: eYo.t3.Expr.Attributeref,
+          type: eYo.t3.expr.attributeref,
           holder_s: {
-            type: eYo.t3.Expr.Call_expr,
+            type: eYo.t3.expr.call_expr,
             name_p: 'getcontext',
             dotted_p: 0
           },
@@ -166,7 +166,7 @@ eYo.Library.DATA.Basic_decimal__module = [
     var key = 'decimal__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Expr.Call_expr,
+      type: eYo.t3.expr.call_expr,
       data: {
         name: name,
         holder: 'decimal',
@@ -179,7 +179,7 @@ eYo.Library.DATA.Basic_decimal__module = [
     var key = 'decimal__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Expr.Attributeref,
+      type: eYo.t3.expr.attributeref,
       data: {
         name: name,
         holder: 'decimal',
@@ -191,23 +191,23 @@ eYo.Library.DATA.Basic_decimal__module = [
 
 eYo.Library.DATA.decimal__module = [
   {
-    type: eYo.t3.Stmt.import_stmt,
+    type: eYo.t3.stmt.import_stmt,
     import_module_s: {
       slots: {
         O: {
-          type: eYo.t3.Expr.identifier,
+          type: eYo.t3.expr.identifier,
           name_p: 'decimal'
         }
       }
     }
   },
   {
-    type: eYo.t3.Stmt.import_stmt,
+    type: eYo.t3.stmt.import_stmt,
     from_p: 'decimal',
     import_s: {
       slots: {
         O: {
-          type: eYo.t3.Expr.identifier_as,
+          type: eYo.t3.expr.identifier_as,
           name_p: 'Decimal',
           alias_p: 'D'
         }
@@ -248,7 +248,7 @@ eYo.Library.DATA.decimal__module = [
       'ROUND_05UP'
     ].forEach(key => {
       createOneBrick({
-        type: eYo.t3.Expr.identifier,
+        type: eYo.t3.expr.identifier,
         name_p: key,
         holder_p: 'decimal',
         dotted_p: 1,
@@ -267,6 +267,6 @@ goog.mixin(eYo.tooltip.Title, {
   decimal__assigned_prec: 'Modifier la précision des calculs à venir.'
 })
 
-eYo.brick.decimal.T3s = [
-  eYo.t3.Expr.decimal__const
+eYo.brick.decimal.t3s = [
+  eYo.t3.expr.decimal__const
 ]

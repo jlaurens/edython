@@ -174,7 +174,7 @@ eYo.magnet.disposeDB = (board) => {
  * @name{eYo.magnet.S}
  * @param {eYo.brick.Dflt} brick  brick is the owner
  */
-eYo.magnet.makeClass('S', {
+eYo.magnet.makeC9r('S', {
   init (brick) {
     // configure the connections
     var model = brick.model
@@ -266,7 +266,7 @@ eYo.c9r.model.magnetHandler = (model) => {
  * @property {boolean} isSuperior  whether the connection is superior, true if connection faces down or right, false otherwise.
  * @constructor
  */
-eYo.magnet.makeClass('Dflt', eYo.c9r.BSMOwned, {
+eYo.magnet.makeC9r('Dflt', eYo.c9r.BSMOwned, {
   init (bs, type, model) {
     if (this.slot) {
       this.name_ = this.slot.key

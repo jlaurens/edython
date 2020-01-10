@@ -21,4 +21,4 @@ eYo.require('c9r.Pane')
  * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.makeClass('Terminal', eYo.c9r.Pane)
+eYo.makeC9r('Terminal', eYo.c9r.Pane)

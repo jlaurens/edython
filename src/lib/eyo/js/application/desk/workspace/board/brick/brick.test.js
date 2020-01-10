@@ -23,7 +23,7 @@ describe('Create', function() {
 describe('One brick (ALIASED)', function () {
   it (`white space before 'as'`, function () {
     var b3k = eYo.Test.new_brick({
-      type: eYo.t3.Expr.identifier,
+      type: eYo.t3.expr.identifier,
       target_p: 'abc',
       alias_p: 'cde'
     })
@@ -36,8 +36,8 @@ describe('Statement magnets', function () {
   var b_1, b_2
   before(function() {
     var type = 'test_stmt_magnets'
-    eYo.t3.Stmt[type] = type
-    eYo.stmt.makeSubclass(type, {
+    eYo.t3.stmt[type] = type
+    eYo.stmt.makeInheritedC9r(type, {
       left: { check: type },
       right: { check: type },
     })  
@@ -93,8 +93,8 @@ describe('Group magnets', function () {
   var b_1, b_2
   before(function() {
     var type = 'test_group_magnets'
-    eYo.t3.Stmt[type] = type
-    eYo.stmt.Group.makeSubclass(type, {
+    eYo.t3.stmt[type] = type
+    eYo.stmt.Group.makeInheritedC9r(type, {
       left: { check: type },
       right: { check: type },
     })  

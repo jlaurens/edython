@@ -21,7 +21,7 @@ eYo.forwardDeclare('Motion')
  * @property {eYo.Motion} motion - the motion used to create this scaler
  * @property {Boolean} active - whether the receiver is active
  */
-eYo.c9r.makeClass(eYo, 'Scaler', {
+eYo.c9r.makeC9r(eYo, 'Scaler', {
   init (motion) {
     this.motion_ = motion
   },

@@ -25,7 +25,7 @@ eYo.require('consolidator.List')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('List', {
+eYo.expr.Dflt.makeInheritedC9r('List', {
   init: function () {
     this.slotList_ = new Proxy(this, eYo.expr.List.SlotsHandler)
   },
@@ -279,9 +279,9 @@ Object.defineProperties(eYo.expr.List.prototype, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubclass('Optional_expression_list', {
+eYo.expr.List.makeInheritedC9r('optional_expression_list', {
   list: {
-    check: eYo.t3.Expr.Check.expression,
+    check: eYo.t3.expr.check.expression,
     mandatory: 0,
     presep: ','
   }
@@ -293,9 +293,9 @@ eYo.expr.List.makeSubclass('Optional_expression_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubclass('Non_void_expression_list', {
+eYo.expr.List.makeInheritedC9r('non_void_expression_list', {
   list: {
-    check: eYo.t3.Expr.Check.expression,
+    check: eYo.t3.expr.check.expression,
     mandatory: 1,
     presep: ','
   }
@@ -307,9 +307,9 @@ eYo.expr.List.makeSubclass('Non_void_expression_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubclass('Slice_list', {
+eYo.expr.List.makeInheritedC9r('slice_list', {
   list: {
-    check: eYo.t3.Expr.Check.Slice_item,
+    check: eYo.t3.expr.check.Slice_item,
     mandatory: 1,
     presep: ','
   }
@@ -321,9 +321,9 @@ eYo.expr.List.makeSubclass('Slice_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubclass('With_item_list', {
+eYo.expr.List.makeInheritedC9r('with_item_list', {
   list: {
-    check: eYo.t3.Expr.Check.with_item,
+    check: eYo.t3.expr.check.with_item,
     mandatory: 1,
     presep: ','
   }
@@ -361,7 +361,7 @@ eYo.expr.List.makeSubclass('With_item_list', {
  * 2) singleton set_display: replacement for the unique connection: same as above
  * 3) singleton dict_display: replacement for the unique connection: same as above
  */
-eYo.expr.List.makeSubclass('Enclosure', {
+eYo.expr.List.makeInheritedC9r('Enclosure', {
   data: {
     variant: {
       order: 0,
@@ -378,11 +378,11 @@ eYo.expr.List.makeSubclass('Enclosure', {
       },
       fromType (type) /** @suppress {globalThis} */ {
         return {
-          [eYo.t3.Expr.enclosure]: eYo.key.PAR,
-          [eYo.t3.Expr.parenth_form]: eYo.key.PAR,
-          [eYo.t3.Expr.parenth_target_list]: eYo.key.PAR,
-          [eYo.t3.Expr.list_display]: eYo.key.SQB,
-          [eYo.t3.Expr.Bracket_target_list]: eYo.key.SQB
+          [eYo.t3.expr.enclosure]: eYo.key.PAR,
+          [eYo.t3.expr.parenth_form]: eYo.key.PAR,
+          [eYo.t3.expr.parenth_target_list]: eYo.key.PAR,
+          [eYo.t3.expr.list_display]: eYo.key.SQB,
+          [eYo.t3.expr.bracket_target_list]: eYo.key.SQB
         } [type] || eYo.key.BRACE
       }
     }
@@ -393,27 +393,27 @@ eYo.expr.List.makeSubclass('Enclosure', {
   },
   list: (() => {
     var unique = {
-      [eYo.t3.Expr.parenth_form]: eYo.t3.Expr.Check.enclosure_list_unique,
-      [eYo.t3.Expr.parenth_target_list]: eYo.t3.Expr.Check.enclosure_list_unique,
-      [eYo.t3.Expr.list_display]: [eYo.t3.Expr.Comprehension],
-      [eYo.t3.Expr.Bracket_target_list]: [eYo.t3.Expr.Comprehension],
-      [eYo.t3.Expr.one_set_display]: [eYo.t3.Expr.Comprehension, eYo.t3.Expr.dict_comprehension],
-      [eYo.t3.Expr.Set_display]: [eYo.t3.Expr.Comprehension, eYo.t3.Expr.dict_comprehension],
-      [eYo.t3.Expr.one_dict_display]: [eYo.t3.Expr.Comprehension, eYo.t3.Expr.dict_comprehension],
-      [eYo.t3.Expr.dict_display]: [eYo.t3.Expr.Comprehension, eYo.t3.Expr.dict_comprehension],
-      [eYo.t3.Expr.void_dict_display]: [eYo.t3.Expr.Comprehension, eYo.t3.Expr.dict_comprehension]
+      [eYo.t3.expr.parenth_form]: eYo.t3.expr.check.enclosure_list_unique,
+      [eYo.t3.expr.parenth_target_list]: eYo.t3.expr.check.enclosure_list_unique,
+      [eYo.t3.expr.list_display]: [eYo.t3.expr.comprehension],
+      [eYo.t3.expr.bracket_target_list]: [eYo.t3.expr.comprehension],
+      [eYo.t3.expr.one_set_display]: [eYo.t3.expr.comprehension, eYo.t3.expr.dict_comprehension],
+      [eYo.t3.expr.set_display]: [eYo.t3.expr.comprehension, eYo.t3.expr.dict_comprehension],
+      [eYo.t3.expr.one_dict_display]: [eYo.t3.expr.comprehension, eYo.t3.expr.dict_comprehension],
+      [eYo.t3.expr.dict_display]: [eYo.t3.expr.comprehension, eYo.t3.expr.dict_comprehension],
+      [eYo.t3.expr.void_dict_display]: [eYo.t3.expr.comprehension, eYo.t3.expr.dict_comprehension]
     }
     var check = {
-      [eYo.t3.Expr.parenth_form]: eYo.t3.Expr.Check.Starred_item_38,
-      [eYo.t3.Expr.list_display]: eYo.t3.Expr.Check.Starred_item_38,
-      [eYo.t3.Expr.parenth_target_list]: eYo.t3.Expr.Check.Starred_item_38,
-      [eYo.t3.Expr.Bracket_target_list]: eYo.t3.Expr.Check.Starred_item_38,
-      [eYo.t3.Expr.one_set_display]: eYo.t3.Expr.Check.Starred_item,
-      [eYo.t3.Expr.Set_display]: eYo.t3.Expr.Check.starred_item,
-      [eYo.t3.Expr.one_dict_display]: eYo.t3.Expr.Check.key_datum_all,
-      [eYo.t3.Expr.dict_display]: eYo.t3.Expr.Check.key_datum_all
+      [eYo.t3.expr.parenth_form]: eYo.t3.expr.check.Starred_item_38,
+      [eYo.t3.expr.list_display]: eYo.t3.expr.check.Starred_item_38,
+      [eYo.t3.expr.parenth_target_list]: eYo.t3.expr.check.Starred_item_38,
+      [eYo.t3.expr.bracket_target_list]: eYo.t3.expr.check.Starred_item_38,
+      [eYo.t3.expr.one_set_display]: eYo.t3.expr.check.Starred_item,
+      [eYo.t3.expr.set_display]: eYo.t3.expr.check.starred_item,
+      [eYo.t3.expr.one_dict_display]: eYo.t3.expr.check.key_datum_all,
+      [eYo.t3.expr.dict_display]: eYo.t3.expr.check.key_datum_all
     }
-    check[eYo.t3.Expr.void_dict_display] = goog.array.concat(eYo.t3.Expr.Check.Starred_item, eYo.t3.Expr.Check.key_datum_all)
+    check[eYo.t3.expr.void_dict_display] = goog.array.concat(eYo.t3.expr.check.Starred_item, eYo.t3.expr.check.key_datum_all)
     var me = {
       unique: (type) => {
         return unique[type]
@@ -425,18 +425,18 @@ eYo.expr.List.makeSubclass('Enclosure', {
       presep: ','
     }
     var all = Object.create(null)
-    ;[eYo.t3.Expr.parenth_form,
-      eYo.t3.Expr.parenth_target_list,
-      eYo.t3.Expr.list_display,
-      eYo.t3.Expr.Bracket_target_list,
-      eYo.t3.Expr.Set_display,
-      eYo.t3.Expr.dict_display].forEach(k => {
+    ;[eYo.t3.expr.parenth_form,
+      eYo.t3.expr.parenth_target_list,
+      eYo.t3.expr.list_display,
+      eYo.t3.expr.bracket_target_list,
+      eYo.t3.expr.set_display,
+      eYo.t3.expr.dict_display].forEach(k => {
       all[k] = goog.array.concat(me.unique(k), me.check(k))
     })
-    all[eYo.t3.Expr.void_dict_display] = all[eYo.t3.Expr.one_set_display] = all[eYo.t3.Expr.one_dict_display] = goog.array.concat(
-      me.unique(eYo.t3.Expr.one_set_display),
-      me.check(eYo.t3.Expr.dict_display),
-      me.check(eYo.t3.Expr.Set_display))
+    all[eYo.t3.expr.void_dict_display] = all[eYo.t3.expr.one_set_display] = all[eYo.t3.expr.one_dict_display] = goog.array.concat(
+      me.unique(eYo.t3.expr.one_set_display),
+      me.check(eYo.t3.expr.dict_display),
+      me.check(eYo.t3.expr.set_display))
     me.all = (type) => {
       return all [type]
     }
@@ -476,7 +476,7 @@ eYo.expr.enclosure.prototype.getProfile = eYo.c9r.decorateChange(
         return {ans: this.slotSome(slot => {
             var t = slot.targetBrick
             if (t && (t = t.out_m.check_)) {
-              return t.some(x => eYo.t3.Expr.Check.Target.indexOf(x) >= 0)
+              return t.some(x => eYo.t3.expr.check.Target.indexOf(x) >= 0)
             }
           })
           ? target
@@ -485,32 +485,32 @@ eYo.expr.enclosure.prototype.getProfile = eYo.c9r.decorateChange(
       }
       var variant = this.Variant_p
       if (variant === eYo.key.PAR) {
-        return f(eYo.t3.Expr.parenth_target_list, eYo.t3.Expr.parenth_form)
+        return f(eYo.t3.expr.parenth_target_list, eYo.t3.expr.parenth_form)
       }
       if (variant === eYo.key.SQB) {
-        return f(eYo.t3.Expr.Bracket_target_list, eYo.t3.Expr.list_display)
+        return f(eYo.t3.expr.bracket_target_list, eYo.t3.expr.list_display)
       }
       var target = this.firstTarget
       if (target) {
-        if (target.type === eYo.t3.Expr.Comprehension) {
-          return {ans: eYo.t3.Expr.Set_display}
-        } else if (target.type === eYo.t3.Expr.dict_comprehension) {
-          return {ans: eYo.t3.Expr.dict_display}
+        if (target.type === eYo.t3.expr.comprehension) {
+          return {ans: eYo.t3.expr.set_display}
+        } else if (target.type === eYo.t3.expr.dict_comprehension) {
+          return {ans: eYo.t3.expr.dict_display}
         } else if (this.slots.length === 3) {
-            if (this.model.all(eYo.t3.Expr.Set_display).indexOf(target.type) >= 0) {
-              return {ans: eYo.t3.Expr.one_set_display}
+            if (this.model.all(eYo.t3.expr.set_display).indexOf(target.type) >= 0) {
+              return {ans: eYo.t3.expr.one_set_display}
             } else {
-              return {ans: eYo.t3.Expr.one_dict_display}
+              return {ans: eYo.t3.expr.one_dict_display}
             }
-        } else if (this.model.all(eYo.t3.Expr.Set_display).indexOf(target.type) >= 0) {
-          return {ans: eYo.t3.Expr.Set_display}
+        } else if (this.model.all(eYo.t3.expr.set_display).indexOf(target.type) >= 0) {
+          return {ans: eYo.t3.expr.set_display}
         } else {
-          return {ans: eYo.t3.Expr.dict_display}
+          return {ans: eYo.t3.expr.dict_display}
         }
       }
-      return {ans: eYo.t3.Expr.void_dict_display}
+      return {ans: eYo.t3.expr.void_dict_display}
     }
-    return {ans: eYo.t3.Expr.parenth_form}
+    return {ans: eYo.t3.expr.parenth_form}
   }
 )
 
@@ -520,16 +520,16 @@ eYo.expr.enclosure.prototype.getProfile = eYo.c9r.decorateChange(
  * @param {Object} profile
  */
 eYo.expr.enclosure.prototype.getOutCheck = function (profile) {
-  if (profile === eYo.t3.Expr.parenth_target_list) {
-    return [eYo.t3.Expr.parenth_target_list, eYo.t3.Expr.parenth_form]
-  } else if (profile === eYo.t3.Expr.Bracket_target_list) {
-    return [eYo.t3.Expr.Bracket_target_list, eYo.t3.Expr.list_display]
-  } else if (profile === eYo.t3.Expr.void_dict_display) {
-    return [profile, eYo.t3.Expr.dict_display]
-  } else if (profile === eYo.t3.Expr.one_dict_display) {
-    return [profile, eYo.t3.Expr.dict_display]
-  } else if (profile === eYo.t3.Expr.one_set_display) {
-    return [profile, eYo.t3.Expr.Set_display]
+  if (profile === eYo.t3.expr.parenth_target_list) {
+    return [eYo.t3.expr.parenth_target_list, eYo.t3.expr.parenth_form]
+  } else if (profile === eYo.t3.expr.bracket_target_list) {
+    return [eYo.t3.expr.bracket_target_list, eYo.t3.expr.list_display]
+  } else if (profile === eYo.t3.expr.void_dict_display) {
+    return [profile, eYo.t3.expr.dict_display]
+  } else if (profile === eYo.t3.expr.one_dict_display) {
+    return [profile, eYo.t3.expr.dict_display]
+  } else if (profile === eYo.t3.expr.one_set_display) {
+    return [profile, eYo.t3.expr.set_display]
   } else {
     return [profile]
   }
@@ -555,22 +555,22 @@ eYo.expr.enclosure.prototype.getBaseType = function () {
   eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.enclosure))
 })
 
-eYo.expr.List.T3s = [
-  eYo.t3.Expr.identifier,
-  eYo.t3.Expr.Comprehension,
-  eYo.t3.Expr.dict_comprehension,
-  eYo.t3.Expr.key_datum,
-  eYo.t3.Expr.optional_expression_list,
-  eYo.t3.Expr.parenth_form,
-  eYo.t3.Expr.parenth_target_list,
-  eYo.t3.Expr.list_display,
-  eYo.t3.Expr.Bracket_target_list,
-  eYo.t3.Expr.void_dict_display,
-  eYo.t3.Expr.one_set_display,
-  eYo.t3.Expr.Set_display,
-  eYo.t3.Expr.one_dict_display,
-  eYo.t3.Expr.dict_display,
-  eYo.t3.Expr.Slice_list,
-  eYo.t3.Expr.dict_display,
-  eYo.t3.Expr.with_item_list
+eYo.expr.List.t3s = [
+  eYo.t3.expr.identifier,
+  eYo.t3.expr.comprehension,
+  eYo.t3.expr.dict_comprehension,
+  eYo.t3.expr.key_datum,
+  eYo.t3.expr.optional_expression_list,
+  eYo.t3.expr.parenth_form,
+  eYo.t3.expr.parenth_target_list,
+  eYo.t3.expr.list_display,
+  eYo.t3.expr.bracket_target_list,
+  eYo.t3.expr.void_dict_display,
+  eYo.t3.expr.one_set_display,
+  eYo.t3.expr.set_display,
+  eYo.t3.expr.one_dict_display,
+  eYo.t3.expr.dict_display,
+  eYo.t3.expr.slice_list,
+  eYo.t3.expr.dict_display,
+  eYo.t3.expr.with_item_list
 ]

@@ -73,7 +73,7 @@ eYo.forwardDeclare('Audio')
  *           minScale: 0.1,
  *           scaleSpeed: 1.2}
  */
-eYo.app.makeClass('Options', eYo.Dflt, {
+eYo.app.makeC9r('Options', eYo.Dflt, {
   init (options) {
     var readOnly = !!options.readOnly
     if (readOnly) {

@@ -18,4 +18,4 @@
  * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.makeClass('Graphic', eYo.c9r.Pane)
+eYo.makeC9r('Graphic', eYo.c9r.Pane)

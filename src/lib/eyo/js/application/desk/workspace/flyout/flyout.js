@@ -75,7 +75,7 @@ eYo.forwardDeclare('menuButtonRenderer')
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.makeClass('Flyout', {
+eYo.makeC9r('Flyout', {
   owned: {
     search () {
       return new eYo.section.Search(this)

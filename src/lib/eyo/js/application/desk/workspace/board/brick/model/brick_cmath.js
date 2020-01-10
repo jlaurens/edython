@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview CMath module bricks for edython.
+ * @fileoverview cmath module bricks for edython.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -22,7 +22,7 @@ eYo.require('expr.Primary')
 eYo.require('tooltip')
 
 eYo.require('Library')
-eYo.provide('brick.cMath')
+eYo.provide('brick.cmath')
 
 ;(function () {
 
@@ -30,7 +30,7 @@ eYo.provide('brick.cMath')
     var key = 'cmath__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Expr.Call_expr,
+      type: eYo.t3.expr.call_expr,
       data: {
         name: name,
         holder: 'cmath',
@@ -43,7 +43,7 @@ eYo.provide('brick.cMath')
     var key = 'cmath__'+name
     title && (eYo.tooltip.Title[key] = title)
     return {
-      type: eYo.t3.Expr.Call_expr,
+      type: eYo.t3.expr.call_expr,
       data: {
         name: name,
         holder: 'cmath',
@@ -53,32 +53,32 @@ eYo.provide('brick.cMath')
     }
   }
 
-eYo.Library.DATA.Basic_cmath__module = [
+eYo.Library.DATA.basic_cmath__module = [
   {
-    type: eYo.t3.Expr.Call_expr,
+    type: eYo.t3.expr.call_expr,
     data: {
       name: 'complex',
       dotted: 0
     }
   },
   {
-    type: eYo.t3.Expr.Attributeref,
+    type: eYo.t3.expr.attributeref,
     name_p: 'real',
     dotted_p: 1
   },
   {
-    type: eYo.t3.Expr.Attributeref,
+    type: eYo.t3.expr.attributeref,
     name_p: 'imag',
     dotted_p: 1
   },
   {
-    type: eYo.t3.Expr.Call_expr,
+    type: eYo.t3.expr.call_expr,
     name_p: 'conjugate',
     ary_p: 0,
     dotted: 1
   },
   {
-    type: eYo.t3.Stmt.import_stmt,
+    type: eYo.t3.stmt.import_stmt,
     from_p: 'cmath',
     variant_p: eYo.key.FROM_MODULE_IMPORT_STAR
   },
@@ -106,7 +106,7 @@ F = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.tooltip.Title[key] = title)
   return {
-    type: eYo.t3.Expr.Call_expr,
+    type: eYo.t3.expr.call_expr,
     data: {
       name: name,
       holder: 'cmath',
@@ -119,7 +119,7 @@ F_k = (name, title) => {
   var key = 'cmath__'+name
   title && (eYo.tooltip.Title[key] = title)
   return {
-    type: eYo.t3.Expr.Attributeref,
+    type: eYo.t3.expr.attributeref,
     data: {
       name: name,
       holder: 'cmath',
@@ -131,28 +131,28 @@ F_k = (name, title) => {
 
 eYo.Library.DATA.Cmath__module = [
   {
-    type: eYo.t3.Expr.Call_expr,
+    type: eYo.t3.expr.call_expr,
     data: {
       name: 'complex',
       dotted: 0
     }
   },
   {
-    type: eYo.t3.Expr.Attributeref,
+    type: eYo.t3.expr.attributeref,
     data: {
       name: 'real',
       dotted: 1
     }
   },
   {
-    type: eYo.t3.Expr.Attributeref,
+    type: eYo.t3.expr.attributeref,
     data: {
       name: 'imag',
       dotted: 1
     }
   },
   {
-    type: eYo.t3.Expr.Call_expr,
+    type: eYo.t3.expr.call_expr,
     data: {
       name: 'conjugate',
       ary: 0,
@@ -160,7 +160,7 @@ eYo.Library.DATA.Cmath__module = [
     }
   },
   {
-    type: eYo.t3.Stmt.import_stmt,
+    type: eYo.t3.stmt.import_stmt,
     data: {
       variant: eYo.key.IMPORT
     },
@@ -168,7 +168,7 @@ eYo.Library.DATA.Cmath__module = [
       import_module: {
         slots: {
           O: {
-            type: eYo.t3.Expr.identifier,
+            type: eYo.t3.expr.identifier,
             data: 'cmath',
           },
         },
@@ -218,6 +218,6 @@ goog.mixin(eYo.tooltip.Title, {
   cmath__import_stmt: 'Importer le module cmath',
 })
 
-eYo.brick.CMath.T3s = [
-  eYo.t3.Expr.Cmath__const
+eYo.brick.CMath.t3s = [
+  eYo.t3.expr.cmath__const
 ]

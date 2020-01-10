@@ -31,7 +31,7 @@ console.error('Manage reentrant_ more carefully')
  * @name{eYo.consolidator.Dlgt}
  * @constructor
  */
-eYo.consolidator.makeClass('Dlgt')
+eYo.consolidator.makeC9r('Dlgt')
 
 /**
  * @name{eYo.consolidator.Dflt}
@@ -48,7 +48,7 @@ eYo.consolidator.makeClass('Dlgt')
  * @param {Object} model - all the model needed
  * @constructor
  */
-eYo.consolidator.makeClass('Dflt', {
+eYo.consolidator.makeC9r('Dflt', {
   valued: {
     model () {
       return Object.create(null)
@@ -88,7 +88,7 @@ eYo.consolidator.Dflt_p.consolidate = eYo.do.nothing
  * of the slot, which means that naming should be done
  * dynamically.
  */
-eYo.consolidator.Dflt.makeSubclass('List', {
+eYo.consolidator.Dflt.makeInheritedC9r('List', {
   /**
    * Initialize the list consolidator.
    * @param {Object} d model.

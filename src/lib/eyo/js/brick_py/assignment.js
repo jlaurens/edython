@@ -43,7 +43,7 @@ goog.forwardDeclare('goog.dom')
  * or a augtarget_annotated which is a particular case of key_datum.
  * For edython.
  */
-eYo.stmt.makeClass('Assignment_stmt', {
+eYo.stmt.makeC9r('assignment_stmt', {
   data: {
     variant: {
       all: [
@@ -74,13 +74,13 @@ eYo.stmt.makeClass('Assignment_stmt', {
         builtin()
       },
       fromType (type) /** @suppress {globalThis} */ {
-        if (type === eYo.t3.Stmt.expression_stmt) {
+        if (type === eYo.t3.stmt.expression_stmt) {
           // expression statement defaults to a python comment line
           // but it should change because of the 'comment_stmt' below
           this.doChange(eYo.key.EXPRESSION)
-        } else if (type === eYo.t3.Stmt.Annotated_stmt) {
+        } else if (type === eYo.t3.stmt.annotated_stmt) {
           this.doChange(eYo.key.ANNOTATED)
-        } else if (type === eYo.t3.Stmt.Annotated_assignment_stmt) {
+        } else if (type === eYo.t3.stmt.annotated_assignment_stmt) {
           this.doChange(eYo.key.ANNOTATED_VALUED)
         } else if (this.value_ !== eYo.key.TARGET_VALUED) {
           this.doChange(eYo.key.TARGET_VALUED)
@@ -89,7 +89,7 @@ eYo.stmt.makeClass('Assignment_stmt', {
       consolidate () /** @suppress {globalThis} */ {
         var b3k = this.brick
         var t = b3k.target_s.unwrappedTarget
-        if (t && (t.type === eYo.t3.Expr.identifier_annotated || t.type === eYo.t3.Expr.Augtarget_annotated)) {
+        if (t && (t.type === eYo.t3.expr.identifier_annotated || t.type === eYo.t3.expr.augtarget_annotated)) {
           // no 2 annotations
           if (b3k.Variant_p === eYo.key.ANNOTATED) {
             this.doChange(eYo.key.TARGET)
@@ -103,9 +103,9 @@ eYo.stmt.makeClass('Assignment_stmt', {
       init: '',
       placeholder: eYo.msg.placeholder.IDENTIFIER,
       subtypes: [
-        eYo.t3.Expr.unset,
-        eYo.t3.Expr.identifier,
-        eYo.t3.Expr.Dotted_name
+        eYo.t3.expr.unset,
+        eYo.t3.expr.identifier,
+        eYo.t3.expr.dotted_name
       ],
       validate (after) /** @suppress {globalThis} */ {
         var p5e = eYo.t3.profile.get(after, null)
@@ -167,7 +167,7 @@ eYo.stmt.makeClass('Assignment_stmt', {
       },
       validate: true,
       fromType (type) /** @suppress {globalThis} */ {
-        if (type === eYo.t3.Stmt.Augmented_assignment_stmt && (this.value_ === '' || this.value_ === '=')) {
+        if (type === eYo.t3.stmt.augmented_assignment_stmt && (this.value_ === '' || this.value_ === '=')) {
           this.doChange('+=')
         }
       },
@@ -238,7 +238,7 @@ eYo.stmt.makeClass('Assignment_stmt', {
           variable: true
         }
       },
-      wrap: eYo.t3.Expr.Target_list,
+      wrap: eYo.t3.expr.target_list,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
@@ -269,7 +269,7 @@ eYo.stmt.makeClass('Assignment_stmt', {
           endEditing: true
         }
       },
-      check: eYo.t3.Expr.Check.expression,
+      check: eYo.t3.expr.check.expression,
       xml: {
         attr: ':'
       },
@@ -297,7 +297,7 @@ eYo.stmt.makeClass('Assignment_stmt', {
           endEditing: true
         }
       },
-      wrap: eYo.t3.Expr.value_list,
+      wrap: eYo.t3.expr.value_list,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
@@ -329,23 +329,23 @@ eYo.stmt.makeClass('Assignment_stmt', {
 eYo.stmt.Assignment_stmt.prototype.getType = function () {
   var x = this.Variant_p
   if (x === eYo.key.VALUED || x === eYo.key.EXPRESSION) { // not yet consolidated
-    return eYo.t3.Stmt.expression_stmt
+    return eYo.t3.stmt.expression_stmt
   } else if (x === eYo.key.NONE || this.Operator_p === '') { // not yet consolidated
-    return eYo.t3.Stmt.expression_stmt
+    return eYo.t3.stmt.expression_stmt
   } else if (this.Operator_p === '=') { // not an augmented assigment
     if (x === eYo.key.ANNOTATED) {
-      return eYo.t3.Stmt.Annotated_stmt
+      return eYo.t3.stmt.annotated_stmt
     }
     if (x === eYo.key.ANNOTATED_VALUED) {
-      return eYo.t3.Stmt.Annotated_assignment_stmt
+      return eYo.t3.stmt.annotated_assignment_stmt
     }
     x = this.target_s.unwrappedTarget
-    if (x && (x.type === eYo.t3.Expr.identifier_annotated || x.type === eYo.t3.Expr.Augtarget_annotated)) {
-      return eYo.t3.Stmt.Annotated_assignment_stmt
+    if (x && (x.type === eYo.t3.expr.identifier_annotated || x.type === eYo.t3.expr.augtarget_annotated)) {
+      return eYo.t3.stmt.annotated_assignment_stmt
     }
-    return eYo.t3.Stmt.Assignment_stmt
+    return eYo.t3.stmt.assignment_stmt
   } else {
-    return eYo.t3.Stmt.Augmented_assignment_stmt
+    return eYo.t3.stmt.augmented_assignment_stmt
   }
 }
 
@@ -388,30 +388,30 @@ eYo.stmt.Assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Used only in assignment statement as wrapped value,
  * and in primary as promised value.
  */
-eYo.expr.List.makeSubclass('Value_list', {
+eYo.expr.List.makeInheritedC9r('value_list', {
   list: (() => {
     /*
      * For each given type, returns the list of brick types that can be unique.
      */
     var unique = {
-      [eYo.t3.Stmt.Assignment_stmt]: [eYo.t3.Expr.yield_expr, eYo.t3.Expr.assignment_chain, eYo.t3.Expr.identifier_valued],
-      [eYo.t3.Stmt.Augmented_assignment_stmt]: [eYo.t3.Expr.yield_expr],
-      [eYo.t3.Stmt.Annotated_assignment_stmt]: [eYo.t3.Expr.yield_expr],
-      [eYo.t3.Expr.Assignment_chain]: [eYo.t3.Expr.yield_expr, eYo.t3.Expr.assignment_chain, eYo.t3.Expr.identifier_valued],
-      [eYo.t3.Expr.identifier_valued]: [eYo.t3.Expr.yield_expr, eYo.t3.Expr.Assignment_chain, eYo.t3.Expr.identifier_valued],
-      [eYo.t3.Expr.identifier_annotated_valued]: [eYo.t3.Expr.yield_expr, eYo.t3.Expr.Assignment_chain, eYo.t3.Expr.identifier_valued],
-      [eYo.t3.Expr.named_expr]: [eYo.t3.Expr.yield_expr, eYo.t3.Expr.Assignment_chain, eYo.t3.Expr.identifier_valued],
-      [eYo.t3.Expr.key_datum]: [eYo.t3.Expr.yield_expr, eYo.t3.Expr.Assignment_chain, eYo.t3.Expr.identifier_valued]
+      [eYo.t3.stmt.assignment_stmt]: [eYo.t3.expr.yield_expr, eYo.t3.expr.assignment_chain, eYo.t3.expr.identifier_valued],
+      [eYo.t3.stmt.augmented_assignment_stmt]: [eYo.t3.expr.yield_expr],
+      [eYo.t3.stmt.annotated_assignment_stmt]: [eYo.t3.expr.yield_expr],
+      [eYo.t3.expr.assignment_chain]: [eYo.t3.expr.yield_expr, eYo.t3.expr.assignment_chain, eYo.t3.expr.identifier_valued],
+      [eYo.t3.expr.identifier_valued]: [eYo.t3.expr.yield_expr, eYo.t3.expr.assignment_chain, eYo.t3.expr.identifier_valued],
+      [eYo.t3.expr.identifier_annotated_valued]: [eYo.t3.expr.yield_expr, eYo.t3.expr.assignment_chain, eYo.t3.expr.identifier_valued],
+      [eYo.t3.expr.named_expr]: [eYo.t3.expr.yield_expr, eYo.t3.expr.assignment_chain, eYo.t3.expr.identifier_valued],
+      [eYo.t3.expr.key_datum]: [eYo.t3.expr.yield_expr, eYo.t3.expr.assignment_chain, eYo.t3.expr.identifier_valued]
     }
     var check = {
-      [eYo.t3.Stmt.Assignment_stmt]: eYo.t3.Expr.Check.starred_item,
-      [eYo.t3.Expr.Assignment_chain]: eYo.t3.Expr.Check.Starred_item,
-      [eYo.t3.Stmt.Augmented_assignment_stmt]: eYo.t3.Expr.Check.expression,
-      [eYo.t3.Stmt.Annotated_assignment_stmt]: eYo.t3.Expr.Check.expression,
-      [eYo.t3.Expr.identifier_valued]: eYo.t3.Expr.Check.expression,
-      [eYo.t3.Expr.identifier_annotated_valued]: eYo.t3.Expr.Check.expression,
-      [eYo.t3.Expr.key_datum]: eYo.t3.Expr.Check.expression,
-      [eYo.t3.Expr.named_expr]: eYo.t3.Expr.Check.expression
+      [eYo.t3.stmt.assignment_stmt]: eYo.t3.expr.check.starred_item,
+      [eYo.t3.expr.assignment_chain]: eYo.t3.expr.check.Starred_item,
+      [eYo.t3.stmt.augmented_assignment_stmt]: eYo.t3.expr.check.expression,
+      [eYo.t3.stmt.annotated_assignment_stmt]: eYo.t3.expr.check.expression,
+      [eYo.t3.expr.identifier_valued]: eYo.t3.expr.check.expression,
+      [eYo.t3.expr.identifier_annotated_valued]: eYo.t3.expr.check.expression,
+      [eYo.t3.expr.key_datum]: eYo.t3.expr.check.expression,
+      [eYo.t3.expr.named_expr]: eYo.t3.expr.check.expression
     }
     var me = {
       /**
@@ -425,53 +425,53 @@ eYo.expr.List.makeSubclass('Value_list', {
         && unique [subtype]) || (subtype && [
           // all the concrete types for primary.
           // For all the commented types, value_list makes no sense.
-          eYo.t3.Expr.identifier,
-          eYo.t3.Expr.identifier_annotated,
-          eYo.t3.Expr.Augtarget_annotated,
-          //eYo.t3.Expr.key_datum,
-          //eYo.t3.Expr.identifier_valued,
-          //eYo.t3.Expr.Assignment_chain,
-          //eYo.t3.Expr.named_expr,
-          //eYo.t3.Expr.identifier_annotated_valued,
-          eYo.t3.Expr.Attributeref,
-          eYo.t3.Expr.named_attributeref,
-          eYo.t3.Expr.Dotted_name,
-          eYo.t3.Expr.parent_module,
-          eYo.t3.Expr.identifier_as,
-          eYo.t3.Expr.Dotted_name_as,
-          eYo.t3.Expr.expression_as,
-          eYo.t3.Expr.Subscription,
-          eYo.t3.Expr.named_subscription,
-          eYo.t3.Expr.Slicing,
-          eYo.t3.Expr.named_slicing,
-          eYo.t3.Expr.Call_expr,
-          eYo.t3.Expr.named_call_expr
+          eYo.t3.expr.identifier,
+          eYo.t3.expr.identifier_annotated,
+          eYo.t3.expr.augtarget_annotated,
+          //eYo.t3.expr.key_datum,
+          //eYo.t3.expr.identifier_valued,
+          //eYo.t3.expr.assignment_chain,
+          //eYo.t3.expr.named_expr,
+          //eYo.t3.expr.identifier_annotated_valued,
+          eYo.t3.expr.attributeref,
+          eYo.t3.expr.named_attributeref,
+          eYo.t3.expr.dotted_name,
+          eYo.t3.expr.parent_module,
+          eYo.t3.expr.identifier_as,
+          eYo.t3.expr.dotted_name_as,
+          eYo.t3.expr.expression_as,
+          eYo.t3.expr.subscription,
+          eYo.t3.expr.named_subscription,
+          eYo.t3.expr.slicing,
+          eYo.t3.expr.named_slicing,
+          eYo.t3.expr.call_expr,
+          eYo.t3.expr.named_call_expr
         ].indexOf(subtype) < 0 ? [] : null)
       },
       check: (type, subtype) => {
         return subtype
         && check [subtype] || (subtype && [
-          eYo.t3.Expr.identifier,
-          eYo.t3.Expr.identifier_annotated,
-          eYo.t3.Expr.Augtarget_annotated,
-          //eYo.t3.Expr.key_datum,
-          //eYo.t3.Expr.identifier_valued,
-          //eYo.t3.Expr.Assignment_chain,
-          //eYo.t3.Expr.named_expr,
-          //eYo.t3.Expr.identifier_annotated_valued,
-          eYo.t3.Expr.Attributeref,
-          eYo.t3.Expr.named_attributeref,
-          eYo.t3.Expr.Dotted_name,
-          eYo.t3.Expr.parent_module,
-          eYo.t3.Expr.identifier_as,
-          eYo.t3.Expr.Dotted_name_as,
-          eYo.t3.Expr.expression_as,
-          eYo.t3.Expr.Subscription,
-          eYo.t3.Expr.named_subscription,
-          eYo.t3.Expr.Slicing,
-          eYo.t3.Expr.named_slicing,
-          eYo.t3.Expr.Call_expr,
-          eYo.t3.Expr.named_call_expr
+          eYo.t3.expr.identifier,
+          eYo.t3.expr.identifier_annotated,
+          eYo.t3.expr.augtarget_annotated,
+          //eYo.t3.expr.key_datum,
+          //eYo.t3.expr.identifier_valued,
+          //eYo.t3.expr.assignment_chain,
+          //eYo.t3.expr.named_expr,
+          //eYo.t3.expr.identifier_annotated_valued,
+          eYo.t3.expr.attributeref,
+          eYo.t3.expr.named_attributeref,
+          eYo.t3.expr.dotted_name,
+          eYo.t3.expr.parent_module,
+          eYo.t3.expr.identifier_as,
+          eYo.t3.expr.dotted_name_as,
+          eYo.t3.expr.expression_as,
+          eYo.t3.expr.subscription,
+          eYo.t3.expr.named_subscription,
+          eYo.t3.expr.slicing,
+          eYo.t3.expr.named_slicing,
+          eYo.t3.expr.call_expr,
+          eYo.t3.expr.named_call_expr
         ].indexOf(subtype) < 0 ? [] : null)
       },
       consolidator: eYo.consolidator.List,
@@ -479,32 +479,32 @@ eYo.expr.List.makeSubclass('Value_list', {
       presep: ','
     }
     var all = Object.create(null)
-    ;[eYo.t3.Stmt.Assignment_stmt,
-      eYo.t3.Expr.Assignment_chain,
-      eYo.t3.Stmt.Augmented_assignment_stmt,
-      eYo.t3.Stmt.Annotated_stmt,
-      eYo.t3.Stmt.Annotated_assignment_stmt,
-      eYo.t3.Expr.identifier,
-      eYo.t3.Expr.identifier_annotated,
-      eYo.t3.Expr.Augtarget_annotated,
-      eYo.t3.Expr.key_datum,
-      eYo.t3.Expr.identifier_valued,
-      eYo.t3.Expr.Assignment_chain,
-      eYo.t3.Expr.named_expr,
-      eYo.t3.Expr.identifier_annotated_valued,
-      eYo.t3.Expr.Attributeref,
-      eYo.t3.Expr.named_attributeref,
-      eYo.t3.Expr.Dotted_name,
-      eYo.t3.Expr.parent_module,
-      eYo.t3.Expr.identifier_as,
-      eYo.t3.Expr.Dotted_name_as,
-      eYo.t3.Expr.expression_as,
-      eYo.t3.Expr.Subscription,
-      eYo.t3.Expr.named_subscription,
-      eYo.t3.Expr.Slicing,
-      eYo.t3.Expr.named_slicing,
-      eYo.t3.Expr.Call_expr,
-      eYo.t3.Expr.named_call_expr].forEach(k => {
+    ;[eYo.t3.stmt.assignment_stmt,
+      eYo.t3.expr.assignment_chain,
+      eYo.t3.stmt.augmented_assignment_stmt,
+      eYo.t3.stmt.annotated_stmt,
+      eYo.t3.stmt.annotated_assignment_stmt,
+      eYo.t3.expr.identifier,
+      eYo.t3.expr.identifier_annotated,
+      eYo.t3.expr.augtarget_annotated,
+      eYo.t3.expr.key_datum,
+      eYo.t3.expr.identifier_valued,
+      eYo.t3.expr.assignment_chain,
+      eYo.t3.expr.named_expr,
+      eYo.t3.expr.identifier_annotated_valued,
+      eYo.t3.expr.attributeref,
+      eYo.t3.expr.named_attributeref,
+      eYo.t3.expr.dotted_name,
+      eYo.t3.expr.parent_module,
+      eYo.t3.expr.identifier_as,
+      eYo.t3.expr.dotted_name_as,
+      eYo.t3.expr.expression_as,
+      eYo.t3.expr.subscription,
+      eYo.t3.expr.named_subscription,
+      eYo.t3.expr.slicing,
+      eYo.t3.expr.named_slicing,
+      eYo.t3.expr.call_expr,
+      eYo.t3.expr.named_call_expr].forEach(k => {
       var unique = me.unique(null, k)
       if (unique === null) {
         return null
@@ -537,10 +537,10 @@ eYo.expr.value_list.prototype.getSubtype = function () {
   return (t && (this.subtype_ = t.type)) || this.subtype_
 }
 
-eYo.expr.List.makeSubclass('Augassigned_list', () => {
+eYo.expr.List.makeInheritedC9r('augassigned_list', () => {
   var D = {
-    check: eYo.t3.Expr.Check.expression,
-    unique: eYo.t3.Expr.yield_expr,
+    check: eYo.t3.expr.check.expression,
+    unique: eYo.t3.expr.yield_expr,
     consolidator: eYo.consolidator.List,
     mandatory: 1,
     presep: ','
@@ -600,14 +600,14 @@ eYo.expr.List.makeSubclass('Augassigned_list', () => {
 //   return eYo.stmt.Augmented_assignment_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 // }
 
-eYo.brick.Assignment.T3s = [
-  eYo.t3.Expr.identifier,
-  eYo.t3.Expr.yield_expr,
-  eYo.t3.Expr.Target_list,
-  eYo.t3.Expr.parenth_target_list,
-  eYo.t3.Expr.Bracket_target_list,
-  eYo.t3.Stmt.Assignment_stmt,
-  eYo.t3.Expr.value_list,
-  eYo.t3.Expr.Augassigned_list,
-  eYo.t3.Stmt.Augmented_assignment_stmt
+eYo.brick.Assignment.t3s = [
+  eYo.t3.expr.identifier,
+  eYo.t3.expr.yield_expr,
+  eYo.t3.expr.target_list,
+  eYo.t3.expr.parenth_target_list,
+  eYo.t3.expr.bracket_target_list,
+  eYo.t3.stmt.assignment_stmt,
+  eYo.t3.expr.value_list,
+  eYo.t3.expr.augassigned_list,
+  eYo.t3.stmt.augmented_assignment_stmt
 ]

@@ -16,7 +16,7 @@
  * @name {eYo.DB}
  * @constructor
  */
-eYo.makeClass('DB', {
+eYo.makeC9r('DB', {
   init () {
     this.byID_ = Object.create(null)
   }

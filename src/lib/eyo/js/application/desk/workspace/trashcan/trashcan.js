@@ -18,7 +18,7 @@ eYo.require('WorkspaceControl')
  * @param {eYo.Workspace} workspace The workspace to sit in.
  * @constructor
  */
-eYo.WorkspaceControl.makeSubclass('TrashCan')
+eYo.WorkspaceControl.makeInheritedC9r('TrashCan')
 
 Object.defineProperties(eYo.TrashCan_p, {
   isOpen: {

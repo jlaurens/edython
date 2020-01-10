@@ -32,7 +32,7 @@ goog.forwardDeclare('goog.array');
  * @param {eYo.app.Dflt|Object} owner Owner application.
  * @constructor
  */
-eYo.makeClass('Workspace', eYo.c9r.Pane, {
+eYo.makeC9r('Workspace', eYo.c9r.Pane, {
   owned: {
     /**
      * @type {?eYo.board.Main} 

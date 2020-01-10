@@ -18,7 +18,7 @@ eYo.require('c9r.Owned')
  * @param {String} pathToMedia
  * @constructor
  */
-eYo.makeClass('Audio', eYo.c9r.Owned, {
+eYo.makeC9r('Audio', eYo.c9r.Owned, {
   computed: {
     /**
      * Time that the last sound was played.

@@ -2,8 +2,8 @@ eYo.Test.no_brick_type = true
 
 describe('Expression shape', function () {
   var type = 'test_shape_out'
-  eYo.t3.Expr[type] = type
-  eYo.expr.Dflt.makeSubclass(type, {
+  eYo.t3.expr[type] = type
+  eYo.expr.Dflt.makeInheritedC9r(type, {
     out: {
       check: null
     }
@@ -34,8 +34,8 @@ describe('Expression shape', function () {
 
 describe('Statement shape', function () {
   var type = 'test_shape_stmt'
-  eYo.t3.Stmt[type] = type
-  eYo.stmt.makeClass(type, {}) 
+  eYo.t3.stmt[type] = type
+  eYo.stmt.makeC9r(type, {}) 
   chai.assert(eYo.stmt.test_shape_stmt)
   var b
   before(function() {
@@ -68,8 +68,8 @@ describe('Statement shape', function () {
 
 describe('Group shape', function () {
   var type = 'test_shape_part'
-  eYo.t3.Stmt[type] = type
-  eYo.stmt.Group.makeSubclass(type, {}) 
+  eYo.t3.stmt[type] = type
+  eYo.stmt.Group.makeInheritedC9r(type, {}) 
   chai.assert(eYo.stmt.test_shape_part)
   var b
   before(function() {

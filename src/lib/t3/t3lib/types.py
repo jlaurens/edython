@@ -494,10 +494,10 @@ class Types:
                         print(' ', t.name, ',', end='', sep='')
                 print()
 
-    def get_T3_data(self, **kwargs):
+    def get_t3_data(self, **kwargs):
         formatter = Formatter(self, **kwargs)
-        return formatter.get_T3_data()
+        return formatter.get_t3_data()
 
-    def get_T3_all(self):
+    def get_t3_all(self):
         formatter = Formatter(self)
-        return formatter.get_T3_all()
+        return formatter.get_t3_all()

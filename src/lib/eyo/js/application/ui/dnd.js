@@ -43,7 +43,7 @@ eYo.forwardDeclare('driver')
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param{eYo.Motion} [motion] -  the owning motion
  */
-eYo.dnd.makeClass('Mngr', eYo.c9r.Owned, {
+eYo.dnd.makeC9r('Mngr', eYo.c9r.Owned, {
   init (owner, motion) {
     this.motion_ = motion
     /** the dragger_ that started a drag, not owned */
@@ -191,7 +191,7 @@ eYo.dnd.Mngr_p.addDropper = function (dropper) {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeClass('Dflt', eYo.c9r.Owned, {
+eYo.dnd.dragger.makeC9r('Dflt', eYo.c9r.Owned, {
   /**
    * Sever all the links.
    */
@@ -257,7 +257,7 @@ eYo.dnd.dragger.Dflt_p.complete = eYo.dnd.dragger.Dflt_p.reset
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeClass('Board')
+eYo.dnd.dragger.makeC9r('Board')
 
 /**
  * Start a drag operation.
@@ -305,7 +305,7 @@ eYo.dnd.dragger.Board_p.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeClass('DraftBoard')
+eYo.dnd.dragger.makeC9r('DraftBoard')
 
 /**
  * Sever all the links.
@@ -319,7 +319,7 @@ eYo.dnd.dragger.DraftBoard.prototype.dispose = function () {
  * @return {Boolean} true is a drag operation did start
  */
 eYo.dnd.dragger.DraftBoard.prototype.start = function () {
-  return eYo.dnd.dragger.DraftBoard.superProto_.Start.Complete(this)
+  return eYo.dnd.dragger.DraftBoard.SuperC9r_p.Start.Complete(this)
 }
 
 /**
@@ -360,14 +360,14 @@ eYo.dnd.dragger.DraftBoard.prototype.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeClass('LibraryBoard')
+eYo.dnd.dragger.makeC9r('LibraryBoard')
 
 /**
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
 eYo.dnd.dragger.LibraryBoard.prototype.start = function () {
-  return eYo.dnd.dragger.LibraryBoard.superProto_.Start.Complete(this)
+  return eYo.dnd.dragger.LibraryBoard.SuperC9r_p.Start.Complete(this)
 }
 
 /**
@@ -408,14 +408,14 @@ eYo.dnd.dragger.LibraryBoard.prototype.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeClass('Brick')
+eYo.dnd.dragger.makeC9r('Brick')
 
 /**
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
 eYo.dnd.dragger.Brick_p.start = function () {
-  return eYo.dnd.dragger.Brick.superProto_.Start.Call(this)
+  return eYo.dnd.dragger.Brick.SuperC9r_p.Start.Call(this)
 }
 
 /**
@@ -456,14 +456,14 @@ eYo.dnd.dragger.Brick_p.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeClass('LibraryBrick')
+eYo.dnd.dragger.makeC9r('LibraryBrick')
 
 /**
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
 eYo.dnd.dragger.LibraryBrick_p.start = function () {
-  return eYo.dnd.dragger.LibraryBrick.superProto_.Start.Call(this)
+  return eYo.dnd.dragger.LibraryBrick.SuperC9r_p.Start.Call(this)
 }
 
 /**
@@ -504,14 +504,14 @@ eYo.dnd.dragger.LibraryBrick_p.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeClass('DraftBrick')
+eYo.dnd.dragger.makeC9r('DraftBrick')
 
 /**
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
 eYo.dnd.dragger.DraftBrick_p.start = function () {
-  return eYo.dnd.dragger.DraftBrick.superProto_.Start.Call(this)
+  return eYo.dnd.dragger.DraftBrick.SuperC9r_p.Start.Call(this)
 }
 
 /**
@@ -552,7 +552,7 @@ eYo.dnd.dragger.DraftBrick_p.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dropper.makeClass('Dflt', eYo.c9r.Owned, {
+eYo.dnd.dropper.makeC9r('Dflt', eYo.c9r.Owned, {
   /**
    * Sever all the links.
    */
@@ -617,7 +617,7 @@ eYo.dnd.dropper.Dflt_p.complete = eYo.dnd.dropper.Dflt_p.reset
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dropper.makeClass('Board')
+eYo.dnd.dropper.makeC9r('Board')
 
 /**
  * Start a drop operation.
@@ -665,7 +665,7 @@ eYo.dnd.dropper.Board_p.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dropper.makeClass('Brick')
+eYo.dnd.dropper.makeC9r('Brick')
 
 /**
  * Start a drop operation.

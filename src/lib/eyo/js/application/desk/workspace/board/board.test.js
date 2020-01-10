@@ -22,8 +22,8 @@ describe('Programmatically create a desk', function () {
 describe('Basic metrics', function () {
   it ('Create block', function () {
     var type = `simple`
-    eYo.t3.Expr[type] = type
-    eYo.expr.Dflt.makeSubclass(type, {})
+    eYo.t3.expr[type] = type
+    eYo.expr.Dflt.makeInheritedC9r(type, {})
     var b3k = eYo.brick.newReady(eYo.app.Board, type)
   })
 })

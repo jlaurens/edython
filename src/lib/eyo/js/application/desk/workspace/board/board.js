@@ -35,7 +35,7 @@ goog.forwardDeclare('goog.math')
  * @param {eYo.Desk|eYo.Workspace|eYo.section.Dflt} owner.
  * @constructor
  */
-eYo.c9r.Dflt.makeSubclass(eYo.board, {
+eYo.c9r.Dflt.makeInheritedC9r(eYo.board, {
   valued: {
     /**
      * The render status of a board.
@@ -229,7 +229,7 @@ eYo.c9r.Dflt.makeSubclass(eYo.board, {
  * @param {eYo.Desk} owner The main board belongs to a workspace. We allways have `this === owner.board`, which means that each kind of owner may have only one board.
  * @constructor
  */
-eYo.board.Dflt.makeSubclass('Main', {
+eYo.board.Dflt.makeInheritedC9r('Main', {
   init (owner, options) {
     /** @type {string} */
     this.id = eYo.do.genUid()    
@@ -507,7 +507,7 @@ eYo.board.Dflt.prototype.allInputsFilled = function(opt_shadowBricksAreFilled) {
  * Database of all identified boards.
  * @constructor
  */
-eYo.board.makeClass('DB', {
+eYo.board.makeC9r('DB', {
   init () {
     this.byID_ = Object.create(null)
   }

@@ -28,7 +28,7 @@ goog.forwardDeclare('goog.array')
  * @param{?eYo.DB} db
  * @constructor
  */
-eYo.makeClass('List', eYo.c9r.Owned, {
+eYo.makeC9r('List', eYo.c9r.Owned, {
   /**
    * Clear the list and sever all the links.
    */

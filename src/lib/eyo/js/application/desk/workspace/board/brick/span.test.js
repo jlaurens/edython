@@ -6,7 +6,7 @@ describe('Span expression', function () {
   var b, s, b_g, s_g, b_s, s_s
   before(function() {
     var type = 'test_expr_span'
-    eYo.expr.Dflt.makeSubclass(type, {
+    eYo.expr.Dflt.makeInheritedC9r(type, {
       out: {
         check: null
       }
@@ -15,7 +15,7 @@ describe('Span expression', function () {
     s = b.span
     chai.assert(b.isExpr, 'MISSED')
     var type = 'test_stmt_span'
-    eYo.stmt.makeClass(type, {
+    eYo.stmt.makeC9r(type, {
       out: {
         check: null
       }
@@ -24,7 +24,7 @@ describe('Span expression', function () {
     s_s = b_s.span
     chai.assert(b_s.isStmt, 'MISSED')
     var type = 'test_group_span'
-    eYo.stmt.Group.makeSubclass(type, {
+    eYo.stmt.Group.makeInheritedC9r(type, {
       out: {
         check: null
       }
@@ -160,8 +160,8 @@ describe('Current Field', function () {
   var b_1
   before(function() {
     var type = 'test_stmt_span_reserved'
-    eYo.t3.Stmt[type] = type
-    eYo.stmt.makeClass(type, {
+    eYo.t3.stmt[type] = type
+    eYo.stmt.makeC9r(type, {
       fields: {
         FIELD: {
           reserved: '1234'
@@ -192,8 +192,8 @@ describe('Current Span statements', function () {
   var b_1, s_1, b_2, s_2, b_3, s_3
   before(function() {
     var type = 'test_stmt_span'
-    eYo.t3.Stmt[type] = type
-    eYo.stmt.makeClass(type, {
+    eYo.t3.stmt[type] = type
+    eYo.stmt.makeC9r(type, {
       fields: {
         FIELD: {
           reserved: '1234'

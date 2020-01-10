@@ -68,7 +68,7 @@ eYo.slot.Dlgt_p.initInstance = function (object) {
  * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.c9r.BSMOwned.makeSubclass(eYo.slot, 'Dflt', {
+eYo.c9r.BSMOwned.makeInheritedC9r(eYo.slot, 'Dflt', {
   init (brick, key, model) {
     eYo.Assert(brick, 'Missing slot owner brick')
     eYo.Assert(key, 'Missing slot key')
