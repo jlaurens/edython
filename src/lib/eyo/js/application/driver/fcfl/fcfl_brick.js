@@ -17,7 +17,7 @@ eYo.require('brick')
 /**
  * Facefull driver for bricks.
  */
-eYo.fcfl.makeDriverClass('Brick')
+eYo.fcfl.makeDriverC9r('Brick')
 
 eYo.brick.eyo.modelDeclare({
   valued: {

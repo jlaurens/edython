@@ -14,7 +14,7 @@
 eYo.require('c9r.Owned')
 
 eYo.forwardDeclare('brick')
-eYo.forwardDeclare('DB')
+eYo.forwardDeclare('c9r.DB')
 
 goog.forwardDeclare('goog.array')
 
@@ -25,7 +25,7 @@ goog.forwardDeclare('goog.array')
  * The main board, the draft board, the flyout board and the drag board
  * both own exactly one such list.
  * The main board, the draft board and the drag should share the same database.
- * @param{?eYo.DB} db
+ * @param{?eYo.c9r.DB} db
  * @constructor
  */
 eYo.makeC9r('List', eYo.c9r.Owned, {

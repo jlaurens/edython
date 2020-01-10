@@ -13,10 +13,10 @@
 
 /**
  * Database of all identified object.
- * @name {eYo.DB}
+ * @name {eYo.c9r.DB}
  * @constructor
  */
-eYo.makeC9r('DB', {
+eYo.c9r.makeC9r('DB', {
   init () {
     this.byID_ = Object.create(null)
   }
@@ -26,7 +26,7 @@ eYo.makeC9r('DB', {
  * Database of all identified boards.
  * @constructor
  */
-eYo.DB.prototype.add = function(object) {
+eYo.c9r.DB_p.add = function(object) {
   this.byID_[object.id] = object
 }
 
@@ -34,7 +34,7 @@ eYo.DB.prototype.add = function(object) {
  * Database of all identified boards.
  * @constructor
  */
-eYo.DB.prototype.remove = function(object) {
+eYo.c9r.DB_p.remove = function(object) {
   delete this.byID_[object.id]
 }
 
@@ -43,6 +43,6 @@ eYo.DB.prototype.remove = function(object) {
  * @param {string} id ID of object to find.
  * @return {eYo.board} The sought after board or null if not found.
  */
-eYo.DB.prototype.byId = function(id) {
+eYo.c9r.DB_p.byId = function(id) {
   return this.byID_[id]
 }

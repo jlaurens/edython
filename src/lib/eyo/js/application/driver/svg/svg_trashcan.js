@@ -20,7 +20,7 @@ goog.forwardDeclare('goog.math')
  * @constructor
  * Svg driver fro the trash can.
  */
-eYo.svg.makeDriverClass('TrashCan', {
+eYo.svg.makeDriverC9r('TrashCan', {
   ui: {
     /**
      * Initialize the trash can SVG ressources.

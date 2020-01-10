@@ -19,7 +19,7 @@ eYo.require('brick')
 /**
  * Svg driver for brick effects
  */
-eYo.svg.makeDriverClass('Effect')
+eYo.svg.makeDriverC9r('Effect')
 
 /**
  * Play some UI effects (sound, animation) when disposing of a brick.

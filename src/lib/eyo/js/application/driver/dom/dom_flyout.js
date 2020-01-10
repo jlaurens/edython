@@ -20,7 +20,7 @@ eYo.forwardDeclare('Flyout')
  * @constructor
  * Dom driver for the flyout.
  */
-eYo.dom.makeDriverClass('Flyout', {
+eYo.dom.makeDriverC9r('Flyout', {
     /**
    * Initialize the flyout dom ressources.
    * @param {eYo.Flyout} flyout

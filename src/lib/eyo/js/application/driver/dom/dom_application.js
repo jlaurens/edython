@@ -13,14 +13,14 @@
 
 eYo.require('dom')
 
-eYo.provide('dom.app')
+eYo.provide('dom.App')
 
 eYo.forwardDeclare('app')
 
 /**
  * Dom driver for application.
  */
-eYo.dom.makeDriverClass('App', {
+eYo.dom.makeDriverC9r('App', {
   /**
    * Initialize the application's dom ressources.
    * @param {eYo.app.Dflt} app

@@ -13,11 +13,11 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.board')
+eYo.provide('fcls.Board')
 
 eYo.forwardDeclare('board')
 
 /**
  * Shared application driver.
  */
-eYo.fcls.makeDriverClass('Board')
+eYo.fcls.makeDriverC9r('Board')

@@ -13,12 +13,12 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.focus')
+eYo.provide('fcls.Focus')
 
 /**
  * Faceless driver for Focus managers.
  */
-eYo.fcls.makeDriverClass('Focus')
+eYo.fcls.makeDriverC9r('Focus')
 
 /**
  * Init the main focus manager.

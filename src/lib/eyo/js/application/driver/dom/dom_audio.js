@@ -21,7 +21,7 @@ goog.forwardDeclare('goog.userAgent')
  * @param {String} pathToMedia
  * @constructor
  */
-eYo.dom.makeDriverClass('Audio', {
+eYo.dom.makeDriverC9r('Audio', {
   initUI(audio) {
     /**
      * Database of pre-loaded sounds.

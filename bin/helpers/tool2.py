@@ -75,7 +75,7 @@ class DDB:
     deps = []
     by_file_name = {}
     by_provide = {}
-    missing = []
+    missing = set()
 
     def __init__(self, *args):
         for path in args:
@@ -113,7 +113,7 @@ class DDB:
         """
         if provide in self.by_provide:
             return self.by_provide[provide]
-        self.missing.append(provide)
+        self.missing.add(provide)
 
     def __getitem__(self, i):
         return self.getDep(i)
@@ -177,9 +177,11 @@ Required:
         dep.done = True
         # for each requirement, which is not already done, add it to the todo_required list
         for r in dep.required:
-            dep = ddb[r]
-            if dep is not None and not dep.done:
-                todo_required.add(r)
+          provided = ddb[r]
+          if provided is None:
+              print('***', r, dep.file_name)
+          elif not provided.done:
+              todo_required.add(r)
     if len(ddb.missing):
       print(*ddb.missing, sep='\n')
       raise Exception('Missing providers')

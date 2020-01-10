@@ -90,7 +90,7 @@ eYo.forwardDeclare('brick.functions');
 eYo.forwardDeclare('brick.stdtypes');
 eYo.forwardDeclare('brick.random');
 eYo.forwardDeclare('brick.math');
-eYo.forwardDeclare('brick.cMath');
+eYo.forwardDeclare('brick.cmath');
 eYo.forwardDeclare('brick.turtle');
 eYo.forwardDeclare('brick.decimal');
 eYo.forwardDeclare('brick.fractions');

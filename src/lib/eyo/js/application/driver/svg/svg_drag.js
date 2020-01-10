@@ -18,7 +18,7 @@
 eYo.require('svg')
 
 eYo.provide('svg.BrickDragSurface')
-eYo.provide('svg.boardDragSurface')
+eYo.provide('svg.BoardDragSurface')
 
 /**
  * Class for a drag surface for the currently dragged block. This is a separate

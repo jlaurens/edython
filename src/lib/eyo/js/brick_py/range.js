@@ -107,7 +107,7 @@ eYo.expr.Dflt.makeInheritedC9r('builtin__range_expr', {
           placeholder: 0
         }
       },
-      check: eYo.t3.expr.check.Argument_any
+      check: eYo.t3.expr.check.argument_any
     },
     sep: {
       order: 20,
@@ -127,7 +127,7 @@ eYo.expr.Dflt.makeInheritedC9r('builtin__range_expr', {
           placeholder: 0
         }
       },
-      check: eYo.t3.expr.check.Argument_any
+      check: eYo.t3.expr.check.argument_any
     },
     step: {
       order: 40,
@@ -143,7 +143,7 @@ eYo.expr.Dflt.makeInheritedC9r('builtin__range_expr', {
           placeholder: 0
         }
       },
-      check: eYo.t3.expr.check.Argument_any
+      check: eYo.t3.expr.check.argument_any
     },
     close: {
       order: 100,

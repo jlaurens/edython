@@ -18,7 +18,7 @@ eYo.forwardDeclare('board')
 /**
  * Dom driver for boards.
  */
-eYo.dom.makeDriverClass('Board', {
+eYo.dom.makeDriverC9r('Board', {
   /**
    * Initialize the board dom ressources.
    * @param {eYo.board} board

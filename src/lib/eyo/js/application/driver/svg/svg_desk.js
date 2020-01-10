@@ -19,7 +19,7 @@ eYo.forwardDeclare('Desk')
 /**
  * Svg driver for desk.
  */
-eYo.svg.makeDriverClass('Desk', {
+eYo.svg.makeDriverC9r('Desk', {
   /**
    * Initialize the desk SVG ressources.
    * @param {eYo.Desk} desk

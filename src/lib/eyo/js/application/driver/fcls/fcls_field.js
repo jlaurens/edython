@@ -13,14 +13,14 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.field')
+eYo.provide('fcls.Field')
 
 eYo.forwardDeclare('field')
 
 /**
  * Faceless driver for fields.
  */
-eYo.fcls.makeDriverClass('Field')
+eYo.fcls.makeDriverC9r('Field')
 
 /**
  * Set the location.

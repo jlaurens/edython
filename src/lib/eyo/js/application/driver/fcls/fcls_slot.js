@@ -13,14 +13,14 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.slot')
+eYo.provide('fcls.Slot')
 
 eYo.forwardDeclare('slot')
 
 /**
  * Faceless driver for slots.
  */
-eYo.fcls.makeDriverClass('Slot')
+eYo.fcls.makeDriverC9r('Slot')
 
 /**
  * Whether the slot is displayed.

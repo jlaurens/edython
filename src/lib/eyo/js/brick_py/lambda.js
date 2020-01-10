@@ -277,7 +277,7 @@ eYo.consolidator.Parameter.prototype.getCheck = (() => {
     }
     out = []
     if (can_parameter) {
-      out = eYo.t3.expr.check.Parameter.Slice()
+      out = eYo.t3.expr.check.parameter.Slice()
     }
     if (can_default) {
       out.push(eYo.t3.expr.identifier_valued)

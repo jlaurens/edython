@@ -18,7 +18,7 @@ eYo.forwardDeclare('magnet')
 /**
  * Svg driver for magnets.
  */
-eYo.svg.makeDriverClass('Magnet')
+eYo.svg.makeDriverC9r('Magnet')
 
 /**
  * Hilight the given magnet.

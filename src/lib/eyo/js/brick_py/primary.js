@@ -187,8 +187,8 @@ eYo.consolidator.Target.prototype.getCheck = (() => {
     if (io.i === io.unique) {
       // all subtypes with `unique` elements
       return {
-        [eYo.t3.stmt.annotated_stmt]: eYo.t3.expr.check.Target_annotated,
-        [eYo.t3.stmt.annotated_assignment_stmt]: eYo.t3.expr.check.Target_annotated,
+        [eYo.t3.stmt.annotated_stmt]: eYo.t3.expr.check.target_annotated,
+        [eYo.t3.stmt.annotated_assignment_stmt]: eYo.t3.expr.check.target_annotated,
         [eYo.t3.stmt.augmented_assignment_stmt]: eYo.t3.expr.check.augtarget,
         [eYo.t3.expr.identifier]: eYo.t3.expr.check.expression,
         [eYo.t3.expr.identifier_annotated]: eYo.t3.expr.check.expression,
@@ -196,7 +196,7 @@ eYo.consolidator.Target.prototype.getCheck = (() => {
         [eYo.t3.expr.key_datum]: eYo.t3.expr.check.expression,
         [eYo.t3.expr.identifier_valued]: eYo.t3.expr.check.expression,
         [eYo.t3.expr.named_expr]: eYo.t3.expr.check.expression,
-        [eYo.t3.expr.identifier_annotated_valued]: eYo.t3.expr.check.Target,
+        [eYo.t3.expr.identifier_annotated_valued]: eYo.t3.expr.check.target,
         [eYo.t3.expr.attributeref]: eYo.t3.expr.check.expression,
         [eYo.t3.expr.named_attributeref]: eYo.t3.expr.check.expression,
         [eYo.t3.expr.dotted_name]: eYo.t3.expr.identifier,
@@ -210,18 +210,18 @@ eYo.consolidator.Target.prototype.getCheck = (() => {
         [eYo.t3.expr.named_slicing]: eYo.t3.expr.check.expression,
         [eYo.t3.expr.call_expr]: eYo.t3.expr.check.expression,
         [eYo.t3.expr.named_call_expr]: eYo.t3.expr.check.expression,
-      } [io.subtype] || eYo.t3.expr.check.Target
+      } [io.subtype] || eYo.t3.expr.check.target
     }
     if (io.i === 1 && io.list.length === 3) {
-      return eYo.t3.expr.check.Target
+      return eYo.t3.expr.check.target
     }
     if (io.i === 0 && io.list.length === 1) {
-      return eYo.t3.expr.check.Target
+      return eYo.t3.expr.check.target
     }
     if (io.first_starred < 0 || io.i === io.first_starred) {
-      return eYo.t3.expr.check.Target
+      return eYo.t3.expr.check.target
     } else {
-      return eYo.t3.expr.check.Target_unstar
+      return eYo.t3.expr.check.target_unstar
     }
   }
   return function (io) {
@@ -311,7 +311,7 @@ eYo.expr.List.makeInheritedC9r('target_list', {
  * The subtype is the type of the enclosing brick.
  * @return {String} The subtype of the receiver's brick.
  */
-eYo.expr.Target_list.prototype.getSubtype = function () {
+eYo.expr.target_list_p.getSubtype = function () {
   var parent = this.parent
   return parent && parent.type
 }
@@ -321,7 +321,7 @@ eYo.expr.Target_list.prototype.getSubtype = function () {
  * @param {eYo.magnet.Dflt} m4t
  * @param {eYo.magnet.Dflt} oldTargetM4t that was connected to blockConnection
  */
-eYo.expr.Target_list.prototype.xdidDisconnect = function (m4t, oldTargetM4t) {
+eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isSlot) {
     var other = false
     if (this.slotSome(slot => {
@@ -350,7 +350,7 @@ eYo.expr.Target_list.prototype.xdidDisconnect = function (m4t, oldTargetM4t) {
       ;(x = x.target_s) && (x.bindField.visible = true)
     }
   }
-  eYo.expr.Target_list.SuperProto_.didDisconnect.Call(this, m4t, oldTargetM4t)
+  eYo.expr.target_list.SuperProto_.didDisconnect.Call(this, m4t, oldTargetM4t)
 }
 
 /**
@@ -360,8 +360,8 @@ eYo.expr.Target_list.prototype.xdidDisconnect = function (m4t, oldTargetM4t) {
  * @param {eYo.magnet.Dflt} oldTargetM4t.
  * @param {eYo.magnet.Dflt} targetOldM4t
  */
-eYo.expr.Target_list.prototype.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.expr.Target_list.SuperProto_.didConnect.Call(this, m4t, oldTargetM4t, targetOldM4t)
+eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+  eYo.expr.target_list.SuperProto_.didConnect.Call(this, m4t, oldTargetM4t, targetOldM4t)
   // BEWARE: the brick is NOT consolidated
   if (m4t.isSlot) {
     var parent = this.parent
@@ -1327,7 +1327,7 @@ eYo.expr.Primary.prototype.getProfile = eYo.c9r.decorateChange(
           type = eYo.t3.expr.parent_module
         } else if (t9k.checkOutputType(eYo.t3.expr.named_attributeref)) {
           type = eYo.t3.expr.named_attributeref
-        } else if (t9k.checkOutputType(eYo.t3.expr.check.Augtarget)) {
+        } else if (t9k.checkOutputType(eYo.t3.expr.check.augtarget)) {
           type = eYo.t3.expr.augtarget
         } else if (t9k.checkOutputType(eYo.t3.expr.check.named_primary)) {
           type = eYo.t3.expr.named_primary
@@ -1369,7 +1369,7 @@ eYo.expr.Primary.prototype.getProfile = eYo.c9r.decorateChange(
             type = eYo.t3.expr.dotted_name
           } else if (t9k.checkOutputType(eYo.t3.expr.parent_module)) {
             type = eYo.t3.expr.parent_module
-          } else if (t9k.checkOutputType(eYo.t3.expr.check.Augtarget)) {
+          } else if (t9k.checkOutputType(eYo.t3.expr.check.augtarget)) {
             type = eYo.t3.expr.augtarget
           } else if (t9k.checkOutputType(eYo.t3.expr.check.named_primary)) {
             type = eYo.t3.expr.named_primary
@@ -1497,12 +1497,12 @@ eYo.expr.Primary.prototype.getOutCheck = function () {
       ]
   } else if (profile.variant === eYo.key.SLICING) {
     // is it a slicing or a subscription ?
-    if (!eYo.t3.expr.check.Slice_only) {
-      eYo.t3.expr.check.Slice_only = eYo.t3.expr.check.slice_list.filter(i => eYo.t3.expr.check.expression.indexOf(i) < 0)
+    if (!eYo.t3.expr.check.slice_only) {
+      eYo.t3.expr.check.slice_only = eYo.t3.expr.check.slice_list.filter(i => eYo.t3.expr.check.expression.indexOf(i) < 0)
     }
     if (this.slotSome(slot => {
       var t = slot.targetBrick
-      return t && (t.checkOutputType(eYo.t3.expr.check.Slice_only))
+      return t && (t.checkOutputType(eYo.t3.expr.check.slice_only))
     })) {
       return named()
       ? [

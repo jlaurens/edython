@@ -20,7 +20,7 @@ eYo.forwardDeclare('TrashCan')
  * @constructor
  * Faceless driver for the trash can.
  */
-eYo.fcls.makeDriverClass('TrashCan')
+eYo.fcls.makeDriverC9r('TrashCan')
 
 /**
  * Initiate the trash can UI.

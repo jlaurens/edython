@@ -13,8 +13,6 @@
  */
 'use strict'
 
-eYo.require('c9r')
-
 eYo.forwardDeclare('app')
 eYo.forwardDeclare('Backer')
 
@@ -32,7 +30,7 @@ goog.forwardDeclare('goog.array')
  * @param {eYo.app.Dflt|Object} owner Owner application.
  * @constructor
  */
-eYo.makeInheritedC9r('Desk', {
+eYo.makeC9r('Desk', {
   owned: {
     /**
      * Terminal.

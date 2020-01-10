@@ -144,7 +144,7 @@ eYo.expr.Dflt.makeInheritedC9r('Binary', {
   }
 })
 
-eYo.t3.expr.check.Binary.forEach(k => {
+eYo.t3.expr.check.binary.forEach(k => {
   if (k !== eYo.t3.expr.any) {
     k = k.substring(4)
     eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Binary))
@@ -174,48 +174,48 @@ eYo.expr.Binary.getOperatorModelForType = function (type) {
       rhs: eYo.t3.expr.check.u_expr_all
     },
     [eYo.t3.expr.a_expr]: {
-      lhs: eYo.t3.expr.check.A_expr_all,
+      lhs: eYo.t3.expr.check.a_expr_all,
       rhs: eYo.t3.expr.check.m_expr_all
     },
     [eYo.t3.expr.or_test]: {
       lhs: eYo.t3.expr.check.or_test_all,
-      rhs: eYo.t3.expr.check.And_test_all
+      rhs: eYo.t3.expr.check.and_test_all
     },
     [eYo.t3.expr.and_test]: {
-      lhs: eYo.t3.expr.check.And_test_all,
+      lhs: eYo.t3.expr.check.and_test_all,
       rhs: eYo.t3.expr.check.not_test_all
     },
     [eYo.t3.expr.power]: {
-      lhs: eYo.t3.expr.check.Await_or_primary,
+      lhs: eYo.t3.expr.check.await_or_primary,
       rhs: eYo.t3.expr.check.u_expr_all
     },
     [eYo.t3.expr.shift_expr]: {
-      lhs: eYo.t3.expr.check.Shift_expr_all,
-      rhs: eYo.t3.expr.check.A_expr_all
+      lhs: eYo.t3.expr.check.shift_expr_all,
+      rhs: eYo.t3.expr.check.a_expr_all
     },
     [eYo.t3.expr.and_expr]: {
-      lhs: eYo.t3.expr.check.And_expr_all,
-      rhs: eYo.t3.expr.check.Shift_expr_all
+      lhs: eYo.t3.expr.check.and_expr_all,
+      rhs: eYo.t3.expr.check.shift_expr_all
     },
     [eYo.t3.expr.xor_expr]: {
       lhs: eYo.t3.expr.check.xor_expr_all,
-      rhs: eYo.t3.expr.check.And_expr_all
+      rhs: eYo.t3.expr.check.and_expr_all
     },
     [eYo.t3.expr.or_expr]: {
       lhs: eYo.t3.expr.check.or_expr_all,
       rhs: eYo.t3.expr.check.xor_expr_all
     },
     [eYo.t3.expr.comparison]: {
-      lhs: eYo.t3.expr.check.Comparison,
-      rhs: eYo.t3.expr.check.Comparison
+      lhs: eYo.t3.expr.check.comparison,
+      rhs: eYo.t3.expr.check.comparison
     },
     [eYo.t3.expr.number_comparison]: {
-      lhs: eYo.t3.expr.check.Comparison,
-      rhs: eYo.t3.expr.check.Comparison
+      lhs: eYo.t3.expr.check.comparison,
+      rhs: eYo.t3.expr.check.comparison
     },
     [eYo.t3.expr.object_comparison]: {
-      lhs: eYo.t3.expr.check.Comparison,
-      rhs: eYo.t3.expr.check.Comparison
+      lhs: eYo.t3.expr.check.comparison,
+      rhs: eYo.t3.expr.check.comparison
     }
   } [type]
 }

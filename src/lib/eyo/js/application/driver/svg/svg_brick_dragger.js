@@ -18,7 +18,7 @@ eYo.forwardDeclare('brickDragger')
 /**
  * Svg driver for a brick dragger.
  */
-eYo.svg.makeDriverClass('BrickDragger', {
+eYo.svg.makeDriverC9r('BrickDragger', {
     /**
    * Initializes the draggerBrick SVG ressources.
    * @param {eYo.draggerBrick} draggerBrick

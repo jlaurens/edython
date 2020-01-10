@@ -309,7 +309,7 @@ eYo.expr.List.makeInheritedC9r('non_void_expression_list', {
  */
 eYo.expr.List.makeInheritedC9r('slice_list', {
   list: {
-    check: eYo.t3.expr.check.Slice_item,
+    check: eYo.t3.expr.check.slice_item,
     mandatory: 1,
     presep: ','
   }
@@ -404,16 +404,16 @@ eYo.expr.List.makeInheritedC9r('Enclosure', {
       [eYo.t3.expr.void_dict_display]: [eYo.t3.expr.comprehension, eYo.t3.expr.dict_comprehension]
     }
     var check = {
-      [eYo.t3.expr.parenth_form]: eYo.t3.expr.check.Starred_item_38,
-      [eYo.t3.expr.list_display]: eYo.t3.expr.check.Starred_item_38,
-      [eYo.t3.expr.parenth_target_list]: eYo.t3.expr.check.Starred_item_38,
-      [eYo.t3.expr.bracket_target_list]: eYo.t3.expr.check.Starred_item_38,
-      [eYo.t3.expr.one_set_display]: eYo.t3.expr.check.Starred_item,
+      [eYo.t3.expr.parenth_form]: eYo.t3.expr.check.starred_item_38,
+      [eYo.t3.expr.list_display]: eYo.t3.expr.check.starred_item_38,
+      [eYo.t3.expr.parenth_target_list]: eYo.t3.expr.check.starred_item_38,
+      [eYo.t3.expr.bracket_target_list]: eYo.t3.expr.check.starred_item_38,
+      [eYo.t3.expr.one_set_display]: eYo.t3.expr.check.starred_item,
       [eYo.t3.expr.set_display]: eYo.t3.expr.check.starred_item,
       [eYo.t3.expr.one_dict_display]: eYo.t3.expr.check.key_datum_all,
       [eYo.t3.expr.dict_display]: eYo.t3.expr.check.key_datum_all
     }
-    check[eYo.t3.expr.void_dict_display] = goog.array.concat(eYo.t3.expr.check.Starred_item, eYo.t3.expr.check.key_datum_all)
+    check[eYo.t3.expr.void_dict_display] = goog.array.concat(eYo.t3.expr.check.starred_item, eYo.t3.expr.check.key_datum_all)
     var me = {
       unique: (type) => {
         return unique[type]
@@ -476,7 +476,7 @@ eYo.expr.enclosure.prototype.getProfile = eYo.c9r.decorateChange(
         return {ans: this.slotSome(slot => {
             var t = slot.targetBrick
             if (t && (t = t.out_m.check_)) {
-              return t.some(x => eYo.t3.expr.check.Target.indexOf(x) >= 0)
+              return t.some(x => eYo.t3.expr.check.target.indexOf(x) >= 0)
             }
           })
           ? target

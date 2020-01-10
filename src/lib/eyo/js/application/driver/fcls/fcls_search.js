@@ -13,14 +13,14 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.search')
+eYo.provide('fcls.Search')
 
 eYo.forwardDeclare('Search')
 
 /**
  * Faceless driver for the search pane.
  */
-eYo.fcls.makeDriverClass('Search')
+eYo.fcls.makeDriverC9r('Search')
 
 /**
  * Initiate the search UI.

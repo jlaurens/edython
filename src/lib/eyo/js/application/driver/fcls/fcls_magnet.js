@@ -13,14 +13,14 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.magnet')
+eYo.provide('fcls.Magnet')
 
 eYo.forwardDeclare('magnet')
 
 /**
  * Faceless driver for magnets.
  */
-eYo.fcls.makeDriverClass('Magnet')
+eYo.fcls.makeDriverC9r('Magnet')
 
 /**
  * Hilight the given connection.

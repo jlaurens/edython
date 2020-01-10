@@ -19,20 +19,20 @@ class Foo:
   #re_provide = re.compile(r"^\s*eYo.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
   # eYo.Foo.makeNS(ns, 'BAR')
-  #eYo.Consolidator.makeClass(ns, 'Dlgt', ...
+  #eYo.Consolidator.makeC9r(ns, 'Dlgt', ...
   re_make = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
-  \.make(?:Driver)?(?P<what>Class|NS)\s*\(\s*
+  \.make(?:Driver)?(?P<what>C9r|NS)\s*\(\s*
   (?P<suite>.*)""", re.X)
 
   assert re.match(re_make, "eYo.makeNS('Brick')"), 'BAD re_make 2'
-  assert re.match(re_make, "eYo.dnd.makeClass('Mngr', {"), 'BAD re_make 3'
+  assert re.match(re_make, "eYo.dnd.makeC9r('Mngr', {"), 'BAD re_make 3'
 
-  # eYo.Foo.makeSubclass(ns, 'bar')
-  re_makeSubclass = re.compile(r"""^\s*
+  # eYo.Foo.makeInheritedC9r(ns, 'bar')
+  re_makeInheritedC9r = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
   \.(?P<Super>[A-Z][\w0-9_]*)
-  \.makeSubclass\s*\(\s*
+  \.makeInheritedC9r\s*\(\s*
   (?P<suite>.*)""", re.X)
 
   re_arg_ns = re.compile(r"""^
@@ -63,23 +63,33 @@ class Foo:
   pathByProvided = {}
   nsByClass = {}
 
-  # we scan all the files and look separately for provide, require, forwardDeclare, makeNS, makeClass, makeSubclass lines.
+  # we scan all the files and look separately for provide, require, forwardDeclare, makeNS, makeClass, makeInheritedC9r lines.
   def __init__(self, path):
     self.path = path
     with path.open('r', encoding='utf-8') as f:
+      prompt = f'======= {path}\n'
+      print('', path)
       relative = path.relative_to(pathRoot)
       provided = set()
+      def addProvided(what):
+        last = what.split('.')[-1]
+        if last in ['DB'] or re.search('[a-z]', last):
+          provided.add(what)
+        else:
+          print(f'IGNORED provided {what}')
       required = set()
       def addRequired(what, assigned = None):
+        nonlocal prompt
+        if what == 'eYo.Desk':
+          print(f'{prompt}*** Requirement {what}')
+          prompt = ''
         required.add(what)
-        if what.endswith('getRelativeWhere'):
-          raise Exception(f'Unexpected {assigned}')
       forwarded = set()
       classed = set()
       subclassed = set()
       namespaced = set()
       if path.stem == 'eyo':
-        provided.add('eYo')
+        addProvided('eYo')
         def base_require(l):
           pass
       else:
@@ -103,7 +113,7 @@ class Foo:
             if ns.endswith('.prototype') or re.search(r'_[ps]\b', ns):
               continue
             addRequired(ns, assigned)
-            provided.add(assigned)
+            addProvided(assigned)
           continue
         ns = key = None
         def parse_args(suite):
@@ -136,11 +146,11 @@ class Foo:
           parse_args(m.group('suite'))
           if ns:
             addRequired(ns)
-            provided.add(f'{ns}.{key}')
+            addProvided(f'{ns}.{key}')
           else:
-            provided.add(f'{NS}.{key}')
+            addProvided(f'{NS}.{key}')
           continue
-        m = self.re_makeSubclass.match(l)
+        m = self.re_makeInheritedC9r.match(l)
         if m:
           addRequired('eYo.c9r')
           NS = m.group('NS')
@@ -149,9 +159,9 @@ class Foo:
           parse_args(m.group('suite'))
           if ns:
             addRequired(ns)
-            provided.add(f'{ns}.{key}')
+            addProvided(f'{ns}.{key}')
           else:
-            provided.add(f'{NS}.{key}')
+            addProvided(f'{NS}.{key}')
           continue
         m = self.re_provide.match(l)
         if m:
@@ -159,7 +169,7 @@ class Foo:
           if not what.startswith('goog'):
             what = 'eYo.' + m.group('what')
           if m.group('provide'):
-            provided.add(what)
+            addProvided(what)
           elif m.group('require'):
             addRequired(what)
           else:
@@ -197,12 +207,12 @@ def buildDeps(library, library_name):
     print('----------------------')
     for foo in foos:
       for x in foo.subclassed:
-        makeSubclass = x[0]
+        makeInheritedC9r = x[0]
         what = x[1]
-        if makeSubclass in Foo.nsByClass:
-          foo.provided.add(f'{Foo.nsByClass[makeSubclass]}{what}')
+        if makeInheritedC9r in Foo.nsByClass:
+          foo.provided.add(f'{Foo.nsByClass[makeInheritedC9r]}{what}')
         else:
-          p = pathlib.Path(makeSubclass)
+          p = pathlib.Path(makeInheritedC9r)
           foo.provided.add(p.with_suffix(what))
 
     for foo in foos:
@@ -211,12 +221,12 @@ def buildDeps(library, library_name):
       provide = '['
       provide_sep = ''
       for what in foo.provided:
-        provide += provide_sep + f"'{what}'"
+        provide += f"{provide_sep}'{what}'"
         provide_sep = ', '
       require = '['
       require_sep = ''
       for what in foo.required:
-        require += require_sep + f"'{what}'"
+        require += f"{require_sep}'{what}'"
         require_sep = ', '
       if len(provide) + len(require)>2:
         provide += ']'

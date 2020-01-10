@@ -405,7 +405,7 @@ eYo.expr.List.makeInheritedC9r('value_list', {
     }
     var check = {
       [eYo.t3.stmt.assignment_stmt]: eYo.t3.expr.check.starred_item,
-      [eYo.t3.expr.assignment_chain]: eYo.t3.expr.check.Starred_item,
+      [eYo.t3.expr.assignment_chain]: eYo.t3.expr.check.starred_item,
       [eYo.t3.stmt.augmented_assignment_stmt]: eYo.t3.expr.check.expression,
       [eYo.t3.stmt.annotated_assignment_stmt]: eYo.t3.expr.check.expression,
       [eYo.t3.expr.identifier_valued]: eYo.t3.expr.check.expression,

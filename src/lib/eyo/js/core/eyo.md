@@ -54,6 +54,10 @@ For example, the namespace `eYo.model` is an instance of a subclass of `eYo`'s c
 Namespaces may contain other namespaces.
 If `eYo.foo.bar` is a namespace then `eYo.foo` is also a namespace but the converse may not be true.
 
+**Exceptions:**
+
+- `DB` as shortcut for `DataBase` is a constructor name.
+
 ## Singletons
 Namespaces are singletons, which means that their constructor is not available as is, only through the instances.
 However, singletons'constructors may be strict subclasses of other singleton's constructors.

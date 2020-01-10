@@ -988,7 +988,7 @@ describe('Primary(ANNOTATED)', function() {
     dd.dotted_d.set(1)
     dd.holder_d.set('x')
     eYo.Test.Brick(dd, 'dotted_name')
-    chai.assert(eYo.t3.expr.check.Augtarget.indexOf(dd.type) >= 0, 'MISSED AUGTARGET')
+    chai.assert(eYo.t3.expr.check.augtarget.indexOf(dd.type) >= 0, 'MISSED AUGTARGET')
     f('identifier_annotated', dd, 'augtarget_annotated')
     dd.dispose()
     dd = eYo.Test.new_brick(421)

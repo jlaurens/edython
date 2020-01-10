@@ -1,7 +1,5 @@
 <!-- Created by `npm run eyo:prepare` -->
-      <script src="ROOT_PLACE_HOLDER/T3.test.js" charset="utf-8"></script>
-    <script src="ROOT_PLACE_HOLDER/T3_all.test.js" charset="utf-8"></script>
-    <script src="ROOT_PLACE_HOLDER/c9r.test.js" charset="utf-8"></script>
+      <script src="ROOT_PLACE_HOLDER/c9r.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/c9r_dlgt.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/c9r_model.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/c9r_prop.test.js" charset="utf-8"></script>
@@ -17,5 +15,7 @@
     <script src="ROOT_PLACE_HOLDER/geometry.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/proxy.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/register.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/t3.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/t3_all.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/ui.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/xre.test.js" charset="utf-8"></script>

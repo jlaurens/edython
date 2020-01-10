@@ -18,7 +18,7 @@ eYo.forwardDeclare('scroller')
 /**
  * Svg driver for a scroller.
  */
-eYo.svg.makeDriverClass('Scroller', {
+eYo.svg.makeDriverC9r('Scroller', {
     /**
    * Inits the scroll bar.
    * @param {eYo.Scroller} scroller

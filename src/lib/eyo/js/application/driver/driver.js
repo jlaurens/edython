@@ -67,7 +67,7 @@ eYo.driver.DlgtMngr.eyo.makeInitInstance()
  * - doInitUI: an optional function with signature (object, ...)->eYo.NA
  * - doDisposeUI: an optional function with signature (object)->eYo.NA
  */
-eYo.driver.DlgtMngr_p.makeDriverClass = function (key, Super, driverModel) {
+eYo.driver.DlgtMngr_p.makeDriverC9r = function (key, Super, driverModel) {
   var ns = this.ns
   if (!eYo.isSubclass(Super, eYo.driver.Dflt)) {
     eYo.ParameterAssert(!driverModel, 'Unexpected model')
@@ -131,7 +131,7 @@ eYo.driver._p.makeMngr = function (mngrModel) {
 }
 
 /**
- * Usage: `eYo.driver.makeDriverClass(model)`.
+ * Usage: `eYo.driver.makeDriverC9r(model)`.
  * Actual implementation with Fcls, Fcfl, Dom and Svg drivers.
  * {Code: ns.Mngr} is instantiated by the main application object.
  * @param {String} key -  The key of the driver
@@ -139,8 +139,8 @@ eYo.driver._p.makeMngr = function (mngrModel) {
  * @param {Object} [mngrModel] -  model used for creation
  * @return {Function} a constructor equals to this.Mngr[key]
  */
-eYo.driver._p.makeDriverClass = function (key, Super, driverModel) {
-  return this.Mngr.eyo.makeDriverClass(key, Super, driverModel)
+eYo.driver._p.makeDriverC9r = function (key, Super, driverModel) {
+  return this.Mngr.eyo.makeDriverC9r(key, Super, driverModel)
 }
 
 /**

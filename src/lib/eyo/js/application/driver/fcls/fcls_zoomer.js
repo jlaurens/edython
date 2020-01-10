@@ -13,14 +13,12 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.zoomer')
-
 eYo.forwardDeclare('Zoomer')
 
 /**
  * Faceless driver for the zoomer.
  */
-eYo.fcls.makeDriverClass('Zoomer')
+eYo.fcls.makeDriverC9r('Zoomer')
 
 /**
  * Initiate the zoomer UI.

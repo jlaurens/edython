@@ -13,11 +13,11 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.scroller')
+eYo.provide('fcls.Scroller')
 
 eYo.forwardDeclare('scroller')
 
 /**
  * Shared application driver.
  */
-eYo.fcls.makeDriverClass('Scroller')
+eYo.fcls.makeDriverC9r('Scroller')

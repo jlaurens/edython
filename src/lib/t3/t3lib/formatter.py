@@ -276,7 +276,7 @@ class Formatter:
         self.append('// alias checks')
         for t in self.Ts:
             if t.alias and t.name != t.alias.name:
-                self.append('eYo.t3.expr.Check.{} = eYo.t3.expr.Check.{}'.format(t.name, t.alias.name))
+                self.append('eYo.t3.expr.check.{} = eYo.t3.expr.check.{}'.format(t.name, t.alias.name))
 
     def feed_special_aliases(self):
         self.append('// special aliases, some types that change naming across the documentation')
@@ -287,7 +287,7 @@ class Formatter:
             self.append('eYo.t3.expr.{} = eYo.t3.expr.{}'.format(k, v))
 
     def feed_expression_checks(self):
-        self.append('eYo.t3.expr.Check = {')
+        self.append('eYo.t3.expr.check = {')
         template = '    eYo.t3.expr.{},'
         for t in self.get_expressions():
             checks = t.get_checks()
@@ -301,12 +301,12 @@ class Formatter:
         self.append('\n// same checks')
         for t in self.get_expressions():
             if t.same_checks:
-                self.append('eYo.t3.expr.Check.{} = eYo.t3.expr.Check.{}'.format(t.name, t.same_checks.name))
+                self.append('eYo.t3.expr.check.{} = eYo.t3.expr.check.{}'.format(t.name, t.same_checks.name))
 
     def feed_statement_pnlr(self, label, attr):
         self.append('eYo.t3.stmt.{} = {{'.format(label))
         template = '    eYo.t3.stmt.{},'
-        template_name = '    eYo.t3.stmt.{}+"."+eYo.Key.{},'
+        template_name = '    eYo.t3.stmt.{}+"."+eYo.key.{},'
         for t in self.get_statements():
             try:
                 ts = getattr(t, attr)
@@ -323,18 +323,18 @@ class Formatter:
         self.append('}\n')
 
     def feed_statement_previous(self):
-        self.feed_statement_pnlr('Previous', 'is_below')
+        self.feed_statement_pnlr('previous', 'is_below')
 
     def feed_statement_next(self):
-        self.feed_statement_pnlr('Next', 'is_above')
+        self.feed_statement_pnlr('next', 'is_above')
 
     def feed_statement_left(self):
         # Only for the simple_stmt
         attr = 'is_right_of'
-        label = 'Left'
+        label = 'left'
         self.append('eYo.t3.stmt.{} = {{'.format(label))
         template = '    eYo.t3.stmt.{},'
-        template_name = '    eYo.t3.stmt.{}+"."+eYo.Key.{},'
+        template_name = '    eYo.t3.stmt.{}+"."+eYo.key.{},'
         t = list(t for t in self.get_statements() if t.name == 'simple_stmt')[0]
         try:
             ts = getattr(t, attr)
@@ -350,10 +350,10 @@ class Formatter:
     def feed_statement_right(self):
         # Only for the simple_stmt
         attr = 'is_left_of'
-        label = 'Right'
+        label = 'right'
         self.append('eYo.t3.stmt.{} = {{'.format(label))
         template = '    eYo.t3.stmt.{},'
-        template_name = '    eYo.t3.stmt.{}+"."+eYo.Key.{},'
+        template_name = '    eYo.t3.stmt.{}+"."+eYo.key.{},'
         t = list(t for t in self.get_statements() if t.name == 'simple_stmt')[0]
         try:
             ts = getattr(t, attr)
@@ -367,25 +367,25 @@ class Formatter:
         self.append('}\n')
 
     def feed_statement_any(self):
-        self.append('eYo.t3.stmt.Any = [ // count {}'.format(len(self.get_statements())))
+        self.append('eYo.t3.stmt.any = [ // count {}'.format(len(self.get_statements())))
         template = '    eYo.t3.stmt.{},'
         for t in self.get_statements():
             self.append(template.format(t.name))
         self.append(']\n')
 
     def feed_expression_available(self):
-        self.append('eYo.t3.expr.Available = []')
+        self.append('eYo.t3.expr.available = []')
 
     def feed_statement_available(self):
-        self.append('eYo.t3.stmt.Available = []')
+        self.append('eYo.t3.stmt.available = []')
 
     def feed_xml_tags(self):
-        self.append('''eYo.t3.Xml = {
+        self.append('''eYo.t3.xml = {
     toDom: {},
 }''')
         from_dom = {}
         Ts = [t for t in self.get_statements() if t.to_dom and len(t.to_dom) == 1]
-        self.append('eYo.t3.Xml.toDom.Stmt = {{ // count {}'.format(len(Ts)))
+        self.append('eYo.t3.xml.toDom.stmt = {{ // count {}'.format(len(Ts)))
         template = "    {}: '{}',"
         for t in Ts:
             k = t.to_dom[0]
@@ -396,7 +396,7 @@ class Formatter:
         self.append('}\n')
 
         Ts = [t for t in self.get_expressions() if t.to_dom and len(t.to_dom) == 1]
-        self.append('eYo.t3.Xml.toDom.Expr = {{ // count {}'.format(len(Ts)))
+        self.append('eYo.t3.xml.toDom.expr = {{ // count {}'.format(len(Ts)))
         template = "    {}: '{}',"
         for t in Ts:
             k = t.to_dom[0]
@@ -407,24 +407,22 @@ class Formatter:
         self.append('}\n')
 
         Ts = [(k, v) for k, v in from_dom.items()]
-        self.append('eYo.t3.Xml.fromDom = {{ // count {}'.format(len(Ts)))
+        self.append('eYo.t3.xml.fromDom = {{ // count {}'.format(len(Ts)))
         template = "    {}: {},"
         for k,v in Ts:
             if len(v) == 1:
                 t = v[0]
-                prefix = 'Stmt' if t.is_stmt else 'Expr'
+                prefix = 'stmt' if t.is_stmt else 'expr'
                 self.append(template.format(k, 'eYo.t3.' + prefix + '.' + t.name))
             else:
                 ra = []
                 for t in v:
-                    ra.append('eYo.t3.'+('Stmt' if t.is_stmt else 'Expr') + '.' + t.name)
+                    ra.append('eYo.t3.'+('stmt' if t.is_stmt else 'expr') + '.' + t.name)
                 self.append(template.format(k, '[' + ', '.join(ra) + ']'))
         self.append('}\n')
 
     def get_t3_data(self):
-        self.append("""
-      
-/**
+        self.append("""/**
  * @name {eYo.t3}
  * @namespace
  **/

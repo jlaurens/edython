@@ -161,7 +161,7 @@ eYo.expr.Dflt.makeInheritedC9r('comp_if', {
  */
 eYo.expr.List.makeInheritedC9r('comp_iter_list', {
   list: {
-    check: eYo.t3.expr.check.Comp_iter,
+    check: eYo.t3.expr.check.comp_iter,
     mandatory: 0,
     presep: ''
   }

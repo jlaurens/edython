@@ -13,14 +13,14 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.brick')
+eYo.provide('fcls.Brick')
 
 eYo.forwardDeclare('brick')
 
 /**
  * Faceless driver for bricks.
  */
-eYo.fcls.makeDriverClass('Brick')
+eYo.fcls.makeDriverC9r('Brick')
 
 /**
  * The default implementation does nothing.

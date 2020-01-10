@@ -18,7 +18,7 @@ eYo.forwardDeclare('Search')
 /**
  * Dom driver for the search pane.
  */
-eYo.dom.makeDriverClass('Search', {
+eYo.dom.makeDriverC9r('Search', {
     /**
    * Initialize the search dom ressources.
    * @param {eYo.Search} search

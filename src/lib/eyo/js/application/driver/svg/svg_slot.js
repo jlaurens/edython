@@ -18,7 +18,7 @@ eYo.forwardDeclare('slot')
 /**
  * Svg driver for slots.
  */
-eYo.svg.makeDriverClass('Slot', {
+eYo.svg.makeDriverC9r('Slot', {
     /**
    * Prepare the given slot.
    * @param {eYo.slot.Dflt} slot to be prepared.

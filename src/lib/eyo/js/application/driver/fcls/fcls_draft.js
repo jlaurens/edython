@@ -18,4 +18,4 @@ eYo.forwardDeclare('Draft')
 /**
  * Shared application driver.
  */
-eYo.fcls.makeDriverClass('Draft')
+eYo.fcls.makeDriverC9r('Draft')

@@ -38,7 +38,7 @@ goog.forwardDeclare('goog.dom')
 /**
  * Svg driver for bricks.
  */
-eYo.svg.makeDriverClass('Brick', {
+eYo.svg.makeDriverC9r('Brick', {
   /**
    * Initialize the given brick.
    * Adds to brick's renderer a `svg` attribute owning all the svg related resources.

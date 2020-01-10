@@ -18,7 +18,7 @@ eYo.forwardDeclare('Zoomer')
 /**
  * Svg driver for the zoomer.
  */
-eYo.svg.makeDriverClass('Zoomer', {
+eYo.svg.makeDriverC9r('Zoomer', {
     /**
    * Initialize the board's controls.
    * @param {eYo.Zoomer} constrols

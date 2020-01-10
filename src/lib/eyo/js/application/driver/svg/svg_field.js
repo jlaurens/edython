@@ -17,7 +17,7 @@ eYo.forwardDeclare('field')
 
 // field management
 
-eYo.svg.makeDriverClass('Field', {
+eYo.svg.makeDriverC9r('Field', {
   /**
    * Initializes the field SVG ressources.
    * Does nothing if the field's brick has no SVG ressources.
