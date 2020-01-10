@@ -22,10 +22,10 @@ eYo.c9r.makeNS(eYo, 'app')
 eYo.forwardDeclare('css')
 
 eYo.forwardDeclare('focus')
-eYo.forwardDeclare('motion')
-eYo.forwardDeclare('desk')
+eYo.forwardDeclare('Motion')
+eYo.forwardDeclare('Desk')
 eYo.forwardDeclare('driver')
-eYo.forwardDeclare('audio')
+eYo.forwardDeclare('Audio')
 
 /**
  * @name {eYo.app.Options}
@@ -241,7 +241,7 @@ eYo.app.Dflt_p.paste = () => {
 /**
  * Delete this brick and the next ones if requested.
  * For edython.
- * @param {eYo.Brick.Dflt} block The brick to delete.
+ * @param {eYo.brick.Dflt} block The brick to delete.
  * @param {boolean} deep
  */
 eYo.app.Dflt_p.deleteBrick = function (brick, deep) {
@@ -276,7 +276,7 @@ eYo.app.Dflt_p.deleteBrick = function (brick, deep) {
 
 /**
  * Copy a brick onto the local clipboard.
- * @param {eYo.Brick.Dflt} brick Brick to be copied.
+ * @param {eYo.brick.Dflt} brick Brick to be copied.
  * @private
  */
 eYo.app.Dflt_p.copyBrick = function (brick, deep) {

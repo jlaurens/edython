@@ -6,15 +6,15 @@ describe('BitSet(Create)', function() {
   describe('BitSet(Create)', function() {
     it('size', function() {
       var ss
-      ss = eYo.bitSet.newbitset(0)
+      ss = eYo.gmr.newbitset(0)
       assert(ss.ra.length === 0)
-      ss = eYo.bitSet.newbitset(4)
+      ss = eYo.gmr.newbitset(4)
       assert(ss.ra.length === 1)
-      ss = eYo.bitSet.newbitset(8)
+      ss = eYo.gmr.newbitset(8)
       assert(ss.ra.length === 1)
-      ss = eYo.bitSet.newbitset(12)
+      ss = eYo.gmr.newbitset(12)
       assert(ss.ra.length === 2)
-      ss = eYo.bitSet.newbitset(16)
+      ss = eYo.gmr.newbitset(16)
       assert(ss.ra.length === 2)
     });
   });
@@ -22,7 +22,7 @@ describe('BitSet(Create)', function() {
   describe('BitSet(Test)', function() {
     it('testbit', function() {
       var ss
-      ss = eYo.bitSet.newbitset(8)
+      ss = eYo.gmr.newbitset(8)
       for (var i = 0 ; i < 8 ; i++) {
         assert(!eYo.bitSet.testbit(ss, i), 'ERROR')
       }
@@ -37,7 +37,7 @@ describe('BitSet(Create)', function() {
       for (var i = 4 ; i < 8 ; i++) {
         assert(!eYo.bitSet.testbit(ss, i), 'ERROR')
       }
-      ss = eYo.bitSet.newbitset(16)
+      ss = eYo.gmr.newbitset(16)
       for (var i = 0 ; i < 8 ; i++) {
         assert(!eYo.bitSet.testbit(ss, 8 + i), 'ERROR')
       }

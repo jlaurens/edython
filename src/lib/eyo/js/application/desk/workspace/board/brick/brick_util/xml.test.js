@@ -4,7 +4,7 @@ describe('XMl', function () {
   describe('Primary', function () {
     it ('identifier', function () {
       var model = `<x eyo="identifier" name="k" slot="key"></x>`
-      var d = eYo.Brick.newReady(eYo.app.Board, model)
+      var d = eYo.brick.newReady(eYo.app.Board, model)
       assert(d, `MISSING brick`)
     })
   })

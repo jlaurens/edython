@@ -26,7 +26,7 @@ eYo.makeClass('DB', {
  * Database of all identified boards.
  * @constructor
  */
-eYo.DB.prototype.Add = function(object) {
+eYo.DB.prototype.add = function(object) {
   this.byID_[object.id] = object
 }
 
@@ -41,8 +41,8 @@ eYo.DB.prototype.remove = function(object) {
 /**
  * Find the object with the specified ID.
  * @param {string} id ID of object to find.
- * @return {eYo.Board} The sought after board or null if not found.
+ * @return {eYo.board} The sought after board or null if not found.
  */
-eYo.DB.prototype.ById = function(id) {
+eYo.DB.prototype.byId = function(id) {
   return this.byID_[id]
 }

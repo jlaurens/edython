@@ -710,7 +710,7 @@ eYo.provide('Module.functions', new eYo.module.Dflt('functions', 'https://docs.p
         ]
       }),
       new Item({
-        name: 'list',
+        name: 'List',
         category: 0,
         type_: 1,
         stmt: true,
@@ -1385,7 +1385,7 @@ eYo.provide('Module.functions', new eYo.module.Dflt('functions', 'https://docs.p
       'issubclass': 35,
       'iter': 36,
       'len': 37,
-      'list': 38,
+      'List': 38,
       'locals': 39,
       'map': 40,
       'max': 41,

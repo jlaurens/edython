@@ -13,12 +13,12 @@
 
 eYo.require('svg')
 
-eYo.forwardDeclare('zoomer')
+eYo.forwardDeclare('Zoomer')
 
 /**
  * Svg driver for the zoomer.
  */
-eYo.Svg.makeDriverClass('Zoomer', {
+eYo.svg.makeDriverClass('Zoomer', {
     /**
    * Initialize the board's controls.
    * @param {eYo.Zoomer} constrols
@@ -51,7 +51,7 @@ eYo.Svg.makeDriverClass('Zoomer', {
           clip-path="url(#eyo-zoom-reset-clip-path837493)"></image>
     </g>
     */
-    g = svg.zoom_ = eYo.Svg.newElement(
+    g = svg.zoom_ = eYo.svg.newElement(
     'g',
       {class: 'eyo-zoom'},
       svg.group_
@@ -59,12 +59,12 @@ eYo.Svg.makeDriverClass('Zoomer', {
     var rnd = String(Math.random()).substring(2)
     var clip;
 
-    clip = eYo.Svg.newElement(
+    clip = eYo.svg.newElement(
       'clipPath',
       {id: 'eyo-zoomout-clip-path' + rnd},
       g
     )
-    eYo.Svg.newElement(
+    eYo.svg.newElement(
       'rect',
       {
         width: 32,
@@ -73,7 +73,7 @@ eYo.Svg.makeDriverClass('Zoomer', {
       },
       clip
     )
-    var zoomoutSvg = eYo.Svg.newElement(
+    var zoomoutSvg = eYo.svg.newElement(
       'image',
       {
         width: eYo.SPRITE.width,
@@ -89,19 +89,19 @@ eYo.Svg.makeDriverClass('Zoomer', {
       'xlink:href',
       board.options.pathToMedia + eYo.SPRITE.url
     )
-    clip = eYo.Svg.newElement(
+    clip = eYo.svg.newElement(
       'clipPath',
       {
         id: 'eyo-zoomin-clip-path' + rnd
       },
       g
     )
-    eYo.Svg.newElement(
+    eYo.svg.newElement(
       'rect',
       {width: 32, height: 32, y: 43},
       clip
     )
-    var zoominSvg = eYo.Svg.newElement(
+    var zoominSvg = eYo.svg.newElement(
       'image',
       {
         width: eYo.SPRITE.width,
@@ -117,17 +117,17 @@ eYo.Svg.makeDriverClass('Zoomer', {
       'xlink:href',
       board.options.pathToMedia + eYo.SPRITE.url
     )
-    clip = eYo.Svg.newElement(
+    clip = eYo.svg.newElement(
       'clipPath',
       {id: 'eyo-zoom-reset-clip-path' + rnd},
       g
     )
-    eYo.Svg.newElement(
+    eYo.svg.newElement(
       'rect',
       {width: 32, height: 32},
       clip
     )
-    var zoomresetSvg = eYo.Svg.newElement(
+    var zoomresetSvg = eYo.svg.newElement(
       'image',
       {
         width: eYo.SPRITE.width,
@@ -202,7 +202,7 @@ eYo.Svg.makeDriverClass('Zoomer', {
  * Position of the zoom controls.
  * @param {eYo.Zoomer} controls
  */
-eYo.Svg.Zoomer.prototype.place = function(controls) {
+eYo.svg.Zoomer.prototype.place = function(controls) {
   controls.board_.dom.svg.zoom_.setAttribute(
     'transform',
     `translate(${controls.left_},${controls.top_})`

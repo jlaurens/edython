@@ -12,12 +12,12 @@
 'use strict'
 
 eYo.require('stmt')
-eYo.require('expr.list')
+eYo.require('expr.List')
 
 eYo.provide('brick.assignment')
 
 eYo.forwardDeclare('msg')
-eYo.forwardDeclare('expr.primary')
+eYo.forwardDeclare('expr.Primary')
 goog.forwardDeclare('goog.dom')
 
 /**
@@ -43,7 +43,7 @@ goog.forwardDeclare('goog.dom')
  * or a augtarget_annotated which is a particular case of key_datum.
  * For edython.
  */
-eYo.Stmt.makeClass('assignment_stmt', {
+eYo.stmt.makeClass('Assignment_stmt', {
   data: {
     variant: {
       all: [
@@ -319,14 +319,14 @@ eYo.Stmt.makeClass('assignment_stmt', {
   'annotated_assignment_stmt',
   'augmented_assignment_stmt'
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.Stmt[k] = eYo.stmt.Assignment_stmt))
+  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.Assignment_stmt))
 })
 
 /**
  * getType.
  * @return {String} The type of the receiver's brick.
  */
-eYo.Stmt.Assignment_stmt.prototype.getType = function () {
+eYo.stmt.Assignment_stmt.prototype.getType = function () {
   var x = this.Variant_p
   if (x === eYo.key.VALUED || x === eYo.key.EXPRESSION) { // not yet consolidated
     return eYo.t3.Stmt.expression_stmt
@@ -351,11 +351,11 @@ eYo.Stmt.Assignment_stmt.prototype.getType = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.Assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.Assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var target_p = this.Target_p
   var variant_p = this.Variant_p
   var F = (content, newVariant) => {
@@ -388,7 +388,7 @@ eYo.Stmt.Assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Used only in assignment statement as wrapped value,
  * and in primary as promised value.
  */
-eYo.expr.list.makeSubclass('value_list', {
+eYo.expr.List.makeSubclass('Value_list', {
   list: (() => {
     /*
      * For each given type, returns the list of brick types that can be unique.
@@ -474,7 +474,7 @@ eYo.expr.list.makeSubclass('value_list', {
           eYo.t3.Expr.named_call_expr
         ].indexOf(subtype) < 0 ? [] : null)
       },
-      consolidator: eYo.consolidator.list,
+      consolidator: eYo.consolidator.List,
       mandatory: 1,
       presep: ','
     }
@@ -537,11 +537,11 @@ eYo.expr.value_list.prototype.getSubtype = function () {
   return (t && (this.subtype_ = t.type)) || this.subtype_
 }
 
-eYo.expr.list.makeSubclass('augassigned_list', () => {
+eYo.expr.List.makeSubclass('Augassigned_list', () => {
   var D = {
     check: eYo.t3.Expr.Check.expression,
     unique: eYo.t3.Expr.yield_expr,
-    consolidator: eYo.consolidator.list,
+    consolidator: eYo.consolidator.List,
     mandatory: 1,
     presep: ','
   }
@@ -555,11 +555,11 @@ eYo.expr.list.makeSubclass('augassigned_list', () => {
 
 // /**
 //  * Populate the context menu for the given brick.
-//  * @param {eYo.Brick.Dflt} brick The brick.
+//  * @param {eYo.brick.Dflt} brick The brick.
 //  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
 //  * @private
 //  */
-// eYo.Stmt.Augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
+// eYo.stmt.Augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
 //   var brick = this
 //   var withTarget = this.target_b
 //   var target = this.Target_p
@@ -600,7 +600,7 @@ eYo.expr.list.makeSubclass('augassigned_list', () => {
 //   return eYo.stmt.Augmented_assignment_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 // }
 
-eYo.Brick.Assignment.T3s = [
+eYo.brick.Assignment.T3s = [
   eYo.t3.Expr.identifier,
   eYo.t3.Expr.yield_expr,
   eYo.t3.Expr.Target_list,

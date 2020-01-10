@@ -18,12 +18,12 @@ eYo.require('msg')
 eYo.require('stmt')
 eYo.require('tooltip')
 
-eYo.require('library')
+eYo.require('Library')
 eYo.provide('brick.string')
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -195,6 +195,6 @@ goog.mixin(eYo.tooltip.Title, {
   string__import_stmt: 'Importer le module string.',
 })
 
-eYo.Brick.String.T3s = [
+eYo.brick.String.T3s = [
   eYo.t3.Expr.String__const
 ]

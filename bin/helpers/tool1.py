@@ -31,7 +31,7 @@ class Foo:
   # eYo.Foo.makeSubclass(ns, 'bar')
   re_makeSubclass = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
-  \.(?P<Super>[a-z][\w0-9_]*)
+  \.(?P<Super>[A-Z][\w0-9_]*)
   \.makeSubclass\s*\(\s*
   (?P<suite>.*)""", re.X)
 
@@ -50,7 +50,7 @@ class Foo:
   .*""", re.X)
 
   re_assignment = re.compile(r"""^\s*
-  (?P<assigned>(?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)\.[a-z][\w0-9_]*)
+  (?P<assigned>(?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)\.[A-Z][\w0-9_]*)
   \s*=(?!=).*""", re.X)
 
   # eYo.Protocol.add(eYo.Module.Item, 'Register', 'module')
@@ -70,6 +70,10 @@ class Foo:
       relative = path.relative_to(pathRoot)
       provided = set()
       required = set()
+      def addRequired(what, assigned = None):
+        required.add(what)
+        if what.endswith('getRelativeWhere'):
+          raise Exception(f'Unexpected {assigned}')
       forwarded = set()
       classed = set()
       subclassed = set()
@@ -81,22 +85,25 @@ class Foo:
       else:
         def base_require(l):
           if re.search(r'^\s*eYo', l):
-            required.add('eYo')
-          if re.search(r'^\s*eYo\.C9r\.', l):
-            required.add('eYo.C9r')
+            addRequired('eYo')
+          if re.search(r'^\s*eYo\.c9r\.', l):
+            addRequired('eYo.c9r')
       for l in f.readlines():
         base_require(l)
         m = self.re_protocol.match(l)
         if m:
           K = m.group('Key')
-          required.add(f'eYo.Protocol.{K}')
+          addRequired(f'eYo.protocol.{K}')
           continue
         m = self.re_assignment.match(l)
         if m:
-          ns = m.group('ns')
-          if not re.search(r'_[ps]\b', ns):
-            required.add(ns)
-            provided.add(m.group('assigned'))
+          assigned = m.group('assigned')
+          if not assigned.endswith('.prototype'):
+            ns = m.group('ns')
+            if ns.endswith('.prototype') or re.search(r'_[ps]\b', ns):
+              continue
+            addRequired(ns, assigned)
+            provided.add(assigned)
           continue
         ns = key = None
         def parse_args(suite):
@@ -123,25 +130,25 @@ class Foo:
         m = self.re_make.match(l)
         if m:
           if m.group('what') != 'NS':
-            required.add('eYo.C9r')
+            addRequired('eYo.c9r')
           NS = m.group('NS')
-          required.add(NS)
+          addRequired(NS)
           parse_args(m.group('suite'))
           if ns:
-            required.add(ns)
+            addRequired(ns)
             provided.add(f'{ns}.{key}')
           else:
             provided.add(f'{NS}.{key}')
           continue
         m = self.re_makeSubclass.match(l)
         if m:
-          required.add('eYo.C9r')
+          addRequired('eYo.c9r')
           NS = m.group('NS')
-          required.add(NS)
+          addRequired(NS)
           key = m.group('Super')
           parse_args(m.group('suite'))
           if ns:
-            required.add(ns)
+            addRequired(ns)
             provided.add(f'{ns}.{key}')
           else:
             provided.add(f'{NS}.{key}')
@@ -154,7 +161,7 @@ class Foo:
           if m.group('provide'):
             provided.add(what)
           elif m.group('require'):
-            required.add(what)
+            addRequired(what)
           else:
             forwarded.add(what)
         continue

@@ -133,7 +133,7 @@ goog.addSingletonGetter(eYo.MenuItemRenderer)
  * @return {Element} Root element for the item.
  * @override
  */
-eYo.MenuItemRenderer.prototype.CreateDom = function (item) {
+eYo.MenuItemRenderer.prototype.createDom = function (item) {
   var element = eYo.MenuItemRenderer.SuperClass_.createDom.Call(this, item)
   return element
 }

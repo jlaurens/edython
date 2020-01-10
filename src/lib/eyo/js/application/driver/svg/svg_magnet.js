@@ -18,13 +18,13 @@ eYo.forwardDeclare('magnet')
 /**
  * Svg driver for magnets.
  */
-eYo.Svg.makeDriverClass('Magnet')
+eYo.svg.makeDriverClass('Magnet')
 
 /**
  * Hilight the given magnet.
- * @param {eYo.Magnet.Dflt} m4t
+ * @param {eYo.magnet.Dflt} m4t
  */
-eYo.Svg.Magnet.prototype.hilight = function (m4t) {
+eYo.svg.Magnet.prototype.hilight = function (m4t) {
   if (!m4t.board) {
     return
   }
@@ -36,8 +36,8 @@ eYo.Svg.Magnet.prototype.hilight = function (m4t) {
       steps = eYo.Shape.definitionWithBrick(m4t.targetBrick)
     } else {
       steps = eYo.Shape.definitionWithMagnet(m4t)
-      eYo.Svg.MagnetHighlightedPath_ =
-      eYo.Svg.newElement(
+      eYo.svg.MagnetHighlightedPath_ =
+      eYo.svg.newElement(
         'path',
         {
           class: 'eyo-hilighted-magnet-path',
@@ -53,7 +53,7 @@ eYo.Svg.Magnet.prototype.hilight = function (m4t) {
     steps = eYo.Shape.definitionWithMagnet(m4t)
   }
   var xy = m4t.whereInBoard
-  eYo.Svg.MagnetHighlightedPath_ = eYo.svg.newElement(
+  eYo.svg.MagnetHighlightedPath_ = eYo.svg.newElement(
     'path',
     {
       class: 'eyo-hilighted-magnet-path',

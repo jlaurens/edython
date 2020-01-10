@@ -11,16 +11,16 @@
  */
 'use strict'
 
-eYo.require('expr.list')
+eYo.require('expr.List')
 
-eYo.require('c9r.change')
+eYo.require('c9r.Change')
 
 eYo.require('Module.stdtypes')
 eYo.require('Module.functions')
 
 eYo.require('msg')
 
-eYo.provide('expr.primary')
+eYo.provide('expr.Primary')
 
 /**
  * @name{eYo.consolidator.Target}
@@ -31,7 +31,7 @@ eYo.provide('expr.primary')
  * Main entry: consolidate
  * @param {String} single - the required type for a single element....
  */
-eYo.consolidator.list.makeSubclass('Target', {
+eYo.consolidator.List.makeSubclass('Target', {
   list: {
     check: null,
     mandatory: 1,
@@ -91,7 +91,7 @@ eYo.consolidator.list.makeSubclass('Target', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {eYo.Brick.Dflt} brick - owner or the receiver.
+ * @param {eYo.brick.Dflt} brick - owner or the receiver.
  */
 eYo.consolidator.Target.prototype.getIO = function (brick) {
   var io = eYo.consolidator.Target.SuperProto_.getIO.Call(this, brick)
@@ -259,7 +259,7 @@ eYo.consolidator.Target.prototype.doFinalize = function (io) {
 /**
  * Class for a Delegate, target_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * This brick appears in
  * - assignment's target slot, types:
  *    - expression_stmt
@@ -301,7 +301,7 @@ eYo.consolidator.Target.prototype.doFinalize = function (io) {
  * All the types involved are
  * For edython.
  */
-eYo.expr.list.makeSubclass('target_list', {
+eYo.expr.List.makeSubclass('Target_list', {
   list: {
     consolidator: eYo.consolidator.Target
   }
@@ -318,10 +318,10 @@ eYo.expr.Target_list.prototype.getSubtype = function () {
 
 /**
  * Did disconnect this brick's connection from another connection.
- * @param {eYo.Magnet.Dflt} m4t
- * @param {eYo.Magnet.Dflt} oldTargetM4t that was connected to blockConnection
+ * @param {eYo.magnet.Dflt} m4t
+ * @param {eYo.magnet.Dflt} oldTargetM4t that was connected to blockConnection
  */
-eYo.expr.Target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
+eYo.expr.Target_list.prototype.xdidDisconnect = function (m4t, oldTargetM4t) {
   if (m4t.isSlot) {
     var other = false
     if (this.slotSome(slot => {
@@ -356,11 +356,11 @@ eYo.expr.Target_list.prototype.XdidDisconnect = function (m4t, oldTargetM4t) {
 /**
  * Hook.
  * If more that 2 bricks are connected, the variant is target_valued.
- * @param {eYo.Magnet.Dflt} m4t.
- * @param {eYo.Magnet.Dflt} oldTargetM4t.
- * @param {eYo.Magnet.Dflt} targetOldM4t
+ * @param {eYo.magnet.Dflt} m4t.
+ * @param {eYo.magnet.Dflt} oldTargetM4t.
+ * @param {eYo.magnet.Dflt} targetOldM4t
  */
-eYo.expr.Target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+eYo.expr.Target_list.prototype.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.expr.Target_list.SuperProto_.didConnect.Call(this, m4t, oldTargetM4t, targetOldM4t)
   // BEWARE: the brick is NOT consolidated
   if (m4t.isSlot) {
@@ -530,7 +530,7 @@ eYo.expr.Target_list.prototype.XdidConnect = function (m4t, oldTargetM4t, target
 
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('primary', {
+eYo.expr.makeClass('Primary', {
   xml: {
     types: [
       eYo.t3.Expr.identifier,
@@ -1253,7 +1253,7 @@ eYo.do.register.Add(eYo.expr, 'primary', function (b3k) {
     console.warn('BREAK HERE!')
   }
 //  console.warn(k)
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.primary))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Primary))
 })
 
 /**
@@ -1261,18 +1261,18 @@ eYo.do.register.Add(eYo.expr, 'primary', function (b3k) {
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {eYo.Brick.Dflt} brick to be initialized.
+ * @param {eYo.brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
-eYo.expr.primary.prototype.init = function () {
-  eYo.expr.primary.SuperProto_.init.Call(this)
+eYo.expr.Primary.prototype.init = function () {
+  eYo.expr.Primary.SuperProto_.init.Call(this)
   this.profile_ = eYo.NA
 }
 
 /**
  * updateProfile.
  */
-eYo.expr.primary.prototype.updateProfile = eYo.decorate.reentrant_method(
+eYo.expr.Primary.prototype.updateProfile = eYo.decorate.reentrant_method(
   'updateProfile',
   function () {
     ++this.change.count
@@ -1296,7 +1296,7 @@ eYo.expr.primary.prototype.updateProfile = eYo.decorate.reentrant_method(
  * This has not been tested despite it is essential.
  * @return {!Object}.
  */
-eYo.expr.primary.prototype.getProfile = eYo.c9r.decorateChange(
+eYo.expr.Primary.prototype.getProfile = eYo.c9r.decorateChange(
   'getProfile',
   function () {
       // this may be called very very early when
@@ -1434,8 +1434,8 @@ eYo.expr.primary.prototype.getProfile = eYo.c9r.decorateChange(
  * After initialization, this should be called whenever
  * the brick type has changed.
  */
-eYo.expr.primary.prototype.ConsolidateMagnets = function () {
-  eYo.expr.primary.SuperProto_.consolidateMagnets.Call(this)
+eYo.expr.Primary.prototype.consolidateMagnets = function () {
+  eYo.expr.Primary.SuperProto_.consolidateMagnets.Call(this)
   this.target_s.magnet.hidden = this.Variant_p === eYo.key.NONE && this.Dotted_p === 0
 }
 
@@ -1444,7 +1444,7 @@ eYo.expr.primary.prototype.ConsolidateMagnets = function () {
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
-eYo.expr.primary.prototype.getBaseType = function () {
+eYo.expr.Primary.prototype.getBaseType = function () {
   var check = this.getOutCheck()
   if (!check.length) {
     console.error('BIG PROBLEM', this.getOutCheck())
@@ -1459,7 +1459,7 @@ eYo.expr.primary.prototype.getBaseType = function () {
  * getOutCheck.
  * The check_ array of the output connection.
  */
-eYo.expr.primary.prototype.getOutCheck = function () {
+eYo.expr.Primary.prototype.getOutCheck = function () {
   var f = function () {
   // there is no validation here
   // simple cases first, variant based
@@ -1762,7 +1762,7 @@ eYo.expr.primary.prototype.getOutCheck = function () {
  * The subtype depends on the variant and the modifiers.
  * Set by getType as side effect.
  */
-eYo.expr.primary.prototype.getSubtype = function () {
+eYo.expr.Primary.prototype.getSubtype = function () {
   this.getType()
   return this.Subtype_p
 }
@@ -1773,10 +1773,10 @@ eYo.expr.primary.prototype.getSubtype = function () {
  * @param {Brick} brick
  * @param {String} name The name of the input.
  * @param {Boolean} [dontCreate] Whether the receiver should create inputs on the fly.
- * @return {eYo.Slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
+ * @return {eYo.slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
-eYo.expr.primary.prototype.getSlot = function (name) {
-  var slot = eYo.expr.primary.SuperProto_.getSlot.Call(this, name)
+eYo.expr.Primary.prototype.getSlot = function (name) {
+  var slot = eYo.expr.Primary.SuperProto_.getSlot.Call(this, name)
   if (!slot) {
     // we suppose that ary is set
     var f = (slot) => {
@@ -1797,19 +1797,19 @@ eYo.expr.primary.prototype.getSlot = function (name) {
 
 /**
  * Class for a Delegate, base call statement brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.makeClass('base_call_stmt', {
+eYo.stmt.makeClass('Base_call_stmt', {
   link: eYo.t3.Expr.primary
 })
 
 /**
  * Class for a Delegate, base call statement brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.Base_call_stmt.makeSubclass('call_stmt', {
+eYo.stmt.Base_call_stmt.makeSubclass('Call_stmt', {
   data: {
     variant: {
       init: eYo.key.CALL_EXPR,
@@ -1838,24 +1838,24 @@ eYo.Stmt.Base_call_stmt.makeSubclass('call_stmt', {
   }
 })
 
-eYo.Stmt.Call_stmt.prototype.updateProfile = eYo.expr.primary.prototype.updateProfile
+eYo.stmt.Call_stmt.prototype.updateProfile = eYo.expr.Primary.prototype.updateProfile
 
-eYo.Stmt.Call_stmt.prototype.getProfile = eYo.expr.primary.prototype.getProfile
+eYo.stmt.Call_stmt.prototype.getProfile = eYo.expr.Primary.prototype.getProfile
 
 /**
  * Initialize a brick.
  * Called from brick's init method.
  * This should be called only once.
  * The underlying model is not expected to change while running.
- * @param {eYo.Brick.Dflt} brick to be initialized.
+ * @param {eYo.brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
-eYo.Stmt.Call_stmt.prototype.init = function () {
+eYo.stmt.Call_stmt.prototype.init = function () {
   eYo.stmt.call_stmt.SuperProto_.init.Call(this)
   this.profile = eYo.NA
 }
 
-eYo.expr.primary.T3s = [
+eYo.expr.Primary.T3s = [
   eYo.t3.Expr.primary,
   eYo.t3.Expr.identifier,
   eYo.t3.Expr.Attributeref,

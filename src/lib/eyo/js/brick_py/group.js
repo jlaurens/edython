@@ -18,12 +18,12 @@ eYo.forwardDeclare('msg')
 goog.forwardDeclare('goog.dom')
 
 /**
- * @name{eYo.Stmt.Group}
+ * @name{eYo.stmt.Group}
  * Class for a Delegate, base group statement brick.
  * Base group is subclassed into Group and Control.
  * For edython.
  */
-eYo.Stmt.Dflt.makeSubclass('group', {
+eYo.stmt.Dflt.makeSubclass('Group', {
   head (type) /** @suppress {globalThis} */ {
     return null
   },
@@ -56,10 +56,10 @@ eYo.Stmt.Dflt.makeSubclass('group', {
 
 /**
  * Class for a Delegate, if_part brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.Group.makeSubclass('branch', {
+eYo.stmt.Group.makeSubclass('Branch', {
   data: {
     variant: {
       all: [
@@ -137,7 +137,7 @@ eYo.Stmt.Group.makeSubclass('branch', {
  * For edython.
  * @return {String}
  */
-eYo.Stmt.Branch.prototype.xmlAttr = function () {
+eYo.stmt.Branch.prototype.xmlAttr = function () {
   return this.Variant_p
 }
 
@@ -150,7 +150,7 @@ eYo.Stmt.Branch.prototype.xmlAttr = function () {
  * Each type change may imply a disconnection.
  * At least, the type may change to a value when no connection is connected.
  */
-eYo.Stmt.Branch.prototype.getBaseType = function () {
+eYo.stmt.Branch.prototype.getBaseType = function () {
   var T3 = eYo.t3.Stmt
   var type = {
     [eYo.key.IF]: T3.if_part,
@@ -186,11 +186,11 @@ eYo.Stmt.Branch.prototype.getBaseType = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.Variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
@@ -221,7 +221,7 @@ eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   'last_else'
 ].forEach(name => {
   var k = name + '_part'
-  eYo.c9r.register(k, (eYo.Stmt[k] = eYo.stmt.Branch))
+  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.Branch))
 })
 
 /**
@@ -230,7 +230,7 @@ eYo.Stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
  * @param {Brick} brick
  * @private
  */
-eYo.Stmt.Group.prototype.willRender_ = function (recorder) {
+eYo.stmt.Group.prototype.willRender_ = function (recorder) {
   eYo.stmt.Group.SuperProto_.willRender_.Call(this, recorder)
   var field = this.async_f
   if (field) {
@@ -240,11 +240,11 @@ eYo.Stmt.Group.prototype.willRender_ = function (recorder) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
   if (this.async_f) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('async', 'eyo-code-reserved'),
@@ -267,10 +267,10 @@ eYo.Stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Class for a Delegate, for_part brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.Group.makeSubclass('for_part', true, {
+eYo.stmt.Group.makeSubclass('For_part', true, {
   slots: {
     for: {
       order: 1,
@@ -291,10 +291,10 @@ eYo.Stmt.Group.makeSubclass('for_part', true, {
 
 /**
  * Class for a Delegate, with_part brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.Group.makeSubclass('with_part', true, {
+eYo.stmt.Group.makeSubclass('With_part', true, {
   slots: {
     with: {
       order: 1,
@@ -306,7 +306,7 @@ eYo.Stmt.Group.makeSubclass('with_part', true, {
   }
 })
 
-eYo.Stmt.Group.T3s = [
+eYo.stmt.Group.T3s = [
   eYo.t3.Stmt.if_part,
   eYo.t3.Stmt.elif_part,
   eYo.t3.Stmt.else_part,

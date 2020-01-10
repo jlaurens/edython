@@ -15,7 +15,7 @@ eYo.require('fcls')
 
 eYo.provide('fcls.library')
 
-eYo.forwardDeclare('library')
+eYo.forwardDeclare('Library')
 
 /**
  * Shared application driver.

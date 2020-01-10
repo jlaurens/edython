@@ -13,13 +13,13 @@
 
 eYo.require('c9r')
 eYo.require('decorate')
-eYo.require('list')
+eYo.require('List')
 
 eYo.makeNS('board')
 
-eYo.forwardDeclare('workspace')
+eYo.forwardDeclare('Workspace')
 
-eYo.forwardDeclare('metrics')
+eYo.forwardDeclare('Metrics')
 
 goog.forwardDeclare('goog.array')
 goog.forwardDeclare('goog.math')
@@ -32,10 +32,10 @@ goog.forwardDeclare('goog.math')
  * The flyout contains the flyout board.
  * There is also a board used to drag bricks around.
  * That makes at least 4 different boards.
- * @param {eYo.Desk|eYo.Workspace|eYo.Section} owner.
+ * @param {eYo.Desk|eYo.Workspace|eYo.section.Dflt} owner.
  * @constructor
  */
-eYo.c9r.Dflt.makeSubclass(eYo.Board, {
+eYo.c9r.Dflt.makeSubclass(eYo.board, {
   valued: {
     /**
      * The render status of a board.
@@ -47,7 +47,7 @@ eYo.c9r.Dflt.makeSubclass(eYo.Board, {
     /**
      * List of currently highlighted bricks.  Brick highlighting is often used to
      * visually mark bricks currently being executed.
-     * @type {Array<eYo.Brick.Dflt>}
+     * @type {Array<eYo.brick.Dflt>}
      * @private
      */
     highlightedBricks: [],
@@ -66,11 +66,11 @@ eYo.c9r.Dflt.makeSubclass(eYo.Board, {
      * The top bricks are all the bricks with no parent.
      * They are owned by a board.
      * They are ordered by line number.
-     * @type {eYo.list}
+     * @type {eYo.List}
      * @private
      */
     list () {
-      return new eYo.list(this)
+      return new eYo.List(this)
     },
     /**
      * @type {eYo.Scrollbar | eYo.Scroller}
@@ -79,7 +79,7 @@ eYo.c9r.Dflt.makeSubclass(eYo.Board, {
     scrollbar: {},
     board () {
       if (!this.isDragger) {
-        return new eYo.dnd.Dragger.Board(this)
+        return new eYo.dnd.dragger.Board(this)
       }
     },
   },
@@ -179,21 +179,21 @@ eYo.c9r.Dflt.makeSubclass(eYo.Board, {
     /**
      * the top bricks of the board.
      * Returns a copy or the internal array.
-     * @type{Array<eYo.Brick.Dflt>}
+     * @type{Array<eYo.brick.Dflt>}
      */
     topBricks () {
       return this.list.bricks
     },
     /**
      * the ordered top bricks of the board.
-     * @type{Array<eYo.Brick.Dflt>}
+     * @type{Array<eYo.brick.Dflt>}
      */
     orderedTopBricks () {
       return this.list.bricks
     },
     /**
      * the main bricks of the board.
-     * @type{Array<eYo.Brick.Dflt>}
+     * @type{Array<eYo.brick.Dflt>}
      */
     mainBricks () {
       return this.mainBricks_.slice()
@@ -211,7 +211,7 @@ eYo.c9r.Dflt.makeSubclass(eYo.Board, {
     this.listeners_.length = 0
     this.clear()
     
-    eYo.Magnet.disposeDB(this)
+    eYo.magnet.disposeDB(this)
 
     this.options = null
 
@@ -229,14 +229,14 @@ eYo.c9r.Dflt.makeSubclass(eYo.Board, {
  * @param {eYo.Desk} owner The main board belongs to a workspace. We allways have `this === owner.board`, which means that each kind of owner may have only one board.
  * @constructor
  */
-eYo.Board.Dflt.makeSubclass('Main', {
+eYo.board.Dflt.makeSubclass('Main', {
   init (owner, options) {
     /** @type {string} */
     this.id = eYo.do.genUid()    
   },
   owned: {
     board () {
-      return new eYo.Board.Dflt(this, {
+      return new eYo.board.Dflt(this, {
         backgroundClass: 'eyo-board-dragger-background'
       })
     },
@@ -269,7 +269,7 @@ eYo.Board.Dflt.makeSubclass('Main', {
      * @type {boolean}
      */
     isDragger () {
-      return this.owner__ instanceof eYo.Board.Dflt
+      return this.owner__ instanceof eYo.board.Dflt
     },
     /**
      * Is this board belonging to a flyout?
@@ -320,7 +320,7 @@ eYo.Board.Dflt.makeSubclass('Main', {
     /**
      * The main board is the receiver.
      * @readonly
-     * @type {eYo.Board}
+     * @type {eYo.board}
      */
     main () {
       return this
@@ -346,7 +346,7 @@ eYo.Board.Dflt.makeSubclass('Main', {
     this.listeners_.length = 0
     this.clear()
     // Remove from board database.
-    delete eYo.Board.Main.DB_[this.id]
+    delete eYo.board.Main.DB_[this.id]
     
     this.mainBricks_ = this.draftBricks_ = this.listeners_ = this.owner_ = null
   },
@@ -375,7 +375,7 @@ eYo.Board.Dflt.makeSubclass('Main', {
  * Update the UI according to the scale change.
  * The dimensions and the scroll offset are updated.
  */
-eYo.Board.Dflt.prototype.didScale = function() {
+eYo.board.Dflt.prototype.didScale = function() {
   console.error('BEFORE', this.metrics)
   this.updateMetrics()
   console.error('AFTER', this.metrics)
@@ -399,19 +399,19 @@ eYo.Board.Dflt.prototype.didScale = function() {
  * a left to right bias.  Units are in degrees.
  * See: http://tvtropes.org/pmwiki/pmwiki.php/Main/DiagonalBilling.
  */
-eYo.Board.SCAN_ANGLE = 3
+eYo.board.SCAN_ANGLE = 3
 
 /**
  * Finds the top-level bricks and returns them.  Bricks are optionally sorted
  * by position; top to bottom.
  * @param {boolean} ordered Sort the list if true.
- * @return {!Array<!eYo.Brick>} The top-level brick objects.
+ * @return {!Array<!eYo.brick>} The top-level brick objects.
  */
-eYo.Board.Dflt.prototype.getTopBricks = function(ordered) {
+eYo.board.Dflt.prototype.getTopBricks = function(ordered) {
   // Copy the topBricks_ list.
   var bricks = this.topBricks_.slice()
   if (ordered && bricks.length > 1) {
-    var offset = Math.sin(goog.math.toRadians(eYo.Board.SCAN_ANGLE))
+    var offset = Math.sin(goog.math.toRadians(eYo.board.SCAN_ANGLE))
     bricks.sort((a, b) => {
       var aWhere = a.whereInBoard
       var bWhere = b.whereInBoard
@@ -424,7 +424,7 @@ eYo.Board.Dflt.prototype.getTopBricks = function(ordered) {
 /**
  * Dispose of all bricks in board.
  */
-eYo.Board.Dflt.prototype.Clear = function() {
+eYo.board.Dflt.prototype.clear = function() {
   this.setResizesEnabled(false)
   this.list_.clear()
   this.setResizesEnabled(true)
@@ -434,13 +434,13 @@ eYo.Board.Dflt.prototype.Clear = function() {
 /**
  * Dispose of all bricks in board.
  */
-eYo.Board.Main.prototype.Clear = function() {
+eYo.board.Main.prototype.clear = function() {
   this.setResizesEnabled(false)
   var existingGroup = eYo.events.group
   if (!existingGroup) {
     eYo.events.group = true
   }
-  eYo.Board.Main.SuperProto_.clear.Call(this)
+  eYo.board.Main.SuperProto_.clear.Call(this)
   if (!existingGroup) {
     eYo.events.group = false
   }
@@ -451,9 +451,9 @@ eYo.Board.Main.prototype.Clear = function() {
  * @param {string} type - The type form `eYo.t3`.
  * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @return {!eYo.Brick.Dflt} The created brick.
+ * @return {!eYo.brick.Dflt} The created brick.
  */
-eYo.Board.Dflt.prototype.newBrick = function (type, opt_id) {
+eYo.board.Dflt.prototype.newBrick = function (type, opt_id) {
   var C9r = eYo.c9r.forType(type)
   eYo.Assert(C9r, 'No class for ' + type)
   var b3k = new C9r(this, type, opt_id)
@@ -466,7 +466,7 @@ eYo.Board.Dflt.prototype.newBrick = function (type, opt_id) {
  * @return {!Function} Function that can be passed to
  *     removeChangeListener.
  */
-eYo.Board.Dflt.prototype.AddChangeListener = function(func) {
+eYo.board.Dflt.prototype.addChangeListener = function(func) {
   this.listeners_.push(func)
   return func
 }
@@ -475,7 +475,7 @@ eYo.Board.Dflt.prototype.AddChangeListener = function(func) {
  * Stop listening for this board's changes.
  * @param {Function} func Function to stop calling.
  */
-eYo.Board.Dflt.prototype.removeChangeListener = function(func) {
+eYo.board.Dflt.prototype.removeChangeListener = function(func) {
   goog.array.remove(this.listeners_, func)
 };
 
@@ -483,9 +483,9 @@ eYo.Board.Dflt.prototype.removeChangeListener = function(func) {
  * Find the brick on this board with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of brick to find.
- * @return {eYo.Brick.Dflt} The sought after brick or null if not found.
+ * @return {eYo.brick.Dflt} The sought after brick or null if not found.
  */
-eYo.Board.Dflt.prototype.getBrickById = eYo.Board.Dflt.prototype.getBrickById = function(id) {
+eYo.board.Dflt.prototype.getBrickById = eYo.board.Dflt.prototype.getBrickById = function(id) {
   return this.list_.getBrickById(id)
 }
 
@@ -496,7 +496,7 @@ eYo.Board.Dflt.prototype.getBrickById = eYo.Board.Dflt.prototype.getBrickById = 
  *     whether shadow bricks are counted as filled. Defaults to true.
  * @return {boolean} True if all inputs are filled, false otherwise.
  */
-eYo.Board.Dflt.prototype.AllInputsFilled = function(opt_shadowBricksAreFilled) {
+eYo.board.Dflt.prototype.allInputsFilled = function(opt_shadowBricksAreFilled) {
   if (this.topBricks.some(b3k => !brick.allInputsFilled(opt_shadowBricksAreFilled))) {
     return false
   }
@@ -507,7 +507,7 @@ eYo.Board.Dflt.prototype.AllInputsFilled = function(opt_shadowBricksAreFilled) {
  * Database of all identified boards.
  * @constructor
  */
-eYo.Board.makeClass('DB', {
+eYo.board.makeClass('DB', {
   init () {
     this.byID_ = Object.create(null)
   }
@@ -517,16 +517,16 @@ eYo.Board.makeClass('DB', {
  * Database of all identified boards.
  * @constructor
  */
-eYo.Board.DB.prototype.Add = function(board) {
+eYo.board.DB.prototype.add = function(board) {
   this.byID_[board.id] = board
 }
 
 /**
  * Find the main board with the specified ID.
  * @param {string} id ID of board to find.
- * @return {eYo.Board} The sought after board or null if not found.
+ * @return {eYo.board} The sought after board or null if not found.
  */
-eYo.Board.DB.ById = function(id) {
+eYo.board.DB.ById = function(id) {
   return this.byID_[id]
 }
 
@@ -536,7 +536,7 @@ eYo.Board.DB.ById = function(id) {
  * @type {boolean}
  * @private
  */
-eYo.Board.Dflt.prototype.resizesEnabled_ = true
+eYo.board.Dflt.prototype.resizesEnabled_ = true
 
 /**
  * Last known position of the page scroll.
@@ -545,24 +545,24 @@ eYo.Board.Dflt.prototype.resizesEnabled_ = true
  * @type {!eYo.Where}
  * @private
  */
-eYo.Board.Dflt.prototype.lastPageScroll_ = null;
+eYo.board.Dflt.prototype.lastPageScroll_ = null;
 
 /**
  * Developers may define this function to add custom menu options to the
  * board's context menu or edit the board-created set of menu options.
  * @param {Array<!Object>} options List of menu options to add to.
  */
-eYo.Board.Dflt.prototype.ConfigureContextMenu = null;
+eYo.board.Dflt.prototype.configureContextMenu = eYo.NA
 
 /**
  * Save layout handler data so we can delete it later in dispose.
  * @param {Array<!Array>} handler Data that can be passed to unbindEvent.
  */
-eYo.Board.Dflt.prototype.SetResizeHandlerWrapper = function(handler) {
+eYo.board.Dflt.prototype.setResizeHandlerWrapper = function(handler) {
   this.resizeHandlerWrapper_ = handler;
 }
 
-Object.defineProperties(eYo.Board.Dflt.prototype, {
+Object.defineProperties(eYo.board.Dflt.prototype, {
   /**
    * The number of bricks that may be added to the board before reaching
    *     the maxBricks.
@@ -578,7 +578,7 @@ Object.defineProperties(eYo.Board.Dflt.prototype, {
   },
   /**
    * Find all bricks in board.  No particular order.
-   * @return {!Array<!eYo.Brick>} Array of bricks.
+   * @return {!Array<!eYo.brick>} Array of bricks.
    */
   allBricks: {
     get () {
@@ -595,7 +595,7 @@ Object.defineProperties(eYo.Board.Dflt.prototype, {
  * Update the board metrics according to the desk.
  * NB: No css styling.
  */
-eYo.Board.Dflt.prototype.updateMetrics = function() {
+eYo.board.Dflt.prototype.updateMetrics = function() {
   this.metrics_.view_.size = this.desk.viewRect.size
   this.resizePort()
   this.flyout_ && this.flyout_.updateMetrics()
@@ -604,7 +604,7 @@ eYo.Board.Dflt.prototype.updateMetrics = function() {
 /**
  * Hook after a `metrics` change.
  */
-eYo.Board.Dflt.prototype.MetricsDidChange = function() {
+eYo.board.Dflt.prototype.metricsDidChange = function() {
   this.place()
 }
 
@@ -612,7 +612,7 @@ eYo.Board.Dflt.prototype.MetricsDidChange = function() {
  * If enabled, calculate the metrics' content related info.
  * Update UI accordingly.
  */
-eYo.Board.Dflt.prototype.resizePort = function() {
+eYo.board.Dflt.prototype.resizePort = function() {
   if (!this.resizesEnabled_ || !this.rendered) {
     return
   }
@@ -667,7 +667,7 @@ eYo.Board.Dflt.prototype.resizePort = function() {
  * requires recalculating dimensions and positions of the
  * chromes. (e.g. window layout).
  */
-eYo.Board.Dflt.prototype.layout = function() {
+eYo.board.Dflt.prototype.layout = function() {
   this.updateMetrics()
   this.place()
   this.scrollbar && this.scrollbar.layout()
@@ -679,7 +679,7 @@ eYo.Board.Dflt.prototype.layout = function() {
  * requires recalculating dimensions and positions of the
  * chromes. (e.g. window layout).
  */
-eYo.Board.Dflt.prototype.place = function() {
+eYo.board.Dflt.prototype.place = function() {
   this.ui_driver_mngr && this.ui_driver_mngr.place(this)
   this.updateScreenCalculations_()
 }
@@ -688,7 +688,7 @@ eYo.Board.Dflt.prototype.place = function() {
  * Resizes and repositions board chrome if the page has a new
  * scroll position.
  */
-eYo.Board.Dflt.prototype.updateScreenCalculationsIfScrolled =
+eYo.board.Dflt.prototype.updateScreenCalculationsIfScrolled =
     function() {
   var currScroll = goog.dom.getDocumentScroll()
   if (!this.lastPageScroll_ || !this.lastPageScroll_.equals(currScroll)) {
@@ -700,7 +700,7 @@ eYo.Board.Dflt.prototype.updateScreenCalculationsIfScrolled =
 /**
  * Move the receiver to the new coordinates given by its metrics' scroll.
  */
-eYo.Board.Dflt.prototype.move = function() {
+eYo.board.Dflt.prototype.move = function() {
   this.dragger && this.dragger.move()
 }
 
@@ -708,7 +708,7 @@ eYo.Board.Dflt.prototype.move = function() {
  * Move the receiver to new coordinates.
  * @param {eYo.Where} xy Translation.
  */
-eYo.Board.Dflt.prototype.moveTo = function(xy) {
+eYo.board.Dflt.prototype.moveTo = function(xy) {
   console.log('moveTo', xy)
   this.metrics_.drag = xy
   this.move()
@@ -717,7 +717,7 @@ eYo.Board.Dflt.prototype.moveTo = function(xy) {
 /**
  * Render all bricks in board.
  */
-eYo.Board.Dflt.prototype.render = function() {
+eYo.board.Dflt.prototype.render = function() {
   var bricks = this.list.all
   // Render each brick
   var i = bricks.length
@@ -735,7 +735,7 @@ eYo.Board.Dflt.prototype.render = function() {
  * automatically unhighlight all others.  If true or false, manually
  * highlight/unhighlight the specified brick.
  */
-eYo.Board.Dflt.prototype.highlightBrick = function(id, opt_state) {
+eYo.board.Dflt.prototype.highlightBrick = function(id, opt_state) {
   if (opt_state === eYo.NA) {
     // Unhighlight all bricks.
     for (var i = 0, brick; brick = this.highlightedBricks_[i]; i++) {
@@ -760,7 +760,7 @@ eYo.Board.Dflt.prototype.highlightBrick = function(id, opt_state) {
 /**
  * Paste the content of the clipboard onto the board.
  */
-eYo.Board.Dflt.prototype.paste = function () {
+eYo.board.Dflt.prototype.paste = function () {
   var xml = eYo.Clipboard.xml
   if (!eYo.Clipboard.xml) {
     return
@@ -854,7 +854,7 @@ eYo.Board.Dflt.prototype.paste = function () {
  * @return {?number} Null if not over a delete area, or an enum representing
  *     which delete area the event is over.
  */
-eYo.Board.Dflt.prototype.inDeleteArea = function(motion) {
+eYo.board.Dflt.prototype.inDeleteArea = function(motion) {
   var xy = motion.where
   if (this.deleteRectTrash_ && this.deleteRectTrash_.contains(xy)) {
     return eYo.Motion.DELETE_AREA_TRASH
@@ -870,7 +870,7 @@ eYo.Board.Dflt.prototype.inDeleteArea = function(motion) {
  * @param {Event} e Mouse down event.
  * @param {eYo.Where} xy Starting location of object.
  */
-eYo.Board.Dflt.prototype.eventWhere = function(e) {
+eYo.board.Dflt.prototype.eventWhere = function(e) {
   return this.ui_driver_mngr.eventWhere(this, e)
 }
 
@@ -880,7 +880,7 @@ eYo.Board.Dflt.prototype.eventWhere = function(e) {
  * @private
  * @suppress{accessControls}
  */
-eYo.Board.Dflt.prototype.ShowContextMenu_ = function (e) {
+eYo.board.Dflt.prototype.showContextMenu_ = function (e) {
   if (this.options.readOnly || this.readOnly) {
     return
   }
@@ -996,7 +996,7 @@ eYo.Board.Dflt.prototype.ShowContextMenu_ = function (e) {
 /**
  * Mark this board's desk main board as the currently focused main board.
  */
-eYo.Board.Dflt.prototype.markFocused = function() {
+eYo.board.Dflt.prototype.markFocused = function() {
   var board = this.desk.board
   board.ui_driver_mngr.setBrowserFocus(board)
 }
@@ -1007,7 +1007,7 @@ eYo.Board.Dflt.prototype.markFocused = function() {
  * @param {number} amount Amount of zooming
  *                        (negative zooms out and positive zooms in).
  */
-eYo.Board.Dflt.prototype.zoom = function(center, amount) {
+eYo.board.Dflt.prototype.zoom = function(center, amount) {
   var options = this.options.zoom
   console.error(this.options)
   eYo.Assert(options, `Forbidden zoom with no zoom options ${this.options}`)
@@ -1035,7 +1035,7 @@ eYo.Board.Dflt.prototype.zoom = function(center, amount) {
  * Zooming the bricks centered in the center of view with zooming in or out.
  * @param {number} type Type of zooming (-1 zooming out and 1 zooming in).
  */
-eYo.Board.Dflt.prototype.zoomCenter = function(type) {
+eYo.board.Dflt.prototype.zoomCenter = function(type) {
   this.zoom(this.metrics.view.center, type)
 }
 
@@ -1046,7 +1046,7 @@ eYo.Board.Dflt.prototype.zoomCenter = function(type) {
  * @param {Boolean} horizontally
  * @param {Boolean} increase  true for a scroll up, false otherwise
  */
-eYo.Board.Dflt.prototype.ScrollPage = function(horizontally, increase) {
+eYo.board.Dflt.prototype.scrollPage = function(horizontally, increase) {
   // how many lines are visible actually
   var metrics = this.metrics_
   var drag = metrics.drag
@@ -1072,7 +1072,7 @@ eYo.Board.Dflt.prototype.ScrollPage = function(horizontally, increase) {
 /**
  * Zoom the bricks to fit in the view rect if possible.
  */
-eYo.Board.Dflt.prototype.zoomToFit = function() {
+eYo.board.Dflt.prototype.zoomToFit = function() {
   var rect = this.bricksBoundingRect
   var width = rect.width
   if (!width) {
@@ -1100,7 +1100,7 @@ eYo.Board.Dflt.prototype.zoomToFit = function() {
 /**
  * Center the board.
  */
-eYo.Board.Dflt.prototype.ScrollCenter = function() {
+eYo.board.Dflt.prototype.scrollCenter = function() {
   this.doRelativeScroll({x: 1 / 2, y: 1 / 2})
 }
   
@@ -1109,7 +1109,7 @@ eYo.Board.Dflt.prototype.ScrollCenter = function() {
  * @param {string} [id] ID of brick center on.
  * @public
  */
-eYo.Board.Dflt.prototype.CenterOnBrick = function(id) {
+eYo.board.Dflt.prototype.centerOnBrick = function(id) {
   if (!this.scrollbar) {
     console.warn('Tried to scroll a non-scrollable board.');
     return;
@@ -1128,9 +1128,9 @@ eYo.Board.Dflt.prototype.CenterOnBrick = function(id) {
  * @param {Object} xyRatio Contains an x and/or y property which is a float
  *     between 0 and 1 specifying the degree of scrolling.
  * @private
- * @this eYo.Board
+ * @this eYo.board
  */
-eYo.Board.doRelativeScroll = function(xyRatio) {
+eYo.board.doRelativeScroll = function(xyRatio) {
   if (!this.scrollbar) {
     throw 'Attempt to set top level board scroll without scrollbars.'
   }
@@ -1157,7 +1157,7 @@ eYo.Board.doRelativeScroll = function(xyRatio) {
  * Use to avoid resizing during a batch operation, for performance.
  * @param {boolean} enabled Whether resizes should be enabled.
  */
-eYo.Board.Dflt.prototype.SetResizesEnabled = function(enabled) {
+eYo.board.Dflt.prototype.setResizesEnabled = function(enabled) {
   var reenabled = (!this.resizesEnabled_ && enabled)
   this.resizesEnabled_ = enabled
   if (reenabled) {
@@ -1166,7 +1166,7 @@ eYo.Board.Dflt.prototype.SetResizesEnabled = function(enabled) {
   }
 }
 
-eYo.Board.Dflt.prototype.logAllConnections = function (comment) {
+eYo.board.Dflt.prototype.logAllConnections = function (comment) {
   comment = comment || ''
   ;[
     'IN',
@@ -1178,7 +1178,7 @@ eYo.Board.Dflt.prototype.logAllConnections = function (comment) {
   ].forEach(k => {
     var dbList = this.magnetDBList
     console.log(`${comment} > ${k} magnet`)
-    dbList[eYo.Magnet[k]].forEach(m4t => {
+    dbList[eYo.magnet[k]].forEach(m4t => {
       console.log(m4t.whereInBrick, m4t.whereInBoard, m4t.brick.type)
     })
   })
@@ -1192,7 +1192,7 @@ eYo.Board.Dflt.prototype.logAllConnections = function (comment) {
  *     scale.
  * @private
  */
-eYo.Board.Dflt.prototype.fromPixelUnit = function(xy) {
+eYo.board.Dflt.prototype.fromPixelUnit = function(xy) {
   return new eYo.Where(xy).unscale(this.scale)
 }
 
@@ -1203,7 +1203,7 @@ eYo.Board.Dflt.prototype.fromPixelUnit = function(xy) {
   /**
    *
    */
-  eYo.Board.Dflt.prototype.getRecover = function () {
+  eYo.board.Dflt.prototype.getRecover = function () {
     eYo.Assert(!this.recover__, 'Collision: this.recover_')
     this.recover__ = new eYo.xml.recover(this)
     this.getRecover = get
@@ -1217,7 +1217,7 @@ eYo.Board.Dflt.prototype.fromPixelUnit = function(xy) {
  * @param {String} str
  * @return {Array<string>} An array containing new brick IDs.
  */
-eYo.Board.Dflt.prototype.fromDom = function (dom) {
+eYo.board.Dflt.prototype.fromDom = function (dom) {
   return dom &&(eYo.xml.domToBoard(dom, this))
 }
 
@@ -1226,7 +1226,7 @@ eYo.Board.Dflt.prototype.fromDom = function (dom) {
  * @param {String} str
  * @return {Array<string>} An array containing new brick IDs.
  */
-eYo.Board.Dflt.prototype.fromString = function (str) {
+eYo.board.Dflt.prototype.fromString = function (str) {
   var parser = new DOMParser()
   var dom = parser.parseFromString(str, 'application/xml')
   return this.fromDom(dom)
@@ -1237,7 +1237,7 @@ eYo.Board.Dflt.prototype.fromString = function (str) {
  * Convert the board to string.
  * @param {Object} [opt]  See eponym parameter in `eYo.xml.BrickToDom`.
  */
-eYo.Board.Dflt.prototype.toDom = function (opt) {
+eYo.board.Dflt.prototype.toDom = function (opt) {
   return eYo.xml.BoardToDom(this, opt)
 }
 
@@ -1245,7 +1245,7 @@ eYo.Board.Dflt.prototype.toDom = function (opt) {
  * Convert the board to string.
  * @param {Boolean} [opt_noId]
  */
-eYo.Board.Dflt.prototype.toString = function (opt_noId) {
+eYo.board.Dflt.prototype.toString = function (opt_noId) {
   let oSerializer = new XMLSerializer()
   return oSerializer.serializeToString(this.toDom())
 }
@@ -1254,7 +1254,7 @@ eYo.Board.Dflt.prototype.toString = function (opt_noId) {
  * Convert the board to UTF8 byte array.
  * @param {Boolean} [opt_noId]
  */
-eYo.Board.Dflt.prototype.toUTF8ByteArray = function (opt_noId) {
+eYo.board.Dflt.prototype.toUTF8ByteArray = function (opt_noId) {
   var s = '<?xml version="1.0" encoding="utf-8"?>\n' + this.toString(optNoId)
   return goog.crypt.toUTF8ByteArray(s)
 }
@@ -1264,17 +1264,17 @@ eYo.Board.Dflt.prototype.toUTF8ByteArray = function (opt_noId) {
  * @param {Array} bytes
  * @return {Array<string>} An array containing new brick IDs.
  */
-eYo.Board.Dflt.prototype.fromUTF8ByteArray = function (bytes) {
+eYo.board.Dflt.prototype.fromUTF8ByteArray = function (bytes) {
   var str = goog.crypt.utf8ByteArrayToString(bytes)
   return str && (this.fromString(str))
 }
 
 /**
  * Add a brick to the board.
- * @param {eYo.Brick.Dflt} brick
+ * @param {eYo.brick.Dflt} brick
  * @param {String} opt_id
  */
-eYo.Board.Dflt.prototype.AddBrick = function (brick, opt_id) {
+eYo.board.Dflt.prototype.addBrick = function (brick, opt_id) {
   this.change.wrap(() => {
     this.list.add(brick, opt_id)
     this.hasUI && brick.initUI()
@@ -1285,10 +1285,10 @@ eYo.Board.Dflt.prototype.AddBrick = function (brick, opt_id) {
 
 /**
  * Remove a brick from the board.
- * @param {eYo.Brick.Dflt} brick
+ * @param {eYo.brick.Dflt} brick
  * @param {Function} [f] - to be executed after ech brick is removed
  */
-eYo.Board.Dflt.prototype.removeBrick = function (brick, f) {
+eYo.board.Dflt.prototype.removeBrick = function (brick, f) {
   this.change.wrap(() => {
     this.list.remove(brick)
     f && f(this)
@@ -1299,7 +1299,7 @@ eYo.Board.Dflt.prototype.removeBrick = function (brick, f) {
  * Tidy up the nodes.
  * @param {Object} [kvargs]  key value arguments
  * IN PROGRESS
-eYo.Board.Dflt.prototype.tidyUp = function (kvargs) {
+eYo.board.Dflt.prototype.tidyUp = function (kvargs) {
   // x + y < O / x + y > 0
   var x_plus_y = (l, r) => {
     var dx = r.xy.x - l.xy.x
@@ -1396,7 +1396,7 @@ eYo.Board.Dflt.prototype.tidyUp = function (kvargs) {
  * @param {string} [id] ID of brick center on.
  * @public
  */
-eYo.Board.Dflt.prototype.ScrollBrickTopLeft = function(id) {
+eYo.board.Dflt.prototype.scrollBrickTopLeft = function(id) {
   if (!this.scrollbar) {
     console.warn('Tried to scroll a non-scrollable board.')
     return;
@@ -1425,7 +1425,7 @@ eYo.Board.Dflt.prototype.ScrollBrickTopLeft = function(id) {
  * Fire a change event.
  * @param {eYo.events.Abstract} event Event to fire.
  */
-eYo.Board.Dflt.prototype.eventDidFireChange = function(event) {
+eYo.board.Dflt.prototype.eventDidFireChange = function(event) {
   let task = () => {
       this.listeners_.forEach(f => f(event))
     }

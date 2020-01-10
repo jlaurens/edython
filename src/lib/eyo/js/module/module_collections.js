@@ -132,7 +132,7 @@ eYo.provide('Module.collections__module', new eYo.module.Dflt('collections__modu
         mandatory: 0,
         arguments: [
           {
-            name: 'list',
+            name: 'List',
             optional: true
           }
         ]

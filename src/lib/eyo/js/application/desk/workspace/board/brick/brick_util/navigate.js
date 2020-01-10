@@ -18,7 +18,7 @@ eYo.provide('navigate')
 
 /**
  * Tab navigation.
- * @param {eYo.Brick.Dflt} [brick]  Brick.
+ * @param {eYo.brick.Dflt} [brick]  Brick.
  * @param {Object} [opt] Optional key value arguments.
  */
 eYo.navigate.doTab = (() => {
@@ -81,11 +81,11 @@ eYo.navigate.doTab = (() => {
 /**
  * Get the closest box, according to the filter.
  * For edython.
- * @param {eYo.Board} board .
+ * @param {eYo.board} board .
  * @param {function(point): number} weight is a function.
- * @return {?eYo.Brick.Dflt}
+ * @return {?eYo.brick.Dflt}
  */
-eYo.Brick.getBestBrick = function (board, weight) {
+eYo.brick.getBestBrick = function (board, weight) {
   var smallest = Infinity
   var best
   board.bricks_.forEach(top => {
@@ -105,7 +105,7 @@ eYo.Brick.getBestBrick = function (board, weight) {
  * @param {(point, point) -> number} distance is a function.
  * @return None
  */
-eYo.Brick.Dflt.prototype.getBestBrick = function (distance) {
+eYo.brick.Dflt.prototype.getBestBrick = function (distance) {
   const box_a = this.ui.boundingBox
   var smallest = {}
   var best

@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.require('c9r.pane')
+eYo.require('c9r.Pane')
 
 eYo.require('decorate')
 

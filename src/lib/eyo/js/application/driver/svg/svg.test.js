@@ -1,19 +1,19 @@
 describe('Svg driver', function() {
   it ('Svg: Basic', function () {
-    chai.assert(eYo.Svg)
-    chai.assert(eYo.Svg.Mngr)
-    chai.assert(eYo.Svg.makeDriverClass)
-    chai.assert(eYo.Svg.makeMngr)
-    chai.assert(eYo.Svg.Dflt)
+    chai.assert(eYo.svg)
+    chai.assert(eYo.svg.Mngr)
+    chai.assert(eYo.svg.makeDriverClass)
+    chai.assert(eYo.svg.makeMngr)
+    chai.assert(eYo.svg.Dflt)
   })
   it ('Svg Dlgt: Drivers', function () {
-    for (let [name, Driver] of Object.entries(eYo.Svg.Mngr.eyo.driverC9rByName)) {
+    for (let [name, Driver] of Object.entries(eYo.svg.Mngr.eyo.driverC9rByName)) {
       console.warn(`${name} -> ${Driver.eyo.name}`)
     }
   })
   it ('Svg: Drivers', function () {
     let onr = {}
-    let mngr = new eYo.Svg.Mngr(onr)
+    let mngr = new eYo.svg.Mngr(onr)
     for (let [name, Driver] of Object.entries(mngr.drivers)) {
       console.log(`${name} -> ${Driver.eyo.name}`)
     }

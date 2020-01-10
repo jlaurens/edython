@@ -72,7 +72,7 @@ eYo.do.readOnlyMixin(eYo.key, {
   IDENTIFIERS: 'identifiers',
 
   VALUE: 'value', // this MUST be in lower case
-  LIST: 'list',
+  LIST: 'List',
 
   ASYNC: 'async',
   AWAIT: 'await',

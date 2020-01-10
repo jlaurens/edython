@@ -13,15 +13,11 @@
 
 eYo.require('svg')
 
-/**
- * @name {eYo.Svg.Dnd}
- * Faceless driver for the zoomer.
- */
-eYo.provide('svg.dnd')
-
-eYo.forwardDeclare('dnd.mngr')
+eYo.forwardDeclare('dnd.Mngr')
 
 /**
+ * @name {eYo.svg.Dnd}
+ * @constructor
  * Faceless driver for the zoomer.
  */
-eYo.Svg.makeDriverClass('Dnd')
+eYo.svg.makeDriverClass('DnD')

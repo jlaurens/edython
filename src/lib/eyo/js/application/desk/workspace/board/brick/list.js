@@ -11,10 +11,10 @@
  */
 'use strict'
 
-eYo.require('c9r.owned')
+eYo.require('c9r.Owned')
 
 eYo.forwardDeclare('brick')
-eYo.forwardDeclare('dB')
+eYo.forwardDeclare('DB')
 
 goog.forwardDeclare('goog.array')
 
@@ -28,7 +28,7 @@ goog.forwardDeclare('goog.array')
  * @param{?eYo.DB} db
  * @constructor
  */
-eYo.makeClass('list', eYo.c9r.Owned, {
+eYo.makeClass('List', eYo.c9r.Owned, {
   /**
    * Clear the list and sever all the links.
    */
@@ -40,7 +40,7 @@ eYo.makeClass('list', eYo.c9r.Owned, {
      * The top bricks are all the bricks with no parent.
      * They are owned by a board.
      * They are ordered by line number.
-     * @type {!Array<!eYo.Brick>}
+     * @type {!Array<!eYo.brick>}
      * @private
      */
     bricks: {
@@ -50,7 +50,7 @@ eYo.makeClass('list', eYo.c9r.Owned, {
       /**
        * Returns the list of bricks as an array
        * of bricks sorted by position; top to bottom.
-       * @return {!Array<!eYo.Brick>} The top-level brick objects.
+       * @return {!Array<!eYo.brick>} The top-level brick objects.
        */
       get () {
         return this.bricks_.slice()
@@ -66,7 +66,7 @@ eYo.makeClass('list', eYo.c9r.Owned, {
     /**
      * Get all the bricks in list, top ones and their children.
      * No particular order.
-     * @return {!Array<!eYo.Brick>} Array of bricks.
+     * @return {!Array<!eYo.brick>} Array of bricks.
      */
     all () {
       var bricks = this.bricks
@@ -92,7 +92,7 @@ eYo.List_p.clear = function() {
  * Find the brick on this list with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of brick to find.
- * @return {eYo.Brick.Dflt} The sought after brick or null if not found.
+ * @return {eYo.brick.Dflt} The sought after brick or null if not found.
  */
 eYo.List_p.getBrickById = function(id) {
   var b3k = this.db.byId(id)
@@ -119,7 +119,7 @@ eYo.List_p.getBrickById = function(id) {
  * If `opt_id` is provided and is not the id
  * of an already existing brick, then it will be the `id` of the added brick once added.
  * If the `opt_id` is already used or is not provided, then a new id is created.
- * @param {eYo.Brick.Dflt} brick
+ * @param {eYo.brick.Dflt} brick
  * @param {string} opt_id
  */
 eYo.List_p.add = function (brick, opt_id) {
@@ -159,7 +159,7 @@ eYo.List_p.add = function (brick, opt_id) {
 /**
  * Remove a brick from the receiver.
  * Throws if the brick is not in the list.
- * @param {eYo.Brick.Dflt} brick
+ * @param {eYo.brick.Dflt} brick
  */
 eYo.List_p.remove = function (brick) {
   if (!goog.array.remove(this.bricks_, brick)) {

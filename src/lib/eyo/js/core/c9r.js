@@ -14,7 +14,7 @@
 eYo.require('t3')
 eYo.require('xre')
 
-eYo.forwardDeclare('c9r.prop')
+eYo.forwardDeclare('c9r.Prop')
 eYo.forwardDeclare('c9r.model')
 eYo.forwardDeclare('c9r.dlgtImpl')
 

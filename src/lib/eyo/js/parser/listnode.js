@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('node')
+eYo.require('Node')
 
 eYo.provide('node.list')
 

@@ -17,7 +17,7 @@ eYo.require('section')
 eYo.require('const')
 eYo.require('tooltip')
 
-eYo.Section.makeClass(eYo, 'Library')
+eYo.section.makeClass(eYo, 'Library')
 
 eYo.Library.DATA = {
   test: [
@@ -393,7 +393,7 @@ eYo.Library.DATA = {
     },
     {
       type: eYo.t3.Expr.Call_expr,
-      name_p: 'list',
+      name_p: 'List',
       n_ary_s: {
         slots: {
           O: "'...'"

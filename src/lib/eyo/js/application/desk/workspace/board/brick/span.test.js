@@ -15,7 +15,7 @@ describe('Span expression', function () {
     s = b.span
     chai.assert(b.isExpr, 'MISSED')
     var type = 'test_stmt_span'
-    eYo.Stmt.makeClass(type, {
+    eYo.stmt.makeClass(type, {
       out: {
         check: null
       }
@@ -24,7 +24,7 @@ describe('Span expression', function () {
     s_s = b_s.span
     chai.assert(b_s.isStmt, 'MISSED')
     var type = 'test_group_span'
-    eYo.Stmt.Group.makeSubclass(type, {
+    eYo.stmt.Group.makeSubclass(type, {
       out: {
         check: null
       }
@@ -161,7 +161,7 @@ describe('Current Field', function () {
   before(function() {
     var type = 'test_stmt_span_reserved'
     eYo.t3.Stmt[type] = type
-    eYo.Stmt.makeClass(type, {
+    eYo.stmt.makeClass(type, {
       fields: {
         FIELD: {
           reserved: '1234'
@@ -193,7 +193,7 @@ describe('Current Span statements', function () {
   before(function() {
     var type = 'test_stmt_span'
     eYo.t3.Stmt[type] = type
-    eYo.Stmt.makeClass(type, {
+    eYo.stmt.makeClass(type, {
       fields: {
         FIELD: {
           reserved: '1234'

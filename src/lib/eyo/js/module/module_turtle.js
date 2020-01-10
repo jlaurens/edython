@@ -71,7 +71,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'RawPen'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 17,
         type_: 1,
         href: '#turtle.RawPen',
@@ -84,7 +84,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'Screen',
-        class: 'turtle',
+        class: 'Turtle',
         category: 17,
         type_: 1,
         href: '#turtle.Screen',
@@ -93,7 +93,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'ScrolledCanvas',
-        class: 'turtle',
+        class: 'Turtle',
         category: 17,
         type_: 1,
         href: '#turtle.ScrolledCanvas',
@@ -106,7 +106,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'shape',
-        class: 'turtle',
+        class: 'Turtle',
         category: 17,
         type_: 1,
         href: '#turtle.Shape',
@@ -121,8 +121,8 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         ]
       }),
       new Item({
-        name: 'turtle',
-        class: 'turtle',
+        name: 'Turtle',
+        class: 'Turtle',
         category: 17,
         type_: 1,
         href: '#turtle.Turtle',
@@ -130,7 +130,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'TurtleScreen',
-        class: 'turtle',
+        class: 'Turtle',
         category: 17,
         type_: 1,
         href: '#turtle.TurtleScreen',
@@ -143,7 +143,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'Vec2D',
-        class: 'turtle',
+        class: 'Turtle',
         category: 17,
         type_: 1,
         href: '#turtle.Vec2D',
@@ -185,7 +185,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
           'bk',
           'backward'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.backward',
@@ -199,7 +199,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'begin_fill',
-        class: 'turtle',
+        class: 'Turtle',
         category: 5,
         type_: 0,
         href: '#turtle.begin_fill',
@@ -208,7 +208,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'begin_poly',
-        class: 'turtle',
+        class: 'Turtle',
         category: 10,
         type_: 0,
         href: '#turtle.begin_poly',
@@ -217,7 +217,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'bgcolor',
-        class: 'turtle',
+        class: 'Turtle',
         category: 11,
         type_: 0,
         href: '#turtle.bgcolor',
@@ -232,7 +232,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'bgpic',
-        class: 'turtle',
+        class: 'Turtle',
         category: 11,
         type_: 0,
         href: '#turtle.bgpic',
@@ -247,7 +247,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'bye',
-        class: 'turtle',
+        class: 'Turtle',
         category: 16,
         type_: 0,
         href: '#turtle.bye',
@@ -256,7 +256,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'circle',
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.circle',
@@ -279,7 +279,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'clear',
-        class: 'turtle',
+        class: 'Turtle',
         category: 6,
         type_: 0,
         href: '#turtle.clear',
@@ -291,7 +291,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'clear'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 11,
         type_: 0,
         href: '#turtle.clearscreen',
@@ -300,7 +300,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'clearstamp',
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.clearstamp',
@@ -313,7 +313,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'clearstamps',
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.clearstamps',
@@ -329,7 +329,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'clone',
-        class: 'turtle',
+        class: 'Turtle',
         category: 10,
         type_: 0,
         href: '#turtle.clone',
@@ -337,7 +337,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'color',
-        class: 'turtle',
+        class: 'Turtle',
         category: 4,
         type_: 0,
         href: '#turtle.color',
@@ -409,7 +409,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'colormode',
-        class: 'turtle',
+        class: 'Turtle',
         category: 15,
         type_: 0,
         href: '#turtle.colormode',
@@ -424,7 +424,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'degrees',
-        class: 'turtle',
+        class: 'Turtle',
         category: 2,
         type_: 0,
         href: '#turtle.degrees',
@@ -440,7 +440,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'delay',
-        class: 'turtle',
+        class: 'Turtle',
         category: 12,
         type_: 0,
         href: '#turtle.delay',
@@ -455,7 +455,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'distance',
-        class: 'turtle',
+        class: 'Turtle',
         category: 1,
         type_: 0,
         href: '#turtle.distance',
@@ -473,7 +473,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'dot',
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.dot',
@@ -493,7 +493,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'end_fill',
-        class: 'turtle',
+        class: 'Turtle',
         category: 5,
         type_: 0,
         href: '#turtle.end_fill',
@@ -502,7 +502,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'end_poly',
-        class: 'turtle',
+        class: 'Turtle',
         category: 10,
         type_: 0,
         href: '#turtle.end_poly',
@@ -511,7 +511,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'exitonclick',
-        class: 'turtle',
+        class: 'Turtle',
         category: 16,
         type_: 0,
         href: '#turtle.exitonclick',
@@ -520,7 +520,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'fillcolor',
-        class: 'turtle',
+        class: 'Turtle',
         category: 4,
         type_: 0,
         href: '#turtle.fillcolor',
@@ -570,7 +570,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'filling',
-        class: 'turtle',
+        class: 'Turtle',
         category: 5,
         type_: 0,
         href: '#turtle.filling',
@@ -581,7 +581,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'fd'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.fd',
@@ -595,7 +595,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'get_poly',
-        class: 'turtle',
+        class: 'Turtle',
         category: 10,
         type_: 0,
         href: '#turtle.get_poly',
@@ -603,7 +603,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'get_shapepoly',
-        class: 'turtle',
+        class: 'Turtle',
         category: 8,
         type_: 0,
         href: '#turtle.get_shapepoly',
@@ -611,7 +611,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'getcanvas',
-        class: 'turtle',
+        class: 'Turtle',
         category: 15,
         type_: 0,
         href: '#turtle.getcanvas',
@@ -619,7 +619,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'getscreen',
-        class: 'turtle',
+        class: 'Turtle',
         category: 10,
         type_: 0,
         href: '#turtle.getscreen',
@@ -627,7 +627,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'getshapes',
-        class: 'turtle',
+        class: 'Turtle',
         category: 15,
         type_: 0,
         href: '#turtle.getshapes',
@@ -638,7 +638,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'getpen'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 10,
         type_: 0,
         href: '#turtle.getpen',
@@ -650,7 +650,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
           'setpos',
           'setposition'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.setposition',
@@ -669,7 +669,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'heading',
-        class: 'turtle',
+        class: 'Turtle',
         category: 1,
         type_: 0,
         href: '#turtle.heading',
@@ -680,7 +680,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'ht'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 7,
         type_: 0,
         href: '#turtle.ht',
@@ -689,7 +689,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'home',
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.home',
@@ -698,7 +698,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'isdown',
-        class: 'turtle',
+        class: 'Turtle',
         category: 3,
         type_: 0,
         href: '#turtle.isdown',
@@ -706,7 +706,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'isvisible',
-        class: 'turtle',
+        class: 'Turtle',
         category: 7,
         type_: 0,
         href: '#turtle.isvisible',
@@ -717,7 +717,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'lt'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.lt',
@@ -731,7 +731,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'listen',
-        class: 'turtle',
+        class: 'Turtle',
         category: 13,
         type_: 0,
         href: '#turtle.listen',
@@ -754,7 +754,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'done'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 13,
         type_: 0,
         href: '#turtle.done',
@@ -763,7 +763,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'mode',
-        class: 'turtle',
+        class: 'Turtle',
         category: 15,
         type_: 0,
         href: '#turtle.mode',
@@ -778,7 +778,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'numinput',
-        class: 'turtle',
+        class: 'Turtle',
         category: 14,
         type_: 0,
         href: '#turtle.numinput',
@@ -807,7 +807,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'onclick',
-        class: 'turtle',
+        class: 'Turtle',
         category: 9,
         type_: 0,
         href: '#turtle.onclick',
@@ -830,7 +830,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'ondrag',
-        class: 'turtle',
+        class: 'Turtle',
         category: 9,
         type_: 0,
         href: '#turtle.ondrag',
@@ -856,7 +856,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'onkeyrelease'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 13,
         type_: 0,
         href: '#turtle.onkeyrelease',
@@ -873,7 +873,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'onkeypress',
-        class: 'turtle',
+        class: 'Turtle',
         category: 13,
         type_: 0,
         href: '#turtle.onkeypress',
@@ -892,7 +892,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'onrelease',
-        class: 'turtle',
+        class: 'Turtle',
         category: 9,
         type_: 0,
         href: '#turtle.onrelease',
@@ -918,7 +918,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'onclick'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 13,
         type_: 0,
         href: '#turtle.onscreenclick',
@@ -941,7 +941,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'ontimer',
-        class: 'turtle',
+        class: 'Turtle',
         category: 13,
         type_: 0,
         href: '#turtle.ontimer',
@@ -960,7 +960,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'pen',
-        class: 'turtle',
+        class: 'Turtle',
         category: 3,
         type_: 0,
         href: '#turtle.pen',
@@ -979,7 +979,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'pencolor',
-        class: 'turtle',
+        class: 'Turtle',
         category: 4,
         type_: 0,
         href: '#turtle.pencolor',
@@ -1033,7 +1033,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
           'pd',
           'down'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 3,
         type_: 0,
         href: '#turtle.down',
@@ -1045,7 +1045,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'width'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 3,
         type_: 0,
         href: '#turtle.width',
@@ -1064,7 +1064,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
           'pu',
           'up'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 3,
         type_: 0,
         href: '#turtle.up',
@@ -1076,7 +1076,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'pos'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 1,
         type_: 0,
         href: '#turtle.pos',
@@ -1084,7 +1084,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'radians',
-        class: 'turtle',
+        class: 'Turtle',
         category: 2,
         type_: 0,
         href: '#turtle.radians',
@@ -1096,7 +1096,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'addshape'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 15,
         type_: 0,
         href: '#turtle.addshape',
@@ -1115,7 +1115,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'reset',
-        class: 'turtle',
+        class: 'Turtle',
         category: 6,
         type_: 0,
         href: '#turtle.reset',
@@ -1127,7 +1127,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'reset'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 11,
         type_: 0,
         href: '#turtle.resetscreen',
@@ -1136,7 +1136,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'resizemode',
-        class: 'turtle',
+        class: 'Turtle',
         category: 8,
         type_: 0,
         href: '#turtle.resizemode',
@@ -1155,7 +1155,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'rt'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.rt',
@@ -1169,7 +1169,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'screensize',
-        class: 'turtle',
+        class: 'Turtle',
         category: 11,
         type_: 0,
         href: '#turtle.screensize',
@@ -1195,7 +1195,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'seth'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.seth',
@@ -1209,7 +1209,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'settiltangle',
-        class: 'turtle',
+        class: 'Turtle',
         category: 8,
         type_: 0,
         href: '#turtle.settiltangle',
@@ -1223,7 +1223,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'setundobuffer',
-        class: 'turtle',
+        class: 'Turtle',
         category: 10,
         type_: 0,
         href: '#turtle.setundobuffer',
@@ -1237,7 +1237,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'setup',
-        class: 'turtle',
+        class: 'Turtle',
         category: 16,
         type_: 0,
         href: '#turtle.setup',
@@ -1269,7 +1269,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'setworldcoordinates',
-        class: 'turtle',
+        class: 'Turtle',
         category: 11,
         type_: 0,
         href: '#turtle.setworldcoordinates',
@@ -1292,7 +1292,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'setx',
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.setx',
@@ -1306,7 +1306,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'sety',
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.sety',
@@ -1320,7 +1320,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'shape',
-        class: 'turtle',
+        class: 'Turtle',
         category: 8,
         type_: 0,
         href: '#turtle.shape',
@@ -1338,7 +1338,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'turtlesize'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 8,
         type_: 0,
         href: '#turtle.turtlesize',
@@ -1361,7 +1361,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'shapetransform',
-        class: 'turtle',
+        class: 'Turtle',
         category: 8,
         type_: 0,
         href: '#turtle.shapetransform',
@@ -1388,7 +1388,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'shearfactor',
-        class: 'turtle',
+        class: 'Turtle',
         category: 8,
         type_: 0,
         href: '#turtle.shearfactor',
@@ -1406,7 +1406,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         synonyms: [
           'st'
         ],
-        class: 'turtle',
+        class: 'Turtle',
         category: 7,
         type_: 0,
         href: '#turtle.st',
@@ -1415,7 +1415,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'speed',
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.speed',
@@ -1431,7 +1431,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'stamp',
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.stamp',
@@ -1439,7 +1439,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'textinput',
-        class: 'turtle',
+        class: 'Turtle',
         category: 14,
         type_: 0,
         href: '#turtle.textinput',
@@ -1455,7 +1455,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'tilt',
-        class: 'turtle',
+        class: 'Turtle',
         category: 8,
         type_: 0,
         href: '#turtle.tilt',
@@ -1469,7 +1469,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'tiltangle',
-        class: 'turtle',
+        class: 'Turtle',
         category: 8,
         type_: 0,
         href: '#turtle.tiltangle',
@@ -1484,7 +1484,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'title',
-        class: 'turtle',
+        class: 'Turtle',
         category: 16,
         type_: 0,
         href: '#turtle.title',
@@ -1498,7 +1498,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'towards',
-        class: 'turtle',
+        class: 'Turtle',
         category: 1,
         type_: 0,
         href: '#turtle.towards',
@@ -1516,7 +1516,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'tracer',
-        class: 'turtle',
+        class: 'Turtle',
         category: 12,
         type_: 0,
         href: '#turtle.tracer',
@@ -1535,7 +1535,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'turtles',
-        class: 'turtle',
+        class: 'Turtle',
         category: 15,
         type_: 0,
         href: '#turtle.turtles',
@@ -1543,7 +1543,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'undo',
-        class: 'turtle',
+        class: 'Turtle',
         category: 0,
         type_: 0,
         href: '#turtle.undo',
@@ -1552,7 +1552,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'undobufferentries',
-        class: 'turtle',
+        class: 'Turtle',
         category: 10,
         type_: 0,
         href: '#turtle.undobufferentries',
@@ -1560,7 +1560,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'update',
-        class: 'turtle',
+        class: 'Turtle',
         category: 12,
         type_: 0,
         href: '#turtle.update',
@@ -1569,7 +1569,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'window_height',
-        class: 'turtle',
+        class: 'Turtle',
         category: 15,
         type_: 0,
         href: '#turtle.window_height',
@@ -1577,7 +1577,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'window_width',
-        class: 'turtle',
+        class: 'Turtle',
         category: 15,
         type_: 0,
         href: '#turtle.window_width',
@@ -1585,7 +1585,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'write',
-        class: 'turtle',
+        class: 'Turtle',
         category: 6,
         type_: 0,
         href: '#turtle.write',
@@ -1618,7 +1618,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'write_docstringdict',
-        class: 'turtle',
+        class: 'Turtle',
         category: 18,
         type_: 0,
         href: '#turtle.write_docstringdict',
@@ -1634,7 +1634,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'xcor',
-        class: 'turtle',
+        class: 'Turtle',
         category: 1,
         type_: 0,
         href: '#turtle.xcor',
@@ -1642,7 +1642,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       }),
       new Item({
         name: 'ycor',
-        class: 'turtle',
+        class: 'Turtle',
         category: 1,
         type_: 0,
         href: '#turtle.ycor',
@@ -1655,7 +1655,7 @@ eYo.provide('Module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
       'Screen': 1,
       'ScrolledCanvas': 2,
       'shape': 3,
-      'turtle': 4,
+      'Turtle': 4,
       'TurtleScreen': 5,
       'Vec2D': 6,
       'addcomponent': 7,

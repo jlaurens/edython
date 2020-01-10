@@ -47,7 +47,7 @@ eYo.provide('Module.datastructures', new eYo.module.Dflt('datastructures', 'http
     items: [
       new Item({
         name: 'append',
-        class: 'list',
+        class: 'List',
         category: 0,
         stmt: true,
         ary: 1,
@@ -59,20 +59,20 @@ eYo.provide('Module.datastructures', new eYo.module.Dflt('datastructures', 'http
       }),
       new Item({
         name: 'clear',
-        class: 'list',
+        class: 'List',
         category: 0,
         stmt: true,
         ary: 0
       }),
       new Item({
         name: 'copy',
-        class: 'list',
+        class: 'List',
         category: 0,
         ary: 0
       }),
       new Item({
         name: 'count',
-        class: 'list',
+        class: 'List',
         category: 0,
         ary: 1,
         arguments: [
@@ -83,7 +83,7 @@ eYo.provide('Module.datastructures', new eYo.module.Dflt('datastructures', 'http
       }),
       new Item({
         name: 'extend',
-        class: 'list',
+        class: 'List',
         category: 0,
         stmt: true,
         ary: 1,
@@ -95,7 +95,7 @@ eYo.provide('Module.datastructures', new eYo.module.Dflt('datastructures', 'http
       }),
       new Item({
         name: 'index',
-        class: 'list',
+        class: 'List',
         category: 0,
         ary: 3,
         mandatory: 1,
@@ -115,7 +115,7 @@ eYo.provide('Module.datastructures', new eYo.module.Dflt('datastructures', 'http
       }),
       new Item({
         name: 'insert',
-        class: 'list',
+        class: 'List',
         category: 0,
         stmt: true,
         ary: 2,
@@ -130,7 +130,7 @@ eYo.provide('Module.datastructures', new eYo.module.Dflt('datastructures', 'http
       }),
       new Item({
         name: 'pop',
-        class: 'list',
+        class: 'List',
         category: 0,
         ary: 1,
         mandatory: 0,
@@ -143,7 +143,7 @@ eYo.provide('Module.datastructures', new eYo.module.Dflt('datastructures', 'http
       }),
       new Item({
         name: 'remove',
-        class: 'list',
+        class: 'List',
         category: 0,
         stmt: true,
         ary: 1,
@@ -155,14 +155,14 @@ eYo.provide('Module.datastructures', new eYo.module.Dflt('datastructures', 'http
       }),
       new Item({
         name: 'reverse',
-        class: 'list',
+        class: 'List',
         category: 0,
         stmt: true,
         ary: 0
       }),
       new Item({
         name: 'sort',
-        class: 'list',
+        class: 'List',
         category: 0,
         stmt: true,
         ary: 2,

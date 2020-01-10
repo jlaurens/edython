@@ -21,7 +21,7 @@ eYo.provide('brick.operator')
  * Abstract class.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('binary', {
+eYo.expr.Dflt.makeSubclass('Binary', {
   data: {
     operator: { // only one field with that key,
       init: '+',
@@ -288,7 +288,7 @@ eYo.t3.Expr.unary = 'eyo:unary' // don't forget it !
  * u_expr.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('unary', {
+eYo.expr.Dflt.makeSubclass('Unary', {
   xml: {
     types: [
       eYo.t3.Expr.u_expr,
@@ -411,7 +411,7 @@ eYo.expr.unary.getTypeForOperator = function (op) {
   return eYo.t3.Expr.unset
 }
 
-eYo.Brick.operator.T3s = [
+eYo.brick.operator.T3s = [
   eYo.t3.Expr.u_expr,
   eYo.t3.Expr.m_expr,
   eYo.t3.Expr.A_expr,

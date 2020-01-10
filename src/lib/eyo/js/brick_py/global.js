@@ -12,16 +12,16 @@
 'use strict'
 
 eYo.require('stmt')
-eYo.require('expr.list')
+eYo.require('expr.List')
 
 /// /////// gobal/nonlocal statement
 /**
  * Class for a Delegate, non_void_identifier_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.list.makeSubclass(eYo.t3.Expr.non_void_identifier_list, {
+eYo.expr.List.makeSubclass(eYo.t3.Expr.non_void_identifier_list, {
   list: {
     check: eYo.t3.Expr.Check.non_void_identifier_list,
     presep: ',',
@@ -33,7 +33,7 @@ eYo.expr.list.makeSubclass(eYo.t3.Expr.non_void_identifier_list, {
  * Class for a Delegate, global_stmt.
  * For edython.
  */
-eYo.Stmt.makeClass(eYo.t3.stmt.global_stmt, {
+eYo.stmt.makeClass(eYo.t3.stmt.global_stmt, {
   data: {
     variant: {
       all: [
@@ -82,7 +82,7 @@ eYo.Stmt.makeClass(eYo.t3.stmt.global_stmt, {
       order: 1,
       promise: eYo.t3.Expr.non_void_identifier_list,
       xml: {
-        key: 'list',
+        key: 'List',
         save (element) /** @suppress {globalThis} */ {
           var variant = this.brick.Variant_p
           if (variant === eYo.key.GLOBAL || variant === eYo.key.NONLOCAL) {
@@ -101,7 +101,7 @@ eYo.Stmt.makeClass(eYo.t3.stmt.global_stmt, {
       order: 2,
       wrap: eYo.t3.Expr.Target_list,
       xml: {
-        key: 'list',
+        key: 'List',
         save (element) /** @suppress {globalThis} */ {
           if (this.brick.Variant_p === eYo.key.DEL) {
             this.save(element)
@@ -118,7 +118,7 @@ eYo.Stmt.makeClass(eYo.t3.stmt.global_stmt, {
       order: 3,
       wrap: eYo.t3.Expr.optional_expression_list,
       xml: {
-        key: 'list',
+        key: 'List',
         save (element) /** @suppress {globalThis} */ {
           if (this.brick.Variant_p === eYo.key.RETURN) {
             this.save(element)
@@ -143,14 +143,14 @@ eYo.Stmt.makeClass(eYo.t3.stmt.global_stmt, {
   'return'
 ].forEach((k) => {
   k = k + '_stmt'
-  eYo.c9r.register(k, (eYo.Stmt[k] = eYo.stmt.global_stmt))
+  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.global_stmt))
 })
 
 /**
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Stmt.global_stmt.prototype.getType = eYo.c9r.decorateChange(
+eYo.stmt.global_stmt.prototype.getType = eYo.c9r.decorateChange(
   'getType',
   function () {
     this.setupType(
@@ -173,17 +173,17 @@ eYo.Stmt.global_stmt.prototype.getType = eYo.c9r.decorateChange(
  * For edython.
  * @return !String
  */
-eYo.Stmt.global_stmt.prototype.xmlAttr = function () {
+eYo.stmt.global_stmt.prototype.xmlAttr = function () {
   return this.Variant_p
 }
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.Variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {

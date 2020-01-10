@@ -16,12 +16,12 @@ eYo.require('brick')
 eYo.require('msg')
 
 eYo.require('stmt')
-eYo.require('expr.list')
+eYo.require('expr.List')
 
-eYo.require('expr.primary')
+eYo.require('expr.Primary')
 eYo.require('tooltip')
 
-eYo.require('library')
+eYo.require('Library')
 eYo.provide('brick.fractions')
 
 /*
@@ -133,6 +133,6 @@ goog.mixin(eYo.tooltip.Title, {
   fractions__import_stmt: 'Importer le module fractions',
 })
 
-eYo.Brick.fractions.T3s = [
+eYo.brick.fractions.T3s = [
   eYo.t3.Fraction
 ]

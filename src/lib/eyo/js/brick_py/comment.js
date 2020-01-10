@@ -15,7 +15,7 @@
  * Class for a Delegate, comment_stmt.
  * For edython.
  */
-eYo.Stmt.makeClass(eYo.t3.stmt.Comment_stmt, {
+eYo.stmt.makeClass(eYo.t3.stmt.Comment_stmt, {
   data: {
     variant: {
       all: [
@@ -93,5 +93,5 @@ eYo.Stmt.makeClass(eYo.t3.stmt.Comment_stmt, {
 })
 
 ;['blank_stmt'].forEach(k => {
-  eYo.c9r.register(k, (eYo.Stmt[k] = eYo.stmt.comment_stmt))
+  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.comment_stmt))
 })

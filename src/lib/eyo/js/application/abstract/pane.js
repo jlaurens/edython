@@ -12,9 +12,9 @@
  */
 'use strict'
 
-eYo.require('c9r.owned')
+eYo.require('c9r.Owned')
 
-eYo.forwardDeclare('desk')
+eYo.forwardDeclare('Desk')
 
 /**
  * The main focus manager.

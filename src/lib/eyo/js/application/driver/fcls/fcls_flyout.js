@@ -13,11 +13,11 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.flyout')
-
-eYo.forwardDeclare('flyout')
+eYo.forwardDeclare('Flyout')
 
 /**
+ * @name{eYo.fcls.Flyout}
+ * @constructor
  * Shared application driver.
  */
 eYo.fcls.makeDriverClass('Flyout')

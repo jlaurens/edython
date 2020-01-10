@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('c9r.owned')
+eYo.require('c9r.Owned')
 
 eYo.forwardDeclare('board')
 eYo.forwardDeclare('geometry')
@@ -22,7 +22,7 @@ eYo.forwardDeclare('geometry')
  * The `view` rectangle corresponds to the view port.
  * Its coordinates correspond to screen coordinates or at least
  * the enclosing graphical element's coordinates.
- * @param {eYo.Board} [board] the owning board.
+ * @param {eYo.board} [board] the owning board.
  * @constructor
  * @readonly
  * @property {eYo.Rect}  port

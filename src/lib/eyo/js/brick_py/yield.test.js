@@ -63,7 +63,7 @@ describe('YIELD expression and statement', function() {
     d.dispose()
   })
   it(`yield abc -> yield <abc> -> yield abc`, function() {
-    var d = eYo.Brick.newReady(eYo.app.Board, eYo.t3.Stmt.yield_stmt)
+    var d = eYo.brick.newReady(eYo.app.Board, eYo.t3.Stmt.yield_stmt)
     d.Expression_p = 'abc'
     eYo.Test.Code(d, 'yield abc')
     var t9k = d.expression_b

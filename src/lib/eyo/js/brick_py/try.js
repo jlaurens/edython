@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('stmt.group')
+eYo.require('stmt.Group')
 
-eYo.require('c9r.change')
+eYo.require('c9r.Change')
 
 eYo.provide('brick.try')
 
@@ -23,10 +23,10 @@ goog.forwardDeclare('goog.dom')
 
 /**
  * Class for a Delegate, try_part brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.Group.makeSubclass('try_part', {
+eYo.stmt.Group.makeSubclass('Try_part', {
   fields: {
     prefix: 'try'
   }
@@ -34,10 +34,10 @@ eYo.Stmt.Group.makeSubclass('try_part', {
 
 /**
  * Class for a Delegate, except_part brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.Group.makeSubclass('except_part', {
+eYo.stmt.Group.makeSubclass('Except_part', {
   data: {
     variant: {
       all: [
@@ -165,13 +165,13 @@ eYo.Stmt.Group.makeSubclass('except_part', {
 ;[
   'void_except_part'
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.Stmt[k] = eYo.stmt.except_part))
+  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.except_part))
 })
 /**
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.Stmt.except_part.prototype.getType = eYo.c9r.decorateChange(
+eYo.stmt.except_part.prototype.getType = eYo.c9r.decorateChange(
   'getType',
   function () {
     this.setupType(
@@ -185,11 +185,11 @@ eYo.Stmt.except_part.prototype.getType = eYo.c9r.decorateChange(
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.Variant_p
   var F = (content, k) => {
     var menuItem = mngr.newMenuItem(content, () => {
@@ -220,10 +220,10 @@ eYo.Stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Class for a Delegate, finally_part brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.Group.makeSubclass('finally_part', {
+eYo.stmt.Group.makeSubclass('Finally_part', {
   fields: {
     prefix: 'finally'
   }
@@ -233,7 +233,7 @@ eYo.Stmt.Group.makeSubclass('finally_part', {
  * Class for a Delegate, raise_stmt.
  * For edython.
  */
-eYo.Stmt.makeClass('raise_stmt', {
+eYo.stmt.makeClass('Raise_stmt', {
   data: {
     variant: {
       all: [
@@ -330,11 +330,11 @@ eYo.Stmt.makeClass('raise_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.Variant_p
   var F = (content, k) => {
     var menuItem = mngr.newMenuItem(content, () => {
@@ -367,7 +367,7 @@ eYo.Stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, assert_stmt.
  * For edython.
  */
-eYo.Stmt.makeClass('assert_stmt', {
+eYo.stmt.makeClass('Assert_stmt', {
   data: {
     variant: {
       all: [
@@ -433,11 +433,11 @@ eYo.Stmt.makeClass('assert_stmt', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.Assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.Assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.Variant_p
   var F = (content, key) => {
     var menuItem = mngr.newMenuItem(content, () => {
@@ -460,7 +460,7 @@ eYo.Stmt.Assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   return eYo.stmt.Assert_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 }
 
-eYo.Brick.try.T3s = [
+eYo.brick.try.T3s = [
   eYo.t3.Stmt.try_part,
   eYo.t3.Stmt.except_part,
   eYo.t3.Stmt.void_except_part,

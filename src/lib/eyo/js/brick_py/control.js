@@ -14,19 +14,19 @@
 goog.require('goog.ui.Dialog')
 
 eYo.require('msg')
-eYo.require('stmt.group')
+eYo.require('stmt.Group')
 goog.require('goog.dom');
 
 /**
- * @name {eYo.Stmt.Control}
+ * @name {eYo.stmt.Control}
  * @constructor
  * Class for a Delegate, control brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
 ;(() => {
   var creation = 0
-  eYo.Stmt.Group.makeSubclass('control', {
+  eYo.stmt.Group.makeSubclass('Control', {
     data: {
       restart: {
         init: false,
@@ -72,7 +72,7 @@ goog.require('goog.dom');
 /**
  * Update the creation number.
  */
-eYo.Stmt.Control.prototype.updateCreation = function () {
+eYo.stmt.Control.prototype.updateCreation = function () {
   this.creation__ = creation ++
 }
 
@@ -80,16 +80,16 @@ eYo.Stmt.Control.prototype.updateCreation = function () {
  * Run the script exported from the brick.
  * @private
  */
-eYo.Brick.Dflt.prototype.runScript = function () {
+eYo.brick.Dflt.prototype.runScript = function () {
   console.log('Someone should everride this method to really run some script')
 }
 
 /**
  * Class for a Delegate, start_stmt.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.Control.makeSubclass('start_stmt', {
+eYo.stmt.Control.makeSubclass('Start_stmt', {
   xml: {
     attr: 'start'
   },
@@ -99,6 +99,6 @@ eYo.Stmt.Control.makeSubclass('start_stmt', {
   foot: eYo.t3.stmt.Start_stmt,
 })
 
-eYo.Stmt.Control.T3s = [
+eYo.stmt.Control.T3s = [
   eYo.t3.stmt.Start_stmt
 ]

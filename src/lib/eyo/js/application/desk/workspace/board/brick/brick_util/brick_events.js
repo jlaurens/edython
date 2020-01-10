@@ -28,7 +28,7 @@ goog.forwardDeclare('goog.dom')
 
 /**
  * Convenient shortcut.
- * @param {eYo.Brick.Dflt} brick  The newly created brick.
+ * @param {eYo.brick.Dflt} brick  The newly created brick.
  * @param {Boolean|String} [group]  eventually set a group.
  */
 eYo.events.fireBrickCreate = function (brick, group) {
@@ -40,7 +40,7 @@ eYo.events.fireBrickCreate = function (brick, group) {
 
 /**
  * Convenient shortcut.
- * @param {eYo.Brick.Dflt} brick  The newly created brick.
+ * @param {eYo.brick.Dflt} brick  The newly created brick.
  */
 eYo.events.fireBrickChange = function (brick, element, name, before, after) {
   if (eYo.events.enabled) {
@@ -50,7 +50,7 @@ eYo.events.fireBrickChange = function (brick, element, name, before, after) {
 
 /**
  * Convenient shortcut.
- * @param {eYo.Brick.Dflt} brick  The moved brick.
+ * @param {eYo.brick.Dflt} brick  The moved brick.
  * @param {Function} move  the move action, signature: (event) -> void
  */
 eYo.events.fireBrickMove = (brick, move) => {
@@ -69,7 +69,7 @@ eYo.events.fireBrickMove = (brick, move) => {
 
 /**
  * Abstract class for a brick event.
- * @param {eYo.Brick.Dflt} brick The brick this event corresponds to.
+ * @param {eYo.brick.Dflt} brick The brick this event corresponds to.
  * @extends {eYo.events.Abstract}
  * @constructor
  */
@@ -94,7 +94,7 @@ Object.defineProperties(eYo.events.BrickBase.prototype, {
 
 /**
  * Class for a brick change event.
- * @param {eYo.Brick.Dflt} brick The changed brick.
+ * @param {eYo.brick.Dflt} brick The changed brick.
  * @param {string} element One of 'field', 'collapsed', 'disabled', etc.
  * @param {string} [name] Name of slot or field affected, or null.
  * @param {*} before - Previous value of element.
@@ -164,7 +164,7 @@ eYo.events.BrickChange.prototype.run = function(redo) {
 
 /**
  * Class for a brick creation event.
- * @param {eYo.Brick.Dflt} brick The created brick.
+ * @param {eYo.brick.Dflt} brick The created brick.
  * @extends {eYo.events.BrickBase}
  * @constructor
  */
@@ -212,7 +212,7 @@ eYo.events.BrickCreate.prototype.run = function(forward) {
 
 /**
  * Class for a brick deletion event.
- * @param {eYo.Brick.Dflt} brick The deleted brick.
+ * @param {eYo.brick.Dflt} brick The deleted brick.
  * @extends {eYo.events.BrickBase}
  * @constructor
  */
@@ -264,7 +264,7 @@ eYo.events.BrickDelete.prototype.run = function(forward) {
 
 /**
  * Class for a brick move event.  Created before the move.
- * @param {eYo.Brick.Dflt} brick The moved brick.
+ * @param {eYo.brick.Dflt} brick The moved brick.
  * @extends {eYo.events.BrickBase}
  * @constructor
  */

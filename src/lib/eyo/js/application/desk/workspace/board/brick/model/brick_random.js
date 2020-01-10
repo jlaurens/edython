@@ -19,21 +19,21 @@ eYo.require('Module.random__module')
 
 eYo.require('stmt')
 
-eYo.require('expr.list')
-eYo.require('expr.primary')
+eYo.require('expr.List')
+eYo.require('expr.Primary')
 eYo.require('tooltip')
 
-eYo.require('library')
+eYo.require('Library')
 eYo.provide('brick.random')
 
 eYo.t3.Expr.random__randrange = 'eyo:random__randrange'
 
 /**
  * Class for a Delegate, random range brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Builtin__range_expr.makeSubclass('random__randrange', {
+eYo.expr.Builtin__range_expr.makeSubclass('Random__randrange', {
   xml: {
     attr: 'randrange'
   },
@@ -310,6 +310,6 @@ goog.mixin(eYo.tooltip.Title, {
   random__setstate: 'Mettre l\'état du générateur aléatoire à la valeur donnée'
 })
 
-eYo.Brick.random.T3s = [
+eYo.brick.random.T3s = [
   eYo.t3.Expr.random__randrange,
 ]

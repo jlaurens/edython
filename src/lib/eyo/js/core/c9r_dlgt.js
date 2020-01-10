@@ -105,7 +105,7 @@ eYo.Dlgt_p.modelDeclare = function (model) {
  * @param {Object} model Object with `value` keys,
  * f any.
  */
-eYo.Dlgt_p.cONSTDeclare = function (k, model = {}) {
+eYo.Dlgt_p.CONSTDeclare = function (k, model = {}) {
   var f = (m) => {
     if (m.unique) {
       return {

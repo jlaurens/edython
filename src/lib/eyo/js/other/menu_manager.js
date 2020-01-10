@@ -18,7 +18,7 @@ eYo.require('brick')
 eYo.require('menuItem')
 eYo.require('separator')
 goog.require('goog.dom');
-eYo.require('py.exporter')
+eYo.require('py.Exporter')
 eYo.provide('menuManager')
 
 /**
@@ -55,7 +55,7 @@ eYo.MenuManager.Shared = (() => {
  * Get the menu, in case clients may want to populate it directly.
  * Each manager has its own menu.
  */
-eYo.menuManager.prototype.Menu = eYo.NA
+eYo.menuManager.prototype.menu = eYo.NA
 
 /**
  * Create a new menu item.
@@ -69,7 +69,7 @@ eYo.MenuManager.prototype.newMenuItem = function (content, action) {
 /**
  * Add a separator.
  */
-eYo.MenuManager.prototype.Separate = function (render = true) {
+eYo.MenuManager.prototype.separate = function (render = true) {
   this.shouldSeparate_ = false
   if (this.menu.getChildCount()) {
     this.menu.addChild(new eYo.Separator(), render)
@@ -80,7 +80,7 @@ eYo.MenuManager.prototype.Separate = function (render = true) {
 /**
  * Add a separator.
  */
-eYo.MenuManager.prototype.SeparateInsert = function (render = true) {
+eYo.MenuManager.prototype.separateInsert = function (render = true) {
   this.shouldSeparateInsert_ = false
   if (this.insertSubmenu.getItemCount()) {
     this.addInsertChild(new eYo.Separator(), render)
@@ -91,7 +91,7 @@ eYo.MenuManager.prototype.SeparateInsert = function (render = true) {
 /**
  * Add a separator.
  */
-eYo.MenuManager.prototype.SeparateInsertBefore = function (render = true) {
+eYo.MenuManager.prototype.separateInsertBefore = function (render = true) {
   this.shouldSeparateInsertBefore_ = false
   if (this.insertBeforeSubmenu.getItemCount()) {
     this.addInsertBeforeChild(new eYo.Separator(), render)
@@ -102,7 +102,7 @@ eYo.MenuManager.prototype.SeparateInsertBefore = function (render = true) {
 /**
  * Add a separator.
  */
-eYo.MenuManager.prototype.SeparateInsertAfter = function (render = true) {
+eYo.MenuManager.prototype.separateInsertAfter = function (render = true) {
   this.shouldSeparateInsertAfter_ = false
   if (this.insertAfterSubmenu.getItemCount()) {
     this.addInsertAfterChild(new eYo.Separator(), render)
@@ -113,7 +113,7 @@ eYo.MenuManager.prototype.SeparateInsertAfter = function (render = true) {
 /**
  * Add a separator.
  */
-eYo.MenuManager.prototype.SeparateRemove = function (render = true) {
+eYo.MenuManager.prototype.separateRemove = function (render = true) {
   this.shouldSeparateRemove_ = false
   if (this.removeSubmenu.getItemCount()) {
     this.addRemoveChild(new eYo.Separator(), render)
@@ -124,7 +124,7 @@ eYo.MenuManager.prototype.SeparateRemove = function (render = true) {
 /**
  * Whether a separator should be inserted before any forthcoming menu item.
  */
-eYo.MenuManager.prototype.ShouldSeparate = function (yorn = true) {
+eYo.MenuManager.prototype.shouldSeparate = function (yorn = true) {
   this.shouldSeparate_ = !this.didSeparate_ && (this.shouldSeparate_ || yorn)
   // console.log('shouldSeparate_', yorn, this.shouldSeparate_)
 }
@@ -132,7 +132,7 @@ eYo.MenuManager.prototype.ShouldSeparate = function (yorn = true) {
 /**
  * Whether a separator should be inserted before any forthcoming menu item.
  */
-eYo.MenuManager.prototype.ShouldSeparateInsert = function (yorn = true) {
+eYo.MenuManager.prototype.shouldSeparateInsert = function (yorn = true) {
   this.shouldSeparateInsert_ = !this.didSeparateInsert_ && (this.shouldSeparateInsert_ || yorn)
   // console.log('shouldSeparate_', yorn, this.shouldSeparate_)
 }
@@ -140,14 +140,14 @@ eYo.MenuManager.prototype.ShouldSeparateInsert = function (yorn = true) {
 /**
  * Whether a separator should be inserted before any forthcoming menu item.
  */
-eYo.MenuManager.prototype.ShouldSeparateRemove = function (yorn = true) {
+eYo.MenuManager.prototype.shouldSeparateRemove = function (yorn = true) {
   this.shouldSeparateRemove_ = !this.didSeparateRemove_ && (this.shouldSeparateRemove_ || yorn)
 }
 
 /**
  * Whether a separator should be inserted before any forthcoming menu item.
  */
-eYo.MenuManager.prototype.ShouldSeparateInsertBefore = function (yorn = true) {
+eYo.MenuManager.prototype.shouldSeparateInsertBefore = function (yorn = true) {
   this.shouldSeparateInsertBefore_ = !this.didSeparateInsertBefore_ && (this.shouldSeparateInsertBefore_ || yorn)
   // console.log('shouldSeparateBefore_', yorn, this.shouldSeparateBefore_)
 }
@@ -155,7 +155,7 @@ eYo.MenuManager.prototype.ShouldSeparateInsertBefore = function (yorn = true) {
 /**
  * Whether a separator should be inserted before any forthcoming menu item.
  */
-eYo.MenuManager.prototype.ShouldSeparateInsertAfter = function (yorn = true) {
+eYo.MenuManager.prototype.shouldSeparateInsertAfter = function (yorn = true) {
   this.shouldSeparateInsertAfter_ = !this.didSeparateInsertAfter_ && (this.shouldSeparateInsertAfter_ || yorn)
   // console.log('shouldSeparateAfter_', yorn, this.shouldSeparateAfter_)
 }
@@ -163,7 +163,7 @@ eYo.MenuManager.prototype.ShouldSeparateInsertAfter = function (yorn = true) {
 /**
  * Add a menu item.
  */
-eYo.MenuManager.prototype.AddChild = function (menuItem, render = true) {
+eYo.MenuManager.prototype.addChild = function (menuItem, render = true) {
   if (this.shouldSeparate_) {
     // console.log('Did separate')
     this.separate(render)
@@ -175,7 +175,7 @@ eYo.MenuManager.prototype.AddChild = function (menuItem, render = true) {
 /**
  * Add a menu item to the insert submenu.
  */
-eYo.MenuManager.prototype.AddInsertChild = function (menuItem, render = true) {
+eYo.MenuManager.prototype.addInsertChild = function (menuItem, render = true) {
   if (this.shouldSeparateInsert_) {
     // console.log('Did separate')
     this.separateInsert(render)
@@ -187,7 +187,7 @@ eYo.MenuManager.prototype.AddInsertChild = function (menuItem, render = true) {
 /**
  * Add a menu item to the insert submenu.
  */
-eYo.MenuManager.prototype.AddInsertBeforeChild = function (menuItem, render = true) {
+eYo.MenuManager.prototype.addInsertBeforeChild = function (menuItem, render = true) {
   if (this.shouldSeparateInsertBefore_) {
     // console.log('Did separate')
     this.separateInsertBefore(render)
@@ -199,7 +199,7 @@ eYo.MenuManager.prototype.AddInsertBeforeChild = function (menuItem, render = tr
 /**
  * Add a menu item to the insert submenu.
  */
-eYo.MenuManager.prototype.AddInsertAfterChild = function (menuItem, render = true) {
+eYo.MenuManager.prototype.addInsertAfterChild = function (menuItem, render = true) {
   if (this.shouldSeparateInsertAfter_) {
     // console.log('Did separate')
     this.separateInsertAfter(render)
@@ -211,14 +211,14 @@ eYo.MenuManager.prototype.AddInsertAfterChild = function (menuItem, render = tru
 /**
  * Add a menu item to the remove submenu.
  */
-eYo.MenuManager.prototype.AddRemoveChild = function (menuItem, render = true) {
+eYo.MenuManager.prototype.addRemoveChild = function (menuItem, render = true) {
   this.removeSubmenu.addItem(menuItem)
 }
 
 /**
  * Records the brick and the event.
  * Removes all the previous menu items.
- * @param {eYo.Brick=} brick The brick.
+ * @param {eYo.brick=} brick The brick.
  * @param {Event=} e Mouse event.
  * @private
  */
@@ -237,11 +237,11 @@ eYo.MenuManager.prototype.init = function (brick = eYo.NA, e = eYo.NA) {
 /**
  * Show the context menu for the given brick.
  * This is not for subclassers.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {Event} e Mouse event.
  * @private
  */
-eYo.MenuManager.prototype.ShowMenu = function (brick, e) {
+eYo.MenuManager.prototype.showMenu = function (brick, e) {
   if (this.menu.isVisible()) {
     this.menu.hide()
     return
@@ -330,11 +330,11 @@ eYo.id.HELP = 'HELP'
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.Brick.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.brick.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
   mngr.shouldSeparate()
   mngr.populate_movable_parent(this)
 }
@@ -344,17 +344,17 @@ eYo.Brick.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.Brick.Dflt.prototype.populateContextMenuMiddle_ = function (mngr) {
+eYo.brick.Dflt.prototype.populateContextMenuMiddle_ = function (mngr) {
   return false
 }
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.Brick.Dflt.prototype.populateContextMenuLast_ = function (mngr) {
+eYo.brick.Dflt.prototype.populateContextMenuLast_ = function (mngr) {
   return mngr.populateLast(this)
 }
 
@@ -528,7 +528,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.Brick.Dflt.prototype.handleMenuItemActionFirst = function (mngr, event) {
+eYo.brick.Dflt.prototype.handleMenuItemActionFirst = function (mngr, event) {
   return mngr.handleAction_movable_parent(this, event)
 }
 
@@ -538,18 +538,18 @@ eYo.Brick.Dflt.prototype.handleMenuItemActionFirst = function (mngr, event) {
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.Brick.Dflt.prototype.handleMenuItemActionMiddle = function (mngr, event) {
+eYo.brick.Dflt.prototype.handleMenuItemActionMiddle = function (mngr, event) {
   return false
 }
 
 /**
  * Handle the selection of an item in the context dropdown menu.
  * Intended to be overriden.
- * @param {eYo.Brick.Dflt} brick
+ * @param {eYo.brick.Dflt} brick
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.Brick.Dflt.prototype.handleMenuItemActionLast = function (mngr, event) {
+eYo.brick.Dflt.prototype.handleMenuItemActionLast = function (mngr, event) {
   return mngr.handleActionLast(this, event)
 }
 
@@ -557,7 +557,7 @@ eYo.Brick.Dflt.prototype.handleMenuItemActionLast = function (mngr, event) {
  * Handle the selection of an item in the context dropdown menu.
  * Default implementation mimics Blockly behaviour.
  * Unlikely to be overriden.
- * @param {eYo.Brick.Dflt} brick
+ * @param {eYo.brick.Dflt} brick
  * @param {goog.events.Event} event The event containing as target
  * the MenuItem selected within menu.
  */
@@ -625,7 +625,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -636,7 +636,7 @@ eYo.MenuManager.prototype.populateVariable_ = function (brick) {
 /**
  * Handle the selection of an item in the first part of the context dropdown menu.
  * Default implementation returns false.
- * @param {eYo.Brick.Dflt} brick The Menu component clicked.
+ * @param {eYo.brick.Dflt} brick The Menu component clicked.
  * @param {goog....} event The event containing as target
  * the MenuItem selected within menu.
  */
@@ -653,14 +653,14 @@ eYo.MenuManager.prototype.handleAction_movable_parent = function (brick, event) 
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.handleAction_movable_parent_module = eYo.menuManager.prototype.handleAction_movable_parent
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
@@ -845,7 +845,7 @@ eYo.MenuManager.prototype.get_menuitem_content = function (type, subtype) {
  * Only for expressions.
  * `model.type` is the type of the to be inserted parent brick.
  * `model.slot` is the slot where the actual brick should be connected.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {Object} model the type of the parent to be and target slot.
  * @private
  */
@@ -940,7 +940,7 @@ eYo.MenuManager.prototype.populate_insert_as_top_parent = function (brick, model
  * Only for expressions.
  * type is the type of the to be inserted parent brick.
  * This parent might be inserted up to the top.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {string} type the type of the parent to be.
  * @private
  */
@@ -968,7 +968,7 @@ eYo.MenuManager.prototype.populate_insert_parent = function (brick, model, top) 
 /**
  * Populate the context menu for the given brick.
  * Only for expressions.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {string|Object} model the subtype is for example the input name through which parent and children are connected.
  * @private
  * @return true if an item were added to the remove menu
@@ -1000,7 +1000,7 @@ eYo.MenuManager.prototype.populate_replace_parent = function (brick, model) {
 /**
  * Populate the context menu for the given brick.
  * Only for statements.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.populate_before_after = function (brick) {
@@ -1027,9 +1027,9 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     eYo.t3.Stmt.print_stmt, // JL defined?
     eYo.t3.Stmt.Builtin__input_stmt// JL defined?
   ]
-  var /** !eYo.Magnet */ m4t, sep
+  var /** !eYo.magnet */ m4t, sep
   var F_after = /** @suppress{accessControls} */ (targetM4t, type) => {
-    var b3k = eYo.Brick.newReady(brick, type)
+    var b3k = eYo.brick.newReady(brick, type)
     var yorn = b3k.head_m &&
     b3k.head_m.checkType_(m4t) &&
     (!targetM4t || (b3k.foot_m && (targetM4t.checkType_(b3k.foot_m))))
@@ -1045,7 +1045,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     return false
   }
   var F_before = /** @suppress{accessControls} */ (target, type) => {
-    var b3k = eYo.Brick.newReady(brick, type)
+    var b3k = eYo.brick.newReady(brick, type)
     var yorn = b3k.foot_m &&
     b3k.foot_m.checkType_(m4t) &&
     (!target || (b3k.head_m && (target.checkType_(b3k.head_m))))
@@ -1089,7 +1089,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
 /**
  * Populate the context menu for the given brick.
  * Only for expressions.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.populate_movable_parent = function (brick) {
@@ -1144,7 +1144,7 @@ eYo.MenuManager.prototype.populate_movable_parent = function (brick) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @private
  */
 eYo.MenuManager.prototype.populateProperties = function (brick, key) {

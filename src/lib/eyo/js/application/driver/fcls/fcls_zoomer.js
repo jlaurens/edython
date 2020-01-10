@@ -15,7 +15,7 @@ eYo.require('fcls')
 
 eYo.provide('fcls.zoomer')
 
-eYo.forwardDeclare('zoomer')
+eYo.forwardDeclare('Zoomer')
 
 /**
  * Faceless driver for the zoomer.

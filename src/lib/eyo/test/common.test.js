@@ -14,7 +14,7 @@
     sounds : false,
     oneBasedIndex : true,
   }
-  eYo.App = new eYo.App.Dflt(options)
+  eYo.app = new eYo.application.Dflt(options)
   /* Inject your workspace
   var workspace = Blockly.inject('eyoDiv', options)
   eYo.Setup(workspace)
@@ -26,7 +26,7 @@
   */
 }
 
-chai.assert(eYo.App, `MISSING eYo.App`)
+chai.assert(eYo.app, `MISSING eYo.gmr`)
 
 setTimeout(() => {
   describe('PREPARE', function() {
@@ -36,9 +36,9 @@ setTimeout(() => {
   })
 }, 0)
 
-eYo.Test = Object.create(null)
+eYo.test = Object.create(null)
 
-eYo.Test.makeTestDesk = (id) => {
+eYo.test.makeTestDesk = (id) => {
   var div0 = document.querySelector('#eyo-desk')
   var div1 = goog.dom.createDom('div')
   div1.setAttribute('id', id)
@@ -58,7 +58,7 @@ eYo.Test.makeTestDesk = (id) => {
   return desk
 }
 
-Object.defineProperties(eYo.Test, {
+Object.defineProperties(eYo.test, {
   desk: {
     /**
      * A programmatically created test desk.
@@ -66,7 +66,7 @@ Object.defineProperties(eYo.Test, {
      * A `div#eyo-desk-headfull-test` is created.
      */
     get () {
-      return this.desk_ || (this.desk_ = eYo.Test.makeTestDesk('#eyo-desk-headfull-test'))
+      return this.desk_ || (this.desk_ = eYo.test.makeTestDesk('#eyo-desk-headfull-test'))
     }
   },
   board: {
@@ -81,7 +81,7 @@ Object.defineProperties(eYo.Test, {
      * A `div#eyo-desk-headfull-test1` is created.
      */
     get () {
-      return this.desk1_ || (this.desk1_ = eYo.Test.makeTestDesk('#eyo-desk-headfull-test1'))
+      return this.desk1_ || (this.desk1_ = eYo.test.makeTestDesk('#eyo-desk-headfull-test1'))
 
     }
   },
@@ -92,8 +92,8 @@ Object.defineProperties(eYo.Test, {
   }
 })
 
-eYo.Test.makeDesk = options => {
-  if (!eYo.App.Board) {
+eYo.test.makeDesk = options => {
+  if (!eYo.application.Board) {
     options = options || {}
     goog.mixin(options, {
       collapse : true,
@@ -107,43 +107,43 @@ eYo.Test.makeDesk = options => {
     })
     // if (options.container && (document.getElementById(options.container) ||
     // document.querySelector(options.container))) {
-    //   eYo.App.makeDesk(options)
+    //   eYo.application.makeDesk(options)
     // }
   }
 }
 
 beforeEach(function() {
-  eYo.Test.makeDesk(this.mainBoardOptions)
+  eYo.test.makeDesk(this.mainBoardOptions)
 })
 
-eYo.Test.SetItUp = () => {
-  eYo.App.Board.Backer.Clear()
-  eYo.App.Board.topBricks_.length = 0
+eYo.test.SetItUp = () => {
+  eYo.application.Board.Backer.Clear()
+  eYo.application.Board.topBricks_.length = 0
 }
 
-eYo.Test.tearItDown = (opt) => {
-  eYo.App.Board.Backer.Clear()
+eYo.test.tearItDown = (opt) => {
+  eYo.application.Board.Backer.Clear()
   if (!opt || !opt.ignoreTopBrick) {
-    chai.assert(eYo.App.Board.topBricks_.length === 0, `FAILED ${eYo.App.Board.topBricks_.length} === 0`)
+    chai.assert(eYo.application.Board.topBricks_.length === 0, `FAILED ${eYo.application.Board.topBricks_.length} === 0`)
   }
 }
 
-eYo.Test.g = eYo.gmr._PyParser_Grammar
+eYo.test.g = eYo.gmr._PyParser_Grammar
 
-eYo.Test.C9r = (brick, k) => {
+eYo.test.C9r = (brick, k) => {
   chai.assert(brick.constructor.eyo.key === k, `MISSED CTOR KEY ${brick.constructor.eyo.key} === ${k}`)
 }
 
-eYo.Test.Brick = (brick, t, str) => {
+eYo.test.Brick = (brick, t, str) => {
   t = eYo.t3.Stmt[t] || eYo.t3.Expr[t] || t
   chai.assert(brick, `MISSING DLGT TYPE ${t || ''}`)
   chai.assert(!t || (brick.type === t), `MISSED TYPE ${str || ''} ${brick.type} === ${t}`)
 }
 
-eYo.Test.new_brick = (t, tt, str, headless) => {
+eYo.test.new_brick = (t, tt, str, headless) => {
   var type = t = eYo.t3.Stmt[t] || eYo.t3.Expr[t] || t
-  var brick = eYo.Brick.newReady(eYo.App.Board, type)
-  eYo.Test.Brick(brick, tt, str)
+  var brick = eYo.brick.newReady(eYo.application.Board, type)
+  eYo.test.Brick(brick, tt, str)
   if (!headless) {
     brick.render()
   }
@@ -162,15 +162,15 @@ eYo.Test.new_brick = (t, tt, str, headless) => {
  * @param{Array} ra
  * @param{String} str
  */
-eYo.Test.Basic = (ra, str) => {
+eYo.test.Basic = (ra, str) => {
   describe(`Basic: ${str}`, function () {
     ra.forEach(args => {
       var t = args[0]
       var tt = args[1] || ((args[1] === null) && args[0])
       var k = args[2] || ((args[2] === null) && args[0])
       it (`${t}${tt ? `/${tt}` : ''}${k ? `/C9r: ${k}` : ''}`, function () {
-        var d = eYo.Test.new_brick(args[0], args[1] || args[0])
-        args[2] && (eYo.Test.C9r(d, args[2]))
+        var d = eYo.test.new_brick(args[0], args[1] || args[0])
+        args[2] && (eYo.test.C9r(d, args[2]))
         d.dispose()
       })
     })
@@ -178,7 +178,7 @@ eYo.Test.Basic = (ra, str) => {
 }
 
 /** Usage
-  eYo.Test.incog(brick,
+  eYo.test.incog(brick,
 ['holder',
 'dotted',
 'target',
@@ -189,20 +189,20 @@ eYo.Test.Basic = (ra, str) => {
 'slicing',
 'alias'])
 */
-eYo.Test.incog = (brick, keys) => {
-  var M = eYo.C9r.model.forKey(brick.type)
+eYo.test.incog = (brick, keys) => {
+  var M = eYo.c9r.model.forKey(brick.type)
   Object.keys(M.slots).forEach(k => {
     var yorn = keys.indexOf(k) >= 0
     chai.assert(!brick[`${k}_s`].incog === yorn, `${yorn ? 'MISSING' : 'UNEXPECTED'} ${k.toUpperCase()} INCOG`)
   })
 }
 
-eYo.Test.variant = (d, variant, str) => {
+eYo.test.variant = (d, variant, str) => {
   variant = eYo.key[variant] || variant
   chai.assert(d.Variant_p === variant, `MISSED VARIANT ${str || ''} ${d.Variant_p} === ${variant}`)
 }
 
-eYo.Test.Set_variant = (d, variant, str) => {
+eYo.test.Set_variant = (d, variant, str) => {
   variant = eYo.key[variant] || variant
   d.Variant_p = variant
   chai.assert(d.Variant_p === variant, `MISSED VARIANT ${str || ''} ${d.Variant_p} === ${variant}`)
@@ -211,31 +211,31 @@ eYo.Test.Set_variant = (d, variant, str) => {
 /**
  * Test all the possible variants
  */
-eYo.Test.All_variants = (d, required) => {
-  eYo.Test.Brick(d)
+eYo.test.All_variants = (d, required) => {
+  eYo.test.Brick(d)
   var d = d.variant_d
   var all = d && (d.getAll())
   chai.assert(all || !required, `MISSING all in model ${d.type}`)
   all && all.forEach(v => {
-    eYo.Test.Set_variant(d, v)
+    eYo.test.Set_variant(d, v)
   })
 }
 
-eYo.Test.linearizeCode_ = s => s.replace(/(?:\r\n|\r|\n)/g, '\\n').replace(/\s+/g, ' ').replace(/(\*) /g, '$1').replace(/(\s|\\n)+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{|:|\*\*|->|,|}|\+|-|=|#)\s*/g, '$1').replace(/(#)  +/g, '$1 ')
+eYo.test.linearizeCode_ = s => s.replace(/(?:\r\n|\r|\n)/g, '\\n').replace(/\s+/g, ' ').replace(/(\*) /g, '$1').replace(/(\s|\\n)+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{|:|\*\*|->|,|}|\+|-|=|#)\s*/g, '$1').replace(/(#)  +/g, '$1 ')
 
-Object.defineProperties(eYo.Brick.Dflt.prototype, {
+Object.defineProperties(eYo.brick.Dflt.prototype, {
   linearizedCode: {
     get () {
-      return eYo.Test.linearizeCode_(this.toString)
+      return eYo.test.linearizeCode_(this.toString)
     }
   }
 })
 
-eYo.Test.Code = (d, str) => {
+eYo.test.Code = (d, str) => {
   var s = d.toString.replace(/\bNOM\d/g, 'NAME')
   if (s !== str) {
-    var s1 = eYo.Test.linearizeCode_(s)
-    var str1 = eYo.Test.linearizeCode_(str)
+    var s1 = eYo.test.linearizeCode_(s)
+    var str1 = eYo.test.linearizeCode_(str)
     // console.error(s1, str1)
     chai.assert(s1 === str1, `MISSED: ${s} === ${str} (${s1} === ${str1})`)
   }
@@ -248,7 +248,7 @@ eYo.Test.Code = (d, str) => {
  * `false` otherwise.
  * Possible types are: 'output', 'high', 'low', 'left', right', 'suite'
  */
-eYo.Test.Magnets = (d, cfg) => {
+eYo.test.Magnets = (d, cfg) => {
   var failed
   var expected, available
   ;['output', 'high', 'left', 'right', 'suite', 'low'].some(k => {
@@ -262,14 +262,14 @@ eYo.Test.Magnets = (d, cfg) => {
   chai.assert(!failed, `${available? 'Unexpected' :  'Missing'} connection ${failed}`)
 }
 
-eYo.Test.Input_length = (d, k, str) => {
+eYo.test.Input_length = (d, k, str) => {
   chai.assert(d.slotList.length === k, `BAD INPUT LENGTH ${str || ''} ${Object.keys(d.slots).length} === ${k}`)
 }
 
 /**
  * Whether both bricks have the same type and variant.
  */
-eYo.Test.Same = (d, dd) => {
+eYo.test.Same = (d, dd) => {
   chai.assert(d, 'MISSING d')
   chai.assert(dd, 'MISSING dd')
   chai.assert(d.type === dd.type, `BAD TYPE ${d.type} === ${dd.type}`)
@@ -280,7 +280,7 @@ eYo.Test.Same = (d, dd) => {
  * Data key test.
  * Data are uniquely defined by their key.
  */
-eYo.Test.data_key = (brick, key, value) => {
+eYo.test.data_key = (brick, key, value) => {
   chai.assert(brick, 'MISSING d')
   var d = brick.data[key]
   chai.assert(d, `UNKNOWN DATA KEY ${key} in ${brick.type}`)
@@ -299,7 +299,7 @@ eYo.Test.data_key = (brick, key, value) => {
 /**
  * Test the data of the brick.
  */
-eYo.Test.data_value = (brick, key, value) => {
+eYo.test.data_value = (brick, key, value) => {
   chai.assert(brick, 'MISSING d')
   var d = brick.data[key]
   chai.assert(d, `UNKNOWN DATA KEY ${key} in ${brick.type}`)
@@ -315,7 +315,7 @@ eYo.Test.data_value = (brick, key, value) => {
  * and compare the data values.
  * Change back the data.
  */
-eYo.Test.data_save = (brick, key, value, ignore) => {
+eYo.test.data_save = (brick, key, value, ignore) => {
   chai.assert(brick, 'MISSING d')
   var d = brick.data[key]
   chai.assert(d, `UNKNOWN DATA KEY: ${key}`)
@@ -326,7 +326,7 @@ eYo.Test.data_save = (brick, key, value, ignore) => {
     var attr = dom.getAttribute(d.attributeName)
     chai.assert(attr === null, `UNEXPECTED ATTRIBUTE ${d.attributeName}: ${attr}`)
   } else {
-    var d = eYo.Brick.newReady(brick, dom)
+    var d = eYo.brick.newReady(brick, dom)
     chai.assert(d, 'MISSING dd from dom')
     var saved = d[`${key}_p`]
     d.dispose()
@@ -338,8 +338,8 @@ eYo.Test.data_save = (brick, key, value, ignore) => {
 /**
  * Slot connection test.
  */
-eYo.Test.Bind_field = (type, key, no) => {
-  var brick = eYo.Test.new_brick(type)
+eYo.test.Bind_field = (type, key, no) => {
+  var brick = eYo.test.new_brick(type)
   var s = brick.slots[key]
   chai.assert(s, `MISSING SLOT for ${key} in ${brick.type}`)
   var f = s.bindField
@@ -353,7 +353,7 @@ eYo.Test.Bind_field = (type, key, no) => {
 /**
  * Slot [connection] test.
  */
-eYo.Test.Slot_connect = (brick, key, tb) => {
+eYo.test.Slot_connect = (brick, key, tb) => {
   chai.assert(brick, 'MISSING d')
   var s = brick.slots[key]
   chai.assert(s === brick[`${key}_s`], `MISSED SLOT SHORTCUT for ${key} in ${brick.type}`)
@@ -369,7 +369,7 @@ eYo.Test.Slot_connect = (brick, key, tb) => {
  * @param {*} brick  a brick
  * @param {string} k  the slot key
  */
-eYo.Test.Slot_wrapped = (brick, k) => {
+eYo.test.Slot_wrapped = (brick, k) => {
   var s = brick.slots[k]
   chai.assert(s, `MISSING wrapped ${k} slot`)
   var t9k = s.targetBrick
@@ -377,7 +377,7 @@ eYo.Test.Slot_wrapped = (brick, k) => {
   chai.assert(t9k.parent === brick, 'MISSING parent')
 }
 
-eYo.Test.expect_out_check = (brick, check, str) => {
+eYo.test.expect_out_check = (brick, check, str) => {
   if (check !== null && !goog.isArray(check)) {
     check = [check]
   }
@@ -387,7 +387,7 @@ eYo.Test.expect_out_check = (brick, check, str) => {
 /**
  * Dynamic list connection test.
  */
-eYo.Test.list_connect = (brick, key, target, name) => {
+eYo.test.list_connect = (brick, key, target, name) => {
   chai.assert(brick, 'MISSING d')
   chai.assert(target, 'MISSING target')
   var s = brick.slots[key]
@@ -398,7 +398,7 @@ eYo.Test.list_connect = (brick, key, target, name) => {
 /**
  * Subtype.
  */
-eYo.Test.Subtype = (brick, t) => {
+eYo.test.Subtype = (brick, t) => {
   chai.assert(brick, 'MISSING d')
   t = eYo.t3.Expr[t] || eYo.t3.Stmt[t] || t
   chai.assert(t, 'UNKNOWN subtype')
@@ -408,17 +408,17 @@ eYo.Test.Subtype = (brick, t) => {
 /**
  * copy/paste.
  */
-eYo.Test.Copy_paste = (brick, opts) => {
+eYo.test.Copy_paste = (brick, opts) => {
   chai.assert(brick, 'MISSING d')
   var dom = eYo.xml.BrickToDom(brick)
-  var dd = eYo.Brick.newReady(brick, dom)
-  eYo.Test.Same(brick, dd)
-  var M = eYo.C9r.model.forKey(brick.type)
+  var dd = eYo.brick.newReady(brick, dom)
+  eYo.test.Same(brick, dd)
+  var M = eYo.c9r.model.forKey(brick.type)
   Object.keys(M.slots).forEach(k => {
     var key = `${k}_s`
     chai.assert(brick[key].incog === dd[key].incog, `INCONSISTENT INCOG for key ${k}`)
     if (!brick[key].incog) {
-      eYo.Test.Same_list_length = (brick, dd, k)
+      eYo.test.Same_list_length = (brick, dd, k)
     }
   })
   var test = opts && opts.test
@@ -443,7 +443,7 @@ eYo.Test.Copy_paste = (brick, opts) => {
 /**
  * Whether both bricks have the same list length.
  */
-eYo.Test.Same_list_length = (dlgt1, dlgt2, key) => {
+eYo.test.Same_list_length = (dlgt1, dlgt2, key) => {
   chai.assert(dlgt1, 'MISSING d')
   chai.assert(dlgt2, 'MISSING dd')
   var s1 = dlgt1.slots[key]
@@ -460,11 +460,11 @@ eYo.Test.Same_list_length = (dlgt1, dlgt2, key) => {
 /**
  * Create a new identifier brick
  */
-eYo.Test.newIdentifier = (str) => {
-  var brick = eYo.Brick.newReady(eYo.App.Board, eYo.t3.Expr.identifier)
+eYo.test.newIdentifier = (str) => {
+  var brick = eYo.brick.newReady(eYo.application.Board, eYo.t3.Expr.identifier)
   brick.Target_p = str
-  eYo.Test.Brick(brick, 'identifier')
-  eYo.Test.data_value(brick, 'target', str)
+  eYo.test.Brick(brick, 'identifier')
+  eYo.test.data_value(brick, 'target', str)
   return brick
 }
 
@@ -475,7 +475,7 @@ eYo.Test.newIdentifier = (str) => {
  * @param {string} parent  the parent element is `svg[parent]`, when parent is defined
  * @param {string} [type]
  */
-eYo.Test.SvgNodeParent = (bdom, node, parent, type) => {
+eYo.test.SvgNodeParent = (bdom, node, parent, type) => {
   if (bdom.ui) {
     type = type || bdom.type
     bdom = bdom.dom
@@ -496,22 +496,22 @@ eYo.Test.SvgNodeParent = (bdom, node, parent, type) => {
  * Test the various string as python source code
  * @param {string} str  The source code to test.
  */
-eYo.Test.Source = (str) => {
+eYo.test.Source = (str) => {
   var err_ret = {}
   var n = eYo.parser.PyParser_ParseString(str, eYo.gmr._PyParser_Grammar, eYo.tkn.file_input, err_ret)
-  var d = n.toBrick(eYo.App.Board)
+  var d = n.toBrick(eYo.application.Board)
   if (!d) {
     eYo.gmr.Showtree(eYo.gmr._PyParser_Grammar, n)
   }
   chai.assert(d, `WHERE IS THE BLOCK ${n.type}/${n.name}`)
-  eYo.Test.Code(d, str)
+  eYo.test.Code(d, str)
   d.dispose()
 }
 
 /**
  * Test the span of bricks, usage:
  *     
-  eYo.Test.Span(b, {
+  eYo.test.Span(b, {
     c_min: 2,
     c_padding: 0,
     c: 2,
@@ -526,7 +526,7 @@ eYo.Test.Source = (str) => {
  * When any key is omitted, the defaut value is used instead.
  * @param {string} str  The source code to test.
  */
-eYo.Test.Span = (b, span) => {
+eYo.test.Span = (b, span) => {
   [
     'c_padding',
     'header',

@@ -24,13 +24,13 @@ eYo.fcls.makeDriverClass('Slot')
 
 /**
  * Whether the slot is displayed.
- * @param {eYo.Slot.Dflt} slot  the slot to query about
+ * @param {eYo.slot.Dflt} slot  the slot to query about
  */
 eYo.fcls.Slot.prototype.displayedGet = eYo.do.nothing
 
 /**
  * Display/hide the given slot.
- * @param {eYo.Slot.Dflt} slot  the slot the driver acts on
+ * @param {eYo.slot.Dflt} slot  the slot the driver acts on
  * @param {boolean} yorn
  */
 eYo.fcls.Slot.prototype.displayedSet = eYo.do.nothing

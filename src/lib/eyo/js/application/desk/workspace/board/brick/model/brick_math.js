@@ -16,12 +16,12 @@ eYo.require('brick')
 eYo.require('msg')
 
 eYo.require('stmt')
-eYo.require('expr.list')
+eYo.require('expr.List')
 
-eYo.require('expr.primary')
+eYo.require('expr.Primary')
 eYo.require('tooltip')
 
-eYo.require('library')
+eYo.require('Library')
 eYo.require('Module.math__module')
 
 eYo.provide('brick.math')
@@ -213,7 +213,7 @@ goog.mixin(eYo.tooltip.Title, {
   math__import_stmt: 'Importer le module math',
 })
 
-eYo.Brick.math.T3s = [
+eYo.brick.math.T3s = [
   eYo.t3.Stmt.math__import_stmt,
   eYo.t3.Expr.math__call_expr,
   eYo.t3.Stmt.math__call_stmt,

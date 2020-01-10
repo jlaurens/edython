@@ -19,10 +19,10 @@ eYo.t3.Expr.Builtin__range_expr = 'eyo:builtin__range_expr'
 
 /**
  * Class for a Delegate, range brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('builtin__range_expr', {
+eYo.expr.Dflt.makeSubclass('Builtin__range_expr', {
   xml: {
     attr: 'range',
   },
@@ -171,7 +171,7 @@ eYo.expr.Builtin__range_expr.prototype.xmlAttr = function () {
   return 'range'
 }
 
-eYo.Brick.range.T3s = [
+eYo.brick.range.T3s = [
   eYo.t3.Expr.identifier,
   eYo.t3.Expr.Builtin__range_expr
 ]

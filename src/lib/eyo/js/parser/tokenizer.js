@@ -15,7 +15,7 @@ eYo.require('do')
 
 eYo.require('e')
 eYo.require('tkn')
-eYo.require('node')
+eYo.require('Node')
 eYo.provide('scan')
 
 /* Scan implementation */

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('expr.list')
+eYo.require('expr.List')
 
 eYo.provide('brick.argument')
 
@@ -39,7 +39,7 @@ keyword_item         ::=  identifier "=" expression
  * RULE 2 : expression << "**" expression
  * RULE 3 : "*" expression << "**" expression
  */
-eYo.consolidator.list.makeSubclass('Arguments', {
+eYo.consolidator.List.makeSubclass('Arguments', {
   list: {
     check: null,
     mandatory: 0,
@@ -50,7 +50,7 @@ eYo.consolidator.list.makeSubclass('Arguments', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {eYo.Brick.Dflt} brick - owner or the receiver.
+ * @param {eYo.brick.Dflt} brick - owner or the receiver.
  */
 eYo.consolidator.Arguments.prototype.getIO = function (brick) {
   var io = eYo.consolidator.Arguments.SuperProto_.getIO.Call(this, brick)
@@ -210,10 +210,10 @@ eYo.consolidator.Arguments.prototype.getCheck = (() => {
 /**
  * Class for a Delegate, argument_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.list.makeSubclass('argument_list', {
+eYo.expr.List.makeSubclass('Argument_list', {
   data: {
     ary: {
       order: 200,
@@ -252,16 +252,16 @@ eYo.expr.list.makeSubclass('argument_list', {
 /**
  * Class for a Delegate, argument_list_comprehensive brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Argument_list.makeSubclass('argument_list_comprehensive', {
+eYo.expr.Argument_list.makeSubclass('Argument_list_comprehensive', {
   list: {
     can_comprehension: true
   }
 })
 
-eYo.Brick.Argument.T3s = [
+eYo.brick.Argument.T3s = [
   // eYo.t3.Expr.identifier_valued,
   eYo.t3.Expr.Argument_list,
   eYo.t3.Expr.Argument_list_comprehensive

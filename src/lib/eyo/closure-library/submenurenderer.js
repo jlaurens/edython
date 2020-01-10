@@ -71,7 +71,7 @@ eYo.SubMenuRenderer.prototype.getCssClass = function () {
  * @return {!Element} Root element for the item.
  * @override
  */
-eYo.SubMenuRenderer.prototype.CreateDom = function (control) {
+eYo.SubMenuRenderer.prototype.createDom = function (control) {
   var subMenu = /** @type {goog.ui.SubMenu} */ (control)
   var element =
     eYo.subMenuRenderer.SuperClass_.createDom.Call(this, subMenu)
@@ -125,7 +125,7 @@ eYo.SubMenuRenderer.prototype.CreateDom = function (control) {
  *     set as the item's content.
  * @override
  */
-eYo.subMenuRenderer.prototype.SetContent = function (element, content) {
+eYo.subMenuRenderer.prototype.setContent = function (element, content) {
   // Save the submenu arrow element, if present.
   var contentElement = this.getContentElement(element)
   var arrowElement = contentElement && contentElement.lastChild

@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.require('dom.search')
+eYo.require('dom.Search')
 
-eYo.forwardDeclare('search')
+eYo.forwardDeclare('Search')
 // eYo.forwardDeclare('searchToolbar')
 
 /**
  * Svg driver for the search pane.
  */
-eYo.Svg.makeDriverClass('Search', {
+eYo.svg.makeDriverClass('Search', {
     /**
    * Initializes the search SVG ressources.
    * @param {eYo.Search} search
@@ -38,14 +38,14 @@ eYo.Svg.makeDriverClass('Search', {
       <g class="eyo-board">...</g>
     </svg>
     */
-    var root = svg.root_ = eYo.Svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
+    var root = svg.root_ = eYo.svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
     x.dataset && (x.dataset.type = 'search board')
 
-    var background = svg.background_ = eYo.Svg.newElement('path', {
+    var background = svg.background_ = eYo.svg.newElement('path', {
       class: 'eyo-search-background'
     }, root)
   // Bad design: code reuse: options
-    this.addTooltip(background, eYo.tooltip.getTitle('search'), {
+    this.addTooltip(background, eYo.tooltip.getTitle('Search'), {
       position: 'right',
       theme: 'light bordered',
       flipDuration: 0,
@@ -84,7 +84,7 @@ eYo.Svg.makeDriverClass('Search', {
  * @param {eYo.Search} search
  * @param {Boolean} show
  */
-eYo.Svg.Search.prototype.displaySet = function (search, show) {
+eYo.svg.Search.prototype.displaySet = function (search, show) {
   !show && eYo.tooltip.hideAll(search.dom.svg.root_)
   search.dom.svg.root_.style.display = show ? 'block' : 'none'
 }
@@ -93,7 +93,7 @@ eYo.Svg.Search.prototype.displaySet = function (search, show) {
  * Get the display attribute.
  * @param {eYo.Search} search
  */
-eYo.Svg.Search.prototype.displayGet = function (search) {
+eYo.svg.Search.prototype.displayGet = function (search) {
   return search.dom.svg.root_.style.display !== 'none'
 }
 
@@ -101,7 +101,7 @@ eYo.Svg.Search.prototype.displayGet = function (search) {
  * Update the view based on coordinates calculated in position().
  * @param {eYo.Search} search
  */
-eYo.Svg.Search.prototype.place = function (search) {
+eYo.svg.Search.prototype.place = function (search) {
   var rect = search.viewRect
   var div = search.dom.div_
   div.style.width = `${rect.width}px`
@@ -133,7 +133,7 @@ eYo.Svg.Search.prototype.place = function (search) {
  * @param {eYo.Search} search
  * @private
  */
-eYo.Svg.Search.prototype.update = function(search) {
+eYo.svg.Search.prototype.update = function(search) {
   var width = search.width
   var height = search.height
   var top_margin = eYo.Search.TOP_MARGIN
@@ -156,7 +156,7 @@ eYo.Svg.Search.prototype.update = function(search) {
  * The 'rect' listeners have been removed.
  * @param {eYo.Search} search
  */
-eYo.Svg.Search.prototype.removeAllBrickListeners = function(search) {
+eYo.svg.Search.prototype.removeAllBrickListeners = function(search) {
   // Delete all the event listeners.
   search.listeners_.forEach(l => eYo.dom.unbindEvent(l))
   search.listeners_.length = 0
@@ -167,9 +167,9 @@ eYo.Svg.Search.prototype.removeAllBrickListeners = function(search) {
  * Listeners work only when the search authorizes it.
  * The 'rect' listeners have been removed.
  * @param {eYo.Search} search
- * @param {eYo.Brick.Dflt} brick The block to add listeners for.
+ * @param {eYo.brick.Dflt} brick The block to add listeners for.
  */
-eYo.Svg.Search.prototype.AddListeners = function(search, brick) {
+eYo.svg.Search.prototype.addListeners = function(search, brick) {
   var g = brick.dom.svg.group_
   search.listeners_.push(eYo.dom.BindEvent(
     g,
@@ -201,7 +201,7 @@ eYo.Svg.Search.prototype.AddListeners = function(search, brick) {
  * Add a `mouseover` listener to deselect all bricks.
  * @param {eYo.Search} search
  */
-eYo.Svg.Search.prototype.listen_mouseover = function(search) {
+eYo.svg.Search.prototype.listen_mouseover = function(search) {
   search.listeners_.push(
     eYo.dom.BindEvent(
     search.dom.svg.background_,
@@ -217,7 +217,7 @@ eYo.Svg.Search.prototype.listen_mouseover = function(search) {
  * Add a `wheel` and `mousdown` listener to scroll.
  * @param {eYo.Search} search
  */
-eYo.Svg.Search.prototype.BindScrollEvents = function(search) {
+eYo.svg.Search.prototype.bindScrollEvents = function(search) {
   var bound = search.dom.bound
   if (bound.drag_wheel) {
     return
@@ -243,7 +243,7 @@ eYo.Svg.Search.prototype.BindScrollEvents = function(search) {
  * @param {Event} e Mouse down event.
  * @private
  */
-eYo.Svg.Search.prototype.on_mousedown = function(e) {
+eYo.svg.Search.prototype.on_mousedown = function(e) {
   eYo.app.Motion.handleFlyoutStart(e, this)
   
 }
@@ -251,7 +251,7 @@ eYo.Svg.Search.prototype.on_mousedown = function(e) {
 /**
  * Svg driver for the search tool bar.
  */
-eYo.Svg.makeDriverClass('SearchToolbar', {
+eYo.svg.makeDriverClass('SearchToolbar', {
   /**
    * Initializes the search toolbar SVG ressources.
    * @param {eYo.SearchToolbar} searchToolbar
@@ -285,8 +285,8 @@ eYo.Svg.makeDriverClass('SearchToolbar', {
       goog.dom.TagName.DIV,
       goog.getCssName(cssClass, 'control')
     )
-    svg.root_ = eYo.Svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
-    svg.pathControl_ = eYo.Svg.newElement('path', {
+    svg.root_ = eYo.svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
+    svg.pathControl_ = eYo.svg.newElement('path', {
       id: 'p-search-control'
     }, dom.svg)
     if (ftb.app && ftb.app.searchDropDown) {

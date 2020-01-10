@@ -15,7 +15,7 @@ eYo.require('stmt')
 
 eYo.require('msg')
 
-eYo.require('expr.list')
+eYo.require('expr.List')
 goog.require('goog.dom')
 
 eYo.provide('brick.yield')
@@ -24,7 +24,7 @@ eYo.provide('brick.yield')
  * Class for a Delegate, yield_expr.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('yield_expr', {
+eYo.expr.Dflt.makeSubclass('Yield_expr', {
   xml: {
     attr: 'yield'
   },
@@ -158,9 +158,9 @@ eYo.expr.Dflt.makeSubclass('yield_expr', {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
- * @this {eYo.Brick.Dflt}
+ * @this {eYo.brick.Dflt}
  * @private
  */
 eYo.expr.yield_expr.populateContextMenuFirst_ = function (mngr) {
@@ -195,7 +195,7 @@ eYo.expr.yield_expr.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
  * @private
  */
@@ -209,22 +209,22 @@ eYo.expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, yield_stmt.
  * For edython.
  */
-eYo.Stmt.makeClass('yield_stmt', {
+eYo.stmt.makeClass('Yield_stmt', {
   link: eYo.t3.Expr.yield_expr
 }, true)
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   eYo.expr.yield_expr.populateContextMenuFirst_.Call(this, mngr)
   return eYo.stmt.yield_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
 }
 
-eYo.Brick.yield.T3s = [
+eYo.brick.yield.T3s = [
   eYo.t3.Expr.yield_expr,
   eYo.t3.Stmt.yield_stmt
 ]

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('workspaceControl')
+eYo.require('WorkspaceControl')
 
 /**
  * Zoom controls model

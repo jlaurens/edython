@@ -13,7 +13,7 @@
 
 eYo.require('dom')
 
-eYo.forwardDeclare('search')
+eYo.forwardDeclare('Search')
 
 /**
  * Dom driver for the search pane.
@@ -67,7 +67,7 @@ eYo.dom.SEARCH_CSS_CLASS = goog.getCssName('eyo-search')
  * @return {string} Renderer-specific CSS class.
  * @override
  */
-eYo.dom.Search.prototype.CssClass = function() {
+eYo.dom.Search.prototype.cssClass = function() {
   return eYo.dom.SEARCH_CSS_CLASS
 }
 

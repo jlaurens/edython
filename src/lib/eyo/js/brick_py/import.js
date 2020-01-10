@@ -15,7 +15,7 @@ eYo.require('stmt')
 
 eYo.require('msg')
 
-eYo.require('expr.list')
+eYo.require('expr.List')
 goog.require('goog.dom');
 eYo.provide('brick.import')
 
@@ -35,10 +35,10 @@ module_name ::= identifier
 /**
  * Class for a Delegate, non_void_module_as_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.list.makeSubclass('non_void_module_as_list', {
+eYo.expr.List.makeSubclass('Non_void_module_as_list', {
   list: {
     check: eYo.t3.Expr.Check.non_void_module_as_list,
     mandatory: 1,
@@ -49,10 +49,10 @@ eYo.expr.list.makeSubclass('non_void_module_as_list', {
 /**
  * Class for a Delegate, non_void_import_identifier_as_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.list.makeSubclass('non_void_import_identifier_as_list', {
+eYo.expr.List.makeSubclass('Non_void_import_identifier_as_list', {
   list: {
     check: eYo.t3.Expr.Check.non_void_import_identifier_as_list,
     mandatory: 1,
@@ -68,7 +68,7 @@ eYo.expr.list.makeSubclass('non_void_import_identifier_as_list', {
  * The value property is used to store the module.
  * For edython.
  */
-eYo.Stmt.makeClass('import_stmt', {
+eYo.stmt.makeClass('Import_stmt', {
   data: {
     variant: {
       all: [
@@ -266,18 +266,18 @@ eYo.Stmt.makeClass('import_stmt', {
     }
   },
   init () /** @suppress {globalThis} */ {
-    eYo.Stmt.importRegister(this)
+    eYo.stmt.importRegister(this)
   },
   deinit () /** @suppress {globalThis} */ {
-    eYo.Stmt.importUnregister(this)
+    eYo.stmt.importUnregister(this)
   }
 }, true)
 
-eYo.do.register.Add(eYo.Stmt, 'import', function (b3k) {
+eYo.do.register.Add(eYo.stmt, 'import', function (b3k) {
   return !b3k.isInFlyout
 })
 
-Object.defineProperties(eYo.Stmt.import_stmt.prototype, {
+Object.defineProperties(eYo.stmt.import_stmt.prototype, {
   star_p: {
     get () {
       return this.Variant_p === eYo.key.FROM_MODULE_IMPORT_STAR
@@ -294,7 +294,7 @@ Object.defineProperties(eYo.Stmt.import_stmt.prototype, {
 /**
  * Returns a dictionary of modules imported by this brick, when not disabled.
  */
-eYo.Stmt.import_stmt.prototype.importedModules = function () {
+eYo.stmt.import_stmt.prototype.importedModules = function () {
   if (this.disabled) {
     return
   }
@@ -326,17 +326,17 @@ eYo.Stmt.import_stmt.prototype.importedModules = function () {
 /**
  * When the brick is just a wrapper, returns the wrapped target.
  */
-eYo.Stmt.import_stmt.prototype.getMenuTarget = function () {
+eYo.stmt.import_stmt.prototype.getMenuTarget = function () {
   return this
 }
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.Brick.Dflt} brick The brick.
+ * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var current = this.Variant_p
   var F = (content, variant) => {
     if (variant !== current) {
@@ -380,7 +380,7 @@ eYo.Stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, future_statement.
  * For edython.
  */
-eYo.Stmt.makeClass('future_statement', {
+eYo.stmt.makeClass('Future_statement', {
   slots: {
     list: {
       order: 1,
@@ -394,7 +394,7 @@ eYo.Stmt.makeClass('future_statement', {
   }
 }, true)
 
-eYo.Brick.import.T3s = [
+eYo.brick.import.T3s = [
   eYo.t3.Expr.identifier,
   eYo.t3.Expr.non_void_module_as_list,
   eYo.t3.Expr.non_void_import_identifier_as_list,

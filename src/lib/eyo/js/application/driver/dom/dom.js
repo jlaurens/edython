@@ -291,7 +291,7 @@ eYo.dom.forEachTouch = (e, f) => {
 }
 
 /**
- * @param {eYo.Brick|eYo.Board|eYo.Flyout}
+ * @param {eYo.brick|eYo.board|eYo.Flyout}
  */
 eYo.dom.ClearBoundEvents = (bbf) => {
   var dom = bbf.dom || bbf.dom
@@ -407,7 +407,7 @@ eYo.dom.gobbleEvent = e => {
 eYo.dom.isTargetInput = e => {
   return e.target.type == 'textarea' || e.target.type == 'text' ||
          e.target.type == 'number' || e.target.type == 'email' ||
-         e.target.type == 'password' || e.target.type == 'search' ||
+         e.target.type == 'password' || e.target.type == 'Search' ||
          e.target.type == 'tel' || e.target.type == 'url' ||
          e.target.isContentEditable
 }

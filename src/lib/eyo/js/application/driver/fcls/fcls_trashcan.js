@@ -13,11 +13,11 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.trashCan')
-
-eYo.forwardDeclare('trashCan')
+eYo.forwardDeclare('TrashCan')
 
 /**
+ * @name {eYo.fclsTrashCan}
+ * @constructor
  * Faceless driver for the trash can.
  */
 eYo.fcls.makeDriverClass('TrashCan')
@@ -57,4 +57,4 @@ eYo.fcls.TrashCan.prototype.place = eYo.do.nothing
  * Get the given trash can's client rect.
  * @param {eYo.TrashCan} trashCan  The trash can we must query.
  */
-eYo.fcls.TrashCan.prototype.ClientRect = eYo.do.nothing
+eYo.fcls.TrashCan.prototype.clientRect = eYo.do.nothing

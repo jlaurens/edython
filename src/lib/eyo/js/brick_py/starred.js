@@ -13,7 +13,7 @@
 
 eYo.require('expr')
 
-eYo.require('c9r.change')
+eYo.require('c9r.Change')
 
 eYo.require('decorate')
 eYo.require('msg')
@@ -33,7 +33,7 @@ eYo.t3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.t3.Expr.Check.or_exp
 
 /**
  * Class for a Delegate, starred brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  *
  * Involved types:
  *
@@ -48,7 +48,7 @@ eYo.t3.Expr.Check._or_expr_all_or_parameter_or_target = eYo.t3.Expr.Check.or_exp
  * For edython.
  */
 
-eYo.expr.Dflt.makeSubclass('starred', {
+eYo.expr.Dflt.makeSubclass('Starred', {
   xml: {
     types: [
       eYo.t3.Expr.Star_expr,
@@ -261,9 +261,9 @@ eYo.expr.Starred.prototype.xmlAttr = function () {
 
 // /**
 //  * Did connect this brick's connection from another connection.
-//  * @param {eYo.Magnet.Dflt} m4t
-//  * @param {eYo.Magnet.Dflt} oldTargetM4t that was connected to connection
-//  * @param {eYo.Magnet.Dflt} targetOldM4t that was connected to the old target connection.
+//  * @param {eYo.magnet.Dflt} m4t
+//  * @param {eYo.magnet.Dflt} oldTargetM4t that was connected to connection
+//  * @param {eYo.magnet.Dflt} targetOldM4t that was connected to the old target connection.
 //  */
 // eYo.expr.Starred.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
 //   eYo.expr.Starred.SuperProto_.didConnect.Call(this, m4t, oldTargetM4t, targetOldM4t)
@@ -274,8 +274,8 @@ eYo.expr.Starred.prototype.xmlAttr = function () {
 
 // /**
 //  * Did disconnect this brick's connection from another connection.
-//  * @param {eYo.Magnet.Dflt} m4t
-//  * @param {eYo.Magnet.Dflt} oldTargetM4t that was connected to m4t
+//  * @param {eYo.magnet.Dflt} m4t
+//  * @param {eYo.magnet.Dflt} oldTargetM4t that was connected to m4t
 //  */
 // eYo.expr.Starred.prototype.didDisconnect = function (m4t, oldTargetM4t) {
 //   eYo.expr.Starred.SuperProto_.didDisconnect.Call(this, m4t, oldTargetM4t)

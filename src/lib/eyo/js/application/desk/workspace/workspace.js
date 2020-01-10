@@ -13,13 +13,13 @@
  */
 'use strict'
 
-eYo.require('c9r.pane')
+eYo.require('c9r.Pane')
 eYo.require('decorate')
 
-eYo.forwardDeclare('flyout')
+eYo.forwardDeclare('Flyout')
 eYo.forwardDeclare('app')
-eYo.forwardDeclare('backer')
-eYo.forwardDeclare('scrollbar')
+eYo.forwardDeclare('Backer')
+eYo.forwardDeclare('Scrollbar')
 
 goog.forwardDeclare('goog.array');
 
@@ -35,9 +35,9 @@ goog.forwardDeclare('goog.array');
 eYo.makeClass('Workspace', eYo.c9r.Pane, {
   owned: {
     /**
-     * @type {?eYo.Board.Main} 
+     * @type {?eYo.board.Main} 
      */
-    board () { return new eYo.Board.Main(this) },
+    board () { return new eYo.board.Main(this) },
     /**
      * The flyout.
      * @type {?eYo.Flyout} 

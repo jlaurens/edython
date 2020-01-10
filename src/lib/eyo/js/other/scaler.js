@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('motion')
+eYo.forwardDeclare('Motion')
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.

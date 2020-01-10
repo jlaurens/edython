@@ -119,7 +119,7 @@ eYo.c9r.model.Allowed = {
     'value', // '(',
     'reserved', // : '.',
     'separator', // : true,
-    'variable', // : true,
+    'Variable', // : true,
     'validate', // : true,
     'endEditing', // : true,
     'willRender', //  () => {},
@@ -193,7 +193,7 @@ eYo.c9r.model.dataHandler = eYo.do.nothing
  * @param {String} key
  * @return {Object}
  */
-eYo.c9r.model.MagnetHandler = eYo.do.nothing
+eYo.c9r.model.magnetHandler = eYo.do.nothing
 
 /**
  * Expands a property model.
@@ -238,7 +238,7 @@ eYo.c9r.model.PropertyHandler = eYo.do.nothing
         // BRICK_TYPE || [BRICK_TYPE] || () => {}
         var before = model[key]
         if (eYo.isO(before)) {
-          eYo.c9r.model.MagnetHandler(before)
+          eYo.c9r.model.magnetHandler(before)
         } else {
           after = {
             check: ensureRAF(before)
@@ -269,8 +269,8 @@ eYo.c9r.model.PropertyHandler = eYo.do.nothing
     } else if (path === 'data') {
       eYo.c9r.model.dataHandler(model, key)
     } else if (path === 'slots') {
-      eYo.c9r.model.MagnetHandler(model)
-    } else if (path === 'list') {
+      eYo.c9r.model.magnetHandler(model)
+    } else if (path === 'List') {
       if (['check', 'unique', 'all'].includes(key)) {
         // BRICK_TYPE || [BRICK_TYPE] || () => {}
         after = ensureRAF(model[key])
@@ -280,7 +280,7 @@ eYo.c9r.model.PropertyHandler = eYo.do.nothing
       if (!goog.isArray(before)) {
         after = [before]
       }
-    } else if (key === 'list') {
+    } else if (key === 'List') {
       var before = model[key]
       before.ary || (before.ary = Infinity)
     } else if (XRegExp.match(path, /slots\.\w+\.fields/)) {
@@ -292,7 +292,7 @@ eYo.c9r.model.PropertyHandler = eYo.do.nothing
       }
     } else if (XRegExp.match(path, /slots\.\w+\.fields\.\w+/)) {
       var before = model[key]
-      if (['reserved', 'variable', 'separator'].includes(key)) {
+      if (['reserved', 'Variable', 'separator'].includes(key)) {
         if (eYo.isStr(before)) {
           after = true
           model.value = before

@@ -15,7 +15,7 @@ eYo.require('fcls')
 
 eYo.provide('fcls.desk')
 
-eYo.forwardDeclare('desk')
+eYo.forwardDeclare('Desk')
 
 /**
  * Shared application driver.

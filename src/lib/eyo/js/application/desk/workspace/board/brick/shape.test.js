@@ -15,7 +15,7 @@ describe('Expression shape', function () {
     chai.assert(b.isExpr, 'MISSED')
   })
   var createPath = (b, c, l) => {
-    eYo.Svg.newElement('path', {
+    eYo.svg.newElement('path', {
       d: eYo.Shape.definitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',
@@ -35,15 +35,15 @@ describe('Expression shape', function () {
 describe('Statement shape', function () {
   var type = 'test_shape_stmt'
   eYo.t3.Stmt[type] = type
-  eYo.Stmt.makeClass(type, {}) 
-  chai.assert(eYo.Stmt.test_shape_stmt)
+  eYo.stmt.makeClass(type, {}) 
+  chai.assert(eYo.stmt.test_shape_stmt)
   var b
   before(function() {
     b = eYo.Test.new_brick(type)
     chai.assert(b.isStmt, 'MISSED')
   })
   var createPath = (b, c, l) => {
-    eYo.Svg.newElement('path', {
+    eYo.svg.newElement('path', {
       d: eYo.Shape.definitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',
@@ -69,15 +69,15 @@ describe('Statement shape', function () {
 describe('Group shape', function () {
   var type = 'test_shape_part'
   eYo.t3.Stmt[type] = type
-  eYo.Stmt.Group.makeSubclass(type, {}) 
-  chai.assert(eYo.Stmt.test_shape_part)
+  eYo.stmt.Group.makeSubclass(type, {}) 
+  chai.assert(eYo.stmt.test_shape_part)
   var b
   before(function() {
     b = eYo.Test.new_brick(type)
     chai.assert(b.isGroup, 'MISSED')
   })
   var createPath = (b, c, l) => {
-    eYo.Svg.newElement('path', {
+    eYo.svg.newElement('path', {
       d: eYo.Shape.definitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',

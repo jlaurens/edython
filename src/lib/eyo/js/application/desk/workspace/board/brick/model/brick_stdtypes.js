@@ -16,12 +16,12 @@ eYo.require('brick')
 eYo.require('msg')
 
 eYo.require('stmt')
-eYo.require('expr.list')
+eYo.require('expr.List')
 
-eYo.require('expr.primary')
+eYo.require('expr.Primary')
 eYo.require('tooltip')
 
-eYo.require('library')
+eYo.require('Library')
 eYo.require('Module.stdtypes')
 
 eYo.provide('brick.stdtypes')
@@ -56,42 +56,42 @@ eYo.provide('brick.stdtypes')
 
   d.items.push(new M.Item({
     name: 'append',
-    class: 'list',
+    class: 'List',
     category: c,
     type_: t,
     ary: 1
   }))
   d.items.push(new M.Item({
     name: 'clear',
-    class: 'list',
+    class: 'List',
     category: c,
     type_: t,
     ary: 0
   }))
   d.items.push(new M.Item({
     name: 'copy',
-    class: 'list',
+    class: 'List',
     category: c,
     type_: t,
     ary: 0
   }))
   d.items.push(new M.Item({
     name: 'extend',
-    class: 'list',
+    class: 'List',
     category: c,
     type_: t,
     ary: 1
   }))
   d.items.push(new M.Item({
     name: 'insert',
-    class: 'list',
+    class: 'List',
     category: c,
     type_: t,
     ary: 2
   }))
   d.items.push(new M.Item({
     name: 'pop',
-    class: 'list',
+    class: 'List',
     category: c,
     type_: t,
     ary: 1,
@@ -100,7 +100,7 @@ eYo.provide('brick.stdtypes')
 
   d.items.push(new M.Item({
     name: 'remove',
-    class: 'list',
+    class: 'List',
     category: c,
     type_: t,
     ary: 1
@@ -108,7 +108,7 @@ eYo.provide('brick.stdtypes')
 
   d.items.push(new M.Item({
     name: 'reverse',
-    class: 'list',
+    class: 'List',
     category: c,
     type_: t,
     ary: 0

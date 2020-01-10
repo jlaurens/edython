@@ -18,15 +18,15 @@ goog.forwardDeclare('goog.math.AffineTransform')
 
 /**
  * A namespace.
- * @name{eYo.Svg}
+ * @name{eYo.svg}
  * @namespace
  */
 eYo.dom.makeNS(eYo, 'svg')
 
 eYo.forwardDeclare('t3.profile')
-eYo.forwardDeclare('svg.brick')
-eYo.forwardDeclare('svg.slot')
-eYo.forwardDeclare('svg.field')
+eYo.forwardDeclare('svg.Brick')
+eYo.forwardDeclare('svg.Slot')
+eYo.forwardDeclare('svg.Field')
 eYo.forwardDeclare('slot')
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('style')
@@ -37,21 +37,21 @@ goog.forwardDeclare('goog.userAgent')
  * The Svg delegate.
  * @constructor
  */
-eYo.dom.Dlgt.makeSubclass(eYo.Svg)
+eYo.dom.Dlgt.makeSubclass(eYo.svg)
 
 /**
- * @name {eYo.Svg.Dlgt}
+ * @name {eYo.svg.Dlgt}
  * @constructor
  */
 /**
- * @name {eYo.Svg.Dflt}
+ * @name {eYo.svg.Dflt}
  * @constructor
  */
 /**
- * @name {eYo.Svg.Mngr}
+ * @name {eYo.svg.Mngr}
  * @constructor
  */
-eYo.Svg.makeMngr({
+eYo.svg.makeMngr({
   ui: {
     initMake (f) {
       return function (object, ...rest) {
@@ -83,7 +83,7 @@ eYo.Svg.makeMngr({
  * @param {Element} parent Optional parent on which to append the element.
  * @return {!SVGElement} Newly created SVG element.
  */
-eYo.Svg._p.newElement = function(name, attrs, parent) {
+eYo.svg._p.newElement = function(name, attrs, parent) {
   var e = /** @type {!SVGElement} */
       document.createElementNS(eYo.dom.SVG_NS, name)
   for (var key in attrs) {
@@ -106,8 +106,8 @@ eYo.Svg._p.newElement = function(name, attrs, parent) {
  * @param {string} className.
  * @return {!SVGElement} Newly created SVG element.
  */
-eYo.Svg._p.newElementSvg = function(parent, className) {
-  return eYo.Svg.newElement('svg', {
+eYo.svg._p.newElementSvg = function(parent, className) {
+  return eYo.svg.newElement('svg', {
     xmlns: eYo.dom.SVG_NS,
     'xmlns:html': eYo.dom.HTML_NS,
     'xmlns:xlink': eYo.dom.XLINK_NS,
@@ -120,7 +120,7 @@ eYo.Svg._p.newElementSvg = function(parent, className) {
 /**
  * Regular expressions.
  */
-Object.defineProperties(eYo.Svg, {
+Object.defineProperties(eYo.svg, {
   TRANSLATE_REGEX_: { value: /translate\s*\(\s*([-+\d.,e]+)([ ,]\s*([-+\d.,e]+)\s*\))/ },
   TRANSLATE_2D_REGEX_: { value: /transform\s*:\s*translate\s*\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ },
   TRANSLATE_3D_REGEX_: { value: /transform\s*:\s*translate3d\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ }
@@ -133,7 +133,7 @@ Object.defineProperties(eYo.Svg, {
  * @param {Element} element SVG element to find the coordinates of.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
-eYo.Svg.Dflt_p.xyInParent = function(element) {
+eYo.svg.Dflt_p.xyInParent = function(element) {
   var xy = new eYo.Where()
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
@@ -146,7 +146,7 @@ eYo.Svg.Dflt_p.xyInParent = function(element) {
   }
   // Second, check for transform="translate(...)" attribute.
   var transform = element.getAttribute('transform')
-  var r = transform && (transform.match(eYo.Svg.TRANSLATE_REGEX_))
+  var r = transform && (transform.match(eYo.svg.TRANSLATE_REGEX_))
   if (r) {
     xy.x += parseFloat(r[1])
     if (r[3]) {
@@ -156,10 +156,10 @@ eYo.Svg.Dflt_p.xyInParent = function(element) {
   // Then check for style = transform: translate(...) or translate3d(...)
   var style = element.getAttribute('style');
   if (style && style.indexOf('translate') > -1) {
-    var styleComponents = style.match(eYo.Svg.TRANSLATE_2D_REGEX_)
+    var styleComponents = style.match(eYo.svg.TRANSLATE_2D_REGEX_)
     // Try transform3d if 2d transform wasn't there.
     if (!styleComponents) {
-      styleComponents = style.match(eYo.Svg.TRANSLATE_3D_REGEX_)
+      styleComponents = style.match(eYo.svg.TRANSLATE_3D_REGEX_)
     }
     if (styleComponents) {
       xy.x += parseFloat(styleComponents[1])
@@ -175,7 +175,7 @@ eYo.Svg.Dflt_p.xyInParent = function(element) {
  * Add tooltip to an element
  * @param {String} key
  */
-eYo.Svg.Dflt_p.addTooltip = function (el, title, options) {
+eYo.svg.Dflt_p.addTooltip = function (el, title, options) {
   if (eYo.isStr(title)) {
     el.setAttribute('title', title)
     tippy(el, options)
@@ -190,7 +190,7 @@ eYo.Svg.Dflt_p.addTooltip = function (el, title, options) {
  * @param {string} txt The text to yield_expr
  * @return {string}
  */
-eYo.Svg.getCssClassForText = function (txt) {
+eYo.svg.getCssClassForText = function (txt) {
   switch (eYo.t3.profile.get(txt, null).raw) {
   case eYo.t3.Expr.reserved_identifier:
   case eYo.t3.Expr.reserved_keyword:
@@ -210,7 +210,7 @@ eYo.Svg.getCssClassForText = function (txt) {
  * @param {Element} element DOM element to remove attribute from.
  * @param {string} attributeName Name of attribute to remove.
  */
-eYo.Svg.removeAttribute = (element, attributeName) => {
+eYo.svg.removeAttribute = (element, attributeName) => {
   // goog.userAgent.isVersion is deprecated, but the replacement is
   // goog.userAgent.isVersionOrHigher.
   if (goog.userAgent.IE && goog.userAgent.isVersion('10.0')) {
@@ -224,7 +224,7 @@ eYo.Svg.removeAttribute = (element, attributeName) => {
  * Get the cumulated affine transform of an element.
  * @param {*} element
  */
-eYo.Svg.getAffineTransform = (() => {
+eYo.svg.getAffineTransform = (() => {
   var getAffineTransform = (str) => {
     var values = str.split(/\s*,\s*|\)\s*|.*\(/)
     if (values.length > 8) {
@@ -260,8 +260,8 @@ eYo.Svg.getAffineTransform = (() => {
  * Get the cumulated affine transform of an element.
  * @param {*} element
  */
-eYo.Svg.getTransformCorrection = element => {
-  var A = eYo.Svg.getAffineTransform(element)
+eYo.svg.getTransformCorrection = element => {
+  var A = eYo.svg.getAffineTransform(element)
   if (A) {
     var B = A.createInverse()
     if (B) {
@@ -281,7 +281,7 @@ eYo.Svg.getTransformCorrection = element => {
  * @param {Element} element SVG element to find the coordinates of.
  * @return {!eYo.Where} Object with .x and .y properties.
  */
-eYo.Svg.getRelativeWhere = function(element) {
+eYo.svg.getRelativeWhere = function(element) {
   var xy = new eYo.Where()
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
@@ -294,7 +294,7 @@ eYo.Svg.getRelativeWhere = function(element) {
   }
   // Second, check for transform="translate(...)" attribute.
   var transform = element.getAttribute('transform')
-  var r = transform && transform.match(eYo.Svg.getRelativeWhere.Where_REGEX_)
+  var r = transform && transform.match(eYo.svg.getRelativeWhere.where_REGEX_)
   if (r) {
     xy.x += parseFloat(r[1])
     if (r[3]) {
@@ -304,10 +304,10 @@ eYo.Svg.getRelativeWhere = function(element) {
   // Then check for style = transform: translate(...) or translate3d(...)
   var style = element.getAttribute('style')
   if (style && style.indexOf('translate') > -1) {
-    var styleComponents = style.match(eYo.Svg.getRelativeWhere.Where_2D_REGEX_)
+    var styleComponents = style.match(eYo.svg.getRelativeWhere.where_2D_REGEX_)
     // Try transform3d if 2d transform wasn't there.
     if (!styleComponents) {
-      styleComponents = style.match(eYo.Svg.getRelativeWhere.Where_3D_REGEX_)
+      styleComponents = style.match(eYo.svg.getRelativeWhere.where_3D_REGEX_)
     }
     if (styleComponents) {
       xy.x += parseFloat(styleComponents[1])
@@ -325,12 +325,12 @@ eYo.Svg.getRelativeWhere = function(element) {
  * @return {!number} number represending the scale applied to the element.
  * @private
  */
-eYo.Svg.getScale_ = function(element) {
+eYo.svg.getScale_ = function(element) {
   var scale = 1
   var transform = element.getAttribute('transform')
   if (transform) {
     var transformComponents =
-        transform.match(eYo.Svg.getScale_REGEXP_)
+        transform.match(eYo.svg.getScale_REGEXP_)
     if (transformComponents && transformComponents[0]) {
       scale = parseFloat(transformComponents[1])
     }
@@ -363,31 +363,31 @@ goog.style.MATRIX_TRANSLATION_REGEX_ = /matrix\([0-9\.,-]+, [0-9\.,\-]+, [0-9\.,
  * @type {!RegExp}
  * @private
  */
-eYo.Svg.getRelativeWhere.Where_REGEX_ =
+eYo.svg.getRelativeWhere.where_REGEX_ =
 /translate\(\s*([-+\d.,e]+)([ ,]\s*([-+\d.,e]+)\s*\))/
 
 /**
  * Static regex to pull the scale values out of a transform style property.
- * Accounts for same exceptions as Where_REGEXP_.
+ * Accounts for same exceptions as where_REGEXP_.
  * @type {!RegExp}
  * @private
  */
-eYo.Svg.getScale_REGEXP_ = /scale\(\s*([-+\d.,e]+)\s*\)/
+eYo.svg.getScale_REGEXP_ = /scale\(\s*([-+\d.,e]+)\s*\)/
 
 /**
  * Static regex to pull the x,y,z values out of a translate3d() style property.
- * Accounts for same exceptions as Where_REGEXP_.
+ * Accounts for same exceptions as where_REGEXP_.
  * @type {!RegExp}
  * @private
  */
-eYo.Svg.getRelativeWhere.Where_3D_REGEX_ =
+eYo.svg.getRelativeWhere.where_3D_REGEX_ =
   /transform:\s*translate3d\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/
 
 /**
  * Static regex to pull the x,y,z values out of a translate3d() style property.
- * Accounts for same exceptions as Where_REGEXP_.
+ * Accounts for same exceptions as where_REGEXP_.
  * @type {!RegExp}
  * @private
  */
-eYo.Svg.getRelativeWhere.Where_2D_REGEX_ =
+eYo.svg.getRelativeWhere.where_2D_REGEX_ =
   /transform:\s*translate\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/

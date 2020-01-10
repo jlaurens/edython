@@ -175,7 +175,7 @@ eYo.provide('Module.array__module', new eYo.module.Dflt('array__module', 'https:
         ary: 1,
         arguments: [
           {
-            name: 'list'
+            name: 'List'
           }
         ]
       }),

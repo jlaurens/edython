@@ -15,7 +15,7 @@ eYo.require('fcls')
 
 eYo.provide('fcls.search')
 
-eYo.forwardDeclare('search')
+eYo.forwardDeclare('Search')
 
 /**
  * Faceless driver for the search pane.

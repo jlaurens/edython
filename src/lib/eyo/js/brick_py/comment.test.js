@@ -4,7 +4,7 @@ describe('Statement', function () {
   var g = eYo.gmr._PyParser_Grammar
 
   var test_connection_db = () => {
-    for (var i = 1; i < eYo.Magnet.RIGHT; i++) {
+    for (var i = 1; i < eYo.magnet.RIGHT; i++) {
       chai.assert(eYo.app.Board.MagnetDBList[i].length === 0, `Unexpected connection ${i}`)
     }
   }

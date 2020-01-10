@@ -11,7 +11,8 @@
  */
 'use strict'
 
-eYo.provide('bitSet')
+eYo.require('gmr')
+eYo.provide('gmr.bitset')
 
 /* Bitset primitives used by the parser generator *-/
 
@@ -20,20 +21,22 @@ eYo.provide('bitSet')
 
 bitset */
 
-eYo.bitSet.newbitset = (nbits) => {
+;(() => {
   var BitSet = function(nbits) {
     this.ra = new Uint8Array(1 + Math.floor((nbits - 1) / 8))
   }
-  var ss = new BitSet(nbits)
-  return ss;
-}
+  eYo.gmr.newbitset = (nbits) => {
+    var ss = new BitSet(nbits)
+    return ss
+  }
+}) ()
 
-eYo.bitSet.delbitset = (ss) => {
+eYo.gmr.delbitset = (ss) => {
   throw 'DO NOT CALL THIS'
 }
 
 // int
-eYo.bitSet.Addbit = (ss, ibit) => {
+eYo.gmr.addbit = (ss, ibit) => {
   var i = ss.ra[Math.floor(ibit / 8)]
   var mask = 1 << (ibit % 8)
   if (i & mask) {
@@ -43,13 +46,13 @@ eYo.bitSet.Addbit = (ss, ibit) => {
   return true
 }
 
-eYo.bitSet.testbit = (ss, ibit) => {
+eYo.gmr.testbit = (ss, ibit) => {
   var i = ss.ra[Math.floor(ibit / 8)]
   var mask = 1 << (ibit % 8)
   return !!(i & mask)
 }
 
-eYo.bitSet.Samebitset = (ss1, ss2, nbits) => {
+eYo.gmr.samebitset = (ss1, ss2, nbits) => {
     for (var i = nbits / 8; --i >= 0; ) {
       if (ss1.ra[i] !== ss2.ra[i]) {
         return 0
@@ -58,7 +61,7 @@ eYo.bitSet.Samebitset = (ss1, ss2, nbits) => {
     return 1;
 }
 
-eYo.bitSet.mergebitset = (ss1, ss2, nbits) => {
+eYo.gmr.mergebitset = (ss1, ss2, nbits) => {
   for (var i = nbits / 8; --i >= 0; ) {
     ss1.ra[i] = ss1.ra[i] | ss2.ra[i]
   }

@@ -11,16 +11,16 @@
  */
 'use strict'
 
-eYo.require('expr.list')
+eYo.require('expr.List')
 
 eYo.provide('brick.comprehension')
 
 /**
  * Class for a Delegate, comprehension value brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('comprehension', {
+eYo.expr.Dflt.makeSubclass('Comprehension', {
   data: {
     expression: {
       order: 1,
@@ -114,10 +114,10 @@ eYo.expr.Comprehension.prototype.xmlAttr = function () {
 
 /**
  * Class for a Delegate, comp_for brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('comp_for', {
+eYo.expr.Dflt.makeSubclass('Comp_for', {
   slots: {
     for: {
       order: 1,
@@ -138,10 +138,10 @@ eYo.expr.Dflt.makeSubclass('comp_for', {
 
 /**
  * Class for a Delegate, comp_if brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('comp_if', {
+eYo.expr.Dflt.makeSubclass('Comp_if', {
   slots: {
     if: {
       order: 1,
@@ -156,10 +156,10 @@ eYo.expr.Dflt.makeSubclass('comp_if', {
 /**
  * Class for a Delegate, comp_iter_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.list.makeSubclass('comp_iter_list', {
+eYo.expr.List.makeSubclass('Comp_iter_list', {
   list: {
     check: eYo.t3.Expr.Check.Comp_iter,
     mandatory: 0,
@@ -167,7 +167,7 @@ eYo.expr.list.makeSubclass('comp_iter_list', {
   }
 })
 
-eYo.Brick.Comprehension.T3s = [
+eYo.brick.Comprehension.T3s = [
   eYo.t3.Expr.Comprehension,
   eYo.t3.Expr.Comp_for,
   eYo.t3.Expr.Comp_if,

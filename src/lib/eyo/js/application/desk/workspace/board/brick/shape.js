@@ -117,7 +117,7 @@ Object.defineProperties(eYo.Shape.prototype, {
 /**
  * begin
  */
-eYo.Shape.prototype.Begin = function () {
+eYo.Shape.prototype.begin = function () {
   this.steps = []
   this.cursor.set()
   this.dc = this.dl = 0
@@ -126,7 +126,7 @@ eYo.Shape.prototype.Begin = function () {
 /**
  * z
  */
-eYo.Shape.prototype.z = eYo.shape.prototype.Z = function () {
+eYo.Shape.prototype.z = eYo.shape.prototype.z = function () {
   this.steps.push('z')
 }
 
@@ -202,7 +202,7 @@ eYo.Shape.prototype.m = function (is_brick, c = 0, l = 0) {
  * @param {*?} c
  * @param {*?} l
  */
-eYo.Shape.prototype.M = function (is_brick, c = 0, l = 0) {
+eYo.Shape.prototype.m = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
@@ -252,7 +252,7 @@ eYo.Shape.prototype.l = function (is_brick, c = 0, l = 0) {
  * @param {*?} c
  * @param {*?} l
  */
-eYo.Shape.prototype.L = function (is_brick, c = 0, l = 0) {
+eYo.Shape.prototype.l = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
@@ -295,7 +295,7 @@ eYo.Shape.prototype.h = function (is_brick = false, c = 0) {
  * @param {Boolean?} is_brick
  * @param {*} c
  */
-eYo.Shape.prototype.H = function (is_brick = false, c = 0) {
+eYo.Shape.prototype.h = function (is_brick = false, c = 0) {
   if (is_brick === true) {
     if (this.cursor.x !== c) {
       this.push(`H ${this.format(c)}`)
@@ -337,7 +337,7 @@ eYo.Shape.prototype.v = function (is_brick, l) {
  * @param {Boolean?} is_brick - when 'true', units are given in brick coordinates
  * @param {*} l
  */
-eYo.Shape.prototype.V = function (is_brick, l) {
+eYo.Shape.prototype.v = function (is_brick, l) {
   if (is_brick === true) {
     if (this.cursor.y !== l) {
       this.push(`V ${this.format(l)}`)
@@ -439,7 +439,7 @@ eYo.Shape.prototype.half_circle = function (r, clockwise, part) {
  * @param {Boolean} left
  * @param {Boolean} down
  */
-eYo.Shape.prototype.Arc = function (h, r = true, left = true, down = true) {
+eYo.Shape.prototype.arc = function (h, r = true, left = true, down = true) {
   if (r === true || r === false) {
     down = left
     left = r
@@ -454,7 +454,7 @@ eYo.Shape.prototype.Arc = function (h, r = true, left = true, down = true) {
 
 /**
  * create a shape with the given brick.
- * @param {eYo.Brick!} brick  Brick
+ * @param {eYo.brick!} brick  Brick
  */
 eYo.Shape.newWithBrick = function(brick) {
   return new eYo.Shape().initWithBrick(brick)
@@ -462,7 +462,7 @@ eYo.Shape.newWithBrick = function(brick) {
 
 /**
  * Create a path definition with the given brick.
- * @param {eYo.Brick!} brick  A brick.
+ * @param {eYo.brick!} brick  A brick.
  * @param {Object} opt  options.
  * @return {String!} A path definition.
  */
@@ -472,12 +472,12 @@ eYo.Shape.definitionWithBrick = function(brick, opt) {
 
 /**
  * Inits a shape with the given brick.
- * @param {eYo.Brick!} brick  Brick
+ * @param {eYo.brick!} brick  Brick
  */
 eYo.Shape.prototype.initWithBrick = (() => {
   /**
    * Inits a shape with the given brick.
-   * @param {eYo.Brick!} brick  Brick
+   * @param {eYo.brick!} brick  Brick
    * @return {!Object} The receiver.
    */
   var initWithStatementBrick = function(brick, opt) {
@@ -522,7 +522,7 @@ eYo.Shape.prototype.initWithBrick = (() => {
 
   /**
    * Inits a shape with the given brick.
-   * @param {eYo.Brick!} brick
+   * @param {eYo.brick!} brick
    * @return {!Object} The receiver.
    */
   var initWithGroupBrick = function(brick, opt) {
@@ -575,8 +575,8 @@ eYo.Shape.prototype.initWithBrick = (() => {
   /**
    * Inits a shape with the given expression brick.
    * The left part of the shape may be special.
-   * @param {eYo.Brick!} brick
-   * @return {eYo.Brick!} The receiver.
+   * @param {eYo.brick!} brick
+   * @return {eYo.brick!} The receiver.
    */
   var initWithExpressionBrick = function(brick, opt) {
     var width = brick.span.width
@@ -649,7 +649,7 @@ eYo.Shape.prototype.initWithBrick = (() => {
 
 /**
  * Create a shape with the given connection delegate.
- * @param {eYo.Magnet!} magnet  A connection delegate.
+ * @param {eYo.magnet!} magnet  A connection delegate.
  */
 eYo.Shape.newWithMagnet = function(magnet) {
   return new eYo.Shape().initWithMagnet(magnet)
@@ -657,7 +657,7 @@ eYo.Shape.newWithMagnet = function(magnet) {
 
 /**
  * Create a path definition with the given connection delegate.
- * @param {eYo.Magnet!} m4t  A connection delegate.
+ * @param {eYo.magnet!} m4t  A connection delegate.
  * @param {Object} [opt]  Optional kv arguments
  * @return {String!} A path definition.
  */
@@ -667,7 +667,7 @@ eYo.Shape.definitionWithMagnet = function(m4t, opt) {
 
 /**
  * create a shape with the given connection delegate.
- * @param {eYo.MagnetSvg} [magnet]  Magnet
+ * @param {eYo.magnetSvg} [magnet]  Magnet
  * @param {Object} [opt]  Optional kv arguments
  * @return {!Object} The receiver.
  */

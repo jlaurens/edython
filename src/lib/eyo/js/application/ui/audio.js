@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('c9r.owned')
+eYo.require('c9r.Owned')
 
 /**
  * Class for loading, storing, and playing audio.

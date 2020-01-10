@@ -13,7 +13,7 @@
 
 eYo.require('dom')
 
-eYo.forwardDeclare('desk')
+eYo.forwardDeclare('Desk')
 
 /**
  * Dom driver for boards.

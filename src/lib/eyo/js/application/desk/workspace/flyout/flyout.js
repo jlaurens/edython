@@ -15,7 +15,7 @@ eYo.require('c9r')
 eYo.require('unit')
 eYo.require('events')
 
-eYo.forwardDeclare('library')
+eYo.forwardDeclare('Library')
 eYo.forwardDeclare('style')
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('flyoutToolbar')
@@ -75,16 +75,16 @@ eYo.forwardDeclare('menuButtonRenderer')
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.c9r.Owned.makeSubclass(eYo, 'Flyout', {
+eYo.makeClass('Flyout', {
   owned: {
     search () {
-      return new eYo.Section.Search(this)
+      return new eYo.section.Search(this)
     },
     library () {
       return new eYo.Library(this)
     },
     draft () {
-      return new eYo.Section.Draft(this)
+      return new eYo.section.Draft(this)
     },
     toolbar: eYo.NA,
   },
@@ -292,7 +292,7 @@ eYo.c9r.Owned.makeSubclass(eYo, 'Flyout', {
     listeners: [],
     /**
      * List of bricks that should always be disabled.
-     * @type {!Array<!eYo.Brick>}
+     * @type {!Array<!eYo.brick>}
      * @private
      */
     permanentlyDisabled: [],
@@ -328,7 +328,7 @@ eYo.c9r.Owned.makeSubclass(eYo, 'Flyout', {
 /**
  * When the size of the receiver did change.
  */
-eYo.Flyout.prototype.SizeChanged = function() {
+eYo.Flyout.prototype.sizeChanged = function() {
   this.desk.board.layout()
   this.search_.layout()
   this.library_.layout()
@@ -394,7 +394,7 @@ eYo.Flyout.prototype.hide = function() {
  * More tagnames accepted.
  * @param {Array|string} model List of bricks to show.
  */
-eYo.Flyout.prototype.Show = function(model) {
+eYo.Flyout.prototype.show = function(model) {
   this.board_.setResizesEnabled(false)
   this.hide()
   eYo.events.disableWrap(() => {
@@ -480,11 +480,11 @@ eYo.Flyout.prototype.on_wheel = function(e) {
 
 /**
  * Create a copy of this brick on the board.
- * @param {eYo.Brick.Dflt} originalBrick The brick to copy from the flyout.
- * @return {eYo.Brick.Dflt} The newly created brick, or null if something
+ * @param {eYo.brick.Dflt} originalBrick The brick to copy from the flyout.
+ * @return {eYo.brick.Dflt} The newly created brick, or null if something
  *     went wrong with deserialization.
  */
-eYo.Flyout.prototype.CreateBrick = function(originalBrick) {
+eYo.Flyout.prototype.createBrick = function(originalBrick) {
   this.desk.board.setResizesEnabled(false)
   var newBrick
   eYo.events.disableWrap(() => {
@@ -525,7 +525,7 @@ eYo.Flyout.prototype.layout_ = function(contents) {
 /**
  * Scroll the flyout to the top.
  */
-eYo.Flyout.prototype.ScrollToStart = function() {
+eYo.Flyout.prototype.scrollToStart = function() {
   var board = this.board
   var metrics = board.metrics_
   metrics.drag.set()
@@ -623,8 +623,8 @@ console.error('IN PROGRESS')
  * Copy a brick from the flyout to the board and position it correctly.
  * Edython adds a full rendering process.
  * No rendering is made while bricks are dragging.
- * @param {eYo.Brick.Dflt} srcBrick The flyout brick to copy.
- * @return {!eYo.Brick.Dflt} The new brick in the main board.
+ * @param {eYo.brick.Dflt} srcBrick The flyout brick to copy.
+ * @return {!eYo.brick.Dflt} The new brick in the main board.
  * @private
  */
 eYo.Flyout.prototype.placeNewBrick_ = function(srcBrick) {
@@ -727,7 +727,7 @@ eYo.Flyout.prototype.doSlide = function(close) {
  * @param {Boolean} [close]  close corresponds to the final state.
  * When not given, toggle the closed state.
  */
-eYo.Flyout.prototype.Slide = function(close) {
+eYo.Flyout.prototype.slide = function(close) {
   this.doSlide(close)
 }
 
@@ -735,7 +735,7 @@ eYo.Flyout.prototype.Slide = function(close) {
  * Subclassers will add there stuff here.
  * @param {number} step betwwen 0 and 1.
  */
-eYo.Flyout.prototype.SlideOneStep = function(step) {
+eYo.Flyout.prototype.slideOneStep = function(step) {
 }
 
 /**

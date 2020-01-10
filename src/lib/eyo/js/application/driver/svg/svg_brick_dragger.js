@@ -18,7 +18,7 @@ eYo.forwardDeclare('brickDragger')
 /**
  * Svg driver for a brick dragger.
  */
-eYo.Svg.makeDriverClass('BrickDragger', {
+eYo.svg.makeDriverClass('BrickDragger', {
     /**
    * Initializes the draggerBrick SVG ressources.
    * @param {eYo.draggerBrick} draggerBrick
@@ -26,7 +26,7 @@ eYo.Svg.makeDriverClass('BrickDragger', {
   initUI (dragger) {
     var dom = dragger.dom
     var svg = dom.svg = Object.create(null)
-    svg.dragSurface = dragger.board.dom.svg.brickDragSurface
+    svg.dragSurface = dragger.board.dom.svg.BrickDragSurface
   },
   /**
    * Dispose of the given slot's rendering resources.
@@ -45,7 +45,7 @@ eYo.Svg.makeDriverClass('BrickDragger', {
  * Start dragging.
  * @param {eYo.draggerBrick} draggerBrick
  */
-eYo.svg.BrickDragger.prototype.Start = function (draggerBrick) {
+eYo.svg.BrickDragger.prototype.start = function (draggerBrick) {
   // Move the brick dragged to the drag surface
   // The translation for drag surface bricks,
   // is equal to the current relative-to-surface position,
@@ -94,7 +94,7 @@ eYo.svg.BrickDragger.prototype.Start = function (draggerBrick) {
  * End dragging.
  * @param {eYoBrickDragger} dragger
  */
-eYo.Svg.BrickDragger.prototype.end = function (dragger) {
+eYo.svg.BrickDragger.prototype.end = function (dragger) {
   this.brickEffectStop(dragger.brick)
   dragger.dragSurface.end(!dragger.wouldDelete_)
 }

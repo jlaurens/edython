@@ -49,7 +49,7 @@ goog.tagUnsealableClass(eYo.SubMenu)
  * @private
  * @suppress{accessControls}
  */
-eYo.subMenu.prototype.SetSubMenuVisible_ = function (visible) {
+eYo.subMenu.prototype.setSubMenuVisible_ = function (visible) {
   // Unhighlighting the menuitems if closing the menu so the event handlers can
   // determine the correct state.
   var subMenu = this.getMenu()

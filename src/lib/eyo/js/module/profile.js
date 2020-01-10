@@ -255,10 +255,10 @@ eYo.t3.profile.prototype.isUnset = False
 eYo.t3.profile.prototype.isVoid = False
 eYo.t3.profile.prototype.raw = eYo.NA
 eYo.t3.profile.prototype.expr = eYo.NA
-eYo.t3.profile.prototype.Stmt = eYo.NA
+eYo.t3.profile.prototype.stmt = eYo.NA
 eYo.t3.profile.prototype.name = eYo.NA
 eYo.t3.profile.prototype.module = eYo.NA
-eYo.t3.profile.prototype.Item = eYo.NA
+eYo.t3.profile.prototype.item = eYo.NA
 eYo.t3.profile.prototype.type = eYo.NA
 */
 
@@ -607,7 +607,7 @@ eYo.t3.profile.getReference = function (identifier) {
 eYo.t3.profile.getInModule = function (identifier) {
   var ans
   if ([
-    'turtle',
+    'Turtle',
     'math',
     'decimal',
     'fraction',

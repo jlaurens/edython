@@ -13,9 +13,11 @@
 
 eYo.require('svg')
 
-eYo.forwardDeclare('flyout')
+eYo.forwardDeclare('Flyout')
 
 /**
+ * @name {eYo.dom.Flyout}
+ * @constructor
  * Dom driver for the flyout.
  */
 eYo.dom.makeDriverClass('Flyout', {
@@ -67,7 +69,7 @@ eYo.dom.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
  * @return {string} Renderer-specific CSS class.
  * @override
  */
-eYo.dom.Flyout.prototype.CssClass = function() {
+eYo.dom.Flyout.prototype.cssClass = function() {
   return eYo.dom.FLYOUT_CSS_CLASS
 }
 

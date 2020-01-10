@@ -17,7 +17,7 @@ eYo.forwardDeclare('field')
 eYo.forwardDeclare('magnet')
 
 eYo.forwardDeclare('dnd')
-eYo.forwardDeclare('scaler')
+eYo.forwardDeclare('Scaler')
 
 eYo.forwardDeclare('dom')
 
@@ -140,7 +140,7 @@ eYo.c9r.Dflt.makeSubclass(eYo, 'Motion', {
      * The board the motion started on,
      * including the brick's board if it started on a brick,
      * or null if it did not start on a brick.
-     * @type {eYo.Board}
+     * @type {eYo.board}
      * @private
      */
     starter: eYo.NA,
@@ -220,7 +220,7 @@ eYo.c9r.Dflt.makeSubclass(eYo, 'Motion', {
     /**
      * The field that the motion started on,
      * or null if it did not start on a field.
-     * @type {eYo.Brick.Dflt}
+     * @type {eYo.brick.Dflt}
      * @private
      */
     field () {
@@ -230,7 +230,7 @@ eYo.c9r.Dflt.makeSubclass(eYo, 'Motion', {
      * The brick that the motion started on,
      * including the field's brick if it started on a field,
      * or null if it did not start on a brick.
-     * @type {eYo.Brick.Dflt}
+     * @type {eYo.brick.Dflt}
      * @private
      */
     brick () {
@@ -245,7 +245,7 @@ eYo.c9r.Dflt.makeSubclass(eYo, 'Motion', {
      * If the motion started in the flyout,
      * this is the root brick of the brick group
      * that was clicked or dragged.
-     * @type {eYo.Brick.Dflt}
+     * @type {eYo.brick.Dflt}
      * @private
      */
     targetBrick () {
@@ -256,7 +256,7 @@ eYo.c9r.Dflt.makeSubclass(eYo, 'Motion', {
      * The board the motion started on,
      * including the brick's board if it started on a brick,
      * or null if it did not start on a brick.
-     * @type {eYo.Board}
+     * @type {eYo.board}
      * @private
      */
     board () {
@@ -368,7 +368,7 @@ Object.defineProperties(eYo.Motion_p, {
  * If the return value is true, the caller should prevent default
  * event handling, it should not otherwise.
  * @param {Event} e - A mouse/pointer down or touch start dom event.
- * @param {eYo.Brick|eYo.Board} [starter] - The object that received the starting event, either a board or a brick.
+ * @param {eYo.brick|eYo.board} [starter] - The object that received the starting event, either a board or a brick.
  * @return {Object} Whether the start is successfull
  */
 eYo.Motion_p.captureStart = function(e, starter) {

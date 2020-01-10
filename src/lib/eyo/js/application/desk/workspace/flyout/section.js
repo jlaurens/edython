@@ -12,10 +12,10 @@
  */
 'use strict'
 
-eYo.require('c9r.owned')
+eYo.require('c9r.Owned')
 
 /**
- * @name {eYo.Section}
+ * @name {eYo.section}
  * @namespace
  */
 eYo.provide('section')
@@ -25,7 +25,7 @@ eYo.provide('section')
  * @param {eYo.Flyout} owner  The owning flyout.
  * @constructor
  */
-eYo.Section.makeClass('Dflt', eYo.c9r.Owned, {
+eYo.section.makeClass('Dflt', eYo.c9r.Owned, {
   computed: {
     /**
      * The owning flyout
@@ -45,7 +45,7 @@ eYo.Section.makeClass('Dflt', eYo.c9r.Owned, {
      */
     toolbar: eYo.NA,
     board () {
-      return new eYo.Board.Dflt(this)
+      return new eYo.board.Dflt(this)
     },
   },
 })

@@ -18,15 +18,15 @@ eYo.forwardDeclare('slot')
 /**
  * Svg driver for slots.
  */
-eYo.Svg.makeDriverClass('Slot', {
+eYo.svg.makeDriverClass('Slot', {
     /**
    * Prepare the given slot.
-   * @param {eYo.Slot.Dflt} slot to be prepared.
+   * @param {eYo.slot.Dflt} slot to be prepared.
    */
   initUI (slot) {
     var dom = this._initUI(slot)
     var svg = dom.svg = Object.create(null)
-    var g = svg.group_ = eYo.Svg.newElement('g', {
+    var g = svg.group_ = eYo.svg.newElement('g', {
       class: 'eyo-slot'
     }, null)
     g.dataset && (g.dataset.slot = slot.key)
@@ -40,7 +40,7 @@ eYo.Svg.makeDriverClass('Slot', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {eYo.Slot.Dflt} slot
+   * @param {eYo.slot.Dflt} slot
    */
   disposeMake (slot) {
     goog.dom.removeNode(slot.dom.svg.group_)
@@ -53,7 +53,7 @@ eYo.Svg.makeDriverClass('Slot', {
  * Whether the slot is displayed.
  * @param {Object} slot  the slot to query about
  */
-eYo.Svg.Slot.prototype.displayedGet = function (slot) {
+eYo.svg.Slot.prototype.displayedGet = function (slot) {
   var g = slot.dom.svg.group_
   return g.style.display !== 'none'
 }
@@ -63,7 +63,7 @@ eYo.Svg.Slot.prototype.displayedGet = function (slot) {
  * @param {Object} slot  the slot the driver acts on
  * @param {boolean} yorn
  */
-eYo.Svg.Slot.prototype.displayedSet = function (slot, yorn) {
+eYo.svg.Slot.prototype.displayedSet = function (slot, yorn) {
   var g = slot.dom.svg.group_
   if (yorn) {
     g.removeAttribute('display')
@@ -77,15 +77,15 @@ eYo.Svg.Slot.prototype.displayedSet = function (slot, yorn) {
  * @param {Object} slot  the slot the driver acts on
  * @param {boolean} yorn
  */
-eYo.Svg.Slot.prototype.displayedUpdate = function (slot) {
+eYo.svg.Slot.prototype.displayedUpdate = function (slot) {
   this.displayedSet(slot, slot.visible)
 }
 
 /**
  * Dispose of the given slot's rendering resources.
- * @param {eYo.Slot.Dflt} slot
+ * @param {eYo.slot.Dflt} slot
  */
-eYo.Svg.Slot.prototype.display = function (slot) {
+eYo.svg.Slot.prototype.display = function (slot) {
   var g = slot.dom && slot.dom.svg.group_
   eYo.Assert(g, 'Slot with no root', slot.brick.type, slot.key)
   if (slot.incog) {

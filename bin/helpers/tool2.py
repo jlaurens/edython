@@ -75,6 +75,7 @@ class DDB:
     deps = []
     by_file_name = {}
     by_provide = {}
+    missing = []
 
     def __init__(self, *args):
         for path in args:
@@ -112,7 +113,7 @@ class DDB:
         """
         if provide in self.by_provide:
             return self.by_provide[provide]
-        raise Exception('No provider for', provide)
+        self.missing.append(provide)
 
     def __getitem__(self, i):
         return self.getDep(i)
@@ -163,7 +164,7 @@ Required:
         print(*sorted([x for x in todo_required if x.startswith('eYo')]), sep = '\n')
     # todo_required contains a list of all the required keys.
     done = set()
-    assert 'eYo.flyout' in todo_required, 'FAILURE (todo_required)'
+    assert 'eYo.Flyout' in todo_required, 'FAILURE (todo_required)'
     #
     while len(todo_required):
         # get an element from todo_required and move it to done
@@ -171,13 +172,17 @@ Required:
         done.add(r)
         # get the dep record
         dep = ddb[r]
+        if dep is None: continue
         # mark it as done
         dep.done = True
         # for each requirement, which is not already done, add it to the todo_required list
         for r in dep.required:
             dep = ddb[r]
-            if not dep.done:
+            if dep is not None and not dep.done:
                 todo_required.add(r)
+    if len(ddb.missing):
+      print(*ddb.missing, sep='\n')
+      raise Exception('Missing providers')
     if global_args.verbose:
         print("""
 Cascaded required:

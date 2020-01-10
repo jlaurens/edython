@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('workspaceControl')
+eYo.require('WorkspaceControl')
 
 /**
  * Class for a trash can.
@@ -20,7 +20,7 @@ eYo.require('workspaceControl')
  */
 eYo.WorkspaceControl.makeSubclass('TrashCan')
 
-Object.defineProperties(eYo.TrashCan.prototype, {
+Object.defineProperties(eYo.TrashCan_p, {
   isOpen: {
     get () {
       return this.ui_driver.openGet(this)
@@ -28,7 +28,7 @@ Object.defineProperties(eYo.TrashCan.prototype, {
   },
 })
 
-Object.defineProperties(eYo.TrashCan.prototype, {
+Object.defineProperties(eYo.TrashCan_p, {
   /**
    * Height of the trash can image (minus lid).
    * @type {number}
@@ -61,19 +61,19 @@ Object.defineProperties(eYo.TrashCan.prototype, {
   SPRITE_TOP_: {value: 32, writable: true},
 })
 
-Object.defineProperties(eYo.TrashCan.prototype, {
+Object.defineProperties(eYo.TrashCan_p, {
     /**
    * Height of the trash can image.
    * @type {number}
    * @private
    */
-  HEIGHT_: {value: eYo.TrashCan.prototype.BODY_HEIGHT_ + eYo.trashCan.prototype.LID_HEIGHT_},
+  HEIGHT_: {value: eYo.TrashCan_p.BODY_HEIGHT_ + eYo.TrashCan_p.LID_HEIGHT_},
 })
 
 /**
  * Move the trash can to the bottom-right corner.
  */
-eYo.TrashCan.prototype.place = function(bottom) {
+eYo.TrashCan_p.place = function(bottom) {
   eYo.TrashCan.SuperProto_.place.Call(this, bottom)
   this.ui_driver.place(this)
 }
@@ -82,7 +82,7 @@ console.error('NYI: what does the inherited place do?')
  * Return the deletion rectangle for this trash can.
  * @return {eYo.Rect} Rectangle in which to delete.
  */
-eYo.TrashCan.prototype.getClientRect = function() {
+eYo.TrashCan_p.getClientRect = function() {
   return this.ui_driver.clientRect(this)
 }
 
@@ -90,6 +90,6 @@ eYo.TrashCan.prototype.getClientRect = function() {
  * Flip the lid shut.
  * Called externally after a drag.
  */
-eYo.TrashCan.prototype.Close = function() {
+eYo.TrashCan_p.Close = function() {
   this.ui_driver.openSet(this, false)
 }

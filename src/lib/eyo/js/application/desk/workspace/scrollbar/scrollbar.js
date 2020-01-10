@@ -22,7 +22,7 @@ goog.forwardDeclare('goog.events')
  * Class for a pure SVG scrollbar.
  * This technique offers a scrollbar that is guaranteed to work, but may not
  * look or behave like the system's scrollbars.
- * @param {eYo.Board|eYo.Scroller} bs Board to bind the scrollbar to, or scroller. Owner of the receiver.
+ * @param {eYo.board|eYo.Scroller} bs Board to bind the scrollbar to, or scroller. Owner of the receiver.
  * @param {boolean} horizontal True if horizontal, false if vertical.
  * @param {string=} opt_class A class to be applied to this scrollbar.
  * @constructor
@@ -143,7 +143,7 @@ eYo.c9r.makeClass(eYo, 'Scrollbar', {
   },
   computed: {
     /**
-     * @type{eYo.Board} The scrolled board...
+     * @type{eYo.board} The scrolled board...
      * @readonly
      */
     board() {
@@ -307,7 +307,7 @@ eYo.Scrollbar.prototype.updateDisplay_ = function() {
  * Forwards to the driver.
  * @private
  */
-eYo.Scrollbar.prototype.CleanUp_ = function() {
+eYo.Scrollbar.prototype.cleanUp_ = function() {
   this.ui_driver_mngr.scrollbarCleanUp(this)
 }
 

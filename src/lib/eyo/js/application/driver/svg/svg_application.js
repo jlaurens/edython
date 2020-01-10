@@ -18,4 +18,4 @@ eYo.forwardDeclare('app')
 /**
  * Svg driver for application.
  */
-eYo.Svg.makeDriverClass('App')
+eYo.svg.makeDriverClass('App')

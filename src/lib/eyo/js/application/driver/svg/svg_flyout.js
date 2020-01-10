@@ -13,13 +13,13 @@
 
 eYo.require('svg')
 
-eYo.forwardDeclare('flyout')
+eYo.forwardDeclare('Flyout')
 eYo.forwardDeclare('flyoutToolbar')
 
 /**
  * Svg driver for the flyout
  */
-eYo.Svg.makeDriverClass('Flyout', {
+eYo.svg.makeDriverClass('Flyout', {
   /**
    * Initializes the flyout SVG ressources.
    * @param {eYo.Flyout} flyout
@@ -35,14 +35,14 @@ eYo.Svg.makeDriverClass('Flyout', {
       <g class="eyo-board">...</g>
     </svg>
     */
-    var root = svg.root_ = eYo.Svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
+    var root = svg.root_ = eYo.svg.newElementSvg(dom.boardDiv_, 'eyo-svg eyo-board')
     x.dataset && (x.dataset.type = 'flyout board')
 
-    var background = svg.background_ = eYo.Svg.newElement('path', {
+    var background = svg.background_ = eYo.svg.newElement('path', {
       class: 'eyo-flyout-background'
     }, root)
   // Bad design: code reuse: options
-    this.addTooltip(background, eYo.tooltip.getTitle('flyout'), {
+    this.addTooltip(background, eYo.tooltip.getTitle('Flyout'), {
       position: 'right',
       theme: 'light bordered',
       flipDuration: 0,
@@ -80,7 +80,7 @@ eYo.Svg.makeDriverClass('Flyout', {
  * @param {eYo.Flyout} flyout
  * @param {Boolean} show
  */
-eYo.Svg.Flyout.prototype.displaySet = function (flyout, show) {
+eYo.svg.Flyout.prototype.displaySet = function (flyout, show) {
   !show && eYo.tooltip.hideAll(flyout.dom.svg.root_)
   flyout.dom.svg.root_.style.display = show ? 'block' : 'none'
 }
@@ -89,14 +89,14 @@ eYo.Svg.Flyout.prototype.displaySet = function (flyout, show) {
  * Get the display attribute.
  * @param {eYo.Flyout} flyout
  */
-eYo.Svg.Flyout.prototype.displayGet = function (flyout) {
+eYo.svg.Flyout.prototype.displayGet = function (flyout) {
   return flyout.dom.svg.root_.style.display !== 'none'
 }
 
 /**
  * Svg driver for the flyout toolbar.
  */
-eYo.Svg.makeDriverClass('FlyoutToolbar', {
+eYo.svg.makeDriverClass('FlyoutToolbar', {
   /**
    * Initializes the flyout toolbar SVG ressources.
    * @param {eYo.FlyoutToolbar} flyoutToolbar
@@ -130,8 +130,8 @@ eYo.Svg.makeDriverClass('FlyoutToolbar', {
       goog.dom.TagName.DIV,
       goog.getCssName(cssClass, 'control')
     )
-    svg.root_ = eYo.Svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
-    svg.pathControl_ = eYo.Svg.newElement('path', {
+    svg.root_ = eYo.svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
+    svg.pathControl_ = eYo.svg.newElement('path', {
       id: 'p-flyout-control'
     }, dom.svg)
     if (eYo.app.Dflt && ftb.app.flyoutDropDown) {
@@ -269,7 +269,7 @@ eYo.Svg.makeDriverClass('FlyoutToolbar', {
  * Update the view based on coordinates calculated in position().
  * @param {eYo.Flyout} flyout
  */
-eYo.Svg.Flyout.prototype.place = function (flyout) {
+eYo.svg.Flyout.prototype.place = function (flyout) {
   var rect = flyout.viewRect
   var div = flyout.dom.div_
   div.style.width = `${rect.width}px`
@@ -301,7 +301,7 @@ eYo.Svg.Flyout.prototype.place = function (flyout) {
  * @param {eYo.Flyout} flyout
  * @private
  */
-eYo.Svg.Flyout.prototype.update = function(flyout) {
+eYo.svg.Flyout.prototype.update = function(flyout) {
   var width = flyout.width
   var height = flyout.height
   var top_margin = eYo.Flyout.TOP_MARGIN
@@ -324,7 +324,7 @@ eYo.Svg.Flyout.prototype.update = function(flyout) {
  * The 'rect' listeners have been removed.
  * @param {eYo.Flyout} flyout
  */
-eYo.Svg.Flyout.prototype.removeAllBrickListeners = function(flyout) {
+eYo.svg.Flyout.prototype.removeAllBrickListeners = function(flyout) {
   // Delete all the event listeners.
   flyout.listeners_.forEach(l => eYo.dom.unbindEvent(l))
   flyout.listeners_.length = 0
@@ -335,9 +335,9 @@ eYo.Svg.Flyout.prototype.removeAllBrickListeners = function(flyout) {
  * Listeners work only when the flyout authorizes it.
  * The 'rect' listeners have been removed.
  * @param {eYo.Flyout} flyout
- * @param {eYo.Brick.Dflt} brick The block to add listeners for.
+ * @param {eYo.brick.Dflt} brick The block to add listeners for.
  */
-eYo.Svg.Flyout.prototype.AddListeners = function(flyout, brick) {
+eYo.svg.Flyout.prototype.addListeners = function(flyout, brick) {
   var g = brick.dom.svg.group_
   flyout.listeners_.push(eYo.dom.BindEvent(
     g,
@@ -369,7 +369,7 @@ eYo.Svg.Flyout.prototype.AddListeners = function(flyout, brick) {
  * Add a `mouseover` listener to deselect all bricks.
  * @param {eYo.Flyout} flyout
  */
-eYo.Svg.Flyout.prototype.listen_mouseover = function(flyout) {
+eYo.svg.Flyout.prototype.listen_mouseover = function(flyout) {
   flyout.listeners_.push(
     eYo.dom.BindEvent(
     flyout.dom.svg.background_,
@@ -385,7 +385,7 @@ eYo.Svg.Flyout.prototype.listen_mouseover = function(flyout) {
  * Add a `wheel` and `mousdown` listener to scroll.
  * @param {eYo.Flyout} flyout
  */
-eYo.Svg.Flyout.prototype.BindScrollEvents = function(flyout) {
+eYo.svg.Flyout.prototype.bindScrollEvents = function(flyout) {
   var bound = flyout.dom.bound
   if (bound.drag_wheel) {
     return
@@ -411,6 +411,6 @@ eYo.Svg.Flyout.prototype.BindScrollEvents = function(flyout) {
  * @param {Event} e Mouse down event.
  * @private
  */
-eYo.Svg.Flyout.prototype.on_mousedown = function(e) {
+eYo.svg.Flyout.prototype.on_mousedown = function(e) {
   this.app.motion.handleFlyoutStart(e, this)
 }

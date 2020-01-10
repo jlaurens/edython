@@ -174,7 +174,7 @@ eYo.keyHandler = (() => {
               }
             })
           }
-          if (doFirst(newB, eYo.Magnet.IN)) {
+          if (doFirst(newB, eYo.magnet.IN)) {
             return true
           } else if ((m4t === eyo.foot_m) && (m4t = newB.foot_m) && !m4t.hidden_) {
             m4t.focusOn()
@@ -506,7 +506,7 @@ eYo.keyHandler = (() => {
       // B is not always a brick!
       F = f => {
         eYo.dom.gobbleEvent(e)
-        var brick = eYo.Brick.getBestBrick(eYo.app.Board, f)
+        var brick = eYo.brick.getBestBrick(eYo.app.Board, f)
         if (brick) {
           brick.focusOn().scrollToVisible()
         }
@@ -816,7 +816,7 @@ for (let [K, V] of Object.entries({
   },
   'list(…)': {
     type: eYo.t3.Expr.Call_expr,
-    name_p: 'list'
+    name_p: 'List'
   },
   'set(…)': {
     type: eYo.t3.Expr.Call_expr,

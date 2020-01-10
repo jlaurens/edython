@@ -44,7 +44,7 @@ eYo.forwardDeclare('brick')
  * The state is always in a consistent state.
  * However, the span state may not be consistent with the brick state.
  * For edython.
- * @param {eYo.Brick.Dflt} brick The brick owning the span.
+ * @param {eYo.brick.Dflt} brick The brick owning the span.
  * @constructor
  */
 eYo.makeClass('Span', eYo.c9r.Owned, {
@@ -63,7 +63,7 @@ eYo.makeClass('Span', eYo.c9r.Owned, {
   computed: {
     /**
      * @readonly
-     * @property {eYo.Brick.Dflt} brick - The owning brick
+     * @property {eYo.brick.Dflt} brick - The owning brick
      */
     brick () {
       return this.owner_

@@ -22,7 +22,7 @@ goog.forwardDeclare('goog.events')
 
 /**
  * Class for a pair of scrollbars.  Horizontal and vertical.
- * @param {eYo.Board} board Board to bind the scrollbars to.
+ * @param {eYo.board} board Board to bind the scrollbars to.
  * @constructor
  */
 eYo.Scroller = function(board) {
@@ -45,7 +45,7 @@ goog.inherits(eYo.Scroller, eYo.c9r.Dflt)
 
 Object.defineProperties(eYo.Scroller.prototype, {
   /**
-   * @type{eYo.Board} The scrolled board...
+   * @type{eYo.board} The scrolled board...
    * @readonly
    */
   board: {

@@ -13,15 +13,11 @@
 
 eYo.require('dom')
 
+eYo.forwardDeclare('dnd.Mngr')
+
 /**
  * @name {eYo.dom.Dnd}
+ * @constructor
  * Faceless driver for the zoomer.
  */
-eYo.provide('dom.dnd')
-
-eYo.forwardDeclare('dnd.mngr')
-
-/**
- * Faceless driver for the zoomer.
- */
-eYo.dom.makeDriverClass('Dnd')
+eYo.dom.makeDriverClass('DnD')

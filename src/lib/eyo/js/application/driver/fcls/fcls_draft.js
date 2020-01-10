@@ -13,9 +13,7 @@
 
 eYo.require('fcls')
 
-eYo.provide('fcls.draft')
-
-eYo.forwardDeclare('draft')
+eYo.forwardDeclare('Draft')
 
 /**
  * Shared application driver.

@@ -11,8 +11,8 @@
  */
 'use strict'
 
-eYo.require('expr.list')
-eYo.require('expr.primary')
+eYo.require('expr.List')
+eYo.require('expr.Primary')
 
 eYo.require('magnet')
 goog.require('goog.dom');
@@ -38,8 +38,8 @@ eYo.provide('brick.parameter')
 // eYo.consolidator.Parameter = function() {
 //   eYo.consolidator.Parameter.SuperProto_.constructor.Call(this, eYo.consolidator.Parameter.data)
 // }
-// goog.require(eYo.consolidator.list)
-// goog.inherits(eYo.consolidator.Parameter, eYo.consolidator.list)
+// goog.require(eYo.consolidator.List)
+// goog.inherits(eYo.consolidator.Parameter, eYo.consolidator.List)
 
 // eYo.consolidator.Parameter.data = {
 //   check: eYo.t3.Expr.Check.primary,
@@ -47,7 +47,7 @@ eYo.provide('brick.parameter')
 //   presep: ',',
 // }
 
-eYo.consolidator.list.makeSubclass('Parameter', {
+eYo.consolidator.List.makeSubclass('Parameter', {
   list: {
     check: null,
     mandatory: 0,
@@ -61,7 +61,7 @@ eYo.consolidator.list.makeSubclass('Parameter', {
  * @return yes exactly if there are more input
  * @override
  */
-eYo.consolidator.Parameter.prototype.Consolidate_connected = function (io) {
+eYo.consolidator.Parameter.prototype.consolidate_connected = function (io) {
   if (io.i + 1 === io.list.length) {
     var check = io.m4t.target.check_
     if (!check || goog.array.contains(check, eYo.t3.Expr.Parameter_star_star)) {
@@ -75,7 +75,7 @@ eYo.consolidator.Parameter.prototype.Consolidate_connected = function (io) {
 /**
  * Prepare io, just before walking through the input list for example.
  * Subclassers may add their own stuff to io.
- * @param {eYo.Brick.Dflt} brick owner of the receiver
+ * @param {eYo.brick.Dflt} brick owner of the receiver
  */
 eYo.consolidator.Parameter.prototype.getIO = function (brick) {
   var io = eYo.consolidator.Parameter.SuperProto_.getIO.Call(this, brick)
@@ -297,10 +297,10 @@ eYo.consolidator.Parameter.prototype.getCheck = (() => {
 /**
  * Class for a Delegate, parameter_list brick.
  * This brick may be wrapped.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.list.makeSubclass('parameter_list', {
+eYo.expr.List.makeSubclass('Parameter_list', {
   list: {
     consolidator: eYo.consolidator.Parameter
   }
@@ -315,7 +315,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
   var F = (modifier, flags, msg) => {
     var b3k
     eYo.events.disableWrap(() => {
-      b3k = eYo.Brick.newReady(this, eYo.t3.Expr.identifier)
+      b3k = eYo.brick.newReady(this, eYo.t3.Expr.identifier)
       b3k.change.wrap(() => {
         b3k.Modifier_p = modifier
         b3k.Variant_p = flags
@@ -333,7 +333,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
           mngr.addInsertChild(mngr.newMenuItem(
             content,
             () => {
-              var b3k = eYo.Brick.newReady(this, eYo.t3.Expr.identifier)
+              var b3k = eYo.brick.newReady(this, eYo.t3.Expr.identifier)
               eYo.events.groupWrap(() => {
                 b3k.change.wrap(() => {
                   b3k.Modifier_p = modifier
@@ -369,10 +369,10 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
  * expression. Whenever one of the connections connects or disconnects,
  * the checking policy changes accordingly. See the `updateLambdaCheck`
  * method of the connection's delegate.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeSubclass('lambda', {
+eYo.expr.Dflt.makeSubclass('Lambda', {
   slots: {
     parameters: {
       order: 1,
@@ -426,8 +426,8 @@ eYo.expr.Dflt.makeSubclass('lambda', {
  * The output check may change depending on the content.
  * For edython.
  */
-eYo.Magnet.Dflt_p.consolidateType = function () {
-  eYo.Magnet.SuperProto_.consolidateType.Call(this)
+eYo.magnet.Dflt_p.consolidateType = function () {
+  eYo.magnet.SuperProto_.consolidateType.Call(this)
   var brick = this.brick
   var m4tOut = brick.out_m
   var slot = brick.getSlot(eYo.key.EXPRESSION)
@@ -465,7 +465,7 @@ eYo.Magnet.Dflt_p.consolidateType = function () {
     (cond_in ? [eYo.t3.Expr.lambda_expr] : []).concat(nocond_in ? [eYo.t3.Expr.lambda_expr_nocond] : [])
 }
 
-eYo.Brick.lambda.T3s = [
+eYo.brick.lambda.T3s = [
   eYo.t3.Expr.identifier,
   eYo.t3.Expr.Parameter_list,
   eYo.t3.Expr.lambda

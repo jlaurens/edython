@@ -68,7 +68,7 @@ eYo.MenuButtonRenderer.prototype.getCssClass = function() {
  * @return {!Element} Root element for the button.
  * @override
  */
-eYo.MenuButtonRenderer.prototype.CreateDom = function(control) {
+eYo.MenuButtonRenderer.prototype.createDom = function(control) {
   var button = /** @type {goog.ui.Button} */ (control);
   var classNames = this.getClassNames(button);
   var buttonElement = button.getDomHelper().createDom(
@@ -101,16 +101,16 @@ eYo.MenuButtonRenderer.prototype.CreateDom = function(control) {
  * @return {Element} Pseudo-rounded-corner box containing the content.
  * @override
  */
-eYo.MenuButtonRenderer.prototype.CreateButton = function(content, dom) {
+eYo.MenuButtonRenderer.prototype.createButton = function(content, dom) {
   var cssClass = this.getCssClass()
   var dropdown = dom.createDom(
     goog.dom.TagName.DIV,
     goog.getCssName(cssClass, 'dropdown'))
-  var svg = eYo.Svg.newElementSvg(dropdown)
+  var svg = eYo.svg.newElementSvg(dropdown)
   var h = eYo.font.lineHeight / 9 * 4
   svg.style.width = h
   svg.style.height = h * 0.866
-  var path = eYo.Svg.newElement('path', {
+  var path = eYo.svg.newElement('path', {
     class: goog.getCssName(cssClass, 'dropdown-image')
   } , svg)
   path.setAttribute('d', 'M 0,0 l '+h+',0 l -'+ (h/2) +','+(h*0.866)+' z')

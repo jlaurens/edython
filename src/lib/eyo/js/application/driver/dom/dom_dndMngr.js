@@ -13,15 +13,11 @@
 
 eYo.require('fcls')
 
+eYo.forwardDeclare('dnd.Mngr')
+
 /**
  * @name {eYo.fcls.Dnd}
+ * @constructor
  * Faceless driver for the zoomer.
  */
-eYo.provide('fcls.dnd')
-
-eYo.forwardDeclare('dnd.mngr')
-
-/**
- * Faceless driver for the zoomer.
- */
-eYo.fcls.makeDriverClass('Dnd')
+eYo.fcls.makeDriverClass('DnD')

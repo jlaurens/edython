@@ -2,7 +2,7 @@ NS = Object.create(null)
 
 describe('Owned', function () {
   it ('Owned: Basic', function () {
-    chai.assert(eYo.c9r.Owned && eYo.c9r.owned.eyo)
+    chai.assert(eYo.c9r.Owned && eYo.c9r.Owned.eyo)
   })
   it ('Owned: new', function () {
     var ONR = function () {}
@@ -87,10 +87,10 @@ describe('Owned', function () {
 
 describe ('Tests: BSMOwned', function () {
   var wrapper = f => 
-  NS.Brick = eYo.Brick
-  NS.Slot = eYo.Slot.Dflt
-  NS.Magnet = eYo.Magnet
-  eYo.Brick = eYo.Slot.Dflt = eYo.Magnet = eYo.NA
+  NS.Brick = eYo.brick
+  NS.Slot = eYo.slot.Dflt
+  NS.Magnet = eYo.magnet
+  eYo.brick = eYo.slot.Dflt = eYo.magnet = eYo.NA
   var ff = k => {
     eYo.makeClass(k, {
       owned: ['foo']
@@ -98,26 +98,26 @@ describe ('Tests: BSMOwned', function () {
     ff('brick')
     ff('magnet')
     ff('slot')
-    chai.assert(eYo.Brick)
-    chai.assert(eYo.Magnet)
-    chai.assert(eYo.Slot.Dflt)
-    chai.assert(eYo.Brick !== NS.Brick)
-    chai.assert(eYo.Slot.Dflt !== NS.Slot)
-    chai.assert(eYo.Magnet !== NS.Magnet)
+    chai.assert(eYo.brick)
+    chai.assert(eYo.magnet)
+    chai.assert(eYo.slot.Dflt)
+    chai.assert(eYo.brick !== NS.Brick)
+    chai.assert(eYo.slot.Dflt !== NS.Slot)
+    chai.assert(eYo.magnet !== NS.Magnet)
     f()
-    eYo.Brick = NS.Brick
-    eYo.Slot.Dflt = NS.Slot
-    eYo.Magnet = NS.Magnet
-    chai.assert(eYo.Brick === NS.Brick)
-    chai.assert(eYo.Slot.Dflt === NS.Slot)
-    chai.assert(eYo.Magnet === NS.Magnet)
+    eYo.brick = NS.Brick
+    eYo.slot.Dflt = NS.Slot
+    eYo.magnet = NS.Magnet
+    chai.assert(eYo.brick === NS.Brick)
+    chai.assert(eYo.slot.Dflt === NS.Slot)
+    chai.assert(eYo.magnet === NS.Magnet)
   }
   it ('BSMOwned: basic', function () {
     chai.assert(eYo.c9r.Dflt)
   })
   it ('BSMOwned: NYI', function () {
     wrapper(() => {
-      var onr = new eYo.Brick.Dflt()
+      var onr = new eYo.brick.Dflt()
       chai.assert(onr)
       var ond = new eYo.c9r.BSMOwned(onr)
       chai.assert(ond)

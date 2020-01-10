@@ -17,7 +17,7 @@
 'use strict'
 
 eYo.require('decorate')
-eYo.require('c9r.owned')
+eYo.require('c9r.Owned')
 
 eYo.require('do')
 eYo.require('board')
@@ -46,7 +46,7 @@ eYo.Focus.makeClass('Main', eYo.c9r.Owned, {
   computed: {
     /**
      * The board that has current focus, if any
-     * @type {eYo.Board}
+     * @type {eYo.board}
      */
     board: {
       get () {
@@ -62,7 +62,7 @@ eYo.Focus.makeClass('Main', eYo.c9r.Owned, {
     },
     /**
      * The brick that has current focus, if any
-     * @type {?eYo.Brick.Dflt}
+     * @type {?eYo.brick.Dflt}
      */
     brick: {
       get () {
@@ -92,7 +92,7 @@ eYo.Focus.makeClass('Main', eYo.c9r.Owned, {
     },
     /**
      * The magnet that has current focus, if any
-     * @type {!eYo.Magnet.Dflt}
+     * @type {!eYo.magnet.Dflt}
      */
     magnet: {
       get () {
@@ -137,7 +137,7 @@ eYo.Focus.Main_p.mngrWillDispose = function (mngr) {
 }
 /**
  * Create a standard focus manager, managed by a main focus manager.
- * @param {eYo.Board} board -  the owner of the focus object.
+ * @param {eYo.board} board -  the owner of the focus object.
  * @param {eYo.Focus.Main} main -  The main focus manager.
  * @constructor
  */
@@ -148,7 +148,7 @@ eYo.Focus.makeClass('Mngr', eYo.c9r.Owned, {
   computed: {
     /**
      * The owning board.
-     * @type {eYo.Board.Dflt}
+     * @type {eYo.board.Dflt}
      */
     board () {
       return this.owner__
@@ -160,7 +160,7 @@ eYo.Focus.makeClass('Mngr', eYo.c9r.Owned, {
   valued: {
     /**
      * Focus only on wrappers.
-     * @type{eYo.Brick.Dflt}
+     * @type{eYo.brick.Dflt}
      */
     brick: {
       validate (after) {
@@ -194,7 +194,7 @@ eYo.Focus.makeClass('Mngr', eYo.c9r.Owned, {
     },
     /**
      * Takes care of consistency between the magnet and the brick.
-     * @type{eYo.Magnet.Dflt}
+     * @type{eYo.magnet.Dflt}
      */
     magnet: {
       willChange() {
@@ -314,7 +314,7 @@ eYo.c9r.Owned.eyo.modelDeclare({
 })
 
 
-eYo.Brick.Dflt.eyo.modelDeclare({
+eYo.brick.Dflt.eyo.modelDeclare({
   computed: {
     focus_mngr () {
       return this.board.focus_mngr
@@ -330,7 +330,7 @@ eYo.Brick.Dflt.eyo.modelDeclare({
   }
 })
 
-eYo.Magnet.Dflt.eyo.modelDeclare({
+eYo.magnet.Dflt.eyo.modelDeclare({
   computed: {
     focus_mngr () {
       return this.board.focus_mngr
@@ -366,7 +366,7 @@ eYo.Field.Dflt.eyo.modelDeclare({
  * Focus on this board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Board.Dflt_p.focusOn = function () {
+eYo.board.Dflt_p.focusOn = function () {
   return !!(this.focus_main.board = this)
 }
 
@@ -378,7 +378,7 @@ eYo.Board.Dflt_p.focusOn = function () {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Brick.Dflt_p.focusOn = function (noBoard) {
+eYo.brick.Dflt_p.focusOn = function (noBoard) {
   noBoard || this.board.focusOn()
   return !!(this.focus_mngr.brick = this)
 }
@@ -403,7 +403,7 @@ eYo.Field.Dflt_p.focusOn = function (noBoard) {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Magnet.Dflt_p.focusOn = function (noBoard) {
+eYo.magnet.Dflt_p.focusOn = function (noBoard) {
   noBoard || this.board.focusOn()
   return !!(this.focus_mngr.magnet = this)
 }
@@ -411,7 +411,7 @@ eYo.Magnet.Dflt_p.focusOn = function (noBoard) {
 /**
  * Focus off this board.
  */
-eYo.Board.Dflt_p.focusOff = function () {
+eYo.board.Dflt_p.focusOff = function () {
   this.focus_main.board = eYo.NA
 }
 
@@ -420,7 +420,7 @@ eYo.Board.Dflt_p.focusOff = function () {
  * If there is a selected connection, it is removed.
  * `focusOff` is used from click handling methods.
  */
-eYo.Brick.Dflt_p.focusOff = function () {
+eYo.brick.Dflt_p.focusOff = function () {
   this.hasFocus && (this.focus_mngr.brick = eYo.NA)
 }
 
@@ -430,7 +430,7 @@ eYo.Brick.Dflt_p.focusOff = function () {
  * `focusOff` is used from click handling methods.
  * Does nothing if the receiver is not selected.
  */
-eYo.Magnet.Dflt_p.focusOff = function () {
+eYo.magnet.Dflt_p.focusOff = function () {
   this.hasFocus && (this.focus_mngr.magnet = eYo.NA)
 }
 

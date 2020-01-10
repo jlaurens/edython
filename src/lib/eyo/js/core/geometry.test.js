@@ -4,7 +4,7 @@ describe ('geometry', function () {
     chai.assert(eYo.Size)
     chai.assert(eYo.Rect)
   })
-  describe('where', function () {
+  describe('Where', function () {
     it ('new eYo.Where', function () {
       var w1 = new eYo.Where()
       console.error(w1.toString)

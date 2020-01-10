@@ -15,12 +15,12 @@ eYo.require('brick')
 
 eYo.require('msg')
 
-eYo.require('expr.list')
+eYo.require('expr.List')
 
-eYo.require('expr.primary')
+eYo.require('expr.Primary')
 eYo.require('tooltip')
 
-eYo.require('library')
+eYo.require('Library')
 eYo.require('Module.functions')
 
 eYo.provide('brick.functions')

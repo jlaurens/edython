@@ -18,23 +18,23 @@ eYo.forwardDeclare('msg')
 eYo.forwardDeclare('brick.operator')
 
 /**
- * @name {eYo.Stmt}
+ * @name {eYo.stmt}
  * @namespace
  */
-eYo.Brick.makeNS(eYo, 'stmt')
+eYo.brick.makeNS(eYo, 'stmt')
 
 /**
- * @name {eYo.Stmt.Dlgt}
+ * @name {eYo.stmt.Dlgt}
  * @constructor
  */
-eYo.Stmt.makeDlgt()
+eYo.stmt.makeDlgt()
 
 /**
  * Class for a Delegate, statement brick.
- * Not normally called directly, eYo.Brick.Create(...) is preferred.
+ * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.Stmt.makeDflt({
+eYo.stmt.makeDflt({
   left /** @suppress {globalThis} */ (type) {
     return this.brick.head || this.brick.foot
     ? [eYo.t3.Stmt.Comment_stmt]
@@ -72,7 +72,7 @@ eYo.Stmt.makeDflt({
   }
 })
 
-eYo.Brick.registerAll(eYo.t3.Stmt, eYo.stmt.Dflt, true)
+eYo.brick.registerAll(eYo.t3.Stmt, eYo.stmt.Dflt, true)
 
 /**
  * Insert a brick above.
@@ -83,13 +83,13 @@ eYo.Brick.registerAll(eYo.t3.Stmt, eYo.stmt.Dflt, true)
  * @param {Object} model
  * @return the created brick
  */
-eYo.Stmt._p.insertParentWithModel = function (model) {
+eYo.stmt._p.insertParentWithModel = function (model) {
   var magnet = this.head_m
   if (magnet) {
     var parent
     eYo.events.disableWrap(
       () => {
-        parent = eYo.Brick.newReady(this, model)
+        parent = eYo.brick.newReady(this, model)
       },
       () => {
         if (parent) {
@@ -133,9 +133,9 @@ eYo.Stmt._p.insertParentWithModel = function (model) {
  * @param {string} belowPrototypeName
  * @return the created brick
  */
-eYo.Stmt._p.insertBrickAfter = function (belowPrototypeName) {
+eYo.stmt._p.insertBrickAfter = function (belowPrototypeName) {
   return eYo.events.groupWrap(() => {
-    var below = eYo.Brick.newReady(this, belowPrototypeName)
+    var below = eYo.brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m
     var targetMagnet = magnet.target
     var magnets = below.magnets

@@ -1140,7 +1140,7 @@ eYo.provide('Module.stdtypes', new eYo.module.Dflt('stdtypes', 'https://docs.pyt
         category: 14
       }),
       new Item({
-        name: 'list',
+        name: 'List',
         class: '',
         category: 3,
         type_: 2,
@@ -1730,7 +1730,7 @@ eYo.provide('Module.stdtypes', new eYo.module.Dflt('stdtypes', 'https://docs.pyt
       }),
       new Item({
         name: 'sort',
-        class: 'list',
+        class: 'List',
         category: 3,
         type_: 0,
         href: '#list.sort',
@@ -2272,7 +2272,7 @@ eYo.provide('Module.stdtypes', new eYo.module.Dflt('stdtypes', 'https://docs.pyt
       'join': 80,
       'keys': 81,
       'len(dictview)': 82,
-      'list': 83,
+      'List': 83,
       'ljust': 85,
       'lower': 87,
       'lstrip': 89,

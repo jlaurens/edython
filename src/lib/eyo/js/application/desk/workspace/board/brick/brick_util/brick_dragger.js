@@ -12,7 +12,7 @@
 'use strict'
 
 
-eYo.require('c9r.change')
+eYo.require('c9r.Change')
 eYo.provide('brickDragger')
 
 eYo.forwardDeclare('dom')
@@ -23,7 +23,7 @@ eYo.forwardDeclare('events.brickMove')
 /**
  * Class for a brick dragger.  It moves bricks around the board when they
  * are being dragged by a mouse or touch.
- * @param {eYo.Board} destination The board to drag on.
+ * @param {eYo.board} destination The board to drag on.
  * @constructor
  */
 eYo.BrickDragger = function(destination) {
@@ -38,7 +38,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
    */
   dragSurface: {
     get () {
-      return this.destination_.dom.svg.brickDragSurface
+      return this.destination_.dom.svg.BrickDragSurface
     }
   },
   brick_: {
@@ -131,9 +131,9 @@ eYo.BrickDragger.prototype.dispose = function() {
  * When the center of the brick will gout out the visible area,
  * we scroll the brick board to keep it back.
  * @param {eYo.Motion} motion  The motion initiating the eventual drag.
- * @return {eYo.Brick.Dflt}  The target brick of the drag event, if any.
+ * @return {eYo.brick.Dflt}  The target brick of the drag event, if any.
  */
-eYo.BrickDragger.prototype.Start = function(motion) {
+eYo.BrickDragger.prototype.start = function(motion) {
   if (this.brick_) {
     return this.brick_
   }
@@ -173,7 +173,7 @@ eYo.BrickDragger.prototype.Start = function(motion) {
   }
   /**
    * The top brick in the stack that is being dragged.
-   * @type {!eYo.Brick.Dflt}
+   * @type {!eYo.brick.Dflt}
    * @private
    */
   this.brick_ = targetBrick.focusOn()
@@ -183,7 +183,7 @@ eYo.BrickDragger.prototype.Start = function(motion) {
    * other bricks.  This includes all open connections on the top brick, as well
    * as the last connection on the brick stack.
    * Does not change during a drag.
-   * @type {!Array<!eYo.Magnet>}
+   * @type {!Array<!eYo.magnet>}
    * @private
    */
   this.availableMagnets_ = targetBrick.getMagnets_(false)
@@ -197,7 +197,7 @@ eYo.BrickDragger.prototype.Start = function(motion) {
    * The connection that would connect to this.target_ if this brick
    * were released immediately.
    * Updated on every mouse move.
-   * @type {eYo.Magnet.Dflt}
+   * @type {eYo.magnet.Dflt}
    * @private
    */
   this.magnet_ = null
@@ -205,7 +205,7 @@ eYo.BrickDragger.prototype.Start = function(motion) {
   /**
    * The target magnet that this brick would connect to if released immediately.
    * Updated on every mouse move.
-   * @type {eYo.Magnet.Dflt}
+   * @type {eYo.magnet.Dflt}
    * @private
    */
   this.target_ = null
@@ -230,7 +230,7 @@ eYo.BrickDragger.prototype.Start = function(motion) {
   /**
    * Which delete area the mouse pointer is over, if any.
    * One of {@link eYo.Motion.DELETE_AREA_TRASH},
-   * {@link eYo.Motion.DELETE_AREA_TOOLBOX}, or {@link eYo.motion.DELETE_AREA_NONE}.
+   * {@link eYo.Motion.DELETE_AREA_TOOLBOX}, or {@link eYo.Motion.DELETE_AREA_NONE}.
    * @type {?number}
    * @private
    */
@@ -278,7 +278,7 @@ eYo.BrickDragger.prototype.Start = function(motion) {
  * If the answer is `{x: -15, y: 0}`, we just have to scroll the board
  * 15 units to the right and the brick is visible.
  * For edython.
- * @param {eYo.Brick.Dflt} brick The new location of the receiver, the actual location when eYo.NA.
+ * @param {eYo.brick.Dflt} brick The new location of the receiver, the actual location when eYo.NA.
  * @param {Object} [newLoc] The new location of the receiver, the actual location when eYo.NA.
  * @return {{x: number, y: number}|eYo.NA}
  */
@@ -402,7 +402,7 @@ eYo.BrickDragger.prototype.end = (() => {
 /**
  * Reset motion.
  */
-eYo.BrickDragger.prototype.ClearMotion = function() {
+eYo.BrickDragger.prototype.clearMotion = function() {
   this.motion_ = null
 }
 
@@ -410,7 +410,7 @@ eYo.BrickDragger.prototype.ClearMotion = function() {
  * Connect to the closest magnet and render the results.
  * This should be called at the end of a drag.
  */
-eYo.BrickDragger.prototype.Connect = function() {
+eYo.BrickDragger.prototype.connect = function() {
   if (this.target_) {
     // Connect the two magnets
     this.magnet_.connect(this.target_)

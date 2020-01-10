@@ -73,7 +73,7 @@ eYo.py.Exporter.prototype.newline_ = function () {
  * For edython.
  * @param {String} s  the string to be appended to the line.
  */
-eYo.py.Exporter.prototype.AddBoard = function () {
+eYo.py.Exporter.prototype.addBoard = function () {
   this.line.length > 1 && (this.lineShouldAddBoard = true) // this line contains at least one indentation string
 }
 
@@ -93,7 +93,7 @@ eYo.py.Exporter.prototype.linePush = function (s) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.Brick.Dflt} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.Dflt} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  See the eponym parameter in `eYo.xml.domToBrick`.
  * @return some python code
  */
@@ -115,18 +115,18 @@ eYo.py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
   } else if (brick.Parenth_p) {
     this.linePush('(')
   }
-  if (brick instanceof eYo.expr.primary) {
+  if (brick instanceof eYo.expr.Primary) {
     if (brick.Dotted_p === 0 && brick.Target_p === 'print' && brick.Variant_p === eYo.key.CALL_EXPR) {
       this.use_print = true
     }
-  } else if (brick instanceof eYo.Stmt.Call_stmt) {
+  } else if (brick instanceof eYo.stmt.Call_stmt) {
     if (brick.Dotted_p === 0 && brick.Target_p === 'print') {
       this.use_print = true
     }
   }
   if (brick.type === eYo.t3.Stmt.import_stmt && !brick.disabled) {
     var importedModules = brick.importedModules
-    if (importedModules && importedModules['turtle']) {
+    if (importedModules && importedModules['Turtle']) {
       this.use_turtle = true
     }
   }
@@ -157,7 +157,7 @@ eYo.py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.Brick.Dflt} eyo The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.Dflt} eyo The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -221,7 +221,7 @@ eYo.py.Exporter.prototype.exportBrick_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.Brick.Dflt} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.Dflt} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -317,7 +317,7 @@ eYo.py.Exporter.prototype.exportField_ = function (field) {
 
 /**
  * Export the given slot in.
- * @param {eYo.Slot.Dflt} slot
+ * @param {eYo.slot.Dflt} slot
  * @param {Object} opt
  * @private
  */
@@ -344,7 +344,7 @@ eYo.py.Exporter.prototype.exportSlot_ = function (slot, opt) {
 
 /**
  * Export the given slot in.
- * @param {eYo.Slot.Dflt} slot
+ * @param {eYo.slot.Dflt} slot
  * @private
  */
 eYo.py.Exporter.prototype.exportSlot_ = function (slot) {
@@ -377,7 +377,7 @@ eYo.py.Exporter.prototype.exportSlot_ = function (slot) {
   }
 }
 
-Object.defineProperties(eYo.Brick.Dflt.prototype, {
+Object.defineProperties(eYo.brick.Dflt.prototype, {
   toString: {
     get () {
       return new eYo.py.Exporter().export(this, {is_deep: true})
