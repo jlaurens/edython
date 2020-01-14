@@ -19,7 +19,7 @@ eYo.provide('padding', Object.create(null))
 
 eYo.forwardDeclare('unit')
 eYo.forwardDeclare('font-face')
-eYo.forwardDeclare('shape')
+eYo.forwardDeclare('c9r.Shape')
 goog.forwardDeclare('goog.cssom')
 goog.forwardDeclare('goog.color')
 
@@ -95,10 +95,8 @@ eYo.provide('font', {
  * Point size of text.
  */
 Object.defineProperties(eYo.font, {
-  size: {
-    get () {
-      return this.ascent
-    }
+  size () {
+    return this.ascent
   },
   ascent: {
     get () {
@@ -122,49 +120,33 @@ Object.defineProperties(eYo.font, {
       }
     }
   },
-  descent: {
-    get () {
-      return this.descent_
-    }
+  descent () {
+    return this.descent_
   },
-  xHeight: {
-    get () {
-      return this.xHeight_
-    }
+  xHeight () {
+    return this.xHeight_
   },
-  space: {
-    get () {
-      return this.space_
-    }
+  space () {
+    return this.space_
   },
-  totalAscent: {
-    get () {
-      return this.totalAscent_
-    }
+  totalAscent () {
+    return this.totalAscent_
   },
-  height: {
-    get () {
-      return this.totalAscent + this.descent
-    }
+  height () {
+    return this.totalAscent + this.descent
   },
-  lineHeight: {
-    get () {
-      return this.height + eYo.padding.t + eYo.padding.B
-    }
+  lineHeight () {
+    return this.height + eYo.padding.t + eYo.padding.B
   },
-  style: {
-    get () {
-      return `font-family:${this.familyMono}!important;font-size:${this.ascent}pt!important;`
-    }
+  style () {
+    return `font-family:${this.familyMono}!important;font-size:${this.ascent}pt!important;`
   },
-  menuStyle: {
-    get () {
-      return `font-family:${this.familySans};font-size:${this.ascent}pt;`
-    }
-  }
+  menuStyle () {
+    return `font-family:${this.familySans};font-size:${this.ascent}pt;`
+  },
 })
 
-eYo.font.Ascent = 13
+eYo.font.ascent = 13
 
 /**
  * Offset of the text editor.
@@ -193,7 +175,7 @@ eYo.Setup.register(() => {
   }
 }, 'Editor offset')
 
-eYo.style.Path = {
+eYo.style.path = {
   Hilighted: {
     colour: '#f9951b', // #fc3
     width: 2.675, // px
@@ -206,7 +188,7 @@ eYo.style.Path = {
 }
 
 Object.defineProperty(
-  eYo.style.Path,
+  eYo.style.path,
   'r',
   {
     get () {
@@ -215,50 +197,49 @@ Object.defineProperty(
   }
 )
 
-eYo.style.MenuItem = {
+eYo.style.menuItem = {
   'padding-h': eYo.padding.t,
   'padding-v': eYo.padding.t
 }
-eYo.style.CheckBox = {
+eYo.style.checkBox = {
   'padding': 1.5// px
 }
 
-eYo.style.Edit = {
+eYo.style.edit = {
   padding_h: 1,
   padding_v: 0,
   radius: 2,
   width: 0.5
 }
 
-eYo.style.MenuIcon = {
+eYo.style.menuIcon = {
   width: eYo.font.Space,
-  color: 'black'
-}
-
-eYo.style.MenuIcon.path = function (g) {
-  var E = eYo.svg.newElement('g',
-    {class: 'eyo-menu-icon', opacity: 0.1}, g)
-  E.style.fill = eYo.style.MenuIcon.Color
-  var h = eYo.font.height
-  var w = eYo.style.MenuIcon.width
-  var r = h / 8
-  eYo.svg.newElement('rect', {
-    x: '0',
-    y: '0',
-    rx: r,
-    ry: r,
-    width: w,
-    height: h,
-    fill: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 254 / 255))
-  }, E)
-  eYo.svg.newElement('circle',
-    {cx: w / 2, cy: h / 2, r: r},
-    E)
-  eYo.svg.newElement('circle',
-    {cx: w / 2, cy: h / 2 - h / 3, r: r},
-    E)
-  eYo.svg.newElement('circle',
-    {cx: w / 2, cy: h / 2 + h / 3, r: r},
-    E)
-  return E
+  color: 'black',
+  path (g) {
+    var E = eYo.svg.newElement('g',
+      {class: 'eyo-menu-icon', opacity: 0.1}, g)
+    E.style.fill = eYo.style.MenuIcon.Color
+    var h = eYo.font.height
+    var w = eYo.style.MenuIcon.width
+    var r = h / 8
+    eYo.svg.newElement('rect', {
+      x: '0',
+      y: '0',
+      rx: r,
+      ry: r,
+      width: w,
+      height: h,
+      fill: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 254 / 255))
+    }, E)
+    eYo.svg.newElement('circle',
+      {cx: w / 2, cy: h / 2, r: r},
+      E)
+    eYo.svg.newElement('circle',
+      {cx: w / 2, cy: h / 2 - h / 3, r: r},
+      E)
+    eYo.svg.newElement('circle',
+      {cx: w / 2, cy: h / 2 + h / 3, r: r},
+      E)
+    return E
+  }
 }

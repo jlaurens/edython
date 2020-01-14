@@ -15,7 +15,7 @@ eYo.require('c9r.BSMOwned')
 
 eYo.provide('field')
 
-eYo.forwardDeclare('size')
+eYo.forwardDeclare('c9r.Size')
 eYo.forwardDeclare('events')
 
 Object.defineProperties(eYo.Field, {
@@ -355,10 +355,10 @@ eYo.Field.makeC9r('Dflt', eYo.c9r.BSMOwned, {
   cloned: {
     /**
      * @readonly
-     * @type {eYo.Size} The size of the field
+     * @type {eYo.c9r.Size} The size of the field
      */
     size () {
-      return new eYo.Size()
+      return new eYo.c9r.Size()
     },
   },
   computed: {

@@ -16,7 +16,7 @@ describe('Expression shape', function () {
   })
   var createPath = (b, c, l) => {
     eYo.svg.newElement('path', {
-      d: eYo.Shape.definitionWithBrick(b),
+      d: eYo.c9r.shapeDefinitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',
       transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`
@@ -44,7 +44,7 @@ describe('Statement shape', function () {
   })
   var createPath = (b, c, l) => {
     eYo.svg.newElement('path', {
-      d: eYo.Shape.definitionWithBrick(b),
+      d: eYo.c9r.shapeDefinitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',
       transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`
@@ -78,7 +78,7 @@ describe('Group shape', function () {
   })
   var createPath = (b, c, l) => {
     eYo.svg.newElement('path', {
-      d: eYo.Shape.definitionWithBrick(b),
+      d: eYo.c9r.shapeDefinitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',
       transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`

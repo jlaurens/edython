@@ -657,21 +657,21 @@ Example of `dt` for the turtle module, method synonyms.
  */
 'use strict'
 
-eYo.require('Module')
+eYo.require('module')
 
-eYo.provide('Module.{{key}}', new eYo.Module.Dflt('{{key}}', '{{url}}'))
+eYo.provide('module.{{key}}', new eYo.module.Dflt('{{key}}', '{{url}}'))
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.Module.{{key}}.Item = function (model) {
-    eYo.Module.Item.call(this, model)
+  var Item = eYo.module.{{key}}.Item = function (model) {
+    eYo.module.Item.call(this, model)
   }
-  eYo.inherits(Item, eYo.Module.Item)
+  eYo.inherits(Item, eYo.module.Item)
 
   /**
   * module
   */
-  Item.prototype.module = eYo.Module.{{key}}
+  Item.prototype.module = eYo.module.{{key}}
 
   Object.defineProperties(Item.prototype, {
     url: {
@@ -905,7 +905,7 @@ eYo.provide('Module.{{key}}', new eYo.Module.Dflt('{{key}}', '{{url}}'))
             with io.StringIO() as self.f:
             # with path_out.open('w', encoding='utf-8') as f:
                 self.raw_print(self.prefix_)
-                self.down_print('eYo.Module.{{key}}.data_ = {')
+                self.down_print('eYo.module.{{key}}.data_ = {')
                 self.down_print('categories: [')
                 separator = ''
                 for category in list(x[0] for x in sorted(list((k,v) for k,v in self.categories.items()), key= lambda x: x[1])):

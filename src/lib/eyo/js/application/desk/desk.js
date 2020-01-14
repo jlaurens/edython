@@ -136,7 +136,7 @@ eYo.Desk_p.place = function() {
 /**
  * See `deskWhereElement`.
  * @param {Element}
- * @return {eYo.Where}
+ * @return {eYo.c9r.Where}
  */
 eYo.Desk_p.xyElementInDesk = function(element) {
   return this.ui_driver.whereElement(this, element)

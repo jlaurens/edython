@@ -80,7 +80,7 @@ eYo.TrashCan_p.place = function(bottom) {
 console.error('NYI: what does the inherited place do?')
 /**
  * Return the deletion rectangle for this trash can.
- * @return {eYo.Rect} Rectangle in which to delete.
+ * @return {eYo.c9r.Rect} Rectangle in which to delete.
  */
 eYo.TrashCan_p.getClientRect = function() {
   return this.ui_driver.clientRect(this)

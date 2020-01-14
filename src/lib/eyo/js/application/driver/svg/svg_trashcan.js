@@ -219,6 +219,6 @@ eYo.svg.TrashCan.prototype.clientRect = function(trashCan) {
   var top = rect.top + trashCan.SPRITE_TOP_ - trashCan.MARGIN_HOTSPOT_
   var width = trashCan.WIDTH_ + 2 * trashCan.MARGIN_HOTSPOT_;
   var height = trashCan.LID_HEIGHT_ + trashCan.BODY_HEIGHT_ + 2 * trashCan.MARGIN_HOTSPOT_
-  return eYo.Rect.xy(left, top, width, height)
+  return eYo.xyRect(left, top, width, height)
 }
 

@@ -16,7 +16,7 @@ eYo.require('xre')
 
 eYo.forwardDeclare('c9r.Prop')
 eYo.forwardDeclare('c9r.model')
-eYo.forwardDeclare('c9r.dlgtImpl')
+eYo.forwardDeclare('c9r.Object')
 
 /**
  * Management of constructors and models.
@@ -28,172 +28,172 @@ eYo.makeNS('c9r')
 
 // ANCHOR Utilities
 {
-/**
- * Convenient way to append code to an already existing method.
- * This allows to define a method in different places.
- * @param {Object} object - Object
- * @param {String} key - Looking for or crating |Object[key]|
- * @param {Function} f - the function we will append
- */
-eYo.c9r.appendToMethod = (object, key, f) => {
-  let old = object[key]
-  if (old && old !== eYo.do.nothing) {
-    eYo.ParameterAsert(eYo.isF(old), `Expecting a function ${old}`)
-    object[key] = function () {
-      old.apply(this, arguments)
-      f.apply(this, arguments)
+  /**
+   * Convenient way to append code to an already existing method.
+   * This allows to define a method in different places.
+   * @param {Object} object - Object
+   * @param {String} key - Looking for or crating |Object[key]|
+   * @param {Function} f - the function we will append
+   */
+  eYo.c9r.appendToMethod = (object, key, f) => {
+    let old = object[key]
+    if (old && old !== eYo.do.nothing) {
+      eYo.ParameterAsert(eYo.isF(old), `Expecting a function ${old}`)
+      object[key] = function () {
+        old.apply(this, arguments)
+        f.apply(this, arguments)
+      }
+    } else {
+      object[key] = f
     }
-  } else {
-    object[key] = f
   }
-}
 
-/**
- * Function frequently used.
- */
-eYo.c9r.noGetter = function (msg) {
-  return msg 
+  /**
+   * Function frequently used.
+   */
+  eYo.c9r.noGetter = function (msg) {
+    return msg 
+      ? function () {
+        throw new Error(`Forbidden getter: ${msg}`)
+      } : function () {
+        throw new Error('Forbidden getter...')
+      }
+  }
+
+  /**
+   * function frequently used.
+   */
+  eYo.c9r.noSetter = function (msg) {
+    return msg
     ? function () {
-      throw new Error(`Forbidden getter: ${msg}`)
+      throw new Error(`Forbidden setter: ${msg}`)
     } : function () {
-      throw new Error('Forbidden getter...')
+      throw new Error('Forbidden setter')
     }
-}
-
-/**
- * function frequently used.
- */
-eYo.c9r.noSetter = function (msg) {
-  return msg
-  ? function () {
-    throw new Error(`Forbidden setter: ${msg}`)
-  } : function () {
-    throw new Error('Forbidden setter')
   }
-}
 
-/**
- * function frequently used.
- */
-eYo.c9r.descriptorR = (msg, getter) => {
-  if (!eYo.isStr(msg)) {
-    eYo.ParameterAssert(!getter, `Unexpected getter: ${getter}`)
-    getter = msg
-    msg = eYo.NA
+  /**
+   * function frequently used.
+   */
+  eYo.c9r.descriptorR = (msg, getter) => {
+    if (!eYo.isStr(msg)) {
+      eYo.ParameterAssert(!getter, `Unexpected getter: ${getter}`)
+      getter = msg
+      msg = eYo.NA
+    }
+    return {
+      get: getter,
+      set: eYo.c9r.noSetter(msg),
+    }
   }
-  return {
-    get: getter,
-    set: eYo.c9r.noSetter(msg),
+
+  /**
+   * function frequently used.
+   */
+  eYo.c9r.descriptorW = (msg, setter) => {
+    if (!eYo.isStr(msg)) {
+      eYo.ParameterAssert(!setter, `Unexpected setter: ${setter}`)
+      setter = msg
+      msg = eYo.NA
+    }
+    return {
+      get: eYo.c9r.noGetter(msg),
+      set: setter,
+    }
   }
-}
 
-/**
- * function frequently used.
- */
-eYo.c9r.descriptorW = (msg, setter) => {
-  if (!eYo.isStr(msg)) {
-    eYo.ParameterAssert(!setter, `Unexpected setter: ${setter}`)
-    setter = msg
-    msg = eYo.NA
+  /**
+   * function frequently used.
+   */
+  eYo.c9r.descriptorNORW = (msg) => {
+    return {
+      get: eYo.c9r.noGetter(msg),
+      set: eYo.c9r.noSetter(msg),
+    }
   }
-  return {
-    get: eYo.c9r.noGetter(msg),
-    set: setter,
+
+  /**
+   * All the created delegates.
+   * @package
+   */
+  eYo.c9r.byName__ = Object.create(null)
+
+  /**
+   * All the created delegates.
+   * @package
+   */
+  eYo.c9r.byKey__ = Object.create(null)
+
+  /**
+   * All the created delegates.
+   * @package
+   */
+  eYo.c9r.byType__ = Object.create(null)
+
+  /**
+   * All the created delegates.
+   * @param{String} key - the key used to create the constructor.
+   */
+  eYo.c9r.forKey = (key) => {
+    return eYo.c9r.byKey__[key]
   }
-}
 
-/**
- * function frequently used.
- */
-eYo.c9r.descriptorNORW = (msg) => {
-  return {
-    get: eYo.c9r.noGetter(msg),
-    set: eYo.c9r.noSetter(msg),
+  /**
+   * All the created delegates.
+   * @param{String} name - the name used to create the constructor.
+   */
+  eYo.c9r.forName = (name) => {
+    return eYo.c9r.byName__[name]
   }
-}
 
-/**
- * All the created delegates.
- * @package
- */
-eYo.c9r.byName__ = Object.create(null)
-
-/**
- * All the created delegates.
- * @package
- */
-eYo.c9r.byKey__ = Object.create(null)
-
-/**
- * All the created delegates.
- * @package
- */
-eYo.c9r.byType__ = Object.create(null)
-
-/**
- * All the created delegates.
- * @param{String} key - the key used to create the constructor.
- */
-eYo.c9r.forKey = (key) => {
-  return eYo.c9r.byKey__[key]
-}
-
-/**
- * All the created delegates.
- * @param{String} name - the name used to create the constructor.
- */
-eYo.c9r.forName = (name) => {
-  return eYo.c9r.byName__[name]
-}
-
-/**
- * All the created delegates.
- * @param{String} type - the type used to create the constructor.
- */
-eYo.c9r.forType = (type) => {
-  return eYo.c9r.byType__[type]
-}
-
-Object.defineProperty(eYo.c9r._p, 'types', eYo.c9r.descriptorR(function () {
-  return Object.keys(eYo.c9r.byType__)
-}))
-
-
-/**
- * Delegate registrator.
- * The constructor has an eyo attached object for
- * some kind of introspection.
- * Computes and caches the model
- * only once from the creation of the delegate.
- *
- * The last delegate registered for a given prototype name wins.
- * @param {!String} [type] - the optional type
- * @param {Object} C9r
- * @private
- */
-eYo.c9r.register = function (key, C9r) {
-  if (!eYo.isStr(key)) {
-  eYo.ParameterAssert(!C9r, `UNEXPECTED ${C9r}`)
-    C9r = key
-    key = C9r.eyo.key
+  /**
+   * All the created delegates.
+   * @param{String} type - the type used to create the constructor.
+   */
+  eYo.c9r.forType = (type) => {
+    return eYo.c9r.byType__[type]
   }
-  var type
-  if ((type = eYo.t3.expr[key])) {
-    eYo.t3.expr.available.push(type)
-  } else if ((type = eYo.t3.stmt[key])) {
-    eYo.t3.stmt.available.push(type)
+
+  Object.defineProperty(eYo.c9r._p, 'types', eYo.c9r.descriptorR(function () {
+    return Object.keys(eYo.c9r.byType__)
+  }))
+
+
+  /**
+   * Delegate registrator.
+   * The constructor has an eyo attached object for
+   * some kind of introspection.
+   * Computes and caches the model
+   * only once from the creation of the delegate.
+   *
+   * The last delegate registered for a given prototype name wins.
+   * @param {!String} [type] - the optional type
+   * @param {Object} C9r
+   * @private
+   */
+  eYo.c9r.register = function (key, C9r) {
+    if (!eYo.isStr(key)) {
+    eYo.ParameterAssert(!C9r, `UNEXPECTED ${C9r}`)
+      C9r = key
+      key = C9r.eyo.key
+    }
+    var type
+    if ((type = eYo.t3.expr[key])) {
+      eYo.t3.expr.available.push(type)
+    } else if ((type = eYo.t3.stmt[key])) {
+      eYo.t3.stmt.available.push(type)
+    }
+    var eyo = C9r.eyo
+    var key = eyo.key
+    key && (eYo.c9r.byKey__[key] = C9r)
+    var name = eyo.name
+    name && (eYo.c9r.byName__[name] = C9r)
+    if (type) {
+      eYo.c9r.byType__[type] = C9r
+      // cache all the input, output and statement data at the prototype level
+      eyo.types.push(type)
+    }
   }
-  var eyo = C9r.eyo
-  var key = eyo.key
-  key && (eYo.c9r.byKey__[key] = C9r)
-  var name = eyo.name
-  name && (eYo.c9r.byName__[name] = C9r)
-  if (type) {
-    eYo.c9r.byType__[type] = C9r
-    // cache all the input, output and statement data at the prototype level
-    eyo.types.push(type)
-  }
-}
 }
 // ANCHOR eYo.c9r.Dlgt
 {
@@ -225,7 +225,7 @@ eYo.c9r.register = function (key, C9r) {
 Object.defineProperties(eYo.c9r._p, {
   Dlgt: {
     value: function (ns, key, C9r, model) {
-      // eYo.Dlgt
+      // eYo.c9r.Dlgt
       if (eYo.isStr(ns)) {
         model = C9r
         C9r = key
@@ -294,7 +294,7 @@ Object.defineProperties(eYo._p, {
     }
   },
 })
-eYo.Assert(eYo.c9r.Dlgt, 'MISSING eYo.Dlgt')
+eYo.Assert(eYo.c9r.Dlgt, 'MISSING eYo.c9r.Dlgt')
 eYo.Assert(eYo.c9r.Dlgt.prototype, 'MISSING eYo.c9r.Dlgt.prototype')
 eYo.Assert(eYo.c9r.Dlgt_p, 'MISSING eYo.c9r.Dlgt_p')
 
@@ -827,7 +827,7 @@ eYo._p.makeC9rDecorate = (f) => {
  * @param {Object|Function} [model] -  The dictionary of parameters. Or a function to create such a dictionary. This might be overcomplicated.
  * @return {Function} the created constructor.
  */
-eYo._p.makeC9r = eYo.makeC9rDecorate(eYo.doMakeC9r)
+eYo._p.makeC9r = eYo.c9r._p.makeC9r = eYo.makeC9rDecorate(eYo.doMakeC9r)
 
 /**
  * This decorator turns f with signature
@@ -1001,103 +1001,5 @@ eYo.makeDflt(eYo.c9r.Dflt, {
     },
   },
 })
-
-/**
- * Make the initUI method.
- */
-eYo.Dlgt_p.makeInitUI = function () {
-  var ui = this.model.ui
-  let initUI = ui && ui.init
-  let C9r_s = this.C9r_s
-  let initUI_s = C9r_s && C9r_s.initUI
-  if (initUI) {
-    if (XRegExp.exec(initUI.toString(), eYo.xre.function_builtin)) {
-      if (initUI_s) {
-        var f = function (...args) {
-          initUI.call(this, () => {
-            initUI_s.call(this, ...args)
-            this.ui_driver.doInitUI(this, ...args)
-          }, ...args)
-        }
-      } else {
-        f = function (...args) {
-          initUI.call(this, () => {
-            this.ui_driver.doInitUI(this, ...args)
-          }, ...args)
-        }
-      }
-    } else if (initUI_s) {
-      f = function (...args) {
-        initUI_s.call(this, ...args)
-        this.ui_driver.doInitUI(this, ...args)
-        initUI.apply(this, arguments)  
-      }
-    } else {
-      f = function (...args) {
-        this.ui_driver.doInitUI(this, ...args)
-        initUI.apply(this, arguments)  
-      }
-    }
-  } else if (initUI_s) {
-    f = function (...args) {
-      initUI_s.call(this, ...args)
-      this.ui_driver.doInitUI(this, ...args)
-    }
-  } else {
-    f = function (...args) {
-      this.ui_driver.doInitUI(this, ...args)
-    }
-  }
-  this.C9r_p.initUI = f
-}
-
-/**
- * Make the disposeUI method.
- */
-eYo.Dlgt_p.makeDisposeUI = function () {
-  var ui = this.model.ui
-  let disposeUI = ui && ui.dispose
-  let C9r_s = this.C9r_s
-  let disposeUI_s = C9r_s && C9r_s.disposeUI
-  if (disposeUI) {
-    if (XRegExp.exec(disposeUI.toString(), eYo.xre.function_builtin)) {
-      if (disposeUI_s) {
-        var f = function (...args) {
-          disposeUI.call(this, () => {
-            disposeUI_s.call(this, ...args)              
-            this.ui_driver.doDisposeUI(this, ...args)
-          }, ...args)
-        }
-      } else {
-        f = function (...args) {
-          disposeUI.call(this, () => {
-            this.ui_driver.doDisposeUI(this, ...args)
-          }, ...args)
-        }
-      }
-    } else if (disposeUI_s) {
-      f = function (...args) {
-        disposeUI_s.call(this, ...args)
-        disposeUI.apply(this, arguments)
-        this.ui_driver.doDisposeUI(this, ...args)
-      }
-    } else {
-      f = function (...args) {
-        disposeUI.apply(this, arguments)  
-        this.ui_driver.doDisposeUI(this, ...args)
-      }
-    }
-  } else if (disposeUI_s) {
-    f = function (...args) {
-      disposeUI_s.call(this, ...args)
-      this.ui_driver.doDisposeUI(this, ...args)
-    }
-  } else {
-    f = function (...args) {
-      this.ui_driver.doDisposeUI(this, ...args)
-    }
-  }
-  this.C9r_p.disposeUI = f
-}
 
 }

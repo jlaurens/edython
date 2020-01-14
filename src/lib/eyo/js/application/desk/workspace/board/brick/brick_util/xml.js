@@ -195,7 +195,7 @@ eYo.xml.domToBoard = function (xml, owner) {
     if (xmlChild && xmlChild.nodeType === Node.ELEMENT_NODE) {
       if ((brick = eYo.xml.domToBrick(xmlChild, owner))) {
         newBlockIds.push(brick.id)
-        var xy = new eYo.Where()
+        var xy = new eYo.c9r.Where()
         xy.x = xmlChild.hasAttribute('x')
           ? parseInt(xmlChild.getAttribute('x'), 10) : 10
         xy.y = xmlChild.hasAttribute('y')

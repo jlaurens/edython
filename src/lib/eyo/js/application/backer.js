@@ -40,7 +40,7 @@ eYo.makeC9r('Backer', eYo.c9r.Owned, {
      * Maximum number of undo events in stack. `0` turns off undo, `Infinity` sets it to unlimited (provided there is enough memory!).
      * @type {number}
      */
-    MAX_UNDO: {value: 1024, writable: true},
+    MAX_UNDO: 1024,
   },
   computed: {
     /**
@@ -66,7 +66,7 @@ eYo.makeC9r('Backer', eYo.c9r.Owned, {
   },
 })
 
-eYo.Backer.eyo.ChangeCountAdd()
+eYo.Backer.eyo.changeCountAdd()
 
 /**
  * Clear the undo/redo stacks.

@@ -35,16 +35,16 @@ eYo.brick.eyo.modelDeclare({
   cloned: {
     /**
      * Position of the receiver in the board.
-     * @type {eYo.Where}
+     * @type {eYo.c9r.Where}
      * @readonly
      */
-    xy () { return new eYo.Where() },
+    xy () { return new eYo.c9r.Where() },
     /**
      * Position of the receiver in the board.
-     * @type {eYo.Where}
+     * @type {eYo.c9r.Where}
      * @readonly
      */
-    where () { return new eYo.Where() },
+    where () { return new eYo.c9r.Where() },
   },
   computed: {
     hasLeftEdge () {
@@ -424,12 +424,12 @@ eYo.fcfl.Brick._p.willShortRender_ = function (brick, recorder) {
  * Translates the brick, forwards to the ui driver after managing the snap formal argument.
  * Contrary to |moveBy| there is no undo management here.
  * @param {eYo.brick.Dflt} brick - The brick to move.
- * @param {eYo.Where} xy - The xy coordinate of the translation in board units.
+ * @param {eYo.c9r.Where} xy - The xy coordinate of the translation in board units.
  * @param {Boolean} snap Whether we should snap to the grid.
  */
 eYo.fcfl.Brick._p.moveTo = function(brick, xy, snap) {
   if (snap && brick.board && !brick.board.dragging && !brick.parent && !brick.isInFlyout) {
-    xy = eYo.Where.Cl(xy.c, xy.l)
+    xy = eYo.c9r.Where.Cl(xy.c, xy.l)
   }
   brick.xy_ = xy
   this.place(brick)
@@ -656,7 +656,7 @@ eYo.fcfl.Brick._p.newDrawRecorder_ = function (brick, recorder) {
     n: 0, // count of rendered objects (fields, slots and inputs)
     form: eYo.NA // rendered field or magnet
   }
-  io.cursor = eYo.Where.xy(0, brick.span.header)
+  io.cursor = eYo.c9r.Where.xy(0, brick.span.header)
   if (recorder) {
     // io inherits some values from the given recorder
     io.recorder = recorder
@@ -1430,7 +1430,7 @@ eYo.fcfl.Brick._p.didDisconnect = function (brick, m4t, oldTargetM4t) {
  * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
  * This does not change with board scale.
- * @return {!eYo.Where} Object with .x and .y properties in
+ * @return {!eYo.c9r.Where} Object with .x and .y properties in
  *     board coordinates.
  */
 eYo.fcls.Brick._p.whereInParent = eYo.do.NYI
@@ -1447,11 +1447,11 @@ eYo.fcls.Brick._p.xyInDesk = eYo.do.NYI
  * the bounding rect changes too.
  * Coordinate system: board coordinates.
  * @param {eYo.brick.Dflt} brick - the brick the driver acts on
- * @return {!eYo.Rect}
+ * @return {!eYo.c9r.Rect}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
 eYo.fcfl.Brick._p.boundingRect = function (brick) {
-  return new eYo.Rect(
+  return new eYo.c9r.Rect(
     brick.whereInBoard,
     brick.size
   )
@@ -1575,7 +1575,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
           if (targetM4t) {
             return targetM4t
           }
-          R = new eYo.Rect(
+          R = new eYo.c9r.Rect(
             magnet.x + eYo.unit.x / 2,
             magnet.y,
             target.width - eYo.unit.x,
@@ -1586,21 +1586,21 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
           }
         }
         if (magnet.slot && magnet.slot.bindField) {
-          R = new eYo.Rect(
+          R = new eYo.c9r.Rect(
             magnet.x,
             magnet.y + eYo.padding.t,
             magnet.w * eYo.unit.x,
             eYo.font.height
           )
         } else if (magnet.optional_ || magnet.s7r_) {
-          R = new eYo.Rect(
+          R = new eYo.c9r.Rect(
             magnet.x - eYo.unit.x / 4,
             magnet.y + eYo.padding.t,
             1.5 * eYo.unit.x,
             eYo.font.height
           )
         } else {
-          R = new eYo.Rect(
+          R = new eYo.c9r.Rect(
             magnet.x + eYo.unit.x / 4,
             magnet.y + eYo.padding.t,
             (magnet.w - 1 / 2) * eYo.unit.x,
@@ -1611,11 +1611,11 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
           return magnet
         }
       } else if (magnet.isFoot || magnet.isSuite) {
-        R = new eYo.Rect(
+        R = new eYo.c9r.Rect(
           magnet.x,
-          magnet.y - eYo.style.Path.width,
+          magnet.y - eYo.style.path.width,
           eYo.Span.TAB_WIDTH,
-          1.5 * eYo.padding.t + 2 * eYo.style.Path.width
+          1.5 * eYo.padding.t + 2 * eYo.style.path.width
         )
         if (xy.in(R)) {
           return magnet
@@ -1626,11 +1626,11 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   if (magnet) {
     return magnet
   } else if ((magnet = brick.head_m) && !magnet.hidden) {
-    R = new eYo.Rect(
+    R = new eYo.c9r.Rect(
       magnet.x,
-      magnet.y - 2 * eYo.style.Path.width,
+      magnet.y - 2 * eYo.style.path.width,
       rect.width,
-      1.5 * eYo.padding.t + 2 * eYo.style.Path.width
+      1.5 * eYo.padding.t + 2 * eYo.style.path.width
     )
     if (xy.in(R)) {
       return magnet
@@ -1638,18 +1638,18 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   }
   if ((magnet = brick.foot_m) && !magnet.hidden) {
     if (rect.height > eYo.unit.y) { // Not the cleanest design
-      R = new eYo.Rect(
+      R = new eYo.c9r.Rect(
         magnet.x,
-        magnet.y - 1.5 * eYo.padding.B - eYo.style.Path.width,
-        eYo.Span.TAB_WIDTH + eYo.style.Path.r, // R U sure?
-        1.5 * eYo.padding.B + 2 * eYo.style.Path.width
+        magnet.y - 1.5 * eYo.padding.B - eYo.style.path.width,
+        eYo.Span.TAB_WIDTH + eYo.style.path.r, // R U sure?
+        1.5 * eYo.padding.B + 2 * eYo.style.path.width
       )
     } else {
-      R = new eYo.Rect(
+      R = new eYo.c9r.Rect(
         magnet.x,
-        magnet.y - 1.5 * eYo.padding.B - eYo.style.Path.width,
+        magnet.y - 1.5 * eYo.padding.B - eYo.style.path.width,
         rect.width,
-        1.5 * eYo.padding.B + 2 * eYo.style.Path.width
+        1.5 * eYo.padding.B + 2 * eYo.style.path.width
       )
     }
     if (xy.in(R)) {
@@ -1657,8 +1657,8 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
     }
   }
   if ((magnet = brick.suite_m) && !magnet.hidden) {
-    var r = eYo.style.Path.Hilighted.width
-    R = new eYo.Rect(
+    var r = eYo.style.path.Hilighted.width
+    R = new eYo.c9r.Rect(
       magnet.x + eYo.unit.x / 2 - r,
       magnet.y + r,
       2 * r,
@@ -1669,8 +1669,8 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
     }
   }
   if ((magnet = brick.left_m) && !magnet.hidden) {
-    var r = eYo.style.Path.Hilighted.width
-    R = new eYo.Rect(
+    var r = eYo.style.path.Hilighted.width
+    R = new eYo.c9r.Rect(
       magnet.x + eYo.unit.x / 2 - r,
       magnet.y + r,
       2 * r,
@@ -1681,7 +1681,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
     }
   }
   if ((magnet = brick.right_m) && !magnet.hidden) {
-    R = new eYo.Rect(
+    R = new eYo.c9r.Rect(
       magnet.x + eYo.unit.x / 2 - r,
       magnet.y + r,
       2 * r,

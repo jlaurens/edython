@@ -22,7 +22,7 @@ eYo.provide('css')
 
 eYo.forwardDeclare('unit')
 eYo.forwardDeclare('font-face')
-eYo.forwardDeclare('shape')
+eYo.forwardDeclare('c9r.Shape')
 goog.forwardDeclare('goog.cssom');
 
 eYo.css.insertRuleAt = (() => {
@@ -444,39 +444,39 @@ eYo.css.CONTENT = path => {
 .eyo-error.eyo-path-shape,
 .eyo-error.eyo-path-contour,
 .eyo-error.eyo-path-inner {
-  stroke:${eYo.style.Path.Error.Colour};
-  stroke-width: ${eYo.style.Path.Error.width}px;
+  stroke:${eYo.style.path.Error.Colour};
+  stroke-width: ${eYo.style.path.Error.width}px;
 }
 .eyo-path-selected,
 .eyo-path-hilighted {
-  stroke: ${eYo.style.Path.Hilighted.Colour};
+  stroke: ${eYo.style.path.Hilighted.Colour};
   fill: none;
 }
 .eyo-path-hilighted {
-  stroke-width: ${eYo.style.Path.Hilighted.width}px;
+  stroke-width: ${eYo.style.path.Hilighted.width}px;
 }
 .eyo-select .eyo-path-contour.eyo-error,
 .eyo-select .eyo-path-inner.eyo-error {
-  stroke: ${eYo.style.Path.Error.Colour};
+  stroke: ${eYo.style.path.Error.Colour};
 }
 .eyo-checkbox-icon-rect {
-  stroke: ${eYo.Shape.Style.Colour.light};
-  stroke-width: ${eYo.Shape.Style.width.light}px;
+  stroke: ${eYo.c9r.shapeStyle.Colour.light};
+  stroke-width: ${eYo.c9r.shapeStyle.width.light}px;
   fill: white;
 }
 .eyo-checkbox-icon-rect {
-  stroke: ${eYo.Shape.Style.Colour.light};
-  stroke-width: ${eYo.Shape.Style.width.light}px;
+  stroke: ${eYo.c9r.shapeStyle.Colour.light};
+  stroke-width: ${eYo.c9r.shapeStyle.width.light}px;
   fill: white;
 }
 .eyo-medium .eyo-checkbox-icon-rect {
-  stroke: ${eYo.Shape.Style.Colour.medium};
-  stroke-width: ${eYo.Shape.Style.width.medium}px;
+  stroke: ${eYo.c9r.shapeStyle.Colour.medium};
+  stroke-width: ${eYo.c9r.shapeStyle.width.medium}px;
   fill: white;
 }
 .eyo-dark .eyo-checkbox-icon-rect {
-  stroke: ${eYo.Shape.Style.Colour.dark};
-  stroke-width: ${eYo.Shape.Style.width.dark}px;
+  stroke: ${eYo.c9r.shapeStyle.Colour.dark};
+  stroke-width: ${eYo.c9r.shapeStyle.width.dark}px;
   fill: white;
 }
 .eyo-locked.eyo-path-contour,
@@ -492,8 +492,8 @@ eYo.css.CONTENT = path => {
   fill-opacity:0.92
 }
 .eyo-path-bbox {
-  stroke: ${eYo.style.Path.Bbox_colour};
-  stroke-width: ${eYo.Shape.Style.width.light}px;
+  stroke: ${eYo.style.path.Bbox_colour};
+  stroke-width: ${eYo.c9r.shapeStyle.width.light}px;
   fill: none;
 }
 .eyo-inner .eyo-path-shape {
@@ -508,8 +508,8 @@ eYo.css.CONTENT = path => {
 .eyo-path-inner,
 .eyo-path-collapsed,
 .eyo-path-play-contour {
-  stroke: ${eYo.Shape.Style.Colour.light};
-  stroke-width: ${eYo.Shape.Style.width.light}px;
+  stroke: ${eYo.c9r.shapeStyle.Colour.light};
+  stroke-width: ${eYo.c9r.shapeStyle.width.light}px;
   fill: none;
   pointer-events: all;
   stroke-linejoin: round;
@@ -518,8 +518,8 @@ eYo.css.CONTENT = path => {
 .eyo-medium .eyo-path-inner,
 .eyo-medium .eyo-path-collapsed,
 .eyo-medium .eyo-path-play-contour {
-  stroke: ${eYo.Shape.Style.Colour.medium};
-  stroke-width: ${eYo.Shape.Style.width.medium}px;
+  stroke: ${eYo.c9r.shapeStyle.Colour.medium};
+  stroke-width: ${eYo.c9r.shapeStyle.width.medium}px;
   fill: none;
   pointer-events: all;
   stroke-linejoin: round;
@@ -528,8 +528,8 @@ eYo.css.CONTENT = path => {
 .eyo-dark .eyo-path-inner,
 .eyo-dark .eyo-path-collapsed,
 .eyo-dark .eyo-path-play-contour {
-  stroke: ${eYo.Shape.Style.Colour.dark};
-  stroke-width: ${eYo.Shape.Style.width.dark}px;
+  stroke: ${eYo.c9r.shapeStyle.Colour.dark};
+  stroke-width: ${eYo.c9r.shapeStyle.width.dark}px;
   fill: none;
   pointer-events: all;
   stroke-linejoin: round;
@@ -539,15 +539,15 @@ eYo.css.CONTENT = path => {
 }
 .eyo-inner.eyo-expr .eyo-path-contour,
 .eyo-inner.eyo-expr .eyo-path-collapsed {
-  stroke: ${eYo.Shape.Style.inner_colour.light};
+  stroke: ${eYo.c9r.shapeStyle.inner_colour.light};
 }
 .eyo-medium .eyo-inner.eyo-expr .eyo-path-contour,
 .eyo-medium .eyo-inner.eyo-expr .eyo-path-collapsed {
-  stroke: ${eYo.Shape.Style.inner_colour.medium};
+  stroke: ${eYo.c9r.shapeStyle.inner_colour.medium};
 }
 .eyo-dark .eyo-inner.eyo-expr .eyo-path-contour,
 .eyo-dark .eyo-inner.eyo-expr .eyo-path-collapsed {
-  stroke: ${eYo.Shape.Style.inner_colour.dark};
+  stroke: ${eYo.c9r.shapeStyle.inner_colour.dark};
 }`,
     `.eyo-code-emph {
   font-weight: bold;
@@ -595,21 +595,21 @@ text.eyo-code-comment {
     `.eyo-select.eyo-expr .eyo-path-contour,
 .eyo-select.eyo-stmt .eyo-path-contour,
 .eyo-select.eyo-expr .eyo-path-inner {
-  stroke: ${eYo.style.Path.Hilighted.Colour};
+  stroke: ${eYo.style.path.Hilighted.Colour};
 }
 .eyo-select.eyo-stmt>.eyo-path-contour,
 .eyo-select.eyo-stmt>.eyo-path-inner,
 .eyo-select.eyo-stmt>.eyo-expr .eyo-path-contour,
 .eyo-select.eyo-stmt>.eyo-expr .eyo-path-inner {
-  stroke: ${eYo.style.Path.Hilighted.Colour};
+  stroke: ${eYo.style.path.Hilighted.Colour};
 }
 .eyo-code-placeholder,
 .eyo-code-comment {
   font-style: oblique;
 }
 .eyo-hilighted-magnet-path{
-  stroke: ${eYo.style.Path.Hilighted.Colour};
-  stroke-width: ${eYo.style.Path.Hilighted.width}px;
+  stroke: ${eYo.style.path.Hilighted.Colour};
+  stroke-width: ${eYo.style.path.Hilighted.width}px;
   fill: none;
 }`,
 `.eyo-main-board-background {

@@ -98,7 +98,7 @@ eYo.makeC9r('Flyout', {
      */
     size: {
       get () {
-        var ans = new eYo.Size(this.viewRect_.size_)
+        var ans = new eYo.c9r.Size(this.viewRect_.size_)
         ans.anchor = this.anchor_
         return ans
       },
@@ -112,7 +112,7 @@ eYo.makeC9r('Flyout', {
     /**
      * Return the deletion rectangle for this flyout in viewport coordinates.
      * Edython : add management of the 0 width rectange
-     * @return {eYo.Rect} Rectangle in which to delete.
+     * @return {eYo.c9r.Rect} Rectangle in which to delete.
      */
     deleteRect () {
       var rect = this.viewRect
@@ -309,7 +309,7 @@ eYo.makeC9r('Flyout', {
      * @private
      */
     viewRect () {
-      return new eYo.RectProxy(this.board.metrics_.view, {
+      return new eYo.c9r.RectProxy(this.board.metrics_.view, {
         l: (after) => after + eYo.Flyout.TOOLBAR_HEIGHT,
         h: (after) => after - eYo.Flyout.TOOLBAR_HEIGHT,
       }, {
@@ -509,7 +509,7 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
  */
 eYo.Flyout.prototype.layout_ = function(contents) {
   this.board_.scale = this.desk.board.scale
-  var where = eYo.Where.xy(this.MARGIN, this.MARGIN)
+  var where = eYo.c9r.Where.xy(this.MARGIN, this.MARGIN)
   contents.forEach(brick => {
     // Mark bricks as being inside a flyout.  This is used to detect and
     // prevent the closure of the flyout if the user right-clicks on such a

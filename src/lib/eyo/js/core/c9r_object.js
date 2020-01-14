@@ -6,48 +6,62 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Utility to make a constructor with some edython specific data storage and methods.
+ * @fileoverview An object owns properties.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
 /**
- * The model management.
- * Models are trees with some inheritancy.
- * @name {eYo.c9r.model}
- * @namespace
+ * @name{eYo.c9r.DlgtObject}
+ * @constructor
  */
-eYo.c9r.makeNS('dlgtImpl')
+eYo.c9r.makeC9r('DlgtObject', eYo.c9r.Dlgt)
 
 /**
  * Initialize an instance with valued, cached, owned and cloned properties.
  * Default implementation forwards to super.
  * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
  */
-eYo.c9r.Dlgt_p.makeInitInstance = function () {
-  this.C9r_p.initInstance = function (object) {
-    if (!object) {
-      console.error('BREAK HERE!')
-    }
-    var f = k => {
-      var init = this.init_ && this.init_[k] || object[k+'Init']
-      if (init) {
-        object[k + '_'] = init.call(object)
-      }
-    }
-    this.valuedForEach(f)
-    this.ownedForEach(f)
-    this.clonedForEach(f) 
+eYo.c9r.DlgtObject_p.initInstance = function (object) {
+  if (!object) {
+    console.error('BREAK HERE!')
   }
+  var f = k => {
+    var init = this.init_ && this.init_[k] || object[k+'Init']
+    if (init) {
+      object[k + '_'] = init.call(object)
+    }
+  }
+  this.valuedForEach(f)
+  this.ownedForEach(f)
+  this.clonedForEach(f) 
 }
 
-eYo.Dlgt.eyo.makeInitInstance()
+/**
+ * Initialize an instance with valued, cached, owned and cloned properties.
+ * Default implementation forwards to super.
+ * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
+ */
+eYo.c9r.DlgtObject_p.initInstance = function (object) {
+  if (!object) {
+    console.error('BREAK HERE!')
+  }
+  var f = k => {
+    var init = this.init_ && this.init_[k] || object[k+'Init']
+    if (init) {
+      object[k + '_'] = init.call(object)
+    }
+  }
+  this.valuedForEach(f)
+  this.ownedForEach(f)
+  this.clonedForEach(f) 
+}
 
 /**
  * Dispose of the resources declared at that level.
  * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
  */
-eYo.Dlgt_p.disposeInstance = function (object) {
+eYo.c9r.DlgtObject_p.disposeInstance = function (object) {
   this.valuedClear_(object)
   this.cachedForget_(object)
   this.ownedDispose_(object)
@@ -59,7 +73,7 @@ eYo.Dlgt_p.disposeInstance = function (object) {
  * @param {String} k - name of the key to add
  * @param {Object} model - Object with `init` key, eventually.
  */
-eYo.Dlgt_p.registerInit = function (k, model) {
+eYo.c9r.DlgtObject_p.registerInit = function (k, model) {
   if (eYo.isNA(model)) {
     console.error('BREAK HERE!')
   }
@@ -76,7 +90,7 @@ eYo.Dlgt_p.registerInit = function (k, model) {
  * @param {String} k name of the ley to add
  * @param {Object} model Object with `dispose` key, eventually.
  */
-eYo.Dlgt_p.registerDispose = function (k, model) {
+eYo.c9r.DlgtObject_p.registerDispose = function (k, model) {
   var dispose = eYo.isF(model.dispose) && model.dispose
   if (dispose) {
     !this.disposer_ && (this.disposer_ = Object.create(null))
@@ -88,7 +102,7 @@ eYo.Dlgt_p.registerDispose = function (k, model) {
  * Declare the given model.
  * @param {Object} model - Object, like for |makeC9r|.
  */
-eYo.Dlgt_p.modelDeclare = function (model) {
+eYo.c9r.DlgtObject_p.modelDeclare = function (model) {
   model.CONST && this.CONSTDeclare(model.CONST)
   model.valued && this.valuedDeclare(model.valued)
   model.owned && this.ownedDeclare(model.owned)
@@ -105,7 +119,7 @@ eYo.Dlgt_p.modelDeclare = function (model) {
  * @param {Object} model Object with `value` keys,
  * f any.
  */
-eYo.Dlgt_p.CONSTDeclare = function (k, model = {}) {
+eYo.c9r.DlgtObject_p.CONSTDeclare = function (k, model = {}) {
   var f = (m) => {
     if (m.unique) {
       return {
@@ -133,7 +147,7 @@ eYo.Dlgt_p.CONSTDeclare = function (k, model = {}) {
  * @param {Object} model Object with `willChange` and `didChange` keys,
  * f any.
  */
-eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
+eYo.c9r.DlgtObject_p.valuedDeclare_ = function (k, model) {
   eYo.ParameterAssert(!this.props__.has(k))
   this.valued_.add(k)
   let C9r = this.C9r_
@@ -197,7 +211,7 @@ eYo.Dlgt_p.valuedDeclare_ = function (k, model) {
  * The initial value is `eYo.NA`.
  * @param {Array<String>} names names of the link to add
  */
-eYo.Dlgt_p.consolidatorMake = function (k, model) {
+eYo.c9r.DlgtObject_p.consolidatorMake = function (k, model) {
   let C9r = this.C9r_
   let C9r_p = C9r.prototype
   let consolidators = this.consolidators__ || (this.consolidators__ = Object.create(null))
@@ -225,7 +239,7 @@ eYo.Dlgt_p.consolidatorMake = function (k, model) {
  * The initial value is `eYo.NA`.
  * @param {Array<String>} names names of the link to add
  */
-eYo.Dlgt_p.valuedDeclare = function (model) {
+eYo.c9r.DlgtObject_p.valuedDeclare = function (model) {
   if (model.forEach) {
     model.forEach(k => {
       this.valuedDeclare_(k, {})
@@ -242,7 +256,7 @@ eYo.Dlgt_p.valuedDeclare = function (model) {
  * @param {Object} object -  an instance of the receiver's constructor,
  * or one of its subclasses.
  */
-eYo.Dlgt_p.valuedClear_ = function (object) {
+eYo.c9r.DlgtObject_p.valuedClear_ = function (object) {
   this.valuedForEach(k => {
     var k_ = k + '_'
     var x = object[k_]
@@ -269,7 +283,7 @@ eYo.Dlgt_p.valuedClear_ = function (object) {
  * @param {String} k name of the owned to add
  * @param {Object} data -  the object used to define the property: key `value` for the initial value, key `willChange` to be called when the property is about to change (signature (before, after) => function, truthy when the change should take place). The returned value is a function called after the change has been made in memory.
  */
-eYo.Dlgt_p.ownedDeclare_ = function (k, model = {}) {
+eYo.c9r.DlgtObject_p.ownedDeclare_ = function (k, model = {}) {
   eYo.ParameterAssert(!this.props__.has(k))
   this.owned_.add(k)
   const proto = this.C9r_.prototype
@@ -350,7 +364,7 @@ eYo.Dlgt_p.ownedDeclare_ = function (k, model = {}) {
  * The receiver is the owner.
  * @param {Object} many  key -> data map.
  */
-eYo.Dlgt_p.ownedDeclare = function (many) {
+eYo.c9r.DlgtObject_p.ownedDeclare = function (many) {
   if (many.forEach) {
     many.forEach(k => {
       this.ownedDeclare_(k)
@@ -366,7 +380,7 @@ eYo.Dlgt_p.ownedDeclare = function (many) {
  * Dispose in the given object, the properties given by their main name.
  * @param {Object} object - the object that owns the property. The other parameters are forwarded to the dispose method.
  */
-eYo.Dlgt_p.ownedDispose_ = function (object, ...params) {
+eYo.c9r.DlgtObject_p.ownedDispose_ = function (object, ...params) {
   this.ownedForEach(k => {
     var k_ = k + '_'
     var k__ = k + '__'
@@ -397,7 +411,7 @@ eYo.Dlgt_p.ownedDispose_ = function (object, ...params) {
  * It may take one argument to override the proposed after value.
  * If key is `foo`, then a `fooForget` and a `fooUpdate` method are created automatically.
  */
-eYo.Dlgt_p.cachedDeclare_ = function (k, model) {
+eYo.c9r.DlgtObject_p.cachedDeclare_ = function (k, model) {
   eYo.ParameterAssert(!this.props__.has(k))
   this.cached_.add(k)
   var proto = this.C9r_.prototype
@@ -481,7 +495,7 @@ eYo.Dlgt_p.cachedDeclare_ = function (k, model) {
  * Add 3 levels cached properties to a prototype.
  * @param {Object} many -  the K => V mapping to which we apply `cachedDeclare_(K, V)`.
  */
-eYo.Dlgt_p.cachedDeclare = function (many) {
+eYo.c9r.DlgtObject_p.cachedDeclare = function (many) {
   Object.keys(many).forEach(n => {
     this.cachedDeclare_(n, many[n])
   })
@@ -490,7 +504,7 @@ eYo.Dlgt_p.cachedDeclare = function (many) {
 /**
  * Forget all the cached valued.
  */
-eYo.Dlgt_p.cachedForget_ = function () {
+eYo.c9r.DlgtObject_p.cachedForget_ = function () {
   this.cachedForEach(n => {
     this.cachedForgetters__[n].call(this)
   })
@@ -499,7 +513,7 @@ eYo.Dlgt_p.cachedForget_ = function () {
 /**
  * Forget all the cached valued.
  */
-eYo.Dlgt_p.cachedUpdate_ = function () {
+eYo.c9r.DlgtObject_p.cachedUpdate_ = function () {
   this.cachedForEach(n => {
     this.cachedUpdaters__[n].call(this)
   })
@@ -509,7 +523,7 @@ eYo.Dlgt_p.cachedUpdate_ = function () {
  * Add computed properties to a prototype.
  * @param {Map<String, Function>} models,  the key => Function mapping.
  */
-eYo.Dlgt_p.computedDeclare = function (models) {
+eYo.c9r.DlgtObject_p.computedDeclare = function (models) {
 //  console.warn('computedDeclare:', this.name, Object.keys(models))
   Object.keys(models).forEach(k => {
 //    console.warn('computedDeclare -> ', k)
@@ -568,7 +582,7 @@ eYo.Dlgt_p.computedDeclare = function (models) {
  * Add methods to the associate prototype.
  * @param {Map<String, Function>} models,  the key => Function mapping.
  */
-eYo.Dlgt_p.calledDeclare = function (model) {
+eYo.c9r.DlgtObject_p.calledDeclare = function (model) {
   let p = this.C9r_p
   Object.keys(model).forEach(k => {
     eYo.Assert(!eYo.do.hasOwnProperty(p, k))
@@ -584,7 +598,7 @@ eYo.Dlgt_p.calledDeclare = function (model) {
  * and `foo.set(bar)` will set `foo` properties according to `bar`.
  * @param {Map<String, Function|Object>} models,  the key => Function mapping.
  */
-eYo.Dlgt_p.clonedDeclare = function (models) {
+eYo.c9r.DlgtObject_p.clonedDeclare = function (models) {
   this.init_ || (this.init_ = Object.create(null))
   var proto = this.C9r_.prototype
   Object.keys(models).forEach(k => { // No `for (var k in models) {...}`, models may change during the loop
@@ -696,7 +710,7 @@ eYo.Dlgt_p.clonedDeclare = function (models) {
  * @param {Object} object - the object that owns the property
  * @param {Array<string>} names -  a list of names
  */
-eYo.Dlgt_p.clonedDispose_ = function (object) {
+eYo.c9r.DlgtObject_p.clonedDispose_ = function (object) {
   this.clonedForEach(k => {
     var k__ = k + '__'
     var x = object[k__]
@@ -706,3 +720,110 @@ eYo.Dlgt_p.clonedDispose_ = function (object) {
     }
   })
 }
+
+/**
+ * Make the initUI method.
+ */
+eYo.c9r.DlgtObject_p.makeInitUI = function () {
+  var ui = this.model.ui
+  let initUI = ui && ui.init
+  let C9r_s = this.C9r_s
+  let initUI_s = C9r_s && C9r_s.initUI
+  if (initUI) {
+    if (XRegExp.exec(initUI.toString(), eYo.xre.function_builtin)) {
+      if (initUI_s) {
+        var f = function (...args) {
+          initUI.call(this, () => {
+            initUI_s.call(this, ...args)
+            this.ui_driver.doInitUI(this, ...args)
+          }, ...args)
+        }
+      } else {
+        f = function (...args) {
+          initUI.call(this, () => {
+            this.ui_driver.doInitUI(this, ...args)
+          }, ...args)
+        }
+      }
+    } else if (initUI_s) {
+      f = function (...args) {
+        initUI_s.call(this, ...args)
+        this.ui_driver.doInitUI(this, ...args)
+        initUI.apply(this, arguments)  
+      }
+    } else {
+      f = function (...args) {
+        this.ui_driver.doInitUI(this, ...args)
+        initUI.apply(this, arguments)  
+      }
+    }
+  } else if (initUI_s) {
+    f = function (...args) {
+      initUI_s.call(this, ...args)
+      this.ui_driver.doInitUI(this, ...args)
+    }
+  } else {
+    f = function (...args) {
+      this.ui_driver.doInitUI(this, ...args)
+    }
+  }
+  this.C9r_p.initUI = f
+}
+
+/**
+ * Make the disposeUI method.
+ */
+eYo.c9r.DlgtObject_p.makeDisposeUI = function () {
+  var ui = this.model.ui
+  let disposeUI = ui && ui.dispose
+  let C9r_s = this.C9r_s
+  let disposeUI_s = C9r_s && C9r_s.disposeUI
+  if (disposeUI) {
+    if (XRegExp.exec(disposeUI.toString(), eYo.xre.function_builtin)) {
+      if (disposeUI_s) {
+        var f = function (...args) {
+          disposeUI.call(this, () => {
+            disposeUI_s.call(this, ...args)              
+            this.ui_driver.doDisposeUI(this, ...args)
+          }, ...args)
+        }
+      } else {
+        f = function (...args) {
+          disposeUI.call(this, () => {
+            this.ui_driver.doDisposeUI(this, ...args)
+          }, ...args)
+        }
+      }
+    } else if (disposeUI_s) {
+      f = function (...args) {
+        disposeUI_s.call(this, ...args)
+        disposeUI.apply(this, arguments)
+        this.ui_driver.doDisposeUI(this, ...args)
+      }
+    } else {
+      f = function (...args) {
+        disposeUI.apply(this, arguments)  
+        this.ui_driver.doDisposeUI(this, ...args)
+      }
+    }
+  } else if (disposeUI_s) {
+    f = function (...args) {
+      disposeUI_s.call(this, ...args)
+      this.ui_driver.doDisposeUI(this, ...args)
+    }
+  } else {
+    f = function (...args) {
+      this.ui_driver.doDisposeUI(this, ...args)
+    }
+  }
+  this.C9r_p.disposeUI = f
+}
+
+/**
+ * The model management.
+ * Objects owns properties as `eYo.c9r.Property` instances.
+ * @name {eYo.c9r.Object}
+ * @namespace
+ */
+eYo.c9r.makeC9r('Object', eYo.c9r.DlgtObject)
+

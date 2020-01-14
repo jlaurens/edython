@@ -839,7 +839,7 @@ describe('Primary(DEFINED)', function() {
     eYo.Test.list_connect(d, 'value', eYo.Test.new_brick(rhs))
     var u = d.value_s.unwrappedTarget
     chai.assert(u.Target_p === rhs, `MISSED ${u.Target_p} === ${rhs}`)
-    // d.moveBy(eYo.Where.xy(20, 20))
+    // d.moveBy(eYo.c9r.Where.xy(20, 20))
     var dom = eYo.xml.BrickToDom(d)
     d.dispose()
     d = eYo.Test.new_brick(dom)
@@ -855,7 +855,7 @@ describe('Primary(DEFINED)', function() {
     eYo.Test.list_connect(d, 'value', eYo.Test.new_brick(rhs_b))
     var u = d.value_s.unwrappedTarget
     chai.assert(u.Target_p === rhs_a, `MISSED ${u.Target_p} === ${rhs_a}`)
-    // d.moveBy(eYo.Where.xy(20, 20))
+    // d.moveBy(eYo.c9r.Where.xy(20, 20))
     var dom = eYo.xml.BrickToDom(d)
     d.dispose()
     d = eYo.Test.new_brick(dom)
@@ -908,7 +908,7 @@ describe('Primary(Assignment)', function() {
     // console.log(dom)
     var d2 = eYo.Test.new_brick(dom)
     f('assignment_chain', d2)
-    d2.moveBy(eYo.Where.xy(50, 10))
+    d2.moveBy(eYo.c9r.Where.xy(50, 10))
     d2.dispose()
   })
   it('f(… = …)', function() {

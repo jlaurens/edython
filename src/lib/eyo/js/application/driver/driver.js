@@ -24,9 +24,7 @@ eYo.makeNS('driver')
  * @name {eYo.driver.Dlgt}
  * @param {Function} constructor
  */
-eYo.driver.makeDlgt(eYo.c9r.Dlgt)
-
-eYo.driver.Dlgt.eyo.makeInitInstance()
+eYo.driver.makeDlgt(eYo.c9r.DlgtObject)
 
 /**
  * Contructor delegate for the driver manager.

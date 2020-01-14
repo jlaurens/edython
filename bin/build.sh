@@ -264,7 +264,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/graphic/graphic.js" \
 --js "src/lib/eyo/js/application/ui/motion.js" \
 --js "src/lib/eyo/js/parser/node.js" \
---js "src/lib/eyo/js/core/geometry.js" \
 --js "src/lib/eyo/js/other/scaler.js" \
 --js "src/lib/eyo/js/application/desk/workspace/scrollbar/scrollbar.js" \
 --js "src/lib/eyo/js/application/desk/workspace/scroller/scroller.js" \
@@ -274,8 +273,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/abstract/owned.js" \
 --js "src/lib/eyo/js/core/change.js" \
 --js "src/lib/eyo/js/other/db.js" \
+--js "src/lib/eyo/js/core/c9r_object.js" \
 --js "src/lib/eyo/js/core/c9r_prop.js" \
---js "src/lib/eyo/js/core/c9r_dlgt.js" \
+--js "src/lib/eyo/js/core/geometry.js" \
+--js "src/lib/eyo/js/application/desk/workspace/board/brick/shape.js" \
 --js "src/lib/eyo/js/core/c9r_model.js" \
 --js "src/lib/eyo/js/core/change_count.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/consolidator.js" \
@@ -296,7 +297,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/module/module_stdtypes.js" \
 --js "src/lib/eyo/js/module/module_turtle.js" \
 --js "src/lib/eyo/js/parser/tokenizer.js" \
---js "src/lib/eyo/js/application/desk/workspace/board/brick/shape.js" \
 --js "src/lib/eyo/js/application/desk/workspace/trashcan/trashcan.js" \
 --js "src/lib/eyo/js/application/desk/workspace/zoomer/zoomer.js" \
 --js "src/lib/eyo/js/application/abstract/pane.js" \

@@ -61,9 +61,9 @@ eYo.makeC9r('Workspace', eYo.c9r.Pane, {
     zoomer () { return new eYo.Zoomer(this) },
   },
   cloned: {
-    /** @type {!eYo.Rect} */
+    /** @type {!eYo.c9r.Rect} */
     viewRect () {
-      new eYo.Rect()
+      new eYo.c9r.Rect()
     }
   },
   valued: {

@@ -18,7 +18,7 @@ eYo.require('c9r')
  * @param {eYo.Workspace} workspace The board to sit in.
  * @constructor
  * @readonly
- * @property {eYo.Rect} viewRect,  The view rectangle
+ * @property {eYo.c9r.Rect} viewRect,  The view rectangle
  * @readonly
  * @property {eYo.Workspace} workspace,  The workspace...
  * @readonly
@@ -45,7 +45,7 @@ eYo.c9r.Dflt.makeInheritedC9r(eYo, 'WorkspaceControl', {
   },
   cloned: {
     viewRect () {
-      var ans = new eYo.Rect()
+      var ans = new eYo.c9r.Rect()
       ans.width = this.WIDTH_
       ans.height = this.HEIGHT_
       return ans

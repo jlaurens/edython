@@ -17,7 +17,7 @@ eYo.require('do')
 eYo.require('c9r.BSMOwned')
 eYo.require('decorate')
 
-eYo.forwardDeclare('Where')
+eYo.forwardDeclare('c9r.Where')
 eYo.forwardDeclare('field')
 eYo.forwardDeclare('magnet')
 
@@ -249,7 +249,7 @@ eYo.c9r.BSMOwned.makeInheritedC9r(eYo.slot, 'Dflt', {
   },
   cloned: {
     where () {
-      return new eYo.Where()
+      return new eYo.c9r.Where()
     }
   },
   /**

@@ -7,7 +7,7 @@ describe('Scrollbar', function() {
       eYo.expr.Dflt.makeInheritedC9r(type, {})
       var b1 = eYo.brick.newReady(eYo.app.Board, type)
       var b2 = eYo.brick.newReady(eYo.app.Board, type)
-      b2.moveTo(eYo.Where.xy(-5, 90))
+      b2.moveTo(eYo.c9r.Where.xy(-5, 90))
     })
   })
 })

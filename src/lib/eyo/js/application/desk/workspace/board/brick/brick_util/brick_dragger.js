@@ -83,7 +83,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
   },
   xyNew_: {
     get () {
-      return new eYo.Where(this.xyStart_).forward(this.xyDelta)
+      return new eYo.c9r.Where(this.xyStart_).forward(this.xyDelta)
     }
   }
 })
@@ -239,7 +239,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
   /**
    * The location of the top left corner of the dragging brick at the beginning
    * of the drag in board coordinates.
-   * @type {!eYo.Where}
+   * @type {!eYo.c9r.Where}
    * @private
    */
   this.xyStart_ = this.brick_.xy
@@ -324,7 +324,7 @@ eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
 /**
  * Execute a step of brick dragging, based on the given event.  Update the
  * display accordingly.
- * @param {eYo.Where} delta How far the pointer has
+ * @param {eYo.c9r.Where} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  */
 eYo.BrickDragger.prototype.drag = function() {
@@ -353,7 +353,7 @@ eYo.BrickDragger.prototype.drag = function() {
 /**
  * Finish a brick drag and put the brick back on the board.
  * @param {Event} e The most recent move event.
- * @param {eYo.Where} delta How far the pointer has
+ * @param {eYo.c9r.Where} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  */
 eYo.BrickDragger.prototype.end = (() => {

@@ -48,7 +48,7 @@ eYo.svg.BrickDragSurface = function(container) {
   svg.canvas_ = eYo.svg.newElement('g', {
     class: 'eyo-brick-canvas'
   }, g)
-  this.where_ = new eYo.Where()
+  this.where_ = new eYo.c9r.Where()
 }
 
 /**
@@ -97,7 +97,7 @@ Object.defineProperties(eYo.svg.BrickDragSurface.prototype, {
    * Cached value for the translation of the drag surface.
    * This translation is in pixel units, because the scale is applied to the
    * drag group rather than the top-level SVG.
-   * @type {eYo.Where}
+   * @type {eYo.c9r.Where}
    * @private
    */
   where: {
@@ -120,7 +120,7 @@ Object.defineProperties(eYo.svg.BrickDragSurface.prototype, {
   /**
    * Reports the surface translation in scaled board coordinates.
    * Use this when finishing a drag to return blocks to the correct position.
-   * @return {!eYo.Where} Current translation of the surface.
+   * @return {!eYo.c9r.Where} Current translation of the surface.
    */
   translation: {
     get () {
@@ -128,7 +128,7 @@ Object.defineProperties(eYo.svg.BrickDragSurface.prototype, {
     }
   },
   /**
-   * @return {eYo.Rect}
+   * @return {eYo.c9r.Rect}
    */
   limits: {
     get () {
@@ -162,7 +162,7 @@ eYo.svg.BrickDragSurface.prototype.start = function(draggerBrick) {
   // appendChild removes the group from its previous parent node
   canvas.appendChild(brick.dom.svg.group_)
   svg.root_.style.display = 'block'
-  this.where = new eYo.Where()
+  this.where = new eYo.c9r.Where()
 }
 
 eYo.Temp.i = 0
@@ -239,7 +239,7 @@ Object.defineProperties(eYo.svg.BoardDragSurface.prototype, {
   /**
    * Reports the surface translation in scaled board coordinates.
    * Use this when finishing a drag to return bricks to the correct position.
-   * @type {!eYo.Where} Current translation of the surface
+   * @type {!eYo.c9r.Where} Current translation of the surface
    */
   translation: {
     get () {
@@ -282,7 +282,7 @@ eYo.svg.BoardDragSurface.prototype.start = function(dragger, width, height) {
  * We translate the drag surface instead of the blocks inside the surface
  * so that the browser avoids repainting the SVG.
  * Because of this, the drag coordinates must be adjusted by scale.
- * @param {eYo.Where} xy Translation for the entire surface
+ * @param {eYo.c9r.Where} xy Translation for the entire surface
  */
 eYo.svg.BoardDragSurface.prototype.moveTo = function(xy) {
   // This is a work-around to prevent the bricks from rendering

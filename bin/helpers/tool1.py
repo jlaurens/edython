@@ -251,4 +251,6 @@ buildDeps('eyo', 'eyo')
 print('Building blockly/core deps')
 buildDeps('blockly/core', 'blockly')
 
+print('Done')
+
 exit(0)

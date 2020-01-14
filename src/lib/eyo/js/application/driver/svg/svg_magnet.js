@@ -33,7 +33,7 @@ eYo.svg.Magnet.prototype.hilight = function (m4t) {
   var steps
   if (m4t.isSlot) {
     if (m4t.target) {
-      steps = eYo.Shape.definitionWithBrick(m4t.targetBrick)
+      steps = eYo.c9r.shapeDefinitionWithBrick(m4t.targetBrick)
     } else {
       steps = eYo.Shape.definitionWithMagnet(m4t)
       eYo.svg.MagnetHighlightedPath_ =
@@ -48,7 +48,7 @@ eYo.svg.Magnet.prototype.hilight = function (m4t) {
       return
     }
   } else if (m4t.isOutput) {
-    steps = eYo.Shape.definitionWithBrick(node)
+    steps = eYo.c9r.shapeDefinitionWithBrick(node)
   } else {
     steps = eYo.Shape.definitionWithMagnet(m4t)
   }

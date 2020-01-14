@@ -149,13 +149,13 @@ eYo.c9r.Dflt.makeInheritedC9r(eYo, 'Motion', {
      * The position of the mouse when the motion started.
      * Units are css pixels, with (0, 0) at the top left of
      * the browser window (mouseEvent clientX/Y).
-     * @type {eYo.Where}
+     * @type {eYo.c9r.Where}
      */
     xyStart: eYo.NA,
     /**
      * How far the mouse has moved during this drag, in pixel units.
      * (0, 0) is at this.xyStart_.
-     * @type {eYo.Where}
+     * @type {eYo.c9r.Where}
      * @private
      */
     xyDelta: eYo.NA,
@@ -290,11 +290,11 @@ eYo.c9r.Dflt.makeInheritedC9r(eYo, 'Motion', {
     },
     /**
      * Position of the receiver's event in the board.
-     * @type {eYo.Where}
+     * @type {eYo.c9r.Where}
      * @readonly
      */
     where () {
-      return new eYo.Where(this.event)
+      return new eYo.c9r.Where(this.event)
     },
   },
 })
@@ -575,8 +575,8 @@ eYo.Motion_p.captureStartMoreTouch_ = function(e) {
       var touch1st = e.touches().identifiedTouch(this.touchIDs_[0])
       var touch2nd = list.item(0)
       this.touchIDs_.push(touch2nd.identifier)
-      var xy1st = new eYo.Where(touch1st)
-      var xy2nd = new eYo.Where(touch2nd)
+      var xy1st = new eYo.c9r.Where(touch1st)
+      var xy2nd = new eYo.c9r.Where(touch2nd)
       this.startDistance_ = xy1st.distance(xy2nd) // Screen coordinates ?
       // Simply ignore any supplemental touch:
       this.captureStart = eYo.do.nothing

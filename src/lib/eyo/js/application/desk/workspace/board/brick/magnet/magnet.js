@@ -16,7 +16,7 @@ eYo.require('c9r.BSMOwned')
 eYo.provide('magnet')
 
 eYo.forwardDeclare('do')
-eYo.forwardDeclare('Where')
+eYo.forwardDeclare('c9r.Where')
 
 // Magnet types
 Object.defineProperties(eYo.magnet._p, {
@@ -431,7 +431,7 @@ eYo.magnet.makeC9r('Dflt', eYo.c9r.BSMOwned, {
   },
   cloned: {
     where () {
-      new eYo.Where()
+      new eYo.c9r.Where()
     }
   },
   computed: {
@@ -494,13 +494,13 @@ eYo.magnet.Dflt.eyo.modelDeclare({
     },
     /**
      * Position in the brick.
-     * @return {eYo.Where}
+     * @return {eYo.c9r.Where}
      */
     whereInBrick: {
       get () {
         return this.slot
         ? this.slot.whereInBrick.forward(this.where)
-        : new eYo.Where(this.where)
+        : new eYo.c9r.Where(this.where)
       },
       set (after) {
         this.where_.set(this.slot
@@ -511,7 +511,7 @@ eYo.magnet.Dflt.eyo.modelDeclare({
     },
     /**
      * Position in the board.
-     * @return {eYo.Where}
+     * @return {eYo.c9r.Where}
      */
     whereInBoard: {
       get () {
@@ -1479,7 +1479,7 @@ eYo.magnet.Dflt_p.bumpAwayFrom_ = function (m4t) {
   // Raise it to the top for extra visibility.
   var selected = root.hasFocus
   selected || root.selectAdd()
-  var dxy = eYo.Where.xy(eYo.Motion.SNAP_RADIUS, eYo.Motion.SNAP_RADIUS).backward(this.xy)
+  var dxy = eYo.c9r.Where.xy(eYo.Motion.SNAP_RADIUS, eYo.Motion.SNAP_RADIUS).backward(this.xy)
   if (reverse) {
     // When reversing a bump due to an uneditable brick, bump up.
     dxy.y = -dxy.y
@@ -1539,7 +1539,7 @@ eYo.magnet.Dflt_p.unhideAll = function() {
    * @param {eYo.Connection} conn The connection searching for a compatible
    *     mate.
    * @param {number} maxRadius The maximum radius to another connection.
-   * @param {eYo.Where} dxy Offset between this connection's location
+   * @param {eYo.c9r.Where} dxy Offset between this connection's location
    *     in the database and the current location (as a result of dragging).
    * @return {!{connection: ?eYo.Connection, radius: number}} Contains two
    *     properties:' connection' which is either another connection or null,
@@ -1550,7 +1550,7 @@ eYo.magnet.Dflt_p.unhideAll = function() {
     if (!db.length) {
       return {magnet: null, radius: maxRadius}
     }
-    var where = new eYo.Where(magnet.where).forward(dxy)
+    var where = new eYo.c9r.Where(magnet.where).forward(dxy)
     // findPositionForConnection finds an index for insertion, which is always
     // after any block with the same y index.  We want to search both forward
     // and back, so search on both sides of the index.
@@ -1584,8 +1584,8 @@ eYo.magnet.Dflt_p.unhideAll = function() {
   /**
    * Find the closest compatible connection to this connection.
    * All parameters are in board units.
-   * @param {eYo.Where} maxLimit The maximum radius to another connection.
-   * @param {eYo.Where} dxy Horizontal offset between this connection's location
+   * @param {eYo.c9r.Where} maxLimit The maximum radius to another connection.
+   * @param {eYo.c9r.Where} dxy Horizontal offset between this connection's location
    *     in the database and the current location (as a result of dragging).
    * @return {!{connection: ?eYo.magnet, radius: number}} Contains two
    *     properties: 'connection' which is either another connection or null,
@@ -1603,7 +1603,7 @@ eYo.magnet.Dflt_p.unhideAll = function() {
 /**
  * Move this magnet to the location given by its offset within the brick and
  * the location of the brick's top left corner.
- * @param {eYo.Where} blockTL The location of the top left corner
+ * @param {eYo.c9r.Where} blockTL The location of the top left corner
  *     of the brick, in board coordinates.
  */
 eYo.magnet.Dflt_p.moveToOffset = function(blockTL) {
@@ -1612,7 +1612,7 @@ eYo.magnet.Dflt_p.moveToOffset = function(blockTL) {
 
 /**
  * Change the magnet's global coordinates.
- * @param {eYo.Where} here
+ * @param {eYo.c9r.Where} here
  */
 eYo.magnet.Dflt_p.moveTo = function(here) {
   if (!this.where.equals(here) || (!here.x && !here.y)) {
@@ -1627,7 +1627,7 @@ eYo.magnet.Dflt_p.moveTo = function(here) {
 /**
  * Change the connection's coordinates.
  * Relative move with respect to the actual position.
- * @param {eYo.Where} dxy Change to coordinates, in board units.
+ * @param {eYo.c9r.Where} dxy Change to coordinates, in board units.
  */
 eYo.magnet.Dflt_p.moveBy = function(dxy) {
   this.moveTo(this.where.forward(dxy))

@@ -128,7 +128,7 @@ eYo.fcls.Brick_p.moveTo = eYo.do.nothing
  * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
  * This does not change with board scale.
- * @return {!eYo.Where} Object with .x and .y properties in
+ * @return {!eYo.c9r.Where} Object with .x and .y properties in
  *     board coordinates.
  */
 eYo.fcls.Brick_p.whereInBoard = eYo.do.nothing
