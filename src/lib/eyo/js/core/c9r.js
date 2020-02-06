@@ -692,7 +692,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
   })
   let DlgtDlgt = function (ns, key, C9r, model) {
     Dlgt.call(this, ns, key, C9r, model)
-  }
+  } // DlgtDlgt will never change and does not need to be suclassed
   eYo.inherits(DlgtDlgt, Dlgt)
   new DlgtDlgt(eYo.c9r, 'Dlgt', Dlgt, {})
   new DlgtDlgt(eYo.c9r, 'Dlgt…', DlgtDlgt, {})
@@ -706,7 +706,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
  * @param {Function} C9r - the constructor associate to the delegate
  * @param {Object} model - the model object associate to the delegate, used for extension.
  */
-eYo.c9r._p.makeDlgt = (ns, key, C9r, model) => {
+eYo._p.makeDlgt = (ns, key, C9r, model) => {
   if (eYo.isStr(ns)) {
     model && eYo.throw(`Unexpected model (1): ${model}`)
     model = C9r
@@ -719,8 +719,6 @@ eYo.c9r._p.makeDlgt = (ns, key, C9r, model) => {
   !eYo.isStr(key) && eYo.throw(`Missing key string: ${key}`)
   !eYo.isF(C9r) && eYo.throw(`Unexpected C9r: ${C9r}`)
   eYo.isC9r(C9r) && eYo.throw(`Already a C9r: ${C9r}`)
-  // in next function, all the parameters are required
-  // but some may be eYo.NA
   let SuperC9r = C9r.SuperC9r
   let SuperDlgt = SuperC9r && SuperC9r.eyo.constructor
   let Dlgt = SuperDlgt ? function (ns, key, C9r, model) {
@@ -730,15 +728,23 @@ eYo.c9r._p.makeDlgt = (ns, key, C9r, model) => {
     eYo.inherits(Dlgt, SuperDlgt)
     ns === eYo.NULL_NS || eYo.isNS(ns) || (ns = SuperC9r.eyo.ns)
   }
-  this.prepareDlgt_p(Dlgt.prototype)
+  // initialization of the dlgt
+  // when defined, init must be a self contained function.
+  let init = model.dlgt
+  if (eYo.isF(init)) {
+    Dlgt.prototype.init = SuperDlgt ? function (...args) {
+      this.init = eYo.do.nothing
+      SuperDlgt.prototype.init.call(this, ...args)
+      init.call(this, ...args)
+    } : function () {
+      this.init = eYo.do.nothing
+      init.call(this, ...args)
+    }
+  }
+  // in next function call, all the parameters are required
+  // but some may be eYo.NA
   return new Dlgt(ns, key, C9r, model)
 }
-
-/**
- * Prepare the delegate prototype before the unique instance is created.
- * In general, add a `init` method.
- */
-eYo.c9r._p.prepareDlgt_p = eYo.do.nothing
 
 // ANCHOR Dflt
 {

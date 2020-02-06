@@ -31,21 +31,6 @@ eYo.forwardDeclare('expr.List')
 
 goog.forwardDeclare('goog.dom');
 
-eYo.slot.makeDlgt()
-
-/**
- * Initialize the instance.
- * Calls the inherited method, then adds methods defined by the model.
- * The methods are managed by the |dataHandler| method of the |eYo.c9r.model|.
- * @param {Object} object - The object to initialize.
- */
-eYo.slot.Dlgt_p.initInstance = function (object) {
-  eYo.slot.Dlgt_s.initInstance(object)
-  object.model['.methods'].forEach(f => {
-    f(object)
-  })
-}
-
 /**
  * The model is one of the entries of the `slots` section
  * of the object used to create a delegate's subclass.
@@ -287,6 +272,19 @@ eYo.slot.makeDflt({
     },
   },
 })
+
+/**
+ * Initialize the instance.
+ * Calls the inherited method, then adds methods defined by the model.
+ * The methods are managed by the |dataHandler| method of the |eYo.c9r.model|.
+ * @param {Object} object - The object to initialize.
+ */
+eYo.slot.Dflt.eyo_p.initInstance = function (object) {
+  this.constructor.eyo.C9r_s.initInstance.call(this, object)
+  object.model['.methods'].forEach(f => {
+    f(object)
+  })
+}
 
 /**
  * Clean the required status, changing the value if necessary.

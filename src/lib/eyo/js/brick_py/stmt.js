@@ -24,12 +24,6 @@ eYo.forwardDeclare('brick.operator')
 eYo.brick.makeNS(eYo, 'stmt')
 
 /**
- * @name {eYo.stmt.Dlgt}
- * @constructor
- */
-eYo.stmt.makeDlgt()
-
-/**
  * Class for a Delegate, statement brick.
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
@@ -83,7 +77,7 @@ eYo.brick.registerAll(eYo.t3.stmt, eYo.stmt.Dflt, true)
  * @param {Object} model
  * @return the created brick
  */
-eYo.stmt._p.insertParentWithModel = function (model) {
+eYo.stmt.Dflt_p.insertParentWithModel = function (model) {
   var magnet = this.head_m
   if (magnet) {
     var parent
@@ -133,7 +127,7 @@ eYo.stmt._p.insertParentWithModel = function (model) {
  * @param {string} belowPrototypeName
  * @return the created brick
  */
-eYo.stmt._p.insertBrickAfter = function (belowPrototypeName) {
+eYo.stmt.Dflt_p.insertBrickAfter = function (belowPrototypeName) {
   return eYo.events.groupWrap(() => {
     var below = eYo.brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m

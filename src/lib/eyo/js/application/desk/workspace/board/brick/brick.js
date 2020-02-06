@@ -64,21 +64,6 @@ eYo.forwardDeclare('focus')
 }) ()
 
 /**
- * Delegate constructor for bricks.
- * @name {eYo.brick.Dlgt}
- * @constructor
- * @param {Object} ns -  namespace.
- * @param {String} key -  the key used when the constructor was created.
- * @param {Object} C9r -  the object to which this instance is attached.
- * @param {Object} model -  the model used to create the constructor.
- */
-eYo.brick.makeDlgt({
-  init (ns, key, C9r, model) {
-    this.types = []
-  }
-})
-
-/**
  * @name {eYo.brick.Dflt}
  * Default class for a brick.
  * Not normally called directly, `eYo.brick.Mngr.Create(...)` is recommanded and `eYo.board` 's `newBrick` method is highly recommanded.
@@ -101,6 +86,16 @@ eYo.brick.makeDlgt({
  * @property {object} wrapper - Get the surround parent which is not wrapped_.
  */
 eYo.brick.makeDflt({
+  /**
+   * Delegate initializator for bricks.
+   * @param {Object} ns -  namespace.
+   * @param {String} key -  the key used when the constructor was created.
+   * @param {Object} C9r -  the object to which this instance is attached.
+   * @param {Object} model -  the model used to create the constructor.
+   */
+  dlgt (ns, key, C9r, model) {
+    this.types = []
+  },
   valued: {
     parent: {
       /**
