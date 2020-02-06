@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('e')
-
 eYo.require('do')
+
+eYo.require('e')
 eYo.require('tkn')
 
 /**
@@ -200,12 +200,12 @@ extern int Py_DEBUG
 
 grammar * */
 
-eYo.gmr.newgrammar = (/* int */ start) => {
+eYo.gmr._p.newgrammar = (/* int */ start) => {
   return new eYo.gmr.Book(null, null, start)
 }
 
 /* dfa * */
-eYo.gmr.Adddfa = (/* grammar * */ g, /* int */ type, /* const char * */ name) => {
+eYo.gmr._p.Adddfa = (/* grammar * */ g, /* int */ type, /* const char * */ name) => {
   var /* dfa * */ d = {}
   g.g_dfa.push(d)
   d.d_type = type
@@ -218,7 +218,7 @@ eYo.gmr.Adddfa = (/* grammar * */ g, /* int */ type, /* const char * */ name) =>
 }
 
 /* int */
-eYo.gmr.Addstate = (/* dfa * */ d) => {
+eYo.gmr.addstate = (/* dfa * */ d) => {
   var /* state * */ s = new eYo.gmr.State()
   d.d_state.push(state)
   ++d.d_nstates
@@ -226,13 +226,13 @@ eYo.gmr.Addstate = (/* dfa * */ d) => {
 }
 
 /* void */
-eYo.gmr.Addarc = (/* dfa * */ d, /* int */ from, /* int */ to, /* int */ lbl) => {
+eYo.gmr.addarc = (/* dfa * */ d, /* int */ from, /* int */ to, /* int */ lbl) => {
   s = d.d_state[from]
   s.s_arc.push(new eYo.gmr.Arc(lbl, to))
 }
 
 /* int */
-eYo.gmr.Addlabel = (/* labellist * */ ll, /* int */ type, /* const char * */ str) => {
+eYo.gmr.addlabel = (/* labellist * */ ll, /* int */ type, /* const char * */ str) => {
   var /* int */ i
   for (i = 0; i < ll.length; i++) {
     if (ll[i].lb_type === type && ll[i].lb_str === str) {

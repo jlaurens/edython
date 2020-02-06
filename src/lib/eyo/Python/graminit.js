@@ -201,7 +201,7 @@ Object.defineProperties(eYo.tkn, {
   var s = (arcs) => new eYo.gmr.State(arcs)
   var d = (type, name, initial, n_states, states, first) => new eYo.gmr.DFA(type, name, initial, states, first)
   var b = (...args) => {
-    var ss = eYo.BitSet.newbitset(args.length * 8)
+    var ss = eYo.gmr.newbitset(args.length * 8)
     for (var i = 0 ; i < args.length ; i++) {
       ss.ra[i] = args[i]
     }

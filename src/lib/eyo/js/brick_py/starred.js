@@ -24,12 +24,12 @@ eYo.provide('brick.starred')
 /**
  * Convenient check list for starred expressions
  */
-eYo.t3.expr.check._expression_or_parameter = eYo.t3.expr.check.expression.Concat(eYo.t3.expr.check.parameter)
+eYo.t3.expr.check._expression_or_parameter = eYo.t3.expr.check.expression.concat(eYo.t3.expr.check.parameter)
 
 /**
  * Convenient check list for starred expressions
  */
-eYo.t3.expr.check._or_expr_all_or_parameter_or_target = eYo.t3.expr.check.or_expr_all.Concat(eYo.t3.expr.check.parameter).concat(eYo.t3.expr.check.target)
+eYo.t3.expr.check._or_expr_all_or_parameter_or_target = eYo.t3.expr.check.or_expr_all.concat(eYo.t3.expr.check.parameter).concat(eYo.t3.expr.check.target)
 
 /**
  * Class for a Delegate, starred brick.

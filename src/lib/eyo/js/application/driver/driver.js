@@ -24,6 +24,9 @@ eYo.o3d.makeNS(eYo, 'driver')
  * @param {Object} owner
  */
 eYo.driver.makeC9r('Mngr', {
+  dlgt () {
+    this.driverC9rByName = Object.create(null)
+  },
   owned: {
     allPurposeDriver () {
       let handler = {
@@ -54,13 +57,6 @@ eYo.driver.makeC9r('Mngr', {
     }
   },
 })
-
-/**
- * Initialize the Mngr delegate.
- */
-eYo.driver.Mngr.eyo_p.init = function () {
-  this.driverC9rByName = Object.create(null)
-}
 
 /**
  * Convenient driver constructor maker.
@@ -204,7 +200,7 @@ eYo.driver.makeDflt({
  * @param {*} object
  * @return {Boolean}
  */
-eYo.Driver_p.doInitUI = function (unused) {
+eYo.driver.Dflt_p.doInitUI = function (unused) {
   return true
 }
 
@@ -212,14 +208,14 @@ eYo.Driver_p.doInitUI = function (unused) {
  * Dispose of the UI.
  * @param {*} object
  */
-eYo.Driver_p.doDisposeUI = function (unused) {
+eYo.driver.Dflt_p.doDisposeUI = function (unused) {
   return true
 }
 
 /**
  * Convenient method to make simple driver forwarders.
  */
-eYo.driver.makeForwarder = (pttp, key) => {
+eYo.driver._p.makeForwarder = (pttp, key) => {
   pttp[key] = function (...args) {
     return this.driver[key](this, ...args)
   }

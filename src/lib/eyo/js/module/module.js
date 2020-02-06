@@ -46,7 +46,7 @@ eYo.module.makeDflt({
        * @param {Object} after - The data object after the change
        */
       didChange (after) /** @suppress {globalThis} */ {
-        var a = eYo.module.item_types = eYo.module.item_types.Concat(after.types)
+        var a = eYo.module.item_types = eYo.module.item_types.concat(after.types)
         // remove duplicates
         for(var i=0; i<a.length; ++i) {
           for(var j=i+1; j<a.length; ++j) {

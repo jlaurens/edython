@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.provide('tkn')
+eYo.makeNS('tkn')
 
 eYo.tkn.ISTERMINAL = x => x < eYo.tkn.NT_OFFSET
 eYo.tkn.ISNONTERMINAL = x => x >= eYo.tkn.NT_OFFSET
