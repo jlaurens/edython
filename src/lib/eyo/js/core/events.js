@@ -164,7 +164,7 @@ eYo.events.groupWrap = (f, g) => {
         var queue = eYo.events.filter(FIRE_QUEUE_, true)
         FIRE_QUEUE_.length = 0
         queue.forEach(event => {
-          var board = eYo.board.ById(event.boardId)
+          var board = eYo.board.byId(event.boardId)
           if (board) {
             board.eventDidFireChange(event)
           }
@@ -272,7 +272,7 @@ eYo.events.enable = function() {
 eYo.events.disableOrphans = function(event) {
   if (event.type === eYo.events.BRICK_MOVE ||
       event.type === eYo.events.BRICK_CREATE) {
-    var board = eYo.board.ById(event.boardId)
+    var board = eYo.board.byId(event.boardId)
     var brick = board.getBrickById(event.brickId)
     if (brick) {
       if (brick.parent && !brick.parent.disabled) {
@@ -332,7 +332,7 @@ Object.defineProperties(eYo.events.Abstract.prototype, {
    */
   board: {
     get () {
-      var board = eYo.board.ById(this.boardId)
+      var board = eYo.board.byId(this.boardId)
       if (!board) {
         throw Error('Board is null. Event must have been generated from real' +
           ' Edython events.')

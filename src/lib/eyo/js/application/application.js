@@ -15,9 +15,11 @@
 eYo.require('do')
 eYo.require('decorate')
 
-eYo.require('c9r')
-
-eYo.c9r.makeNS(eYo, 'app')
+/**
+ * @name{eYo.app}
+ * @namespace
+ */
+eYo.o4t.makeNS(eYo, 'app')
 
 eYo.forwardDeclare('css')
 
@@ -172,7 +174,7 @@ eYo.app.parseZoom_ = function(options) {
  * @property {eYo.driver.Mngr} ui_driver_mngr
  * @readonly
  * The main focus manager.
- * @property {eYo.Focus.Main} focus_main
+ * @property {eYo.focus.Main} focus_main
  *
  */
 eYo.app.makeDflt({
@@ -197,7 +199,7 @@ eYo.app.makeDflt({
       return new eYo.Audio(this)
     },
     focus_main () {
-      return new eYo.Focus.Main(this)
+      return new eYo.focus.Main(this)
     },
     clipboard: {},
     ui_driver_mngr: {

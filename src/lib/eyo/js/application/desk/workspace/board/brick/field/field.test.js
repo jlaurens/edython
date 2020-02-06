@@ -4,10 +4,10 @@ describe('field', function () {
 
   eYo.Test.FIELD = 'field'
   var RA = [
-    ['base', eYo.Test.FIELD, eYo.Field.STATUS_NONE],
-    ['builtin', {builtin: eYo.Test.FIELD}, eYo.Field.STATUS_BUILTIN],
-    ['reserved', {reserved: eYo.Test.FIELD}, eYo.Field.STATUS_RESERVED],
-    ['comment', {comment: eYo.Test.FIELD}, eYo.Field.STATUS_COMMENT]
+    ['base', eYo.Test.FIELD, eYo.field.STATUS_NONE],
+    ['builtin', {builtin: eYo.Test.FIELD}, eYo.field.STATUS_BUILTIN],
+    ['reserved', {reserved: eYo.Test.FIELD}, eYo.field.STATUS_RESERVED],
+    ['comment', {comment: eYo.Test.FIELD}, eYo.field.STATUS_COMMENT]
   ]
   RA.forEach(X => {
     var type = `one_slot_one_field_${X[0]}`

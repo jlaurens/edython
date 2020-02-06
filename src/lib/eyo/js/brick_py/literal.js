@@ -44,7 +44,7 @@ eYo.expr.Dflt.makeInheritedC9r('Literal', {
  * @param {Object} [opt]
  */
 eYo.expr.Literal.prototype.saveData = function (element, opt) {
-  eYo.expr.Literal.SuperC9r_p.SaveData.Apply(this, arguments)
+  eYo.expr.Literal.SuperC9r_p.SaveData.apply(this, arguments)
   if (this.Value_p == '') {
     element.setAttribute(eYo.key.PLACEHOLDER, this.value_d.model.placeholder)
   }
@@ -382,8 +382,8 @@ eYo.expr.Literal.literalPopulateContextMenuFirst_ = function (mngr) {
  * @private
  */
 eYo.expr.Shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
-  eYo.expr.Literal.literalPopulateContextMenuFirst_.Call(this, mngr)
-  eYo.expr.shortliteral.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  eYo.expr.Literal.literalPopulateContextMenuFirst_.call(this, mngr)
+  eYo.expr.shortliteral.SuperProto_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 

@@ -209,7 +209,7 @@ eYo.stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   F(2)
   F(3)
   mngr.shouldSeparate()
-  return eYo.stmt.global_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  return eYo.stmt.global_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 ;[
@@ -231,7 +231,7 @@ eYo.stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
  * @private
  */
 eYo.stmt.Group.prototype.willRender_ = function (recorder) {
-  eYo.stmt.Group.SuperProto_.willRender_.Call(this, recorder)
+  eYo.stmt.Group.SuperProto_.willRender_.call(this, recorder)
   var field = this.async_f
   if (field) {
     field.visible = this.async_
@@ -262,7 +262,7 @@ eYo.stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
       mngr.shouldSeparateInsert()
     }
   }
-  return eYo.stmt.Group.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  return eYo.stmt.Group.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**

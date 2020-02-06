@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('c9r.Owned')
-
 eYo.forwardDeclare('board')
 eYo.forwardDeclare('c9r.Rect')
 
@@ -97,7 +95,7 @@ eYo.makeC9r('Metrics', {
     updateDepth: 0,
     scale: {
       init () {
-        return new eYo.c9r.Where()
+        return new eYo.o4t.Where()
       },
       validate (after) /** @suppress {globalThis} */ {
         if (after <= 0) {
@@ -139,11 +137,11 @@ eYo.makeC9r('Metrics', {
     /**
      * The default scroll value.
      * 
-     * @type {eYo.c9r.Where} 
+     * @type {eYo.o4t.Where} 
      * @readonly 
      */
     dragDefault () {
-      return eYo.c9r.Where.Cl(0*1.5, 0*0.25)
+      return eYo.o4t.Where.Cl(0*1.5, 0*0.25)
     },
     /**
      * Whether the actual drag value is within the acceptable limits.
@@ -157,7 +155,7 @@ eYo.makeC9r('Metrics', {
     /**
      * The opposite of `drag`.
      * 
-     * @type {eYo.c9r.Where}
+     * @type {eYo.o4t.Where}
      * @readonly
      */
     scroll () {
@@ -220,7 +218,7 @@ eYo.makeC9r('Metrics', {
      * at the same location on screen.
      * The drag div is translated by `drag•(i,j)` with respect to the view.
      * 
-     * @type {eYo.c9r.Where} 
+     * @type {eYo.o4t.Where} 
      */
     drag: {
       get () {
@@ -274,7 +272,7 @@ eYo.Metrics.prototype.wrapUpdate = function (do_it) {
 
 /**
  * Convert the given argument from `board` coordinates to `view` coordinates.
- * @param{eYo.c9r.Rect | eYo.c9r.Where} WR
+ * @param{eYo.c9r.Rect | eYo.o4t.Where} WR
  */
 eYo.Metrics.prototype.toView = function (WR) {
   // Referential(view) = (origin: o, basis: {i, j})
@@ -292,7 +290,7 @@ eYo.Metrics.prototype.toView = function (WR) {
 
 /**
  * Convert the given argument from `view` coordinates to `board` coordinates.
- * @param{eYo.c9r.Rect | eYo.c9r.Where} wr
+ * @param{eYo.c9r.Rect | eYo.o4t.Where} wr
  */
 eYo.Metrics.prototype.fromView = function (wr) {
   return wr.backward(this.drag___).unscale(this.scale)

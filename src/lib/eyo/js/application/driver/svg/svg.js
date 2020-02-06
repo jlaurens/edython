@@ -131,10 +131,10 @@ Object.defineProperties(eYo.svg, {
  * its parent.  Only for SVG elements and children (e.g. rect, g, path).
  * Fixed bug in original code.
  * @param {Element} element SVG element to find the coordinates of.
- * @return {!eYo.c9r.Where} Object with .x and .y properties.
+ * @return {!eYo.o4t.Where} Object with .x and .y properties.
  */
 eYo.svg.Dflt_p.xyInParent = function(element) {
-  var xy = new eYo.c9r.Where()
+  var xy = new eYo.o4t.Where()
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
   if (x) {
@@ -279,10 +279,10 @@ eYo.svg.getTransformCorrection = element => {
  * Return the coordinates of the top-left corner of this element relative to
  * its parent.  Only for SVG elements and children (e.g. rect, g, path).
  * @param {Element} element SVG element to find the coordinates of.
- * @return {!eYo.c9r.Where} Object with .x and .y properties.
+ * @return {!eYo.o4t.Where} Object with .x and .y properties.
  */
 eYo.svg.getRelativeWhere = function(element) {
-  var xy = new eYo.c9r.Where()
+  var xy = new eYo.o4t.Where()
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
   if (x) {

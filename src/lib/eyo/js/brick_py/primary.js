@@ -13,10 +13,10 @@
 
 eYo.require('expr.List')
 
-eYo.require('c9r.Change')
+eYo.require('o3d.Change')
 
-eYo.require('Module.stdtypes')
-eYo.require('Module.functions')
+eYo.require('module.stdtypes')
+eYo.require('module.functions')
 
 eYo.require('msg')
 
@@ -94,7 +94,7 @@ eYo.consolidator.List.makeInheritedC9r('Target', {
  * @param {eYo.brick.Dflt} brick - owner or the receiver.
  */
 eYo.consolidator.Target.prototype.getIO = function (brick) {
-  var io = eYo.consolidator.Target.SuperProto_.getIO.Call(this, brick)
+  var io = eYo.consolidator.Target.SuperProto_.getIO.call(this, brick)
   io.first_starred = io.last = io.max = -1
   io.annotatedInput = eYo.NA
   io.subtype = brick.subtype
@@ -157,7 +157,7 @@ eYo.consolidator.Target.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.consolidator.Target.SuperProto_.doCleanup.Call(this, io)
+    eYo.consolidator.Target.SuperProto_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.first_starred >= 0) {
       // ther must be only one starred
@@ -248,7 +248,7 @@ eYo.consolidator.Target.prototype.getCheck = (() => {
  * @param {object} io
  */
 eYo.consolidator.Target.prototype.doFinalize = function (io) {
-  eYo.consolidator.Target.SuperProto_.doFinalize.Call(this, io)
+  eYo.consolidator.Target.SuperProto_.doFinalize.call(this, io)
   if (this.setupIO(io, 0)) {
     do {
       io.m4t.incog = io.annotatedInput && io.annotatedInput !== io.slot // will ensure that there is only one annotated input
@@ -350,7 +350,7 @@ eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
       ;(x = x.target_s) && (x.bindField.visible = true)
     }
   }
-  eYo.expr.target_list.SuperProto_.didDisconnect.Call(this, m4t, oldTargetM4t)
+  eYo.expr.target_list.SuperProto_.didDisconnect.call(this, m4t, oldTargetM4t)
 }
 
 /**
@@ -361,7 +361,7 @@ eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
  * @param {eYo.magnet.Dflt} targetOldM4t
  */
 eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.expr.target_list.SuperProto_.didConnect.Call(this, m4t, oldTargetM4t, targetOldM4t)
+  eYo.expr.target_list.SuperProto_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   // BEWARE: the brick is NOT consolidated
   if (m4t.isSlot) {
     var parent = this.parent
@@ -1222,7 +1222,7 @@ eYo.expr.makeC9r('Primary', {
   }
 })
 
-eYo.do.register.Add(eYo.expr, 'primary', function (b3k) {
+eYo.do.register.add(eYo.expr, 'primary', function (b3k) {
   return !b3k.isInFlyout
 })
 
@@ -1265,7 +1265,7 @@ eYo.do.register.Add(eYo.expr, 'primary', function (b3k) {
  * For subclassers eventually
  */
 eYo.expr.Primary.prototype.init = function () {
-  eYo.expr.Primary.SuperProto_.init.Call(this)
+  eYo.expr.Primary.SuperProto_.init.call(this)
   this.profile_ = eYo.NA
 }
 
@@ -1435,7 +1435,7 @@ eYo.expr.Primary.prototype.getProfile = eYo.c9r.decorateChange(
  * the brick type has changed.
  */
 eYo.expr.Primary.prototype.consolidateMagnets = function () {
-  eYo.expr.Primary.SuperProto_.consolidateMagnets.Call(this)
+  eYo.expr.Primary.SuperProto_.consolidateMagnets.call(this)
   this.target_s.magnet.hidden = this.Variant_p === eYo.key.NONE && this.Dotted_p === 0
 }
 
@@ -1776,7 +1776,7 @@ eYo.expr.Primary.prototype.getSubtype = function () {
  * @return {eYo.slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.expr.Primary.prototype.getSlot = function (name) {
-  var slot = eYo.expr.Primary.SuperProto_.getSlot.Call(this, name)
+  var slot = eYo.expr.Primary.SuperProto_.getSlot.call(this, name)
   if (!slot) {
     // we suppose that ary is set
     var f = (slot) => {
@@ -1851,7 +1851,7 @@ eYo.stmt.Call_stmt.prototype.getProfile = eYo.expr.Primary.prototype.getProfile
  * For subclassers eventually
  */
 eYo.stmt.Call_stmt.prototype.init = function () {
-  eYo.stmt.call_stmt.SuperProto_.init.Call(this)
+  eYo.stmt.call_stmt.SuperProto_.init.call(this)
   this.profile = eYo.NA
 }
 

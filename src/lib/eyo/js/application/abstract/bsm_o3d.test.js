@@ -1,29 +1,29 @@
 NS = Object.create(null)
 
-describe('Owned', function () {
-  it ('Owned: Basic', function () {
-    chai.assert(eYo.c9r.Owned && eYo.c9r.Owned.eyo)
+describe('BSM Owned', function () {
+  it ('BSM Owned: Basic', function () {
+    chai.assert(eYo.bsm_o3d.Dflt && eYo.bsm_o3d.Dflt.eyo)
   })
-  it ('Owned: new', function () {
+  it ('BSM Owned: new', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.c9r.Owned(onr)
+    var o = new eYo.bsm_o3d.Dflt(onr)
     chai.assert(o.owner === onr)
   })
-  it ('Owned: app', function () {
+  it ('BSM Owned: app', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.c9r.Owned(onr)
+    var o = new eYo.bsm_o3d.Dflt(onr)
     chai.assert(o.owner === onr)
     chai.assert(!o.app)
     onr.app = 421
     o.appUpdate()
     chai.assert(o.app === 421)
   })
-  it ('Owned: owner change', function () {
+  it ('BSM Owned: owner change', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.c9r.Owned(onr)
+    var o = new eYo.bsm_o3d.Dflt(onr)
     onr.app = 421
     chai.assert(o.app === 421)
     onr = new ONR()
@@ -39,10 +39,10 @@ describe('Owned', function () {
     onr.app = 421
     chai.assert(o.app === 421)
   })
-  it ('Owned: computed', function () {
+  it ('BSM Owned: computed', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.c9r.Owned(onr)
+    var o = new eYo.bsm_o3d.Dflt(onr)
     chai.assert(o.owner === onr)
     onr.app = {}
     o.appForget()
@@ -59,16 +59,16 @@ describe('Owned', function () {
     onr.app.desk.workspace = 421
     chai.assert(o.workspace === 421)
   })
-  it ('Owned: cascade', function () {
+  it ('BSM Owned: cascade', function () {
     var ONR = function () {}
     var onr0 = new ONR()
-    eYo.makeC9r(NS, 'A', eYo.c9r.Owned, {
+    eYo.makeC9r(NS, 'A', eYo.bsm_o3d.Dflt, {
       owned: {
         foo () {}
       }
     })
     var onr1 = new NS.A(onr0)
-    var onr2 = new eYo.c9r.Owned()
+    var onr2 = new eYo.bsm_o3d.Dflt()
     onr1.foo_ = onr2
     chai.assert(!onr0.app)
     chai.assert(!onr1.app)
@@ -85,7 +85,7 @@ describe('Owned', function () {
   })
 })
 
-describe ('Tests: BSMOwned', function () {
+describe ('Tests: BSM Owned', function () {
   var wrapper = f => 
   NS.Brick = eYo.brick
   NS.Slot = eYo.slot.Dflt
@@ -112,14 +112,14 @@ describe ('Tests: BSMOwned', function () {
     chai.assert(eYo.slot.Dflt === NS.Slot)
     chai.assert(eYo.magnet === NS.Magnet)
   }
-  it ('BSMOwned: basic', function () {
+  it ('BSM Owned: basic', function () {
     chai.assert(eYo.c9r.Dflt)
   })
-  it ('BSMOwned: NYI', function () {
+  it ('BSM Owned: NYI', function () {
     wrapper(() => {
       var onr = new eYo.brick.Dflt()
       chai.assert(onr)
-      var ond = new eYo.c9r.BSMOwned(onr)
+      var ond = new eYo.c9r.BSM Owned(onr)
       chai.assert(ond)
       chai.assert(ond.brick === onr)
       console.warn(ond.brick, ond.slot, ond.magnet)

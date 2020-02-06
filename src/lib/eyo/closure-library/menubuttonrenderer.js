@@ -30,7 +30,7 @@ eYo.provide('menuButtonRenderer')
  * @extends {goog.ui.CustomButtonRenderer}
  */
 eYo.MenuButtonRenderer = function() {
-  eYo.MenuButtonRenderer.SuperClass_.constructor.Call(this);
+  eYo.MenuButtonRenderer.SuperClass_.constructor.call(this);
 };
 goog.inherits(eYo.MenuButtonRenderer, goog.ui.MenuButtonRenderer);
 goog.addSingletonGetter(eYo.MenuButtonRenderer);

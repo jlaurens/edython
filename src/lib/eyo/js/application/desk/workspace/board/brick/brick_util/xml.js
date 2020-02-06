@@ -195,7 +195,7 @@ eYo.xml.domToBoard = function (xml, owner) {
     if (xmlChild && xmlChild.nodeType === Node.ELEMENT_NODE) {
       if ((brick = eYo.xml.domToBrick(xmlChild, owner))) {
         newBlockIds.push(brick.id)
-        var xy = new eYo.c9r.Where()
+        var xy = new eYo.o4t.Where()
         xy.x = xmlChild.hasAttribute('x')
           ? parseInt(xmlChild.getAttribute('x'), 10) : 10
         xy.y = xmlChild.hasAttribute('y')
@@ -384,7 +384,7 @@ eYo.require('expr.Literal')
 eYo.expr.List.prototype.xmlAttr = function () {
   return this.wrapped_
     ? eYo.xml.LIST
-    : eYo.expr.List.SuperProto_.xmlAttr.Call(this)
+    : eYo.expr.List.SuperProto_.xmlAttr.call(this)
 }
 
 eYo.require('expr.Primary')

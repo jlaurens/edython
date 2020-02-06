@@ -11,12 +11,7 @@
  */
 'use strict'
 
-eYo.require('fcls')
-
-eYo.provide('fcls.Workspace')
-
-eYo.forwardDeclare('Workspace')
-
+eYo.forwardDeclare('pane.Workspace')
 /**
  * Shared application driver.
  */

@@ -253,7 +253,7 @@ eYo.MenuManager.prototype.showMenu = function (brick, e) {
       if (brick.hasFocus) {
         // if the brick was already selected,
         // try to select an input connection
-        eYo.Focus.Magnet = brick.ui.lastSelectedMagnet__
+        eYo.focus.magnet = brick.ui.lastSelectedMagnet__
       }
     }
   }

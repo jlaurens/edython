@@ -371,7 +371,7 @@ eYo.gmr.PyGrammar_FindDFA = (/* grammar * */ g, /* int */ type) => {
   if (!d) {
     console.error('WTF')
   }
-  eYo.Assert(d.d_type === type, `${d.d_type} === ${type}`)
+  eYo.assert(d.d_type === type, `${d.d_type} === ${type}`)
   return d
 }
 

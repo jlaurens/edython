@@ -36,7 +36,7 @@ eYo.provide('brick.parameter')
  * All the inputs are connectedÒ.
  */
 // eYo.consolidator.Parameter = function() {
-//   eYo.consolidator.Parameter.SuperProto_.constructor.Call(this, eYo.consolidator.Parameter.data)
+//   eYo.consolidator.Parameter.SuperProto_.constructor.call(this, eYo.consolidator.Parameter.data)
 // }
 // goog.require(eYo.consolidator.List)
 // goog.inherits(eYo.consolidator.Parameter, eYo.consolidator.List)
@@ -69,7 +69,7 @@ eYo.consolidator.Parameter.prototype.consolidate_connected = function (io) {
       return false
     }
   }
-  return eYo.consolidator.Parameter.SuperProto_.consolidate_connected.Call(this, io)
+  return eYo.consolidator.Parameter.SuperProto_.consolidate_connected.call(this, io)
 }
 
 /**
@@ -78,7 +78,7 @@ eYo.consolidator.Parameter.prototype.consolidate_connected = function (io) {
  * @param {eYo.brick.Dflt} brick owner of the receiver
  */
 eYo.consolidator.Parameter.prototype.getIO = function (brick) {
-  var io = eYo.consolidator.Parameter.SuperProto_.getIO.Call(this, brick)
+  var io = eYo.consolidator.Parameter.SuperProto_.getIO.call(this, brick)
   io.first_star_star = io.first_star = io.first_default = io.last_default = -1
   return io
 }
@@ -161,7 +161,7 @@ eYo.consolidator.Parameter.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.consolidator.Parameter.SuperProto_.doCleanup.Call(this, io)
+    eYo.consolidator.Parameter.SuperProto_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     // there must be an only one
     // first remove all the extra ** parameters
@@ -357,7 +357,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
   F('*', 0, '*…')
   F('**', 0, '**…')
   mngr.shouldSeparateInsert()
-  eYo.expr.Parameter_list.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  eYo.expr.Parameter_list.SuperProto_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -427,7 +427,7 @@ eYo.expr.Dflt.makeInheritedC9r('Lambda', {
  * For edython.
  */
 eYo.magnet.Dflt_p.consolidateType = function () {
-  eYo.magnet.SuperProto_.consolidateType.Call(this)
+  eYo.magnet.SuperProto_.consolidateType.call(this)
   var brick = this.brick
   var m4tOut = brick.out_m
   var slot = brick.getSlot(eYo.key.EXPRESSION)

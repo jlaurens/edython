@@ -21,7 +21,7 @@ eYo.provide('id')
 
 eYo.provide('const')
 
-eYo.Assert(XRegExp, 'load XRegExp before')
+eYo.assert(XRegExp, 'load XRegExp before')
 
 eYo.Const = {
   ABOVE: 'ABOVE', // not for brick definition

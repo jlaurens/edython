@@ -12,13 +12,11 @@
  */
 'use strict'
 
-eYo.require('c9r')
-
 /**
  * @name{eYo.dnd}
  * @namespace
  */
-eYo.provide('dnd')
+eYo.o3d.makeNS(eYo, 'dnd')
 
 /**
  * @name{eYo.dnd.dragger}
@@ -43,7 +41,7 @@ eYo.forwardDeclare('driver')
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param{eYo.Motion} [motion] -  the owning motion
  */
-eYo.dnd.makeC9r('Mngr', eYo.c9r.Owned, {
+eYo.dnd.makeC9r('Mngr', {
   init (owner, motion) {
     this.motion_ = motion
     /** the dragger_ that started a drag, not owned */
@@ -94,7 +92,7 @@ eYo.dnd.makeC9r('Mngr', eYo.c9r.Owned, {
 })
 
 eYo.dnd.Mngr_p.ownedForEach = function (f) {
-  eYo.dnd.Mngr_s.OwnedForEach(f)
+  eYo.dnd.Mngr_s.c9r.OwnedForEach(f)
   if (!this.draggers_) {
     console.error('BREAK HERE!!!')
   }
@@ -191,7 +189,7 @@ eYo.dnd.Mngr_p.addDropper = function (dropper) {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeC9r('Dflt', eYo.c9r.Owned, {
+eYo.dnd.dragger.makeC9r('Dflt', eYo.o3d.Dflt, {
   /**
    * Sever all the links.
    */
@@ -264,7 +262,7 @@ eYo.dnd.dragger.makeC9r('Board')
  * @return {Boolean} true is a drag operation did start
  */
 eYo.dnd.dragger.Board_p.start = function () {
-  return eYo.dnd.dragger.Board_s.Start.Call(this)
+  return eYo.dnd.dragger.Board_s.Start.call(this)
 }
 
 /**
@@ -272,7 +270,7 @@ eYo.dnd.dragger.Board_p.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.dnd.dragger.Board_p.update = function () {
-  return eYo.dnd.dragger.Board_s.update.Call(this)
+  return eYo.dnd.dragger.Board_s.update.call(this)
 }
 
 /**
@@ -311,7 +309,7 @@ eYo.dnd.dragger.makeC9r('DraftBoard')
  * Sever all the links.
  */
 eYo.dnd.dragger.DraftBoard.prototype.dispose = function () {
-  eYo.dnd.dragger.DraftBoard.SuperProto_.dispose.Call(this)
+  eYo.dnd.dragger.DraftBoard.SuperProto_.dispose.call(this)
 }
 
 /**
@@ -327,7 +325,7 @@ eYo.dnd.dragger.DraftBoard.prototype.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.dnd.dragger.DraftBoard.prototype.update = function () {
-  return eYo.dnd.dragger.DraftBoard.SuperProto_.update.Call(this)
+  return eYo.dnd.dragger.DraftBoard.SuperProto_.update.call(this)
 }
 
 /**
@@ -335,7 +333,7 @@ eYo.dnd.dragger.DraftBoard.prototype.update = function () {
  * @return {Boolean} true is a drag operation did cancel
  */
 eYo.dnd.dragger.DraftBoard.prototype.cancel = function () {
-  return eYo.dnd.dragger.DraftBoard.SuperProto_.cancel.Call(this)
+  return eYo.dnd.dragger.DraftBoard.SuperProto_.cancel.call(this)
 }
 
 /**
@@ -343,7 +341,7 @@ eYo.dnd.dragger.DraftBoard.prototype.cancel = function () {
  * @return {Boolean} true is a drag operation did reset
  */
 eYo.dnd.dragger.DraftBoard.prototype.reset = function () {
-  return eYo.dnd.dragger.DraftBoard.SuperProto_.reset.Call(this)
+  return eYo.dnd.dragger.DraftBoard.SuperProto_.reset.call(this)
 }
 
 /**
@@ -351,7 +349,7 @@ eYo.dnd.dragger.DraftBoard.prototype.reset = function () {
  * @return {Boolean} true is a drag operation did complete
  */
 eYo.dnd.dragger.DraftBoard.prototype.complete = function () {
-  return eYo.dnd.dragger.DraftBoard.SuperProto_.complete.Call(this)
+  return eYo.dnd.dragger.DraftBoard.SuperProto_.complete.call(this)
 }
 
 /*******/
@@ -375,7 +373,7 @@ eYo.dnd.dragger.LibraryBoard.prototype.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.dnd.dragger.LibraryBoard.prototype.update = function () {
-  return eYo.dnd.dragger.LibraryBoard.SuperProto_.update.Call(this)
+  return eYo.dnd.dragger.LibraryBoard.SuperProto_.update.call(this)
 }
 
 /**
@@ -383,7 +381,7 @@ eYo.dnd.dragger.LibraryBoard.prototype.update = function () {
  * @return {Boolean} true is a drag operation did cancel
  */
 eYo.dnd.dragger.LibraryBoard.prototype.cancel = function () {
-  return eYo.dnd.dragger.LibraryBoard.SuperProto_.cancel.Call(this)
+  return eYo.dnd.dragger.LibraryBoard.SuperProto_.cancel.call(this)
 }
 
 /**
@@ -391,7 +389,7 @@ eYo.dnd.dragger.LibraryBoard.prototype.cancel = function () {
  * @return {Boolean} true is a drag operation did reset
  */
 eYo.dnd.dragger.LibraryBoard.prototype.reset = function () {
-  return eYo.dnd.dragger.LibraryBoard.SuperProto_.reset.Call(this)
+  return eYo.dnd.dragger.LibraryBoard.SuperProto_.reset.call(this)
 }
 
 /**
@@ -399,7 +397,7 @@ eYo.dnd.dragger.LibraryBoard.prototype.reset = function () {
  * @return {Boolean} true is a drag operation did complete
  */
 eYo.dnd.dragger.LibraryBoard.prototype.complete = function () {
-  return eYo.dnd.dragger.LibraryBoard.SuperProto_.complete.Call(this)
+  return eYo.dnd.dragger.LibraryBoard.SuperProto_.complete.call(this)
 }
 
 /*******/
@@ -415,7 +413,7 @@ eYo.dnd.dragger.makeC9r('Brick')
  * @return {Boolean} true is a drag operation did start
  */
 eYo.dnd.dragger.Brick_p.start = function () {
-  return eYo.dnd.dragger.Brick.SuperC9r_p.Start.Call(this)
+  return eYo.dnd.dragger.Brick.SuperC9r_p.Start.call(this)
 }
 
 /**
@@ -423,7 +421,7 @@ eYo.dnd.dragger.Brick_p.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.dnd.dragger.Brick_p.update = function () {
-  return eYo.dnd.dragger.Brick.SuperProto_.update.Call(this)
+  return eYo.dnd.dragger.Brick.SuperProto_.update.call(this)
 }
 
 /**
@@ -431,7 +429,7 @@ eYo.dnd.dragger.Brick_p.update = function () {
  * @return {Boolean} true is a drag operation did cancel
  */
 eYo.dnd.dragger.Brick_p.cancel = function () {
-  return eYo.dnd.dragger.Brick.SuperProto_.cancel.Call(this)
+  return eYo.dnd.dragger.Brick.SuperProto_.cancel.call(this)
 }
 
 /**
@@ -439,7 +437,7 @@ eYo.dnd.dragger.Brick_p.cancel = function () {
  * @return {Boolean} true is a drag operation did reset
  */
 eYo.dnd.dragger.Brick_p.reset = function () {
-  return eYo.dnd.dragger.Brick.SuperProto_.reset.Call(this)
+  return eYo.dnd.dragger.Brick.SuperProto_.reset.call(this)
 }
 
 /**
@@ -447,7 +445,7 @@ eYo.dnd.dragger.Brick_p.reset = function () {
  * @return {Boolean} true is a drag operation did complete
  */
 eYo.dnd.dragger.Brick_p.complete = function () {
-  return eYo.dnd.dragger.Brick.SuperProto_.complete.Call(this)
+  return eYo.dnd.dragger.Brick.SuperProto_.complete.call(this)
 }
 
 /*******/
@@ -463,7 +461,7 @@ eYo.dnd.dragger.makeC9r('LibraryBrick')
  * @return {Boolean} true is a drag operation did start
  */
 eYo.dnd.dragger.LibraryBrick_p.start = function () {
-  return eYo.dnd.dragger.LibraryBrick.SuperC9r_p.Start.Call(this)
+  return eYo.dnd.dragger.LibraryBrick.SuperC9r_p.Start.call(this)
 }
 
 /**
@@ -471,7 +469,7 @@ eYo.dnd.dragger.LibraryBrick_p.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.dnd.dragger.LibraryBrick_p.update = function () {
-  return eYo.dnd.dragger.LibraryBrick.SuperProto_.update.Call(this)
+  return eYo.dnd.dragger.LibraryBrick.SuperProto_.update.call(this)
 }
 
 /**
@@ -479,7 +477,7 @@ eYo.dnd.dragger.LibraryBrick_p.update = function () {
  * @return {Boolean} true is a drag operation did cancel
  */
 eYo.dnd.dragger.LibraryBrick_p.cancel = function () {
-  return eYo.dnd.dragger.LibraryBrick.SuperProto_.cancel.Call(this)
+  return eYo.dnd.dragger.LibraryBrick.SuperProto_.cancel.call(this)
 }
 
 /**
@@ -487,7 +485,7 @@ eYo.dnd.dragger.LibraryBrick_p.cancel = function () {
  * @return {Boolean} true is a drag operation did reset
  */
 eYo.dnd.dragger.LibraryBrick_p.reset = function () {
-  return eYo.dnd.dragger.LibraryBrick.SuperProto_.reset.Call(this)
+  return eYo.dnd.dragger.LibraryBrick.SuperProto_.reset.call(this)
 }
 
 /**
@@ -495,7 +493,7 @@ eYo.dnd.dragger.LibraryBrick_p.reset = function () {
  * @return {Boolean} true is a drag operation did complete
  */
 eYo.dnd.dragger.LibraryBrick_p.complete = function () {
-  return eYo.dnd.dragger.LibraryBrick.SuperProto_.complete.Call(this)
+  return eYo.dnd.dragger.LibraryBrick.SuperProto_.complete.call(this)
 }
 
 /*******/
@@ -511,7 +509,7 @@ eYo.dnd.dragger.makeC9r('DraftBrick')
  * @return {Boolean} true is a drag operation did start
  */
 eYo.dnd.dragger.DraftBrick_p.start = function () {
-  return eYo.dnd.dragger.DraftBrick.SuperC9r_p.Start.Call(this)
+  return eYo.dnd.dragger.DraftBrick.SuperC9r_p.Start.call(this)
 }
 
 /**
@@ -519,7 +517,7 @@ eYo.dnd.dragger.DraftBrick_p.start = function () {
  * @return {Boolean} true is a drag operation did update
  */
 eYo.dnd.dragger.DraftBrick_p.update = function () {
-  return eYo.dnd.dragger.DraftBrick.SuperProto_.update.Call(this)
+  return eYo.dnd.dragger.DraftBrick.SuperProto_.update.call(this)
 }
 
 /**
@@ -527,7 +525,7 @@ eYo.dnd.dragger.DraftBrick_p.update = function () {
  * @return {Boolean} true is a drag operation did cancel
  */
 eYo.dnd.dragger.DraftBrick_p.cancel = function () {
-  return eYo.dnd.dragger.DraftBrick.SuperProto_.cancel.Call(this)
+  return eYo.dnd.dragger.DraftBrick.SuperProto_.cancel.call(this)
 }
 
 /**
@@ -535,7 +533,7 @@ eYo.dnd.dragger.DraftBrick_p.cancel = function () {
  * @return {Boolean} true is a drag operation did reset
  */
 eYo.dnd.dragger.DraftBrick_p.reset = function () {
-  return eYo.dnd.dragger.DraftBrick.SuperProto_.reset.Call(this)
+  return eYo.dnd.dragger.DraftBrick.SuperProto_.reset.call(this)
 }
 
 /**
@@ -543,7 +541,7 @@ eYo.dnd.dragger.DraftBrick_p.reset = function () {
  * @return {Boolean} true is a drag operation did complete
  */
 eYo.dnd.dragger.DraftBrick_p.complete = function () {
-  return eYo.dnd.dragger.DraftBrick.SuperProto_.complete.Call(this)
+  return eYo.dnd.dragger.DraftBrick.SuperProto_.complete.call(this)
 }
 
 /*******/
@@ -552,7 +550,7 @@ eYo.dnd.dragger.DraftBrick_p.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dropper.makeC9r('Dflt', eYo.c9r.Owned, {
+eYo.dnd.dropper.makeC9r('Dflt', eYo.o3d.Dflt, {
   /**
    * Sever all the links.
    */
@@ -624,7 +622,7 @@ eYo.dnd.dropper.makeC9r('Board')
  * @return {Boolean} true is a drop operation did start
  */
 eYo.dnd.dropper.Board_p.start = function () {
-  return eYo.dnd.dropper.Board_s.Start.Call(this)
+  return eYo.dnd.dropper.Board_s.Start.call(this)
 }
 
 /**
@@ -632,7 +630,7 @@ eYo.dnd.dropper.Board_p.start = function () {
  * @return {Boolean} true is a drop operation did update
  */
 eYo.dnd.dropper.Board_p.update = function () {
-  return eYo.dnd.dropper.Board_s.update.Call(this)
+  return eYo.dnd.dropper.Board_s.update.call(this)
 }
 
 /**
@@ -640,7 +638,7 @@ eYo.dnd.dropper.Board_p.update = function () {
  * @return {Boolean} true is a drop operation did cancel
  */
 eYo.dnd.dropper.Board_p.cancel = function () {
-  return eYo.dnd.dropper.Board_s.cancel.Call(this)
+  return eYo.dnd.dropper.Board_s.cancel.call(this)
 }
 
 /**
@@ -648,7 +646,7 @@ eYo.dnd.dropper.Board_p.cancel = function () {
  * @return {Boolean} true is a drop operation did reset
  */
 eYo.dnd.dropper.Board_p.reset = function () {
-  return eYo.dnd.dropper.Board_s.reset.Call(this)
+  return eYo.dnd.dropper.Board_s.reset.call(this)
 }
 
 /**
@@ -656,7 +654,7 @@ eYo.dnd.dropper.Board_p.reset = function () {
  * @return {Boolean} true is a drop operation did complete
  */
 eYo.dnd.dropper.Board_p.complete = function () {
-  return eYo.dnd.dropper.Board_s.complete.Call(this)
+  return eYo.dnd.dropper.Board_s.complete.call(this)
 }
 
 /*******/
@@ -672,7 +670,7 @@ eYo.dnd.dropper.makeC9r('Brick')
  * @return {Boolean} true is a drop operation did start
  */
 eYo.dnd.dropper.Brick_p.start = function () {
-  return eYo.dnd.dropper.Brick_s.Start.Call(this)
+  return eYo.dnd.dropper.Brick_s.Start.call(this)
 }
 
 /**
@@ -680,7 +678,7 @@ eYo.dnd.dropper.Brick_p.start = function () {
  * @return {Boolean} true is a drop operation did update
  */
 eYo.dnd.dropper.Brick_p.update = function () {
-  return eYo.dnd.dropper.Brick_s.update.Call(this)
+  return eYo.dnd.dropper.Brick_s.update.call(this)
 }
 
 /**
@@ -688,7 +686,7 @@ eYo.dnd.dropper.Brick_p.update = function () {
  * @return {Boolean} true is a drop operation did cancel
  */
 eYo.dnd.dropper.Brick_p.cancel = function () {
-  return eYo.dnd.dropper.Brick_s.cancel.Call(this)
+  return eYo.dnd.dropper.Brick_s.cancel.call(this)
 }
 
 /**
@@ -696,7 +694,7 @@ eYo.dnd.dropper.Brick_p.cancel = function () {
  * @return {Boolean} true is a drop operation did reset
  */
 eYo.dnd.dropper.Brick_p.reset = function () {
-  return eYo.dnd.dropper.Brick_s.reset.Call(this)
+  return eYo.dnd.dropper.Brick_s.reset.call(this)
 }
 
 /**
@@ -704,7 +702,7 @@ eYo.dnd.dropper.Brick_p.reset = function () {
  * @return {Boolean} true is a drop operation did complete
  */
 eYo.dnd.dropper.Brick_p.complete = function () {
-  return eYo.dnd.dropper.Brick_s.complete.Call(this)
+  return eYo.dnd.dropper.Brick_s.complete.call(this)
 }
 
 /*******/

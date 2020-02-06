@@ -13,7 +13,7 @@
 
 eYo.require('expr')
 
-eYo.require('c9r.Change')
+eYo.require('o3d.Change')
 
 eYo.require('decorate')
 eYo.require('msg')
@@ -266,7 +266,7 @@ eYo.expr.Starred.prototype.xmlAttr = function () {
 //  * @param {eYo.magnet.Dflt} targetOldM4t that was connected to the old target connection.
 //  */
 // eYo.expr.Starred.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-//   eYo.expr.Starred.SuperProto_.didConnect.Call(this, m4t, oldTargetM4t, targetOldM4t)
+//   eYo.expr.Starred.SuperProto_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
 //   if (m4t === this.modified_s.magnet) {
 
 //   }
@@ -278,7 +278,7 @@ eYo.expr.Starred.prototype.xmlAttr = function () {
 //  * @param {eYo.magnet.Dflt} oldTargetM4t that was connected to m4t
 //  */
 // eYo.expr.Starred.prototype.didDisconnect = function (m4t, oldTargetM4t) {
-//   eYo.expr.Starred.SuperProto_.didDisconnect.Call(this, m4t, oldTargetM4t)
+//   eYo.expr.Starred.SuperProto_.didDisconnect.call(this, m4t, oldTargetM4t)
 // }
 
 ;[

@@ -22,7 +22,7 @@ eYo.require('expr.Primary')
 eYo.require('tooltip')
 
 eYo.require('Library')
-eYo.require('Module.stdtypes')
+eYo.require('module.stdtypes')
 
 eYo.provide('brick.stdtypes')
 

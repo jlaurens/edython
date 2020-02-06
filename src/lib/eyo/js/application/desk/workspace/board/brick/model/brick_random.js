@@ -15,7 +15,7 @@ eYo.require('brick')
 
 eYo.require('brick.range')
 
-eYo.require('Module.random__module')
+eYo.require('module.random__module')
 
 eYo.require('stmt')
 

@@ -260,7 +260,7 @@ eYo.makeC9r('Flyout', {
       var d = this.ui_driver_mngr
       this.toolbar_ && d.toolbarDisposeUI(this.toolbar_)
       d.disposeUI(this)
-      eYo.Flyout.eyo.OwnedDispose(this, 'scrollbar_')
+      eYo.Flyout.eyo.c9r.OwnedDispose(this, 'scrollbar_')
     }
   },
   valued: {
@@ -509,7 +509,7 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
  */
 eYo.Flyout.prototype.layout_ = function(contents) {
   this.board_.scale = this.desk.board.scale
-  var where = eYo.c9r.Where.xy(this.MARGIN, this.MARGIN)
+  var where = eYo.o4t.Where.xy(this.MARGIN, this.MARGIN)
   contents.forEach(brick => {
     // Mark bricks as being inside a flyout.  This is used to detect and
     // prevent the closure of the flyout if the user right-clicks on such a

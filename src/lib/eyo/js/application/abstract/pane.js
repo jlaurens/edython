@@ -12,16 +12,20 @@
  */
 'use strict'
 
-eYo.require('c9r.Owned')
-
 eYo.forwardDeclare('Desk')
+
+/**
+ * @name{eYo.pane}
+ * @namespace
+ */
+eYo.o3d.makeNS(eYo, 'pane')
 
 /**
  * The main focus manager.
  * @param {eYo.Desk} desk -  the owning desk.
  * @constructor
  */
-eYo.c9r.Owned.makeInheritedC9r('Pane', {
+eYo.pane.makeDflt({
   computed: {
     /**
      * The desk of the receiver.
@@ -38,14 +42,14 @@ eYo.c9r.Owned.makeInheritedC9r('Pane', {
  * Layout the receiver.
  * The default implementation does nothing.
  */
-eYo.c9r.Pane_p.layout = eYo.do.nothing
+eYo.pane.Dflt_p.layout = eYo.do.nothing
 
 /**
  * Update the metrics of the receiver.
  */
-eYo.c9r.Pane_p.updateMetrics = eYo.do.nothing
+eYo.pane.Dflt_p.updateMetrics = eYo.do.nothing
 
 /**
  * Place the receiver.
  */
-eYo.c9r.Pane_p.place = eYo.do.nothing
+eYo.pane.Dflt_p.place = eYo.do.nothing

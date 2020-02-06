@@ -218,5 +218,5 @@ eYo.stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   F(5)
   F(6)
   mngr.shouldSeparate()
-  return eYo.stmt.global_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  return eYo.stmt.global_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 }

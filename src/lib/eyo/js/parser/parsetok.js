@@ -178,7 +178,7 @@ eYo.provide('parseTok')
         /* Put type_ignore nodes in the ENDMARKER of file_input. */
         var /* int */ num = parent.n_nchildren
         var /* node * */ ch = parent.n_child[num - 1]
-        eYo.Assert(ch.n_type === eYo.tkn.ENDMARKER);
+        eYo.assert(ch.n_type === eYo.tkn.ENDMARKER);
 
         for (var i = 0; i < type_ignores.length; i++) {
             eYo.do.PyNode_AddChild(ch, eYo.tkn.TYPE_IGNORE, null,

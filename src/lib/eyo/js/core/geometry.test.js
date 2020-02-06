@@ -1,12 +1,12 @@
 describe ('geometry', function () {
   it ('Geometry: Basic', function () {
-    chai.assert(eYo.c9r.Where)
+    chai.assert(eYo.o4t.Where)
     chai.assert(eYo.c9r.Size)
     chai.assert(eYo.c9r.Rect)
   })
   describe('Where', function () {
-    it ('new eYo.c9r.Where', function () {
-      var w1 = new eYo.c9r.Where()
+    it ('new eYo.o4t.Where', function () {
+      var w1 = new eYo.o4t.Where()
       console.error(w1.toString)
       chai.assert(!['c', 'l', 'x', 'y'].some(k => w1[k] != 0))
       w1.c = 1.23
@@ -21,14 +21,14 @@ describe ('geometry', function () {
       chai.assert(w1.l == 1.24 && w1.y == a)
     })
     it('Mutation', function () {
-      var w1 = new eYo.c9r.Where()
-      var w2 = new eYo.c9r.Where(w1)
+      var w1 = new eYo.o4t.Where()
+      var w2 = new eYo.o4t.Where(w1)
       chai.assert(w1.equals(w2) && w2.equals(w1), `MISSED ${w1.toString}.equals(${w2.toString})`)
       w1.forward(1)
       chai.assert(!w1.equals(w2), `MISSED !${w1.toString}.equals(${w2.toString})`)
       w1.forward(-1)
       chai.assert(w1.equals(w2) && w2.equals(w1))
-      var w3 = eYo.c9r.Where.xy(12.34, 56.78)
+      var w3 = eYo.o4t.Where.xy(12.34, 56.78)
       w1.forward(w3)
       chai.assert(!w1.equals(w2), `MISSED !${w1.toString}.equals(${w2.toString})`)
       w2.forward(w3)
@@ -80,11 +80,11 @@ describe ('geometry', function () {
   describe('In/Out', function () {
     it('Out', function() {
       var r = new eYo.c9r.Rect(0,0,1,1)
-      var w = new eYo.c9r.Where(0,1)
+      var w = new eYo.o4t.Where(0,1)
       chai.assert(w.out(r))
-      w = new eYo.c9r.Where(1,1)
+      w = new eYo.o4t.Where(1,1)
       chai.assert(w.out(r))
-      w = new eYo.c9r.Where(1,0)
+      w = new eYo.o4t.Where(1,0)
       chai.assert(w.out(r))
     })
   })

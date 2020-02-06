@@ -379,7 +379,7 @@ eYo.stmt.Assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     mngr.addChild(menuItem, true)
     mngr.shouldSeparate()
   }
-  eYo.stmt.Assignment_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  eYo.stmt.Assignment_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -597,7 +597,7 @@ eYo.expr.List.makeInheritedC9r('augassigned_list', () => {
 //   })
 //   mngr.addChild(menuItem, true)
 //   mngr.shouldSeparate()
-//   return eYo.stmt.Augmented_assignment_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+//   return eYo.stmt.Augmented_assignment_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 // }
 
 eYo.brick.Assignment.t3s = [

@@ -11,14 +11,12 @@
  */
 'use strict'
 
-eYo.require('c9r.Owned')
-
 /**
  * Class for loading, storing, and playing audio.
  * @param {String} pathToMedia
  * @constructor
  */
-eYo.makeC9r('Audio', eYo.c9r.Owned, {
+eYo.o3d.makeC9r(eYo, 'Audio', {
   computed: {
     /**
      * Time that the last sound was played.

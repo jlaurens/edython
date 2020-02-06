@@ -42,7 +42,7 @@ eYo.provide('menu')
  * @extends {goog.ui.Container}
  */
 eYo.Menu = function (optDomHelper, optRenderer) {
-  eYo.Menu.SuperClass_.constructor.Call(
+  eYo.Menu.SuperClass_.constructor.call(
     /** goog.ui.Menu */ this, optDomHelper,
     optRenderer || eYo.MenuRenderer.getInstance())
 }

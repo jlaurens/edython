@@ -13,7 +13,7 @@
 
 eYo.require('fcls')
 
-eYo.forwardDeclare('Zoomer')
+eYo.forwardDeclare('pane.Zoomer')
 
 /**
  * Faceless driver for the zoomer.
@@ -22,12 +22,12 @@ eYo.fcls.makeDriverC9r('Zoomer')
 
 /**
  * Initiate the zoomer UI.
- * @param {eYo.Zoomer} trashCan  The zoomer we must initialize the UI.
+ * @param {eYo.pane.Zoomer} trashCan  The zoomer we must initialize the UI.
  */
-eYo.fcls.Zoomer.prototype.doInitUI = eYo.do.nothing
+eYo.fcls.Zoomer_p.doInitUI = eYo.do.nothing
 
 /**
  * Dispose of the zoomer UI.
- * @param {eYo.Zoomer} zoomer  The zoomer we must dispose the UI of.
+ * @param {eYo.pane.Zoomer} zoomer  The zoomer we must dispose the UI of.
  */
-eYo.fcls.Zoomer.prototype.doDisposeUI = eYo.do.nothing
+eYo.fcls.Zoomer_p.doDisposeUI = eYo.do.nothing

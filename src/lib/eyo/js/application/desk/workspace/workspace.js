@@ -13,7 +13,6 @@
  */
 'use strict'
 
-eYo.require('c9r.Pane')
 eYo.require('decorate')
 
 eYo.forwardDeclare('Flyout')
@@ -24,6 +23,7 @@ eYo.forwardDeclare('Scrollbar')
 goog.forwardDeclare('goog.array');
 
 /**
+ * @name{eYo.pane.Workspace}
  * Class for a workspace.
  * This is the structure above the boards but below the desk.
  * The workspace has 3+n boards:
@@ -32,7 +32,7 @@ goog.forwardDeclare('goog.array');
  * @param {eYo.app.Dflt|Object} owner Owner application.
  * @constructor
  */
-eYo.makeC9r('Workspace', eYo.c9r.Pane, {
+eYo.pane.makeC9r('Workspace', {
   owned: {
     /**
      * @type {?eYo.board.Main} 
@@ -50,15 +50,15 @@ eYo.makeC9r('Workspace', eYo.c9r.Pane, {
     backer () { return new eYo.Backer(this) },
     /**
      * The workspace's trashCan (if any).
-     * @type {eYo.TrashCan}
+     * @type {eYo.pane.TrashCan}
      */
-    trashCan () { return new eYo.TrashCan(this) },
+    trashCan () { return new eYo.pane.TrashCan(this) },
     /**
      * The main focus manager.
-     * @type {?eYo.Focus.Main} 
+     * @type {?eYo.focus.Main} 
      */
-    focus_main () { return new eYo.Focus.Main(this) },
-    zoomer () { return new eYo.Zoomer(this) },
+    focus_main () { return new eYo.focus.Main(this) },
+    zoomer () { return new eYo.pane.Zoomer(this) },
   },
   cloned: {
     /** @type {!eYo.c9r.Rect} */

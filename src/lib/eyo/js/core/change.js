@@ -12,11 +12,11 @@
 'use strict'
 
 /**
- * @name {eYo.c9r.Change}
+ * @name {eYo.o3d.Change}
  * @constructor
  * @param{Object} owner
  */
-eYo.c9r.Owned.makeInheritedC9r('Change', {
+eYo.o3d.Dflt.makeInheritedC9r('Change', {
   init () {
     this.reset()
   },
@@ -51,7 +51,7 @@ eYo.c9r.Owned.makeInheritedC9r('Change', {
 /**
  * Sever the links.
  */
-eYo.c9r.Change_p.reset = function () {
+eYo.o3d.Change_p.reset = function () {
   this.count_ = this.step_ = this.level_ = 0
   // Some operations are performed only when there is a change
   // In order to decide whether to run or do nothing,
@@ -78,7 +78,7 @@ eYo.c9r.Change_p.reset = function () {
  * @return {!Function}
  */
 eYo.c9r.decorateChange = function (key, do_it) {
-  eYo.Assert(eYo.isF(do_it), 'do_it MUST be a function')
+  eYo.assert(eYo.isF(do_it), 'do_it MUST be a function')
   return function() {
     var c = this.change
     if (c.save_[key] === c.count) {
@@ -96,7 +96,7 @@ eYo.c9r.decorateChange = function (key, do_it) {
 /**
  * Increment the level.
  */
-eYo.c9r.Change_p.begin = function () {
+eYo.o3d.Change_p.begin = function () {
   ++this.level_
   var O = this.owner_
   O.onChangeBegin && O.onChangeBegin(arguments)
@@ -110,7 +110,7 @@ eYo.c9r.Change_p.begin = function () {
  * This is the only place where consolidation should occur.
  * For edython.
  */
-eYo.c9r.Change_p.end = function () {
+eYo.o3d.Change_p.end = function () {
   --this.level_
   var O = this.owner_
   O.onChangeEnd && O.onChangeEnd(arguments)
@@ -131,7 +131,7 @@ eYo.c9r.Change_p.end = function () {
  * to cache the return value.
  * For edython.
  */
-eYo.c9r.Change_p.done = function () {
+eYo.o3d.Change_p.done = function () {
   ++ this.count_
   var O = this.owner_
   if (!O.changeStepFreeze) {
@@ -146,7 +146,7 @@ eYo.c9r.Change_p.done = function () {
  * @param {Function} do_it
  * @return {*} whatever `do_it` returns.
  */
-eYo.c9r.Change_p.wrap = function (do_it) {
+eYo.o3d.Change_p.wrap = function (do_it) {
   let ans
   if (do_it) {
     try {

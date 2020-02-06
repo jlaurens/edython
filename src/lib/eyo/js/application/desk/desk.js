@@ -16,21 +16,22 @@
 eYo.forwardDeclare('app')
 eYo.forwardDeclare('Backer')
 
-eYo.forwardDeclare('Terminal')
-eYo.forwardDeclare('Turtle')
-eYo.forwardDeclare('Graphic')
-eYo.forwardDeclare('Variable')
-eYo.forwardDeclare('Workspace')
+eYo.forwardDeclare('pane.Terminal')
+eYo.forwardDeclare('pane.Turtle')
+eYo.forwardDeclare('pane.Graphic')
+eYo.forwardDeclare('pane.Variable')
+eYo.forwardDeclare('pane.Workspace')
 
 goog.forwardDeclare('goog.array')
 
 /**
+ * @name{eYo.Desk}
  * Class for a desk.
  * This is the structure above the panes but below the application.
  * @param {eYo.app.Dflt|Object} owner Owner application.
  * @constructor
  */
-eYo.makeC9r('Desk', {
+eYo.o3d.makeC9r(eYo, 'Desk', {
   owned: {
     /**
      * Terminal.
@@ -136,7 +137,7 @@ eYo.Desk_p.place = function() {
 /**
  * See `deskWhereElement`.
  * @param {Element}
- * @return {eYo.c9r.Where}
+ * @return {eYo.o4t.Where}
  */
 eYo.Desk_p.xyElementInDesk = function(element) {
   return this.ui_driver.whereElement(this, element)

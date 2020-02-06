@@ -18,20 +18,13 @@ eYo.require('c9r')
  * @name {eYo.consolidator}
  * @namespace
  */
-eYo.makeNS('consolidator')
+eYo.o4t.makeNS(eYo, 'consolidator')
 
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('do')
 eYo.forwardDeclare('slot')
 
 console.error('Manage reentrant_ more carefully')
-
-/**
- * Consolidator constructor delegate.
- * @name{eYo.consolidator.Dlgt}
- * @constructor
- */
-eYo.consolidator.makeC9r('Dlgt')
 
 /**
  * @name{eYo.consolidator.Dflt}
@@ -48,7 +41,7 @@ eYo.consolidator.makeC9r('Dlgt')
  * @param {Object} model - all the model needed
  * @constructor
  */
-eYo.consolidator.makeC9r('Dflt', {
+eYo.consolidator.makeDflt({
   valued: {
     model () {
       return Object.create(null)
@@ -64,7 +57,7 @@ eYo.consolidator.makeC9r('Dflt', {
   init (model) {
     var D = this.model
     model && goog.mixin(D, model)
-    eYo.Assert(goog.isDef(D.check), 'Consolidators must check their objects')
+    eYo.assert(goog.isDef(D.check), 'Consolidators must check their objects')
     D.check = eYo.decorate.ArrayFunction(D.check)
     this.model_ = D
   },
@@ -88,7 +81,7 @@ eYo.consolidator.Dflt_p.consolidate = eYo.do.nothing
  * of the slot, which means that naming should be done
  * dynamically.
  */
-eYo.consolidator.Dflt.makeInheritedC9r('List', {
+eYo.consolidator.makeC9r('List', {
   /**
    * Initialize the list consolidator.
    * @param {Object} d model.
@@ -96,8 +89,8 @@ eYo.consolidator.Dflt.makeInheritedC9r('List', {
   init (d) {
     var D = this.model
     var DD = this.constructor.eyo.model 
-    DD && DD.list && goog.mixin(DD.list)
-    eYo.c9r.model.Consolidate({list: D})
+    DD && DD.list && goog.mixin(D, DD.list)
+    eYo.c9r.model.consolidate({list: D})
   }
 })
 
@@ -149,7 +142,7 @@ eYo.consolidator.List_p.setupIO = function (io, i) {
   }
   if ((io.slot = io.list[io.i])) {
     io.m4t = io.slot.magnet
-    eYo.Assert(!io.slot || !!io.m4t, 'List items must have a magnet')
+    eYo.assert(!io.slot || !!io.m4t, 'List items must have a magnet')
     return true
   } else {
     io.m4t = null
@@ -284,10 +277,10 @@ eYo.consolidator.List_p.doFinalizeSeparator = function (io, extreme, name) {
   io.m4t.disabled_ = false
   if (extreme || (!io.slot.lst_presep.length && io.slot.lst_postsep.length)) {
     // remove all the fields
-    eYo.Field.disposeFields(io.slot)
+    eYo.field.disposeFields(io.slot)
   } else if (!io.slot.fieldRow.length) {
     var f = (sep, suffix) => {
-      var field = new eYo.FieldLabel(io.slot, sep)
+      var field = new eYo.fieldLabel(io.slot, sep)
       io.slot.fieldRow.splice(0, 0, field)
       field.initUI()
       field.suffix = suffix

@@ -29,7 +29,7 @@ eYo.decorate.reentrant_method = (object, key, f) => {
       return
     }
   } else {
-    eYo.ParameterAssert(eYo.isNA(f))
+    eYo.isNA(f) || eYo.throw('Unexpected f')
     f = key
     key = object
   }

@@ -20,7 +20,7 @@ eYo.provide('do.register')
  * @param {String} key - The unique key prefixing the added methods
  * @param {Function} filter - The function to filter out objects before registering.
  */
-eYo.do.register.Add = function (object, key, filter) {
+eYo.do.register.add = function (object, key, filter) {
   if (eYo.isF(object)) {
     object.eyo.modelDeclare({
       valued: {
@@ -58,7 +58,7 @@ eYo.do.register.Add = function (object, key, filter) {
     },
   }
   Object.keys(model).forEach(k => {
-    eYo.Assert(!eYo.do.hasOwnProperty(object, k))
+    eYo.assert(!eYo.do.hasOwnProperty(object, k))
     let f = model[k]
     object[k] = f // maybe some post processing here
   })

@@ -17,7 +17,7 @@ eYo.require('do.register')
  * @name {eYo.module}
  * @namespace
  */
-eYo.makeNS('module')
+eYo.o4t.makeNS(eYo, 'module')
 console.error('NYI')
 /**
  * @name {eYo.module.Dflt}
@@ -25,14 +25,14 @@ console.error('NYI')
  * @param {String} url - the url of the module (in the python documentation)
  * @constructor
  */
-eYo.Dflt.makeInheritedC9r(eYo.module, {
+eYo.module.makeDflt({
   init(name, url) {
     this.name_ = name
     this.url_ = url
   },
   valued: {
-    value: {},
-    url: {},
+    value: eYo.NA,
+    url: eYo.NA,
     profiles () {
       return Object.create(null)
     },
@@ -43,11 +43,10 @@ eYo.Dflt.makeInheritedC9r(eYo.module, {
       value: ['.'],
       /**
        * Registers the types in the given object.
-       * @param {Object} before - The data object before the change
        * @param {Object} after - The data object after the change
        */
-      didChange (before, after) /** @suppress {globalThis} */ {
-        var a = eYo.module.Item_types = eYo.module.item_types.Concat(after.types)
+      didChange (after) /** @suppress {globalThis} */ {
+        var a = eYo.module.item_types = eYo.module.item_types.Concat(after.types)
         // remove duplicates
         for(var i=0; i<a.length; ++i) {
           for(var j=i+1; j<a.length; ++j) {
@@ -115,18 +114,38 @@ eYo.module.makeC9r('Item', {
         }
       }))
       return mandatory
-    }
-  }
+    },
+    /**
+     * Each item has a type_ and a type property.
+     * The former is overriden by the model given at creation time.
+     */
+    type () {
+      return this.module.data.types[this.type_]
+    },
+  },
+  valued: {
+    kwargs: {
+      lazy () {
+        // only those arguments with a `default` key
+        this.kwargs_ = []
+        this.arguments && (this.arguments.forEach((arg) => {
+          if (goog.isDef(arg.default)) {
+            this.kwargs_.push(arg)
+          }
+        }))
+      },
+    },
+  },
 })
 
-eYo.Assert(eYo.module.Item, 'FAILED')
+eYo.assert(eYo.module.Item, 'FAILED')
 
 /**
  * Get the item with the given key
  * @param {String|Number} key  The key or index of the item
  * @return {?Object} return the model object for that item, if any.
  */
-eYo.module.Dflt.prototype.getItem = function (key) {
+eYo.module.Dflt_p.getItem = function (key) {
   if (!goog.isNumber(key)) {
     key = this.data.by_name[key]
   }
@@ -140,7 +159,7 @@ eYo.module.Dflt.prototype.getItem = function (key) {
  * @param {String} key  The name of the category
  * @return {!Array} the list of item indices with the given category (possibly void).
  */
-eYo.module.Dflt.prototype.getItemsInCategory = function (category, type) {
+eYo.module.Dflt_p.getItemsInCategory = function (category, type) {
   var ra = this.data.by_category[category] || []
   if (eYo.isStr(type)) {
     type = this.data.type.indexOf(type)
@@ -163,7 +182,7 @@ eYo.module.Dflt.prototype.getItemsInCategory = function (category, type) {
  * Sends a message for each ordered item with the give type
  * @param {String} key  The name of the category
  */
-eYo.module.Dflt.prototype.forEachItemWithType = function (type, handler) {
+eYo.module.Dflt_p.forEachItemWithType = function (type, handler) {
   if (eYo.isStr(type)) {
     var ra = this.items_by_type[type]
     if (!ra) {
@@ -177,45 +196,15 @@ eYo.module.Dflt.prototype.forEachItemWithType = function (type, handler) {
 }
 
 // Each model loaded comes here
-eYo.do.register.Add(eYo.module.Item, 'module')
+eYo.do.register.add(eYo.module, 'module')
 
 /**
  * Each item has a link to the module it belongs to.
  */
-eYo.module.Item.prototype.module = new eYo.module.Dflt()
+eYo.module.Item_p.module = new eYo.module.Dflt()
 
 /**
  * Collect here all the types
  * @type {Array<String>}
  */
-eYo.module.Item_types = []
-
-/**
- * Each item has a type_ and a type property.
- * The former is overriden by the model given at creation time.
- */
-eYo.module.Item.prototype.type_ = 0
-
-Object.defineProperties(
-  eYo.module.Item.prototype,
-  {
-    type: {
-      get () {
-        return this.module.data.types[this.type_]
-      }
-    },
-    kwargs: { // only those arguments with a `default` key
-      get () {
-        if (!this.kwargs_) {
-          this.kwargs_ = []
-          this.arguments && (this.arguments.forEach((arg) => {
-            if (goog.isDef(arg.default)) {
-              this.kwargs_.push(arg)
-            }
-          }))
-        }
-        return this.kwargs_
-      }
-    }
-  }
-)
+eYo.module.item_types = []

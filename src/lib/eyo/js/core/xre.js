@@ -20,7 +20,7 @@ eYo.require('do')
 
 eYo.provide('xre')
 
-eYo.Assert(XRegExp, 'load XRegExp before')
+eYo.assert(XRegExp, 'load XRegExp before')
 
 XRegExp.install('astral')// python supports astral
 
@@ -287,8 +287,8 @@ bytesescapeseq ::=  "\" <any ASCII character>
 */
 
 eYo.do.readOnlyMixin(eYo.xre, {
-  function_builtin_before: XRegExp('^function[^(]*\\(\\s*(?<builtin>\\bbuiltin\\b)?(?:\\s*,\\s*)?(?<before>\\bbefore\\b)?'),
-  function_before: XRegExp('^function\\b[^(]*\\(\\s*\\bbefore\\b'),
-  function_builtin: XRegExp('^function\\b[^(]*\\(\\s*\\bbuiltin\\b'),
-  function_builtin_after: XRegExp('^function\\b[^(]*\\(\\s*\\bbuiltin\\b\\s*,\\s*\\bafter\\b'),
+  function_builtin_before: XRegExp('^[^(]*\\(\\s*(?<builtin>\\bbuiltin\\b)?(?:\\s*,\\s*)?(?<before>\\bbefore\\b)?'),
+  function_before: XRegExp('^[^(]*\\(\\s*\\bbefore\\b'),
+  function_builtin: XRegExp('^[^(]*\\(\\s*\\bbuiltin\\b'),
+  function_builtin_after: XRegExp('^[^(]*\\(\\s*\\bbuiltin\\b\\s*,\\s*\\bafter\\b'),
 })

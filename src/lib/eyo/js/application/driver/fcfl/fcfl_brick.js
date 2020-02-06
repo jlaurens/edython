@@ -35,16 +35,16 @@ eYo.brick.eyo.modelDeclare({
   cloned: {
     /**
      * Position of the receiver in the board.
-     * @type {eYo.c9r.Where}
+     * @type {eYo.o4t.Where}
      * @readonly
      */
-    xy () { return new eYo.c9r.Where() },
+    xy () { return new eYo.o4t.Where() },
     /**
      * Position of the receiver in the board.
-     * @type {eYo.c9r.Where}
+     * @type {eYo.o4t.Where}
      * @readonly
      */
-    where () { return new eYo.c9r.Where() },
+    where () { return new eYo.o4t.Where() },
   },
   computed: {
     hasLeftEdge () {
@@ -54,7 +54,7 @@ eYo.brick.eyo.modelDeclare({
       return !this.wrapped_ && !this.locked_
     },
     minBrickW () {
-      return this.isStmt ? eYo.Span.INDENT : 0
+      return this.isStmt ? eYo.span.INDENT : 0
     },
     bBox () {
       return this.rendered && (this.driver.getBBox(brick))
@@ -192,7 +192,7 @@ eYo.fcfl.Brick._p.renderSuite_ = function (io) {
   if (eYo.brick.debugStartTrackingRender) {
     console.log(eYo.brick.debugPrefix, 'SUITE')
   }
-  m4t.setOffset(eYo.Span.INDENT, brick.span.main)
+  m4t.setOffset(eYo.span.INDENT, brick.span.main)
   let t9k = m4t.targetBrick
   if (t9k) {
     brick.ui.someTargetIsMissing = false
@@ -424,12 +424,12 @@ eYo.fcfl.Brick._p.willShortRender_ = function (brick, recorder) {
  * Translates the brick, forwards to the ui driver after managing the snap formal argument.
  * Contrary to |moveBy| there is no undo management here.
  * @param {eYo.brick.Dflt} brick - The brick to move.
- * @param {eYo.c9r.Where} xy - The xy coordinate of the translation in board units.
+ * @param {eYo.o4t.Where} xy - The xy coordinate of the translation in board units.
  * @param {Boolean} snap Whether we should snap to the grid.
  */
 eYo.fcfl.Brick._p.moveTo = function(brick, xy, snap) {
   if (snap && brick.board && !brick.board.dragging && !brick.parent && !brick.isInFlyout) {
-    xy = eYo.c9r.Where.Cl(xy.c, xy.l)
+    xy = eYo.o4t.Where.Cl(xy.c, xy.l)
   }
   brick.xy_ = xy
   this.place(brick)
@@ -613,7 +613,7 @@ eYo.fcfl.Brick._p.alignRightEdges_ = eYo.c9r.decorateChange(
       return
     }
     var right = 0
-    var t = eYo.Span.INDENT
+    var t = eYo.span.INDENT
     brick.stmtForEach((b, depth) => {
       if (b.span.min_c) {
         var c = t * depth + b.span.min_c
@@ -656,7 +656,7 @@ eYo.fcfl.Brick._p.newDrawRecorder_ = function (brick, recorder) {
     n: 0, // count of rendered objects (fields, slots and inputs)
     form: eYo.NA // rendered field or magnet
   }
-  io.cursor = eYo.c9r.Where.xy(0, brick.span.header)
+  io.cursor = eYo.o4t.Where.xy(0, brick.span.header)
   if (recorder) {
     // io inherits some values from the given recorder
     io.recorder = recorder
@@ -979,7 +979,7 @@ eYo.fcfl.Brick._p.drawField_ = function (field, io) {
             || tail === '#'
             || tail === ','
             || (tail === '.'
-              && (!(field instanceof eYo.FieldLabel))))
+              && (!(field instanceof eYo.fieldLabel))))
         io.common.field.afterBlack = !eYo.xre.white_space.test(tail)
         io.common.field.afterCaret = false
         // place the field at the right position:
@@ -1135,7 +1135,7 @@ eYo.fcfl.Brick._p.drawEnding_ = function (io, isLast = false, inStatement = fals
           m4t.side = eYo.key.RIGHT
           m4t.shape = eYo.key.NONE
           m4t.ui.isLastInStatement =isLastInStatement
-          var d = eYo.Shape.definitionWithMagnet(m4t) // depends on the shape and the side
+          var d = eYo.c9r.shapeDefinitionWithMagnet(m4t) // depends on the shape and the side
           var brick = m4t.brick
           if (this === brick) {
             // we are lucky, this is the brick we are currently rendering
@@ -1168,7 +1168,7 @@ eYo.fcfl.Brick._p.drawPending_ = function (io, side = eYo.key.NONE, shape = eYo.
     if (m4t) {
       m4t.side = side
       m4t.shape = io.ui.isLastInStatement ? eYo.key.Right : shape
-      var shp = eYo.Shape.newWithMagnet(m4t)
+      var shp = eYo.c9r.newShapeWithMagnet(m4t)
       var b3k = m4t.brick
       if (io.brick === b3k) {
         // we are lucky, this is the brick we are currently rendering
@@ -1338,7 +1338,7 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
             }
             m4t.setOffset(io.cursor)
           }
-          var shape = eYo.Shape.newWithMagnet(m4t)
+          var shape = eYo.c9r.newShapeWithMagnet(m4t)
           io.steps.push(shape.definition)
           if (shape.width) {
             io.cursor.c += shape.width
@@ -1430,7 +1430,7 @@ eYo.fcfl.Brick._p.didDisconnect = function (brick, m4t, oldTargetM4t) {
  * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
  * This does not change with board scale.
- * @return {!eYo.c9r.Where} Object with .x and .y properties in
+ * @return {!eYo.o4t.Where} Object with .x and .y properties in
  *     board coordinates.
  */
 eYo.fcls.Brick._p.whereInParent = eYo.do.NYI
@@ -1614,7 +1614,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
         R = new eYo.c9r.Rect(
           magnet.x,
           magnet.y - eYo.style.path.width,
-          eYo.Span.TAB_WIDTH,
+          eYo.span.TAB_WIDTH,
           1.5 * eYo.padding.t + 2 * eYo.style.path.width
         )
         if (xy.in(R)) {
@@ -1641,7 +1641,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
       R = new eYo.c9r.Rect(
         magnet.x,
         magnet.y - 1.5 * eYo.padding.B - eYo.style.path.width,
-        eYo.Span.TAB_WIDTH + eYo.style.path.r, // R U sure?
+        eYo.span.TAB_WIDTH + eYo.style.path.r, // R U sure?
         1.5 * eYo.padding.B + 2 * eYo.style.path.width
       )
     } else {
@@ -1762,7 +1762,7 @@ eYo.fcfl.Brick._p.on_mousedown = function (brick, e) {
   // Next is not good design
   // remove any selected connection, if any
   // but remember it for a contextual menu
-  t9k.ui.lastSelectedMagnet__ = eYo.Focus.Magnet
+  t9k.ui.lastSelectedMagnet__ = eYo.focus.magnet
   // Prepare the mouseUp event for an eventual connection selection
   t9k.ui.lastMouseDownEvent = t9k.hasFocus ? e : null
   eYo.app.Motion.handleBrickStart(e, t9k)
@@ -1803,7 +1803,7 @@ eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
           // and there is a candidate selection
           if (magnet.hasFocus) {
             // unselect
-            eYo.Focus.Magnet = null
+            eYo.focus.magnet = null
           } else if (magnet !== t9k.ui.lastSelectedMagnet__) {
             if (magnet.isSlot) {
               if (!magnet.targetBrick) {
@@ -1813,10 +1813,10 @@ eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
               magnet.focusOn()
             }
           } else {
-            eYo.Focus.Magnet = null
+            eYo.focus.magnet = null
           }
-        } else if (eYo.Focus.Magnet) {
-          eYo.Focus.Magnet = null
+        } else if (eYo.focus.magnet) {
+          eYo.focus.magnet = null
         } else if (t9k.ui.selectMouseDownEvent) {
           // (brick.hasFocus ? this : brick.stmtParent) || t9k.root
           t9k.ui.selectMouseDownEvent = null

@@ -11,12 +11,14 @@
  */
 'use strict'
 
-eYo.require('c9r.BSMOwned')
-
-eYo.provide('magnet')
+/**
+ * @name{eYo.magnet}
+ * @namespace
+ */
+eYo.bsm_o3d.makeNS(eYo, 'magnet')
 
 eYo.forwardDeclare('do')
-eYo.forwardDeclare('c9r.Where')
+eYo.forwardDeclare('o4t.Where')
 
 // Magnet types
 Object.defineProperties(eYo.magnet._p, {
@@ -26,14 +28,6 @@ Object.defineProperties(eYo.magnet._p, {
   FOOT: { value: 5 },
   LEFT: { value: 3 },
   RIGHT: { value: 4 },
-  OPPOSITE_TYPE: {
-    [eYo.magnet.IN]: eYo.magnet.OUT,
-    [eYo.magnet.OUT]: eYo.magnet.IN,
-    [eYo.magnet.FOOT]: eYo.magnet.HEAD,
-    [eYo.magnet.HEAD]: eYo.magnet.FOOT,
-    [eYo.magnet.RIGHT]: eYo.magnet.LEFT,
-    [eYo.magnet.LEFT]: eYo.magnet.RIGHT,
-  },
   /**
   * Constants for checking whether two connections are compatible.
   */
@@ -45,6 +39,17 @@ Object.defineProperties(eYo.magnet._p, {
   REASON_DIFFERENT_WORKSPACES: { value: 5},
 })
 
+// Magnet opposite types, once the types are created
+Object.defineProperties(eYo.magnet._p, {
+  OPPOSITE_TYPE: {
+    [eYo.magnet.IN]: eYo.magnet.OUT,
+    [eYo.magnet.OUT]: eYo.magnet.IN,
+    [eYo.magnet.FOOT]: eYo.magnet.HEAD,
+    [eYo.magnet.HEAD]: eYo.magnet.FOOT,
+    [eYo.magnet.RIGHT]: eYo.magnet.LEFT,
+    [eYo.magnet.LEFT]: eYo.magnet.RIGHT,
+  },
+})
 
 // Database of magnets
 ;(() => {
@@ -209,7 +214,7 @@ eYo.magnet.makeC9r('S', {
  * @return {Object}
  */
 eYo.c9r.model.magnetHandler = (model) => {
-  eYo.ParameterAssert(model)
+  model || eYo.throw('Missing model')
   let methods = []
   ;['willConnect', 'didConnect', 'willDisconnect', 'didDisconnect'].forEach(k => {
     var f = model[k]
@@ -219,7 +224,7 @@ eYo.c9r.model.magnetHandler = (model) => {
         var builtin = m.builtin
         if (builtin) {
           ff = (object) => {
-            let builtin = eYo.AsF(object[k])
+            let builtin = eYo.asF(object[k])
             object[k] = builtin
             ? function (...args) {
               f.call(this, () => {
@@ -266,7 +271,7 @@ eYo.c9r.model.magnetHandler = (model) => {
  * @property {boolean} isSuperior  whether the connection is superior, true if connection faces down or right, false otherwise.
  * @constructor
  */
-eYo.magnet.makeC9r('Dflt', eYo.c9r.BSMOwned, {
+eYo.magnet.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
   init (bs, type, model) {
     if (this.slot) {
       this.name_ = this.slot.key
@@ -275,7 +280,7 @@ eYo.magnet.makeC9r('Dflt', eYo.c9r.BSMOwned, {
     this.model_ = model
     this.optional_ = this.model_.optional
     this.incog_ = this.hidden_ = model.hidden
-    eYo.Field.makeFields(this, model.fields)
+    eYo.field.makeFields(this, model.fields)
     this.reentrant_ = {}
     this.targetIsMissing_ = false
     if (!this.brick.isInFlyout) {
@@ -303,7 +308,7 @@ eYo.magnet.makeC9r('Dflt', eYo.c9r.BSMOwned, {
       this.brick.removeWrapperMagnet(this)
       this.wrapped_ = eYo.NA
     }
-    eYo.Field.disposeFields(this)
+    eYo.field.disposeFields(this)
   },
   ui: {
     /**
@@ -431,7 +436,7 @@ eYo.magnet.makeC9r('Dflt', eYo.c9r.BSMOwned, {
   },
   cloned: {
     where () {
-      new eYo.c9r.Where()
+      new eYo.o4t.Where()
     }
   },
   computed: {
@@ -494,13 +499,13 @@ eYo.magnet.Dflt.eyo.modelDeclare({
     },
     /**
      * Position in the brick.
-     * @return {eYo.c9r.Where}
+     * @return {eYo.o4t.Where}
      */
     whereInBrick: {
       get () {
         return this.slot
         ? this.slot.whereInBrick.forward(this.where)
-        : new eYo.c9r.Where(this.where)
+        : new eYo.o4t.Where(this.where)
       },
       set (after) {
         this.where_.set(this.slot
@@ -511,7 +516,7 @@ eYo.magnet.Dflt.eyo.modelDeclare({
     },
     /**
      * Position in the board.
-     * @return {eYo.c9r.Where}
+     * @return {eYo.o4t.Where}
      */
     whereInBoard: {
       get () {
@@ -798,8 +803,8 @@ eYo.magnet.Dflt_p.completeWrap = eYo.decorate.reentrant_method(
         () => {
           var brick = this.brick
           t9k = eYo.brick.newReady(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
-          eYo.Assert(t9k, 'completeWrap failed: ' + this.wrapped_)
-          eYo.Assert(t9k.out_m, 'Did you declare an Expr brick typed ' + t9k.type)
+          eYo.assert(t9k, 'completeWrap failed: ' + this.wrapped_)
+          eYo.assert(t9k.out_m, 'Did you declare an Expr brick typed ' + t9k.type)
           ans = this.connect(t9k.out_m)
         }
       )
@@ -1479,7 +1484,7 @@ eYo.magnet.Dflt_p.bumpAwayFrom_ = function (m4t) {
   // Raise it to the top for extra visibility.
   var selected = root.hasFocus
   selected || root.selectAdd()
-  var dxy = eYo.c9r.Where.xy(eYo.Motion.SNAP_RADIUS, eYo.Motion.SNAP_RADIUS).backward(this.xy)
+  var dxy = eYo.o4t.Where.xy(eYo.Motion.SNAP_RADIUS, eYo.Motion.SNAP_RADIUS).backward(this.xy)
   if (reverse) {
     // When reversing a bump due to an uneditable brick, bump up.
     dxy.y = -dxy.y
@@ -1539,7 +1544,7 @@ eYo.magnet.Dflt_p.unhideAll = function() {
    * @param {eYo.Connection} conn The connection searching for a compatible
    *     mate.
    * @param {number} maxRadius The maximum radius to another connection.
-   * @param {eYo.c9r.Where} dxy Offset between this connection's location
+   * @param {eYo.o4t.Where} dxy Offset between this connection's location
    *     in the database and the current location (as a result of dragging).
    * @return {!{connection: ?eYo.Connection, radius: number}} Contains two
    *     properties:' connection' which is either another connection or null,
@@ -1550,7 +1555,7 @@ eYo.magnet.Dflt_p.unhideAll = function() {
     if (!db.length) {
       return {magnet: null, radius: maxRadius}
     }
-    var where = new eYo.c9r.Where(magnet.where).forward(dxy)
+    var where = new eYo.o4t.Where(magnet.where).forward(dxy)
     // findPositionForConnection finds an index for insertion, which is always
     // after any block with the same y index.  We want to search both forward
     // and back, so search on both sides of the index.
@@ -1584,8 +1589,8 @@ eYo.magnet.Dflt_p.unhideAll = function() {
   /**
    * Find the closest compatible connection to this connection.
    * All parameters are in board units.
-   * @param {eYo.c9r.Where} maxLimit The maximum radius to another connection.
-   * @param {eYo.c9r.Where} dxy Horizontal offset between this connection's location
+   * @param {eYo.o4t.Where} maxLimit The maximum radius to another connection.
+   * @param {eYo.o4t.Where} dxy Horizontal offset between this connection's location
    *     in the database and the current location (as a result of dragging).
    * @return {!{connection: ?eYo.magnet, radius: number}} Contains two
    *     properties: 'connection' which is either another connection or null,
@@ -1603,7 +1608,7 @@ eYo.magnet.Dflt_p.unhideAll = function() {
 /**
  * Move this magnet to the location given by its offset within the brick and
  * the location of the brick's top left corner.
- * @param {eYo.c9r.Where} blockTL The location of the top left corner
+ * @param {eYo.o4t.Where} blockTL The location of the top left corner
  *     of the brick, in board coordinates.
  */
 eYo.magnet.Dflt_p.moveToOffset = function(blockTL) {
@@ -1612,7 +1617,7 @@ eYo.magnet.Dflt_p.moveToOffset = function(blockTL) {
 
 /**
  * Change the magnet's global coordinates.
- * @param {eYo.c9r.Where} here
+ * @param {eYo.o4t.Where} here
  */
 eYo.magnet.Dflt_p.moveTo = function(here) {
   if (!this.where.equals(here) || (!here.x && !here.y)) {
@@ -1627,7 +1632,7 @@ eYo.magnet.Dflt_p.moveTo = function(here) {
 /**
  * Change the connection's coordinates.
  * Relative move with respect to the actual position.
- * @param {eYo.c9r.Where} dxy Change to coordinates, in board units.
+ * @param {eYo.o4t.Where} dxy Change to coordinates, in board units.
  */
 eYo.magnet.Dflt_p.moveBy = function(dxy) {
   this.moveTo(this.where.forward(dxy))

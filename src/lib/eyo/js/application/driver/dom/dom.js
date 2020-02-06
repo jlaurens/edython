@@ -68,10 +68,10 @@ eYo.dom.makeMngr({
 
 /**
  * The document scroll.
- * @return {eYo.c9r.Where}
+ * @return {eYo.o4t.Where}
  */
 eYo.dom.getDocumentScroll = () => {
-  return eYo.c9r.Where.xy(goog.dom.getDocumentScroll())
+  return eYo.o4t.Where.xy(goog.dom.getDocumentScroll())
 }
 
 /**
@@ -167,7 +167,7 @@ eYo.dom.BindEvent = (node, name, thisObject, callback, opt) => {
     callback = thisObject
     thisObject = null
   }
-  eYo.Assert(eYo.isF(callback))
+  eYo.assert(eYo.isF(callback))
   var handled = false
   var wrapFunc = e => {
     var noCaptureIdentifier = opt && opt.noCaptureIdentifier

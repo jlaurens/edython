@@ -12,18 +12,18 @@
 'use strict'
 
 eYo.forwardDeclare('unit')
-eYo.forwardDeclare('c9r.Where')
+eYo.forwardDeclare('o4t.Where')
 
 eYo.forwardDeclare('padding')
 goog.forwardDeclare('goog.color')
 
 /**
- * @name {eYo.c9r.Shape}
+ * @name {eYo.o4t.Shape}
  * @constructor
  */
-eYo.c9r.Object.makeInheritedC9r('Shape', {
+eYo.o4t.makeC9r('Shape', {
   init () {
-    this.cursor = new eYo.c9r.Where()
+    this.cursor = new eYo.o4t.Where()
     // allways start from the top left
   },
   computed: {
@@ -63,7 +63,7 @@ eYo.c9r.Object.makeInheritedC9r('Shape', {
   },
 })
 
-eYo.c9r.sharedShape = new eYo.c9r.Shape()
+eYo.c9r.sharedShape = new eYo.o4t.Shape()
 
 eYo.c9r.shapeStyle = {
   Hilighted: {
@@ -93,7 +93,7 @@ eYo.c9r.shapeStyle = {
 /**
  * begin
  */
-eYo.c9r.Shape_p.begin = function () {
+eYo.Shape_p.begin = function () {
   this.steps = []
   this.cursor.set()
   this.dc = this.dl = 0
@@ -102,7 +102,7 @@ eYo.c9r.Shape_p.begin = function () {
 /**
  * z
  */
-eYo.c9r.Shape_p.z = function () {
+eYo.Shape_p.z = function () {
   this.steps.push('z')
 }
 
@@ -110,7 +110,7 @@ eYo.c9r.Shape_p.z = function () {
  * end
  * @return {!Object} The receiver.
  */
-eYo.c9r.Shape_p.end = function (noClose = false) {
+eYo.Shape_p.end = function (noClose = false) {
   if (!noClose && this.steps.length) {
     this.z()
   }
@@ -121,14 +121,14 @@ eYo.c9r.Shape_p.end = function (noClose = false) {
  * formatter.
  * @param {Number} x
  */
-eYo.c9r.Shape_p.format = function (x) {
+eYo.Shape_p.format = function (x) {
   return Math.round(100 * x) / 100
 }
 
 /**
  * end
  */
-eYo.c9r.Shape_p.push = function () {
+eYo.Shape_p.push = function () {
   var i
   for(i = 0; i < arguments.length ; i++) {
     var arg = arguments[i]
@@ -151,7 +151,7 @@ eYo.c9r.Shape_p.push = function () {
  * @param {*?} c
  * @param {*?} l
  */
-eYo.c9r.Shape_p.m = function (is_brick, c = 0, l = 0) {
+eYo.Shape_p.m = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
@@ -178,7 +178,7 @@ eYo.c9r.Shape_p.m = function (is_brick, c = 0, l = 0) {
  * @param {*?} c
  * @param {*?} l
  */
-eYo.c9r.Shape_p.m = function (is_brick, c = 0, l = 0) {
+eYo.Shape_p.m = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
@@ -205,7 +205,7 @@ eYo.c9r.Shape_p.m = function (is_brick, c = 0, l = 0) {
  * @param {*?} c
  * @param {*?} l
  */
-eYo.c9r.Shape_p.l = function (is_brick, c = 0, l = 0) {
+eYo.Shape_p.l = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
@@ -228,7 +228,7 @@ eYo.c9r.Shape_p.l = function (is_brick, c = 0, l = 0) {
  * @param {*?} c
  * @param {*?} l
  */
-eYo.c9r.Shape_p.l = function (is_brick, c = 0, l = 0) {
+eYo.Shape_p.l = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
@@ -250,7 +250,7 @@ eYo.c9r.Shape_p.l = function (is_brick, c = 0, l = 0) {
  * @param {Boolean?} is_brick
  * @param {*} c
  */
-eYo.c9r.Shape_p.h = function (is_brick = false, c = 0) {
+eYo.Shape_p.h = function (is_brick = false, c = 0) {
   if (is_brick === true) {
     if (c) {
       this.push(`h ${this.format(c)}`)
@@ -271,7 +271,7 @@ eYo.c9r.Shape_p.h = function (is_brick = false, c = 0) {
  * @param {Boolean?} is_brick
  * @param {*} c
  */
-eYo.c9r.Shape_p.h = function (is_brick = false, c = 0) {
+eYo.Shape_p.h = function (is_brick = false, c = 0) {
   if (is_brick === true) {
     if (this.cursor.x !== c) {
       this.push(`H ${this.format(c)}`)
@@ -292,7 +292,7 @@ eYo.c9r.Shape_p.h = function (is_brick = false, c = 0) {
  * @param {Boolean?} is_brick
  * @param {*} l
  */
-eYo.c9r.Shape_p.v = function (is_brick, l) {
+eYo.Shape_p.v = function (is_brick, l) {
   if (is_brick === true) {
     if (l) {
       this.push(`v ${this.format(l)}`)
@@ -313,7 +313,7 @@ eYo.c9r.Shape_p.v = function (is_brick, l) {
  * @param {Boolean?} is_brick - when 'true', units are given in brick coordinates
  * @param {*} l
  */
-eYo.c9r.Shape_p.v = function (is_brick, l) {
+eYo.Shape_p.v = function (is_brick, l) {
   if (is_brick === true) {
     if (this.cursor.y !== l) {
       this.push(`V ${this.format(l)}`)
@@ -347,7 +347,7 @@ eYo.c9r.Shape_p.v = function (is_brick, l) {
  * @param {Boolean} [clockwise]  Drawing direction.
  * @param {Number} [part]  part is in [[0, 3]].
  */
-eYo.c9r.Shape_p.quarter_circle = function (r, clockwise, part) {
+eYo.Shape_p.quarter_circle = function (r, clockwise, part) {
   if (r === null) {
     r = this.hilighted_width
   } else if (r === true || r === false) {
@@ -389,7 +389,7 @@ eYo.c9r.Shape_p.quarter_circle = function (r, clockwise, part) {
  * @param {Boolean} [part]  part is in [[0, 3]].
  * @param {Boolean} [clockwise]  Drawing direction.
  */
-eYo.c9r.Shape_p.half_circle = function (r, clockwise, part) {
+eYo.Shape_p.half_circle = function (r, clockwise, part) {
   if (part === true || part === false) {
     part = clockwise
     clockwise = r
@@ -415,7 +415,7 @@ eYo.c9r.Shape_p.half_circle = function (r, clockwise, part) {
  * @param {Boolean} left
  * @param {Boolean} down
  */
-eYo.c9r.Shape_p.arc = function (h, r = true, left = true, down = true) {
+eYo.Shape_p.arc = function (h, r = true, left = true, down = true) {
   if (r === true || r === false) {
     down = left
     left = r
@@ -433,7 +433,7 @@ eYo.c9r.Shape_p.arc = function (h, r = true, left = true, down = true) {
  * @param {eYo.brick!} brick  Brick
  */
 eYo.c9r.newShapeWithBrick = function(brick) {
-  return new eYo.c9r.Shape().initWithBrick(brick)
+  return new eYo.o4t.Shape().initWithBrick(brick)
 }
 
 /**
@@ -450,7 +450,7 @@ eYo.c9r.shapeDefinitionWithBrick = function(brick, opt) {
  * Inits a shape with the given brick.
  * @param {eYo.brick!} brick  Brick
  */
-eYo.c9r.Shape_p.initWithBrick = (() => {
+eYo.Shape_p.initWithBrick = (() => {
   /**
    * Inits a shape with the given brick.
    * @param {eYo.brick!} brick  Brick
@@ -528,7 +528,7 @@ eYo.c9r.Shape_p.initWithBrick = (() => {
       this.v(l - s.suite)
     }
     if (s.suite) {
-      this.H(eYo.Span.INDENT + r_c + 1/2)
+      this.H(eYo.span.INDENT + r_c + 1/2)
       this.quarter_circle(r_xy, false, 1)
       this.v(s.suite - 2 * r_l)
       this.quarter_circle(r_xy, false, 2)  
@@ -627,8 +627,8 @@ eYo.c9r.Shape_p.initWithBrick = (() => {
  * Create a shape with the given connection delegate.
  * @param {eYo.magnet!} magnet  A connection delegate.
  */
-eYo.Shape.newWithMagnet = function(magnet) {
-  return new eYo.Shape().initWithMagnet(magnet)
+eYo.c9r.newShapeWithMagnet = function(magnet) {
+  return new eYo.o4t.Shape().initWithMagnet(magnet)
 }
 
 /**
@@ -637,7 +637,7 @@ eYo.Shape.newWithMagnet = function(magnet) {
  * @param {Object} [opt]  Optional kv arguments
  * @return {String!} A path definition.
  */
-eYo.Shape.definitionWithMagnet = function(m4t, opt) {
+eYo.c9r.shapeDefinitionWithMagnet = function(m4t, opt) {
   return eYo.c9r.sharedShape.initWithMagnet(m4t, opt).definition
 }
 
@@ -647,13 +647,13 @@ eYo.Shape.definitionWithMagnet = function(m4t, opt) {
  * @param {Object} [opt]  Optional kv arguments
  * @return {!Object} The receiver.
  */
-eYo.c9r.Shape_p.initWithMagnet = function(magnet, opt) {
+eYo.Shape_p.initWithMagnet = function(magnet, opt) {
   var dd = this.caret_extra
   if (magnet) {
     var brick = magnet.brick
     var m4t
     if (brick && brick.wrapped_ && opt && opt.absolute && (m4t = brick.out_m)) {
-      var where = eYo.c9r.Where.xy(magnet)
+      var where = eYo.o4t.Where.xy(magnet)
       do {
         var t9k = m4t.targetBrick
         where.forward(t9k)
@@ -693,9 +693,9 @@ eYo.c9r.Shape_p.initWithMagnet = function(magnet, opt) {
         this.half_circle(r, true, 1)
       } else if (magnet.isFoot) {
         if (brick.span.l > 1) { // this is not clean design, really?
-          this.m(true, eYo.Span.TAB_WIDTH, brick.span.height - r)
+          this.m(true, eYo.span.TAB_WIDTH, brick.span.height - r)
           this.half_circle(r, true, 3)
-          this.h(true, -eYo.Span.TAB_WIDTH + 4 * r + eYo.unit.x - eYo.padding.l)
+          this.h(true, -eYo.span.TAB_WIDTH + 4 * r + eYo.unit.x - eYo.padding.l)
           this.half_circle(r, true, 1)
         } else {
           this.m(true, w - 4 * r, eYo.unit.y - r)
@@ -706,7 +706,7 @@ eYo.c9r.Shape_p.initWithMagnet = function(magnet, opt) {
       } else if (magnet.isSuite) {
         this.m(true, w - 4 * r, -r + eYo.unit.y)
         this.half_circle(r, true, 3)
-        this.h(true, eYo.Span.TAB_WIDTH - w + eYo.unit.x / 2 + 8 * r)
+        this.h(true, eYo.span.TAB_WIDTH - w + eYo.unit.x / 2 + 8 * r)
         this.half_circle(r, true, 1)
       } else {
         this.M(true, (magnet.isLeft ? eYo.unit.x / 2 : w) + r, eYo.unit.y - 4 * r)
@@ -778,7 +778,7 @@ eYo.c9r.Shape_p.initWithMagnet = function(magnet, opt) {
  * @param {*} isContour
  * @return {!Object} The receiver.
  */
-eYo.c9r.Shape_p.initForPlay = function (cursor, isContour) {
+eYo.Shape_p.initForPlay = function (cursor, isContour) {
   this.begin()
   var lh = eYo.unit.y / 2
   var ratio = 1.618
@@ -807,9 +807,9 @@ eYo.c9r.Shape_p.initForPlay = function (cursor, isContour) {
  * @param {*} cursor  A magnet.
  * @return {String!} A path definition.
  */
-eYo.Shape.definitionForPlayIcon = function(cursor) {
+eYo.c9r.shapeDefinitionForPlayIcon = function(cursor) {
   eYo.c9r.sharedShape.initForPlay(cursor, false)
-  return eYo.c9r.sharedShape.definition
+  return eYo.c9r.sharedc9r.shapeDefinition
 }
 
 /**
@@ -817,7 +817,7 @@ eYo.Shape.definitionForPlayIcon = function(cursor) {
  * @param {*} cursor  A connection delegate.
  * @return {String!} A path definition.
  */
-eYo.Shape.definitionForPlayContour = function(cursor) {
+eYo.c9r.shapeDefinitionForPlayContour = function(cursor) {
   eYo.c9r.sharedShape.initForPlay(cursor, true)
-  return eYo.c9r.sharedShape.definition
+  return eYo.c9r.sharedc9r.shapeDefinition
 }

@@ -27,7 +27,7 @@ eYo.c9r.makeC9r(eYo, 'Scaler', {
   },
   value: {
     active: false,
-    motion: eYo.isNA,
+    motion: eYo.NA,
   },
 })
 

@@ -13,12 +13,10 @@
  */
 'use strict'
 
-eYo.require('c9r.Pane')
-
 /**
- * @name {eYo.Terminal}
+ * @name {eYo.pane.Terminal}
  * Class for a terminal.
  * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.makeC9r('Terminal', eYo.c9r.Pane)
+eYo.pane.makeC9r('Terminal')

@@ -64,7 +64,7 @@ eYo.subMenu.prototype.setSubMenuVisible_ = function (visible) {
       goog.ui.Component.State.OPENED, visible))
   if (visible !== this.menuIsVisible_) {
     goog.dom.classlist.enable(
-      eYo.Assert(this.getElement()),
+      eYo.assert(this.getElement()),
       subMenu.getRenderer().getCssClass() + '-open', visible)
   }
   if (visible !== subMenu.isVisible()) {

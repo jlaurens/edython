@@ -53,7 +53,7 @@ eYo.consolidator.List.makeInheritedC9r('Arguments', {
  * @param {eYo.brick.Dflt} brick - owner or the receiver.
  */
 eYo.consolidator.Arguments.prototype.getIO = function (brick) {
-  var io = eYo.consolidator.Arguments.SuperProto_.getIO.Call(this, brick)
+  var io = eYo.consolidator.Arguments.SuperProto_.getIO.call(this, brick)
   io.last_expression = io.last_positional = io.unique = -Infinity
   io.first_keyword_star_star = io.first_star_star = Infinity
   return io
@@ -131,7 +131,7 @@ eYo.consolidator.Arguments.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.consolidator.Arguments.SuperProto_.doCleanup.Call(this, io)
+    eYo.consolidator.Arguments.SuperProto_.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.unique !== -Infinity) {
       // remove whatever comes before and after the io.unique

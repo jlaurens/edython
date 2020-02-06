@@ -13,7 +13,7 @@
 
 eYo.require('brick')
 
-eYo.require('Module.turtle__module')
+eYo.require('module.turtle__module')
 
 eYo.require('stmt')
 

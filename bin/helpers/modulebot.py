@@ -90,6 +90,7 @@ def do_one_module(module, **kwargs):
             Returns `True` to indicate that there is a return value.
             '''
             if txt.startswith('Return')\
+                    or txt.startswith('Convert ')\
                     or txt.startswith('Retrieve')\
                     or txt.startswith('The concatenation of the ')\
                     or txt.startswith('The lowercase letters ')\

@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('c9r')
-
 /**
  * Class for a workspace control.
  * @param {eYo.Workspace} workspace The board to sit in.
@@ -34,7 +32,7 @@ eYo.require('c9r')
  * @property {number} MARGIN_SIDE_, Distance between trash can and right edge of board.
  *
  */
-eYo.c9r.Dflt.makeInheritedC9r(eYo, 'WorkspaceControl', {
+eYo.o3d.makeC9r(eYo.pane, 'WorkspaceControl', {
   computed: {
     workspace () {
       return this.owner
@@ -52,9 +50,9 @@ eYo.c9r.Dflt.makeInheritedC9r(eYo, 'WorkspaceControl', {
     }
   },
   valued: {
-    WIDTH_: {value: 47},
-    MARGIN_BOTTOM_: {value: 20},
-    MARGIN_SIDE_: {value: 20},
+    WIDTH_: 47,
+    MARGIN_BOTTOM_: 20,
+    MARGIN_SIDE_: 20,
   }
 })
 
@@ -63,7 +61,7 @@ eYo.c9r.Dflt.makeInheritedC9r(eYo, 'WorkspaceControl', {
  * Just change the view rectangle.
  * Subclassers will place th receiver according to their driver.
  */
-eYo.WorkspaceControl.prototype.place = function(bottom) {
+eYo.pane.Workspace.Control_p.place = function(bottom) {
   var board = this.board
   var view = board.metrics.view
   var r = this.viewRect__

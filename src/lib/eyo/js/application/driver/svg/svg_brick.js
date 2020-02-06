@@ -133,11 +133,11 @@ eYo.svg.makeDriverC9r('Brick', {
         }, svg.groupPlay_)
         svg.pathPlayContour_.setAttribute(
           'd',
-          eYo.Shape.definitionForPlayContour({x: 0, y: 0})
+          eYo.c9r.shapeDefinitionForPlayContour({x: 0, y: 0})
         )
         svg.pathPlayIcon_.setAttribute(
           'd',
-          eYo.Shape.definitionForPlayIcon({x: 0, y: 0})
+          eYo.c9r.shapeDefinitionForPlayIcon({x: 0, y: 0})
         )
         dom.bound.mousedown = eYo.dom.BindEvent(
           svg.pathPlayIcon_,
@@ -349,8 +349,8 @@ eYo.svg.Brick_p.pathCollapsedDef_ = eYo.svg.Brick_p.pathDef_
  * @private
  */
 eYo.svg.Brick_p.pathMagnetDef_ = function (brick) {
-  return eYo.Focus.Magnet
-  ? eYo.Shape.definitionWithMagnet(eYo.Focus.Magnet, {hilight: true})
+  return eYo.focus.magnet
+  ? eYo.c9r.shapeDefinitionWithMagnet(eYo.focus.magnet, {hilight: true})
   : ''
 }
 
@@ -687,7 +687,7 @@ eYo.svg.Brick_p.place = function(brick) {
  * drag surface to translate bricks.
  * This brick must be a top-level brick.
  * @param {eYo.brick.Dflt} brick  the brick.
- * @param {eYo.c9r.Where} dxy  in board coordinates.
+ * @param {eYo.o4t.Where} dxy  in board coordinates.
  */
 eYo.svg.Brick_p.setOffsetDuringDrag = function(brick, dxy) {
   var svg = brick.dom.svg
@@ -698,7 +698,7 @@ eYo.svg.Brick_p.setOffsetDuringDrag = function(brick, dxy) {
 
 /**
  * Return the coordinates of the top-left corner of this brick relative to the parent, in board units.
- * @return {!eYo.c9r.Where} Object with .x and .y properties in
+ * @return {!eYo.o4t.Where} Object with .x and .y properties in
  *     board coordinates.
  */
 eYo.svg.Brick_p.whereInParent = function (brick) {
@@ -711,11 +711,11 @@ eYo.svg.Brick_p.whereInParent = function (brick) {
  * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
  * This does not change with board scale.
- * @return {!eYo.c9r.Where} Object with .x and .y properties in
+ * @return {!eYo.o4t.Where} Object with .x and .y properties in
  *     board coordinates.
  */
 eYo.svg.Brick_p.whereInBoard = function (brick) {
-  var ans = new eYo.c9r.Where()
+  var ans = new eYo.o4t.Where()
   var bds = brick.board.dom.svg.BrickDragSurface
   var current = bds.brickGroup
   var bdsGroup = bds.dom.svg.group_
@@ -737,11 +737,11 @@ eYo.svg.Brick_p.whereInBoard = function (brick) {
 /**
  * Return the coordinates of the top-left corner
  * of this brick relative to the desk.
- * @return {!eYo.c9r.Where} Object with .x and .y properties in
+ * @return {!eYo.o4t.Where} Object with .x and .y properties in
  *     desk coordinates.
  */
 eYo.svg.Brick_p.whereInDesk = function (brick) {
-  var ans = new eYo.c9r.Where()
+  var ans = new eYo.o4t.Where()
   var bds = brick.board.dom.svg.BrickDragSurface
   var bdsRoot = bds.dom.svg.root_
   var boardRoot = brick.board.dom.svg.root_

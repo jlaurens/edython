@@ -12,29 +12,27 @@
  */
 'use strict'
 
-eYo.require('c9r.Pane')
-
 eYo.require('decorate')
 
 /**
- * @name {eYo.Template}
+ * @name {eYo.pane.Template}
  * Class for a template environment.
  * To be subclassed.
  * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.makeC9r('Template', eYo.c9r.Pane)
+eYo.pane.makeC9r('Template')
 
 /**
  * Update the metrics of the receiver.
  */
-eYo.Template.prototype.updateMetrics = function () {
+eYo.pane.Template_p.updateMetrics = function () {
   this.ui_driver.updateMetrics(this)
 }
 
 /**
  * Place the receiver.
  */
-eYo.Template.prototype.place = function () {
+eYo.pane.Template_p.place = function () {
   this.ui_driver.place(this)
 }

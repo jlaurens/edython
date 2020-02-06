@@ -22,8 +22,8 @@ eYo.svg.makeDriverC9r('Field', {
    * Initializes the field SVG ressources.
    * Does nothing if the field's brick has no SVG ressources.
    * Part of the `initUI` process.
-   * @param {eYo.Field} field
-   * @return {?eYo.Field}
+   * @param {eYo.field} field
+   * @return {?eYo.field}
    */
   initUI (field) {
     if (field.dom) {
@@ -151,7 +151,7 @@ eYo.svg.Field_p.makePlaceholder = function (field, yorn) {
 
 /**
  * Make the given field a comment.
- * @param {eYo.Field} field
+ * @param {eYo.field} field
  * @param {boolean} yorn
  */
 eYo.svg.Field_p.makeComment = function (field, yorn) {
@@ -197,7 +197,7 @@ eYo.svg.Field_p.displayedUpdate = function (field) {
 
 /**
  * Add or remove the UI indicating if this field is editable or not.
- * @param {eYo.Field} field
+ * @param {eYo.field} field
  */
 eYo.svg.Field_p.updateEditable = function(field) {
   var g = field.dom && field.dom.svg && field.dom.svg.group_
@@ -275,7 +275,7 @@ eYo.svg.Field_p.setVisualAttribute = function (field) {
 /**
  * Return the absolute coordinates of the top-left corner of this field.
  * The origin $(0,0)$ is the top-left corner of the page body.
- * @return {!eYo.c9r.Where} Object with `.x` and `.y` properties.
+ * @return {!eYo.o4t.Where} Object with `.x` and `.y` properties.
  * @private
  */
 eYo.svg.Field_p.getAbsoluteWhere_ = function(field) {

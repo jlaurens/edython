@@ -34,7 +34,7 @@ eYo.keyHandler.makeC9r('Menu')
  */
 eYo.keyHandler.Menu_p.handleKeyEventInternal = function (e) {
   // Give the highlighted control the chance to handle the key event.
-  if (eYo.keyHandler.Menu.SuperProto_.handleKeyEventInternal.Call(this, e)) {
+  if (eYo.keyHandler.Menu.SuperProto_.handleKeyEventInternal.call(this, e)) {
     return true
   }
   return this.handleMenuKeyEvent(e)
@@ -70,7 +70,7 @@ eYo.keyHandler = (() => {
   me.register = function (key, model) {
     // manage duplicates
     if (key.length) {
-      eYo.Assert(eYo.isStr(model) || eYo.isF(model) || eYo.isF(model.action) || eYo.isStr(model.type), 'No model to register for ' + key)
+      eYo.assert(eYo.isStr(model) || eYo.isF(model) || eYo.isF(model.action) || eYo.isStr(model.type), 'No model to register for ' + key)
       for (var i = 0, s; (s = shortcuts_[i]); i++) {
         if (s.key === key) {
           shortcuts_[i] = {
@@ -110,7 +110,7 @@ eYo.keyHandler = (() => {
   me.handleFirstMenuItemAction = function (model) {
     // first check to see if the selected brick can handle the model
     var eyo = eYo.app.Focus_mngr.Brick
-    var m4t = eYo.Focus.Magnet
+    var m4t = eYo.focus.magnet
     if (eyo && !m4t) {
       var D = model.data
       if (D && eyo.setDataWithModel(D)) {
@@ -151,7 +151,7 @@ eYo.keyHandler = (() => {
     }
     var eyo = eYo.app.Focus_mngr.Brick
     if (eyo) {
-      var m4t = eYo.Focus.Magnet
+      var m4t = eYo.focus.magnet
       var newB = m4t && (eyo.insertBrickWithModel(model, m4t))
         || (model.parent || model.slot
           ? eyo.insertParentWithModel(model) || eyo.insertBrickWithModel(model, m4t)
@@ -180,7 +180,7 @@ eYo.keyHandler = (() => {
             m4t.focusOn()
             return true
           }
-          eYo.Focus.Magnet = null
+          eYo.focus.magnet = null
           newB.focusOn()
           return true
         }
@@ -196,7 +196,7 @@ eYo.keyHandler = (() => {
             return true
           }
         } while ((parent = parent.group))
-        eYo.Focus.Magnet = null
+        eYo.focus.magnet = null
         newB.focusOn()
         return true
       }
@@ -480,7 +480,7 @@ eYo.keyHandler = (() => {
           })
         }
         var scaledHeight = eYo.unit.y * brick.board.scale
-        var m4t = eYo.Focus.Magnet
+        var m4t = eYo.focus.magnet
         if (m4t && m4t.brick) {
           var xy = goog.style.getPageOffset(m4t.brick.dom.svg.group_)
           var xxyy = m4t.whereInBrick.scale(brick.board.scale)
@@ -496,10 +496,10 @@ eYo.keyHandler = (() => {
           f()
         }
         switch (k) {
-        case 'arrowdown': return F(eYo.Focus.ChooseBelow)
-        case 'arrowup': return F(eYo.Focus.ChooseAbove)
-        case 'arrowleft': return F(eYo.Focus.ChooseLeft)
-        case 'arrowright': return F(eYo.Focus.ChooseRight)
+        case 'arrowdown': return F(eYo.focus.ChooseBelow)
+        case 'arrowup': return F(eYo.focus.ChooseAbove)
+        case 'arrowleft': return F(eYo.focus.ChooseLeft)
+        case 'arrowright': return F(eYo.focus.ChooseRight)
         }
       }
     } else {
@@ -598,7 +598,7 @@ for (let [K, V] of Object.entries({
           eyo.replaceBrick(parent)
           return
         }
-        if (eYo.Focus.Magnet) {
+        if (eYo.focus.magnet) {
           eyo.insertBrickWithModel(eYo.t3.expr.not_test)
         } else {
           eyo.insertParentWithModel(eYo.t3.expr.not_test)
@@ -616,7 +616,7 @@ for (let [K, V] of Object.entries({
           type: eYo.t3.expr.u_expr,
           operator_p: '+'
         }
-        if (eYo.Focus.Magnet) {
+        if (eYo.focus.magnet) {
           eyo.insertBrickWithModel(model)
         } else {
           eyo.insertParentWithModel(model)
@@ -640,7 +640,7 @@ for (let [K, V] of Object.entries({
         type: eYo.t3.expr.u_expr,
         operator_p: op
       }
-      eYo.Focus.Magnet
+      eYo.focus.magnet
         ? brick.insertBrickWithModel(model)
         : brick.insertParentWithModel(model)
     }

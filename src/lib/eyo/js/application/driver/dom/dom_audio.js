@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('c9r.Owned')
-
 goog.forwardDeclare('goog.userAgent')
 
 /**

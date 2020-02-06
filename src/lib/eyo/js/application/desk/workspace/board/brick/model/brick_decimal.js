@@ -22,7 +22,7 @@ eYo.require('expr.Primary')
 eYo.require('tooltip')
 
 eYo.require('Library')
-eYo.require('Module.decimal__module')
+eYo.require('module.decimal__module')
 
 eYo.provide('brick.decimal')
 

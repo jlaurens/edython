@@ -15,7 +15,7 @@ eYo.makeNS('do')
 
 goog.forwardDeclare('goog.dom')
 
-eYo.Assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
+eYo.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
 
 // Object.keys polyfill
 // http://tokenposts.blogspot.com/2012/04/javascript-objectkeys-browser.html
@@ -578,7 +578,7 @@ eYo.do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
 eYo.do.readOnlyMixin = (object, props) => {
   var key
   for (key in props) {
-    eYo.Assert(!eYo.do.hasOwnProperty(object, key), 'Duplicate keys are forbidden: ' + key)
+    eYo.assert(!eYo.do.hasOwnProperty(object, key), 'Duplicate keys are forbidden: ' + key)
     var value = props[key]
     var prop = eYo.isF(value)
     ? { get: value }
@@ -614,6 +614,6 @@ eYo.do.readOnlyMixin = (object, props) => {
  * @param {String} str - the base string
  */
 eYo.do.toTitleCase = (str) => {
-  eYo.ParameterAssert(eYo.isStr(str))
+  eYo.parameterAssert(eYo.isStr(str))
   return str.length ? str[0].toUpperCase()+str.substr(1) : str
 }

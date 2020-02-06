@@ -13,7 +13,7 @@
 
 eYo.require('stmt.Group')
 
-eYo.require('c9r.Change')
+eYo.require('o3d.Change')
 
 eYo.provide('brick.try')
 
@@ -215,7 +215,7 @@ eYo.stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
   ), eYo.key.ALIASED
   )
   mngr.shouldSeparate()
-  return eYo.stmt.except_part.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  return eYo.stmt.except_part.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -360,7 +360,7 @@ eYo.stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   ), eYo.key.FROM
   )
   mngr.shouldSeparate()
-  return eYo.stmt.raise_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  return eYo.stmt.raise_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -457,7 +457,7 @@ eYo.stmt.Assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   ), eYo.key.BINARY
   )
   mngr.shouldSeparate()
-  return eYo.stmt.Assert_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  return eYo.stmt.Assert_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 eYo.brick.try.t3s = [

@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.require('WorkspaceControl')
+eYo.require('pane.WorkspaceControl')
 
 /**
  * Zoom controls model
  * @param {eYo.Workspace} workspace Workspace to zoom.
  * @constructor
  */
-eYo.WorkspaceControl.makeInheritedC9r(eYo, 'Zoomer')
-
-Object.defineProperties(eYo.Zoomer.prototype, {
-  HEIGHT_: { value: 110 },
+eYo.pane.WorkspaceControl.makeInheritedC9r('Zoomer', {
+  valued: {
+    HEIGHT_: { init: 110 },
+  }
 })

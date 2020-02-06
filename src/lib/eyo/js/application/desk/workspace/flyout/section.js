@@ -12,20 +12,18 @@
  */
 'use strict'
 
-eYo.require('c9r.Owned')
-
 /**
  * @name {eYo.section}
  * @namespace
  */
-eYo.provide('section')
+eYo.o3d.makeNS(eYo, 'section')
 
 /**
  * Class for a flyout's section.
  * @param {eYo.Flyout} owner  The owning flyout.
  * @constructor
  */
-eYo.section.makeC9r('Dflt', eYo.c9r.Owned, {
+eYo.section.makeDflt({
   computed: {
     /**
      * The owning flyout

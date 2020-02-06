@@ -46,6 +46,27 @@ var eYo
     }
   })
 
+  /**
+   * Unique object, to avoid collisions in constants.
+   */
+  let F = function () {}
+  eYo.getUNIK = () => {
+    return new F()
+  }
+
+  let NULL_NS = eYo.getUNIK()
+
+  Object.defineProperties(eYo, {
+    NULL_NS: {
+      get () {
+        return NULL_NS
+      },
+      set (after) {
+        throw 'Unexpected NULL_NS setter'
+      }
+    }
+  })
+    
 })()
 
 /**
@@ -68,7 +89,7 @@ eYo.global =
     this ||
     // https://developer.mozilla.org/en-US/docs/Web/API/Window/self
     // For in-page browser environments and workers.
-    self;
+    self
 
 /**
  * Whether the argument is a string.
@@ -174,11 +195,22 @@ eYo.isF = (what) => {
 }
 
 /**
+ * Whether the argument is a constructor, in edython paradigm.
+ * Such a constructor is a function with an `eyo` property pointing to
+ * a delegate. It is not advisable to change this property on the fly.
+ * @param {*} what
+ * @return {!Boolean}
+ */
+eYo.isC9r = (what) => {
+  return !!what.eyo__ && eYo.isF(what)
+}
+
+/**
  * Returns the argument if its a function, `eYo.NA` otherwise.
  * @param {*} what
  * @return {Function|eYo.NA}
  */
-eYo.AsF = (what) => {
+eYo.asF = (what) => {
   return typeof what === 'function' && !!what.call ? what : eYo.NA
 }
 
@@ -188,7 +220,7 @@ eYo.AsF = (what) => {
  * @param {*} what
  * @return {Function|eYo.NA}
  */
-eYo.Called = (what) => {
+eYo.called = (what) => {
   return eYo.isF(what) ? what() : what
 }
 
@@ -203,9 +235,17 @@ eYo.isSubclass = (Sub, Super) => {
 }
 
 /**
- * @param {String} name
+ * @param {String} name - dotted components, some kind of path.
+ * @param {Object} value - When false, nothing is performed. This is the value used to create some object at the given path, instead of the default namespace.
  */
 eYo._p.provide = (name, value) => {
+  if (value === false) {
+    return
+  }
+  var args = name.split('.')
+  if (args[0] === 'eYo') {
+    return
+  }
   var ns = eYo
   var f = (first, second, ...args) => {
     if (first) {
@@ -222,10 +262,6 @@ eYo._p.provide = (name, value) => {
       } 
     }
   }
-  var args = name.split('.')
-  if (args[0] === 'eYo') {
-    return
-  }
   f(...args, value)
 }
 
@@ -235,7 +271,7 @@ eYo._p.provide = (name, value) => {
 eYo._p.require = (name) => {
   var ns = eYo
   name.split('.').forEach(k => {
-    eYo.Assert((ns = ns[k]), `Missing required ${name}`)
+    eYo.assert((ns = ns[k]), `Missing required ${name}`)
   })
 }
 
@@ -264,7 +300,7 @@ eYo.inherits = function (ChildC9r, SuperC9r) {
  */
 eYo._p.makeNS = function (ns, key, model) {
   if (eYo.isStr(ns)) {
-    eYo.ParameterAssert(!model, 'Unexpected model argument')
+    model && eYo.throw('Unexpected model argument')
     model = key
     key = ns
     ns = this
@@ -280,6 +316,9 @@ eYo._p.makeNS = function (ns, key, model) {
   Object.defineProperty(NS.prototype, 'super', {
     value: this,
   })
+  ns && Object.defineProperty(NS.prototype, 'parent', {
+    value: ns,
+  })
   if (model) {
     for (var k in model) {
       Object.defineProperty(NS.prototype, k, {
@@ -288,22 +327,21 @@ eYo._p.makeNS = function (ns, key, model) {
     }
   }
   var ans = new NS()
-  if (ns) {
-    Object.defineProperties(ns, {
-      [key]: { value: ans, },
-      [key + '_p']: { value: ans.prototype, },
-      [key + '_s']: { value: Super.prototype, },
-    })
-  }
+  ns && Object.defineProperties(ns, {
+    [key]: { value: ans, },
+    [key + '_p']: { value: ans.prototype, },
+    [key + '_s']: { value: Super.prototype, },
+  })
   Object.defineProperties(ans, {
-    name: { value: ns ? `${ns.name}.${key}` : key || "No man's land" },
+    key: {value: key},
+    name: { value: ns ? `${ns.name}.${this.key}` : this.key || "No man's land" },
   })
   return ans
 }
 
 /**
  * The default error handler.
- * @param {eYo.AssertionError} e The exception to be handled.
+ * @param {eYo.assertionError} e The exception to be handled.
  */
 eYo.DEFAULT_ERROR_HANDLER = function(e) {
   throw e
@@ -311,7 +349,7 @@ eYo.DEFAULT_ERROR_HANDLER = function(e) {
 
 /**
  * The handler responsible for throwing or logging assertion errors.
- * @private {function(!eYo.AssertionError)}
+ * @private {function(!eYo.assertionError)}
  */
 eYo.errorHandler_ = eYo.DEFAULT_ERROR_HANDLER
 
@@ -324,12 +362,12 @@ eYo.eNABLE_ASSERTS = true
  * @param {string=} opt_message Error message in case of failure.
  * @param {...*} args The items to substitute into the failure message.
  * @return {T} The value of the condition.
- * @throws {eYo.AssertionError} When the condition evaluates to false.
+ * @throws {eYo.assertionError} When the condition evaluates to false.
  * @closurePrimitive {asserts.truthy}
  */
-eYo.Assert = function(condition, message, ...args) {
+eYo.assert = function(condition, message, ...args) {
   if (eYo.eNABLE_ASSERTS && !condition) {
-    var e = new eYo.AssertionError(message, ...args);
+    var e = new eYo.assertionError(message, ...args);
     eYo.errorHandler_(e);
   }
   return condition
@@ -344,7 +382,7 @@ eYo.Assert = function(condition, message, ...args) {
  * @extends {Error}
  * @final
  */
-eYo.AssertionError = function(pattern, ...args) {
+eYo.assertionError = function(pattern, ...args) {
   this.message = eYo.Subs_(pattern, ...args)
   this.stack = Error().stack
   /**
@@ -354,9 +392,9 @@ eYo.AssertionError = function(pattern, ...args) {
    */
   this.messagePattern = pattern
 }
-eYo.inherits(eYo.AssertionError, Error)
+eYo.inherits(eYo.assertionError, Error)
 
-eYo.AssertionError.prototype.name = "AssertionError"
+eYo.assertionError.prototype.name = "AssertionError"
 
 /**
  * Does simple python-style string substitution.
@@ -386,8 +424,8 @@ eYo.Subs_ = function(pattern, ...subs) {
  * @param {Boolean} what
  * @param {String} [str]
  */
-eYo.ParameterAssert = (what, str) => {
-  eYo.Assert(what, str ? `Bad parameter - ${str}` : "Bad parameter")
+eYo.parameterAssert = (what, str) => {
+  eYo.assert(what, str ? `Bad parameter - ${str}` : "Bad parameter")
 }
 
 /**
@@ -448,8 +486,8 @@ eYo.Setup = (() => {
       i11r = when
       when = i11rsHead.length
     } else {
-      eYo.Assert(eYo.isF(i11r))
-      eYo.Assert(goog.isNumber(when))
+      eYo.assert(eYo.isF(i11r))
+      eYo.assert(goog.isNumber(when))
     }
     if (when < 0) {
       when = i11rsTail.length + 1 + when

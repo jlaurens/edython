@@ -32,7 +32,6 @@
  */
 'use strict'
 
-eYo.require('c9r.Owned')
 eYo.require('do')
 eYo.require('xre')
 
@@ -43,7 +42,7 @@ goog.require('goog.dom')
  * @name {eYo.data}
  * @namespace
  */
-eYo.c9r.makeNS(eYo, 'data')
+eYo.o3d.makeNS(eYo, 'data')
 
 eYo.data.makeDlgt()
 
@@ -73,7 +72,7 @@ eYo.c9r.model.dataHandler = (model, key) => {
           if (builtin) {
             if (before) {
               var ff = (object) => {
-                let builtin = eYo.AsF(object[kk])
+                let builtin = eYo.asF(object[kk])
                 object[k] = builtin
                 ? function (before, after) {
                   f.call(this, () => {
@@ -85,7 +84,7 @@ eYo.c9r.model.dataHandler = (model, key) => {
               }
             } else {
               ff = (object) => {
-                let builtin = eYo.AsF(object[kk])
+                let builtin = eYo.asF(object[kk])
                 object[k] = builtin
                 ? function (before, after) {
                   f.call(this, () => {
@@ -146,11 +145,11 @@ eYo.data.Dlgt_p.initInstance = function (object) {
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.data.makeC9r('Dflt', eYo.c9r.Owned, {
+eYo.data.makeDflt({
   init (brick, key, model) {
-    eYo.ParameterAssert(brick, 'Missing brick')
-    eYo.ParameterAssert(key, 'Missing key')
-    eYo.ParameterAssert(model, 'Missing model')
+    !brick && eYo.throw('Missing brick')
+    !key && eYo.throw('Missing key')
+    !model && eYo.throw('Missing model')
     this.reentrant_ = {}
     this.key_ = key
     this.model_ = model
@@ -674,7 +673,7 @@ eYo.data.Dflt_p.synchronize = function (before, after) {
     after = this.get()
   }
   if (this.model.synchronize === true) {
-    eYo.Assert(this.field || this.slot || this.model.synchronize, `No field nor slot bound. ${this.key}/${this.brickType}`)
+    eYo.assert(this.field || this.slot || this.model.synchronize, `No field nor slot bound. ${this.key}/${this.brickType}`)
     var field = this.field
     if (field) {
       if (this.incog) {

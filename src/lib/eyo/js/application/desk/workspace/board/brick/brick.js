@@ -16,7 +16,7 @@ eYo.require('do')
 eYo.require('c9r')
 eYo.require('c9r.model')
 
-eYo.require('c9r.Change')
+eYo.require('o3d.Change')
 eYo.require('data')
 
 /**
@@ -34,11 +34,11 @@ eYo.forwardDeclare('stmt')
 
 eYo.forwardDeclare('xre')
 eYo.forwardDeclare('t3')
-eYo.forwardDeclare('c9r.Where')
+eYo.forwardDeclare('o4t.Where')
 eYo.forwardDeclare('do')
 
 eYo.forwardDeclare('events')
-eYo.forwardDeclare('Span')
+eYo.forwardDeclare('span')
 eYo.forwardDeclare('field')
 eYo.forwardDeclare('slot')
 eYo.forwardDeclare('magnet')
@@ -344,14 +344,14 @@ eYo.brick.makeDflt({
   },
   owned: {
     span () {
-      return new eYo.Span(this)
+      return new eYo.span.Dflt(this)
     },
     /**
-     * @type{eYo.c9r.Change}
+     * @type{eYo.o3d.Change}
      * @readonly
      */
     change () {
-      return new eYo.c9r.Change(this)
+      return new eYo.o3d.Change(this)
     },
     data: eYo.NA,
   },
@@ -709,7 +709,7 @@ eYo.brick.makeDflt({
     foot_m () { return this.magnets.foot },
     /**
      * Position of the receiver in the board.
-     * @type {eYo.c9r.Where}
+     * @type {eYo.o4t.Where}
      * @readonly
      */
     xy () {
@@ -717,7 +717,7 @@ eYo.brick.makeDflt({
     },
     /**
      * Position of the receiver in the board.
-     * @type {eYo.c9r.Where}
+     * @type {eYo.o4t.Where}
      * @readonly
      */
     where () {
@@ -812,7 +812,7 @@ eYo.brick.makeDflt({
       this.children__ = eYo.NA
     })
     this.board.resizePort()
-    eYo.Property.dispose(this, 'span', 'change')
+    eYo.p6y.disposeProperties(this, 'span', 'change')
     eYo.Link.Clear(this, 'parent')
   }
 })
@@ -1182,7 +1182,7 @@ eYo.brick.DEBUG_ = Object.create(null)
           var candidate
           slot.fieldForEach(f => {
             if (f.editable) {
-              eYo.Assert(!candidate, 'Ambiguous slot <-> data bound (too many editable fields)')
+              eYo.assert(!candidate, 'Ambiguous slot <-> data bound (too many editable fields)')
               candidate = f
             }
           })
@@ -1192,7 +1192,7 @@ eYo.brick.DEBUG_ = Object.create(null)
       } else {
         this.slotSome(slot => {
           if ((data.field = slot.fields[k])) {
-            eYo.Assert(!slot.data, `Ambiguous slot <-> data bound ${data.key}, ${slot.data && slot.data.key}`)
+            eYo.assert(!slot.data, `Ambiguous slot <-> data bound ${data.key}, ${slot.data && slot.data.key}`)
             data.slot = slot
             slot.data = data
             return true
@@ -1247,7 +1247,7 @@ eYo.brick.DEBUG_ = Object.create(null)
               //     }
               //   })
               // }
-              eYo.Assert(!done, `Ambiguous data model ${d.key} / ${data_in}: ${done}`)
+              eYo.assert(!done, `Ambiguous data model ${d.key} / ${data_in}: ${done}`)
               d.doChange(data_in)
               d.setRequiredFromModel(true)
               done = d.key
@@ -1339,7 +1339,7 @@ eYo.brick.DEBUG_ = Object.create(null)
     this.dataForEach(d => {
       Object.defineProperty(d.brick, d.key + '_d', { value: d })
       if (d.model.main === true) {
-        eYo.Assert(!data.main, 'Only one main data please')
+        eYo.assert(!data.main, 'Only one main data please')
         Object.defineProperty(d.brick, 'main_d', { value: d })
       }
     })
@@ -1376,7 +1376,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * For edython.
    */
   _p.makeFields = function () {
-    eYo.Field.makeFields(this, this.model.fields)
+    eYo.field.makeFields(this, this.model.fields)
   }
 
   /**
@@ -1384,7 +1384,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * For edython.
    */
   _p.disposeFields = function () {
-    eYo.Field.disposeFields(this)
+    eYo.field.disposeFields(this)
   }
 
   /**
@@ -1409,7 +1409,7 @@ eYo.brick.DEBUG_ = Object.create(null)
             if ((slot = feedSlots.call(this, model.slots))) {
               next = slot
               do {
-                eYo.Assert(!goog.isDef(slots[next.key]),
+                eYo.assert(!goog.isDef(slots[next.key]),
                   'Duplicate inserted slot key %s/%s/%s', next.key, insert, brick.type)
                 slots[next.key] = next
               } while ((next = next.next))
@@ -1420,7 +1420,7 @@ eYo.brick.DEBUG_ = Object.create(null)
             continue
           }
         } else if (goog.isObject(model) && (slot = new eYo.slot.Dflt(this, k, model))) {
-          eYo.Assert(!goog.isDef(slots[k]),
+          eYo.assert(!goog.isDef(slots[k]),
             `Duplicate slot key ${k}/${this.type}`)
           slots[k] = slot
           slot.slots = slots
@@ -1430,7 +1430,7 @@ eYo.brick.DEBUG_ = Object.create(null)
         slot.order = order
         for (var i = 0; i < ordered.length; i++) {
           // we must not find an aleady existing entry.
-          eYo.Assert(i !== slot.order,
+          eYo.assert(i !== slot.order,
             `Same order slot ${i}/${this.type}`)
           if (ordered[i].model.order > slot.model.order) {
             break
@@ -1692,7 +1692,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @private
    */
   _p.duringBrickWrapped = function () {
-    eYo.Assert(!this.uiHasSelect, 'Deselect brick before')
+    eYo.assert(!this.uiHasSelect, 'Deselect brick before')
     this.updateWrapped()
   }
 
@@ -1950,7 +1950,7 @@ eYo.brick.DEBUG_ = Object.create(null)
   /**
    * @name{moveTo}
    * Move a brick to an offset in board coordinates.
-   * @param {eYo.c9r.Where} xy Offset in board units.
+   * @param {eYo.o4t.Where} xy Offset in board units.
    * @param {Boolean} snap Whether we should snap to the grid.
    */
   eYo.driver.makeForwarder(_p, 'moveTo')
@@ -2010,7 +2010,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * Returns the named field from a brick.
    * Only fields that do not belong to an input are searched for.
    * @param {string} name The name of the field.
-   * @return {eYo.Field} Named field, or null if field does not exist.
+   * @return {eYo.field} Named field, or null if field does not exist.
    */
   _p.getField = function (name) {
     var ans = null
@@ -2191,7 +2191,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @return {?eYo.brick.Dflt} the created brick
    */
   _p.insertParentWithModel = function (model) {
-    eYo.Assert(false, 'Must be subclassed')
+    eYo.assert(false, 'Must be subclassed')
   }
 
   /**
@@ -2246,7 +2246,7 @@ eYo.brick.DEBUG_ = Object.create(null)
         }
         if (!candidate) {
           // very special management for tuple input
-          if ((otherM4t = eYo.Focus.Magnet) && eYo.isStr(model)) {
+          if ((otherM4t = eYo.focus.magnet) && eYo.isStr(model)) {
             var otherBrick = otherM4t.brick
             if (otherBrick instanceof eYo.expr.List && otherM4t.isSlot) {
               eYo.events.groupWrap(() => {
@@ -2286,7 +2286,7 @@ eYo.brick.DEBUG_ = Object.create(null)
           }
           return
         }
-        if ((otherM4t = eYo.Focus.Magnet)) {
+        if ((otherM4t = eYo.focus.magnet)) {
           otherBrick = otherM4t.brick
           if (otherM4t.isSlot) {
             if ((m4t = candidate.out_m) && m4t.checkType_(otherM4t)) {
@@ -2459,7 +2459,7 @@ eYo.brick.DEBUG_ = Object.create(null)
       this, eYo.Const.Event.locked, null, this.locked_, true)
     this.locked_ = true
     if (this.hasFocus) {
-      eYo.Focus.Magnet = null
+      eYo.focus.magnet = null
     }
     // list all the slots for connections with a target
     var m4t
@@ -2728,7 +2728,7 @@ eYo.brick._p.doMakeC9r = function (ns, key, Super, Dlgt, register, model) {
   if (key.indexOf('eyo:') >= 0) {
     key = key.substring(4)
   }
-  var C9r = eYo.brick.Super.doMakeC9r.Call(this, ns, key, Super, Dlgt, model)
+  var C9r = eYo.brick.Super.doMakeC9r.call(this, ns, key, Super, Dlgt, model)
   if (!C9r.eyo) {
     console.error('WHERE IS EYO???')
   }
@@ -2770,7 +2770,7 @@ eYo.brick.Dlgt_p.makeInheritedC9rDecorate = (f) => {
       console.error('BREAK HERE!')
     }
     if (ns && !eYo.isNS(ns)) {
-      eYo.ParameterAssert(!model, `Unexpected model(1) ${model}`)
+      model && eYo.throw(`Unexpected model(1) ${model}`)
       model = register
       register = Dlgt
       Dlgt = key
@@ -2778,19 +2778,19 @@ eYo.brick.Dlgt_p.makeInheritedC9rDecorate = (f) => {
       ns = eYo.NA
     }
     if (!eYo.isStr(key)) {
-      eYo.ParameterAssert(!model, `Unexpected model(2) ${model}`)
+      model && eYo.throw(`Unexpected model(2) ${model}`)
       model = register
       register = Dlgt
       Dlgt = key
       key = eYo.NA
     }
     if (goog.isBoolean(Dlgt)) {
-      eYo.ParameterAssert(!model, `Unexpected model(3) ${model}`)
+      model && eYo.throw(`Unexpected model(3) ${model}`)
       model = register
       register = Dlgt
       Dlgt = eYo.NA
     } else if (!goog.isBoolean(register)) {
-      eYo.ParameterAssert(!model, `Unexpected model(4) ${model}`)
+      model && eYo.throw(`Unexpected model(4) ${model}`)
       model = register
       register = false
     }

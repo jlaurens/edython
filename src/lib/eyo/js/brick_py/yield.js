@@ -201,8 +201,8 @@ eYo.expr.yield_expr.populateContextMenuFirst_ = function (mngr) {
  */
 eYo.expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
   var brick = this
-  var yorn = eYo.expr.yield_expr.populateContextMenuFirst_.Call(this, mngr)
-  return eYo.expr.yield_expr.SuperProto_.populateContextMenuFirst_.Call(this, mngr) || yorn
+  var yorn = eYo.expr.yield_expr.populateContextMenuFirst_.call(this, mngr)
+  return eYo.expr.yield_expr.SuperProto_.populateContextMenuFirst_.call(this, mngr) || yorn
 }
 
 /**
@@ -220,8 +220,8 @@ eYo.stmt.makeC9r('yield_stmt', {
  * @private
  */
 eYo.stmt.yield_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
-  eYo.expr.yield_expr.populateContextMenuFirst_.Call(this, mngr)
-  return eYo.stmt.yield_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  eYo.expr.yield_expr.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.yield_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 eYo.brick.yield.t3s = [

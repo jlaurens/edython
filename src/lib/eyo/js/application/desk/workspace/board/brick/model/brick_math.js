@@ -22,7 +22,7 @@ eYo.require('expr.Primary')
 eYo.require('tooltip')
 
 eYo.require('Library')
-eYo.require('Module.math__module')
+eYo.require('module.math__module')
 
 eYo.provide('brick.math')
 

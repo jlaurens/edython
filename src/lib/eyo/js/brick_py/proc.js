@@ -404,7 +404,7 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     })
   }
   mngr.shouldSeparate()
-  return eYo.stmt.decorator_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  return eYo.stmt.decorator_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -490,7 +490,7 @@ eYo.stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
     goog.dom.createTextNode('(…) -> …')
   ), variants[1])
   mngr.shouldSeparate()
-  return eYo.stmt.funcdef_part.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  return eYo.stmt.funcdef_part.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /*
@@ -579,7 +579,7 @@ eYo.stmt.Classdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
     goog.dom.createTextNode('(…)')
   ), variants[1])
   mngr.shouldSeparate()
-  return eYo.stmt.classdef_part.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  return eYo.stmt.classdef_part.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 eYo.brick.Proc.t3s = [

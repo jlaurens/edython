@@ -257,7 +257,7 @@ eYo.py.Exporter.prototype.export = function (brick, opt) {
 /**
  * Export the field, which must be defined.
  *
- * @param {eYo.Field}
+ * @param {eYo.field}
  * @private
  */
 eYo.py.Exporter.prototype.exportField_ = function (field) {
@@ -303,7 +303,7 @@ eYo.py.Exporter.prototype.exportField_ = function (field) {
       eYo.xre.operator.test(tail) ||
       tail === ';' ||
       tail === ',' ||
-      (tail === '.' && (!(field instanceof eYo.Field.Input)))
+      (tail === '.' && (!(field instanceof eYo.field.Input)))
       this.starSymbol = ((this.isFirst || !this.wasContinue || this.wasLeftParenth) && (['*', '@', '+', '-', '~', '.'].indexOf(text) >= 0)) || text === '**'
       this.isFirst = false
       this.wasSeparatorField = this.isSeparatorField
@@ -397,7 +397,7 @@ Object.defineProperties(eYo.brick.Dflt.prototype, {
  * @private
  * @suppress{accessControls}
  */
-eYo.Field.Dflt_p.getPythonText_ = function() {
+eYo.field.Dflt_p.getPythonText_ = function() {
   return this.text
 }
 
@@ -407,12 +407,12 @@ eYo.Field.Dflt_p.getPythonText_ = function() {
  * @private
  * @suppress{accessControls}
  */
-eYo.Field.Input_p.getPythonText_ = function () {
+eYo.field.Input_p.getPythonText_ = function () {
   if (this.model.variable) {
     var candidate = this.text_ || ''
     return !XRegExp.match(candidate, /\s/) && candidate || (!this.optional_ && '<MISSING NAME>')  
   }
-  var t = eYo.Field.Input.SuperProto_.getPythonText_.Call(this)
+  var t = eYo.field.Input.SuperProto_.getPythonText_.call(this)
   if (!t.length && !this.optional_) {
     if (!this.model.canEmpty && (this.placeholder || (this.data && this.data.placeholder))) {
       var t = `<missing ${this.getPlaceholderText().trim()}>`.toUpperCase()

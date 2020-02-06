@@ -19,7 +19,6 @@ eYo.provide('padding', Object.create(null))
 
 eYo.forwardDeclare('unit')
 eYo.forwardDeclare('font-face')
-eYo.forwardDeclare('c9r.Shape')
 goog.forwardDeclare('goog.cssom')
 goog.forwardDeclare('goog.color')
 

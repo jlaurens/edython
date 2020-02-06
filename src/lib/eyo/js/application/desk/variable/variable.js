@@ -12,14 +12,11 @@
  */
 'use strict'
 
-eYo.require('c9r.Pane')
-
-eYo.require('decorate')
 
 /**
- * @name {eYo.Variable}
+ * @name {eYo.pane.Variable}
  * Class for a variable inspector.
  * @param {eYo.Desk} owner Owner desk.
  * @constructor
  */
-eYo.makeC9r('Variable', eYo.c9r.Pane)
+eYo.pane.makeC9r('Variable')

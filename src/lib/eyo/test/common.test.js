@@ -534,7 +534,7 @@ eYo.test.Span = (b, span) => {
     'suite',
     'foot',
   ].forEach(k => { span[k] || (span[k] = 0) })
-  span.c_min || (span.c_min = b.wrapped ? 0 : b.isGroup ? 2 * eYo.Span.INDENT : b.isStmt ? eYo.Span.INDENT : 2)
+  span.c_min || (span.c_min = b.wrapped ? 0 : b.isGroup ? 2 * eYo.span.INDENT : b.isStmt ? eYo.span.INDENT : 2)
   span.c || (span.c = span.c_min + span.c_padding)
   span.main || (span.main = 1)
   span.hole || (span.hole = b.isGroup && (!b.right || b.right.isComment) ? 1 : 0)

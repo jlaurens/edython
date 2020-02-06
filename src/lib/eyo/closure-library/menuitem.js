@@ -156,7 +156,7 @@ goog.tagUnsealableClass(eYo.MenuItem)
  * @extends {goog.ui.Control}
  */
 eYo.Separator = function (optRenderer, optDomHelper) {
-  eYo.separator.SuperClass_.constructor.Call(
+  eYo.separator.SuperClass_.constructor.call(
     this, optRenderer || eYo.MenuSeparatorRenderer.getInstance(),
     optDomHelper)
 }

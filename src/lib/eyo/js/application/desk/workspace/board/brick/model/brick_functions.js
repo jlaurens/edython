@@ -21,7 +21,7 @@ eYo.require('expr.Primary')
 eYo.require('tooltip')
 
 eYo.require('Library')
-eYo.require('Module.functions')
+eYo.require('module.functions')
 
 eYo.provide('brick.functions')
 

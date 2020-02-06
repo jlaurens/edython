@@ -273,7 +273,7 @@ eYo.stmt.makeC9r('import_stmt', {
   }
 }, true)
 
-eYo.do.register.Add(eYo.stmt, 'import', function (b3k) {
+eYo.do.register.add(eYo.stmt, 'import', function (b3k) {
   return !b3k.isInFlyout
 })
 
@@ -371,7 +371,7 @@ eYo.stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     eYo.do.CreateSPAN('import *', 'eyo-code-reserved')
   ), eYo.key.FROM_MODULE_IMPORT_STAR)
   mngr.shouldSeparate()
-  return eYo.stmt.import_stmt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  return eYo.stmt.import_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 }
 
 /// //////// future

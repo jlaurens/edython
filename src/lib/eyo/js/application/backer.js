@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('c9r.Owned')
-
 eYo.require('changeCount')
 
 eYo.forwardDeclare('events')
@@ -22,7 +20,7 @@ eYo.forwardDeclare('app')
  * @param {Object} owner
  * @constructor
  */
-eYo.makeC9r('Backer', eYo.c9r.Owned, {
+eYo.o3d.makeC9r(eYo, 'Backer', {
   valued: {
     /**
      * @type {!Array<!eYo.events.Abstract>}
@@ -71,7 +69,7 @@ eYo.Backer.eyo.changeCountAdd()
 /**
  * Clear the undo/redo stacks.
  */
-eYo.Backer_p.clear = function() {
+eYo.o3d.Backer_p.clear = function() {
   this.undoStack.length = 0
   this.redoStack.length = 0
   // Stop any events already in the firing queue from being undoable.
@@ -83,7 +81,7 @@ eYo.Backer_p.clear = function() {
  * Clear the undo/redo stacks.
  * Forwards to the owner.
  */
-eYo.Backer_p.didClearUndo = function() {
+eYo.o3d.Backer_p.didClearUndo = function() {
   this.app.didClearUndo && this.app.didClearUndo()
 }
 
@@ -91,7 +89,7 @@ eYo.Backer_p.didClearUndo = function() {
  * Undo or redo the previous action.
  * @param {boolean} redo False if undo, true if redo.
  */
-eYo.Backer_p.undo = function(redo) {
+eYo.o3d.Backer_p.undo = function(redo) {
   var inputStack = redo ? this.redoStack_ : this.undoStack_
   var outputStack = redo ? this.undoStack_ : this.redoStack_
   while (true) {
@@ -144,7 +142,7 @@ eYo.Backer_p.undo = function(redo) {
  * Forwards to the owner.
  * @param {boolean} redo False if undo, true if redo.
  */
-eYo.Backer_p.didProcessUndo = function(redo) {
+eYo.o3d.Backer_p.didProcessUndo = function(redo) {
   this.app.didProcessUndo && this.app.didProcessUndo(redo)
 }
 
@@ -154,7 +152,7 @@ eYo.Backer_p.didProcessUndo = function(redo) {
  * @param {eYo.event} event The event.
  * @param {function} task what is wrapped.
  */
-eYo.Backer_p.eventDidFireChange = function(event, task) {
+eYo.o3d.Backer_p.eventDidFireChange = function(event, task) {
   if (event.toUndoStack) {
     this.undoStack_.push(event)
     this.redoStack_.length = 0
@@ -175,7 +173,7 @@ eYo.Backer_p.eventDidFireChange = function(event, task) {
  * Message sent when an undo has been pushed.
  * Forwards to the owner.
  */
-eYo.Backer_p.didPushUndo = function() {
+eYo.o3d.Backer_p.didPushUndo = function() {
   this.app.didUnshiftUndo && this.app.didUnshiftUndo()
 }
 
@@ -183,6 +181,6 @@ eYo.Backer_p.didPushUndo = function() {
  * Message sent when an undo has been unshifted.
  * Forwards to the owner.
  */
-eYo.Backer_p.didUnshiftUndo = function() {
+eYo.o3d.Backer_p.didUnshiftUndo = function() {
   this.app.didUnshiftUndo && this.app.didUnshiftUndo()
 }

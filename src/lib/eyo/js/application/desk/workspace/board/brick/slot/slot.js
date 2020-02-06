@@ -11,13 +11,17 @@
  */
 'use strict'
 
-eYo.provide('slot')
+/**
+ * @name{eYo.slot}
+ * @namespace
+ */
+eYo.bsm_o3d.makeNS(eYo, 'slot')
 
 eYo.require('do')
-eYo.require('c9r.BSMOwned')
 eYo.require('decorate')
 
-eYo.forwardDeclare('c9r.Where')
+eYo.forwardDeclare('o4t.Where')
+
 eYo.forwardDeclare('field')
 eYo.forwardDeclare('magnet')
 
@@ -68,12 +72,12 @@ eYo.slot.Dlgt_p.initInstance = function (object) {
  * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.c9r.BSMOwned.makeInheritedC9r(eYo.slot, 'Dflt', {
+eYo.slot.makeDflt({
   init (brick, key, model) {
-    eYo.Assert(brick, 'Missing slot owner brick')
-    eYo.Assert(key, 'Missing slot key')
-    eYo.Assert(model, 'Missing slot model')
-    eYo.Assert(!eYo.isNA(model.order), 'Missing slot model order')
+    eYo.assert(brick, 'Missing slot owner brick')
+    eYo.assert(key, 'Missing slot key')
+    eYo.assert(model, 'Missing slot model')
+    eYo.assert(!eYo.isNA(model.order), 'Missing slot model order')
     
     this.reentrant_ = {}
     this.key_ = key
@@ -94,7 +98,7 @@ eYo.c9r.BSMOwned.makeInheritedC9r(eYo.slot, 'Dflt', {
         this.incog = true
       }
     }
-    eYo.Field.makeFields(this, model.fields)
+    eYo.field.makeFields(this, model.fields)
     if (key === 'comment') {
       this.bind_f && (this.bind_f.isComment = true)
     }
@@ -249,7 +253,7 @@ eYo.c9r.BSMOwned.makeInheritedC9r(eYo.slot, 'Dflt', {
   },
   cloned: {
     where () {
-      return new eYo.c9r.Where()
+      return new eYo.o4t.Where()
     }
   },
   /**
@@ -258,11 +262,11 @@ eYo.c9r.BSMOwned.makeInheritedC9r(eYo.slot, 'Dflt', {
    * @param {Boolean} [onlyThis]  Dispose of the inferior target iff healStack is a falsy value
    */
   dispose (onlyThis) {
-    eYo.Field.disposeFields(this)
+    eYo.field.disposeFields(this)
     this.magnet_ && this.magnet_.dispose(onlyThis)
     this.magnet_ = eYo.NA
     this.key_ = eYo.NA
-    eYo.Property.dispose(this, 'Where')
+    eYo.p6y.disposeProperties(this, 'where')
   },
   ui: {
     /**

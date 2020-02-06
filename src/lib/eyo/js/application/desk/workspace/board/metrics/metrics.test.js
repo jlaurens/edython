@@ -15,7 +15,7 @@ describe('Basic metrics IN PROGRESS', function () {
   it ('place and scroll basics', function() {
     var div0 = document.querySelector('#eyo-desk')
     var metrics = new eYo.Metrics()
-    metrics.view_.size = eYo.c9r.Where.xy(parseInt(div0.style.width), parseInt(div0.style.height))
+    metrics.view_.size = eYo.o4t.Where.xy(parseInt(div0.style.width), parseInt(div0.style.height))
     var div1 = goog.dom.createDom('div')
     goog.dom.appendChild(div0.parentNode, div1)
     div1.style.position='relative'
@@ -26,11 +26,11 @@ describe('Basic metrics IN PROGRESS', function () {
     svg.style.position='absolute'
     svg.setAttribute('preserveAspectRatio', 'xMinYMin slice')
     var content = metrics.port_
-    content.origin = eYo.c9r.Where.Cl(-8, -2)
-    content.size = eYo.c9r.Where.Cl(80, 20)
+    content.origin = eYo.o4t.Where.Cl(-8, -2)
+    content.size = eYo.o4t.Where.Cl(80, 20)
     svg.setAttribute('viewBox', `${content.x} ${content.y} ${content.width} ${content.height}`)
     metrics.scale_ = 1.1
-    metrics.drag = eYo.c9r.Where.Cl(4, 2)
+    metrics.drag = eYo.o4t.Where.Cl(4, 2)
     content = metrics.portInView
     svg.setAttribute('width', `${content.width}px`)
     svg.setAttribute('height', `${content.height}px`)
@@ -71,7 +71,7 @@ describe('Basic metrics IN PROGRESS', function () {
   it ('place and scale basics', function() {
     var div0 = document.querySelector('#eyo-desk')
     var metrics = new eYo.Metrics()
-    metrics.view_.size = eYo.c9r.Where.xy(parseInt(div0.style.width), parseInt(div0.style.height))
+    metrics.view_.size = eYo.o4t.Where.xy(parseInt(div0.style.width), parseInt(div0.style.height))
     var div1 = goog.dom.createDom('div')
     goog.dom.appendChild(div0.parentNode, div1)
     div1.style.position='relative'
@@ -82,11 +82,11 @@ describe('Basic metrics IN PROGRESS', function () {
     svg.style.position='absolute'
     svg.setAttribute('preserveAspectRatio', 'xMinYMin slice')
     var content = metrics.port_
-    content.origin = eYo.c9r.Where.Cl(-8, -2)
-    content.size = eYo.c9r.Where.Cl(80, 20)
+    content.origin = eYo.o4t.Where.Cl(-8, -2)
+    content.size = eYo.o4t.Where.Cl(80, 20)
     svg.setAttribute('viewBox', `${content.x} ${content.y} ${content.width} ${content.height}`)
     metrics.scale_ = 1.5
-    metrics.drag = eYo.c9r.Where.Cl(4, 2)
+    metrics.drag = eYo.o4t.Where.Cl(4, 2)
     content = metrics.portInView
     svg.setAttribute('width', `${content.width}px`)
     svg.setAttribute('height', `${content.height}px`)

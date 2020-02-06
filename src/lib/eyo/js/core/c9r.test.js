@@ -26,6 +26,39 @@ NS.test_valued = (x, foo, bar) => {
 }
 describe ('POC', function () {
   this.timeout(10000)
+  it ('Change constructor', function () {
+    let OYE = function () {}
+    OYE.prototype.version = 421
+    let oYe = new OYE()
+    chai.assert(oYe.version === 421)
+    let C9r = function () {}
+    let c9r = new C9r()
+    chai.assert(c9r.version === oYe.NA)
+    Object.setPrototypeOf(c9r, OYE.prototype)
+    chai.assert(c9r.version === 421)
+    Object.setPrototypeOf(c9r, C9r.prototype)
+    chai.assert(c9r.version === oYe.NA)
+    let setConstructorOf = (object, C9r) => {
+      object.constructor = C9r
+      Object.setPrototypeOf(object, C9r.prototype)
+    }
+    setConstructorOf(oYe, C9r)
+    chai.assert(oYe.version === oYe.NA)
+    setConstructorOf(oYe, OYE)
+    chai.assert(oYe.version === 421)
+    C9r.prototype.test = 123
+    chai.assert(c9r.test === 123)    
+    chai.assert(c9r.version === oYe.NA)
+    eYo.inherits(C9r, OYE)
+    chai.assert(c9r.test === 123)
+    chai.assert(c9r.version === 421)
+    setConstructorOf(oYe, C9r)
+    setConstructorOf(c9r, OYE)
+    chai.assert(c9r.test === eYo.NA)
+    chai.assert(c9r.version === 421)
+    chai.assert(oYe.test === 123)
+    chai.assert(oYe.version === 421)
+  })
   it ('init', function () {
     var flag = 123
     var model = {
@@ -67,7 +100,7 @@ describe ('Tests: C9r', function () {
     chai.assert(eYo.Dflt)
   })
   describe('C9r: Model', function () {
-    it('eYo.c9r.model.Consolidate(…)', function () {
+    it('eYo.c9r.model.consolidate(…)', function () {
       var model = {
         owned: {
           drag: {
@@ -77,8 +110,8 @@ describe ('Tests: C9r', function () {
           },
         },
       }
-      eYo.c9r.model.Consolidate(model)
-      chai.assert(eYo.isF(model.owned.drag.get))
+      eYo.c9r.model.consolidate(model)
+      chai.assert(eYo.isF(model.o3d.drag.get))
       var model = {
         owned: {
           drag () {
@@ -86,8 +119,8 @@ describe ('Tests: C9r', function () {
           },
         },
       }
-      eYo.c9r.model.Consolidate(model)
-      chai.assert(eYo.isF(model.owned.drag.init))
+      eYo.c9r.model.consolidate(model)
+      chai.assert(eYo.isF(model.o3d.drag.init))
     })
   })
   describe('C9r: makeNS', function () {
@@ -470,7 +503,7 @@ describe('c9r.model', function () {
     eYo.c9r.model.extends(submodel, model)
     chai.assert(submodel.data.aa.xml === 421)
     chai.assert(submodel.data.ab === 421)
-    chai.assert(submodel.owned === 421)
+    chai.assert(submodel.o3d === 421)
   })
 })
 describe ('Dlgt', function () {
@@ -1769,13 +1802,13 @@ describe ('Dlgt', function () {
         foo () {}
       }
     })
-    chai.assert(ns.A.eyo.owned__.size === 1)
+    chai.assert(ns.A.eyo.o3d__.size === 1)
     eYo.makeC9r(ns, 'AB', ns.A, {
       owned: {
         bar () {}
       }
     })
-    chai.assert(ns.AB.eyo.owned__.size === 2)
+    chai.assert(ns.AB.eyo.o3d__.size === 2)
     var a = new ns.A()
     a.foo_ = {value: 1}
     var ab = new ns.AB()
@@ -1913,7 +1946,7 @@ describe ('Dlgt', function () {
     var ns = eYo.makeNS()
     var flag = 0
     var dlgt = function (ns, key, c9r, model) {
-      eYo.Dlgt.Call(this, ns, key, c9r, model)
+      eYo.Dlgt.call(this, ns, key, c9r, model)
       flag += 1
     }
     eYo.inherits(dlgt, eYo.Dlgt)

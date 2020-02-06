@@ -134,7 +134,7 @@ goog.addSingletonGetter(eYo.MenuItemRenderer)
  * @override
  */
 eYo.MenuItemRenderer.prototype.createDom = function (item) {
-  var element = eYo.MenuItemRenderer.SuperClass_.createDom.Call(this, item)
+  var element = eYo.MenuItemRenderer.SuperClass_.createDom.call(this, item)
   return element
 }
 
@@ -159,7 +159,7 @@ eYo.style.SetControlRendererCssClass(
  * @override
  */
 eYo.MenuItemRenderer.prototype.getClassForState = function (state) {
-  return eYo.MenuItemRenderer.SuperClass_.getClassForState.Call(
+  return eYo.MenuItemRenderer.SuperClass_.getClassForState.call(
     this, state)
 }
 

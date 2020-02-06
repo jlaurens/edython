@@ -74,7 +74,7 @@ eYo.SubMenuRenderer.prototype.getCssClass = function () {
 eYo.SubMenuRenderer.prototype.createDom = function (control) {
   var subMenu = /** @type {goog.ui.SubMenu} */ (control)
   var element =
-    eYo.subMenuRenderer.SuperClass_.createDom.Call(this, subMenu)
+    eYo.subMenuRenderer.SuperClass_.createDom.call(this, subMenu)
   goog.dom.classlist.remove(element, goog.ui.SubMenuRenderer.CSS_CLASS)
   return element
 }
@@ -96,7 +96,7 @@ eYo.SubMenuRenderer.prototype.createDom = function (control) {
 //   var subMenu = /** @type {goog.ui.SubMenu} */ (control)
 //   element =
 //       goog.ui.SubMenuRenderer.superClass_.decorate.call(this, subMenu, element)
-//   eYo.Assert(element)
+//   eYo.assert(element)
 //   goog.dom.classlist.add(element, goog.ui.SubMenuRenderer.CSS_CLASS)
 //   this.addArrow_(subMenu, element)
 //
@@ -165,7 +165,7 @@ goog.ui.SubMenuRenderer.prototype.initializeDom = function (control) {
     element.appendChild(arrow)
   }
   var subMenuElement = subMenu.getElement()
-  eYo.Assert(
+  eYo.assert(
     subMenuElement, 'The sub menu DOM element cannot be null.')
   goog.a11y.aria.setState(
     subMenuElement, goog.a11y.aria.State.HASPOPUP, 'true')
@@ -213,7 +213,7 @@ goog.ui.SubMenuRenderer.prototype.addArrow_ = function (subMenu, element) {
 //   var leftArrow = goog.ui.SubMenuRenderer.LEFT_ARROW_
 //   var rightArrow = goog.ui.SubMenuRenderer.RIGHT_ARROW_
 //
-//   eYo.Assert(arrow)
+//   eYo.assert(arrow)
 //
 //   if (subMenu.isRightToLeft()) {
 //     goog.dom.classlist.add(arrow, goog.getCssName('goog-submenu-arrow-rtl'))

@@ -37,11 +37,11 @@ Object.defineProperties(eYo.unit, {
 
 /**
  * `where` is modelling a planar point that stores its coordinates in text units. When `snap` is true, the coordinates are snapped to half integers horizontally and quarter integers vertically.
- * @name {eYo.c9r.Where}
+ * @name {eYo.o4t.Where}
  * @constructor
  * @param {Number} c - Horizontal coordinates, or another planar object.
  */
-eYo.c9r.Object.makeInheritedC9r('Where', {
+eYo.o4t.makeC9r('Where', {
   init (c, l, snap) {
     if (c === true || c === false) {
       this.snap_ = c
@@ -115,28 +115,28 @@ eYo.c9r.Object.makeInheritedC9r('Where', {
     },
     /**
      * clone the receiver.
-     * @type {eYo.c9r.Where}
+     * @type {eYo.o4t.Where}
      */
     clone () {
-      return new eYo.c9r.Where(this)
+      return new eYo.o4t.Where(this)
     },
     /**
      * Euclidian distance between points.
-     * @param {eYo.c9r.Where} other
+     * @param {eYo.o4t.Where} other
      * @return {number} non negative number
      */
     toString () {
-      return `eYo.c9r.Where(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
+      return `eYo.o4t.Where(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
     },
   },
 })
 
 // Overdefined, for better understanding
 ;(() => {
-  let c = Object.getOwnPropertyDescriptor(eYo.c9r.Where_p, 'c_')
-  let l = Object.getOwnPropertyDescriptor(eYo.c9r.Where_p, 'l_')
-  let x = Object.getOwnPropertyDescriptor(eYo.c9r.Where_p, 'x_')
-  let y = Object.getOwnPropertyDescriptor(eYo.c9r.Where_p, 'y_')
+  let c = Object.getOwnPropertyDescriptor(eYo.o4t.Where_p, 'c_')
+  let l = Object.getOwnPropertyDescriptor(eYo.o4t.Where_p, 'l_')
+  let x = Object.getOwnPropertyDescriptor(eYo.o4t.Where_p, 'x_')
+  let y = Object.getOwnPropertyDescriptor(eYo.o4t.Where_p, 'y_')
   let ps = {
     /**
      * Horizontal offset in text unit
@@ -179,8 +179,8 @@ eYo.c9r.Object.makeInheritedC9r('Where', {
      */
     height_: y,
   }
-  Object.defineProperties(eYo.c9r.Where_p, ps)
-  let d = eYo.c9r.Where.eyo.descriptors__
+  Object.defineProperties(eYo.o4t.Where_p, ps)
+  let d = eYo.o4t.Where.eyo.descriptors__
   d['dc'] = d['w'] = eYo.c9r.descriptorR(function () { return this.c})
   d['dl'] = d['h'] = eYo.c9r.descriptorR(function () { return this.l})
   d['dx'] = d['width'] = eYo.c9r.descriptorR(function () { return this.x})
@@ -189,11 +189,11 @@ eYo.c9r.Object.makeInheritedC9r('Where', {
 
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
- * @param {Number | eYo.c9r.Where | Event | Object} c
+ * @param {Number | eYo.o4t.Where | Event | Object} c
  * @param {Number} [l]
- * @return {eYo.c9r.Where} The receiver
+ * @return {eYo.o4t.Where} The receiver
  */
-eYo.c9r.Where_p.set = function (c = 0, l = 0) {
+eYo.o4t.Where_p.set = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ = c.x
     this.y_ = c.y
@@ -215,17 +215,17 @@ eYo.c9r.Where_p.set = function (c = 0, l = 0) {
 /**
  * Test equality between the receiver and the rhs.
  */
-eYo.c9r.Where_p.equals = function (rhs) {
-  return rhs instanceof eYo.c9r.Where && this.c_ == rhs.c_ && this.l_ == rhs.l_
+eYo.o4t.Where_p.equals = function (rhs) {
+  return rhs instanceof eYo.o4t.Where && this.c_ == rhs.c_ && this.l_ == rhs.l_
 }
 
 /**
  * Setter.
  * @param {Number} x  x coordinate
  * @param {Number} y  y coordinate
- * @return {eYo.c9r.Where} The receiver
+ * @return {eYo.o4t.Where} The receiver
  */
-eYo.c9r.Where_p.xySet = function (x = 0, y = 0) {
+eYo.o4t.Where_p.xySet = function (x = 0, y = 0) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     this.x_ = x.x
     this.y_ = x.y
@@ -248,9 +248,9 @@ eYo.c9r.Where_p.xySet = function (x = 0, y = 0) {
  * Convenient creator.
  * @param {Number} x  x coordinate
  * @param {Number} y  y coordinate
- * @return {eYo.c9r.Where} The receiver
+ * @return {eYo.o4t.Where} The receiver
  */
-eYo.c9r.Where.xy = function (x, y, snap) {
+eYo.o4t.Where.xy = function (x, y, snap) {
   var y
   if (x === true || x === false) {
     var _ = x
@@ -264,7 +264,7 @@ eYo.c9r.Where.xy = function (x, y, snap) {
   } else {
     snap = !!x.snap || !!snap
   }
-return new eYo.c9r.Where(snap).xySet(x, y)
+return new eYo.o4t.Where(snap).xySet(x, y)
 }
 
 /**
@@ -272,19 +272,19 @@ return new eYo.c9r.Where(snap).xySet(x, y)
  * @param {Number} [c] - c coordinate. Defaults to 0.
  * @param {Number} [l] - l coordinate. Defaults to 0.
  * @param {Boolean} [snap] - snap flag. Defaults to false.
- * @return {eYo.c9r.Where} The receiver
+ * @return {eYo.o4t.Where} The receiver
  */
-eYo.c9r.Where.Cl = function (c, l, snap) {
-  return new eYo.c9r.Where(c, l, snap)
+eYo.o4t.Where.Cl = function (c, l, snap) {
+  return new eYo.o4t.Where(c, l, snap)
 }
 
 /**
  * Like `set` but advance the coordinates, instead of setting them.
- * @param {number | eYo.c9r.Where | eYo.c9r.Size} c
+ * @param {number | eYo.o4t.Where | eYo.c9r.Size} c
  * @param {number} l
- * @return {eYo.c9r.Where} c
+ * @return {eYo.o4t.Where} c
  */
-eYo.c9r.Where_p.forward = function (c = 0, l = 0) {
+eYo.o4t.Where_p.forward = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ += c.x
     this.y_ += c.y
@@ -297,11 +297,11 @@ eYo.c9r.Where_p.forward = function (c = 0, l = 0) {
 
 /**
  * Like `set` but advance the coordinates, instead of setting them.
- * @param {number | eYo.c9r.Where | eYo.c9r.Size} c
+ * @param {number | eYo.o4t.Where | eYo.c9r.Size} c
  * @param {number} l
- * @return {eYo.c9r.Where} c
+ * @return {eYo.o4t.Where} c
  */
-eYo.c9r.Where_p.backward = function (c = 0, l = 0) {
+eYo.o4t.Where_p.backward = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ -= c.x
     this.y_ -= c.y
@@ -317,9 +317,9 @@ eYo.c9r.Where_p.backward = function (c = 0, l = 0) {
  * Board coodinates
  * @param {number} c
  * @param {number} l
- * @return {eYo.c9r.Where} c
+ * @return {eYo.o4t.Where} c
  */
-eYo.c9r.Where_p.xyAdvance = function (x = 0, y = 0) {
+eYo.o4t.Where_p.xyAdvance = function (x = 0, y = 0) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     y = x.y
     x = x.x
@@ -333,9 +333,9 @@ eYo.c9r.Where_p.xyAdvance = function (x = 0, y = 0) {
  * Scale the receiver.
  * @param {Number | Object} scaleX
  * @param {Number} [scaleY] - Defaults to
- * @return {eYo.c9r.Where} the receiver
+ * @return {eYo.o4t.Where} the receiver
  */
-eYo.c9r.Where_p.scale = function (scaleX, scaleY) {
+eYo.o4t.Where_p.scale = function (scaleX, scaleY) {
   if (scaleX.x) {
     this.c_ *= scaleX.x
     this.l_ *= (scaleX.y || scaleX.x)
@@ -353,9 +353,9 @@ eYo.c9r.Where_p.scale = function (scaleX, scaleY) {
  * Unscale the receiver.
  * @param {Number | Object} scaleX
  * @param {Number} [scaleY] - Defaults to scaleX
- * @return {eYo.c9r.Where} the receiver
+ * @return {eYo.o4t.Where} the receiver
  */
-eYo.c9r.Where_p.unscale = function (scaleX, scaleY) {
+eYo.o4t.Where_p.unscale = function (scaleX, scaleY) {
   if (scaleX.x) {
     this.c_ /= scaleX.x
     this.l_ /= (scaleX.y || scaleX.x)
@@ -371,10 +371,10 @@ eYo.c9r.Where_p.unscale = function (scaleX, scaleY) {
 
 /**
  * Euclidian distance between points.
- * @param {eYo.c9r.Where} other
+ * @param {eYo.o4t.Where} other
  * @return {number} non negative number
  */
-eYo.c9r.Where_p.distance = function (other) {
+eYo.o4t.Where_p.distance = function (other) {
   var dx = this.x - other.x
   var dy = this.y - other.y
   return Math.sqrt(dx * dx + dy * dy)
@@ -385,7 +385,7 @@ eYo.c9r.Where_p.distance = function (other) {
  * @param {eYo.c9r.Rect} rect
  * @return {Boolean}
  */
-eYo.c9r.Where_p.in = function (rect) {
+eYo.o4t.Where_p.in = function (rect) {
   return this.c_ >= rect.c_min
     && this.c_ <= rect.c_max
     && this.l_ >= rect.l_min
@@ -398,7 +398,7 @@ eYo.c9r.Where_p.in = function (rect) {
  * @param {eYo.c9r.Rect} rect
  * @return {number} non negative number
  */
-eYo.c9r.Where_p.out = function (rect) {
+eYo.o4t.Where_p.out = function (rect) {
   return this.c_ <= rect.c_min
     || this.c_ >= rect.c_max
     || this.l_ <= rect.l_min
@@ -408,14 +408,14 @@ eYo.c9r.Where_p.out = function (rect) {
 /**
  * `Size` is a synonym of Where.
  */
-eYo.c9r.Size = eYo.c9r.Where
+eYo.c9r.Size = eYo.o4t.Where
 
 /**
  * Sets from the given text.
  * @param {String!} s
  * @return {eYo.c9r.Size} the receiver.
  */
-eYo.c9r.Where_p.setFromText = function (txt) {
+eYo.o4t.Where_p.setFromText = function (txt) {
   var lines = txt.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/)
   var c = 0
   lines.forEach(l => (c < l.length) && (c = l.length) )
@@ -443,7 +443,7 @@ eYo.do.SizeOfText = function (txt) {
  */
 eYo.c9r.makeC9r('Rect', {
   init (c, l, w, h, snap) {
-    this.origin_ = new eYo.c9r.Where()
+    this.origin_ = new eYo.o4t.Where()
     this.size_ = new eYo.c9r.Size()
     this.set(c, l, w, h, snap)
   },
@@ -676,7 +676,7 @@ eYo.c9r.makeC9r('Rect', {
     // Composed
     origin: {
       get () {
-        return new eYo.c9r.Where(this.origin_)
+        return new eYo.o4t.Where(this.origin_)
       },
       set (after) {
         this.origin_.x_ = after.x
@@ -685,7 +685,7 @@ eYo.c9r.makeC9r('Rect', {
     },
     topLeft: {
       get () {
-        return new eYo.c9r.Where(this.origin_)
+        return new eYo.o4t.Where(this.origin_)
       },
       set (after) {
         this.origin_.x_ = after.x
@@ -694,7 +694,7 @@ eYo.c9r.makeC9r('Rect', {
     },
     bottomRight: {
       get () {
-        return new eYo.c9r.Where(this.origin_).forward(this.size_)
+        return new eYo.o4t.Where(this.origin_).forward(this.size_)
       },
       set (after) {
         this.x_max_ = after.x
@@ -703,7 +703,7 @@ eYo.c9r.makeC9r('Rect', {
     },
     center: {
       get () {
-        return new eYo.c9r.Where(this.origin_).forward(this.size_.unscale(2))
+        return new eYo.o4t.Where(this.origin_).forward(this.size_.unscale(2))
       },
       /**
        * Change the origin but keeps the size.
@@ -761,7 +761,7 @@ eYo.c9r.Rect_p.dispose = eYo.do.nothing
 /**
  * set the `Rect`.
  * This is a very very permissive setter.
- * @param{?Number|eYo.c9r.Where|Element} c
+ * @param{?Number|eYo.o4t.Where|Element} c
  * @param{?Number|eYo.c9r.Size} l
  * @param{?Number|eYo.c9r.Size} w
  * @param{?Number} h
@@ -822,7 +822,7 @@ eYo.c9r.Rect_p.xySet = function (x = 0, y = 0, width = 0, height = 0) {
 
 /**
  * Like `set` but advance the coordinates, instead of setting them.
- * @param {number | eYo.c9r.Where | eYo.c9r.Size} c
+ * @param {number | eYo.o4t.Where | eYo.c9r.Size} c
  * @param {number} l
  * @return {eYo.c9r.Rect}
  */
@@ -833,7 +833,7 @@ eYo.c9r.Rect_p.forward = function (c = 0, l = 0) {
 
 /**
  * Like `set` but advance the coordinates, instead of setting them.
- * @param {number | eYo.c9r.Where | eYo.c9r.Size} c
+ * @param {number | eYo.o4t.Where | eYo.c9r.Size} c
  * @param {number} l
  * @return {eYo.c9r.Rect}
  */
@@ -900,7 +900,7 @@ eYo.c9r.Rect_p.mirror = function () {
 /**
  * Inset the receiver.
  * Default values are `eYo.unit.x / 2` and `eYo.unit.y / 4`
- * @param {Number|eYo.c9r.Where} [dx_min]
+ * @param {Number|eYo.o4t.Where} [dx_min]
  * @param {Number} [dy_min]
  * @param {Number} [dx_max]
  * @param {Number} [dy_max]
@@ -934,7 +934,7 @@ eYo.c9r.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
 /**
  * outset the receiver.
  * Default values are `eYo.unit.x / 2` and `eYo.unit.y / 4`
- * @param {Number|eYo.c9r.Where} [dx_min]
+ * @param {Number|eYo.o4t.Where} [dx_min]
  * @param {Number} [dy_min]
  * @param {Number} [dx_max]
  * @param {Number} [dy_max]
@@ -967,7 +967,7 @@ eYo.c9r.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
 
 /**
  * Whether the receiver contains the given point.
- * @param {Number | eYo.c9r.Where} x
+ * @param {Number | eYo.o4t.Where} x
  * @param {Number} [y]
  * @return {Boolean}
  */

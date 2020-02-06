@@ -165,8 +165,8 @@ eYo.c9r.model.isAllowed = (path, key) => {
  * @param {Object} model - the tree in which we replace some node by objects
  * @param {Function} handler - a function with signature (path, before): boolean
  */
-eYo.c9r.model.Consolidate = (model, handler) => {
-  handler || (handler = eYo.c9r.model.ShortcutsBaseHandler)
+eYo.c9r.model.consolidate = (model, handler) => {
+  handler || (handler = eYo.c9r.model.shortcutsBaseHandler)
   var do_it = (model, path) => {
     eYo.isO(model) && Object.keys(model).forEach(k => {
       handler(model, path, k) || do_it(model[k], path && `${path}.${k}` || k)
@@ -175,8 +175,8 @@ eYo.c9r.model.Consolidate = (model, handler) => {
   do_it(model, '')
 }
 
-eYo.Dlgt_p.modelConsolidate = function (...args) {
-  eYo.c9r.model.Consolidate(...args)
+eYo.c9r.Dlgt_p.modelConsolidate = function (...args) {
+  eYo.c9r.model.consolidate(...args)
 }
 
 /**
@@ -221,7 +221,7 @@ eYo.c9r.model.PropertyHandler = eYo.do.nothing
    * @param {String} path
    * @param {String} key
    */
-  eYo.c9r.model.ShortcutsBaseHandler = (model, path, key) => {
+  eYo.c9r.model.shortcutsBaseHandler = (model, path, key) => {
     var after
     if (path === '') {
       if (['owned', 'valued'].includes(key)) {
@@ -322,10 +322,10 @@ eYo.c9r.model.PropertyHandler = eYo.do.nothing
 eYo.c9r.model.inherits = (model, base) => {
   var do_it = (model_, base_) => {
     if (eYo.isO(model_) && eYo.c9r.isModel(base_)) {
-      eYo.ParameterAssert(!model_.model__, `Already inheritance: ${model}`)
+      model_.model__ && eYo.throw(`Already inheritance: ${model}`)
       Object.keys(model_).forEach(k => {do_it(model_[k], base_[k])})
       Object.setPrototypeOf(model_, base_)
-      eYo.Assert(Object.getPrototypeOf(model_) === base_, `Unexpected ${Object.getPrototypeOf(model_)} !== ${base_}`)
+      eYo.assert(Object.getPrototypeOf(model_) === base_, `Unexpected ${Object.getPrototypeOf(model_)} !== ${base_}`)
       model_.model__ = model
     }
   }

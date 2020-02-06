@@ -17,7 +17,6 @@
 'use strict'
 
 eYo.require('decorate')
-eYo.require('c9r.Owned')
 
 eYo.require('do')
 eYo.require('board')
@@ -25,24 +24,23 @@ eYo.require('board')
 eYo.require('brick')
 eYo.require('magnet')
 eYo.require('field')
-
-/**
- * @name{eYo.Focus}
- * @namespace
- */
-eYo.provide('focus')
-
 eYo.forwardDeclare('app')
 
 /**
- * @name {eYo.Focus.Main}
+ * @name{eYo.focus}
+ * @namespace
+ */
+eYo.o3d.makeNS(eYo, 'focus')
+
+/**
+ * @name {eYo.focus.Main}
  * @constructor
  * The main focus manager is uniquely owned by the application.
  * It maintains a list of focus managers associated to boards.
  * @param {eYo.app} app -  the owning application.
  * @constructor
  */
-eYo.Focus.makeC9r('Main', eYo.c9r.Owned, {
+eYo.focus.makeC9r('Main', {
   computed: {
     /**
      * The board that has current focus, if any
@@ -77,7 +75,7 @@ eYo.Focus.makeC9r('Main', eYo.c9r.Owned, {
     },
     /**
      * The field that has current focus, if any
-     * @type {?eYo.Field}
+     * @type {?eYo.field}
      */
     field: {
       get () {
@@ -109,7 +107,7 @@ eYo.Focus.makeC9r('Main', eYo.c9r.Owned, {
   valued: {
     /**
      * The manager that has current focus
-     * @type {?eYo.Focus.Mngr}
+     * @type {?eYo.focus.Mngr}
      */
     mngr: eYo.NA,
   },
@@ -124,12 +122,12 @@ eYo.Focus.makeC9r('Main', eYo.c9r.Owned, {
 })
 
 // Each newly created focus manager comes here
-eYo.do.register.Add(eYo.Focus.Main, 'mngr')
+eYo.do.register.add(eYo.focus.Main, 'mngr')
 
 /**
  * Dispose of the 
  */
-eYo.Focus.Main_p.mngrWillDispose = function (mngr) {
+eYo.focus.Main_p.mngrWillDispose = function (mngr) {
   this.mngrUnregister(mngr)
   if (this.mngr_ === mngr) {
     this.mngr_ = null
@@ -138,10 +136,10 @@ eYo.Focus.Main_p.mngrWillDispose = function (mngr) {
 /**
  * Create a standard focus manager, managed by a main focus manager.
  * @param {eYo.board} board -  the owner of the focus object.
- * @param {eYo.Focus.Main} main -  The main focus manager.
+ * @param {eYo.focus.Main} main -  The main focus manager.
  * @constructor
  */
-eYo.Focus.makeC9r('Mngr', eYo.c9r.Owned, {
+eYo.focus.makeC9r('Mngr', {
   init () {
     this.focus_main.mngrRegister(this)
   },
@@ -228,7 +226,7 @@ eYo.Focus.makeC9r('Mngr', eYo.c9r.Owned, {
     },
     /**
      * Takes care of consistency between the field and the brick.
-     * @type{eYo.Field}
+     * @type{eYo.field}
      * @private
      */
     field: {
@@ -262,26 +260,26 @@ eYo.Focus.makeC9r('Mngr', eYo.c9r.Owned, {
  * Scroll the focused brick to visible.
  * UI related.
  */
-eYo.Focus.Mngr_p.scrollToVisible = function (force) {
+eYo.focus.Mngr_p.scrollToVisible = function (force) {
   this.brick && this.brick.scrollToVisible(force)
 }
 
 /**
  * Hook.
  */
-eYo.Focus.Mngr_p.didAdd = eYo.do.nothing
+eYo.focus.Mngr_p.didAdd = eYo.do.nothing
 
 /**
  * Hook.
  */
-eYo.Focus.Mngr_p.didRemove = eYo.do.nothing
+eYo.focus.Mngr_p.didRemove = eYo.do.nothing
 
 /**
  * Select one of the given bricks.
  * @param {Array<eYo.BrickNSs>} bricks
  * @param {Boolean} force
  */
-eYo.Focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
+eYo.focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
   var select
   bricks = bricks.slice()
   var f = brick => {
@@ -305,7 +303,7 @@ eYo.Focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
 }
 
 
-eYo.c9r.Owned.eyo.modelDeclare({
+eYo.o3d.Dflt.eyo.modelDeclare({
   computed: {
     focus_main () {
       this.app.focus_main
@@ -346,7 +344,7 @@ eYo.magnet.Dflt.eyo.modelDeclare({
   },
 })
 
-eYo.Field.Dflt.eyo.modelDeclare({
+eYo.field.Dflt.eyo.modelDeclare({
   computed: {
     focus_mngr () {
       return this.board.focus_mngr
@@ -390,7 +388,7 @@ eYo.brick.Dflt_p.focusOn = function (noBoard) {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.Field.Dflt_p.focusOn = function (noBoard) {
+eYo.field.Dflt_p.focusOn = function (noBoard) {
   noBoard || this.board.focusOn()
   return !!(this.focus_mngr.field = this)
 }
@@ -438,6 +436,6 @@ eYo.magnet.Dflt_p.focusOff = function () {
  * Focus off this field.
  * `focusOff` is used from click handling methods.
  */
-eYo.Field.Dflt_p.focusOff = function () {
+eYo.field.Dflt_p.focusOff = function () {
   this.hasFocus && (this.focus_mngr.field = eYo.NA)
 }

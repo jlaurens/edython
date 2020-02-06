@@ -13,7 +13,7 @@
 
 eYo.require('expr')
 
-eYo.require('c9r.Change')
+eYo.require('o3d.Change')
 
 eYo.require('decorate')
 eYo.require('consolidator.List')
@@ -141,7 +141,7 @@ eYo.expr.List.SlotsHandler = {
  * @return {eYo.slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.expr.List.prototype.getSlot = function (name, dontCreate) {
-  var slot = eYo.expr.List.SuperProto_.getSlot.Call(this, name)
+  var slot = eYo.expr.List.SuperProto_.getSlot.call(this, name)
   if (!slot) {
     this.createConsolidator()
     slot = this.consolidator.getSlot(this, name, dontCreate)
@@ -162,12 +162,12 @@ eYo.expr.List.prototype.createConsolidator = eYo.decorate.reentrant_method(
       console.error('unexpected void type')
     }
     var D = eYo.c9r.model.forKey(type).list
-    eYo.Assert(D, '`model`.list is missing in ' + type)
+    eYo.assert(D, '`model`.list is missing in ' + type)
     var C10r = this.consolidatorConstructor || D.consolidator || eYo.consolidator.List
     if (this.consolidator) {
       if (this.consolidator.constructor !== C10r) {
         this.consolidator = new C10r(D)
-        eYo.Assert(this.consolidator, `Could not create the consolidator ${type}`)
+        eYo.assert(this.consolidator, `Could not create the consolidator ${type}`)
       } else {
         this.consolidator.init(D)
       }
@@ -176,7 +176,7 @@ eYo.expr.List.prototype.createConsolidator = eYo.decorate.reentrant_method(
       }
     } else {
       this.consolidator = new C10r(D)
-      eYo.Assert(this.consolidator, `Could not create the consolidator ${type}`)
+      eYo.assert(this.consolidator, `Could not create the consolidator ${type}`)
       this.consolidate()
     }
   }
@@ -189,7 +189,7 @@ eYo.expr.List.prototype.createConsolidator = eYo.decorate.reentrant_method(
  * @param {eYo.magnet.Dflt} targetOldM4t
  */
 eYo.expr.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.expr.List.SuperProto_.didConnect.Call(this, m4t, oldTargetM4t, targetOldM4t)
+  eYo.expr.List.SuperProto_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   if (m4t.isOutput) {
     this.createConsolidator(true)
   }
@@ -218,7 +218,7 @@ eYo.expr.List.prototype.doConsolidate = (() => {
       return
     }
     force = true  // always force consolidation because of the dynamics
-    if (eYo.expr.List.SuperProto_.doConsolidate.Call(this, deep, force)) {
+    if (eYo.expr.List.SuperProto_.doConsolidate.call(this, deep, force)) {
       return !this.connectionsIncog && (this.consolidator.consolidate(this, deep, force))
     }
   }

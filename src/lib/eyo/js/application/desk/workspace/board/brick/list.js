@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('c9r.Owned')
-
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('c9r.DB')
 
 goog.forwardDeclare('goog.array')
 
 /**
+ * @name{eYo.List}
+ * @constructor
  * Class for a brick list.
  * Any number of brick lists can be created.
  * This list is kept ordered according to brick's vertical position.
@@ -28,7 +28,7 @@ goog.forwardDeclare('goog.array')
  * @param{?eYo.c9r.DB} db
  * @constructor
  */
-eYo.makeC9r('List', eYo.c9r.Owned, {
+eYo.o3d.makeC9r(eYo, 'List', {
   /**
    * Clear the list and sever all the links.
    */

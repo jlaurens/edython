@@ -48,7 +48,7 @@ eYo.svg.BrickDragSurface = function(container) {
   svg.canvas_ = eYo.svg.newElement('g', {
     class: 'eyo-brick-canvas'
   }, g)
-  this.where_ = new eYo.c9r.Where()
+  this.where_ = new eYo.o4t.Where()
 }
 
 /**
@@ -97,7 +97,7 @@ Object.defineProperties(eYo.svg.BrickDragSurface.prototype, {
    * Cached value for the translation of the drag surface.
    * This translation is in pixel units, because the scale is applied to the
    * drag group rather than the top-level SVG.
-   * @type {eYo.c9r.Where}
+   * @type {eYo.o4t.Where}
    * @private
    */
   where: {
@@ -120,7 +120,7 @@ Object.defineProperties(eYo.svg.BrickDragSurface.prototype, {
   /**
    * Reports the surface translation in scaled board coordinates.
    * Use this when finishing a drag to return blocks to the correct position.
-   * @return {!eYo.c9r.Where} Current translation of the surface.
+   * @return {!eYo.o4t.Where} Current translation of the surface.
    */
   translation: {
     get () {
@@ -147,7 +147,7 @@ eYo.svg.BrickDragSurface.prototype.start = function(draggerBrick) {
   var brick = this.brick
   var svg = this.dom.svg
   var canvas = svg.canvas_
-  eYo.Assert(
+  eYo.assert(
     canvas.childNodes.length == 0, 'Already dragging a brick.')
   var b_svg = brick.board.dom.svg
   var b_root = b_svg.root_
@@ -162,7 +162,7 @@ eYo.svg.BrickDragSurface.prototype.start = function(draggerBrick) {
   // appendChild removes the group from its previous parent node
   canvas.appendChild(brick.dom.svg.group_)
   svg.root_.style.display = 'block'
-  this.where = new eYo.c9r.Where()
+  this.where = new eYo.o4t.Where()
 }
 
 eYo.Temp.i = 0
@@ -201,7 +201,7 @@ eYo.svg.BrickDragSurface.prototype.end = function(board) {
     svg.canvas_.removeChild(this.brick.dom.svg.group_)
   }
   svg.root_.style.display = 'none'
-  eYo.Assert(
+  eYo.assert(
     svg.canvas_.childNodes.length == 0, 'Drag group was not cleared.')
   this.dragger_ = null
 }
@@ -239,7 +239,7 @@ Object.defineProperties(eYo.svg.BoardDragSurface.prototype, {
   /**
    * Reports the surface translation in scaled board coordinates.
    * Use this when finishing a drag to return bricks to the correct position.
-   * @type {!eYo.c9r.Where} Current translation of the surface
+   * @type {!eYo.o4t.Where} Current translation of the surface
    */
   translation: {
     get () {
@@ -262,7 +262,7 @@ eYo.svg.BoardDragSurface.prototype.start = function(dragger, width, height) {
   var board = dragger.board
   var brickCanvas = board.dom.svg.canvas_
   var root = this.dom.svg.root_
-  eYo.Assert(
+  eYo.assert(
     root.childNodes.length == 0, 'Already dragging a block.')
     var coord = eYo.svg.getRelativeWhere(brickCanvas)
     eYo.dom.SetCssTransform(
@@ -282,7 +282,7 @@ eYo.svg.BoardDragSurface.prototype.start = function(dragger, width, height) {
  * We translate the drag surface instead of the blocks inside the surface
  * so that the browser avoids repainting the SVG.
  * Because of this, the drag coordinates must be adjusted by scale.
- * @param {eYo.c9r.Where} xy Translation for the entire surface
+ * @param {eYo.o4t.Where} xy Translation for the entire surface
  */
 eYo.svg.BoardDragSurface.prototype.moveTo = function(xy) {
   // This is a work-around to prevent the bricks from rendering
@@ -318,7 +318,7 @@ eYo.svg.BoardDragSurface.prototype.clearAndHide = function(newSurface) {
   }
   // Hide the drag surface.
   root.style.display = 'none'
-  eYo.Assert(
+  eYo.assert(
     root.childNodes.length == 0, 'Drag surface was not cleared.')
   eYo.dom.SetCssTransform(root, '')
   this.previousSibling_ = null

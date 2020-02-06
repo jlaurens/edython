@@ -60,6 +60,10 @@ class Foo:
   (?:'|")(?P<Key>[^'"]+)(?:'|")
   .*""", re.X)
 
+  # eYo.widget.makeDflt()
+  re_makeDflt = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*)).makeDflt\s*\(.*""", re.X)
+
   pathByProvided = {}
   nsByClass = {}
 
@@ -100,6 +104,14 @@ class Foo:
             addRequired('eYo.c9r')
       for l in f.readlines():
         base_require(l)
+        m = self.re_makeDflt.match(l)
+        if m:
+          ns = m.group('ns')
+          k = m.group('key')
+          addRequired(f'{ns}')
+          addProvided(f'{ns}.{k.title()}')
+          addProvided(f'{ns}.{k}.Dflt')
+          continue
         m = self.re_protocol.match(l)
         if m:
           K = m.group('Key')

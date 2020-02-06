@@ -13,7 +13,7 @@
 
 eYo.require('stmt')
 
-eYo.require('c9r.Change')
+eYo.require('o3d.Change')
 eYo.require('msg')
 
 eYo.require('decorate')
@@ -57,7 +57,7 @@ Object.defineProperties(eYo.expr.Dflt.prototype, {
  * @param {*} deep  Whether to propagate the message to children.
  */
 eYo.expr.Dflt.prototype.changeDone = function (deep) {
-  eYo.expr.Dflt.SuperProto_.ChangeDone.Call(this, deep)
+  eYo.expr.Dflt.SuperProto_.ChangeDone.call(this, deep)
   var parent = this.parent
   parent && parent.changeDone()
 }
@@ -161,7 +161,7 @@ eYo.expr.Dflt.prototype.replaceBrick = function (brick) {
  * @private
  */
 eYo.expr.Dflt.prototype.willRender_ = function (recorder) {
-  eYo.expr.Dflt.SuperProto_.willRender_.Call(this, recorder)
+  eYo.expr.Dflt.SuperProto_.willRender_.call(this, recorder)
   var field = this.await_f
   if (field) {
     field.visible = this.await_
@@ -196,7 +196,7 @@ eYo.expr.Dflt.prototype.awaitable = function () {
  * @private
  */
 eYo.expr.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var yorn = eYo.expr.Dflt.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  var yorn = eYo.expr.Dflt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('await', 'eyo-code-reserved'),
@@ -240,18 +240,18 @@ eYo.expr.Dflt.prototype.insertParentWithModel = function (model) {
     // start by the slots
     var slot = parent.slots[model.slot]
     var parentSlot = slot
-    eYo.Assert(parentSlot, 'No input named ' + model.slot)
+    eYo.assert(parentSlot, 'No input named ' + model.slot)
     var parentInputM4t = parentSlot.magnet
-    eYo.Assert(parentInputM4t, 'Unexpected dummy input ' + model.slot+ ' in ' + parent.type)
+    eYo.assert(parentInputM4t, 'Unexpected dummy input ' + model.slot+ ' in ' + parent.type)
   } else if ((parentSlot = parent.getSlot(eYo.key.LIST, true))) {
     var list = parentSlot.targetBrick
-    eYo.Assert(list, 'Missing list brick inside ' + this.type)
+    eYo.assert(list, 'Missing list brick inside ' + this.type)
     // the list has many potential inputs,
     // none of them is actually connected because this is very fresh
     // get the middle input.
     parentSlot = list.getSlot(eYo.do.Name.middle_name)
     parentInputM4t = parentSlot.magnet
-    eYo.Assert(parentInputM4t, 'Unexpected dummy input ' + parentSlotName)
+    eYo.assert(parentInputM4t, 'Unexpected dummy input ' + parentSlotName)
   } else {
     // find the first parent's connection that can accept brick
     var findM4t = y => {
@@ -336,7 +336,7 @@ eYo.expr.Dflt.prototype.insertParentWithModel = function (model) {
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
 eYo.expr.Dflt.prototype.doConsolidate = function (deep, force) {
-  if (eYo.expr.Dflt.SuperProto_.doConsolidate.Call(this, deep, force)) {
+  if (eYo.expr.Dflt.SuperProto_.doConsolidate.call(this, deep, force)) {
     var parent = this.parent
     return (parent && parent.consolidate()) || true
   }
@@ -499,7 +499,7 @@ eYo.expr.Dflt.makeInheritedC9r('builtin__object', {
 eYo.expr.Builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
   mngr.populateProperties(this, 'value')
   mngr.shouldSeparateInsert()
-  eYo.expr.Builtin__object.SuperProto_.populateContextMenuFirst_.Call(this, mngr)
+  eYo.expr.Builtin__object.SuperProto_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 

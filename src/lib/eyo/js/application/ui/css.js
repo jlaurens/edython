@@ -22,7 +22,6 @@ eYo.provide('css')
 
 eYo.forwardDeclare('unit')
 eYo.forwardDeclare('font-face')
-eYo.forwardDeclare('c9r.Shape')
 goog.forwardDeclare('goog.cssom');
 
 eYo.css.insertRuleAt = (() => {

@@ -13,7 +13,7 @@
 
 eYo.require('svg')
 
-eYo.forwardDeclare('Zoomer')
+eYo.forwardDeclare('pane.Zoomer')
 
 /**
  * Svg driver for the zoomer.
@@ -21,7 +21,7 @@ eYo.forwardDeclare('Zoomer')
 eYo.svg.makeDriverC9r('Zoomer', {
     /**
    * Initialize the board's controls.
-   * @param {eYo.Zoomer} constrols
+   * @param {eYo.pane.Zoomer} constrols
    * @return {!Element} The controls's SVG group.
    */
   initUI (controls) {
@@ -178,7 +178,7 @@ eYo.svg.makeDriverC9r('Zoomer', {
   },
   /**
    * Dispose of the zoom controls SVG ressources.
-   * @param {eYo.Zoomer} constrols
+   * @param {eYo.pane.Zoomer} constrols
    */
   disposeUI (controls) {
     var board = controls.board_
@@ -200,9 +200,9 @@ eYo.svg.makeDriverC9r('Zoomer', {
 
 /**
  * Position of the zoom controls.
- * @param {eYo.Zoomer} controls
+ * @param {eYo.pane.Zoomer} controls
  */
-eYo.svg.Zoomer.prototype.place = function(controls) {
+eYo.svg.Zoomer_p.place = function(controls) {
   controls.board_.dom.svg.zoom_.setAttribute(
     'transform',
     `translate(${controls.left_},${controls.top_})`

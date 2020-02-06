@@ -73,10 +73,10 @@ eYo.svg.BrickDragger.prototype.start = function (draggerBrick) {
   var point = svg.root_.createSVGPoint()
   point.x = rect.top
   point.y = rect.left
-  bds.topLeft_ = eYo.c9r.Where.xy(point.matrixTransform(matrix))
+  bds.topLeft_ = eYo.o4t.Where.xy(point.matrixTransform(matrix))
   point.x = rect.bottom
   point.y = rect.right
-  bds.bottomRight_ = eYo.c9r.Where.xy(point.matrixTransform(matrix))
+  bds.bottomRight_ = eYo.o4t.Where.xy(point.matrixTransform(matrix))
   // While dragging, the visible area must be contained within these limits.
   var limits = bds.limits_ = new eYo.c9r.Rect()
   var topBricks = board.topBricks.filter(b3k => b3k.ui && b3k.ui.rendered)

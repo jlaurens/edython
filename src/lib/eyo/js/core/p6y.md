@@ -1,7 +1,9 @@
 # Edyhon properties
+
+`p6y` stands for `property`.
+
 Each object may contain properties.
 There are different kinds of properties.
-
 
 - owned
 - valued
@@ -12,7 +14,7 @@ There are different kinds of properties.
  
 ## Namespace
 
-Property related code is gathered under `eYo.Prop` namespace.
+Property related code is gathered under `eYo.Property` namespace.
 
 ## Nature
 

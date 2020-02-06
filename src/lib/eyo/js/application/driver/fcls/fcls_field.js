@@ -24,20 +24,20 @@ eYo.fcls.makeDriverC9r('Field')
 
 /**
  * Set the location.
- * @param {eYo.Field} field
+ * @param {eYo.field} field
  * @param {*} where
  */
 eYo.fcls.Field.Dflt_p.moveTo = eYo.do.nothing
 
 /**
  * The field text will change.
- * @param {eYo.Field} field  the node the driver acts on
+ * @param {eYo.field} field  the node the driver acts on
  */
 eYo.fcls.Field.Dflt_p.textRemove = eYo.do.nothing
 
 /**
  * Display the field text.
- * @param {eYo.Field} field  the node the driver acts on
+ * @param {eYo.field} field  the node the driver acts on
  */
 eYo.fcls.Field.Dflt_p.textCreate = eYo.do.nothing
 
@@ -55,20 +55,20 @@ eYo.fcls.Field.Dflt_p.inlineEditorResize = eYo.do.nothing
 
 /**
  * Whether the field is displayed.
- * @param {eYo.Field} field  the field to query about
+ * @param {eYo.field} field  the field to query about
  */
 eYo.fcls.Field.Dflt_p.displayedGet = eYo.do.nothing
 
 /**
  * Display/hide the given field.
- * @param {eYo.Field} field  the field the driver acts on
+ * @param {eYo.field} field  the field the driver acts on
  * @param {boolean} yorn
  */
 eYo.fcls.Field.Dflt_p.displayedSet = eYo.do.nothing
 
 /**
  * Display/hide the given field, according to its `visible` status.
- * @param {eYo.Field} field  the field the driver acts on
+ * @param {eYo.field} field  the field the driver acts on
  * @param {boolean} yorn
  */
 eYo.fcls.Field.Dflt_p.displayedUpdate = eYo.do.nothing
