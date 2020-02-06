@@ -18,7 +18,7 @@ class Foo:
   .*""", re.X)
   #re_provide = re.compile(r"^\s*eYo.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
-  # eYo.Foo.makeNS(ns, 'BAR')
+  # eYo.foo.makeNS(ns, 'BAR')
   #eYo.Consolidator.makeC9r(ns, 'Dlgt', ...
   re_make = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
@@ -28,26 +28,49 @@ class Foo:
   assert re.match(re_make, "eYo.makeNS('Brick')"), 'BAD re_make 2'
   assert re.match(re_make, "eYo.dnd.makeC9r('Mngr', {"), 'BAD re_make 3'
 
-  # eYo.Foo.makeInheritedC9r(ns, 'bar')
-  re_makeInheritedC9r = re.compile(r"""^\s*
-  (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
-  \.(?P<Super>[A-Z][\w0-9_]*)
-  \.makeInheritedC9r\s*\(\s*
-  (?P<suite>.*)""", re.X)
+  m = re.match(re_make, "eYo.o3d.makeC9r(eYo.pane, 'WorkspaceControl', {")
+  assert m, 'BAD re_make 4'
+  assert m.group('NS') == "eYo.o3d", 'BAD re_make 5'
+  suite = m.group('suite')
+  assert suite == "eYo.pane, 'WorkspaceControl', {", 'BAD re_make 6'
 
   re_arg_ns = re.compile(r"""^
   (?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)
   (?:\s*,\s*)?
   (?P<suite>.*)""", re.X)
 
-  re_arg_T3 = re.compile(r"""^
-  eYo\.t3\.(?:stmt|expr)\.(?P<type>[a-z][\w_]*)
-  (?:\s*,\s*)?
+  m = re.match(re_arg_ns, suite)
+  assert m, 'BAD re_arg_ns 1'
+  assert m.group('ns') == "eYo.pane", 'BAD re_arg_ns 2'
+
+  # eYo.pane.WorkspaceControl.makeInheritedC9r('TrashCan', {
+  re_makeInheritedC9r = re.compile(r"""^\s*
+  (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
+  \.(?P<Super>[A-Z][\w0-9_]*)
+  \.makeInheritedC9r\s*\(\s*
   (?P<suite>.*)""", re.X)
+
+  m = re.match(re_makeInheritedC9r, "eYo.pane.WorkspaceControl.makeInheritedC9r('TrashCan', {")
+  assert m, 'BAD re_makeInheritedC9r 1'
+  assert m.group('NS') == "eYo.pane", 'BAD re_makeInheritedC9r 2'
+  assert m.group('Super') == "WorkspaceControl", 'BAD re_makeInheritedC9r 3'
+  suite = m.group('suite')
+  assert suite == "'TrashCan', {", 'BAD re_makeInheritedC9r 4'
+  m = re.match(re_arg_ns, suite)
+  assert not m, 'BAD re_arg_ns 3'
 
   re_arg_key = re.compile(r"""^
   (?:'|")(?P<key>[^'"]+)(?:'|")
   .*""", re.X)
+
+  m = re.match(re_arg_key, suite)
+  assert m, 'BAD re_arg_key 1'
+  assert m.group('key') == "TrashCan", 'BAD re_arg_ns 2'
+
+  re_arg_t3 = re.compile(r"""^
+  eYo\.t3\.(?:stmt|expr)\.(?P<type>[a-z][\w_]*)
+  (?:\s*,\s*)?
+  (?P<suite>.*)""", re.X)
 
   re_assignment = re.compile(r"""^\s*
   (?P<assigned>(?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)\.[A-Z][\w0-9_]*)
@@ -130,11 +153,12 @@ class Foo:
         ns = key = None
         def parse_args(suite):
           nonlocal ns, key
-          m = self.re_arg_T3.match(suite)
+          ns = Key = None
+          m = self.re_arg_t3.match(suite)
           if m:
             key = m.group('type')
             suite = m.group('suite')
-          m = self.re_arg_T3.match(suite)
+          m = self.re_arg_t3.match(suite)
           if m:
             key = m.group('type')
             suite = m.group('suite')
@@ -161,13 +185,15 @@ class Foo:
             addProvided(f'{ns}.{key}')
           else:
             addProvided(f'{NS}.{key}')
+          if path.stem == 'workspace_control':
+            print(NS, ns, key, provided)
           continue
         m = self.re_makeInheritedC9r.match(l)
         if m:
           addRequired('eYo.c9r')
           NS = m.group('NS')
-          addRequired(NS)
           key = m.group('Super')
+          addRequired(f'{NS}.{key}')
           parse_args(m.group('suite'))
           if ns:
             addRequired(ns)
@@ -175,6 +201,7 @@ class Foo:
           else:
             addProvided(f'{NS}.{key}')
           continue
+        
         m = self.re_provide.match(l)
         if m:
           what = m.group('what')

@@ -255,7 +255,7 @@ eYo.expr.List.makeInheritedC9r('argument_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Argument_list.makeInheritedC9r('argument_list_comprehensive', {
+eYo.expr.argument_list.makeInheritedC9r('argument_list_comprehensive', {
   list: {
     can_comprehension: true
   }

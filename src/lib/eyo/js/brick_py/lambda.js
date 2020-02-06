@@ -394,7 +394,7 @@ eYo.expr.Dflt.makeInheritedC9r('Lambda', {
             return eYo.t3.expr.check.expression_nocond
           }
         }
-        return eYo.t3.expr.check.expression.Concat(eYo.t3.expr.check.expression_nocond)
+        return eYo.t3.expr.check.expression.concat(eYo.t3.expr.check.expression_nocond)
       }
     }
   },
@@ -460,7 +460,7 @@ eYo.magnet.Dflt_p.consolidateType = function () {
   // better design if we use the subtype ?
   m4tIn.check = nocond_only_out
     ? eYo.t3.expr.check.expression_nocond
-    : eYo.t3.expr.check.expression.Concat(eYo.t3.expr.check.expression_nocond)
+    : eYo.t3.expr.check.expression.concat(eYo.t3.expr.check.expression_nocond)
   m4tOut.check = 
     (cond_in ? [eYo.t3.expr.lambda_expr] : []).concat(nocond_in ? [eYo.t3.expr.lambda_expr_nocond] : [])
 }

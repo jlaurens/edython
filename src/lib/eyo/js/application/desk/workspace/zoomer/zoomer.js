@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('pane.WorkspaceControl')
-
 /**
  * Zoom controls model
  * @param {eYo.Workspace} workspace Workspace to zoom.

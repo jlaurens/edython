@@ -1809,7 +1809,7 @@ eYo.stmt.makeC9r('base_call_stmt', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Base_call_stmt.makeInheritedC9r('call_stmt', {
+eYo.stmt.base_call_stmt.makeInheritedC9r('call_stmt', {
   data: {
     variant: {
       init: eYo.key.CALL_EXPR,

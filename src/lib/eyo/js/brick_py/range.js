@@ -167,7 +167,7 @@ eYo.expr.Dflt.makeInheritedC9r('builtin__range_expr', {
  * The xml `eyo` attribute of this brick, as it should appear in the saved data.
  * For edython.
  */
-eYo.expr.Builtin__range_expr.prototype.xmlAttr = function () {
+eYo.expr.builtin__range_expr.prototype.xmlAttr = function () {
   return 'range'
 }
 

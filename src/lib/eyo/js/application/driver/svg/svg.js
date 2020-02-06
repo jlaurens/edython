@@ -34,20 +34,6 @@ eYo.forwardDeclare('style')
 goog.forwardDeclare('goog.userAgent')
 
 /**
- * The Svg delegate.
- * @constructor
- */
-eYo.dom.Dlgt.makeInheritedC9r(eYo.svg)
-
-/**
- * @name {eYo.svg.Dlgt}
- * @constructor
- */
-/**
- * @name {eYo.svg.Dflt}
- * @constructor
- */
-/**
  * @name {eYo.svg.Mngr}
  * @constructor
  */
@@ -126,6 +112,11 @@ Object.defineProperties(eYo.svg, {
   TRANSLATE_3D_REGEX_: { value: /transform\s*:\s*translate3d\(\s*([-+\d.,e]+)px([ ,]\s*([-+\d.,e]+)\s*)px([ ,]\s*([-+\d.,e]+)\s*)px\)?/ }
 })
 
+/**
+ * @name{eYo.svg.Dflt}
+ * @constructor
+ */
+eYo.svg.makeDflt()
 /**
  * Return the coordinates of the top-left corner of this element relative to
  * its parent.  Only for SVG elements and children (e.g. rect, g, path).

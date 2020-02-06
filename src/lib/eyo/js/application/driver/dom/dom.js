@@ -24,11 +24,6 @@ goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
 
 /**
- * @name{eYo.dom.Dlgt}
- * The Dom default class.
- * @constructor
- */
-/**
  * @name{eYo.dom.Dflt}
  * The Dom delegate default class.
  * @constructor
