@@ -20,12 +20,12 @@ eYo.forwardDeclare('msg')
 goog.forwardDeclare('goog.dom')
 
 /**
- * @name{eYo.expr.Literal}
+ * @name{eYo.expr.literal}
  * @constructor
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('Literal', {
+eYo.expr.Dflt.makeInheritedC9r('literal', {
   xml: {
     attr: 'literal',
   },
@@ -43,8 +43,8 @@ eYo.expr.Dflt.makeInheritedC9r('Literal', {
  * @param {Element} element the persistent element.
  * @param {Object} [opt]
  */
-eYo.expr.Literal.prototype.saveData = function (element, opt) {
-  eYo.expr.Literal.SuperC9r_p.SaveData.apply(this, arguments)
+eYo.expr.literal.prototype.saveData = function (element, opt) {
+  eYo.expr.literal.eyo.C9r_s.saveData.apply(this, arguments)
   if (this.Value_p == '') {
     element.setAttribute(eYo.key.PLACEHOLDER, this.value_d.model.placeholder)
   }
@@ -54,7 +54,7 @@ eYo.expr.Literal.prototype.saveData = function (element, opt) {
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.expr.Literal.makeInheritedC9r('Numberliteral', {
+eYo.expr.literal.makeInheritedC9r('numberliteral', {
   data: {
     type: {
       all: [
@@ -126,7 +126,7 @@ eYo.expr.numberliteral.prototype.getBaseType = function () {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.expr.Literal.makeInheritedC9r('Shortliteral', {
+eYo.expr.iteral.makeInheritedC9r('shortliteral', {
   data: {
     subtype: {
       all: [
@@ -278,7 +278,7 @@ eYo.expr.Literal.makeInheritedC9r('Shortliteral', {
   'shortformattedliteral',
   'shortbytesliteral',
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Shortliteral))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.shortliteral))
 })
 
 /**
@@ -287,7 +287,7 @@ eYo.expr.Literal.makeInheritedC9r('Shortliteral', {
  * @param {string} [prototypeName] Name of the language object containing
  *     type-specific functions for this brick.
  */
-eYo.expr.Shortliteral.prototype.getBaseType = function () {
+eYo.expr.shortliteral.prototype.getBaseType = function () {
   return this.Subtype_p
 }
 
@@ -298,7 +298,7 @@ eYo.expr.Shortliteral.prototype.getBaseType = function () {
  *     type-specific functions for this brick.
  * @constructor
  */
-eYo.expr.Shortliteral.prototype.validateComponents = function(kvargs) {
+eYo.expr.shortliteral.prototype.validateComponents = function(kvargs) {
   var prefix = kvargs.prefix || this.Prefix_p
   var delimiter = kvargs.delimiter || this.Delimiter_p
   var content = kvargs.content || this.Content_p
@@ -315,18 +315,18 @@ eYo.expr.Shortliteral.prototype.validateComponents = function(kvargs) {
  * @param {string} op op is the operator
  * @private
  */
-eYo.expr.Shortliteral.prototype.makeTitle = function (variant) {
+eYo.expr.shortliteral.prototype.makeTitle = function (variant) {
   return eYo.do.CreateSPAN(variant + '…' + variant, 'eyo-code')
 }
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  * @suppress {globalThis}
 */
-eYo.expr.Literal.literalPopulateContextMenuFirst_ = function (mngr) {
+console.warn('NYI')
+eYo.expr.literal.literalPopulateContextMenuFirst_ = function (mngr) {
   mngr.populateProperties(this, 'delimiter')
   mngr.separate()
   var current = this.Prefix_p
@@ -381,9 +381,9 @@ eYo.expr.Literal.literalPopulateContextMenuFirst_ = function (mngr) {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.expr.Shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
-  eYo.expr.Literal.literalPopulateContextMenuFirst_.call(this, mngr)
-  eYo.expr.shortliteral.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+eYo.expr.shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
+  eYo.expr.literal.literalPopulateContextMenuFirst_.call(this, mngr)
+  eYo.expr.shortliteral.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -392,7 +392,7 @@ eYo.expr.Shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.expr.Shortliteral.makeInheritedC9r('Longliteral', {
+eYo.expr.shortliteral.makeInheritedC9r('longliteral', {
   data: {
     subtype: {
       all: [
@@ -474,9 +474,3 @@ eYo.expr.longliteral.prototype.validateComponents = function(kvargs) {
 ].forEach(k => {
   eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.longliteral))
 })
-
-eYo.expr.Literal.t3s = [
-  eYo.t3.expr.shortliteral,
-  eYo.t3.expr.longliteral,
-  eYo.t3.expr.numberliteral
-]

@@ -11,11 +11,6 @@
  */
 'use strict'
 
-eYo.require('expr.List')
-
-eYo.provide('brick.argument')
-
-
 /**
  * List consolidator for argument list.
  * Main entry: consolidate
@@ -53,7 +48,7 @@ eYo.consolidator.List.makeInheritedC9r('Arguments', {
  * @param {eYo.brick.Dflt} brick - owner or the receiver.
  */
 eYo.consolidator.Arguments.prototype.getIO = function (brick) {
-  var io = eYo.consolidator.Arguments.SuperProto_.getIO.call(this, brick)
+  var io = eYo.consolidator.Arguments.eyo.C9r_s.getIO.call(this, brick)
   io.last_expression = io.last_positional = io.unique = -Infinity
   io.first_keyword_star_star = io.first_star_star = Infinity
   return io
@@ -131,7 +126,7 @@ eYo.consolidator.Arguments.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.consolidator.Arguments.SuperProto_.doCleanup.call(this, io)
+    eYo.consolidator.Arguments.eyo.C9r_s.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.unique !== -Infinity) {
       // remove whatever comes before and after the io.unique
@@ -260,9 +255,3 @@ eYo.expr.argument_list.makeInheritedC9r('argument_list_comprehensive', {
     can_comprehension: true
   }
 })
-
-eYo.brick.Argument.t3s = [
-  // eYo.t3.expr.identifier_valued,
-  eYo.t3.expr.argument_list,
-  eYo.t3.expr.argument_list_comprehensive
-]

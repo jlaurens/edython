@@ -219,6 +219,3 @@ goog.mixin(eYo.tooltip.Title, {
   cmath__import_stmt: 'Importer le module cmath',
 })
 
-eYo.brick.cmath.t3s = [
-  eYo.t3.expr.cmath__const
-]

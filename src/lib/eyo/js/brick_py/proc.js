@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('stmt.Group')
+eYo.require('stmt.group')
 
 eYo.require('xre')
 
@@ -19,7 +19,6 @@ eYo.require('msg')
 eYo.require('expr.primary')
 eYo.require('menuItem')
 goog.require('goog.dom');
-eYo.provide('brick.proc')
 
 eYo.do.readOnlyMixin(eYo.xre, {
   decorator: XRegExp(`^@?
@@ -404,14 +403,14 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     })
   }
   mngr.shouldSeparate()
-  return eYo.stmt.decorator_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.decorator_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
  * Class for a Delegate, funcdef_part.
  * For edython.
  */
-eYo.stmt.Group.makeInheritedC9r('funcdef_part', {
+eYo.stmt.group.makeInheritedC9r('funcdef_part', {
   data: {
     variant: {
       all: [null, eYo.key.TYPE],
@@ -490,7 +489,7 @@ eYo.stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
     goog.dom.createTextNode('(…) -> …')
   ), variants[1])
   mngr.shouldSeparate()
-  return eYo.stmt.funcdef_part.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.funcdef_part.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 /*
@@ -501,7 +500,7 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  * Class for a Delegate, classdef_part brick.
  * For edython.
  */
-eYo.stmt.Group.makeInheritedC9r('classdef_part', {
+eYo.stmt.group.makeInheritedC9r('classdef_part', {
   data: {
     variant: {
       all: [eYo.key.NONE, eYo.key.N_ARY],
@@ -579,12 +578,5 @@ eYo.stmt.Classdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
     goog.dom.createTextNode('(…)')
   ), variants[1])
   mngr.shouldSeparate()
-  return eYo.stmt.classdef_part.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.classdef_part.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
-
-eYo.brick.Proc.t3s = [
-  eYo.t3.expr.identifier,
-  eYo.t3.stmt.decorator_stmt,
-  eYo.t3.stmt.funcdef_part,
-  eYo.t3.stmt.classdef_part
-]

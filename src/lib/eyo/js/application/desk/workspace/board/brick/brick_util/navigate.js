@@ -105,7 +105,7 @@ eYo.brick.getBestBrick = function (board, weight) {
  * @param {(point, point) -> number} distance is a function.
  * @return None
  */
-eYo.brick.Dflt.prototype.getBestBrick = function (distance) {
+eYo.brick.Dflt_p.getBestBrick = function (distance) {
   const box_a = this.ui.boundingBox
   var smallest = {}
   var best

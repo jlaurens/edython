@@ -212,10 +212,3 @@ eYo.Library.DATA.Basic_math__module = [
 goog.mixin(eYo.tooltip.Title, {
   math__import_stmt: 'Importer le module math',
 })
-
-eYo.brick.math.t3s = [
-  eYo.t3.stmt.math__import_stmt,
-  eYo.t3.expr.math__call_expr,
-  eYo.t3.stmt.math__call_stmt,
-  eYo.t3.expr.math__const
-]

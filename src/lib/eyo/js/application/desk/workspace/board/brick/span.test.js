@@ -24,7 +24,7 @@ describe('Span expression', function () {
     s_s = b_s.span
     chai.assert(b_s.isStmt, 'MISSED')
     var type = 'test_group_span'
-    eYo.stmt.Group.makeInheritedC9r(type, {
+    eYo.stmt.group.makeInheritedC9r(type, {
       out: {
         check: null
       }

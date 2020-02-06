@@ -170,8 +170,3 @@ eYo.expr.Dflt.makeInheritedC9r('builtin__range_expr', {
 eYo.expr.builtin__range_expr.prototype.xmlAttr = function () {
   return 'range'
 }
-
-eYo.brick.range.t3s = [
-  eYo.t3.expr.identifier,
-  eYo.t3.expr.builtin__range_expr
-]

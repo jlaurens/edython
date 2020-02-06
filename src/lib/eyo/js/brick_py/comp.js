@@ -20,7 +20,7 @@ eYo.provide('brick.comprehension')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('Comprehension', {
+eYo.expr.Dflt.makeInheritedC9r('comprehension', {
   data: {
     expression: {
       order: 1,
@@ -94,7 +94,7 @@ eYo.expr.Dflt.makeInheritedC9r('Comprehension', {
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
-eYo.expr.Comprehension.prototype.getBaseType = function () {
+eYo.expr.comprehension_p.getBaseType = function () {
   var check = this.out_m.check_
   return (check && check[0]) || eYo.t3.expr.comprehension
 }
@@ -108,7 +108,7 @@ eYo.expr.Comprehension.prototype.getBaseType = function () {
  * For edython.
  * @return attr name
  */
-eYo.expr.Comprehension.prototype.xmlAttr = function () {
+eYo.expr.comprehension_p.xmlAttr = function () {
   return 'comprehension'
 }
 
@@ -166,12 +166,3 @@ eYo.expr.List.makeInheritedC9r('comp_iter_list', {
     presep: ''
   }
 })
-
-eYo.brick.Comprehension.t3s = [
-  eYo.t3.expr.comprehension,
-  eYo.t3.expr.comp_for,
-  eYo.t3.expr.comp_if,
-  eYo.t3.expr.comp_iter_list,
-  eYo.t3.expr.dict_comprehension,
-  eYo.t3.expr.identifier,
-]

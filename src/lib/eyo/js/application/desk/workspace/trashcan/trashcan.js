@@ -73,7 +73,7 @@ eYo.pane.WorkspaceControl.makeInheritedC9r('TrashCan', {
  * Move the trash can to the bottom-right corner.
  */
 eYo.pane.TrashCan_p.place = function(bottom) {
-  eYo.pane.TrashCan.SuperProto_.place.call(this, bottom)
+  eYo.pane.TrashCan.eyo.C9r_s.place.call(this, bottom)
   this.ui_driver.place(this)
 }
 console.error('NYI: what does the inherited place do?')

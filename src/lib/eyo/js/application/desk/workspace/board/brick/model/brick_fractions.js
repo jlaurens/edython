@@ -132,7 +132,3 @@ eYo.Library.DATA.fractions__module = [
 goog.mixin(eYo.tooltip.Title, {
   fractions__import_stmt: 'Importer le module fractions',
 })
-
-eYo.brick.fractions.t3s = [
-  eYo.t3.Fraction
-]

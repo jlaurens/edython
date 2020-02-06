@@ -14,11 +14,11 @@
 goog.require('goog.ui.Dialog')
 
 eYo.require('msg')
-eYo.require('stmt.Group')
+eYo.require('stmt.group')
 goog.require('goog.dom');
 
 /**
- * @name {eYo.stmt.Control}
+ * @name {eYo.stmt.control}
  * @constructor
  * Class for a Delegate, control brick.
  * Not normally called directly, eYo.brick.Create(...) is preferred.
@@ -26,7 +26,7 @@ goog.require('goog.dom');
  */
 ;(() => {
   var creation = 0
-  eYo.stmt.Group.makeInheritedC9r('Control', {
+  eYo.stmt.group.makeInheritedC9r('control', {
     data: {
       restart: {
         init: false,
@@ -72,7 +72,7 @@ goog.require('goog.dom');
 /**
  * Update the creation number.
  */
-eYo.stmt.Control.prototype.updateCreation = function () {
+eYo.stmt.control_p.updateCreation = function () {
   this.creation__ = creation ++
 }
 
@@ -80,7 +80,7 @@ eYo.stmt.Control.prototype.updateCreation = function () {
  * Run the script exported from the brick.
  * @private
  */
-eYo.brick.Dflt.prototype.runScript = function () {
+eYo.brick.Dflt_p.runScript = function () {
   console.log('Someone should everride this method to really run some script')
 }
 
@@ -89,7 +89,7 @@ eYo.brick.Dflt.prototype.runScript = function () {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Control.makeInheritedC9r('start_stmt', {
+eYo.stmt.control.makeInheritedC9r('start_stmt', {
   xml: {
     attr: 'start'
   },
@@ -99,6 +99,3 @@ eYo.stmt.Control.makeInheritedC9r('start_stmt', {
   foot: eYo.t3.stmt.start_stmt,
 })
 
-eYo.stmt.Control.t3s = [
-  eYo.t3.stmt.start_stmt
-]

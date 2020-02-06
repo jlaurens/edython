@@ -34,7 +34,7 @@ eYo.keyHandler.makeC9r('Menu')
  */
 eYo.keyHandler.Menu_p.handleKeyEventInternal = function (e) {
   // Give the highlighted control the chance to handle the key event.
-  if (eYo.keyHandler.Menu.SuperProto_.handleKeyEventInternal.call(this, e)) {
+  if (eYo.keyHandler.Menu.eyo.C9r_s.handleKeyEventInternal.call(this, e)) {
     return true
   }
   return this.handleMenuKeyEvent(e)

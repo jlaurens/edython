@@ -141,7 +141,7 @@ eYo.expr.List.SlotsHandler = {
  * @return {eYo.slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.expr.List.prototype.getSlot = function (name, dontCreate) {
-  var slot = eYo.expr.List.SuperProto_.getSlot.call(this, name)
+  var slot = eYo.expr.List.eyo.C9r_s.getSlot.call(this, name)
   if (!slot) {
     this.createConsolidator()
     slot = this.consolidator.getSlot(this, name, dontCreate)
@@ -189,7 +189,7 @@ eYo.expr.List.prototype.createConsolidator = eYo.decorate.reentrant_method(
  * @param {eYo.magnet.Dflt} targetOldM4t
  */
 eYo.expr.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.expr.List.SuperProto_.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+  eYo.expr.List.eyo.C9r_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   if (m4t.isOutput) {
     this.createConsolidator(true)
   }
@@ -218,7 +218,7 @@ eYo.expr.List.prototype.doConsolidate = (() => {
       return
     }
     force = true  // always force consolidation because of the dynamics
-    if (eYo.expr.List.SuperProto_.doConsolidate.call(this, deep, force)) {
+    if (eYo.expr.List.eyo.C9r_s.doConsolidate.call(this, deep, force)) {
       return !this.connectionsIncog && (this.consolidator.consolidate(this, deep, force))
     }
   }
@@ -554,23 +554,3 @@ eYo.expr.enclosure.prototype.getBaseType = function () {
 'one_dict_display'].forEach(k => {
   eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.enclosure))
 })
-
-eYo.expr.List.t3s = [
-  eYo.t3.expr.identifier,
-  eYo.t3.expr.comprehension,
-  eYo.t3.expr.dict_comprehension,
-  eYo.t3.expr.key_datum,
-  eYo.t3.expr.optional_expression_list,
-  eYo.t3.expr.parenth_form,
-  eYo.t3.expr.parenth_target_list,
-  eYo.t3.expr.list_display,
-  eYo.t3.expr.bracket_target_list,
-  eYo.t3.expr.void_dict_display,
-  eYo.t3.expr.one_set_display,
-  eYo.t3.expr.set_display,
-  eYo.t3.expr.one_dict_display,
-  eYo.t3.expr.dict_display,
-  eYo.t3.expr.slice_list,
-  eYo.t3.expr.dict_display,
-  eYo.t3.expr.with_item_list
-]

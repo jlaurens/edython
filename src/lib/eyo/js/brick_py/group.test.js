@@ -1,8 +1,8 @@
 describe("Group", function () {
   it ("Group: Basic", function () {
     chai.assert(eYo.Test)
-    chai.assert(eYo.stmt.Group)
-    chai.assert(eYo.isSubclass(eYo.stmt.Group, eYo.stmt.Dflt))
+    chai.assert(eYo.stmt.group)
+    chai.assert(eYo.isSubclass(eYo.stmt.group, eYo.stmt.Dflt))
   })
 })
 

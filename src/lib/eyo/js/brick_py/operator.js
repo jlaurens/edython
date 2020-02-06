@@ -410,18 +410,3 @@ eYo.expr.unary.getTypeForOperator = function (op) {
   }
   return eYo.t3.expr.unset
 }
-
-eYo.brick.operator.t3s = [
-  eYo.t3.expr.u_expr,
-  eYo.t3.expr.m_expr,
-  eYo.t3.expr.a_expr,
-  eYo.t3.expr.shift_expr,
-  eYo.t3.expr.and_expr,
-  eYo.t3.expr.xor_expr,
-  eYo.t3.expr.or_expr,
-  eYo.t3.expr.number_comparison,
-  eYo.t3.expr.object_comparison,
-  eYo.t3.expr.or_test,
-  eYo.t3.expr.and_test,
-  eYo.t3.expr.power
-]

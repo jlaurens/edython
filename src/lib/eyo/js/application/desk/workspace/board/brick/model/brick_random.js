@@ -309,7 +309,3 @@ goog.mixin(eYo.tooltip.Title, {
   random__seed_stmt: 'Initialiser le générateur aléatoire',
   random__setstate: 'Mettre l\'état du générateur aléatoire à la valeur donnée'
 })
-
-eYo.brick.random.t3s = [
-  eYo.t3.expr.random__randrange,
-]

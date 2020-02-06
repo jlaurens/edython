@@ -123,7 +123,3 @@ eYo.Library.DATA.Statistics__module = [
 goog.mixin(eYo.tooltip.Title, {
   statistics__import_stmt: 'Importer le module statistics',
 })
-
-eYo.brick.statistics.t3s = [
-  eYo.t3.statistics
-]

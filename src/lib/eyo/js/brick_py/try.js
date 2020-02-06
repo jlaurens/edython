@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('stmt.Group')
+eYo.require('stmt.group')
 
 eYo.require('o3d.Change')
 
@@ -26,7 +26,7 @@ goog.forwardDeclare('goog.dom')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeInheritedC9r('try_part', {
+eYo.stmt.group.makeInheritedC9r('try_part', {
   fields: {
     prefix: 'try'
   }
@@ -37,7 +37,7 @@ eYo.stmt.Group.makeInheritedC9r('try_part', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeInheritedC9r('except_part', {
+eYo.stmt.group.makeInheritedC9r('except_part', {
   data: {
     variant: {
       all: [
@@ -215,7 +215,7 @@ eYo.stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
   ), eYo.key.ALIASED
   )
   mngr.shouldSeparate()
-  return eYo.stmt.except_part.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.except_part.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -223,7 +223,7 @@ eYo.stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeInheritedC9r('finally_part', {
+eYo.stmt.group.makeInheritedC9r('finally_part', {
   fields: {
     prefix: 'finally'
   }
@@ -360,7 +360,7 @@ eYo.stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   ), eYo.key.FROM
   )
   mngr.shouldSeparate()
-  return eYo.stmt.raise_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.raise_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -457,14 +457,6 @@ eYo.stmt.Assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   ), eYo.key.BINARY
   )
   mngr.shouldSeparate()
-  return eYo.stmt.Assert_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.Assert_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 
-eYo.brick.try.t3s = [
-  eYo.t3.stmt.try_part,
-  eYo.t3.stmt.except_part,
-  eYo.t3.stmt.void_except_part,
-  eYo.t3.stmt.finally_part,
-  eYo.t3.stmt.raise_stmt,
-  eYo.t3.stmt.assert_stmt
-]

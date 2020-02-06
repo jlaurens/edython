@@ -74,7 +74,7 @@ eYo.events.fireBrickMove = (brick, move) => {
  * @constructor
  */
 eYo.events.BrickBase = function(brick) {
-  eYo.events.BrickBase.SuperProto_.constructor.call(this, brick.board)
+  eYo.events.BrickBase.eyo.C9r_s.constructor.call(this, brick.board)
   /**
    * The brick id for the brick this event pertains to
    * @type {string}
@@ -103,7 +103,7 @@ Object.defineProperties(eYo.events.BrickBase.prototype, {
  * @constructor
  */
 eYo.events.BrickChange = function(brick, element, name, before, after) {
-  eYo.events.BrickChange.SuperProto_.constructor.call(this, brick)
+  eYo.events.BrickChange.eyo.C9r_s.constructor.call(this, brick)
   this.element = element
   this.name = name
   this.before = before
@@ -169,7 +169,7 @@ eYo.events.BrickChange.prototype.run = function(redo) {
  * @constructor
  */
 eYo.events.BrickCreate = function(brick) {
-  eYo.events.BrickCreate.SuperProto_.constructor.call(this, brick)
+  eYo.events.BrickCreate.eyo.C9r_s.constructor.call(this, brick)
   if (brick.board.rendered) {
     this.xml = eYo.xml.BrickToDomWithWhere(brick)
   } else {
@@ -220,7 +220,7 @@ eYo.events.BrickDelete = function(brick) {
   if (brick.parent) {
     throw 'Connected bricks cannot be deleted.'
   }
-  eYo.events.BrickDelete.SuperProto_.constructor.call(this, brick)
+  eYo.events.BrickDelete.eyo.C9r_s.constructor.call(this, brick)
 
   if (brick.board.rendered) {
     this.oldXml = eYo.xml.BrickToDomWithWhere(brick)
@@ -269,7 +269,7 @@ eYo.events.BrickDelete.prototype.run = function(forward) {
  * @constructor
  */
 eYo.events.BrickMove = function(brick) {
-  eYo.events.BrickMove.SuperProto_.constructor.call(this, brick)
+  eYo.events.BrickMove.eyo.C9r_s.constructor.call(this, brick)
   var location = this.currentLocation_
   this.oldParentId = location.parentId
   this.oldName = location.name

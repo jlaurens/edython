@@ -740,7 +740,7 @@ eYo.brick.makeDflt({
       // next trick to avoid some costy computations
       // this makes sense because subclassers may use a long getBaseType
       // which is oftenly used
-      this.getBaseType = eYo.brick.Dflt.prototype.getBaseType // no side effect during creation due to inheritance.
+      this.getBaseType = eYo.brick.Dflt_p.getBaseType // no side effect during creation due to inheritance.
 
       // private properties
       this.children__ = []
@@ -816,7 +816,7 @@ eYo.brick.makeDflt({
 eYo.brick.DEBUG_ = Object.create(null)
 
 ;(() => {
-  let _p = eYo.brick.Dflt.prototype
+  let _p = eYo.brick.Dflt_p
   /**
    * Increment the change count.
    * The change.count is used to compute some properties that depend

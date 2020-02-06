@@ -371,7 +371,7 @@ eYo.stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     eYo.do.CreateSPAN('import *', 'eyo-code-reserved')
   ), eYo.key.FROM_MODULE_IMPORT_STAR)
   mngr.shouldSeparate()
-  return eYo.stmt.import_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.import_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 /// //////// future
@@ -393,11 +393,3 @@ eYo.stmt.makeC9r('future_statement', {
     }
   }
 }, true)
-
-eYo.brick.import.t3s = [
-  eYo.t3.expr.identifier,
-  eYo.t3.expr.non_void_module_as_list,
-  eYo.t3.expr.non_void_import_identifier_as_list,
-  eYo.t3.stmt.import_stmt,
-  eYo.t3.stmt.future_statement
-]

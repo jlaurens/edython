@@ -16,12 +16,12 @@ eYo.forwardDeclare('msg')
 goog.forwardDeclare('goog.dom')
 
 /**
- * @name{eYo.stmt.Group}
+ * @name{eYo.stmt.group}
  * Class for a Delegate, base group statement brick.
  * Base group is subclassed into Group and Control.
  * For edython.
  */
-eYo.stmt.Dflt.makeInheritedC9r('Group', {
+eYo.stmt.Dflt.makeInheritedC9r('group', {
   head (type) /** @suppress {globalThis} */ {
     return null
   },
@@ -57,7 +57,7 @@ eYo.stmt.Dflt.makeInheritedC9r('Group', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeInheritedC9r('Branch', {
+eYo.stmt.group.makeInheritedC9r('Branch', {
   data: {
     variant: {
       all: [
@@ -207,7 +207,7 @@ eYo.stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   F(2)
   F(3)
   mngr.shouldSeparate()
-  return eYo.stmt.global_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.global_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 ;[
@@ -228,8 +228,8 @@ eYo.stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
  * @param {Brick} brick
  * @private
  */
-eYo.stmt.Group.prototype.willRender_ = function (recorder) {
-  eYo.stmt.Group.SuperProto_.willRender_.call(this, recorder)
+eYo.stmt.group.prototype.willRender_ = function (recorder) {
+  eYo.stmt.group.eyo.C9r_s.willRender_.call(this, recorder)
   var field = this.async_f
   if (field) {
     field.visible = this.async_
@@ -242,7 +242,7 @@ eYo.stmt.Group.prototype.willRender_ = function (recorder) {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.group.prototype.populateContextMenuFirst_ = function (mngr) {
   if (this.async_f) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('async', 'eyo-code-reserved'),
@@ -260,7 +260,7 @@ eYo.stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
       mngr.shouldSeparateInsert()
     }
   }
-  return eYo.stmt.Group.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.group.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
@@ -268,7 +268,7 @@ eYo.stmt.Group.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeInheritedC9r('for_part', true, {
+eYo.stmt.group.makeInheritedC9r('for_part', true, {
   slots: {
     for: {
       order: 1,
@@ -292,7 +292,7 @@ eYo.stmt.Group.makeInheritedC9r('for_part', true, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.Group.makeInheritedC9r('with_part', true, {
+eYo.stmt.group.makeInheritedC9r('with_part', true, {
   slots: {
     with: {
       order: 1,
@@ -304,11 +304,3 @@ eYo.stmt.Group.makeInheritedC9r('with_part', true, {
   }
 })
 
-eYo.stmt.Group.t3s = [
-  eYo.t3.stmt.if_part,
-  eYo.t3.stmt.elif_part,
-  eYo.t3.stmt.else_part,
-  eYo.t3.stmt.while_part,
-  eYo.t3.stmt.with_part,
-  eYo.t3.stmt.for_part
-]

@@ -38,7 +38,7 @@ eYo.expr.makeDflt()
 // Default delegate for all expression bricks
 eYo.brick.registerAll(eYo.t3.expr, eYo.expr.Dflt, true)
 
-Object.defineProperties(eYo.expr.Dflt.prototype, {
+Object.defineProperties(eYo.expr.Dflt_p, {
   isExpr: {
     value: true
   },
@@ -56,8 +56,8 @@ Object.defineProperties(eYo.expr.Dflt.prototype, {
  * For edython.
  * @param {*} deep  Whether to propagate the message to children.
  */
-eYo.expr.Dflt.prototype.changeDone = function (deep) {
-  eYo.expr.Dflt.SuperProto_.ChangeDone.call(this, deep)
+eYo.expr.Dflt_p.changeDone = function (deep) {
+  eYo.expr.Dflt.eyo.C9r_s.ChangeDone.call(this, deep)
   var parent = this.parent
   parent && parent.changeDone()
 }
@@ -69,7 +69,7 @@ eYo.expr.Dflt.prototype.changeDone = function (deep) {
  * This should be used instead of direct brick querying.
  * @return {String} The type of the receiver's brick.
  */
-eYo.expr.Dflt.prototype.getType = eYo.c9r.decorateChange(
+eYo.expr.Dflt_p.getType = eYo.c9r.decorateChange(
   'getType',
   function () {
     return {
@@ -85,7 +85,7 @@ eYo.expr.Dflt.prototype.getType = eYo.c9r.decorateChange(
  * @param {String} type
  * @return {Boolean}
  */
-eYo.expr.Dflt.prototype.checkOutputType = function (type) {
+eYo.expr.Dflt_p.checkOutputType = function (type) {
   var m4t = this.out_m
   if (m4t.check_) {
     if (type.indexOf) {
@@ -107,7 +107,7 @@ eYo.expr.Dflt.prototype.checkOutputType = function (type) {
  * The connection cannot always establish.
  * @param {eYo.brick.Dflt} brick  the brick to be replaced
  */
-eYo.expr.Dflt.prototype.canReplaceBrick = function (brick) {
+eYo.expr.Dflt_p.canReplaceBrick = function (brick) {
   if (brick) {
     var m4t = brick.out_m
     if (!m4t) {
@@ -129,7 +129,7 @@ eYo.expr.Dflt.prototype.canReplaceBrick = function (brick) {
  * The connection cannot always establish.
  * @param {eYo.brick.Dflt} brick
  */
-eYo.expr.Dflt.prototype.replaceBrick = function (brick) {
+eYo.expr.Dflt_p.replaceBrick = function (brick) {
   if (this.board && brick && brick.board) {
     eYo.events.groupWrap(() => {
       eYo.do.tryFinally(() => {
@@ -160,8 +160,8 @@ eYo.expr.Dflt.prototype.replaceBrick = function (brick) {
  * The print statement needs some preparation before drawing.
  * @private
  */
-eYo.expr.Dflt.prototype.willRender_ = function (recorder) {
-  eYo.expr.Dflt.SuperProto_.willRender_.call(this, recorder)
+eYo.expr.Dflt_p.willRender_ = function (recorder) {
+  eYo.expr.Dflt.eyo.C9r_s.willRender_.call(this, recorder)
   var field = this.await_f
   if (field) {
     field.visible = this.await_
@@ -174,7 +174,7 @@ eYo.expr.Dflt.prototype.willRender_ = function (recorder) {
  * are awaitable
  * @return yes or no
  */
-eYo.expr.Dflt.prototype.awaitable = function () {
+eYo.expr.Dflt_p.awaitable = function () {
   if (!this.await_f) {
     return false
   }
@@ -195,8 +195,8 @@ eYo.expr.Dflt.prototype.awaitable = function () {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.expr.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var yorn = eYo.expr.Dflt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+eYo.expr.Dflt_p.populateContextMenuFirst_ = function (mngr) {
+  var yorn = eYo.expr.Dflt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('await', 'eyo-code-reserved'),
@@ -227,7 +227,7 @@ eYo.expr.Dflt.prototype.populateContextMenuFirst_ = function (mngr) {
  * @param {Object} model
  * @return the created brick
  */
-eYo.expr.Dflt.prototype.insertParentWithModel = function (model) {
+eYo.expr.Dflt_p.insertParentWithModel = function (model) {
   var parentSlotName = model.slot || model.input
   var parent
   eYo.events.disableWrap(() => {
@@ -335,8 +335,8 @@ eYo.expr.Dflt.prototype.insertParentWithModel = function (model) {
  * @param {Boolean} force
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
-eYo.expr.Dflt.prototype.doConsolidate = function (deep, force) {
-  if (eYo.expr.Dflt.SuperProto_.doConsolidate.call(this, deep, force)) {
+eYo.expr.Dflt_p.doConsolidate = function (deep, force) {
+  if (eYo.expr.Dflt.eyo.C9r_s.doConsolidate.call(this, deep, force)) {
     var parent = this.parent
     return (parent && parent.consolidate()) || true
   }
@@ -534,11 +534,3 @@ eYo.expr.Dflt.makeInheritedC9r('Any', {
     check: null // means that every output type will fit, once we have a python parser...
   }
 }, true)
-
-eYo.expr.t3s = [
-  eYo.t3.expr.proper_slice,
-  eYo.t3.expr.conditional_expression,
-  eYo.t3.expr.starred_expression,
-  eYo.t3.expr.builtin__object,
-  eYo.t3.expr.any
-]

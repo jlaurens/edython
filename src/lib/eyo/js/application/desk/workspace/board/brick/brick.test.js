@@ -94,7 +94,7 @@ describe('Group magnets', function () {
   before(function() {
     var type = 'test_group_magnets'
     eYo.t3.stmt[type] = type
-    eYo.stmt.Group.makeInheritedC9r(type, {
+    eYo.stmt.group.makeInheritedC9r(type, {
       left: { check: type },
       right: { check: type },
     })  

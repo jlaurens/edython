@@ -377,7 +377,7 @@ eYo.py.Exporter.prototype.exportSlot_ = function (slot) {
   }
 }
 
-Object.defineProperties(eYo.brick.Dflt.prototype, {
+Object.defineProperties(eYo.brick.Dflt_p, {
   toString: {
     get () {
       return new eYo.py.Exporter().export(this, {is_deep: true})
@@ -412,7 +412,7 @@ eYo.field.Input_p.getPythonText_ = function () {
     var candidate = this.text_ || ''
     return !XRegExp.match(candidate, /\s/) && candidate || (!this.optional_ && '<MISSING NAME>')  
   }
-  var t = eYo.field.Input.SuperProto_.getPythonText_.call(this)
+  var t = eYo.field.Input.eyo.C9r_s.getPythonText_.call(this)
   if (!t.length && !this.optional_) {
     if (!this.model.canEmpty && (this.placeholder || (this.data && this.data.placeholder))) {
       var t = `<missing ${this.getPlaceholderText().trim()}>`.toUpperCase()

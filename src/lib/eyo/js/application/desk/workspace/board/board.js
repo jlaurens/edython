@@ -468,7 +468,7 @@ eYo.board.Main_p.clear = function() {
   if (!existingGroup) {
     eYo.events.group = true
   }
-  eYo.board.Main.SuperProto_.clear.call(this)
+  eYo.board.Main.eyo.C9r_s.clear.call(this)
   if (!existingGroup) {
     eYo.events.group = false
   }

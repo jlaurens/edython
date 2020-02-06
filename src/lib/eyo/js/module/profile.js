@@ -66,7 +66,7 @@ eYo.do.readOnlyMixin(
  * create one on the first call if the module knows it.
  * @param {*} identifier
  */
-eYo.module.Dflt.prototype.getProfile = function(identifier) {
+eYo.module.Dflt_p.getProfile = function(identifier) {
   var ans = this.profiles[identifier]
   if (ans) {
     return ans

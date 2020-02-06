@@ -359,14 +359,14 @@ eYo.xml.BrickToDom = (() => {
 
 goog.exportSymbol('Xml.brickToDom', eYo.xml.BrickToDom)
 
-eYo.require('stmt.Group')
+eYo.require('stmt.group')
 
 /**
  * The xml tag name of this brick, as it should appear in the saved data.
  * For edython.
  * @return attr name
  */
-eYo.brick.Dflt.prototype.xmlAttr = function () {
+eYo.brick.Dflt_p.xmlAttr = function () {
   var attr = this.constructor.eyo.xmlAttr || (this.isExpr ? eYo.t3.xml.toDom.Expr : eYo.t3.xml.toDom.Stmt)[this.constructor.eyo.key]
   return attr || (this.type && this.type.substring(4)) || eYo.key.PLACEHOLDER
 }
@@ -384,7 +384,7 @@ eYo.require('expr.Literal')
 eYo.expr.List.prototype.xmlAttr = function () {
   return this.wrapped_
     ? eYo.xml.LIST
-    : eYo.expr.List.SuperProto_.xmlAttr.call(this)
+    : eYo.expr.List.eyo.C9r_s.xmlAttr.call(this)
 }
 
 eYo.require('expr.primary')
@@ -479,7 +479,7 @@ eYo.require('brick.operator')
  * @param {Element} element the persistent element.
  * @param {Object} [opt]
  */
-eYo.brick.Dflt.prototype.saveData = function (element, opt) {
+eYo.brick.Dflt_p.saveData = function (element, opt) {
   this.dataForEach(data => data.save(element, opt))
 }
 
@@ -489,7 +489,7 @@ eYo.brick.Dflt.prototype.saveData = function (element, opt) {
  * @param {Element} element the persistent element.
  * @param {Object} [opt]
  */
-eYo.brick.Dflt.prototype.saveSlots = function (element, opt) {
+eYo.brick.Dflt_p.saveSlots = function (element, opt) {
   this.slotForEach(slot => slot.save(element, opt))
 }
 
@@ -874,7 +874,7 @@ eYo.xml.domToBrick = (() => {
         (brick = eYo.xml.literal.domToComplete(dom, owner)) ||
         (brick = eYo.xml.Comparison.domToComplete(dom, owner)) ||
         (brick = eYo.xml.Starred.domToComplete(dom, owner)) ||
-        // (brick = eYo.xml.Group.domToComplete(dom, owner)) ||
+        // (brick = eYo.xml.group.domToComplete(dom, owner)) ||
         (brick = eYo.xml.Call.domToComplete(dom, owner)) ||
         (brick = eYo.xml.Compatibility.domToComplete(dom, owner))) {
           eYo.xml.fromDom(brick, dom)
@@ -1240,7 +1240,7 @@ eYo.xml.primary.domToComplete = function (element, owner) {
 //  * @param {*} owner  The board or the parent brick.
 //  * @override
 //  */
-// eYo.xml.Group.domToComplete = function (element, owner) {
+// eYo.xml.group.domToComplete = function (element, owner) {
 //   var attr = element.getAttribute(eYo.key.EYO)
 //   if (attr === eYo.stmt.else_part.prototype.xmlAttr()) {
 //     var type = eYo.t3.stmt.else_part

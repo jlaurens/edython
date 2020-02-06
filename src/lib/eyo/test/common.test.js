@@ -223,7 +223,7 @@ eYo.test.All_variants = (d, required) => {
 
 eYo.test.linearizeCode_ = s => s.replace(/(?:\r\n|\r|\n)/g, '\\n').replace(/\s+/g, ' ').replace(/(\*) /g, '$1').replace(/(\s|\\n)+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{|:|\*\*|->|,|}|\+|-|=|#)\s*/g, '$1').replace(/(#)  +/g, '$1 ')
 
-Object.defineProperties(eYo.brick.Dflt.prototype, {
+Object.defineProperties(eYo.brick.Dflt_p, {
   linearizedCode: {
     get () {
       return eYo.test.linearizeCode_(this.toString)

@@ -13,7 +13,7 @@ describe ('Tests: dlgt_ui', function () {
     var NS = Object.create(null)
     eYo.c9r.makeC9r(NS, 'A')
     chai.assert(NS.A)
-    chai.assert(NS.A.SuperC9r_p === eYo.c9r.Dflt.prototype)
+    chai.assert(NS.A.SuperC9r_p === eYo.c9r.Dflt_p)
     chai.assert(NS.A.eyo.constructor === eYo.c9r.Dlgt)
     chai.assert(NS.A.eyo.initUIDecorate)
     chai.assert(NS.A.eyo.disposeUIDecorate)

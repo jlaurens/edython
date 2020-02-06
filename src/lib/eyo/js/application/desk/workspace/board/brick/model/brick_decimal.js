@@ -266,7 +266,3 @@ goog.mixin(eYo.tooltip.Title, {
   decimal__assigned_contexte: 'Obtenir le contexte de calcul et l\'affecter à une variable.',
   decimal__assigned_prec: 'Modifier la précision des calculs à venir.'
 })
-
-eYo.brick.decimal.t3s = [
-  eYo.t3.expr.decimal__const
-]

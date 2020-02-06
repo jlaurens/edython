@@ -378,7 +378,7 @@ eYo.stmt.assignment_stmt_p.populateContextMenuFirst_ = function (mngr) {
     mngr.addChild(menuItem, true)
     mngr.shouldSeparate()
   }
-  eYo.stmt.assignment_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  eYo.stmt.assignment_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -596,17 +596,5 @@ eYo.expr.List.makeInheritedC9r('augassigned_list', () => {
 //   })
 //   mngr.addChild(menuItem, true)
 //   mngr.shouldSeparate()
-//   return eYo.stmt.Augmented_assignment_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+//   return eYo.stmt.Augmented_assignment_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
 // }
-
-eYo.brick.assignment.t3s = [
-  eYo.t3.expr.identifier,
-  eYo.t3.expr.yield_expr,
-  eYo.t3.expr.target_list,
-  eYo.t3.expr.parenth_target_list,
-  eYo.t3.expr.bracket_target_list,
-  eYo.t3.stmt.assignment_stmt,
-  eYo.t3.expr.value_list,
-  eYo.t3.expr.augassigned_list,
-  eYo.t3.stmt.augmented_assignment_stmt
-]

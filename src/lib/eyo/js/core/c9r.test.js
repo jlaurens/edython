@@ -341,7 +341,7 @@ describe ('Tests: C9r', function () {
       })
       chai.assert(ns.A)
       chai.assert(eYo.isSubclass(ns.A, ns.Dflt))
-      chai.assert(ns.A_s === ns.Dflt.prototype)
+      chai.assert(ns.A_s === ns.Dflt_p)
       chai.assert(ns.A.eyo.constructor === ns.Dlgt)
       var flag = 0
       new ns.A(123)
@@ -369,7 +369,7 @@ describe ('Tests: C9r', function () {
       chai.assert(ns.A.eyo.ns === ns)
       chai.assert(ns.A.eyo.constructor === ns.Dlgt)
       chai.assert(ns.A_p === ns.A.prototype)
-      chai.assert(ns.A_s === ns.Dflt.prototype)
+      chai.assert(ns.A_s === ns.Dflt_p)
     })
     it ('makeC9rDecorate', function () {
       return
@@ -800,7 +800,7 @@ describe ('Dlgt', function () {
         }
       })
       chai.assert(ns.A)
-      chai.assert(ns.A.SuperC9r_p === ns.Dflt.prototype)
+      chai.assert(ns.A.SuperC9r_p === ns.Dflt_p)
       chai.assert(ns.A.SuperC9r_p.constructor === ns.Dflt)
       chai.expect(() => {
         new ns.A()
@@ -844,7 +844,7 @@ describe ('Dlgt', function () {
       chai.assert(A)
       chai.assert(A.eyo)
       chai.assert(A.eyo.super === eYo.Dflt.eyo)
-      chai.assert(A.SuperC9r_p === eYo.Dflt.prototype)
+      chai.assert(A.SuperC9r_p === eYo.Dflt_p)
       chai.assert(A.SuperC9r_p.constructor === eYo.Dflt)
       chai.expect(() => {
         new A()
@@ -858,7 +858,7 @@ describe ('Dlgt', function () {
       chai.assert(ns.A)
       chai.assert(ns.A.eyo)
       chai.assert(ns.A.eyo.super === ns.Dflt.eyo)
-      chai.assert(ns.A.SuperC9r_p === ns.Dflt.prototype)
+      chai.assert(ns.A.SuperC9r_p === ns.Dflt_p)
       chai.assert(ns.A.SuperC9r_p.constructor === ns.Dflt)
       chai.expect(() => {
         new ns.A()
@@ -874,7 +874,7 @@ describe ('Dlgt', function () {
         }
       })
       chai.assert(ns.A)
-      chai.assert(ns.A.SuperC9r_p === ns.Dflt.prototype)
+      chai.assert(ns.A.SuperC9r_p === ns.Dflt_p)
       chai.assert(ns.A.SuperC9r_p.constructor === ns.Dflt)
       chai.expect(() => {
         new ns.A()

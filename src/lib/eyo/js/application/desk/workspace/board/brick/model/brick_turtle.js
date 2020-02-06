@@ -234,7 +234,3 @@ goog.mixin(eYo.tooltip.Title, {
   turtle__import_stmt: 'Importer le module turtle',
   turtle__setup_stmt: 'Réglages du module turtle propres à edython',
 })
-
-eYo.brick.turtle.t3s = [
-  eYo.t3.stmt.turtle__setup_stmt
-]
