@@ -18,7 +18,7 @@ eYo.require('msg')
 eYo.require('stmt')
 eYo.require('expr.List')
 
-eYo.require('expr.Primary')
+eYo.require('expr.primary')
 eYo.require('tooltip')
 
 eYo.require('Library')
@@ -33,7 +33,7 @@ eYo.provide('brick.stdtypes')
  */
 
 ;(function () {
-  var M = eYo.module.Stdtypes
+  var M = eYo.module.stdtypes
   var d = M.data
   var n = d.items.length
   var t = d.types.indexOf('method')

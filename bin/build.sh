@@ -278,6 +278,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/parser/tokenizer.js" \
 --js "src/lib/eyo/js/core/geometry.js" \
 --js "src/lib/eyo/js/parser/bitset.js" \
+--js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/node_brick.js" \
 --js "src/lib/eyo/js/core/o3d.js" \
 --js "src/lib/eyo/js/application/ui/audio.js" \
 --js "src/lib/eyo/js/application/backer.js" \
@@ -343,7 +344,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/brick_py/starred.js" \
 --js "src/lib/eyo/js/brick_py/list.js" \
 --js "src/lib/eyo/js/brick_py/literal.js" \
---js "src/lib/eyo/js/brick_py/control.js" \
 --js "src/lib/eyo/closure-library/menuitem.js" \
 --js "src/lib/eyo/js/brick_py/assignment.js" \
 --js "src/lib/eyo/js/brick_py/primary.js" \
@@ -357,11 +357,9 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/model/brick_statistics.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/model/brick_stdtypes.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/model/brick_turtle.js" \
---js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/node_brick.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/xml.js" \
 --js "src/lib/eyo/closure-library/menubuttonrenderer.js" \
 --js "src/lib/eyo/closure-library/popupmenu.js" \
---js "src/lib/eyo/js/other/key_handler.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/flyout-toolbar.js" \
   --js_output_file "build/base/edython.js"\
   -O BUNDLE

@@ -11,10 +11,6 @@
  */
 'use strict'
 
-eYo.require('dom')
-
-eYo.provide('dom.App')
-
 eYo.forwardDeclare('app')
 
 /**

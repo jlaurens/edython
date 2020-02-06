@@ -11,7 +11,11 @@
  */
 'use strict'
 
-eYo.require('brick')
+/**
+ * @name{eYo.brick.turtle}
+ * @namespace
+ */
+eYo.makeNS('brick.turtle')
 
 eYo.require('module.turtle__module')
 
@@ -19,12 +23,11 @@ eYo.require('stmt')
 
 eYo.require('expr.List')
 
-eYo.require('expr.Primary')
+eYo.require('expr.primary')
 eYo.require('msg')
 
 eYo.require('tooltip')
 eYo.require('Library')
-eYo.provide('brick.turtle')
 
 eYo.t3.stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
 
@@ -232,6 +235,6 @@ goog.mixin(eYo.tooltip.Title, {
   turtle__setup_stmt: 'Réglages du module turtle propres à edython',
 })
 
-eYo.brick.Turtle.t3s = [
+eYo.brick.turtle.t3s = [
   eYo.t3.stmt.turtle__setup_stmt
 ]

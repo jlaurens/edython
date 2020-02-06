@@ -496,10 +496,10 @@ eYo.expr.Dflt.makeInheritedC9r('builtin__object', {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.expr.Builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.expr.builtin__object_p.populateContextMenuFirst_ = function (mngr) {
   mngr.populateProperties(this, 'value')
   mngr.shouldSeparateInsert()
-  eYo.expr.Builtin__object.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  eYo.expr.builtin__object.eYo.C9r_s.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -509,7 +509,7 @@ eYo.expr.Builtin__object.prototype.populateContextMenuFirst_ = function (mngr) {
  * @param {string} op op is the operator
  * @private
  */
-eYo.expr.Builtin__object.prototype.makeTitle = function (op) {
+eYo.expr.builtin__object_p.makeTitle = function (op) {
   return eYo.do.CreateSPAN(op, 'eyo-code-reserved')
 }
 

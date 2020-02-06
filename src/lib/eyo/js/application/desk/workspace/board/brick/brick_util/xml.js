@@ -387,7 +387,7 @@ eYo.expr.List.prototype.xmlAttr = function () {
     : eYo.expr.List.SuperProto_.xmlAttr.call(this)
 }
 
-eYo.require('expr.Primary')
+eYo.require('expr.primary')
 
 /**
  * Convert the brick's value to a text dom element.
@@ -652,8 +652,6 @@ eYo.xml.StringToBrick = function (string, owner) {
   }
   return brick
 }
-
-eYo.require('stmt.Group')
 
 /**
  * Recover nodes from a possibly corrupted xml data.
@@ -1073,7 +1071,7 @@ eYo.xml.fromDom = function (brick, element) {
  * For edython.
  * @return !String
  */
-eYo.expr.Primary.prototype.xmlAttr = function () {
+eYo.expr.primary_p.xmlAttr = function () {
   var type = this.type
   if ([
     eYo.t3.expr.identifier_valued,
@@ -1129,7 +1127,7 @@ eYo.expr.Primary.prototype.xmlAttr = function () {
  * The xml `eyo` attribute of this brick, as it should appear in the saved data.
  * For edython.
  */
-eYo.stmt.Assignment_stmt.prototype.xmlAttr = function () {
+eYo.stmt.assignment_stmt_p.xmlAttr = function () {
   return this.type === eYo.t3.stmt.augmented_assignment_stmt
   ? this.Operator_p
   : this.type === eYo.t3.stmt.annotated_stmt || this.Variant_p === eYo.key.NONE || this.Variant_p === eYo.key.VALUED || this.Variant_p === eYo.key.EXPRESSION

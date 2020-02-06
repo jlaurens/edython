@@ -17,7 +17,7 @@ eYo.require('msg')
 
 eYo.require('expr.List')
 
-eYo.require('expr.Primary')
+eYo.require('expr.primary')
 eYo.require('tooltip')
 
 eYo.require('Library')

@@ -115,7 +115,7 @@ eYo.py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
   } else if (brick.Parenth_p) {
     this.linePush('(')
   }
-  if (brick instanceof eYo.expr.Primary) {
+  if (brick instanceof eYo.expr.primary) {
     if (brick.Dotted_p === 0 && brick.Target_p === 'print' && brick.Variant_p === eYo.key.CALL_EXPR) {
       this.use_print = true
     }

@@ -17,9 +17,7 @@ eYo.require('tkn')
 
 eYo.require('gmr')
 
-eYo.require('expr.Primary')
-
-eYo.provide('node_Brick')
+eYo.provide('node_brick')
 
 /**
  * Converts the receiver to a visual brick.

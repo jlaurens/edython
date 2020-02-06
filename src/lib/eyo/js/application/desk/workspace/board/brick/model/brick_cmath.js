@@ -18,13 +18,14 @@ eYo.require('msg')
 eYo.require('stmt')
 eYo.require('expr.List')
 
-eYo.require('expr.Primary')
+eYo.require('expr.primary')
 eYo.require('tooltip')
 
 eYo.require('Library')
+
 eYo.provide('brick.cmath')
 
-;(function () {
+;(() => {
 
   var F = (name, title) => {
     var key = 'cmath__'+name
@@ -218,6 +219,6 @@ goog.mixin(eYo.tooltip.Title, {
   cmath__import_stmt: 'Importer le module cmath',
 })
 
-eYo.brick.CMath.t3s = [
+eYo.brick.cmath.t3s = [
   eYo.t3.expr.cmath__const
 ]

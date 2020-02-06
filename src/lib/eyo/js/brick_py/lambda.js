@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.require('expr.List')
-eYo.require('expr.Primary')
+eYo.require('expr.primary')
 
 eYo.require('magnet')
 goog.require('goog.dom');

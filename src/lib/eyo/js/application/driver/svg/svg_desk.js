@@ -11,7 +11,6 @@
  */
 'use strict'
 
-eYo.require('svg')
 eYo.require('dom.Desk')
 
 eYo.forwardDeclare('Desk')

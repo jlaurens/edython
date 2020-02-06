@@ -2698,14 +2698,14 @@ eYo.brick._p.makeC9rDecorate = (f) => {
       model = register
       register = false
     }
-    return eYo.Brick_s.makeC9rDecorate(function(ns, key, Super, Dlgt, model) {
+    return eYo.brick.super.makeC9rDecorate(function(ns, key, Super, Dlgt, model) {
       return f.call(this, ns, key, Super, Dlgt, register, model)
     }).call(this, ns, key, Super, Dlgt, model)
   }
 }
 
 /**
- * @name{eYo.doMakeC9r}
+ * @name{eYo.brick.doMakeC9r}
  * Make a constructor with an 'eyo__' property.
  * Caveat, constructors must have the same arguments.
  * Use a key->value design if you do not want that.
@@ -2723,7 +2723,7 @@ eYo.brick._p.doMakeC9r = function (ns, key, Super, Dlgt, register, model) {
   if (key.indexOf('eyo:') >= 0) {
     key = key.substring(4)
   }
-  var C9r = eYo.brick.Super.doMakeC9r.call(this, ns, key, Super, Dlgt, model)
+  var C9r = eYo.brick.super.doMakeC9r.call(this, ns, key, Super, Dlgt, model)
   if (!C9r.eyo) {
     console.error('WHERE IS EYO???')
   }
@@ -2759,7 +2759,7 @@ eYo.brick._p.makeC9r = eYo.brick.makeC9rDecorate(eYo.brick.doMakeC9r)
  * @param {Function} f -  The function to decorate.
  * @return {Function} the constructor created or `eYo.NA` when the receiver has no namespace.
  */
-eYo.brick.Dlgt_p.makeInheritedC9rDecorate = (f) => {
+eYo.brick.Dflt.eyo_p.makeInheritedC9rDecorate = (f) => {
   return function (ns, key, Dlgt, register, model) {
     if (!this) {
       console.error('BREAK HERE!')
@@ -2790,8 +2790,8 @@ eYo.brick.Dlgt_p.makeInheritedC9rDecorate = (f) => {
       register = false
     }
     var Super = this.C9r
-    return eYo.Brick_s.makeC9rDecorate(function(ns, key, Super, Dlgt, model) {
-      return f(ns, key, Super, Dlgt, register, model)
+    return eYo.brick.super.makeC9rDecorate(function(ns, key, Super, Dlgt, model) {
+      return f.call(this, ns, key, Super, Dlgt, register, model)
     }).call(this.ns, ns, key, Super, Dlgt, model)
   }
 }
@@ -2816,7 +2816,7 @@ eYo.brick.Dlgt_p.makeInheritedC9rDecorate = (f) => {
  * @param {Object} [model]
  * @return the constructor created
  */
-eYo.brick.Dlgt_p.makeInheritedC9r = eYo.brick.Dlgt_p.makeInheritedC9rDecorate(eYo.brick.doMakeC9r)
+eYo.brick.Dflt.eyo_p.makeInheritedC9r = eYo.brick.Dflt.eyo_p.makeInheritedC9rDecorate(eYo.brick.doMakeC9r)
 
 eYo.brick.registerAll = function (typesByKey, C9r, fake) {
   for (var k in typesByKey) {

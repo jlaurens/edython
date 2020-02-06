@@ -361,7 +361,7 @@ eYo.expr.List.makeInheritedC9r('with_item_list', {
  * 2) singleton set_display: replacement for the unique connection: same as above
  * 3) singleton dict_display: replacement for the unique connection: same as above
  */
-eYo.expr.List.makeInheritedC9r('Enclosure', {
+eYo.expr.List.makeInheritedC9r('enclosure', {
   data: {
     variant: {
       order: 0,

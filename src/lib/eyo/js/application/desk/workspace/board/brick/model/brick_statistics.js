@@ -18,10 +18,11 @@ eYo.require('msg')
 eYo.require('stmt')
 eYo.require('expr.List')
 
-eYo.require('expr.Primary')
+eYo.require('expr.primary')
 eYo.require('tooltip')
 
 eYo.require('Library')
+
 eYo.provide('brick.statistics')
 
 /*
@@ -123,6 +124,6 @@ goog.mixin(eYo.tooltip.Title, {
   statistics__import_stmt: 'Importer le module statistics',
 })
 
-eYo.brick.Statistics.t3s = [
-  eYo.t3.Statistics
+eYo.brick.statistics.t3s = [
+  eYo.t3.statistics
 ]

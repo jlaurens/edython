@@ -16,7 +16,7 @@ eYo.require('stmt.Group')
 eYo.require('xre')
 
 eYo.require('msg')
-eYo.require('expr.Primary')
+eYo.require('expr.primary')
 eYo.require('menuItem')
 goog.require('goog.dom');
 eYo.provide('brick.proc')

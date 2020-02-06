@@ -84,7 +84,7 @@ eYo.svg.makeDriverC9r('Search', {
  * @param {eYo.Search} search
  * @param {Boolean} show
  */
-eYo.svg.Search.prototype.displaySet = function (search, show) {
+eYo.svg.Search_p.displaySet = function (search, show) {
   !show && eYo.tooltip.hideAll(search.dom.svg.root_)
   search.dom.svg.root_.style.display = show ? 'block' : 'none'
 }
@@ -93,7 +93,7 @@ eYo.svg.Search.prototype.displaySet = function (search, show) {
  * Get the display attribute.
  * @param {eYo.Search} search
  */
-eYo.svg.Search.prototype.displayGet = function (search) {
+eYo.svg.Search_p.displayGet = function (search) {
   return search.dom.svg.root_.style.display !== 'none'
 }
 
@@ -101,7 +101,7 @@ eYo.svg.Search.prototype.displayGet = function (search) {
  * Update the view based on coordinates calculated in position().
  * @param {eYo.Search} search
  */
-eYo.svg.Search.prototype.place = function (search) {
+eYo.svg.Search_p.place = function (search) {
   var rect = search.viewRect
   var div = search.dom.div_
   div.style.width = `${rect.width}px`
@@ -133,7 +133,7 @@ eYo.svg.Search.prototype.place = function (search) {
  * @param {eYo.Search} search
  * @private
  */
-eYo.svg.Search.prototype.update = function(search) {
+eYo.svg.Search_p.update = function(search) {
   var width = search.width
   var height = search.height
   var top_margin = eYo.Search.TOP_MARGIN
@@ -156,7 +156,7 @@ eYo.svg.Search.prototype.update = function(search) {
  * The 'rect' listeners have been removed.
  * @param {eYo.Search} search
  */
-eYo.svg.Search.prototype.removeAllBrickListeners = function(search) {
+eYo.svg.Search_p.removeAllBrickListeners = function(search) {
   // Delete all the event listeners.
   search.listeners_.forEach(l => eYo.dom.unbindEvent(l))
   search.listeners_.length = 0
@@ -169,7 +169,7 @@ eYo.svg.Search.prototype.removeAllBrickListeners = function(search) {
  * @param {eYo.Search} search
  * @param {eYo.brick.Dflt} brick The block to add listeners for.
  */
-eYo.svg.Search.prototype.addListeners = function(search, brick) {
+eYo.svg.Search_p.addListeners = function(search, brick) {
   var g = brick.dom.svg.group_
   search.listeners_.push(eYo.dom.BindEvent(
     g,
@@ -201,7 +201,7 @@ eYo.svg.Search.prototype.addListeners = function(search, brick) {
  * Add a `mouseover` listener to deselect all bricks.
  * @param {eYo.Search} search
  */
-eYo.svg.Search.prototype.listen_mouseover = function(search) {
+eYo.svg.Search_p.listen_mouseover = function(search) {
   search.listeners_.push(
     eYo.dom.BindEvent(
     search.dom.svg.background_,
@@ -217,7 +217,7 @@ eYo.svg.Search.prototype.listen_mouseover = function(search) {
  * Add a `wheel` and `mousdown` listener to scroll.
  * @param {eYo.Search} search
  */
-eYo.svg.Search.prototype.bindScrollEvents = function(search) {
+eYo.svg.Search_p.bindScrollEvents = function(search) {
   var bound = search.dom.bound
   if (bound.drag_wheel) {
     return
@@ -243,7 +243,7 @@ eYo.svg.Search.prototype.bindScrollEvents = function(search) {
  * @param {Event} e Mouse down event.
  * @private
  */
-eYo.svg.Search.prototype.on_mousedown = function(e) {
+eYo.svg.Search_p.on_mousedown = function(e) {
   eYo.app.Motion.handleFlyoutStart(e, this)
   
 }

@@ -221,12 +221,12 @@ class Foo:
 {path}
 '''
       self.provided = provided
-      self.required = required
+      self.required = required - provided
       self.forwarded = forwarded
       self.subclassed = subclassed
 
 def buildDeps(library, library_name):
-    pathInput = pathRoot / 'src/lib/' / library
+    pathInput = pathRoot / 'src' / 'lib' / library
     print('Scanning folder\n    ', pathInput, '\nfor `*.js` files:')
     files = [x for x in pathInput.rglob('*')
              if x.is_file() and x.suffix == '.js'

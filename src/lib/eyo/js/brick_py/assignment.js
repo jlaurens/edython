@@ -11,13 +11,12 @@
  */
 'use strict'
 
-eYo.require('stmt')
 eYo.require('expr.List')
 
 eYo.provide('brick.assignment')
 
 eYo.forwardDeclare('msg')
-eYo.forwardDeclare('expr.Primary')
+eYo.forwardDeclare('expr.primary')
 goog.forwardDeclare('goog.dom')
 
 /**
@@ -319,14 +318,14 @@ eYo.stmt.makeC9r('assignment_stmt', {
   'annotated_assignment_stmt',
   'augmented_assignment_stmt'
 ].forEach(k => {
-  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.Assignment_stmt))
+  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.assignment_stmt))
 })
 
 /**
  * getType.
  * @return {String} The type of the receiver's brick.
  */
-eYo.stmt.Assignment_stmt.prototype.getType = function () {
+eYo.stmt.assignment_stmt_p.getType = function () {
   var x = this.Variant_p
   if (x === eYo.key.VALUED || x === eYo.key.EXPRESSION) { // not yet consolidated
     return eYo.t3.stmt.expression_stmt
@@ -355,7 +354,7 @@ eYo.stmt.Assignment_stmt.prototype.getType = function () {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.stmt.Assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.assignment_stmt_p.populateContextMenuFirst_ = function (mngr) {
   var target_p = this.Target_p
   var variant_p = this.Variant_p
   var F = (content, newVariant) => {
@@ -379,7 +378,7 @@ eYo.stmt.Assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     mngr.addChild(menuItem, true)
     mngr.shouldSeparate()
   }
-  eYo.stmt.Assignment_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
+  eYo.stmt.assignment_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -559,7 +558,7 @@ eYo.expr.List.makeInheritedC9r('augassigned_list', () => {
 //  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
 //  * @private
 //  */
-// eYo.stmt.Augmented_assignment_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
+// eYo.stmt.Augmented_assignment_stmt_p.populateContextMenuFirst_ = function (mngr) {
 //   var brick = this
 //   var withTarget = this.target_b
 //   var target = this.Target_p
@@ -600,7 +599,7 @@ eYo.expr.List.makeInheritedC9r('augassigned_list', () => {
 //   return eYo.stmt.Augmented_assignment_stmt.SuperProto_.populateContextMenuFirst_.call(this, mngr)
 // }
 
-eYo.brick.Assignment.t3s = [
+eYo.brick.assignment.t3s = [
   eYo.t3.expr.identifier,
   eYo.t3.expr.yield_expr,
   eYo.t3.expr.target_list,

@@ -61,7 +61,7 @@ eYo.style.SetControlRendererCssClass = (() => {
       }
     }
     var rule = '.' + name + '{\n' + RA.join('') + '\n}'
-    eYo.Css.insertRuleAt(rule)
+    eYo.css.insertRuleAt(rule)
   }
   return function (renderer, cssClass) {
     goog.addSingletonGetter(renderer)

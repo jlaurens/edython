@@ -11,13 +11,14 @@
  */
 'use strict'
 
+eYo.require('style')
+
 /**
  * @name eYo.css
  * @namespace
  */
-eYo.require('style')
 
-eYo.provide('css')
+eYo.makeNS('css')
 
 
 eYo.forwardDeclare('unit')

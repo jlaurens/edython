@@ -20,7 +20,7 @@ eYo.require('module.functions')
 
 eYo.require('msg')
 
-eYo.provide('expr.Primary')
+eYo.provide('expr.primary')
 
 /**
  * @name{eYo.consolidator.Target}
@@ -530,7 +530,7 @@ eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) 
 
  * For edython.
  */
-eYo.expr.makeC9r('Primary', {
+eYo.expr.makeC9r('primary', {
   xml: {
     types: [
       eYo.t3.expr.identifier,
@@ -1253,7 +1253,7 @@ eYo.do.register.add(eYo.expr, 'primary', function (b3k) {
     console.warn('BREAK HERE!')
   }
 //  console.warn(k)
-  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.Primary))
+  eYo.c9r.register(k, (eYo.expr[k] = eYo.expr.primary))
 })
 
 /**
@@ -1264,15 +1264,15 @@ eYo.do.register.add(eYo.expr, 'primary', function (b3k) {
  * @param {eYo.brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
-eYo.expr.Primary.prototype.init = function () {
-  eYo.expr.Primary.SuperProto_.init.call(this)
+eYo.expr.primary.prototype.init = function () {
+  eYo.expr.primary.SuperProto_.init.call(this)
   this.profile_ = eYo.NA
 }
 
 /**
  * updateProfile.
  */
-eYo.expr.Primary.prototype.updateProfile = eYo.decorate.reentrant_method(
+eYo.expr.primary.prototype.updateProfile = eYo.decorate.reentrant_method(
   'updateProfile',
   function () {
     ++this.change.count
@@ -1296,7 +1296,7 @@ eYo.expr.Primary.prototype.updateProfile = eYo.decorate.reentrant_method(
  * This has not been tested despite it is essential.
  * @return {!Object}.
  */
-eYo.expr.Primary.prototype.getProfile = eYo.c9r.decorateChange(
+eYo.expr.primary.prototype.getProfile = eYo.c9r.decorateChange(
   'getProfile',
   function () {
       // this may be called very very early when
@@ -1434,8 +1434,8 @@ eYo.expr.Primary.prototype.getProfile = eYo.c9r.decorateChange(
  * After initialization, this should be called whenever
  * the brick type has changed.
  */
-eYo.expr.Primary.prototype.consolidateMagnets = function () {
-  eYo.expr.Primary.SuperProto_.consolidateMagnets.call(this)
+eYo.expr.primary.prototype.consolidateMagnets = function () {
+  eYo.expr.primary.SuperProto_.consolidateMagnets.call(this)
   this.target_s.magnet.hidden = this.Variant_p === eYo.key.NONE && this.Dotted_p === 0
 }
 
@@ -1444,7 +1444,7 @@ eYo.expr.Primary.prototype.consolidateMagnets = function () {
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
-eYo.expr.Primary.prototype.getBaseType = function () {
+eYo.expr.primary.prototype.getBaseType = function () {
   var check = this.getOutCheck()
   if (!check.length) {
     console.error('BIG PROBLEM', this.getOutCheck())
@@ -1459,7 +1459,7 @@ eYo.expr.Primary.prototype.getBaseType = function () {
  * getOutCheck.
  * The check_ array of the output connection.
  */
-eYo.expr.Primary.prototype.getOutCheck = function () {
+eYo.expr.primary.prototype.getOutCheck = function () {
   var f = function () {
   // there is no validation here
   // simple cases first, variant based
@@ -1762,7 +1762,7 @@ eYo.expr.Primary.prototype.getOutCheck = function () {
  * The subtype depends on the variant and the modifiers.
  * Set by getType as side effect.
  */
-eYo.expr.Primary.prototype.getSubtype = function () {
+eYo.expr.primary.prototype.getSubtype = function () {
   this.getType()
   return this.Subtype_p
 }
@@ -1775,8 +1775,8 @@ eYo.expr.Primary.prototype.getSubtype = function () {
  * @param {Boolean} [dontCreate] Whether the receiver should create inputs on the fly.
  * @return {eYo.slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
-eYo.expr.Primary.prototype.getSlot = function (name) {
-  var slot = eYo.expr.Primary.SuperProto_.getSlot.call(this, name)
+eYo.expr.primary.prototype.getSlot = function (name) {
+  var slot = eYo.expr.primary.SuperProto_.getSlot.call(this, name)
   if (!slot) {
     // we suppose that ary is set
     var f = (slot) => {
@@ -1838,9 +1838,9 @@ eYo.stmt.base_call_stmt.makeInheritedC9r('call_stmt', {
   }
 })
 
-eYo.stmt.Call_stmt.prototype.updateProfile = eYo.expr.Primary.prototype.updateProfile
+eYo.stmt.Call_stmt.prototype.updateProfile = eYo.expr.primary.prototype.updateProfile
 
-eYo.stmt.Call_stmt.prototype.getProfile = eYo.expr.Primary.prototype.getProfile
+eYo.stmt.Call_stmt.prototype.getProfile = eYo.expr.primary.prototype.getProfile
 
 /**
  * Initialize a brick.
@@ -1855,7 +1855,7 @@ eYo.stmt.Call_stmt.prototype.init = function () {
   this.profile = eYo.NA
 }
 
-eYo.expr.Primary.t3s = [
+eYo.expr.primary.t3s = [
   eYo.t3.expr.primary,
   eYo.t3.expr.identifier,
   eYo.t3.expr.attributeref,

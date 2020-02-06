@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('stmt')
-
 eYo.forwardDeclare('msg')
 
 goog.forwardDeclare('goog.dom')
@@ -92,7 +90,7 @@ eYo.stmt.Group.makeInheritedC9r('Branch', {
         save (element, opt) /** @suppress {globalThis} */ {
         },
         load (element) /** @suppress {globalThis} */ {
-          this.brick.Variant_p = element.getAttribute(eYo.key.EYO)
+          this.brick.variant_p = element.getAttribute(eYo.key.EYO)
         },
       },
       isChanging (builtin) /** @suppress {globalThis} */ { // same code for primary bricks
@@ -138,7 +136,7 @@ eYo.stmt.Group.makeInheritedC9r('Branch', {
  * @return {String}
  */
 eYo.stmt.Branch.prototype.xmlAttr = function () {
-  return this.Variant_p
+  return this.variant_p
 }
 
 /**
@@ -156,7 +154,7 @@ eYo.stmt.Branch.prototype.getBaseType = function () {
     [eYo.key.IF]: T3.if_part,
     [eYo.key.ELIF]: T3.elif_part,
     [eYo.key.WHILE]: T3.while_part
-  } [this.Variant_p]
+  } [this.variant_p]
   if (!type) {
     var targetMagnet
     if ((targetMagnet = this.head_m.target)) {
@@ -191,7 +189,7 @@ eYo.stmt.Branch.prototype.getBaseType = function () {
  * @private
  */
 eYo.stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
-  var current = this.Variant_p
+  var current = this.variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
     var key = variants[i]
@@ -199,7 +197,7 @@ eYo.stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
       eYo.do.CreateSPAN(key, 'eyo-code-reserved')
     )
     var menuItem = mngr.newMenuItem(content, () => {
-      this.Variant_p = key
+      this.variant_p = key
     })
     mngr.addChild(menuItem, true)
     menuItem.setEnabled(key !== current)

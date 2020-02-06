@@ -288,7 +288,7 @@ eYo.t3.expr.unary = 'eyo:unary' // don't forget it !
  * u_expr.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('Unary', {
+eYo.expr.Dflt.makeInheritedC9r('unary', {
   xml: {
     types: [
       eYo.t3.expr.u_expr,
