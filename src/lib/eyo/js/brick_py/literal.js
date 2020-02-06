@@ -25,7 +25,7 @@ goog.forwardDeclare('goog.dom')
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('literal', {
+eYo.expr.makeC9r('literal', {
   xml: {
     attr: 'literal',
   },
@@ -126,7 +126,7 @@ eYo.expr.numberliteral.prototype.getBaseType = function () {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.expr.iteral.makeInheritedC9r('shortliteral', {
+eYo.expr.literal.makeInheritedC9r('shortliteral', {
   data: {
     subtype: {
       all: [

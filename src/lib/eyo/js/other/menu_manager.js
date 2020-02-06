@@ -484,7 +484,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
 
   menuItem = this.newMenuItem(
     brick.getPythonType(), (event) => {
-      var xmlDom = eYo.xml.BrickToDom(brick, true)
+      var xmlDom = eYo.xml.brickToDom(brick, true)
       var xmlText = eYo.xml.domToText(xmlDom)
       console.log(xmlText)
     }

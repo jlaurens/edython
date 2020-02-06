@@ -224,10 +224,10 @@ describe ('Tests: C9r', function () {
         eYo.Dlgt.makeInheritedC9r(ns)
       }).to.throw()
     })
-    it ("eYo.Dflt.makeInheritedC9r(ns)", function () {
+    it ("eYo.makeC9r(ns)", function () {
       var ns = eYo.makeNS()
       chai.assert(ns.Dflt === eYo.Dflt)
-      eYo.Dflt.makeInheritedC9r(ns)
+      eYo.makeC9r(ns)
       chai.assert(ns.Dflt !== eYo.Dflt)
       chai.assert(eYo.isSubclass(ns.Dflt, eYo.Dflt))
       chai.assert(ns.Dflt.eyo.constructor === ns.Dlgt)
@@ -264,7 +264,7 @@ describe ('Tests: C9r', function () {
         value: 421
       })
       chai.expect(() => { ns.makeDflt() }).to.throw()
-      chai.expect(() => { eYo.Dflt.makeInheritedC9r(ns) }).to.throw()
+      chai.expect(() => { eYo.makeC9r(ns) }).to.throw()
       chai.expect(() => { eYo.makeC9r(ns, 'Dflt') }).to.throw()
       chai.expect(() => { ns.makeC9r('Dflt') }).to.throw()
     })
@@ -391,11 +391,11 @@ describe ('Tests: C9r', function () {
       var ns0 = eYo.makeNS()
       ns0.makeDflt()
       ns0.Dlgt.makeInheritedC9r('Dlgt0')
-      ns0.Dflt.makeInheritedC9r('Super0', ns0.Dlgt0)
+      ns0.makeC9r('Super0', ns0.Dlgt0)
       var ns1 = ns0.makeNS()
       ns1.makeDflt()
       ns1.Dlgt.makeInheritedC9r('Dlgt1')
-      ns1.Dflt.makeInheritedC9r('Super1', ns1.Dlgt1)
+      ns1.makeC9r('Super1', ns1.Dlgt1)
       var A_X, SuperX, DlgtX, modelX
       ;[eYo.NA, ns0, ns1].forEach(ns => {
         ;[eYo.NA, 'A'].forEach(key => {
@@ -1677,7 +1677,7 @@ describe ('Dlgt', function () {
     it ('C9r: No setter', function () {
       var ns = eYo.makeNS()
       ns.makeDflt()
-      ns.Dflt.makeInheritedC9r('A', {
+      ns.makeC9r('A', {
         owned: 'foo'
       })
       chai.expect(() => {
@@ -1690,7 +1690,7 @@ describe ('Dlgt', function () {
       ns.makeDflt()
       chai.assert(ns === ns.Dflt.eyo.ns)
       var flag = 0
-      ns.Dflt.makeInheritedC9r('A', {
+      ns.makeC9r('A', {
         owned: {
           foo () {
             flag += 421
@@ -1718,7 +1718,7 @@ describe ('Dlgt', function () {
       var ns = eYo.makeNS()
       ns.makeDflt()
       chai.assert(ns === ns.Dflt.eyo.ns)
-      ns.Dflt.makeInheritedC9r('A', {
+      ns.makeC9r('A', {
         owned: 'foo'
       })
       ns.A.makeInheritedC9r('AA', {

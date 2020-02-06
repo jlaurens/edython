@@ -35,7 +35,7 @@ Object.defineProperties(eYo.BoardDragger.prototype, {
   },
   startDrag: {
     get () {
-      return this.startDrag_.clone
+      return this.startDrag_.copy
     }
   },
 })

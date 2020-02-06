@@ -1262,7 +1262,7 @@ eYo.do.register.add(eYo.expr, 'primary', function (b3k) {
  * @param {eYo.brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
-eYo.expr.primary.prototype.init = function () {
+eYo.expr.primary_p.init = function () {
   eYo.expr.primary.eyo.C9r_s.init.call(this)
   this.profile_ = eYo.NA
 }
@@ -1270,7 +1270,7 @@ eYo.expr.primary.prototype.init = function () {
 /**
  * updateProfile.
  */
-eYo.expr.primary.prototype.updateProfile = eYo.decorate.reentrant_method(
+eYo.expr.primary_p.updateProfile = eYo.decorate.reentrant_method(
   'updateProfile',
   function () {
     ++this.change.count
@@ -1294,7 +1294,7 @@ eYo.expr.primary.prototype.updateProfile = eYo.decorate.reentrant_method(
  * This has not been tested despite it is essential.
  * @return {!Object}.
  */
-eYo.expr.primary.prototype.getProfile = eYo.c9r.decorateChange(
+eYo.expr.primary_p.getProfile = eYo.c9r.decorateChange(
   'getProfile',
   function () {
       // this may be called very very early when
@@ -1432,7 +1432,7 @@ eYo.expr.primary.prototype.getProfile = eYo.c9r.decorateChange(
  * After initialization, this should be called whenever
  * the brick type has changed.
  */
-eYo.expr.primary.prototype.consolidateMagnets = function () {
+eYo.expr.primary_p.consolidateMagnets = function () {
   eYo.expr.primary.eyo.C9r_s.consolidateMagnets.call(this)
   this.target_s.magnet.hidden = this.Variant_p === eYo.key.NONE && this.Dotted_p === 0
 }
@@ -1442,7 +1442,7 @@ eYo.expr.primary.prototype.consolidateMagnets = function () {
  * The type depends on the variant and the modifiers.
  * As side effect, the subtype is set.
  */
-eYo.expr.primary.prototype.getBaseType = function () {
+eYo.expr.primary_p.getBaseType = function () {
   var check = this.getOutCheck()
   if (!check.length) {
     console.error('BIG PROBLEM', this.getOutCheck())
@@ -1457,7 +1457,7 @@ eYo.expr.primary.prototype.getBaseType = function () {
  * getOutCheck.
  * The check_ array of the output connection.
  */
-eYo.expr.primary.prototype.getOutCheck = function () {
+eYo.expr.primary_p.getOutCheck = function () {
   var f = function () {
   // there is no validation here
   // simple cases first, variant based
@@ -1760,7 +1760,7 @@ eYo.expr.primary.prototype.getOutCheck = function () {
  * The subtype depends on the variant and the modifiers.
  * Set by getType as side effect.
  */
-eYo.expr.primary.prototype.getSubtype = function () {
+eYo.expr.primary_p.getSubtype = function () {
   this.getType()
   return this.Subtype_p
 }
@@ -1773,7 +1773,7 @@ eYo.expr.primary.prototype.getSubtype = function () {
  * @param {Boolean} [dontCreate] Whether the receiver should create inputs on the fly.
  * @return {eYo.slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
-eYo.expr.primary.prototype.getSlot = function (name) {
+eYo.expr.primary_p.getSlot = function (name) {
   var slot = eYo.expr.primary.eyo.C9r_s.getSlot.call(this, name)
   if (!slot) {
     // we suppose that ary is set
@@ -1836,9 +1836,9 @@ eYo.stmt.base_call_stmt.makeInheritedC9r('call_stmt', {
   }
 })
 
-eYo.stmt.Call_stmt.prototype.updateProfile = eYo.expr.primary.prototype.updateProfile
+eYo.stmt.call_stmt_p.updateProfile = eYo.expr.primary_p.updateProfile
 
-eYo.stmt.Call_stmt.prototype.getProfile = eYo.expr.primary.prototype.getProfile
+eYo.stmt.call_stmt_p.getProfile = eYo.expr.primary_p.getProfile
 
 /**
  * Initialize a brick.
@@ -1848,7 +1848,7 @@ eYo.stmt.Call_stmt.prototype.getProfile = eYo.expr.primary.prototype.getProfile
  * @param {eYo.brick.Dflt} brick to be initialized.
  * For subclassers eventually
  */
-eYo.stmt.Call_stmt.prototype.init = function () {
+eYo.stmt.call_stmt_p.init = function () {
   eYo.stmt.call_stmt.eyo.C9r_s.init.call(this)
   this.profile = eYo.NA
 }

@@ -479,7 +479,7 @@ eYo.field.Dflt_p.willRender = function () {
  * @extends {eYo.field}
  * @constructor
  */
-eYo.field.Dflt.makeInheritedC9r('Label', {
+eYo.field.makeC9r('Label', {
   init (bsi, name, text) {
     this.isLabel = true
   },
@@ -493,7 +493,7 @@ eYo.field.Dflt.makeInheritedC9r('Label', {
  * @extends {eYo.field}
  * @constructor
  */
-eYo.field.Dflt.makeInheritedC9r('Input', {
+eYo.field.makeC9r('Input', {
   init (bsi, name, text) {
     eYo.assert(name, 'missing name for an editable field')
     this.editable = true

@@ -3,7 +3,7 @@ eYo.Test.no_brick_type = true
 describe('Expression shape', function () {
   var type = 'test_shape_out'
   eYo.t3.expr[type] = type
-  eYo.expr.Dflt.makeInheritedC9r(type, {
+  eYo.expr.makeC9r(type, {
     out: {
       check: null
     }

@@ -20,7 +20,7 @@ eYo.provide('brick.comprehension')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('comprehension', {
+eYo.expr.makeC9r('comprehension', {
   data: {
     expression: {
       order: 1,
@@ -117,7 +117,7 @@ eYo.expr.comprehension_p.xmlAttr = function () {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('comp_for', {
+eYo.expr.makeC9r('comp_for', {
   slots: {
     for: {
       order: 1,
@@ -141,7 +141,7 @@ eYo.expr.Dflt.makeInheritedC9r('comp_for', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('comp_if', {
+eYo.expr.makeC9r('comp_if', {
   slots: {
     if: {
       order: 1,

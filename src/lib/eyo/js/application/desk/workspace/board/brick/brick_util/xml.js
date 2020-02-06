@@ -116,11 +116,11 @@ eYo.xml.domToText = function (dom) {
 /**
  * Encode a brick subtree as XML with where coordinates. Eliminates the use of the Blockly's eponym method.
  * @param {eYo.brick.Dflt} brick The root brick to encode.
- * @param {Object} [opt]  See the eponym parameter in `eYo.xml.BrickToDom`.
+ * @param {Object} [opt]  See the eponym parameter in `eYo.xml.brickToDom`.
  * @return {!Element} Tree of XML elements.
  */
-eYo.xml.BrickToDomWithWhere = function(brick, opt) {
-  var element = eYo.xml.BrickToDom(brick, opt)
+eYo.xml.brickToDomWithWhere = function(brick, opt) {
+  var element = eYo.xml.brickToDom(brick, opt)
   var xy = brick.xy
   element.setAttribute('x', Math.round(xy.x))
   element.setAttribute('y', Math.round(xy.y))
@@ -130,18 +130,18 @@ eYo.xml.BrickToDomWithWhere = function(brick, opt) {
 /**
  * Encode a brick tree as XML.
  * @param {eYo.board} board The board containing bricks.
- * @param {Object} [opt]  See eponym parameter in `eYo.xml.BrickToDom`.
+ * @param {Object} [opt]  See eponym parameter in `eYo.xml.brickToDom`.
  * @return {!Element} XML document.
  */
-eYo.xml.BoardToDom = function(board, opt) {
+eYo.xml.boardToDom = function(board, opt) {
   var root = goog.dom.createDom(eYo.xml.EDYTHON, null,
     goog.dom.createDom(eYo.xml.WORKSPACE, null,
-      goog.dom.createDom(eYo.xml.CONTENT)
+      goog.dom.createDom(eYo.xml.cONTENT)
     )
   )
   var xml = root.firstChild.firstChild
   board.orderedTopBricks.forEach(brick => {
-    var dom = eYo.xml.BrickToDomWithWhere(brick, opt)
+    var dom = eYo.xml.brickToDomWithWhere(brick, opt)
     var p = new eYo.py.Exporter()
     eYo.do.tryFinally(() => {
       if (!brick.isControl) {
@@ -225,7 +225,7 @@ eYo.xml.domToBoard = function (xml, owner) {
         child.childNodes.some(child => {
           if (child.tagName && child.tagName.toLowerCase() === eYo.xml.WORKSPACE) {
             child.childNodes.some(child => {
-              if (child.tagName && child.tagName.toLowerCase() === eYo.xml.CONTENT) {
+              if (child.tagName && child.tagName.toLowerCase() === eYo.xml.cONTENT) {
                 child.childNodes.forEach(child => {
                   if ((brick = brickMaker(child))) {
                     newBlockIds.push(brick.id)
@@ -237,7 +237,7 @@ eYo.xml.domToBoard = function (xml, owner) {
             return true
           }
         })
-      } else if (name === eYo.xml.STMT || name === eYo.xml.EXPR) {
+      } else if (name === eYo.xml.sTMT || name === eYo.xml.EXPR) {
         // for edython
         ;(brick = brickMaker(child)) && (newBlockIds.push(brick.id))
       }
@@ -269,7 +269,7 @@ eYo.brick.newReady = (() => {
     if (eYo.isStr(model)) {
       model = model.trim()
       if (model.startsWith('<')) {
-        var brick = eYo.xml.StringToBrick(model, owner)
+        var brick = eYo.xml.stringToBrick(model, owner)
       }
     } else if (model.getAttribute) {
       brick = eYo.xml.domToBrick(model, owner)
@@ -318,7 +318,7 @@ eYo.brick.newReady = (() => {
  * @param {Object} [opt]  Options `noId` is True if the encoder should skip the brick id, `noNext` is True if the encoder should skip the next brick.
  * @return {!Element} Tree of XML elements, possibly null.
  */
-eYo.xml.BrickToDom = (() => {
+eYo.xml.brickToDom = (() => {
   var brickToDom = function (brick, opt) {
     if (brick.target_is_wrapped_ && !(brick instanceof eYo.expr.List)) {
       // a wrapped brick does not create a new element on its own
@@ -339,25 +339,25 @@ eYo.xml.BrickToDom = (() => {
       var element = controller.brickToDom(brick, opt)
     } else {
       var attr = brick.xmlAttr()
-      element = goog.dom.createDom(brick.isExpr? eYo.xml.EXPR: eYo.xml.STMT)
+      element = goog.dom.createDom(brick.isExpr? eYo.xml.EXPR: eYo.xml.sTMT)
       element.setAttribute(eYo.key.EYO, attr)
       !(opt && opt.noId) && (element.setAttribute('id', brick.id))
       eYo.xml.toDom(brick, element, opt)
     }
     // this is for the editor, not python
     if (brick.locked_) {
-      element.setAttribute(eYo.xml.STATE, eYo.xml.LOCKED)
+      element.setAttribute(eYo.xml.sTATE, eYo.xml.LOCKED)
     }
     return element
   }
   return function (brick, opt) {
     eYo.xml.registerAllTags && (eYo.xml.registerAllTags())
-    eYo.xml.BrickToDom = brickToDom
+    eYo.xml.brickToDom = brickToDom
     return brickToDom(brick, opt)
   }
 }) ()
 
-goog.exportSymbol('Xml.brickToDom', eYo.xml.BrickToDom)
+goog.exportSymbol('Xml.brickToDom', eYo.xml.brickToDom)
 
 eYo.require('stmt.group')
 
@@ -373,15 +373,13 @@ eYo.brick.Dflt_p.xmlAttr = function () {
 
 eYo.require('expr.List')
 
-eYo.require('expr.Literal')
-
 /**
  * The xml tag name of this brick, as it should appear in the saved data.
  * Default implementation just returns the brick type.
  * For edython.
  * @return !String
  */
-eYo.expr.List.prototype.xmlAttr = function () {
+eYo.expr.List_p.xmlAttr = function () {
   return this.wrapped_
     ? eYo.xml.LIST
     : eYo.expr.List.eyo.C9r_s.xmlAttr.call(this)
@@ -455,7 +453,7 @@ eYo.xml.literal.domToComplete = (() => {
     }
     var board = owner.board || owner
     // is it a statement or an expression ?
-    var stmt_expected = element.tagName.toLowerCase() === eYo.xml.STMT
+    var stmt_expected = element.tagName.toLowerCase() === eYo.xml.sTMT
     var id = element.getAttribute('id')
     var brick
     eYo.do.SomeChild(element, child => {
@@ -529,7 +527,7 @@ eYo.xml.data.fromDom = function (brick, element) {
  * to take control.
  * @param {eYo.brick.Dflt} brick The root brick to encode.
  * @param {element} dom element to encode in
- * @param {Object} [opt]  See the eponym option in `eYo.xml.BrickToDom`.
+ * @param {Object} [opt]  See the eponym option in `eYo.xml.brickToDom`.
  * @return {!Element} Tree of XML elements, possibly null.
  */
 eYo.xml.toDom = function (brick, element, opt) {
@@ -560,7 +558,7 @@ eYo.xml.toDom = function (brick, element, opt) {
         // wrapped bricks belong to slots, they are managed from there
         var t9k = m4t.targetBrick
         if (t9k) {
-          var child = eYo.xml.BrickToDom(t9k, opt)
+          var child = eYo.xml.brickToDom(t9k, opt)
           if (child) {
             child.setAttribute(name, key)
             goog.dom.appendChild(element, child)
@@ -570,7 +568,7 @@ eYo.xml.toDom = function (brick, element, opt) {
     }
     // the right, suite and next flows
     magnetToDom(brick.right_m, eYo.xml.FLOW, eYo.xml.RIGHT)
-    magnetToDom(brick.suite_m, eYo.xml.FLOW, eYo.xml.SUITE)
+    magnetToDom(brick.suite_m, eYo.xml.FLOW, eYo.xml.sUITE)
     !optNoNext && (magnetToDom(brick.foot_m, eYo.xml.FLOW, eYo.xml.NEXT))
   }
 }
@@ -639,7 +637,7 @@ eYo.xml.registerAllTags = function () {
  * @param {*} owner board or brick.
  * @return {?eYo.brick.Dflt} The root brick created, if any.
  */
-eYo.xml.StringToBrick = function (string, owner) {
+eYo.xml.stringToBrick = function (string, owner) {
   var brick
   try {
     var dom = eYo.do.StringToDom(string)
@@ -762,7 +760,7 @@ eYo.xml.recover.prototype.domToBrick = function (dom, owner) {
   if (tag === eYo.xml.EXPR) {
     fallback = eYo.t3.expr.expression_any
     where = eYo.t3.expr
-  } else if (tag === eYo.xml.STMT) {
+  } else if (tag === eYo.xml.sTMT) {
     fallback = eYo.t3.stmt.expression_stmt
     where = eYo.t3.stmt
   }
@@ -802,7 +800,7 @@ eYo.xml.recover.prototype.domToBrick = function (dom, owner) {
       if (best.types.length === 1) {
         fallback = best.types[0]
       } else if (owner && (best.types.length > 1)) {
-        var name = dom.getAttribute(eYo.xml.SLOT)
+        var name = dom.getAttribute(eYo.xml.sLOT)
         var slot = owner.getSlot(name)
         var slot_m4t = slot && slot.magnet
         var flow_m4t = dom.getAttribute(eYo.xml.FLOW)
@@ -870,13 +868,13 @@ eYo.xml.domToBrick = (() => {
         var brick
         // is it a literal or something else special ?
         if ((brick = eYo.xml.primary.domToComplete(dom, owner)) ||
-        (brick = eYo.xml.Assignment.domToComplete(dom, owner)) ||
+        (brick = eYo.xml.assignment.domToComplete(dom, owner)) ||
         (brick = eYo.xml.literal.domToComplete(dom, owner)) ||
-        (brick = eYo.xml.Comparison.domToComplete(dom, owner)) ||
-        (brick = eYo.xml.Starred.domToComplete(dom, owner)) ||
+        (brick = eYo.xml.comparison.domToComplete(dom, owner)) ||
+        (brick = eYo.xml.starred.domToComplete(dom, owner)) ||
         // (brick = eYo.xml.group.domToComplete(dom, owner)) ||
-        (brick = eYo.xml.Call.domToComplete(dom, owner)) ||
-        (brick = eYo.xml.Compatibility.domToComplete(dom, owner))) {
+        (brick = eYo.xml.call.domToComplete(dom, owner)) ||
+        (brick = eYo.xml.compatibility.domToComplete(dom, owner))) {
           eYo.xml.fromDom(brick, dom)
           return brick
         }
@@ -981,7 +979,7 @@ eYo.xml.fromDom = function (brick, element) {
         out = controller.fromDom(brick, element)
       }, () => {
         delete brick.controller_fromDom_locked
-        var state = element.getAttribute(eYo.xml.STATE)
+        var state = element.getAttribute(eYo.xml.sTATE)
         if (state && state.toLowerCase() === eYo.xml.LOCKED) {
           brick.lock()
         }
@@ -992,7 +990,7 @@ eYo.xml.fromDom = function (brick, element) {
       this.slotForEach(slot => slot.load(element))
       if (this instanceof eYo.expr.List) {
         eYo.do.forEachElementChild(element, child => {
-          var name = child.getAttribute(eYo.xml.SLOT)
+          var name = child.getAttribute(eYo.xml.sLOT)
           var slot = this.getSlot(name)
           var m4t = slot && slot.magnet
           if (m4t) {
@@ -1054,9 +1052,9 @@ eYo.xml.fromDom = function (brick, element) {
         }
       }
       var out = statement(this.right_m, eYo.xml.RIGHT)
-      out = statement(this.suite_m, eYo.xml.SUITE) || out
+      out = statement(this.suite_m, eYo.xml.sUITE) || out
       out = statement(this.foot_m, eYo.xml.NEXT) || out
-      var state = element.getAttribute(eYo.xml.STATE)
+      var state = element.getAttribute(eYo.xml.sTATE)
       if (state && state.toLowerCase() === eYo.xml.LOCKED) {
         this.lock()
       }
@@ -1141,7 +1139,7 @@ eYo.stmt.assignment_stmt_p.xmlAttr = function () {
  * @param {*} owner  The board or the parent brick.
  * @override
  */
-eYo.xml.Assignment.domToComplete = function (element, owner) {
+eYo.xml.assignment.domToComplete = function (element, owner) {
   if (element.tagName.toLowerCase() === 's') {
     var prototypeName = element.getAttribute(eYo.key.EYO)
     var id = element.getAttribute('id')
@@ -1166,10 +1164,10 @@ eYo.xml.Assignment.domToComplete = function (element, owner) {
  * @param {*} owner  The board or the parent brick.
  * @override
  */
-eYo.xml.Comparison.domToComplete = function (element, owner) {
+eYo.xml.comparison.domToComplete = function (element, owner) {
   var prototypeName = element.getAttribute(eYo.key.EYO)
   var id = element.getAttribute('id')
-  if (prototypeName === eYo.xml.COMPARISON) {
+  if (prototypeName === eYo.xml.cOMPARISON) {
     var op = element.getAttribute(eYo.xml.OPERATOR)
     var C9r, model
     var type = eYo.t3.expr.number_comparison
@@ -1197,7 +1195,7 @@ eYo.xml.Comparison.domToComplete = function (element, owner) {
  * @param {*} owner  The board or the parent brick.
  * @override
  */
-eYo.xml.Starred.domToComplete = function (element, owner) {
+eYo.xml.starred.domToComplete = function (element, owner) {
   var prototypeName = element.getAttribute(eYo.key.EYO)
   var id = element.getAttribute('id')
   if (prototypeName === "*") {
@@ -1255,7 +1253,7 @@ eYo.xml.primary.domToComplete = function (element, owner) {
  * @param {*} owner  The board or the parent brick
  * @override
  */
-eYo.xml.Compatibility.domToComplete = function (element, owner) {
+eYo.xml.compatibility.domToComplete = function (element, owner) {
   var name = element.getAttribute(eYo.key.EYO)
   // deprecated since v0.3.0
   if (name === 'dict_comprehension') {
@@ -1266,7 +1264,7 @@ eYo.xml.Compatibility.domToComplete = function (element, owner) {
       var kd = eYo.brick.newReady(owner, eYo.t3.expr.key_datum)
       // the 'key' slot
       eYo.do.forEachElementChild(element, child => {
-        var name = child.getAttribute(eYo.xml.SLOT)
+        var name = child.getAttribute(eYo.xml.sLOT)
         if (name === 'key') {
           var dd = eYo.brick.newReady(owner, child)
           kd.target_b.connectLast(dd)
@@ -1290,8 +1288,8 @@ eYo.xml.Compatibility.domToComplete = function (element, owner) {
  * @param {*} owner  The board or the parent brick
  * @override
  */
-eYo.xml.Call.domToComplete = function (element, owner) {
-  if (element.getAttribute(eYo.key.EYO) === eYo.xml.CALL) {
+eYo.xml.call.domToComplete = function (element, owner) {
+  if (element.getAttribute(eYo.key.EYO) === eYo.xml.cALL) {
     var type = element.tagName.toLowerCase() === eYo.xml.EXPR
       ? eYo.t3.expr.call_expr
       : eYo.t3.stmt.call_stmt
@@ -1308,8 +1306,8 @@ eYo.xml.Call.domToComplete = function (element, owner) {
  * @param {eYo.brick.Dflt} rhs
  * @return {Number} classical values -1, 0 or 1.
  */
-eYo.xml.CompareBricks = function (lhs, rhs) {
-  var xmlL = goog.dom.xml.serialize(eYo.xml.BrickToDom(lhs, {noId: true}))
-  var xmlR = goog.dom.xml.serialize(eYo.xml.BrickToDom(rhs, {noId: true}))
+eYo.xml.compareBricks = function (lhs, rhs) {
+  var xmlL = goog.dom.xml.serialize(eYo.xml.brickToDom(lhs, {noId: true}))
+  var xmlR = goog.dom.xml.serialize(eYo.xml.brickToDom(rhs, {noId: true}))
   return xmlL < xmlR ? -1 : (xmlL < xmlR ? 1 : 0)
 }

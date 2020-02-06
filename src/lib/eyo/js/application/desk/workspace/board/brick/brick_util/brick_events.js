@@ -171,9 +171,9 @@ eYo.events.BrickChange.prototype.run = function(redo) {
 eYo.events.BrickCreate = function(brick) {
   eYo.events.BrickCreate.eyo.C9r_s.constructor.call(this, brick)
   if (brick.board.rendered) {
-    this.xml = eYo.xml.BrickToDomWithWhere(brick)
+    this.xml = eYo.xml.brickToDomWithWhere(brick)
   } else {
-    this.xml = eYo.xml.BrickToDom(brick)
+    this.xml = eYo.xml.brickToDom(brick)
   }
   this.ids = brick.descendantIds
 }
@@ -223,9 +223,9 @@ eYo.events.BrickDelete = function(brick) {
   eYo.events.BrickDelete.eyo.C9r_s.constructor.call(this, brick)
 
   if (brick.board.rendered) {
-    this.oldXml = eYo.xml.BrickToDomWithWhere(brick)
+    this.oldXml = eYo.xml.brickToDomWithWhere(brick)
   } else {
-    this.oldXml = eYo.xml.BrickToDom(brick)
+    this.oldXml = eYo.xml.brickToDom(brick)
   }
   this.ids = brick.descendantIds
 }

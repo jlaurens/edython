@@ -24,7 +24,7 @@ eYo.provide('brick.yield')
  * Class for a Delegate, yield_expr.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('yield_expr', {
+eYo.expr.makeC9r('yield_expr', {
   xml: {
     attr: 'yield'
   },

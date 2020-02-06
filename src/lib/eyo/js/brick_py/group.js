@@ -21,7 +21,7 @@ goog.forwardDeclare('goog.dom')
  * Base group is subclassed into Group and Control.
  * For edython.
  */
-eYo.stmt.Dflt.makeInheritedC9r('group', {
+eYo.stmt.makeC9r('group', {
   head (type) /** @suppress {globalThis} */ {
     return null
   },

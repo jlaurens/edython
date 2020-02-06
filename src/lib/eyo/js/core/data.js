@@ -842,7 +842,7 @@ eYo.data.makeDflt({
    * then the data is not saved either.
    * For edython.
    * @param {Element} element the persistent element.
-   * @param {Object} [opt]  See eponym parameter in `eYo.xml.BrickToDom`.
+   * @param {Object} [opt]  See eponym parameter in `eYo.xml.brickToDom`.
    */
   _p.save = function (element, opt) {
     var xml = this.model.xml

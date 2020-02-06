@@ -112,7 +112,7 @@ describe('Primary dom', function() {
   ].some(Ts => {
     it(`Dom eyo attribute ${Ts[1]} -> ${Ts[0]}`, function() {
       var d = eYo.Test.new_brick(Ts[0])
-      var dom = eYo.xml.BrickToDom(d)
+      var dom = eYo.xml.brickToDom(d)
       var attr = dom.getAttribute(eYo.key.EYO)
       chai.assert(attr === Ts[1], `FAILED ${attr} === ${Ts[1]}`)
       d.dispose()
@@ -150,7 +150,7 @@ describe ('XML', function () {
     // eYo.Test.list_connect(d, 'target', dd)
     // dd = eYo.Test.new_brick('c')
     // eYo.Test.list_connect(d, 'target', dd)
-    // console.error(eYo.xml.BrickToDom(d).outerHTML)
+    // console.error(eYo.xml.brickToDom(d).outerHTML)
     // d.dispose()
     var dom = `<x eyo="…"><x eyo="list" slot="targets"><x eyo="…" slot="O" target="a"></x><x eyo="…" slot="f" target="d"></x><x eyo="…" slot="r" target="c"></x></x></x>`
     var d = eYo.Test.new_brick(dom)
@@ -188,7 +188,7 @@ describe('Copy/Paste', function() {
   ].some(t => {
     it(`Basic Copy/paste ${t}`, function() {
       var d = eYo.Test.new_brick(t)
-      var dom = eYo.xml.BrickToDom(d)
+      var dom = eYo.xml.brickToDom(d)
       var dd = eYo.Test.new_brick(dom)
       eYo.Test.Same(dd, d)
       dd.dispose()
@@ -217,7 +217,7 @@ describe('Copy/Paste', function() {
     w[1].forEach(v => {
       var d = d.data[k]
       d.set(v)
-      var dom = eYo.xml.BrickToDom(d)
+      var dom = eYo.xml.brickToDom(d)
       var dd = eYo.Test.new_brick(dom)
       chai.assert(dd.data[k].get() === d.get(), `MISSED ${k} data ${dd.data[k].get()} === ${d.get()}`)
       dd.dispose()
@@ -722,7 +722,7 @@ describe('Primary(Compatibility)', function() {
     var rhs = 'rhs'
     d.Value_p = rhs
     chai.assert(d.Value_p === rhs, `BAD ${d.Value_p} === ${rhs}`)
-    var dom = eYo.xml.BrickToDom(d)
+    var dom = eYo.xml.brickToDom(d)
     d.dispose()
     console.error(dom)
     f = (t, expected) => {
@@ -827,7 +827,7 @@ describe('Primary(DEFINED)', function() {
     var rhs = 'rhs'
     d.Value_p = rhs
     chai.assert(d.Value_p === rhs, `MISSED ${d.Value_p} === ${rhs}`)
-    var dom = eYo.xml.BrickToDom(d)
+    var dom = eYo.xml.brickToDom(d)
     d.dispose()
     d = eYo.Test.new_brick(dom)
     chai.assert(d.Value_p === rhs, `MISSED ${d.Value_p} === ${rhs}`)
@@ -840,7 +840,7 @@ describe('Primary(DEFINED)', function() {
     var u = d.value_s.unwrappedTarget
     chai.assert(u.Target_p === rhs, `MISSED ${u.Target_p} === ${rhs}`)
     // d.moveBy(eYo.o4t.Where.xy(20, 20))
-    var dom = eYo.xml.BrickToDom(d)
+    var dom = eYo.xml.brickToDom(d)
     d.dispose()
     d = eYo.Test.new_brick(dom)
     u = d.value_s.unwrappedTarget
@@ -856,7 +856,7 @@ describe('Primary(DEFINED)', function() {
     var u = d.value_s.unwrappedTarget
     chai.assert(u.Target_p === rhs_a, `MISSED ${u.Target_p} === ${rhs_a}`)
     // d.moveBy(eYo.o4t.Where.xy(20, 20))
-    var dom = eYo.xml.BrickToDom(d)
+    var dom = eYo.xml.brickToDom(d)
     d.dispose()
     d = eYo.Test.new_brick(dom)
     u = d.value_s.unwrappedTarget
@@ -903,7 +903,7 @@ describe('Primary(Assignment)', function() {
     f('identifier_valued')
     eYo.Test.list_connect(d, 'target', eYo.Test.new_brick('d')) // 2nd target
     f('assignment_chain')
-    var dom = eYo.xml.BrickToDom(d)
+    var dom = eYo.xml.brickToDom(d)
     d.dispose()
     // console.log(dom)
     var d2 = eYo.Test.new_brick(dom)
@@ -934,7 +934,7 @@ describe('Primary(Assignment)', function() {
     d.Variant_p = eYo.key.TARGET_VALUED
     var a = eYo.Test.new_brick('rhs')
     eYo.Test.list_connect(d, 'value', a)
-    var dom = eYo.xml.BrickToDom(d)
+    var dom = eYo.xml.brickToDom(d)
     d.dispose()
     d = eYo.Test.new_brick(dom)
     chai.assert(d, `MISSING ${dom}`)

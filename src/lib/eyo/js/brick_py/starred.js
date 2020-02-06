@@ -48,7 +48,7 @@ eYo.t3.expr.check._or_expr_all_or_parameter_or_target = eYo.t3.expr.check.or_exp
  * For edython.
  */
 
-eYo.expr.Dflt.makeInheritedC9r('Starred', {
+eYo.expr.makeC9r('Starred', {
   xml: {
     types: [
       eYo.t3.expr.star_expr,

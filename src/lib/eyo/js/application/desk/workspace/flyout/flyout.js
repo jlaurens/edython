@@ -629,7 +629,7 @@ console.error('IN PROGRESS')
  */
 eYo.Flyout.prototype.placeNewBrick_ = function(srcBrick) {
   // Create the new brick by cloning the brick in the flyout (via XML).
-  var xml = eYo.xml.BrickToDom(srcBrick)
+  var xml = eYo.xml.brickToDom(srcBrick)
   // The target board would normally resize during domToBrick, which will
   // lead to weird (AKA buggy) jumps.  Save it for terminateDrag.
   var targetBoard = this.desk.board

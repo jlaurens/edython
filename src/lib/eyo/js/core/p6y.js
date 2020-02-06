@@ -46,7 +46,7 @@ Object.defineProperties(eYo.p6y, {
  */
 eYo.p6y._p.new = function (owner, key, model) {
   if (!model.C9r) {
-    model.C9r = this.Dflt.makeInheritedC9r(eYo.NULL_NS)
+    model.C9r = this.makeC9r(eYo.NULL_NS)
     model._starters = []
     let _p = model.C9r.prototype
     this.handle_value(_p, model)

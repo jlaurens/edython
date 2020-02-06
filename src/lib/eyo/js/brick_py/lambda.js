@@ -372,7 +372,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('Lambda', {
+eYo.expr.makeC9r('Lambda', {
   slots: {
     parameters: {
       order: 1,

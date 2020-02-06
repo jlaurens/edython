@@ -119,7 +119,7 @@ eYo.py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
     if (brick.Dotted_p === 0 && brick.Target_p === 'print' && brick.Variant_p === eYo.key.CALL_EXPR) {
       this.use_print = true
     }
-  } else if (brick instanceof eYo.stmt.Call_stmt) {
+  } else if (brick instanceof eYo.stmt.call_stmt) {
     if (brick.Dotted_p === 0 && brick.Target_p === 'print') {
       this.use_print = true
     }

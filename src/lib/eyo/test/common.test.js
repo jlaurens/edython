@@ -14,7 +14,7 @@
     sounds : false,
     oneBasedIndex : true,
   }
-  eYo.app = new eYo.application.Dflt(options)
+  eYo.APP = new eYo.app.Dflt(options)
   /* Inject your workspace
   var workspace = Blockly.inject('eyoDiv', options)
   eYo.Setup(workspace)
@@ -321,7 +321,7 @@ eYo.test.data_save = (brick, key, value, ignore) => {
   chai.assert(d, `UNKNOWN DATA KEY: ${key}`)
   var old = brick[`${key}_p`]
   brick[`${key}_p`] = value
-  var dom = eYo.xml.BrickToDom(brick)
+  var dom = eYo.xml.brickToDom(brick)
   if (ignore) { // do not create a brick from dom
     var attr = dom.getAttribute(d.attributeName)
     chai.assert(attr === null, `UNEXPECTED ATTRIBUTE ${d.attributeName}: ${attr}`)
@@ -410,7 +410,7 @@ eYo.test.Subtype = (brick, t) => {
  */
 eYo.test.Copy_paste = (brick, opts) => {
   chai.assert(brick, 'MISSING d')
-  var dom = eYo.xml.BrickToDom(brick)
+  var dom = eYo.xml.brickToDom(brick)
   var dd = eYo.brick.newReady(brick, dom)
   eYo.test.Same(brick, dd)
   var M = eYo.c9r.model.forKey(brick.type)

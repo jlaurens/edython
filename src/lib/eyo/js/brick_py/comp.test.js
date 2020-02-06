@@ -40,7 +40,7 @@ describe('Comprehension', function() {
   })
   it('export comprehension', function() {
     var d = eYo.Test.new_brick('comprehension')
-    var d = eYo.xml.BrickToDom(d)
+    var d = eYo.xml.brickToDom(d)
     var dd = eYo.Test.new_brick(d)
     eYo.Test.Same(d, dd)
     d.dispose()
@@ -51,7 +51,7 @@ describe('Comprehension', function() {
     var dd = eYo.Test.new_brick('key_datum')
     chai.assert(d.expression_s.connect(dd), 'MISSING connection')
     eYo.Test.Brick(d, 'dict_comprehension')
-    var d = eYo.xml.BrickToDom(d)
+    var d = eYo.xml.brickToDom(d)
     var dd = eYo.Test.new_brick(d)
     eYo.Test.Same(d, dd)
     d.dispose()

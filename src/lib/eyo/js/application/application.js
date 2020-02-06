@@ -75,7 +75,7 @@ eYo.forwardDeclare('Audio')
  *           minScale: 0.1,
  *           scaleSpeed: 1.2}
  */
-eYo.app.makeC9r('Options', eYo.Dflt, {
+eYo.app.makeC9r('Options', {
   init (options) {
     var readOnly = !!options.readOnly
     if (readOnly) {
@@ -282,7 +282,7 @@ eYo.app.Dflt_p.deleteBrick = function (brick, deep) {
  * @private
  */
 eYo.app.Dflt_p.copyBrick = function (brick, deep) {
-  var xml = eYo.xml.BrickToDom(brick, {noId: true, noNext: !deep})
+  var xml = eYo.xml.brickToDom(brick, {noId: true, noNext: !deep})
   // Copy only the selected brick and internal bricks.
   // Encode start position in XML.
   var xy = brick.xy

@@ -347,7 +347,7 @@ eYo.expr.Dflt_p.doConsolidate = function (deep, force) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('proper_slice', {
+eYo.expr.makeC9r('proper_slice', {
   data: {
     variant: {
       all: [
@@ -448,7 +448,7 @@ eYo.expr.Dflt.makeInheritedC9r('proper_slice', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('conditional_expression', {
+eYo.expr.makeC9r('conditional_expression', {
   slots: {
     expression: {
       order: 1,
@@ -475,7 +475,7 @@ eYo.expr.Dflt.makeInheritedC9r('conditional_expression', {
  * Class for a Delegate, builtin object.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('builtin__object', {
+eYo.expr.makeC9r('builtin__object', {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
@@ -517,7 +517,7 @@ eYo.expr.builtin__object_p.makeTitle = function (op) {
  * Class for a Delegate, any object.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('Any', {
+eYo.expr.makeC9r('Any', {
   data: {
     expression: {
       init: '',

@@ -688,6 +688,12 @@ eYo.board.Dflt_p.updateScreenCalculationsIfScrolled =
   }
 }
 
+console.warn('NYI')
+/**
+ * Update the calculations.
+ */
+eYo.board.Dflt_p.updateScreenCalculations_ = eYo.do.nothing
+
 /**
  * Move the receiver to the new coordinates given by its metrics' scroll.
  */
@@ -1226,10 +1232,10 @@ eYo.board.Dflt_p.fromString = function (str) {
 
 /**
  * Convert the board to string.
- * @param {Object} [opt]  See eponym parameter in `eYo.xml.BrickToDom`.
+ * @param {Object} [opt]  See eponym parameter in `eYo.xml.brickToDom`.
  */
 eYo.board.Dflt_p.toDom = function (opt) {
-  return eYo.xml.BoardToDom(this, opt)
+  return eYo.xml.boardToDom(this, opt)
 }
 
 /**

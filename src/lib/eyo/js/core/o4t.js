@@ -656,7 +656,7 @@ eYo.o4t.makeDflt({
    */
   _p.clonedDeclare = function (models) {
     this.init_ || (this.init_ = Object.create(null))
-    var proto = this.C9r_.prototype
+    var proto = this.C9r_p
     Object.keys(models).forEach(k => { // No `for (var k in models) {...}`, models may change during the loop
       eYo.parameterAssert(!this.props__.has(k))
       this.cloned_.add(k)
@@ -668,8 +668,8 @@ eYo.o4t.makeDflt({
         init = model.init
       }
       this.init_[k] = init
-      var k_ = k + '_'
-      var k__ = k + '__'
+      let k_ = k + '_'
+      let k__ = k + '__'
       Object.defineProperties(proto, {
         [k__]: {value: eYo.keyHandler, writable: true},
         [k_]: {
@@ -732,6 +732,7 @@ eYo.o4t.makeDflt({
                 before.owner_ = before.ownerKey_ = eYo.NA
               }
               var setter = () => {
+                this[k__] || eYo.throw(`This is not initialized: ${k__} in ${this.eyo.name}`)
                 this[k__].set(after)
               }
               if (!!after && !!after.ownerKey_) {

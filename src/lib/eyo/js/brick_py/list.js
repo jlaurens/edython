@@ -25,7 +25,7 @@ eYo.require('consolidator.List')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('List', {
+eYo.expr.makeC9r('List', {
   init: function () {
     this.slotList_ = new Proxy(this, eYo.expr.List.SlotsHandler)
   },
@@ -140,7 +140,7 @@ eYo.expr.List.SlotsHandler = {
  * @param {Boolean} [dontCreate] Whether the receiver should create slots on the fly.
  * @return {eYo.slot.Dflt} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
-eYo.expr.List.prototype.getSlot = function (name, dontCreate) {
+eYo.expr.List_p.getSlot = function (name, dontCreate) {
   var slot = eYo.expr.List.eyo.C9r_s.getSlot.call(this, name)
   if (!slot) {
     this.createConsolidator()
@@ -154,7 +154,7 @@ eYo.expr.List.prototype.getSlot = function (name, dontCreate) {
  *
  * @param {boolean} force
  */
-eYo.expr.List.prototype.createConsolidator = eYo.decorate.reentrant_method(
+eYo.expr.List_p.createConsolidator = eYo.decorate.reentrant_method(
   'createConsolidator',
   function (force) {
     var type = this.type
@@ -188,7 +188,7 @@ eYo.expr.List.prototype.createConsolidator = eYo.decorate.reentrant_method(
  * @param {eYo.magnet.Dflt} oldTargetM4t.
  * @param {eYo.magnet.Dflt} targetOldM4t
  */
-eYo.expr.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
+eYo.expr.List_p.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.expr.List.eyo.C9r_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   if (m4t.isOutput) {
     this.createConsolidator(true)
@@ -202,7 +202,7 @@ eYo.expr.List.prototype.didConnect = function (m4t, oldTargetM4t, targetOldM4t) 
  *
  * @param {Brick} brick
  */
-eYo.expr.List.prototype.doConsolidate = (() => {
+eYo.expr.List_p.doConsolidate = (() => {
   // this is a one shot function
   /**
    * Consolidate the slots.
@@ -229,14 +229,14 @@ eYo.expr.List.prototype.doConsolidate = (() => {
   }
 }) ()
 
-// eYo.expr.List.prototype.consolidator = eYo.NA
+// eYo.expr.List_p.consolidator = eYo.NA
 
 /**
  * Clear the list af all items.
  * For edython.
  * @private
  */
-eYo.expr.List.prototype.removeItems = function () {
+eYo.expr.List_p.removeItems = function () {
   eYo.events.groupWrap(() => {
     this.slotForEach(slot => {
       var m4t = slot.magnet
@@ -255,7 +255,7 @@ eYo.expr.List.prototype.removeItems = function () {
  * Force to recompute the chain tile.
  * For edython.
  */
-eYo.expr.List.prototype.changeInputDone = function () {
+eYo.expr.List_p.changeInputDone = function () {
   this.slotForEach(slot => {
     var t9k = slot.targetBrick
     t9k && (t9k.changeDone())
@@ -263,7 +263,7 @@ eYo.expr.List.prototype.changeInputDone = function () {
   this.changeDone()
 }
 
-Object.defineProperties(eYo.expr.List.prototype, {
+Object.defineProperties(eYo.expr.List_p, {
   firstTarget: {
     get () {
       var t

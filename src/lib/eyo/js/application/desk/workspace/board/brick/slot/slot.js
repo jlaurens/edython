@@ -343,7 +343,7 @@ eYo.slot.Dflt_p.synchronize = function () {
  * List all the available data and converts them to xml.
  * For edython.
  * @param {Element} element the persistent element.
- * @param {Object} [opt]  See eponym parameter in `eYo.xml.BrickToDom`.
+ * @param {Object} [opt]  See eponym parameter in `eYo.xml.brickToDom`.
  * @return a dom element, void lists may return nothing
  * @this a brick
  */
@@ -363,9 +363,9 @@ eYo.slot.Dflt_p.save = function (element, opt) {
         // For lists only, we do create a further level
         // Actually, every wrapped brick is a list
         if (t9k instanceof eYo.expr.List) {
-          var child = eYo.xml.BrickToDom(t9k, opt)
+          var child = eYo.xml.brickToDom(t9k, opt)
           if (child.firstElementChild) {
-            child.setAttribute(eYo.xml.SLOT, this.xmlKey)
+            child.setAttribute(eYo.xml.sLOT, this.xmlKey)
             goog.dom.appendChild(element, child)
             return child
           }
@@ -374,9 +374,9 @@ eYo.slot.Dflt_p.save = function (element, opt) {
           return eYo.xml.toDom(t9k, element, opt)
         }
       } else {
-        child = eYo.xml.BrickToDom(t9k, opt)
+        child = eYo.xml.brickToDom(t9k, opt)
         if (child.firstElementChild || child.hasAttributes()) {
-          child.setAttribute(eYo.xml.SLOT, this.xmlKey)
+          child.setAttribute(eYo.xml.sLOT, this.xmlKey)
           goog.dom.appendChild(element, child)
           return child
         }
@@ -397,7 +397,7 @@ eYo.slot.Dflt_p.save = function (element, opt) {
 eYo.slot.Dflt_p.saveRequired = function (element) {
   var child = goog.dom.createDom(eYo.xml.EXPR)
   child.setAttribute(eYo.key.EYO, eYo.key.PLACEHOLDER)
-  child.setAttribute(eYo.xml.SLOT, this.xmlKey)
+  child.setAttribute(eYo.xml.sLOT, this.xmlKey)
   goog.dom.appendChild(element, child)
 }
 
@@ -431,7 +431,7 @@ eYo.slot.Dflt_p.load = function (element) {
   } else {
   // find the xml child with the proper slot attribute
     eYo.do.SomeElementChild(element, child => {
-      var attribute = child.getAttribute(eYo.xml.SLOT)
+      var attribute = child.getAttribute(eYo.xml.sLOT)
       if (attribute && (attribute === this.xmlKey || attribute === this.key || (this.model.xml && eYo.isF(this.model.xml.accept) && this.model.xml.accept.call(this, attribute)))) {
         this.recover.dontResit(child)
         if (child.getAttribute(eYo.key.EYO) === eYo.key.PLACEHOLDER) {
@@ -446,7 +446,7 @@ eYo.slot.Dflt_p.load = function (element) {
             if (t9k instanceof eYo.expr.List) {
               // var grandChildren = Array.prototype.slice.call(child.childNodes)
               eYo.do.forEachElementChild(child, grandChild => {
-                var name = grandChild.getAttribute(eYo.xml.SLOT)
+                var name = grandChild.getAttribute(eYo.xml.sLOT)
                 var slot = t9k.getSlot(name)
                 if (slot) {
                   if (slot.magnet) {

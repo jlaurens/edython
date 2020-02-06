@@ -16,7 +16,7 @@
  * @constructor
  * @param{Object} owner
  */
-eYo.o3d.Dflt.makeInheritedC9r('Change', {
+eYo.o3d.makeC9r('Change', {
   init () {
     this.reset()
   },

@@ -35,38 +35,38 @@ eYo.o3d.makeC9r(eYo, 'Desk', {
   owned: {
     /**
      * Terminal.
-     * @type{eYo.Terminal}
+     * @type{eYo.pane.Terminal}
      */
     terminal () {
-      return new eYo.Terminal(this)
+      return new eYo.pane.Terminal(this)
     },
     /**
      * Turtle.
-     * @type{eYo.Turtle}
+     * @type{eYo.vTurtle}
      */
     turtle () {
-      return new eYo.Turtle(this)
+      return new eYo.pane.Turtle(this)
     },
     /**
      * Graphic.
-     * @type{eYo.Graphic}
+     * @type{eYo.pane.Graphic}
      */
     graphic () {
-      return new eYo.Graphic(this)
+      return new eYo.pane.Graphic(this)
     },
     /**
      * Variable.
-     * @type{eYo.Variable}
+     * @type{eYo.pane.Variable}
      */
     variable () {
-      return new eYo.Variable(this)
+      return new eYo.pane.Variable(this)
     },
     /**
      * Wokspace.
-     * @type{eYo.Workspace}
+     * @type{eYo.pane.Workspace}
      */
     workspace () {
-      return new eYo.Workspace(this)
+      return new eYo.pane.Workspace(this)
     },
   },
   computed: {

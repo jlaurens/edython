@@ -21,7 +21,7 @@ eYo.provide('brick.operator')
  * Abstract class.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('Binary', {
+eYo.expr.makeC9r('Binary', {
   data: {
     operator: { // only one field with that key,
       init: '+',
@@ -288,7 +288,7 @@ eYo.t3.expr.unary = 'eyo:unary' // don't forget it !
  * u_expr.
  * For edython.
  */
-eYo.expr.Dflt.makeInheritedC9r('unary', {
+eYo.expr.makeC9r('unary', {
   xml: {
     types: [
       eYo.t3.expr.u_expr,
