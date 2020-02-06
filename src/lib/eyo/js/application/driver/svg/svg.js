@@ -113,11 +113,6 @@ Object.defineProperties(eYo.svg, {
 })
 
 /**
- * @name{eYo.svg.Dflt}
- * @constructor
- */
-eYo.svg.makeDflt()
-/**
  * Return the coordinates of the top-left corner of this element relative to
  * its parent.  Only for SVG elements and children (e.g. rect, g, path).
  * Fixed bug in original code.

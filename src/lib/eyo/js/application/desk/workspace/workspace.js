@@ -115,7 +115,7 @@ eYo.pane.makeC9r('Workspace', {
  *    This gives the desk viewRect.
  * 2) Then the board dimensions.
  */
-eYo.Workspace.prototype.updateMetrics = function() {
+eYo.pane.Workspace_p.updateMetrics = function() {
   this.ui_driver.updateMetrics(this)
   this.board.updateMetrics()
   this.flyout.updateMetrics()
@@ -124,7 +124,7 @@ eYo.Workspace.prototype.updateMetrics = function() {
 /**
  * Update the metrics and place the components accordingly.
  */
-eYo.Workspace.prototype.layout = function() {
+eYo.pane.Workspace_p.layout = function() {
   this.updateMetrics()
   this.place()
 }
@@ -132,7 +132,7 @@ eYo.Workspace.prototype.layout = function() {
 /**
  * Place the boards.
  */
-eYo.Workspace.prototype.place = function() {
+eYo.pane.Workspace_p.place = function() {
   this.ui_driver.place(this)
   this.board.place()
   this.flyout.place()
@@ -145,7 +145,7 @@ eYo.Workspace.prototype.place = function() {
 /**
  * Make a list of all the delete areas for this workspace.
  */
-eYo.Workspace.prototype.recordDeleteAreas = function() {
+eYo.pane.Workspace_p.recordDeleteAreas = function() {
   if (this.trashCan) {
     this.deleteRectTrash_ = this.trashCan.getClientRect()
   } else {
@@ -162,7 +162,7 @@ eYo.Workspace.prototype.recordDeleteAreas = function() {
  * Forwards to the backer.
  * @param{Boolean} redo  True when redoing, false otherwise
  */
-eYo.Workspace.prototype.undo = function(redo) {
+eYo.pane.Workspace_p.undo = function(redo) {
   this.backer__.undo(redo)
 }
 

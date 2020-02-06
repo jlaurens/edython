@@ -79,7 +79,7 @@ eYo.driver.Mngr.eyo_p.makeDriverC9r = function (key, Super, driverModel) {
   var ns = this.ns
   if (!eYo.isSubclass(Super, eYo.Driver)) {
     driverModel && eYo.throw(`Unexpected model ${driverModel}`)
-    driverModel = eYo.Called(Super) || {}
+    driverModel = eYo.called(Super) || {}
     Super = ns.super[key] || ns.Dflt
   }
   if (!eYo.isSubclass(Super, ns.Dflt)) {
@@ -121,7 +121,7 @@ eYo.driver._p.makeMngr = function (mngrModel) {
   if (this === eYo.driver) {
     return
   }
-  this.makeDflt()
+  this._p.hasOwnProperty('Dflt') || this.hasOwnProperty('Dflt') || this.makeDflt()
   let Super = this.super.Mngr
   var Mngr = this.makeC9r(Super, mngrModel)
   Mngr.prototype.initDrivers = function () {

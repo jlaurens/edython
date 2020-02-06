@@ -25,7 +25,7 @@ eYo.require('data')
  * @name {eYo.brick.Dflt}
  * @namespace
  */
-eYo.makeNS('brick')
+eYo.o3d.makeNS(eYo, 'brick')
 
 // eYo.provide('brick.dflt')
 

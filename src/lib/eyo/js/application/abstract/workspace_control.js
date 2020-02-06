@@ -61,7 +61,7 @@ eYo.o3d.makeC9r(eYo.pane, 'WorkspaceControl', {
  * Just change the view rectangle.
  * Subclassers will place th receiver according to their driver.
  */
-eYo.pane.Workspace.Control_p.place = function(bottom) {
+eYo.pane.WorkspaceControl_p.place = function(bottom) {
   var board = this.board
   var view = board.metrics.view
   var r = this.viewRect__

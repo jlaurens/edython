@@ -332,9 +332,9 @@ eYo._p.makeNS = function (ns, key, model) {
     [key + '_p']: { value: ans.prototype, },
     [key + '_s']: { value: Super.prototype, },
   })
-  Object.defineProperties(ans, {
+  Object.defineProperties(NS.prototype, {
     key: {value: key},
-    name: { value: ns ? `${ns.name}.${this.key}` : this.key || "No man's land" },
+    name: { value: ns ? `${ns.name}.${key}` : key || "No man's land" },
   })
   return ans
 }

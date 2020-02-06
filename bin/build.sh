@@ -320,10 +320,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/zoomer/zoomer.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom.js" \
 --js "src/lib/eyo/js/core/data.js" \
---js "src/lib/eyo/js/application/driver/svg/svg.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom_brick.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom_desk.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom_search.js" \
+--js "src/lib/eyo/js/application/driver/svg/svg.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/brick_events.js" \
 --js "src/lib/eyo/js/application/driver/svg/svg_brick.js" \
