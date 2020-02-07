@@ -433,6 +433,18 @@ describe ('Tests: Property', function () {
     }
     p.dispose()
     chai.assert(flag === 0)
+    flag = 421
+    p = eYo.p6y.new(onr, 'foo', {
+      dispose: false
+    })
+    p.value_ = {
+      dispose () {
+        flag = 0
+      },
+      eyo: true, // fake
+    }
+    p.dispose()
+    chai.assert(flag !== 0)
   })
   it('Property: copy', function () {
     flag = 123
@@ -450,5 +462,29 @@ describe ('Tests: Property', function () {
     p.value_ = v
     p.value
     chai.assert(flag === 0)
+  })
+  it ('Property: computed', function () {
+    let onr = {
+      eyo: true
+    }
+    var flag = 0
+    var p = eYo.p6y.new(onr, 'foo', {
+      get () {
+        return flag
+      },
+    })
+    chai.expect(() => {
+      p.value_ = 421
+    }).to.throw()
+    var p = eYo.p6y.new(onr, 'foo', {
+      get () {
+        return flag
+      },
+      set (after) {
+        flag = after
+      },
+    })
+    p.value_ = 421
+    chai.assert(p.value === 421)
   })
 })

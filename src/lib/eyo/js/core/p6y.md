@@ -14,7 +14,7 @@ There are different kinds of properties.
  
 ## Namespace
 
-Property related code is gathered under `eYo.Property` namespace.
+Property related code is gathered under `eYo.p6y` namespace.
 
 ## Nature
 
@@ -26,7 +26,7 @@ this.owner[this.key] === this
 ## Hooks
 The main purpose is to allow some hooks while modifying the property.
 
-## `eYo.Prop.Dflt`
+## `eYo.p6y.Dflt`
 
 Each property is represented by an instance of one of `eYo.Prop.Dflt` subclasses.
  
@@ -35,7 +35,7 @@ Each property is represented by an instance of one of `eYo.Prop.Dflt` subclasses
 Let `O` be an object with a property named `foo`.
 Reading the property is made through a standard code `O.foo` or `O.foo_`. Setting the property is only made through `O.foo_ = bar`, if the property is not read only, of course.
 
-The storage is the inderlying `O.foo__` which is an instance of one of the `eYo.Prop.Dflt` subclasses owned by `O`.
+The implementation is made through `O.foo_p`, which is an instance of of one of the `eYo.p6y.Dflt` subclasses, owned by `O`.
 
 ## The model
 
@@ -72,7 +72,7 @@ The difference between at change and did change hooks is that the latter is alwa
 
 ### Shortcuts
 
-Each of the `validate`, `willChange`, `atChange`, `didChange` model function follows the template
+Each of the `validate`, `willChange`, `atChange`, `didChange` model function follows one of the templates
 
 ```
 foo (before, after) {
@@ -132,4 +132,8 @@ The `getStored ` getter can be overriden by the model with key `get_`. Useful fo
 
 The `setStored ` setter can be overriden by the model with key `set_`. Useful for computed properties. Defaults implementation simply sets the `stored__`.
 
+### Model details
 
+| keys | value | usage |
+|---|---|---|
+| lazy | 
