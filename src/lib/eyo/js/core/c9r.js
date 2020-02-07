@@ -358,7 +358,6 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
     if (type) {
       eYo.c9r.byType__[type] = C9r
       // cache all the input, output and statement data at the prototype level
-      eyo.types.push(type)
     }
   }
 }

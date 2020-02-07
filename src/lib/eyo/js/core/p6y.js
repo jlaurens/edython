@@ -138,7 +138,7 @@ eYo.p6y._p.handle_dispose = function (prototype, model) {
 eYo.p6y._p.handle_validate = function (prototype, model) {
   var f = model.validate
   if (eYo.isF(f)) {
-    prototype.validate = XRegExp.match(f.toString(), eYo.xre.function_before)
+    prototype.validate = f.length > 1
     ? function (before, after) {
       try {
         this.validate = eYo.do.nothing
@@ -183,7 +183,7 @@ eYo.p6y._p.handle_get_set = function (prototype, model) {
       can_lazy = false
       prototype.getValue = eYo.c9r.noGetter('Write only')
     } else if (eYo.isF(get)) {
-      if (XRegExp.match(get.toString(), eYo.xre.function_builtin)) {
+      if (get.length > 0) {
         prototype.getValue = function () {
           try {
             this.getValue = eYo.do.nothing
@@ -215,8 +215,7 @@ eYo.p6y._p.handle_get_set = function (prototype, model) {
   if (set === eYo.do.nothing) {
     prototype.setValue = eYo.c9r.noSetter(`Read only key ${this.key}`)
   } else if (eYo.isF(set)) {
-    prototype.setValue = XRegExp.match(set.toString(), eYo.xre.function_builtin_after)
-    ? function (after) {
+    prototype.setValue = set.length > 1 ? function (after) {
       try {
         this.setValue = eYo.do.nothing
         return set.call(this, after => {
@@ -264,7 +263,7 @@ eYo.p6y._p.handle_change = function (prototype, model) {
   eYo.p6y.HOOKS.forEach(when => {
     let f = model[when]
     if (eYo.isF(f)) {
-      prototype[when] = XRegExp.match(f.toString(), eYo.xre.function_before)
+      prototype[when] = f.length > 1
       ? function (before, after) {
         try {
           this[when] = eYo.do.nothing
@@ -299,7 +298,7 @@ eYo.p6y._p.handle_stored = function (prototype, model) {
   if (get_ === eYo.do.nothing) {
     prototype.getStored = eYo.c9r.noGetter('Read only')
   } else if (eYo.isF(get_)) {
-    prototype.getStored = XRegExp.match(get_.toString(), eYo.xre.function_builtin) ? function () {
+    prototype.getStored = get_.length > 0 ? function () {
       try {
         this.getStored = eYo.do.nothing
         return get_.call(this, () => { return this.__getStored()})
@@ -321,8 +320,7 @@ eYo.p6y._p.handle_stored = function (prototype, model) {
   if (set_ === eYo.do.nothing) {
     prototype.setStored = eYo.c9r.noSetter('Read only')
   } else if (eYo.isF(set_)) {
-    prototype.setStored = XRegExp.match(set_.toString(), eYo.xre.function_builtin_after)
-    ? function (after) {
+    prototype.setStored = set_.length > 1 ? function (after) {
       try {
         this.setStored = eYo.do.nothing
         return set_.call(this, after => {this.__setStored(after)}, after)
@@ -586,7 +584,7 @@ eYo.p6y.makeDflt({
     eYo.parameterAssert(eYo.p6y.HOOKS.includes(when))
     let byWhen = this.observersByWhen__ || (this.observersByWhen__ = {})
     let observers = byWhen[when] || (byWhen[when] = [])
-    if (XRegExp.match(callback.toString(), eYo.xre.function_before)) {
+    if (callback.length > 1) {
       observers.push(callback)
     } else {
       let wrapper = (before, after) => {

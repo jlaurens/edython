@@ -288,7 +288,6 @@ bytesescapeseq ::=  "\" <any ASCII character>
 
 eYo.do.readOnlyMixin(eYo.xre, {
   function_builtin_before: XRegExp('^[^(]*\\(\\s*(?<builtin>\\bbuiltin\\b)?(?:\\s*,\\s*)?(?<before>\\bbefore\\b)?'),
-  function_before: XRegExp('^[^(]*\\(\\s*\\bbefore\\b'),
   function_builtin: XRegExp('^[^(]*\\(\\s*\\bbuiltin\\b'),
   function_builtin_after: XRegExp('^[^(]*\\(\\s*\\bbuiltin\\b\\s*,\\s*\\bafter\\b'),
 })

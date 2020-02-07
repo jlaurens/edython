@@ -26,6 +26,7 @@ eYo.c9r.makeNS(eYo, 'o4t')
  */
 eYo.o4t.makeDflt({
   dlgt () {
+    this.properties__ = Object.create(null)
     this.props__ = new Set()
     this.descriptors__ = Object.create(null)
   }
@@ -33,6 +34,7 @@ eYo.o4t.makeDflt({
 
 ;(() => {
   let _p = Object.getPrototypeOf(eYo.o4t.Dflt.eyo)
+
   ;['owned', 'copied', 'valued', 'cached', 'computed'].forEach(k => {
     var k_ = k + '_'
     var k__ = k + '__'
@@ -102,6 +104,25 @@ eYo.o4t.makeDflt({
     if (!object) {
       console.error('BREAK HERE!')
     }
+    Object.keys(this.properties__).forEach(k => {
+      let model = this.properties__[k]
+      let k_p = k + '_p'
+      let k_ = k + '_'
+      Object.defineProperties(object, {
+        [k_p]: eYo.p6y.new(this, k, model),
+        k: eYo.c9r.descriptorR(function () {
+          return this[k_p].value
+        }),
+        k_: {
+          get () {
+            return this[k_p].value
+          },
+          set (after) {
+            this[k_p].value_ = after
+          },
+        },
+      })
+    })
     var f = k => {
       var init = this.init_ && this.init_[k] || object[k+'Init']
       if (init) {
@@ -159,6 +180,7 @@ eYo.o4t.makeDflt({
    * @param {Object} model - Object, like for |makeC9r|.
    */
   _p.modelDeclare = function (model) {
+    this.properties__ = model.properties || {}
     model.CONST && this.CONSTDeclare(model.CONST)
     model.valued && this.valuedDeclare(model.valued)
     model.owned && this.ownedDeclare(model.owned)
