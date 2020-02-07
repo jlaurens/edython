@@ -206,7 +206,7 @@ eYo.events.filter = function(queueIn, forward) {
       }
     }
   }
-  var queue = goog.array.clone(queueIn)
+  var queue = goog.array.copy(queueIn)
   if (!forward) {
     // Undo is merged in reverse order.
     queue.reverse()

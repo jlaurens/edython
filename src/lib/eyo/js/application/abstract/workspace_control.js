@@ -41,7 +41,7 @@ eYo.o3d.makeC9r(eYo.pane, 'WorkspaceControl', {
       return this.viewRect_.y
     }
   },
-  cloned: {
+  copied: {
     viewRect () {
       var ans = new eYo.c9r.Rect()
       ans.width = this.WIDTH_

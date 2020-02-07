@@ -332,7 +332,7 @@ eYo.provide('module.turtle__module', new eYo.module.Dflt('turtle__module', 'http
         class: 'turtle',
         category: 10,
         type_: 0,
-        href: '#turtle.clone',
+        href: '#turtle.copy',
         ary: 0
       }),
       new Item({

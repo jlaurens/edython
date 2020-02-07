@@ -302,7 +302,7 @@ eYo.makeC9r('Flyout', {
       return this.options.autoClose
     },
   },
-  cloned: {
+  copied: {
     /**
      * Position and dimensions of the flyout in the workspace.
      * @type {number}

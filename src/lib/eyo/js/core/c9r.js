@@ -574,7 +574,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
     this.C9r_p.dispose = f
   }
   /**
-   * Initialize an instance with valued, cached, owned and cloned properties.
+   * Initialize an instance with valued, cached, owned and copied properties.
    * Default implementation forwards to super.
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */

@@ -78,7 +78,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
   },
   xyDelta: {
     get () {
-      return this.xyDelta_.clone
+      return this.xyDelta_.copy
     }
   },
   xyNew_: {

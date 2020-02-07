@@ -1466,14 +1466,14 @@ describe ('Dlgt', function () {
         chai.assert(flag === 1100)
       })
     })
-    describe ('C9r: Cloned', function () {
-      it ('Cloned: Basic', function () {
+    describe ('C9r: copied', function () {
+      it ('copied: Basic', function () {
         var ns = eYo.makeNS()
         var B = function (value) {
           this.value_ = value
         }
         eYo.makeC9r(ns, 'A', null, {
-          cloned: {
+          copied: {
             foo () {
               return new B()
             }
@@ -1547,7 +1547,7 @@ describe ('Dlgt', function () {
           chai.assert(after === foo_after)
         }
         eYo.makeC9r(ns, 'A', null, {
-          cloned: {
+          copied: {
             foo: {
               init () {
                 return foo_before
@@ -1627,12 +1627,12 @@ describe ('Dlgt', function () {
           })
         }).to.throw()
       })
-      it ('No collision: valued + cloned', function () {
+      it ('No collision: valued + copied', function () {
         var ns = eYo.makeNS()
         chai.expect(() => {
           eYo.makeC9r(ns, 'A', null, {
             valued: ['foo'],
-            cloned: {
+            copied: {
               foo () {}
             },
           })
@@ -1649,25 +1649,25 @@ describe ('Dlgt', function () {
           })
         }).to.throw()
       })
-      it ('No collision: cached + cloned', function () {
+      it ('No collision: cached + copied', function () {
         var ns = eYo.makeNS()
         chai.expect(() => {
           eYo.makeC9r(ns, 'A', null, {
             cached: {
               foo () {}
             },
-            cloned: {
+            copied: {
               foo () {}
             },
           })
         }).to.throw()
       })
-      it ('No collision: owned + cloned', function () {
+      it ('No collision: owned + copied', function () {
         var ns = eYo.makeNS()
         chai.expect(() => {
           eYo.makeC9r(ns, 'A', null, {
             owned: ['foo'],
-            cloned: {
+            copied: {
               foo () {}
             },
           })
@@ -1741,7 +1741,7 @@ describe ('Dlgt', function () {
         cached: {
           foo () {}
         },
-        cloned: {
+        copied: {
           foo () {}
         },
         valued: ['foo'],
@@ -1756,25 +1756,25 @@ describe ('Dlgt', function () {
         owned: {
           owned: ok,
           cached: ok,
-          cloned: ok,
+          copied: ok,
           valued: ok,
         },
         cached: {
           owned: ok,
           cached: ok,
-          cloned: ok,
+          copied: ok,
           valued: ok,
         },
-        cloned: {
+        copied: {
           owned: ok,
           cached: ok,
-          cloned: ok,
+          copied: ok,
           valued: ok,
         },
         valued: {
           owned: ok,
           cached: ok,
-          cloned: ok,
+          copied: ok,
           valued: ok,
         },
       }
@@ -1864,17 +1864,17 @@ describe ('Dlgt', function () {
     ab.valuedForEach(x => flag += x)
     chai.assert(flag === 11)
   })
-  it ('Constructor: clonedForEach', function () {
+  it ('Constructor: copiedForEach', function () {
     var ns = eYo.makeNS()
     eYo.makeC9r(ns, 'A', null, {
-      cloned: {
+      copied: {
         foo () {
           return new B()
         }
       }
     })
     eYo.makeC9r(ns, 'AB', ns.A, {
-      cloned: {
+      copied: {
         bar () {
           return new B()
         }
@@ -1901,7 +1901,7 @@ describe ('Dlgt', function () {
     a.foo_ = new B(1)
     chai.assert(a.foo.value_ === 1)
     var flag = 0
-    a.clonedForEach(x => flag += x.value_)
+    a.copiedForEach(x => flag += x.value_)
     chai.assert(flag === 1)
     var ab = new ns.AB()
     ab.foo_ = new B(1)
@@ -1909,7 +1909,7 @@ describe ('Dlgt', function () {
     ab.bar_ = new B(10)
     chai.assert(ab.bar.value_ === 10)
     flag = 0
-    ab.clonedForEach(x => flag += x.value_)
+    ab.copiedForEach(x => flag += x.value_)
     chai.assert(flag === 11)
   })
   it ('Constructor: makeInheritedC9r', function () {

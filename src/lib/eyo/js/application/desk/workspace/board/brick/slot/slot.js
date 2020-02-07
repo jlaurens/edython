@@ -236,7 +236,7 @@ eYo.slot.makeDflt({
       return this.requiredFromModel
     },
   },
-  cloned: {
+  copied: {
     where () {
       return new eYo.o4t.Where()
     }

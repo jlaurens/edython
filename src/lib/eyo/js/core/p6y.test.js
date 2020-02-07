@@ -486,5 +486,29 @@ describe ('Tests: Property', function () {
     })
     p.value_ = 421
     chai.assert(p.value === 421)
+    chai.expect(() => {
+      eYo.p6y.new(onr, 'foo', {
+        value: 0,
+        get () {
+          return flag
+        },
+      })
+    }).to.throw()
+    chai.expect(() => {
+      eYo.p6y.new(onr, 'foo', {
+        lazy: 0,
+        get () {
+          return flag
+        },
+      })
+    }).to.throw()
+    chai.expect(() => {
+      eYo.p6y.new(onr, 'foo', {
+        reset: 0,
+        get () {
+          return flag
+        },
+      })
+    }).to.throw()
   })
 })

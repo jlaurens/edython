@@ -54,7 +54,7 @@ eYo.board.makeDflt({
      */
     highlightedBricks: [],
   },
-  cloned: {
+  copied: {
         /**
      * @type {!Object}
      * @private
@@ -831,7 +831,7 @@ eYo.board.Dflt_p.paste = function () {
           var scale = this.scale || 1
           var size = b3k.size
           // the brick is in the visible area if we see its center
-          var bounds = view.clone.unscale(scale).inset(size.width / 2, size.height / 2)
+          var bounds = view.copy.unscale(scale).inset(size.width / 2, size.height / 2)
           if (!bounds.xyContains(dx, dy)) {
             dx = (view.x + view.width / 2) / scale - size.width / 2
             dy = (view.y + view.height / 2) / scale - size.height / 2

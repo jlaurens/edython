@@ -72,7 +72,7 @@ eYo.forwardDeclare('c9r.Rect')
  * to display line numbers.
  */
 eYo.makeC9r('Metrics', {
-  cloned: {
+  copied: {
     port () {
       return new eYo.c9r.Rect()
     },
@@ -222,7 +222,7 @@ eYo.makeC9r('Metrics', {
      */
     drag: {
       get () {
-        var ans = (this.drag__ || this.dragDefault).clone
+        var ans = (this.drag__ || this.dragDefault).copy
         var r = this.dragLimits
         if (r) {
           if (ans.x < r.x) {

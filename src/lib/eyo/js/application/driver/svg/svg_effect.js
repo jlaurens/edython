@@ -26,7 +26,7 @@ eYo.svg.makeDriverC9r('Effect')
  */
 eYo.svg.Effect.prototype.brickDispose = (() => {
   /*
-  * Animate a cloned brick and eventually dispose of it.
+  * Animate a copied brick and eventually dispose of it.
   * @param {Element} clone SVG element to animate and dispose of.
   * @param {boolean} rtl True if RTL, false if LTR.
   * @param {Date} start Date of animation's start.

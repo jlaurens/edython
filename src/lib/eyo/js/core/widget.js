@@ -87,7 +87,7 @@ eYo.Widget.eyo_p.handleModel = function (model) {
 }
 
 /**
- * Initialize an instance with valued, cached, owned and cloned properties.
+ * Initialize an instance with valued, cached, owned and copied properties.
  * Default implementation forwards to super.
  * @param {Widget} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
  */
@@ -103,7 +103,7 @@ eYo.Widget.eyo_p.disposeInstance = function (object) {
   this.valuedClear_(object)
   this.cachedForget_(object)
   this.o3dDispose_(object)
-  this.clonedDispose_(object)
+  this.copiedDispose_(object)
 }
 
 /**
@@ -145,7 +145,7 @@ eYo.Widget.eyo_p.modelDeclare = function (model) {
   model.valued && this.valuedDeclare(model.valued)
   model.o3d && this.o3dDeclare(model.o3d)
   model.cached && this.cachedDeclare(model.cached)
-  model.cloned && this.clonedDeclare(model.cloned)
+  model.copied && this.copiedDeclare(model.copied)
   model.computed && this.computedDeclare(model.computed)
   model.called && this.calledDeclare(model.called)
 }
@@ -632,17 +632,17 @@ eYo.Widget.eyo_p.calledDeclare = function (model) {
 }
 
 /**
- * Add a 3 levels cloned property to a prototype.
- * `foo` is a cloned object means that `foo.clone` is a clone of `foo`
+ * Add a 3 levels copied property to a prototype.
+ * `foo` is a copied object means that `foo.copy` is a clone of `foo`
  * and `foo.set(bar)` will set `foo` properties according to `bar`.
  * @param {Map<String, Function|Widget>} models,  the key => Function mapping.
  */
-eYo.Widget.eyo_p.clonedDeclare = function (models) {
+eYo.Widget.eyo_p.copiedDeclare = function (models) {
   this.init_ || (this.init_ = Object.create(null))
   var proto = this.C9r_.prototype
   Widget.keys(models).forEach(k => { // No `for (var k in models) {...}`, models may change during the loop
     eYo.parameterAssert(!this.props__.has(k))
-    this.cloned_.add(k)
+    this.copied_.add(k)
     var model = models[k]
     if (eYo.isF(model)) {
       var init = model
@@ -657,7 +657,7 @@ eYo.Widget.eyo_p.clonedDeclare = function (models) {
       [k__]: {value: eYo.keyHandler, writable: true},
       [k_]: {
         get() {
-          return this[k__].clone
+          return this[k__].copy
         },
         set (after) {
           var before = this[k__]
@@ -666,7 +666,7 @@ eYo.Widget.eyo_p.clonedDeclare = function (models) {
               return
             }
             var setter = () => {
-              this[k__] = after.clone
+              this[k__] = after.copy
             }
             var f = model.validate
             if (f && (after = f.validate(before, after)) === eYo.INVALID) {
@@ -749,8 +749,8 @@ eYo.Widget.eyo_p.clonedDeclare = function (models) {
  * @param {Widget} object - the object that owns the property
  * @param {Array<string>} names -  a list of names
  */
-eYo.Widget.eyo_p.clonedDispose_ = function (object) {
-  this.clonedForEach(k => {
+eYo.Widget.eyo_p.copiedDispose_ = function (object) {
+  this.copiedForEach(k => {
     var k__ = k + '__'
     var x = object[k__]
     if (x) {

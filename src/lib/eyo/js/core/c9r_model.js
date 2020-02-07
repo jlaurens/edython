@@ -30,7 +30,7 @@ eYo.c9r.isModel = (what) => {
 eYo.c9r.model.Allowed = {
   ['^$']: [
     'init', 'deinit', 'dispose', 'ui',
-    'owned', 'computed', 'valued', 'cached', 'cloned', 'link',
+    'owned', 'computed', 'valued', 'cached', 'copied', 'link',
     'xml', 'data', 'slots',
     'out', 'head', 'left', 'right', 'suite', 'foot'
   ],
@@ -47,7 +47,7 @@ eYo.c9r.model.Allowed = {
   computed: '^\\w+$',
   valued: '^\\w+$',
   cached: '^\\w+$',
-  cloned: '^\\w+$',
+  copied: '^\\w+$',
   ['^xml$']: [
     'attr', 'types', 'attribute',
   ],
@@ -72,7 +72,7 @@ eYo.c9r.model.Allowed = {
     'validate', 'willChange', 'atChange', 'didChange',
     'forget',
   ],
-  ['^cloned\\.\\w+$']: [
+  ['^copied\\.\\w+$']: [
     'value', 'lazy', 'init',
     'validate', 'willChange', 'didChange',
   ],
@@ -252,7 +252,7 @@ eYo.c9r.model.PropertyHandler = eYo.do.nothing
           get: before
         }
       }
-    } else if (['owned', 'CONST', 'valued', 'cached', 'cloned'].includes(path)) {
+    } else if (['owned', 'CONST', 'valued', 'cached', 'copied'].includes(path)) {
       var before = model[key]
       if (eYo.isF(before)) {
         after = { init: before }

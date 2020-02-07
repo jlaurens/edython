@@ -32,7 +32,7 @@ eYo.brick.eyo.modelDeclare({
       }
     },
   },
-  cloned: {
+  copied: {
     /**
      * Position of the receiver in the board.
      * @type {eYo.o4t.Where}

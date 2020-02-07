@@ -354,7 +354,7 @@ eYo.field.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
     },
     css_class: {},
   },
-  cloned: {
+  copied: {
     /**
      * @readonly
      * @type {eYo.c9r.Size} The size of the field

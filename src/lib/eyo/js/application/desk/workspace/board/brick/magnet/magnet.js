@@ -434,7 +434,7 @@ eYo.magnet.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
     db: {},
     db_opposite: {},
   },
-  cloned: {
+  copied: {
     where () {
       new eYo.o4t.Where()
     }

@@ -60,7 +60,7 @@ eYo.pane.makeC9r('Workspace', {
     focus_main () { return new eYo.focus.Main(this) },
     zoomer () { return new eYo.pane.Zoomer(this) },
   },
-  cloned: {
+  copied: {
     /** @type {!eYo.c9r.Rect} */
     viewRect () {
       new eYo.c9r.Rect()

@@ -73,8 +73,7 @@ eYo.p6y._p.new = function (owner, key, model) {
 eYo.p6y._p.handle_value = function (prototype, model) {
   let f = model.value
   if (!eYo.isNA(f)) {
-    (model.get || model.set) && eYo.throw(`Bad model (${this.key}): unexpected value for computed properties`)
-    model.lazy && eYo.throw(`Bad model (${this.key}): unexpected lazy`)
+    eYo.isNA(model.lazy) || eYo.throw(`Bad model (${this.key}): unexpected lazy`)
     prototype.start = eYo.isF(f) ? f : function () {
       return f
     }
@@ -94,7 +93,6 @@ eYo.p6y._p.handle_value = function (prototype, model) {
 eYo.p6y._p.handle_reset = function (prototype, model) {
   let f = model.reset
   if (!eYo.isNA(f)) {
-    (model.get || model.set) && eYo.throw(`Bad model (${this.key}): unexpected reset for computed properties`)
     if (!model.value && !model.lazy) {
       model.value = model.reset
       this.handle_value(prototype, model)
@@ -238,12 +236,13 @@ eYo.p6y._p.handle_get_set = function (prototype, model) {
   } else {
     set && eYo.throw(`Bad model (${this.key}): unexpected set -> ${set}`)
     if (computed) {
+      eYo.isNA(model.reset) || eYo.throw(`Bad model (${this.key}): unexpected reset`)
       prototype.setValue = eYo.c9r.noSetter(`Read only key ${this.key}`)
     }
   }
   if (can_lazy) {
     let f = model.lazy
-    if (f) {
+    if (!eYo.isNA(f)) {
       model._starters.push(object => {
         object.getValue = Object.getPrototypeOf(object).__getLazyValue
       })
@@ -252,7 +251,7 @@ eYo.p6y._p.handle_get_set = function (prototype, model) {
       }
     }
   } else {
-    (model.lazy || model.value) && eYo.throw(`Bad model (${this.key}): unexpected value or lazy`)
+    eYo.isNA(model.lazy) && eYo.isNA(model.value) || eYo.throw(`Bad model (${this.key}): unexpected value or lazy`)
   }
 }
 
@@ -316,7 +315,7 @@ eYo.p6y._p.handle_stored = function (prototype, model) {
       }
     }
   } else {
-    get_ && eYo.throw(`Bad model (${this.key}): unexpected get_ object`)
+    eYo.isNA(get_) || eYo.throw(`Bad model (${this.key}): unexpected get_ object`)
   }
   let set_ = model.set_
   if (set_ === eYo.do.nothing) {
@@ -339,7 +338,7 @@ eYo.p6y._p.handle_stored = function (prototype, model) {
       }
     }
   } else {
-    set_ && eYo.throw(`Bad model (${this.key}): unexpected set_ object.`)
+    eYo.isNA(set_) || eYo.throw(`Bad model (${this.key}): unexpected set_ object.`)
   }
 }
 
@@ -359,12 +358,11 @@ eYo.p6y._p.handle_stored = function (prototype, model) {
 eYo.p6y.makeDflt({
   init (owner, key, model) {
     owner || eYo.throw('Missing owner')
-    key || eYo.throw('Missing key')
-    model || eYo.throw('Missing model')
+    eYo.isStr(key) || eYo.throw('Missing key')
+    eYo.isNA(model) && eYo.throw('Missing model')
     this.owner_ = owner
     this.key_ = key
     this.model_ = model
-    this.reentrant_ = Object.create(null)
     this.stored__ = eYo.NA // this may be useless in some situations
     Object.defineProperties(this, {
       value: eYo.c9r.descriptorR(
@@ -388,7 +386,7 @@ eYo.p6y.makeDflt({
   dispose () {
     this.disposeStored()
     this.removeObservers()
-    this.reentrant_ = this.key_ = this.owner_ = this.model_ = eYo.NA
+    this.key_ = this.owner_ = this.model_ = eYo.NA
   },
 })
 

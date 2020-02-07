@@ -33,7 +33,7 @@ eYo.o4t.makeDflt({
 
 ;(() => {
   let _p = Object.getPrototypeOf(eYo.o4t.Dflt.eyo)
-  ;['owned', 'cloned', 'valued', 'cached', 'computed'].forEach(k => {
+  ;['owned', 'copied', 'valued', 'cached', 'computed'].forEach(k => {
     var k_ = k + '_'
     var k__ = k + '__'
     Object.defineProperty(_p, k_, {
@@ -81,7 +81,7 @@ eYo.o4t.makeDflt({
   }
   
   /**
-   * Initialize an instance with valued, cached, owned and cloned properties.
+   * Initialize an instance with valued, cached, owned and copied properties.
    * Default implementation forwards to super.
    * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
    */
@@ -94,7 +94,7 @@ eYo.o4t.makeDflt({
   }
   
   /**
-   * Initialize an instance with valued, cached, owned and cloned properties.
+   * Initialize an instance with valued, cached, owned and copied properties.
    * Default implementation forwards to super.
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
@@ -110,7 +110,7 @@ eYo.o4t.makeDflt({
     }
     this.valuedForEach(f)
     this.ownedForEach(f)
-    this.clonedForEach(f) 
+    this.copiedForEach(f) 
   }
   
   /**
@@ -121,7 +121,7 @@ eYo.o4t.makeDflt({
     this.valuedClear_(object)
     this.cachedForget_(object)
     this.ownedDispose_(object)
-    this.clonedDispose_(object)
+    this.copiedDispose_(object)
   }
   
   /**
@@ -163,7 +163,7 @@ eYo.o4t.makeDflt({
     model.valued && this.valuedDeclare(model.valued)
     model.owned && this.ownedDeclare(model.owned)
     model.cached && this.cachedDeclare(model.cached)
-    model.cloned && this.clonedDeclare(model.cloned)
+    model.copied && this.copiedDeclare(model.copied)
     model.computed && this.computedDeclare(model.computed)
     model.called && this.calledDeclare(model.called)
   }
@@ -649,17 +649,17 @@ eYo.o4t.makeDflt({
   }
   
   /**
-   * Add a 3 levels cloned property to a prototype.
-   * `foo` is a cloned object means that `foo.clone` is a clone of `foo`
+   * Add a 3 levels copied property to a prototype.
+   * `foo` is a copied object means that `foo.copy` is a clone of `foo`
    * and `foo.set(bar)` will set `foo` properties according to `bar`.
    * @param {Map<String, Function|Object>} models,  the key => Function mapping.
    */
-  _p.clonedDeclare = function (models) {
+  _p.copiedDeclare = function (models) {
     this.init_ || (this.init_ = Object.create(null))
     var proto = this.C9r_p
     Object.keys(models).forEach(k => { // No `for (var k in models) {...}`, models may change during the loop
       eYo.parameterAssert(!this.props__.has(k))
-      this.cloned_.add(k)
+      this.copied_.add(k)
       var model = models[k]
       if (eYo.isF(model)) {
         var init = model
@@ -674,7 +674,7 @@ eYo.o4t.makeDflt({
         [k__]: {value: eYo.keyHandler, writable: true},
         [k_]: {
           get() {
-            return this[k__].clone
+            return this[k__].copy
           },
           set (after) {
             var before = this[k__]
@@ -683,7 +683,7 @@ eYo.o4t.makeDflt({
                 return
               }
               var setter = () => {
-                this[k__] = after.clone
+                this[k__] = after.copy
               }
               var f = model.validate
               if (f && (after = f.validate(before, after)) === eYo.INVALID) {
@@ -767,8 +767,8 @@ eYo.o4t.makeDflt({
    * @param {Object} object - the object that owns the property
    * @param {Array<string>} names -  a list of names
    */
-  _p.clonedDispose_ = function (object) {
-    this.clonedForEach(k => {
+  _p.copiedDispose_ = function (object) {
+    this.copiedForEach(k => {
       var k__ = k + '__'
       var x = object[k__]
       if (x) {

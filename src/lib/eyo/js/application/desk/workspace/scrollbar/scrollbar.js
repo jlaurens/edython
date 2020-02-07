@@ -38,7 +38,7 @@ eYo.c9r.makeC9r(eYo, 'Scrollbar', {
     this.oldMetrics_ = null
     this.opt_class_ = opt_class  
   },
-  cloned: {
+  copied: {
     viewRect () {
       new eYo.c9r.Rect()
     }
