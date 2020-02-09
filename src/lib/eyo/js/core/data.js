@@ -63,7 +63,7 @@ eYo.c9r.model.dataHandler = (model, key) => {
   })) { ((k, kk) => {
       var f = model[k]
       if (eYo.isF(f)) {
-        var m = f.length > 2
+        var m = XRegExp.exec(f.toString(), eYo.xre.function_builtin_before)
         if (m) {
           var builtin = m.builtin
           var before = m.before

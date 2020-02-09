@@ -508,27 +508,3 @@ eYo.Setup = (() => {
 
 eYo.Temp = Object.create(null)
 eYo.Debug = Object.create(null)
-
-/**
- * Object disposer.
- * @param {Object} what
- */
-eYo.disposeObject = (what) => {
-  if (what) {
-    if (what.eyo) {
-      eYo.isF(what.dispose) && what.dispose()
-    } else if (eYo.isRA(what)) {
-      try {
-        what.forEach(eYo.disposeObject)
-      } finally {
-        what.length = 0
-      }
-    } else {
-      for (var k in what) {
-        if (Object.hasOwnProperty(what, k)) {
-          eYo.disposeObject(what[k])
-        }
-      }
-    }
-  }
-}

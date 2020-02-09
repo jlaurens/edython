@@ -1065,7 +1065,7 @@ eYo.Node_p.toBrick_ = function (board) {
           root = eYo.brick.newReady(board, eYo.t3.stmt.annotated_stmt)
           n0.testlist_star_exprInBrick(root.target_b)
           d1 = n1.n1.toBrick(board)
-          if (d1.toString === 'str') {
+          if (d1.description === 'str') {
             console.error('STOP HERE')
           }
           root.annotated_s.connect(d1)

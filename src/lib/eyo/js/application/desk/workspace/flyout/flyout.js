@@ -75,8 +75,8 @@ eYo.forwardDeclare('menuButtonRenderer')
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.makeC9r('Flyout', {
-  owned: {
+eYo.o3d.makeC9r(eYo, 'Flyout', {
+  properties: {
     search () {
       return new eYo.section.Search(this)
     },
@@ -87,10 +87,11 @@ eYo.makeC9r('Flyout', {
       return new eYo.section.Draft(this)
     },
     toolbar: eYo.NA,
-  },
-  computed: {
-    workspace () {
-      return this.owner
+    workspace: {
+      get () {
+        return this.owner
+      },
+      dispose: false,
     },
     /**
      * This size and anchor of the receiver and wrapped
@@ -98,7 +99,7 @@ eYo.makeC9r('Flyout', {
      */
     size: {
       get () {
-        var ans = new eYo.c9r.Size(this.viewRect_.size_)
+        var ans = new eYo.geom.Size(this.viewRect_.size_)
         ans.anchor = this.anchor_
         return ans
       },
@@ -112,26 +113,28 @@ eYo.makeC9r('Flyout', {
     /**
      * Return the deletion rectangle for this flyout in viewport coordinates.
      * Edython : add management of the 0 width rectange
-     * @return {eYo.c9r.Rect} Rectangle in which to delete.
+     * @return {eYo.geom.Rect} Rectangle in which to delete.
      */
-    deleteRect () {
-      var rect = this.viewRect
-      var width = rect.width
-      if (!width) {
-        return null
-      }
-      // BIG_NUM is offscreen padding so that bricks dragged beyond the shown flyout
-      // area are still deleted.  Must be larger than the largest screen size,
-      // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
-      var BIG_NUM = 1000000000
-      if (this.atRight) {
-        rect.right += BIG_NUM
-      } else {
-        rect.left -= BIG_NUM
-      }
-      rect.top = BIG_NUM
-      rect.bottom = BIG_NUM
-      return rect
+    deleteRect: {
+      get () {
+        var rect = this.viewRect
+        var width = rect.width
+        if (!width) {
+          return null
+        }
+        // BIG_NUM is offscreen padding so that bricks dragged beyond the shown flyout
+        // area are still deleted.  Must be larger than the largest screen size,
+        // but be smaller than half Number.MAX_SAFE_INTEGER (not available on IE).
+        var BIG_NUM = 1000000000
+        if (this.atRight) {
+          rect.right += BIG_NUM
+        } else {
+          rect.left -= BIG_NUM
+        }
+        rect.top = BIG_NUM
+        rect.bottom = BIG_NUM
+        return rect
+      },
     },
     position: {
       get () {
@@ -149,15 +152,7 @@ eYo.makeC9r('Flyout', {
       get () {
         return this.viewRect_.size_.width
       },
-      get_ () {
-        return this.viewRect_.size_.width
-      },
-      set_ (after) {
-        if (this.viewRect_.size_.width !== after) {
-          this.viewRect_.size_.width = after
-          this.desk.board.layout()
-        }
-      }
+      set: false,
     },
     /**
      * @readonly
@@ -263,6 +258,13 @@ eYo.makeC9r('Flyout', {
       eYo.Flyout.eyo.c9r.OwnedDispose(this, 'scrollbar_')
     }
   },
+  properties: {
+    autoClose: {
+      reset () {
+        return this.options.autoClose
+      },
+    }
+  },
   valued: {
     /**
      * Position of the flyout relative to the board.
@@ -297,11 +299,6 @@ eYo.makeC9r('Flyout', {
      */
     permanentlyDisabled: [],
   },
-  cached: {
-    autoClose () {
-      return this.options.autoClose
-    },
-  },
   copied: {
     /**
      * Position and dimensions of the flyout in the workspace.
@@ -309,7 +306,7 @@ eYo.makeC9r('Flyout', {
      * @private
      */
     viewRect () {
-      return new eYo.c9r.RectProxy(this.board.metrics_.view, {
+      return new eYo.geom.RectProxy(this.board.metrics_.view, {
         l: (after) => after + eYo.Flyout.TOOLBAR_HEIGHT,
         h: (after) => after - eYo.Flyout.TOOLBAR_HEIGHT,
       }, {
@@ -509,7 +506,7 @@ eYo.Flyout.prototype.createBrick = function(originalBrick) {
  */
 eYo.Flyout.prototype.layout_ = function(contents) {
   this.board_.scale = this.desk.board.scale
-  var where = eYo.o4t.Where.xy(this.MARGIN, this.MARGIN)
+  var where = eYo.geom.xyWhere(this.MARGIN, this.MARGIN)
   contents.forEach(brick => {
     // Mark bricks as being inside a flyout.  This is used to detect and
     // prevent the closure of the flyout if the user right-clicks on such a

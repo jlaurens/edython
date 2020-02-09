@@ -84,7 +84,7 @@ eYo.BoardDragger.prototype.start = function(Motion) {
   /**
    * The board's metrics' drag object at the beginning of the drag.
    * Coordinate system: pixel coordinates.
-   * @type {!eYo.o4t.Where}
+   * @type {!eYo.geom.Where}
    * @private
    * @package
    */
@@ -93,11 +93,11 @@ eYo.BoardDragger.prototype.start = function(Motion) {
   /**
    * The local start where. Used to manage the boundaries:
    * dragging past the limits is recorded.
-   * @type {!eYo.o4t.Where}
+   * @type {!eYo.geom.Where}
    * @private
    * @package
    */
-  this.xyStart_ = new eYo.o4t.Where()
+  this.xyStart_ = new eYo.geom.Where()
   if (eYo.app.Focus_mngr.Brick) {
     eYo.app.focus_mngr.Brick.FocusOff()
   }

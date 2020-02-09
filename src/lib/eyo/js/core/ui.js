@@ -11,46 +11,117 @@
  */
 'use strict'
 
-/**
- * @name{eYo.padding}
- * @namespace
- */
-eYo.provide('padding', Object.create(null))
-
 eYo.forwardDeclare('unit')
 eYo.forwardDeclare('font-face')
 goog.forwardDeclare('goog.cssom')
 goog.forwardDeclare('goog.color')
 
 /**
- * The richness of brick colours, regardless of the hue.
- * Must be in the range of 0 (inclusive) to 1 (exclusive).
+ * @name{eYo.font}
+ * @namespace
  */
-eYo.HSV_SATURATION = 5 / 255
+eYo.o4t.makeNS(eYo, 'font')
 
 /**
- * The intensity of brick colours, regardless of the hue.
- * Must be in the range of 0 (inclusive) to 1 (exclusive).
+ * Point size of text.
  */
-eYo.HSV_VALUE = 1
+eYo.o4t.initProperties(eYo.font, {
+  familyMono: {
+    get () {
+      return 'DejaVuSansMono,monospace'
+    }
+  },
+  familySans: {
+    get () {
+      return 'DejaVuSans,sans-serif'
+    }
+  },
+  ascent: {
+    /**
+     * `after` is truncated to the `1/32th`
+     * such that half value is still exact
+     * when used in pixel dimension.
+     * @param {Number} after 
+     */
+    validate (after) {
+      return Math.round(32 * after) / 32
+    },
+    set_ (builtin, after) {
+      builtin(after)
+      this.owner.descent_p.reset()
+      this.owner.xHeight_p.reset()
+      this.owner.space_p.reset()
+      this.owner.totalAscent_p.reset()
+    }
+  },
+  descent: {
+    reset () {
+      return Math.round(this.owner.ascent * 492 * 8 / 389) / 32
+    },
+    set: false,
+  },
+  xHeight: {
+    reset () {
+      return Math.round(this.owner.ascent * 1120 * 8 / 389) / 32
+    },
+    set: false,
+  },
+  space: {
+    reset () {
+      return Math.round(this.owner.ascent * 1233 * 8 / 389) / 32
+    },
+    set: false,
+  },
+  totalAscent: {
+    reset () {
+      return Math.round(this.owner.ascent * 2048 * 8 / 389) / 32
+    },
+    set: false,
+  },
+  size: {
+    get () {
+      return this.owner.ascent
+    }
+  },
+  height: {
+    get () {
+      return this.owner.totalAscent + this.owner.descent
+    },
+  },
+  lineHeight: {
+    get () {
+      return this.owner.height + eYo.padding.t + eYo.padding.b
+    },
+  },
+  style: {
+    get () {
+      return `font-family:${this.owner.familyMono}!important;font-size:${this.owner.ascent}pt!important;`
+    }
+  },
+  menuStyle: {
+    get () {
+      return `font-family:${this.owner.familySans};font-size:${this.owner.ascent}pt;`
+    }
+  },
+})
 
-/**
- * Convert a hue (HSV model) into an RGB hex triplet.
- * @param {number} hue Hue on a colour wheel (0-360).
- * @return {string} RGB code, e.g. '#5ba65b'.
- */
-eYo.hueToRgb = function (hue) {
-  return goog.color.hsvToHex(hue, eYo.HSV_SATURATION, eYo.HSV_VALUE * 255)
-}
+// Initialization of font dimensions
+eYo.font.ascent_ = 13
 
 /**
  * @name{eYo.style}
  * @namespace
  */
-eYo.provide('style', {
-  weight: x => x / (1 + x), // 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
-  SEP_SPACE_X: 0
-})
+eYo.provide('style')
+
+eYo.style._p.weight = x => x / (1 + x), // 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
+eYo.style._p.SEP_SPACE_X = 0
+
+/**
+ * @name{eYo.padding}
+ * @namespace
+ */
+eYo.provide('padding')
 
 ;(() => {
   var g = {
@@ -68,7 +139,7 @@ eYo.provide('style', {
   )
   g = {
     get () {
-      return Math.round(6000 * eYo.style.weight(eYo.font.size / 10) / 1000)
+      return Math.round(6000 * eYo.style.weight(eYo.font.size / 10)) / 1000
     }
   }
   Object.defineProperties(
@@ -80,72 +151,6 @@ eYo.provide('style', {
     }
   )
 }) ()
-
-/**
- * @name{eYo.font}
- * @namespace
- */
-eYo.provide('font', {
-  familyMono: 'DejaVuSansMono,monospace',
-  familySans: 'DejaVuSans,sans-serif'
-})
-
-/**
- * Point size of text.
- */
-Object.defineProperties(eYo.font, {
-  size () {
-    return this.ascent
-  },
-  ascent: {
-    get () {
-      return this.ascent_
-    },
-    /**
-     * `after` is truncated to the `1/32th`
-     * such that half value is still exact
-     * when used in pixel dimension.
-     * @param {Number} after 
-     */
-    set (after) {
-      after = Math.round(32 * after) / 32
-      if (after !== this.ascent_) {
-        this.ascent_ = after
-        after *= 32 / 1556 // = 16 / 778 = 8 / 389
-        this.descent_ = Math.round(492 * after) / 32
-        this.xHeight_ = Math.round(1120 * after) / 32
-        this.space_ = Math.round(1233 * after) / 32
-        this.totalAscent_ = Math.round(2048 * after) / 32
-      }
-    }
-  },
-  descent () {
-    return this.descent_
-  },
-  xHeight () {
-    return this.xHeight_
-  },
-  space () {
-    return this.space_
-  },
-  totalAscent () {
-    return this.totalAscent_
-  },
-  height () {
-    return this.totalAscent + this.descent
-  },
-  lineHeight () {
-    return this.height + eYo.padding.t + eYo.padding.B
-  },
-  style () {
-    return `font-family:${this.familyMono}!important;font-size:${this.ascent}pt!important;`
-  },
-  menuStyle () {
-    return `font-family:${this.familySans};font-size:${this.ascent}pt;`
-  },
-})
-
-eYo.font.ascent = 13
 
 /**
  * Offset of the text editor.
@@ -241,4 +246,25 @@ eYo.style.menuIcon = {
       E)
     return E
   }
+}
+
+/**
+ * The richness of brick colours, regardless of the hue.
+ * Must be in the range of 0 (inclusive) to 1 (exclusive).
+ */
+eYo.HSV_SATURATION = 5 / 255
+
+/**
+ * The intensity of brick colours, regardless of the hue.
+ * Must be in the range of 0 (inclusive) to 1 (exclusive).
+ */
+eYo.HSV_VALUE = 1
+
+/**
+ * Convert a hue (HSV model) into an RGB hex triplet.
+ * @param {number} hue Hue on a colour wheel (0-360).
+ * @return {string} RGB code, e.g. '#5ba65b'.
+ */
+eYo.hueToRgb = function (hue) {
+  return goog.color.hsvToHex(hue, eYo.HSV_SATURATION, eYo.HSV_VALUE * 255)
 }

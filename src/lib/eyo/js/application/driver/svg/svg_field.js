@@ -275,7 +275,7 @@ eYo.svg.Field_p.setVisualAttribute = function (field) {
 /**
  * Return the absolute coordinates of the top-left corner of this field.
  * The origin $(0,0)$ is the top-left corner of the page body.
- * @return {!eYo.o4t.Where} Object with `.x` and `.y` properties.
+ * @return {!eYo.geom.Where} Object with `.x` and `.y` properties.
  * @private
  */
 eYo.svg.Field_p.getAbsoluteWhere_ = function(field) {

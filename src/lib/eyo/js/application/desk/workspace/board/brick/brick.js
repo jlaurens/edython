@@ -34,7 +34,7 @@ eYo.forwardDeclare('stmt')
 
 eYo.forwardDeclare('xre')
 eYo.forwardDeclare('t3')
-eYo.forwardDeclare('o4t.Where')
+eYo.forwardDeclare('geom.Where')
 eYo.forwardDeclare('do')
 
 eYo.forwardDeclare('events')
@@ -704,7 +704,7 @@ eYo.brick.makeDflt({
     foot_m () { return this.magnets.foot },
     /**
      * Position of the receiver in the board.
-     * @type {eYo.o4t.Where}
+     * @type {eYo.geom.Where}
      * @readonly
      */
     xy () {
@@ -712,7 +712,7 @@ eYo.brick.makeDflt({
     },
     /**
      * Position of the receiver in the board.
-     * @type {eYo.o4t.Where}
+     * @type {eYo.geom.Where}
      * @readonly
      */
     where () {
@@ -1945,7 +1945,7 @@ eYo.brick.DEBUG_ = Object.create(null)
   /**
    * @name{moveTo}
    * Move a brick to an offset in board coordinates.
-   * @param {eYo.o4t.Where} xy Offset in board units.
+   * @param {eYo.geom.Where} xy Offset in board units.
    * @param {Boolean} snap Whether we should snap to the grid.
    */
   eYo.driver.makeForwarder(_p, 'moveTo')

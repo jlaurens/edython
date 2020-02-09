@@ -116,7 +116,7 @@ eYo.board.makeDflt({
       },
       /**
        * Set the board's scroll vector.
-       * @param {eYo.c9r.Size} after Scroll factor.
+       * @param {eYo.geom.Size} after Scroll factor.
        */
       set (after) {
         this.metrics__.drag = after
@@ -138,7 +138,7 @@ eYo.board.makeDflt({
      */
     bricksBoundingRect () {
       // JL: TODO separate main bricks and draft bricks
-      var ans = new eYo.c9r.Rect()
+      var ans = new eYo.geom.Rect()
       var bricks = this.topBricks.filter(b3k => b3k.ui && b3k.hasUI)
       bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
       return ans
@@ -151,7 +151,7 @@ eYo.board.makeDflt({
      *   containing the bricks on the board.
      */
     mainBricksBoundingRect () {
-      var ans = new eYo.c9r.Rect()
+      var ans = new eYo.geom.Rect()
       var bricks = this.mainBricks.filter(b3k => b3k.ui && b3k.hasUI)
       bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
       return ans
@@ -164,7 +164,7 @@ eYo.board.makeDflt({
      *   containing the bricks on the board.
      */
     draftBricksBoundingRect () {
-      var ans = new eYo.c9r.Rect()
+      var ans = new eYo.geom.Rect()
       var bricks = this.draftBricks.filter(b3k => b3k.ui && b3k.hasUI)
       bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
       return ans
@@ -173,7 +173,7 @@ eYo.board.makeDflt({
      * Return the position of the board origin relative to the application.
      * The board origin is where a brick would render at position (0, 0).
      * It is not the upper left corner of the main window due to various offsets.
-     * @return {!eYo.o4t.Where} Offset in pixels.
+     * @return {!eYo.geom.Where} Offset in pixels.
      */
     originInApplication () {
       return this.desk.xyElementInDesk(this.dom.svg.canvas_)
@@ -562,7 +562,7 @@ eYo.board.Dflt_p.resizesEnabled_ = true
  * Last known position of the page scroll.
  * This is used to determine whether we have recalculated screen coordinate
  * stuff since the page scrolled.
- * @type {!eYo.o4t.Where}
+ * @type {!eYo.geom.Where}
  * @private
  */
 eYo.board.Dflt_p.lastPageScroll_ = null;
@@ -649,7 +649,7 @@ eYo.board.Dflt_p.resizePort = function() {
     port.width += eYo.Scrollbar.thickness / metrics_.scale
   }
   metrics_.port = port
-  console.error('port: ', port.toString)
+  console.error('port: ', port.description)
 }
 
 /**
@@ -703,7 +703,7 @@ eYo.board.Dflt_p.move = function() {
 
 /**
  * Move the receiver to new coordinates.
- * @param {eYo.o4t.Where} xy Translation.
+ * @param {eYo.geom.Where} xy Translation.
  */
 eYo.board.Dflt_p.moveTo = function(xy) {
   console.log('moveTo', xy)
@@ -814,7 +814,7 @@ eYo.board.Dflt_p.paste = function () {
                 }
               }) || b3k.getMagnets_(false).some(m4t => {
                   var neighbour = m4t.closest(eYo.Motion.SNAP_RADIUS,
-                    eYo.o4t.Where.xy(dx, dy))
+                    eYo.geom.xyWhere(dx, dy))
                   if (neighbour) {
                     return true
                   }
@@ -837,7 +837,7 @@ eYo.board.Dflt_p.paste = function () {
             dy = (view.y + view.height / 2) / scale - size.height / 2
             avoidCollision()
           }
-          b3k.moveBy(eYo.o4t.Where.xy(dx, dy))
+          b3k.moveBy(eYo.geom.xyWhere(dx, dy))
         }
         b3k.focusOn().scrollToVisible()
       }
@@ -865,7 +865,7 @@ eYo.board.Dflt_p.inDeleteArea = function(motion) {
 /**
  * Start tracking a drag of an object on this board.
  * @param {Event} e Mouse down event.
- * @param {eYo.o4t.Where} xy Starting location of object.
+ * @param {eYo.geom.Where} xy Starting location of object.
  */
 eYo.board.Dflt_p.eventWhere = function(e) {
   return this.ui_driver_mngr.eventWhere(this, e)
@@ -1000,7 +1000,7 @@ eYo.board.Dflt_p.markFocused = function() {
 
 /**
  * Zooming the bricks given the center with zooming in or out.
- * @param {eYo.o4t.Where | Event} center coordinate of center.
+ * @param {eYo.geom.Where | Event} center coordinate of center.
  * @param {number} amount Amount of zooming
  *                        (negative zooms out and positive zooms in).
  */
@@ -1023,7 +1023,7 @@ eYo.board.Dflt_p.zoom = function(center, amount) {
   }
   this.scale *= scaleChange
   if (goog.isDef(center.clientX)) {
-    center = new eYo.o4t.Where(center)
+    center = new eYo.geom.Where(center)
   }
   this.ui_driver_mngr.zoom(this, center, scaleChange)
 }
@@ -1090,7 +1090,7 @@ eYo.board.Dflt_p.zoomToFit = function() {
   this.scale = Math.min(size.x, size.y)
   this.scrollCenter()
   if (this.flyout_) {
-    this.moveBy(eYo.o4t.Where.xy(-this.flyout_.viewRect.width / 2, 0))
+    this.moveBy(eYo.geom.xyWhere(-this.flyout_.viewRect.width / 2, 0))
   }
 }
 
@@ -1183,14 +1183,14 @@ eYo.board.Dflt_p.logAllConnections = function (comment) {
 
 /**
  * Convert a coordinate object from pixels to board units.
- * @param {eYo.o4t.Where} pixelCoord  A coordinate with x and y values
+ * @param {eYo.geom.Where} pixelCoord  A coordinate with x and y values
  *     in css pixel units.
- * @return {!eYo.o4t.Where} The input coordinate divided by the board
+ * @return {!eYo.geom.Where} The input coordinate divided by the board
  *     scale.
  * @private
  */
 eYo.board.Dflt_p.fromPixelUnit = function(xy) {
-  return new eYo.o4t.Where(xy).unscale(this.scale)
+  return new eYo.geom.Where(xy).unscale(this.scale)
 }
 
 ;(() => {
@@ -1242,7 +1242,7 @@ eYo.board.Dflt_p.toDom = function (opt) {
  * Convert the board to string.
  * @param {Boolean} [opt_noId]
  */
-eYo.board.Dflt_p.toString = function (opt_noId) {
+eYo.board.Dflt_p.description = function (opt_noId) {
   let oSerializer = new XMLSerializer()
   return oSerializer.serializeToString(this.toDom())
 }

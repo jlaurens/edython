@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.forwardDeclare('board')
-eYo.forwardDeclare('c9r.Rect')
+eYo.forwardDeclare('geom.Rect')
 
 /**
  * The `content` rect is enclosing all the bricks.
@@ -23,7 +23,7 @@ eYo.forwardDeclare('c9r.Rect')
  * @param {eYo.board} [board] the owning board.
  * @constructor
  * @readonly
- * @property {eYo.c9r.Rect}  port
+ * @property {eYo.geom.Rect}  port
  * The port rect is at least enclosing all the bricks.
  * In board coordinates.
  * 
@@ -43,14 +43,14 @@ eYo.forwardDeclare('c9r.Rect')
  * and scrolling may be possible.
  *
  * @readonly
- * @property {eYo.c9r.Rect}  view
+ * @property {eYo.geom.Rect}  view
  * The view rect is the visible rectangle on screen.
  * For the main board it is the bounding rect of the enclosing
  * desk's div. For a flyout, it is generally smaller.
  * It is used for clipping the svg.
  *
  * @readonly 
- * @property {eYo.c9r.Rect} box
+ * @property {eYo.geom.Rect} box
  * The box rect is bigger than the content rect.
  * It is reset each time the content rect changes.
  *
@@ -74,13 +74,13 @@ eYo.forwardDeclare('c9r.Rect')
 eYo.makeC9r('Metrics', {
   copied: {
     port () {
-      return new eYo.c9r.Rect()
+      return new eYo.geom.Rect()
     },
     view () {
-      return new eYo.c9r.Rect()
+      return new eYo.geom.Rect()
     },
     box () {
-      return new eYo.c9r.Rect()
+      return new eYo.geom.Rect()
     },
   },
   valued: {
@@ -95,7 +95,7 @@ eYo.makeC9r('Metrics', {
     updateDepth: 0,
     scale: {
       init () {
-        return new eYo.o4t.Where()
+        return new eYo.geom.Where()
       },
       validate (after) /** @suppress {globalThis} */ {
         if (after <= 0) {
@@ -128,7 +128,7 @@ eYo.makeC9r('Metrics', {
     /**
      * The port rect is at least enclosing all the bricks.
      * In view coordinates.
-     * @type {eYo.c9r.Rect} 
+     * @type {eYo.geom.Rect} 
      * @readonly 
      */
     portInView () {
@@ -137,11 +137,11 @@ eYo.makeC9r('Metrics', {
     /**
      * The default scroll value.
      * 
-     * @type {eYo.o4t.Where} 
+     * @type {eYo.geom.Where} 
      * @readonly 
      */
     dragDefault () {
-      return eYo.o4t.Where.Cl(0*1.5, 0*0.25)
+      return eYo.geom.clWhere(0*1.5, 0*0.25)
     },
     /**
      * Whether the actual drag value is within the acceptable limits.
@@ -155,7 +155,7 @@ eYo.makeC9r('Metrics', {
     /**
      * The opposite of `drag`.
      * 
-     * @type {eYo.o4t.Where}
+     * @type {eYo.geom.Where}
      * @readonly
      */
     scroll () {
@@ -165,7 +165,7 @@ eYo.makeC9r('Metrics', {
      * The minimum port rect in board coordinates,
      * when the scroll value is default.
      * 
-     * @type {eYo.c9r.Rect} 
+     * @type {eYo.geom.Rect} 
      * @readonly 
      */
     minPort () {
@@ -208,7 +208,7 @@ eYo.makeC9r('Metrics', {
       return ans
     },
     toString () {
-      return `drag: ${this.drag.toString}, view: ${this.view.toString}, port: ${this.port.toString}`
+      return `drag: ${this.drag.description}, view: ${this.view.description}, port: ${this.port.description}`
     },
   },
   owned: {
@@ -218,7 +218,7 @@ eYo.makeC9r('Metrics', {
      * at the same location on screen.
      * The drag div is translated by `drag•(i,j)` with respect to the view.
      * 
-     * @type {eYo.o4t.Where} 
+     * @type {eYo.geom.Where} 
      */
     drag: {
       get () {
@@ -272,7 +272,7 @@ eYo.Metrics.prototype.wrapUpdate = function (do_it) {
 
 /**
  * Convert the given argument from `board` coordinates to `view` coordinates.
- * @param{eYo.c9r.Rect | eYo.o4t.Where} WR
+ * @param{eYo.geom.Rect | eYo.geom.Where} WR
  */
 eYo.Metrics.prototype.toView = function (WR) {
   // Referential(view) = (origin: o, basis: {i, j})
@@ -290,7 +290,7 @@ eYo.Metrics.prototype.toView = function (WR) {
 
 /**
  * Convert the given argument from `view` coordinates to `board` coordinates.
- * @param{eYo.c9r.Rect | eYo.o4t.Where} wr
+ * @param{eYo.geom.Rect | eYo.geom.Where} wr
  */
 eYo.Metrics.prototype.fromView = function (wr) {
   return wr.backward(this.drag___).unscale(this.scale)
@@ -299,7 +299,7 @@ eYo.Metrics.prototype.fromView = function (wr) {
 /**
  * Get the dragging limits.
  * Reference is the brick board.
- * @param{?eYo.c9r.Rect} rect
+ * @param{?eYo.geom.Rect} rect
  */
 console.error('MISSING IMPLEMENTATION')
 eYo.Metrics.prototype.getDraggingLimits = function (rect) {

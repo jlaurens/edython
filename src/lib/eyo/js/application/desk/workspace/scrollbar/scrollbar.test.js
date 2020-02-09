@@ -7,7 +7,7 @@ describe('Scrollbar', function() {
       eYo.expr.makeC9r(type, {})
       var b1 = eYo.brick.newReady(eYo.app.Board, type)
       var b2 = eYo.brick.newReady(eYo.app.Board, type)
-      b2.moveTo(eYo.o4t.Where.xy(-5, 90))
+      b2.moveTo(eYo.geom.xyWhere(-5, 90))
     })
   })
 })

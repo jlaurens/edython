@@ -84,10 +84,10 @@ eYo.svg.Desk.prototype.updateMetrics = function(desk) {
  * @param {Element} element SVG element to find the coordinates of. If this is
  *     not a child of the div blockly was injected into, the behaviour is
  *     eYo.NA.
- * @return {!eYo.o4t.Where} Object with .x and .y properties.
+ * @return {!eYo.geom.Where} Object with .x and .y properties.
  */
 eYo.svg.Desk.prototype.whereElement = function(desk, element) {
-  var ans = new eYo.o4t.Where()
+  var ans = new eYo.geom.Where()
   var div = desk.dom.div_
   while (element && element !== div) {
     ans.scale(eYo.svg.getScale_(element))

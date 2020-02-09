@@ -22,26 +22,33 @@ eYo.forwardDeclare('font')
  */
 
 Object.defineProperties(eYo.unit, {
-  x () {
+  x: eYo.c9r.descriptorR(function () {
     return eYo.font.space
-  },
-  y () {
+  }),
+  y: eYo.c9r.descriptorR(function  () {
     return eYo.font.lineHeight
-  },
-  rem () {
+  }),
+  rem: eYo.c9r.descriptorR(function  () {
     return parseFloat(getComputedStyle(document.documentElement).fontSize)
-  },
+  }),
 })
+
 // x, y, with, height are in pixels
 // c, l, w, h are in text units
 
 /**
+ * @name{eYo.geom}
+ * @namespace
+ */
+eYo.o4t.makeNS(eYo, 'geom')
+
+/**
  * `where` is modelling a planar point that stores its coordinates in text units. When `snap` is true, the coordinates are snapped to half integers horizontally and quarter integers vertically.
- * @name {eYo.o4t.Where}
+ * @name {eYo.geom.Where}
  * @constructor
  * @param {Number} c - Horizontal coordinates, or another planar object.
  */
-eYo.o4t.makeC9r('Where', {
+eYo.geom.makeC9r('Where', {
   init (c, l, snap) {
     if (c === true || c === false) {
       this.snap_ = c
@@ -55,41 +62,37 @@ eYo.o4t.makeC9r('Where', {
     }
     this.set(c, l)
   },
-  valued: {
+  properties: {
     /**
      * Horizontal position in text unit
      * @type {Number}
      */
     c: {
-      init: 0,
+      value: 0,
       validate (after) {
-        return this.snap_ ? Math.round(2 * after) / 2 : after
+        return this.owner.snap_ ? Math.round(2 * after) / 2 : after
       },
-      configurable: true,
     },
     /**
      * Vertical position in text unit
      * @type {Number}
      */
     l: {
-      init: 0,
+      value: 0,
       validate (after) {
-        return this.snap_ ? Math.round(4 * after) / 4 : after
+        return this.owner.snap_ ? Math.round(4 * after) / 4 : after
       },
-      configurable: true,
     },
-  },
-  computed: {
     /**
      * Horizontal position in pixels
      * @type {Number}
      */
     x: {
       get () {
-        return this.c_ * eYo.unit.x
+        return this.owner.c_ * eYo.unit.x
       },
-      set_ (after) {
-        this.c_ = after / eYo.unit.x
+      set (after) {
+        this.owner.c_ = after / eYo.unit.x
       }
     },
     /**
@@ -98,102 +101,57 @@ eYo.o4t.makeC9r('Where', {
      */
     y: {
       get () {
-        return this.l_ * eYo.unit.x
+        return this.owner.l_ * eYo.unit.y
       },
-      set_ (after) {
-        this.l_ = after / eYo.unit.x
+      set (after) {
+        this.owner.l_ = after / eYo.unit.y
       }
     },
     /**
      * Euclidian magnitude between points.
      * @return {number} non negative number
      */
-    magnitude () {
-      var dx = this.x
-      var dy = this.y
-      return Math.sqrt(dx * dx + dy * dy)
+    magnitude: {
+      get () {
+        var dx = this.owner.x
+        var dy = this.owner.y
+        return Math.sqrt(dx * dx + dy * dy)
+      }
     },
     /**
      * clone the receiver.
-     * @type {eYo.o4t.Where}
+     * @type {eYo.geom.Where}
      */
-    clone () {
-      return new eYo.o4t.Where(this)
+    copy: {
+      get () {
+        return new eYo.geom.Where(this.owner)
+      }
     },
     /**
-     * Euclidian distance between points.
-     * @param {eYo.o4t.Where} other
-     * @return {number} non negative number
+     * Human readable description.
+     * @return {String}
      */
-    toString () {
-      return `eYo.o4t.Where(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
-    },
+    description: {
+      get () {
+        return `eYo.geom.Where(c: ${this.owner.c}, l: ${this.owner.l}, x: ${this.owner.x}, y: ${this.owner.y})`
+      },
+    }
   },
-})
-
-// Overdefined, for better understanding
-;(() => {
-  let c = Object.getOwnPropertyDescriptor(eYo.o4t.Where_p, 'c_')
-  let l = Object.getOwnPropertyDescriptor(eYo.o4t.Where_p, 'l_')
-  let x = Object.getOwnPropertyDescriptor(eYo.o4t.Where_p, 'x_')
-  let y = Object.getOwnPropertyDescriptor(eYo.o4t.Where_p, 'y_')
-  let ps = {
-    /**
-     * Horizontal offset in text unit
-     * @type {Number}
-     */
-    dc_: c,
-    /**
-     * Vertical offset in text unit
-     * @type {Number}
-     */
-    dl_: l,
-    /**
-     * Horizontal dimension in text unit
-     * @type {Number}
-     */
-    w_: c,
-    /**
-     * Vertical dimension in text unit
-     * @type {Number}
-     */
-    h_: l,
-    /**
-     * Horizontal offset in pixels
-     * @type {Number}
-     */
-    dx_: x,
-    /**
-     * Vertical offset in pixels
-     * @type {Number}
-     */
-    dy_: y,
-    /**
-     * Horizontal dimension in pixels
-     * @type {Number}
-     */
-    width_: x,
-    /**
-     * Vertical dimension in pixels
-     * @type {Number}
-     */
-    height_: y,
+  aliases: {
+    c: ['dc', 'w'],
+    l: ['dl', 'h'],
+    x: ['dx', 'width'],
+    y: ['dy', 'height'],
   }
-  Object.defineProperties(eYo.o4t.Where_p, ps)
-  let d = eYo.o4t.Where.eyo.descriptors__
-  d['dc'] = d['w'] = eYo.c9r.descriptorR(function () { return this.c})
-  d['dl'] = d['h'] = eYo.c9r.descriptorR(function () { return this.l})
-  d['dx'] = d['width'] = eYo.c9r.descriptorR(function () { return this.x})
-  d['dy'] = d['height'] = eYo.c9r.descriptorR(function () { return this.y})
-}) ()
+})
 
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
- * @param {Number | eYo.o4t.Where | Event | Object} c
+ * @param {Number | eYo.geom.Where | Event | Object} c
  * @param {Number} [l]
- * @return {eYo.o4t.Where} The receiver
+ * @return {eYo.geom.Where} The receiver
  */
-eYo.o4t.Where_p.set = function (c = 0, l = 0) {
+eYo.geom.Where_p.set = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ = c.x
     this.y_ = c.y
@@ -215,17 +173,17 @@ eYo.o4t.Where_p.set = function (c = 0, l = 0) {
 /**
  * Test equality between the receiver and the rhs.
  */
-eYo.o4t.Where_p.equals = function (rhs) {
-  return rhs instanceof eYo.o4t.Where && this.c_ == rhs.c_ && this.l_ == rhs.l_
+eYo.geom.Where_p.equals = function (rhs) {
+  return rhs instanceof eYo.geom.Where && this.c_ == rhs.c_ && this.l_ == rhs.l_
 }
 
 /**
  * Setter.
  * @param {Number} x  x coordinate
  * @param {Number} y  y coordinate
- * @return {eYo.o4t.Where} The receiver
+ * @return {eYo.geom.Where} The receiver
  */
-eYo.o4t.Where_p.xySet = function (x = 0, y = 0) {
+eYo.geom.Where_p.xySet = function (x = 0, y = 0) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     this.x_ = x.x
     this.y_ = x.y
@@ -246,11 +204,12 @@ eYo.o4t.Where_p.xySet = function (x = 0, y = 0) {
 
 /**
  * Convenient creator.
- * @param {Number} x  x coordinate
- * @param {Number} y  y coordinate
- * @return {eYo.o4t.Where} The receiver
+ * @param {Number} x - x coordinate
+ * @param {Number} y - y coordinate
+ * @param {Boolean} snap - Whether the receiver should snap to the grid
+ * @return {eYo.geom.Where} The receiver
  */
-eYo.o4t.Where.xy = function (x, y, snap) {
+eYo.geom.xyWhere = function (x, y, snap) {
   var y
   if (x === true || x === false) {
     var _ = x
@@ -264,7 +223,7 @@ eYo.o4t.Where.xy = function (x, y, snap) {
   } else {
     snap = !!x.snap || !!snap
   }
-return new eYo.o4t.Where(snap).xySet(x, y)
+  return new eYo.geom.Where(snap).xySet(x, y)
 }
 
 /**
@@ -272,19 +231,19 @@ return new eYo.o4t.Where(snap).xySet(x, y)
  * @param {Number} [c] - c coordinate. Defaults to 0.
  * @param {Number} [l] - l coordinate. Defaults to 0.
  * @param {Boolean} [snap] - snap flag. Defaults to false.
- * @return {eYo.o4t.Where} The receiver
+ * @return {eYo.geom.Where} The receiver
  */
-eYo.o4t.Where.Cl = function (c, l, snap) {
-  return new eYo.o4t.Where(c, l, snap)
+eYo.geom.clWhere = function (c, l, snap) {
+  return new eYo.geom.Where(c, l, snap)
 }
 
 /**
  * Like `set` but advance the coordinates, instead of setting them.
- * @param {number | eYo.o4t.Where | eYo.c9r.Size} c
+ * @param {number | eYo.geom.Where | eYo.geom.Size} c
  * @param {number} l
- * @return {eYo.o4t.Where} c
+ * @return {eYo.geom.Where} c
  */
-eYo.o4t.Where_p.forward = function (c = 0, l = 0) {
+eYo.geom.Where_p.forward = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ += c.x
     this.y_ += c.y
@@ -297,11 +256,11 @@ eYo.o4t.Where_p.forward = function (c = 0, l = 0) {
 
 /**
  * Like `set` but advance the coordinates, instead of setting them.
- * @param {number | eYo.o4t.Where | eYo.c9r.Size} c
+ * @param {number | eYo.geom.Where | eYo.geom.Size} c
  * @param {number} l
- * @return {eYo.o4t.Where} c
+ * @return {eYo.geom.Where} c
  */
-eYo.o4t.Where_p.backward = function (c = 0, l = 0) {
+eYo.geom.Where_p.backward = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ -= c.x
     this.y_ -= c.y
@@ -317,9 +276,9 @@ eYo.o4t.Where_p.backward = function (c = 0, l = 0) {
  * Board coodinates
  * @param {number} c
  * @param {number} l
- * @return {eYo.o4t.Where} c
+ * @return {eYo.geom.Where} c
  */
-eYo.o4t.Where_p.xyAdvance = function (x = 0, y = 0) {
+eYo.geom.Where_p.xyAdvance = function (x = 0, y = 0) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     y = x.y
     x = x.x
@@ -333,9 +292,9 @@ eYo.o4t.Where_p.xyAdvance = function (x = 0, y = 0) {
  * Scale the receiver.
  * @param {Number | Object} scaleX
  * @param {Number} [scaleY] - Defaults to
- * @return {eYo.o4t.Where} the receiver
+ * @return {eYo.geom.Where} the receiver
  */
-eYo.o4t.Where_p.scale = function (scaleX, scaleY) {
+eYo.geom.Where_p.scale = function (scaleX, scaleY) {
   if (scaleX.x) {
     this.c_ *= scaleX.x
     this.l_ *= (scaleX.y || scaleX.x)
@@ -353,9 +312,9 @@ eYo.o4t.Where_p.scale = function (scaleX, scaleY) {
  * Unscale the receiver.
  * @param {Number | Object} scaleX
  * @param {Number} [scaleY] - Defaults to scaleX
- * @return {eYo.o4t.Where} the receiver
+ * @return {eYo.geom.Where} the receiver
  */
-eYo.o4t.Where_p.unscale = function (scaleX, scaleY) {
+eYo.geom.Where_p.unscale = function (scaleX, scaleY) {
   if (scaleX.x) {
     this.c_ /= scaleX.x
     this.l_ /= (scaleX.y || scaleX.x)
@@ -371,10 +330,10 @@ eYo.o4t.Where_p.unscale = function (scaleX, scaleY) {
 
 /**
  * Euclidian distance between points.
- * @param {eYo.o4t.Where} other
+ * @param {eYo.geom.Where} other
  * @return {number} non negative number
  */
-eYo.o4t.Where_p.distance = function (other) {
+eYo.geom.Where_p.distance = function (other) {
   var dx = this.x - other.x
   var dy = this.y - other.y
   return Math.sqrt(dx * dx + dy * dy)
@@ -382,40 +341,41 @@ eYo.o4t.Where_p.distance = function (other) {
 
 /**
  * Test container.
- * @param {eYo.c9r.Rect} rect
+ * Returns true iff the receiver is inside the given rect.
+ * @param {eYo.geom.Rect} rect
  * @return {Boolean}
  */
-eYo.o4t.Where_p.in = function (rect) {
-  return this.c_ >= rect.c_min
-    && this.c_ <= rect.c_max
-    && this.l_ >= rect.l_min
-    && this.l_ <= rect.l_max
+eYo.geom.Where_p.in = function (rect) {
+  return this.c >= rect.c_min
+    && this.c <= rect.c_max
+    && this.l >= rect.l_min
+    && this.l <= rect.l_max
 }
 
 /**
  * Test container.
  * Opposite of `in`, except for the rect boundary. A point of the rect boundary is in and out the rect.
- * @param {eYo.c9r.Rect} rect
- * @return {number} non negative number
+ * @param {eYo.geom.Rect} rect
+ * @return {Boolean} non negative number
  */
-eYo.o4t.Where_p.out = function (rect) {
-  return this.c_ <= rect.c_min
-    || this.c_ >= rect.c_max
-    || this.l_ <= rect.l_min
-    || this.l_ >= rect.l_max
+eYo.geom.Where_p.out = function (rect) {
+  return this.c <= rect.c_min
+    || this.c >= rect.c_max
+    || this.l <= rect.l_min
+    || this.l >= rect.l_max
 }
 
 /**
  * `Size` is a synonym of Where.
  */
-eYo.c9r.Size = eYo.o4t.Where
+eYo.geom.Size = eYo.geom.Where
 
 /**
  * Sets from the given text.
  * @param {String!} s
- * @return {eYo.c9r.Size} the receiver.
+ * @return {eYo.geom.Size} the receiver.
  */
-eYo.o4t.Where_p.setFromText = function (txt) {
+eYo.geom.Where_p.setFromText = function (txt) {
   var lines = txt.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/)
   var c = 0
   lines.forEach(l => (c < l.length) && (c = l.length) )
@@ -428,10 +388,11 @@ eYo.o4t.Where_p.setFromText = function (txt) {
  * @param {String!} s
  */
 eYo.do.SizeOfText = function (txt) {
-  return new eYo.c9r.Size().setFromText(txt)
+  return new eYo.geom.Size().setFromText(txt)
 }
 
 /**
+ * @name{eYo.geom.Rect}
  * `Rect` stores its coordinates in text units.
  * Class for representing rectangular regions.
  * @param {number} c Left, in text units.
@@ -441,314 +402,218 @@ eYo.do.SizeOfText = function (txt) {
  * @struct
  * @constructor
  */
-eYo.c9r.makeC9r('Rect', {
+eYo.geom.makeC9r('Rect', {
   init (c, l, w, h, snap) {
-    this.origin_ = new eYo.o4t.Where()
-    this.size_ = new eYo.c9r.Size()
     this.set(c, l, w, h, snap)
   },
-  computed: {
+  aliases: {
+    origin: 'topLeft',
     // Basic properties in text dimensions.
     // When in text dimensions,
     // setters round their arguments to half width and quarter height.
     // Except for left, right, top and bottom,
     // the position setters won't change the size.
-    c: {
-      get () {
-        return this.origin_.c
-      },
-      set (after) {
-        this.origin_.c_ = after
-      }
-    },
-    l: {
-      get () {
-        return this.origin_.l
-      },
-      set (after) {
-        this.origin_.l_ = after
-      }
-    },
-    w: {
-      get () {
-        return this.size_.w
-      },
-      set (after) {
-        this.size_.w_ = after
-      }
-    },
-    h: {
-      get () {
-        return this.size_.h
-      },
-      set (after) {
-        this.size_.h_ = after
-      }
-    },
+    'origin.c': ['c', 'c_min'],
+    'origin.l': ['l', 'l_min'],
+    'size.w': 'w',
+    'size.h': 'h',
     // basic properties in board dimensions
-    x: {
-      get () {
-        return this.origin_.x
-      },
-      set (after) {
-        this.origin_.x_ = after
-      }
-    },
-    y: {
-      get () {
-        return this.origin_.y
-      },
-      set (after) {
-        this.origin_.y_ = after
-      }
-    },
-    width: {
-      get () {
-        return this.size_.width
-      },
-      set (after) {
-        this.size_.width_ = after
-      }
-    },
-    height: {
-      get () {
-        return this.size_.height
-      },
-      set (after) {
-        this.size_.height_ = after
-      }
-    },
-    // convenient setters and getters
-    c_min: {
-      get () {
-        return this.c
-      },
-      /**
-       * @param {Number} after 
-       */
-      set (after) {
-        this.c_ = after
-      }
-    },
+    'origin.x': ['x', 'x_min'],
+    'origin.y': ['y', 'y_min'],
+    'size.width': 'width',
+    'size.height': 'height',
+  },
+  properties: {
     c_mid: {
       get () {
-        return this.c + this.w / 2
+        return this.owner.c + this.owner.w / 2
       },
       /**
        * @param {Number} after 
        */
       set (after) {
-        this.c_ = after - this.w / 2
+        this.owner.c_ = after - this.owner.w / 2
       }
     },
     c_max: {
       get () {
-        return this.c + this.w
+        return this.owner.c + this.owner.w
       },
       set (after) {
-        this.c_ = after - this.w
-      }
-    },
-    l_min: {
-      get () {
-        return this.l
-      },
-      /**
-       * The height does not change, `l_max` changes accordingly.
-       * @param {Number} after 
-       */
-      set (after) {
-        this.l_ = after
+        this.owner.c_ = after - this.owner.w
       }
     },
     l_mid: {
       get () {
-        return this.l + this.h / 2
+        return this.owner.l + this.owner.h / 2
       },
       set (after) {
-        this.l_ = after - this.h / 2
+        this.owner.l_ = after - this.owner.h / 2
       }
     },
     l_max: {
       get () {
-        return this.l + this.h
+        return this.owner.l + this.owner.h
       },
       set (after) {
-        this.l_ = after - this.h
+        this.owner.l_ = after - this.owner.h
       }
     },
     // Convenient setters in board coordinates
-    x_min: {
-      get () {
-        return this.x
-      },
-      set (after) {
-        this.x_ = after
-      }
-    },
     x_mid: {
       get () {
-        return this.x + this.width / 2
+        return this.owner.x + this.owner.width / 2
       },
       set (after) {
-        this.x_ = after - this.width / 2
+        this.owner.x_ = after - this.owner.width / 2
       }
     },
     x_max: {
       get () {
-        return this.x + this.width
+        return this.owner.x + this.owner.width
       },
       set (after) {
-        this.x_ = after - this.width
-      }
-    },
-    y_min: {
-      get () {
-        return this.y
-      },
-      set (after) {
-        this.y_ = after
+        this.owner.x_ = after - this.owner.width
       }
     },
     y_mid: {
       get () {
-        return this.y + this.height / 2
+        return this.owner.y + this.owner.height / 2
       },
       set (after) {
-        this.y_ = after - this.height / 2
+        this.owner.y_ = after - this.owner.height / 2
       }
     },
     y_max: {
       get () {
-        return this.y + this.height
+        return this.owner.y + this.owner.height
       },
       set (after) {
-        this.y_ = after - this.height
+        this.owner.y_ = after - this.owner.height
       }
     },
     //// The setters change the width, but does not change the `right`
     left: {
       get () {
-        return this.origin_.x
+        return this.owner.origin_.x
       },
       set (after) {
-        this.width = this.x_max - after
-        this.x_min_ = after
+        this.owner.width = this.owner.x_max - after
+        this.owner.x_min_ = after
       }
     },
     top: {
       get () {
-        return this.y
+        return this.owner.y
       },
       /**
        * The height does not change.
        * @param {Number} after 
        */
       set (after) {
-        this.height = this.y_max - after
-        this.y_min_ = after
+        this.owner.height = this.owner.y_max - after
+        this.owner.y_min_ = after
       }
     },
     right: {
       get () {
-        return this.x_max
+        return this.owner.x_max
       },
       /**
        * Change the width, not the `left`.
        * No negative width.
        */
       set (after) {
-        this.width_ = Math.max(0, after - this.left)
+        this.owner.width_ = Math.max(0, after - this.owner.left)
       }
     },
     bottom: {
       get () {
-        return this.y_max
+        return this.owner.y_max
       },
       /**
        * Change the height, not the `top`.
        * No negative height.
        */
       set (after) {
-        this.height_ = Math.max(0, after - this.top)
+        this.owner.height_ = Math.max(0, after - this.owner.top)
       }
     },
     // Composed
     origin: {
-      get () {
-        return new eYo.o4t.Where(this.origin_)
+      value () {
+        return new eYo.geom.Where()
       },
+      copy: true,
       set (after) {
-        this.origin_.x_ = after.x
-        this.origin_.y_ = after.y
-      }
-    },
-    topLeft: {
-      get () {
-        return new eYo.o4t.Where(this.origin_)
-      },
-      set (after) {
-        this.origin_.x_ = after.x
-        this.origin_.y_ = after.y
+        this.value.xySet(after)
       }
     },
     bottomRight: {
       get () {
-        return new eYo.o4t.Where(this.origin_).forward(this.size_)
+        return this.owner.origin.forward(this.owner.size_)
       },
       set (after) {
-        this.x_max_ = after.x
-        this.y_max_ = after.y
+        this.owner.x_max_ = after.x
+        this.owner.y_max_ = after.y
       }
     },
     center: {
       get () {
-        return new eYo.o4t.Where(this.origin_).forward(this.size_.unscale(2))
+        return this.owner.origin.forward(this.owner.size_.unscale(2))
       },
       /**
        * Change the origin but keeps the size.
        */
       set (after) {
-        this.origin_ = after.addvance(this.size_.unscale(-2))
+        this.owner.origin_ = after.addvance(this.owner.size_.unscale(-2))
       }
     },
     size: {
-      get () {
-        return new eYo.c9r.Size(this.size_)
+      value () {
+        return new eYo.geom.Size()
       },
+      copy: true,
       set (after) {
-        this.size_.width_ = after.width
-        this.size_.height_ = after.height
-      }
+        this.value.xySet(after)
+      },
     },
     /**
      * clone the receiver.
-     * @type {eYo.c9r.Rect}
+     * @type {eYo.geom.Rect}
      */
-    clone () {
-      return new eYo.c9r.Rect(this)
+    copy: {
+      get () {
+        return new eYo.geom.Rect(this)
+      },
     },
     /**
      * String representation of the receiver.
      * @return {String} a string
      */
-    toString () {
-      return `eYo.c9r.Rect(origin: ${this.origin_.toString}, size: ${this.size_.toString})`
+    description: {
+      get () {
+        return `eYo.geom.Rect(c: ${this.owner.c}, x: ${this.owner.x}, l: ${this.owner.l}, y: ${this.owner.y}, w: ${this.owner.w}, width: ${this.owner.width}, h: ${this.owner.h}, height: ${this.owner.height})`
+      },
     },
     /**
      * Width of the draft part of the board.
      * @return {number} non negative number
      */
-    draft () {
-      return Math.max(0, -this.x)
+    draft: {
+      get () {
+        return Math.max(0, -this.x)
+      },
     },
     /**
      * Width of the main part of the board.
      * `0` when in flyout.
      * @return {number} non negative number
      */
-    main () {
-      return Math.min(this.width, this.width + this.x)
+    main: {
+      get () {
+        return Math.min(this.owner.width, this.owner.width + this.owner.x)
+      },
     },
   },
 })
@@ -756,18 +621,18 @@ eYo.c9r.makeC9r('Rect', {
 /**
  * Dispose of the receiver's resources.
  */
-eYo.c9r.Rect_p.dispose = eYo.do.nothing
+eYo.geom.Rect_p.dispose = eYo.do.nothing
 
 /**
  * set the `Rect`.
  * This is a very very permissive setter.
- * @param{?Number|eYo.o4t.Where|Element} c
- * @param{?Number|eYo.c9r.Size} l
- * @param{?Number|eYo.c9r.Size} w
+ * @param{?Number|eYo.geom.Where|Element} c
+ * @param{?Number|eYo.geom.Size} l
+ * @param{?Number|eYo.geom.Size} w
  * @param{?Number} h
- * @return {eYo.c9r.Rect} The receiver
+ * @return {eYo.geom.Rect} The receiver
  */
-eYo.c9r.Rect_p.set = function (c = 0, l = 0, w = 0, h = 0, snap) {
+eYo.geom.Rect_p.set = function (c = 0, l = 0, w = 0, h = 0, snap) {
   if (eYo.isDef(c.left) && eYo.isDef(c.right) && eYo.isDef(c.top) && eYo.isDef(c.bottom)) {
     // properties are evaluated twice
     this.left_ = c.left
@@ -783,19 +648,19 @@ eYo.c9r.Rect_p.set = function (c = 0, l = 0, w = 0, h = 0, snap) {
     } else if (eYo.isDef(l.width) && eYo.isDef(l.height)) {
       this.size_ = l
     } else {
-      this.size_.x = l
-      this.size_.y = w
+      this.c_ = l
+      this.l_ = w
     }
   } else {
-    this.origin_.c_ = c
-    this.origin_.l_ = l
+    this.c_ = c
+    this.l_ = l
     if (eYo.isDef(w.x) && eYo.isDef(w.y)) {
       this.size_ = w
     } else if (eYo.isDef(w.width) && eYo.isDef(w.height)) {
       this.size_ = w
     } else {
-      this.size_.x_ = w
-      this.size_.y_ = h
+      this.w_ = w
+      this.h_ = h
     }
   }
   return this
@@ -807,37 +672,37 @@ eYo.c9r.Rect_p.set = function (c = 0, l = 0, w = 0, h = 0, snap) {
  * @param {Number} y  y coordinate
  * @param {Number} width  x coordinate
  * @param {Number} height  y coordinate
- * @return {eYo.c9r.Rect} The receiver
+ * @return {eYo.geom.Rect} The receiver
  */
-eYo.c9r.Rect_p.xySet = function (x = 0, y = 0, width = 0, height = 0) {
-  if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
-    this.origin_.set(x)
-    this.size_.xySet(y, width)
-  } else {
+eYo.geom.Rect_p.xySet = function (x = 0, y = 0, width = 0, height = 0) {
+  if (eYo.isNA(x.x) || eYo.isNA(x.y)) {
     this.origin_.xySet(x, y)
     this.size_.xySet(width, height)
-    }
+  } else {
+    this.origin_.set(x)
+    this.size_.xySet(y, width)
+  }
   return this
 }
 
 /**
  * Like `set` but advance the coordinates, instead of setting them.
- * @param {number | eYo.o4t.Where | eYo.c9r.Size} c
+ * @param {number | eYo.geom.Where | eYo.geom.Size} c
  * @param {number} l
- * @return {eYo.c9r.Rect}
+ * @return {eYo.geom.Rect}
  */
-eYo.c9r.Rect_p.forward = function (c = 0, l = 0) {
+eYo.geom.Rect_p.forward = function (c = 0, l = 0) {
   this.origin_.forward(c, l)
   return this
 }
 
 /**
  * Like `set` but advance the coordinates, instead of setting them.
- * @param {number | eYo.o4t.Where | eYo.c9r.Size} c
+ * @param {number | eYo.geom.Where | eYo.geom.Size} c
  * @param {number} l
- * @return {eYo.c9r.Rect}
+ * @return {eYo.geom.Rect}
  */
-eYo.c9r.Rect_p.backward = function (c = 0, l = 0) {
+eYo.geom.Rect_p.backward = function (c = 0, l = 0) {
   this.origin_.backward(c, l)
   return this
 }
@@ -848,27 +713,27 @@ eYo.c9r.Rect_p.backward = function (c = 0, l = 0) {
  * @param {Number} y  y coordinate
  * @param {Number} width  x coordinate
  * @param {Number} height  y coordinate
- * @return {eYo.c9r.Rect} The newly created rect instance.
+ * @return {eYo.geom.Rect} The newly created rect instance.
  */
-eYo.c9r.xyRect = function (x = 0, y = 0, width = 0, height = 0) {
-  return new eYo.c9r.Rect().xySet(x, y, width, height)
+eYo.geom.xyRect = function (x = 0, y = 0, width = 0, height = 0) {
+  return new eYo.geom.Rect().xySet(x, y, width, height)
 }
 
 /**
  * Test equality between the receiver and the rhs.
- * @param {eYo.c9r.Rect} rhs
+ * @param {eYo.geom.Rect} rhs
  */
-eYo.c9r.Rect_p.equals = function (rhs) {
-  return rhs instanceof eYo.c9r.Rect && this.origin_.equals(rhs.origin_) && this.size_.equals(rhs.size_)
+eYo.geom.Rect_p.equals = function (rhs) {
+  return rhs instanceof eYo.geom.Rect && this.origin_.equals(rhs.origin_) && this.size_.equals(rhs.size_)
 }
 
 /**
  * Scale the receiver.
  * @param {Number | Object} scaleX  Must be positive.
  * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
- * @return {!eYo.c9r.Rect} the receiver
+ * @return {!eYo.geom.Rect} the receiver
  */
-eYo.c9r.Rect_p.scale = function (scaleX, scaleY) {
+eYo.geom.Rect_p.scale = function (scaleX, scaleY) {
   this.origin_.scale(scaleX, scaleY)
   this.size_.scale(scaleX, scaleY)
   return this
@@ -878,9 +743,9 @@ eYo.c9r.Rect_p.scale = function (scaleX, scaleY) {
  * Unscale the receiver.
  * @param {Number} scaleX  Must be positive.
  * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
- * @return {!eYo.c9r.Rect} the receiver
+ * @return {!eYo.geom.Rect} the receiver
  */
-eYo.c9r.Rect_p.unscale = function (scaleX, scaleY) {
+eYo.geom.Rect_p.unscale = function (scaleX, scaleY) {
   this.origin_.unscale(scaleX, scaleY)
   this.size_.unscale(scaleX, scaleY)
   return this
@@ -888,9 +753,9 @@ eYo.c9r.Rect_p.unscale = function (scaleX, scaleY) {
 
 /**
  * Mirror the receiver vertically and horizontally.
- * @return {!eYo.c9r.Rect} the receiver
+ * @return {!eYo.geom.Rect} the receiver
  */
-eYo.c9r.Rect_p.mirror = function () {
+eYo.geom.Rect_p.mirror = function () {
   // size does not change, only max <-> -min
   this.x_max_ = -this.x
   this.y_max_ = -this.y
@@ -900,13 +765,13 @@ eYo.c9r.Rect_p.mirror = function () {
 /**
  * Inset the receiver.
  * Default values are `eYo.unit.x / 2` and `eYo.unit.y / 4`
- * @param {Number|eYo.o4t.Where} [dx_min]
+ * @param {Number|eYo.geom.Where} [dx_min]
  * @param {Number} [dy_min]
  * @param {Number} [dx_max]
  * @param {Number} [dy_max]
- * @return {!eYo.c9r.Rect} the receiver
+ * @return {!eYo.geom.Rect} the receiver
  */
-eYo.c9r.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
+eYo.geom.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
   if (!eYo.isDef(dx_min)) {
     dx_min = dx_max = eYo.unit.x / 2
     dy_min = dy_max = eYo.unit.y / 4
@@ -934,13 +799,13 @@ eYo.c9r.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
 /**
  * outset the receiver.
  * Default values are `eYo.unit.x / 2` and `eYo.unit.y / 4`
- * @param {Number|eYo.o4t.Where} [dx_min]
+ * @param {Number|eYo.geom.Where} [dx_min]
  * @param {Number} [dy_min]
  * @param {Number} [dx_max]
  * @param {Number} [dy_max]
- * @return {!eYo.c9r.Rect} the receiver
+ * @return {!eYo.geom.Rect} the receiver
  */
-eYo.c9r.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
+eYo.geom.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
   if (!eYo.isDef(dx_min)) {
     dx_min = dx_max = eYo.unit.x / 2
     dy_min = dy_max = eYo.unit.y / 4
@@ -967,11 +832,11 @@ eYo.c9r.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
 
 /**
  * Whether the receiver contains the given point.
- * @param {Number | eYo.o4t.Where} x
+ * @param {Number | eYo.geom.Where} x
  * @param {Number} [y]
  * @return {Boolean}
  */
-eYo.c9r.Rect_p.xyContains = function (x, y) {
+eYo.geom.Rect_p.xyContains = function (x, y) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     var c = x.x / eYo.unit.x
     var l = y.x / eYo.unit.y
@@ -989,10 +854,10 @@ eYo.c9r.Rect_p.xyContains = function (x, y) {
 
 /**
  * Union with the `Rect`.
- * @param {eYo.c9r.Rect} rect
- * @return {eYo.c9r.Rect} the receiver
+ * @param {eYo.geom.Rect} rect
+ * @return {eYo.geom.Rect} the receiver
  */
-eYo.c9r.Rect_p.union = function (rect) {
+eYo.geom.Rect_p.union = function (rect) {
   var a = rect.x
   if (a < this.x) {
     this.x_ = a
@@ -1019,12 +884,12 @@ eYo.c9r.Rect_p.union = function (rect) {
  * The only difference with closure implementation is that we keep track
  * of the rectangles order: 0 -> above, 1 -> below, 2 -> left, 3 -> right
  * SEE: https://github.com/google/closure-library/blob/master/closure/goog/math/rect.js#L272
- * @param {eYo.c9r.Rect} a A Rectangle.
- * @param {eYo.c9r.Rect} b A Rectangle.
- * @return {!Array<?eYo.c9r.Rect>} An array with 4 rectangles which
+ * @param {eYo.geom.Rect} a A Rectangle.
+ * @param {eYo.geom.Rect} b A Rectangle.
+ * @return {!Array<?eYo.geom.Rect>} An array with 4 rectangles which
  *     together define the difference area of rectangle a minus rectangle b.
  */
-eYo.c9r.Rect.difference = function(a, b) {
+eYo.geom.deltaRect = function(a, b) {
   var ans = [null, null, null, null]
 
   var top = a.top
@@ -1037,18 +902,18 @@ eYo.c9r.Rect.difference = function(a, b) {
   var b_bottom = b.top + b.height
 
   if (a_bottom <= b.top) { // b is entirely below a
-    ans[0] = new eYo.c9r.Rect(a)
+    ans[0] = new eYo.geom.Rect(a)
     return
   }
   // b.top < a_bottom
   if (b_bottom <= a.top) {
-    ans[1] = new eYo.c9r.Rect(a)
+    ans[1] = new eYo.geom.Rect(a)
     return
   }
   // a.top < b_bottom
   // Subtract off any area on top where A extends past B
   if (b.top > a.top) {
-    var r = ans[0] = new eYo.c9r.Rect(a)
+    var r = ans[0] = new eYo.geom.Rect(a)
     r.height_ = b.top - a.top
     top = b.top
     // If we're moving the top down, we also need to subtract the height diff.
@@ -1059,20 +924,20 @@ eYo.c9r.Rect.difference = function(a, b) {
   // b.top < b_bottom < a_bottom
   // b.top < a_bottom <= b_bottom
   if (b_bottom < a_bottom) {
-    r = ans[1] = new eYo.c9r.Rect(a)
+    r = ans[1] = new eYo.geom.Rect(a)
     r.y_ = b_bottom
     r.height_ = a_bottom - b_bottom
     height = b_bottom - top
   }
   if (b.right <= a.left) {
     // no intersection
-    ans[2] = new eYo.c9r.Rect(a)
+    ans[2] = new eYo.geom.Rect(a)
     return
   }
   // a.left < b.right
   if (a.right <= b.left) {
     // no intersection
-    ans[3] = new eYo.c9r.Rect(a)
+    ans[3] = new eYo.geom.Rect(a)
     return
   }
   // b.left < a.right
@@ -1081,7 +946,7 @@ eYo.c9r.Rect.difference = function(a, b) {
   // a.left < b.left < b.right
   // b.left <= a.left < b.right
   if (a.left < b.left) {
-    r = ans[2] = new eYo.c9r.Rect(a)
+    r = ans[2] = new eYo.geom.Rect(a)
     r.width_ = b.left - a.left
     r.height_ = height
   }
@@ -1102,12 +967,12 @@ eYo.c9r.Rect.difference = function(a, b) {
  * either 0 width or 0 height,
  * thus representing either a segment or a point.
  * Both rectangles are expected to have the same constructor.
- * @param {eYo.c9r.Rect} a A Rectangle.
- * @param {eYo.c9r.Rect} b A Rectangle.
- * @return {eYo.c9r.Rect}
+ * @param {eYo.geom.Rect} a A Rectangle.
+ * @param {eYo.geom.Rect} b A Rectangle.
+ * @return {eYo.geom.Rect}
  */
-eYo.c9r.Rect.intersection = function(a, b) {
-  var ans = new eYo.c9r.Rect()
+eYo.geom.intersectionRect = function(a, b) {
+  var ans = new eYo.geom.Rect()
   ans.left = Math.max(a.left, b.left)
   ans.right = Math.min(a.right, b.right)
   if (ans.width >= 0) {

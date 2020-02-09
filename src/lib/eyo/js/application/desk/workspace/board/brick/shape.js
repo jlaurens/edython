@@ -12,7 +12,7 @@
 'use strict'
 
 eYo.forwardDeclare('unit')
-eYo.forwardDeclare('o4t.Where')
+eYo.forwardDeclare('geom.Where')
 
 eYo.forwardDeclare('padding')
 goog.forwardDeclare('goog.color')
@@ -23,7 +23,7 @@ goog.forwardDeclare('goog.color')
  */
 eYo.o4t.makeC9r('Shape', {
   init () {
-    this.cursor = new eYo.o4t.Where()
+    this.cursor = new eYo.geom.Where()
     // allways start from the top left
   },
   computed: {
@@ -653,7 +653,7 @@ eYo.Shape_p.initWithMagnet = function(magnet, opt) {
     var brick = magnet.brick
     var m4t
     if (brick && brick.wrapped_ && opt && opt.absolute && (m4t = brick.out_m)) {
-      var where = eYo.o4t.Where.xy(magnet)
+      var where = eYo.geom.xyWhere(magnet)
       do {
         var t9k = m4t.targetBrick
         where.forward(t9k)

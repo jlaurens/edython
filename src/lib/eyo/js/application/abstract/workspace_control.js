@@ -16,7 +16,7 @@
  * @param {eYo.Workspace} workspace The board to sit in.
  * @constructor
  * @readonly
- * @property {eYo.c9r.Rect} viewRect,  The view rectangle
+ * @property {eYo.geom.Rect} viewRect,  The view rectangle
  * @readonly
  * @property {eYo.Workspace} workspace,  The workspace...
  * @readonly
@@ -43,7 +43,7 @@ eYo.o3d.makeC9r(eYo.pane, 'WorkspaceControl', {
   },
   copied: {
     viewRect () {
-      var ans = new eYo.c9r.Rect()
+      var ans = new eYo.geom.Rect()
       ans.width = this.WIDTH_
       ans.height = this.HEIGHT_
       return ans

@@ -15,7 +15,7 @@ eYo.provide('font-face')
  /**
  * Setup the font style, amongst others.
  */
-eYo.Temp.x = ((static_) => {
+;(static_ => {
   eYo.Setup.register(() => {
     eYo.css.insertRuleAt(`@font-face {
   font-family: 'DejaVuSansMono';

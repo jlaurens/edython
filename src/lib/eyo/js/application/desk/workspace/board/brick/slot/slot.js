@@ -20,7 +20,7 @@ eYo.bsm_o3d.makeNS(eYo, 'slot')
 eYo.require('do')
 eYo.require('decorate')
 
-eYo.forwardDeclare('o4t.Where')
+eYo.forwardDeclare('geom.Where')
 
 eYo.forwardDeclare('field')
 eYo.forwardDeclare('magnet')
@@ -238,7 +238,7 @@ eYo.slot.makeDflt({
   },
   copied: {
     where () {
-      return new eYo.o4t.Where()
+      return new eYo.geom.Where()
     }
   },
   /**

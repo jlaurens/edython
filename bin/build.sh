@@ -249,13 +249,11 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/core/do.js" \
 --js "src/lib/eyo/js/core/register.js" \
 --js "src/lib/eyo/Include/errcode.js" \
---js "src/lib/eyo/js/core/ui.js" \
 --js "src/lib/eyo/js/core/font.js" \
 --js "src/lib/eyo/msg/js/base.js" \
 --js "src/lib/eyo/js/core/t3.js" \
 --js "src/lib/eyo/js/parser/token.js" \
 --js "src/lib/eyo/js/core/const.js" \
---js "src/lib/eyo/js/application/ui/css.js" \
 --js "src/lib/eyo/js/core/t3_all.js" \
 --js "src/lib/eyo/js/core/xre.js" \
 --js "src/lib/eyo/js/core/c9r.js" \
@@ -277,6 +275,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/ui/motion.js" \
 --js "src/lib/eyo/js/parser/tokenizer.js" \
 --js "src/lib/eyo/js/core/geometry.js" \
+--js "src/lib/eyo/js/core/ui.js" \
 --js "src/lib/eyo/js/parser/bitset.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/node_brick.js" \
 --js "src/lib/eyo/js/core/o3d.js" \
@@ -292,6 +291,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/flyout/section.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/span.js" \
 --js "src/lib/eyo/js/core/widget.js" \
+--js "src/lib/eyo/js/application/ui/css.js" \
 --js "src/lib/eyo/js/application/ui/dnd.js" \
 --js "src/lib/eyo/js/parser/parser.js" \
 --js "src/lib/eyo/Python/graminit.js" \
@@ -343,7 +343,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/brick_py/range.js" \
 --js "src/lib/eyo/js/brick_py/starred.js" \
 --js "src/lib/eyo/js/brick_py/list.js" \
---js "src/lib/eyo/js/brick_py/literal.js" \
 --js "src/lib/eyo/closure-library/menuitem.js" \
 --js "src/lib/eyo/js/brick_py/assignment.js" \
 --js "src/lib/eyo/js/brick_py/primary.js" \

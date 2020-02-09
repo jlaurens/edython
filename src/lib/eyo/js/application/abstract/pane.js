@@ -21,21 +21,24 @@ eYo.forwardDeclare('Desk')
 eYo.o3d.makeNS(eYo, 'pane')
 
 /**
+ * @name{eYo.pane.Dflt}
  * The main focus manager.
  * @param {eYo.Desk} desk -  the owning desk.
  * @constructor
  */
 eYo.pane.makeDflt({
-  computed: {
+  properties: {
     /**
      * The desk of the receiver.
      * @type {eYo.Desk}
      * @readonly
      */
-    desk () {
-      return this.owner_
-    }
-  }
+    desk: {
+      get () {
+        return this.owner_
+      },
+    },
+  },
 })
 
 /**

@@ -32,6 +32,46 @@ eYo.o4t.makeDflt({
   }
 })
 
+/**
+ * Initialize an instance with given property models.
+ * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
+ * @param {*} properties - a properties model
+ */
+eYo.o4t._p.initProperties = function (object, properties) {
+  Object.keys(properties).forEach(k => {
+    let model = properties[k]
+    if (!eYo.isO(model)) {
+      model = properties[k] = {
+        value: model,
+      }
+    }
+    let k_p = k + '_p'
+    let p = eYo.p6y.new(object, k, model)
+    Object.defineProperties(object, {
+      [k_p]: eYo.c9r.descriptorR(function () {
+        return p
+      }),
+    })
+    let _p = Object.getPrototypeOf(object)
+    if (!_p.hasOwnProperty(k)) {
+      Object.defineProperties(_p, {
+        [k]: eYo.c9r.descriptorR(function () {
+          return this[k_p].getValue()
+        }),
+        [k + '_']: {
+          get: function () {
+            return this[k_p].getStored()
+          },
+          set (after) {
+            this[k_p].setValue(after)
+          },
+        },
+      }) 
+    }
+  })
+}
+
+
 ;(() => {
   let _p = Object.getPrototypeOf(eYo.o4t.Dflt.eyo)
 
@@ -60,7 +100,6 @@ eYo.o4t.makeDflt({
       return this[k__] && (this[k__].some(f))
     }
   })
-  
   /**
    * Consolidate the given model.
    * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
@@ -88,6 +127,7 @@ eYo.o4t.makeDflt({
    * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
    */
   _p.preInitInstance = function (object) {
+    (this.ns||eYo.o4t).initProperties(object, this.properties__)
     for (var k in this.descriptors__) {
       object.hasOwnProperty(k) || Object.defineProperty(object, k, this.descriptors__[k])
     }
@@ -104,25 +144,6 @@ eYo.o4t.makeDflt({
     if (!object) {
       console.error('BREAK HERE!')
     }
-    Object.keys(this.properties__).forEach(k => {
-      let model = this.properties__[k]
-      let k_p = k + '_p'
-      let k_ = k + '_'
-      Object.defineProperties(object, {
-        [k_p]: eYo.p6y.new(this, k, model),
-        k: eYo.c9r.descriptorR(function () {
-          return this[k_p].value
-        }),
-        k_: {
-          get () {
-            return this[k_p].value
-          },
-          set (after) {
-            this[k_p].value_ = after
-          },
-        },
-      })
-    })
     var f = k => {
       var init = this.init_ && this.init_[k] || object[k+'Init']
       if (init) {
@@ -138,7 +159,11 @@ eYo.o4t.makeDflt({
    * Dispose of the resources declared at that level.
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
-  _p.disposeInstance = function (object) {
+  _p.disposeInstance = function (object, ...params) {
+    Object.keys(this.properties__).forEach(k => {
+      let x = object[k + '_p']
+      x.dispose(...params)
+    })
     this.valuedClear_(object)
     this.cachedForget_(object)
     this.ownedDispose_(object)
@@ -176,11 +201,86 @@ eYo.o4t.makeDflt({
   }
   
   /**
+   * Declare the given alias.
+   * @param {String} original
+   * @param {String} alias
+   */
+  _p.deepAliasDeclare = function (key, original, alias) {
+    let key_p = key + '_p'
+    let original_p = original + '_p'
+    let get = function () {
+      return this[key_p].value__[original_p].value
+    }
+    Object.defineProperties(this.C9r_p, {
+      [alias + '_p']: eYo.c9r.descriptorR(function () {
+        return this[key_p].value__[original_p]
+      }),
+      [alias]: eYo.c9r.descriptorR(get),
+      [alias + '_']: {
+        get: get,
+        set (after) {
+          this[key_p].value__[original_p].value_ = after
+        },
+      },
+    })
+  }
+  
+  /**
+   * Declare the given alias.
+   * @param {String} original
+   * @param {String} alias
+   */
+  _p.aliasDeclare = function (original, alias) {
+    let components = original.split('.')
+    if (components.length === 2) {
+      this.deepAliasDeclare(components[0], components[1], alias)
+      return
+    }
+    let original_p = original + '_p'
+    let get = function () {
+      return this[original_p].value
+    }
+    Object.defineProperties(this.C9r_p, {
+      [alias + '_p']: eYo.c9r.descriptorR(function () {
+        return this[original_p]
+      }),
+      [alias]: eYo.c9r.descriptorR(get),
+      [alias + '_']: {
+        get: get,
+        set (after) {
+          this[original_p].value_ = after
+        },
+      },  
+    })
+  }
+  
+  /**
+   * Declare the given aliases.
+   * Used to declare synonyms.
+   * @param {Map<String, String>} model - Object, map alias -> source.
+   */
+  _p.aliasesDeclare = function (model) {
+    Object.keys(model).forEach(k => {
+      let components = k.split('.')
+      let alias = model[k]
+      let declare = components.length === 2
+      ? alias => this.deepAliasDeclare(components[0], components[1], alias)
+      : alias => this.aliasDeclare(k, alias)
+      if (eYo.isRA(alias)) {
+        alias.forEach(alias => declare(alias))
+      } else {
+        declare(alias)
+      }
+    })
+  }
+  
+  /**
    * Declare the given model.
    * @param {Object} model - Object, like for |makeC9r|.
    */
   _p.modelDeclare = function (model) {
     this.properties__ = model.properties || {}
+    model.aliases && this.aliasesDeclare(model.aliases)
     model.CONST && this.CONSTDeclare(model.CONST)
     model.valued && this.valuedDeclare(model.valued)
     model.owned && this.ownedDeclare(model.owned)

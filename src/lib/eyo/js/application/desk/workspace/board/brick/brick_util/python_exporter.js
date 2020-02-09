@@ -378,14 +378,14 @@ eYo.py.Exporter.prototype.exportSlot_ = function (slot) {
 }
 
 Object.defineProperties(eYo.brick.Dflt_p, {
-  toString: {
+  description: {
     get () {
       return new eYo.py.Exporter().export(this, {is_deep: true})
     }
   },
   toLinearString: {
     get () {
-      var s = this.toString
+      var s = this.description
       return s.replace(/(?:\r\n|\r|\n)/g, '\\n')
     }
   }

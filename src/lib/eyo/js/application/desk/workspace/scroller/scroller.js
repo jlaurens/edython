@@ -37,7 +37,7 @@ eYo.Scroller = function(board) {
     false,
     'eyo-main-board-scrollbar'
   )
-  this.cornerRect_ = new eYo.c9r.Rect()
+  this.cornerRect_ = new eYo.geom.Rect()
   this.disposeUI = eYo.do.nothing
   board.hasUI && this.initUI()
 }

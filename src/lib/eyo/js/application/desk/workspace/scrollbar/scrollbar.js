@@ -40,7 +40,7 @@ eYo.c9r.makeC9r(eYo, 'Scrollbar', {
   },
   copied: {
     viewRect () {
-      new eYo.c9r.Rect()
+      new eYo.geom.Rect()
     }
   },
   cached: {
@@ -88,7 +88,7 @@ eYo.c9r.makeC9r(eYo, 'Scrollbar', {
      * Units are CSS pixels, with (0, 0) at the top left of the browser window.
      * For a horizontal scrollbar this is the x coordinate of the mouse down event;
      * for a vertical scrollbar it's the y coordinate of the mouse down event.
-     * @type {eYo.o4t.Where}
+     * @type {eYo.geom.Where}
      */
     dragStart: {
       value: 0,

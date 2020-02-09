@@ -26,7 +26,7 @@
   */
 }
 
-chai.assert(eYo.app, `MISSING eYo.gmr`)
+chai.assert(eYo.app, `MISSING eYo.app`)
 
 setTimeout(() => {
   describe('PREPARE', function() {
@@ -36,7 +36,7 @@ setTimeout(() => {
   })
 }, 0)
 
-eYo.test = Object.create(null)
+eYo.test || eYo.makeNS('test')
 
 eYo.test.makeTestDesk = (id) => {
   var div0 = document.querySelector('#eyo-desk')
@@ -226,13 +226,13 @@ eYo.test.linearizeCode_ = s => s.replace(/(?:\r\n|\r|\n)/g, '\\n').replace(/\s+/
 Object.defineProperties(eYo.brick.Dflt_p, {
   linearizedCode: {
     get () {
-      return eYo.test.linearizeCode_(this.toString)
+      return eYo.test.linearizeCode_(this.description)
     }
   }
 })
 
 eYo.test.Code = (d, str) => {
-  var s = d.toString.replace(/\bNOM\d/g, 'NAME')
+  var s = d.description.replace(/\bNOM\d/g, 'NAME')
   if (s !== str) {
     var s1 = eYo.test.linearizeCode_(s)
     var str1 = eYo.test.linearizeCode_(str)

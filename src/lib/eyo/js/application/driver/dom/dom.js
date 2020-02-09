@@ -63,10 +63,10 @@ eYo.dom.makeMngr({
 
 /**
  * The document scroll.
- * @return {eYo.o4t.Where}
+ * @return {eYo.geom.Where}
  */
 eYo.dom.getDocumentScroll = () => {
-  return eYo.o4t.Where.xy(goog.dom.getDocumentScroll())
+  return eYo.geom.xyWhere(goog.dom.getDocumentScroll())
 }
 
 /**

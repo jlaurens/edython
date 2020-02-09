@@ -511,4 +511,21 @@ describe ('Tests: Property', function () {
       })
     }).to.throw()
   })
+  it ('Property: reset', function () {
+    let onr = {
+      eyo: true
+    }
+    var flag = 421
+    var p = eYo.p6y.new(onr, 'foo', {
+      reset () {
+        return flag
+      },
+    })
+    chai.assert(p.value === 421)
+    p.value_ = 123
+    chai.assert(p.value === 123)
+    flag = 666
+    p.reset()
+    chai.assert(p.value === 666)
+  })
 })

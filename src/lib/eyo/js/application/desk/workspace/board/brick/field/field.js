@@ -17,7 +17,7 @@
  */
 eYo.bsm_o3d.makeNS(eYo, 'field')
 
-eYo.forwardDeclare('c9r.Size')
+eYo.forwardDeclare('geom.Size')
 eYo.forwardDeclare('events')
 
 Object.defineProperties(eYo.field, {
@@ -357,10 +357,10 @@ eYo.field.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
   copied: {
     /**
      * @readonly
-     * @type {eYo.c9r.Size} The size of the field
+     * @type {eYo.geom.Size} The size of the field
      */
     size () {
-      return new eYo.c9r.Size()
+      return new eYo.geom.Size()
     },
   },
   computed: {
