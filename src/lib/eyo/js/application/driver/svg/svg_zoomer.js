@@ -11,9 +11,7 @@
  */
 'use strict'
 
-eYo.require('svg')
-
-eYo.forwardDeclare('pane.Zoomer')
+eYo.forwardDeclare('widget.Zoomer')
 
 /**
  * Svg driver for the zoomer.

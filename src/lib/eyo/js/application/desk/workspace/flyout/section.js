@@ -24,7 +24,7 @@ eYo.o3d.makeNS(eYo, 'section')
  * @constructor
  */
 eYo.section.makeDflt({
-  computed: {
+  properties: {
     /**
      * The owning flyout
      * @type {eYo.Flyout}
@@ -35,13 +35,13 @@ eYo.section.makeDflt({
         return this.owner_
       }
     },
-  },
-  owned: {
     /**
      * The toolbar
      * @readonly
      */
-    toolbar: eYo.NA,
+    toolbar: {
+      set: false,
+    },
     board () {
       return new eYo.board.Dflt(this)
     },

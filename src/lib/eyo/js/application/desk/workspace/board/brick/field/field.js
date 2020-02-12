@@ -296,7 +296,7 @@ eYo.field.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
     console.warn('Defer next line to the owner ?')
     bsm.hasUI && this.initUI()
   },
-  valued: {
+  properties: {
     visible: true,
     status: eYo.field.STATUS_NONE, // one of STATUS_... above
     isEditing: false,
@@ -320,16 +320,12 @@ eYo.field.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
       /**
        * 
        */
-      set (after) {
-        if (!goog.isDef(after)) {
-          // No change if null.
-          return;
-        }
-        if (this.text__ === after) {
-          return
-        }
+      set (builtin, after) {
         eYo.events.fireBrickChange(this.brick, 'field', this.name, this.text__, after)
-        this.brick.change.wrap(() => this.size.setFromText(this.text__ = after))
+        this.brick.change.wrap(() => {
+          builtin(after)
+          this.size.setFromText(after)
+        })
         this.placeholder__ = !after || !after.length
       },
     },
@@ -353,39 +349,48 @@ eYo.field.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
       },
     },
     css_class: {},
-  },
-  copied: {
     /**
      * @readonly
      * @type {eYo.geom.Size} The size of the field
      */
-    size () {
-      return new eYo.geom.Size()
+    size: {
+      value () {
+        return new eYo.geom.Size()
+      },
+      copy: true,
     },
-  },
-  computed: {
     /**
      * @readonly
      * @type {String} The text of the field.
      */
-    displayText () { return this.text_ },
+    displayText: {
+      get () { return this.text_ },
+    },
     /**
      * Check whether this field is currently editable.
      * Text labels are not editable and are not serialized to XML.
      * Editable fields are serialized, but may exist on locked brick.
      * @return {boolean} whether this field is editable and on an editable brick
      */
-    isCurrentlyEditable () {
-      return this.editable && this.brick.editable
+    isCurrentlyEditable: {
+      get () {
+        return this.editable && this.brick.editable
+      },
     },
-    isComment () {
-      return this.status === eYo.field.STATUS_COMMENT
+    isComment: {
+      get () {
+        return this.status === eYo.field.STATUS_COMMENT
+      },
     },
-    isReserved () {
-      return this.status === eYo.field.STATUS_RESERVED
+    isReserved: {
+      get () {
+        return this.status === eYo.field.STATUS_RESERVED
+      },
     },
-    isBuiltin () {
-      return this.status === eYo.field.STATUS_BUILTIN
+    isBuiltin: {
+      get () {
+        return this.status === eYo.field.STATUS_BUILTIN
+      },
     },
   },
 })
@@ -498,31 +503,33 @@ eYo.field.makeC9r('Input', {
     eYo.assert(name, 'missing name for an editable field')
     this.editable = true
   },
-  valued: {
+  properties: {
     /**
      * css class for both the text element and html input.
      */
     css_class: 'eyo-code',
     placeholderText: '',
-  },
-  computed: {
     /**
      * Get the text from this field as displayed on screen.
      * @return {string} Currently displayed text.
      * @private
      * @suppress{accessControls}
      */
-    displayText () {
-      if (!this.isEditing && !this.text_.length &&(this.isPlaceholder || (this.data && (this.data.placeholder || this.data.model.placeholder)))) {
-        return this.getPlaceholderText()
-      }
-      return this.text 
+    displayText: {
+      get () {
+        if (!this.isEditing && !this.text_.length &&(this.isPlaceholder || (this.data && (this.data.placeholder || this.data.model.placeholder)))) {
+          return this.getPlaceholderText()
+        }
+        return this.text 
+      },
     },
     /**
      * Whether the field text corresponds to a placeholder.
      */
-    isPlaceholder () {
-      return !!this.model.placeholder
+    isPlaceholder: {
+      get () {
+        return !!this.model.placeholder
+      },
     },
   },
 })

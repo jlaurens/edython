@@ -20,7 +20,7 @@ eYo.require('brick')
 eYo.fcfl.makeDriverC9r('Brick')
 
 eYo.brick.eyo.modelDeclare({
-  valued: {
+  properties: {
     ui () {
       return Object.create(null)
     },
@@ -31,36 +31,41 @@ eYo.brick.eyo.modelDeclare({
         this.ui_driver.draggingSet(this, after)      
       }
     },
-  },
-  copied: {
     /**
      * Position of the receiver in the board.
      * @type {eYo.geom.Where}
      * @readonly
      */
-    xy () { return new eYo.geom.Where() },
-    /**
-     * Position of the receiver in the board.
-     * @type {eYo.geom.Where}
-     * @readonly
-     */
-    where () { return new eYo.geom.Where() },
-  },
-  computed: {
-    hasLeftEdge () {
-      return !this.wrapped_ && !this.locked_
+    xy: {
+      value () {
+        return new eYo.geom.Where()
+      },
+      copy: true,
     },
-    hasRightEdge () {
-      return !this.wrapped_ && !this.locked_
+    hasLeftEdge: {
+      get () {
+        return !this.wrapped_ && !this.locked_
+      },
     },
-    minBrickW () {
-      return this.isStmt ? eYo.span.INDENT : 0
+    hasRightEdge: {
+      get () {
+        return !this.wrapped_ && !this.locked_
+      },
     },
-    bBox () {
-      return this.rendered && (this.driver.getBBox(brick))
+    minBrickW: {
+      get () {
+        return this.isStmt ? eYo.span.INDENT : 0
+      },
     },
-    hasSelect () {
-      return this.rendered && (this.driver.hasFocus(brick))
+    bBox: {
+      get () {
+        return this.rendered && (this.driver.getBBox(brick))
+      },
+    },
+    hasSelect: {
+      get () {
+        return this.rendered && (this.driver.hasFocus(brick))
+      },
     },
     visible: {
       /**
@@ -79,10 +84,11 @@ eYo.brick.eyo.modelDeclare({
         this.driver.displayedSet(this, visible)
       }
     },
-  },
-  CONST: {
     BUMP_DELAY: 250,
-  }
+  },
+  aliases(
+    'xy': 'where',
+  )
 })
 
 /**
@@ -106,7 +112,7 @@ eYo.fcfl.Brick._p.drawFoot_ = function (io) {
   (!brick.up &&
     !eYo.magnet.disconnectedParent &&
     !eYo.magnet.disconnectedChild&&
-    !eYo.magnet.ConnectedParent)
+    !eYo.magnet.connectedParent)
   if (do_it) {
     try {
       t9k.down = true
@@ -232,7 +238,7 @@ eYo.fcfl.Brick._p.drawParent_ = function (io, bbbl) {
   // when the render message did not come from above!
   var parent = brick.parent
   if (parent) {
-    var justConnected = eYo.magnet.ConnectedParent && brick.out_m === eYo.magnet.connectedParent.Target
+    var justConnected = eYo.magnet.connectedParent && brick.out_m === eYo.magnet.connectedParent.Target
     if (!parent.down) {
       try {
         parent.up = true
@@ -342,8 +348,8 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
       brick.change.save.render = brick.change.count
       this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       return
-    } else if (eYo.magnet.ConnectedParent) {
-      if (brick.head_m && eYo.magnet.ConnectedParent === brick.head_m.target) {
+    } else if (eYo.magnet.connectedParent) {
+      if (brick.head_m && eYo.magnet.connectedParent === brick.head_m.target) {
         var io = this.willShortRender_(brick, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
@@ -351,7 +357,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
         brick.updateShape()
         brick.change.save.render = brick.change.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
-      } else if (brick.foot_m && eYo.magnet.ConnectedParent === brick.foot_m) {
+      } else if (brick.foot_m && eYo.magnet.connectedParent === brick.foot_m) {
         var io = this.willShortRender_(brick, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
@@ -359,7 +365,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
         brick.updateShape()
         brick.change.save.render = brick.change.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
-      } else if (brick.suite_m && eYo.magnet.ConnectedParent === brick.suite_m) {
+      } else if (brick.suite_m && eYo.magnet.connectedParent === brick.suite_m) {
         var io = this.willShortRender_(brick, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
@@ -382,7 +388,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
       // parent has no output magnet or has no parent.
       recorder && (recorder.field.last = eYo.NA)
       if (!parent.down) {
-        if (eYo.magnet.ConnectedParent && eYo.magnet.connectedParent.Brick === this) {
+        if (eYo.magnet.connectedParent && eYo.magnet.connectedParent.Brick === this) {
           try {
             parent.up = true
             parent.render(bbbl, recorder)

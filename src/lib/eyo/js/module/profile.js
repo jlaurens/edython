@@ -219,31 +219,25 @@ eYo.t3.profile.makeC9r('Dotted', {
   init (owner, profile, model) {
     this.profile = profile
     if (model) {
-      for (var key in model) {
+      Object.keys(model).forEach(key => {
         var value = model[key]
-        Object.defineProperty(
-          this,
-          key,
-          eYo.isF(value)
-          ? {
-            get: value
-          }
-          : {
-            value: value
-          }
-        )
-      }
+        Object.defineProperty(this, key, eYo.isF(value) ? {
+          get: value
+        } : {
+          value: value
+        })
+      })
     }
   },
-  computed: {
-    isVoid () { return this.profile.isVoid },
-    isUnset() { return this.profile.isUnset },
-    raw () { return this.profile.raw },
-    expr () { return this.profile.expr },
-    stmt () { return this.profile.stmt },
-    name () { return this.profile.name },
-    item () { return this.profile.item },
-    type () { return this.profile.type },
+  aliases: {
+    'profile.isVoid': 'isVoid',
+    'profile.isUnset': 'isUnset',
+    'profile.raw': 'raw',
+    'profile.expr': 'expr',
+    'profile.stmt': 'stmt',
+    'profile.name': 'name',
+    'profile.item': 'item',
+    'profile.type': 'type',
   }
 })
 

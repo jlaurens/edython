@@ -11,11 +11,7 @@
  */
 'use strict'
 
-eYo.require('fcls')
-
-eYo.provide('fcls.Scroller')
-
-eYo.forwardDeclare('scroller')
+eYo.forwardDeclare('widget.Scroller')
 
 /**
  * Shared application driver.

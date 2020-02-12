@@ -96,50 +96,23 @@ eYo.brick.makeDflt({
   dlgt (ns, key, C9r, model) {
     this.types = []
   },
-  valued: {
+  properties: {
     parent: {
-      /**
-       * Set parent of this brick to be a new brick or null.
-       * Beware, we cannot replace an already existing parent!
-       * @param {eYo.brick.Dflt} [after] New parent brick.
-       */
-      set_ (after) {
-        var before = this.parent__
-        if (after === before) {
-          return
-        }
-        // First disconnect from parent, if any
-        this.parentWillChange(after)
+      willChange(before, after) {
         var f = m4t => m4t && m4t.disconnect()
-        f(this.head_m)
-          || f(this.left_m)
-            || f(this.out_m)
-        this.parent__ = after
-        this.parentDidChange(before)
-      },
-      /**
-       * Set parent__ of this brick to be a new brick or null.
-       * This has a lower level than connecting magnets.
-       * If two magnets are linked together, then their bricks
-       * are parent and child from each other.
-       * The converse is not true.
-       * 
-       * @param {eYo.brick.Dflt} [after] New parent_ brick.
-       */
-      set__ (after) {
-        if (after === this.parent__) {
-          return;
-        }
-        if (this.parent__) {
+        f(this.owner.head_m)
+          || f(this.owner.left_m)
+            || f(this.owner.out_m)
+        if (before) {
           // Remove this brick from the old parent_'s child list.
-          goog.array.remove(this.parent__.children__, this)
-          this.parent__ = null
+          goog.array.remove(before.children__, this)
           this.ui_driver.parentSet(null)
         } else {
           // Remove this brick from the board's list of top-most bricks.
-          this.board.removeBrick(this)
+          this.owner.board.removeBrick(this.owner.value)
         }
-        this.parent__ = after
+      },
+      didChange(before, after) {
         if (after) {
           // Add this brick to the new parent_'s child list.
           after.children__.push(this)
@@ -147,7 +120,8 @@ eYo.brick.makeDflt({
           this.board.addBrick(this)
         }
         after && (this.ui_driver.parentSet(after))
-      }
+      },
+      dispose: false,
     },
     inputList: eYo.NA,
     pythonType: eYo.NA,
@@ -195,8 +169,8 @@ eYo.brick.makeDflt({
        * @param {Boolean} incog
        */
       didChange(after) {
-        this.slotForEach(slot => slot.incog = after) // with incog validator
-        var m4t = this.suite_m
+        this.owner.slotForEach(slot => slot.incog = after) // with incog validator
+        var m4t = this.owner.suite_m
         m4t && (m4t.incog = after)
         this.consolidate() // no deep consolidation because connected blocs were consolidated during slot's or connection's incog setter
       },
@@ -328,7 +302,7 @@ eYo.brick.makeDflt({
     collapsed: {
       willChange(before, after) {
         // Show/hide the next statement inputs.
-        this.slotForEach(slot => slot.visible = !after)
+        this.owner.slotForEach(slot => slot.visible = !after)
         eYo.events.fireBrickChange(
             this, 'collapsed', null, before, after)
       },
@@ -336,295 +310,280 @@ eYo.brick.makeDflt({
         this.render()
       }
     },
-  },
-  owned: {
-    span () {
-      return new eYo.span.Dflt(this)
+    span: {
+      value () {
+        return new eYo.span.Dflt(this)
+      },
     },
     /**
      * @type{eYo.o3d.Change}
      * @readonly
      */
-    change () {
-      return new eYo.o3d.Change(this)
+    change: {
+      value () {
+        return new eYo.o3d.Change(this)
+      },
     },
     data: eYo.NA,
-  },
-  computed: {
     /**
      * Lazy list of all the wrapped magnets.
      */
-    wrappedMagnets () {
-      return this.wrappedMagnets_ || (this.wrappedMagnets_ = [])
+    wrappedMagnets: {
+      lazy () {
+        return []
+      },
+      dispose: false,
     },
     /**
      * The receiver's board
      * @type {eYo.board}
      */
-    board () {
-      return this.owner
+    board: {
+      get () {
+        return this.owner
+      },
+      dispose: false,
     },
     /** @type {string} */
-    type () {
-      return this.getBaseType()
+    type: {
+      get () {
+        return this.owner.getBaseType()
+      },
     },
-    subtype () {
-      return this.getSubtype()
+    subtype: {
+      get () {
+        return this.owner.getSubtype()
+      },
     },
-    model () {
-      return this.constructor.eyo.model
+    model: {
+      get () {
+        return this.owner.eyo.model
+      },
     },
-    surround () {
-      var b3k
-      if ((b3k = this.out)) {
-        return b3k
-      } else if ((b3k = this.leftMost)) {
-        return b3k.group
-      }
-      return null
-    },
-    group () {
-      var b3k = this
-      var ans
-      while ((ans = b3k.head)) {
-        if (ans.suite === b3k) {
-          return ans
+    surround: {
+      get () {
+        var b3k
+        if ((b3k = this.owner.out)) {
+          return b3k
+        } else if ((b3k = this.owner.leftMost)) {
+          return b3k.group
         }
-        b3k = ans
-      }
+        return null
+      },
     },
-    wrapper () {
-      var ans = this
-      while (ans.wrapped_) {
-        var parent = ans.parent
-        if (parent) {
-          ans = parent
-        } else {
-          break
+    group: {
+      get () {
+        var b3k = this.owner
+        var ans
+        while ((ans = b3k.head)) {
+          if (ans.suite === b3k) {
+            return ans
+          }
+          b3k = ans
         }
-      }
-      return ans
+      },
     },
-    topGroup () {
-      var ans
-      var group = this.group
-      while (group) {
-        ans = group
-        group = ans.group
-      }
-      return ans
+    wrapper: {
+      get () {
+        var ans = this.owner
+        while (ans.wrapped_) {
+          var parent = ans.parent
+          if (parent) {
+            ans = parent
+          } else {
+            break
+          }
+        }
+        return ans
+      },
+    },
+    topGroup: {
+      get () {
+        var ans
+        var group = this.owner.group
+        while (group) {
+          ans = group
+          group = ans.group
+        }
+        return ans
+      },
     },
     /**
      * Return the parent which is a statement, if any.
      * Never returns `this`.
      */
-    stmtParent () {
-      var ans = this
-      do {
-        ans = ans.parent
-      } while (ans && !ans.isStmt)
-      return ans
+    stmtParent: {
+      get () {
+        var ans = this.owner
+        do {
+          ans = ans.parent
+        } while (ans && !ans.isStmt)
+        return ans
+      },
     },
     out: {
       get () {
-        var m = this.out_m
+        var m = this.owner.out_m
         return m && m.targetBrick
       },
       set (after) {
         var m = this.out_m
-        m && (m.targetBrick = after)
+        m && (m.targetBrick_ = after)
       }
     },
     head: {
       get () {
-        var m = this.head_m
+        var m = this.owner.head_m
         return m && m.targetBrick
       },
       set (after) {
-        var m = this.head_m
-        m && (m.targetBrick = after)
+        var m = this.owner.head_m
+        m && (m.targetBrick_ = after)
       }
     },
     left: {
       get () {
         var m = this.left_m
-        return m && m.targetBrick
+        return m && m.owner.targetBrick
       },
       set (after) {
         var m = this.left_m
-        m && (m.targetBrick = after)
+        m && (m.owner.targetBrick_ = after)
       }
     },
     right: {
       get () {
         var m = this.right_m
-        return m && m.targetBrick
+        return m && m.owner.targetBrick
       },
       set (after) {
         var m = this.right_m
-        m && (m.targetBrick = after)
+        m && (m.owner.targetBrick_ = after)
       }
     },
     suite: {
       get () {
         var m = this.suite_m
-        return m && m.targetBrick
+        return m && m.owner.targetBrick
       },
       set (after) {
         var m = this.suite_m
-        m && (m.targetBrick = after)
+        m && (m.owner.targetBrick_ = after)
       }
     },
     foot: {
       get () {
         var m = this.foot_m
-        return m && m.targetBrick
+        return m && m.owner.targetBrick
       },
       set (after) {
         var m = this.foot_m
-        m && (m.targetBrick = after)
+        m && (m.owner.targetBrick_ = after)
       }
     },
-    leftMost () {
-      var ans = this
-      var b3k
-      while ((b3k = ans.left)) {
-        ans = b3k
-      }
-      return ans
-    },
-    headMost () {
-      var ans = this
-      var b3k
-      while ((b3k = ans.head)) {
-        ans = b3k
-      }
-      return ans
-    },
-    rightMost () {
-      var ans = this
-      var b3k
-      while ((b3k = ans.right)) {
-        ans = b3k
-      }
-      return ans
-    },
-    footMost () {
-      var ans = this
-      var b3k
-      while ((b3k = ans.foot)) {
-        ans = b3k
-      }
-      return ans
-    },
-    rightComment () {
-      var b = this.right
-      return b && b.isComment ? b : null
-    },
-    width () {
-      return this.span.width
-    },
-    height () {
-      return this.span.height
-    },
-    recover () {
-      return this.board.recover
-    },
-    /**
-     * Size of the receiver, in board coordinates.
-     * Stores the height, minWidth and width.
-     * The latter includes the right padding.
-     * It is updated in the right alignment method.
-     */
-    size: {
-      get: eYo.c9r.decorateChange('full_HW__', function() {
-        var height = this.span.height
-        var minWidth = this.span.width
-        var width = minWidth
-        // Recursively add size of subsequent bricks.
-        var nn, HW
-        if ((nn = this.right)) {
-          var size = nn.size
-          minWidth += size.minWidth
-          width += size.width
-          // The height of the line is managed while rendering.
-        } else {
-          width += this.span.right
+    leftMost: {
+      get () {
+        var ans = this.owner
+        var b3k
+        while ((b3k = ans.left)) {
+          ans = b3k
         }
-        if ((nn = this.foot)) {
-          var size = nn.size
-          height += size.height // NO Height of tab.
-          var w = size.width
-          if (width < w) {
-            width = minWidth = w
-          } else if (minWidth < w) {
-            minWidth = w
-          }
+        return ans
+      },
+    },
+    headMost: {
+      get () {
+        var ans = this.oner
+        var b3k
+        while ((b3k = ans.head)) {
+          ans = b3k
         }
-        return {
-          ans: {height: height, width: width, minWidth: minWidth}
+        return ans
+      },
+    },
+    rightMost: {
+      get () {
+        var ans = this.owner
+        var b3k
+        while ((b3k = ans.right)) {
+          ans = b3k
         }
-      })
+        return ans
+      },
     },
-    surroundParent () {
-      throw "DEPRECATED, BREAK HERE"
+    footMost: {
+      get () {
+        var ans = this.owner
+        var b3k
+        while ((b3k = ans.foot)) {
+          ans = b3k
+        }
+        return ans
+      },
     },
-    previous () {
-      console.error("INCONSISTENCY BREAK HERE")
-      throw "FORBIDDEN"
-    },
-    next () {
-      console.error("INCONSISTENCY BREAK HERE")
-      throw "FORBIDDEN"
+    rightComment: {
+      get () {
+        var b = this.owner.right
+        return b && b.isComment ? b : eYo.NA
+      },
     },
     /**
      * Return the topmost enclosing brick in this brick's tree.
      * May return `this`.
      * @return {!eYo.brick.Dflt} The root brick.
      */
-    root () {
-      var ans = this
-      var parent
-      while ((parent = ans.parent)) {
-        ans = parent
-      }
-      return ans
+    root: {
+      get () {
+        var ans = this.owner
+        var parent
+        while ((parent = ans.parent)) {
+          ans = parent
+        }
+        return ans
+      },
     },
     /**
      * Return the statement after the receiver.
      * @return {!eYo.brick.Dflt} The root brick.
      */
-    after () {
-      var b3k = this.isStmt ? this : this.stmtParent
-      var ans = b3k.right || b3k.suite || b3k.foot
-      if (ans) {
+    after: {
+      get () {
+        let o = this.owner
+        var b3k = o.isStmt ? o : o.stmtParent
+        var ans = b3k.right || b3k.suite || b3k.foot
+        if (ans) {
+          return ans
+        }
+        while ((b3k = b3k.parent)) {
+          if ((ans = b3k.foot)) {
+            break
+          }
+        }
         return ans
       }
-      while ((b3k = b3k.parent)) {
-        if ((ans = b3k.foot)) {
-          break
-        }
-      }
-      return ans
     },
-    lastSlot () {
-      var ans = this.slotAtHead
-      if (ans) {
-        while (ans.next) {
-          ans = ans.next
+    lastSlot: {
+      get () {
+        var ans = this.owner.slotAtHead
+        if (ans) {
+          while (ans.next) {
+            ans = ans.next
+          }
         }
-      }
-      return ans
+        return ans
+      },
     },
     /**
      * Return the enclosing brick in this brick's tree
      * which is a control. May be null. May be different from the `root`.
      * @return {?eYo.brick.Dflt} The root brick.
      */
-    rootControl () {
-      var ans = this
-      while (!ans.isControl && (ans = ans.parent)) {}
-      return ans
+    rootControl: {
+      get () {
+        var ans = this.owner
+        while (!ans.isControl && (ans = ans.parent)) {}
+        return ans
+      },
     },
     /**
      * @readonly
@@ -633,46 +592,56 @@ eYo.brick.makeDflt({
      * White bricks are comment statements, disabled bricks
      * and maybe other kinds of bricks to be found...
      */
-    isWhite () {
-      return this.disabled
+    isWhite: {
+      get () {
+        return this.owner.disabled
+      },
     },
     /**
      * @readonly
      * @type {Boolean} Whether this brick is the suite of its parent. False when there is no parent.
      * No white brick management.
      */
-    isSuite () {
-      var head = this.head
-      return head && (this === head.suite)
+    isSuite: {
+      get () {
+        var head = this.owner.head
+        return head && (this.owner === head.suite)
+      },
     },
     /**
      * @readonly
      * @type {Boolean} Whether this brick is the suite of its parent. False when there is no parent.
      * No white brick management.
      */
-    isFoot () {
-      var head = this.head
-      return head && (this === head.foot)
+    isFoot: {
+      get () {
+        var head = this.owner.head
+        return head && (this.owner === head.foot)
+      },
     },
     /**
      * @readonly
      * @type {Boolean} Whether this brick is top most, meaning the first one
      * in a block of instructions. True iff it is the suite of a there is no brick above nor to the left
      */
-    isTop () {
-      return this.isSuite || (this.isStmt && !this.isFoot)
+    isTop: {
+      get () {
+        return this.owner.isSuite || (this.owner.isStmt && !this.owner.isFoot)
+      },
     },
-      /**
+    /**
      * Find all the bricks that are directly or indirectly nested inside this one.
      * Includes this brick in the list.
      * Includes value and brick inputs, as well as any following statements.
      * Excludes any connection on an output tab or any preceding statements.
      * @type {!Array<!eYo.brick>} Flattened array of brick.
      */
-    descendants () {
-      var ans = [this]
-      this.children__.forEach(d => ans.push.apply(ans, d.descendants))
-      return ans
+    descendants: {
+      get () {
+        var ans = [this.owner]
+        this.owner.children__.forEach(d => ans.push.apply(ans, d.descendants))
+        return ans
+      },
     },
     /**
      * Compute a list of the IDs of the specified brick and all its descendants.
@@ -680,58 +649,66 @@ eYo.brick.makeDflt({
      * @return {!Array<string>} List of brick IDs.
      * @private
      */
-    descendantIds () {
-      return this.descendants.map(b3k => b3k.id)
+    descendantIds: {
+      get () {
+        return this.owner.descendants.map(b3k => b3k.id)
+      },
     },
     /**
      * Same as `descendants` property except that it
      * includes the receiver in the list only when not sealed.
      * @return {!Array<!eYo.brick>} Flattened array of brick.
      */
-    wrappedDescendants () {
-      var ans = []
-      if (!this.wrapped_) {
-        ans.push(this)
-      }
-      this.childForEach(b => ans.push.apply(ans, b.wrappedDescendants))
-      return ans    
-    },
-    out_m () { return this.magnets.out },
-    head_m () { return this.magnets.head },
-    left_m () { return this.magnets.left },
-    right_m () { return this.magnets.right },
-    suite_m () { return this.magnets.suite },
-    foot_m () { return this.magnets.foot },
-    /**
-     * Position of the receiver in the board.
-     * @type {eYo.geom.Where}
-     * @readonly
-     */
-    xy () {
-      return this.ui.xy_
-    },
-    /**
-     * Position of the receiver in the board.
-     * @type {eYo.geom.Where}
-     * @readonly
-     */
-    where () {
-      return this.ui.xy_
+    wrappedDescendants: {
+      get () {
+        var ans = []
+        if (!this.owner.wrapped_) {
+          ans.push(this)
+        }
+        this.owner.childForEach(b => ans.push.apply(ans, b.wrappedDescendants))
+        return ans    
+      },
     },
     /**
      * Freeze the change step while editing.
      * @type{Boolean}
      * @readonly
      */
-    changeStepFreeze () {
-      return this.isEditing
+    changeStepFreeze: {
+      get () {
+        return this.isEditing
+      },
     },
-    ui () {
-      return this.ui_
+    uiHasSelect: {
+      get () {
+        return this.ui && this.ui.hasSelect
+      },
     },
-    uiHasSelect () {
-      return this.ui && this.ui.hasSelect
-    },
+    ui: eYo.NA,
+  },
+  aliases: {
+    'span.width': 'width',
+    'span.height': 'height',
+    'board.recover': 'recover',
+    'magnets.out': 'out_m',
+    'magnets.head': 'head_m',
+    'magnets.left': 'left_m',
+    'magnets.right': 'right_m',
+    'magnets.suite': 'suite_m',
+    'magnets.foot': 'foot_m',
+    /**
+     * Position of the receiver in the board.
+     * @type {eYo.geom.Where}
+     * @readonly
+     */
+    'ui.xy': 'xy',
+    /**
+     * Position of the receiver in the board.
+     * @type {eYo.geom.Where}
+     * @readonly
+     */
+    'ui.xy': 'where',
+    //'': '',
   },
   init (board, type, opt_id) {
     try {

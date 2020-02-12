@@ -31,7 +31,7 @@ eYo.o3d.makeDflt({
     !owner && eYo.throw('Missing owner!')
     this.owner_ = owner
   },
-  valued: {
+  properties: {
     owner: {
       didChange (before) /** @suppress {globalThis} */ {
         if (before) {
@@ -47,17 +47,17 @@ eYo.o3d.makeDflt({
         } else {
           this.disposeUI()
         }
-      }
-    }
-  },
-  cached: {
+      },
+      dispose: false,
+    },
     /**
      * The root application
      * @type {eYo.app}
      */
     app: {
-      init () {
-        let o = this.owner ; return o && o.app
+      value () {
+        let o = this.owner
+        return o && o.app
       },
       forget (forgetter) {
         this.ownedForEach(x => {
@@ -66,53 +66,63 @@ eYo.o3d.makeDflt({
         forgetter()
       },
     },
-  },
-  computed: {
     /**
      * Options
      */
-    options () {
-      return this.owner.options
+    options: {
+      get () {
+        return this.owner.options
+      },
     },
     /**
      * The app's audio manager
      * @readonly
      * @type {eYo.dom.Audio}
      */
-    audio () {
-      let a = this.app ; return a && a.audio
+    audio: {
+      get () {
+        let a = this.app ; return a && a.audio
+      },
     },
     /**
      * The app's desk
      * @readonly
      * @type {eYo.Desk}
      */
-    desk () {
-      let a = this.app ; return a && a.desk
+    desk: {
+      get () {
+        let a = this.app ; return a && a.desk
+      },
     },
     /**
      * The desk's flyout...
      * @readonly
      * @type {eYo.Flyout}
      */
-    flyout () {
-      let d = this.desk ; return d && d.flyout
+    flyout: {
+      get () {
+        let d = this.desk ; return d && d.flyout
+      },
     },
     /**
      * The desk's board
      * @readonly
      * @type {eYo.board}
      */
-    board () {
-      let d = this.desk ; return d && d.board
+    board: {
+      get () {
+        let d = this.desk ; return d && d.board
+      },
     },
     /**
-     * The owner's workspace...
+     * The desk's workspace...
      * @readonly
      * @type {eYo.Workspace}
      */
-    workspace () {
-      let d = this.desk ; return d && d.workspace
+    workspace: {
+      get () {
+        let d = this.desk ; return d && d.workspace
+      },
     },
   },
 })

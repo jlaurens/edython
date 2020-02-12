@@ -759,12 +759,13 @@ eYo._p.makeDlgt = (ns, key, C9r, model) => {
       model = eYo.called(Super) || {}
       Super = this.super && this.super.Dflt || eYo.NA
     }
-    let ans = this.makeC9r(this, 'Dflt', Super, model || {})
+    let Ans = this.makeC9r(this, 'Dflt', Super, model || {})
     let s = this.parent
     if (s) {
-      s[eYo.do.toTitleCase(this.key)] = ans
+      s[eYo.do.toTitleCase(this.key)] = Ans
     }
-    return ans
+    this.Dlgt_p = Ans.eyo_p
+    return Ans
   }
   
   /**

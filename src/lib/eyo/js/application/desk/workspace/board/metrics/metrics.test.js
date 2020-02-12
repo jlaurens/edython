@@ -14,7 +14,7 @@ describe('Basic metrics IN PROGRESS', function () {
   })
   it ('place and scroll basics', function() {
     var div0 = document.querySelector('#eyo-desk')
-    var metrics = new eYo.Metrics()
+    var metrics = new eYo.geom.Metrics()
     metrics.view_.size = eYo.geom.xyWhere(parseInt(div0.style.width), parseInt(div0.style.height))
     var div1 = goog.dom.createDom('div')
     goog.dom.appendChild(div0.parentNode, div1)
@@ -70,7 +70,7 @@ describe('Basic metrics IN PROGRESS', function () {
   })
   it ('place and scale basics', function() {
     var div0 = document.querySelector('#eyo-desk')
-    var metrics = new eYo.Metrics()
+    var metrics = new eYo.geom.Metrics()
     metrics.view_.size = eYo.geom.xyWhere(parseInt(div0.style.width), parseInt(div0.style.height))
     var div1 = goog.dom.createDom('div')
     goog.dom.appendChild(div0.parentNode, div1)

@@ -20,61 +20,61 @@ goog.forwardDeclare('goog.userAgent')
  * @constructor
  */
 eYo.dom.makeDriverC9r('Audio', {
-  initUI(audio) {
-    /**
-     * Database of pre-loaded sounds.
-     * @private
-     * @const
-     */
-    try {
-      this.load(audio, 'click')
-      this.load(audio, 'disconnect')
-      this.load(audio, 'delete')
-    } catch(e) {
-      return
-    }
-    // Android ignores any sound not loaded as a result of a user action.
-    // Bind temporary hooks that preload the sounds.
-    var soundBinds
-    var self = this
-    var unbindSounds = () => {
-      while (soundBinds.length) {
-        eYo.dom.unbindEvent(soundBinds.pop())
+  ui: {
+    init(audio) {
+      /**
+       * Database of pre-loaded sounds.
+       * @private
+       * @const
+       */
+      try {
+        this.load(audio, 'click')
+        this.load(audio, 'disconnect')
+        this.load(audio, 'delete')
+      } catch(e) {
+        return
       }
-      self.preload()
-    }
-    // These are bound on mouse/touch events with Blockly.bindEventWithChecks_, so
-    // they restrict the touch identifier that will be recognized.  But this is
-    // really something that happens on a click, not a drag, so that's not
-    // necessary.
+      // Android ignores any sound not loaded as a result of a user action.
+      // Bind temporary hooks that preload the sounds.
+      var soundBinds
+      var self = this
+      var unbindSounds = () => {
+        while (soundBinds.length) {
+          eYo.dom.unbindEvent(soundBinds.pop())
+        }
+        self.preload()
+      }
+      // These are bound on mouse/touch events with Blockly.bindEventWithChecks_, so
+      // they restrict the touch identifier that will be recognized.  But this is
+      // really something that happens on a click, not a drag, so that's not
+      // necessary.
 
-    soundBinds = [eYo.dom.BindEvent(
-      document,
-      'mousemove',
-      unbindSounds,
-      {noCaptureIdentifier: true}
-    ), eYo.dom.BindEvent(
-      document,
-      'touchstart',
-      unbindSounds,
-      {noCaptureIdentifier: true}
-    )]
+      soundBinds = [eYo.dom.BindEvent(
+        document,
+        'mousemove',
+        unbindSounds,
+        {noCaptureIdentifier: true}
+      ), eYo.dom.BindEvent(
+        document,
+        'touchstart',
+        unbindSounds,
+        {noCaptureIdentifier: true}
+      )]
+    },
   },
-  valued: {
+  properties: {
     /**
      * Time that the last sound was played.
      * @type {Date}
      * @private
      */
-    lastPlay: { value: null, writable: true },
+    lastPlay: eYo.NA,
     tester () {
       return new Audio()
     },
     sounds () {
       return Object.create(null)
     },
-  },
-  CONST: {
     /**
      * Play a sound at least this amount of milliseconds.
      */

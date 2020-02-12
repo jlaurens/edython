@@ -31,13 +31,15 @@ eYo.forwardDeclare('node_brick')
 
 node * */
 /**
+ * @type {eYo.Node}
+ * @constructor
  * @param {*} scan
  * @param {*} type
  * @param {*}subtype
  * @readonly
  * @property {string} name  name is the human readable type of the node.
  */
-eYo.makeC9r('Node', {
+eYo.o4t.makeC9r(eYo, 'Node', {
   init (scan, type, subtype) {
     if (type === eYo.NA || type === eYo.tkn.ERRORTOKEN) {
       console.error('WTF')
@@ -59,47 +61,67 @@ eYo.makeC9r('Node', {
     }
     this.n_child = [];
   },
-  computed:   {
-    name () {
-      return eYo.tkn._NT_NAMES[this.n_type - eYo.tkn.NT_OFFSET] || eYo.tkn._NAMES[this.n_type]
+  properties:   {
+    name: {
+      get () {
+        return eYo.tkn._NT_NAMES[this.n_type - eYo.tkn.NT_OFFSET] || eYo.tkn._NAMES[this.n_type]
+      },
     },
-    str () {
-      return this.scan.str
+    str: {
+      get () {
+        return this.scan.str
+      },
     },
-    content () {
-      if (this._content) {
-        return this._content
-      }
-      return (this._content = this.str.substring(this.start, this.end))
+    content: {
+      get () {
+        if (this._content) {
+          return this._content
+        }
+        return (this._content = this.str.substring(this.start, this.end))
+      },
     },
-    comment () {
-      if (this._comment) {
-        return this._comment
-      }
-      return (this._comment = this.str.substring(this.start_comment, this.end))
+    comment: {
+      get () {
+        if (this._comment) {
+          return this._comment
+        }
+        return (this._comment = this.str.substring(this.start_comment, this.end))
+      },
     },
-    string () {
-      if (this._string) {
-        return this._string
-      }
-      return (this._string = eYo.isNA(this.start_string)
-      ? this.content
-      : this.str.substring(this.start_string, this.end))
+    string: {
+      get () {
+        if (this._string) {
+          return this._string
+        }
+        return (this._string = eYo.isNA(this.start_string)
+        ? this.content
+        : this.str.substring(this.start_string, this.end))
+      },
     },
-    n_type () {
-      return this.type
+    n_type: {
+      get () {
+        return this.type
+      },
     },
-    n_str () {
-      return this.content
+    n_str: {
+      get () {
+        return this.content
+      },
     },
-    n_comment () {
-      return this.comment
+    n_comment: {
+      get () {
+        return this.comment
+      },
     },
-    n_lineno () {
-      return this.lineno
+    n_lineno: {
+      get () {
+        return this.lineno
+      },
     },
-    n_nchildren () {
-      return this.n_child.length
+    n_nchildren: {
+      get () {
+        return this.n_child.length
+      },
     },
     next: {
       get () {
@@ -124,23 +146,35 @@ eYo.makeC9r('Node', {
         return this.n0_
       }
     },
-    n1 () {
-      return this.n0_.sibling
+    n1: {
+      get () {
+        return this.n0_.sibling
+      },
     },
-    n2 () {
-      return this.n_child[2]
+    n2: {
+      get () {
+        return this.n_child[2]
+      },
     },
-    n3 () {
-      return this.n_child[3]
+    n3: {
+      get () {
+        return this.n_child[3]
+      },
     },
-    n4 () {
-      return this.n_child[4]
+    n4: {
+      get () {
+        return this.n_child[4]
+      },
     },
-    n5 () {
-      return this.n_child[5]
+    n5: {
+      get () {
+        return this.n_child[5]
+      },
     },
-    n6 () {
-      return this.n_child[6]
+    n6: {
+      get () {
+        return this.n_child[6]
+      },
     },
     comments: {
       get () {
@@ -152,206 +186,208 @@ eYo.makeC9r('Node', {
         }
       }
     },
-    acceptComments () {
+    acceptComments: {
+      get () {
       if (this.acceptComments_ !== eYo.NA) {
-        return this.acceptComments_
-      } else if ([ // statements
-        eYo.tkn.Single_input,
-        eYo.tkn.file_input,
-        eYo.tkn.eval_input,
-        eYo.tkn.decorator,
-        // eYo.tkn.decorators,
-        // eYo.tkn.decorated,
-        // eYo.tkn.Async_funcdef,
-        eYo.tkn.funcdef,
-        // eYo.tkn.Parameters,
-        // eYo.tkn.typedargslist,
-        // eYo.tkn.tfpdef,
-        // eYo.tkn.varargslist,
-        // eYo.tkn.vfpdef,
-        // eYo.tkn.Stmt,
-        // eYo.tkn.Simple_stmt,
-        // eYo.tkn.Small_stmt,
-        eYo.tkn.expr_stmt,
-        eYo.tkn.Annassign,
-        // eYo.tkn.testlist_star_expr,
-        eYo.tkn.Augassign,
-        eYo.tkn.del_stmt,
-        eYo.tkn.pass_stmt,
-        // eYo.tkn.flow_stmt,
-        eYo.tkn.Break_stmt,
-        eYo.tkn.Continue_stmt,
-        eYo.tkn.return_stmt,
-        eYo.tkn.yield_stmt,
-        eYo.tkn.raise_stmt,
-        eYo.tkn.import_stmt,
-        // eYo.tkn.import_name,
-        // eYo.tkn.import_from,
-        // eYo.tkn.import_as_name,
-        // eYo.tkn.Dotted_as_name,
-        // eYo.tkn.import_as_names,
-        // eYo.tkn.Dotted_as_names,
-        // eYo.tkn.Dotted_name,
-        // eYo.tkn.global_stmt,
-        // eYo.tkn.nonlocal_stmt,
-        eYo.tkn.Assert_stmt,
-        // eYo.tkn.Compound_stmt,
-        // eYo.tkn.Async_stmt,
-        eYo.tkn.if_stmt,
-        eYo.tkn.while_stmt,
-        eYo.tkn.for_stmt,
-        eYo.tkn.try_stmt,
-        eYo.tkn.with_stmt,
-        eYo.tkn.with_item,
-        eYo.tkn.except_clause,
-        // eYo.tkn.Suite,
-        // eYo.tkn.namedexpr_test,
-        // eYo.tkn.test,
-        // eYo.tkn.test_nocond,
-        // eYo.tkn.lambdef,
-        // eYo.tkn.lambdef_nocond,
-        // eYo.tkn.or_test,
-        // eYo.tkn.And_test,
-        // eYo.tkn.not_test,
-        // eYo.tkn.Comparison,
-        // eYo.tkn.Comp_op,
-        // eYo.tkn.Star_expr,
-        // eYo.tkn.expr,
-        // eYo.tkn.xor_expr,
-        // eYo.tkn.And_expr,
-        // eYo.tkn.Shift_expr,
-        // eYo.tkn.Arith_expr,
-        // eYo.tkn.term,
-        // eYo.tkn.factor,
-        // eYo.tkn.power,
-        // eYo.tkn.Atom_expr,
-        // eYo.tkn.Atom,
-        // eYo.tkn.testlist_comp,
-        // eYo.tkn.trailer,
-        // eYo.tkn.Subscriptlist,
-        // eYo.tkn.Subscript,
-        // eYo.tkn.Sliceop,
-        // eYo.tkn.exprlist,
-        // eYo.tkn.testlist,
-        // eYo.tkn.dictorsetmaker,
-        // eYo.tkn.Classdef,
-        // eYo.tkn.Arglist,
-        // eYo.tkn.Argument,
-        // eYo.tkn.Comp_iter,
-        // eYo.tkn.Sync_comp_for,
-        // eYo.tkn.Comp_for,
-        // eYo.tkn.Comp_if,
-        // eYo.tkn.encoding_decl,
-        // eYo.tkn.yield_expr,
-        // eYo.tkn.yield_arg,
-        // eYo.tkn.func_body_suite,
-        // eYo.tkn.func_type_input,
-        // eYo.tkn.func_type,
-        // eYo.tkn.typelist,
-      ].indexOf(this.type) >= 0) {
-        return (this.acceptComments_ = true)
-      } else if (this.type === eYo.tkn.NEWLINE) {
-        return (this.acceptComments_ = true)
-      } else {
-        var parent = this.parent
-        if ([ // expressions
-        // eYo.tkn.Single_input,
-        // eYo.tkn.file_input,
-        // eYo.tkn.eval_input,
-        // eYo.tkn.decorator,
-        // eYo.tkn.decorators,
-        // eYo.tkn.decorated,
-        // eYo.tkn.Async_funcdef,
-        // eYo.tkn.funcdef,
-        // eYo.tkn.Parameters,
-        // eYo.tkn.typedargslist,
-        // eYo.tkn.tfpdef,
-        // eYo.tkn.varargslist,
-        // eYo.tkn.vfpdef,
-        // eYo.tkn.Stmt,
-        // eYo.tkn.Simple_stmt,
-        // eYo.tkn.Small_stmt,
-        // eYo.tkn.expr_stmt,
-        // eYo.tkn.Annassign,
-        // eYo.tkn.testlist_star_expr,
-        // eYo.tkn.Augassign,
-        // eYo.tkn.del_stmt,
-        // eYo.tkn.pass_stmt,
-        // eYo.tkn.flow_stmt,
-        // eYo.tkn.Break_stmt,
-        // eYo.tkn.Continue_stmt,
-        // eYo.tkn.return_stmt,
-        // eYo.tkn.yield_stmt,
-        // eYo.tkn.raise_stmt,
-        // eYo.tkn.import_stmt,
-        // eYo.tkn.import_name,
-        // eYo.tkn.import_from,
-        // eYo.tkn.import_as_name,
-        // eYo.tkn.Dotted_as_name,
-        // eYo.tkn.import_as_names,
-        // eYo.tkn.Dotted_as_names,
-        // eYo.tkn.Dotted_name,
-        // eYo.tkn.global_stmt,
-        // eYo.tkn.nonlocal_stmt,
-        // eYo.tkn.Assert_stmt,
-        // eYo.tkn.Compound_stmt,
-        // eYo.tkn.Async_stmt,
-        // eYo.tkn.if_stmt,
-        // eYo.tkn.while_stmt,
-        // eYo.tkn.for_stmt,
-        // eYo.tkn.try_stmt,
-        // eYo.tkn.with_stmt,
-        // eYo.tkn.with_item,
-        // eYo.tkn.except_clause,
-        // eYo.tkn.Suite,
-        // eYo.tkn.namedexpr_test,
-        // eYo.tkn.test,
-        // eYo.tkn.test_nocond,
-        // eYo.tkn.lambdef,
-        // eYo.tkn.lambdef_nocond,
-        // eYo.tkn.or_test,
-        // eYo.tkn.And_test,
-        // eYo.tkn.not_test,
-        // eYo.tkn.Comparison,
-        // eYo.tkn.Comp_op,
-        // eYo.tkn.Star_expr,
-        // eYo.tkn.expr,
-        // eYo.tkn.xor_expr,
-        // eYo.tkn.And_expr,
-        // eYo.tkn.Shift_expr,
-        // eYo.tkn.Arith_expr,
-        // eYo.tkn.term,
-        // eYo.tkn.factor,
-        // eYo.tkn.power,
-        // eYo.tkn.Atom_expr,
-        // eYo.tkn.Atom,
-        // eYo.tkn.testlist_comp,
-        // eYo.tkn.trailer,
-        // eYo.tkn.Subscriptlist,
-        // eYo.tkn.Subscript,
-        // eYo.tkn.Sliceop,
-        // eYo.tkn.exprlist,
-        // eYo.tkn.testlist,
-        // eYo.tkn.dictorsetmaker,
-        // eYo.tkn.Classdef,
-        // eYo.tkn.Arglist,
-        // eYo.tkn.Argument,
-        // eYo.tkn.Comp_iter,
-        // eYo.tkn.Sync_comp_for,
-        // eYo.tkn.Comp_for,
-        // eYo.tkn.Comp_if,
-        // eYo.tkn.encoding_decl,
-        // eYo.tkn.yield_expr,
-        // eYo.tkn.yield_arg,
-        // eYo.tkn.func_body_suite,
-        // eYo.tkn.func_type_input,
-        // eYo.tkn.func_type,
-        // eYo.tkn.typelist,
-        ].indexOf(parent.type) >= 0) {
-          return this.acceptComments_ = true
+          return this.acceptComments_
+        } else if ([ // statements
+          eYo.tkn.Single_input,
+          eYo.tkn.file_input,
+          eYo.tkn.eval_input,
+          eYo.tkn.decorator,
+          // eYo.tkn.decorators,
+          // eYo.tkn.decorated,
+          // eYo.tkn.Async_funcdef,
+          eYo.tkn.funcdef,
+          // eYo.tkn.Parameters,
+          // eYo.tkn.typedargslist,
+          // eYo.tkn.tfpdef,
+          // eYo.tkn.varargslist,
+          // eYo.tkn.vfpdef,
+          // eYo.tkn.Stmt,
+          // eYo.tkn.Simple_stmt,
+          // eYo.tkn.Small_stmt,
+          eYo.tkn.expr_stmt,
+          eYo.tkn.Annassign,
+          // eYo.tkn.testlist_star_expr,
+          eYo.tkn.Augassign,
+          eYo.tkn.del_stmt,
+          eYo.tkn.pass_stmt,
+          // eYo.tkn.flow_stmt,
+          eYo.tkn.Break_stmt,
+          eYo.tkn.Continue_stmt,
+          eYo.tkn.return_stmt,
+          eYo.tkn.yield_stmt,
+          eYo.tkn.raise_stmt,
+          eYo.tkn.import_stmt,
+          // eYo.tkn.import_name,
+          // eYo.tkn.import_from,
+          // eYo.tkn.import_as_name,
+          // eYo.tkn.Dotted_as_name,
+          // eYo.tkn.import_as_names,
+          // eYo.tkn.Dotted_as_names,
+          // eYo.tkn.Dotted_name,
+          // eYo.tkn.global_stmt,
+          // eYo.tkn.nonlocal_stmt,
+          eYo.tkn.Assert_stmt,
+          // eYo.tkn.Compound_stmt,
+          // eYo.tkn.Async_stmt,
+          eYo.tkn.if_stmt,
+          eYo.tkn.while_stmt,
+          eYo.tkn.for_stmt,
+          eYo.tkn.try_stmt,
+          eYo.tkn.with_stmt,
+          eYo.tkn.with_item,
+          eYo.tkn.except_clause,
+          // eYo.tkn.Suite,
+          // eYo.tkn.namedexpr_test,
+          // eYo.tkn.test,
+          // eYo.tkn.test_nocond,
+          // eYo.tkn.lambdef,
+          // eYo.tkn.lambdef_nocond,
+          // eYo.tkn.or_test,
+          // eYo.tkn.And_test,
+          // eYo.tkn.not_test,
+          // eYo.tkn.Comparison,
+          // eYo.tkn.Comp_op,
+          // eYo.tkn.Star_expr,
+          // eYo.tkn.expr,
+          // eYo.tkn.xor_expr,
+          // eYo.tkn.And_expr,
+          // eYo.tkn.Shift_expr,
+          // eYo.tkn.Arith_expr,
+          // eYo.tkn.term,
+          // eYo.tkn.factor,
+          // eYo.tkn.power,
+          // eYo.tkn.Atom_expr,
+          // eYo.tkn.Atom,
+          // eYo.tkn.testlist_comp,
+          // eYo.tkn.trailer,
+          // eYo.tkn.Subscriptlist,
+          // eYo.tkn.Subscript,
+          // eYo.tkn.Sliceop,
+          // eYo.tkn.exprlist,
+          // eYo.tkn.testlist,
+          // eYo.tkn.dictorsetmaker,
+          // eYo.tkn.Classdef,
+          // eYo.tkn.Arglist,
+          // eYo.tkn.Argument,
+          // eYo.tkn.Comp_iter,
+          // eYo.tkn.Sync_comp_for,
+          // eYo.tkn.Comp_for,
+          // eYo.tkn.Comp_if,
+          // eYo.tkn.encoding_decl,
+          // eYo.tkn.yield_expr,
+          // eYo.tkn.yield_arg,
+          // eYo.tkn.func_body_suite,
+          // eYo.tkn.func_type_input,
+          // eYo.tkn.func_type,
+          // eYo.tkn.typelist,
+        ].indexOf(this.type) >= 0) {
+          return (this.acceptComments_ = true)
+        } else if (this.type === eYo.tkn.NEWLINE) {
+          return (this.acceptComments_ = true)
+        } else {
+          var parent = this.parent
+          if ([ // expressions
+          // eYo.tkn.Single_input,
+          // eYo.tkn.file_input,
+          // eYo.tkn.eval_input,
+          // eYo.tkn.decorator,
+          // eYo.tkn.decorators,
+          // eYo.tkn.decorated,
+          // eYo.tkn.Async_funcdef,
+          // eYo.tkn.funcdef,
+          // eYo.tkn.Parameters,
+          // eYo.tkn.typedargslist,
+          // eYo.tkn.tfpdef,
+          // eYo.tkn.varargslist,
+          // eYo.tkn.vfpdef,
+          // eYo.tkn.Stmt,
+          // eYo.tkn.Simple_stmt,
+          // eYo.tkn.Small_stmt,
+          // eYo.tkn.expr_stmt,
+          // eYo.tkn.Annassign,
+          // eYo.tkn.testlist_star_expr,
+          // eYo.tkn.Augassign,
+          // eYo.tkn.del_stmt,
+          // eYo.tkn.pass_stmt,
+          // eYo.tkn.flow_stmt,
+          // eYo.tkn.Break_stmt,
+          // eYo.tkn.Continue_stmt,
+          // eYo.tkn.return_stmt,
+          // eYo.tkn.yield_stmt,
+          // eYo.tkn.raise_stmt,
+          // eYo.tkn.import_stmt,
+          // eYo.tkn.import_name,
+          // eYo.tkn.import_from,
+          // eYo.tkn.import_as_name,
+          // eYo.tkn.Dotted_as_name,
+          // eYo.tkn.import_as_names,
+          // eYo.tkn.Dotted_as_names,
+          // eYo.tkn.Dotted_name,
+          // eYo.tkn.global_stmt,
+          // eYo.tkn.nonlocal_stmt,
+          // eYo.tkn.Assert_stmt,
+          // eYo.tkn.Compound_stmt,
+          // eYo.tkn.Async_stmt,
+          // eYo.tkn.if_stmt,
+          // eYo.tkn.while_stmt,
+          // eYo.tkn.for_stmt,
+          // eYo.tkn.try_stmt,
+          // eYo.tkn.with_stmt,
+          // eYo.tkn.with_item,
+          // eYo.tkn.except_clause,
+          // eYo.tkn.Suite,
+          // eYo.tkn.namedexpr_test,
+          // eYo.tkn.test,
+          // eYo.tkn.test_nocond,
+          // eYo.tkn.lambdef,
+          // eYo.tkn.lambdef_nocond,
+          // eYo.tkn.or_test,
+          // eYo.tkn.And_test,
+          // eYo.tkn.not_test,
+          // eYo.tkn.Comparison,
+          // eYo.tkn.Comp_op,
+          // eYo.tkn.Star_expr,
+          // eYo.tkn.expr,
+          // eYo.tkn.xor_expr,
+          // eYo.tkn.And_expr,
+          // eYo.tkn.Shift_expr,
+          // eYo.tkn.Arith_expr,
+          // eYo.tkn.term,
+          // eYo.tkn.factor,
+          // eYo.tkn.power,
+          // eYo.tkn.Atom_expr,
+          // eYo.tkn.Atom,
+          // eYo.tkn.testlist_comp,
+          // eYo.tkn.trailer,
+          // eYo.tkn.Subscriptlist,
+          // eYo.tkn.Subscript,
+          // eYo.tkn.Sliceop,
+          // eYo.tkn.exprlist,
+          // eYo.tkn.testlist,
+          // eYo.tkn.dictorsetmaker,
+          // eYo.tkn.Classdef,
+          // eYo.tkn.Arglist,
+          // eYo.tkn.Argument,
+          // eYo.tkn.Comp_iter,
+          // eYo.tkn.Sync_comp_for,
+          // eYo.tkn.Comp_for,
+          // eYo.tkn.Comp_if,
+          // eYo.tkn.encoding_decl,
+          // eYo.tkn.yield_expr,
+          // eYo.tkn.yield_arg,
+          // eYo.tkn.func_body_suite,
+          // eYo.tkn.func_type_input,
+          // eYo.tkn.func_type,
+          // eYo.tkn.typelist,
+          ].indexOf(parent.type) >= 0) {
+            return this.acceptComments_ = true
+          }
+          return this.acceptComments_ = false
         }
-        return this.acceptComments_ = false
-      }
+      },
     },
   },
 })

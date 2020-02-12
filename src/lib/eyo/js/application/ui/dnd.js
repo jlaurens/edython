@@ -76,19 +76,27 @@ eYo.dnd.makeC9r('Mngr', {
     this.droppers_.length = 0
     this.droppers_ = eYo.NA
   },
-  owned: 'motion',
-  valued: 'dragger',
-  computed: {
-    ui_driver_mngr () {
-      if (!this.motion) {
-        console.error('BREAK HERE!')
-      }
-      return this.motion.ui_driver_mngr
+  properties: {
+    motion: {
+      dispose: false
     },
-    active_ () {
-      return !!this.dragger_
+    dragger: {
+      dispose: false
     },
-  }
+    ui_driver_mngr: {
+      get () {
+        if (!this.motion) {
+          console.error('BREAK HERE!')
+        }
+        return this.motion.ui_driver_mngr
+      },
+    },
+    active: {
+      get () {
+        return !!this.dragger
+      },
+    },
+  },
 })
 
 eYo.dnd.Mngr_p.ownedForEach = function (f) {
@@ -189,19 +197,23 @@ eYo.dnd.Mngr_p.addDropper = function (dropper) {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeC9r('Dflt', eYo.o3d.Dflt, {
+eYo.dnd.dragger.makeDflt({
   /**
    * Sever all the links.
    */
   dispose () {
     this.cancel()
   },
-  computed: {
-    manager () {
-      return this.owner__
+  compropertiesputed: {
+    manager: {
+      get () {
+        return this.owner__
+      },
     },
-    motion () {
-      return this.manager.motion_
+    motion: {
+      get () {
+        return this.manager.motion_
+      },
     },
     /**
      * Whether started
@@ -547,26 +559,29 @@ eYo.dnd.dragger.DraftBrick_p.complete = function () {
 /*******/
 
 /**
+ * @name {eYo.dnd.dropper.Dflt}
+ * @constructor
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dropper.makeC9r('Dflt', eYo.o3d.Dflt, {
+eYo.dnd.dropper.makeDflt({
   /**
    * Sever all the links.
    */
   dispose () {
     this.cancel()
   },
-  computed: {
-    motion () {
-      return this.manager.motion_
+  p6y computed => dispose = false
+  properties: {
+    motion: {
+      get () {
+        return this.manager.motion_
+      },
     },
     /**
      * Whether started
      */
-    started: {
-      value: false
-    }
+    started: false,
   },
 })
 

@@ -27,28 +27,28 @@ eYo.driver.makeC9r('Mngr', {
   dlgt () {
     this.driverC9rByName = Object.create(null)
   },
-  owned: {
-    allPurposeDriver () {
-      let handler = {
-        get (obj, prop) {
-          if (prop in obj) {
-            return obj[prop]
+  properties: {
+    allPurposeDriver: {
+      value () {
+        let handler = {
+          get (obj, prop) {
+            if (prop in obj) {
+              return obj[prop]
+            }
+            throw new Error(`Missing driver property named ${prop} in object ${obj}`)
+          },
+          set (obj, prop, value) {
+            if (prop in obj) {
+              obj[prop] = value
+            }
+            throw new Error(`Missing driver property named ${prop} in object ${obj}`)
           }
-          throw new Error(`Missing driver property named ${prop} in object ${obj}`)
-        },
-        set (obj, prop, value) {
-          if (prop in obj) {
-            obj[prop] = value
-          }
-          throw new Error(`Missing driver property named ${prop} in object ${obj}`)
         }
-      }
-      return new Proxy(new this.eyo.ns.Dflt (this), handler)
-    }
-  },
-  valued: {
+        return new Proxy(new this.eyo.ns.Dflt (this), handler)
+      },
+    },
     drivers: {
-      init () {
+      value () {
         return Object.create(null)
       },
       didChange (after) {
@@ -188,11 +188,13 @@ eYo.driver.Mngr_p.initDrivers = function () {
  * @property {eYo.driver.Mgt} mngr,  the owning driver manager
  */
 eYo.driver.makeDflt({
-  computed: {
-    mngr () {
-      return this.owner
-    }
-  }
+  properties: {
+    mngr: {
+      get () {
+        return this.owner
+      },
+    },
+  },
 })
 
 /**

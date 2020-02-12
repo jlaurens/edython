@@ -13,7 +13,7 @@
 
 eYo.require('svg')
 
-eYo.forwardDeclare('Scrollbar')
+eYo.forwardDeclare('widget.Scrollbar')
 
 /**
  * Svg driver for a scrollbar.
@@ -21,10 +21,10 @@ eYo.forwardDeclare('Scrollbar')
 eYo.svg.makeDriverC9r('Scrollbar', {
     /**
    * Initializes the scrollbar SVG ressources.
-   * @param {eYo.Scrollbar} scrollbar
-   * @param {String} [opt_class]
+   * @param {eYo.widget.Scrollbar} scrollbar
+   * @param {String} [opt_css_class]
    */
-  initUI (scrollbar, opt_class) {
+  initUI (scrollbar, opt_css_class) {
     var dom = scrollbar.dom
     var svg = dom.svg
     /* Create the following DOM:
@@ -36,8 +36,8 @@ eYo.svg.makeDriverC9r('Scrollbar', {
     </svg>
     */
     var className = 'eyo-scrollbar-' + (scrollbar.horizontal_ ? 'horizontal' : 'vertical')
-    if (opt_class) {
-      className += ' ' + opt_class
+    if (opt_css_class) {
+      className += ' ' + opt_css_class
     }
     var root = svg.root_ = eYo.svg.newElement(
       'svg',
@@ -56,7 +56,7 @@ eYo.svg.makeDriverC9r('Scrollbar', {
       { class: 'eyo-scrollbar-background'},
       g
     )
-    var radius = Math.floor((eYo.Scrollbar.thickness - 5) / 2)
+    var radius = Math.floor((eYo.widget.SCROLLBAR_THICKNESS - 5) / 2)
     var handle = svg.handle_ = eYo.svg.newElement(
       'rect',
       {
@@ -66,7 +66,7 @@ eYo.svg.makeDriverC9r('Scrollbar', {
       },
       g
     )
-    var thickness = eYo.Scrollbar.thickness;
+    var thickness = eYo.widget.SCROLLBAR_THICKNESS;
     if (scrollbar.horizontal_) {
       background.setAttribute('height', thickness)
       handle.setAttribute('height', thickness - 5)
@@ -99,7 +99,7 @@ eYo.svg.makeDriverC9r('Scrollbar', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {eYo.Scrollbar} scrollbar
+   * @param {eYo.widget.Scrollbar} scrollbar
    */
   disposeUI (scrollbar) {
     var dom = scrollbar.dom
@@ -116,18 +116,18 @@ eYo.svg.makeDriverC9r('Scrollbar', {
  * be visible and whether its containing board is visible.
  * We cannot rely on the containing board being hidden to hide us
  * because it is not necessarily our parent in the DOM.
- * @param {eYo.Scrollbar} scrollbar
+ * @param {eYo.widget.Scrollbar} scrollbar
  * @param {Boolean} show
  */
-eYo.svg.Scrollbar.prototype.updateDisplay = function(scrollbar, show) {
+eYo.svg.Scrollbar_p.updateDisplay = function(scrollbar, show) {
   scrollbar.dom.svg.root_.setAttribute('display', show ? 'block' : 'none')
 }
 
 /**
  * Update the handle of the scroll bar, position and dimensions at the same time.
- * @param {eYo.Scrollbar} scrollbar
+ * @param {eYo.widget.Scrollbar} scrollbar
  */
-eYo.svg.Scrollbar.prototype.updateHandle = function(scrollbar) {
+eYo.svg.Scrollbar_p.updateHandle = function(scrollbar) {
   var handle = scrollbar.dom.svg.handle_
   handle.setAttribute(
     scrollbar.lengthAttribute_,
@@ -141,17 +141,17 @@ eYo.svg.Scrollbar.prototype.updateHandle = function(scrollbar) {
 
 /**
  * Update the view of the scroll bar, position and dimensions at the same time.
- * @param {eYo.Scrollbar} scrollbar
+ * @param {eYo.widget.Scrollbar} scrollbar
  */
-eYo.svg.Scrollbar.prototype.updateView = function(scrollbar) {
+eYo.svg.Scrollbar_p.updateView = function(scrollbar) {
   var svg = scrollbar.dom.svg
 }
 
 /**
  * Place the scroll bar.
- * @param {eYo.Scrollbar} scrollbar
+ * @param {eYo.widget.Scrollbar} scrollbar
  */
-eYo.svg.Scrollbar.prototype.place = function(scrollbar) {
+eYo.svg.Scrollbar_p.place = function(scrollbar) {
   var r = scrollbar.viewRect
   scrollbar.dom.svg.root_.setAttribute('viewBox', `${r.x_min} ${r.y_min} ${r.width} ${r.height}`)
 }
@@ -160,10 +160,10 @@ eYo.svg.Scrollbar.prototype.place = function(scrollbar) {
  * Start a dragging operation.
  * Called when scrollbar handle is clicked.
  * @param {Event} e Mouse down event.
- * @this {eYo.Scrollbar}
+ * @this {eYo.widget.Scrollbar}
  * @private
  */
-eYo.svg.Scrollbar.prototype.onHandle_mousedown = function(e) {
+eYo.svg.Scrollbar_p.onHandle_mousedown = function(e) {
   this.board_.markFocused()
   this.cleanUp_()
   if (eYo.dom.isRightButton(e)) {
@@ -204,9 +204,9 @@ eYo.svg.Scrollbar.prototype.onHandle_mousedown = function(e) {
 /**
  * Drag the scrollbar's handle.
  * @param {Event} e Mouse up event.
- * @this {eYo.Scrollbar}
+ * @this {eYo.widget.Scrollbar}
  */
-eYo.svg.Scrollbar.prototype.on_mousemove = function(e) {
+eYo.svg.Scrollbar_p.on_mousemove = function(e) {
   var currentMouse = this.horizontal_ ? e.clientX : e.clientY
   var ratio = this.dragLength_ ? (currentMouse - this.dragMin_) / this.dragLength_ : 0
   if (ratio < 0) {
@@ -221,9 +221,9 @@ eYo.svg.Scrollbar.prototype.on_mousemove = function(e) {
 /**
  * End of scrolling.
  * @param {Event} e Mouse up event.
- * @this {eYo.Scrollbar}
+ * @this {eYo.widget.Scrollbar}
  */
-eYo.svg.Scrollbar.prototype.on_mouseup = function() {
+eYo.svg.Scrollbar_p.on_mouseup = function() {
   // Tell the board to clean up now that the board is done moving.
   eYo.dom.ClearTouchIdentifier()
   this.cleanUp_()
@@ -232,10 +232,10 @@ eYo.svg.Scrollbar.prototype.on_mouseup = function() {
 /**
  * Stop binding to mouseup and mousemove events.  Call this to
  * wrap up lose ends associated with the scrollbar.
- * @param {eYo.Scrollbar}
+ * @param {eYo.widget.Scrollbar}
  * @private
  */
-eYo.svg.Scrollbar.prototype.cleanUp = function(scrollbar) {
+eYo.svg.Scrollbar_p.cleanUp = function(scrollbar) {
   scrollbar.app.hideChaff()
   var bound = scrollbar.dom.bound
   if (bound.mouseup) {
@@ -252,10 +252,10 @@ eYo.svg.Scrollbar.prototype.cleanUp = function(scrollbar) {
  * Scroll by one pageful.
  * Called when scrollbar background is clicked.
  * @param {Event} e Mouse down event.
- * @this {eYo.Scrollbar}
+ * @this {eYo.widget.Scrollbar}
  * @private
  */
-eYo.svg.Scrollbar.prototype.onBar_mousedown = function(e) {
+eYo.svg.Scrollbar_p.onBar_mousedown = function(e) {
   var board = this.board_
   board.markFocused()
   eYo.dom.ClearTouchIdentifier()  // This is really a click.

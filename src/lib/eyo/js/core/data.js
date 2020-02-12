@@ -174,37 +174,46 @@ eYo.data.makeDflt({
       }
     }
   },
-  computed: {
-    brick () {
-      return this.owner_
+  properties: {
+    brick: {
+      get() {
+          return this.owner
+        },
+      },
     },
-    change () {
-      return this.brick.change
+    change: {
+      get () {
+        return this.brick.change
+      },
     },
-    brickType () {
-      return this.brick.type
+    brickType: {
+      get () {
+        return this.brick.type
+      },
     },
-    data () {
-      return this.brick.data
+    data: {
+      get () {
+        return this.brick.data
+      },
     },
-    ui () {
-      return this.brick.ui
+    ui: {
+      get () {
+        return this.brick.ui
+      },
     },
-    ui_driver () {
-      return this.brick.ui_driver
+    ui_driver: {
+      get () {
+        return this.brick.ui_driver
+      },
     },
-  },
-  valued: {
     key: eYo.NA,
     value: eYo.NA,
+    /**
+     * Disabled data correspond to disabled input.
+     * Changing this value will cause an UI synchronization and a change count.
+     */
     incog: {
       value: false,
-      /**
-       * Disabled data correspond to disabled input.
-       * Changing this value will cause an UI synchronization and a change count.
-       * @param {Object} after  When not defined, replaced by `!this.required`
-       * @return {boolean} whether changes have been made
-       */
       set (after) {
         if (!goog.isDef(after)) {
           after = !this.required
@@ -239,6 +248,7 @@ eYo.data.makeDflt({
    * The methods are managed by the |dataHandler| method of the |eYo.c9r.model|.
    * @param {Object} object - The object to initialize.
    */
+  eYo.p6y.Data
   eYo.data.Dflt.eyo_p.initInstance = function (object) {
     this.C9r_S.eyo_p.initInstance.call(this, object)
     object.model['.methods'].forEach(f => {

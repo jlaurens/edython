@@ -41,20 +41,20 @@ eYo.o3d.makeNS(eYo, 'focus')
  * @constructor
  */
 eYo.focus.makeC9r('Main', {
-  computed: {
+  properties: {
     /**
      * The board that has current focus, if any
      * @type {eYo.board}
      */
     board: {
       get () {
-        return this.mngr && this.mngr.board
+        return this.owner.mngr && this.owner.mngr.board
       },
       set (after) {
         if (after !== this.board) {
-          this.hasUI && this.ui_driver.boardOff(this)
-          this.mngr_ = after && after.focus_mngr || eYo.NA
-          this.hasUI && this.ui_driver.boardOn(this)
+          this.owner.hasUI && thisowner..ui_driver.boardOff(this)
+          this.owner.mngr_ = after && after.focus_mngr || eYo.NA
+          this.owner.hasUI && this.owner.ui_driver.boardOn(this)
         }
       }
     },
@@ -64,12 +64,12 @@ eYo.focus.makeC9r('Main', {
      */
     brick: {
       get () {
-        return this.mngr_ && this.mngr_.brick
+        return this.owner.mngr_ && this.owner.mngr_.brick
       },
       set (after) {
-        if (after && this.mngr_ && after !== this.mngr_.brick) {
-          this.mngr_ = after.focus_mngr
-          this.mngr_.brick = after
+        if (after && this.owner.mngr_owner.) {
+          this.owner.mngr_ = after.focus_mngr
+          this.owner.mngr_.brick = after
         }
       }
     },
@@ -79,12 +79,12 @@ eYo.focus.makeC9r('Main', {
      */
     field: {
       get () {
-        return this.mngr_ && this.mngr_.field
+        return this.owner.mngr_ && this.owner.mngr_.field
       },
       set (after) {
-        if (after && this.mngr_ && after !== this.mngr_.field) {
-          this.mngr_ = after.focus_mngr
-          this.mngr_.field = after
+        if (after && this.owner.mngr_) {
+          this.owner.mngr_ = after.focus_mngr
+          this.owner.mngr_.field = after
         }
       }
     },
@@ -94,31 +94,29 @@ eYo.focus.makeC9r('Main', {
      */
     magnet: {
       get () {
-        return this.mngr_ && this.mngr_.magnet
+        return this.owner.mngr_ && this.mngr_.owner.magnet
       },
       set (after) {
-        if (after && this.mngr_ && after !== this.mngr_.magnet) {
-          this.mngr_ = after.focus_mngr
-          this.mngr_.magnet = after
+        if (after && this.mngr_) {
+          this.owner.mngr_ = after.focus_mngr
+          this.owner.mngr_.magnet = after
         }
       }
     },
-  },
-  valued: {
     /**
      * The manager that has current focus
      * @type {?eYo.focus.Mngr}
      */
     mngr: eYo.NA,
+    ui: {
+      init () {
+        this.owner.mngrForEach(m => m.initUI())
+      },
+      dispose () {
+        this.owner.mngrForEach(m => m.disposeUI())
+      },
+    },
   },
-  ui: {
-    init () {
-      this.mngrForEach(m => m.initUI())
-    },
-    dispose () {
-      this.mngrForEach(m => m.disposeUI())
-    },
-  }
 })
 
 // Each newly created focus manager comes here
@@ -143,7 +141,7 @@ eYo.focus.makeC9r('Mngr', {
   init () {
     this.focus_main.mngrRegister(this)
   },
-  computed: {
+  properties: {
     /**
      * The owning board.
      * @type {eYo.board.Dflt}
@@ -152,10 +150,8 @@ eYo.focus.makeC9r('Mngr', {
       return this.owner__
     },
     focus_main () {
-      return this.app.focus_main
+      return this.owner.app.focus_main
     },
-  },
-  valued: {
     /**
      * Focus only on wrappers.
      * @type{eYo.brick.Dflt}
@@ -165,27 +161,29 @@ eYo.focus.makeC9r('Mngr', {
         return after && after.wrapper || after
       },
       willChange() {
-        this.hasUI && this.ui_driver.brickOff(this)
+        this.owner.hasUI && this.value && this.value.ui_driver.off(this)
       },
       didChange(after) {
         if (after) {
-          if (this.magnet__) {
-            var b3k = this.magnet__.brick
+          let m4t = this.owner.magnet__
+          if (m4t) {
+            var b3k = m4t.brick
             if (b3k && after !== b3k.wrapper) {
-              this.magnet_ = null
+              this.magnet_ = eYo.NA
             }
           }
-          if (this.field__) {
-            var b3k = this.field__.brick
+          let f3d = this.owner.field
+          if (f3d) {
+            var b3k = f3d.brick
             if (b3k && after !== b3k.wrapper) {
-              this.field__ = null
+              this.owner.field_ = eYo.NA
             }
           }
-          this.hasUI && this.ui_driver_mngr.brickOn(this)
+          this.owner.hasUI && this.value.ui_driver.on(this)
           this.didAdd()
         } else {
-          this.magnet_ = null
-          this.field_ = null
+          this.owner.magnet_ = eYo.NA
+          this.owner.field_ = eYo.NA
           this.didRemove()
         }
       },
@@ -302,59 +300,74 @@ eYo.focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
   }
 }
 
-
 eYo.o3d.Dflt.eyo.modelDeclare({
-  computed: {
-    focus_main () {
-      this.app.focus_main
+  properties: {
+    app: {
+      get () {
+        this.owner.app
+      },
     },
-  }
+    focus_main: {
+      get () {
+        this.app.focus_main
+      },
+    },
+    focus_mgr: {
+      get () {
+        this.owner.focus_mgr
+      },
+    },
+  },
 })
 
-
 eYo.brick.Dflt.eyo.modelDeclare({
-  computed: {
-    focus_mngr () {
-      return this.board.focus_mngr
-    },
+  properties: {
     hasFocus: {
       get() {
-        return this === this.focus_mngr.brick
+        return this === this.owner.focus_mngr.brick
       },
       set (after) {
-        after ? this.focusOn() : this.focusOff()
+        after ? this.owner.focusOn() : this.owner.focusOff()
       }
     },
   }
 })
 
 eYo.magnet.Dflt.eyo.modelDeclare({
-  computed: {
-    focus_mngr () {
-      return this.board.focus_mngr
-    },
+  properties: {
     hasFocus: {
       get() {
         return this === this.focus_mngr.magnet
       },
       set (after) {
-        after ? this.focusOn() : this.focusOff()
+        after ? this.owner.focusOn() : this.owner.focusOff()
       }
     },
   },
 })
 
 eYo.field.Dflt.eyo.modelDeclare({
-  computed: {
-    focus_mngr () {
-      return this.board.focus_mngr
-    },
+  properties: {
     hasFocus: {
       get() {
         return this === this.focus_mngr.field
       },
       set (after) {
-        after ? this.focusOn() : this.focusOff()
+        after ? this.owner.focusOn() : this.owner.focusOff()
+      },
+    },
+  }
+})
+
+eYo.pane.Workspace.eyo.modelDeclare({
+  properties: {
+    /**
+     * The main focus manager.
+     * @type {?eYo.focus.Main} 
+     */
+    focus_main: {
+      value () {
+        return new eYo.focus.Main(this)
       },
     },
   }

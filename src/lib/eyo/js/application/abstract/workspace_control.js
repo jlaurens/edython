@@ -32,36 +32,42 @@
  * @property {number} MARGIN_SIDE_, Distance between trash can and right edge of board.
  *
  */
-eYo.o3d.makeC9r(eYo.pane, 'WorkspaceControl', {
-  computed: {
-    workspace () {
-      return this.owner
+eYo.widget.makeC9r('WorkspaceControl', {
+  properties: {
+    workspace: {
+      get () {
+        return this.owner
+      },
     },
-    top () {
-      return this.viewRect_.y
-    }
-  },
-  copied: {
-    viewRect () {
-      var ans = new eYo.geom.Rect()
-      ans.width = this.WIDTH_
-      ans.height = this.HEIGHT_
-      return ans
-    }
-  },
-  valued: {
+    top: {
+      get () {
+        return this.owner.viewRect_.y
+      },
+      set (after) {
+        this.owner.viewRect_.y_ = after
+      },
+    },
+    viewRect: {
+      get () {
+        var ans = new eYo.geom.Rect()
+        ans.width = this.WIDTH_
+        ans.height = this.HEIGHT_
+        return ans
+      },
+    },
     WIDTH_: 47,
     MARGIN_BOTTOM_: 20,
     MARGIN_SIDE_: 20,
-  }
+  },
 })
 
 /**
  * Move the workspace control to the bottom-right corner.
  * Just change the view rectangle.
- * Subclassers will place th receiver according to their driver.
+ * Subclassers will place the receiver according to their driver.
+ * @param {Number} bottom - 
  */
-eYo.pane.WorkspaceControl_p.place = function(bottom) {
+eYo.widget.WorkspaceControl_p.place = function(bottom) {
   var board = this.board
   var view = board.metrics.view
   var r = this.viewRect__

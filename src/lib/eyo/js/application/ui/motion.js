@@ -45,7 +45,7 @@ eYo.o4t.makeC9r(eYo, 'Motion', {
   dispose () {
     this.reset()
   },
-  CONST: {
+  properties: {
     /**
      * The latency between 2 mouse down/up events,
      * in order to recognize a (multi) click event.
@@ -120,8 +120,6 @@ eYo.o4t.makeC9r(eYo, 'Motion', {
     CAPTURE_IGNORED: 0,
     CAPTURE_STARTED: 1,
     CAPTURE_UPDATING: 2,
-  },
-  owned: {
     scaler () {
       return new eYo.Scaler(this)
     },
@@ -130,9 +128,7 @@ eYo.o4t.makeC9r(eYo, 'Motion', {
     },
     change () {
       return new eYo.o3d.Change(this)
-    }
-  },
-  valued:  {
+    },
     touchIDs () {
       return []
     },
@@ -143,8 +139,12 @@ eYo.o4t.makeC9r(eYo, 'Motion', {
      * @type {eYo.board}
      * @private
      */
-    starter: eYo.NA,
-    event: eYo.NA,
+    starter: {
+      dispose: false,
+    },
+    event: {
+      dispose: false,
+    },
     /**
      * The position of the mouse when the motion started.
      * Units are css pixels, with (0, 0) at the top left of
@@ -214,17 +214,18 @@ eYo.o4t.makeC9r(eYo, 'Motion', {
           return candidate.isInFlyout && candidate.root || candidate
         }
       },
+      dispose: false,
     },
-  },
-  computed: {
     /**
      * The field that the motion started on,
      * or null if it did not start on a field.
      * @type {eYo.brick.Dflt}
      * @private
      */
-    field () {
-      return this.starter__ && this.starter__.isField && this.starter__
+    field: {
+      get () {
+        return this.starter__ && this.starter__.isField && this.starter__
+      },
     },
     /**
      * The brick that the motion started on,
@@ -233,12 +234,14 @@ eYo.o4t.makeC9r(eYo, 'Motion', {
      * @type {eYo.brick.Dflt}
      * @private
      */
-    brick () {
-      return this.starter__ && (
-        this.starter__.isBrick?
-          this.starter__.wrapper:
-          this.field_.brick.wrapper
-      )
+    brick: {
+      get () {
+        return this.starter__ && (
+          this.starter__.isBrick?
+            this.starter__.wrapper:
+            this.field_.brick.wrapper
+        )
+      },
     },
     /**
      * The brick that this motion targets.
@@ -248,9 +251,11 @@ eYo.o4t.makeC9r(eYo, 'Motion', {
      * @type {eYo.brick.Dflt}
      * @private
      */
-    targetBrick () {
-      var b3k = this.brick
-      return b3k && (b3k.inLibrary ? b3k.root: b3k)
+    targetBrick: {
+      get () {
+        var b3k = this.brick
+        return b3k && (b3k.inLibrary ? b3k.root: b3k)
+      },
     },
     /**
      * The board the motion started on,
@@ -259,42 +264,54 @@ eYo.o4t.makeC9r(eYo, 'Motion', {
      * @type {eYo.board}
      * @private
      */
-    board () {
-      return this.starter__ && (
-        this.starter__.isBoard?
-          this.starter__:
-          (this.field_ || this.brick_).board
-      )
+    board: {
+      get () {
+        return this.starter__ && (
+          this.starter__.isBoard?
+            this.starter__:
+            (this.field_ || this.brick_).board
+        )
+      },
     },
     /**
      * Boolean for whether or not this motion is a multi-touch motion.
      * @type {boolean}
      * @private
      */
-    multiTouch () {
-      return this.touchIDs.length > 1
+    multiTouch: {
+      get () {
+        return this.touchIDs.length > 1
+      },
     },
     /**
      * The flyout of the board the motion started on, if any.
      * @type {eYo.Flyout}
      * @private
      */
-    flyout () {
-      let b3d = this.board ; return b3d && b3d.flyout
+    flyout: {
+      get () {
+        let b3d = this.board
+        return b3d && b3d.flyout
+      },
     },
     /**
      * General purpose ui_driver_mngr from the creator board.
      */
-    ui_driver_mngr () {
-      let b3d = this.board ; return b3d && b3d.ui_driver_mngr
+    ui_driver_mngr: {
+      get () {
+        let b3d = this.board
+        return b3d && b3d.ui_driver_mngr
+      },
     },
     /**
      * Position of the receiver's event in the board.
      * @type {eYo.geom.Where}
      * @readonly
      */
-    where () {
-      return new eYo.geom.Where(this.event)
+    where: {
+      get () {
+        return new eYo.geom.Where(this.event)
+      },
     },
   },
 })

@@ -30,7 +30,7 @@ eYo.module.makeDflt({
     this.name_ = name
     this.url_ = url
   },
-  valued: {
+  properties: {
     value: eYo.NA,
     url: eYo.NA,
     profiles () {
@@ -48,9 +48,9 @@ eYo.module.makeDflt({
       didChange (after) /** @suppress {globalThis} */ {
         var a = eYo.module.item_types = eYo.module.item_types.concat(after.types)
         // remove duplicates
-        for(var i=0; i<a.length; ++i) {
-          for(var j=i+1; j<a.length; ++j) {
-            if(a[i] === a[j]) {
+        for (var i=0; i<a.length; ++i) {
+          for (var j=i+1; j<a.length; ++j) {
+            if (a[i] === a[j]) {
               a.splice(j--, 1)
             }
           }
@@ -67,7 +67,7 @@ eYo.module.makeDflt({
  */
 eYo.module.makeC9r('Item', {
   init (model) {
-    for (var key in model) {
+    Object.keys(model).forEach(key => {
       Object.defineProperty(
         this,
         key,
@@ -75,45 +75,55 @@ eYo.module.makeC9r('Item', {
           value: model[key]
         }
       )
-    }
+    })
   },
-  computed: {
-    isMethod () {
-      return this.type === eYo.key.METHOD
+  properties: {
+    isMethod: {
+      get () {
+        return this.type === eYo.key.METHOD
+      },
     },
-    isFunction () {
-      return this.type === eYo.key.FUNCTION
+    isFunction: {
+      get () {
+        return this.type === eYo.key.FUNCTION
+      },
     },
-    isClass () {
-      return this.type === eYo.key.CLASS
+    isClass: {
+      get () {
+        return this.type === eYo.key.CLASS
+      },
     },
     model () {
       throw 'RENAMED property: model -> module'
     },
-    ary_max () {
-      var ary = eYo.isNA(this.ary)
-        ? Infinity
-        : this.ary
-      this.signatures && (this.signatures.forEach((signature) => {
-        if (ary < signature.ary) {
-          ary = signature.ary
-        }
-      }))
-      return ary
+    ary_max: {
+      get () {
+        var ary = eYo.isNA(this.ary)
+          ? Infinity
+          : this.ary
+        this.signatures && (this.signatures.forEach((signature) => {
+          if (ary < signature.ary) {
+            ary = signature.ary
+          }
+        }))
+        return ary
+      },
     },
-    mandatory_min () {
-      var mandatory = eYo.isNA(this.mandatory)
-        ? this.ary || 0
-        : this.mandatory
-      this.signatures && (this.signatures.forEach((signature) => {
-        var candidate = eYo.isNA(signature.mandatory)
-          ? signature.ary
-          : signature.mandatory
-        if (mandatory > candidate) {
-          mandatory = candidate
-        }
-      }))
-      return mandatory
+    mandatory_min: {
+        get () {
+        var mandatory = eYo.isNA(this.mandatory)
+          ? this.ary || 0
+          : this.mandatory
+        this.signatures && (this.signatures.forEach((signature) => {
+          var candidate = eYo.isNA(signature.mandatory)
+            ? signature.ary
+            : signature.mandatory
+          if (mandatory > candidate) {
+            mandatory = candidate
+          }
+        }))
+        return mandatory
+      },
     },
     /**
      * Each item has a type_ and a type property.
@@ -122,8 +132,6 @@ eYo.module.makeC9r('Item', {
     type () {
       return this.module.data.types[this.type_]
     },
-  },
-  valued: {
     kwargs: {
       lazy () {
         // only those arguments with a `default` key
@@ -138,7 +146,7 @@ eYo.module.makeC9r('Item', {
   },
 })
 
-eYo.assert(eYo.module.Item, 'FAILED')
+eYo.module.Item || eYo.throw('MISSING eYo.module.Item')
 
 /**
  * Get the item with the given key

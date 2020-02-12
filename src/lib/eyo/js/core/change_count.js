@@ -16,10 +16,10 @@ eYo.provide('changeCount')
 
 eYo.c9r.Dlgt_p.changeCountAdd = function () {
   this.modelDeclare({
-    valued: {
+    properties: {
       changeCount: 0,
     },
-    called: {
+    X called: {
       updateChangeCount (event, redo) {
         if (event.type == eYo.events.UI) {
           return

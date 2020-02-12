@@ -42,13 +42,12 @@ console.error('Manage reentrant_ more carefully')
  * @constructor
  */
 eYo.consolidator.makeDflt({
-  valued: {
-    model () {
-      return Object.create(null)
+  properties: {
+    model: {
+      value () {
+        return Object.create(null)
+      },
     },
-    reentrant () {
-      return Object.create(null)
-    }
   },
   /**
    * Init. Not implemented. No return.

@@ -16,8 +16,8 @@
  * @param {eYo.Workspace} workspace The workspace to sit in.
  * @constructor
  */
-eYo.pane.WorkspaceControl.makeInheritedC9r('TrashCan', {
-  computed: {
+eYo.widget.WorkspaceControl.makeInheritedC9r('TrashCan', {
+  properties: {
     isOpen: {
       get () {
         return this.ui_driver.openGet(this)
@@ -33,38 +33,36 @@ eYo.pane.WorkspaceControl.makeInheritedC9r('TrashCan', {
         return this.BODY_HEIGHT_ + this.LID_HEIGHT_
       },
     },
-  },
-  valued: {
     /**
      * Height of the trash can image (minus lid).
      * @type {number}
      * @private
      */
-    BODY_HEIGHT_: {value: 44, writable: true},
+    BODY_HEIGHT_: 44,
     /**
      * Height of the lid image.
      * @type {number}
      * @private
      */
-    LID_HEIGHT_: {value: 16, writable: true},
+    LID_HEIGHT_: 16,
     /**
      * Extent of hotspot on all sides beyond the size of the image.
      * @type {number}
      * @private
      */
-    MARGIN_HOTSPOT_: {value: 10, writable: true},
+    MARGIN_HOTSPOT_: 10,
     /**
      * Location of trash can in sprite image.
      * @type {number}
      * @private
      */
-    SPRITE_LEFT_: {value: 0, writable: true},
+    SPRITE_LEFT_: 0,
     /**
      * Location of trash can in sprite image.
      * @type {number}
      * @private
      */
-    SPRITE_TOP_: {value: 32, writable: true},
+    SPRITE_TOP_: 32,
   },
 })
 

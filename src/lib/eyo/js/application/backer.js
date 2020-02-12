@@ -21,17 +21,49 @@ eYo.forwardDeclare('app')
  * @constructor
  */
 eYo.o3d.makeC9r(eYo, 'Backer', {
-  valued: {
+  properties: {
     /**
      * @type {!Array<!eYo.events.Abstract>}
      * @protected
      */
-    undoStack: [],
+    undoStack: {
+      value () {
+        return []
+      },
+    },
     /**
      * @type {!Array<!eYo.events.Abstract>}
      * @protected
      */
-    redoStack: [],
+    redoStack: {
+      value () {
+        return []
+      },
+    },
+    /**
+     * Data to create an undo menu item.
+     */
+    undoMenuItemData: {
+      value () {
+        return {
+          text: eYo.msg.UNDO,
+          enabled: this.undoStack.length > 0,
+          callback: this.undo.bind(this, false)
+        }
+      },
+    },
+    /**
+     * Data to create a redo menu item.
+     */
+    redoMenuItemData: {
+      get () {
+        return {
+          text: eYo.msg.REDO,
+          enabled: this.redoStack_.length > 0,
+          callback: this.undo.bind(this, true)
+        }
+      },
+    },
   },
   CONST: {
     /**
@@ -40,28 +72,6 @@ eYo.o3d.makeC9r(eYo, 'Backer', {
      */
     MAX_UNDO: 1024,
   },
-  computed: {
-    /**
-     * Data to create an undo menu item.
-     */
-    undoMenuItemData () {
-      return {
-        text: eYo.msg.UNDO,
-        enabled: this.undoStack_.length > 0,
-        callback: this.undo.bind(this, false)
-      }
-    },
-    /**
-     * Data to create a redo menu item.
-     */
-    redoMenuItemData () {
-      return {
-        text: eYo.msg.REDO,
-        enabled: this.redoStack_.length > 0,
-        callback: this.undo.bind(this, true)
-      }
-    }
-  },
 })
 
 eYo.Backer.eyo.changeCountAdd()
@@ -69,7 +79,7 @@ eYo.Backer.eyo.changeCountAdd()
 /**
  * Clear the undo/redo stacks.
  */
-eYo.o3d.Backer_p.clear = function() {
+eYo.Backer_p.clear = function() {
   this.undoStack.length = 0
   this.redoStack.length = 0
   // Stop any events already in the firing queue from being undoable.
@@ -81,7 +91,7 @@ eYo.o3d.Backer_p.clear = function() {
  * Clear the undo/redo stacks.
  * Forwards to the owner.
  */
-eYo.o3d.Backer_p.didClearUndo = function() {
+eYo.Backer_p.didClearUndo = function() {
   this.app.didClearUndo && this.app.didClearUndo()
 }
 
@@ -89,7 +99,7 @@ eYo.o3d.Backer_p.didClearUndo = function() {
  * Undo or redo the previous action.
  * @param {boolean} redo False if undo, true if redo.
  */
-eYo.o3d.Backer_p.undo = function(redo) {
+eYo.Backer_p.undo = function(redo) {
   var inputStack = redo ? this.redoStack_ : this.undoStack_
   var outputStack = redo ? this.undoStack_ : this.redoStack_
   while (true) {
@@ -142,7 +152,7 @@ eYo.o3d.Backer_p.undo = function(redo) {
  * Forwards to the owner.
  * @param {boolean} redo False if undo, true if redo.
  */
-eYo.o3d.Backer_p.didProcessUndo = function(redo) {
+eYo.Backer_p.didProcessUndo = function(redo) {
   this.app.didProcessUndo && this.app.didProcessUndo(redo)
 }
 
@@ -152,7 +162,7 @@ eYo.o3d.Backer_p.didProcessUndo = function(redo) {
  * @param {eYo.event} event The event.
  * @param {function} task what is wrapped.
  */
-eYo.o3d.Backer_p.eventDidFireChange = function(event, task) {
+eYo.Backer_p.eventDidFireChange = function(event, task) {
   if (event.toUndoStack) {
     this.undoStack_.push(event)
     this.redoStack_.length = 0
@@ -173,7 +183,7 @@ eYo.o3d.Backer_p.eventDidFireChange = function(event, task) {
  * Message sent when an undo has been pushed.
  * Forwards to the owner.
  */
-eYo.o3d.Backer_p.didPushUndo = function() {
+eYo.Backer_p.didPushUndo = function() {
   this.app.didUnshiftUndo && this.app.didUnshiftUndo()
 }
 
@@ -181,6 +191,6 @@ eYo.o3d.Backer_p.didPushUndo = function() {
  * Message sent when an undo has been unshifted.
  * Forwards to the owner.
  */
-eYo.o3d.Backer_p.didUnshiftUndo = function() {
+eYo.Backer_p.didUnshiftUndo = function() {
   this.app.didUnshiftUndo && this.app.didUnshiftUndo()
 }

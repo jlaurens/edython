@@ -17,15 +17,17 @@
  * @constructor
  */
 eYo.o3d.makeC9r(eYo, 'Audio', {
-  computed: {
+  properties: {
     /**
      * Time that the last sound was played.
      * @type {String}
      */
-    pathToMedia () {
-      return this.options.pathToMedia
+    pathToMedia: {
+      get () {
+        return this.options.pathToMedia
+      },
     },
-  }
+  },
 })
 
 /**

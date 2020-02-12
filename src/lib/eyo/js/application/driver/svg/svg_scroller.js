@@ -11,9 +11,7 @@
  */
 'use strict'
 
-eYo.require('svg')
-
-eYo.forwardDeclare('scroller')
+eYo.forwardDeclare('widget.Scroller')
 
 /**
  * Svg driver for a scroller.
@@ -28,8 +26,8 @@ eYo.svg.makeDriverC9r('Scroller', {
     var corner = svg.corner_ = eYo.svg.newElement(
       'rect',
       {
-        height: eYo.Scrollbar.thickness,
-        width: eYo.Scrollbar.thickness,
+        height: eYo.widget.SCROLLBAR_THICKNESS,
+        width: eYo.widget.SCROLLBAR_THICKNESS,
         class: 'eyo-scrollbar-background'
       }
     )

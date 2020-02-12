@@ -13,7 +13,7 @@
 
 eYo.require('fcls')
 
-eYo.forwardDeclare('pane.TrashCan')
+eYo.forwardDeclare('widget.TrashCan')
 
 /**
  * @name {eYo.fcls.TrashCan}

@@ -13,7 +13,7 @@
 
 eYo.require('fcls')
 
-eYo.forwardDeclare('pane.Zoomer')
+eYo.forwardDeclare('widget.Zoomer')
 
 /**
  * Faceless driver for the zoomer.

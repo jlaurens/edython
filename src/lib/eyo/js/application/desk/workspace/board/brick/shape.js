@@ -26,39 +26,57 @@ eYo.o4t.makeC9r('Shape', {
     this.cursor = new eYo.geom.Where()
     // allways start from the top left
   },
-  computed: {
-    min_expr_radius () {
-      var w = eYo.unit.x
-      var h = eYo.unit.y / 2
-      return (w ** 2 + h ** 2) / 2 / w
+  properties: {
+    min_expr_radius: {
+      get () {
+        var w = eYo.unit.x
+        var h = eYo.unit.y / 2
+        return (w ** 2 + h ** 2) / 2 / w
+      },
     },
-    expr_radius () {
-      return this.min_expr_radius * 2
+    expr_radius: {
+      get () {
+        return this.min_expr_radius * 2
+      },
     },
-    caret_width () {
-      var r = this.expr_radius
-      var h = eYo.unit.y / 2
-      return r - Math.sqrt(r**2 - h**2)
+    caret_width: {
+      get () {
+        var r = this.expr_radius
+        var h = eYo.unit.y / 2
+        return r - Math.sqrt(r**2 - h**2)
+      },
     },
-    max_caret_extra () {
-      return eYo.unit.x - this.caret_width / 2
+    max_caret_extra: {
+      get () {
+        return eYo.unit.x - this.caret_width / 2
+      },
     },
-    caret_extra () {
-      return 0.25 * this.max_caret_extra // coefficient in ]0 ; 1]
+    caret_extra: {
+      get () {
+        return 0.25 * this.max_caret_extra // coefficient in ]0 ; 1]
+      },
     },
-    caret_height () {
-      var r = this.expr_radius
-      var w = this.caret_width
-      return Math.sqrt(w * (4 * r - w))
+    caret_height: {
+      get () {
+        var r = this.expr_radius
+        var w = this.caret_width
+        return Math.sqrt(w * (4 * r - w))
+      },
     },
-    stmt_radius () {
-      return (eYo.unit.y - this.caret_height) / 2
+    stmt_radius: {
+      get () {
+        return (eYo.unit.y - this.caret_height) / 2
+      },
     },
-    hilighted_width () {
-      return eYo.style.path.Hilighted.width / 2
+    hilighted_width: {
+      get () {
+        return eYo.style.path.Hilighted.width / 2
+      },
     },
-    definition () {
-      return this.steps.join(' ')
+    definition: {
+      get () {
+        return this.steps.join(' ')
+      },
     },
   },
 })

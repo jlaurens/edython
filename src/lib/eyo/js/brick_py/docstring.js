@@ -18,13 +18,15 @@ console.warn('THIS MUST BE AN EXPRESSION')
  */
 eYo.stmt.makeC9r(eYo.t3.stmt.docstring_stmt, {
   link: eYo.t3.expr.longliteral,
-  computed: {
+  properties: {
     /**
      * @readonly
      * @property {Boolean}  always true
      */
-    isWhite () {
-      return true
+    isWhite: {
+      get () {
+        return true
+      },
     },
   }
-}, true)
+})

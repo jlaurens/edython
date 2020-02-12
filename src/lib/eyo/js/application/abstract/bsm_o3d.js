@@ -48,21 +48,23 @@ eYo.o3d.makeNS(eYo, 'bsm_o3d')
  */
 
 eYo.bsm_o3d.makeDflt({
-  valued: ['slot', 'brick', 'magnet'],
-  computed: {
-    ui () {
-      return this.brick.ui
-    }
-  }
+  properties: {
+    ui: {
+      get () {
+        return this.brick.ui
+      },
+    },
+    brick: eYo.NA,
+    slot: eYo.NA,
+    magnet: eYo.NA,
+  },
 })
 
-eYo.assert(!!eYo.bsm_o3d.Dflt && !!eYo.bsm_o3d.Dflt_p, 'MISSED/FAILURE...')
-
-eYo.forwardDeclare('brick')
-eYo.forwardDeclare('slot')
-eYo.forwardDeclare('magnet')
+!!eYo.bsm_o3d.Dflt && !!eYo.bsm_o3d.Dflt_p || eYo.assert('MISSED/FAILURE...')
 
 eYo.bsm_o3d.Dflt_p.ownerDidChange = function (before, after) {
+  let inherited = eYo.bsm_o3d.Dflt_s.ownerDidChange
+  inherited && inherited.call(this, before, after)
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA
   if (after instanceof eYo.slot.Dflt) {
     this.slot_ = after

@@ -71,32 +71,35 @@ eYo.forwardDeclare('geom.Rect')
  * When true, an extra margin at the right of the draft board is added
  * to display line numbers.
  */
-eYo.makeC9r('Metrics', {
-  copied: {
-    port () {
-      return new eYo.geom.Rect()
-    },
-    view () {
-      return new eYo.geom.Rect()
-    },
-    box () {
-      return new eYo.geom.Rect()
-    },
-  },
-  valued: {
-    numbering: {
-      set__ (after) {
-        this.wrapUpdate(() => this.numbering__ = after)
+eYo.geom.makeC9r('Metrics', {
+  properties: {
+    port: {
+      get () {
+        return new eYo.geom.Rect()
       },
-      init () {
-        return false
-      }
+      copy: true,
+    },
+    view: {
+      get  () {
+        return new eYo.geom.Rect()
+      },
+      copy: true,
+    },
+    box: {
+      get  () {
+        return new eYo.geom.Rect()
+      },
+      copy: true,
+    },
+    numbering: {
+      set_ (builtin, after) {
+        this.wrapUpdate(() => builtin(after))
+      },
+      value: false,
     },
     updateDepth: 0,
     scale: {
-      init () {
-        return new eYo.geom.Where()
-      },
+      value: 1,
       validate (after) /** @suppress {globalThis} */ {
         if (after <= 0) {
           after = 1
@@ -117,13 +120,15 @@ eYo.makeC9r('Metrics', {
         this.board && this.board.didScale()
       }
     },
-  },
-  computed: {
-    board () {
-      return this.owner
+    board: {
+      get () {
+        return this.owner
+      },
     },
-    options () {
-      return this.board && this.board.options.zoom || {}
+    options: {
+      get () {
+        return this.board && this.board.options.zoom || {}
+      },
     },
     /**
      * The port rect is at least enclosing all the bricks.
@@ -131,8 +136,10 @@ eYo.makeC9r('Metrics', {
      * @type {eYo.geom.Rect} 
      * @readonly 
      */
-    portInView () {
-      return this.toView(this.port)
+    portInView: {
+      get () {
+        return this.toView(this.port)
+      },
     },
     /**
      * The default scroll value.
@@ -140,17 +147,21 @@ eYo.makeC9r('Metrics', {
      * @type {eYo.geom.Where} 
      * @readonly 
      */
-    dragDefault () {
-      return eYo.geom.clWhere(0*1.5, 0*0.25)
+    dragDefault: {
+      get () {
+        return eYo.geom.clWhere(0*1.5, 0*0.25)
+      },
     },
     /**
      * Whether the actual drag value is within the acceptable limits.
      * 
      * @type {Boolean} 
      */
-    dragPastLimits () {
-      var r = this.dragLimits
-      return r && this.drag_.out(r)
+    dragPastLimits: {
+      get () {
+        var r = this.dragLimits
+        return r && this.drag_.out(r)
+      },
     },
     /**
      * The opposite of `drag`.
@@ -158,8 +169,10 @@ eYo.makeC9r('Metrics', {
      * @type {eYo.geom.Where}
      * @readonly
      */
-    scroll () {
-      return this.drag.mirror
+    scroll: {
+      get () {
+        return this.drag.mirror
+      },
     },
     /**
      * The minimum port rect in board coordinates,
@@ -168,50 +181,56 @@ eYo.makeC9r('Metrics', {
      * @type {eYo.geom.Rect} 
      * @readonly 
      */
-    minPort () {
+    minPort: {
+      get () {
       var ans = this.view
-      ans.origin.set()
-      ans.unscale(this.scale)
-      ans.left = -(this.numbering ? 5 : 3) * eYo.unit.x
-      ans.top = -eYo.unit.y
-      return ans
+        ans.origin.set()
+        ans.unscale(this.scale)
+        ans.left = -(this.numbering ? 5 : 3) * eYo.unit.x
+        ans.top = -eYo.unit.y
+        return ans
+      },
     },
     /**
      * The scroll limits in view coordinates.
      * Used for scrolling, gives the limiting values of the `scroll` property.
      */
-    dragLimits () {
-      var v = this.view
-      v.origin_.set()
-      var ans = this.port.scale(this.scale)
-      var d = ans.right - v.right
-      ans.right = d >= 0 ? d : 0
-      d = ans.left - v.left
-      ans.left = d <= 0 ? d : 0
-      d = ans.bottom - v.bottom
-      ans.bottom = d >= 0 ? d : 0
-      d = ans.top - v.top
-      ans.top = d <= 0 ? d : 0
-      ans.mirror()
-      return ans
+    dragLimits: {
+      get () {
+        var v = this.view
+        v.origin_.set()
+        var ans = this.port.scale(this.scale)
+        var d = ans.right - v.right
+        ans.right = d >= 0 ? d : 0
+        d = ans.left - v.left
+        ans.left = d <= 0 ? d : 0
+        d = ans.bottom - v.bottom
+        ans.bottom = d >= 0 ? d : 0
+        d = ans.top - v.top
+        ans.top = d <= 0 ? d : 0
+        ans.mirror()
+        return ans
+      },
     },
     /**
      * Clone the object.
      */
-    clone () {
-      var ans = new eYo.Metrics()
-      ans.scale_ = this.scale_
-      ans.view_ = this.view_
-      ans.port_ = this.port_
-      ans.drag_ = this.drag_
-      ans.box_ = this.box_
-      return ans
+    clone: {
+      get () {
+        var ans = new eYo.geom.Metrics()
+        ans.scale_ = this.scale_
+        ans.view_ = this.view_
+        ans.port_ = this.port_
+        ans.drag_ = this.drag_
+        ans.box_ = this.box_
+        return ans
+      },
     },
-    toString () {
-      return `drag: ${this.drag.description}, view: ${this.view.description}, port: ${this.port.description}`
+    toString: {
+      get () {
+        return `drag: ${this.drag.description}, view: ${this.view.description}, port: ${this.port.description}`
+      },
     },
-  },
-  owned: {
     /**
      * When this point is (0,0) the view topleft corner
      * and the (0,0) point in the port are exactly
@@ -221,8 +240,8 @@ eYo.makeC9r('Metrics', {
      * @type {eYo.geom.Where} 
      */
     drag: {
-      get () {
-        var ans = (this.drag__ || this.dragDefault).copy
+      get (builtin) {
+        var ans = (builtin() || this.dragDefault).copy
         var r = this.dragLimits
         if (r) {
           if (ans.x < r.x) {
@@ -251,14 +270,14 @@ eYo.makeC9r('Metrics', {
 /**
  * Update the board.
  */
-eYo.Metrics.prototype.update = function () {
+eYo.geom.Metrics.prototype.update = function () {
   this.board && this.board.metricsDidChange()
 }
 
 /**
  * Update the board.
  */
-eYo.Metrics.prototype.wrapUpdate = function (do_it) {
+eYo.geom.Metrics.prototype.wrapUpdate = function (do_it) {
   try {
     ++this.updateDepth__
     do_it()
@@ -274,7 +293,7 @@ eYo.Metrics.prototype.wrapUpdate = function (do_it) {
  * Convert the given argument from `board` coordinates to `view` coordinates.
  * @param{eYo.geom.Rect | eYo.geom.Where} WR
  */
-eYo.Metrics.prototype.toView = function (WR) {
+eYo.geom.Metrics.prototype.toView = function (WR) {
   // Referential(view) = (origin: o, basis: {i, j})
   // o is the top left corner of the visible area.
   // Referential(port) = (origin: O, basis: {I, J})
@@ -292,7 +311,7 @@ eYo.Metrics.prototype.toView = function (WR) {
  * Convert the given argument from `view` coordinates to `board` coordinates.
  * @param{eYo.geom.Rect | eYo.geom.Where} wr
  */
-eYo.Metrics.prototype.fromView = function (wr) {
+eYo.geom.Metrics.prototype.fromView = function (wr) {
   return wr.backward(this.drag___).unscale(this.scale)
 }
 
@@ -302,7 +321,7 @@ eYo.Metrics.prototype.fromView = function (wr) {
  * @param{?eYo.geom.Rect} rect
  */
 console.error('MISSING IMPLEMENTATION')
-eYo.Metrics.prototype.getDraggingLimits = function (rect) {
+eYo.geom.Metrics.prototype.getDraggingLimits = function (rect) {
   var view = this.minPort
   var limits = this.port
   if (rect) {
@@ -312,11 +331,11 @@ eYo.Metrics.prototype.getDraggingLimits = function (rect) {
 
 /**
  * Test whether the receiver equals the given metrics object.
- * @param {eYo.Metrics} rhs Another metrics.
+ * @param {eYo.geom.Metrics} rhs Another metrics.
  * @return {boolean} Whether the two sets of metrics are equivalent.
  * @private
  */
-eYo.Metrics.prototype.equals = function(rhs) {
+eYo.geom.Metrics.prototype.equals = function(rhs) {
   return rhs && this.view.equals(rhs.view) &&
   this.scale === rhs.scale &&
   this.drag.equals(rhs.drag) &&

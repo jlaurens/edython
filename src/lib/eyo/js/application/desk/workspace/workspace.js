@@ -18,7 +18,7 @@ eYo.require('decorate')
 eYo.forwardDeclare('Flyout')
 eYo.forwardDeclare('app')
 eYo.forwardDeclare('Backer')
-eYo.forwardDeclare('Scrollbar')
+eYo.forwardDeclare('widget.Scrollbar')
 
 goog.forwardDeclare('goog.array');
 
@@ -33,45 +33,59 @@ goog.forwardDeclare('goog.array');
  * @constructor
  */
 eYo.pane.makeC9r('Workspace', {
-  owned: {
+  properties: {
     /**
      * @type {?eYo.board.Main} 
      */
-    board () { return new eYo.board.Main(this) },
+    board: {
+      value () {
+        return new eYo.board.Main(this)
+      },
+    },
     /**
      * The flyout.
      * @type {?eYo.Flyout} 
      */
-    flyout () { return new eYo.Flyout(this) },
+    flyout: {
+      value () {
+        return new eYo.Flyout(this)
+      },
+    },
     /**
      * The undo/redo manager
      * @type {?eYo.Backer} 
      */
-    backer () { return new eYo.Backer(this) },
+    backer: {
+      value () {
+        return new eYo.Backer(this)
+      },
+    },
     /**
      * The workspace's trashCan (if any).
      * @type {eYo.pane.TrashCan}
      */
-    trashCan () { return new eYo.pane.TrashCan(this) },
-    /**
-     * The main focus manager.
-     * @type {?eYo.focus.Main} 
-     */
-    focus_main () { return new eYo.focus.Main(this) },
-    zoomer () { return new eYo.pane.Zoomer(this) },
-  },
-  copied: {
-    /** @type {!eYo.geom.Rect} */
-    viewRect () {
-      new eYo.geom.Rect()
-    }
-  },
-  valued: {
-    scale () {
-      return this.options.zoom.startScale || 1
+    trashCan: {
+      value () {
+        return new eYo.pane.TrashCan(this)
+      },
     },
-  },
-  computed: {
+    zoomer: {
+      value () {
+        return new eYo.pane.Zoomer(this)
+      },
+    },
+    /** @type {!eYo.geom.Rect} */
+    viewRect: {
+      get () {
+        new eYo.geom.Rect()
+      },
+      copy: true,
+    },
+    scale: {
+      get () {
+        return this.options.zoom.startScale || 1
+      },
+    },
     /**
      * The workspace's desk.
      * @type {!eYo.Desk}
@@ -136,7 +150,7 @@ eYo.pane.Workspace_p.place = function() {
   this.ui_driver.place(this)
   this.board.place()
   this.flyout.place()
-  var bottom = eYo.Scrollbar.thickness
+  var bottom = eYo.widget.SCROLLBAR_THICKNESS
   this.trashCan.place(bottom)
   bottom = this.trashCan.top
   this.zoomer.place(bottom)
@@ -163,6 +177,5 @@ eYo.pane.Workspace_p.recordDeleteAreas = function() {
  * @param{Boolean} redo  True when redoing, false otherwise
  */
 eYo.pane.Workspace_p.undo = function(redo) {
-  this.backer__.undo(redo)
+  this.backer_.undo(redo)
 }
-

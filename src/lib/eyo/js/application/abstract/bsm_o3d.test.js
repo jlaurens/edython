@@ -63,7 +63,7 @@ describe('BSM Owned', function () {
     var ONR = function () {}
     var onr0 = new ONR()
     eYo.makeC9r(NS, 'A', eYo.bsm_o3d.Dflt, {
-      owned: {
+      properties: {
         foo () {}
       }
     })
@@ -93,7 +93,7 @@ describe ('Tests: BSM Owned', function () {
   eYo.brick = eYo.slot.Dflt = eYo.magnet = eYo.NA
   var ff = k => {
     eYo.makeC9r(k, {
-      owned: ['foo']
+      properties: ['foo']
     })
     ff('brick')
     ff('magnet')

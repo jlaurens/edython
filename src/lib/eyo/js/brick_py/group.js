@@ -47,7 +47,7 @@ eYo.stmt.makeC9r('group', {
   foot (type) /** @suppress {globalThis} */ {
     return null
   },
-  valued: {
+  properties: {
     isGroup: true,
   }
 })

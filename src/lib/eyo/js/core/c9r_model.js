@@ -43,11 +43,8 @@ eYo.c9r.model.Allowed = {
     'end',
   ],
   data: '^\\w+$',
+  properties: '^\\w+$',
   owned: '^\\w+$',
-  computed: '^\\w+$',
-  valued: '^\\w+$',
-  cached: '^\\w+$',
-  copied: '^\\w+$',
   ['^xml$']: [
     'attr', 'types', 'attribute',
   ],

@@ -66,75 +66,43 @@ eYo.span.makeDflt({
     this.c_ = this.c_min_ + this.c_padding
     this.l_ = this.header_ + this.main_ + this.hole_ + this.suite_ + this.footer_
   },
-  computed: {
+  aliases: {
+    'size.x': ['x', 'width'],
+    'size.y': ['y', 'height'],
+  },
+  properties: {
+    size: {
+      value () {
+        return new eYo.geom.Size()
+      }
+    },
     /**
      * @readonly
      * @property {eYo.brick.Dflt} brick - The owning brick
      */
-    brick () {
-      return this.owner_
-    },
-    /**
-      * @readonly
-      * @property {number} width  The full width, in board coordinates, computed based on `c`.
-      */
-    width: {
+    brick: {
       get () {
-        return this.c * eYo.unit.x
+        return this.owner_
       },
-      set (after) {
-        this.c_ = after / eYo.unit.x
-      }
     },
-    /**
-      * @property {number} x  Synonym of `width`.
-      */
-    x: {
+    parentSpan: {
       get () {
-        return this.width
+        var p = this.brick.parent
+        return p && p.span
       },
-      set (after) {
-        this.width_ = after
-      }
     },
-    parentSpan () {
-      var p = this.brick.parent
-      return p && p.span
-    },
-    rightSpan () {
-      var b3k = this.brick.right
-      return b3k && b3k.span
-    },
-    leftSpan () {
-      var b3k = this.brick.left
-      return b3k && b3k.span
-    },
-    /**
-     * @readonly
-     * @property {number} height - The height, in board coordinates.
-     */
-    height: {
+    rightSpan: {
       get () {
-        return this.l_ * eYo.unit.y
-      },
-      set_ (after) {
-        this.l_ =  after / eYo.unit.y
+        var b3k = this.brick.right
+        return b3k && b3k.span
       },
     },
-    /**
-     * @readonly
-     * @property {number} y  Synonym of `height`.
-     */
-    y: {
+    leftSpan: {
       get () {
-        return this.height
-      },
-      set_ (after) {
-        this.height_ = after
+        var b3k = this.brick.left
+        return b3k && b3k.span
       },
     },
-  },
-  valued: {
     /**
      * This is the total number of columns in that block.
      * At least two.
@@ -142,9 +110,14 @@ eYo.span.makeDflt({
      * @property {number} c - The full number of columns
      */
     c: {
-      init: 0,
+      get () {
+        return this.c_min + this.c_padding
+      },
+      validate(after) {
+        return after >= this.c_min ? after : this.c_min
+      },
       set (after) {
-        this.setPadding(after - this.c_min_)
+        this.c_padding_ = after - this.c_min
       }
     },
     /**
@@ -153,19 +126,38 @@ eYo.span.makeDflt({
      * @property {number} c_min - The minimum number of columns
      */
     c_min: {
-      init: 0,
-      set (after) {
-        this.addC(after - this.c_min_)
+      value: 0,
+      set (builtin, after) {
+        this.addC(after - this.c_min)
       }
     },
     /**
      * @property {number} c_padding - The extra padding at the right
      */
     c_padding: {
-      init: 0,
+      value: 0,
+      validate(after) {
+        return after>=0 ? after : eYo.INVALID
+      },
       set (after) {
-        this.setPadding(after)
-      }
+        if (after>=0) {
+          var right = this.rightSpan
+          if (right) {
+            // cascade to all the right statements
+            right.c_padding_ = after
+            this.c_padding_ = 0
+          } else {
+            if (this.brick.isGroup && !this.brick.right) {
+              this.c_min_ + after >= 2 * eYo.span.INDENT
+              var min = 2 * eYo.span.INDENT - this.c_min_
+              if (after < min) {
+                after = min
+              }
+            }
+            this.c_padding_ = after 
+          }
+        }
+      },
     },
     /**
      * @property {number} right  The number of right columns
@@ -190,17 +182,17 @@ eYo.span.makeDflt({
      * @property {number} main - The number of main lines
      */
     main: {
-      init: 1, // 1 or more
-      set (after) {
-        this.addMain(after - this.main_)
+      value: 1, // 1 or more
+      set (builtin, after) {
+        this.addMain(after - this.main)
       }
     },
     /** 
      * @property {number} header - The number of header lines
      */
     header: {
-      init: 0,
-      set (after) {
+      value: 0,
+      set (builtin, after) {
         this.addHeader(after - this.header_)
       }
     },
@@ -208,9 +200,9 @@ eYo.span.makeDflt({
      * @property {number} footer - The number of footer lines
      */
     footer: {
-      init: 0,
-      set (after) {
-        this.addFooter(after - this.footer_)
+      value: 0,
+      set (builtin, after) {
+        this.addFooter(after - this.footer)
       }
     },
     /**
@@ -227,9 +219,9 @@ eYo.span.makeDflt({
      * @property {number} suite - The number of suite lines
      */
     suite: {
-      init: 0,
-      set (after) {
-        this.addSuite(after - this.suite_)
+      value: 0,
+      set (builtin, after) {
+        this.addSuite(after - this.suite)
       },
     },
     /**
@@ -246,9 +238,9 @@ eYo.span.makeDflt({
      * @property {number} foot - The number of foot lines
      */
     foot: {
-      init: 0,
-      set (after) {
-        this.addFoot(after - this.foot_)
+      value: 0,
+      set (builtin, after) {
+        this.addFoot(after - this.foot)
       },
     },
   },
@@ -270,38 +262,12 @@ Object.defineProperties(eYo.span, {
 })
 
 /**
- * Set the right padding column number.
- * Used to align the right edges of statement blocks.
- * @param {Number} padding  the new value of the padding, a non negative number.
- */
-eYo.span.Dflt_p.setPadding = function (padding) {
-  if (padding>=0) {
-    var right = this.rightSpan
-    if (right) {
-      // cascade to all the right statements
-      right.setPadding(delta)
-      this.c_ = this.c_min_
-    } else {
-      if (this.brick.isGroup && !this.brick.right) {
-        this.c_min_ + padding >= 2 * eYo.span.INDENT
-        var min = 2 * eYo.span.INDENT - this.c_min_
-        if (padding < min) {
-          padding = min
-        }
-      }
-      this.c_padding_ = padding
-      this.c_ = this.c_min_ + padding  
-    }
-  }
-}
-
-/**
  * Reset the padding to 0.
  * @result {Boolean}  true iff there was a positive padding.
  */
 eYo.span.Dflt_p.resetPadding = function () {
-  if (this.c_padding_ > 0) {
-    this.setPadding(0)
+  if (this.c_padding > 0) {
+    this.c_padding_ = 0
     return true
   }
 }

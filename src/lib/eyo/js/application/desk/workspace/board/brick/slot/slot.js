@@ -59,12 +59,11 @@ goog.forwardDeclare('goog.dom');
  */
 eYo.slot.makeDflt({
   init (brick, key, model) {
-    eYo.assert(brick, 'Missing slot owner brick')
-    eYo.assert(key, 'Missing slot key')
-    eYo.assert(model, 'Missing slot model')
-    eYo.assert(!eYo.isNA(model.order), 'Missing slot model order')
+    brick || eYo.throw('Missing slot owner brick')
+    key || eYo.throw('Missing slot key')
+    model || eYo.throw('Missing slot model')
+    eYo.isNA(model.order) && eYo.throw('Missing slot model order')
     
-    this.reentrant_ = {}
     this.key_ = key
     this.model_ = model
     var setupModel = model => {
@@ -88,26 +87,24 @@ eYo.slot.makeDflt({
       this.bind_f && (this.bind_f.isComment = true)
     }
   },
-  owned: {
-    magnet: eYo.NA
-  },
-  valued: {
+  properties: {
+    magnet: eYo.NA,
     /**
      * @property {eYo.data.Dflt} data  Bound data.
      */
     data: eYo.NA,
     visible: true,
     incog: {
-      init () {
+      value () {
         return true
       },
       validate (after) {
         if (this.data) {
           after = this.data.incog
-        } else if (!eYo.isNA(after)) {
-          after = !this.required
-        } else {
+        } else if (eYo.isNA(after)) {
           after = !!after
+        } else {
+          after = !this.required
         }
         var validator = this.slots && this.model.validateIncog
         if (validator) { // if !this.slots, the receiver is not yet ready
@@ -115,9 +112,9 @@ eYo.slot.makeDflt({
         }
         return after
       },
-      set_ (after) {
+      set_ (builtin, after) {
         this.brick_.change.wrap(() => {
-          this.incog_ = after
+          builtin(after)
           // forward to the connection
           var m4t = this.magnet
           if (m4t) {
@@ -126,38 +123,42 @@ eYo.slot.makeDflt({
         })
       },
     },
-    key: {},
-    model: {},
+    key: eYo.NA,
+    model: eYo.NA,
     /**
      * Get the concrete required status.
      * For edython.
      * @param {boolean} after
      */
-    requiredFromModel: {}
-  },
-  computed: {
+    requiredFromModel: eYo.NA,
     /**
      * @readonly
      * @property {eYo.brick.Dflt} brick  the immediate brick in which this is contained
      */
-    brick () {
-      return this.owner_
+    brick: {
+      get () {
+        return this.owner_
+      },
     },
     /**
      * @readonly
      * @property {eYo.brick.Dflt} brick  the immediate brick in which this is contained
      */
-    targetBrick () {
-      var m4t = this.magnet
-      return m4t && m4t.targetBrick
+    targetBrick: {
+      get () {
+        var m4t = this.magnet
+        return m4t && m4t.targetBrick
+      },
     },
     /**
      * Position of the receiver in its board
      * @readonly
      * @property {Number}
      */
-    whereInBoard () {
-      return this.where.forward(this.brick.ui.whereInBoard)
+    whereInBoard: {
+      get () {
+        return this.where_.forward(this.brick.whereInBoard)
+      },
     },
     /**
      * Position of the receiver in its brick.
@@ -171,21 +172,24 @@ eYo.slot.makeDflt({
         this.where_.set(after)
       }
     },
-    recover () {
-      return this.brick_.recover
+    recover: {
+      get () {
+        return this.brick_.recover
+      },
     },
-    xmlKey () {
-      return (this.model.xml && this.model.xml.key) || this.key
-    },
-    ui () {
-      return this.brick.ui
+    xmlKey: {
+      get () {
+        return (this.model.xml && this.model.xml.key) || this.key
+      },
     },
     /**
      * Convenience shortcut.
      */
-    unwrappedTarget () {
-      var m4t = this.magnet
-      return m4t && m4t.unwrappedTarget
+    unwrappedTarget: {
+      get () {
+        var m4t = this.magnet
+        return m4t && m4t.unwrappedTarget
+      },
     },
     requiredIncog: {
       get () {
@@ -198,48 +202,53 @@ eYo.slot.makeDflt({
     /**
      * @property {boolean} isRequiredToModel - Get the required status.
      */
-    isRequiredToModel () {
-      if (this.incog) {
+    isRequiredToModel: {
+      get () {
+        if (this.incog) {
+          return false
+        }
+        if (!this.magnet) {
+          return false
+        }
+        if (!this.magnet.wrapped_ && this.targetBrick) {
+          return true
+        }
+        if (this.required) {
+          return true
+        }
+        if (this.data && this.data.required) {
+          return false
+        }
+        if (this.model.xml && this.model.xml.required) {
+          return true
+        }
         return false
-      }
-      if (!this.magnet) {
-        return false
-      }
-      if (!this.magnet.wrapped_ && this.targetBrick) {
-        return true
-      }
-      if (this.required) {
-        return true
-      }
-      if (this.data && this.data.required) {
-        return false
-      }
-      if (this.model.xml && this.model.xml.required) {
-        return true
-      }
-      return false
+      },
     },
     /**
      * Get the concrete required status.
      * For edython.
      * @param {boolean} after
      */
-    requiredFromSaved () {
-      var t9k = this.targetBrick
-      if (t9k) {
-        if (t9k.wrapped_) {
-          // return true if one of the inputs is connected
-          return t9k.slotSome(slot => !!slot.target)
+    requiredFromSaved: {
+      get () {
+        var t9k = this.targetBrick
+        if (t9k) {
+          if (t9k.wrapped_) {
+            // return true if one of the inputs is connected
+            return t9k.slotSome(slot => !!slot.target)
+          }
+          return true
         }
-        return true
-      }
-      return this.requiredFromModel
+        return this.requiredFromModel
+      },
     },
-  },
-  copied: {
-    where () {
-      return new eYo.geom.Where()
-    }
+    where: {
+      value () {
+        return new eYo.geom.Where()
+      },
+      copy: true,
+    },
   },
   /**
    * Dispose of all attributes.
@@ -250,8 +259,6 @@ eYo.slot.makeDflt({
     eYo.field.disposeFields(this)
     this.magnet_ && this.magnet_.dispose(onlyThis)
     this.magnet_ = eYo.NA
-    this.key_ = eYo.NA
-    eYo.p6y.disposeProperties(this, 'where')
   },
   ui: {
     /**
@@ -280,7 +287,7 @@ eYo.slot.makeDflt({
  * @param {Object} object - The object to initialize.
  */
 eYo.slot.Dflt.eyo_p.initInstance = function (object) {
-  this.constructor.eyo.C9r_s.initInstance.call(this, object)
+  eYo.slot.Dflt_s.initInstance.call(this, object)
   object.model['.methods'].forEach(f => {
     f(object)
   })

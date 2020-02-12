@@ -67,27 +67,33 @@ eYo.stmt.makeC9r(eYo.t3.stmt.comment_stmt, {
       }
     }
   },
-  computed: {
+  properties: {
     /**
      * @readonly
      * @property {Boolean} whether the receiver is a comment.
      */
-    isComment () {
-      return this.type === eYo.t3.stmt.comment_stmt
+    isComment: {
+      get () {
+        return this.type === eYo.t3.stmt.comment_stmt
+      },
     },
     /**
      * @readonly
      * @property {Boolean} whether the receiver is a blank statement: a line consisting of only white spaces, if any.
      */
-    isBlank () {
-      return this.type === eYo.t3.stmt.blank_stmt
+    isBlank: {
+      get () {
+        return this.type === eYo.t3.stmt.blank_stmt
+      },
     },
     /**
      * @readonly
      * @property {Boolean} comment bricks are white
      */
-    isWhite () {
-      return true
+    isWhite: {
+      get () {
+        return true
+      },
     },
   },
 })

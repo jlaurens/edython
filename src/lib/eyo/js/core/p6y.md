@@ -136,4 +136,16 @@ The `setStored ` setter can be overriden by the model with key `set_`. Useful fo
 
 | keys | value | usage |
 |---|---|---|
-| lazy | 
+| value | | |
+| lazy | | |
+| reset | | |
+| dispose | | |
+| validate | | |
+| copy | | |
+| get | | |
+| set | | |
+| get_ | | |
+| set_ | | |
+| willChange | | |
+| atChange | | |
+| didChange | | |

@@ -280,14 +280,17 @@ eYo._p.forwardDeclare = (name) => {}
 /**
  * Contrary to goog.inherits, does not erase the childC9r.prototype.
  * IE<11
- * @param {Function} childC9r
+ * @param {Function} ChildC9r
  * @param {Function} SuperC9r
  */
 eYo.inherits = function (ChildC9r, SuperC9r) {
   ChildC9r.SuperC9r = SuperC9r
-  ChildC9r.SuperC9r_p = SuperC9r.prototype
-  Object.setPrototypeOf(ChildC9r.prototype, SuperC9r.prototype)
-  ChildC9r.prototype.constructor = ChildC9r
+  let Super_p = SuperC9r.prototype
+  let Child_p = ChildC9r.prototype
+  ChildC9r.SuperC9r_p = Super_p
+  Object.setPrototypeOf(Child_p, Super_p)
+  Child_p.constructor = ChildC9r
+  Child_p.SuperC9r_p = Super_p
 }
 
 /**

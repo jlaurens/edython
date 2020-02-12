@@ -55,13 +55,17 @@ eYo.stmt.makeDflt({
     ? []
     : null
   },
-  computed: {
-    isStmt () {
-      return true
+  properties: {
+    isStmt: {
+      get () {
+        return true
+      },
     },
-    depth () {
-      var group = this.group
-      return (group && (group.depth + 1)) || 0
+    depth: {
+      get () {
+        var group = this.group
+        return (group && (group.depth + 1)) || 0
+      },
     },
   }
 })

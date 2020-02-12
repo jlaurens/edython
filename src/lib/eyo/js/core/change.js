@@ -20,7 +20,7 @@ eYo.o3d.makeC9r('Change', {
   init () {
     this.reset()
   },
-  valued: {
+  properties: {
     /** the count is incremented each time a change occurs,
      * even when undoing.
      * Some lengthy actions may be shortened when the count
@@ -78,7 +78,7 @@ eYo.o3d.Change_p.reset = function () {
  * @return {!Function}
  */
 eYo.c9r.decorateChange = function (key, do_it) {
-  eYo.assert(eYo.isF(do_it), 'do_it MUST be a function')
+  eYo.isF(do_it) || eYo.throw('do_it MUST be a function')
   return function() {
     var c = this.change
     if (c.save_[key] === c.count) {

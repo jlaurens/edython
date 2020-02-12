@@ -1,5 +1,11 @@
 describe ('Tests: Property', function () {
   this.timeout(10000)
+  it ('POC: function arguments', function () {
+    chai.assert((() => {}).length === 0)
+    chai.assert(((x) => {}).length === 1)
+    chai.assert((function () {}).length === 0)
+    chai.assert((function (x) {}).length === 1)
+  })
   it ('Property: Basic', function () {
     chai.assert(eYo.p6y)
   })
@@ -100,25 +106,31 @@ describe ('Tests: Property', function () {
     var flag = 0
     let onr = {}
     let p = eYo.p6y.new(onr, 'foo', {
-      set (after) {
-        flag = after
-      },
       get () {
         return flag
+      },
+      set (after) {
+        flag = after
       },
     })
     p.value_ = 123
     chai.assert(flag === 123)
     chai.assert(p.value === 123)
     chai.assert(p.value_ === 123)
-    chai.assert(p.value__ === eYo.NA)
+    chai.assert(p.value__ === 123)
     chai.assert(p.stored__ === eYo.NA)
     p.value__ = 421
-    chai.assert(flag === 123)
-    chai.assert(p.value === 123)
-    chai.assert(p.value_ === 123)
+    chai.assert(flag === 421)
+    chai.assert(p.value === 421)
+    chai.assert(p.value_ === 421)
     chai.assert(p.value__ === 421)
-    chai.assert(p.stored__ === 421)
+    chai.assert(p.stored__ === eYo.NA)
+    p.stored__ = 123
+    chai.assert(flag === 421)
+    chai.assert(p.value === 421)
+    chai.assert(p.value_ === 421)
+    chai.assert(p.value__ === 421)
+    chai.assert(p.stored__ === 123)
   })
   it('Property: {set ():...}', function () {
     var flag = 0
@@ -527,5 +539,21 @@ describe ('Tests: Property', function () {
     flag = 666
     p.reset()
     chai.assert(p.value === 666)
+  })
+  it ('Property: cached', function () {
+    let onr = {
+      eyo: true
+    }
+    var flag = 421
+    var p = eYo.p6y.new(onr, 'foo', {
+      value () {
+        return flag
+      },
+    })
+    chai.assert(p.value === 421)
+    flag = 123
+    chai.assert(p.value === 421)
+    p.reset()
+    chai.assert(p.value === 123)
   })
 })

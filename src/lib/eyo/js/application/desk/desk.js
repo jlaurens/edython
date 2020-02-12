@@ -32,7 +32,7 @@ goog.forwardDeclare('goog.array')
  * @constructor
  */
 eYo.o3d.makeC9r(eYo, 'Desk', {
-  owned: {
+  properties: {
     /**
      * Terminal.
      * @type{eYo.pane.Terminal}
@@ -68,14 +68,14 @@ eYo.o3d.makeC9r(eYo, 'Desk', {
     workspace () {
       return new eYo.pane.Workspace(this)
     },
-  },
-  computed: {
     /**
      * The desk's desk.
      * @type {!eYo.Desk}
      */
-    desk () {
-      return this
+    desk: {
+      get () {
+        return this
+      },
     },
   },
   ui: {

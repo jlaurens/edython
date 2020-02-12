@@ -16,17 +16,19 @@ console.error('In progress')
 /**
  * 
  */
-eYo.makeC9r('Clipboard', eYo.o3d.Dflt, {
-  valued: {
+eYo.o3d.makeC9r(eYo, 'Clipboard', {
+  properties: {
     dom: eYo.isNA,
     sourceBoard: eYo.isNA,
-  },
-  computed: {
-    desk () {
-      return this.sourceBoard_.desk
+    desk: {
+      get () {
+        return this.sourceBoard.desk
+      },
     },
-    board () {
-      return this.sourceBoard_.desk.board
+    board: {
+      get () {
+        return this.sourceBoard.desk.board
+      },
     },
   },
 })

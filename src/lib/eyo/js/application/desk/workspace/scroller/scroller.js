@@ -11,83 +11,69 @@
  */
 'use strict'
 
-eYo.require('c9r')
-
-eYo.provide('scroller')
-
 eYo.forwardDeclare('board')
 
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
 
 /**
+ * @type{eYo.widget.Scroller}
  * Class for a pair of scrollbars.  Horizontal and vertical.
  * @param {eYo.board} board Board to bind the scrollbars to.
  * @constructor
  */
-eYo.Scroller = function(board) {
-  eYo.Scroller.eyo.C9r_s.constructor.call(this, board)
-  this.hScroll = new eYo.Scrollbar(
-    this,
-    true,
-    'eyo-main-board-scrollbar'
-  )
-  this.vScroll = new eYo.Scrollbar(
-    this,
-    false,
-    'eyo-main-board-scrollbar'
-  )
-  this.cornerRect_ = new eYo.geom.Rect()
-  this.disposeUI = eYo.do.nothing
-  board.hasUI && this.initUI()
-}
-goog.inherits(eYo.Scroller, eYo.c9r.Dflt)
-
-Object.defineProperties(eYo.Scroller.prototype, {
-  /**
-   * @type{eYo.board} The scrolled board...
-   * @readonly
-   */
-  board: {
-    get () {
-      return this.owner
-    }
+eYo.widget.makeC9r('Scroller', {
+  init (board) {
+    eYo.Scroller.eyo.C9r_s.constructor.call(this, board)
+    this.hScroll = new eYo.widget.Scrollbar(
+      this,
+      true,
+      'eyo-main-board-scrollbar'
+    )
+    this.vScroll = new eYo.widget.Scrollbar(
+      this,
+      false,
+      'eyo-main-board-scrollbar'
+    )
+    this.cornerRect_ = new eYo.geom.Rect()
+    this.disposeUI = eYo.do.nothing
+    board.hasUI && this.initUI()
   },
-  /**
-   * Set/get whether this scrollbar's container is visible.
-   * @param {boolean} visible Whether the container is visible.
-   */
-  containerVisible: {
-    get () {
-      return this.hScroll.containerVisible || this.vScroll.containerVisible
+  properties: {
+    /**
+     * @type {eYo.board.Dflt} The scrolled board...
+     * @readonly
+     */
+    board: {
+      get () {
+        return this.owner
+      }
     },
-    set (after) {
-      this.hScroll.containerVisible = after
-      this.vScroll.containerVisible = after
-    }
-  },
-  /**
-   * Is the scrollbar visible.  Non-paired scrollbars disappear when they aren't
-   * needed.
-   * @return {boolean} True if visible.
-   */
-  visible: {
-    get () {
-      return this.hScroll.visible || this.vScroll.visible
-    }
+    /**
+     * Set/get whether this scrollbar's container is visible.
+     * @param {boolean} visible Whether the container is visible.
+     */
+    containerVisible: {
+      get () {
+        return this.hScroll.containerVisible || this.vScroll.containerVisible
+      },
+      set (after) {
+        this.hScroll.containerVisible_ = after
+        this.vScroll.containerVisible_ = after
+      }
+    },
+    /**
+     * Is the scrollbar visible.  Non-paired scrollbars disappear when they aren't
+     * needed.
+     * @return {boolean} True if visible.
+     */
+    visible: {
+      get () {
+        return this.hScroll.visible || this.vScroll.visible
+      }
+    },
   },
 })
-
-/**
- * Previously recorded metrics from the board.
- * @type {Object}
- * @private
- */
-eYo.Scroller.prototype.initUI = function () {
-  this.ui_driver_mngr.scrollerInit(this)
-  this.initUI = eYo.do.nothing
-  delete this.disposeUI
-}
 
 /**
  * Previously recorded metrics from the board.

@@ -20,8 +20,8 @@ eYo.require('decorate')
 eYo.o3d.makeNS(eYo, 'board')
 
 eYo.forwardDeclare('pane.Workspace')
-eYo.forwardDeclare('List')
-eYo.forwardDeclare('Metrics')
+eYo.forwardDeclare('brick.List')
+eYo.forwardDeclare('geom.Metrics')
 
 goog.forwardDeclare('goog.array')
 goog.forwardDeclare('goog.math')
@@ -38,7 +38,7 @@ goog.forwardDeclare('goog.math')
  * @constructor
  */
 eYo.board.makeDflt({
-  valued: {
+  properties: {
     /**
      * The render status of a board.
      * Returns `true` for visible boards and `false` for non-visible,
@@ -52,82 +52,68 @@ eYo.board.makeDflt({
      * @type {Array<eYo.brick.Dflt>}
      * @private
      */
-    highlightedBricks: [],
-  },
-  copied: {
-        /**
+    highlightedBricks: {
+      value () {
+        return []
+      },
+    },
+    /**
      * @type {!Object}
      * @private
      */
-    metrics () {
-      return new eYo.Metrics(this)
-    }
-  },
-  owned: {
+    metrics: {
+      get () {
+        return new eYo.geom.Metrics(this)
+      },
+      copy: true,
+    },
     /**
      * The top bricks are all the bricks with no parent.
      * They are owned by a board.
      * They are ordered by line number.
-     * @type {eYo.List}
+     * @type {eYo.brick.List}
      * @private
      */
-    list () {
-      return new eYo.List(this)
+    list: {
+      get () {
+        return new eYo.brick.List(this)
+      },
     },
     /**
-     * @type {eYo.Scrollbar | eYo.Scroller}
+     * @type {eYo.widget.Scrollbar | eYo.widget.Scroller}
      * @readonly
      */
     scrollbar: {},
-    board () {
-      if (!this.isDragger) {
-        return new eYo.dnd.dragger.Board(this)
-      }
+    board: {
+      get () {
+        if (!this.isDragger) {
+          return new eYo.dnd.dragger.Board(this)
+        }
+      },
     },
-  },
-  computed: {
     /**
      * Convenient property.
      * @readonly
      * @type {eYo.Workspace}
      */
-    workspace () {
-      return this.owner
-    },
-    recover () {
-      return this.getRecover()
-    },
-    scale: {
+    workspace: {
       get () {
-        return this.metrics__.scale
+        return this.owner
       },
-      /**
-       * Set the board's zoom factor.
-       * zoom options are required
-       * @param {number} newScale Zoom factor.
-       */
-      set (after) {
-        this.metrics__.scale = after
-      }
     },
-    drag: {
+    recover: {
       get () {
-        return this.metrics__.drag
+        return this.getRecover()
       },
-      /**
-       * Set the board's scroll vector.
-       * @param {eYo.geom.Size} after Scroll factor.
-       */
-      set (after) {
-        this.metrics__.drag = after
-      }
     },
     /**
      * Is this board draggable and scrollable?
      * @type {boolean} True if this board may be dragged.
      */
-    draggable () {
-      return !!this.scrollbar
+    draggable: {
+      get () {
+        return !!this.scrollbar
+      },
     },
     /**
      * Calculate the bounding box for the bricks on the board.
@@ -136,12 +122,14 @@ eYo.board.makeDflt({
      * @return {Object} Contains the position and size of the bounding box
      *   containing the bricks on the board.
      */
-    bricksBoundingRect () {
-      // JL: TODO separate main bricks and draft bricks
-      var ans = new eYo.geom.Rect()
-      var bricks = this.topBricks.filter(b3k => b3k.ui && b3k.hasUI)
-      bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
-      return ans
+    bricksBoundingRect: {
+      get () {
+        // JL: TODO separate main bricks and draft bricks
+        var ans = new eYo.geom.Rect()
+        var bricks = this.topBricks.filter(b3k => b3k.ui && b3k.hasUI)
+        bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
+        return ans
+      },
     },
     /**
      * Calculate the bounding box for the bricks on the board.
@@ -150,11 +138,13 @@ eYo.board.makeDflt({
      * @return {Object} Contains the position and size of the bounding box
      *   containing the bricks on the board.
      */
-    mainBricksBoundingRect () {
-      var ans = new eYo.geom.Rect()
-      var bricks = this.mainBricks.filter(b3k => b3k.ui && b3k.hasUI)
-      bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
-      return ans
+    mainBricksBoundingRect: {
+      get () {
+        var ans = new eYo.geom.Rect()
+        var bricks = this.mainBricks.filter(b3k => b3k.ui && b3k.hasUI)
+        bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
+        return ans
+      },
     },
     /**
      * Calculate the bounding box for the bricks on the board.
@@ -163,11 +153,13 @@ eYo.board.makeDflt({
      * @return {Object} Contains the position and size of the bounding box
      *   containing the bricks on the board.
      */
-    draftBricksBoundingRect () {
-      var ans = new eYo.geom.Rect()
-      var bricks = this.draftBricks.filter(b3k => b3k.ui && b3k.hasUI)
-      bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
-      return ans
+    draftBricksBoundingRect: {
+      get () {
+        var ans = new eYo.geom.Rect()
+        var bricks = this.draftBricks.filter(b3k => b3k.ui && b3k.hasUI)
+        bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
+        return ans
+      },
     },
     /**
      * Return the position of the board origin relative to the application.
@@ -175,30 +167,38 @@ eYo.board.makeDflt({
      * It is not the upper left corner of the main window due to various offsets.
      * @return {!eYo.geom.Where} Offset in pixels.
      */
-    originInApplication () {
-      return this.desk.xyElementInDesk(this.dom.svg.canvas_)
+    originInApplication: {
+      get () {
+        return this.desk.xyElementInDesk(this.dom.svg.canvas_)
+      },
     },
     /**
      * the top bricks of the board.
      * Returns a copy or the internal array.
      * @type{Array<eYo.brick.Dflt>}
      */
-    topBricks () {
-      return this.list.bricks
+    topBricks: {
+      get () {
+        return this.list.bricks
+      },
     },
     /**
      * the ordered top bricks of the board.
      * @type{Array<eYo.brick.Dflt>}
      */
-    orderedTopBricks () {
-      return this.list.bricks
+    orderedTopBricks: {
+      get () {
+        return this.list.bricks
+      },
     },
     /**
      * the main bricks of the board.
      * @type{Array<eYo.brick.Dflt>}
      */
-    mainBricks () {
-      return this.mainBricks_.slice()
+    mainBricks: {
+      get () {
+        return this.mainBricks_.slice()
+      },
     },
     /**
      * The number of bricks that may be added to the board before reaching
@@ -226,6 +226,20 @@ eYo.board.makeDflt({
         return bricks
       }
     },
+  },
+  aliases: {
+    /**
+     * @type {Number}
+     * The board's zoom factor.
+     * zoom options are required
+     */
+    'metrics.scale': 'scale',
+    /**
+     * @type {Yo.geom.Size}
+     * The board's zoom factor.
+     * zoom options are required
+     */
+    'metrics.drag': 'drag',
   },
   init (owner) {    
     /**
@@ -262,22 +276,28 @@ eYo.board.makeC9r('Main', {
     /** @type {string} */
     this.id = eYo.do.genUid()    
   },
-  owned: {
-    board () {
-      return new eYo.board.Dflt(this, {
-        backgroundClass: 'eyo-board-dragger-background'
-      })
+  properties: {
+    board: {
+      value () {
+        return new eYo.board.Dflt(this, {
+          backgroundClass: 'eyo-board-dragger-background'
+        })
+      },
     },
-    draggerBrick () {
-      return new eYo.BrickDragger(this)
+    draggerBrick: {
+      value () {
+        return new eYo.BrickDragger(this)
+      },
     },
     /**
      * The change manager.
      * @readonly
      * @type {eYo.o3d.Change}
      */
-    change () {
-      return new eYo.o3d.Change(this)
+    change: {
+      value () {
+        return new eYo.o3d.Change(this)
+      },
     },
     /**
      * @param{?eYo.Flyout}
@@ -289,29 +309,33 @@ eYo.board.makeC9r('Main', {
       },
     },
     zoomer: {},
-  },
-  computed: {
     /**
      * Dragger boards are owned by another board.
      * @readonly
      * @type {boolean}
      */
-    isDragger () {
-      return this.owner__ instanceof eYo.board.Dflt
+    isDragger: {
+      get () {
+        return this.owner__ instanceof eYo.board.Dflt
+      },
     },
     /**
      * Is this board belonging to a flyout?
      * @readonly
      * @type {boolean}
      */
-    readOnly () {
-      return this.owner__ instanceof eYo.Flyout
+    readOnly: {
+      get () {
+        return this.owner__ instanceof eYo.Flyout
+      },
     },
     /**
      * The dragger, if relevant.
      */
-    dragger () {
-      return this.draggable && this.board
+    dragger: {
+      get () {
+        return this.draggable && this.board
+      },
     },
     /**
      * Is this board visible
@@ -350,16 +374,20 @@ eYo.board.makeC9r('Main', {
      * @readonly
      * @type {eYo.board}
      */
-    main () {
-      return this
+    main: {
+      get () {
+        return this
+      },
     },
-  },
-  valued: {
     /**
      * @type {!Array<!Function>}
      * @private
      */
-    listeners_: [],
+    listeners: {
+      value () {
+        return []
+      },
+    },
     /**
      * Only main boards may have a flyout and draggers.
      * @readonly
@@ -620,13 +648,13 @@ eYo.board.Dflt_p.resizePort = function() {
   // Add room for the whole visible rectangle.
   var view = metrics_.view
   // remove the room for both scrollers
-  var withHScroller = view.height > eYo.Scrollbar.thickness
+  var withHScroller = view.height > eYo.widget.SCROLLBAR_THICKNESS
   if (withHScroller) {
-    view.size_.height -= eYo.Scrollbar.thickness
+    view.size_.height -= eYo.widget.SCROLLBAR_THICKNESS
   }
-  var withVScroller = view.width > eYo.Scrollbar.thickness
+  var withVScroller = view.width > eYo.widget.SCROLLBAR_THICKNESS
   if (withVScroller) {
-    view.size_.width -= eYo.Scrollbar.thickness
+    view.size_.width -= eYo.widget.SCROLLBAR_THICKNESS
   }
   view.unscale(metrics_.scale)
   view.origin_.set()
@@ -643,10 +671,10 @@ eYo.board.Dflt_p.resizePort = function() {
   }
   // then add the scrollers
   if (withHScroller) {
-    port.height += eYo.Scrollbar.thickness / metrics_.scale
+    port.height += eYo.widget.SCROLLBAR_THICKNESS / metrics_.scale
   }
   if (withVScroller) {
-    port.width += eYo.Scrollbar.thickness / metrics_.scale
+    port.width += eYo.widget.SCROLLBAR_THICKNESS / metrics_.scale
   }
   metrics_.port = port
   console.error('port: ', port.description)
@@ -1432,3 +1460,13 @@ eYo.board.Dflt_p.eventDidFireChange = function(event) {
     task()
   }
 }
+
+eYo.o3d.Dflt.eyo.modelDeclare({
+  properties: {
+    board: {
+      get () {
+        this.owner.board
+      },
+    },
+  },
+})

@@ -187,7 +187,7 @@ eYo.app.makeDflt({
   dispose () {
     this.disposeUI()
   },
-  owned: {
+  properties: {
     options: eYo.NA,
     motion () {
       return new eYo.Motion(this)
@@ -214,21 +214,23 @@ eYo.app.makeDflt({
         after && this.initUI()
       }
     },
-  },
-  computed: {
     /**
      * The application of the receiver (returns itself).
      * @readonly
      */
-    app () {
-      return this
+    app: {
+      get () {
+        return this
+      },
     },
     /**
      * Is the user currently dragging a brick or scrolling a board?
      * @type {boolean} True if currently dragging or scrolling.
      */
-    isDragging () {
-      return this.motion__.isDragging
+    isDragging: {
+      get () {
+        return this.motion__.isDragging
+      },
     },
   },
 })

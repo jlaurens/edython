@@ -204,7 +204,14 @@ eYo.magnet.makeC9r('S', {
       }
     }
   },
-  owned: ['out', 'head', 'left', 'right', 'suite', 'foot'],
+  properties: {
+    out: eYo.NA,
+    head: eYo.NA,
+    left: eYo.NA,
+    right: eYo.NA,
+    suite: eYo.NA,
+    foot: eYo.NA,
+  },
 })
 
 /**
@@ -271,7 +278,7 @@ eYo.c9r.model.magnetHandler = (model) => {
  * @property {boolean} isSuperior  whether the connection is superior, true if connection faces down or right, false otherwise.
  * @constructor
  */
-eYo.magnet.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
+eYo.magnet.makeDflt({
   init (bs, type, model) {
     if (this.slot) {
       this.name_ = this.slot.key
@@ -281,7 +288,6 @@ eYo.magnet.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
     this.optional_ = this.model_.optional
     this.incog_ = this.hidden_ = model.hidden
     eYo.field.makeFields(this, model.fields)
-    this.reentrant_ = {}
     this.targetIsMissing_ = false
     if (!this.brick.isInFlyout) {
       var DB = this.magnetDB_
@@ -333,13 +339,13 @@ eYo.magnet.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
       }
     },
   },
-  valued: {
+  properties: {
     target: {
       /**
        * Connect the receiver to the after, if any, otherwise disconnects the receiver.
        * @param {eYo.brick.Dflt} [after] 
        */
-      set (after) {
+      set (builtin, after) {
         if (after) {
           this.target_ && (this.disconnect())
           this.connect(after)
@@ -433,69 +439,80 @@ eYo.magnet.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
     },
     db: {},
     db_opposite: {},
-  },
-  copied: {
-    where () {
-      new eYo.geom.Where()
-    }
-  },
-  computed: {
+    where: {
+      value () {
+        new eYo.geom.Where()
+      },
+      copy: true,
+    },
     /**
      * The right magnet is just at the right... Not used.
      * @private
      */
-    right () {
-      var slot = this.slot
-      if (slot) {
-        if ((slot = slot.next) && (slot = slot.some(slot => !slot.incog && slot.magnet && !slot.magnet.hidden))) {
-          return slot.magnet
+    right: {
+      get () {
+        var slot = this.slot
+        if (slot) {
+          if ((slot = slot.next) && (slot = slot.some(slot => !slot.incog && slot.magnet && !slot.magnet.hidden))) {
+            return slot.magnet
+          }
         }
-      }
-      if ((m4t = this.brick.out_m) && (m4t = m4t.target)) {
-        return m4t.right
-      }
+        if ((m4t = this.brick.out_m) && (m4t = m4t.target)) {
+          return m4t.right
+        }
+      },
     },
-    magnetDB () {
-      return this.board.magnetDBList
+    magnetDB: {
+      get () {
+        return this.board.magnetDBList
+      },
     },
-    typeName () {
-      return {
-        [eYo.magnet.IN]: 'in',
-        [eYo.magnet.OUT]: 'out',
-        [eYo.magnet.HEAD]: 'head',
-        [eYo.magnet.FOOT]: 'foot',
-        [eYo.magnet.LEFT]: 'left',
-        [eYo.magnet.RIGHT]: 'right'
-      } [this.type]
+    typeName: {
+      get () {
+        return {
+          [eYo.magnet.IN]: 'in',
+          [eYo.magnet.OUT]: 'out',
+          [eYo.magnet.HEAD]: 'head',
+          [eYo.magnet.FOOT]: 'foot',
+          [eYo.magnet.LEFT]: 'left',
+          [eYo.magnet.RIGHT]: 'right'
+        } [this.type]
+      },
     },
-    isSuperior () { // the source 'owns' the target
-      return this.isSlot || this.isFoot || this.isRight
+    isSuperior: {
+      get () { // the source 'owns' the target
+        return this.isSlot || this.isFoot || this.isRight
+      },
     },
   },
 })
 
 // computed public properties
 eYo.magnet.Dflt.eyo.modelDeclare({
-  computed: {
+  properties: {
     /**
     * Horizontal position in the brick in text unit.
     * @readonly
     * @return {Number}
     */
-    c () { // in text units
-      return this.slot
-      ? this.where.c + this.slot.where.c
-      : this.where.c
+    c: {
+      get () { // in text units
+        return this.slot
+        ? this.where.c + this.slot.where.c
+        : this.where.c
+      },
     },
     /**
     * vertical position in the brick in text unit.
     * @readonly
     * @return {Number}
     */
-    l () { // in text units
-      return this.slot
-      ? this.where.l + this.slot.where.l
-      : this.where.l
+    l: {
+      get () { // in text units
+        return this.slot
+        ? this.where_.l + this.slot.where_.l
+        : this.where_.l
+      },
     },
     /**
      * Position in the brick.
@@ -531,36 +548,44 @@ eYo.magnet.Dflt.eyo.modelDeclare({
     * @readonly
     * @return {Number}
     */
-    x () { // in board coordinates
-      return this.slot ? this.where.x + this.slot.where.x : this.where.x
+    x: {
+      get () { // in board coordinates
+        return this.slot ? this.where_.x + this.slot.where_.x : this.where_.x
+      },
     },
     /**
     * Vertical position in the brick.
     * @readonly
     * @return {Number}
     */
-    y () { // in board coordinates
-      return this.slot ? this.where.y + this.slot.where.y : this.where.y
+    y: {
+      get () { // in board coordinates
+        return this.slot ? this.where_.y + this.slot.where_.y : this.where_.y
+      },
     },
     /**
     * Width in text coordinates.
     * @readonly
     * @return {Number}
     */
-   w () { // in text units
-      return this.bindField
-        ? this.bindField.size.w + 1
-        : this.optional_ || this.s7r_
-          ? 1
-          : 3
+   w: {
+     get () { // in text units
+        return this.bindField
+          ? this.bindField.size_.w + 1
+          : this.optional_ || this.s7r_
+            ? 1
+            : 3
+     };
     },
     /**
     * Width in board coordinates.
     * @readonly
     * @return {Number}
     */
-    width () { // in board coordinates
-      return this.w * eYo.unit.x
+    width: {
+      get () { // in board coordinates
+        return this.w * eYo.unit.x
+      },
     },
     targetBrick: { // === this.target.brick
       get () {
@@ -576,94 +601,114 @@ eYo.magnet.Dflt.eyo.modelDeclare({
         }
       }
     },
-    unwrappedMagnet () {
-      // scheme:
-      // this = output <- input <- wrapped source brick <- output <- input
-      var ans = this
-      var t9k, m4t
-      while ((t9k = ans.targetBrick) && t9k.wrapped_ && (m4t = t9k.out_m)) {
-        ans = m4t
-      }
-      return ans
+    unwrappedMagnet: {
+      get () {
+        // scheme:
+        // this = output <- input <- wrapped source brick <- output <- input
+        var ans = this
+        var t9k, m4t
+        while ((t9k = ans.targetBrick) && t9k.wrapped_ && (m4t = t9k.out_m)) {
+          ans = m4t
+        }
+        return ans
+      },
     },
     parent () {
       throw "FORBIDDEN call to parent's magnet"
     },
-    bindField () {
-      if (this.slot) {
-        return this.slot.bindField
-      }
-      // in a void wrapped list
-      var brick = this.brick
-      var slot = brick.slotAtHead
-      if (slot && (slot.magnet === this)) {
-        var m4t = brick.out_m
-        if (m4t && (m4t = m4t.target)) {
-          return m4t.bindField
+    bindField: {
+      get () {
+        if (this.slot) {
+          return this.slot.bindField
         }
-      }
+        // in a void wrapped list
+        var brick = this.brick
+        var slot = brick.slotAtHead
+        if (slot && (slot.magnet === this)) {
+          var m4t = brick.out_m
+          if (m4t && (m4t = m4t.target)) {
+            return m4t.bindField
+          }
+        }
+      },
     },
     /**
      * Is it an output magnet.
      * @return {boolean} True if the magnet is the brick's output one.
      */
-    isOutput () {
-      return this.type === eYo.magnet.OUT
+    isOutput: {
+      get () {
+        return this.type === eYo.magnet.OUT
+      },
     },
     /**
      * Is it a slot magnet.
      * @return {boolean} True if the magnet is one of the brick's slot magnet.
      */
-    isSlot () {
-      return this.type === eYo.magnet.IN
+    isSlot: {
+      get () {
+        return this.type === eYo.magnet.IN
+      },
     },
     /**
      * Is it a top magnet.
      * @return {boolean} True if the magnet is the brick's head one.
      */
-    isHead () {
-      return this.type === eYo.magnet.HEAD
+    isHead: {
+      get () {
+        return this.type === eYo.magnet.HEAD
+      },
     },
     /**
      * Is it a foot magnet.
      * @return {boolean} True if the magnet is the brick's foot one.
      */
-    isFoot () {
-      return this.type === eYo.magnet.FOOT
+    isFoot: {
+      get () {
+        return this.type === eYo.magnet.FOOT
+      },
     },
     /**
      * Is it a suite magnet.
      * @return {boolean} True if the magnet is the brick's suite one.
      */
-    isSuite () {
-      return this === this.brick.suite_m
+    isSuite: {
+      get () {
+        return this === this.brick.suite_m
+      },
     },
     /**
      * Is it a left magnet.
      * @return {boolean} True if the magnet is the brick's left one.
      */
-    isLeft () {
-      return this.type === eYo.magnet.LEFT
+    isLeft: {
+      get () {
+        return this.type === eYo.magnet.LEFT
+      },
     },
     /**
      * Is it a right magnet.
      * @return {boolean} True if the magnet is the brick's right one.
      */
-    isRight () {
-      return this.type === eYo.magnet.RIGHT
+    isRight: {
+      get () {
+        return this.type === eYo.magnet.RIGHT
+      },
     },
     /**
      * Returns an unwrapped target brick
      */
-    unwrappedTarget () {
-      var t = this.targetBrick
-      var f = t => {
-        return t && (!t.wrapped_ || t.slotSome(slot => {
-          var m4t = slot.magnet
-          return f(t = m4t && m4t.targetBrick)
-        }))
-      }
-      return f(t) && t
+    unwrappedTarget: {
+      get () {
+        var t = this.targetBrick
+        var f = t => {
+          return t && (!t.wrapped_ || t.slotSome(slot => {
+            var m4t = slot.magnet
+            return f(t = m4t && m4t.targetBrick)
+          }))
+        }
+        return f(t) && t
+      },
     },
     /**
      * Return the black target.
@@ -671,30 +716,32 @@ eYo.magnet.Dflt.eyo.modelDeclare({
      * @return {?eYo.magnet.Dflt}
      * @private
      */
-    blackTarget () {
-      var t4t = this.target
-      if (!t4t) {
-        return eYo.NA
-      }
-      var brick = t4t.brick
-      if (!brick.isWhite) {
-        return t4t
-      }
-      if (t4t.isHead) {
-        var F = x => x.foot_m
-      } else if (t4t.isFoot) {
-        F = x => x.head_m
-      } else {
-        return eYo.NA
-      }
-      do {
-        if (!(t4t = F(brick)) || !(t4t = t4t.target) || !(brick = t4t.brick)) {
+    blackTarget: {
+      get () {
+        var t4t = this.target
+        if (!t4t) {
           return eYo.NA
         }
+        var brick = t4t.brick
         if (!brick.isWhite) {
           return t4t
         }
-      } while (true)
+        if (t4t.isHead) {
+          var F = x => x.foot_m
+        } else if (t4t.isFoot) {
+          F = x => x.head_m
+        } else {
+          return eYo.NA
+        }
+        do {
+          if (!(t4t = F(brick)) || !(t4t = t4t.target) || !(brick = t4t.brick)) {
+            return eYo.NA
+          }
+          if (!brick.isWhite) {
+            return t4t
+          }
+        } while (true)
+      },
     },
     /**
     * Return the black connection.
@@ -707,23 +754,25 @@ eYo.magnet.Dflt.eyo.modelDeclare({
     * @param F optional function defaults to !argument.isWhite
     * @return a connection, possibly eYo.NA
     */
-    blackMagnet () {
-      var brick = this.brick
-      if (!brick.isWhite) {
-        return this
-      }
-      if (this.isHead) {
-        var other = b => b.foot_m
-      } else if (this.isFoot) {
-        other = b => b.head_m
-      } else {
-        // this is a 'do' statement input connection
-        // whether the surrounding brick is disabled or not has no importance
-        return this
-      }
-      var magnet
-      while ((magnet = other(brick)) && (magnet = magnet.target) && !magnet.name_ && (!(brick = magnet.brick) || brick.isWhite)) {}
-      return magnet
+    blackMagnet: {
+      get () {
+        var brick = this.brick
+        if (!brick.isWhite) {
+          return this
+        }
+        if (this.isHead) {
+          var other = b => b.foot_m
+        } else if (this.isFoot) {
+          other = b => b.head_m
+        } else {
+          // this is a 'do' statement input connection
+          // whether the surrounding brick is disabled or not has no importance
+          return this
+        }
+        var magnet
+        while ((magnet = other(brick)) && (magnet = magnet.target) && !magnet.name_ && (!(brick = magnet.brick) || brick.isWhite)) {}
+        return magnet
+      },
     },
   },
 })
@@ -1385,8 +1434,8 @@ eYo.magnet.Dflt_p.connect_ = function (childM4t) {
               eYo.do.tryFinally(
                 connect1, // 
                 () => { // finally
-                  parentM4t.startOfStatement && (child.changeDone())
-                  eYo.magnet.ConnectedParent = parentM4t
+                  parentM4t.startOfStatement && child.changeDone()
+                  eYo.magnet.connectedParent = parentM4t
                   // next must absolutely run because of possible undo management
                   child.didConnect(childM4t, oldParentT4t, oldChildT4t)
                 }
@@ -1406,7 +1455,7 @@ eYo.magnet.Dflt_p.connect_ = function (childM4t) {
           })
         }, () => { // finally
           childM4t.didConnect(oldChildT4t, oldParentT4t)
-          eYo.magnet.ConnectedParent = eYo.NA
+          eYo.magnet.connectedParent = eYo.NA
           childM4t.bindField && (childM4t.bindField.visible = false) // unreachable ?
         })
       })
@@ -1756,7 +1805,7 @@ eYo.magnet.Dflt_p.distance = function(other) {
  */
 eYo.magnet.Dflt_p.connect = function(other) {
   if (this.target === other) {
-    return;
+    return
   }
   switch (this.canConnectWithReason_(other)) {
     case eYo.magnet.CAN_CONNECT:

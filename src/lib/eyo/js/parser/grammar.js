@@ -51,9 +51,11 @@ eYo.gmr.makeC9r('Book', {
     })
     this.g_accel = 0
   },
-  computed: {
-    g_ndfas () {
-      return this.g_dfa.length
+  properties: {
+    g_ndfas: {
+      get () {
+        return this.g_dfa.length
+      },
     },
   },
 })
@@ -124,11 +126,13 @@ eYo.gmr.makeC9r('State', {
     this.s_accel = null
     this.s_accept = 0
   },
-  computed: {
-    s_narcs () {
-      return this.s_arc.length
+  properties: {
+    s_narcs: {
+      get () {
+        return this.s_arc.length
+      },
     },
-  }
+  },
 })
 
 /* A DFA *-/
@@ -155,11 +159,13 @@ eYo.gmr.makeC9r('DFA', {
     this.d_state = states
     this.d_first = first
   },
-  computed: {
-    d_nstates () {
-      return this.d_state.length
+  properties: {
+    d_nstates: {
+      get () {
+        return this.d_state.length
+      },
     },
-  }
+  },
 })
 
 /* A grammar *-/

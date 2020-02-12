@@ -45,7 +45,7 @@ goog.require('goog.dom');
         }
       },
     },
-    valued: {
+    properties: {
       creation: {},
       /**
        * True for controls only.
@@ -54,7 +54,7 @@ goog.require('goog.dom');
        */
       isControl: {
         value: true,
-        set: eYo.do.noSetter,
+        set: false,
       },
       /**
        * True for start statements only.
@@ -63,7 +63,7 @@ goog.require('goog.dom');
        */
       isMain: {
         value: true,
-        set: eYo.do.noSetter,
+        set: false,
       },
     }
   })

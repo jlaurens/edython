@@ -102,25 +102,21 @@ describe ('Tests: C9r', function () {
   describe('C9r: Model', function () {
     it('eYo.c9r.model.consolidate(…)', function () {
       var model = {
-        owned: {
+        properties: {
           drag: {
-            get () {
-              return this.drag__
-            },
+            get () {},
           },
         },
       }
       eYo.c9r.model.consolidate(model)
       chai.assert(eYo.isF(model.o3d.drag.get))
       var model = {
-        owned: {
-          drag () {
-            return this.drag__
-          },
+        properties: {
+          drag () {},
         },
       }
       eYo.c9r.model.consolidate(model)
-      chai.assert(eYo.isF(model.o3d.drag.init))
+      chai.assert(eYo.isF(model.o3d.drag.start))
     })
   })
   describe('C9r: makeNS', function () {
@@ -492,7 +488,7 @@ describe('c9r.model', function () {
         },
         ab: 123
       },
-      owned: 421,
+      properties: 421,
     }
     var submodel = {
       data: {
@@ -516,7 +512,7 @@ describe ('Dlgt', function () {
     it ('Make: super: implicit', function () {
       var ns = eYo.makeNS()
       eYo.makeC9r(ns, 'A', {
-         valued: ['foo', 'bar'],
+         properties: {foo: eYo.NA, bar: eYo.NA},
       })
       chai.assert(ns.A)
       const a = new ns.A()
@@ -543,7 +539,7 @@ describe ('Dlgt', function () {
         init (x) {
           flag_A += x
         },
-        valued: ['foo'],
+        properties: {foo:eYo.NA},
       })
       chai.assert(ns.A.eyo.valued_.has('foo'))
       chai.assert(!ns.A.eyo.valued_.has('bar'))
@@ -552,7 +548,7 @@ describe ('Dlgt', function () {
         init (x) {
           flag_AB += x
         },
-        valued: ['bar'],
+        properties: {bar:eYo.NA},
       })
       chai.assert(ns.A.eyo.valued_.has('foo'))
       chai.assert(!ns.A.eyo.valued_.has('bar'))
@@ -570,42 +566,42 @@ describe ('Dlgt', function () {
         init (x) {
           flag_A += x
         },
-        valued: ['foo'],
+        properties: {foo:eYo.NA},
       })
       var flag_B = 0
       eYo.makeC9r(ns, 'B', null, {
         init (x) {
           flag_B += 10 * x
         },
-        valued: ['foo'],
+        properties: {foo:eYo.NA},
       })
       var flag_AA = 0
       eYo.makeC9r(ns, 'AA', ns.A, {
         init (x) {
           flag_AA += 100 * x
         },
-        valued: ['bar'],
+        properties: {bar:eYo.NA},
       })
       var flag_AB = 0
       eYo.makeC9r(ns, 'AB', ns.A, {
         init (x) {
           flag_AB += 1000 * x
         },
-        valued: ['bar'],
+        properties: {bar:eYo.NA},
       })
       var flag_BA = 0
       eYo.makeC9r(ns, 'BA', ns.B, {
         init (x) {
           flag_BA += 10000 * x
         },
-        valued: ['bar'],
+        properties: {bar:eYo.NA},
       })
       var flag_BB = 0
       eYo.makeC9r(ns, 'BB', ns.B, {
         init (x) {
           flag_BB += 100000 * x
         },
-        valued: ['bar'],
+        properties: {bar:eYo.NA},
       })
       flag_A = flag_B = flag_AA = flag_AB = flag_BA = flag_BB = 0
       var aa = new ns.AA(3)
@@ -641,7 +637,7 @@ describe ('Dlgt', function () {
         init (x) {
           flag_B += 10 * x
         },
-         valued: ['foo', 'bar'],
+         properties: {foo:eYo.NA, bar:eYo.NA},
       })
       chai.assert(ns.B_s.constructor === ns.A)
       var ab = new ns.B(1)
@@ -907,7 +903,7 @@ describe ('Dlgt', function () {
     it ("Valued: declare 'foo' and 'bar' then clear", function () {
       var ns = eYo.makeNS()
       ns.makeC9r('A', null, {
-        valued: ['foo', 'bar'],
+        properties: {foo:eYo.NA, bar:eYo.NA},
       })
       console.error('Generalize the C9r test')
       chai.assert(ns.A.eyo.C9r === ns.A)
@@ -938,7 +934,7 @@ describe ('Dlgt', function () {
         init (value) {
           this.foo__ = value
         },
-        valued: {
+        properties: {
           foo: {
             willChange (before, after) {
               eYo.isNA(before) || test.call(this, before, after)
@@ -962,7 +958,7 @@ describe ('Dlgt', function () {
       var ns = eYo.makeNS()
       var flag = 0
       eYo.makeC9r(ns, 'A', {
-        valued: {
+        properties: {
           foo: {
             value: 0,
             validate (after) {
@@ -989,9 +985,9 @@ describe ('Dlgt', function () {
         var ns = eYo.makeNS()
         var flag = 0
         eYo.makeC9r(ns, 'A', null, {
-          cached: {
+          properties: {
             foo: {
-              init () {
+              lazy () {
                 return flag
               }
             }
@@ -1010,10 +1006,12 @@ describe ('Dlgt', function () {
         var ns = eYo.makeNS()
         var flag = 0
         eYo.makeC9r(ns, 'A', null, {
-          cached: {
-            foo () {
-              return flag
-            }
+          properties: {
+            foo: {
+              lazy () {
+                return flag
+              },
+            },
           },
         })
         var a1 = new ns.A()
@@ -1032,28 +1030,28 @@ describe ('Dlgt', function () {
         var flag_B1 = 2
         var flag_B2 = 3
         eYo.makeC9r(ns, 'A', null, {
-          cached: {
+          properties: {
             foo1: {
-              init () {
+              lazy () {
                 return flag_A1
               }
             },
             foo2: {
-              init () {
+              lazy () {
                 return flag_A2
               }
             }
           },
         })
         eYo.makeC9r(ns, 'B', null, {
-          cached: {
+          properties: {
             foo1: {
-              init () {
+              lazy () {
                 return flag_B1
               }
             },
             foo2: {
-              init () {
+              lazy () {
                 return flag_B2
               }
             }
@@ -1090,18 +1088,18 @@ describe ('Dlgt', function () {
         var flag_1 = 0
         var flag_2 = 1
         eYo.makeC9r(ns, 'A', null, {
-          cached: {
+          properties: {
             foo1: {
-              init () {
+              lazy () {
                 return flag_1
               }
             }
           },
         })
         eYo.makeC9r(ns, 'AB', ns.A, {
-          cached: {
+          properties: {
             foo2: {
-              init () {
+              lazy () {
                 return flag_2
               }
             }
@@ -1126,9 +1124,9 @@ describe ('Dlgt', function () {
         var ns = eYo.makeNS()
         var flag = 123
         eYo.makeC9r(ns, 'A', null, {
-          cached: {
+          properties: {
             foo: {
-              init () {
+              lazy () {
                 return flag
               },
               forget (forgetter) {
@@ -1148,9 +1146,9 @@ describe ('Dlgt', function () {
         var ns = eYo.makeNS()
         var flag = 421
         eYo.makeC9r(ns, 'A', null, {
-          cached: {
+          properties: {
             foo: {
-              init () {
+              lazy () {
                 return flag
               }
             }
@@ -1162,62 +1160,12 @@ describe ('Dlgt', function () {
         a.fooUpdate()
         chai.assert(a.foo === 521)
       })
-      it ('Cached: updater no override', function () {
-        var ns = eYo.makeNS()
-        var flag = 421
-        eYo.makeC9r(ns, 'A', null, {
-          cached: {
-            foo: {
-              init () {
-                return flag
-              },
-              update (before, after, updater) {
-                flag = 0
-                if (before === 421) {
-                  flag += 1
-                }
-                if (after === 123) {
-                  flag += 10
-                }
-                updater()
-              }
-            }
-          },
-        })
-        var a = new ns.A()
-        chai.assert(a.foo === 421)
-        flag = 123
-        a.fooUpdate()
-        chai.assert(flag === 11)
-        chai.assert(a.foo === 123)
-      })
-      it ('Cached: updater with override', function () {
-        var ns = eYo.makeNS()
-        var flag = 421
-        eYo.makeC9r(ns, 'A', null, {
-          cached: {
-            foo: {
-              init () {
-                return flag
-              },
-              update (before, after, updater) {
-                updater(flag+100)
-              }
-            }
-          },
-        })
-        var a = new ns.A()
-        chai.assert(a.foo === 421)
-        flag = 123
-        a.fooUpdate()
-        chai.assert(a.foo === 223)
-      })
     })
     describe('C9r: Owned', function () {
       it ('Owned: Basic', function () {
         var ns = eYo.makeNS()
         eYo.makeC9r(ns, 'A', null, {
-          owned: ['foo']
+          properties: {foo:eYo.NA}
         })
         ns.A_p.ui_driver = {
           doDisposeUI: eYo.do.nothing
@@ -1249,7 +1197,7 @@ describe ('Dlgt', function () {
       it ('Owned: Two instances', function () {
         var ns = eYo.makeNS()
         eYo.makeC9r(ns, 'A', null, {
-          owned: ['foo']
+          properties: {foo:eYo.NA}
         })
         var a1 = new ns.A()
         var a2 = new ns.A()
@@ -1289,7 +1237,7 @@ describe ('Dlgt', function () {
       it ('Owned: Two keys', function () {
         var ns = eYo.makeNS()
         eYo.makeC9r(ns, 'A', null, {
-          owned: ['foo1', 'foo2']
+          properties: {foo1:eYo.NA, foo2:eYo.NA}
         })
         var a = new ns.A()
         var B = function () {}
@@ -1333,10 +1281,10 @@ describe ('Dlgt', function () {
       it ('Owned: Inherit', function () {
         var ns = eYo.makeNS()
         eYo.makeC9r(ns, 'A', null, {
-          owned: ['foo']
+          properties: {foo:eYo.NA}
         })
         eYo.makeC9r(ns, 'AB', ns.A, {
-          owned: ['bar']
+          properties: {bar:eYo.NA}
         })
         var a = new ns.A()
         var ab = new ns.AB()
@@ -1392,7 +1340,7 @@ describe ('Dlgt', function () {
       it ('Owned: init 0', function () {
         var ns = eYo.makeNS()
         ns.makeC9r('A', {
-          owned: {
+          properties: {
             foo: {
               init () {
                 return 421
@@ -1405,7 +1353,7 @@ describe ('Dlgt', function () {
       it ('Owned: init 1', function () {
         var ns = eYo.makeNS()
         ns.makeC9r('A', {
-          owned: {
+          properties: {
             foo: 421
           },
         })
@@ -1428,7 +1376,7 @@ describe ('Dlgt', function () {
           init (value) {
             this.foo__ = value
           },
-          owned: {
+          properties: {
             foo: {
               willChange (before, after) {
                 console.warn
@@ -1466,18 +1414,21 @@ describe ('Dlgt', function () {
         chai.assert(flag === 1100)
       })
     })
-    describe ('C9r: copied', function () {
-      it ('copied: Basic', function () {
+    describe ('C9r: copy', function () {
+      it ('copy: Basic', function () {
         var ns = eYo.makeNS()
         var B = function (value) {
           this.value_ = value
         }
         eYo.makeC9r(ns, 'A', null, {
-          copied: {
-            foo () {
-              return new B()
-            }
-          }
+          properties: {
+            foo: {
+              value () {
+                return new B()
+              },
+              copy: true,
+            },
+          },
         })
         ns.A_p.ui_driver = {
           doDisposeUI: eYo.do.nothing
@@ -1547,9 +1498,9 @@ describe ('Dlgt', function () {
           chai.assert(after === foo_after)
         }
         eYo.makeC9r(ns, 'A', null, {
-          copied: {
+          properties: {
             foo: {
-              init () {
+              value () {
                 return foo_before
               },
               willChange (before, after) {
@@ -1558,7 +1509,8 @@ describe ('Dlgt', function () {
                   flag = 421
                 }
               },
-              didChange: test
+              didChange: test,
+              copy: true,
             }
           },
         })
@@ -1575,15 +1527,17 @@ describe ('Dlgt', function () {
       var ns = eYo.makeNS()
       var flag = 123
       ns.makeC9r('C', {
-        computed: {
-          foo () {
-            return 10 * flag + 1
+        properties: {
+          foo: {
+            get () {
+              return 10 * flag + 1
+            },
           },
-        },
-        cached: {
-          bar () {
-            return flag
-          }
+          bar: {
+            lazy () {
+              return flag
+            },
+          },
         },
       })
       flag = 421
@@ -1606,79 +1560,11 @@ describe ('Dlgt', function () {
         a.foo__
       }).to.throw()
     })
-    describe ('C9r: No collision', function () {
-      it ('No collision: valued + cached', function () {
-        var ns = eYo.makeNS()
-        chai.expect(() => {
-          eYo.makeC9r(ns, 'A', null, {
-            valued: ['foo'],
-            cached: {
-              foo () {}
-            }
-          }).to.throw()
-        })
-      })
-      it ('No collision: valued + owned', function () {
-        var ns = eYo.makeNS()
-        chai.expect(() => {
-          eYo.makeC9r(ns, 'A', null, {
-            valued: ['foo'],
-            owned: ['foo'],
-          })
-        }).to.throw()
-      })
-      it ('No collision: valued + copied', function () {
-        var ns = eYo.makeNS()
-        chai.expect(() => {
-          eYo.makeC9r(ns, 'A', null, {
-            valued: ['foo'],
-            copied: {
-              foo () {}
-            },
-          })
-        }).to.throw()
-      })
-      it ('No collision: cached + owned', function () {
-        var ns = eYo.makeNS()
-        chai.expect(() => {
-          eYo.makeC9r(ns, 'A', null, {
-            cached: {
-              foo () {}
-            },
-            owned: ['foo'],
-          })
-        }).to.throw()
-      })
-      it ('No collision: cached + copied', function () {
-        var ns = eYo.makeNS()
-        chai.expect(() => {
-          eYo.makeC9r(ns, 'A', null, {
-            cached: {
-              foo () {}
-            },
-            copied: {
-              foo () {}
-            },
-          })
-        }).to.throw()
-      })
-      it ('No collision: owned + copied', function () {
-        var ns = eYo.makeNS()
-        chai.expect(() => {
-          eYo.makeC9r(ns, 'A', null, {
-            owned: ['foo'],
-            copied: {
-              foo () {}
-            },
-          })
-        }).to.throw()
-      })
-    })
     it ('C9r: No setter', function () {
       var ns = eYo.makeNS()
       ns.makeDflt()
       ns.makeC9r('A', {
-        owned: 'foo'
+        properties: {foo: eYo.NA}
       })
       chai.expect(() => {
         var a = new ns.A()
@@ -1691,7 +1577,7 @@ describe ('Dlgt', function () {
       chai.assert(ns === ns.Dflt.eyo.ns)
       var flag = 0
       ns.makeC9r('A', {
-        owned: {
+        properties: {
           foo () {
             flag += 421
             return 421
@@ -1699,7 +1585,7 @@ describe ('Dlgt', function () {
         },
       })
       ns.A.makeInheritedC9r('AA', {
-        owned: {
+        properties: {
           foo () {
             flag += 123
             return 123
@@ -1719,198 +1605,15 @@ describe ('Dlgt', function () {
       ns.makeDflt()
       chai.assert(ns === ns.Dflt.eyo.ns)
       ns.makeC9r('A', {
-        owned: 'foo'
+        properties: {foo: eYo.NA}
       })
       ns.A.makeInheritedC9r('AA', {
-        owned: 'foo'
+        properties: {foo: eYo.NA}
       })
       chai.expect(() => {
         new ns.AA()
       }).not.to.throw()
     })
-    it ('C9r: Override rules for properties', function () {
-      var ns = eYo.makeNS()
-      var makeA = (model) => {
-        ns.makeC9r('A', model)
-      }
-      var makeAB = (model) => {
-        ns.makeC9r('AB', ns.A, model)
-      }
-      var props = {
-        owned: ['foo'],
-        cached: {
-          foo () {}
-        },
-        copied: {
-          foo () {}
-        },
-        valued: ['foo'],
-      }
-      var ok = () => {
-        new ns.AB()
-      }
-      var okThrow = () => {
-        chai.expect(ok()).to.throw()
-      }
-      var expect = {
-        owned: {
-          owned: ok,
-          cached: ok,
-          copied: ok,
-          valued: ok,
-        },
-        cached: {
-          owned: ok,
-          cached: ok,
-          copied: ok,
-          valued: ok,
-        },
-        copied: {
-          owned: ok,
-          cached: ok,
-          copied: ok,
-          valued: ok,
-        },
-        valued: {
-          owned: ok,
-          cached: ok,
-          copied: ok,
-          valued: ok,
-        },
-      }
-      Object.keys(props).forEach(a => {
-  //      console.warn(`TEST a: ${a}...`)
-        Object.keys(props).forEach(ab => {
-  //        console.warn(`TEST ab: ${ab}...`)
-          ns = eYo.makeNS()
-          makeA({
-            [a]: props[a]
-          })
-          makeAB({
-            [ab]: props[ab]
-          })
-          expect[a][ab]()
-  //        console.warn(`TEST ab: ${ab}... DONE`)
-        })
-      })
-    })
-  })
-  it ('Constructor: ownedForEach', function () {
-    var ns = eYo.makeNS()
-    eYo.makeC9r(ns, 'A', null, {
-      owned: {
-        foo () {}
-      }
-    })
-    chai.assert(ns.A.eyo.o3d__.size === 1)
-    eYo.makeC9r(ns, 'AB', ns.A, {
-      owned: {
-        bar () {}
-      }
-    })
-    chai.assert(ns.AB.eyo.o3d__.size === 2)
-    var a = new ns.A()
-    a.foo_ = {value: 1}
-    var ab = new ns.AB()
-    ab.foo_ = {value: 1}
-    ab.bar_ = {value: 10}
-    var flag = 0
-    a.ownedForEach(x => flag += x.value)
-    chai.assert(flag === 1)
-    flag = 0
-//    ab.ownedForEach(x => console.warn(x.value))
-    ab.ownedForEach(x => flag += x.value)
-//    console.warn(flag)
-    chai.assert(flag === 11)
-  })
-  it ('Constructor: cachedForEach', function () {
-    var ns = eYo.makeNS()
-    eYo.makeC9r(ns, 'A', null, {
-      cached: {
-        foo () {return 1}
-      }
-    })
-    eYo.makeC9r(ns, 'AB', ns.A, {
-      cached: {
-        bar () {return 10}
-      }
-    })
-    var a = new ns.A()
-    var ab = new ns.AB()
-    var flag = 0
-    a.cachedForEach(x => flag += x)
-    chai.assert(flag === 1)
-    flag = 0
-    ab.cachedForEach(x => flag += x)
-    chai.assert(flag === 11)
-  })
-  it ('Constructor: valuedForEach', function () {
-    var ns = eYo.makeNS()
-    eYo.makeC9r(ns, 'A', null, {
-      valued: ['foo']
-    })
-    eYo.makeC9r(ns, 'AB', ns.A, {
-      valued: ['bar']
-    })
-    var a = new ns.A()
-    a.foo_ = 1
-    var flag = 0
-    a.valuedForEach(x => flag += x)
-    chai.assert(flag === 1)
-    var ab = new ns.AB()
-    ab.foo_ = 1
-    ab.bar_ = 10
-    flag = 0
-    ab.valuedForEach(x => flag += x)
-    chai.assert(flag === 11)
-  })
-  it ('Constructor: copiedForEach', function () {
-    var ns = eYo.makeNS()
-    eYo.makeC9r(ns, 'A', null, {
-      copied: {
-        foo () {
-          return new B()
-        }
-      }
-    })
-    eYo.makeC9r(ns, 'AB', ns.A, {
-      copied: {
-        bar () {
-          return new B()
-        }
-      }
-    })
-    var B = function (value) {
-      this.value_ = value
-    }
-    B.prototype.dispose = function () {
-      this.disposed_ = true
-    }
-    B.prototype.set = function (other) {
-      this.value_ = other && other.value_
-    }
-    B.prototype.equals = function (other) {
-      return other && (this.value_ === other.value_)
-    }
-    Object.defineProperty(B.prototype, 'clone', {
-      get () {
-        return new B(this.value_)
-      }
-    })
-    var a = new ns.A()
-    a.foo_ = new B(1)
-    chai.assert(a.foo.value_ === 1)
-    var flag = 0
-    a.copiedForEach(x => flag += x.value_)
-    chai.assert(flag === 1)
-    var ab = new ns.AB()
-    ab.foo_ = new B(1)
-    chai.assert(ab.foo.value_ === 1)
-    ab.bar_ = new B(10)
-    chai.assert(ab.bar.value_ === 10)
-    flag = 0
-    ab.copiedForEach(x => flag += x.value_)
-    chai.assert(flag === 11)
   })
   it ('Constructor: makeInheritedC9r', function () {
     var ns = eYo.makeNS()

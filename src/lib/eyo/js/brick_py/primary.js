@@ -1197,20 +1197,12 @@ eYo.expr.makeC9r('primary', {
   deinit () /** @suppress {globalThis} */ {
     eYo.expr.unregisterPrimary(this)
   },
-  valued: {
+  properties: {
     profile : {
-      get () {
-        var p5e = this.getProfile()
-        return this.profile_ === p5e
-          ? this.profile_
-          : (this.profile_ = p5e) // this should never happen
+      lazy () {
+        return this.getProfile()
       },
-      set (after) {
-        this.profile_ = after
-      }
     },
-  },
-  computed: {
     item : {
       get () {
         var p5e = this.profile.p5e
@@ -1816,17 +1808,12 @@ eYo.stmt.base_call_stmt.makeInheritedC9r('call_stmt', {
       }
     }
   },
-  valued: {
+  properties: {
     profile : {
-      get () {
-        var p = this.getProfile()
-        return this.profile__ === p
-          ? this.profile__
-          : (this.profile__ = p) // this should never happen
-      }
+      lazy () {
+        return this.getProfile()
+      },
     },
-  },
-  computed: {
     item : {
       get () {
         var p5e = this.profile.p5e
