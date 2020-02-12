@@ -48,11 +48,15 @@ describe ('Tests: Property', function () {
   it('Property: {set_ (builtin, after) ...}', function () {
     console.warn('WHAT?')
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       set_ (builtin, after) {
         builtin(after)
-        flag = 421
+        this.do_it(421)
       }
     })
     p.value_ = 123
@@ -61,10 +65,14 @@ describe ('Tests: Property', function () {
   })
   it('Property: {get_ (builtin) ...}', function () {
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       get_ (builtin) {
-        flag = 421
+        this.do_it(421)
         return builtin()
       }
     })
@@ -72,14 +80,20 @@ describe ('Tests: Property', function () {
     chai.assert(p.value === 123)
     chai.assert(flag === 421)
   })
-  it('Property: {set_:...}', function () {
+  it('Property: {set_:..., get_:...}', function () {
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       set_ (after) {
+        this.do_it(after)
         flag = after
       },
       get_ () {
+        this.do_it(flag)
         return flag
       },
     })
@@ -87,14 +101,19 @@ describe ('Tests: Property', function () {
     chai.assert(flag === 123)
     chai.assert(p.value === 123)
     p.value__ = 421
+    chai.assert(flag === 421)
     chai.assert(p.value === 421)
   })
   it('Property: {get (builtin) ...}', function () {
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       get (builtin) {
-        flag = 421
+        this.do_it(421)
         return builtin()
       }
     })
@@ -104,12 +123,18 @@ describe ('Tests: Property', function () {
   })
   it('Property: {set:...}', function () {
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       get () {
+        this.do_it(flag)
         return flag
       },
       set (after) {
+        this.do_it(after)
         flag = after
       },
     })
@@ -134,12 +159,18 @@ describe ('Tests: Property', function () {
   })
   it('Property: {set ():...}', function () {
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       set (builtin, after) {
+        this.do_it(after)
         builtin(flag = after)
       },
       get (builtin) {
+        this.do_it(flag)
         return flag*1000+builtin()
       },
     })
@@ -157,24 +188,38 @@ describe ('Tests: Property', function () {
     chai.assert(p.value_ === 123421)
   })
   it('Property: validate(after)...', function () {
-    let onr = {}
+    var flag = 0
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       validate (after) {
+        this.do_it(after)
         return 10 * after
       },
     })
     p.value_ = 123
     chai.assert(p.value === 1230)
+    chai.assert(flag === 123)
   })
   it('Property: validate(before, after)...', function () {
-    let onr = {}
+    var flag = 0
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       validate (before, after) {
+        this.do_it(after)
         return 10 * after
       },
     })
     p.value_ = 123
     chai.assert(p.value === 1230)
+    chai.assert(flag === 123)
   })
   it('Property: fooValidate', function () {
     var flag = 0
@@ -193,9 +238,12 @@ describe ('Tests: Property', function () {
     var flag = 0
     let onr = {
       fooValidate (before, after) {
-        flag = after
+        this.do_it(after)
         return eYo.INVALID
-      }
+      },
+      do_it (what) {
+        flag = what
+      },
     }
     let p = eYo.p6y.new(onr, 'foo', {})
     p.value_ = 123
@@ -204,10 +252,14 @@ describe ('Tests: Property', function () {
   })
   it('Property: willChange(after)...', function () {
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       willChange (after) {
-        flag = 1 + after*10
+        this.do_it(1 + after*10)
       },
     })
     p.value_ = 123
@@ -215,10 +267,14 @@ describe ('Tests: Property', function () {
   })
   it('Property: willChange(before, after)...', function () {
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       willChange (before, after) {
-        flag = 1 + after*10
+        this.do_it(1 + after*10)
       },
     })
     p.value_ = 123
@@ -226,10 +282,14 @@ describe ('Tests: Property', function () {
   })
   it('Property: atChange(after)...', function () {
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       atChange (after) {
-        flag = 1 + after*10
+        this.do_it(1 + after*10)
       },
     })
     p.value_ = 123
@@ -237,10 +297,14 @@ describe ('Tests: Property', function () {
   })
   it('Property: atChange(before, after)...', function () {
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       atChange (before, after) {
-        flag = 1 + after*10
+        this.do_it(1 + after*10)
       },
     })
     p.value_ = 123
@@ -248,10 +312,14 @@ describe ('Tests: Property', function () {
   })
   it('Property: didChange(after)...', function () {
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       didChange (after) {
-        flag = 1 + after*10
+        this.do_it(1 + after*10)
       },
     })
     p.value_ = 123
@@ -259,10 +327,14 @@ describe ('Tests: Property', function () {
   })
   it('Property: didChange(before, after)...', function () {
     var flag = 0
-    let onr = {}
+    let onr = {
+      do_it (what) {
+        flag = what
+      }
+    }
     let p = eYo.p6y.new(onr, 'foo', {
       didChange (before, after) {
-        flag = 1 + after*10
+        this.do_it(1 + after*10)
       },
     })
     p.value_ = 123
@@ -272,8 +344,11 @@ describe ('Tests: Property', function () {
     var flag = 0
     let onr = {
       fooWillChange (before, after) {
-        flag = after
-      }
+        this.do_it(after)
+      },
+      do_it (what) {
+        flag = what
+      },
     }
     let p = eYo.p6y.new(onr, 'foo', {})
     p.value_ = 123
@@ -283,8 +358,11 @@ describe ('Tests: Property', function () {
     var flag = 0
     let onr = {
       fooAtChange (before, after) {
-        flag = after
-      }
+        this.do_it(after)
+      },
+      do_it (what) {
+        flag = what
+      },
     }
     let p = eYo.p6y.new(onr, 'foo', {})
     p.value_ = 123
@@ -294,8 +372,11 @@ describe ('Tests: Property', function () {
     var flag = 0
     let onr = {
       fooDidChange (before, after) {
-        flag = after
-      }
+        this.do_it(after)
+      },
+      do_it (what) {
+        flag = what
+      },
     }
     let p = eYo.p6y.new(onr, 'foo', {})
     p.value_ = 123

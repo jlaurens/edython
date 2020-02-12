@@ -237,7 +237,7 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
           try {
             this.getValue = eYo.do.nothing
             return get_m.call(this.owner, () => {
-              return prototype.getValue.call(this)
+              return prototype.eyo.C9r_s.getValue.call(this)
             })
           } finally {
             delete this.getValue
@@ -270,7 +270,7 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
         try {
           this.setValue = eYo.do.nothing
           return set_m.call(this.owner, after => {
-            prototype.setValue.call(this, after)
+            prototype.eyo.C9r_s.setValue.call(this, after)
           }, after)
         } finally {
           delete this.setValue
