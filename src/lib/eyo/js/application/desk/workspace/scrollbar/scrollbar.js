@@ -20,7 +20,7 @@ Object.defineProperties(eYo.widget, {
    * Width of vertical scrollbar or height of horizontal scrollbar in CSS pixels.
    * Scrollbars should be larger on touch devices.
    */
-  SCROLLBAR_THICKNESS: eYo.descriptorR(function () {
+  SCROLLBAR_THICKNESS: eYo.c9r.descriptorR(function () {
     return goog.events.BrowserFeature.TOUCH_ENABLED ? 26 : 16
   }),
 })

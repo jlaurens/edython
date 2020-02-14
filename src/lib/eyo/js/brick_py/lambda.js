@@ -314,7 +314,7 @@ eYo.expr.List.makeInheritedC9r('parameter_list', {
 eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
   var F = (modifier, flags, msg) => {
     var b3k
-    eYo.events.disableWrap(() => {
+    eYo.event.disableWrap(() => {
       b3k = eYo.brick.newReady(this, eYo.t3.expr.identifier)
       b3k.change.wrap(() => {
         b3k.Modifier_p = modifier
@@ -334,7 +334,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
             content,
             () => {
               var b3k = eYo.brick.newReady(this, eYo.t3.expr.identifier)
-              eYo.events.groupWrap(() => {
+              eYo.event.groupWrap(() => {
                 b3k.change.wrap(() => {
                   b3k.Modifier_p = modifier
                   b3k.Variant_p = flags
@@ -346,7 +346,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
         }
       }
     })
-    eYo.events.disableWrap(() => {
+    eYo.event.disableWrap(() => {
       b3k.dispose(true)
     })
   }

@@ -179,7 +179,7 @@ eYo.expr.makeC9r('Starred', {
           : eYo.t3.expr.check._expression_or_parameter
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
-        if (eYo.events.recordingUndo) {
+        if (eYo.event.recordingUndo) {
           this.brick.Variant_p = eYo.key.NONE
         }
       }

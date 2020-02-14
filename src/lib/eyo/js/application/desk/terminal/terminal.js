@@ -16,7 +16,7 @@
 /**
  * @name {eYo.pane.Terminal}
  * Class for a terminal.
- * @param {eYo.Desk} owner Owner desk.
+ * @param {eYo.widget.Desk} owner Owner desk.
  * @constructor
  */
 eYo.pane.makeC9r('Terminal')

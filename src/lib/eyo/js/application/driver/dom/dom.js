@@ -590,10 +590,10 @@ eYo.dom.on_keydown = e => {
   // Common code for delete and cut.
   // Don't delete in the flyout.
   // if (deleteBrick && !eYo.app.Focus_mngr.Brick.Board.readOnly) {
-  //   eYo.events.group = true
+  //   eYo.event.group = true
   //   eYo.app.hideChaff();
   //   eYo.app.Focus_mngr.Brick.dispose(/* heal */ true, true);
-  //   eYo.events.group = false
+  //   eYo.event.group = false
   // }
 };
 

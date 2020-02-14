@@ -8,6 +8,6 @@ describe ('Tests: Owned', function () {
       eyo: true
     }
     let o3d = new eYo.o3d.Dflt(onr)
-    chai.assert(o3d.owner === onr)
+    chai.assert(o3d.owner === onr, `MISSED ${o3d.owner} === ${onr}`)
   })
 })

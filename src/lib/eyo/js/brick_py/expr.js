@@ -131,7 +131,7 @@ eYo.expr.Dflt_p.canReplaceBrick = function (brick) {
  */
 eYo.expr.Dflt_p.replaceBrick = function (brick) {
   if (this.board && brick && brick.board) {
-    eYo.events.groupWrap(() => {
+    eYo.event.groupWrap(() => {
       eYo.do.tryFinally(() => {
         var my_m4t = this.out_m
         my_m4t.disconnect()
@@ -230,7 +230,7 @@ eYo.expr.Dflt_p.populateContextMenuFirst_ = function (mngr) {
 eYo.expr.Dflt_p.insertParentWithModel = function (model) {
   var parentSlotName = model.slot || model.input
   var parent
-  eYo.events.disableWrap(() => {
+  eYo.event.disableWrap(() => {
     parent = eYo.brick.newReady(this, model)
   })
   if (!parent) {
@@ -283,8 +283,8 @@ eYo.expr.Dflt_p.insertParentWithModel = function (model) {
   // Next connections should be connected
   var outputM4t = this.out_m
   if (parentInputM4t && parentInputM4t.checkType_(outputM4t)) {
-    eYo.events.groupWrap(() => { // `this` is catched
-      eYo.events.fireBrickCreate(parent)
+    eYo.event.groupWrap(() => { // `this` is catched
+      eYo.event.fireBrickCreate(parent)
       var targetM4t = parentInputM4t.target
       if (targetM4t) {
         console.log('input already connected, disconnect and dispose target')

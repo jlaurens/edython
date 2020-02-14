@@ -29,7 +29,7 @@ eYo.forwardDeclare('dom')
 // TODO: Consider touchcancel/pointercancel.
 
 /**
- * @name{eYo.Motion}
+ * @name{eYo.event.Motion}
  * @constructor
  * Class for one motion.
  * There should be only one active motion at a time.
@@ -38,7 +38,7 @@ eYo.forwardDeclare('dom')
  * @param {eYo.app.Dflt} application - The top application where the event occured.
  * @constructor
  */
-eYo.o4t.makeC9r(eYo, 'Motion', {
+eYo.event.makeC9r('Motion', {
   /**
    * Reset and sever all links from this object.
    */
@@ -46,80 +46,6 @@ eYo.o4t.makeC9r(eYo, 'Motion', {
     this.reset()
   },
   properties: {
-    /**
-     * The latency between 2 mouse down/up events,
-     * in order to recognize a (multi) click event.
-     * @type {number}
-     */
-    DOUBLE_LATENCY: 350,
-    /**
-     * The latency between 2 mouse down/up events,
-     * in order to recognize a (multi) click event.
-     * @type {number}
-     */
-    LONG_PRESS_LATENCY: 500,
-    /**
-     * The latency between 2 mouse down/up events,
-     * in order to recognize a (multi) click event.
-     * @type {number}
-     */
-    CANCEL_LATENCY: 15000,
-    /**
-     * Number of pixels the mouse must move before a drag starts.
-     */
-    DRAG_RADIUS: 5,
-    /**
-     * Number of pixels the mouse must move before a drag/scroll starts from the
-     * flyout.  Because the drag-intention is determined when this is reached, it is
-     * larger than DRAG_RADIUS so that the drag-direction is clearer.
-     */
-    FLYOUT_DRAG_RADIUS: 10,
-    /**
-     * A multiplier used to convert the motion scale to a zoom in delta.
-     * @const
-     */
-    ZOOM_IN_FACTOR: 5,
-    /**
-     * A multiplier used to convert the motion scale to a zoom out delta.
-     * @const
-     */
-    ZOOM_OUT_FACTOR: 6,
-    /**
-     * If the scale is bigger than this limit, a zoom out occurs.
-     * @const
-     */
-    ZOOM_IN_LIMIT: 1.05,
-    /**
-     * If the scale is less than this limit, a zoom out occurs.
-     * @const
-     */
-    ZOOM_OUT_LIMIT: 0.95,
-    /**
-     * When dragging a block out of a stack, split the stack in two (true), or drag
-     * out the block healing the stack (false).
-     * @const
-     */
-    DRAG_STACK: true,
-    /**
-     * NYD.
-     * @const
-     */
-    SNAP_RADIUS: 20,
-    DELETE_AREA_NONE: null,
-    /**
-     * ENUM representing that an event is in the delete area of the trash can.
-     * @const
-     */
-    DELETE_AREA_TRASH: 1,
-    /**
-     * ENUM representing that an event is in the delete area of the flyout or
-     * flyout.
-     * @const
-     */
-    DELETE_AREA_TOOLBOX: 2,
-    CAPTURE_IGNORED: 0,
-    CAPTURE_STARTED: 1,
-    CAPTURE_UPDATING: 2,
     scaler () {
       return new eYo.Scaler(this)
     },
@@ -203,7 +129,7 @@ eYo.o4t.makeC9r(eYo, 'Motion', {
     shouldSelect: eYo.NA,
     startBrick: {
       /*
-       * Dragging should start for selected blocks only.
+       * Dragging should start for selected bricks only.
        */
       validate (after) {
         if (!this.brick) {
@@ -316,20 +242,97 @@ eYo.o4t.makeC9r(eYo, 'Motion', {
   },
 })
 
+Object.defineProperties(eYo.event._p, {
+  /**
+   * The latency between 2 mouse down/up events,
+   * in order to recognize a (multi) click event.
+   * @type {number}
+   */
+  DOUBLE_LATENCY: { value: 350 },
+  /**
+   * The latency between 2 mouse down/up events,
+   * in order to recognize a (multi) click event.
+   * @type {number}
+   */
+  LONG_PRESS_LATENCY: { value: 500 },
+  /**
+   * The latency between 2 mouse down/up events,
+   * in order to recognize a (multi) click event.
+   * @type {number}
+   */
+  CANCEL_LATENCY: { value: 15000 },
+  /**
+   * Number of pixels the mouse must move before a drag starts.
+   */
+  DRAG_RADIUS: { value: 5 },
+  /**
+   * Number of pixels the mouse must move before a drag/scroll starts from the
+   * flyout.  Because the drag-intention is determined when this is reached, it is
+   * larger than DRAG_RADIUS so that the drag-direction is clearer.
+   */
+  FLYOUT_DRAG_RADIUS: { value: 10 },
+  /**
+   * A multiplier used to convert the motion scale to a zoom in delta.
+   * @const
+   */
+  ZOOM_IN_FACTOR: { value: 5 },
+  /**
+   * A multiplier used to convert the motion scale to a zoom out delta.
+   * @const
+   */
+  ZOOM_OUT_FACTOR: { value: 6 },
+  /**
+   * If the scale is bigger than this limit, a zoom out occurs.
+   * @const
+   */
+  ZOOM_IN_LIMIT: { value: 1.05 },
+  /**
+   * If the scale is less than this limit, a zoom out occurs.
+   * @const
+   */
+  ZOOM_OUT_LIMIT: { value: 0.95 },
+  /**
+   * When dragging a block out of a stack, split the stack in two (true), or drag
+   * out the block healing the stack (false).
+   * @const
+   */
+  DRAG_STACK: { value: true },
+  /**
+   * NYD.
+   * @const
+   */
+  SNAP_RADIUS: { value: 20 },
+  DELETE_AREA_NONE: { value: null },
+  /**
+   * ENUM representing that an event is in the delete area of the trash can.
+   * @const
+   */
+  DELETE_AREA_TRASH: { value: 1 },
+  /**
+   * ENUM representing that an event is in the delete area of the flyout or
+   * flyout.
+   * @const
+   */
+  DELETE_AREA_TOOLBOX: { value: 2 },
+  CAPTURE_IGNORED: { value: 0 },
+  CAPTURE_STARTED: { value: 1 },
+  CAPTURE_UPDATING: { value: 2 },
+})
+
 /**
  * The receiver has been started.
  * @param {Event} e - the dom event
- * @return {eYo.Motion} the receiver
+ * @return {eYo.event.Motion} the receiver
  */
-eYo.Motion_p.update = function(e) {
+eYo.event.Motion_p.update = function(e) {
   return this
 }
 
 /**
  * Reset the receiver to default values.
- * @return {eYo.Motion} the receiver
+ * @return {eYo.event.Motion} the receiver
  */
-eYo.Motion_p.reset = function() {
+eYo.event.Motion_p.reset = function() {
   if (this.event) {
     this.change_.reset()
     this.dndmngr_.reset()
@@ -350,7 +353,7 @@ eYo.Motion_p.reset = function() {
   return this
 }
 
-Object.defineProperties(eYo.Motion_p, {
+Object.defineProperties(eYo.event.Motion_p, {
   /**
    * @private
    */
@@ -388,7 +391,7 @@ Object.defineProperties(eYo.Motion_p, {
  * @param {eYo.brick|eYo.board} [starter] - The object that received the starting event, either a board or a brick.
  * @return {Object} Whether the start is successfull
  */
-eYo.Motion_p.captureStart = function(e, starter) {
+eYo.event.Motion_p.captureStart = function(e, starter) {
   if (eYo.dom.isTargetInput(e)) {
     this.cancel()
     return this.CAPTURE_IGNORED
@@ -425,7 +428,7 @@ eYo.Motion_p.captureStart = function(e, starter) {
  * Remove custom capture method overrides.
  * @private
  */
-eYo.Motion_p.abortCapture_ = function(e) {
+eYo.event.Motion_p.abortCapture_ = function(e) {
   this.abortCaptureUp_()
   this.abortCaptureMove_()
   this.abortCaptureGestureMove_()
@@ -439,7 +442,7 @@ eYo.Motion_p.abortCapture_ = function(e) {
  * Start capturing a mouse motion.
  * @private
  */
-eYo.Motion_p.captureMouseStart_ = function() {
+eYo.event.Motion_p.captureMouseStart_ = function() {
   if (this.event_.pointerType === 'mouse') {
     return // this will be tracked as mouse event
   }
@@ -480,7 +483,7 @@ eYo.Motion_p.captureMouseStart_ = function() {
  * Capturing a mouse move event.
  * @private
  */
-eYo.Motion_p.captureMouseMove_ = function(e) {
+eYo.event.Motion_p.captureMouseMove_ = function(e) {
   this.event__ = e
   this.xyDelta_ = this.where.backward(this.xyStart_)
   var delta = this.xyDelta_.magnitude
@@ -500,7 +503,7 @@ eYo.Motion_p.captureMouseMove_ = function(e) {
  * A dragging operation has started, any move of the device
  * is applied to the dndmngr.
  */
-eYo.Motion_p.captureMouseDrag_ = function(e) {
+eYo.event.Motion_p.captureMouseDrag_ = function(e) {
   this.event__ = e
   this.xyDelta_ = this.where.backward(this.xyStart_)
   this.dndmngr_.update()
@@ -510,7 +513,7 @@ eYo.Motion_p.captureMouseDrag_ = function(e) {
  * Eventually end capturing a mouse motion.
  * @private
  */
-eYo.Motion_p.captureMouseUp_ = function(e) {
+eYo.event.Motion_p.captureMouseUp_ = function(e) {
   if (this.dragging) {
     this.captureMouseDrag_(e)
     this.dndmngr_.complete()
@@ -530,7 +533,7 @@ eYo.Motion_p.captureMouseUp_ = function(e) {
  * Update the receiver's event.
  * @private
  */
-eYo.Motion_p.captureStartMoreMouse_ = function(e) {
+eYo.event.Motion_p.captureStartMoreMouse_ = function(e) {
   if (e.type === 'mousedown') {
     this.event__ = e
     this.willHandleClick_()
@@ -545,7 +548,7 @@ eYo.Motion_p.captureStartMoreMouse_ = function(e) {
  * 
  * @private
  */
-eYo.Motion_p.captureTouchStart_ = function() {
+eYo.event.Motion_p.captureTouchStart_ = function() {
   var captureMove = e => {
     this.captureTouchMove_(e)
   }
@@ -584,7 +587,7 @@ eYo.Motion_p.captureTouchStart_ = function() {
  * 
  * @private
  */
-eYo.Motion_p.captureStartMoreTouch_ = function(e) {
+eYo.event.Motion_p.captureStartMoreTouch_ = function(e) {
   if (e.type === 'touchstart') {
     this.event__ = e
     var list = e.changedTouches
@@ -608,7 +611,7 @@ eYo.Motion_p.captureStartMoreTouch_ = function(e) {
  * 
  * @private
  */
-eYo.Motion_p.captureTouchMove_ = function(e) {
+eYo.event.Motion_p.captureTouchMove_ = function(e) {
   if (e.type === 'touchmove' || e.type === 'gesturemove') {
     this.event__ = e
     if (e.scale) {
@@ -650,7 +653,7 @@ eYo.Motion_p.captureTouchMove_ = function(e) {
  * 
  * @private
  */
-eYo.Motion_p.captureTouchDragOrScale_ = function(e) {
+eYo.event.Motion_p.captureTouchDragOrScale_ = function(e) {
   if (e.type === 'touchmove' || e.type === 'gesturemove') {
     this.event__ = e
     if (e.scale) {
@@ -664,7 +667,7 @@ eYo.Motion_p.captureTouchDragOrScale_ = function(e) {
  * Capturing a touch end.
  * @private
  */
-eYo.Motion_p.captureTouchEnd_ = function(e) {
+eYo.event.Motion_p.captureTouchEnd_ = function(e) {
   this.event__ = e
   if (this.scaler_.end() || this.dndmngr_.end()) {
     this.reset()
@@ -690,7 +693,7 @@ eYo.Motion_p.captureTouchEnd_ = function(e) {
  * 
  * @private
  */
-eYo.Motion_p.captureStartMoreTouchNoMove_ = function(e) {
+eYo.event.Motion_p.captureStartMoreTouchNoMove_ = function(e) {
   if (e.type === 'touchstart') {
     this.event__ = e
     var list = e.changedTouches
@@ -708,7 +711,7 @@ eYo.Motion_p.captureStartMoreTouchNoMove_ = function(e) {
  * Capturing a touch cancel.
  * @private
  */
-eYo.Motion_p.captureTouchCancel_ = function(e) {
+eYo.event.Motion_p.captureTouchCancel_ = function(e) {
   this.cancel()
   eYo.dom.gobbleEvent(e)
 }
@@ -717,7 +720,7 @@ eYo.Motion_p.captureTouchCancel_ = function(e) {
  * Capturing a touch cancel.
  * @private
  */
-eYo.Motion_p.cancel = function(e) {
+eYo.event.Motion_p.cancel = function(e) {
   this.abortCancel_()
   this.scaler_.cancel() || this.dndmngr_.cancel()
   this.reset()
@@ -733,7 +736,7 @@ eYo.Motion_p.cancel = function(e) {
  * @param {Event} e Touch start event.
  * @private
  */
-eYo.Motion_p.willLongPress = function (e) {
+eYo.event.Motion_p.willLongPress = function (e) {
   this.abortLongPress_()
   // Punt on multitouch events.
   if (e.changedTouches && e.changedTouches.length != 1) {
@@ -761,7 +764,7 @@ eYo.Motion_p.willLongPress = function (e) {
  * Kill the queued long-press task.
  * @private
  */
-eYo.Motion_p.abortLongPress_ = function () {
+eYo.event.Motion_p.abortLongPress_ = function () {
   this.pidLong_ = 0
 }
 
@@ -769,7 +772,7 @@ eYo.Motion_p.abortLongPress_ = function () {
  * Handle a real or faked right-click event by showing a context menu.
  * @param {Event} e A mouse move or touch move event.
  */
-eYo.Motion_p.handleLongPress = function(e) {
+eYo.event.Motion_p.handleLongPress = function(e) {
   var b = this.targetBrick
   if (b) {
     b.ui.showContextMenu_(e)
@@ -784,7 +787,7 @@ eYo.Motion_p.handleLongPress = function(e) {
  * Kill the queued cancel task.
  * @private
  */
-eYo.Motion_p.abortCancel_ = function () {
+eYo.event.Motion_p.abortCancel_ = function () {
   this.pidCancel_ = 0
 }
 
@@ -792,7 +795,7 @@ eYo.Motion_p.abortCancel_ = function () {
  * Kill the queued handle task.
  * @private
  */
-eYo.Motion_p.abortHandle_ = function () {
+eYo.event.Motion_p.abortHandle_ = function () {
   this.pidHandle_ = 0
 }
 
@@ -800,7 +803,7 @@ eYo.Motion_p.abortHandle_ = function () {
  * Schedule a `handleClick_`.
  * @private
  */
-eYo.Motion_p.willHandleClick_ = function(e) {
+eYo.event.Motion_p.willHandleClick_ = function(e) {
   this.pidHandle_ = setTimeout(() => {
     this.pidHandle__ = 0
     this.handleClick_()
@@ -811,7 +814,7 @@ eYo.Motion_p.willHandleClick_ = function(e) {
  * Handle the mouse click.
  * @private
  */
-eYo.Motion_p.handleClick_ = function() {
+eYo.event.Motion_p.handleClick_ = function() {
   this.handleClickField_(this)
   || this.handleClickBrick_(this)
   || this.handleClickBoard_(this)
@@ -823,7 +826,7 @@ eYo.Motion_p.handleClick_ = function() {
  * @return {Boolean} whether the click was handled
  * @private
  */
-eYo.Motion_p.handleClickBoard_ = function() {
+eYo.event.Motion_p.handleClickBoard_ = function() {
   if (this.clickCount_>1) {
     this.board_.close()
   } else {
@@ -836,7 +839,7 @@ eYo.Motion_p.handleClickBoard_ = function() {
  * @return {Boolean} whether the click was handled
  * @private
  */
-eYo.Motion_p.handleClickField_ = eYo.Motion_p.handleClickBrick_ = function() {
+eYo.event.Motion_p.handleClickField_ = eYo.event.Motion_p.handleClickBrick_ = function() {
   var b = this.targetBrick
   if (b) {
     if (this.clickCount_>1) {
@@ -845,12 +848,12 @@ eYo.Motion_p.handleClickField_ = eYo.Motion_p.handleClickBrick_ = function() {
       if (this.flyout_ && this.flyout_.autoClose) {
         // Brick click in an autoclosing flyout.
         if (!b.disabled) {
-          if (!eYo.events.group) {
-            eYo.events.group = true
+          if (!eYo.event.group) {
+            eYo.event.group = true
           }
           var newBrick = this.flyout_.createBrick(b)
           newBrick.ui_driver.scheduleSnapAndBump(newBrick)
-          eYo.events.group = false
+          eYo.event.group = false
           return true
         }
       } 
@@ -865,7 +868,7 @@ eYo.Motion_p.handleClickField_ = eYo.Motion_p.handleClickBrick_ = function() {
  * @return {Boolean}  true iff the click was handled
  * @private
  */
-eYo.Motion_p.handleClickBoard_ = function() {
+eYo.event.Motion_p.handleClickBoard_ = function() {
   eYo.app.Focus_mngr.Brick && eYo.app.focus_mngr.Brick.focusOff()
   return true
 }

@@ -13,7 +13,7 @@
 
 eYo.require('c9r')
 eYo.require('unit')
-eYo.require('events')
+eYo.require('event')
 
 eYo.forwardDeclare('Library')
 eYo.forwardDeclare('style')
@@ -404,7 +404,7 @@ eYo.Flyout_p.hide = function() {
 eYo.Flyout_p.show = function(model) {
   this.board_.setResizesEnabled(false)
   this.hide()
-  eYo.events.disableWrap(() => {
+  eYo.event.disableWrap(() => {
     // Delete any bricks from a previous showing.
     this.board_.topBricks.forEach(brick => brick.dispose())
     // Create the bricks to be shown in this flyout.
@@ -494,12 +494,12 @@ eYo.Flyout_p.on_wheel = function(e) {
 eYo.Flyout_p.createBrick = function(originalBrick) {
   this.desk.board.setResizesEnabled(false)
   var newBrick
-  eYo.events.disableWrap(() => {
+  eYo.event.disableWrap(() => {
     newBrick = this.placeNewBrick_(originalBrick)
     // Close the flyout.
     this.app.hideChaff()
   })
-  eYo.events.fireBrickCreate(newBrick, true)
+  eYo.event.fireBrickCreate(newBrick, true)
   if (this.autoClose) {
     this.hide()
   } else {
@@ -543,7 +543,7 @@ eYo.Flyout_p.scrollToStart = function() {
  * Determine if a drag delta is toward the board, based on the position
  * and orientation of the flyout. This is used in determineDragIntention_ to
  * determine if a new brick should be created or if the flyout should scroll.
- * @param {eYo.Motion} Motion.
+ * @param {eYo.event.Motion} Motion.
  * @return {boolean} true if the drag is toward the board.
  */
 eYo.Flyout_p.isDragTowardBoard = function(Motion) {

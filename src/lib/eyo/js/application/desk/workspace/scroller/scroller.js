@@ -24,7 +24,6 @@ goog.forwardDeclare('goog.events')
  */
 eYo.widget.makeC9r('Scroller', {
   init (board) {
-    eYo.Scroller.eyo.C9r_s.constructor.call(this, board)
     this.hScroll = new eYo.widget.Scrollbar(
       this,
       true,
@@ -80,10 +79,10 @@ eYo.widget.makeC9r('Scroller', {
  * @type {Object}
  * @private
  */
-eYo.Scroller.prototype.disposeUI = function () {
+eYo.widget.Scroller_p.disposeUI = function () {
   this.hScroll.disposeUI()
   this.vScroll.disposeUI()
-  this.ui_driver_mngr.scrollerDispose(this)
+  this.ui_driver.doDispose(this)
   this.disposeUI = eYo.do.nothing
   delete this.initUI
 }
@@ -93,30 +92,27 @@ eYo.Scroller.prototype.disposeUI = function () {
  * @type {Object}
  * @private
  */
-eYo.Scroller.prototype.oldMetrics_ = null;
+eYo.widget.Scroller_p.oldMetrics_ = null
 
 /**
  * Dispose of this pair of scrollbars.
  * Unlink from all DOM elements to prevent memory leaks.
  */
-eYo.Scroller.prototype.dispose = function() {
+eYo.widget.Scroller_p.dispose = function() {
   this.disposeUI()
   this.board = null
   this.oldMetrics_ = null
-  this.hScroll.dispose()
-  this.hScroll = null
-  this.vScroll.dispose()
-  this.vScroll = null
-  this.cornerRect_.dispose()
-  this.cornerRect_ = null
-  eYo.Scroller.eyo.C9r_s.dispose.call(this)
+  this.hScroll = this.hScroll.dispose()
+  this.vScroll = this.vScroll.dispose()
+  this.cornerRect_ = this.cornerRect_.dispose()
+  eYo.widget.Scroller.eyo.C9r_s.dispose.call(this)
 }
 
 /**
  * Recalculate both of the scrollbars' locations and lengths.
  * Also reposition the corner rectangle.
  */
-eYo.Scroller.prototype.layout = function() {
+eYo.widget.Scroller_p.layout = function() {
   // Look up the host metrics once, and use for both scrollbars.
   var hostMetrics = this.board.metrics
   if (!hostMetrics) {
@@ -144,7 +140,7 @@ eYo.Scroller.prototype.layout = function() {
  * Place the scroller.
  * @private
  */
-eYo.Scroller.prototype.place = function() {
+eYo.widget.Scroller_p.place = function() {
   var s
   ;(s = this.hScroll) && s.place()
   ;(s = this.vScroll) && s.place()

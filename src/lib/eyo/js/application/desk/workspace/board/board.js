@@ -34,7 +34,7 @@ goog.forwardDeclare('goog.math')
  * The flyout contains the flyout board.
  * There is also a board used to drag bricks around.
  * That makes at least 4 different boards.
- * @param {eYo.Desk|eYo.Workspace|eYo.section.Dflt} owner.
+ * @param {eYo.widget.Desk|eYo.Workspace|eYo.section.Dflt} owner.
  * @constructor
  */
 eYo.board.makeDflt({
@@ -268,7 +268,7 @@ eYo.board.makeDflt({
 
 /**
  * Class for a main board.  This is a data structure that contains bricks, has event, undo/redo management...
- * @param {eYo.Desk} owner The main board belongs to a workspace. We allways have `this === owner.board`, which means that each kind of owner may have only one board.
+ * @param {eYo.widget.Desk} owner The main board belongs to a workspace. We allways have `this === owner.board`, which means that each kind of owner may have only one board.
  * @constructor
  */
 eYo.board.makeC9r('Main', {
@@ -420,7 +420,7 @@ eYo.board.makeC9r('Main', {
               false /*this.horizontalLayout_*/,
               false, 'eyo-flyout-scrollbar'
             )
-          : new eYo.Scroller(this)
+          : new eYo.widget.Scroller(this)
       }
     },
   }
@@ -492,13 +492,13 @@ eYo.board.Dflt_p.clear = function() {
  */
 eYo.board.Main_p.clear = function() {
   this.setResizesEnabled(false)
-  var existingGroup = eYo.events.group
+  var existingGroup = eYo.event.group
   if (!existingGroup) {
-    eYo.events.group = true
+    eYo.event.group = true
   }
   eYo.board.Main.eyo.C9r_s.clear.call(this)
   if (!existingGroup) {
-    eYo.events.group = false
+    eYo.event.group = false
   }
 }
 
@@ -796,7 +796,7 @@ eYo.board.Dflt_p.paste = function () {
   }
   this.cancelMotion() // Dragging while pasting?  No.
   var m4t, targetM4t, b3k
-  eYo.events.groupWrap(() => {
+  eYo.event.groupWrap(() => {
     if ((b3k = eYo.xml.domToBrick(xml, this))) {
       if ((m4t = eYo.focus.magnet)) {
         if (m4t.isSlot) {
@@ -841,15 +841,15 @@ eYo.board.Dflt_p.paste = function () {
                   return true
                 }
               }) || b3k.getMagnets_(false).some(m4t => {
-                  var neighbour = m4t.closest(eYo.Motion.SNAP_RADIUS,
+                  var neighbour = m4t.closest(eYo.event.SNAP_RADIUS,
                     eYo.geom.xyWhere(dx, dy))
                   if (neighbour) {
                     return true
                   }
               })
               if (collide) {
-                dx += eYo.Motion.SNAP_RADIUS
-                dy += eYo.Motion.SNAP_RADIUS * 2
+                dx += eYo.event.SNAP_RADIUS
+                dy += eYo.event.SNAP_RADIUS * 2
               }
             } while (collide)
           }
@@ -875,19 +875,19 @@ eYo.board.Dflt_p.paste = function () {
 
 /**
  * Is the motion over a delete area (flyout or non-closing flyout)?
- * @param {eYo.Motion} e Mouse move event.
+ * @param {eYo.event.Motion} e Mouse move event.
  * @return {?number} Null if not over a delete area, or an enum representing
  *     which delete area the event is over.
  */
 eYo.board.Dflt_p.inDeleteArea = function(motion) {
   var xy = motion.where
   if (this.deleteRectTrash_ && this.deleteRectTrash_.contains(xy)) {
-    return eYo.Motion.DELETE_AREA_TRASH
+    return eYo.event.DELETE_AREA_TRASH
   }
   if (this.deleteRectFlyout_ && this.deleteRectFlyout_.contains(xy)) {
-    return eYo.Motion.DELETE_AREA_TOOLBOX
+    return eYo.event.DELETE_AREA_TOOLBOX
   }
-  return eYo.Motion.DELETE_AREA_NONE
+  return eYo.event.DELETE_AREA_NONE
 }
 
 /**
@@ -982,7 +982,7 @@ eYo.board.Dflt_p.showContextMenu_ = function (e) {
   topBricks.forEach(child => addDeletableBricks(child))
 
   function deleteNext () {
-    eYo.events.group = eventGroup
+    eYo.event.group = eventGroup
     var brick = deleteList.shift()
     if (brick) {
       if (brick.board) {
@@ -1448,7 +1448,7 @@ eYo.board.Dflt_p.scrollBrickTopLeft = function(id) {
 
 /**
  * Fire a change event.
- * @param {eYo.events.Abstract} event Event to fire.
+ * @param {eYo.event.Abstract} event Event to fire.
  */
 eYo.board.Dflt_p.eventDidFireChange = function(event) {
   let task = () => {

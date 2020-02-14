@@ -48,59 +48,59 @@ eYo.o4t.initProperties(eYo.font, {
     },
     set_ (builtin, after) {
       builtin(after)
-      this.owner.descent_p.reset()
-      this.owner.xHeight_p.reset()
-      this.owner.space_p.reset()
-      this.owner.totalAscent_p.reset()
+      this.descent_p.reset()
+      this.xHeight_p.reset()
+      this.space_p.reset()
+      this.totalAscent_p.reset()
     }
   },
   descent: {
     reset () {
-      return Math.round(this.owner.ascent * 492 * 8 / 389) / 32
+      return Math.round(this.ascent * 492 * 8 / 389) / 32
     },
     set: false,
   },
   xHeight: {
     reset () {
-      return Math.round(this.owner.ascent * 1120 * 8 / 389) / 32
+      return Math.round(this.ascent * 1120 * 8 / 389) / 32
     },
     set: false,
   },
   space: {
     reset () {
-      return Math.round(this.owner.ascent * 1233 * 8 / 389) / 32
+      return Math.round(this.ascent * 1233 * 8 / 389) / 32
     },
     set: false,
   },
   totalAscent: {
     reset () {
-      return Math.round(this.owner.ascent * 2048 * 8 / 389) / 32
+      return Math.round(this.ascent * 2048 * 8 / 389) / 32
     },
     set: false,
   },
   size: {
     get () {
-      return this.owner.ascent
+      return this.ascent
     }
   },
   height: {
     get () {
-      return this.owner.totalAscent + this.owner.descent
+      return this.totalAscent + this.descent
     },
   },
   lineHeight: {
     get () {
-      return this.owner.height + eYo.padding.t + eYo.padding.b
+      return this.height + eYo.padding.t + eYo.padding.b
     },
   },
   style: {
     get () {
-      return `font-family:${this.owner.familyMono}!important;font-size:${this.owner.ascent}pt!important;`
+      return `font-family:${this.familyMono}!important;font-size:${this.ascent}pt!important;`
     }
   },
   menuStyle: {
     get () {
-      return `font-family:${this.owner.familySans};font-size:${this.owner.ascent}pt;`
+      return `font-family:${this.familySans};font-size:${this.ascent}pt;`
     }
   },
 })

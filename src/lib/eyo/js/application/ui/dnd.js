@@ -30,7 +30,7 @@ eYo.provide('dnd.dragger')
  */
 eYo.provide('dnd.dropper')
 
-eYo.forwardDeclare('Motion')
+eYo.forwardDeclare('event.Motion')
 eYo.forwardDeclare('driver')
 
 /**
@@ -39,7 +39,7 @@ eYo.forwardDeclare('driver')
  * Main drag and drop manager.
  * It maintains a list of draggers and droppers.
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param{eYo.Motion} [motion] -  the owning motion
+ * @param{eYo.event.Motion} [motion] -  the owning motion
  */
 eYo.dnd.makeC9r('Mngr', {
   init (owner, motion) {
@@ -100,7 +100,7 @@ eYo.dnd.makeC9r('Mngr', {
 })
 
 eYo.dnd.Mngr_p.ownedForEach = function (f) {
-  eYo.dnd.Mngr_s.c9r.OwnedForEach(f)
+  eYo.dnd.Mngr_s.c9r.ownedForEach.call(this, f)
   if (!this.draggers_) {
     console.error('BREAK HERE!!!')
   }
@@ -571,7 +571,6 @@ eYo.dnd.dropper.makeDflt({
   dispose () {
     this.cancel()
   },
-  p6y computed => dispose = false
   properties: {
     motion: {
       get () {

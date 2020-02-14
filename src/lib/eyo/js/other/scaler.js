@@ -12,13 +12,13 @@
  */
 'use strict'
 
-eYo.forwardDeclare('Motion')
+eYo.forwardDeclare('event.Motion')
 
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
- * @param{eYo.Motion} [motion] -  the owning motion
+ * @param{eYo.event.Motion} [motion] -  the owning motion
  * @constructor
- * @property {eYo.Motion} motion - the motion used to create this scaler
+ * @property {eYo.event.Motion} motion - the motion used to create this scaler
  * @property {Boolean} active - whether the receiver is active
  */
 eYo.c9r.makeC9r(eYo, 'Scaler', {

@@ -68,7 +68,7 @@ eYo.o3d.makeC9r(eYo.brick, 'List', {
      */
     all: {
       get () {
-        var bricks = this.owner.bricks
+        var bricks = this.bricks
         for (var i = 0; i < bricks.length; i++) {
           bricks.push.apply(bricks, bricks[i].children)
         }

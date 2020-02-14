@@ -15,7 +15,7 @@
 /**
  * @name {eYo.pane.Graphic}
  * Class for a graphic environment.
- * @param {eYo.Desk} owner Owner desk.
+ * @param {eYo.widget.Desk} owner Owner desk.
  * @constructor
  */
 eYo.pane.makeC9r('Graphic')

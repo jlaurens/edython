@@ -51,7 +51,7 @@ eYo.test.makeTestDesk = (id) => {
   style.height = `${h}px`
   style.background = 'red'
   style.border = '2px solid gray'
-  var desk = new eYo.Desk({
+  var desk = new eYo.widget.Desk({
     container: id
   })
   desk.initUI()

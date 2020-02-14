@@ -13,7 +13,7 @@
 
 eYo.require('changeCount')
 
-eYo.forwardDeclare('events')
+eYo.forwardDeclare('event')
 eYo.forwardDeclare('app')
 
 /**
@@ -23,7 +23,7 @@ eYo.forwardDeclare('app')
 eYo.o3d.makeC9r(eYo, 'Backer', {
   properties: {
     /**
-     * @type {!Array<!eYo.events.Abstract>}
+     * @type {!Array<!eYo.event.Abstract>}
      * @protected
      */
     undoStack: {
@@ -32,7 +32,7 @@ eYo.o3d.makeC9r(eYo, 'Backer', {
       },
     },
     /**
-     * @type {!Array<!eYo.events.Abstract>}
+     * @type {!Array<!eYo.event.Abstract>}
      * @protected
      */
     redoStack: {
@@ -83,7 +83,7 @@ eYo.Backer_p.clear = function() {
   this.undoStack.length = 0
   this.redoStack.length = 0
   // Stop any events already in the firing queue from being undoable.
-  eYo.events.ClearPendingUndo()
+  eYo.event.ClearPendingUndo()
   this.didClearUndo()
 }
 
@@ -115,13 +115,13 @@ eYo.Backer_p.undo = function(redo) {
         events.push(inputStack.pop())
       }
     }
-    events = eYo.events.filter(events, redo)
+    events = eYo.event.filter(events, redo)
     if (events.length) {
       // Push these popped events on the opposite stack.
       events.forEach((event) => {
         outputStack.push(event)
       })
-      eYo.events.recordingUndo = false
+      eYo.event.recordingUndo = false
       var Bs = []
       eYo.do.tryFinally(() => { // try
         if (this.rendered) {
@@ -138,7 +138,7 @@ eYo.Backer_p.undo = function(redo) {
           this.updateChangeCount(event, redo)
         })
       }, () => { // finally
-        eYo.events.recordingUndo = true
+        eYo.event.recordingUndo = true
         Bs.forEach(B => B.change.end())
         this.didProcessUndo(redo)
       })

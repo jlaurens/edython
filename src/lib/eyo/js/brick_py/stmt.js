@@ -85,7 +85,7 @@ eYo.stmt.Dflt_p.insertParentWithModel = function (model) {
   var magnet = this.head_m
   if (magnet) {
     var parent
-    eYo.events.disableWrap(
+    eYo.event.disableWrap(
       () => {
         parent = eYo.brick.newReady(this, model)
       },
@@ -93,8 +93,8 @@ eYo.stmt.Dflt_p.insertParentWithModel = function (model) {
         if (parent) {
           var p_magnet = parent.foot_m
           if (p_magnet && magnet.checkType_(p_magnet)) {
-            eYo.events.groupWrap(() => {
-              eYo.events.fireBrickCreate(parent)
+            eYo.event.groupWrap(() => {
+              eYo.event.fireBrickCreate(parent)
               var targetMagnet = magnet.target
               if (targetMagnet) {
                 targetMagnet.disconnect()
@@ -132,7 +132,7 @@ eYo.stmt.Dflt_p.insertParentWithModel = function (model) {
  * @return the created brick
  */
 eYo.stmt.Dflt_p.insertBrickAfter = function (belowPrototypeName) {
-  return eYo.events.groupWrap(() => {
+  return eYo.event.groupWrap(() => {
     var below = eYo.brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m
     var targetMagnet = magnet.target

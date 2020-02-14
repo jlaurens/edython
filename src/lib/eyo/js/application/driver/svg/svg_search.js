@@ -244,7 +244,7 @@ eYo.svg.Search_p.bindScrollEvents = function(search) {
  * @private
  */
 eYo.svg.Search_p.on_mousedown = function(e) {
-  eYo.app.Motion.handleFlyoutStart(e, this)
+  eYo.app.motion.handleFlyoutStart(e, this)
   
 }
 

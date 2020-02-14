@@ -280,6 +280,7 @@ eYo._p.forwardDeclare = (name) => {}
 /**
  * Contrary to goog.inherits, does not erase the childC9r.prototype.
  * IE<11
+ * At the end, 
  * @param {Function} ChildC9r
  * @param {Function} SuperC9r
  */

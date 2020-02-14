@@ -19,9 +19,9 @@ eYo.c9r.Dlgt_p.changeCountAdd = function () {
     properties: {
       changeCount: 0,
     },
-    X called: {
+    methods: {
       updateChangeCount (event, redo) {
-        if (event.type == eYo.events.UI) {
+        if (event.type == eYo.event.UI) {
           return
         }
         if (redo) {

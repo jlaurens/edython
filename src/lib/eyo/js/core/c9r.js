@@ -164,9 +164,9 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
       && (ns.hasOwnProperty(key) || ns._p.hasOwnProperty(key)) && eYo.throw(`${key} is already a property of ns: ${ns.name}`)
     }
     !model && eYo.throw('Unexpected void model')
-    if (eYo.isNS(ns) && eYo.isSubclass(ns.Dflt, Super)) {
-      Super = ns.Dflt
-    }
+    // if (eYo.isNS(ns) && eYo.isSubclass(ns.Dflt, Super)) {
+    //   Super = ns.Dflt
+    // }
     if (eYo.isSubclass(this.Dflt, Super)) {
       Super = this.Dflt
     }
@@ -498,17 +498,17 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
    * Make the dispose method.
    */
   _p.makeDispose = function () {
-    let dispose = this.model.dispose
+    let dispose_m = this.model.dispose
     let C9r_s = this.C9r_s
     let dispose_s = C9r_s && C9r_s.dispose
     let disposeInstance = this.disposeInstance.bind(this)
-    if (dispose) {
-      if (XRegExp.exec(dispose.toString(), eYo.xre.function_builtin)) {
+    if (dispose_m) {
+      if (XRegExp.exec(dispose_m.toString(), eYo.xre.function_builtin)) {
         if (dispose_s) {
           var f = function (...args) {
             try {
               this.dispose = eYo.do.nothing
-              dispose.call(this, () => {
+              dispose_m.call(this, () => {
                 disposeInstance(this)
                 dispose_s.call(this, ...args)              
               }, ...args)
@@ -520,7 +520,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
           f = function (...args) {
             try {
               this.dispose = eYo.do.nothing
-              dispose.call(this, () => {
+              dispose_m.call(this, () => {
                 disposeInstance(this)              
               }, ...args)
             } finally {
@@ -532,7 +532,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
         f = function (...args) {
           try {
             this.dispose = eYo.do.nothing
-            dispose.call(this, ...args)
+            dispose_m.call(this, ...args)
             disposeInstance(this)
             dispose_s.call(this, ...args)
           } finally {
@@ -543,7 +543,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
         f = function (...args) {
           try {
             this.dispose = eYo.do.nothing
-            dispose.call(this, ...args)
+            dispose_m.call(this, ...args)
             disposeInstance(this)
           } finally {
             delete this.init

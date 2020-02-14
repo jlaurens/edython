@@ -367,14 +367,14 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     if (brick.canUnlock()) {
       menuItem = this.newMenuItem(eYo.msg.UNLOCK_BLOCK,
         function (event) {
-          eYo.events.group = true
+          eYo.event.group = true
           try {
             brick.unlock()
           } catch (err) {
             console.error(err)
             throw err
           } finally {
-            eYo.events.group = false
+            eYo.event.group = false
           }
         }
       )
@@ -383,14 +383,14 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
     if (brick.canLock()) {
       menuItem = this.newMenuItem(eYo.msg.LOCK_BLOCK,
         function (event) {
-          eYo.events.group = true
+          eYo.event.group = true
           try {
             brick.lock()
           } catch (err) {
             console.error(err)
             throw err
           } finally {
-            eYo.events.group = false
+            eYo.event.group = false
           }
         }
       )
@@ -596,7 +596,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
       unwrapped = parent
     }
     // unwrapped is the topmost brick or the first unwrapped parent
-    eYo.events.group = true
+    eYo.event.group = true
     var returnState = false
     try {
       if (target.hasFocus && target !== unwrapped) {
@@ -614,7 +614,7 @@ eYo.MenuManager.prototype.handleActionLast = function (brick, event) {
       console.error(err)
       throw err
     } finally {
-      eYo.events.group = false
+      eYo.event.group = false
     }
     return returnState
   case eYo.id.HELP:
@@ -1060,7 +1060,7 @@ eYo.MenuManager.prototype.populate_before_after = function (brick) {
     }
     return false
   }
-  eYo.events.disableWrap(() => {
+  eYo.event.disableWrap(() => {
     if ((m4t = brick.foot_m)) {
       var target = m4t.target
       for (var _ = 0, type; (type = Us[_++]);) {

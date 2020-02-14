@@ -61,18 +61,19 @@ eYo.module.makeDflt({
 })
 
 /**
- * Item constuctor
+ * Item constuctor.
+ * This should not inherit from `eYo.module.Dflt`. 
  * @name{eYo.module.Item}
- * @param {*} instance_model
+ * @param {Objec} item_model
  */
-eYo.module.makeC9r('Item', {
-  init (model) {
-    Object.keys(model).forEach(key => {
+eYo.o4t.Dflt.makeInheritedC9r(eYo.module, 'Item', {
+  init (item_model) {
+    Object.keys(item_model).forEach(key => {
       Object.defineProperty(
         this,
         key,
         {
-          value: model[key]
+          value: item_model[key]
         }
       )
     })
@@ -93,8 +94,10 @@ eYo.module.makeC9r('Item', {
         return this.type === eYo.key.CLASS
       },
     },
-    model () {
-      throw 'RENAMED property: model -> module'
+    model: {
+      get () {
+        throw 'RENAMED property: model -> module'
+      },
     },
     ary_max: {
       get () {
@@ -129,8 +132,10 @@ eYo.module.makeC9r('Item', {
      * Each item has a type_ and a type property.
      * The former is overriden by the model given at creation time.
      */
-    type () {
-      return this.module.data.types[this.type_]
+    type: {
+      get () {
+        return this.module.data.types[this.type_]
+      },
     },
     kwargs: {
       lazy () {
@@ -147,6 +152,25 @@ eYo.module.makeC9r('Item', {
 })
 
 eYo.module.Item || eYo.throw('MISSING eYo.module.Item')
+
+eYo.module._p.makeItem = function () {
+  this === eYo.module && eYo.throw('Only derived modules can make Items')
+  var Item = eYo.module.Item.makeInheritedC9r(this, 'Item')
+  let _p = Item.prototype
+  /**
+  * module
+  */
+  _p.module = this
+
+  Object.defineProperties(_p, {
+    url: eYo.c9r.descriptorR(function () {
+      return this.href
+        ? this.module.url + this.href
+        : this.module.url
+    })
+  })
+  return Item
+}
 
 /**
  * Get the item with the given key

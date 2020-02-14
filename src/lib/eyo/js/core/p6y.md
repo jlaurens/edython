@@ -35,7 +35,25 @@ Each property is represented by an instance of one of `eYo.Prop.Dflt` subclasses
 Let `O` be an object with a property named `foo`.
 Reading the property is made through a standard code `O.foo` or `O.foo_`. Setting the property is only made through `O.foo_ = bar`, if the property is not read only, of course.
 
-The implementation is made through `O.foo_p`, which is an instance of of one of the `eYo.p6y.Dflt` subclasses, owned by `O`.
+The implementation is made through `O.foo_p`, which is an instance of one of the `eYo.p6y.Dflt` subclasses, owned by `O`.
+
+## property POV
+
+### owner and parent
+The property has an owner an a parent.
+The owner is the object who both originated the `new` instruction
+that created the property and holds an handle on it.
+The parent is the object whose properties section of the model contains the property model. It might not be the same.
+The parent is the `this` object when functions from the model are called.
+
+### values
+
+The value of the property may be all kind of object.
+For edython specific objects, we do not rely on GC mechanics and we explicitely dispose of objects when they are no longer used.
+This is absolutely necessary for objects that modify the dom.
+For that purpose, and it is not restricted to properties,
+we make a soft link between an object and its owner through
+the `eyo_o3r` key.
 
 ## The model
 

@@ -39,30 +39,6 @@ Object.defineProperties(eYo.p6y._p, {
   },
 })
 
-/**
- * Object disposer.
- * @param {Object} what
- */
-eYo.p6y._p.disposeObject = function (what) {
-  if (what) {
-    if (what.eyo) {
-      eYo.isF(what.dispose) && what.dispose()
-    } else if (eYo.isRA(what)) {
-      try {
-        what.forEach(this.disposeObject)
-      } finally {
-        what.length = 0
-      }
-    } else {
-      Object.keys(what).forEach(k => {
-        if (what.hasOwnProperty(k)) {
-          this.disposeObject(what[k])
-        }
-      })
-    }
-  }
-}
-
 // ANCHOR eYo.p6y.new
 /**
  * Create a new property based on the model
@@ -463,25 +439,69 @@ eYo.p6y.makeDflt({
       ),
     })
   },
-  dispose () {
-    this.disposeStored_()
+  dispose (...args) {
+    this.disposeStored_(...args)
     this.removeObservers()
     this.key_ = this.owner_ = this.model_ = eYo.NA
   },
 })
 
+
 ;(() => {
   let _p = eYo.p6y.Dflt_p
 
   /**
-   * Dispose of the stored object, if any.
-   * Private property overriden to `eYo.do.nothing` for objects that should not override.
+   * The parent of the property is the object who declares the property,
+   * as part of its `properties:` section of its model.
+   * The owner is the object who creates the property with `new`.
+   * In general both are equal.
+   * @type {Object} parent
    */
-  _p.disposeStored_ = function () {
+  Object.defineProperties(_p, {
+    parent: eYo.c9r.descriptorR(function () {
+      return this.owner
+    })
+  })
+
+  /**
+   * Object disposer.
+   * Manage collections, takes care of ownership.
+   * @param {Object} what
+   */
+  _p.disposeStored__ = function (what, ...args) {
+    if (what) {
+      if (what.eyo) {
+        what.eyo_p6y === this && eYo.isF(what.dispose) && what.dispose(...args)
+      } else if (eYo.isRA(what)) {
+        try {
+          what.forEach(x => this.disposeStored__(x, ...args))
+        } finally {
+          what.length = 0
+        }
+      } else {
+        Object.keys(what).forEach(k => {
+          if (what.hasOwnProperty(k)) {
+            this.disposeStored__(what[k], ...args)
+          }
+        })
+      }
+    }
+  }
+
+
+  /**
+   * Dispose of the stored object, if any.
+   * Private method, overriden to `eYo.do.nothing`
+   * for objects that should not be disposed of.
+   * 
+   */
+  _p.disposeStored_ = function (...args) {
     let v = this.stored__
     if (v) {
       try {
-        (this.eyo.ns || eYo.p6y).disposeObject(v)
+        if (v.eyo && v.eyo_p6y == this) {
+          this.disposeStored__(v, ...args)
+        }
       } catch (e) {
         console.error(`Failed to dispose of property ${this.key} of ${this.owner} due to ${e}`)
       } finally {
@@ -559,10 +579,42 @@ eYo.p6y.makeDflt({
   /**
    * Set the value of the receiver.
    * This can be overriden by the model's `set_` key.
+   * The computed properties do not store values on their own.
    * @param {*} after - the new value after the change.
+   * @return {*} the previously stored value
    */
   _p.setStored = _p.__setStored = function (after) {
+    let before = this.stored__
+    if (before && before.eyo_p6y === this) {
+      // resign ownership
+      before.eyo_p6y = eYo.NA
+    }
     this.stored__ = after
+    if (after && after.eyo && !after.eyo_p6y) {
+      // gain ownership
+      after.eyo_p6y = this
+    }
+  }
+
+  /**
+   * recycle of the value.
+   * @private
+   */
+  _p.recycle = function (...args) {
+    let before = this.stored__
+    if (!eYo.isNA(before)) {
+      try {
+        this.validate = eYo.do.nothing
+        let dispose = before.eyo_p6y === this
+        this.setValue(eYo.NA)
+        if (dispose) {
+          before.eyo_p6y = eYo.NA
+          before.dispose(...args)
+        }
+      } finally {
+        delete this.validate
+      }
+    }
   }
 
   /**
@@ -742,6 +794,14 @@ eYo.p6y.makeDflt({
       observers && observers.forEach(f => f(before, after))
     }
   }
+
+  /**
+   * Fire the observers.
+   * @param {*} when - One of `eYo.p6y.BEFORE`, `eYo.p6y.DURING`, `eYo.p6y.AFTER`, specifies when the observers are fired.
+   * @param {*} before - the value before
+   * @param {*} after - the value after
+   */
+  _p.ownedForEach = eYo.do.nothing
 
 }) ()
 

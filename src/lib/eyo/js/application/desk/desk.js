@@ -14,7 +14,6 @@
 'use strict'
 
 eYo.forwardDeclare('app')
-eYo.forwardDeclare('Backer')
 
 eYo.forwardDeclare('pane.Terminal')
 eYo.forwardDeclare('pane.Turtle')
@@ -22,17 +21,15 @@ eYo.forwardDeclare('pane.Graphic')
 eYo.forwardDeclare('pane.Variable')
 eYo.forwardDeclare('pane.Workspace')
 
-goog.forwardDeclare('goog.array')
-
 /**
- * @name{eYo.Desk}
+ * @name{eYo.widget.Desk}
  * Class for a desk.
  * This is the structure above the panes but below the application.
  * @param {eYo.app.Dflt|Object} owner Owner application.
  * @constructor
  */
-eYo.o3d.makeC9r(eYo, 'Desk', {
-  properties: {
+eYo.widget.makeC9r('Desk', {
+  views: {
     /**
      * Terminal.
      * @type{eYo.pane.Terminal}
@@ -42,7 +39,7 @@ eYo.o3d.makeC9r(eYo, 'Desk', {
     },
     /**
      * Turtle.
-     * @type{eYo.vTurtle}
+     * @type{eYo.pane.Turtle}
      */
     turtle () {
       return new eYo.pane.Turtle(this)
@@ -68,9 +65,11 @@ eYo.o3d.makeC9r(eYo, 'Desk', {
     workspace () {
       return new eYo.pane.Workspace(this)
     },
+  },
+  properties: {
     /**
      * The desk's desk.
-     * @type {!eYo.Desk}
+     * @type {!eYo.widget.Desk}
      */
     desk: {
       get () {
@@ -91,7 +90,7 @@ eYo.o3d.makeC9r(eYo, 'Desk', {
 /**
  * Make the user interface.
  */
-eYo.Desk_p.forEachPane = function (f) {
+eYo.widget.Desk_p.forEachPane = function (f) {
   [
     this.workspace,
     this.terminal,
@@ -104,7 +103,7 @@ eYo.Desk_p.forEachPane = function (f) {
 /**
  * Update the metrics and place the components accordingly.
  */
-eYo.Desk_p.layout = function() {
+eYo.widget.Desk_p.layout = function() {
   this.updateMetrics()
   this.place()
 }
@@ -121,7 +120,7 @@ eYo.Desk_p.layout = function() {
  * 2) Then the board dimensions.
  
  */
-eYo.Desk_p.updateMetrics = function() {
+eYo.widget.Desk_p.updateMetrics = function() {
   this.ui_driver.updateMetrics(this)
   this.forEachPane(p => p.updateMetrics())
 }
@@ -129,7 +128,7 @@ eYo.Desk_p.updateMetrics = function() {
 /**
  * Place the panes.
  */
-eYo.Desk_p.place = function() {
+eYo.widget.Desk_p.place = function() {
   this.ui_driver.place(this)
   this.forEachPane(p => p.place())
 }
@@ -139,7 +138,7 @@ eYo.Desk_p.place = function() {
  * @param {Element}
  * @return {eYo.geom.Where}
  */
-eYo.Desk_p.xyElementInDesk = function(element) {
+eYo.widget.Desk_p.xyElementInDesk = function(element) {
   return this.ui_driver.whereElement(this, element)
 }
 
@@ -148,6 +147,6 @@ eYo.Desk_p.xyElementInDesk = function(element) {
  * because something has changed (e.g. scroll position, window size).
  * @private
  */
-eYo.Desk_p.updateScreenCalculations_ = function() {
+eYo.widget.Desk_p.updateScreenCalculations_ = function() {
   this.workspace.recordDeleteAreas()
 }

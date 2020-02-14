@@ -453,7 +453,7 @@ eYo.fcfl.Brick._p.moveBy = function(brick, dxy, snap) {
   if (brick.parent || brick.desk.desktop.isDragging) {
     this.moveTo(brick, xy)
   } else {
-    eYo.events.fireBrickMove(brick, () => {
+    eYo.event.fireBrickMove(brick, () => {
       this.moveTo(brick, xy, snap)
       brick.board.resizePort(brick)
     })
@@ -1488,16 +1488,16 @@ eYo.fcfl.Brick._p.boundingBox = function (brick) {
  */
 eYo.fcfl.Brick._p.scheduleSnapAndBump = function(brick) {
   // Ensure that any snap and bump are part of this move's event group.
-  var group = eYo.events.group
+  var group = eYo.event.group
   setTimeout(() => {
-    eYo.events.group = group
+    eYo.event.group = group
     this.snapToGrid(brick)
-    eYo.events.group = false
+    eYo.event.group = false
   }, eYo.brick.Dflt.BUMP_DELAY / 2)
   setTimeout(() => {
-    eYo.events.group = group
+    eYo.event.group = group
     this.bumpNeighbours_(brick)
-    eYo.events.group = false
+    eYo.event.group = false
   }, eYo.brick.Dflt.BUMP_DELAY)
 }
 
@@ -1532,7 +1532,7 @@ eYo.fcfl.Brick._p.bumpNeighbours_ = function(brick) {
     if (magnet.target && magnet.isSuperior) {
       magnet.targetBrick.bumpNeighbours_()
     }
-    magnet.neighbours_(eYo.Motion.SNAP_RADIUS).forEach(other => {
+    magnet.neighbours_(eYo.event.SNAP_RADIUS).forEach(other => {
       // If both magnets are connected, that's probably fine.  But if
       // either one of them is unconnected, then there could be confusion.
       if (!magnet.target || !other.target) {
@@ -1566,7 +1566,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
     return
   }
   // if we clicked on a field, no connection returned
-  if (eYo.app.Motion.Field) {
+  if (eYo.app.motion.field) {
     return
   }
   var rect = brick.boundingRect // in board coordinates
@@ -1744,7 +1744,7 @@ eYo.fcfl.Brick._p.on_mousedown = function (brick, e) {
   if (brick.ui.parentIsShort && !brick.hasFocus) {
     parent = brick.parent
     if (!parent.hasFocus) {
-      eYo.app.Motion.handleBrickStart(e, brick)
+      eYo.app.motion.handleBrickStart(e, brick)
       return
     }
   }
@@ -1771,7 +1771,7 @@ eYo.fcfl.Brick._p.on_mousedown = function (brick, e) {
   t9k.ui.lastSelectedMagnet__ = eYo.focus.magnet
   // Prepare the mouseUp event for an eventual connection selection
   t9k.ui.lastMouseDownEvent = t9k.hasFocus ? e : null
-  eYo.app.Motion.handleBrickStart(e, t9k)
+  eYo.app.motion.handleBrickStart(e, t9k)
 }
 
 /**

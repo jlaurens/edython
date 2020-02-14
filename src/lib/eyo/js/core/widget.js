@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('t3')
-
 /**
  * @name {eYo.widget}
  * @namespace
@@ -65,6 +63,14 @@ eYo.widget.makeDflt({
         return !this.initUI || this.initUI === eYo.do.nothing
       },
     },
+    /**
+     * Each view has a view rect.
+     * @type {eYo.widget.Desk}
+     * @readonly
+     */
+    viewRect () {
+      return new eYo.Rect()
+    },
   },
 })
 
@@ -94,9 +100,6 @@ eYo.widget.Dlgt_p.consolidatorMake = function (k, model) {
     !!Super && Super.apply(this, arguments)
     model.consolidate.call(this, arguments)
     this.ownedForEach(x => {
-      let f = x[kC] ; f && f.apply(this, arguments)
-    })
-    this.valuedForEach(x => {
       let f = x[kC] ; f && f.apply(this, arguments)
     })
   } : function () {

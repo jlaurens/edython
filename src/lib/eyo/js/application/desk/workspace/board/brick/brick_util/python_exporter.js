@@ -237,7 +237,7 @@ eYo.py.Exporter.prototype.export = function (brick, opt) {
   this.missing_statements = []
   this.missing_expressions = []
   this.newline_()
-  eYo.events.groupWrap(() => {
+  eYo.event.groupWrap(() => {
     eYo.do.tryFinally(() => {
       ++this.depth
       this.expression = []

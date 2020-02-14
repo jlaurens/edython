@@ -62,11 +62,11 @@ eYo.pane.makeC9r('Workspace', {
     },
     /**
      * The workspace's trashCan (if any).
-     * @type {eYo.pane.TrashCan}
+     * @type {eYo.widget.TrashCan}
      */
     trashCan: {
       value () {
-        return new eYo.pane.TrashCan(this)
+        return new eYo.widget.TrashCan(this)
       },
     },
     zoomer: {
@@ -88,7 +88,7 @@ eYo.pane.makeC9r('Workspace', {
     },
     /**
      * The workspace's desk.
-     * @type {!eYo.Desk}
+     * @type {!eYo.widget.Desk}
      * @private
      */
     desk: {

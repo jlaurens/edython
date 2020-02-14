@@ -61,7 +61,7 @@ eYo.BoardDragger.prototype.isActive_ = false
 
 /**
  * Start dragging the board.
- * @param {eYo.Motion} Motion
+ * @param {eYo.event.Motion} Motion
  * @return {Boolean} started or not
  */
 eYo.BoardDragger.prototype.start = function(Motion) {

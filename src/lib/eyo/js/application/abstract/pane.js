@@ -12,25 +12,23 @@
  */
 'use strict'
 
-eYo.forwardDeclare('Desk')
-
 /**
  * @name{eYo.pane}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'pane')
+eYo.view.makeNS(eYo, 'pane')
 
 /**
  * @name{eYo.pane.Dflt}
  * The main focus manager.
- * @param {eYo.Desk} desk -  the owning desk.
+ * @param {eYo.widget.Desk} desk -  the owning desk.
  * @constructor
  */
 eYo.pane.makeDflt({
   properties: {
     /**
      * The desk of the receiver.
-     * @type {eYo.Desk}
+     * @type {eYo.widget.Desk}
      * @readonly
      */
     desk: {

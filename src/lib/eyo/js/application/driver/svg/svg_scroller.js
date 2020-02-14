@@ -19,7 +19,7 @@ eYo.forwardDeclare('widget.Scroller')
 eYo.svg.makeDriverC9r('Scroller', {
     /**
    * Inits the scroll bar.
-   * @param {eYo.Scroller} scroller
+   * @param {eYo.widget.Scroller} scroller
    */
   initUI (pair) {
     var svg = pair.dom.svg
@@ -38,7 +38,7 @@ eYo.svg.makeDriverC9r('Scroller', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {eYo.Scroller} scroller
+   * @param {eYo.widget.Scroller} scroller
    */
   disposeUI (scroller) {
     var dom = scroller.dom
@@ -49,10 +49,10 @@ eYo.svg.makeDriverC9r('Scroller', {
 
 /**
  * Place the corner.
- * @param {eYo.Scroller} scroller
+ * @param {eYo.widget.Scroller} scroller
  * @private
  */
-eYo.svg.Scroller.prototype.placeCorner = function(pair) {
+eYo.svg.Scroller_p.placeCorner = function(pair) {
   var r = pair.cornerRect_
   var corner = pair.dom.svg.corner_
   corner.setAttribute('x', r.x)

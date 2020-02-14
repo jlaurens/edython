@@ -48,13 +48,13 @@ eYo.focus.makeC9r('Main', {
      */
     board: {
       get () {
-        return this.owner.mngr && this.owner.mngr.board
+        return this.mngr && this.mngr.board
       },
       set (after) {
         if (after !== this.board) {
-          this.owner.hasUI && thisowner..ui_driver.boardOff(this)
-          this.owner.mngr_ = after && after.focus_mngr || eYo.NA
-          this.owner.hasUI && this.owner.ui_driver.boardOn(this)
+          this.hasUI && this.ui_driver.boardOff(this)
+          this.mngr_ = after && after.focus_mngr || eYo.NA
+          this.hasUI && this.ui_driver.boardOn(this)
         }
       }
     },
@@ -64,12 +64,12 @@ eYo.focus.makeC9r('Main', {
      */
     brick: {
       get () {
-        return this.owner.mngr_ && this.owner.mngr_.brick
+        return this.mngr_ && this.mngr_.brick
       },
       set (after) {
-        if (after && this.owner.mngr_owner.) {
-          this.owner.mngr_ = after.focus_mngr
-          this.owner.mngr_.brick = after
+        if (after && this.mngr_) {
+          this.mngr_ = after.focus_mngr
+          this.mngr_.brick = after
         }
       }
     },
@@ -79,12 +79,12 @@ eYo.focus.makeC9r('Main', {
      */
     field: {
       get () {
-        return this.owner.mngr_ && this.owner.mngr_.field
+        return this.mngr_ && this.mngr_.field
       },
       set (after) {
-        if (after && this.owner.mngr_) {
-          this.owner.mngr_ = after.focus_mngr
-          this.owner.mngr_.field = after
+        if (after && this.mngr_) {
+          this.mngr_ = after.focus_mngr
+          this.mngr_.field = after
         }
       }
     },
@@ -94,12 +94,12 @@ eYo.focus.makeC9r('Main', {
      */
     magnet: {
       get () {
-        return this.owner.mngr_ && this.mngr_.owner.magnet
+        return this.mngr_ && this.mngr_.magnet
       },
       set (after) {
         if (after && this.mngr_) {
-          this.owner.mngr_ = after.focus_mngr
-          this.owner.mngr_.magnet = after
+          this.mngr_ = after.focus_mngr
+          this.mngr_.magnet = after
         }
       }
     },
@@ -110,10 +110,10 @@ eYo.focus.makeC9r('Main', {
     mngr: eYo.NA,
     ui: {
       init () {
-        this.owner.mngrForEach(m => m.initUI())
+        this.mngrForEach(m => m.initUI())
       },
       dispose () {
-        this.owner.mngrForEach(m => m.disposeUI())
+        this.mngrForEach(m => m.disposeUI())
       },
     },
   },
@@ -150,7 +150,7 @@ eYo.focus.makeC9r('Mngr', {
       return this.owner__
     },
     focus_main () {
-      return this.owner.app.focus_main
+      return this.app.focus_main
     },
     /**
      * Focus only on wrappers.
@@ -160,30 +160,30 @@ eYo.focus.makeC9r('Mngr', {
       validate (after) {
         return after && after.wrapper || after
       },
-      willChange() {
-        this.owner.hasUI && this.value && this.value.ui_driver.off(this)
+      willChange(before, after) {
+        this.hasUI && before && before.ui_driver.off(this)
       },
       didChange(after) {
         if (after) {
-          let m4t = this.owner.magnet__
+          let m4t = this.magnet__
           if (m4t) {
             var b3k = m4t.brick
             if (b3k && after !== b3k.wrapper) {
               this.magnet_ = eYo.NA
             }
           }
-          let f3d = this.owner.field
+          let f3d = this.field
           if (f3d) {
             var b3k = f3d.brick
             if (b3k && after !== b3k.wrapper) {
-              this.owner.field_ = eYo.NA
+              this.field_ = eYo.NA
             }
           }
-          this.owner.hasUI && this.value.ui_driver.on(this)
+          this.hasUI && this.value.ui_driver.on(this)
           this.didAdd()
         } else {
-          this.owner.magnet_ = eYo.NA
-          this.owner.field_ = eYo.NA
+          this.magnet_ = eYo.NA
+          this.field_ = eYo.NA
           this.didRemove()
         }
       },
@@ -324,10 +324,10 @@ eYo.brick.Dflt.eyo.modelDeclare({
   properties: {
     hasFocus: {
       get() {
-        return this === this.owner.focus_mngr.brick
+        return this === this.focus_mngr.brick
       },
       set (after) {
-        after ? this.owner.focusOn() : this.owner.focusOff()
+        after ? this.focusOn() : this.focusOff()
       }
     },
   }
@@ -340,7 +340,7 @@ eYo.magnet.Dflt.eyo.modelDeclare({
         return this === this.focus_mngr.magnet
       },
       set (after) {
-        after ? this.owner.focusOn() : this.owner.focusOff()
+        after ? this.focusOn() : this.focusOff()
       }
     },
   },
@@ -353,7 +353,7 @@ eYo.field.Dflt.eyo.modelDeclare({
         return this === this.focus_mngr.field
       },
       set (after) {
-        after ? this.owner.focusOn() : this.owner.focusOff()
+        after ? this.focusOn() : this.focusOff()
       },
     },
   }

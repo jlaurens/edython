@@ -70,7 +70,7 @@ eYo.geom.makeC9r('Where', {
     c: {
       value: 0,
       validate (after) {
-        return this.owner.snap_ ? Math.round(2 * after) / 2 : after
+        return this.snap_ ? Math.round(2 * after) / 2 : after
       },
     },
     /**
@@ -80,7 +80,7 @@ eYo.geom.makeC9r('Where', {
     l: {
       value: 0,
       validate (after) {
-        return this.owner.snap_ ? Math.round(4 * after) / 4 : after
+        return this.snap_ ? Math.round(4 * after) / 4 : after
       },
     },
     /**
@@ -89,10 +89,10 @@ eYo.geom.makeC9r('Where', {
      */
     x: {
       get () {
-        return this.owner.c_ * eYo.unit.x
+        return this.c_ * eYo.unit.x
       },
       set (after) {
-        this.owner.c_ = after / eYo.unit.x
+        this.c_ = after / eYo.unit.x
       }
     },
     /**
@@ -101,10 +101,10 @@ eYo.geom.makeC9r('Where', {
      */
     y: {
       get () {
-        return this.owner.l_ * eYo.unit.y
+        return this.l_ * eYo.unit.y
       },
       set (after) {
-        this.owner.l_ = after / eYo.unit.y
+        this.l_ = after / eYo.unit.y
       }
     },
     /**
@@ -113,8 +113,8 @@ eYo.geom.makeC9r('Where', {
      */
     magnitude: {
       get () {
-        var dx = this.owner.x
-        var dy = this.owner.y
+        var dx = this.x
+        var dy = this.y
         return Math.sqrt(dx * dx + dy * dy)
       }
     },
@@ -133,7 +133,7 @@ eYo.geom.makeC9r('Where', {
      */
     description: {
       get () {
-        return `eYo.geom.Where(c: ${this.owner.c}, l: ${this.owner.l}, x: ${this.owner.x}, y: ${this.owner.y})`
+        return `eYo.geom.Where(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
       },
     }
   },
@@ -426,117 +426,117 @@ eYo.geom.makeC9r('Rect', {
   properties: {
     c_mid: {
       get () {
-        return this.owner.c + this.owner.w / 2
+        return this.c + this.w / 2
       },
       /**
        * @param {Number} after 
        */
       set (after) {
-        this.owner.c_ = after - this.owner.w / 2
+        this.c_ = after - this.w / 2
       }
     },
     c_max: {
       get () {
-        return this.owner.c + this.owner.w
+        return this.c + this.w
       },
       set (after) {
-        this.owner.c_ = after - this.owner.w
+        this.c_ = after - this.w
       }
     },
     l_mid: {
       get () {
-        return this.owner.l + this.owner.h / 2
+        return this.l + this.h / 2
       },
       set (after) {
-        this.owner.l_ = after - this.owner.h / 2
+        this.l_ = after - this.h / 2
       }
     },
     l_max: {
       get () {
-        return this.owner.l + this.owner.h
+        return this.l + this.h
       },
       set (after) {
-        this.owner.l_ = after - this.owner.h
+        this.l_ = after - this.h
       }
     },
     // Convenient setters in board coordinates
     x_mid: {
       get () {
-        return this.owner.x + this.owner.width / 2
+        return this.x + this.width / 2
       },
       set (after) {
-        this.owner.x_ = after - this.owner.width / 2
+        this.x_ = after - this.width / 2
       }
     },
     x_max: {
       get () {
-        return this.owner.x + this.owner.width
+        return this.x + this.width
       },
       set (after) {
-        this.owner.x_ = after - this.owner.width
+        this.x_ = after - this.width
       }
     },
     y_mid: {
       get () {
-        return this.owner.y + this.owner.height / 2
+        return this.y + this.height / 2
       },
       set (after) {
-        this.owner.y_ = after - this.owner.height / 2
+        this.y_ = after - this.height / 2
       }
     },
     y_max: {
       get () {
-        return this.owner.y + this.owner.height
+        return this.y + this.height
       },
       set (after) {
-        this.owner.y_ = after - this.owner.height
+        this.y_ = after - this.height
       }
     },
     //// The setters change the width, but does not change the `right`
     left: {
       get () {
-        return this.owner.origin_.x
+        return this.origin_.x
       },
       set (after) {
-        this.owner.width = this.owner.x_max - after
-        this.owner.x_min_ = after
+        this.width = this.x_max - after
+        this.x_min_ = after
       }
     },
     top: {
       get () {
-        return this.owner.y
+        return this.y
       },
       /**
        * The height does not change.
        * @param {Number} after 
        */
       set (after) {
-        this.owner.height = this.owner.y_max - after
-        this.owner.y_min_ = after
+        this.height = this.y_max - after
+        this.y_min_ = after
       }
     },
     right: {
       get () {
-        return this.owner.x_max
+        return this.x_max
       },
       /**
        * Change the width, not the `left`.
        * No negative width.
        */
       set (after) {
-        this.owner.width_ = Math.max(0, after - this.owner.left)
+        this.width_ = Math.max(0, after - this.left)
       }
     },
     bottom: {
       get () {
-        return this.owner.y_max
+        return this.y_max
       },
       /**
        * Change the height, not the `top`.
        * No negative height.
        */
       set (after) {
-        this.owner.height_ = Math.max(0, after - this.owner.top)
+        this.height_ = Math.max(0, after - this.top)
       }
     },
     // Composed
@@ -545,28 +545,28 @@ eYo.geom.makeC9r('Rect', {
         return new eYo.geom.Where()
       },
       copy: true,
-      set (after) {
+      set (builtin, after) {
         this.value.xySet(after)
       }
     },
     bottomRight: {
       get () {
-        return this.owner.origin.forward(this.owner.size_)
+        return this.origin.forward(this.size_)
       },
       set (after) {
-        this.owner.x_max_ = after.x
-        this.owner.y_max_ = after.y
+        this.x_max_ = after.x
+        this.y_max_ = after.y
       }
     },
     center: {
       get () {
-        return this.owner.origin.forward(this.owner.size_.unscale(2))
+        return this.origin.forward(this.size_.unscale(2))
       },
       /**
        * Change the origin but keeps the size.
        */
       set (after) {
-        this.owner.origin_ = after.addvance(this.owner.size_.unscale(-2))
+        this.origin_ = after.addvance(this.size_.unscale(-2))
       }
     },
     size: {
@@ -574,7 +574,7 @@ eYo.geom.makeC9r('Rect', {
         return new eYo.geom.Size()
       },
       copy: true,
-      set (after) {
+      set (builtin, after) {
         this.value.xySet(after)
       },
     },
@@ -593,7 +593,7 @@ eYo.geom.makeC9r('Rect', {
      */
     description: {
       get () {
-        return `eYo.geom.Rect(c: ${this.owner.c}, x: ${this.owner.x}, l: ${this.owner.l}, y: ${this.owner.y}, w: ${this.owner.w}, width: ${this.owner.width}, h: ${this.owner.h}, height: ${this.owner.height})`
+        return `eYo.geom.Rect(c: ${this.c}, x: ${this.x}, l: ${this.l}, y: ${this.y}, w: ${this.w}, width: ${this.width}, h: ${this.h}, height: ${this.height})`
       },
     },
     /**
@@ -612,7 +612,7 @@ eYo.geom.makeC9r('Rect', {
      */
     main: {
       get () {
-        return Math.min(this.owner.width, this.owner.width + this.owner.x)
+        return Math.min(this.width, this.width + this.x)
       },
     },
   },

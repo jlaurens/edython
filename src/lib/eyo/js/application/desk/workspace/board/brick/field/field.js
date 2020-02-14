@@ -18,7 +18,7 @@
 eYo.bsm_o3d.makeNS(eYo, 'field')
 
 eYo.forwardDeclare('geom.Size')
-eYo.forwardDeclare('events')
+eYo.forwardDeclare('event')
 
 Object.defineProperties(eYo.field, {
   STATUS_NONE: { value: '' }, // names correspond to `eyo-code-...` css class names
@@ -321,7 +321,7 @@ eYo.field.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
        * 
        */
       set (builtin, after) {
-        eYo.events.fireBrickChange(this.brick, 'field', this.name, this.text__, after)
+        eYo.event.fireBrickChange(this.brick, 'field', this.name, this.text__, after)
         this.brick.change.wrap(() => {
           builtin(after)
           this.size.setFromText(after)

@@ -34,7 +34,7 @@ eYo.provide('brick.stdtypes')
 
 ;(function () {
   var M = eYo.module.stdtypes
-  var d = M.data
+  var d = M.data_
   var n = d.items.length
   var t = d.types.indexOf('method')
   var c = d.categories.indexOf('lists')

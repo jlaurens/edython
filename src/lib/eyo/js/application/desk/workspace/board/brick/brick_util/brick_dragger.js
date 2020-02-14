@@ -18,7 +18,7 @@ eYo.provide('brickDragger')
 eYo.forwardDeclare('dom')
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('board')
-eYo.forwardDeclare('events.brickMove')
+eYo.forwardDeclare('event.brickMove')
 
 /**
  * Class for a brick dragger.  It moves bricks around the board when they
@@ -130,7 +130,7 @@ eYo.BrickDragger.prototype.dispose = function() {
  * We track both the mouse location and the brick location.
  * When the center of the brick will gout out the visible area,
  * we scroll the brick board to keep it back.
- * @param {eYo.Motion} motion  The motion initiating the eventual drag.
+ * @param {eYo.event.Motion} motion  The motion initiating the eventual drag.
  * @return {eYo.brick.Dflt}  The target brick of the drag event, if any.
  */
 eYo.BrickDragger.prototype.start = function(motion) {
@@ -165,7 +165,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
     // so that the same event group is used for brick
     // creation and brick dragging.
     // The start brick is no longer relevant, because this is a drag.
-    eYo.events.disableWrap(() => {
+    eYo.event.disableWrap(() => {
       targetBrick = flyout.createBrick(targetBrick)
     })
   } else if (!targetBrick.movable) {
@@ -229,8 +229,8 @@ eYo.BrickDragger.prototype.start = function(motion) {
 
   /**
    * Which delete area the mouse pointer is over, if any.
-   * One of {@link eYo.Motion.DELETE_AREA_TRASH},
-   * {@link eYo.Motion.DELETE_AREA_TOOLBOX}, or {@link eYo.Motion.DELETE_AREA_NONE}.
+   * One of {@link eYo.event.DELETE_AREA_TRASH},
+   * {@link eYo.event.DELETE_AREA_TOOLBOX}, or {@link eYo.event.DELETE_AREA_NONE}.
    * @type {?number}
    * @private
    */
@@ -246,8 +246,8 @@ eYo.BrickDragger.prototype.start = function(motion) {
 
   eYo.focus.magnet = null
   
-  if (!eYo.events.group) {
-    eYo.events.group = true
+  if (!eYo.event.group) {
+    eYo.event.group = true
   }
   this.destination.setResizesEnabled(false)
   var d = this.ui_driver_mngr
@@ -346,7 +346,7 @@ eYo.BrickDragger.prototype.drag = function() {
 
   var trashCan = this.destination.trashCan
   if (trashCan) {
-    trashCan.setOpen_(this.wouldDelete_ && this.deleteRect_ === eYo.Motion.DELETE_AREA_TRASH)
+    trashCan.setOpen_(this.wouldDelete_ && this.deleteRect_ === eYo.event.DELETE_AREA_TRASH)
   }
 }
 
@@ -362,7 +362,7 @@ eYo.BrickDragger.prototype.end = (() => {
    * @private
    */
   var fireMoveEvent = self => {
-    eYo.events.fireBrickMove(self.brick_, event => {
+    eYo.event.fireBrickMove(self.brick_, event => {
       event.oldCoordinate = self.xyStart_
     })
   }
@@ -382,7 +382,7 @@ eYo.BrickDragger.prototype.end = (() => {
       this.connect()
       b3k.render()
       if (this.motion_.flyout_) {
-        eYo.events.fireBrickCreate(b3k, true) 
+        eYo.event.fireBrickCreate(b3k, true) 
       }
       fireMoveEvent(this)
       b3k.ui_driver.scheduleSnapAndBump(b3k)
@@ -393,7 +393,7 @@ eYo.BrickDragger.prototype.end = (() => {
     }
     this.destination.setResizesEnabled(true)
 
-    eYo.events.group = false
+    eYo.event.group = false
     this.availableMagnets_.length = 0
     this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = this.clearMotion()
   }
@@ -434,7 +434,7 @@ eYo.BrickDragger.prototype.update = function() {
   var deleteRect = this.deleteRect_ = this.destination.inDeleteArea(this.motion_)
   var oldTarget = this.target_
   this.target_ = this.magnet_ = null
-  this.distance_ = eYo.Motion.SNAP_RADIUS
+  this.distance_ = eYo.event.SNAP_RADIUS
   this.availableMagnets_.forEach(m4t => {
     var neighbour = m4t.closest(this.distance_, this.xyDelta)
     if (neighbour.magnet) {
@@ -449,7 +449,7 @@ eYo.BrickDragger.prototype.update = function() {
   // Prefer connecting over dropping into the trash can, but prefer dragging to
   // the flyout over connecting to other bricks.
   var wouldConnect = !!this.target_ &&
-      deleteRect != eYo.Motion.DELETE_AREA_TOOLBOX
+      deleteRect != eYo.event.DELETE_AREA_TOOLBOX
   var wouldDelete = !wouldConnect && !!deleteRect && !this.brick_.parent &&
       this.brick_.deletable
   this.wouldDelete_ = wouldDelete

@@ -16,7 +16,7 @@
 /**
  * @name {eYo.pane.Variable}
  * Class for a variable inspector.
- * @param {eYo.Desk} owner Owner desk.
+ * @param {eYo.widget.Desk} owner Owner desk.
  * @constructor
  */
 eYo.pane.makeC9r('Variable')

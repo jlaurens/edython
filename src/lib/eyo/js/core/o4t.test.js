@@ -100,7 +100,7 @@ describe ('Tests: Object', function () {
     })
     var o = new O()
     o = o.dispose()
-    chai.assert(flag === 421)
+    chai.assert(flag === 0)
     var flag = 0
     var O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
       properties: {
@@ -215,5 +215,94 @@ describe ('Tests: Object', function () {
     chai.assert(bar.chi === bar.foo.chi)
     bar.foo.chi_ = 123
     chai.assert(bar.chi === bar.foo.chi)
+  })
+  it ('O4t: override only get', function () {
+    var flag = 421
+    var Foo = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
+      properties: {
+        foo: {
+          get () {
+            return flag
+          },
+        },
+      },
+    })
+    var foo = new Foo()
+    chai.assert(foo.foo === flag)
+    var Bar = eYo.o4t.makeC9r(eYo.NULL_NS, 'Bar', Foo, {
+      properties: {
+        foo: {
+          get () {
+            return 10 * flag
+          },
+        },
+      },
+    })
+    var bar = new Bar()
+    chai.assert(bar.foo !== flag)
+  })
+  it ('O4t: override only set', function () {
+    var flag = 421
+    var Foo = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
+      properties: {
+        foo: {
+          get () {
+            return flag
+          },
+          set (after) {
+            flag = after
+          },
+        },
+      },
+    })
+    var foo = new Foo()
+    chai.assert(foo.foo === flag)
+    chai.assert((foo.foo_ = 123) === flag)
+    var Bar = eYo.o4t.makeC9r(eYo.NULL_NS, 'Bar', Foo, {
+      properties: {
+        foo: {
+          get () {
+            return 10 * flag
+          },
+        },
+      },
+    })
+    var bar = new Bar()
+    chai.assert(bar.foo !== flag)
+    chai.expect(() => {
+      bar.foo_ = 421
+    }).to.throw()
+  })
+  it ('O4t: override readonly', function () {
+    var flag = 421
+    var Foo = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
+      properties: {
+        foo: {
+          get () {
+            return flag
+          },
+        },
+      },
+    })
+    var foo = new Foo()
+    chai.assert(foo.foo === flag)
+    chai.expect(() => {
+      foo.foo_ = 421
+    }).to.throw()
+    var Bar = eYo.o4t.makeC9r(eYo.NULL_NS, 'Bar', Foo, {
+      properties: {
+        foo: {
+          get () {
+            return 10 * flag
+          },
+          set (after) {
+            flag = 10 * after
+          },
+        },
+      },
+    })
+    var bar = new Bar()
+    chai.assert(bar.foo !== flag)
+    chai.assert((bar.foo_ = 1) * 10 === flag)
   })
 })

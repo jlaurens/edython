@@ -575,7 +575,7 @@ eYo.magnet.Dflt.eyo.modelDeclare({
           : this.optional_ || this.s7r_
             ? 1
             : 3
-     };
+      },
     },
     /**
     * Width in board coordinates.
@@ -848,7 +848,7 @@ eYo.magnet.Dflt_p.completeWrap = eYo.decorate.reentrant_method(
     var t9k = this.targetBrick
     if (!t9k) {
       var ans
-      eYo.events.disableWrap(
+      eYo.event.disableWrap(
         () => {
           var brick = this.brick
           t9k = eYo.brick.newReady(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
@@ -1130,7 +1130,7 @@ eYo.magnet.Dflt_p.setOffset = function(c = 0, l = 0) {
  * @suppress {accessControls}
  */
 eYo.magnet.Dflt_p.checkType_ = function (other, force) {
-  if (!eYo.events.recordingUndo) {
+  if (!eYo.event.recordingUndo) {
     // we are undoing or redoing
     // we will most certainly reach a state that was valid
     // some time ago
@@ -1334,7 +1334,7 @@ eYo.magnet.Dflt_p.connect_ = function (childM4t) {
   }
   var connect2 = () => {
     // Disconnect any existing parent on the child connection.
-    eYo.events.fireBrickMove(child, () => {
+    eYo.event.fireBrickMove(child, () => {
       childM4t.disconnect() // move may start here
       attach_orphan()
       link()
@@ -1377,7 +1377,7 @@ eYo.magnet.Dflt_p.connect_ = function (childM4t) {
       var oldChild = oldChildT4t.brick
       if (oldChild) {
         if (oldChild.wrapped_) {
-          eYo.events.recordingUndo && (oldChild.dispose(true))
+          eYo.event.recordingUndo && (oldChild.dispose(true))
         } else if (!oldChildT4t.targetBrick) {
           // another chance to reconnect the orphan
           // just in case the check_ has changed in between
@@ -1415,7 +1415,7 @@ eYo.magnet.Dflt_p.connect_ = function (childM4t) {
     parentM4t.hasFocus && (parentM4t.focusOff())
     child.incog = parentM4t.incog
   }
-  eYo.events.groupWrap(() => {
+  eYo.event.groupWrap(() => {
     parent.change.wrap(() => { // Disable rendering until changes are made
       child.change.wrap(() => {
         parent.initUI(child.hasUI)
@@ -1533,7 +1533,7 @@ eYo.magnet.Dflt_p.bumpAwayFrom_ = function (m4t) {
   // Raise it to the top for extra visibility.
   var selected = root.hasFocus
   selected || root.selectAdd()
-  var dxy = eYo.geom.xyWhere(eYo.Motion.SNAP_RADIUS, eYo.Motion.SNAP_RADIUS).backward(this.xy)
+  var dxy = eYo.geom.xyWhere(eYo.event.SNAP_RADIUS, eYo.event.SNAP_RADIUS).backward(this.xy)
   if (reverse) {
     // When reversing a bump due to an uneditable brick, bump up.
     dxy.y = -dxy.y
@@ -1735,8 +1735,8 @@ eYo.magnet.Dflt_p.distance = function(other) {
     parent = parentM4t.brick
     child = childM4t.brick
     unwrappedM4t = parentM4t.unwrappedMagnet
-    eYo.events.groupWrap(() => {
-      eYo.events.fireBrickMove(child, () => {
+    eYo.event.groupWrap(() => {
+      eYo.event.fireBrickMove(child, () => {
         child.change.wrap(() => { // `this` is catched
           parent.change.wrap(() => { // `this` is catched
             eYo.do.tryFinally(() => {

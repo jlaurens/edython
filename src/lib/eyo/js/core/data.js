@@ -177,8 +177,7 @@ eYo.data.makeDflt({
   properties: {
     brick: {
       get() {
-          return this.owner
-        },
+        return this.owner
       },
     },
     change: {
@@ -625,7 +624,7 @@ eYo.data.makeDflt({
    * @return eYo.NA
    */
   _p.beforeChange = function(before, after) {
-    ;(!eYo.events.recordingUndo ? this.willChange : this.willUnchange).call(this, before, after)
+    ;(!eYo.event.recordingUndo ? this.willChange : this.willUnchange).call(this, before, after)
   }
 
   /**
@@ -639,7 +638,7 @@ eYo.data.makeDflt({
    * @return eYo.NA
    */
   _p.duringChange = function(before, after) {
-    ;(!eYo.events.recordingUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
+    ;(!eYo.event.recordingUndo ? this.isChanging : this.isUnchanging).apply(this, arguments)
   }
 
   /**
@@ -651,7 +650,7 @@ eYo.data.makeDflt({
    * @return eYo.NA
    */
   _p.afterChange = function(before, after) {
-    ;(eYo.events.recordingUndo ? this.didChange : this.didUnchange).call(before, after)
+    ;(eYo.event.recordingUndo ? this.didChange : this.didUnchange).call(before, after)
     this.synchronize(before, after)
   }
 
@@ -693,7 +692,7 @@ eYo.data.makeDflt({
             field.visible = false
           }
         } else {
-          eYo.events.disableWrap(() => {
+          eYo.event.disableWrap(() => {
             field.text = this.toField()
             if (this.slot && this.slot.data === this) {
               this.slot.incog = false
@@ -725,7 +724,14 @@ eYo.data.makeDflt({
    * @param {Object} after
    * @param {Boolean} noRender
    */
-  _p.setTrusted = eYo.decorate.reentrant_method('trusted', _p.setTrusted_)
+  _p.setTrusted = function (...args) {
+    try {
+      this.setTrusted = eYo.do.nothing
+      this.setTrusted_.call(this, ...args)
+    } finally {
+      delete this.setTrusted
+    }
+  }
 
   /**
    * If the value is an uppercase string,
@@ -837,7 +843,7 @@ eYo.data.makeDflt({
   _p.setMainFieldValue = function (after, fieldKey, noUndo) {
     var field = this.fields[fieldKey || this.key]
     if (field) {
-      eYo.events.disableWrap(() => {
+      eYo.event.disableWrap(() => {
         field.text = after
       })
     }

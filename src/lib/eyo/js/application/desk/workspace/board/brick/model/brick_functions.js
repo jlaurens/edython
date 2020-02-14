@@ -33,7 +33,7 @@ eYo.provide('brick.functions')
 
 ;(() => {
   var M = eYo.module.functions
-  var d = M.data
+  var d = M.data_
   var n = d.items.length
   var t = d.types.length
   var c = d.categories.length

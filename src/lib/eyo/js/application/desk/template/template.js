@@ -18,7 +18,7 @@ eYo.require('decorate')
  * @name {eYo.pane.Template}
  * Class for a template environment.
  * To be subclassed.
- * @param {eYo.Desk} owner Owner desk.
+ * @param {eYo.widget.Desk} owner Owner desk.
  * @constructor
  */
 eYo.pane.makeC9r('Template')

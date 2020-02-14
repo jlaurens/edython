@@ -637,4 +637,48 @@ describe ('Tests: Property', function () {
     p.reset()
     chai.assert(p.value === 123)
   })
+  it ('Property: recycle', function () {
+    let onr = {
+      eyo: true
+    }
+    var flag = 421
+    var p = eYo.p6y.new(onr, 'foo', {
+      value () {
+        return flag
+      },
+    })
+    var flag_what = 0
+    var flag_how = 0
+    let value = {
+      eyo: true,
+      eyo_p6y: 421,
+      dispose (what, how) {
+        flag_what = what
+        flag_how = how
+      }
+    }
+    chai.assert((p.value__ = value) === value)
+    chai.assert(value.eyo_p6y === 421)
+    chai.assert((p.value__ = eYo.NA) === eYo.NA)
+    chai.assert(value.eyo_p6y === 421)
+    value.eyo_p6y = eYo.NA
+    chai.assert((p.value__ = value) === value)
+    chai.assert(value.eyo_p6y === p)
+    chai.assert((p.value__ = eYo.NA) === eYo.NA)
+    chai.assert(value.eyo_p6y === eYo.NA)
+
+    p = eYo.p6y.new(onr, 'foo', {})
+    value.eyo_p6y = 421
+    chai.assert((p.value__ = value) === value)
+    p.dispose(123,456)
+    chai.assert(flag_what === 0)
+    chai.assert(flag_how === 0)
+
+    p = eYo.p6y.new(onr, 'foo', {})
+    value.eyo_p6y = eYo.NA
+    chai.assert((p.value__ = value) === value)
+    p.dispose(123,456)
+    chai.assert(flag_what === 123)
+    chai.assert(flag_how === 456)
+  })
 })

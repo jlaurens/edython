@@ -237,7 +237,7 @@ eYo.expr.List_p.doConsolidate = (() => {
  * @private
  */
 eYo.expr.List_p.removeItems = function () {
-  eYo.events.groupWrap(() => {
+  eYo.event.groupWrap(() => {
     this.slotForEach(slot => {
       var m4t = slot.magnet
       var t9k = m4t.targetBrick

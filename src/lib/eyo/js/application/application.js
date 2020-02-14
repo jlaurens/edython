@@ -24,8 +24,8 @@ eYo.o4t.makeNS(eYo, 'app')
 eYo.forwardDeclare('css')
 
 eYo.forwardDeclare('focus')
-eYo.forwardDeclare('Motion')
-eYo.forwardDeclare('Desk')
+eYo.forwardDeclare('event.Motion')
+eYo.forwardDeclare('widget.Desk')
 eYo.forwardDeclare('driver')
 eYo.forwardDeclare('Audio')
 
@@ -165,10 +165,10 @@ eYo.app.parseZoom_ = function(options) {
  * @property {eYo.Options} options
  * @readonly
  * The current motion in progress, if any.
- * @property {?eYo.Motion} motion
+ * @property {?eYo.event.Motion} motion
  * @readonly
  * The desk, if any.
- * @property {eYo.Desk} desk
+ * @property {eYo.widget.Desk} desk
  * @readonly
  * The ui drivers manager.
  * @property {eYo.driver.Mngr} ui_driver_mngr
@@ -190,10 +190,10 @@ eYo.app.makeDflt({
   properties: {
     options: eYo.NA,
     motion () {
-      return new eYo.Motion(this)
+      return new eYo.event.Motion(this)
     },
     desk () {
-      return new eYo.Desk(this)
+      return new eYo.widget.Desk(this)
     },
     audio () {
       return new eYo.Audio(this)
@@ -259,7 +259,7 @@ eYo.app.Dflt_p.deleteBrick = function (brick, deep) {
         var t9k = m4t.targetBrick
       }
     }
-    eYo.events.groupWrap(() => {
+    eYo.event.groupWrap(() => {
       this.hideChaff()
       if (deep) {
         do {

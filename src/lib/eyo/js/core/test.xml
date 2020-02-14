@@ -7,7 +7,7 @@
     <script src="ROOT_PLACE_HOLDER/data.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/decorate.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/do.test.js" charset="utf-8"></script>
-    <script src="ROOT_PLACE_HOLDER/events.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/event.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/eyo.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/font.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/geometry.test.js" charset="utf-8"></script>
@@ -19,5 +19,6 @@
     <script src="ROOT_PLACE_HOLDER/t3.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/t3_all.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/ui.test.js" charset="utf-8"></script>
+    <script src="ROOT_PLACE_HOLDER/view.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/widget.test.js" charset="utf-8"></script>
     <script src="ROOT_PLACE_HOLDER/xre.test.js" charset="utf-8"></script>

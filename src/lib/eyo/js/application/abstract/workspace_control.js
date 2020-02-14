@@ -33,18 +33,13 @@
  *
  */
 eYo.widget.makeC9r('WorkspaceControl', {
+  aliases: {
+    'viewRect.y': 'top',
+  },
   properties: {
     workspace: {
       get () {
         return this.owner
-      },
-    },
-    top: {
-      get () {
-        return this.owner.viewRect_.y
-      },
-      set (after) {
-        this.owner.viewRect_.y_ = after
       },
     },
     viewRect: {

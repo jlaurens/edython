@@ -218,7 +218,7 @@ eYo.xml.domToBoard = function (xml, owner) {
     return brick
   }
   var brick
-  eYo.events.groupWrap(() => {
+  eYo.event.groupWrap(() => {
     xml.childNodes.forEach(child => {
       var name = child.nodeName.toLowerCase()
       if (name === eYo.xml.EDYTHON) {
@@ -698,7 +698,7 @@ eYo.xml.recover.prototype.resitWrap = function (dom, try_f, finally_f) {
     dom,
     child => this.to_resit.push(child)
   )
-  return eYo.events.groupWrap(() => {
+  return eYo.event.groupWrap(() => {
     var ans
     try {
       ans = try_f()
@@ -795,7 +795,7 @@ eYo.xml.recover.prototype.domToBrick = function (dom, owner) {
     }
   })
   var ans
-  eYo.events.disableWrap(
+  eYo.event.disableWrap(
     () => {
       if (best.types.length === 1) {
         fallback = best.types[0]
@@ -828,7 +828,7 @@ eYo.xml.recover.prototype.domToBrick = function (dom, owner) {
   )
   if (ans) {
     ans.errorRecover = true
-    eYo.events.fireBrickCreate(ans)
+    eYo.event.fireBrickCreate(ans)
     eYo.xml.fromDom(ans, dom)
   }
   return ans

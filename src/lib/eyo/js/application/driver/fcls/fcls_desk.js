@@ -11,11 +11,7 @@
  */
 'use strict'
 
-eYo.require('fcls')
-
-eYo.provide('fcls.Desk')
-
-eYo.forwardDeclare('Desk')
+eYo.forwardDeclare('widget.Desk')
 
 /**
  * Shared application driver.

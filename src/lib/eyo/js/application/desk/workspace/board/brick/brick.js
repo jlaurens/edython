@@ -37,7 +37,7 @@ eYo.forwardDeclare('t3')
 eYo.forwardDeclare('geom.Where')
 eYo.forwardDeclare('do')
 
-eYo.forwardDeclare('events')
+eYo.forwardDeclare('event')
 eYo.forwardDeclare('span')
 eYo.forwardDeclare('field')
 eYo.forwardDeclare('slot')
@@ -100,16 +100,16 @@ eYo.brick.makeDflt({
     parent: {
       willChange(before, after) {
         var f = m4t => m4t && m4t.disconnect()
-        f(this.owner.head_m)
-          || f(this.owner.left_m)
-            || f(this.owner.out_m)
+        f(this.head_m)
+          || f(this.left_m)
+            || f(this.out_m)
         if (before) {
           // Remove this brick from the old parent_'s child list.
           goog.array.remove(before.children__, this)
           this.ui_driver.parentSet(null)
         } else {
           // Remove this brick from the board's list of top-most bricks.
-          this.owner.board.removeBrick(this.owner.value)
+          this.board.removeBrick(before)
         }
       },
       didChange(before, after) {
@@ -117,7 +117,7 @@ eYo.brick.makeDflt({
           // Add this brick to the new parent_'s child list.
           after.children__.push(this)
         } else {
-          this.board.addBrick(this)
+          this.board.addBrick(after)
         }
         after && (this.ui_driver.parentSet(after))
       },
@@ -169,8 +169,8 @@ eYo.brick.makeDflt({
        * @param {Boolean} incog
        */
       didChange(after) {
-        this.owner.slotForEach(slot => slot.incog = after) // with incog validator
-        var m4t = this.owner.suite_m
+        this.slotForEach(slot => slot.incog = after) // with incog validator
+        var m4t = this.suite_m
         m4t && (m4t.incog = after)
         this.consolidate() // no deep consolidation because connected blocs were consolidated during slot's or connection's incog setter
       },
@@ -191,8 +191,8 @@ eYo.brick.makeDflt({
           // nothing to do the brick is already in the good state
           return
         }
-        eYo.events.groupWrap(() => {
-          eYo.events.fireBrickChange(
+        eYo.event.groupWrap(() => {
+          eYo.event.fireBrickChange(
             this, 'disabled', null, this.disabled_, after)
           var previous, next
           if (after) {
@@ -302,8 +302,8 @@ eYo.brick.makeDflt({
     collapsed: {
       willChange(before, after) {
         // Show/hide the next statement inputs.
-        this.owner.slotForEach(slot => slot.visible = !after)
-        eYo.events.fireBrickChange(
+        this.slotForEach(slot => slot.visible = !after)
+        eYo.event.fireBrickChange(
             this, 'collapsed', null, before, after)
       },
       didChange() {
@@ -347,25 +347,25 @@ eYo.brick.makeDflt({
     /** @type {string} */
     type: {
       get () {
-        return this.owner.getBaseType()
+        return this.getBaseType()
       },
     },
     subtype: {
       get () {
-        return this.owner.getSubtype()
+        return this.getSubtype()
       },
     },
     model: {
       get () {
-        return this.owner.eyo.model
+        return this.eyo.model
       },
     },
     surround: {
       get () {
         var b3k
-        if ((b3k = this.owner.out)) {
+        if ((b3k = this.out)) {
           return b3k
-        } else if ((b3k = this.owner.leftMost)) {
+        } else if ((b3k = this.leftMost)) {
           return b3k.group
         }
         return null
@@ -400,7 +400,7 @@ eYo.brick.makeDflt({
     topGroup: {
       get () {
         var ans
-        var group = this.owner.group
+        var group = this.group
         while (group) {
           ans = group
           group = ans.group
@@ -423,7 +423,7 @@ eYo.brick.makeDflt({
     },
     out: {
       get () {
-        var m = this.owner.out_m
+        var m = this.out_m
         return m && m.targetBrick
       },
       set (after) {
@@ -433,11 +433,11 @@ eYo.brick.makeDflt({
     },
     head: {
       get () {
-        var m = this.owner.head_m
+        var m = this.head_m
         return m && m.targetBrick
       },
       set (after) {
-        var m = this.owner.head_m
+        var m = this.head_m
         m && (m.targetBrick_ = after)
       }
     },
@@ -523,7 +523,7 @@ eYo.brick.makeDflt({
     },
     rightComment: {
       get () {
-        var b = this.owner.right
+        var b = this.right
         return b && b.isComment ? b : eYo.NA
       },
     },
@@ -564,7 +564,7 @@ eYo.brick.makeDflt({
     },
     lastSlot: {
       get () {
-        var ans = this.owner.slotAtHead
+        var ans = this.slotAtHead
         if (ans) {
           while (ans.next) {
             ans = ans.next
@@ -594,7 +594,7 @@ eYo.brick.makeDflt({
      */
     isWhite: {
       get () {
-        return this.owner.disabled
+        return this.disabled
       },
     },
     /**
@@ -604,8 +604,8 @@ eYo.brick.makeDflt({
      */
     isSuite: {
       get () {
-        var head = this.owner.head
-        return head && (this.owner === head.suite)
+        var head = this.head
+        return head && (this === head.suite)
       },
     },
     /**
@@ -615,8 +615,8 @@ eYo.brick.makeDflt({
      */
     isFoot: {
       get () {
-        var head = this.owner.head
-        return head && (this.owner === head.foot)
+        var head = this.head
+        return head && (this === head.foot)
       },
     },
     /**
@@ -626,7 +626,7 @@ eYo.brick.makeDflt({
      */
     isTop: {
       get () {
-        return this.owner.isSuite || (this.owner.isStmt && !this.owner.isFoot)
+        return this.isSuite || (this.isStmt && !this.isFoot)
       },
     },
     /**
@@ -639,7 +639,7 @@ eYo.brick.makeDflt({
     descendants: {
       get () {
         var ans = [this.owner]
-        this.owner.children__.forEach(d => ans.push.apply(ans, d.descendants))
+        this.children__.forEach(d => ans.push.apply(ans, d.descendants))
         return ans
       },
     },
@@ -651,7 +651,7 @@ eYo.brick.makeDflt({
      */
     descendantIds: {
       get () {
-        return this.owner.descendants.map(b3k => b3k.id)
+        return this.descendants.map(b3k => b3k.id)
       },
     },
     /**
@@ -662,10 +662,10 @@ eYo.brick.makeDflt({
     wrappedDescendants: {
       get () {
         var ans = []
-        if (!this.owner.wrapped_) {
+        if (!this.wrapped_) {
           ans.push(this)
         }
-        this.owner.childForEach(b => ans.push.apply(ans, b.wrappedDescendants))
+        this.childForEach(b => ans.push.apply(ans, b.wrappedDescendants))
         return ans    
       },
     },
@@ -727,7 +727,7 @@ eYo.brick.makeDflt({
       this.errors = Object.create(null)
 
       // make the state
-      eYo.events.disableWrap(() => {
+      eYo.event.disableWrap(() => {
         this.change.wrap(() => {
           this.makeMagnets()
           this.makeData()
@@ -765,8 +765,8 @@ eYo.brick.makeDflt({
       board.cancelMotion()
     }
     this.unplug(healStack, animate)
-    if (eYo.events.enabled) {
-      eYo.events.fire(new eYo.events.BrickDelete(this))
+    if (eYo.event.enabled) {
+      eYo.event.fire(new eYo.event.BrickDelete(this))
     }
     // Stop rerendering.
     this.ui_ && (this.ui_.rendered = false)
@@ -774,7 +774,7 @@ eYo.brick.makeDflt({
     // Remove from board
     board.removeBrick(this)
     this.wrappedMagnets_ && (this.wrappedMagnets_.length = 0)
-    eYo.events.disableWrap(() => {
+    eYo.event.disableWrap(() => {
       this.disposeSlots(healStack)
       this.disposeMagnets()
       this.disposeFields()
@@ -957,7 +957,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @return {Boolean} true when consolidation occurred
    */
   _p.doConsolidate = function (deep, force) {
-    if (!force && (!eYo.events.recordingUndo || !this.board || this.change_.level > 1)) {
+    if (!force && (!eYo.event.recordingUndo || !this.board || this.change_.level > 1)) {
       // do not consolidate while un(re)doing
       return
     }
@@ -2196,15 +2196,15 @@ eYo.brick.DEBUG_ = Object.create(null)
     }
     // create a brick out of the undo mechanism
     var candidate
-    eYo.events.disableWrap(
+    eYo.event.disableWrap(
       () => {
         var m4t, otherM4t
         candidate = eYo.brick.newReady(this, model)
         var fin = prepare => {
-          eYo.events.groupWrap(() => {
-            eYo.events.enableWrap(() => {
+          eYo.event.groupWrap(() => {
+            eYo.event.enableWrap(() => {
               eYo.do.tryFinally(() => {
-                eYo.events.fireBrickCreate(candidate)
+                eYo.event.fireBrickCreate(candidate)
                 prepare && (prepare())
                 otherM4t.connect(m4t)
               }, () => {
@@ -2221,7 +2221,7 @@ eYo.brick.DEBUG_ = Object.create(null)
           if ((otherM4t = eYo.focus.magnet) && eYo.isStr(model)) {
             var otherBrick = otherM4t.brick
             if (otherBrick instanceof eYo.expr.List && otherM4t.isSlot) {
-              eYo.events.groupWrap(() => {
+              eYo.event.groupWrap(() => {
                 var b4s = model.split(',').map(x => {
                   var model = x.trim()
                   var p5e = eYo.t3.profile.get(model, null)
@@ -2427,7 +2427,7 @@ eYo.brick.DEBUG_ = Object.create(null)
     if (this.locked_ || !this.canLock()) {
       return ans
     }
-    eYo.events.fireBrickChange(
+    eYo.event.fireBrickChange(
       this, eYo.Const.Event.locked, null, this.locked_, true)
     this.locked_ = true
     if (this.hasFocus) {
@@ -2487,7 +2487,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    */
   _p.unlock = function (shallow) {
     var ans = 0
-    eYo.events.fireBrickChange(
+    eYo.event.fireBrickChange(
         this, eYo.Const.Event.locked, null, this.locked_, false)
     this.locked_ = false
     // list all the input for connections with a target

@@ -644,7 +644,7 @@ Example of `dt` for the turtle module, method synonyms.
     class Model:
 
         indent_ = '  '
-        prefix_ = """/**
+        head_ = """/**
  * edython
  *
  * Copyright 2019 Jérôme LAURENS.
@@ -658,31 +658,14 @@ Example of `dt` for the turtle module, method synonyms.
  */
 'use strict'
 
-eYo.require('module')
+eYo.module.makeNS('{{key}}')
 
-eYo.provide('module.{{key}}', new eYo.module.Dflt('{{key}}', '{{url}}'))
+eYo.module.{{key}}.url = '{{url}}'
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.{{key}}.Item = function (model) {
-    eYo.module.Item.call(this, model)
-  }
-  eYo.inherits(Item, eYo.module.Item)
+  var Item = eYo.module.{{key}}.makeItem()
 
-  /**
-  * module
-  */
-  Item.prototype.module = eYo.module.{{key}}
-
-  Object.defineProperties(Item.prototype, {
-    url: {
-      get() {
-        return this.href
-          ? this.module.url + this.href
-          : this.module.url
-      }
-    }
-  })
 """
         suffix_ = """
 
@@ -905,7 +888,7 @@ eYo.provide('module.{{key}}', new eYo.module.Dflt('{{key}}', '{{url}}'))
             print('Exporting', self.path_out)
             with io.StringIO() as self.f:
             # with path_out.open('w', encoding='utf-8') as f:
-                self.raw_print(self.prefix_)
+                self.raw_print(self.head_)
                 self.down_print('eYo.module.{{key}}.data_ = {')
                 self.down_print('categories: [')
                 separator = ''
@@ -980,9 +963,13 @@ eYo.provide('module.{{key}}', new eYo.module.Dflt('{{key}}', '{{url}}'))
 parser = argparse.ArgumentParser(description='Extract module model from online document.')
 parser.add_argument('module', metavar='module', type=str, nargs='+',
                     help='a module name from which to extract a model.')
-parser.add_argument('--no-suffix', dest='suffix', action='store_const',
-                    const='', default='__module',
-                    help='without the `__module` suffix')
+parser.add_argument(
+  '--no-suffix',
+  dest='suffix',
+  action='store_const',
+  const='', default='__module',
+  help='without the `__module` suffix'
+)
 
 parser.add_argument('--verbose', dest='verbose', action='store_const',
                     const=True, default=False,

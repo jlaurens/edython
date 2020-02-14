@@ -25,8 +25,13 @@ eYo.o4t.makeDflt({
 /**
  * Prepare the delegate prototype.
  */
-  dlgt () {
+  dlgt (ns, key, C9r, model) {
     this.properties__ = Object.create(null)
+    if (C9r && (C9r = C9r.SuperC9r)) {
+      this.keys_p__ = new Set(C9r.eyo.keys_p__)
+    } else {
+      this.keys_p__ = new Set()
+    }
   }
 })
 
@@ -44,14 +49,17 @@ eYo.o4t._p.initProperties = function (object, properties) {
       }
     }
     let k_p = k + '_p'
-    let p = eYo.p6y.new(object, k, model)
-    Object.defineProperties(object, {
-      [k_p]: eYo.c9r.descriptorR(function () {
-        return p
-      }),
-    })
+    if (!object.hasOwnProperty(k_p)) {
+      let p = eYo.p6y.new(object, k, model)
+      Object.defineProperties(object, {
+        [k_p]: eYo.c9r.descriptorR(function () {
+          return p
+        }),
+      })
+    }
     let _p = Object.getPrototypeOf(object)
     if (!_p.hasOwnProperty(k)) {
+      object.eyo.keys_p__.add(k_p)
       Object.defineProperties(_p, {
         [k]: eYo.c9r.descriptorR(function () {
           return this[k_p].getValue()
@@ -69,35 +77,19 @@ eYo.o4t._p.initProperties = function (object, properties) {
   })
 }
 
-
 ;(() => {
   let _p = eYo.o4t.Dlgt_p
 
-  ;['owned', 'copied', 'valued', 'cached', 'computed'].forEach(k => {
-    var k_ = k + '_'
-    var k__ = k + '__'
-    Object.defineProperty(_p, k_, {
-      get () {
-        if (this[k__]) {
-          return this[k__]
-        }
-        var s = this.super
-        return (this[k__] = s ? new Set(s[k__]) : new Set())
-      }
-    })
-    /**
-     * Owned enumerating loop.
-     * @param {Function} helper -  signature (name) => {...}
-     */
-    var name = k + 'ForEach'
-    eYo.C9r.eyo_p[name] = function (f) {
-      this[k__] && this[k__].forEach(f)
-    }
-    var name = k + 'Some'
-    eYo.C9r.eyo_p[name] = function (f) {
-      return this[k__] && (this[k__].some(f))
-    }
-  })
+  /**
+   * Iterators
+   */
+  _p.propertyForEach = function (f, owned = true) {
+    this.eyo.propertyForEach(this, f, owned)
+  }
+  _p.propertySome = function (f, owned = true) {
+    this.eyo.propertySome(this, f, true)
+  }
+
   /**
    * Consolidate the given model.
    * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
@@ -124,8 +116,6 @@ eYo.o4t._p.initProperties = function (object, properties) {
    */
   _p.preInitInstance = function (object) {
     (this.ns||eYo.o4t).initProperties(object, this.properties__)
-    let s = this.super
-    s && s.preInitInstance(object)
   }
   
   /**
@@ -143,8 +133,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
         object[k + '_'] = init.call(object)
       }
     }
-    this.valuedForEach(f)
-    this.ownedForEach(f)
+    this.propertyForEach(f)
   }
   
   /**
@@ -239,7 +228,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
   _p.modelDeclare = function (model) {
     model.properties && (this.properties__ = model.properties)
     model.aliases && this.aliasesDeclare(model.aliases)
-    model.called && this.calledDeclare(model.called)
+    model.methods && this.methodsDeclare(model.methods)
   }
   
   /**
@@ -264,15 +253,9 @@ eYo.o4t._p.initProperties = function (object, properties) {
         this.ownedForEach(x => {
           let f = x[kC] ; f && f.call(this, ...args)
         })
-        this.valuedForEach(x => {
-          let f = x[kC] ; f && f.call(this, ...args)
-        })
       } : function (...args) {
         consolidate_m.call(this, ...args)
         this.ownedForEach(x => {
-          let f = x[kC] ; f && f.call(this, ...args)
-        })
-        this.valuedForEach(x => {
           let f = x[kC] ; f && f.call(this, ...args)
         })
       }
@@ -281,13 +264,13 @@ eYo.o4t._p.initProperties = function (object, properties) {
     }
   }
   
-  //// Properties
+  //// Properties and methods
   
   /**
    * Add methods to the associate prototype.
    * @param {Map<String, Function>} models,  the key => Function mapping.
    */
-  _p.calledDeclare = function (model) {
+  _p.methodsDeclare = function (model) {
     let p = this.C9r_p
     Object.keys(model).forEach(k => {
       eYo.assert(!eYo.do.hasOwnProperty(p, k))
@@ -295,6 +278,66 @@ eYo.o4t._p.initProperties = function (object, properties) {
       eYo.assert(eYo.isF(f), `Got ${f}instead of a function`)
       p[k] = f // maybe some post processing here
     })
+  }
+  
+  /**
+   * Iterator over the properties.
+   * @param {Object} object
+   * @param {Function} f
+   * @param {Boolean} owned
+   */
+  _p.propertyForEach = function (object, f, owned) {
+    if (owned) {
+      this.keys_p__.forEach(k_p => {
+        let p = object[k_p]
+        if (p) {
+          let v = p.stored__
+          if (v && v.eyo && p === v.eyo_p6y) {
+            f(v)
+          }
+        }
+      })
+    } else {
+      this.keys_p__.forEach(k_p => {
+        let p = object[k_p]
+        if (p) {
+          let v = p.getValue()
+          if (v) {
+            f(v)
+          }
+        }
+      })
+    }
+  }
+  
+  /**
+   * Iterator over the properties.
+   * @param {Object} object
+   * @param {Function} f
+   * @param {Boolean} owned
+   */
+  _p.propertySome = function (object, f, owned) {
+    if (owned) {
+      this.keys_p__.some(k_p => {
+        let p = object[k_p]
+        if (p) {
+          let v = p.stored__
+          if (v && v.eyo && p === v.eyo_p6y) {
+            f(v)
+          }
+        }
+      })
+    } else {
+      this.keys_p__.some(k_p => {
+        let p = object[k_p]
+        if (p) {
+          let v = p.getValue()
+          if (v) {
+            f(v)
+          }
+        }
+      })
+    }
   }
   
 })()
