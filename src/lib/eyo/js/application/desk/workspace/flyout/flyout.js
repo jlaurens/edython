@@ -586,7 +586,7 @@ eYo.Flyout_p.reflow = function() {
   this.board_.scale = this.desk.board.scale
   var size = this.size
   var rect = this.board_.metrics.port
-  size.width = rect.width + this.MARGIN * 1.5 + eYo.widget.SCROLLBAR_THICKNESS
+  size.width = rect.width + this.MARGIN * 1.5 + eYo.view.SCROLLBAR_THICKNESS
   this.size = size
   if (this.reflowWrapper_) {
     this.board_.addChangeListener(this.reflowWrapper_)

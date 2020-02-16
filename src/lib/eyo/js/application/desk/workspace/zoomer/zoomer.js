@@ -16,7 +16,7 @@
  * @param {eYo.Workspace} workspace Workspace to zoom.
  * @constructor
  */
-eYo.widget.WorkspaceControl.makeInheritedC9r('Zoomer', {
+eYo.view.WorkspaceControl.makeInheritedC9r('Zoomer', {
   properties: {
     HEIGHT_: 110,
   }

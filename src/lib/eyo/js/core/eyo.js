@@ -319,9 +319,11 @@ eYo._p.makeNS = function (ns, key, model) {
   eYo.inherits(NS, Super)
   Object.defineProperty(NS.prototype, 'super', {
     value: this,
+    writable: false,
   })
   ns && Object.defineProperty(NS.prototype, 'parent', {
     value: ns,
+    writable: false,
   })
   if (model) {
     for (var k in model) {
@@ -332,13 +334,16 @@ eYo._p.makeNS = function (ns, key, model) {
   }
   var ans = new NS()
   ns && Object.defineProperties(ns, {
-    [key]: { value: ans, },
-    [key + '_p']: { value: ans.prototype, },
-    [key + '_s']: { value: Super.prototype, },
+    [key]: { value: ans, writable: false, },
+    [key + '_p']: { value: NS.prototype, writable: false, },
+    [key + '_s']: { value: Super.prototype, writable: false, },
   })
   Object.defineProperties(NS.prototype, {
-    key: {value: key},
-    name: { value: ns ? `${ns.name}.${key}` : key || "No man's land" },
+    key: {value: key, writable: false,},
+    name: {
+      value: ns ? `${ns.name}.${key}` : key || "No man's land",
+      writable: false,
+    },
   })
   return ans
 }

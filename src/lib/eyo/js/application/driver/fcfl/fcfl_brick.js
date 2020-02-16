@@ -19,7 +19,7 @@ eYo.require('brick')
  */
 eYo.fcfl.makeDriverC9r('Brick')
 
-eYo.brick.eyo.modelDeclare({
+eYo.brick.eyo.initWithModel({
   properties: {
     ui () {
       return Object.create(null)
@@ -1012,7 +1012,7 @@ eYo.fcfl.Brick._p.drawField_ = function (field, io) {
     }
     if (field.isEditing) {
       // This is a trick to avoid some bad geometry while editing
-      // this is useful for widget only.
+      // this is useful for view only.
       io.cursor.c += 1
       io.common.field.shouldSeparate =
       io.common.field.afterBlack = false

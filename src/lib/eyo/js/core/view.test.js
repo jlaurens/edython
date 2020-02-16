@@ -1,6 +1,7 @@
-describe ('Tests: Widget', function () {
+describe ('Tests: View', function () {
   this.timeout(10000)
-  it ('Object: Widget', function () {
-    chai.assert(eYo.Widget)
+  it ('View: Basic', function () {
+    chai.assert(eYo.view)
+    chai.assert(eYo.view.Dflt)
   })
 })

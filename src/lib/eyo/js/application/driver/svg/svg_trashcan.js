@@ -24,7 +24,7 @@ eYo.svg.makeDriverC9r('TrashCan', {
   ui: {
     /**
      * Initialize the trash can SVG ressources.
-     * @param {eYo.widget.TrashCan} trashCan
+     * @param {eYo.view.TrashCan} trashCan
      * @param {Object} [options]
      * @return {!Element} The trash can's SVG group.
      */
@@ -117,7 +117,7 @@ eYo.svg.makeDriverC9r('TrashCan', {
     },
     /**
      * Initializes the trash can SVG ressources.
-     * @param {eYo.widget.TrashCan} trashCan
+     * @param {eYo.view.TrashCan} trashCan
      */
     dispose (trashCan) {
       var dom = trashCan.dom
@@ -149,7 +149,7 @@ eYo.svg.TrashCan.prototype.on_mouseup = function(trashCan) {
 
 /**
  * Initializes the trashCan SVG ressources.
- * @param {eYo.widget.TrashCan} trashCan
+ * @param {eYo.view.TrashCan} trashCan
  */
 eYo.svg.TrashCan.prototype.place = function(trashCan) {
   var r = trashCan.viewRect
@@ -161,7 +161,7 @@ eYo.svg.TrashCan.prototype.place = function(trashCan) {
 
 /**
  * Is the lid open or shut.
- * @param {eYo.widget.TrashCan} trashCan
+ * @param {eYo.view.TrashCan} trashCan
  * @private
  */
 eYo.svg.TrashCan.prototype.openGet = function(trashCan) {
@@ -170,7 +170,7 @@ eYo.svg.TrashCan.prototype.openGet = function(trashCan) {
 
 /**
  * Flip the lid open or shut.
- * @param {eYo.widget.TrashCan} trashCan
+ * @param {eYo.view.TrashCan} trashCan
  * @param {boolean} state True if open.
  * @private
  */
@@ -187,7 +187,7 @@ eYo.svg.TrashCan.prototype.openSet = function(trashCan, state) {
 
 /**
  * Rotate the lid open or closed by one step.  Then wait and recurse.
- * @param {eYo.widget.TrashCan} trashCan
+ * @param {eYo.view.TrashCan} trashCan
  */
 eYo.svg.TrashCan.prototype.animate = function(trashCan) {
   var dom = trashCan.dom
@@ -210,7 +210,7 @@ eYo.svg.TrashCan.prototype.animate = function(trashCan) {
 
 /**
  * Return the deletion rectangle for the given trash can.
- * @param {eYo.widget.TrashCan} trashCan
+ * @param {eYo.view.TrashCan} trashCan
  */
 eYo.svg.TrashCan.prototype.clientRect = function(trashCan) {
   var svg = trashCan.dom.svg

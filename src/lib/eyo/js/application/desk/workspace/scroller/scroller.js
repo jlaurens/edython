@@ -17,19 +17,19 @@ goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
 
 /**
- * @type{eYo.widget.Scroller}
+ * @type{eYo.view.Scroller}
  * Class for a pair of scrollbars.  Horizontal and vertical.
  * @param {eYo.board} board Board to bind the scrollbars to.
  * @constructor
  */
-eYo.widget.makeC9r('Scroller', {
+eYo.view.makeC9r('Scroller', {
   init (board) {
-    this.hScroll = new eYo.widget.Scrollbar(
+    this.hScroll = new eYo.view.Scrollbar(
       this,
       true,
       'eyo-main-board-scrollbar'
     )
-    this.vScroll = new eYo.widget.Scrollbar(
+    this.vScroll = new eYo.view.Scrollbar(
       this,
       false,
       'eyo-main-board-scrollbar'
@@ -79,7 +79,7 @@ eYo.widget.makeC9r('Scroller', {
  * @type {Object}
  * @private
  */
-eYo.widget.Scroller_p.disposeUI = function () {
+eYo.view.Scroller_p.disposeUI = function () {
   this.hScroll.disposeUI()
   this.vScroll.disposeUI()
   this.ui_driver.doDispose(this)
@@ -92,27 +92,27 @@ eYo.widget.Scroller_p.disposeUI = function () {
  * @type {Object}
  * @private
  */
-eYo.widget.Scroller_p.oldMetrics_ = null
+eYo.view.Scroller_p.oldMetrics_ = null
 
 /**
  * Dispose of this pair of scrollbars.
  * Unlink from all DOM elements to prevent memory leaks.
  */
-eYo.widget.Scroller_p.dispose = function() {
+eYo.view.Scroller_p.dispose = function() {
   this.disposeUI()
   this.board = null
   this.oldMetrics_ = null
   this.hScroll = this.hScroll.dispose()
   this.vScroll = this.vScroll.dispose()
   this.cornerRect_ = this.cornerRect_.dispose()
-  eYo.widget.Scroller.eyo.C9r_s.dispose.call(this)
+  eYo.view.Scroller.eyo.C9r_s.dispose.call(this)
 }
 
 /**
  * Recalculate both of the scrollbars' locations and lengths.
  * Also reposition the corner rectangle.
  */
-eYo.widget.Scroller_p.layout = function() {
+eYo.view.Scroller_p.layout = function() {
   // Look up the host metrics once, and use for both scrollbars.
   var hostMetrics = this.board.metrics
   if (!hostMetrics) {
@@ -140,7 +140,7 @@ eYo.widget.Scroller_p.layout = function() {
  * Place the scroller.
  * @private
  */
-eYo.widget.Scroller_p.place = function() {
+eYo.view.Scroller_p.place = function() {
   var s
   ;(s = this.hScroll) && s.place()
   ;(s = this.vScroll) && s.place()

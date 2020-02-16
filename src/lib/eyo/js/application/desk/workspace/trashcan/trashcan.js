@@ -16,7 +16,7 @@
  * @param {eYo.Workspace} workspace The workspace to sit in.
  * @constructor
  */
-eYo.widget.WorkspaceControl.makeInheritedC9r('TrashCan', {
+eYo.view.WorkspaceControl.makeInheritedC9r('TrashCan', {
   properties: {
     isOpen: {
       get () {
@@ -70,8 +70,8 @@ eYo.widget.WorkspaceControl.makeInheritedC9r('TrashCan', {
 /**
  * Move the trash can to the bottom-right corner.
  */
-eYo.widget.TrashCan_p.place = function(bottom) {
-  eYo.widget.TrashCan.eyo.C9r_s.place.call(this, bottom)
+eYo.view.TrashCan_p.place = function(bottom) {
+  eYo.view.TrashCan.eyo.C9r_s.place.call(this, bottom)
   this.ui_driver.place(this)
 }
 console.error('NYI: what does the inherited place do?')
@@ -79,7 +79,7 @@ console.error('NYI: what does the inherited place do?')
  * Return the deletion rectangle for this trash can.
  * @return {eYo.geom.Rect} Rectangle in which to delete.
  */
-eYo.widget.TrashCan_p.getClientRect = function() {
+eYo.view.TrashCan_p.getClientRect = function() {
   return this.ui_driver.clientRect(this)
 }
 
@@ -87,7 +87,6 @@ eYo.widget.TrashCan_p.getClientRect = function() {
  * Flip the lid shut.
  * Called externally after a drag.
  */
-eYo.widget.TrashCan_p.Close = function() {
+eYo.view.TrashCan_p.close = function() {
   this.ui_driver.openSet(this, false)
 }
-console.error('Close or close?')

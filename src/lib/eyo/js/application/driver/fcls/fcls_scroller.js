@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('widget.Scroller')
+eYo.forwardDeclare('view.Scroller')
 
 /**
  * Shared application driver.

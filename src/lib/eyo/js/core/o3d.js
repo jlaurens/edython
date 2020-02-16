@@ -25,7 +25,7 @@ eYo.o4t.makeNS(eYo, 'o3d')
  * @constructor
  */
 eYo.o3d.makeDflt({
-  /** @param {eYo.app.Dflt|eYo.widget.Desk|eYo.Flyout|eYo.board|eYo.expr|eYo.stmt|eYo.slot.Dflt|eYo.magnet.Dflt} owner  the immediate owner of this object. When not a brick, it is directly owned by a brick.
+  /** @param {eYo.app.Dflt|eYo.view.Desk|eYo.Flyout|eYo.board|eYo.expr|eYo.stmt|eYo.slot.Dflt|eYo.magnet.Dflt} owner  the immediate owner of this object. When not a brick, it is directly owned by a brick.
    */
   init (owner) {
     !owner && eYo.throw('Missing owner!')
@@ -87,7 +87,7 @@ eYo.o3d.makeDflt({
     /**
      * The app's desk
      * @readonly
-     * @type {eYo.widget.Desk}
+     * @type {eYo.view.Desk}
      */
     desk: {
       get () {

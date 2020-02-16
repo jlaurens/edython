@@ -14,9 +14,9 @@
 'use strict'
 
 /**
- * @name {eYo.pane.Terminal}
+ * @name {eYo.view.Terminal}
  * Class for a terminal.
- * @param {eYo.widget.Desk} owner Owner desk.
+ * @param {eYo.view.Desk} owner Owner desk.
  * @constructor
  */
-eYo.pane.makeC9r('Terminal')
+eYo.view.makeC9r('Terminal')

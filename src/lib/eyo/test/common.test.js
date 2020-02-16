@@ -51,7 +51,7 @@ eYo.test.makeTestDesk = (id) => {
   style.height = `${h}px`
   style.background = 'red'
   style.border = '2px solid gray'
-  var desk = new eYo.widget.Desk({
+  var desk = new eYo.view.Desk({
     container: id
   })
   desk.initUI()
@@ -93,7 +93,7 @@ Object.defineProperties(eYo.test, {
 })
 
 eYo.test.makeDesk = options => {
-  if (!eYo.application.Board) {
+  if (!eYo.app.Board) {
     options = options || {}
     goog.mixin(options, {
       collapse : true,
@@ -107,7 +107,7 @@ eYo.test.makeDesk = options => {
     })
     // if (options.container && (document.getElementById(options.container) ||
     // document.querySelector(options.container))) {
-    //   eYo.application.makeDesk(options)
+    //   eYo.app.makeDesk(options)
     // }
   }
 }
@@ -117,14 +117,14 @@ beforeEach(function() {
 })
 
 eYo.test.SetItUp = () => {
-  eYo.application.Board.Backer.Clear()
-  eYo.application.Board.topBricks_.length = 0
+  eYo.app.Board.Backer.Clear()
+  eYo.app.Board.topBricks_.length = 0
 }
 
 eYo.test.tearItDown = (opt) => {
-  eYo.application.Board.Backer.Clear()
+  eYo.app.Board.Backer.Clear()
   if (!opt || !opt.ignoreTopBrick) {
-    chai.assert(eYo.application.Board.topBricks_.length === 0, `FAILED ${eYo.application.Board.topBricks_.length} === 0`)
+    chai.assert(eYo.app.Board.topBricks_.length === 0, `FAILED ${eYo.app.Board.topBricks_.length} === 0`)
   }
 }
 
@@ -142,7 +142,7 @@ eYo.test.Brick = (brick, t, str) => {
 
 eYo.test.new_brick = (t, tt, str, headless) => {
   var type = t = eYo.t3.stmt[t] || eYo.t3.expr[t] || t
-  var brick = eYo.brick.newReady(eYo.application.Board, type)
+  var brick = eYo.brick.newReady(eYo.app.Board, type)
   eYo.test.Brick(brick, tt, str)
   if (!headless) {
     brick.render()
@@ -461,7 +461,7 @@ eYo.test.Same_list_length = (dlgt1, dlgt2, key) => {
  * Create a new identifier brick
  */
 eYo.test.newIdentifier = (str) => {
-  var brick = eYo.brick.newReady(eYo.application.Board, eYo.t3.expr.identifier)
+  var brick = eYo.brick.newReady(eYo.app.Board, eYo.t3.expr.identifier)
   brick.Target_p = str
   eYo.test.Brick(brick, 'identifier')
   eYo.test.data_value(brick, 'target', str)
@@ -499,7 +499,7 @@ eYo.test.SvgNodeParent = (bdom, node, parent, type) => {
 eYo.test.Source = (str) => {
   var err_ret = {}
   var n = eYo.parser.PyParser_ParseString(str, eYo.gmr._PyParser_Grammar, eYo.tkn.file_input, err_ret)
-  var d = n.toBrick(eYo.application.Board)
+  var d = n.toBrick(eYo.app.Board)
   if (!d) {
     eYo.gmr.Showtree(eYo.gmr._PyParser_Grammar, n)
   }

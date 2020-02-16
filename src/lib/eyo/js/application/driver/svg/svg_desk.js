@@ -13,7 +13,7 @@
 
 eYo.require('dom.Desk')
 
-eYo.forwardDeclare('widget.Desk')
+eYo.forwardDeclare('view.Desk')
 
 /**
  * Svg driver for desk.
@@ -21,7 +21,7 @@ eYo.forwardDeclare('widget.Desk')
 eYo.svg.makeDriverC9r('Desk', {
   /**
    * Initialize the desk SVG ressources.
-   * @param {eYo.widget.Desk} desk
+   * @param {eYo.view.Desk} desk
    * @return {!Element} The desk's SVG group.
    */
   initUI (desk) {
@@ -53,7 +53,7 @@ eYo.svg.Desk_p.bind_resize = function (desk) {
  * Set the display mode for bricks.
  * Used to draw bricks lighter or not,
  * by adding/removing a class on the main div.
- * @param {eYo.widget.Desk} mode  The display mode for bricks.
+ * @param {eYo.view.Desk} mode  The display mode for bricks.
  * @param {String} mode  The display mode for bricks.
  */
 eYo.svg.Desk_p.setBrickDisplayMode = function (desk, mode) {
@@ -69,7 +69,7 @@ eYo.svg.Desk_p.setBrickDisplayMode = function (desk, mode) {
  * Size the main board to completely fill its container.
  * Call this when the view actually changes sizes
  * (e.g. on a window resize/device orientation change).
- * @param {eYo.widget.Desk} desk A desk.
+ * @param {eYo.view.Desk} desk A desk.
  */
 eYo.svg.Desk_p.updateMetrics = function(desk) {
   // After the change, the selection should be visible if it was.
@@ -80,7 +80,7 @@ eYo.svg.Desk_p.updateMetrics = function(desk) {
 /**
  * Return the coordinates of the top-left corner of this element relative to
  * the div containing the desk.
- * @param {eYo.widget.Desk}
+ * @param {eYo.view.Desk}
  * @param {Element} element SVG element to find the coordinates of. If this is
  *     not a child of the div blockly was injected into, the behaviour is
  *     eYo.NA.
@@ -99,7 +99,7 @@ eYo.svg.Desk_p.whereElement = function(desk, element) {
 
 /**
  * Initialize the desk's flyout SVG ressources.
- * @param {eYo.widget.Desk} desk
+ * @param {eYo.view.Desk} desk
  * @return {!Element} The desk's SVG group.
  */
 eYo.svg.Desk_p.installFlyout = function(desk) {

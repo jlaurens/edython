@@ -15,7 +15,7 @@ eYo.require('c9r')
 eYo.provide('changeCount')
 
 eYo.c9r.Dlgt_p.changeCountAdd = function () {
-  this.modelDeclare({
+  this.initWithModel({
     properties: {
       changeCount: 0,
     },

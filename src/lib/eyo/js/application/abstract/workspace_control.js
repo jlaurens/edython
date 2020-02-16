@@ -32,7 +32,7 @@
  * @property {number} MARGIN_SIDE_, Distance between trash can and right edge of board.
  *
  */
-eYo.widget.makeC9r('WorkspaceControl', {
+eYo.view.makeC9r('WorkspaceControl', {
   aliases: {
     'viewRect.y': 'top',
   },
@@ -62,7 +62,7 @@ eYo.widget.makeC9r('WorkspaceControl', {
  * Subclassers will place the receiver according to their driver.
  * @param {Number} bottom - 
  */
-eYo.widget.WorkspaceControl_p.place = function(bottom) {
+eYo.view.WorkspaceControl_p.place = function(bottom) {
   var board = this.board
   var view = board.metrics.view
   var r = this.viewRect__

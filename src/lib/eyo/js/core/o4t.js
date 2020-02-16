@@ -58,8 +58,8 @@ eYo.o4t._p.initProperties = function (object, properties) {
       })
     }
     let _p = Object.getPrototypeOf(object)
-    if (!_p.hasOwnProperty(k)) {
-      object.eyo.keys_p__.add(k_p)
+    if (object.eyo && !_p.hasOwnProperty(k)) {
+      object.eyo.keys_p__ && object.eyo.keys_p__.add(k_p)
       Object.defineProperties(_p, {
         [k]: eYo.c9r.descriptorR(function () {
           return this[k_p].getValue()
@@ -105,7 +105,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
   _p.handleModel = function (model) {
     if (model) {
       this.modelConsolidate(model)
-      this.modelDeclare(model)
+      this.initWithModel(model)
     }
   }
   
@@ -115,7 +115,13 @@ eYo.o4t._p.initProperties = function (object, properties) {
    * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
    */
   _p.preInitInstance = function (object) {
-    (this.ns||eYo.o4t).initProperties(object, this.properties__)
+    var ns = this.ns
+    if (!ns || !ns.initProperties) {
+      ns = eYo.o4t
+    }
+    ns.initProperties(object, this.properties__)
+    let eyo = this.super
+    eyo && eyo.preInitInstance(object)
   }
   
   /**
@@ -225,7 +231,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
    * Declare the given model.
    * @param {Object} model - Object, like for |makeC9r|.
    */
-  _p.modelDeclare = function (model) {
+  _p.initWithModel = function (model) {
     model.properties && (this.properties__ = model.properties)
     model.aliases && this.aliasesDeclare(model.aliases)
     model.methods && this.methodsDeclare(model.methods)

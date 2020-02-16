@@ -1,6 +1,6 @@
 describe('Programmatically create a desk', function () {
   it ('Headless desk', function () {
-    var desk = new eYo.widget.Desk({})
+    var desk = new eYo.view.Desk({})
     chai.assert(desk !== eYo.app.Desk)
     var board = desk.board
     chai.assert(board !== eYo.app.Board)

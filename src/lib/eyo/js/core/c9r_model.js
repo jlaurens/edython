@@ -29,8 +29,8 @@ eYo.c9r.isModel = (what) => {
 
 eYo.c9r.model.Allowed = {
   ['^$']: [
-    'init', 'deinit', 'dispose', 'ui',
-    'owned', 'computed', 'valued', 'cached', 'copied', 'link',
+    'dlgt', 'init', 'deinit', 'dispose', 'ui',
+    'properties', 'aliases',
     'xml', 'data', 'slots',
     'out', 'head', 'left', 'right', 'suite', 'foot'
   ],
@@ -44,34 +44,18 @@ eYo.c9r.model.Allowed = {
   ],
   data: '^\\w+$',
   properties: '^\\w+$',
-  owned: '^\\w+$',
+  aliases: '^\\w+$',
   ['^xml$']: [
     'attr', 'types', 'attribute',
   ],
   ['^ui$']: [
     'init', 'dispose', 'doInit', 'doDispose', 'initMake', 'disposeMake',
   ],
-  ['^owned\\.\\w+$']: [
-    'value', 'lazy', 'init',
-    'validate', 'willChange', 'atChange', 'didChange'
-  ],
-  ['^computed\\.\\w+$']: [
-    'get', 'set', 'get_', 'set_',
-    'validate', 'willChange', 'atChange', 'didChange',
+  ['^properties\\.\\w+$']: [
+    'value', 'lazy', 'reset',
+    'validate', 'get', 'set', 'get_', 'set_',
+    'willChange', 'atChange', 'didChange',
     'dispose',
-  ],
-  ['^valued\\.\\w+$']: [
-    'value', 'lazy', 'init', 'get', 'set', 'get_', 'set_',
-    'validate', 'willChange', 'atChange', 'didChange',
-  ],
-  ['^cached\\.\\w+$']: [
-    'value', 'lazy', 'init',
-    'validate', 'willChange', 'atChange', 'didChange',
-    'forget',
-  ],
-  ['^copied\\.\\w+$']: [
-    'value', 'lazy', 'init',
-    'validate', 'willChange', 'didChange',
   ],
   ['^data\\.\\w+$']: [
     'order', // INTEGER

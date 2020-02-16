@@ -72,11 +72,11 @@ eYo.p6y._p.new = function (owner, key, model) {
  * @param {Object} model
  */
 eYo.p6y._p.handle_value = function (prototype, key, model) {
-  let f = model.value
-  if (!eYo.isNA(f)) {
+  let value_m = model.value
+  if (!eYo.isNA(value_m)) {
     eYo.isNA(model.lazy) || eYo.throw(`Bad model (${key}): unexpected lazy`)
-    prototype.start = eYo.isF(f) ? f : function () {
-      return f
+    prototype.start = eYo.isF(value_m) ? value_m : function () {
+      return value_m
     }
     model._starters.push(object => {
       object.setStored(object.start())
@@ -94,29 +94,46 @@ eYo.p6y._p.handle_value = function (prototype, key, model) {
  */
 eYo.p6y._p.handle_reset = function (prototype, key, model) {
   let reset_m = model.reset
-  if (!eYo.isNA(reset_m)) {
-    if (!model.value && !model.lazy) {
-      model.value = model.reset
-      this.handle_value(prototype, key, model)
-    }
-    if (eYo.isF(reset_m)) {
+  if (eYo.isNA(reset_m)) {
+    return
+  } else if (eYo.isF(reset_m)) {
+    if (reset_m.length) {
+      prototype.reset = function () {
+        try {
+          this.reset = eYo.do.nothing
+          reset_m.call(this.owner, () => {
+            prototype.eyo.C9r_s.reset.call(this)
+          })
+        } finally {
+          delete this.reset
+        }
+      }
+    } else {
+      if (!model.value) {
+        model.value = model.lazy || model.reset
+        this.handle_value(prototype, key, model)
+      }
       prototype.reset = function () {
         try {
           this.reset = eYo.do.nothing
           this.resetValue(reset_m.call(this.owner))
         } finally {
           delete this.reset
-        }    
+        }
       }
-    } else {
-      prototype.reset = function () {
-        try {
-          this.reset = eYo.do.nothing
-          this.resetValue(reset_m)
-        } finally {
-          delete this.reset
-        }    
-      }
+    }
+  } else {
+    if (!model.value && !model.lazy) {
+      model.value = model.reset
+      this.handle_value(prototype, key, model)
+    }
+    prototype.reset = function () {
+      try {
+        this.reset = eYo.do.nothing
+        this.resetValue(reset_m)
+      } finally {
+        delete this.reset
+      }    
     }
   }
 }
@@ -208,7 +225,7 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
       can_lazy = false
       prototype.getValue = eYo.c9r.noGetter('Write only')
     } else if (eYo.isF(get_m)) {
-      if (get_m.length > 0) {
+      if (get_m.length) {
         prototype.getValue = function () {
           try {
             this.getValue = eYo.do.nothing
@@ -220,7 +237,6 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
           }
         }
       } else {
-        // p6y with pure computed getter cannot be lazy
         prototype.getStored = prototype.getValue = function () {
           try {
             this.getValue = eYo.do.nothing
@@ -229,6 +245,7 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
             delete this.getValue
           }
         }
+        // p6y with pure computed getter cannot be lazy
         computed = true
         can_lazy = false
       }
@@ -274,13 +291,13 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
     prototype.dispose = eYo.do.nothing
   }
   if (can_lazy) {
-    let f = model.lazy
-    if (!eYo.isNA(f)) {
+    let lazy_m = model.lazy
+    if (!eYo.isNA(lazy_m)) {
       model._starters.push(object => {
         object.getValue = Object.getPrototypeOf(object).__getLazyValue
       })
-      prototype.start = eYo.isF(f) ? f : function () {
-        return f
+      prototype.start = eYo.isF(lazy_m) ? lazy_m : function () {
+        return lazy_m
       }
     }
   } else {
@@ -307,7 +324,7 @@ eYo.p6y._p.handle_change = function (prototype, key, model) {
           try {
             this[when] = eYo.do.nothing
             when_m.call(this.owner, before, after)
-            when_s.call(this, when, before, after)
+            when_s.call(this, before, after)
           } finally {
             delete this[when]
           }
@@ -324,7 +341,7 @@ eYo.p6y._p.handle_change = function (prototype, key, model) {
           try {
             this[when] = eYo.do.nothing
             when_m.call(this.owner, after)  
-            when_s.call(this, when, before, after)
+            when_s.call(this, before, after)
           } finally {
             delete this[when]
           }
@@ -413,9 +430,9 @@ eYo.p6y._p.handle_stored = function (prototype, key, model) {
  */
 eYo.p6y.makeDflt({
   init (owner, key, model) {
-    owner || eYo.throw('Missing owner')
-    eYo.isStr(key) || eYo.throw('Missing key')
-    eYo.isNA(model) && eYo.throw('Missing model')
+    owner || eYo.throw(`${this.eyo.name}: Missing owner in makeDflt`)
+    eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeDflt`)
+    eYo.isNA(model) && eYo.throw(`${this.eyo.name}: Missing model in makeDflt`)
     this.owner_ = owner
     this.key_ = key
     this.model_ = model
@@ -499,7 +516,7 @@ eYo.p6y.makeDflt({
     let v = this.stored__
     if (v) {
       try {
-        if (v.eyo && v.eyo_p6y == this) {
+        if (v.eyo && v.eyo_p6y === this) {
           this.disposeStored__(v, ...args)
         }
       } catch (e) {
@@ -805,3 +822,79 @@ eYo.p6y.makeDflt({
 
 }) ()
 
+/**
+ * Maintains a list of properties.
+ * `eYo.o4t.Dflt` instances maintains properties by keys.
+ * Here properties are maintained by index.
+ * @name{eYo.p6y.List}
+ * @constructor
+ */
+eYo.p6y.makeC9r('List', {
+  init (owner, ...items) {
+    this.list__ = []
+    this.values = new Proxy(this.list__, {
+      get(target, prop) {
+        if (!isNaN(prop)) {
+          prop = parseInt(prop, 10)
+          if (prop < 0) {
+            prop += target.length
+          }
+          let p = target[prop]
+          return p && p.value
+        }
+        throw new Error('`values` attribute only accepts indexed accessors')
+      }
+    })
+    this.properties = new Proxy(this.list__, {
+      get(target, prop) {
+        if (!isNaN(prop)) {
+          prop = parseInt(prop, 10)
+          if (prop < 0) {
+            prop += target.length
+          }
+          return target[prop]
+        }
+        throw new Error('`properties` attribute only accepts indexed accessors')
+      }
+    })
+    this.splice(0, 0, ...items)
+  },
+  dispose(...args) {
+    for (const p of this.list__) {
+      p.dispose(...args)
+    }
+    this.list__.length = 0
+  }
+})
+
+;(() => {
+  let _p = eYo.p6y.List_p
+
+  Object.defineProperties(_p, {
+    length: {
+      get () {
+        return this.list__.length
+      },
+      set (after) {
+        this.list__.length = after
+      }
+    }
+  })
+ 
+  /**
+   * Insert something at index i.
+   * @param {Integer} start - The index at which to start changing the list.
+   * @param {...} item - items to be inserted.
+   */
+  _p.splice = function (start, deleteCount,  ...items) {
+    if (start < 0) {
+      start = this.list__.length - start
+    }
+    let ans = this.list__.splice(start, deleteCount).map(p => p.value)
+    this.list__.splice(start, 0, ...(items.map(item => eYo.p6y.new(this, '', {
+      value: item
+    }))))
+    return ans
+  }
+  
+}) ()

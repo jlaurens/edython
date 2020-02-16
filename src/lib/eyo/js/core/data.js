@@ -132,9 +132,9 @@ eYo.c9r.model.dataHandler = (model, key) => {
  */
 eYo.data.makeDflt({
   init (brick, key, model) {
-    !brick && eYo.throw('Missing brick')
-    !key && eYo.throw('Missing key')
-    !model && eYo.throw('Missing model')
+    !brick && eYo.throw(`${this.eyo.name}: Missing brick`)
+    !key && eYo.throw(`${this.eyo.name}: Missing key in makeDflt`)
+    !model && eYo.throw(`${this.eyo.name}: Missing model`)
     this.reentrant_ = {}
     this.key_ = key
     this.model_ = model

@@ -13,9 +13,9 @@
 'use strict'
 
 /**
- * @name {eYo.pane.Graphic}
+ * @name {eYo.view.Graphic}
  * Class for a graphic environment.
- * @param {eYo.widget.Desk} owner Owner desk.
+ * @param {eYo.view.Desk} owner Owner desk.
  * @constructor
  */
-eYo.pane.makeC9r('Graphic')
+eYo.view.makeC9r('Graphic')

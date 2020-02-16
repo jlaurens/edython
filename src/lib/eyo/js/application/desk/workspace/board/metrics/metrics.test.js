@@ -136,7 +136,7 @@ describe('Basic metrics IN PROGRESS', function () {
     chai.assert(0 === r.width)
   })
   it ('desk: metrics scaling', function () {
-    var desk = new eYo.widget.Desk({})
+    var desk = new eYo.view.Desk({})
     chai.assert(desk !== eYo.app.Desk)
     var board = desk.board
     var before = board.metrics

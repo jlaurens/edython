@@ -614,6 +614,6 @@ eYo.do.readOnlyMixin = (object, props) => {
  * @param {String} str - the base string
  */
 eYo.do.toTitleCase = (str) => {
-  eYo.parameterAssert(eYo.isStr(str))
+  eYo.isStr(str) || eYo.throw(`eYo.do.toTitleCase: string expected but got ${str}`)
   return str.length ? str[0].toUpperCase()+str.substr(1) : str
 }

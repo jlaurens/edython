@@ -18,12 +18,12 @@ eYo.require('decorate')
 eYo.forwardDeclare('Flyout')
 eYo.forwardDeclare('app')
 eYo.forwardDeclare('Backer')
-eYo.forwardDeclare('widget.Scrollbar')
+eYo.forwardDeclare('view.Scrollbar')
 
 goog.forwardDeclare('goog.array');
 
 /**
- * @name{eYo.pane.Workspace}
+ * @name{eYo.view.Workspace}
  * Class for a workspace.
  * This is the structure above the boards but below the desk.
  * The workspace has 3+n boards:
@@ -32,7 +32,7 @@ goog.forwardDeclare('goog.array');
  * @param {eYo.app.Dflt|Object} owner Owner application.
  * @constructor
  */
-eYo.pane.makeC9r('Workspace', {
+eYo.view.makeC9r('Workspace', {
   properties: {
     /**
      * @type {?eYo.board.Main} 
@@ -62,16 +62,16 @@ eYo.pane.makeC9r('Workspace', {
     },
     /**
      * The workspace's trashCan (if any).
-     * @type {eYo.widget.TrashCan}
+     * @type {eYo.view.TrashCan}
      */
     trashCan: {
       value () {
-        return new eYo.widget.TrashCan(this)
+        return new eYo.view.TrashCan(this)
       },
     },
     zoomer: {
       value () {
-        return new eYo.pane.Zoomer(this)
+        return new eYo.view.Zoomer(this)
       },
     },
     /** @type {!eYo.geom.Rect} */
@@ -88,7 +88,7 @@ eYo.pane.makeC9r('Workspace', {
     },
     /**
      * The workspace's desk.
-     * @type {!eYo.widget.Desk}
+     * @type {!eYo.view.Desk}
      * @private
      */
     desk: {
@@ -129,7 +129,7 @@ eYo.pane.makeC9r('Workspace', {
  *    This gives the desk viewRect.
  * 2) Then the board dimensions.
  */
-eYo.pane.Workspace_p.updateMetrics = function() {
+eYo.view.Workspace_p.updateMetrics = function() {
   this.ui_driver.updateMetrics(this)
   this.board.updateMetrics()
   this.flyout.updateMetrics()
@@ -138,7 +138,7 @@ eYo.pane.Workspace_p.updateMetrics = function() {
 /**
  * Update the metrics and place the components accordingly.
  */
-eYo.pane.Workspace_p.layout = function() {
+eYo.view.Workspace_p.layout = function() {
   this.updateMetrics()
   this.place()
 }
@@ -146,11 +146,11 @@ eYo.pane.Workspace_p.layout = function() {
 /**
  * Place the boards.
  */
-eYo.pane.Workspace_p.place = function() {
+eYo.view.Workspace_p.place = function() {
   this.ui_driver.place(this)
   this.board.place()
   this.flyout.place()
-  var bottom = eYo.widget.SCROLLBAR_THICKNESS
+  var bottom = eYo.view.SCROLLBAR_THICKNESS
   this.trashCan.place(bottom)
   bottom = this.trashCan.top
   this.zoomer.place(bottom)
@@ -159,7 +159,7 @@ eYo.pane.Workspace_p.place = function() {
 /**
  * Make a list of all the delete areas for this workspace.
  */
-eYo.pane.Workspace_p.recordDeleteAreas = function() {
+eYo.view.Workspace_p.recordDeleteAreas = function() {
   if (this.trashCan) {
     this.deleteRectTrash_ = this.trashCan.getClientRect()
   } else {
@@ -176,6 +176,6 @@ eYo.pane.Workspace_p.recordDeleteAreas = function() {
  * Forwards to the backer.
  * @param{Boolean} redo  True when redoing, false otherwise
  */
-eYo.pane.Workspace_p.undo = function(redo) {
+eYo.view.Workspace_p.undo = function(redo) {
   this.backer_.undo(redo)
 }

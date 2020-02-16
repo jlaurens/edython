@@ -654,7 +654,7 @@ eYo.xml.stringToBrick = function (string, owner) {
 /**
  * Recover nodes from a possibly corrupted xml data.
  */
-eYo.xml.recover = function (board) {
+eYo.xml.Recover = function (board) {
   this.board = board
   this.recovered = []
   this.to_resit = []
@@ -665,7 +665,7 @@ eYo.xml.recover = function (board) {
  * Will execute the given action for each recovered brick.
  * @param {Function} [f]
  */
-eYo.xml.recover.prototype.whenRecovered = function (f) {
+eYo.xml.Recover.prototype.whenRecovered = function (f) {
   this.recovered_f = f
 }
 
@@ -675,7 +675,7 @@ eYo.xml.recover.prototype.whenRecovered = function (f) {
  * @param {Element} dom XML dom element.
  * @param {eYo.board} board  The board.
  */
-eYo.xml.recover.prototype.dontResit = function (dom) {
+eYo.xml.Recover.prototype.dontResit = function (dom) {
   var i = this.to_resit.indexOf(dom)
   if (i >= 0) {
     this.to_resit.splice(i, 1)
@@ -690,7 +690,7 @@ eYo.xml.recover.prototype.dontResit = function (dom) {
  * @param {*} [finally_f]
  * @param {*} [recovered_f]
  */
-eYo.xml.recover.prototype.resitWrap = function (dom, try_f, finally_f) {
+eYo.xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
   this.dontResit(dom)
   this.to_resit_stack.push(this.to_resit)
   this.to_resit = []
@@ -743,7 +743,7 @@ eYo.xml.recover.prototype.resitWrap = function (dom, try_f, finally_f) {
  * @param {eYo.board | eYo.brick.Dflt} owner either the board or a brick.
  * @return {!eYo.brick.Dflt} The root brick created.
  */
-eYo.xml.recover.prototype.domToBrick = function (dom, owner) {
+eYo.xml.Recover.prototype.domToBrick = function (dom, owner) {
   var board = owner.board
   if (!board) {
     board = owner

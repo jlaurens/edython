@@ -1,7 +1,7 @@
 # Edython's class management
 
-Various `makeClass` function are utilities to create class objects with 
-properties and methods given in an object.
+Various `makeC9r` function are utilities to create class objects with 
+properties and methods given in an model object.
 The idea is to use a rather straightforward syntax.
 
 ## Class extensions
@@ -14,6 +14,28 @@ subclasses.
 This extension knows the namespace owning the class.
 It also knows the unique string identifying the class: its name.
 The name is exactly the string as it appears in javascript to reference the class.
+
+## Infinite loop
+
+There is a possible infinite list :
+
+object[0] -> constructor[0] -> eyo[1] -> constructor[1] -> eyo[2] -> constructor[2] -> eyo[3] -> constructor[3] -> ...
+
+This list is turned into an infinite loop.
+
+* object[0] is not an instance of `eYo.c9r.Dlgt`.
+* eyo[1] is an instance of `eYo.c9r.Dlgt`
+* eyo[i] is an instance of the same unexposed class for i>1
+
+This means that constructor[2] does not depend on object[0]
+and that since eyo[3], all the delegates are the same.
+
+With the `eyo` property shortcut
+
+* `object.eyo` is an instance of `eYo.c9r.Dlgt`
+* `object.eyo.eyo` is an instance of an unexposed class
+* `object.eyo.eyo.eyo` is another instance of this unexposed class which is the same for all objects
+* `object.eyo.eyo.eyo.eyo...` is exactly the same instance
 
 ## Where the classes are stored,
 
@@ -130,9 +152,11 @@ base_template = {
     init () {},
     dispose () {},
   },
-  owned: IDENTIFIER || [IDENTIFIER] || Owned properties dictionary ,
-  computed: {
+  properties: {
     key: Function / getter || {
+      value: ?Function,
+      lazy: ?Function,
+      reset () {},
       get: ?Function,
       set: ?Function,
       get_: ?Function,
@@ -141,42 +165,13 @@ base_template = {
       set__: ?Function,
       validate () {},
       willChange () {},
+      atChange () {},
       didChange () {},
     }
   },
-  link: {
-    key: {
-      value: VALUE,
-      init () {},
-      get () {},
-      set () {},
-      get_ () {},
-      set_ () {},
-      validate () {},
-      willChange () {},
-      didChange () {},
-    }
+  aliases: {
+    source: destination
   }, 
-  cached: {
-    key: init Function || {
-      lazy: Boolean,
-      value: VALUE,
-      init () {},
-      validate () {},
-      willChange () {},
-      didChange () {},
-    }
-  },
-  cloned: {
-    key: init Function || {
-      lazy: Boolean, // NYI
-      value: VALUE,
-      init () {},
-      validate () {},
-      willChange () {},
-      didChange () {},
-    }
-  },
 }
 ```
 NB: there is a possible need for a consolidation layer.

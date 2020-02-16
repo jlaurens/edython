@@ -17,7 +17,7 @@ eYo.forwardDeclare('Search')
 // eYo.forwardDeclare('searchToolbar')
 
 /**
- * Svg driver for the search pane.
+ * Svg driver for the search view.
  */
 eYo.svg.makeDriverC9r('Search', {
     /**

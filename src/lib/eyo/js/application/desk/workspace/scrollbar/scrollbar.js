@@ -15,7 +15,7 @@ eYo.forwardDeclare('board')
 goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
 
-Object.defineProperties(eYo.widget, {
+Object.defineProperties(eYo.view, {
   /**
    * Width of vertical scrollbar or height of horizontal scrollbar in CSS pixels.
    * Scrollbars should be larger on touch devices.
@@ -26,18 +26,18 @@ Object.defineProperties(eYo.widget, {
 })
 
 /**
- * @type {eYo.widget.Scrollbar}
+ * @type {eYo.view.Scrollbar}
  * Class for a pure SVG scrollbar.
  * This technique offers a scrollbar that is guaranteed to work, but may not
  * look or behave like the system's scrollbars.
- * @param {eYo.board.Dflt|eYo.widget.Scroller} bs Board to bind the scrollbar to, or scroller. Owner of the receiver.
+ * @param {eYo.board.Dflt|eYo.view.Scroller} bs Board to bind the scrollbar to, or scroller. Owner of the receiver.
  * @param {boolean} horizontal True if horizontal, false if vertical.
  * @param {string=} opt_css_class A class to be applied to this scrollbar.
  * @constructor
  */
-eYo.widget.makeC9r('Scrollbar', {
+eYo.view.makeC9r('Scrollbar', {
   init(bs, horizontal, opt_css_class) {
-    if (bs instanceof eYo.widget.Scroller) {
+    if (bs instanceof eYo.view.Scroller) {
       this.scroller_ = bs  
     } else {
       this.scroller_ = null  
@@ -175,7 +175,7 @@ eYo.widget.makeC9r('Scrollbar', {
  * required dimensions.  If not provided, it will be fetched from the board.
  * @param{?Boolean} prepare  True when prepare only.
  */
-eYo.widget.Scrollbar_p.layout = function(hostMetrics, prepare) {
+eYo.view.Scrollbar_p.layout = function(hostMetrics, prepare) {
   if (this.horizontal_) {
     this.layoutHorizontal(hostMetrics, prepare)
   } else {
@@ -191,15 +191,15 @@ eYo.widget.Scrollbar_p.layout = function(hostMetrics, prepare) {
  *     required dimensions, possibly fetched from the host object.
  * @param {Boolean} [prepare]  True when only preparing.
  */
-eYo.widget.Scrollbar_p.layoutHorizontal = function(hostMetrics, prepare) {
+eYo.view.Scrollbar_p.layoutHorizontal = function(hostMetrics, prepare) {
   hostMetrics || (hostMetrics = this.board.metrics)
   var view = hostMetrics.view
   var content = hostMetrics.port
   var range = content.width - view.width
   if (prepare !== false) {
     this.visible = (view.width > this.scroller_
-    ? 2 * eYo.widget.SCROLLBAR_THICKNESS
-    : eYo.widget.SCROLLBAR_THICKNESS) && (this.scroller_ || range > 0)
+    ? 2 * eYo.view.SCROLLBAR_THICKNESS
+    : eYo.view.SCROLLBAR_THICKNESS) && (this.scroller_ || range > 0)
     if (prepare) {
       return
     }
@@ -213,8 +213,8 @@ eYo.widget.Scrollbar_p.layoutHorizontal = function(hostMetrics, prepare) {
     this.oldMetrics_ = hostMetrics
     var r = this.viewRect_
     r.left = view.left
-    r.right = this.scroller_ && this.scroller_.vScroll.visible ? view.right - eYo.widget.SCROLLBAR_THICKNESS : view.right
-    r.top = (r.bottom = view.bottom) - eYo.widget.SCROLLBAR_THICKNESS
+    r.right = this.scroller_ && this.scroller_.vScroll.visible ? view.right - eYo.view.SCROLLBAR_THICKNESS : view.right
+    r.top = (r.bottom = view.bottom) - eYo.view.SCROLLBAR_THICKNESS
     r.xyInset(0.5)
     // layout the content
     this.handleLength_ = view.width / content.width * r.width
@@ -238,15 +238,15 @@ eYo.widget.Scrollbar_p.layoutHorizontal = function(hostMetrics, prepare) {
  *     required dimensions, possibly fetched from the host object.
  * @param {Boolean} [prepare]  True when preparing.
  */
-eYo.widget.Scrollbar_p.layoutVertical = function(hostMetrics, prepare) {
+eYo.view.Scrollbar_p.layoutVertical = function(hostMetrics, prepare) {
   hostMetrics || (hostMetrics = this.board.metrics)
   var view = hostMetrics.view
   var content = hostMetrics.port
   var range = content.height - view.height
   if (prepare !== false) {
     this.visible = (view.height > (this.scroller_
-    ? 2 * eYo.widget.SCROLLBAR_THICKNESS
-    : eYo.widget.SCROLLBAR_THICKNESS)) && (!!this.scroller_ || range > 0)
+    ? 2 * eYo.view.SCROLLBAR_THICKNESS
+    : eYo.view.SCROLLBAR_THICKNESS)) && (!!this.scroller_ || range > 0)
     if (prepare) {
       return
     }
@@ -261,9 +261,9 @@ eYo.widget.Scrollbar_p.layoutVertical = function(hostMetrics, prepare) {
     var r = this.viewRect_
     r.top = view.top
     r.bottom = this.scroller_ && this.scroller_.hScroll.visible
-    ? view.bottom - eYo.widget.SCROLLBAR_THICKNESS
+    ? view.bottom - eYo.view.SCROLLBAR_THICKNESS
     : view.bottom
-    r.left = (r.right = view.right) - eYo.widget.SCROLLBAR_THICKNESS
+    r.left = (r.right = view.right) - eYo.view.SCROLLBAR_THICKNESS
     r.xyInset(0.5)
     // layout the content
     this.handleLength_ = view.height / content.height * r.height
@@ -286,7 +286,7 @@ eYo.widget.Scrollbar_p.layoutVertical = function(hostMetrics, prepare) {
  * We cannot rely on the containing board being hidden to hide us
  * because it is not necessarily our parent in the DOM.
  */
-eYo.widget.Scrollbar_p.updateDisplay_ = function() {
+eYo.view.Scrollbar_p.updateDisplay_ = function() {
   var show = true
   // Check whether our parent/container is visible.
   show = this.containerVisible_ && this.visible_
@@ -297,7 +297,7 @@ eYo.widget.Scrollbar_p.updateDisplay_ = function() {
  * Forwards to the driver.
  * @private
  */
-eYo.widget.Scrollbar_p.cleanUp_ = function() {
+eYo.view.Scrollbar_p.cleanUp_ = function() {
   this.ui_driver.cleanUp(this)
 }
 
@@ -306,7 +306,7 @@ eYo.widget.Scrollbar_p.cleanUp_ = function() {
  * wrap up lose ends associated with the scrollbar.
  * @private
  */
-eYo.widget.Scrollbar_p.place = function() {
+eYo.view.Scrollbar_p.place = function() {
   this.ui_driver.place(this)
 }
 

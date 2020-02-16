@@ -19,7 +19,7 @@ eYo.require('decorate')
  */
 eYo.o3d.makeNS(eYo, 'board')
 
-eYo.forwardDeclare('pane.Workspace')
+eYo.forwardDeclare('view.Workspace')
 eYo.forwardDeclare('brick.List')
 eYo.forwardDeclare('geom.Metrics')
 
@@ -34,7 +34,7 @@ goog.forwardDeclare('goog.math')
  * The flyout contains the flyout board.
  * There is also a board used to drag bricks around.
  * That makes at least 4 different boards.
- * @param {eYo.widget.Desk|eYo.Workspace|eYo.section.Dflt} owner.
+ * @param {eYo.view.Desk|eYo.Workspace|eYo.section.Dflt} owner.
  * @constructor
  */
 eYo.board.makeDflt({
@@ -80,7 +80,7 @@ eYo.board.makeDflt({
       },
     },
     /**
-     * @type {eYo.widget.Scrollbar | eYo.widget.Scroller}
+     * @type {eYo.view.Scrollbar | eYo.view.Scroller}
      * @readonly
      */
     scrollbar: {},
@@ -268,7 +268,7 @@ eYo.board.makeDflt({
 
 /**
  * Class for a main board.  This is a data structure that contains bricks, has event, undo/redo management...
- * @param {eYo.widget.Desk} owner The main board belongs to a workspace. We allways have `this === owner.board`, which means that each kind of owner may have only one board.
+ * @param {eYo.view.Desk} owner The main board belongs to a workspace. We allways have `this === owner.board`, which means that each kind of owner may have only one board.
  * @constructor
  */
 eYo.board.makeC9r('Main', {
@@ -420,7 +420,7 @@ eYo.board.makeC9r('Main', {
               false /*this.horizontalLayout_*/,
               false, 'eyo-flyout-scrollbar'
             )
-          : new eYo.widget.Scroller(this)
+          : new eYo.view.Scroller(this)
       }
     },
   }
@@ -648,13 +648,13 @@ eYo.board.Dflt_p.resizePort = function() {
   // Add room for the whole visible rectangle.
   var view = metrics_.view
   // remove the room for both scrollers
-  var withHScroller = view.height > eYo.widget.SCROLLBAR_THICKNESS
+  var withHScroller = view.height > eYo.view.SCROLLBAR_THICKNESS
   if (withHScroller) {
-    view.size_.height -= eYo.widget.SCROLLBAR_THICKNESS
+    view.size_.height -= eYo.view.SCROLLBAR_THICKNESS
   }
-  var withVScroller = view.width > eYo.widget.SCROLLBAR_THICKNESS
+  var withVScroller = view.width > eYo.view.SCROLLBAR_THICKNESS
   if (withVScroller) {
-    view.size_.width -= eYo.widget.SCROLLBAR_THICKNESS
+    view.size_.width -= eYo.view.SCROLLBAR_THICKNESS
   }
   view.unscale(metrics_.scale)
   view.origin_.set()
@@ -671,10 +671,10 @@ eYo.board.Dflt_p.resizePort = function() {
   }
   // then add the scrollers
   if (withHScroller) {
-    port.height += eYo.widget.SCROLLBAR_THICKNESS / metrics_.scale
+    port.height += eYo.view.SCROLLBAR_THICKNESS / metrics_.scale
   }
   if (withVScroller) {
-    port.width += eYo.widget.SCROLLBAR_THICKNESS / metrics_.scale
+    port.width += eYo.view.SCROLLBAR_THICKNESS / metrics_.scale
   }
   metrics_.port = port
   console.error('port: ', port.description)
@@ -1230,7 +1230,7 @@ eYo.board.Dflt_p.fromPixelUnit = function(xy) {
    */
   eYo.board.Dflt_p.getRecover = function () {
     eYo.assert(!this.recover__, 'Collision: this.recover_')
-    this.recover__ = new eYo.xml.recover(this)
+    this.recover__ = new eYo.xml.Recover(this)
     this.getRecover = get
     return this.recover__
   }
@@ -1461,7 +1461,7 @@ eYo.board.Dflt_p.eventDidFireChange = function(event) {
   }
 }
 
-eYo.o3d.Dflt.eyo.modelDeclare({
+eYo.o3d.Dflt.eyo.initWithModel({
   properties: {
     board: {
       get () {

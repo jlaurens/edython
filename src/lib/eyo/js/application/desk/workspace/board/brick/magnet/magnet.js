@@ -488,7 +488,7 @@ eYo.magnet.makeDflt({
 })
 
 // computed public properties
-eYo.magnet.Dflt.eyo.modelDeclare({
+eYo.magnet.Dflt.eyo.initWithModel({
   properties: {
     /**
     * Horizontal position in the brick in text unit.

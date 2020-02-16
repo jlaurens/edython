@@ -395,7 +395,7 @@ eYo.dom.gobbleEvent = e => {
 }
 
 /**
- * Is this event targeting a text input widget?
+ * Is this event targeting a text input view?
  * @param {Event} e An event.
  * @return {boolean} True if text input.
  */
@@ -528,7 +528,7 @@ eYo.dom.BindDocumentEvents = (() => {
 eYo.dom.on_keydown = e => {
   if (eYo.app.Board.Options.readOnly || eYo.dom.isTargetInput(e)) {
     // No key actions on readonly boards.
-    // When focused on an HTML text input widget, don't trap any keys.
+    // When focused on an HTML text input view, don't trap any keys.
     return
   }
   // var deleteBrick = false;

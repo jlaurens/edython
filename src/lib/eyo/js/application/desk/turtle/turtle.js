@@ -13,9 +13,9 @@
 'use strict'
 
 /**
- * @name {eYo.pane.Turtle}
+ * @name {eYo.view.Turtle}
  * Class for a turtle graphic environment.
- * @param {eYo.widget.Desk} owner Owner desk.
+ * @param {eYo.view.Desk} owner Owner desk.
  * @constructor
  */
-eYo.pane.makeC9r('Turtle')
+eYo.view.makeC9r('Turtle')

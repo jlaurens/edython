@@ -21,7 +21,7 @@ eYo.forwardDeclare('navigate')
 eYo.forwardDeclare('menuItem')
 eYo.forwardDeclare('separator')
 
-eYo.keyHandler.makeC9r('Menu')
+eYo.KHandler.makeC9r('Menu')
 
 /**
  * Attempts to handle a keyboard event; returns true if the event was handled,
@@ -32,9 +32,9 @@ eYo.keyHandler.makeC9r('Menu')
  * @return {boolean} Whether the event was handled by the container (or one of
  *     its children).
  */
-eYo.keyHandler.Menu_p.handleKeyEventInternal = function (e) {
+eYo.KHandler.Menu_p.handleKeyEventInternal = function (e) {
   // Give the highlighted control the chance to handle the key event.
-  if (eYo.keyHandler.Menu.eyo.C9r_s.handleKeyEventInternal.call(this, e)) {
+  if (eYo.KHandler.Menu.eyo.C9r_s.handleKeyEventInternal.call(this, e)) {
     return true
   }
   return this.handleMenuKeyEvent(e)
@@ -45,7 +45,7 @@ eYo.keyHandler.Menu_p.handleKeyEventInternal = function (e) {
  * For edython.
  * @param {constructor} constructor is either a constructor or the name of a constructor.
  */
-eYo.keyHandler = (() => {
+eYo.KHandler = (() => {
   var me = {
     MAX_CHILD_COUNT: 20
   }
@@ -53,7 +53,7 @@ eYo.keyHandler = (() => {
   var shortcuts_ = [] // an array of {key: ..., model: ...} objects
   var current_ = []
   var target_
-  var menu_ = new eYo.keyHandler.Menu(/* eYo.NA, ContextMenuRenderer */)
+  var menu_ = new eYo.KHandler.Menu(/* eYo.NA, ContextMenuRenderer */)
   // menu_.eyo = me
   /**
  * Setup the shared key handler.
@@ -534,7 +534,7 @@ eYo.keyHandler = (() => {
  * @param {*} sep
  * @return an array of 2 elements, what is before `sep` and what is after
  */
-eYo.keyHandler.Split = function (key, sep) {
+eYo.KHandler.Split = function (key, sep) {
   var i = key.indexOf(sep)
   if (i < 0) {
     return eYo.NA
@@ -546,7 +546,7 @@ eYo.keyHandler.Split = function (key, sep) {
  * Turn the selected brick into a call brick or insert a call brick.
  * @param {*} model
  */
-eYo.keyHandler.makeCall = function (model) {
+eYo.KHandler.makeCall = function (model) {
   this.handleModel(model)
 }
 
@@ -554,11 +554,11 @@ eYo.keyHandler.makeCall = function (model) {
  * Turn the selected brick into a slicing, or insert a slicing
  * @param {*} model
  */
-eYo.keyHandler.makeSlicing = function (model) {
+eYo.KHandler.makeSlicing = function (model) {
   this.handleModel(model)
 }
 
-eYo.keyHandler.register('if', eYo.t3.stmt.if_part)
+eYo.KHandler.register('if', eYo.t3.stmt.if_part)
 
 for (let [K, V] of Object.entries({
     'start': eYo.t3.stmt.start_stmt,
@@ -624,7 +624,7 @@ for (let [K, V] of Object.entries({
       }
     }
 })) {
-  eYo.keyHandler.register(K, V)
+  eYo.KHandler.register(K, V)
 }
 
 ;(() => {
@@ -653,7 +653,7 @@ for (let [K, V] of Object.entries({
       return F(key, '~')
     }
   })) {
-    eYo.keyHandler.register(K + '…', V)
+    eYo.KHandler.register(K + '…', V)
   }
   console.warn('Implement support for `key` in range above')
   console.warn('Problem when there can be both a statement and an expression for the same shortcut')
@@ -716,25 +716,25 @@ for (let [K, V] of Object.entries({
   'or': eYo.t3.expr.or_test,
   'and': eYo.t3.expr.and_test
 })) {
-  eYo.keyHandler.register(`… ${K} …`, V)
+  eYo.KHandler.register(`… ${K} …`, V)
 }
 
 ;['True', 'False', 'None', '...'].forEach(K => {
-  eYo.keyHandler.register(K, {
+  eYo.KHandler.register(K, {
     type: eYo.t3.expr.builtin__object,
     data: K
   })
 })
 
 ;['is', 'is not', 'in', 'not in'].forEach(K => {
-  eYo.keyHandler.register(`… ${K} …`, {
+  eYo.KHandler.register(`… ${K} …`, {
     type: eYo.t3.expr.object_comparison,
     operator_p: K
   })
 })
 
 ;['<', '>', '==', '>=', '<=', '!='].forEach(K => {
-  eYo.keyHandler.register(`… ${K} …`, {
+  eYo.KHandler.register(`… ${K} …`, {
     type: eYo.t3.expr.number_comparison,
     operator_p: K
   })
@@ -856,14 +856,14 @@ for (let [K, V] of Object.entries({
     dotted_p: 1
   },
   'f(…)': {
-    action: eYo.keyHandler.makeCall,
+    action: eYo.KHandler.makeCall,
     model: {
       type: eYo.t3.expr.call_expr,
       name_p: ''
     }
   },
   'x[…]': {
-    action: eYo.keyHandler.makeSlicing,
+    action: eYo.KHandler.makeSlicing,
     model: {
       type: eYo.t3.expr.slicing,
       parent: true
@@ -891,18 +891,18 @@ for (let [K, V] of Object.entries({
     parent: true
   }
 })) {
-  eYo.keyHandler.register(K, V)
+  eYo.KHandler.register(K, V)
 }
 
 ;['+=', '-=', '*=', '@=', '/=', '//=', '%=', '**=', '>>=', '<<=', '&=', '^=', '|='].forEach(K => {
-  eYo.keyHandler.register(`… ${K} …`, {
+  eYo.KHandler.register(`… ${K} …`, {
     type: eYo.t3.stmt.augmented_assignment_stmt,
     operator: K
   })
 })
 // cmath
 ;['real', 'imag'].forEach(K => {
-  eYo.keyHandler.register(`… ${K} …`, {
+  eYo.KHandler.register(`… ${K} …`, {
     type: eYo.t3.expr.call_expr,
     name_p: K
   })

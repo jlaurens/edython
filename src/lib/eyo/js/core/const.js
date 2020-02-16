@@ -46,9 +46,11 @@ eYo.Const.Field = {
   NCSTR: 'NCSTR'
 }
 
-eYo.provide('key')
-
-eYo.key = {}
+/**
+ * @name{eYo.key}
+ * @namespace
+ */
+eYo.makeNS('key')
 
 eYo.do.readOnlyMixin(eYo.key, {
   EYO: 'eyo',

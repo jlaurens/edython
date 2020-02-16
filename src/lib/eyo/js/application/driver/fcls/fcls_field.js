@@ -74,7 +74,7 @@ eYo.fcls.Field.Dflt_p.displayedSet = eYo.do.nothing
 eYo.fcls.Field.Dflt_p.displayedUpdate = eYo.do.nothing
 
 /**
- * Callback at widget disposal.
+ * Callback at view disposal.
  * Forwards to the driver.
  * @param {*} field
  */

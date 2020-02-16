@@ -25,7 +25,7 @@ eYo.forwardDeclare('css')
 
 eYo.forwardDeclare('focus')
 eYo.forwardDeclare('event.Motion')
-eYo.forwardDeclare('widget.Desk')
+eYo.forwardDeclare('view.Desk')
 eYo.forwardDeclare('driver')
 eYo.forwardDeclare('Audio')
 
@@ -168,7 +168,7 @@ eYo.app.parseZoom_ = function(options) {
  * @property {?eYo.event.Motion} motion
  * @readonly
  * The desk, if any.
- * @property {eYo.widget.Desk} desk
+ * @property {eYo.view.Desk} desk
  * @readonly
  * The ui drivers manager.
  * @property {eYo.driver.Mngr} ui_driver_mngr
@@ -193,7 +193,7 @@ eYo.app.makeDflt({
       return new eYo.event.Motion(this)
     },
     desk () {
-      return new eYo.widget.Desk(this)
+      return new eYo.view.Desk(this)
     },
     audio () {
       return new eYo.Audio(this)
@@ -203,14 +203,14 @@ eYo.app.makeDflt({
     },
     clipboard: {},
     ui_driver_mngr: {
-      init () {
+      value () {
         let UI = this.options.UI || 'fcls'
         return new eYo[UI].Mngr(this)
       },
       willChange(before) {
         before && this.disposeUI()
       },
-      didChange(before, after) {
+      didChange(after) {
         after && this.initUI()
       }
     },
@@ -239,8 +239,7 @@ eYo.app.makeDflt({
  * Paste a brick from the local clipboard.
  * @private
  */
-eYo.app.Dflt_p.paste = () => {
-}
+eYo.app.Dflt_p.paste = eYo.do.nothing
 
 /**
  * Delete this brick and the next ones if requested.
@@ -280,7 +279,7 @@ eYo.app.Dflt_p.deleteBrick = function (brick, deep) {
 
 /**
  * Copy a brick onto the local clipboard.
- * @param {eYo.brick.Dflt} brick Brick to be copied.
+ * @param {eYo.brick.Dflt} brick - Brick to be copied.
  * @private
  */
 eYo.app.Dflt_p.copyBrick = function (brick, deep) {

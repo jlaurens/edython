@@ -16,7 +16,7 @@ eYo.require('dom')
 eYo.forwardDeclare('Search')
 
 /**
- * Dom driver for the search pane.
+ * Dom driver for the search view.
  */
 eYo.dom.makeDriverC9r('Search', {
     /**

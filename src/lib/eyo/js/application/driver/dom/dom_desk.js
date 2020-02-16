@@ -17,7 +17,7 @@
 eYo.dom.makeDriverC9r('Desk', {
   /**
    * Initialize the desk dom ressources.
-   * @param {eYo.widget.Desk} desk
+   * @param {eYo.view.Desk} desk
    * @param {Function} [f]
    * @return {!Element} The desk's dom repository.
    */
@@ -52,7 +52,7 @@ eYo.dom.makeDriverC9r('Desk', {
   },
   /**
    * Dispose of the desk dom resources.
-   * @param {eYo.widget.Desk} desk
+   * @param {eYo.view.Desk} desk
    */
   disposeUI (desk) {
     var dom = desk.dom
@@ -63,7 +63,7 @@ eYo.dom.makeDriverC9r('Desk', {
 
 /**
  * Place the desk div.
- * @param {eYo.widget.Desk} desk
+ * @param {eYo.view.Desk} desk
  */
 eYo.dom.Desk_p.place = function(desk) {
 }

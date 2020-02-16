@@ -300,7 +300,7 @@ eYo.focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
   }
 }
 
-eYo.o3d.Dflt.eyo.modelDeclare({
+eYo.o3d.Dflt.eyo.initWithModel({
   properties: {
     app: {
       get () {
@@ -320,7 +320,7 @@ eYo.o3d.Dflt.eyo.modelDeclare({
   },
 })
 
-eYo.brick.Dflt.eyo.modelDeclare({
+eYo.brick.Dflt.eyo.initWithModel({
   properties: {
     hasFocus: {
       get() {
@@ -333,7 +333,7 @@ eYo.brick.Dflt.eyo.modelDeclare({
   }
 })
 
-eYo.magnet.Dflt.eyo.modelDeclare({
+eYo.magnet.Dflt.eyo.initWithModel({
   properties: {
     hasFocus: {
       get() {
@@ -346,7 +346,7 @@ eYo.magnet.Dflt.eyo.modelDeclare({
   },
 })
 
-eYo.field.Dflt.eyo.modelDeclare({
+eYo.field.Dflt.eyo.initWithModel({
   properties: {
     hasFocus: {
       get() {
@@ -359,7 +359,7 @@ eYo.field.Dflt.eyo.modelDeclare({
   }
 })
 
-eYo.pane.Workspace.eyo.modelDeclare({
+eYo.view.Workspace.eyo.initWithModel({
   properties: {
     /**
      * The main focus manager.
