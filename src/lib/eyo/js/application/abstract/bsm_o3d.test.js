@@ -62,7 +62,7 @@ describe('BSM Owned', function () {
   it ('BSM Owned: cascade', function () {
     var ONR = function () {}
     var onr0 = new ONR()
-    eYo.makeC9r(NS, 'A', eYo.bsm_o3d.Dflt, {
+    eYo.bsm_o3d.makeC9r(NS, 'A', {
       properties: {
         foo () {}
       }
@@ -92,8 +92,10 @@ describe ('Tests: BSM Owned', function () {
   NS.Magnet = eYo.magnet
   eYo.brick = eYo.slot.Dflt = eYo.magnet = eYo.NA
   var ff = k => {
-    eYo.makeC9r(k, {
-      properties: ['foo']
+    eYo.bsm_o3d.makeC9r(k, {
+      properties: {
+        foo: eYo.NA,
+      }
     })
     ff('brick')
     ff('magnet')

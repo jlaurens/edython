@@ -177,7 +177,7 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
   }
 }
 /**
- * @name{eYo.makeC9r}
+ * @name{eYo.c9r.makeC9r}
  * Make a constructor with an 'eyo__' property.
  * Caveat, constructors must have the same arguments.
  * Use a key->value design if you do not want that.
@@ -727,7 +727,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
  * @param {Function} C9r - the constructor associate to the delegate
  * @param {Object} model - the model object associate to the delegate, used for extension.
  */
-eYo._p.makeDlgt = (ns, key, C9r, model) => {
+eYo._p.makeDlgt = function (ns, key, C9r, model) {
   if (eYo.isStr(ns)) {
     model && eYo.throw(`Unexpected model (1): ${model}`)
     model = C9r

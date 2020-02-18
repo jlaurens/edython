@@ -85,7 +85,7 @@ eYo.driver.Mngr.eyo_p.makeDriverC9r = function (key, Super, driverModel) {
   if (!eYo.isSubclass(Super, ns.Dflt)) {
     Super = ns.Dflt
   }
-  var Driver = eYo.makeC9r(ns, key, Super, driverModel)
+  var Driver = eYo.c9r.makeC9r(ns, key, Super, driverModel)
   var x = Driver.eyo.name.split('.') // x = ['eYo', 'Dom', 'Brick']
   x.shift()
   x = x.join('.') // 'Dom.Brick'

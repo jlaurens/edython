@@ -8,7 +8,7 @@ describe ('Tests: Object', function () {
     chai.assert(O.eyo instanceof eYo.o4t.Dflt.eyo.constructor)
     let o = new O()
     chai.assert(o)
-    let OO = eYo.makeC9r(eYo.NULL_NS, 'Bar', O, {})
+    let OO = eYo.c9r.makeC9r(eYo.NULL_NS, 'Bar', O, {})
     chai.assert(OO.eyo instanceof eYo.o4t.Dflt.eyo.constructor)
     let oo = new OO()
     chai.assert(oo)
