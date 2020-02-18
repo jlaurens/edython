@@ -518,18 +518,20 @@ describe ('Tests: Property', function () {
     chai.assert(p.value === 123)
     chai.assert(flag === 421)
   })
-  it('P6y: lazy', function () {
+  it('P6y: lazy2', function () {
     var flag = 123
     let onr = {}
     var p = eYo.p6y.new(onr, 'foo', {
       lazy () {
-        flag = 421
+        this.called = flag = 421
         return 123
       }
     })
     chai.assert(flag !== 421)
+    chai.assert(onr.called !== 421)
     chai.assert(p.value === 123)
     chai.assert(flag === 421)
+    chai.assert(onr.called === 421)
     flag = 0
     var p = eYo.p6y.new(onr, 'foo', {
       lazy: 421,

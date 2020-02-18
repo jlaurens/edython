@@ -11,7 +11,6 @@
  */
 'use strict'
 
-eYo.require('svg')
 eYo.require('dom.Brick')
 
 eYo.forwardDeclare('brick')
@@ -133,11 +132,11 @@ eYo.svg.makeDriverC9r('Brick', {
         }, svg.groupPlay_)
         svg.pathPlayContour_.setAttribute(
           'd',
-          eYo.c9r.shapeDefinitionForPlayContour({x: 0, y: 0})
+          eYo.shape.definitionForPlayContour({x: 0, y: 0})
         )
         svg.pathPlayIcon_.setAttribute(
           'd',
-          eYo.c9r.shapeDefinitionForPlayIcon({x: 0, y: 0})
+          eYo.shape.definitionForPlayIcon({x: 0, y: 0})
         )
         dom.bound.mousedown = eYo.dom.BindEvent(
           svg.pathPlayIcon_,
@@ -271,7 +270,7 @@ eYo.svg.Brick_p.hasFocus = function (brick) {
  * @private
  */
 eYo.svg.Brick_p.pathSelectDef_ = function (brick) {
-  return eYo.c9r.shapeDefinitionWithBrick(brick, {dido: true})
+  return eYo.shape.definitionWithBrick(brick, {dido: true})
 }
 
 /**
@@ -280,7 +279,7 @@ eYo.svg.Brick_p.pathSelectDef_ = function (brick) {
  * @private
  */
 eYo.svg.Brick_p.pathDef_ = function (brick) {
-  return eYo.c9r.shapeDefinitionWithBrick(brick)
+  return eYo.shape.definitionWithBrick(brick)
 }
 
 /**
@@ -350,7 +349,7 @@ eYo.svg.Brick_p.pathCollapsedDef_ = eYo.svg.Brick_p.pathDef_
  */
 eYo.svg.Brick_p.pathMagnetDef_ = function (brick) {
   return eYo.focus.magnet
-  ? eYo.c9r.shapeDefinitionWithMagnet(eYo.focus.magnet, {hilight: true})
+  ? eYo.shape.definitionWithMagnet(eYo.focus.magnet, {hilight: true})
   : ''
 }
 
@@ -360,7 +359,7 @@ eYo.svg.Brick_p.pathMagnetDef_ = function (brick) {
  * @private
  */
 eYo.svg.Brick_p.pathBBoxDef_ = function (brick) {
-  return eYo.c9r.shapeDefinitionWithBrick(brick, {bbox: true})
+  return eYo.shape.definitionWithBrick(brick, {bbox: true})
 }
 
 /**

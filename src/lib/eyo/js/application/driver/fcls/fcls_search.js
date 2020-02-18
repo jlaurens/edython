@@ -11,10 +11,6 @@
  */
 'use strict'
 
-eYo.require('fcls')
-
-eYo.provide('fcls.Search')
-
 eYo.forwardDeclare('Search')
 
 /**

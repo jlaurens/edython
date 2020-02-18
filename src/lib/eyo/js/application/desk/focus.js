@@ -300,77 +300,62 @@ eYo.focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
   }
 }
 
-eYo.o3d.Dflt.eyo.initWithModel({
-  properties: {
-    app: {
-      get () {
-        this.owner.app
-      },
+eYo.o3d.Dflt.eyo.extendsProperties({
+  focus_main: {
+    get () {
+      this.app.focus_main
     },
-    focus_main: {
-      get () {
-        this.app.focus_main
-      },
-    },
-    focus_mgr: {
-      get () {
-        this.owner.focus_mgr
-      },
+  },
+  focus_mgr: {
+    get () {
+      this.owner.focus_mgr
     },
   },
 })
 
-eYo.brick.Dflt.eyo.initWithModel({
-  properties: {
-    hasFocus: {
-      get() {
-        return this === this.focus_mngr.brick
-      },
-      set (after) {
-        after ? this.focusOn() : this.focusOff()
-      }
+eYo.brick.Dflt.eyo.extendsProperties({
+  hasFocus: {
+    get() {
+      return this === this.focus_mngr.brick
     },
-  }
+    set (after) {
+      after ? this.focusOn() : this.focusOff()
+    }
+  },
 })
 
-eYo.magnet.Dflt.eyo.initWithModel({
-  properties: {
-    hasFocus: {
-      get() {
-        return this === this.focus_mngr.magnet
-      },
-      set (after) {
-        after ? this.focusOn() : this.focusOff()
-      }
+eYo.magnet.Dflt.eyo.extendsProperties({
+  hasFocus: {
+    get() {
+      return this === this.focus_mngr.magnet
+    },
+    set (after) {
+      after ? this.focusOn() : this.focusOff()
+    }
+  },
+})
+
+eYo.field.Dflt.eyo.extendsProperties({
+  hasFocus: {
+    get() {
+      return this === this.focus_mngr.field
+    },
+    set (after) {
+      after ? this.focusOn() : this.focusOff()
     },
   },
 })
 
-eYo.field.Dflt.eyo.initWithModel({
-  properties: {
-    hasFocus: {
-      get() {
-        return this === this.focus_mngr.field
-      },
-      set (after) {
-        after ? this.focusOn() : this.focusOff()
-      },
+eYo.view.Workspace.eyo.extendsProperties({
+  /**
+   * The main focus manager.
+   * @type {?eYo.focus.Main} 
+   */
+  focus_main: {
+    value () {
+      return new eYo.focus.Main(this)
     },
-  }
-})
-
-eYo.view.Workspace.eyo.initWithModel({
-  properties: {
-    /**
-     * The main focus manager.
-     * @type {?eYo.focus.Main} 
-     */
-    focus_main: {
-      value () {
-        return new eYo.focus.Main(this)
-      },
-    },
-  }
+  },
 })
 
 /**

@@ -100,7 +100,7 @@ eYo.dnd.makeC9r('Mngr', {
 })
 
 eYo.dnd.Mngr_p.ownedForEach = function (f) {
-  eYo.dnd.Mngr_s.c9r.ownedForEach.call(this, f)
+  eYo.dnd.Mngr_s.ownedForEach.call(this, f)
   if (!this.draggers_) {
     console.error('BREAK HERE!!!')
   }

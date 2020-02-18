@@ -203,7 +203,7 @@ eYo.app.makeDflt({
     },
     clipboard: {},
     ui_driver_mngr: {
-      value () {
+      lazy () {
         let UI = this.options.UI || 'fcls'
         return new eYo[UI].Mngr(this)
       },
@@ -343,3 +343,33 @@ eYo.app.Dflt_p.doFocus = function() {
  * Close tooltips, context menus, dropdown selections, etc.
  */
 eYo.app.Dflt_p.hideChaff = eYo.do.nothing
+
+eYo.o3d.Dflt.eyo.extendsProperties({
+  /**
+   * The root application
+   * @type {eYo.app}
+   */
+  app: {
+    lazy () {
+      let o = this.owner
+      return o && o.app
+    },
+    reset (resetter) {
+      this.ownedForEach(x => {
+        x.app_p && x.app_p.reset()
+      })
+      resetter()
+    },
+  },
+})
+
+;(() => {
+  let old = eYo.o3d.Dflt_p.ownerDidChange
+  eYo.o3d.Dflt_p.ownerDidChange = function (before, after)
+  /** @suppress {globalThis} */ {
+    old && old.call(this, before, after)
+    if (before) {
+      this.app_p.reset()
+    }
+  }
+}) ()

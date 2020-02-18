@@ -222,3 +222,49 @@ eYo.driver._p.makeForwarder = (pttp, key) => {
     return this.driver[key](this, ...args)
   }
 }
+
+eYo.view.Dflt.eyo.extendsProperties({
+  /**
+   * The driver manager shared by all the instances in the app.
+   * @type {eYo.driver.Mngr}
+   */
+  ui_driver_mngr: {
+    get () {
+      let a = this.app
+      return a && a.ui_driver_mngr
+    },
+  },
+  /**
+   * The driver.
+   * @type {eYo.driver.Dflt}
+   */
+  ui_driver: {
+    lazy () {
+      var mngr = this.ui_driver_mngr
+      return mngr && mngr.driver(this)
+    },
+    reset (builtin) {
+      this.ownedForEach(x => {
+        let p = x.ui_driver_p
+        p && p.reset()
+      })
+      builtin()
+    }
+  },
+})
+
+/**
+ * Make the ui.
+ * Default implementation forwards to the driver.
+ */
+eYo.view.Dflt_p.doInitUI = function (...args) {
+  this.ui_driver.doInitUI(this, ...args)
+}
+
+/**
+ * Dispose of the ui.
+ * Default implementation forwards to the driver.
+ */
+eYo.view.Dflt_p.doDisposeUI = function (...args) {
+  this.ui_driver.doDisposeUI(this, ...args)
+}

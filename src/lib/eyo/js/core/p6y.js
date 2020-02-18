@@ -75,7 +75,9 @@ eYo.p6y._p.handle_value = function (prototype, key, model) {
   let value_m = model.value
   if (!eYo.isNA(value_m)) {
     eYo.isNA(model.lazy) || eYo.throw(`Bad model (${key}): unexpected lazy`)
-    prototype.start = eYo.isF(value_m) ? value_m : function () {
+    prototype.start = eYo.isF(value_m) ? function() {
+      return value_m.call(this.owner)
+    } : function () {
       return value_m
     }
     model._starters.push(object => {
@@ -285,6 +287,7 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
     if (computed) {
       eYo.isNA(model.reset) || eYo.throw(`Bad model (${key}): unexpected reset`)
       prototype.setStored = prototype.setValue = eYo.c9r.noSetter(`Read only key ${key}`)
+      prototype.reset = eYo.do.nothing
     }
   }
   if (computed) {
@@ -296,7 +299,9 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
       model._starters.push(object => {
         object.getValue = Object.getPrototypeOf(object).__getLazyValue
       })
-      prototype.start = eYo.isF(lazy_m) ? lazy_m : function () {
+      prototype.start = eYo.isF(lazy_m) ? function () {
+        return lazy_m.call(this.owner)
+      } : function () {
         return lazy_m
       }
     }

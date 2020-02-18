@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('fcls')
-
 eYo.forwardDeclare('view.TrashCan')
 
 /**

@@ -11,10 +11,6 @@
  */
 'use strict'
 
-eYo.require('fcls')
-
-eYo.provide('fcls.Slot')
-
 eYo.forwardDeclare('slot')
 
 /**

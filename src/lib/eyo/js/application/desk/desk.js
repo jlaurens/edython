@@ -150,3 +150,16 @@ eYo.view.Desk_p.xyElementInDesk = function(element) {
 eYo.view.Desk_p.updateScreenCalculations_ = function() {
   this.workspace.recordDeleteAreas()
 }
+
+eYo.view.Dflt.eyo.extendsProperties({
+  /**
+   * The desk of the receiver.
+   * @type {eYo.view.Desk}
+   * @readonly
+   */
+  desk: {
+    get () {
+      return this.owner.desk
+    },
+  },
+})

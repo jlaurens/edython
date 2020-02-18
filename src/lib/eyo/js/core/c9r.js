@@ -442,7 +442,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
             try {
               this.init = eYo.do.nothing
               init_m.call(this, () => {
-                this.eyo.preInitInstance(this)
+                this.eyo.prepareInstance(this)
                 init_s.call(this, ...args)              
                 this.eyo.initInstance(this)
               }, ...args)
@@ -454,7 +454,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
           f = function (...args) {
             try {
               this.init = eYo.do.nothing
-              this.eyo.preInitInstance(this)
+              this.eyo.prepareInstance(this)
               init_m.call(this, () => {
                 this.eyo.initInstance(this)
               }, ...args)
@@ -467,7 +467,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
         f = function (...args) {
           try {
             this.init = eYo.do.nothing
-            this.eyo.preInitInstance(this)
+            this.eyo.prepareInstance(this)
             init_s.call(this, ...args)
             init_m.call(this, ...args)
             this.eyo.initInstance(this)
@@ -479,7 +479,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
         f = function (...args) {
           try {
             this.init = eYo.do.nothing
-            this.eyo.preInitInstance(this)
+            this.eyo.prepareInstance(this)
             init_m.call(this, ...args)
             this.eyo.initInstance(this)
           } finally {
@@ -494,7 +494,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
           if (!this.eyo) {
             console.error('NO EYO')
           }
-          this.eyo.preInitInstance(this)
+          this.eyo.prepareInstance(this)
           init_s.call(this, ...args)
           this.eyo.initInstance(this) 
         } finally {
@@ -508,7 +508,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
           if (!this.eyo) {
             console.error('BREAK HERE!')
           }
-          this.eyo.preInitInstance(this)
+          this.eyo.prepareInstance(this)
           this.eyo.initInstance(this) 
         } finally {
           delete this.dispose
@@ -599,7 +599,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
    * Default implementation forwards to super.
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
-  _p.preInitInstance = eYo.do.nothing
+  _p.prepareInstance = eYo.do.nothing
 
   /**
    * Defined by subclassers.
@@ -743,7 +743,7 @@ eYo._p.makeDlgt = function (ns, key, C9r, model) {
   let SuperC9r = C9r.SuperC9r
   let SuperDlgt = SuperC9r && SuperC9r.eyo && SuperC9r.eyo.constructor
   var better = this.Dlgt
-  if ((better || (better = this.Dlgt_p && this.Dlgt_p.constructor)) && eYo.isSubclass(SuperDlgt, better)) {
+  if ((better || (better = this.Dlgt_p && this.Dlgt_p.constructor)) && eYo.isSubclass(better, SuperDlgt)) {
     SuperDlgt = better
   }
   let Dlgt = SuperDlgt ? function (ns, key, C9r, model) {

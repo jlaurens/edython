@@ -76,7 +76,7 @@ class Foo:
   (?P<assigned>(?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)\.[A-Z][\w0-9_]*)
   \s*=(?!=).*""", re.X)
 
-  # eYo.Protocol.add(eYo.Module.Item, 'Register', 'module')
+  # eYo.protocol.add(eYo.Module.Item, 'Register', 'module')
   re_protocol = re.compile(r"""^\s*
   eYo\.protocol\.add\s*\(\s*eYo(?:\.[a-z]\w*)*
   \s*,\s*
@@ -85,7 +85,19 @@ class Foo:
 
   # eYo.widget.makeDflt()
   re_makeDflt = re.compile(r"""^\s*
-  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*)).makeDflt\s*\(.*""", re.X)
+  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeDflt\s*\(.*""", re.X)
+
+  # eYo.driver.makeMngr(model)
+  re_makeMngr = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)\.makeMngr\s*\(.*""", re.X)
+
+  # eYo.o3d.Dflt.eyo.extendsProperties({
+  re_extendsProperties = re.compile(r"""^\s*
+  (?P<extended>eYo(?:\.[a-z]\w*)*\.[A-Z]\w*)\.eyo\.extendsProperties\s*\(.*""", re.X)
+
+  # eYo.view.Dflt_p.doDisposeUI = function (...args) {
+  re_protocol2 = re.compile(r"""^\s*
+  (?P<required>eYo(?:\.[a-z]\w*)*\.[A-Z]\w*)_p\.\w+\s*=.*""", re.X)
 
   pathByProvided = {}
   nsByClass = {}
@@ -135,6 +147,13 @@ class Foo:
           addProvided(f'{ns}.{k.title()}')
           addProvided(f'{ns}.{k}.Dflt')
           continue
+        m = self.re_makeMngr.match(l)
+        if m:
+          ns = m.group('ns')
+          addRequired(f'{ns}')
+          addProvided(f'{ns}.Mngr')
+          addProvided(f'{ns}.Dflt')
+          continue
         m = self.re_protocol.match(l)
         if m:
           K = m.group('Key')
@@ -149,6 +168,16 @@ class Foo:
               continue
             addRequired(ns, assigned)
             addProvided(assigned)
+          continue
+        m = self.re_extendsProperties.match(l)
+        if m:
+          addRequired(m.group('extended'))
+          continue
+        m = self.re_protocol2.match(l)
+        if m:
+          req = m.group('required')
+          if not req.endswith('Dlgt'):
+            addRequired(req)
           continue
         ns = key = None
         def parse_args(suite):

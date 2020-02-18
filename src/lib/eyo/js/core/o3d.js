@@ -28,19 +28,11 @@ eYo.o3d.makeDflt({
   /** @param {eYo.app.Dflt|eYo.view.Desk|eYo.Flyout|eYo.board|eYo.expr|eYo.stmt|eYo.slot.Dflt|eYo.magnet.Dflt} owner  the immediate owner of this object. When not a brick, it is directly owned by a brick.
    */
   init (owner) {
-    !owner && eYo.throw('Missing owner!')
+    owner || eYo.throw('Missing owner!')
     this.owner_ = owner
   },
   properties: {
     owner: {
-      didChange (before) /** @suppress {globalThis} */ {
-        if (before) {
-          this.appForget() // do not update, may be the owner is not yet complete
-          this.ownedForEach(x => {
-            x.appForget && x.appForget()
-          })  
-        }
-      },
       consolidate (after) {
         if (after.hasUI) {
           this.initUI()
@@ -49,22 +41,6 @@ eYo.o3d.makeDflt({
         }
       },
       dispose: false,
-    },
-    /**
-     * The root application
-     * @type {eYo.app}
-     */
-    app: {
-      value () {
-        let o = this.owner
-        return o && o.app
-      },
-      forget (forgetter) {
-        this.ownedForEach(x => {
-          x.appForget && x.appForget()
-        })
-        forgetter()
-      },
     },
     /**
      * Options

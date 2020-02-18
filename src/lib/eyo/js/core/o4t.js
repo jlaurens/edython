@@ -62,6 +62,9 @@ eYo.o4t._p.initProperties = function (object, properties) {
       object.eyo.keys_p__ && object.eyo.keys_p__.add(k_p)
       Object.defineProperties(_p, {
         [k]: eYo.c9r.descriptorR(function () {
+          if (!this[k_p]) {
+            console.error('BREAK HERE!')
+          }
           return this[k_p].getValue()
         }),
         [k + '_']: {
@@ -110,20 +113,32 @@ eYo.o4t._p.initProperties = function (object, properties) {
   }
   
   /**
+   * Extends the properties of the associate constructor.
+   * @param {Object} properties -  A properties model
+   */
+  _p.extendsProperties = function (properties) {
+    let _p = this.C9r_p
+    Object.keys(properties).forEach(k => {
+      this.properties__[k] = properties[k]
+      _p[k] && delete _p[k]
+    })
+  }
+
+  /**
    * Initialize an instance with valued, cached, owned and copied properties.
    * Default implementation forwards to super.
    * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
    */
-  _p.preInitInstance = function (object) {
+  _p.prepareInstance = function (object) {
     var ns = this.ns
     if (!ns || !ns.initProperties) {
       ns = eYo.o4t
     }
     ns.initProperties(object, this.properties__)
     let eyo = this.super
-    eyo && eyo.preInitInstance(object)
+    eyo && eyo.prepareInstance(object)
   }
-  
+
   /**
    * Initialize an instance with valued, cached, owned and copied properties.
    * Default implementation forwards to super.
@@ -347,3 +362,19 @@ eYo.o4t._p.initProperties = function (object, properties) {
   }
   
 })()
+
+/**
+ * Executes the helper for each owned property.
+ * @param{Function} f -  an helper
+ */
+eYo.o4t.Dflt_p.ownedForEach = function (f) {
+  this.eyo.propertyForEach(this, f, true)
+}
+
+/**
+ * Executes the helper for each owned property stopping at the first truthy answer.
+ * @param{Function} f -  an helper
+ */
+eYo.o4t.Dflt_p.ownedSome = function (f) {
+  return this.eyo.propertySome(this, f, true)
+}

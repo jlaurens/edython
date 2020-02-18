@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('dom')
-
 eYo.forwardDeclare('board')
 
 /**

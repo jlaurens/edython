@@ -11,7 +11,6 @@
  */
 'use strict'
 
-eYo.require('svg')
 eYo.require('brick')
 
 // eYo.forwardDeclare('effect')

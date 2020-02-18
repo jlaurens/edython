@@ -9,9 +9,10 @@ describe ('Tests: Object', function () {
     let o = new O()
     chai.assert(o)
     let OO = eYo.c9r.makeC9r(eYo.NULL_NS, 'Bar', O, {})
-    chai.assert(OO.eyo instanceof eYo.o4t.Dflt.eyo.constructor)
     let oo = new OO()
     chai.assert(oo)
+    chai.assert(oo instanceof O)
+    chai.assert(oo.eyo instanceof O.eyo.constructor)
   })
   it ('O4t: ns.makeC9r...', function () {
     let ns = eYo.o4t.makeNS()
@@ -596,5 +597,57 @@ describe ('Tests: Object', function () {
     chai.expect(() => {
       new ns.AA()
     }).not.to.throw()
+  })
+  it ('O4t: extendsProperties', function () {
+    var ns = eYo.o4t.makeNS()
+    ns.makeDflt()
+    chai.assert(ns === ns.Dflt.eyo.ns)
+    ns.makeC9r('A', {
+      properties: {foo: 421}
+    })
+    var a = new ns.A()
+    chai.assert(a.foo === 421)
+    ns.A.eyo.extendsProperties({
+      bar: 123,
+    })
+    chai.assert(a.bar !== 123)
+    a = new ns.A()
+    chai.assert(a.foo === 421)
+    chai.assert(a.bar === 123)
+    ns.makeC9r('B')
+    ns.B.makeInheritedC9r('BB')    
+    var bb = new ns.BB()
+    chai.assert(bb.foo !== 421)
+    var flag = 0
+    ns.B.eyo.extendsProperties({
+      foo: {
+        value () {
+          flag = 666
+          return 421
+        }
+      },
+    })
+    bb = new ns.BB()
+    chai.assert(flag === 666)
+    chai.assert(bb.foo === 421)
+    chai.assert((bb.foo_ = 123) === bb.foo)
+    ns.B.eyo.extendsProperties({
+      foo: {
+        lazy () {
+          flag = 666
+          return 123
+        },
+      },
+    })
+    flag = 421
+    bb = new ns.BB()
+    chai.assert(flag === 421)
+    chai.assert(bb.foo === 123)
+    chai.assert(flag === 666)
+    chai.assert((bb.foo_ = 421) === bb.foo)
+    flag = 421
+    bb.foo_p.reset()
+    chai.assert(flag === 666)
+    chai.assert(bb.foo === 123)
   })
 })

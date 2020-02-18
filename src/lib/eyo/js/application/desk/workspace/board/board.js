@@ -1461,12 +1461,10 @@ eYo.board.Dflt_p.eventDidFireChange = function(event) {
   }
 }
 
-eYo.o3d.Dflt.eyo.initWithModel({
-  properties: {
-    board: {
-      get () {
-        this.owner.board
-      },
+eYo.o3d.Dflt.eyo.extendsProperties({
+  board: {
+    get () {
+      this.owner.board
     },
   },
 })

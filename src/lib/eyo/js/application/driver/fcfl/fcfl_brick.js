@@ -11,7 +11,6 @@
  */
 'use strict'
 
-eYo.require('fcfl')
 eYo.require('brick')
 
 /**
@@ -19,76 +18,74 @@ eYo.require('brick')
  */
 eYo.fcfl.makeDriverC9r('Brick')
 
-eYo.brick.eyo.initWithModel({
-  properties: {
-    ui () {
-      return Object.create(null)
+eYo.brick.eyo.extendsProperties({
+  ui () {
+    return Object.create(null)
+  },
+  down: false,
+  up: false,
+  dragging: {
+    didChange (before, after) /** @suppress {globalThis} */ {
+      this.ui_driver.draggingSet(this, after)      
+    }
+  },
+  /**
+   * Position of the receiver in the board.
+   * @type {eYo.geom.Where}
+   * @readonly
+   */
+  xy: {
+    value () {
+      return new eYo.geom.Where()
     },
-    down: false,
-    up: false,
-    dragging: {
-      didChange (before, after) /** @suppress {globalThis} */ {
-        this.ui_driver.draggingSet(this, after)      
-      }
+    copy: true,
+  },
+  hasLeftEdge: {
+    get () {
+      return !this.wrapped_ && !this.locked_
+    },
+  },
+  hasRightEdge: {
+    get () {
+      return !this.wrapped_ && !this.locked_
+    },
+  },
+  minBrickW: {
+    get () {
+      return this.isStmt ? eYo.span.INDENT : 0
+    },
+  },
+  bBox: {
+    get () {
+      return this.rendered && (this.driver.getBBox(brick))
+    },
+  },
+  hasSelect: {
+    get () {
+      return this.rendered && (this.driver.hasFocus(brick))
+    },
+  },
+  visible: {
+    /**
+     * Get the display status of the receiver's brick.
+     * Forwards to the driver.
+     */
+    get () {
+      return this.driver.displayedGet(this)
     },
     /**
-     * Position of the receiver in the board.
-     * @type {eYo.geom.Where}
-     * @readonly
+     * Set the display status of the receiver's brick.
+     * Forwards to the driver.
+     * @param {boolean} visible
      */
-    xy: {
-      value () {
-        return new eYo.geom.Where()
-      },
-      copy: true,
-    },
-    hasLeftEdge: {
-      get () {
-        return !this.wrapped_ && !this.locked_
-      },
-    },
-    hasRightEdge: {
-      get () {
-        return !this.wrapped_ && !this.locked_
-      },
-    },
-    minBrickW: {
-      get () {
-        return this.isStmt ? eYo.span.INDENT : 0
-      },
-    },
-    bBox: {
-      get () {
-        return this.rendered && (this.driver.getBBox(brick))
-      },
-    },
-    hasSelect: {
-      get () {
-        return this.rendered && (this.driver.hasFocus(brick))
-      },
-    },
-    visible: {
-      /**
-       * Get the display status of the receiver's brick.
-       * Forwards to the driver.
-       */
-      get () {
-        return this.driver.displayedGet(this)
-      },
-      /**
-       * Set the display status of the receiver's brick.
-       * Forwards to the driver.
-       * @param {boolean} visible
-       */
-      set (after) {
-        this.driver.displayedSet(this, visible)
-      }
-    },
-    BUMP_DELAY: 250,
+    set (after) {
+      this.driver.displayedSet(this, visible)
+    }
   },
-  aliases(
-    'xy': 'where',
-  )
+  BUMP_DELAY: 250,
+})
+eYo.brick.eyo.aliasesDeclare({
+  'xy': 'where',
 })
 
 /**
@@ -1141,7 +1138,7 @@ eYo.fcfl.Brick._p.drawEnding_ = function (io, isLast = false, inStatement = fals
           m4t.side = eYo.key.RIGHT
           m4t.shape = eYo.key.NONE
           m4t.ui.isLastInStatement =isLastInStatement
-          var d = eYo.c9r.shapeDefinitionWithMagnet(m4t) // depends on the shape and the side
+          var d = eYo.shape.definitionWithMagnet(m4t) // depends on the shape and the side
           var brick = m4t.brick
           if (this === brick) {
             // we are lucky, this is the brick we are currently rendering
@@ -1174,7 +1171,7 @@ eYo.fcfl.Brick._p.drawPending_ = function (io, side = eYo.key.NONE, shape = eYo.
     if (m4t) {
       m4t.side = side
       m4t.shape = io.ui.isLastInStatement ? eYo.key.Right : shape
-      var shp = eYo.c9r.newShapeWithMagnet(m4t)
+      var shp = eYo.shape.newWithMagnet(m4t)
       var b3k = m4t.brick
       if (io.brick === b3k) {
         // we are lucky, this is the brick we are currently rendering
@@ -1344,7 +1341,7 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
             }
             m4t.setOffset(io.cursor)
           }
-          var shape = eYo.c9r.newShapeWithMagnet(m4t)
+          var shape = eYo.shape.newWithMagnet(m4t)
           io.steps.push(shape.definition)
           if (shape.width) {
             io.cursor.c += shape.width

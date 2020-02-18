@@ -11,10 +11,6 @@
  */
 'use strict'
 
-eYo.require('fcls')
-
-eYo.provide('fcls.Magnet')
-
 eYo.forwardDeclare('magnet')
 
 /**

@@ -28,11 +28,9 @@ eYo.provide('do.register')
 eYo.do.register.add = function (object, key, filter) {
   let k = key + 'Registered'
   if (eYo.isF(object)) {
-    object.eyo.initWithModel({
-      properties: {
-        [k] () {
-          return []
-        }
+    object.eyo.extendsProperties({
+      [k] () {
+        return []
       }
     })
     object = object.prototype

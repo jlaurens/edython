@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('svg')
-
 eYo.forwardDeclare('dnd')
 
 /**

@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('svg')
-
 eYo.forwardDeclare('magnet')
 
 /**
@@ -33,9 +31,9 @@ eYo.svg.Magnet.prototype.hilight = function (m4t) {
   var steps
   if (m4t.isSlot) {
     if (m4t.target) {
-      steps = eYo.c9r.shapeDefinitionWithBrick(m4t.targetBrick)
+      steps = eYo.shape.definitionWithBrick(m4t.targetBrick)
     } else {
-      steps = eYo.c9r.shapeDefinitionWithMagnet(m4t)
+      steps = eYo.shape.definitionWithMagnet(m4t)
       eYo.svg.MagnetHighlightedPath_ =
       eYo.svg.newElement(
         'path',
@@ -48,9 +46,9 @@ eYo.svg.Magnet.prototype.hilight = function (m4t) {
       return
     }
   } else if (m4t.isOutput) {
-    steps = eYo.c9r.shapeDefinitionWithBrick(node)
+    steps = eYo.shape.definitionWithBrick(node)
   } else {
-    steps = eYo.c9r.shapeDefinitionWithMagnet(m4t)
+    steps = eYo.shape.definitionWithMagnet(m4t)
   }
   var xy = m4t.whereInBoard
   eYo.svg.MagnetHighlightedPath_ = eYo.svg.newElement(

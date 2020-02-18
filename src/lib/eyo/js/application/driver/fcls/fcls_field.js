@@ -11,10 +11,6 @@
  */
 'use strict'
 
-eYo.require('fcls')
-
-eYo.provide('fcls.Field')
-
 eYo.forwardDeclare('field')
 
 /**
