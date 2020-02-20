@@ -17,101 +17,102 @@
  */
 goog.require('goog.array')
 
-eYo.o4t.makeNS(eYo, 'event')
-
-Object.defineProperties(eYo.event._p, {
+eYo.o4t.makeNS(eYo, 'event', {
   /**
    * Maximum number of undo events in stack. `0` turns off undo, `Infinity` sets it to unlimited (provided there is enough memory!).
    * @type {number}
    */
-  MAX_UNDO: {
-    value: 1024,
-  },
+  MAX_UNDO: 1024,
+  /**
+   * Name of event that records a UI change.
+   * @const
+   */
+  UI: 'ui',
   /**
    * Name of event that creates a block.
    * @const
    */
-  BRICK_CREATE: { value: 'create' },
+  BRICK_CREATE: 'create',
   /**
    * Name of event that deletes a block.
    * @const
    */
-  BRICK_DELETE: { value: 'delete' },
+  BRICK_DELETE: 'delete',
   /**
    * Name of event that creates a block.
    * @const
    */
-  BRICK_CHANGE: { value: 'change' },
+  BRICK_CHANGE: 'change',
   /**
    * Name of event that moves a block.
    * @const
    */
-  BRICK_MOVE: { value: 'move' },
+  BRICK_MOVE: 'move',
   /**
    * Group ID for new events.  Grouped events are indivisible.
    * @type {string}
    * @private
    */
-  group_: { value: '', writable: true },
+  group__: '',
   /**
    * Sets whether the next event should be added to the undo stack.
    * @type {boolean}
    */
-  recordingUndo: { value: true, writable: true },
+  recordingUndo: true,
   /**
    * Allow change events to be created and fired.
    * @type {number}
    * @private
    */
-  disabled_: { value: 0, writable: true },
+  disabled__: 0,
   /**
    * Allow change events to be created and fired.
    * @type {number}
    * @private
    */
+  level__: 0,
+  /**
+   * The queue.
+   * @type {number}
+   * @private
+   */
+  FIRE_QUEUE__: []
+})
+
+Object.defineProperties(eYo.event._p, {
   enabled: { 
     get () {
-      return !this.disabled_
+      return !this.disabled__
     }
    },
-  /**
-   * Name of event that records a UI change.
-   * @const
-   */
-  UI: { value: 'ui' },
   /**
    * Current group.
    * @return {string} ID string.
    */
   group: {
     get () {
-      return this.group_
+      return this.group__
     },
     /**
      * Start or stop a group.
      * @param {boolean|string} state True to start new group, false to end group.
      *   String to set group explicitly.
      */
-    set: (() => {
-      var level = 0
-      return state => {
-        if (eYo.isStr(state)) {
-          eYo.event.group_ = state
-          level = 1
-        } else if (state) {
-          if (!level++) {
-            eYo.event.group_ = eYo.do.genUid()
-          }
-        } else {
-          if (level > 1) {
-            --level
-          } else if (level) {
-            --level
-            eYo.event.group_ = ''
-          }
+    set (state) {
+      if (eYo.isStr(state)) {
+        this.group__ = state
+        this.level__ = 1
+      } else if (state) {
+        if (!this.level++) {
+          this.group__ = eYo.do.genUid()
         }
+      } else if (this.level > 1) {
+        --this.level
+      } else if (this.level) {
+        --this.level
+        this.group__ = ''
       }
-    })()
+    },
   }
 })
 
@@ -153,40 +154,37 @@ eYo.event.groupWrap = (f, g) => {
   g)(f)
 }
 
-(()=>{
-  var FIRE_QUEUE_ = []
-  /**
-   * Create a custom event and fire it.
-   * @param {eYo.event.Abstract} event Custom data for event.
-   */
-  eYo.event.fire = function(event) {
-    if (!eYo.event.enabled) {
-      return
-    }
-    if (!FIRE_QUEUE_.length) {
-      // First event added; schedule a firing of the event queue.
-      setTimeout(() => {
-        var queue = eYo.event.filter(FIRE_QUEUE_, true)
-        FIRE_QUEUE_.length = 0
-        queue.forEach(event => {
-          var board = eYo.board.byId(event.boardId)
-          if (board) {
-            board.eventDidFireChange(event)
-          }
-        })
-      }, 0)
-    }
-    FIRE_QUEUE_.push(event)
+/**
+ * Create a custom event and fire it.
+ * @param {eYo.event.Abstract} event Custom data for event.
+ */
+eYo.event._p.fire = function(event) {
+  if (!eYo.event.enabled) {
+    return
   }
+  if (!this.FIRE_QUEUE__.length) {
+    // First event added; schedule a firing of the event queue.
+    setTimeout(() => {
+      var queue = eYo.event.filter(this.FIRE_QUEUE__, true)
+      this.FIRE_QUEUE__.length = 0
+      queue.forEach(event => {
+        var board = eYo.board.byId(event.boardId)
+        if (board) {
+          board.eventDidFireChange(event)
+        }
+      })
+    }, 0)
+  }
+  this.FIRE_QUEUE__.push(event)
+}
 
-  /**
-   * Modify pending undo events so that when they are fired they don't land
-   * in the undo stack.  Called by eYo.event.Backer's clear.
-   */
-  eYo.event.ClearPendingUndo = function() {
-    FIRE_QUEUE_.forEach(event => (event.toUndoStack = false))
-  }
-})()
+/**
+ * Modify pending undo events so that when they are fired they don't land
+ * in the undo stack.  Called by eYo.event.Backer's clear.
+ */
+eYo.event._p.ClearPendingUndo = function() {
+  this.FIRE_QUEUE__.forEach(event => (event.toUndoStack = false))
+}
 
 /**
  * Filter the queued events and merge duplicates.
@@ -194,7 +192,7 @@ eYo.event.groupWrap = (f, g) => {
  * @param {boolean} forward True if forward (redo), false if backward (undo).
  * @return {!Array<!eYo.event.Abstract>} Array of filtered events.
  */
-eYo.event.filter = function(queueIn, forward) {
+eYo.event._p.filter = function(queueIn, forward) {
   if (!forward) {
     // is it a create/move/delete sequence we are about to undo?
     if (queueIn.length === 3) {
@@ -256,7 +254,7 @@ eYo.event.filter = function(queueIn, forward) {
  * Stop sending events.  Every call to this function MUST also call enable.
  */
 eYo.event.disable = function() {
-  eYo.event.disabled_++
+  eYo.event.disabled__++
 };
 
 /**
@@ -264,7 +262,7 @@ eYo.event.disable = function() {
  * corresponding call to disable was made.
  */
 eYo.event.enable = function() {
-  eYo.event.disabled_--
+  eYo.event.disabled__--
 }
 
 /**
@@ -421,14 +419,6 @@ eYo.event.Backer_p.clear = function() {
 }
 
 /**
- * Clear the undo/redo stacks.
- * Forwards to the owner.
- */
-eYo.event.Backer_p.didClearUndo = function() {
-  this.app.didClearUndo && this.app.didClearUndo()
-}
-
-/**
  * Undo or redo the previous action.
  * @param {boolean} redo False if undo, true if redo.
  */
@@ -481,15 +471,6 @@ eYo.event.Backer_p.undo = function(redo) {
 }
 
 /**
- * Message sent when an undo has been processed.
- * Forwards to the owner.
- * @param {boolean} redo False if undo, true if redo.
- */
-eYo.event.Backer_p.didProcessUndo = function(redo) {
-  this.app.didProcessUndo && this.app.didProcessUndo(redo)
-}
-
-/**
  * The given event di fire a change.
  * Called by board's eventDidFireChange.
  * @param {eYo.event} event The event.
@@ -513,17 +494,26 @@ eYo.event.Backer_p.eventDidFireChange = function(event, task) {
 }
 
 /**
+ * Clear the undo/redo stacks.
+ * Forwards to the owner.
+ */
+eYo.event.Backer_p.didClearUndo = eYo.doNothing
+
+/**
+ * Message sent when an undo has been processed.
+ * Forwards to the owner.
+ * @param {boolean} redo False if undo, true if redo.
+ */
+eYo.event.Backer_p.didProcessUndo = eYo.doNothing
+
+/**
  * Message sent when an undo has been pushed.
  * Forwards to the owner.
  */
-eYo.event.Backer_p.didPushUndo = function() {
-  this.app.didUnshiftUndo && this.app.didUnshiftUndo()
-}
+eYo.event.Backer_p.didPushUndo = eYo.doNothing
 
 /**
  * Message sent when an undo has been unshifted.
  * Forwards to the owner.
  */
-eYo.event.Backer_p.didUnshiftUndo = function() {
-  this.app.didUnshiftUndo && this.app.didUnshiftUndo()
-}
+eYo.event.Backer_p.didUnshiftUndo = eYo.doNothing

@@ -243,6 +243,13 @@ eYo.mixinRO(eYo, {
     return Array.isArray(what)
   },
   /**
+   * Convenient method to return  the copy of an array.
+   * @param {*} what
+   */
+  copyRA (what) {
+    return Array.prototype.slice.call(what, 0)
+  },
+  /**
    * Whether the argument is na array.
    * @param {*} what
    */

@@ -166,4 +166,17 @@ describe('eYo Tests', function () {
     chai.assert(o.foo === 421)
     chai.assert(o.bar === 123)
   })
+  it ('eYo.copyRA', function () {
+    let original = []
+    var copy = eYo.copyRA(original)
+    chai.expect(copy).to.deep.equal(original)
+    original.push(1)
+    chai.expect(copy).not.to.deep.equal(original)
+    copy = eYo.copyRA(original)
+    chai.expect(copy).to.deep.equal(original)
+    copy.push(2)
+    chai.expect(copy).not.to.deep.equal(original)
+    original.push(2)
+    chai.expect(copy).to.deep.equal(original)
+  })
 })

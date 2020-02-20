@@ -155,6 +155,30 @@ describe ('Tests: C9r', function () {
     d.foo()
     chai.assert(flag === 0)
   })
+  it ('C9r modelMerge - overriden', function () {
+    var ns = eYo.c9r.makeNS()
+    ns.makeDflt()
+    var d = new ns.Dflt()
+    chai.assert(!d.foo)
+    var flag = 0
+    ns.Dflt.eyo.methodsMerge({
+      foo () {
+        flag = 421 - flag
+      },
+    })
+    var galf = 0
+    ns.Dflt.eyo.methodsMerge({
+      foo (overriden) {
+        return function () {
+          overriden()
+          galf = 421 - galf
+        }
+      },
+    })
+    new ns.Dflt().foo()
+    chai.assert(flag === 421)
+    chai.assert(galf === 421)
+  })
   describe('C9r: makeNS', function () {
     it ('makeNS(...)', function () {
       var foo = eYo.makeNS('___Foo')

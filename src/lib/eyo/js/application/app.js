@@ -373,3 +373,47 @@ eYo.o3d.Dflt.eyo.propertiesMerge({
     }
   }
 }) ()
+
+eYo.event.Backer.eyo.methodsMerge({
+  /**
+   * Clear the undo/redo stacks.
+   * Forwards to the owner.
+   */
+  didClearUndo (overriden) {
+    return function () {
+      overriden()
+      this.app.didClearUndo()
+    }
+  },
+  /**
+   * Message sent when an undo has been processed.
+   * Forwards to the owner.
+   * @param {boolean} redo False if undo, true if redo.
+   */
+  didProcessUndo (overriden) {
+    return function (redo) {
+      overriden(redo)
+      this.app.didProcessUndo(redo)
+    }
+  },
+  /**
+   * Message sent when an undo has been pushed.
+   * Forwards to the owner.
+   */
+  didPushUndo (overriden) {
+    return function () {
+      overriden()
+      this.app.didPushUndo()
+    }
+  },
+  /**
+   * Message sent when an undo has been unshifted.
+   * Forwards to the owner.
+   */
+  didUnshiftUndo (overriden) {
+    return function () {
+      overriden()
+      this.app.didUnshiftUndo()
+    }
+  },
+})
