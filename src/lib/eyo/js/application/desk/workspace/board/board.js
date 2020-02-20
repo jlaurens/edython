@@ -1448,7 +1448,7 @@ eYo.board.Dflt_p.scrollBrickTopLeft = function(id) {
 
 /**
  * Fire a change event.
- * @param {eYo.event.Abstract} event Event to fire.
+ * @param {eYo.event.Dflt} event Event to fire.
  */
 eYo.board.Dflt_p.eventDidFireChange = function(event) {
   let task = () => {

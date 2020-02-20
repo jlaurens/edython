@@ -18,7 +18,7 @@ eYo.provide('brickDragger')
 eYo.forwardDeclare('dom')
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('board')
-eYo.forwardDeclare('event.brickMove')
+eYo.forwardDeclare('event.BrickMove')
 
 /**
  * Class for a brick dragger.  It moves bricks around the board when they

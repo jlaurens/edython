@@ -93,7 +93,7 @@ class Foo:
 
   # eYo.o3d.Dflt.eyo.propertiesMerge({
   re_propertiesMerge = re.compile(r"""^\s*
-  (?P<extended>eYo(?:\.[a-z]\w*)*\.[A-Z]\w*)\.eyo\.propertiesMerge\s*\(.*""", re.X)
+  (?P<extended>eYo(?:\.[a-z]\w*)*\.[A-Z]\w*)\.eyo\.(?:properties|methods)Merge\s*\(.*""", re.X)
 
   # eYo.view.Dflt_p.doDisposeUI = function (...args) {
   re_protocol2 = re.compile(r"""^\s*

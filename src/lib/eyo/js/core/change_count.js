@@ -35,7 +35,7 @@ eYo.o4t.changeCount.modelDeclare({
         what = event || eYo.isNA(event) ? 1 : -1
         event = redo
       }
-      if (!event || event.type !== eYo.event.UI) {
+      if (!event || !event.isUI) {
         this.changeCount_ += what
       }
     },

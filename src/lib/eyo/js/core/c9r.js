@@ -685,8 +685,8 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
     Object.keys(model).forEach(k => {
       let m = model[k]
       eYo.isF(m) || eYo.throw(`Function expected: ${m}`)
-      if (m.length === 1 && XRegExp.exec(m.toString(), eYo.xre.function_overriden)) {
-        _p[k] = eYo.asF(m.call(this, eYo.asF(_p[k])))
+      if (m.length === 1 && _p[k] && XRegExp.exec(m.toString(), eYo.xre.function_overriden)) {
+        _p[k] = eYo.asF(m.call(this, eYo.toF(_p[k]).bind(this)))
       } else {
         _p[k] = m
       }

@@ -27,7 +27,7 @@ eYo.forwardDeclare('focus')
 eYo.forwardDeclare('event.Motion')
 eYo.forwardDeclare('view.Desk')
 eYo.forwardDeclare('driver')
-eYo.forwardDeclare('Audio')
+eYo.forwardDeclare('audio')
 
 /**
  * @name {eYo.app.Options}
@@ -196,7 +196,7 @@ eYo.app.makeDflt({
       return new eYo.view.Desk(this)
     },
     audio () {
-      return new eYo.Audio(this)
+      return new eYo.audio.Dflt(this)
     },
     focus_main () {
       return new eYo.focus.Main(this)
@@ -289,8 +289,8 @@ eYo.app.Dflt_p.copyBrick = function (brick, deep) {
   var xy = brick.xy
   xml.setAttribute('x', xy.x)
   xml.setAttribute('y', xy.y)
-  eYo.Clipboard.xml = xml
-  eYo.Clipboard.Source = brick.board
+  eYo.Clipboard.xml_ = xml
+  eYo.Clipboard.source_ = brick.board
   this.didCopyBrick && (this.didCopyBrick(brick, xml))
 }
 
@@ -363,16 +363,17 @@ eYo.o3d.Dflt.eyo.propertiesMerge({
   },
 })
 
-;(() => {
-  let old = eYo.o3d.Dflt_p.ownerDidChange
-  eYo.o3d.Dflt_p.ownerDidChange = function (before, after)
-  /** @suppress {globalThis} */ {
-    old && old.call(this, before, after)
-    if (before) {
-      this.app_p.reset()
+eYo.o3d.Dflt.eyo.methodsMerge({
+  ownerDidChange (overriden) {
+    return function (before, after)
+    /** @suppress {globalThis} */ {
+      overriden(before, after)
+      if (before) {
+        this.app_p.reset()
+      }
     }
   }
-}) ()
+})
 
 eYo.event.Backer.eyo.methodsMerge({
   /**

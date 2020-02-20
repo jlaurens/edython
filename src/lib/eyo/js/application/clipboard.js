@@ -19,7 +19,8 @@ console.error('In progress')
 eYo.o3d.makeC9r(eYo, 'Clipboard', {
   properties: {
     dom: eYo.isNA,
-    sourceBoard: eYo.isNA,
+    xml: eYo.NA,
+    source: eYo.isNA,
     desk: {
       get () {
         return this.sourceBoard.desk

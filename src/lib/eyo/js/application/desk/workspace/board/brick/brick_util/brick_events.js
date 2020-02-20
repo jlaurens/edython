@@ -11,18 +11,6 @@
  */
 'use strict'
 
-eYo.require('event.Abstract')
-
-eYo.require('data')
-
-eYo.provide('event.brickMove')
-eYo.provide('event.brickDelete')
-eYo.provide('event.brickBase')
-eYo.provide('event.brickCreate')
-eYo.provide('event.brickChange')
-
-
-goog.forwardDeclare('goog.array')
 goog.forwardDeclare('goog.dom')
 
 /**
@@ -54,7 +42,7 @@ eYo.event.fireBrickChange = function (brick, element, name, before, after) {
  */
 eYo.event.fireBrickMove = (brick, move) => {
   if (eYo.event.enabled) {
-    var event = new eYo.event.BrickMove(brick)
+    let event = new eYo.event.BrickMove(brick)
     try {
       move(event)
     } finally {
@@ -69,10 +57,10 @@ eYo.event.fireBrickMove = (brick, move) => {
 /**
  * Abstract class for a brick event.
  * @param {eYo.brick.Dflt} brick The brick this event corresponds to.
- * @extends {eYo.event.Abstract}
+ * @extends {eYo.event.Dflt}
  * @constructor
  */
-eYo.event.Abstract.makeInheritedC9r('BrickBase', {
+eYo.event.Dflt.makeInheritedC9r('BrickBase', {
   init (brick) {
     /**
      * The brick id for the brick this event pertains to
@@ -110,9 +98,26 @@ eYo.event.BrickBase.makeInheritedC9r('BrickChange', {
   properties: {
     /**
      * Type of this event.
-     * @type {string}
+     * @type {Boolean}
      */
-    type: eYo.event.BRICK_CHANGE,
+    isChange: {
+      get () {
+        return true
+      },
+    },
+    /**
+     * Merge the receiver with the given event.
+     * @param {eYo.event.Dflt} event - an eYo event
+     * @return {Boolean} Whether the change did occur.
+     */
+    merge (lastEvent) {
+      if (this.element === lastEvent.element &&
+        this.name === lastEvent.name) {
+        // Merge change events.
+        lastEvent.after = this.after
+        return true
+      }
+    },
     /**
      * Does this event record any change of state?
      * @return {boolean} True if something changed.
@@ -177,9 +182,13 @@ eYo.event.BrickBase.makeInheritedC9r('BrickCreate', {
   properties: {
     /**
      * Type of this event.
-     * @type {string}
+     * @type {Boolean}
      */
-    type: eYo.event.BRICK_CREATE,
+    isCreate: {
+      get () {
+        return true
+      },
+    },
   }
 })
 
@@ -227,9 +236,13 @@ eYo.event.BrickBase.makeInheritedC9r('BrickDelete', {
   properties: {
     /**
      * Type of this event.
-     * @type {string}
+     * @type {Boolean}
      */
-    type: { value: eYo.event.BRICK_DELETE },
+    isDelete: {
+      get () {
+        return true
+      },
+    },
   },
 })
 
@@ -273,9 +286,36 @@ eYo.event.BrickBase.makeInheritedC9r('BrickMove', {
   properties: {
     /**
      * Type of this event.
-     * @type {string}
+     * @type {Boolean}
      */
-    type: eYo.event.BRICK_MOVE,
+    isMove: {
+      get () {
+        return true
+      },
+    },
+    /**
+     * Merge the receiver with the given event.
+     * @param {eYo.event.Dflt} event - an eYo event
+     * @return {Boolean} Whether the change did occur.
+     */
+    merge (lastEvent) {
+      lastEvent.newParentId = this.newParentId
+      lastEvent.newInputName = this.newInputName
+      lastEvent.newCoordinate = this.newCoordinate
+      return true
+    },
+    /**
+     * Does this event record any change of state?
+     * @return {boolean} True if something changed.
+     */
+    isNull: {
+      get() {
+        return this.oldParentId === this.newParentId &&
+          this.oldName === this.newName &&
+          this.oldLeft === this.newLeft &&
+          this.oldCoordinate.equals(this.newCoordinate)
+      }
+    },
     /**
      * Returns the parentId and slot if the brick is connected,
      *   or the where location if disconnected.
@@ -301,18 +341,6 @@ eYo.event.BrickBase.makeInheritedC9r('BrickMove', {
         return location
       }
     },
-    /**
-     * Does this event record any change of state?
-     * @return {boolean} True if something changed.
-     */
-    isNull: {
-      get() {
-        return this.oldParentId === this.newParentId &&
-          this.oldName === this.newName &&
-          this.oldLeft === this.newLeft &&
-          this.oldCoordinate.equals(this.newCoordinate)
-      }
-    },
   }
 })
 
@@ -332,39 +360,36 @@ eYo.event.BrickMove_p.recordNew = function() {
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
 eYo.event.BrickMove_p.run = function(forward) {
-  var brick = this.brick
-  if (!brick) {
+  var b3k = this.brick
+  if (!b3k) {
     console.warn("Can't move non-existent brick: " + this.brickId)
     return
   }
   var parentId = forward ? this.newParentId : this.oldParentId
-  var name = forward ? this.newName : this.oldName
-  var left = forward ? this.newLeft : this.oldLeft
-  var coordinate = forward ? this.newCoordinate : this.oldCoordinate
-  var parentBrick = null
   if (parentId) {
-    parentBrick = this.board.getBrickById(parentId)
-    if (!parentBrick) {
+    var parentB3k = this.board.getBrickById(parentId)
+    if (!parentB3k) {
       console.warn("Can't connect to non-existent brick: " + parentId)
       return
     }
   }
-  if (brick.parent) {
-    brick.unplug()
+  if (b3k.parent) {
+    b3k.unplug()
   }
-  if (coordinate) {
-    brick.moveTo(coordinate)
+  if (forward ? this.newCoordinate : this.oldCoordinate) {
+    b3k.moveTo(coordinate)
   } else {
     var m4t, targetM4t
+    var name = forward ? this.newName : this.oldName
     if (name) {
-      m4t = brick.output_m
-      targetM4t = parentBrick.getMagnet(name)
-    } else if (left) {
-      m4t = brick.left_m
-      targetM4t = parentBrick.right_m
+      m4t = b3k.output_m
+      targetM4t = parentB3k.getMagnet(name)
+    } else if (forward ? this.newLeft : this.oldLeft) {
+      m4t = b3k.left_m
+      targetM4t = parentB3k.right_m
     } else {
-      m4t = brick.head_m
-      targetM4t = parentBrick.foot_m
+      m4t = b3k.head_m
+      targetM4t = parentB3k.foot_m
     }
     if (targetM4t) {
       m4t.connect(targetM4t)
@@ -373,68 +398,69 @@ eYo.event.BrickMove_p.run = function(forward) {
     }
   }
 }
-
-/**
- * set the value of the property,
- * without validation but with undo and synchronization.
- * `duringChange` message is sent just before consolidating and undo registration.
- * Note on interference with the undo stack.
- * Let's suppose that we have triggered a UI event
- * that modifies some data of a brick.
- * As a consequence, this brick automatically changes type and
- * may be disconnected.
- * Take a look at what happens regarding the default undo/redo stack
- * management when connected bricks are involved
- * as data change.
- * NB the changeEnd method may disconnect
- *  1) normal flow
- *    a - the user asks for a data change
- *    b - the type change
- *    c - the connection check change triggering a disconnect brick event
- *    d - the data change undo event is trigerred
- *    undo/redo stacks : [..., reconnect brick, data undo change]/[]
- *  2) when undoing
- *    a - the user asks for an undo
- *    b - the data undo change is performed first
- *    c - the type change
- *    d - the connection check change but no undo event is recorded
- *        because no brick has been connected nor disconnected meanwhile
- *    e - the data rechange is pushed to the redo stack
- *    f - bricks are reconnected and the redo event is pushed to the redo stack
- *    undo/redo stacks : [...]/[disconnect brick, data rechange]
- *  3) when redoing
- *    a - bricks are disconnected and the reconnect event is pushed to the undo stack
- *    b - the data is rechanged, with type and connection checks.
- *        No brick is disconnected, no other move event is recorded.
- *    undo/redo stacks : [..., reconnect brick, data undo change]/[]
- * This is the reason why we consolidate the type before the undo change is recorded.
- * @param {Object} after
- */
-eYo.data.Dflt_p.setTrusted_ = function (after) {
-  var before = this.value_
-  if (before !== after) {
-    try {
-      this.setTrusted_ = eYo.doNothing
-      this.brick.change.wrap(() => { // catch `this`
-        eYo.event.groupWrap(() => { // catch `this`
-          this.beforeChange(before, after)
-          try {
-            this.value_ = after
-            this.duringChange(before, after)
-          } catch(err) {
-            console.error(err)
-            throw err
-          } finally {
-            if (!this.noUndo) {
-              eYo.event.fireBrickChange(
-                this.brick, eYo.Const.Event.DATA + this.key, null, before, after)
+eYo.data.Dflt.eyo.methodsMerge({
+  /**
+   * set the value of the property,
+   * without validation but with undo and synchronization.
+   * `duringChange` message is sent just before consolidating and undo registration.
+   * Note on interference with the undo stack.
+   * Let's suppose that we have triggered a UI event
+   * that modifies some data of a brick.
+   * As a consequence, this brick automatically changes type and
+   * may be disconnected.
+   * Take a look at what happens regarding the default undo/redo stack
+   * management when connected bricks are involved
+   * as data change.
+   * NB the changeEnd method may disconnect
+   *  1) normal flow
+   *    a - the user asks for a data change
+   *    b - the type change
+   *    c - the connection check change triggering a disconnect brick event
+   *    d - the data change undo event is trigerred
+   *    undo/redo stacks : [..., reconnect brick, data undo change]/[]
+   *  2) when undoing
+   *    a - the user asks for an undo
+   *    b - the data undo change is performed first
+   *    c - the type change
+   *    d - the connection check change but no undo event is recorded
+   *        because no brick has been connected nor disconnected meanwhile
+   *    e - the data rechange is pushed to the redo stack
+   *    f - bricks are reconnected and the redo event is pushed to the redo stack
+   *    undo/redo stacks : [...]/[disconnect brick, data rechange]
+   *  3) when redoing
+   *    a - bricks are disconnected and the reconnect event is pushed to the undo stack
+   *    b - the data is rechanged, with type and connection checks.
+   *        No brick is disconnected, no other move event is recorded.
+   *    undo/redo stacks : [..., reconnect brick, data undo change]/[]
+   * This is the reason why we consolidate the type before the undo change is recorded.
+   * @param {Object} after
+   */
+  setTrusted_ (after) {
+    var before = this.value_
+    if (before !== after) {
+      try {
+        this.setTrusted_ = eYo.doNothing
+        this.brick.change.wrap(() => { // catch `this`
+          eYo.event.groupWrap(() => { // catch `this`
+            this.beforeChange(before, after)
+            try {
+              this.value_ = after
+              this.duringChange(before, after)
+            } catch(err) {
+              console.error(err)
+              throw err
+            } finally {
+              if (!this.noUndo) {
+                eYo.event.fireBrickChange(
+                  this.brick, eYo.Const.Event.DATA + this.key, null, before, after)
+              }
+              this.afterChange(before, after)
             }
-            this.afterChange(before, after)
-          }
+          })
         })
-      })
-    } finally {
-      delete this.setTrusted_
+      } finally {
+        delete this.setTrusted_
+      }
     }
-  }
-}
+  },
+})

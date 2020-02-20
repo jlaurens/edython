@@ -75,14 +75,6 @@ eYo.dom.makeDriverC9r('Audio', {
     sounds () {
       return Object.create(null)
     },
-    /**
-     * Play a sound at least this amount of milliseconds.
-     */
-    SOUND_LIMIT: 100,
-    /**
-     * Default volume.
-     */
-    SOUND_VOLUME: 0.5,
   }
 })
 

@@ -2,7 +2,8 @@ NS = Object.create(null)
 describe ('Tests: audio', function () {
   this.timeout(10000)
   it ('Audio: basic', function () {
-    chai.assert(eYo.Audio)
+    chai.assert(eYo.audio)
+    chai.assert(eYo.audio.Dflt)
   })
   it ('Audio: basic properties', function () {
     let app = new eYo.app.Dflt()
@@ -18,11 +19,9 @@ describe ('Tests: audio', function () {
       media : `${eYo.path_eyo}media/`,
       UI: 'dom',
     }
-      let app = new eYo.app.Dflt({
-
-    })
+    let app = new eYo.app.Dflt(options)
     app.audio.play('click')
-    app.audio.disconnect('delete')
-    app.audio.disconnect('disconnect')
+    app.audio.play('delete')
+    app.audio.play('disconnect')
   })
 })

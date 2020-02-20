@@ -272,17 +272,16 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/parser/bitset.js" \
 --js "src/lib/eyo/js/core/o3d.js" \
 --js "src/lib/eyo/js/core/change_count.js" \
---js "src/lib/eyo/js/application/app.js" \
 --js "src/lib/eyo/js/application/ui/audio.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/board.js" \
 --js "src/lib/eyo/js/application/abstract/bsm_o3d.js" \
+--js "src/lib/eyo/js/core/event.js" \
 --js "src/lib/eyo/js/parser/tokenizer.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/section.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/span.js" \
 --js "src/lib/eyo/js/core/view.js" \
 --js "src/lib/eyo/js/application/ui/css.js" \
 --js "src/lib/eyo/js/application/ui/dnd.js" \
---js "src/lib/eyo/js/core/event.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/metrics/metrics.js" \
 --js "src/lib/eyo/Python/graminit.js" \
 --js "src/lib/eyo/js/module/module_decimal.js" \
@@ -294,6 +293,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/node_brick.js" \
 --js "src/lib/eyo/js/core/change.js" \
 --js "src/lib/eyo/js/module/profile.js" \
+--js "src/lib/eyo/js/application/app.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/brick_dragger.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/draft.js" \
 --js "src/lib/eyo/js/application/driver/driver.js" \

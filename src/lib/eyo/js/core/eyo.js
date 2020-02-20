@@ -269,7 +269,7 @@ eYo.mixinRO(eYo, {
    * @param {*} what
    * @return {Function|eYo.NA}
    */
-  asF (what) {
+  asF (what, defaults) {
     return typeof what === 'function' && !!what.call ? what : eYo.NA
   },
   /**

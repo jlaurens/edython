@@ -29,26 +29,6 @@ eYo.o4t.makeNS(eYo, 'event', {
    */
   UI: 'ui',
   /**
-   * Name of event that creates a block.
-   * @const
-   */
-  BRICK_CREATE: 'create',
-  /**
-   * Name of event that deletes a block.
-   * @const
-   */
-  BRICK_DELETE: 'delete',
-  /**
-   * Name of event that creates a block.
-   * @const
-   */
-  BRICK_CHANGE: 'change',
-  /**
-   * Name of event that moves a block.
-   * @const
-   */
-  BRICK_MOVE: 'move',
-  /**
    * Group ID for new events.  Grouped events are indivisible.
    * @type {string}
    * @private
@@ -156,7 +136,7 @@ eYo.event.groupWrap = (f, g) => {
 
 /**
  * Create a custom event and fire it.
- * @param {eYo.event.Abstract} event Custom data for event.
+ * @param {eYo.event.Dflt} event Custom data for event.
  */
 eYo.event._p.fire = function(event) {
   if (!eYo.event.enabled) {
@@ -188,9 +168,9 @@ eYo.event._p.ClearPendingUndo = function() {
 
 /**
  * Filter the queued events and merge duplicates.
- * @param {Array<!eYo.event.Abstract>} queueIn Array of events.
+ * @param {Array<!eYo.event.Dflt>} queueIn Array of events.
  * @param {boolean} forward True if forward (redo), false if backward (undo).
- * @return {!Array<!eYo.event.Abstract>} Array of filtered events.
+ * @return {!Array<!eYo.event.Dflt>} Array of filtered events.
  */
 eYo.event._p.filter = function(queueIn, forward) {
   if (!forward) {
@@ -199,8 +179,8 @@ eYo.event._p.filter = function(queueIn, forward) {
       var first = queueIn[0]
       var last = queueIn[queueIn.length-1]
       if (!first.isNull && !last.isNull
-          && first.type === eYo.event.DELETE
-          && last.type === eYo.event.CREATE
+          && first.isDelete
+          && last.isCreate
           && first.boardId === last.boardId
           && first.group === last.group
           && first.brickId === last.brickId) {
@@ -209,40 +189,26 @@ eYo.event._p.filter = function(queueIn, forward) {
       }
     }
   }
-  var queue = goog.array.copy(queueIn)
+  var queue = eYo.copyRA(queueIn)
   if (!forward) {
     // Undo is merged in reverse order.
     queue.reverse()
   }
   var mergedQueue = []
-  var hash = Object.create(null);
+  var eventsByKey = Object.create(null)
   // Merge duplicates.
   queue.forEach(event => {
     if (!event.isNull) {
-      var key = [event.type, event.brickId, event.boardId].join(' ')
-      var lastEvent = hash[key]
-      if (!lastEvent) {
-        hash[key] = event
-        mergedQueue.push(event)
-      } else if (event.type == eYo.event.BLOCK_MOVE) {
-        // Merge move events.
-        lastEvent.newParentId = event.newParentId;
-        lastEvent.newInputName = event.newInputName;
-        lastEvent.newCoordinate = event.newCoordinate;
-      } else if (event.type == eYo.event.BLOCK_CHANGE &&
-          event.element == lastEvent.element &&
-          event.name == lastEvent.name) {
-        // Merge change events.
-        lastEvent.after = event.after
-      } else {
-        // Collision: newer events should merge into this event to maintain order
-        hash[key] = event
+      var key = event.key
+      var lastEvent = eventsByKey[key]
+      if (!lastEvent || !event.merge(lastEvent)) {
+        eventsByKey[key] = event
         mergedQueue.push(event)
       }
     }
   })
   // Filter out any events that have become null due to merging.
-  queue = mergedQueue.filter((e) => !e.isNull)
+  queue = mergedQueue.filter(e => !e.isNull)
   if (!forward) {
     // Restore undo order.
     queue.reverse()
@@ -255,7 +221,7 @@ eYo.event._p.filter = function(queueIn, forward) {
  */
 eYo.event.disable = function() {
   eYo.event.disabled__++
-};
+}
 
 /**
  * Start sending events.  Unless events were already disabled when the
@@ -270,11 +236,10 @@ eYo.event.enable = function() {
  * Use this on applications where all bricks should be connected to a top brick.
  * Recommend setting the 'disable' option to 'false' in the config so that
  * users don't try to reenable disabled orphan bricks.
- * @param {eYo.event.Abstract} event Custom data for event.
+ * @param {eYo.event.Dflt} event Custom data for event.
  */
 eYo.event.disableOrphans = function(event) {
-  if (event.type === eYo.event.BRICK_MOVE ||
-      event.type === eYo.event.BRICK_CREATE) {
+  if (event.isMove || event.isCreate) {
     var board = eYo.board.byId(event.boardId)
     var brick = board.getBrickById(event.brickId)
     if (brick) {
@@ -295,7 +260,7 @@ eYo.event.disableOrphans = function(event) {
  * Abstract class for an event.
  * @constructor
  */
-eYo.event.makeC9r('Abstract', {
+eYo.event.makeDflt({
   init (board) {
     /**
      * The board identifier for this event.
@@ -319,12 +284,49 @@ eYo.event.makeC9r('Abstract', {
   },
   properties: {
     /**
+     * Is this a move event ?
+     */
+    isMove: {
+      get () {
+        false
+      }
+    },
+    /**
+     * Is this a create event ?
+     */
+    isCreate: {
+      get () {
+        return false
+      }
+    },
+    /**
+     * Is this a delete event ?
+     */
+    isDelete: {
+      get () {
+        return false
+      }
+    },
+    /**
+     * Is this a change event ?
+     */
+    isChange: {
+      get () {
+        return false
+      }
+    },
+    /**
      * Does this event record any change of state?
      * @return {boolean} True if null, false if something changed.
      */
     isNull: {
       get () {
         return false
+      }
+    },
+    key: {
+      get () {
+        return [this.eyo.key, this.brickId, this.boardId].join('.')
       }
     },
     boardID: eYo.NA,
@@ -351,7 +353,14 @@ eYo.event.makeC9r('Abstract', {
  * Run an event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
-eYo.event.Abstract_p.run = eYo.doNothing
+eYo.event.Dflt_p.run = eYo.doNothing
+
+/**
+ * Merge the receiver with the given event.
+ * @param {eYo.event.Dflt} event - an eYo event
+ * @return {Boolean} Whether the change did occur.
+ */
+eYo.event.Dflt_p.merge = eYo.doNothing
 
 /**
  * @name {eYo.event.Backer}
@@ -361,7 +370,7 @@ eYo.event.Abstract_p.run = eYo.doNothing
 eYo.o3d.makeC9r(eYo.event, 'Backer', {
   properties: {
     /**
-     * @type {!Array<!eYo.event.Abstract>}
+     * @type {!Array<!eYo.event.Dflt>}
      * @protected
      */
     undoStack: {
@@ -370,7 +379,7 @@ eYo.o3d.makeC9r(eYo.event, 'Backer', {
       },
     },
     /**
-     * @type {!Array<!eYo.event.Abstract>}
+     * @type {!Array<!eYo.event.Dflt>}
      * @protected
      */
     redoStack: {

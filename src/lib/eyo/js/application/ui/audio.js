@@ -11,12 +11,23 @@
  */
 'use strict'
 
+eYo.o3d.makeNS(eYo, 'audio', {
+  /**
+   * Play a sound at least this amount of milliseconds.
+   */
+  SOUND_LIMIT: 100,
+  /**
+   * Default volume.
+   */
+  SOUND_VOLUME: 0.5,
+})
+
 /**
  * Class for loading, storing, and playing audio.
  * @param {String} pathToMedia
  * @constructor
  */
-eYo.o3d.makeC9r(eYo, 'Audio', {
+eYo.audio.makeDflt({
   properties: {
     /**
      * Time that the last sound was played.
@@ -28,14 +39,17 @@ eYo.o3d.makeC9r(eYo, 'Audio', {
       },
     },
   },
+  methods: {
+    /**
+     * Play a named sound at specified volume.  If volume is not specified,
+     * use SOUND_VOLUME.
+     * @param {string} name Name of sound.
+     * @param {number=} opt_volume Volume of sound (0-1).
+     */
+    play (name, opt_volume) {
+      this.ui_driver.play(this, name, eYo.isNA(opt_volume) ? this.ns.SOUND_VOLUME : opt_volume)
+    },
+  },
 })
 
-/**
- * Play a named sound at specified volume.  If volume is not specified,
- * use SOUND_VOLUME.
- * @param {string} name Name of sound.
- * @param {number=} opt_volume Volume of sound (0-1).
- */
-eYo.Audio_p.play = function(name, opt_volume) {
-  this.ui_driver.play(this, name, opt_volume)
-}
+

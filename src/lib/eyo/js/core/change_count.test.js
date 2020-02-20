@@ -36,7 +36,7 @@ describe ('Tests: change_count', function () {
     chai.assert(d.changeCount === 1)
     d.resetChangeCount()
     chai.assert(d.changeCount === 0)
-    event.type = eYo.event.UI
+    event.isUI = true
     d.updateChangeCount(event)
     chai.assert(d.changeCount === 0)
     d.updateChangeCount(event, true)
