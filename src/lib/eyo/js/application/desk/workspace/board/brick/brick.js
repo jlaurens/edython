@@ -699,13 +699,7 @@ eYo.brick.makeDflt({
      * @type {eYo.geom.Where}
      * @readonly
      */
-    'ui.xy': 'xy',
-    /**
-     * Position of the receiver in the board.
-     * @type {eYo.geom.Where}
-     * @readonly
-     */
-    'ui.xy': 'where',
+    'ui.xy': ['xy', 'where'],
     //'': '',
   },
   init (board, type, opt_id) {

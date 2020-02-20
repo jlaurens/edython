@@ -630,6 +630,7 @@ describe ('Tests: Object', function () {
     })
     var a = new ns.A()
     chai.assert(a.foo === 421)
+    chai.assert(!a.bar)
     ns.A.eyo.propertiesMerge({
       bar: 123,
     })
@@ -673,8 +674,9 @@ describe ('Tests: Object', function () {
     chai.assert(flag === 666)
     chai.assert(bb.foo === 123)
   })
-  it ('O4t: modelDeclare', function () {
-    let ns = eYo.o4t.makeNS()
+  it (`O4t: modelDeclare({...})`, function () {
+    let NS = eYo.o4t.makeNS()
+    let ns = NS.makeNS('foo')
     ns.makeDflt()
     let o = new ns.Dflt()
     chai.expect(() =>{
@@ -682,21 +684,62 @@ describe ('Tests: Object', function () {
     }).to.throw()
     chai.assert(!o.foo)
     var flag = 0
+    chai.assert(!ns.merge)
+    ns.modelDeclare({
+      properties: {
+        foo: 421,
+      },
+      aliases: {
+        foo: 'mi',
+      },
+      methods: {
+        bar () {
+          flag = 421 - flag
+        }
+      }
+    })
+    chai.assert(ns.merge)
+    ns.merge(ns.Dflt_p)
+    o.bar()
+    chai.assert(flag === 421)
+    o = new ns.Dflt()
+    o.bar()
+    chai.assert(flag === 0)
+    chai.assert(o.foo === 421)
+    chai.assert(o.mi === o.foo)
+  })
+  it (`O4t: modelDeclare('...', {...})`, function () {
+    let NS = eYo.o4t.makeNS()
+    let ns = NS.makeNS('foo')
+    ns.makeDflt()
+    let o = new ns.Dflt()
+    chai.expect(() =>{
+      o.bar()
+    }).to.throw()
+    chai.assert(!o.foo)
+    var flag = 0
+    chai.assert(!ns.chiMerge)
     ns.modelDeclare('chi', {
       properties: {
         foo: 421,
       },
       aliases: {
-        mi: 'foo',
+        foo: 'mi',
       },
       methods: {
         bar () {
-          flag = 421
+          flag = 421 - flag
         }
       }
     })
+    chai.assert(ns.chiMerge)
     ns.chiMerge(ns.Dflt_p)
     o.bar()
     chai.assert(flag === 421)
+    o = new ns.Dflt()
+    o.bar()
+    chai.assert(flag === 0)
+    chai.assert(o.foo === 421)
+    chai.assert(o.mi === o.foo)
   })
 })

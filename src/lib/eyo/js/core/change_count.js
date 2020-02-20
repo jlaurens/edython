@@ -12,22 +12,36 @@
 'use strict'
 
 eYo.o4t.makeNS('changeCount')
-console.error('BREAK')
+
 eYo.o4t.changeCount.modelDeclare({
   properties: {
     changeCount: 0,
   },
   methods: {
-    updateChangeCount (event, redo) {
-      if (event.type == eYo.event.UI) {
-        return
-      }
-      if (redo) {
-        ++this.changeCount_
+    /**
+     * If the event is not a UI event,
+     * adds 1 to change count on redo,
+     * removes 2 on undo.
+     * Order of params does not matter.
+     * @param {Boolean} [redo] - defaults to `true`
+     * @param {Event} [event]
+     */
+    updateChangeCount (redo, event) {
+      if (redo === true) {
+        var what = 1
+      } else if (redo === false) {
+        what = -1
       } else {
-        --this.changeCount_
+        what = event || eYo.isNA(event) ? 1 : -1
+        event = redo
+      }
+      if (!event || event.type !== eYo.event.UI) {
+        this.changeCount_ += what
       }
     },
+    /**
+     * Resets the change count to 0.
+     */
     resetChangeCount () {
       this.changeCount_ = 0
     }

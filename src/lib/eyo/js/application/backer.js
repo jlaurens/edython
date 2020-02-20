@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('o4t.changeCount')
-
 eYo.forwardDeclare('event')
 eYo.forwardDeclare('app')
 
@@ -135,7 +133,7 @@ eYo.Backer_p.undo = function(redo) {
         }
         events.forEach(event => {
           event.run(redo)
-          this.updateChangeCount(event, redo)
+          this.updateChangeCount(redo, event)
         })
       }, () => { // finally
         eYo.event.recordingUndo = true
@@ -172,7 +170,7 @@ eYo.Backer_p.eventDidFireChange = function(event, task) {
       complete = this.didUnshiftUndo
     }
     task()
-    this.updateChangeCount(event, true)
+    this.updateChangeCount(true, event)
     complete.apply(this)
   } else {
     task()
