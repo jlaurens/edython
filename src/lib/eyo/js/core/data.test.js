@@ -19,9 +19,9 @@ describe ('Tests: data', function () {
   it ('Data: basic', function () {
     chai.assert(eYo.data, 'NOT YET IMPLEMENTED')
   })
-  it ('eYo.c9r.model.dataHandler: #', function () {
+  it ('eYo.model.dataHandler: #', function () {
     let test = (model, n) => {
-      eYo.c9r.model.dataHandler({
+      eYo.model.dataHandler({
         foo: model
       }, 'foo')
       var methods = model['.methods']
@@ -35,7 +35,7 @@ describe ('Tests: data', function () {
     test({synchronize () {}}, 1)
     test({willChange () {}, didChange () {}}, 2)
   })
-  it ('eYo.c9r.model.dataHandler: object', function () {
+  it ('eYo.model.dataHandler: object', function () {
     var flag
     let test = (f, n) => {
       flag = 0
@@ -44,7 +44,7 @@ describe ('Tests: data', function () {
           willChange: f
         }
       }
-      eYo.c9r.model.dataHandler(model, 'foo')
+      eYo.model.dataHandler(model, 'foo')
       var O = {}
       model.foo['.methods'].forEach(f => {
         f(O)

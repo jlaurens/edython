@@ -20,7 +20,7 @@ eYo.require('expr.primary')
 eYo.require('menuItem')
 goog.require('goog.dom');
 
-eYo.do.readOnlyMixin(eYo.xre, {
+eYo.mixinRO(eYo.xre, {
   decorator: XRegExp(`^@?
     (?:
       (?<property> property) |
@@ -49,7 +49,7 @@ eYo.do.readOnlyMixin(eYo.xre, {
  * Class for a Delegate, decorator.
  * For edython.
  */
-eYo.stmt.makeC9r('decorator_stmt', {
+eYo.stmt.makeC9r('decorator_stmt', true, {
   xml: {
     attr: '@'
   },
@@ -328,7 +328,7 @@ eYo.stmt.makeC9r('decorator_stmt', {
   foot: {
     required: true
   }
-}, true)
+})
 
 Object.defineProperties(eYo.stmt.decorator_stmt.prototype, {
   /**
@@ -410,7 +410,7 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, funcdef_part.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('funcdef_part', {
+eYo.stmt.group.makeInheritedC9r('funcdef_part', true, {
   data: {
     variant: {
       all: [null, eYo.key.TYPE],
@@ -460,7 +460,7 @@ eYo.stmt.group.makeInheritedC9r('funcdef_part', {
       check: eYo.t3.expr.check.expression
     }
   }
-}, true)
+})
 
 /**
  * Populate the context menu for the given brick.
@@ -500,7 +500,7 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  * Class for a Delegate, classdef_part brick.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('classdef_part', {
+eYo.stmt.group.makeInheritedC9r('classdef_part', true, {
   data: {
     variant: {
       all: [eYo.key.NONE, eYo.key.N_ARY],
@@ -550,7 +550,7 @@ eYo.stmt.group.makeInheritedC9r('classdef_part', {
       }
     }
   }
-}, true)
+})
 
 /**
  * Populate the context menu for the given brick.

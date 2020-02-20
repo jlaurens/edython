@@ -112,7 +112,7 @@ eYo.font.ascent_ = 13
  * @name{eYo.style}
  * @namespace
  */
-eYo.provide('style')
+eYo.makeNS('style')
 
 eYo.style._p.weight = x => x / (1 + x), // 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
 eYo.style._p.SEP_SPACE_X = 0
@@ -121,7 +121,7 @@ eYo.style._p.SEP_SPACE_X = 0
  * @name{eYo.padding}
  * @namespace
  */
-eYo.provide('padding')
+eYo.makeNS('padding')
 
 ;(() => {
   var g = {
@@ -160,7 +160,7 @@ eYo.editorOffset = {x: 0, y: 0}
 /**
  * Setupt the offset of the text editor.
  */
-eYo.Setup.register(() => {
+eYo.setup.register(() => {
   var ELECTRON = {x: 1, y: 2}
   var CHROME = {x: 1, y: 1}
   var GECKO = {x: 0, y: -1}

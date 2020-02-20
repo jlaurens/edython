@@ -220,7 +220,7 @@ eYo.magnet.makeC9r('S', {
  * @param {String} key
  * @return {Object}
  */
-eYo.c9r.model.magnetHandler = (model) => {
+eYo.model.magnetHandler = (model) => {
   model || eYo.throw('Missing model')
   let methods = []
   ;['willConnect', 'didConnect', 'willDisconnect', 'didDisconnect'].forEach(k => {
@@ -238,7 +238,7 @@ eYo.c9r.model.magnetHandler = (model) => {
                 builtin.call(this, ...args)
               }, ...args)
             } : function (...args) {
-              f.call(this, eYo.do.nothing, ...args)
+              f.call(this, eYo.doNothing, ...args)
             }
           }
         } else {
@@ -488,7 +488,7 @@ eYo.magnet.makeDflt({
 })
 
 // computed public properties
-eYo.magnet.Dflt.eyo.extendsProperties({
+eYo.magnet.Dflt.eyo.propertiesMerge({
   /**
   * Horizontal position in the brick in text unit.
   * @readonly

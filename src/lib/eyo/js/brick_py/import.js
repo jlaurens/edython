@@ -68,7 +68,7 @@ eYo.expr.List.makeInheritedC9r('non_void_import_identifier_as_list', {
  * The value property is used to store the module.
  * For edython.
  */
-eYo.stmt.makeC9r('import_stmt', {
+eYo.stmt.makeC9r('import_stmt', true, {
   data: {
     variant: {
       all: [
@@ -271,7 +271,7 @@ eYo.stmt.makeC9r('import_stmt', {
   deinit () /** @suppress {globalThis} */ {
     eYo.stmt.importUnregister(this)
   }
-}, true)
+})
 
 eYo.do.register.add(eYo.stmt, 'import', function (b3k) {
   return !b3k.isInFlyout
@@ -380,7 +380,7 @@ eYo.stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, future_statement.
  * For edython.
  */
-eYo.stmt.makeC9r('future_statement', {
+eYo.stmt.makeC9r('future_statement', true, {
   slots: {
     list: {
       order: 1,
@@ -392,4 +392,4 @@ eYo.stmt.makeC9r('future_statement', {
       wrap: eYo.t3.expr.non_void_import_identifier_as_list
     }
   }
-}, true)
+})

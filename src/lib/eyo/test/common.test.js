@@ -17,7 +17,7 @@
   eYo.APP = new eYo.app.Dflt(options)
   /* Inject your workspace
   var workspace = Blockly.inject('eyoDiv', options)
-  eYo.Setup(workspace)
+  eYo.setup.finalize(workspace)
   workspace.eyo.options = {
     noLeftSeparator: true,
     noDynamicList: false,
@@ -190,7 +190,7 @@ eYo.test.Basic = (ra, str) => {
 'alias'])
 */
 eYo.test.incog = (brick, keys) => {
-  var M = eYo.c9r.model.forKey(brick.type)
+  var M = eYo.model.forKey(brick.type)
   Object.keys(M.slots).forEach(k => {
     var yorn = keys.indexOf(k) >= 0
     chai.assert(!brick[`${k}_s`].incog === yorn, `${yorn ? 'MISSING' : 'UNEXPECTED'} ${k.toUpperCase()} INCOG`)
@@ -413,7 +413,7 @@ eYo.test.Copy_paste = (brick, opts) => {
   var dom = eYo.xml.brickToDom(brick)
   var dd = eYo.brick.newReady(brick, dom)
   eYo.test.Same(brick, dd)
-  var M = eYo.c9r.model.forKey(brick.type)
+  var M = eYo.model.forKey(brick.type)
   Object.keys(M.slots).forEach(k => {
     var key = `${k}_s`
     chai.assert(brick[key].incog === dd[key].incog, `INCONSISTENT INCOG for key ${k}`)

@@ -42,7 +42,7 @@ goog.forwardDeclare('goog.dom')
  * or a augtarget_annotated which is a particular case of key_datum.
  * For edython.
  */
-eYo.stmt.makeC9r('assignment_stmt', {
+eYo.stmt.makeC9r('assignment_stmt', true, {
   data: {
     variant: {
       all: [
@@ -310,7 +310,7 @@ eYo.stmt.makeC9r('assignment_stmt', {
       }
     }
   }
-}, true)
+})
 
 ;[
   'expression_stmt',

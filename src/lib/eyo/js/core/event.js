@@ -346,5 +346,5 @@ eYo.event.makeC9r('Abstract', {
  * Run an event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
-eYo.event.Abstract_p.run = eYo.do.nothing
+eYo.event.Abstract_p.run = eYo.doNothing
 

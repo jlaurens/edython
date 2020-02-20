@@ -28,7 +28,7 @@ eYo.provide('do.register')
 eYo.do.register.add = function (object, key, filter) {
   let k = key + 'Registered'
   if (eYo.isF(object)) {
-    object.eyo.extendsProperties({
+    object.eyo.propertiesMerge({
       [k] () {
         return []
       }
@@ -62,7 +62,7 @@ eYo.do.register.add = function (object, key, filter) {
     },
   }
   Object.keys(model).forEach(k => {
-    eYo.do.hasOwnProperty(object, k) && eYo.throw(`Unexpected property ${key}`)
+    eYo.hasOwnProperty(object, k) && eYo.throw(`Unexpected property ${key}`)
     let f = model[k]
     object[k] = f // maybe some post processing here...
   })

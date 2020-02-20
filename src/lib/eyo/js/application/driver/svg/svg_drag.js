@@ -55,7 +55,7 @@ eYo.svg.BrickDragSurface = function(container) {
  * Sever all the links and remove dom nodes.
  */
 eYo.svg.BrickDragSurface.prototype.dispose = function() {
-  this.dispose = eYo.do.Nothing
+  this.dispose = eYo.doNothing
   goog.dom.removeNode(this.dom.svg.root_)
   this.limits_ = this.dom = this.brick_ = null
 }
@@ -165,7 +165,7 @@ eYo.svg.BrickDragSurface.prototype.start = function(draggerBrick) {
   this.where = new eYo.geom.Where()
 }
 
-eYo.Temp.i = 0
+eYo.temp.i = 0
 
 /**
  * Translate the entire drag surface during a drag.
@@ -174,7 +174,7 @@ eYo.Temp.i = 0
  * Because of this, the drag coordinates must be adjusted by scale.
  */
 eYo.svg.BrickDragSurface.prototype.move = function() {
-  if (++eYo.Temp.i > 100) {
+  if (++eYo.temp.i > 100) {
     console.error('BREAK HERE')
   }
   this.where = this.dragger.xyDelta.scale(this.scale_)
@@ -232,7 +232,7 @@ eYo.svg.BoardDragSurface.prototype.dispose = function () {
   var svg = dom.svg
   goog.dom.removeNode(svg.root_)
   this.dom = dom.svg = svg.root_ = this.dragger_ = null
-  this.dispose = eYo.do.nothing
+  this.dispose = eYo.doNothing
 }
 
 Object.defineProperties(eYo.svg.BoardDragSurface.prototype, {

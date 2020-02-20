@@ -720,7 +720,7 @@ console.warn('NYI')
 /**
  * Update the calculations.
  */
-eYo.board.Dflt_p.updateScreenCalculations_ = eYo.do.nothing
+eYo.board.Dflt_p.updateScreenCalculations_ = eYo.doNothing
 
 /**
  * Move the receiver to the new coordinates given by its metrics' scroll.
@@ -1461,7 +1461,7 @@ eYo.board.Dflt_p.eventDidFireChange = function(event) {
   }
 }
 
-eYo.o3d.Dflt.eyo.extendsProperties({
+eYo.o3d.Dflt.eyo.propertiesMerge({
   board: {
     get () {
       this.owner.board

@@ -18,7 +18,7 @@ eYo.require('brick')
  */
 eYo.fcfl.makeDriverC9r('Brick')
 
-eYo.brick.eyo.extendsProperties({
+eYo.brick.Dflt.eyo.propertiesMerge({
   ui () {
     return Object.create(null)
   },
@@ -84,7 +84,7 @@ eYo.brick.eyo.extendsProperties({
   },
   BUMP_DELAY: 250,
 })
-eYo.brick.eyo.aliasesDeclare({
+eYo.brick.Dflt.eyo.aliasesMerge({
   'xy': 'where',
 })
 
@@ -902,7 +902,7 @@ eYo.fcfl.Brick._p.drawSharp_ = function (io) {
  * @param {Boolean} visible - the brick the driver acts on
  * @private
  */
-eYo.fcfl.Brick._p.drawSharp = eYo.do.nothing
+eYo.fcfl.Brick._p.drawSharp = eYo.doNothing
 
 /**
  * Render the given field, when defined.
@@ -1369,7 +1369,7 @@ eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'updateShape')
  * @param {eYo.brick.Dflt} brick - The brick of which the shape would need an update
  * @protected
  */
-eYo.fcfl.Brick._p.updateShape = eYo.do.nothing
+eYo.fcfl.Brick._p.updateShape = eYo.doNothing
 
 /**
  * Hide the brick.
@@ -1702,7 +1702,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
  * @param {boolean} enable True if the delete cursor should be shown, false
  *     otherwise.
  */
-eYo.fcfl.Brick._p.deleteStyleSet = eYo.do.nothing
+eYo.fcfl.Brick._p.deleteStyleSet = eYo.doNothing
 
 /**
  * Hilight the given connection.
@@ -1876,4 +1876,4 @@ eYo.fcls.Brick_p.canDraw = function (brick) {
  * Default implementation does nothing.
  * @param {eYo.brick.Dflt} brick The brick to place.
  */
-eYo.fcfl.Brick_p.place = eYo.do.nothing
+eYo.fcfl.Brick_p.place = eYo.doNothing

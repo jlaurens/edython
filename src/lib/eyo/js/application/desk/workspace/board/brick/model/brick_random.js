@@ -33,7 +33,7 @@ eYo.t3.expr.random__randrange = 'eyo:random__randrange'
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.builtin__range_expr.makeInheritedC9r('random__randrange', {
+eYo.expr.builtin__range_expr.makeInheritedC9r('random__randrange', true, {
   xml: {
     attr: 'randrange'
   },
@@ -118,7 +118,7 @@ eYo.expr.builtin__range_expr.makeInheritedC9r('random__randrange', {
   out: {
     check: [eYo.t3.expr.random__randrange, eYo.t3.expr.call_expr]
   }
-}, true)
+})
 
 /**
  * The xml `eyo` attribute of this brick, as it should appear in the saved data.

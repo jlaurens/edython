@@ -26,18 +26,18 @@ goog.forwardDeclare('goog.dom')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('try_part', {
+eYo.stmt.group.makeInheritedC9r('try_part', true, {
   fields: {
     prefix: 'try'
   }
-}, true)
+})
 
 /**
  * Class for a Delegate, except_part brick.
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('except_part', {
+eYo.stmt.group.makeInheritedC9r('except_part', true, {
   data: {
     variant: {
       all: [
@@ -160,7 +160,7 @@ eYo.stmt.group.makeInheritedC9r('except_part', {
       : eYo.t3.stmt.next.void_except_part
     }
   }
-}, true)
+})
 
 ;[
   'void_except_part'
@@ -223,17 +223,17 @@ eYo.stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('finally_part', {
+eYo.stmt.group.makeInheritedC9r('finally_part', true, {
   fields: {
     prefix: 'finally'
   }
-}, true)
+})
 
 /**
  * Class for a Delegate, raise_stmt.
  * For edython.
  */
-eYo.stmt.makeC9r('raise_stmt', {
+eYo.stmt.makeC9r('raise_stmt', true, {
   data: {
     variant: {
       all: [
@@ -326,7 +326,7 @@ eYo.stmt.makeC9r('raise_stmt', {
       }
     }
   }
-}, true)
+})
 
 /**
  * Populate the context menu for the given brick.
@@ -367,7 +367,7 @@ eYo.stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, assert_stmt.
  * For edython.
  */
-eYo.stmt.makeC9r('assert_stmt', {
+eYo.stmt.makeC9r('assert_stmt', true, {
   data: {
     variant: {
       all: [
@@ -429,7 +429,7 @@ eYo.stmt.makeC9r('assert_stmt', {
       }
     }
   }
-}, true)
+})
 
 /**
  * Populate the context menu for the given brick.

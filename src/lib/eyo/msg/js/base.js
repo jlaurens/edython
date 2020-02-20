@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.provide('msgPack')
+eYo.makeNS('msgPack')
 
-eYo.provide('msg')
+eYo.makeNS('msg')
 
 /** @export */ eYo.msg.RENAME = 'Renommer'
 

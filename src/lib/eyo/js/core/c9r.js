@@ -17,7 +17,6 @@ eYo.require('xre')
 eYo.forwardDeclare('o4t')
 eYo.forwardDeclare('o3d')
 eYo.forwardDeclare('p6y')
-eYo.forwardDeclare('c9r.model')
 
 /**
  * Management of constructors and models.
@@ -25,12 +24,12 @@ eYo.forwardDeclare('c9r.model')
  * @name {eYo.c9r}
  * @namespace
  */
-eYo.makeNS('c9r')
+eYo.model.makeNS(eYo,'c9r')
 
 // ANCHOR Top level constructor utilities
 {
   eYo.c9r._p.declareDlgt = function (_p) {
-    let d = eYo.c9r.descriptorR(function () {
+    let d = eYo.descriptorR(function () {
       return this.constructor.eyo__
     })
     Object.defineProperties(_p, {
@@ -60,22 +59,22 @@ eYo.makeNS('c9r')
  * @return {Function} the created constructor.
  */
 eYo._p.doMakeC9r = function (ns, key, Super, model) {
-  !ns || ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw(`Bad ns: ${ns}`)
-  eYo.isStr(key) || eYo.throw(`Bad key: ${key}`)
-  !Super || eYo.isF(Super) || eYo.throw(`Bad Super: ${Super}`)
-  eYo.isO(model) || eYo.throw(`Bad model: ${model}`)
+  !ns || ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw(`doMakeC9r/Bad ns: ${ns}`)
+  !key || eYo.isStr(key) || eYo.throw(`doMakeC9r/Bad key: ${key}`)
+  !Super || eYo.isC9r(Super) || eYo.throw(`doMakeC9r/Bad Super: ${Super}`)
+  eYo.isD(model) || eYo.throw(`doMakeC9r/Bad model: ${model}`)
   if (Super) {
     // create the constructor
     // TODO: due to the makeInit method, this constructor may be badly designed.
     var C9r = function () {
       // Class
       var old = this.init
-      this.init = eYo.do.nothing
+      this.init = eYo.doNothing
       Super.apply(this, arguments)
       if (!this) {
         console.error('BREAK HERE!')
       }
-      if (old !== eYo.do.nothing) {
+      if (old !== eYo.doNothing) {
         delete this.init
         old.apply(this, arguments)
       }
@@ -83,12 +82,18 @@ eYo._p.doMakeC9r = function (ns, key, Super, model) {
     eYo.inherits(C9r, Super)
     eYo.assert(eYo.isSubclass(C9r, Super), 'MISSED inheritance)')
     // syntactic sugar shortcuts
-    ns && ns !== eYo.NULL_NS && key.length && Object.defineProperties(ns._p, {
-      [key]: { value: C9r},
-      [key + '_p']: { value: C9r.prototype },
-      [key + '_s']: { value: Super.prototype },
-      [key + '_S']: { value: Super },
-    })
+    if (ns && key.length) {
+      if (key && key.startsWith('eyo:')) {
+        key = key.substring(4)
+      }
+      (ns.hasOwnProperty(key) || ns._p.hasOwnProperty(key)) && eYo.throw(`${key} is already a property of ns: ${ns.name}`)
+      Object.defineProperties(ns._p, {
+        [key]: { value: C9r},
+        [key + '_p']: { value: C9r.prototype },
+        [key + '_s']: { value: Super.prototype },
+        [key + '_S']: { value: Super },
+      })
+    }
   } else {
     // create the constructor
     var C9r = function () {
@@ -99,14 +104,20 @@ eYo._p.doMakeC9r = function (ns, key, Super, model) {
       this.init.apply(this, arguments)
     }
     // store the constructor
-    ns && ns !== eYo.NULL_NS && key.length && Object.defineProperties(ns._p, {
-      [key]: { value: C9r},
-      [key + '_p']: { value: C9r.prototype },
-    })
+    if (ns && key.length) {
+      if (key && key.startsWith('eyo:')) {
+        key = key.substring(4)
+      }
+      (ns.hasOwnProperty(key) || ns._p.hasOwnProperty(key)) && eYo.throw(`${key} is already a property of ns: ${ns.name}`)
+      Object.defineProperties(ns._p, {
+        [key]: { value: C9r},
+        [key + '_p']: { value: C9r.prototype },
+      })
+    }
     eYo.c9r.declareDlgt(C9r.prototype)
   }
   let eyo = this.makeDlgt(ns, key, C9r, model)
-  eYo.assert(eyo === C9r.eyo, 'MISSED')
+  eyo === C9r.eyo || eYo.throw('MISSED')
   C9r.makeInheritedC9r = eyo.makeInheritedC9r.bind(eyo)
   return C9r
 }
@@ -117,63 +128,55 @@ eYo._p.doMakeC9r = function (ns, key, Super, model) {
  * into
  * function ([ns], [key], [Super], [model]) {...}.
  * Both functions have `this` bound to a namespace.
+ * If argument `ns` is not provided, just replace it with the receiver.
  * @param{Function} f
  * @this{undefined}
  */
 eYo.c9r._p.makeC9rDecorate = (f) => {
-  return function (ns, key, Super, model) {
+  return function (ns, key, Super, register, model) {
     // makeC9rDecorate
-    if (ns && ns !== eYo.NULL_NS && !eYo.isNS(ns)) {
-      model && eYo.throw(`Unexpected model: ${model}`)
-      model = Super
+    if (ns !== eYo.NULL_NS && !eYo.isNS(ns)) {
+      if(model) {
+        console.error('BREAK HERE!!!')
+      }
+      model && eYo.throw(`Unexpected model(1): ${model}`)
+      model = register
+      register = Super
       Super = key
       key = ns
-      ns = eYo.NA
+      ns = this
     }
     if (!eYo.isStr(key)) {
-      model && eYo.throw(`Unexpected model: ${model}`)
-      model = Super
+      model && eYo.throw(`Unexpected model (2): ${model}`)
+      model = register
+      register = Super
       Super = key
       key = eYo.NA
     }
-    eYo.isStr(key) || (key = Super && Super.eyo && Super.eyo.key)
-    if (eYo.isSubclass(Super, eYo.C9r)) {
-      // Super is OK
-      key || (key = Super.eyo.key)
-      model = eYo.called(model) || {}
-    } else if (eYo.isF(Super)) {
-      if (Super.eyo) {
-        key || (key = Super.eyo.key)
-        model = eYo.called(model) || {}
-      } else {
-        model && eYo.throw(`Unexpected model (4): ${model}`)
-        model = eYo.called(Super) || {}
-        Super = eYo.asF(key && this[key]) || this.Dflt
-      }
-    } else if (model) {
-      model = eYo.called(model) || {}
-    } else {
-      model = Super || {}
+    if (Super && !eYo.isC9r(Super)) {
+      model && eYo.throw(`Unexpected model (3): ${model}`)
+      model = register
+      register = Super
       Super = eYo.asF(key && this[key]) || this.Dflt
     }
-    ns || ns === eYo.NULL_NS || (ns = this)
-    if (key || (key = Super && Super.eyo && Super.eyo.key)) {
-      !eYo.isStr(key) && eYo.throw('`key` is not a string')
-      if (key.startsWith('eyo:')) {
-        key = key.substring(4)
-      }
-      eYo.isNS(ns)
-      && (ns.hasOwnProperty(key) || ns._p.hasOwnProperty(key)) && eYo.throw(`${key} is already a property of ns: ${ns.name}`)
+    if (!eYo.isBool(register)) {
+      model && eYo.throw(`Unexpected model (4): ${model}`)
+      model = register
+      register = false
     }
-    model || eYo.throw('Unexpected void model')
-    // if (eYo.isNS(ns) && eYo.isSubclass(ns.Dflt, Super)) {
-    //   Super = ns.Dflt
-    // }
+    model = eYo.called(model) || {}
+    if (eYo.isStr(key)) {
+      eYo.isNA(Super) && (Super = eYo.asF(key && this[key]) || this.Dflt)
+    } else {
+      key = Super && Super.eyo && Super.eyo.key || ''
+    }
     if (eYo.isSubclass(this.Dflt, Super)) {
       Super = this.Dflt
     }
-    !eYo.isNS(ns) || !key && eYo.throw('Missing key in makeC9rDecorate')
-    return f.call(this, ns, key, Super, model)
+    !eYo.isNS(ns) || !eYo.isStr(key) && eYo.throw('Missing key in makeC9rDecorate')
+    let C9r = f.call(this, ns, key, Super, model)
+    register && eYo.c9r.register(C9r)
+    return C9r
   }
 }
 /**
@@ -189,7 +192,9 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
  * @param {Object|Function} [model] -  The dictionary of parameters. Or a function to create such a dictionary. This might be overcomplicated.
  * @return {Function} the created constructor.
  */
-eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
+eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
+  return this.doMakeC9r(ns, key, Super, model)
+})
 }
 // ANCHOR Constructor utilities
 {
@@ -202,7 +207,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
    */
   eYo.c9r.appendToMethod = (object, key, f) => {
     let old = object[key]
-    if (old && old !== eYo.do.nothing) {
+    if (old && old !== eYo.doNothing) {
       eYo.ParameterAsert(eYo.isF(old), `Expecting a function ${old}`)
       object[key] = function () {
         old.apply(this, arguments)
@@ -210,70 +215,6 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
       }
     } else {
       object[key] = f
-    }
-  }
-
-  /**
-   * Function used when defining a JS property.
-   */
-  eYo.c9r.noGetter = function (msg) {
-    return msg 
-      ? function () {
-        throw new Error(`Forbidden getter: ${msg}`)
-      } : function () {
-        throw new Error('Forbidden getter...')
-      }
-  }
-
-  /**
-   * Function used when defining a JS property.
-   */
-  eYo.c9r.noSetter = function (msg) {
-    return msg
-    ? function () {
-      throw new Error(`Forbidden setter: ${msg}`)
-    } : function () {
-      throw new Error('Forbidden setter')
-    }
-  }
-
-  /**
-   * Function used when defining a JS property.
-   */
-  eYo.c9r.descriptorR = (msg, getter) => {
-    if (!eYo.isStr(msg)) {
-      getter && eYo.throw(`Unexpected getter: ${getter}`)
-      getter = msg
-      msg = eYo.NA
-    }
-    return {
-      get: getter,
-      set: eYo.c9r.noSetter(msg),
-    }
-  }
-
-  /**
-   * Function used when defining a JS property.
-   */
-  eYo.c9r.descriptorW = (msg, setter) => {
-    if (!eYo.isStr(msg)) {
-      setter && eYo.throw(`Unexpected setter: ${setter}`)
-      setter = msg
-      msg = eYo.NA
-    }
-    return {
-      get: eYo.c9r.noGetter(msg),
-      set: setter,
-    }
-  }
-
-  /**
-   * Function used when defining a JS property.
-   */
-  eYo.c9r.descriptorNORW = (msg) => {
-    return {
-      get: eYo.c9r.noGetter(msg),
-      set: eYo.c9r.noSetter(msg),
     }
   }
 
@@ -323,7 +264,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
    * @type{Array<String>}
    * @property{types}
    */
-  Object.defineProperty(eYo.c9r._p, 'types', eYo.c9r.descriptorR(function () {
+  Object.defineProperty(eYo.c9r._p, 'types', eYo.descriptorR(function () {
     return Object.keys(eYo.c9r.byType__)
   }))
 
@@ -342,7 +283,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
    */
   eYo.c9r._p.register = function (key, C9r) {
     if (!eYo.isStr(key)) {
-    C9r && eYo.throw(`UNEXPECTED ${C9r}`)
+      C9r && eYo.throw(`UNEXPECTED ${C9r}`)
       C9r = key
       key = C9r.eyo.key
     }
@@ -393,13 +334,13 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
     })
     C9r.eyo__ = this
     if (!C9r.eyo) { // true for subclasses of eYo.c9r.Dlgt
-      var d = eYo.c9r.descriptorR(function () {
+      var d = eYo.descriptorR(function () {
         return this.eyo__
       })
       Object.defineProperties(C9r, {
         eyo: d,
         eyo_: d,
-        eyo_p: eYo.c9r.descriptorR(function () {
+        eyo_p: eYo.descriptorR(function () {
           return this.eyo__._p
         }),
       })
@@ -407,6 +348,9 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
   }
   let Dlgt = eYo.c9r.Dlgt = function (ns, key, C9r, model) {
     AutoDlgt.call(this, ns, key, C9r, model)
+    if (!this.init) {
+      console.error('BREAK HERE!')
+    }
     this.init()
     this.handleModel(model)
     this.makeInit()
@@ -422,12 +366,36 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
   /**
    * Initialize the delegate.
    */
-  _p.init = eYo.do.nothing
+  _p.init = eYo.doNothing
   /**
-   * @param {Object} model - a model used for extensions.
+   * Extend the receiver and its associate constructor with the given model.
+   * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
    */
-  _p.handleModel = eYo.do.nothing
+  _p.handleModel = function (model) {
+    if (model) {
+      this.modelConsolidate(model)
+      this.modelMerge(model)
+    }
+  }
+  /**
+   * Consolidate the given model.
+   * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
+   */
+  _p.modelConsolidate = function (model) {
+    Object.keys(model).length && eYo.model.consolidate(model)
+  }
 
+  _p.modelConsolidate = function (...args) {
+    eYo.model.consolidate(...args)
+  }
+  
+  /**
+   * Declare the given model.
+   * @param {Object} model - Object, like for |makeC9r|.
+   */
+  _p.modelMerge = function (model) {
+    model.methods && this.methodsMerge(model.methods)
+  }
   /**
    * Make the init method of the associate contructor.
    */
@@ -440,7 +408,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
         if (init_s) {
           var f = function (...args) {
             try {
-              this.init = eYo.do.nothing
+              this.init = eYo.doNothing
               init_m.call(this, () => {
                 this.eyo.prepareInstance(this)
                 init_s.call(this, ...args)              
@@ -453,7 +421,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
         } else {
           f = function (...args) {
             try {
-              this.init = eYo.do.nothing
+              this.init = eYo.doNothing
               this.eyo.prepareInstance(this)
               init_m.call(this, () => {
                 this.eyo.initInstance(this)
@@ -466,7 +434,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
       } else if (init_s) {
         f = function (...args) {
           try {
-            this.init = eYo.do.nothing
+            this.init = eYo.doNothing
             this.eyo.prepareInstance(this)
             init_s.call(this, ...args)
             init_m.call(this, ...args)
@@ -478,7 +446,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
       } else {
         f = function (...args) {
           try {
-            this.init = eYo.do.nothing
+            this.init = eYo.doNothing
             this.eyo.prepareInstance(this)
             init_m.call(this, ...args)
             this.eyo.initInstance(this)
@@ -490,7 +458,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
     } else if (init_s) {
       f = function (...args) {
         try {
-          this.init = eYo.do.nothing
+          this.init = eYo.doNothing
           if (!this.eyo) {
             console.error('NO EYO')
           }
@@ -504,7 +472,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
     } else {
       f = function () {
         try {
-          this.init = eYo.do.nothing
+          this.init = eYo.doNothing
           if (!this.eyo) {
             console.error('BREAK HERE!')
           }
@@ -529,7 +497,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
         if (dispose_s) {
           var f = function (...args) {
             try {
-              this.dispose = eYo.do.nothing
+              this.dispose = eYo.doNothing
               dispose_m.call(this, () => {
                 this.eyo.disposeInstance(this)
                 dispose_s.call(this, ...args)              
@@ -541,7 +509,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
         } else {
           f = function (...args) {
             try {
-              this.dispose = eYo.do.nothing
+              this.dispose = eYo.doNothing
               dispose_m.call(this, () => {
                 this.eyo.disposeInstance(this)              
               }, ...args)
@@ -553,7 +521,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
       } else if (dispose_s) {
         f = function (...args) {
           try {
-            this.dispose = eYo.do.nothing
+            this.dispose = eYo.doNothing
             dispose_m.call(this, ...args)
             this.eyo.disposeInstance(this)
             dispose_s.call(this, ...args)
@@ -564,7 +532,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
       } else {
         f = function (...args) {
           try {
-            this.dispose = eYo.do.nothing
+            this.dispose = eYo.doNothing
             dispose_m.call(this, ...args)
             this.eyo.disposeInstance(this)
           } finally {
@@ -575,7 +543,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
     } else if (dispose_s) {
       f = function (...args) {
         try {
-          this.dispose = eYo.do.nothing
+          this.dispose = eYo.doNothing
           this.eyo.disposeInstance(this)
           dispose_s.call(this, ...args)
         } finally {
@@ -585,7 +553,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
     } else {
       f = function (...args) {
         try {
-          this.dispose = eYo.do.nothing
+          this.dispose = eYo.doNothing
           this.eyo.disposeInstance(this)
         } finally {
           delete this.init
@@ -599,27 +567,27 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
    * Default implementation forwards to super.
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
-  _p.prepareInstance = eYo.do.nothing
+  _p.prepareInstance = eYo.doNothing
 
   /**
    * Defined by subclassers.
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
-  _p.initInstance = eYo.do.nothing
+  _p.initInstance = eYo.doNothing
 
   /**
    * Defined by subclassers.
    */
-  _p.disposeInstance = eYo.do.nothing
+  _p.disposeInstance = eYo.doNothing
 
   // convenient shortcut
   Object.defineProperties(_p, {
-    _p: eYo.c9r.descriptorR(function () {
+    _p: eYo.descriptorR(function () {
       return this.constructor.prototype
     }),
   })
   ;['ns', 'key', 'C9r', 'model'].forEach(k => {
-    let d = eYo.c9r.descriptorR(function () {
+    let d = eYo.descriptorR(function () {
       return this[k + '__']
     })
     Object.defineProperties(_p, {
@@ -631,32 +599,32 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
     let k_ = k + '_'
     let k__ = k + '__'
     Object.defineProperties(_p, {
-      [k_]: eYo.c9r.descriptorNORW(k_),
-      [k__]: eYo.c9r.descriptorNORW(k__),
+      [k_]: eYo.descriptorNORW(k_),
+      [k__]: eYo.descriptorNORW(k__),
     })
   })
   Object.defineProperties(_p, {
-    C9r_p: eYo.c9r.descriptorR(function () {
+    C9r_p: eYo.descriptorR(function () {
       return this.C9r__.prototype
     }),
-    C9r_S: eYo.c9r.descriptorR(function () {
+    C9r_S: eYo.descriptorR(function () {
       return this.C9r__.SuperC9r
     }),
-    C9r_s: eYo.c9r.descriptorR(function () {
+    C9r_s: eYo.descriptorR(function () {
       return this.C9r__.SuperC9r_p
     }),
-    name: eYo.c9r.descriptorR(function () {
+    name: eYo.descriptorR(function () {
       return this.ns__ && this.key__ && `${this.ns__.name}.${this.key__}` || this.key
     }),
-    super: eYo.c9r.descriptorR(function () {
+    super: eYo.descriptorR(function () {
       var S = this.C9r__.SuperC9r
       return S && S.eyo__
     }),
-    super_p: eYo.c9r.descriptorR(function () {
+    super_p: eYo.descriptorR(function () {
       var s = this.super
       return s && s.constructor.prototype
     }),
-    genealogy: eYo.c9r.descriptorR(function () {
+    genealogy: eYo.descriptorR(function () {
       var s = this
       var ans = []
       do {
@@ -683,26 +651,46 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(eYo._p.doMakeC9r)
    * @param{Function} f - the Dlgt constructor maker to decorate.
    */
   _p.makeInheritedC9rDecorate = (f) => {
-    return function (ns, key, model) {
+    return function (ns, key, register, model) {
       var Super = this.C9r
-      if (ns && ns !== eYo.NULL_NS && !eYo.isNS(ns)) {
+      if (ns && !eYo.isNS(ns)) {
         model && eYo.throw(`Unexpected model (1): ${model}`)
-        model = key
+        model = register
+        register = key
         key = ns
         ns = this.ns
       }
       if (!eYo.isStr(key)) {
         model && eYo.throw(`Unexpected model (2): ${model}`)
-        model = key
-        key = ns === eYo.NULL_NS ? '' : this.key
+        model = register
+        register = key
+        key = ns ? this.key : ''
       }
-      try {
-        var ff = (this.ns||eYo.c9r).makeC9rDecorate(f)
-        return ff.call(this.ns||eYo.c9r, ns, key, Super, model)
-      } catch(e) {
-        console.log(this.ns)
-      }
+      var ff = (this.ns||eYo.c9r).makeC9rDecorate(f)
+      return ff.call(this.ns||eYo.c9r, ns, key, Super, register, model)
     }
+  }
+
+  /**
+   * Declare methods.
+   * Allows to split the definition of methods into different files,
+   * eventually.
+   * If the method is a function with exactly one argument named 'overriden',
+   * then we override the previously defined method.
+   * The model object is a function decorator.
+   * @param{Map<String, Function>} model - the model
+   */
+  _p.methodsMerge = function (model) {
+    let _p = this.C9r_p
+    Object.keys(model).forEach(k => {
+      let m = model[k]
+      eYo.isF(m) || eYo.throw(`Function expected: ${m}`)
+      if (m.length === 1 && XRegExp.exec(m.toString(), eYo.xre.function_overriden)) {
+        _p[k] = m.call(this, eYo.asF(_p[k]))
+      } else {
+        _p[k] = m
+      }
+    })
   }
 
   /**
@@ -737,7 +725,7 @@ eYo._p.makeDlgt = function (ns, key, C9r, model) {
   } else {
     ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw('Bad namespace')
   }
-  !eYo.isStr(key) && eYo.throw(`Missing key string: ${key} in makeDlgt`)
+  !key || eYo.isStr(key) || eYo.throw(`Missing key string: ${key} in makeDlgt`)
   !eYo.isF(C9r) && eYo.throw(`Unexpected C9r: ${C9r} in makeDlgt`)
   eYo.isC9r(C9r) && eYo.throw(`Already a C9r: ${C9r} in makeDlgt`)
   let SuperC9r = C9r.SuperC9r
@@ -759,11 +747,11 @@ eYo._p.makeDlgt = function (ns, key, C9r, model) {
   if (eYo.isF(dlgt_m)) {
     Dlgt.prototype.init = SuperDlgt
     ? function (...args) {
-      this.init = eYo.do.nothing
+      this.init = eYo.doNothing
       SuperDlgt.prototype.init.call(this, ...args)
       dlgt_m.call(this, ...args)
     } : function (...args) {
-      this.init = eYo.do.nothing
+      this.init = eYo.doNothing
       dlgt_m.call(this, ...args)
     }
   }
@@ -790,13 +778,13 @@ eYo._p.eyo = eYo.makeDlgt('NS', eYo.constructor, {})
       model = eYo.called(Super) || {}
       Super = this.super && this.super.Dflt || eYo.NA
     }
-    let Ans = this.makeC9r(this, 'Dflt', Super, model || {})
+    let C9r = this.makeC9r(this, 'Dflt', Super, model || {})
     let s = this.parent
     if (s && this.key) {
-      s[eYo.do.toTitleCase(this.key)] = Ans
+      s[eYo.do.toTitleCase(this.key)] = C9r
     }
-    this.Dlgt_p = Ans.eyo_p
-    return Ans
+    this.Dlgt_p = C9r.eyo_p
+    return C9r
   }
   
   /**
@@ -812,4 +800,34 @@ eYo._p.eyo = eYo.makeDlgt('NS', eYo.constructor, {})
    * @constructor
    */
   eYo.c9r.makeDflt()
+}
+
+// ANCHOR model
+{
+  /**
+   * The created model, by key.
+   * @param{String} key - the key used to create the constructor.
+   */
+  eYo.model.forKey = (key) => {
+    var C9r = eYo.c9r.byKey(key)
+    return C9r && C9r.eyo.model
+  }
+
+  /**
+   * The created model, by name.
+   * @param{String} name - the key used to create the constructor.
+   */
+  eYo.model.forName = (name) => {
+    var C9r = eYo.c9r.byName(name)
+    return C9r && C9r.eyo.model
+  }
+
+  /**
+   * The created models given its type.
+   * @param{String} type - the key used to create the constructor.
+   */
+  eYo.model.forType = (type) => {
+    var C9r = eYo.c9r.byType(type)
+    return C9r && C9r.eyo.model
+  }
 }

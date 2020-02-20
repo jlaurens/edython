@@ -228,7 +228,7 @@ goog.ui.SubMenuRenderer.prototype.addArrow_ = function (subMenu, element) {
 //   }
 // }
 
-eYo.Setup.register(() => {
+eYo.setup.register(() => {
   eYo.Css.insertRuleAt('.eyo-submenu-content {',
       eYo.font.MenuStyle,
   '}')

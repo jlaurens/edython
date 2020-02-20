@@ -29,7 +29,7 @@ eYo.require('do')
  */
 eYo.t3.makeNS('profile')
 
-eYo.do.readOnlyMixin(
+eYo.mixinRO(
   eYo.t3.expr,
   {
     reserved_identifier: '.reserved identifier',
@@ -53,7 +53,7 @@ eYo.do.readOnlyMixin(
   }
 )
 
-eYo.do.readOnlyMixin(
+eYo.mixinRO(
   eYo.t3.stmt,
   {
     control: '.control statement',
@@ -201,7 +201,7 @@ eYo.t3.profile.makeC9r('Dflt', {
         }
       }
     } else {
-      eYo.do.readOnlyMixin(this, m)
+      eYo.mixinRO(this, m)
     }
   },
 })
@@ -300,7 +300,7 @@ eYo.t3.makeC9r('Profiles', {
       if ((ans = profiles[module])) {
         return ans
       }
-      var M = eYo.c9r.model[module] || eYo.c9r.model[module + '__module']
+      var M = eYo.model[module] || eYo.model[module + '__module']
       if (M) {
         return (profiles[module] = M.getProfile(candidate))
       }
@@ -328,7 +328,7 @@ eYo.t3.makeC9r('Profiles', {
   }
 }) ()
 
-eYo.do.readOnlyMixin(
+eYo.mixinRO(
   eYo.t3.profile,
   {
     /* Default void profile */
@@ -376,7 +376,7 @@ eYo.t3.profile.getDotted = function (candidate, module) {
         : module
       : null
     if (holder) {
-      var M = eYo.c9r.model[holder] || eYo.c9r.model[holder + '__module']
+      var M = eYo.model[holder] || eYo.model[holder + '__module']
       var ans = M && (M.getProfile(candidate))
     } else {
       ans = eYo.t3.profile.getReference(candidate) || eYo.t3.profile.getInModule(candidate)
@@ -571,7 +571,7 @@ eYo.t3.profile.getReference = function (identifier) {
     'stdtypes',
     'datamodel'
   ].some((ref) => {
-    var M = eYo.c9r.model[ref]
+    var M = eYo.model[ref]
     ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true
@@ -610,7 +610,7 @@ eYo.t3.profile.getInModule = function (identifier) {
     'cmath',
     'string'
   ].some(module => {
-    var M = eYo.c9r.model[module + '__module']
+    var M = eYo.model[module + '__module']
     ans = M && (M.getProfile(identifier))
     if (ans && !ans.isVoid) {
       return true

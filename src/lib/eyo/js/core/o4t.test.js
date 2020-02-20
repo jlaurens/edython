@@ -37,6 +37,29 @@ describe ('Tests: Object', function () {
     let oo = new OO()
     chai.assert(oo)
   })
+  it ('O4t: initProperties', function () {
+    let O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {})
+    let o = new O()
+    chai.assert(!o.foo_p)
+    chai.assert(!o.foo)
+    eYo.o4t.initProperties(o, {
+      foo: {
+        value: 421
+      },
+    })
+    chai.assert(o.foo === 421)
+    let oo = new O()
+    chai.assert(!oo.foo_p)
+    chai.expect(() => {
+      oo.foo === eYo.NA
+    }).to.throw()
+    eYo.o4t.initProperties(oo, {
+      foo: {
+        value: 123
+      },
+    })
+    chai.assert(oo.foo === 123)
+  })
   it ('O4t: properties (valued)', function () {
     var O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
       properties: {
@@ -598,7 +621,7 @@ describe ('Tests: Object', function () {
       new ns.AA()
     }).not.to.throw()
   })
-  it ('O4t: extendsProperties', function () {
+  it ('O4t: propertiesMerge', function () {
     var ns = eYo.o4t.makeNS()
     ns.makeDflt()
     chai.assert(ns === ns.Dflt.eyo.ns)
@@ -607,7 +630,7 @@ describe ('Tests: Object', function () {
     })
     var a = new ns.A()
     chai.assert(a.foo === 421)
-    ns.A.eyo.extendsProperties({
+    ns.A.eyo.propertiesMerge({
       bar: 123,
     })
     chai.assert(a.bar !== 123)
@@ -619,7 +642,7 @@ describe ('Tests: Object', function () {
     var bb = new ns.BB()
     chai.assert(bb.foo !== 421)
     var flag = 0
-    ns.B.eyo.extendsProperties({
+    ns.B.eyo.propertiesMerge({
       foo: {
         value () {
           flag = 666
@@ -631,7 +654,7 @@ describe ('Tests: Object', function () {
     chai.assert(flag === 666)
     chai.assert(bb.foo === 421)
     chai.assert((bb.foo_ = 123) === bb.foo)
-    ns.B.eyo.extendsProperties({
+    ns.B.eyo.propertiesMerge({
       foo: {
         lazy () {
           flag = 666
@@ -649,5 +672,31 @@ describe ('Tests: Object', function () {
     bb.foo_p.reset()
     chai.assert(flag === 666)
     chai.assert(bb.foo === 123)
+  })
+  it ('O4t: modelDeclare', function () {
+    let ns = eYo.o4t.makeNS()
+    ns.makeDflt()
+    let o = new ns.Dflt()
+    chai.expect(() =>{
+      o.bar()
+    }).to.throw()
+    chai.assert(!o.foo)
+    var flag = 0
+    ns.modelDeclare('chi', {
+      properties: {
+        foo: 421,
+      },
+      aliases: {
+        mi: 'foo',
+      },
+      methods: {
+        bar () {
+          flag = 421
+        }
+      }
+    })
+    ns.chiMerge(ns.Dflt_p)
+    o.bar()
+    chai.assert(flag === 421)
   })
 })

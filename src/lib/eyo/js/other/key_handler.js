@@ -13,7 +13,7 @@
 
 eYo.require('popupMenu')
 
-eYo.provide('keyHandler')
+eYo.makeNS('keyHandler')
 
 eYo.forwardDeclare('xre')
 eYo.forwardDeclare('dom')

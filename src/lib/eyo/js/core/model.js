@@ -14,20 +14,20 @@
 /**
  * The model management.
  * Models are trees with some inheritancy.
- * @name {eYo.c9r.model}
+ * @name {eYo.model}
  * @namespace
  */
-eYo.c9r.makeNS('model')
+eYo.makeNS('model')
 
 /**
  * Whether the argument is a model object once created with `{...}` syntax.
  * @param {*} what
  */
-eYo.c9r.isModel = (what) => {
-  return what && (what.model__ || eYo.isO(what))
+eYo.isModel = (what) => {
+  return what && (what.model__ || eYo.isD(what))
 }
 
-eYo.c9r.model.Allowed = {
+eYo.model.allowed = {
   ['^$']: [
     'dlgt', 'init', 'deinit', 'dispose', 'ui',
     'properties', 'aliases',
@@ -120,17 +120,17 @@ eYo.c9r.model.Allowed = {
   ],
 }
 /**
- * @name{eYo.c9r.model.isAllowed}
+ * @name{eYo.model.isAllowed}
  * Allowed keys by path pattern
  * @param {String} path - Dot separated path components
  * @param {String} key - Dotless path components
  * @return {Boolean} Whether the key is authorized with the given path.
  */
-eYo.c9r.model.isAllowed = (path, key) => {
-  for (var k in eYo.c9r.model.Allowed) {
+eYo.model.isAllowed = (path, key) => {
+  for (var k in eYo.model.allowed) {
     var re = XRegExp(k)
     if (re.test(path)) {
-      var expected = eYo.c9r.model.Allowed[k]
+      var expected = eYo.model.allowed[k]
       if (eYo.isStr(expected)) {
         re = XRegExp(expected)
         return  re.test(key)  
@@ -141,23 +141,20 @@ eYo.c9r.model.isAllowed = (path, key) => {
   return false
 }  
 
-
 /**
+ * The real model syntax may be somehow relaxed.
+ * The method will turn the model into something strong.
  * @param {Object} model - the tree in which we replace some node by objects
  * @param {Function} handler - a function with signature (path, before): boolean
  */
-eYo.c9r.model.consolidate = (model, handler) => {
-  handler || (handler = eYo.c9r.model.shortcutsBaseHandler)
+eYo.model.consolidate = (model, handler) => {
+  handler || (handler = eYo.model.shortcutsBaseHandler)
   var do_it = (model, path) => {
-    eYo.isO(model) && Object.keys(model).forEach(k => {
+    eYo.isD(model) && Object.keys(model).forEach(k => {
       handler(model, path, k) || do_it(model[k], path && `${path}.${k}` || k)
     })
   }
   do_it(model, '')
-}
-
-eYo.c9r.Dlgt_p.modelConsolidate = function (...args) {
-  eYo.c9r.model.consolidate(...args)
 }
 
 /**
@@ -166,7 +163,7 @@ eYo.c9r.Dlgt_p.modelConsolidate = function (...args) {
  * @param {String} key
  * @return {Object}
  */
-eYo.c9r.model.dataHandler = eYo.do.nothing
+eYo.model.dataHandler = eYo.doNothing
 
 /**
  * Expands a magnet model.
@@ -174,16 +171,20 @@ eYo.c9r.model.dataHandler = eYo.do.nothing
  * @param {String} key
  * @return {Object}
  */
-eYo.c9r.model.magnetHandler = eYo.do.nothing
+eYo.model.magnetHandler = eYo.doNothing
 
 /**
  * Expands a property model.
  * @param {Object} model
  * @return {Object}
  */
-eYo.c9r.model.PropertyHandler = eYo.do.nothing
+eYo.model.propertyHandler = eYo.doNothing
 
 ;(() => {
+  /*
+   * When a function returning an array is expected.
+   * @param {*} x 
+   */
   var ensureRAF = (x) => {
     if (eYo.isRA(x)) {
       return function () {
@@ -202,45 +203,26 @@ eYo.c9r.model.PropertyHandler = eYo.do.nothing
    * @param {String} path
    * @param {String} key
    */
-  eYo.c9r.model.shortcutsBaseHandler = (model, path, key) => {
-    var after
+  eYo.model.shortcutsBaseHandler = (model, path, key) => {
+    var before, after
     if (path === '') {
-      if (['owned', 'valued'].includes(key)) {
-        var before = model[key]
-        if (eYo.isStr(before)) {
-          after = {[before]: {}}
-        } else if (goog.isArray(before)) {
-          after = {}
-          before.forEach(k => {
-            after[k] = {}
-          })
-        }
-      } else if (['out', 'head', 'left', 'right', 'suite', 'foot'].includes(key)) {
+      if (['out', 'head', 'left', 'right', 'suite', 'foot'].includes(key)) {
         // BRICK_TYPE || [BRICK_TYPE] || () => {}
-        var before = model[key]
-        if (eYo.isO(before)) {
-          eYo.c9r.model.magnetHandler(before)
+        if (eYo.isD(before = model[key])) {
+          eYo.model.magnetHandler(before)
         } else {
           after = {
             check: ensureRAF(before)
           }
         }
       }
-    } else if (path === 'computed') {
-      var before = model[key]
-      if (eYo.isF(before)) {
-        after = {
-          get: before
-        }
-      }
-    } else if (['owned', 'CONST', 'valued', 'cached', 'copied'].includes(path)) {
-      var before = model[key]
-      if (eYo.isF(before)) {
+    } else if (['CONST'].includes(path)) {
+      if (eYo.isF(before = model[key])) {
         after = { init: before }
-      } else if (!eYo.isO(before)) {
+      } else if (!eYo.isD(before)) {
         after = { value: before }
       } else if (before) {
-        eYo.c9r.model.PropertyHandler(model)
+        eYo.model.propertyHandler(model)
       }
     } else if (['out', 'head', 'left', 'right', 'suite', 'foot'].includes(path)) {
       if (key === 'check') {
@@ -248,20 +230,20 @@ eYo.c9r.model.PropertyHandler = eYo.do.nothing
         after = ensureRAF(model[key])
       }
     } else if (path === 'data') {
-      eYo.c9r.model.dataHandler(model, key)
+      eYo.model.dataHandler(model, key)
     } else if (path === 'slots') {
-      eYo.c9r.model.magnetHandler(model)
-    } else if (path === 'List') {
+      eYo.model.magnetHandler(model)
+    } else if (path === 'list') {
       if (['check', 'unique', 'all'].includes(key)) {
         // BRICK_TYPE || [BRICK_TYPE] || () => {}
         after = ensureRAF(model[key])
       }
     } else if (key === 'all') {
       var before = model[key]
-      if (!goog.isArray(before)) {
+      if (!eYo.isRA(before)) {
         after = [before]
       }
-    } else if (key === 'List') {
+    } else if (key === 'list') {
       var before = model[key]
       before.ary || (before.ary = Infinity)
     } else if (XRegExp.match(path, /slots\.\w+\.fields/)) {
@@ -273,7 +255,7 @@ eYo.c9r.model.PropertyHandler = eYo.do.nothing
       }
     } else if (XRegExp.match(path, /slots\.\w+\.fields\.\w+/)) {
       var before = model[key]
-      if (['reserved', 'Variable', 'separator'].includes(key)) {
+      if (['reserved', 'variable', 'separator'].includes(key)) {
         if (eYo.isStr(before)) {
           after = true
           model.value = before
@@ -300,14 +282,14 @@ eYo.c9r.model.PropertyHandler = eYo.do.nothing
  * @param {Object} model_  a tree of properties
  * @param {Object} base  a tree of properties
  */
-eYo.c9r.model.inherits = (model, base) => {
-  var do_it = (model_, base_) => {
-    if (eYo.isO(model_) && eYo.c9r.isModel(base_)) {
-      model_.model__ && eYo.throw(`Already inheritance: ${model}`)
-      Object.keys(model_).forEach(k => {do_it(model_[k], base_[k])})
-      Object.setPrototypeOf(model_, base_)
-      eYo.assert(Object.getPrototypeOf(model_) === base_, `Unexpected ${Object.getPrototypeOf(model_)} !== ${base_}`)
-      model_.model__ = model
+eYo.model.inherits = (model, base) => {
+  var do_it = (M, B) => {
+    if (eYo.isD(M) && eYo.isModel(B)) {
+      M.model__ && eYo.throw(`Already inheritance: ${model}`)
+      Object.keys(M).forEach(k => {do_it(M[k], B[k])})
+      Object.setPrototypeOf(M, B)
+      eYo.assert(Object.getPrototypeOf(M) === B, `Unexpected ${Object.getPrototypeOf(M)} !== ${B}`)
+      M.model__ = model
     }
   }
   do_it(model, base)
@@ -317,17 +299,17 @@ eYo.c9r.model.inherits = (model, base) => {
  * @param {Object} model_  a tree of properties
  * @param {Object} from_  a tree of properties
  */
-eYo.c9r.model.extends = (model, base) => {
+eYo.model.extends = (model, base) => {
   var do_it = (m, b, path) => {
-    if (eYo.isO(m) && eYo.isO(b)) {
+    if (eYo.isD(m) && eYo.isD(b)) {
       for (var k in b) {
-        if (!eYo.c9r.model.isAllowed(path, k)) {
+        if (!eYo.model.isAllowed(path, k)) {
           console.warn(`Attempting to use ${path}.${k} in a model`)
           return
         }
         if (m[k] === eYo.NA) {
           var after = b[k]
-          m[k] = eYo.isO(after) ? {} : after
+          m[k] = eYo.isD(after) ? {} : after
         }
         do_it(m[k], b[k], path && `${path}.${k}` || k)
       }
@@ -335,31 +317,4 @@ eYo.c9r.model.extends = (model, base) => {
   }
   do_it(model, base, '')
   return
-}
-
-/**
- * The created model, by key.
- * @param{String} key - the key used to create the constructor.
- */
-eYo.c9r.model.forKey = (key) => {
-  var C9r = eYo.c9r.byKey(key)
-  return C9r && C9r.eyo.model
-}
-
-/**
- * The created model, by name.
- * @param{String} name - the key used to create the constructor.
- */
-eYo.c9r.model.forName = (name) => {
-  var C9r = eYo.c9r.byName(name)
-  return C9r && C9r.eyo.model
-}
-
-/**
- * The created models given its type.
- * @param{String} type - the key used to create the constructor.
- */
-eYo.c9r.model.forType = (type) => {
-  var C9r = eYo.c9r.byType(type)
-  return C9r && C9r.eyo.model
 }

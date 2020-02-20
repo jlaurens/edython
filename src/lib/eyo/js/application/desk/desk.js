@@ -151,7 +151,7 @@ eYo.view.Desk_p.updateScreenCalculations_ = function() {
   this.workspace.recordDeleteAreas()
 }
 
-eYo.view.Dflt.eyo.extendsProperties({
+eYo.view.Dflt.eyo.propertiesMerge({
   /**
    * The desk of the receiver.
    * @type {eYo.view.Desk}

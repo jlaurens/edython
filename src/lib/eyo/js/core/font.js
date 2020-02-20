@@ -10,20 +10,20 @@
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 
-eYo.provide('font-face')
+eYo.makeNS('font-face')
 
  /**
  * Setup the font style, amongst others.
  */
 ;(static_ => {
-  eYo.Setup.register(() => {
+  eYo.setup.register(() => {
     eYo.css.insertRuleAt(`@font-face {
   font-family: 'DejaVuSansMono';
   src: local('☺'),url(${static_}/font/DejaVuSansMono.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }`)
-    eYo.css.insertRuleAt(`@font-face {
+  eYo.css.insertRuleAt(`@font-face {
   font-family: 'DejaVuSansMono';
   src: local('☺'), url('${static_}/font/DejaVuSansMono-Bold.woff')format('woff');
   font-weight: bold;

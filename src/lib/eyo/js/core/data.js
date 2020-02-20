@@ -50,7 +50,7 @@ eYo.o3d.makeNS(eYo, 'data')
  * @param {String} key
  * @return {Object}
  */
-eYo.c9r.model.dataHandler = (model, key) => {
+eYo.model.dataHandler = (model, key) => {
   model = model[key]
   let methods = []
   for (let [key, value] of Object.entries({
@@ -77,7 +77,7 @@ eYo.c9r.model.dataHandler = (model, key) => {
                     builtin.call(this, before, after)
                   }, before, after)
                 } : function (before, after) {
-                  f.call(this, eYo.do.nothing, before, after)
+                  f.call(this, eYo.doNothing, before, after)
                 }
               }
             } else {
@@ -89,7 +89,7 @@ eYo.c9r.model.dataHandler = (model, key) => {
                     builtin.call(this, before, after)
                   }, after)
                 } : function (before, after) {
-                  f.call(this, eYo.do.nothing, after)
+                  f.call(this, eYo.doNothing, after)
                 }
               }
             }
@@ -132,9 +132,9 @@ eYo.c9r.model.dataHandler = (model, key) => {
  */
 eYo.data.makeDflt({
   init (brick, key, model) {
-    !brick && eYo.throw(`${this.eyo.name}: Missing brick`)
-    !key && eYo.throw(`${this.eyo.name}: Missing key in makeDflt`)
-    !model && eYo.throw(`${this.eyo.name}: Missing model`)
+    brick || eYo.throw(`${this.eyo.name}: Missing brick`)
+    key || eYo.throw(`${this.eyo.name}: Missing key in makeDflt`)
+    model || eYo.throw(`${this.eyo.name}: Missing model`)
     this.reentrant_ = {}
     this.key_ = key
     this.model_ = model
@@ -244,11 +244,11 @@ eYo.data.makeDflt({
   /**
    * Initialize the instance.
    * Calls the inherited method, then adds methods defined by the model.
-   * The methods are managed by the |dataHandler| method of the |eYo.c9r.model|.
+   * The methods are managed by the |dataHandler| method of the |eYo.model|.
    * @param {Object} object - The object to initialize.
    */
   eYo.p6y.Data
-  eYo.data.Dflt.eyo_p.initInstance = function (object) {
+  eYo.data.Dlgt_p.initInstance = function (object) {
     this.C9r_S.eyo_p.initInstance.call(this, object)
     object.model['.methods'].forEach(f => {
       f(object)
@@ -556,7 +556,7 @@ eYo.data.makeDflt({
    * @param {Object} after
    * @return eYo.NA
    */
-  _p.willChange = eYo.do.nothing
+  _p.willChange = eYo.doNothing
 
   /**
    * When unchange the value of the property.
@@ -567,7 +567,7 @@ eYo.data.makeDflt({
    * @param {Object} before
    * @return eYo.NA
    */
-  _p.didUnchange = eYo.do.nothing
+  _p.didUnchange = eYo.doNothing
 
   /**
    * Did change the value of the property.
@@ -577,7 +577,7 @@ eYo.data.makeDflt({
    * @param {Object} after
    * @return eYo.NA
    */
-  _p.didChange = eYo.do.nothing
+  _p.didChange = eYo.doNothing
 
   /**
    * Will unchange the value of the property.
@@ -588,7 +588,7 @@ eYo.data.makeDflt({
    * @param {Object} after
    * @return eYo.NA
    */
-  _p.willUnchange = eYo.do.nothing
+  _p.willUnchange = eYo.doNothing
 
   /**
    * Before the didChange message is sent.
@@ -601,7 +601,7 @@ eYo.data.makeDflt({
    * @param {Object} after
    * @return eYo.NA
    */
-  _p.isChanging = eYo.do.nothing
+  _p.isChanging = eYo.doNothing
 
   /**
    * Before the didUnchange message is sent.
@@ -614,7 +614,7 @@ eYo.data.makeDflt({
    * @param {Object} after
    * @return eYo.NA
    */
-  _p.isUnchanging = eYo.do.nothing
+  _p.isUnchanging = eYo.doNothing
 
   /**
    * Before change the value of the property.
@@ -726,7 +726,7 @@ eYo.data.makeDflt({
    */
   _p.setTrusted = function (...args) {
     try {
-      this.setTrusted = eYo.do.nothing
+      this.setTrusted = eYo.doNothing
       this.setTrusted_.call(this, ...args)
     } finally {
       delete this.setTrusted

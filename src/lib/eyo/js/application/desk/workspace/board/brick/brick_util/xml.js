@@ -583,7 +583,7 @@ eYo.xml.registerAllTags = function () {
   var register = (mode) => {
     var where = eYo.t3[mode]
     for (var key in where) {
-      if (!eYo.do.hasOwnProperty(where, key)) {
+      if (!eYo.hasOwnProperty(where, key)) {
         continue
       }
       var type = where[key]
@@ -591,7 +591,7 @@ eYo.xml.registerAllTags = function () {
         continue
       }
       var C9r = eYo.c9r.forType(type)
-      var model = eYo.c9r.model.forType(type)
+      var model = eYo.model.forType(type)
       var xml = model && model.xml
       var attr = xml && xml.attr
       if (!eYo.isStr(attr)) {
@@ -780,7 +780,7 @@ eYo.xml.Recover.prototype.domToBrick = function (dom, owner) {
     types: []
   }
   where.Available.forEach(function(type) {
-    var data = eYo.c9r.model.forType(type).data
+    var data = eYo.model.forType(type).data
     var match = 0
     attributeNames.forEach(function (name) {
       if (data[name]) {
@@ -892,7 +892,7 @@ eYo.xml.domToBrick = (() => {
                 var where = dom.tagName.toLowerCase() === eYo.xml.EXPR ? eYo.t3.expr : eYo.t3.stmt
                 for (var i = 0; i < prototypeName.length; i++) {
                   var candidate = prototypeName[i]
-                  var C9r = eYo.c9r.model.forType(candidate)
+                  var C9r = eYo.model.forType(candidate)
                   if (C9r && where[C9r.eyo.key]) {
                     return candidate
                   }
@@ -909,7 +909,7 @@ eYo.xml.domToBrick = (() => {
           }
           prototypeName = 'eyo:'+name
           var solid = prototypeName + ''
-          var controller = eYo.c9r.model.forType(solid)
+          var controller = eYo.model.forType(solid)
           if (controller) {
             if (controller.eyo && eYo.isF(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, board, id)
@@ -917,7 +917,7 @@ eYo.xml.domToBrick = (() => {
               return controller.domToBrick(dom, board, id)
             }
             brick = eYo.brick.newReady(board, solid, id)
-          } else if ((controller = eYo.c9r.model.forType(prototypeName))) {
+          } else if ((controller = eYo.model.forType(prototypeName))) {
             if (controller.eyo && eYo.isF(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, board, id)
             } else if (eYo.isF(controller.domToBrick)) {
@@ -969,10 +969,10 @@ eYo.xml.fromDom = function (brick, element) {
         eYo.isF(controller.fromDom)) ||
         ((controller = brick.xml) &&
         eYo.isF(controller.fromDom)) ||
-        ((controller = eYo.c9r.model.forType(brick.type)) &&
+        ((controller = eYo.model.forType(brick.type)) &&
         (controller = controller.xml) &&
         eYo.isF(controller.fromDom)) ||
-        ((controller = eYo.c9r.model.forType(brick.type)) &&
+        ((controller = eYo.model.forType(brick.type)) &&
         eYo.isF(controller.fromDom))) {
       eYo.do.tryFinally(() => {
         brick.controller_fromDom_locked = true
@@ -1171,14 +1171,14 @@ eYo.xml.comparison.domToComplete = function (element, owner) {
     var op = element.getAttribute(eYo.xml.OPERATOR)
     var C9r, model
     var type = eYo.t3.expr.number_comparison
-    if ((C9r = eYo.c9r.model.forType(type))
+    if ((C9r = eYo.model.forType(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all
       && (model.all.indexOf(op) >= 0)) {
       var b3k = eYo.brick.newReady(owner, type, id)
     } else if ((type = eYo.t3.expr.object_comparison)
-      && (C9r = eYo.c9r.model.forType(type))
+      && (C9r = eYo.model.forType(type))
       && (model = C9r.eyo.model.data)
       && (model = model.operator)
       && model.all

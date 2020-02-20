@@ -16,7 +16,7 @@ eYo.require('do')
 eYo.require('e')
 eYo.require('tkn')
 eYo.require('Node')
-eYo.provide('scan')
+eYo.makeNS('scan')
 
 /* Scan implementation */
 
@@ -57,7 +57,7 @@ eYo.Scan.prototype.init = function (str, start) {
   return this
 }
 
-eYo.do.readOnlyMixin(eYo.Scan, {
+eYo.mixinRO(eYo.Scan, {
   E: {},
   XRE: {},
   KW: {}
@@ -66,7 +66,7 @@ eYo.do.readOnlyMixin(eYo.Scan, {
 /**
  * Langage keywords
  */
-eYo.do.readOnlyMixin(eYo.Scan.KW, {
+eYo.mixinRO(eYo.Scan.KW, {
   FALSE: 'False',
   NONE: 'None',
   TRUE: 'True',
@@ -104,7 +104,7 @@ eYo.do.readOnlyMixin(eYo.Scan.KW, {
   YIELD: 'yield',
 })
 
-eYo.do.readOnlyMixin(eYo.Scan.E, {
+eYo.mixinRO(eYo.Scan.E, {
   DEDENT_AUGMENTED: 'DEDENT_AUGMENTED',
   INCONSISTENT_INDENTATION: 'INCONSISTENT_INDENTATION',
   EOLS: 'EOLS',
@@ -124,7 +124,7 @@ eYo.do.readOnlyMixin(eYo.Scan.E, {
 })
 
 /* NO sign, all are called in sticky mode so no ^ at start */
-eYo.do.readOnlyMixin(eYo.Scan.XRE, {
+eYo.mixinRO(eYo.Scan.XRE, {
   prefix: XRegExp(
     'u|r(?:f|b)?|(?:f|b)r?', 'i'),
   string: {

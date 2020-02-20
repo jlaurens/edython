@@ -23,6 +23,6 @@ eYo.fcls.makeDriverC9r('Magnet')
  * The default implementation does nothing.
  * @param {eYo.magnet.Dflt} magnet
  */
-eYo.fcls.Magnet.prototype.hilight = eYo.do.nothing
+eYo.fcls.Magnet.prototype.hilight = eYo.doNothing
 
 console.error('hilight -> focusOn?')

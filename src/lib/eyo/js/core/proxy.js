@@ -16,7 +16,7 @@
  * @namespace
  **/
 
-eYo.provide('proxy')
+eYo.makeNS('proxy')
 
 /**
  * Returns a Proxy to the tied rectangle.

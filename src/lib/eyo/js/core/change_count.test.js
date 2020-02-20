@@ -1,6 +1,15 @@
 NS = Object.create(null)
 describe ('Tests: change_count', function () {
   it ('Change_count: basic', function () {
-    chai.assert(false, 'NOT YET IMPLEMENTED')
+    console.error('BREAK')
+    chai.assert(eYo.o4t.changeCount)
+    chai.assert(eYo.o4t.changeCount.merge)
+    var ns = eYo.c9r.makeNS()
+    ns.makeDflt()
+    eYo.o4t.changeCount.merge(ns.Dflt_p)
+    let d = new ns.Dflt()
+    chai.assert(d.changeCount_p)
+    chai.assert(d.updateChangeCount)
+    chai.assert(d.resetChangeCount)
   })
 })

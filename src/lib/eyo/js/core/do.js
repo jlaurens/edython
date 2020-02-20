@@ -403,17 +403,6 @@ eYo.do.Enumerator = (list, filter) => {
 }
 
 /**
- * Convenient shortcut
- * For edython.
- * @param {Object} object
- * @param {string} key
- * @return {boolean}
- */
-eYo.do.hasOwnProperty = function (object, key) {
-  return object && key && (Object.prototype.hasOwnProperty.call(object, key))
-}
-
-/**
  * Convenient converter.
  * Throws an error for bad input.
  * See https://stackoverflow.com/questions/11563554/how-do-i-detect-xml-parsing-errors-when-using-javascripts-domparser-in-a-cross
@@ -512,11 +501,6 @@ eYo.do.valueOf = function (f, thisObject) {
 /**
  * Void function frequently used.
  */
-eYo.do.nothing = () => {}
-
-/**
- * Void function frequently used.
- */
 eYo.do.NYI = () => {
   throw new Error('This is not yet implemented, possibly a pure abstract method that needs subclassing.')
 }
@@ -566,28 +550,6 @@ eYo.do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
       end_finally_f && (end_finally_f())
     })
     return ans
-  }
-}
-
-/**
- * The props dictionary is a `key=>value` mapping where values
- * are getters, not a dictionary containing a getter.
- * @param {*} object
- * @param {*} props
- */
-eYo.do.readOnlyMixin = (object, props) => {
-  var key
-  for (key in props) {
-    eYo.assert(!eYo.do.hasOwnProperty(object, key), 'Duplicate keys are forbidden: ' + key)
-    var value = props[key]
-    var prop = eYo.isF(value)
-    ? { get: value }
-    : { value: value }
-    Object.defineProperty(
-      object,
-      key,
-      prop
-    )
   }
 }
 

@@ -2,27 +2,6 @@
 
 const NS = Object.create(null)
 
-NS.test_properties = (x, foo, bar) => {
-  let foo_ = foo + '_'
-  let bar_ = bar + '_'
-  let foo_p = foo + '_p'
-  let bar_p = bar + '_p'
-  chai.assert(x[foo_p])
-  chai.assert(x[bar_p])
-  chai.assert(x[foo_] === eYo.NA && x[foo] === eYo.NA)
-  chai.assert(x[foo_] === eYo.NA && x[foo] === eYo.NA)
-  chai.assert(x[bar_] === eYo.NA && x[bar] === eYo.NA)
-  x[foo_] = 421
-  chai.assert(x[foo_] === 421 && x[foo] === 421)
-  chai.assert(x[bar_] === eYo.NA && x[bar] === eYo.NA)
-  x[bar_] = 123
-  chai.assert(x[foo_] === 421 && x[foo] === 421)
-  chai.assert(x[bar_] === 123 && x[bar] === 123)
-  chai.expect(() => {x[bar] = 421}).to.throw()
-  x[foo_] = x[bar_] = eYo.NA
-  chai.assert(x[foo_] === eYo.NA && x[foo] === eYo.NA)
-  chai.assert(x[bar_] === eYo.NA && x[bar] === eYo.NA)
-}
 describe ('POC', function () {
   this.timeout(10000)
   it ('Dlgt infinite loop', function () {
@@ -34,18 +13,18 @@ describe ('POC', function () {
         model__: { value: model },
       })
       C9r.eyo__ = this
-      let d = eYo.c9r.descriptorR(function () {
+      let d = eYo.descriptorR(function () {
         return this.eyo__
       })
       Object.defineProperties(C9r, {
         eyo: d,
         eyo_: d,
-        eyo_p: eYo.c9r.descriptorR(function () {
+        eyo_p: eYo.descriptorR(function () {
           return this.eyo__._p
         }),
       })  
     }
-    let d = eYo.c9r.descriptorR(function () {
+    let d = eYo.descriptorR(function () {
       return this.constructor.eyo__
     })
     Object.defineProperties(AutoDlgt.prototype, {
@@ -142,7 +121,12 @@ describe ('Tests: C9r', function () {
   this.timeout(10000)
   it ('C9r: basic', function () {
     chai.assert(eYo.makeNS)
+    chai.assert(eYo.c9r)
     chai.assert(eYo.c9r.makeC9r)
+    var C9r = eYo.c9r.makeC9r()
+    chai.assert(C9r)
+    chai.assert(C9r.eyo)
+    chai.assert(C9r.eyo.key === '')
     chai.assert(eYo.c9r.Dlgt)
     chai.assert(eYo.c9r.Dflt)
     chai.assert(eYo.c9r.Dlgt_p)
@@ -150,26 +134,6 @@ describe ('Tests: C9r', function () {
     chai.assert(eYo.c9r.Dlgt.eyo)
     chai.assert(eYo.c9r.Dlgt.eyo.eyo)
     chai.assert(eYo.c9r.Dlgt.eyo.eyo.eyo === eYo.c9r.Dlgt.eyo.eyo)
-  })
-  describe('C9r: Model', function () {
-    it('eYo.c9r.model.consolidate(…)', function () {
-      var model = {
-        properties: {
-          drag: {
-            get () {},
-          },
-        },
-      }
-      eYo.c9r.model.consolidate(model)
-      chai.assert(eYo.isF(model.properties.drag.get))
-      var model = {
-        properties: {
-          drag () {},
-        },
-      }
-      eYo.c9r.model.consolidate(model)
-      chai.assert(eYo.isF(model.properties.drag))
-    })
   })
   describe('C9r: makeNS', function () {
     if ('makeNS: Basics', function () {
@@ -183,12 +147,12 @@ describe ('Tests: C9r', function () {
       chai.assert(ns.Dlgt.eyo.constructor === ns.Dlgt)  
     })
     it ('makeNS(...)', function () {
-      var Foo = eYo.makeNS('___Foo')
-      chai.assert(Foo && Foo === eYo.___Foo)
-      chai.assert(Foo.makeNS)
-      chai.assert(Foo.makeC9r)
-      chai.assert(Foo.super === eYo)
-      chai.assert(Foo.name === 'eYo.___Foo')
+      var foo = eYo.makeNS('___Foo')
+      chai.assert(foo && foo === eYo.___Foo)
+      chai.assert(foo.makeNS)
+      chai.assert(foo.makeC9r)
+      chai.assert(foo.super === eYo)
+      chai.assert(foo.name === 'eYo.___Foo')
       var ns = eYo.c9r.makeNS()
       chai.assert(ns.makeNS)
       chai.assert(ns.makeC9r)
@@ -229,6 +193,7 @@ describe ('Tests: C9r', function () {
       var ns = eYo.c9r.makeNS()
       chai.assert(ns.Dflt === eYo.c9r.Dflt)
       ns.makeC9r('Dflt')
+      chai.assert(ns.Dflt)
       chai.assert(ns.Dflt !== eYo.c9r.Dflt)
       chai.assert(eYo.isSubclass(ns.Dflt, eYo.c9r.Dflt))
       chai.assert(ns.Dflt.eyo.ns === ns)
@@ -253,9 +218,18 @@ describe ('Tests: C9r', function () {
         value: 421
       })
       chai.expect(() => { ns.makeDflt() }).to.throw()
-      chai.expect(() => { eYo.c9r.makeC9r(ns) }).to.throw()
+      chai.assert(eYo.c9r.makeC9r(ns).eyo.key === '')
       chai.expect(() => { eYo.c9r.makeC9r(ns, 'Dflt') }).to.throw()
       chai.expect(() => { ns.makeC9r('Dflt') }).to.throw()
+    })
+    it(`eYo.c9r.makeC9r('A', eYo.c9r.Dflt)`, function () {
+      let ns = eYo.c9r.makeNS()
+      let C9r = ns.makeC9r('A', eYo.c9r.Dflt)
+      chai.assert(eYo.isSubclass(ns.A, eYo.c9r.Dflt))
+      chai.assert(C9r === C9r.eyo.C9r)
+      chai.assert(C9r.prototype === C9r.eyo.C9r_p)
+      chai.assert(eYo.c9r.Dflt === C9r.eyo.C9r_S)
+      chai.assert(eYo.c9r.Dflt_p === C9r.eyo.C9r_s)
     })
     it('eYo.makeC9rDecorate', function () {
       return
@@ -312,7 +286,6 @@ describe ('Tests: C9r', function () {
     it ("eYo.c9r.makeC9r(ns, 'A')", function () {
       var ns = eYo.c9r.makeNS()
       ns.makeDflt()
-      chai.expect(()=>{ eYo.c9r.makeC9r() }).to.throw()
       eYo.c9r.makeC9r(ns, 'A')
       chai.assert(ns.A_s === eYo.c9r.Dflt_p)
       chai.expect(()=>{ eYo.c9r.makeC9r(ns, 'A') }).to.throw() // missing model
@@ -419,77 +392,6 @@ describe ('Tests: C9r', function () {
     })
   })
 })
-describe('c9r.model', function () {
-  this.timeout(10000); 
-  it ('C9r.Model: POC', function () {
-    chai.assert(XRegExp.match('abc', /abc/))
-    var x = {
-      ['abc']: ''
-    }
-    for (var k in x) {
-      chai.assert(XRegExp.match('abc', XRegExp(k)))
-      chai.assert(XRegExp(k).test('abc'))
-    }
-  })
-  it ('eYo.c9r.model.isAllowed(path, k)', function () {
-    chai.assert(eYo.c9r.model.isAllowed('', 'init'))
-    chai.assert(eYo.c9r.model.isAllowed('properties', 'abc'))
-    chai.assert(eYo.c9r.model.isAllowed('properties.abc', 'validate'))
-  })
-  it ('Inheritance 1', function () {
-    var base = {init: 421}
-    var model = {}
-    eYo.c9r.model.extends(model, base)
-    chai.assert(model.init === 421)
-  })
-  it ('Inheritance 2', function () {
-    var base = {xml: {attr: 421}}
-    var model = {}
-    eYo.c9r.model.extends(model, base)
-    chai.assert(model.xml.attr === 421)
-  })
-  it ('Inheritance 3', function () {
-    var base = {
-      xml: {
-        attr: 421
-      }
-    }
-    var model = {
-      xml: {
-        types: 123
-      }
-    }
-    eYo.c9r.model.extends(model, base)
-    chai.assert(model.xml.attr === 421)
-    chai.assert(model.xml.types === 123)
-  })
-  it ('Inheritance 4', function () {
-    var base = {
-      data: {
-        aa: 421
-      }
-    }
-    var model = {
-      data: {
-        aa: {
-          xml: 421
-        },
-        ab: 123
-      },
-      properties: 421,
-    }
-    var submodel = {
-      data: {
-        ab: 421
-      }
-    }
-    eYo.c9r.model.extends(model, base)
-    eYo.c9r.model.extends(submodel, model)
-    chai.assert(submodel.data.aa.xml === 421)
-    chai.assert(submodel.data.ab === 421)
-    chai.assert(submodel.properties === 421)
-  })
-})
 describe ('Dlgt', function () {
   this.timeout(10000)
   describe ('make', function () {
@@ -528,6 +430,7 @@ describe ('Dlgt', function () {
           flag_AB += x
         },
       })
+      chai.assert(ns.AB)
       chai.assert(ns.AB.eyo instanceof eYo.c9r.Dflt.eyo.constructor)
       new ns.AB(1)
       chai.assert(flag_A === 1)
@@ -757,7 +660,7 @@ describe ('Dlgt', function () {
       testX(ns.A, eYo.c9r.Dflt, eYo.c9r.Dlgt_p)
       var ns = eYo.c9r.makeNS()
       ns.makeDflt()
-      chai.assert(ns.Dflt.eyo_p === ns.Dlgt_p)
+      chai.assert(ns.Dlgt_p === ns.Dlgt_p)
       testX(ns.Dflt, eYo.c9r.Dflt, ns.Dlgt_p)
       var flag_A = 0
       eYo.c9r.makeC9r(ns, 'A', ns.Dflt, {
@@ -847,7 +750,7 @@ describe ('Dlgt', function () {
   it ('Constructor: eyo setter', function () {
     var ns = eYo.c9r.makeNS()
     eYo.c9r.makeC9r(ns, 'A', null, {})
-    chai.assert(ns.A.eyo.constructor === eYo.c9r.Dlgt)
+    chai.assert(eYo.isSubclass(ns.A.eyo.constructor, eYo.c9r.Dlgt))
     chai.expect(() => {
       ns.A.eyo = null
     }).to.throw()

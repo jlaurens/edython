@@ -43,7 +43,7 @@ eYo.o4t.makeDflt({
 eYo.o4t._p.initProperties = function (object, properties) {
   Object.keys(properties).forEach(k => {
     let model = properties[k]
-    if (!eYo.isO(model)) {
+    if (!eYo.isD(model)) {
       model = properties[k] = {
         value: model,
       }
@@ -52,19 +52,17 @@ eYo.o4t._p.initProperties = function (object, properties) {
     if (!object.hasOwnProperty(k_p)) {
       let p = eYo.p6y.new(object, k, model)
       Object.defineProperties(object, {
-        [k_p]: eYo.c9r.descriptorR(function () {
+        [k_p]: eYo.descriptorR(function () {
           return p
         }),
       })
+      object[k_p] || eYo.throw('Missing property')
     }
     let _p = Object.getPrototypeOf(object)
     if (object.eyo && !_p.hasOwnProperty(k)) {
       object.eyo.keys_p__ && object.eyo.keys_p__.add(k_p)
       Object.defineProperties(_p, {
-        [k]: eYo.c9r.descriptorR(function () {
-          if (!this[k_p]) {
-            console.error('BREAK HERE!')
-          }
+        [k]: eYo.descriptorR(function () {
           return this[k_p].getValue()
         }),
         [k + '_']: {
@@ -94,33 +92,13 @@ eYo.o4t._p.initProperties = function (object, properties) {
   }
 
   /**
-   * Consolidate the given model.
-   * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
-   */
-  _p.modelConsolidate = function (model) {
-    eYo.c9r.model.consolidate(model)
-  }
-  
-  /**
-   * Extend the receiver and its associate constructor with the given model.
-   * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
-   */
-  _p.handleModel = function (model) {
-    if (model) {
-      this.modelConsolidate(model)
-      this.initWithModel(model)
-    }
-  }
-  
-  /**
    * Extends the properties of the associate constructor.
    * @param {Object} properties -  A properties model
    */
-  _p.extendsProperties = function (properties) {
+  _p.propertiesMerge = function (properties) {
     let _p = this.C9r_p
     Object.keys(properties).forEach(k => {
       this.properties__[k] = properties[k]
-      _p[k] && delete _p[k]
     })
   }
 
@@ -180,10 +158,10 @@ eYo.o4t._p.initProperties = function (object, properties) {
       return this[key_p].value__[original_p].value
     }
     Object.defineProperties(this.C9r_p, {
-      [alias + '_p']: eYo.c9r.descriptorR(function () {
+      [alias + '_p']: eYo.descriptorR(function () {
         return this[key_p].value__[original_p]
       }),
-      [alias]: eYo.c9r.descriptorR(get),
+      [alias]: eYo.descriptorR(get),
       [alias + '_']: {
         get: get,
         set (after) {
@@ -209,10 +187,10 @@ eYo.o4t._p.initProperties = function (object, properties) {
       return this[original_p].value
     }
     Object.defineProperties(this.C9r_p, {
-      [alias + '_p']: eYo.c9r.descriptorR(function () {
+      [alias + '_p']: eYo.descriptorR(function () {
         return this[original_p]
       }),
-      [alias]: eYo.c9r.descriptorR(get),
+      [alias]: eYo.descriptorR(get),
       [alias + '_']: {
         get: get,
         set (after) {
@@ -227,7 +205,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
    * Used to declare synonyms.
    * @param {Map<String, String>} model - Object, map alias -> source.
    */
-  _p.aliasesDeclare = function (model) {
+  _p.aliasesMerge = function (model) {
     Object.keys(model).forEach(k => {
       let components = k.split('.')
       let alias = model[k]
@@ -246,10 +224,10 @@ eYo.o4t._p.initProperties = function (object, properties) {
    * Declare the given model.
    * @param {Object} model - Object, like for |makeC9r|.
    */
-  _p.initWithModel = function (model) {
-    model.properties && (this.properties__ = model.properties)
-    model.aliases && this.aliasesDeclare(model.aliases)
-    model.methods && this.methodsDeclare(model.methods)
+  _p.modelMerge = function (model) {
+    model.properties && this.propertiesMerge(model.properties)
+    model.aliases && this.aliasesMerge(model.aliases)
+    eYo.o4t.super.Dlgt_p.modelMerge.call(this, model)
   }
   
   /**
@@ -286,21 +264,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
   }
   
   //// Properties and methods
-  
-  /**
-   * Add methods to the associate prototype.
-   * @param {Map<String, Function>} models,  the key => Function mapping.
-   */
-  _p.methodsDeclare = function (model) {
-    let p = this.C9r_p
-    Object.keys(model).forEach(k => {
-      eYo.assert(!eYo.do.hasOwnProperty(p, k))
-      let f = model[k]
-      eYo.assert(eYo.isF(f), `Got ${f}instead of a function`)
-      p[k] = f // maybe some post processing here
-    })
-  }
-  
+    
   /**
    * Iterator over the properties.
    * @param {Object} object
@@ -377,4 +341,25 @@ eYo.o4t.Dflt_p.ownedForEach = function (f) {
  */
 eYo.o4t.Dflt_p.ownedSome = function (f) {
   return this.eyo.propertySome(this, f, true)
+}
+
+/**
+ * Declares a model to be used by others. 
+ * It creates in the receiver's namespace a `merge` function of a `fooMerge` function,
+ * which purpose is to enlarge the prototype of the given constructor.
+ * @param{String} [key] - the key for that model
+ * @param{Object} model - the model
+ */
+eYo.o4t._p.modelDeclare = function (key, model) {
+  if (eYo.isStr(key)) {
+    key = key + 'Merge'
+  } else {
+    model = key
+    key = 'merge'
+  }
+  let _p = this._p
+  _p.hasOwnProperty(key) && eYo.throw(`Already done`)
+  _p[key] = function (C9r) {
+    C9r.eyo.modelMerge(model)
+  }
 }

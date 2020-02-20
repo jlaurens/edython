@@ -91,13 +91,21 @@ class Foo:
   re_makeMngr = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.makeMngr\s*\(.*""", re.X)
 
-  # eYo.o3d.Dflt.eyo.extendsProperties({
-  re_extendsProperties = re.compile(r"""^\s*
-  (?P<extended>eYo(?:\.[a-z]\w*)*\.[A-Z]\w*)\.eyo\.extendsProperties\s*\(.*""", re.X)
+  # eYo.o3d.Dflt.eyo.propertiesMerge({
+  re_propertiesMerge = re.compile(r"""^\s*
+  (?P<extended>eYo(?:\.[a-z]\w*)*\.[A-Z]\w*)\.eyo\.propertiesMerge\s*\(.*""", re.X)
 
   # eYo.view.Dflt_p.doDisposeUI = function (...args) {
   re_protocol2 = re.compile(r"""^\s*
   (?P<required>eYo(?:\.[a-z]\w*)*\.[A-Z]\w*)_p\.\w+\s*=.*""", re.X)
+
+  # eYo.setup.register(
+  re_setup = re.compile(r"""^\s*
+  (?P<required>eYo\.setup)\.register\s*\(""", re.X)
+
+  # eYo.....merge(
+  re_merge = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)\.(?:[a-z]\w*M|m)erge \s*\(""", re.X)
 
   pathByProvided = {}
   nsByClass = {}
@@ -120,6 +128,9 @@ class Foo:
       def addRequired(what, assigned = None):
         nonlocal prompt
         if what == 'eYo.Desk':
+          print(f'{prompt}*** Requirement {what}')
+          prompt = ''
+        if what == 'eYo.brick.eyo':
           print(f'{prompt}*** Requirement {what}')
           prompt = ''
         required.add(what)
@@ -169,7 +180,7 @@ class Foo:
             addRequired(ns, assigned)
             addProvided(assigned)
           continue
-        m = self.re_extendsProperties.match(l)
+        m = self.re_propertiesMerge.match(l)
         if m:
           addRequired(m.group('extended'))
           continue
@@ -178,6 +189,14 @@ class Foo:
           req = m.group('required')
           if not req.endswith('Dlgt'):
             addRequired(req)
+          continue
+        m = self.re_setup.match(l)
+        if m:
+          addRequired(m.group('required'))
+          continue
+        m = self.re_merge.match(l)
+        if m:
+          addRequired(m.group('ns'))
           continue
         ns = key = None
         def parse_args(suite):

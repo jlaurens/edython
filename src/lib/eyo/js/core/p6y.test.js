@@ -433,7 +433,7 @@ describe ('Tests: Property', function () {
   it('P6y: No getValue', function () {
     let onr = {}
     let p = eYo.p6y.new(onr, 'foo', {
-      get: eYo.do.nothing
+      get: eYo.doNothing
     })
     p.value_ = 123
     chai.expect(() => {
@@ -444,7 +444,7 @@ describe ('Tests: Property', function () {
   it('P6y: No setValue', function () {
     let onr = {}
     let p = eYo.p6y.new(onr, 'foo', {
-      set: eYo.do.nothing
+      set: eYo.doNothing
     })
     chai.expect(() => {
       p.value_ = 123
@@ -455,7 +455,7 @@ describe ('Tests: Property', function () {
   it('P6y: No getStored', function () {
     let onr = {}
     let p = eYo.p6y.new(onr, 'foo', {
-      get_: eYo.do.nothing
+      get_: eYo.doNothing
     })
     chai.expect(() => {
       p.value_ = 123
@@ -472,7 +472,7 @@ describe ('Tests: Property', function () {
   it('P6y: No setStored', function () {
     let onr = {}
     let p = eYo.p6y.new(onr, 'foo', {
-      set_: eYo.do.nothing
+      set_: eYo.doNothing
     })
     chai.expect(() => {
       p.value_ = 123

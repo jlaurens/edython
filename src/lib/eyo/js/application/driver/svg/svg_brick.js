@@ -404,7 +404,7 @@ eYo.svg.Brick_p.willRender = function (brick, recorder) {
  * @param {*} recorder
  * @private
  */
-eYo.svg.Brick_p.didRender = eYo.do.nothing
+eYo.svg.Brick_p.didRender = eYo.doNothing
 
 /**
  * Compute the paths of the brick depending on its size.

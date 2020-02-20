@@ -265,12 +265,12 @@ eYo.focus.Mngr_p.scrollToVisible = function (force) {
 /**
  * Hook.
  */
-eYo.focus.Mngr_p.didAdd = eYo.do.nothing
+eYo.focus.Mngr_p.didAdd = eYo.doNothing
 
 /**
  * Hook.
  */
-eYo.focus.Mngr_p.didRemove = eYo.do.nothing
+eYo.focus.Mngr_p.didRemove = eYo.doNothing
 
 /**
  * Select one of the given bricks.
@@ -300,7 +300,7 @@ eYo.focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
   }
 }
 
-eYo.o3d.Dflt.eyo.extendsProperties({
+eYo.o3d.Dflt.eyo.propertiesMerge({
   focus_main: {
     get () {
       this.app.focus_main
@@ -313,7 +313,7 @@ eYo.o3d.Dflt.eyo.extendsProperties({
   },
 })
 
-eYo.brick.Dflt.eyo.extendsProperties({
+eYo.brick.Dflt.eyo.propertiesMerge({
   hasFocus: {
     get() {
       return this === this.focus_mngr.brick
@@ -324,7 +324,7 @@ eYo.brick.Dflt.eyo.extendsProperties({
   },
 })
 
-eYo.magnet.Dflt.eyo.extendsProperties({
+eYo.magnet.Dflt.eyo.propertiesMerge({
   hasFocus: {
     get() {
       return this === this.focus_mngr.magnet
@@ -335,7 +335,7 @@ eYo.magnet.Dflt.eyo.extendsProperties({
   },
 })
 
-eYo.field.Dflt.eyo.extendsProperties({
+eYo.field.Dflt.eyo.propertiesMerge({
   hasFocus: {
     get() {
       return this === this.focus_mngr.field
@@ -346,7 +346,7 @@ eYo.field.Dflt.eyo.extendsProperties({
   },
 })
 
-eYo.view.Workspace.eyo.extendsProperties({
+eYo.view.Workspace.eyo.propertiesMerge({
   /**
    * The main focus manager.
    * @type {?eYo.focus.Main} 

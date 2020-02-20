@@ -67,7 +67,7 @@ eYo.consolidator.makeDflt({
  * Removes empty place holders
  * @param {eYo.brick.Dflt} brick - to be consolidated....
  */
-eYo.consolidator.Dflt_p.consolidate = eYo.do.nothing
+eYo.consolidator.Dflt_p.consolidate = eYo.doNothing
 
 /**
  * List consolidator.
@@ -89,7 +89,7 @@ eYo.consolidator.makeC9r('List', {
     var D = this.model
     var DD = this.constructor.eyo.model 
     DD && DD.list && goog.mixin(D, DD.list)
-    eYo.c9r.model.consolidate({list: D})
+    eYo.model.consolidate({list: D})
   }
 })
 

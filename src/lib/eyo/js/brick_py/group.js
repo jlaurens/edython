@@ -57,7 +57,7 @@ eYo.stmt.makeC9r('group', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('Branch', {
+eYo.stmt.group.makeInheritedC9r('branch', true, {
   data: {
     variant: {
       all: [
@@ -135,7 +135,7 @@ eYo.stmt.group.makeInheritedC9r('Branch', {
  * For edython.
  * @return {String}
  */
-eYo.stmt.Branch.prototype.xmlAttr = function () {
+eYo.stmt.branch_p.xmlAttr = function () {
   return this.variant_p
 }
 
@@ -148,7 +148,7 @@ eYo.stmt.Branch.prototype.xmlAttr = function () {
  * Each type change may imply a disconnection.
  * At least, the type may change to a value when no connection is connected.
  */
-eYo.stmt.Branch.prototype.getBaseType = function () {
+eYo.stmt.branch_p.getBaseType = function () {
   var T3 = eYo.t3.stmt
   var type = {
     [eYo.key.IF]: T3.if_part,
@@ -188,7 +188,7 @@ eYo.stmt.Branch.prototype.getBaseType = function () {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
+eYo.stmt.branch_p.populateContextMenuFirst_ = function (mngr) {
   var current = this.variant_p
   var variants = this.variant_d.getAll()
   var F = (i) => {
@@ -219,7 +219,7 @@ eYo.stmt.Branch.prototype.populateContextMenuFirst_ = function (mngr) {
   'last_else'
 ].forEach(name => {
   var k = name + '_part'
-  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.Branch))
+  eYo.c9r.register(k, (eYo.stmt[k] = eYo.stmt.branch))
 })
 
 /**

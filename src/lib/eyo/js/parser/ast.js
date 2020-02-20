@@ -14,7 +14,7 @@
 eYo.require('e')
 eYo.require('tkn')
 
-eYo.provide('aST')
+eYo.makeNS('ast')
 /*
  * This file includes functions to transform a concrete syntax tree (CST) to
  * an abstract syntax tree (AST). The main function is PyAST_FromNode().

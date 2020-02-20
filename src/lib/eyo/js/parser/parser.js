@@ -15,7 +15,7 @@ eYo.require('scan')
 
 eYo.require('e')
 
-eYo.provide('parser')
+eYo.makeNS('parser')
 
 /* Parser implementation */
 

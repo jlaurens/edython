@@ -164,7 +164,7 @@ eYo.MenuItemRenderer.prototype.getClassForState = function (state) {
 }
 
 
-eYo.Setup.register(() => {
+eYo.setup.register(() => {
   eYo.Css.insertRuleAt('.eyo-menuitem-content {',
       eYo.font.MenuStyle,
   '}')

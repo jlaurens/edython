@@ -22,10 +22,10 @@ eYo.fcls.makeDriverC9r('Zoomer')
  * Initiate the zoomer UI.
  * @param {eYo.view.Zoomer} trashCan  The zoomer we must initialize the UI.
  */
-eYo.fcls.Zoomer_p.doInitUI = eYo.do.nothing
+eYo.fcls.Zoomer_p.doInitUI = eYo.doNothing
 
 /**
  * Dispose of the zoomer UI.
  * @param {eYo.view.Zoomer} zoomer  The zoomer we must dispose the UI of.
  */
-eYo.fcls.Zoomer_p.doDisposeUI = eYo.do.nothing
+eYo.fcls.Zoomer_p.doDisposeUI = eYo.doNothing

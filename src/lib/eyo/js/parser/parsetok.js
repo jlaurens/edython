@@ -16,7 +16,7 @@ eYo.require('gmr.init')
 eYo.require('parser')
 eYo.require('scan')
 eYo.require('e')
-eYo.provide('parseTok')
+eYo.makeNS('parseTok')
 
   ;(function(){
 

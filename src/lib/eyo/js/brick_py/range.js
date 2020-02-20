@@ -22,7 +22,7 @@ eYo.t3.expr.builtin__range_expr = 'eyo:builtin__range_expr'
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeC9r('builtin__range_expr', {
+eYo.expr.makeC9r('builtin__range_expr', true, {
   xml: {
     attr: 'range',
   },
@@ -161,7 +161,7 @@ eYo.expr.makeC9r('builtin__range_expr', {
       eYo.t3.expr.call_expr
     ]
   }
-}, true)
+})
 
 /**
  * The xml `eyo` attribute of this brick, as it should appear in the saved data.

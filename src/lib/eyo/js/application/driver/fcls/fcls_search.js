@@ -22,22 +22,22 @@ eYo.fcls.makeDriverC9r('Search')
  * Initiate the search UI.
  * @param {eYo.Search} search  The search controller we must init the UI of.
  */
-eYo.fcls.Search.prototype.doInitUI = eYo.do.nothing
+eYo.fcls.Search.prototype.doInitUI = eYo.doNothing
 
 /**
  * Dispose of the search UI.
  * @param {eYo.Search} search  The search controller we must dispose of the UI of.
  */
-eYo.fcls.Search.prototype.doDisposeUI = eYo.do.nothing
+eYo.fcls.Search.prototype.doDisposeUI = eYo.doNothing
 
 /**
  * Initiate the search UI.
  * @param {eYo.Search} search  The search controller we must init the toolbar of.
  */
-eYo.fcls.Search.prototype.toolbarInitUI = eYo.do.nothing
+eYo.fcls.Search.prototype.toolbarInitUI = eYo.doNothing
 
 /**
  * Dispose of the search UI.
  * @param {eYo.Search} search  The search controller we must dispose of the toolbar of.
  */
-eYo.fcls.Search.prototype.toolbarDisposeUI = eYo.do.nothing
+eYo.fcls.Search.prototype.toolbarDisposeUI = eYo.doNothing

@@ -84,32 +84,32 @@ eYo.app.makeC9r('Options', {
       var hasDisable = false
       var hasSounds = false
     } else {
-      var hasTrashcan = eYo.AsDef(options.trashCan, true)
-      var hasCollapse = eYo.AsDef(options.collapse, true)
-      var hasDisable = eYo.AsDef(options.disable, true)
-      var hasSounds = eYo.AsDef(options.sounds, true)
+      var hasTrashcan = eYo.asDef(options.trashCan, true)
+      var hasCollapse = eYo.asDef(options.collapse, true)
+      var hasDisable = eYo.asDef(options.disable, true)
+      var hasSounds = eYo.asDef(options.sounds, true)
     }
     this.readOnly = readOnly
     this.hasTrashcan = hasTrashcan
     this.collapse = hasCollapse
     this.disable = hasDisable
     this.hasSounds = hasSounds
-    this.hasScrollbars = eYo.AsDef(options.scrollbars, true)
+    this.hasScrollbars = eYo.asDef(options.scrollbars, true)
     this.maxBricks = options.maxBricks || Infinity
-    this.hasCss = eYo.AsDef(options.css, true)
-    this.noLeftSeparator = eYo.AsDef(options.noLeftSeparator, true)
-    this.noDynamicList = eYo.AsDef(options.noDynamicList, false)
-    this.smartUnary = eYo.AsDef(options.smartUnary, true)
-    this.flyoutAnchor = eYo.AsDef(options.flyoutAnchor, eYo.Flyout.AT_RIGHT)
-    this.container = eYo.AsDef(options.container, 'eyo-desk')
-    this.backgroundClass = eYo.AsDef(options.backgroundClass,'eyo-main-board-background')
+    this.hasCss = eYo.asDef(options.css, true)
+    this.noLeftSeparator = eYo.asDef(options.noLeftSeparator, true)
+    this.noDynamicList = eYo.asDef(options.noDynamicList, false)
+    this.smartUnary = eYo.asDef(options.smartUnary, true)
+    this.flyoutAnchor = eYo.asDef(options.flyoutAnchor, eYo.Flyout.AT_RIGHT)
+    this.container = eYo.asDef(options.container, 'eyo-desk')
+    this.backgroundClass = eYo.asDef(options.backgroundClass,'eyo-main-board-background')
     var pathToMedia = options.media || './static/media'
     // Strip off any trailing slash (either Unix or Windows).
     pathToMedia = pathToMedia.replace(/[\\\/]$/, '')
     this.pathToMedia = pathToMedia
     this.zoom = eYo.app.parseZoom_(options)
     this.faceless = false
-    this.UI = eYo.AsDef(options.UI, 'fcls')
+    this.UI = eYo.asDef(options.UI, 'fcls')
   }
 })
 
@@ -239,7 +239,7 @@ eYo.app.makeDflt({
  * Paste a brick from the local clipboard.
  * @private
  */
-eYo.app.Dflt_p.paste = eYo.do.nothing
+eYo.app.Dflt_p.paste = eYo.doNothing
 
 /**
  * Delete this brick and the next ones if requested.
@@ -342,9 +342,9 @@ eYo.app.Dflt_p.doFocus = function() {
 /**
  * Close tooltips, context menus, dropdown selections, etc.
  */
-eYo.app.Dflt_p.hideChaff = eYo.do.nothing
+eYo.app.Dflt_p.hideChaff = eYo.doNothing
 
-eYo.o3d.Dflt.eyo.extendsProperties({
+eYo.o3d.Dflt.eyo.propertiesMerge({
   /**
    * The root application
    * @type {eYo.app}

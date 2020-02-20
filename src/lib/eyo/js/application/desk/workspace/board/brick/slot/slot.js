@@ -283,10 +283,10 @@ eYo.slot.makeDflt({
 /**
  * Initialize the instance.
  * Calls the inherited method, then adds methods defined by the model.
- * The methods are managed by the |dataHandler| method of the |eYo.c9r.model|.
+ * The methods are managed by the |dataHandler| method of the |eYo.model|.
  * @param {Object} object - The object to initialize.
  */
-eYo.slot.Dflt.eyo_p.initInstance = function (object) {
+eYo.slot.Dlgt_p.initInstance = function (object) {
   eYo.slot.Dflt_s.initInstance.call(this, object)
   object.model['.methods'].forEach(f => {
     f(object)
@@ -636,7 +636,7 @@ eYo.slot.Dflt_p.connect = function (bm) {
 eYo.slot.Dflt_p.completePromise = function () {
   var m4t = this.magnet
   if (m4t && m4t.completePromise()) {
-    this.completePromise = eYo.do.nothing
+    this.completePromise = eYo.doNothing
     return true
   }
 }

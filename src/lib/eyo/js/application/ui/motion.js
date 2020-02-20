@@ -358,25 +358,25 @@ Object.defineProperties(eYo.event.Motion_p, {
    * @private
    */
   abortCaptureMove_: {
-    value: eYo.do.nothing
+    value: eYo.doNothing
   },
   /**
    * @private
    */
   abortCaptureGestureMove_: {
-    value: eYo.do.nothing
+    value: eYo.doNothing
   },
   /**
    * @private
    */
   abortCaptureCancel_: {
-    value: eYo.do.nothing
+    value: eYo.doNothing
   },
   /**
    * @private
    */
   abortCaptureUp_: {
-    value: eYo.do.nothing
+    value: eYo.doNothing
   },
 })
 
@@ -599,7 +599,7 @@ eYo.event.Motion_p.captureStartMoreTouch_ = function(e) {
       var xy2nd = new eYo.geom.Where(touch2nd)
       this.startDistance_ = xy1st.distance(xy2nd) // Screen coordinates ?
       // Simply ignore any supplemental touch:
-      this.captureStart = eYo.do.nothing
+      this.captureStart = eYo.doNothing
       eYo.dom.gobbleEvent(e)
     }
   }
@@ -701,7 +701,7 @@ eYo.event.Motion_p.captureStartMoreTouchNoMove_ = function(e) {
       var touch2nd = list.item(0)
       this.touchIDs_.push(touch2nd.identifier)
       // Simply ignore any supplemental touch:
-      this.captureStart = eYo.do.nothing
+      this.captureStart = eYo.doNothing
       eYo.dom.gobbleEvent(e)
     }
   }

@@ -526,7 +526,7 @@ describe('Initalize with model', function() {
 })
 
 describe('Initalize augmented_assignment_stmt', function() {
-  eYo.c9r.model.forKey(eYo.t3.expr.augmented_stmt)
+  eYo.model.forKey(eYo.t3.expr.augmented_stmt)
   it(`basic augmented_assignment_stmt`, function() {
     eYo.Test.SetItUp()
     var d = eYo.Test.new_brick(eYo.t3.stmt.augmented_assignment_stmt)

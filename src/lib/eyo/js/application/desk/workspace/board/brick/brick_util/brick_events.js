@@ -414,7 +414,7 @@ eYo.data.Dflt_p.setTrusted_ = function (after) {
   var before = this.value_
   if (before !== after) {
     try {
-      this.setTrusted_ = eYo.do.nothing
+      this.setTrusted_ = eYo.doNothing
       this.brick.change.wrap(() => { // catch `this`
         eYo.event.groupWrap(() => { // catch `this`
           this.beforeChange(before, after)

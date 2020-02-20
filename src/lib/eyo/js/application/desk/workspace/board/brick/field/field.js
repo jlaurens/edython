@@ -399,7 +399,7 @@ eYo.field.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
  * Initializes the model of the field after it has been installed on a block.
  * No-op by default.
  */
-eYo.field.Dflt_p.initModel = eYo.do.nothing
+eYo.field.Dflt_p.initModel = eYo.doNothing
 
 /**
  * Whether the field of the receiver starts with a separator.

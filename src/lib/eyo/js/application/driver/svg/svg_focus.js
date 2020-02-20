@@ -27,26 +27,26 @@ eYo.svg.makeDriverC9r('Focus')
  * Init the main focus manager.
  * @param {eYo.focus.Main} mainMngr  The main focus manager
  */
-eYo.svg.Focus.prototype.mainInitUI = eYo.do.nothing
+eYo.svg.Focus.prototype.mainInitUI = eYo.doNothing
 
 /**
  * Init the main focus manager.
  * @param {eYo.focus.Main} mainMngr  The main focus manager
  */
-eYo.svg.Focus.prototype.mainDisposeUI = eYo.do.nothing
+eYo.svg.Focus.prototype.mainDisposeUI = eYo.doNothing
 
 
 /**
  * Init a standard focus manager.
  * @param {eYo.focus.Mngr} mngr  The standard focus manager
  */
-eYo.svg.Focus.prototype.mngrInitUI = eYo.do.nothing
+eYo.svg.Focus.prototype.mngrInitUI = eYo.doNothing
 
 /**
  * Init a standard focus manager.
  * @param {eYo.focus.Mngr} mngr  The standard focus manager
  */
-eYo.svg.Focus.prototype.mngrDisposeUI = eYo.do.nothing
+eYo.svg.Focus.prototype.mngrDisposeUI = eYo.doNothing
 
 console.error("CSS flag missing in board's dom")
 /**

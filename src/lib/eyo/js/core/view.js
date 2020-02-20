@@ -29,7 +29,7 @@ eYo.view.makeDflt({
    * Initializer.
    */
   init() {
-    this.disposeUI = eYo.do.nothing // will be used by subclassers
+    this.disposeUI = eYo.doNothing // will be used by subclassers
   },
   properties: {
     views: {
@@ -44,7 +44,7 @@ eYo.view.makeDflt({
      */
     hasUI: {
       get () {
-        return !this.initUI || this.initUI === eYo.do.nothing
+        return !this.initUI || this.initUI === eYo.doNothing
       },
     },
     /**
@@ -95,9 +95,9 @@ eYo.view._p.enhanceNew = (enhancer) => {
  * Declare the given model.
  * @param {Object} model - Object, like for |makeC9r|.
  */
-eYo.view.Dflt_p.initWithModel = function (model) {
-  eYo.view.Dflt_p.SuperC9r_p.initWithModel.call(this, model)
-  model.views && (this.views.initWithModel(model.views))
+eYo.view.Dflt_p.modelMerge = function (model) {
+  eYo.view.Dflt_p.SuperC9r_p.modelMerge.call(this, model)
+  model.views && (this.views.modelMerge(model.views))
 }
 
 /**
@@ -167,24 +167,24 @@ eYo.view.Dflt_p.doDisposeUI = function (...args) {
  * Layout the receiver.
  * The default implementation does nothing.
  */
-eYo.view.Dflt_p.layout = eYo.do.nothing
+eYo.view.Dflt_p.layout = eYo.doNothing
 
 /**
  * Update the metrics of the receiver.
  */
-eYo.view.Dflt_p.updateMetrics = eYo.do.nothing
+eYo.view.Dflt_p.updateMetrics = eYo.doNothing
 
 /**
  * Place the receiver.
  */
-eYo.view.Dflt_p.place = eYo.do.nothing
+eYo.view.Dflt_p.place = eYo.doNothing
 
 /**
  * Consolidate the given model.
  * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
  */
 eYo.view.Dlgt_p.modelConsolidate = function (...args) {
-  eYo.c9r.model.consolidate(...args)
+  eYo.model.consolidate(...args)
 }
 
 /**
@@ -215,7 +215,7 @@ eYo.view.Dlgt_p.consolidatorMake = function (k, model) {
  * Make the ui.
  * Default implementation forwards to the driver.
  */
-eYo.view.Dflt_p.doInitUI = eYo.do.nothing
+eYo.view.Dflt_p.doInitUI = eYo.doNothing
 
 /**
  * Make the ui.
@@ -223,7 +223,7 @@ eYo.view.Dflt_p.doInitUI = eYo.do.nothing
  */
 eYo.view.Dflt_p.initUI = function (...args) {
   try {
-    this.initUI = eYo.do.nothing
+    this.initUI = eYo.doNothing
     this.doInitUI(...args)
 
   } finally {
@@ -235,7 +235,7 @@ eYo.view.Dflt_p.initUI = function (...args) {
  * Dispose of the ui.
  * Default implementation forwards to the driver.
  */
-eYo.view.Dflt_p.doDisposeUI = eYo.do.nothing
+eYo.view.Dflt_p.doDisposeUI = eYo.doNothing
 
 /**
  * Dispose of the ui.
@@ -243,7 +243,7 @@ eYo.view.Dflt_p.doDisposeUI = eYo.do.nothing
  */
 eYo.view.Dflt_p.disposeUI = function (...args) {
   try {
-    this.disposeUI = eYo.do.nothing
+    this.disposeUI = eYo.doNothing
     this.doDisposeUI(...args)
 
   } finally {
@@ -263,7 +263,7 @@ eYo.p6y.List.makeInheritedC9r(eYo.view)
  * initialize from the model.
  * @param {Array<Object>} model - An array of views or view models
  */
-eYo.view.List_p.initWithModel = function (model) {
+eYo.view.List_p.modelMerge = function (model) {
   this.splice(this.length, 0, ...(map(x => {
     return eYo.view.new(model)
   }, model)))

@@ -195,7 +195,7 @@ describe('Copy/Paste', function() {
       d.dispose()
     })
   })
-  var md = eYo.c9r.model.forKey(eYo.t3.expr.identifier).data
+  var md = eYo.model.forKey(eYo.t3.expr.identifier).data
   var f = (k) => {
     var w = {
       holder: ['NONE', ['abc']],
@@ -236,7 +236,7 @@ describe('Copy/Paste', function() {
 // don't forget to test creation with a string
 
 describe('Primary variant', function() {
-  var Vs = eYo.c9r.model.forKey(eYo.t3.expr.identifier).data.variant.all
+  var Vs = eYo.model.forKey(eYo.t3.expr.identifier).data.variant.all
   Vs.some(to => {
     var d = eYo.Test.new_brick(eYo.t3.expr.identifier)
     d.Variant_p = to

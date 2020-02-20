@@ -13,8 +13,6 @@
 
 eYo.require('decorate')
 eYo.require('do')
-eYo.require('c9r')
-eYo.require('c9r.model')
 
 eYo.require('o3d.Change')
 eYo.require('data')
@@ -770,7 +768,7 @@ eYo.brick.makeDflt({
     }
     // Stop rerendering.
     this.ui_ && (this.ui_.rendered = false)
-    this.consolidate = this.initUI = this.render = eYo.do.nothing
+    this.consolidate = this.initUI = this.render = eYo.doNothing
     // Remove from board
     board.removeBrick(this)
     this.wrappedMagnets_ && (this.wrappedMagnets_.length = 0)
@@ -1229,13 +1227,13 @@ eYo.brick.DEBUG_ = Object.create(null)
       } else if (goog.isDef(data_in)) {
         this.dataForEach(data => {
           var k = data.key
-          if (eYo.do.hasOwnProperty(data_in, k)) {
+          if (eYo.hasOwnProperty(data_in, k)) {
             data.set(data_in[k])
             data.setRequiredFromModel(true)
             done = true
           } else {
             k = k + '_placeholder'
-            if (eYo.do.hasOwnProperty(data_in, k)) {
+            if (eYo.hasOwnProperty(data_in, k)) {
               data.setRequiredFromModel(true)
               // change the place holder in the objects's model
               var m = {}
@@ -1248,7 +1246,7 @@ eYo.brick.DEBUG_ = Object.create(null)
         })
         if (!noCheck) {
           for (var k in data_in) {
-            if (eYo.do.hasOwnProperty(data_in, k)) {
+            if (eYo.hasOwnProperty(data_in, k)) {
               var D = this.data[k]
               if (!D) {
                 console.warn('Unused data:', this.type, k, data_in[k])
@@ -1259,13 +1257,13 @@ eYo.brick.DEBUG_ = Object.create(null)
       }
       this.dataForEach(data => {
         var k = data.key + '_p'
-        if (eYo.do.hasOwnProperty(model, k)) {
+        if (eYo.hasOwnProperty(model, k)) {
           data.set(model[k])
           done = true
           data.setRequiredFromModel(true)
         }
         k = data.key + '_placeholder'
-        if (eYo.do.hasOwnProperty(model, k)) {
+        if (eYo.hasOwnProperty(model, k)) {
           data.customizePlaceholder(model[k])
         }
       })
@@ -1284,7 +1282,7 @@ eYo.brick.DEBUG_ = Object.create(null)
     var dataModel = this.model.data
     var byOrder = []
     for (var k in dataModel) {
-      if (eYo.do.hasOwnProperty(dataModel, k)) {
+      if (eYo.hasOwnProperty(dataModel, k)) {
         var model = dataModel[k]
         if (model) {
           // null models are used to neutralize the inherited data
@@ -1331,7 +1329,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    */
   _p.synchronizeData = function () {
     this.dataForEach(data => data.synchronize())
-    this.synchronizeData = eYo.do.nothing
+    this.synchronizeData = eYo.doNothing
   }
 
   /**
@@ -1376,7 +1374,7 @@ eYo.brick.DEBUG_ = Object.create(null)
         var insert = model.insert
         var slot, next
         if (insert) {
-          var model = eYo.c9r.model.forKey(insert)
+          var model = eYo.model.forKey(insert)
           if (model) {
             if ((slot = feedSlots.call(this, model.slots))) {
               next = slot
@@ -1968,7 +1966,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * in the proper domain of the dom tree.
    * @param {eYo.brick.Dflt} newParent to be connected.
    */
-  _p.parentWillChange = eYo.do.nothing
+  _p.parentWillChange = eYo.doNothing
 
   /**
    * Called when the parent will just change.
@@ -1976,7 +1974,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * in the proper domain of the dom tree.
    * @param {eYo.brick.Dflt} oldParent that was disConnected.
    */
-  _p.parentDidChange = eYo.do.nothing
+  _p.parentDidChange = eYo.doNothing
 
   /**
    * Returns the named field from a brick.
@@ -2120,7 +2118,7 @@ eYo.brick.DEBUG_ = Object.create(null)
       this.updateShape()
       delete this.render
     })
-    this.initUI = eYo.do.nothing
+    this.initUI = eYo.doNothing
     delete this.disposeUI
   }
 
@@ -2129,7 +2127,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    */
   _p.disposeUI = function (healStack, animate) {
     this.change.wrap(() => {
-      this.render = eYo.do.nothing
+      this.render = eYo.doNothing
       this.fieldForEach(field => field.disposeUI())
       this.slotForEach(slot => slot.disposeUI())
       this.magnets.disposeUI()
@@ -2137,7 +2135,7 @@ eYo.brick.DEBUG_ = Object.create(null)
       this.ui_ = null
     })
     this.ui_ && (this.ui_.dispose() && (this.ui_ = null))
-    this.disposeUI = eYo.do.nothing
+    this.disposeUI = eYo.doNothing
     delete this.initUI
   }
 
@@ -2534,10 +2532,10 @@ eYo.brick.newReady = (() => {
   var processModel = (board, model, id, brick) => {
     var dataModel = model // may change below
     if (!brick) {
-      if (eYo.c9r.model.forType(model.type)) {
+      if (eYo.model.forType(model.type)) {
         brick = board.newBrick(model.type, id)
         brick.setDataWithType(model.type)
-      } else if (eYo.c9r.model.forType(model)) {
+      } else if (eYo.model.forType(model)) {
         brick = board.newBrick(model, id) // can undo
         brick.setDataWithType(model)
       } else if (eYo.isStr(model) || goog.isNumber(model)) {
@@ -2572,7 +2570,7 @@ eYo.brick.newReady = (() => {
       brick.setDataWithModel(dataModel)
       var Vs = model.slots
       for (var k in Vs) {
-        if (eYo.do.hasOwnProperty(Vs, k)) {
+        if (eYo.hasOwnProperty(Vs, k)) {
           var slot = brick.slots[k]
           if (slot && slot.magnet) {
             var t9k = slot.targetBrick
@@ -2638,162 +2636,6 @@ eYo.do.defineDataProperty = (object, k) => {
     })
   }
 }
-
-/**
- * Turns a function with signature
- * function (ns, key, Super, Dlgt, register, model) {...}
- * into a function with signature
- * function ([ns], [key], [Super], [Dlgt], [register], [model]) {...}
- * @param{Function} f
- */
-eYo.brick._p.makeC9rDecorate = (f) => {
-  return function (ns, key, Super, Dlgt, register, model) {
-    if (ns && !eYo.isNS(ns)) {
-      model = register
-      register = Dlgt
-      Dlgt = Super
-      Super = key
-      key = ns
-      ns = eYo.NA
-    }
-    if (!eYo.isStr(key)) {
-      model = register
-      register = Dlgt
-      Dlgt = Super
-      Super = key
-      key = eYo.NA
-    }
-    if (goog.isBoolean(Super)) {
-      model = Dlgt
-      register = Super
-      Dlgt = Super = eYo.NA
-    } else if (goog.isBoolean(Dlgt)) {
-      model = register
-      register = Dlgt
-      Dlgt = eYo.NA
-    } else if (!goog.isBoolean(register)) {
-      model = register
-      register = false
-    }
-    return eYo.brick.super.makeC9rDecorate(function(ns, key, Super, Dlgt, model) {
-      return f.call(this, ns, key, Super, Dlgt, register, model)
-    }).call(this, ns, key, Super, Dlgt, model)
-  }
-}
-
-/**
- * @name{eYo.brick.doMakeC9r}
- * Make a constructor with an 'eyo__' property.
- * Caveat, constructors must have the same arguments.
- * Use a key->value design if you do not want that.
- * This is not used directly, only decorated.
- * @param {Object} ns -  The namespace.
- * @param {String} key -  The key.
- * @param {Function} Super -  The super class.
- * @param {Function} Dlgt -  The constructor's delegate class. Must be a subclass of `eYo.Dlgt`.
- * @param {Boolean} register
- * @param {Object|Function} model -  The dictionary of parameters.
- * @return {Function} the created constructor.
- * @this {*} namepsace
- */
-eYo.brick._p.doMakeC9r = function (ns, key, Super, Dlgt, register, model) {
-  if (key.indexOf('eyo:') >= 0) {
-    key = key.substring(4)
-  }
-  var C9r = eYo.brick.super.doMakeC9r.call(this, ns, key, Super, Dlgt, model)
-  if (!C9r.eyo) {
-    console.error('WHERE IS EYO???')
-  }
-  register && eYo.c9r.register(C9r)
-  // console.warn('NEW BRICK CLASS', C9r.eyo.name)
-  return C9r
-}
-
-/**
- * @name{eYo.brick.makeC9r}
- * Method to create the constructor of a subclass.
- * One constructor, one key.
- * Registers the subclass too.
- * For any constructor C built with this method, we have
- * C === me.get(C.eyo.key)
- * and in general
- * key in me.get(key).eyo.types
- * but this is not a requirement!
- * In particular, some bricks share a basic do nothing delegate
- * because they are not meant to really exist yet.
- * , , ,  = eYo.NA,  = eYo.brick.Dlgt,  = false
- * @param {Object} [ns] - namespace, `eYo.expr`, `eYo.stmt` or `eYo.brick` when omitted, depending on the key
- * @param {String} [key] -  capitalized string, `ns[key]` will be created. Guessed form `Super` when omitted.
- * @param {Function} [Super] - The super class, `ns.Dlft` when omitted.
- * @param {Function} [Dlgt] - The constructor of `Super` when omitted.
- * @param {Boolean} [register] - falsy or truthy values are not supported!, false when omitted.
- * @param {Object} [model]
- * @return the constructor created
- */
-eYo.brick._p.makeC9r = eYo.brick.makeC9rDecorate(eYo.brick.doMakeC9r)
-
-/**
- * @param {Function} f -  The function to decorate.
- * @return {Function} the constructor created or `eYo.NA` when the receiver has no namespace.
- */
-eYo.brick.Dflt.eyo_p.makeInheritedC9rDecorate = (f) => {
-  return function (ns, key, Dlgt, register, model) {
-    if (!this) {
-      console.error('BREAK HERE!')
-    }
-    if (ns && !eYo.isNS(ns)) {
-      model && eYo.throw(`Unexpected model(1) ${model}`)
-      model = register
-      register = Dlgt
-      Dlgt = key
-      key = ns
-      ns = eYo.NA
-    }
-    if (!eYo.isStr(key)) {
-      model && eYo.throw(`Unexpected model(2) ${model}`)
-      model = register
-      register = Dlgt
-      Dlgt = key
-      key = eYo.NA
-    }
-    if (goog.isBoolean(Dlgt)) {
-      model && eYo.throw(`Unexpected model(3) ${model}`)
-      model = register
-      register = Dlgt
-      Dlgt = eYo.NA
-    } else if (!goog.isBoolean(register)) {
-      model && eYo.throw(`Unexpected model(4) ${model}`)
-      model = register
-      register = false
-    }
-    var Super = this.C9r
-    return eYo.brick.super.makeC9rDecorate(function(ns, key, Super, Dlgt, model) {
-      return f.call(this, ns, key, Super, Dlgt, register, model)
-    }).call(this.ns, ns, key, Super, Dlgt, model)
-  }
-}
-
-/**
- * Method to create the constructor of a subclass.
- * One constructor, one key.
- * Registers the subclass too.
- * For any constructor C built with this method, we have
- * C === me.get(C.eyo.key)
- * and in general
- * key in me.get(key).eyo.types
- * but this is not a requirement!
- * In particular, some bricks share a basic do nothing delegate
- * because they are not meant to really exist yet.
- * , , ,  = eYo.NA,  = eYo.brick.Dlgt,  = false
- * @param {Object} [ns] - namespace, `eYo.expr`, `eYo.stmt` or `eYo.brick` when omitted, depending on the key
- * @param {String} key -  capitalized string, `ns[key]` will be created.
- * @param {Function} [Super] - The super class, `ns.Dlft` when omitted.
- * @param {Function} [Dlgt] - The constructor of `Super` when omitted.
- * @param {Boolean} [register] - falsy or truthy values are not supported!, false when omitted.
- * @param {Object} [model]
- * @return the constructor created
- */
-eYo.brick.Dflt.eyo_p.makeInheritedC9r = eYo.brick.Dflt.eyo_p.makeInheritedC9rDecorate(eYo.brick.doMakeC9r)
 
 eYo.brick.registerAll = function (typesByKey, C9r, fake) {
   for (var k in typesByKey) {

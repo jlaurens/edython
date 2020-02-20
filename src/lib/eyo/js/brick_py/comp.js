@@ -20,7 +20,7 @@ eYo.provide('brick.comprehension')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeC9r('comprehension', {
+eYo.expr.makeC9r('comprehension', true, {
   data: {
     expression: {
       order: 1,
@@ -87,7 +87,7 @@ eYo.expr.makeC9r('comprehension', {
       return [eYo.t3.expr.comprehension]
     }
   }
-}, true)
+})
 
 /**
  * getBaseType.
@@ -117,7 +117,7 @@ eYo.expr.comprehension_p.xmlAttr = function () {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeC9r('comp_for', {
+eYo.expr.makeC9r('comp_for', true, {
   slots: {
     for: {
       order: 1,
@@ -134,14 +134,14 @@ eYo.expr.makeC9r('comp_for', {
       check: eYo.t3.expr.check.or_test_all
     }
   }
-}, true)
+})
 
 /**
  * Class for a Delegate, comp_if brick.
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeC9r('comp_if', {
+eYo.expr.makeC9r('comp_if', true, {
   slots: {
     if: {
       order: 1,
@@ -151,7 +151,7 @@ eYo.expr.makeC9r('comp_if', {
       check: eYo.t3.expr.check.expression_nocond
     }
   }
-}, true)
+})
 
 /**
  * Class for a Delegate, comp_iter_list brick.

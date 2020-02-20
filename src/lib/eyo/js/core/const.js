@@ -17,9 +17,9 @@
  **/
 
 eYo.require('do')
-eYo.provide('id')
+eYo.makeNS('id')
 
-eYo.provide('const')
+eYo.makeNS('const')
 
 eYo.assert(XRegExp, 'load XRegExp before')
 
@@ -52,7 +52,7 @@ eYo.Const.Field = {
  */
 eYo.makeNS('key')
 
-eYo.do.readOnlyMixin(eYo.key, {
+eYo.mixinRO(eYo.key, {
   EYO: 'eyo',
   PLACEHOLDER: 'placeholder', // this MUST be in lower case
   TERM: 'term', // this MUST be in lower case

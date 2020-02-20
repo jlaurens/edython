@@ -15,7 +15,7 @@
  * @name{eYo.brick.turtle}
  * @namespace
  */
-eYo.makeNS('brick.turtle')
+eYo.provide('brick.turtle')
 
 eYo.require('module.turtle__module')
 
@@ -36,11 +36,11 @@ eYo.t3.stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.makeC9r('turtle__setup_stmt', {
+eYo.stmt.makeC9r('turtle__setup_stmt', true, {
   fields: {
     label: 'edython.turtleSetup()'
   }
-}, true)
+})
 
 ;(function () {
   var F_expr = (name, title) => {

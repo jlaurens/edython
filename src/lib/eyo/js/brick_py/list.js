@@ -161,7 +161,7 @@ eYo.expr.List_p.createConsolidator = eYo.decorate.reentrant_method(
     if (!type) {
       console.error('unexpected void type')
     }
-    var D = eYo.c9r.model.forKey(type).list
+    var D = eYo.model.forKey(type).list
     eYo.assert(D, '`model`.list is missing in ' + type)
     var C10r = this.consolidatorConstructor || D.consolidator || eYo.consolidator.List
     if (this.consolidator) {

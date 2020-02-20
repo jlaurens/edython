@@ -12,12 +12,9 @@
 'use strict'
 
 eYo.require('expr.List')
-eYo.require('expr.primary')
 
 eYo.require('magnet')
 goog.require('goog.dom');
-eYo.provide('brick.lambda')
-eYo.provide('brick.parameter')
 
 /**
  * List consolidator for parameter list.
@@ -47,7 +44,7 @@ eYo.provide('brick.parameter')
 //   presep: ',',
 // }
 
-eYo.consolidator.List.makeInheritedC9r('Parameter', {
+eYo.consolidator.List.makeInheritedC9r('parameter', {
   list: {
     check: null,
     mandatory: 0,
@@ -372,7 +369,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeC9r('Lambda', {
+eYo.expr.makeC9r('lambda', true, {
   slots: {
     parameters: {
       order: 1,
@@ -412,7 +409,7 @@ eYo.expr.makeC9r('Lambda', {
       return (cond_in ? [eYo.t3.expr.lambda_expr] : []).concat(nocond_in ? [eYo.t3.expr.lambda_expr_nocond] : [])
     }
   }
-}, true)
+})
 
 ;[
   // 'if',

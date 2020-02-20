@@ -22,13 +22,13 @@ eYo.forwardDeclare('font')
  */
 
 Object.defineProperties(eYo.unit, {
-  x: eYo.c9r.descriptorR(function () {
+  x: eYo.descriptorR(function () {
     return eYo.font.space
   }),
-  y: eYo.c9r.descriptorR(function  () {
+  y: eYo.descriptorR(function  () {
     return eYo.font.lineHeight
   }),
-  rem: eYo.c9r.descriptorR(function  () {
+  rem: eYo.descriptorR(function  () {
     return parseFloat(getComputedStyle(document.documentElement).fontSize)
   }),
 })
@@ -621,7 +621,7 @@ eYo.geom.makeC9r('Rect', {
 /**
  * Dispose of the receiver's resources.
  */
-eYo.geom.Rect_p.dispose = eYo.do.nothing
+eYo.geom.Rect_p.dispose = eYo.doNothing
 
 /**
  * set the `Rect`.

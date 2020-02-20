@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('collections.abc__module')
+eYo.module.provide('collections.abc__module')
 
 eYo.module.collections.abc__module.url = 'https://docs.python.org/3.6/library/collections.abc.html'
 

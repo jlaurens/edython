@@ -24,7 +24,7 @@ eYo.provide('brick.yield')
  * Class for a Delegate, yield_expr.
  * For edython.
  */
-eYo.expr.makeC9r('yield_expr', {
+eYo.expr.makeC9r('yield_expr', true, {
   xml: {
     attr: 'yield'
   },
@@ -154,7 +154,7 @@ eYo.expr.makeC9r('yield_expr', {
       }
     }
   }
-}, true)
+})
 
 /**
  * Populate the context menu for the given brick.
@@ -209,9 +209,9 @@ eYo.expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, yield_stmt.
  * For edython.
  */
-eYo.stmt.makeC9r('yield_stmt', {
+eYo.stmt.makeC9r('yield_stmt', true, {
   link: eYo.t3.expr.yield_expr
-}, true)
+})
 
 /**
  * Populate the context menu for the given brick.

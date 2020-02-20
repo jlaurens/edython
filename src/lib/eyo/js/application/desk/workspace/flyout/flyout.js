@@ -711,7 +711,7 @@ eYo.Flyout_p.doSlide = function(close) {
       this.desk_.recordDeleteAreas()
       this.slideOneStep(steps[n_steps])
       this.didSlide(close)
-      this.abortSlide = eYo.do.nothing
+      this.abortSlide = eYo.doNothing
     } else {
       rect.x = positions[n]
       this.ui_driver_mngr.place(this)

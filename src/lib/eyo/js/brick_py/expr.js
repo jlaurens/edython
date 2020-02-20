@@ -33,22 +33,20 @@ eYo.stmt.makeNS(eYo, 'expr')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeDflt()
+eYo.expr.makeDflt({
+  properties: {
+    isExpr: true,
+    depth: {
+      get () {
+        var stmt = this.stmtParent
+        return (stmt && stmt.depth) || 0
+      }
+    }  
+  },
+})
 
 // Default delegate for all expression bricks
 eYo.brick.registerAll(eYo.t3.expr, eYo.expr.Dflt, true)
-
-Object.defineProperties(eYo.expr.Dflt_p, {
-  isExpr: {
-    value: true
-  },
-  depth: {
-    get () {
-      var stmt = this.stmtParent
-      return (stmt && stmt.depth) || 0
-    }
-  }
-})
 
 /**
  * Increment the change count.
@@ -347,7 +345,7 @@ eYo.expr.Dflt_p.doConsolidate = function (deep, force) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeC9r('proper_slice', {
+eYo.expr.makeC9r('proper_slice', true, {
   data: {
     variant: {
       all: [
@@ -441,14 +439,14 @@ eYo.expr.makeC9r('proper_slice', {
       }
     }
   }
-}, true)
+})
 
 /**
  * Class for a Delegate, conditional_expression brick.
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeC9r('conditional_expression', {
+eYo.expr.makeC9r('conditional_expression', true, {
   slots: {
     expression: {
       order: 1,
@@ -469,13 +467,13 @@ eYo.expr.makeC9r('conditional_expression', {
       check: eYo.t3.expr.check.expression
     }
   }
-}, true)
+})
 
 /**
  * Class for a Delegate, builtin object.
  * For edython.
  */
-eYo.expr.makeC9r('builtin__object', {
+eYo.expr.makeC9r('builtin__object', true, {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
@@ -488,11 +486,10 @@ eYo.expr.makeC9r('builtin__object', {
       reserved: ''
     }
   }
-}, true)
+})
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.Dflt} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -517,7 +514,7 @@ eYo.expr.builtin__object_p.makeTitle = function (op) {
  * Class for a Delegate, any object.
  * For edython.
  */
-eYo.expr.makeC9r('Any', {
+eYo.expr.makeC9r('Any', true, {
   data: {
     expression: {
       init: '',
@@ -533,4 +530,4 @@ eYo.expr.makeC9r('Any', {
   out: {
     check: null // means that every output type will fit, once we have a python parser...
   }
-}, true)
+})

@@ -35,7 +35,7 @@ eYo.view.makeC9r('Scroller', {
       'eyo-main-board-scrollbar'
     )
     this.cornerRect_ = new eYo.geom.Rect()
-    this.disposeUI = eYo.do.nothing
+    this.disposeUI = eYo.doNothing
     board.hasUI && this.initUI()
   },
   properties: {
@@ -83,7 +83,7 @@ eYo.view.Scroller_p.disposeUI = function () {
   this.hScroll.disposeUI()
   this.vScroll.disposeUI()
   this.ui_driver.doDispose(this)
-  this.disposeUI = eYo.do.nothing
+  this.disposeUI = eYo.doNothing
   delete this.initUI
 }
 

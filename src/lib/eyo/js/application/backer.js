@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('changeCount')
+eYo.require('o4t.changeCount')
 
 eYo.forwardDeclare('event')
 eYo.forwardDeclare('app')
@@ -74,7 +74,7 @@ eYo.o3d.makeC9r(eYo, 'Backer', {
   },
 })
 
-eYo.Backer.eyo.changeCountAdd()
+eYo.o4t.changeCount.merge(eYo.Backer)
 
 /**
  * Clear the undo/redo stacks.

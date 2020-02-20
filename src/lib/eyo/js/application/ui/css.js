@@ -59,7 +59,7 @@ eYo.css.insertRuleAt = (() => {
   }
 })()
 
-eYo.Setup.register(-1, () => {
+eYo.setup.register(-1, () => {
   eYo.css.insertRuleAt('body {background: orange;}')
 })
 
@@ -103,7 +103,7 @@ eYo.css.inject = (hasCss, pathToMedia) => {
   var cssTextNode = document.createTextNode(text);
   cssNode.appendChild(cssTextNode);
   Blockly.Css.styleSheet_ = cssNode.sheet;
-  Blockly.Css.inject = eYo.do.nothing
+  Blockly.Css.inject = eYo.doNothing
 }
 
 /**

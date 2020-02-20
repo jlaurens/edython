@@ -163,7 +163,7 @@ eYo.module._p.makeItem = function () {
   _p.module = this
 
   Object.defineProperties(_p, {
-    url: eYo.c9r.descriptorR(function () {
+    url: eYo.descriptorR(function () {
       return this.href
         ? this.module.url + this.href
         : this.module.url

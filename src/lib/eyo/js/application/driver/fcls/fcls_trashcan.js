@@ -24,35 +24,35 @@ eYo.fcls.makeDriverC9r('TrashCan')
  * Initiate the trash can UI.
  * @param {eYo.view.TrashCan} trashCan  The trash can we must initialize the UI.
  */
-// eYo.fcls.TrashCan.prototype.doInitUI = eYo.do.nothing
+// eYo.fcls.TrashCan.prototype.doInitUI = eYo.doNothing
 
 /**
  * Dispose of the trash can UI.
  * @param {eYo.view.TrashCan} trashCan  The trash can we must dispose the UI of.
  */
-// eYo.fcls.TrashCan.prototype.doDisposeUI = eYo.do.nothing
+// eYo.fcls.TrashCan.prototype.doDisposeUI = eYo.doNothing
 
 /**
  * Is the given trash can open.
  * @param {eYo.view.TrashCan} trashCan  The trash can we must query.
  */
-eYo.fcls.TrashCan.prototype.openGet = eYo.do.nothing
+eYo.fcls.TrashCan.prototype.openGet = eYo.doNothing
 
 /**
  * Set the given trash can open status.
  * @param {eYo.view.TrashCan} trashCan  The trash can we must set.
  * @param {Boolean} torf  The expected value.
  */
-eYo.fcls.TrashCan.prototype.openSet = eYo.do.nothing
+eYo.fcls.TrashCan.prototype.openSet = eYo.doNothing
 
 /**
  * Place the given trash can.
  * @param {eYo.view.TrashCan} trashCan  The trash can we must place.
  */
-eYo.fcls.TrashCan.prototype.place = eYo.do.nothing
+eYo.fcls.TrashCan.prototype.place = eYo.doNothing
 
 /**
  * Get the given trash can's client rect.
  * @param {eYo.view.TrashCan} trashCan  The trash can we must query.
  */
-eYo.fcls.TrashCan.prototype.clientRect = eYo.do.nothing
+eYo.fcls.TrashCan.prototype.clientRect = eYo.doNothing

@@ -30,22 +30,5 @@ Properties are defined in different flavours : owned, cached, lazy, computed. Ow
 In general, properties do not depend on one another.
 A contrario, some cached properties like `app` must be set after the owner is set. We can add some index to the property to order initialization processing.
 We can also rely on some kind of automatic order detection.
-
-#### On level, 2 properties
-
-Let property `foo` depend on `bar` like for example
-
-```
-makeC9r('A', {
-  properties: {
-    foo () {
-      return this.bar
-    },
-    bar () {
-      return 421
-    },
-  }
-})
-```
-
-
+And we can rely on lazyness.
+This last design may lead to infinite loops: we must take care of reentrency.
