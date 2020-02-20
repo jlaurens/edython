@@ -17,7 +17,7 @@ eYo.require('decorate')
 
 eYo.forwardDeclare('Flyout')
 eYo.forwardDeclare('app')
-eYo.forwardDeclare('Backer')
+eYo.forwardDeclare('event')
 eYo.forwardDeclare('view.Scrollbar')
 
 goog.forwardDeclare('goog.array');
@@ -53,11 +53,11 @@ eYo.view.makeC9r('Workspace', {
     },
     /**
      * The undo/redo manager
-     * @type {?eYo.Backer} 
+     * @type {?eYo.event.Backer} 
      */
     backer: {
       value () {
-        return new eYo.Backer(this)
+        return new eYo.event.Backer(this)
       },
     },
     /**

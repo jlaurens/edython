@@ -21,6 +21,13 @@ eYo.o4t.makeNS(eYo, 'event')
 
 Object.defineProperties(eYo.event._p, {
   /**
+   * Maximum number of undo events in stack. `0` turns off undo, `Infinity` sets it to unlimited (provided there is enough memory!).
+   * @type {number}
+   */
+  MAX_UNDO: {
+    value: 1024,
+  },
+  /**
    * Name of event that creates a block.
    * @const
    */
@@ -174,7 +181,7 @@ eYo.event.groupWrap = (f, g) => {
 
   /**
    * Modify pending undo events so that when they are fired they don't land
-   * in the undo stack.  Called by eYo.Backer's clear.
+   * in the undo stack.  Called by eYo.event.Backer's clear.
    */
   eYo.event.ClearPendingUndo = function() {
     FIRE_QUEUE_.forEach(event => (event.toUndoStack = false))
@@ -348,3 +355,175 @@ eYo.event.makeC9r('Abstract', {
  */
 eYo.event.Abstract_p.run = eYo.doNothing
 
+/**
+ * @name {eYo.event.Backer}
+ * @param {Object} owner
+ * @constructor
+ */
+eYo.o3d.makeC9r(eYo.event, 'Backer', {
+  properties: {
+    /**
+     * @type {!Array<!eYo.event.Abstract>}
+     * @protected
+     */
+    undoStack: {
+      value () {
+        return []
+      },
+    },
+    /**
+     * @type {!Array<!eYo.event.Abstract>}
+     * @protected
+     */
+    redoStack: {
+      value () {
+        return []
+      },
+    },
+    /**
+     * Data to create an undo menu item.
+     */
+    undoMenuItemData: {
+      value () {
+        return {
+          text: eYo.msg.UNDO,
+          enabled: this.undoStack.length > 0,
+          callback: this.undo.bind(this, false)
+        }
+      },
+    },
+    /**
+     * Data to create a redo menu item.
+     */
+    redoMenuItemData: {
+      get () {
+        return {
+          text: eYo.msg.REDO,
+          enabled: this.redoStack_.length > 0,
+          callback: this.undo.bind(this, true)
+        }
+      },
+    },
+  },
+})
+
+eYo.o4t.changeCount.merge(eYo.event.Backer)
+
+/**
+ * Clear the undo/redo stacks.
+ */
+eYo.event.Backer_p.clear = function() {
+  this.undoStack.length = 0
+  this.redoStack.length = 0
+  // Stop any events already in the firing queue from being undoable.
+  eYo.event.ClearPendingUndo()
+  this.didClearUndo()
+}
+
+/**
+ * Clear the undo/redo stacks.
+ * Forwards to the owner.
+ */
+eYo.event.Backer_p.didClearUndo = function() {
+  this.app.didClearUndo && this.app.didClearUndo()
+}
+
+/**
+ * Undo or redo the previous action.
+ * @param {boolean} redo False if undo, true if redo.
+ */
+eYo.event.Backer_p.undo = function(redo) {
+  var inputStack = redo ? this.redoStack_ : this.undoStack_
+  var outputStack = redo ? this.undoStack_ : this.redoStack_
+  while (true) {
+    var inputEvent = inputStack.pop()
+    if (!inputEvent) {
+      return
+    }
+    var events = [inputEvent]
+    // Do another undo/redo if the next one is of the same group.
+    if (inputEvent.group) {
+      while (inputStack.length &&
+        inputEvent.group == inputStack[inputStack.length - 1].group) {
+        events.push(inputStack.pop())
+      }
+    }
+    events = eYo.event.filter(events, redo)
+    if (events.length) {
+      // Push these popped events on the opposite stack.
+      events.forEach((event) => {
+        outputStack.push(event)
+      })
+      eYo.event.recordingUndo = false
+      var Bs = []
+      eYo.do.tryFinally(() => { // try
+        if (this.rendered) {
+          events.forEach(event => {
+            var b3k = this.getBrickById(event.brickId)
+            if (b3k) {
+              b3k.change.begin()
+              Bs.push(b3k)
+            }
+          })
+        }
+        events.forEach(event => {
+          event.run(redo)
+          this.updateChangeCount(redo, event)
+        })
+      }, () => { // finally
+        eYo.event.recordingUndo = true
+        Bs.forEach(B => B.change.end())
+        this.didProcessUndo(redo)
+      })
+      return
+    }
+  }
+}
+
+/**
+ * Message sent when an undo has been processed.
+ * Forwards to the owner.
+ * @param {boolean} redo False if undo, true if redo.
+ */
+eYo.event.Backer_p.didProcessUndo = function(redo) {
+  this.app.didProcessUndo && this.app.didProcessUndo(redo)
+}
+
+/**
+ * The given event di fire a change.
+ * Called by board's eventDidFireChange.
+ * @param {eYo.event} event The event.
+ * @param {function} task what is wrapped.
+ */
+eYo.event.Backer_p.eventDidFireChange = function(event, task) {
+  if (event.toUndoStack) {
+    this.undoStack_.push(event)
+    this.redoStack_.length = 0
+    var complete = this.didPushUndo
+    if (this.undoStack_.length > this.ns.MAX_UNDO) {
+      this.undoStack_.unshift()
+      complete = this.didUnshiftUndo
+    }
+    task()
+    this.updateChangeCount(true, event)
+    complete.apply(this)
+  } else {
+    task()
+  }
+}
+
+/**
+ * Message sent when an undo has been pushed.
+ * Forwards to the owner.
+ */
+eYo.event.Backer_p.didPushUndo = function() {
+  this.app.didUnshiftUndo && this.app.didUnshiftUndo()
+}
+
+/**
+ * Message sent when an undo has been unshifted.
+ * Forwards to the owner.
+ */
+eYo.event.Backer_p.didUnshiftUndo = function() {
+  this.app.didUnshiftUndo && this.app.didUnshiftUndo()
+}

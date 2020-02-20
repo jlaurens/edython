@@ -15,7 +15,7 @@ describe ('Tests: Model', function () {
   })
   it ('Model: isModel', function () {
     chai.assert(eYo.isModel({}))
-    let x = new function () {}
+    let x = new eYo.doNothing()
     chai.assert(!eYo.isModel(x))
     x.model__ = true
     chai.assert(eYo.isModel(x))

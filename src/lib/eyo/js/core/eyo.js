@@ -169,7 +169,11 @@ eYo.mixinRO(eYo, {
    */
   throw (what) {
     throw what
-  }
+  },
+  /**
+   * Void function frequently used.
+   */
+  doNothing: function () {},
 }, false)
 
 // ANCHOR Utilities
@@ -209,7 +213,7 @@ eYo.mixinRO(eYo, {
     return eYo.isDef(object) ? object : fallout
   },
   INVALID: (() => {
-    return new function () {}
+    return new eYo.doNothing()
   })(),
   /**
    * Whether the argument is not `eYo.INVALID`.
@@ -261,10 +265,6 @@ eYo.mixinRO(eYo, {
   asF (what) {
     return typeof what === 'function' && !!what.call ? what : eYo.NA
   },
-  /**
-   * Void function frequently used.
-   */
-  doNothing: () => {},
   /**
    * Turns the argument into a function.
    * Returns the argument when a function and `eYo.doNothing` otherwise.
