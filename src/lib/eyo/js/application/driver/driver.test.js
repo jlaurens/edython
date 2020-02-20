@@ -1,5 +1,3 @@
-var NS = Object.create(null)
-
 describe('driver', function() {
   it ('Driver: Basic', function () {
     chai.assert(eYo.driver)

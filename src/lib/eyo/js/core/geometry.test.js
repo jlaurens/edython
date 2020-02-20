@@ -32,7 +32,6 @@ describe ('geometry', function () {
       chai.assert(whr.snap_)
       chai.assert(!['c', 'l', 'x', 'y'].some(k => whr[k] != 0))
       whr.c_ = 1.23
-      console.error(whr.description)
       chai.assert(eYo.test.almost(whr.c, 1) && eYo.test.almost(whr.x, 1 * eYo.unit.x))
       whr.c_ = 1.33
       chai.assert(eYo.test.almost(whr.c, 1.5) && eYo.test.almost(whr.x, 1.5 * eYo.unit.x))
@@ -61,7 +60,6 @@ describe ('geometry', function () {
     })
     it('Mutation', function () {
       var w1 = new eYo.geom.Where()
-      console.error(w1.description)
       var w2 = new eYo.geom.Where(w1)
       chai.assert(w1.equals(w2) && w2.equals(w1), `MISSED ${w1.description}.equals(${w2.description})`)
       w1.forward(1)
@@ -142,7 +140,6 @@ describe ('geometry', function () {
     })
     it ('Rect: new eYo.geom.Rect(...)', function () {
       let r = new eYo.geom.Rect(1, 2, 3, 4)
-      console.error('r:', r.w, r.description)
       test(r, 1, 2, 3, 4)
     })
     it ('Rect: min, mid, max', function () {

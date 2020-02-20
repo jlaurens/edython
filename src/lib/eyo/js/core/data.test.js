@@ -1,7 +1,3 @@
-'use strict'
-
-const NS = Object.create(null)
-
 describe ('Tests: data', function () {
   this.timeout(10000)
   it ('eYo.xre.function_builtin_before', function () {

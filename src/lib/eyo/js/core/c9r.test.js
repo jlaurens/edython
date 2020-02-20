@@ -1,7 +1,3 @@
-'use strict';
-
-const NS = Object.create(null)
-
 describe ('POC', function () {
   this.timeout(10000)
   it ('Dlgt infinite loop', function () {
@@ -95,7 +91,6 @@ describe ('POC', function () {
       }
     }
     var str = model.foo.toString()
-    console.error(model.foo.toString())
     chai.assert(XRegExp.match(str, /^[^(]*\([^,]*builtin\b/))
     var str = model.bar.toString()
     chai.assert(!XRegExp.match(str, /^[^(]*\([^,]*builtin\b/))

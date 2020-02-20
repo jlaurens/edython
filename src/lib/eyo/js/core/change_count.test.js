@@ -1,6 +1,5 @@
 describe ('Tests: change_count', function () {
   it ('Change_count: basic', function () {
-    console.error('BREAK')
     chai.assert(eYo.o4t.changeCount)
     chai.assert(eYo.o4t.changeCount.merge)
     var ns = eYo.o4t.makeNS()

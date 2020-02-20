@@ -216,11 +216,14 @@ def updateWebTestWrappers():
         HTML.head(root),
         HTML.deps(path_deps, root),
       ]
+      body = True
       for f in tests:
         try:
           relative = f.relative_to(path_eyo)
-          eyo = '../' * len(relative.parts)
-          lines.append(HTML.body(root, eyo)),
+          if body:
+            body = False
+            eyo = '../' * len(relative.parts)
+            lines.append(HTML.body(root, eyo)),
           lines.append(HTML.script(f.relative_to(path_test)))
         except: pass
       lines.append(HTML.mocha(root))

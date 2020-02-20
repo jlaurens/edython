@@ -1,5 +1,3 @@
-const NS = Object.create(null)
-
 describe ('do', function () {
   it ('BASIC: Do', function () {
     chai.assert(eYo.do)

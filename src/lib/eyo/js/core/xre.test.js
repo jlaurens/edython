@@ -62,13 +62,13 @@ describe ('Tests: xre', function () {
     test('function ( builtinX, after ) ...', false)
     test('function ( before, after ) ...', false)
   })
-  it ('eYo.xre.function_before', function () {
+  it ('eYo.xre.function_overriden', function () {
     let test = (s, yorn) => {
-      let m = XRegExp.exec(s, eYo.xre.function_before)
+      let m = XRegExp.exec(s, eYo.xre.function_overriden)
       chai.assert(!!m === yorn)
     }
-    test('function ( before,  ) ...', true)
-    test('function ( beforeX,  ) ...', false)
+    test('function ( overriden ) ...', true)
+    test('function ( overridenX  ) ...', false)
     test('function ( after ) ...', false)
   })
 })
