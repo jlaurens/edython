@@ -1,4 +1,3 @@
-NS = Object.create(null)
 describe ('Tests: xre', function () {
   it ('XRE: basic', function () {
     chai.assert(XRegExp)

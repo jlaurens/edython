@@ -1,5 +1,3 @@
-NS = Object.create(null)
-
 describe('BSM Owned', function () {
   it ('BSM Owned: Basic', function () {
     chai.assert(eYo.bsm_o3d.Dflt && eYo.bsm_o3d.Dflt.eyo)

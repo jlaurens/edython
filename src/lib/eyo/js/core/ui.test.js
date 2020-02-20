@@ -1,4 +1,3 @@
-NS = Object.create(null)
 describe ('Tests: ui', function () {
   it ('Ui: basic', function () {
     chai.assert(eYo.font)
