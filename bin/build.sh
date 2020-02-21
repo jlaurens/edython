@@ -250,7 +250,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/core/register.js" \
 --js "src/lib/eyo/Include/errcode.js" \
 --js "src/lib/eyo/js/core/model.js" \
---js "src/lib/eyo/msg/js/base.js" \
+--js "src/lib/eyo/js/msg/base.js" \
 --js "src/lib/eyo/js/core/setup.js" \
 --js "src/lib/eyo/js/core/t3.js" \
 --js "src/lib/eyo/js/parser/token.js" \
@@ -295,6 +295,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/module/profile.js" \
 --js "src/lib/eyo/js/application/app.js" \
 --js "src/lib/eyo/js/application/desk/workspace/board/brick/brick_util/brick_dragger.js" \
+--js "src/lib/eyo/js/application/abstract/control.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/draft.js" \
 --js "src/lib/eyo/js/application/driver/driver.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/flyout.js" \
@@ -308,14 +309,14 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/graphic/graphic.js" \
 --js "src/lib/eyo/js/application/desk/workspace/scrollbar/scrollbar.js" \
 --js "src/lib/eyo/js/application/desk/workspace/scroller/scroller.js" \
+--js "src/lib/eyo/js/application/desk/template/template.js" \
 --js "src/lib/eyo/js/application/desk/terminal/terminal.js" \
 --js "src/lib/eyo/js/application/desk/turtle/turtle.js" \
 --js "src/lib/eyo/js/application/desk/variable/variable.js" \
 --js "src/lib/eyo/js/application/desk/workspace/workspace.js" \
---js "src/lib/eyo/js/application/abstract/workspace_control.js" \
---js "src/lib/eyo/js/application/driver/fcls/fcls.js" \
 --js "src/lib/eyo/js/application/desk/workspace/trashcan/trashcan.js" \
 --js "src/lib/eyo/js/application/desk/workspace/zoomer/zoomer.js" \
+--js "src/lib/eyo/js/application/driver/fcls/fcls.js" \
 --js "src/lib/eyo/js/application/driver/fcfl/fcfl.js" \
 --js "src/lib/eyo/js/core/data.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom.js" \

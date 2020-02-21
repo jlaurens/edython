@@ -41,41 +41,71 @@ eYo.o4t.makeDflt({
  * @param {*} properties - a properties model
  */
 eYo.o4t._p.initProperties = function (object, properties) {
-  Object.keys(properties).forEach(k => {
-    let model = properties[k]
-    if (!eYo.isD(model)) {
-      model = properties[k] = {
-        value: model,
+  let todo = eYo.copyRA(Object.keys(properties))
+  let done = []
+  let again = []
+  var more = false
+  while(true) {
+    var k
+    if ((k = todo.pop())) {
+      let model = properties[k]
+      if (model && model.after) {
+        if (eYo.isStr(model.after)) {
+          if (!done.includes(model.after)) {
+            again.push(k)
+            continue
+          }
+        } else if (model.after.some(k => !done.includes(k))) {
+          again.push(k)
+          continue
+        }
       }
-    }
-    let k_p = k + '_p'
-    if (!object.hasOwnProperty(k_p)) {
-      let p = eYo.p6y.new(object, k, model)
-      Object.defineProperties(object, {
-        [k_p]: eYo.descriptorR(function () {
-          return p
-        }),
-      })
-      object[k_p] || eYo.throw('Missing property')
-    }
-    let _p = Object.getPrototypeOf(object)
-    if (object.eyo && !_p.hasOwnProperty(k)) {
-      object.eyo.keys_p__ && object.eyo.keys_p__.add(k_p)
-      Object.defineProperties(_p, {
-        [k]: eYo.descriptorR(function () {
-          return this[k_p].getValue()
-        }),
-        [k + '_']: {
-          get: function () {
-            return this[k_p].getStored()
+      if (!eYo.isD(model)) {
+        model = properties[k] = {
+          value: model,
+        }
+      }
+      let k_p = k + '_p'
+      if (!object.hasOwnProperty(k_p)) {
+        let p = eYo.p6y.new(object, k, model)
+        Object.defineProperties(object, {
+          [k_p]: eYo.descriptorR(function () {
+            return p
+          }),
+        })
+        object[k_p] || eYo.throw('Missing property')
+      }
+      let _p = Object.getPrototypeOf(object)
+      if (object.eyo && !_p.hasOwnProperty(k)) {
+        object.eyo.keys_p__ && object.eyo.keys_p__.add(k_p)
+        Object.defineProperties(_p, {
+          [k]: eYo.descriptorR(function () {
+            if (!this[k_p]) {
+              console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
+            }
+            return this[k_p].getValue()
+          }),
+          [k + '_']: {
+            get: function () {
+              return this[k_p].getStored()
+            },
+            set (after) {
+              this[k_p].setValue(after)
+            },
           },
-          set (after) {
-            this[k_p].setValue(after)
-          },
-        },
-      }) 
+        }) 
+      }
+      done.push(k)
+      more = true
+    } else if (more) {
+      more = false
+      todo = again
+      again = []
+    } else {
+      again.length && eYo.throw(`Cycling properties in ${this.eyo.name}: ${again}`)
+      break
     }
-  })
+  }
 }
 
 ;(() => {

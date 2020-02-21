@@ -12,8 +12,6 @@
  */
 'use strict'
 
-eYo.require('decorate')
-
 /**
  * @name {eYo.view.Template}
  * Class for a template environment.
@@ -22,17 +20,3 @@ eYo.require('decorate')
  * @constructor
  */
 eYo.view.makeC9r('Template')
-
-/**
- * Update the metrics of the receiver.
- */
-eYo.view.Template_p.updateMetrics = function () {
-  this.ui_driver.updateMetrics(this)
-}
-
-/**
- * Place the receiver.
- */
-eYo.view.Template_p.place = function () {
-  this.ui_driver.place(this)
-}

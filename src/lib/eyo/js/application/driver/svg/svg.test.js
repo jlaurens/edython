@@ -25,8 +25,8 @@ describe('Svg driver', function() {
 var x = () => {
 describe('SVG coordinates', function () {
   it ('xy', function () {
-    eYo.Test.SetItUp()
-    var d1 = eYo.Test.new_brick('True')
+    eYo.test.SetItUp()
+    var d1 = eYo.test.new_brick('True')
     var ui = d1.ui
     var xy1 = d1.xy
     var xy2 = ui.whereInBoard
@@ -41,13 +41,13 @@ describe('SVG coordinates', function () {
     chai.assert(xy2d.x === xy2.x + dx, `FAILURE x2: ${xy2d.x} === ${xy2.x} + ${dx}`)
     chai.assert(xy2d.y === xy2.y + dy, `FAILURE y2: ${xy2d.y} === ${xy2.y} + ${dy}`)
     d1.dispose()
-    eYo.Test.tearItDown()
+    eYo.test.tearItDown()
   })
 })
 describe('SVG groups and paths', function () {
   it(`Field: Label`, function () {
-    eYo.Test.SetItUp()
-    var d1 = eYo.Test.new_brick('True')
+    eYo.test.SetItUp()
+    var d1 = eYo.test.new_brick('True')
     var field = d1.value_f
     var dom = field.dom
     var type = d1.type
@@ -59,11 +59,11 @@ describe('SVG groups and paths', function () {
     chai.assert(dom.svg.group_ === dom.svg.textElement_, `FAILED dom.svg.group_ === dom.svg.textElement_ in value field of ${type}`)
     d1.dispose()
     chai.assert(!d1.dom, `FAILED SVG dispose`)
-    eYo.Test.tearItDown()
+    eYo.test.tearItDown()
   })
   // it(`Field: Text Input`, function () {
-  //   eYo.Test.SetItUp()
-  //   var d1 = eYo.Test.new_brick('builtin__object')
+  //   eYo.test.SetItUp()
+  //   var d1 = eYo.test.new_brick('builtin__object')
   //   var field = d1.value_f
   //   var dom = field.dom
   //   var type = d1.type
@@ -72,24 +72,24 @@ describe('SVG groups and paths', function () {
   //   chai.assert(ui === d1.ui, `MISSING field.ui === d1.ui for value field of ${type}`)
   //   var ui_driver_mngr = field.ui_driver_mngr
   //   chai.assert(ui_driver_mngr, `MISSING ui_driver_mngr in value field of ${type}`)
-  //   eYo.Test.SvgNodeParent(dom, 'textElement_', 'group_', type)
-  //   eYo.Test.tearItDown()
+  //   eYo.test.SvgNodeParent(dom, 'textElement_', 'group_', type)
+  //   eYo.test.tearItDown()
   // })
   it(`Expression`, function () {
-    eYo.Test.SetItUp()
-    var d1 = eYo.Test.new_brick('builtin__object')
-    eYo.Test.SvgNodeParent(d1, 'group_', d1.board.dom.svg.canvas_)
-    eYo.Test.SvgNodeParent(d1, 'groupContour_', 'group_')
-    eYo.Test.SvgNodeParent(d1, 'groupShape_', 'group_')
-    eYo.Test.SvgNodeParent(d1, 'pathInner_', 'groupContour_')
-    eYo.Test.SvgNodeParent(d1, 'pathCollapsed_', 'groupContour_')
-    eYo.Test.SvgNodeParent(d1, 'pathContour_', 'groupContour_')
-    eYo.Test.SvgNodeParent(d1, 'pathShape_', 'groupShape_')
-    eYo.Test.SvgNodeParent(d1, 'pathSelect_')
-    eYo.Test.SvgNodeParent(d1, 'pathHilight_')
-    eYo.Test.SvgNodeParent(d1, 'pathMagnet_')
+    eYo.test.SetItUp()
+    var d1 = eYo.test.new_brick('builtin__object')
+    eYo.test.SvgNodeParent(d1, 'group_', d1.board.dom.svg.canvas_)
+    eYo.test.SvgNodeParent(d1, 'groupContour_', 'group_')
+    eYo.test.SvgNodeParent(d1, 'groupShape_', 'group_')
+    eYo.test.SvgNodeParent(d1, 'pathInner_', 'groupContour_')
+    eYo.test.SvgNodeParent(d1, 'pathCollapsed_', 'groupContour_')
+    eYo.test.SvgNodeParent(d1, 'pathContour_', 'groupContour_')
+    eYo.test.SvgNodeParent(d1, 'pathShape_', 'groupShape_')
+    eYo.test.SvgNodeParent(d1, 'pathSelect_')
+    eYo.test.SvgNodeParent(d1, 'pathHilight_')
+    eYo.test.SvgNodeParent(d1, 'pathMagnet_')
     d1.dispose()
-    eYo.Test.tearItDown()
+    eYo.test.tearItDown()
   })
 })
 }

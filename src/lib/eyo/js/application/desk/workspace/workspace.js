@@ -62,16 +62,16 @@ eYo.view.makeC9r('Workspace', {
     },
     /**
      * The workspace's trashCan (if any).
-     * @type {eYo.view.TrashCan}
+     * @type {eYo.control.TrashCan}
      */
     trashCan: {
       value () {
-        return new eYo.view.TrashCan(this)
+        return new eYo.control.TrashCan(this)
       },
     },
     zoomer: {
       value () {
-        return new eYo.view.Zoomer(this)
+        return new eYo.control.Zoomer(this)
       },
     },
     /** @type {!eYo.geom.Rect} */

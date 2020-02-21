@@ -1,5 +1,5 @@
 describe('Desk', function () {
-  it ('Basic', function () {
+  it ('Desk: Basic', function () {
     let onr = {
       eyo: true
     }
@@ -9,11 +9,11 @@ describe('Desk', function () {
     })
   })
   // it ('Headfull desk', function () {
-  //   chai.assert(eYo.Test.Board && eYo.Test.Board !== eYo.app.board)
+  //   chai.assert(eYo.test.Board && eYo.test.Board !== eYo.app.board)
   // })
   // it ('Headfull board metrics scale', function () {
-  //   var board = eYo.Test.Board
-  //   var board1 = eYo.Test.Board1
+  //   var board = eYo.test.Board
+  //   var board1 = eYo.test.Board1
   //   var before = board.metrics
   //   board.metrics_.scale = 1
   //   var after = board.metrics

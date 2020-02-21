@@ -91,7 +91,7 @@ eYo.consolidator.List.makeInheritedC9r('Target', {
  * Subclassers may add their own stuff to io.
  * @param {eYo.brick.Dflt} brick - owner or the receiver.
  */
-eYo.consolidator.Target.prototype.getIO = function (brick) {
+eYo.consolidator.Target_p.getIO = function (brick) {
   var io = eYo.consolidator.Target.eyo.C9r_s.getIO.call(this, brick)
   io.first_starred = io.last = io.max = -1
   io.annotatedInput = eYo.NA
@@ -104,7 +104,7 @@ eYo.consolidator.Target.prototype.getIO = function (brick) {
  * there might be unwanted things.
  * @param {object} io
  */
-eYo.consolidator.Target.prototype.doCleanup = (() => {
+eYo.consolidator.Target_p.doCleanup = (() => {
   // preparation: walk through the list of inputs and
   // find the first_starred input
   var Type = {
@@ -180,7 +180,7 @@ eYo.consolidator.Target.prototype.doCleanup = (() => {
  * This does not suppose that the list of input has been completely consolidated
  * @param {Object} io parameter.
  */
-eYo.consolidator.Target.prototype.getCheck = (() => {
+eYo.consolidator.Target_p.getCheck = (() => {
   var f = io => {
     if (io.i === io.unique) {
       // all subtypes with `unique` elements
@@ -245,7 +245,7 @@ eYo.consolidator.Target.prototype.getCheck = (() => {
  * there might be unwanted things.
  * @param {object} io
  */
-eYo.consolidator.Target.prototype.doFinalize = function (io) {
+eYo.consolidator.Target_p.doFinalize = function (io) {
   eYo.consolidator.Target.eyo.C9r_s.doFinalize.call(this, io)
   if (this.setupIO(io, 0)) {
     do {
@@ -298,6 +298,8 @@ eYo.consolidator.Target.prototype.doFinalize = function (io) {
  *    - del_stmt
  * All the types involved are
  * For edython.
+ * @name {eYo.expr.target_list}
+ * @constructor
  */
 eYo.expr.List.makeInheritedC9r('target_list', {
   list: {

@@ -10,6 +10,7 @@ import os, stat
 path_root = pathlib.Path(__file__).resolve().parent.parent.parent
 path_src = path_root / 'src'
 path_eyo = path_src / 'lib' / 'eyo'
+path_js = path_eyo / 'js'
 path_helpers = path_root / 'build' / 'helpers'
 path_helpers.mkdir(parents=True, exist_ok=True)
 
@@ -109,9 +110,11 @@ class HTML:
     <div id="mocha"></div>
     <script src="{root}node_modules/mocha/mocha.js"></script>
     <script src="{root}node_modules/chai/chai.js"></script>
-    <script>mocha.setup('bdd')</script>
-    <script>eYo.path_root = '{root}'</script>
-    <script>eYo.path_eyo = '{eyo}'</script>
+    <script  type="text/javascript">//<![CDATA[
+mocha.setup('bdd')
+eYo.path_root = '{root}'
+eYo.path_eyo = '{eyo}'
+//]]></script>
     <script src="{eyo}test/common.test.js"></script>
 '''
 
@@ -124,7 +127,8 @@ class HTML:
 
   def mocha(root):
     return f'''    <script src="{root}src/lib/eyo/debugging.js"></script>
-    <script>mocha.run();</script>
+    <script  type="text/javascript">//<![CDATA[
+      mocha.run();//]]></script>
 '''
 
 def minimalTests(path_src):
@@ -149,14 +153,12 @@ describe ('Tests: {js.stem}', function () {{
 def updateWebTests():
 
   print('Updating web tests...')
-  tests = [x for x in path_root.rglob('*.test.js')
-    if x.is_file()]
+  tests = (x for x in path_js.rglob('*.test.js') if x.is_file())
   for path_test in tests:
     try:
       relative = path_test.relative_to(path_eyo)
       eyo = '../' * (len(relative.parts) - 1)
       relative = path_test.relative_to(path_root)
-      print(relative)
       root = '../' * (len(relative.parts) - 1)
       path_base = path_test.with_suffix('').with_suffix('')
       basename = path_base.stem
@@ -179,6 +181,7 @@ def updateWebTests():
   ''')
       path_out = path_base.with_suffix('.test.html')
       path_out.write_text(''.join(lines), encoding='utf-8')
+      print(f'Updated: {path_out.relative_to(path_eyo)}')
     except: pass
   print('... DONE')
   return 0
@@ -190,40 +193,34 @@ def updateWebTestWrappers():
   2) we create a test file wrapper for local test files names `test_local.html`
   3) we create a `test.js` file with local test files and test files in any subdirectories
   '''
-  print('Updating web test wrappers...')
-  for path_dir in [x for x in path_eyo.rglob('*')
-    if x.is_dir()
-  ]:
-    tests = [x for x in path_dir.glob('*.test.js')]
-    tests = map(lambda x: f'''    <script src="ROOT_PLACE_HOLDER/{x.name}" charset="utf-8"></script>
-''', tests)
-    content = ''.join(tests)
+  dirs = [x for x in path_js.rglob('*') if x.is_dir()]
+  for path_dir in dirs:
+    content = ''.join(f'''    <script src="ROOT_PLACE_HOLDER/{x.name}" charset="utf-8"></script>
+''' for x in path_dir.glob('*.test.js'))
     if len(content):
-      content = '''<!-- Created by `npm run eyo:prepare` -->
+      content = '''<!-- Automatically created by `npm run eyo:prepare` -->
   ''' + content
       path_out = path_dir / 'test.xml'
       path_out.write_text(content, encoding='utf-8')
-      print(path_out.relative_to(path_root))
+      print(f'Updated: {path_out.relative_to(path_root)}')
 
-  for path_test in [x for x in path_eyo.rglob('*')
-    if x.is_dir()
-  ]:
+  # Now local test files
+  for path_test in dirs:
     tests = list(path_test.glob('*.test.js'))
     if (len(tests)):
       relative = path_test.relative_to(path_root)
-      root = '../' * len(relative.parts)
+      root = '../' * (len(relative.parts) - 1)
+      relative = path_test.relative_to(path_eyo)
+      eyo = '../' * (len(relative.parts) - 1)
       lines = [
         HTML.head(root),
         HTML.deps(path_deps, root),
       ]
-      body = True
+      lines.append(HTML.body(root, eyo)),
       for f in tests:
+        # f : path_test/foo.test.js
+        # 
         try:
-          relative = f.relative_to(path_eyo)
-          if body:
-            body = False
-            eyo = '../' * len(relative.parts)
-            lines.append(HTML.body(root, eyo)),
           lines.append(HTML.script(f.relative_to(path_test)))
         except: pass
       lines.append(HTML.mocha(root))
@@ -239,23 +236,23 @@ def updateWebTestWrappers():
 ''')
       path_out = path_test / 'test_local.html'
       path_out.write_text(''.join(lines), encoding='utf-8')
-      print(path_out.relative_to(path_eyo))
+      print(f'Updated: {path_out.relative_to(path_root)}...')
+
   # Now deep test files
-  for path_test in [x for x in path_eyo.rglob('*')
-    if x.is_dir()
-  ]:
-    tests = list(path_test.rglob('*.test.js'))
+  dirs.append(path_js)
+  for path_test in dirs:
+    tests = list(path_test.rglob('*/*.test.js'))
     if (len(tests)):
       relative = path_test.relative_to(path_root)
       root = '../' * len(relative.parts)
+      relative = path_test.relative_to(path_eyo)
+      eyo = '../' * len(relative.parts)
       lines = [
         HTML.head(root),
         HTML.deps(path_deps, root),
       ]
+      lines.append(HTML.body(root, eyo))
       for f in tests:
-        relative = f.relative_to(path_eyo)
-        eyo = '../' * len(relative.parts)
-        lines.append(HTML.body(root, eyo))
         lines.append(HTML.script(f.relative_to(path_test)))
       lines.append(HTML.mocha(root))
       for f in tests:
@@ -270,7 +267,7 @@ def updateWebTestWrappers():
 ''')
       path_out = path_test / 'test.html'
       path_out.write_text(''.join(lines), encoding='utf-8')
-      print(path_out.relative_to(path_eyo))
+      print(f'Updated: {path_out.relative_to(path_root)}')
  
   print('... DONE')
   return 0

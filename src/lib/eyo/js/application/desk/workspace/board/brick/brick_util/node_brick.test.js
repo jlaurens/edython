@@ -5,13 +5,13 @@ describe('node brick', function () {
 //   describe('NAME', function() {
 //     this.timeout(5000)
 //     it('NAME', function() {
-//       eYo.Test.SetItUp()
+//       eYo.test.SetItUp()
 //       var err_ret = {}
 //       var n = eYo.parser.PyParser_ParseString('abc', g, eYo.tkn.file_input, err_ret)
 //       var d = n.toBrick(eYo.app.Board)
 //       chai.assert(d, 'MISSING BLOCK')
 //       d.dispose()
-//       eYo.Test.tearItDown()
+//       eYo.test.tearItDown()
 //     })
 //   })
 
@@ -27,7 +27,7 @@ describe('node brick', function () {
       str_s.forEach(str => {
         var f = (() => {
           return function() {
-            eYo.Test.Source(str)
+            eYo.test.Source(str)
           }
         })()
         it(str, f)

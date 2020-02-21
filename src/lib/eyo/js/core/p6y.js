@@ -39,6 +39,16 @@ Object.defineProperties(eYo.p6y._p, {
   },
 })
 
+eYo.model.allow('properties', {
+  ['^properties\\.\\w+$']: [
+    'after',
+    'value', 'lazy', 'reset',
+    'validate', 'get', 'set', 'get_', 'set_',
+    eYo.p6y.BEFORE, eYo.p6y.DURING, eYo.p6y.AFTER,
+    'dispose',
+  ],
+})
+
 // ANCHOR eYo.p6y.new
 /**
  * Create a new property based on the model
@@ -447,19 +457,30 @@ eYo.p6y.makeDflt({
     this.stored__ = eYo.NA // this may be useless in some situations
     Object.defineProperties(this, {
       value: eYo.descriptorR(
-        `Unexpected setter ${key} in ${owner}'s instance property`,
+        function () {
+          return `Unexpected setter ${key} in ${owner}'s instance property`
+        },
         eYo.p6y.Dflt_p.valueGetter
       ),
-      owner: eYo.descriptorR(
-        `Unexpected ….owner = …, ${owner}'s instance property`,
+      owner: eYo.descriptorR({
+          lazy () {
+            return `Unexpected ….owner_ = …, ${owner}'s instance property`
+          }
+        },
         function () { return this.owner_ }
       ),
-      key: eYo.descriptorR(
-        `Unexpected ….key = …, ${owner}'s instance property`,
+      key: eYo.descriptorR({
+          lazy () {
+            return `Unexpected ….key_ = …, ${owner}'s instance property`
+          },
+        },
         function () { return this.key_ }
       ),
-      model: eYo.descriptorR(
-        `Unexpected ….model = …, ${owner}'s property`,
+      model: eYo.descriptorR({
+          lazy () {
+            return `Unexpected ….model_ = …, ${owner}'s property`
+          },
+        },
         function () { return this.model_ }
       ),
     })

@@ -103,7 +103,7 @@ eYo.dom.Audio_p.load = function(audio, name) {
  * Preload all the audio files so that they play quickly when asked for.
  */
 eYo.dom.Audio_p.preload = function() {
-  if (eYo.Test && !eYo.Test.Audio) {
+  if (eYo.test && !eYo.test.Audio) {
     return
   }
   Object.values(this.sounds).some(sound => {

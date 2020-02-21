@@ -1,5 +1,5 @@
-describe('Basic metrics IN PROGRESS', function () {
-  it ('scaling divs', function () {
+describe('Metrics', function () {
+  it ('POC: scaling divs', function () {
     var div0 = document.querySelector('#eyo-desk')
     var div1 = goog.dom.createDom('div')
     goog.dom.appendChild(div0.parentNode, div1)
@@ -11,6 +11,12 @@ describe('Basic metrics IN PROGRESS', function () {
     style.height = `${h}px`
     style.background = 'blue'
     style.transform = `translate(${-w / 2}px, ${-h / 2}px) scale(${s}) translate(${w / 2}px, ${h / 2}px)`
+  })
+  it ('Metrics: Basic', function () {
+    chai.assert(eYo.geom.Metrics)
+    let onr = {}
+    var mx = new eYo.geom.Metrics(onr)
+    chai.assert(mx)
   })
   it ('place and scroll basics', function() {
     var div0 = document.querySelector('#eyo-desk')
@@ -30,7 +36,7 @@ describe('Basic metrics IN PROGRESS', function () {
     content.size = eYo.geom.clWhere(80, 20)
     svg.setAttribute('viewBox', `${content.x} ${content.y} ${content.width} ${content.height}`)
     metrics.scale_ = 1.1
-    metrics.drag = eYo.geom.clWhere(4, 2)
+    metrics.drag_ = eYo.geom.clWhere(4, 2)
     content = metrics.portInView
     svg.setAttribute('width', `${content.width}px`)
     svg.setAttribute('height', `${content.height}px`)
@@ -86,7 +92,7 @@ describe('Basic metrics IN PROGRESS', function () {
     content.size = eYo.geom.clWhere(80, 20)
     svg.setAttribute('viewBox', `${content.x} ${content.y} ${content.width} ${content.height}`)
     metrics.scale_ = 1.5
-    metrics.drag = eYo.geom.clWhere(4, 2)
+    metrics.drag_ = eYo.geom.clWhere(4, 2)
     content = metrics.portInView
     svg.setAttribute('width', `${content.width}px`)
     svg.setAttribute('height', `${content.height}px`)

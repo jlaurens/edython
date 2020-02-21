@@ -11,8 +11,8 @@ describe('Literals(Basic)', function() {
     'longbytesliteral'
   ].forEach(args => {
     it(`${args[0]}/${args[1]}`, function() {
-      var d = eYo.Test.new_brick(args[0])
-      eYo.Test.Code(d, Ts[1])
+      var d = eYo.test.new_brick(args[0])
+      eYo.test.Code(d, Ts[1])
       d.dispose()
     })
   })
@@ -34,10 +34,10 @@ describe('Literals(String)', function() {
     [`F"""abc"""`, 'longformattedliteral']
   ].forEach(Ts => {
     it(`${Ts[0]}`, function() {
-      var d = eYo.Test.new_brick(Ts[0])
-      eYo.Test.Brick(d, Ts[1])
-      eYo.Test.expect_out_check(d, eYo.t3.stmt[Ts[1]] || eYo.t3.expr[Ts[1]] || Ts[1])
-      eYo.Test.Code(d, Ts[0])
+      var d = eYo.test.new_brick(Ts[0])
+      eYo.test.Brick(d, Ts[1])
+      eYo.test.expect_out_check(d, eYo.t3.stmt[Ts[1]] || eYo.t3.expr[Ts[1]] || Ts[1])
+      eYo.test.Code(d, Ts[0])
       d.dispose()
     })
   })

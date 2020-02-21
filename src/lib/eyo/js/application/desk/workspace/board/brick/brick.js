@@ -1455,7 +1455,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @private
    */
   _p.setupType = function (optNewType) {
-    if (!optNewType && !this.type && !eYo.Test && !eYo.Test.no_brick_type) {
+    if (!optNewType && !this.type && !eYo.test && !eYo.test.no_brick_type) {
       console.error('Error!')
     }
     if (this.type_ === optNewType) {

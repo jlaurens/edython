@@ -1,13 +1,13 @@
 describe('field', function () {
-  chai.assert(eYo.Test)
+  chai.assert(eYo.test)
   chai.assert(eYo.expr.makeC9r)
 
-  eYo.Test.FIELD = 'field'
+  eYo.test.FIELD = 'field'
   var RA = [
-    ['base', eYo.Test.FIELD, eYo.field.STATUS_NONE],
-    ['builtin', {builtin: eYo.Test.FIELD}, eYo.field.STATUS_BUILTIN],
-    ['reserved', {reserved: eYo.Test.FIELD}, eYo.field.STATUS_RESERVED],
-    ['comment', {comment: eYo.Test.FIELD}, eYo.field.STATUS_COMMENT]
+    ['base', eYo.test.FIELD, eYo.field.STATUS_NONE],
+    ['builtin', {builtin: eYo.test.FIELD}, eYo.field.STATUS_BUILTIN],
+    ['reserved', {reserved: eYo.test.FIELD}, eYo.field.STATUS_RESERVED],
+    ['comment', {comment: eYo.test.FIELD}, eYo.field.STATUS_COMMENT]
   ]
   RA.forEach(X => {
     var type = `one_slot_one_field_${X[0]}`
@@ -25,19 +25,19 @@ describe('field', function () {
   })
   describe('Headless', function () {
     beforeEach(function() {
-      eYo.Test.SetItUp()
+      eYo.test.SetItUp()
     })
     afterEach(function() {
-      eYo.Test.tearItDown()
+      eYo.test.tearItDown()
     })
     describe('Create', function() {
       RA.forEach(X => {
         var type = `one_slot_one_field_${X[0]}`
         it(`Basic ${X[2]}`, function() {
-          var b = eYo.Test.new_brick(type)
+          var b = eYo.test.new_brick(type)
           var slot = b.SLOT_s
           var field = slot.FIELD_f
-          chai.assert(field.text === eYo.Test.FIELD)
+          chai.assert(field.text === eYo.test.FIELD)
           chai.assert(field.status === X[2])
           b.dispose()
         })
@@ -49,10 +49,10 @@ describe('field', function () {
       RA.forEach(X => {
         var type = `one_slot_one_field_${X[0]}`
         it(`Basic ${X[2]}`, function() {
-          var b = eYo.Test.new_brick(type)
+          var b = eYo.test.new_brick(type)
           var slot = b.SLOT_s
           var field = slot.FIELD_f
-          chai.assert(field.text === eYo.Test.FIELD)
+          chai.assert(field.text === eYo.test.FIELD)
           chai.assert(field.status === X[2])
           // b.dispose()
         })

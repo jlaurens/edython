@@ -1,7 +1,7 @@
 /**
  * edython
  *
- * Copyright 2019 Jérôme LAURENS.
+ * Copyright 2020 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -16,7 +16,7 @@
  * @param {eYo.Workspace} workspace The workspace to sit in.
  * @constructor
  */
-eYo.view.WorkspaceControl.makeInheritedC9r('TrashCan', {
+eYo.control.makeC9r('TrashCan', {
   properties: {
     isOpen: {
       get () {
@@ -64,29 +64,27 @@ eYo.view.WorkspaceControl.makeInheritedC9r('TrashCan', {
      */
     SPRITE_TOP_: 32,
   },
+  methods: {
+    /**
+     * Move the trash can to the bottom-right corner.
+     */
+    place (bottom) {
+      eYo.control.TrashCan.eyo.C9r_s.place.call(this, bottom)
+      this.ui_driver.place(this)
+    },
+    /**
+     * Return the deletion rectangle for this trash can.
+     * @return {eYo.geom.Rect} Rectangle in which to delete.
+     */
+    getClientRect () {
+      return this.ui_driver.clientRect(this)
+    },
+    /**
+     * Flip the lid shut.
+     * Called externally after a drag.
+     */
+    close () {
+      this.ui_driver.openSet(this, false)
+    },
+  },
 })
-
-
-/**
- * Move the trash can to the bottom-right corner.
- */
-eYo.view.TrashCan_p.place = function(bottom) {
-  eYo.view.TrashCan.eyo.C9r_s.place.call(this, bottom)
-  this.ui_driver.place(this)
-}
-console.error('NYI: what does the inherited place do?')
-/**
- * Return the deletion rectangle for this trash can.
- * @return {eYo.geom.Rect} Rectangle in which to delete.
- */
-eYo.view.TrashCan_p.getClientRect = function() {
-  return this.ui_driver.clientRect(this)
-}
-
-/**
- * Flip the lid shut.
- * Called externally after a drag.
- */
-eYo.view.TrashCan_p.close = function() {
-  this.ui_driver.openSet(this, false)
-}

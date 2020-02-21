@@ -71,27 +71,28 @@ eYo.forwardDeclare('geom.Rect')
  * When true, an extra margin at the right of the draft board is added
  * to display line numbers.
  */
-eYo.geom.makeC9r('Metrics', {
+eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
   properties: {
     port: {
-      get () {
+      value () {
         return new eYo.geom.Rect()
       },
       copy: true,
     },
     view: {
-      get  () {
+      value  () {
         return new eYo.geom.Rect()
       },
       copy: true,
     },
     box: {
-      get  () {
+      value  () {
         return new eYo.geom.Rect()
       },
       copy: true,
     },
     numbering: {
+      after: 'board',
       set_ (builtin, after) {
         this.wrapUpdate(() => builtin(after))
       },
@@ -160,7 +161,7 @@ eYo.geom.makeC9r('Metrics', {
     dragPastLimits: {
       get () {
         var r = this.dragLimits
-        return r && this.drag_.out(r)
+        return r && this.drag.out(r)
       },
     },
     /**
@@ -215,7 +216,7 @@ eYo.geom.makeC9r('Metrics', {
     /**
      * Clone the object.
      */
-    clone: {
+    copy: {
       get () {
         var ans = new eYo.geom.Metrics()
         ans.scale_ = this.scale_
@@ -228,6 +229,9 @@ eYo.geom.makeC9r('Metrics', {
     },
     toString: {
       get () {
+        if (!this.drag) {
+          console.error('BREAK HERE!')
+        }
         return `drag: ${this.drag.description}, view: ${this.view.description}, port: ${this.port.description}`
       },
     },
@@ -240,7 +244,7 @@ eYo.geom.makeC9r('Metrics', {
      * @type {eYo.geom.Where} 
      */
     drag: {
-      get (builtin) {
+      get_ (builtin) {
         var ans = (builtin() || this.dragDefault).copy
         var r = this.dragLimits
         if (r) {
@@ -265,55 +269,65 @@ eYo.geom.makeC9r('Metrics', {
       },
     },
   },
+  methods: {
+    /**
+     * Update the board.
+     */
+    update () {
+      this.board && this.board.metricsDidChange()
+    },
+    /**
+     * Update the board.
+     */
+    wrapUpdate (do_it) {
+      try {
+        ++this.updateDepth__
+        do_it()
+      } finally {
+        if(--this.updateDepth__) {
+          return
+        }
+        this.update()
+      }
+    },
+    /**
+     * Convert the given argument from `board` coordinates to `view` coordinates.
+     * @param{eYo.geom.Rect | eYo.geom.Where} WR
+     */
+    toView (WR) {
+      // Referential(view) = (origin: o, basis: {i, j})
+      // o is the top left corner of the visible area.
+      // Referential(port) = (origin: O, basis: {I, J})
+      // I = i * scale, J = j * scale
+      // o + drag = O, drag is a vector in view coordinates
+      // P = o + (x, y) •{i, j}
+      //   = O + (X, Y) • {I, J}
+      //   = o + drag • {i, j} + (X, Y) * scale • {i, j} 
+      //  (x, y) = drag + (X, Y) * scale
+      //  (X, Y) = ((x, y) - drag) / scale
+      return WR.scale(this.scale).forward(this.drag)
+    },
+    /**
+     * Convert the given argument from `view` coordinates to `board` coordinates.
+     * @param{eYo.geom.Rect | eYo.geom.Where} wr
+     */
+    fromView (wr) {
+      return wr.backward(this.drag).unscale(this.scale)
+    },
+    /**
+     * Test whether the receiver equals the given metrics object.
+     * @param {eYo.geom.Metrics} rhs Another metrics.
+     * @return {boolean} Whether the two sets of metrics are equivalent.
+     * @private
+     */
+    equals (rhs) {
+      return rhs && this.view.equals(rhs.view) &&
+      this.scale === rhs.scale &&
+      this.drag.equals(rhs.drag) &&
+      this.port.equals(rhs.port)
+    },
+  },
 })
-
-/**
- * Update the board.
- */
-eYo.geom.Metrics.prototype.update = function () {
-  this.board && this.board.metricsDidChange()
-}
-
-/**
- * Update the board.
- */
-eYo.geom.Metrics.prototype.wrapUpdate = function (do_it) {
-  try {
-    ++this.updateDepth__
-    do_it()
-  } finally {
-    if(--this.updateDepth__) {
-      return
-    }
-    this.update()
-  }
-}
-
-/**
- * Convert the given argument from `board` coordinates to `view` coordinates.
- * @param{eYo.geom.Rect | eYo.geom.Where} WR
- */
-eYo.geom.Metrics.prototype.toView = function (WR) {
-  // Referential(view) = (origin: o, basis: {i, j})
-  // o is the top left corner of the visible area.
-  // Referential(port) = (origin: O, basis: {I, J})
-  // I = i * scale, J = j * scale
-  // o + drag = O, drag is a vector in view coordinates
-  // P = o + (x, y) •{i, j}
-  //   = O + (X, Y) • {I, J}
-  //   = o + drag • {i, j} + (X, Y) * scale • {i, j} 
-  //  (x, y) = drag + (X, Y) * scale
-  //  (X, Y) = ((x, y) - drag) / scale
-  return WR.scale(this.scale).forward(this.drag___)
-}
-
-/**
- * Convert the given argument from `view` coordinates to `board` coordinates.
- * @param{eYo.geom.Rect | eYo.geom.Where} wr
- */
-eYo.geom.Metrics.prototype.fromView = function (wr) {
-  return wr.backward(this.drag___).unscale(this.scale)
-}
 
 /**
  * Get the dragging limits.
@@ -321,23 +335,10 @@ eYo.geom.Metrics.prototype.fromView = function (wr) {
  * @param{?eYo.geom.Rect} rect
  */
 console.error('MISSING IMPLEMENTATION')
-eYo.geom.Metrics.prototype.getDraggingLimits = function (rect) {
+eYo.geom.Metrics_p.getDraggingLimits = function (rect) {
   var view = this.minPort
   var limits = this.port
   if (rect) {
 
   }
-}
-
-/**
- * Test whether the receiver equals the given metrics object.
- * @param {eYo.geom.Metrics} rhs Another metrics.
- * @return {boolean} Whether the two sets of metrics are equivalent.
- * @private
- */
-eYo.geom.Metrics.prototype.equals = function(rhs) {
-  return rhs && this.view.equals(rhs.view) &&
-  this.scale === rhs.scale &&
-  this.drag.equals(rhs.drag) &&
-  this.port.equals(rhs.port)
 }

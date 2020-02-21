@@ -75,7 +75,7 @@ eYo._p.doMakeC9r = function (ns, key, Super, model) {
         console.error('BREAK HERE!')
       }
       if (old !== eYo.doNothing) {
-        delete this.init
+        delete this.dispose
         old.apply(this, arguments)
       }
     }
@@ -809,7 +809,7 @@ eYo._p.eyo = eYo.makeDlgt('NS', eYo.constructor, {})
    * @param{String} key - the key used to create the constructor.
    */
   eYo.model.forKey = (key) => {
-    var C9r = eYo.c9r.byKey(key)
+    var C9r = eYo.c9r.byKey__[key]
     return C9r && C9r.eyo.model
   }
 
@@ -827,7 +827,7 @@ eYo._p.eyo = eYo.makeDlgt('NS', eYo.constructor, {})
    * @param{String} type - the key used to create the constructor.
    */
   eYo.model.forType = (type) => {
-    var C9r = eYo.c9r.byType(type)
+    var C9r = eYo.c9r.byType__[type]
     return C9r && C9r.eyo.model
   }
 }

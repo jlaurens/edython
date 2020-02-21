@@ -29,6 +29,9 @@ describe('eYo Tests', function () {
     var x
     chai.assert(eYo.NA === x)
     chai.assert(eYo.isNA(x))
+    chai.expect(() => {
+      eYo.NA = 1
+    }).to.throw()
   })
   it('eYo: hasOwnProperty', function () {
     chai.assert(eYo.hasOwnProperty({eyo: true}, 'eyo'))

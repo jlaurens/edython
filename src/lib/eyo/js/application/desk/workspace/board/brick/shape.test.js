@@ -1,4 +1,4 @@
-eYo.Test.no_brick_type = true
+eYo.test.no_brick_type = true
 
 describe('Expression shape', function () {
   var type = 'test_shape_out'
@@ -11,7 +11,7 @@ describe('Expression shape', function () {
   chai.assert(eYo.expr.test_shape_out)
   var b
   beforeEach(function() {
-    b = eYo.Test.new_brick(type)
+    b = eYo.test.new_brick(type)
     chai.assert(b.isExpr, 'MISSED')
   })
   var createPath = (b, c, l) => {
@@ -39,7 +39,7 @@ describe('Statement shape', function () {
   chai.assert(eYo.stmt.test_shape_stmt)
   var b
   before(function() {
-    b = eYo.Test.new_brick(type)
+    b = eYo.test.new_brick(type)
     chai.assert(b.isStmt, 'MISSED')
   })
   var createPath = (b, c, l) => {
@@ -73,7 +73,7 @@ describe('Group shape', function () {
   chai.assert(eYo.stmt.test_shape_part)
   var b
   before(function() {
-    b = eYo.Test.new_brick(type)
+    b = eYo.test.new_brick(type)
     chai.assert(b.isGroup, 'MISSED')
   })
   var createPath = (b, c, l) => {

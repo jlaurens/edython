@@ -11,9 +11,9 @@ describe('Statement', function () {
 
   describe('comment statement', function () {
     it(`One brick dbOpposite_`, function () {
-      eYo.Test.SetItUp()
+      eYo.test.SetItUp()
       test_connection_db()
-      var d = eYo.Test.new_brick('comment_stmt')
+      var d = eYo.test.new_brick('comment_stmt')
       // d.Comment_p = 'abc'
       var m5s = d.magnets
       ;[
@@ -38,13 +38,13 @@ describe('Statement', function () {
       })
       d.dispose()
       test_connection_db()
-      eYo.Test.tearItDown()
+      eYo.test.tearItDown()
     })
     it(`Two bricks dbOpposite_`, function () {
-      eYo.Test.SetItUp()
+      eYo.test.SetItUp()
       test_connection_db()
-      var d1 = eYo.Test.new_brick('comment_stmt')
-      var d2 = eYo.Test.new_brick('comment_stmt')
+      var d1 = eYo.test.new_brick('comment_stmt')
+      var d2 = eYo.test.new_brick('comment_stmt')
       // d1.Comment_p = 'abc'
       // d2.Comment_p = 'cde'
       // d2.moveBy(eYo.geom.xyWhere(100,20))
@@ -86,21 +86,21 @@ describe('Statement', function () {
       d1.dispose()
       d2.dispose()
       test_connection_db()
-      eYo.Test.tearItDown()
+      eYo.test.tearItDown()
     })
     it(`Create from type`, function () {
-      eYo.Test.SetItUp()
-      var d = eYo.Test.new_brick('comment_stmt')
-      eYo.Test.Brick(d, 'comment_stmt')
-      eYo.Test.C9r(d, 'comment_stmt')
-      var d1 = eYo.Test.new_brick('comment_stmt')
+      eYo.test.SetItUp()
+      var d = eYo.test.new_brick('comment_stmt')
+      eYo.test.Brick(d, 'comment_stmt')
+      eYo.test.C9r(d, 'comment_stmt')
+      var d1 = eYo.test.new_brick('comment_stmt')
       d.Comment_p = 'abc'
       d1.Comment_p = 'cde'
       d1.moveBy(eYo.geom.xyWhere(100,20))
       d1.right_m.focusOn()
       // d1.dispose()
       // d.dispose()
-      eYo.Test.tearItDown()
+      eYo.test.tearItDown()
     })
   })
 })

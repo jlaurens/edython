@@ -11,23 +11,23 @@ describe('Brick constructor delegate', function() {
 
 describe('Create', function() {
   it(`Basic`, function() {
-    eYo.Test.SetItUp()
-    var b3k = eYo.Test.new_brick('identifier')
+    eYo.test.SetItUp()
+    var b3k = eYo.test.new_brick('identifier')
     chai.assert(b3k.change.count !== eYo.NA, 'MISSED 3')
     chai.assert(eYo.app.Board.getBrickById(b3k.id) === b3k, 'Unknown as top block')
     b3k.dispose()
-    eYo.Test.tearItDown()
+    eYo.test.tearItDown()
   })
 })
 
 describe('One brick (ALIASED)', function () {
   it (`white space before 'as'`, function () {
-    var b3k = eYo.Test.new_brick({
+    var b3k = eYo.test.new_brick({
       type: eYo.t3.expr.identifier,
       target_p: 'abc',
       alias_p: 'cde'
     })
-    eYo.Test.Code(b3k, 'abc as cde')
+    eYo.test.Code(b3k, 'abc as cde')
     b3k.dispose()
   })
 })
@@ -41,10 +41,10 @@ describe('Statement magnets', function () {
       left: { check: type },
       right: { check: type },
     })  
-    b_1 = eYo.Test.new_brick(type)
+    b_1 = eYo.test.new_brick(type)
     s_1 = b_1.span
     chai.assert(b_1.isStmt, 'MISSED')
-    b_2 = eYo.Test.new_brick(type)
+    b_2 = eYo.test.new_brick(type)
     s_2 = b_2.span
     chai.assert(b_2.isStmt, 'MISSED')
   })
@@ -98,10 +98,10 @@ describe('Group magnets', function () {
       left: { check: type },
       right: { check: type },
     })  
-    b_1 = eYo.Test.new_brick(type)
+    b_1 = eYo.test.new_brick(type)
     s_1 = b_1.span
     chai.assert(b_1.isStmt, 'MISSED')
-    b_2 = eYo.Test.new_brick(type)
+    b_2 = eYo.test.new_brick(type)
     s_2 = b_2.span
     chai.assert(b_2.isStmt, 'MISSED')
   })

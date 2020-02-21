@@ -8,9 +8,9 @@ describe('TRY statements', function() {
     ['assert_stmt', null, 'assert <MISSING EXPRESSION>']
   ].forEach(Ts => {
     it(`Basic ${Ts[0]} statement`, function() {
-      var d = eYo.Test.new_brick(Ts[0], Ts[1] || Ts[0])
-      eYo.Test.Code(d, Ts[2])
-      eYo.Test.All_variants(d)
+      var d = eYo.test.new_brick(Ts[0], Ts[1] || Ts[0])
+      eYo.test.Code(d, Ts[2])
+      eYo.test.All_variants(d)
       d.dispose()
     })
   })
@@ -21,9 +21,9 @@ describe('TRY ONLY', function() {
     ['try_part', null, 'try:\n    <MISSING STATEMENT>']
   ].forEach(Ts => {
     it(`Basic ${Ts[0]} statement`, function() {
-      var d = eYo.Test.new_brick(Ts[0], Ts[1] || Ts[0])
-      eYo.Test.Code(d, Ts[2])
-      eYo.Test.All_variants(d)
+      var d = eYo.test.new_brick(Ts[0], Ts[1] || Ts[0])
+      eYo.test.Code(d, Ts[2])
+      eYo.test.All_variants(d)
       d.dispose()
     })
   })

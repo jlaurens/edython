@@ -201,7 +201,7 @@ eYo.app.makeDflt({
     focus_main () {
       return new eYo.focus.Main(this)
     },
-    clipboard: {},
+    clipboard: eYo.NA,
     ui_driver_mngr: {
       lazy () {
         let UI = this.options.UI || 'fcls'

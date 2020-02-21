@@ -30,8 +30,7 @@ eYo.isModel = (what) => {
 eYo.model.allowed = {
   ['^$']: [
     'dlgt', 'init', 'deinit', 'dispose', 'ui',
-    'properties', 'aliases',
-    'xml', 'data', 'slots',
+    'xml',
     'out', 'head', 'left', 'right', 'suite', 'foot'
   ],
   ['^init$']: [
@@ -42,21 +41,42 @@ eYo.model.allowed = {
     'begin',
     'end',
   ],
-  data: '^\\w+$',
-  properties: '^\\w+$',
-  aliases: '^\\w+$',
   ['^xml$']: [
     'attr', 'types', 'attribute',
   ],
   ['^ui$']: [
     'init', 'dispose', 'doInit', 'doDispose', 'initMake', 'disposeMake',
   ],
-  ['^properties\\.\\w+$']: [
-    'value', 'lazy', 'reset',
-    'validate', 'get', 'set', 'get_', 'set_',
-    'willChange', 'atChange', 'didChange',
-    'dispose',
-  ],
+}
+
+/**
+ * Allow a new set ok keys.
+ * @param {String} key - A model's top level key
+ * @param {String|Array<String>} [pattern] - Optional pattern for top values, with a model given, defaults to word's pattern when not an array of strings.
+ * @param {Map<String, Object>} [model]
+ */
+eYo.model._p.allow = function (key, pattern, model) {
+  if (eYo.isRA(pattern)) {
+    model && eYo.throw(`Unexpected model: ${model}`)
+    eYo.model.allowed['^$'].push(key)
+    eYo.mixinRO(eYo.model.allowed, {[key]: pattern})
+    return
+  }
+  if (!pattern) {
+    eYo.model.allowed['^$'].push(key)
+    return
+  }
+  if (!eYo.isStr(pattern)) {
+    model && eYo.throw(`Unexpected model: ${model}`)
+    model = pattern
+    pattern = '^\\w+$'
+  }
+  eYo.model.allowed['^$'].push(key)
+  eYo.mixinRO(eYo.model.allowed, {[key]: pattern})
+  model && eYo.mixinRO(eYo.model.allowed, model)
+}
+
+eYo.model._p.allow('data', {
   ['^data\\.\\w+$']: [
     'order', // INTEGER
     'all', // TYPE || [TYPE], // last is expected
@@ -80,6 +100,9 @@ eYo.model.allowed = {
   ['^data\\.\\w+\.xml$']: [
     'save', 'load',
   ],
+})
+
+eYo.model._p.allow('slots', {
   ['^slots\\.\\w+$']: [
     'order', // INTEGER,
     'fields', // {},
@@ -96,6 +119,7 @@ eYo.model.allowed = {
     'xml', // : (() => {} || true) || false||  first expected,
     'plugged', // : eYo.t3.expr.primary,
   ],
+  ['^slots\\.\\w+\.fields$']: '^\\w+$',
   ['^slots\\.\\w+\.fields\\.\\w+$']: [
     'value', // '(',
     'reserved', // : '.',
@@ -108,17 +132,21 @@ eYo.model.allowed = {
   ['^slots\\.\\w+\.xml$']: [
     'accept', //  () => {},
   ],
-  ['^list$']: [
-    'check',
-    'presep',
-    'postsep',
-    'ary',
-    'mandatory',
-    'unique',
-    'all',
-    'makeUnique'
-  ],
-}
+})
+
+eYo.model._p.allow('aliases')
+
+eYo.model._p.allow('list', [
+  'check',
+  'presep',
+  'postsep',
+  'ary',
+  'mandatory',
+  'unique',
+  'all',
+  'makeUnique'
+])
+
 /**
  * @name{eYo.model.isAllowed}
  * Allowed keys by path pattern

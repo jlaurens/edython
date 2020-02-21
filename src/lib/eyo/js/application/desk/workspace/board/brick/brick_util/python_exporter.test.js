@@ -10,7 +10,7 @@ describe('Python exporter', function() {
       eYo.gmr.Showtree(g, n)
     }
     chai.assert(d, `WHERE IS THE BLOCK ${n.type}/${n.name}`)
-    eYo.Test.Code(d, str)
+    eYo.test.Code(d, str)
     d.dispose()
   }
 

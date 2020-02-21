@@ -28,3 +28,7 @@ thumbs.db
 !/**/README.md
 !/**/Readme.md
 /bin/compiler-latest/**
+/src/lib/eyo/**/*.test.html
+/src/lib/eyo/**/test_local.html
+/src/lib/eyo/**/test.html
+/src/lib/eyo/**/test.xml

@@ -53,38 +53,58 @@ eYo.isF = (what) => {
 eYo.isStr = (what) => {
   return typeof what === 'string'
 }
+/**
+ * Whether the argument is `eYo.NA`.
+ * @param {*} what
+ */
+eYo.isNA = (what) => {
+  return what === eYo.NA
+}
 
 /**
  * Function used when defining a JS property.
  */
 eYo.noGetter = function (msg) {
-  return msg 
+  return eYo.isStr(msg)
+  ? function () {
+    throw new Error(`Forbidden getter: ${msg}`)
+  } : eYo.isF(msg)
     ? function () {
-      throw new Error(`Forbidden getter: ${msg}`)
+      throw new Error(`Forbidden getter ${msg.call(this)}`)
     } : function () {
-      throw new Error('Forbidden getter...')
+      throw new Error('Forbidden getter')
     }
 }
 /**
  * Function used when defining a JS property.
+ * @param {String|Function} [msg] - Either a string of a function.
  */
 eYo.noSetter = function (msg) {
-  return msg
+  return eYo.isStr(msg)
   ? function () {
     throw new Error(`Forbidden setter: ${msg}`)
-  } : function () {
-    throw new Error('Forbidden setter')
-  }
+  } : eYo.isF(msg)
+    ? function () {
+      throw new Error(`Forbidden setter ${msg.call(this)}`)
+    } : function () {
+      throw new Error('Forbidden setter')
+    }
 }
 /**
  * Function used when defining a JS property.
+ * @param {String|Object} [msg] - Diagnostic message,or object
+ * with a `lazy` attribute for a function returning the dignostic message.
+ * @param {Function} setter
+ * @private
  */
 eYo.descriptorR = (msg, getter) => {
-  if (!eYo.isStr(msg)) {
-    getter && eYo.throw(`Unexpected getter: ${getter}`)
-    getter = msg
-    msg = eYo.NA
+  if (eYo.isF(msg)) {
+    let swap = msg
+    msg = getter
+    getter = swap
   }
+  msg && msg.lazy && (msg = msg.lazy)
+  getter || eYo.throw('Missing getter')
   return {
     get: getter,
     set: eYo.noSetter(msg),
@@ -93,13 +113,19 @@ eYo.descriptorR = (msg, getter) => {
 
 /**
  * Function used when defining a JS property.
+ * @param {String|Object} [msg] - Diagnostic message, or object
+ * with a `lazy` attribute for a function returning the dignostic message.
+ * @param {Function} setter
+ * @private
  */
 eYo.descriptorW = (msg, setter) => {
-  if (!eYo.isStr(msg)) {
-    setter && eYo.throw(`Unexpected setter: ${setter}`)
-    setter = msg
-    msg = eYo.NA
+  if (eYo.isF(msg)) {
+    let swap = msg
+    msg = setter
+    setter = swap
   }
+  msg && msg.lazy && (msg = msg.lazy)
+  setter || eYo.throw('Missing getter')
   return {
     get: eYo.noGetter(msg),
     set: setter,
@@ -108,8 +134,10 @@ eYo.descriptorW = (msg, setter) => {
 
 /**
  * Function used when defining a JS property.
+ * @private
  */
 eYo.descriptorNORW = (msg) => {
+  msg && msg.lazy && (msg = msg.lazy)
   return {
     get: eYo.noGetter(msg),
     set: eYo.noSetter(msg),
@@ -179,6 +207,13 @@ eYo.mixinRO(eYo, {
 // ANCHOR Utilities
 eYo.mixinRO(eYo, {
   /**
+   * Readonly undefined
+   */
+  NA: (() => {
+    var x
+    return x
+  })(),
+  /**
    * Whether the argument is an object created with `{...}` syntax.
    * @param {*} what
    */
@@ -188,13 +223,6 @@ eYo.mixinRO(eYo, {
       return what && Object.getPrototypeOf(what) === _p
     }
   }) (),
-  /**
-   * Whether the argument is `eYo.NA`.
-   * @param {*} what
-   */
-  isNA (what) {
-    return what === eYo.NA
-  },
   /**
    * Whether the argument is not `undefined` nor `null`.
    * @param {*} what

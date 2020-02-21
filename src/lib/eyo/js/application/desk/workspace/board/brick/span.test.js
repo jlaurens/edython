@@ -1,6 +1,6 @@
 // Functional tests
 
-eYo.Test.no_brick_type = true
+eYo.test.no_brick_type = true
 
 describe('Span expression', function () {
   var b, s, b_g, s_g, b_s, s_s
@@ -11,7 +11,7 @@ describe('Span expression', function () {
         check: null
       }
     })  
-    b = eYo.Test.new_brick(type)
+    b = eYo.test.new_brick(type)
     s = b.span
     chai.assert(b.isExpr, 'MISSED')
     var type = 'test_stmt_span'
@@ -20,7 +20,7 @@ describe('Span expression', function () {
         check: null
       }
     })  
-    b_s = eYo.Test.new_brick(type)
+    b_s = eYo.test.new_brick(type)
     s_s = b_s.span
     chai.assert(b_s.isStmt, 'MISSED')
     var type = 'test_group_span'
@@ -29,12 +29,12 @@ describe('Span expression', function () {
         check: null
       }
     })  
-    b_g = eYo.Test.new_brick(type)
+    b_g = eYo.test.new_brick(type)
     s_g = b_g.span
     chai.assert(b_g.isGroup, 'MISSED')
   })
   it('(add|reset)C', function() {
-    var test = c => eYo.Test.Span(b, {
+    var test = c => eYo.test.Span(b, {
       c_min: c,
       c: c,
     })
@@ -52,7 +52,7 @@ describe('Span expression', function () {
     test(2)
   })
   it ('(re)setPadding', function () {
-    var test = p => eYo.Test.Span(b, {
+    var test = p => eYo.test.Span(b, {
       c_padding: p,
       c: 2 + p,
     })
@@ -69,7 +69,7 @@ describe('Span expression', function () {
     test(0)
   })
   it ('addHeader', function () {
-    var test = h => eYo.Test.Span(b, {
+    var test = h => eYo.test.Span(b, {
       header: h,
       l: 1 + h,
     })
@@ -89,7 +89,7 @@ describe('Span expression', function () {
     test(0)
   })
   it ('addMain', function () {
-    var test = h => eYo.Test.Span(b, {
+    var test = h => eYo.test.Span(b, {
       main: 1 + h,
       l: 1 + h,
     })
@@ -109,7 +109,7 @@ describe('Span expression', function () {
     test(0)
   })
   it ('addFooter', function () {
-    var test = h => eYo.Test.Span(b, {
+    var test = h => eYo.test.Span(b, {
       footer: h,
       l: 1 + h,
     })
@@ -130,7 +130,7 @@ describe('Span expression', function () {
   })
   it ('addSuite', function () {
     console.error(b_g.span)
-    var test = h => eYo.Test.Span(b_g, {
+    var test = h => eYo.test.Span(b_g, {
       suite: h,
       l: Math.max(2, 1 + h),
     })
@@ -170,12 +170,12 @@ describe('Current Field', function () {
       left: { check: type },
       right: { check: type },
     })  
-    b_1 = eYo.Test.new_brick(type)
+    b_1 = eYo.test.new_brick(type)
     s_1 = b_1.span
     chai.assert(b_1.isStmt, 'MISSED')
   })
   it ('FIELD: 1234', function () {
-    var test = (b, c, m) => eYo.Test.Span(b, {
+    var test = (b, c, m) => eYo.test.Span(b, {
       c_min: c,
       main: m,
     })
@@ -202,18 +202,18 @@ describe('Current Span statements', function () {
       left: { check: type },
       right: { check: type },
     })  
-    b_1 = eYo.Test.new_brick(type)
+    b_1 = eYo.test.new_brick(type)
     s_1 = b_1.span
     chai.assert(b_1.isStmt, 'MISSED')
-    b_2 = eYo.Test.new_brick(type)
+    b_2 = eYo.test.new_brick(type)
     s_2 = b_2.span
     chai.assert(b_2.isStmt, 'MISSED')
-    b_3 = eYo.Test.new_brick(type)
+    b_3 = eYo.test.new_brick(type)
     s_3 = b_3.span
     chai.assert(b_3.isStmt, 'MISSED')
   })
   it ('left+middle+right', function () {
-    var test = (b, h, m, f) => eYo.Test.Span(b, {
+    var test = (b, h, m, f) => eYo.test.Span(b, {
       header: h,
       main: m,
       footer: f

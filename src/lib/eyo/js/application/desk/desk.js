@@ -16,6 +16,7 @@
 eYo.forwardDeclare('app')
 
 eYo.forwardDeclare('view.Terminal')
+eYo.forwardDeclare('view.Template')
 eYo.forwardDeclare('view.Turtle')
 eYo.forwardDeclare('view.Graphic')
 eYo.forwardDeclare('view.Variable')
