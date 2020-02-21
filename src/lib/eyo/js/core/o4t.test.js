@@ -37,6 +37,36 @@ describe ('Tests: Object', function () {
     let oo = new OO()
     chai.assert(oo)
   })
+  it ('preparedProperties(1)', function () {
+    let ns = eYo.o4t.makeNS()
+    let Foo = ns.makeC9r('foo')
+    chai.expect(Foo.eyo.properties).to.equal(Foo.eyo.properties)
+    let Bar = ns.makeC9r('bar', Foo)
+    chai.expect(Bar.eyo.properties).to.equal(Bar.eyo.properties)
+    Foo.eyo.properties.chi = 421
+    chai.assert(!Bar.eyo.properties.chi)
+  })
+  it ('preparedProperties(2)', function () {
+    let ns = eYo.o4t.makeNS()
+    let Foo = ns.makeC9r('foo')
+    Foo.eyo.properties.chi = 421
+    chai.expect(Foo.eyo.properties.chi).to.equal((Foo.eyo.properties.chi = 421))
+    chai.expect(Foo.eyo.properties).to.equal(Foo.eyo.properties)
+    let Bar = ns.makeC9r('bar', Foo)
+    chai.expect(Bar.eyo.properties.chi).to.equal(Foo.eyo.properties.chi)
+  })
+  it ('preparedProperties(3)', function () {
+    let ns = eYo.o4t.makeNS()
+    let Foo = ns.makeC9r('foo', {
+      properties: {
+        chi: 421,
+      }
+    })
+    chai.expect(Foo.eyo.properties.chi).to.equal(421)
+    chai.expect(Foo.eyo.properties).to.equal(Foo.eyo.properties)
+    let Bar = ns.makeC9r('bar', Foo)
+    chai.expect(Bar.eyo.properties.chi).to.equal(Foo.eyo.properties.chi)
+  })
   it ('O4t: initProperties', function () {
     let O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {})
     let o = new O()
@@ -47,7 +77,7 @@ describe ('Tests: Object', function () {
         value: 421
       },
     })
-    chai.assert(o.foo === 421)
+    chai.expect(o.foo).to.equal(421)
     let oo = new O()
     chai.assert(!oo.foo_p)
     chai.expect(() => {
@@ -58,7 +88,7 @@ describe ('Tests: Object', function () {
         value: 123
       },
     })
-    chai.assert(oo.foo === 123)
+    chai.expect(oo.foo).to.equal(123)
   })
   it ('O4t: properties (valued)', function () {
     var O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
@@ -74,20 +104,20 @@ describe ('Tests: Object', function () {
     })
     var o = new O()
     chai.assert(o.foo_p)
-    chai.assert(o.foo_p.owner === o)
-    chai.assert(o.foo_p === o[o.foo_p.key + '_p'])
-    chai.assert(o.foo_p.value === 421)
-    chai.assert(o.foo === 421)
+    chai.expect(o.foo_p.owner).to.equal(o)
+    chai.expect(o.foo_p).to.equal(o[o.foo_p.key + '_p'])
+    chai.expect(o.foo_p.value).to.equal(421)
+    chai.expect(o.foo).to.equal(421)
     o.foo_ = 123
-    chai.assert(o.foo === 123)
+    chai.expect(o.foo).to.equal(123)
     chai.assert(o.bar_p)
-    chai.assert(o.bar === 0)
+    chai.expect(o.bar).to.equal(0)
     o.bar_ = 421
-    chai.assert(o.bar === 421)
+    chai.expect(o.bar).to.equal(421)
     chai.assert(o.chi_p)
-    chai.assert(o.chi === 666)
+    chai.expect(o.chi).to.equal(666)
     o.chi_ = 421
-    chai.assert(o.chi === 421)
+    chai.expect(o.chi).to.equal(421)
   })
   it ('O4t: properties (owned)', function () {
     var flag = 0
@@ -105,7 +135,7 @@ describe ('Tests: Object', function () {
     })
     var o = new O()
     o = o.dispose()
-    chai.assert(flag === 421)
+    chai.expect(flag).to.equal(421)
     flag = 0
     var O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
       properties: {
@@ -122,7 +152,7 @@ describe ('Tests: Object', function () {
     })
     var o = new O()
     o = o.dispose()
-    chai.assert(flag === 0)
+    chai.expect(flag).to.equal(0)
   })
   it ('O4t: alias', function () {
     var O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
@@ -137,55 +167,55 @@ describe ('Tests: Object', function () {
       },
     })
     var o = new O()
-    chai.assert(o.foo_p === o.bar_p)
-    chai.assert(o.foo_ === o.bar_)
-    chai.assert(o.foo === o.bar)
-    chai.assert(o.foo_p === o.bar1_p)
-    chai.assert(o.foo_ === o.bar1_)
-    chai.assert(o.foo === o.bar1)
-    chai.assert(o.foo_p === o.bar2_p)
-    chai.assert(o.foo_ === o.bar2_)
-    chai.assert(o.foo === o.bar2)
+    chai.expect(o.foo_p).to.equal(o.bar_p)
+    chai.expect(o.foo_).to.equal(o.bar_)
+    chai.expect(o.foo).to.equal(o.bar)
+    chai.expect(o.foo_p).to.equal(o.bar1_p)
+    chai.expect(o.foo_).to.equal(o.bar1_)
+    chai.expect(o.foo).to.equal(o.bar1)
+    chai.expect(o.foo_p).to.equal(o.bar2_p)
+    chai.expect(o.foo_).to.equal(o.bar2_)
+    chai.expect(o.foo).to.equal(o.bar2)
     o.foo_ = 123 - o.foo_
-    chai.assert(o.foo_p === o.bar1_p)
-    chai.assert(o.foo_ === o.bar1_)
-    chai.assert(o.foo === o.bar1)
-    chai.assert(o.foo_p === o.bar2_p)
-    chai.assert(o.foo_ === o.bar2_)
-    chai.assert(o.foo === o.bar2)
-    chai.assert(o.foo_p === o.bar_p)
-    chai.assert(o.foo_ === o.bar_)
-    chai.assert(o.foo === o.bar)
+    chai.expect(o.foo_p).to.equal(o.bar1_p)
+    chai.expect(o.foo_).to.equal(o.bar1_)
+    chai.expect(o.foo).to.equal(o.bar1)
+    chai.expect(o.foo_p).to.equal(o.bar2_p)
+    chai.expect(o.foo_).to.equal(o.bar2_)
+    chai.expect(o.foo).to.equal(o.bar2)
+    chai.expect(o.foo_p).to.equal(o.bar_p)
+    chai.expect(o.foo_).to.equal(o.bar_)
+    chai.expect(o.foo).to.equal(o.bar)
     o.bar_ = 123 - o.bar_
-    chai.assert(o.foo_p === o.bar_p)
-    chai.assert(o.foo_ === o.bar_)
-    chai.assert(o.foo === o.bar)
-    chai.assert(o.foo_p === o.bar1_p)
-    chai.assert(o.foo_ === o.bar1_)
-    chai.assert(o.foo === o.bar1)
-    chai.assert(o.foo_p === o.bar2_p)
-    chai.assert(o.foo_ === o.bar2_)
-    chai.assert(o.foo === o.bar2)
+    chai.expect(o.foo_p).to.equal(o.bar_p)
+    chai.expect(o.foo_).to.equal(o.bar_)
+    chai.expect(o.foo).to.equal(o.bar)
+    chai.expect(o.foo_p).to.equal(o.bar1_p)
+    chai.expect(o.foo_).to.equal(o.bar1_)
+    chai.expect(o.foo).to.equal(o.bar1)
+    chai.expect(o.foo_p).to.equal(o.bar2_p)
+    chai.expect(o.foo_).to.equal(o.bar2_)
+    chai.expect(o.foo).to.equal(o.bar2)
     o.bar1_ = 123 - o.bar1_
-    chai.assert(o.foo_p === o.bar_p)
-    chai.assert(o.foo_ === o.bar_)
-    chai.assert(o.foo === o.bar)
-    chai.assert(o.foo_p === o.bar1_p)
-    chai.assert(o.foo_ === o.bar1_)
-    chai.assert(o.foo === o.bar1)
-    chai.assert(o.foo_p === o.bar2_p)
-    chai.assert(o.foo_ === o.bar2_)
-    chai.assert(o.foo === o.bar2)
+    chai.expect(o.foo_p).to.equal(o.bar_p)
+    chai.expect(o.foo_).to.equal(o.bar_)
+    chai.expect(o.foo).to.equal(o.bar)
+    chai.expect(o.foo_p).to.equal(o.bar1_p)
+    chai.expect(o.foo_).to.equal(o.bar1_)
+    chai.expect(o.foo).to.equal(o.bar1)
+    chai.expect(o.foo_p).to.equal(o.bar2_p)
+    chai.expect(o.foo_).to.equal(o.bar2_)
+    chai.expect(o.foo).to.equal(o.bar2)
     o.bar2_ = 123 - o.bar2_
-    chai.assert(o.foo_p === o.bar_p)
-    chai.assert(o.foo_ === o.bar_)
-    chai.assert(o.foo === o.bar)
-    chai.assert(o.foo_p === o.bar1_p)
-    chai.assert(o.foo_ === o.bar1_)
-    chai.assert(o.foo === o.bar1)
-    chai.assert(o.foo_p === o.bar2_p)
-    chai.assert(o.foo_ === o.bar2_)
-    chai.assert(o.foo === o.bar2)
+    chai.expect(o.foo_p).to.equal(o.bar_p)
+    chai.expect(o.foo_).to.equal(o.bar_)
+    chai.expect(o.foo).to.equal(o.bar)
+    chai.expect(o.foo_p).to.equal(o.bar1_p)
+    chai.expect(o.foo_).to.equal(o.bar1_)
+    chai.expect(o.foo).to.equal(o.bar1)
+    chai.expect(o.foo_p).to.equal(o.bar2_p)
+    chai.expect(o.foo_).to.equal(o.bar2_)
+    chai.expect(o.foo).to.equal(o.bar2)
   })
   it ('O4t: deep alias', function () {
     var Foo = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
@@ -202,11 +232,11 @@ describe ('Tests: Object', function () {
       },
     })
     var bar = new Bar()
-    chai.assert(bar.chi_p === bar.foo.chi_p)
+    chai.expect(bar.chi_p).to.equal(bar.foo.chi_p)
     bar.chi_ = 421
-    chai.assert(bar.chi === bar.foo.chi)
+    chai.expect(bar.chi).to.equal(bar.foo.chi)
     bar.foo.chi_ = 123
-    chai.assert(bar.chi === bar.foo.chi)
+    chai.expect(bar.chi).to.equal(bar.foo.chi)
   })
   it ('O4t: override only get', function () {
     var flag = 421
@@ -220,7 +250,7 @@ describe ('Tests: Object', function () {
       },
     })
     var foo = new Foo()
-    chai.assert(foo.foo === flag)
+    chai.expect(foo.foo).to.equal(flag)
     var Bar = eYo.o4t.makeC9r(eYo.NULL_NS, 'Bar', Foo, {
       properties: {
         foo: {
@@ -248,7 +278,7 @@ describe ('Tests: Object', function () {
       },
     })
     var foo = new Foo()
-    chai.assert(foo.foo === flag)
+    chai.expect(foo.foo).to.equal(flag)
     chai.assert((foo.foo_ = 123) === flag)
     var Bar = eYo.o4t.makeC9r(eYo.NULL_NS, 'Bar', Foo, {
       properties: {
@@ -277,7 +307,7 @@ describe ('Tests: Object', function () {
       },
     })
     var foo = new Foo()
-    chai.assert(foo.foo === flag)
+    chai.expect(foo.foo).to.equal(flag)
     chai.expect(() => {
       foo.foo_ = 421
     }).to.throw()
@@ -358,12 +388,12 @@ describe ('Tests: Object', function () {
       })
       var a1 = new ns.A()
       var a2 = new ns.A()
-      chai.assert(a1.foo === 0)
+      chai.expect(a1.foo).to.equal(0)
       flag = 1
-      chai.assert(a1.foo === 0)
-      chai.assert(a2.foo === 1)
+      chai.expect(a1.foo).to.equal(0)
+      chai.expect(a2.foo).to.equal(1)
       a1.foo_p.reset()
-      chai.assert(a1.foo === 1)
+      chai.expect(a1.foo).to.equal(1)
     })
     it ('Cached: Two objects', function () {
       var ns = eYo.o4t.makeNS()
@@ -402,10 +432,10 @@ describe ('Tests: Object', function () {
       var a = new ns.A()
       var b = new ns.B()
       var test = (a1, a2, b1, b2) => {
-        chai.assert(a.foo1 === a1)
-        chai.assert(a.foo2 === a2)
-        chai.assert(b.foo1 === b1)
-        chai.assert(b.foo2 === b2)
+        chai.expect(a.foo1).to.equal(a1)
+        chai.expect(a.foo2).to.equal(a2)
+        chai.expect(b.foo1).to.equal(b1)
+        chai.expect(b.foo2).to.equal(b2)
       }
       test(0, 1, 2, 3)
       flag_A1 = 10
@@ -449,8 +479,8 @@ describe ('Tests: Object', function () {
       })
       var ab = new ns.AB()
       var test = (f1, f2) => {
-        chai.assert(ab.foo1 === f1)
-        chai.assert(ab.foo2 === f2)
+        chai.expect(ab.foo1).to.equal(f1)
+        chai.expect(ab.foo2).to.equal(f2)
       }
       test(0, 1)
       flag_1 = 10
@@ -549,10 +579,10 @@ describe ('Tests: Object', function () {
       })
       ns.A.prototype.fooWillChange = ns.A.prototype.fooDidChange = test
       var a = new ns.A()
-      chai.assert(a.foo_ === foo_before)
+      chai.expect(a.foo_).to.equal(foo_before)
       chai.assert(a.foo.equals(foo_before))
       a.foo_ = foo_after
-      chai.assert(a.foo_ === foo_after)
+      chai.expect(a.foo_).to.equal(foo_after)
       chai.assert(a.foo.equals(foo_after))
     })
   })
@@ -575,13 +605,13 @@ describe ('Tests: Object', function () {
     })
     flag = 69
     var a = new ns.A()
-    chai.assert(a.bar === 69)
-    chai.assert(a.foo === 6901)
+    chai.expect(a.bar).to.equal(69)
+    chai.expect(a.foo).to.equal(6901)
   })
   it ('O4t: configure', function () {
     var ns = eYo.o4t.makeNS()
     ns.makeDflt()
-    chai.assert(ns === ns.Dflt.eyo.ns)
+    chai.expect(ns).to.equal(ns.Dflt.eyo.ns)
     var flag = 0
     ns.makeC9r('A', {
       properties: {
@@ -600,17 +630,17 @@ describe ('Tests: Object', function () {
       },
     })
     var a = new ns.A()
-    chai.assert(flag === 421)
-    chai.assert(a.foo === 421)
+    chai.expect(flag).to.equal(421)
+    chai.expect(a.foo).to.equal(421)
     flag = 0
     var aa = new ns.AA()
     chai.assert(flag === 123, `Unexpected flag: ${flag}`)
-    chai.assert(aa.foo === 123)
+    chai.expect(aa.foo).to.equal(123)
   })
   it ('O4t: POC Override rules for properties', function () {
     var ns = eYo.o4t.makeNS()
     ns.makeDflt()
-    chai.assert(ns === ns.Dflt.eyo.ns)
+    chai.expect(ns).to.equal(ns.Dflt.eyo.ns)
     ns.makeC9r('A', {
       properties: {foo: eYo.NA}
     })
@@ -624,20 +654,20 @@ describe ('Tests: Object', function () {
   it ('O4t: propertiesMerge', function () {
     var ns = eYo.o4t.makeNS()
     ns.makeDflt()
-    chai.assert(ns === ns.Dflt.eyo.ns)
+    chai.expect(ns).to.equal(ns.Dflt.eyo.ns)
     ns.makeC9r('A', {
       properties: {foo: 421}
     })
     var a = new ns.A()
-    chai.assert(a.foo === 421)
+    chai.expect(a.foo).to.equal(421)
     chai.assert(!a.bar)
     ns.A.eyo.propertiesMerge({
       bar: 123,
     })
     chai.assert(a.bar !== 123)
     a = new ns.A()
-    chai.assert(a.foo === 421)
-    chai.assert(a.bar === 123)
+    chai.expect(a.foo).to.equal(421)
+    chai.expect(a.bar).to.equal(123)
     ns.makeC9r('B')
     ns.B.makeInheritedC9r('BB')    
     var bb = new ns.BB()
@@ -652,8 +682,8 @@ describe ('Tests: Object', function () {
       },
     })
     bb = new ns.BB()
-    chai.assert(flag === 666)
-    chai.assert(bb.foo === 421)
+    chai.expect(flag).to.equal(666)
+    chai.expect(bb.foo).to.equal(421)
     chai.assert((bb.foo_ = 123) === bb.foo)
     ns.B.eyo.propertiesMerge({
       foo: {
@@ -665,14 +695,14 @@ describe ('Tests: Object', function () {
     })
     flag = 421
     bb = new ns.BB()
-    chai.assert(flag === 421)
-    chai.assert(bb.foo === 123)
-    chai.assert(flag === 666)
+    chai.expect(flag).to.equal(421)
+    chai.expect(bb.foo).to.equal(123)
+    chai.expect(flag).to.equal(666)
     chai.assert((bb.foo_ = 421) === bb.foo)
     flag = 421
     bb.foo_p.reset()
-    chai.assert(flag === 666)
-    chai.assert(bb.foo === 123)
+    chai.expect(flag).to.equal(666)
+    chai.expect(bb.foo).to.equal(123)
   })
   it (`O4t: modelDeclare({...})`, function () {
     let NS = eYo.o4t.makeNS()
@@ -701,12 +731,12 @@ describe ('Tests: Object', function () {
     chai.assert(ns.merge)
     ns.merge(ns.Dflt_p)
     o.bar()
-    chai.assert(flag === 421)
+    chai.expect(flag).to.equal(421)
     o = new ns.Dflt()
     o.bar()
-    chai.assert(flag === 0)
-    chai.assert(o.foo === 421)
-    chai.assert(o.mi === o.foo)
+    chai.expect(flag).to.equal(0)
+    chai.expect(o.foo).to.equal(421)
+    chai.expect(o.mi).to.equal(o.foo)
   })
   it (`O4t: modelDeclare('...', {...})`, function () {
     let NS = eYo.o4t.makeNS()
@@ -735,11 +765,11 @@ describe ('Tests: Object', function () {
     chai.assert(ns.chiMerge)
     ns.chiMerge(ns.Dflt_p)
     o.bar()
-    chai.assert(flag === 421)
+    chai.expect(flag).to.equal(421)
     o = new ns.Dflt()
     o.bar()
-    chai.assert(flag === 0)
-    chai.assert(o.foo === 421)
-    chai.assert(o.mi === o.foo)
+    chai.expect(flag).to.equal(0)
+    chai.expect(o.foo).to.equal(421)
+    chai.expect(o.mi).to.equal(o.foo)
   })
 })

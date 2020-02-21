@@ -47,7 +47,7 @@ describe ('Tests: xre', function () {
   it ('eYo.xre.function_builtin', function () {
     let test = (s, yorn) => {
       let m = XRegExp.exec(s, eYo.xre.function_builtin)
-      chai.assert(!!m === yorn)
+      chai.expect(!!m).to.equal(yorn)
     }
     test('function ( builtin, before ) ...', true)
     test('function ( builtinX, before ) ...', false)
@@ -56,7 +56,7 @@ describe ('Tests: xre', function () {
   it ('eYo.xre.function_builtin_after', function () {
     let test = (s, yorn) => {
       let m = XRegExp.exec(s, eYo.xre.function_builtin_after)
-      chai.assert(!!m === yorn)
+      chai.expect(!!m).to.equal(yorn)
     }
     test('function ( builtin, after ) ...', true)
     test('function ( builtinX, after ) ...', false)
@@ -65,7 +65,7 @@ describe ('Tests: xre', function () {
   it ('eYo.xre.function_overriden', function () {
     let test = (s, yorn) => {
       let m = XRegExp.exec(s, eYo.xre.function_overriden)
-      chai.assert(!!m === yorn)
+      chai.expect(!!m).to.equal(yorn)
     }
     test('function ( overriden ) ...', true)
     test('function ( overridenX  ) ...', false)

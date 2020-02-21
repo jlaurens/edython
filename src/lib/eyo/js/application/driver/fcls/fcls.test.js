@@ -4,7 +4,7 @@ describe('Fcls driver', function() {
     chai.assert(eYo.fcls)
     chai.assert(eYo.fcls.Mngr)
     chai.assert(eYo.fcls.Mngr.eyo)
-    chai.assert(eYo.fcls.Mngr.eyo.constructor === eYo.fcls.DlgtMngr)
+    chai.expect(eYo.fcls.Mngr.eyo.constructor).to.equal(eYo.fcls.DlgtMngr)
   })
   it ('new eYo.fcls.Mngr(…)', function () {
     let owner = {}

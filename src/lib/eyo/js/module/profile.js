@@ -29,7 +29,7 @@ eYo.require('do')
  */
 eYo.t3.makeNS('profile')
 
-eYo.mixinRO(
+eYo.mixinR(
   eYo.t3.expr,
   {
     reserved_identifier: '.reserved identifier',
@@ -53,7 +53,7 @@ eYo.mixinRO(
   }
 )
 
-eYo.mixinRO(
+eYo.mixinR(
   eYo.t3.stmt,
   {
     control: '.control statement',
@@ -201,7 +201,7 @@ eYo.t3.profile.makeC9r('Dflt', {
         }
       }
     } else {
-      eYo.mixinRO(this, m)
+      eYo.mixinR(this, m)
     }
   },
 })
@@ -328,7 +328,7 @@ eYo.t3.makeC9r('Profiles', {
   }
 }) ()
 
-eYo.mixinRO(
+eYo.mixinR(
   eYo.t3.profile,
   {
     /* Default void profile */

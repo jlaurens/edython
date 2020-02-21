@@ -57,7 +57,7 @@ eYo.Scan.prototype.init = function (str, start) {
   return this
 }
 
-eYo.mixinRO(eYo.Scan, {
+eYo.mixinR(eYo.Scan, {
   E: {},
   XRE: {},
   KW: {}
@@ -66,7 +66,7 @@ eYo.mixinRO(eYo.Scan, {
 /**
  * Langage keywords
  */
-eYo.mixinRO(eYo.Scan.KW, {
+eYo.mixinR(eYo.Scan.KW, {
   FALSE: 'False',
   NONE: 'None',
   TRUE: 'True',
@@ -104,7 +104,7 @@ eYo.mixinRO(eYo.Scan.KW, {
   YIELD: 'yield',
 })
 
-eYo.mixinRO(eYo.Scan.E, {
+eYo.mixinR(eYo.Scan.E, {
   DEDENT_AUGMENTED: 'DEDENT_AUGMENTED',
   INCONSISTENT_INDENTATION: 'INCONSISTENT_INDENTATION',
   EOLS: 'EOLS',
@@ -124,7 +124,7 @@ eYo.mixinRO(eYo.Scan.E, {
 })
 
 /* NO sign, all are called in sticky mode so no ^ at start */
-eYo.mixinRO(eYo.Scan.XRE, {
+eYo.mixinR(eYo.Scan.XRE, {
   prefix: XRegExp(
     'u|r(?:f|b)?|(?:f|b)r?', 'i'),
   string: {

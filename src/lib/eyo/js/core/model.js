@@ -59,7 +59,7 @@ eYo.model._p.allow = function (key, pattern, model) {
   if (eYo.isRA(pattern)) {
     model && eYo.throw(`Unexpected model: ${model}`)
     eYo.model.allowed['^$'].push(key)
-    eYo.mixinRO(eYo.model.allowed, {[key]: pattern})
+    eYo.mixinR(eYo.model.allowed, {[key]: pattern})
     return
   }
   if (!pattern) {
@@ -72,8 +72,8 @@ eYo.model._p.allow = function (key, pattern, model) {
     pattern = '^\\w+$'
   }
   eYo.model.allowed['^$'].push(key)
-  eYo.mixinRO(eYo.model.allowed, {[key]: pattern})
-  model && eYo.mixinRO(eYo.model.allowed, model)
+  eYo.mixinR(eYo.model.allowed, {[key]: pattern})
+  model && eYo.mixinR(eYo.model.allowed, model)
 }
 
 eYo.model._p.allow('data', {

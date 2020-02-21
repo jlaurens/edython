@@ -17,13 +17,13 @@ describe('driver', function() {
     var ns = eYo.driver.makeNS()
     ns.makeMngr()
     chai.assert(ns.Mngr)
-    chai.assert(ns.Mngr.eyo.C9r === ns.Mngr)
-    chai.assert(ns.Mngr.eyo.constructor === eYo.driver.DlgtMngr)
+    chai.expect(ns.Mngr.eyo.C9r).to.equal(ns.Mngr)
+    chai.expect(ns.Mngr.eyo.constructor).to.equal(eYo.driver.DlgtMngr)
     chai.assert(ns.makeMngr)
     chai.assert(ns.makeDriverC9r)
-    chai.assert(ns.Dflt === eYo.driver.Dflt)
-    chai.assert(ns.Dlgt === eYo.driver.Dlgt)
-    chai.assert(ns.DlgtMngr === eYo.driver.DlgtMngr)
+    chai.expect(ns.Dflt).to.equal(eYo.driver.Dflt)
+    chai.expect(ns.Dlgt).to.equal(eYo.driver.Dlgt)
+    chai.expect(ns.DlgtMngr).to.equal(eYo.driver.DlgtMngr)
     ns.makeNS('a')
     ns.a.makeMngr()
   })
@@ -31,11 +31,11 @@ describe('driver', function() {
     var ns = eYo.driver.makeNS()
     ns.makeMngr()
     chai.assert(ns.Mngr)
-    chai.assert(ns.Mngr.eyo.constructor === ns.DlgtMngr)
+    chai.expect(ns.Mngr.eyo.constructor).to.equal(ns.DlgtMngr)
     var onr = {}
     onr.mngr = new ns.Mngr(onr)
     chai.assert(onr.mngr)
-    chai.assert(onr.mngr.owner === onr)
+    chai.expect(onr.mngr.owner).to.equal(onr)
     chai.assert(onr.mngr.allPurposeDriver)
   })
   it ('Driver: makeDriverC9r basic', function () {
@@ -63,7 +63,7 @@ describe('driver', function() {
     chai.assert(eYo.isF(ns.Foo))
     flag = 0
     new ns.Foo(NS)
-    chai.assert(flag === 421)
+    chai.expect(flag).to.equal(421)
   })
   it ('Driver: makeDriverC9r inherits (2)', function () {
     var flag
@@ -77,10 +77,10 @@ describe('driver', function() {
     chai.assert(eYo.isF(ns.Foo))
     flag = 0
     new ns.Foo(NS, 1)
-    chai.assert(flag === 1)
+    chai.expect(flag).to.equal(1)
     ns.makeNS('a')
     ns.a.makeMngr()
-    chai.assert(ns.a.super === ns)
+    chai.expect(ns.a.super).to.equal(ns)
     ns.a.makeDriverC9r('Foo', {
       init (owner, x) {
         flag += 10*x
@@ -90,14 +90,14 @@ describe('driver', function() {
     flag = 0
     new ns.a.Foo(NS, 1)
     console.warn('flag', flag)
-    chai.assert(flag === 11)
+    chai.expect(flag).to.equal(11)
   })
   it ('Driver: makeDriverC9r with model', function () {
     var flag
     var ns = eYo.driver.makeNS()
     ns.makeMngr()
     var Super = (ns.super && ns.super[name])|| ns.Dflt
-    chai.assert(Super === ns.Dflt)
+    chai.expect(Super).to.equal(ns.Dflt)
     ns.makeDriverC9r('Foo', {
       init () {
         flag += 1
@@ -114,9 +114,9 @@ describe('driver', function() {
     })
     flag = 0
     var foo = new ns.Foo(NS)
-    chai.assert(flag === 1)
+    chai.expect(flag).to.equal(1)
     chai.assert(foo.doInitUI && foo.doInitUI(2))
-    chai.assert(flag === 21)
+    chai.expect(flag).to.equal(21)
     foo.doDisposeUI(3)
     chai.assert(flag === 321, `Unexpected flag value: ${flag}`)
   })
@@ -154,17 +154,17 @@ describe('driver', function() {
     })
     flag = 0
     var foo = new ns.Foo(NS)
-    chai.assert(flag === 1)
+    chai.expect(flag).to.equal(1)
     chai.assert(foo.doInitUI())
-    chai.assert(flag === 11)
+    chai.expect(flag).to.equal(11)
     foo.doDisposeUI()
-    chai.assert(flag === 111)
+    chai.expect(flag).to.equal(111)
     var bar = new ns.Bar(NS)
-    chai.assert(flag === 1111)
+    chai.expect(flag).to.equal(1111)
     chai.assert(bar.doInitUI())
-    chai.assert(flag === 11111)
+    chai.expect(flag).to.equal(11111)
     bar.doDisposeUI()
-    chai.assert(flag === 111111)
+    chai.expect(flag).to.equal(111111)
   })
   it ('Driver: new', function () {
     let owner = {}

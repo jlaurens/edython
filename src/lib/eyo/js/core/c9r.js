@@ -563,8 +563,8 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
     this.C9r_p.dispose = f
   }
   /**
-   * Initialize an instance with valued, cached, owned and copied properties.
-   * Default implementation forwards to super.
+   * Prepare an instance.
+   * Default implementation does nothing.
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
   _p.prepareInstance = eYo.doNothing

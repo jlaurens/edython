@@ -37,8 +37,8 @@ describe('field', function () {
           var b = eYo.test.new_brick(type)
           var slot = b.SLOT_s
           var field = slot.FIELD_f
-          chai.assert(field.text === eYo.test.FIELD)
-          chai.assert(field.status === X[2])
+          chai.expect(field.text).to.equal(eYo.test.FIELD)
+          chai.expect(field.status).to.equal(X[2])
           b.dispose()
         })
       })
@@ -52,8 +52,8 @@ describe('field', function () {
           var b = eYo.test.new_brick(type)
           var slot = b.SLOT_s
           var field = slot.FIELD_f
-          chai.assert(field.text === eYo.test.FIELD)
-          chai.assert(field.status === X[2])
+          chai.expect(field.text).to.equal(eYo.test.FIELD)
+          chai.expect(field.status).to.equal(X[2])
           // b.dispose()
         })
       })

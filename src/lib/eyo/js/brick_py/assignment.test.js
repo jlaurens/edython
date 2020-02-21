@@ -440,8 +440,8 @@ describe('XML representation', function() {
       do_it && (do_it(d))
       var dom = eYo.xml.brickToDom(d)
       // console.log(dom)
-      chai.assert(dom.tagName.toLowerCase() === 's')
-      chai.assert(dom.getAttribute(eYo.key.EYO) === k)
+      chai.expect(dom.tagName.toLowerCase()).to.equal('s')
+      chai.expect(dom.getAttribute(eYo.key.EYO)).to.equal(k)
       d.dispose()
       eYo.test.tearItDown()
     })
@@ -462,7 +462,7 @@ describe('Copy/Paste with value', function() {
       chai.assert(d.value_b.connectLast(dd))
       var dom = eYo.xml.brickToDom(d)
       // console.log(dom)
-      chai.assert(dom.tagName.toLowerCase() === 's')
+      chai.expect(dom.tagName.toLowerCase()).to.equal('s')
       dd = eYo.test.new_brick(dom)
       eYo.test.variant(d, dd.Variant_p)
       eYo.test.Code(d, dd.description)
@@ -482,7 +482,7 @@ describe('Copy/Paste with data test', function() {
       var d = eYo.test.new_brick(t)
       do_it && (do_it(d))
       var dom = eYo.xml.brickToDom(d)
-      chai.assert(dom.tagName.toLowerCase() === 's')
+      chai.expect(dom.tagName.toLowerCase()).to.equal('s')
       console.error(t, dom)
       var dd = eYo.test.new_brick(dom)
       eYo.test.variant(d, dd.Variant_p)
@@ -497,18 +497,18 @@ describe('Copy/Paste with data test', function() {
   // f('assignment_stmt', d => {
   //   d.Operator_p = '**='
   // }, (d, dd) => {
-  //   chai.assert(d.Operator_p === '**=')
+  //   chai.expect(d.Operator_p).to.equal('**=')
   // })
   f('annotated_stmt', d => {
     d.Annotated_p = 'ANNOTATED'
   }, (d, dd) => {
-    chai.assert(d.Annotated_p === 'ANNOTATED')
+    chai.expect(d.Annotated_p).to.equal('ANNOTATED')
   })
   // f('annotated_assignment_stmt')
   // f('augmented_assignment_stmt', d => {
   //   d.Operator_p = '**='
   // }, (d, dd) => {
-  //   chai.assert(d.Operator_p === '**=')
+  //   chai.expect(d.Operator_p).to.equal('**=')
   // })
 })
 

@@ -52,7 +52,7 @@ eYo.Const.Field = {
  */
 eYo.makeNS('key')
 
-eYo.mixinRO(eYo.key, {
+eYo.mixinR(eYo.key, {
   EYO: 'eyo',
   PLACEHOLDER: 'placeholder', // this MUST be in lower case
   TERM: 'term', // this MUST be in lower case

@@ -41,6 +41,9 @@ eYo.o4t.makeDflt({
  * @param {*} properties - a properties model
  */
 eYo.o4t._p.initProperties = function (object, properties) {
+  if (!properties) {
+    return
+  }
   let todo = eYo.copyRA(Object.keys(properties))
   let done = []
   let again = []
@@ -132,8 +135,25 @@ eYo.o4t._p.initProperties = function (object, properties) {
     })
   }
 
+  Object.defineProperties(_p, {
+    /**
+     * this.properties__ merged with the prepared properties of super, if any.
+     */
+    properties: eYo.descriptorR(function () {
+      this.properties__ || (this.properties__ = Object.create(null))
+      let superPs = this.super && this.super.properties
+      let Ps = superPs? eYo.provideR(this.properties__, superPs) : this.properties__
+      Object.defineProperties(this, {
+        properties: eYo.descriptorR(function () {
+          return Ps
+        })
+      })
+      return Ps
+    })
+  })
+  
   /**
-   * Initialize an instance with valued, cached, owned and copied properties.
+   * Initialize an instance with properties.
    * Default implementation forwards to super.
    * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
    */
@@ -142,7 +162,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
     if (!ns || !ns.initProperties) {
       ns = eYo.o4t
     }
-    ns.initProperties(object, this.properties__)
+    ns.initProperties(object, this.preparedProperties)
     let eyo = this.super
     eyo && eyo.prepareInstance(object)
   }

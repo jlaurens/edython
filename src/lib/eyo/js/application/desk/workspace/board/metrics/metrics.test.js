@@ -135,11 +135,11 @@ describe('Metrics', function () {
     div1.style.height = `${1/64}px`
     var r = div1.getBoundingClientRect()
     console.error('getBoundingClientRect', 1/64, r.width)
-    chai.assert(1/64 === r.width)
+    chai.expect(1/64).to.equal(r.width)
     div1.style.width = `${1/128}px`
     div1.style.height = `${1/128}px`
     var r = div1.getBoundingClientRect()
-    chai.assert(0 === r.width)
+    chai.expect(0).to.equal(r.width)
   })
   it ('desk: metrics scaling', function () {
     var desk = new eYo.view.Desk({})

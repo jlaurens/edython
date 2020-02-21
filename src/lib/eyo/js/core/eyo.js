@@ -150,8 +150,9 @@ eYo.descriptorNORW = (msg) => {
  * @param {*} object - The destination
  * @param {*} props - the source
  * @param {Boolean} getters - True if functions are considered as getter.
+ * @return {*} the destination
  */
-eYo.mixinRO = (object, props, getters = true) => {
+eYo.mixinR = (object, props, getters = true) => {
   Object.keys(props).forEach(key => {
     eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys are forbidden: ${object}, ${key}`)
     let value = props[key]
@@ -163,9 +164,35 @@ eYo.mixinRO = (object, props, getters = true) => {
       })
     )
   })
+  return object
 }
 
-eYo.mixinRO(eYo, {
+/**
+ * The props dictionary is a `key=>value` mapping where values
+ * are getters, not a dictionary containing a getter.
+ * The difference with the `mixinR` is that an existing key is not overriden.
+ * @param {*} object - The destination
+ * @param {*} props - the source
+ * @param {Boolean} getters - True if functions are considered as getter.
+ * @return {*} the destination
+ */
+eYo.provideR = (object, props, getters = true) => {
+  Object.keys(props).forEach(key => {
+    if (!eYo.hasOwnProperty(object, key)) {
+      let value = props[key]
+      Object.defineProperty(
+        object,
+        key,
+        eYo.descriptorR(getters && eYo.isF(value) ? value : function () {
+          return value
+        })
+      )
+    }
+  })
+  return object
+}
+
+eYo.mixinR(eYo, {
   /**
    * @const
    */
@@ -205,7 +232,7 @@ eYo.mixinRO(eYo, {
 }, false)
 
 // ANCHOR Utilities
-eYo.mixinRO(eYo, {
+eYo.mixinR(eYo, {
   /**
    * Readonly undefined
    */
@@ -360,7 +387,7 @@ eYo.mixinRO(eYo, {
 }, false)
 
 // ANCHOR makeNS, provide
-eYo.mixinRO(eYo._p, {
+eYo.mixinR(eYo._p, {
   /**
    * @name {eYo.makeNS}
    * Make a namespace by subclassing the caller's constructor.
@@ -414,7 +441,7 @@ eYo.mixinRO(eYo._p, {
   },
 }, false)
 
-eYo.mixinRO(eYo, {
+eYo.mixinR(eYo, {
   /**
    * @param {String} name - dotted components, some kind of path.
    * @param {Object} value - When false, nothing is performed. This is the value used to create some object at the given path, instead of the default namespace.
@@ -458,7 +485,7 @@ eYo.mixinRO(eYo, {
 }, false)
 
 // ANCHOR Assert
-eYo.mixinRO(eYo, {
+eYo.mixinR(eYo, {
   /**
    * The default error handler.
    * @param {eYo.AssertionError} e The exception to be handled.

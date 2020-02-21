@@ -27,11 +27,59 @@ describe('eYo Tests', function () {
   })
   it('eYo: NA', function () {
     var x
-    chai.assert(eYo.NA === x)
+    chai.expect(eYo.NA).to.equal(x)
     chai.assert(eYo.isNA(x))
     chai.expect(() => {
       eYo.NA = 1
     }).to.throw()
+  })
+  it ('eYo.mixinR', function () {
+    let o = {}
+    eYo.mixinR(o, {
+      foo: 421
+    })
+    chai.expect(o.foo).to.equal(421)
+    chai.expect(() => {
+      o.foo = 421
+    }).to.throw()
+    chai.expect(() => {
+      eYo.mixinR(o, {
+        foo: 123
+      })
+    }).to.throw()
+    eYo.mixinR(o, {
+      bar: 123
+    })
+    chai.expect(o.foo).to.equal(421)
+    chai.expect(o.bar).to.equal(123)
+    let a = {}
+    let b = {}
+    chai.expect(() => eYo.mixinR(eYo.NS, eYo.NA)).to.throw()
+    chai.expect(() => eYo.mixinR(a, eYo.NA)).to.throw()
+    eYo.mixinR(a, b)
+    chai.expect(a).to.deep.equal(b)
+    b.foo = 421
+    chai.expect(() => eYo.mixinR(eYo.NS, b)).to.throw()
+    chai.expect(a).not.to.deep.equal(b)
+    eYo.mixinR(a, b)
+    chai.expect(a.foo).equal(b.foo).equal(421)
+    chai.expect(() => eYo.mixinR(a, b)).to.throw()
+  })
+  it ('eYo: provideR', function () {
+    let a = {}
+    let b = {}
+    chai.expect(() => eYo.provideR(eYo.NS, eYo.NA)).to.throw()
+    chai.expect(() => eYo.provideR(a, eYo.NA)).to.throw()
+    eYo.provideR(a, b)
+    chai.expect(a).to.deep.equal(b)
+    b.foo = 421
+    chai.expect(() => eYo.provideR(eYo.NS, b)).to.throw()
+    chai.expect(a).not.to.deep.equal(b)
+    eYo.provideR(a, b)
+    chai.expect(a.foo).equal(b.foo).equal(421)
+    b.foo = 123
+    chai.expect(() => eYo.provideR(a, b)).not.to.throw()
+    chai.expect(a.foo).not.equal(b.foo)
   })
   it('eYo: hasOwnProperty', function () {
     chai.assert(eYo.hasOwnProperty({eyo: true}, 'eyo'))
@@ -48,7 +96,7 @@ describe('eYo Tests', function () {
     chai.assert(ns !== eYo)
     ns = eYo.makeNS('foo')
     chai.assert(ns)
-    chai.assert(ns === eYo.foo)
+    chai.expect(ns).to.equal(eYo.foo)
     chai.assert(eYo.isNS(ns))
     chai.assert(eYo.foo)
     eYo.foo.makeNS('bar')
@@ -65,7 +113,7 @@ describe('eYo Tests', function () {
     ns = eYo.makeNS(eYo.NULL_NS, 'fu', {
       shi: 421
     })
-    chai.assert(ns.shi === 421)
+    chai.expect(ns.shi).to.equal(421)
   })
   it ('F', function () {
     chai.assert(eYo.isF)
@@ -75,18 +123,18 @@ describe('eYo Tests', function () {
     chai.assert(eYo.isF(f))
     chai.assert(!eYo.isF())
     chai.assert(!eYo.isF({}))
-    chai.assert(eYo.asF(eYo.doNothing) === eYo.doNothing)
-    chai.assert(eYo.asF(f) === f)
+    chai.expect(eYo.asF(eYo.doNothing)).to.equal(eYo.doNothing)
+    chai.expect(eYo.asF(f)).to.equal(f)
     chai.assert(eYo.isNA(eYo.asF()))
     chai.assert(eYo.isNA(eYo.asF(421)))
-    chai.assert(eYo.toF(eYo.doNothing) === eYo.doNothing)
-    chai.assert(eYo.toF(f) === f)
+    chai.expect(eYo.toF(eYo.doNothing)).to.equal(eYo.doNothing)
+    chai.expect(eYo.toF(f)).to.equal(f)
     chai.assert(eYo.isF(eYo.toF()))
     chai.assert(eYo.isF(eYo.toF(421)))
-    chai.assert(eYo.toF(421)() === 421)
+    chai.expect(eYo.toF(421)()).to.equal(421)
     chai.assert(eYo.isNA(eYo.called()))
-    chai.assert(eYo.called(421) === 421)
-    chai.assert(eYo.called(f) === 421)
+    chai.expect(eYo.called(421)).to.equal(421)
+    chai.expect(eYo.called(f)).to.equal(421)
     chai.assert(eYo.called(() => {
       return 421
     }) === 421)
@@ -143,31 +191,11 @@ describe('eYo Tests', function () {
     eYo.whenVALID({}, () => {
       flag = 421
     })
-    chai.assert(flag === 421)
+    chai.expect(flag).to.equal(421)
     eYo.whenVALID(eYo.INVALID, () => {
       flag = 0
     })
-    chai.assert(flag === 421)
-  })
-  it ('eYo.mixinRO', function () {
-    let o = {}
-    eYo.mixinRO(o, {
-      foo: 421
-    })
-    chai.assert(o.foo === 421)
-    chai.expect(() => {
-      o.foo = 421
-    }).to.throw()
-    chai.expect(() => {
-      eYo.mixinRO(o, {
-        foo: 123
-      })
-    }).to.throw()
-    eYo.mixinRO(o, {
-      bar: 123
-    })
-    chai.assert(o.foo === 421)
-    chai.assert(o.bar === 123)
+    chai.expect(flag).to.equal(421)
   })
   it ('eYo.copyRA', function () {
     let original = []

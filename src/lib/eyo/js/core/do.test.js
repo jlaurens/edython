@@ -3,8 +3,8 @@ describe ('do', function () {
     chai.assert(eYo.do)
   })
   it ('eYo.do.toTitleCase', function () {
-    chai.assert(eYo.do.toTitleCase('') === '')
-    chai.assert(eYo.do.toTitleCase('a') === 'A')
-    chai.assert(eYo.do.toTitleCase('abc') === 'Abc')
+    chai.expect(eYo.do.toTitleCase('')).to.equal('')
+    chai.expect(eYo.do.toTitleCase('a')).to.equal('A')
+    chai.expect(eYo.do.toTitleCase('abc')).to.equal('Abc')
   })
 })

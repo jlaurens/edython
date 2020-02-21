@@ -20,7 +20,7 @@ eYo.require('expr.primary')
 eYo.require('menuItem')
 goog.require('goog.dom');
 
-eYo.mixinRO(eYo.xre, {
+eYo.mixinR(eYo.xre, {
   decorator: XRegExp(`^@?
     (?:
       (?<property> property) |
