@@ -7,7 +7,7 @@ describe ('Tests: audio', function () {
   it ('Audio: basic properties', function () {
     let app = new eYo.app.Dflt()
     chai.assert(app.audio)
-    chai.expect(app.audio.app).to.equal(app)
+    chai.expect(app.audio.app).equal(app)
     chai.assert(app.ui_driver_mngr)
     chai.assert(app.audio.ui_driver_mngr)
     chai.assert(app.audio.ui_driver)

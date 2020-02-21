@@ -17,7 +17,7 @@ describe('XMl', function () {
       console.error(d.type)
       var t = d.expression_s.target
       chai.assert(t, 'MISSING target')
-      chai.expect(t.type).to.equal(eYo.t3.expr.identifier_annotated)
+      chai.expect(t.type).equal(eYo.t3.expr.identifier_annotated)
     })
   })
 })

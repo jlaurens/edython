@@ -456,29 +456,30 @@ eYo.p6y.makeDflt({
     this.model_ = model
     this.stored__ = eYo.NA // this may be useless in some situations
     Object.defineProperties(this, {
-      value: eYo.descriptorR(
-        function () {
-          return `Unexpected setter ${key} in ${owner}'s instance property`
+      value: eYo.descriptorR({
+          lazy () {
+            return `Unexpected setter ${key} in ${owner.eyo.key}'s instance property`
+          },
         },
         eYo.p6y.Dflt_p.valueGetter
       ),
       owner: eYo.descriptorR({
           lazy () {
-            return `Unexpected ….owner_ = …, ${owner}'s instance property`
+            return `Unexpected ….owner_ = …, ${owner.eyo.key}'s instance property`
           }
         },
         function () { return this.owner_ }
       ),
       key: eYo.descriptorR({
           lazy () {
-            return `Unexpected ….key_ = …, ${owner}'s instance property`
+            return `Unexpected ….key_ = …, ${owner.eyo.key}'s instance property`
           },
         },
         function () { return this.key_ }
       ),
       model: eYo.descriptorR({
           lazy () {
-            return `Unexpected ….model_ = …, ${owner}'s property`
+            return `Unexpected ….model_ = …, ${owner.eyo.key}'s property`
           },
         },
         function () { return this.model_ }

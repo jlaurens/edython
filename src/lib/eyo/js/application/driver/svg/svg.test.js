@@ -30,8 +30,8 @@ describe('SVG coordinates', function () {
     var ui = d1.ui
     var xy1 = d1.xy
     var xy2 = ui.whereInBoard
-    chai.expect(xy1.x).to.equal(xy2.x)
-    chai.expect(xy1.y).to.equal(xy2.y)
+    chai.expect(xy1.x).equal(xy2.x)
+    chai.expect(xy1.y).equal(xy2.y)
     var d = eYo.geom.xyWhere(246 * Math.random(), 135 * Math.random())
     d1.moveBy(d)
     var xy1d = d1.xy

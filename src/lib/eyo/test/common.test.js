@@ -454,7 +454,7 @@ eYo.test.Same_list_length = (dlgt1, dlgt2, key) => {
   var t2_brick = s2.targetBrick
   chai.assert(t1_brick, `MISSING d slot target for key ${key}`)
   chai.assert(t2_brick, `MISSING dd slot target for key ${key}`)
-  chai.expect(Object.keys(t1_brick.slots).length).to.equal(Object.keys(t2_brick.slots).length, `FAILED slotList length ${Object.keys(t1_brick.slots).length} === ${Object.keys(t2_brick.slots).length}`)
+  chai.expect(Object.keys(t1_brick.slots).length).equal(Object.keys(t2_brick.slots).length, `FAILED slotList length ${Object.keys(t1_brick.slots).length} === ${Object.keys(t2_brick.slots).length}`)
 }
 
 /**

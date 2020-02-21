@@ -27,7 +27,7 @@ describe('eYo Tests', function () {
   })
   it('eYo: NA', function () {
     var x
-    chai.expect(eYo.NA).to.equal(x)
+    chai.expect(eYo.NA).equal(x)
     chai.assert(eYo.isNA(x))
     chai.expect(() => {
       eYo.NA = 1
@@ -38,7 +38,7 @@ describe('eYo Tests', function () {
     eYo.mixinR(o, {
       foo: 421
     })
-    chai.expect(o.foo).to.equal(421)
+    chai.expect(o.foo).equal(421)
     chai.expect(() => {
       o.foo = 421
     }).to.throw()
@@ -50,8 +50,8 @@ describe('eYo Tests', function () {
     eYo.mixinR(o, {
       bar: 123
     })
-    chai.expect(o.foo).to.equal(421)
-    chai.expect(o.bar).to.equal(123)
+    chai.expect(o.foo).equal(421)
+    chai.expect(o.bar).equal(123)
     let a = {}
     let b = {}
     chai.expect(() => eYo.mixinR(eYo.NS, eYo.NA)).to.throw()
@@ -96,7 +96,7 @@ describe('eYo Tests', function () {
     chai.assert(ns !== eYo)
     ns = eYo.makeNS('foo')
     chai.assert(ns)
-    chai.expect(ns).to.equal(eYo.foo)
+    chai.expect(ns).equal(eYo.foo)
     chai.assert(eYo.isNS(ns))
     chai.assert(eYo.foo)
     eYo.foo.makeNS('bar')
@@ -113,7 +113,7 @@ describe('eYo Tests', function () {
     ns = eYo.makeNS(eYo.NULL_NS, 'fu', {
       shi: 421
     })
-    chai.expect(ns.shi).to.equal(421)
+    chai.expect(ns.shi).equal(421)
   })
   it ('F', function () {
     chai.assert(eYo.isF)
@@ -123,18 +123,18 @@ describe('eYo Tests', function () {
     chai.assert(eYo.isF(f))
     chai.assert(!eYo.isF())
     chai.assert(!eYo.isF({}))
-    chai.expect(eYo.asF(eYo.doNothing)).to.equal(eYo.doNothing)
-    chai.expect(eYo.asF(f)).to.equal(f)
+    chai.expect(eYo.asF(eYo.doNothing)).equal(eYo.doNothing)
+    chai.expect(eYo.asF(f)).equal(f)
     chai.assert(eYo.isNA(eYo.asF()))
     chai.assert(eYo.isNA(eYo.asF(421)))
-    chai.expect(eYo.toF(eYo.doNothing)).to.equal(eYo.doNothing)
-    chai.expect(eYo.toF(f)).to.equal(f)
+    chai.expect(eYo.toF(eYo.doNothing)).equal(eYo.doNothing)
+    chai.expect(eYo.toF(f)).equal(f)
     chai.assert(eYo.isF(eYo.toF()))
     chai.assert(eYo.isF(eYo.toF(421)))
-    chai.expect(eYo.toF(421)()).to.equal(421)
+    chai.expect(eYo.toF(421)()).equal(421)
     chai.assert(eYo.isNA(eYo.called()))
-    chai.expect(eYo.called(421)).to.equal(421)
-    chai.expect(eYo.called(f)).to.equal(421)
+    chai.expect(eYo.called(421)).equal(421)
+    chai.expect(eYo.called(f)).equal(421)
     chai.assert(eYo.called(() => {
       return 421
     }) === 421)
@@ -191,11 +191,11 @@ describe('eYo Tests', function () {
     eYo.whenVALID({}, () => {
       flag = 421
     })
-    chai.expect(flag).to.equal(421)
+    chai.expect(flag).equal(421)
     eYo.whenVALID(eYo.INVALID, () => {
       flag = 0
     })
-    chai.expect(flag).to.equal(421)
+    chai.expect(flag).equal(421)
   })
   it ('eYo.copyRA', function () {
     let original = []

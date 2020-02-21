@@ -346,7 +346,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
       })
     }
   }
-  let Dlgt = eYo.c9r.Dlgt = function (ns, key, C9r, model) {
+  let Dlgt = eYo.c9r._p.Dlgt = function (ns, key, C9r, model) {
     AutoDlgt.call(this, ns, key, C9r, model)
     if (!this.init) {
       console.error('BREAK HERE!')

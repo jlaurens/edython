@@ -32,13 +32,13 @@ describe ('Tests: Model', function () {
     var base = {init: 421}
     var model = {}
     eYo.model.extends(model, base)
-    chai.expect(model.init).to.equal(421)
+    chai.expect(model.init).equal(421)
   })
   it ('Inheritance 2', function () {
     var base = {xml: {attr: 421}}
     var model = {}
     eYo.model.extends(model, base)
-    chai.expect(model.xml.attr).to.equal(421)
+    chai.expect(model.xml.attr).equal(421)
   })
   it ('Inheritance 3', function () {
     var base = {
@@ -52,8 +52,8 @@ describe ('Tests: Model', function () {
       }
     }
     eYo.model.extends(model, base)
-    chai.expect(model.xml.attr).to.equal(421)
-    chai.expect(model.xml.types).to.equal(123)
+    chai.expect(model.xml.attr).equal(421)
+    chai.expect(model.xml.types).equal(123)
   })
   it ('Inheritance 4', function () {
     var base = {
@@ -77,9 +77,9 @@ describe ('Tests: Model', function () {
     }
     eYo.model.extends(model, base)
     eYo.model.extends(submodel, model)
-    chai.expect(submodel.data.aa.xml).to.equal(421)
-    chai.expect(submodel.data.ab).to.equal(421)
-    chai.expect(submodel.properties).to.equal(421)
+    chai.expect(submodel.data.aa.xml).equal(421)
+    chai.expect(submodel.data.ab).equal(421)
+    chai.expect(submodel.properties).equal(421)
   })
   it('eYo.model.consolidate(…)', function () {
     var model = {

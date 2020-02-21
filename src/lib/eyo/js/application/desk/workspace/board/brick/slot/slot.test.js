@@ -93,7 +93,7 @@ describe('Proxy between lists and linked lists (Proof of concept)', function() {
     var test = (...names) => {
       var i = 0
       names.forEach(name => {
-        chai.expect(p[i++].name).to.equal(name)
+        chai.expect(p[i++].name).equal(name)
       })
     }
     test('a0','b1','c2')

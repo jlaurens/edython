@@ -162,7 +162,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
     if (!ns || !ns.initProperties) {
       ns = eYo.o4t
     }
-    ns.initProperties(object, this.preparedProperties)
+    ns.initProperties(object, this.properties)
     let eyo = this.super
     eyo && eyo.prepareInstance(object)
   }

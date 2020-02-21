@@ -217,7 +217,7 @@ describe('Copy/Paste', function() {
       d.set(v)
       var dom = eYo.xml.brickToDom(d)
       var dd = eYo.test.new_brick(dom)
-      chai.expect(dd.data[k].get()).to.equal(d.get(), `MISSED ${k} data ${dd.data[k].get()} === ${d.get()}`)
+      chai.expect(dd.data[k].get()).equal(d.get(), `MISSED ${k} data ${dd.data[k].get()} === ${d.get()}`)
       dd.dispose()
     })
     d.dispose()
@@ -753,7 +753,7 @@ describe('Primary(value_list)', function() {
   it('void unwrapped', function() {
     var d = eYo.test.new_brick(eYo.t3.expr.value_list)
     chai.assert(d, 'MISSED')
-    chai.expect(Object.keys(d.slots).length).to.equal(1)
+    chai.expect(Object.keys(d.slots).length).equal(1)
     var model = d.consolidator.model
     console.error('ALL', d.type, d.subtype, model.all(d.type, d.subtype))
     var check = d.slotAtHead.magnet.check_
@@ -773,7 +773,7 @@ describe('Primary(value_list)', function() {
     eYo.test.Input_length(d, 1)
     var model = d.consolidator.model
     var check = d.slotAtHead.magnet.check_
-    chai.assert(chai.expect(check).to.equal(model.all(d.type, d.subtype)),`MISMATCH 1`)
+    chai.assert(chai.expect(check).equal(model.all(d.type, d.subtype)),`MISMATCH 1`)
     chai.assert(chai.expect(check).to.not.equal(model.check(d.type, d.subtype)),`MISMATCH 2`)
     chai.assert(chai.expect(check).to.not.equal(model.unique(d.type, d.subtype)),`MISMATCH 3`)
     dd.dispose()
@@ -789,15 +789,15 @@ describe('Primary(value_list)', function() {
     var model_check = model.check(d.type, d.subtype)
     var model_all = model.all(d.type, d.subtype)
     var model_unique = model.unique(d.type, d.subtype)
-    chai.assert(chai.expect(check).to.equal(model_check), `MISMATCH 01`)
+    chai.assert(chai.expect(check).equal(model_check), `MISMATCH 01`)
     chai.assert(chai.expect(check).to.not.equal(model_all), `MISMATCH 02`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 03`)
     check = d.slotAtHead.next.magnet.check_
-    chai.assert(chai.expect(check).to.equal(model_all), `MISMATCH 11`)
+    chai.assert(chai.expect(check).equal(model_all), `MISMATCH 11`)
     chai.assert(chai.expect(check).to.not.equal(model_check), `MISMATCH 12`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 13`)
     check = d.slotAtHead.next.next.magnet.check_
-    chai.assert(chai.expect(check).to.equal(model_check), `MISMATCH 21`)
+    chai.assert(chai.expect(check).equal(model_check), `MISMATCH 21`)
     chai.assert(chai.expect(check).to.not.equal(model_all), `MISMATCH 22`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 23`)
     dd.dispose()
@@ -806,13 +806,13 @@ describe('Primary(value_list)', function() {
     var dd = eYo.test.new_brick('identifier_valued')
     var d = dd.value_b
     d.lastSlot.connect(eYo.test.new_brick('identifier_valued'))
-    chai.expect(Object.keys(d.slots).length).to.equal(1)
+    chai.expect(Object.keys(d.slots).length).equal(1)
     var model = d.consolidator.model
     var check = d.slotAtHead.magnet.check_
     var model_check = model.check(d.type, d.subtype)
     var model_all = model.all(d.type, d.subtype)
     var model_unique = model.unique(d.type, d.subtype)
-    chai.assert(chai.expect(check).to.equal(model_all), `MISMATCH 01`)
+    chai.assert(chai.expect(check).equal(model_all), `MISMATCH 01`)
     chai.assert(chai.expect(check).to.not.equal(model_check), `MISMATCH 02`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 03`)
     dd.dispose()
@@ -948,7 +948,7 @@ describe('Primary(Expression Assignment)', function() {
   it('basic', function() {
     var d = eYo.test.new_brick(eYo.t3.expr.named_expr)
     eYo.test.variant(d, 'COL_VALUED')
-    chai.expect(d.value_s.label_f.getValue()).to.equal(':=')
+    chai.expect(d.value_s.label_f.getValue()).equal(':=')
     d.dispose()
   })
 })

@@ -4,7 +4,7 @@ describe('Brick constructor delegate', function() {
     var c9r = function () {}
     var eyo = new eYo.brick.Dlgt(c9r, 'Foo', {})
     chai.assert(eyo)
-    chai.expect(eyo.name_).to.equal('Foo')
+    chai.expect(eyo.name_).equal('Foo')
     chai.assert(eyo.types)
   })
 })

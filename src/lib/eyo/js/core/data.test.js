@@ -21,7 +21,7 @@ describe ('Tests: data', function () {
         foo: model
       }, 'foo')
       var methods = model['.methods']
-      chai.expect(methods.length).to.equal(n)
+      chai.expect(methods.length).equal(n)
     }
     test({}, 0)
     test({willChange () {}}, 1)
@@ -46,7 +46,7 @@ describe ('Tests: data', function () {
         f(O)
       })
       O.willChange(123, 421)
-      chai.expect(flag).to.equal(n)
+      chai.expect(flag).equal(n)
     }
     test(function () {flag = 123}, 123)
     test(function (after) {flag = after}, 421)

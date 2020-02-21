@@ -23,7 +23,7 @@ describe('Statement', function () {
         m5s.right
       ].forEach(m => {
         var db = m.db_
-        chai.expect(db.length).to.equal(1)
+        chai.expect(db.length).equal(1)
         chai.assert(db.indexOf(m) >= 0)
       })
       ;[
@@ -33,7 +33,7 @@ describe('Statement', function () {
         [m5s.right, m5s.left]
       ].forEach(ms => {
         var db = ms[0].dbOpposite_
-        chai.expect(db.length).to.equal(1)
+        chai.expect(db.length).equal(1)
         chai.assert(db.indexOf(ms[1]) >= 0)
       })
       d.dispose()
@@ -57,7 +57,7 @@ describe('Statement', function () {
         var cc1 = d1.magnets[args[1]]
         var cc2 = d2.magnets[args[1]]
         var db = c1.db_
-        chai.expect(db).to.equal(c2.db_)
+        chai.expect(db).equal(c2.db_)
         var f1 = k => {
           chai.assert(db.length === 2, `${k} 1) ${args[0]} / ${args[1]}`)
           chai.assert(db.indexOf(c1) >= 0, `${k} 2) ${args[0]} / ${args[1]}`)
@@ -67,7 +67,7 @@ describe('Statement', function () {
         }
         f1('c1 db')
         db = c1.dbOpposite_
-        chai.expect(db).to.equal(c2.dbOpposite_)
+        chai.expect(db).equal(c2.dbOpposite_)
         var f2 = (k) => {
           chai.assert(db.length === 2, `${k} 1) ${args[0]} / ${args[1]}`)
           chai.assert(db.indexOf(cc1) >= 0, `${k} 2) ${args[0]} / ${args[1]}`)
@@ -77,10 +77,10 @@ describe('Statement', function () {
         }
         f2('c1 opposite')
         db = cc1.db_
-        chai.expect(db).to.equal(cc2.db_)
+        chai.expect(db).equal(cc2.db_)
         f2('cc1 db')
         db = cc1.dbOpposite_
-        chai.expect(db).to.equal(cc2.dbOpposite_)
+        chai.expect(db).equal(cc2.dbOpposite_)
         f1('cc1 opposite')
       })
       d1.dispose()

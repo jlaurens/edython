@@ -126,9 +126,9 @@ describe ('geometry', function () {
       let r = new eYo.geom.Rect()
       // by copy or not
       chai.assert(r.origin !== r.origin_)
-      chai.expect(r.origin_).to.equal(r.origin_)
+      chai.expect(r.origin_).equal(r.origin_)
       chai.assert(r.size !== r.size_)
-      chai.expect(r.size_).to.equal(r.size_)
+      chai.expect(r.size_).equal(r.size_)
       r.c_ = 123
       test(r, 123, 0, 0, 0)
       r.l_ = 421
@@ -148,37 +148,37 @@ describe ('geometry', function () {
       test(r, 1, 0, 0, 0)
       r.w_ = 9
       test(r, 1, 0, 9, 0)
-      chai.expect(r.c_max).to.equal(10)
+      chai.expect(r.c_max).equal(10)
       r.c_max_ = 110
       test(r, 101, 0, 9, 0)
       r.w_ = 100
       test(r, 101, 0, 100, 0)
-      chai.expect(r.c_max).to.equal(201)
+      chai.expect(r.c_max).equal(201)
       r.c_min_ = 0
-      chai.expect(r.c_max).to.equal(100)
-      chai.expect(r.c_mid).to.equal(50)
+      chai.expect(r.c_max).equal(100)
+      chai.expect(r.c_mid).equal(50)
       r.c_mid_ = 100
-      chai.expect(r.c_min).to.equal(50)
-      chai.expect(r.c_mid).to.equal(100)
-      chai.expect(r.c_max).to.equal(150)
+      chai.expect(r.c_min).equal(50)
+      chai.expect(r.c_mid).equal(100)
+      chai.expect(r.c_max).equal(150)
       r = new eYo.geom.Rect()
       r.l_min_ = 1
       test(r, 0, 1, 0, 0)
       r.h_ = 9
       test(r, 0, 1, 0, 9)
-      chai.expect(r.l_max).to.equal(10)
+      chai.expect(r.l_max).equal(10)
       r.l_max_ = 110
       test(r, 0, 101, 0, 9)
       r.h_ = 100
       test(r, 0, 101, 0, 100)
-      chai.expect(r.l_max).to.equal(201)
+      chai.expect(r.l_max).equal(201)
       r.l_min_ = 0
-      chai.expect(r.l_max).to.equal(100)
-      chai.expect(r.l_mid).to.equal(50)
+      chai.expect(r.l_max).equal(100)
+      chai.expect(r.l_mid).equal(50)
       r.l_mid_ = 100
-      chai.expect(r.l_min).to.equal(50)
-      chai.expect(r.l_mid).to.equal(100)
-      chai.expect(r.l_max).to.equal(150)
+      chai.expect(r.l_min).equal(50)
+      chai.expect(r.l_mid).equal(100)
+      chai.expect(r.l_max).equal(150)
     })
   })
   describe('In/Out', function () {

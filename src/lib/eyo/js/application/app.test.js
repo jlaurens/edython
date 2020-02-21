@@ -6,13 +6,13 @@ describe('app', function() {
     }
     let o = new eYo.o3d.Dflt(onr)
     chai.assert(o.owner_p)
-    chai.expect(o.owner).to.equal(onr)
+    chai.expect(o.owner).equal(onr)
     chai.assert(o.app_p)
-    chai.expect(o.app).to.equal(421)
+    chai.expect(o.app).equal(421)
     onr.app = 123
-    chai.expect(o.app).to.equal(421)
+    chai.expect(o.app).equal(421)
     o.app_p.reset()
-    chai.expect(o.app).to.equal(123)
+    chai.expect(o.app).equal(123)
   })
   it ('Application: Basic', function () {
     chai.assert(eYo.app.Dflt)
@@ -27,8 +27,8 @@ describe('app', function() {
   //     let APP = new eYo.app.Dflt(options)
   //     console.error('BREAK HERE!')
   //     console.error(APP.options)
-  //     chai.expect(APP.options.UI).to.equal(UI)
-  //     chai.expect(APP.ui_driver_mngr.constructor).to.equal(eYo[UI].Mngr)
+  //     chai.expect(APP.options.UI).equal(UI)
+  //     chai.expect(APP.ui_driver_mngr.constructor).equal(eYo[UI].Mngr)
   //   })
   // })
 })
