@@ -27,13 +27,13 @@ goog.require('goog.dom');
 eYo.stmt.makeNS(eYo, 'expr')
 
 /**
- * @name {eYo.expr.Dflt}
+ * @name {eYo.expr.Base}
  * @constructor
  * Class for a Delegate, value brick.
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeDflt({
+eYo.expr.makeBase({
   properties: {
     isExpr: true,
     depth: {
@@ -46,7 +46,7 @@ eYo.expr.makeDflt({
 })
 
 // Default delegate for all expression bricks
-eYo.brick.registerAll(eYo.t3.expr, eYo.expr.Dflt, true)
+eYo.brick.registerAll(eYo.t3.expr, eYo.expr.Base, true)
 
 /**
  * Increment the change count.
@@ -55,7 +55,7 @@ eYo.brick.registerAll(eYo.t3.expr, eYo.expr.Dflt, true)
  * @param {*} deep  Whether to propagate the message to children.
  */
 eYo.expr.Dflt_p.changeDone = function (deep) {
-  eYo.expr.Dflt.eyo.C9r_s.ChangeDone.call(this, deep)
+  eYo.expr.Base.eyo.C9r_s.ChangeDone.call(this, deep)
   var parent = this.parent
   parent && parent.changeDone()
 }
@@ -103,7 +103,7 @@ eYo.expr.Dflt_p.checkOutputType = function (type) {
  * If the parent's output connection is connected,
  * can connect the brick's output connection to it?
  * The connection cannot always establish.
- * @param {eYo.brick.Dflt} brick  the brick to be replaced
+ * @param {eYo.brick.Base} brick  the brick to be replaced
  */
 eYo.expr.Dflt_p.canReplaceBrick = function (brick) {
   if (brick) {
@@ -125,7 +125,7 @@ eYo.expr.Dflt_p.canReplaceBrick = function (brick) {
  * If the parent's output magnet is connected,
  * connects the brick's output magnet to it.
  * The connection cannot always establish.
- * @param {eYo.brick.Dflt} brick
+ * @param {eYo.brick.Base} brick
  */
 eYo.expr.Dflt_p.replaceBrick = function (brick) {
   if (this.board && brick && brick.board) {
@@ -159,7 +159,7 @@ eYo.expr.Dflt_p.replaceBrick = function (brick) {
  * @private
  */
 eYo.expr.Dflt_p.willRender_ = function (recorder) {
-  eYo.expr.Dflt.eyo.C9r_s.willRender_.call(this, recorder)
+  eYo.expr.Base.eyo.C9r_s.willRender_.call(this, recorder)
   var field = this.await_f
   if (field) {
     field.visible = this.await_
@@ -194,7 +194,7 @@ eYo.expr.Dflt_p.awaitable = function () {
  * @private
  */
 eYo.expr.Dflt_p.populateContextMenuFirst_ = function (mngr) {
-  var yorn = eYo.expr.Dflt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  var yorn = eYo.expr.Base.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('await', 'eyo-code-reserved'),
@@ -334,7 +334,7 @@ eYo.expr.Dflt_p.insertParentWithModel = function (model) {
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
 eYo.expr.Dflt_p.doConsolidate = function (deep, force) {
-  if (eYo.expr.Dflt.eyo.C9r_s.doConsolidate.call(this, deep, force)) {
+  if (eYo.expr.Base.eyo.C9r_s.doConsolidate.call(this, deep, force)) {
     var parent = this.parent
     return (parent && parent.consolidate()) || true
   }
@@ -502,7 +502,7 @@ eYo.expr.builtin__object_p.populateContextMenuFirst_ = function (mngr) {
 
 /**
  * Get the content for the menu item.
- * @param {eYo.brick.Dflt} brick The brick.
+ * @param {eYo.brick.Base} brick The brick.
  * @param {string} op op is the operator
  * @private
  */

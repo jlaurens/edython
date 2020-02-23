@@ -45,7 +45,7 @@ eYo.consolidator.List.makeInheritedC9r('Arguments', {
 /**
  * Prepare io, just before walking through the input list.
  * Subclassers may add their own stuff to io.
- * @param {eYo.brick.Dflt} brick - owner or the receiver.
+ * @param {eYo.brick.Base} brick - owner or the receiver.
  */
 eYo.consolidator.Arguments.prototype.getIO = function (brick) {
   var io = eYo.consolidator.Arguments.eyo.C9r_s.getIO.call(this, brick)

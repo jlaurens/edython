@@ -21,11 +21,11 @@
 eYo.o4t.makeNS(eYo, 'o3d')
 
 /**
- * @name{eYo.o3d.Dflt}
+ * @name{eYo.o3d.Base}
  * @constructor
  */
-eYo.o3d.makeDflt({
-  /** @param {eYo.app.Dflt|eYo.view.Desk|eYo.Flyout|eYo.board|eYo.expr|eYo.stmt|eYo.slot.Dflt|eYo.magnet.Dflt} owner  the immediate owner of this object. When not a brick, it is directly owned by a brick.
+eYo.o3d.makeBase({
+  /** @param {eYo.app.Base|eYo.view.Desk|eYo.Flyout|eYo.board|eYo.expr|eYo.stmt|eYo.slot.Base|eYo.magnet.Base} owner  the immediate owner of this object. When not a brick, it is directly owned by a brick.
    */
   init (owner) {
     owner || eYo.throw('Missing owner!')

@@ -44,7 +44,7 @@ eYo.driver.makeC9r('Mngr', {
             throw new Error(`Missing driver property named ${prop} in object ${obj}`)
           }
         }
-        return new Proxy(new this.eyo.ns.Dflt (this), handler)
+        return new Proxy(new this.eyo.ns.Base (this), handler)
       },
     },
     drivers: {
@@ -62,11 +62,11 @@ eYo.driver.makeC9r('Mngr', {
  * Convenient driver constructor maker.
  * The prototype will have eventually an `doInitUI` or `doDisposeUI`
  * wrapping the model's eponym methods, if any.
- * The owner will have a dafault driver named `Dflt`,
+ * The owner will have a dafault driver named `Base`,
  * which is expected to be the ancestor of all drivers.
  * @param {String} key - a (titlecased) word, the name of the subclass (last component)
  * @param {Function} [Super] - the super class of the driver constructor,
- * defaults to the owner's super_'s key property or the owner's `Dflt`.
+ * defaults to the owner's super_'s key property or the owner's `Base`.
  * @param {Object} driverModel
  * An object with various keys:
  * - owner: An object owning the class, basically a namespace object.
@@ -80,10 +80,10 @@ eYo.driver.Mngr.eyo_p.makeDriverC9r = function (key, Super, driverModel) {
   if (!eYo.isSubclass(Super, eYo.Driver)) {
     driverModel && eYo.throw(`Unexpected model ${driverModel}`)
     driverModel = eYo.called(Super) || {}
-    Super = ns.super[key] || ns.Dflt
+    Super = ns.super[key] || ns.Base
   }
-  if (!eYo.isSubclass(Super, ns.Dflt)) {
-    Super = ns.Dflt
+  if (!eYo.isSubclass(Super, ns.Base)) {
+    Super = ns.Base
   }
   var Driver = eYo.c9r.makeC9r(ns, key, Super, driverModel)
   var x = Driver.eyo.name.split('.') // x = ['eYo', 'Dom', 'Brick']
@@ -113,7 +113,7 @@ eYo.driver.Mngr.eyo_p.makeDriverC9r = function (key, Super, driverModel) {
  * Usage: `eYo.driver.makeMngr(model)`.
  * Actual implementation with Fcls, Fcfl, Dom and Svg drivers.
  * {Code: ns.Mngr} is instantiated by the main application object.
- * The `Dflt` class is also created.
+ * The `Base` class is also created.
  ** @param {Object} [mngrModel] -  model used for creation, see `makeC9r`.
  * @return {Function} a constructor equals to ns.Mngr
  */
@@ -121,7 +121,7 @@ eYo.driver._p.makeMngr = function (mngrModel) {
   if (this === eYo.driver) {
     return
   }
-  this._p.hasOwnProperty('Dflt') || this.hasOwnProperty('Dflt') || this.makeDflt()
+  this._p.hasOwnProperty('Base') || this.hasOwnProperty('Base') || this.makeBase()
   let Super = this.super.Mngr
   var Mngr = this.makeC9r(Super, mngrModel)
   Mngr.prototype.initDrivers = function () {
@@ -155,7 +155,7 @@ eYo.driver._p.makeDriverC9r = function (key, Super, driverModel) {
  * Returns a driver, based on the given object's constructor name.
  * If the receiver is `eYo.fcfl.Mngr` and the object's constructor name is `Foo.Bar` then the returned driver is an instance of `eYo.fcfl.Foo.Bar`, `eYo.fcfl.Foo` as soon as it is a driver constructor, otherwise it is the all purpose driver.
  * @param {*} object - the object for which a driver is required.
- * @return {eYo.driver.Dflt}
+ * @return {eYo.driver.Base}
  */
 eYo.driver.Mngr_p.getDriver = function (object) {
   var components = object.eyo.name.split('.')
@@ -182,12 +182,12 @@ eYo.driver.Mngr_p.initDrivers = function () {
 }
 
 /**
- * @name {eYo.driver.Dflt}
+ * @name {eYo.driver.Base}
  * Default convenient driver, to be subclassed.
  * @param {Object} owner
  * @property {eYo.driver.Mgt} mngr,  the owning driver manager
  */
-eYo.driver.makeDflt({
+eYo.driver.makeBase({
   properties: {
     mngr: {
       get () {
@@ -223,7 +223,7 @@ eYo.driver._p.makeForwarder = (pttp, key) => {
   }
 }
 
-eYo.view.Dflt.eyo.propertiesMerge({
+eYo.view.Base.eyo.propertiesMerge({
   /**
    * The driver manager shared by all the instances in the app.
    * @type {eYo.driver.Mngr}
@@ -236,7 +236,7 @@ eYo.view.Dflt.eyo.propertiesMerge({
   },
   /**
    * The driver.
-   * @type {eYo.driver.Dflt}
+   * @type {eYo.driver.Base}
    */
   ui_driver: {
     lazy () {

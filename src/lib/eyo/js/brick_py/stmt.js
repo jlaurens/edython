@@ -23,12 +23,32 @@ eYo.forwardDeclare('brick.operator')
  */
 eYo.brick.makeNS(eYo, 'stmt')
 
+eYo.model.allowPaths({
+  [eYo.model.ROOT]: 'left',
+  left: 'check',
+})
+
+eYo.model.allowPaths({
+  [eYo.model.ROOT]: 'right',
+  right: ['check', 'fields'],
+})
+
+eYo.model.allowPaths({
+  [eYo.model.ROOT]: 'head',
+  head: 'check',
+})
+
+eYo.model.allowPaths({
+  [eYo.model.ROOT]: 'foot',
+  foot: 'check'
+})
+
 /**
  * Class for a Delegate, statement brick.
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.makeDflt({
+eYo.stmt.makeBase({
   left /** @suppress {globalThis} */ (type) {
     return this.brick.head || this.brick.foot
     ? [eYo.t3.stmt.comment_stmt]
@@ -70,7 +90,7 @@ eYo.stmt.makeDflt({
   }
 })
 
-eYo.brick.registerAll(eYo.t3.stmt, eYo.stmt.Dflt, true)
+eYo.brick.registerAll(eYo.t3.stmt, eYo.stmt.Base, true)
 
 /**
  * Insert a brick above.

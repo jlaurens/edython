@@ -96,12 +96,12 @@ eYo._p.doMakeC9r = function (ns, key, Super, model) {
     }
   } else {
     // create the constructor
-    var C9r = function () {
+    var C9r = function (...args) {
       // Class
       if (!this) {
-        console.error('BREAK HERE!')
+        console.error('BREAK HERE! C9r')
       }
-      this.init.apply(this, arguments)
+      this.init.call(this, ...args)
     }
     // store the constructor
     if (ns && key.length) {
@@ -157,7 +157,7 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
       model && eYo.throw(`Unexpected model (3): ${model}`)
       model = register
       register = Super
-      Super = eYo.asF(key && this[key]) || this.Dflt
+      Super = eYo.asF(key && this[key]) || this.Base
     }
     if (!eYo.isBool(register)) {
       model && eYo.throw(`Unexpected model (4): ${model}`)
@@ -166,12 +166,12 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
     }
     model = eYo.called(model) || {}
     if (eYo.isStr(key)) {
-      eYo.isNA(Super) && (Super = eYo.asF(key && this[key]) || this.Dflt)
+      eYo.isNA(Super) && (Super = eYo.asF(key && this[key]) || this.Base)
     } else {
       key = Super && Super.eyo && Super.eyo.key || ''
     }
-    if (eYo.isSubclass(this.Dflt, Super)) {
-      Super = this.Dflt
+    if (eYo.isSubclass(this.Base, Super)) {
+      Super = this.Base
     }
     !eYo.isNS(ns) || !eYo.isStr(key) && eYo.throw('Missing key in makeC9rDecorate')
     let C9r = f.call(this, ns, key, Super, model)
@@ -382,13 +382,9 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
    * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
    */
   _p.modelConsolidate = function (model) {
-    Object.keys(model).length && eYo.model.consolidate(model)
+    Object.keys(model).length && eYo.model.expand(model)
   }
 
-  _p.modelConsolidate = function (...args) {
-    eYo.model.consolidate(...args)
-  }
-  
   /**
    * Declare the given model.
    * @param {Object} model - Object, like for |makeC9r|.
@@ -410,9 +406,9 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
             try {
               this.init = eYo.doNothing
               init_m.call(this, () => {
-                this.eyo.prepareInstance(this)
+                this.doPrepare(...args)
                 init_s.call(this, ...args)              
-                this.eyo.initInstance(this)
+                this.doInit(...args)
               }, ...args)
             } finally {
               delete this.dispose
@@ -422,9 +418,9 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
           f = function (...args) {
             try {
               this.init = eYo.doNothing
-              this.eyo.prepareInstance(this)
+              this.doPrepare(...args)
               init_m.call(this, () => {
-                this.eyo.initInstance(this)
+                this.doInit(...args)
               }, ...args)
             } finally {
               delete this.dispose
@@ -435,10 +431,10 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
         f = function (...args) {
           try {
             this.init = eYo.doNothing
-            this.eyo.prepareInstance(this)
+            this.doPrepare(...args)
             init_s.call(this, ...args)
             init_m.call(this, ...args)
-            this.eyo.initInstance(this)
+            this.doInit(this, ...args)
           } finally {
             delete this.dispose
           }
@@ -447,9 +443,9 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
         f = function (...args) {
           try {
             this.init = eYo.doNothing
-            this.eyo.prepareInstance(this)
+            this.doPrepare(...args)
             init_m.call(this, ...args)
-            this.eyo.initInstance(this)
+            this.doInit(this, ...args)
           } finally {
             delete this.dispose
           }
@@ -460,24 +456,24 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
         try {
           this.init = eYo.doNothing
           if (!this.eyo) {
-            console.error('NO EYO')
+            console.error('BREAK HERE! NO EYO')
           }
-          this.eyo.prepareInstance(this)
+          this.doPrepare(...args)
           init_s.call(this, ...args)
-          this.eyo.initInstance(this) 
+          this.doInit(...args) 
         } finally {
           delete this.dispose
         }
       }
     } else {
-      f = function () {
+      f = function (...args) {
         try {
           this.init = eYo.doNothing
           if (!this.eyo) {
             console.error('BREAK HERE!')
           }
-          this.eyo.prepareInstance(this)
-          this.eyo.initInstance(this) 
+          this.doPrepare(...args)
+          this.doInit(...args) 
         } finally {
           delete this.dispose
         }
@@ -764,21 +760,21 @@ eYo._p.makeDlgt = function (ns, key, C9r, model) {
 // make the Dlgt for the namespaces too
 eYo._p.eyo = eYo.makeDlgt('NS', eYo.constructor, {})
 
-// ANCHOR Dflt
+// ANCHOR Base
 {
   /**
-   * Convenient method to create the Dflt class.
+   * Convenient method to create the Base class.
    * @param {Object} [Super] - the ancestor class
    * @param {Object} [model] - the model
    */
-  eYo.c9r._p.makeDflt = function (Super, model) {
-    this.hasOwnProperty('Dflt') && eYo.throw(`${this.name}: Already Dflt`)
+  eYo.c9r._p.makeBase = function (Super, model) {
+    this.hasOwnProperty('Base') && eYo.throw(`${this.name}: Already Base`)
     if (!eYo.isF(Super) || !Super.eyo) {
       model && eYo.throw(`Unexpected model: ${model}`)
       model = eYo.called(Super) || {}
-      Super = this.super && this.super.Dflt || eYo.NA
+      Super = this.super && this.super.Base || eYo.NA
     }
-    let C9r = this.makeC9r(this, 'Dflt', Super, model || {})
+    let C9r = this.makeC9r(this, 'Base', Super, model || {})
     let s = this.parent
     if (s && this.key) {
       s[eYo.do.toTitleCase(this.key)] = C9r
@@ -796,10 +792,31 @@ eYo._p.eyo = eYo.makeDlgt('NS', eYo.constructor, {})
    */
   /**
    * The default class.
-   * @name {eYo.c9r.Dflt}
+   * @name {eYo.c9r.Base}
    * @constructor
    */
-  eYo.c9r.makeDflt()
+  eYo.c9r.makeBase()
+
+  /**
+   * Prepare an instance.
+   * Default implementation forwards to the delegate.
+   * One shot method: any subsequent call is useless.
+   */
+  eYo.c9r.Dflt_p.doPrepare = function (...args) {
+    this.doPrepare = eYo.doNothing
+    this.eyo.prepareInstance(this, ...args)
+  }
+  
+  /**
+   * Prepare an instance.
+   * Default implementation does nothing.
+   * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
+   */
+  eYo.c9r.Dflt_p.doInit = function (...args) {
+    this.doInit = eYo.doNothing
+    this.eyo.initInstance(this, ...args)
+  }
+  
 }
 
 // ANCHOR model

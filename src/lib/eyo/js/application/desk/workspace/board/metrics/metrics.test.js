@@ -43,26 +43,26 @@ describe('Metrics', function () {
     svg.style.transform = `translate(${content.x}px,${content.y}px)`
     for (var i = -1 ; i < 11 ; i++) {
       eYo.svg.newElement('rect', {
-        x: 8 * i * eYo.unit.x,
-        y: 2 * i * eYo.unit.y,
-        width: 8 * eYo.unit.x,
-        height: 2 * eYo.unit.y,
+        x: 8 * i * eYo.geom.X,
+        y: 2 * i * eYo.geom.Y,
+        width: 8 * eYo.geom.X,
+        height: 2 * eYo.geom.Y,
         fill: 'yellow'
       },
       svg)
       eYo.svg.newElement('rect', {
-        x: 8 * (i + 1) * eYo.unit.x,
-        y: 2 * i * eYo.unit.y,
-        width: 8 * eYo.unit.x,
-        height: 2 * eYo.unit.y,
+        x: 8 * (i + 1) * eYo.geom.X,
+        y: 2 * i * eYo.geom.Y,
+        width: 8 * eYo.geom.X,
+        height: 2 * eYo.geom.Y,
         fill: 'green'
       },
       svg)
       eYo.svg.newElement('rect', {
-        x: 8 * i * eYo.unit.x,
-        y: 2 * (i + 1) * eYo.unit.y,
-        width: 8 * eYo.unit.x,
-        height: 2 * eYo.unit.y,
+        x: 8 * i * eYo.geom.X,
+        y: 2 * (i + 1) * eYo.geom.Y,
+        width: 8 * eYo.geom.X,
+        height: 2 * eYo.geom.Y,
         fill: 'red'
       },
       svg)
@@ -99,26 +99,26 @@ describe('Metrics', function () {
     svg.style.transform = `translate(${content.x}px,${content.y}px)`
     for (var i = -1 ; i < 11 ; i++) {
       eYo.svg.newElement('rect', {
-        x: 8 * i * eYo.unit.x,
-        y: 2 * i * eYo.unit.y,
-        width: 8 * eYo.unit.x,
-        height: 2 * eYo.unit.y,
+        x: 8 * i * eYo.geom.X,
+        y: 2 * i * eYo.geom.Y,
+        width: 8 * eYo.geom.X,
+        height: 2 * eYo.geom.Y,
         fill: 'yellow'
       },
       svg)
       eYo.svg.newElement('rect', {
-        x: 8 * (i + 1) * eYo.unit.x,
-        y: 2 * i * eYo.unit.y,
-        width: 8 * eYo.unit.x,
-        height: 2 * eYo.unit.y,
+        x: 8 * (i + 1) * eYo.geom.X,
+        y: 2 * i * eYo.geom.Y,
+        width: 8 * eYo.geom.X,
+        height: 2 * eYo.geom.Y,
         fill: 'green'
       },
       svg)
       eYo.svg.newElement('rect', {
-        x: 8 * i * eYo.unit.x,
-        y: 2 * (i + 1) * eYo.unit.y,
-        width: 8 * eYo.unit.x,
-        height: 2 * eYo.unit.y,
+        x: 8 * i * eYo.geom.X,
+        y: 2 * (i + 1) * eYo.geom.Y,
+        width: 8 * eYo.geom.X,
+        height: 2 * eYo.geom.Y,
         fill: 'red'
       },
       svg)

@@ -1,17 +1,17 @@
 describe('BSM Owned', function () {
   it ('BSM Owned: Basic', function () {
-    chai.assert(eYo.bsm_o3d.Dflt && eYo.bsm_o3d.Dflt.eyo)
+    chai.assert(eYo.bsm_o3d.Base && eYo.bsm_o3d.Base.eyo)
   })
   it ('BSM Owned: new', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.bsm_o3d.Dflt(onr)
+    var o = new eYo.bsm_o3d.Base(onr)
     chai.expect(o.owner).equal(onr)
   })
   it ('BSM Owned: app', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.bsm_o3d.Dflt(onr)
+    var o = new eYo.bsm_o3d.Base(onr)
     chai.expect(o.owner).equal(onr)
     chai.assert(!o.app)
     onr.app = 421
@@ -21,7 +21,7 @@ describe('BSM Owned', function () {
   it ('BSM Owned: owner change', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.bsm_o3d.Dflt(onr)
+    var o = new eYo.bsm_o3d.Base(onr)
     onr.app = 421
     chai.expect(o.app).equal(421)
     onr = new ONR()
@@ -40,7 +40,7 @@ describe('BSM Owned', function () {
   it ('BSM Owned: computed', function () {
     var ONR = function () {}
     var onr = new ONR()
-    var o = new eYo.bsm_o3d.Dflt(onr)
+    var o = new eYo.bsm_o3d.Base(onr)
     chai.expect(o.owner).equal(onr)
     onr.app = {}
     o.appForget()
@@ -66,7 +66,7 @@ describe('BSM Owned', function () {
       }
     })
     var onr1 = new NS.A(onr0)
-    var onr2 = new eYo.bsm_o3d.Dflt()
+    var onr2 = new eYo.bsm_o3d.Base()
     onr1.foo_ = onr2
     chai.assert(!onr0.app)
     chai.assert(!onr1.app)
@@ -85,10 +85,10 @@ describe('BSM Owned', function () {
 
 describe ('Tests: BSM Owned', function () {
   NS = eYo.makeNS()
-  NS.Brick = eYo.brick.Dflt
-  NS.Slot = eYo.slot.Dflt
-  NS.Magnet = eYo.magnet.Dflt
-  eYo.brick = eYo.slot.Dflt = eYo.magnet = eYo.NA
+  NS.Brick = eYo.brick.Base
+  NS.Slot = eYo.slot.Base
+  NS.Magnet = eYo.magnet.Base
+  eYo.brick = eYo.slot.Base = eYo.magnet = eYo.NA
   var ff = k => {
     eYo.bsm_o3d.makeC9r(k, {
       properties: {
@@ -98,27 +98,27 @@ describe ('Tests: BSM Owned', function () {
     ff('brick')
     ff('magnet')
     ff('slot')
-    chai.assert(eYo.brick.Dflt)
-    chai.assert(eYo.magnet.Dflt)
-    chai.assert(eYo.slot.Dflt)
-    chai.assert(eYo.brick.Dflt !== NS.Brick)
-    chai.assert(eYo.slot.Dflt !== NS.Slot)
-    chai.assert(eYo.magnet.Dflt !== NS.Magnet)
-    eYo.brick.Dflt = NS.Brick
-    eYo.slot.Dflt = NS.Slot
-    eYo.magnet.Dflt = NS.Magnet
-    chai.expect(eYo.brick.Dflt).equal(NS.Brick)
-    chai.expect(eYo.slot.Dflt).equal(NS.Slot)
-    chai.expect(eYo.magnet.Dflt).equal(NS.Magnet)
+    chai.assert(eYo.brick.Base)
+    chai.assert(eYo.magnet.Base)
+    chai.assert(eYo.slot.Base)
+    chai.assert(eYo.brick.Base !== NS.Brick)
+    chai.assert(eYo.slot.Base !== NS.Slot)
+    chai.assert(eYo.magnet.Base !== NS.Magnet)
+    eYo.brick.Base = NS.Brick
+    eYo.slot.Base = NS.Slot
+    eYo.magnet.Base = NS.Magnet
+    chai.expect(eYo.brick.Base).equal(NS.Brick)
+    chai.expect(eYo.slot.Base).equal(NS.Slot)
+    chai.expect(eYo.magnet.Base).equal(NS.Magnet)
   }
   it ('BSM Owned: basic', function () {
-    chai.assert(eYo.c9r.Dflt)
+    chai.assert(eYo.c9r.Base)
   })
   it ('BSM Owned: NYI', function () {
     wrapper(() => {
-      var onr = new eYo.brick.Dflt()
+      var onr = new eYo.brick.Base()
       chai.assert(onr)
-      var ond = new eYo.bsm_o3d.Dflt(onr)
+      var ond = new eYo.bsm_o3d.Base(onr)
       chai.assert(ond)
       chai.expect(ond.brick).equal(onr)
       console.warn(ond.brick, ond.slot, ond.magnet)

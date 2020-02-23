@@ -20,11 +20,11 @@
 eYo.o3d.makeNS(eYo, 'view')
 
 /**
- * @name{eYo.view.Dflt}
+ * @name{eYo.view.Base}
  * @constructor
  * Widgets with UI capabilities.
  */
-eYo.view.makeDflt({
+eYo.view.makeBase({
   /**
    * Initializer.
    */
@@ -61,17 +61,17 @@ eYo.view.makeDflt({
 /**
  * Recommanded way to create view instances.
  * @param{Object} owner - and eYo object
- * @param{Object} model - either a `eYo.view.Dflt` instance or an object suitable to create such a view instance.
+ * @param{Object} model - either a `eYo.view.Base` instance or an object suitable to create such a view instance.
  */
 eYo.view._p.new = (owner, model) => {
-  return model instanceof eYo.view.Dflt
+  return model instanceof eYo.view.Base
   ? model
-  : new eYo.view.Dflt(owner, model)
+  : new eYo.view.Base(owner, model)
 }
 
 /**
  * Recommanded way to create view instances.
- * @param{Function} enhancer - A function with signature (owner, model) => eYo.view.Dflt.
+ * @param{Function} enhancer - A function with signature (owner, model) => eYo.view.Base.
  * The actual `eYo.view._p.new` is overriden to call the enhancer first.
  * If the result is not undefined, then it is returned as is.
  * Otherwise, the original method is called.
@@ -82,7 +82,7 @@ eYo.view._p.enhanceNew = (enhancer) => {
   let original = eYo.view._p.new
   eYo.view._p.new = (owner, model) => {
     let ans = enhancer(owner, model)
-    if (ans instanceof eYo.view.Dflt) {
+    if (ans instanceof eYo.view.Base) {
       return ans
     } else if (ans) {
       eYo.throw(`Unexpected enhancer return value: ${ans}`)
@@ -184,7 +184,7 @@ eYo.view.Dflt_p.place = eYo.doNothing
  * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
  */
 eYo.view.Dlgt_p.modelConsolidate = function (...args) {
-  eYo.model.consolidate(...args)
+  eYo.model.expand(...args)
 }
 
 /**
@@ -198,11 +198,11 @@ eYo.view.Dlgt_p.consolidatorMake = function (k, model) {
   let C9r_p = C9r.prototype
   let consolidators = this.consolidators__ || (this.consolidators__ = Object.create(null))
   let kC = k+'Consolidate'
-  C9r_p[kC] = consolidators[k] = model.consolidate
+  C9r_p[kC] = consolidators[k] = model.expand
   ? function () {
     let Super = C9r.SuperC9r_p[kC]
     !!Super && Super.apply(this, arguments)
-    model.consolidate.call(this, arguments)
+    model.expand.call(this, arguments)
     this.ownedForEach(x => {
       let f = x[kC] ; f && f.apply(this, arguments)
     })

@@ -15,7 +15,7 @@ goog.forwardDeclare('goog.dom')
 
 /**
  * Convenient shortcut.
- * @param {eYo.brick.Dflt} brick  The newly created brick.
+ * @param {eYo.brick.Base} brick  The newly created brick.
  * @param {Boolean|String} [group]  eventually set a group.
  */
 eYo.event.fireBrickCreate = function (brick, group) {
@@ -27,7 +27,7 @@ eYo.event.fireBrickCreate = function (brick, group) {
 
 /**
  * Convenient shortcut.
- * @param {eYo.brick.Dflt} brick  The newly created brick.
+ * @param {eYo.brick.Base} brick  The newly created brick.
  */
 eYo.event.fireBrickChange = function (brick, element, name, before, after) {
   if (eYo.event.enabled) {
@@ -37,7 +37,7 @@ eYo.event.fireBrickChange = function (brick, element, name, before, after) {
 
 /**
  * Convenient shortcut.
- * @param {eYo.brick.Dflt} brick  The moved brick.
+ * @param {eYo.brick.Base} brick  The moved brick.
  * @param {Function} move  the move action, signature: (event) -> void
  */
 eYo.event.fireBrickMove = (brick, move) => {
@@ -56,11 +56,11 @@ eYo.event.fireBrickMove = (brick, move) => {
 
 /**
  * Abstract class for a brick event.
- * @param {eYo.brick.Dflt} brick The brick this event corresponds to.
- * @extends {eYo.event.Dflt}
+ * @param {eYo.brick.Base} brick The brick this event corresponds to.
+ * @extends {eYo.event.Base}
  * @constructor
  */
-eYo.event.Dflt.makeInheritedC9r('BrickBase', {
+eYo.event.Base.makeInheritedC9r('BrickBase', {
   init (brick) {
     /**
      * The brick id for the brick this event pertains to
@@ -80,7 +80,7 @@ eYo.event.Dflt.makeInheritedC9r('BrickBase', {
 
 /**
  * Class for a brick change event.
- * @param {eYo.brick.Dflt} brick The changed brick.
+ * @param {eYo.brick.Base} brick The changed brick.
  * @param {string} element One of 'field', 'collapsed', 'disabled', etc.
  * @param {string} [name] Name of slot or field affected, or null.
  * @param {*} before - Previous value of element.
@@ -107,7 +107,7 @@ eYo.event.BrickBase.makeInheritedC9r('BrickChange', {
     },
     /**
      * Merge the receiver with the given event.
-     * @param {eYo.event.Dflt} event - an eYo event
+     * @param {eYo.event.Base} event - an eYo event
      * @return {Boolean} Whether the change did occur.
      */
     merge (lastEvent) {
@@ -166,7 +166,7 @@ eYo.event.BrickChange_p.run = function(redo) {
 
 /**
  * Class for a brick creation event.
- * @param {eYo.brick.Dflt} brick The created brick.
+ * @param {eYo.brick.Base} brick The created brick.
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
@@ -217,7 +217,7 @@ eYo.event.BrickCreate_p.run = function(forward) {
 
 /**
  * Class for a brick deletion event.
- * @param {eYo.brick.Dflt} brick The deleted brick.
+ * @param {eYo.brick.Base} brick The deleted brick.
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
@@ -271,7 +271,7 @@ eYo.event.BrickDelete_p.run = function(forward) {
 
 /**
  * Class for a brick move event.  Created before the move.
- * @param {eYo.brick.Dflt} brick The moved brick.
+ * @param {eYo.brick.Base} brick The moved brick.
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
@@ -295,7 +295,7 @@ eYo.event.BrickBase.makeInheritedC9r('BrickMove', {
     },
     /**
      * Merge the receiver with the given event.
-     * @param {eYo.event.Dflt} event - an eYo event
+     * @param {eYo.event.Base} event - an eYo event
      * @return {Boolean} Whether the change did occur.
      */
     merge (lastEvent) {
@@ -398,7 +398,7 @@ eYo.event.BrickMove_p.run = function(forward) {
     }
   }
 }
-eYo.data.Dflt.eyo.methodsMerge({
+eYo.data.Base.eyo.methodsMerge({
   /**
    * set the value of the property,
    * without validation but with undo and synchronization.

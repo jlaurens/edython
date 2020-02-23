@@ -21,7 +21,7 @@ eYo.require('expr.List')
 eYo.require('expr.primary')
 eYo.require('tooltip')
 
-eYo.require('Library')
+eYo.require('library')
 
 eYo.provide('brick.cmath')
 
@@ -54,7 +54,7 @@ eYo.provide('brick.cmath')
     }
   }
 
-eYo.Library.DATA.basic_cmath__module = [
+eYo.library.DATA.basic_cmath__module = [
   {
     type: eYo.t3.expr.call_expr,
     data: {
@@ -130,7 +130,7 @@ F_k = (name, title) => {
   }
 }
 
-eYo.Library.DATA.Cmath__module = [
+eYo.library.DATA.Cmath__module = [
   {
     type: eYo.t3.expr.call_expr,
     data: {

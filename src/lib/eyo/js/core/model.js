@@ -17,7 +17,9 @@
  * @name {eYo.model}
  * @namespace
  */
-eYo.makeNS('model')
+eYo.makeNS('model', {
+  ROOT: '^$'
+})
 
 /**
  * Whether the argument is a model object once created with `{...}` syntax.
@@ -27,57 +29,75 @@ eYo.isModel = (what) => {
   return what && (what.model__ || eYo.isD(what))
 }
 
-eYo.model.allowed = {
-  ['^$']: [
+/**
+ * A model is an object representing a tree.
+ * Each node is accessed by a path.
+ * If `M` is the root node, the node `M.foo.bar` has path `foo.bar`.
+ * Paths are given as regulr expression to embrace many cases at a time.
+ * Here is a map from paths to a list of allowed keys.
+ * @name {eYo.model.allowed}
+ */
+eYo.model._p.allowed = Object.create(null)
+
+/**
+ * @name{eYo.model.isAllowed}
+ * Allowed keys by path pattern
+ * @param {String} path - Dot separated path components
+ * @param {String} key - Dotless path components
+ * @return {Boolean} Whether the key is authorized with the given path.
+ */
+eYo.model._p.isAllowed = function (path, key) {
+  for (var k in this.allowed) {
+    var re = XRegExp(`^${k}$`)
+    if (re.test(path)) {
+      return this.allowed[k].some(k => XRegExp(`^${k}$`).test(key))
+    }
+  }
+  return false
+}  
+
+/**
+ * Allow a new set of keys.
+ * @param {Map<String,String|Array<String>>} [model]
+ */
+eYo.model._p.allowPaths = function (model) {
+  Object.keys(model).forEach(path => {
+    let keys = model[path]
+    var already = this.allowed[path]
+    already || (already = this.allowed[path] = [])
+    if (eYo.isStr(keys)) {
+      already.push(keys)
+    } else if (eYo.isRA(keys)) {
+      already.splice(-1, 0, ...keys)
+    }
+  })
+}
+
+eYo.model.allowPaths({
+  [eYo.model.ROOT]: [
     'dlgt', 'init', 'deinit', 'dispose', 'ui',
     'xml',
     'out', 'head', 'left', 'right', 'suite', 'foot'
   ],
-  ['^init$']: [
+  init: [
     'begin',
     'end',
   ],
-  ['^dispose$']: [
+  dispose: [
     'begin',
     'end',
   ],
-  ['^xml$']: [
+  xml: [
     'attr', 'types', 'attribute',
   ],
-  ['^ui$']: [
+  ui: [
     'init', 'dispose', 'doInit', 'doDispose', 'initMake', 'disposeMake',
   ],
-}
+})
 
-/**
- * Allow a new set ok keys.
- * @param {String} key - A model's top level key
- * @param {String|Array<String>} [pattern] - Optional pattern for top values, with a model given, defaults to word's pattern when not an array of strings.
- * @param {Map<String, Object>} [model]
- */
-eYo.model._p.allow = function (key, pattern, model) {
-  if (eYo.isRA(pattern)) {
-    model && eYo.throw(`Unexpected model: ${model}`)
-    eYo.model.allowed['^$'].push(key)
-    eYo.mixinR(eYo.model.allowed, {[key]: pattern})
-    return
-  }
-  if (!pattern) {
-    eYo.model.allowed['^$'].push(key)
-    return
-  }
-  if (!eYo.isStr(pattern)) {
-    model && eYo.throw(`Unexpected model: ${model}`)
-    model = pattern
-    pattern = '^\\w+$'
-  }
-  eYo.model.allowed['^$'].push(key)
-  eYo.mixinR(eYo.model.allowed, {[key]: pattern})
-  model && eYo.mixinR(eYo.model.allowed, model)
-}
-
-eYo.model._p.allow('data', {
-  ['^data\\.\\w+$']: [
+eYo.model.allowPaths({
+  [eYo.model.ROOT]: 'data',
+  'data\\.\\w+': [
     'order', // INTEGER
     'all', // TYPE || [TYPE], // last is expected
     'main', // BOOLEAN
@@ -97,13 +117,14 @@ eYo.model._p.allow('data', {
     'noUndo', // true
     'xml', {}
   ],
-  ['^data\\.\\w+\.xml$']: [
+  'data\\.\\w+\.xml': [
     'save', 'load',
   ],
 })
 
-eYo.model._p.allow('slots', {
-  ['^slots\\.\\w+$']: [
+eYo.model.allowPaths({
+  [eYo.model.ROOT]: 'slots',
+  'slots\\.\\w+': [
     'order', // INTEGER,
     'fields', // {},
     'check', // :  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
@@ -119,8 +140,7 @@ eYo.model._p.allow('slots', {
     'xml', // : (() => {} || true) || false||  first expected,
     'plugged', // : eYo.t3.expr.primary,
   ],
-  ['^slots\\.\\w+\.fields$']: '^\\w+$',
-  ['^slots\\.\\w+\.fields\\.\\w+$']: [
+  'slots\\.\\w+\.fields\\.\\w+': [
     'value', // '(',
     'reserved', // : '.',
     'separator', // : true,
@@ -129,103 +149,92 @@ eYo.model._p.allow('slots', {
     'endEditing', // : true,
     'willRender', //  () => {},
   ],
-  ['^slots\\.\\w+\.xml$']: [
+  'slots\\.\\w+\.xml': [
     'accept', //  () => {},
   ],
 })
 
-eYo.model._p.allow('aliases')
+eYo.model.allowPaths({
+  [eYo.model.ROOT]: 'aliases',
+})
 
-eYo.model._p.allow('list', [
-  'check',
-  'presep',
-  'postsep',
-  'ary',
-  'mandatory',
-  'unique',
-  'all',
-  'makeUnique'
-])
+eYo.model.allowPaths({
+  [eYo.model.ROOT]: 'list',
+  list: [
+    'check',
+    'presep',
+    'postsep',
+    'ary',
+    'mandatory',
+    'unique',
+    'all',
+    'makeUnique'
+  ]
+})
 
 /**
- * @name{eYo.model.isAllowed}
- * Allowed keys by path pattern
- * @param {String} path - Dot separated path components
- * @param {String} key - Dotless path components
- * @return {Boolean} Whether the key is authorized with the given path.
+ * Some shortcuts are allowed.
+ * @name {eYo.model.shortcut}
  */
-eYo.model.isAllowed = (path, key) => {
-  for (var k in eYo.model.allowed) {
-    var re = XRegExp(k)
-    if (re.test(path)) {
-      var expected = eYo.model.allowed[k]
-      if (eYo.isStr(expected)) {
-        re = XRegExp(expected)
-        return  re.test(key)  
-      }
-      return expected.includes(key)
+eYo.model._p.shortcut = Object.create(null)
+
+/**
+ * Allow new shortcuts.
+ * @param {Map<String, Function>} [model] - Functions.
+ */
+eYo.model._p.allowShortcuts = function (model) {
+  Object.keys(model).forEach(path => {
+    let shortcut = model[path]
+    eYo.isF(shortcut) || eYo.throw(`Unexpected shortcut handler: ${shortcut}`)
+    let already = this.shortcut[path]
+    if (already) {
+      already.push(shortcut)
+    } else {
+      this.shortcut[path] = [shortcut]
     }
-  }
-  return false
-}  
+  })
+}
 
 /**
  * The real model syntax may be somehow relaxed.
  * The method will turn the model into something strong.
  * @param {Object} model - the tree in which we replace some node by objects
- * @param {Function} handler - a function with signature (path, before): boolean
+ * @param {String} path - Defaults to a void string for the root path.
  */
-eYo.model.consolidate = (model, handler) => {
-  handler || (handler = eYo.model.shortcutsBaseHandler)
-  var do_it = (model, path) => {
-    eYo.isD(model) && Object.keys(model).forEach(k => {
-      handler(model, path, k) || do_it(model[k], path && `${path}.${k}` || k)
-    })
-  }
-  do_it(model, '')
+eYo.model._p.expand = function (model, path = '') {
+  Object.keys(model).forEach(k => {
+    let p = path && `${path}.${k}` || k
+    var M = model[k]
+    if (eYo.isNA(M)) {
+      model[k] = {
+        value: M
+      }
+    } else if (eYo.isD(M)) {
+      Object.keys(this.shortcut).forEach(pattern => {
+        if (XRegExp(`^${pattern}$`).test(p)) {
+          if (this.shortcut[pattern].some(f => {
+            if (!eYo.isF(f)) {
+              console.error('BREAK HERE!!! !eYo.isF(f)')
+            }
+              eYo.isF(f) || eYo.throw(`Missing a function, got ${typeof f} instead: ${f}`)
+            let ans = f(M, p)
+            if (eYo.isINVALID(ans)) {
+              delete model[k]
+              return true
+            } else if (ans) {
+              model[k] = ans
+            }
+          })) {
+            return
+          }
+        }
+      })
+      ;(M = model[k]) && this.expand(M, p)
+    }
+  })
 }
 
-/**
- * Expands a data model.
- * @param {Object} model
- * @param {String} key
- * @return {Object}
- */
-eYo.model.dataHandler = eYo.doNothing
-
-/**
- * Expands a magnet model.
- * @param {Object} model
- * @param {String} key
- * @return {Object}
- */
-eYo.model.magnetHandler = eYo.doNothing
-
-/**
- * Expands a property model.
- * @param {Object} model
- * @return {Object}
- */
-eYo.model.propertyHandler = eYo.doNothing
-
 ;(() => {
-  /*
-   * When a function returning an array is expected.
-   * @param {*} x 
-   */
-  var ensureRAF = (x) => {
-    if (eYo.isRA(x)) {
-      return function () {
-        return x
-      }
-    } else if (eYo.isF(x)) {
-      return x
-    } else {
-      return function () {
-        return [x]
-      }
-    }
-  }
   /**
    * @param {Object} model
    * @param {String} path
@@ -240,7 +249,7 @@ eYo.model.propertyHandler = eYo.doNothing
           eYo.model.magnetHandler(before)
         } else {
           after = {
-            check: ensureRAF(before)
+            check: eYo.toRAF(before)
           }
         }
       }
@@ -255,7 +264,7 @@ eYo.model.propertyHandler = eYo.doNothing
     } else if (['out', 'head', 'left', 'right', 'suite', 'foot'].includes(path)) {
       if (key === 'check') {
         // BRICK_TYPE || [BRICK_TYPE] || () => {}
-        after = ensureRAF(model[key])
+        after = eYo.toRAF(model[key])
       }
     } else if (path === 'data') {
       eYo.model.dataHandler(model, key)
@@ -264,7 +273,7 @@ eYo.model.propertyHandler = eYo.doNothing
     } else if (path === 'list') {
       if (['check', 'unique', 'all'].includes(key)) {
         // BRICK_TYPE || [BRICK_TYPE] || () => {}
-        after = ensureRAF(model[key])
+        after = eYo.toRAF(model[key])
       }
     } else if (key === 'all') {
       var before = model[key]
@@ -324,25 +333,21 @@ eYo.model.inherits = (model, base) => {
 }
 /**
  * Make `model` extend model `base`.
- * @param {Object} model_  a tree of properties
- * @param {Object} from_  a tree of properties
+ * @param {Object} model - a tree of properties
+ * @param {Object} base - a tree of properties
  */
-eYo.model.extends = (model, base) => {
-  var do_it = (m, b, path) => {
-    if (eYo.isD(m) && eYo.isD(b)) {
-      for (var k in b) {
-        if (!eYo.model.isAllowed(path, k)) {
-          console.warn(`Attempting to use ${path}.${k} in a model`)
-          return
-        }
-        if (m[k] === eYo.NA) {
-          var after = b[k]
-          m[k] = eYo.isD(after) ? {} : after
-        }
-        do_it(m[k], b[k], path && `${path}.${k}` || k)
+eYo.model._p.extends = function (m, b, path = '') {
+  if (eYo.isD(m) && eYo.isD(b)) {
+    for (var k in b) {
+      if (!this.isAllowed(path, k)) {
+        console.warn(`Attempting to use ${path}.${k} in a model`)
+        return
       }
+      if (m[k] === eYo.NA) {
+        var after = b[k]
+        m[k] = eYo.isD(after) ? {} : after
+      }
+      this.extends(m[k], b[k], path && `${path}.${k}` || k)
     }
   }
-  do_it(model, base, '')
-  return
 }

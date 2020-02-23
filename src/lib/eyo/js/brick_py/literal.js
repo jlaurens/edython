@@ -135,7 +135,7 @@ eYo.expr.literal.makeInheritedC9r('shortliteral', {
         eYo.t3.expr.shortbytesliteral
       ],
       init: eYo.t3.expr.shortstringliteral,
-      synchronize: /** @this{eYo.data.Dflt} */ function (after) {
+      synchronize: /** @this{eYo.data.Base} */ function (after) {
         // synchronize the placeholder text
         var p = this.Content_p
         if (!p || !p.length) {
@@ -147,11 +147,11 @@ eYo.expr.literal.makeInheritedC9r('shortliteral', {
     delimiter: {
       all: ["'", '"'],
       init: '"',
-      didChange (builtin) /** @this{eYo.data.Dflt} */ {
+      didChange (builtin) /** @this{eYo.data.Base} */ {
         builtin()
         this.brick.value_d.consolidate()
       },
-      synchronize (builtin) /** @this{eYo.data.Dflt} */ {
+      synchronize (builtin) /** @this{eYo.data.Base} */ {
         builtin()
         var f4s = this.brick.fields
         f4s.start.text = f4s.end.text = this.toText()
@@ -163,16 +163,16 @@ eYo.expr.literal.makeInheritedC9r('shortliteral', {
         'fr', 'Fr', 'fR', 'FR', 'rf', 'rF', 'Rf', 'RF',
         'b', 'B', 'br', 'Br', 'bR', 'BR', 'rb', 'rB', 'Rb', 'RB'],
       init: '',
-      didChange (builtin) /** @suppress {globalThis} */ { /** @this{eYo.data.Dflt} */
+      didChange (builtin) /** @suppress {globalThis} */ { /** @this{eYo.data.Base} */
       builtin()
         this.brick.value_d.consolidate()
       },
-      validate (after) { /** @this{eYo.data.Dflt} */
+      validate (after) { /** @this{eYo.data.Base} */
         return !goog.isDef(this.brick.Content_p) || this.brick.validateComponents({
           prefix: after}
         ) ? after : eYo.INVALID
       },
-      synchronize (builtin, after) { /** @this{eYo.data.Dflt} */ 
+      synchronize (builtin, after) { /** @this{eYo.data.Base} */ 
         this.incog = !after || !after.length
         builtin()
       },
@@ -198,10 +198,10 @@ eYo.expr.literal.makeInheritedC9r('shortliteral', {
     value: {
       init: "''",
       main: true,
-      validate (after) { /** @this{eYo.data.Dflt} */
+      validate (after) { /** @this{eYo.data.Base} */
         return eYo.isStr(after)? after: eYo.INVALID
       },
-      didChange (builtin, after) /** @suppress {globalThis} */ {/** @this{eYo.data.Dflt} */ 
+      didChange (builtin, after) /** @suppress {globalThis} */ {/** @this{eYo.data.Base} */ 
       builtin()
         var b3k = this.brick
         var F = (xre, type, formatted) => {
@@ -311,7 +311,7 @@ eYo.expr.shortliteral.prototype.validateComponents = function(kvargs) {
 
 /**
  * Get the content for the menu item.
- * @param {eYo.brick.Dflt} brick The brick.
+ * @param {eYo.brick.Base} brick The brick.
  * @param {string} op op is the operator
  * @private
  */
@@ -377,7 +377,7 @@ eYo.expr.literal.literalPopulateContextMenuFirst_ = function (mngr) {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.Dflt} brick The brick.
+ * @param {eYo.brick.Base} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */

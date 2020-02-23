@@ -115,7 +115,7 @@ eYo.xml.domToText = function (dom) {
 
 /**
  * Encode a brick subtree as XML with where coordinates. Eliminates the use of the Blockly's eponym method.
- * @param {eYo.brick.Dflt} brick The root brick to encode.
+ * @param {eYo.brick.Base} brick The root brick to encode.
  * @param {Object} [opt]  See the eponym parameter in `eYo.xml.brickToDom`.
  * @return {!Element} Tree of XML elements.
  */
@@ -195,7 +195,7 @@ eYo.xml.domToBoard = function (xml, owner) {
     if (xmlChild && xmlChild.nodeType === Node.ELEMENT_NODE) {
       if ((brick = eYo.xml.domToBrick(xmlChild, owner))) {
         newBlockIds.push(brick.id)
-        var xy = new eYo.geom.Where()
+        var xy = new eYo.geom.Point()
         xy.x = xmlChild.hasAttribute('x')
           ? parseInt(xmlChild.getAttribute('x'), 10) : 10
         xy.y = xmlChild.hasAttribute('y')
@@ -314,7 +314,7 @@ eYo.brick.newReady = (() => {
  * 5) solid bricks are named after their type which eyo:foo.
  * These brick types correspond to an alternate in the python grammar.
  * The persistence storage may remember these bricks as eyo:foo instead of eyo:foo.
- * @param {eYo.brick.Dflt} brick The root brick to encode.
+ * @param {eYo.brick.Base} brick The root brick to encode.
  * @param {Object} [opt]  Options `noId` is True if the encoder should skip the brick id, `noNext` is True if the encoder should skip the next brick.
  * @return {!Element} Tree of XML elements, possibly null.
  */
@@ -390,7 +390,7 @@ eYo.require('expr.primary')
 /**
  * Convert the brick's value to a text dom element.
  * For edython.
- * @param {eYo.brick.Dflt} brick The brick to be converted.
+ * @param {eYo.brick.Base} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element
  */
@@ -406,7 +406,7 @@ eYo.xml.text.toDom = function (brick, element) {
 /**
  * Convert the brick from a dom element.
  * For edython.
- * @param {eYo.brick.Dflt} brick The brick to be converted.
+ * @param {eYo.brick.Base} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  * @return a dom element
  */
@@ -494,7 +494,7 @@ eYo.brick.Dflt_p.saveSlots = function (element, opt) {
 /**
  * Convert the brick's data from a dom element.
  * For edython.
- * @param {eYo.brick.Dflt} brick The brick to be converted.
+ * @param {eYo.brick.Base} brick The brick to be converted.
  * @param {Element} xml the persistent element.
  */
 eYo.xml.data.fromDom = function (brick, element) {
@@ -525,7 +525,7 @@ eYo.xml.data.fromDom = function (brick, element) {
  * 4) brick.constructor (no inheritance here too)
  * The default implementation does nothing if there's no controller
  * to take control.
- * @param {eYo.brick.Dflt} brick The root brick to encode.
+ * @param {eYo.brick.Base} brick The root brick to encode.
  * @param {element} dom element to encode in
  * @param {Object} [opt]  See the eponym option in `eYo.xml.brickToDom`.
  * @return {!Element} Tree of XML elements, possibly null.
@@ -635,7 +635,7 @@ eYo.xml.registerAllTags = function () {
  *
  * @param {String} string a serialized dom element.
  * @param {*} owner board or brick.
- * @return {?eYo.brick.Dflt} The root brick created, if any.
+ * @return {?eYo.brick.Base} The root brick created, if any.
  */
 eYo.xml.stringToBrick = function (string, owner) {
   var brick
@@ -740,8 +740,8 @@ eYo.xml.Recover.prototype.resitWrap = function (dom, try_f, finally_f) {
  * and parse the children separately with `recoverDom`
  *
  * @param {Element} dom XML dom element.
- * @param {eYo.board | eYo.brick.Dflt} owner either the board or a brick.
- * @return {!eYo.brick.Dflt} The root brick created.
+ * @param {eYo.board | eYo.brick.Base} owner either the board or a brick.
+ * @return {!eYo.brick.Base} The root brick created.
  */
 eYo.xml.Recover.prototype.domToBrick = function (dom, owner) {
   var board = owner.board
@@ -850,7 +850,7 @@ eYo.xml.Recover.prototype.domToBrick = function (dom, owner) {
  *
  * @param {Element} xmlBrick XML brick element.
  * @param {*} owner The board or the owning brick.
- * @return {!eYo.brick.Dflt} The root brick created.
+ * @return {!eYo.brick.Base} The root brick created.
  */
 eYo.xml.domToBrick = (() => {
   var domToBrick = function (dom, owner) {
@@ -953,7 +953,7 @@ goog.exportSymbol('Xml.domToBrick', eYo.xml.domToBrick)
  * 3) brick.constructor.xml (no inheritance)
  * 4) brick.constructor (no inheritance here too)
  * The default implementation does nothing if there's no controller
- * @param {eYo.brick.Dflt} brick  The root brick to decode.
+ * @param {eYo.brick.Base} brick  The root brick to decode.
  * @param {element} dom element to encode in
  * @return {?Boolean} Used?
  */
@@ -1302,8 +1302,8 @@ eYo.xml.call.domToComplete = function (element, owner) {
  * Compare the bricks by comparing their xml string representation.
  * Usefull for testing.
  * For edython.
- * @param {eYo.brick.Dflt} lhs
- * @param {eYo.brick.Dflt} rhs
+ * @param {eYo.brick.Base} lhs
+ * @param {eYo.brick.Base} rhs
  * @return {Number} classical values -1, 0 or 1.
  */
 eYo.xml.compareBricks = function (lhs, rhs) {

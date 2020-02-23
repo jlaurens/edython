@@ -123,17 +123,17 @@ eYo.model.dataHandler = (model, key) => {
  * Base property constructor.
  * The bounds between the data and the arguments are immutable.
  * For edython.
- * @param {eYo.brick.Dflt} brick The object owning the data.
+ * @param {eYo.brick.Base} brick The object owning the data.
  * @param {string} key name of the data.
  * @param {Object} model contains methods and properties.
  * It is shared by all data controllers belonging to the same kind
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.data.makeDflt({
+eYo.data.makeBase({
   init (brick, key, model) {
     brick || eYo.throw(`${this.eyo.name}: Missing brick`)
-    key || eYo.throw(`${this.eyo.name}: Missing key in makeDflt`)
+    key || eYo.throw(`${this.eyo.name}: Missing key in makeBase`)
     model || eYo.throw(`${this.eyo.name}: Missing model`)
     this.reentrant_ = {}
     this.key_ = key
@@ -817,12 +817,19 @@ eYo.data.makeDflt({
    * Should be overriden by the model.
    * Reentrant management here of the model action.
    */
-  _p.consolidate = function () {
+  _p.consolidate = function (...args) {
     if (this.change.level) {
       return
     }
-    var f = eYo.decorate.reentrant_method(this, 'model_consolidate', this.model.consolidate)
-    f && (f.apply(this, arguments))
+    let f = this.model.consolidate
+    if (f) {
+      try {
+        this.consolidate = eYo.doNothing
+        f.call(this, ...args)
+      } finally {
+        delete this.consolidate
+      }
+    }
   }
 
   /**

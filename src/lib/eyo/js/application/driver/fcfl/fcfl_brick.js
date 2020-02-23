@@ -18,7 +18,7 @@ eYo.require('brick')
  */
 eYo.fcfl.makeDriverC9r('Brick')
 
-eYo.brick.Dflt.eyo.propertiesMerge({
+eYo.brick.Base.eyo.propertiesMerge({
   ui () {
     return Object.create(null)
   },
@@ -31,12 +31,12 @@ eYo.brick.Dflt.eyo.propertiesMerge({
   },
   /**
    * Position of the receiver in the board.
-   * @type {eYo.geom.Where}
+   * @type {eYo.geom.Point}
    * @readonly
    */
   xy: {
     value () {
-      return new eYo.geom.Where()
+      return new eYo.geom.Point()
     },
     copy: true,
   },
@@ -84,7 +84,7 @@ eYo.brick.Dflt.eyo.propertiesMerge({
   },
   BUMP_DELAY: 250,
 })
-eYo.brick.Dflt.eyo.aliasesMerge({
+eYo.brick.Base.eyo.aliasesMerge({
   'xy': 'where',
 })
 
@@ -426,8 +426,8 @@ eYo.fcfl.Brick._p.willShortRender_ = function (brick, recorder) {
 /**
  * Translates the brick, forwards to the ui driver after managing the snap formal argument.
  * Contrary to |moveBy| there is no undo management here.
- * @param {eYo.brick.Dflt} brick - The brick to move.
- * @param {eYo.geom.Where} xy - The xy coordinate of the translation in board units.
+ * @param {eYo.brick.Base} brick - The brick to move.
+ * @param {eYo.geom.Point} xy - The xy coordinate of the translation in board units.
  * @param {Boolean} snap Whether we should snap to the grid.
  */
 eYo.fcfl.Brick._p.moveTo = function(brick, xy, snap) {
@@ -898,7 +898,7 @@ eYo.fcfl.Brick._p.drawSharp_ = function (io) {
 /**
  * Draw/hide the sharp.
  * Default implementation does nothing.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  * @param {Boolean} visible - the brick the driver acts on
  * @private
  */
@@ -1283,7 +1283,7 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
       }
     }
   } else {
-    if (m4t.targetIsMissing) {
+    if (!m4t.target) {
       brick.ui.someTargetIsMissing = true
     }
     if (m4t.bindField && m4t.bindField.visible) {
@@ -1366,7 +1366,7 @@ eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'updateShape')
 /**
  * Update the shape of the brick.
  * To be subclassed.
- * @param {eYo.brick.Dflt} brick - The brick of which the shape would need an update
+ * @param {eYo.brick.Base} brick - The brick of which the shape would need an update
  * @protected
  */
 eYo.fcfl.Brick._p.updateShape = eYo.doNothing
@@ -1374,7 +1374,7 @@ eYo.fcfl.Brick._p.updateShape = eYo.doNothing
 /**
  * Hide the brick.
  * Forwards to the driver.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  */
 eYo.fcfl.Brick._p.hide = function (brick) {
   this.displayedSet(brick, false)
@@ -1383,7 +1383,7 @@ eYo.fcfl.Brick._p.hide = function (brick) {
 /**
  * The default implementation forwards to the driver.
  * This must take place while the brick is still in a consistent state.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  */
 eYo.fcfl.Brick._p.disposeEffect = function (brick) {
   missing implementation
@@ -1392,7 +1392,7 @@ eYo.fcfl.Brick._p.disposeEffect = function (brick) {
 /**
  * Show the given menu.
  * The default implementation forwards to the driver.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  * @param {*} menu
  */
 eYo.fcfl.Brick._p.showMenu = function (brick, menu) {
@@ -1404,10 +1404,10 @@ eYo.fcfl.Brick._p.showMenu = function (brick, menu) {
 /**
  * Did connect some brick's connection to another connection.
  * When connecting locked bricks, select the receiver.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
- * @param {eYo.magnet.Dflt} m4t what has been connected in the brick
- * @param {eYo.magnet.Dflt} oldTargetM4t what was previously connected in the brick
- * @param {eYo.magnet.Dflt} targetOldM4t what was previously connected to the new targetConnection
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.magnet.Base} m4t what has been connected in the brick
+ * @param {eYo.magnet.Base} oldTargetM4t what was previously connected in the brick
+ * @param {eYo.magnet.Base} targetOldM4t what was previously connected to the new targetConnection
  */
 eYo.fcfl.Brick._p.didConnect = function (brick, m4t, oldTargetM4t, targetOldM4t) {
   if (m4t.isOutput) {
@@ -1417,9 +1417,9 @@ eYo.fcfl.Brick._p.didConnect = function (brick, m4t, oldTargetM4t, targetOldM4t)
 
 /**
  * Converse of the preceeding.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
- * @param {eYo.magnet.Dflt} m4t what has been connected in the brick
- * @param {eYo.magnet.Dflt} oldTargetM4t what was previously connected in the brick
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.magnet.Base} m4t what has been connected in the brick
+ * @param {eYo.magnet.Base} oldTargetM4t what was previously connected in the brick
  */
 eYo.fcfl.Brick._p.didDisconnect = function (brick, m4t, oldTargetM4t) {
   if (m4t.isOutput) {
@@ -1433,7 +1433,7 @@ eYo.fcfl.Brick._p.didDisconnect = function (brick, m4t, oldTargetM4t) {
  * If the brick is on the board, (0, 0) is the origin of the board
  * coordinate system.
  * This does not change with board scale.
- * @return {!eYo.geom.Where} Object with .x and .y properties in
+ * @return {!eYo.geom.Point} Object with .x and .y properties in
  *     board coordinates.
  */
 eYo.fcls.Brick._p.whereInParent = eYo.do.NYI
@@ -1449,7 +1449,7 @@ eYo.fcls.Brick._p.xyInDesk = eYo.do.NYI
  * As the shape is not the same comparing to Blockly's default,
  * the bounding rect changes too.
  * Coordinate system: board coordinates.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  * @return {!eYo.geom.Rect}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
@@ -1461,7 +1461,7 @@ eYo.fcfl.Brick._p.boundingRect = function (brick) {
 }
 /**
  * The size
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  */
 eYo.fcfl.Brick._p.size = function (brick) {
   return brick.size
@@ -1470,7 +1470,7 @@ eYo.fcfl.Brick._p.size = function (brick) {
  * Returns the coordinates of a bounding box describing the dimensions of this
  * brick.
  * Coordinate system: board coordinates.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  * @return {!goog.math.Box}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
@@ -1481,7 +1481,7 @@ eYo.fcfl.Brick._p.boundingBox = function (brick) {
 /**
  * Schedule snapping to grid and bumping neighbours to occur after a brief
  * delay.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  */
 eYo.fcfl.Brick._p.scheduleSnapAndBump = function(brick) {
   // Ensure that any snap and bump are part of this move's event group.
@@ -1490,17 +1490,17 @@ eYo.fcfl.Brick._p.scheduleSnapAndBump = function(brick) {
     eYo.event.group = group
     this.snapToGrid(brick)
     eYo.event.group = false
-  }, eYo.brick.Dflt.BUMP_DELAY / 2)
+  }, eYo.brick.Base.BUMP_DELAY / 2)
   setTimeout(() => {
     eYo.event.group = group
     this.bumpNeighbours_(brick)
     eYo.event.group = false
-  }, eYo.brick.Dflt.BUMP_DELAY)
+  }, eYo.brick.Base.BUMP_DELAY)
 }
 
 /**
  * Snap the given brick to the nearest grid point.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  */
 eYo.fcfl.Brick._p.snapToGrid = function(brick) {
   if (!brick.board || brick.board.dragging || brick.parent || brick.isInFlyout) {
@@ -1513,7 +1513,7 @@ eYo.fcfl.Brick._p.snapToGrid = function(brick) {
 /**
  * Bump unconnected blocks out of alignment.  Two blocks which aren't actually
  * connected should not coincidentally line up on screen.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  * @private
  */
 eYo.fcfl.Brick._p.bumpNeighbours_ = function(brick) {
@@ -1553,7 +1553,7 @@ eYo.fcfl.Brick._p.bumpNeighbours_ = function(brick) {
  * The brick is already rendered once.
  *
  * For edython.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  * @param {Object} e in general a mouse down event
  * @return {Object|eYo.NA|null}
  */
@@ -1579,9 +1579,9 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
             return targetM4t
           }
           R = new eYo.geom.Rect(
-            magnet.x + eYo.unit.x / 2,
+            magnet.x + eYo.geom.X / 2,
             magnet.y,
-            target.width - eYo.unit.x,
+            target.width - eYo.geom.X,
             target.height
           )
           if (xy.in(R)) {
@@ -1592,21 +1592,21 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
           R = new eYo.geom.Rect(
             magnet.x,
             magnet.y + eYo.padding.t,
-            magnet.w * eYo.unit.x,
+            magnet.w * eYo.geom.X,
             eYo.font.height
           )
         } else if (magnet.optional_ || magnet.s7r_) {
           R = new eYo.geom.Rect(
-            magnet.x - eYo.unit.x / 4,
+            magnet.x - eYo.geom.X / 4,
             magnet.y + eYo.padding.t,
-            1.5 * eYo.unit.x,
+            1.5 * eYo.geom.X,
             eYo.font.height
           )
         } else {
           R = new eYo.geom.Rect(
-            magnet.x + eYo.unit.x / 4,
+            magnet.x + eYo.geom.X / 4,
             magnet.y + eYo.padding.t,
-            (magnet.w - 1 / 2) * eYo.unit.x,
+            (magnet.w - 1 / 2) * eYo.geom.X,
             eYo.font.height
           )
         }
@@ -1640,7 +1640,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
     }
   }
   if ((magnet = brick.foot_m) && !magnet.hidden) {
-    if (rect.height > eYo.unit.y) { // Not the cleanest design
+    if (rect.height > eYo.geom.Y) { // Not the cleanest design
       R = new eYo.geom.Rect(
         magnet.x,
         magnet.y - 1.5 * eYo.padding.B - eYo.style.path.width,
@@ -1662,10 +1662,10 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   if ((magnet = brick.suite_m) && !magnet.hidden) {
     var r = eYo.style.path.Hilighted.width
     R = new eYo.geom.Rect(
-      magnet.x + eYo.unit.x / 2 - r,
+      magnet.x + eYo.geom.X / 2 - r,
       magnet.y + r,
       2 * r,
-      eYo.unit.y - 2 * r // R U sure?
+      eYo.geom.Y - 2 * r // R U sure?
     )
     if (xy.in(R)) {
       return magnet
@@ -1674,10 +1674,10 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   if ((magnet = brick.left_m) && !magnet.hidden) {
     var r = eYo.style.path.Hilighted.width
     R = new eYo.geom.Rect(
-      magnet.x + eYo.unit.x / 2 - r,
+      magnet.x + eYo.geom.X / 2 - r,
       magnet.y + r,
       2 * r,
-      eYo.unit.y - 2 * r // R U sure?
+      eYo.geom.Y - 2 * r // R U sure?
     )
     if (xy.in(R)) {
       return magnet
@@ -1685,10 +1685,10 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   }
   if ((magnet = brick.right_m) && !magnet.hidden) {
     R = new eYo.geom.Rect(
-      magnet.x + eYo.unit.x / 2 - r,
+      magnet.x + eYo.geom.X / 2 - r,
       magnet.y + r,
       2 * r,
-      eYo.unit.y - 2 * r // R U sure?
+      eYo.geom.Y - 2 * r // R U sure?
     )
     if (xy.in(R)) {
       return magnet
@@ -1698,7 +1698,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
 
 /**
  * Update the cursor over this block by adding or removing a class.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  * @param {boolean} enable True if the delete cursor should be shown, false
  *     otherwise.
  */
@@ -1707,7 +1707,7 @@ eYo.fcfl.Brick._p.deleteStyleSet = eYo.doNothing
 /**
  * Hilight the given connection.
  * The default implementation forwards to the driver.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  */
 eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'deleteStyleSet')
 
@@ -1726,7 +1726,7 @@ eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'deleteStyleSet')
  * is better suited to listen to mouse events.
  * Actually, both are registered which implies that
  * handlers must filter out reentrancy.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  * @param {Event} e Mouse down event or touch start event.
  * @private
  */
@@ -1776,7 +1776,7 @@ eYo.fcfl.Brick._p.on_mousedown = function (brick, e) {
  * When a connection is selected, one of the ancestor bricks is also selected.
  * Then, the higlighted path of the source bricks is not the outline of the brick
  * but the shape of the connection as it shows when bricks are moved close enough.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  * @param {Event} e Mouse down event or touch start event.
  */
 eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
@@ -1850,7 +1850,7 @@ eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
 
 /**
  * Show the context menu for this brick.
- * @param {eYo.brick.Dflt} brick - the brick the driver acts on
+ * @param {eYo.brick.Base} brick - the brick the driver acts on
  * @param {Event} e Mouse event.
  * @private
  */
@@ -1864,7 +1864,7 @@ eYo.fcfl.Brick._p.showContextMenu_ = function (brick, e) {
 
 /**
  * Whether the given brick can draw.
- * @param {eYo.brick.Dflt} brick  the brick the driver acts on
+ * @param {eYo.brick.Base} brick  the brick the driver acts on
  * @private
  */
 eYo.fcls.Brick_p.canDraw = function (brick) {
@@ -1874,6 +1874,6 @@ eYo.fcls.Brick_p.canDraw = function (brick) {
 /**
  * Place the brick in its board.
  * Default implementation does nothing.
- * @param {eYo.brick.Dflt} brick The brick to place.
+ * @param {eYo.brick.Base} brick The brick to place.
  */
 eYo.fcfl.Brick_p.place = eYo.doNothing

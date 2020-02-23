@@ -83,7 +83,7 @@ Object.defineProperties(eYo.BrickDragger.prototype, {
   },
   xyNew_: {
     get () {
-      return new eYo.geom.Where(this.xyStart_).forward(this.xyDelta)
+      return new eYo.geom.Point(this.xyStart_).forward(this.xyDelta)
     }
   }
 })
@@ -131,7 +131,7 @@ eYo.BrickDragger.prototype.dispose = function() {
  * When the center of the brick will gout out the visible area,
  * we scroll the brick board to keep it back.
  * @param {eYo.event.Motion} motion  The motion initiating the eventual drag.
- * @return {eYo.brick.Dflt}  The target brick of the drag event, if any.
+ * @return {eYo.brick.Base}  The target brick of the drag event, if any.
  */
 eYo.BrickDragger.prototype.start = function(motion) {
   if (this.brick_) {
@@ -173,7 +173,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
   }
   /**
    * The top brick in the stack that is being dragged.
-   * @type {!eYo.brick.Dflt}
+   * @type {!eYo.brick.Base}
    * @private
    */
   this.brick_ = targetBrick.focusOn()
@@ -197,7 +197,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
    * The connection that would connect to this.target_ if this brick
    * were released immediately.
    * Updated on every mouse move.
-   * @type {eYo.magnet.Dflt}
+   * @type {eYo.magnet.Base}
    * @private
    */
   this.magnet_ = null
@@ -205,7 +205,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
   /**
    * The target magnet that this brick would connect to if released immediately.
    * Updated on every mouse move.
-   * @type {eYo.magnet.Dflt}
+   * @type {eYo.magnet.Base}
    * @private
    */
   this.target_ = null
@@ -239,7 +239,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
   /**
    * The location of the top left corner of the dragging brick at the beginning
    * of the drag in board coordinates.
-   * @type {!eYo.geom.Where}
+   * @type {!eYo.geom.Point}
    * @private
    */
   this.xyStart_ = this.brick_.xy
@@ -278,7 +278,7 @@ eYo.BrickDragger.prototype.start = function(motion) {
  * If the answer is `{x: -15, y: 0}`, we just have to scroll the board
  * 15 units to the right and the brick is visible.
  * For edython.
- * @param {eYo.brick.Dflt} brick The new location of the receiver, the actual location when eYo.NA.
+ * @param {eYo.brick.Base} brick The new location of the receiver, the actual location when eYo.NA.
  * @param {Object} [newLoc] The new location of the receiver, the actual location when eYo.NA.
  * @return {{x: number, y: number}|eYo.NA}
  */
@@ -324,7 +324,7 @@ eYo.BrickDragger.prototype.getOffsetFromVisible = function (brick ,newLoc) {
 /**
  * Execute a step of brick dragging, based on the given event.  Update the
  * display accordingly.
- * @param {eYo.geom.Where} delta How far the pointer has
+ * @param {eYo.geom.Point} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  */
 eYo.BrickDragger.prototype.drag = function() {
@@ -353,7 +353,7 @@ eYo.BrickDragger.prototype.drag = function() {
 /**
  * Finish a brick drag and put the brick back on the board.
  * @param {Event} e The most recent move event.
- * @param {eYo.geom.Where} delta How far the pointer has
+ * @param {eYo.geom.Point} delta How far the pointer has
  *     moved from the position at the start of the drag, in pixel units.
  */
 eYo.BrickDragger.prototype.end = (() => {

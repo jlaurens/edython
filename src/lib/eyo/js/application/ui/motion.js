@@ -110,9 +110,9 @@ Object.defineProperties(eYo.event._p, {
  * @constructor
  * Class for one motion.
  * There should be only one active motion at a time.
- * Actually, the topmost object, eYo.app.Dflt, is managing this motion.
+ * Actually, the topmost object, eYo.app.Base, is managing this motion.
  * 
- * @param {eYo.app.Dflt} application - The top application where the event occured.
+ * @param {eYo.app.Base} application - The top application where the event occured.
  * @constructor
  */
 eYo.event.makeC9r('Motion', {
@@ -152,13 +152,13 @@ eYo.event.makeC9r('Motion', {
      * The position of the mouse when the motion started.
      * Units are css pixels, with (0, 0) at the top left of
      * the browser window (mouseEvent clientX/Y).
-     * @type {eYo.geom.Where}
+     * @type {eYo.geom.Point}
      */
     xyStart: eYo.NA,
     /**
      * How far the mouse has moved during this drag, in pixel units.
      * (0, 0) is at this.xyStart_.
-     * @type {eYo.geom.Where}
+     * @type {eYo.geom.Point}
      * @private
      */
     xyDelta: eYo.NA,
@@ -222,7 +222,7 @@ eYo.event.makeC9r('Motion', {
     /**
      * The field that the motion started on,
      * or null if it did not start on a field.
-     * @type {eYo.brick.Dflt}
+     * @type {eYo.brick.Base}
      * @private
      */
     field: {
@@ -234,7 +234,7 @@ eYo.event.makeC9r('Motion', {
      * The brick that the motion started on,
      * including the field's brick if it started on a field,
      * or null if it did not start on a brick.
-     * @type {eYo.brick.Dflt}
+     * @type {eYo.brick.Base}
      * @private
      */
     brick: {
@@ -251,7 +251,7 @@ eYo.event.makeC9r('Motion', {
      * If the motion started in the flyout,
      * this is the root brick of the brick group
      * that was clicked or dragged.
-     * @type {eYo.brick.Dflt}
+     * @type {eYo.brick.Base}
      * @private
      */
     targetBrick: {
@@ -308,12 +308,12 @@ eYo.event.makeC9r('Motion', {
     },
     /**
      * Position of the receiver's event in the board.
-     * @type {eYo.geom.Where}
+     * @type {eYo.geom.Point}
      * @readonly
      */
     where: {
       get () {
-        return new eYo.geom.Where(this.event)
+        return new eYo.geom.Point(this.event)
       },
     },
   },
@@ -608,8 +608,8 @@ eYo.event.Motion.eyo.methodsMerge({
         var touch1st = e.touches().identifiedTouch(this.touchIDs_[0])
         var touch2nd = list.item(0)
         this.touchIDs_.push(touch2nd.identifier)
-        var xy1st = new eYo.geom.Where(touch1st)
-        var xy2nd = new eYo.geom.Where(touch2nd)
+        var xy1st = new eYo.geom.Point(touch1st)
+        var xy2nd = new eYo.geom.Point(touch2nd)
         this.startDistance_ = xy1st.distance(xy2nd) // Screen coordinates ?
         // Simply ignore any supplemental touch:
         this.captureStart = eYo.doNothing

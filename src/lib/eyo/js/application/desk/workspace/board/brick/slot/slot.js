@@ -20,7 +20,7 @@ eYo.bsm_o3d.makeNS(eYo, 'slot')
 eYo.require('do')
 eYo.require('decorate')
 
-eYo.forwardDeclare('geom.Where')
+eYo.forwardDeclare('geom.Point')
 
 eYo.forwardDeclare('field')
 eYo.forwardDeclare('magnet')
@@ -52,12 +52,12 @@ goog.forwardDeclare('goog.dom');
   // - wrap input
   // - insert input
   // It may contain label fields
- * @param {eYo.brick.Dflt} brick  The owner is a brick.
+ * @param {eYo.brick.Base} brick  The owner is a brick.
  * @param {string} key  One of the keys in `slots` section of the brick model.
  * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.slot.makeDflt({
+eYo.slot.makeBase({
   init (brick, key, model) {
     brick || eYo.throw('Missing slot owner brick')
     key || eYo.throw('Missing slot key')
@@ -74,7 +74,7 @@ eYo.slot.makeDflt({
     }
     model.setup_ || setupModel(model)
     if (!eYo.isNA(model.check)) {
-      this.magnet_ = new eYo.magnet.Dflt(this, eYo.magnet.IN, model)
+      this.magnet_ = eYo.magnet.new(this, eYo.magnet.IN, model)
       if (model.wrap) {
         this.magnet_.wrapped = model.wrap   
       } else if (model.promise) {
@@ -90,7 +90,7 @@ eYo.slot.makeDflt({
   properties: {
     magnet: eYo.NA,
     /**
-     * @property {eYo.data.Dflt} data  Bound data.
+     * @property {eYo.data.Base} data  Bound data.
      */
     data: eYo.NA,
     visible: true,
@@ -133,7 +133,7 @@ eYo.slot.makeDflt({
     requiredFromModel: eYo.NA,
     /**
      * @readonly
-     * @property {eYo.brick.Dflt} brick  the immediate brick in which this is contained
+     * @property {eYo.brick.Base} brick  the immediate brick in which this is contained
      */
     brick: {
       get () {
@@ -142,7 +142,7 @@ eYo.slot.makeDflt({
     },
     /**
      * @readonly
-     * @property {eYo.brick.Dflt} brick  the immediate brick in which this is contained
+     * @property {eYo.brick.Base} brick  the immediate brick in which this is contained
      */
     targetBrick: {
       get () {
@@ -245,7 +245,7 @@ eYo.slot.makeDflt({
     },
     where: {
       value () {
-        return new eYo.geom.Where()
+        return new eYo.geom.Point()
       },
       copy: true,
     },
@@ -586,9 +586,9 @@ eYo.slot.Dflt_p.fieldForEach = function (helper) {
 /**
  * Connect the brick or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
  * The slot corresponds to a wrapped list block.
- * @param {eYo.brick | eYo.magnet.Dflt} bm  either a brick or a magnet.
+ * @param {eYo.brick | eYo.magnet.Base} bm  either a brick or a magnet.
  * @param {String} [key] an input key. When not given the last free input is used.
- * @return {?eYo.magnet.Dflt} the eventual magnet target that was connected.
+ * @return {?eYo.magnet.Base} the eventual magnet target that was connected.
  */
 eYo.slot.Dflt_p.listConnect = function (bm, key) {
   var t9k = this.targetBrick
@@ -614,8 +614,8 @@ eYo.slot.Dflt_p.listConnect = function (bm, key) {
 /**
  * Connect to the target.
  * For edython.
- * @param {eYo.brick | eYo.magnet.Dflt} bm  The target is either a brick or another magnet.
- * @return {?eYo.magnet.Dflt} the eventual target magnet
+ * @param {eYo.brick | eYo.magnet.Base} bm  The target is either a brick or another magnet.
+ * @return {?eYo.magnet.Base} the eventual target magnet
  */
 eYo.slot.Dflt_p.connect = function (bm) {
   var m4t = this.magnet

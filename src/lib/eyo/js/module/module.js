@@ -18,14 +18,15 @@ eYo.require('do.register')
  * @namespace
  */
 eYo.o4t.makeNS(eYo, 'module')
+
 console.error('NYI')
 /**
- * @name {eYo.module.Dflt}
+ * @name {eYo.module.Base}
  * @param {String} name - the name of this constructor
  * @param {String} url - the url of the module (in the python documentation)
  * @constructor
  */
-eYo.module.makeDflt({
+eYo.module.makeBase({
   init(name, url) {
     this.name_ = name
     this.url_ = url
@@ -62,11 +63,11 @@ eYo.module.makeDflt({
 
 /**
  * Item constuctor.
- * This should not inherit from `eYo.module.Dflt`. 
+ * This should not inherit from `eYo.module.Base` but from `eYo.o4t.Base`. 
  * @name{eYo.module.Item}
  * @param {Objec} item_model
  */
-eYo.o4t.Dflt.makeInheritedC9r(eYo.module, 'Item', {
+eYo.o4t.makeC9r(eYo.module, 'Item', {
   init (item_model) {
     Object.keys(item_model).forEach(key => {
       Object.defineProperty(
@@ -155,19 +156,26 @@ eYo.module.Item || eYo.throw('MISSING eYo.module.Item')
 
 eYo.module._p.makeItem = function () {
   this === eYo.module && eYo.throw('Only derived modules can make Items')
-  var Item = eYo.module.Item.makeInheritedC9r(this, 'Item')
-  let _p = Item.prototype
-  /**
-  * module
-  */
-  _p.module = this
-
+  var Item = this.makeC9r('Item', this.Item, {
+    properties: {
+      url: eYo.descriptorR(function () {
+        return this.href
+          ? this.module.URL + this.href
+          : this.module.URL
+      }),
+    },
+  })
+  let _p = Item.eyo.C9r_p
   Object.defineProperties(_p, {
-    url: eYo.descriptorR(function () {
-      return this.href
-        ? this.module.url + this.href
-        : this.module.url
-    })
+    /**
+     * module
+     */
+    module: {
+      get: () => {
+        return this
+      },
+      set: eYo.noSetter(),
+    },
   })
   return Item
 }
@@ -233,7 +241,7 @@ eYo.do.register.add(eYo.module, 'module')
 /**
  * Each item has a link to the module it belongs to.
  */
-eYo.module.Item_p.module = new eYo.module.Dflt()
+eYo.module.Item_p.module = new eYo.module.Base()
 
 /**
  * Collect here all the types

@@ -35,10 +35,10 @@ eYo.svg.BrickDragSurface = function(container) {
   var svg = dom.svg = Object.create(null)
   var root = svg.root_ = eYo.svg.newElementSvg(container, 'eyo-brick-drag-surface')
   var x = eYo.svg.newElement('rect', {
-    x: eYo.unit.x,
-    y: eYo.unit.y,
-    width: 10 * eYo.unit.x,
-    height: 3 * eYo.unit.y,
+    x: eYo.geom.X,
+    y: eYo.geom.Y,
+    width: 10 * eYo.geom.X,
+    height: 3 * eYo.geom.Y,
     class: 'eyo-background-drag-surface'
   }, root)
   x.setAttribute('fill', 'yellow')
@@ -48,7 +48,7 @@ eYo.svg.BrickDragSurface = function(container) {
   svg.canvas_ = eYo.svg.newElement('g', {
     class: 'eyo-brick-canvas'
   }, g)
-  this.where_ = new eYo.geom.Where()
+  this.where_ = new eYo.geom.Point()
 }
 
 /**
@@ -97,7 +97,7 @@ Object.defineProperties(eYo.svg.BrickDragSurface.prototype, {
    * Cached value for the translation of the drag surface.
    * This translation is in pixel units, because the scale is applied to the
    * drag group rather than the top-level SVG.
-   * @type {eYo.geom.Where}
+   * @type {eYo.geom.Point}
    * @private
    */
   where: {
@@ -120,7 +120,7 @@ Object.defineProperties(eYo.svg.BrickDragSurface.prototype, {
   /**
    * Reports the surface translation in scaled board coordinates.
    * Use this when finishing a drag to return blocks to the correct position.
-   * @return {!eYo.geom.Where} Current translation of the surface.
+   * @return {!eYo.geom.Point} Current translation of the surface.
    */
   translation: {
     get () {
@@ -140,7 +140,7 @@ Object.defineProperties(eYo.svg.BrickDragSurface.prototype, {
 /**
  * Set the SVG brick's group on the drag surface's group and show the surface.
  * Set the size of the svg drag surface equal to the one of the brick's board. Make both canvases transformed similarly.
- * @param {eYo.brick.Dflt} brick  A top block with no parent.
+ * @param {eYo.brick.Base} brick  A top block with no parent.
  */
 eYo.svg.BrickDragSurface.prototype.start = function(draggerBrick) {
   this.dragger_ = draggerBrick
@@ -162,7 +162,7 @@ eYo.svg.BrickDragSurface.prototype.start = function(draggerBrick) {
   // appendChild removes the group from its previous parent node
   canvas.appendChild(brick.dom.svg.group_)
   svg.root_.style.display = 'block'
-  this.where = new eYo.geom.Where()
+  this.where = new eYo.geom.Point()
 }
 
 eYo.temp.i = 0
@@ -239,7 +239,7 @@ Object.defineProperties(eYo.svg.BoardDragSurface.prototype, {
   /**
    * Reports the surface translation in scaled board coordinates.
    * Use this when finishing a drag to return bricks to the correct position.
-   * @type {!eYo.geom.Where} Current translation of the surface
+   * @type {!eYo.geom.Point} Current translation of the surface
    */
   translation: {
     get () {
@@ -282,7 +282,7 @@ eYo.svg.BoardDragSurface.prototype.start = function(dragger, width, height) {
  * We translate the drag surface instead of the blocks inside the surface
  * so that the browser avoids repainting the SVG.
  * Because of this, the drag coordinates must be adjusted by scale.
- * @param {eYo.geom.Where} xy Translation for the entire surface
+ * @param {eYo.geom.Point} xy Translation for the entire surface
  */
 eYo.svg.BoardDragSurface.prototype.moveTo = function(xy) {
   // This is a work-around to prevent the bricks from rendering

@@ -19,7 +19,7 @@ describe('Expression shape', function () {
       d: eYo.shape.definitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',
-      transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`
+      transform: `translate(${c * eYo.geom.X},${l * eYo.geom.Y})`
     }, eYo.app.Board.dom.Svg.Canvas_)
   }
   it('column', function() {
@@ -47,7 +47,7 @@ describe('Statement shape', function () {
       d: eYo.shape.definitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',
-      transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`
+      transform: `translate(${c * eYo.geom.X},${l * eYo.geom.Y})`
     }, eYo.app.Board.dom.Svg.Canvas_)
   }
   it('column', function() {
@@ -81,7 +81,7 @@ describe('Group shape', function () {
       d: eYo.shape.definitionWithBrick(b),
       stroke: 'firebrick',
       fill: 'aliceblue',
-      transform: `translate(${c * eYo.unit.x},${l * eYo.unit.y})`
+      transform: `translate(${c * eYo.geom.X},${l * eYo.geom.Y})`
     }, eYo.app.Board.dom.Svg.Canvas_)
   }
   it('column', function() {

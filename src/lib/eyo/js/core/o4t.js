@@ -11,6 +11,11 @@
  */
 'use strict'
 
+eYo.model.allowPaths({
+  [eYo.model.ROOT]: 'CONST',
+  CONST: '[A-Z_]+'
+})
+
 /**
  * @name {eYo.o4t}
  * @namespace
@@ -18,32 +23,30 @@
 eYo.c9r.makeNS(eYo, 'o4t')
 
 /**
- * @name {eYo.o4t.Dflt}
+ * @name {eYo.o4t.Base}
  * @constructor
  */
-eYo.o4t.makeDflt({
+eYo.o4t.makeBase({
 /**
  * Prepare the delegate prototype.
  */
   dlgt (ns, key, C9r, model) {
     this.properties__ = Object.create(null)
-    if (C9r && (C9r = C9r.SuperC9r)) {
-      this.keys_p__ = new Set(C9r.eyo.keys_p__)
-    } else {
-      this.keys_p__ = new Set()
-    }
   }
 })
 
 /**
  * Initialize an instance with given property models.
- * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
+ * @param {Object} instance -  namespace or an instance of a subclass of the `C9r` of the receiver
  * @param {*} properties - a properties model
+ * @param {Array<String>} keys_p - A list of keys
  */
-eYo.o4t._p.initProperties = function (object, properties) {
+eYo.o4t._p.initProperties = function (object, properties, keys_p) {
   if (!properties) {
     return
   }
+  eYo.model.expand(properties, 'properties')
+  var _p = object._p || object.eyo.C9r_p // either a namespace or an instance
   let todo = eYo.copyRA(Object.keys(properties))
   let done = []
   let again = []
@@ -52,7 +55,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
     var k
     if ((k = todo.pop())) {
       let model = properties[k]
-      if (model && model.after) {
+      if (model.after) {
         if (eYo.isStr(model.after)) {
           if (!done.includes(model.after)) {
             again.push(k)
@@ -63,24 +66,28 @@ eYo.o4t._p.initProperties = function (object, properties) {
           continue
         }
       }
-      if (!eYo.isD(model)) {
-        model = properties[k] = {
-          value: model,
-        }
-      }
-      let k_p = k + '_p'
-      if (!object.hasOwnProperty(k_p)) {
+      if (model.source) {
+        object.eyo.aliasDeclare(model.source, k)
+      } else {
+        let k_p = k + '_p'
         let p = eYo.p6y.new(object, k, model)
+        if (object.hasOwnProperty(k_p)) {
+          console.error(`BREAK HERE!!! ALREADY object/${k_p}`)
+        } else if (k === 'data') {
+          console.error(`BREAK HERE!!! WILL _p/${k}`)
+        }
         Object.defineProperties(object, {
           [k_p]: eYo.descriptorR(function () {
             return p
           }),
         })
         object[k_p] || eYo.throw('Missing property')
-      }
-      let _p = Object.getPrototypeOf(object)
-      if (object.eyo && !_p.hasOwnProperty(k)) {
-        object.eyo.keys_p__ && object.eyo.keys_p__.add(k_p)
+        keys_p && keys_p.push(k_p) // keys are now properly ordered
+        if (_p.hasOwnProperty(k)) {
+          console.error(`BREAK HERE!!! ALREADY _p/${k}`)
+        } else if (k === 'data') {
+          console.error(`BREAK HERE!!! WILL _p/${k}`)
+        }
         Object.defineProperties(_p, {
           [k]: eYo.descriptorR(function () {
             if (!this[k_p]) {
@@ -105,7 +112,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
       todo = again
       again = []
     } else {
-      again.length && eYo.throw(`Cycling properties in ${this.eyo.name}: ${again}`)
+      again.length && eYo.throw(`Cycling/Missing properties in ${this.eyo.name}: ${again}`)
       break
     }
   }
@@ -158,11 +165,24 @@ eYo.o4t._p.initProperties = function (object, properties) {
    * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
    */
   _p.prepareInstance = function (object) {
-    var ns = this.ns
-    if (!ns || !ns.initProperties) {
-      ns = eYo.o4t
+    if (this.keys_p__) {
+      this.keys_p__.forEach(k_p => {
+        let k = k_p.substring(0, k_p.length-2)
+        let p = eYo.p6y.new(object, k, this.properties[k])
+        Object.defineProperties(object, {
+          [k_p]: eYo.descriptorR(function () {
+            return p
+          }),
+        })
+        object[k_p] || eYo.throw('Missing property')
+      })
+    } else {
+      var ns = this.ns
+      if (!ns || !ns.initProperties) {
+        ns = eYo.o4t
+      }
+      ns.initProperties(object, this.properties, this.keys_p__ = [])
     }
-    ns.initProperties(object, this.properties)
     let eyo = this.super
     eyo && eyo.prepareInstance(object)
   }
@@ -190,7 +210,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
   _p.disposeInstance = function (object, ...params) {
-    Object.keys(this.properties__).forEach(k => {
+    Object.keys(this.properties).forEach(k => {
       let x = object[k + '_p']
       x.dispose(...params)
     })
@@ -198,24 +218,24 @@ eYo.o4t._p.initProperties = function (object, properties) {
   
   /**
    * Declare the given alias.
-   * @param {String} original
+   * @param {String} source
    * @param {String} alias
    */
-  _p.deepAliasDeclare = function (key, original, alias) {
+  _p.deepAliasDeclare = function (key, source, alias) {
     let key_p = key + '_p'
-    let original_p = original + '_p'
+    let source_p = source + '_p'
     let get = function () {
-      return this[key_p].value__[original_p].value
+      return this[key_p].value__[source_p].value
     }
     Object.defineProperties(this.C9r_p, {
       [alias + '_p']: eYo.descriptorR(function () {
-        return this[key_p].value__[original_p]
+        return this[key_p].value__[source_p]
       }),
       [alias]: eYo.descriptorR(get),
       [alias + '_']: {
         get: get,
         set (after) {
-          this[key_p].value__[original_p].value_ = after
+          this[key_p].value__[source_p].value_ = after
         },
       },
     })
@@ -223,28 +243,32 @@ eYo.o4t._p.initProperties = function (object, properties) {
   
   /**
    * Declare the given alias.
-   * @param {String} original
+   * @param {Array<String>} components
    * @param {String} alias
    */
-  _p.aliasDeclare = function (original, alias) {
-    let components = original.split('.')
+  _p.aliasDeclare = function (components, alias) {
+    // let components = source.split('.')
     if (components.length === 2) {
       this.deepAliasDeclare(components[0], components[1], alias)
       return
     }
-    let original_p = original + '_p'
+    let source_p = components[0] + '_p'
     let get = function () {
-      return this[original_p].value
+      return this[source_p].value
+    }
+    let alias_p = alias + '_p'
+    if (this.C9r_p.hasOwnProperty(alias_p)) {
+      console.error(`ALREADY ${alias_p} : BREAK HERE!`)
     }
     Object.defineProperties(this.C9r_p, {
-      [alias + '_p']: eYo.descriptorR(function () {
-        return this[original_p]
+      [alias_p]: eYo.descriptorR(function () {
+        return this[source_p]
       }),
       [alias]: eYo.descriptorR(get),
       [alias + '_']: {
         get: get,
         set (after) {
-          this[original_p].value_ = after
+          this[source_p].value_ = after
         },
       },  
     })
@@ -253,21 +277,26 @@ eYo.o4t._p.initProperties = function (object, properties) {
   /**
    * Declare the given aliases.
    * Used to declare synonyms.
-   * @param {Map<String, String>} model - Object, map alias -> source.
+   * @param {Map<String, String|Array<String>>} model - Object, map source -> alias.
    */
-  _p.aliasesMerge = function (model) {
-    Object.keys(model).forEach(k => {
-      let components = k.split('.')
-      let alias = model[k]
-      let declare = components.length === 2
-      ? alias => this.deepAliasDeclare(components[0], components[1], alias)
-      : alias => this.aliasDeclare(k, alias)
-      if (eYo.isRA(alias)) {
-        alias.forEach(alias => declare(alias))
+  _p.aliasesMerge = function (aliases) {
+    let d = Object.create(null)
+    Object.keys(aliases).forEach(source => {
+      let components = source.split('.')
+      let d8r = {
+        source: components,
+        after: components[0],
+      }
+      let a = aliases[source]
+      if (eYo.isRA(a)) {
+        a.forEach(v => {
+          d[v] = d8r
+        })
       } else {
-        declare(alias)
+        d[a] = d8r
       }
     })
+    this.propertiesMerge(d)
   }
   
   /**
@@ -277,6 +306,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
   _p.modelMerge = function (model) {
     model.properties && this.propertiesMerge(model.properties)
     model.aliases && this.aliasesMerge(model.aliases)
+    let aliases = model.aliases
     eYo.o4t.super.Dlgt_p.modelMerge.call(this, model)
   }
   
@@ -292,7 +322,7 @@ eYo.o4t._p.initProperties = function (object, properties) {
     C9r_s || eYo.throw('Only subclasses may have a consolidator !')
     let consolidators = this.consolidators__ || (this.consolidators__ = Object.create(null))
     let kC = k+'Consolidate'
-    let consolidate_m = model.consolidate
+    let consolidate_m = model.expand
     let consolidate_s = C9r_s[kC]
     C9r_p[kC] = consolidators[k] = consolidate_m
     ? consolidate_s

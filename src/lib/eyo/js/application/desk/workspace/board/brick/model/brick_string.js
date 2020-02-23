@@ -18,12 +18,12 @@ eYo.require('msg')
 eYo.require('stmt')
 eYo.require('tooltip')
 
-eYo.require('Library')
+eYo.require('library')
 eYo.provide('brick.string')
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.Dflt} brick The brick.
+ * @param {eYo.brick.Base} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -77,7 +77,7 @@ eYo.provide('brick.string')
     template: 21,
     'capwords': 22
   */
-eYo.Library.DATA.Basic_string__module = [
+eYo.library.DATA.Basic_string__module = [
   {
     type: eYo.t3.stmt.import_stmt,
     variant_p: eYo.key.FROM_MODULE_IMPORT_STAR,
@@ -143,7 +143,7 @@ eYo.Library.DATA.Basic_string__module = [
     }
   }
 
-eYo.Library.DATA.String__module = [
+eYo.library.DATA.String__module = [
   {
     type: eYo.t3.stmt.import_stmt,
     variant_p: eYo.key.IMPORT,

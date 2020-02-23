@@ -21,7 +21,7 @@ eYo.require('expr.List')
 eYo.require('expr.primary')
 eYo.require('tooltip')
 
-eYo.require('Library')
+eYo.require('library')
 eYo.provide('brick.fractions')
 
 /*
@@ -63,7 +63,7 @@ eYo.provide('brick.fractions')
     }
   }
 
-eYo.Library.DATA.Basic_fractions__module = [
+eYo.library.DATA.Basic_fractions__module = [
   {
     type: eYo.t3.stmt.import_stmt,
     variant_p: eYo.key.FROM_MODULE_IMPORT_STAR,
@@ -100,7 +100,7 @@ F = function (name, title) {
   }
 }
 
-eYo.Library.DATA.fractions__module = [
+eYo.library.DATA.fractions__module = [
   {
     type: eYo.t3.stmt.import_stmt,
     variant_p: eYo.key.IMPORT,

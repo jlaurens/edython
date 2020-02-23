@@ -33,20 +33,20 @@ eYo.o3d.makeNS(eYo, 'bsm_o3d')
 /**
  * Class for a basic object indirectly owned by a brick.
  * 
- * @name {eYo.bsm_o3d.Dflt}
+ * @name {eYo.bsm_o3d.Base}
  * @constructor
- * @param {eYo.brick|eYo.slot.Dflt|eYo.magnet.Dflt} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
+ * @param {eYo.brick|eYo.slot.Base|eYo.magnet.Base} owner  the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
  * @readonly
  * @property {eYo.brick.UI} ui  The ui object used for rendering.
  * @readonly
- * @property {eYo.brick.Dflt} brick  The brick.
+ * @property {eYo.brick.Base} brick  The brick.
  * @readonly
- * @property {eYo.slot.Dflt} slot  The slot.
+ * @property {eYo.slot.Base} slot  The slot.
  * @readonly
- * @property {eYo.magnet.Dflt} magnet  The magnet.
+ * @property {eYo.magnet.Base} magnet  The magnet.
  */
 
-eYo.bsm_o3d.makeDflt({
+eYo.bsm_o3d.makeBase({
   properties: {
     ui: {
       get () {
@@ -59,19 +59,19 @@ eYo.bsm_o3d.makeDflt({
   },
 })
 
-!!eYo.bsm_o3d.Dflt && !!eYo.bsm_o3d.Dflt_p || eYo.assert('MISSED/FAILURE...')
+!!eYo.bsm_o3d.Base && !!eYo.bsm_o3d.Dflt_p || eYo.assert('MISSED/FAILURE...')
 
 eYo.bsm_o3d.Dflt_p.ownerDidChange = function (before, after) {
   let inherited = eYo.bsm_o3d.Dflt_s.ownerDidChange
   inherited && inherited.call(this, before, after)
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA
-  if (after instanceof eYo.slot.Dflt) {
+  if (after instanceof eYo.slot.Base) {
     this.slot_ = after
     this.brick_ = after.brick
-  } else if (after instanceof eYo.magnet.Dflt) {
+  } else if (after instanceof eYo.magnet.Base) {
     this.magnet_ = after
     this.brick_ = after.brick
-  } else if (after instanceof eYo.brick.Dflt) {
+  } else if (after instanceof eYo.brick.Base) {
     this.brick_ = after
   }
 }

@@ -60,7 +60,7 @@ eYo.focus.makeC9r('Main', {
     },
     /**
      * The brick that has current focus, if any
-     * @type {?eYo.brick.Dflt}
+     * @type {?eYo.brick.Base}
      */
     brick: {
       get () {
@@ -90,7 +90,7 @@ eYo.focus.makeC9r('Main', {
     },
     /**
      * The magnet that has current focus, if any
-     * @type {!eYo.magnet.Dflt}
+     * @type {!eYo.magnet.Base}
      */
     magnet: {
       get () {
@@ -144,7 +144,7 @@ eYo.focus.makeC9r('Mngr', {
   properties: {
     /**
      * The owning board.
-     * @type {eYo.board.Dflt}
+     * @type {eYo.board.Base}
      */
     board () {
       return this.owner__
@@ -154,7 +154,7 @@ eYo.focus.makeC9r('Mngr', {
     },
     /**
      * Focus only on wrappers.
-     * @type{eYo.brick.Dflt}
+     * @type{eYo.brick.Base}
      */
     brick: {
       validate (after) {
@@ -190,7 +190,7 @@ eYo.focus.makeC9r('Mngr', {
     },
     /**
      * Takes care of consistency between the magnet and the brick.
-     * @type{eYo.magnet.Dflt}
+     * @type{eYo.magnet.Base}
      */
     magnet: {
       willChange() {
@@ -300,7 +300,7 @@ eYo.focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
   }
 }
 
-eYo.o3d.Dflt.eyo.propertiesMerge({
+eYo.o3d.Base.eyo.propertiesMerge({
   focus_main: {
     get () {
       this.app.focus_main
@@ -313,7 +313,7 @@ eYo.o3d.Dflt.eyo.propertiesMerge({
   },
 })
 
-eYo.brick.Dflt.eyo.propertiesMerge({
+eYo.brick.Base.eyo.propertiesMerge({
   hasFocus: {
     get() {
       return this === this.focus_mngr.brick
@@ -324,7 +324,7 @@ eYo.brick.Dflt.eyo.propertiesMerge({
   },
 })
 
-eYo.magnet.Dflt.eyo.propertiesMerge({
+eYo.magnet.Base.eyo.propertiesMerge({
   hasFocus: {
     get() {
       return this === this.focus_mngr.magnet
@@ -335,7 +335,7 @@ eYo.magnet.Dflt.eyo.propertiesMerge({
   },
 })
 
-eYo.field.Dflt.eyo.propertiesMerge({
+eYo.field.Base.eyo.propertiesMerge({
   hasFocus: {
     get() {
       return this === this.focus_mngr.field

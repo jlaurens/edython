@@ -34,10 +34,10 @@ goog.forwardDeclare('goog.math')
  * The flyout contains the flyout board.
  * There is also a board used to drag bricks around.
  * That makes at least 4 different boards.
- * @param {eYo.view.Desk|eYo.Workspace|eYo.section.Dflt} owner.
+ * @param {eYo.view.Desk|eYo.Workspace|eYo.section.Base} owner.
  * @constructor
  */
-eYo.board.makeDflt({
+eYo.board.makeBase({
   properties: {
     /**
      * The render status of a board.
@@ -49,7 +49,7 @@ eYo.board.makeDflt({
     /**
      * List of currently highlighted bricks.  Brick highlighting is often used to
      * visually mark bricks currently being executed.
-     * @type {Array<eYo.brick.Dflt>}
+     * @type {Array<eYo.brick.Base>}
      * @private
      */
     highlightedBricks: {
@@ -165,7 +165,7 @@ eYo.board.makeDflt({
      * Return the position of the board origin relative to the application.
      * The board origin is where a brick would render at position (0, 0).
      * It is not the upper left corner of the main window due to various offsets.
-     * @return {!eYo.geom.Where} Offset in pixels.
+     * @return {!eYo.geom.Point} Offset in pixels.
      */
     originInApplication: {
       get () {
@@ -175,7 +175,7 @@ eYo.board.makeDflt({
     /**
      * the top bricks of the board.
      * Returns a copy or the internal array.
-     * @type{Array<eYo.brick.Dflt>}
+     * @type{Array<eYo.brick.Base>}
      */
     topBricks: {
       get () {
@@ -184,7 +184,7 @@ eYo.board.makeDflt({
     },
     /**
      * the ordered top bricks of the board.
-     * @type{Array<eYo.brick.Dflt>}
+     * @type{Array<eYo.brick.Base>}
      */
     orderedTopBricks: {
       get () {
@@ -193,7 +193,7 @@ eYo.board.makeDflt({
     },
     /**
      * the main bricks of the board.
-     * @type{Array<eYo.brick.Dflt>}
+     * @type{Array<eYo.brick.Base>}
      */
     mainBricks: {
       get () {
@@ -279,7 +279,7 @@ eYo.board.makeC9r('Main', {
   properties: {
     board: {
       value () {
-        return new eYo.board.Dflt(this, {
+        return new eYo.board.Base(this, {
           backgroundClass: 'eyo-board-dragger-background'
         })
       },
@@ -316,7 +316,7 @@ eYo.board.makeC9r('Main', {
      */
     isDragger: {
       get () {
-        return this.owner__ instanceof eYo.board.Dflt
+        return this.owner__ instanceof eYo.board.Base
       },
     },
     /**
@@ -507,7 +507,7 @@ eYo.board.Main_p.clear = function() {
  * @param {string} type - The type form `eYo.t3`.
  * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @return {!eYo.brick.Dflt} The created brick.
+ * @return {!eYo.brick.Base} The created brick.
  */
 eYo.board.Dflt_p.newBrick = function (type, opt_id) {
   var C9r = eYo.c9r.forType(type)
@@ -539,7 +539,7 @@ eYo.board.Dflt_p.removeChangeListener = function(func) {
  * Find the brick on this board with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of brick to find.
- * @return {eYo.brick.Dflt} The sought after brick or null if not found.
+ * @return {eYo.brick.Base} The sought after brick or null if not found.
  */
 eYo.board.Dflt_p.getBrickById = eYo.board.Dflt_p.getBrickById = function(id) {
   return this.list_.getBrickById(id)
@@ -590,7 +590,7 @@ eYo.board.Dflt_p.resizesEnabled_ = true
  * Last known position of the page scroll.
  * This is used to determine whether we have recalculated screen coordinate
  * stuff since the page scrolled.
- * @type {!eYo.geom.Where}
+ * @type {!eYo.geom.Point}
  * @private
  */
 eYo.board.Dflt_p.lastPageScroll_ = null;
@@ -639,12 +639,12 @@ eYo.board.Dflt_p.resizePort = function() {
   // Start with the minimal rectangle enclosing all the blocks.
   var port = this.bricksBoundingRect
   // add room for the draft
-  var z = -3 * eYo.unit.x
+  var z = -3 * eYo.geom.X
   if (port.left > z) {
     port.left = z
   }
   // add room for line numbering
-  this.numbering && (port.left -= 2 * eYo.unit.x)
+  this.numbering && (port.left -= 2 * eYo.geom.X)
   // Add room for the whole visible rectangle.
   var view = metrics_.view
   // remove the room for both scrollers
@@ -665,7 +665,7 @@ eYo.board.Dflt_p.resizePort = function() {
   if (port.bottom < view.bottom) {
     port.bottom = view.bottom
   }
-  z = -eYo.unit.y
+  z = -eYo.geom.Y
   if (port.top > z) {
     port.top = z
   }
@@ -731,7 +731,7 @@ eYo.board.Dflt_p.move = function() {
 
 /**
  * Move the receiver to new coordinates.
- * @param {eYo.geom.Where} xy Translation.
+ * @param {eYo.geom.Point} xy Translation.
  */
 eYo.board.Dflt_p.moveTo = function(xy) {
   console.log('moveTo', xy)
@@ -893,7 +893,7 @@ eYo.board.Dflt_p.inDeleteArea = function(motion) {
 /**
  * Start tracking a drag of an object on this board.
  * @param {Event} e Mouse down event.
- * @param {eYo.geom.Where} xy Starting location of object.
+ * @param {eYo.geom.Point} xy Starting location of object.
  */
 eYo.board.Dflt_p.eventWhere = function(e) {
   return this.ui_driver_mngr.eventWhere(this, e)
@@ -1028,7 +1028,7 @@ eYo.board.Dflt_p.markFocused = function() {
 
 /**
  * Zooming the bricks given the center with zooming in or out.
- * @param {eYo.geom.Where | Event} center coordinate of center.
+ * @param {eYo.geom.Point | Event} center coordinate of center.
  * @param {number} amount Amount of zooming
  *                        (negative zooms out and positive zooms in).
  */
@@ -1051,7 +1051,7 @@ eYo.board.Dflt_p.zoom = function(center, amount) {
   }
   this.scale *= scaleChange
   if (goog.isDef(center.clientX)) {
-    center = new eYo.geom.Where(center)
+    center = new eYo.geom.Point(center)
   }
   this.ui_driver_mngr.zoom(this, center, scaleChange)
 }
@@ -1211,14 +1211,14 @@ eYo.board.Dflt_p.logAllConnections = function (comment) {
 
 /**
  * Convert a coordinate object from pixels to board units.
- * @param {eYo.geom.Where} pixelCoord  A coordinate with x and y values
+ * @param {eYo.geom.Point} pixelCoord  A coordinate with x and y values
  *     in css pixel units.
- * @return {!eYo.geom.Where} The input coordinate divided by the board
+ * @return {!eYo.geom.Point} The input coordinate divided by the board
  *     scale.
  * @private
  */
 eYo.board.Dflt_p.fromPixelUnit = function(xy) {
-  return new eYo.geom.Where(xy).unscale(this.scale)
+  return new eYo.geom.Point(xy).unscale(this.scale)
 }
 
 ;(() => {
@@ -1296,7 +1296,7 @@ eYo.board.Dflt_p.fromUTF8ByteArray = function (bytes) {
 
 /**
  * Add a brick to the board.
- * @param {eYo.brick.Dflt} brick
+ * @param {eYo.brick.Base} brick
  * @param {String} opt_id
  */
 eYo.board.Dflt_p.addBrick = function (brick, opt_id) {
@@ -1310,7 +1310,7 @@ eYo.board.Dflt_p.addBrick = function (brick, opt_id) {
 
 /**
  * Remove a brick from the board.
- * @param {eYo.brick.Dflt} brick
+ * @param {eYo.brick.Base} brick
  * @param {Function} [f] - to be executed after ech brick is removed
  */
 eYo.board.Dflt_p.removeBrick = function (brick, f) {
@@ -1448,7 +1448,7 @@ eYo.board.Dflt_p.scrollBrickTopLeft = function(id) {
 
 /**
  * Fire a change event.
- * @param {eYo.event.Dflt} event Event to fire.
+ * @param {eYo.event.Base} event Event to fire.
  */
 eYo.board.Dflt_p.eventDidFireChange = function(event) {
   let task = () => {
@@ -1461,7 +1461,7 @@ eYo.board.Dflt_p.eventDidFireChange = function(event) {
   }
 }
 
-eYo.o3d.Dflt.eyo.propertiesMerge({
+eYo.o3d.Base.eyo.propertiesMerge({
   board: {
     get () {
       this.owner.board

@@ -14,7 +14,7 @@
     sounds : false,
     oneBasedIndex : true,
   }
-  eYo.APP = new eYo.app.Dflt(options)
+  eYo.APP = new eYo.app.Base(options)
   /* Inject your workspace
   var workspace = Blockly.inject('eyoDiv', options)
   eYo.setup.finalize(workspace)
@@ -45,8 +45,8 @@ eYo.test.makeTestDesk = (id) => {
   goog.dom.appendChild(div0.parentNode, div1)
   var style = div1.style
   style.position = 'relative'
-  var w  = 10 * eYo.unit.x
-  var h = 5 * eYo.unit.y
+  var w  = 10 * eYo.geom.X
+  var h = 5 * eYo.geom.Y
   style.width = `${w}px`
   style.height = `${h}px`
   style.background = 'red'

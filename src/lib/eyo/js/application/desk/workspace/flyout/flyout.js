@@ -11,11 +11,10 @@
  */
 'use strict'
 
-eYo.require('c9r')
-eYo.require('unit')
-eYo.require('event')
+eYo.require('geom')
 
-eYo.forwardDeclare('Library')
+eYo.forwardDeclare('event')
+eYo.forwardDeclare('library')
 eYo.forwardDeclare('style')
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('flyoutToolbar')
@@ -35,7 +34,7 @@ eYo.forwardDeclare('menuButtonRenderer')
  * @property {eYo.Search} search Search section.
  * 
  * @private
- * @property {eYo.Library} library Library section.
+ * @property {eYo.library.Base} library Library section.
  * 
  * @private
  * @property {eYo.Draft} draft Draft section.
@@ -112,7 +111,7 @@ eYo.o3d.makeC9r(eYo, 'Flyout', {
       var d = this.ui_driver_mngr
       this.toolbar_ && d.toolbarDisposeUI(this.toolbar_)
       d.disposeUI(this)
-      eYo.Flyout.eyo.c9r.OwnedDispose(this, 'scrollbar_')
+      
     }
   },
   aliases: {
@@ -126,7 +125,7 @@ eYo.o3d.makeC9r(eYo, 'Flyout', {
     },
     library: {
       value () {
-        return new eYo.section.Library(this)
+        return new eYo.library.Base(this)
       },
     },
     draft: {
@@ -351,15 +350,15 @@ Object.defineProperties(eYo.Flyout, {
    * @const
    */
   SCROLLBAR_PADDING: {value: 2},
-  TOP_MARGIN: {value: 0}, // 4 * eYo.unit.rem
+  TOP_MARGIN: {value: 0}, // 4 * eYo.geom.REM
   BOTTOM_MARGIN: {value: 16}, // scroll bar width
-  TOOLBAR_HEIGHT : {value: Math.round(2 * eYo.unit.y)},
+  TOOLBAR_HEIGHT : {value: Math.round(2 * eYo.geom.Y)},
   /**
    * Margin around the edges of the bricks.
    * @type {number}
    * @const
    */
-  MARGIN : {value: eYo.unit.rem / 4},
+  MARGIN : {value: eYo.geom.REM / 4},
   /**
    * This size and anchor of the receiver and wrapped
    * in an object with eponym keys.
@@ -487,8 +486,8 @@ eYo.Flyout_p.on_wheel = function(e) {
 
 /**
  * Create a copy of this brick on the board.
- * @param {eYo.brick.Dflt} originalBrick The brick to copy from the flyout.
- * @return {eYo.brick.Dflt} The newly created brick, or null if something
+ * @param {eYo.brick.Base} originalBrick The brick to copy from the flyout.
+ * @return {eYo.brick.Base} The newly created brick, or null if something
  *     went wrong with deserialization.
  */
 eYo.Flyout_p.createBrick = function(originalBrick) {
@@ -525,7 +524,7 @@ eYo.Flyout_p.layout_ = function(contents) {
     brick.render()
     brick.moveTo(where)
     this.ui_driver_mngr.addListeners(this, brick)
-    where.y += brick.size.height + eYo.unit.y / 4
+    where.y += brick.size.height + eYo.geom.Y / 4
   })
 }
 
@@ -630,8 +629,8 @@ console.error('IN PROGRESS')
  * Copy a brick from the flyout to the board and position it correctly.
  * Edython adds a full rendering process.
  * No rendering is made while bricks are dragging.
- * @param {eYo.brick.Dflt} srcBrick The flyout brick to copy.
- * @return {!eYo.brick.Dflt} The new brick in the main board.
+ * @param {eYo.brick.Base} srcBrick The flyout brick to copy.
+ * @return {!eYo.brick.Base} The new brick in the main board.
  * @private
  */
 eYo.Flyout_p.placeNewBrick_ = function(srcBrick) {
@@ -758,7 +757,7 @@ eYo.Flyout_p.didSlide = function(closed) {
  * @param {String} category The name of the category to retrieve.
  */
 eYo.Flyout_p.getList = function (category) {
-  return eYo.Library[category] || []
+  return eYo.library.DATA[category] || []
 }
 
 /**
@@ -776,7 +775,7 @@ eYo.Flyout_p.updateMetrics = function() {
   var view = this.desk.board.metrics.view
   var r = this.viewRect_
   r.size_.height = view.height
-  r.size_.width = Math.min(view.width / 3, Math.max(this.board.metrics.port.width, eYo.unit.x * 10))
+  r.size_.width = Math.min(view.width / 3, Math.max(this.board.metrics.port.width, eYo.geom.X * 10))
   var where = this.atRight ? view.right : view.left
   if (!this.closed === !this.atRight) {
     r.origin_.x_min = where

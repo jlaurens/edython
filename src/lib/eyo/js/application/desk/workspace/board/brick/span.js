@@ -32,7 +32,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('unit')
+eYo.forwardDeclare('geom')
 eYo.forwardDeclare('brick')
 
 /**
@@ -42,7 +42,7 @@ eYo.forwardDeclare('brick')
 eYo.o3d.makeNS(eYo, 'span')
 
 /**
- * @name {eYo.span.Dflt}
+ * @name {eYo.span.Base}
  * Class for a Span object.
  * A span object stores various dimensions of a brick, in text units.
  * Each node has a span object.
@@ -50,10 +50,10 @@ eYo.o3d.makeNS(eYo, 'span')
  * The state is always in a consistent state.
  * However, the span state may not be consistent with the brick state.
  * For edython.
- * @param {eYo.brick.Dflt} brick The brick owning the span.
+ * @param {eYo.brick.Base} brick The brick owning the span.
  * @constructor
  */
-eYo.span.makeDflt({
+eYo.span.makeBase({
   init (brick) {
     this.c_min_init_ = brick.wrapped_
       ? 0
@@ -78,7 +78,7 @@ eYo.span.makeDflt({
     },
     /**
      * @readonly
-     * @property {eYo.brick.Dflt} brick - The owning brick
+     * @property {eYo.brick.Base} brick - The owning brick
      */
     brick: {
       get () {
@@ -256,7 +256,7 @@ Object.defineProperties(eYo.span, {
    */
   TAB_WIDTH: {
     get () {
-      return eYo.span.INDENT * eYo.unit.x
+      return eYo.span.INDENT * eYo.geom.X
     }
   },
 })

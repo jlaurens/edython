@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.forwardDeclare('Library')
+eYo.forwardDeclare('library')
 
 /**
  * Shared application driver.
  */
-eYo.fcls.makeDriverC9r('Library')
+eYo.fcls.makeDriverC9r('library')

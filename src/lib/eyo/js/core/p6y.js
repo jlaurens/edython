@@ -39,9 +39,9 @@ Object.defineProperties(eYo.p6y._p, {
   },
 })
 
-eYo.model.allow('properties', {
+eYo.model.allowPaths('properties', {
   ['^properties\\.\\w+$']: [
-    'after',
+    'after', 'source',
     'value', 'lazy', 'reset',
     'validate', 'get', 'set', 'get_', 'set_',
     eYo.p6y.BEFORE, eYo.p6y.DURING, eYo.p6y.AFTER,
@@ -433,9 +433,9 @@ eYo.p6y._p.handle_stored = function (prototype, key, model) {
   }
 }
 
-// ANCHOR eYo.p6y.Dflt
+// ANCHOR eYo.p6y.Base
 /**
- * @name{eYo.p6y.Dflt}
+ * @name{eYo.p6y.Base}
  * Base property constructor.
  * The bounds between the property and the arguments are immutable.
  * For edython.
@@ -446,11 +446,11 @@ eYo.p6y._p.handle_stored = function (prototype, key, model) {
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.p6y.makeDflt({
+eYo.p6y.makeBase({
   init (owner, key, model) {
-    owner || eYo.throw(`${this.eyo.name}: Missing owner in makeDflt`)
-    eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeDflt`)
-    eYo.isNA(model) && eYo.throw(`${this.eyo.name}: Missing model in makeDflt`)
+    owner || eYo.throw(`${this.eyo.name}: Missing owner in makeBase`)
+    eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeBase`)
+    eYo.isNA(model) && eYo.throw(`${this.eyo.name}: Missing model in makeBase`)
     this.owner_ = owner
     this.key_ = key
     this.model_ = model
@@ -854,7 +854,7 @@ eYo.p6y.makeDflt({
 
 /**
  * Maintains a list of properties.
- * `eYo.o4t.Dflt` instances maintains properties by keys.
+ * `eYo.o4t.Base` instances maintains properties by keys.
  * Here properties are maintained by index.
  * @name{eYo.p6y.List}
  * @constructor

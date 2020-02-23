@@ -136,7 +136,7 @@ eYo.event.groupWrap = (f, g) => {
 
 /**
  * Create a custom event and fire it.
- * @param {eYo.event.Dflt} event Custom data for event.
+ * @param {eYo.event.Base} event Custom data for event.
  */
 eYo.event._p.fire = function(event) {
   if (!eYo.event.enabled) {
@@ -168,9 +168,9 @@ eYo.event._p.ClearPendingUndo = function() {
 
 /**
  * Filter the queued events and merge duplicates.
- * @param {Array<!eYo.event.Dflt>} queueIn Array of events.
+ * @param {Array<!eYo.event.Base>} queueIn Array of events.
  * @param {boolean} forward True if forward (redo), false if backward (undo).
- * @return {!Array<!eYo.event.Dflt>} Array of filtered events.
+ * @return {!Array<!eYo.event.Base>} Array of filtered events.
  */
 eYo.event._p.filter = function(queueIn, forward) {
   if (!forward) {
@@ -236,7 +236,7 @@ eYo.event.enable = function() {
  * Use this on applications where all bricks should be connected to a top brick.
  * Recommend setting the 'disable' option to 'false' in the config so that
  * users don't try to reenable disabled orphan bricks.
- * @param {eYo.event.Dflt} event Custom data for event.
+ * @param {eYo.event.Base} event Custom data for event.
  */
 eYo.event.disableOrphans = function(event) {
   if (event.isMove || event.isCreate) {
@@ -260,7 +260,7 @@ eYo.event.disableOrphans = function(event) {
  * Abstract class for an event.
  * @constructor
  */
-eYo.event.makeDflt({
+eYo.event.makeBase({
   init (board) {
     /**
      * The board identifier for this event.
@@ -357,7 +357,7 @@ eYo.event.Dflt_p.run = eYo.doNothing
 
 /**
  * Merge the receiver with the given event.
- * @param {eYo.event.Dflt} event - an eYo event
+ * @param {eYo.event.Base} event - an eYo event
  * @return {Boolean} Whether the change did occur.
  */
 eYo.event.Dflt_p.merge = eYo.doNothing
@@ -370,7 +370,7 @@ eYo.event.Dflt_p.merge = eYo.doNothing
 eYo.o3d.makeC9r(eYo.event, 'Backer', {
   properties: {
     /**
-     * @type {!Array<!eYo.event.Dflt>}
+     * @type {!Array<!eYo.event.Base>}
      * @protected
      */
     undoStack: {
@@ -379,7 +379,7 @@ eYo.o3d.makeC9r(eYo.event, 'Backer', {
       },
     },
     /**
-     * @type {!Array<!eYo.event.Dflt>}
+     * @type {!Array<!eYo.event.Base>}
      * @protected
      */
     redoStack: {

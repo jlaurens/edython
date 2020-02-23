@@ -21,7 +21,7 @@ eYo.require('expr.List')
 eYo.require('expr.primary')
 eYo.require('tooltip')
 
-eYo.require('Library')
+eYo.require('library')
 
 eYo.provide('brick.statistics')
 
@@ -56,7 +56,7 @@ eYo.provide('brick.statistics')
     }
   }
 
-eYo.Library.DATA.Basic_statistics__module = [
+eYo.library.DATA.Basic_statistics__module = [
   {
     type: eYo.t3.stmt.import_stmt,
     from_p: 'statistics',
@@ -91,7 +91,7 @@ eYo.Library.DATA.Basic_statistics__module = [
     }
   }
 
-eYo.Library.DATA.Statistics__module = [
+eYo.library.DATA.Statistics__module = [
   {
     type: eYo.t3.stmt.import_stmt,
     variant_p: eYo.key.IMPORT,

@@ -67,7 +67,7 @@ eYo.FlyoutToolbar.prototype.doSelectGeneral = function (e) {
   var board = this.flyout_.desk.board
   if (board && this.selectControl_) {
     var category = this.selectControl_.getValue()
-    var list = eYo.Library[category]
+    var list = eYo.library.DATA[category]
     if (list.length) {
       this.flyout_.show(list)
     }
@@ -162,8 +162,8 @@ eYo.FlyoutToolbar.prototype.layout = function(width, height) {
   }
   var height = this.HEIGHT
   var margin = this.MARGIN
-  var big_radius = 1.25 * eYo.unit.rem
-  var radius = 1.125 * eYo.unit.rem
+  var big_radius = 1.25 * eYo.geom.REM
+  var radius = 1.125 * eYo.geom.REM
   var h = radius * 0.75
 
   this.div_.style.width = width + 'px'

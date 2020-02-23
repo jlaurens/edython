@@ -26,7 +26,7 @@ eYo.forwardDeclare('view.Workspace')
  * @name{eYo.view.Desk}
  * Class for a desk.
  * This is the structure above the panes but below the application.
- * @param {eYo.app.Dflt|Object} owner Owner application.
+ * @param {eYo.app.Base|Object} owner Owner application.
  * @constructor
  */
 eYo.view.makeC9r('Desk', {
@@ -137,7 +137,7 @@ eYo.view.Desk_p.place = function() {
 /**
  * See `deskWhereElement`.
  * @param {Element}
- * @return {eYo.geom.Where}
+ * @return {eYo.geom.Point}
  */
 eYo.view.Desk_p.xyElementInDesk = function(element) {
   return this.ui_driver.whereElement(this, element)
@@ -152,7 +152,7 @@ eYo.view.Desk_p.updateScreenCalculations_ = function() {
   this.workspace.recordDeleteAreas()
 }
 
-eYo.view.Dflt.eyo.propertiesMerge({
+eYo.view.Base.eyo.propertiesMerge({
   /**
    * The desk of the receiver.
    * @type {eYo.view.Desk}

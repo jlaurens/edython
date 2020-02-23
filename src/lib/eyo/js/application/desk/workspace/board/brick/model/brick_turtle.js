@@ -27,7 +27,7 @@ eYo.require('expr.primary')
 eYo.require('msg')
 
 eYo.require('tooltip')
-eYo.require('Library')
+eYo.require('library')
 
 eYo.t3.stmt.turtle__setup_stmt = 'eyo:turtle__setup_stmt'
 
@@ -69,7 +69,7 @@ eYo.stmt.makeC9r('turtle__setup_stmt', true, {
       title: key
     }
   }
-  eYo.Library.DATA.Basic_turtle__module = [
+  eYo.library.DATA.Basic_turtle__module = [
     {
       type: eYo.t3.stmt.import_stmt,
       variant_p: eYo.key.FROM_MODULE_IMPORT_STAR,
@@ -137,7 +137,7 @@ eYo.stmt.makeC9r('turtle__setup_stmt', true, {
       title: key
     }
   }
-  eYo.Library.DATA.Turtle__module = [
+  eYo.library.DATA.Turtle__module = [
     {
       type: eYo.t3.stmt.import_stmt,
       variant_p: eYo.key.IMPORT,

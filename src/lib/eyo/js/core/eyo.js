@@ -38,7 +38,7 @@ eYo.hasOwnProperty = function (object, key) {
 }
 
 /**
- * Whether the argument is a function.
+ * Whether the argument is a function or an arrow.
  * @param {*} what
  * @return {!Boolean}
  */
@@ -180,13 +180,13 @@ eYo.provideR = (object, props, getters = true) => {
   Object.keys(props).forEach(key => {
     if (!eYo.hasOwnProperty(object, key)) {
       let value = props[key]
-      Object.defineProperty(
-        object,
-        key,
-        eYo.descriptorR(getters && eYo.isF(value) ? value : function () {
-          return value
-        })
-      )
+      let d = eYo.descriptorR(getters && eYo.isF(value) ? value : function () {
+        return value
+      })
+      let dd = Object.getOwnPropertyDescriptor(props, key)
+      d.enumerable = dd.enumerable
+      d.configurable = dd.configurable
+      Object.defineProperty(object, key, d)
     }
   })
   return object
@@ -278,6 +278,13 @@ eYo.mixinR(eYo, {
     return what !== eYo.INVALID
   },
   /**
+   * Whether the argument is `eYo.INVALID`.
+   * @param {*} what
+   */
+  isINVALID (what) {
+    return what === eYo.INVALID
+  },
+  /**
    * Calls `helper` if the `ans` is valid.
    * `ans` may be the output of a reentrant method.
    * @param {*} ans
@@ -338,6 +345,23 @@ eYo.mixinR(eYo, {
     ? what
     : () => {
       return what
+    }
+  },
+  /**
+   * When not a function, returns the argument into
+   * a function that returns an array.
+   */
+  toRAF: (x) => {
+    if (eYo.isRA(x)) {
+      return function () {
+        return x
+      }
+    } else if (eYo.isF(x)) {
+      return x
+    } else {
+      return function () {
+        return [x]
+      }
     }
   },
   /**

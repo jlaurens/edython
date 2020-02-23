@@ -66,7 +66,7 @@ eYo.dnd.makeC9r('Mngr', {
   /**
    * Main drag and drop manager.
    * It maintains a list of draggers and droppers
-   * * @param{eYo.app.Dflt} [desktop] -  the owning desktop
+   * * @param{eYo.app.Base} [desktop] -  the owning desktop
    */
   dispose (dispose) {
     this.cancel()
@@ -193,11 +193,11 @@ eYo.dnd.Mngr_p.addDropper = function (dropper) {
 /*******/
 
 /**
- * @name {eYo.dnd.dragger.Dflt}
+ * @name {eYo.dnd.dragger.Base}
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeDflt({
+eYo.dnd.dragger.makeBase({
   /**
    * Sever all the links.
    */
@@ -559,12 +559,12 @@ eYo.dnd.dragger.DraftBrick_p.complete = function () {
 /*******/
 
 /**
- * @name {eYo.dnd.dropper.Dflt}
+ * @name {eYo.dnd.dropper.Base}
  * @constructor
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dropper.makeDflt({
+eYo.dnd.dropper.makeBase({
   /**
    * Sever all the links.
    */

@@ -479,7 +479,7 @@ eYo.KHandler = (() => {
             }
           })
         }
-        var scaledHeight = eYo.unit.y * brick.board.scale
+        var scaledHeight = eYo.geom.Y * brick.board.scale
         var m4t = eYo.focus.magnet
         if (m4t && m4t.brick) {
           var xy = goog.style.getPageOffset(m4t.brick.dom.svg.group_)

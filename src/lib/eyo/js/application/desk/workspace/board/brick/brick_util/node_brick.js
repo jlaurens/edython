@@ -207,7 +207,7 @@ eYo.Node_p.comp_iter2Brick = function (board) {
 /**
  * Converts the node `n` to a visual brick.
  * `this.type === eYo.tkn.Comp_for`
- * @param {eYo.brick.Dflt} brick  a brick with a 'for' slot.
+ * @param {eYo.brick.Base} brick  a brick with a 'for' slot.
  */
 eYo.Node_p.comp_forInBrick = function (brick) {
   // comp_for: ['async'] sync_comp_for
@@ -221,7 +221,7 @@ eYo.Node_p.comp_forInBrick = function (brick) {
 /**
  * Converts the node `n` to a visual brick.
  * `this.type === eYo.tkn.Sync_comp_for`
- * @param {eYo.brick.Dflt} brick  a brick with a 'for' slot.
+ * @param {eYo.brick.Base} brick  a brick with a 'for' slot.
  */
 eYo.Node_p.sync_comp_forInBrick = function (brick) {
   // 'for' exprlist 'in' or_test [comp_iter]
@@ -563,7 +563,7 @@ eYo.Node_p.tfpdef2Brick = function (board) {
 /**
  * `this` is the first node of a typedargslist.
  * `this.type === eYo.tkn.typedargslist`
- * @param {eYo.brick.Dflt} brick  a brick
+ * @param {eYo.brick.Base} brick  a brick
  */
 eYo.Node_p.typedargslistInBrick = function (brick) {
   var n = this.n0
@@ -670,7 +670,7 @@ eYo.Node_p.subscriptlistInBrick = eYo.Node_p.do_list
 
 /**
  * `this` is binary expression.
- * @param {eYo.board|eYo.brick.Dflt} owner
+ * @param {eYo.board|eYo.brick.Base} owner
  * @param {String} type
  * @param {String} op
  */
@@ -788,7 +788,7 @@ eYo.Node_p.varargslistInBrick = function (brick) {
 /**
  * `this` is the first node of a typedargslist.
  * `this.type === eYo.tkn.dictorsetmaker`
- * @param {eYo.brick.Dflt} brick  a brick
+ * @param {eYo.brick.Base} brick  a brick
  */
 eYo.Node_p.dictorsetmakerInBrick = function (brick) {
 /*dictorsetmaker: ( ((test ':' test | '**' expr)
@@ -864,7 +864,7 @@ eYo.Node_p.dictorsetmakerInBrick = function (brick) {
 /**
  * Partially converts the node `this` to a visual brick.
  * `this.n_type === eo.TKN.comp_for`
- * @param {eYo.brick.Dflt} brick a brick
+ * @param {eYo.brick.Base} brick a brick
  */
 eYo.Node_p.comprehensionInBrick = function (brick) {
   this.comp_forInBrick(brick)

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('unit')
+eYo.forwardDeclare('geom')
 eYo.forwardDeclare('font-face')
 goog.forwardDeclare('goog.cssom')
 goog.forwardDeclare('goog.color')

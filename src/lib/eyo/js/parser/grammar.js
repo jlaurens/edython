@@ -20,7 +20,7 @@ eYo.require('tkn')
  * @name{eYo.gmr}
  * @namespace
  */
-eYo.makeNS('gmr')
+eYo.c9r.makeNS(eYo, 'gmr')
 
 /* Grammar implementation *-/
 

@@ -30,7 +30,7 @@ Object.defineProperties(eYo.view, {
  * Class for a pure SVG scrollbar.
  * This technique offers a scrollbar that is guaranteed to work, but may not
  * look or behave like the system's scrollbars.
- * @param {eYo.board.Dflt|eYo.view.Scroller} bs Board to bind the scrollbar to, or scroller. Owner of the receiver.
+ * @param {eYo.board.Base|eYo.view.Scroller} bs Board to bind the scrollbar to, or scroller. Owner of the receiver.
  * @param {boolean} horizontal True if horizontal, false if vertical.
  * @param {string=} opt_css_class A class to be applied to this scrollbar.
  * @constructor
@@ -80,7 +80,7 @@ eYo.view.makeC9r('Scrollbar', {
      * Units are CSS pixels, with (0, 0) at the top left of the browser window.
      * For a horizontal scrollbar this is the x coordinate of the mouse down event;
      * for a vertical scrollbar it's the y coordinate of the mouse down event.
-     * @type {eYo.geom.Where}
+     * @type {eYo.geom.Point}
      */
     dragStart: {
       value: 0,

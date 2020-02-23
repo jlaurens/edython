@@ -92,7 +92,7 @@ eYo.brick.List_p.clear = function() {
  * Find the brick on this list with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of brick to find.
- * @return {eYo.brick.Dflt} The sought after brick or null if not found.
+ * @return {eYo.brick.Base} The sought after brick or null if not found.
  */
 eYo.brick.List_p.getBrickById = function(id) {
   var b3k = this.db.byId(id)
@@ -119,7 +119,7 @@ eYo.brick.List_p.getBrickById = function(id) {
  * If `opt_id` is provided and is not the id
  * of an already existing brick, then it will be the `id` of the added brick once added.
  * If the `opt_id` is already used or is not provided, then a new id is created.
- * @param {eYo.brick.Dflt} brick
+ * @param {eYo.brick.Base} brick
  * @param {string} opt_id
  */
 eYo.brick.List_p.add = function (brick, opt_id) {
@@ -159,7 +159,7 @@ eYo.brick.List_p.add = function (brick, opt_id) {
 /**
  * Remove a brick from the receiver.
  * Throws if the brick is not in the list.
- * @param {eYo.brick.Dflt} brick
+ * @param {eYo.brick.Base} brick
  */
 eYo.brick.List_p.remove = function (brick) {
   if (!goog.array.remove(this.bricks_, brick)) {

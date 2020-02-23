@@ -125,7 +125,7 @@ Object.defineProperties(eYo.field, {
   /**
    * Create all the fields from the given model.
    * For edython.
-   * @param {eYo.slot.Dflt|!eYo.magnet|!eYo.brick.Dflt} owner
+   * @param {eYo.slot.Base|!eYo.magnet|!eYo.brick.Base} owner
    * @param {Object} fieldsModel
    */
   eYo.field.makeFields = (owner, fieldsModel) => {
@@ -138,7 +138,7 @@ Object.defineProperties(eYo.field, {
       var model = fieldsModel[name]
       var field = makeField(owner, name, model)
       if (field) {
-        if (name === eYo.key.BIND && owner instanceof eYo.slot.Dflt.Dflt) {
+        if (name === eYo.key.BIND && owner instanceof eYo.slot.Base.Base) {
           owner.bindField = field
         }
         owner.fields[name] = field
@@ -272,22 +272,22 @@ Object.defineProperties(eYo.field, {
 
 /**
  * 
- * @param {eYo.brick|eYo.slot.Dflt}
+ * @param {eYo.brick|eYo.slot.Base}
  */
 eYo.field.disposeFields = owner => {
   var fields = owner.fields
   owner.fieldAtStart = owner.toEndField = owner.fields = eYo.NA
-  ;(owner instanceof eYo.slot.Dflt) && (owner.bindField = eYo.NA)
+  ;(owner instanceof eYo.slot.Base) && (owner.bindField = eYo.NA)
   Object.values(fields).forEach(f => f.dispose())
 }
 
 /**
  * Abstract class for text fields.
- * @param {eYo.brick|eYo.slot.Dflt|eYo.magnet.Dflt} bsim The owner of the field.
+ * @param {eYo.brick|eYo.slot.Base|eYo.magnet.Base} bsim The owner of the field.
  * @param {string} text The initial content of the field.
  * @constructor
  */
-eYo.field.makeC9r('Dflt', eYo.bsm_o3d.Dflt, {
+eYo.field.makeC9r('Base', eYo.bsm_o3d.Base, {
   init (bsm, name, text) {
     this.name_ = name
     this.text_ = text
@@ -478,7 +478,7 @@ eYo.field.Dflt_p.willRender = function () {
 /**
  * Class for a non-editable field.
  * The only purpose is to start with a different height.
- * @param {eYo.brick|eYo.slot.Dflt} bsi The owner of the field.
+ * @param {eYo.brick|eYo.slot.Base} bsi The owner of the field.
  * @param {string} name The required name of the field
  * @param {string} text The initial content of the field.
  * @extends {eYo.field}
@@ -492,7 +492,7 @@ eYo.field.makeC9r('Label', {
 
 /**
  * Class for an editable code field.
- * @param {eYo.brick|eYo.slot.Dflt} bsi The owner of the field.
+ * @param {eYo.brick|eYo.slot.Base} bsi The owner of the field.
  * @param {string=} name
  * @param {string} text The initial content of the field.
  * @extends {eYo.field}

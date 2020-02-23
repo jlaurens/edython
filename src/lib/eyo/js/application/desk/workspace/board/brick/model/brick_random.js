@@ -23,7 +23,7 @@ eYo.require('expr.List')
 eYo.require('expr.primary')
 eYo.require('tooltip')
 
-eYo.require('Library')
+eYo.require('library')
 eYo.provide('brick.random')
 
 eYo.t3.expr.random__randrange = 'eyo:random__randrange'
@@ -154,7 +154,7 @@ eYo.expr.random__randrange.prototype.xmlAttr = function () {
       title: key
     }
   }
-eYo.Library.DATA.Basic_random__module = [
+eYo.library.DATA.Basic_random__module = [
   {
     type: eYo.t3.stmt.import_stmt,
     data: {
@@ -248,7 +248,7 @@ F_s = function (name, title) {
     title: key
   }
 }
-eYo.Library.DATA.random__module = [
+eYo.library.DATA.random__module = [
   {
     type: eYo.t3.stmt.import_stmt,
     variant_p: eYo.key.IMPORT,

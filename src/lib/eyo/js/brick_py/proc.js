@@ -344,7 +344,7 @@ Object.defineProperties(eYo.stmt.decorator_stmt.prototype, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.Dflt} brick The brick.
+ * @param {eYo.brick.Base} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @override
  */
@@ -464,7 +464,7 @@ eYo.stmt.group.makeInheritedC9r('funcdef_part', true, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.Dflt} brick The brick.
+ * @param {eYo.brick.Base} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -554,7 +554,7 @@ eYo.stmt.group.makeInheritedC9r('classdef_part', true, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.Dflt} brick The brick.
+ * @param {eYo.brick.Base} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */

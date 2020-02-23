@@ -18,7 +18,7 @@ eYo.provide('navigate')
 
 /**
  * Tab navigation.
- * @param {eYo.brick.Dflt} [brick]  Brick.
+ * @param {eYo.brick.Base} [brick]  Brick.
  * @param {Object} [opt] Optional key value arguments.
  */
 eYo.navigate.doTab = (() => {
@@ -83,7 +83,7 @@ eYo.navigate.doTab = (() => {
  * For edython.
  * @param {eYo.board} board .
  * @param {function(point): number} weight is a function.
- * @return {?eYo.brick.Dflt}
+ * @return {?eYo.brick.Base}
  */
 eYo.brick.getBestBrick = function (board, weight) {
   var smallest = Infinity

@@ -24,11 +24,11 @@ goog.forwardDeclare('goog.dom')
 goog.forwardDeclare('goog.events')
 
 /**
- * @name{eYo.dom.Dflt}
+ * @name{eYo.dom.Base}
  * The Dom delegate default class.
  * @constructor
  */
-eYo.dom.makeDflt()
+eYo.dom.makeBase()
 
 /**
  * @type {eYo.dom.Mngr}
@@ -63,7 +63,7 @@ eYo.dom.makeMngr({
 
 /**
  * The document scroll.
- * @return {eYo.geom.Where}
+ * @return {eYo.geom.Point}
  */
 eYo.dom.getDocumentScroll = () => {
   return eYo.geom.xyWhere(goog.dom.getDocumentScroll())
@@ -570,11 +570,11 @@ eYo.dom.on_keydown = e => {
       if (e.keyCode == 67) {
         // 'c' for copy.
         eYo.app.hideChaff()
-        eYo.app.Dflt.CopyBrick(eYo.app.Focus_mngr.Brick, deep)
+        eYo.app.Base.CopyBrick(eYo.app.Focus_mngr.Brick, deep)
       } else if (e.keyCode == 88 && !eYo.app.Focus_mngr.Brick.Board.readOnly) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.app.Dflt.CopyBrick(eYo.app.Focus_mngr.Brick, deep)
+        eYo.app.Base.CopyBrick(eYo.app.Focus_mngr.Brick, deep)
         eYo.app.deleteBrick(eYo.app.Focus_mngr.Brick, deep)
       }
     }

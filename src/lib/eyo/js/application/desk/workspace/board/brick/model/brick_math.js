@@ -21,7 +21,7 @@ eYo.require('expr.List')
 eYo.require('expr.primary')
 eYo.require('tooltip')
 
-eYo.require('Library')
+eYo.require('library')
 eYo.require('module.math__module')
 
 eYo.provide('brick.math')
@@ -54,7 +54,7 @@ eYo.provide('brick.math')
       title: key
     }
   }
-eYo.Library.DATA.Basic_math__module = [
+eYo.library.DATA.Basic_math__module = [
   {
     type: eYo.t3.stmt.import_stmt,
     data: {
@@ -138,7 +138,7 @@ eYo.Library.DATA.Basic_math__module = [
       title: key
     }
   }
-  eYo.Library.DATA.math__module = [
+  eYo.library.DATA.math__module = [
     {
       type: eYo.t3.stmt.import_stmt,
       data: {

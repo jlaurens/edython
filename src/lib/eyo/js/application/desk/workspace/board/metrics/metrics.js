@@ -121,11 +121,6 @@ eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
         this.board && this.board.didScale()
       }
     },
-    board: {
-      get () {
-        return this.owner
-      },
-    },
     options: {
       get () {
         return this.board && this.board.options.zoom || {}
@@ -145,7 +140,7 @@ eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
     /**
      * The default scroll value.
      * 
-     * @type {eYo.geom.Where} 
+     * @type {eYo.geom.Point} 
      * @readonly 
      */
     dragDefault: {
@@ -167,7 +162,7 @@ eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
     /**
      * The opposite of `drag`.
      * 
-     * @type {eYo.geom.Where}
+     * @type {eYo.geom.Point}
      * @readonly
      */
     scroll: {
@@ -187,8 +182,8 @@ eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
       var ans = this.view
         ans.origin.set()
         ans.unscale(this.scale)
-        ans.left = -(this.numbering ? 5 : 3) * eYo.unit.x
-        ans.top = -eYo.unit.y
+        ans.left = -(this.numbering ? 5 : 3) * eYo.geom.X
+        ans.top = -eYo.geom.Y
         return ans
       },
     },
@@ -241,7 +236,7 @@ eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
      * at the same location on screen.
      * The drag div is translated by `drag•(i,j)` with respect to the view.
      * 
-     * @type {eYo.geom.Where} 
+     * @type {eYo.geom.Point} 
      */
     drag: {
       get_ (builtin) {
@@ -269,6 +264,9 @@ eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
       },
     },
   },
+  aliases: {
+    'board': 'owner',
+  },
   methods: {
     /**
      * Update the board.
@@ -292,7 +290,7 @@ eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
     },
     /**
      * Convert the given argument from `board` coordinates to `view` coordinates.
-     * @param{eYo.geom.Rect | eYo.geom.Where} WR
+     * @param{eYo.geom.Rect | eYo.geom.Point} WR
      */
     toView (WR) {
       // Referential(view) = (origin: o, basis: {i, j})
@@ -309,7 +307,7 @@ eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
     },
     /**
      * Convert the given argument from `view` coordinates to `board` coordinates.
-     * @param{eYo.geom.Rect | eYo.geom.Where} wr
+     * @param{eYo.geom.Rect | eYo.geom.Point} wr
      */
     fromView (wr) {
       return wr.backward(this.drag).unscale(this.scale)

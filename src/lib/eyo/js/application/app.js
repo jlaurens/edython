@@ -7,7 +7,7 @@
  */
 
 /**
- * @fileoverview Top application class, eYo.app.Dflt is an instance.
+ * @fileoverview Top application class, eYo.app.Base is an instance.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -177,7 +177,7 @@ eYo.app.parseZoom_ = function(options) {
  * @property {eYo.focus.Main} focus_main
  *
  */
-eYo.app.makeDflt({
+eYo.app.makeBase({
   init (options) {
     this.options_ = new eYo.app.Options(options || {})
   },
@@ -196,7 +196,7 @@ eYo.app.makeDflt({
       return new eYo.view.Desk(this)
     },
     audio () {
-      return new eYo.audio.Dflt(this)
+      return new eYo.audio.Base(this)
     },
     focus_main () {
       return new eYo.focus.Main(this)
@@ -244,7 +244,7 @@ eYo.app.Dflt_p.paste = eYo.doNothing
 /**
  * Delete this brick and the next ones if requested.
  * For edython.
- * @param {eYo.brick.Dflt} block The brick to delete.
+ * @param {eYo.brick.Base} block The brick to delete.
  * @param {boolean} deep
  */
 eYo.app.Dflt_p.deleteBrick = function (brick, deep) {
@@ -279,7 +279,7 @@ eYo.app.Dflt_p.deleteBrick = function (brick, deep) {
 
 /**
  * Copy a brick onto the local clipboard.
- * @param {eYo.brick.Dflt} brick - Brick to be copied.
+ * @param {eYo.brick.Base} brick - Brick to be copied.
  * @private
  */
 eYo.app.Dflt_p.copyBrick = function (brick, deep) {
@@ -344,7 +344,7 @@ eYo.app.Dflt_p.doFocus = function() {
  */
 eYo.app.Dflt_p.hideChaff = eYo.doNothing
 
-eYo.o3d.Dflt.eyo.propertiesMerge({
+eYo.o3d.Base.eyo.propertiesMerge({
   /**
    * The root application
    * @type {eYo.app}
@@ -363,7 +363,7 @@ eYo.o3d.Dflt.eyo.propertiesMerge({
   },
 })
 
-eYo.o3d.Dflt.eyo.methodsMerge({
+eYo.o3d.Base.eyo.methodsMerge({
   ownerDidChange (overriden) {
     return function (before, after)
     /** @suppress {globalThis} */ {

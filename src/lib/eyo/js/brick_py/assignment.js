@@ -350,7 +350,7 @@ eYo.stmt.assignment_stmt_p.getType = function () {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.Dflt} brick The brick.
+ * @param {eYo.brick.Base} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -554,7 +554,7 @@ eYo.expr.List.makeInheritedC9r('augassigned_list', () => {
 
 // /**
 //  * Populate the context menu for the given brick.
-//  * @param {eYo.brick.Dflt} brick The brick.
+//  * @param {eYo.brick.Base} brick The brick.
 //  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
 //  * @private
 //  */

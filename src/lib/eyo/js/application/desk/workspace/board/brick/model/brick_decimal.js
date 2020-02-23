@@ -21,14 +21,14 @@ eYo.require('expr.List')
 eYo.require('expr.primary')
 eYo.require('tooltip')
 
-eYo.require('Library')
+eYo.require('library')
 eYo.require('module.decimal__module')
 
 eYo.provide('brick.decimal')
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.Dflt} brick The brick.
+ * @param {eYo.brick.Base} brick The brick.
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
@@ -91,7 +91,7 @@ eYo.provide('brick.decimal')
     'FloatOperation': 30
 
     */
-eYo.Library.DATA.Basic_decimal__module = [
+eYo.library.DATA.Basic_decimal__module = [
   {
     type: eYo.t3.stmt.import_stmt,
     from_p: 'decimal',
@@ -189,7 +189,7 @@ eYo.Library.DATA.Basic_decimal__module = [
     }
   }
 
-eYo.Library.DATA.decimal__module = [
+eYo.library.DATA.decimal__module = [
   {
     type: eYo.t3.stmt.import_stmt,
     import_module_s: {

@@ -93,7 +93,7 @@ eYo.py.Exporter.prototype.linePush = function (s) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.brick.Dflt} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.Base} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  See the eponym parameter in `eYo.xml.domToBrick`.
  * @return some python code
  */
@@ -157,7 +157,7 @@ eYo.py.Exporter.prototype.exportAsExpression_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.brick.Dflt} eyo The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.Base} eyo The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -221,7 +221,7 @@ eYo.py.Exporter.prototype.exportBrick_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.brick.Dflt} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.Base} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -317,7 +317,7 @@ eYo.py.Exporter.prototype.exportField_ = function (field) {
 
 /**
  * Export the given slot in.
- * @param {eYo.slot.Dflt} slot
+ * @param {eYo.slot.Base} slot
  * @param {Object} opt
  * @private
  */
@@ -344,7 +344,7 @@ eYo.py.Exporter.prototype.exportSlot_ = function (slot, opt) {
 
 /**
  * Export the given slot in.
- * @param {eYo.slot.Dflt} slot
+ * @param {eYo.slot.Base} slot
  * @private
  */
 eYo.py.Exporter.prototype.exportSlot_ = function (slot) {

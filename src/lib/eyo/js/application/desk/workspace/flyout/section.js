@@ -23,7 +23,7 @@ eYo.o3d.makeNS(eYo, 'section')
  * @param {eYo.Flyout} owner  The owning flyout.
  * @constructor
  */
-eYo.section.makeDflt({
+eYo.section.makeBase({
   properties: {
     /**
      * The owning flyout
@@ -43,7 +43,7 @@ eYo.section.makeDflt({
       set: false,
     },
     board () {
-      return new eYo.board.Dflt(this)
+      return new eYo.board.Base(this)
     },
   },
 })

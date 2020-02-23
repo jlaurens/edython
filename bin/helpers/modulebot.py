@@ -658,9 +658,9 @@ Example of `dt` for the turtle module, method synonyms.
  */
 'use strict'
 
-eYo.module.makeNS('{{key}}')
-
-eYo.module.{{key}}.url = '{{url}}'
+eYo.module.makeNS('{{key}}', {
+  URL: '{{url}}'
+})
 
 ;(() => {
   /* Singleton constructor */

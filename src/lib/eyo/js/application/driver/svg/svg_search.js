@@ -167,7 +167,7 @@ eYo.svg.Search_p.removeAllBrickListeners = function(search) {
  * Listeners work only when the search authorizes it.
  * The 'rect' listeners have been removed.
  * @param {eYo.Search} search
- * @param {eYo.brick.Dflt} brick The block to add listeners for.
+ * @param {eYo.brick.Base} brick The block to add listeners for.
  */
 eYo.svg.Search_p.addListeners = function(search, brick) {
   var g = brick.dom.svg.group_

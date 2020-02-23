@@ -5,62 +5,64 @@ eYo.test.almost = (a, b) => 10000 * Math.abs(a-b) <= (Math.abs(a) + Math.abs(b))
 describe ('geometry', function () {
   this.timeout(10000)
   it ('Geometry: Basic', function () {
-    chai.assert(eYo.geom.Where)
+    chai.assert(eYo.geom.Point)
     chai.assert(eYo.geom.Size)
     chai.assert(eYo.geom.Rect)
   })
-  it ('Geometry: unit', function () {
-    chai.assert(eYo.unit.x)
-    chai.assert(eYo.unit.y)
-    chai.assert(eYo.unit.rem)
+  it ('Geometry: units', function () {
+    chai.assert(eYo.geom.X)
+    chai.assert(eYo.geom.Y)
+    chai.assert(eYo.geom.REM)
+    chai.assert(eYo.geom.C)
+    chai.assert(eYo.geom.L)
   })
-  describe('Where', function () {
-    it ('new eYo.geom.Where()', function () {
-      var whr = new eYo.geom.Where()
+  describe('Point', function () {
+    it ('new eYo.geom.Point()', function () {
+      var whr = new eYo.geom.Point()
       chai.assert(!['c', 'l', 'x', 'y'].some(k => whr[k] != 0))
       whr.c_ = 1.23
-      chai.assert(eYo.test.almost(whr.c, 1.23) && eYo.test.almost(whr.x, 1.23 * eYo.unit.x))
-      whr.x_ = 4.21 * eYo.unit.x
-      chai.assert(eYo.test.almost(whr.c, 4.21) && eYo.test.almost(whr.x, 4.21 * eYo.unit.x))
+      chai.assert(eYo.test.almost(whr.c, 1.23) && eYo.test.almost(whr.x, 1.23 * eYo.geom.X))
+      whr.x_ = 4.21 * eYo.geom.X
+      chai.assert(eYo.test.almost(whr.c, 4.21) && eYo.test.almost(whr.x, 4.21 * eYo.geom.X))
       whr.l_ = 3.21
-      chai.assert(eYo.test.almost(whr.l, 3.21) && eYo.test.almost(whr.y, 3.21 * eYo.unit.y))
-      whr.y_ = 1.24 * eYo.unit.y
-      chai.assert(eYo.test.almost(whr.l, 1.24) && eYo.test.almost(whr.y, 1.24 * eYo.unit.y))
+      chai.assert(eYo.test.almost(whr.l, 3.21) && eYo.test.almost(whr.y, 3.21 * eYo.geom.Y))
+      whr.y_ = 1.24 * eYo.geom.Y
+      chai.assert(eYo.test.almost(whr.l, 1.24) && eYo.test.almost(whr.y, 1.24 * eYo.geom.Y))
     })
-    it ('new eYo.geom.Where(true)', function () {
-      var whr = new eYo.geom.Where(true)
+    it ('new eYo.geom.Point(true)', function () {
+      var whr = new eYo.geom.Point(true)
       chai.assert(whr.snap_)
       chai.assert(!['c', 'l', 'x', 'y'].some(k => whr[k] != 0))
       whr.c_ = 1.23
-      chai.assert(eYo.test.almost(whr.c, 1) && eYo.test.almost(whr.x, 1 * eYo.unit.x))
+      chai.assert(eYo.test.almost(whr.c, 1) && eYo.test.almost(whr.x, 1 * eYo.geom.X))
       whr.c_ = 1.33
-      chai.assert(eYo.test.almost(whr.c, 1.5) && eYo.test.almost(whr.x, 1.5 * eYo.unit.x))
-      whr.x_ = 4.21 * eYo.unit.x
-      chai.assert(eYo.test.almost(whr.c, 4) && eYo.test.almost(whr.x, 4 * eYo.unit.x))
-      whr.x_ = 4.31 * eYo.unit.x
-      chai.assert(eYo.test.almost(whr.c, 4.5) && eYo.test.almost(whr.x, 4.5 * eYo.unit.x))
+      chai.assert(eYo.test.almost(whr.c, 1.5) && eYo.test.almost(whr.x, 1.5 * eYo.geom.X))
+      whr.x_ = 4.21 * eYo.geom.X
+      chai.assert(eYo.test.almost(whr.c, 4) && eYo.test.almost(whr.x, 4 * eYo.geom.X))
+      whr.x_ = 4.31 * eYo.geom.X
+      chai.assert(eYo.test.almost(whr.c, 4.5) && eYo.test.almost(whr.x, 4.5 * eYo.geom.X))
       whr.l_ = 3.11
-      chai.assert(eYo.test.almost(whr.l, 3) && eYo.test.almost(whr.y, 3 * eYo.unit.y))
+      chai.assert(eYo.test.almost(whr.l, 3) && eYo.test.almost(whr.y, 3 * eYo.geom.Y))
       whr.l_ = 3.31
-      chai.assert(eYo.test.almost(whr.l, 3.25) && eYo.test.almost(whr.y, 3.25 * eYo.unit.y))
+      chai.assert(eYo.test.almost(whr.l, 3.25) && eYo.test.almost(whr.y, 3.25 * eYo.geom.Y))
       whr.l_ = 3.41
-      chai.assert(eYo.test.almost(whr.l, 3.5) && eYo.test.almost(whr.y, 3.5 * eYo.unit.y))
-      whr.y_ = 1.124 * eYo.unit.y
-      chai.assert(eYo.test.almost(whr.l, 1.0) && eYo.test.almost(whr.y, 1.0 * eYo.unit.y))
-      whr.y_ = 1.125001 * eYo.unit.y
-      chai.assert(eYo.test.almost(whr.l, 1.25) && eYo.test.almost(whr.y, 1.25 * eYo.unit.y))
-      whr.y_ = 1.44 * eYo.unit.y
-      chai.assert(eYo.test.almost(whr.l, 1.5) && eYo.test.almost(whr.y, 1.5 * eYo.unit.y))
-      whr.y_ = 1.75 * eYo.unit.y
-      chai.assert(eYo.test.almost(whr.l, 1.75) && eYo.test.almost(whr.y, 1.75 * eYo.unit.y))
-      whr.y_ = 1.874999 * eYo.unit.y
-      chai.assert(eYo.test.almost(whr.l, 1.75) && eYo.test.almost(whr.y, 1.75 * eYo.unit.y))
-      whr.y_ = 1.875001 * eYo.unit.y
-      chai.assert(eYo.test.almost(whr.l, 2) && eYo.test.almost(whr.y, 2 * eYo.unit.y))
+      chai.assert(eYo.test.almost(whr.l, 3.5) && eYo.test.almost(whr.y, 3.5 * eYo.geom.Y))
+      whr.y_ = 1.124 * eYo.geom.Y
+      chai.assert(eYo.test.almost(whr.l, 1.0) && eYo.test.almost(whr.y, 1.0 * eYo.geom.Y))
+      whr.y_ = 1.125001 * eYo.geom.Y
+      chai.assert(eYo.test.almost(whr.l, 1.25) && eYo.test.almost(whr.y, 1.25 * eYo.geom.Y))
+      whr.y_ = 1.44 * eYo.geom.Y
+      chai.assert(eYo.test.almost(whr.l, 1.5) && eYo.test.almost(whr.y, 1.5 * eYo.geom.Y))
+      whr.y_ = 1.75 * eYo.geom.Y
+      chai.assert(eYo.test.almost(whr.l, 1.75) && eYo.test.almost(whr.y, 1.75 * eYo.geom.Y))
+      whr.y_ = 1.874999 * eYo.geom.Y
+      chai.assert(eYo.test.almost(whr.l, 1.75) && eYo.test.almost(whr.y, 1.75 * eYo.geom.Y))
+      whr.y_ = 1.875001 * eYo.geom.Y
+      chai.assert(eYo.test.almost(whr.l, 2) && eYo.test.almost(whr.y, 2 * eYo.geom.Y))
     })
     it('Mutation', function () {
-      var w1 = new eYo.geom.Where()
-      var w2 = new eYo.geom.Where(w1)
+      var w1 = new eYo.geom.Point()
+      var w2 = new eYo.geom.Point(w1)
       chai.assert(w1.equals(w2) && w2.equals(w1), `MISSED ${w1.description}.equals(${w2.description})`)
       w1.forward(1)
       chai.assert(!w1.equals(w2), `MISSED !${w1.description}.equals(${w2.description})`)
@@ -185,7 +187,7 @@ describe ('geometry', function () {
     it('Out', function() {
       var r = new eYo.geom.Rect(0,0,1,1)
       let test = (c, l) => {
-        let w = new eYo.geom.Where(c, l)
+        let w = new eYo.geom.Point(c, l)
         chai.assert(w.out(r) && w.in(r))  
       }
       test(0,0)

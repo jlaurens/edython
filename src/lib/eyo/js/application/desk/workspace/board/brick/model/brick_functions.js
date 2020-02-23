@@ -20,7 +20,7 @@ eYo.require('expr.List')
 eYo.require('expr.primary')
 eYo.require('tooltip')
 
-eYo.require('Library')
+eYo.require('library')
 eYo.require('module.functions')
 
 eYo.provide('brick.functions')
