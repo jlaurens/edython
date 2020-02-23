@@ -264,12 +264,12 @@ eYo.fcls.Brick_p.hilightAdd_ = eYo.doNothing
 /**
  * The default implementation forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'hilightAdd_')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'hilightAdd_')
 
 /**
  * The default implementation forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'hilightAdd_')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'hilightAdd_')
 
 /**
  * Add the select path.
@@ -280,7 +280,7 @@ eYo.fcls.Brick_p.selectAdd = eYo.doNothing
 /**
  * The default implementation forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'selectAdd')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'selectAdd')
 
 /**
  * Remove the select path.
@@ -291,7 +291,7 @@ eYo.fcls.Brick_p.selectAdd = eYo.doNothing
 /**
  * The default implementation forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'selectRemove')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'selectRemove')
 
 /**
  * Forwards to the |selectRemove|.
@@ -304,12 +304,12 @@ eYo.fcls.Brick_p.focusRemove = function (brick) {
 /**
  * The default implementation forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'selectRemove')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'selectRemove')
 
 /**
  * Forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'magnetAdd_')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'magnetAdd_')
 
 /**
  * Add the magnet connection path_.
@@ -320,7 +320,7 @@ eYo.fcls.Brick_p.magnetAdd_ = eYo.doNothing
 /**
  * Forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'magnetRemove_')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'magnetRemove_')
 
 /**
  * In progress.
@@ -331,7 +331,7 @@ eYo.fcls.Brick_p.magnetRemove_ = eYo.doNothing
 /**
  * Forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'StatusTopAdd')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'StatusTopAdd')
 
 /**
  * In progress.
@@ -343,7 +343,7 @@ eYo.fcls.Brick_p.statusTopAdd_ = eYo.doNothing
  * Remove the `top` status.
  * Forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'statusTopRemove_')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'statusTopRemove_')
 
 /**
  * Remove the `top` status.
@@ -354,7 +354,7 @@ eYo.fcls.Brick_p.statusTopRemove_ = eYo.doNothing
  * In progress.
  * Forwards to the driver.
  */
-eYo.brick.Dflt_p.statusFocusAdd_ = function () {
+eYo.brick.Base_p.statusFocusAdd_ = function () {
   this.ui_driver.statusFocusAdd(this)
   this.slotForEach(slot => {
     slot.fieldForEach(field => {
@@ -372,7 +372,7 @@ eYo.fcls.Brick_p.statusFocusAdd_ = eYo.doNothing
 /**
  * Reverse `statusFocusAdd_`.
  */
-eYo.brick.Dflt_p.statusFocusRemove_ = function (brick) {
+eYo.brick.Base_p.statusFocusRemove_ = function (brick) {
   this.ui_driver.statusSelectRemove(this)
   this.slotForEach(slot => {
     slot.fieldForEach(field => {
@@ -392,7 +392,7 @@ eYo.fcls.Brick_p.statusFocusRemove_ = eYo.doNothing
  * Hilight the given connection.
  * The default implementation forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'magnetHilight')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'magnetHilight')
 
 /**
  * Hilight the given connection.
@@ -415,7 +415,7 @@ eYo.fcls.Brick_p.parentSet = eYo.doNothing
  */
 eYo.fcls.Brick_p.parentWillChange = eYo.doNothing
 
-eYo.c9r.appendToMethod(eYo.brick.Dflt_p, 'parentWillChange', function (after) {
+eYo.c9r.appendToMethod(eYo.brick.Base_p, 'parentWillChange', function (after) {
   this.ui_driver.parentWillChange(this, after)
 })
 
@@ -426,7 +426,7 @@ eYo.c9r.appendToMethod(eYo.brick.Dflt_p, 'parentWillChange', function (after) {
  */
 eYo.fcls.Brick_p.parentDidChange = eYo.doNothing
 
-eYo.c9r.appendToMethod(eYo.brick.Dflt_p, 'parentDidChange', function (before) {
+eYo.c9r.appendToMethod(eYo.brick.Base_p, 'parentDidChange', function (before) {
   this.ui_driver.parentDidChange(this, before)
 })
 
@@ -448,4 +448,4 @@ eYo.fcls.Brick_p.bumpNeighbours_ = eYo.doNothing
  * Hilight the given connection.
  * The default implementation forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'bumpNeighbours_')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'bumpNeighbours_')

@@ -118,7 +118,7 @@ eYo.shape.style = {
 /**
  * begin
  */
-eYo.shape.Dflt_p.begin = function () {
+eYo.shape.Base_p.begin = function () {
   this.steps = []
   this.cursor.set()
   this.dc = this.dl = 0
@@ -127,7 +127,7 @@ eYo.shape.Dflt_p.begin = function () {
 /**
  * z
  */
-eYo.shape.Dflt_p.z = function () {
+eYo.shape.Base_p.z = function () {
   this.steps.push('z')
 }
 
@@ -135,7 +135,7 @@ eYo.shape.Dflt_p.z = function () {
  * end
  * @return {!Object} The receiver.
  */
-eYo.shape.Dflt_p.end = function (noClose = false) {
+eYo.shape.Base_p.end = function (noClose = false) {
   if (!noClose && this.steps.length) {
     this.z()
   }
@@ -146,14 +146,14 @@ eYo.shape.Dflt_p.end = function (noClose = false) {
  * formatter.
  * @param {Number} x
  */
-eYo.shape.Dflt_p.format = function (x) {
+eYo.shape.Base_p.format = function (x) {
   return Math.round(100 * x) / 100
 }
 
 /**
  * end
  */
-eYo.shape.Dflt_p.push = function () {
+eYo.shape.Base_p.push = function () {
   var i
   for(i = 0; i < arguments.length ; i++) {
     var arg = arguments[i]
@@ -176,7 +176,7 @@ eYo.shape.Dflt_p.push = function () {
  * @param {*?} c
  * @param {*?} l
  */
-eYo.shape.Dflt_p.m = function (is_brick, c = 0, l = 0) {
+eYo.shape.Base_p.m = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
@@ -203,7 +203,7 @@ eYo.shape.Dflt_p.m = function (is_brick, c = 0, l = 0) {
  * @param {*?} c
  * @param {*?} l
  */
-eYo.shape.Dflt_p.m = function (is_brick, c = 0, l = 0) {
+eYo.shape.Base_p.m = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
@@ -230,7 +230,7 @@ eYo.shape.Dflt_p.m = function (is_brick, c = 0, l = 0) {
  * @param {*?} c
  * @param {*?} l
  */
-eYo.shape.Dflt_p.l = function (is_brick, c = 0, l = 0) {
+eYo.shape.Base_p.l = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
@@ -253,7 +253,7 @@ eYo.shape.Dflt_p.l = function (is_brick, c = 0, l = 0) {
  * @param {*?} c
  * @param {*?} l
  */
-eYo.shape.Dflt_p.l = function (is_brick, c = 0, l = 0) {
+eYo.shape.Base_p.l = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
     if (goog.isDef(c.x) && goog.isDef(c.y)) {
       l = c.y
@@ -275,7 +275,7 @@ eYo.shape.Dflt_p.l = function (is_brick, c = 0, l = 0) {
  * @param {Boolean?} is_brick
  * @param {*} c
  */
-eYo.shape.Dflt_p.h = function (is_brick = false, c = 0) {
+eYo.shape.Base_p.h = function (is_brick = false, c = 0) {
   if (is_brick === true) {
     if (c) {
       this.push(`h ${this.format(c)}`)
@@ -296,7 +296,7 @@ eYo.shape.Dflt_p.h = function (is_brick = false, c = 0) {
  * @param {Boolean?} is_brick
  * @param {*} c
  */
-eYo.shape.Dflt_p.h = function (is_brick = false, c = 0) {
+eYo.shape.Base_p.h = function (is_brick = false, c = 0) {
   if (is_brick === true) {
     if (this.cursor.x !== c) {
       this.push(`H ${this.format(c)}`)
@@ -317,7 +317,7 @@ eYo.shape.Dflt_p.h = function (is_brick = false, c = 0) {
  * @param {Boolean?} is_brick
  * @param {*} l
  */
-eYo.shape.Dflt_p.v = function (is_brick, l) {
+eYo.shape.Base_p.v = function (is_brick, l) {
   if (is_brick === true) {
     if (l) {
       this.push(`v ${this.format(l)}`)
@@ -338,7 +338,7 @@ eYo.shape.Dflt_p.v = function (is_brick, l) {
  * @param {Boolean?} is_brick - when 'true', units are given in brick coordinates
  * @param {*} l
  */
-eYo.shape.Dflt_p.v = function (is_brick, l) {
+eYo.shape.Base_p.v = function (is_brick, l) {
   if (is_brick === true) {
     if (this.cursor.y !== l) {
       this.push(`V ${this.format(l)}`)
@@ -372,7 +372,7 @@ eYo.shape.Dflt_p.v = function (is_brick, l) {
  * @param {Boolean} [clockwise]  Drawing direction.
  * @param {Number} [part]  part is in [[0, 3]].
  */
-eYo.shape.Dflt_p.quarter_circle = function (r, clockwise, part) {
+eYo.shape.Base_p.quarter_circle = function (r, clockwise, part) {
   if (r === null) {
     r = this.hilighted_width
   } else if (r === true || r === false) {
@@ -414,7 +414,7 @@ eYo.shape.Dflt_p.quarter_circle = function (r, clockwise, part) {
  * @param {Boolean} [part]  part is in [[0, 3]].
  * @param {Boolean} [clockwise]  Drawing direction.
  */
-eYo.shape.Dflt_p.half_circle = function (r, clockwise, part) {
+eYo.shape.Base_p.half_circle = function (r, clockwise, part) {
   if (part === true || part === false) {
     part = clockwise
     clockwise = r
@@ -440,7 +440,7 @@ eYo.shape.Dflt_p.half_circle = function (r, clockwise, part) {
  * @param {Boolean} left
  * @param {Boolean} down
  */
-eYo.shape.Dflt_p.arc = function (h, r = true, left = true, down = true) {
+eYo.shape.Base_p.arc = function (h, r = true, left = true, down = true) {
   if (r === true || r === false) {
     down = left
     left = r
@@ -475,7 +475,7 @@ eYo.shape.definitionWithBrick = function(brick, opt) {
  * Inits a shape with the given brick.
  * @param {eYo.brick!} brick  Brick
  */
-eYo.shape.Dflt_p.initWithBrick = (() => {
+eYo.shape.Base_p.initWithBrick = (() => {
   /**
    * Inits a shape with the given brick.
    * @param {eYo.brick!} brick  Brick
@@ -672,7 +672,7 @@ eYo.shape.definitionWithMagnet = function(m4t, opt) {
  * @param {Object} [opt]  Optional kv arguments
  * @return {!Object} The receiver.
  */
-eYo.shape.Dflt_p.initWithMagnet = function(magnet, opt) {
+eYo.shape.Base_p.initWithMagnet = function(magnet, opt) {
   var dd = this.caret_extra
   if (magnet) {
     var brick = magnet.brick
@@ -803,7 +803,7 @@ eYo.shape.Dflt_p.initWithMagnet = function(magnet, opt) {
  * @param {*} isContour
  * @return {!Object} The receiver.
  */
-eYo.shape.Dflt_p.initForPlay = function (cursor, isContour) {
+eYo.shape.Base_p.initForPlay = function (cursor, isContour) {
   this.begin()
   var lh = eYo.geom.Y / 2
   var ratio = 1.618

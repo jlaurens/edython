@@ -366,7 +366,7 @@ eYo.require('stmt.group')
  * For edython.
  * @return attr name
  */
-eYo.brick.Dflt_p.xmlAttr = function () {
+eYo.brick.Base_p.xmlAttr = function () {
   var attr = this.constructor.eyo.xmlAttr || (this.isExpr ? eYo.t3.xml.toDom.Expr : eYo.t3.xml.toDom.Stmt)[this.constructor.eyo.key]
   return attr || (this.type && this.type.substring(4)) || eYo.key.PLACEHOLDER
 }
@@ -477,7 +477,7 @@ eYo.require('brick.operator')
  * @param {Element} element the persistent element.
  * @param {Object} [opt]
  */
-eYo.brick.Dflt_p.saveData = function (element, opt) {
+eYo.brick.Base_p.saveData = function (element, opt) {
   this.dataForEach(data => data.save(element, opt))
 }
 
@@ -487,7 +487,7 @@ eYo.brick.Dflt_p.saveData = function (element, opt) {
  * @param {Element} element the persistent element.
  * @param {Object} [opt]
  */
-eYo.brick.Dflt_p.saveSlots = function (element, opt) {
+eYo.brick.Base_p.saveSlots = function (element, opt) {
   this.slotForEach(slot => slot.save(element, opt))
 }
 

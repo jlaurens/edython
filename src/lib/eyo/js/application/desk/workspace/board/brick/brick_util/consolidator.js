@@ -67,7 +67,7 @@ eYo.consolidator.makeBase({
  * Removes empty place holders
  * @param {eYo.brick.Base} brick - to be consolidated....
  */
-eYo.consolidator.Dflt_p.consolidate = eYo.doNothing
+eYo.consolidator.Base_p.consolidate = eYo.doNothing
 // TODO make a subclass for each consolidator
 /**
  * List consolidator.

@@ -95,8 +95,8 @@ eYo.view._p.enhanceNew = (enhancer) => {
  * Declare the given model.
  * @param {Object} model - Object, like for |makeC9r|.
  */
-eYo.view.Dflt_p.modelMerge = function (model) {
-  eYo.view.Dflt_p.SuperC9r_p.modelMerge.call(this, model)
+eYo.view.Base_p.modelMerge = function (model) {
+  eYo.view.Base_p.SuperC9r_p.modelMerge.call(this, model)
   model.views && (this.views.modelMerge(model.views))
 }
 
@@ -141,7 +141,7 @@ eYo.view.Dlgt_p.uiDeclare = function (ui) {
  * Default implementation calls the inherited method
  * and forwards to the views.
  */
-eYo.view.Dflt_p.doInitUI = function (...args) {
+eYo.view.Base_p.doInitUI = function (...args) {
   eYo.view.Dlgt_p.SuperC9r_p.doInitUI.call(this, ...args)
   this.viewForEach(v => v.doInitUI(...args))
 }
@@ -151,7 +151,7 @@ eYo.view.Dflt_p.doInitUI = function (...args) {
  * Default implementation forwards to the views
  * and calls the inherited method.
  */
-eYo.view.Dflt_p.doDisposeUI = function (...args) {
+eYo.view.Base_p.doDisposeUI = function (...args) {
   this.viewForEach(v => v.doDisposeUI(...args))
   eYo.view.Dlgt_p.SuperC9r_p.doDisposeUI.call(this, ...args)
 }
@@ -167,17 +167,17 @@ eYo.view.Dflt_p.doDisposeUI = function (...args) {
  * Layout the receiver.
  * The default implementation does nothing.
  */
-eYo.view.Dflt_p.layout = eYo.doNothing
+eYo.view.Base_p.layout = eYo.doNothing
 
 /**
  * Update the metrics of the receiver.
  */
-eYo.view.Dflt_p.updateMetrics = eYo.doNothing
+eYo.view.Base_p.updateMetrics = eYo.doNothing
 
 /**
  * Place the receiver.
  */
-eYo.view.Dflt_p.place = eYo.doNothing
+eYo.view.Base_p.place = eYo.doNothing
 
 /**
  * Consolidate the given model.
@@ -215,13 +215,13 @@ eYo.view.Dlgt_p.consolidatorMake = function (k, model) {
  * Make the ui.
  * Default implementation forwards to the driver.
  */
-eYo.view.Dflt_p.doInitUI = eYo.doNothing
+eYo.view.Base_p.doInitUI = eYo.doNothing
 
 /**
  * Make the ui.
  * Default implementation forwards to the driver.
  */
-eYo.view.Dflt_p.initUI = function (...args) {
+eYo.view.Base_p.initUI = function (...args) {
   try {
     this.initUI = eYo.doNothing
     this.doInitUI(...args)
@@ -235,13 +235,13 @@ eYo.view.Dflt_p.initUI = function (...args) {
  * Dispose of the ui.
  * Default implementation forwards to the driver.
  */
-eYo.view.Dflt_p.doDisposeUI = eYo.doNothing
+eYo.view.Base_p.doDisposeUI = eYo.doNothing
 
 /**
  * Dispose of the ui.
  * Default implementation forwards to the driver.
  */
-eYo.view.Dflt_p.disposeUI = function (...args) {
+eYo.view.Base_p.disposeUI = function (...args) {
   try {
     this.disposeUI = eYo.doNothing
     this.doDisposeUI(...args)

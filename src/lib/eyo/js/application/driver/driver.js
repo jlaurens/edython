@@ -202,7 +202,7 @@ eYo.driver.makeBase({
  * @param {*} object
  * @return {Boolean}
  */
-eYo.driver.Dflt_p.doInitUI = function (unused) {
+eYo.driver.Base_p.doInitUI = function (unused) {
   return true
 }
 
@@ -210,7 +210,7 @@ eYo.driver.Dflt_p.doInitUI = function (unused) {
  * Dispose of the UI.
  * @param {*} object
  */
-eYo.driver.Dflt_p.doDisposeUI = function (unused) {
+eYo.driver.Base_p.doDisposeUI = function (unused) {
   return true
 }
 
@@ -257,7 +257,7 @@ eYo.view.Base.eyo.propertiesMerge({
  * Make the ui.
  * Default implementation forwards to the driver.
  */
-eYo.view.Dflt_p.doInitUI = function (...args) {
+eYo.view.Base_p.doInitUI = function (...args) {
   this.ui_driver.doInitUI(this, ...args)
 }
 
@@ -265,6 +265,6 @@ eYo.view.Dflt_p.doInitUI = function (...args) {
  * Dispose of the ui.
  * Default implementation forwards to the driver.
  */
-eYo.view.Dflt_p.doDisposeUI = function (...args) {
+eYo.view.Base_p.doDisposeUI = function (...args) {
   this.ui_driver.doDisposeUI(this, ...args)
 }

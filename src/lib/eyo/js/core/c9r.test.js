@@ -127,7 +127,7 @@ describe ('Tests: C9r', function () {
     chai.assert(eYo.c9r.Dlgt)
     chai.assert(eYo.c9r.Base)
     chai.assert(eYo.c9r.Dlgt_p)
-    chai.assert(eYo.c9r.Dflt_p)
+    chai.assert(eYo.c9r.Base_p)
     chai.assert(eYo.c9r.Dlgt.eyo)
     chai.assert(eYo.c9r.Dlgt.eyo.eyo)
     chai.expect(eYo.c9r.Dlgt.eyo.eyo.eyo).equal(eYo.c9r.Dlgt.eyo.eyo)
@@ -136,7 +136,7 @@ describe ('Tests: C9r', function () {
     let ns = eYo.c9r.makeNS()
     chai.expect(ns.Base).equal(eYo.c9r.Base)
     chai.expect(ns.Dlgt).equal(eYo.c9r.Dlgt)
-    chai.expect(ns.Dflt_p).equal(eYo.c9r.Dflt_p)
+    chai.expect(ns.Base_p).equal(eYo.c9r.Base_p)
   })
   it ('C9r modelMerge', function () {
     var ns = eYo.c9r.makeNS()
@@ -281,7 +281,7 @@ describe ('Tests: C9r', function () {
       chai.assert(!ns.Base.SuperC9r_p)
       eYo.c9r.makeC9r(ns, 'Base')
       chai.assert(ns.Base !== eYo.c9r.Base)
-      chai.expect(ns.Base.SuperC9r_p).equal(eYo.c9r.Dflt_p)
+      chai.expect(ns.Base.SuperC9r_p).equal(eYo.c9r.Base_p)
     })
     it (`ns.makeBase()`, function () {
       chai.assert(eYo.c9r.Base)
@@ -306,13 +306,13 @@ describe ('Tests: C9r', function () {
       chai.expect(C9r).equal(C9r.eyo.C9r)
       chai.expect(C9r.prototype).equal(C9r.eyo.C9r_p)
       chai.expect(eYo.c9r.Base).equal(C9r.eyo.C9r_S)
-      chai.expect(eYo.c9r.Dflt_p).equal(C9r.eyo.C9r_s)
+      chai.expect(eYo.c9r.Base_p).equal(C9r.eyo.C9r_s)
     })
     it (`eYo.c9r.makeC9r(ns, 'A')`, function () {
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
       eYo.c9r.makeC9r(ns, 'A')
-      chai.expect(ns.A_s).equal(eYo.c9r.Dflt_p)
+      chai.expect(ns.A_s).equal(eYo.c9r.Base_p)
       chai.expect(()=>{ eYo.c9r.makeC9r(ns, 'A') }).to.throw() // missing model
     })
     it (`eYo.c9r.makeC9r(ns, 'A', Super, model)`, function () {
@@ -326,7 +326,7 @@ describe ('Tests: C9r', function () {
       })
       chai.assert(ns.A)
       chai.assert(eYo.isSubclass(ns.A, ns.Base))
-      chai.expect(ns.A_s).equal(ns.Dflt_p)
+      chai.expect(ns.A_s).equal(ns.Base_p)
       var flag = 0
       new ns.A(123)
       chai.expect(flag).equal(123)
@@ -351,7 +351,7 @@ describe ('Tests: C9r', function () {
       chai.assert(ns.A.eyo.name.endsWith('.A'))
       chai.expect(ns.A.eyo.ns).equal(ns)
       chai.expect(ns.A_p).equal(ns.A.prototype)
-      chai.expect(ns.A_s).equal(ns.Dflt_p)
+      chai.expect(ns.A_s).equal(ns.Base_p)
     })
     it ('makeC9r: constructor call', function () {
       var ns = eYo.c9r.makeNS()
@@ -633,7 +633,7 @@ describe ('Tests: C9r', function () {
       chai.assert(A)
       chai.assert(A.eyo)
       chai.expect(A.eyo.super).equal(eYo.c9r.Base.eyo)
-      chai.expect(A.SuperC9r_p).equal(eYo.c9r.Dflt_p)
+      chai.expect(A.SuperC9r_p).equal(eYo.c9r.Base_p)
       chai.expect(A.SuperC9r_p.constructor).equal(eYo.c9r.Base)
       chai.expect(() => {
         new A()

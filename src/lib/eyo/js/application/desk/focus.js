@@ -362,7 +362,7 @@ eYo.view.Workspace.eyo.propertiesMerge({
  * Focus on this board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.board.Dflt_p.focusOn = function () {
+eYo.board.Base_p.focusOn = function () {
   return !!(this.focus_main.board = this)
 }
 
@@ -374,7 +374,7 @@ eYo.board.Dflt_p.focusOn = function () {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.brick.Dflt_p.focusOn = function (noBoard) {
+eYo.brick.Base_p.focusOn = function (noBoard) {
   noBoard || this.board.focusOn()
   return !!(this.focus_mngr.brick = this)
 }
@@ -386,7 +386,7 @@ eYo.brick.Dflt_p.focusOn = function (noBoard) {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.field.Dflt_p.focusOn = function (noBoard) {
+eYo.field.Base_p.focusOn = function (noBoard) {
   noBoard || this.board.focusOn()
   return !!(this.focus_mngr.field = this)
 }
@@ -399,7 +399,7 @@ eYo.field.Dflt_p.focusOn = function (noBoard) {
  * also focuses on its enclosing board.
  * @return {Boolean} Whether the receiver gained focus.
  */
-eYo.magnet.Dflt_p.focusOn = function (noBoard) {
+eYo.magnet.Base_p.focusOn = function (noBoard) {
   noBoard || this.board.focusOn()
   return !!(this.focus_mngr.magnet = this)
 }
@@ -407,7 +407,7 @@ eYo.magnet.Dflt_p.focusOn = function (noBoard) {
 /**
  * Focus off this board.
  */
-eYo.board.Dflt_p.focusOff = function () {
+eYo.board.Base_p.focusOff = function () {
   this.focus_main.board = eYo.NA
 }
 
@@ -416,7 +416,7 @@ eYo.board.Dflt_p.focusOff = function () {
  * If there is a selected connection, it is removed.
  * `focusOff` is used from click handling methods.
  */
-eYo.brick.Dflt_p.focusOff = function () {
+eYo.brick.Base_p.focusOff = function () {
   this.hasFocus && (this.focus_mngr.brick = eYo.NA)
 }
 
@@ -426,7 +426,7 @@ eYo.brick.Dflt_p.focusOff = function () {
  * `focusOff` is used from click handling methods.
  * Does nothing if the receiver is not selected.
  */
-eYo.magnet.Dflt_p.focusOff = function () {
+eYo.magnet.Base_p.focusOff = function () {
   this.hasFocus && (this.focus_mngr.magnet = eYo.NA)
 }
 
@@ -434,6 +434,6 @@ eYo.magnet.Dflt_p.focusOff = function () {
  * Focus off this field.
  * `focusOff` is used from click handling methods.
  */
-eYo.field.Dflt_p.focusOff = function () {
+eYo.field.Base_p.focusOff = function () {
   this.hasFocus && (this.focus_mngr.field = eYo.NA)
 }

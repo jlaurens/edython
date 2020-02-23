@@ -54,7 +54,7 @@ eYo.brick.registerAll(eYo.t3.expr, eYo.expr.Base, true)
  * For edython.
  * @param {*} deep  Whether to propagate the message to children.
  */
-eYo.expr.Dflt_p.changeDone = function (deep) {
+eYo.expr.Base_p.changeDone = function (deep) {
   eYo.expr.Base.eyo.C9r_s.ChangeDone.call(this, deep)
   var parent = this.parent
   parent && parent.changeDone()
@@ -67,7 +67,7 @@ eYo.expr.Dflt_p.changeDone = function (deep) {
  * This should be used instead of direct brick querying.
  * @return {String} The type of the receiver's brick.
  */
-eYo.expr.Dflt_p.getType = eYo.c9r.decorateChange(
+eYo.expr.Base_p.getType = eYo.c9r.decorateChange(
   'getType',
   function () {
     return {
@@ -83,7 +83,7 @@ eYo.expr.Dflt_p.getType = eYo.c9r.decorateChange(
  * @param {String} type
  * @return {Boolean}
  */
-eYo.expr.Dflt_p.checkOutputType = function (type) {
+eYo.expr.Base_p.checkOutputType = function (type) {
   var m4t = this.out_m
   if (m4t.check_) {
     if (type.indexOf) {
@@ -105,7 +105,7 @@ eYo.expr.Dflt_p.checkOutputType = function (type) {
  * The connection cannot always establish.
  * @param {eYo.brick.Base} brick  the brick to be replaced
  */
-eYo.expr.Dflt_p.canReplaceBrick = function (brick) {
+eYo.expr.Base_p.canReplaceBrick = function (brick) {
   if (brick) {
     var m4t = brick.out_m
     if (!m4t) {
@@ -127,7 +127,7 @@ eYo.expr.Dflt_p.canReplaceBrick = function (brick) {
  * The connection cannot always establish.
  * @param {eYo.brick.Base} brick
  */
-eYo.expr.Dflt_p.replaceBrick = function (brick) {
+eYo.expr.Base_p.replaceBrick = function (brick) {
   if (this.board && brick && brick.board) {
     eYo.event.groupWrap(() => {
       eYo.do.tryFinally(() => {
@@ -158,7 +158,7 @@ eYo.expr.Dflt_p.replaceBrick = function (brick) {
  * The print statement needs some preparation before drawing.
  * @private
  */
-eYo.expr.Dflt_p.willRender_ = function (recorder) {
+eYo.expr.Base_p.willRender_ = function (recorder) {
   eYo.expr.Base.eyo.C9r_s.willRender_.call(this, recorder)
   var field = this.await_f
   if (field) {
@@ -172,7 +172,7 @@ eYo.expr.Dflt_p.willRender_ = function (recorder) {
  * are awaitable
  * @return yes or no
  */
-eYo.expr.Dflt_p.awaitable = function () {
+eYo.expr.Base_p.awaitable = function () {
   if (!this.await_f) {
     return false
   }
@@ -193,7 +193,7 @@ eYo.expr.Dflt_p.awaitable = function () {
  * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
  * @private
  */
-eYo.expr.Dflt_p.populateContextMenuFirst_ = function (mngr) {
+eYo.expr.Base_p.populateContextMenuFirst_ = function (mngr) {
   var yorn = eYo.expr.Base.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
@@ -225,7 +225,7 @@ eYo.expr.Dflt_p.populateContextMenuFirst_ = function (mngr) {
  * @param {Object} model
  * @return the created brick
  */
-eYo.expr.Dflt_p.insertParentWithModel = function (model) {
+eYo.expr.Base_p.insertParentWithModel = function (model) {
   var parentSlotName = model.slot || model.input
   var parent
   eYo.event.disableWrap(() => {
@@ -333,7 +333,7 @@ eYo.expr.Dflt_p.insertParentWithModel = function (model) {
  * @param {Boolean} force
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
-eYo.expr.Dflt_p.doConsolidate = function (deep, force) {
+eYo.expr.Base_p.doConsolidate = function (deep, force) {
   if (eYo.expr.Base.eyo.C9r_s.doConsolidate.call(this, deep, force)) {
     var parent = this.parent
     return (parent && parent.consolidate()) || true

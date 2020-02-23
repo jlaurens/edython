@@ -23,58 +23,58 @@ eYo.fcls.makeDriverC9r('Field')
  * @param {eYo.field} field
  * @param {*} where
  */
-eYo.fcls.Field.Dflt_p.moveTo = eYo.doNothing
+eYo.fcls.Field.Base_p.moveTo = eYo.doNothing
 
 /**
  * The field text will change.
  * @param {eYo.field} field  the node the driver acts on
  */
-eYo.fcls.Field.Dflt_p.textRemove = eYo.doNothing
+eYo.fcls.Field.Base_p.textRemove = eYo.doNothing
 
 /**
  * Display the field text.
  * @param {eYo.field} field  the node the driver acts on
  */
-eYo.fcls.Field.Dflt_p.textCreate = eYo.doNothing
+eYo.fcls.Field.Base_p.textCreate = eYo.doNothing
 
 /**
  * Set the visual effects of the field.
  * @param {*} field
  */
-eYo.fcls.Field.Dflt_p.setVisualAttribute = eYo.doNothing
+eYo.fcls.Field.Base_p.setVisualAttribute = eYo.doNothing
 
 /**
  * Set the visual effects of the field.
  * @param {*} field
  */
-eYo.fcls.Field.Dflt_p.inlineEditorResize = eYo.doNothing
+eYo.fcls.Field.Base_p.inlineEditorResize = eYo.doNothing
 
 /**
  * Whether the field is displayed.
  * @param {eYo.field} field  the field to query about
  */
-eYo.fcls.Field.Dflt_p.displayedGet = eYo.doNothing
+eYo.fcls.Field.Base_p.displayedGet = eYo.doNothing
 
 /**
  * Display/hide the given field.
  * @param {eYo.field} field  the field the driver acts on
  * @param {boolean} yorn
  */
-eYo.fcls.Field.Dflt_p.displayedSet = eYo.doNothing
+eYo.fcls.Field.Base_p.displayedSet = eYo.doNothing
 
 /**
  * Display/hide the given field, according to its `visible` status.
  * @param {eYo.field} field  the field the driver acts on
  * @param {boolean} yorn
  */
-eYo.fcls.Field.Dflt_p.displayedUpdate = eYo.doNothing
+eYo.fcls.Field.Base_p.displayedUpdate = eYo.doNothing
 
 /**
  * Callback at view disposal.
  * Forwards to the driver.
  * @param {*} field
  */
-eYo.fcls.Field.Dflt_p.widgetDisposeCallback = function (field) {
+eYo.fcls.Field.Base_p.widgetDisposeCallback = function (field) {
   return eYo.doNothing
 }
 
@@ -84,7 +84,7 @@ eYo.fcls.Field.Dflt_p.widgetDisposeCallback = function (field) {
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.fcls.Field.Dflt_p.makeReserved = eYo.doNothing
+eYo.fcls.Field.Base_p.makeReserved = eYo.doNothing
 
 /**
  * Make the given field an error.
@@ -92,7 +92,7 @@ eYo.fcls.Field.Dflt_p.makeReserved = eYo.doNothing
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.fcls.Field.Dflt_p.makeError = eYo.doNothing
+eYo.fcls.Field.Base_p.makeError = eYo.doNothing
 
 /**
  * Make the given field a placeholder.
@@ -100,7 +100,7 @@ eYo.fcls.Field.Dflt_p.makeError = eYo.doNothing
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.fcls.Field.Dflt_p.makePlaceholder = eYo.doNothing
+eYo.fcls.Field.Base_p.makePlaceholder = eYo.doNothing
 
 /**
  * Make the given field a comment.
@@ -108,4 +108,4 @@ eYo.fcls.Field.Dflt_p.makePlaceholder = eYo.doNothing
  * @param {*} field
  * @param {boolean} yorn
  */
-eYo.fcls.Field.Dflt_p.makeComment = eYo.doNothing
+eYo.fcls.Field.Base_p.makeComment = eYo.doNothing

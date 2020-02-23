@@ -764,7 +764,7 @@ describe ('Tests: Object', function () {
       }
     })
     chai.assert(ns.merge)
-    ns.merge(ns.Dflt_p)
+    ns.merge(ns.Base_p)
     o.bar()
     chai.expect(flag).equal(421)
     o = new ns.Base()
@@ -798,7 +798,7 @@ describe ('Tests: Object', function () {
       }
     })
     chai.assert(ns.chiMerge)
-    ns.chiMerge(ns.Dflt_p)
+    ns.chiMerge(ns.Base_p)
     o.bar()
     chai.expect(flag).equal(421)
     o = new ns.Base()

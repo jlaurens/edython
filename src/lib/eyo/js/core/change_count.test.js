@@ -4,7 +4,7 @@ describe ('Tests: change_count', function () {
     chai.assert(eYo.o4t.changeCount.merge)
     var ns = eYo.o4t.makeNS()
     ns.makeBase()
-    eYo.o4t.changeCount.merge(ns.Dflt_p)
+    eYo.o4t.changeCount.merge(ns.Base_p)
     let d = new ns.Base()
     chai.assert(d.changeCount_p)
     chai.assert(d.updateChangeCount)

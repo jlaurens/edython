@@ -353,14 +353,14 @@ eYo.event.makeBase({
  * Run an event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
-eYo.event.Dflt_p.run = eYo.doNothing
+eYo.event.Base_p.run = eYo.doNothing
 
 /**
  * Merge the receiver with the given event.
  * @param {eYo.event.Base} event - an eYo event
  * @return {Boolean} Whether the change did occur.
  */
-eYo.event.Dflt_p.merge = eYo.doNothing
+eYo.event.Base_p.merge = eYo.doNothing
 
 /**
  * @name {eYo.event.Backer}

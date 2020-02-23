@@ -423,7 +423,7 @@ eYo.expr.makeC9r('lambda', true, {
  * The output check may change depending on the content.
  * For edython.
  */
-eYo.magnet.Dflt_p.consolidateType = function () {
+eYo.magnet.Base_p.consolidateType = function () {
   eYo.magnet.eyo.C9r_s.consolidateType.call(this)
   var brick = this.brick
   var m4tOut = brick.out_m

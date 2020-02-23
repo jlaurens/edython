@@ -101,7 +101,7 @@ eYo.brick.registerAll(eYo.t3.stmt, eYo.stmt.Base, true)
  * @param {Object} model
  * @return the created brick
  */
-eYo.stmt.Dflt_p.insertParentWithModel = function (model) {
+eYo.stmt.Base_p.insertParentWithModel = function (model) {
   var magnet = this.head_m
   if (magnet) {
     var parent
@@ -151,7 +151,7 @@ eYo.stmt.Dflt_p.insertParentWithModel = function (model) {
  * @param {string} belowPrototypeName
  * @return the created brick
  */
-eYo.stmt.Dflt_p.insertBrickAfter = function (belowPrototypeName) {
+eYo.stmt.Base_p.insertBrickAfter = function (belowPrototypeName) {
   return eYo.event.groupWrap(() => {
     var below = eYo.brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m

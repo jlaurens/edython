@@ -399,12 +399,12 @@ eYo.field.makeC9r('Base', eYo.bsm_o3d.Base, {
  * Initializes the model of the field after it has been installed on a block.
  * No-op by default.
  */
-eYo.field.Dflt_p.initModel = eYo.doNothing
+eYo.field.Base_p.initModel = eYo.doNothing
 
 /**
  * Whether the field of the receiver starts with a separator.
  */
-eYo.field.Dflt_p.startsWithSeparator = function () {
+eYo.field.Base_p.startsWithSeparator = function () {
   // if the text is void, it can not change whether
   // the last character was a letter or not
   var text = this.text
@@ -428,7 +428,7 @@ eYo.field.Dflt_p.startsWithSeparator = function () {
  * Saves the computed width in a property.
  * @private
  */
-eYo.field.Dflt_p.render_ = function() {
+eYo.field.Base_p.render_ = function() {
   if (!this.visible_) {
     this.size_.width = 0
     return
@@ -441,7 +441,7 @@ eYo.field.Dflt_p.render_ = function() {
 /**
  * Updates the width of the field in the UI.
  **/
-eYo.field.Dflt_p.updateWidth = function() {
+eYo.field.Base_p.updateWidth = function() {
   var d = this.ui_driver_mngr
   d && (d.updateWidth(this))
 }
@@ -453,7 +453,7 @@ eYo.field.Dflt_p.updateWidth = function() {
  * @param {String} txt
  * @return {String}
  */
-eYo.field.Dflt_p.validate = function (txt) {
+eYo.field.Base_p.validate = function (txt) {
   var v = this.data.validate(goog.isDef(txt) ? txt : this.text)
   return eYo.isVALID(v) ? v : eYo.NA
 }
@@ -462,7 +462,7 @@ eYo.field.Dflt_p.validate = function (txt) {
  * Will render the field.
  * We should call `this.willRender()` from the model.
  */
-eYo.field.Dflt_p.willRender = function () {
+eYo.field.Base_p.willRender = function () {
   var f = this.model && (eYo.decorate.reentrant_method(this, 'model_willRender', this.model.willRender))
   if (f) {
     f.call(this)

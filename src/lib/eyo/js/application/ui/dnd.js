@@ -226,7 +226,7 @@ eYo.dnd.dragger.makeBase({
  * Start a drag operation.
  * @return {Boolean} true is a drag operation did start
  */
-eYo.dnd.dragger.Dflt_p.start = function () {
+eYo.dnd.dragger.Base_p.start = function () {
   return (this.started_ = true)
 }
 
@@ -234,7 +234,7 @@ eYo.dnd.dragger.Dflt_p.start = function () {
  * Update a drag operation.
  * @return {Boolean} true if a drag operation did update
  */
-eYo.dnd.dragger.Dflt_p.update = function () {
+eYo.dnd.dragger.Base_p.update = function () {
   return this.started_
 }
 
@@ -242,13 +242,13 @@ eYo.dnd.dragger.Dflt_p.update = function () {
  * Cancel a drag operation.
  * @return {Boolean} true is a drag operation did cancel
  */
-eYo.dnd.dragger.Dflt_p.cancel = eYo.dnd.dragger.Dflt_p.update
+eYo.dnd.dragger.Base_p.cancel = eYo.dnd.dragger.Base_p.update
 
 /**
  * Reset a drag operation.
  * @return {Boolean} true is a drag operation did reset
  */
-eYo.dnd.dragger.Dflt_p.reset = function () {
+eYo.dnd.dragger.Base_p.reset = function () {
   if (this.started_) {
     this.started_ = false
     return true
@@ -259,7 +259,7 @@ eYo.dnd.dragger.Dflt_p.reset = function () {
  * Complete a drag operation.
  * @return {Boolean} true is a drag operation did complete
  */
-eYo.dnd.dragger.Dflt_p.complete = eYo.dnd.dragger.Dflt_p.reset
+eYo.dnd.dragger.Base_p.complete = eYo.dnd.dragger.Base_p.reset
 
 /********/
 
@@ -588,7 +588,7 @@ eYo.dnd.dropper.makeBase({
  * Start a drop operation.
  * @return {Boolean} true is a drop operation did start
  */
-eYo.dnd.dropper.Dflt_p.start = function () {
+eYo.dnd.dropper.Base_p.start = function () {
   return (this.started_ = true)
 }
 
@@ -596,7 +596,7 @@ eYo.dnd.dropper.Dflt_p.start = function () {
  * Update a drop operation.
  * @return {Boolean} true is a drop operation did update
  */
-eYo.dnd.dropper.Dflt_p.update = function () {
+eYo.dnd.dropper.Base_p.update = function () {
   return this.started_
 }
 
@@ -604,13 +604,13 @@ eYo.dnd.dropper.Dflt_p.update = function () {
  * Cancel a drop operation.
  * @return {Boolean} true is a drop operation did cancel
  */
-eYo.dnd.dropper.Dflt_p.cancel = eYo.dnd.dropper.Dflt_p.update
+eYo.dnd.dropper.Base_p.cancel = eYo.dnd.dropper.Base_p.update
 
 /**
  * Reset a drop operation.
  * @return {Boolean} true is a drop operation did reset
  */
-eYo.dnd.dropper.Dflt_p.reset = function () {
+eYo.dnd.dropper.Base_p.reset = function () {
   if (this.started_) {
     this.started_ = false
     return true
@@ -621,7 +621,7 @@ eYo.dnd.dropper.Dflt_p.reset = function () {
  * Complete a drop operation.
  * @return {Boolean} true is a drop operation did complete
  */
-eYo.dnd.dropper.Dflt_p.complete = eYo.dnd.dropper.Dflt_p.reset
+eYo.dnd.dropper.Base_p.complete = eYo.dnd.dropper.Base_p.reset
 
 /*******/
 

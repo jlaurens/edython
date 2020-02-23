@@ -334,7 +334,7 @@ eYo.id.HELP = 'HELP'
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.brick.Dflt_p.populateContextMenuFirst_ = function (mngr) {
+eYo.brick.Base_p.populateContextMenuFirst_ = function (mngr) {
   mngr.shouldSeparate()
   mngr.populate_movable_parent(this)
 }
@@ -344,7 +344,7 @@ eYo.brick.Dflt_p.populateContextMenuFirst_ = function (mngr) {
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.brick.Dflt_p.populateContextMenuMiddle_ = function (mngr) {
+eYo.brick.Base_p.populateContextMenuMiddle_ = function (mngr) {
   return false
 }
 
@@ -354,7 +354,7 @@ eYo.brick.Dflt_p.populateContextMenuMiddle_ = function (mngr) {
  * @param {eYo.MenuManager} mngr The context menu manager.
  * @private
  */
-eYo.brick.Dflt_p.populateContextMenuLast_ = function (mngr) {
+eYo.brick.Base_p.populateContextMenuLast_ = function (mngr) {
   return mngr.populateLast(this)
 }
 
@@ -528,7 +528,7 @@ eYo.MenuManager.prototype.populateLast = function (brick) {
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.brick.Dflt_p.handleMenuItemActionFirst = function (mngr, event) {
+eYo.brick.Base_p.handleMenuItemActionFirst = function (mngr, event) {
   return mngr.handleAction_movable_parent(this, event)
 }
 
@@ -538,7 +538,7 @@ eYo.brick.Dflt_p.handleMenuItemActionFirst = function (mngr, event) {
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.brick.Dflt_p.handleMenuItemActionMiddle = function (mngr, event) {
+eYo.brick.Base_p.handleMenuItemActionMiddle = function (mngr, event) {
   return false
 }
 
@@ -549,7 +549,7 @@ eYo.brick.Dflt_p.handleMenuItemActionMiddle = function (mngr, event) {
  * @param {eYo.MenuManager} mngr
  * @param {goog.events.Event} event The event containing as target
  */
-eYo.brick.Dflt_p.handleMenuItemActionLast = function (mngr, event) {
+eYo.brick.Base_p.handleMenuItemActionLast = function (mngr, event) {
   return mngr.handleActionLast(this, event)
 }
 

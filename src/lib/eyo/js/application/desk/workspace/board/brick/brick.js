@@ -709,7 +709,7 @@ eYo.brick.makeBase({
       // next trick to avoid some costy computations
       // this makes sense because subclassers may use a long getBaseType
       // which is oftenly used
-      this.getBaseType = eYo.brick.Dflt_p.getBaseType // no side effect during creation due to inheritance.
+      this.getBaseType = eYo.brick.Base_p.getBaseType // no side effect during creation due to inheritance.
 
       // private properties
       this.children__ = []
@@ -785,7 +785,7 @@ eYo.brick.makeBase({
 eYo.brick.DEBUG_ = Object.create(null)
 
 ;(() => {
-  let _p = eYo.brick.Dflt_p
+  let _p = eYo.brick.Base_p
   /**
    * Increment the change count.
    * The change.count is used to compute some properties that depend
@@ -845,7 +845,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @param {Object} after
    * @param {Boolean} notUndoable
    */
-  eYo.data.Dflt_p.doChange = function (after, validate) {
+  eYo.data.Base_p.doChange = function (after, validate) {
     if (after !== this.get()) {
       this.brick.change.wrap(() => {
         this.set(after, validate)
@@ -2683,12 +2683,12 @@ eYo.do.defineSlotProperty = (object, k) => {
  * Update the receiver's shape.
  * Default implementation just forwards to the driver.
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'updateShape')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'updateShape')
 
 /**
  * The default implementation forwards to the driver.
  */
-eYo.brick.Dflt_p.connectEffect = function () {
+eYo.brick.Base_p.connectEffect = function () {
   this.audio.play('click')
   var b = this.board
   if (b.scale < 1) {
@@ -2701,7 +2701,7 @@ eYo.brick.Dflt_p.connectEffect = function () {
  * The default implementation forwards to the driver.
  * This must take place while the brick is still in a consistent state.
  */
-eYo.brick.Dflt_p.disposeEffect = function () {
+eYo.brick.Base_p.disposeEffect = function () {
   this.audio.play('delete')
   this.driver.disposeEffect(this)
 }

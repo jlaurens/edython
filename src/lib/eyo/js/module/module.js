@@ -63,7 +63,7 @@ eYo.module.makeBase({
 
 /**
  * Item constuctor.
- * This should not inherit from `eYo.module.Base` but from `eYo.o4t.Base`. 
+ * This must not inherit from `eYo.module.Base` but from `eYo.o4t.Base`. 
  * @name{eYo.module.Item}
  * @param {Objec} item_model
  */
@@ -185,7 +185,7 @@ eYo.module._p.makeItem = function () {
  * @param {String|Number} key  The key or index of the item
  * @return {?Object} return the model object for that item, if any.
  */
-eYo.module.Dflt_p.getItem = function (key) {
+eYo.module.Base_p.getItem = function (key) {
   if (!goog.isNumber(key)) {
     key = this.data.by_name[key]
   }
@@ -199,7 +199,7 @@ eYo.module.Dflt_p.getItem = function (key) {
  * @param {String} key  The name of the category
  * @return {!Array} the list of item indices with the given category (possibly void).
  */
-eYo.module.Dflt_p.getItemsInCategory = function (category, type) {
+eYo.module.Base_p.getItemsInCategory = function (category, type) {
   var ra = this.data.by_category[category] || []
   if (eYo.isStr(type)) {
     type = this.data.type.indexOf(type)
@@ -222,7 +222,7 @@ eYo.module.Dflt_p.getItemsInCategory = function (category, type) {
  * Sends a message for each ordered item with the give type
  * @param {String} key  The name of the category
  */
-eYo.module.Dflt_p.forEachItemWithType = function (type, handler) {
+eYo.module.Base_p.forEachItemWithType = function (type, handler) {
   if (eYo.isStr(type)) {
     var ra = this.items_by_type[type]
     if (!ra) {

@@ -411,7 +411,7 @@ eYo.o4t._p.initProperties = function (object, properties, keys_p) {
  * Executes the helper for each owned property.
  * @param{Function} f -  an helper
  */
-eYo.o4t.Dflt_p.ownedForEach = function (f) {
+eYo.o4t.Base_p.ownedForEach = function (f) {
   this.eyo.propertyForEach(this, f, true)
 }
 
@@ -419,7 +419,7 @@ eYo.o4t.Dflt_p.ownedForEach = function (f) {
  * Executes the helper for each owned property stopping at the first truthy answer.
  * @param{Function} f -  an helper
  */
-eYo.o4t.Dflt_p.ownedSome = function (f) {
+eYo.o4t.Base_p.ownedSome = function (f) {
   return this.eyo.propertySome(this, f, true)
 }
 

@@ -239,7 +239,7 @@ eYo.app.makeBase({
  * Paste a brick from the local clipboard.
  * @private
  */
-eYo.app.Dflt_p.paste = eYo.doNothing
+eYo.app.Base_p.paste = eYo.doNothing
 
 /**
  * Delete this brick and the next ones if requested.
@@ -247,7 +247,7 @@ eYo.app.Dflt_p.paste = eYo.doNothing
  * @param {eYo.brick.Base} block The brick to delete.
  * @param {boolean} deep
  */
-eYo.app.Dflt_p.deleteBrick = function (brick, deep) {
+eYo.app.Base_p.deleteBrick = function (brick, deep) {
   if (brick && brick.deletable && !brick.board.readOnly) {
     if (brick.hasFocus) {
       // prepare a connection or a block to be selected
@@ -282,7 +282,7 @@ eYo.app.Dflt_p.deleteBrick = function (brick, deep) {
  * @param {eYo.brick.Base} brick - Brick to be copied.
  * @private
  */
-eYo.app.Dflt_p.copyBrick = function (brick, deep) {
+eYo.app.Base_p.copyBrick = function (brick, deep) {
   var xml = eYo.xml.brickToDom(brick, {noId: true, noNext: !deep})
   // Copy only the selected brick and internal bricks.
   // Encode start position in XML.
@@ -300,7 +300,7 @@ eYo.app.Dflt_p.copyBrick = function (brick, deep) {
  * @private
  * @return {Boolean} true if copied, false otherwise
  */
-eYo.app.Dflt_p.doCopy = function(optNoNext) {
+eYo.app.Base_p.doCopy = function(optNoNext) {
   var brick = this.focus_main.brick
   if (brick) {
     this.copyBrick(brick, !optNoNext)
@@ -312,7 +312,7 @@ eYo.app.Dflt_p.doCopy = function(optNoNext) {
  * Send the selected brick to the front.
  * This is a job for the renderer.
  */
-eYo.app.Dflt_p.doFront = function() {
+eYo.app.Base_p.doFront = function() {
   var b3k = this.focus_main.brick
   if (b3k) {
     b3k.sendToFront()
@@ -322,7 +322,7 @@ eYo.app.Dflt_p.doFront = function() {
 /**
  * Send the selected brick to the back.
  */
-eYo.app.Dflt_p.doBack = function() {
+eYo.app.Base_p.doBack = function() {
   var b3k = this.focus_main.brick
   if (b3k) {
     b3k.ui.sendToBack()
@@ -332,7 +332,7 @@ eYo.app.Dflt_p.doBack = function() {
 /**
  * Scroll the board to show the selected brick.
  */
-eYo.app.Dflt_p.doFocus = function() {
+eYo.app.Base_p.doFocus = function() {
   var b3k = this.focus_main.brick
   if (b3k) {
     b3k.board.scrollBrickTopLeft(b3k.id)
@@ -342,7 +342,7 @@ eYo.app.Dflt_p.doFocus = function() {
 /**
  * Close tooltips, context menus, dropdown selections, etc.
  */
-eYo.app.Dflt_p.hideChaff = eYo.doNothing
+eYo.app.Base_p.hideChaff = eYo.doNothing
 
 eYo.o3d.Base.eyo.propertiesMerge({
   /**

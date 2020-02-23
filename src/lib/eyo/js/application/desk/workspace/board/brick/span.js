@@ -265,7 +265,7 @@ Object.defineProperties(eYo.span, {
  * Reset the padding to 0.
  * @result {Boolean}  true iff there was a positive padding.
  */
-eYo.span.Dflt_p.resetPadding = function () {
+eYo.span.Base_p.resetPadding = function () {
   if (this.c_padding > 0) {
     this.c_padding_ = 0
     return true
@@ -275,7 +275,7 @@ eYo.span.Dflt_p.resetPadding = function () {
 /**
  * Reset the column counts to initial values.
  */
-eYo.span.Dflt_p.resetC = function () {
+eYo.span.Base_p.resetC = function () {
   this.c_min_ = this.c_min_init_
   this.c_padding_ = 0
   var c = this.c_min_ + this.c_padding_
@@ -288,7 +288,7 @@ eYo.span.Dflt_p.resetC = function () {
  * The suite bricks, if any, influence the padding.
  * @param {Number} delta  the difference from the old value to value and the old one.
  */
-eYo.span.Dflt_p.addC = function (delta) {
+eYo.span.Base_p.addC = function (delta) {
   if (this.c_min_ + delta < this.c_min_init_) {
     delta = this.c_min_init_ - this.c_min_
   }
@@ -310,7 +310,7 @@ eYo.span.Dflt_p.addC = function (delta) {
  * The suite bricks, if any, influence the padding.
  * @param {Number} delta  the difference from the old value to value and the old one.
  */
-eYo.span.Dflt_p.addL = function (delta) {
+eYo.span.Base_p.addL = function (delta) {
   if (delta) {
     this.l_ += delta
   }
@@ -320,7 +320,7 @@ eYo.span.Dflt_p.addL = function (delta) {
  * Convenient method
  * @param {Object} delta  the value to add to the ressource.
  */
-eYo.span.Dflt_p.reset = function (where) {
+eYo.span.Base_p.reset = function (where) {
   console.error('WHAT IS THE PURPOSE ?')
 }
 
@@ -328,7 +328,7 @@ eYo.span.Dflt_p.reset = function (where) {
  * Convenient method
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.span.Dflt_p.resetL = function () {
+eYo.span.Base_p.resetL = function () {
   this.main_ = 1
   this.header_ = this.suite_ = this.footer_ = 0
   var b = this.brick_
@@ -348,7 +348,7 @@ eYo.span.Dflt_p.resetL = function () {
  * 3) the left connection changes
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.span.Dflt_p.addHeader = function (delta) {
+eYo.span.Base_p.addHeader = function (delta) {
   if (delta) {
     this.header_ += delta
     this.l_ += delta
@@ -370,7 +370,7 @@ eYo.span.Dflt_p.addHeader = function (delta) {
  * and possibly to the head.
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.span.Dflt_p.addMain = function (delta) {
+eYo.span.Base_p.addMain = function (delta) {
   if (delta) {
     this.main_ += delta
     this.l_ += delta
@@ -388,7 +388,7 @@ eYo.span.Dflt_p.addMain = function (delta) {
  * Convenient method
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.span.Dflt_p.addLeft_ = function (delta) {
+eYo.span.Base_p.addLeft_ = function (delta) {
   var left = this.leftSpan
   if (left) {
     left.addFooter(delta)
@@ -401,7 +401,7 @@ eYo.span.Dflt_p.addLeft_ = function (delta) {
  * Convenient method
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.span.Dflt_p.addParent_ = function (delta) {
+eYo.span.Base_p.addParent_ = function (delta) {
   var parent = this.parentSpan
   if (parent) {
     this.brick.isTop
@@ -418,7 +418,7 @@ eYo.span.Dflt_p.addParent_ = function (delta) {
  * 3) The right connection changes
  * @param {Number} delta  the value to add to the ressource.
  */
-eYo.span.Dflt_p.addFooter = function (delta) {
+eYo.span.Base_p.addFooter = function (delta) {
   if (delta) {
     this.footer_ += delta
     this.l_ += delta
@@ -434,7 +434,7 @@ eYo.span.Dflt_p.addFooter = function (delta) {
  * @param {Number} delta  the value to add to the ressource.
  * Actually it can only be 1 or -1.
  */
-eYo.span.Dflt_p.addFoot = function (delta) {
+eYo.span.Base_p.addFoot = function (delta) {
   if (delta) {
     this.foot_ += delta
     this.addParent_(delta)
@@ -446,7 +446,7 @@ eYo.span.Dflt_p.addFoot = function (delta) {
  * @param {Number} delta  the value to add to the ressource.
  * Actually it can only be 1 or -1.
  */
-eYo.span.Dflt_p.addSuite = function (delta) {
+eYo.span.Base_p.addSuite = function (delta) {
   var b = this.brick
   if (delta && b.isGroup) {
     this.suite_ += delta

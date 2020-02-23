@@ -1361,7 +1361,7 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
  * Forwards to the driver.
  * @protected
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'updateShape')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'updateShape')
 
 /**
  * Update the shape of the brick.
@@ -1709,7 +1709,7 @@ eYo.fcfl.Brick._p.deleteStyleSet = eYo.doNothing
  * The default implementation forwards to the driver.
  * @param {eYo.brick.Base} brick - the brick the driver acts on
  */
-eYo.driver.makeForwarder(eYo.brick.Dflt_p, 'deleteStyleSet')
+eYo.driver.makeForwarder(eYo.brick.Base_p, 'deleteStyleSet')
 
 /**
  * Handle a mousedown on an SVG brick.

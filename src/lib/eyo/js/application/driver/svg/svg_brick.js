@@ -29,7 +29,7 @@ goog.forwardDeclare('goog.dom')
  * @property {SvgPathElement} pathCollapsed_  A path.
  * @property {SvgPathElement} pathSelect_  A path.
  * @property {SvgPathElement} pathHilight_  A path.
- * @memberof eYo.brick.Dflt_p.dom
+ * @memberof eYo.brick.Base_p.dom
  */
 
 // Brick management

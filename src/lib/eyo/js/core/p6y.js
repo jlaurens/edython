@@ -234,7 +234,7 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
   let get_m = model.get // from model => suffix = '_m' and `@this` == property owner
   if (model.copy) {
     model.get && eYo.throw(`Unexpected get`)
-    prototype.getValue = eYo.p6y.Dflt_p.__getCopyValue
+    prototype.getValue = eYo.p6y.Base_p.__getCopyValue
   } else {
     if (get_m === eYo.doNothing || get_m === false) {
       can_lazy = false
@@ -461,7 +461,7 @@ eYo.p6y.makeBase({
             return `Unexpected setter ${key} in ${owner.eyo.key}'s instance property`
           },
         },
-        eYo.p6y.Dflt_p.valueGetter
+        eYo.p6y.Base_p.valueGetter
       ),
       owner: eYo.descriptorR({
           lazy () {
@@ -495,7 +495,7 @@ eYo.p6y.makeBase({
 
 
 ;(() => {
-  let _p = eYo.p6y.Dflt_p
+  let _p = eYo.p6y.Base_p
 
   /**
    * The parent of the property is the object who declares the property,
@@ -725,7 +725,7 @@ eYo.p6y.makeBase({
   _p.__getCopyValue = function () {
     try {
       this.getValue = eYo.doNothing
-      var ans = eYo.p6y.Dflt_p.getValue.call(this)
+      var ans = eYo.p6y.Base_p.getValue.call(this)
       return ans && ans.copy
     } finally {
       delete this.getValue

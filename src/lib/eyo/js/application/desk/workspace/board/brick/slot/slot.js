@@ -298,7 +298,7 @@ eYo.slot.Dlgt_p.initInstance = function (object) {
  * For edython.
  * @param {boolean} after
  */
-eYo.slot.Dflt_p.whenRequiredFromModel = function (helper) {
+eYo.slot.Base_p.whenRequiredFromModel = function (helper) {
   if (this.isRequiredFromModel) {
     this.isRequiredFromModel = false
     if (eYo.isF(helper)) {
@@ -315,7 +315,7 @@ eYo.slot.Dflt_p.whenRequiredFromModel = function (helper) {
  * @param {Boolean} deep whether to consolidate connected bricks.
  * @param {Boolean} force whether to force synchronization.
  */
-eYo.slot.Dflt_p.consolidate = function (deep, force) {
+eYo.slot.Base_p.consolidate = function (deep, force) {
   var m4t = this.magnet
   if (m4t) {
     m4t.incog = this.incog
@@ -332,7 +332,7 @@ eYo.slot.Dflt_p.consolidate = function (deep, force) {
  * Called only by `synchronizeSlots`.
  * For edython.
  */
-eYo.slot.Dflt_p.synchronize = function () {
+eYo.slot.Base_p.synchronize = function () {
   var d = this.ui_driver
   if (!d) {
     return
@@ -354,7 +354,7 @@ eYo.slot.Dflt_p.synchronize = function () {
  * @return a dom element, void lists may return nothing
  * @this a brick
  */
-eYo.slot.Dflt_p.save = function (element, opt) {
+eYo.slot.Base_p.save = function (element, opt) {
   if (this.incog) {
     return
   }
@@ -401,7 +401,7 @@ eYo.slot.Dflt_p.save = function (element, opt) {
  * @param {Element} element a dom element in which to save the receiver
  * @param {Object} opt
  */
-eYo.slot.Dflt_p.saveRequired = function (element) {
+eYo.slot.Base_p.saveRequired = function (element) {
   var child = goog.dom.createDom(eYo.xml.EXPR)
   child.setAttribute(eYo.key.EYO, eYo.key.PLACEHOLDER)
   child.setAttribute(eYo.xml.sLOT, this.xmlKey)
@@ -422,7 +422,7 @@ eYo.slot.Dflt_p.saveRequired = function (element) {
  * @param {Element} element a dom element in which to save the input
  * @return true if this is loaded
  */
-eYo.slot.Dflt_p.load = function (element) {
+eYo.slot.Base_p.load = function (element) {
   this.loaded_ = false
   var xml = this.model.xml
   if (xml === false) {
@@ -505,7 +505,7 @@ eYo.slot.Dflt_p.load = function (element) {
  * When all the slots and data have been loaded.
  * For edython.
  */
-eYo.slot.Dflt_p.willLoad = eYo.decorate.reentrant_method('willLoad', function () {
+eYo.slot.Base_p.willLoad = eYo.decorate.reentrant_method('willLoad', function () {
   let f = this.model.willLoad
   if (eYo.isF(f)) {
     f.apply(this, arguments)
@@ -518,7 +518,7 @@ eYo.slot.Dflt_p.willLoad = eYo.decorate.reentrant_method('willLoad', function ()
  * and possibly once when the saved representation has been loaded.
  * For edython.
  */
-eYo.slot.Dflt_p.didLoad = eYo.decorate.reentrant_method('didLoad', function () {
+eYo.slot.Base_p.didLoad = eYo.decorate.reentrant_method('didLoad', function () {
   let f = this.model.didLoad
   if (eYo.isF(f)) {
     f.apply(this, arguments)
@@ -531,7 +531,7 @@ eYo.slot.Dflt_p.didLoad = eYo.decorate.reentrant_method('didLoad', function () {
  * @param {function} helper
  * @return {boolean} whether there was an slot to act upon or no helper given
  */
-eYo.slot.Dflt_p.forEach = function (helper) {
+eYo.slot.Base_p.forEach = function (helper) {
   var slot = this
   if (eYo.isF(helper)) {
     do {
@@ -546,7 +546,7 @@ eYo.slot.Dflt_p.forEach = function (helper) {
  * @param {function} helper
  * @return {boolean} whether there was an slot to act upon or no helper given
  */
-eYo.slot.Dflt_p.forEachPrevious = function (helper) {
+eYo.slot.Base_p.forEachPrevious = function (helper) {
   var slot = this
   if (eYo.isF(helper)) {
     do {
@@ -563,7 +563,7 @@ eYo.slot.Dflt_p.forEachPrevious = function (helper) {
  * @param {function} helper
  * @return {?Object} The slot that returned true, eventually.
  */
-eYo.slot.Dflt_p.some = function (helper) {
+eYo.slot.Base_p.some = function (helper) {
   var slot = this
   if (eYo.isF(helper)) {
     do {
@@ -579,7 +579,7 @@ eYo.slot.Dflt_p.some = function (helper) {
  * For edython.
  * @param {function} helper
  */
-eYo.slot.Dflt_p.fieldForEach = function (helper) {
+eYo.slot.Base_p.fieldForEach = function (helper) {
   this.fields && (Object.values(this.fields).forEach(f => helper(f)))
 }
 
@@ -590,7 +590,7 @@ eYo.slot.Dflt_p.fieldForEach = function (helper) {
  * @param {String} [key] an input key. When not given the last free input is used.
  * @return {?eYo.magnet.Base} the eventual magnet target that was connected.
  */
-eYo.slot.Dflt_p.listConnect = function (bm, key) {
+eYo.slot.Base_p.listConnect = function (bm, key) {
   var t9k = this.targetBrick
   if (!t9k) {
     this.completePromise()
@@ -617,7 +617,7 @@ eYo.slot.Dflt_p.listConnect = function (bm, key) {
  * @param {eYo.brick | eYo.magnet.Base} bm  The target is either a brick or another magnet.
  * @return {?eYo.magnet.Base} the eventual target magnet
  */
-eYo.slot.Dflt_p.connect = function (bm) {
+eYo.slot.Base_p.connect = function (bm) {
   var m4t = this.magnet
   if(m4t && bm) {
     var other = (bm.magnets && bm.out_m) || bm
@@ -633,7 +633,7 @@ eYo.slot.Dflt_p.connect = function (bm) {
  * One shot in case of success.
  * @return {Boolean} whether the complete was successfull
  */
-eYo.slot.Dflt_p.completePromise = function () {
+eYo.slot.Base_p.completePromise = function () {
   var m4t = this.magnet
   if (m4t && m4t.completePromise()) {
     this.completePromise = eYo.doNothing

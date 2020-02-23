@@ -802,7 +802,7 @@ eYo._p.eyo = eYo.makeDlgt('NS', eYo.constructor, {})
    * Default implementation forwards to the delegate.
    * One shot method: any subsequent call is useless.
    */
-  eYo.c9r.Dflt_p.doPrepare = function (...args) {
+  eYo.c9r.Base_p.doPrepare = function (...args) {
     this.doPrepare = eYo.doNothing
     this.eyo.prepareInstance(this, ...args)
   }
@@ -812,7 +812,7 @@ eYo._p.eyo = eYo.makeDlgt('NS', eYo.constructor, {})
    * Default implementation does nothing.
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
-  eYo.c9r.Dflt_p.doInit = function (...args) {
+  eYo.c9r.Base_p.doInit = function (...args) {
     this.doInit = eYo.doNothing
     this.eyo.initInstance(this, ...args)
   }

@@ -377,7 +377,7 @@ eYo.py.Exporter.prototype.exportSlot_ = function (slot) {
   }
 }
 
-Object.defineProperties(eYo.brick.Dflt_p, {
+Object.defineProperties(eYo.brick.Base_p, {
   description: {
     get () {
       return new eYo.py.Exporter().export(this, {is_deep: true})
@@ -397,7 +397,7 @@ Object.defineProperties(eYo.brick.Dflt_p, {
  * @private
  * @suppress{accessControls}
  */
-eYo.field.Dflt_p.getPythonText_ = function() {
+eYo.field.Base_p.getPythonText_ = function() {
   return this.text
 }
 
