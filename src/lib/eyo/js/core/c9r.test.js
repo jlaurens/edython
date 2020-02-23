@@ -707,4 +707,37 @@ describe ('Tests: C9r', function () {
     ns.A.makeInheritedC9r('AB', {})
     chai.expect(flag).equal(200)
   })
+  it ('C9r: subC9rs...', function () {
+    var ns = eYo.c9r.makeNS()
+    ns.makeBase()
+    var flag = 0
+    ns.Base.eyo_p.do_it = (x) => {
+      flag += 1
+    }
+    eYo.c9r.Base.eyo.forEachSubC9r(C9r => {
+      C9r.eyo.do_it && C9r.eyo.do_it()
+    })
+    chai.expect(flag).equal(1)
+    flag = 0
+    ns.makeC9r('A')
+    ns.makeC9r('B')
+    ns.Base.eyo.forEachSubC9r(C9r => {
+      C9r.eyo.do_it && C9r.eyo.do_it()
+    })
+    chai.expect(flag).equal(2)
+    ns.A.makeInheritedC9r('AA')
+    ns.A.makeInheritedC9r('AB')
+    ns.B.makeInheritedC9r('BA')
+    ns.B.makeInheritedC9r('BB')
+    flag = 0
+    ns.Base.eyo.forEachSubC9r(C9r => {
+      C9r.eyo.do_it && C9r.eyo.do_it()
+    })
+    chai.expect(flag).equal(2)
+    flag = 0
+    ns.Base.eyo.forEachSubC9r(C9r => {
+      C9r.eyo.do_it && C9r.eyo.do_it()
+    }, true)
+    chai.expect(flag).equal(6)
+  })
 })

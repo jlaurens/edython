@@ -41,7 +41,7 @@ eYo.o4t.makeBase({
  * @param {*} properties - a properties model
  * @param {Array<String>} keys_p - A list of keys
  */
-eYo.o4t._p.initProperties = function (object, properties, keys_p) {
+eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
   if (!properties) {
     return
   }
@@ -73,8 +73,8 @@ eYo.o4t._p.initProperties = function (object, properties, keys_p) {
         let p = eYo.p6y.new(object, k, model)
         if (object.hasOwnProperty(k_p)) {
           console.error(`BREAK HERE!!! ALREADY object/${k_p}`)
-        } else if (k === 'data') {
-          console.error(`BREAK HERE!!! WILL _p/${k}`)
+        } else if (k === 'kwargs') {
+          console.error(`BREAK HERE!!! WILL object/${k_p}`)
         }
         Object.defineProperties(object, {
           [k_p]: eYo.descriptorR(function () {
@@ -83,12 +83,7 @@ eYo.o4t._p.initProperties = function (object, properties, keys_p) {
         })
         object[k_p] || eYo.throw('Missing property')
         keys_p && keys_p.push(k_p) // keys are now properly ordered
-        if (_p.hasOwnProperty(k)) {
-          console.error(`BREAK HERE!!! ALREADY _p/${k}`)
-        } else if (k === 'data') {
-          console.error(`BREAK HERE!!! WILL _p/${k}`)
-        }
-        Object.defineProperties(_p, {
+        _p.hasOwnProperty(k) || Object.defineProperties(_p, {
           [k]: eYo.descriptorR(function () {
             if (!this[k_p]) {
               console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
@@ -136,10 +131,20 @@ eYo.o4t._p.initProperties = function (object, properties, keys_p) {
    * @param {Object} properties -  A properties model
    */
   _p.propertiesMerge = function (properties) {
-    let _p = this.C9r_p
-    Object.keys(properties).forEach(k => {
-      this.properties__[k] = properties[k]
-    })
+    this.keys_p__ = eYo.NA
+    delete this.properties
+    this.forEachSubC9r(C9r => C9r.eyo.propertiesMerge({}))
+    for (var k in properties) {
+      var M = properties[k]
+      if (eYo.isD(M)) {
+        eYo.model.expand(M, `properties.${k}`)
+        this.properties__[k] = properties[k]
+      } else {
+        this.properties__[k] = {
+          value: M
+        }
+      }
+    }
   }
 
   Object.defineProperties(_p, {
@@ -153,7 +158,7 @@ eYo.o4t._p.initProperties = function (object, properties, keys_p) {
       Object.defineProperties(this, {
         properties: eYo.descriptorR(function () {
           return Ps
-        })
+        }, true)
       })
       return Ps
     })
@@ -161,12 +166,27 @@ eYo.o4t._p.initProperties = function (object, properties, keys_p) {
   
   /**
    * Initialize an instance with properties.
-   * Default implementation forwards to super.
+   * The first time an object is initialized, some actions are taken to
+   * facilitate the next creation.
    * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
    */
   _p.prepareInstance = function (object) {
+    this.prepareProperties(object)
+    let eyo = this.super
+    if (eyo) {
+      eyo.prepareProperties = eYo.doNothing
+      eyo.prepareInstance(object)
+      delete eyo.prepareProperties
+    }
+  }
+  
+  /**
+   * Prepares an instance with properties.
+   * @param {Object} object -  object is an instance of a subclass of the `C9r` of the receiver
+   */
+  _p.prepareProperties = function (object) {
     if (this.keys_p__) {
-      this.keys_p__.forEach(k_p => {
+      this.keys_p__.some(k_p => {
         let k = k_p.substring(0, k_p.length-2)
         let p = eYo.p6y.new(object, k, this.properties[k])
         Object.defineProperties(object, {
@@ -178,13 +198,11 @@ eYo.o4t._p.initProperties = function (object, properties, keys_p) {
       })
     } else {
       var ns = this.ns
-      if (!ns || !ns.initProperties) {
+      if (!ns || !ns.prepareProperties) {
         ns = eYo.o4t
       }
-      ns.initProperties(object, this.properties, this.keys_p__ = [])
+      ns.prepareProperties(object, this.properties, this.keys_p__ = [])
     }
-    let eyo = this.super
-    eyo && eyo.prepareInstance(object)
   }
 
   /**
@@ -306,7 +324,6 @@ eYo.o4t._p.initProperties = function (object, properties, keys_p) {
   _p.modelMerge = function (model) {
     model.properties && this.propertiesMerge(model.properties)
     model.aliases && this.aliasesMerge(model.aliases)
-    let aliases = model.aliases
     eYo.o4t.super.Dlgt_p.modelMerge.call(this, model)
   }
   
@@ -404,7 +421,6 @@ eYo.o4t._p.initProperties = function (object, properties, keys_p) {
       })
     }
   }
-  
 })()
 
 /**

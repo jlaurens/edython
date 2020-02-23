@@ -807,4 +807,14 @@ describe ('Tests: Property', function () {
     chai.assert(eYo.isNA(l.values[0]))
     chai.assert(eYo.isNA(l.properties[0]))
   })
+  it ('P6y: Shortcuts', function () {
+    var model = {
+      properties: {
+        foo: 0,
+      }
+    }
+    eYo.model.expand(model)
+    console.error('BREAK')
+    chai.assert(eYo.isD(model.properties.foo))
+  })
 })

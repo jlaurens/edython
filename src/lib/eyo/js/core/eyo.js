@@ -60,6 +60,13 @@ eYo.isStr = (what) => {
 eYo.isNA = (what) => {
   return what === eYo.NA
 }
+/**
+ * Whether the argument is na array.
+ * @param {*} what
+ */
+eYo.isBool = (what) => {
+  return what === true || what === false
+}
 
 /**
  * Function used when defining a JS property.
@@ -93,21 +100,28 @@ eYo.noSetter = function (msg) {
 /**
  * Function used when defining a JS property.
  * @param {String|Object} [msg] - Diagnostic message,or object
- * with a `lazy` attribute for a function returning the dignostic message.
- * @param {Function} setter
+ * with a `lazy` attribute for a function returning the diagnostic message.
+ * @param {Function} getter
+ * @param {Boolean} configurable
  * @private
  */
-eYo.descriptorR = (msg, getter) => {
-  if (eYo.isF(msg)) {
-    let swap = msg
+eYo.descriptorR = (msg, getter, configurable) => {
+  if (!eYo.isF(getter)) {
+    var swap = msg
     msg = getter
     getter = swap
+  }
+  if (eYo.isBool(msg)) {
+    swap = msg
+    msg = configurable
+    configurable = swap
   }
   msg && msg.lazy && (msg = msg.lazy)
   getter || eYo.throw('Missing getter')
   return {
     get: getter,
     set: eYo.noSetter(msg),
+    configurable: !!configurable,
   }
 }
 
@@ -310,13 +324,6 @@ eYo.mixinR(eYo, {
    */
   copyRA (what) {
     return Array.prototype.slice.call(what, 0)
-  },
-  /**
-   * Whether the argument is na array.
-   * @param {*} what
-   */
-  isBool (what) {
-    return what === true || what === false
   },
   /**
    * Whether the argument is a function.

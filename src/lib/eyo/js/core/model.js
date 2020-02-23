@@ -209,14 +209,14 @@ eYo.model._p.expand = function (model, path = '') {
       model[k] = {
         value: M
       }
-    } else if (eYo.isD(M)) {
+    } else {
       Object.keys(this.shortcut).forEach(pattern => {
         if (XRegExp(`^${pattern}$`).test(p)) {
           if (this.shortcut[pattern].some(f => {
             if (!eYo.isF(f)) {
               console.error('BREAK HERE!!! !eYo.isF(f)')
             }
-              eYo.isF(f) || eYo.throw(`Missing a function, got ${typeof f} instead: ${f}`)
+            eYo.isF(f) || eYo.throw(`Missing a function, got ${typeof f} instead: ${f}`)
             let ans = f(M, p)
             if (eYo.isINVALID(ans)) {
               delete model[k]
@@ -229,7 +229,7 @@ eYo.model._p.expand = function (model, path = '') {
           }
         }
       })
-      ;(M = model[k]) && this.expand(M, p)
+      eYo.isD(M = model[k]) && this.expand(M, p)
     }
   })
 }

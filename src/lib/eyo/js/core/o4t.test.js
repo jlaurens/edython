@@ -62,22 +62,22 @@ describe ('Tests: Object', function () {
         chi: 421,
       }
     })
-    chai.expect(Foo.eyo.properties.chi).equal(421)
+    chai.expect(Foo.eyo.properties.chi.value).equal(421) // expanded
     chai.expect(Foo.eyo.properties).equal(Foo.eyo.properties)
     let Bar = ns.makeC9r('bar', Foo)
     chai.expect(Bar.eyo.properties.chi).equal(Foo.eyo.properties.chi)
   })
-  it ('O4t: initProperties', function () {
+  it ('O4t: prepareProperties', function () {
     let O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {})
     chai.expect(O.eyo.super).equal(eYo.o4t.Base.eyo)
     let o = new O()
     chai.assert(!o.foo_p)
     chai.assert(!o.foo)
-    eYo.o4t.initProperties(o, {
+    eYo.o4t.prepareProperties(o, {
       foo: {
         value: 421
       },
-    })
+    }) // creates `foo` in the prototype, `foo_p` in the object
     chai.assert(o.hasOwnProperty('foo_p'))
     chai.assert(!o.hasOwnProperty('foo'))
     chai.assert(o.eyo.C9r_p.hasOwnProperty('foo'))
@@ -85,9 +85,9 @@ describe ('Tests: Object', function () {
     let oo = new O()
     chai.assert(!oo.foo_p)
     chai.expect(() => {
-      oo.foo === eYo.NA
+      oo.foo === eYo.NA // call to oo.foo_p... which does not exist
     }).to.throw()
-    eYo.o4t.initProperties(oo, {
+    eYo.o4t.prepareProperties(oo, {
       foo: {
         value: 123
       },
@@ -176,12 +176,15 @@ describe ('Tests: Object', function () {
     chai.expect(bar.foo).equal(421)
     chai.expect(bar.bar).equal(123)
     var flag = 0
-    bar.foo = {
+    console.error('BREAK')
+    bar.foo_ = {
+      eyo: true,
       dispose(x, y) {
         flag += x * 1000
       },
     }
-    bar.bar = {
+    bar.bar_ = {
+      eyo: true,
       dispose(x, y) {
         flag += y
       },
@@ -693,51 +696,43 @@ describe ('Tests: Object', function () {
     ns.makeC9r('A', {
       properties: {foo: 421}
     })
+    chai.expect(ns.A.eyo.properties).property('foo')
     var a = new ns.A()
     chai.expect(a.foo).equal(421)
     chai.assert(!a.bar)
     ns.A.eyo.propertiesMerge({
       bar: 123,
     })
-    chai.assert(a.bar !== 123)
+    chai.expect(ns.A.eyo.properties).property('bar')
+    chai.expect(a.bar).not.equal(123)
     a = new ns.A()
     chai.expect(a.foo).equal(421)
     chai.expect(a.bar).equal(123)
     ns.makeC9r('B')
     ns.B.makeInheritedC9r('BB')    
     var bb = new ns.BB()
-    chai.assert(bb.foo !== 421)
+    chai.expect(ns.BB.eyo.properties).not.property('foo')
+    chai.expect(bb.foo).not.equal(421)
     var flag = 0
     ns.B.eyo.propertiesMerge({
       foo: {
         value () {
-          flag = 666
+          flag = 666 - flag
           return 421
         }
       },
     })
+    chai.expect(ns.B.eyo.properties).property('foo')
+    chai.expect(ns.BB.eyo.properties).property('foo')
+    chai.expect(flag).not.equal(666)
+    chai.expect(bb.foo).not.equal(421)
     bb = new ns.BB()
     chai.expect(flag).equal(666)
     chai.expect(bb.foo).equal(421)
     chai.assert((bb.foo_ = 123) === bb.foo)
-    ns.B.eyo.propertiesMerge({
-      foo: {
-        lazy () {
-          flag = 666
-          return 123
-        },
-      },
-    })
-    flag = 421
-    bb = new ns.BB()
-    chai.expect(flag).equal(421)
-    chai.expect(bb.foo).equal(123)
-    chai.expect(flag).equal(666)
-    chai.assert((bb.foo_ = 421) === bb.foo)
-    flag = 421
     bb.foo_p.reset()
-    chai.expect(flag).equal(666)
-    chai.expect(bb.foo).equal(123)
+    chai.expect(flag).equal(0)
+    chai.expect(bb.foo).equal(421)
   })
   it (`O4t: modelDeclare({...})`, function () {
     let NS = eYo.o4t.makeNS()
@@ -879,9 +874,9 @@ describe ('Tests: Object', function () {
     chai.expect(bar.mi).equal(421)
     chai.expect(bar.chi).equal(666)
   })
-  it ('O4t: initProperties(ns,...)', function () {
+  it ('O4t: prepareProperties(ns,...)', function () {
     let ns = eYo.makeNS()
-    eYo.o4t.initProperties(ns, {
+    eYo.o4t.prepareProperties(ns, {
       foo: 421,
     })
     chai.expect(ns.foo).equal(421)
