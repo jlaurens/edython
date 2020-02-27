@@ -38,7 +38,7 @@ eYo.svg.Desk_p.bind_resize = function (desk) {
   if (bound.resize) {
     return
   }
-  bound.resize = eYo.dom.BindEvent(
+  bound.resize = eYo.dom.bindEvent(
     window,
     'resize',
     null,

@@ -221,25 +221,25 @@ eYo.svg.makeDriverC9r('FlyoutToolbar', {
     }
     div.appendChild(dom.control_)
     var bound = dom.bound
-    bound.mousedown = eYo.dom.BindEvent(
+    bound.mousedown = eYo.dom.bindEvent(
       dom.control_,
       'mousedown',
       flyout,
       flyout.on_mousedown.bind(flyout)
     )
-    bound.mouseenter = eYo.dom.BindEvent(
+    bound.mouseenter = eYo.dom.bindEvent(
       dom.control_,
       'mouseenter',
       flyout,
       flyout.on_mouseenter.bind(flyout)
     )
-    bound.mouseleave = eYo.dom.BindEvent(
+    bound.mouseleave = eYo.dom.bindEvent(
       dom.control_,
       'mouseleave',
       flyout,
       flyout.on_mouseleave.bind(flyout)
     )
-    bound.mouseup = eYo.dom.BindEvent(
+    bound.mouseup = eYo.dom.bindEvent(
       dom.control_,
       'mouseup',
       flyout,
@@ -337,25 +337,25 @@ eYo.svg.Flyout.prototype.removeAllBrickListeners = function(flyout) {
  */
 eYo.svg.Flyout.prototype.addListeners = function(flyout, brick) {
   var g = brick.dom.svg.group_
-  flyout.listeners_.push(eYo.dom.BindEvent(
+  flyout.listeners_.push(eYo.dom.bindEvent(
     g,
     'mousedown',
     null,
     e => flyout.app.motion.handleFlyoutStart(e, flyout, brick)
   ))
-  flyout.listeners_.push(eYo.dom.BindEvent(
+  flyout.listeners_.push(eYo.dom.bindEvent(
     g,
     'mouseover',
     brick,
     brick.selectAdd
   ))
-  flyout.listeners_.push(eYo.dom.BindEvent(
+  flyout.listeners_.push(eYo.dom.bindEvent(
     g,
     'mouseleave',
     brick,
     brick.focusRemove
   ))
-  flyout.listeners_.push(eYo.dom.BindEvent(
+  flyout.listeners_.push(eYo.dom.bindEvent(
     g,
     'mouseout',
     brick,
@@ -369,7 +369,7 @@ eYo.svg.Flyout.prototype.addListeners = function(flyout, brick) {
  */
 eYo.svg.Flyout.prototype.listen_mouseover = function(flyout) {
   flyout.listeners_.push(
-    eYo.dom.BindEvent(
+    eYo.dom.bindEvent(
     flyout.dom.svg.background_,
     'mouseover',
     null,
@@ -389,14 +389,14 @@ eYo.svg.Flyout.prototype.bindScrollEvents = function(flyout) {
     return
   }
   var svg = flyout.dom.svg
-  bound.drag_wheel = eYo.dom.BindEvent(
+  bound.drag_wheel = eYo.dom.bindEvent(
     svg.group_,
     'wheel',
     null,
     this.on_wheel.bind(flyout)
   )
   // Dragging the flyout up and down.
-  bound.drag_mousedown = eYo.dom.BindEvent(
+  bound.drag_mousedown = eYo.dom.bindEvent(
     svg.background_,
     'mousedown',
     null,

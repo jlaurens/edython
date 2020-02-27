@@ -44,10 +44,19 @@ Object.defineProperties(eYo.geom, {
   L: eYo.descriptorR(function  () {
     return 4
   }),
+  EPSILON: eYo.descriptorR(function  () {
+    return 1e-10
+  }),
 })
 
+eYo.geom._p.greater = function (left, right) {
+  return left - right >= -this.EPSILON * (Math.abs(left) + Math.abs(right))
+}
+
 /**
- * `Point` is modelling a planar point that stores its coordinates in text units. When `snap` is true, the coordinates are snapped to half integers horizontally and quarter integers vertically.
+ * `Point` is modelling a planar point that stores its coordinates in text units.
+ * When `snap` is true, the coordinates are snapped to half integers horizontally and quarter integers vertically.
+ * Orientation is from top to bottom and from left to right.
  * @name {eYo.geom.Point}
  * @constructor
  * @param {Number} c - Horizontal coordinates, or another planar object.
@@ -215,12 +224,12 @@ eYo.geom.Point_p.xySet = function (x = 0, y = 0) {
  */
 eYo.geom.xyWhere = function (x, y, snap) {
   var y
-  if (x === true || x === false) {
+  if (eYo.isBool(x)) {
     var _ = x
     x = y
     y = snap
     snap = _
-  } else if (y === true || y === false) {
+  } else if (eYo.isBool(y)) {
     var _ = y
     y = snap
     snap = _
@@ -245,7 +254,7 @@ eYo.geom.clWhere = function (c, l, snap) {
  * Like `set` but advance the coordinates, instead of setting them.
  * @param {number | eYo.geom.Point | eYo.geom.Size} c
  * @param {number} l
- * @return {eYo.geom.Point} c
+ * @return {eYo.geom.Point}
  */
 eYo.geom.Point_p.forward = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
@@ -278,17 +287,34 @@ eYo.geom.Point_p.backward = function (c = 0, l = 0) {
 /**
  * Like `set` but advance the coordinates, instead of setting them.
  * Board coodinates
- * @param {number} c
- * @param {number} l
- * @return {eYo.geom.Point} c
+ * @param {number} x
+ * @param {number} y
+ * @return {eYo.geom.Point}
  */
-eYo.geom.Point_p.xyAdvance = function (x = 0, y = 0) {
+eYo.geom.Point_p.xyForward = function (x = 0, y = 0) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     y = x.y
     x = x.x
   }
   this.x_ += x
   this.y_ += y
+  return this
+}
+
+/**
+ * Like `set` but advance the coordinates, instead of setting them.
+ * Board coodinates
+ * @param {number} x
+ * @param {number} y
+ * @return {eYo.geom.Point}
+ */
+eYo.geom.Point_p.xyBackward = function (x = 0, y = 0) {
+  if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
+    y = x.y
+    x = x.x
+  }
+  this.x_ -= x
+  this.y_ -= y
   return this
 }
 
@@ -346,27 +372,29 @@ eYo.geom.Point_p.distance = function (other) {
 /**
  * Test container.
  * Returns true iff the receiver is inside the given rect.
+ * Rounding errors are taken into account.
  * @param {eYo.geom.Rect} rect
  * @return {Boolean}
  */
 eYo.geom.Point_p.in = function (rect) {
-  return this.c >= rect.c_min
-    && this.c <= rect.c_max
-    && this.l >= rect.l_min
-    && this.l <= rect.l_max
+  return eYo.geom.greater(this.c, rect.c_min)
+    && eYo.geom.greater(rect.c_max, this.c)
+    && eYo.geom.greater(this.l, rect.l_min)
+    && eYo.geom.greater(rect.l_max, this.l)
 }
 
 /**
  * Test container.
  * Opposite of `in`, except for the rect boundary. A point of the rect boundary is in and out the rect.
+ * Rounding errors are taken into account.
  * @param {eYo.geom.Rect} rect
  * @return {Boolean} non negative number
  */
 eYo.geom.Point_p.out = function (rect) {
-  return this.c <= rect.c_min
-    || this.c >= rect.c_max
-    || this.l <= rect.l_min
-    || this.l >= rect.l_max
+  return eYo.geom.greater(this.c, rect.c_max)
+    || eYo.geom.greater(rect.c_min, this.c)
+    || eYo.geom.greater(this.l, rect.l_max)
+    || eYo.geom.greater(rect.l_min, this.l)
 }
 
 /**
@@ -433,8 +461,8 @@ eYo.geom.makeC9r('Rect', {
         return new eYo.geom.Point()
       },
       copy: true,
-      set (after) {
-        this.value.xySet(after)
+      set (stored, after) {
+        stored.xySet(after)
       }
     },
     size: {
@@ -442,10 +470,13 @@ eYo.geom.makeC9r('Rect', {
         return new eYo.geom.Size()
       },
       copy: true,
-      set (after) {
-        this.value.xySet(after)
+      set (stored, after) {
+        stored.xySet(after)
       },
     },
+    /**
+     * Translation: the size size does not change.
+     */
     c_mid: {
       after: ['c', 'w'],
       get () {
@@ -529,12 +560,12 @@ eYo.geom.makeC9r('Rect', {
         return this.x
       },
       set (after) {
-        this.width = this.x_max - after
+        this.width_ = this.x_max - after
         this.x_min_ = after
       }
     },
     top: {
-      after: ['y', 'height', 'x_min', 'x_max'],
+      after: ['y', 'height', 'y_min', 'y_max'],
       get () {
         return this.y
       },
@@ -543,11 +574,12 @@ eYo.geom.makeC9r('Rect', {
        * @param {Number} after 
        */
       set (after) {
-        this.height = this.y_max - after
+        this.height_ = this.y_max - after
         this.y_min_ = after
       }
     },
     right: {
+      after: ['left', 'width', 'x_max'],
       get () {
         return this.x_max
       },
@@ -560,6 +592,7 @@ eYo.geom.makeC9r('Rect', {
       }
     },
     bottom: {
+      after: ['top', 'height', 'y_max'],
       get () {
         return this.y_max
       },
@@ -573,6 +606,7 @@ eYo.geom.makeC9r('Rect', {
     },
     // Composed
     bottomRight: {
+      after: ['x_max', 'y_max'],
       get () {
         return this.origin.forward(this.size_)
       },
@@ -582,14 +616,15 @@ eYo.geom.makeC9r('Rect', {
       }
     },
     center: {
+      after: ['origin', 'size'],
       get () {
-        return this.origin.forward(this.size_.unscale(2))
+        return this.origin.forward(this.size.unscale(2))
       },
       /**
        * Change the origin but keeps the size.
        */
       set (after) {
-        this.origin_ = after.addvance(this.size_.unscale(-2))
+        this.origin_ = after.addvance(this.size.unscale(-2))
       }
     },
     /**
@@ -607,7 +642,16 @@ eYo.geom.makeC9r('Rect', {
      */
     description: {
       get () {
-        return `eYo.geom.Rect(c: ${this.c}, x: ${this.x}, l: ${this.l}, y: ${this.y}, w: ${this.w}, width: ${this.width}, h: ${this.h}, height: ${this.height})`
+        return `${this.eyo.name}(c: ${this.c}, l: ${this.l}, w: ${this.w}, h: ${this.h})`
+      },
+    },
+    /**
+     * String representation of the receiver.
+     * @return {String} a string
+     */
+    xyDescription: {
+      get () {
+        return `${this.eyo.name}(x: ${this.x}, y: ${this.y}, width: ${this.width}, height: ${this.height})`
       },
     },
     /**
@@ -778,7 +822,7 @@ eYo.geom.Rect_p.mirror = function () {
 
 /**
  * Inset the receiver.
- * Default values are `eYo.geom.X / 2` and `eYo.geom.Y / 4`
+ * Default values are `eYo.geom.X / eYo.geom.C` and `eYo.geom.Y / eYo.geom.L`
  * @param {Number|eYo.geom.Point} [dx_min]
  * @param {Number} [dy_min]
  * @param {Number} [dx_max]
@@ -787,8 +831,8 @@ eYo.geom.Rect_p.mirror = function () {
  */
 eYo.geom.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
   if (!eYo.isDef(dx_min)) {
-    dx_min = dx_max = eYo.geom.X / 2
-    dy_min = dy_max = eYo.geom.Y / 4
+    dx_min = dx_max = eYo.geom.X / eYo.geom.C
+    dy_min = dy_max = eYo.geom.Y / eYo.geom.L
   } else if (eYo.isDef(dx_min.x)) {
     dy_min = dy_max = dx_min.y
     dx_min = dx_max = dx_min.x
@@ -803,16 +847,32 @@ eYo.geom.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
       dy_max = dy_min
     }
   }
-  this.x_min_ += dx_min
-  this.x_max_ -= dx_min + dx_max
-  this.y_min_ += dy_min
-  this.y_max_ -= dy_min + dy_max
+  if (this.width > 0) {
+    if (eYo.geom.greater(dx_min + dx_max, this.width)) {
+      dx_min = this.width * dx_min / (dx_min + dx_max)
+      this.left_ += dx_min
+      this.w_ = 0
+    } else {
+      this.left_ += dx_min
+      this.right_ -= dx_max  
+    }
+  }
+  if (this.height > 0) {
+    if (eYo.geom.greater(dy_min + dy_max, this.height)) {
+      dy_min = this.height * dy_min / (dy_min + dy_max)
+      this.top_ += dy_min
+      this.h_ = 0
+    } else {
+      this.top_ += dy_min
+      this.bottom_ -= dy_max
+    }
+  }
   return this
 }
 
 /**
  * outset the receiver.
- * Default values are `eYo.geom.X / 2` and `eYo.geom.Y / 4`
+ * Default values are `eYo.geom.X / eYo.geom.C` and `eYo.geom.Y / eYo.geom.L`
  * @param {Number|eYo.geom.Point} [dx_min]
  * @param {Number} [dy_min]
  * @param {Number} [dx_max]
@@ -821,8 +881,8 @@ eYo.geom.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
  */
 eYo.geom.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
   if (!eYo.isDef(dx_min)) {
-    dx_min = dx_max = eYo.geom.X / 2
-    dy_min = dy_max = eYo.geom.Y / 4
+    dx_min = dx_max = eYo.geom.X / eYo.geom.C
+    dy_min = dy_max = eYo.geom.Y / eYo.geom.L
   } else if (eYo.isDef(dx_min.x)) {
     dy_min = dy_max = dx_min.y
     dx_min = dx_max = dx_min.x
@@ -837,10 +897,10 @@ eYo.geom.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
       dy_max = dy_min
     }
   }
-  this.x_min_ -= dx_min
-  this.x_max_ += dx_min + dx_max
-  this.y_min_ -= dy_min
-  this.y_max_ += dy_min + dy_max
+  this.left_ -= dx_min
+  this.right_ += dx_max
+  this.top_ -= dy_min
+  this.bottom_ += dy_max
   return this
 }
 
@@ -853,42 +913,57 @@ eYo.geom.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
 eYo.geom.Rect_p.xyContains = function (x, y) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     var c = x.x / eYo.geom.X
-    var l = y.x / eYo.geom.Y
+    var l = x.y / eYo.geom.Y
   } else {
     c = x.c
     l = x.l
-    if (!eYo.isDef(x.c) || !eYo.isDef(x.l)) {
+    if (eYo.isNA(c) || eYo.isNA(l)) {
       c = x / eYo.geom.X
       l = y / eYo.geom.Y
     }
   }
-  return c >= this.c_min && c <= this.c_max
-    && l >= this.l_min && l <= this.l_max
+  return eYo.geom.greater(c, this.c_min)
+  && eYo.geom.greater(this.c_max, c)
+  && eYo.geom.greater(l, this.l_min)
+  && eYo.geom.greater(this.l_max, l)
 }
 
 /**
  * Union with the `Rect`.
+ * Extendes the receiver to include the given rect.
  * @param {eYo.geom.Rect} rect
  * @return {eYo.geom.Rect} the receiver
  */
-eYo.geom.Rect_p.union = function (rect) {
-  var a = rect.x
-  if (a < this.x) {
-    this.x_ = a
-  }
-  a = rect.right
-  if (this.right < a) {
-    this.right_ = a
-  }
-  a = rect.y
-  if (a < this.y) {
-    this.y_ = a
-  }
-  a = rect.bottom
-  if (this.bottom < a) {
-    this.bottom_ = a
-  }
+eYo.geom.Rect_p.unionRect = function (rect) {
+  let left = Math.min(this.x_min, rect.x_min)
+  let right = Math.max(this.x_max, rect.x_max)
+  let top = Math.min(this.y_min, rect.y_min)
+  let bottom = Math.max(this.y_max, rect.y_max)
+  this.left_ = left
+  this.right_ = right
+  this.top_ = top
+  this.bottom_ = bottom
   return this
+}
+
+/**
+ * Union with the `Rect`.
+ * Extendes the receiver to include the given rect.
+ * @param {eYo.geom.Rect} rect
+ * @return {eYo.geom.Rect} the receiver
+ */
+eYo.geom.Rect_p.intersectionRect = function (rect) {
+  let left = Math.max(this.x_min, rect.x_min)
+  let right = Math.min(this.x_max, rect.x_max)
+  let top = Math.max(this.y_min, rect.y_min)
+  let bottom = Math.min(this.y_max, rect.y_max)
+  if (right >= left && bottom >= top) {
+    this.left_ = left
+    this.right_ = right
+    this.top_ = top
+    this.bottom_ = bottom
+    return this  
+  }
 }
 
 /**
@@ -976,24 +1051,25 @@ eYo.geom.deltaRect = function(a, b) {
 
 /**
  * Computes the intersection of the rectangle a and the rectangle b.
- * When the intersection is void, the return value is null.
+ * When the intersection is void, the return value is `eYo.NA`.
  * When the rectangles are side by side, the return rectangle has
  * either 0 width or 0 height,
  * thus representing either a segment or a point.
  * Both rectangles are expected to have the same constructor.
- * @param {eYo.geom.Rect} a A Rectangle.
- * @param {eYo.geom.Rect} b A Rectangle.
+ * A new rectangle is returned when there is
+ * a-n intersection, otherwise `eYo.NA` is returnde.
+ * @param {eYo.geom.Rect} a - A Rectangle.
+ * @param {eYo.geom.Rect} b - A Rectangle.
  * @return {eYo.geom.Rect}
  */
 eYo.geom.intersectionRect = function(a, b) {
-  var ans = new eYo.geom.Rect()
-  ans.left = Math.max(a.left, b.left)
-  ans.right = Math.min(a.right, b.right)
-  if (ans.width >= 0) {
-    ans.top = Math.max(a.top, b.top)
-    ans.bottom = Math.min(a.bottom, b.bottom)
-    if (ans.height >= 0) {
-      return ans
+  var x_min = Math.max(a.x_min, b.x_min)
+  var width = Math.min(a.x_max, b.x_max) - x_min
+  if (width >= 0) {
+    var y_min = Math.max(a.y_min, b.y_min)
+    var height = Math.min(a.y_max, b.y_max) - y_min
+    if (height >= 0) {
+      return new eYo.geom.Rect().xySet(x_min, y_min, width, height)
     }
   }
   return eYo.NA

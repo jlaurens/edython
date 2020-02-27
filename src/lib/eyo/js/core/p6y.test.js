@@ -788,7 +788,7 @@ describe ('Tests: Property', function () {
       eyo: true
     }
     var flag = 0
-    var l = new eYo.p6y.List(onr, '', {})
+    var l = new eYo.p6y.List(onr)
     l.splice(0, 0, {
       eyo: true,
       dispose (x) {
@@ -807,13 +807,29 @@ describe ('Tests: Property', function () {
     chai.assert(eYo.isNA(l.values[0]))
     chai.assert(eYo.isNA(l.properties[0]))
   })
+  it ('P6y: List iterate...', function () {
+    let onr = {
+      eyo: true
+    }
+    var flag = 0
+    var l = new eYo.p6y.List(onr, 'a', 'b', 'c')
+    var ans = ''
+    for (var x of l) {
+      ans = ans + x
+    }
+    chai.expect(ans).equal('abc')
+    for (var x of l) {
+      ans = x + ans
+    }
+    chai.expect(ans).equal('cba')
+  })
   it ('P6y: Shortcuts', function () {
     var model = {
       properties: {
         foo: 0,
       }
     }
-    eYo.model.expand(model)
+    eYo.model.modelExpand(model)
     console.error('BREAK')
     chai.assert(eYo.isD(model.properties.foo))
   })

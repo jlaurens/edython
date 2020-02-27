@@ -62,7 +62,7 @@ eYo.bsm_o3d.makeBase({
 !!eYo.bsm_o3d.Base && !!eYo.bsm_o3d.Base_p || eYo.assert('MISSED/FAILURE...')
 
 eYo.bsm_o3d.Base_p.ownerDidChange = function (before, after) {
-  let inherited = eYo.bsm_o3d.Dflt_s.ownerDidChange
+  let inherited = eYo.bsm_o3d.Base_s.ownerDidChange
   inherited && inherited.call(this, before, after)
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA
   if (after instanceof eYo.slot.Base) {

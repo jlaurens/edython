@@ -1826,7 +1826,7 @@ eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
         }
       }
     }
-  } else if ((b3k = eYo.app.Focus_mngr.Brick) && (ee = b3k.ui.selectMouseDownEvent)) {
+  } else if ((b3k = eYo.app.focus_mngr.brick) && (ee = b3k.ui.selectMouseDownEvent)) {
     b3k.ui.selectMouseDownEvent = null
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move

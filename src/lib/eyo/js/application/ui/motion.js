@@ -17,7 +17,7 @@ eYo.forwardDeclare('field')
 eYo.forwardDeclare('magnet')
 
 eYo.forwardDeclare('dnd')
-eYo.forwardDeclare('Scaler')
+eYo.forwardDeclare('event.Scaler')
 
 eYo.forwardDeclare('dom')
 
@@ -122,9 +122,12 @@ eYo.event.makeC9r('Motion', {
   dispose () {
     this.reset()
   },
+  aliases: {
+    owner: 'event',
+  },
   properties: {
     scaler () {
-      return new eYo.Scaler(this)
+      return new eYo.event.Scaler(this)
     },
     dndmngr () {
       return new eYo.dnd.Mngr(this)
@@ -143,9 +146,6 @@ eYo.event.makeC9r('Motion', {
      * @private
      */
     starter: {
-      dispose: false,
-    },
-    event: {
       dispose: false,
     },
     /**
@@ -202,7 +202,6 @@ eYo.event.makeC9r('Motion', {
       },
     },
     clickCount: 0,
-    event: eYo.NA,
     shouldSelect: eYo.NA,
     startBrick: {
       /*
@@ -339,7 +338,7 @@ eYo.event.makeC9r('Motion', {
         this.touchIDs_.length = 0
         this.touchID_ = null
         this.startDistance_ = 0
-        eYo.dom.ClearTouchIdentifier()
+        eYo.dom.clearTouchIdentifier()
         Blockly.Tooltip.unblock()
         eYo.dom.unbindMouseEvents(this)
         this.pidCancel_ = this.pidLong_ = this.pidHandle_ = 0
@@ -469,8 +468,8 @@ eYo.event.Motion.eyo.methodsMerge({
     // select the brick if any
     // and prepare a click motion
     if (this.brick_) {
-      if (this.brick_.isDescendantOf(eYo.app.Focus_mngr.Brick) && this.event_.altKey) {
-        this.shouldSelect_ = eYo.app.Focus_mngr.Brick.parent
+      if (this.brick_.isDescendantOf(eYo.app.focus_mngr.brick) && this.event_.altKey) {
+        this.shouldSelect_ = eYo.app.focus_mngr.brick.parent
       } else {
         this.shouldSelect_ = !this.brick_.selected && this.brick_
       }
@@ -814,7 +813,7 @@ eYo.event.Motion.eyo.methodsMerge({
     if (this.clickCount_>1) {
       this.board_.close()
     } else {
-      eYo.app.Focus_mngr.Brick && eYo.app.focus_mngr.Brick.focusOff()
+      eYo.app.focus_mngr.brick && eYo.app.focus_mngr.brick.focusOff()
     }
     return true
   },
@@ -841,7 +840,7 @@ eYo.event.Motion.eyo.methodsMerge({
             return true
           }
         } 
-        eYo.app.Focus_mngr.Brick = this.shouldSelect_
+        eYo.app.focus_mngr.brick = this.shouldSelect_
       }
       return true
     }

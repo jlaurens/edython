@@ -34,7 +34,7 @@ eYo.dom.makeDriverC9r('Desk', {
       throw 'Error: container is not in current document.'
     }
     var div = dom.div_ || (dom.div_= container)
-    eYo.dom.BindEvent(
+    eYo.dom.bindEvent(
       container,
       'contextmenu',
       e => eYo.dom.isTargetInput(e) || e.preventDefault()

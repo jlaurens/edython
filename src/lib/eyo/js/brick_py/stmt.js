@@ -23,22 +23,22 @@ eYo.forwardDeclare('brick.operator')
  */
 eYo.brick.makeNS(eYo, 'stmt')
 
-eYo.model.allowPaths({
+eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'left',
   left: 'check',
 })
 
-eYo.model.allowPaths({
+eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'right',
   right: ['check', 'fields'],
 })
 
-eYo.model.allowPaths({
+eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'head',
   head: 'check',
 })
 
-eYo.model.allowPaths({
+eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'foot',
   foot: 'check'
 })

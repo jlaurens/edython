@@ -18,6 +18,12 @@ eYo.forwardDeclare('o4t')
 eYo.forwardDeclare('o3d')
 eYo.forwardDeclare('p6y')
 
+eYo.model.allowModelPaths({
+  [eYo.model.ROOT]: [
+    'dlgt', 'init', 'deinit', 'dispose',
+  ],
+})
+
 /**
  * Management of constructors and models.
  * Models are trees with some inheritancy.
@@ -330,7 +336,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
   */
   let AutoDlgt = function (ns, key, C9r, model) {
     Object.defineProperties(this, {
-      ns__: { value: eYo.isNS(ns) ? ns : eYo.NA },
+      ns: { value: eYo.isNS(ns) ? ns : eYo.NA },
       key__: {value: key},
       C9r__: { value: C9r },
       model__: { value: model },
@@ -377,20 +383,14 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
    */
   _p.handleModel = function (model) {
     if (model) {
-      this.modelConsolidate(model)
+      Object.keys(model).length && (this.eyo.ns||eYo.model).modelExpand(model)
       this.modelMerge(model)
     }
   }
-  /**
-   * Consolidate the given model.
-   * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
-   */
-  _p.modelConsolidate = function (model) {
-    Object.keys(model).length && eYo.model.expand(model)
-  }
 
   /**
-   * Declare the given model.
+   * Declare the given model for the associate constructor.
+   * The default implementation calls `methodsMerge`.
    * @param {Object} model - Object, like for |makeC9r|.
    */
   _p.modelMerge = function (model) {
@@ -617,7 +617,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
       return this.C9r__.SuperC9r_p
     }),
     name: eYo.descriptorR(function () {
-      return this.ns__ && this.key__ && `${this.ns__.name}.${this.key__}` || this.key
+      return this.ns && this.key__ && `${this.ns.name}.${this.key__}` || this.key
     }),
     super: eYo.descriptorR(function () {
       var S = this.C9r__.SuperC9r
@@ -656,9 +656,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
    */
   _p.forEachSubC9r = function (f, deep) {
     if (eYo.isF(deep)) {
-      let swap = f
-      f = deep
-      deep = swap
+      [f, deep] = [deep, f]
     }
     this.subC9rs__.forEach(C9r => {
       f(C9r)
@@ -860,7 +858,17 @@ eYo._p.eyo = eYo.makeDlgt('NS', eYo.constructor, {})
     this.doInit = eYo.doNothing
     this.eyo.initInstance(this, ...args)
   }
-  
+  /**
+   * Convenience shortcut to the model
+   */
+  Object.defineProperties(eYo.c9r.Base_p, {
+    model: eYo.descriptorR(function () {
+      return this.eyo.model
+    }),
+    ns: eYo.descriptorR(function () {
+      return this.eyo.ns
+    })
+  })
 }
 
 // ANCHOR model
@@ -891,4 +899,11 @@ eYo._p.eyo = eYo.makeDlgt('NS', eYo.constructor, {})
     var C9r = eYo.c9r.byType__[type]
     return C9r && C9r.eyo.model
   }
+}
+
+/**
+ * Convenient method
+ */
+eYo.c9r.Base_p.pureAbstract = () => {
+  eYo.throw(`Missing implementation of a pure abstract method`)
 }

@@ -2,13 +2,13 @@ describe('YIELD expression and statement', function() {
   it(`Basic yield statement`, function() {
     var d = eYo.test.new_brick(eYo.t3.stmt.yield_stmt)
     eYo.test.Code(d, 'yield')
-    eYo.test.Brick(d, 'yield_stmt')
+    eYo.test.brick(d, 'yield_stmt')
     d.dispose()
   })
   it(`Basic yield expression`, function() {
     var d = eYo.test.new_brick(eYo.t3.expr.yield_expr)
     eYo.test.Code(d, 'yield')
-    eYo.test.Brick(d, 'yield_expr')
+    eYo.test.brick(d, 'yield_expr')
     d.dispose()
   })
   it(`yield expression output`, function() {
@@ -63,7 +63,7 @@ describe('YIELD expression and statement', function() {
     d.dispose()
   })
   it(`yield abc -> yield <abc> -> yield abc`, function() {
-    var d = eYo.brick.newReady(eYo.app.Board, eYo.t3.stmt.yield_stmt)
+    var d = eYo.brick.newReady(eYo.board, eYo.t3.stmt.yield_stmt)
     d.Expression_p = 'abc'
     eYo.test.Code(d, 'yield abc')
     var t9k = d.expression_b

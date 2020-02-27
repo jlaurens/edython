@@ -104,7 +104,7 @@ eYo.svg.makeDriverC9r('TrashCan', {
         'xlink:href',
         url
       )
-      dom.bound.mouseup = eYo.dom.BindEvent(
+      dom.bound.mouseup = eYo.dom.bindEvent(
         g,
         'mouseup',
         null,
@@ -124,7 +124,7 @@ eYo.svg.makeDriverC9r('TrashCan', {
       if (dom) {
         goog.Timer.clear(dom.lidTask)
         dom.lidTask = 0
-        eYo.dom.ClearBoundEvents(trashCan)
+        eYo.dom.clearBoundEvents(trashCan)
         var svg = dom.svg
         if (svg) {
           goog.dom.removeNode(svg.group_)

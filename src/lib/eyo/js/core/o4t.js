@@ -11,8 +11,8 @@
  */
 'use strict'
 
-eYo.model.allowPaths({
-  [eYo.model.ROOT]: 'CONST',
+eYo.model.allowModelPaths({
+  [eYo.model.ROOT]: ['CONST', 'aliases'],
   CONST: '[A-Z_]+'
 })
 
@@ -45,7 +45,7 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
   if (!properties) {
     return
   }
-  eYo.model.expand(properties, 'properties')
+  this.modelExpand(properties, 'properties')
   var _p = object._p || object.eyo.C9r_p // either a namespace or an instance
   let todo = eYo.copyRA(Object.keys(properties))
   let done = []
@@ -73,8 +73,6 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
         let p = eYo.p6y.new(object, k, model)
         if (object.hasOwnProperty(k_p)) {
           console.error(`BREAK HERE!!! ALREADY object/${k_p}`)
-        } else if (k === 'kwargs') {
-          console.error(`BREAK HERE!!! WILL object/${k_p}`)
         }
         Object.defineProperties(object, {
           [k_p]: eYo.descriptorR(function () {
@@ -107,7 +105,7 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
       todo = again
       again = []
     } else {
-      again.length && eYo.throw(`Cycling/Missing properties in ${this.eyo.name}: ${again}`)
+      again.length && eYo.throw(`Cycling/Missing properties in ${object.eyo.name}: ${again}`)
       break
     }
   }
@@ -133,17 +131,10 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
   _p.propertiesMerge = function (properties) {
     this.keys_p__ = eYo.NA
     delete this.properties
-    this.forEachSubC9r(C9r => C9r.eyo.propertiesMerge({}))
+    this.forEachSubC9r(C9r => C9r.eyo.propertiesMerge({})) // force to recalculate the `properties` list.
+    this.modelExpand(properties, 'properties')
     for (var k in properties) {
-      var M = properties[k]
-      if (eYo.isD(M)) {
-        eYo.model.expand(M, `properties.${k}`)
-        this.properties__[k] = properties[k]
-      } else {
-        this.properties__[k] = {
-          value: M
-        }
-      }
+      this.properties__[k] = properties[k]
     }
   }
 
@@ -174,9 +165,12 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
     this.prepareProperties(object)
     let eyo = this.super
     if (eyo) {
-      eyo.prepareProperties = eYo.doNothing
-      eyo.prepareInstance(object)
-      delete eyo.prepareProperties
+      try {
+        eyo.prepareProperties = eYo.doNothing // prevent to recreate the same properties
+        eyo.prepareInstance(object)
+      } finally {
+        delete eyo.prepareProperties
+      }
     }
   }
   
@@ -253,6 +247,9 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
       [alias + '_']: {
         get: get,
         set (after) {
+          if (!this[key_p]) {
+            console.error('BREAK HERE!!! !this[key_p]')
+          }
           this[key_p].value__[source_p].value_ = after
         },
       },
@@ -318,13 +315,15 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
   }
   
   /**
-   * Declare the given model.
+   * Declare the given model for the associate constructor.
+   * The default implementation calls `propertiesMerge`,
+   * `aliasesMerge` then forwards to ancestor.
    * @param {Object} model - Object, like for |makeC9r|.
    */
   _p.modelMerge = function (model) {
     model.properties && this.propertiesMerge(model.properties)
     model.aliases && this.aliasesMerge(model.aliases)
-    eYo.o4t.super.Dlgt_p.modelMerge.call(this, model)
+    eYo.o4t.Dlgt_p.eyo.C9r_s.modelMerge.call(this, model)
   }
   
   /**
@@ -339,7 +338,7 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
     C9r_s || eYo.throw('Only subclasses may have a consolidator !')
     let consolidators = this.consolidators__ || (this.consolidators__ = Object.create(null))
     let kC = k+'Consolidate'
-    let consolidate_m = model.expand
+    let consolidate_m = this.modelExpand(model)
     let consolidate_s = C9r_s[kC]
     C9r_p[kC] = consolidators[k] = consolidate_m
     ? consolidate_s
@@ -425,7 +424,7 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
 
 /**
  * Executes the helper for each owned property.
- * @param{Function} f -  an helper
+ * @param{Function} f -  an helper with one argument which is the owned value.
  */
 eYo.o4t.Base_p.ownedForEach = function (f) {
   this.eyo.propertyForEach(this, f, true)
@@ -433,7 +432,7 @@ eYo.o4t.Base_p.ownedForEach = function (f) {
 
 /**
  * Executes the helper for each owned property stopping at the first truthy answer.
- * @param{Function} f -  an helper
+ * @param{Function} f -  an helper with one argument which is the owned value.
  */
 eYo.o4t.Base_p.ownedSome = function (f) {
   return this.eyo.propertySome(this, f, true)
@@ -441,7 +440,7 @@ eYo.o4t.Base_p.ownedSome = function (f) {
 
 /**
  * Declares a model to be used by others. 
- * It creates in the receiver's namespace a `merge` function of a `fooMerge` function,
+ * It creates in the receiver's namespace a `merge` function or a `fooMerge` function,
  * which purpose is to enlarge the prototype of the given constructor.
  * @param{String} [key] - the key for that model
  * @param{Object} model - the model
@@ -449,9 +448,10 @@ eYo.o4t.Base_p.ownedSome = function (f) {
 eYo.o4t._p.modelDeclare = function (key, model) {
   if (eYo.isStr(key)) {
     key = key + 'Merge'
+  } else if (eYo.isStr(model)) {
+    [key, model] = [model + 'Merge', key]
   } else {
-    model = key
-    key = 'merge'
+    [model, key] = [key, 'merge']
   }
   let _p = this._p
   _p.hasOwnProperty(key) && eYo.throw(`Already done`)

@@ -210,4 +210,14 @@ describe('eYo Tests', function () {
     original.push(2)
     chai.expect(copy).to.deep.equal(original)
   })
+  it ('valueForKeyPath', function () {
+    chai.expect(eYo.valueForKeyPath('eYo.test')).equal(eYo.test)
+    chai.expect(eYo.valueForKeyPath('test')).equal(eYo.test)
+    var key = eYo.do.genUID(eYo.do.IDENT)
+    eYo.test[key] = {
+      foo: {bar: 421}
+    }
+    chai.expect(eYo.valueForKeyPath(`eYo.test.${key}.foo.bar`)).equal(421)
+    delete eYo.test[key]
+  })
 })

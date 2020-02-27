@@ -39,7 +39,7 @@ Object.defineProperties(eYo.p6y._p, {
   },
 })
 
-eYo.model.allowPaths('properties', {
+eYo.model.allowModelPaths('properties', {
   'properties\\.\\w+': [
     'after', 'source',
     'value', 'lazy', 'reset',
@@ -49,7 +49,7 @@ eYo.model.allowPaths('properties', {
   ],
 })
 
-eYo.model.allowShortcuts({
+eYo.model.allowModelShortcuts({
   'properties\\.\\w+': (before, p) => {
     if (!eYo.isD(before)) {
       return {
@@ -293,19 +293,31 @@ eYo.p6y._p.handle_get_set = function (owner, prototype, key, model) {
     })
   } else if (eYo.isF(set_m)) {
     if (set_m.length > 1) {
-      !computed || eYo.throw(`Bad model (${owner.eyo.name}/${key}): Unexpected 'builtin' in set`)
-      prototype.setValue = prototype.resetValue = function (after) {
-        try {
-          this.setValue = eYo.doNothing
-          return set_m.call(this.owner, after => {
-            prototype.eyo.C9r_s.setValue.call(this, after)
-          }, after)
-        } finally {
-          delete this.setValue
+      computed && eYo.throw(`Bad model (${owner.eyo.name}/${key}): Unexpected 'builtin|property' in set`)
+      if (XRegExp.exec(set_m.toString(), eYo.xre.function_stored_after)) {
+        prototype.setValue = prototype.resetValue = function (after) {
+          try {
+            this.setValue = eYo.doNothing
+            return set_m.call(this.owner, this.stored__, after)
+          } finally {
+            delete this.setValue
+          }
+        }
+      } else {
+        computed || eYo.throw(`Bad model (${owner.eyo.name}/${key}): Missing 'builtin|property' in set`)
+        prototype.setValue = prototype.resetValue = function (after) {
+          try {
+            this.setValue = eYo.doNothing
+            return set_m.call(this.owner, after => {
+              prototype.eyo.C9r_s.setValue.call(this, after)
+            }, after)
+          } finally {
+            delete this.setValue
+          }
         }
       }
     } else {
-      computed || eYo.throw(`Bad model (${owner.eyo.name}/${key}): Missing 'builtin' in set`)
+      computed || eYo.throw(`Bad model (${owner.eyo.name}/${key}): Missing 'builtin|property' in set (2)`)
       prototype.setStored = prototype.setValue = prototype.resetValue = function (after) {
         try {
           this.setValue = eYo.doNothing
@@ -515,8 +527,8 @@ eYo.p6y.makeBase({
     })
   },
   dispose (...args) {
-    this.disposeStored_(...args)
     this.removeObservers()
+    this.disposeStored_(...args)
     this.key_ = this.owner_ = this.model_ = eYo.NA
   },
 })
@@ -807,7 +819,7 @@ eYo.p6y.makeBase({
       let wrapper = (before, after) => {
         callback(after)
       }
-      wrapper.eyo = callback
+      wrapper.eyo_observer = callback
       observers.push(wrapper)
     }
     return callback
@@ -827,13 +839,13 @@ eYo.p6y.makeBase({
       if (when) {
         let observers = byWhen[when]
         if (observers) {
-          byWhen[when] = observers.filter(x => x !== callback && x.eyo !== callback)
+          byWhen[when] = observers.filter(x => x !== callback && x.eyo_observer !== callback)
         }
       } else {
         eYo.p6y.HOOKS.forEach(when => {
           let observers = byWhen[when]
           if (observers) {
-            byWhen[when] = observers.filter(x => x !== callback && x.eyo !== callback)
+            byWhen[when] = observers.filter(x => x !== callback && x.eyo_observer !== callback)
           }  
         })
       }
@@ -871,10 +883,7 @@ eYo.p6y.makeBase({
   }
 
   /**
-   * Fire the observers.
-   * @param {*} when - One of `eYo.p6y.BEFORE`, `eYo.p6y.DURING`, `eYo.p6y.AFTER`, specifies when the observers are fired.
-   * @param {*} before - the value before
-   * @param {*} after - the value after
+   * Iterator.
    */
   _p.ownedForEach = eYo.doNothing
 
@@ -936,7 +945,7 @@ eYo.p6y.makeC9r('List', {
       set (after) {
         this.list__.length = after
       }
-    }
+    },
   })
  
   /**
@@ -954,5 +963,17 @@ eYo.p6y.makeC9r('List', {
     }))))
     return ans
   }
-  
+
 }) ()
+
+/**
+ * The @@iterator method
+ */
+eYo.p6y.List.eyo_p.initInstance = function (object) {
+  eYo.p6y.List.eyo.super.initInstance(object)
+  object.Symbol.iterator = function* () {
+    for (var p of this.list__) {
+      yield p.value
+    }
+  }
+}

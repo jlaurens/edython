@@ -37,7 +37,7 @@ eYo.o3d.makeNS(eYo, 'focus')
  * @constructor
  * The main focus manager is uniquely owned by the application.
  * It maintains a list of focus managers associated to boards.
- * @param {eYo.app} app -  the owning application.
+ * @param {eYo.app.Base} app -  the owning application.
  * @constructor
  */
 eYo.focus.makeC9r('Main', {

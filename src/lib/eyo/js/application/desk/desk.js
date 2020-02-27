@@ -86,20 +86,23 @@ eYo.view.makeC9r('Desk', {
       this.layout()
     }
   },
+  methods: {
+    /**
+     * Make the user interface.
+     */
+    forEachPane (f) {
+      [
+        this.workspace,
+        this.terminal,
+        this.turtle,
+        this.graphic,
+        this.variable,
+      ].forEach(f)
+    },
+
+  },
 })
 
-/**
- * Make the user interface.
- */
-eYo.view.Desk_p.forEachPane = function (f) {
-  [
-    this.workspace,
-    this.terminal,
-    this.turtle,
-    this.graphic,
-    this.variable,
-  ].forEach(f)
-}
 
 /**
  * Update the metrics and place the components accordingly.
@@ -122,8 +125,13 @@ eYo.view.Desk_p.layout = function() {
  
  */
 eYo.view.Desk_p.updateMetrics = function() {
-  this.ui_driver.updateMetrics(this)
-  this.forEachPane(p => p.updateMetrics())
+  try {
+    this.updateMetrics = eYo.doNothing
+    this.ui_driver.updateMetrics(this)
+    this.forEachPane(p => p.updateMetrics())
+  } finally {
+    delete this.updateMetrics
+  }
 }
 
 /**

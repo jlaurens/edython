@@ -107,14 +107,14 @@ eYo.noSetter = function (msg) {
  */
 eYo.descriptorR = (msg, getter, configurable) => {
   if (!eYo.isF(getter)) {
-    var swap = msg
+    var _ = msg
     msg = getter
-    getter = swap
+    getter = _
   }
   if (eYo.isBool(msg)) {
-    swap = msg
+    _ = msg
     msg = configurable
-    configurable = swap
+    configurable = _
   }
   msg && msg.lazy && (msg = msg.lazy)
   getter || eYo.throw('Missing getter')
@@ -134,9 +134,7 @@ eYo.descriptorR = (msg, getter, configurable) => {
  */
 eYo.descriptorW = (msg, setter) => {
   if (eYo.isF(msg)) {
-    let swap = msg
-    msg = setter
-    setter = swap
+    [msg, setter] = [setter, msg]
   }
   msg && msg.lazy && (msg = msg.lazy)
   setter || eYo.throw('Missing getter')
@@ -410,15 +408,33 @@ eYo.mixinR(eYo, {
     ChildC9r.SuperC9r = SuperC9r
     let Super_p = SuperC9r.prototype
     let Child_p = ChildC9r.prototype
-    ChildC9r.SuperC9r_p = Super_p
+    ChildC9r.SuperC9r_p = Child_p.SuperC9r_p = Super_p
     Object.setPrototypeOf(Child_p, Super_p)
-    Child_p.constructor = ChildC9r
-    Child_p.SuperC9r_p = Super_p
+    Object.defineProperty(Child_p, 'constructor', {
+      value: ChildC9r
+    })
   },
 }, false)
 
 // ANCHOR makeNS, provide
 eYo.mixinR(eYo._p, {
+  /**
+   * 
+   * @param {String} p 
+   */
+  valueForKeyPath: function (p) {
+    let components = p.split('.')
+    var ans = this
+    if (this === eYo && components[0] === eYo) {
+      components.shift()
+    }
+    for (component in components) {
+      if (component.length && eYo.isNA(ans = ans[component])) {
+        return
+      }
+    }
+    return ans
+  },
   /**
    * @name {eYo.makeNS}
    * Make a namespace by subclassing the caller's constructor.
@@ -452,7 +468,8 @@ eYo.mixinR(eYo._p, {
     })
     model && Object.keys(model).forEach(k => {
       Object.defineProperty(NS.prototype, k, {
-        value: model[k]
+        value: model[k],
+        configurable: true,
       })
     })
     var ans = new NS()
@@ -598,30 +615,29 @@ eYo.ENABLE_ASSERTS = true
 
 eYo.provide('eYo')
 
-eYo.makeNS('version')
+eYo.makeNS('version', {
+  /** @define {number} */
+  MAJOR: 0,
+
+  /** @define {number} */
+  MINOR: 1,
+
+  /** @define {number} */
+  PATCH: 0,
+
+  /** @define {string} */
+  PRERELEASE: '',
+
+  /** @define {string} */
+  BUILD_DATE: '',
+
+  /** @define {string} */
+  GIT_HEAD: '',
+})
+
 eYo.makeNS('session')
 
 eYo.forwardDeclare('app')
-
-Object.defineProperties(eYo.version, {
-  /** @define {number} */
-  MAJOR: { value: 0 },
-
-  /** @define {number} */
-  MINOR: { value: 1 },
-
-  /** @define {number} */
-  PATCH: { value: 0 },
-
-  /** @define {string} */
-  PRERELEASE: { value: '' },
-
-  /** @define {string} */
-  BUILD_DATE: { value: '' },
-
-  /** @define {string} */
-  GIT_HEAD: { value: '' },
-})
 
 eYo.makeNS('temp')
 eYo.makeNS('debug')

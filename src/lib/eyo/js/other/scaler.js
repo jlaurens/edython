@@ -12,8 +12,6 @@
  */
 'use strict'
 
-eYo.forwardDeclare('event.Motion')
-
 /**
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param{eYo.event.Motion} [motion] -  the owning motion
@@ -21,40 +19,41 @@ eYo.forwardDeclare('event.Motion')
  * @property {eYo.event.Motion} motion - the motion used to create this scaler
  * @property {Boolean} active - whether the receiver is active
  */
-eYo.c9r.makeC9r(eYo, 'Scaler', {
-  init (motion) {
-    this.motion_ = motion
-  },
-  value: {
+eYo.event.makeC9r('Scaler', {
+  properties: {
     active: false,
-    motion: eYo.NA,
   },
+  aliases: {
+    owner: 'motion',
+  },
+  methods: {
+    /**
+     * Start a transition.
+     */
+    start: function () {
+      this.reset()
+    },
+    /**
+     * Resets a transition.
+     */
+    reset: function () {
+      this.cancel()
+    },
+    /**
+     * Update a transition.
+     */
+    update: function () {
+    },
+    /**
+     * Cancel a scaling operation.
+     */
+    cancel: function () {
+    },
+    /**
+     * Conclude a scale operation.
+     * @return {!Boolean} Whether the scale opertion did conclude.
+     */
+    complete: function () {
+    },
+  }
 })
-
-/**
- * @return {Boolean} Whether a scale operation did start.
- */
-eYo.Scaler_p.start = function () {
-  this.cancel()
-}
-
-/**
- * Update a scale operation.
- * @return {Boolean} Whether a drag operation did update.
- */
-eYo.Scaler_p.update = function () {
-}
-
-/**
- * Cancel a scaling operation.
- * @return {Boolean} Whether a scale operation did cancel.
- */
-eYo.Scaler_p.cancel = function () {
-}
-
-/**
- * Conclude a scale operation.
- * @return {!Boolean} Whether the scale opertion did conclude.
- */
-eYo.Scaler_p.complete = function () {
-}

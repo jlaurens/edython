@@ -171,25 +171,25 @@ eYo.svg.Search_p.removeAllBrickListeners = function(search) {
  */
 eYo.svg.Search_p.addListeners = function(search, brick) {
   var g = brick.dom.svg.group_
-  search.listeners_.push(eYo.dom.BindEvent(
+  search.listeners_.push(eYo.dom.bindEvent(
     g,
     'mousedown',
     null,
     e => search.app.motion.handleFlyoutStart(e, search, brick)
   ))
-  search.listeners_.push(eYo.dom.BindEvent(
+  search.listeners_.push(eYo.dom.bindEvent(
     g,
     'mouseover',
     brick,
     brick.selectAdd
   ))
-  search.listeners_.push(eYo.dom.BindEvent(
+  search.listeners_.push(eYo.dom.bindEvent(
     g,
     'mouseleave',
     brick,
     brick.focusRemove
   ))
-  search.listeners_.push(eYo.dom.BindEvent(
+  search.listeners_.push(eYo.dom.bindEvent(
     g,
     'mouseout',
     brick,
@@ -203,7 +203,7 @@ eYo.svg.Search_p.addListeners = function(search, brick) {
  */
 eYo.svg.Search_p.listen_mouseover = function(search) {
   search.listeners_.push(
-    eYo.dom.BindEvent(
+    eYo.dom.bindEvent(
     search.dom.svg.background_,
     'mouseover',
     null,
@@ -223,14 +223,14 @@ eYo.svg.Search_p.bindScrollEvents = function(search) {
     return
   }
   var svg = search.dom.svg
-  bound.drag_wheel = eYo.dom.BindEvent(
+  bound.drag_wheel = eYo.dom.bindEvent(
     svg.group_,
     'wheel',
     null,
     this.searchOn_wheel.bind(search)
   )
   // Dragging the search up and down.
-  bound.drag_mousedown = eYo.dom.BindEvent(
+  bound.drag_mousedown = eYo.dom.bindEvent(
     svg.background_,
     'mousedown',
     null,
@@ -378,25 +378,25 @@ eYo.svg.makeDriverC9r('SearchToolbar', {
     }
     div.appendChild(dom.control_)
     var bound = dom.bound
-    bound.mousedown = eYo.dom.BindEvent(
+    bound.mousedown = eYo.dom.bindEvent(
       dom.control_,
       'mousedown',
       search,
       search.on_mousedown
     )
-    bound.mouseenter = eYo.dom.BindEvent(
+    bound.mouseenter = eYo.dom.bindEvent(
       dom.control_,
       'mouseenter',
       search,
       search.on_mouseenter
     )
-    bound.mouseleave = eYo.dom.BindEvent(
+    bound.mouseleave = eYo.dom.bindEvent(
       dom.control_,
       'mouseleave',
       search,
       search.on_mouseleave
     )
-    bound.mouseup = eYo.dom.BindEvent(
+    bound.mouseup = eYo.dom.bindEvent(
       dom.control_,
       'mouseup',
       search,

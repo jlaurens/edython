@@ -1,16 +1,16 @@
 describe('Programmatically create a desk', function () {
   it ('Headless desk', function () {
     var desk = new eYo.view.Desk({})
-    chai.assert(desk !== eYo.app.Desk)
+    chai.assert(desk !== eYo.app.desk)
     var board = desk.board
-    chai.assert(board !== eYo.app.Board)
+    chai.assert(board !== eYo.board)
   })
   it ('Headfull desk', function () {
-    chai.assert(eYo.test.Board && eYo.test.Board !== eYo.app.board)
+    chai.assert(eYo.test.board && eYo.test.board !== eYo.app.board)
   })
   it ('Headfull board metrics scale', function () {
-    var board = eYo.test.Board
-    var board1 = eYo.test.Board1
+    var board = eYo.test.board
+    var board1 = eYo.test.board1
     var before = board.metrics
     board.metrics_.scale = 1
     var after = board.metrics
@@ -24,6 +24,6 @@ describe('Basic metrics', function () {
     var type = `simple`
     eYo.t3.expr[type] = type
     eYo.expr.makeC9r(type, {})
-    var b3k = eYo.brick.newReady(eYo.app.Board, type)
+    var b3k = eYo.brick.newReady(eYo.board, type)
   })
 })

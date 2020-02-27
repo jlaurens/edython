@@ -25,7 +25,7 @@ describe('Svg driver', function() {
 var x = () => {
 describe('SVG coordinates', function () {
   it ('xy', function () {
-    eYo.test.SetItUp()
+    eYo.test.setItUp()
     var d1 = eYo.test.new_brick('True')
     var ui = d1.ui
     var xy1 = d1.xy
@@ -46,7 +46,7 @@ describe('SVG coordinates', function () {
 })
 describe('SVG groups and paths', function () {
   it(`Field: Label`, function () {
-    eYo.test.SetItUp()
+    eYo.test.setItUp()
     var d1 = eYo.test.new_brick('True')
     var field = d1.value_f
     var dom = field.dom
@@ -62,7 +62,7 @@ describe('SVG groups and paths', function () {
     eYo.test.tearItDown()
   })
   // it(`Field: Text Input`, function () {
-  //   eYo.test.SetItUp()
+  //   eYo.test.setItUp()
   //   var d1 = eYo.test.new_brick('builtin__object')
   //   var field = d1.value_f
   //   var dom = field.dom
@@ -76,7 +76,7 @@ describe('SVG groups and paths', function () {
   //   eYo.test.tearItDown()
   // })
   it(`Expression`, function () {
-    eYo.test.SetItUp()
+    eYo.test.setItUp()
     var d1 = eYo.test.new_brick('builtin__object')
     eYo.test.SvgNodeParent(d1, 'group_', d1.board.dom.svg.canvas_)
     eYo.test.SvgNodeParent(d1, 'groupContour_', 'group_')

@@ -36,8 +36,7 @@ class Foo:
 
   re_arg_ns = re.compile(r"""^
   (?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)
-  (?:\s*,\s*)?
-  (?P<suite>.*)""", re.X)
+  (?:\s*,\s* (?P<suite>.*))?$""", re.X)
 
   m = re.match(re_arg_ns, suite)
   assert m, 'BAD re_arg_ns 1'
@@ -60,17 +59,29 @@ class Foo:
   assert not m, 'BAD re_arg_ns 3'
 
   re_arg_key = re.compile(r"""^
-  (?:'|")(?P<key>[^'"]+)(?:'|")
-  .*""", re.X)
+  (?:'|")(?P<key>[^'"]+?)(?:'|")
+  .*$""", re.X)
 
   m = re.match(re_arg_key, suite)
   assert m, 'BAD re_arg_key 1'
   assert m.group('key') == "TrashCan", 'BAD re_arg_ns 2'
 
   re_arg_t3 = re.compile(r"""^
-  eYo\.t3\.(?:stmt|expr)\.(?P<type>[a-z][\w_]*)
-  (?:\s*,\s*)?
-  (?P<suite>.*)""", re.X)
+  eYo\.t3\.(?:stmt|expr)\.(?P<type>[a-z][\w0-9_]*)
+  (?:\s*,\s*(?P<suite>.*))?
+  $""", re.X)
+
+  re_arg_Super = re.compile(r"""^
+  (?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)\.(?P<key>[A-Z][\w0-9_]*)
+  (?:\s*,\s*(?P<suite>.*)|\W*)?""", re.X)
+  
+  m = re.match(re_make, "eYo.view.makeC9r(eYo.p6y.List)")
+  assert m, 'BAD re_make 7'
+  assert m.group('NS') == "eYo.view", 'BAD re_make 8'
+  suite = m.group('suite')
+  assert suite == "eYo.p6y.List)", 'BAD re_make 9'
+  m = re.match(re_arg_Super, suite)
+  assert m, 'BAD re_arg_Super 1'
 
   re_assignment = re.compile(r"""^\s*
   (?P<assigned>(?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)\.[A-Z][\w0-9_]*)
@@ -83,19 +94,19 @@ class Foo:
   (?:'|")(?P<Key>[^'"]+)(?:'|")
   .*""", re.X)
 
-  # eYo.widget.makeDflt()
-  re_makeDflt = re.compile(r"""^\s*
-  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeDflt\s*\(.*""", re.X)
+  # eYo.widget.makeBase()
+  re_makeBase = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeBase\s*\(.*""", re.X)
 
   # eYo.driver.makeMngr(model)
   re_makeMngr = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.makeMngr\s*\(.*""", re.X)
 
-  # eYo.o3d.Dflt.eyo.propertiesMerge({
+  # eYo.o3d.Base.eyo.propertiesMerge({
   re_propertiesMerge = re.compile(r"""^\s*
   (?P<extended>eYo(?:\.[a-z]\w*)*\.[A-Z]\w*)\.eyo\.(?:properties|methods)Merge\s*\(.*""", re.X)
 
-  # eYo.view.Dflt_p.doDisposeUI = function (...args) {
+  # eYo.view.Base_p.doDisposeUI = function (...args) {
   re_protocol2 = re.compile(r"""^\s*
   (?P<required>eYo(?:\.[a-z]\w*)*\.[A-Z]\w*)_p\.\w+\s*=.*""", re.X)
 
@@ -106,6 +117,10 @@ class Foo:
   # eYo.....merge(
   re_merge = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.(?:[a-z]\w*M|m)erge \s*\(""", re.X)
+
+  # eYo.....merge(
+  re_model = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)\.allow(?:Path|Shortcut)\s*\(""", re.X)
 
   pathByProvided = {}
   nsByClass = {}
@@ -150,20 +165,19 @@ class Foo:
             addRequired('eYo.c9r')
       for l in f.readlines():
         base_require(l)
-        m = self.re_makeDflt.match(l)
+        m = self.re_makeBase.match(l)
         if m:
           ns = m.group('ns')
           k = m.group('key')
           addRequired(f'{ns}')
-          addProvided(f'{ns}.{k.title()}')
-          addProvided(f'{ns}.{k}.Dflt')
+          addProvided(f'{ns}.{k}.Base')
           continue
         m = self.re_makeMngr.match(l)
         if m:
           ns = m.group('ns')
           addRequired(f'{ns}')
           addProvided(f'{ns}.Mngr')
-          addProvided(f'{ns}.Dflt')
+          addProvided(f'{ns}.Base')
           continue
         m = self.re_protocol.match(l)
         if m:
@@ -198,29 +212,32 @@ class Foo:
         if m:
           addRequired(m.group('ns'))
           continue
-        ns = key = None
+        m = self.re_model.match(l)
+        if m:
+          addRequired(m.group('ns'))
+          continue
+        ns = key = superKey = None
         def parse_args(suite):
-          nonlocal ns, key
-          ns = Key = None
+          nonlocal ns, key, superKey
+          ns = key = superKey = None
           m = self.re_arg_t3.match(suite)
           if m:
             key = m.group('type')
             suite = m.group('suite')
-          m = self.re_arg_t3.match(suite)
-          if m:
-            key = m.group('type')
-            suite = m.group('suite')
-          m = self.re_arg_ns.match(suite)
-          if m:
-            ns = m.group('ns')
-            suite = m.group('suite')
-          m = self.re_arg_ns.match(suite)
-          if m:
-            ns = m.group('ns')
-            suite = m.group('suite')
-          m = self.re_arg_key.match(suite)
-          if m:
-            key = m.group('key')
+          else:
+            m = self.re_arg_ns.match(suite)
+            if m:
+              ns = m.group('ns')
+              suite = m.group('suite')
+            m = self.re_arg_key.match(suite)
+            if m:
+              key = m.group('key')
+            else:
+              m = self.re_arg_Super.match(suite)
+              if m:
+                superKey = m.group('key')
+          if path.stem == 'view':
+            print('parseArgs:', ns, key, superKey)
         m = self.re_make.match(l)
         if m:
           if m.group('what') != 'NS':
@@ -228,13 +245,20 @@ class Foo:
           NS = m.group('NS')
           addRequired(NS)
           parse_args(m.group('suite'))
-          if ns:
-            addRequired(ns)
-            addProvided(f'{ns}.{key}')
-          else:
-            addProvided(f'{NS}.{key}')
-          if path.stem == 'workspace_control':
-            print(NS, ns, key, provided)
+          if key:
+            if ns:
+              addRequired(ns)
+              addProvided(f'{ns}.{key}')
+            else:
+              addProvided(f'{NS}.{key}')
+          elif superKey:
+            if ns:
+              addRequired(ns)
+              addProvided(f'{ns}.{superKey}')
+            else:
+              addProvided(f'{NS}.{superKey}')
+          if path.stem == 'view':
+            print('????', l, NS, ns, key, superKey, provided)
           continue
         m = self.re_makeInheritedC9r.match(l)
         if m:

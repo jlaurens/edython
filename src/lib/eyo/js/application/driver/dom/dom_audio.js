@@ -49,12 +49,12 @@ eYo.dom.makeDriverC9r('Audio', {
       // really something that happens on a click, not a drag, so that's not
       // necessary.
 
-      soundBinds = [eYo.dom.BindEvent(
+      soundBinds = [eYo.dom.bindEvent(
         document,
         'mousemove',
         unbindSounds,
         {noCaptureIdentifier: true}
-      ), eYo.dom.BindEvent(
+      ), eYo.dom.bindEvent(
         document,
         'touchstart',
         unbindSounds,

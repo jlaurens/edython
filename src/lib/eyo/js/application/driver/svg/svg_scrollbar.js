@@ -85,12 +85,12 @@ eYo.svg.makeDriverC9r('Scrollbar', {
       scrollbar.board_.dom.svg.root_
     )
     var bound = dom.bound
-    bound.bar_mousedown = eYo.dom.BindEvent(
+    bound.bar_mousedown = eYo.dom.bindEvent(
       background,
       'mousedown',
       this.scrollbarOnBar_mousedown.bind(scrollbar)
     )
-    bound.handle_mousedown = eYo.dom.BindEvent(
+    bound.handle_mousedown = eYo.dom.bindEvent(
       handle,
       'mousedown',
       this.scrollbarOnHandle_mousedown.bind(scrollbar)
@@ -186,13 +186,13 @@ eYo.svg.Scrollbar_p.onHandle_mousedown = function(e) {
     this.dragLength_ = rect.height - this.handleLength_
   }
   var bound = this.dom.bound
-  bound.mouseup = eYo.dom.BindEvent(
+  bound.mouseup = eYo.dom.bindEvent(
     document,
     'mouseup',
     this,
     this.ui_driver_mngr.scrollbarOn_mouseup
   )
-  bound.mousemove = eYo.dom.BindEvent(
+  bound.mousemove = eYo.dom.bindEvent(
     document,
     'mousemove',
     this,
@@ -225,7 +225,7 @@ eYo.svg.Scrollbar_p.on_mousemove = function(e) {
  */
 eYo.svg.Scrollbar_p.on_mouseup = function() {
   // Tell the board to clean up now that the board is done moving.
-  eYo.dom.ClearTouchIdentifier()
+  eYo.dom.clearTouchIdentifier()
   this.cleanUp_()
 }
 
@@ -258,7 +258,7 @@ eYo.svg.Scrollbar_p.cleanUp = function(scrollbar) {
 eYo.svg.Scrollbar_p.onBar_mousedown = function(e) {
   var board = this.board_
   board.markFocused()
-  eYo.dom.ClearTouchIdentifier()  // This is really a click.
+  eYo.dom.clearTouchIdentifier()  // This is really a click.
   this.cleanUp_()
   if (eYo.dom.isRightButton(e)) {
     // Right-click.

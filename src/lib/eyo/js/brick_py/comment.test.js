@@ -1,17 +1,17 @@
 describe('Statement', function () {
   var assert = chai.assert
 
-  var g = eYo.gmr._PyParser_Grammar
+  var g = eYo.py.gmr._pyParser_Grammar
 
   var test_connection_db = () => {
     for (var i = 1; i < eYo.magnet.RIGHT; i++) {
-      chai.assert(eYo.app.Board.MagnetDBList[i].length === 0, `Unexpected connection ${i}`)
+      chai.assert(eYo.board.MagnetDBList[i].length === 0, `Unexpected connection ${i}`)
     }
   }
 
   describe('comment statement', function () {
     it(`One brick dbOpposite_`, function () {
-      eYo.test.SetItUp()
+      eYo.test.setItUp()
       test_connection_db()
       var d = eYo.test.new_brick('comment_stmt')
       // d.Comment_p = 'abc'
@@ -41,7 +41,7 @@ describe('Statement', function () {
       eYo.test.tearItDown()
     })
     it(`Two bricks dbOpposite_`, function () {
-      eYo.test.SetItUp()
+      eYo.test.setItUp()
       test_connection_db()
       var d1 = eYo.test.new_brick('comment_stmt')
       var d2 = eYo.test.new_brick('comment_stmt')
@@ -89,10 +89,10 @@ describe('Statement', function () {
       eYo.test.tearItDown()
     })
     it(`Create from type`, function () {
-      eYo.test.SetItUp()
+      eYo.test.setItUp()
       var d = eYo.test.new_brick('comment_stmt')
-      eYo.test.Brick(d, 'comment_stmt')
-      eYo.test.C9r(d, 'comment_stmt')
+      eYo.test.brick(d, 'comment_stmt')
+      eYo.test.c9r(d, 'comment_stmt')
       var d1 = eYo.test.new_brick('comment_stmt')
       d.Comment_p = 'abc'
       d1.Comment_p = 'cde'

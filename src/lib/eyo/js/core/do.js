@@ -11,7 +11,11 @@
  */
 'use strict'
 
-eYo.makeNS('do')
+eYo.makeNS('do', {
+  LETTER: 'letter',
+  ALNUM: 'alnum',
+  IDENT: 'ident',
+})
 
 goog.forwardDeclare('goog.dom')
 
@@ -555,16 +559,27 @@ eYo.do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
 
 ;(() => {
   // remove characters '`:()[]{}' for convenience
-  var soup = '!#$%*+,-./;=?@^_|~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  var letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_'
+  var alnum = letter + '0123456789'
+  var all = alnum + '!#$%*+,-./;=?@^|'
   /**
    * Generate a unique ID.  This should be globally unique.
-   * 87 characters ^ 20, length > 128 bits (better than a UUID).
+   * 79 characters ^ 20, length > 128 bits (better than a UUID).
    * @return {string} A globally unique ID string.
    */
-  eYo.do.genUid = () => {
+  eYo.do.genUid = (type, length) => {
+    if (!eYo.isStr(type)) {
+      [length, type] = [type, length]
+    }
+    length || (length = 20)
+    if (type === eYo.do.IDENT) {
+      return eYo.do.genUid(eYo.do.LETTER, 1) + eYo.do.genUid(eYo.do.ALNUM, length - 1)
+    }
+    let soup = type === eYo.do.LETTER ? letter :
+    type === eYo.do.ALNUM ? alnum : all
     let soupLength = soup.length
     let id = []
-    var i = 20
+    var i = length || 20
     while (i) {
       id[--i] = soup.charAt(Math.random() * soupLength)
     }

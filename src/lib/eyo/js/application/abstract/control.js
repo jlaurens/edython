@@ -73,10 +73,10 @@ eYo.control.makeBase({
       var view = board.metrics.view
       var r = this.viewRect__
       var flyout = this.flyout_
-      r.right = (flyout && flyout.atRight
+      r.right_ = (flyout && flyout.atRight
         ? flyout.viewRect.left
         : view.left) - this.ns.MARGIN_SIDE_
-      r.y_max = bottom - this.ns.MARGIN_BOTTOM_
+      r.y_max_ = bottom - this.ns.MARGIN_BOTTOM_
     }
   },
 })

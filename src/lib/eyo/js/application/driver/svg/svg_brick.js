@@ -103,11 +103,11 @@ eYo.svg.makeDriverC9r('Brick', {
     }
     goog.dom.appendChild(svg.groupShape_, svg.pathShape_)
     if (!brick.board.options.readOnly) {
-      eYo.dom.BindMouseEvents(brick.ui, g)
+      eYo.dom.bindMouseEvents(brick.ui, g)
       // I could not achieve to use only one binding
       // With 2 bindings all the mouse events are catched,
       // but some, not all?, are catched twice.
-      eYo.dom.BindMouseEvents(brick.ui, svg.pathContour_)
+      eYo.dom.bindMouseEvents(brick.ui, svg.pathContour_)
     }
     if (brick.isExpr) {
       goog.dom.classlist.add(svg.groupShape_, 'eyo-expr')
@@ -138,7 +138,7 @@ eYo.svg.makeDriverC9r('Brick', {
           'd',
           eYo.shape.definitionForPlayIcon({x: 0, y: 0})
         )
-        dom.bound.mousedown = eYo.dom.BindEvent(
+        dom.bound.mousedown = eYo.dom.bindEvent(
           svg.pathPlayIcon_,
           'mousedown',
           null,
@@ -747,7 +747,7 @@ eYo.svg.Brick_p.whereInDesk = function (brick) {
   var element = brick.dom.svg.group_
   do {
     // Loop through this brick and every parent.
-    ans.xyAdvance(this.xyInParent(element))
+    ans.xyForward(this.xyInParent(element))
   } while ((element = element.parentNode) && element != boardRoot && element != bdsRoot)
   return ans
 }

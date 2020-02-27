@@ -81,7 +81,7 @@ describe ('Tests: Model', function () {
     chai.expect(submodel.data.ab).equal(421)
     chai.expect(submodel.properties).equal(421)
   })
-  it('eYo.model.expand(…)', function () {
+  it('eYo.model.modelExpand(…)', function () {
     var model = {
       properties: {
         drag: {
@@ -89,14 +89,14 @@ describe ('Tests: Model', function () {
         },
       },
     }
-    eYo.model.expand(model)
+    eYo.model.modelExpand(model)
     chai.assert(eYo.isF(model.properties.drag.get))
     var model = {
       properties: {
         drag () {},
       },
     }
-    eYo.model.expand(model)
+    eYo.model.modelExpand(model)
     chai.assert(eYo.isF(model.properties.drag))
   })
 })

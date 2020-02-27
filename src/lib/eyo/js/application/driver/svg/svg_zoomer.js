@@ -141,34 +141,34 @@ eYo.svg.makeDriverC9r('Zoomer', {
     )
     // Attach event listeners.
     var bound = dom.bound
-    bound.zoomreset = eYo.dom.BindEvent(
+    bound.zoomreset = eYo.dom.bindEvent(
       zoomresetSvg,
       'mousedown',
       e => {
         board.markFocused()
         board.scale = board.options.zoom.startScale
         board.scrollCenter()
-        eYo.dom.ClearTouchIdentifier()  // Don't block future drags.
+        eYo.dom.clearTouchIdentifier()  // Don't block future drags.
         eYo.dom.gobbleEvent(e)
       }
     )
-    bound.zoomin = eYo.dom.BindEvent(
+    bound.zoomin = eYo.dom.bindEvent(
       zoominSvg,
       'mousedown',
       e => {
         board.markFocused()
         board.zoomCenter(1)
-        eYo.dom.ClearTouchIdentifier()  // Don't block future drags.
+        eYo.dom.clearTouchIdentifier()  // Don't block future drags.
         eYo.dom.gobbleEvent(e)
       }
     )
-    bound.zoomout = eYo.dom.BindEvent(
+    bound.zoomout = eYo.dom.bindEvent(
       zoomoutSvg,
       'mousedown',
       e => {
         board.markFocused();
         board.zoomCenter(-1)
-        eYo.dom.ClearTouchIdentifier()  // Don't block future drags.
+        eYo.dom.clearTouchIdentifier()  // Don't block future drags.
         eYo.dom.gobbleEvent(e)
       }
     )

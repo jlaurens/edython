@@ -375,7 +375,7 @@ eYo.o3d.Base.eyo.methodsMerge({
   }
 })
 
-eYo.event.Backer.eyo.methodsMerge({
+eYo.event.Mngr.eyo.methodsMerge({
   /**
    * Clear the undo/redo stacks.
    * Forwards to the owner.

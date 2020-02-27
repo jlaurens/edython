@@ -53,11 +53,11 @@ eYo.view.makeC9r('Workspace', {
     },
     /**
      * The undo/redo manager
-     * @type {?eYo.event.Backer} 
+     * @type {?eYo.event.Mngr} 
      */
     backer: {
       value () {
-        return new eYo.event.Backer(this)
+        return new eYo.event.Mngr(this)
       },
     },
     /**

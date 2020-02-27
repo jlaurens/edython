@@ -33,7 +33,7 @@ eYo.isModel = (what) => {
  * A model is an object representing a tree.
  * Each node is accessed by a path.
  * If `M` is the root node, the node `M.foo.bar` has path `foo.bar`.
- * Paths are given as regulr expression to embrace many cases at a time.
+ * Paths are given as regular expression to embrace many cases at a time.
  * Here is a map from paths to a list of allowed keys.
  * @name {eYo.model.allowed}
  */
@@ -60,7 +60,7 @@ eYo.model._p.isAllowed = function (path, key) {
  * Allow a new set of keys.
  * @param {Map<String,String|Array<String>>} [model]
  */
-eYo.model._p.allowPaths = function (model) {
+eYo.model._p.allowModelPaths = function (model) {
   Object.keys(model).forEach(path => {
     let keys = model[path]
     var already = this.allowed[path]
@@ -73,29 +73,16 @@ eYo.model._p.allowPaths = function (model) {
   })
 }
 
-eYo.model.allowPaths({
+eYo.model.allowModelPaths({
   [eYo.model.ROOT]: [
-    'dlgt', 'init', 'deinit', 'dispose', 'ui',
     'xml',
-    'out', 'head', 'left', 'right', 'suite', 'foot'
-  ],
-  init: [
-    'begin',
-    'end',
-  ],
-  dispose: [
-    'begin',
-    'end',
   ],
   xml: [
     'attr', 'types', 'attribute',
   ],
-  ui: [
-    'init', 'dispose', 'doInit', 'doDispose', 'initMake', 'disposeMake',
-  ],
 })
 
-eYo.model.allowPaths({
+eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'data',
   'data\\.\\w+': [
     'order', // INTEGER
@@ -122,7 +109,7 @@ eYo.model.allowPaths({
   ],
 })
 
-eYo.model.allowPaths({
+eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'slots',
   'slots\\.\\w+': [
     'order', // INTEGER,
@@ -154,11 +141,7 @@ eYo.model.allowPaths({
   ],
 })
 
-eYo.model.allowPaths({
-  [eYo.model.ROOT]: 'aliases',
-})
-
-eYo.model.allowPaths({
+eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'list',
   list: [
     'check',
@@ -182,7 +165,7 @@ eYo.model._p.shortcut = Object.create(null)
  * Allow new shortcuts.
  * @param {Map<String, Function>} [model] - Functions.
  */
-eYo.model._p.allowShortcuts = function (model) {
+eYo.model._p.allowModelShortcuts = function (model) {
   Object.keys(model).forEach(path => {
     let shortcut = model[path]
     eYo.isF(shortcut) || eYo.throw(`Unexpected shortcut handler: ${shortcut}`)
@@ -197,11 +180,12 @@ eYo.model._p.allowShortcuts = function (model) {
 
 /**
  * The real model syntax may be somehow relaxed.
- * The method will turn the model into something strong.
+ * The method will turn the given model into something strong
+ * by expanding shortcuts. After this call, the model is well formed.
  * @param {Object} model - the tree in which we replace some node by objects
  * @param {String} path - Defaults to a void string for the root path.
  */
-eYo.model._p.expand = function (model, path = '') {
+eYo.model._p.modelExpand = function (model, path = '') {
   Object.keys(model).forEach(k => {
     let p = path && `${path}.${k}` || k
     var M = model[k]
@@ -229,7 +213,7 @@ eYo.model._p.expand = function (model, path = '') {
           }
         }
       })
-      eYo.isD(M = model[k]) && this.expand(M, p)
+      eYo.isD(M = model[k]) && this.modelExpand(M, p)
     }
   })
 }

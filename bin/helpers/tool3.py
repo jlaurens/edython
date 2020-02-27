@@ -115,6 +115,7 @@ mocha.setup('bdd')
 eYo.path_root = '{root}'
 eYo.path_eyo = '{eyo}'
 //]]></script>
+    <script src="{eyo}test/chai_extension.js"></script>
     <script src="{eyo}test/common.test.js"></script>
 '''
 
