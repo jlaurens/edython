@@ -359,8 +359,6 @@ print('Step 1:')
 print('=======')
 print('Building eyo deps')
 buildDeps('eyo', 'eyo')
-print('Building blockly/core deps')
-buildDeps('blockly/core', 'blockly')
 
 print('Done')
 

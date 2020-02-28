@@ -145,7 +145,6 @@ if __name__ != "main":
     pathBuild.mkdir(parents=True, exist_ok=True)
     #deps contains a list of alll the available key found from the sources.
     ddb = DDB(pathRoot / 'src' / 'lib' / 'closure-library' / 'closure' / 'goog' / 'deps.js',
-              pathBuild / 'blockly_deps.js',
               pathBuild / 'eyo_deps.js')
     if global_args.verbose:
         print("""
@@ -153,10 +152,8 @@ Dependencies:
 =============""")
         print(ddb)
     
-    todo_required1 = getRQR(pathBuild / 'blockly_required.txt')
     todo_required2 = getRQR(pathBuild / 'eyo_required.txt')
-    todo_required1.extend(todo_required2)
-    todo_required = set(todo_required1)
+    todo_required = set(todo_required2)
     if global_args.verbose:
         print("""
 Required:
@@ -191,7 +188,7 @@ Cascaded required:
 ==================""")
         print(*sorted([x for x in done if x.startswith('eYo')]), sep = '\n')
 
-    # Actually, done contains all the keys provided by both edython and blockly
+    # Actually, done contains all the keys provided by edython
     # but it actually contains only some of the goog keys.
     assert 'eYo.view.Flyout' in done, 'FAILURE (done)'
     # now order the deps
@@ -290,9 +287,7 @@ Cascaded required:
             dep.done = True
     control_middle = len(final)
     final_goog = ['src/lib/closure-library/closure/goog/' + r for r in final if not r.startswith('src/lib/')]
-    final_Blockly = [r for r in final if r.startswith('src/lib/b')]
     final_eYo = [r for r in final if r.startswith('src/lib/e')]
-    final_goog.extend(final_Blockly)
     final_goog.extend(final_eYo)
     final = final_goog
     control_after = len(final)
