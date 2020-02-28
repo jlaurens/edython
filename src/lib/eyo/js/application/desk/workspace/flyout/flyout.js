@@ -19,13 +19,11 @@ eYo.forwardDeclare('style')
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('flyoutToolbar')
 eYo.forwardDeclare('tooltip')
-eYo.forwardDeclare('menuRenderer')
-eYo.forwardDeclare('menuButtonRenderer')
 
 /**
  * @type {eYo.view.Flyout}
  * Class for a flyout.
- * @param {eYo.Workspace} owner  The owning desk, which must be a desk...
+ * @param {eYo.view.Workspace} owner  The owning desk, which must be a desk...
  * @constructor
  * @readonly
  * @property {eYo.Workspace} workspace, The workspace

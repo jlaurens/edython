@@ -11,10 +11,8 @@
  */
 'use strict'
 
-eYo.require('menuRenderer')
 eYo.forwardDeclare('flyoutToolbar')
 
-eYo.require('menuButtonRenderer')
 goog.require('goog.dom')
 goog.require('goog.ui.Select')
 eYo.provide('flyoutToolbar')

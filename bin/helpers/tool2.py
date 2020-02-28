@@ -164,7 +164,7 @@ Required:
         print(*sorted([x for x in todo_required if x.startswith('eYo')]), sep = '\n')
     # todo_required contains a list of all the required keys.
     done = set()
-    assert 'eYo.Flyout' in todo_required, 'FAILURE (todo_required)'
+    assert 'eYo.view.Flyout' in todo_required, 'FAILURE (todo_required)'
     #
     while len(todo_required):
         # get an element from todo_required and move it to done
@@ -193,7 +193,7 @@ Cascaded required:
 
     # Actually, done contains all the keys provided by both edython and blockly
     # but it actually contains only some of the goog keys.
-    assert 'eYo.Flyout' in done, 'FAILURE (done)'
+    assert 'eYo.view.Flyout' in done, 'FAILURE (done)'
     # now order the deps
     # we start with objects with no requirements at all
     # we remove them from the list of all the other requirements
@@ -281,7 +281,7 @@ Cascaded required:
 1)
 ==""", *sorted([x for x in sorted_deps if x.startswith('eYo')]), sep = '\n')
     
-    assert 'eYo.Flyout' in sorted_deps, 'FAILURE (sorted)'
+    assert 'eYo.view.Flyout' in sorted_deps, 'FAILURE (sorted)'
     final = []
     for r in sorted_deps:
         dep = ddb[r]

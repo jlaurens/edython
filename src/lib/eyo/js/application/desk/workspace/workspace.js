@@ -15,7 +15,7 @@
 
 eYo.require('decorate')
 
-eYo.forwardDeclare('Flyout')
+eYo.forwardDeclare('view.Flyout')
 eYo.forwardDeclare('app')
 eYo.forwardDeclare('event')
 eYo.forwardDeclare('view.Scrollbar')

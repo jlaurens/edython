@@ -184,52 +184,6 @@ eYo.stmt.except_part.prototype.getType = eYo.change.decorate(
 )
 
 /**
- * Populate the context menu for the given brick.
- * @param {eYo.brick.Base} brick The brick.
- * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
- * @private
- */
-eYo.stmt.except_part.prototype.populateContextMenuFirst_ = function (mngr) {
-  var current = this.Variant_p
-  var F = (content, k) => {
-    var menuItem = mngr.newMenuItem(content, () => {
-      this.Variant_p = k
-    })
-    mngr.addChild(menuItem, true)
-    menuItem.setEnabled(k !== current)
-  }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
-    goog.dom.createTextNode('except:')
-  ), eYo.key.NONE
-  )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('except ', 'eyo-code-reserved'),
-    goog.dom.createTextNode('…:')
-  ), eYo.key.EXPRESSION
-  )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('except', 'eyo-code-reserved'),
-    goog.dom.createTextNode(' … '),
-    eYo.do.CreateSPAN(' as', 'eyo-code-reserved'),
-    goog.dom.createTextNode(' …:')
-  ), eYo.key.ALIASED
-  )
-  mngr.shouldSeparate()
-  return eYo.stmt.except_part.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
-}
-
-/**
- * Class for a Delegate, finally_part brick.
- * Not normally called directly, eYo.brick.Create(...) is preferred.
- * For edython.
- */
-eYo.stmt.group.makeInheritedC9r('finally_part', true, {
-  fields: {
-    prefix: 'finally'
-  }
-})
-
-/**
  * Class for a Delegate, raise_stmt.
  * For edython.
  */
@@ -329,41 +283,6 @@ eYo.stmt.makeC9r('raise_stmt', true, {
 })
 
 /**
- * Populate the context menu for the given brick.
- * @param {eYo.brick.Base} brick The brick.
- * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
- * @private
- */
-eYo.stmt.raise_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var current = this.Variant_p
-  var F = (content, k) => {
-    var menuItem = mngr.newMenuItem(content, () => {
-      this.Variant_p = k
-    })
-    mngr.addChild(menuItem, true)
-    menuItem.setEnabled(k !== current)
-  }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
-    goog.dom.createTextNode('raise')
-  ), eYo.key.NONE
-  )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('raise ', 'eyo-code-reserved'),
-    goog.dom.createTextNode('…')
-  ), eYo.key.EXPRESSION
-  )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('raise', 'eyo-code-reserved'),
-    goog.dom.createTextNode(' … '),
-    eYo.do.CreateSPAN(' from', 'eyo-code-reserved'),
-    goog.dom.createTextNode(' …')
-  ), eYo.key.FROM
-  )
-  mngr.shouldSeparate()
-  return eYo.stmt.raise_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
-}
-
-/**
  * Class for a Delegate, assert_stmt.
  * For edython.
  */
@@ -430,33 +349,3 @@ eYo.stmt.makeC9r('assert_stmt', true, {
     }
   }
 })
-
-/**
- * Populate the context menu for the given brick.
- * @param {eYo.brick.Base} brick The brick.
- * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
- * @private
- */
-eYo.stmt.Assert_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var current = this.Variant_p
-  var F = (content, key) => {
-    var menuItem = mngr.newMenuItem(content, () => {
-      this.Variant_p = key
-    })
-    mngr.addChild(menuItem, true)
-    menuItem.setEnabled(key !== current)
-  }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('assert ', 'eyo-code-reserved'),
-    goog.dom.createTextNode('…')
-  ), eYo.key.UNARY
-  )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('assert ', 'eyo-code-reserved'),
-    goog.dom.createTextNode('…, …')
-  ), eYo.key.BINARY
-  )
-  mngr.shouldSeparate()
-  return eYo.stmt.Assert_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
-}
-

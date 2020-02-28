@@ -42,7 +42,7 @@ eYo.dragger.makeC9r('Brick', {
     availableMagnets: eYo.NA,
     /**
      * The associate drag surface
-     * @type{eYo.BrickNSDragSurface}
+     * @type{eYo.NS.BrickDragSurface}
      * @readonly
      */
     dragSurface: {

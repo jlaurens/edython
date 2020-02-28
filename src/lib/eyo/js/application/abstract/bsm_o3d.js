@@ -17,7 +17,6 @@ eYo.require('decorate')
 eYo.forwardDeclare('app')
 // Possible owned
 eYo.forwardDeclare('view.Workspace')
-eYo.forwardDeclare('Flyout')
 eYo.forwardDeclare('board')
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('slot')

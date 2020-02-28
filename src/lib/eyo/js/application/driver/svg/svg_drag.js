@@ -15,11 +15,6 @@
  */
 'use strict'
 
-eYo.require('svg')
-
-eYo.provide('svg.brickDragSurface')
-eYo.provide('svg.BoardDragSurface')
-
 /**
  * Class for a drag surface for the currently dragged block. This is a separate
  * SVG that contains only the currently moving block, or nothing.

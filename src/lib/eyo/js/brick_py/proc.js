@@ -17,7 +17,6 @@ eYo.require('xre')
 
 eYo.require('msg')
 eYo.require('expr.primary')
-eYo.require('menuItem')
 goog.require('goog.dom');
 
 eYo.mixinR(eYo.xre, {
@@ -462,36 +461,6 @@ eYo.stmt.group.makeInheritedC9r('funcdef_part', true, {
   }
 })
 
-/**
- * Populate the context menu for the given brick.
- * @param {eYo.brick.Base} brick The brick.
- * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
- * @private
- */
-eYo.stmt.funcdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
-  var variants = this.variant_d.getAll()
-  var variant = this.Variant_p
-  var F = (content, key) => {
-    var menuItem = mngr.newMenuItem(content, () => {
-      this.Variant_p = key
-    })
-    mngr.addChild(menuItem, true)
-    menuItem.setEnabled(key !== variant)
-  }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('def', 'eyo-code-reserved'),
-    eYo.do.CreateSPAN(' f', 'eyo-code-placeholder'),
-    goog.dom.createTextNode('(…)')
-  ), variants[0])
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('def', 'eyo-code-reserved'),
-    eYo.do.CreateSPAN(' f', 'eyo-code-placeholder'),
-    goog.dom.createTextNode('(…) -> …')
-  ), variants[1])
-  mngr.shouldSeparate()
-  return eYo.stmt.funcdef_part.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
-}
-
 /*
 classdef_part ::=  "class" classname [parenth_argument_list] ':'
 */
@@ -551,32 +520,3 @@ eYo.stmt.group.makeInheritedC9r('classdef_part', true, {
     }
   }
 })
-
-/**
- * Populate the context menu for the given brick.
- * @param {eYo.brick.Base} brick The brick.
- * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
- * @private
- */
-eYo.stmt.Classdef_part.prototype.populateContextMenuFirst_ = function (mngr) {
-  var variants = this.variant_d.getAll()
-  var variant = this.variant_d.get()
-  var F = (content, key) => {
-    var menuItem = mngr.newMenuItem(content, () => {
-      this.Variant_p = key
-    })
-    mngr.addChild(menuItem, true)
-    menuItem.setEnabled(key !== variant)
-  }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('class', 'eyo-code-reserved'),
-    eYo.do.CreateSPAN(' name', 'eyo-code-placeholder')
-  ), variants[0])
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('class', 'eyo-code-reserved'),
-    eYo.do.CreateSPAN(' name', 'eyo-code-placeholder'),
-    goog.dom.createTextNode('(…)')
-  ), variants[1])
-  mngr.shouldSeparate()
-  return eYo.stmt.classdef_part.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
-}

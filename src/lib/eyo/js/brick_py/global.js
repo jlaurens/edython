@@ -191,11 +191,6 @@ eYo.stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
       eYo.do.CreateSPAN(key, 'eyo-code-reserved')
     )
-    var menuItem = mngr.newMenuItem(content, () => {
-      this.Variant_p = key
-    })
-    mngr.addChild(menuItem, true)
-    menuItem.setEnabled(key !== current)
   }
   F(0)
   F(1)
@@ -207,11 +202,6 @@ eYo.stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
       eYo.do.CreateSPAN(key, 'eyo-code-reserved'),
       eYo.do.CreateSPAN(' …', 'eyo-code-placeholder')
     )
-    var menuItem = mngr.newMenuItem(content, () => {
-      this.Variant_p = key
-    })
-    mngr.addChild(menuItem, true)
-    menuItem.setEnabled(key !== current)
   }
   F(3)
   F(4)

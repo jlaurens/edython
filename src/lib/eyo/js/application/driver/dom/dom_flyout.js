@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('Flyout')
+eYo.forwardDeclare('view.Flyout')
 
 /**
  * @name {eYo.dom.Flyout}

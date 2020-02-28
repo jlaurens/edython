@@ -143,7 +143,6 @@ java -jar "$COMPILER"\
 --js "src/lib/closure-library/closure/goog/ui/modalpopup.js" \
 --js "src/lib/closure-library/closure/goog/ui/tree/basenode.js" \
 --js "src/lib/closure-library/closure/goog/positioning/anchoredposition.js" \
---js "src/lib/closure-library/closure/goog/positioning/clientposition.js" \
 --js "src/lib/closure-library/closure/goog/ui/buttonrenderer.js" \
 --js "src/lib/closure-library/closure/goog/ui/control.js" \
 --js "src/lib/closure-library/closure/goog/ui/dialog.js" \
@@ -153,7 +152,6 @@ java -jar "$COMPILER"\
 --js "src/lib/closure-library/closure/goog/ui/paletterenderer.js" \
 --js "src/lib/closure-library/closure/goog/ui/tree/treenode.js" \
 --js "src/lib/closure-library/closure/goog/positioning/anchoredviewportposition.js" \
---js "src/lib/closure-library/closure/goog/positioning/viewportclientposition.js" \
 --js "src/lib/closure-library/closure/goog/ui/container.js" \
 --js "src/lib/closure-library/closure/goog/ui/custombuttonrenderer.js" \
 --js "src/lib/closure-library/closure/goog/ui/menuheader.js" \
@@ -170,10 +168,7 @@ java -jar "$COMPILER"\
 --js "src/lib/closure-library/closure/goog/ui/colorpicker.js" \
 --js "src/lib/closure-library/closure/goog/ui/menu.js" \
 --js "src/lib/closure-library/closure/goog/ui/menubuttonrenderer.js" \
---js "src/lib/closure-library/closure/goog/ui/popupmenu.js" \
---js "src/lib/closure-library/closure/goog/ui/submenurenderer.js" \
 --js "src/lib/closure-library/closure/goog/ui/menubutton.js" \
---js "src/lib/closure-library/closure/goog/ui/submenu.js" \
 --js "src/lib/closure-library/closure/goog/ui/select.js" \
 --js "src/lib/blockly/core/blocks.js" \
 --js "src/lib/blockly/core/css.js" \
@@ -273,12 +268,12 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/py/grammar.js" \
 --js "src/lib/eyo/js/py/node.js" \
 --js "src/lib/eyo/js/py/token.js" \
---js "src/lib/eyo/js/application/desk/workspace/flyout/flyout.js" \
 --js "src/lib/eyo/js/application/ui/audio.js" \
---js "src/lib/eyo/js/application/desk/board/board.js" \
 --js "src/lib/eyo/js/application/abstract/bsm_o3d.js" \
+--js "src/lib/eyo/js/core/change.js" \
 --js "src/lib/eyo/js/application/ui/css.js" \
 --js "src/lib/eyo/js/application/ui/dnd.js" \
+--js "src/lib/eyo/js/other/dragger.js" \
 --js "src/lib/eyo/js/core/event.js" \
 --js "src/lib/eyo/js/application/desk/board/metrics/metrics.js" \
 --js "src/lib/eyo/js/module/module_decimal.js" \
@@ -287,7 +282,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/module/module_random.js" \
 --js "src/lib/eyo/js/module/module_stdtypes.js" \
 --js "src/lib/eyo/js/module/module_turtle.js" \
---js "src/lib/eyo/js/core/change.js" \
 --js "src/lib/eyo/Python/graminit.js" \
 --js "src/lib/eyo/js/application/desk/board/brick/brick_util/node_brick.js" \
 --js "src/lib/eyo/js/py/tokenizer.js" \
@@ -295,10 +289,10 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/board/brick/span.js" \
 --js "src/lib/eyo/js/module/profile.js" \
 --js "src/lib/eyo/js/core/view.js" \
---js "src/lib/eyo/js/application/desk/board/brick/brick_util/brick_dragger.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/draft.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/search.js" \
 --js "src/lib/eyo/js/application/app.js" \
+--js "src/lib/eyo/js/application/desk/board/board.js" \
 --js "src/lib/eyo/js/application/abstract/control.js" \
 --js "src/lib/eyo/js/application/driver/driver.js" \
 --js "src/lib/eyo/js/application/ui/motion.js" \
@@ -307,6 +301,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/board/brick/magnet/magnet.js" \
 --js "src/lib/eyo/js/application/desk/board/brick/slot/slot.js" \
 --js "src/lib/eyo/js/application/desk/desk.js" \
+--js "src/lib/eyo/js/application/desk/workspace/flyout/flyout.js" \
 --js "src/lib/eyo/js/application/desk/graphic/graphic.js" \
 --js "src/lib/eyo/js/application/desk/workspace/scrollbar/scrollbar.js" \
 --js "src/lib/eyo/js/application/desk/workspace/scroller/scroller.js" \
@@ -330,7 +325,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/board/brick/list.js" \
 --js "src/lib/eyo/js/application/driver/fcls/fcls_brick.js" \
 --js "src/lib/eyo/js/application/desk/focus.js" \
---js "src/lib/eyo/js/application/desk/board/brick/brick_util/python_exporter.js" \
 --js "src/lib/eyo/js/brick_py/stmt.js" \
 --js "src/lib/eyo/js/application/driver/svg/svg_brick.js" \
 --js "src/lib/eyo/js/application/driver/svg/svg_field.js" \
@@ -340,15 +334,12 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/board/brick/brick_util/navigate.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/library.js" \
 --js "src/lib/eyo/js/brick_py/group.js" \
---js "src/lib/eyo/closure-library/menuitemrenderer.js" \
 --js "src/lib/eyo/js/brick_py/operator.js" \
 --js "src/lib/eyo/js/brick_py/range.js" \
 --js "src/lib/eyo/js/brick_py/starred.js" \
 --js "src/lib/eyo/js/brick_py/list.js" \
---js "src/lib/eyo/closure-library/menuitem.js" \
 --js "src/lib/eyo/js/brick_py/assignment.js" \
 --js "src/lib/eyo/js/brick_py/primary.js" \
---js "src/lib/eyo/closure-library/menurenderer.js" \
 --js "src/lib/eyo/js/application/desk/board/brick/model/brick_cmath.js" \
 --js "src/lib/eyo/js/application/desk/board/brick/model/brick_decimal.js" \
 --js "src/lib/eyo/js/application/desk/board/brick/model/brick_fractions.js" \
@@ -359,8 +350,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/board/brick/model/brick_stdtypes.js" \
 --js "src/lib/eyo/js/application/desk/board/brick/model/brick_turtle.js" \
 --js "src/lib/eyo/js/application/desk/board/brick/brick_util/xml.js" \
---js "src/lib/eyo/closure-library/menubuttonrenderer.js" \
---js "src/lib/eyo/closure-library/popupmenu.js" \
 --js "src/lib/eyo/js/application/desk/workspace/flyout/flyout-toolbar.js" \
   --js_output_file "build/base/edython.js"\
   -O BUNDLE

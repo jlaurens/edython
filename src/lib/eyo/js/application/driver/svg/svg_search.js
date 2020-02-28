@@ -290,80 +290,19 @@ eYo.svg.makeDriverC9r('SearchToolbar', {
       id: 'p-search-control'
     }, dom.svg)
     if (ftb.app && ftb.app.searchDropDown) {
-      dom.select_general_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName(cssClass, 'select'),
-        eYo.app.SearchDropDown
-      )
     } else if (ftb.app && ftb.app.searchDropDownGeneral && ftb.app.searchDropDownModule) {
-      dom.select_general_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName(cssClass, 'select-general'),
-        ftb.app.searchDropDownGeneral
-      )
-      dom.select_module_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName(cssClass, 'select-module'),
-        ftb.app.searchDropDownModule
-      )
     } else {
-      dom.select_general_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName(cssClass, 'select-general')
-      )
-      select = new goog.ui.Select(null, new eYo.Menu(), eYo.menuButtonRenderer.getInstance())
       // select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'test'))
       // select.addItem(new eYo.Separator())
       select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'basic'))
       select.addItem(new eYo.MenuItem(eYo.msg.INTERMEDIATE, 'intermediate'))
-      select.addItem(new eYo.MenuItem(eYo.msg.ADVANCED, 'advanced'))
-      select.addItem(new eYo.MenuItem(eYo.msg.EXPERT, 'expert'))
-      select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.msg.BRANCHING, 'branching'))
-      select.addItem(new eYo.MenuItem(eYo.msg.LOOPING, 'looping'))
-      select.addItem(new eYo.MenuItem(eYo.msg.FUNCTION, 'function'))
-      select.setSelectedIndex(0)
-      select.render(dom.select_general_)
-      search.listenableKey = select.listen(
-        goog.ui.Component.EventType.ACTION,
-        search.doSelectGeneral,
-        false,
-        search
-      )
-      dom.select_module_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName(cssClass, 'select-module')
-      )
-      var select = new goog.ui.Select(null, new eYo.Menu(), eYo.menuButtonRenderer.getInstance())
-      // select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'test'))
-      // select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'basic'))
-      select.addItem(new eYo.MenuItem(eYo.msg.INTERMEDIATE, 'intermediate'))
-      select.addItem(new eYo.MenuItem(eYo.msg.ADVANCED, 'advanced'))
-      select.addItem(new eYo.MenuItem(eYo.msg.EXPERT, 'expert'))
-      select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.msg.BRANCHING, 'branching'))
-      select.addItem(new eYo.MenuItem(eYo.msg.LOOPING, 'looping'))
-      select.addItem(new eYo.MenuItem(eYo.msg.FUNCTION, 'function'))
-      select.setSelectedIndex(0)
-      select.render(dom.select_module_)
-      search.listenableKey = select.listen(
+     search.listenableKey = select.listen(
         goog.ui.Component.EventType.ACTION,
         search.doSelectGeneral,
         false,
         search
       )
     }
-    var div_general = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'toolbar-general'),
-      dom.select_general_
-    )
-    var div_module = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'toolbar-module'),
-      dom.select_module_
-    )
     const div = this.search.desk.dom.div_.searchToolbar_
     Object.definePorperty(dom, 'div_', {
       get () { return div }
@@ -372,9 +311,6 @@ eYo.svg.makeDriverC9r('SearchToolbar', {
       div.appendChild(search.switcher_)
       search.switcher_.style.left = '0px'
       search.switcher_.style.top = '0px'
-    } else {
-      div.appendChild(div_general)
-      div.appendChild(div_module)
     }
     div.appendChild(dom.control_)
     var bound = dom.bound

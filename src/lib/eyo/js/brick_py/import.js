@@ -330,50 +330,6 @@ eYo.stmt.import_stmt.prototype.getMenuTarget = function () {
   return this
 }
 
-/**
- * Populate the context menu for the given brick.
- * @param {eYo.brick.Base} brick The brick.
- * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
- * @private
- */
-eYo.stmt.import_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
-  var current = this.Variant_p
-  var F = (content, variant) => {
-    if (variant !== current) {
-      var menuItem = mngr.newMenuItem(content, () => {
-        this.Variant_p = variant
-      })
-      mngr.addChild(menuItem, true)
-      menuItem.setEnabled(variant !== current)
-    }
-  }
-  var from = this.From_p
-  var module = from ? from : 'module'
-  var style = from ? 'eyo-code' : 'eyo-code-placeholder'
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('import ', 'eyo-code-reserved'),
-    eYo.do.CreateSPAN(module, style),
-    goog.dom.createTextNode(' ['),
-    eYo.do.CreateSPAN('as', 'eyo-code-reserved'),
-    goog.dom.createTextNode(' ...]')
-  ), eYo.key.IMPORT)
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('from ', 'eyo-code-reserved'),
-    eYo.do.CreateSPAN(module + ' ', style),
-    eYo.do.CreateSPAN('import ', 'eyo-code-reserved'),
-    goog.dom.createTextNode('… ['),
-    eYo.do.CreateSPAN('as', 'eyo-code-reserved'),
-    goog.dom.createTextNode(' …]')
-  ), eYo.key.FROM_MODULE_IMPORT)
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('from ', 'eyo-code-reserved'),
-    eYo.do.CreateSPAN(module + ' ', style),
-    eYo.do.CreateSPAN('import *', 'eyo-code-reserved')
-  ), eYo.key.FROM_MODULE_IMPORT_STAR)
-  mngr.shouldSeparate()
-  return eYo.stmt.import_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
-}
-
 /// //////// future
 // This is expected to disappear soon
 /**

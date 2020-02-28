@@ -182,34 +182,6 @@ eYo.stmt.branch_p.getBaseType = function () {
   return this.type_
 }
 
-/**
- * Populate the context menu for the given brick.
- * @param {eYo.brick.Base} brick The brick.
- * @param {eYo.MenuManager} mngr mngr.menu is the menu to populate.
- * @private
- */
-eYo.stmt.branch_p.populateContextMenuFirst_ = function (mngr) {
-  var current = this.variant_p
-  var variants = this.variant_d.getAll()
-  var F = (i) => {
-    var key = variants[i]
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-      eYo.do.CreateSPAN(key, 'eyo-code-reserved')
-    )
-    var menuItem = mngr.newMenuItem(content, () => {
-      this.variant_p = key
-    })
-    mngr.addChild(menuItem, true)
-    menuItem.setEnabled(key !== current)
-  }
-  F(0)
-  F(1)
-  F(2)
-  F(3)
-  mngr.shouldSeparate()
-  return eYo.stmt.global_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
-}
-
 ;[
   'if',
   'elif',

@@ -11,15 +11,11 @@
  */
 'use strict'
 
-eYo.require('popupMenu')
-
 eYo.makeNS('keyHandler')
 
 eYo.forwardDeclare('xre')
 eYo.forwardDeclare('dom')
 eYo.forwardDeclare('navigate')
-eYo.forwardDeclare('menuItem')
-eYo.forwardDeclare('separator')
 
 eYo.KHandler.makeC9r('Menu')
 

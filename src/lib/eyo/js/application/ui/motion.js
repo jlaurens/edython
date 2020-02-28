@@ -775,9 +775,9 @@ eYo.event.Motion.eyo.methodsMerge({
   handleLongPress (e) {
     var b = this.targetBrick
     if (b) {
-      b.ui.showContextMenu_(e)
+      b.ui_driver.showContextMenu_(b, e)
     } else if ((b = this.board)) {
-      b.showContextMenu_(e)
+      b.ui_driver.showContextMenu_(b, e)
     }
     eYo.dom.gobbleEvent(e)
     this.reset()

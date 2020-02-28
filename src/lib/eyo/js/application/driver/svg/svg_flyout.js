@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('Flyout')
+eYo.forwardDeclare('view.Flyout')
 eYo.forwardDeclare('flyoutToolbar')
 
 /**
@@ -40,7 +40,7 @@ eYo.svg.makeDriverC9r('Flyout', {
       class: 'eyo-flyout-background'
     }, root)
   // Bad design: code reuse: options
-    this.addTooltip(background, eYo.tooltip.getTitle('Flyout'), {
+    this.addTooltip(background, eYo.tooltip.getTitle('view.Flyout'), {
       position: 'right',
       theme: 'light bordered',
       flipDuration: 0,
@@ -133,80 +133,13 @@ eYo.svg.makeDriverC9r('FlyoutToolbar', {
       id: 'p-flyout-control'
     }, dom.svg)
     if (eYo.app.Base && ftb.app.flyoutDropDown) {
-      dom.select_general_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName(cssClass, 'select'),
-        ftb.app.flyoutDropDown
-      )
     } else if (eYo.app.Base && ftb.app.flyoutDropDownGeneral && ftb.app.flyoutDropDownModule) {
-      dom.select_general_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName(cssClass, 'select-general'),
-        ftb.app.flyoutDropDownGeneral
-      )
-      dom.select_module_ = goog.dom.createDom(
+    dom.select_module_ = goog.dom.createDom(
         goog.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-module'),
         ftb.app.flyoutDropDownModule
       )
-    } else {
-      dom.select_general_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName(cssClass, 'select-general')
-      )
-      select = new goog.ui.Select(null, new eYo.Menu(), eYo.menuButtonRenderer.getInstance())
-      // select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'test'))
-      // select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'basic'))
-      select.addItem(new eYo.MenuItem(eYo.msg.INTERMEDIATE, 'intermediate'))
-      select.addItem(new eYo.MenuItem(eYo.msg.ADVANCED, 'advanced'))
-      select.addItem(new eYo.MenuItem(eYo.msg.EXPERT, 'expert'))
-      select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.msg.BRANCHING, 'branching'))
-      select.addItem(new eYo.MenuItem(eYo.msg.LOOPING, 'looping'))
-      select.addItem(new eYo.MenuItem(eYo.msg.FUNCTION, 'function'))
-      select.setSelectedIndex(0)
-      select.render(dom.select_general_)
-      flyout.listenableKey = select.listen(
-        goog.ui.Component.EventType.ACTION,
-        flyout.doSelectGeneral,
-        false,
-        flyout
-      )
-      dom.select_module_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
-        goog.getCssName(cssClass, 'select-module')
-      )
-      var select = new goog.ui.Select(null, new eYo.Menu(), eYo.menuButtonRenderer.getInstance())
-      // select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'test'))
-      // select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'basic'))
-      select.addItem(new eYo.MenuItem(eYo.msg.INTERMEDIATE, 'intermediate'))
-      select.addItem(new eYo.MenuItem(eYo.msg.ADVANCED, 'advanced'))
-      select.addItem(new eYo.MenuItem(eYo.msg.EXPERT, 'expert'))
-      select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.msg.BRANCHING, 'branching'))
-      select.addItem(new eYo.MenuItem(eYo.msg.LOOPING, 'looping'))
-      select.addItem(new eYo.MenuItem(eYo.msg.FUNCTION, 'function'))
-      select.setSelectedIndex(0)
-      select.render(dom.select_module_)
-      flyout.listenableKey = select.listen(
-        goog.ui.Component.EventType.ACTION,
-        flyout.doSelectGeneral,
-        false,
-        flyout
-      )
     }
-    var div_general = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'toolbar-general'),
-      dom.select_general_
-    )
-    var div_module = goog.dom.createDom(
-      goog.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'toolbar-module'),
-      dom.select_module_
-    )
     const div = this.flyout.desk.dom.div_.flyoutToolbar_
     Object.definePorperty(dom, 'div_', {
       get () { return div }
@@ -215,9 +148,6 @@ eYo.svg.makeDriverC9r('FlyoutToolbar', {
       div.appendChild(flyout.switcher_)
       flyout.switcher_.style.left = '0px'
       flyout.switcher_.style.top = '0px'
-    } else {
-      div.appendChild(div_general)
-      div.appendChild(div_module)
     }
     div.appendChild(dom.control_)
     var bound = dom.bound

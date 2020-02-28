@@ -160,43 +160,6 @@ eYo.expr.makeC9r('yield_expr', true, {
  * Populate the context menu for the given brick.
  * @param {eYo.brick.Base} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
- * @this {eYo.brick.Base}
- * @private
- */
-eYo.expr.yield_expr.populateContextMenuFirst_ = function (mngr) {
-  var brick = this
-  if (brick.locked_) {
-    return
-  }
-  var current = this.Variant_p
-  var F = (content, k) => {
-    var menuItem = mngr.newMenuItem(content, () => {
-      this.Variant_p = k
-    })
-    mngr.addChild(menuItem, true)
-    menuItem.setEnabled(k !== current)
-  }
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code-reserved',
-    goog.dom.createTextNode('yield')
-  ), eYo.key.NONE
-  )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('yield ', 'eyo-code-reserved'),
-    goog.dom.createTextNode('…')
-  ), eYo.key.EXPRESSION
-  )
-  F(goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-    eYo.do.CreateSPAN('yield from ', 'eyo-code-reserved'),
-    goog.dom.createTextNode('…')
-  ), eYo.key.FROM
-  )
-  mngr.shouldSeparate()
-}
-
-/**
- * Populate the context menu for the given brick.
- * @param {eYo.brick.Base} brick The brick.
- * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
  * @private
  */
 eYo.expr.yield_expr.prototype.populateContextMenuFirst_ = function (mngr) {

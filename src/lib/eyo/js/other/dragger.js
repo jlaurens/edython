@@ -15,4 +15,4 @@
  * @name {eYo.o3d.dragger}
  * @namespace
  */
-eYo.o3d.makeNS('dragger')
+eYo.o3d.makeNS(eYo, 'dragger')

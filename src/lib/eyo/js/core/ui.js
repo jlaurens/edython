@@ -201,10 +201,6 @@ Object.defineProperty(
   }
 )
 
-eYo.style.menuItem = {
-  'padding-h': eYo.padding.t,
-  'padding-v': eYo.padding.t
-}
 eYo.style.checkBox = {
   'padding': 1.5// px
 }
