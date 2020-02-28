@@ -100,7 +100,7 @@ eYo.app.makeC9r('Options', {
     this.noLeftSeparator = eYo.asDef(options.noLeftSeparator, true)
     this.noDynamicList = eYo.asDef(options.noDynamicList, false)
     this.smartUnary = eYo.asDef(options.smartUnary, true)
-    this.flyoutAnchor = eYo.asDef(options.flyoutAnchor, eYo.Flyout.AT_RIGHT)
+    this.flyoutAnchor = eYo.asDef(options.flyoutAnchor, eYo.view.Flyout.AT_RIGHT)
     this.container = eYo.asDef(options.container, 'eyo-desk')
     this.backgroundClass = eYo.asDef(options.backgroundClass,'eyo-main-board-background')
     var pathToMedia = options.media || './static/media'
@@ -162,7 +162,7 @@ eYo.app.parseZoom_ = function(options) {
  * @constructor
  * @readonly
  * The current options.
- * @property {eYo.Options} options
+ * @property {eYo.app.Options} options
  * @readonly
  * The current motion in progress, if any.
  * @property {?eYo.event.Motion} motion
@@ -289,8 +289,8 @@ eYo.app.Base_p.copyBrick = function (brick, deep) {
   var xy = brick.xy
   xml.setAttribute('x', xy.x)
   xml.setAttribute('y', xy.y)
-  eYo.Clipboard.xml_ = xml
-  eYo.Clipboard.source_ = brick.board
+  eYo.clipboard.xml_ = xml
+  eYo.clipboard.source_ = brick.board
   this.didCopyBrick && (this.didCopyBrick(brick, xml))
 }
 

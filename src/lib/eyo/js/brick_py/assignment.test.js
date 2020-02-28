@@ -299,7 +299,6 @@ describe('One brick: assignment_stmt', function() {
     var d3 =  eYo.test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns: eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     chai.assert(d3, `MISSING …+…`)
     d3.will_remain = true
-    eYo.STOP = true
     chai.assert(!d1.target_b.connectLast(d3), 'connectLast failed.')
     eYo.test.Input_length(d1.target_b, 3, `MISSED M4T 2`)
     d3.dispose()

@@ -197,7 +197,7 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
  * Each namespace has its own `makeC9r` method which creates classes in itself.
  * @param {Object} [ns] -  The namespace, defaults to the Super's one or the caller.
  * @param {String} key -  The key.
- * @param {Function} [Super] -  The eventual super class. There is no default value. Must be a subclass of `eYo.C9r`, but not necessarily with an `eyo`.
+ * @param {Function} [Super] -  The eventual super class. There is no default value. Must be a subclass of `eYo.c9r.Base`, but not necessarily with an `eyo`.
  * @param {Object|Function} [model] -  The dictionary of parameters. Or a function to create such a dictionary. This might be overcomplicated.
  * @return {Function} the created constructor.
  */

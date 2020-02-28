@@ -13,7 +13,7 @@
 
 eYo.require('stmt')
 
-eYo.require('o3d.Change')
+eYo.require('change.Base')
 eYo.require('msg')
 
 eYo.require('decorate')
@@ -67,7 +67,7 @@ eYo.expr.Base_p.changeDone = function (deep) {
  * This should be used instead of direct brick querying.
  * @return {String} The type of the receiver's brick.
  */
-eYo.expr.Base_p.getType = eYo.c9r.decorateChange(
+eYo.expr.Base_p.getType = eYo.change.decorate(
   'getType',
   function () {
     return {

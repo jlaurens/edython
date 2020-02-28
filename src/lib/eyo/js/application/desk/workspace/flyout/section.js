@@ -20,14 +20,14 @@ eYo.o3d.makeNS(eYo, 'section')
 
 /**
  * Class for a flyout's section.
- * @param {eYo.Flyout} owner  The owning flyout.
+ * @param {eYo.view.Flyout} owner  The owning flyout.
  * @constructor
  */
 eYo.section.makeBase({
   properties: {
     /**
      * The owning flyout
-     * @type {eYo.Flyout}
+     * @type {eYo.view.Flyout}
      * @readonly
      */
     flyout: { 

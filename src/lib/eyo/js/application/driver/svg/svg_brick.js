@@ -715,7 +715,7 @@ eYo.svg.Brick_p.whereInParent = function (brick) {
  */
 eYo.svg.Brick_p.whereInBoard = function (brick) {
   var ans = new eYo.geom.Point()
-  var bds = brick.board.dom.svg.BrickDragSurface
+  var bds = brick.board.dom.svg.brickDragSurface
   var current = bds.brickGroup
   var bdsGroup = bds.dom.svg.group_
   var canvas = brick.board.dom.svg.canvas_
@@ -741,7 +741,7 @@ eYo.svg.Brick_p.whereInBoard = function (brick) {
  */
 eYo.svg.Brick_p.whereInDesk = function (brick) {
   var ans = new eYo.geom.Point()
-  var bds = brick.board.dom.svg.BrickDragSurface
+  var bds = brick.board.dom.svg.brickDragSurface
   var bdsRoot = bds.dom.svg.root_
   var boardRoot = brick.board.dom.svg.root_
   var element = brick.dom.svg.group_

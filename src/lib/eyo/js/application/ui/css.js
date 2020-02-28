@@ -74,13 +74,6 @@ eYo.css.Cursor = {
 }
 
 /**
- * Large stylesheet added by Blockly.Css.inject.
- * @type {Element}
- * @private
- */
-Blockly.Css.styleSheet_ = null;
-
-/**
  * Inject the CSS into the DOM.  This is preferable over using a regular CSS
  * file since:
  * a) It loads synchronously and doesn't force a redraw later.

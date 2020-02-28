@@ -13,7 +13,7 @@
 
 eYo.require('expr')
 
-eYo.require('o3d.Change')
+eYo.require('change.Base')
 
 eYo.require('decorate')
 eYo.require('msg')
@@ -242,7 +242,7 @@ eYo.expr.makeC9r('Starred', {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.expr.Starred.prototype.getType = eYo.c9r.decorateChange(
+eYo.expr.Starred.prototype.getType = eYo.change.decorate(
   'getType',
   function () {
     var check = this.out_m.check_

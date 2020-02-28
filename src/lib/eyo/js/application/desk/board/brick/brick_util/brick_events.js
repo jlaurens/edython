@@ -452,7 +452,7 @@ eYo.data.Base.eyo.methodsMerge({
             } finally {
               if (!this.noUndo) {
                 eYo.event.fireBrickChange(
-                  this.brick, eYo.Const.Event.DATA + this.key, null, before, after)
+                  this.brick, eYo.const.event.data + this.key, null, before, after)
               }
               this.afterChange(before, after)
             }

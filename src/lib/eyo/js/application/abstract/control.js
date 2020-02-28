@@ -25,12 +25,12 @@ Object.defineProperties(eYo.control._p, {
 
 /**
  * Class for a workspace control.
- * @param {eYo.Workspace} workspace The board to sit in.
+ * @param {eYo.view.Workspace} workspace The board to sit in.
  * @constructor
  * @readonly
  * @property {eYo.geom.Rect} viewRect,  The view rectangle
  * @readonly
- * @property {eYo.Workspace} workspace,  The workspace...
+ * @property {eYo.view.Workspace} workspace - The workspace...
  * @readonly
  * @property {Number} top,  ...
  * @private

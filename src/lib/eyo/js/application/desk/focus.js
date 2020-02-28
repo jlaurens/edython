@@ -274,7 +274,7 @@ eYo.focus.Mngr_p.didRemove = eYo.doNothing
 
 /**
  * Select one of the given bricks.
- * @param {Array<eYo.BrickNSs>} bricks
+ * @param {Array<eYo.brick.Base>} bricks
  * @param {Boolean} force
  */
 eYo.focus.Mngr_p.selectOneBrickOf = function (bricks, force) {

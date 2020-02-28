@@ -13,7 +13,7 @@
 
 eYo.require('expr.List')
 
-eYo.require('o3d.Change')
+eYo.require('change.Base')
 
 eYo.require('module.stdtypes')
 eYo.require('module.functions')
@@ -1288,7 +1288,7 @@ eYo.expr.primary_p.updateProfile = eYo.decorate.reentrant_method(
  * This has not been tested despite it is essential.
  * @return {!Object}.
  */
-eYo.expr.primary_p.getProfile = eYo.c9r.decorateChange(
+eYo.expr.primary_p.getProfile = eYo.change.decorate(
   'getProfile',
   function () {
       // this may be called very very early when

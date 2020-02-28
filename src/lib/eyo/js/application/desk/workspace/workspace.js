@@ -44,11 +44,11 @@ eYo.view.makeC9r('Workspace', {
     },
     /**
      * The flyout.
-     * @type {?eYo.Flyout} 
+     * @type {?eYo.view.Flyout} 
      */
     flyout: {
       value () {
-        return new eYo.Flyout(this)
+        return new eYo.view.Flyout(this)
       },
     },
     /**

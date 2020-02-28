@@ -1,6 +1,6 @@
 describe ('Tests: change', function () {
   it ('Change: basic', function () {
-    chai.assert(eYo.o3d.Change)
+    chai.assert(eYo.change.Base)
   })
   it ('Change: begin', function () {
     var flag = 0
@@ -15,7 +15,7 @@ describe ('Tests: change', function () {
         flag += 10000
       },
     }
-    let change = new eYo.o3d.Change(onr)
+    let change = new eYo.change.Base(onr)
     change.begin()
     chai.expect(flag).equal(1)
     change.end()

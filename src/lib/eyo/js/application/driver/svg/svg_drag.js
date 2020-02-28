@@ -17,7 +17,7 @@
 
 eYo.require('svg')
 
-eYo.provide('svg.BrickDragSurface')
+eYo.provide('svg.brickDragSurface')
 eYo.provide('svg.BoardDragSurface')
 
 /**
@@ -26,7 +26,7 @@ eYo.provide('svg.BoardDragSurface')
  * @param {Element} container Containing element.
  * @constructor
  */
-eYo.svg.BrickDragSurface = function(container) {
+eYo.svg.brickDragSurface = function(container) {
   /**
    * @type {!Element}
    * @private
@@ -54,17 +54,17 @@ eYo.svg.BrickDragSurface = function(container) {
 /**
  * Sever all the links and remove dom nodes.
  */
-eYo.svg.BrickDragSurface.prototype.dispose = function() {
+eYo.svg.brickDragSurface.prototype.dispose = function() {
   this.dispose = eYo.doNothing
   goog.dom.removeNode(this.dom.svg.root_)
   this.limits_ = this.dom = this.brick_ = null
 }
 
-Object.defineProperties(eYo.svg.BrickDragSurface.prototype, {
+Object.defineProperties(eYo.svg.brickDragSurface.prototype, {
   /**
    * Get the current blocks on the drag surface, if any (primarily
    * for BlockSvg.getRelativeToSurfaceWhere).
-   * @return {!eYo.BrickDragger} Drag surface block DOM element, or eYo.NA
+   * @return {!eYo.dragger.Brick} Drag surface block DOM element, or eYo.NA
    * if no blocks exist.
    */
   dragger: {
@@ -142,7 +142,7 @@ Object.defineProperties(eYo.svg.BrickDragSurface.prototype, {
  * Set the size of the svg drag surface equal to the one of the brick's board. Make both canvases transformed similarly.
  * @param {eYo.brick.Base} brick  A top block with no parent.
  */
-eYo.svg.BrickDragSurface.prototype.start = function(draggerBrick) {
+eYo.svg.brickDragSurface.prototype.start = function(draggerBrick) {
   this.dragger_ = draggerBrick
   var brick = this.brick
   var svg = this.dom.svg
@@ -173,7 +173,7 @@ eYo.temp.i = 0
  * so that the browser avoids repainting the SVG.
  * Because of this, the drag coordinates must be adjusted by scale.
  */
-eYo.svg.BrickDragSurface.prototype.move = function() {
+eYo.svg.brickDragSurface.prototype.move = function() {
   if (++eYo.temp.i > 100) {
     console.error('BREAK HERE')
   }
@@ -187,7 +187,7 @@ eYo.svg.BrickDragSurface.prototype.move = function() {
  * surface, since it would be removed immediately during dispose.
  * @param {eYo.board | true} board Target board where the brick should be dropped on, or true if this is the receiver's brick's board.
  */
-eYo.svg.BrickDragSurface.prototype.end = function(board) {
+eYo.svg.brickDragSurface.prototype.end = function(board) {
   this.brick.moveBy(this.where_, true)
   this.where = 0
   var svg = this.dom.svg

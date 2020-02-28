@@ -11,13 +11,11 @@
  */
 'use strict'
 
-eYo.require('decorate')
-
 /**
  * @name{eYo.board}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'board')
+eYo.view.makeNS(eYo, 'board')
 
 eYo.forwardDeclare('view.Workspace')
 eYo.forwardDeclare('brick.List')
@@ -34,7 +32,7 @@ goog.forwardDeclare('goog.math')
  * The flyout contains the flyout board.
  * There is also a board used to drag bricks around.
  * That makes at least 4 different boards.
- * @param {eYo.view.Desk|eYo.Workspace|eYo.section.Base} owner.
+ * @param {eYo.view.Desk|eYo.view.Workspace|eYo.section.Base} owner.
  * @constructor
  */
 eYo.board.makeBase({
@@ -94,7 +92,7 @@ eYo.board.makeBase({
     /**
      * Convenient property.
      * @readonly
-     * @type {eYo.Workspace}
+     * @type {eYo.view.Workspace}
      */
     workspace: {
       get () {
@@ -286,21 +284,21 @@ eYo.board.makeC9r('Main', {
     },
     draggerBrick: {
       value () {
-        return new eYo.BrickDragger(this)
+        return new eYo.draggerBrick(this)
       },
     },
     /**
      * The change manager.
      * @readonly
-     * @type {eYo.o3d.Change}
+     * @type {eYo.change.Base}
      */
     change: {
       value () {
-        return new eYo.o3d.Change(this)
+        return new eYo.change.Base(this)
       },
     },
     /**
-     * @param{?eYo.Flyout}
+     * @param{?eYo.view.Flyout}
      */
     flyout: {
       validate (after) {
@@ -326,7 +324,7 @@ eYo.board.makeC9r('Main', {
      */
     readOnly: {
       get () {
-        return this.owner__ instanceof eYo.Flyout
+        return this.owner__ instanceof eYo.view.Flyout
       },
     },
     /**
@@ -415,7 +413,7 @@ eYo.board.makeC9r('Main', {
       if (options.hasScrollbars) {
           // Add scrollbar.
         this.scrollbar_ = this.readOnly
-          ? new eYo.Scrollbar(
+          ? new eYo.view.Scrollbar(
               this,
               false /*this.horizontalLayout_*/,
               false, 'eyo-flyout-scrollbar'
@@ -786,8 +784,8 @@ eYo.board.Base_p.highlightBrick = function(id, opt_state) {
  * Paste the content of the clipboard onto the board.
  */
 eYo.board.Base_p.paste = function () {
-  var xml = eYo.Clipboard.xml
-  if (!eYo.Clipboard.xml) {
+  var xml = eYo.clipboard.xml
+  if (!eYo.clipboard.xml) {
     return
   }
   if (!this.rendered || xml.getElementsByTagName('s').length + xml.getElementsByTagName('x').length >=

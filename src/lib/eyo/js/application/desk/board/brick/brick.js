@@ -14,7 +14,7 @@
 eYo.require('decorate')
 eYo.require('do')
 
-eYo.require('o3d.Change')
+eYo.require('change.Base')
 eYo.require('data')
 
 /**
@@ -160,12 +160,12 @@ eYo.brick.makeBase({
       },
     },
     /**
-     * @type{eYo.o3d.Change}
+     * @type{eYo.change.Base}
      * @readonly
      */
     change: {
       value () {
-        return new eYo.o3d.Change(this)
+        return new eYo.change.Base(this)
       },
     },
     inputList: eYo.NA,
@@ -767,7 +767,6 @@ eYo.brick.makeBase({
     })
     this.board.resizePort()
     eYo.p6y.disposeProperties(this, 'span', 'change')
-    eYo.Link.Clear(this, 'parent')
   }
 })
 
@@ -961,7 +960,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    */
   _p.consolidate = eYo.decorate.reentrant_method(
     'consolidate',
-    eYo.c9r.decorateChange(
+    eYo.change.decorate(
       'consolidate',
       function (deep, force) {
         this.doConsolidate(deep, force)
@@ -1631,7 +1630,7 @@ eYo.brick.DEBUG_ = Object.create(null)
       while (i < this.wrappedMagnets_.length) {
         var d = this.wrappedMagnets_[i]
         var ans = d.completeWrap()
-        if (ans && ans.ans) {
+        if (eYo.isValid(ans)) {
           this.wrappedMagnets_.splice(i)
         } else {
           ++i
@@ -1646,7 +1645,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @private
    */
   _p.duringBrickWrapped = function () {
-    eYo.assert(!this.uiHasSelect, 'Deselect brick before')
+    this.uiHasSelect && eYo.throw('Deselect brick before')
     this.updateWrapped()
   }
 
@@ -2408,7 +2407,7 @@ eYo.brick.DEBUG_ = Object.create(null)
       return ans
     }
     eYo.event.fireBrickChange(
-      this, eYo.Const.Event.locked, null, this.locked_, true)
+      this, eYo.const.Event.locked, null, this.locked_, true)
     this.locked_ = true
     if (this.hasFocus) {
       eYo.focus.magnet = null
@@ -2468,7 +2467,7 @@ eYo.brick.DEBUG_ = Object.create(null)
   _p.unlock = function (shallow) {
     var ans = 0
     eYo.event.fireBrickChange(
-        this, eYo.Const.Event.locked, null, this.locked_, false)
+        this, eYo.const.Event.locked, null, this.locked_, false)
     this.locked_ = false
     // list all the input for connections with a target
     var m4t, t9k

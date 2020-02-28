@@ -871,28 +871,31 @@ Object.defineProperty(eYo.magnet.Base_p, 'incog', {
  * @param {String} prototypeName
  * @return {Object} Object with an `ans` property.
  */
-eYo.magnet.Base_p.completeWrap = eYo.decorate.reentrant_method(
-  'completeWrap',
-  function () {
-    if (!this.wrapped_) {
-      return
-    }
-    var t9k = this.targetBrick
-    if (!t9k) {
-      var ans
+eYo.magnet.Base_p.completeWrap = function () {
+  if (!this.wrapped_) {
+    return
+  }
+  var t9k = this.targetBrick
+  if (!t9k) {
+    var ans
+    try {
+      this.completeWrap = eYo.doNothing
       eYo.event.disableWrap(
         () => {
           var brick = this.brick
           t9k = eYo.brick.newReady(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
-          eYo.assert(t9k, 'completeWrap failed: ' + this.wrapped_)
-          eYo.assert(t9k.out_m, 'Did you declare an Expr brick typed ' + t9k.type)
+          t9k || eYo.throw(`completeWrap failed: ${this.wrapped_}`)
+          t9k.out_m || eYo.throw(`Did you declare an expr brick typed ${t9k.type}`)
           ans = this.connect(t9k.out_m)
         }
       )
       return ans // true when connected
+    } finally {
+      delete this.completeWrap
     }
   }
-)
+}
+
 
 /**
  * Complete with a promised brick.
@@ -902,7 +905,7 @@ eYo.magnet.Base_p.completePromise = function () {
     // console.error('PROMISE CLOSED')
     this.wrapped_ = this.promised_
     var ans = this.completeWrap()
-    return ans && ans.ans
+    return eYo.isValid(ans) && ans || eYo.NA
   }
 }
 

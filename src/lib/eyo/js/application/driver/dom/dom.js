@@ -286,7 +286,7 @@ eYo.dom.forEachTouch = (e, f) => {
 }
 
 /**
- * @param {eYo.brick|eYo.board|eYo.Flyout}
+ * @param {eYo.brick|eYo.board|eYo.view.Flyout}
  */
 eYo.dom.clearBoundEvents = (bbf) => {
   var dom = bbf.dom || bbf.dom
@@ -571,7 +571,7 @@ eYo.dom.on_keydown = e => {
         // 'c' for copy.
         eYo.app.hideChaff()
         eYo.app.Base.CopyBrick(eYo.app.focus_mngr.brick, deep)
-      } else if (e.keyCode == 88 && !eYo.app.focus_mngr.brick.Board.readOnly) {
+      } else if (e.keyCode == 88 && !eYo.app.focus_mngr.brick.board.readOnly) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
         eYo.app.Base.CopyBrick(eYo.app.focus_mngr.brick, deep)
@@ -589,7 +589,7 @@ eYo.dom.on_keydown = e => {
   }
   // Common code for delete and cut.
   // Don't delete in the flyout.
-  // if (deleteBrick && !eYo.app.focus_mngr.brick.Board.readOnly) {
+  // if (deleteBrick && !eYo.app.focus_mngr.brick.board.readOnly) {
   //   eYo.event.group = true
   //   eYo.app.hideChaff();
   //   eYo.app.focus_mngr.brick.dispose(/* heal */ true, true);

@@ -13,7 +13,7 @@
 
 eYo.require('stmt.group')
 
-eYo.require('o3d.Change')
+eYo.require('change.Base')
 
 eYo.provide('brick.try')
 
@@ -171,7 +171,7 @@ eYo.stmt.group.makeInheritedC9r('except_part', true, {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.stmt.except_part.prototype.getType = eYo.c9r.decorateChange(
+eYo.stmt.except_part.prototype.getType = eYo.change.decorate(
   'getType',
   function () {
     this.setupType(

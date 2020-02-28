@@ -25,7 +25,7 @@ eYo.o4t.makeNS(eYo, 'o3d')
  * @constructor
  */
 eYo.o3d.makeBase({
-  /** @param {eYo.app.Base|eYo.view.Desk|eYo.Flyout|eYo.board|eYo.expr|eYo.stmt|eYo.slot.Base|eYo.magnet.Base} owner  the immediate owner of this object. When not a brick, it is directly owned by a brick.
+  /** @param {eYo.app.Base|eYo.view.Desk|eYo.view.Flyout|eYo.board|eYo.expr|eYo.stmt|eYo.slot.Base|eYo.magnet.Base} owner  the immediate owner of this object. When not a brick, it is directly owned by a brick.
    */
   init (owner) {
     owner || eYo.throw('Missing owner!')
@@ -73,7 +73,7 @@ eYo.o3d.makeBase({
     /**
      * The desk's flyout...
      * @readonly
-     * @type {eYo.Flyout}
+     * @type {eYo.view.Flyout}
      */
     flyout: {
       get () {
@@ -93,7 +93,7 @@ eYo.o3d.makeBase({
     /**
      * The desk's workspace...
      * @readonly
-     * @type {eYo.Workspace}
+     * @type {eYo.view.Workspace}
      */
     workspace: {
       get () {

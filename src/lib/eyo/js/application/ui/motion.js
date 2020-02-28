@@ -133,7 +133,7 @@ eYo.event.makeC9r('Motion', {
       return new eYo.dnd.Mngr(this)
     },
     change () {
-      return new eYo.o3d.Change(this)
+      return new eYo.change.Base(this)
     },
     touchIDs () {
       return []
@@ -161,7 +161,9 @@ eYo.event.makeC9r('Motion', {
      * @type {eYo.geom.Point}
      * @private
      */
-    xyDelta: eYo.NA,
+    xyDelta: {
+      copy: true,
+    },
     /**
      * Boolean used internally to break a cycle in disposal.
      * @type {boolean}
@@ -287,7 +289,7 @@ eYo.event.makeC9r('Motion', {
     },
     /**
      * The flyout of the board the motion started on, if any.
-     * @type {eYo.Flyout}
+     * @type {eYo.view.Flyout}
      * @private
      */
     flyout: {

@@ -12,47 +12,41 @@
 'use strict'
 
 /**
- * @name eYo.Const
+ * @name eYo.const
  * @namespace
  **/
 
 eYo.require('do')
 eYo.makeNS('id')
 
-eYo.makeNS('const')
-
-eYo.assert(XRegExp, 'load XRegExp before')
-
-eYo.Const = {
+eYo.makeNS('const', {
   ABOVE: 'ABOVE', // not for brick definition
   BELOW: 'BELOW',
-}
+  field = {
+    // IN PROGRESS
+    VAR: 'VAR',
+    STARS: 'STARS',
+    ANN: 'ANN',
+    DFT: 'DFT',
+    ANY: 'ANY',
+    TEXT: 'TEXT',
+    TFN: 'TFN',
+    STT: 'STT',
+    BCP: 'BCP',
+    GNL: 'GNL',
+    DEF: 'DEF',
+    CLASS: 'CLASS',
+    NCSTR: 'NCSTR'
+  },
+})
 
-
-eYo.Const.Field = {
-  // IN PROGRESS
-  VAR: 'VAR',
-  STARS: 'STARS',
-  ANN: 'ANN',
-  DFT: 'DFT',
-  ANY: 'ANY',
-  TEXT: 'TEXT',
-  TFN: 'TFN',
-  STT: 'STT',
-  BCP: 'BCP',
-  GNL: 'GNL',
-  DEF: 'DEF',
-  CLASS: 'CLASS',
-  NCSTR: 'NCSTR'
-}
+eYo.assert(XRegExp, 'load XRegExp before') 
 
 /**
  * @name{eYo.key}
  * @namespace
  */
-eYo.makeNS('key')
-
-eYo.mixinR(eYo.key, {
+eYo.makeNS('key', {
   EYO: 'eyo',
   PLACEHOLDER: 'placeholder', // this MUST be in lower case
   TERM: 'term', // this MUST be in lower case
@@ -217,13 +211,11 @@ eYo.mixinR(eYo.key, {
   PAR: '()', // also used in xml eyo attribute
   SQB: '[]', // also used in xml eyo attribute
   BRACE: '{}', // also used in xml eyo attribute
-
+  event = {
+    data: 'eyo:data:',
+    property: 'eyo:property',
+    locked: 'eyo:locked',
+    asynced: 'eyo:asynced'
+  },
 })
-
-eYo.Const.Event = {
-  DATA: 'eyo:data:',
-  property: 'eyo:property',
-  locked: 'eyo:locked',
-  asynced: 'eyo:asynced'
-}
 

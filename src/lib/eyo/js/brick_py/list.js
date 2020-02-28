@@ -13,7 +13,7 @@
 
 eYo.require('expr')
 
-eYo.require('o3d.Change')
+eYo.require('change.Base')
 
 eYo.require('decorate')
 eYo.require('consolidator.List')
@@ -466,7 +466,7 @@ eYo.expr.List.makeInheritedC9r('enclosure', {
  * getProfile.
  * @return {!Object} with `ans` key.
  */
-eYo.expr.enclosure.prototype.getProfile = eYo.c9r.decorateChange(
+eYo.expr.enclosure.prototype.getProfile = eYo.change.decorate(
   'getProfile',
   function () {
     // this may be called very very early when

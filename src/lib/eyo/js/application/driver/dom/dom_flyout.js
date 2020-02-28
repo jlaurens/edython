@@ -21,7 +21,7 @@ eYo.forwardDeclare('Flyout')
 eYo.dom.makeDriverC9r('Flyout', {
     /**
    * Initialize the flyout dom ressources.
-   * @param {eYo.Flyout} flyout
+   * @param {eYo.view.Flyout} flyout
    * @return {!Element} The desk's dom repository.
    */
   initUI (flyout) {
@@ -45,7 +45,7 @@ eYo.dom.makeDriverC9r('Flyout', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {eYo.Flyout} flyout
+   * @param {eYo.view.Flyout} flyout
    */
   disposeUI (flyout) {
     var dom = flyout.dom
@@ -63,7 +63,7 @@ eYo.dom.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
 
 /**
  * Returns the CSS class to be applied to the root element.
- * @param {eYo.Flyout} flyout
+ * @param {eYo.view.Flyout} flyout
  * @return {string} Renderer-specific CSS class.
  * @override
  */
@@ -73,15 +73,15 @@ eYo.dom.Flyout.prototype.cssClass = function() {
 
 /**
  * Dispose of the given slot's rendering resources.
- * @param {eYo.Flyout} flyout
+ * @param {eYo.view.Flyout} flyout
  */
 eYo.dom.Flyout.prototype.updateMetrics = function (flyout) {
   var r = flyout.viewRect
   var div = flyout.dom.toolbarDiv_
   div.style.width = `${r.width} px`
-  div.style.height = `${eYo.Flyout.TOOLBAR_HEIGHT} px`
+  div.style.height = `${eYo.view.Flyout.TOOLBAR_HEIGHT} px`
   flyout.dom.boardDiv_
-  div.style.y = `${eYo.Flyout.TOOLBAR_HEIGHT} px`
+  div.style.y = `${eYo.view.Flyout.TOOLBAR_HEIGHT} px`
   div.style.width = `${r.width} px`
-  div.style.height = `${r.height - eYo.Flyout.TOOLBAR_HEIGHT} px`
+  div.style.height = `${r.height - eYo.view.Flyout.TOOLBAR_HEIGHT} px`
 }

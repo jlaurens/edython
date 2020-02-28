@@ -150,7 +150,7 @@ eYo.stmt.makeC9r(eYo.t3.stmt.global_stmt, {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.stmt.global_stmt.prototype.getType = eYo.c9r.decorateChange(
+eYo.stmt.global_stmt.prototype.getType = eYo.change.decorate(
   'getType',
   function () {
     this.setupType(

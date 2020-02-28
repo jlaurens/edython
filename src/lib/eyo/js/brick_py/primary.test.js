@@ -869,7 +869,6 @@ describe('Primary(DEFINED)', function() {
     var rhs_a = 'a'
     eYo.test.list_connect(d, 'value', eYo.test.new_brick(rhs_a))
     var dd = eYo.test.new_brick('identifier_valued')
-    eYo.STOP = 0
     eYo.test.list_connect(dd, 'value', d)
     eYo.test.brick(d, 'assignment_chain')
     console.log(dd.getProfile())
