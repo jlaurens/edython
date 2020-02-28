@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.require('brick')
-
 /**
- * Facefull driver for bricks.
+ * Facefull driver for boards.
  */
-eYo.fcfl.makeDriverC9r('Brick')
+eYo.fcfl.makeDriverC9r('Board')
 
-eYo.brick.Base.eyo.propertiesMerge({
+console.error('NYI')
+
+eYo.board.Base.eyo.propertiesMerge({
   ui () {
     return Object.create(null)
   },
@@ -50,31 +50,31 @@ eYo.brick.Base.eyo.propertiesMerge({
       return !this.wrapped_ && !this.locked_
     },
   },
-  minBrickW: {
+  minBoardW: {
     get () {
       return this.isStmt ? eYo.span.INDENT : 0
     },
   },
   bBox: {
     get () {
-      return this.rendered && (this.driver.getBBox(brick))
+      return this.rendered && (this.driver.getBBox(board))
     },
   },
   hasSelect: {
     get () {
-      return this.rendered && (this.driver.hasFocus(brick))
+      return this.rendered && (this.driver.hasFocus(board))
     },
   },
   visible: {
     /**
-     * Get the display status of the receiver's brick.
+     * Get the display status of the receiver's board.
      * Forwards to the driver.
      */
     get () {
       return this.driver.displayedGet(this)
     },
     /**
-     * Set the display status of the receiver's brick.
+     * Set the display status of the receiver's board.
      * Forwards to the driver.
      * @param {boolean} visible
      */
@@ -84,29 +84,29 @@ eYo.brick.Base.eyo.propertiesMerge({
   },
   BUMP_DELAY: 250,
 })
-eYo.brick.Base.eyo.aliasesMerge({
+eYo.board.Base.eyo.aliasesMerge({
   'xy': 'where',
 })
 
 /**
- * Render the next brick, if relevant.
+ * Render the next board, if relevant.
  * @param {*} recorder
  * @return {boolean=} true if an rendering message was sent, false otherwise.
  */
-eYo.fcfl.Brick._p.drawFoot_ = function (io) {
-  let brick = io.brick
-  var m4t = brick.foot_m
+eYo.fcfl.Board._p.drawFoot_ = function (io) {
+  let board = io.board
+  var m4t = board.foot_m
   if (!m4t) {
     return
   }
-  m4t.setOffset(0, brick.span.l)
-  var t9k = m4t.targetBrick
+  m4t.setOffset(0, board.span.l)
+  var t9k = m4t.targetBoard
   if (!t9k) {
     return
   }
   m4t.tighten()
   var do_it = !t9k.ui.rendered ||
-  (!brick.up &&
+  (!board.up &&
     !eYo.magnet.disconnectedParent &&
     !eYo.magnet.disconnectedChild&&
     !eYo.magnet.connectedParent)
@@ -123,26 +123,26 @@ eYo.fcfl.Brick._p.drawFoot_ = function (io) {
 }
 
 /**
- * Render the right brick, if relevant.
- * Returns true if there is a right brick which is not a comment.
+ * Render the right board, if relevant.
+ * Returns true if there is a right board which is not a comment.
  * @param {*} io
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.fcfl.Brick._p.renderRight_ = function (io) {
-  let brick = io.brick
-  brick.span.right = 0
-  var m4t = brick.right_m
+eYo.fcfl.Board._p.renderRight_ = function (io) {
+  let board = io.board
+  board.span.right = 0
+  var m4t = board.right_m
   if (m4t) {
-    var t9k = m4t.targetBrick
+    var t9k = m4t.targetBoard
     if (t9k) {
-      t9k.span.header = brick.span.header + brick.span.main - 1
+      t9k.span.header = board.span.header + board.span.main - 1
       try {
         t9k.ui.startOfLine = io.common.startOfLine
         t9k.ui.startOfStatement = io.common.startOfStatement
         t9k.ui.mayBeLast = t9k.hasRightEdge
         t9k.down = true
-        if (eYo.brick.debugStartTrackingRender) {
-          console.log(eYo.brick.debugPrefix, 'DOWN')
+        if (eYo.board.debugStartTrackingRender) {
+          console.log(eYo.board.debugPrefix, 'DOWN')
         }
         if (t9k.wrapped_) {
           // force target rendering
@@ -161,7 +161,7 @@ eYo.fcfl.Brick._p.renderRight_ = function (io) {
         var span = t9k.span
         if (span.w) {
           io.cursor.forward(span.width, span.height - 1)
-          // We just rendered a brick
+          // We just rendered a board
           // it is potentially the rightmost object inside its parent.
           if (t9k.hasRightEdge || io.common.shouldPack) {
             io.common.ending.push(t9k)
@@ -171,10 +171,10 @@ eYo.fcfl.Brick._p.renderRight_ = function (io) {
           io.common.field.afterCaret = false
         }
       }
-      brick.span.footer = t9k.span.footer + t9k.span.main - 1
-      brick.span.right = t9k.span.c + t9k.span.right
+      board.span.footer = t9k.span.footer + t9k.span.main - 1
+      board.span.right = t9k.span.c + t9k.span.right
       return !t9k.isComment
-    } else if (brick.isGroup) {
+    } else if (board.isGroup) {
       this.drawField_(m4t.label_f, io) // only the ':' or ';' trailing field.
       return false
     }
@@ -182,23 +182,23 @@ eYo.fcfl.Brick._p.renderRight_ = function (io) {
 }
 
 /**
- * Render the suite brick, if relevant.
+ * Render the suite board, if relevant.
  * @param {*} recorder
  * @return {boolean=} true if a rendering message was sent, false otherwise.
  */
-eYo.fcfl.Brick._p.renderSuite_ = function (io) {
-  let brick = io.brick
-  var m4t = brick.suite_m
+eYo.fcfl.Board._p.renderSuite_ = function (io) {
+  let board = io.board
+  var m4t = board.suite_m
   if (!m4t) {
     return
   }
-  if (eYo.brick.debugStartTrackingRender) {
-    console.log(eYo.brick.debugPrefix, 'SUITE')
+  if (eYo.board.debugStartTrackingRender) {
+    console.log(eYo.board.debugPrefix, 'SUITE')
   }
-  m4t.setOffset(eYo.span.INDENT, brick.span.main)
-  let t9k = m4t.targetBrick
+  m4t.setOffset(eYo.span.INDENT, board.span.main)
+  let t9k = m4t.targetBoard
   if (t9k) {
-    brick.ui.someTargetIsMissing = false
+    board.ui.someTargetIsMissing = false
     m4t.tighten()
     if (!t9k.ui.rendered || !t9k.up) {
       try {
@@ -211,51 +211,51 @@ eYo.fcfl.Brick._p.renderSuite_ = function (io) {
         t9k.down = false
       }
     }
-    brick.span.suite = t9k.span.l + t9k.span.foot
+    board.span.suite = t9k.span.l + t9k.span.foot
   } else {
-    brick.span.suite = 0
+    board.span.suite = 0
   }
   return true
 }
 
 /**
- * May render the parent brick, if relevant.
+ * May render the parent board, if relevant.
  * @param {Object} recorder - A recorder object.
- * @param {boolean=} bbbl - If false, just render this brick.
- *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
+ * @param {boolean=} bbbl - If false, just render this board.
+ *   If true, also render board's parent, grandparent, etc.  Defaults to true.
  * @return {boolean=} true if an rendering message was sent, false otherwise.
  */
-eYo.fcfl.Brick._p.drawParent_ = function (io, bbbl) {
-  let brick = io.brick
-  // `this` is a brick
-  if (bbbl === false || brick.down) {
+eYo.fcfl.Board._p.drawParent_ = function (io, bbbl) {
+  let board = io.board
+  // `this` is a board
+  if (bbbl === false || board.down) {
     return
   }
-  // Render all bricks above this one only
+  // Render all boards above this one only
   // when the render message did not come from above!
-  var parent = brick.parent
+  var parent = board.parent
   if (parent) {
-    var justConnected = eYo.magnet.connectedParent && brick.out_m === eYo.magnet.connectedParent.Target
+    var justConnected = eYo.magnet.connectedParent && board.out_m === eYo.magnet.connectedParent.Target
     if (!parent.down) {
       try {
         parent.up = true
-        var old = brick.up
-        brick.up = true
-        if (eYo.brick.DEBUG_StartTrackingRender) {
-          console.log(eYo.brick.DEBUG_Prefix, 'UP')
+        var old = board.up
+        board.up = true
+        if (eYo.board.DEBUG_StartTrackingRender) {
+          console.log(eYo.board.DEBUG_Prefix, 'UP')
         }
         parent.render(!justConnected, io)
       } finally {
         parent.up = false
-        brick.up = old
+        board.up = old
       }
       if (justConnected) {
         if (parent.parent) {
           parent = parent.root
           try {
             parent.up = true
-            if (eYo.brick.DEBUG_StartTrackingRender) {
-              console.log(eYo.brick.DEBUG_Prefix, 'UP')
+            if (eYo.board.DEBUG_StartTrackingRender) {
+              console.log(eYo.board.DEBUG_Prefix, 'UP')
             }
             parent.render(false, io)
           } finally {
@@ -266,118 +266,118 @@ eYo.fcfl.Brick._p.drawParent_ = function (io, bbbl) {
       return true
     }
   } else {
-    // Top-most brick.  Fire an event to allow scrollbars to layout.
-    this.board.resizePort(brick)
+    // Top-most board.  Fire an event to allow scrollbars to layout.
+    this.board.resizePort(board)
   }
 }
 
-eYo.fcfl.Brick._p.longRender_ = eYo.decorate.reentrant_method(
+eYo.fcfl.Board._p.longRender_ = eYo.decorate.reentrant_method(
   'longRender_',
   function (bbbl, recorder) {
-    let brick = recorder.brick
-    if (eYo.brick.DEBUG_StartTrackingRender) {
-      var n = eYo.brick.DEBUG_Count[brick.id]
-      eYo.brick.DEBUG_Count[brick.id] = (n||0)+1
-      if (!eYo.brick.DEBUG_Prefix.length) {
+    let board = recorder.board
+    if (eYo.board.DEBUG_StartTrackingRender) {
+      var n = eYo.board.DEBUG_Count[board.id]
+      eYo.board.DEBUG_Count[board.id] = (n||0)+1
+      if (!eYo.board.DEBUG_Prefix.length) {
         console.log('>>>>>>>>>>')
       }
-      eYo.brick.DEBUG_Prefix = eYo.brick.DEBUG_Prefix + '.'
-      console.log(eYo.brick.DEBUG_Prefix, brick.type, n, brick.id)
+      eYo.board.DEBUG_Prefix = eYo.board.DEBUG_Prefix + '.'
+      console.log(eYo.board.DEBUG_Prefix, board.type, n, board.id)
       if (n > 1) {
         n = n + 0
       }
     }
     try {
-      var io = this.willRender_(brick, recorder)
+      var io = this.willRender_(board, recorder)
       this.draw_(io)
       this.layoutMagnets_(io)
       this.drawFoot_(io)
       this.renderMove_(io)
-      brick.updateShape()
+      board.updateShape()
       this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
-      this.didRender_(brick, io)
+      this.didRender_(board, io)
     } finally {
-      if (eYo.brick.DEBUG_StartTrackingRender &&  eYo.brick.DEBUG_Prefix.length) {
-        eYo.brick.DEBUG_Prefix = eYo.brick.DEBUG_Prefix.Substring(1)
+      if (eYo.board.DEBUG_StartTrackingRender &&  eYo.board.DEBUG_Prefix.length) {
+        eYo.board.DEBUG_Prefix = eYo.board.DEBUG_Prefix.Substring(1)
       }
     }
   }
 )
-// deleted bricks are rendered during deletion
+// deleted boards are rendered during deletion
 // this should be avoided
 /**
- * Render the brick.
- * Lays out and reflows a brick based on its contents and settings.
+ * Render the board.
+ * Lays out and reflows a board based on its contents and settings.
  * Rendering is complicated considering the possibility of both line continuation and multi line strings.
  * @param {*} recorder
- * @param {boolean=} bbbl If false, just render this brick.
- *   If true, also render brick's parent, grandparent, etc.  Defaults to true.
+ * @param {boolean=} bbbl If false, just render this board.
+ *   If true, also render board's parent, grandparent, etc.  Defaults to true.
  */
-eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
-  if (!brick.hasUI || brick.rendered === false) { // brick.rendered === eYo.NA is OK
+eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
+  if (!board.hasUI || board.rendered === false) { // board.rendered === eYo.NA is OK
     return
   }
-  if (!brick.isEditing && (brick.dragging_ || brick.change.level || !brick.board)) {
+  if (!board.isEditing && (board.dragging_ || board.change.level || !board.board)) {
     return
   }
-  this.drawPending_(recorder, !brick.wrapped_ && eYo.key.LEFT)
+  this.drawPending_(recorder, !board.wrapped_ && eYo.key.LEFT)
   // rendering is very special when this is just a matter of
   // statement connection
-  if (brick.rendered) {
-    if (eYo.magnet.disconnectedChild && brick.head_m === eYo.magnet.disconnectedChild) {
+  if (board.rendered) {
+    if (eYo.magnet.disconnectedChild && board.head_m === eYo.magnet.disconnectedChild) {
       // this is the child one
-      var io = this.willShortRender_(brick, recorder)
+      var io = this.willShortRender_(board, recorder)
       this.layoutMagnets_(io)
       this.drawFoot_(io)
       this.renderMove_(io)
-      brick.updateShape()
-      brick.change.save.render = brick.change.count
+      board.updateShape()
+      board.change.save.render = board.change.count
       this.drawParent_(io, bbbl) || this.alignRightEdges_(io) // will they have a parent meanwhile?
       return
-    } else if (eYo.magnet.disconnectedParent && brick.foot_m === eYo.magnet.disconnectedParent) {
+    } else if (eYo.magnet.disconnectedParent && board.foot_m === eYo.magnet.disconnectedParent) {
       // this is the parent one
       // but it may belong to a suite
-      var io = this.willShortRender_(brick, recorder)
+      var io = this.willShortRender_(board, recorder)
       this.layoutMagnets_(io)
       this.drawFoot_(io)
       this.renderMove_(io)
-      brick.updateShape()
-      brick.change.save.render = brick.change.count
+      board.updateShape()
+      board.change.save.render = board.change.count
       this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       return
     } else if (eYo.magnet.connectedParent) {
-      if (brick.head_m && eYo.magnet.connectedParent === brick.head_m.target) {
-        var io = this.willShortRender_(brick, recorder)
+      if (board.head_m && eYo.magnet.connectedParent === board.head_m.target) {
+        var io = this.willShortRender_(board, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
         this.renderMove_(io)
-        brick.updateShape()
-        brick.change.save.render = brick.change.count
+        board.updateShape()
+        board.change.save.render = board.change.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
-      } else if (brick.foot_m && eYo.magnet.connectedParent === brick.foot_m) {
-        var io = this.willShortRender_(brick, recorder)
+      } else if (board.foot_m && eYo.magnet.connectedParent === board.foot_m) {
+        var io = this.willShortRender_(board, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
         this.renderMove_(io)
-        brick.updateShape()
-        brick.change.save.render = brick.change.count
+        board.updateShape()
+        board.change.save.render = board.change.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
-      } else if (brick.suite_m && eYo.magnet.connectedParent === brick.suite_m) {
-        var io = this.willShortRender_(brick, recorder)
+      } else if (board.suite_m && eYo.magnet.connectedParent === board.suite_m) {
+        var io = this.willShortRender_(board, recorder)
         this.layoutMagnets_(io)
         this.drawFoot_(io)
         this.renderMove_(io)
-        brick.updateShape()
-        brick.change.save.render = brick.change.count
+        board.updateShape()
+        board.change.save.render = board.change.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       }
     }
   }
-  if (!brick.down && brick.out_m) {
+  if (!board.down && board.out_m) {
     // always render from a line start id est
-    // an orphan brick or a statement brick with no left brick
+    // an orphan board or a statement board with no left board
     var parent
-    if ((parent = brick.parent)) {
+    if ((parent = board.parent)) {
       var next
       while (parent.out_m && !parent.down && (next = parent.parent)) {
         parent = next
@@ -385,7 +385,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
       // parent has no output magnet or has no parent.
       recorder && (recorder.field.last = eYo.NA)
       if (!parent.down) {
-        if (eYo.magnet.connectedParent && eYo.magnet.connectedParent.Brick === this) {
+        if (eYo.magnet.connectedParent && eYo.magnet.connectedParent.Board === this) {
           try {
             parent.up = true
             parent.render(bbbl, recorder)
@@ -399,83 +399,83 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
       return
     }
   }
-  if (brick.change.save.render === brick.change.count) {
+  if (board.change.save.render === board.change.count) {
     // minimal rendering
-    var io = this.willShortRender_(brick, recorder)
+    var io = this.willShortRender_(board, recorder)
     this.layoutMagnets_(io)
     this.drawFoot_(io)
     this.renderMove_(io)
-    brick.updateShape()
+    board.updateShape()
     this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
     return
   }
   this.longRender_(bbbl, recorder)
-  brick.change.save.render = brick.change.count
+  board.change.save.render = board.change.count
 }
 
 /**
- * Will draw the brick, short version.
+ * Will draw the board, short version.
  * The print statement needs some preparation before drawing.
  * @param {*} recorder
  * @private
  */
-eYo.fcfl.Brick._p.willShortRender_ = function (brick, recorder) {
-  return this.newDrawRecorder_(brick, recorder)
+eYo.fcfl.Board._p.willShortRender_ = function (board, recorder) {
+  return this.newDrawRecorder_(board, recorder)
 }
 
 /**
- * Translates the brick, forwards to the ui driver after managing the snap formal argument.
+ * Translates the board, forwards to the ui driver after managing the snap formal argument.
  * Contrary to |moveBy| there is no undo management here.
- * @param {eYo.brick.Base} brick - The brick to move.
+ * @param {eYo.board.Base} board - The board to move.
  * @param {eYo.geom.Point} xy - The xy coordinate of the translation in board units.
  * @param {Boolean} snap Whether we should snap to the grid.
  */
-eYo.fcfl.Brick._p.moveTo = function(brick, xy, snap) {
-  if (snap && brick.board && !brick.board.dragging && !brick.parent && !brick.isInFlyout) {
+eYo.fcfl.Board._p.moveTo = function(board, xy, snap) {
+  if (snap && board.board && !board.board.dragging && !board.parent && !board.isInFlyout) {
     xy = eYo.geom.clWhere(xy.c, xy.l)
   }
-  brick.xy_ = xy
-  this.place(brick)
-  this.placeMagnets_(brick)
+  board.xy_ = xy
+  this.place(board)
+  this.placeMagnets_(board)
 }
 
 /**
- * Move a standalone brick by a relative offset.
+ * Move a standalone board by a relative offset.
  * Event aware for top blocks, except when dragging.
  * @param {number} dxy Offset in board units.
  * @param {Boolean} snap Whether we should snap to the grid.
  */
-eYo.fcfl.Brick._p.moveBy = function(brick, dxy, snap) {
-  var xy = brick.xy.forward(dxy)
-  if (brick.parent || brick.desk.desktop.isDragging) {
-    this.moveTo(brick, xy)
+eYo.fcfl.Board._p.moveBy = function(board, dxy, snap) {
+  var xy = board.xy.forward(dxy)
+  if (board.parent || board.desk.desktop.isDragging) {
+    this.moveTo(board, xy)
   } else {
-    eYo.event.fireBrickMove(brick, () => {
-      this.moveTo(brick, xy, snap)
-      brick.board.resizePort(brick)
+    eYo.event.fireBoardMove(board, () => {
+      this.moveTo(board, xy, snap)
+      board.board.resizePort(board)
     })
   }
 }
 
 /**
- * Will draw the brick.
- * Prepares the brick and forwards to the driver.
+ * Will draw the board.
+ * Prepares the board and forwards to the driver.
  * @param {*} recorder
  * @private
  */
-eYo.fcfl.Brick._p.willRender_ = function (brick, recorder) {
-  brick.consolidate()
+eYo.fcfl.Board._p.willRender_ = function (board, recorder) {
+  board.consolidate()
 }
 
 /**
  * Update all of the connections on this with the new locations.  * @private
  */
-eYo.fcfl.Brick._p.renderMoveMagnets_ = function(brick) {
-  var xy = brick.whereInBoard
+eYo.fcfl.Board._p.renderMoveMagnets_ = function(board) {
+  var xy = board.whereInBoard
   var f = m4t => {
     if (m4t) {
       m4t.moveToOffset(xy)
-      var t9k = m4t.targetBrick
+      var t9k = m4t.targetBoard
       if (t9k) {
         m4t.tighten()
         // t9k.ui_driver.placeMagnets_(t9k)
@@ -484,7 +484,7 @@ eYo.fcfl.Brick._p.renderMoveMagnets_ = function(brick) {
   }
   // Don't tighten previous or output connections because they are inferior
   // connections.
-  var m5s = brick.magnets
+  var m5s = board.magnets
   var m4t
   if ((m4t = m5s.left)) {
     m4t.moveToOffset(xy)
@@ -495,7 +495,7 @@ eYo.fcfl.Brick._p.renderMoveMagnets_ = function(brick) {
   if ((m4t = m5s.out)) {
     m4t.moveToOffset(xy)
   }
-  this.slotForEach(brick, slot => f(slot.magnet))
+  this.slotForEach(board, slot => f(slot.magnet))
   // next is done while rendering
   // f(m5s.right)
   // f(m5s.suite)
@@ -506,12 +506,12 @@ eYo.fcfl.Brick._p.renderMoveMagnets_ = function(brick) {
  * Update all of the connections on this with the new locations.
  * @private
  */
-eYo.fcfl.Brick._p.placeMagnets_ = function(brick) {
-  var xy = brick.whereInBoard
+eYo.fcfl.Board._p.placeMagnets_ = function(board) {
+  var xy = board.whereInBoard
   var f = m4t => {
     if (m4t) {
       m4t.moveToOffset(xy)
-      var t9k = m4t.targetBrick
+      var t9k = m4t.targetBoard
       if (t9k) {
         m4t.tighten()
         t9k.ui_driver.placeMagnets_(t9k)
@@ -520,7 +520,7 @@ eYo.fcfl.Brick._p.placeMagnets_ = function(brick) {
   }
   // Don't tighten previous or output connections because they are inferior
   // connections.
-  var m5s = brick.magnets
+  var m5s = board.magnets
   var m4t
   if ((m4t = m5s.left)) {
     m4t.moveToOffset(xy)
@@ -531,7 +531,7 @@ eYo.fcfl.Brick._p.placeMagnets_ = function(brick) {
   if ((m4t = m5s.out)) {
     m4t.moveToOffset(xy)
   }
-  this.slotForEach(brick, slot => f(slot.magnet))
+  this.slotForEach(board, slot => f(slot.magnet))
   // next is done while rendering
   // f(m5s.right)
   // f(m5s.suite)
@@ -539,23 +539,23 @@ eYo.fcfl.Brick._p.placeMagnets_ = function(brick) {
 }
 
 /**
- * Layout brick magnets.
+ * Layout board magnets.
  * @param {*} recorder
  * @private
  */
-eYo.fcfl.Brick._p.renderMove_ = function (io) {
-  let brick = io.brick
-  this.renderMoveMagnets_(brick)
+eYo.fcfl.Board._p.renderMove_ = function (io) {
+  let board = io.board
+  this.renderMoveMagnets_(board)
 }
 
 /**
- * Layout previous, next and output brick connections.
+ * Layout previous, next and output board connections.
  * @param {*} recorder
  * @private
  */
-eYo.fcfl.Brick._p.layoutMagnets_ = function (recorder) {
-  let brick = recorder.brick
-  var m5s = brick.magnets
+eYo.fcfl.Board._p.layoutMagnets_ = function (recorder) {
+  let board = recorder.board
+  var m5s = board.magnets
   var m4t = m5s.out
   if (m4t) {
     m4t.setOffset()
@@ -564,36 +564,36 @@ eYo.fcfl.Brick._p.layoutMagnets_ = function (recorder) {
       m4t.setOffset()
     }
     if ((m4t = m5s.foot)) {
-      if (brick.collapsed) {
+      if (board.collapsed) {
         m4t.setOffset(0, 2)
       } else {
-        m4t.setOffset(0, brick.span.height)
+        m4t.setOffset(0, board.span.height)
       }
     }
     if ((m4t = m5s.left)) {
       m4t.setOffset()
     }
     if ((m4t = m5s.right)) {
-      m4t.setOffset(brick.span.width, 0)
+      m4t.setOffset(board.span.width, 0)
     }
   }
 }
 
 /**
- * Draw the path of the brick.
+ * Draw the path of the board.
  * @param {*} recorder - 
  * @private
  */
-eYo.fcfl.Brick._p.draw_ = function (recorder) {
-  let brick = recorder.brick
-  if (this.canDraw(brick)) {
+eYo.fcfl.Board._p.draw_ = function (recorder) {
+  let board = recorder.board
+  if (this.canDraw(board)) {
     try {
       var io = this.drawModelBegin_(recorder)
       this.drawModel_(io)
       this.drawModelEnd_(io)
     } finally {
       this.renderRight_(io) || this.renderSuite_(io)
-      brick.updateShape()
+      board.updateShape()
       this.drawSharp_(io)
     }
     return io
@@ -602,36 +602,36 @@ eYo.fcfl.Brick._p.draw_ = function (recorder) {
 }
 
 /**
- * Align the right edges by changing the width of all the connected statement bricks. For each line, only the last statement
+ * Align the right edges by changing the width of all the connected statement boards. For each line, only the last statement
  * of the line is extended.
- * Only for root bricks.
+ * Only for root boards.
  * @param {*} recorder
  * @protected
  */
-eYo.fcfl.Brick._p.alignRightEdges_ = eYo.change.decorate(
+eYo.fcfl.Board._p.alignRightEdges_ = eYo.change.decorate(
   'alignRightEdges_',
   function (recorder) {
-    let brick = recorder.brick
-    if (brick.parent || !brick.isStmt || !brick.rendered || !brick.board || !brick.hasUI) {
+    let board = recorder.board
+    if (board.parent || !board.isStmt || !board.rendered || !board.board || !board.hasUI) {
       return
     }
     var right = 0
     var t = eYo.span.INDENT
-    brick.stmtForEach((b, depth) => {
+    board.stmtForEach((b, depth) => {
       if (b.span.min_c) {
         var c = t * depth + b.span.min_c
-        // all the right bricks now
+        // all the right boards now
         var x = b
         while ((x = x.right)) {
-          c += x.span.min_c - 1 // `- 1` because bricks will overlap one space for the vertical boundaries
+          c += x.span.min_c - 1 // `- 1` because boards will overlap one space for the vertical boundaries
         }
         right = Math.max(right, c)
       }
     })
     if (right) {
-      brick.stmtForEach((b, depth) => {
+      board.stmtForEach((b, depth) => {
         var c = right - t * depth
-        // find the last right brick and
+        // find the last right board and
         var bb = b
         while ((bb = bb.right)) {
           c -= bb.span.min_c - 1 // see comment above
@@ -648,18 +648,18 @@ eYo.fcfl.Brick._p.alignRightEdges_ = eYo.change.decorate(
 
 /**
  * Get a new draw recorder.
- * @param {*} recorder  Null iff this is the first brick rendered
+ * @param {*} recorder  Null iff this is the first board rendered
  * of that rendering process.
  * @private
  */
-eYo.fcfl.Brick._p.newDrawRecorder_ = function (brick, recorder) {
+eYo.fcfl.Board._p.newDrawRecorder_ = function (board, recorder) {
   var io = {
-    brick: brick,
+    board: board,
     steps: [],
     n: 0, // count of rendered objects (fields, slots and inputs)
     form: eYo.NA // rendered field or magnet
   }
-  io.cursor = eYo.geom.xyWhere(0, brick.span.header)
+  io.cursor = eYo.geom.xyWhere(0, board.span.header)
   if (recorder) {
     // io inherits some values from the given recorder
     io.recorder = recorder
@@ -672,61 +672,61 @@ eYo.fcfl.Brick._p.newDrawRecorder_ = function (brick, recorder) {
       afterEdge: false,
       shouldPack: false,
       startOfStatement: false,
-      startOfLine: !brick.isExpr || !brick.parent, // statement, group or orphan brick
+      startOfLine: !board.isExpr || !board.parent, // statement, group or orphan board
       field: {
         afterBlack: false, // true if the position before the cursor contains a black character
         afterSeparator: false, // true if the position before the cursor contains a mandatory white character
         afterCaret: false, // true if the position before the cursor contains a caret, id est an otional input magnet
         shouldSeparate: false // and other properties...
       },
-      header: 0 // used when a brick will render its right sibling
+      header: 0 // used when a board will render its right sibling
     }
   }
   // A "star like" field's text is one of '*', '+', '-', '~'...
-  // This field is the very first of the brick.
+  // This field is the very first of the board.
   // Once we have rendered a field with a positive length,
   // we cannot have a star like field.
   io.common.field.canStarLike = true
-  brick.ui.firstRenderedMagnet = brick.ui.lastRenderedMagnet = eYo.NA
+  board.ui.firstRenderedMagnet = board.ui.lastRenderedMagnet = eYo.NA
   io.footer = 0
   io.main = 1
   return io
 }
 
 /**
- * Prepare rendering of a brick.
+ * Prepare rendering of a board.
  * @param {Object} [recorder]
  * @return {!Object} a local recorder
  * @private
  */
-eYo.fcfl.Brick._p.drawModelBegin_ = function (recorder) {
-  let brick = recorder.brick
-  brick.ui.parentIsShort = false
-  brick.ui.isShort = false
-  brick.ui.someTargetIsMissing = false
-  // we define the `io` named recorder which is specific to brick.
-  var io = this.newDrawRecorder_(brick, recorder)
+eYo.fcfl.Board._p.drawModelBegin_ = function (recorder) {
+  let board = recorder.board
+  board.ui.parentIsShort = false
+  board.ui.isShort = false
+  board.ui.someTargetIsMissing = false
+  // we define the `io` named recorder which is specific to board.
+  var io = this.newDrawRecorder_(board, recorder)
   // By default, we restart from scratch,
   // set the size to 0 for the width and 1 for the height
   // And reset properties
-  brick.ui.mayBeLast = false
-  brick.ui.isLastInExpression = false
-  brick.ui.isLastInStatement = false
-  // Do we need some room for the left side of the brick?
-  // no for wrapped bricks
-  if (!brick.wrapped_) {
-    if (!brick.isExpr || !brick.locked_ || !recorder) {
+  board.ui.mayBeLast = false
+  board.ui.isLastInExpression = false
+  board.ui.isLastInStatement = false
+  // Do we need some room for the left side of the board?
+  // no for wrapped boards
+  if (!board.wrapped_) {
+    if (!board.isExpr || !board.locked_ || !recorder) {
       // statement or unlocked,
-      // one space for the left edge of the brick
+      // one space for the left edge of the board
       // (even for locked statements, this is to avoid a
       // display shift when locking/unlocking)
       io.cursor.c = 1
       io.common.field.afterBlack = false
     }
   }
-  if (brick.hasLeftEdge || !recorder || !brick.out_m) {
+  if (board.hasLeftEdge || !recorder || !board.out_m) {
     // statement or unlocked,
-    // one space for the left edge of the brick
+    // one space for the left edge of the board
     // (even for locked statements, this is to avoid a
     // display shift when locking/unlocking)
     io.cursor.c = 1
@@ -735,34 +735,34 @@ eYo.fcfl.Brick._p.drawModelBegin_ = function (recorder) {
     io.common.field.shouldSeparate = false
     // Do not change io.common.field.shouldSeparate ?
   }
-  if (brick.isExpr) {
-    brick.ui.startOfStatement = io.common.startOfStatement
-    brick.ui.startOfLine = io.common.startOfLine
+  if (board.isExpr) {
+    board.ui.startOfStatement = io.common.startOfStatement
+    board.ui.startOfLine = io.common.startOfLine
   } else {
-    brick.ui.startOfStatement = io.common.startOfStatement = true
-    brick.span.header = 0
+    board.ui.startOfStatement = io.common.startOfStatement = true
+    board.span.header = 0
   }
   return io
 }
 
 /**
- * Render the inputs, the fields and the slots of the brick.
+ * Render the inputs, the fields and the slots of the board.
  * The `recorder` is an object that keeps track of some
  * rendering information. It is the argument of various methods.
- * This method is executed at least once for any rendered brick.
- * Since then, it won't be executed as long as the brick has not been edited.
+ * This method is executed at least once for any rendered board.
+ * Since then, it won't be executed as long as the board has not been edited.
  * @param {Object} [io]
  * @private
  */
-eYo.fcfl.Brick._p.drawModel_ = function (io) {
-  let brick = io.brick
-  this.fieldDrawFrom_(brick.fieldAtStart, io)
-  if ((io.slot = brick.slotAtHead)) {
+eYo.fcfl.Board._p.drawModel_ = function (io) {
+  let board = io.board
+  this.fieldDrawFrom_(board.fieldAtStart, io)
+  if ((io.slot = board.slotAtHead)) {
     do {
       this.slotDraw_(io)
     } while ((io.slot = io.slot.next))
   }
-  this.fieldDrawFrom_(brick.toEndField, io)
+  this.fieldDrawFrom_(board.toEndField, io)
   return
 }
 
@@ -771,11 +771,11 @@ eYo.fcfl.Brick._p.drawModel_ = function (io) {
  * @param {Object} [recorder]
  * @private
  */
-eYo.fcfl.Brick._p.drawModelEnd_ = function (brick, io) {
+eYo.fcfl.Board._p.drawModelEnd_ = function (board, io) {
   // and now some space for the right edge, if any
   let f = io.common.field
-  if (!brick.wrapped_) {
-    if (brick.isExpr) {
+  if (!board.wrapped_) {
+    if (board.isExpr) {
       if (f.last && f.last.isEditing) {
         io.cursor.c += 1
         f.afterSeparator = false
@@ -791,7 +791,7 @@ eYo.fcfl.Brick._p.drawModelEnd_ = function (brick, io) {
           f.afterSeparator = f.shouldSeparate
           f.shouldSeparate = false
           f.afterBlack = false
-        } else if (!brick.locked_ && !io.common.ending.length) {
+        } else if (!board.locked_ && !io.common.ending.length) {
           io.cursor.c += 1
           f.afterSeparator = f.shouldSeparate
           f.shouldSeparate = false
@@ -809,18 +809,18 @@ eYo.fcfl.Brick._p.drawModelEnd_ = function (brick, io) {
       f.afterBlack = false
     }
   }
-  if (!brick.isExpr) {
+  if (!board.isExpr) {
     this.drawEnding_(io, true, true)
   } else if (!io.recorder) {
     this.drawEnding_(io, true)
   }
   this.drawPending_(io)
-  if (!brick.wrapped_) {
+  if (!board.wrapped_) {
     var m4t = io.form
-    var t9k = m4t && m4t.targetBrick
-    if (io.n < 2 && !brick.wrapped_) {
-      // this is a short brick, special management of selection
-      brick.ui.isShort = true
+    var t9k = m4t && m4t.targetBoard
+    if (io.n < 2 && !board.wrapped_) {
+      // this is a short board, special management of selection
+      board.ui.isShort = true
       if (t9k) {
         t9k.ui.parentIsShort = true
         // always add a space to the right
@@ -829,23 +829,23 @@ eYo.fcfl.Brick._p.drawModelEnd_ = function (brick, io) {
         io.cursor.c += 1
       }
     } else {
-      brick.ui.isShort = false
+      board.ui.isShort = false
       if (t9k) {
         t9k.ui.parentIsShort = false
       }
     }
   }
-  brick.span.c_min = io.cursor.c = Math.max(io.cursor.c, brick.minBrickW)
+  board.span.c_min = io.cursor.c = Math.max(io.cursor.c, board.minBoardW)
   if (io.recorder) {
-    // We ended a brick. The right edge is generally a separator.
-    // No need to add a separator if the brick is wrapped or locked
-    f.shouldSeparate && (f.shouldSeparate = !brick.hasRightEdge)
-    // if the brick is wrapped or locked, there won't be any
+    // We ended a board. The right edge is generally a separator.
+    // No need to add a separator if the board is wrapped or locked
+    f.shouldSeparate && (f.shouldSeparate = !board.hasRightEdge)
+    // if the board is wrapped or locked, there won't be any
     // right edge where a caret could be placed.
-    // But may be we just rendered bricks in cascade such that
+    // But may be we just rendered boards in cascade such that
     // there might be some right edge already.
   }
-  brick.ui.lastRenderedMagnet = io.common.magnetDone
+  board.ui.lastRenderedMagnet = io.common.magnetDone
 }
 
 /**
@@ -853,7 +853,7 @@ eYo.fcfl.Brick._p.drawModelEnd_ = function (brick, io) {
  * @param io
  * @private
  */
-eYo.fcfl.Brick._p.slotDraw_ = function (io) {
+eYo.fcfl.Board._p.slotDraw_ = function (io) {
   var slot = io.slot
   // if (!slot) {
   //   return
@@ -868,7 +868,7 @@ eYo.fcfl.Brick._p.slotDraw_ = function (io) {
       this.drawInputMagnet_(io)
     }
     this.fieldDrawFrom_(slot.toEndField, io)
-    // come back to the brick coordinates
+    // come back to the board coordinates
     io.cursor.forward(slot.where)
     // translate at the end because `slot.where` may change
     // due to the shrink process
@@ -877,18 +877,18 @@ eYo.fcfl.Brick._p.slotDraw_ = function (io) {
 }
 
 /**
- * Render the leading # character for collapsed statement bricks.
+ * Render the leading # character for collapsed statement boards.
  * Statement subclasses must override it.
  * @param io
  * @private
  */
-eYo.fcfl.Brick._p.drawSharp_ = function (io) {
-  let brick = io.brick
-  if (brick.isControl) { // Not very clean, used as hook before rendering the comment fields.
+eYo.fcfl.Board._p.drawSharp_ = function (io) {
+  let board = io.board
+  if (board.isControl) { // Not very clean, used as hook before rendering the comment fields.
     io.cursor.c += 4
-  } else if (brick.isStmt) {
-    this.drawSharp(brick, brick.disabled)
-    if (brick.disabled) {
+  } else if (board.isStmt) {
+    this.drawSharp(board, board.disabled)
+    if (board.disabled) {
       io.cursor.c += 2
       io.common.startOfLine = io.common.startOfStatement = false
     }
@@ -898,29 +898,29 @@ eYo.fcfl.Brick._p.drawSharp_ = function (io) {
 /**
  * Draw/hide the sharp.
  * Default implementation does nothing.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
- * @param {Boolean} visible - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
+ * @param {Boolean} visible - the board the driver acts on
  * @private
  */
-eYo.fcfl.Brick._p.drawSharp = eYo.doNothing
+eYo.fcfl.Board._p.drawSharp = eYo.doNothing
 
 /**
  * Render the given field, when defined.
  * This is the process that make the cursor move,
- * together with brick boundaries.
+ * together with board boundaries.
  *
  * @param {Object} field A field.
  * @param {Object} io An input/output recorder.
  * @private
  */
-eYo.fcfl.Brick._p.drawField_ = function (field, io) {
-  let brick = io.brick
+eYo.fcfl.Board._p.drawField_ = function (field, io) {
+  let board = io.board
   var c = io.cursor.c
   field.displayedUpdate()
   if (field.visible) {
     // Actually, io.cursor points to the location where the field
     // is expected. It is relative to the enclosing `SVG` group,
-    // which is either a brick or a slot.
+    // which is either a board or a slot.
     // If there is a pending caret, draw it and advance the cursor.
     io.form = field
     field.willRender()
@@ -937,7 +937,7 @@ eYo.fcfl.Brick._p.drawField_ = function (field, io) {
       io.common.startOfLine = io.common.startOfStatement = false
       ++ io.n
       if (field.size.l === 1) {
-      //    this.fieldTextCreate(brick, field)
+      //    this.fieldTextCreate(board, field)
         var head = text[0]
         var tail = text[text.length - 1]
         if (field.model.literal) {
@@ -951,13 +951,13 @@ eYo.fcfl.Brick._p.drawField_ = function (field, io) {
             && !io.common.field.afterBlack
             && !io.common.startOfLine
             && !io.common.field.afterCaret) {
-            if (brick.ui.packedQuotes && (head === "'" || head === '"')) {
+            if (board.ui.packedQuotes && (head === "'" || head === '"')) {
               io.cursor.c -= 1
-            } else if (brick.ui.packedBrackets && head === "[") {
+            } else if (board.ui.packedBrackets && head === "[") {
               io.cursor.c -= 1
-            } else if (brick.ui.packedBraces && head === "{") {
+            } else if (board.ui.packedBraces && head === "{") {
               io.cursor.c -= 1
-            } else if (brick.ui.packedParenthesis && head === "(") {
+            } else if (board.ui.packedParenthesis && head === "(") {
               io.cursor.c -= 1
             }
           } else if (head === '.' && !io.common.field.afterBlack) {
@@ -996,19 +996,19 @@ eYo.fcfl.Brick._p.drawField_ = function (field, io) {
         io.common.startOfLine = io.common.startOfStatement = false
       }
       if (io.cursor.c > 2) {
-        if ((tail === '"' || tail === "'") && brick.ui.packedQuotes) {
+        if ((tail === '"' || tail === "'") && board.ui.packedQuotes) {
           io.common.shouldPack = null // this
-        } else if (tail === ']' && brick.ui.packedBrackets) {
+        } else if (tail === ']' && board.ui.packedBrackets) {
           io.common.shouldPack = this
-        } else if ((tail === '}') && brick.ui.packedBraces) {
+        } else if ((tail === '}') && board.ui.packedBraces) {
           io.common.shouldPack = this
-        } else if ((tail === ')') && brick.ui.packedParenthesis) {
+        } else if ((tail === ')') && board.ui.packedParenthesis) {
           io.common.shouldPack = this
         }
       }
     }
     if (field.isEditing) {
-      // This is a trick to avoid some bad geometry while editing
+      // This is a toard to avoid some bad geometry while editing
       // this is useful for view only.
       io.cursor.c += 1
       io.common.field.shouldSeparate =
@@ -1027,7 +1027,7 @@ eYo.fcfl.Brick._p.drawField_ = function (field, io) {
  * @param {Object} io An input/output recorder.
  * @private
  */
-eYo.fcfl.Brick._p.fieldDrawFrom_ = function (field, io) {
+eYo.fcfl.Board._p.fieldDrawFrom_ = function (field, io) {
   if (field) {
     do {
       this.drawField_(field, io)
@@ -1036,7 +1036,7 @@ eYo.fcfl.Brick._p.fieldDrawFrom_ = function (field, io) {
 }
 
 /**
- * Render the fields of a brick input/slot.
+ * Render the fields of a board input/slot.
  * Fields are either before or after the connection.
  * If `only_prefix` is true, only fields before the
  * connection are rendered.
@@ -1045,7 +1045,7 @@ eYo.fcfl.Brick._p.fieldDrawFrom_ = function (field, io) {
  * @return {Number}  The advance of the cursor (in columns)
  * @private
  */
-eYo.fcfl.Brick._p.drawFields_ = function (io, only_prefix) {
+eYo.fcfl.Board._p.drawFields_ = function (io, only_prefix) {
   var current = io.cursor.c
   io.slot.fieldForEach(field => {
     if (!!only_prefix === !field.suffix) {
@@ -1056,48 +1056,48 @@ eYo.fcfl.Brick._p.drawFields_ = function (io, only_prefix) {
 }
 
 /**
- * Render the ending bricks.
+ * Render the ending boards.
  *
- * In order to save space, we put caret at the end of bricks
- * and we shrink bricks to the minimum.
+ * In order to save space, we put caret at the end of boards
+ * and we shrink boards to the minimum.
  *
- * When expression bricks are stacked, there is no need to
+ * When expression boards are stacked, there is no need to
  * spend space just to draw the edges.
- * We can save space by drawing the brick edges on top of each others.
+ * We can save space by drawing the board edges on top of each others.
  *
- * When we start rendering a new brick,
+ * When we start rendering a new board,
  * `io.common.field.shouldSeparate` is set to `false`.
- * If we enter a child brick, with no field nor splot before,
+ * If we enter a child board, with no field nor splot before,
  * then we should decrease `cursor`.
- * This is why the right end of expression bricks
+ * This is why the right end of expression boards
  * may be a straight line instead of a curved one
- * when at the end of a statement brick.
- * This situation depends of information given after a brick is
- * rendered. One solution is to scan all the bricks to prepare
+ * when at the end of a statement board.
+ * This situation depends of information given after a board is
+ * rendered. One solution is to scan all the boards to prepare
  * rendering, then scan again to render.
  * We assume that only one loop is more efficient.
- * In that case, we must wait until a statement brick is rendered
+ * In that case, we must wait until a statement board is rendered
  * to properly locate and display connection,
- * and to properly display the last brick.
+ * and to properly display the last board.
  * In order to display a caret connection properly,
- * we attach to each brick ending with a one character spaced
+ * we attach to each board ending with a one character spaced
  * right edge a pending connection that might be displayed
  * over that right edge.
  * we consider the first fullfilled of these conditions:
  *
- * 1) we just rendered an expression brick
+ * 1) we just rendered an expression board
  * that ends with a white space (not wrapped nor locked)
  * but have no pending connection attached
  *
- * 2) we won't render any field until the end of the brick
- * and the brick ends with a white space
+ * 2) we won't render any field until the end of the board
+ * and the board ends with a white space
  *
- * This message is sent at the end of statement brick rendering.
+ * This message is sent at the end of statement board rendering.
  * It is also sent each time we have rendered a field or a slot.
  * @param {Object} [io] the input/output argument.
  * @private
  */
-eYo.fcfl.Brick._p.drawEnding_ = function (io, isLast = false, inStatement = false) {
+eYo.fcfl.Board._p.drawEnding_ = function (io, isLast = false, inStatement = false) {
   if (io) {
     var isLastInExpression = isLast && !inStatement
     var isLastInStatement = isLast && inStatement
@@ -1119,7 +1119,7 @@ eYo.fcfl.Brick._p.drawEnding_ = function (io, isLast = false, inStatement = fals
               // from now on, we pack just one character width
             }
             if (pack) {
-              b3k.span.c = Math.max(b3k.ui.minBrickW, b3k.span.c - 1)
+              b3k.span.c = Math.max(b3k.ui.minBoardW, b3k.span.c - 1)
               io.common.field.didPack = true
               io.common.field.afterBlack = true
             }
@@ -1139,16 +1139,16 @@ eYo.fcfl.Brick._p.drawEnding_ = function (io, isLast = false, inStatement = fals
           m4t.shape = eYo.key.NONE
           m4t.ui.isLastInStatement =isLastInStatement
           var d = eYo.shape.definitionWithMagnet(m4t) // depends on the shape and the side
-          var brick = m4t.brick
-          if (this === brick) {
-            // we are lucky, this is the brick we are currently rendering
+          var board = m4t.board
+          if (this === board) {
+            // we are lucky, this is the board we are currently rendering
             io.steps.push(departFocus)
           } else {
-            // bad luck, brick has already been rendered
+            // bad luck, board has already been rendered
             // we must append the definition to the path
-            // this may happen for bricks with no left or right end,
-            // eg locked or wrapped bricks.
-            var path = brick.pathInner_
+            // this may happen for boards with no left or right end,
+            // eg locked or wrapped boards.
+            var path = board.pathInner_
             path.setAttribute('d', `${path.getAttribute('d')} ${d}`)
           }
         }
@@ -1161,26 +1161,26 @@ eYo.fcfl.Brick._p.drawEnding_ = function (io, isLast = false, inStatement = fals
 /**
  * Render a pending caret, if relevant.
  * @param {Object} [io] the input/output argument.
- * @param {String} [side] On which side of a brick.
+ * @param {String} [side] On which side of a board.
  * @param {String} [shape] Which is the shape.
  * @private
  */
-eYo.fcfl.Brick._p.drawPending_ = function (io, side = eYo.key.NONE, shape = eYo.key.NONE) {
+eYo.fcfl.Board._p.drawPending_ = function (io, side = eYo.key.NONE, shape = eYo.key.NONE) {
   if (io) {
     var m4t = io.common.pending
     if (m4t) {
       m4t.side = side
       m4t.shape = io.ui.isLastInStatement ? eYo.key.Right : shape
       var shp = eYo.shape.newWithMagnet(m4t)
-      var b3k = m4t.brick
-      if (io.brick === b3k) {
-        // we are lucky, this is the brick we are currently rendering
+      var b3k = m4t.board
+      if (io.board === b3k) {
+        // we are lucky, this is the board we are currently rendering
         io.steps.push(shp.definition)
       } else {
-        // bad luck, brick has already been rendered
+        // bad luck, board has already been rendered
         // we must append the definition to the path
-        // this may happen for bricks with no left or right end,
-        // eg locked or wrapped bricks.
+        // this may happen for boards with no left or right end,
+        // eg locked or wrapped boards.
         var path = b3k.pathInner_
         path.setAttribute('d', `${path.getAttribute('d')} ${shp.definition}`)
       }
@@ -1207,14 +1207,14 @@ eYo.fcfl.Brick._p.drawPending_ = function (io, side = eYo.key.NONE, shape = eYo.
  * @param {Object} io the input/output argument.
  * @private
  */
-eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
+eYo.fcfl.Board._p.drawInputMagnet_ = function (io) {
   var m4t = io.magnet
   m4t.renderedRight = eYo.NA
   m4t.renderedLeft = io.common.magnetDone
   if (io.common.magnetDone) {
     io.common.magnetDone.inputRight = io.magnet
   } else {
-    brick.ui.firstRenderedMagnet = io.magnet
+    board.ui.firstRenderedMagnet = io.magnet
   }
   io.common.magnetDone = io.magnet
   ++ io.n
@@ -1223,11 +1223,11 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
   io.form = m4t
   m4t.side = m4t.shape = eYo.NA
   io.common.field.canStarLike = false
-  // io.cursor is relative to the brick or the slot
-  // but the magnet must be located relative to the brick
+  // io.cursor is relative to the board or the slot
+  // but the magnet must be located relative to the board
   // the magnet will take care of that because it knows
   // if there is a slot.
-  var t9k = m4t.targetBrick
+  var t9k = m4t.targetBoard
   if (t9k) {
     if (m4t.bindField && m4t.bindField.visible) {
       m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
@@ -1244,8 +1244,8 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
       ui.startOfStatement = io.common.startOfStatement
       ui.mayBeLast = ui.hasRightEdge
       ui.down = true
-      if (eYo.brick.DEBUG_StartTrackingRender) {
-        console.log(eYo.brick.DEBUG_Prefix, 'DOWN')
+      if (eYo.board.DEBUG_StartTrackingRender) {
+        console.log(eYo.board.DEBUG_Prefix, 'DOWN')
       }
       if (t9k.wrapped_) {
         // force target rendering
@@ -1259,7 +1259,7 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
           ui.startOfLine = ui.startOfStatement = io.common.startOfLine = io.common.startOfStatement = true
         }
       }
-      if (brick.out_m !== eYo.magnet.disconnectedChild && !ui.up) {
+      if (board.out_m !== eYo.magnet.disconnectedChild && !ui.up) {
         t9k.render(false, io)
         if (!t9k.wrapped_) {
           io.common.field.shouldSeparate = false
@@ -1270,9 +1270,9 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
       ui.down = false
       var span = t9k.span
       if (span.w) {
-        brick.span.main += span.main - 1
+        board.span.main += span.main - 1
         io.cursor.forward(span.c, span.main - 1)
-        // We just rendered a connected input brick
+        // We just rendered a connected input board
         // it is potentially the rightmost object inside its parent.
         if (ui.hasRightEdge || io.common.shouldPack) {
           io.common.ending.push(t9k)
@@ -1284,7 +1284,7 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
     }
   } else {
     if (!m4t.target) {
-      brick.ui.someTargetIsMissing = true
+      board.ui.someTargetIsMissing = true
     }
     if (m4t.bindField && m4t.bindField.visible) {
       m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
@@ -1294,8 +1294,8 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
       // for that connection is a bit different.
       // Don't display anything for that connection
       io.common.field.afterCaret = false
-    } else if (!brick.locked_ && !m4t.hidden_) {
-      // locked bricks won't display any placeholder
+    } else if (!board.locked_ && !m4t.hidden_) {
+      // locked boards won't display any placeholder
       // (slot with no target)
       if (!m4t.disabled_) {
         m4t.setOffset(io.cursor)
@@ -1305,7 +1305,7 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
           m4t.side = eYo.key.NONE
           var ending = io.common.ending.slice(-1)[0]
           if (ending && !ending.ui.rightCaret) {
-            // an expression brick with a right end has been rendered
+            // an expression board with a right end has been rendered
             // we put the caret on that end to save space,
             // we move the connection one character to the left
             io.cursor.c -= 1
@@ -1319,10 +1319,10 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
             // If the next rendered object is a field, then
             // this caret should be rendered normally
             // and the cursor should advance.
-            // If the next rendered object is an expression brick
+            // If the next rendered object is an expression board
             // with a left end, then this caret shoud be rendered
             // with a left shape and the cursor should not advance.
-            // If the caret is the last rendered object of the brick,
+            // If the caret is the last rendered object of the board,
             // then it should be rendered with special shape and
             // the cursor should not advance.
             io.common.pending = m4t
@@ -1357,184 +1357,184 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
 }
 
 /**
- * Update the shape of the brick.
+ * Update the shape of the board.
  * Forwards to the driver.
  * @protected
  */
-eYo.driver.makeForwarder(eYo.brick.Base_p, 'updateShape')
+eYo.driver.makeForwarder(eYo.board.Base_p, 'updateShape')
 
 /**
- * Update the shape of the brick.
+ * Update the shape of the board.
  * To be subclassed.
- * @param {eYo.brick.Base} brick - The brick of which the shape would need an update
+ * @param {eYo.board.Base} board - The board of which the shape would need an update
  * @protected
  */
-eYo.fcfl.Brick._p.updateShape = eYo.doNothing
+eYo.fcfl.Board._p.updateShape = eYo.doNothing
 
 /**
- * Hide the brick.
+ * Hide the board.
  * Forwards to the driver.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
  */
-eYo.fcfl.Brick._p.hide = function (brick) {
-  this.displayedSet(brick, false)
+eYo.fcfl.Board._p.hide = function (board) {
+  this.displayedSet(board, false)
 }
 
 /**
  * The default implementation forwards to the driver.
- * This must take place while the brick is still in a consistent state.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * This must take place while the board is still in a consistent state.
+ * @param {eYo.board.Base} board - the board the driver acts on
  */
-eYo.fcfl.Brick._p.disposeEffect = function (brick) {
+eYo.fcfl.Board._p.disposeEffect = function (board) {
   missing implementation
 }
 
 /**
  * Show the given menu.
  * The default implementation forwards to the driver.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
  * @param {*} menu
  */
-eYo.fcfl.Brick._p.showMenu = function (brick, menu) {
-  this.MenuShow(brick, menu)
+eYo.fcfl.Board._p.showMenu = function (board, menu) {
+  this.MenuShow(board, menu)
 }
 
 //////////////////
 
 /**
- * Did connect some brick's connection to another connection.
- * When connecting locked bricks, select the receiver.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
- * @param {eYo.magnet.Base} m4t what has been connected in the brick
- * @param {eYo.magnet.Base} oldTargetM4t what was previously connected in the brick
+ * Did connect some board's connection to another connection.
+ * When connecting locked boards, select the receiver.
+ * @param {eYo.board.Base} board - the board the driver acts on
+ * @param {eYo.magnet.Base} m4t what has been connected in the board
+ * @param {eYo.magnet.Base} oldTargetM4t what was previously connected in the board
  * @param {eYo.magnet.Base} targetOldM4t what was previously connected to the new targetConnection
  */
-eYo.fcfl.Brick._p.didConnect = function (brick, m4t, oldTargetM4t, targetOldM4t) {
+eYo.fcfl.Board._p.didConnect = function (board, m4t, oldTargetM4t, targetOldM4t) {
   if (m4t.isOutput) {
-    m4t.brick.statusTopRemove_()
+    m4t.board.statusTopRemove_()
   }
 }
 
 /**
  * Converse of the preceeding.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
- * @param {eYo.magnet.Base} m4t what has been connected in the brick
- * @param {eYo.magnet.Base} oldTargetM4t what was previously connected in the brick
+ * @param {eYo.board.Base} board - the board the driver acts on
+ * @param {eYo.magnet.Base} m4t what has been connected in the board
+ * @param {eYo.magnet.Base} oldTargetM4t what was previously connected in the board
  */
-eYo.fcfl.Brick._p.didDisconnect = function (brick, m4t, oldTargetM4t) {
+eYo.fcfl.Board._p.didDisconnect = function (board, m4t, oldTargetM4t) {
   if (m4t.isOutput) {
-    m4t.brick.statusTopAdd_()
+    m4t.board.statusTopAdd_()
   }
 }
 
 /**
  * Return the coordinates of the top-left corner of this relative to the
  * drawing surface's origin (0,0), in board units.
- * If the brick is on the board, (0, 0) is the origin of the board
+ * If the board is on the board, (0, 0) is the origin of the board
  * coordinate system.
  * This does not change with board scale.
  * @return {!eYo.geom.Point} Object with .x and .y properties in
  *     board coordinates.
  */
-eYo.fcls.Brick._p.whereInParent = eYo.do.NYI
+eYo.fcls.Board._p.whereInParent = eYo.do.NYI
 
-eYo.fcls.Brick._p.xyInParent = eYo.do.NYI
+eYo.fcls.Board._p.xyInParent = eYo.do.NYI
 
-eYo.fcls.Brick._p.whereInBoard = eYo.do.NYI
+eYo.fcls.Board._p.whereInBoard = eYo.do.NYI
 
-eYo.fcls.Brick._p.xyInDesk = eYo.do.NYI
+eYo.fcls.Board._p.xyInDesk = eYo.do.NYI
 
 /**
- * Returns the coordinates of a bounding rect describing the dimensions of the brick.
+ * Returns the coordinates of a bounding rect describing the dimensions of the board.
  * As the shape is not the same comparing to Blockly's default,
  * the bounding rect changes too.
  * Coordinate system: board coordinates.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
  * @return {!eYo.geom.Rect}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-eYo.fcfl.Brick._p.boundingRect = function (brick) {
+eYo.fcfl.Board._p.boundingRect = function (board) {
   return new eYo.geom.Rect(
-    brick.whereInBoard,
-    brick.size
+    board.whereInBoard,
+    board.size
   )
 }
 /**
  * The size
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
  */
-eYo.fcfl.Brick._p.size = function (brick) {
-  return brick.size
+eYo.fcfl.Board._p.size = function (board) {
+  return board.size
 }
 /**
  * Returns the coordinates of a bounding box describing the dimensions of this
- * brick.
+ * board.
  * Coordinate system: board coordinates.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
  * @return {!goog.math.Box}
  *    Object with top left and bottom right coordinates of the bounding box.
  */
-eYo.fcfl.Brick._p.boundingBox = function (brick) {
-  return this.boundingRect(brick).toBox()
+eYo.fcfl.Board._p.boundingBox = function (board) {
+  return this.boundingRect(board).toBox()
 }
   
 /**
  * Schedule snapping to grid and bumping neighbours to occur after a brief
  * delay.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
  */
-eYo.fcfl.Brick._p.scheduleSnapAndBump = function(brick) {
+eYo.fcfl.Board._p.scheduleSnapAndBump = function(board) {
   // Ensure that any snap and bump are part of this move's event group.
   var group = eYo.event.group
   setTimeout(() => {
     eYo.event.group = group
-    this.snapToGrid(brick)
+    this.snapToGrid(board)
     eYo.event.group = false
-  }, eYo.brick.Base.BUMP_DELAY / 2)
+  }, eYo.board.Base.BUMP_DELAY / 2)
   setTimeout(() => {
     eYo.event.group = group
-    this.bumpNeighbours_(brick)
+    this.bumpNeighbours_(board)
     eYo.event.group = false
-  }, eYo.brick.Base.BUMP_DELAY)
+  }, eYo.board.Base.BUMP_DELAY)
 }
 
 /**
- * Snap the given brick to the nearest grid point.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * Snap the given board to the nearest grid point.
+ * @param {eYo.board.Base} board - the board the driver acts on
  */
-eYo.fcfl.Brick._p.snapToGrid = function(brick) {
-  if (!brick.board || brick.board.dragging || brick.parent || brick.isInFlyout) {
+eYo.fcfl.Board._p.snapToGrid = function(board) {
+  if (!board.board || board.board.dragging || board.parent || board.isInFlyout) {
     return
   }
-  this.moveTo(brick, brick.xy, true)
+  this.moveTo(board, board.xy, true)
 }
 
 
 /**
  * Bump unconnected blocks out of alignment.  Two blocks which aren't actually
  * connected should not coincidentally line up on screen.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
  * @private
  */
-eYo.fcfl.Brick._p.bumpNeighbours_ = function(brick) {
-  if (!brick.board || brick.board.dragging) {
+eYo.fcfl.Board._p.bumpNeighbours_ = function(board) {
+  if (!board.board || board.board.dragging) {
     return;  // Don't bump blocks during a drag.
   }
-  var root = brick.root
+  var root = board.root
   if (root.isInFlyout) {
     return
   }
-  brick.magnetForEach(false, magnet => {
+  board.magnetForEach(false, magnet => {
     // Spider down from this block bumping all sub-blocks.
     if (magnet.target && magnet.isSuperior) {
-      magnet.targetBrick.bumpNeighbours_()
+      magnet.targetBoard.bumpNeighbours_()
     }
     magnet.neighbours_(eYo.event.SNAP_RADIUS).forEach(other => {
       // If both magnets are connected, that's probably fine.  But if
       // either one of them is unconnected, then there could be confusion.
       if (!magnet.target || !other.target) {
         // Only bump blocks if they are from different tree structures.
-        if (other.brick.root != root) {
+        if (other.board.root != root) {
           // Always bump the inferior block.
           if (magnet.isSuperior) {
             other.bumpAwayFrom_(magnet)
@@ -1550,15 +1550,15 @@ eYo.fcfl.Brick._p.bumpNeighbours_ = function(brick) {
 
 /**
  * Get the magnet for the given event.
- * The brick is already rendered once.
+ * The board is already rendered once.
  *
  * For edython.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
  * @param {Object} e in general a mouse down event
  * @return {Object|eYo.NA|null}
  */
-eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
-  var brd = brick.board
+eYo.fcfl.Board._p.getMagnetForEvent = function (board, e) {
+  var brd = board.board
   if (!brd) {
     return
   }
@@ -1566,15 +1566,15 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   if (eYo.app.motion.field) {
     return
   }
-  var rect = brick.boundingRect // in board coordinates
+  var rect = board.boundingRect // in board coordinates
   var xy = brd.eventWhere(e).backward(rect.topLeft)
   var R
-  var magnet = this.slotSomeMagnet(brick, magnet => {
+  var magnet = this.slotSomeMagnet(board, magnet => {
     if (!magnet.disabled_ && (!magnet.hidden_ || magnet.wrapped_)) {
       if (magnet.isSlot) {
         var target = magnet.target
         if (target) {
-          var targetM4t = target.brick.ui_driver.getMagnetForEvent(target.brick, e)
+          var targetM4t = target.board.ui_driver.getMagnetForEvent(target.board, e)
           if (targetM4t) {
             return targetM4t
           }
@@ -1628,7 +1628,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
   })
   if (magnet) {
     return magnet
-  } else if ((magnet = brick.head_m) && !magnet.hidden) {
+  } else if ((magnet = board.head_m) && !magnet.hidden) {
     R = new eYo.geom.Rect(
       magnet.x,
       magnet.y - 2 * eYo.style.path.width,
@@ -1639,7 +1639,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
       return magnet
     }
   }
-  if ((magnet = brick.foot_m) && !magnet.hidden) {
+  if ((magnet = board.foot_m) && !magnet.hidden) {
     if (rect.height > eYo.geom.Y) { // Not the cleanest design
       R = new eYo.geom.Rect(
         magnet.x,
@@ -1659,7 +1659,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
       return magnet
     }
   }
-  if ((magnet = brick.suite_m) && !magnet.hidden) {
+  if ((magnet = board.suite_m) && !magnet.hidden) {
     var r = eYo.style.path.Hilighted.width
     R = new eYo.geom.Rect(
       magnet.x + eYo.geom.X / 2 - r,
@@ -1671,7 +1671,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
       return magnet
     }
   }
-  if ((magnet = brick.left_m) && !magnet.hidden) {
+  if ((magnet = board.left_m) && !magnet.hidden) {
     var r = eYo.style.path.Hilighted.width
     R = new eYo.geom.Rect(
       magnet.x + eYo.geom.X / 2 - r,
@@ -1683,7 +1683,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
       return magnet
     }
   }
-  if ((magnet = brick.right_m) && !magnet.hidden) {
+  if ((magnet = board.right_m) && !magnet.hidden) {
     R = new eYo.geom.Rect(
       magnet.x + eYo.geom.X / 2 - r,
       magnet.y + r,
@@ -1698,65 +1698,65 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
 
 /**
  * Update the cursor over this block by adding or removing a class.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
  * @param {boolean} enable True if the delete cursor should be shown, false
  *     otherwise.
  */
-eYo.fcfl.Brick._p.deleteStyleSet = eYo.doNothing
+eYo.fcfl.Board._p.deleteStyleSet = eYo.doNothing
 
 /**
  * Hilight the given connection.
  * The default implementation forwards to the driver.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
  */
-eYo.driver.makeForwarder(eYo.brick.Base_p, 'deleteStyleSet')
+eYo.driver.makeForwarder(eYo.board.Base_p, 'deleteStyleSet')
 
 /**
- * Handle a mousedown on an SVG brick.
- * If the brick is sealed to its parent, forwards to the parent.
- * This is used to prevent a dragging operation on a sealed brick.
+ * Handle a mousedown on an SVG board.
+ * If the board is sealed to its parent, forwards to the parent.
+ * This is used to prevent a dragging operation on a sealed board.
  * However, this will manage the selection of a slot connection.
  * on_mousedown message is sent multiple times for one mouse click
- * because bricks may lay on above the other (when connected for example)
+ * because boards may lay on above the other (when connected for example)
  * Considering the selection of a connection, we manage the on_mousedown calls
  * independantly. Whatever node is answering to a mousDown event,
  * a connection will be activated if relevant.
- * There is a problem due to the shape of the bricks.
- * Depending on the brick, the contour path or the whole svg group
+ * There is a problem due to the shape of the boards.
+ * Depending on the board, the contour path or the whole svg group
  * is better suited to listen to mouse events.
  * Actually, both are registered which implies that
  * handlers must filter out reentrancy.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * @param {eYo.board.Base} board - the board the driver acts on
  * @param {Event} e Mouse down event or touch start event.
  * @private
  */
-eYo.fcfl.Brick._p.on_mousedown = function (brick, e) {
-  var brick = this
-  if (brick.locked_) {
-    var parent = brick.parent
+eYo.fcfl.Board._p.on_mousedown = function (board, e) {
+  var board = this
+  if (board.locked_) {
+    var parent = board.parent
     if (parent) {
       return
     }
   }
-  if (brick.ui.parentIsShort && !brick.hasFocus) {
-    parent = brick.parent
+  if (board.ui.parentIsShort && !board.hasFocus) {
+    parent = board.parent
     if (!parent.hasFocus) {
-      eYo.app.motion.handleBrickStart(e, brick)
+      eYo.app.motion.handleBoardStart(e, board)
       return
     }
   }
-  // unfortunately, the mouse events sometimes do not find there way to the proper brick
-  var magnet = this.getMagnetForEvent(brick, e)
+  // unfortunately, the mouse events sometimes do not find there way to the proper board
+  var magnet = this.getMagnetForEvent(board, e)
   var t9k = magnet
   ? magnet.isSlot
-    ? magnet.targetBrick || magnet.brick
-    : magnet.brick
-  : brick
+    ? magnet.targetBoard || magnet.board
+    : magnet.board
+  : board
   while (t9k && (t9k.wrapped_ || t9k.locked_)) {
     t9k = t9k.parent
   }
   // console.log('MOUSE DOWN', target)
-  // Next trick because of the the dual event binding
+  // Next toard because of the the dual event binding
   // reentrant management
   if (!t9k || t9k.ui.alreadyMouseDownEvent_ === e) {
     return
@@ -1768,24 +1768,24 @@ eYo.fcfl.Brick._p.on_mousedown = function (brick, e) {
   t9k.ui.lastSelectedMagnet__ = eYo.focus.magnet
   // Prepare the mouseUp event for an eventual connection selection
   t9k.ui.lastMouseDownEvent = t9k.hasFocus ? e : null
-  eYo.app.motion.handleBrickStart(e, t9k)
+  eYo.app.motion.handleBoardStart(e, t9k)
 }
 
 /**
- * The selected connection is used to insert bricks with the keyboard.
- * When a connection is selected, one of the ancestor bricks is also selected.
- * Then, the higlighted path of the source bricks is not the outline of the brick
- * but the shape of the connection as it shows when bricks are moved close enough.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * The selected connection is used to insert boards with the keyboard.
+ * When a connection is selected, one of the ancestor boards is also selected.
+ * Then, the higlighted path of the source boards is not the outline of the board
+ * but the shape of the connection as it shows when boards are moved close enough.
+ * @param {eYo.board.Base} board - the board the driver acts on
  * @param {Event} e Mouse down event or touch start event.
  */
-eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
-  const magnet = this.getMagnetForEvent(brick, e)
+eYo.fcfl.Board._p.on_mouseup = function (board, e) {
+  const magnet = this.getMagnetForEvent(board, e)
   var b3k
   var t9k = magnet
   ? magnet.isSlot
-    ? magnet.targetBrick || magnet.brick
-    : magnet.brick
+    ? magnet.targetBoard || magnet.board
+    : magnet.board
   : this
   while (t9k && (t9k.wrapped_ || t9k.locked_)) {
     t9k = t9k.parent
@@ -1797,11 +1797,11 @@ eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
   t9k.ui.alreadyMouseUpEvent_ = e
   var ee = t9k.ui.lastMouseDownEvent
   if (ee) {
-    // a brick was selected when the mouse down event was sent
+    // a board was selected when the mouse down event was sent
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
       if (t9k.hasFocus) {
-        // the brick was already selected,
+        // the board was already selected,
         if (magnet) {
           // and there is a candidate selection
           if (magnet.hasFocus) {
@@ -1809,7 +1809,7 @@ eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
             eYo.focus.magnet = null
           } else if (magnet !== t9k.ui.lastSelectedMagnet__) {
             if (magnet.isSlot) {
-              if (!magnet.targetBrick) {
+              if (!magnet.targetBoard) {
                 magnet.bindField && magnet.focusOn()
               }
             } else {
@@ -1821,17 +1821,17 @@ eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
         } else if (eYo.focus.magnet) {
           eYo.focus.magnet = null
         } else if (t9k.ui.selectMouseDownEvent) {
-          // (brick.hasFocus ? this : brick.stmtParent) || t9k.root
+          // (board.hasFocus ? this : board.stmtParent) || t9k.root
           t9k.ui.selectMouseDownEvent = null
         }
       }
     }
-  } else if ((b3k = eYo.app.focus_mngr.brick) && (ee = b3k.ui.selectMouseDownEvent)) {
+  } else if ((b3k = eYo.app.focus_mngr.board) && (ee = b3k.ui.selectMouseDownEvent)) {
     b3k.ui.selectMouseDownEvent = null
     if (ee.clientX === e.clientX && ee.clientY === e.clientY) {
       // not a drag move
-      // select the brick which is an ancestor of the target
-      // which parent is the selected brick
+      // select the board which is an ancestor of the target
+      // which parent is the selected board
       var parent = t9k
       while ((parent = parent.parent)) {
         console.log('ancestor', parent.type)
@@ -1844,22 +1844,22 @@ eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
       }
     }
   }
-  let a = brick.app
-  a.didTouchBrick && a.didTouchBrick(a.focus_mngr.brick)
+  let a = board.app
+  a.didTouchBoard && a.didTouchBoard(a.focus_mngr.board)
 }
 
 /**
- * Show the context menu for this brick.
- * @param {eYo.brick.Base} brick - the brick the driver acts on
+ * Show the context menu for this board.
+ * @param {eYo.board.Base} board - the board the driver acts on
  * @param {Event} e Mouse event.
  * @private
  */
-eYo.fcfl.Brick._p.showContextMenu_ = function (brick, e) {
+eYo.fcfl.Board._p.showContextMenu_ = function (board, e) {
   // this part is copied as is from the parent's implementation. Is it relevant ?
-  if (brick.board.options.readOnly || !brick.contextMenu) {
+  if (board.board.options.readOnly || !board.contextMenu) {
     return
   }
-  eYo.MenuManager.Shared().showMenu(brick, e)
+  eYo.MenuManager.Shared().showMenu(board, e)
 }
 
 /**
@@ -1873,7 +1873,7 @@ eYo.board.Base_p.showContextMenu_ = function (e) {
     return
   }
   var menuOptions = []
-  var topBricks = this.orderedTopBricks
+  var topBoards = this.orderedTopBoards
   var eventGroup = eYo.do.genUid()
 
   if (this.back_) {
@@ -1884,47 +1884,47 @@ eYo.board.Base_p.showContextMenu_ = function (e) {
   // Add a little animation to collapsing and expanding.
   var DELAY = 10
   if (this.options.collapse) {
-    var hasCollapsedBricks = false
-    var hasExpandedBricks = false
-    for (var i = 0; i < topBricks.length; i++) {
-      var b3k = topBricks[i]
+    var hasCollapsedBoards = false
+    var hasExpandedBoards = false
+    for (var i = 0; i < topBoards.length; i++) {
+      var b3k = topBoards[i]
       while (b3k) {
         if (b3k.collapsed) {
-          hasCollapsedBricks = true
+          hasCollapsedBoards = true
         } else {
-          hasExpandedBricks = true
+          hasExpandedBoards = true
         }
         b3k = b3k.foot
       }
     }
 
     /**
-     * Option to collapse or expand top bricks.
-     * @param {boolean} shouldCollapse Whether a brick should collapse.
+     * Option to collapse or expand top boards.
+     * @param {boolean} shouldCollapse Whether a board should collapse.
      * @private
      */
     var toggleOption = (shouldCollapse) => {
       var ms = 0
-      for (var i = 0; i < topBricks.length; i++) {
-        var brick = topBricks[i]
-        while (brick) {
-          setTimeout(brick.setCollapsed.bind(brick, shouldCollapse), ms)
-          brick = brick.foot
+      for (var i = 0; i < topBoards.length; i++) {
+        var board = topBoards[i]
+        while (board) {
+          setTimeout(board.setCollapsed.bind(board, shouldCollapse), ms)
+          board = board.foot
           ms += DELAY
         }
       }
     }
 
-    // Option to collapse top bricks.
-    var collapseOption = {enabled: hasExpandedBricks}
+    // Option to collapse top boards.
+    var collapseOption = {enabled: hasExpandedBoards}
     collapseOption.text = eYo.msg.COLLAPSE_ALL
     collapseOption.callback = () => {
       toggleOption(true)
     }
     menuOptions.push(collapseOption)
 
-    // Option to expand top bricks.
-    var expandOption = {enabled: hasCollapsedBricks}
+    // Option to expand top boards.
+    var expandOption = {enabled: hasCollapsedBoards}
     expandOption.text = eYo.msg.EXPAND_ALL
     expandOption.callback = () => {
       toggleOption(false)
@@ -1932,24 +1932,24 @@ eYo.board.Base_p.showContextMenu_ = function (e) {
     menuOptions.push(expandOption)
   }
 
-  // Option to delete all bricks.
-  // Count the number of bricks that are deletable.
+  // Option to delete all boards.
+  // Count the number of boards that are deletable.
   var deleteList = []
-  function addDeletableBricks (b3k) {
+  function addDeletableBoards (b3k) {
     if (b3k.deletable) {
       deleteList = deleteList.concat(b3k.getWrappedDescendants())
     } else {
-      b3k.children.forEach(child => addDeletableBricks(child))
+      b3k.children.forEach(child => addDeletableBoards(child))
     }
   }
-  topBricks.forEach(child => addDeletableBricks(child))
+  topBoards.forEach(child => addDeletableBoards(child))
 
   function deleteNext () {
     eYo.event.group = eventGroup
-    var brick = deleteList.shift()
-    if (brick) {
-      if (brick.board) {
-        brick.dispose(false, true)
+    var board = deleteList.shift()
+    if (board) {
+      if (board.board) {
+        board.dispose(false, true)
         setTimeout(deleteNext, DELAY)
       } else {
         deleteNext()
@@ -1966,33 +1966,30 @@ eYo.board.Base_p.showContextMenu_ = function (e) {
       if (deleteList.length < 2) {
         deleteNext()
       } else {
-        Blockly.confirm(eYo.msg.DELETE_ALL_BLOCKS
+        /* Blockly.confirm(eYo.msg.DELETE_ALL_BLOCKS
           .replace('%1', deleteList.length),
-        function (ok) {
-          if (ok) {
-            deleteNext()
-          }
-        })
+          ok => (ok && deleteNext())
+        )*/
       }
     }
   }
   menuOptions.push(deleteOption)
 
-  Blockly.ContextMenu.show(e, menuOptions)
+  // Blockly.ContextMenu.show(e, menuOptions)
 }
 
 /**
- * Whether the given brick can draw.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * Whether the given board can draw.
+ * @param {eYo.board.Base} board  the board the driver acts on
  * @private
  */
-eYo.fcls.Brick_p.canDraw = function (brick) {
+eYo.fcls.Board_p.canDraw = function (board) {
   return true
 }
 
 /**
- * Place the brick in its board.
+ * Place the board in its board.
  * Default implementation does nothing.
- * @param {eYo.brick.Base} brick The brick to place.
+ * @param {eYo.board.Base} board The board to place.
  */
-eYo.fcfl.Brick_p.place = eYo.doNothing
+eYo.fcfl.Board_p.place = eYo.doNothing

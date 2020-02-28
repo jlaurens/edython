@@ -94,9 +94,7 @@ eYo.css.inject = (hasCss, pathToMedia) => {
   document.head.insertBefore(cssNode, document.head.firstChild);
 
   var cssTextNode = document.createTextNode(text);
-  cssNode.appendChild(cssTextNode);
-  Blockly.Css.styleSheet_ = cssNode.sheet;
-  Blockly.Css.inject = eYo.doNothing
+  cssNode.appendChild(cssTextNode)
 }
 
 /**
@@ -282,8 +280,6 @@ eYo.css.CONTENT = path => {
 
     '.blocklyDropdownMenu {',
       'padding: 0 !important;',
-      /* max-height value is same as the constant
-      * Blockly.FieldDropdown.MAX_MENU_HEIGHT defined in field_dropdown.js. */
       'max-height: 300px !important;',
     '}',
     `.eyo-flyout {

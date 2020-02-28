@@ -341,7 +341,6 @@ eYo.event.makeC9r('Motion', {
         this.touchID_ = null
         this.startDistance_ = 0
         eYo.dom.clearTouchIdentifier()
-        Blockly.Tooltip.unblock()
         eYo.dom.unbindMouseEvents(this)
         this.pidCancel_ = this.pidLong_ = this.pidHandle_ = 0
         this.event_ = null

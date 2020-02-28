@@ -314,6 +314,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/zoomer/zoomer.js" \
 --js "src/lib/eyo/js/application/driver/fcls/fcls.js" \
 --js "src/lib/eyo/js/application/driver/fcfl/fcfl.js" \
+--js "src/lib/eyo/js/application/driver/fcls/fcls_board.js" \
 --js "src/lib/eyo/js/core/data.js" \
 --js "src/lib/eyo/js/application/driver/dom/dom.js" \
 --js "src/lib/eyo/js/application/desk/board/brick/brick.js" \

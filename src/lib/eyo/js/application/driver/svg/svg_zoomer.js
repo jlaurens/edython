@@ -74,8 +74,8 @@ eYo.svg.makeDriverC9r('Zoomer', {
     var zoomoutSvg = eYo.svg.newElement(
       'image',
       {
-        width: eYo.SPRITE.width,
-        height: eYo.SPRITE.height,
+        width: eYo.svg.SPRITE.width,
+        height: eYo.svg.SPRITE.height,
         x: -64,
         y: -15,
         'clip-path': `url(#eyo-zoomout-clip-path${rnd})`
@@ -85,7 +85,7 @@ eYo.svg.makeDriverC9r('Zoomer', {
     zoomoutSvg.setAttributeNS(
       eYo.dom.XLINK_NS,
       'xlink:href',
-      board.options.pathToMedia + eYo.SPRITE.url
+      board.options.pathToMedia + eYo.svg.SPRITE.url
     )
     clip = eYo.svg.newElement(
       'clipPath',
@@ -102,8 +102,8 @@ eYo.svg.makeDriverC9r('Zoomer', {
     var zoominSvg = eYo.svg.newElement(
       'image',
       {
-        width: eYo.SPRITE.width,
-        height: eYo.SPRITE.height,
+        width: eYo.svg.SPRITE.width,
+        height: eYo.svg.SPRITE.height,
         x: -32,
         y: -49,
         'clip-path': `url(#eyo-zoomin-clip-path${rnd})`
@@ -113,7 +113,7 @@ eYo.svg.makeDriverC9r('Zoomer', {
     zoominSvg.setAttributeNS(
       eYo.dom.XLINK_NS,
       'xlink:href',
-      board.options.pathToMedia + eYo.SPRITE.url
+      board.options.pathToMedia + eYo.svg.SPRITE.url
     )
     clip = eYo.svg.newElement(
       'clipPath',
@@ -128,8 +128,8 @@ eYo.svg.makeDriverC9r('Zoomer', {
     var zoomresetSvg = eYo.svg.newElement(
       'image',
       {
-        width: eYo.SPRITE.width,
-        height: eYo.SPRITE.height, y: -92,
+        width: eYo.svg.SPRITE.width,
+        height: eYo.svg.SPRITE.height, y: -92,
         'clip-path': `url(#eyo-zoom-reset-clip-path${rnd})`
       },
       g
@@ -137,7 +137,7 @@ eYo.svg.makeDriverC9r('Zoomer', {
     zoomresetSvg.setAttributeNS(
       eYo.dom.XLINK_NS,
       'xlink:href',
-      board.options.pathToMedia + eYo.SPRITE.url
+      board.options.pathToMedia + eYo.svg.SPRITE.url
     )
     // Attach event listeners.
     var bound = dom.bound

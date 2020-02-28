@@ -15,15 +15,6 @@
     oneBasedIndex : true,
   }
   eYo.APP = new eYo.app.Base(options)
-  /* Inject your workspace
-  var workspace = Blockly.inject('eyoDiv', options)
-  eYo.setup.finalize(workspace)
-  workspace.eyo.options = {
-    noLeftSeparator: true,
-    noDynamicList: false,
-    smartUnary: true,
-  }
-  */
 }
 
 chai.assert(eYo.app, `MISSING eYo.app`)

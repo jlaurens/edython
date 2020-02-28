@@ -11,14 +11,18 @@
  */
 'use strict'
 
-eYo.require('svg')
+eYo.svg.SPRITE = {
+  height: 124,
+  url: "sprites.png",
+  width: 96,
+}
 
 goog.forwardDeclare('goog.math')
 
 /**
  * @name{eYo.svg.TrashCan}
  * @constructor
- * Svg driver fro the trash can.
+ * Svg driver for the trash can.
  */
 eYo.svg.makeDriverC9r('TrashCan', {
   ui: {
@@ -63,13 +67,13 @@ eYo.svg.makeDriverC9r('TrashCan', {
         y: trashCan.LID_HEIGHT_
       }, clip)
       var body = eYo.svg.newElement('image', {
-        width: Blockly.SPRITE.width,
+        width: eYo.svg.SPRITE.width,
         x: -trashCan.SPRITE_LEFT_,
-        height: Blockly.SPRITE.height,
+        height: eYo.svg.SPRITE.height,
         y: -trashCan.SPRITE_TOP_,
         'clip-path': 'url(#eyo-trash-body-clip-' + rnd + ')'
       }, g)
-      var url = trashCan.board_.options.pathToMedia + Blockly.SPRITE.url
+      var url = trashCan.board_.options.pathToMedia + eYo.svg.SPRITE.url
       body.setAttributeNS(
         eYo.dom.XLINK_NS,
         'xlink:href',
@@ -91,9 +95,9 @@ eYo.svg.makeDriverC9r('TrashCan', {
       var lid = svg.lid_ = eYo.svg.newElement(
         'image',
         {
-          width: Blockly.SPRITE.width,
+          width: eYo.svg.SPRITE.width,
           x: -trashCan.SPRITE_LEFT_,
-          height: Blockly.SPRITE.height,
+          height: eYo.svg.SPRITE.height,
           y: -trashCan.SPRITE_TOP_,
           'clip-path': 'url(#eyo-trash-lid-clip-' + rnd + ')'
         },
