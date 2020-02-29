@@ -168,7 +168,7 @@ ConfigEyo.prototype.getConfig = function () {
           exclude: /node_modules/
         }
         if (this.env === 'web') {
-          model.include = [ path.join(this.jsPath, 'renderer') ]
+          model.include = [ path.join(this.srcPath, 'renderer') ]
         }
         return model
       }) (),
@@ -238,7 +238,6 @@ ConfigEyo.prototype.getConfig = function () {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   ]
-  console.warn('UTIL:', path.join(this.jsPath, 'renderer', 'components', 'Util'))
   config.resolve = {
     alias: {
       'vue$': path.join('vue', 'dist', 'vue.esm.js'),
@@ -315,12 +314,12 @@ ConfigEyo.prototype.enableBrython = function (config) {
     new CopyWebpackPlugin(
       [
         {
-          from: path.join(this.jsPath, 'lib/brython/www/src/**'),
+          from: path.join(this.srcPath, 'lib/brython/www/src/**'),
           to: path.join(this.distPath, '[1]'),
           test: /^.*\/src\/lib\/brython\/www\/(src\/.+)$/,
         },
         {
-          from: path.join(this.jsPath, 'lib/site-packages/**'),
+          from: path.join(this.srcPath, 'lib/site-packages/**'),
           to: path.join(this.distPath, 'src/Lib/[1]'),
           test: /..\/src\/lib(\/.+\.py)$/,
         },
@@ -344,7 +343,7 @@ ConfigEyo.prototype.enableBrythonSources = function (config) {
     new CopyWebpackPlugin(
       [
         {
-          from: path.join(this.jsPath, 'lib/brython/www/src/**'),
+          from: path.join(this.srcPath, 'lib/brython/www/src/**'),
           to: path.join(this.distPath, '[1]'),
           test: /^.*\/src\/lib\/brython\/www\/(src\/.+)$/,
         }
@@ -403,7 +402,7 @@ ConfigEyo.prototype.enableResources = function (config) {
     new CopyWebpackPlugin(
       [
         {
-          from: path.join(this.jsPath, 'lib/eyo/media/**'),
+          from: path.join(this.srcPath, 'lib/eyo/media/**'),
           to: path.join(this.distPath, 'static[1]'),
           test: /..\/src\/lib\/eyo(\/media\/.+)$/,
         },
