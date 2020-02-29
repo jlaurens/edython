@@ -252,8 +252,6 @@ eYo.xml.domToBoard = function (xml, owner) {
   return newBlockIds
 }
 
-goog.exportSymbol('Xml.domToBoard', eYo.xml.domToBoard)
-
 /**
  * Create a new brick, with full contents.
  * This is the expected way to create a brick
@@ -356,8 +354,6 @@ eYo.xml.brickToDom = (() => {
     return brickToDom(brick, opt)
   }
 }) ()
-
-goog.exportSymbol('Xml.brickToDom', eYo.xml.brickToDom)
 
 eYo.require('stmt.group')
 
@@ -942,8 +938,6 @@ eYo.xml.domToBrick = (() => {
   }
 })()
 
-goog.exportSymbol('Xml.domToBrick', eYo.xml.domToBrick)
-
 /**
  * Decode a brick subtree from XML.
  * When possible, the control is transferred to the first controller
@@ -1307,7 +1301,10 @@ eYo.xml.call.domToComplete = function (element, owner) {
  * @return {Number} classical values -1, 0 or 1.
  */
 eYo.xml.compareBricks = function (lhs, rhs) {
-  var xmlL = goog.dom.xml.serialize(eYo.xml.brickToDom(lhs, {noId: true}))
-  var xmlR = goog.dom.xml.serialize(eYo.xml.brickToDom(rhs, {noId: true}))
+  var xmlL = eYo.xml.serialize(eYo.xml.brickToDom(lhs, {noId: true}))
+  var xmlR = eYo.xml.serialize(eYo.xml.brickToDom(rhs, {noId: true}))
   return xmlL < xmlR ? -1 : (xmlL < xmlR ? 1 : 0)
 }
+
+goog.require('goog.dom.xml')
+eYo.xml.srialize = goog.dom.xml.serialize

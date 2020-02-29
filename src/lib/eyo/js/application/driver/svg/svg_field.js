@@ -220,7 +220,7 @@ eYo.svg.Field_p.updateEditable = function(field) {
  * @param {Object} field  the node the driver acts on
  */
 eYo.svg.Field_p.textRemove = function (field) {
-  goog.dom.removeChildren(/** @type {!Element} */ (field.dom.textElement_))
+  eYo.dom.removeChildren(/** @type {!Element} */ (field.dom.textElement_))
 }
 
 /**
@@ -241,7 +241,7 @@ eYo.svg.Field_p.textCreate = function (field) {
 eYo.svg.Field_p.textUpdate = function (field) {
   var text = field.dom.svg.textElement_
   // text.textContent = field.text
-  goog.dom.removeChildren(/** @type {!Element} */ text)
+  eYo.dom.removeChildren(/** @type {!Element} */ text)
   var textNode = document.createTextNode(field.text)
   text.appendChild(textNode)
 }

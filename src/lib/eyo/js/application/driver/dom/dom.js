@@ -11,23 +11,26 @@
  */
 'use strict'
 
-goog.require('goog.dom')
-eYo.dom.contains = goog.dom.contains
-eYo.dom.createDom = goog.dom.createDom
-eYo.dom.insertChildAt = goog.dom.insertChildAt
-eYo.dom.appendChild = goog.dom.appendChild
-eYo.dom.insertSiblingAfter = goog.dom.insertSiblingAfter
-eYo.dom.createTextNode = goog.dom.createTextNode
-eYo.dom.removeNode = goog.dom.removeNode
-eYo.dom.classlist = goog.dom.classlist
-eYo.dom.TagName = goog.dom.TagName
-
 /**
  * @name {eYo.dom}
  * @namespace
  */
 
 eYo.fcfl.makeNS(eYo, 'dom')
+
+goog.require('goog.dom')
+eYo.dom.contains = goog.dom.contains
+eYo.dom.createDom = goog.dom.createDom
+eYo.dom.getChildren = goog.dom.getChildren
+eYo.dom.insertChildAt = goog.dom.insertChildAt
+eYo.dom.appendChild = goog.dom.appendChild
+eYo.dom.removeChildren = goog.dom.removeChildren
+eYo.dom.insertSiblingAfter = goog.dom.insertSiblingAfter
+eYo.dom.insertSiblingBefore = goog.dom.insertSiblingBefore
+eYo.dom.createTextNode = goog.dom.createTextNode
+eYo.dom.removeNode = goog.dom.removeNode
+eYo.dom.classlist = goog.dom.classlist
+eYo.dom.TagName = goog.dom.TagName
 
 //g@@g.forwardDeclare('g@@g.dom')
 //g@@g.forwardDeclare('g@@g.events')

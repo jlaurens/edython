@@ -175,7 +175,7 @@ eYo.svg.makeDriverC9r('Brick', {
       eYo.dom.insertChildAt(g, svg.groupContour_, 0)
       eYo.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
         'eyo-inner')
-      goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
+      eYo.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
       eYo.dom.classlist.remove(/** @type {!Element} */svg.groupShape_,
         'eyo-inner')
       svg.groupContour_.removeAttribute('transform')
@@ -536,7 +536,7 @@ eYo.svg.Brick_p.placeOnTop = function (brick) {
   svg.groupContour_.removeAttribute('transform')
   eYo.dom.classlist.remove(/** @type {!Element} */ svg.groupContour_,
     'eyo-inner')
-  goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
+  eYo.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
   svg.groupShape_.removeAttribute('transform')
   eYo.dom.classlist.remove(/** @type {!Element} */(svg.groupShape_),
     'eyo-inner')
@@ -898,7 +898,7 @@ eYo.svg.Brick_p.displayedSet = function (brick, visible) {
 eYo.svg.Brick_p.drawSharp = function (brick, visible) {
   var g = brick.dom.svg.groupSharp_
   if (visible) {
-    var children = goog.dom.getChildren(g)
+    var children = eYo.dom.getChildren(g)
     var length = children.length
     if (!length) {
       var y = eYo.font.totalAscent
@@ -924,7 +924,7 @@ eYo.svg.Brick_p.drawSharp = function (brick, visible) {
     g.setAttribute('transform', `translate(${io.cursor.x},${eYo.padding.t})`)
     g.style.display = 'block'
   } else {
-    goog.dom.removeChildren(g)
+    eYo.dom.removeChildren(g)
     g.style.display = 'none'
   }
 }
@@ -975,7 +975,7 @@ eYo.svg.Brick_p.parentSet = function (brick, parent) {
     eYo.dom.insertChildAt(svg.group_, svg.groupContour_, 0)
     eYo.dom.classlist.remove(/** @type {!Element} */svg.groupContour_,
       'eyo-inner')
-    goog.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
+    eYo.dom.insertSiblingBefore(svg.groupShape_, svg.groupContour_)
     eYo.dom.classlist.remove(/** @type {!Element} */svg.groupShape_,
       'eyo-inner')
   }
