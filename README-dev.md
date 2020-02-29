@@ -1,5 +1,17 @@
 # Developer documentation
 
+## Building
+
+### While developping
+
+from the root directory
+
+```
+npm run eyo:t3
+npm run eyo:prepare
+
+```
+
 ## Supporting python keywords
 
 ## The getDocumenScroll problem in chromium/macOS
@@ -10,13 +22,13 @@ See test_getDocumenScroll.html
 
 While trying to require blockly related javascript files, there were so many errors and warnings due to eslint that I had to disable this adding lines to .eslintigonre.
 
-## Managing blockly and closure libraries
+## Managing closure libraries
 
-The closure compiler is used to create a single file containing blockly, edython and the require closure-library components.
+The closure compiler is not used, only the webpack transpiler.
 
 ## Working with submodule
 
-Actually, submodules are configured for blockly, goog-closure and xregexp.
+Actually, submodules are configured for goog-closure and xregexp.
 We see the configuration for the latter.
 
 ```
