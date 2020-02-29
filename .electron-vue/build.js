@@ -119,4 +119,4 @@ function web () {
   })
 }
 
-console.log('build.js... READ\n\n')
+console.log('build.js... DONE\n\n')
