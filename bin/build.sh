@@ -55,6 +55,7 @@ java -jar "$COMPILER"\
 --js "src/lib/closure-library/closure/goog/dom/safe.js" \
 --js "src/lib/closure-library/closure/goog/html/uncheckedconversions.js" \
 --js "src/lib/closure-library/closure/goog/dom/dom.js" \
+--js "src/lib/closure-library/closure/goog/dom/xml.js" \
 --js "src/lib/eyo/js/core/eyo.js" \
 --js "src/lib/eyo/js/core/decorate.js" \
 --js "src/lib/eyo/js/core/do.js" \
