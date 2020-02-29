@@ -11,7 +11,16 @@
  */
 'use strict'
 
-eYo.require('fcfl')
+goog.require('goog.dom')
+eYo.dom.contains = goog.dom.contains
+eYo.dom.createDom = goog.dom.createDom
+eYo.dom.insertChildAt = goog.dom.insertChildAt
+eYo.dom.appendChild = goog.dom.appendChild
+eYo.dom.insertSiblingAfter = goog.dom.insertSiblingAfter
+eYo.dom.createTextNode = goog.dom.createTextNode
+eYo.dom.removeNode = goog.dom.removeNode
+eYo.dom.classlist = goog.dom.classlist
+eYo.dom.TagName = goog.dom.TagName
 
 /**
  * @name {eYo.dom}
@@ -20,8 +29,8 @@ eYo.require('fcfl')
 
 eYo.fcfl.makeNS(eYo, 'dom')
 
-goog.forwardDeclare('goog.dom')
-goog.forwardDeclare('goog.events')
+//g@@g.forwardDeclare('g@@g.dom')
+//g@@g.forwardDeclare('g@@g.events')
 
 /**
  * @name{eYo.dom.Base}
@@ -66,7 +75,20 @@ eYo.dom.makeMngr({
  * @return {eYo.geom.Point}
  */
 eYo.dom.getDocumentScroll = () => {
-  return eYo.geom.xyWhere(goog.dom.getDocumentScroll())
+  let el = document.scrollingElement || (
+  !eYo.userAgent.WEBKIT && goog.dom.isCss1CompatMode_(document)
+    ? document.documentElement
+    : doc.body || doc.documentElement)
+  let win = goog.dom.getWindow_(document)
+  if (eYo.userAgent.IE && eYo.userAgent.isVersionOrHigher('10') &&
+      win.pageYOffset != el.scrollTop) {
+    // The keyboard on IE10 touch devices shifts the page using the pageYOffset
+    // without modifying scrollTop. For this case, we want the body scroll
+    // offsets.
+    return eYo.geom.xyPoint(el.scrollLeft, el.scrollTop)
+  }
+  return eYo.geom.xyPoint(
+      win.pageXOffset || el.scrollLeft, win.pageYOffset || el.scrollTop)
 }
 
 /**
@@ -133,7 +155,7 @@ eYo.dom.insertAfter = function(node, before) {
  * @return {boolean} True if right-click.
  */
 eYo.dom.isRightButton = e => {
-  if (e.ctrlKey && goog.userAgent.MAC) {
+  if (e.ctrlKey && eYo.userAgent.MAC) {
     // Control-clicking on Mac OS X is treated as a right-click.
     // WebKit on Mac OS X fails to change button to 2 (but Gecko does).
     return true
@@ -507,7 +529,7 @@ eYo.dom.bindDocumentEvents = (() => {
         eYo.dom.longStop_
       )
       // Some iPad versions don't fire resize after portrait to landscape change.
-      if (goog.userAgent.IPAD) {
+      if (eYo.userAgent.IPAD) {
         eYo.dom.bindEvent(
           window,
           'orientationchange',
@@ -595,5 +617,4 @@ eYo.dom.on_keydown = e => {
   //   eYo.app.focus_mngr.brick.dispose(/* heal */ true, true);
   //   eYo.event.group = false
   // }
-};
-
+}

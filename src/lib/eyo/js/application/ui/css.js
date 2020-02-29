@@ -23,7 +23,7 @@ eYo.makeNS('css')
 
 eYo.forwardDeclare('geom')
 eYo.forwardDeclare('font-face')
-goog.forwardDeclare('goog.cssom');
+//g@@g.forwardDeclare('g@@g.cssom');
 
 eYo.css.insertRuleAt = (() => {
   var style, sheet
@@ -50,7 +50,7 @@ eYo.css.insertRuleAt = (() => {
       rule.push(arguments[i])
       ++i
     }
-    if (goog.isNumber(arguments[i])) {
+    if (eYo.isNum(arguments[i])) {
       var at = arguments[i]
     }
     if (rule.length) {

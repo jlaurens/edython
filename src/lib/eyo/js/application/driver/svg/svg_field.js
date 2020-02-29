@@ -71,7 +71,7 @@ eYo.svg.makeDriverC9r('Field', {
   disposeUI (field) {
     var svg = field.dom && field.dom.svg
     if (!svg) { return }
-    svg.group_ = goog.dom.removeNode(svg.group_)
+    svg.group_ = eYo.dom.removeNode(svg.group_)
     this._disposeUI(field)
   },
 })
@@ -109,8 +109,8 @@ eYo.svg.Field_p.makeError = function (field, yorn) {
   var root = field.dom.svg.group_
   if (root) {
     (yorn
-      ? goog.dom.classlist.add
-      : goog.dom.classlist.remove)(
+      ? eYo.dom.classlist.add
+      : eYo.dom.classlist.remove)(
       root,
       'eyo-code-reserved'
     )
@@ -126,8 +126,8 @@ eYo.svg.Field_p.makeReserved = function (field, yorn) {
   var g = field.dom.svg.group_
   if (g) {
     (yorn
-    ? goog.dom.classlist.add
-    : goog.dom.classlist.remove)(
+    ? eYo.dom.classlist.add
+    : eYo.dom.classlist.remove)(
       g,
       'eyo-code-reserved'
     )
@@ -142,8 +142,8 @@ eYo.svg.Field_p.makeReserved = function (field, yorn) {
 eYo.svg.Field_p.makePlaceholder = function (field, yorn) {
   var g = field.dom.svg.group_
   g && (yorn
-    ? goog.dom.classlist.add
-    : goog.dom.classlist.remove)(g,
+    ? eYo.dom.classlist.add
+    : eYo.dom.classlist.remove)(g,
       'eyo-code-comment')
 }
 
@@ -155,8 +155,8 @@ eYo.svg.Field_p.makePlaceholder = function (field, yorn) {
 eYo.svg.Field_p.makeComment = function (field, yorn) {
   var g = field.dom.svg.group_
   g && (yorn
-    ? goog.dom.classlist.add
-    : goog.dom.classlist.remove)(g,
+    ? eYo.dom.classlist.add
+    : eYo.dom.classlist.remove)(g,
       'eyo-code-comment')
 }
 
@@ -204,12 +204,12 @@ eYo.svg.Field_p.updateEditable = function(field) {
     return
   }
   if (field.brick.editable) {
-    goog.dom.classlist.add(g, 'eyo-editable-text')
-    goog.dom.classlist.remove(g, 'eyo-non-editable-text')
+    eYo.dom.classlist.add(g, 'eyo-editable-text')
+    eYo.dom.classlist.remove(g, 'eyo-non-editable-text')
     g.style.cursor = 'text'
   } else {
-    goog.dom.classlist.add(g, 'eyo-non-editable-text')
-    goog.dom.classlist.remove(g, 'eyo-editable-text')
+    eYo.dom.classlist.add(g, 'eyo-non-editable-text')
+    eYo.dom.classlist.remove(g, 'eyo-editable-text')
     g.style.cursor = ''
   }
 };
@@ -265,8 +265,8 @@ eYo.svg.Field_p.setVisualAttribute = function (field) {
           return 'eyo-code'
       }
     }
-    goog.dom.classlist.removeAll(e, goog.dom.classlist.get(e))
-    goog.dom.classlist.add(e, f(field.text))
+    eYo.dom.classlist.removeAll(e, eYo.dom.classlist.get(e))
+    eYo.dom.classlist.add(e, f(field.text))
   }
 }
 

@@ -14,7 +14,7 @@
 eYo.require('dom')
 
 eYo.require('decorate')
-goog.forwardDeclare('goog.math.AffineTransform')
+//g@@g.forwardDeclare('g@@g.math.AffineTransform')
 
 /**
  * A namespace.
@@ -31,7 +31,7 @@ eYo.forwardDeclare('slot')
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('style')
 
-goog.forwardDeclare('goog.userAgent')
+//g@@g.forwardDeclare('g@@g.userAgent')
 
 /**
  * @name {eYo.svg.Mngr}
@@ -165,7 +165,7 @@ eYo.svg.Base_p.addTooltip = function (el, title, options) {
   if (eYo.isStr(title)) {
     el.setAttribute('title', title)
     tippy(el, options)
-  } else if (goog.isDef(title)) {
+  } else if (eYo.isDef(title)) {
     tippy(el, title)
   }
 }
@@ -197,9 +197,9 @@ eYo.svg.getCssClassForText = function (txt) {
  * @param {string} attributeName Name of attribute to remove.
  */
 eYo.svg.removeAttribute = (element, attributeName) => {
-  // goog.userAgent.isVersion is deprecated, but the replacement is
-  // goog.userAgent.isVersionOrHigher.
-  if (goog.userAgent.IE && goog.userAgent.isVersion('10.0')) {
+  // eYo.userAgent.isVersion is deprecated, but the replacement is
+  // eYo.userAgent.isVersionOrHigher.
+  if (eYo.userAgent.IE && eYo.userAgent.isVersion('10.0')) {
     element.setAttribute(attributeName, null)
   } else {
     element.removeAttribute(attributeName)
@@ -332,7 +332,7 @@ eYo.svg.getScale_ = function(element) {
 // eslint-disable-next-line no-global-assign
 var eyo_original_parseFloat = parseFloat
 parseFloat = (x) => {
-  return eyo_original_parseFloat(goog.isDefAndNotNull(x) && x.replace
+  return eyo_original_parseFloat(eYo.isDefAndNotNull(x) && x.replace
     ? x.replace(',', '.')
     : x)
 }

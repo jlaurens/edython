@@ -83,27 +83,27 @@ Object.defineProperties(eYo.field, {
     var field
     if (eYo.isStr(model)) {
       field = new eYo.fieldLabel(owner, name, model)
-    } else if (goog.isObject(model)) {
+    } else if (eYo.isObject(model)) {
       setupModel(model)
       if (model.edit || model.endEditing || model.startEditing) {
         // this is an editable field
         field = new eYo.field.Input(owner, name, model.edit || '')
-      } else if (goog.isDefAndNotNull(model.value)) {
+      } else if (eYo.isDefAndNotNull(model.value)) {
         // this is just a label field
         field = new eYo.fieldLabel(owner, name, model.value || '')
-      } else if (goog.isDefAndNotNull(model.reserved)) {
+      } else if (eYo.isDefAndNotNull(model.reserved)) {
         // this is just a label field
         field = new eYo.fieldLabel(owner, name, model.reserved)
         field.status = eYo.field.STATUS_RESERVED
-      } else if (goog.isDefAndNotNull(model.builtin)) {
+      } else if (eYo.isDefAndNotNull(model.builtin)) {
         // this is just a label field
         field = new eYo.fieldLabel(owner, name, model.builtin)
         field.status = eYo.field.STATUS_BUILTIN
-      } else if (goog.isDefAndNotNull(model.comment)) {
+      } else if (eYo.isDefAndNotNull(model.comment)) {
         // this is just a label field
         field = new eYo.fieldLabel(owner, name, model.comment)
         field.status = eYo.field.STATUS_COMMENT
-      } else if (goog.isDefAndNotNull(model.status)) {
+      } else if (eYo.isDefAndNotNull(model.status)) {
         // this is just a label field
         field = new eYo.fieldLabel(owner, name, '')
       } else { // other entries are ignored
@@ -156,7 +156,7 @@ Object.defineProperties(eYo.field, {
       field = owner.fields[name]
       var order = field.order__
       if (order) {
-        eYo.assert(!goog.isDefAndNotNull(byOrder[order]),
+        eYo.assert(!eYo.isDefAndNotNull(byOrder[order]),
         'Fields with the same order  %s = %s / %s',
         byOrder[order] && byOrder[order].name || 'NOTHING', field.name, owner.getBrick().type)
         byOrder[order] = field
@@ -454,7 +454,7 @@ eYo.field.Base_p.updateWidth = function() {
  * @return {String}
  */
 eYo.field.Base_p.validate = function (txt) {
-  var v = this.data.validate(goog.isDef(txt) ? txt : this.text)
+  var v = this.data.validate(eYo.isDef(txt) ? txt : this.text)
   return eYo.isVALID(v) ? v : eYo.NA
 }
 
@@ -550,7 +550,7 @@ eYo.field.Input_p.getPlaceholderText = function (clear) {
   if (this.brick) {
     var ph = model => {
       var placeholder = model && model.placeholder
-      if (goog.isNumber(placeholder)) {
+      if (eYo.isNum(placeholder)) {
         return placeholder.toString()
       }
       placeholder = eYo.do.valueOf(placeholder, this)

@@ -29,8 +29,8 @@ eYo.dom.makeDriverC9r('Brick', {
         return brick.owner.dom.board_
       }
     })
-    dom.drag_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
+    dom.drag_ = eYo.dom.createDom(
+      eYo.dom.TagName.DIV,
       'eyo-brick'
     )
     return dom
@@ -41,7 +41,7 @@ eYo.dom.makeDriverC9r('Brick', {
    */
   disposeUI (brick) {
     if (brick.dom && brick.dom.div_) {
-      goog.dom.removeNode(brick.dom.div_)
+      eYo.dom.removeNode(brick.dom.div_)
       brick.dom.div_ = null // do not remove this div from the dom
     }
   },

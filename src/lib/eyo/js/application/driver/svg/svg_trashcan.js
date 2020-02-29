@@ -17,7 +17,7 @@ eYo.svg.SPRITE = {
   width: 96,
 }
 
-goog.forwardDeclare('goog.math')
+//g@@g.forwardDeclare('g@@g.math')
 
 /**
  * @name{eYo.svg.TrashCan}
@@ -131,7 +131,7 @@ eYo.svg.makeDriverC9r('TrashCan', {
         eYo.dom.clearBoundEvents(trashCan)
         var svg = dom.svg
         if (svg) {
-          goog.dom.removeNode(svg.group_)
+          eYo.dom.removeNode(svg.group_)
           svg.group_ = null
           svg.lid_ = null
         }

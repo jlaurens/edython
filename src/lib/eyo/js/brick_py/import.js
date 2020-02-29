@@ -16,7 +16,7 @@ eYo.require('stmt')
 eYo.require('msg')
 
 eYo.require('expr.List')
-goog.require('goog.dom');
+//g@@g.require('g@@g.dom');
 eYo.provide('brick.import')
 
 /// //////////////     module_as      ///////////////////

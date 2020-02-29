@@ -49,10 +49,10 @@ eYo.expr.builtin__range_expr.makeInheritedC9r('random__randrange', true, {
           } else {
             validated = Infinity
           }
-        } else if (goog.isNumber(after)) {
+        } else if (eYo.isNum(after)) {
           validated = Math.max(0, Math.floor(after))
         }
-        return goog.isDef(validated) && validated <= 1
+        return eYo.isDef(validated) && validated <= 1
         ? validated
         : eYo.INVALID
       },
@@ -301,7 +301,7 @@ eYo.library.DATA.random__module = [
 
 })()
 
-goog.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.Title, {
   random__import_stmt: 'Importer le module random',
   random__randint: 'Générer aléatoirement un entier entre deux bornes',
   random__shuffle_stmt: 'Mélanger les éléments d\'une liste',

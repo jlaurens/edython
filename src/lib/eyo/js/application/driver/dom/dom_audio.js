@@ -11,8 +11,6 @@
  */
 'use strict'
 
-goog.forwardDeclare('goog.userAgent')
-
 /**
  * @name {eYo.dom.Audio}
  * Class for loading, storing, and playing audio.
@@ -112,7 +110,7 @@ eYo.dom.Audio_p.preload = function() {
     sound.pause()
     // iOS can only process one sound at a time.  Trying to load more than one
     // corrupts the earlier ones.  Just load one and leave the others uncached.
-    return goog.userAgent.IPAD || goog.userAgent.IPHONE
+    return eYo.userAgent.IPAD || eYo.userAgent.IPHONE
   })
 }
 
@@ -132,9 +130,9 @@ eYo.dom.Audio_p.play = function(audio, name, opt_volume) {
     }
     this.lastPlay_ = now
     var mySound
-    var ie9 = goog.userAgent.DOCUMENT_MODE &&
-              goog.userAgent.DOCUMENT_MODE === 9
-    if (ie9 || goog.userAgent.IPAD || goog.userAgent.ANDROID) {
+    var ie9 = eYo.userAgent.DOCUMENT_MODE &&
+              eYo.userAgent.DOCUMENT_MODE === 9
+    if (ie9 || eYo.userAgent.IPAD || eYo.userAgent.ANDROID) {
       // Creating a new audio node causes lag in IE9, Android and iPad. Android
       // and IE9 refetch the file from the server, iPad uses a singleton audio
       // node which must be deleted and recreated for each new audio tag.

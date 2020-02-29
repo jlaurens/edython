@@ -413,7 +413,7 @@ eYo.expr.List.makeInheritedC9r('enclosure', {
       [eYo.t3.expr.one_dict_display]: eYo.t3.expr.check.key_datum_all,
       [eYo.t3.expr.dict_display]: eYo.t3.expr.check.key_datum_all
     }
-    check[eYo.t3.expr.void_dict_display] = goog.array.concat(eYo.t3.expr.check.starred_item, eYo.t3.expr.check.key_datum_all)
+    check[eYo.t3.expr.void_dict_display] = [].concat(eYo.t3.expr.check.starred_item, eYo.t3.expr.check.key_datum_all)
     var me = {
       unique: (type) => {
         return unique[type]
@@ -431,9 +431,9 @@ eYo.expr.List.makeInheritedC9r('enclosure', {
       eYo.t3.expr.bracket_target_list,
       eYo.t3.expr.set_display,
       eYo.t3.expr.dict_display].forEach(k => {
-      all[k] = goog.array.concat(me.unique(k), me.check(k))
+      all[k] = [].concat(me.unique(k), me.check(k))
     })
-    all[eYo.t3.expr.void_dict_display] = all[eYo.t3.expr.one_set_display] = all[eYo.t3.expr.one_dict_display] = goog.array.concat(
+    all[eYo.t3.expr.void_dict_display] = all[eYo.t3.expr.one_set_display] = all[eYo.t3.expr.one_dict_display] = [].concat(
       me.unique(eYo.t3.expr.one_set_display),
       me.check(eYo.t3.expr.dict_display),
       me.check(eYo.t3.expr.set_display))

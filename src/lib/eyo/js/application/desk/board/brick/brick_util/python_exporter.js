@@ -264,9 +264,9 @@ eYo.py.Exporter_p.exportField_ = function (field) {
     if (!text.length) {
       var d = field.data
       if (d) {
-        if (goog.isDef(d.model.python)) {
+        if (eYo.isDef(d.model.python)) {
           text = eYo.do.valueOf(d.model.python, d) || ''
-        } else if (!field.optional_ && goog.isDef(d.model.placeholder)) {
+        } else if (!field.optional_ && eYo.isDef(d.model.placeholder)) {
           text = eYo.do.valueOf(d.model.placeholder, d) || ''
         }
       }

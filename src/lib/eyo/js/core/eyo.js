@@ -61,13 +61,19 @@ eYo.isNA = (what) => {
   return what === eYo.NA
 }
 /**
- * Whether the argument is na array.
+ * Whether the argument is a boolean.
  * @param {*} what
  */
 eYo.isBool = (what) => {
   return what === true || what === false
 }
-
+/**
+ * Whether the argument is a number.
+ * @param {*} what
+ */
+eYo.isNum = (what) => {
+  return typeof what == 'number'
+}
 /**
  * Function used when defining a JS property.
  */
@@ -252,6 +258,14 @@ eYo.mixinR(eYo, {
     var x
     return x
   })(),
+  /**
+   * Whether the argument is an object.
+   * @param {*} what 
+   */
+  isObject (what) { // see g@@g.isObject
+    var type = typeof val
+    return type == 'object' && val != null || type == 'function'
+  },
   /**
    * Whether the argument is an object created with `{...}` syntax.
    * @param {*} what
@@ -487,9 +501,6 @@ eYo.mixinR(eYo._p, {
     })
     return ans
   },
-}, false)
-
-eYo.mixinR(eYo, {
   /**
    * @param {String} name - dotted components, some kind of path.
    * @param {Object} value - When false, nothing is performed. This is the value used to create some object at the given path, instead of the default namespace.
@@ -641,3 +652,11 @@ eYo.forwardDeclare('app')
 
 eYo.makeNS('temp')
 eYo.makeNS('debug')
+
+goog.require('goog.userAgent')
+
+// ANCHOR Assert
+eYo.mixinR(eYo, {
+  userAgent: goog.userAgent,
+}, false)
+

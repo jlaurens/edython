@@ -17,7 +17,7 @@ eYo.require('xre')
 
 eYo.require('msg')
 eYo.require('expr.primary')
-goog.require('goog.dom');
+//g@@g.require('g@@g.dom');
 
 eYo.mixinR(eYo.xre, {
   decorator: XRegExp(`^@?
@@ -350,7 +350,7 @@ Object.defineProperties(eYo.stmt.decorator_stmt.prototype, {
 eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var variant_p = this.Variant_p
   if (variant_p !== eYo.key.NONE) {
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('@', 'eyo-code-reserved'),
       eYo.do.CreateSPAN(eYo.msg.placeholder.DECORATOR, 'eyo-code-placeholder')
     )
@@ -373,7 +373,7 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     }
   })
   if (variant_p !== eYo.key.N_ARY) {
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('@', 'eyo-code-reserved'),
       eYo.do.CreateSPAN(eYo.msg.placeholder.DECORATOR, 'eyo-code-placeholder'),
       eYo.do.CreateSPAN('(…)', 'eyo-code')
@@ -389,7 +389,7 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     ]
     builtins.forEach((builtin) => {
       if (builtin !== this.Property_p) {
-        var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+        var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, null,
           eYo.do.CreateSPAN('@', 'eyo-code-reserved'),
           eYo.do.CreateSPAN(eYo.msg.placeholder.IDENTIFIER, 'eyo-code-placeholder'),
           eYo.do.CreateSPAN('.', 'eyo-code'),

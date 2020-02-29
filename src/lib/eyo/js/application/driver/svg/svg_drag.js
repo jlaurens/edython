@@ -51,7 +51,7 @@ eYo.svg.brickDragSurface = function(container) {
  */
 eYo.svg.brickDragSurface.prototype.dispose = function() {
   this.dispose = eYo.doNothing
-  goog.dom.removeNode(this.dom.svg.root_)
+  eYo.dom.removeNode(this.dom.svg.root_)
   this.limits_ = this.dom = this.brick_ = null
 }
 
@@ -225,7 +225,7 @@ eYo.svg.BoardDragSurface = function(container) {
 eYo.svg.BoardDragSurface.prototype.dispose = function () {
   var svg = this.dom.svg
   var svg = dom.svg
-  goog.dom.removeNode(svg.root_)
+  eYo.dom.removeNode(svg.root_)
   this.dom = dom.svg = svg.root_ = this.dragger_ = null
   this.dispose = eYo.doNothing
 }

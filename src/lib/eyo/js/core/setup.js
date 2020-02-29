@@ -50,7 +50,7 @@ eYo.setup.register = function (when, i9r, key) {
     when = this.i9rsHead.length
   } else {
     eYo.assert(eYo.isF(i9r))
-    eYo.assert(goog.isNumber(when))
+    eYo.assert(eYo.isNum(when))
   }
   if (when < 0) {
     when = this.i9rsTail.length + 1 + when

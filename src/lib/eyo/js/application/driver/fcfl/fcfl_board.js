@@ -432,7 +432,7 @@ eYo.fcfl.Board._p.willShortRender_ = function (board, recorder) {
  */
 eYo.fcfl.Board._p.moveTo = function(board, xy, snap) {
   if (snap && board.board && !board.board.dragging && !board.parent && !board.isInFlyout) {
-    xy = eYo.geom.clWhere(xy.c, xy.l)
+    xy = eYo.geom.clPoint(xy.c, xy.l)
   }
   board.xy_ = xy
   this.place(board)
@@ -659,7 +659,7 @@ eYo.fcfl.Board._p.newDrawRecorder_ = function (board, recorder) {
     n: 0, // count of rendered objects (fields, slots and inputs)
     form: eYo.NA // rendered field or magnet
   }
-  io.cursor = eYo.geom.xyWhere(0, board.span.header)
+  io.cursor = eYo.geom.xyPoint(0, board.span.header)
   if (recorder) {
     // io inherits some values from the given recorder
     io.recorder = recorder

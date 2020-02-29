@@ -21,8 +21,8 @@ eYo.forwardDeclare('view.Workspace')
 eYo.forwardDeclare('brick.List')
 eYo.forwardDeclare('geom.Metrics')
 
-goog.forwardDeclare('goog.array')
-goog.forwardDeclare('goog.math')
+//g@@g.forwardDeclare('g@@g.array')
+//g@@g.forwardDeclare('g@@g.math')
 
 
 /**
@@ -465,7 +465,7 @@ eYo.board.Base_p.getTopBricks = function(ordered) {
   // Copy the topBricks_ list.
   var bricks = this.topBricks_.slice()
   if (ordered && bricks.length > 1) {
-    var offset = Math.sin(goog.math.toRadians(eYo.board.SCAN_ANGLE))
+    var offset = Math.sin(eYo.board.SCAN_ANGLE*Math.pi/180)
     bricks.sort((a, b) => {
       var aWhere = a.whereInBoard
       var bWhere = b.whereInBoard
@@ -530,8 +530,8 @@ eYo.board.Base_p.addChangeListener = function(func) {
  * @param {Function} func Function to stop calling.
  */
 eYo.board.Base_p.removeChangeListener = function(func) {
-  goog.array.remove(this.listeners_, func)
-};
+  eYo.do.arrayRemove(this.listeners_, func)
+}
 
 /**
  * Find the brick on this board with the specified ID.
@@ -707,7 +707,7 @@ eYo.board.Base_p.place = function() {
  */
 eYo.board.Base_p.updateScreenCalculationsIfScrolled =
     function() {
-  var currScroll = goog.dom.getDocumentScroll()
+  var currScroll = eYo.dom.getDocumentScroll()
   if (!this.lastPageScroll_ || !this.lastPageScroll_.equals(currScroll)) {
     this.lastPageScroll_ = currScroll
     this.updateScreenCalculations_()
@@ -772,7 +772,7 @@ eYo.board.Base_p.highlightBrick = function(id, opt_state) {
     var state = (opt_state === eYo.NA) || opt_state;
     // Using Set here would be great, but at the cost of IE10 support.
     if (!state) {
-      goog.array.remove(this.highlightedBricks_, brick);
+      eYo.do.arrayRemove(this.highlightedBricks_, brick);
     } else if (this.highlightedBricks_.indexOf(brick) == -1) {
       this.highlightedBricks_.push(brick);
     }
@@ -840,7 +840,7 @@ eYo.board.Base_p.paste = function () {
                 }
               }) || b3k.getMagnets_(false).some(m4t => {
                   var neighbour = m4t.closest(eYo.event.SNAP_RADIUS,
-                    eYo.geom.xyWhere(dx, dy))
+                    eYo.geom.xyPoint(dx, dy))
                   if (neighbour) {
                     return true
                   }
@@ -863,7 +863,7 @@ eYo.board.Base_p.paste = function () {
             dy = (view.y + view.height / 2) / scale - size.height / 2
             avoidCollision()
           }
-          b3k.moveBy(eYo.geom.xyWhere(dx, dy))
+          b3k.moveBy(eYo.geom.xyPoint(dx, dy))
         }
         b3k.focusOn().scrollToVisible()
       }
@@ -929,7 +929,7 @@ eYo.board.Base_p.zoom = function(center, amount) {
     return // No change in zoom.
   }
   this.scale *= scaleChange
-  if (goog.isDef(center.clientX)) {
+  if (eYo.isDef(center.clientX)) {
     center = new eYo.geom.Point(center)
   }
   this.ui_driver_mngr.zoom(this, center, scaleChange)
@@ -997,7 +997,7 @@ eYo.board.Base_p.zoomToFit = function() {
   this.scale = Math.min(size.x, size.y)
   this.scrollCenter()
   if (this.flyout_) {
-    this.moveBy(eYo.geom.xyWhere(-this.flyout_.viewRect.width / 2, 0))
+    this.moveBy(eYo.geom.xyPoint(-this.flyout_.viewRect.width / 2, 0))
   }
 }
 
@@ -1042,12 +1042,12 @@ eYo.board.doRelativeScroll = function(xyRatio) {
   var content = metrics.port
   var view = metrics.port
   var drag = metrics.drag
-  if (goog.isNumber(xyRatio.x)) {
+  if (eYo.isNum(xyRatio.x)) {
     var t = Math.min(1, Math.max(0, xyRatio.x))
     // view.x_max - content.x_max <= scroll.x <= view.x_min - content.x_min
     drag.x = view.x_max - content.x_max + t * (view.width - content.width)
   }
-  if (goog.isNumber(xyRatio.y)) {
+  if (eYo.isNum(xyRatio.y)) {
     var t = Math.min(1, Math.max(0, xyRatio.y))
     drag.y = view.y_max - content.y_max + t * (view.height - content.height)
   }

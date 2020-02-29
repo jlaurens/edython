@@ -209,6 +209,6 @@ eYo.library.DATA.Basic_math__module = [
 
 }) ()
 
-goog.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.Title, {
   math__import_stmt: 'Importer le module math',
 })

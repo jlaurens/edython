@@ -110,7 +110,7 @@ eYo.brick.makeBase({
             || f(this.out_m)
         if (before) {
           // Remove this brick from the old parent_'s child list.
-          goog.array.remove(before.children__, this)
+          eYo.do.arrayRemove(before.children__, this)
           this.ui_driver.parentSet(null)
         } else {
           // Remove this brick from the board's list of top-most bricks.
@@ -1183,7 +1183,7 @@ eYo.brick.DEBUG_ = Object.create(null)
     this.dataForEach(data => data.setRequiredFromModel(false))
     this.change.wrap(() => {
       var data_in = model.data
-      if (eYo.isStr(data_in) || goog.isNumber(data_in)) {
+      if (eYo.isStr(data_in) || eYo.isNum(data_in)) {
         var d = this.main_d
         if (d && !d.incog && d.validate(data_in)) {
           d.doChange(data_in)
@@ -1207,7 +1207,7 @@ eYo.brick.DEBUG_ = Object.create(null)
             }
           })
         }
-      } else if (goog.isDef(data_in)) {
+      } else if (eYo.isDef(data_in)) {
         this.dataForEach(data => {
           var k = data.key
           if (eYo.hasOwnProperty(data_in, k)) {
@@ -1220,7 +1220,7 @@ eYo.brick.DEBUG_ = Object.create(null)
               data.setRequiredFromModel(true)
               // change the place holder in the objects's model
               var m = {}
-              goog.mixin(m, data.model)
+              eYo.do.mixin(m, data.model)
               m.placeholder = data_in[k]
               data.model = m
               done = true
@@ -1362,7 +1362,7 @@ eYo.brick.DEBUG_ = Object.create(null)
             if ((slot = feedSlots.call(this, model.slots))) {
               next = slot
               do {
-                eYo.assert(!goog.isDef(slots[next.key]),
+                eYo.assert(!eYo.isDef(slots[next.key]),
                   'Duplicate inserted slot key %s/%s/%s', next.key, insert, brick.type)
                 slots[next.key] = next
               } while ((next = next.next))
@@ -1372,8 +1372,8 @@ eYo.brick.DEBUG_ = Object.create(null)
           } else {
             continue
           }
-        } else if (goog.isObject(model) && (slot = new eYo.slot.Base(this, k, model))) {
-          eYo.assert(!goog.isDef(slots[k]),
+        } else if (eYo.isObject(model) && (slot = new eYo.slot.Base(this, k, model))) {
+          eYo.assert(!eYo.isDef(slots[k]),
             `Duplicate slot key ${k}/${this.type}`)
           slots[k] = slot
           slot.slots = slots
@@ -2519,7 +2519,7 @@ eYo.brick.newReady = (() => {
       } else if (eYo.model.forType(model)) {
         brick = board.newBrick(model, id) // can undo
         brick.setDataWithType(model)
-      } else if (eYo.isStr(model) || goog.isNumber(model)) {
+      } else if (eYo.isStr(model) || eYo.isNum(model)) {
         var p5e = eYo.t3.profile.get(model, null)
         var f = p5e => {
           var ans
@@ -2530,7 +2530,7 @@ eYo.brick.newReady = (() => {
           } else if (p5e.stmt && (ans = board.newBrick(p5e.stmt, id))) {
             p5e.stmt && (ans.setDataWithType(p5e.stmt))
             dataModel = {data: model}
-          } else if (goog.isNumber(model)  && (ans = board.newBrick(eYo.t3.expr.numberliteral, id))) {
+          } else if (eYo.isNum(model)  && (ans = board.newBrick(eYo.t3.expr.numberliteral, id))) {
             ans.setDataWithType(eYo.t3.expr.numberliteral)
             dataModel = {data: model.toString()}
           } else {

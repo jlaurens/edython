@@ -36,7 +36,7 @@ eYo.svg.Effect.prototype.brickDispose = (() => {
     var ms = new Date - start
     var percent = ms / 150
     if (percent > 1) {
-      goog.dom.removeNode(clone)
+      eYo.dom.removeNode(clone)
       return
     }
     var x = clone.translateX_ +
@@ -81,7 +81,7 @@ eYo.svg.Effect.prototype.brickConnect = (() => {
     var ms = new Date() - start
     var percent = ms / 200
     if (percent > 1) {
-      goog.dom.removeNode(ripple)
+      eYo.dom.removeNode(ripple)
     } else {
       ripple.style.opacity = 8 * Math.pow(percent, 2) * Math.pow(1 - percent, 2)
       pid_ = setTimeout(step, 10, ripple, start, scale)

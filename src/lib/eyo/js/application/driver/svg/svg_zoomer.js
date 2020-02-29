@@ -191,7 +191,7 @@ eYo.svg.makeDriverC9r('Zoomer', {
     bound.zoomreset = eYo.dom.unbindEvent(bound.zoomreset)
     bound.zoomin = eYo.dom.unbindEvent(bound.zoomin)
     bound.zoomout = eYo.dom.unbindEvent(bound.zoomout)
-    goog.dom.removeNode(svg.zoom_)
+    eYo.dom.removeNode(svg.zoom_)
     svg.zoom_ = null
   },
 })

@@ -72,7 +72,7 @@ eYo.svg.makeDriverC9r('Search', {
    */
   disposeUI (search) {
     var dom = search.dom
-    goog.dom.removeNode(dom.svg.root_)
+    eYo.dom.removeNode(dom.svg.root_)
     dom.svg.root_ = null
     dom.svg = null
     eYo.svg.eyo.C9r_s.SearchDispose.call(this, search)
@@ -281,8 +281,8 @@ eYo.svg.makeDriverC9r('SearchToolbar', {
     </div>
     */
     var cssClass = this.cssClass()
-    dom.control_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
+    dom.control_ = eYo.dom.createDom(
+      eYo.dom.TagName.DIV,
       goog.getCssName(cssClass, 'control')
     )
     svg.root_ = eYo.svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
@@ -291,17 +291,6 @@ eYo.svg.makeDriverC9r('SearchToolbar', {
     }, dom.svg)
     if (ftb.app && ftb.app.searchDropDown) {
     } else if (ftb.app && ftb.app.searchDropDownGeneral && ftb.app.searchDropDownModule) {
-    } else {
-      // select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'test'))
-      // select.addItem(new eYo.Separator())
-      select.addItem(new eYo.MenuItem(eYo.msg.BASIC, 'basic'))
-      select.addItem(new eYo.MenuItem(eYo.msg.INTERMEDIATE, 'intermediate'))
-     search.listenableKey = select.listen(
-        goog.ui.Component.EventType.ACTION,
-        search.doSelectGeneral,
-        false,
-        search
-      )
     }
     const div = this.search.desk.dom.div_.searchToolbar_
     Object.definePorperty(dom, 'div_', {
@@ -351,7 +340,7 @@ eYo.svg.makeDriverC9r('SearchToolbar', {
       myNode.removeChild(fc)
     }
     var svg = dom.svg
-    goog.dom.removeNode(svg.group_)
+    eYo.dom.removeNode(svg.group_)
     svg.group_ = null
   },
 })

@@ -67,7 +67,7 @@ eYo.svg.makeDriverC9r('Flyout', {
    */
   disposeUI (flyout) {
     var dom = flyout.dom
-    goog.dom.removeNode(dom.svg.root_)
+    eYo.dom.removeNode(dom.svg.root_)
     dom.svg.root_ = null
     dom.svg = null
   },
@@ -124,8 +124,8 @@ eYo.svg.makeDriverC9r('FlyoutToolbar', {
     </div>
     */
     var cssClass = this.cssClass()
-    dom.control_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
+    dom.control_ = eYo.dom.createDom(
+      eYo.dom.TagName.DIV,
       goog.getCssName(cssClass, 'control')
     )
     svg.root_ = eYo.svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
@@ -134,8 +134,8 @@ eYo.svg.makeDriverC9r('FlyoutToolbar', {
     }, dom.svg)
     if (eYo.app.Base && ftb.app.flyoutDropDown) {
     } else if (eYo.app.Base && ftb.app.flyoutDropDownGeneral && ftb.app.flyoutDropDownModule) {
-    dom.select_module_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
+    dom.select_module_ = eYo.dom.createDom(
+        eYo.dom.TagName.DIV,
         goog.getCssName(cssClass, 'select-module'),
         ftb.app.flyoutDropDownModule
       )
@@ -188,7 +188,7 @@ eYo.svg.makeDriverC9r('FlyoutToolbar', {
       myNode.removeChild(fc)
     }
     var svg = dom.svg
-    goog.dom.removeNode(svg.group_)
+    eYo.dom.removeNode(svg.group_)
     svg.group_ = null
   },
 })

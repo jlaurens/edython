@@ -33,7 +33,7 @@ eYo.require('xre')
 eYo.require('t3')
 eYo.require('brick')
 
-goog.require('goog.dom');
+//g@@g.require('g@@g.dom');
 
 eYo.makeNS('xml', {
   URN: 'urn:edython:',
@@ -134,9 +134,9 @@ eYo.xml.brickToDomWithWhere = function(brick, opt) {
  * @return {!Element} XML document.
  */
 eYo.xml.boardToDom = function(board, opt) {
-  var root = goog.dom.createDom(eYo.xml.EDYTHON, null,
-    goog.dom.createDom(eYo.xml.WORKSPACE, null,
-      goog.dom.createDom(eYo.xml.cONTENT)
+  var root = eYo.dom.createDom(eYo.xml.EDYTHON, null,
+    eYo.dom.createDom(eYo.xml.WORKSPACE, null,
+      eYo.dom.createDom(eYo.xml.cONTENT)
     )
   )
   var xml = root.firstChild.firstChild
@@ -147,13 +147,13 @@ eYo.xml.boardToDom = function(board, opt) {
       if (!brick.isControl) {
         var code = p.export(brick, {is_deep: true})
         if (code.length) {
-          var py_dom = goog.dom.createDom(eYo.xml.PYTHON)
-          goog.dom.insertChildAt(dom, py_dom, 0)
-          goog.dom.appendChild(py_dom, goog.dom.createTextNode(`\n${code}\n`))
+          var py_dom = eYo.dom.createDom(eYo.xml.PYTHON)
+          eYo.dom.insertChildAt(dom, py_dom, 0)
+          eYo.dom.appendChild(py_dom, eYo.dom.createTextNode(`\n${code}\n`))
         }
       }
     }, () => {
-      goog.dom.appendChild(xml, dom)
+      eYo.dom.appendChild(xml, dom)
     })
   })
   root.setAttribute('xmlns', eYo.xml.XMLNS) // default namespace
@@ -339,7 +339,7 @@ eYo.xml.brickToDom = (() => {
       var element = controller.brickToDom(brick, opt)
     } else {
       var attr = brick.xmlAttr()
-      element = goog.dom.createDom(brick.isExpr? eYo.xml.EXPR: eYo.xml.sTMT)
+      element = eYo.dom.createDom(brick.isExpr? eYo.xml.EXPR: eYo.xml.sTMT)
       element.setAttribute(eYo.key.EYO, attr)
       !(opt && opt.noId) && (element.setAttribute('id', brick.id))
       eYo.xml.toDom(brick, element, opt)
@@ -397,8 +397,8 @@ eYo.require('expr.primary')
 eYo.xml.text.toDom = function (brick, element) {
   var text = brick.value_d.get()
   if (text && text.length) {
-    var child = goog.dom.createTextNode(text)
-    goog.dom.appendChild(element, child)
+    var child = eYo.dom.createTextNode(text)
+    eYo.dom.appendChild(element, child)
   }
   return element
 }
@@ -536,9 +536,9 @@ eYo.xml.toDom = function (brick, element, opt) {
     eYo.do.tryFinally(() => {
       var code = p.export(brick, {is_deep: true})
       if (code.length) {
-        var py_dom = goog.dom.createDom(eYo.xml.PYTHON)
-        goog.dom.insertChildAt(element, py_dom, 0)
-        goog.dom.appendChild(py_dom, goog.dom.createTextNode(`\n${code}\n`))
+        var py_dom = eYo.dom.createDom(eYo.xml.PYTHON)
+        eYo.dom.insertChildAt(element, py_dom, 0)
+        eYo.dom.appendChild(py_dom, eYo.dom.createTextNode(`\n${code}\n`))
       }
     })
   }
@@ -561,7 +561,7 @@ eYo.xml.toDom = function (brick, element, opt) {
           var child = eYo.xml.brickToDom(t9k, opt)
           if (child) {
             child.setAttribute(name, key)
-            goog.dom.appendChild(element, child)
+            eYo.dom.appendChild(element, child)
           }
         }
       }
@@ -605,7 +605,7 @@ eYo.xml.registerAllTags = function () {
         continue
       }
       var already = eYo.t3.xml.fromDom[attr]
-      if (goog.isArray(already)) {
+      if (eYo.isRA(already)) {
         if (already.indexOf(type) < 0) {
           already.push(type)
         }
@@ -885,7 +885,7 @@ eYo.xml.domToBrick = (() => {
           prototypeName = eYo.t3.xml.fromDom[name]
         }
         if (prototypeName) {
-          if (goog.isArray(prototypeName)) {
+          if (eYo.isRA(prototypeName)) {
             if (prototypeName.length === 1) {
               prototypeName = prototypeName[0]
             } else if (!(prototypeName = (() => {

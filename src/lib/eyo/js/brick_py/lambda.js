@@ -14,7 +14,7 @@
 eYo.require('expr.List')
 
 eYo.require('magnet')
-goog.require('goog.dom');
+//g@@g.require('g@@g.dom');
 
 /**
  * List consolidator for parameter list.
@@ -35,7 +35,7 @@ goog.require('goog.dom');
 // eYo.consolidator.Parameter = function() {
 //   eYo.consolidator.Parameter.eyo.C9r_s.constructor.call(this, eYo.consolidator.Parameter.data)
 // }
-// goog.require(eYo.consolidator.List)
+// //g@@g.require(eYo.consolidator.List)
 // goog.inherits(eYo.consolidator.Parameter, eYo.consolidator.List)
 
 // eYo.consolidator.Parameter.data = {
@@ -61,7 +61,7 @@ eYo.consolidator.List.makeInheritedC9r('parameter', {
 eYo.consolidator.Parameter.prototype.consolidate_connected = function (io) {
   if (io.i + 1 === io.list.length) {
     var check = io.m4t.target.check_
-    if (!check || goog.array.contains(check, eYo.t3.expr.parameter_star_star)) {
+    if (!check || eYo.do.arrayContains(check, eYo.t3.expr.parameter_star_star)) {
       // do not add a separator after
       return false
     }
@@ -106,13 +106,13 @@ eYo.consolidator.Parameter.prototype.doCleanup = (() => {
     }
     var check = target.check_
     if (check) {
-      if (goog.array.contains(check, eYo.t3.expr.star)) {
+      if (eYo.do.arrayContains(check, eYo.t3.expr.star)) {
         return Type.star
-      } else if (goog.array.contains(check, eYo.t3.expr.parameter_star)) {
+      } else if (eYo.do.arrayContains(check, eYo.t3.expr.parameter_star)) {
         return Type.star
-      } else if (goog.array.contains(check, eYo.t3.expr.parameter_star_star)) {
+      } else if (eYo.do.arrayContains(check, eYo.t3.expr.parameter_star_star)) {
         return Type.star_star
-      } else if (goog.array.contains(check, eYo.t3.expr.identifier_valued)) {
+      } else if (eYo.do.arrayContains(check, eYo.t3.expr.identifier_valued)) {
         return Type.default
       } else {
         return Type.parameter
@@ -322,7 +322,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
       var m4t = slot.magnet
       if (m4t && !m4t.target) {
         if (m4t.checkType_(b3k.out_m)) {
-          var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+          var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, 'eyo-code',
             eYo.do.CreateSPAN('( ', 'eyo-code-disabled'),
             eYo.do.CreateSPAN(msg),
             eYo.do.CreateSPAN(' )', 'eyo-code-disabled')

@@ -26,7 +26,7 @@ eYo.tooltip.Add = function (el, title, options) {
   if (eYo.isStr(title)) {
     el.setAttribute('title', title)
     tippy(el, options)
-  } else if (goog.isDef(title)) {
+  } else if (eYo.isDef(title)) {
     tippy(el, title)
   }
 }

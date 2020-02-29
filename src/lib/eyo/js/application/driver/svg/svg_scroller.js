@@ -42,7 +42,7 @@ eYo.svg.makeDriverC9r('Scroller', {
    */
   disposeUI (scroller) {
     var dom = scroller.dom
-    goog.dom.removeNode(dom.svg.corner_)
+    eYo.dom.removeNode(dom.svg.corner_)
     dom.svg = dom.svg.corner_ = null
   },
 })

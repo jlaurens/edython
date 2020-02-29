@@ -20,7 +20,7 @@ eYo.forwardDeclare('app')
 eYo.forwardDeclare('event')
 eYo.forwardDeclare('view.Scrollbar')
 
-goog.forwardDeclare('goog.array');
+//g@@g.forwardDeclare('g@@g.array');
 
 /**
  * @name{eYo.view.Workspace}

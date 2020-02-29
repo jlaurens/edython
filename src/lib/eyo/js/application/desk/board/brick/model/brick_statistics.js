@@ -120,6 +120,6 @@ eYo.library.DATA.Statistics__module = [
 
 })()
 
-goog.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.Title, {
   statistics__import_stmt: 'Importer le module statistics',
 })

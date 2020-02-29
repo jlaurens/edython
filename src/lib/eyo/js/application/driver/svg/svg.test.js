@@ -32,7 +32,7 @@ describe('SVG coordinates', function () {
     var xy2 = ui.whereInBoard
     chai.expect(xy1.x).equal(xy2.x)
     chai.expect(xy1.y).equal(xy2.y)
-    var d = eYo.geom.xyWhere(246 * Math.random(), 135 * Math.random())
+    var d = eYo.geom.xyPoint(246 * Math.random(), 135 * Math.random())
     d1.moveBy(d)
     var xy1d = d1.xy
     chai.assert(xy1d.x === xy1.x + dx, `FAILURE x1: ${xy1d.x} === ${xy1.x} + ${dx}`)

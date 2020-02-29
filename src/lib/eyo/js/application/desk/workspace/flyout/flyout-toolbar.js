@@ -13,8 +13,7 @@
 
 eYo.forwardDeclare('flyoutToolbar')
 
-goog.require('goog.dom')
-goog.require('goog.ui.Select')
+//g@@g.require('g@@g.dom')
 eYo.provide('flyoutToolbar')
 
 /**
@@ -26,7 +25,7 @@ eYo.view.makeC9r('FlyoutToolbar', {
     this.flyout_ = flyout
     this.switcher_ = switcher || this.app.flyoutToolbarSwitcher
     if (this.switcher_) {
-      goog.dom.removeNode(this.switcher_)
+      eYo.dom.removeNode(this.switcher_)
     }
   },
   /**
@@ -100,7 +99,7 @@ eYo.view.FlyoutToolbar_p.onButtonDown_ = function(e) {
  */
 eYo.view.FlyoutToolbar_p.onButtonEnter_ = function(e) {
   if (this.isDown) {
-    goog.dom.classlist.add(this.control_, 'eyo-flash')
+    eYo.dom.classlist.add(this.control_, 'eyo-flash')
   }
 };
 
@@ -110,7 +109,7 @@ eYo.view.FlyoutToolbar_p.onButtonEnter_ = function(e) {
  * @private
  */
 eYo.view.FlyoutToolbar_p.onButtonLeave_ = function(e) {
-  goog.dom.classlist.remove(this.control_, 'eyo-flash')
+  eYo.dom.classlist.remove(this.control_, 'eyo-flash')
 };
 
 /**
@@ -124,7 +123,7 @@ eYo.view.FlyoutToolbar_p.onButtonUp_ = function(e) {
     this.isDown = false
     var el = document.querySelector('#eyo-flyout-dropdown .dropdown.show')
     if (el) {
-      goog.dom.classlist.remove('show')
+      eYo.dom.classlist.remove('show')
     }
     this.flyout_.slide()
     this.onButtonLeave_(e)
@@ -155,7 +154,7 @@ eYo.view.FlyoutToolbar_p.notOnButtonUp_ = function(e) {
  * @private
  */
 eYo.view.FlyoutToolbar_p.layout = function(width, height) {
-  if (goog.isDef(width.width)) {
+  if (eYo.isDef(width.width)) {
     height = width.height || 0
     width = width.width
   }

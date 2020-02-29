@@ -13,8 +13,12 @@
 
 eYo.forwardDeclare('geom')
 eYo.forwardDeclare('font-face')
-goog.forwardDeclare('goog.cssom')
-goog.forwardDeclare('goog.color')
+
+//g@@g.forwardDeclare('g@@g.cssom')
+goog.require('goog.color')
+eYo.makeNS('color')
+eYo.color.rgbArrayToHex = goog.color.rgbArrayToHex
+eYo.color.hslToRgb = goog.color.hslToRgb
 
 /**
  * @name{eYo.font}
@@ -165,10 +169,10 @@ eYo.setup.register(() => {
   var CHROME = {x: 1, y: 1}
   var GECKO = {x: 0, y: -1}
   var WEBKIT = {x: 1, y: -1}
-  if (goog.userAgent.GECKO) {
+  if (eYo.userAgent.GECKO) {
     eYo.editorOffset = GECKO
-  } else if (goog.userAgent.WEBKIT) {
-    var userAgent = goog.userAgent.getNavigator().userAgent
+  } else if (eYo.userAgent.WEBKIT) {
+    var userAgent = eYo.userAgent.getNavigator().userAgent
     if (userAgent && userAgent.search('Electron/') >= 0) {
       eYo.editorOffset = ELECTRON
     } else if (userAgent && userAgent.search('Chrome') >= 0) {
@@ -188,7 +192,7 @@ eYo.style.path = {
     colour: '#c33', // #fc3
     width: 2, // px
   },
-  bbox_colour: goog.color.rgbArrayToHex(goog.color.hslToRgb(120, 100 / 100, 50 / 100))
+  bbox_colour: eYo.color.rgbArrayToHex(eYo.color.hslToRgb(120, 100 / 100, 50 / 100))
 }
 
 Object.defineProperty(
@@ -229,7 +233,7 @@ eYo.style.menuIcon = {
       ry: r,
       width: w,
       height: h,
-      fill: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 254 / 255))
+      fill: eYo.color.rgbArrayToHex(eYo.color.hslToRgb(0, 0, 254 / 255))
     }, E)
     eYo.svg.newElement('circle',
       {cx: w / 2, cy: h / 2, r: r},
@@ -242,25 +246,4 @@ eYo.style.menuIcon = {
       E)
     return E
   }
-}
-
-/**
- * The richness of brick colours, regardless of the hue.
- * Must be in the range of 0 (inclusive) to 1 (exclusive).
- */
-eYo.HSV_SATURATION = 5 / 255
-
-/**
- * The intensity of brick colours, regardless of the hue.
- * Must be in the range of 0 (inclusive) to 1 (exclusive).
- */
-eYo.HSV_VALUE = 1
-
-/**
- * Convert a hue (HSV model) into an RGB hex triplet.
- * @param {number} hue Hue on a colour wheel (0-360).
- * @return {string} RGB code, e.g. '#5ba65b'.
- */
-eYo.hueToRgb = function (hue) {
-  return goog.color.hsvToHex(hue, eYo.HSV_SATURATION, eYo.HSV_VALUE * 255)
 }

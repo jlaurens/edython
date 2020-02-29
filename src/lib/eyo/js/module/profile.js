@@ -117,7 +117,7 @@ eYo.t3.profile.makeC9r('Base', {
     if (model) {
       var methods = model.methods
       var properties = model.properties || (!methods && model)
-      goog.mixin(m, properties)
+      eYo.do.mixin(m, properties)
       var key, value
       var f = (key) => {
         value = m[key]
@@ -279,7 +279,7 @@ eYo.t3.makeC9r('Profiles', {
    * @return {!eYo.t3} the type of this candidate, possible keys are `name`, `expr`, `stmt`.
    */
   eYo.t3.profile.get = function (candidate, module) {
-    if (goog.isNumber(candidate)) {
+    if (eYo.isNum(candidate)) {
       return candidate === Math.floor(candidate)
       ? eYo.t3.profile.integer
       : eYo.t3.profile.floatnumber
@@ -673,7 +673,7 @@ eYo.t3.profile.getReserved = function (identifier) {
       stmt: eYo.t3.stmt.yield_stmt
     }
   } [identifier])) {
-    goog.mixin(out, {
+    eYo.do.mixin(out, {
       raw: eYo.t3.expr.reserved_keyword
     })
     return new eYo.t3.profile.Base(null, out)

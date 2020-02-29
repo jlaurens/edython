@@ -30,7 +30,7 @@ eYo.dom.makeDriverC9r('Desk', {
       container = options.container = document.getElementById(container) ||
           document.querySelector(container)
     }
-    if (!goog.dom.contains(document, container)) {
+    if (!eYo.dom.contains(document, container)) {
       throw 'Error: container is not in current document.'
     }
     var div = dom.div_ || (dom.div_= container)
@@ -39,8 +39,8 @@ eYo.dom.makeDriverC9r('Desk', {
       'contextmenu',
       e => eYo.dom.isTargetInput(e) || e.preventDefault()
     )
-    // var d = dom.div_ = goog.dom.createDom(
-    //   goog.dom.TagName.DIV,
+    // var d = dom.div_ = eYo.dom.createDom(
+    //   eYo.dom.TagName.DIV,
     //   'eyo-desk'
     // )
     // var stl = d.style
@@ -56,7 +56,7 @@ eYo.dom.makeDriverC9r('Desk', {
    */
   disposeUI (desk) {
     var dom = desk.dom
-    goog.dom.removeNode(dom.div_)
+    eYo.dom.removeNode(dom.div_)
     dom.div_ = null
   },
 })

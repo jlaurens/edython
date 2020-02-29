@@ -197,16 +197,16 @@ eYo.expr.makeC9r('Starred', {
       if (brick.Modifier_p === '*') {
         if (b) {
           var tt = b.type
-          if (goog.array.contains(eYo.t3.expr.check.or_expr_all, tt)) {
+          if (eYo.do.arrayContains(eYo.t3.expr.check.or_expr_all, tt)) {
             types.push(eYo.t3.expr.star_expr)
           }
-          if (goog.array.contains(eYo.t3.expr.check.expression, tt)) {
+          if (eYo.do.arrayContains(eYo.t3.expr.check.expression, tt)) {
             types.push(eYo.t3.expr.expression_star)
           }
-          if (goog.array.contains(eYo.t3.expr.check.target, tt)) {
+          if (eYo.do.arrayContains(eYo.t3.expr.check.target, tt)) {
             types.push(eYo.t3.expr.target_star)
           }
-          if (goog.array.contains(eYo.t3.expr.check.parameter, tt)) {
+          if (eYo.do.arrayContains(eYo.t3.expr.check.parameter, tt)) {
             types.push(eYo.t3.expr.parameter_star)
           }
           return types
@@ -219,13 +219,13 @@ eYo.expr.makeC9r('Starred', {
       }
       if(b) {
         tt = b.type
-        if (goog.array.contains(eYo.t3.expr.check.or_expr_all, tt)) {
+        if (eYo.do.arrayContains(eYo.t3.expr.check.or_expr_all, tt)) {
           types.push(eYo.t3.expr.or_expr_star_star)
         }
-        if (goog.array.contains(eYo.t3.expr.check.expression, tt)) {
+        if (eYo.do.arrayContains(eYo.t3.expr.check.expression, tt)) {
           types.push(eYo.t3.expr.expression_star_star)
         }
-        if (goog.array.contains(eYo.t3.expr.check.parameter, tt)) {
+        if (eYo.do.arrayContains(eYo.t3.expr.check.parameter, tt)) {
           types.push(eYo.t3.expr.parameter_star_star)
         }
         return types

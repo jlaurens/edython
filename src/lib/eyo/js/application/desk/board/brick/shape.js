@@ -15,7 +15,7 @@ eYo.forwardDeclare('geom')
 eYo.forwardDeclare('geom.Point')
 
 eYo.forwardDeclare('padding')
-goog.forwardDeclare('goog.color')
+//g@@g.forwardDeclare('g@@g.color')
 
 /**
  * @name {eYo.o4t.Shape}
@@ -99,14 +99,14 @@ eYo.shape.style = {
     colour: '#c33'
   },
   colour: {
-    light: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
-    medium: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 70 / 100)),
-    dark: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 50 / 100)),
+    light: eYo.color.rgbArrayToHex(eYo.color.hslToRgb(0, 0, 90 / 100)),
+    medium: eYo.color.rgbArrayToHex(eYo.color.hslToRgb(0, 0, 70 / 100)),
+    dark: eYo.color.rgbArrayToHex(eYo.color.hslToRgb(0, 0, 50 / 100)),
   },
   inner_colour: {
-    light: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 97 / 100)),
-    medium: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 90 / 100)),
-    dark: goog.color.rgbArrayToHex(goog.color.hslToRgb(0, 0, 75 / 100)),
+    light: eYo.color.rgbArrayToHex(eYo.color.hslToRgb(0, 0, 97 / 100)),
+    medium: eYo.color.rgbArrayToHex(eYo.color.hslToRgb(0, 0, 90 / 100)),
+    dark: eYo.color.rgbArrayToHex(eYo.color.hslToRgb(0, 0, 75 / 100)),
   },
   width: {
     light: 0.5,
@@ -159,7 +159,7 @@ eYo.shape.Base_p.push = function () {
     var arg = arguments[i]
     if (eYo.isStr(arg)) {
       this.steps.push(arg)
-    } else if (goog.isArray(arg)) {
+    } else if (eYo.isRA(arg)) {
       var j = 0
       for(j = 0; j < arg.length ; j++) {
         this.push(arg[j])
@@ -178,7 +178,7 @@ eYo.shape.Base_p.push = function () {
  */
 eYo.shape.Base_p.m = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
-    if (goog.isDef(c.x) && goog.isDef(c.y)) {
+    if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
       l = c.y
       c = c.x
     }
@@ -189,7 +189,7 @@ eYo.shape.Base_p.m = function (is_brick, c = 0, l = 0) {
     l = c
     c = is_brick
   }
-  if (goog.isDef(c.x) && goog.isDef(c.y)) {
+  if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     l = c.y
     c = c.x
   }
@@ -205,7 +205,7 @@ eYo.shape.Base_p.m = function (is_brick, c = 0, l = 0) {
  */
 eYo.shape.Base_p.m = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
-    if (goog.isDef(c.x) && goog.isDef(c.y)) {
+    if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
       l = c.y
       c = c.x
     }
@@ -216,7 +216,7 @@ eYo.shape.Base_p.m = function (is_brick, c = 0, l = 0) {
     l = c
     c = is_brick
   }
-  if (goog.isDef(c.x) && goog.isDef(c.y)) {
+  if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     l = c.y
     c = c.x
   }
@@ -232,7 +232,7 @@ eYo.shape.Base_p.m = function (is_brick, c = 0, l = 0) {
  */
 eYo.shape.Base_p.l = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
-    if (goog.isDef(c.x) && goog.isDef(c.y)) {
+    if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
       l = c.y
       c = c.x
     }
@@ -255,7 +255,7 @@ eYo.shape.Base_p.l = function (is_brick, c = 0, l = 0) {
  */
 eYo.shape.Base_p.l = function (is_brick, c = 0, l = 0) {
   if (is_brick === true) {
-    if (goog.isDef(c.x) && goog.isDef(c.y)) {
+    if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
       l = c.y
       c = c.x
     }
@@ -446,8 +446,8 @@ eYo.shape.Base_p.arc = function (h, r = true, left = true, down = true) {
     left = r
     r = this.expr_radius
   }
-  var dx = goog.isDef(h.x) ? h.x : 0
-  var dy = goog.isDef(h.y) ? h.y : h
+  var dx = eYo.isDef(h.x) ? h.x : 0
+  var dy = eYo.isDef(h.y) ? h.y : h
   dy = down ? dy : -dy
   this.push('a', `${this.format(r)},${this.format(r)}`, '0 0', (left === down? 0 : 1), `${this.format(dx)},${this.format(dy)}`)
   this.cursor.forward(dx, dy)
@@ -678,7 +678,7 @@ eYo.shape.Base_p.initWithMagnet = function(magnet, opt) {
     var brick = magnet.brick
     var m4t
     if (brick && brick.wrapped_ && opt && opt.absolute && (m4t = brick.out_m)) {
-      var where = eYo.geom.xyWhere(magnet)
+      var where = eYo.geom.xyPoint(magnet)
       do {
         var t9k = m4t.targetBrick
         where.forward(t9k)

@@ -17,7 +17,7 @@ eYo.makeNS('do', {
   IDENT: 'ident',
 })
 
-goog.forwardDeclare('goog.dom')
+//g@@g.forwardDeclare('g@@g.dom')
 
 eYo.assert(Object.setPrototypeOf, 'No setPrototypeOf, buy a new computer')
 
@@ -321,7 +321,7 @@ eYo.do.Name = (() => {
 })()
 
 eYo.do.ensureArray = eYo.do.ensureFunctionOrArray = function (object) {
-  return goog.isArray(object) || eYo.isF(object) ? object : (object ? [object] : object)
+  return eYo.isRA(object) || eYo.isF(object) ? object : (object ? [object] : object)
 }
 
 eYo.do.ensureFunction = function (object) {
@@ -333,8 +333,8 @@ eYo.do.ensureFunction = function (object) {
 }
 
 eYo.do.CreateSPAN = function (text, css) {
-  return goog.dom.createDom(goog.dom.TagName.SPAN, css || null,
-    goog.dom.createTextNode(text)
+  return eYo.dom.createDom(eYo.dom.TagName.SPAN, css || null,
+    eYo.dom.createTextNode(text)
   )
 }
 
@@ -547,7 +547,7 @@ eYo.do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
       // or eventually modify `ans`
       if (finally_f) {
         var out = finally_f(ans)
-        if (goog.isDef(out)) {
+        if (eYo.isDef(out)) {
           ans = out
         }
       }
@@ -593,4 +593,44 @@ eYo.do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
 eYo.do.toTitleCase = (str) => {
   eYo.isStr(str) || eYo.throw(`eYo.do.toTitleCase: string expected but got ${str}`)
   return str.length ? str[0].toUpperCase()+str.substr(1) : str
+}
+
+/**
+ * Remove the any instance of the given object from the given array.
+ * @param {Array<*>} ra
+ * @param {*} obj
+ */
+eYo.do.arrayRemove = function(ra, obj) {
+  while(true) {
+    var i = ra.indexOf(obj)
+    if (i>=0) {
+      ra.splice(i,1)
+    } else {
+      break
+    }
+  }
+}
+/**
+ * Whether the given array contains the given object.
+ * @param {Array<*>} ra
+ * @param {*} obj
+ */
+eYo.do.arrayContains = function (ra, obj) {
+  return ra.indexOf(obj) >= 0
+}
+
+/**
+ * @param {*} target
+ * @param {*} source
+ */
+eYo.do.mixin = function(target, source) {
+  for (var x in source) {
+    target[x] = source[x];
+  }
+
+  // For IE7 or lower, the for-in-loop does not contain any properties that are
+  // not enumerable on the prototype object (for example, isPrototypeOf from
+  // Object.prototype) but also it will not include 'replace' on objects that
+  // extend String and change 'replace' (not that it is common for anyone to
+  // extend anything except Object).
 }

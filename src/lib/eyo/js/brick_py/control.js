@@ -11,11 +11,9 @@
  */
 'use strict'
 
-goog.require('goog.ui.Dialog')
-
 eYo.require('msg')
 eYo.require('stmt.group')
-goog.require('goog.dom');
+//g@@g.require('g@@g.dom');
 
 /**
  * @name {eYo.stmt.control}

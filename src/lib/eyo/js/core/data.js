@@ -36,7 +36,7 @@ eYo.require('do')
 eYo.require('xre')
 
 eYo.require('decorate')
-goog.require('goog.dom')
+//g@@g.require('g@@g.dom')
 
 /**
  * @name {eYo.data}
@@ -142,7 +142,7 @@ eYo.data.makeBase({
     this.name = 'eyo:' + (model.name || key).toLowerCase()
     this.noUndo = !!model.noUndo
     var xml = model.xml
-    if (goog.isDefAndNotNull(xml) || xml !== false) {
+    if (eYo.isDefAndNotNull(xml) || xml !== false) {
       this.attributeName = (xml && xml.attribute) || key
     }
     if (!model.setup_) {
@@ -150,7 +150,7 @@ eYo.data.makeBase({
       if (!eYo.isF(model.didLoad)) {
         delete model.didLoad
       }
-      if (goog.isDefAndNotNull(xml)) {
+      if (eYo.isDefAndNotNull(xml)) {
         if (!eYo.isF(xml.toText)) {
           delete xml.toText
         }
@@ -214,7 +214,7 @@ eYo.data.makeBase({
     incog: {
       value: false,
       set (after) {
-        if (!goog.isDef(after)) {
+        if (!eYo.isDef(after)) {
           after = !this.required
         } else {
           after = !!after
@@ -260,7 +260,7 @@ eYo.data.makeBase({
    * Get the value of the data
    */
   _p.get = function () {
-    if (!goog.isDef(this.value_)) {
+    if (!eYo.isDef(this.value_)) {
       var f = eYo.decorate.reentrant_method(this,
         'get',
         this.init
@@ -308,9 +308,9 @@ eYo.data.makeBase({
       var x = this.model[after]
       !x || !eYo.isF(after) || (after = x)
     }
-    if (goog.isNumber(after)) {
+    if (eYo.isNum(after)) {
       x = this.getAll()
-      if (x && goog.isDefAndNotNull((x = x[after]))) {
+      if (x && eYo.isDefAndNotNull((x = x[after]))) {
         after = x
       }
     }
@@ -330,7 +330,7 @@ eYo.data.makeBase({
    * @param {Object} after
    */
   _p.init = function (after) {
-    if (goog.isDef(after)) {
+    if (eYo.isDef(after)) {
       this.internalSet(after)
       return
     }
@@ -346,7 +346,7 @@ eYo.data.makeBase({
           this.internalSet(ans)
         })
         return
-      } else if (goog.isDef(init)) {
+      } else if (eYo.isDef(init)) {
         this.internalSet(init)
         return
       }
@@ -355,7 +355,7 @@ eYo.data.makeBase({
         this.internalSet(all[0])
       }
     } finally {
-      if (!goog.isDef(this.value_)) {
+      if (!eYo.isDef(this.value_)) {
         console.error('THIS SHOULD BE DEFINED', this.key, this.brickType)
       }
     }
@@ -391,7 +391,7 @@ eYo.data.makeBase({
    */
   _p.getAll = function () {
     var all = this.model.all
-    return (goog.isArray(all) && all) || (eYo.isF(all) && (goog.isArray(all = all()) && all))
+    return (eYo.isRA(all) && all) || (eYo.isF(all) && (eYo.isRA(all = all()) && all))
   }
 
   /**
@@ -426,7 +426,7 @@ eYo.data.makeBase({
     if (f) {
       return eYo.whenVALID(f.call(this, result))
     }
-    if (goog.isNumber(result)) {
+    if (eYo.isNum(result)) {
       result = result.toString()
     }
     return result || ''
@@ -443,7 +443,7 @@ eYo.data.makeBase({
     if (f) {
       return eYo.whenVALID(f.call(this))
     }
-    if (goog.isNumber(result)) {
+    if (eYo.isNum(result)) {
       result = result.toString()
     }
     return result || ''
@@ -678,7 +678,7 @@ eYo.data.makeBase({
     if (!d) {
       return
     }
-    if (!goog.isDef(after)) {
+    if (!eYo.isDef(after)) {
       after = this.get()
     }
     if (this.model.synchronize === true) {
@@ -754,9 +754,9 @@ eYo.data.makeBase({
           var x = eYo.key[after]
           !x || (after = x)
         }
-      } else if (goog.isNumber(after)) {
+      } else if (eYo.isNum(after)) {
         x = this.getAll()
-        if (x && goog.isDefAndNotNull((x = x[after]))) {
+        if (x && eYo.isDefAndNotNull((x = x[after]))) {
           after = x
         }
       }
@@ -792,7 +792,7 @@ eYo.data.makeBase({
      * @param {Boolean} after  When not defined, replaced by `!this.required`
      */
     set (after) {
-      if (!goog.isDef(after)) {
+      if (!eYo.isDef(after)) {
         after = !this.required
       } else {
         after = !!after
@@ -895,9 +895,9 @@ eYo.data.makeBase({
       }
       if (isText) {
         if (txt.length) {
-          goog.dom.appendChild(element, goog.dom.createTextNode(txt))
+          eYo.dom.appendChild(element, eYo.dom.createTextNode(txt))
         } else if (required) {
-          goog.dom.appendChild(element, goog.dom.createTextNode('?'))
+          eYo.dom.appendChild(element, eYo.dom.createTextNode('?'))
         }
       } else if (txt.length) {
         element.setAttribute(this.attributeName, txt)
@@ -923,13 +923,13 @@ eYo.data.makeBase({
     if (txt === this.model.placeholder) {
       return
     }
-    if (goog.isDef(this.model.custom_placeholder)) {
+    if (eYo.isDef(this.model.custom_placeholder)) {
       var placeholder = eYo.do.valueOf(txt, this)
       this.model.custom_placeholder = placeholder && (placeholder.toString().trim())
       return
     }
     var m = {}
-    goog.mixin(m, this.model)
+    eYo.do.mixin(m, this.model)
     this.model = m
     m.placeholder = m.custom_placeholder = eYo.do.valueOf(txt, this)
   }
@@ -961,7 +961,7 @@ eYo.data.makeBase({
           }
         })) {
           txt = element.getAttribute(eYo.key.PLACEHOLDER)
-          if (goog.isDefAndNotNull(txt)) {
+          if (eYo.isDefAndNotNull(txt)) {
             this.customizePlaceholder(txt)
             this.setRequiredFromModel(true)
             this.fromText('', false)
@@ -971,9 +971,9 @@ eYo.data.makeBase({
       } else {
         txt = (this.model.xml && (eYo.isF(this.model.xml.getAttribute))
           && (this.model.xml.getAttribute.call(this, element)) ||element.getAttribute(this.attributeName))
-        if (!goog.isDefAndNotNull(txt)) {
+        if (!eYo.isDefAndNotNull(txt)) {
           txt = element.getAttribute(`${this.attributeName}_${eYo.key.PLACEHOLDER}`)
-          if (goog.isDefAndNotNull(txt)) {
+          if (eYo.isDefAndNotNull(txt)) {
             this.customizePlaceholder(txt)
             this.setRequiredFromModel(true)
             this.fromText('', false)
@@ -981,7 +981,7 @@ eYo.data.makeBase({
           }
         }
       }
-      if (goog.isDefAndNotNull(txt)) {
+      if (eYo.isDefAndNotNull(txt)) {
         if (required && txt === '?') {
           txt = ''
           this.setRequiredFromModel(true)

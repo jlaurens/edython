@@ -143,7 +143,7 @@ eYo.o4t.makeC9r(eYo.module, 'Item', {
         // only those arguments with a `default` key
         this.kwargs_ = []
         this.arguments && (this.arguments.forEach((arg) => {
-          if (goog.isDef(arg.default)) {
+          if (eYo.isDef(arg.default)) {
             this.kwargs_.push(arg)
           }
         }))
@@ -186,10 +186,10 @@ eYo.module._p.makeItem = function () {
  * @return {?Object} return the model object for that item, if any.
  */
 eYo.module.Base_p.getItem = function (key) {
-  if (!goog.isNumber(key)) {
+  if (!eYo.isNum(key)) {
     key = this.data.by_name[key]
   }
-  if (goog.isNumber(key)) {
+  if (eYo.isNum(key)) {
     return this.data.items[key]
   }
 }
@@ -204,7 +204,7 @@ eYo.module.Base_p.getItemsInCategory = function (category, type) {
   if (eYo.isStr(type)) {
     type = this.data.type.indexOf(type)
   }
-  if (goog.isNumber(type) && type >= 0) {
+  if (eYo.isNum(type) && type >= 0) {
     var ra2 = []
     for (var i = 0; i < ra.length ; i++) {
       var item = this.getItem(i)

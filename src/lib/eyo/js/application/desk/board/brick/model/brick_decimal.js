@@ -259,7 +259,7 @@ eYo.library.DATA.decimal__module = [
 ]
 })()
 
-goog.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.Title, {
   decimal__import_stmt: 'Importer le module decimal',
   decimal__assigned_from_float: 'Créer une représentation d\'un nombre décimal à partir d\'un flottant et l\'affecter à une variable.',
   decimal__assigned_from_string: 'Créer une représentation d\'un nombre décimal à partir d\'un texte et l\'affecter à une variable.',

@@ -29,8 +29,8 @@ eYo.dom.makeDriverC9r('Board', {
         return board.owner.dom.board_
       }
     })
-    var d1 = dom.drag_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
+    var d1 = dom.drag_ = eYo.dom.createDom(
+      eYo.dom.TagName.DIV,
       'eyo-board-drag'
     )
     var style = d1.style
@@ -38,8 +38,8 @@ eYo.dom.makeDriverC9r('Board', {
     style.overflow = 'visible'
     style.position = 'absolute'
     dom.div_.appendChild(d1)
-    var d2 = dom.scale_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
+    var d2 = dom.scale_ = eYo.dom.createDom(
+      eYo.dom.TagName.DIV,
       'eyo-board-scale'
     )
     var stl = d2.style
@@ -47,8 +47,8 @@ eYo.dom.makeDriverC9r('Board', {
     stl.overflow = 'visible'
     stl.position = 'absolute'
     d1.appendChild(d2)
-    var d3 = dom.content_ = goog.dom.createDom(
-      goog.dom.TagName.DIV,
+    var d3 = dom.content_ = eYo.dom.createDom(
+      eYo.dom.TagName.DIV,
       'eyo-board-content'
     )
     stl = d3.style
@@ -56,16 +56,16 @@ eYo.dom.makeDriverC9r('Board', {
     stl.position = 'absolute'
     d2.appendChild(d3)
     if (board.isMain) {
-      const flyout = dom.flyout_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
+      const flyout = dom.flyout_ = eYo.dom.createDom(
+        eYo.dom.TagName.DIV,
         'eyo-flyout'
       )
       stl = flyout.style
       stl.position = 'absolute'
       stl.display = 'none'
       dom.div_.appendChild(flyout)
-      d1 = dom.board_ = goog.dom.createDom(
-        goog.dom.TagName.DIV,
+      d1 = dom.board_ = eYo.dom.createDom(
+        eYo.dom.TagName.DIV,
         'eyo-board-dragger'
       )
       dom.div_.appendChild(d1)

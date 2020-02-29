@@ -82,13 +82,13 @@ eYo.consolidator.Arguments.prototype.doCleanup = (() => {
     }
     var check = target.check_
     if (check) {
-      if (goog.array.contains(check, eYo.t3.expr.comprehension)) {
+      if (eYo.do.arrayContains(check, eYo.t3.expr.comprehension)) {
         return Type.COMPREHENSION
-      } else if (goog.array.contains(check, eYo.t3.expr.expression_star_star)) {
+      } else if (eYo.do.arrayContains(check, eYo.t3.expr.expression_star_star)) {
         return Type.STAR_STAR
-      } else if (goog.array.contains(check, eYo.t3.expr.expression_star)) {
+      } else if (eYo.do.arrayContains(check, eYo.t3.expr.expression_star)) {
         return Type.STAR
-      } else if (goog.array.contains(check, eYo.t3.expr.identifier_valued)) {
+      } else if (eYo.do.arrayContains(check, eYo.t3.expr.identifier_valued)) {
         return Type.KEYWORD
       } else {
         return Type.ARGUMENT
@@ -216,7 +216,7 @@ eYo.expr.List.makeInheritedC9r('argument_list', {
       xml: false,
       noUndo: true,
       validate (after) /** @suppress {globalThis} */ {
-        return goog.isNumber(after) ? after : Infinity
+        return eYo.isNum(after) ? after : Infinity
       },
       didChange (builtin) /** @suppress {globalThis} */ {
         builtin()

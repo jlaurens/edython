@@ -19,7 +19,7 @@ eYo.provide('brick.try')
 
 eYo.forwardDeclare('msg')
 
-goog.forwardDeclare('goog.dom')
+//g@@g.forwardDeclare('g@@g.dom')
 
 /**
  * Class for a Delegate, try_part brick.

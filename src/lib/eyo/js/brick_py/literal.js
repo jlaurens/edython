@@ -17,7 +17,7 @@ eYo.require('expr')
 eYo.forwardDeclare('xre')
 eYo.forwardDeclare('msg')
 
-goog.forwardDeclare('goog.dom')
+//g@@g.forwardDeclare('g@@g.dom')
 
 /**
  * @name{eYo.expr.literal}
@@ -168,7 +168,7 @@ eYo.expr.literal.makeInheritedC9r('shortliteral', {
         this.brick.value_d.consolidate()
       },
       validate (after) { /** @this{eYo.data.Base} */
-        return !goog.isDef(this.brick.Content_p) || this.brick.validateComponents({
+        return !eYo.isDef(this.brick.Content_p) || this.brick.validateComponents({
           prefix: after}
         ) ? after : eYo.INVALID
       },
@@ -189,7 +189,7 @@ eYo.expr.literal.makeInheritedC9r('shortliteral', {
         this.brick.value_d.consolidate()
       },
       validate (after) /** @suppress {globalThis} */ {
-        return !goog.isDef(this.brick.Content_p) || this.brick.validateComponents({
+        return !eYo.isDef(this.brick.Content_p) || this.brick.validateComponents({
           content: after
         }) ? after : eYo.INVALID
       },
@@ -229,7 +229,7 @@ eYo.expr.literal.makeInheritedC9r('shortliteral', {
         var prefix = this.brick.Prefix_p
         var delimiter = this.brick.Delimiter_p
         var content = this.brick.Content_p
-        if (goog.isDef(prefix) && goog.isDef(delimiter) && goog.isDef(content)) {
+        if (eYo.isDef(prefix) && eYo.isDef(delimiter) && eYo.isDef(content)) {
           this.set('' + prefix + delimiter + content + delimiter)
         }
       },
@@ -338,9 +338,9 @@ eYo.expr.literal.literalPopulateContextMenuFirst_ = function (mngr) {
   })
   var item = (msg, prefix) => {
     if (prefix !== current) {
-      var title = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+      var title = eYo.dom.createDom(eYo.dom.TagName.SPAN, null,
         eYo.do.CreateSPAN(msg, 'eyo-code'),
-        goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
+        eYo.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
       )
       return mngr.newMenuItem(title, () => {
         this.Prefix_p = prefix

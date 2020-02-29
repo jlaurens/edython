@@ -187,19 +187,19 @@ eYo.magnet.makeC9r('S', {
     if ((D = model.out) && Object.keys(D).length) {
       this.out_ = eYo.magnet.new(brick, eYo.magnet.OUT, D)
     } else if ((D = model.statement) && Object.keys(D).length) {
-      if (D.head && goog.isDefAndNotNull(D.head.check)) {
+      if (D.head && eYo.isDefAndNotNull(D.head.check)) {
         this.high_ = eYo.magnet.new(brick, eYo.magnet.HEAD, D.head)
       }
-      if (D.foot && goog.isDefAndNotNull(D.foot.check)) {
+      if (D.foot && eYo.isDefAndNotNull(D.foot.check)) {
         this.foot_ = eYo.magnet.new(brick, eYo.magnet.FOOT, D.foot)
       }
-      if (D.suite && goog.isDefAndNotNull(D.suite.check)) {
+      if (D.suite && eYo.isDefAndNotNull(D.suite.check)) {
         this.suite_ = eYo.magnet.new(brick, eYo.magnet.FOOT, D.suite)
       }
-      if (D.left && goog.isDefAndNotNull(D.left.check)) {
+      if (D.left && eYo.isDefAndNotNull(D.left.check)) {
         this.left_ = eYo.magnet.new(brick, eYo.magnet.LEFT, D.left)
       }
-      if (D.right && goog.isDefAndNotNull(D.right.check)) {
+      if (D.right && eYo.isDefAndNotNull(D.right.check)) {
         this.right_ = eYo.magnet.new(brick, eYo.magnet.RIGHT, D.right)
       }
     }
@@ -396,7 +396,7 @@ eYo.magnet.makeBase({
     hidden: eYo.NA,
     check: {
       validate (after) {
-        return goog.isArray(after) ? after : after && [after]
+        return eYo.isRA(after) ? after : after && [after]
       },
       didChange () {
         var brick = this.brick
@@ -1062,7 +1062,7 @@ eYo.magnet.Base_p.connectSmart = (() => {
  * @param {Number} l The line index.
  */
 eYo.magnet.Base_p.setOffset = function(c = 0, l = 0) {
-  if (goog.isDef(c.c) && goog.isDef(c.l)) {
+  if (eYo.isDef(c.c) && eYo.isDef(c.l)) {
     l = c.l
     c = c.c
   }
@@ -1490,7 +1490,7 @@ eYo.magnet.Base_p.bumpAwayFrom_ = function (m4t) {
   // Raise it to the top for extra visibility.
   var selected = root.hasFocus
   selected || root.selectAdd()
-  var dxy = eYo.geom.xyWhere(eYo.event.SNAP_RADIUS, eYo.event.SNAP_RADIUS).backward(this.xy)
+  var dxy = eYo.geom.xyPoint(eYo.event.SNAP_RADIUS, eYo.event.SNAP_RADIUS).backward(this.xy)
   if (reverse) {
     // When reversing a bump due to an uneditable brick, bump up.
     dxy.y = -dxy.y
@@ -1830,7 +1830,7 @@ eYo.magnet.Base_p.isConnectionAllowed = function (candidate, maxRadius) {
   if (this.wrapped_ || candidate.wrapped_) {
     return false
   }
-  if (goog.isDef(maxRadius) && this.distance(candidate) > maxRadius) {
+  if (eYo.isDef(maxRadius) && this.distance(candidate) > maxRadius) {
     return false
   }
   // Type checking.

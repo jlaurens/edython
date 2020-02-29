@@ -11,7 +11,7 @@
  */
 'use strict'
 
-goog.forwardDeclare('goog.dom')
+//g@@g.forwardDeclare('g@@g.dom')
 
 /**
  * Convenient shortcut.
@@ -20,7 +20,7 @@ goog.forwardDeclare('goog.dom')
  */
 eYo.event.fireBrickCreate = function (brick, group) {
   if (eYo.event.enabled) {
-    goog.isDef(group) && (eYo.event.group = group)
+    eYo.isDef(group) && (eYo.event.group = group)
     eYo.event.fire(new eYo.event.BrickCreate(brick))
   }
 }
@@ -199,7 +199,7 @@ eYo.event.BrickBase.makeInheritedC9r('BrickCreate', {
 eYo.event.BrickCreate_p.run = function(forward) {
   var board = this.board
   if (forward) {
-    var xml = goog.dom.createDom('xml')
+    var xml = eYo.dom.createDom('xml')
     xml.appendChild(this.xml)
     eYo.xml.domToBoard(xml, board)
   } else {
@@ -263,7 +263,7 @@ eYo.event.BrickDelete_p.run = function(forward) {
       }
     })
   } else {
-    var xml = goog.dom.createDom('xml')
+    var xml = eYo.dom.createDom('xml')
     xml.appendChild(this.oldXml)
     eYo.xml.domToBoard(xml, board)
   }

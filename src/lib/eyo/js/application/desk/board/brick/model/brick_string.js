@@ -191,6 +191,6 @@ eYo.library.DATA.String__module = [
 
 })()
 
-goog.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.Title, {
   string__import_stmt: 'Importer le module string.',
 })

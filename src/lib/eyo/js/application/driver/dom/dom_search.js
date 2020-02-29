@@ -29,8 +29,8 @@ eYo.dom.makeDriverC9r('Search', {
     // search toolbar, on top of the search
     var cssClass = this.cssClass()
     var f = (type) => {
-      var x = goog.dom.createDom(
-        goog.dom.TagName.DIV,
+      var x = eYo.dom.createDom(
+        eYo.dom.TagName.DIV,
         goog.getCssName(cssClass, type)
       )
       div.appendChild(x)
@@ -47,8 +47,8 @@ eYo.dom.makeDriverC9r('Search', {
    */
   disposeUI (search) {
     var dom = search.dom
-    goog.dom.removeNode(dom.toolbar_)
-    goog.dom.removeNode(dom.board_)
+    eYo.dom.removeNode(dom.toolbar_)
+    eYo.dom.removeNode(dom.board_)
   },
 })
 

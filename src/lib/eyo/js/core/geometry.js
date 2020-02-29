@@ -222,7 +222,7 @@ eYo.geom.Point_p.xySet = function (x = 0, y = 0) {
  * @param {Boolean} snap - Whether the receiver should snap to the grid
  * @return {eYo.geom.Point} The receiver
  */
-eYo.geom.xyWhere = function (x, y, snap) {
+eYo.geom.xyPoint = function (x, y, snap) {
   var y
   if (eYo.isBool(x)) {
     var _ = x
@@ -246,7 +246,7 @@ eYo.geom.xyWhere = function (x, y, snap) {
  * @param {Boolean} [snap] - snap flag. Defaults to false.
  * @return {eYo.geom.Point} The receiver
  */
-eYo.geom.clWhere = function (c, l, snap) {
+eYo.geom.clPoint = function (c, l, snap) {
   return new eYo.geom.Point(c, l, snap)
 }
 

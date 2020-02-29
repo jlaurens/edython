@@ -188,7 +188,7 @@ eYo.stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   var variants = this.variant_d.getAll()
   var F = (i) => {
     var key = variants[i]
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+    var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, 'eyo-code',
       eYo.do.CreateSPAN(key, 'eyo-code-reserved')
     )
   }
@@ -198,7 +198,7 @@ eYo.stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   mngr.shouldSeparate()
   F = (i) => {
     var key = variants[i]
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+    var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, 'eyo-code',
       eYo.do.CreateSPAN(key, 'eyo-code-reserved'),
       eYo.do.CreateSPAN(' …', 'eyo-code-placeholder')
     )

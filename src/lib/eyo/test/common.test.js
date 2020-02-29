@@ -31,9 +31,9 @@ eYo.test || eYo.makeNS('test')
 
 eYo.test.makeTestDesk = (id) => {
   var div0 = document.querySelector('#eyo-desk')
-  var div1 = goog.dom.createDom('div')
+  var div1 = eYo.dom.createDom('div')
   div1.setAttribute('id', id)
-  goog.dom.appendChild(div0.parentNode, div1)
+  eYo.dom.appendChild(div0.parentNode, div1)
   var style = div1.style
   style.position = 'relative'
   var w  = 10 * eYo.geom.X
@@ -86,7 +86,7 @@ Object.defineProperties(eYo.test, {
 eYo.test.makeDesk = options => {
   if (!eYo.board) {
     options = options || {}
-    goog.mixin(options, {
+    eYo.do.mixin(options, {
       collapse : true,
       disable : true,
       trashCan : false,
@@ -369,7 +369,7 @@ eYo.test.Slot_wrapped = (brick, k) => {
 }
 
 eYo.test.expect_out_check = (brick, check, str) => {
-  if (check !== null && !goog.isArray(check)) {
+  if (check !== null && !eYo.isRA(check)) {
     check = [check]
   }
   chai.assert(chai.expect(brick.out_m.check_).to.deep.equal(check), `MISSED output check for ${brick.type}: ${brick.out_m.check_} !== ${check}`)
@@ -413,11 +413,11 @@ eYo.test.Copy_paste = (brick, opts) => {
     }
   })
   var test = opts && opts.test
-  if (goog.isFunction(test)) {
+  if (eYo.isF(test)) {
     test(brick, dd)
   }
   var filter = opts && opts.filter
-  if (goog.isFunction(filter)) {
+  if (eYo.isF(filter)) {
     var f = slot => {
       var t9k = slot.targetBrick
       if (t9k) {

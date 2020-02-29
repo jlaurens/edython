@@ -34,7 +34,7 @@ eYo.dom.makeDriverC9r('App', {
       container = options.container = document.getElementById(container) ||
           document.querySelector(container)
     }
-    if (!goog.dom.contains(document, container)) {
+    if (!eYo.dom.contains(document, container)) {
       throw 'Error: container is not in current document.'
     }
     var div = dom.div_ || (dom.div_= container)
@@ -46,7 +46,7 @@ eYo.dom.makeDriverC9r('App', {
    */
   disposeUI (app) {
     var dom = app.dom
-    goog.dom.removeNode(dom.div_)
+    eYo.dom.removeNode(dom.div_)
     dom.div_ = null
   }
 })

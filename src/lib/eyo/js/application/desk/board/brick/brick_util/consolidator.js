@@ -55,8 +55,8 @@ eYo.consolidator.makeBase({
    */
   init (model) {
     var D = this.model
-    model && goog.mixin(D, model)
-    eYo.assert(goog.isDef(D.check), 'Consolidators must check their objects')
+    model && eYo.do.mixin(D, model)
+    eYo.assert(eYo.isDef(D.check), 'Consolidators must check their objects')
     D.check = eYo.decorate.ArrayFunction(D.check)
     this.model_ = D
   },
@@ -88,7 +88,7 @@ eYo.consolidator.makeC9r('List', {
   init () {
     var D = this.model
     var DD = this.constructor.eyo.model 
-    DD && DD.list && goog.mixin(D, DD.list)
+    DD && DD.list && eYo.do.mixin(D, DD.list)
     this.eyo.ns.modelExpand({list: D})
   }
 })
@@ -105,7 +105,7 @@ eYo.consolidator.List_p.getAry = function (io) {
       return d.get()
     }
   }
-  return goog.isDef(this.model.ary)
+  return eYo.isDef(this.model.ary)
     ? this.model.ary
     : this.model.ary = Infinity
 }
@@ -125,7 +125,7 @@ eYo.consolidator.List_p.getMandatory = function (io) {
       return this.model.mandatory(io.brick.type, io.brick.subtype)
     }
   }
-  return goog.isDef(this.model.mandatory)
+  return eYo.isDef(this.model.mandatory)
   ? this.model.mandatory
   : this.model.mandatory = 0
 }
@@ -176,7 +176,7 @@ eYo.consolidator.List_p.willBeConnected = function (io) {
  * @return {eYo.slot.Base}, the slot inserted.
  */
 eYo.consolidator.List_p.insertPlaceholder = function (io, i) {
-  if (goog.isNumber(i)) {
+  if (eYo.isNum(i)) {
     io.i = i
   }
   var model = {
@@ -202,7 +202,7 @@ eYo.consolidator.List_p.insertPlaceholder = function (io, i) {
  * @return boolean, whether the io is at end.
  */
 eYo.consolidator.List_p.disposeAtI = function (io, i) {
-  if (!goog.isNumber(i)) {
+  if (!eYo.isNum(i)) {
     i = io.i
   }
   var slot = io.list[i]
@@ -744,16 +744,16 @@ eYo.consolidator.List_p.getSlot = function (brick, name, dontCreate) {
  * @return the next keyword item slot, eYo.NA when at end.
  */
 eYo.consolidator.List_p.nextSlotForType = function (io, type) {
-  var filter = goog.isArray(type)
+  var filter = eYo.isRA(type)
     ? (check) => {
       for (var i = 0; i < type.length; i++) {
-        if (goog.array.contains(check, type[i])) {
+        if (eYo.do.arrayContains(check, type[i])) {
           return true
         }
       }
     }
     : (check) => {
-      return goog.array.contains(check, type)
+      return eYo.do.arrayContains(check, type)
     }
   while (this.nextSlot(io)) {
     var target = io.m4t.target

@@ -59,9 +59,9 @@ eYo.svg.Desk_p.bind_resize = function (desk) {
 eYo.svg.Desk_p.setBrickDisplayMode = function (desk, mode) {
   var div = desk.dom.div_
   var old = desk.currentBrickDisplayMode
-  old && (goog.dom.classlist.remove(div, `eyo-${old}`))
+  old && (eYo.dom.classlist.remove(div, `eyo-${old}`))
   if ((desk.currentBrickDisplayMode = mode)) {
-    goog.dom.classlist.add(div, `eyo-${mode}`)
+    eYo.dom.classlist.add(div, `eyo-${mode}`)
   }
 }
 

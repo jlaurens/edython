@@ -13,8 +13,8 @@
 
 eYo.forwardDeclare('board')
 
-goog.forwardDeclare('goog.dom')
-goog.forwardDeclare('goog.events')
+//g@@g.forwardDeclare('g@@g.dom')
+//g@@g.forwardDeclare('g@@g.events')
 
 /**
  * @type{eYo.view.Scroller}

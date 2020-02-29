@@ -1,8 +1,8 @@
 describe('Metrics', function () {
   it ('POC: scaling divs', function () {
     var div0 = document.querySelector('#eyo-desk')
-    var div1 = goog.dom.createDom('div')
-    goog.dom.appendChild(div0.parentNode, div1)
+    var div1 = eYo.dom.createDom('div')
+    eYo.dom.appendChild(div0.parentNode, div1)
     var style = div1.style
     var w  = 100
     var h = 100
@@ -21,9 +21,9 @@ describe('Metrics', function () {
   it ('place and scroll basics', function() {
     var div0 = document.querySelector('#eyo-desk')
     var metrics = new eYo.geom.Metrics()
-    metrics.view_.size = eYo.geom.xyWhere(parseInt(div0.style.width), parseInt(div0.style.height))
-    var div1 = goog.dom.createDom('div')
-    goog.dom.appendChild(div0.parentNode, div1)
+    metrics.view_.size = eYo.geom.xyPoint(parseInt(div0.style.width), parseInt(div0.style.height))
+    var div1 = eYo.dom.createDom('div')
+    eYo.dom.appendChild(div0.parentNode, div1)
     div1.style.position='relative'
     div1.style.width = `${metrics.view_.width}px`
     div1.style.height = `${metrics.view_.height}px`
@@ -32,11 +32,11 @@ describe('Metrics', function () {
     svg.style.position='absolute'
     svg.setAttribute('preserveAspectRatio', 'xMinYMin slice')
     var content = metrics.port_
-    content.origin = eYo.geom.clWhere(-8, -2)
-    content.size = eYo.geom.clWhere(80, 20)
+    content.origin = eYo.geom.clPoint(-8, -2)
+    content.size = eYo.geom.clPoint(80, 20)
     svg.setAttribute('viewBox', `${content.x} ${content.y} ${content.width} ${content.height}`)
     metrics.scale_ = 1.1
-    metrics.drag_ = eYo.geom.clWhere(4, 2)
+    metrics.drag_ = eYo.geom.clPoint(4, 2)
     content = metrics.portInView
     svg.setAttribute('width', `${content.width}px`)
     svg.setAttribute('height', `${content.height}px`)
@@ -77,9 +77,9 @@ describe('Metrics', function () {
   it ('place and scale basics', function() {
     var div0 = document.querySelector('#eyo-desk')
     var metrics = new eYo.geom.Metrics()
-    metrics.view_.size = eYo.geom.xyWhere(parseInt(div0.style.width), parseInt(div0.style.height))
-    var div1 = goog.dom.createDom('div')
-    goog.dom.appendChild(div0.parentNode, div1)
+    metrics.view_.size = eYo.geom.xyPoint(parseInt(div0.style.width), parseInt(div0.style.height))
+    var div1 = eYo.dom.createDom('div')
+    eYo.dom.appendChild(div0.parentNode, div1)
     div1.style.position='relative'
     div1.style.width = `${metrics.view_.width}px`
     div1.style.height = `${metrics.view_.height}px`
@@ -88,11 +88,11 @@ describe('Metrics', function () {
     svg.style.position='absolute'
     svg.setAttribute('preserveAspectRatio', 'xMinYMin slice')
     var content = metrics.port_
-    content.origin = eYo.geom.clWhere(-8, -2)
-    content.size = eYo.geom.clWhere(80, 20)
+    content.origin = eYo.geom.clPoint(-8, -2)
+    content.size = eYo.geom.clPoint(80, 20)
     svg.setAttribute('viewBox', `${content.x} ${content.y} ${content.width} ${content.height}`)
     metrics.scale_ = 1.5
-    metrics.drag_ = eYo.geom.clWhere(4, 2)
+    metrics.drag_ = eYo.geom.clPoint(4, 2)
     content = metrics.portInView
     svg.setAttribute('width', `${content.width}px`)
     svg.setAttribute('height', `${content.height}px`)
@@ -129,8 +129,8 @@ describe('Metrics', function () {
   })
   it ('getBoundingClientRect truncated to 1/64th', function () {
     var div0 = document.querySelector('#eyo-desk')
-    var div1 = goog.dom.createDom('div')
-    goog.dom.appendChild(div0.parentNode, div1)
+    var div1 = eYo.dom.createDom('div')
+    eYo.dom.appendChild(div0.parentNode, div1)
     div1.style.width = `${1/64}px`
     div1.style.height = `${1/64}px`
     var r = div1.getBoundingClientRect()

@@ -124,13 +124,13 @@ eYo.consolidator.Target_p.doCleanup = (() => {
     }
     var check = m4t.check_
     if (check) {
-      if (goog.array.contains(check, eYo.t3.expr.target_star)) {
+      if (eYo.do.arrayContains(check, eYo.t3.expr.target_star)) {
         return Type.STARRED
       } else {
         if (!io.annotatedInput
-          && (goog.array.contains(check, eYo.t3.expr.identifier_annotated)
-          || goog.array.contains(check, eYo.t3.expr.augtarget_annotated)
-          || goog.array.contains(check, eYo.t3.expr.key_datum))) {
+          && (eYo.do.arrayContains(check, eYo.t3.expr.identifier_annotated)
+          || eYo.do.arrayContains(check, eYo.t3.expr.augtarget_annotated)
+          || eYo.do.arrayContains(check, eYo.t3.expr.key_datum))) {
           io.annotatedInput = io.slot
         }
         return Type.OTHER
@@ -568,10 +568,10 @@ eYo.expr.makeC9r('primary', {
           } else {
             validated = Infinity
           }
-        } else if (goog.isNumber(after)) {
+        } else if (eYo.isNum(after)) {
           validated = Math.max(0, Math.floor(after))
         }
-        return goog.isDef(validated)
+        return eYo.isDef(validated)
         ? validated
         : eYo.INVALID
       },
@@ -608,7 +608,7 @@ eYo.expr.makeC9r('primary', {
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          if (this.get() || goog.isDef(this.model.placeholder)) {
+          if (this.get() || eYo.isDef(this.model.placeholder)) {
             this.save(element, opt)
           }
         }
@@ -916,7 +916,7 @@ eYo.expr.makeC9r('primary', {
             } else {
               validated = Infinity
             }
-          } else if (goog.isNumber(after)) {
+          } else if (eYo.isNum(after)) {
             validated = Math.max(0, Math.floor(after))
           }
         }
@@ -931,7 +931,7 @@ eYo.expr.makeC9r('primary', {
           target.Ary_p = after
         }
         ;(after < this.brick.Mandatory_p) && (this.brick.Mandatory_p = after)
-        if (goog.isDefAndNotNull(after)) {
+        if (eYo.isDefAndNotNull(after)) {
           this.brick.Variant_p = eYo.key.CALL_EXPR
         }
       },
@@ -963,7 +963,7 @@ eYo.expr.makeC9r('primary', {
             } else {
               validated = 0
             }
-          } else if (goog.isNumber(after)) {
+          } else if (eYo.isNum(after)) {
             validated = Math.max(0, Math.floor(after))
           }
         }
@@ -976,7 +976,7 @@ eYo.expr.makeC9r('primary', {
           target.Mandatory_p = after
         }
         ;(after > this.brick.Ary_p) && (this.brick.Ary_p = after)
-        if (goog.isDefAndNotNull(after)) {
+        if (eYo.isDefAndNotNull(after)) {
           this.brick.Variant_p = eYo.key.CALL_EXPR
         }
       },

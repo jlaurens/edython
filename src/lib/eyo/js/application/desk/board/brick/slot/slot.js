@@ -29,7 +29,7 @@ eYo.forwardDeclare('xml')
 eYo.forwardDeclare('key')
 eYo.forwardDeclare('expr.List')
 
-goog.forwardDeclare('goog.dom');
+//g@@g.forwardDeclare('g@@g.dom');
 
 /**
  * The model is one of the entries of the `slots` section
@@ -373,7 +373,7 @@ eYo.slot.Base_p.save = function (element, opt) {
           var child = eYo.xml.brickToDom(t9k, opt)
           if (child.firstElementChild) {
             child.setAttribute(eYo.xml.sLOT, this.xmlKey)
-            goog.dom.appendChild(element, child)
+            eYo.dom.appendChild(element, child)
             return child
           }
         } else {
@@ -384,7 +384,7 @@ eYo.slot.Base_p.save = function (element, opt) {
         child = eYo.xml.brickToDom(t9k, opt)
         if (child.firstElementChild || child.hasAttributes()) {
           child.setAttribute(eYo.xml.sLOT, this.xmlKey)
-          goog.dom.appendChild(element, child)
+          eYo.dom.appendChild(element, child)
           return child
         }
       }
@@ -402,10 +402,10 @@ eYo.slot.Base_p.save = function (element, opt) {
  * @param {Object} opt
  */
 eYo.slot.Base_p.saveRequired = function (element) {
-  var child = goog.dom.createDom(eYo.xml.EXPR)
+  var child = eYo.dom.createDom(eYo.xml.EXPR)
   child.setAttribute(eYo.key.EYO, eYo.key.PLACEHOLDER)
   child.setAttribute(eYo.xml.sLOT, this.xmlKey)
-  goog.dom.appendChild(element, child)
+  eYo.dom.appendChild(element, child)
 }
 
 /**

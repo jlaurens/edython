@@ -31,8 +31,8 @@ eYo.dom.makeDriverC9r('Flyout', {
     // flyout toolbar, on top of the flyout
     var cssClass = this.cssClass()
     var f = (type) => {
-      var x = goog.dom.createDom(
-        goog.dom.TagName.DIV,
+      var x = eYo.dom.createDom(
+        eYo.dom.TagName.DIV,
         goog.getCssName(cssClass, type)
       )
       div.appendChild(x)
@@ -49,8 +49,8 @@ eYo.dom.makeDriverC9r('Flyout', {
    */
   disposeUI (flyout) {
     var dom = flyout.dom
-    goog.dom.removeNode(dom.toolbar_)
-    goog.dom.removeNode(dom.board_)
+    eYo.dom.removeNode(dom.toolbar_)
+    eYo.dom.removeNode(dom.board_)
   },
 })
 

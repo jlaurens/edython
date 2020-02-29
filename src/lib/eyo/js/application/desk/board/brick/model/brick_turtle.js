@@ -230,7 +230,7 @@ eYo.stmt.makeC9r('turtle__setup_stmt', true, {
 <x eyo="list" slot="assigned"><x eyo="turtle__call_expr" name="stamp" ary="0" slot="O"></x>
 </x>
 </s> */
-goog.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.Title, {
   turtle__import_stmt: 'Importer le module turtle',
   turtle__setup_stmt: 'Réglages du module turtle propres à edython',
 })

@@ -31,10 +31,10 @@ eYo.svg.makeDriverC9r('Slot', {
     }, null)
     g.dataset && (g.dataset.slot = slot.key)
     if (slot.previous) {
-      goog.dom.insertSiblingAfter(g, slot.previous.dom.svg.group_)
+      eYo.dom.insertSiblingAfter(g, slot.previous.dom.svg.group_)
     } else {
       eYo.assert(slot.brick.slotAtHead === slot, 'Unexpected head slot not at head')
-      goog.dom.appendChild(slot.brick.dom.svg.group_, g)
+      eYo.dom.appendChild(slot.brick.dom.svg.group_, g)
     }
     this.displayedUpdate(slot)
   },
@@ -43,7 +43,7 @@ eYo.svg.makeDriverC9r('Slot', {
    * @param {eYo.slot.Base} slot
    */
   disposeMake (slot) {
-    goog.dom.removeNode(slot.dom.svg.group_)
+    eYo.dom.removeNode(slot.dom.svg.group_)
     slot.dom.svg.group_ = null
     slot.dom.svg = null
   },

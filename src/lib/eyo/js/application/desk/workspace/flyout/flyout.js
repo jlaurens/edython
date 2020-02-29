@@ -472,7 +472,7 @@ eYo.view.Flyout_p.show = function(model) {
 eYo.view.Flyout_p.on_wheel = function(e) {
   var delta = e.deltaY
   if (delta) {
-    if (goog.userAgent.GECKO) {
+    if (eYo.userAgent.GECKO) {
       // Firefox's deltas are a tenth that of Chrome/Safari.
       delta *= 10
     }
@@ -513,7 +513,7 @@ eYo.view.Flyout_p.createBrick = function(originalBrick) {
  */
 eYo.view.Flyout_p.layout_ = function(contents) {
   this.board_.scale = this.desk.board.scale
-  var where = eYo.geom.xyWhere(this.MARGIN, this.MARGIN)
+  var where = eYo.geom.xyPoint(this.MARGIN, this.MARGIN)
   contents.forEach(brick => {
     // Mark bricks as being inside a flyout.  This is used to detect and
     // prevent the closure of the flyout if the user right-clicks on such a
@@ -661,7 +661,7 @@ eYo.view.Flyout_p.doSlide = function(close) {
   if (this.slide_locked) {
     return
   }
-  if (!goog.isDef(close)) {
+  if (!eYo.isDef(close)) {
     close = !this.closed
   }
   // nothing to do either if already in the expected state

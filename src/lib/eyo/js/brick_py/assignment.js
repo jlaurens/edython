@@ -17,7 +17,7 @@ eYo.provide('brick.assignment')
 
 eYo.forwardDeclare('msg')
 eYo.forwardDeclare('expr.primary')
-goog.forwardDeclare('goog.dom')
+//g@@g.forwardDeclare('g@@g.dom')
 
 /**
  * Class for a Delegate, assignment_stmt.
@@ -478,7 +478,7 @@ eYo.expr.List.makeInheritedC9r('value_list', {
       if (check === null) {
         return null
       }
-      var ra = goog.array.concat(unique, check)
+      var ra = [].concat(unique, check)
       all[k] = ra.length ? ra : null
     })
     me.all = (type, subtype) => {
@@ -510,8 +510,8 @@ eYo.expr.List.makeInheritedC9r('augassigned_list', () => {
     mandatory: 1,
     presep: ','
   }
-  var RA = goog.array.concat(D.check, D.unique)
-  goog.array.removeDuplicates(RA)
+  var RA = [].concat(D.check, D.unique)
+  eYo.do.arrayRemoveDuplicates(RA)
   D.all = RA
   return {
     list: D

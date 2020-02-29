@@ -104,7 +104,7 @@ describe ('geometry', function () {
       chai.expect(w1).not.almost.deep.equal(w2)
       w1.forward(-1)
       chai.expect(w1).almost.deep.equal(w2)
-      var w3 = eYo.geom.xyWhere(12.34, 56.78)
+      var w3 = eYo.geom.xyPoint(12.34, 56.78)
       w1.forward(w3)
       chai.expect(w1).not.almost.deep.equal(w2)
       w2.forward(w3)

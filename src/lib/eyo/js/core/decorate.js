@@ -79,7 +79,7 @@ eYo.decorate.Benchmark = function (key, f) {
 eYo.decorate.ArrayFunction = object => {
   var did = eYo.isF(object)
     ? object
-    : goog.isArray(object)
+    : eYo.isRA(object)
       ? () => object
       : object
         ? () => [object]

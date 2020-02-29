@@ -321,7 +321,7 @@ eYo.KHandler = (() => {
     }
     MI = menu_.getChildAt(0)
     var k = keys_.join('')
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
+    var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, 'eyo-code',
       eYo.do.CreateSPAN(k, 'eyo-code-emph'))
     MI.setContent(content)
     MI.setModel(k)
@@ -334,11 +334,11 @@ eYo.KHandler = (() => {
         var j = 0
         var c = Cs[j++]
         var d
-        content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-          goog.dom.createTextNode(c))
+        content = eYo.dom.createDom(eYo.dom.TagName.SPAN, 'eyo-code',
+          eYo.dom.createTextNode(c))
         while ((d = Cs[j++]) !== eYo.NA && (c = Cs[j++]) !== eYo.NA) {
           content.appendChild(eYo.do.CreateSPAN(d, 'eyo-code-emph'))
-          content.appendChild(goog.dom.createTextNode(c))
+          content.appendChild(eYo.dom.createTextNode(c))
         }
         if ((MI = menu_.getChildAt(i + 2))) {
           MI.setModel(s)
@@ -389,10 +389,10 @@ eYo.KHandler = (() => {
     }
     i = 0
     while (i < me.MAX_CHILD_COUNT && (shortcut = current_[i++])) {
-      content = goog.dom.createDom(goog.dom.TagName.SPAN, 'eyo-code',
-        goog.dom.createTextNode(shortcut.components[0]),
+      content = eYo.dom.createDom(eYo.dom.TagName.SPAN, 'eyo-code',
+        eYo.dom.createTextNode(shortcut.components[0]),
         eYo.do.CreateSPAN(shortcut.components[1], 'eyo-code-emph'),
-        goog.dom.createTextNode(shortcut.components[2])
+        eYo.dom.createTextNode(shortcut.components[2])
       )
       MI = new eYo.MenuItem(content, shortcut)
       menu_.addChild(MI, true)

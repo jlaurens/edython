@@ -12,8 +12,8 @@
 'use strict'
 
 eYo.forwardDeclare('board')
-goog.forwardDeclare('goog.dom')
-goog.forwardDeclare('goog.events')
+//g@@g.forwardDeclare('g@@g.dom')
+//g@@g.forwardDeclare('g@@g.events')
 
 Object.defineProperties(eYo.view, {
   /**

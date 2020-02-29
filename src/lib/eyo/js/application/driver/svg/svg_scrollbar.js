@@ -103,7 +103,7 @@ eYo.svg.makeDriverC9r('Scrollbar', {
    */
   disposeUI (scrollbar) {
     var dom = scrollbar.dom
-    goog.dom.removeNode(dom.svg.root_)
+    eYo.dom.removeNode(dom.svg.root_)
     dom.svg = dom.svg.root_ = null
     throw 'WHAT ABOUT THE OTHER EVENTS'
   },

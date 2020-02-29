@@ -215,7 +215,7 @@ eYo.library.DATA.Cmath__module = [
 
 })()
 
-goog.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.Title, {
   cmath__import_stmt: 'Importer le module cmath',
 })
 

@@ -84,7 +84,7 @@ eYo.library.DATA.Basic_fractions__module = [
   F_instance('limit_denominator', eYo.t3.expr.call_expr, 'Approximation d\'une fraction avec dénominateur maximal')
 ]
 
-goog.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.Title, {
   fractions__import_stmt: 'Importer le module fractions'
 })
 
@@ -129,6 +129,6 @@ eYo.library.DATA.fractions__module = [
 
 })()
 
-goog.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.Title, {
   fractions__import_stmt: 'Importer le module fractions',
 })

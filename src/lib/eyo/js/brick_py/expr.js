@@ -18,7 +18,7 @@ eYo.require('msg')
 
 eYo.require('decorate')
 eYo.require('t3.all')
-goog.require('goog.dom');
+//g@@g.require('g@@g.dom');
 
 /**
  * @name{eYo.expr}
@@ -196,9 +196,9 @@ eYo.expr.Base_p.awaitable = function () {
 eYo.expr.Base_p.populateContextMenuFirst_ = function (mngr) {
   var yorn = eYo.expr.Base.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('await', 'eyo-code-reserved'),
-      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
+      eYo.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
     )
     if (this.await_) {
       mngr.shouldSeparateRemove()

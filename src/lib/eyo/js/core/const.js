@@ -22,7 +22,7 @@ eYo.makeNS('id')
 eYo.makeNS('const', {
   ABOVE: 'ABOVE', // not for brick definition
   BELOW: 'BELOW',
-  field = {
+  field: {
     // IN PROGRESS
     VAR: 'VAR',
     STARS: 'STARS',

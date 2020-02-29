@@ -13,7 +13,7 @@
 
 eYo.forwardDeclare('msg')
 
-goog.forwardDeclare('goog.dom')
+//g@@g.forwardDeclare('g@@g.dom')
 
 /**
  * @name{eYo.stmt.group}
@@ -216,9 +216,9 @@ eYo.stmt.group.prototype.willRender_ = function (recorder) {
  */
 eYo.stmt.group.prototype.populateContextMenuFirst_ = function (mngr) {
   if (this.async_f) {
-    var content = goog.dom.createDom(goog.dom.TagName.SPAN, null,
+    var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('async', 'eyo-code-reserved'),
-      goog.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
+      eYo.dom.createTextNode(' ' + eYo.msg.AT_THE_LEFT)
     )
     if (this.async_) {
       mngr.addRemoveChild(mngr.newMenuItem(content, () => {

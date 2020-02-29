@@ -14,7 +14,7 @@
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('c9r.DB')
 
-goog.forwardDeclare('goog.array')
+//g@@g.forwardDeclare('g@@g.array')
 
 /**
  * @name{eYo.brick.List}
@@ -162,7 +162,7 @@ eYo.brick.List_p.add = function (brick, opt_id) {
  * @param {eYo.brick.Base} brick
  */
 eYo.brick.List_p.remove = function (brick) {
-  if (!goog.array.remove(this.bricks_, brick)) {
+  if (!eYo.do.arrayRemove(this.bricks_, brick)) {
     throw 'Brick not present in list.'
   }
   // Remove from list

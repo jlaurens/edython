@@ -49,6 +49,7 @@ var ConfigEyo = function (target, dist, env) {
   this.distPath = path.join(this.rootPath, 'dist', dist)
   this.staticPath = path.join(this.rootPath, 'static')
   this.srcPath = path.join(this.rootPath, 'src')
+  this.jsPath = path.join(this.srcPath, 'js')
   this.rendererPath = path.join(this.srcPath, 'renderer')
   this.langPath = path.join(this.rendererPath, 'lang')
   this.envPath = path.join(this.rendererPath, 'env', this.env)
@@ -60,6 +61,7 @@ var ConfigEyo = function (target, dist, env) {
   console.log('this.distPath :', this.distPath)
   console.log('this.staticPath :', this.staticPath)
   console.log('this.srcPath :', this.srcPath)
+  console.log('this.jsPath :', this.jsPath)
   console.log('this.rendererPath :', this.rendererPath)
   console.log('this.langPath :', this.langPath)
   console.log('this.envPath :', this.envPath)
@@ -105,13 +107,13 @@ ConfigEyo.prototype.getConfig = function () {
       },
       // {
       //   test: /\.(xml)$/,
-      //   use: path.resolve(this.srcPath, 'loaders', 'eyo-loader.js')
+      //   use: path.resolve(this.jsPath, 'loaders', 'eyo-loader.js')
       // },
       {
         test: /\.eyox$/,
         use: [
           'raw-loader',
-          // path.resolve(this.srcPath, 'loaders', 'eyo-loader.js')
+          // path.resolve(this.jsPath, 'loaders', 'eyo-loader.js')
         ]
       },
       {
@@ -166,7 +168,7 @@ ConfigEyo.prototype.getConfig = function () {
           exclude: /node_modules/
         }
         if (this.env === 'web') {
-          model.include = [ path.join(this.srcPath, 'renderer') ]
+          model.include = [ path.join(this.jsPath, 'renderer') ]
         }
         return model
       }) (),
@@ -236,14 +238,14 @@ ConfigEyo.prototype.getConfig = function () {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
   ]
-  console.warn('UTIL:', path.join(this.srcPath, 'renderer', 'components', 'Util'))
+  console.warn('UTIL:', path.join(this.jsPath, 'renderer', 'components', 'Util'))
   config.resolve = {
     alias: {
       'vue$': path.join('vue', 'dist', 'vue.esm.js'),
-      '@blockly': path.join(this.srcPath, 'lib', 'blockly/'),
-      '@eyo': path.join(this.srcPath, 'lib', 'eyo'),
+      '@eyo': path.join(this.jsPath, 'lib', 'eyo'),
       '@root': this.rootPath,
       '@src': this.srcPath,
+      '@js': this.jsPath,
       '@static': this.staticPath,
       '@lang': this.langPath,
       '@env': this.envPath,
@@ -313,12 +315,12 @@ ConfigEyo.prototype.enableBrython = function (config) {
     new CopyWebpackPlugin(
       [
         {
-          from: path.join(this.srcPath, 'lib/brython/www/src/**'),
+          from: path.join(this.jsPath, 'lib/brython/www/src/**'),
           to: path.join(this.distPath, '[1]'),
           test: /^.*\/src\/lib\/brython\/www\/(src\/.+)$/,
         },
         {
-          from: path.join(this.srcPath, 'lib/site-packages/**'),
+          from: path.join(this.jsPath, 'lib/site-packages/**'),
           to: path.join(this.distPath, 'src/Lib/[1]'),
           test: /..\/src\/lib(\/.+\.py)$/,
         },
@@ -342,7 +344,7 @@ ConfigEyo.prototype.enableBrythonSources = function (config) {
     new CopyWebpackPlugin(
       [
         {
-          from: path.join(this.srcPath, 'lib/brython/www/src/**'),
+          from: path.join(this.jsPath, 'lib/brython/www/src/**'),
           to: path.join(this.distPath, '[1]'),
           test: /^.*\/src\/lib\/brython\/www\/(src\/.+)$/,
         }
@@ -401,9 +403,9 @@ ConfigEyo.prototype.enableResources = function (config) {
     new CopyWebpackPlugin(
       [
         {
-          from: path.join(this.srcPath, 'lib/blockly/media/**'),
+          from: path.join(this.jsPath, 'lib/eyo/media/**'),
           to: path.join(this.distPath, 'static[1]'),
-          test: /..\/src\/lib\/blockly(\/media\/.+)$/,
+          test: /..\/src\/lib\/eyo(\/media\/.+)$/,
         },
         {
           from: path.join(this.rootPath, 'font/*.woff'),
