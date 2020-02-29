@@ -211,7 +211,7 @@ eYo.makeNS('key', {
   PAR: '()', // also used in xml eyo attribute
   SQB: '[]', // also used in xml eyo attribute
   BRACE: '{}', // also used in xml eyo attribute
-  event = {
+  event: {
     data: 'eyo:data:',
     property: 'eyo:property',
     locked: 'eyo:locked',

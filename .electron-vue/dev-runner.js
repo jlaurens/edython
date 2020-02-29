@@ -10,7 +10,7 @@ const WebpackDevServer = require('webpack-dev-server')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 
 const mainConfig = require('./webpack.main.config')
-const rendererConfig = process.env.EYO_BUILD_MODE === 'debug'? require('./webpack.debug.config'): require('./webpack.renderer.config')
+const rendererConfig = process.env.EYO_BUILD_MODE === 'debug' ? require('./webpack.debug.config'): require('./webpack.renderer.config')
 
 console.warn('EYO_BUILD_MODE: ', process.env.EYO_BUILD_MODE)
 
@@ -151,8 +151,7 @@ function greeting () {
   const cols = process.stdout.columns
   let text = ''
 
-  if (cols > 104) text = 'electron-vue'
-  else if (cols > 76) text = 'electron-|vue'
+  if (cols > 76) text = 'Edython'
   else text = false
 
   if (text) {
