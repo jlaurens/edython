@@ -57,10 +57,10 @@ eYo.event.fireBrickMove = (brick, move) => {
 /**
  * Abstract class for a brick event.
  * @param {eYo.brick.Base} brick The brick this event corresponds to.
- * @extends {eYo.event.Base}
+ * @extends {eYo.event.Event}
  * @constructor
  */
-eYo.event.Base.makeInheritedC9r('BrickBase', {
+eYo.event.Event.makeInheritedC9r('BrickBase', {
   init (brick) {
     /**
      * The brick id for the brick this event pertains to
@@ -107,7 +107,7 @@ eYo.event.BrickBase.makeInheritedC9r('BrickChange', {
     },
     /**
      * Merge the receiver with the given event.
-     * @param {eYo.event.Base} event - an eYo event
+     * @param {eYo.event.Event} event - an eYo event
      * @return {Boolean} Whether the change did occur.
      */
     merge (lastEvent) {
@@ -295,7 +295,7 @@ eYo.event.BrickBase.makeInheritedC9r('BrickMove', {
     },
     /**
      * Merge the receiver with the given event.
-     * @param {eYo.event.Base} event - an eYo event
+     * @param {eYo.event.Event} event - an eYo event
      * @return {Boolean} Whether the change did occur.
      */
     merge (lastEvent) {

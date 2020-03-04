@@ -101,6 +101,8 @@ class Foo:
   # eYo.driver.makeMngr(model)
   re_makeMngr = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.makeMngr\s*\(.*""", re.X)
+  re_makeForwarder = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)\.makeForwarder\s*\(.*""", re.X)
 
   # eYo.o3d.Base.eyo.propertiesMerge({
   re_propertiesMerge = re.compile(r"""^\s*
@@ -178,6 +180,11 @@ class Foo:
           addRequired(f'{ns}')
           addProvided(f'{ns}.Mngr')
           addProvided(f'{ns}.Base')
+          continue
+        m = self.re_makeForwarder.match(l)
+        if m:
+          ns = m.group('ns')
+          addRequired(f'{ns}')
           continue
         m = self.re_protocol.match(l)
         if m:

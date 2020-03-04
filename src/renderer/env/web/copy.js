@@ -55,9 +55,9 @@ eYo.App.copyTextToClipboard = function (text) {
   document.body.removeChild(textArea)
 }
 
-eYo.App.didCopyBlock = function (block, xml) {
+eYo.App.didCopyBrick = function (block, xml) {
   const p = new eYo.Py.Exporter()
   const code = p.export(block, {is_deep: true})
   eYo.App.copyTextToClipboard(code)
-  store.commit('Clipboard/didCopyBlock', xml)
+  store.commit('Clipboard/didCopyBrick', xml)
 }

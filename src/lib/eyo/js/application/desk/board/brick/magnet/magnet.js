@@ -187,19 +187,19 @@ eYo.magnet.makeC9r('S', {
     if ((D = model.out) && Object.keys(D).length) {
       this.out_ = eYo.magnet.new(brick, eYo.magnet.OUT, D)
     } else if ((D = model.statement) && Object.keys(D).length) {
-      if (D.head && eYo.isDefAndNotNull(D.head.check)) {
+      if (D.head && eYo.isDef(D.head.check)) {
         this.high_ = eYo.magnet.new(brick, eYo.magnet.HEAD, D.head)
       }
-      if (D.foot && eYo.isDefAndNotNull(D.foot.check)) {
+      if (D.foot && eYo.isDef(D.foot.check)) {
         this.foot_ = eYo.magnet.new(brick, eYo.magnet.FOOT, D.foot)
       }
-      if (D.suite && eYo.isDefAndNotNull(D.suite.check)) {
+      if (D.suite && eYo.isDef(D.suite.check)) {
         this.suite_ = eYo.magnet.new(brick, eYo.magnet.FOOT, D.suite)
       }
-      if (D.left && eYo.isDefAndNotNull(D.left.check)) {
+      if (D.left && eYo.isDef(D.left.check)) {
         this.left_ = eYo.magnet.new(brick, eYo.magnet.LEFT, D.left)
       }
-      if (D.right && eYo.isDefAndNotNull(D.right.check)) {
+      if (D.right && eYo.isDef(D.right.check)) {
         this.right_ = eYo.magnet.new(brick, eYo.magnet.RIGHT, D.right)
       }
     }

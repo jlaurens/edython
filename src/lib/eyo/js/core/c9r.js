@@ -11,9 +11,9 @@
  */
 'use strict'
 
-eYo.require('t3')
 eYo.require('xre')
 
+eYo.forwardDeclare('t3')
 eYo.forwardDeclare('o4t')
 eYo.forwardDeclare('o3d')
 eYo.forwardDeclare('p6y')
@@ -753,7 +753,7 @@ eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
  * @param {Function} C9r - the constructor associate to the delegate
  * @param {Object} model - the model object associate to the delegate, used for extension.
  */
-eYo._p.makeDlgt = function (ns, key, C9r, model) {
+eYo.c9r._p.makeDlgt = function (ns, key, C9r, model) {
   if (eYo.isStr(ns)) {
     model && eYo.throw(`Unexpected model (1): ${model}`)
     model = C9r
@@ -800,7 +800,7 @@ eYo._p.makeDlgt = function (ns, key, C9r, model) {
 }
 
 // make the Dlgt for the namespaces too
-eYo._p.eyo = eYo.makeDlgt('NS', eYo.constructor, {})
+eYo._p.eyo = eYo.c9r.makeDlgt('NS', eYo.constructor, {})
 
 // ANCHOR Base
 {

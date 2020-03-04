@@ -1,4 +1,4 @@
-eYo.Do.readOnlyMixin(eYo.App, {
+eYo.mixinR(eYo.App, {
   TUTORIAL: '0-tutorial',
   BASIC: '1-basic',
   NORMAL: '2-normal',
@@ -9,11 +9,11 @@ const state = {
   panelsWidth: 0,
   displayMode: undefined,
   selectedMode: eYo.App.TUTORIAL,
-  toolbarBlockVisible: undefined,
+  toolbarBrickVisible: undefined,
   toolbarRyVisible: undefined,
   toolbarInfoDebug: undefined,
-  blockEditShowRy: undefined,
-  blockEditShowDotted: undefined
+ brickEditShowRy: undefined,
+ brickEditShowDotted: undefined
 }
 
 const mutations = {
@@ -29,35 +29,35 @@ const mutations = {
   },
   selectMode (state, mode) {
     state.selectedMode = mode
-    this.commit('UI/setToolbarBlockVisible', mode !== eYo.App.TUTORIAL)
+    this.commit('UI/setToolbarBrickVisible', mode !== eYo.App.TUTORIAL)
     var yorn = mode !== eYo.App.TUTORIAL && mode !== eYo.App.BASIC
-    this.commit('UI/setBlockEditShowRy', yorn)
-    this.commit('UI/setBlockEditShowDotted', yorn)
+    this.commit('UI/setBrickEditShowRy', yorn)
+    this.commit('UI/setBrickEditShowDotted', yorn)
   },
-  setToolbarBlockVisible (state, yorn) {
-    state.toolbarBlockVisible = !!yorn
+  setToolbarBrickVisible (state, yorn) {
+    state.toolbarBrickVisible = !!yorn
   },
   setToolbarRyVisible (state, yorn) {
     state.toolbarRyVisible = !!yorn
   },
-  setToolbarBlockDebug (state, yorn) {
+  setToolbarBrickDebug (state, yorn) {
     state.toolbarInfoDebug = !!yorn
   },
-  setBlockEditShowRy (state, yorn) {
+  setBrickEditShowRy (state, yorn) {
     state.blockEditShowRy = !!yorn
   },
-  setBlockEditShowDotted (state, yorn) {
+  setBrickEditShowDotted (state, yorn) {
     state.blockEditShowDotted = !!yorn
   },
   reset (state) {
     this.commit('UI/setPanelsWidth', 0)
     this.commit('UI/setDisplayMode', false)
     this.commit('UI/selectMode', eYo.App.TUTORIAL)
-    this.commit('UI/setToolbarBlockVisible', false)
+    this.commit('UI/setToolbarBrickVisible', false)
     this.commit('UI/setToolbarRyVisible', false)
-    this.commit('UI/setToolbarBlockDebug', false)
-    this.commit('UI/setBlockEditShowRy', false)
-    this.commit('UI/setBlockEditShowDotted', false)
+    this.commit('UI/setToolbarBrickDebug', false)
+    this.commit('UI/setBrickEditShowRy', false)
+    this.commit('UI/setBrickEditShowDotted', false)
   }
 }
 

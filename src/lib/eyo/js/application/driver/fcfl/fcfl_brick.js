@@ -608,7 +608,7 @@ eYo.fcfl.Brick._p.draw_ = function (recorder) {
  * @param {*} recorder
  * @protected
  */
-eYo.fcfl.Brick._p.alignRightEdges_ = eYo.change.decorate(
+eYo.fcfl.Brick._p.alignRightEdges_ = eYo.change.memoize(
   'alignRightEdges_',
   function (recorder) {
     let brick = recorder.brick

@@ -203,7 +203,7 @@ class Formatter:
     preamble = """/**
  * edython
  *
- * Copyright 2019 Jérôme LAURENS.
+ * Copyright 2020 Jérôme LAURENS.
  *
  * License EUPL-1.2
  */
@@ -427,7 +427,7 @@ class Formatter:
  * @namespace
  **/
 
-eYo.makeNS('t3')
+eYo.c9r.makeNS(eYo, 't3')
 
 """)
         self.feed_statements()

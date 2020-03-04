@@ -31,7 +31,7 @@ export default {
       on: 'Activer les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet',
       off: 'Désactiver les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet'
     },
-    block: {
+   brick: {
       on: 'Afficher la barre d\'édition et de réglage du bloc sélectionné',
       off: 'Cacher la barre d\'édition'
     },
@@ -64,7 +64,7 @@ export default {
       on: 'Activer les bulles d\'aide',
       off: 'Désactiver les bulles d\'aide'
     },
-    block: {
+   brick: {
       on: 'Afficher la barre d\'édition',
       off: 'Cacher la barre d\'édition'
     },

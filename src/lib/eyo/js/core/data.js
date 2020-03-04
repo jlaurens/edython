@@ -142,7 +142,7 @@ eYo.data.makeBase({
     this.name = 'eyo:' + (model.name || key).toLowerCase()
     this.noUndo = !!model.noUndo
     var xml = model.xml
-    if (eYo.isDefAndNotNull(xml) || xml !== false) {
+    if (eYo.isDef(xml) || xml !== false) {
       this.attributeName = (xml && xml.attribute) || key
     }
     if (!model.setup_) {
@@ -150,7 +150,7 @@ eYo.data.makeBase({
       if (!eYo.isF(model.didLoad)) {
         delete model.didLoad
       }
-      if (eYo.isDefAndNotNull(xml)) {
+      if (eYo.isDef(xml)) {
         if (!eYo.isF(xml.toText)) {
           delete xml.toText
         }
@@ -310,7 +310,7 @@ eYo.data.makeBase({
     }
     if (eYo.isNum(after)) {
       x = this.getAll()
-      if (x && eYo.isDefAndNotNull((x = x[after]))) {
+      if (x && eYo.isDef((x = x[after]))) {
         after = x
       }
     }
@@ -756,7 +756,7 @@ eYo.data.makeBase({
         }
       } else if (eYo.isNum(after)) {
         x = this.getAll()
-        if (x && eYo.isDefAndNotNull((x = x[after]))) {
+        if (x && eYo.isDef((x = x[after]))) {
           after = x
         }
       }
@@ -961,7 +961,7 @@ eYo.data.makeBase({
           }
         })) {
           txt = element.getAttribute(eYo.key.PLACEHOLDER)
-          if (eYo.isDefAndNotNull(txt)) {
+          if (eYo.isDef(txt)) {
             this.customizePlaceholder(txt)
             this.setRequiredFromModel(true)
             this.fromText('', false)
@@ -971,9 +971,9 @@ eYo.data.makeBase({
       } else {
         txt = (this.model.xml && (eYo.isF(this.model.xml.getAttribute))
           && (this.model.xml.getAttribute.call(this, element)) ||element.getAttribute(this.attributeName))
-        if (!eYo.isDefAndNotNull(txt)) {
+        if (!eYo.isDef(txt)) {
           txt = element.getAttribute(`${this.attributeName}_${eYo.key.PLACEHOLDER}`)
-          if (eYo.isDefAndNotNull(txt)) {
+          if (eYo.isDef(txt)) {
             this.customizePlaceholder(txt)
             this.setRequiredFromModel(true)
             this.fromText('', false)
@@ -981,7 +981,7 @@ eYo.data.makeBase({
           }
         }
       }
-      if (eYo.isDefAndNotNull(txt)) {
+      if (eYo.isDef(txt)) {
         if (required && txt === '?') {
           txt = ''
           this.setRequiredFromModel(true)

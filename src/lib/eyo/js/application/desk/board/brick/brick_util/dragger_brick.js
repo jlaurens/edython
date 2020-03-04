@@ -58,7 +58,7 @@ eYo.dragger.makeC9r('Brick', {
      * 
      */
     xyDelta: {
-      get: eYo.change.decorate('xyDeltadragger.Brick', function () {
+      get: eYo.change.memoize('xyDeltadragger.Brick', function () {
         return {ans: this.destination.fromPixelUnit(this.motion_.xyDelta_)}
       }),
       copy: true,

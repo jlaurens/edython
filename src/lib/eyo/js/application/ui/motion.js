@@ -289,7 +289,7 @@ eYo.event.makeC9r('Motion', {
     },
     /**
      * The flyout of the board the motion started on, if any.
-     * @type {eYo.view.Flyout}
+     * @type {eYo.flyout.View}
      * @private
      */
     flyout: {

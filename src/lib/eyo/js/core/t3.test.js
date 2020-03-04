@@ -1,5 +1,7 @@
 describe ('Tests: T3', function () {
   it ('T3: basic', function () {
-    chai.assert(false, 'NOT YET IMPLEMENTED')
+    chai.assert(eYo.t3)
+    chai.assert(eYo.t3.stmt)
+    chai.assert(eYo.t3.expr)
   })
 })

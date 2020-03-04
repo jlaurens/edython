@@ -88,22 +88,22 @@ Object.defineProperties(eYo.field, {
       if (model.edit || model.endEditing || model.startEditing) {
         // this is an editable field
         field = new eYo.field.Input(owner, name, model.edit || '')
-      } else if (eYo.isDefAndNotNull(model.value)) {
+      } else if (eYo.isDef(model.value)) {
         // this is just a label field
         field = new eYo.fieldLabel(owner, name, model.value || '')
-      } else if (eYo.isDefAndNotNull(model.reserved)) {
+      } else if (eYo.isDef(model.reserved)) {
         // this is just a label field
         field = new eYo.fieldLabel(owner, name, model.reserved)
         field.status = eYo.field.STATUS_RESERVED
-      } else if (eYo.isDefAndNotNull(model.builtin)) {
+      } else if (eYo.isDef(model.builtin)) {
         // this is just a label field
         field = new eYo.fieldLabel(owner, name, model.builtin)
         field.status = eYo.field.STATUS_BUILTIN
-      } else if (eYo.isDefAndNotNull(model.comment)) {
+      } else if (eYo.isDef(model.comment)) {
         // this is just a label field
         field = new eYo.fieldLabel(owner, name, model.comment)
         field.status = eYo.field.STATUS_COMMENT
-      } else if (eYo.isDefAndNotNull(model.status)) {
+      } else if (eYo.isDef(model.status)) {
         // this is just a label field
         field = new eYo.fieldLabel(owner, name, '')
       } else { // other entries are ignored
@@ -156,7 +156,7 @@ Object.defineProperties(eYo.field, {
       field = owner.fields[name]
       var order = field.order__
       if (order) {
-        eYo.assert(!eYo.isDefAndNotNull(byOrder[order]),
+        eYo.assert(!eYo.isDef(byOrder[order]),
         'Fields with the same order  %s = %s / %s',
         byOrder[order] && byOrder[order].name || 'NOTHING', field.name, owner.getBrick().type)
         byOrder[order] = field

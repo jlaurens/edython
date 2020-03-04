@@ -123,7 +123,7 @@ eYo.path_eyo = '{eyo}'
     return HTML.script(f'./{basename}.test.js')
 
   def script(relative):
-    return f'''    <script src="{relative}" charset="utf-8"></script>
+    return f'''    <script src="./{relative}" charset="utf-8"></script>
 '''
 
   def mocha(root):
@@ -157,10 +157,10 @@ def updateWebTests():
   tests = (x for x in path_js.rglob('*.test.js') if x.is_file())
   for path_test in tests:
     try:
+      relative = path_test.relative_to(path_root)
+      root = '../' * len(relative.parts)
       relative = path_test.relative_to(path_eyo)
       eyo = '../' * (len(relative.parts) - 1)
-      relative = path_test.relative_to(path_root)
-      root = '../' * (len(relative.parts) - 1)
       path_base = path_test.with_suffix('').with_suffix('')
       basename = path_base.stem
       lines = [
@@ -210,7 +210,7 @@ def updateWebTestWrappers():
     tests = list(path_test.glob('*.test.js'))
     if (len(tests)):
       relative = path_test.relative_to(path_root)
-      root = '../' * (len(relative.parts) - 1)
+      root = '../' * len(relative.parts)
       relative = path_test.relative_to(path_eyo)
       eyo = '../' * (len(relative.parts) - 1)
       lines = [

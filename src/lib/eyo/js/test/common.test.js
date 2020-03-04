@@ -22,7 +22,7 @@ chai.assert(eYo.app, `MISSING eYo.app`)
 setTimeout(() => {
   describe('PREPARE', function() {
     it('toBrick', function() {
-      chai.assert(eYo.py.node.prototype.toBrick, `MISSING toBrick`)
+      chai.assert(eYo.py.node.Base_p.toBrick, `MISSING toBrick`)
     })
   })
 }, 0)

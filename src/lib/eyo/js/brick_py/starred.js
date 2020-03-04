@@ -242,7 +242,7 @@ eYo.expr.makeC9r('Starred', {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.expr.Starred.prototype.getType = eYo.change.decorate(
+eYo.expr.Starred.prototype.getType = eYo.change.memoize(
   'getType',
   function () {
     var check = this.out_m.check_

@@ -272,7 +272,7 @@ eYo.board.makeBase({
 eYo.board.makeC9r('Main', {
   init (owner, options) {
     /** @type {string} */
-    this.id = eYo.do.genUid()    
+    this.id = eYo.do.genUID()    
   },
   properties: {
     board: {
@@ -298,7 +298,7 @@ eYo.board.makeC9r('Main', {
       },
     },
     /**
-     * @param{?eYo.view.Flyout}
+     * @param{?eYo.flyout.View}
      */
     flyout: {
       validate (after) {
@@ -324,7 +324,7 @@ eYo.board.makeC9r('Main', {
      */
     readOnly: {
       get () {
-        return this.owner__ instanceof eYo.view.Flyout
+        return this.owner__ instanceof eYo.flyout.View
       },
     },
     /**
@@ -1327,7 +1327,7 @@ eYo.board.Base_p.scrollBrickTopLeft = function(id) {
 
 /**
  * Fire a change event.
- * @param {eYo.event.Base} event Event to fire.
+ * @param {eYo.event.Event} event Event to fire.
  */
 eYo.board.Base_p.eventDidFireChange = function(event) {
   let task = () => {

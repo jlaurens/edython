@@ -14,6 +14,8 @@
 eYo.require('dom')
 
 eYo.require('decorate')
+
+goog.require('goog.style')
 //g@@g.forwardDeclare('g@@g.math.AffineTransform')
 
 /**
@@ -332,7 +334,7 @@ eYo.svg.getScale_ = function(element) {
 // eslint-disable-next-line no-global-assign
 var eyo_original_parseFloat = parseFloat
 parseFloat = (x) => {
-  return eyo_original_parseFloat(eYo.isDefAndNotNull(x) && x.replace
+  return eyo_original_parseFloat(eYo.isDef(x) && x.replace
     ? x.replace(',', '.')
     : x)
 }

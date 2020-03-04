@@ -171,7 +171,7 @@ eYo.stmt.group.makeInheritedC9r('except_part', true, {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.stmt.except_part.prototype.getType = eYo.change.decorate(
+eYo.stmt.except_part.prototype.getType = eYo.change.memoize(
   'getType',
   function () {
     this.setupType(

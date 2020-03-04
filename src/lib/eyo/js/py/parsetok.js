@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.require('py.gmr.init')
+eYo.require('py.gmr_init')
 eYo.require('py.parser')
 
 eYo.forwardDeclare('py.parser.Scan')

@@ -1,14 +1,14 @@
 const state = {
   toolbarMainHeight: 0,
-  toolbarBlockHeight: 0
+  toolbarBrickHeight: 0
 }
 
 const mutations = {
   setToolbarMainHeight (state, height) {
     state.toolbarMainHeight = height
   },
-  setToolbarBlockHeight (state, height) {
-    state.toolbarBlockHeight = height
+  setToolbarBrickHeight (state, height) {
+    state.toolbarBrickHeight = height
   }
 }
 

@@ -960,7 +960,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    */
   _p.consolidate = eYo.decorate.reentrant_method(
     'consolidate',
-    eYo.change.decorate(
+    eYo.change.memoize(
       'consolidate',
       function (deep, force) {
         this.doConsolidate(deep, force)

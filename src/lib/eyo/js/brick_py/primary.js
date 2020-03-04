@@ -931,7 +931,7 @@ eYo.expr.makeC9r('primary', {
           target.Ary_p = after
         }
         ;(after < this.brick.Mandatory_p) && (this.brick.Mandatory_p = after)
-        if (eYo.isDefAndNotNull(after)) {
+        if (eYo.isDef(after)) {
           this.brick.Variant_p = eYo.key.CALL_EXPR
         }
       },
@@ -976,7 +976,7 @@ eYo.expr.makeC9r('primary', {
           target.Mandatory_p = after
         }
         ;(after > this.brick.Ary_p) && (this.brick.Ary_p = after)
-        if (eYo.isDefAndNotNull(after)) {
+        if (eYo.isDef(after)) {
           this.brick.Variant_p = eYo.key.CALL_EXPR
         }
       },
@@ -1288,7 +1288,7 @@ eYo.expr.primary_p.updateProfile = eYo.decorate.reentrant_method(
  * This has not been tested despite it is essential.
  * @return {!Object}.
  */
-eYo.expr.primary_p.getProfile = eYo.change.decorate(
+eYo.expr.primary_p.getProfile = eYo.change.memoize(
   'getProfile',
   function () {
       // this may be called very very early when

@@ -608,7 +608,7 @@ eYo.fcfl.Board._p.draw_ = function (recorder) {
  * @param {*} recorder
  * @protected
  */
-eYo.fcfl.Board._p.alignRightEdges_ = eYo.change.decorate(
+eYo.fcfl.Board._p.alignRightEdges_ = eYo.change.memoize(
   'alignRightEdges_',
   function (recorder) {
     let board = recorder.board
@@ -1874,7 +1874,7 @@ eYo.board.Base_p.showContextMenu_ = function (e) {
   }
   var menuOptions = []
   var topBoards = this.orderedTopBoards
-  var eventGroup = eYo.do.genUid()
+  var eventGroup = eYo.do.genUID()
 
   if (this.back_) {
     menuOptions.push(this.back_.undoMenuItemData)

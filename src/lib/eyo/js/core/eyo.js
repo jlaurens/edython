@@ -439,10 +439,10 @@ eYo.mixinR(eYo._p, {
   valueForKeyPath: function (p) {
     let components = p.split('.')
     var ans = this
-    if (this === eYo && components[0] === eYo) {
+    if (this === eYo && components[0] === 'eYo') {
       components.shift()
     }
-    for (component in components) {
+    for (let component of components) {
       if (component.length && eYo.isNA(ans = ans[component])) {
         return
       }

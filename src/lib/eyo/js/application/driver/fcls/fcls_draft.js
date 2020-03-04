@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('Draft')
+eYo.forwardDeclare('section.Draft')
 
 /**
  * Shared application driver.

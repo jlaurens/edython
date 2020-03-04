@@ -13,13 +13,13 @@
 'use strict'
 
 /**
- * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
+ * Scaler.
  * @param{eYo.event.Motion} [motion] -  the owning motion
  * @constructor
  * @property {eYo.event.Motion} motion - the motion used to create this scaler
  * @property {Boolean} active - whether the receiver is active
  */
-eYo.event.makeC9r('Scaler', {
+eYo.event.makeC9r('Scaler', eYo.o3d.Base, {
   properties: {
     active: false,
   },

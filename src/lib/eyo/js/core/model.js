@@ -47,14 +47,14 @@ eYo.model._p.allowed = Object.create(null)
  * @return {Boolean} Whether the key is authorized with the given path.
  */
 eYo.model._p.isAllowed = function (path, key) {
-  for (var k in this.allowed) {
+  for (let k in this.allowed) {
     var re = XRegExp(`^${k}$`)
     if (re.test(path)) {
       return this.allowed[k].some(k => XRegExp(`^${k}$`).test(key))
     }
   }
   return false
-}  
+}
 
 /**
  * Allow a new set of keys.
@@ -84,6 +84,7 @@ eYo.model.allowModelPaths({
 
 eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'data',
+  'data': '\\w+',
   'data\\.\\w+': [
     'order', // INTEGER
     'all', // TYPE || [TYPE], // last is expected
@@ -328,8 +329,7 @@ eYo.model._p.extends = function (m, b, path = '') {
         return
       }
       if (m[k] === eYo.NA) {
-        var after = b[k]
-        m[k] = eYo.isD(after) ? {} : after
+        m[k] = b[k]
       }
       this.extends(m[k], b[k], path && `${path}.${k}` || k)
     }

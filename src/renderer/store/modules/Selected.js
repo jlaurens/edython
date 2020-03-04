@@ -1,41 +1,47 @@
+/**
+ * The selected brick updates the UI on changes.
+ */
 const temp = {
-  eyo: undefined
+  brick: eYo.NA,
+  listener: eYo.NA,
 }
 
 const state = {
-  id: undefined, // the selected block id
-  step: 0 // the selected block change step
+  id: eYo.NA, // the selectedbrick id
+  step: 0 // the selectedbrick change step
 }
 
 const mutations = {
-  selectBlock (state, block) {
-    if (block) {
-      if (block.isInFlyout || (block.id === state.id)) {
+  selectBrick (state, brick) {
+    if (brick) {
+      if (brick.isInFlyout || (brick.id === state.id)) {
         return
       }
-      temp.eyo && (temp.eyo.didChangeEnd = null)
-      temp.eyo = block.eyo
-      temp.eyo.didChangeEnd = (eyo) => {
-        if (eyo) {
-          if (eyo.id === state.id) {
-            this.commit('Selected/update', eyo.block_)
-          }
-        }
+    }
+    if (temp.brick) {
+      try {
+        temp.brick.change.removeChangeDoneListener(temp.listener)
+      } finally {
+        temp.listener = temp.brick = eYo.NA
       }
-      state.id = block.id
-      state.step = block.eyo.change.step
+    }
+    if ((temp.brick = brick)) {
+      temp.listener = brick.change.addChangeDoneListener(() => {
+        this.commit('Selected/update', brick)
+      })
+      state.id = brick.id
+      state.step = brick.change.step
     } else {
       if (!state.id) {
         return
       }
-      temp.eyo && (temp.eyo.didChangeEnd = null)
       state.id = null
       state.step = 0
     }
   },
-  update (state, block) {
+  update (state, brick) {
     // var old = state.step
-    state.step = block ? block.eyo.change.step : 0
+    state.step = brick ? brick.change.step : 0
     // console.warn('step', old, '=>', state.step)
   }
 }
@@ -45,7 +51,6 @@ const actions = {
 
 const getters = {
   eyo: state => state.id && temp.eyo,
-  type: state => state.id && temp.eyo && temp.eyo.type
 }
 
 export default {

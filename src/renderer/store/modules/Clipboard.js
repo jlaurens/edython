@@ -3,7 +3,7 @@ const state = {
 }
 
 const mutations = {
-  didCopyBlock (state, xml) {
+  didCopyBrick (state, xml) {
     state.clipboard = xml
   }
 }

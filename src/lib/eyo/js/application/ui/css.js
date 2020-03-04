@@ -18,11 +18,17 @@ eYo.require('style')
  * @namespace
  */
 
-eYo.makeNS('css')
-
+eYo.makeNS('css', {
+  Cursor: {
+    OPEN: 'handopen',
+    CLOSED: 'handclosed',
+    DELETE: 'handdelete'
+    },
+  },
+)
 
 eYo.forwardDeclare('geom')
-eYo.forwardDeclare('font-face')
+eYo.forwardDeclare('font')
 //g@@g.forwardDeclare('g@@g.cssom');
 
 eYo.css.insertRuleAt = (() => {
@@ -59,19 +65,41 @@ eYo.css.insertRuleAt = (() => {
   }
 })()
 
+ /**
+ * Setup the font style, amongst others.
+ */
+;(static_ => {
+  eYo.setup.register(() => {
+    eYo.css.insertRuleAt(`@font-face {
+  font-family: 'DejaVuSansMono';
+  src: local('☺'),url(${static_}/font/DejaVuSansMono.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}`)
+  eYo.css.insertRuleAt(`@font-face {
+  font-family: 'DejaVuSansMono';
+  src: local('☺'), url('${static_}/font/DejaVuSansMono-Bold.woff')format('woff');
+  font-weight: bold;
+  font-style: normal;
+}`)
+    eYo.css.insertRuleAt(`@font-face {
+  font-family: 'DejaVuSansMono';
+  src: local('☺'),url('${static_}/font/DejaVuSansMono-Oblique.woff')format('woff');
+  font-weight: normal;
+  font-style: oblique;
+}`)
+    eYo.css.insertRuleAt(`@font-face {
+  font-family: 'DejaVuSansMono';
+  src: local('☺'),url('${static_}/font/DejaVuSansMono-BoldOblique.woff')format('woff');
+  font-weight: bold;
+  font-style: oblique;
+}`)
+  })
+})(window.__static || 'static')
+
 eYo.setup.register(-1, () => {
   eYo.css.insertRuleAt('body {background: orange;}')
 })
-
-/**
- * List of cursors.
- * @enum {string}
- */
-eYo.css.Cursor = {
-  OPEN: 'handopen',
-  CLOSED: 'handclosed',
-  DELETE: 'handdelete'
-}
 
 /**
  * Inject the CSS into the DOM.  This is preferable over using a regular CSS

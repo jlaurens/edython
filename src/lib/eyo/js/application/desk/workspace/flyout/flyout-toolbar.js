@@ -11,47 +11,16 @@
  */
 'use strict'
 
-eYo.forwardDeclare('flyoutToolbar')
-
-//g@@g.require('g@@g.dom')
-eYo.provide('flyoutToolbar')
-
 /**
  * Class for a flyout toolbar.
  * @constructor
  */
-eYo.view.makeC9r('FlyoutToolbar', {
+eYo.flyout.makeC9r('Toolbar', {
   init (flyout, switcher) {
     this.flyout_ = flyout
     this.switcher_ = switcher || this.app.flyoutToolbarSwitcher
     if (this.switcher_) {
       eYo.dom.removeNode(this.switcher_)
-    }
-  },
-  /**
-   * Dispose of this flyout toolbar.
-   * Unlink from all DOM elements to prevent memory leaks.
-   */
-  dispose () {
-    if (this.onButtonDownWrapper_) {
-      eYo.dom.unbindEvent(this.onButtonDownWrapper_)
-      this.onButtonDownWrapper_ = eYo.NA
-    }
-    if (this.onButtonEnterWrapper_) {
-      eYo.dom.unbindEvent(this.onButtonEnterWrapper_);
-      this.onButtonEnterWrapper_ = eYo.NA
-    }
-    if (this.onButtonLeaveWrapper_) {
-      eYo.dom.unbindEvent(this.onButtonLeaveWrapper_);
-      this.onButtonLeaveWrapper_ = eYo.NA
-    }
-    if (this.onButtonUpWrapper_) {
-      eYo.dom.unbindEvent(this.onButtonUpWrapper_);
-      this.onButtonUpWrapper_ = eYo.NA
-    }
-    if (this.selectControl_) {
-      this.selectControl_.unlisten(this.listenableKey)
-      this.selectControl_ = eYo.NA
     }
   },
 })
@@ -61,7 +30,7 @@ eYo.view.makeC9r('FlyoutToolbar', {
  * @param {Object} dom helper.
  * @return {!Element} The flyout toolbar's div.
  */
-eYo.view.FlyoutToolbar_p.doSelectGeneral = function (e) {
+eYo.flyout.Toolbar_p.doSelectGeneral = function (e) {
   var board = this.flyout_.desk.board
   if (board && this.selectControl_) {
     var category = this.selectControl_.getValue()
@@ -73,19 +42,19 @@ eYo.view.FlyoutToolbar_p.doSelectGeneral = function (e) {
 }
 
 // toolbar height
-eYo.view.FlyoutToolbar_p.MARGIN = eYo.padding.t
-eYo.view.FlyoutToolbar_p.HEIGHT = 2 * (eYo.font.lineHeight + 2 * eYo.view.FlyoutToolbar_p.MARGIN)
+eYo.flyout.TOOLBAR_MARGIN = eYo.padding.t
+eYo.flyout.TOOLBAR_HEIGHT = 2 * (eYo.font.lineHeight + 2 * eYo.flyout.TOOLBAR_MARGIN)
 
-eYo.view.FlyoutToolbar_p.BUTTON_RADIUS = eYo.view.FlyoutToolbar_p.HEIGHT / 4
+eYo.flyout.TOOLBAR_BUTTON_RADIUS = eYo.flyout.TOOLBAR_HEIGHT / 4
 // left margin
-eYo.view.FlyoutToolbar_p.BUTTON_MARGIN = eYo.view.FlyoutToolbar_p.BUTTON_RADIUS / 8
+eYo.flyout.TOOLBAR_BUTTON_MARGIN = eYo.flyout.TOOLBAR_BUTTON_RADIUS / 8
 
 /**
  * Slide out.
  * @param {Event} e Mouse up event.
  * @private
  */
-eYo.view.FlyoutToolbar_p.onButtonDown_ = function(e) {
+eYo.flyout.Toolbar_p.onButtonDown_ = function(e) {
   this.isDown = true
   window.addEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonEnter_(e)
@@ -97,27 +66,27 @@ eYo.view.FlyoutToolbar_p.onButtonDown_ = function(e) {
  * @param {Event} e Mouse up event.
  * @private
  */
-eYo.view.FlyoutToolbar_p.onButtonEnter_ = function(e) {
+eYo.flyout.Toolbar_p.onButtonEnter_ = function(e) {
   if (this.isDown) {
     eYo.dom.classlist.add(this.control_, 'eyo-flash')
   }
-};
+}
 
 /**
  * Unhilight.
  * @param {Event} e Mouse up event.
  * @private
  */
-eYo.view.FlyoutToolbar_p.onButtonLeave_ = function(e) {
+eYo.flyout.Toolbar_p.onButtonLeave_ = function(e) {
   eYo.dom.classlist.remove(this.control_, 'eyo-flash')
-};
+}
 
 /**
  * Slide out.
  * @param {Event} e Mouse up event.
  * @private
  */
-eYo.view.FlyoutToolbar_p.onButtonUp_ = function(e) {
+eYo.flyout.Toolbar_p.onButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
   if (this.isDown) {
     this.isDown = false
@@ -133,14 +102,14 @@ eYo.view.FlyoutToolbar_p.onButtonUp_ = function(e) {
 };
 // Sometimes this error has poped up.
 // console.error(`Uncaught TypeError: this.onButtonLeave_ is not a function
-// at eYo.view.FlyoutToolbar.notOnButtonUp_`)
+// at eYo.flyout.Toolbar.notOnButtonUp_`)
 
 /**
  * Mouse up catcher.
  * @param {Event} e Mouse up event.
  * @private
  */
-eYo.view.FlyoutToolbar_p.notOnButtonUp_ = function(e) {
+eYo.flyout.Toolbar_p.notOnButtonUp_ = function(e) {
   window.removeEventListener('mouseup', this.notOnButtonUp_)
   this.onButtonLeave_(e)
   this.app.cancelMotion()
@@ -153,13 +122,13 @@ eYo.view.FlyoutToolbar_p.notOnButtonUp_ = function(e) {
  * @param {Float} [height.]
  * @private
  */
-eYo.view.FlyoutToolbar_p.layout = function(width, height) {
+eYo.flyout.Toolbar_p.layout = function(width, height) {
   if (eYo.isDef(width.width)) {
     height = width.height || 0
     width = width.width
   }
-  var height = this.HEIGHT
-  var margin = this.MARGIN
+  var height = eYo.flyout.TOOLBAR_HEIGHT
+  var margin = eYo.flyout.TOOLBAR_MARGIN
   var big_radius = 1.25 * eYo.geom.REM
   var radius = 1.125 * eYo.geom.REM
   var h = radius * 0.75
@@ -187,7 +156,7 @@ eYo.view.FlyoutToolbar_p.layout = function(width, height) {
  * @param {number} y The computed y origin of the flyout's SVG group.
  * @private
  */
-eYo.view.FlyoutToolbar_p.positionAt_ = function(width, height, x, y) {
+eYo.flyout.Toolbar_p.positionAt_ = function(width, height, x, y) {
   this.ui_driver.positionAt(this, width, height, x, y)
   this.div_.style.left = x + 'px'
   this.div_.style.top = y + 'px'

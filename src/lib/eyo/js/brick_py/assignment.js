@@ -510,9 +510,7 @@ eYo.expr.List.makeInheritedC9r('augassigned_list', () => {
     mandatory: 1,
     presep: ','
   }
-  var RA = [].concat(D.check, D.unique)
-  eYo.do.arrayRemoveDuplicates(RA)
-  D.all = RA
+  D.all = [...new Set([].concat(D.check, D.unique))]
   return {
     list: D
   }

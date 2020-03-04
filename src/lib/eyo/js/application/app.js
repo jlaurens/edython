@@ -100,7 +100,7 @@ eYo.app.makeC9r('Options', {
     this.noLeftSeparator = eYo.asDef(options.noLeftSeparator, true)
     this.noDynamicList = eYo.asDef(options.noDynamicList, false)
     this.smartUnary = eYo.asDef(options.smartUnary, true)
-    this.flyoutAnchor = eYo.asDef(options.flyoutAnchor, eYo.view.Flyout.AT_RIGHT)
+    this.flyoutAnchor = eYo.asDef(options.flyoutAnchor, eYo.flyout.AT_RIGHT)
     this.container = eYo.asDef(options.container, 'eyo-desk')
     this.backgroundClass = eYo.asDef(options.backgroundClass,'eyo-main-board-background')
     var pathToMedia = options.media || './static/media'

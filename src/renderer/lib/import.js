@@ -10,7 +10,6 @@ eYo.$$ = {
   process, // usefull only in electron
   goog,
   eYo,
-  Blockly,
   pako,
   _: lodash,
   TweenLite,

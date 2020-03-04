@@ -273,7 +273,7 @@ ConfigEyo.prototype.getConfig = function () {
   this.enableEdython(config)
   this.enableTippy(config)
   this.enableResources(config)
-  this.enablePolyFills(config)
+  // this.enablePolyFills(config)
   return config
 }
 

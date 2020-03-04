@@ -15,7 +15,7 @@
 
 eYo.require('decorate')
 
-eYo.forwardDeclare('view.Flyout')
+eYo.forwardDeclare('flyout.View')
 eYo.forwardDeclare('app')
 eYo.forwardDeclare('event')
 eYo.forwardDeclare('view.Scrollbar')
@@ -44,11 +44,11 @@ eYo.view.makeC9r('Workspace', {
     },
     /**
      * The flyout.
-     * @type {?eYo.view.Flyout} 
+     * @type {?eYo.flyout.View} 
      */
     flyout: {
       value () {
-        return new eYo.view.Flyout(this)
+        return new eYo.flyout.View(this)
       },
     },
     /**

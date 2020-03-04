@@ -567,13 +567,13 @@ eYo.do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
    * 79 characters ^ 20, length > 128 bits (better than a UUID).
    * @return {string} A globally unique ID string.
    */
-  eYo.do.genUid = (type, length) => {
+  eYo.do.genUID = (type, length) => {
     if (!eYo.isStr(type)) {
       [length, type] = [type, length]
     }
     length || (length = 20)
     if (type === eYo.do.IDENT) {
-      return eYo.do.genUid(eYo.do.LETTER, 1) + eYo.do.genUid(eYo.do.ALNUM, length - 1)
+      return eYo.do.genUID(eYo.do.LETTER, 1) + eYo.do.genUID(eYo.do.ALNUM, length - 1)
     }
     let soup = type === eYo.do.LETTER ? letter :
     type === eYo.do.ALNUM ? alnum : all

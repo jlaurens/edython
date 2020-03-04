@@ -2,7 +2,7 @@ import VueI18n from 'vue-i18n'
 
 import message_fr_FR from './fr_FR/message'
 import toolbar_fr_FR from './fr_FR/toolbar'
-import block_fr_FR from './fr_FR/block'
+importbrick_fr_FR from './fr_FR/block'
 import panel_fr_FR from './fr_FR/panel'
 
 const messages = {
@@ -14,7 +14,7 @@ const messages = {
   fr_FR: {
     message: message_fr_FR,
     panel: panel_fr_FR,
-    block: block_fr_FR,
+   brick:brick_fr_FR,
     toolbar: toolbar_fr_FR
   }
 }

@@ -68,18 +68,21 @@ describe ('Tests: Model', function () {
         },
         ab: 123
       },
-      properties: 421,
+      properties: {
+        foo: 'bar',
+      },
     }
+    eYo.model.extends(model, base)
+    chai.expect(model.data.aa.xml).equal(421)
     var submodel = {
       data: {
         ab: 421
       }
     }
-    eYo.model.extends(model, base)
     eYo.model.extends(submodel, model)
     chai.expect(submodel.data.aa.xml).equal(421)
     chai.expect(submodel.data.ab).equal(421)
-    chai.expect(submodel.properties).equal(421)
+    chai.expect(submodel.properties.foo).equal('bar')
   })
   it('eYo.model.modelExpand(…)', function () {
     var model = {
@@ -97,6 +100,6 @@ describe ('Tests: Model', function () {
       },
     }
     eYo.model.modelExpand(model)
-    chai.assert(eYo.isF(model.properties.drag))
+    chai.assert(eYo.isF(model.properties.drag.value))
   })
 })

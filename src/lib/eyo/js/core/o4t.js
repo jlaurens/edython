@@ -132,7 +132,7 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
     this.keys_p__ = eYo.NA
     delete this.properties
     this.forEachSubC9r(C9r => C9r.eyo.propertiesMerge({})) // force to recalculate the `properties` list.
-    this.modelExpand(properties, 'properties')
+    ;(this.ns || eYo.model).modelExpand(properties, 'properties')
     for (var k in properties) {
       this.properties__[k] = properties[k]
     }

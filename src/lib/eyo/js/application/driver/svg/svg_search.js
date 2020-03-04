@@ -13,7 +13,7 @@
 
 eYo.require('dom.Search')
 
-eYo.forwardDeclare('Search')
+eYo.forwardDeclare('section.Search')
 // eYo.forwardDeclare('searchToolbar')
 
 /**
@@ -22,7 +22,7 @@ eYo.forwardDeclare('Search')
 eYo.svg.makeDriverC9r('Search', {
     /**
    * Initializes the search SVG ressources.
-   * @param {eYo.Search} search
+   * @param {eYo.dom.Search} search
    */
   initUI (search) {
     if (search.dom) {
@@ -68,7 +68,7 @@ eYo.svg.makeDriverC9r('Search', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {eYo.Search} search
+   * @param {eYo.dom.Search} search
    */
   disposeUI (search) {
     var dom = search.dom
@@ -81,7 +81,7 @@ eYo.svg.makeDriverC9r('Search', {
 
 /**
  * Set the display attribute.
- * @param {eYo.Search} search
+ * @param {eYo.dom.Search} search
  * @param {Boolean} show
  */
 eYo.svg.Search_p.displaySet = function (search, show) {
@@ -91,7 +91,7 @@ eYo.svg.Search_p.displaySet = function (search, show) {
 
 /**
  * Get the display attribute.
- * @param {eYo.Search} search
+ * @param {eYo.dom.Search} search
  */
 eYo.svg.Search_p.displayGet = function (search) {
   return search.dom.svg.root_.style.display !== 'none'
@@ -99,7 +99,7 @@ eYo.svg.Search_p.displayGet = function (search) {
 
 /**
  * Update the view based on coordinates calculated in position().
- * @param {eYo.Search} search
+ * @param {eYo.dom.Search} search
  */
 eYo.svg.Search_p.place = function (search) {
   var rect = search.viewRect
@@ -130,13 +130,13 @@ eYo.svg.Search_p.place = function (search) {
 
 /**
  * Update the visible boundaries of the search.
- * @param {eYo.Search} search
+ * @param {eYo.dom.Search} search
  * @private
  */
 eYo.svg.Search_p.update = function(search) {
   var width = search.width
   var height = search.height
-  var top_margin = eYo.Search.TOP_MARGIN
+  var top_margin = eYo.dom.Search.TOP_MARGIN
   var atRight = search.atRight
   // Decide whether to start on the left or right.
   var path = [`M ${atRight ? width : 0},${top_margin}`]
@@ -154,7 +154,7 @@ eYo.svg.Search_p.update = function(search) {
  * Add listeners to a block that has been added to the search.
  * Listeners work only when the search authorizes it.
  * The 'rect' listeners have been removed.
- * @param {eYo.Search} search
+ * @param {eYo.dom.Search} search
  */
 eYo.svg.Search_p.removeAllBrickListeners = function(search) {
   // Delete all the event listeners.
@@ -166,7 +166,7 @@ eYo.svg.Search_p.removeAllBrickListeners = function(search) {
  * Add listeners to a block that has been added to the search.
  * Listeners work only when the search authorizes it.
  * The 'rect' listeners have been removed.
- * @param {eYo.Search} search
+ * @param {eYo.dom.Search} search
  * @param {eYo.brick.Base} brick The block to add listeners for.
  */
 eYo.svg.Search_p.addListeners = function(search, brick) {
@@ -199,7 +199,7 @@ eYo.svg.Search_p.addListeners = function(search, brick) {
 
 /**
  * Add a `mouseover` listener to deselect all bricks.
- * @param {eYo.Search} search
+ * @param {eYo.dom.Search} search
  */
 eYo.svg.Search_p.listen_mouseover = function(search) {
   search.listeners_.push(
@@ -215,7 +215,7 @@ eYo.svg.Search_p.listen_mouseover = function(search) {
 
 /**
  * Add a `wheel` and `mousdown` listener to scroll.
- * @param {eYo.Search} search
+ * @param {eYo.dom.Search} search
  */
 eYo.svg.Search_p.bindScrollEvents = function(search) {
   var bound = search.dom.bound
@@ -254,7 +254,7 @@ eYo.svg.Search_p.on_mousedown = function(e) {
 eYo.svg.makeDriverC9r('SearchToolbar', {
   /**
    * Initializes the search toolbar SVG ressources.
-   * @param {eYo.SearchToolbar} searchToolbar
+   * @param {eYo.dom.SearchToolbar} searchToolbar
    */
   initUI (ftb) {
     if (ftb.dom) {
@@ -283,9 +283,9 @@ eYo.svg.makeDriverC9r('SearchToolbar', {
     var cssClass = this.cssClass()
     dom.control_ = eYo.dom.createDom(
       eYo.dom.TagName.DIV,
-      goog.getCssName(cssClass, 'control')
+      eYo.dom.getCssClass(cssClass, 'control')
     )
-    svg.root_ = eYo.svg.newElementSvg(dom.control_, goog.getCssName(cssClass, 'control-image'))
+    svg.root_ = eYo.svg.newElementSvg(dom.control_, eYo.dom.getCssClass(cssClass, 'control-image'))
     svg.pathControl_ = eYo.svg.newElement('path', {
       id: 'p-search-control'
     }, dom.svg)
@@ -330,7 +330,7 @@ eYo.svg.makeDriverC9r('SearchToolbar', {
   },
   /**
    * Initializes the search toolbar SVG ressources.
-   * @param {eYo.SearchToolbar} searchToolbar
+   * @param {eYo.dom.SearchToolbar} searchToolbar
    */
   disposeUI (ftb) {
     var dom = ftb.dom

@@ -20,15 +20,15 @@ eYoAppDocument.install = function (Vue, options) {
       eYo.App.Document.doClear()
       eYo.App.Document.readString(blank)
       Vue.nextTick(() => {
-        eYo.Selected.selectOneBlockOf(eYo.App.workspace.topBlocks_, true)
+        eYo.Selected.selectOneBrickOf(eYo.App.workspace.topBricks_, true)
       })
     })
   }
   eYo.App.Document.getDeflate = () => {
     eYo.Events.groupWrap(() => {
-      eYo.Do.tryFinally(() => {
-        var tops = eYo.App.workspace.topBlocks_.filter(block => !block.eyo.isReady)
-        tops.forEach(block => block.eyo.beReady())
+      eYo.do.tryFinally(() => {
+        var tops = eYo.App.workspace.topBricks_.filter(block => !block.eyo.isReady)
+        tops.forEach(block =>brick.eyo.beReady())
       })
     })
     var dom = eYo.App.workspace.eyo.toDom({noId: true})
@@ -61,9 +61,9 @@ eYoAppDocument.install = function (Vue, options) {
     workspace.eyo.fromDom(dom)
     workspace.clearUndo()
     workspace.eyo.resetChangeCount()
-    if (workspace.topBlocks_.some(b => !b.eyo.isReady)) {
+    if (workspace.topBricks_.some(b => !b.eyo.isReady)) {
       console.error('SOME BLOCKS WERE RECOVERED')
-      workspace.topBlocks_.forEach(b => b.eyo.beReady())
+      workspace.topBricks_.forEach(b => b.eyo.beReady())
       eYo.$$.app.$emit('document-read-string-recovered')
     }
     // d = new Date()

@@ -11,77 +11,58 @@
  */
 'use strict'
 
-eYo.forwardDeclare('view.Flyout')
+eYo.forwardDeclare('flyout.View')
+
+eYo.dom.makeNS('flyout', {
+  /**
+   * Default CSS class of the flyout panel.
+   * @type {string}
+   */
+  CSS_CLASS: eYo.dom.getCssClass('flyout'),
+})
 
 /**
- * @name {eYo.dom.Flyout}
+ * @name {eYo.dom.flyout.View}
  * @constructor
  * Dom driver for the flyout.
  */
-eYo.dom.makeDriverC9r('Flyout', {
+eYo.dom.flyout.makeDriverC9r('View', {
     /**
    * Initialize the flyout dom ressources.
-   * @param {eYo.view.Flyout} flyout
+   * @param {eYo.flyout.View} flyout
    * @return {!Element} The desk's dom repository.
    */
   initUI (flyout) {
-    var dom = flyout.dom
-    const div = flyout.owner_.dom.flyout_
+    let dom = flyout.dom
+    let div = flyout.owner_.dom.flyout_
     Object.defineProperty(dom, 'div_', { value: div, writable: true})
     // flyout toolbar, on top of the flyout
-    var cssClass = this.cssClass()
-    var f = (type) => {
-      var x = eYo.dom.createDom(
-        eYo.dom.TagName.DIV,
-        goog.getCssName(cssClass, type)
-      )
-      div.appendChild(x)
-      x.dataset && (x.dataset.type = `flyout ${type}`)
-      return x
-    }
-    dom.toolbar_ = f('toolbar')
-    dom.board_ = f('board')
+    div.appendChild(dom.toolbar_ = this.ns.createDIV('toolbar', flyout.eyo.name))
+    div.appendChild(dom.board_ = this.ns.createDIV('board', flyout.eyo.name))
     return dom
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {eYo.view.Flyout} flyout
+   * @param {eYo.flyout.View} flyout
    */
   disposeUI (flyout) {
     var dom = flyout.dom
-    eYo.dom.removeNode(dom.toolbar_)
-    eYo.dom.removeNode(dom.board_)
+    dom.board_ = eYo.dom.removeNode(dom.board_)
+    dom.toolbar_ = eYo.dom.removeNode(dom.toolbar_)
   },
 })
 
 /**
- * Default CSS class of the flyout panel.
- * @type {string}
- */
-eYo.dom.FLYOUT_CSS_CLASS = goog.getCssName('eyo-flyout')
-
-
-/**
- * Returns the CSS class to be applied to the root element.
- * @param {eYo.view.Flyout} flyout
- * @return {string} Renderer-specific CSS class.
- * @override
- */
-eYo.dom.Flyout.prototype.cssClass = function() {
-  return eYo.dom.FLYOUT_CSS_CLASS
-}
-
-/**
  * Dispose of the given slot's rendering resources.
- * @param {eYo.view.Flyout} flyout
+ * @param {eYo.flyout.View} flyout
  */
-eYo.dom.Flyout.prototype.updateMetrics = function (flyout) {
+eYo.dom.flyout.View_p.updateMetrics = function (flyout) {
   var r = flyout.viewRect
-  var div = flyout.dom.toolbarDiv_
+  var div = flyout.dom.toolbar_
   div.style.width = `${r.width} px`
-  div.style.height = `${eYo.view.Flyout.TOOLBAR_HEIGHT} px`
-  flyout.dom.boardDiv_
-  div.style.y = `${eYo.view.Flyout.TOOLBAR_HEIGHT} px`
+  div.style.height = `${eYo.flyout.TOOLBAR_HEIGHT} px`
+  div = flyout.dom.board_
+  div.style.y = `${eYo.flyout.TOOLBAR_HEIGHT} px`
   div.style.width = `${r.width} px`
-  div.style.height = `${r.height - eYo.view.Flyout.TOOLBAR_HEIGHT} px`
+  div.style.height = `${r.height - eYo.flyout.TOOLBAR_HEIGHT} px`
 }

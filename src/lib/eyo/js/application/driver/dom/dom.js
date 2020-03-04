@@ -16,7 +16,40 @@
  * @namespace
  */
 
-eYo.fcfl.makeNS(eYo, 'dom')
+eYo.fcfl.makeNS(eYo, 'dom', {
+  CSS_CLASS: 'dom',
+})
+
+/**
+ * Turns a list of components into a class name.
+ */
+eYo.dom._p.getCssClass = (...args) => {
+  return ['eyo', this.cssClass, ...args].join('-')
+}
+
+/**
+ * @param{String} type
+ * @param{String} [data]
+ */
+eYo.dom._p.createDIV = function(type, data) {
+  let div = eYo.dom.createDom(
+    eYo.dom.TagName.DIV,
+    this.getCssClass(type)
+  )
+  data && div.dataset && (div.dataset.type = `${data}.${type}`)
+  return div
+}
+
+Object.defineProperties(eYo.dom._p, {
+  /**
+   * Returns the CSS class to be applied to the root element.
+   * @return {string} Renderer-specific CSS class.
+   * @override
+   */
+  cssClass: eYo.descriptorR(function() {
+    return this.CSS_CLASS
+  }),
+})
 
 goog.require('goog.dom')
 eYo.dom.contains = goog.dom.contains
@@ -311,7 +344,7 @@ eYo.dom.forEachTouch = (e, f) => {
 }
 
 /**
- * @param {eYo.brick|eYo.board|eYo.view.Flyout}
+ * @param {eYo.brick|eYo.board|eYo.flyout.View}
  */
 eYo.dom.clearBoundEvents = (bbf) => {
   var dom = bbf.dom || bbf.dom

@@ -17,25 +17,47 @@ eYo.forwardDeclare('event')
 eYo.forwardDeclare('library')
 eYo.forwardDeclare('style')
 eYo.forwardDeclare('brick')
-eYo.forwardDeclare('flyoutToolbar')
+eYo.forwardDeclare('flyout.Toolbar')
 eYo.forwardDeclare('tooltip')
 
 /**
- * @type {eYo.view.Flyout}
+ * @name {eYo.flyout}
+ * @namespace
+ */
+eYo.view.makeNS(eYo, 'flyout', {
+  AT_RIGHT: 1,
+  AT_LEFT: 2,
+  /**
+   * Top/bottom padding between scrollbar and edge of flyout background.
+   * @type {number}
+   * @const
+   */
+  SCROLLBAR_PADDING: 2,
+  TOP_MARGIN: 0, // 4 * eYo.geom.REM
+  BOTTOM_MARGIN: 16, // scroll bar width
+  MARGIN: eYo.geom.REM / 4,
+  /**
+   * This size and anchor of the receiver and wrapped
+   * in an object with eponym keys.
+   */
+})
+
+/**
+ * @type {eYo.flyout.View}
  * Class for a flyout.
  * @param {eYo.view.Workspace} owner  The owning desk, which must be a desk...
  * @constructor
  * @readonly
- * @property {eYo.Workspace} workspace, The workspace
+ * @property {eYo.view.Workspace} workspace, The workspace
  * 
  * @private
- * @property {eYo.Search} search Search section.
+ * @property {eYo.section.Search} search Search section.
  * 
  * @private
  * @property {eYo.library.Base} library Library section.
  * 
  * @private
- * @property {eYo.Draft} draft Draft section.
+ * @property {eYo.section.Draft} draft - Draft section.
  *
  * @readonly
  * @property {boolean} closed Whether the flyout is closed.
@@ -72,7 +94,7 @@ eYo.forwardDeclare('tooltip')
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.view.makeC9r('Flyout', {
+eYo.flyout.makeC9r('View', {
   init (owner) {
     // First
     if (!this.autoClose) {
@@ -95,7 +117,7 @@ eYo.view.makeC9r('Flyout', {
     init () {
       var switcher = this.flyoutOptions.switcher
       if (switcher) {
-        var tb = this.toolbar_ = new eYo.view.FlyoutToolbar(this, switcher)
+        var tb = this.toolbar_ = new eYo.flyout.Toolbar(this, switcher)
         d.toolbarInitUI(tb)
         tb.doSelectGeneral(null) // is it necessary ?
       }
@@ -229,7 +251,7 @@ eYo.view.makeC9r('Flyout', {
      */
     atRight: {
       get () {
-        return this.anchor_ === eYo.view.Flyout.AT_RIGHT
+        return this.anchor_ === eYo.flyout.AT_RIGHT
       },
     },
     closed: false,
@@ -266,7 +288,7 @@ eYo.view.makeC9r('Flyout', {
      */
     anchor: {
       get () {
-        return this.options.anchor || eYo.view.Flyout.AT_RIGHT
+        return this.options.anchor || eYo.flyout.AT_RIGHT
       },
     },
     /**
@@ -313,11 +335,11 @@ eYo.view.makeC9r('Flyout', {
     viewRect: {
       value () {
         return new eYo.geom.RectProxy(this.board.metrics_.view, {
-          l: (after) => after + eYo.view.Flyout.TOOLBAR_HEIGHT,
-          h: (after) => after - eYo.view.Flyout.TOOLBAR_HEIGHT,
+          l: (after) => after + eYo.flyout.TOOLBAR_HEIGHT || 0,
+          h: (after) => after - eYo.flyout.TOOLBAR_HEIGHT || 0,
         }, {
-          l: (after) => after - eYo.view.Flyout.TOOLBAR_HEIGHT,
-          h: (after) => after + eYo.view.Flyout.TOOLBAR_HEIGHT,
+          l: (after) => after - eYo.flyout.TOOLBAR_HEIGHT || 0,
+          h: (after) => after + eYo.flyout.TOOLBAR_HEIGHT || 0,
         })
       },
     },
@@ -332,43 +354,19 @@ eYo.view.makeC9r('Flyout', {
 /**
  * When the size of the receiver did change.
  */
-eYo.view.Flyout_p.sizeChanged = function() {
+eYo.flyout.View_p.sizeChanged = function() {
   this.desk.board.layout()
   this.search_.layout()
   this.library_.layout()
   this.draft_.layout()
 }
 
-Object.defineProperties(eYo.view.Flyout, {
-  AT_RIGHT: {value: 1},
-  AT_LEFT: {value: 2},
-  /**
-   * Top/bottom padding between scrollbar and edge of flyout background.
-   * @type {number}
-   * @const
-   */
-  SCROLLBAR_PADDING: {value: 2},
-  TOP_MARGIN: {value: 0}, // 4 * eYo.geom.REM
-  BOTTOM_MARGIN: {value: 16}, // scroll bar width
-  TOOLBAR_HEIGHT : {value: Math.round(2 * eYo.geom.Y)},
-  /**
-   * Margin around the edges of the bricks.
-   * @type {number}
-   * @const
-   */
-  MARGIN : {value: eYo.geom.REM / 4},
-  /**
-   * This size and anchor of the receiver and wrapped
-   * in an object with eponym keys.
-   */
-})
-
 /**
  * Update the display property of the flyout based whether it thinks it should
  * be visible and whether its containing board is visible.
  * @private
  */
-eYo.view.Flyout_p.updateDisplay_ = function() {
+eYo.flyout.View_p.updateDisplay_ = function() {
   var show = this.containerVisible_ && this.visible_
   this.ui_driver_mngr.displaySet(show)
   // Update the scrollbar's visiblity too since it should mimic the
@@ -379,7 +377,7 @@ eYo.view.Flyout_p.updateDisplay_ = function() {
 /**
  * Hide and empty the flyout.
  */
-eYo.view.Flyout_p.hide = function() {
+eYo.flyout.View_p.hide = function() {
   if (!this.visible) {
     return
   }
@@ -398,7 +396,7 @@ eYo.view.Flyout_p.hide = function() {
  * More tagnames accepted.
  * @param {Array|string} model List of bricks to show.
  */
-eYo.view.Flyout_p.show = function(model) {
+eYo.flyout.View_p.show = function(model) {
   this.board_.setResizesEnabled(false)
   this.hide()
   eYo.event.disableWrap(() => {
@@ -469,7 +467,7 @@ eYo.view.Flyout_p.show = function(model) {
  * @param {Event} e Mouse wheel scroll event.
  * @private
  */
-eYo.view.Flyout_p.on_wheel = function(e) {
+eYo.flyout.View_p.on_wheel = function(e) {
   var delta = e.deltaY
   if (delta) {
     if (eYo.userAgent.GECKO) {
@@ -488,7 +486,7 @@ eYo.view.Flyout_p.on_wheel = function(e) {
  * @return {eYo.brick.Base} The newly created brick, or null if something
  *     went wrong with deserialization.
  */
-eYo.view.Flyout_p.createBrick = function(originalBrick) {
+eYo.flyout.View_p.createBrick = function(originalBrick) {
   this.desk.board.setResizesEnabled(false)
   var newBrick
   eYo.event.disableWrap(() => {
@@ -511,9 +509,9 @@ eYo.view.Flyout_p.createBrick = function(originalBrick) {
  * @param {Array<number>} gaps The visible gaps between bricks.
  * @private
  */
-eYo.view.Flyout_p.layout_ = function(contents) {
+eYo.flyout.View_p.layout_ = function(contents) {
   this.board_.scale = this.desk.board.scale
-  var where = eYo.geom.xyPoint(this.MARGIN, this.MARGIN)
+  var where = eYo.geom.xyPoint(this.ns.MARGIN, this.ns.MARGIN)
   contents.forEach(brick => {
     // Mark bricks as being inside a flyout.  This is used to detect and
     // prevent the closure of the flyout if the user right-clicks on such a
@@ -529,7 +527,7 @@ eYo.view.Flyout_p.layout_ = function(contents) {
 /**
  * Scroll the flyout to the top.
  */
-eYo.view.Flyout_p.scrollToStart = function() {
+eYo.flyout.View_p.scrollToStart = function() {
   var board = this.board
   var metrics = board.metrics_
   metrics.drag.set()
@@ -543,7 +541,7 @@ eYo.view.Flyout_p.scrollToStart = function() {
  * @param {eYo.event.Motion} Motion.
  * @return {boolean} true if the drag is toward the board.
  */
-eYo.view.Flyout_p.isDragTowardBoard = function(Motion) {
+eYo.flyout.View_p.isDragTowardBoard = function(Motion) {
   if(!this.scrollable) {
     return true
   }
@@ -564,7 +562,7 @@ eYo.view.Flyout_p.isDragTowardBoard = function(Motion) {
  * the board, an "a + b" brick that has two required placeholders would be disabled.
  * @private
  */
-eYo.view.Flyout_p.filterForCapacity_ = function() {
+eYo.flyout.View_p.filterForCapacity_ = function() {
   var remainingCapacity = this.desk.board.remainingCapacity
   this.board_.topBricks.forEach(brick => {
     if (this.permanentlyDisabled_.indexOf(brick) < 0) {
@@ -576,14 +574,14 @@ eYo.view.Flyout_p.filterForCapacity_ = function() {
 /**
  * Reflow bricks and their mats.
  */
-eYo.view.Flyout_p.reflow = function() {
+eYo.flyout.View_p.reflow = function() {
   if (this.reflowWrapper_) {
     this.board_.removeChangeListener(this.reflowWrapper_)
   }
   this.board_.scale = this.desk.board.scale
   var size = this.size
   var rect = this.board_.metrics.port
-  size.width = rect.width + this.MARGIN * 1.5 + eYo.view.SCROLLBAR_THICKNESS
+  size.width = rect.width + this.ns.MARGIN * 1.5 + eYo.view.SCROLLBAR_THICKNESS
   this.size = size
   if (this.reflowWrapper_) {
     this.board_.addChangeListener(this.reflowWrapper_)
@@ -593,7 +591,7 @@ eYo.view.Flyout_p.reflow = function() {
 /**
  * Move the flyout to the edge of the board.
  */
-eYo.view.Flyout_p.place = function () {
+eYo.flyout.View_p.place = function () {
   if (!this.visible_) {
     return
   }
@@ -631,7 +629,7 @@ console.error('IN PROGRESS')
  * @return {!eYo.brick.Base} The new brick in the main board.
  * @private
  */
-eYo.view.Flyout_p.placeNewBrick_ = function(srcBrick) {
+eYo.flyout.View_p.placeNewBrick_ = function(srcBrick) {
   // Create the new brick by cloning the brick in the flyout (via XML).
   var xml = eYo.xml.brickToDom(srcBrick)
   // The target board would normally resize during domToBrick, which will
@@ -656,7 +654,7 @@ eYo.view.Flyout_p.placeNewBrick_ = function(srcBrick) {
  * @param {Boolean} [close]  close corresponds to the final state.
  * When not given, toggle the closed state.
  */
-eYo.view.Flyout_p.doSlide = function(close) {
+eYo.flyout.View_p.doSlide = function(close) {
   // nothing to do if in the process of reaching the expected state
   if (this.slide_locked) {
     return
@@ -731,7 +729,7 @@ eYo.view.Flyout_p.doSlide = function(close) {
  * @param {Boolean} [close]  close corresponds to the final state.
  * When not given, toggle the closed state.
  */
-eYo.view.Flyout_p.slide = function(close) {
+eYo.flyout.View_p.slide = function(close) {
   this.doSlide(close)
 }
 
@@ -739,14 +737,14 @@ eYo.view.Flyout_p.slide = function(close) {
  * Subclassers will add there stuff here.
  * @param {number} step betwwen 0 and 1.
  */
-eYo.view.Flyout_p.slideOneStep = function(step) {
+eYo.flyout.View_p.slideOneStep = function(step) {
 }
 
 /**
  * Subclassers will add there stuff here.
  * @param {Boolean} closed
  */
-eYo.view.Flyout_p.didSlide = function(closed) {
+eYo.flyout.View_p.didSlide = function(closed) {
 }
 
 /**
@@ -754,7 +752,7 @@ eYo.view.Flyout_p.didSlide = function(closed) {
  * Used by the front end.
  * @param {String} category The name of the category to retrieve.
  */
-eYo.view.Flyout_p.getList = function (category) {
+eYo.flyout.View_p.getList = function (category) {
   return eYo.library.DATA[category] || []
 }
 
@@ -766,7 +764,7 @@ eYo.view.Flyout_p.getList = function (category) {
  * This must be called at initialization time, when building the UI,
  * and each time some change occurs that modifies the geometry.
  */
-eYo.view.Flyout_p.updateMetrics = function() {
+eYo.flyout.View_p.updateMetrics = function() {
   // if the flyout is moving, either opening or closing,
   // stop moving
   this.abortSlide() // ideally, sliding would follow the new metrics

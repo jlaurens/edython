@@ -1,7 +1,7 @@
 /**
  * edython
  *
- * Copyright 2018 Jérôme LAURENS.
+ * Copyright 2020 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -12,11 +12,10 @@
 'use strict'
 
 /**
- * @name {eYo.change.Base}
+ * @name {eYo.change}
  * @namespace
  */
-eYo.o3d.makeNS('change')
-
+eYo.o3d.makeNS(eYo, 'change')
 
 /**
  * Decorate of change count hooks.
@@ -29,18 +28,18 @@ eYo.o3d.makeNS('change')
  * the `change.count` is recorded such that `do_it` won't be executed
  * until the next `change.count` increment.
  * @param {String} key -
- * @param {Function} do_it  must return something.
- * @return {!Function}
+ * @param {Function} do_it - must return something, @this is the owner.
+ * @return {Function}
  */
-eYo.change._p.decorate = function (key, do_it) {
-  eYo.isF(do_it) || eYo.throw('do_it MUST be a function')
-  return function() {
+eYo.change._p.memoize = function (key, do_it) {
+  eYo.isF(do_it) || eYo.throw(`do_it MUST be a function, got: ${do_it}`)
+  return function(...args) {
     var c = this.change
     if (c.save_[key] === c.count) {
       return c.cache_[key]
     }
-    var did_it = do_it.apply(this, arguments)
-    if (eYo.isValid(did_it)) {
+    var did_it = do_it.call(this.owner_, ...args)
+    if (eYo.isVALID(did_it)) {
       c.save_[key] = c.count
       c.cache_[key] = did_it
     }
@@ -53,7 +52,7 @@ eYo.change._p.decorate = function (key, do_it) {
  * @constructor
  * @param{Object} owner
  */
-eYo.change.makeBase('Change', {
+eYo.change.makeBase({
   init () {
     this.reset()
   },
@@ -86,8 +85,18 @@ eYo.change.makeBase('Change', {
     save: {
       value: Object.create(null)
     },
+    listeners: {
+      value: []
+    },
   },
   methods: {
+    addChangeDoneListener (do_it) {
+      this.listeners.push(do_it)
+      return do_it
+    },
+    removeChangeDoneListener (listener) {
+      return eYo.do.arrayRemove(this.listeners, listener)
+    },
     /**
      * Reset the receiver.
      */
@@ -96,7 +105,7 @@ eYo.change.makeBase('Change', {
       // Some operations are performed only when there is a change
       // In order to decide whether to run or do nothing,
       // we have to store the last change count when the operation was
-      // last performed. See `eYo.change.decorate` decorator.
+      // last performed. See `eYo.change.memoize` decorator.
       this.save_ = Object.create(null)
       // When these operations return values, they are cached below
       // until they are computed once again.
@@ -108,7 +117,7 @@ eYo.change.makeBase('Change', {
     begin () {
       ++this.level_
       var O = this.owner_
-      O.onChangeBegin && O.onChangeBegin(arguments)
+      O.onChangeBegin && O.onChangeBegin()
     },
     /**
      * Ends a mutation.
@@ -121,7 +130,7 @@ eYo.change.makeBase('Change', {
     end () {
       --this.level_
       var O = this.owner_
-      O.onChangeEnd && O.onChangeEnd(arguments)
+      O.onChangeEnd && O.onChangeEnd()
       if (this.level === 0) {
         this.done()
       }
@@ -145,6 +154,7 @@ eYo.change.makeBase('Change', {
         this.step_ = this.count
       }
       O.onChangeDone && O.onChangeDone(arguments)
+      this.listeners_.forEach(l => l())
     },
     /**
      * Begin a mutation.

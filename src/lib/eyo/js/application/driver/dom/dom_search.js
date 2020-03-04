@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('Search')
+eYo.forwardDeclare('section.Search')
 
 /**
  * Dom driver for the search view.
@@ -19,7 +19,7 @@ eYo.forwardDeclare('Search')
 eYo.dom.makeDriverC9r('Search', {
     /**
    * Initialize the search dom ressources.
-   * @param {eYo.Search} search
+   * @param {eYo.section.Search} search
    * @return {!Element} The desk's dom repository.
    */
   initUI (search) {
@@ -31,7 +31,7 @@ eYo.dom.makeDriverC9r('Search', {
     var f = (type) => {
       var x = eYo.dom.createDom(
         eYo.dom.TagName.DIV,
-        goog.getCssName(cssClass, type)
+        eYo.dom.getCssClass(cssClass, type)
       )
       div.appendChild(x)
       x.dataset && (x.dataset.type = `search ${type}`)
@@ -43,7 +43,7 @@ eYo.dom.makeDriverC9r('Search', {
   },
   /**
    * Dispose of the given slot's rendering resources.
-   * @param {eYo.Search} search
+   * @param {eYo.section.Search} search
    */
   disposeUI (search) {
     var dom = search.dom
@@ -56,12 +56,12 @@ eYo.dom.makeDriverC9r('Search', {
  * Default CSS class of the search panel.
  * @type {string}
  */
-eYo.dom.SEARCH_CSS_CLASS = goog.getCssName('eyo-search')
+eYo.dom.SEARCH_CSS_CLASS = eYo.dom.getCssClass('eyo-search')
 
 
 /**
  * Returns the CSS class to be applied to the root element.
- * @param {eYo.Search} search
+ * @param {eYo.section.Search} search
  * @return {string} Renderer-specific CSS class.
  * @override
  */
@@ -71,15 +71,15 @@ eYo.dom.Search.prototype.cssClass = function() {
 
 /**
  * Dispose of the given slot's rendering resources.
- * @param {eYo.Search} search
+ * @param {eYo.section.Search} search
  */
 eYo.dom.Search.prototype.updateMetrics = function (search) {
   var r = search.viewRect
   var div = search.dom.toolbarDiv_
   div.style.width = `${r.width} px`
-  div.style.height = `${eYo.Search.TOOLBAR_HEIGHT} px`
+  div.style.height = `${eYo.dom.Search.TOOLBAR_HEIGHT} px`
   search.dom.boardDiv_
-  div.style.y = `${eYo.Search.TOOLBAR_HEIGHT} px`
+  div.style.y = `${eYo.dom.Search.TOOLBAR_HEIGHT} px`
   div.style.width = `${r.width} px`
-  div.style.height = `${r.height - eYo.Search.TOOLBAR_HEIGHT} px`
+  div.style.height = `${r.height - eYo.dom.Search.TOOLBAR_HEIGHT} px`
 }

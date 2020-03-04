@@ -493,7 +493,7 @@
           })
           this.$$onOnly('workspace-clean', () => {
             eYo.Events.groupWrap(() => {
-              eYo.Do.tryFinally(() => {
+              eYo.do.tryFinally(() => {
                 var tops = eYo.App.workspace.topBlocks_.filter(block => !block.eyo.isControl)
                 tops.forEach(block => eYo.deleteBlock(block, true))
               })
@@ -501,7 +501,7 @@
           })
           eYo.$$.bus.$on('workspace-tidy-up', (kvargs) => {
             eYo.Events.groupWrap(() => {
-              eYo.Do.tryFinally(() => {
+              eYo.do.tryFinally(() => {
                 eYo.App.workspace.eyo.tidyUp(kvargs)
               })
             })

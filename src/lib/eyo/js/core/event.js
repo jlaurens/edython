@@ -30,12 +30,15 @@ eYo.o3d.makeNS(eYo, 'event', {
   UI: 'ui',
 })
 
+// No special Base class
+eYo.event.makeBase()
+
 /**
  * An event manager.
  * @name {eYo.event.Mngr}
  * @constructor
  */
-eYo.o3d.makeC9r(eYo.event, 'Mngr', {
+eYo.event.makeC9r('Mngr', {
   properties: {
     /**
      * Maximum number of undo events in stack. `0` turns off undo, `Infinity` sets it to unlimited (provided there is enough memory!).
@@ -98,7 +101,7 @@ eYo.o3d.makeC9r(eYo.event, 'Mngr', {
           this.level_ = 1
         } else if (after) {
           if (!this.level++) {
-            this.group_ = eYo.do.genUid()
+            this.group_ = eYo.do.genUID()
           }
         } else if (this.level > 1) {
           --this.level_
@@ -155,7 +158,7 @@ eYo.event.Mngr_p.groupWrap = function (try_f, finally_f) {
 
 /**
  * Create a custom event and fire it.
- * @param {eYo.event.Base} event - Custom data for event.
+ * @param {eYo.event.Event} event - Custom data for event.
  */
 eYo.event.Mngr_p.fire = function(event) {
   if (!eYo.event.enabled) {
@@ -187,9 +190,9 @@ eYo.event.Mngr_p.clearPendingUndo = function() {
 
 /**
  * Filter the queued events and merge duplicates.
- * @param {Array<!eYo.event.Base>} queueIn Array of events.
+ * @param {Array<!eYo.event.Event>} queueIn Array of events.
  * @param {boolean} forward True if forward (redo), false if backward (undo).
- * @return {!Array<!eYo.event.Base>} Array of filtered events.
+ * @return {!Array<!eYo.event.Event>} Array of filtered events.
  */
 eYo.event.Mngr_p.filter = function(queueIn, forward) {
   if (!forward) {
@@ -239,7 +242,7 @@ eYo.event.Mngr_p.filter = function(queueIn, forward) {
  * Abstract class for an event.
  * @constructor
  */
-eYo.event.makeBase({
+eYo.event.makeC9r('Event', {
   /**
    * 
    * @param {*} owner - The event manager is the owner
@@ -334,19 +337,19 @@ eYo.event.makeBase({
  * Run an event.
  * @param {boolean} forward True if run forward, false if run backward (undo).
  */
-eYo.event.Base_p.run = eYo.doNothing
+eYo.event.Event_p.run = eYo.doNothing
 
 /**
  * Merge the receiver with the given event.
- * @param {eYo.event.Base} event - an eYo event
+ * @param {eYo.event.Event} event - an eYo event
  * @return {Boolean} Whether the change did occur.
  */
-eYo.event.Base_p.merge = eYo.doNothing
+eYo.event.Event_p.merge = eYo.doNothing
 
 eYo.event.Mngr.eyo.propertiesMerge({
   properties: {
     /**
-     * @type {!Array<!eYo.event.Base>}
+     * @type {!Array<!eYo.event.Event>}
      * @protected
      */
     undoStack: {
@@ -355,7 +358,7 @@ eYo.event.Mngr.eyo.propertiesMerge({
       },
     },
     /**
-     * @type {!Array<!eYo.event.Base>}
+     * @type {!Array<!eYo.event.Event>}
      * @protected
      */
     redoStack: {

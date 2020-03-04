@@ -13,7 +13,11 @@
  */
 'use strict'
 
-eYo.provide('do.register')
+/**
+ * @name {eYo.do.register}
+ * @namespace
+ */
+eYo.do.makeNS('register')
 
 /**
  * Adds `fooRegister` and `fooUnregister` methods, and
@@ -27,42 +31,43 @@ eYo.provide('do.register')
  */
 eYo.do.register.add = function (object, key, filter) {
   let k = key + 'Registered'
-  if (eYo.isF(object)) {
+  if (eYo.isC9r(object)) {
+    eYo.isSubclass(object, eYo.o4t.Base) || eYo.throw(`Not an eYo.o4t.Base subclass.`)
     object.eyo.propertiesMerge({
       [k] () {
-        return []
+        return new Set()
       }
     })
     object = object.prototype
   } else {
-    Object.defineProperty(object, k, {value: []})
+    Object.defineProperty(object, k, {value: new Set()})
   }
   let model = {
     [key + 'Register']: function (object) {
       let registered = this[k]
-      if (filter(object)) {
-        let i = registered.indexOf(object)
-        if (i < 0) {
-          registered.push(object)
-        }
+      if (!filter || filter(object)) {
+        registered.add(object)
       }
     },
     [key + 'Unregister']: function (object) {
       let registered = this[k]
-      var i = registered.indexOf(object)
-      if (i>=0) {
-        registered.splice(i)
-      }
+      return registered.delete(object)
     },
     [key + 'ForEach']: function (handler) {
       this[k].forEach(handler, this)
     },
     [key + 'Some']: function (handler) {
-      this[k].some(handler, this)
+      var ans = false
+      this[k].forEach((currentValue, currentKey, set) => {
+        if (!ans && handler(currentValue, currentKey, set)) {
+          ans = true
+        }
+      }, this)
+      return ans
     },
   }
   Object.keys(model).forEach(k => {
-    eYo.hasOwnProperty(object, k) && eYo.throw(`Unexpected property ${key}`)
+    eYo.hasOwnProperty(object, k) && eYo.throw(`Unexpected property ${k}`)
     let f = model[k]
     object[k] = f // maybe some post processing here...
   })

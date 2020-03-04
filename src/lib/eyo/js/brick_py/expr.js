@@ -67,7 +67,7 @@ eYo.expr.Base_p.changeDone = function (deep) {
  * This should be used instead of direct brick querying.
  * @return {String} The type of the receiver's brick.
  */
-eYo.expr.Base_p.getType = eYo.change.decorate(
+eYo.expr.Base_p.getType = eYo.change.memoize(
   'getType',
   function () {
     return {

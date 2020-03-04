@@ -21,12 +21,10 @@ eYo.forwardDeclare('xre')
  * @name{eYo.p6y}
  * @namespace
  */
-eYo.c9r.makeNS(eYo, 'p6y')
-
-Object.defineProperties(eYo.p6y._p, {
-  BEFORE: {value: 'willChange'},
-  DURING: {value: 'atChange'},
-  AFTER: {value: 'didChange'},
+eYo.c9r.makeNS(eYo, 'p6y', {
+  BEFORE: 'willChange',
+  DURING: 'atChange',
+  AFTER: 'didChange',
 })
 
 Object.defineProperties(eYo.p6y._p, {
@@ -39,7 +37,9 @@ Object.defineProperties(eYo.p6y._p, {
   },
 })
 
-eYo.model.allowModelPaths('properties', {
+eYo.model.allowModelPaths({
+  [eYo.model.ROOT]: 'properties',
+  'properties': '\\w+',
   'properties\\.\\w+': [
     'after', 'source',
     'value', 'lazy', 'reset',
@@ -58,7 +58,6 @@ eYo.model.allowModelShortcuts({
     }
   },
 })
-
 
 // ANCHOR eYo.p6y.new
 /**
@@ -294,26 +293,22 @@ eYo.p6y._p.handle_get_set = function (owner, prototype, key, model) {
   } else if (eYo.isF(set_m)) {
     if (set_m.length > 1) {
       computed && eYo.throw(`Bad model (${owner.eyo.name}/${key}): Unexpected 'builtin|property' in set`)
-      if (XRegExp.exec(set_m.toString(), eYo.xre.function_stored_after)) {
-        prototype.setValue = prototype.resetValue = function (after) {
-          try {
-            this.setValue = eYo.doNothing
-            return set_m.call(this.owner, this.stored__, after)
-          } finally {
-            delete this.setValue
-          }
+      prototype.setValue = prototype.resetValue = XRegExp.exec(set_m.toString(), eYo.xre.function_stored_after)
+      ? function (after) {
+        try {
+          this.setValue = eYo.doNothing
+          return set_m.call(this.owner, this.stored__, after)
+        } finally {
+          delete this.setValue
         }
-      } else {
-        computed || eYo.throw(`Bad model (${owner.eyo.name}/${key}): Missing 'builtin|property' in set`)
-        prototype.setValue = prototype.resetValue = function (after) {
-          try {
-            this.setValue = eYo.doNothing
-            return set_m.call(this.owner, after => {
-              prototype.eyo.C9r_s.setValue.call(this, after)
-            }, after)
-          } finally {
-            delete this.setValue
-          }
+      } : function (after) {
+        try {
+          this.setValue = eYo.doNothing
+          return set_m.call(this.owner, after => {
+            prototype.eyo.C9r_s.setValue.call(this, after)
+          }, after)
+        } finally {
+          delete this.setValue
         }
       }
     } else {
@@ -473,6 +468,97 @@ eYo.p6y._p.handle_stored = function (owner, prototype, key, model) {
   }
 }
 
+// ANCHOR eYo.p6y.List
+
+/**
+ * Maintains a list of properties.
+ * `eYo.o4t.Base` instances maintains properties by keys.
+ * Here properties are maintained by index.
+ * @name{eYo.p6y.List}
+ * @constructor
+ */
+eYo.p6y.makeC9r('List', {
+  init (owner, ...items) {
+    this.list__ = []
+    this.values = new Proxy(this.list__, {
+      get(target, prop) {
+        if (!isNaN(prop)) {
+          prop = parseInt(prop, 10)
+          if (prop < 0) {
+            prop += target.length
+          }
+          let p = target[prop]
+          return p && p.value
+        }
+        throw new Error('`values` attribute only accepts indexed accessors')
+      }
+    })
+    this.properties = new Proxy(this.list__, {
+      get(target, prop) {
+        if (!isNaN(prop)) {
+          prop = parseInt(prop, 10)
+          if (prop < 0) {
+            prop += target.length
+          }
+          return target[prop]
+        }
+        throw new Error('`properties` attribute only accepts indexed accessors')
+      }
+    })
+    this.splice(0, 0, ...items)
+  },
+  dispose(...args) {
+    for (const p of this.list__) {
+      p.dispose(...args)
+    }
+    this.list__.length = 0
+  }
+})
+
+;(() => {
+  let _p = eYo.p6y.List_p
+
+  Object.defineProperties(_p, {
+    length: {
+      get () {
+        return this.list__.length
+      },
+      set (after) {
+        this.list__.length = after
+      }
+    },
+  })
+ 
+  /**
+   * Insert something at index i.
+   * @param {Integer} start - The index at which to start changing the list.
+   * @param {...} item - items to be inserted.
+   */
+  _p.splice = function (start, deleteCount,  ...items) {
+    if (start < 0) {
+      start = this.list__.length - start
+    }
+    let ans = this.list__.splice(start, deleteCount).map(p => p.value)
+    this.list__.splice(start, 0, ...(items.map(item => eYo.p6y.new(this, '', {
+      value: item
+    }))))
+    return ans
+  }
+
+}) ()
+
+/**
+ * The @@iterator method
+ */
+eYo.p6y.List.eyo_p.initInstance = function (object) {
+  eYo.p6y.List.eyo.super.initInstance(object)
+  object[Symbol.iterator] = function* () {
+    for (var p of this.list__) {
+      yield p.value
+    }
+  }
+}
+
 // ANCHOR eYo.p6y.Base
 /**
  * @name{eYo.p6y.Base}
@@ -489,6 +575,9 @@ eYo.p6y._p.handle_stored = function (owner, prototype, key, model) {
 eYo.p6y.makeBase({
   init (owner, key, model) {
     owner || eYo.throw(`${this.eyo.name}: Missing owner in makeBase`)
+    if (!eYo.isStr(key)) {
+      console.error('BREAK HERE!!!')
+    }
     eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeBase`)
     eYo.isNA(model) && eYo.throw(`${this.eyo.name}: Missing model in makeBase`)
     this.owner_ = owner
@@ -888,92 +977,3 @@ eYo.p6y.makeBase({
   _p.ownedForEach = eYo.doNothing
 
 }) ()
-
-/**
- * Maintains a list of properties.
- * `eYo.o4t.Base` instances maintains properties by keys.
- * Here properties are maintained by index.
- * @name{eYo.p6y.List}
- * @constructor
- */
-eYo.p6y.makeC9r('List', {
-  init (owner, ...items) {
-    this.list__ = []
-    this.values = new Proxy(this.list__, {
-      get(target, prop) {
-        if (!isNaN(prop)) {
-          prop = parseInt(prop, 10)
-          if (prop < 0) {
-            prop += target.length
-          }
-          let p = target[prop]
-          return p && p.value
-        }
-        throw new Error('`values` attribute only accepts indexed accessors')
-      }
-    })
-    this.properties = new Proxy(this.list__, {
-      get(target, prop) {
-        if (!isNaN(prop)) {
-          prop = parseInt(prop, 10)
-          if (prop < 0) {
-            prop += target.length
-          }
-          return target[prop]
-        }
-        throw new Error('`properties` attribute only accepts indexed accessors')
-      }
-    })
-    this.splice(0, 0, ...items)
-  },
-  dispose(...args) {
-    for (const p of this.list__) {
-      p.dispose(...args)
-    }
-    this.list__.length = 0
-  }
-})
-
-;(() => {
-  let _p = eYo.p6y.List_p
-
-  Object.defineProperties(_p, {
-    length: {
-      get () {
-        return this.list__.length
-      },
-      set (after) {
-        this.list__.length = after
-      }
-    },
-  })
- 
-  /**
-   * Insert something at index i.
-   * @param {Integer} start - The index at which to start changing the list.
-   * @param {...} item - items to be inserted.
-   */
-  _p.splice = function (start, deleteCount,  ...items) {
-    if (start < 0) {
-      start = this.list__.length - start
-    }
-    let ans = this.list__.splice(start, deleteCount).map(p => p.value)
-    this.list__.splice(start, 0, ...(items.map(item => eYo.p6y.new(this, '', {
-      value: item
-    }))))
-    return ans
-  }
-
-}) ()
-
-/**
- * The @@iterator method
- */
-eYo.p6y.List.eyo_p.initInstance = function (object) {
-  eYo.p6y.List.eyo.super.initInstance(object)
-  object.Symbol.iterator = function* () {
-    for (var p of this.list__) {
-      yield p.value
-    }
-  }
-}

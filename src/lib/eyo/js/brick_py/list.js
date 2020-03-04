@@ -466,7 +466,7 @@ eYo.expr.List.makeInheritedC9r('enclosure', {
  * getProfile.
  * @return {!Object} with `ans` key.
  */
-eYo.expr.enclosure.prototype.getProfile = eYo.change.decorate(
+eYo.expr.enclosure.prototype.getProfile = eYo.change.memoize(
   'getProfile',
   function () {
     // this may be called very very early when

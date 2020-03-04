@@ -30,7 +30,7 @@ eYoPlugin.install = function (Vue, options) {
   })
 
   /**
-   * Trick to force synchronization of the various vues with the selected block.
+   * Trick to force synchronization of the various vues with the selectedbrick.
    * @param{!Number} step
    */
   Vue.prototype.$$synchronize = function (step) {
@@ -117,8 +117,8 @@ eYoPlugin.install = function (Vue, options) {
     MAIN: {
       get: () => 'MAIN'
     },
-    BLOCK: {
-      get: () => 'BLOCK'
+    BRICK: {
+      get: () => 'BRICK'
     },
     STRING3: {
       get: () => 'STRING3'

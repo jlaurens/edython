@@ -11,11 +11,11 @@
  */
 'use strict'
 
-eYo.forwardDeclare('view.Flyout')
+eYo.forwardDeclare('flyout.View')
 
 /**
  * @name{eYo.fcls.Flyout}
  * @constructor
  * Shared application driver.
  */
-eYo.fcls.makeDriverC9r('view.Flyout')
+eYo.fcls.makeDriverC9r('flyout.View')
