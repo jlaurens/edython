@@ -300,7 +300,7 @@ eYo.focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
   }
 }
 
-eYo.o3d.Base.eyo.propertiesMerge({
+eYo.o4t.Base.eyo.propertiesMerge({
   focus_main: {
     get () {
       this.app.focus_main

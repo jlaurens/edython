@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('array__module')
-
-eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
+eYo.module.makeNS('array__module', {
+  URL: 'https://docs.python.org/3.6/library/array.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.array__module.makeItem()
-
+  let newItem = eYo.module.array__module.makeNewItem()
 
   eYo.module.array__module.data_ = {
     categories: [
@@ -32,7 +31,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
       'method'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'append',
         class: 'array',
         holder: 'array.array',
@@ -47,7 +46,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'array',
         class: 'array',
         category: 0,
@@ -66,7 +65,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'buffer_info',
         class: 'array',
         holder: 'array.array',
@@ -75,7 +74,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
         href: '#array.array.buffer_info',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'byteswap',
         class: 'array',
         holder: 'array.array',
@@ -85,7 +84,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'count',
         class: 'array',
         holder: 'array.array',
@@ -99,7 +98,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'extend',
         class: 'array',
         holder: 'array.array',
@@ -114,7 +113,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'frombytes',
         class: 'array',
         holder: 'array.array',
@@ -129,7 +128,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fromfile',
         class: 'array',
         holder: 'array.array',
@@ -147,7 +146,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fromlist',
         class: 'array',
         holder: 'array.array',
@@ -162,7 +161,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fromstring',
         class: 'array',
         holder: 'array.array',
@@ -172,7 +171,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'fromunicode',
         class: 'array',
         holder: 'array.array',
@@ -187,7 +186,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'index',
         class: 'array',
         holder: 'array.array',
@@ -201,7 +200,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'insert',
         class: 'array',
         holder: 'array.array',
@@ -219,7 +218,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'itemsize',
         class: 'array',
         holder: 'array.array',
@@ -228,7 +227,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
         href: '#array.array.itemsize',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'pop',
         class: 'array',
         holder: 'array.array',
@@ -244,7 +243,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'remove',
         class: 'array',
         holder: 'array.array',
@@ -259,7 +258,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'reverse',
         class: 'array',
         holder: 'array.array',
@@ -269,7 +268,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tobytes',
         class: 'array',
         holder: 'array.array',
@@ -278,7 +277,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
         href: '#array.array.tobytes',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tofile',
         class: 'array',
         holder: 'array.array',
@@ -293,7 +292,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tolist',
         class: 'array',
         holder: 'array.array',
@@ -302,7 +301,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
         href: '#array.array.tolist',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tostring',
         class: 'array',
         holder: 'array.array',
@@ -312,7 +311,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tounicode',
         class: 'array',
         holder: 'array.array',
@@ -321,7 +320,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
         href: '#array.array.tounicode',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'typecode',
         class: 'array',
         holder: 'array.array',
@@ -330,7 +329,7 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
         href: '#array.array.typecode',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'typecodes',
         class: 'array',
         category: 0,
@@ -381,6 +380,6 @@ eYo.module.array__module.url = 'https://docs.python.org/3.6/library/array.html'
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py array` on 2020-02-12 15:52:53.324063
+  // This file was generated by `python3 ./bin/helpers/modulebot.py array` on 2020-03-04 13:02:49.230916
 
 

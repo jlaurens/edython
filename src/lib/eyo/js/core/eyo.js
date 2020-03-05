@@ -47,6 +47,15 @@ eYo.isF = (what) => {
 }
 
 /**
+ * Whether the argument is a function or an arrow.
+ * @param {*} what
+ * @return {!Boolean}
+ */
+eYo.isDoIt = (what) => {
+  return what !== eYo.doNothing && typeof what === 'function' && !!what.call
+}
+
+/**
  * Whether the argument is a string.
  * @param {*} what
  */
@@ -246,7 +255,13 @@ eYo.mixinR(eYo, {
   /**
    * Void function frequently used.
    */
-  doNothing: function () {},
+  doNothing: function () {}, // NO SHORTHAND
+  /**
+   * Identity function frequently used.
+   */
+  doReturn (what) {
+    return what
+  },
 }, false)
 
 // ANCHOR Utilities
@@ -314,14 +329,15 @@ eYo.mixinR(eYo, {
    * Calls `helper` if the `ans` is valid.
    * `ans` may be the output of a reentrant method.
    * @param {*} ans
-   * @param {function} [f]
+   * @param {function|*} [f] – function or default value
    * @return The result of the call to `f`, when `f` is defined,
-   * `ans` if it is valid, `eYo.NA` otherwise.
+   * `ans` if it is valid, `f` if not a function else `eYo.NA` otherwise.
    */
   whenVALID  (ans, f) {
     if (eYo.isVALID(ans)) {
-      return (f && f(ans)) || ans
+      return (eYo.isF(f) && f(ans)) || ans
     }
+    return eYo.isF(f) ? eYo.NA : f
   },
   /**
    * Whether the argument is na array.

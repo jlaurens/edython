@@ -72,8 +72,8 @@ eYo.expr.builtin__range_expr.makeInheritedC9r('random__randrange', true, {
           this.doChange(1)
         }
       },
-      fromField (value) /** @suppress {globalThis} */ {
-        this.fromField(value.length)
+      fromField (builtin, value) /** @suppress {globalThis} */ {
+        builtin(value.length)
       },
       toField (value) /** @suppress {globalThis} */ {
         var txt = ''

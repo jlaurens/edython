@@ -1,6 +1,6 @@
 describe ('Tests: change', function () {
   it ('Change: basic', function () {
-    chai.assert(eYo.change.Base)
+    chai.assert(eYo.changer.Base)
   })
   it ('Change: begin', function () {
     var flag = 0
@@ -15,7 +15,7 @@ describe ('Tests: change', function () {
         flag += 10000
       },
     }
-    let change = new eYo.change.Base(onr)
+    let change = eYo.changer.new(onr)
     change.begin()
     chai.expect(flag).equal(1)
     change.end()
@@ -29,13 +29,13 @@ describe ('Tests: change', function () {
     change.end()
     chai.assert(flag === 10202, `Got ${flag}`)
     flag = 0
-    change.wrap(() => {
+    changer.wrap(() => {
       flag += 1000000
     })
     chai.expect(flag).equal(1010101)
     flag = 0
-    change.wrap(() => {
-      change.wrap(() => {
+    changer.wrap(() => {
+      changer.wrap(() => {
         flag += 1000000
       })
     })
@@ -44,17 +44,17 @@ describe ('Tests: change', function () {
   it ('Change: listener', function () {
     var flag = 0
     let onr = {}
-    let change = new eYo.change.Base(onr)
-    let listener = change.addChangeDoneListener(() => {
+    let changer = eYo.changer.new(onr)
+    let listener = changer.addChangeDoneListener(() => {
       flag += 1
     })
-    change.wrap(() => {
+    changer.wrap(() => {
       flag += 100
     })
     chai.expect(flag).equal(101)
     flag = 0
-    change.removeChangeDoneListener(listener)
-    change.wrap(() => {
+    changer.removeChangeDoneListener(listener)
+    changer.wrap(() => {
       flag += 100
     })
     chai.expect(flag).equal(100)
@@ -62,18 +62,18 @@ describe ('Tests: change', function () {
   it ('Change: memoize', function () {
     var flag = 0
     let onr = {}
-    onr.change = new eYo.change.Base(onr)
-    onr.foo = eYo.change.memoize('foo', (what) => {
+    onr.changer = eYo.changer.new(onr)
+    onr.foo = eYo.changer.memoize('foo', (what) => {
       return (flag += what)
     })
-    onr.bar = eYo.change.memoize('bar', (what) => {
+    onr.bar = eYo.changer.memoize('bar', (what) => {
       return (flag += what)
     })
     chai.expect(onr.foo(421)).equal(421)
     chai.expect(onr.foo(421)).equal(421)
     chai.expect(onr.bar(421)).equal(842)
     chai.expect(onr.bar(421)).equal(842)
-    onr.change.wrap(() => {
+    onr.changer.wrap(() => {
       flag = 1000
     })
     chai.expect(onr.foo(421)).equal(1421)

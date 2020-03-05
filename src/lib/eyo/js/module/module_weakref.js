@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('weakref__module')
-
-eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.html'
+eYo.module.makeNS('weakref__module', {
+  URL: 'https://docs.python.org/3.6/library/weakref.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.weakref__module.makeItem()
-
+  let newItem = eYo.module.weakref__module.makeNewItem()
 
   eYo.module.weakref__module.data_ = {
     categories: [
@@ -33,7 +32,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
       'exception'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'CallableProxyType',
         class: 'weakref',
         category: 0,
@@ -42,7 +41,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ProxyType',
         class: 'weakref',
         category: 0,
@@ -51,7 +50,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ProxyTypes',
         class: 'weakref',
         category: 0,
@@ -60,7 +59,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ReferenceError',
         class: 'weakref',
         category: 0,
@@ -68,7 +67,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
         href: '#weakref.ReferenceError',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ReferenceType',
         class: 'weakref',
         category: 0,
@@ -77,7 +76,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'WeakKeyDictionary',
         class: 'weakref',
         category: 0,
@@ -93,7 +92,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'WeakMethod',
         class: 'weakref',
         category: 0,
@@ -107,7 +106,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'WeakSet',
         class: 'weakref',
         category: 0,
@@ -123,7 +122,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'WeakValueDictionary',
         class: 'weakref',
         category: 0,
@@ -139,7 +138,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__call__',
         class: 'weakref.finalize',
         category: 0,
@@ -147,7 +146,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
         href: '#weakref.finalize.__call__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'detach',
         class: 'weakref.finalize',
         category: 0,
@@ -155,7 +154,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
         href: '#weakref.finalize.detach',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'finalize',
         class: 'weakref',
         category: 0,
@@ -180,7 +179,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'getweakrefcount',
         class: 'weakref',
         category: 0,
@@ -193,7 +192,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'getweakrefs',
         class: 'weakref',
         category: 0,
@@ -206,7 +205,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'keyrefs',
         class: 'WeakKeyDictionary',
         holder: 'weakref.WeakKeyDictionary',
@@ -215,7 +214,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
         href: '#weakref.WeakKeyDictionary.keyrefs',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'peek',
         class: 'weakref.finalize',
         category: 0,
@@ -223,7 +222,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
         href: '#weakref.finalize.peek',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'proxy',
         class: 'weakref',
         category: 0,
@@ -241,7 +240,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ref',
         class: 'weakref',
         category: 0,
@@ -259,7 +258,7 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'valuerefs',
         class: 'WeakValueDictionary',
         holder: 'weakref.WeakValueDictionary',
@@ -306,6 +305,6 @@ eYo.module.weakref__module.url = 'https://docs.python.org/3.6/library/weakref.ht
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py weakref` on 2020-02-12 15:52:53.357550
+  // This file was generated by `python3 ./bin/helpers/modulebot.py weakref` on 2020-03-04 13:02:49.264468
 
 

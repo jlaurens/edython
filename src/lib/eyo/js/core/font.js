@@ -14,7 +14,7 @@
  * @name{eYo.font}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'font')
+eYo.o3d.makeNS(eYo, 'font')
 
 /**
  * Point size of text.

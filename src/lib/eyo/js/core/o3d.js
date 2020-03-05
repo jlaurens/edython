@@ -31,6 +31,9 @@ eYo.o3d.makeBase({
     owner || eYo.throw('Missing owner!')
     this.owner_ = owner
   },
+  dispose () {
+    this.owner_ = eYo.NA
+  },
   properties: {
     owner: {
       consolidate (after) {
@@ -40,65 +43,30 @@ eYo.o3d.makeBase({
           this.disposeUI()
         }
       },
-      dispose: false,
     },
     /**
      * Options
      */
     options: {
       get () {
-        return this.owner.options
-      },
-    },
-    /**
-     * The app's audio manager
-     * @readonly
-     * @type {eYo.dom.Audio}
-     */
-    audio: {
-      get () {
-        let a = this.app ; return a && a.audio
-      },
-    },
-    /**
-     * The app's desk
-     * @readonly
-     * @type {eYo.view.Desk}
-     */
-    desk: {
-      get () {
-        let a = this.app ; return a && a.desk
-      },
-    },
-    /**
-     * The desk's flyout...
-     * @readonly
-     * @type {eYo.flyout.View}
-     */
-    flyout: {
-      get () {
-        let d = this.desk ; return d && d.flyout
-      },
-    },
-    /**
-     * The desk's board
-     * @readonly
-     * @type {eYo.board}
-     */
-    board: {
-      get () {
-        let d = this.desk ; return d && d.board
-      },
-    },
-    /**
-     * The desk's workspace...
-     * @readonly
-     * @type {eYo.view.Workspace}
-     */
-    workspace: {
-      get () {
-        let d = this.desk ; return d && d.workspace
+        return this.owner_.options
       },
     },
   },
+  methods: {
+    /**
+     * The default implementation does nothing.
+     * For subclassers.
+     * @param{*} before - the owner before the change
+     * @param{*} after - the owner after the change
+     */
+    ownerWillChange: eYo.doNothing,
+    /**
+     * The default implementation does nothing.
+     * For subclassers.
+     * @param{*} before - the owner before the change
+     * @param{*} after - the owner after the change
+     */
+    ownerDidChange: eYo.doNothing,
+  }
 })

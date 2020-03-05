@@ -34,11 +34,6 @@ eYo.py.bitset.makeBase({
   }
 })
 
-eYo.py.bitset.new = (nbits) => {
-  var ss = new eYo.py.bitset.Base(nbits)
-  return ss
-}
-
 // eYo.py.gmr.delbitset = (ss) => {
 //   throw 'DO NOT CALL THIS'
 // }

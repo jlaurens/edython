@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview eYo.data is a class for a data controller.
+ * @fileoverview eYo.data.Base is a class for a data controller.
  * It merely provides the API.
  * There is a design problem concerning the binding between the model
  * and the ui.
@@ -32,6 +32,63 @@
  */
 'use strict'
 
+eYo.model.allowModelPaths({
+  [eYo.model.ROOT]: 'data',
+  'data': '\\w+',
+  'data\\.\\w+': [
+    'after', // key || [keys]
+    'order', // INTEGER
+    'all', // TYPE || [TYPE], // last is expected
+    'main', // BOOLEAN
+    'placeholder', // STRING
+    'noUndo', // true
+    'xml', // {}
+    'init', // WHATEVER
+    'validate', // (...) => {} || false || true,
+    'validateIncog', // (...) => {}
+    'willChange', // (...) => {}
+    'isChanging', // (...) => {}
+    'didChange', // (...) => {}
+    'willUnchange', // (...) => {}
+    'isUnchanging', // (...) => {}
+    'didUnchange', // (...) => {}
+    'willLoad', // () => {}
+    'didLoad', // () => {}
+    'consolidate', // (...) => {}
+    'fromType', // () => {}
+    'fromField', // () => {}
+    'toField', // () => {}
+  ],
+  'data\\.\\w+\.xml': [
+    'save', 'load',
+  ],
+})
+
+eYo.model.allowModelShortcuts({
+  'data\\.\\w+\\.init': (before, p) => {
+    if (!eYo.isF(before)) {
+      return function () {
+        return before
+      }
+    }
+  },
+  'data\\.\\w+\\.(?:all|after)': (before, p) => {
+    if (!eYo.isRA(before)) {
+      return [before]
+    }
+  },
+  'data\\.\\w+\\.(?:didLoad|after)': (before, p) => {
+    if (!eYo.isF(before)) {
+      return eYo.INVALID
+    }
+  },
+  'data\\.\\w+\\.xml\\.(?:toText|fromText|toField|fromField|save|load)': (before, p) => {
+    if (!eYo.isF(before)) {
+      return eYo.INVALID
+    }
+  },
+})
+
 eYo.require('do')
 eYo.require('xre')
 
@@ -42,81 +99,291 @@ eYo.require('decorate')
  * @name {eYo.data}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'data')
+eYo.attr.makeNS(eYo, 'data')
+
+/**
+ * For subclassers.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.data._p.handle_model = function (_p, key, model) {
+  this.handle_filter(_p, key, model)
+  this.handle_validate(_p, key, model)
+  this.handle_synchronize(_p, key, model)
+  this.handle_change(_p, key, model)
+  this.handle_load(_p, key, model)
+}
+
+/**
+ * make the prototype's filter method based on the model's object for key filter.
+ * The prototype does inherit a filter method.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.data._p.handle_filter = function (prototype, key, model) {
+  let filter_m = model.filter
+  if (eYo.isF(filter_m)) {
+    let filter_s = prototype.eyo.C9r_s.filter
+    prototype.filter = function (after) {
+      try {
+        this.filter = filter_s
+        return filter_m.call(this, after)
+      } finally {
+        delete this.fister_s
+      }
+    }
+  } else if (!filter_m) {
+    prototype.filter = eYo.doReturn
+  }
+}
+
+/**
+ * make the prototype's fromField method based on the model's object for key fromField.
+ * The prototype may inherit a fromField method.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.data._p.handle_fromField = function (prototype, key, model) {
+  /**
+   * Set the value from the given text representation
+   * as text field content.
+   * In general, the given text either was entered by a user in a text field ot read from a persistent text formatted storage.
+   * Calls the javascript model, reentrant.
+   * Does nothing when the actual value and
+   * the actual argument are the same.
+   * @param {Object} txt
+   * @param {boolean=} dontValidate
+   */
+  let f_m = model.fromField
+  if (eYo.isF(f_m)) {
+    let f_s = prototype.eyo.C9r_s.fromField
+    if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+      prototype.fromField = eYo.decorate.reentrant(function (...$) {
+        f_m.call(this, (...$) => {
+          f_s.call(this, ...$)
+        }, ...$)
+      } )
+    } else {
+      prototype.fromField = function (...$) {
+        try {
+          this.fromField = f_s
+          f_m.call(this, ...$)
+        } finally {
+          delete this.fromField
+        }
+      }
+    }
+  } else {
+    f_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}): ${f_m}`)
+  }
+}
+
+/**
+ * make the prototype's validate method based on the model's object for key validate.
+ * The prototype may inherit a validate method.
+ * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.data._p.handle_load = function (prototype, key, model) {
+  ;['willLoad', 'didLoad'].forEach(k => {
+    let load_m = model[k]
+    if (eYo.isF(load_m)) {
+      prototype[k] = load_m
+    } else {
+      load_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) ...Load -> ${load_m}`)
+    }
+  })
+}
+
+/**
+ * make the prototype's validate method based on the model's object for key validate.
+ * The prototype may inherit a validate method.
+ * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.data._p.handle_consolidate = function (prototype, key, model) {
+  let consolidate_m = model.consolidate
+  if (eYo.isF(consolidate_m)) {
+    prototype.consolidate = eYo.decorate.reentrant('consolidate', function (...args) {
+      if (this.changer.level) {
+        return
+      }
+      consolidate_m.call(this, ...args)
+    })
+  } else {
+    consolidate_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) consolidate -> ${consolidate_m}`)
+  }
+}
+
+/**
+ * make the prototype's validate method based on the model's object for key validate.
+ * The prototype may inherit a validate method.
+ * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.data._p.handle_validate = function (prototype, key, model) {
+  let validate_m = model.validate
+  let validate_s = prototype.eyo.C9r_s.validate
+  if (eYo.isF(validate_m)) {
+    prototype.validate = eYo.decorate.reentrant('validate', validate_m.length > 2 // builtin, before, after
+    ? eYo.isDoIt(validate_s)
+      ? function (before, after) {
+        return validate_m.call(this, (_after = after) => {
+          return validate_s.call(this, before, _after)
+        }, before, after)
+      } : function (before, after) {
+        return validate_m.call(this, () => {
+          return after
+        }, before, after)
+      }
+    : validate_m.length > 1 // before, after
+      ? eYo.isDoIt(validate_s)
+        ? function (before, after) {
+          if (eYo.isVALID((after = validate_m.call(this, before, after)))) {
+            after = validate_s.call(this, before, after)
+          }
+          return after
+        } : validate_m
+      : eYo.isDoIt(validate_s)
+        ? function (before, after) {
+          if (eYo.isVALID((after = validate_m.call(this, after)))) {
+            after = validate_s.call(this, before, after)
+          }
+          return after
+        } : function (before, after) {
+          return validate_m.call(this, after)
+        }
+    )
+  } else {
+    validate_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) value validate -> ${validate_m}`)
+  }
+}
+
+/**
+ * make the prototype's validateIncog method based on the model's object for key validateIncog.
+ * The prototype may inherit a validateIncog method.
+ * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.data._p.handle_validateIncog = function (prototype, key, model) {
+  let validate_m = model.validateIncog
+  let validate_s = prototype.eyo.C9r_s.validateIncog
+  if (eYo.isF(validate_m)) {
+    prototype.validateIncog = eYo.decorate.reentrant('validateIncog', validate_m.length > 2 // builtin, before, after
+    ? eYo.isDoIt(validate_s)
+      ? function (before, after) {
+        return validate_m.call(this, (_after = after) => {
+          return validate_s.call(this, before, _after)
+        }, before, after)
+      } : function (before, after) {
+        return validate_m.call(this, () => {
+          return after
+        }, before, after)
+      }
+    : validate_m.length > 1 // before, after
+      ? eYo.isDoIt(validate_s)
+        ? function (before, after) {
+          if (eYo.isVALID((after = validate_m.call(this, before, after)))) {
+            after = validate_s.call(this, before, after)
+          }
+          return after
+        } : validate_m
+      : eYo.isDoIt(validate_s)
+        ? function (before, after) {
+          if (eYo.isVALID((after = validate_m.call(this, after)))) {
+            after = validate_s.call(this, before, after)
+          }
+          return after
+        } : function (before, after) {
+          return validate_m.call(this, after)
+        }
+    )
+  } else {
+    validate_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) value validateIncog -> ${validate_m}`)
+  }
+}
+
+/**
+ * make the prototype's synchronize method based on the model's object for key synchronize.
+ * The prototype may inherit a synchronize method.
+ * Changing the ancestor prototype afterwards is not a good idea.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.data._p.handle_synchronize = function (prototype, key, model) {
+  let synchronize_m = model.synchronize
+  let synchronize_s = prototype.eyo.C9r_s.synchronize
+  if (eYo.isF(synchronize_m)) {
+    prototype.synchronize = eYo.decorate.reentrant('synchronize', synchronize_m.length > 1
+    ? synchronize_s
+      ? function (after) {
+        return synchronize_m.call(this, synchronize_s, after)
+      } : function (after) {
+        return synchronize_m.call(this, eYo.doNothing, after)
+      }
+    : synchronize_m
+    )
+  } else {
+    synchronize_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) value synchronize -> ${synchronize_m}`)
+  }
+}
 
 /**
  * Expands a data model.
- * @param {Object} model
- * @param {String} key
+ * @param {Object} model - a data model object
+ * @param {String} key - the data key
  * @return {Object}
  */
-eYo.model.dataHandler = (model, key) => {
-  model = model[key]
-  let methods = []
-  for (let [key, value] of Object.entries({
-    willChange: 'beforeChange',
-    isChanging: 'duringChanging',
-    didChange: 'afterChange',
-    synchronize: 'synchronize',
-    validate: 'validate',
-    validateIncog: 'validateIncog',
-  })) { ((k, kk) => {
-      var f = model[k]
-      if (eYo.isF(f)) {
-        var m = XRegExp.exec(f.toString(), eYo.xre.function_builtin_before)
-        if (m) {
-          var builtin = m.builtin
-          var before = m.before
-          if (builtin) {
-            if (before) {
-              var ff = (object) => {
-                let builtin = eYo.asF(object[kk])
-                object[k] = builtin
-                ? function (before, after) {
-                  f.call(this, () => {
-                    builtin.call(this, before, after)
-                  }, before, after)
-                } : function (before, after) {
-                  f.call(this, eYo.doNothing, before, after)
-                }
+eYo.attr._p.handle_change = function (prototype, key, model) {
+  ;['willChange', 'isChanging', 'didChange',
+  'willUnchange', 'isUnchanging', 'didUnchange'].forEach(k => {
+    let f_m = model[k] // use a closure to catch f
+    if (eYo.isF(f_m)) {
+      let f_s = prototype.eyo.C9r_s[k]
+      let m = XRegExp.exec(f_m.toString(), eYo.xre.function_builtin_before)
+      if (m) {
+        let before = m.before
+        if (m.builtin) {
+          var ff = before
+            ? eYo.isDoIt(f_s) ? function (before, after) {
+                f_m.call(this, () => {
+                  f_s.call(this, before, after)
+                }, before, after)
+              } : function (before, after) {
+                f_m.call(this, eYo.doNothing, before, after)
               }
-            } else {
-              ff = (object) => {
-                let builtin = eYo.asF(object[kk])
-                object[k] = builtin
-                ? function (before, after) {
-                  f.call(this, () => {
-                    builtin.call(this, before, after)
-                  }, after)
-                } : function (before, after) {
-                  f.call(this, eYo.doNothing, after)
-                }
+            : eYo.isDoIt(f_s) ? function (before, after) {
+                f_m.call(this, () => {
+                  f_s.call(this, before, after)
+                }, after)
+              } : function (before, after) {
+                f_m.call(this, eYo.doNothing, after)
               }
-            }
-          } else if (before) {
-            ff = (object) => {
-              object[k] = f
-            }
-          } else {
-            ff = (object) => {
-              object[k] = function (before, after) {
-                f.call(this, after)
-              }
-            }
-          }
         } else {
-          ff = (object) => {
-            object[k] = f
+          ff = before ? f_m : function (before, after) {
+            f_m.call(this, after)
           }
         }
-        methods.push(ff)
+      } else {
+        ff = f_m
       }
-    }) (key, value)
-  }
-  model['.methods'] = methods
-  if (model.validateIncog && !eYo.isF(model.validateIncog)) {
-    delete model.validateIncog
-  }
+      prototype[k] = eYo.decorate.reentrant(k, ff)
+    } else {
+      f_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) value synchronize -> ${f_m}`)
+    }
+  })
 }
 
 /**
@@ -145,66 +412,16 @@ eYo.data.makeBase({
     if (eYo.isDef(xml) || xml !== false) {
       this.attributeName = (xml && xml.attribute) || key
     }
-    if (!model.setup_) {
-      model.setup_ = true
-      if (!eYo.isF(model.didLoad)) {
-        delete model.didLoad
-      }
-      if (eYo.isDef(xml)) {
-        if (!eYo.isF(xml.toText)) {
-          delete xml.toText
-        }
-        if (!eYo.isF(xml.fromText)) {
-          delete xml.fromText
-        }
-        if (!eYo.isF(xml.toField)) {
-          delete xml.toField
-        }
-        if (!eYo.isF(xml.fromField)) {
-          delete xml.fromField
-        }
-        if (!eYo.isF(xml.save)) {
-          delete xml.save
-        }
-        if (!eYo.isF(xml.load)) {
-          delete xml.load
-        }
-      } else if (key === 'variant' || key === 'option' || key === 'subtype') {
-        model.xml = false
-      }
-    }
+  },
+  aliases: {
+    owner: 'brick',
+    'brick.changer': 'changer',
+    'brick.type': 'brickType',
+    'brick.data': 'data',
+    'brick.ui': 'ui',
+    'brick.ui_driver': 'ui_driver',
   },
   properties: {
-    brick: {
-      get() {
-        return this.owner
-      },
-    },
-    change: {
-      get () {
-        return this.brick.change
-      },
-    },
-    brickType: {
-      get () {
-        return this.brick.type
-      },
-    },
-    data: {
-      get () {
-        return this.brick.data
-      },
-    },
-    ui: {
-      get () {
-        return this.brick.ui
-      },
-    },
-    ui_driver: {
-      get () {
-        return this.brick.ui_driver
-      },
-    },
     key: eYo.NA,
     value: eYo.NA,
     /**
@@ -215,61 +432,70 @@ eYo.data.makeBase({
       value: false,
       set (after) {
         if (!eYo.isDef(after)) {
-          after = !this.required
+          after = !this.required_from_model_
         } else {
           after = !!after
         }
-        var validator = this.model.validateIncog
-        if (validator) {
-          after = validator.call(this, after)
-        }
-        if (this.incog_ !== after) {
-          this.change.wrap(() => {
-            this.incog_ = after
-            this.slot && (this.slot.incog = after)
-            this.field && (this.field.visible = !after)
-          })
-        }
+        eYo.whenVALID(this.validateIncog(after), after => {
+          if (this.incog_ !== after) {
+            this.changer.wrap(() => {
+              this.incog_ = after
+              this.slot && (this.slot.incog = after)
+              this.field && (this.field.visible = !after)
+            })
+          }
+        })
       }
     },
     requiredIncog: {
       set (after) {
-        this.incog = !(this.required = after)
+        this.incog_ = !(this.required_from_model_ = after)
       }
-    }
+    },
+    required_from_model: false
   },
 })
 
 ;(() => {
   /**
-   * Initialize the instance.
-   * Calls the inherited method, then adds methods defined by the model.
-   * The methods are managed by the |dataHandler| method of the |eYo.model|.
-   * @param {Object} object - The object to initialize.
+  * Get the value of the data.
+  * Never call it dierctly
+  * One shot.
+  */
+ let getLazyValue = eYo.decorate.reentrant('get', function () {
+    if (!eYo.isDef(this.stored__)) {
+      this.internalSet(this.model.init.call(this.owner))
+    }
+    return this.stored__
+  })
+
+  /**
+   * This is the recommanded method to create new data objects.
+   * One data model, one class.
+   * @param{eYo.brick.Base} brick - the owner
+   * @param{String} key - the unique data identifier
+   * @param{Object} model - the data model
    */
-  eYo.p6y.Data
-  eYo.data.Dlgt_p.initInstance = function (object) {
-    this.C9r_S.eyo_p.initInstance.call(this, object)
-    object.model['.methods'].forEach(f => {
-      f(object)
-    })
+  eYo.data._p.new = function (brick, key, model) {
+    if (!model.C9r) {
+      let _p = (model.C9r = this.makeC9r('')).prototype
+      this.handle_data(brick, _p, key, model)
+      if (key === 'variant' || key === 'option' || key === 'subtype') {
+        model.xml = false
+      }
+    }
+    let ans = new model.C9r(owner, key, model)
+    ans.get = getLazyValue
+    return ans
   }
+
   let _p = eYo.data.Base_p
 
   /**
    * Get the value of the data
    */
   _p.get = function () {
-    if (!eYo.isDef(this.value_)) {
-      var f = eYo.decorate.reentrant_method(this,
-        'get',
-        this.init
-      )
-      f && (eYo.whenVALID(f.apply(this, arguments), (ans) => {
-        this.internalSet(ans)
-      }))
-    }
-    return this.value_
+    return this.stored__
   }
 
   /**
@@ -278,19 +504,19 @@ eYo.data.makeBase({
    * @param {Boolean} notUndoable
    */
   _p.rawSet = function (after, notUndoable) {
-    var before = this.value_
+    var before = this.stored__
     if (before !== after) {
-      this.change.begin()
-      this.beforeChange(before, after)
+      this.changer.begin()
       try {
+        this.beforeChange(before, after)
         if (after === eYo.key.Comment) {
           console.error('BACK TO COMMENT')
         }
-        this.value_ = after
+        this.stored__ = after
         this.duringChange(before, after)
       } finally {
         this.afterChange(before, after)
-        this.change.end() // may render
+        this.changer.end() // may render
       }
     }
   }
@@ -318,65 +544,14 @@ eYo.data.makeBase({
   }
 
   /**
-   * Init the value of the property.
-   * If `after` is defined, it is used as is and nothing more is performed.
-   * Otherwise, if the model contains:
-   * `init: foo,`
-   * then the initial value will be based on `foo`,
-   * even if it is not a valid data.
-   * If `foo` is a function, it is evaluated.
-   * Within the scope of this model function `this` is the receiver
-   * and `this.init(foo)` may be used to initialize the data.
-   * @param {Object} after
-   */
-  _p.init = function (after) {
-    if (eYo.isDef(after)) {
-      this.internalSet(after)
-      return
-    }
-    var init = this.model.init
-    var f = eYo.decorate.reentrant_method(
-      this,
-      'model_init',
-      this.model.init
-    )
-    try {
-      if (f) {
-        eYo.whenVALID(f.apply(this, arguments), (ans) => {
-          this.internalSet(ans)
-        })
-        return
-      } else if (eYo.isDef(init)) {
-        this.internalSet(init)
-        return
-      }
-      var all = this.getAll()
-      if (all && all.length) {
-        this.internalSet(all[0])
-      }
-    } finally {
-      if (!eYo.isDef(this.value_)) {
-        console.error('THIS SHOULD BE DEFINED', this.key, this.brickType)
-      }
-    }
-  }
-
-  /**
    * Init the value of the property depending on the type.
    * This is usefull for variants and options.
    * The model is asked for a method.
    * @param {Object} type
    */
-  _p.setWithType = function (type) {
-    var f = eYo.decorate.reentrant_method(
-      this,
-      'model_fromType',
-      this.model.fromType
-    )
-    f && (eYo.whenVALID(f.apply(this, arguments), (ans) => {
-      this.internalSet(ans)
-    }))
-  }
+  _p.setWithType = eYo.decorate.reentrant('setWithType', function (type) {
+    this.internalSet(this.model.fromType.call(this.owner, type))
+  })
 
   /**
    * When not eYo.NA, this is the array of all possible values.
@@ -403,19 +578,19 @@ eYo.data.makeBase({
   }
 
   /**
-   * Validates the value of the property
+   * Validates the value of the data
    * May be overriden by the model.
    * @param {Object} after
    */
-  _p.validate = function (after) {
-    var f = eYo.decorate.reentrant_method(this, 'model_validate', this.model.validate)
-    if (f) {
-      return eYo.whenVALID(f.apply(this, arguments))
-    }
-    var all = this.getAll()
-    return this.model.validate === false || !all || all.indexOf(after) >= 0 ? after : eYo.INVALID
-  }
-
+  _p.validate = eYo.doReturn
+  
+  /**
+   * Validates the value of the data
+   * May be overriden by the model.
+   * @param {Object} after
+   */
+  _p.validateIncog =  eYo.doReturn
+  
   /**
    * Returns the text representation of the data.
    * @param {Object} [after]
@@ -501,42 +676,31 @@ eYo.data.makeBase({
     }
     if (!validate) {
       this.doChange(txt, false)
-    } else if (this.value_ !== txt) {
-      var v7d = this.validate(txt)
-      if (!v7d || !eYo.isVALID(v7d)) {
+    } else if (this.stored__ !== txt) {
+      let v7d = this.validate(txt)
+      if (eYo.isVALID(v7d)) {
+        this.error = false
+      } else {
         this.error = true
         v7d = txt
-      } else {
-        this.error = false
       }
       this.setTrusted_(v7d)
     }
   }
 
-
   /**
    * Set the value from the given text representation
    * as text field content.
    * In general, the given text either was entered by a user in a text field ot read from a persistent text formatted storage.
-   * Calls the javascript model, reentrant.
    * Does nothing when the actual value and
    * the actual argument are the same.
    * @param {Object} txt
    * @param {boolean=} dontValidate
    */
   _p.fromField = function (txt, dontValidate) {
-    if (!this.model_fromField_lock) {
-      var f = eYo.decorate.reentrant_method(this, 'model_fromField', this.model.fromField || this.model.fromText)
-      if (f) {
-        eYo.whenVALID(f.call(this), ans => {
-          this.fromField(ans, dontValidate)
-        })
-        return
-      }
-    }
     if (dontValidate) {
       this.set(txt)
-    } else if (this.value_ !== txt) {
+    } else if (this.stored__ !== txt) {
       var v7d = this.validate(txt)
       if (!v7d || !eYo.isVALID(v7d)) {
         this.error = true
@@ -567,7 +731,9 @@ eYo.data.makeBase({
    * @param {Object} before
    * @return eYo.NA
    */
-  _p.didUnchange = eYo.doNothing
+  _p.didUnchange = function (before, after) {
+    this.didChange(before, after)
+  }
 
   /**
    * Did change the value of the property.
@@ -588,7 +754,9 @@ eYo.data.makeBase({
    * @param {Object} after
    * @return eYo.NA
    */
-  _p.willUnchange = eYo.doNothing
+  _p.willUnchange = function (before, after) {
+    this.willChange(before, after)
+  }
 
   /**
    * Before the didChange message is sent.
@@ -614,7 +782,9 @@ eYo.data.makeBase({
    * @param {Object} after
    * @return eYo.NA
    */
-  _p.isUnchanging = eYo.doNothing
+  _p.isUnchanging = function (before, after) {
+    this.isChanging(before, after)
+  }
 
   /**
    * Before change the value of the property.
@@ -724,14 +894,9 @@ eYo.data.makeBase({
    * @param {Object} after
    * @param {Boolean} noRender
    */
-  _p.setTrusted = function (...args) {
-    try {
-      this.setTrusted = eYo.doNothing
-      this.setTrusted_.call(this, ...args)
-    } finally {
-      delete this.setTrusted
-    }
-  }
+  _p.setTrusted = eYo.decorate.reentrant('setTrusted', function (...args) {
+    this.setTrusted_.call(this, ...args)
+  })
 
   /**
    * If the value is an uppercase string,
@@ -742,23 +907,15 @@ eYo.data.makeBase({
    * @param {Object} after
    */
   _p.filter = function (after) {
-    // tricky argument management
-    // Used when after is an uppercase string
-    var f = eYo.decorate.reentrant_method(this, 'model_filter',this.model.filter)
-    if (f) {
-      return eYo.whenVALID(f.apply(this, arguments))
-    }
-    if (this.model.filter === true) {
-      if (eYo.isStr(after)) {
-        if (after === after.toUpperCase()) {
-          var x = eYo.key[after]
-          !x || (after = x)
-        }
-      } else if (eYo.isNum(after)) {
-        x = this.getAll()
-        if (x && eYo.isDef((x = x[after]))) {
-          after = x
-        }
+    if (eYo.isStr(after)) {
+      if (after === after.toUpperCase()) {
+        var x = eYo.key[after]
+        !x || (after = x)
+      }
+    } else if (eYo.isNum(after)) {
+      x = this.getAll()
+      if (x && eYo.isDef((x = x[after]))) {
+        after = x
       }
     }
     return after
@@ -774,7 +931,7 @@ eYo.data.makeBase({
    */
   _p.set = function (after, validate = true) {
     after = this.filter(after)
-    if ((this.value_ === after) || (validate && (!eYo.isVALID(after = this.validate (before, after))))) {
+    if ((this.stored__ === after) || (validate && (!eYo.isVALID(after = this.validate (before, after))))) {
       return false
     }
     this.error = false
@@ -789,11 +946,11 @@ eYo.data.makeBase({
     /**
      * Disabled data correspond to disabled input.
      * Changing this value will cause an UI synchronization but no change count.
-     * @param {Boolean} after  When not defined, replaced by `!this.required`
+     * @param {Boolean} after  When not defined, replaced by `!this.required_from_model_`
      */
     set (after) {
       if (!eYo.isDef(after)) {
-        after = !this.required
+        after = !this.required_from_model
       } else {
         after = !!after
       }
@@ -817,27 +974,14 @@ eYo.data.makeBase({
    * Should be overriden by the model.
    * Reentrant management here of the model action.
    */
-  _p.consolidate = function (...args) {
-    if (this.change.level) {
-      return
-    }
-    let f = this.model.consolidate
-    if (f) {
-      try {
-        this.consolidate = eYo.doNothing
-        f.call(this, ...args)
-      } finally {
-        delete this.consolidate
-      }
-    }
-  }
+  _p.consolidate = eYo.doNothing
 
   /**
    * An active data is not explicitely disabled, and does contain text.
    * @private
    */
   _p.isActive = function () {
-    return !!this.required || (!this.incog_ && (eYo.isStr(this.value_) && this.value_.length))
+    return !!this.required_from_model || (!this.incog_ && (eYo.isStr(this.stored__) && this.stored__.length))
   }
 
   /**
@@ -879,7 +1023,7 @@ eYo.data.makeBase({
     }
     if (!this.incog || xml && eYo.do.valueOf(xml.force, this)) {
       // in general, data should be saved
-      var required = this.required || (xml && xml.required)
+      var required = this.required_from_model || (xml && xml.required)
       var isText = xml && xml.text
       var txt = this.toText()
       // if there is no text available, replace with the placeholder
@@ -901,7 +1045,7 @@ eYo.data.makeBase({
         }
       } else if (txt.length) {
         element.setAttribute(this.attributeName, txt)
-      } else if (this.required) {
+      } else if (this.required_from_model) {
         if (this.model.custom_placeholder) {
           element.setAttribute(this.attributeName + '_placeholder', this.model.custom_placeholder.toString())
         } else if (this.slot && this.slot.bindField === this.field) {
@@ -948,13 +1092,13 @@ eYo.data.makeBase({
       return
     }
     if (element) {
-      var required = this.required
+      var required = this.required_from_model
       var isText = xml && xml.text
-      this.setRequiredFromModel(false)
+      this.required_from_model_ = false
       var txt
       if (isText) {
         // get the first child which is a text node
-        if (!eYo.do.SomeChild(element, (child) => {
+        if (!eYo.do.someChild(element, (child) => {
           if (child.nodeType === Node.TEXT_NODE) {
             txt = child.nodeValue
             return true
@@ -963,7 +1107,7 @@ eYo.data.makeBase({
           txt = element.getAttribute(eYo.key.PLACEHOLDER)
           if (eYo.isDef(txt)) {
             this.customizePlaceholder(txt)
-            this.setRequiredFromModel(true)
+            this.required_from_model_ = true
             this.fromText('', false)
             return this.loaded_ = true
           }
@@ -975,7 +1119,7 @@ eYo.data.makeBase({
           txt = element.getAttribute(`${this.attributeName}_${eYo.key.PLACEHOLDER}`)
           if (eYo.isDef(txt)) {
             this.customizePlaceholder(txt)
-            this.setRequiredFromModel(true)
+            this.required_from_model_ = true
             this.fromText('', false)
             return this.loaded_ = true
           }
@@ -984,14 +1128,14 @@ eYo.data.makeBase({
       if (eYo.isDef(txt)) {
         if (required && txt === '?') {
           txt = ''
-          this.setRequiredFromModel(true)
+          this.required_from_model_ = true
         } else {
           if ((isText && txt === '?') || (!isText && txt === '')) {
             txt = ''
-            this.setRequiredFromModel(true)
+            this.required_from_model_ = true
           } else if (txt) {
             let v7d = this.validate(txt)
-            this.setRequiredFromModel(eYo.isVALID(v7d) ? v7d : '')
+            this.required_from_model_ = eYo.whenVALID(v7d, '')
           }
           this.fromText(txt, false) // do not validate, there might be an error while saving, please check
         }
@@ -1001,66 +1145,34 @@ eYo.data.makeBase({
       return this.loaded_ = true
     }
   }
-
   /**
    * Before all the data and slots will load.
    * For edython.
    */
-  _p.willLoad = function () {
-    var f =  this.model.willLoad
-    if (f) {
-      f.apply(this, arguments)
-      return
-    }
-  }
-
   /**
    * When all the data and slots have been loaded.
    * For edython.
    */
-  _p.didLoad = function () {
-    var f =  this.model.didLoad
-    if (f) {
-      f.apply(this, arguments)
-      return
-    }
-  }
-
-  /**
-   * Set the required status.
-   * When some data is required, an `?` might be used instead of nothing
-   * For edython.
-   */
-  _p.setRequiredFromModel = function (after) {
-    this.required_from_model = after
-  }
-
-  /**
-   * Get the required status.
-   * For edython.
-   */
-  _p.isRequiredFromModel = function () {
-    return this.required_from_model
-  }
+  _p.willLoad = _p.didLoad = eYo.doNothing
 
   /**
    * Get the concrete required status.
    * For edython.
    */
   _p.isRequiredFromSaved = function () {
-    return this.isRequiredFromModel() || this.get().length || this.required_from_type
+    return this.required_from_model || this.get().length || this.required_from_type
   }
 
   /**
    * Clean the required status, changing the value if necessary.
    * For edython.
-   * @param {function()} helper
+   * @param {Function} do_it
    */
-  _p.whenRequiredFromModel = function (helper) {
-    if (this.isRequiredFromModel()) {
-      this.setRequiredFromModel(false)
-      if (eYo.isF(helper)) {
-        helper.call(this)
+  _p.whenRequiredFromModel = function (do_it) {
+    if (this.required_from_model) {
+      this.required_from_model_ = false
+      if (eYo.isF(do_it)) {
+        do_it.call(this)
       }
       return true
     }
@@ -1073,11 +1185,24 @@ eYo.data.makeBase({
    */
   _p.whenRequiredFromSaved = function (helper) {
     if (this.requiredFromSaved) {
-      this.setRequiredFromModel(false)
+      this.required_from_model_ = false
       if (eYo.isF(helper)) {
         helper.call(this)
       }
       return true
+    }
+  }
+  /**
+   * Set the value wrapping in a `changeBegin`/`changeEnd`
+   * group call of the owner.
+   * @param {Object} after
+   * @param {Boolean} notUndoable
+   */
+  _p.doChange = function (after, validate) {
+    if (after !== this.stored__) {
+      this.owner.changer.wrap(() => {
+        this.set(after, validate)
+      })
     }
   }
 

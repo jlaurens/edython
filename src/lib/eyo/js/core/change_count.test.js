@@ -2,7 +2,7 @@ describe ('Tests: change_count', function () {
   it ('Change_count: basic', function () {
     chai.assert(eYo.o4t.changeCount)
     chai.assert(eYo.o4t.changeCount.merge)
-    var ns = eYo.o4t.makeNS()
+    var ns = eYo.o3d.makeNS()
     ns.makeBase()
     eYo.o4t.changeCount.merge(ns.Base_p)
     let d = new ns.Base()

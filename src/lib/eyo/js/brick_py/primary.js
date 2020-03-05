@@ -13,7 +13,7 @@
 
 eYo.require('expr.List')
 
-eYo.require('change.Base')
+eYo.require('changer')
 
 eYo.require('module.stdtypes')
 eYo.require('module.functions')
@@ -342,8 +342,8 @@ eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
     var x = this.parent
     if (x) {
       if (other) {
-        if (x.Variant_p === eYo.key.ANNOTATED || x.Variant_p === eYo.key.ANNOTATED_VALUED) {
-          x.Variant_p = eYo.key.TARGET_VALUED
+        if (x.variant === eYo.key.ANNOTATED || x.variant === eYo.key.ANNOTATED_VALUED) {
+          x.variant_ = eYo.key.TARGET_VALUED
         }
         return
       }
@@ -369,7 +369,7 @@ eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) 
       parent.target_s.bindField.visible = false
       if (Object.keys(this.slots).length > 1) {
         // this is the second brick we connect
-        parent.Variant_p = eYo.key.TARGET_VALUED
+        parent.variant_ = eYo.key.TARGET_VALUED
       } else {
         var v = parent.Variant_p
         if (v === eYo.key.ANNOTATED) {
@@ -377,14 +377,14 @@ eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) 
           if ([eYo.t3.expr.identifier_annotated,
             eYo.t3.expr.augtarget_annotated,
             eYo.t3.expr.key_datum].indexOf(t9k.type) >= 0) {
-            parent.Variant_p = eYo.key.NONE // no 2 annotations
+            parent.variant_ = eYo.key.NONE // no 2 annotations
           }
         } else if (v === eYo.key.ANNOTATED_VALUED) {
           var t9k = m4t.targetBrick
           if ([eYo.t3.expr.identifier_annotated,
             eYo.t3.expr.augtarget_annotated,
             eYo.t3.expr.key_datum].indexOf(t9k.type) >= 0) {
-            parent.Variant_p = eYo.key.TARGET_VALUED // no 2 annotations
+            parent.variant_ = eYo.key.TARGET_VALUED // no 2 annotations
           }
         }
       }
@@ -596,8 +596,8 @@ eYo.expr.makeC9r('primary', {
           this.doChange(1)
         }
       },
-      fromField (value) /** @suppress {globalThis} */ {
-        this.fromField(value.length)
+      fromField (builtin, value) /** @suppress {globalThis} */ {
+        builtin(value.length)
       },
       toField (value) /** @suppress {globalThis} */ {
         var txt = ''
@@ -642,7 +642,7 @@ eYo.expr.makeC9r('primary', {
       },
       xml: {
         force () /** @suppress {globalThis} */ {
-          return this.brick.Variant_p === eYo.key.CALL_EXPR
+          return this.brick.variant === eYo.key.CALL_EXPR
         },
         save (element, opt) /** @suppress {globalThis} */ {
           if (!this.brick.holder_b) {
@@ -673,18 +673,18 @@ eYo.expr.makeC9r('primary', {
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.Variant_p === eYo.key.ALIASED
+          this.required_from_model = this.brick.variant === eYo.key.ALIASED
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.ALIASED
+          this.brick.variant_ = eYo.key.ALIASED
         }
       },
       didChange (after) /** @suppress {globalThis} */ {
         if (after) {
-          this.brick.Variant_p = eYo.key.ALIASED
+          this.brick.variant_ = eYo.key.ALIASED
         }
       }
     }, // new
@@ -696,7 +696,7 @@ eYo.expr.makeC9r('primary', {
         save (element, opt) /** @suppress {globalThis} */ {
           var v = this.brick.Variant_p
           if (v === eYo.key.ANNOTATED || v === eYo.key.ANNOTATED_VALUED) {
-            this.required = true
+            this.required_from_model = true
             this.save(element, opt)
           }
         }
@@ -706,15 +706,15 @@ eYo.expr.makeC9r('primary', {
         var v = b3k.Variant_p
         if (this.requiredFromSaved) {
           if (v === eYo.key.TARGET_VALUED) {
-            b3k.Variant_p = eYo.key.ANNOTATED_VALUED
+            b3k.variant_ = eYo.key.ANNOTATED_VALUED
           } else if (v !== eYo.key.ANNOTATED_VALUED) {
-            b3k.Variant_p = eYo.key.ANNOTATED
+            b3k.variant_ = eYo.key.ANNOTATED
           }
         } else {
           if (v === eYo.key.ANNOTATED_VALUED) {
-            b3k.Variant_p = eYo.key.TARGET_VALUED
+            b3k.variant_ = eYo.key.TARGET_VALUED
           } else if (v === eYo.key.ANNOTATED) {
-            b3k.Variant_p = eYo.key.NONE
+            b3k.variant_ = eYo.key.NONE
           }
         }
       },
@@ -726,7 +726,7 @@ eYo.expr.makeC9r('primary', {
       didChange (after) /** @suppress {globalThis} */ {
         if (after) {
           var b3k = this.brick
-          b3k.Variant_p = b3k.Value_p || b3k.value_s.unwrappedTarget
+          b3k.variant_ = b3k.Value_p || b3k.value_s.unwrappedTarget
           ? eYo.key.ANNOTATED_VALUED
           : eYo.key.ANNOTATED
         }
@@ -741,7 +741,7 @@ eYo.expr.makeC9r('primary', {
         save (element, opt) /** @suppress {globalThis} */ {
           var v = this.brick.Variant_p
           if (v === eYo.key.TARGET_VALUED || v === eYo.key.ANNOTATED_VALUED) {
-            this.required = false
+            this.required_from_model = false
             this.save(element, opt)
           }
         },
@@ -760,9 +760,9 @@ eYo.expr.makeC9r('primary', {
           var b3k = this.brick
           var v = b3k.Variant_p
           if (v === eYo.key.ANNOTATED) {
-            b3k.Variant_p = eYo.key.ANNOTATED_VALUED
+            b3k.variant_ = eYo.key.ANNOTATED_VALUED
           } else if (v !== eYo.key.TARGET_VALUED && v !== eYo.key.ANNOTATED_VALUED && v !== eYo.key.COL_VALUED) {
-            b3k.Variant_p = eYo.key.TARGET_VALUED
+            b3k.variant_ = eYo.key.TARGET_VALUED
           }
         }
       },
@@ -814,9 +814,7 @@ eYo.expr.makeC9r('primary', {
           b3k.annotated_d.required_from_type = true
         } else if (type === eYo.t3.expr.identifier_valued ||
             type === eYo.t3.expr.assignment_chain) {
-          if (this.value_ !== eYo.key.TARGET_VALUED) {
-            this.doChange(eYo.key.TARGET_VALUED)
-          }
+          this.doChange(eYo.key.TARGET_VALUED)
           b3k.value_d.required_from_type = true
         } else if (type === eYo.t3.expr.identifier_annotated_valued) {
           this.doChange(eYo.key.ANNOTATED_VALUED)
@@ -932,12 +930,12 @@ eYo.expr.makeC9r('primary', {
         }
         ;(after < this.brick.Mandatory_p) && (this.brick.Mandatory_p = after)
         if (eYo.isDef(after)) {
-          this.brick.Variant_p = eYo.key.CALL_EXPR
+          this.brick.variant_ = eYo.key.CALL_EXPR
         }
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          if (this.brick.Variant_p === eYo.key.CALL_EXPR && this.get() !== Infinity) {
+          if (this.brick.variant === eYo.key.CALL_EXPR && this.get() !== Infinity) {
             var profile = this.brick.profile
             if (profile && profile.p5e && (profile.p5e.raw === eYo.t3.expr.known_identifier)) {
               return
@@ -977,12 +975,12 @@ eYo.expr.makeC9r('primary', {
         }
         ;(after > this.brick.Ary_p) && (this.brick.Ary_p = after)
         if (eYo.isDef(after)) {
-          this.brick.Variant_p = eYo.key.CALL_EXPR
+          this.brick.variant_ = eYo.key.CALL_EXPR
         }
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          if (this.brick.profile && this.brick.Variant_p === eYo.key.CALL_EXPR && this.get()) {
+          if (this.brick.profile && this.brick.variant === eYo.key.CALL_EXPR && this.get()) {
             var profile = this.brick.profile
             if (profile && profile.p5e && (profile.p5e.raw === eYo.t3.expr.known_identifier)) {
               return
@@ -1054,7 +1052,7 @@ eYo.expr.makeC9r('primary', {
             parent.target_s.bindField.visible = false
             if (Object.keys(this.brick.slots).length > 1) {
               // this is the second brick we connect
-              parent.Variant_p = eYo.key.TARGET_VALUED
+              parent.variant_ = eYo.key.TARGET_VALUED
             } else {
               var v = parent.Variant_p
               if (v === eYo.key.ANNOTATED) {
@@ -1062,14 +1060,14 @@ eYo.expr.makeC9r('primary', {
                 if ([eYo.t3.expr.identifier_annotated,
                   eYo.t3.expr.augtarget_annotated,
                   eYo.t3.expr.key_datum].indexOf(t.type) >= 0) {
-                  parent.Variant_p = eYo.key.NONE // no 2 annotations
+                  parent.variant_ = eYo.key.NONE // no 2 annotations
                 }
               } else if (v === eYo.key.ANNOTATED_VALUED) {
                 var t = this.targetBrick
                 if ([eYo.t3.expr.identifier_annotated,
                   eYo.t3.expr.augtarget_annotated,
                   eYo.t3.expr.key_datum].indexOf(t.type) >= 0) {
-                  parent.Variant_p = eYo.key.TARGET_VALUED // no 2 annotations
+                  parent.variant_ = eYo.key.TARGET_VALUED // no 2 annotations
                 }
               }
             }
@@ -1105,9 +1103,9 @@ eYo.expr.makeC9r('primary', {
         var v = b3k.Variant_p
         if (this.requiredFromSaved) {
           if (v === eYo.key.TARGET_VALUED) {
-            b3k.Variant_p = eYo.key.ANNOTATED_VALUED
+            b3k.variant_ = eYo.key.ANNOTATED_VALUED
           } else if (v !== eYo.key.ANNOTATED_VALUED) {
-            b3k.Variant_p = eYo.key.ANNOTATED
+            b3k.variant_ = eYo.key.ANNOTATED
           }
         }
       }
@@ -1125,10 +1123,10 @@ eYo.expr.makeC9r('primary', {
       promise: eYo.t3.expr.value_list,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          if (this.brick.Variant_p === eYo.key.ANNOTATED) {
-            this.brick.Variant_p = eYo.key.ANNOTATED_VALUED
-          } else if (this.brick.Variant_p !== eYo.key.ANNOTATED_VALUED && this.brick.Variant_p !== eYo.key.TARGET_VALUED && this.brick.Variant_p !== eYo.key.COL_VALUED) {
-            this.brick.Variant_p = eYo.key.TARGET_VALUED
+          if (this.brick.variant === eYo.key.ANNOTATED) {
+            this.brick.variant_ = eYo.key.ANNOTATED_VALUED
+          } else if (this.brick.variant !== eYo.key.ANNOTATED_VALUED && this.brick.variant !== eYo.key.TARGET_VALUED && this.brick.variant !== eYo.key.COL_VALUED) {
+            this.brick.variant_ = eYo.key.TARGET_VALUED
           }
         }
       },
@@ -1146,7 +1144,7 @@ eYo.expr.makeC9r('primary', {
       },
       promise: eYo.t3.expr.argument_list_comprehensive,
       validateIncog () /** @suppress {globalThis} */ {
-        return this.brick.Variant_p !== eYo.key.CALL_EXPR
+        return this.brick.variant !== eYo.key.CALL_EXPR
       }
     },
     slicing: {
@@ -1157,7 +1155,7 @@ eYo.expr.makeC9r('primary', {
       },
       promise: eYo.t3.expr.slice_list,
       validateIncog () /** @suppress {globalThis} */ {
-        return this.brick.Variant_p !== eYo.key.SLICING
+        return this.brick.variant !== eYo.key.SLICING
       }
     },
     alias: {
@@ -1171,17 +1169,17 @@ eYo.expr.makeC9r('primary', {
         }
       },
       validateIncog () /** @suppress {globalThis} */ {
-        return this.brick.Variant_p !== eYo.key.ALIASED
+        return this.brick.variant !== eYo.key.ALIASED
       },
       check: [eYo.t3.expr.identifier, eYo.t3.expr.unset],
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.ALIASED
+          this.brick.variant_ = eYo.key.ALIASED
         }
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         this.slot.bindField.visible = false
-        this.brick.Variant_p = eYo.key.ALIASED
+        this.brick.variant_ = eYo.key.ALIASED
       },
       didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
         this.slot.bindField.visible = true
@@ -1267,7 +1265,7 @@ eYo.expr.primary_p.init = function () {
 eYo.expr.primary_p.updateProfile = eYo.decorate.reentrant_method(
   'updateProfile',
   function () {
-    ++this.change.count
+    ++this.changer.count
     var p5e = this.profile.p5e
     this.Subtype_p = p5e && p5e.raw
     var item = p5e && p5e.item
@@ -1288,7 +1286,7 @@ eYo.expr.primary_p.updateProfile = eYo.decorate.reentrant_method(
  * This has not been tested despite it is essential.
  * @return {!Object}.
  */
-eYo.expr.primary_p.getProfile = eYo.change.memoize(
+eYo.expr.primary_p.getProfile = eYo.changer.memoize(
   'getProfile',
   function () {
       // this may be called very very early when
@@ -1428,7 +1426,7 @@ eYo.expr.primary_p.getProfile = eYo.change.memoize(
  */
 eYo.expr.primary_p.consolidateMagnets = function () {
   eYo.expr.primary.eyo.C9r_s.consolidateMagnets.call(this)
-  this.target_s.magnet.hidden = this.Variant_p === eYo.key.NONE && this.Dotted_p === 0
+  this.target_s.magnet.hidden = this.variant === eYo.key.NONE && this.Dotted_p === 0
 }
 
 /**

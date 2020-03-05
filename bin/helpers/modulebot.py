@@ -664,8 +664,7 @@ eYo.module.makeNS('{{key}}', {
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.{{key}}.makeItem()
-
+  let newItem = eYo.module.{{key}}.makeNewItem()
 """
         suffix_ = """
 
@@ -828,7 +827,7 @@ eYo.module.makeNS('{{key}}', {
                     attr = 'Infinity'
                 self.do_print(template.format(key, attr), s7r=s7r, nl=True)
 
-            self.down_print("new Item({", s7r=separator)
+            self.down_print("newItem({", s7r=separator)
             do_print_attribute(item, 'name', s7r='')
             synonyms = item.synonyms
             if synonyms is not None and len(synonyms) > 0:

@@ -12,8 +12,6 @@
 'use strict'
 
 
-eYo.require('change.Base')
-
 eYo.forwardDeclare('dom')
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('board')
@@ -30,7 +28,7 @@ eYo.dragger.makeC9r('Brick', {
     this.destination_ = destination
   },
   aliases: {
-    'motion.change': 'change'
+    'motion.changer': 'changer'
   },
   properties: {
     destination: eYo.NA,
@@ -58,7 +56,7 @@ eYo.dragger.makeC9r('Brick', {
      * 
      */
     xyDelta: {
-      get: eYo.change.memoize('xyDeltadragger.Brick', function () {
+      get: eYo.changer.memoize('xyDeltadragger.Brick', function () {
         return {ans: this.destination.fromPixelUnit(this.motion_.xyDelta_)}
       }),
       copy: true,

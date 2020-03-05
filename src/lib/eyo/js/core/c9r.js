@@ -907,3 +907,10 @@ eYo._p.eyo = eYo.c9r.makeDlgt('NS', eYo.constructor, {})
 eYo.c9r.Base_p.pureAbstract = () => {
   eYo.throw(`Missing implementation of a pure abstract method`)
 }
+
+/**
+ * Convenient creator.
+ */
+eYo.c9r._p.new = function (...$) {
+  return new this.Base(...$)
+}

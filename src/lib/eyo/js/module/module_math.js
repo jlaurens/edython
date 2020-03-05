@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('math__module')
-
-eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
+eYo.module.makeNS('math__module', {
+  URL: 'https://docs.python.org/3.6/library/math.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.math__module.makeItem()
-
+  let newItem = eYo.module.math__module.makeNewItem()
 
   eYo.module.math__module.data_ = {
     categories: [
@@ -36,7 +35,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
       'data'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'acos',
         class: 'math',
         category: 2,
@@ -49,7 +48,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'acosh',
         class: 'math',
         category: 4,
@@ -62,7 +61,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'asin',
         class: 'math',
         category: 2,
@@ -75,7 +74,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'asinh',
         class: 'math',
         category: 4,
@@ -88,7 +87,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'atan',
         class: 'math',
         category: 2,
@@ -101,7 +100,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'atan2',
         class: 'math',
         category: 2,
@@ -117,7 +116,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'atanh',
         class: 'math',
         category: 4,
@@ -130,7 +129,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ceil',
         class: 'math',
         category: 0,
@@ -143,7 +142,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'copysign',
         class: 'math',
         category: 0,
@@ -159,7 +158,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'cos',
         class: 'math',
         category: 2,
@@ -172,7 +171,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'cosh',
         class: 'math',
         category: 4,
@@ -185,7 +184,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'degrees',
         class: 'math',
         category: 3,
@@ -198,7 +197,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'e',
         class: 'math',
         category: 6,
@@ -207,7 +206,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'erf',
         class: 'math',
         category: 5,
@@ -220,7 +219,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'erfc',
         class: 'math',
         category: 5,
@@ -233,7 +232,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'exp',
         class: 'math',
         category: 1,
@@ -246,7 +245,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'expm1',
         class: 'math',
         category: 1,
@@ -259,7 +258,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fabs',
         class: 'math',
         category: 0,
@@ -272,7 +271,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'factorial',
         class: 'math',
         category: 0,
@@ -285,7 +284,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'floor',
         class: 'math',
         category: 0,
@@ -298,7 +297,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fmod',
         class: 'math',
         category: 0,
@@ -314,7 +313,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'frexp',
         class: 'math',
         category: 0,
@@ -327,7 +326,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fsum',
         class: 'math',
         category: 0,
@@ -340,7 +339,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'gamma',
         class: 'math',
         category: 5,
@@ -353,7 +352,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'gcd',
         class: 'math',
         category: 0,
@@ -369,7 +368,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'hypot',
         class: 'math',
         category: 2,
@@ -385,7 +384,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'inf',
         class: 'math',
         category: 6,
@@ -394,7 +393,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isclose',
         class: 'math',
         category: 0,
@@ -423,7 +422,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'isfinite',
         class: 'math',
         category: 0,
@@ -436,7 +435,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'isinf',
         class: 'math',
         category: 0,
@@ -449,7 +448,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'isnan',
         class: 'math',
         category: 0,
@@ -462,7 +461,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ldexp',
         class: 'math',
         category: 0,
@@ -478,7 +477,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'lgamma',
         class: 'math',
         category: 5,
@@ -491,7 +490,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'log',
         class: 'math',
         category: 1,
@@ -509,7 +508,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'log10',
         class: 'math',
         category: 1,
@@ -522,7 +521,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'log1p',
         class: 'math',
         category: 1,
@@ -535,7 +534,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'log2',
         class: 'math',
         category: 1,
@@ -548,7 +547,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'modf',
         class: 'math',
         category: 0,
@@ -561,7 +560,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'nan',
         class: 'math',
         category: 6,
@@ -570,7 +569,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'pi',
         class: 'math',
         category: 6,
@@ -579,7 +578,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'pow',
         class: 'math',
         category: 1,
@@ -595,7 +594,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'radians',
         class: 'math',
         category: 3,
@@ -608,7 +607,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sin',
         class: 'math',
         category: 2,
@@ -621,7 +620,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sinh',
         class: 'math',
         category: 4,
@@ -634,7 +633,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sqrt',
         class: 'math',
         category: 1,
@@ -647,7 +646,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tan',
         class: 'math',
         category: 2,
@@ -660,7 +659,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tanh',
         class: 'math',
         category: 4,
@@ -673,7 +672,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tau',
         class: 'math',
         category: 6,
@@ -682,7 +681,7 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'trunc',
         class: 'math',
         category: 0,
@@ -766,6 +765,6 @@ eYo.module.math__module.url = 'https://docs.python.org/3.6/library/math.html'
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py math` on 2020-02-12 15:52:52.919044
+  // This file was generated by `python3 ./bin/helpers/modulebot.py math` on 2020-03-04 13:02:48.767269
 
 

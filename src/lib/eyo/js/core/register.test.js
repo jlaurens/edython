@@ -39,7 +39,7 @@ describe ('Tests: register', function () {
     chai.expect(() => eYo.do.register.add(ns.Base, 'foo')).throw()
   })
   it ('Register: C9r(2)', function () {
-    let ns = eYo.o4t.makeNS()
+    let ns = eYo.o3d.makeNS()
     ns.makeBase()
     eYo.do.register.add(ns.Base, 'foo')
     let o = new ns.Base()

@@ -60,9 +60,9 @@ eYo.expr.makeC9r('yield_expr', true, {
       didChange (before, after) /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (after) {
-          b3k.Variant_p = eYo.key.EXPRESSION
+          b3k.variant_ = eYo.key.EXPRESSION
         } else if (!b3k.expression_s.unwrappedTarget) {
-          b3k.Variant_p = eYo.key.NONE
+          b3k.variant_ = eYo.key.NONE
         }
       }
     },
@@ -72,23 +72,23 @@ eYo.expr.makeC9r('yield_expr', true, {
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.Variant_p !== eYo.key.NONE
+          this.required_from_model = this.brick.variant !== eYo.key.NONE
           this.save(element, opt)
         }
       },
       didChange (before, after) /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (after || b3k.from_b) {
-          b3k.Variant_p = eYo.key.FROM
+          b3k.variant_ = eYo.key.FROM
         } else if (b3k.Expression_p || (b3k.expression_b && b3k.expression_b.unwrappedTarget)) {
-          b3k.Variant_p = eYo.key.EXPRESSION
+          b3k.variant_ = eYo.key.EXPRESSION
         } else {
-          b3k.Variant_p = eYo.key.NONE
+          b3k.variant_ = eYo.key.NONE
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.FROM
+          this.brick.variant_ = eYo.key.FROM
         }
       }
     }
@@ -108,19 +108,19 @@ eYo.expr.makeC9r('yield_expr', true, {
       wrap: eYo.t3.expr.non_void_expression_list,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.EXPRESSION
+          this.brick.variant_ = eYo.key.EXPRESSION
         }
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         if (this.isSlot) {
           var parent = this.brick.parent
-          parent && (parent.Variant_p = eYo.key.EXPRESSION)
+          parent && (parent.variant_ = eYo.key.EXPRESSION)
         }
       },
       didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
         if (this.isSlot) {
           var parent = this.brick.parent
-          parent && (parent.Variant_p = parent.expression_s.unwrappedTarget || parent.Expression_p ? eYo.key.EXPRESSION : eYo.key.NONE)
+          parent && (parent.variant_ = parent.expression_s.unwrappedTarget || parent.Expression_p ? eYo.key.EXPRESSION : eYo.key.NONE)
         }
       }
     },
@@ -136,20 +136,20 @@ eYo.expr.makeC9r('yield_expr', true, {
       check: eYo.t3.expr.check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.FROM
+          this.brick.variant_ = eYo.key.FROM
         }
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
-        this.brick.Variant_p = eYo.key.FROM
+        this.brick.variant_ = eYo.key.FROM
       },
       didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
         var b3k = this.brick
         if (b3k.From_p) {
-          b3k.Variant_p = eYo.key.FROM
+          b3k.variant_ = eYo.key.FROM
         } else if (b3k.Expression_p || (b3k.expression_b && b3k.expression_b.unwrappedTarget)) {
-          b3k.Variant_p = eYo.key.EXPRESSION
+          b3k.variant_ = eYo.key.EXPRESSION
         } else {
-          b3k.Variant_p = eYo.key.NONE
+          b3k.variant_ = eYo.key.NONE
         }
       }
     }

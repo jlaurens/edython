@@ -317,7 +317,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
   if (!brick.hasUI || brick.rendered === false) { // brick.rendered === eYo.NA is OK
     return
   }
-  if (!brick.isEditing && (brick.dragging_ || brick.change.level || !brick.board)) {
+  if (!brick.isEditing && (brick.dragging_ || brick.changer.level || !brick.board)) {
     return
   }
   this.drawPending_(recorder, !brick.wrapped_ && eYo.key.LEFT)
@@ -331,7 +331,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
       this.drawFoot_(io)
       this.renderMove_(io)
       brick.updateShape()
-      brick.change.save.render = brick.change.count
+      brick.changer.save.render = brick.changer.count
       this.drawParent_(io, bbbl) || this.alignRightEdges_(io) // will they have a parent meanwhile?
       return
     } else if (eYo.magnet.disconnectedParent && brick.foot_m === eYo.magnet.disconnectedParent) {
@@ -342,7 +342,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
       this.drawFoot_(io)
       this.renderMove_(io)
       brick.updateShape()
-      brick.change.save.render = brick.change.count
+      brick.changer.save.render = brick.changer.count
       this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       return
     } else if (eYo.magnet.connectedParent) {
@@ -352,7 +352,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
         this.drawFoot_(io)
         this.renderMove_(io)
         brick.updateShape()
-        brick.change.save.render = brick.change.count
+        brick.changer.save.render = brick.changer.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       } else if (brick.foot_m && eYo.magnet.connectedParent === brick.foot_m) {
         var io = this.willShortRender_(brick, recorder)
@@ -360,7 +360,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
         this.drawFoot_(io)
         this.renderMove_(io)
         brick.updateShape()
-        brick.change.save.render = brick.change.count
+        brick.changer.save.render = brick.changer.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       } else if (brick.suite_m && eYo.magnet.connectedParent === brick.suite_m) {
         var io = this.willShortRender_(brick, recorder)
@@ -368,7 +368,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
         this.drawFoot_(io)
         this.renderMove_(io)
         brick.updateShape()
-        brick.change.save.render = brick.change.count
+        brick.changer.save.render = brick.changer.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       }
     }
@@ -399,7 +399,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
       return
     }
   }
-  if (brick.change.save.render === brick.change.count) {
+  if (brick.changer.save.render === brick.changer.count) {
     // minimal rendering
     var io = this.willShortRender_(brick, recorder)
     this.layoutMagnets_(io)
@@ -410,7 +410,7 @@ eYo.fcfl.Brick._p.render = function (brick, bbbl, recorder) {
     return
   }
   this.longRender_(bbbl, recorder)
-  brick.change.save.render = brick.change.count
+  brick.changer.save.render = brick.changer.count
 }
 
 /**
@@ -608,7 +608,7 @@ eYo.fcfl.Brick._p.draw_ = function (recorder) {
  * @param {*} recorder
  * @protected
  */
-eYo.fcfl.Brick._p.alignRightEdges_ = eYo.change.memoize(
+eYo.fcfl.Brick._p.alignRightEdges_ = eYo.changer.memoize(
   'alignRightEdges_',
   function (recorder) {
     let brick = recorder.brick

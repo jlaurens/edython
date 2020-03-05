@@ -19,22 +19,22 @@ describe('YIELD expression and statement', function() {
   it(`Variant`, function() {
     var d = eYo.test.new_brick(eYo.t3.stmt.yield_stmt)
     eYo.test.Code(d, 'yield')
-    d.Variant_p = eYo.key.EXPRESSION
+    d.variant_ = eYo.key.EXPRESSION
     eYo.test.Code(d, 'yield <MISSING EXPR>')
-    d.Variant_p = eYo.key.FROM
+    d.variant_ = eYo.key.FROM
     eYo.test.Code(d, 'yield from <MISSING EXPRESSION>')
-    d.Variant_p = eYo.key.NONE
+    d.variant_ = eYo.key.NONE
     eYo.test.Code(d, 'yield')
     d.dispose()
   })
   it(`Variant`, function() {
     var d = eYo.test.new_brick(eYo.t3.expr.yield_expr)
     eYo.test.Code(d, 'yield')
-    d.Variant_p = eYo.key.EXPRESSION
+    d.variant_ = eYo.key.EXPRESSION
     eYo.test.Code(d, 'yield <MISSING EXPR>')
-    d.Variant_p = eYo.key.FROM
+    d.variant_ = eYo.key.FROM
     eYo.test.Code(d, 'yield from <MISSING EXPRESSION>')
-    d.Variant_p = eYo.key.NONE
+    d.variant_ = eYo.key.NONE
     eYo.test.Code(d, 'yield')
     d.dispose()
   })

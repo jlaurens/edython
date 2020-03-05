@@ -13,7 +13,7 @@
 
 eYo.require('expr')
 
-eYo.require('change.Base')
+eYo.require('changer')
 
 eYo.require('decorate')
 eYo.require('msg')
@@ -88,7 +88,7 @@ eYo.expr.makeC9r('Starred', {
         builtin()
         var b3k = this.brick
         if (after !== '*') {
-          b3k.Variant_p = eYo.key.NONE
+          b3k.variant_ = eYo.key.NONE
         }
       },
       fromType (type) /** @suppress {globalThis} */ {
@@ -135,13 +135,13 @@ eYo.expr.makeC9r('Starred', {
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         if (after.length) {
-          this.brick.Variant_p = eYo.key.NONE
+          this.brick.variant_ = eYo.key.NONE
         }
       },
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.Variant_p !== eYo.key.STAR && this.brick.Modifier_p === '*'
+          this.required_from_model = this.brick.variant !== eYo.key.STAR && this.brick.Modifier_p === '*'
           this.save(element, opt)
         },
         load (element, opt) /** @suppress {globalThis} */ {
@@ -153,7 +153,7 @@ eYo.expr.makeC9r('Starred', {
         this.required_from_type = type !== eYo.t3.expr.star
       },
       didLoad () /** @suppress {globalThis} */ {
-        this.brick.Variant_p = this.required_from_type || this.isRequiredFromModel()
+        this.brick.variant_ = this.required_from_type || this.required_from_model
           ? eYo.key.NONE
           : eYo.key.STAR
         this.required_from_type = false
@@ -180,7 +180,7 @@ eYo.expr.makeC9r('Starred', {
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         if (eYo.event.recordingUndo) {
-          this.brick.Variant_p = eYo.key.NONE
+          this.brick.variant_ = eYo.key.NONE
         }
       }
     }
@@ -189,7 +189,7 @@ eYo.expr.makeC9r('Starred', {
     check (type) /** @suppress {globalThis} */ {
       // retrieve the brick
       var brick = this.brick
-      if (brick.Variant_p === eYo.key.STAR) {
+      if (brick.variant === eYo.key.STAR) {
         return [eYo.t3.expr.star]
       }
       var b = brick.modified_b
@@ -242,7 +242,7 @@ eYo.expr.makeC9r('Starred', {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.expr.Starred.prototype.getType = eYo.change.memoize(
+eYo.expr.Starred.prototype.getType = eYo.changer.memoize(
   'getType',
   function () {
     var check = this.out_m.check_

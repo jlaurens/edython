@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('string__module')
-
-eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html'
+eYo.module.makeNS('string__module', {
+  URL: 'https://docs.python.org/3.6/library/string.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.string__module.makeItem()
-
+  let newItem = eYo.module.string__module.makeNewItem()
 
   eYo.module.string__module.data_ = {
     categories: [
@@ -35,7 +34,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
       'method'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'Formatter',
         class: 'string',
         category: 1,
@@ -43,7 +42,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
         href: '#string.Formatter',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'Template',
         class: 'string',
         category: 2,
@@ -56,7 +55,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ascii_letters',
         class: 'string',
         category: 0,
@@ -64,7 +63,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
         href: '#string.ascii_letters',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ascii_lowercase',
         class: 'string',
         category: 0,
@@ -72,7 +71,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
         href: '#string.ascii_lowercase',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ascii_uppercase',
         class: 'string',
         category: 0,
@@ -80,7 +79,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
         href: '#string.ascii_uppercase',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'capwords',
         class: 'string',
         category: 3,
@@ -99,7 +98,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'check_unused_args',
         class: 'string.Formatter',
         category: 1,
@@ -119,7 +118,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'convert_field',
         class: 'string.Formatter',
         category: 1,
@@ -135,7 +134,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'digits',
         class: 'string',
         category: 0,
@@ -143,7 +142,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
         href: '#string.digits',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'format',
         class: 'string.Formatter',
         category: 1,
@@ -166,7 +165,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'format_field',
         class: 'string.Formatter',
         category: 1,
@@ -183,7 +182,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'get_field',
         class: 'string.Formatter',
         category: 1,
@@ -202,7 +201,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'get_value',
         class: 'string.Formatter',
         category: 1,
@@ -221,7 +220,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'hexdigits',
         class: 'string',
         category: 0,
@@ -229,7 +228,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
         href: '#string.hexdigits',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'octdigits',
         class: 'string',
         category: 0,
@@ -237,7 +236,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
         href: '#string.octdigits',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'parse',
         class: 'string.Formatter',
         category: 1,
@@ -250,7 +249,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'printable',
         class: 'string',
         category: 0,
@@ -258,7 +257,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
         href: '#string.printable',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'punctuation',
         class: 'string',
         category: 0,
@@ -266,7 +265,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
         href: '#string.punctuation',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'safe_substitute',
         class: 'string.Template',
         category: 2,
@@ -285,7 +284,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'substitute',
         class: 'string.Template',
         category: 2,
@@ -303,7 +302,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'vformat',
         class: 'string.Formatter',
         category: 1,
@@ -323,7 +322,7 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'whitespace',
         class: 'string',
         category: 0,
@@ -374,6 +373,6 @@ eYo.module.string__module.url = 'https://docs.python.org/3.6/library/string.html
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py string` on 2020-02-12 15:52:52.770347
+  // This file was generated by `python3 ./bin/helpers/modulebot.py string` on 2020-03-04 13:02:48.618194
 
 

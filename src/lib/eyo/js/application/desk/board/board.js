@@ -290,11 +290,11 @@ eYo.board.makeC9r('Main', {
     /**
      * The change manager.
      * @readonly
-     * @type {eYo.change.Base}
+     * @type {eYo.changer.Base}
      */
     change: {
       value () {
-        return new eYo.change.Base(this)
+        return eYo.changer.new(this)
       },
     },
     /**
@@ -1179,7 +1179,7 @@ eYo.board.Base_p.fromUTF8ByteArray = function (bytes) {
  * @param {String} opt_id
  */
 eYo.board.Base_p.addBrick = function (brick, opt_id) {
-  this.change.wrap(() => {
+  this.changer.wrap(() => {
     this.list.add(brick, opt_id)
     this.hasUI && brick.initUI()
     brick.move()
@@ -1193,7 +1193,7 @@ eYo.board.Base_p.addBrick = function (brick, opt_id) {
  * @param {Function} [f] - to be executed after ech brick is removed
  */
 eYo.board.Base_p.removeBrick = function (brick, f) {
-  this.change.wrap(() => {
+  this.changer.wrap(() => {
     this.list.remove(brick)
     f && f(this)
   })
@@ -1340,7 +1340,7 @@ eYo.board.Base_p.eventDidFireChange = function(event) {
   }
 }
 
-eYo.o3d.Base.eyo.propertiesMerge({
+eYo.o4t.Base.eyo.propertiesMerge({
   board: {
     get () {
       this.owner.board

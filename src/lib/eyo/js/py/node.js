@@ -415,10 +415,6 @@ eYo.py.node.Base_p.pushComment = function (comment) {
   n.comments.push(comment)
 }
 
-eYo.py.node._p.new = function () {
-  return new eYo.py.node.Base(scan, type, subtype)
-}
-
 /* void */
 eYo.py.node._p._finalizeEndPos = function (n) {
     var nch = n.n_nchildren

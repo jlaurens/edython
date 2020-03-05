@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('stdtypes')
-
-eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
+eYo.module.makeNS('stdtypes', {
+  URL: 'https://docs.python.org/3.6/library/stdtypes.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.stdtypes.makeItem()
-
+  let newItem = eYo.module.stdtypes.makeNewItem()
 
   eYo.module.stdtypes.data_ = {
     categories: [
@@ -49,7 +48,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
       'attribute'
     ],
     items: [
-      new Item({
+      newItem({
         name: '__bases__',
         class: 'class',
         category: 16,
@@ -57,7 +56,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#class.__bases__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__class__',
         class: 'instance',
         category: 16,
@@ -65,7 +64,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#instance.__class__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__dict__',
         class: 'object',
         category: 16,
@@ -73,7 +72,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#object.__dict__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__enter__',
         class: 'contextmanager',
         category: 15,
@@ -81,7 +80,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#contextmanager.__enter__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__eq__',
         class: 'memoryview',
         category: 11,
@@ -94,7 +93,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__exit__',
         class: 'contextmanager',
         category: 15,
@@ -113,7 +112,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__iter__',
         class: 'container',
         category: 2,
@@ -121,7 +120,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#container.__iter__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__iter__',
         class: 'iterator',
         category: 2,
@@ -129,7 +128,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#iterator.__iter__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__mro__',
         class: 'class',
         category: 16,
@@ -137,7 +136,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#class.__mro__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__name__',
         class: 'definition',
         category: 16,
@@ -145,7 +144,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#definition.__name__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__next__',
         class: 'iterator',
         category: 2,
@@ -153,7 +152,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#iterator.__next__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__qualname__',
         class: 'definition',
         category: 16,
@@ -161,7 +160,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#definition.__qualname__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__subclasses__',
         class: 'class',
         category: 16,
@@ -169,7 +168,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#class.__subclasses__',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'add',
         class: 'frozenset',
         category: 12,
@@ -183,7 +182,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'as_integer_ratio',
         class: 'float',
         category: 1,
@@ -191,7 +190,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#float.as_integer_ratio',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'bit_length',
         class: 'int',
         category: 0,
@@ -199,7 +198,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#int.bit_length',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'bytearray',
         class: '',
         category: 9,
@@ -223,7 +222,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'bytes',
         class: '',
         category: 8,
@@ -247,7 +246,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'capitalize',
         class: 'str',
         category: 7,
@@ -255,7 +254,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.capitalize',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'capitalize',
         class: 'bytearray',
         holder: 'bytes',
@@ -264,7 +263,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.capitalize',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'casefold',
         class: 'str',
         category: 7,
@@ -272,7 +271,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.casefold',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'cast',
         class: 'memoryview',
         category: 11,
@@ -291,7 +290,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'center',
         class: 'str',
         category: 7,
@@ -309,7 +308,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'center',
         class: 'bytearray',
         holder: 'bytes',
@@ -328,7 +327,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'clear',
         class: 'frozenset',
         category: 12,
@@ -337,7 +336,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'clear',
         class: 'dict',
         category: 13,
@@ -346,7 +345,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'copy',
         class: 'frozenset',
         category: 12,
@@ -354,7 +353,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#frozenset.copy',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'copy',
         class: 'dict',
         category: 13,
@@ -362,7 +361,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#dict.copy',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'count',
         class: 'str',
         category: 7,
@@ -384,7 +383,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'count',
         class: 'bytearray',
         holder: 'bytes',
@@ -407,7 +406,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'decode',
         class: 'bytearray',
         holder: 'bytes',
@@ -427,7 +426,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'dict',
         class: '',
         category: 13,
@@ -470,7 +469,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'difference',
         synonyms: [
           'set - other -'
@@ -486,7 +485,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         ],
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'difference_update',
         synonyms: [
           'set -= other |'
@@ -503,7 +502,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         ],
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'discard',
         class: 'frozenset',
         category: 12,
@@ -517,7 +516,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'encode',
         class: 'str',
         category: 7,
@@ -536,7 +535,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'endswith',
         class: 'str',
         category: 7,
@@ -558,7 +557,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'endswith',
         class: 'bytearray',
         holder: 'bytes',
@@ -581,7 +580,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'expandtabs',
         class: 'str',
         category: 7,
@@ -596,7 +595,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'expandtabs',
         class: 'bytearray',
         holder: 'bytes',
@@ -612,7 +611,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'find',
         class: 'str',
         category: 7,
@@ -634,7 +633,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'find',
         class: 'bytearray',
         holder: 'bytes',
@@ -657,7 +656,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'format',
         class: 'str',
         category: 7,
@@ -676,7 +675,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'format_map',
         class: 'str',
         category: 7,
@@ -689,7 +688,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'from_bytes',
         class: 'int',
         category: 0,
@@ -714,7 +713,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fromhex',
         class: 'float',
         category: 1,
@@ -727,7 +726,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'get',
         class: 'dict',
         category: 13,
@@ -745,7 +744,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'hex',
         class: 'float',
         category: 1,
@@ -753,7 +752,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#float.hex',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'hex',
         class: 'bytes',
         category: 8,
@@ -761,7 +760,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytes.hex',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'hex',
         class: 'bytearray',
         category: 9,
@@ -769,7 +768,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.hex',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'hex',
         class: 'memoryview',
         category: 11,
@@ -777,7 +776,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#memoryview.hex',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'index',
         class: 'str',
         category: 7,
@@ -799,7 +798,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'index',
         class: 'bytearray',
         holder: 'bytes',
@@ -822,7 +821,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'intersection',
         synonyms: [
           'set & other &'
@@ -838,7 +837,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         ],
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'intersection_update',
         synonyms: [
           'set &= other &'
@@ -855,7 +854,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         ],
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'is_integer',
         class: 'float',
         category: 1,
@@ -863,7 +862,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#float.is_integer',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isalnum',
         class: 'str',
         category: 7,
@@ -871,7 +870,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.isalnum',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isalnum',
         class: 'bytearray',
         holder: 'bytes',
@@ -880,7 +879,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.isalnum',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isalpha',
         class: 'str',
         category: 7,
@@ -888,7 +887,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.isalpha',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isalpha',
         class: 'bytearray',
         holder: 'bytes',
@@ -897,7 +896,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.isalpha',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isdecimal',
         class: 'str',
         category: 7,
@@ -905,7 +904,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.isdecimal',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isdigit',
         class: 'str',
         category: 7,
@@ -913,7 +912,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.isdigit',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isdigit',
         class: 'bytearray',
         holder: 'bytes',
@@ -922,7 +921,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.isdigit',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isdisjoint',
         class: 'frozenset',
         category: 12,
@@ -935,7 +934,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'isidentifier',
         class: 'str',
         category: 7,
@@ -943,7 +942,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.isidentifier',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'islower',
         class: 'str',
         category: 7,
@@ -951,7 +950,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.islower',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'islower',
         class: 'bytearray',
         holder: 'bytes',
@@ -960,7 +959,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.islower',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isnumeric',
         class: 'str',
         category: 7,
@@ -968,7 +967,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.isnumeric',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isprintable',
         class: 'str',
         category: 7,
@@ -976,7 +975,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.isprintable',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isspace',
         class: 'str',
         category: 7,
@@ -984,7 +983,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.isspace',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isspace',
         class: 'bytearray',
         holder: 'bytes',
@@ -993,7 +992,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.isspace',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'issubset',
         synonyms: [
           'set <= other'
@@ -1015,7 +1014,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'issuperset',
         synonyms: [
           'set >= other'
@@ -1037,7 +1036,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'istitle',
         class: 'str',
         category: 7,
@@ -1045,7 +1044,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.istitle',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'istitle',
         class: 'bytearray',
         holder: 'bytes',
@@ -1054,7 +1053,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.istitle',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isupper',
         class: 'str',
         category: 7,
@@ -1062,7 +1061,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.isupper',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isupper',
         class: 'bytearray',
         holder: 'bytes',
@@ -1071,7 +1070,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.isupper',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'items',
         class: 'dict',
         category: 13,
@@ -1079,11 +1078,11 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#dict.items',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'iter(dictview)',
         category: 14
       }),
-      new Item({
+      newItem({
         name: 'join',
         class: 'str',
         category: 7,
@@ -1096,7 +1095,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'join',
         class: 'bytearray',
         holder: 'bytes',
@@ -1110,7 +1109,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'keys',
         class: 'dict',
         category: 13,
@@ -1118,11 +1117,11 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#dict.keys',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'len(dictview)',
         category: 14
       }),
-      new Item({
+      newItem({
         name: 'list',
         class: '',
         category: 3,
@@ -1137,7 +1136,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ljust',
         class: 'str',
         category: 7,
@@ -1155,7 +1154,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ljust',
         class: 'bytearray',
         holder: 'bytes',
@@ -1174,7 +1173,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'lower',
         class: 'str',
         category: 7,
@@ -1182,7 +1181,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.lower',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'lower',
         class: 'bytearray',
         holder: 'bytes',
@@ -1191,7 +1190,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.lower',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'lstrip',
         class: 'str',
         category: 7,
@@ -1206,7 +1205,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'lstrip',
         class: 'bytearray',
         holder: 'bytes',
@@ -1222,7 +1221,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'maketrans',
         class: 'str',
         category: 7,
@@ -1244,7 +1243,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'maketrans',
         class: 'bytearray',
         holder: 'bytes',
@@ -1261,7 +1260,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'memoryview',
         class: '',
         category: 11,
@@ -1275,7 +1274,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'mro',
         class: 'class',
         category: 16,
@@ -1283,7 +1282,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#class.mro',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'partition',
         class: 'str',
         category: 7,
@@ -1296,7 +1295,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'partition',
         class: 'bytearray',
         holder: 'bytes',
@@ -1310,7 +1309,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'pop',
         class: 'frozenset',
         category: 12,
@@ -1318,7 +1317,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#frozenset.pop',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'pop',
         class: 'dict',
         category: 13,
@@ -1336,7 +1335,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'popitem',
         class: 'dict',
         category: 13,
@@ -1344,7 +1343,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#dict.popitem',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'range',
         class: '',
         category: 5,
@@ -1375,7 +1374,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'release',
         class: 'memoryview',
         category: 11,
@@ -1384,7 +1383,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'remove',
         class: 'frozenset',
         category: 12,
@@ -1398,7 +1397,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'replace',
         class: 'str',
         category: 7,
@@ -1419,7 +1418,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'replace',
         class: 'bytearray',
         holder: 'bytes',
@@ -1441,7 +1440,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rfind',
         class: 'str',
         category: 7,
@@ -1463,7 +1462,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rfind',
         class: 'bytearray',
         holder: 'bytes',
@@ -1486,7 +1485,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rindex',
         class: 'str',
         category: 7,
@@ -1508,7 +1507,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rindex',
         class: 'bytearray',
         holder: 'bytes',
@@ -1531,7 +1530,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rjust',
         class: 'str',
         category: 7,
@@ -1549,7 +1548,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rjust',
         class: 'bytearray',
         holder: 'bytes',
@@ -1568,7 +1567,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rpartition',
         class: 'str',
         category: 7,
@@ -1581,7 +1580,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rpartition',
         class: 'bytearray',
         holder: 'bytes',
@@ -1595,7 +1594,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rsplit',
         class: 'str',
         category: 7,
@@ -1614,7 +1613,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rsplit',
         class: 'bytearray',
         holder: 'bytes',
@@ -1634,7 +1633,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rstrip',
         class: 'str',
         category: 7,
@@ -1649,7 +1648,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rstrip',
         class: 'bytearray',
         holder: 'bytes',
@@ -1665,7 +1664,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'set',
         synonyms: [
           'frozenset'
@@ -1683,17 +1682,17 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'set < other',
         category: 12,
         stmt: true
       }),
-      new Item({
+      newItem({
         name: 'set > other',
         category: 12,
         stmt: true
       }),
-      new Item({
+      newItem({
         name: 'setdefault',
         class: 'dict',
         category: 13,
@@ -1711,7 +1710,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sort',
         class: 'list',
         category: 3,
@@ -1735,7 +1734,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'split',
         class: 'str',
         category: 7,
@@ -1754,7 +1753,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'split',
         class: 'bytearray',
         holder: 'bytes',
@@ -1774,7 +1773,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'splitlines',
         class: 'str',
         category: 7,
@@ -1789,7 +1788,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'splitlines',
         class: 'bytearray',
         holder: 'bytes',
@@ -1805,7 +1804,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'startswith',
         class: 'str',
         category: 7,
@@ -1827,7 +1826,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'startswith',
         class: 'bytearray',
         holder: 'bytes',
@@ -1850,7 +1849,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'str',
         class: '',
         category: 6,
@@ -1885,7 +1884,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'strip',
         class: 'str',
         category: 7,
@@ -1900,7 +1899,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'strip',
         class: 'bytearray',
         holder: 'bytes',
@@ -1916,7 +1915,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'swapcase',
         class: 'str',
         category: 7,
@@ -1924,7 +1923,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.swapcase',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'swapcase',
         class: 'bytearray',
         holder: 'bytes',
@@ -1933,7 +1932,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.swapcase',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'symmetric_difference',
         synonyms: [
           'set ^ other'
@@ -1954,7 +1953,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'symmetric_difference_update',
         synonyms: [
           'set ^= other'
@@ -1976,7 +1975,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'title',
         class: 'str',
         category: 7,
@@ -1984,7 +1983,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.title',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'title',
         class: 'bytearray',
         holder: 'bytes',
@@ -1993,7 +1992,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.title',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'to_bytes',
         class: 'int',
         category: 0,
@@ -2018,7 +2017,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tobytes',
         class: 'memoryview',
         category: 11,
@@ -2026,7 +2025,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#memoryview.tobytes',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tolist',
         class: 'memoryview',
         category: 11,
@@ -2034,7 +2033,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#memoryview.tolist',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'translate',
         class: 'str',
         category: 7,
@@ -2047,7 +2046,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'translate',
         class: 'bytearray',
         holder: 'bytes',
@@ -2066,7 +2065,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tuple',
         class: '',
         category: 4,
@@ -2081,7 +2080,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'union',
         synonyms: [
           'set | other |'
@@ -2097,7 +2096,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         ],
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'update',
         synonyms: [
           'set |= other |'
@@ -2114,7 +2113,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         ],
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'update',
         class: 'dict',
         category: 13,
@@ -2129,7 +2128,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'upper',
         class: 'str',
         category: 7,
@@ -2137,7 +2136,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#str.upper',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'upper',
         class: 'bytearray',
         holder: 'bytes',
@@ -2146,7 +2145,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#bytearray.upper',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'values',
         class: 'dict',
         category: 13,
@@ -2154,11 +2153,11 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
         href: '#dict.values',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'x in dictview',
         category: 14
       }),
-      new Item({
+      newItem({
         name: 'zfill',
         class: 'str',
         category: 7,
@@ -2171,7 +2170,7 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'zfill',
         class: 'bytearray',
         holder: 'bytes',
@@ -2338,6 +2337,6 @@ eYo.module.stdtypes.url = 'https://docs.python.org/3.6/library/stdtypes.html'
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix stdtypes` on 2020-02-12 15:52:52.375965
+  // This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix stdtypes` on 2020-03-04 13:02:48.220183
 
 

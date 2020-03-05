@@ -48,7 +48,7 @@ eYo.expr.makeC9r('builtin__range_expr', true, {
       init: '',
       xml: {
         save (element) /** @suppress {globalThis} */ {
-          if (this.brick.Variant_p !== eYo.key.NONE) {
+          if (this.brick.variant !== eYo.key.NONE) {
             this.save(element)
           }
         }
@@ -56,7 +56,7 @@ eYo.expr.makeC9r('builtin__range_expr', true, {
       didLoad () /** @suppress {globalThis} */ {
         this.didLoad()
         if (this.requiredFromSaved && after !== eYo.key.STEP) {
-          this.brick.Variant_p = eYo.key.START
+          this.brick.variant_ = eYo.key.START
         }
       }
     },
@@ -71,7 +71,7 @@ eYo.expr.makeC9r('builtin__range_expr', true, {
       synchronize: true,
       xml: {
         save (element) /** @suppress {globalThis} */ {
-          if (this.brick.Variant_p === eYo.key.STEP) {
+          if (this.brick.variant === eYo.key.STEP) {
             this.save(element)
           }
         }
@@ -79,7 +79,7 @@ eYo.expr.makeC9r('builtin__range_expr', true, {
       didLoad () /** @suppress {globalThis} */ {
         this.didLoad()
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.STEP
+          this.brick.variant_ = eYo.key.STEP
         }
       }
     }

@@ -50,20 +50,20 @@ eYo.provide('brick.functions')
 
   d.categories.push('edython')
 
-  d.items.push(new M.Item({
+  d.items.push(M.newItem({
     name: 'conjugate',
     class: 'complex',
     category: c,
     type_: t,
     ary: 0
   }))
-  d.items.push(new M.Item({
+  d.items.push(M.newItem({
     name: 'real',
     class: 'complex',
     category: c,
     type_: t + 1
   }))
-  d.items.push(new M.Item({
+  d.items.push(M.newItem({
     name: 'imag',
     class: 'complex',
     category: c,

@@ -1,6 +1,8 @@
-# Edyhon properties
+# Edython attributes
 
-`p6y` stands for `property`.
+There are two kinds of attributes: data and properties.
+
+Here `p6y` stands for `property`.
 
 Each object may contain properties.
 There are different kinds of properties.
@@ -11,49 +13,32 @@ There are different kinds of properties.
 - cached
 - computed
 - enumerated, by key or index
- 
-## Namespace
 
+A `data` attribute is very similar to a property, except that it should interacts with the user interface.
+ 
+## Namespaces
+
+Attributes related code is gathered under `eYo.attr` namespace.
 Property related code is gathered under `eYo.p6y` namespace.
+Data related code is gathered under `eYo.data` namespace.
 
 ## Nature
 
-Each property has exactly one owner and a key such that in the property context, we always have
+Each attribute, whether a property or a data, has exactly one owner and a key such that in the attribute context, we always have
 ```
 this.owner[this.key] === this
 ```
 
 ## Hooks
-The main purpose is to allow some hooks while modifying the property.
+The main purpose is to allow some hooks while modifying the attribute.
 
-## `eYo.p6y.Dflt`
+## `Base`
 
-Each property is represented by an instance of one of `eYo.Prop.Dflt` subclasses.
- 
-## The owner POV
+Each property is represented by an instance of one of `eYo.p6y.Base` subclasses whereas each data is represented by an instance of one of `eYo.data.Base` subclasses.
 
-Let `O` be an object with a property named `foo`.
-Reading the property is made through a standard code `O.foo` or `O.foo_`. Setting the property is only made through `O.foo_ = bar`, if the property is not read only, of course.
+## Properties
 
-The implementation is made through `O.foo_p`, which is an instance of one of the `eYo.p6y.Dflt` subclasses, owned by `O`.
-
-## property POV
-
-### owner and parent
-The property has an owner an a parent.
-The owner is the object who both originated the `new` instruction
-that created the property and holds an handle on it.
-The parent is the object whose properties section of the model contains the property model. It might not be the same.
-The parent is the `this` object when functions from the model are called.
-
-### values
-
-The value of the property may be all kind of object.
-For edython specific objects, we do not rely on GC mechanics and we explicitely dispose of objects when they are no longer used.
-This is absolutely necessary for objects that modify the dom.
-For that purpose, and it is not restricted to properties,
-we make a soft link between an object and its owner through
-the `eyo_o3r` key.
+## Data
 
 ## The model
 
@@ -133,7 +118,7 @@ init () {
 ```
 will start with a globally unique value different from each other.
 
-## Some implementation details
+## Some implementation details for properties
 
 From bottom up.
 
@@ -167,3 +152,22 @@ The `setStored ` setter can be overriden by the model with key `set_`. Useful fo
 | willChange | | |
 | atChange | | |
 | didChange | | |
+
+## More about data
+
+A data object manages the state of an user interface widget.
+More precisely, data objects are owned by bricks and maintain their visual aspect.
+All the data objects may not be in any available state due to overall consistency. Some changes to data objects may cascade to other data objects.
+
+### Overall state consistency
+
+When a brick state consistency comes into play, a change to a data object must be done through a `doChange` message. This informs the owning brick that its state should not be considered as consistent. Eventually, some other data may change accordingly. Once any change is done, the owning brick is informed. The brick is considered in a consistent state once the very first change is complete.
+
+For that purpose, any brick has a `changer` object maintaining the level of inconsistency. Level 0 means no inconsistency. Each time a data change is initiated, the level increases by one, conversely it decreases by one each time a data change is complete.
+
+### Implementation details
+
+#### the data content
+
+The data object stores its content in the `stored__` attribute. It points to a base object, string, number, array, map, nothing more complicated. In particular, memory management is mainly left to the garbage collector.
+

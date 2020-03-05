@@ -190,13 +190,13 @@ eYo.test.incog = (brick, keys) => {
 
 eYo.test.variant = (d, variant, str) => {
   variant = eYo.key[variant] || variant
-  chai.assert(d.Variant_p === variant, `MISSED VARIANT ${str || ''} ${d.Variant_p} === ${variant}`)
+  chai.assert(d.variant === variant, `MISSED VARIANT ${str || ''} ${d.Variant_p} === ${variant}`)
 }
 
 eYo.test.Set_variant = (d, variant, str) => {
   variant = eYo.key[variant] || variant
-  d.Variant_p = variant
-  chai.assert(d.Variant_p === variant, `MISSED VARIANT ${str || ''} ${d.Variant_p} === ${variant}`)
+  d.variant_ = variant
+  chai.assert(d.variant === variant, `MISSED VARIANT ${str || ''} ${d.Variant_p} === ${variant}`)
 }
 
 /**
@@ -264,7 +264,7 @@ eYo.test.Same = (d, dd) => {
   chai.assert(d, 'MISSING d')
   chai.assert(dd, 'MISSING dd')
   chai.assert(d.type === dd.type, `BAD TYPE ${d.type} === ${dd.type}`)
-  chai.assert(d.Variant_p === dd.Variant_p, `BAD VARIANT ${d.Variant_p} === ${dd.Variant_p}`)
+  chai.assert(d.variant === dd.Variant_p, `BAD VARIANT ${d.Variant_p} === ${dd.Variant_p}`)
 }
 
 /**

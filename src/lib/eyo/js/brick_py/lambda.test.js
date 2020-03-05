@@ -10,7 +10,7 @@ describe('Lambda', function() {
       assert(d.lastSlot.connect(a), 'MISSING 1')
       assert(d.slots.length === 3, 'MISSED 2')
       var f = v => {
-        a.Variant_p = v
+        a.variant_ = v
         var u = b3k.parameters_s.unwrappedTarget
         assert(u.Target_p === 'a', `MISSED: ${v}`)
       }
@@ -60,13 +60,13 @@ describe('Lambda', function() {
               var t = b3k.parameters_b
               var a = eYo.test.new_brick('a')
               assert(t.lastSlot.connect(a), 'MISSING 1')
-              a.Variant_p = v1
+              a.variant_ = v1
               var d = eYo.test.new_brick('d')
               assert(t.lastSlot.connect(d), 'MISSING 2')
-              d.Variant_p = v2
+              d.variant_ = v2
               var c = eYo.test.new_brick('c')
               assert(this._runnable.lastSlot.connect(c), 'MISSING 3')
-              c.Variant_p = v3
+              c.variant_ = v3
               assert(t.slots.length === 7, 'MISSED 1')
               var f = (n, i) => {
                 var u = b3k.parameters_b.slotList_[i].targetBrick

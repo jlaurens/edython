@@ -52,19 +52,38 @@ eYo.decorate.reentrant_method = (object, key, f) => {
 }
 
 /**
- * Calls `f` and logs the time used when gerater than 50ms.
+ * Decorate the function to be reentrant.
  * @param {string} key
  * @param {function} f
- * @return The result of the call to `f`.
+ * @return {*} Whathever `f` returns.
  */
-eYo.decorate.Benchmark = function (key, f) {
-  return function (...args) {
-    const startTime = performance.now()
+eYo.decorate.reentrant = (key, f) => {
+  eYo.isF(f) || ([key, f] = [f, key])
+  return function(...$) {
+    this[key] = eYo.doNothing
     try {
-      return f.call(this, ...args)
+      return f.call(this, ...$)
     } finally {
-      const duration = performance.now() - startTime
-      if (duration > 50) {
+      delete this[key]
+    }
+  }
+}
+
+/**
+ * Calls `f` and logs the time used when greater than 50ms.
+ * @param {String} key
+ * @param {Function} f
+ * @param {Number} limit
+ * @return {*} Whatever `f` returns.
+ */
+eYo.decorate.benchmark = function (key, f, limit = 50) {
+  return function (...$) {
+    let startTime = performance.now()
+    try {
+      return f.call(this, ...$)
+    } finally {
+      let duration = performance.now() - startTime
+      if (duration > limit) {
         console.log(`BENCHMARK: ${key} took ${duration}ms`)
       }
     }

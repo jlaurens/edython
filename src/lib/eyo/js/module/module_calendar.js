@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('calendar__module')
-
-eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.html'
+eYo.module.makeNS('calendar__module', {
+  URL: 'https://docs.python.org/3.6/library/calendar.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.calendar__module.makeItem()
-
+  let newItem = eYo.module.calendar__module.makeNewItem()
 
   eYo.module.calendar__module.data_ = {
     categories: [
@@ -32,7 +31,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
       'method'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'Calendar',
         class: 'calendar',
         category: 0,
@@ -48,7 +47,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'HTMLCalendar',
         class: 'calendar',
         category: 0,
@@ -64,7 +63,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'LocaleHTMLCalendar',
         class: 'calendar',
         category: 0,
@@ -83,7 +82,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'LocaleTextCalendar',
         class: 'calendar',
         category: 0,
@@ -102,7 +101,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'TextCalendar',
         class: 'calendar',
         category: 0,
@@ -118,7 +117,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'calendar',
         class: 'calendar',
         category: 0,
@@ -148,7 +147,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'day_abbr',
         class: 'calendar',
         category: 0,
@@ -157,7 +156,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'day_name',
         class: 'calendar',
         category: 0,
@@ -166,7 +165,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'firstweekday',
         class: 'calendar',
         category: 0,
@@ -174,7 +173,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
         href: '#calendar.firstweekday',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'formatmonth',
         class: 'calendar.TextCalendar',
         category: 0,
@@ -199,7 +198,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'formatmonth',
         class: 'calendar.HTMLCalendar',
         category: 0,
@@ -220,7 +219,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'formatyear',
         class: 'calendar.TextCalendar',
         category: 0,
@@ -250,7 +249,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'formatyear',
         class: 'calendar.HTMLCalendar',
         category: 0,
@@ -268,7 +267,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'formatyearpage',
         class: 'calendar.HTMLCalendar',
         category: 0,
@@ -294,7 +293,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'isleap',
         class: 'calendar',
         category: 0,
@@ -307,7 +306,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'itermonthdates',
         class: 'calendar.Calendar',
         category: 0,
@@ -323,7 +322,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'itermonthdays',
         class: 'calendar.Calendar',
         category: 0,
@@ -339,7 +338,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'itermonthdays2',
         class: 'calendar.Calendar',
         category: 0,
@@ -355,7 +354,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'iterweekdays',
         class: 'calendar.Calendar',
         category: 0,
@@ -363,7 +362,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
         href: '#calendar.Calendar.iterweekdays',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'leapdays',
         class: 'calendar',
         category: 0,
@@ -379,7 +378,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'month',
         class: 'calendar',
         category: 0,
@@ -404,7 +403,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'month_abbr',
         class: 'calendar',
         category: 0,
@@ -413,7 +412,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'month_name',
         class: 'calendar',
         category: 0,
@@ -422,7 +421,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'monthcalendar',
         class: 'calendar',
         category: 0,
@@ -438,7 +437,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'monthdatescalendar',
         class: 'calendar.Calendar',
         category: 0,
@@ -454,7 +453,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'monthdays2calendar',
         class: 'calendar.Calendar',
         category: 0,
@@ -470,7 +469,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'monthdayscalendar',
         class: 'calendar.Calendar',
         category: 0,
@@ -486,7 +485,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'monthrange',
         class: 'calendar',
         category: 0,
@@ -502,7 +501,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'prcal',
         class: 'calendar',
         category: 0,
@@ -532,7 +531,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'prmonth',
         class: 'calendar',
         category: 0,
@@ -557,7 +556,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'prmonth',
         class: 'calendar.TextCalendar',
         category: 0,
@@ -582,7 +581,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'pryear',
         class: 'calendar.TextCalendar',
         category: 0,
@@ -612,7 +611,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'setfirstweekday',
         class: 'calendar',
         category: 0,
@@ -626,7 +625,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'timegm',
         class: 'calendar',
         category: 0,
@@ -639,7 +638,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'weekday',
         class: 'calendar',
         category: 0,
@@ -658,7 +657,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'weekheader',
         class: 'calendar',
         category: 0,
@@ -671,7 +670,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'yeardatescalendar',
         class: 'calendar.Calendar',
         category: 0,
@@ -689,7 +688,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'yeardays2calendar',
         class: 'calendar.Calendar',
         category: 0,
@@ -707,7 +706,7 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'yeardayscalendar',
         class: 'calendar.Calendar',
         category: 0,
@@ -779,6 +778,6 @@ eYo.module.calendar__module.url = 'https://docs.python.org/3.6/library/calendar.
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py calendar` on 2020-02-12 15:52:53.221953
+  // This file was generated by `python3 ./bin/helpers/modulebot.py calendar` on 2020-03-04 13:02:49.102018
 
 

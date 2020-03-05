@@ -18,7 +18,7 @@ eYo.require('c9r')
  * @name {eYo.consolidator}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'consolidator')
+eYo.o3d.makeNS(eYo, 'consolidator')
 
 eYo.forwardDeclare('brick')
 eYo.forwardDeclare('do')
@@ -640,9 +640,9 @@ eYo.consolidator.List_p.getIO = function (brick) {
  * @param {eYo.brick.Base} brick - to be consolidated.
  * @param {boolean} force - true if no shortcut is allowed.
  */
-eYo.consolidator.List_p.consolidate = eYo.decorate.reentrant_method('consolidate', function (brick, force) {
+eYo.consolidator.List_p.consolidate = eYo.decorate.reentrant('consolidate', function (brick, force) {
   // do not consolidate while changing or not in a board
-  if (brick.change.level || !brick.board) {
+  if (brick.changer.level || !brick.board) {
     return
   }
   var io = this.getIO(brick)

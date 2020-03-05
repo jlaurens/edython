@@ -322,7 +322,7 @@ eYo.field.makeC9r('Base', eYo.bsm_o3d.Base, {
        */
       set (builtin, after) {
         eYo.event.fireBrickChange(this.brick, 'field', this.name, this.text__, after)
-        this.brick.change.wrap(() => {
+        this.brick.changer.wrap(() => {
           builtin(after)
           this.size.setFromText(after)
         })

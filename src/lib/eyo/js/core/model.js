@@ -83,34 +83,6 @@ eYo.model.allowModelPaths({
 })
 
 eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: 'data',
-  'data': '\\w+',
-  'data\\.\\w+': [
-    'order', // INTEGER
-    'all', // TYPE || [TYPE], // last is expected
-    'main', // BOOLEAN
-    'init', // () => {} || VALUE, !!! are function supported ?
-    'placeholder', // STRING
-    'validate', // () => {} || false || true,
-    'consolidate', // () => {}
-    'validateIncog', // () => {}
-    'willChange', // () => {}
-    'isChanging', // () => {}
-    'didChange', // () => {}
-    'willLoad', // () => {}
-    'didLoad', // () => {}
-    'fromType', // () => {}
-    'fromField', // () => {}
-    'toField', // () => {}
-    'noUndo', // true
-    'xml', {}
-  ],
-  'data\\.\\w+\.xml': [
-    'save', 'load',
-  ],
-})
-
-eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'slots',
   'slots\\.\\w+': [
     'order', // INTEGER,

@@ -58,7 +58,7 @@ describe('Assignment', function() {
     eYo.test.variant(d1, 'EXPRESSION', '2')
     eYo.test.incog(d1, ['Xtarget', 'Xannotated', 'value'])
     var f = (v, target, annotation, value, str) => {
-      d1.Variant_p = eYo.key[v]
+      d1.variant_ = eYo.key[v]
       eYo.test.variant(d1, v, str)
       eYo.test.incog(d1, target, annotation, value)
     }
@@ -147,7 +147,7 @@ describe('T&ST', function () {
     eYo.test.variant(d1, 'TARGET_VALUED')
     var d2 = eYo.test.new_brick('augtarget_annotated')
     d2.target_b.connectLast(eYo.test.new_brick('identifier'))
-    d2.target_s.unwrappedTarget.Variant_p = eYo.key.SLICING
+    d2.target_s.unwrappedTarget.variant_ = eYo.key.SLICING
     eYo.test.brick('augtarget_annotated')
     eYo.test.list_connect(d1, 'target', d2)
     eYo.test.brick(d1, 'annotated_assignment_stmt')
@@ -183,7 +183,7 @@ describe('Comment/Variant changes', function() {
     eYo.test.setItUp()
     var d1 = eYo.test.new_brick('expression_stmt')
     var f = (v, target, annotation, value, str) => {
-      d1.Variant_p = eYo.key[v]
+      d1.variant_ = eYo.key[v]
       eYo.test.variant(d1, v, str)
       eYo.test.incog(d1, target, annotation, value)
     }
@@ -288,7 +288,7 @@ describe('One brick: assignment_stmt', function() {
     eYo.test.setItUp()
     var d1 = eYo.test.new_brick('assignment_stmt')
     eYo.test.incog(d1, ['target', 'Xannotated', 'value'])
-    d1.Variant_p = eYo.key.TARGET
+    d1.variant_ = eYo.key.TARGET
     eYo.test.variant(d1, 'TARGET', '2')
     eYo.test.incog(d1, ['target', 'Xannotated', 'Xvalue'])
     // connect all the possible targets
@@ -313,7 +313,7 @@ describe('One brick: expression_stmt', function() {
     var d1 = eYo.test.new_brick('expression_stmt')
     chai.assert(d1.Operator_p === '', `MISSED ${d1.Operator_p}`)
     eYo.test.incog(d1, ['Xtarget', 'Xannotated', 'value'])
-    d1.Variant_p = eYo.key.TARGET
+    d1.variant_ = eYo.key.TARGET
     eYo.test.variant(d1, 'TARGET', '1')
     eYo.test.incog(d1, ['target', 'Xannotated', 'Xvalue'])
     eYo.test.brick(d1, 'assignment_stmt')
@@ -411,7 +411,7 @@ describe('One brick: annotated_assignment_stmt', function() {
     eYo.test.Code(d_main, 'xxx: abc + bcd=<MISSING EXPRESSION>')
     // then replace the target brick with an annotated identifier
     d3 = eYo.test.new_brick('Z')
-    d3.Variant_p = eYo.key.ANNOTATED
+    d3.variant_ = eYo.key.ANNOTATED
     d3.Annotated_p = 'abcd + cdef'
     eYo.test.Code(d3, 'Z: abcd + cdef')
     eYo.test.brick(d3, 'identifier_annotated')

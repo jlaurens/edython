@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('datetime__module')
-
-eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.html'
+eYo.module.makeNS('datetime__module', {
+  URL: 'https://docs.python.org/3.6/library/datetime.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.datetime__module.makeItem()
-
+  let newItem = eYo.module.datetime__module.makeNewItem()
 
   eYo.module.datetime__module.data_ = {
     categories: [
@@ -40,7 +39,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
       'classmethod'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'MAXYEAR',
         class: 'datetime',
         category: 0,
@@ -49,7 +48,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'MINYEAR',
         class: 'datetime',
         category: 0,
@@ -58,7 +57,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__format__',
         class: 'date',
         holder: 'datetime.date',
@@ -73,7 +72,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__format__',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -88,7 +87,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__format__',
         class: 'time',
         holder: 'datetime.time',
@@ -103,7 +102,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__str__',
         class: 'date',
         holder: 'datetime.date',
@@ -113,7 +112,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__str__',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -123,7 +122,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__str__',
         class: 'time',
         holder: 'datetime.time',
@@ -133,7 +132,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'astimezone',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -149,7 +148,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'combine',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -171,7 +170,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ctime',
         class: 'date',
         holder: 'datetime.date',
@@ -180,7 +179,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.ctime',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ctime',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -189,7 +188,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.ctime',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'date',
         class: 'datetime',
         category: 1,
@@ -197,7 +196,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'date',
         class: 'datetime',
         category: 3,
@@ -217,7 +216,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'date',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -226,7 +225,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.date',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'datetime',
         class: 'datetime',
         category: 1,
@@ -234,7 +233,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'datetime',
         class: 'datetime',
         category: 4,
@@ -283,7 +282,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'day',
         class: 'date',
         holder: 'datetime.date',
@@ -292,7 +291,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.day',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'day',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -301,7 +300,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.day',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'dst',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -310,7 +309,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.dst',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'dst',
         class: 'time',
         holder: 'datetime.time',
@@ -319,7 +318,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.dst',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'dst',
         class: 'tzinfo',
         holder: 'datetime.tzinfo',
@@ -333,7 +332,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'dst',
         class: 'timezone',
         holder: 'datetime.timezone',
@@ -347,7 +346,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fold',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -356,7 +355,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.fold',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'fold',
         class: 'time',
         holder: 'datetime.time',
@@ -365,7 +364,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.fold',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'fromordinal',
         class: 'date',
         holder: 'datetime.date',
@@ -379,7 +378,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fromordinal',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -393,7 +392,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fromtimestamp',
         class: 'date',
         holder: 'datetime.date',
@@ -407,7 +406,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fromtimestamp',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -426,7 +425,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fromutc',
         class: 'tzinfo',
         holder: 'datetime.tzinfo',
@@ -441,7 +440,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fromutc',
         class: 'timezone',
         holder: 'datetime.timezone',
@@ -455,7 +454,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'hour',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -464,7 +463,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.hour',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'hour',
         class: 'time',
         holder: 'datetime.time',
@@ -473,7 +472,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.hour',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isocalendar',
         class: 'date',
         holder: 'datetime.date',
@@ -482,7 +481,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.isocalendar',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isocalendar',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -491,7 +490,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.isocalendar',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isoformat',
         class: 'date',
         holder: 'datetime.date',
@@ -500,7 +499,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.isoformat',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isoformat',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -520,7 +519,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'isoformat',
         class: 'time',
         holder: 'datetime.time',
@@ -536,7 +535,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'isoweekday',
         class: 'date',
         holder: 'datetime.date',
@@ -545,7 +544,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.isoweekday',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isoweekday',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -554,7 +553,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.isoweekday',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'max',
         class: 'timedelta',
         holder: 'datetime.timedelta',
@@ -563,7 +562,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.timedelta.max',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'max',
         class: 'date',
         holder: 'datetime.date',
@@ -572,7 +571,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.max',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'max',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -581,7 +580,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.max',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'max',
         class: 'time',
         holder: 'datetime.time',
@@ -590,7 +589,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.max',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'microsecond',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -599,7 +598,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.microsecond',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'microsecond',
         class: 'time',
         holder: 'datetime.time',
@@ -608,7 +607,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.microsecond',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'min',
         class: 'timedelta',
         holder: 'datetime.timedelta',
@@ -617,7 +616,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.timedelta.min',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'min',
         class: 'date',
         holder: 'datetime.date',
@@ -626,7 +625,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.min',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'min',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -635,7 +634,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.min',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'min',
         class: 'time',
         holder: 'datetime.time',
@@ -644,7 +643,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.min',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'minute',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -653,7 +652,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.minute',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'minute',
         class: 'time',
         holder: 'datetime.time',
@@ -662,7 +661,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.minute',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'month',
         class: 'date',
         holder: 'datetime.date',
@@ -671,7 +670,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.month',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'month',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -680,7 +679,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.month',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'now',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -696,7 +695,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'replace',
         class: 'date',
         holder: 'datetime.date',
@@ -720,7 +719,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'replace',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -768,7 +767,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'replace',
         class: 'time',
         holder: 'datetime.time',
@@ -804,7 +803,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'resolution',
         class: 'timedelta',
         holder: 'datetime.timedelta',
@@ -813,7 +812,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.timedelta.resolution',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'resolution',
         class: 'date',
         holder: 'datetime.date',
@@ -822,7 +821,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.resolution',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'resolution',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -831,7 +830,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.resolution',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'resolution',
         class: 'time',
         holder: 'datetime.time',
@@ -840,7 +839,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.resolution',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'second',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -849,7 +848,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.second',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'second',
         class: 'time',
         holder: 'datetime.time',
@@ -858,7 +857,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.second',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'strftime',
         class: 'date',
         holder: 'datetime.date',
@@ -872,7 +871,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'strftime',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -886,7 +885,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'strftime',
         class: 'time',
         holder: 'datetime.time',
@@ -900,7 +899,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'strptime',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -917,7 +916,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'time',
         class: 'datetime',
         category: 1,
@@ -925,7 +924,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'time',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -934,7 +933,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.time',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'time',
         class: 'datetime',
         category: 5,
@@ -974,7 +973,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'timedelta',
         class: 'datetime',
         category: 1,
@@ -982,7 +981,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'timedelta',
         class: 'datetime',
         category: 2,
@@ -1022,7 +1021,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'timestamp',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1031,7 +1030,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.timestamp',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'timetuple',
         class: 'date',
         holder: 'datetime.date',
@@ -1040,7 +1039,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.timetuple',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'timetuple',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1049,7 +1048,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.timetuple',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'timetz',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1058,7 +1057,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.timetz',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'timezone',
         class: 'datetime',
         category: 1,
@@ -1066,7 +1065,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'timezone',
         class: 'datetime',
         category: 7,
@@ -1085,7 +1084,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'today',
         class: 'date',
         holder: 'datetime.date',
@@ -1094,7 +1093,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.today',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'today',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1103,7 +1102,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.today',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'toordinal',
         class: 'date',
         holder: 'datetime.date',
@@ -1112,7 +1111,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.toordinal',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'toordinal',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1121,7 +1120,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.toordinal',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'total_seconds',
         class: 'timedelta',
         holder: 'datetime.timedelta',
@@ -1130,7 +1129,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.timedelta.total_seconds',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tzinfo',
         class: 'datetime',
         category: 1,
@@ -1138,7 +1137,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tzinfo',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1147,7 +1146,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.tzinfo',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tzinfo',
         class: 'time',
         holder: 'datetime.time',
@@ -1156,7 +1155,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.tzinfo',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tzinfo',
         class: 'datetime',
         category: 6,
@@ -1165,7 +1164,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tzname',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1174,7 +1173,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.tzname',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tzname',
         class: 'time',
         holder: 'datetime.time',
@@ -1183,7 +1182,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.tzname',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'tzname',
         class: 'tzinfo',
         holder: 'datetime.tzinfo',
@@ -1197,7 +1196,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tzname',
         class: 'timezone',
         holder: 'datetime.timezone',
@@ -1211,7 +1210,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'utc',
         class: 'timezone',
         holder: 'datetime.timezone',
@@ -1220,7 +1219,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.timezone.utc',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'utcfromtimestamp',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1234,7 +1233,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'utcnow',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1243,7 +1242,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.utcnow',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'utcoffset',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1252,7 +1251,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.utcoffset',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'utcoffset',
         class: 'time',
         holder: 'datetime.time',
@@ -1261,7 +1260,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.time.utcoffset',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'utcoffset',
         class: 'tzinfo',
         holder: 'datetime.tzinfo',
@@ -1275,7 +1274,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'utcoffset',
         class: 'timezone',
         holder: 'datetime.timezone',
@@ -1289,7 +1288,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'utctimetuple',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1299,7 +1298,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'weekday',
         class: 'date',
         holder: 'datetime.date',
@@ -1308,7 +1307,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.weekday',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'weekday',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1317,7 +1316,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.datetime.weekday',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'year',
         class: 'date',
         holder: 'datetime.date',
@@ -1326,7 +1325,7 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
         href: '#datetime.date.year',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'year',
         class: 'datetime',
         holder: 'datetime.datetime',
@@ -1409,6 +1408,6 @@ eYo.module.datetime__module.url = 'https://docs.python.org/3.6/library/datetime.
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py datetime` on 2020-02-12 15:52:53.185674
+  // This file was generated by `python3 ./bin/helpers/modulebot.py datetime` on 2020-03-04 13:02:49.061268
 
 

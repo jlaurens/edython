@@ -13,7 +13,7 @@
 
 eYo.require('stmt')
 
-eYo.require('change.Base')
+eYo.require('changer')
 eYo.require('msg')
 
 eYo.require('decorate')
@@ -67,7 +67,7 @@ eYo.expr.Base_p.changeDone = function (deep) {
  * This should be used instead of direct brick querying.
  * @return {String} The type of the receiver's brick.
  */
-eYo.expr.Base_p.getType = eYo.change.memoize(
+eYo.expr.Base_p.getType = eYo.changer.memoize(
   'getType',
   function () {
     return {
@@ -385,14 +385,14 @@ eYo.expr.makeC9r('proper_slice', true, {
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          if (this.brick.Variant_p === eYo.key.STRIDE) {
+          if (this.brick.variant === eYo.key.STRIDE) {
             this.save(element, opt)
           }
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.STRIDE
+          this.brick.variant_ = eYo.key.STRIDE
         }
       }
     }
@@ -434,7 +434,7 @@ eYo.expr.makeC9r('proper_slice', true, {
       optional: true,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.STRIDE
+          this.brick.variant_ = eYo.key.STRIDE
         }
       }
     }

@@ -113,7 +113,7 @@ eYo.slot.makeBase({
         return after
       },
       set_ (builtin, after) {
-        this.brick_.change.wrap(() => {
+        this.brick_.changer.wrap(() => {
           builtin(after)
           // forward to the connection
           var m4t = this.magnet
@@ -216,7 +216,7 @@ eYo.slot.makeBase({
         if (this.required) {
           return true
         }
-        if (this.data && this.data.required) {
+        if (this.data && this.data.required_from_model) {
           return false
         }
         if (this.model.xml && this.model.xml.required) {
@@ -294,15 +294,15 @@ eYo.slot.Dlgt_p.initInstance = function (object) {
 }
 
 /**
- * Clean the required status, changing the value if necessary.
+ * Take action when required from model.
  * For edython.
- * @param {boolean} after
+ * @param {Function} do_it
  */
-eYo.slot.Base_p.whenRequiredFromModel = function (helper) {
+eYo.slot.Base_p.whenRequiredFromModel = function (do_it) {
   if (this.isRequiredFromModel) {
     this.isRequiredFromModel = false
-    if (eYo.isF(helper)) {
-      helper.call(this)
+    if (eYo.isF(do_it)) {
+      do_it.call(this)
     }
     return true
   }
@@ -505,7 +505,7 @@ eYo.slot.Base_p.load = function (element) {
  * When all the slots and data have been loaded.
  * For edython.
  */
-eYo.slot.Base_p.willLoad = eYo.decorate.reentrant_method('willLoad', function () {
+eYo.slot.Base_p.willLoad = eYo.decorate.reentrant('willLoad', function () {
   let f = this.model.willLoad
   if (eYo.isF(f)) {
     f.apply(this, arguments)
@@ -518,7 +518,7 @@ eYo.slot.Base_p.willLoad = eYo.decorate.reentrant_method('willLoad', function ()
  * and possibly once when the saved representation has been loaded.
  * For edython.
  */
-eYo.slot.Base_p.didLoad = eYo.decorate.reentrant_method('didLoad', function () {
+eYo.slot.Base_p.didLoad = eYo.decorate.reentrant('didLoad', function () {
   let f = this.model.didLoad
   if (eYo.isF(f)) {
     f.apply(this, arguments)

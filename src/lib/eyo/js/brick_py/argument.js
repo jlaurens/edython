@@ -220,7 +220,7 @@ eYo.expr.List.makeInheritedC9r('argument_list', {
       },
       didChange (builtin) /** @suppress {globalThis} */ {
         builtin()
-        this.change.wrap(() => {
+        this.changer.wrap(() => {
           this.brick.createConsolidator(true)
         })
       }
@@ -232,7 +232,7 @@ eYo.expr.List.makeInheritedC9r('argument_list', {
       noUndo: true,
       didChange (builtin) /** @suppress {globalThis} */ {
         builtin()
-        this.change.wrap(() => {
+        this.changer.wrap(() => {
           this.brick.createConsolidator(true)
         })
       }

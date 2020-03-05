@@ -317,7 +317,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
   if (!board.hasUI || board.rendered === false) { // board.rendered === eYo.NA is OK
     return
   }
-  if (!board.isEditing && (board.dragging_ || board.change.level || !board.board)) {
+  if (!board.isEditing && (board.dragging_ || board.changer.level || !board.board)) {
     return
   }
   this.drawPending_(recorder, !board.wrapped_ && eYo.key.LEFT)
@@ -331,7 +331,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
       this.drawFoot_(io)
       this.renderMove_(io)
       board.updateShape()
-      board.change.save.render = board.change.count
+      board.changer.save.render = board.changer.count
       this.drawParent_(io, bbbl) || this.alignRightEdges_(io) // will they have a parent meanwhile?
       return
     } else if (eYo.magnet.disconnectedParent && board.foot_m === eYo.magnet.disconnectedParent) {
@@ -342,7 +342,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
       this.drawFoot_(io)
       this.renderMove_(io)
       board.updateShape()
-      board.change.save.render = board.change.count
+      board.changer.save.render = board.changer.count
       this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       return
     } else if (eYo.magnet.connectedParent) {
@@ -352,7 +352,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
         this.drawFoot_(io)
         this.renderMove_(io)
         board.updateShape()
-        board.change.save.render = board.change.count
+        board.changer.save.render = board.changer.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       } else if (board.foot_m && eYo.magnet.connectedParent === board.foot_m) {
         var io = this.willShortRender_(board, recorder)
@@ -360,7 +360,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
         this.drawFoot_(io)
         this.renderMove_(io)
         board.updateShape()
-        board.change.save.render = board.change.count
+        board.changer.save.render = board.changer.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       } else if (board.suite_m && eYo.magnet.connectedParent === board.suite_m) {
         var io = this.willShortRender_(board, recorder)
@@ -368,7 +368,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
         this.drawFoot_(io)
         this.renderMove_(io)
         board.updateShape()
-        board.change.save.render = board.change.count
+        board.changer.save.render = board.changer.count
         this.drawParent_(io, bbbl) || this.alignRightEdges_(io)
       }
     }
@@ -399,7 +399,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
       return
     }
   }
-  if (board.change.save.render === board.change.count) {
+  if (board.changer.save.render === board.changer.count) {
     // minimal rendering
     var io = this.willShortRender_(board, recorder)
     this.layoutMagnets_(io)
@@ -410,7 +410,7 @@ eYo.fcfl.Board._p.render = function (board, bbbl, recorder) {
     return
   }
   this.longRender_(bbbl, recorder)
-  board.change.save.render = board.change.count
+  board.changer.save.render = board.changer.count
 }
 
 /**
@@ -608,7 +608,7 @@ eYo.fcfl.Board._p.draw_ = function (recorder) {
  * @param {*} recorder
  * @protected
  */
-eYo.fcfl.Board._p.alignRightEdges_ = eYo.change.memoize(
+eYo.fcfl.Board._p.alignRightEdges_ = eYo.changer.memoize(
   'alignRightEdges_',
   function (recorder) {
     let board = recorder.board

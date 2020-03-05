@@ -59,7 +59,7 @@ eYo.stmt.makeC9r('decorator_stmt', true, {
         eYo.key.SETTER,
         eYo.key.DELETER
       ],
-      init: null,
+      init: eYo.NA,
       didChange (builtin, after) /** @suppress {globalThis} */ {
         // the property change may echo into a decorator change
         builtin()
@@ -133,7 +133,7 @@ eYo.stmt.makeC9r('decorator_stmt', true, {
       init: '',
       placeholder () /** @suppress {globalThis} */ {
         var b3k = this.brick
-        return b3k.Variant_p === eYo.key.PROPERTY && b3k.Property_p !== eYo.key.GETTER
+        return b3k.variant === eYo.key.PROPERTY && b3k.Property_p !== eYo.key.GETTER
         ? eYo.msg.placeholder.IDENTIFIER
         : eYo.msg.placeholder.DECORATOR
       },
@@ -175,16 +175,16 @@ eYo.stmt.makeC9r('decorator_stmt', true, {
         if (m) {
           if (m.setter) {
             b3k.Target_p = b3k.Saved_p = m.property_name
-            if (b3k.Variant_p === eYo.key.N_ARY) {
-              b3k.Variant_p = eYo.key.NONE
+            if (b3k.variant === eYo.key.N_ARY) {
+              b3k.variant_ = eYo.key.NONE
             }
             b3k.Property_p = eYo.key.SETTER
             b3k.MainChooser_p = eYo.key.NONE
             b3k.Chooser_p = eYo.key.SETTER
           } else if(m.deleter) {
             b3k.Target_p = b3k.Saved_p = m.property_name
-            if (b3k.Variant_p === eYo.key.N_ARY) {
-              b3k.Variant_p = eYo.key.NONE
+            if (b3k.variant === eYo.key.N_ARY) {
+              b3k.variant_ = eYo.key.NONE
             }
             b3k.Property_p = eYo.key.DELETER
             b3k.MainChooser_p = eYo.key.NONE
@@ -193,17 +193,17 @@ eYo.stmt.makeC9r('decorator_stmt', true, {
             b3k.Property_p = eYo.key.GETTER
             b3k.Chooser_p = eYo.key.NONE
             if (m.property) {
-              b3k.Variant_p = b3k.Target_p = eYo.key.PROPERTY
+              b3k.variant_ = b3k.Target_p = eYo.key.PROPERTY
               b3k.MainChooser_p = eYo.key.PROPERTY
             } else if (m.staticmethod) {
-              b3k.Variant_p = b3k.Target_p = eYo.key.STATICMETHOD
+              b3k.variant_ = b3k.Target_p = eYo.key.STATICMETHOD
               b3k.MainChooser_p = eYo.key.STATICMETHOD
             } else if (m.classmethod) {
-              b3k.Variant_p = b3k.Target_p = eYo.key.CLASSMETHOD
+              b3k.variant_ = b3k.Target_p = eYo.key.CLASSMETHOD
               b3k.MainChooser_p = eYo.key.CLASSMETHOD
             } else {
-              if (b3k.Variant_p !== eYo.key.N_ARY) {
-                b3k.Variant_p = eYo.key.NONE
+              if (b3k.variant !== eYo.key.N_ARY) {
+                b3k.variant_ = eYo.key.NONE
               }
               b3k.Target_p = b3k.Saved_p = after
               b3k.MainChooser_p = eYo.key.NONE
@@ -226,11 +226,11 @@ eYo.stmt.makeC9r('decorator_stmt', true, {
         eYo.key.CLASSMETHOD, // @classmethod
         eYo.key.PROPERTY // @property
       ],
-      init: null,
+      init: eYo.NA,
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         if (after === eYo.key.NONE) {
-          this.brick.Variant_p = eYo.key.NONE
+          this.brick.variant_ = eYo.key.NONE
           this.brick.Decorator_p = this.brick.Saved_p || ''
         } else {
           this.brick.Chooser_p = eYo.key.NONE
@@ -248,19 +248,19 @@ eYo.stmt.makeC9r('decorator_stmt', true, {
         eYo.key.SETTER,
         eYo.key.DELETER
       ],
-      init: null,
+      init: eYo.NA,
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         switch(after) {
           case eYo.key.NONE:
-          this.brick.Variant_p = eYo.key.NONE
+          this.brick.variant_ = eYo.key.NONE
           this.brick.Decorator_p = this.brick.Saved_p || ''
           break
           case eYo.key.N_ARY:
-          if(this.brick.Variant_p !== eYo.key.NONE) {
+          if(this.brick.variant !== eYo.key.NONE) {
             this.brick.Decorator_p = this.brick.Saved_p || ''
           }
-          this.brick.Variant_p = eYo.key.N_ARY
+          this.brick.variant_ = eYo.key.N_ARY
           this.brick.MainChooser_p = eYo.key.NONE
           break
           case eYo.key.SETTER:
@@ -319,7 +319,7 @@ eYo.stmt.makeC9r('decorator_stmt', true, {
       didLoad () /** @suppress {globalThis} */ {
         var t = this.targetBrick // may be null ?
         if (t && t.children_.length) {
-          this.brick.Variant_p = eYo.key.N_ARY
+          this.brick.variant_ = eYo.key.N_ARY
         }
       }
     }
@@ -514,7 +514,7 @@ eYo.stmt.group.makeInheritedC9r('classdef_part', true, {
       wrap: eYo.t3.expr.argument_list,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.N_ARY
+          this.brick.variant_ = eYo.key.N_ARY
         }
       }
     }

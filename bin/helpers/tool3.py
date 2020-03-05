@@ -115,8 +115,8 @@ mocha.setup('bdd')
 eYo.path_root = '{root}'
 eYo.path_eyo = '{eyo}'
 //]]></script>
-    <script src="{eyo}test/chai_extension.js"></script>
-    <script src="{eyo}test/common.test.js"></script>
+    <script src="{eyo}js/test/chai_extension.js"></script>
+    <script src="{eyo}js/test/common.test.js"></script>
 '''
 
   def test(basename):
@@ -158,7 +158,7 @@ def updateWebTests():
   for path_test in tests:
     try:
       relative = path_test.relative_to(path_root)
-      root = '../' * len(relative.parts)
+      root = '../' * (len(relative.parts) - 1)
       relative = path_test.relative_to(path_eyo)
       eyo = '../' * (len(relative.parts) - 1)
       path_base = path_test.with_suffix('').with_suffix('')

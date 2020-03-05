@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('cmath__module')
-
-eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
+eYo.module.makeNS('cmath__module', {
+  URL: 'https://docs.python.org/3.6/library/cmath.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.cmath__module.makeItem()
-
+  let newItem = eYo.module.cmath__module.makeNewItem()
 
   eYo.module.cmath__module.data_ = {
     categories: [
@@ -35,7 +34,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
       'data'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'acos',
         class: 'cmath',
         category: 2,
@@ -48,7 +47,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'acosh',
         class: 'cmath',
         category: 3,
@@ -61,7 +60,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'asin',
         class: 'cmath',
         category: 2,
@@ -74,7 +73,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'asinh',
         class: 'cmath',
         category: 3,
@@ -87,7 +86,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'atan',
         class: 'cmath',
         category: 2,
@@ -100,7 +99,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'atanh',
         class: 'cmath',
         category: 3,
@@ -113,7 +112,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'cos',
         class: 'cmath',
         category: 2,
@@ -126,7 +125,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'cosh',
         class: 'cmath',
         category: 3,
@@ -139,7 +138,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'e',
         class: 'cmath',
         category: 5,
@@ -148,7 +147,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'exp',
         class: 'cmath',
         category: 1,
@@ -161,7 +160,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'inf',
         class: 'cmath',
         category: 5,
@@ -170,7 +169,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'infj',
         class: 'cmath',
         category: 5,
@@ -179,7 +178,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isclose',
         class: 'cmath',
         category: 4,
@@ -208,7 +207,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'isfinite',
         class: 'cmath',
         category: 4,
@@ -221,7 +220,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'isinf',
         class: 'cmath',
         category: 4,
@@ -234,7 +233,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'isnan',
         class: 'cmath',
         category: 4,
@@ -247,7 +246,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'log',
         class: 'cmath',
         category: 1,
@@ -265,7 +264,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'log10',
         class: 'cmath',
         category: 1,
@@ -278,7 +277,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'nan',
         class: 'cmath',
         category: 5,
@@ -287,7 +286,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'nanj',
         class: 'cmath',
         category: 5,
@@ -296,7 +295,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'phase',
         class: 'cmath',
         category: 0,
@@ -309,7 +308,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'pi',
         class: 'cmath',
         category: 5,
@@ -318,7 +317,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'polar',
         class: 'cmath',
         category: 0,
@@ -331,7 +330,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rect',
         class: 'cmath',
         category: 0,
@@ -347,7 +346,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sin',
         class: 'cmath',
         category: 2,
@@ -360,7 +359,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sinh',
         class: 'cmath',
         category: 3,
@@ -373,7 +372,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sqrt',
         class: 'cmath',
         category: 1,
@@ -386,7 +385,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tan',
         class: 'cmath',
         category: 2,
@@ -399,7 +398,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tanh',
         class: 'cmath',
         category: 3,
@@ -412,7 +411,7 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tau',
         class: 'cmath',
         category: 5,
@@ -472,6 +471,6 @@ eYo.module.cmath__module.url = 'https://docs.python.org/3.6/library/cmath.html'
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py cmath` on 2020-02-12 15:52:52.936934
+  // This file was generated by `python3 ./bin/helpers/modulebot.py cmath` on 2020-03-04 13:02:48.788912
 
 

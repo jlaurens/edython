@@ -13,7 +13,7 @@
 
 eYo.require('expr')
 
-eYo.require('change.Base')
+eYo.require('changer')
 
 eYo.require('decorate')
 eYo.require('consolidator.List')
@@ -210,7 +210,7 @@ eYo.expr.List_p.doConsolidate = (() => {
    * This must not be overriden.
    */
   var doConsolidate = function (deep, force) {
-    if (this.will_connect_ || this.change.level) {
+    if (this.will_connect_ || this.changer.level) {
       // reentrant flag or wait for the new connection
       // to be established before consolidating
       // reentrant is essential because the consolidation
@@ -466,7 +466,7 @@ eYo.expr.List.makeInheritedC9r('enclosure', {
  * getProfile.
  * @return {!Object} with `ans` key.
  */
-eYo.expr.enclosure.prototype.getProfile = eYo.change.memoize(
+eYo.expr.enclosure.prototype.getProfile = eYo.changer.memoize(
   'getProfile',
   function () {
     // this may be called very very early when

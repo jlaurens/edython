@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('random__module')
-
-eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html'
+eYo.module.makeNS('random__module', {
+  URL: 'https://docs.python.org/3.6/library/random.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.random__module.makeItem()
-
+  let newItem = eYo.module.random__module.makeNewItem()
 
   eYo.module.random__module.data_ = {
     categories: [
@@ -34,7 +33,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
       'class'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'SystemRandom',
         class: 'random',
         category: 4,
@@ -50,7 +49,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'betavariate',
         class: 'random',
         category: 3,
@@ -66,7 +65,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'choice',
         class: 'random',
         category: 2,
@@ -79,7 +78,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'choices',
         class: 'random',
         category: 2,
@@ -109,7 +108,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'expovariate',
         class: 'random',
         category: 3,
@@ -122,7 +121,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'gammavariate',
         class: 'random',
         category: 3,
@@ -138,7 +137,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'gauss',
         class: 'random',
         category: 3,
@@ -154,7 +153,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'getrandbits',
         class: 'random',
         category: 0,
@@ -167,7 +166,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'getstate',
         class: 'random',
         category: 0,
@@ -175,7 +174,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
         href: '#random.getstate',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'lognormvariate',
         class: 'random',
         category: 3,
@@ -191,7 +190,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'normalvariate',
         class: 'random',
         category: 3,
@@ -207,7 +206,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'paretovariate',
         class: 'random',
         category: 3,
@@ -220,7 +219,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'randint',
         class: 'random',
         category: 1,
@@ -236,7 +235,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'random',
         class: 'random',
         category: 3,
@@ -244,7 +243,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
         href: '#random.random',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'randrange',
         class: 'random',
         category: 1,
@@ -275,7 +274,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sample',
         class: 'random',
         category: 2,
@@ -291,7 +290,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'seed',
         class: 'random',
         category: 0,
@@ -311,7 +310,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'setstate',
         class: 'random',
         category: 0,
@@ -325,7 +324,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'shuffle',
         class: 'random',
         category: 2,
@@ -344,7 +343,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'triangular',
         class: 'random',
         category: 3,
@@ -363,7 +362,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'uniform',
         class: 'random',
         category: 3,
@@ -379,7 +378,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'vonmisesvariate',
         class: 'random',
         category: 3,
@@ -395,7 +394,7 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'weibullvariate',
         class: 'random',
         category: 3,
@@ -454,6 +453,6 @@ eYo.module.random__module.url = 'https://docs.python.org/3.6/library/random.html
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py random` on 2020-02-12 15:52:53.092517
+  // This file was generated by `python3 ./bin/helpers/modulebot.py random` on 2020-03-04 13:02:48.941834
 
 

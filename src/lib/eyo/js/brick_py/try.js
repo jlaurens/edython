@@ -13,7 +13,7 @@
 
 eYo.require('stmt.group')
 
-eYo.require('change.Base')
+eYo.require('changer')
 
 eYo.provide('brick.try')
 
@@ -61,14 +61,14 @@ eYo.stmt.group.makeInheritedC9r('except_part', true, {
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.Variant_p !== eYo.key.NONE
+          this.required_from_model = this.brick.variant !== eYo.key.NONE
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         var b3k = this.brick
-        if (this.requiredFromSaved && b3k.Variant_p !== eYo.key.ALIASED) {
-          b3k.Variant_p = eYo.key.EXPRESSION
+        if (this.requiredFromSaved && b3k.variant !== eYo.key.ALIASED) {
+          b3k.variant_ = eYo.key.EXPRESSION
         }
       }
     },
@@ -87,13 +87,13 @@ eYo.stmt.group.makeInheritedC9r('except_part', true, {
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.Variant_p === eYo.key.ALIASED
+          this.required_from_model = this.brick.variant === eYo.key.ALIASED
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.ALIASED
+          this.brick.variant_ = eYo.key.ALIASED
         }
       }
     }
@@ -112,13 +112,13 @@ eYo.stmt.group.makeInheritedC9r('except_part', true, {
       },
       check: eYo.t3.expr.check.expression,
       didLoad () /** @suppress {globalThis} */ {
-        if (this.brick.Variant_p === eYo.key.NONE && this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.EXPRESSION
+        if (this.brick.variant === eYo.key.NONE && this.requiredFromSaved) {
+          this.brick.variant_ = eYo.key.EXPRESSION
         }
       },
       didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
         var O = this.brick
-        b3k.Variant_p === eYo.key.ALIASED || (b3k.Variant_p = eYo.key.EXPRESSION)
+        b3k.variant === eYo.key.ALIASED || (b3k.variant_ = eYo.key.EXPRESSION)
       }
     },
     alias: {
@@ -132,17 +132,17 @@ eYo.stmt.group.makeInheritedC9r('except_part', true, {
         }
       },
       validateIncog () /** @suppress {globalThis} */ {
-        return this.brick.Variant_p !== eYo.key.ALIASED
+        return this.brick.variant !== eYo.key.ALIASED
       },
       check: eYo.t3.expr.identifier,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.ALIASED
+          this.brick.variant_ = eYo.key.ALIASED
         }
       },
       didConnect: /** @suppress {globalThis} */ function  (oldTargetM4t, targetOldM4t) {
         var O = this.brick
-        b3k.Variant_p = eYo.key.ALIASED
+        b3k.variant_ = eYo.key.ALIASED
       }
     }
   },
@@ -171,11 +171,11 @@ eYo.stmt.group.makeInheritedC9r('except_part', true, {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.stmt.except_part.prototype.getType = eYo.change.memoize(
+eYo.stmt.except_part.prototype.getType = eYo.changer.memoize(
   'getType',
   function () {
     this.setupType(
-      this.Variant_p === eYo.key.NONE
+      this.variant === eYo.key.NONE
       ? eYo.t3.stmt.void_except_part
       : eYo.t3.stmt.except_part
     )
@@ -211,13 +211,13 @@ eYo.stmt.makeC9r('raise_stmt', true, {
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.Variant_p !== eYo.key.NONE
+          this.required_from_model = this.brick.variant !== eYo.key.NONE
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.EXPRESSION
+          this.brick.variant_ = eYo.key.EXPRESSION
         }
       }
     },
@@ -228,13 +228,13 @@ eYo.stmt.makeC9r('raise_stmt', true, {
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.Variant_p === eYo.key.FROM
+          this.required_from_model = this.brick.variant === eYo.key.FROM
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.FROM
+          this.brick.variant_ = eYo.key.FROM
         }
       }
     }
@@ -258,8 +258,8 @@ eYo.stmt.makeC9r('raise_stmt', true, {
         }
       },
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved && this.brick.Variant_p === eYo.key.NONE) {
-          this.brick.Variant_p = eYo.key.EXPRESSION
+        if (this.requiredFromSaved && this.brick.variant === eYo.key.NONE) {
+          this.brick.variant_ = eYo.key.EXPRESSION
         }
       }
     },
@@ -275,7 +275,7 @@ eYo.stmt.makeC9r('raise_stmt', true, {
       check: eYo.t3.expr.check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.FROM
+          this.brick.variant_ = eYo.key.FROM
         }
       }
     }
@@ -308,13 +308,13 @@ eYo.stmt.makeC9r('assert_stmt', true, {
       synchronize: true,
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          this.required = this.brick.Variant_p === eYo.key.BINARY
+          this.required_from_model = this.brick.variant === eYo.key.BINARY
           this.save(element, opt)
         }
       },
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.BINARY
+          this.brick.variant_ = eYo.key.BINARY
         }
       }
     }
@@ -343,7 +343,7 @@ eYo.stmt.makeC9r('assert_stmt', true, {
       check: eYo.t3.expr.check.expression,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.BINARY
+          this.brick.variant_ = eYo.key.BINARY
         }
       }
     }

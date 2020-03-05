@@ -14,7 +14,7 @@
 eYo.require('decorate')
 eYo.require('do')
 
-eYo.require('change.Base')
+eYo.forwardDeclare('changer')
 eYo.require('data')
 
 /**
@@ -94,13 +94,10 @@ eYo.brick.makeBase({
   dlgt (ns, key, C9r, model) {
     this.types = []
   },
+  aliases: {
+    owner: 'board',
+  },
   properties: {
-    board: {
-      get () {
-        return this.owner
-      },
-      dispose: false,
-    },
     /** @type {string} */
     parent: {
       willChange(before, after) {
@@ -156,16 +153,16 @@ eYo.brick.makeBase({
     data: eYo.NA,
     span: {
       value () {
-        return new eYo.span.Base(this)
+        return eYo.span.new(this)
       },
     },
     /**
-     * @type{eYo.change.Base}
+     * @type{eYo.changer.Base}
      * @readonly
      */
     change: {
       value () {
-        return new eYo.change.Base(this)
+        return eYo.changer.new(this)
       },
     },
     inputList: eYo.NA,
@@ -432,41 +429,41 @@ eYo.brick.makeBase({
     left: {
       get () {
         var m = this.left_m
-        return m && m.owner.targetBrick
+        return m && m.targetBrick
       },
       set (after) {
         var m = this.left_m
-        m && (m.owner.targetBrick_ = after)
+        m && (m.targetBrick_ = after)
       }
     },
     right: {
       get () {
         var m = this.right_m
-        return m && m.owner.targetBrick
+        return m && m.targetBrick
       },
       set (after) {
         var m = this.right_m
-        m && (m.owner.targetBrick_ = after)
+        m && (m.targetBrick_ = after)
       }
     },
     suite: {
       get () {
         var m = this.suite_m
-        return m && m.owner.targetBrick
+        return m && m.targetBrick
       },
       set (after) {
         var m = this.suite_m
-        m && (m.owner.targetBrick_ = after)
+        m && (m.targetBrick_ = after)
       }
     },
     foot: {
       get () {
         var m = this.foot_m
-        return m && m.owner.targetBrick
+        return m && m.targetBrick
       },
       set (after) {
         var m = this.foot_m
-        m && (m.owner.targetBrick_ = after)
+        m && (m.targetBrick_ = after)
       }
     },
     leftMost: {
@@ -710,7 +707,7 @@ eYo.brick.makeBase({
 
       // make the state
       eYo.event.disableWrap(() => {
-        this.change.wrap(() => {
+        this.changer.wrap(() => {
           this.makeMagnets()
           this.makeData()
           this.makeFields()
@@ -766,7 +763,6 @@ eYo.brick.makeBase({
       this.children__ = eYo.NA
     })
     this.board.resizePort()
-    eYo.p6y.disposeProperties(this, 'span', 'change')
   }
 })
 
@@ -789,7 +785,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @param {*} deep  Whether to propagate the message to children.
    */
   _p.changeDone = function (deep) {
-    this.change.done()
+    this.changer.done()
   }
 
   /**
@@ -826,20 +822,6 @@ eYo.brick.DEBUG_ = Object.create(null)
    */
   _p.changeEnd = function () {
     this.render()
-  }
-
-  /**
-   * Set the value wrapping in a `changeBegin`/`changeEnd`
-   * group call of the owner.
-   * @param {Object} after
-   * @param {Boolean} notUndoable
-   */
-  eYo.data.Base_p.doChange = function (after, validate) {
-    if (after !== this.get()) {
-      this.brick.change.wrap(() => {
-        this.set(after, validate)
-      })
-    }
   }
 
   /**
@@ -957,10 +939,12 @@ eYo.brick.DEBUG_ = Object.create(null)
 
   /**
    * Wraps `doConsolidate` into a reentrant and `change.count` aware method.
+   * @param{Boolean} deep
+   * @param{Boolean} force
    */
-  _p.consolidate = eYo.decorate.reentrant_method(
+  _p.consolidate = eYo.decorate.reentrant(
     'consolidate',
-    eYo.change.memoize(
+    eYo.changer.memoize(
       'consolidate',
       function (deep, force) {
         this.doConsolidate(deep, force)
@@ -1180,14 +1164,14 @@ eYo.brick.DEBUG_ = Object.create(null)
    */
   _p.setDataWithModel = function (model, noCheck) {
     var done = false
-    this.dataForEach(data => data.setRequiredFromModel(false))
-    this.change.wrap(() => {
+    this.dataForEach(data => data.required_from_model_ = false)
+    this.changer.wrap(() => {
       var data_in = model.data
       if (eYo.isStr(data_in) || eYo.isNum(data_in)) {
         var d = this.main_d
         if (d && !d.incog && d.validate(data_in)) {
           d.doChange(data_in)
-          d.setRequiredFromModel(true)
+          d.required_from_model_ = true
           done = true
         } else {
           this.dataForEach(d => {
@@ -1202,7 +1186,7 @@ eYo.brick.DEBUG_ = Object.create(null)
               // }
               eYo.assert(!done, `Ambiguous data model ${d.key} / ${data_in}: ${done}`)
               d.doChange(data_in)
-              d.setRequiredFromModel(true)
+              d.required_from_model_ = true
               done = d.key
             }
           })
@@ -1212,12 +1196,12 @@ eYo.brick.DEBUG_ = Object.create(null)
           var k = data.key
           if (eYo.hasOwnProperty(data_in, k)) {
             data.set(data_in[k])
-            data.setRequiredFromModel(true)
+            data.required_from_model_ = true
             done = true
           } else {
             k = k + '_placeholder'
             if (eYo.hasOwnProperty(data_in, k)) {
-              data.setRequiredFromModel(true)
+              data.required_from_model_ = true
               // change the place holder in the objects's model
               var m = {}
               eYo.do.mixin(m, data.model)
@@ -1243,7 +1227,7 @@ eYo.brick.DEBUG_ = Object.create(null)
         if (eYo.hasOwnProperty(model, k)) {
           data.set(model[k])
           done = true
-          data.setRequiredFromModel(true)
+          data.required_from_model_ = true
         }
         k = data.key + '_placeholder'
         if (eYo.hasOwnProperty(model, k)) {
@@ -2088,7 +2072,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @param {boolean} headless  no op when false
    */
   _p.initUI = function () {
-    this.change.wrap(() => {
+    this.changer.wrap(() => {
       this.ui_ = new eYo.brick.UI(this)
       this.fieldForEach(field => field.initUI())
       this.slotForEach(slot => slot.initUI())
@@ -2110,7 +2094,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    */
   _p.disposeUI = function (healStack, animate) {
     this.disposeUI = eYo.doNothing
-    this.change.wrap(() => {
+    this.changer.wrap(() => {
       this.render = eYo.doNothing
       this.fieldForEach(field => field.disposeUI())
       this.slotForEach(slot => slot.disposeUI())
@@ -2546,7 +2530,7 @@ eYo.brick.newReady = (() => {
         }
       }
     }
-    brick && brick.change.wrap(() => { // `this` is `brick`
+    brick && brick.changer.wrap(() => { // `this` is `brick`
       brick.willLoad()
       brick.setDataWithModel(dataModel)
       var Vs = model.slots
@@ -2558,7 +2542,7 @@ eYo.brick.newReady = (() => {
             var V = Vs[k]
             var b3k = processModel(board, V, null, t9k)
             if (!t9k && b3k && b3k.out_m) {
-              b3k.change.wrap(() => {
+              b3k.changer.wrap(() => {
                 slot && (slot.incog = false)
                 b3k.out_m.connect(slot.magnet)
               })

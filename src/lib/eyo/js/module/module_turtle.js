@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('turtle__module')
-
-eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html'
+eYo.module.makeNS('turtle__module', {
+  URL: 'https://docs.python.org/3.6/library/turtle.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.turtle__module.makeItem()
-
+  let newItem = eYo.module.turtle__module.makeNewItem()
 
   eYo.module.turtle__module.data_ = {
     categories: [
@@ -49,7 +48,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
       'method'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'RawTurtle',
         synonyms: [
           'RawPen'
@@ -65,7 +64,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'Screen',
         class: 'turtle',
         category: 17,
@@ -74,7 +73,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ScrolledCanvas',
         class: 'turtle',
         category: 17,
@@ -87,7 +86,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'Shape',
         class: 'turtle',
         category: 17,
@@ -103,7 +102,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'Turtle',
         class: 'turtle',
         category: 17,
@@ -111,7 +110,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.Turtle',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'TurtleScreen',
         class: 'turtle',
         category: 17,
@@ -124,7 +123,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'Vec2D',
         class: 'turtle',
         category: 17,
@@ -140,7 +139,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'addcomponent',
         class: 'turtle.Shape',
         category: 17,
@@ -162,7 +161,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'back',
         synonyms: [
           'bk',
@@ -180,7 +179,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'begin_fill',
         class: 'turtle',
         category: 5,
@@ -189,7 +188,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'begin_poly',
         class: 'turtle',
         category: 10,
@@ -198,7 +197,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'bgcolor',
         class: 'turtle',
         category: 11,
@@ -213,7 +212,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'bgpic',
         class: 'turtle',
         category: 11,
@@ -228,7 +227,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'bye',
         class: 'turtle',
         category: 16,
@@ -237,7 +236,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'circle',
         class: 'turtle',
         category: 0,
@@ -260,7 +259,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'clear',
         class: 'turtle',
         category: 6,
@@ -269,7 +268,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'clearscreen',
         synonyms: [
           'clear'
@@ -281,7 +280,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'clearstamp',
         class: 'turtle',
         category: 0,
@@ -294,7 +293,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'clearstamps',
         class: 'turtle',
         category: 0,
@@ -310,7 +309,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'clone',
         class: 'turtle',
         category: 10,
@@ -318,7 +317,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.clone',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'color',
         class: 'turtle',
         category: 4,
@@ -390,7 +389,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'colormode',
         class: 'turtle',
         category: 15,
@@ -405,7 +404,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'degrees',
         class: 'turtle',
         category: 2,
@@ -421,7 +420,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'delay',
         class: 'turtle',
         category: 12,
@@ -436,7 +435,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'distance',
         class: 'turtle',
         category: 1,
@@ -454,7 +453,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'dot',
         class: 'turtle',
         category: 0,
@@ -474,7 +473,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'end_fill',
         class: 'turtle',
         category: 5,
@@ -483,7 +482,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'end_poly',
         class: 'turtle',
         category: 10,
@@ -492,7 +491,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'exitonclick',
         class: 'turtle',
         category: 16,
@@ -501,7 +500,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'fillcolor',
         class: 'turtle',
         category: 4,
@@ -551,7 +550,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'filling',
         class: 'turtle',
         category: 5,
@@ -559,7 +558,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.filling',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'forward',
         synonyms: [
           'fd'
@@ -576,7 +575,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'get_poly',
         class: 'turtle',
         category: 10,
@@ -584,7 +583,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.get_poly',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'get_shapepoly',
         class: 'turtle',
         category: 8,
@@ -592,7 +591,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.get_shapepoly',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'getcanvas',
         class: 'turtle',
         category: 15,
@@ -600,7 +599,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.getcanvas',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'getscreen',
         class: 'turtle',
         category: 10,
@@ -608,7 +607,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.getscreen',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'getshapes',
         class: 'turtle',
         category: 15,
@@ -616,7 +615,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.getshapes',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'getturtle',
         synonyms: [
           'getpen'
@@ -627,7 +626,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.getpen',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'goto',
         synonyms: [
           'setpos',
@@ -650,7 +649,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'heading',
         class: 'turtle',
         category: 1,
@@ -658,7 +657,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.heading',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'hideturtle',
         synonyms: [
           'ht'
@@ -670,7 +669,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'home',
         class: 'turtle',
         category: 0,
@@ -679,7 +678,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isdown',
         class: 'turtle',
         category: 3,
@@ -687,7 +686,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.isdown',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'isvisible',
         class: 'turtle',
         category: 7,
@@ -695,7 +694,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.isvisible',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'left',
         synonyms: [
           'lt'
@@ -712,7 +711,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'listen',
         class: 'turtle',
         category: 13,
@@ -732,7 +731,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'mainloop',
         synonyms: [
           'done'
@@ -744,7 +743,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'mode',
         class: 'turtle',
         category: 15,
@@ -759,7 +758,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'numinput',
         class: 'turtle',
         category: 14,
@@ -788,7 +787,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'onclick',
         class: 'turtle',
         category: 9,
@@ -811,7 +810,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ondrag',
         class: 'turtle',
         category: 9,
@@ -834,7 +833,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'onkey',
         synonyms: [
           'onkeyrelease'
@@ -854,7 +853,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'onkeypress',
         class: 'turtle',
         category: 13,
@@ -873,7 +872,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'onrelease',
         class: 'turtle',
         category: 9,
@@ -896,7 +895,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'onscreenclick',
         synonyms: [
           'onclick'
@@ -922,7 +921,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ontimer',
         class: 'turtle',
         category: 13,
@@ -941,7 +940,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'pen',
         class: 'turtle',
         category: 3,
@@ -960,7 +959,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'pencolor',
         class: 'turtle',
         category: 4,
@@ -1010,7 +1009,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'pendown',
         synonyms: [
           'pd',
@@ -1023,7 +1022,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'pensize',
         synonyms: [
           'width'
@@ -1041,7 +1040,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'penup',
         synonyms: [
           'pu',
@@ -1054,7 +1053,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'position',
         synonyms: [
           'pos'
@@ -1065,7 +1064,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.pos',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'radians',
         class: 'turtle',
         category: 2,
@@ -1074,7 +1073,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'register_shape',
         synonyms: [
           'addshape'
@@ -1096,7 +1095,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'reset',
         class: 'turtle',
         category: 6,
@@ -1105,7 +1104,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'resetscreen',
         synonyms: [
           'reset'
@@ -1117,7 +1116,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'resizemode',
         class: 'turtle',
         category: 8,
@@ -1133,7 +1132,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'right',
         synonyms: [
           'rt'
@@ -1150,7 +1149,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'screensize',
         class: 'turtle',
         category: 11,
@@ -1173,7 +1172,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'setheading',
         synonyms: [
           'seth'
@@ -1190,7 +1189,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'settiltangle',
         class: 'turtle',
         category: 8,
@@ -1204,7 +1203,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'setundobuffer',
         class: 'turtle',
         category: 10,
@@ -1218,7 +1217,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'setup',
         class: 'turtle',
         category: 16,
@@ -1250,7 +1249,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'setworldcoordinates',
         class: 'turtle',
         category: 11,
@@ -1273,7 +1272,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'setx',
         class: 'turtle',
         category: 0,
@@ -1287,7 +1286,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sety',
         class: 'turtle',
         category: 0,
@@ -1301,7 +1300,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'shape',
         class: 'turtle',
         category: 8,
@@ -1316,7 +1315,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'shapesize',
         synonyms: [
           'turtlesize'
@@ -1342,7 +1341,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'shapetransform',
         class: 'turtle',
         category: 8,
@@ -1369,7 +1368,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'shearfactor',
         class: 'turtle',
         category: 8,
@@ -1384,7 +1383,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'showturtle',
         synonyms: [
           'st'
@@ -1396,7 +1395,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'speed',
         class: 'turtle',
         category: 0,
@@ -1412,7 +1411,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'stamp',
         class: 'turtle',
         category: 0,
@@ -1420,7 +1419,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.stamp',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'textinput',
         class: 'turtle',
         category: 14,
@@ -1436,7 +1435,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tilt',
         class: 'turtle',
         category: 8,
@@ -1450,7 +1449,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tiltangle',
         class: 'turtle',
         category: 8,
@@ -1465,7 +1464,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'title',
         class: 'turtle',
         category: 16,
@@ -1479,7 +1478,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'towards',
         class: 'turtle',
         category: 1,
@@ -1497,7 +1496,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tracer',
         class: 'turtle',
         category: 12,
@@ -1516,7 +1515,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'turtles',
         class: 'turtle',
         category: 15,
@@ -1524,7 +1523,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.turtles',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'undo',
         class: 'turtle',
         category: 0,
@@ -1533,7 +1532,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'undobufferentries',
         class: 'turtle',
         category: 10,
@@ -1541,7 +1540,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.undobufferentries',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'update',
         class: 'turtle',
         category: 12,
@@ -1550,7 +1549,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'window_height',
         class: 'turtle',
         category: 15,
@@ -1558,7 +1557,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.window_height',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'window_width',
         class: 'turtle',
         category: 15,
@@ -1566,7 +1565,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.window_width',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'write',
         class: 'turtle',
         category: 6,
@@ -1599,7 +1598,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'write_docstringdict',
         class: 'turtle',
         category: 18,
@@ -1615,7 +1614,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'xcor',
         class: 'turtle',
         category: 1,
@@ -1623,7 +1622,7 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
         href: '#turtle.xcor',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ycor',
         class: 'turtle',
         category: 1,
@@ -1787,6 +1786,6 @@ eYo.module.turtle__module.url = 'https://docs.python.org/3.6/library/turtle.html
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py turtle` on 2020-02-12 15:52:52.887664
+  // This file was generated by `python3 ./bin/helpers/modulebot.py turtle` on 2020-03-04 13:02:48.717367
 
 

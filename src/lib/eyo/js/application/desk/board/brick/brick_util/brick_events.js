@@ -436,23 +436,20 @@ eYo.data.Base.eyo.methodsMerge({
    * @param {Object} after
    */
   setTrusted_ (after) {
-    var before = this.value_
+    var before = this.stored__
     if (before !== after) {
       try {
         this.setTrusted_ = eYo.doNothing
-        this.brick.change.wrap(() => { // catch `this`
+        this.brick.changer.wrap(() => { // catch `this`
           eYo.event.groupWrap(() => { // catch `this`
             this.beforeChange(before, after)
             try {
-              this.value_ = after
+              this.stored__ = after
               this.duringChange(before, after)
-            } catch(err) {
-              console.error(err)
-              throw err
             } finally {
               if (!this.noUndo) {
                 eYo.event.fireBrickChange(
-                  this.brick, eYo.const.event.data + this.key, null, before, after)
+                  this.brick, eYo.const.EVENT.DATA + this.key, null, before, after)
               }
               this.afterChange(before, after)
             }

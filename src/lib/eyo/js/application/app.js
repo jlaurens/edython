@@ -344,7 +344,7 @@ eYo.app.Base_p.doFocus = function() {
  */
 eYo.app.Base_p.hideChaff = eYo.doNothing
 
-eYo.o3d.Base.eyo.propertiesMerge({
+eYo.o4t.Base.eyo.propertiesMerge({
   /**
    * The root application
    * @type {eYo.app}
@@ -359,6 +359,56 @@ eYo.o3d.Base.eyo.propertiesMerge({
         x.app_p && x.app_p.reset()
       })
       resetter()
+    },
+    /**
+     * The app's audio manager
+     * @readonly
+     * @type {eYo.dom.Audio}
+     */
+    audio: {
+      get () {
+        let a = this.app ; return a && a.audio
+      },
+    },
+    /**
+     * The app's desk
+     * @readonly
+     * @type {eYo.view.Desk}
+     */
+    desk: {
+      get () {
+        let a = this.app ; return a && a.desk
+      },
+    },
+    /**
+     * The desk's flyout...
+     * @readonly
+     * @type {eYo.flyout.View}
+     */
+    flyout: {
+      get () {
+        let d = this.desk ; return d && d.flyout
+      },
+    },
+    /**
+     * The desk's board
+     * @readonly
+     * @type {eYo.board}
+     */
+    board: {
+      get () {
+        let d = this.desk ; return d && d.board
+      },
+    },
+    /**
+     * The desk's workspace...
+     * @readonly
+     * @type {eYo.view.Workspace}
+     */
+    workspace: {
+      get () {
+        let d = this.desk ; return d && d.workspace
+      },
     },
   },
 })

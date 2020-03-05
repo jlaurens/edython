@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('decimal__module')
-
-eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.html'
+eYo.module.makeNS('decimal__module', {
+  URL: 'https://docs.python.org/3.6/library/decimal.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.decimal__module.makeItem()
-
+  let newItem = eYo.module.decimal__module.makeNewItem()
 
   eYo.module.decimal__module.data_ = {
     categories: [
@@ -37,7 +36,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
       'method'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'BasicContext',
         class: 'decimal',
         category: 1,
@@ -46,7 +45,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'Clamped',
         class: 'decimal',
         category: 4,
@@ -55,7 +54,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'Context',
         class: 'decimal',
         category: 1,
@@ -99,7 +98,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'Decimal',
         class: 'decimal',
         category: 0,
@@ -118,7 +117,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'DecimalException',
         class: 'decimal',
         category: 4,
@@ -127,7 +126,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'DefaultContext',
         class: 'decimal',
         category: 1,
@@ -136,7 +135,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'DivisionByZero',
         class: 'decimal',
         category: 4,
@@ -145,7 +144,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'Etiny',
         class: 'decimal.Context',
         category: 1,
@@ -153,7 +152,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Context.Etiny',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'Etop',
         class: 'decimal.Context',
         category: 1,
@@ -161,7 +160,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Context.Etop',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ExtendedContext',
         class: 'decimal',
         category: 1,
@@ -170,7 +169,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'FloatOperation',
         class: 'decimal',
         category: 4,
@@ -179,7 +178,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'HAVE_THREADS',
         class: 'decimal',
         category: 2,
@@ -188,7 +187,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'Inexact',
         class: 'decimal',
         category: 4,
@@ -197,7 +196,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'InvalidOperation',
         class: 'decimal',
         category: 4,
@@ -206,7 +205,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'MAX_EMAX',
         class: 'decimal',
         category: 2,
@@ -215,7 +214,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'MAX_PREC',
         class: 'decimal',
         category: 2,
@@ -224,7 +223,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'MIN_EMIN',
         class: 'decimal',
         category: 2,
@@ -233,7 +232,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'MIN_ETINY',
         class: 'decimal',
         category: 2,
@@ -242,7 +241,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'Overflow',
         class: 'decimal',
         category: 4,
@@ -251,7 +250,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ROUND_05UP',
         class: 'decimal',
         category: 3,
@@ -260,7 +259,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ROUND_CEILING',
         class: 'decimal',
         category: 3,
@@ -269,7 +268,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ROUND_DOWN',
         class: 'decimal',
         category: 3,
@@ -278,7 +277,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ROUND_FLOOR',
         class: 'decimal',
         category: 3,
@@ -287,7 +286,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ROUND_HALF_DOWN',
         class: 'decimal',
         category: 3,
@@ -296,7 +295,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ROUND_HALF_EVEN',
         class: 'decimal',
         category: 3,
@@ -305,7 +304,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ROUND_HALF_UP',
         class: 'decimal',
         category: 3,
@@ -314,7 +313,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ROUND_UP',
         class: 'decimal',
         category: 3,
@@ -323,7 +322,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'Rounded',
         class: 'decimal',
         category: 4,
@@ -332,7 +331,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'Subnormal',
         class: 'decimal',
         category: 4,
@@ -341,7 +340,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'Underflow',
         class: 'decimal',
         category: 4,
@@ -350,7 +349,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'abs',
         class: 'decimal.Context',
         category: 1,
@@ -363,7 +362,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'add',
         class: 'decimal.Context',
         category: 1,
@@ -379,7 +378,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'adjusted',
         class: 'decimal.Decimal',
         category: 0,
@@ -387,7 +386,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.adjusted',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'as_integer_ratio',
         class: 'decimal.Decimal',
         category: 0,
@@ -395,7 +394,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.as_integer_ratio',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'as_tuple',
         class: 'decimal.Decimal',
         category: 0,
@@ -403,7 +402,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.as_tuple',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'canonical',
         class: 'decimal.Decimal',
         category: 0,
@@ -411,7 +410,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.canonical',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'canonical',
         class: 'decimal.Context',
         category: 1,
@@ -424,7 +423,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'clear_flags',
         class: 'decimal.Context',
         category: 1,
@@ -433,7 +432,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'clear_traps',
         class: 'decimal.Context',
         category: 1,
@@ -442,7 +441,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'compare',
         class: 'decimal.Decimal',
         category: 0,
@@ -461,7 +460,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'compare',
         class: 'decimal.Context',
         category: 1,
@@ -478,7 +477,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'compare_signal',
         class: 'decimal.Decimal',
         category: 0,
@@ -497,7 +496,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'compare_signal',
         class: 'decimal.Context',
         category: 1,
@@ -514,7 +513,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'compare_total',
         class: 'decimal.Decimal',
         category: 0,
@@ -533,7 +532,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'compare_total',
         class: 'decimal.Context',
         category: 1,
@@ -550,7 +549,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'compare_total_mag',
         class: 'decimal.Decimal',
         category: 0,
@@ -569,7 +568,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'compare_total_mag',
         class: 'decimal.Context',
         category: 1,
@@ -586,7 +585,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'conjugate',
         class: 'decimal.Decimal',
         category: 0,
@@ -594,7 +593,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.conjugate',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'copy',
         class: 'decimal.Context',
         category: 1,
@@ -602,7 +601,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Context.copy',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'copy_abs',
         class: 'decimal.Decimal',
         category: 0,
@@ -610,7 +609,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.copy_abs',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'copy_abs',
         class: 'decimal.Context',
         category: 1,
@@ -623,7 +622,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'copy_decimal',
         class: 'decimal.Context',
         category: 1,
@@ -636,7 +635,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'copy_negate',
         class: 'decimal.Decimal',
         category: 0,
@@ -644,7 +643,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.copy_negate',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'copy_negate',
         class: 'decimal.Context',
         category: 1,
@@ -657,7 +656,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'copy_sign',
         class: 'decimal.Decimal',
         category: 0,
@@ -675,7 +674,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'copy_sign',
         class: 'decimal.Context',
         category: 1,
@@ -692,7 +691,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'create_decimal',
         class: 'decimal.Context',
         category: 1,
@@ -706,7 +705,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'create_decimal_from_float',
         class: 'decimal.Context',
         category: 1,
@@ -720,7 +719,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'divide',
         class: 'decimal.Context',
         category: 1,
@@ -736,7 +735,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'divide_int',
         class: 'decimal.Context',
         category: 1,
@@ -752,7 +751,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'divmod',
         class: 'decimal.Context',
         category: 1,
@@ -768,7 +767,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'exp',
         class: 'decimal.Decimal',
         category: 0,
@@ -783,7 +782,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'exp',
         class: 'decimal.Context',
         category: 1,
@@ -796,7 +795,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fma',
         class: 'decimal.Decimal',
         category: 0,
@@ -817,7 +816,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fma',
         class: 'decimal.Context',
         category: 1,
@@ -836,7 +835,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'from_float',
         class: 'decimal.Decimal',
         category: 0,
@@ -850,7 +849,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'getcontext',
         class: 'decimal',
         category: 1,
@@ -858,7 +857,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.getcontext',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'is_canonical',
         class: 'decimal.Decimal',
         category: 0,
@@ -866,7 +865,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.is_canonical',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'is_canonical',
         class: 'decimal.Context',
         category: 1,
@@ -879,7 +878,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'is_finite',
         class: 'decimal.Decimal',
         category: 0,
@@ -887,7 +886,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.is_finite',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'is_finite',
         class: 'decimal.Context',
         category: 1,
@@ -900,7 +899,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'is_infinite',
         class: 'decimal.Decimal',
         category: 0,
@@ -908,7 +907,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.is_infinite',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'is_infinite',
         class: 'decimal.Context',
         category: 1,
@@ -921,7 +920,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'is_nan',
         class: 'decimal.Decimal',
         category: 0,
@@ -929,7 +928,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.is_nan',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'is_nan',
         class: 'decimal.Context',
         category: 1,
@@ -942,7 +941,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'is_normal',
         class: 'decimal.Decimal',
         category: 0,
@@ -957,7 +956,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'is_normal',
         class: 'decimal.Context',
         category: 1,
@@ -970,7 +969,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'is_qnan',
         class: 'decimal.Decimal',
         category: 0,
@@ -978,7 +977,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.is_qnan',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'is_qnan',
         class: 'decimal.Context',
         category: 1,
@@ -991,7 +990,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'is_signed',
         class: 'decimal.Decimal',
         category: 0,
@@ -999,7 +998,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.is_signed',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'is_signed',
         class: 'decimal.Context',
         category: 1,
@@ -1012,7 +1011,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'is_snan',
         class: 'decimal.Decimal',
         category: 0,
@@ -1020,7 +1019,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.is_snan',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'is_snan',
         class: 'decimal.Context',
         category: 1,
@@ -1033,7 +1032,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'is_subnormal',
         class: 'decimal.Decimal',
         category: 0,
@@ -1048,7 +1047,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'is_subnormal',
         class: 'decimal.Context',
         category: 1,
@@ -1061,7 +1060,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'is_zero',
         class: 'decimal.Decimal',
         category: 0,
@@ -1069,7 +1068,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.is_zero',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'is_zero',
         class: 'decimal.Context',
         category: 1,
@@ -1082,7 +1081,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ln',
         class: 'decimal.Decimal',
         category: 0,
@@ -1097,7 +1096,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ln',
         class: 'decimal.Context',
         category: 1,
@@ -1110,7 +1109,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'localcontext',
         class: 'decimal',
         category: 1,
@@ -1125,7 +1124,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'log10',
         class: 'decimal.Decimal',
         category: 0,
@@ -1140,7 +1139,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'log10',
         class: 'decimal.Context',
         category: 1,
@@ -1153,7 +1152,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'logb',
         class: 'decimal.Decimal',
         category: 0,
@@ -1168,7 +1167,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'logb',
         class: 'decimal.Context',
         category: 1,
@@ -1181,7 +1180,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'logical_and',
         class: 'decimal.Decimal',
         category: 0,
@@ -1200,7 +1199,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'logical_and',
         class: 'decimal.Context',
         category: 1,
@@ -1217,7 +1216,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'logical_invert',
         class: 'decimal.Decimal',
         category: 0,
@@ -1233,7 +1232,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'logical_invert',
         class: 'decimal.Context',
         category: 1,
@@ -1247,7 +1246,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'logical_or',
         class: 'decimal.Decimal',
         category: 0,
@@ -1266,7 +1265,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'logical_or',
         class: 'decimal.Context',
         category: 1,
@@ -1283,7 +1282,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'logical_xor',
         class: 'decimal.Decimal',
         category: 0,
@@ -1302,7 +1301,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'logical_xor',
         class: 'decimal.Context',
         category: 1,
@@ -1319,7 +1318,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'max',
         class: 'decimal.Decimal',
         category: 0,
@@ -1337,7 +1336,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'max',
         class: 'decimal.Context',
         category: 1,
@@ -1353,7 +1352,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'max_mag',
         class: 'decimal.Decimal',
         category: 0,
@@ -1372,7 +1371,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'max_mag',
         class: 'decimal.Context',
         category: 1,
@@ -1389,7 +1388,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'min',
         class: 'decimal.Decimal',
         category: 0,
@@ -1407,7 +1406,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'min',
         class: 'decimal.Context',
         category: 1,
@@ -1423,7 +1422,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'min_mag',
         class: 'decimal.Decimal',
         category: 0,
@@ -1442,7 +1441,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'min_mag',
         class: 'decimal.Context',
         category: 1,
@@ -1459,7 +1458,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'minus',
         class: 'decimal.Context',
         category: 1,
@@ -1473,7 +1472,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'multiply',
         class: 'decimal.Context',
         category: 1,
@@ -1489,7 +1488,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'next_minus',
         class: 'decimal.Decimal',
         category: 0,
@@ -1504,7 +1503,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'next_minus',
         class: 'decimal.Context',
         category: 1,
@@ -1517,7 +1516,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'next_plus',
         class: 'decimal.Decimal',
         category: 0,
@@ -1532,7 +1531,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'next_plus',
         class: 'decimal.Context',
         category: 1,
@@ -1545,7 +1544,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'next_toward',
         class: 'decimal.Decimal',
         category: 0,
@@ -1563,7 +1562,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'next_toward',
         class: 'decimal.Context',
         category: 1,
@@ -1579,7 +1578,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'normalize',
         class: 'decimal.Decimal',
         category: 0,
@@ -1595,7 +1594,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'normalize',
         class: 'decimal.Context',
         category: 1,
@@ -1609,7 +1608,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'number_class',
         class: 'decimal.Decimal',
         category: 0,
@@ -1624,7 +1623,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'number_class',
         class: 'decimal.Context',
         category: 1,
@@ -1637,7 +1636,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'plus',
         class: 'decimal.Context',
         category: 1,
@@ -1651,7 +1650,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'power',
         class: 'decimal.Context',
         category: 1,
@@ -1672,7 +1671,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'quantize',
         class: 'decimal.Decimal',
         category: 0,
@@ -1694,7 +1693,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'quantize',
         class: 'decimal.Context',
         category: 1,
@@ -1710,7 +1709,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'radix',
         class: 'decimal.Decimal',
         category: 0,
@@ -1718,7 +1717,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Decimal.radix',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'radix',
         class: 'decimal.Context',
         category: 1,
@@ -1726,7 +1725,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
         href: '#decimal.Context.radix',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'remainder',
         class: 'decimal.Context',
         category: 1,
@@ -1742,7 +1741,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'remainder_near',
         class: 'decimal.Decimal',
         category: 0,
@@ -1760,7 +1759,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'remainder_near',
         class: 'decimal.Context',
         category: 1,
@@ -1776,7 +1775,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rotate',
         class: 'decimal.Decimal',
         category: 0,
@@ -1794,7 +1793,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'rotate',
         class: 'decimal.Context',
         category: 1,
@@ -1810,7 +1809,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'same_quantum',
         class: 'decimal.Decimal',
         category: 0,
@@ -1829,7 +1828,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'same_quantum',
         class: 'decimal.Context',
         category: 1,
@@ -1845,7 +1844,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'scaleb',
         class: 'decimal.Decimal',
         category: 0,
@@ -1863,7 +1862,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'scaleb',
         class: 'decimal.Context',
         category: 1,
@@ -1879,7 +1878,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'setcontext',
         class: 'decimal',
         category: 1,
@@ -1893,7 +1892,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'shift',
         class: 'decimal.Decimal',
         category: 0,
@@ -1911,7 +1910,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'shift',
         class: 'decimal.Context',
         category: 1,
@@ -1927,7 +1926,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sqrt',
         class: 'decimal.Decimal',
         category: 0,
@@ -1942,7 +1941,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sqrt',
         class: 'decimal.Context',
         category: 1,
@@ -1956,7 +1955,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'subtract',
         class: 'decimal.Context',
         category: 1,
@@ -1972,7 +1971,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'to_eng_string',
         class: 'decimal.Decimal',
         category: 0,
@@ -1987,7 +1986,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'to_eng_string',
         class: 'decimal.Context',
         category: 1,
@@ -2000,7 +1999,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'to_integral',
         class: 'decimal.Decimal',
         category: 0,
@@ -2020,7 +2019,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'to_integral_exact',
         class: 'decimal.Decimal',
         category: 0,
@@ -2040,7 +2039,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'to_integral_exact',
         class: 'decimal.Context',
         category: 1,
@@ -2054,7 +2053,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'to_integral_value',
         class: 'decimal.Decimal',
         category: 0,
@@ -2074,7 +2073,7 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'to_sci_string',
         class: 'decimal.Context',
         category: 1,
@@ -2215,6 +2214,6 @@ eYo.module.decimal__module.url = 'https://docs.python.org/3.6/library/decimal.ht
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py decimal` on 2020-02-12 15:52:53.026910
+  // This file was generated by `python3 ./bin/helpers/modulebot.py decimal` on 2020-03-04 13:02:48.893337
 
 

@@ -102,7 +102,7 @@ eYo.stmt.makeC9r('import_stmt', true, {
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         if (after) {
-          this.brick.Variant_p = eYo.key.IMPORT
+          this.brick.variant_ = eYo.key.IMPORT
         }
       },
       synchronize: true,
@@ -132,9 +132,9 @@ eYo.stmt.makeC9r('import_stmt', true, {
         builtin()
         if (after) {
           var b3k = this.brick
-          if (b3k.Variant_p === eYo.key.IMPORT) {
+          if (b3k.variant === eYo.key.IMPORT) {
             // STAR of not ?
-            b3k.Variant_p = b3k.import_s.unwrappedTarget
+            b3k.variant_ = b3k.import_s.unwrappedTarget
             ? eYo.key.FROM_MODULE_IMPORT
             : eYo.key.FROM_MODULE_IMPORT_STAR
           }
@@ -153,7 +153,7 @@ eYo.stmt.makeC9r('import_stmt', true, {
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         if (after) {
-          this.brick.Variant_p = eYo.key.FROM_MODULE_IMPORT
+          this.brick.variant_ = eYo.key.FROM_MODULE_IMPORT
         }
       },
       synchronize: true,
@@ -178,7 +178,7 @@ eYo.stmt.makeC9r('import_stmt', true, {
       promise: eYo.t3.expr.non_void_module_as_list,
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         var parent = this.brick.parent
-        parent && (parent.Variant_p = eYo.key.IMPORT)
+        parent && (parent.variant_ = eYo.key.IMPORT)
       }
     },
     from: {
@@ -207,9 +207,9 @@ eYo.stmt.makeC9r('import_stmt', true, {
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
           var b3k = this.brick
-          if (b3k.Variant_p === eYo.key.IMPORT) {
+          if (b3k.variant === eYo.key.IMPORT) {
             // STAR of not ?
-            b3k.Variant_p = b3k.import_s.unwrappedTarget
+            b3k.variant_ = b3k.import_s.unwrappedTarget
             ? eYo.key.FROM_MODULE_IMPORT
             : eYo.key.FROM_MODULE_IMPORT_STAR
           }
@@ -217,9 +217,9 @@ eYo.stmt.makeC9r('import_stmt', true, {
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         var O = this.brick
-        if (b3k.Variant_p === eYo.key.IMPORT) {
+        if (b3k.variant === eYo.key.IMPORT) {
           // STAR of not ?
-          b3k.Variant_p = b3k.import_s.unwrappedTarget
+          b3k.variant_ = b3k.import_s.unwrappedTarget
           ? eYo.key.FROM_MODULE_IMPORT
           : eYo.key.FROM_MODULE_IMPORT_STAR
         }
@@ -236,12 +236,12 @@ eYo.stmt.makeC9r('import_stmt', true, {
       promise: eYo.t3.expr.non_void_import_identifier_as_list,
       didLoad () /** @suppress {globalThis} */ {
         if (this.requiredFromSaved) {
-          this.brick.Variant_p = eYo.key.FROM_MODULE_IMPORT
+          this.brick.variant_ = eYo.key.FROM_MODULE_IMPORT
         }
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
         var parent = this.brick.parent
-        parent && (parent.Variant_p = eYo.key.FROM_MODULE_IMPORT)
+        parent && (parent.variant_ = eYo.key.FROM_MODULE_IMPORT)
       }
     },
     import_star: {
@@ -253,13 +253,13 @@ eYo.stmt.makeC9r('import_stmt', true, {
       },
       xml: {
         save (element, opt) /** @suppress {globalThis} */ {
-          if (this.brick.Variant_p === eYo.key.FROM_MODULE_IMPORT_STAR) {
+          if (this.brick.variant === eYo.key.FROM_MODULE_IMPORT_STAR) {
             element.setAttribute('star', 'true')
           }
         },
         load (element) /** @suppress {globalThis} */ {
           if (element.getAttribute('star') === 'true') {
-            this.brick.Variant_p = eYo.key.FROM_MODULE_IMPORT_STAR
+            this.brick.variant_ = eYo.key.FROM_MODULE_IMPORT_STAR
           }
         }
       }
@@ -280,13 +280,13 @@ eYo.do.register.add(eYo.stmt, 'import', function (b3k) {
 Object.defineProperties(eYo.stmt.import_stmt.prototype, {
   star_p: {
     get () {
-      return this.Variant_p === eYo.key.FROM_MODULE_IMPORT_STAR
+      return this.variant === eYo.key.FROM_MODULE_IMPORT_STAR
     },
     set(after) {
       if (after) {
-        this.Variant_p = eYo.key.FROM_MODULE_IMPORT_STAR
-      } else if (this.Variant_p === eYo.key.FROM_MODULE_IMPORT_STAR) {
-        this.Variant_p = eYo.key.FROM_MODULE_IMPORT
+        this.variant_ = eYo.key.FROM_MODULE_IMPORT_STAR
+      } else if (this.variant === eYo.key.FROM_MODULE_IMPORT_STAR) {
+        this.variant_ = eYo.key.FROM_MODULE_IMPORT
       }
     }
   }

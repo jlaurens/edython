@@ -18,7 +18,7 @@ describe('Primary: Initialize from models', function () {
     eYo.test.brick(d, 'identifier')
     d.Target_p = 'open'
     eYo.test.brick(d, 'named_call_expr')
-    d.Variant_p = eYo.key.NONE
+    d.variant_ = eYo.key.NONE
     eYo.test.brick(d, 'identifier')
     d.dispose()
   })
@@ -207,7 +207,7 @@ describe('Copy/Paste', function() {
       mandatory: ['CALL_EXPR', [2]]
     }[k]
     var d = eYo.test.new_brick('identifier')
-    d.Variant_p = eYo.key[w[0]]
+    d.variant_ = eYo.key[w[0]]
     eYo.test.data_key(d, k)
     if (k === 'holder') {
       d.Dotted_p = 1
@@ -237,12 +237,12 @@ describe('Primary variant', function() {
   var Vs = eYo.model.forKey(eYo.t3.expr.identifier).data.variant.all
   Vs.some(to => {
     var d = eYo.test.new_brick(eYo.t3.expr.identifier)
-    d.Variant_p = to
+    d.variant_ = to
     Vs.some(from => {
       it(`${from} -> ${to}`, function() {
         var dd = eYo.test.new_brick(eYo.t3.expr.identifier)
-        dd.Variant_p = from
-        dd.Variant_p = to
+        dd.variant_ = from
+        dd.variant_ = to
         eYo.test.Same(dd, d)
         dd.dispose()
       })
@@ -306,7 +306,7 @@ describe('Basic variants and slot incogs', function() {
   ].some(Ts => {
     it(`Slots incog status by variant ${Ts[0]}`, function() {
       var d = eYo.test.new_brick('identifier')
-      d.Variant_p = eYo.key[Ts[0]]
+      d.variant_ = eYo.key[Ts[0]]
       eYo.test.incog(d, Ts)
       d.dispose()
     })
@@ -340,7 +340,7 @@ describe('Copy/Paste by data', function() {
   var f = (k, variant, values, ignore) => {
     it(`data: ${k}/${variant}`, function() {
       var d = eYo.test.new_brick('identifier')
-      d.Variant_p = eYo.key[variant] || variant
+      d.variant_ = eYo.key[variant] || variant
       values.forEach(v => {
         eYo.test.data_save(d, k, v)
       })
@@ -422,7 +422,7 @@ describe('Primary slots', function() {
     dmain.Dotted_p = 1
     eYo.test.Code(dmain, 'a.d')
     eYo.test.brick(dmain, 'dotted_name')
-    dhldr.Variant_p = eYo.key.CALL_EXPR
+    dhldr.variant_ = eYo.key.CALL_EXPR
     eYo.test.Code(dmain, 'a().d')
     eYo.test.brick(dmain, 'attributeref')
     dmain.dispose()
@@ -454,7 +454,7 @@ describe('Primary slots', function() {
     da.Target_p = 'a'
     eYo.test.Code(da, 'a')
     eYo.test.data_key(da, 'variant', eYo.key.ANNOTATED)
-    da.Variant_p = eYo.key.ANNOTATED
+    da.variant_ = eYo.key.ANNOTATED
     eYo.test.Code(da, 'a: <MISSING EXPR>')
     da.Annotated_p = 'fal ba la'
     eYo.test.Code(da, 'a: fal ba la')
@@ -526,7 +526,7 @@ describe('Primary slots', function() {
           var d = eYo.test.new_brick(tt)
           if (tt === eYo.t3.expr.assignment_chain) {
             var dc = eYo.test.new_brick(tt)
-            dc.Variant_p = eYo.key.SLICING
+            dc.variant_ = eYo.key.SLICING
             chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
           if (d.type === tt) {
@@ -544,7 +544,7 @@ describe('Primary slots', function() {
           var d = eYo.test.new_brick(tt)
           if (tt === eYo.t3.expr.assignment_chain) {
             var dc = eYo.test.new_brick(tt)
-            dc.Variant_p = eYo.key.SLICING
+            dc.variant_ = eYo.key.SLICING
             chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
           if (d.type === tt) {
@@ -586,7 +586,7 @@ describe('Primary slots', function() {
           var d = eYo.test.new_brick(tt)
           if (tt === eYo.t3.expr.assignment_chain) {
             var dc = eYo.test.new_brick(tt)
-            dc.Variant_p = eYo.key.SLICING
+            dc.variant_ = eYo.key.SLICING
             chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
           if (d.type === tt) {
@@ -604,7 +604,7 @@ describe('Primary slots', function() {
           var d = eYo.test.new_brick(tt)
           if (tt === eYo.t3.expr.assignment_chain) {
             var dc = eYo.test.new_brick(tt)
-            dc.Variant_p = eYo.key.SLICING
+            dc.variant_ = eYo.key.SLICING
             chai.assert(d.target_b.lastConnect(dc), `MISSED TARGET ${tt}`)
           }
           if (d.type === tt) {
@@ -627,7 +627,7 @@ describe('Primary slots', function() {
     da.Target_p = 'a'
     eYo.test.Code(da, 'a')
     eYo.test.data_key(da, 'variant', eYo.key.TARGET_VALUED)
-    da.Variant_p = eYo.key.TARGET_VALUED
+    da.variant_ = eYo.key.TARGET_VALUED
     eYo.test.brick(da, 'identifier_valued')
     eYo.test.Code(da, 'a = <MISSING EXPRESSION>')
     da.Value_p = 'value'
@@ -645,19 +645,19 @@ describe('Primary slots', function() {
     // console.error(da.value_b.slotAtHead.next.next.magnet.check_)
     chai.assert(da.value_b.lastConnect(dc), 'MISSED')
     eYo.test.Code(da, 'a = d, c')
-    da.Variant_p = eYo.key.ANNOTATED
+    da.variant_ = eYo.key.ANNOTATED
     eYo.test.Code(da, 'a: <MISSING EXPR>')
-    da.Variant_p = eYo.key.ANNOTATED_VALUED
+    da.variant_ = eYo.key.ANNOTATED_VALUED
     eYo.test.Code(da, 'a: <MISSING EXPR> = d, c')
-    da.Variant_p = eYo.key.TARGET_VALUED
+    da.variant_ = eYo.key.TARGET_VALUED
     eYo.test.Code(da, 'a = d, c')
     d.unplug()
     eYo.test.Code(da, 'a = c')
-    dc.Variant_p = eYo.key.TARGET_VALUED
+    dc.variant_ = eYo.key.TARGET_VALUED
     eYo.test.brick(dc, 'assignment_chain') // c is unique and connect
     eYo.test.Code(da, 'a = c = <MISSING EXPRESSION>')
     eYo.test.Input_length(da.value_b, 1)
-    dc.Variant_p = eYo.key.SLICING // c is no longer unique
+    dc.variant_ = eYo.key.SLICING // c is no longer unique
     eYo.test.brick(dc, 'named_subscription')
     eYo.test.Code(da, 'a = c[<MISSING INPUT>]')
     eYo.test.Input_length(da.value_b, 3)
@@ -928,7 +928,7 @@ describe('Primary(Assignment)', function() {
   })
   it('d=rhs (dom)', function() {
     var d = eYo.test.new_brick('identifier_valued')
-    d.Variant_p = eYo.key.TARGET_VALUED
+    d.variant_ = eYo.key.TARGET_VALUED
     var a = eYo.test.new_brick('rhs')
     eYo.test.list_connect(d, 'value', a)
     var dom = eYo.xml.brickToDom(d)
@@ -1005,7 +1005,7 @@ describe('Primary(ANNOTATED)', function() {
     eYo.test.Code(dd, 'dd')
     eYo.test.list_connect(d, 'target', dd)
     eYo.test.Input_length(d.target_b, 3)
-    eYo.test.variant(d, d.Variant_p = eYo.key.ANNOTATED)
+    eYo.test.variant(d, d.variant_ = eYo.key.ANNOTATED)
     eYo.test.Code(d, 'dd: str')
 
     var cc = eYo.test.new_brick('identifier')
@@ -1019,33 +1019,33 @@ describe('Primary(ANNOTATED)', function() {
     eYo.test.variant(d, 'TARGET_VALUED')
     cc.dispose()
     eYo.test.variant(d, 'TARGET_VALUED')
-    d.Variant_p = eYo.key.ANNOTATED
+    d.variant_ = eYo.key.ANNOTATED
     eYo.test.variant(d, 'ANNOTATED')
 
     d.Annotated_p = 'str'
     eYo.test.brick(d, 'identifier_annotated')
     eYo.test.Code(d, 'dd: str')
-    dd.Variant_p = eYo.key.CALL_EXPR
+    dd.variant_ = eYo.key.CALL_EXPR
     eYo.test.Code(d, 'dd(): str')
     eYo.test.brick(d, 'key_datum')
-    dd.Variant_p = eYo.key.SLICING
+    dd.variant_ = eYo.key.SLICING
     eYo.test.incog(dd, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'])
     eYo.test.list_connect(dd, 'slicing', eYo.test.new_brick(421))
     eYo.test.Code(d, 'dd[421]: str')
     eYo.test.brick(d, 'augtarget_annotated')
-    dd.Variant_p = eYo.key.NONE
+    dd.variant_ = eYo.key.NONE
     eYo.test.incog(dd, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
     eYo.test.Code(d, 'dd: str')
     eYo.test.brick(d, 'identifier_annotated')
-    dd.Variant_p = eYo.key.SLICING
+    dd.variant_ = eYo.key.SLICING
     eYo.test.incog(dd, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'slicing', 'Xalias'])
     eYo.test.Code(d, 'dd[421]: str')
     eYo.test.brick(d, 'augtarget_annotated')
-    dd.Variant_p = eYo.key.CALL_EXPR
+    dd.variant_ = eYo.key.CALL_EXPR
     eYo.test.incog(dd, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'n_ary', 'Xslicing', 'Xalias'])
     eYo.test.Code(d, 'dd(): str')
     eYo.test.brick(d, 'key_datum')
-    dd.Variant_p = eYo.key.NONE
+    dd.variant_ = eYo.key.NONE
     eYo.test.incog(dd, ['target', 'Xholder', 'Xdotted', 'Xannotated', 'Xvalue', 'Xn_ary', 'Xslicing', 'Xalias'])
     eYo.test.Code(d, 'dd: str')
     eYo.test.brick(d, 'identifier_annotated')

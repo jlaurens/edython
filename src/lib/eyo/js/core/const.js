@@ -22,7 +22,7 @@ eYo.makeNS('id')
 eYo.makeNS('const', {
   ABOVE: 'ABOVE', // not for brick definition
   BELOW: 'BELOW',
-  field: {
+  FIELD: {
     // IN PROGRESS
     VAR: 'VAR',
     STARS: 'STARS',
@@ -211,11 +211,11 @@ eYo.makeNS('key', {
   PAR: '()', // also used in xml eyo attribute
   SQB: '[]', // also used in xml eyo attribute
   BRACE: '{}', // also used in xml eyo attribute
-  event: {
-    data: 'eyo:data:',
-    property: 'eyo:property',
-    locked: 'eyo:locked',
-    asynced: 'eyo:asynced'
+  EVENT: {
+    DATA: 'eyo:data:',
+//    PROPERTY: 'eyo:property',
+//    LOCKED: 'eyo:locked',
+//    ASYNCED: 'eyo:asynced'
   },
 })
 

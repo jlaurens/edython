@@ -133,7 +133,7 @@ eYo.event.makeC9r('Motion', {
       return new eYo.dnd.Mngr(this)
     },
     change () {
-      return new eYo.change.Base(this)
+      return eYo.changer.new(this)
     },
     touchIDs () {
       return []

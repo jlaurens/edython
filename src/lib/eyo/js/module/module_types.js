@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('types__module')
-
-eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
+eYo.module.makeNS('types__module', {
+  URL: 'https://docs.python.org/3.6/library/types.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.types__module.makeItem()
-
+  let newItem = eYo.module.types__module.makeNewItem()
 
   eYo.module.types__module.data_ = {
     categories: [
@@ -35,7 +34,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
       'method'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'AsyncGeneratorType',
         class: 'types',
         category: 1,
@@ -44,7 +43,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'BuiltinFunctionType',
         synonyms: [
           'BuiltinMethodType'
@@ -56,7 +55,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'CodeType',
         class: 'types',
         category: 1,
@@ -64,7 +63,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         href: '#types.CodeType',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'CoroutineType',
         class: 'types',
         category: 1,
@@ -73,7 +72,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'DynamicClassAttribute',
         class: 'types',
         category: 2,
@@ -101,7 +100,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'FrameType',
         class: 'types',
         category: 1,
@@ -110,7 +109,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'FunctionType',
         synonyms: [
           'LambdaType'
@@ -122,7 +121,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'GeneratorType',
         class: 'types',
         category: 1,
@@ -131,7 +130,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'GetSetDescriptorType',
         class: 'types',
         category: 1,
@@ -140,7 +139,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'MappingProxyType',
         class: 'types',
         category: 1,
@@ -154,7 +153,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'MemberDescriptorType',
         class: 'types',
         category: 1,
@@ -163,7 +162,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'MethodType',
         class: 'types',
         category: 1,
@@ -172,7 +171,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'ModuleType',
         class: 'types',
         category: 1,
@@ -191,7 +190,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'SimpleNamespace',
         class: 'types',
         category: 2,
@@ -200,7 +199,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'TracebackType',
         class: 'types',
         category: 1,
@@ -209,7 +208,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'copy',
         class: 'types.MappingProxyType',
         category: 1,
@@ -217,7 +216,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         href: '#types.MappingProxyType.copy',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'coroutine',
         class: 'types',
         category: 3,
@@ -230,7 +229,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'get',
         class: 'types.MappingProxyType',
         category: 1,
@@ -248,7 +247,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'items',
         class: 'types.MappingProxyType',
         category: 1,
@@ -256,7 +255,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         href: '#types.MappingProxyType.items',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'keys',
         class: 'types.MappingProxyType',
         category: 1,
@@ -264,7 +263,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
         href: '#types.MappingProxyType.keys',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'new_class',
         class: 'types',
         category: 0,
@@ -291,7 +290,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'prepare_class',
         class: 'types',
         category: 0,
@@ -314,7 +313,7 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'values',
         class: 'types.MappingProxyType',
         category: 1,
@@ -368,6 +367,6 @@ eYo.module.types__module.url = 'https://docs.python.org/3.6/library/types.html'
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py types` on 2020-02-12 15:52:53.374179
+  // This file was generated by `python3 ./bin/helpers/modulebot.py types` on 2020-03-04 13:02:49.287506
 
 

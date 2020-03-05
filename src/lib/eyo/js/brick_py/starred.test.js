@@ -37,7 +37,7 @@ describe('Basic Starred', function() {
     var d = eYo.test.new_brick(eYo.t3.expr.star)
     d.Modified_p = 'abc'
     eYo.test.Code(d, '*abc')
-    d.Variant_p = eYo.key.STAR
+    d.variant_ = eYo.key.STAR
     eYo.test.Code(d, '*')
     d.dispose()
 
@@ -45,7 +45,7 @@ describe('Basic Starred', function() {
     d.Modified_p = 'abc'
     d.Modifier_p = '**'
     eYo.test.Code(d, '**abc')
-    d.Variant_p = eYo.key.STAR
+    d.variant_ = eYo.key.STAR
     eYo.test.Code(d, '*')
     d.dispose()
 
@@ -55,7 +55,7 @@ describe('Basic Starred', function() {
     eYo.test.Code(dd, 'cba')
     d.modified_s.connect(dd)
     eYo.test.Code(d, '*cba')
-    d.Variant_p = eYo.key.STAR
+    d.variant_ = eYo.key.STAR
     eYo.test.Code(d, '*')
     d.dispose()
 
@@ -66,7 +66,7 @@ describe('Basic Starred', function() {
     eYo.test.Code(dd, 'cba')
     d.modified_s.connect(dd)
     eYo.test.Code(d, '**cba')
-    d.Variant_p = eYo.key.STAR
+    d.variant_ = eYo.key.STAR
     eYo.test.Code(d, '*')
     d.dispose()
   })
@@ -79,9 +79,9 @@ describe('Basic Starred', function() {
       // to and from star only
       var d = eYo.test.new_brick(eYo.t3.expr[t])
       d.Modified_p = 'abc'
-      d.Variant_p = eYo.key.STAR
+      d.variant_ = eYo.key.STAR
       eYo.test.Code(d, '*')
-      d.Variant_p = eYo.key.NONE
+      d.variant_ = eYo.key.NONE
       eYo.test.Code(d, '*abc')
       d.dispose()
 
@@ -99,9 +99,9 @@ describe('Basic Starred', function() {
       dd.Target_p = 'cba'
       eYo.test.Code(dd, 'cba')
       d.modified_s.connect(dd)
-      d.Variant_p = eYo.key.STAR
+      d.variant_ = eYo.key.STAR
       eYo.test.Code(d, '*')
-      d.Variant_p = eYo.key.NONE
+      d.variant_ = eYo.key.NONE
       eYo.test.Code(d, '*cba')
       dd.dispose()
       eYo.test.Code(d, '*abc')
@@ -131,9 +131,9 @@ describe('Basic Starred', function() {
       // to and from star only
       var d = eYo.test.new_brick(eYo.t3.expr[t])
       d.Modified_p = 'abc'
-      d.Variant_p = eYo.key.STAR
+      d.variant_ = eYo.key.STAR
       eYo.test.Code(d, '*')
-      d.Variant_p = eYo.key.NONE
+      d.variant_ = eYo.key.NONE
       eYo.test.Code(d, '*abc')
       d.dispose()
 
@@ -151,9 +151,9 @@ describe('Basic Starred', function() {
       dd.Target_p = 'cba'
       eYo.test.Code(dd, 'cba')
       d.modified_s.connect(dd)
-      d.Variant_p = eYo.key.STAR
+      d.variant_ = eYo.key.STAR
       eYo.test.Code(d, '*')
-      d.Variant_p = eYo.key.NONE
+      d.variant_ = eYo.key.NONE
       eYo.test.Code(d, '*cba')
       dd.dispose()
       eYo.test.Code(d, '*abc')

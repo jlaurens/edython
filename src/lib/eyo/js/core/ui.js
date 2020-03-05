@@ -11,12 +11,19 @@
  */
 'use strict'
 
+eYo.require('font')
+
 eYo.forwardDeclare('geom')
-eYo.forwardDeclare('font')
 
 //g@@g.forwardDeclare('g@@g.cssom')
 goog.require('goog.color')
+
+/**
+ * @name {eYo.color}
+ * @namespace
+ */
 eYo.makeNS('color')
+
 eYo.color.rgbArrayToHex = goog.color.rgbArrayToHex
 eYo.color.hslToRgb = goog.color.hslToRgb
 

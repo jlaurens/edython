@@ -21,21 +21,7 @@ eYo.forwardDeclare('xre')
  * @name{eYo.p6y}
  * @namespace
  */
-eYo.c9r.makeNS(eYo, 'p6y', {
-  BEFORE: 'willChange',
-  DURING: 'atChange',
-  AFTER: 'didChange',
-})
-
-Object.defineProperties(eYo.p6y._p, {
-  HOOKS: {
-    value: [
-      eYo.p6y.BEFORE,
-      eYo.p6y.DURING,
-      eYo.p6y.AFTER
-    ]
-  },
-})
+eYo.attr.makeNS(eYo, 'p6y')
 
 eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'properties',
@@ -60,26 +46,22 @@ eYo.model.allowModelShortcuts({
 })
 
 // ANCHOR eYo.p6y.new
+
 /**
- * Create a new property based on the model
- * 
+ * For subclassers.
+ * @param {Object} owner
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
  */
-eYo.p6y._p.new = function (owner, key, model) {
-  if (!model.C9r) {
-    model.C9r = this.makeC9r('')
-    model._starters = []
-    let _p = model.C9r.prototype
-    this.handle_value(owner, _p, key, model)
-    this.handle_dispose(owner, _p, key, model)
-    this.handle_validate(owner, _p, key, model)
-    this.handle_get_set(owner, _p, key, model)
-    this.handle_change(owner, _p, key, model)
-    this.handle_stored(owner, _p, key, model)
-    this.handle_reset(owner, _p, key, model) // must be last
-  }
-  let ans = new model.C9r(owner, key, model)
-  model._starters.forEach(f => f(ans))
-  return ans
+eYo.p6y._p.handle_model = function (_p, key, model) {
+  this.handle_value(_p, key, model)
+  this.handle_dispose(_p, key, model)
+  this.handle_validate(_p, key, model)
+  this.handle_get_set(_p, key, model)
+  this.handle_change(_p, key, model)
+  this.handle_stored(_p, key, model)
+  this.handle_reset(_p, key, model) // must be last
 }
 
 /**
@@ -92,12 +74,12 @@ eYo.p6y._p.new = function (owner, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_value = function (owner, prototype, key, model) {
+eYo.p6y._p.handle_value = function (prototype, key, model) {
   let value_m = model.value
   if (!eYo.isNA(value_m)) {
-    eYo.isNA(model.lazy) || eYo.throw(`Bad model (${key}): unexpected lazy`)
+    eYo.isNA(model.lazy) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected lazy`)
     prototype.start = eYo.isF(value_m) ? function() {
-      return value_m.call(this.owner)
+      return value_m.call(this.owner_)
     } : function () {
       return value_m
     }
@@ -116,7 +98,7 @@ eYo.p6y._p.handle_value = function (owner, prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_reset = function (owner, prototype, key, model) {
+eYo.p6y._p.handle_reset = function (prototype, key, model) {
   let reset_m = model.reset
   if (eYo.isNA(reset_m)) {
     return
@@ -125,7 +107,7 @@ eYo.p6y._p.handle_reset = function (owner, prototype, key, model) {
       prototype.reset = function () {
         try {
           this.reset = eYo.doNothing
-          reset_m.call(this.owner, () => {
+          reset_m.call(this.owner_, () => {
             prototype.eyo.C9r_s.reset.call(this)
           })
         } finally {
@@ -135,12 +117,12 @@ eYo.p6y._p.handle_reset = function (owner, prototype, key, model) {
     } else {
       if (!model.value) {
         model.value = model.lazy || model.reset
-        this.handle_value(owner, prototype, key, model)
+        this.handle_value(prototype, key, model)
       }
       prototype.reset = function () {
         try {
           this.reset = eYo.doNothing
-          this.resetValue(reset_m.call(this.owner))
+          this.resetValue(reset_m.call(this.owner_))
         } finally {
           delete this.reset
         }
@@ -149,7 +131,7 @@ eYo.p6y._p.handle_reset = function (owner, prototype, key, model) {
   } else {
     if (!model.value && !model.lazy) {
       model.value = model.reset
-      this.handle_value(owner, prototype, key, model)
+      this.handle_value(prototype, key, model)
     }
     prototype.reset = function () {
       try {
@@ -169,7 +151,7 @@ eYo.p6y._p.handle_reset = function (owner, prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_dispose = function (owner, prototype, key, model) {
+eYo.p6y._p.handle_dispose = function (prototype, key, model) {
   if (model.dispose === false) {
     prototype.disposeStored_ = eYo.doNothing
   }
@@ -184,54 +166,35 @@ eYo.p6y._p.handle_dispose = function (owner, prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_validate = function (owner, prototype, key, model) {
+eYo.p6y._p.handle_validate = function (prototype, key, model) {
   let validate_m = model.validate
   if (!prototype.eyo.C9r_s) {
     console.error('BREAK HERE!!!')
   }
   let validate_s = prototype.eyo.C9r_s.validate
   if (eYo.isF(validate_m)) {
-    prototype.validate = validate_m.length > 1
-    ? validate_s
+    prototype.validate = eYo.decorate.reentrant('validate', validate_m.length > 1
+    ? eYo.isDoIt(validate_s)
       ? function (before, after) {
-        try {
-          this.validate = eYo.doNothing
-          if (eYo.isVALID((after = validate_m.call(this.owner, before, after)))) {
-            after = validate_s.call(this, before, after)
-          } 
-          return after
-        } finally {
-          delete this.validate
-        }
+        if (eYo.isVALID((after = validate_m.call(this.owner_, before, after)))) {
+          after = validate_s.call(this, before, after)
+        } 
+        return after
       } : function (before, after) {
-        try {
-          this.validate = eYo.doNothing
-          return validate_m.call(this.owner, before, after)
-        } finally {
-          delete this.validate
-        }
+        return validate_m.call(this.owner_, before, after)
       }
-    : validate_s
+    : eYo.isDoIt(validate_s)
       ? function (before, after) {
-        try {
-          this.validate = eYo.doNothing
-          if (eYo.isVALID((after = validate_m.call(this.owner, after)))) {
-            after = validate_s.call(this, before, after)
-          }
-          return after
-        } finally {
-          delete this.validate
+        if (eYo.isVALID((after = validate_m.call(this.owner_, after)))) {
+          after = validate_s.call(this, before, after)
         }
+        return after
       } : function (before, after) {
-        try {
-          this.validate = eYo.doNothing
-          return validate_m.call(this.owner, after)
-        } finally {
-          delete this.validate
-        }
+        return validate_m.call(this.owner_, after)
       }
+    )
   } else {
-    validate_m && eYo.throw(`Unexpected model value validate -> ${validate_m}`)
+    validate_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) value validate -> ${validate_m}`)
   }
 }
 
@@ -243,25 +206,25 @@ eYo.p6y._p.handle_validate = function (owner, prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_get_set = function (owner, prototype, key, model) {
+eYo.p6y._p.handle_get_set = function (prototype, key, model) {
   var can_lazy = true
   var computed = false // true iff get and set are given with no builtin dependency
   let get_m = model.get // from model => suffix = '_m' and `@this` == property owner
   if (model.copy) {
-    model.get && eYo.throw(`Bad model (${owner.eyo.name}/${key}): Unexpected get`)
+    model.get && eYo.throw(`Bad model (${prototype.eyo.name}/${key}): Unexpected get`)
     prototype.getValue = eYo.p6y.Base_p.__getCopyValue
   } else {
     if (get_m === eYo.doNothing || get_m === false) {
       can_lazy = false
       prototype.getValue = eYo.noGetter(function () {
-        return `Write only (${this.owner.eyo.name}/${key})`
+        return `Write only (${this.owner_.eyo.name}/${key})`
       })
     } else if (eYo.isF(get_m)) {
       if (get_m.length) {
         prototype.getValue = function () {
           try {
             this.getValue = eYo.doNothing
-            return get_m.call(this.owner, () => {
+            return get_m.call(this.owner_, () => {
               return prototype.eyo.C9r_s.getValue.call(this)
             })
           } finally {
@@ -272,7 +235,7 @@ eYo.p6y._p.handle_get_set = function (owner, prototype, key, model) {
         prototype.getStored = prototype.getValue = function () {
           try {
             this.getValue = eYo.doNothing
-            return get_m.call(this.owner)
+            return get_m.call(this.owner_)
           } finally {
             delete this.getValue
           }
@@ -282,29 +245,29 @@ eYo.p6y._p.handle_get_set = function (owner, prototype, key, model) {
         can_lazy = false
       }
     } else {
-      eYo.isNA(get_m) || eYo.throw(`Bad model (${owner.eyo.name}/${key}): unexpected get -> ${get_m}`)
+      eYo.isNA(get_m) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected get -> ${get_m}`)
     }
   }
   let set_m = model.set // from model => suffix = '_m' and `@this` == property owner
   if (set_m === eYo.doNothing || set_m === false) {
     prototype.setValue = eYo.noSetter(function () {
-      return `Read only ${this.owner.eyo.name}/${key}`
+      return `Read only ${this.owner_.eyo.name}/${key}`
     })
   } else if (eYo.isF(set_m)) {
     if (set_m.length > 1) {
-      computed && eYo.throw(`Bad model (${owner.eyo.name}/${key}): Unexpected 'builtin|property' in set`)
+      computed && eYo.throw(`Bad model (${prototype.eyo.name}/${key}): Unexpected 'builtin|property' in set`)
       prototype.setValue = prototype.resetValue = XRegExp.exec(set_m.toString(), eYo.xre.function_stored_after)
       ? function (after) {
         try {
           this.setValue = eYo.doNothing
-          return set_m.call(this.owner, this.stored__, after)
+          return set_m.call(this.owner_, this.stored__, after)
         } finally {
           delete this.setValue
         }
       } : function (after) {
         try {
           this.setValue = eYo.doNothing
-          return set_m.call(this.owner, after => {
+          return set_m.call(this.owner_, after => {
             prototype.eyo.C9r_s.setValue.call(this, after)
           }, after)
         } finally {
@@ -312,22 +275,22 @@ eYo.p6y._p.handle_get_set = function (owner, prototype, key, model) {
         }
       }
     } else {
-      computed || eYo.throw(`Bad model (${owner.eyo.name}/${key}): Missing 'builtin|property' in set (2)`)
+      computed || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): Missing 'builtin|property' in set (2)`)
       prototype.setStored = prototype.setValue = prototype.resetValue = function (after) {
         try {
           this.setValue = eYo.doNothing
-          return set_m.call(this.owner, after)
+          return set_m.call(this.owner_, after)
         } finally {
           delete this.setValue
         }
       }
     }
   } else {
-    set_m && eYo.throw(`Bad model (${owner.eyo.name}/${key}): unexpected set -> ${set_m}`)
+    set_m && eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected set -> ${set_m}`)
     if (computed) {
-      eYo.isNA(model.reset) || eYo.throw(`Bad model (${owner.eyo.name}/${key}): unexpected reset`)
+      eYo.isNA(model.reset) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected reset`)
       prototype.setStored = prototype.setValue = eYo.noSetter(function () {
-        return `Read only ${this.owner.eyo.name}/${key}`
+        return `Read only ${this.owner_.eyo.name}/${key}`
       })
       prototype.reset = eYo.doNothing
     }
@@ -342,13 +305,13 @@ eYo.p6y._p.handle_get_set = function (owner, prototype, key, model) {
         object.getValue = Object.getPrototypeOf(object).__getLazyValue
       })
       prototype.start = eYo.isF(lazy_m) ? function () {
-        return lazy_m.call(this.owner)
+        return lazy_m.call(this.owner_)
       } : function () {
         return lazy_m
       }
     }
   } else {
-    eYo.isNA(model.lazy) && eYo.isNA(model.value) || eYo.throw(`Bad model (${owner.eyo.name}/${key}): unexpected value or lazy`)
+    eYo.isNA(model.lazy) && eYo.isNA(model.value) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected value or lazy`)
   }
 }
 
@@ -361,7 +324,7 @@ eYo.p6y._p.handle_get_set = function (owner, prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_change = function (owner, prototype, key, model) {
+eYo.p6y._p.handle_change = function (prototype, key, model) {
   eYo.p6y.HOOKS.forEach(when => {
     let when_m = model[when]
     let when_s = prototype.eyo.C9r_s[when]
@@ -371,7 +334,7 @@ eYo.p6y._p.handle_change = function (owner, prototype, key, model) {
         ? function (before, after) {
           try {
             this[when] = eYo.doNothing
-            when_m.call(this.owner, before, after)
+            when_m.call(this.owner_, before, after)
             when_s.call(this, before, after)
           } finally {
             delete this[when]
@@ -379,7 +342,7 @@ eYo.p6y._p.handle_change = function (owner, prototype, key, model) {
         } : function (before, after) {
           try {
             this[when] = eYo.doNothing
-            when_m.call(this.owner, before, after)
+            when_m.call(this.owner_, before, after)
           } finally {
             delete this[when]
           }
@@ -388,7 +351,7 @@ eYo.p6y._p.handle_change = function (owner, prototype, key, model) {
         ? function (before, after) {
           try {
             this[when] = eYo.doNothing
-            when_m.call(this.owner, after)  
+            when_m.call(this.owner_, after)  
             when_s.call(this, before, after)
           } finally {
             delete this[when]
@@ -396,7 +359,7 @@ eYo.p6y._p.handle_change = function (owner, prototype, key, model) {
         } : function (before, after) {
           try {
             this[when] = eYo.doNothing
-            when_m.call(this.owner, after)
+            when_m.call(this.owner_, after)
           } finally {
             delete this[when]
           }
@@ -415,153 +378,63 @@ eYo.p6y._p.handle_change = function (owner, prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_stored = function (owner, prototype, key, model) {
+eYo.p6y._p.handle_stored = function (prototype, key, model) {
   let get__m = model.get_
   if (get__m === eYo.doNothing || get__m === false) {
     prototype.getStored = eYo.noGetter(function () {
-      return `Read only ${this.owner.eyo.name}/${key}`
+      return `Read only ${this.owner_.eyo.name}/${key}`
     })
   } else if (eYo.isF(get__m)) {
     prototype.getStored = get__m.length > 0 ? function () {
       try {
         this.getStored = eYo.doNothing
-        return get__m.call(this.owner, () => { return this.__getStored()})
+        return get__m.call(this.owner_, () => { return this.__getStored()})
       } finally {
         delete this.getStored
       }
     } : function () {
       try {
         this.getStored = eYo.doNothing
-        return get__m.call(this.owner)
+        return get__m.call(this.owner_)
       } finally {
         delete this.getStored
       }
     }
   } else {
-    eYo.isNA(get__m) || eYo.throw(`Bad model (${owner.eyo.key}/${key}): unexpected get_ object`)
+    eYo.isNA(get__m) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected get_ object`)
   }
   let set__m = model.set_
   if (set__m === eYo.doNothing || set__m === false) {
     prototype.setStored = eYo.noSetter(function () {
-      return `Read only ${this.owner.eyo.name}/${key}`
+      return `Read only ${this.owner_.eyo.name}/${key}`
     })
   } else if (eYo.isF(set__m)) {
     prototype.setStored = set__m.length > 1 ? function (after) {
       try {
         this.setStored = eYo.doNothing
-        return set__m.call(this.owner, after => {this.__setStored(after)}, after)
+        return set__m.call(this.owner_, after => {this.__setStored(after)}, after)
       } finally {
         delete this.setStored
       }
     } : function (after) {
       try {
         this.setStored = eYo.doNothing
-        return set__m.call(this.owner, after)
+        return set__m.call(this.owner_, after)
       } finally {
         delete this.setStored
       }
     }
     prototype.resetValue || (prototype.resetValue = prototype.setStored)
   } else {
-    eYo.isNA(set__m) || eYo.throw(`Bad model (${owner.eyo.name}/${key}): unexpected set_ object.`)
+    eYo.isNA(set__m) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected set_ object.`)
     prototype.resetValue || (prototype.resetValue = prototype.setStored)
   }
 }
 
-// ANCHOR eYo.p6y.List
 
+// ANCHOR eYo.p6y.Base_p
 /**
- * Maintains a list of properties.
- * `eYo.o4t.Base` instances maintains properties by keys.
- * Here properties are maintained by index.
- * @name{eYo.p6y.List}
- * @constructor
- */
-eYo.p6y.makeC9r('List', {
-  init (owner, ...items) {
-    this.list__ = []
-    this.values = new Proxy(this.list__, {
-      get(target, prop) {
-        if (!isNaN(prop)) {
-          prop = parseInt(prop, 10)
-          if (prop < 0) {
-            prop += target.length
-          }
-          let p = target[prop]
-          return p && p.value
-        }
-        throw new Error('`values` attribute only accepts indexed accessors')
-      }
-    })
-    this.properties = new Proxy(this.list__, {
-      get(target, prop) {
-        if (!isNaN(prop)) {
-          prop = parseInt(prop, 10)
-          if (prop < 0) {
-            prop += target.length
-          }
-          return target[prop]
-        }
-        throw new Error('`properties` attribute only accepts indexed accessors')
-      }
-    })
-    this.splice(0, 0, ...items)
-  },
-  dispose(...args) {
-    for (const p of this.list__) {
-      p.dispose(...args)
-    }
-    this.list__.length = 0
-  }
-})
-
-;(() => {
-  let _p = eYo.p6y.List_p
-
-  Object.defineProperties(_p, {
-    length: {
-      get () {
-        return this.list__.length
-      },
-      set (after) {
-        this.list__.length = after
-      }
-    },
-  })
- 
-  /**
-   * Insert something at index i.
-   * @param {Integer} start - The index at which to start changing the list.
-   * @param {...} item - items to be inserted.
-   */
-  _p.splice = function (start, deleteCount,  ...items) {
-    if (start < 0) {
-      start = this.list__.length - start
-    }
-    let ans = this.list__.splice(start, deleteCount).map(p => p.value)
-    this.list__.splice(start, 0, ...(items.map(item => eYo.p6y.new(this, '', {
-      value: item
-    }))))
-    return ans
-  }
-
-}) ()
-
-/**
- * The @@iterator method
- */
-eYo.p6y.List.eyo_p.initInstance = function (object) {
-  eYo.p6y.List.eyo.super.initInstance(object)
-  object[Symbol.iterator] = function* () {
-    for (var p of this.list__) {
-      yield p.value
-    }
-  }
-}
-
-// ANCHOR eYo.p6y.Base
-/**
- * @name{eYo.p6y.Base}
+ * @name{eYo.p6y.Base_p}
  * Base property constructor.
  * The bounds between the property and the arguments are immutable.
  * For edython.
@@ -574,15 +447,6 @@ eYo.p6y.List.eyo_p.initInstance = function (object) {
  */
 eYo.p6y.makeBase({
   init (owner, key, model) {
-    owner || eYo.throw(`${this.eyo.name}: Missing owner in makeBase`)
-    if (!eYo.isStr(key)) {
-      console.error('BREAK HERE!!!')
-    }
-    eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeBase`)
-    eYo.isNA(model) && eYo.throw(`${this.eyo.name}: Missing model in makeBase`)
-    this.owner_ = owner
-    this.key_ = key
-    this.model_ = model
     this.stored__ = eYo.NA // this may be useless in some situations
     Object.defineProperties(this, {
       value: eYo.descriptorR({
@@ -592,36 +456,93 @@ eYo.p6y.makeBase({
         },
         eYo.p6y.Base_p.valueGetter
       ),
-      owner: eYo.descriptorR({
-          lazy () {
-            return `Unexpected ….owner_ = …, ${owner.eyo.key}'s instance property`
-          }
-        },
-        function () { return this.owner_ }
-      ),
-      key: eYo.descriptorR({
-          lazy () {
-            return `Unexpected ….key_ = …, ${owner.eyo.key}'s instance property`
-          },
-        },
-        function () { return this.key_ }
-      ),
-      model: eYo.descriptorR({
-          lazy () {
-            return `Unexpected ….model_ = …, ${owner.eyo.key}'s property`
-          },
-        },
-        function () { return this.model_ }
-      ),
     })
   },
   dispose (...args) {
-    this.removeObservers()
     this.disposeStored_(...args)
-    this.key_ = this.owner_ = this.model_ = eYo.NA
+  },
+  methods: {
+    /**
+     * Fallback to validate the value of the property;
+     * Default implementation forwards to an eventual `fooValidate` method
+     * of the owner, where `foo` should be replaced by the key of the receiver.
+     * @param {Object} before
+     * @param {Object} after
+     */
+    validate (before, after) {
+      let f_o = this.key && this.owner_ && this.owner_[this.key + 'Validate']
+      return eYo.isF(f_o) ? f_o.call(this.owner_, before, after) : after
+    },
+    /**
+     * Object disposer.
+     * Manage collections, takes care of ownership.
+     * @param {Object} what
+     */
+    disposeStored__ (what, ...args) {
+      if (what) {
+        if (what.eyo) {
+          what.eyo_p6y === this && eYo.isF(what.dispose) && what.dispose(...args)
+        } else if (eYo.isRA(what)) {
+          try {
+            what.forEach(x => this.disposeStored__(x, ...args))
+          } finally {
+            what.length = 0
+          }
+        } else {
+          Object.keys(what).forEach(k => {
+            if (what.hasOwnProperty(k)) {
+              this.disposeStored__(what[k], ...args)
+            }
+          })
+        }
+      }
+    },
+    /**
+     * Dispose of the stored object, if any.
+     * Private method, overriden to `eYo.doNothing`
+     * for objects that should not be disposed of.
+     * 
+     */
+    disposeStored_ (...args) {
+      let v = this.stored__
+      if (eYo.isDef(v) && v.eyo && v.eyo_p6y === this) {
+        try {
+          this.disposeStored__(v, ...args)
+        } finally {
+          this.stored__ = eYo.NA
+        }
+      }
+    },
+    /**
+     * recycle of the value.
+     * @private
+     */
+    recycle (...args) {
+      let before = this.stored__
+      if (!eYo.isNA(before)) {
+        try {
+          this.validate = eYo.doNothing
+          let dispose = before.eyo_p6y === this
+          this.setValue(eYo.NA)
+          if (dispose) {
+            before.eyo_p6y = eYo.NA
+            before.dispose(...args)
+          }
+        } finally {
+          delete this.validate
+        }
+      }
+    },
+    /**
+     * Set the value of the receiver.
+     * This can be overriden by the model's `set` key.
+     * @param {*} after - the new value after the change.
+     */
+    reset () {
+      this.setValue(this.start())
+    },
   },
 })
-
 
 ;(() => {
   let _p = eYo.p6y.Base_p
@@ -635,69 +556,9 @@ eYo.p6y.makeBase({
    */
   Object.defineProperties(_p, {
     parent: eYo.descriptorR(function () {
-      return this.owner
+      return this.owner_
     })
-  })
-
-  /**
-   * Object disposer.
-   * Manage collections, takes care of ownership.
-   * @param {Object} what
-   */
-  _p.disposeStored__ = function (what, ...args) {
-    if (what) {
-      if (what.eyo) {
-        what.eyo_p6y === this && eYo.isF(what.dispose) && what.dispose(...args)
-      } else if (eYo.isRA(what)) {
-        try {
-          what.forEach(x => this.disposeStored__(x, ...args))
-        } finally {
-          what.length = 0
-        }
-      } else {
-        Object.keys(what).forEach(k => {
-          if (what.hasOwnProperty(k)) {
-            this.disposeStored__(what[k], ...args)
-          }
-        })
-      }
-    }
-  }
-
-
-  /**
-   * Dispose of the stored object, if any.
-   * Private method, overriden to `eYo.doNothing`
-   * for objects that should not be disposed of.
-   * 
-   */
-  _p.disposeStored_ = function (...args) {
-    let v = this.stored__
-    if (v) {
-      try {
-        if (v.eyo && v.eyo_p6y === this) {
-          this.disposeStored__(v, ...args)
-        }
-      } catch (e) {
-        console.error(`Failed to dispose of property ${this.key} of ${this.owner} due to ${e}`)
-      } finally {
-        this.stored__ = eYo.NA
-      }
-    }
-  }
-
-  /**
-   * Fallback to validate the value of the property;
-   * Default implementation forwards to an eventual `fooValidate` method
-   * of the owner, where `foo` should be replaced by the key of the receiver.
-   * @param {Object} before
-   * @param {Object} after
-   */
-  _p.validate = function (before, after) {
-    let f_o = this.owner && this.owner[this.key + 'Validate']
-    return eYo.isF(f_o) ? f_o.call(this.owner, before, after) : after
-  }
-  
+  })  
   /**
    * @name{willChange}
    * Before changing the value of the property.
@@ -730,8 +591,8 @@ eYo.p6y.makeBase({
     _p[when] = function (before, after) {
       try {
         this[when] = eYo.doNothing
-        let f_o = this.owner[this.key + When]
-        eYo.isF(f_o) && f_o.call(this.owner, before, after)
+        let f_o = this.key && this.owner_ && this.owner_[this.key + When]
+        eYo.isF(f_o) && f_o.call(this.owner_, before, after)
         this.fireObservers(when, before, after)
       } finally {
         delete this[when]
@@ -771,28 +632,6 @@ eYo.p6y.makeBase({
       after.eyo_p6y = this
     }
   }
-
-  /**
-   * recycle of the value.
-   * @private
-   */
-  _p.recycle = function (...args) {
-    let before = this.stored__
-    if (!eYo.isNA(before)) {
-      try {
-        this.validate = eYo.doNothing
-        let dispose = before.eyo_p6y === this
-        this.setValue(eYo.NA)
-        if (dispose) {
-          before.eyo_p6y = eYo.NA
-          before.dispose(...args)
-        }
-      } finally {
-        delete this.validate
-      }
-    }
-  }
-
   /**
    * Used multiple times.
    * @private
@@ -881,99 +720,100 @@ eYo.p6y.makeBase({
       }    
     }
   }
-
-  /**
-   * Set the value of the receiver.
-   * This can be overriden by the model's `set` key.
-   * @param {*} after - the new value after the change.
-   */
-  _p.reset = function () {
-    this.setValue(this.start())
-  }
-
-  /**
-   * Add the observer
-   * @param {Function} f - function ([before], after) => void. arguments must ont have another name. No `this` for the callback.
-   * @param {String} when - One of 'before', 'during', 'after'
-   * @return {*} The callback, to be used for removing the observer.
-   */
-  _p.addObserver = function (callback, when = eYo.p6y.AFTER) {
-    eYo.isF(callback) || eYo.throw(`Callback must be a function, got ${callback}`)
-    eYo.p6y.HOOKS.includes(when) || eYo.throw(`Unexpected when, got ${when}`)
-    let byWhen = this.observersByWhen__ || (this.observersByWhen__ = {})
-    let observers = byWhen[when] || (byWhen[when] = [])
-    if (callback.length > 1) {
-      observers.push(callback)
-    } else {
-      let wrapper = (before, after) => {
-        callback(after)
-      }
-      wrapper.eyo_observer = callback
-      observers.push(wrapper)
-    }
-    return callback
-  }
-
-  /**
-   * Remove the given observer.
-   * @param {Function} callback - function ([before], after) => void. arguments must ont have another name. No `this` for the callback.
-   * @param {String} [when] - One of 'before', 'during', 'after'
-   * @return {*} The callback, to be used for adding the observer again.
-   */
-  _p.removeObserver = function (callback, when) {
-    !callback || eYo.isF(callback) || eYo.throw(`removeObserver: bad call back ${callback}`)
-    !when || eYo.p6y.HOOKS.includes(when) || eYo.throw(`removeObserver: bad when ${when}`)
-    let byWhen = this.observersByWhen__
-    if (byWhen) {
-      if (when) {
-        let observers = byWhen[when]
-        if (observers) {
-          byWhen[when] = observers.filter(x => x !== callback && x.eyo_observer !== callback)
-        }
-      } else {
-        eYo.p6y.HOOKS.forEach(when => {
-          let observers = byWhen[when]
-          if (observers) {
-            byWhen[when] = observers.filter(x => x !== callback && x.eyo_observer !== callback)
-          }  
-        })
-      }
-    }
-    return callback
-  }
-
-  /**
-   * Remove all the observers.
-   */
-  _p.removeObservers = function () {
-    let byWhen = this.observersByWhen__
-    if (byWhen) {
-      eYo.p6y.HOOKS.forEach(when => {
-        let observers = byWhen[when]
-        if (observers) {
-          observers.length = 0
-        }  
-      })
-    }
-  }
-
-  /**
-   * Fire the observers.
-   * @param {*} when - One of `eYo.p6y.BEFORE`, `eYo.p6y.DURING`, `eYo.p6y.AFTER`, specifies when the observers are fired.
-   * @param {*} before - the value before
-   * @param {*} after - the value after
-   */
-  _p.fireObservers = function (when, before, after) {
-    let byWhen = this.observersByWhen__
-    if (byWhen) {
-      let observers = byWhen[when]
-      observers && observers.forEach(f => f(before, after))
-    }
-  }
-
   /**
    * Iterator.
    */
   _p.ownedForEach = eYo.doNothing
 
 }) ()
+
+// ANCHOR eYo.p6y.List
+
+/**
+ * Maintains a list of properties.
+ * `eYo.o4t.Base` instances maintains properties by keys.
+ * Here properties are maintained by index.
+ * @name{eYo.p6y.List}
+ * @constructor
+ */
+eYo.c9r.makeC9r(eYo.p6y, 'List', {
+  init (owner, ...items) {
+    this.list__ = []
+    this.values = new Proxy(this.list__, {
+      get(target, prop) {
+        if (!isNaN(prop)) {
+          prop = parseInt(prop, 10)
+          if (prop < 0) {
+            prop += target.length
+          }
+          let p = target[prop]
+          return p && p.value
+        }
+        throw new Error('`values` attribute only accepts indexed accessors')
+      }
+    })
+    this.properties = new Proxy(this.list__, {
+      get(target, prop) {
+        if (!isNaN(prop)) {
+          prop = parseInt(prop, 10)
+          if (prop < 0) {
+            prop += target.length
+          }
+          return target[prop]
+        }
+        throw new Error('`properties` attribute only accepts indexed accessors')
+      }
+    })
+    this.splice(0, 0, ...items)
+  },
+  dispose(...args) {
+    for (const p of this.list__) {
+      p.dispose(...args)
+    }
+    this.list__.length = 0
+  }
+})
+
+;(() => {
+  let _p = eYo.p6y.List_p
+
+  Object.defineProperties(_p, {
+    length: {
+      get () {
+        return this.list__.length
+      },
+      set (after) {
+        this.list__.length = after
+      }
+    },
+  })
+ 
+  /**
+   * Insert something at index i.
+   * @param {Integer} start - The index at which to start changing the list.
+   * @param {...} item - items to be inserted.
+   */
+  _p.splice = function (start, deleteCount,  ...items) {
+    if (start < 0) {
+      start = this.list__.length - start
+    }
+    let ans = this.list__.splice(start, deleteCount).map(p => p.value)
+    this.list__.splice(start, 0, ...(items.map(item => eYo.p6y.new(this, '', {
+      value: item
+    }))))
+    return ans
+  }
+
+}) ()
+
+/**
+ * The @@iterator method
+ */
+eYo.p6y.List.eyo_p.initInstance = function (object) {
+  eYo.p6y.List.eyo.super.initInstance(object)
+  object[Symbol.iterator] = function* () {
+    for (var p of this.list__) {
+      yield p.value
+    }
+  }
+}

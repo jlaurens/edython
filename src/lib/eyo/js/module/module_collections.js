@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('collections__module')
-
-eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collections.html'
+eYo.module.makeNS('collections__module', {
+  URL: 'https://docs.python.org/3.6/library/collections.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.collections__module.makeItem()
-
+  let newItem = eYo.module.collections__module.makeNewItem()
 
   eYo.module.collections__module.data_ = {
     categories: [
@@ -41,7 +40,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
       'attribute'
     ],
     items: [
-      new Item({
+      newItem({
         name: 'ChainMap',
         class: 'collections',
         category: 0,
@@ -57,7 +56,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'Counter',
         class: 'collections',
         category: 1,
@@ -73,7 +72,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'OrderedDict',
         class: 'collections',
         category: 5,
@@ -88,7 +87,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'UserDict',
         class: 'collections',
         category: 6,
@@ -104,7 +103,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'UserList',
         class: 'collections',
         category: 7,
@@ -120,7 +119,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'UserString',
         class: 'collections',
         category: 8,
@@ -136,7 +135,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__missing__',
         class: 'collections.defaultdict',
         category: 3,
@@ -150,7 +149,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '_asdict',
         class: 'somenamedtuple',
         holder: 'collections.somenamedtuple',
@@ -159,7 +158,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
         href: '#collections.somenamedtuple._asdict',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '_fields',
         class: 'somenamedtuple',
         holder: 'collections.somenamedtuple',
@@ -168,7 +167,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
         href: '#collections.somenamedtuple._fields',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '_make',
         class: 'somenamedtuple',
         holder: 'collections.somenamedtuple',
@@ -183,7 +182,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '_replace',
         class: 'somenamedtuple',
         holder: 'collections.somenamedtuple',
@@ -199,7 +198,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '_source',
         class: 'somenamedtuple',
         holder: 'collections.somenamedtuple',
@@ -208,7 +207,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
         href: '#collections.somenamedtuple._source',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'append',
         class: 'collections.deque',
         category: 2,
@@ -222,7 +221,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'appendleft',
         class: 'collections.deque',
         category: 2,
@@ -236,7 +235,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'clear',
         class: 'collections.deque',
         category: 2,
@@ -245,7 +244,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'copy',
         class: 'collections.deque',
         category: 2,
@@ -254,7 +253,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'count',
         class: 'collections.deque',
         category: 2,
@@ -268,7 +267,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'defaultdict',
         class: 'collections',
         category: 3,
@@ -287,7 +286,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'deque',
         class: 'collections',
         category: 2,
@@ -306,7 +305,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'elements',
         class: 'collections.Counter',
         category: 1,
@@ -314,7 +313,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
         href: '#collections.Counter.elements',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'extend',
         class: 'collections.deque',
         category: 2,
@@ -328,7 +327,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'extendleft',
         class: 'collections.deque',
         category: 2,
@@ -342,7 +341,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'fromkeys',
         class: 'collections.Counter',
         category: 1,
@@ -356,7 +355,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'index',
         class: 'collections.deque',
         category: 2,
@@ -378,7 +377,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'insert',
         class: 'collections.deque',
         category: 2,
@@ -395,7 +394,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'most_common',
         class: 'collections.Counter',
         category: 1,
@@ -410,7 +409,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'move_to_end',
         class: 'collections.OrderedDict',
         category: 5,
@@ -429,7 +428,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'namedtuple',
         class: 'collections',
         category: 4,
@@ -462,7 +461,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'new_child',
         class: 'collections.ChainMap',
         category: 0,
@@ -477,7 +476,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'pop',
         class: 'collections.deque',
         category: 2,
@@ -485,7 +484,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
         href: '#collections.deque.pop',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'popitem',
         class: 'collections.OrderedDict',
         category: 5,
@@ -500,7 +499,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'popleft',
         class: 'collections.deque',
         category: 2,
@@ -508,7 +507,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
         href: '#collections.deque.popleft',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'remove',
         class: 'collections.deque',
         category: 2,
@@ -522,7 +521,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'reverse',
         class: 'collections.deque',
         category: 2,
@@ -530,7 +529,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
         href: '#collections.deque.reverse',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'rotate',
         class: 'collections.deque',
         category: 2,
@@ -546,7 +545,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'subtract',
         class: 'collections.Counter',
         category: 1,
@@ -562,7 +561,7 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'update',
         class: 'collections.Counter',
         category: 1,
@@ -642,6 +641,6 @@ eYo.module.collections__module.url = 'https://docs.python.org/3.6/library/collec
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py collections` on 2020-02-12 15:52:53.264072
+  // This file was generated by `python3 ./bin/helpers/modulebot.py collections` on 2020-03-04 13:02:49.154266
 
 

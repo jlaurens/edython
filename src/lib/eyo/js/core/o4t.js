@@ -11,6 +11,8 @@
  */
 'use strict'
 
+eYo.require('p6y')
+
 eYo.model.allowModelPaths({
   [eYo.model.ROOT]: ['CONST', 'aliases'],
   CONST: '[A-Z_]+'
@@ -32,7 +34,7 @@ eYo.o4t.makeBase({
  */
   dlgt (ns, key, C9r, model) {
     this.properties__ = Object.create(null)
-  }
+  },
 })
 
 /**
@@ -113,16 +115,6 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
 
 ;(() => {
   let _p = eYo.o4t.Dlgt_p
-
-  /**
-   * Iterators
-   */
-  _p.propertyForEach = function (f, owned = true) {
-    this.eyo.propertyForEach(this, f, owned)
-  }
-  _p.propertySome = function (f, owned = true) {
-    this.eyo.propertySome(this, f, true)
-  }
 
   /**
    * Extends the properties of the associate constructor.

@@ -157,7 +157,7 @@ eYo.py.node.Base_p.nAME2Brick = function (owner) {
     type: eYo.t3.expr.identifier,
     target_p: this.n_str
   })
-  brick.Variant_p = eYo.key.NONE
+  brick.variant_ = eYo.key.NONE
   return brick
 }
 
@@ -304,7 +304,7 @@ eYo.py.node.Base_p.namedexpr_test2Brick = function (board) {
     }
     // b is an identifier, turn it into an identifier_valued
     // before any connection
-    brick.Variant_p = eYo.key.COL_VALUED
+    brick.variant_ = eYo.key.COL_VALUED
     dd = n.toBrick(board)
     if (!brick.value_b.connectLast(dd)) {
       console.error('IMPOSSIBLE CONNECTION:', brick, dd)
@@ -442,7 +442,7 @@ eYo.py.node.Base_p.with_stmt2Brick = function (board) {
 eYo.py.node.Base_p.funcdef2Brick = function (board) {
   // 'def' NAME parameters ['->' test] ':' [TYPE_COMMENT] func_body_suite
   var root = eYo.brick.newReady(board, eYo.t3.stmt.funcdef_part)
-  root.Name_p = this.n1.n_str
+  root.name_ = this.n1.n_str
   // parameters: '(' [typedargslist] ')'
   var n = this.n2.n1
   if (n.type !== eYo.py.tkn.RPAR) {
@@ -451,7 +451,7 @@ eYo.py.node.Base_p.funcdef2Brick = function (board) {
   n = this.n4
   if (this.n3.type === eYo.py.tkn.RARROW) {
     root.type_s.connect(n.toBrick(board))
-    root.Variant_p = eYo.key.TYPE
+    root.variant_ = eYo.key.TYPE
     n = n.sibling.sibling
   }
   if (n.type === eYo.py.tkn.TYPE_COMMENT) {
@@ -471,10 +471,10 @@ eYo.py.node.Base_p.classdef2Brick = function (board) {
   // 'class' NAME ['(' [arglist] ')'] ':' suite
   var root = eYo.brick.newReady(board, eYo.t3.stmt.classdef_part)
   var n = this.n1
-  root.Name_p = n.n_str
+  root.name_ = n.n_str
   n = n.sibling
   if (n.type === eYo.py.tkn.LPAR) {
-    root.Variant_p = eYo.key.N_ARY
+    root.variant_ = eYo.key.N_ARY
     n = n.sibling
     if (n.type !== eYo.py.tkn.RPAR) {
       n.arglistInBrick(root.n_ary_b)
@@ -525,10 +525,10 @@ eYo.py.node.Base_p.decorator2Brick = function (board) {
   // decorator: '@' dotted_name [ '(' [arglist] ')' ] NEWLINE
   var brick = eYo.brick.newReady(board, eYo.t3.stmt.decorator_stmt)
   var n = this.n1
-  brick.Name_p = n.n_child.map(child => child.type === eYo.py.tkn.NAME ? child.n_str : '.').join('')
+  brick.name_ = n.n_child.map(child => child.type === eYo.py.tkn.NAME ? child.n_str : '.').join('')
   n = n.sibling
   if (n.n_type === eYo.py.tkn.LPAR) {
-    brick.Variant_p = eYo.key.N_ARY
+    brick.variant_ = eYo.key.N_ARY
     n = n.sibling
     if (n.n_type !== eYo.py.tkn.RPAR) {
       n.arglistInBrick(brick.n_ary_b)
@@ -559,7 +559,7 @@ eYo.py.node.Base_p.tfpdef2Brick = function (board) {
   brick.Target_p = n.n_str
   if ((n = this.n2)) {
     brick.annotated_s.connect(n.toBrick(board))
-    brick.Variant_p = eYo.key.ANNOTATED
+    brick.variant_ = eYo.key.ANNOTATED
   }
   return brick
 }
@@ -609,7 +609,7 @@ eYo.py.node.Base_p.typedargslistInBrick = function (brick) {
       d = brick.connectLast(n.tfpdef2Brick(brick))
       if ((n = n.sibling)) {
         if (n.type === eYo.py.tkn.EQUAL) {
-          d.Variant_p = d.Variant_p === eYo.key.ANNOTATED
+          d.variant_ = d.variant === eYo.key.ANNOTATED
           ? eYo.key.ANNOTATED_VALUED
           : eYo.key.TARGET_VALUED
           n = n.sibling
@@ -773,7 +773,7 @@ eYo.py.node.Base_p.varargslistInBrick = function (brick) {
       d = brick.connectLast(n.n0.NAME2Brick(brick))
       if ((n = n.sibling)) {
         if (n.type === eYo.py.tkn.EQUAL) {
-          d.Variant_p = eYo.key.TARGET_VALUED
+          d.variant_ = eYo.key.TARGET_VALUED
           n = n.sibling
           d.value_b.connectLast(n.toBrick(brick))
           if (!(n = n.sibling)) {
@@ -806,7 +806,7 @@ eYo.py.node.Base_p.dictorsetmakerInBrick = function (brick) {
     if (n1.n_type === eYo.py.comp_for) {
       // set comprehension
       brick.connectLast(this.comprehension2Brick(brick))
-      brick.Variant_p = eYo.key.BRACE
+      brick.variant_ = eYo.key.BRACE
       return brick
     } else if ((n2 = n1.sibling)) {
       if (n2.n_type === eYo.py.comp_for) {
@@ -1031,7 +1031,7 @@ eYo.py.node.Base_p.toBrick_ = function (board) {
               d2 = eYo.brick.newReady(board, eYo.t3.expr.assignment_chain)
               if ((d = d1.value_b)) {
                 d.connectLast(d2)
-                d1.Variant_p = eYo.key.TARGET_VALUED // necessary ?
+                d1.variant_ = eYo.key.TARGET_VALUED // necessary ?
               } else {
                 console.error('ERROR')
               }
@@ -1094,8 +1094,8 @@ eYo.py.node.Base_p.toBrick_ = function (board) {
         // n0 is a trailer: '(' [arglist] ')' | '[' subscriptlist ']' | '.' NAME
         if (n0.n0.n_type === eYo.py.tkn.LPAR) {
           d = d0.n_ary_b
-          if (d && d0.Variant_p === eYo.key.NONE) {
-            d0.Variant_p = eYo.key.CALL_EXPR
+          if (d && d0.variant === eYo.key.NONE) {
+            d0.variant_ = eYo.key.CALL_EXPR
           } else {
             root = eYo.brick.newReady(board, eYo.t3.expr.call_expr)
             root.target_b.connectLast(d0)
@@ -1108,8 +1108,8 @@ eYo.py.node.Base_p.toBrick_ = function (board) {
           }
         } else if (n0.n0.n_type === eYo.py.tkn.LSQB) {
           d = d0.slicing_b
-          if (d && d0.Variant_p === eYo.key.NONE) {
-            d0.Variant_p = eYo.key.SLICING
+          if (d && d0.variant === eYo.key.NONE) {
+            d0.variant_ = eYo.key.SLICING
           } else {
             root = eYo.brick.newReady(board, eYo.t3.expr.slicing)
             root.target_b.connectLast(d0)
@@ -1121,13 +1121,13 @@ eYo.py.node.Base_p.toBrick_ = function (board) {
             n1.subscriptlistInBrick(brick)
           }
         } else /* if (n0.n0.n_type === eYo.py.tkn.DOT) */ {
-          if (!d0.dotted_d || d0.Variant_p !== eYo.key.NONE || d0.Dotted_p !== 0) {
+          if (!d0.dotted_d || d0.variant !== eYo.key.NONE || d0.Dotted_p !== 0) {
             root = n0.n1.NAME2Brick(board)
             root.holder_s.connect(d0)
             d0 = root
             d0.Dotted_p = 1
           } else {
-            d0.change.wrap(() => {
+            d0.changer.wrap(() => {
               if ((d = d0.target_s.unwrappedTarget)) {
                 d0.holder_s.connect(d)
               } else {
@@ -1159,7 +1159,7 @@ eYo.py.node.Base_p.toBrick_ = function (board) {
             return root
           }
         }
-        root.Variant_p = eYo.key.STRIDE
+        root.variant_ = eYo.key.STRIDE
         n0.n1 && (root.stride_s.connect(n0.n1.toBrick(board)))
       }
       return root
@@ -1196,7 +1196,7 @@ eYo.py.node.Base_p.toBrick_ = function (board) {
             : null
             break
         }
-        root.Variant_p = t
+        root.variant_ = t
         s && (s.call(n1, root))
         return root
       } else if (['...', 'None', 'True', 'False'].indexOf((s = n0.n_str)) < 0) {
@@ -1457,10 +1457,10 @@ factor: ('+'|'-'|'~') factor | power
       root = eYo.brick.newReady(board, eYo.t3.stmt.raise_stmt)
       if ((n = this.n0.sibling)) {
         root.expression_s.connect(n.toBrick(board))
-        root.Variant_p = eYo.key.EXPRESSION
+        root.variant_ = eYo.key.EXPRESSION
         if ((n = n.sibling) && (n = n.sibling)) {
           root.from_s.connect(n.toBrick(board))
-          root.Variant_p = eYo.key.FROM
+          root.variant_ = eYo.key.FROM
         }
       }
       return root

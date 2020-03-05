@@ -448,7 +448,7 @@ eYo.do.ChildForEach = function (element, handler, thisArg) {
  * @param {*} handler
  * @param {*} thisArg
  */
-eYo.do.SomeChild = function (element, handler, thisArg) {
+eYo.do.someChild = function (element, handler, thisArg) {
   var children = Array.prototype.slice.call(element.childNodes)
   return children.some(handler, thisArg)
 }

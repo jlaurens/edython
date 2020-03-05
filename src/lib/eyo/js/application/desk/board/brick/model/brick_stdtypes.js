@@ -54,42 +54,42 @@ eYo.provide('brick.stdtypes')
     ++n
   })
 
-  d.items.push(new M.Item({
+  d.items.push(M.newItem({
     name: 'append',
     class: 'List',
     category: c,
     type_: t,
     ary: 1
   }))
-  d.items.push(new M.Item({
+  d.items.push(M.newItem({
     name: 'clear',
     class: 'List',
     category: c,
     type_: t,
     ary: 0
   }))
-  d.items.push(new M.Item({
+  d.items.push(M.newItem({
     name: 'copy',
     class: 'List',
     category: c,
     type_: t,
     ary: 0
   }))
-  d.items.push(new M.Item({
+  d.items.push(M.newItem({
     name: 'extend',
     class: 'List',
     category: c,
     type_: t,
     ary: 1
   }))
-  d.items.push(new M.Item({
+  d.items.push(M.newItem({
     name: 'insert',
     class: 'List',
     category: c,
     type_: t,
     ary: 2
   }))
-  d.items.push(new M.Item({
+  d.items.push(M.newItem({
     name: 'pop',
     class: 'List',
     category: c,
@@ -98,7 +98,7 @@ eYo.provide('brick.stdtypes')
     mandatory: 0
   }))
 
-  d.items.push(new M.Item({
+  d.items.push(M.newItem({
     name: 'remove',
     class: 'List',
     category: c,
@@ -106,7 +106,7 @@ eYo.provide('brick.stdtypes')
     ary: 1
   }))
 
-  d.items.push(new M.Item({
+  d.items.push(M.newItem({
     name: 'reverse',
     class: 'List',
     category: c,

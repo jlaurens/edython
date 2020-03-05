@@ -17,9 +17,8 @@ eYo.require('do.register')
  * @name {eYo.module}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'module')
+eYo.o3d.makeNS(eYo, 'module')
 
-console.error('NYI')
 /**
  * @name {eYo.module.Base}
  * @param {String} name - the name of this constructor
@@ -47,15 +46,7 @@ eYo.module.makeBase({
        * @param {Object} after - The data object after the change
        */
       didChange (after) /** @suppress {globalThis} */ {
-        var a = eYo.module.item_types = eYo.module.item_types.concat(after.types)
-        // remove duplicates
-        for (var i=0; i<a.length; ++i) {
-          for (var j=i+1; j<a.length; ++j) {
-            if (a[i] === a[j]) {
-              a.splice(j--, 1)
-            }
-          }
-        }      
+        after.forEach(x => eYo.module.item_types.add(x))
       }
     },
   }
@@ -65,10 +56,10 @@ eYo.module.makeBase({
  * Item constuctor.
  * This must not inherit from `eYo.module.Base` but from `eYo.o4t.Base`. 
  * @name{eYo.module.Item}
- * @param {Objec} item_model
+ * @param {Object} item_model
  */
 eYo.o4t.makeC9r(eYo.module, 'Item', {
-  init (item_model) {
+  init (owner, item_model) {
     Object.keys(item_model).forEach(key => {
       Object.defineProperty(
         this,
@@ -154,30 +145,23 @@ eYo.o4t.makeC9r(eYo.module, 'Item', {
 
 eYo.module.Item || eYo.throw('MISSING eYo.module.Item')
 
-eYo.module._p.makeItem = function () {
+eYo.module._p.makeNewItem = function () {
   this === eYo.module && eYo.throw('Only derived modules can make Items')
   var Item = this.makeC9r('Item', this.Item, {
     properties: {
       url: eYo.descriptorR(function () {
         return this.href
-          ? this.module.URL + this.href
-          : this.module.URL
+          ? this.owner_.URL + this.href
+          : this.owner_.URL
       }),
     },
   })
-  let _p = Item.eyo.C9r_p
-  Object.defineProperties(_p, {
-    /**
-     * module
-     */
-    module: {
-      get: () => {
-        return this
-      },
-      set: eYo.noSetter(),
-    },
-  })
-  return Item
+  this.makeNewItem = function () {
+    return this.newItem
+  }
+  return this.newItem = (self => function (model) {
+    return new Item(self, model)
+  })(this)
 }
 
 /**
@@ -219,7 +203,7 @@ eYo.module.Base_p.getItemsInCategory = function (category, type) {
 }
 
 /**
- * Sends a message for each ordered item with the give type
+ * Sends a message for each ordered item with the given type
  * @param {String} key  The name of the category
  */
 eYo.module.Base_p.forEachItemWithType = function (type, handler) {
@@ -241,10 +225,10 @@ eYo.do.register.add(eYo.module, 'module')
 /**
  * Each item has a link to the module it belongs to.
  */
-eYo.module.Item_p.module = new eYo.module.Base()
+eYo.module.Item_p.module = new eYo.module.Base(eYo.module)
 
 /**
  * Collect here all the types
  * @type {Array<String>}
  */
-eYo.module.item_types = []
+eYo.module._p.item_types = new Set()

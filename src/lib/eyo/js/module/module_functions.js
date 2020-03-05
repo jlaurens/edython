@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('functions')
-
-eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
+eYo.module.makeNS('functions', {
+  URL: 'https://docs.python.org/3.6/library/functions.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.functions.makeItem()
-
+  let newItem = eYo.module.functions.makeNewItem()
 
   eYo.module.functions.data_ = {
     categories: [
@@ -30,7 +29,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
       'class'
     ],
     items: [
-      new Item({
+      newItem({
         name: '__import__',
         class: '',
         category: 0,
@@ -61,7 +60,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'abs',
         class: '',
         category: 0,
@@ -74,7 +73,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'all',
         class: '',
         category: 0,
@@ -87,7 +86,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'any',
         class: '',
         category: 0,
@@ -100,7 +99,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ascii',
         class: '',
         category: 0,
@@ -113,7 +112,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'bin',
         class: '',
         category: 0,
@@ -126,7 +125,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'bool',
         class: '',
         category: 0,
@@ -141,7 +140,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'bytearray',
         category: 0,
         type_: 1,
@@ -162,7 +161,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'bytes',
         category: 0,
         type_: 1,
@@ -183,7 +182,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'callable',
         class: '',
         category: 0,
@@ -196,7 +195,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'chr',
         class: '',
         category: 0,
@@ -209,7 +208,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'classmethod',
         class: '@',
         holder: '',
@@ -219,7 +218,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'compile',
         class: '',
         category: 0,
@@ -251,7 +250,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'complex',
         class: '',
         category: 0,
@@ -270,7 +269,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'delattr',
         class: '',
         category: 0,
@@ -286,7 +285,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'dict',
         category: 0,
         type_: 1,
@@ -328,7 +327,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'dir',
         class: '',
         category: 0,
@@ -343,7 +342,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'divmod',
         class: '',
         category: 0,
@@ -359,7 +358,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'enumerate',
         class: '',
         category: 0,
@@ -377,7 +376,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'eval',
         class: '',
         category: 0,
@@ -399,7 +398,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'exec',
         class: '',
         category: 0,
@@ -422,7 +421,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'filter',
         class: '',
         category: 0,
@@ -438,7 +437,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'float',
         class: '',
         category: 0,
@@ -453,7 +452,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'format',
         class: '',
         category: 0,
@@ -471,7 +470,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'frozenset',
         category: 0,
         type_: 1,
@@ -484,7 +483,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'getattr',
         class: '',
         category: 0,
@@ -505,7 +504,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'globals',
         class: '',
         category: 0,
@@ -513,7 +512,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
         href: '#globals',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'hasattr',
         class: '',
         category: 0,
@@ -529,7 +528,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'hash',
         class: '',
         category: 0,
@@ -542,7 +541,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'help',
         class: '',
         category: 0,
@@ -558,7 +557,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'hex',
         class: '',
         category: 0,
@@ -571,7 +570,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'id',
         class: '',
         category: 0,
@@ -584,7 +583,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'input',
         class: '',
         category: 0,
@@ -599,7 +598,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'int',
         class: '',
         category: 0,
@@ -629,7 +628,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'isinstance',
         class: '',
         category: 0,
@@ -645,7 +644,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'issubclass',
         class: '',
         category: 0,
@@ -661,7 +660,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'iter',
         class: '',
         category: 0,
@@ -679,7 +678,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'len',
         class: '',
         category: 0,
@@ -692,7 +691,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'list',
         category: 0,
         type_: 1,
@@ -706,7 +705,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'locals',
         class: '',
         category: 0,
@@ -714,7 +713,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
         href: '#locals',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'map',
         class: '',
         category: 0,
@@ -733,7 +732,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'max',
         class: '',
         category: 0,
@@ -781,7 +780,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'memoryview',
         category: 0,
         ary: 1,
@@ -791,7 +790,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'min',
         class: '',
         category: 0,
@@ -839,7 +838,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'next',
         class: '',
         category: 0,
@@ -857,7 +856,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'object',
         class: '',
         category: 0,
@@ -865,7 +864,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
         href: '#object',
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'oct',
         class: '',
         category: 0,
@@ -878,7 +877,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'open',
         class: '',
         category: 0,
@@ -920,7 +919,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'ord',
         class: '',
         category: 0,
@@ -933,7 +932,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'pow',
         class: '',
         category: 0,
@@ -954,7 +953,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'print',
         class: '',
         category: 0,
@@ -986,7 +985,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'property',
         class: '',
         category: 0,
@@ -1013,7 +1012,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'range',
         category: 0,
         stmt: true,
@@ -1042,7 +1041,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'repr',
         class: '',
         category: 0,
@@ -1055,7 +1054,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'reversed',
         class: '',
         category: 0,
@@ -1068,7 +1067,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'round',
         class: '',
         category: 0,
@@ -1086,7 +1085,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'set',
         category: 0,
         type_: 1,
@@ -1099,7 +1098,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'setattr',
         class: '',
         category: 0,
@@ -1119,7 +1118,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'slice',
         class: '',
         category: 0,
@@ -1150,7 +1149,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sorted',
         class: '',
         category: 0,
@@ -1176,7 +1175,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'staticmethod',
         class: '@',
         holder: '',
@@ -1186,7 +1185,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'str',
         category: 0,
         type_: 1,
@@ -1219,7 +1218,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'sum',
         class: '',
         category: 0,
@@ -1237,7 +1236,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'super',
         class: '',
         category: 0,
@@ -1256,7 +1255,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'tuple',
         category: 0,
         stmt: true,
@@ -1269,7 +1268,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'type',
         class: '',
         category: 0,
@@ -1298,7 +1297,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'vars',
         class: '',
         category: 0,
@@ -1313,7 +1312,7 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'zip',
         class: '',
         category: 0,
@@ -1412,6 +1411,6 @@ eYo.module.functions.url = 'https://docs.python.org/3.6/library/functions.html'
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix functions` on 2020-02-12 15:52:52.134437
+  // This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix functions` on 2020-03-04 13:02:48.062079
 
 

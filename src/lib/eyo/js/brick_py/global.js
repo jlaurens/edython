@@ -57,7 +57,7 @@ eYo.stmt.makeC9r(eYo.t3.stmt.global_stmt, {
         save (element, opt) /** @suppress {globalThis} */ {
         },
         load (element) /** @suppress {globalThis} */ {
-          this.brick.Variant_p = element.getAttribute(eYo.key.EYO)
+          this.brick.variant_ = element.getAttribute(eYo.key.EYO)
         }
       },
       fromType (type) /** @suppress {globalThis} */ {
@@ -103,12 +103,12 @@ eYo.stmt.makeC9r(eYo.t3.stmt.global_stmt, {
       xml: {
         key: 'List',
         save (element) /** @suppress {globalThis} */ {
-          if (this.brick.Variant_p === eYo.key.DEL) {
+          if (this.brick.variant === eYo.key.DEL) {
             this.save(element)
           }
         },
         load (element) /** @suppress {globalThis} */ {
-          if (this.brick.Variant_p === eYo.key.DEL) {
+          if (this.brick.variant === eYo.key.DEL) {
             this.load(element)
           }
         }
@@ -120,12 +120,12 @@ eYo.stmt.makeC9r(eYo.t3.stmt.global_stmt, {
       xml: {
         key: 'List',
         save (element) /** @suppress {globalThis} */ {
-          if (this.brick.Variant_p === eYo.key.RETURN) {
+          if (this.brick.variant === eYo.key.RETURN) {
             this.save(element)
           }
         },
         load (element) /** @suppress {globalThis} */ {
-          if (this.brick.Variant_p === eYo.key.RETURN) {
+          if (this.brick.variant === eYo.key.RETURN) {
             this.load(element)
           }
         }
@@ -150,7 +150,7 @@ eYo.stmt.makeC9r(eYo.t3.stmt.global_stmt, {
  * The type and connection depend on the properties modifier, value and variant.
  * For edython.
  */
-eYo.stmt.global_stmt.prototype.getType = eYo.change.memoize(
+eYo.stmt.global_stmt.prototype.getType = eYo.changer.memoize(
   'getType',
   function () {
     this.setupType(

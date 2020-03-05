@@ -407,7 +407,7 @@ eYo.xml.text.toDom = function (brick, element) {
  * @return a dom element
  */
 eYo.xml.text.fromDom = function (brick, element) {
-  return eYo.do.SomeChild(element, child => child.nodeType === Node.TEXT_NODE && (brick.Value_p = child.nodeValue)
+  return eYo.do.someChild(element, child => child.nodeType === Node.TEXT_NODE && (brick.Value_p = child.nodeValue)
   )
 }
 
@@ -452,7 +452,7 @@ eYo.xml.literal.domToComplete = (() => {
     var stmt_expected = element.tagName.toLowerCase() === eYo.xml.sTMT
     var id = element.getAttribute('id')
     var brick
-    eYo.do.SomeChild(element, child => {
+    eYo.do.someChild(element, child => {
       if (child.nodeType === Node.TEXT_NODE) {
         return brick = brickMaker(board, child.nodeValue, id, stmt_expected)
       }
@@ -495,7 +495,7 @@ eYo.brick.Base_p.saveSlots = function (element, opt) {
  */
 eYo.xml.data.fromDom = function (brick, element) {
   var hasText
-  brick.change.wrap(() => { // `this` is `brick`
+  brick.changer.wrap(() => { // `this` is `brick`
     brick.dataForEach(data => {
       data.load(element)
       // Consistency section, to be removed
@@ -953,7 +953,7 @@ eYo.xml.domToBrick = (() => {
  */
 eYo.xml.fromDom = function (brick, element) {
   // headless please
-  brick.change.wrap(() => { // `this` is `brick`
+  brick.changer.wrap(() => { // `this` is `brick`
   //    console.log('Brick created from dom:', xmlBrick, brick.type, brick.id)
   // then fill it based on the xml data
     this.willLoad()
@@ -1122,7 +1122,7 @@ eYo.expr.primary_p.xmlAttr = function () {
 eYo.stmt.assignment_stmt_p.xmlAttr = function () {
   return this.type === eYo.t3.stmt.augmented_assignment_stmt
   ? this.Operator_p
-  : this.type === eYo.t3.stmt.annotated_stmt || this.Variant_p === eYo.key.NONE || this.Variant_p === eYo.key.VALUED || this.Variant_p === eYo.key.EXPRESSION
+  : this.type === eYo.t3.stmt.annotated_stmt || this.variant === eYo.key.NONE || this.variant === eYo.key.VALUED || this.variant === eYo.key.EXPRESSION
     ? 'x'
     : '='
 }

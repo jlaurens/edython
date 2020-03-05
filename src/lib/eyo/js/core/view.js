@@ -63,8 +63,9 @@ eYo.view.makeBase({
   /**
    * Initializer.
    */
-  init(owner, key) {
+  init(builtin, owner, key) {
     this.disposeUI = eYo.doNothing // will be used by subclassers
+    builtin(owner)
     this.key__ = key
   },
   properties: {
@@ -103,7 +104,7 @@ eYo.view.makeBase({
  * @param{Object} owner - and eYo object
  * @param{Object} model - An object suitable to create such a view instance.
  */
-eYo.view._p.new = (owner, key, model) => {
+eYo.view._p.new = function (owner, key, model) {
   if (!eYo.isStr(key)) {
     model = key
     key = ''
@@ -134,7 +135,7 @@ eYo.view._p.new = (owner, key, model) => {
  */
 eYo.view._p.enhanceNew = (enhancer) => {
   let original = eYo.view._p.new
-  eYo.view._p.new = (owner, model) => {
+  eYo.view._p.new = function (owner, model) {
     let ans = enhancer(owner, model)
     if (ans instanceof eYo.view.Base) {
       return ans
@@ -156,7 +157,6 @@ eYo.view.Base_p.modelMerge = function (model) {
   eYo.view.Base_p.SuperC9r_p.modelMerge.call(this, model)
   model.ui && (this.uiMerge(model.ui))
   model.views && (this.viewsMerge(model.views))
-
 }
 
 /**
@@ -336,4 +336,19 @@ eYo.view.List.eyo_p.initInstance = function (object) {
     this.views__.push(eYo.view.new(this, k, model[k]))
     object.newView(model[k])
   })
+}
+
+/**
+ * Create the view.
+ * @param{*} before - the owner before the change
+ * @param{*} after - the owner after the change
+ */
+eYo.view.Base_p.ownerDidChange = function (before, after) {
+  if (after) {
+    if (after.hasUI) {
+      this.initUI()
+    } else {
+      this.disposeUI()
+    }
+  }
 }

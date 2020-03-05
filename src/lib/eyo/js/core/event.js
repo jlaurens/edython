@@ -439,7 +439,7 @@ eYo.event.Mngr_p.undo = function(redo) {
           events.forEach(event => {
             var b3k = this.getBrickById(event.brickId)
             if (b3k) {
-              b3k.change.begin()
+              b3k.changer.begin()
               Bs.push(b3k)
             }
           })
@@ -450,7 +450,7 @@ eYo.event.Mngr_p.undo = function(redo) {
         })
       }, () => { // finally
         eYo.event.recordingUndo = true
-        Bs.forEach(B => B.change.end())
+        Bs.forEach(B => B.changer.end())
         this.didProcessUndo(redo)
       })
       return

@@ -86,7 +86,7 @@ eYo.o4t.makeC9r(eYo.py, 'Stack', {
   /* PARSER CREATION */
 
   /* parser_state * */
-  eYo.py.parser.new = (scan, /* grammar * */ g, /* int */ start) => {
+  eYo.py.parser.new = function (scan, /* grammar * */ g, /* int */ start) {
     var /* parser_state * */ ps = {}
     if (!g.g_accel) {
       eYo.py.gmr.accelerators.add(g)

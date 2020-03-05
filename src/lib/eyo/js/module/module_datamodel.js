@@ -12,14 +12,13 @@
  */
 'use strict'
 
-eYo.module.makeNS('datamodel')
-
-eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
+eYo.module.makeNS('datamodel', {
+  URL: 'https://docs.python.org/3.6/library/datamodel.html'
+})
 
 ;(() => {
   /* Singleton constructor */
-  var Item = eYo.module.datamodel.makeItem()
-
+  let newItem = eYo.module.datamodel.makeNewItem()
 
   eYo.module.datamodel.data_ = {
     categories: [
@@ -46,7 +45,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
       'classmethod'
     ],
     items: [
-      new Item({
+      newItem({
         name: '__add__',
         synonyms: [
           '__sub__',
@@ -96,7 +95,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__aenter__',
         class: 'object',
         category: 14,
@@ -109,7 +108,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__aexit__',
         class: 'object',
         category: 14,
@@ -131,7 +130,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__aiter__',
         class: 'object',
         category: 13,
@@ -144,7 +143,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__anext__',
         class: 'object',
         category: 13,
@@ -157,7 +156,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__await__',
         class: 'object',
         category: 11,
@@ -170,7 +169,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__bool__',
         class: 'object',
         category: 1,
@@ -183,7 +182,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__bytes__',
         class: 'object',
         category: 1,
@@ -197,7 +196,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__call__',
         class: 'object',
         category: 7,
@@ -216,7 +215,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__complex__',
         synonyms: [
           '__int__',
@@ -234,7 +233,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__contains__',
         class: 'object',
         category: 8,
@@ -251,7 +250,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__del__',
         class: 'object',
         category: 1,
@@ -265,7 +264,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__delattr__',
         class: 'object',
         category: 2,
@@ -282,7 +281,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__delete__',
         class: 'object',
         category: 3,
@@ -299,7 +298,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__delitem__',
         class: 'object',
         category: 8,
@@ -316,7 +315,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__dir__',
         class: 'object',
         category: 2,
@@ -330,7 +329,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__enter__',
         class: 'object',
         category: 10,
@@ -344,7 +343,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__exit__',
         class: 'object',
         category: 10,
@@ -367,7 +366,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__format__',
         class: 'object',
         category: 1,
@@ -384,7 +383,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__get__',
         class: 'object',
         category: 3,
@@ -404,7 +403,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__getattr__',
         class: 'object',
         category: 2,
@@ -421,7 +420,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__getattribute__',
         class: 'object',
         category: 2,
@@ -438,7 +437,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__getitem__',
         class: 'object',
         category: 8,
@@ -455,7 +454,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__hash__',
         class: 'object',
         category: 1,
@@ -469,7 +468,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__iadd__',
         synonyms: [
           '__isub__',
@@ -518,7 +517,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__index__',
         class: 'object',
         category: 9,
@@ -532,7 +531,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__init__',
         class: 'object',
         category: 1,
@@ -550,7 +549,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__init_subclass__',
         class: 'object',
         category: 5,
@@ -564,7 +563,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__instancecheck__',
         class: 'class',
         category: 6,
@@ -580,7 +579,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__iter__',
         class: 'object',
         category: 8,
@@ -594,7 +593,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__len__',
         class: 'object',
         category: 8,
@@ -608,7 +607,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__length_hint__',
         class: 'object',
         category: 8,
@@ -622,7 +621,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__lt__',
         synonyms: [
           '__le__',
@@ -646,7 +645,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__missing__',
         class: 'object',
         category: 8,
@@ -663,7 +662,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__neg__',
         synonyms: [
           '__pos__',
@@ -682,7 +681,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__new__',
         class: 'object',
         category: 1,
@@ -701,7 +700,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__radd__',
         synonyms: [
           '__rsub__',
@@ -733,7 +732,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__repr__',
         class: 'object',
         category: 1,
@@ -747,7 +746,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__reversed__',
         class: 'object',
         category: 8,
@@ -761,7 +760,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__round__',
         synonyms: [
           '__trunc__',
@@ -795,7 +794,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__set__',
         class: 'object',
         category: 3,
@@ -815,7 +814,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__set_name__',
         class: 'object',
         category: 3,
@@ -835,7 +834,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__setattr__',
         class: 'object',
         category: 2,
@@ -855,7 +854,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__setitem__',
         class: 'object',
         category: 8,
@@ -875,7 +874,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__slots__',
         class: 'object',
         category: 4,
@@ -884,7 +883,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: '__str__',
         class: 'object',
         category: 1,
@@ -898,7 +897,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: '__subclasscheck__',
         class: 'class',
         category: 6,
@@ -914,7 +913,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'clear',
         class: 'frame',
         category: 0,
@@ -923,7 +922,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'close',
         class: 'coroutine',
         category: 12,
@@ -932,7 +931,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
         stmt: true,
         ary: 0
       }),
-      new Item({
+      newItem({
         name: 'indices',
         class: 'slice',
         category: 0,
@@ -949,7 +948,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'send',
         class: 'coroutine',
         category: 12,
@@ -963,7 +962,7 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
           }
         ]
       }),
-      new Item({
+      newItem({
         name: 'throw',
         class: 'coroutine',
         category: 12,
@@ -1121,6 +1120,6 @@ eYo.module.datamodel.url = 'https://docs.python.org/3.6/library/datamodel.html'
 }) ()
 
 
-  // This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix datamodel` on 2020-02-12 15:52:52.485975
+  // This file was generated by `python3 ./bin/helpers/modulebot.py --no-suffix datamodel` on 2020-03-04 13:02:48.328881
 
 

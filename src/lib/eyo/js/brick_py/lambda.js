@@ -313,9 +313,9 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
     var b3k
     eYo.event.disableWrap(() => {
       b3k = eYo.brick.newReady(this, eYo.t3.expr.identifier)
-      b3k.change.wrap(() => {
+      b3k.changer.wrap(() => {
         b3k.Modifier_p = modifier
-        b3k.Variant_p = flags
+        b3k.variant_ = flags
       })
     })
     this.slotForEachReverse((slot) => {
@@ -332,9 +332,9 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
             () => {
               var b3k = eYo.brick.newReady(this, eYo.t3.expr.identifier)
               eYo.event.groupWrap(() => {
-                b3k.change.wrap(() => {
+                b3k.changer.wrap(() => {
                   b3k.Modifier_p = modifier
-                  b3k.Variant_p = flags
+                  b3k.variant_ = flags
                   m4t.connect(b3k.out_m)
                 })
               })

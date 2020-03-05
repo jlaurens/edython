@@ -12,10 +12,10 @@
 'use strict'
 
 /**
- * @name {eYo.change}
+ * @name {eYo.changer}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'change')
+eYo.o3d.makeNS(eYo, 'changer')
 
 /**
  * Decorate of change count hooks.
@@ -31,10 +31,10 @@ eYo.o3d.makeNS(eYo, 'change')
  * @param {Function} do_it - must return something, @this is the owner.
  * @return {Function}
  */
-eYo.change._p.memoize = function (key, do_it) {
+eYo.changer._p.memoize = function (key, do_it) {
   eYo.isF(do_it) || eYo.throw(`do_it MUST be a function, got: ${do_it}`)
   return function(...args) {
-    var c = this.change
+    var c = this.changer
     if (c.save_[key] === c.count) {
       return c.cache_[key]
     }
@@ -48,11 +48,11 @@ eYo.change._p.memoize = function (key, do_it) {
 }
 
 /**
- * @name {eYo.change.Base}
+ * @name {eYo.changer.Base}
  * @constructor
  * @param{Object} owner
  */
-eYo.change.makeBase({
+eYo.changer.makeBase({
   init () {
     this.reset()
   },
@@ -71,7 +71,7 @@ eYo.change.makeBase({
      * Some actions that are performed when something changes
      * should not be performed while there is a pending change.
      * The level is incremented before the change and
-     * decremented after the change (see `change.wrap`)
+     * decremented after the change (see `changer.wrap`)
      * If we have
      * A change (level 1) => B change (level 2) => C change (level 3)
      * Such level aware actions are not performed when B and C
@@ -105,7 +105,7 @@ eYo.change.makeBase({
       // Some operations are performed only when there is a change
       // In order to decide whether to run or do nothing,
       // we have to store the last change count when the operation was
-      // last performed. See `eYo.change.memoize` decorator.
+      // last performed. See `eYo.changer.memoize` decorator.
       this.save_ = Object.create(null)
       // When these operations return values, they are cached below
       // until they are computed once again.
@@ -116,7 +116,7 @@ eYo.change.makeBase({
      */
     begin () {
       ++this.level_
-      var O = this.owner_
+      let O = this.owner_
       O.onChangeBegin && O.onChangeBegin()
     },
     /**
@@ -129,7 +129,7 @@ eYo.change.makeBase({
      */
     end () {
       --this.level_
-      var O = this.owner_
+      let O = this.owner_
       O.onChangeEnd && O.onChangeEnd()
       if (this.level === 0) {
         this.done()
@@ -149,7 +149,7 @@ eYo.change.makeBase({
      */
     done () {
       ++ this.count_
-      var O = this.owner_
+      let O = this.owner_
       if (!O.changeStepFreeze) {
         this.step_ = this.count
       }
@@ -157,9 +157,9 @@ eYo.change.makeBase({
       this.listeners_.forEach(l => l())
     },
     /**
-     * Begin a mutation.
+     * Wraps a mutation.
      * For edython.
-     * @param {Function} do_it
+     * @param {Function} do_it - Function with no argument, and no `this`.
      * @return {*} whatever `do_it` returns.
      */
     wrap (do_it) {

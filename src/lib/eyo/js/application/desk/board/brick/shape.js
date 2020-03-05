@@ -21,7 +21,7 @@ eYo.forwardDeclare('padding')
  * @name {eYo.o4t.Shape}
  * @constructor
  */
-eYo.o4t.makeNS(eYo, 'shape')
+eYo.o3d.makeNS(eYo, 'shape')
 
 
 /**

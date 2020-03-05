@@ -924,10 +924,10 @@ eYo.magnet.Base_p.break = function () {
  */
 eYo.magnet.Base_p.updateCheck = function () {
   var b = this.brick
-  if(b.change.level > 1 || this.changeCount_ === b.change.count) {
+  if(b.changer.level > 1 || this.changeCount_ === b.changer.count) {
     return
   }
-  this.changeCount_ = b.change.count
+  this.changeCount_ = b.changer.count
   if (this.model.check) {
     this.check = this.model.check.call(this, b.type, b.subtype)
   }
@@ -1373,8 +1373,8 @@ eYo.magnet.Base_p.connect_ = function (childM4t) {
     child.incog = parentM4t.incog
   }
   eYo.event.groupWrap(() => {
-    parent.change.wrap(() => { // Disable rendering until changes are made
-      child.change.wrap(() => {
+    parent.changer.wrap(() => { // Disable rendering until changes are made
+      child.changer.wrap(() => {
         parent.initUI(child.hasUI)
         child.initUI(parent.hasUI)
         parentM4t.willConnect(childM4t)
@@ -1694,8 +1694,8 @@ eYo.magnet.Base_p.distance = function(other) {
     unwrappedM4t = parentM4t.unwrappedMagnet
     eYo.event.groupWrap(() => {
       eYo.event.fireBrickMove(child, () => {
-        child.change.wrap(() => { // `this` is catched
-          parent.change.wrap(() => { // `this` is catched
+        child.changer.wrap(() => { // `this` is catched
+          parent.changer.wrap(() => { // `this` is catched
             eYo.do.tryFinally(() => {
               parentM4t.willDisconnect()
               ;(unwrappedM4t !== parentM4t) && unwrappedM4t.willDisconnect()
@@ -1875,10 +1875,10 @@ eYo.magnet.Base_p.isConnectionAllowed = function (candidate, maxRadius) {
  */
 eYo.magnet._p.new = function (owner, type, model) {
   model || eYo.throw('Cannot create a magnet without a model')
-  var C9r = model.C9r
-  if (!C9r) {
-    C9r = eYo.magnet.makeC9r()
+  if (!model.C9r) {
+    model.C9r = eYo.magnet.makeC9r()
   }
+  return new model.C9r(owner, type, model)
 }
 
 /**
@@ -1927,7 +1927,7 @@ eYo.magnet.Base_p.didConnect = function (oldTargetM4t, targetOldM4t) {
 eYo.magnet.Base_p.willDisconnect = function () {
   var f = this.model.willDisconnect
   if (eYo.isF(f)) {
-    eYo.decorate.reentrant_method('willDisconnect',f).apply(this, arguments)
+    eYo.decorate.reentrant('willDisconnect',f).apply(this, arguments)
     return
   }
   if (this.isRight) {
