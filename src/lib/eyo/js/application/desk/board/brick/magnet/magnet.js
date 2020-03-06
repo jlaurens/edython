@@ -496,11 +496,6 @@ eYo.magnet.makeBase({
         }
       },
     },
-    magnetDB: {
-      get () {
-        return this.board.magnetDBList
-      },
-    },
     typeName: {
       get () {
         return {
@@ -519,6 +514,9 @@ eYo.magnet.makeBase({
       },
     },
   },
+  aliases: {
+    'board.magnetDBList': 'magnetDB',
+  }
 })
 
 // computed public properties

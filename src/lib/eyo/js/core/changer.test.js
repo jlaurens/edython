@@ -1,8 +1,8 @@
-describe ('Tests: change', function () {
-  it ('Change: basic', function () {
+describe ('Tests: changer', function () {
+  it ('Changer: basic', function () {
     chai.assert(eYo.changer.Base)
   })
-  it ('Change: begin', function () {
+  it ('Changer: begin', function () {
     var flag = 0
     let onr = {
       onChangeBegin () {
@@ -15,18 +15,18 @@ describe ('Tests: change', function () {
         flag += 10000
       },
     }
-    let change = eYo.changer.new(onr)
-    change.begin()
+    let changer = eYo.changer.new(onr)
+    changer.begin()
     chai.expect(flag).equal(1)
-    change.end()
+    changer.end()
     chai.expect(flag).equal(10101)
     flag = 0
-    change.begin()
-    change.begin()
+    changer.begin()
+    changer.begin()
     chai.expect(flag).equal(2)
-    change.end()
+    changer.end()
     chai.assert(flag === 102, `Got ${flag}`)
-    change.end()
+    changer.end()
     chai.assert(flag === 10202, `Got ${flag}`)
     flag = 0
     changer.wrap(() => {
@@ -41,7 +41,7 @@ describe ('Tests: change', function () {
     })
     chai.expect(flag).equal(1010202)
   })
-  it ('Change: listener', function () {
+  it ('Changer: listener', function () {
     var flag = 0
     let onr = {}
     let changer = eYo.changer.new(onr)
@@ -59,7 +59,7 @@ describe ('Tests: change', function () {
     })
     chai.expect(flag).equal(100)
   })
-  it ('Change: memoize', function () {
+  it ('Changer: memoize', function () {
     var flag = 0
     let onr = {}
     onr.changer = eYo.changer.new(onr)

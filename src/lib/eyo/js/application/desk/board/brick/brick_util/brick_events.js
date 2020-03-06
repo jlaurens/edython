@@ -18,10 +18,10 @@
  * @param {eYo.brick.Base} brick  The newly created brick.
  * @param {Boolean|String} [group]  eventually set a group.
  */
-eYo.event.fireBrickCreate = function (brick, group) {
-  if (eYo.event.enabled) {
-    eYo.isDef(group) && (eYo.event.group = group)
-    eYo.event.fire(new eYo.event.BrickCreate(brick))
+eYo.event.Mngr_p.fireBrickCreate = function (brick, group) {
+  if (this.enabled) {
+    eYo.isDef(group) && (this.group_ = group)
+    this.fire(new eYo.event.BrickCreate(this, brick))
   }
 }
 
@@ -29,9 +29,9 @@ eYo.event.fireBrickCreate = function (brick, group) {
  * Convenient shortcut.
  * @param {eYo.brick.Base} brick  The newly created brick.
  */
-eYo.event.fireBrickChange = function (brick, element, name, before, after) {
-  if (eYo.event.enabled) {
-    eYo.event.fire(new eYo.event.BrickChange(brick, element, name, before, after))
+eYo.event.Mngr_p.fireBrickChange = function (brick, element, name, before, after) {
+  if (this.enabled) {
+    eYo.event.fire(new eYo.event.BrickChange(this, brick, element, name, before, after))
   }
 }
 
@@ -40,9 +40,9 @@ eYo.event.fireBrickChange = function (brick, element, name, before, after) {
  * @param {eYo.brick.Base} brick  The moved brick.
  * @param {Function} move  the move action, signature: (event) -> void
  */
-eYo.event.fireBrickMove = (brick, move) => {
-  if (eYo.event.enabled) {
-    let event = new eYo.event.BrickMove(brick)
+eYo.event.Mngr_p.fireBrickMove = function (brick, move) {
+  if (this.enabled) {
+    let event = new eYo.event.BrickMove(this, brick)
     try {
       move(event)
     } finally {
@@ -57,11 +57,11 @@ eYo.event.fireBrickMove = (brick, move) => {
 /**
  * Abstract class for a brick event.
  * @param {eYo.brick.Base} brick The brick this event corresponds to.
- * @extends {eYo.event.Event}
+ * @extends {eYo.event.Abstract}
  * @constructor
  */
-eYo.event.Event.makeInheritedC9r('BrickBase', {
-  init (brick) {
+eYo.event.Abstract.makeInheritedC9r('BrickBase', {
+  init (mngr, brick) {
     /**
      * The brick id for the brick this event pertains to
      * @type {string}
@@ -89,7 +89,7 @@ eYo.event.Event.makeInheritedC9r('BrickBase', {
  * @constructor
  */
 eYo.event.BrickBase.makeInheritedC9r('BrickChange', {
-  init (brick, element, name, before, after) {
+  init (mngr, brick, element, name, before, after) {
     this.element_ = element
     this.name_ = name
     this.before_ = before
@@ -107,7 +107,7 @@ eYo.event.BrickBase.makeInheritedC9r('BrickChange', {
     },
     /**
      * Merge the receiver with the given event.
-     * @param {eYo.event.Event} event - an eYo event
+     * @param {eYo.event.Abstract} event - an eYo event
      * @return {Boolean} Whether the change did occur.
      */
     merge (lastEvent) {
@@ -171,7 +171,7 @@ eYo.event.BrickChange_p.run = function(redo) {
  * @constructor
  */
 eYo.event.BrickBase.makeInheritedC9r('BrickCreate', {
-  ini(brick) {
+  init(mngr, brick) {
     if (brick.board.rendered) {
       this.xml = eYo.xml.brickToDomWithWhere(brick)
     } else {
@@ -222,7 +222,7 @@ eYo.event.BrickCreate_p.run = function(forward) {
  * @constructor
  */
 eYo.event.BrickBase.makeInheritedC9r('BrickDelete', {
-  init (brick) {
+  init (mngr, brick) {
     if (brick.parent) {
       throw 'Connected bricks cannot be deleted.'
     }
@@ -276,7 +276,7 @@ eYo.event.BrickDelete_p.run = function(forward) {
  * @constructor
  */
 eYo.event.BrickBase.makeInheritedC9r('BrickMove', {
-  init (brick) {
+  init (mngr, brick) {
     var location = this.currentLocation
     this.oldParentId = location.parentId
     this.oldName = location.name
@@ -295,7 +295,7 @@ eYo.event.BrickBase.makeInheritedC9r('BrickMove', {
     },
     /**
      * Merge the receiver with the given event.
-     * @param {eYo.event.Event} event - an eYo event
+     * @param {eYo.event.Abstract} event - an eYo event
      * @return {Boolean} Whether the change did occur.
      */
     merge (lastEvent) {

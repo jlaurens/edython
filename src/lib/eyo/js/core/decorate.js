@@ -55,12 +55,13 @@ eYo.decorate.reentrant_method = (object, key, f) => {
  * Decorate the function to be reentrant.
  * @param {string} key
  * @param {function} f
+ * @param {function} [alt_f] - defaults to `eYo.doNothing`.
  * @return {*} Whathever `f` returns.
  */
-eYo.decorate.reentrant = (key, f) => {
+eYo.decorate.reentrant = (key, f, alt_f = eYo.doNothing) => {
   eYo.isF(f) || ([key, f] = [f, key])
   return function(...$) {
-    this[key] = eYo.doNothing
+    this[key] = alt_f
     try {
       return f.call(this, ...$)
     } finally {

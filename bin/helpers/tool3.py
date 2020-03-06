@@ -164,7 +164,7 @@ def updateWebTests():
         HTML.deps(path_deps, root),
       ]
       relative = path_test.relative_to(path_js)
-      js = '../' * len(relative.parts)
+      js = '../' * (len(relative.parts) - 1)
       lines.append(HTML.body(root, js))
       path_base = path_test.with_suffix('').with_suffix('')
       basename = path_base.stem

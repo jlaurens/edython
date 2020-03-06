@@ -209,9 +209,7 @@ eYo.dragger.makeC9r('Brick', {
 
       eYo.focus.magnet = null
       
-      if (!eYo.event.group) {
-        eYo.event.group = true
-      }
+      eYo.event.beginGroup()
       this.destination.setResizesEnabled(false)
       var d = this.ui_driver_mngr
       d.brickEffectStop()
@@ -321,9 +319,9 @@ eYo.dragger.makeC9r('Brick', {
        * Fire a move event at the end of a brick drag.
        * @private
        */
-      var fireMoveEvent = self => {
-        eYo.event.fireBrickMove(self.brick_, event => {
-          event.oldCoordinate = self.xyStart_
+      let fireMoveEvent = $this => {
+        eYo.event.fireBrickMove($this.brick_, event => {
+          event.oldCoordinate = $this.xyStart_
         })
       }
       return function(e, delta) {
@@ -336,7 +334,7 @@ eYo.dragger.makeC9r('Brick', {
           }
           b3k.dispose(false, true)
         } else {
-          // These may be expensive and don't need to be done if we're deleting.
+          // These may be expensive and won't be done if we're deleting.
           b3k.ui.placeMagnets_()
           b3k.ui.dragging = false
           this.connect()
@@ -353,7 +351,7 @@ eYo.dragger.makeC9r('Brick', {
         }
         this.destination.setResizesEnabled(true)
 
-        eYo.event.group = false
+        eYo.event.endGroup()
         this.availableMagnets_.length = 0
         this.availableMagnets_ = this.brick_ = this.target_ = this.magnet_ = this.clearMotion()
       }
@@ -386,11 +384,6 @@ eYo.dragger.makeC9r('Brick', {
     },
   },
 })
-
-
-
-
-
 
 /**
  * Update highlighted connections based on the most recent move location.

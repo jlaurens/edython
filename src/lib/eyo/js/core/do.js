@@ -519,11 +519,8 @@ eYo.do.NYI = () => {
 eYo.do.tryFinally = function (try_f, finally_f) {
   try {
     return try_f()
-  }  catch (err) {
-    console.error(err)
-    throw err
   } finally {
-    finally_f && (finally_f())
+    finally_f && finally_f()
   }
 }
 
@@ -531,28 +528,35 @@ eYo.do.tryFinally = function (try_f, finally_f) {
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
  * No `this` in both arguments.
- * @param {Function} [start_f]
- * @param {Function} [begin_finally_f]
- * @param {Function} [end_finally_f]
+ * @param {Function} [start_f] - Optional arrow function
+ * @param {Function} [begin_finally_f] - Optional arrow function
+ * @param {Function} [end_finally_f] - Optional arrow function
+ * @return {Function} with signature (this?, ()=>*, (ans)=>*) => *
  */
-eYo.do.makeWrapper = (start_f, begin_finally_f, end_finally_f) => {
-  return (try_f, finally_f) => {
-    start_f && (start_f())
+eYo.do._p.makeWrapper = ($this, start_f, begin_finally_f, end_finally_f) => {
+  if (eYo.isF($this)) {
+    [start_f, begin_finally_f, end_finally_f, $this] = [$this, start_f, begin_finally_f, end_finally_f]
+  }
+  return function ($$this, try_f, finally_f) {
+    if (eYo.isF($$this)) {
+      [try_f, finally_f, $$this] = [$$this, try_f, finally_f || this]
+    }
+    var old = start_f && start_f.call($this)
     var ans
-    eYo.do.tryFinally(() => {
-      ans = try_f()
-    }, () => {
-      begin_finally_f && (begin_finally_f())
+    try {
+      ans = try_f.call($$this)
+    } finally {
+      begin_finally_f && begin_finally_f.call($this, old)
       // enable first to allow finally_f to eventually fire events
       // or eventually modify `ans`
       if (finally_f) {
-        var out = finally_f(ans)
+        var out = finally_f.call($$this, ans)
         if (eYo.isDef(out)) {
           ans = out
         }
       }
-      end_finally_f && (end_finally_f())
-    })
+      end_finally_f && end_finally_f.call($this, old)
+    }
     return ans
   }
 }

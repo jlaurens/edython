@@ -39,29 +39,38 @@ eYo.event.makeBase()
  * @constructor
  */
 eYo.event.makeC9r('Mngr', {
+  init (onr) {
+    // Private properties
+    this.group__ = ''
+    this.level__ = 0
+  },
   properties: {
     /**
      * Maximum number of undo events in stack. `0` turns off undo, `Infinity` sets it to unlimited (provided there is enough memory!).
      * @type {number}
      */
     MAX_UNDO: eYo.event.MAX_UNDO,
-    /**
-     * Group ID for new events.  Grouped events are indivisible.
-     * @type {string}
+      /**
+     * Allow change events to be created and fired.
+     * @type {number}
      * @private
      */
-    group: '',
+    disabled: {
+      value: 0,
+      validate (after) {
+        return after > 0 ? after : 0
+      }
+    },
+    enabled: { 
+      get () {
+        return !this.disabled_
+      },
+    },
     /**
      * Sets whether the next event should be added to the undo stack.
      * @type {boolean}
      */
     recordingUndo: true,
-    /**
-     * Allow change events to be created and fired.
-     * @type {number}
-     * @private
-     */
-    disabled: 0,
     /**
      * Allow change events to be created and fired.
      * @type {number}
@@ -74,14 +83,6 @@ eYo.event.makeC9r('Mngr', {
      * @private
      */
     fire_queue: [],
-    enabled: { 
-      get () {
-        return !this.disabled__
-      },
-      set (after) {
-        this.disabled__ = !!after
-      }
-    },
     /**
      * Current group.
      * @return {string} ID string.
@@ -90,87 +91,87 @@ eYo.event.makeC9r('Mngr', {
       get () {
         return this.group__
       },
-      /**
-       * Start or stop a group.
-       * @param {boolean|string} after True to start new group, false to end group.
-       *   String to set group explicitly.
-       */
-      set (after) {
-        if (eYo.isStr(after)) {
-          this.group_ = after
-          this.level_ = 1
-        } else if (after) {
-          if (!this.level++) {
-            this.group_ = eYo.do.genUID()
-          }
-        } else if (this.level > 1) {
-          --this.level_
-        } else if (this.level) {
-          --this.level_
-          this.group_ = ''
-        }
-      },
+    },
+  },
+  methods: {
+    beginGroup(after) {
+      if (eYo.isStr(after)) {
+        this.group__ = after
+        this.level__ = 1
+      } else if (!this.level__++) {
+        this.group__ = eYo.do.genUID()
+      }
+    },
+    endGroup () {
+      if (this.level > 1) {
+        --this.level__
+      } else if (this.level) {
+        --this.level__
+        this.group__ = ''
+      }
+    },
+    /**
+     * Event enabler.
+     * @param {Object} [$this] - Optional value for `this`
+     * @param {Function} try_f - Function
+     * @param {Function} [finally_f] - Optional function
+     */
+    enableWrap ($this, try_f, finally_f) {
+      return eYo.do.makeWrapper(
+        () => {
+          let old = this.disabled_
+          this.disabled_--
+          return old
+        },
+        (old) => this.disabled_ = old
+      ) ($this, try_f, finally_f)
+    },
+    /**
+     * Event disabler.
+     * @param {Object} [$this] - Optional value for `this`
+     * @param {Function} try_f - Function
+     * @param {Function} [finally_f] - Optional function
+     */
+    disableWrap ($this, try_f, finally_f) {
+      return eYo.do.makeWrapper(
+        () => this.disabled_++,
+        (old) => this.disabled_ = old
+      ) ($this, try_f, finally_f)
+    },
+    /**
+     * Wrap the given function into a single undo group.
+     * @param {String} [group] - Optional group name
+     * @param {Object} [$this] - Optional value for `this`
+     * @param {Function} try_f - Function
+     * @param {Function} [finally_f] - Optional function
+     */
+    groupWrap (group, $this, try_f, finally_f) {
+      if (!eYo.isStr(group)) {
+        [$this, try_f, finally_f, group] = [group, $this, try_f, true]
+      }
+      return eYo.do.makeWrapper(
+        () => this.beginGroup(group),
+        () => this.endGroup()
+      ) ($this, try_f, finally_f)
     },
   },
 })
 
-;(() => {
-
-  /*
-   * Stop sending events.  Every call to this function MUST also call enable.
-   */
-  let disable = () => eYo.event.disabled__++
-
-  /*
-   * Start sending events.  Unless events were already disabled when the
-   * corresponding call to disable was made.
-   */
-  let enable = () => eYo.event.disabled__--
-
-  /**
-   * Event enabler.
-   * Use the arrow definition of functions to catch `this`.
-   * @param {Function} try_f
-   * @param {Function} [finally_f]
-   */
-  eYo.event.Mngr_p.enableWrap = eYo.do.makeWrapper(enable,disable)
-
-  /**
-   * Event disabler.
-   * Use the arrow definition of functions to catch `this`.
-   * @param {Function} try_f
-   * @param {Function} [finally_f]
-   */
-  eYo.event.Mngr_p.disableWrap = eYo.do.makeWrapper(disable,enable)
-})()
-
-/**
- * Wrap the given function into a single undo group.
- * @param {Function} try_f - standalone function
- * @param {Function} [finally_f] - optional standalone function
- */
-eYo.event.Mngr_p.groupWrap = function (try_f, finally_f) {
-  eYo.do.makeWrapper(
-    () => (this.group = true),
-    () => (this.group = false),
-    finally_f)(try_f)
-}
-
 /**
  * Create a custom event and fire it.
- * @param {eYo.event.Event} event - Custom data for event.
+ * @param {eYo.event.Abstract} event - Custom data for event.
  */
 eYo.event.Mngr_p.fire = function(event) {
-  if (!eYo.event.enabled) {
+  if (!this.enabled) {
     return
   }
   if (!this.fire_queue.length) {
     // First event added; schedule a firing of the event queue.
     setTimeout(() => {
-      var queue = eYo.event.filter(this.fire_queue, true)
+      let queue = this.filter(this.fire_queue, true)
       this.fire_queue.length = 0
       queue.forEach(event => {
-        var board = eYo.board.byId(event.boardId)
+        let board = eYo.board.byId(event.boardId)
         if (board) {
           board.eventDidFireChange(event)
         }
@@ -190,9 +191,9 @@ eYo.event.Mngr_p.clearPendingUndo = function() {
 
 /**
  * Filter the queued events and merge duplicates.
- * @param {Array<!eYo.event.Event>} queueIn Array of events.
+ * @param {Array<!eYo.event.Abstract>} queueIn Array of events.
  * @param {boolean} forward True if forward (redo), false if backward (undo).
- * @return {!Array<!eYo.event.Event>} Array of filtered events.
+ * @return {!Array<!eYo.event.Abstract>} Array of filtered events.
  */
 eYo.event.Mngr_p.filter = function(queueIn, forward) {
   if (!forward) {
@@ -242,7 +243,7 @@ eYo.event.Mngr_p.filter = function(queueIn, forward) {
  * Abstract class for an event.
  * @constructor
  */
-eYo.event.makeC9r('Event', {
+eYo.event.makeC9r('Abstract', {
   /**
    * 
    * @param {*} owner - The event manager is the owner
@@ -331,25 +332,25 @@ eYo.event.makeC9r('Event', {
       }
     },
   },
+  methods: {
+    /**
+     * Run an event.
+     * @param {boolean} forward True if run forward, false if run backward (undo).
+     */
+    run: eYo.doNothing,
+    /**
+    * Merge the receiver with the given event.
+    * @param {eYo.event.Abstract} event - an eYo event
+    * @return {Boolean} Whether the change did occur.
+    */
+    merge: eYo.doNothing,
+  },
 })
-
-/**
- * Run an event.
- * @param {boolean} forward True if run forward, false if run backward (undo).
- */
-eYo.event.Event_p.run = eYo.doNothing
-
-/**
- * Merge the receiver with the given event.
- * @param {eYo.event.Event} event - an eYo event
- * @return {Boolean} Whether the change did occur.
- */
-eYo.event.Event_p.merge = eYo.doNothing
 
 eYo.event.Mngr.eyo.propertiesMerge({
   properties: {
     /**
-     * @type {!Array<!eYo.event.Event>}
+     * @type {!Array<!eYo.event.Abstract>}
      * @protected
      */
     undoStack: {
@@ -358,7 +359,7 @@ eYo.event.Mngr.eyo.propertiesMerge({
       },
     },
     /**
-     * @type {!Array<!eYo.event.Event>}
+     * @type {!Array<!eYo.event.Abstract>}
      * @protected
      */
     redoStack: {
@@ -477,7 +478,7 @@ eYo.event.Mngr_p.eventDidFireChange = function(event, task) {
       task()
     } finally {
       this.updateChangeCount(true, event)
-      complete.apply(this)
+      complete.call(this)
     }
   } else {
     task()

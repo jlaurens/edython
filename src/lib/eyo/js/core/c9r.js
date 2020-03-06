@@ -201,7 +201,7 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
  * @param {Object|Function} [model] -  The dictionary of parameters. Or a function to create such a dictionary. This might be overcomplicated.
  * @return {Function} the created constructor.
  */
-eYo._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
+eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
   return this.doMakeC9r(ns, key, Super, model)
 })
 }

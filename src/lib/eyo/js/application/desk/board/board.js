@@ -36,7 +36,15 @@ eYo.forwardDeclare('geom.Metrics')
  * @constructor
  */
 eYo.board.makeBase({
+  aliases: {
+    'owner.workspace': 'workspace',
+  },
   properties: {
+    board: {
+      get () {
+        return this
+      },
+    },
     /**
      * The render status of a board.
      * Returns `true` for visible boards and `false` for non-visible,
@@ -82,23 +90,6 @@ eYo.board.makeBase({
      * @readonly
      */
     scrollbar: {},
-    board: {
-      get () {
-        if (!this.isDragger) {
-          return new eYo.dnd.dragger.Board(this)
-        }
-      },
-    },
-    /**
-     * Convenient property.
-     * @readonly
-     * @type {eYo.view.Workspace}
-     */
-    workspace: {
-      get () {
-        return this.owner
-      },
-    },
     recover: {
       get () {
         return this.getRecover()
@@ -490,14 +481,9 @@ eYo.board.Base_p.clear = function() {
  */
 eYo.board.Main_p.clear = function() {
   this.setResizesEnabled(false)
-  var existingGroup = eYo.event.group
-  if (!existingGroup) {
-    eYo.event.group = true
-  }
-  eYo.board.Main.eyo.C9r_s.clear.call(this)
-  if (!existingGroup) {
-    eYo.event.group = false
-  }
+  eYo.event.groupWrap(() => {
+    eYo.board.Main.eyo.C9r_s.clear.call(this)
+  })
 }
 
 /**
@@ -1070,24 +1056,6 @@ eYo.board.Base_p.setResizesEnabled = function(enabled) {
   }
 }
 
-eYo.board.Base_p.logAllConnections = function (comment) {
-  comment = comment || ''
-  ;[
-    'IN',
-    'OUT',
-    'FOOT',
-    'HEAD',
-    'LEFT',
-    'RIGHT'
-  ].forEach(k => {
-    var dbList = this.magnetDBList
-    console.log(`${comment} > ${k} magnet`)
-    dbList[eYo.magnet[k]].forEach(m4t => {
-      console.log(m4t.whereInBrick, m4t.whereInBoard, m4t.brick.type)
-    })
-  })
-}
-
 /**
  * Convert a coordinate object from pixels to board units.
  * @param {eYo.geom.Point} pixelCoord  A coordinate with x and y values
@@ -1100,20 +1068,16 @@ eYo.board.Base_p.fromPixelUnit = function(xy) {
   return new eYo.geom.Point(xy).unscale(this.scale)
 }
 
-;(() => {
-  var get = function () {
+/**
+ *
+ */
+eYo.board.Base_p.getRecover = function () {
+  eYo.assert(!this.recover__, 'Collision: this.recover_')
+  this.getRecover = function () {
     return this.recover__
   }
-  /**
-   *
-   */
-  eYo.board.Base_p.getRecover = function () {
-    eYo.assert(!this.recover__, 'Collision: this.recover_')
-    this.recover__ = new eYo.xml.Recover(this)
-    this.getRecover = get
-    return this.recover__
-  }
-})()
+  return (this.recover__ = new eYo.xml.Recover(this))
+}
 
 /**
  * Add the nodes from string to the board.
@@ -1135,7 +1099,6 @@ eYo.board.Base_p.fromString = function (str) {
   var dom = parser.parseFromString(str, 'application/xml')
   return this.fromDom(dom)
 }
-
 
 /**
  * Convert the board to string.
@@ -1176,13 +1139,18 @@ eYo.board.Base_p.fromUTF8ByteArray = function (bytes) {
 /**
  * Add a brick to the board.
  * @param {eYo.brick.Base} brick
- * @param {String} opt_id
+ * @param {String} [opt_id]
  */
-eYo.board.Base_p.addBrick = function (brick, opt_id) {
+eYo.board.Base_p.addBrick = function (brick, opt_id, f, ...$) {
+  if (!eYo.isStr(opt_id)) {
+    $ = [f, ...$]
+    [opt_id, f] = [eYo.NA, opt_id]
+  }
   this.changer.wrap(() => {
     this.list.add(brick, opt_id)
     this.hasUI && brick.initUI()
     brick.move()
+    f && f.call(this, ...$)
   })
   this.resizePort()
 }
@@ -1190,12 +1158,13 @@ eYo.board.Base_p.addBrick = function (brick, opt_id) {
 /**
  * Remove a brick from the board.
  * @param {eYo.brick.Base} brick
- * @param {Function} [f] - to be executed after ech brick is removed
+ * @param {Function} [f] - to be executed after each brick removal
+ * @param {...} [arguments] - Arguments to f, `this` is the receiver.
  */
-eYo.board.Base_p.removeBrick = function (brick, f) {
+eYo.board.Base_p.removeBrick = function (brick, f, ...$) {
   this.changer.wrap(() => {
     this.list.remove(brick)
-    f && f(this)
+    f && f.call(this, ...$)
   })
 }
 
@@ -1303,7 +1272,7 @@ eYo.board.Base_p.tidyUp = function (kvargs) {
 eYo.board.Base_p.scrollBrickTopLeft = function(id) {
   if (!this.scrollbar) {
     console.warn('Tried to scroll a non-scrollable board.')
-    return;
+    return
   }
   var b3k = this.getBrickById(id)
   if (!b3k) {
@@ -1327,12 +1296,12 @@ eYo.board.Base_p.scrollBrickTopLeft = function(id) {
 
 /**
  * Fire a change event.
- * @param {eYo.event.Event} event Event to fire.
+ * @param {eYo.event.Abstract} event Event to fire.
  */
 eYo.board.Base_p.eventDidFireChange = function(event) {
   let task = () => {
-      this.listeners_.forEach(f => f(event))
-    }
+    this.listeners_.forEach(f => f(event))
+  }
   if (this.backer_) {
     this.backer_.eventDidFireChange(event, task)
   } else {
@@ -1340,10 +1309,25 @@ eYo.board.Base_p.eventDidFireChange = function(event) {
   }
 }
 
-eYo.o4t.Base.eyo.propertiesMerge({
-  board: {
-    get () {
-      this.owner.board
-    },
-  },
+eYo.o3d.Base.eyo.aliasesMerge({
+  'owner.board': 'board',
 })
+
+eYo.board.Base_p.logAllConnections = function (comment) {
+  comment = comment || ''
+  ;[
+    'IN',
+    'OUT',
+    'FOOT',
+    'HEAD',
+    'LEFT',
+    'RIGHT'
+  ].forEach(k => {
+    var dbList = this.magnetDBList
+    console.log(`${comment} > ${k} magnet`)
+    dbList[eYo.magnet[k]].forEach(m4t => {
+      console.log(m4t.whereInBrick, m4t.whereInBoard, m4t.brick.type)
+    })
+  })
+}
+

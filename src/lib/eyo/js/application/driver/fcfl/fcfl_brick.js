@@ -13,6 +13,8 @@
 
 eYo.require('brick')
 
+eYo.brick.BUMP_DELAY = 250
+
 /**
  * Facefull driver for bricks.
  */
@@ -82,7 +84,6 @@ eYo.brick.Base.eyo.propertiesMerge({
       this.driver.displayedSet(this, visible)
     }
   },
-  BUMP_DELAY: 250,
 })
 eYo.brick.Base.eyo.aliasesMerge({
   'xy': 'where',
@@ -1487,15 +1488,15 @@ eYo.fcfl.Brick._p.scheduleSnapAndBump = function(brick) {
   // Ensure that any snap and bump are part of this move's event group.
   var group = eYo.event.group
   setTimeout(() => {
-    eYo.event.group = group
-    this.snapToGrid(brick)
-    eYo.event.group = false
-  }, eYo.brick.Base.BUMP_DELAY / 2)
+    eYo.event.groupWrap(group, () => {
+      this.snapToGrid(brick)
+    })
+  }, eYo.brick.BUMP_DELAY / 2)
   setTimeout(() => {
-    eYo.event.group = group
-    this.bumpNeighbours_(brick)
-    eYo.event.group = false
-  }, eYo.brick.Base.BUMP_DELAY)
+    eYo.event.groupWrap(group, () => {
+      this.bumpNeighbours_(brick)
+    })
+  }, eYo.brick.BUMP_DELAY)
 }
 
 /**

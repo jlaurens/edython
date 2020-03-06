@@ -832,12 +832,10 @@ eYo.event.Motion.eyo.methodsMerge({
         if (this.flyout_ && this.flyout_.autoClose) {
           // Brick click in an autoclosing flyout.
           if (!b.disabled) {
-            if (!eYo.event.group) {
-              eYo.event.group = true
-            }
-            var newBrick = this.flyout_.createBrick(b)
-            newBrick.ui_driver.scheduleSnapAndBump(newBrick)
-            eYo.event.group = false
+            eYo.event.groupWrap(() => {
+              var newBrick = this.flyout_.createBrick(b)
+              newBrick.ui_driver.scheduleSnapAndBump(newBrick)  
+            })
             return true
           }
         } 
