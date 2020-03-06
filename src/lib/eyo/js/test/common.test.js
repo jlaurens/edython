@@ -14,7 +14,7 @@
     sounds : false,
     oneBasedIndex : true,
   }
-  eYo.APP = new eYo.app.Base(options)
+  eYo.APP = eYo.app.new(options)
 }
 
 chai.assert(eYo.app, `MISSING eYo.app`)

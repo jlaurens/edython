@@ -45,6 +45,60 @@ describe ('Tests: Property', function () {
     chai.assert(eYo.isNA(p.value))
     chai.expect(flag).equal(421)
   })
+  it('P6y: this is the owner', function () {
+    let onr = {}
+    var p = eYo.p6y.new(onr, 'foo', {
+      get () {
+        this.flag = 1
+        return 421
+      },
+    })
+    chai.expect(p.value).equal(421)
+    chai.expect(onr.flag).equal(1)
+    var p = eYo.p6y.new(onr, 'foo', {
+      get_ () {
+        this.flag = 2
+        return 123
+      },
+    })
+    chai.expect(p.value).equal(123)
+    chai.expect(onr.flag).equal(2)
+    var p = eYo.p6y.new(onr, 'foo', {
+      set (after) {
+        this.flag = after
+      },
+    })
+    p.value_ = 421
+    chai.expect(onr.flag).equal(421)
+    var p = eYo.p6y.new(onr, 'foo', {
+      set_ (after) {
+        this.flag = after
+      },
+    })
+    p.value__ = 123
+    chai.expect(onr.flag).equal(123)
+    var p = eYo.p6y.new(onr, 'foo', {
+      validate (after) {
+        return (this.flag = after)
+      },
+    })
+    p.value__ = 421
+    chai.expect(onr.flag).equal(421)
+    var p = eYo.p6y.new(onr, 'foo', {
+      willChange (after) {
+        return (this.flag = after)
+      },
+    })
+    p.value__ = 123
+    chai.expect(onr.flag).equal(123)
+    var p = eYo.p6y.new(onr, 'foo', {
+      willChange (after) {
+        return (this.flag = after)
+      },
+    })
+    p.value__ = 421
+    chai.expect(onr.flag).equal(421)
+  })
   it('P6y: {set_ (builtin, after) ...}', function () {
     console.warn('WHAT?')
     var flag = 0

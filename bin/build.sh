@@ -142,7 +142,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/application/desk/workspace/flyout/flyout-toolbar.js" \
 --js "src/lib/eyo/js/application/desk/board/brick/list.js" \
 --js "src/lib/eyo/js/application/driver/fcfl/fcfl.js" \
---js "src/lib/eyo/js/application/driver/fcls/fcls_board.js" \
 --js "src/lib/eyo/js/application/driver/fcls/fcls_brick.js" \
 --js "src/lib/eyo/js/application/desk/focus.js" \
 --js "src/lib/eyo/js/brick_py/stmt.js" \

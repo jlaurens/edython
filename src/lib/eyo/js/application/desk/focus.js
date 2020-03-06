@@ -1,7 +1,7 @@
 /*
  * edython
  *
- * Copyright 2019 Jérôme LAURENS.
+ * Copyright 2020 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -16,14 +16,6 @@
  */
 'use strict'
 
-eYo.require('decorate')
-
-eYo.require('do')
-eYo.require('board')
-
-eYo.require('brick')
-eYo.require('magnet')
-eYo.require('field')
 eYo.forwardDeclare('app')
 
 /**
@@ -117,20 +109,22 @@ eYo.focus.makeC9r('Main', {
       },
     },
   },
+  methods: {
+    /**
+     * Dispose of the 
+     */
+    mngrWillDispose (mngr) {
+      this.mngrUnregister(mngr)
+      if (this.mngr_ === mngr) {
+        this.mngr_ = null
+      }
+    }
+  },
 })
 
 // Each newly created focus manager comes here
 eYo.register.add(eYo.focus.Main, 'mngr')
 
-/**
- * Dispose of the 
- */
-eYo.focus.Main_p.mngrWillDispose = function (mngr) {
-  this.mngrUnregister(mngr)
-  if (this.mngr_ === mngr) {
-    this.mngr_ = null
-  }
-}
 /**
  * Create a standard focus manager, managed by a main focus manager.
  * @param {eYo.board} board -  the owner of the focus object.
@@ -138,20 +132,18 @@ eYo.focus.Main_p.mngrWillDispose = function (mngr) {
  * @constructor
  */
 eYo.focus.makeC9r('Mngr', {
-  init () {
+  /**
+   * 
+   * @param {eYo.focus.Main} owner 
+   */
+  init (owner) {
     this.focus_main.mngrRegister(this)
   },
+  aliases: {
+    owner: 'workspace',
+    'app.focus_main': 'focus_main'
+  },
   properties: {
-    /**
-     * The owning board.
-     * @type {eYo.board.Base}
-     */
-    board () {
-      return this.owner__
-    },
-    focus_main () {
-      return this.app.focus_main
-    },
     /**
      * Focus only on wrappers.
      * @type{eYo.brick.Base}
@@ -161,11 +153,11 @@ eYo.focus.makeC9r('Mngr', {
         return after && after.wrapper || after
       },
       willChange(before, after) {
-        this.hasUI && before && before.ui_driver.off(this)
+        this.hasUI && before && before.ui_driver.off(before)
       },
       didChange(after) {
         if (after) {
-          let m4t = this.magnet__
+          let m4t = this.magnet
           if (m4t) {
             var b3k = m4t.brick
             if (b3k && after !== b3k.wrapper) {
@@ -179,7 +171,7 @@ eYo.focus.makeC9r('Mngr', {
               this.field_ = eYo.NA
             }
           }
-          this.hasUI && this.value.ui_driver.on(this)
+          this.hasUI && after.ui_driver.on(after)
           this.didAdd()
         } else {
           this.magnet_ = eYo.NA
@@ -358,82 +350,86 @@ eYo.view.Workspace.eyo.propertiesMerge({
   },
 })
 
-/**
- * Focus on this board.
- * @return {Boolean} Whether the receiver gained focus.
- */
-eYo.board.Base_p.focusOn = function () {
-  return !!(this.focus_main.board = this)
-}
+eYo.board.Base.eyo.methodsMerge({
+  /**
+   * Focus on this board.
+   * @return {Boolean} Whether the receiver gained focus.
+   */
+  focusOn () {
+    return !!(this.focus_main.board = this)
+  },
+  /**
+   * Focus off this board.
+   */
+  focusOff () {
+    this.focus_main.board = eYo.NA
+  },
+})
 
-/**
- * Select this brick.  Highlight it visually.
- * Wrapped bricks are not selectable.
- * @param {Boolean} noBoard -  Do not focus on the receiver' board.
- * Defaults to false, which means that focusing on an object
- * also focuses on its enclosing board.
- * @return {Boolean} Whether the receiver gained focus.
- */
-eYo.brick.Base_p.focusOn = function (noBoard) {
-  noBoard || this.board.focusOn()
-  return !!(this.focus_mngr.brick = this)
-}
+eYo.brick.Base.eyo.methodsMerge({
+  /**
+   * Select this brick.  Highlight it visually.
+   * Wrapped bricks are not selectable.
+   * @param {Boolean} noBoard -  Do not focus on the receiver' board.
+   * Defaults to false, which means that focusing on an object
+   * also focuses on its enclosing board.
+   * @return {Boolean} Whether the receiver gained focus.
+   */
+  focusOn (noBoard) {
+    noBoard || this.board.focusOn()
+    return !!(this.focus_mngr.brick = this)
+  },
+  /**
+   * Focus off this brick.
+   * If there is a selected connection, it is removed.
+   * `focusOff` is used from click handling methods.
+   */
+  focusOff () {
+    this.hasFocus && (this.focus_mngr.brick = eYo.NA)
+  },
+})
 
-/**
- * Select this field. Highlight it visually.
- * @param {Boolean} noBoard -  Do not focus on the receiver' board.
- * Defaults to false, which means that focusing on an object
- * also focuses on its enclosing board.
- * @return {Boolean} Whether the receiver gained focus.
- */
-eYo.field.Base_p.focusOn = function (noBoard) {
-  noBoard || this.board.focusOn()
-  return !!(this.focus_mngr.field = this)
-}
+eYo.magnet.Base.eyo.methodsMerge({
+  /**
+   * Select this magnet. Highlight it visually.
+   * Wrapped magnets are not selectable.
+   * @param {Boolean} noBoard -  Do not focus on the receiver' board.
+   * Defaults to false, which means that focusing on an object
+   * also focuses on its enclosing board.
+   * @return {Boolean} Whether the receiver gained focus.
+   */
+  focusOn (noBoard) {
+    noBoard || this.board.focusOn()
+    return !!(this.focus_mngr.magnet = this)
+  },
+  /**
+   * Focus off this magnet.
+   * If `this` is the selected magnet, it looses its status.
+   * `focusOff` is used from click handling methods.
+   * Does nothing if the receiver is not selected.
+   */
+  focusOff () {
+    this.hasFocus && (this.focus_mngr.magnet = eYo.NA)
+  },
+})
 
-/**
- * Select this magnet. Highlight it visually.
- * Wrapped magnets are not selectable.
- * @param {Boolean} noBoard -  Do not focus on the receiver' board.
- * Defaults to false, which means that focusing on an object
- * also focuses on its enclosing board.
- * @return {Boolean} Whether the receiver gained focus.
- */
-eYo.magnet.Base_p.focusOn = function (noBoard) {
-  noBoard || this.board.focusOn()
-  return !!(this.focus_mngr.magnet = this)
-}
-
-/**
- * Focus off this board.
- */
-eYo.board.Base_p.focusOff = function () {
-  this.focus_main.board = eYo.NA
-}
-
-/**
- * Focus off this brick.
- * If there is a selected connection, it is removed.
- * `focusOff` is used from click handling methods.
- */
-eYo.brick.Base_p.focusOff = function () {
-  this.hasFocus && (this.focus_mngr.brick = eYo.NA)
-}
-
-/**
- * Focus off this magnet.
- * If `this` is the selected magnet, it looses its status.
- * `focusOff` is used from click handling methods.
- * Does nothing if the receiver is not selected.
- */
-eYo.magnet.Base_p.focusOff = function () {
-  this.hasFocus && (this.focus_mngr.magnet = eYo.NA)
-}
-
-/**
- * Focus off this field.
- * `focusOff` is used from click handling methods.
- */
-eYo.field.Base_p.focusOff = function () {
-  this.hasFocus && (this.focus_mngr.field = eYo.NA)
-}
+eYo.field.Base.eyo.methodsMerge({
+  /**
+   * Select this field. Highlight it visually.
+   * @param {Boolean} noBoard -  Do not focus on the receiver' board.
+   * Defaults to false, which means that focusing on an object
+   * also focuses on its enclosing board.
+   * @return {Boolean} Whether the receiver gained focus.
+   */
+  focusOn (noBoard) {
+    noBoard || this.board.focusOn()
+    return !!(this.focus_mngr.field = this)
+  },
+  /**
+   * Focus off this field.
+   * `focusOff` is used from click handling methods.
+   */
+  focusOff () {
+    this.hasFocus && (this.focus_mngr.field = eYo.NA)
+  },
+})

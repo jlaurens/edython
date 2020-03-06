@@ -120,7 +120,7 @@ eYo.app.makeC9r('Options', {
  * @return {!Object} A dictionary of normalized options.
  * @private
  */
-eYo.app.parseZoom_ = function(options) {
+eYo.app._p.parseZoom_ = function (options) {
   var zoom = options.zoom || {}
   var options = {}
   if (zoom.controls === eYo.NA) {
@@ -196,12 +196,14 @@ eYo.app.makeBase({
       return new eYo.view.Desk(this)
     },
     audio () {
-      return new eYo.audio.Base(this)
+      return eYo.audio.new(this)
     },
     focus_main () {
       return new eYo.focus.Main(this)
     },
-    clipboard: eYo.NA,
+    clipboard () {
+      return new eYo.app.Clipboard(this)
+    },
     ui_driver_mngr: {
       lazy () {
         let UI = this.options.UI || 'fcls'
@@ -233,6 +235,52 @@ eYo.app.makeBase({
       },
     },
   },
+  aliases: {
+    'motion.isDragging': 'isDragging',
+  },
+  methods: {
+    /**
+     * Copy the selected brick onto the local clipboard.
+     * @param {Boolean} optNoNext Whether the next blocks may be copied too.
+     * @private
+     * @return {Boolean} true if copied, false otherwise
+     */
+    doCopy (optNoNext) {
+      var b3k = this.focus_main.brick
+      if (b3k) {
+        this.copyBrick(b3k, !optNoNext)
+        return true
+      }
+    },
+    /**
+     * Send the selected brick to the front.
+     * This is a job for the renderer.
+     */
+    doFront () {
+      var b3k = this.focus_main.brick
+      if (b3k) {
+        b3k.sendToFront()
+      }
+    },
+    /**
+    * Send the selected brick to the back.
+    */
+    doBack () {
+      var b3k = this.focus_main.brick
+      if (b3k) {
+        b3k.sendToBack()
+      }
+    },
+    /**
+    * Scroll the board to show the selected brick.
+    */
+    doFocus () {
+      var b3k = this.focus_main.brick
+      if (b3k) {
+        b3k.board.scrollBrickTopLeft(b3k.id)
+      }
+    },
+  },
 })
 
 /**
@@ -244,29 +292,30 @@ eYo.app.Base_p.paste = eYo.doNothing
 /**
  * Delete this brick and the next ones if requested.
  * For edython.
- * @param {eYo.brick.Base} block The brick to delete.
+ * @param {eYo.brick.Base} b3k - The brick to delete.
  * @param {boolean} deep
  */
-eYo.app.Base_p.deleteBrick = function (brick, deep) {
-  if (brick && brick.deletable && !brick.board.readOnly) {
-    if (brick.hasFocus) {
+eYo.app.Base_p.deleteBrick = function (b3k, deep) {
+  let brd = b3k.clipboard
+  if (b3k && b3k.deletable && !brd.readOnly) {
+    if (b3k.hasFocus) {
       // prepare a connection or a block to be selected
       var m4t
-      if ((m4t = brick.out_m)) {
+      if ((m4t = b3k.out_m)) {
         m4t = m4t.target
-      } else if ((m4t = brick.foot_m)) {
+      } else if ((m4t = b3k.foot_m)) {
         var t9k = m4t.targetBrick
       }
     }
-    eYo.event.groupWrap(() => {
+    brd.eventMngr.groupWrap(() => {
       this.hideChaff()
       if (deep) {
         do {
-          var low = brick.foot
-          brick.dispose(false, true)
-        } while ((brick = low))
+          var low = b3k.foot
+          b3k.dispose(false, true)
+        } while ((b3k = low))
       } else {
-        brick.dispose(true, true)
+        b3k.dispose(true, true)
       }
     })
     if (m4t && m4t.board) {
@@ -289,54 +338,9 @@ eYo.app.Base_p.copyBrick = function (brick, deep) {
   var xy = brick.xy
   xml.setAttribute('x', xy.x)
   xml.setAttribute('y', xy.y)
-  eYo.clipboard.xml_ = xml
-  eYo.clipboard.source_ = brick.board
-  this.didCopyBrick && (this.didCopyBrick(brick, xml))
-}
-
-/**
- * Copy the selected brick onto the local clipboard.
- * @param {Boolean} optNoNext Whether the next blocks may be copied too.
- * @private
- * @return {Boolean} true if copied, false otherwise
- */
-eYo.app.Base_p.doCopy = function(optNoNext) {
-  var brick = this.focus_main.brick
-  if (brick) {
-    this.copyBrick(brick, !optNoNext)
-    return true
-  }
-};
-
-/**
- * Send the selected brick to the front.
- * This is a job for the renderer.
- */
-eYo.app.Base_p.doFront = function() {
-  var b3k = this.focus_main.brick
-  if (b3k) {
-    b3k.sendToFront()
-  }
-}
-
-/**
- * Send the selected brick to the back.
- */
-eYo.app.Base_p.doBack = function() {
-  var b3k = this.focus_main.brick
-  if (b3k) {
-    b3k.ui.sendToBack()
-  }
-}
-
-/**
- * Scroll the board to show the selected brick.
- */
-eYo.app.Base_p.doFocus = function() {
-  var b3k = this.focus_main.brick
-  if (b3k) {
-    b3k.board.scrollBrickTopLeft(b3k.id)
-  }
+  this.clipboard.xml_ = xml
+  this.clipboard.source_ = brick.board
+  this.didCopyBrick && this.didCopyBrick(brick, xml)
 }
 
 /**
@@ -466,5 +470,41 @@ eYo.event.Mngr.eyo.methodsMerge({
       overriden()
       this.app.didUnshiftUndo()
     }
+  },
+})
+
+/**
+ * edython
+ *
+ * Copyright 2019 Jérôme LAURENS.
+ *
+ * @license EUPL-1.2
+ */
+/**
+ * @fileoverview Clipboard manager, in progress.
+ * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
+ */
+'use strict'
+
+console.error('In progress')
+
+/**
+ * 
+ */
+eYo.o3d.makeC9r(eYo.app, 'Clipboard', {
+  properties: {
+    dom: eYo.isNA,
+    xml: eYo.NA,
+    source: eYo.isNA,
+    desk: {
+      get () {
+        return this.source.desk
+      },
+    },
+    board: {
+      get () {
+        return this.desk.board
+      },
+    },
   },
 })

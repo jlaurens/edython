@@ -15,7 +15,15 @@
  * @name{eYo.board}
  * @namespace
  */
-eYo.view.makeNS(eYo, 'board')
+eYo.view.makeNS(eYo, 'board', {
+  /**
+   * Angle away from the horizontal to sweep for bricks.  Order of execution is
+   * generally top to bottom, but a small angle changes the scan to give a bit of
+   * a left to right bias.  Units are in degrees.
+   * See: http://tvtropes.org/pmwiki/pmwiki.php/Main/DiagonalBilling.
+   */
+  SCAN_ANGLE: 3, // THIS IS OBSOLETE
+})
 
 eYo.forwardDeclare('view.Workspace')
 eYo.forwardDeclare('brick.List')
@@ -23,7 +31,6 @@ eYo.forwardDeclare('geom.Metrics')
 
 //g@@g.forwardDeclare('g@@g.array')
 //g@@g.forwardDeclare('g@@g.math')
-
 
 /**
  * Class for a board. This is a data structure that contains bricks
@@ -437,14 +444,6 @@ eYo.board.Base_p.didScale = function() {
   //   this.flyout_.reflow()
   // }
 }
-
-/**
- * Angle away from the horizontal to sweep for bricks.  Order of execution is
- * generally top to bottom, but a small angle changes the scan to give a bit of
- * a left to right bias.  Units are in degrees.
- * See: http://tvtropes.org/pmwiki/pmwiki.php/Main/DiagonalBilling.
- */
-eYo.board.SCAN_ANGLE = 3
 
 /**
  * Finds the top-level bricks and returns them.  Bricks are optionally sorted

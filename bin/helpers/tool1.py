@@ -128,6 +128,10 @@ class Foo:
   re_model = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.allow(?:Path|Shortcut)\s*\(""", re.X)
 
+  # eYo.....allowPath, allowShortcut(
+  re_merge_MPA = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)\.[A^Z]\w*\.(?:methods|aliases|properties)Merge\s*\(""", re.X)
+
   # eYo.....enhancedO4t(
   re_enhanced = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.enhanced[A-Z]\w+\s*\(""", re.X)
@@ -232,6 +236,10 @@ class Foo:
           addRequired(m.group('ns'))
           continue
         m = self.re_model.match(l)
+        if m:
+          addRequired(m.group('ns'))
+          continue
+        m = self.re_merge_MPA.match(l)
         if m:
           addRequired(m.group('ns'))
           continue

@@ -56,16 +56,15 @@
         var tippies = Array.from(document.querySelectorAll('[data-tippy]'), el => el._tippy)
         var i = 0
         if (newValue) {
-          for (; i < tippies.length; ++i) {
-            var t = tippies[i]
+          for (var t in tippies) {
             if (t.state.visible) {
               t.hide()
             }
             t.disable()
           }
         } else {
-          for (; i < tippies.length; ++i) {
-            tippies[i].enable()
+          for (var t in tippies) {
+            t.enable()
           }
         }
       }
