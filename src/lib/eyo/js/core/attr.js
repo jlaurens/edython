@@ -41,7 +41,6 @@ Object.defineProperties(eYo.attr._p, {
 
 /**
  * For subclassers.
- * @param {Object} owner
  * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
@@ -52,7 +51,6 @@ eYo.attr._p.handle_model = function (_p, key, model) {
  * Create a new property based on the model
  * No need to subclass. Override `Main` and `handle_model`.
  * @param {Object} owner
- * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
  */
@@ -60,7 +58,7 @@ eYo.attr._p.new = function (owner, key, model) {
   if (!model.C9r) {
     this.modelExpand(model)
     model._starters = []
-    let _p = (model.C9r = this.makeC9r('')).prototype
+    let _p = (model.C9r = this.makeC9r('', model)).prototype
     this.handle_model(_p, key, model)
   }
   let ans = new model.C9r(owner, key, model)

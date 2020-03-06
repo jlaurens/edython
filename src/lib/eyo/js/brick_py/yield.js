@@ -39,8 +39,8 @@ eYo.expr.makeC9r('yield_expr', true, {
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var b3k = this.brick
-        b3k.from_d.requiredIncog = after === eYo.key.FROM
-        b3k.expression_d.requiredIncog = after === eYo.key.EXPRESSION
+        b3k.from_d.requiredIncog_ = after === eYo.key.FROM
+        b3k.expression_d.requiredIncog_ = after === eYo.key.EXPRESSION
       },
       xml: false
     },
@@ -87,7 +87,7 @@ eYo.expr.makeC9r('yield_expr', true, {
         }
       },
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           this.brick.variant_ = eYo.key.FROM
         }
       }
@@ -107,7 +107,7 @@ eYo.expr.makeC9r('yield_expr', true, {
       },
       wrap: eYo.t3.expr.non_void_expression_list,
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           this.brick.variant_ = eYo.key.EXPRESSION
         }
       },
@@ -135,7 +135,7 @@ eYo.expr.makeC9r('yield_expr', true, {
       },
       check: eYo.t3.expr.check.expression,
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           this.brick.variant_ = eYo.key.FROM
         }
       },

@@ -27,7 +27,7 @@ eYo.stmt.makeC9r(eYo.t3.stmt.comment_stmt, {
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var b3k = this.brick
-        b3k.comment_d.requiredIncog = after !== eYo.key.BLANK
+        b3k.comment_d.requiredIncog_ = after !== eYo.key.BLANK
       },
       fromType (type) /** @suppress {globalThis} */ {
         if (type === eYo.t3.stmt.blank_stmt) {

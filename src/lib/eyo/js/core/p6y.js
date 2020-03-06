@@ -275,7 +275,13 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
         }
       }
     } else {
-      computed || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): Missing 'builtin|property' in set (2)`)
+      if (!computed) {
+        get_m && eYo.throw(`Bad model (${prototype.eyo.name}/${key}): Missing 'builtin|property' in set (2)`)
+        prototype.getStored = prototype.getValue = eYo.noGetter(function () {
+          return `Write only ${this.owner_.eyo.name}/${key}`
+        })
+      }
+      computed || !get_m 
       prototype.setStored = prototype.setValue = prototype.resetValue = function (after) {
         try {
           this.setValue = eYo.doNothing
@@ -382,7 +388,7 @@ eYo.p6y._p.handle_stored = function (prototype, key, model) {
   let get__m = model.get_
   if (get__m === eYo.doNothing || get__m === false) {
     prototype.getStored = eYo.noGetter(function () {
-      return `Read only ${this.owner_.eyo.name}/${key}`
+      return `Write only ${this.owner_.eyo.name}/${key}`
     })
   } else if (eYo.isF(get__m)) {
     prototype.getStored = get__m.length > 0 ? function () {

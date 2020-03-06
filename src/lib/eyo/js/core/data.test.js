@@ -420,6 +420,148 @@ describe ('Tests: data', function () {
       flag += what
     }, 7, 57)
   })
+  it ('eYo.data.handle_toField', function () {
+    let ns = eYo.c9r.makeNS()
+    ns.makeBase()
+    var flag
+    let test = (f, before, after, expected) => {
+      let model = {
+        toField: f,
+      }
+      eYo.data.modelExpand(model, 'data.foo')
+      let O = new (ns.makeC9r(''))()
+      eYo.data.handle_toField(Object.getPrototypeOf(O), 'foo', model)
+      flag = 0
+      chai.expect(O.toField(before)).equal(after)
+      chai.expect(flag).equal(expected)
+    }
+    test(function (what) {
+      flag *= 100
+      flag += what
+      return 2 * what
+    }, 3, 6, 3)
+    ns.Base_p.toField = function (what) {
+      flag *= 100
+      flag += 2 * what
+      return 3 * what
+    }
+    test(function (what) {
+      flag *= 100
+      flag += what
+      return 2 * what
+    }, 3, 6, 3)
+    test(function (builtin, what) {
+      builtin(what)
+      flag *= 100
+      flag += what
+      return 2 * what
+    }, 3, 6, 603)
+    test(function (what) {
+      this.toField(what)
+      flag *= 100
+      flag += what
+      return 2 * what
+    }, 3, 6, 603)
+    test(function (builtin, what) {
+      flag *= 100
+      flag += what
+      return 2 * builtin(what)
+    }, 3, 18, 306)
+    test(function (what) {
+      flag *= 100
+      flag += what
+      return 2 * this.toField(what)
+    }, 3, 18, 306)
+  })
+  it ('eYo.data.handle_fromText', function () {
+    let ns = eYo.c9r.makeNS()
+    ns.makeBase()
+    var flag
+    let test = (f, what, expected) => {
+      let model = {
+        fromText: f,
+      }
+      eYo.data.modelExpand(model, 'data.foo')
+      let O = new (ns.makeC9r(''))()
+      eYo.data.handle_fromText(Object.getPrototypeOf(O), 'foo', model)
+      flag = 0
+      O.fromText(what)
+      chai.expect(flag).equal(expected)
+    }
+    test(function (what) {
+      flag = what
+    }, 7, 7)
+    ns.Base_p.fromText = function (what) {
+      flag *= 10
+      flag += what
+    }
+    test(function (what) {
+      flag = what
+    }, 7, 7)
+    test(function (builtin, what) {
+      builtin(5)
+      flag *= 10
+      flag += what
+    }, 7, 57)
+    test(function (what) {
+      this.fromText(5)
+      flag *= 10
+      flag += what
+    }, 7, 57)
+  })
+  it ('eYo.data.handle_toText', function () {
+    let ns = eYo.c9r.makeNS()
+    ns.makeBase()
+    var flag
+    let test = (f, before, after, expected) => {
+      let model = {
+        toText: f,
+      }
+      eYo.data.modelExpand(model, 'data.foo')
+      let O = new (ns.makeC9r(''))()
+      eYo.data.handle_toText(Object.getPrototypeOf(O), 'foo', model)
+      flag = 0
+      chai.expect(O.toText(before)).equal(after)
+      chai.expect(flag).equal(expected)
+    }
+    test(function (what) {
+      flag *= 100
+      flag += what
+      return 2 * what
+    }, 3, 6, 3)
+    ns.Base_p.toText = function (what) {
+      flag *= 100
+      flag += 2 * what
+      return 3 * what
+    }
+    test(function (what) {
+      flag *= 100
+      flag += what
+      return 2 * what
+    }, 3, 6, 3)
+    test(function (builtin, what) {
+      builtin(what)
+      flag *= 100
+      flag += what
+      return 2 * what
+    }, 3, 6, 603)
+    test(function (what) {
+      this.toText(what)
+      flag *= 100
+      flag += what
+      return 2 * what
+    }, 3, 6, 603)
+    test(function (builtin, what) {
+      flag *= 100
+      flag += what
+      return 2 * builtin(what)
+    }, 3, 18, 306)
+    test(function (what) {
+      flag *= 100
+      flag += what
+      return 2 * this.toText(what)
+    }, 3, 18, 306)
+  })
   it ('eYo.data.handle_consolidate', function () {
     let ns = eYo.c9r.makeNS()
     ns.makeBase()
@@ -482,5 +624,37 @@ describe ('Tests: data', function () {
       flag += 3 * what
       return ans
     }, 2, 6, 406)
+  })
+  it ('Data: aliases', function () {
+    /*aliases: {
+      owner: 'brick',
+      'brick.changer': 'changer',
+      'brick.type': 'brickType',
+      'brick.data': 'data',
+      'brick.ui': 'ui',
+      'brick.ui_driver': 'ui_driver',
+    },*/
+    let onr = eYo.o4t.singleton({
+      properties: {
+        changer: 1,
+        type: 2,
+        data: 3,
+        ui: 4,
+        ui_driver: 5,
+      },
+    })
+    let d = eYo.data.new(onr, 'foo', {})
+    chai.assert(d.brick_p)
+    chai.assert(d.changer_p)
+    chai.assert(d.brickType_p)
+    chai.assert(d.data_p)
+    chai.assert(d.ui_p)
+    chai.assert(d.ui_driver_p)
+    chai.expect(d.brick).equal(onr)
+    chai.expect(d.changer).equal(1)
+    chai.expect(d.brickType).equal(2)
+    chai.expect(d.data).equal(3)
+    chai.expect(d.ui).equal(4)
+    chai.expect(d.ui_driver).equal(5)
   })
 })

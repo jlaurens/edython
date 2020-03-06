@@ -55,7 +55,7 @@ eYo.expr.makeC9r('builtin__range_expr', true, {
       },
       didLoad () /** @suppress {globalThis} */ {
         this.didLoad()
-        if (this.requiredFromSaved && after !== eYo.key.STEP) {
+        if (this.required_from_saved && after !== eYo.key.STEP) {
           this.brick.variant_ = eYo.key.START
         }
       }
@@ -78,7 +78,7 @@ eYo.expr.makeC9r('builtin__range_expr', true, {
       },
       didLoad () /** @suppress {globalThis} */ {
         this.didLoad()
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           this.brick.variant_ = eYo.key.STEP
         }
       }

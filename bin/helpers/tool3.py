@@ -102,7 +102,7 @@ class HTML:
       ans = ans.replace('PATH_ROOT/', root)
     return ans
 
-  def body(root, eyo):
+  def body(root, js):
     return f'''    <link rel="stylesheet" href="{root}node_modules/mocha/mocha.css">
   </head>
   <body style="background-color: snow">
@@ -113,10 +113,10 @@ class HTML:
     <script  type="text/javascript">//<![CDATA[
 mocha.setup('bdd')
 eYo.path_root = '{root}'
-eYo.path_eyo = '{eyo}'
+eYo.path_js = '{js}'
 //]]></script>
-    <script src="{eyo}js/test/chai_extension.js"></script>
-    <script src="{eyo}js/test/common.test.js"></script>
+    <script src="{js}/test/chai_extension.js"></script>
+    <script src="{js}/test/common.test.js"></script>
 '''
 
   def test(basename):
@@ -159,15 +159,14 @@ def updateWebTests():
     try:
       relative = path_test.relative_to(path_root)
       root = '../' * (len(relative.parts) - 1)
-      relative = path_test.relative_to(path_eyo)
-      eyo = '../' * (len(relative.parts) - 1)
-      path_base = path_test.with_suffix('').with_suffix('')
-      basename = path_base.stem
       lines = [
         HTML.head(root),
         HTML.deps(path_deps, root),
-        HTML.body(root, eyo),
       ]
+      relative = path_test.relative_to(path_js)
+      js = '../' * len(relative.parts)
+      lines.append(HTML.body(root, js))
+      path_base = path_test.with_suffix('').with_suffix('')
       basename = path_base.stem
       lines.append(HTML.test(basename))
       lines.append(HTML.mocha(root))
@@ -207,17 +206,18 @@ def updateWebTestWrappers():
 
   # Now local test files
   for path_test in dirs:
+    # path_test is path_js/.../
     tests = list(path_test.glob('*.test.js'))
     if (len(tests)):
       relative = path_test.relative_to(path_root)
       root = '../' * len(relative.parts)
-      relative = path_test.relative_to(path_eyo)
-      eyo = '../' * (len(relative.parts) - 1)
       lines = [
         HTML.head(root),
         HTML.deps(path_deps, root),
       ]
-      lines.append(HTML.body(root, eyo)),
+      relative = path_test.relative_to(path_js)
+      js = '../' * len(relative.parts)
+      lines.append(HTML.body(root, js)),
       for f in tests:
         # f : path_test/foo.test.js
         # 
@@ -246,13 +246,13 @@ def updateWebTestWrappers():
     if (len(tests)):
       relative = path_test.relative_to(path_root)
       root = '../' * len(relative.parts)
-      relative = path_test.relative_to(path_eyo)
-      eyo = '../' * len(relative.parts)
       lines = [
         HTML.head(root),
         HTML.deps(path_deps, root),
       ]
-      lines.append(HTML.body(root, eyo))
+      relative = path_test.relative_to(path_js)
+      js = '../' * len(relative.parts)
+      lines.append(HTML.body(root, js))
       for f in tests:
         lines.append(HTML.script(f.relative_to(path_test)))
       lines.append(HTML.mocha(root))

@@ -416,7 +416,7 @@ eYo.stmt.group.makeInheritedC9r('funcdef_part', true, {
       init: null,
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
-        this.brick.type_s.requiredIncog = after === eYo.key.TYPE
+        this.brick.type_s.requiredIncog_ = after === eYo.key.TYPE
       }
     },
     name: {
@@ -476,7 +476,7 @@ eYo.stmt.group.makeInheritedC9r('classdef_part', true, {
       init: eYo.key.NONE,
       synchronize (builtin, after) /** @suppress {globalThis} */{
         builtin()
-        this.brick.n_ary_s.requiredIncog = after === eYo.key.N_ARY
+        this.brick.n_ary_s.requiredIncog_ = after === eYo.key.N_ARY
       },
       xml: false
     },
@@ -513,7 +513,7 @@ eYo.stmt.group.makeInheritedC9r('classdef_part', true, {
       },
       wrap: eYo.t3.expr.argument_list,
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           this.brick.variant_ = eYo.key.N_ARY
         }
       }

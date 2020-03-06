@@ -11,8 +11,6 @@
  */
 'use strict'
 
-eYo.require('do.register')
-
 /**
  * @name {eYo.module}
  * @namespace
@@ -220,12 +218,12 @@ eYo.module.Base_p.forEachItemWithType = function (type, handler) {
 }
 
 // Each model loaded comes here
-eYo.do.register.add(eYo.module, 'module')
+eYo.register.add(eYo.module, 'module')
 
 /**
  * Each item has a link to the module it belongs to.
  */
-eYo.module.Item_p.module = new eYo.module.Base(eYo.module)
+eYo.module.Item_p.module = eYo.module.new(eYo.module)
 
 /**
  * Collect here all the types

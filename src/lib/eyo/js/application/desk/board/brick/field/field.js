@@ -33,9 +33,9 @@ Object.defineProperties(eYo.field, {
   let endEditing = function () {
     var data = this.data
     eYo.assert(data, `No data bound to field ${this.name}/${this.brick.type}`)
-    var result = this.validate(this.text)
-    if (result) {
-      data.fromField(result)
+    var ans = this.validate(this.text)
+    if (ans) {
+      data.fromField(ans)
     } else {
       this.text = data.toText()
     }

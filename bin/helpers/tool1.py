@@ -116,13 +116,21 @@ class Foo:
   re_setup = re.compile(r"""^\s*
   (?P<required>eYo\.setup)\.register\s*\(""", re.X)
 
+  # eYo.register.add(
+  re_register = re.compile(r"""^\s*
+  (?P<required>eYo\.register)\.add\s*\(""", re.X)
+
   # eYo.....merge(
   re_merge = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.(?:[a-z]\w*M|m)erge \s*\(""", re.X)
 
-  # eYo.....merge(
+  # eYo.....allowPath, allowShortcut(
   re_model = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.allow(?:Path|Shortcut)\s*\(""", re.X)
+
+  # eYo.....enhancedO4t(
+  re_enhanced = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)\.enhanced[A-Z]\w+\s*\(""", re.X)
 
   pathByProvided = {}
   nsByClass = {}
@@ -215,6 +223,10 @@ class Foo:
         if m:
           addRequired(m.group('required'))
           continue
+        m = self.re_register.match(l)
+        if m:
+          addRequired(m.group('required'))
+          continue
         m = self.re_merge.match(l)
         if m:
           addRequired(m.group('ns'))
@@ -222,6 +234,10 @@ class Foo:
         m = self.re_model.match(l)
         if m:
           addRequired(m.group('ns'))
+          continue
+        m = self.re_enhanced.match(l)
+        if m:
+          addRequired('eYo.o4t')
           continue
         ns = key = superKey = None
         def parse_args(suite):

@@ -58,7 +58,7 @@ eYo.expr.builtin__range_expr.makeInheritedC9r('random__randrange', true, {
       },
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
-        this.requiredIncog = after > 0
+        this.requiredIncog_ = after > 0
       },
       fromType (type) /** @suppress {globalThis} */ {
         var item = this.brick.item

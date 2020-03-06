@@ -80,10 +80,10 @@ eYo.stmt.makeC9r('import_stmt', true, {
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var b3k = this.brick
-        b3k.import_module_d.requiredIncog = after === eYo.key.IMPORT
-        b3k.from_d.requiredIncog = after !== eYo.key.IMPORT
-        b3k.import_d.requiredIncog = after === eYo.key.FROM_MODULE_IMPORT
-        b3k.import_star_s.requiredIncog = after === eYo.key.FROM_MODULE_IMPORT_STAR
+        b3k.import_module_d.requiredIncog_ = after === eYo.key.IMPORT
+        b3k.from_d.requiredIncog_ = after !== eYo.key.IMPORT
+        b3k.import_d.requiredIncog_ = after === eYo.key.FROM_MODULE_IMPORT
+        b3k.import_star_s.requiredIncog_ = after === eYo.key.FROM_MODULE_IMPORT_STAR
       }
     },
     import_module: {
@@ -205,7 +205,7 @@ eYo.stmt.makeC9r('import_stmt', true, {
         ]
       },
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           var b3k = this.brick
           if (b3k.variant === eYo.key.IMPORT) {
             // STAR of not ?
@@ -235,7 +235,7 @@ eYo.stmt.makeC9r('import_stmt', true, {
       },
       promise: eYo.t3.expr.non_void_import_identifier_as_list,
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           this.brick.variant_ = eYo.key.FROM_MODULE_IMPORT
         }
       },
@@ -273,7 +273,7 @@ eYo.stmt.makeC9r('import_stmt', true, {
   }
 })
 
-eYo.do.register.add(eYo.stmt, 'import', function (b3k) {
+eYo.register.add(eYo.stmt, 'import', function (b3k) {
   return !b3k.isInFlyout
 })
 

@@ -356,7 +356,7 @@ eYo.expr.makeC9r('proper_slice', true, {
       validate: true,
       didChange (builtin, after) /** @suppress {globalThis} */ {
         builtin()
-        this.brick.stride_d.requiredIncog = after === eYo.key.STRIDE
+        this.brick.stride_d.requiredIncog_ = after === eYo.key.STRIDE
       },
       xml: false
     },
@@ -391,7 +391,7 @@ eYo.expr.makeC9r('proper_slice', true, {
         }
       },
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           this.brick.variant_ = eYo.key.STRIDE
         }
       }
@@ -433,7 +433,7 @@ eYo.expr.makeC9r('proper_slice', true, {
       check: eYo.t3.expr.check.expression,
       optional: true,
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           this.brick.variant_ = eYo.key.STRIDE
         }
       }

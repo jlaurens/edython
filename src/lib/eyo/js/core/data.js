@@ -108,6 +108,24 @@ eYo.attr.makeNS(eYo, 'data')
  * @param {Object} model
  */
 eYo.data._p.handle_model = function (_p, key, model) {
+  if (key === 'variant' || key === 'option' || key === 'subtype') {
+    model.xml = false
+  }
+  /**
+    * Get the value of the data.
+    * One shot.
+    */
+  let getLazyValue = eYo.decorate.reentrant('get', function () {
+    if (!eYo.isDef(this.stored__)) {
+      this.setFiltered_(this.model.init.call(this.owner))
+    }
+    return this.stored__
+  })
+  model._starters.push(ans => (ans.get = getLazyValue))
+  this.handle_toField(_p, key, model)
+  this.handle_toText(_p, key, model)
+  this.handle_fromField(_p, key, model)
+  this.handle_fromText(_p, key, model)
   this.handle_filter(_p, key, model)
   this.handle_validate(_p, key, model)
   this.handle_synchronize(_p, key, model)
@@ -173,6 +191,120 @@ eYo.data._p.handle_fromField = function (prototype, key, model) {
           f_m.call(this, ...$)
         } finally {
           delete this.fromField
+        }
+      }
+    }
+  } else {
+    f_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}): ${f_m}`)
+  }
+}
+
+/**
+ * make the prototype's toField method based on the model's object for key toField.
+ * The prototype may inherit a toField method.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.data._p.handle_toField = function (prototype, key, model) {
+  /**
+   * Returns the text representation of the data.
+   * Called during synchronization.
+   */
+  let f_m = model.toField
+  if (eYo.isF(f_m)) {
+    let f_s = prototype.eyo.C9r_s.toField
+    if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+      prototype.toField = eYo.decorate.reentrant(function (...$) {
+        return f_m.call(this, (...$) => {
+          return f_s.call(this, ...$)
+        }, ...$)
+      } )
+    } else {
+      prototype.toField = function (...$) {
+        try {
+          this.toField = f_s
+          return f_m.call(this, ...$)
+        } finally {
+          delete this.toField
+        }
+      }
+    }
+  } else {
+    f_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}): ${f_m}`)
+  }
+}
+
+/**
+ * make the prototype's fromText method based on the model's object for key fromText.
+ * The prototype may inherit a fromText method.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.data._p.handle_fromText = function (prototype, key, model) {
+  /**
+   * Set the value from the given text representation
+   * as text field content.
+   * In general, the given text either was entered by a user in a text field ot read from a persistent text formatted storage.
+   * Calls the javascript model, reentrant.
+   * Does nothing when the actual value and
+   * the actual argument are the same.
+   * @param {Object} txt
+   * @param {boolean=} dontValidate
+   */
+  let f_m = model.fromText
+  if (eYo.isF(f_m)) {
+    let f_s = prototype.eyo.C9r_s.fromText
+    if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+      prototype.fromText = eYo.decorate.reentrant(function (...$) {
+        f_m.call(this, (...$) => {
+          f_s.call(this, ...$)
+        }, ...$)
+      } )
+    } else {
+      prototype.fromText = function (...$) {
+        try {
+          this.fromText = f_s
+          f_m.call(this, ...$)
+        } finally {
+          delete this.fromText
+        }
+      }
+    }
+  } else {
+    f_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}): ${f_m}`)
+  }
+}
+
+/**
+ * make the prototype's toText method based on the model's object for key toText.
+ * The prototype may inherit a toText method.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.data._p.handle_toText = function (prototype, key, model) {
+  /**
+   * Returns the text representation of the data.
+   * Called during synchronization.
+   */
+  let f_m = model.toText
+  if (eYo.isF(f_m)) {
+    let f_s = prototype.eyo.C9r_s.toText
+    if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+      prototype.toText = eYo.decorate.reentrant(function (...$) {
+        return f_m.call(this, (...$) => {
+          return f_s.call(this, ...$)
+        }, ...$)
+      } )
+    } else {
+      prototype.toText = function (...$) {
+        try {
+          this.toText = f_s
+          return f_m.call(this, ...$)
+        } finally {
+          delete this.toText
         }
       }
     }
@@ -413,8 +545,12 @@ eYo.data.makeBase({
       this.attributeName = (xml && xml.attribute) || key
     }
   },
+})
+
+eYo.data.enhancedO4t()
+
+eYo.data.Base.eyo.modelMerge({
   aliases: {
-    owner: 'brick',
     'brick.changer': 'changer',
     'brick.type': 'brickType',
     'brick.data': 'data',
@@ -422,14 +558,21 @@ eYo.data.makeBase({
     'brick.ui_driver': 'ui_driver',
   },
   properties: {
+    brick: {
+      get () {
+        return this.owner
+      },
+    },
     key: eYo.NA,
     value: eYo.NA,
+    required_from_model: false,
     /**
      * Disabled data correspond to disabled input.
      * Changing this value will cause an UI synchronization and a change count.
      */
     incog: {
-      value: false,
+      after: ['required_from_model', 'changer'],
+      lazy: false,
       set (after) {
         if (!eYo.isDef(after)) {
           after = !this.required_from_model_
@@ -448,47 +591,26 @@ eYo.data.makeBase({
       }
     },
     requiredIncog: {
+      after: ['required_from_model'],
       set (after) {
         this.incog_ = !(this.required_from_model_ = after)
       }
     },
-    required_from_model: false
+    required_from_type: false,
+    /**
+     * Get the concrete required status.
+     * For edython.
+     */
+    required_from_saved: {
+      after: ['required_from_model', 'required_from_type'],
+      get () {
+        return this.required_from_model || this.get().length || this.required_from_type
+      },
+    },
   },
 })
 
 ;(() => {
-  /**
-  * Get the value of the data.
-  * Never call it dierctly
-  * One shot.
-  */
- let getLazyValue = eYo.decorate.reentrant('get', function () {
-    if (!eYo.isDef(this.stored__)) {
-      this.internalSet(this.model.init.call(this.owner))
-    }
-    return this.stored__
-  })
-
-  /**
-   * This is the recommanded method to create new data objects.
-   * One data model, one class.
-   * @param{eYo.brick.Base} brick - the owner
-   * @param{String} key - the unique data identifier
-   * @param{Object} model - the data model
-   */
-  eYo.data._p.new = function (brick, key, model) {
-    if (!model.C9r) {
-      let _p = (model.C9r = this.makeC9r('')).prototype
-      this.handle_data(brick, _p, key, model)
-      if (key === 'variant' || key === 'option' || key === 'subtype') {
-        model.xml = false
-      }
-    }
-    let ans = new model.C9r(owner, key, model)
-    ans.get = getLazyValue
-    return ans
-  }
-
   let _p = eYo.data.Base_p
 
   /**
@@ -501,9 +623,8 @@ eYo.data.makeBase({
   /**
    * Set the value with no extra task except hooks before, during and after the change.
    * @param {Object} after
-   * @param {Boolean} notUndoable
    */
-  _p.rawSet = function (after, notUndoable) {
+  _p.setRaw_ = function (after) {
     var before = this.stored__
     if (before !== after) {
       this.changer.begin()
@@ -529,7 +650,7 @@ eYo.data.makeBase({
    * item in the `getAll()` array.
    * @param {Object} after
    */
-  _p.internalSet = function (after) {
+  _p.setFiltered_ = function (after) {
     if (eYo.isStr(after)) {
       var x = this.model[after]
       !x || !eYo.isF(after) || (after = x)
@@ -540,7 +661,7 @@ eYo.data.makeBase({
         after = x
       }
     }
-    this.rawSet(after)
+    this.setRaw_(after)
   }
 
   /**
@@ -550,7 +671,7 @@ eYo.data.makeBase({
    * @param {Object} type
    */
   _p.setWithType = eYo.decorate.reentrant('setWithType', function (type) {
-    this.internalSet(this.model.fromType.call(this.owner, type))
+    this.setFiltered_(this.model.fromType.call(this.owner, type))
   })
 
   /**
@@ -596,21 +717,16 @@ eYo.data.makeBase({
    * @param {Object} [after]
    */
   _p.toText = function () {
-    var f = eYo.decorate.reentrant_method(this, 'toText', this.model.toText)
-    var result = this.get()
-    if (f) {
-      return eYo.whenVALID(f.call(this, result))
+    var ans = this.get()
+    if (eYo.isNum(ans)) {
+      ans = ans.toString()
     }
-    if (eYo.isNum(result)) {
-      result = result.toString()
-    }
-    return result || ''
+    return ans || ''
   }
 
   /**
    * Returns the text representation of the data.
    * Called during synchronization.
-   * @param {Object} [after]
    */
   _p.toField = function () {
     var f = eYo.decorate.reentrant_method(this, 'toField', this.model.toField || this.model.toText)
@@ -658,34 +774,14 @@ eYo.data.makeBase({
    * @param {Object} txt
    * @param {boolean=} dontValidate
    */
-  _p.fromText = function (txt, validate = true) {
-    if (!this.model_fromText_lock) {
-      var f = eYo.decorate.reentrant_method(this, 'model_fromText', this.model.fromText)
-      if (f) {
-        eYo.whenVALID(f.apply(this, arguments), ans => {
-          this.doChange(ans, validate)
-        })
-        return
-      }
-    }
+  _p.fromText = function (txt, dontValidate) {
     if (txt.length && !this.model.isText) {
       var n = Number(txt)
       if (!isNaN(n)) {
         txt = n
       }
     }
-    if (!validate) {
-      this.doChange(txt, false)
-    } else if (this.stored__ !== txt) {
-      let v7d = this.validate(txt)
-      if (eYo.isVALID(v7d)) {
-        this.error = false
-      } else {
-        this.error = true
-        v7d = txt
-      }
-      this.setTrusted_(v7d)
-    }
+    this.setUntrusted_(txt, dontValidate)
   }
 
   /**
@@ -698,18 +794,7 @@ eYo.data.makeBase({
    * @param {boolean=} dontValidate
    */
   _p.fromField = function (txt, dontValidate) {
-    if (dontValidate) {
-      this.set(txt)
-    } else if (this.stored__ !== txt) {
-      var v7d = this.validate(txt)
-      if (!v7d || !eYo.isVALID(v7d)) {
-        this.error = true
-        v7d = txt
-      } else {
-        this.error = false
-      }
-      this.setTrusted_(v7d)
-    }
+    this.setUntrusted_(txt, dontValidate)
   }
 
   /**
@@ -884,8 +969,29 @@ eYo.data.makeBase({
    * @param {Object} after
    * @param {Boolean} noRender
    */
+  _p.setUntrusted_ = function (after, dontValidate) {
+    if (dontValidate) {
+      this.doChange(after, false)
+    } else if (this.stored__ !== after) {
+      var v7d = this.validate(after)
+      if (!v7d || !eYo.isVALID(v7d)) {
+        this.error = true
+        v7d = after
+      } else {
+        this.error = false
+      }
+      this.setTrusted_(v7d)
+    }
+  }
+
+  /**
+   * set the value of the property without any validation.
+   * This is overriden by the events module.
+   * @param {Object} after
+   * @param {Boolean} noRender
+   */
   _p.setTrusted_ = function (after) {
-    this.internalSet(after)
+    this.setFiltered_(after)
   }
 
   /**
@@ -1156,14 +1262,6 @@ eYo.data.makeBase({
   _p.willLoad = _p.didLoad = eYo.doNothing
 
   /**
-   * Get the concrete required status.
-   * For edython.
-   */
-  _p.isRequiredFromSaved = function () {
-    return this.required_from_model || this.get().length || this.required_from_type
-  }
-
-  /**
    * Clean the required status, changing the value if necessary.
    * For edython.
    * @param {Function} do_it
@@ -1184,7 +1282,7 @@ eYo.data.makeBase({
    * @param {function()} helper
    */
   _p.whenRequiredFromSaved = function (helper) {
-    if (this.requiredFromSaved) {
+    if (this.required_from_saved) {
       this.required_from_model_ = false
       if (eYo.isF(helper)) {
         helper.call(this)

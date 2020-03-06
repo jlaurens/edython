@@ -14,10 +14,10 @@
 'use strict'
 
 /**
- * @name {eYo.do.register}
+ * @name {eYo.register}
  * @namespace
  */
-eYo.do.makeNS('register')
+eYo.do.makeNS(eYo, 'register')
 
 /**
  * Adds `fooRegister` and `fooUnregister` methods, and
@@ -29,10 +29,10 @@ eYo.do.makeNS('register')
  * @param {String} key - The unique key prefixing the added methods
  * @param {Function} filter - The function to filter out objects before registering.
  */
-eYo.do.register.add = function (object, key, filter) {
+eYo.register.add = function (object, key, filter) {
   let k = key + 'Registered'
   if (eYo.isC9r(object)) {
-    eYo.isSubclass(object, eYo.o4t.Base) || eYo.throw(`Not an eYo.o4t.Base subclass.`)
+    eYo.isF(object.eyo.propertiesMerge) || eYo.throw(`Not a proper subclass.`)
     object.eyo.propertiesMerge({
       [k] () {
         return new Set()

@@ -150,13 +150,13 @@ eYo.expr.makeC9r('Starred', {
       },
       fromType (type) /** @suppress {globalThis} */ {
         // the `didLoad` will be performed afterwards.
-        this.required_from_type = type !== eYo.t3.expr.star
+        this.required_from_type_ = type !== eYo.t3.expr.star
       },
       didLoad () /** @suppress {globalThis} */ {
         this.brick.variant_ = this.required_from_type || this.required_from_model
           ? eYo.key.NONE
           : eYo.key.STAR
-        this.required_from_type = false
+        this.required_from_type_ = false
       }
     }
   },

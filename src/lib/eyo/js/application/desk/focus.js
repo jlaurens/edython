@@ -110,17 +110,17 @@ eYo.focus.makeC9r('Main', {
     mngr: eYo.NA,
     ui: {
       init () {
-        this.mngrForEach(m => m.initUI())
+        this.owner.mngrForEach(m => m.initUI())
       },
       dispose () {
-        this.mngrForEach(m => m.disposeUI())
+        this.owner.mngrForEach(m => m.disposeUI())
       },
     },
   },
 })
 
 // Each newly created focus manager comes here
-eYo.do.register.add(eYo.focus.Main, 'mngr')
+eYo.register.add(eYo.focus.Main, 'mngr')
 
 /**
  * Dispose of the 

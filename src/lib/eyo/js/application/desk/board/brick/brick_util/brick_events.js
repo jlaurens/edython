@@ -398,6 +398,7 @@ eYo.event.BrickMove_p.run = function(forward) {
     }
   }
 }
+
 eYo.data.Base.eyo.methodsMerge({
   /**
    * set the value of the property,
@@ -435,12 +436,12 @@ eYo.data.Base.eyo.methodsMerge({
    * This is the reason why we consolidate the type before the undo change is recorded.
    * @param {Object} after
    */
-  setTrusted_ (after) {
+  setRaw_ (after) {
     var before = this.stored__
     if (before !== after) {
       try {
-        this.setTrusted_ = eYo.doNothing
-        this.brick.changer.wrap(() => { // catch `this`
+        this.setRaw_ = eYo.doNothing
+        this.changer.wrap(() => { // catch `this`
           eYo.event.groupWrap(() => { // catch `this`
             this.beforeChange(before, after)
             try {
@@ -456,7 +457,7 @@ eYo.data.Base.eyo.methodsMerge({
           })
         })
       } finally {
-        delete this.setTrusted_
+        delete this.setRaw_
       }
     }
   },

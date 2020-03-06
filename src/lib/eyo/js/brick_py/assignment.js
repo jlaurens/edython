@@ -58,9 +58,9 @@ eYo.stmt.makeC9r('assignment_stmt', true, {
       synchronize (builtin, after) /** @suppress {globalThis} */ {
         builtin()
         var b3k = this.brick
-        b3k.target_d.requiredIncog = after !== eYo.key.VALUED && after !== eYo.key.EXPRESSION
-        b3k.annotated_d.requiredIncog = after === eYo.key.ANNOTATED || after === eYo.key.ANNOTATED_VALUED
-        b3k.value_d.requiredIncog = after === eYo.key.TARGET_VALUED || after === eYo.key.ANNOTATED_VALUED || after === eYo.key.VALUED || after === eYo.key.EXPRESSION
+        b3k.target_d.requiredIncog_ = after !== eYo.key.VALUED && after !== eYo.key.EXPRESSION
+        b3k.annotated_d.requiredIncog_ = after === eYo.key.ANNOTATED || after === eYo.key.ANNOTATED_VALUED
+        b3k.value_d.requiredIncog_ = after === eYo.key.TARGET_VALUED || after === eYo.key.ANNOTATED_VALUED || after === eYo.key.VALUED || after === eYo.key.EXPRESSION
       },
       isChanging (builtin, after) /** @suppress {globalThis} */ {
         var b3k = this.brick
@@ -120,7 +120,7 @@ eYo.stmt.makeC9r('assignment_stmt', true, {
         }
       },
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           var b3k = this.brick
           var v = b3k.Variant_p
           if (v === eYo.key.EXPRESSION) {
@@ -138,7 +138,7 @@ eYo.stmt.makeC9r('assignment_stmt', true, {
       didLoad () /** @suppress {globalThis} */ {
         var b3k = this.brick
         var v = b3k.Variant_p
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           if (v === eYo.key.VALUED || v === eYo.key.TARGET_VALUED) {
             b3k.variant_ = eYo.key.ANNOTATED_VALUED
             b3k.Operator_p = '='
@@ -210,7 +210,7 @@ eYo.stmt.makeC9r('assignment_stmt', true, {
         }
       },
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           var b3k = this.brick
           var v = b3k.Variant_p
           if (v === eYo.key.ANNOTATED) {
@@ -239,7 +239,7 @@ eYo.stmt.makeC9r('assignment_stmt', true, {
       },
       wrap: eYo.t3.expr.target_list,
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           var b3k = this.brick
           var v = b3k.Variant_p
           if (v === eYo.key.EXPRESSION) {
@@ -273,7 +273,7 @@ eYo.stmt.makeC9r('assignment_stmt', true, {
         attr: ':'
       },
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           var b3k = this.brick
           var v = b3k.Variant_p
           if (v === eYo.key.TARGET || v === eYo.key.EXPRESSION) {
@@ -298,7 +298,7 @@ eYo.stmt.makeC9r('assignment_stmt', true, {
       },
       wrap: eYo.t3.expr.value_list,
       didLoad () /** @suppress {globalThis} */ {
-        if (this.requiredFromSaved) {
+        if (this.required_from_saved) {
           var b3k = this.brick
           var v = b3k.Variant_p
           if (v === eYo.key.ANNOTATED) {

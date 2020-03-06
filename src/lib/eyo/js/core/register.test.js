@@ -1,10 +1,10 @@
 describe ('Tests: register', function () {
   it ('Register: basic', function () {
-    chai.assert(eYo.do.register)
+    chai.assert(eYo.register)
   })
   it ('Register: object', function () {
     let o = {}
-    eYo.do.register.add(o, 'foo')
+    eYo.register.add(o, 'foo')
     chai.assert(o.fooRegister)
     chai.assert(o.fooUnregister)
     chai.assert(o.fooForEach)
@@ -36,13 +36,14 @@ describe ('Tests: register', function () {
   it ('Register: C9r(1)', function () {
     let ns = eYo.c9r.makeNS()
     ns.makeBase()
-    chai.expect(() => eYo.do.register.add(ns.Base, 'foo')).throw()
+    chai.expect(() => eYo.register.add(ns.Base, 'foo')).throw()
   })
   it ('Register: C9r(2)', function () {
     let ns = eYo.o3d.makeNS()
     ns.makeBase()
-    eYo.do.register.add(ns.Base, 'foo')
-    let o = new ns.Base()
+    eYo.register.add(ns.Base, 'foo')
+    let onr = {}
+    let o = new ns.Base(onr)
     chai.assert(o.fooRegister)
     chai.assert(o.fooUnregister)
     chai.assert(o.fooForEach)

@@ -106,7 +106,7 @@ describe ('Tests: Object', function () {
         },
       }
     })
-    chai.expect(Object.keys(O.eyo.properties).length).equal(3)
+    ;['foo', 'bar', 'chi'].forEach(k => chai.expect(Object.keys(O.eyo.properties)).include(k))
     var o = new O()
     chai.assert(o.foo_p)
     chai.expect(o.foo_p.owner).equal(o)
@@ -881,5 +881,24 @@ describe ('Tests: Object', function () {
     })
     chai.expect(ns.foo).equal(421)
     chai.assert(!eYo._p.hasOwnProperty('foo'))
+  })
+  it ('O4t: eYo.o4t.makeC9r("", ...)', function () {
+    let model = {
+      properties: {
+        foo: 421,
+      },
+    }
+    let C9r = eYo.o4t.makeC9r('', model)
+    let o = new C9r()
+    chai.expect(o.foo).equal(421)
+  })
+  it ('O4t: eYo.o4t.singleton(...)', function () {
+    let model = {
+      properties: {
+        foo: 421,
+      },
+    }
+    let o = eYo.o4t.singleton(model)
+    chai.expect(o.foo).equal(421)
   })
 })

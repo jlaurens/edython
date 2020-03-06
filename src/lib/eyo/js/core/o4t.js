@@ -59,11 +59,11 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
       let model = properties[k]
       if (model.after) {
         if (eYo.isStr(model.after)) {
-          if (!done.includes(model.after)) {
+          if (!done.includes(model.after) && todo.includes(model.after)) {
             again.push(k)
             continue
           }
-        } else if (model.after.some(k => !done.includes(k))) {
+        } else if (model.after.some(k => (!done.includes(k) && todo.includes(k)))) {
           again.push(k)
           continue
         }
@@ -113,9 +113,9 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
   }
 }
 
-;(() => {
-  let _p = eYo.o4t.Dlgt_p
-
+eYo.c9r._p.enhancedO4t = function () {
+  let _p = this.Dlgt_p
+  _p.propertiesMerge && eYo.throw(`Already propertiesMerge`)
   /**
    * Extends the properties of the associate constructor.
    * @param {Object} properties -  A properties model
@@ -125,7 +125,8 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
     delete this.properties
     this.forEachSubC9r(C9r => C9r.eyo.propertiesMerge({})) // force to recalculate the `properties` list.
     ;(this.ns || eYo.model).modelExpand(properties, 'properties')
-    for (var k in properties) {
+    this.properties__ || (this.properties__ = Object.create(null))
+    for (let k in properties) {
       this.properties__[k] = properties[k]
     }
   }
@@ -171,7 +172,7 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
    * @param {Object} object -  object is an instance of a subclass of the `C9r` of the receiver
    */
   _p.prepareProperties = function (object) {
-    if (this.keys_p__) {
+    if (eYo.isDef(this.keys_p__)) {
       this.keys_p__.some(k_p => {
         let k = k_p.substring(0, k_p.length-2)
         let p = eYo.p6y.new(object, k, this.properties[k])
@@ -233,6 +234,7 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
     }
     Object.defineProperties(this.C9r_p, {
       [alias + '_p']: eYo.descriptorR(function () {
+        this[key_p] || eYo.throw(`Unknown ${key_p} in ${this.eyo.name}`)
         return this[key_p].value__[source_p]
       }),
       [alias]: eYo.descriptorR(get),
@@ -261,6 +263,9 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
     }
     let source_p = components[0] + '_p'
     let get = function () {
+      if (!this[source_p]) {
+        eYo.throw(`No ${source_p} in ${this.eyo.name}`)
+      }
       return this[source_p].value
     }
     let alias_p = alias + '_p'
@@ -412,23 +417,25 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
       })
     }
   }
-})()
+  /**
+   * Executes the helper for each owned property.
+   * @param{Function} f -  an helper with one argument which is the owned value.
+   */
+  this.Base_p.ownedForEach = function (f) {
+    this.eyo.propertyForEach(this, f, true)
+  }
 
-/**
- * Executes the helper for each owned property.
- * @param{Function} f -  an helper with one argument which is the owned value.
- */
-eYo.o4t.Base_p.ownedForEach = function (f) {
-  this.eyo.propertyForEach(this, f, true)
+  /**
+   * Executes the helper for each owned property stopping at the first truthy answer.
+   * @param{Function} f -  an helper with one argument which is the owned value.
+   */
+  this.Base_p.ownedSome = function (f) {
+    return this.eyo.propertySome(this, f, true)
+  }
 }
 
-/**
- * Executes the helper for each owned property stopping at the first truthy answer.
- * @param{Function} f -  an helper with one argument which is the owned value.
- */
-eYo.o4t.Base_p.ownedSome = function (f) {
-  return this.eyo.propertySome(this, f, true)
-}
+eYo.o4t.enhancedO4t()
+
 
 /**
  * Declares a model to be used by others. 
@@ -450,4 +457,14 @@ eYo.o4t._p.modelDeclare = function (key, model) {
   _p[key] = function (C9r) {
     C9r.eyo.modelMerge(model)
   }
+}
+
+/**
+ * Create a new property based on the model
+ * No need to subclass. Override `Main` and `handle_model`.
+ * @param {Object} model
+ */
+eYo.o4t._p.singleton = function (model) {
+  this.modelExpand(model)
+  return new (this.makeC9r('', model))()
 }

@@ -230,7 +230,7 @@ eYo.slot.makeBase({
      * For edython.
      * @param {boolean} after
      */
-    requiredFromSaved: {
+    required_from_saved: {
       get () {
         var t9k = this.targetBrick
         if (t9k) {

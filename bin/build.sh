@@ -76,7 +76,6 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/other/db.js" \
 --js "src/lib/eyo/js/py/py.js" \
 --js "src/lib/eyo/js/core/t3.js" \
---js "src/lib/eyo/js/core/data.js" \
 --js "src/lib/eyo/js/core/p6y.js" \
 --js "src/lib/eyo/js/py/bitset.js" \
 --js "src/lib/eyo/js/py/grammar.js" \
@@ -86,6 +85,7 @@ java -jar "$COMPILER"\
 --js "src/lib/eyo/js/core/o4t.js" \
 --js "src/lib/eyo/Python/graminit.js" \
 --js "src/lib/eyo/js/application/desk/board/brick/brick_util/node_brick.js" \
+--js "src/lib/eyo/js/core/data.js" \
 --js "src/lib/eyo/js/core/geometry.js" \
 --js "src/lib/eyo/js/core/o3d.js" \
 --js "src/lib/eyo/js/core/change_count.js" \
