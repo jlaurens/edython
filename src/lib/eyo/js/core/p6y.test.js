@@ -75,28 +75,55 @@ describe ('Tests: Property', function () {
         this.flag = after
       },
     })
-    p.value__ = 123
-    chai.expect(onr.flag).equal(123)
+    p.value_ = 421
+    chai.expect(onr.flag).equal(421)
+    var p = eYo.p6y.new(onr, 'foo', {
+      validate (before, after) {
+        this.flag = before * 1000 + after
+        return after
+      },
+    })
+    p.value_ = 123
+    p.value_ = 666
+    chai.expect(onr.flag).equal(123666)
     var p = eYo.p6y.new(onr, 'foo', {
       validate (after) {
         return (this.flag = after)
       },
     })
-    p.value__ = 421
+    p.value_ = 421
     chai.expect(onr.flag).equal(421)
     var p = eYo.p6y.new(onr, 'foo', {
-      willChange (after) {
-        return (this.flag = after)
+      willChange (before, after) {
+        this.flag = before * 1000 + after
+        return after
       },
     })
-    p.value__ = 123
-    chai.expect(onr.flag).equal(123)
+    p.value_ = 123
+    p.value_ = 666
+    chai.expect(onr.flag).equal(123666)
     var p = eYo.p6y.new(onr, 'foo', {
       willChange (after) {
         return (this.flag = after)
       },
     })
-    p.value__ = 421
+    p.value_ = 421
+    chai.expect(onr.flag).equal(421)
+    var p = eYo.p6y.new(onr, 'foo', {
+      didChange (before, after) {
+        this.flag = before * 1000 + after
+        return after
+      },
+    })
+    p.value_ = 123
+    p.value_ = 666
+    chai.expect(onr.flag).equal(123666)
+    var p = eYo.p6y.new(onr, 'foo', {
+      didChange (after) {
+        return (this.flag = after)
+      },
+    })
+    p.value_ = 421
     chai.expect(onr.flag).equal(421)
   })
   it('P6y: {set_ (builtin, after) ...}', function () {
@@ -450,6 +477,37 @@ describe ('Tests: Property', function () {
     let p = eYo.p6y.new(onr, 'foo', {})
     p.value_ = 123
     chai.expect(flag).equal(p.value)
+  })
+  it('P6y: get_/willChange/set_/didChange', function () {
+    let onr = {
+      eyo: true,
+    }
+    let p = eYo.p6y.new(onr, 'foo', {
+      get_ () {
+        this.flag = this.foo__
+        return this.foo__
+      },
+      willChange (before, after) {
+        this.flag *= 100
+        this.flag += 20*before+2*after
+      },
+      set_ (after) {
+        this.flag *= 10
+        this.flag += 3 * after
+        this.foo__ = after
+      },
+      didChange (before, after) {
+        this.flag *= 100
+        this.flag += 40*before+4*after
+      },
+    })
+    onr.flag = 0
+    onr.foo__ = 1
+    chai.expect(p.value).equal(1)
+    chai.expect(onr.flag).equal(1)
+    onr.flag = 0
+    p.value_ = 2
+    chai.expect(onr.flag).equal(124648)
   })
   it('P6y: observe', function () {
     var flag
@@ -924,7 +982,6 @@ describe ('Tests: Property', function () {
       }
     }
     eYo.model.modelExpand(model)
-    console.error('BREAK')
     chai.assert(eYo.isD(model.properties.foo))
   })
 })

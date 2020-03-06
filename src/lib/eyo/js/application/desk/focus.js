@@ -35,20 +35,27 @@ eYo.o3d.makeNS(eYo, 'focus')
 eYo.focus.makeC9r('Main', {
   properties: {
     /**
+     * The manager that has the current focus
+     * @type {?eYo.focus.Mngr}
+     */
+    mngr: eYo.NA,
+    /**
      * The board that has current focus, if any
      * @type {eYo.board}
      */
     board: {
-      get () {
+      get_ () {
         return this.mngr && this.mngr.board
       },
-      set (after) {
-        if (after !== this.board) {
-          this.hasUI && this.ui_driver.boardOff(this)
-          this.mngr_ = after && after.focus_mngr || eYo.NA
-          this.hasUI && this.ui_driver.boardOn(this)
-        }
-      }
+      willChange (before, after) {
+        before && this.hasUI && before.focusOff()
+      },
+      set_ (after) {
+        this.mngr_ = after && after.focus_mngr || eYo.NA
+      },
+      didChange (after) {
+        after && this.hasUI && after.focusOn()
+      },
     },
     /**
      * The brick that has current focus, if any
@@ -59,7 +66,7 @@ eYo.focus.makeC9r('Main', {
         return this.mngr_ && this.mngr_.brick
       },
       set (after) {
-        if (after && this.mngr_) {
+        if (after && after.focus_mngr) {
           this.mngr_ = after.focus_mngr
           this.mngr_.brick = after
         }
@@ -74,7 +81,7 @@ eYo.focus.makeC9r('Main', {
         return this.mngr_ && this.mngr_.field
       },
       set (after) {
-        if (after && this.mngr_) {
+        if (after && after.focus_mngr) {
           this.mngr_ = after.focus_mngr
           this.mngr_.field = after
         }
@@ -89,17 +96,12 @@ eYo.focus.makeC9r('Main', {
         return this.mngr_ && this.mngr_.magnet
       },
       set (after) {
-        if (after && this.mngr_) {
+        if (after && after.focus_mngr) {
           this.mngr_ = after.focus_mngr
           this.mngr_.magnet = after
         }
       }
     },
-    /**
-     * The manager that has current focus
-     * @type {?eYo.focus.Mngr}
-     */
-    mngr: eYo.NA,
     ui: {
       init () {
         this.owner.mngrForEach(m => m.initUI())
@@ -122,7 +124,7 @@ eYo.focus.makeC9r('Main', {
   },
 })
 
-// Each newly created focus manager comes here
+// Each newly created focus manager will come here
 eYo.register.add(eYo.focus.Main, 'mngr')
 
 /**
@@ -136,7 +138,7 @@ eYo.focus.makeC9r('Mngr', {
    * 
    * @param {eYo.focus.Main} owner 
    */
-  init (owner) {
+  init () {
     this.focus_main.mngrRegister(this)
   },
   aliases: {

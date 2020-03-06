@@ -160,6 +160,8 @@ describe ('geometry', function () {
       chai.expect(r.w).almost.equal(w)
       chai.expect(r.h).almost.equal(h)
     }
+    it ('Rect: aliases', function () {
+    })
     it ('Rect: new eYo.geom.Rect()', function () {
       let r = new eYo.geom.Rect()
       chai.expect(r).eyo_rect

@@ -176,7 +176,6 @@ describe ('Tests: Object', function () {
     chai.expect(bar.foo).equal(421)
     chai.expect(bar.bar).equal(123)
     var flag = 0
-    console.error('BREAK')
     bar.foo_ = {
       eyo: true,
       dispose(x, y) {
@@ -900,5 +899,48 @@ describe ('Tests: Object', function () {
     }
     let o = eYo.o4t.singleton(model)
     chai.expect(o.foo).equal(421)
+  })
+  it ('O4t: time is on my side', function () {
+    // In the init method, the properties are available and initialized
+    // when not lazy!
+    var flag = 0
+    let ns1 = eYo.o4t.makeNS('')
+    ns1.makeBase({
+      init (what) {
+        flag *= 10
+        flag += what
+        chai.expect(this.foo).equal(421)
+      },
+      properties: {
+        foo: {
+          value: 421,
+          Xconsolidate(after) {
+            flag *= 1000
+            flag += after  
+          },
+        },
+      }
+    })
+    ns2 = ns1.makeNS('')
+    ns2.makeBase({
+      init (what) {
+        flag *= 10
+        flag += 2 * what
+        chai.expect(this.foo).equal(421)
+        chai.expect(this.bar).equal(123)
+      },
+      properties: {
+        bar: {
+          value: 123,
+          Xconsolidate(after) {
+            flag *= 1000
+            flag += 2 * after  
+          },
+        },
+      }
+    })
+    chai.expect(flag).equal(0)
+    ns2.new(1)
+    chai.expect(flag).equal(12)
   })
 })

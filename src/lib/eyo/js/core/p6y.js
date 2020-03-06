@@ -308,7 +308,7 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
     let lazy_m = model.lazy
     if (!eYo.isNA(lazy_m)) {
       model._starters.push(object => {
-        object.getValue = Object.getPrototypeOf(object).__getLazyValue
+        object.getStored = Object.getPrototypeOf(object).__getLazyStored
       })
       prototype.start = eYo.isF(lazy_m) ? function () {
         return lazy_m.call(this.owner_)
@@ -675,20 +675,16 @@ eYo.p6y.makeBase({
   }
 
   /**
-   * Get the value, lazily.
+   * Get the stored value, lazily.
    * @private
    */
-  _p.__getLazyValue = function () {
-    try {
-      this.getValue = eYo.doNothing
-      var ans = this.getStored()
-      if (eYo.isNA(ans)) {
-        this.setStored(ans = this.start())
-      }
-      return ans
-    } finally {
-      delete this.getValue
+  _p.__getLazyStored = function () {
+    delete this.getStored
+    var ans = this.getStored()
+    if (eYo.isNA(ans)) {
+      this.setStored(ans = this.start())
     }
+    return ans
   }
 
   /**
@@ -712,7 +708,7 @@ eYo.p6y.makeBase({
    * @param {*} after - the new value after the change.
    */
   _p.setValue = function (after) {
-    var before = this.value__
+    var before = this.getStored()
     after = this.validate(before, after)
     if (eYo.isVALID(after)) {
       if (before !== after) {

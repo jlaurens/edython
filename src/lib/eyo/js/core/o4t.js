@@ -227,24 +227,24 @@ eYo.c9r._p.enhancedO4t = function () {
    * @param {String} alias
    */
   _p.deepAliasDeclare = function (key, source, alias) {
+    let key_ = key + '_'
     let key_p = key + '_p'
+    let source_ = source + '_'
     let source_p = source + '_p'
     let get = function () {
-      return this[key_p].value__[source_p].value
+      return this[key_][source_]
     }
     Object.defineProperties(this.C9r_p, {
       [alias + '_p']: eYo.descriptorR(function () {
         this[key_p] || eYo.throw(`Unknown ${key_p} in ${this.eyo.name}`)
-        return this[key_p].value__[source_p]
+        return this[key_][source_p]
       }),
       [alias]: eYo.descriptorR(get),
       [alias + '_']: {
         get: get,
         set (after) {
-          if (!this[key_p]) {
-            console.error('BREAK HERE!!! !this[key_p]')
-          }
-          this[key_p].value__[source_p].value_ = after
+          this[key_p] || eYo.throw(`Unknown ${key_p} in ${this.eyo.name}`)
+          this[key_][source_] = after
         },
       },
     })
