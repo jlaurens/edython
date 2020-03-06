@@ -366,13 +366,13 @@
    * @param {!String} id
    * @param {?Boolean} restart
    */
-  eYo.DelegateSvg.prototype.runScript = function (id, restart) {
-    if (!goog.isDef(restart) && this === this.root && this.restart_p) {
+  eYo.brick.Base_p.runScript = function (id, restart) {
+    if (!eYo.isDef(restart) && this === this.root && this.restart_p) {
       restart = !this.previous
     }
-    // Does this block need the console or the turtle ?
+    // Does this brick need the console or the turtle ?
     var p = new eYo.Py.Exporter()
-    var code = p.export(this.block_, {is_deep: true})
+    var code = p.export(this, {is_deep: true})
     if (p.use_turtle) {
       eYo.emit('pane-turtle-show')
     } else if (p.use_print) {

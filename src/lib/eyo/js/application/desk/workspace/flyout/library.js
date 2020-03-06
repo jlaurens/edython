@@ -145,7 +145,7 @@ eYo.section.makeNS(eYo, 'library', {
         data: {
           variant: eYo.key.FROM_MODULE_IMPORT
         },
-        title: eYo.tooltip.Title.import_stmt
+        title: eYo.tooltip.TITLE.import_stmt
       },
       {
         type: eYo.t3.expr.identifier,

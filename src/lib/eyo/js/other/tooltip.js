@@ -58,7 +58,7 @@ eYo.tooltip.Options = {
  * @param {String} title tooltip string content.
  */
 eYo.tooltip.getTitle = function (key) {
-  return eYo.tooltip.Title[key] || key
+  return eYo.tooltip.TITLE[key] || key
 }
 
 /**
@@ -76,7 +76,7 @@ eYo.tooltip.hideAll = function (el) {
   }
 }
 
-eYo.tooltip.Title = {
+eYo.tooltip.TITLE = {
   flyout: 'Glisser des blocs vers l\'espace de travail et les connecter à d\'autres blocs',
   start_stmt: 'Bloc de contrôle, indique le point de départ d\'un programme',
   shortliteral: 'Texte court',

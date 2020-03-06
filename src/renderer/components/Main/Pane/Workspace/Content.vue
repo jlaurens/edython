@@ -121,7 +121,7 @@
           key: name,
           content: Msg[name.toUpperCase()],
           in_category: true,
-          label: this.$$t('message.flyout.blocks').replace('{{key}}', Msg[name.toUpperCase()])
+          label: this.$$t('message.flyout.bricks').replace('{{key}}', Msg[name.toUpperCase()])
         }
         if (!Msg[name.toUpperCase()]) {
           console.error('MISSING eYo.Msg.' + name.toUpperCase())
@@ -230,7 +230,7 @@
             var content = this.$refs.el_inner
             if (content) {
               var el = content.getElementsByClassName('eyo-flyout')[0]
-              eYo.Tooltip.hideAll(el)
+              eYo.tooltip.hideAll(el)
               this.setFlyoutCategory(newValue.key)
               this.label = newValue.label
             }
@@ -494,8 +494,8 @@
           this.$$onOnly('workspace-clean', () => {
             eYo.Events.groupWrap(() => {
               eYo.do.tryFinally(() => {
-                var tops = eYo.App.workspace.topBlocks_.filter(block => !block.eyo.isControl)
-                tops.forEach(block => eYo.deleteBlock(block, true))
+                var tops = eYo.App.workspace.topBlocks_.filter(brick => !brick.isControl)
+                tops.forEach(brick => eYo.deleteBrick(brick, true))
               })
             })
           })

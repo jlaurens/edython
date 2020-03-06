@@ -114,7 +114,7 @@
     mounted: function () {
       // add the tippy by hand if it does already exists
       var el = document.getElementById('eyo-toolbar-dropdown-demo')
-      el._tippy || window.tippy(el, eYo.Tooltip.options)
+      el._tippy || window.tippy(el, eYo.tooltip.options)
       goog.asserts.assert(el._tippy)
       this.flashInterval = setInterval(() => {
         this.flash()
@@ -154,7 +154,7 @@
             var ids = w.eyo.fromDom(dom)
             // problem of code reuse
             eYo.App.doDomToPref(dom)
-            // select the first created block that is a control
+            // select the first created brick that is a control
             this.$nextTick(() => {
               eYo.Selected.selectOneBlockOf(ids.map(id => w.getBlockById(id)), true)
             })
@@ -165,7 +165,7 @@
         var el = document.getElementById('eyo-toolbar-dropdown-demo')
         !el._tippy.state.visible || el._tippy.hide()
         el._tippy.state.enabled = false
-        eYo.Tooltip.hideAll(eYo.App.workspace.flyout_.svgGroup_)
+        eYo.tooltip.hideAll(eYo.App.workspace.flyout_.svgGroup_)
       },
       doHidden () {
         var el = document.getElementById('eyo-toolbar-dropdown-demo')

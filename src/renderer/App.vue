@@ -14,7 +14,7 @@ export default {
   name: 'app',
   data: function () {
     return {
-      copyBlock: 0
+      copyBrick: 0
     }
   },
   created () {
@@ -35,20 +35,20 @@ export default {
     ])
   },
   mounted () {
-    this.copyBlock = eYo.copyBlock
-    eYo.copyBlock = this.getCopyBlock(this.deepCopy)
+    this.copyBrick = eYo.copyBrick
+    eYo.copyBrick = this.getCopyBrick(this.deepCopy)
   },
   methods: {
-    getCopyBlock (value) {
-      var copyBlock = this.copyBlock
-      return function (block, deep) {
-        return copyBlock.call(this, block, !value === !!deep)
+    getCopyBrick (value) {
+      var copyBrick = this.copyBrick
+      return function (brick, deep) {
+        return copyBrick.call(this, brick, !value === !!deep)
       }
     }
   },
   watch: {
     deepCopy (newValue, oldValue) {
-      eYo.copyBlock = this.getCopyBlock(newValue)
+      eYo.copyBrick = this.getCopyBrick(newValue)
     }
   }
 }

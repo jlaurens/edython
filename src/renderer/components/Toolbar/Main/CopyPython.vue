@@ -47,10 +47,10 @@
     },
     methods: {
       doIt () {
-        var block = this.eyo && this.eyo.block_
-        if (block) {
+        var brick = this.eyo && this.eyo.brick_
+        if (brick) {
           var p = new eYo.Py.Exporter()
-          var code = p.export(block, {is_deep: true})
+          var code = p.export(brick, {is_deep: true})
           eYo.App.copyTextToClipboard(code)
           this.footstep = 0
           eYo.$$.TweenLite.to(this, 0.5, {footstep: 1})

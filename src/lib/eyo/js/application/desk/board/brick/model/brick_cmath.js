@@ -29,7 +29,7 @@ eYo.provide('brick.cmath')
 
   var F = (name, title) => {
     var key = 'cmath__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       data: {
@@ -42,7 +42,7 @@ eYo.provide('brick.cmath')
   }
   var F_k = (name, title) => {
     var key = 'cmath__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       data: {
@@ -105,7 +105,7 @@ eYo.library.DATA.basic_cmath__module = [
 
 F = (name, title) => {
   var key = 'cmath__'+name
-  title && (eYo.tooltip.Title[key] = title)
+  title && (eYo.tooltip.TITLE[key] = title)
   return {
     type: eYo.t3.expr.call_expr,
     data: {
@@ -118,7 +118,7 @@ F = (name, title) => {
 }
 F_k = (name, title) => {
   var key = 'cmath__'+name
-  title && (eYo.tooltip.Title[key] = title)
+  title && (eYo.tooltip.TITLE[key] = title)
   return {
     type: eYo.t3.expr.attributeref,
     data: {
@@ -215,7 +215,7 @@ eYo.library.DATA.Cmath__module = [
 
 })()
 
-eYo.do.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.TITLE, {
   cmath__import_stmt: 'Importer le module cmath',
 })
 

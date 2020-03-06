@@ -9,7 +9,7 @@
       v-for="choice in choices"
       v-on:click="choose(choice)"
       :key="choice"
-      class="block-variant"
+      class="brick-variant"
       v-html="$$t(`toolbar.content.mode.${choice}`)"
       :title="$$t(`toolbar.tooltip.mode.${choice}`)"
       v-tippy

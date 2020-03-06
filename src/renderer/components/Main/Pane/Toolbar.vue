@@ -16,15 +16,15 @@
           v-if="isWorkspace"
           v-on:click="$root.$emit('document-rename')"
           class="eyo-code"
-          :title="$$t('block.pane.tooltip.document-rename')"
-          v-tippy>{{$$t('block.pane.content.document-rename')}}</b-dd-item-button>
+          :title="$$t('brick.pane.tooltip.document-rename')"
+          v-tippy>{{$$t('brick.pane.content.document-rename')}}</b-dd-item-button>
         <b-dd-divider
           v-if="isWorkspace"></b-dd-divider>
         <b-dd-item-button
           v-for="pane in panes"
           v-on:click="selectedPane = pane"
           :key="pane"
-          class="eyo-code">{{$$t(`block.pane.${pane.replace(/(^|\s)\S/g, l => l.toUpperCase())}`)}}</b-dd-item-button>
+          class="eyo-code">{{$$t(`brick.pane.${pane.replace(/(^|\s)\S/g, l => l.toUpperCase())}`)}}</b-dd-item-button>
         <b-dd-divider></b-dd-divider>
         <b-dd-item-button
           v-for="layout in layouts"
@@ -306,11 +306,11 @@
         turtleScaleReset: 'scaleReset'
       }),
       localized (s) {
-        return this.$$t(`block.pane.${s.replace(/(^|\s)\S/g, l => l.toUpperCase())}`)
+        return this.$$t(`brick.pane.${s.replace(/(^|\s)\S/g, l => l.toUpperCase())}`)
       },
       localizedTooltip (s) {
         // console.log(s) BUG: never called
-        return this.$$t(`block.pane.tooltip.${s.replace(/(^|\s)\S/g, l => l.toUpperCase())}`)
+        return this.$$t(`brick.pane.tooltip.${s.replace(/(^|\s)\S/g, l => l.toUpperCase())}`)
       },
       choose (choice) {
         var do_it = {
@@ -387,7 +387,7 @@
         do_it()
       },
       title (choice) {
-        return this.$$t(`block.pane.content.${choice}`) || this.$$t(`block.pane.content.${choice.split('.').pop()}`)
+        return this.$$t(`brick.pane.content.${choice}`) || this.$$t(`brick.pane.content.${choice.split('.').pop()}`)
       },
       changeLayout (args) {
         this.$emit('change-layout', args)

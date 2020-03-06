@@ -66,7 +66,7 @@
         'eyo'
       ]),
       ...mapState('UI', [
-        'blockClipboard'
+        'brickClipboard'
       ]),
       id () {
         return 'toolbar-btn-' + (this.copy
@@ -83,7 +83,7 @@
       canDoIt () {
         return this.copy || this.duplicate
           ? !!this.eyo
-          : !!this.blockClipboard
+          : !!this.brickClipboard
       },
       locale () {
         return this.$i18n.locale
@@ -91,18 +91,18 @@
       name () {
         var deep_or_shallow = this.deep ? 'deep' : 'shallow'
         return this.copy
-          ? this.$$t(`toolbar.content.copy_block_${deep_or_shallow}`)
+          ? this.$$t(`toolbar.content.copy_brick_${deep_or_shallow}`)
           : this.duplicate
-            ? this.$$t(`toolbar.content.duplicate_block_${deep_or_shallow}`)
-            : this.$$t(`toolbar.content.paste_block`)
+            ? this.$$t(`toolbar.content.duplicate_brick_${deep_or_shallow}`)
+            : this.$$t(`toolbar.content.paste_brick`)
       },
       title () {
         var deep_or_shallow = this.deep ? 'deep' : 'shallow'
         return this.copy
-          ? this.$$t(`toolbar.tooltip.copy_block_${deep_or_shallow}`, this.locale)
+          ? this.$$t(`toolbar.tooltip.copy_brick_${deep_or_shallow}`, this.locale)
           : this.duplicate
-            ? this.$$t(`toolbar.tooltip.duplicate_block_${deep_or_shallow}`)
-            : this.$$t(`toolbar.tooltip.paste_block`)
+            ? this.$$t(`toolbar.tooltip.duplicate_brick_${deep_or_shallow}`)
+            : this.$$t(`toolbar.tooltip.paste_brick`)
       }
     },
     methods: {

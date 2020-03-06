@@ -31,7 +31,7 @@ export default {
       on: 'Activer les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet',
       off: 'Désactiver les bulles d\'aide qui apparaissent quand le pointeur reste sur un objet'
     },
-   brick: {
+    brick: {
       on: 'Afficher la barre d\'édition et de réglage du bloc sélectionné',
       off: 'Cacher la barre d\'édition'
     },
@@ -40,11 +40,11 @@ export default {
       off: 'Cacher les informations de débogage'
     },
     menu: 'Options et actions',
-    copy_block_deep: 'Copier le bloc sélectionné et les suivants',
-    copy_block_shallow: 'Copier le bloc sélectionné',
-    duplicate_block_deep: 'Dupliquer le bloc sélectionné et les suivants',
-    duplicate_block_shallow: 'Dupliquer le bloc sélectionné',
-    paste_block: 'Coller le bloc du presse-papier',
+    copy_brick_deep: 'Copier le bloc sélectionné et les suivants',
+    copy_brick_shallow: 'Copier le bloc sélectionné',
+    duplicate_brick_deep: 'Dupliquer le bloc sélectionné et les suivants',
+    duplicate_brick_shallow: 'Dupliquer le bloc sélectionné',
+    paste_brick: 'Coller le bloc du presse-papier',
     copy_python: 'Copier le code python dans le presse-papier',
     run_python: 'Exécuter dans la console le code python du groupe qui contient le bloc sélectionné',
     demo: 'Exemples de programmes de démonstration',
@@ -64,16 +64,16 @@ export default {
       on: 'Activer les bulles d\'aide',
       off: 'Désactiver les bulles d\'aide'
     },
-   brick: {
+    brick: {
       on: 'Afficher la barre d\'édition',
       off: 'Cacher la barre d\'édition'
     },
     debug: 'Mode débogage',
-    copy_block_deep: 'Copier avec les suivants',
-    copy_block_shallow: 'Copier',
-    duplicate_block_deep: 'Dupliquer avec les suivants',
-    duplicate_block_shallow: 'Dupliquer',
-    paste_block: 'Coller',
+    copy_brick_deep: 'Copier avec les suivants',
+    copy_brick_shallow: 'Copier',
+    duplicate_brick_deep: 'Dupliquer avec les suivants',
+    duplicate_brick_shallow: 'Dupliquer',
+    paste_brick: 'Coller',
     run_python: 'Exécuter',
     restart: 'Redémarrer',
     factoryDefaults: 'Réglages usine'

@@ -37,7 +37,7 @@ eYo.provide('brick.decimal')
 
   var F = (name, title) => {
     var key = 'decimal__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       name_p: name,
@@ -48,7 +48,7 @@ eYo.provide('brick.decimal')
   }
   var F_k = (name, title) => {
     var key = 'decimal__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.identifier,
       name_p: name,
@@ -164,7 +164,7 @@ eYo.library.DATA.Basic_decimal__module = [
 
   var F = (name, title) => {
     var key = 'decimal__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       data: {
@@ -177,7 +177,7 @@ eYo.library.DATA.Basic_decimal__module = [
   }
   var F_k = (name, title) => {
     var key = 'decimal__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.attributeref,
       data: {
@@ -259,7 +259,7 @@ eYo.library.DATA.decimal__module = [
 ]
 })()
 
-eYo.do.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.TITLE, {
   decimal__import_stmt: 'Importer le module decimal',
   decimal__assigned_from_float: 'Créer une représentation d\'un nombre décimal à partir d\'un flottant et l\'affecter à une variable.',
   decimal__assigned_from_string: 'Créer une représentation d\'un nombre décimal à partir d\'un texte et l\'affecter à une variable.',

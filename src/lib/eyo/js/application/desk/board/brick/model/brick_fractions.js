@@ -40,7 +40,7 @@ eYo.provide('brick.fractions')
 
   var F = (name, title) => {
     var key = 'fractions__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       name_p: name,
@@ -52,7 +52,7 @@ eYo.provide('brick.fractions')
 
   var F_instance = (name, type, title) => {
     var key = 'fractions__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: type,
       data: {
@@ -84,13 +84,13 @@ eYo.library.DATA.Basic_fractions__module = [
   F_instance('limit_denominator', eYo.t3.expr.call_expr, 'Approximation d\'une fraction avec dénominateur maximal')
 ]
 
-eYo.do.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.TITLE, {
   fractions__import_stmt: 'Importer le module fractions'
 })
 
 F = function (name, title) {
   var key = 'fractions__'+name
-  title && (eYo.tooltip.Title[key] = title)
+  title && (eYo.tooltip.TITLE[key] = title)
   return {
     type: eYo.t3.expr.call_expr,
     name_p: name,
@@ -129,6 +129,6 @@ eYo.library.DATA.fractions__module = [
 
 })()
 
-eYo.do.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.TITLE, {
   fractions__import_stmt: 'Importer le module fractions',
 })

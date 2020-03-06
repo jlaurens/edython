@@ -132,7 +132,7 @@ eYo.expr.random__randrange.prototype.xmlAttr = function () {
 
   var F = (name, title) => {
     var key = 'random__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       data: {
@@ -145,7 +145,7 @@ eYo.expr.random__randrange.prototype.xmlAttr = function () {
   }
   var F_s = (name, title) => {
     var key = 'random__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.stmt.call_stmt,
       name_p: name,
@@ -175,7 +175,7 @@ eYo.library.DATA.Basic_random__module = [
   },
   function () {
     var key = 'random__choice'
-    eYo.tooltip.Title[key] = 'Choisir aléatoirement un élément dans une liste'
+    eYo.tooltip.TITLE[key] = 'Choisir aléatoirement un élément dans une liste'
     return {
       type: eYo.t3.expr.call_expr,
       data: {
@@ -224,7 +224,7 @@ eYo.library.DATA.Basic_random__module = [
 
 F = function (name, title) {
   var key = 'random__'+name
-  title && (eYo.tooltip.Title[key] = title)
+  title && (eYo.tooltip.TITLE[key] = title)
   return {
     type: eYo.t3.expr.call_expr,
     data: {
@@ -237,7 +237,7 @@ F = function (name, title) {
 }
 F_s = function (name, title) {
   var key = 'random__'+name
-  title && (eYo.tooltip.Title[key] = title)
+  title && (eYo.tooltip.TITLE[key] = title)
   return {
     type: eYo.t3.stmt.call_stmt,
     data: {
@@ -301,7 +301,7 @@ eYo.library.DATA.random__module = [
 
 })()
 
-eYo.do.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.TITLE, {
   random__import_stmt: 'Importer le module random',
   random__randint: 'Générer aléatoirement un entier entre deux bornes',
   random__shuffle_stmt: 'Mélanger les éléments d\'une liste',

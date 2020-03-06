@@ -12,8 +12,8 @@ const state = {
   toolbarBrickVisible: undefined,
   toolbarRyVisible: undefined,
   toolbarInfoDebug: undefined,
- brickEditShowRy: undefined,
- brickEditShowDotted: undefined
+  brickEditShowRy: undefined,
+  brickEditShowDotted: undefined
 }
 
 const mutations = {
@@ -44,10 +44,10 @@ const mutations = {
     state.toolbarInfoDebug = !!yorn
   },
   setBrickEditShowRy (state, yorn) {
-    state.blockEditShowRy = !!yorn
+    state.brickEditShowRy = !!yorn
   },
   setBrickEditShowDotted (state, yorn) {
-    state.blockEditShowDotted = !!yorn
+    state.brickEditShowDotted = !!yorn
   },
   reset (state) {
     this.commit('UI/setPanelsWidth', 0)

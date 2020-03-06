@@ -1,7 +1,7 @@
 <template>
   <div
     id="pane-content">
-    <block-toolbar></block-toolbar>
+    <brick-toolbar></brick-toolbar>
     <div
       class="eyo-workbench">
       <div

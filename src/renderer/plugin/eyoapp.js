@@ -37,8 +37,8 @@ eYoApp.install = function (Vue, options) {
       var name = child.nodeName.toLowerCase()
       if (name === eYo.Xml.EDYTHON) {
         // find the 'prefs' child
-        children = child.childNodes
-        i = 0
+        var children = child.childNodes
+        var i = 0
         while (i < children.length) {
           child = children[i++]
           if (child.tagName && child.tagName.toLowerCase() === 'prefs') {
@@ -47,10 +47,8 @@ eYoApp.install = function (Vue, options) {
             if (str) {
               var prefs = JSON.parse(str)
               if (prefs) {
-                eYo.do.tryFinally(() => {
-                  store.dispatch('Workspace/setPrefs', prefs.workspace)
-                  store.dispatch('Layout/setPrefs', prefs.paneLayout)
-                })
+                store.dispatch('Workspace/setPrefs', prefs.workspace)
+                store.dispatch('Layout/setPrefs', prefs.paneLayout)
                 return
               }
             }
@@ -75,27 +73,27 @@ eYoApp.install = function (Vue, options) {
   eYo.App.didPushUndo = () => {
     store.commit('Undo/didPushUndo')
   }
-  // eYo.App.didTouchBrick = function (block) {
+  // eYo.App.didTouchBrick = function (brick) {
   //   console.log('didTouchBrick',brick)
   //   // store.commit('Selected/selectBrick',brick) once broke everything when uncommented
   // }
   eYo.Selected.didAdd = () => {
     Vue.nextTick(() => {
-      store.commit('Selected/selectBrick', eYo.Selected.block)
+      store.commit('Selected/selectBrick', eYo.Selected.brick)
     })
   }
   eYo.Selected.didRemove = () => {
     Vue.nextTick(() => {
-      store.commit('Selected/selectBrick', eYo.Selected.block)
+      store.commit('Selected/selectBrick', eYo.Selected.brick)
     })
   }
-  eYo.App.selectedBrickUpdate = (eyo) => {
+  eYo.App.selectedBrickUpdate = (brick) => {
     console.error('selectedBrickUpdate')
-    if (eyo) {
-      if (eyo.id === store.state.Selected.id) {
+    if (brick) {
+      if (brick.id === store.state.Selected.id) {
         Vue.nextTick(() => {
           console.error('selectedBrickUpdate echoed')
-          store.commit('Selected/update', eyo.block_)
+          store.commit('Selected/update', brick)
         })
       }
     }
@@ -104,11 +102,11 @@ eYoApp.install = function (Vue, options) {
     selectedBrick: {
       get () {
         var id = store.state.Selected.id
-        return id && eYo.App.workspace.blockDB_[id]
+        return id && eYo.App.workspace.brickDB_[id]
       }
     }
   })
-  eYo.App.didRemoveSelect = function (block) {
+  eYo.App.didRemoveSelect = function (brick) {
     Vue.nextTick(() => {
       store.commit('Selected/selectBrick', eYo.focus.brick)
     })

@@ -25,7 +25,7 @@ export default {
   flyout: {
     basic: 'basic',
     module: 'Module {{key}}',
-   bricks: 'Blocs {{key}}'
+    bricks: 'Briques {{key}}'
   },
   document: {
     Untitled: 'Sans Titre'

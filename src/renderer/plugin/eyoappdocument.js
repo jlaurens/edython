@@ -27,8 +27,8 @@ eYoAppDocument.install = function (Vue, options) {
   eYo.App.Document.getDeflate = () => {
     eYo.Events.groupWrap(() => {
       eYo.do.tryFinally(() => {
-        var tops = eYo.App.workspace.topBricks_.filter(block => !block.eyo.isReady)
-        tops.forEach(block =>brick.eyo.beReady())
+        var tops = eYo.App.workspace.topBricks_.filter(brick => !brick.eyo.isReady)
+        tops.forEach(brick => brick.eyo.beReady())
       })
     })
     var dom = eYo.App.workspace.eyo.toDom({noId: true})

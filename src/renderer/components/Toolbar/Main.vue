@@ -32,7 +32,7 @@
       <run-python />
     </b-btn-group>
     <copy-paste />
-    <block-layout />    
+    <brick-layout />    
     <b-btn-group>
       <main-undo-redo
         :redo="false" />

@@ -124,10 +124,10 @@
         return this.$$t(`toolbar.content.tooltip.${this.tipsDisabled ? 'on' : 'off'}`, this.locale)
       },
       titleToolbarBlockVisible () {
-        return this.$$t(`toolbar.tooltip.block.${this.toolbarBlockVisible ? 'off' : 'on'}`, this.locale)
+        return this.$$t(`toolbar.tooltip.brick.${this.toolbarBlockVisible ? 'off' : 'on'}`, this.locale)
       },
       contentToolbarBlockVisible () {
-        return this.$$t(`toolbar.content.block.${this.toolbarBlockVisible ? 'off' : 'on'}`, this.locale)
+        return this.$$t(`toolbar.content.brick.${this.toolbarBlockVisible ? 'off' : 'on'}`, this.locale)
       },
       titleToolbarBlockDebug () {
         return this.$$t(`toolbar.tooltip.debug.${this.toolbarInfoDebug ? 'off' : 'on'}`, this.locale)

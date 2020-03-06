@@ -44,7 +44,7 @@ eYo.provide('brick.statistics')
 
   var F = (name, title) => {
     var key = 'statistics__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       data: {
@@ -79,7 +79,7 @@ eYo.library.DATA.Basic_statistics__module = [
 
   var F = (name, title) => {
     var key = 'statistics__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       data: {
@@ -120,6 +120,6 @@ eYo.library.DATA.Statistics__module = [
 
 })()
 
-eYo.do.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.TITLE, {
   statistics__import_stmt: 'Importer le module statistics',
 })

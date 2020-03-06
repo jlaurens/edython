@@ -45,7 +45,7 @@ eYo.stmt.makeC9r('turtle__setup_stmt', true, {
 ;(function () {
   var F_expr = (name, title) => {
     var key = 'turtle__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       data: {
@@ -58,7 +58,7 @@ eYo.stmt.makeC9r('turtle__setup_stmt', true, {
   }
   var F_stmt = (name, title) => {
     var key = 'turtle__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.stmt.call_stmt,
       data: {
@@ -117,7 +117,7 @@ eYo.stmt.makeC9r('turtle__setup_stmt', true, {
 
   var F_expr = (name, title) => {
     var key = 'turtle__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       name_p: name,
@@ -128,7 +128,7 @@ eYo.stmt.makeC9r('turtle__setup_stmt', true, {
   }
   var F_stmt = (name, title) => {
     var key = 'turtle__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.stmt.call_stmt,
       name_p: name,
@@ -230,7 +230,7 @@ eYo.stmt.makeC9r('turtle__setup_stmt', true, {
 <x eyo="list" slot="assigned"><x eyo="turtle__call_expr" name="stamp" ary="0" slot="O"></x>
 </x>
 </s> */
-eYo.do.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.TITLE, {
   turtle__import_stmt: 'Importer le module turtle',
   turtle__setup_stmt: 'Réglages du module turtle propres à edython',
 })

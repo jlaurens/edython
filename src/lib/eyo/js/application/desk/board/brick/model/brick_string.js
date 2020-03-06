@@ -32,7 +32,7 @@ eYo.provide('brick.string')
 
   var F = (name, title, holder = 'formatter') => {
     var key = 'string__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       name_p: name,
@@ -43,7 +43,7 @@ eYo.provide('brick.string')
   }
   var F_k = (name, title) => {
     var key = 'string__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.identifier,
       name_p: name,
@@ -118,7 +118,7 @@ eYo.library.DATA.Basic_string__module = [
 
   var F = (name, title) => {
     var key = 'string__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.call_expr,
       data: {
@@ -131,7 +131,7 @@ eYo.library.DATA.Basic_string__module = [
   }
   var F_k = (name, title) => {
     var key = 'string__'+name
-    title && (eYo.tooltip.Title[key] = title)
+    title && (eYo.tooltip.TITLE[key] = title)
     return {
       type: eYo.t3.expr.attributeref,
       data: {
@@ -191,6 +191,6 @@ eYo.library.DATA.String__module = [
 
 })()
 
-eYo.do.mixin(eYo.tooltip.Title, {
+eYo.do.mixin(eYo.tooltip.TITLE, {
   string__import_stmt: 'Importer le module string.',
 })
