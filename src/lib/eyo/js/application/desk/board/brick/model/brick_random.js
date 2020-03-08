@@ -97,11 +97,9 @@ eYo.expr.builtin__range_expr.makeInheritedC9r('random__randrange', true, {
       order: 1,
       fields: {
         label: {
-          order: 1,
           reserved: 'random'
         },
         bind: {
-          order: 10,
           reserved: '.',
           separator: true
         }

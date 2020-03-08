@@ -60,6 +60,9 @@ eYo.attr._p.new = function (owner, key, model) {
     model._starters = []
     let _p = (model.C9r = this.makeC9r('', model)).prototype
     this.handle_model(_p, key, model)
+    Object.defineProperty(model.C9r.eyo, 'name', eYo.descriptorR(function () {
+      return `${model.C9r.eyo.super.name}(${name})`
+    }))
   }
   let ans = new model.C9r(owner, key, model)
   model._starters.forEach(f => f(ans))

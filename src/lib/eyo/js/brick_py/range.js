@@ -89,20 +89,15 @@ eYo.expr.makeC9r('builtin__range_expr', true, {
       order: 5,
       fields: {
         label: {
-          order:1,
           builtin: 'range'
         },
-        open: {
-          value: '(',
-          order: 2
-        }
+        open: '(',
       },
     },
     start: {
       order: 10,
       fields: {
         bind: {
-          order: 1,
           endEditing: true,
           placeholder: 0
         }
@@ -112,7 +107,7 @@ eYo.expr.makeC9r('builtin__range_expr', true, {
     sep: {
       order: 20,
       fields: {
-        sep:{
+        sep: {
           value: ',',
           separator: true
         }
@@ -122,7 +117,6 @@ eYo.expr.makeC9r('builtin__range_expr', true, {
       order: 30,
       fields: {
         bind: {
-          order: 1,
           endEditing: true,
           placeholder: 0
         }
@@ -132,13 +126,11 @@ eYo.expr.makeC9r('builtin__range_expr', true, {
     step: {
       order: 40,
       fields: {
-        begin:{
-          order: 1,
+        label: {
           value: ',',
           separator: true
         },
         bind: {
-          order: 2,
           endEditing: true,
           placeholder: 0
         }
@@ -150,7 +142,6 @@ eYo.expr.makeC9r('builtin__range_expr', true, {
       fields: {
         close: {
           value: ')',
-          order: -1
         }
       },
     },

@@ -55,11 +55,9 @@ eYo.stmt.makeC9r(eYo.t3.stmt.comment_stmt, {
       order: 1000001,
       fields: {
         label: {
-          order: 0,
           reserved: '#'
         },
         bind: {
-          order: 1,
           validate: true,
           endEditing: true,
           comment: ''

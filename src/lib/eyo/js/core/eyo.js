@@ -121,15 +121,11 @@ eYo.noSetter = function (msg) {
  * @private
  */
 eYo.descriptorR = (msg, getter, configurable) => {
-  if (!eYo.isF(getter)) {
-    var _ = msg
-    msg = getter
-    getter = _
+  if (eYo.isF(msg)) {
+    [getter, msg] = [msg, getter]
   }
   if (eYo.isBool(msg)) {
-    _ = msg
-    msg = configurable
-    configurable = _
+    [configurable, msg] = [msg, configurable]
   }
   msg && msg.lazy && (msg = msg.lazy)
   getter || eYo.throw('Missing getter')

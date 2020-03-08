@@ -967,7 +967,7 @@ eYo.fcfl.Brick._p.drawField_ = function (field, io) {
             && (eYo.xre.operator.test(head) || head === '=' || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
             io.cursor.c += 1
           } else if (io.common.field.shouldSeparate
-              && (!field.startsWithSeparator()
+              && (!field.startsWithSeparator
               || head === '='
               || (head === ':' && text.length > 1 /* `:=` but not `:` alone */))) {
             io.cursor.c += 1

@@ -125,22 +125,14 @@ eYo.makeNS('key', {
   FILE: 'file',
   FLUSH: 'flush',
 
-  PREFIX: 'prefix', // lowercase
-  SUFFIX: 'suffix', // lowercase
-  START: 'start', // lowercase
   STEP: 'end', // lowercase
-  END: 'end', // lowercase
   STOP: 'stop', // lowercase
 
-  LABEL: 'label', // lowercase
-  SEPARATOR: 'separator', // lowercase
   BIND: 'bind', // lowercase
   DATA: 'data', // lowercase
 
   CODE: 'code', // lowercase
-  COMMENT: 'comment', // lowercase
   BLANK: 'blank', // lowercase
-  COMMENT_MARK: 'comment_mark', // lowercase
   NUMBER: 'number', // lowercase
   STRING: 'string', // lowercase
   LONG_STRING: 'longString', // lowercase

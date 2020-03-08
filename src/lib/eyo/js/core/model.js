@@ -100,15 +100,6 @@ eYo.model.allowModelPaths({
     'xml', // : (() => {} || true) || false||  first expected,
     'plugged', // : eYo.t3.expr.primary,
   ],
-  'slots\\.\\w+\.fields\\.\\w+': [
-    'value', // '(',
-    'reserved', // : '.',
-    'separator', // : true,
-    'Variable', // : true,
-    'validate', // : true,
-    'endEditing', // : true,
-    'willRender', //  () => {},
-  ],
   'slots\\.\\w+\.xml': [
     'accept', //  () => {},
   ],

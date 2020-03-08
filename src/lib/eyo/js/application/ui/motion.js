@@ -243,7 +243,7 @@ eYo.event.makeC9r('Motion', {
         return this.starter__ && (
           this.starter__.isBrick?
             this.starter__.wrapper:
-            this.field_.brick.wrapper
+            this.field_.wrapper
         )
       },
     },

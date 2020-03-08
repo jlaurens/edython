@@ -740,4 +740,72 @@ describe ('Tests: C9r', function () {
     }, true)
     chai.expect(flag).equal(6)
   })
+  it ('C9r: inheritedMethod', function () {
+    var ns = eYo.c9r.makeNS()
+    ns.makeBase()
+    ns.makeC9r('A')
+    ns.A.makeInheritedC9r('AA')
+    ns.AA.makeInheritedC9r('AAA')
+    let A_foo = ns.A_p.foo = function () {}
+    let AA_foo = ns.AA_p.foo = function () {}
+    let AAA_foo = ns.AAA_p.foo = function () {}
+    
+    let a = new ns.A()
+    let aa = new ns.AA()
+    let aaa = new ns.AAA()
+
+    chai.expect(a.inheritedMethod('foo')).equal(eYo.doNothing)
+    chai.expect(aa.inheritedMethod('foo')).equal(A_foo)
+    chai.expect(aaa.inheritedMethod('foo')).equal(AA_foo)
+
+    chai.expect(a.inheritedMethod('foo', true)).equal(eYo.doNothing)
+    chai.expect(aa.inheritedMethod('foo', true)).equal(A_foo)
+    chai.expect(aaa.inheritedMethod('foo', true)).equal(AA_foo)
+
+    a.foo = function () {}
+    chai.expect(a.inheritedMethod('foo')).equal(A_foo)
+    chai.expect(a.inheritedMethod('foo', true)).equal(eYo.doNothing)
+
+    aa.foo = function () {}
+    chai.expect(aa.inheritedMethod('foo')).equal(AA_foo)
+    chai.expect(aa.inheritedMethod('foo', true)).equal(A_foo)
+
+    aaa.foo = function () {}
+    chai.expect(aaa.inheritedMethod('foo')).equal(AAA_foo)
+    chai.expect(aaa.inheritedMethod('foo', true)).equal(AA_foo)
+  })
+  it ('C9r: inheritedMethod (broken chain)', function () {
+    var ns = eYo.c9r.makeNS()
+    ns.makeBase()
+    ns.makeC9r('A')
+    ns.A.makeInheritedC9r('AA')
+    ns.AA.makeInheritedC9r('AAA')
+    let A_foo = ns.A_p.foo = 1
+    let AA_foo = ns.AA_p.foo = function () {}
+    let AAA_foo = ns.AAA_p.foo = function () {}
+    
+    let a = new ns.A()
+    let aa = new ns.AA()
+    let aaa = new ns.AAA()
+
+    chai.expect(a.inheritedMethod('foo')).equal(eYo.doNothing)
+    chai.expect(aa.inheritedMethod('foo')).equal(eYo.doNothing)
+    chai.expect(aaa.inheritedMethod('foo')).equal(AA_foo)
+
+    chai.expect(a.inheritedMethod('foo', true)).equal(eYo.doNothing)
+    chai.expect(aa.inheritedMethod('foo', true)).equal(eYo.doNothing)
+    chai.expect(aaa.inheritedMethod('foo', true)).equal(AA_foo)
+
+    a.foo = function () {}
+    chai.expect(a.inheritedMethod('foo')).equal(eYo.doNothing)
+    chai.expect(a.inheritedMethod('foo', true)).equal(eYo.doNothing)
+
+    aa.foo = function () {}
+    chai.expect(aa.inheritedMethod('foo')).equal(AA_foo)
+    chai.expect(aa.inheritedMethod('foo', true)).equal(eYo.doNothing)
+
+    aaa.foo = function () {}
+    chai.expect(aaa.inheritedMethod('foo')).equal(AAA_foo)
+    chai.expect(aaa.inheritedMethod('foo', true)).equal(AA_foo)
+  })
 })

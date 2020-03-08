@@ -275,7 +275,7 @@ eYo.stmt.makeC9r('decorator_stmt', true, {
     }
   },
   fields: {
-    prefix: {
+    label: {
       reserved: '@'
     }
   },
@@ -303,7 +303,7 @@ eYo.stmt.makeC9r('decorator_stmt', true, {
     property: {
       order: 2,
       fields: {
-        prefix: '.',
+        label: '.',
         bind: {
           reserved: ''
         }
@@ -436,7 +436,7 @@ eYo.stmt.group.makeInheritedC9r('funcdef_part', true, {
     name: {
       order: 1,
       fields: {
-        prefix: 'def',
+        label: 'def',
         bind: {
           validate: true,
           endEditing: true

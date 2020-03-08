@@ -365,7 +365,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
     this.handleModel(model)
     this.makeInit()
     this.makeDispose()
-  } // DlgtDlgt will never change and does not need to be suclassed
+  } // AutoDlgt will never change and does not need to be suclassed
   eYo.inherits(Dlgt, AutoDlgt)
   eYo.c9r.Dlgt_p = eYo.c9r.Dlgt.prototype
   let _p = AutoDlgt.prototype
@@ -914,3 +914,29 @@ eYo.c9r.Base_p.pureAbstract = () => {
 eYo.c9r._p.new = function (...$) {
   return new this.Base(...$)
 }
+
+/**
+ * Get the inherited method with the given name.
+ * @param {String} methodName
+ * @param {Boolean} up - starts with the prototype or the inherited prototype
+ * @return {Function} It never returns `this[methodName]`.
+ */
+eYo.c9r.Base_p.inheritedMethod = eYo.c9r.Dlgt_p.inheritedMethod = function (methodName, up) {
+  let method = this[methodName]
+  var _p = up ? this.eyo.C9r_s : this.eyo.C9r_p
+  while (_p) {
+    if (_p.hasOwnProperty(methodName)) {
+      var ans = _p[methodName]
+      if (eYo.isF(ans)) {
+        if (ans !== method) {
+          return ans
+        }
+      } else {
+        break
+      }
+    }
+    _p = _p.eyo.C9r_s
+  }
+  return eYo.doNothing
+}
+

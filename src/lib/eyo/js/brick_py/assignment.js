@@ -258,12 +258,10 @@ eYo.stmt.makeC9r('assignment_stmt', true, {
     annotated: {
       order: 2,
       fields: {
-        delimiter: {
-          order: 1,
+        label: {
           reserved: ':'
         },
         bind: {
-          order: 2,
           validate: true,
           endEditing: true
         }

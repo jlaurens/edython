@@ -47,14 +47,8 @@ eYo.focus.makeC9r('Main', {
       get_ () {
         return this.mngr && this.mngr.board
       },
-      willChange (before, after) {
-        before && this.hasUI && before.focusOff()
-      },
       set_ (after) {
         this.mngr_ = after && after.focus_mngr || eYo.NA
-      },
-      didChange (after) {
-        after && this.hasUI && after.focusOn()
       },
     },
     /**
@@ -68,7 +62,7 @@ eYo.focus.makeC9r('Main', {
       set (after) {
         if (after && after.focus_mngr) {
           this.mngr_ = after.focus_mngr
-          this.mngr_.brick = after
+          this.mngr_.brick_ = after
         }
       }
     },
@@ -83,7 +77,7 @@ eYo.focus.makeC9r('Main', {
       set (after) {
         if (after && after.focus_mngr) {
           this.mngr_ = after.focus_mngr
-          this.mngr_.field = after
+          this.mngr_.field_ = after
         }
       }
     },
@@ -98,7 +92,7 @@ eYo.focus.makeC9r('Main', {
       set (after) {
         if (after && after.focus_mngr) {
           this.mngr_ = after.focus_mngr
-          this.mngr_.magnet = after
+          this.mngr_.magnet_ = after
         }
       }
     },
@@ -118,7 +112,7 @@ eYo.focus.makeC9r('Main', {
     mngrWillDispose (mngr) {
       this.mngrUnregister(mngr)
       if (this.mngr_ === mngr) {
-        this.mngr_ = null
+        this.mngr_ = eYo.NA
       }
     }
   },
@@ -148,36 +142,54 @@ eYo.focus.makeC9r('Mngr', {
   properties: {
     /**
      * Focus only on wrappers.
+     * @type{eYo.board.Base}
+     */
+    board: {
+      willChange (before, after) {
+        before && before.ui_driver.off(after)
+        after && (this.brick_ = this.magnet_ = this.field_ = eYo.NA)
+      },
+      didChange (after) {
+        after && after.ui_driver.on(after)
+      },
+    },
+    /**
+     * Focus only on wrappers.
      * @type{eYo.brick.Base}
      */
     brick: {
       validate (after) {
-        return after && after.wrapper || after
+        if (after) {
+          if (!after.board) return eYo.INVALID
+          return after.wrapper || after
+        }
       },
       willChange(before, after) {
-        this.hasUI && before && before.ui_driver.off(before)
-      },
-      didChange(after) {
+        before && before.ui_driver.off(before)
         if (after) {
+          this.board_ = after.board
           let m4t = this.magnet
           if (m4t) {
-            var b3k = m4t.brick
-            if (b3k && after !== b3k.wrapper) {
+            // before === m4t.wrapper
+            var b3k = m4t.targetBrick
+            if (!b3k || after !== b3k.wrapper) {
               this.magnet_ = eYo.NA
             }
           }
           let f3d = this.field
           if (f3d) {
-            var b3k = f3d.brick
-            if (b3k && after !== b3k.wrapper) {
-              this.field_ = eYo.NA
-            }
+            // before === f3d.wrapper
+            this.field_ = eYo.NA
           }
-          this.hasUI && after.ui_driver.on(after)
+        } else {
+          this.magnet_ = this.field_ = eYo.NA
+        }
+      },
+      didChange(after) {
+        if (after) {
+          after.ui_driver.on(after)
           this.didAdd()
         } else {
-          this.magnet_ = eYo.NA
-          this.field_ = eYo.NA
           this.didRemove()
         }
       },
@@ -187,10 +199,6 @@ eYo.focus.makeC9r('Mngr', {
      * @type{eYo.magnet.Base}
      */
     magnet: {
-      willChange() {
-        this.hasUI && this.ui_driver.magnetOff(this)
-        this.field_ = null
-      },
       validate(after) {
         if (after) {
           if (!after.board) return eYo.INVALID
@@ -203,17 +211,26 @@ eYo.focus.makeC9r('Mngr', {
             return eYo.INVALID
           }
           // if the connection visually belongs to 2 bricks, select the top left most
-          if ((after.isHead || after.isSlot) && after.target) {
+          if ((after.isLeft || after.isHead || after.isSlot) && after.target) {
             after = after.target
           }
           return after
         }
       },
+      willChange(before, after) {
+        before && before.ui_driver.off(before)
+        if (after) {
+          this.field_ = eYo.NA
+          if (after.wrapper !== this.brick) {
+            this.brick_ = eYo.NA
+          }
+        }
+      },
       didChange (after) {
         if (after) {
-          this.brick_ = after.brick.wrapper
+          this.brick_ = after.brick
+          after.ui_driver.on(after)
         }
-        this.hasUI && this.ui_driver.magnetOn(this)
       },
     },
     /**
@@ -222,22 +239,25 @@ eYo.focus.makeC9r('Mngr', {
      * @private
      */
     field: {
-      willChange (after) {
-        this.ui_driver.fieldOff(this)
-        this.magnet_ = null
+      validate(after) {
         if (after) {
-          var b3k = after.brick
-          if (b3k !== this.brick) {
+          if (!after.board) return eYo.INVALID
+          return after
+        }
+      },
+      willChange (before, after) {
+        before && before.ui_driver.off(before)
+        if (after) {
+          this.magnet_ = eYo.NA
+          if (after.wrapper !== this.brick) {
             this.brick_ = eYo.NA
           }
         }
       },
       didChange (after) {
         if (after) {
-          if (!this.brick) {
-            this.brick_ = after.brick
-          }
-          this.ui_driver.fieldOn(this)
+          this.brick_ = after.brick
+          after.ui_driver.on(after)
         }
       },
     },
@@ -307,39 +327,6 @@ eYo.o4t.Base.eyo.propertiesMerge({
   },
 })
 
-eYo.brick.Base.eyo.propertiesMerge({
-  hasFocus: {
-    get() {
-      return this === this.focus_mngr.brick
-    },
-    set (after) {
-      after ? this.focusOn() : this.focusOff()
-    }
-  },
-})
-
-eYo.magnet.Base.eyo.propertiesMerge({
-  hasFocus: {
-    get() {
-      return this === this.focus_mngr.magnet
-    },
-    set (after) {
-      after ? this.focusOn() : this.focusOff()
-    }
-  },
-})
-
-eYo.field.Base.eyo.propertiesMerge({
-  hasFocus: {
-    get() {
-      return this === this.focus_mngr.field
-    },
-    set (after) {
-      after ? this.focusOn() : this.focusOff()
-    },
-  },
-})
-
 eYo.view.Workspace.eyo.propertiesMerge({
   /**
    * The main focus manager.
@@ -352,86 +339,134 @@ eYo.view.Workspace.eyo.propertiesMerge({
   },
 })
 
-eYo.board.Base.eyo.methodsMerge({
-  /**
-   * Focus on this board.
-   * @return {Boolean} Whether the receiver gained focus.
-   */
-  focusOn () {
-    return !!(this.focus_main.board = this)
+eYo.board.Base.eyo.modelMerge({
+  properties: {
+    hasFocus: {
+      get() {
+        return this === this.focus_mngr.board
+      },
+      set (after) {
+        after ? this.focusOn() : this.focusOff()
+      }
+    },
   },
-  /**
-   * Focus off this board.
-   */
-  focusOff () {
-    this.focus_main.board = eYo.NA
-  },
-})
-
-eYo.brick.Base.eyo.methodsMerge({
-  /**
-   * Select this brick.  Highlight it visually.
-   * Wrapped bricks are not selectable.
-   * @param {Boolean} noBoard -  Do not focus on the receiver' board.
-   * Defaults to false, which means that focusing on an object
-   * also focuses on its enclosing board.
-   * @return {Boolean} Whether the receiver gained focus.
-   */
-  focusOn (noBoard) {
-    noBoard || this.board.focusOn()
-    return !!(this.focus_mngr.brick = this)
-  },
-  /**
-   * Focus off this brick.
-   * If there is a selected connection, it is removed.
-   * `focusOff` is used from click handling methods.
-   */
-  focusOff () {
-    this.hasFocus && (this.focus_mngr.brick = eYo.NA)
+  methods: {
+    /**
+     * Focus on this board.
+     * @return {Boolean} Whether the receiver gained focus.
+     */
+    focusOn () {
+      return !!(this.focus_main.board_ = this)
+    },
+    /**
+     * Focus off this board.
+     */
+    focusOff () {
+      this.focus_main.board_ = eYo.NA
+    },
   },
 })
 
-eYo.magnet.Base.eyo.methodsMerge({
-  /**
-   * Select this magnet. Highlight it visually.
-   * Wrapped magnets are not selectable.
-   * @param {Boolean} noBoard -  Do not focus on the receiver' board.
-   * Defaults to false, which means that focusing on an object
-   * also focuses on its enclosing board.
-   * @return {Boolean} Whether the receiver gained focus.
-   */
-  focusOn (noBoard) {
-    noBoard || this.board.focusOn()
-    return !!(this.focus_mngr.magnet = this)
+eYo.brick.Base.eyo.modelMerge({
+  properties: {
+    hasFocus: {
+      get() {
+        return this === this.focus_mngr.brick
+      },
+      set (after) {
+        after ? this.focusOn() : this.focusOff()
+      }
+    },
   },
-  /**
-   * Focus off this magnet.
-   * If `this` is the selected magnet, it looses its status.
-   * `focusOff` is used from click handling methods.
-   * Does nothing if the receiver is not selected.
-   */
-  focusOff () {
-    this.hasFocus && (this.focus_mngr.magnet = eYo.NA)
+  methods: {
+    /**
+     * Select this brick.  Highlight it visually.
+     * Wrapped bricks are not selectable.
+     * @param {Boolean} noBoard -  Do not focus on the receiver' board.
+     * Defaults to false, which means that focusing on an object
+     * also focuses on its enclosing board.
+     * @return {Boolean} Whether the receiver gained focus.
+     */
+    focusOn (noBoard) {
+      noBoard || this.board.focusOn()
+      return !!(this.focus_mngr.brick_ = this)
+    },
+    /**
+     * Focus off this brick.
+     * If there is a selected connection, it is removed.
+     * `focusOff` is used from click handling methods.
+     */
+    focusOff () {
+      this.hasFocus && (this.focus_mngr.brick_ = eYo.NA)
+    },
   },
 })
 
-eYo.field.Base.eyo.methodsMerge({
-  /**
-   * Select this field. Highlight it visually.
-   * @param {Boolean} noBoard -  Do not focus on the receiver' board.
-   * Defaults to false, which means that focusing on an object
-   * also focuses on its enclosing board.
-   * @return {Boolean} Whether the receiver gained focus.
-   */
-  focusOn (noBoard) {
-    noBoard || this.board.focusOn()
-    return !!(this.focus_mngr.field = this)
+eYo.magnet.Base.eyo.modelMerge({
+  properties: {
+    hasFocus: {
+      get() {
+        return this === this.focus_mngr.magnet
+      },
+      set (after) {
+        after ? this.focusOn() : this.focusOff()
+      }
+    },
   },
-  /**
-   * Focus off this field.
-   * `focusOff` is used from click handling methods.
-   */
-  focusOff () {
-    this.hasFocus && (this.focus_mngr.field = eYo.NA)
+  methods: {
+    /**
+     * Select this magnet. Highlight it visually.
+     * Wrapped magnets are not selectable.
+     * @param {Boolean} noBoard -  Do not focus on the receiver' board.
+     * Defaults to false, which means that focusing on an object
+     * also focuses on its enclosing board.
+     * @return {Boolean} Whether the receiver gained focus.
+     */
+    focusOn (noBoard) {
+      noBoard || this.board.focusOn()
+      return !!(this.focus_mngr.magnet_ = this)
+    },
+    /**
+     * Focus off this magnet.
+     * If `this` is the selected magnet, it looses its status.
+     * `focusOff` is used from click handling methods.
+     * Does nothing if the receiver is not selected.
+     */
+    focusOff () {
+      this.hasFocus && (this.focus_mngr.magnet_ = eYo.NA)
+    },
+  },
+})
+
+eYo.field.Base.eyo.modelMerge({
+  properties: {
+    hasFocus: {
+      get() {
+        return this === this.focus_mngr.field
+      },
+      set (after) {
+        after ? this.focusOn() : this.focusOff()
+      },
+    },
+  },
+  methods: {
+    /**
+     * Select this field. Highlight it visually.
+     * @param {Boolean} noBoard -  Do not focus on the receiver' board.
+     * Defaults to false, which means that focusing on an object
+     * also focuses on its enclosing board.
+     * @return {Boolean} Whether the receiver gained focus.
+     */
+    focusOn (noBoard) {
+      noBoard || this.board.focusOn()
+      return !!(this.focus_mngr.field_ = this)
+    },
+    /**
+     * Focus off this field.
+     * `focusOff` is used from click handling methods.
+     */
+    focusOff () {
+      this.hasFocus && (this.focus_mngr.field_ = eYo.NA)
+    },
   },
 })

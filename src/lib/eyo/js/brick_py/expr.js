@@ -424,7 +424,7 @@ eYo.expr.makeC9r('proper_slice', true, {
     stride: {
       order: 3,
       fields: {
-        start: ':',
+        label: ':',
         bind: {
           endEditing: true,
           canEmpty: true

@@ -406,10 +406,6 @@ eYo.field.Base_p.getPythonText_ = function() {
  * @suppress{accessControls}
  */
 eYo.field.Input_p.getPythonText_ = function () {
-  if (this.model.variable) {
-    var candidate = this.text_ || ''
-    return !XRegExp.match(candidate, /\s/) && candidate || (!this.optional_ && '<MISSING NAME>')  
-  }
   var t = eYo.field.Input.eyo.C9r_s.getPythonText_.call(this)
   if (!t.length && !this.optional_) {
     if (!this.model.canEmpty && (this.placeholder || (this.data && this.data.placeholder))) {

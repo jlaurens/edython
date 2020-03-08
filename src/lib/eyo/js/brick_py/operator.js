@@ -106,12 +106,8 @@ eYo.expr.makeC9r('Binary', {
     rhs: {
       order: 2,
       fields: {
-        operator: {
-          order: 1,
-          value: ''
-        },
+        operator: '',
         bind: {
-          order: 2,
           endEditing: true,
           placeholder () /** @suppress {globalThis} */ {
             var type = this.brick.type
@@ -331,12 +327,8 @@ eYo.expr.makeC9r('unary', {
     rhs: {
       order: 1000,
       fields: {
-        operator: {
-          order: 1,
-          value: ''
-        },
+        operator: '',
         bind: {
-          order: 2,
           validate: true,
           endEditing: true
         }

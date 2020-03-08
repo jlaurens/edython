@@ -28,14 +28,7 @@ eYo.c9r.makeNS(eYo, 'o4t')
  * @name {eYo.o4t.Base}
  * @constructor
  */
-eYo.o4t.makeBase({
-/**
- * Prepare the delegate prototype.
- */
-  dlgt (ns, key, C9r, model) {
-    this.properties__ = Object.create(null)
-  },
-})
+eYo.o4t.makeBase()
 
 /**
  * Initialize an instance with given property models.
@@ -115,7 +108,7 @@ eYo.o4t._p.prepareProperties = function (object, properties, keys_p) {
 
 eYo.c9r._p.enhancedO4t = function () {
   let _p = this.Dlgt_p
-  _p.propertiesMerge && eYo.throw(`Already propertiesMerge`)
+  _p.propertiesMerge && eYo.throw(`Already propertiesMerge ${_p.name}`)
   /**
    * Extends the properties of the associate constructor.
    * @param {Object} properties -  A properties model
@@ -179,7 +172,7 @@ eYo.c9r._p.enhancedO4t = function () {
         Object.defineProperties(object, {
           [k_p]: eYo.descriptorR(function () {
             return p
-          }),
+          }, true),
         })
         object[k_p] || eYo.throw('Missing property')
       })
@@ -194,30 +187,27 @@ eYo.c9r._p.enhancedO4t = function () {
 
   /**
    * Initialize an instance with valued, cached, owned and copied properties.
-   * Default implementation forwards to super.
-   * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
+   * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
    */
   _p.initInstance = function (object) {
     if (!object) {
       console.error('BREAK HERE!')
     }
-    var f = k => {
+    this.propertyForEach(object, k => {
       var init = this.init_ && this.init_[k] || object[k+'Init']
       if (init) {
         object[k + '_'] = init.call(object)
       }
-    }
-    this.propertyForEach(f)
+    })
   }
   
   /**
    * Dispose of the resources declared at that level.
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
    */
-  _p.disposeInstance = function (object, ...params) {
-    Object.keys(this.properties).forEach(k => {
-      let x = object[k + '_p']
-      x.dispose(...params)
+  _p.disposeInstance = function (object, ...$) {
+    this.propertyForEach(object, p => {
+      p.dispose(...$)
     })
   }
   
@@ -318,9 +308,8 @@ eYo.c9r._p.enhancedO4t = function () {
    * @param {Object} model - Object, like for |makeC9r|.
    */
   _p.modelMerge = function (model) {
-    model.properties && this.propertiesMerge(model.properties)
-    model.aliases && this.aliasesMerge(model.aliases)
-    eYo.o4t.Dlgt_p.eyo.C9r_s.modelMerge.call(this, model)
+    model.fields && this.fieldsMerge(model.fields)
+    this.inheritedMethod('modelMerge').call(this, model)
   }
   
   /**
@@ -361,17 +350,21 @@ eYo.c9r._p.enhancedO4t = function () {
   /**
    * Iterator over the properties.
    * @param {Object} object
+   * @param {Object} [$this] - Optional this, cannot be a function
    * @param {Function} f
    * @param {Boolean} owned
    */
-  _p.propertyForEach = function (object, f, owned) {
+  _p.propertyForEach = function (object, $this, f, owned) {
+    if (eYo.isF($this)) {
+      [f, owned, $this] = [$this, f, owned]
+    }
     if (owned) {
       this.keys_p__.forEach(k_p => {
         let p = object[k_p]
         if (p) {
           let v = p.stored__
           if (v && v.eyo && p === v.eyo_p6y) {
-            f(v)
+            f.call($this, v)
           }
         }
       })
@@ -381,7 +374,7 @@ eYo.c9r._p.enhancedO4t = function () {
         if (p) {
           let v = p.getValue()
           if (v) {
-            f(v)
+            f.call($this, v)
           }
         }
       })
@@ -391,27 +384,28 @@ eYo.c9r._p.enhancedO4t = function () {
   /**
    * Iterator over the properties.
    * @param {Object} object
+   * @param {Object} [$this] - Optional this, cannot be a function
    * @param {Function} f
    * @param {Boolean} owned
    */
-  _p.propertySome = function (object, f, owned) {
+  _p.propertySome = function (object, $this, f, owned) {
     if (owned) {
-      this.keys_p__.some(k_p => {
+      return this.keys_p__.some(k_p => {
         let p = object[k_p]
         if (p) {
           let v = p.stored__
           if (v && v.eyo && p === v.eyo_p6y) {
-            f(v)
+            f.call($this, v)
           }
         }
       })
     } else {
-      this.keys_p__.some(k_p => {
+      return this.keys_p__.some(k_p => {
         let p = object[k_p]
         if (p) {
           let v = p.getValue()
           if (v) {
-            f(v)
+            f.call($this, v)
           }
         }
       })
@@ -419,18 +413,20 @@ eYo.c9r._p.enhancedO4t = function () {
   }
   /**
    * Executes the helper for each owned property.
+   * @param {Object} [$this] - Optional this, cannot be a function
    * @param{Function} f -  an helper with one argument which is the owned value.
    */
-  this.Base_p.ownedForEach = function (f) {
-    this.eyo.propertyForEach(this, f, true)
+  this.Base_p.ownedForEach = function ($this, f) {
+    this.eyo.propertyForEach(this, $this, f, true)
   }
 
   /**
    * Executes the helper for each owned property stopping at the first truthy answer.
+   * @param {Object} [$this] - Optional this, cannot be a function
    * @param{Function} f -  an helper with one argument which is the owned value.
    */
-  this.Base_p.ownedSome = function (f) {
-    return this.eyo.propertySome(this, f, true)
+  this.Base_p.ownedSome = function ($this, f) {
+    return this.eyo.propertySome(this, $this, f, true)
   }
 }
 

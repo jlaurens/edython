@@ -124,7 +124,7 @@ eYo.stmt.group.makeInheritedC9r('except_part', true, {
     alias: {
       order: 3000,
       fields: {
-        prefix: 'as',
+        label: 'as',
         bind: {
           validate: true,
           endEditing: true,
@@ -323,7 +323,7 @@ eYo.stmt.makeC9r('assert_stmt', true, {
     expression: {
       order: 1,
       fields: {
-        prefix: 'assert',
+        label: 'assert',
         bind: {
           endEditing: true,
           placeholder: eYo.msg.placeholder.EXPRESSION
