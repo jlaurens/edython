@@ -1239,50 +1239,6 @@ eYo.brick.DEBUG_ = Object.create(null)
   }
 
   /**
-   * Make the data according to the model.
-   * Called only once during creation process.
-   * No data change, no rendering.
-   * For edython.
-   */
-  _p.makeData = function () {
-    var data = Object.create(null) // just a hash
-    var dataModel = this.model.data
-    var byOrder = []
-    for (var k in dataModel) {
-      if (eYo.hasOwnProperty(dataModel, k)) {
-        var model = dataModel[k]
-        if (model) {
-          // null models are used to neutralize the inherited data
-          var d = new eYo.data.Base(this, k, model)
-          data[k] = d
-          for (var i = 0, dd; (dd = byOrder[i]); ++i) {
-            if (dd.model.order > d.model.order) {
-              break
-            }
-          }
-          byOrder.splice(i, 0, d)
-        }
-      }
-    }
-    if ((d = this.headData = byOrder[0])) {
-      for (i = 1; (dd = byOrder[i]); ++i) {
-        d.next = dd
-        dd.previous = d
-        d = dd
-      }
-    }
-    this.data_ = data
-    // now we can use `dataForEach`
-    this.dataForEach(d => {
-      Object.defineProperty(d.brick, d.key + '_d', { value: d })
-      if (d.model.main === true) {
-        eYo.assert(!data.main, 'Only one main data please')
-        Object.defineProperty(d.brick, 'main_d', { value: d })
-      }
-    })
-  }
-
-  /**
    * Synchronize the data to the UI.
    * The change level and change count should not change here.
    * Sends a `synchronize` message to all data controllers.
