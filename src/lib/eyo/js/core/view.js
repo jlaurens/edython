@@ -102,6 +102,7 @@ eYo.view.makeBase({
  * then it is returned as is.
  * If it is a C9r, an instance is created, cached and returned.
  * @param{Object} owner - and eYo object
+ * @param{String} key - The key of the created instance.
  * @param{Object} model - An object suitable to create such a view instance.
  */
 eYo.view._p.new = function (owner, key, model) {

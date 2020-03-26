@@ -19,7 +19,7 @@ eYo.o3d.makeNS(eYo, 'font')
 /**
  * Point size of text.
  */
-eYo.o4t.prepareProperties(eYo.font, {
+eYo.font.eyo.p6yPrepare(eYo.font, {
   familyMono: {
     get () {
       return 'DejaVuSansMono,monospace'

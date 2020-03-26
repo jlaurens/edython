@@ -29,6 +29,15 @@ eYo.forwardDeclare('xml')
 eYo.forwardDeclare('key')
 eYo.forwardDeclare('expr.List')
 
+/**
+ * The model path.
+ * @see The `new` method.
+ * @param {String} key
+ */
+eYo.slot._p.modelPath = function (key) {
+  return eYo.isStr(key) ? `slots.${key}` : 'slots'
+}
+
 //g@@g.forwardDeclare('g@@g.dom');
 
 /**
@@ -58,14 +67,12 @@ eYo.forwardDeclare('expr.List')
  * @constructor
  */
 eYo.slot.makeBase({
-  init (brick, key, model) {
+  init (brick, key) {
     brick || eYo.throw('Missing slot owner brick')
     key || eYo.throw('Missing slot key')
-    model || eYo.throw('Missing slot model')
-    eYo.isNA(model.order) && eYo.throw('Missing slot model order')
+    eYo.isNA(this.model.order) && eYo.throw('Missing slot model order')
     
     this.key_ = key
-    this.model_ = model
     var setupModel = model => {
       model.setup_ = true
       if (model.validateIncog && !eYo.isF(model.validateIncog)) {
@@ -529,13 +536,12 @@ eYo.slot.Base_p.didLoad = eYo.decorate.reentrant('didLoad', function () {
  * execute the given function for the receiver and its next siblings.
  * For edython.
  * @param {function} helper
- * @return {boolean} whether there was an slot to act upon or no helper given
  */
-eYo.slot.Base_p.forEach = function (helper) {
+eYo.slot.Base_p.forEach = function (helper, ...$) {
   var slot = this
   if (eYo.isF(helper)) {
     do {
-      helper(slot)
+      helper.call(slot, ...$)
     } while ((slot = slot.next))
   }
 }
@@ -546,11 +552,11 @@ eYo.slot.Base_p.forEach = function (helper) {
  * @param {function} helper
  * @return {boolean} whether there was an slot to act upon or no helper given
  */
-eYo.slot.Base_p.forEachPrevious = function (helper) {
+eYo.slot.Base_p.forEachPrevious = function (helper, ...$) {
   var slot = this
   if (eYo.isF(helper)) {
     do {
-      helper(slot)
+      helper.call(slot, ...$)
     } while ((slot = slot.previous))
   }
 }
@@ -563,11 +569,11 @@ eYo.slot.Base_p.forEachPrevious = function (helper) {
  * @param {function} helper
  * @return {?Object} The slot that returned true, eventually.
  */
-eYo.slot.Base_p.some = function (helper) {
+eYo.slot.Base_p.some = function (helper, ...$) {
   var slot = this
   if (eYo.isF(helper)) {
     do {
-      if (helper(slot)) {
+      if (helper.call(slot, ...$)) {
         return slot
       }
     } while ((slot = slot.next))
@@ -579,8 +585,8 @@ eYo.slot.Base_p.some = function (helper) {
  * For edython.
  * @param {function} helper
  */
-eYo.slot.Base_p.fieldForEach = function (helper) {
-  this.fields && (Object.values(this.fields).forEach(f => helper(f)))
+eYo.slot.Base_p.fieldForEach = function ($this, helper) {
+  this.eyo.fieldForEach(this, $this, helper)
 }
 
 /**

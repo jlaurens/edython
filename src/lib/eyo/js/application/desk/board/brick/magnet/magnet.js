@@ -315,15 +315,14 @@ eYo.model.magnetHandler = (model) => {
  * @constructor
  */
 eYo.magnet.makeBase({
-  init (bs, type, model) {
+  init (bs, type) {
     if (this.slot) {
       this.name_ = this.slot.key
     }
     this.type_ = type
-    this.model_ = model
-    this.optional_ = this.model_.optional
-    this.incog_ = this.hidden_ = model.hidden
-    eYo.field.makeFields(this, model.fields)
+    this.optional_ = this.model.optional
+    this.incog_ = this.hidden_ = this.model.hidden
+    eYo.field.makeFields(this, this.model.fields)
     if (!this.brick.isInFlyout) {
       var DB = this.magnetDB_
       if (DB) {
@@ -520,7 +519,7 @@ eYo.magnet.makeBase({
 })
 
 // computed public properties
-eYo.magnet.Base.eyo.propertiesMerge({
+eYo.magnet.Base.eyo.p6yMerge({
   /**
   * Horizontal position in the brick in text unit.
   * @readonly
@@ -1863,20 +1862,6 @@ eYo.magnet.Base_p.isConnectionAllowed = function (candidate, maxRadius) {
   } while ((its_brick = its_brick.parent))
 
   return true
-}
-
-/**
- * Magnet creator.
- * @param {eYo.brick.Base|eYo.slot.Base} owner - the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
- * @param {String} type - the type of this magnet
- * @param {Object} model - the model of this magnet
- */
-eYo.magnet._p.new = function (owner, type, model) {
-  model || eYo.throw('Cannot create a magnet without a model')
-  if (!model.C9r) {
-    model.C9r = eYo.magnet.makeC9r()
-  }
-  return new model.C9r(owner, type, model)
 }
 
 /**

@@ -1,9 +1,6 @@
 """Create a list of deps from a list of requirements
 Each line of the file_name named 'required.txt' is what is put in goog.require('blablabla')
 """
-from pathlib import Path
-import re
-import json
 import argparse
 
 parser = argparse.ArgumentParser(description='Tool.')
@@ -14,145 +11,23 @@ parser.add_argument('--verbose', dest='verbose', action='store_const',
 
 global_args = parser.parse_args()
 
-# re to parse the 
-re_addDep = re.compile(r"""^(?:eYo|goog)\.addDependency\(
-    (?P<file_name>'[^']+'),\s+
-    (?P<provided>\[[^\]]*\])\s*,\s+
-    (?P<required>\[[^\]]*\])\s*,\s+
-    (?P<options>\{[^\}]*\})\s*
-    \)\s*;?\s*$""", re.X)
+from my_util import *
 
-def loads(input):
-    return json.loads(input.replace("'", '"'))
-
-# Dependencies data base
-class DDB:
-    class Dep:
-        def __init__(self, ddb, file_name, provided, required, options):
-            self.ddb = ddb
-            self.file_name = file_name
-            self.provided = provided
-            self.required = required
-            self.options = options
-            self.done = False
-            self.required_cumul = []
-            self.required_delta = []
-            self.required_delta_ = None
-
-        def __str__(self):
-            ra = [self.file_name + ':\n  provided:']
-            if len(self.provided) < 10:
-                ra = ra + ['    ' + x for x in self.provided]
-            else:
-                ra = ra + ['    …']
-            if len(self.required_delta):
-                ra = ra + ['  deltas:']
-                i = 0
-                for delta in self.required_delta:
-                    ra = ra + ['    ' + str(i) + ':']
-                    ra = ra + ['      ' + x for x in delta]
-                    i = i + 1
-                ra = ra + ['  cumuls:']
-                i = 0
-                for cumul in self.required_cumul:
-                    ra = ra + ['    ' + str(i) + ':']
-                    ra = ra + ['      ' + x for x in cumul]
-                    i = i + 1
-            else:
-                ra = ra + ['  required:']
-                if len(self.required) < 20:
-                    ra = ra + ['    ' + x for x in self.required]
-                else:
-                    ra = ra + ['    …']
-                if len(self.options):
-                    ra = ra + ['  options:']
-                    if len(self.options) < 10:
-                        ra = ra + ['    ' + x for x in self.options]
-                    else:
-                        ra = ra + ['    …']
-            return '\n'.join(ra)
-
-    deps = []
-    by_file_name = {}
-    by_provide = {}
-    missing = set()
-
-    def __init__(self, *args):
-        for path in args:
-            with path.open('r', encoding='utf-8') as f:
-                for line in f.readlines():
-                    m = re_addDep.match(line)
-                    if m:
-                        file_name = loads(m.group('file_name'))
-                        provided = loads(m.group('provided'))
-                        required = loads(m.group('required'))
-                        options = loads(m.group('options'))
-                        for p in provided:
-                            if p in required:
-                                required.remove(p)
-                        dep = DDB.Dep(self, file_name, provided, required, options)
-                        self.deps.append(dep)
-                        assert self.by_file_name.get(file_name) is None, 'Same file_name appears twice at least ' + file_name
-                        self.by_file_name[file_name] = dep
-                        for p in provided:
-                          if self.by_provide.get(p) is dep:
-                            continue
-                          else:
-                            assert self.by_provide.get(p) is None, 'Same provide appears twice at least ' + p + ', ' + path.as_posix()
-                            self.by_provide[p] = dep
-                          if p == 'eYo.Dnd.Mngr':
-                            print('YOUPI')
-                    elif global_args.verbose:
-                      print('Ignored:', line.rstrip())
-        self.deps.sort(key = lambda x: ' ' + x.file_name if not x.file_name.startswith('src/lib/eyo') else x.file_name)
-
-    def getDep(self, provide):
-        """
-        The provide -> dep mapping is not one to one.
-        Care is taken to manage the redundancy.
-        """
-        if provide in self.by_provide:
-            return self.by_provide[provide]
-        self.missing.add(provide)
-
-    def __getitem__(self, i):
-        return self.getDep(i)
-
-    def getDepWithFileName(self, file_name):
-        return self.by_file_name[file_name]
-
-    def __str__(self):
-        return '\n'.join(map(str, [x for x in self.deps if x.file_name.startswith('src/lib/eyo')]))
-
-def getRQR(p):
-    RQR = []
-    with p.open('r', encoding='utf-8') as f:
-        RQR = [line.rstrip() for line in f.readlines()]
-    return RQR
+from pathlib import Path
 
 if __name__ != "main":
-#    path0 = Path(__file__).parent / 'lexical.html'
-#    print(path0)
-#    path00 = Path(__file__).parent / 'lexical_xtd.html'
-#    print(path00)
     print('Step 2:')
     print('=======')
     print('Resolve deps.')
-    print(Path(__file__).resolve())
-    pathRoot = Path(__file__).resolve().parent.parent.parent
-    pathBuild = pathRoot / 'build' / 'helpers'
-    print(pathBuild)
-    pathBuild.mkdir(parents=True, exist_ok=True)
     #deps contains a list of alll the available key found from the sources.
-    ddb = DDB(pathRoot / 'src' / 'lib' / 'closure-library' / 'closure' / 'goog' / 'deps.js',
-              pathBuild / 'eyo_deps.js')
+    ddb = BDD(path_goog_deps, path_eyo_deps, verbose=global_args.verbose)
     if global_args.verbose:
         print("""
 Dependencies:
 =============""")
         print(ddb)
     
-    todo_required2 = getRQR(pathBuild / 'eyo_required.txt')
+    todo_required2 = getRQR(path_required)
     todo_required = set(todo_required2)
     if global_args.verbose:
         print("""
@@ -295,29 +170,36 @@ Cascaded required:
         print(control_before, control_middle, control_after, len(done))
         raise Exception('ERROR')
     
-    def export(component, mapper):
-        p_out = pathBuild / component
+    def export(p_out, mapper):
         print('Exporting to', p_out)
         p_out.write_text(''.join(map(mapper, final)))
    
     export(
-      'deps-build.txt',
+      path_deps,
+      lambda r: f'''src/{Path(r).relative_to('src').as_posix()}\n'''
+    )
+    export(
+      path_deps_test,
+      lambda r: f'''src/{Path(r).with_suffix('.test.js').relative_to('src').as_posix()}\n'''
+    )
+    export(
+      path_deps_build,
       lambda r: f'--js "{r}" \\\n'
     )
     export(
-      'deps-vue.txt',
+      path_deps_vue,
       lambda r: f'''      <script src="{Path(r).relative_to('src').as_posix()}"></script>\n'''
     )
     export(
-      'deps-web-dev.txt',
+      path_deps_web_dev,
       lambda r: f'''      <script src="../../src/{Path(r).relative_to('src').as_posix()}"></script>\n'''
     )
     export(
-      'deps-web-test.txt',
+      path_deps_web_test,
       lambda r: f'''      <script src="PATH_ROOT/src/{Path(r).relative_to('src').as_posix()}"></script>\n'''
     )
     export(
-      'deps-test-import.txt',
+      path_deps_test_import,
       lambda r: f'''import_file("src/{Path(r).relative_to('src').as_posix()}")\n'''
     )
     

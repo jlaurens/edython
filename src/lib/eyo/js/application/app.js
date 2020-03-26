@@ -348,7 +348,7 @@ eYo.app.Base_p.copyBrick = function (brick, deep) {
  */
 eYo.app.Base_p.hideChaff = eYo.doNothing
 
-eYo.o4t.Base.eyo.propertiesMerge({
+eYo.o4t.Base.eyo.p6yMerge({
   /**
    * The root application
    * @type {eYo.app}
@@ -417,16 +417,24 @@ eYo.o4t.Base.eyo.propertiesMerge({
   },
 })
 
-eYo.o3d.Base.eyo.methodsMerge({
-  ownerDidChange (overriden) {
-    return function (before, after)
-    /** @suppress {globalThis} */ {
-      overriden(before, after)
-      if (before) {
-        this.app_p.reset()
+eYo.o3d.Base.eyo.modelMerge({
+  aliases: {
+    /**
+     * Options
+     */
+    'owner.options': 'options',
+  },
+  methods: {
+    ownerDidChange (overriden) {
+      return function (before, after)
+      /** @suppress {globalThis} */ {
+        overriden(before, after)
+        if (before) {
+          this.app_p.reset()
+        }
       }
     }
-  }
+  },
 })
 
 eYo.event.Mngr.eyo.methodsMerge({
@@ -492,19 +500,13 @@ console.error('In progress')
  * 
  */
 eYo.o3d.makeC9r(eYo.app, 'Clipboard', {
+  aliases: {
+    'desk.board': 'board',
+    'source.desk': 'desk',
+  },
   properties: {
     dom: eYo.isNA,
     xml: eYo.NA,
     source: eYo.isNA,
-    desk: {
-      get () {
-        return this.source.desk
-      },
-    },
-    board: {
-      get () {
-        return this.desk.board
-      },
-    },
   },
 })

@@ -18,7 +18,7 @@ eYo.fcfl.makeDriverC9r('Board')
 
 console.error('NYI')
 
-eYo.board.Base.eyo.propertiesMerge({
+eYo.board.Base.eyo.p6yMerge({
   ui () {
     return Object.create(null)
   },
@@ -755,13 +755,13 @@ eYo.fcfl.Board._p.drawModelBegin_ = function (recorder) {
  */
 eYo.fcfl.Board._p.drawModel_ = function (io) {
   let board = io.board
-  this.fieldDrawFrom_(board.fieldAtStart, io)
+  this.fieldDrawFrom_(board.fieldHead, io)
   if ((io.slot = board.slotAtHead)) {
     do {
       this.slotDraw_(io)
     } while ((io.slot = io.slot.next))
   }
-  this.fieldDrawFrom_(board.toEndField, io)
+  this.fieldDrawFrom_(board.fieldTail, io)
   return
 }
 
@@ -862,11 +862,11 @@ eYo.fcfl.Board._p.slotDraw_ = function (io) {
     slot.where.set(io.cursor)
     // Now reset the cursor relative to the slot
     io.cursor.set()
-    this.fieldDrawFrom_(slot.fieldAtStart, io)
+    this.fieldDrawFrom_(slot.fieldHead, io)
     if ((io.magnet = slot.magnet)) {
       this.drawInputMagnet_(io)
     }
-    this.fieldDrawFrom_(slot.toEndField, io)
+    this.fieldDrawFrom_(slot.fieldTail, io)
     // come back to the board coordinates
     io.cursor.forward(slot.where)
     // translate at the end because `slot.where` may change

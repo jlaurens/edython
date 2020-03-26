@@ -1,21 +1,14 @@
 """
-Generates a dependency javacript file from a directory.
+Generates a dependency javascript file from a directory.
 Build test html files.
 """
-import pathlib
-import re
-import shutil
-import os, stat
 
-path_root = pathlib.Path(__file__).resolve().parent.parent.parent
-path_src = path_root / 'src'
-path_eyo = path_src / 'lib' / 'eyo'
-path_js = path_eyo / 'js'
-path_helpers = path_root / 'build' / 'helpers'
-path_helpers.mkdir(parents=True, exist_ok=True)
+import re, os, stat
+from my_util import *
+from pathlib import Path
 
 # read the build.sh, change it and save the modified file to the build
-def updateBuild(path_in, path_out, path_deps):
+def updateBuild(path_in, path_out, path_deps_web_test):
     re_good = re.compile(r"^--js ")
     with path_in.open('r', encoding='utf-8') as f:
         head = []
@@ -26,7 +19,7 @@ def updateBuild(path_in, path_out, path_deps):
                 fill = tail
             else:
                 fill.append(l)
-        with path_deps.open('r', encoding='utf-8') as f:
+        with path_deps_web_test.open('r', encoding='utf-8') as f:
             head.append(f.read())
             head.extend(tail)
             path_out.write_text(''.join(head), encoding='utf-8')
@@ -35,7 +28,7 @@ def updateBuild(path_in, path_out, path_deps):
             return 0
     return 1
 
-def updateWeb(path_in, path_out, path_deps):
+def updateWeb(path_in, path_out, path_deps_web_test):
     re_start = re.compile(r"^\s*<\!--\s+DYNAMIC DEPS START\s+-->\s*$")
     re_end = re.compile(r"^\s*<\!--\s+DYNAMIC DEPS END\s+-->\s*$")
     with path_in.open('r', encoding='utf-8') as f:
@@ -51,14 +44,14 @@ def updateWeb(path_in, path_out, path_deps):
                 fill.append(l)
             elif fill is not None:
                 fill.append(l)
-        with path_deps.open('r', encoding='utf-8') as f:
+        with path_deps_web_test.open('r', encoding='utf-8') as f:
             head.append(f.read())
             head.extend(tail)
             path_out.write_text(''.join(head), encoding='utf-8')
             return 0
     return 1
 
-def updateTest(path_in, path_out, path_deps):
+def updateTest(path_in, path_out, path_deps_web_test):
     re_start = re.compile(r"^\s*//\s*DYNAMIC DEPS START\s+.*$")
     re_end = re.compile(r"^\s*//\s*DYNAMIC DEPS END\s+.*$")
     with path_in.open('r', encoding='utf-8') as f:
@@ -74,70 +67,18 @@ def updateTest(path_in, path_out, path_deps):
                 fill.append(l)
             elif fill is not None:
                 fill.append(l)
-        with path_deps.open('r', encoding='utf-8') as f:
+        with path_deps_web_test.open('r', encoding='utf-8') as f:
             head.append(f.read())
             head.extend(tail)
             path_out.write_text(''.join(head), encoding='utf-8')
             return 0
     return 1
 
-class HTML:
-
-  def head(root):
-    return f'''<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Mocha Tests</title>
-  <script src="{root}src/lib/xregexp-all/xregexp-all.js"></script>
-  <script src="{root}src/lib/brython/www/src/brython.js"></script>
-  <script src="{root}src/lib/brython/www/src/brython_stdlib.js"></script>
-  <script src="{root}src/lib/closure-library/closure/goog/base.js"></script>
-'''
-
-  def deps(path_deps, root):
-    ans = ''
-    with path_deps.open('r', encoding='utf-8') as f:
-      ans = f.read()
-      ans = ans.replace('PATH_ROOT/', root)
-    return ans
-
-  def body(root, js):
-    return f'''    <link rel="stylesheet" href="{root}node_modules/mocha/mocha.css">
-  </head>
-  <body style="background-color: snow">
-    <div id="eyo-desk" style="height: 95.375px; width: 412.5px;"></div>
-    <div id="mocha"></div>
-    <script src="{root}node_modules/mocha/mocha.js"></script>
-    <script src="{root}node_modules/chai/chai.js"></script>
-    <script  type="text/javascript">//<![CDATA[
-mocha.setup('bdd')
-eYo.path_root = '{root}'
-eYo.path_js = '{js}'
-//]]></script>
-    <script src="{js}test/chai_extension.js"></script>
-    <script src="{js}test/common.test.js"></script>
-'''
-
-  def test(basename):
-    return HTML.script(f'./{basename}.test.js')
-
-  def script(relative):
-    return f'''    <script src="./{relative}" charset="utf-8"></script>
-'''
-
-  def mocha(root):
-    return f'''    <script src="{root}src/lib/eyo/debugging.js"></script>
-    <script  type="text/javascript">//<![CDATA[
-      mocha.run();//]]></script>
-'''
-
 def minimalTests(path_src):
   print('Updating minimal tests...')
   for js in [x for x in path_src.rglob('*.js')
     if x.is_file() if not x.name.endswith('test.js')]:
     test = js.with_suffix('.test.js')
-    print(js.relative_to(path_src), test.relative_to(path_src))
     if not test.is_file():
       name = js.stem.capitalize()
       test.write_text(f'''NS = Object.create(null)
@@ -161,7 +102,7 @@ def updateWebTests():
       root = '../' * (len(relative.parts) - 1)
       lines = [
         HTML.head(root),
-        HTML.deps(path_deps, root),
+        HTML.deps(path_deps_web_test, root),
       ]
       relative = path_test.relative_to(path_js)
       js = '../' * (len(relative.parts) - 1)
@@ -194,7 +135,20 @@ def updateWebTestWrappers():
   3) we create a `test.js` file with local test files and test files in any subdirectories
   '''
   dirs = [x for x in path_js.rglob('*') if x.is_dir()]
+  # read the content at path_deps_test and split by parent
+  by_parent = {}
+  with open(path_deps_test) as f:
+    for line in f.readlines():
+      p = Path(line.rstrip())
+      parent = p.parent
+      try:
+        by = by_parent[parent]
+      except KeyError:
+        by = by_parent[parent] = []
+      by.append(p)
   for path_dir in dirs:
+    k = path_dir.relative_to(path_root).parent
+    #print('k =', k, k.as_posix())
     content = ''.join(f'''    <script src="ROOT_PLACE_HOLDER/{x.name}" charset="utf-8"></script>
 ''' for x in path_dir.glob('*.test.js'))
     if len(content):
@@ -213,18 +167,31 @@ def updateWebTestWrappers():
       root = '../' * len(relative.parts)
       lines = [
         HTML.head(root),
-        HTML.deps(path_deps, root),
+        HTML.deps(path_deps_web_test, root),
       ]
       relative = path_test.relative_to(path_js)
       js = '../' * len(relative.parts)
-      lines.append(HTML.body(root, js)),
-      for f in tests:
-        # f : path_test/foo.test.js
-        # 
-        try:
-          lines.append(HTML.script(f.relative_to(path_test)))
-        except: pass
-      lines.append(HTML.mocha(root))
+      lines.append(HTML.body(root, js))
+      
+      try:
+        k = path_test.relative_to(path_root)
+        by = by_parent[k]
+        for f in by:
+          # f : path_test/foo.test.js
+          # 
+          f = path_root / f.as_posix()
+          try:
+            lines.append(HTML.script(f.relative_to(path_test)))
+          except: pass
+        lines.append(HTML.mocha(root))
+      except KeyError:
+        for f in tests:
+          # f : path_test/foo.test.js
+          # 
+          try:
+            lines.append(HTML.script(f.relative_to(path_test)))
+          except: pass
+        lines.append(HTML.mocha(root))
       for f in tests:
         try:
           path_in = path_test.with_suffix('').with_suffix('').with_suffix('.in.xml')
@@ -248,7 +215,7 @@ def updateWebTestWrappers():
       root = '../' * len(relative.parts)
       lines = [
         HTML.head(root),
-        HTML.deps(path_deps, root),
+        HTML.deps(path_deps_web_test, root),
       ]
       relative = path_test.relative_to(path_js)
       js = '../' * len(relative.parts)
@@ -273,35 +240,45 @@ def updateWebTestWrappers():
   print('... DONE')
   return 0
 
-print('Step 3:')
-print('=======')
+if __name__ == "__main__":
+  print('Step 3:')
+  print('=======')
 
-out = minimalTests(path_eyo)
+  out = minimalTests(path_eyo)
+  out and exit(out)
 
-print('Update source files.')
-out = updateBuild(path_root / 'bin' / 'build.sh',
-                  path_root / 'bin' / 'build.sh',
-                path_helpers / 'deps-build.txt'
-                  )
+  print('Update source files.')
+  out = updateBuild(
+    path_bin / 'build.sh',
+    path_bin / 'build.sh',
+    path_helpers / 'deps-build.txt'
+  )
+  out and exit(out)
 
-out = updateWeb(path_root / 'src' / 'index.ejs',
-                path_root / 'src' / 'index.ejs',
-                     path_helpers / 'deps-vue.txt')
+  out = updateWeb(
+    path_src / 'index.ejs',
+    path_src / 'index.ejs',
+    path_helpers / 'deps-vue.txt'
+  )
+  out and exit(out)
 
-out = updateTest(path_root / 'test' / 'import.js',
-                path_root / 'test' / 'import.js',
-                     path_helpers / 'deps-test-import.txt')
+  out = updateTest(
+    path_test / 'import.js',
+    path_test / 'import.js',
+    path_helpers / 'deps-test-import.txt'
+  )
+  out and exit(out)
 
-path_deps = path_helpers / 'deps-web-test.txt'
-out = updateWebTests()
+  out = updateWebTests()
+  out and exit(out)
 
-out = updateWebTestWrappers()
+  out = updateWebTestWrappers()
+  out and exit(out)
 
-try:
-    out = updateWeb(path_root / 'sandbox' / 'html' / 'toolbox.html',
-                    path_root / 'sandbox' / 'html' / 'toolbox.html',
-                    path_helpers / 'deps-web-dev.txt')
-except:
-    # this is just a convenient method to update developer's test file
-    pass
-exit(out)
+  out = updateWeb(
+    path_root / 'sandbox' / 'html' / 'toolbox.html',
+    path_root / 'sandbox' / 'html' / 'toolbox.html',
+    path_helpers / 'deps-web-dev.txt'
+  )
+
+  exit(out)

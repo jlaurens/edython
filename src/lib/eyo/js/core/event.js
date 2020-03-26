@@ -347,7 +347,7 @@ eYo.event.makeC9r('Abstract', {
   },
 })
 
-eYo.event.Mngr.eyo.propertiesMerge({
+eYo.event.Mngr.eyo.p6yMerge({
   properties: {
     /**
      * @type {!Array<!eYo.event.Abstract>}

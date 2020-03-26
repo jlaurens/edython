@@ -223,7 +223,7 @@ eYo.driver._p.makeForwarder = (pttp, key) => {
   }
 }
 
-eYo.view.Base.eyo.propertiesMerge({
+eYo.view.Base.eyo.p6yMerge({
   /**
    * The driver manager shared by all the instances in the app.
    * @type {eYo.driver.Mngr}

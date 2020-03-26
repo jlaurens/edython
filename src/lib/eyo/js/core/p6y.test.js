@@ -1,5 +1,15 @@
 describe ('Tests: Property', function () {
   this.timeout(10000)
+  let flag = {
+    v: 0,
+    reset () {
+      this.v = 0
+    },
+    push (what) {
+      this.v *= 10
+      this.v += what
+    },
+  }
   it ('POC: function arguments', function () {
     chai.assert((() => {}).length === 0)
     chai.assert(((x) => {}).length === 1)
@@ -8,6 +18,24 @@ describe ('Tests: Property', function () {
   })
   it ('P6y: Basic', function () {
     chai.assert(eYo.p6y)
+  })
+  it('P6y: eYo.model.modelExpand(…)', function () {
+    var model = {
+      properties: {
+        drag: {
+          get () {},
+        },
+      },
+    }
+    eYo.model.modelExpand(model)
+    chai.assert(eYo.isF(model.properties.drag.get))
+    var model = {
+      properties: {
+        drag () {},
+      },
+    }
+    eYo.model.modelExpand(model)
+    chai.assert(eYo.isF(model.properties.drag.value))
   })
   it('P6y: {}', function () {
     let onr = {}
@@ -24,6 +52,16 @@ describe ('Tests: Property', function () {
     let onr = {}
     let p = eYo.p6y.new(onr, 'foo', {})
     p.value_ = 421
+    chai.expect(p.value).equal(421)
+    chai.expect(p.value_).equal(421)
+    chai.expect(p.value__).equal(421)
+    chai.expect(p.stored__).equal(421)
+  })
+  it('P6y: {value: ...}', function () {
+    let onr = {}
+    let p = eYo.p6y.new(onr, 'foo', {
+      value: 421
+    })
     chai.expect(p.value).equal(421)
     chai.expect(p.value_).equal(421)
     chai.expect(p.value__).equal(421)
@@ -305,10 +343,10 @@ describe ('Tests: Property', function () {
     chai.expect(p.value).equal(1230)
     chai.expect(flag).equal(123)
   })
-  it('P6y: fooValidate', function () {
+  it('P6y: fooPropertyValidate', function () {
     var flag = 0
     let onr = {
-      fooValidate (before, after) {
+      fooPropertyValidate (before, after) {
         flag = after
         return after
       },
@@ -319,10 +357,10 @@ describe ('Tests: Property', function () {
     p.value_ = 123
     chai.expect(flag).equal(123)
   })
-  it('P6y: fooValidate(INVALID)', function () {
+  it('P6y: fooPropertyValidate(INVALID)', function () {
     var flag = 0
     let onr = {
-      fooValidate (before, after) {
+      fooPropertyValidate (before, after) {
         this.do_it(after)
         return eYo.INVALID
       },
@@ -902,11 +940,24 @@ describe ('Tests: Property', function () {
     chai.expect(flag_what).equal(123)
     chai.expect(flag_how).equal(456)
   })
+  it ('P6y: new eYo.p6y.List()+splice', function () {
+    let onr = {
+      eyo: true
+    }
+    var l = new eYo.p6y.List(onr)
+    chai.expect(l.length).equal(0)
+    l.splice(0,0,421)
+    chai.expect(l.length).equal(1)
+    let p = l.list__[0]
+    chai.expect(eYo.isSubclass(p.constructor, eYo.p6y.Base)).true
+    chai.expect(p.value).equal(421)
+  })
   it ('P6y: List splice...', function () {
     let onr = {
       eyo: true
     }
     var flag = 421
+    var l = new eYo.p6y.List(onr)
     var l = new eYo.p6y.List(onr, 'a', 'b', 'c')
     let test = (l, ra) => {
       chai.expect(l.length).equal(ra.length)
@@ -956,7 +1007,7 @@ describe ('Tests: Property', function () {
     l.dispose(123)
     chai.expect(flag).equal(123)
     chai.assert(eYo.isNA(l.values[0]))
-    chai.assert(eYo.isNA(l.properties[0]))
+    chai.assert(eYo.isNA(l.p6yByKey[0]))
   })
   it ('P6y: List iterate...', function () {
     let onr = {
@@ -978,10 +1029,11 @@ describe ('Tests: Property', function () {
   it ('P6y: Shortcuts', function () {
     var model = {
       properties: {
-        foo: 0,
+        foo: 421,
       }
     }
     eYo.model.modelExpand(model)
-    chai.assert(eYo.isD(model.properties.foo))
+    chai.expect(eYo.isD(model.properties.foo)).true
+    chai.expect(model.properties.foo.value).equal(421)
   })
 })

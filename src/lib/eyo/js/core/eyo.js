@@ -194,14 +194,14 @@ eYo.mixinR = (object, props, getters = true) => {
  * The props dictionary is a `key=>value` mapping where values
  * are getters, not a dictionary containing a getter.
  * The difference with the `mixinR` is that an existing key is not overriden.
- * @param {*} object - The destination
+ * @param {*} dest - The destination
  * @param {*} props - the source
  * @param {Boolean} getters - True if functions are considered as getter.
  * @return {*} the destination
  */
-eYo.provideR = (object, props, getters = true) => {
+eYo.provideR = (dest, props, getters = true) => {
   Object.keys(props).forEach(key => {
-    if (!eYo.hasOwnProperty(object, key)) {
+    if (!eYo.hasOwnProperty(dest, key)) {
       let value = props[key]
       let d = eYo.descriptorR(getters && eYo.isF(value) ? value : function () {
         return value
@@ -209,10 +209,10 @@ eYo.provideR = (object, props, getters = true) => {
       let dd = Object.getOwnPropertyDescriptor(props, key)
       d.enumerable = dd.enumerable
       d.configurable = dd.configurable
-      Object.defineProperty(object, key, d)
+      Object.defineProperty(dest, key, d)
     }
   })
-  return object
+  return dest
 }
 
 eYo.mixinR(eYo, {
@@ -360,10 +360,11 @@ eYo.mixinR(eYo, {
   /**
    * Returns the argument if its a function, `eYo.NA` otherwise.
    * @param {*} what
+   * @param {*} defaults - a default function
    * @return {Function|eYo.NA}
    */
-  asF (what, defaults) {
-    return typeof what === 'function' && !!what.call ? what : eYo.NA
+  asF (what, defaults = eYo.NA) {
+    return typeof what === 'function' && !!what.call ? what : defaults
   },
   /**
    * Turns the argument into a function.

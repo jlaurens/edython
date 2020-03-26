@@ -153,7 +153,7 @@ eYo.expr.literal.makeInheritedC9r('shortliteral', {
       },
       synchronize (builtin) /** @this{eYo.data.Base} */ {
         builtin()
-        var f4s = this.brick.fields
+        var f4s = this.brick.fieldByKey
         f4s.start.text = f4s.end.text = this.toText()
       },
       xml: false,

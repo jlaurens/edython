@@ -27,9 +27,10 @@ eYo.o4t.makeNS(eYo, 'o3d')
 eYo.o3d.makeBase({
   /** @param {eYo.app.Base|eYo.view.Desk|eYo.flyout.View|eYo.board|eYo.expr|eYo.stmt|eYo.slot.Base|eYo.magnet.Base} owner  the immediate owner of this object. When not a brick, it is directly owned by a brick.
    */
-  init (owner) {
+  init (owner, key = '') {
     owner || eYo.throw('Missing owner!')
     this.owner_ = owner
+    this.key_ = key
   },
   dispose () {
     this.owner_ = eYo.NA
@@ -44,14 +45,7 @@ eYo.o3d.makeBase({
         }
       },
     },
-    /**
-     * Options
-     */
-    options: {
-      get () {
-        return this.owner_.options
-      },
-    },
+    key: '',
   },
   methods: {
     /**

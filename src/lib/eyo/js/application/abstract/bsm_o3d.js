@@ -27,7 +27,7 @@ eYo.forwardDeclare('magnet')
  * @name {eYo.bsm_o3d}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'bsm_o3d')
+eYo.dfs.makeNS(eYo, 'bsm_o3d')
 
 /**
  * Class for a basic object indirectly owned by a brick.

@@ -37,38 +37,6 @@ Object.defineProperties(eYo.attr._p, {
   },
 })
 
-// ANCHOR eYo.attr.new
-
-/**
- * For subclassers.
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.attr._p.handle_model = function (_p, key, model) {
-}
-/**
- * Create a new property based on the model
- * No need to subclass. Override `Main` and `handle_model`.
- * @param {Object} owner
- * @param {String} key
- * @param {Object} model
- */
-eYo.attr._p.new = function (owner, key, model) {
-  if (!model.C9r) {
-    this.modelExpand(model)
-    model._starters = []
-    let _p = (model.C9r = this.makeC9r('', model)).prototype
-    this.handle_model(_p, key, model)
-    Object.defineProperty(model.C9r.eyo, 'name', eYo.descriptorR(function () {
-      return `${model.C9r.eyo.super.name}(${name})`
-    }))
-  }
-  let ans = new model.C9r(owner, key, model)
-  model._starters.forEach(f => f(ans))
-  return ans
-}
-
 // ANCHOR eYo.attr.Base_p
 /**
  * @name{eYo.attr.Base_p}
@@ -83,16 +51,14 @@ eYo.attr._p.new = function (owner, key, model) {
  * @constructor
  */
 eYo.attr.makeBase({
-  init (owner, key, model) {
+  init (owner, key) {
     owner || eYo.throw(`${this.eyo.name}: Missing owner in init`)
     if (!eYo.isStr(key)) {
       console.error('BREAK HERE!!!')
     }
     eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in init`)
-    eYo.isNA(model) && eYo.throw(`${this.eyo.name}: Missing model in init`)
     this.owner_ = owner
     this.key_ = key
-    this.model_ = model
     Object.defineProperties(this, {
       owner: eYo.descriptorR(function () {
         return this.owner_
@@ -111,22 +77,9 @@ eYo.attr.makeBase({
   },
 })
 
-
 ;(() => {
-  let _p = eYo.attr.Base_p
+  let _p = eYo.attr._p.Base_p
 
-  /**
-   * Fallback to validate the value of the property;
-   * Default implementation forwards to an eventual `fooValidate` method
-   * of the owner, where `foo` should be replaced by the key of the receiver.
-   * @param {Object} before
-   * @param {Object} after
-   */
-  _p.validate = function (before, after) {
-    let f_o = this.owner && this.owner[this.key + 'Validate']
-    return eYo.isF(f_o) ? f_o.call(this.owner, before, after) : after
-  }
-  
   /**
    * @name{willChange}
    * Before changing the value of the property.
@@ -233,7 +186,6 @@ eYo.attr.makeBase({
       })
     }
   }
-
   /**
    * Fire the observers.
    * @param {*} when - One of `eYo.attr.BEFORE`, `eYo.attr.DURING`, `eYo.attr.AFTER`, specifies when the observers are fired.
@@ -247,5 +199,4 @@ eYo.attr.makeBase({
       observers && observers.forEach(f => f(before, after))
     }
   }
-
 }) ()

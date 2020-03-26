@@ -44,7 +44,7 @@ eYo.dfs.makeBase()
  * @param {*} properties - a properties model
  * @param {Array<String>} keys_p - A list of keys
  */
-eYo.dfs._p.dataPrepare = function (object, models, keys_d) {
+eYo.dfs._p.dataPrepare = function (object, models, keys_p) {
   if (!models) {
     return
   }
@@ -97,93 +97,8 @@ eYo.dfs._p.dataPrepare = function (object, models, keys_d) {
       break
     }
   }
-  keys_d.concat(...head, ...middle, ...tail)
+  keys_p.concat(...head, ...middle, ...tail)
 }
-
-/**
- * Prepares an instance with field.
- * @param {Object} object -  object is an instance of a subclass of the `C9r` of the receiver
- */
-;[
-  ['dataPrepare', 'data', 'keys_d__', eYo.data, 'dataHead', 'dataTail'],
-  ['slotPrepare', 'slots', 'keys_s__', eYo.slot, 'slotHead', 'slotTail'],
-  ['fieldPrepare', 'fields', 'keys_f__', eYo.field, 'fieldHead', 'fieldTail'],
-].forEach(ks => {
-  eYo.dfs.Dlgt_p[ks[0]] = function (object) {
-    let models = this[ks[1] /* models */]
-    if (!eYo.isDef(this[ks[2] /* keys_?_ */])) {
-      var ns = this.ns
-      if (!ns || !ns[ks[0]]) {
-        ns = eYo.dfs
-      }
-      ns[ks[0]](object, models, this[ks[2] /* keys_?_ */] = [])
-    }
-    let values = []
-    let byKey = Object.create(null)
-    this[ks[2] /* keys_?_ */].forEach(k_dsf => {
-      let k = k_dsf.substring(0, k_dsf.length-2)
-      let d = byKey[k] = ks[3 /* eYo.ns */].new(object, k, models[k])
-      values.push(d)
-      Object.defineProperties(object, {
-        [k_dsf]: eYo.descriptorR(function () {
-          return d
-        }),
-      })
-      object[k_dsf] || eYo.throw(`Missing field ${object.eyo.name}(${k})`)
-    })
-    var dd = object[ks[4]/* head */] = values.shift()
-    for (let d in values) {
-      dd.next = d
-      d.previous = dd
-      dd = d
-    }
-    object[ks[5]/* tail */] = values.pop() || object[ks[4]/* head */] 
-    object[ks[1]] = byKey
-  }  
-})
-
-/**
- * Initialize the data of the given instance.
- * @name{eYo.dfs.Dlgt.dataInit}
- * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
- */
-/**
- * Initialize the fields of the given instance.
- * @name{eYo.dfs.Dlgt.fieldInit}
- * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
- */
-/**
- * Initialize the slots of the given instance.
- * @name{eYo.dfs.Dlgt.slotInit}
- * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
- */
-;[
-  ['dataInit', 'dataForEach', 'DataInit'],
-  ['slotInit', 'slotForEach', 'SlotInit',],
-  ['fieldInit', 'fieldForEach', 'FieldInit'],
-].forEach(ks => {
-  eYo.dfs.Dlgt_p[ks[0]] = function (object, ...$) {
-    this[ks[1]](object, x => {
-      let init = object[x.key + ks[2]]
-      init && init.call(object, x, ...$)
-    })
-  }
-})
-
-/**
- * 
- * @param {eYo.brick|eYo.slot.Base}
- */
-;['data', 'slot', 'field'].forEach(k => {
-  eYo.dfs.Dlgt_p[k + 'Dispose'] = function(owner) {
-    this[k + 'ForEach'](object, x => {
-      let dispose = object[x.key + eYo.do.toTitleCase(k) + 'Dispose']
-      dispose && dispose.call(object, x, ...$)
-      x.dispose()
-    })
-    owner.bindField = owner[k+'Head'] = owner[k+'Tail'] = owner[k+'ByKey'] = eYo.NA
-  }
-})
 
 // ANCHOR Fields management
 
@@ -263,31 +178,20 @@ eYo.dfs._p.fieldPrepare = function (object, fields, keys_f) {
 }
 
 /**
- * 
- * @param {eYo.brick|eYo.slot.Base}
+ * Initialize the data of the given instance.
+ * @name{eYo.dfs.Dlgt.dataInit}
+ * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
  */
-eYo.dfs.Dlgt_p.disposeFields = function(owner) {
-  this.fieldForEach(object, f => f.dispose())
-  ;(owner instanceof eYo.slot.Base) && (owner.bindField = eYo.NA)
-  owner.fieldAtStart = owner.toEndField = owner.fields = eYo.NA
-}
-
 /**
- * Expands the fields section to the receiver.
- * @param{Object} fields - Fields model.
+ * Initialize the fields of the given instance.
+ * @name{eYo.dfs.Dlgt.fieldInit}
+ * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
  */
-eYo.dfs.Dlgt_p.fieldsMerge = function (fields) {
-  this.keys_f__ = eYo.NA
-  delete this.fields
-  this.forEachSubC9r(C9r => C9r.eyo.fieldsMerge({})) // force to recalculate the `fields` list.
-  ;(this.ns || eYo.model).modelExpand(fields, 'fields')
-  this.fields__ || (this.fields__ = Object.create(null))
-  for (let k in fields) {
-    this.fields__[k] = fields[k]
-  }
-}
-
-// ANCHOR Iterators
+/**
+ * Initialize the slots of the given instance.
+ * @name{eYo.dfs.Dlgt.slotInit}
+ * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
+ */
 /**
  * Iterator over the data.
  * @name {eYo.dfs.Dlgt.dataForEach}
@@ -323,46 +227,5 @@ eYo.dfs.Dlgt_p.fieldsMerge = function (fields) {
  * @param {Object} [$this] - Optional this, cannot be a function
  * @param {Function} f
  */
-/**
- * Iterator over the slots.
- * @name {eYo.dfs.Dlgt.slotSome}
- * @param {Object} object
- * @param {Object} [$this] - Optional this, cannot be a function
- * @param {Function} f
- */
-;[
-  ['keys_d__', 'dataForEach', 'dataSome', 'data', 'data__'],
-  ['keys_f__', 'fieldForEach', 'fieldSome', 'fields', 'fields__'],
-  ['keys_s__', 'slotForEach', 'slotSome', 'slots', 'slots__'],
-].forEach (ks => {
-  eYo.dfs.Dlgt_p[ks[1]] = function (object, $this, f) {
-    if (eYo.isF($this)) {
-      [$this, f] = [f, $this]
-    }
-    this[ks[0]].forEach(k => f.call($this, object[k]))
-  }
-  eYo.dfs.Dlgt_p[ks[2]] = function (object, $this, f) {
-    if (eYo.isF($this)) {
-      [$this, f] = [f, $this]
-    }
-    return this[ks[0]].some(k => f.call($this, object[k]))
-  }
-  Object.defineProperties(eYo.dfs.Dlgt_p, {
-    /**
-     * this.fields__ merged with the prepared fields of super, if any.
-     */
-    [ks[3]]: eYo.descriptorR(function () {
-      this[ks[4]] || (this[ks[4]] = Object.create(null))
-      let superFs = this.super && this.super[ks[3]]
-      let Fs = superFs? eYo.provideR(this[ks[4]], superFs) : this[ks[4]]
-      Object.defineProperties(this, {
-        properties: eYo.descriptorR(function () {
-          return Fs
-        }, true)
-      })
-      return Fs
-    })
-  })
-})
 
 

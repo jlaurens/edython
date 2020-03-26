@@ -314,7 +314,7 @@ eYo.focus.Mngr_p.selectOneBrickOf = function (bricks, force) {
   }
 }
 
-eYo.o4t.Base.eyo.propertiesMerge({
+eYo.o3d.Base.eyo.p6yMerge({
   focus_main: {
     get () {
       this.app.focus_main
@@ -327,7 +327,7 @@ eYo.o4t.Base.eyo.propertiesMerge({
   },
 })
 
-eYo.view.Workspace.eyo.propertiesMerge({
+eYo.view.Workspace.eyo.p6yMerge({
   /**
    * The main focus manager.
    * @type {?eYo.focus.Main} 

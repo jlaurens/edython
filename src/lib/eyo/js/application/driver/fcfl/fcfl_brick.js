@@ -20,7 +20,7 @@ eYo.brick.BUMP_DELAY = 250
  */
 eYo.fcfl.makeDriverC9r('Brick')
 
-eYo.brick.Base.eyo.propertiesMerge({
+eYo.brick.Base.eyo.p6yMerge({
   ui () {
     return Object.create(null)
   },
@@ -757,13 +757,13 @@ eYo.fcfl.Brick._p.drawModelBegin_ = function (recorder) {
  */
 eYo.fcfl.Brick._p.drawModel_ = function (io) {
   let brick = io.brick
-  this.fieldDrawFrom_(brick.fieldAtStart, io)
+  this.fieldDrawFrom_(brick.fieldHead, io)
   if ((io.slot = brick.slotAtHead)) {
     do {
       this.slotDraw_(io)
     } while ((io.slot = io.slot.next))
   }
-  this.fieldDrawFrom_(brick.toEndField, io)
+  this.fieldDrawFrom_(brick.fieldTail, io)
   return
 }
 
@@ -864,11 +864,11 @@ eYo.fcfl.Brick._p.slotDraw_ = function (io) {
     slot.where.set(io.cursor)
     // Now reset the cursor relative to the slot
     io.cursor.set()
-    this.fieldDrawFrom_(slot.fieldAtStart, io)
+    this.fieldDrawFrom_(slot.fieldHead, io)
     if ((io.magnet = slot.magnet)) {
       this.drawInputMagnet_(io)
     }
-    this.fieldDrawFrom_(slot.toEndField, io)
+    this.fieldDrawFrom_(slot.fieldTail, io)
     // come back to the brick coordinates
     io.cursor.forward(slot.where)
     // translate at the end because `slot.where` may change

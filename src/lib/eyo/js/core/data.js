@@ -102,12 +102,21 @@ eYo.require('decorate')
 eYo.attr.makeNS(eYo, 'data')
 
 /**
+ * The model path.
+ * @see The `new` method.
+ * @param {String} key
+ */
+eYo.data._p.modelPath = function (key) {
+  return eYo.isStr(key) ? `data.${key}` : 'data'
+}
+
+/**
  * For subclassers.
  * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
  */
-eYo.data._p.handle_model = function (_p, key, model) {
+eYo.data._p.modelHandle = function (_p, key, model) {
   if (key === 'variant' || key === 'option' || key === 'subtype') {
     model.xml = false
   }
@@ -179,11 +188,11 @@ eYo.data._p.handle_fromField = function (prototype, key, model) {
   if (eYo.isF(f_m)) {
     let f_s = prototype.eyo.C9r_s.fromField
     if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-      prototype.fromField = eYo.decorate.reentrant(function (...$) {
+      prototype.fromField = eYo.decorate.reentrant('fromField', function (...$) {
         f_m.call(this, (...$) => {
           f_s.call(this, ...$)
         }, ...$)
-      } )
+      })
     } else {
       prototype.fromField = function (...$) {
         try {
@@ -215,11 +224,11 @@ eYo.data._p.handle_toField = function (prototype, key, model) {
   if (eYo.isF(f_m)) {
     let f_s = prototype.eyo.C9r_s.toField
     if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-      prototype.toField = eYo.decorate.reentrant(function (...$) {
+      prototype.toField = eYo.decorate.reentrant('toField', function (...$) {
         return f_m.call(this, (...$) => {
           return f_s.call(this, ...$)
         }, ...$)
-      } )
+      })
     } else {
       prototype.toField = function (...$) {
         try {
@@ -257,11 +266,11 @@ eYo.data._p.handle_fromText = function (prototype, key, model) {
   if (eYo.isF(f_m)) {
     let f_s = prototype.eyo.C9r_s.fromText
     if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-      prototype.fromText = eYo.decorate.reentrant(function (...$) {
+      prototype.fromText = eYo.decorate.reentrant('fromText', function (...$) {
         f_m.call(this, (...$) => {
           f_s.call(this, ...$)
         }, ...$)
-      } )
+      })
     } else {
       prototype.fromText = function (...$) {
         try {
@@ -293,11 +302,11 @@ eYo.data._p.handle_toText = function (prototype, key, model) {
   if (eYo.isF(f_m)) {
     let f_s = prototype.eyo.C9r_s.toText
     if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-      prototype.toText = eYo.decorate.reentrant(function (...$) {
+      prototype.toText = eYo.decorate.reentrant('toText', function (...$) {
         return f_m.call(this, (...$) => {
           return f_s.call(this, ...$)
         }, ...$)
-      } )
+      })
     } else {
       prototype.toText = function (...$) {
         try {
@@ -362,11 +371,11 @@ eYo.data._p.handle_consolidate = function (prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.data._p.handle_validate = function (prototype, key, model) {
+eYo.data._p.handle_validate = function (_p, key, model) {
   let validate_m = model.validate
-  let validate_s = prototype.eyo.C9r_s.validate
+  let validate_s = _p.eyo.C9r_s.validate
   if (eYo.isF(validate_m)) {
-    prototype.validate = eYo.decorate.reentrant('validate', validate_m.length > 2 // builtin, before, after
+    _p.validate = eYo.decorate.reentrant('validate', validate_m.length > 2 // builtin, before, after
     ? eYo.isDoIt(validate_s)
       ? function (before, after) {
         return validate_m.call(this, (_after = after) => {
@@ -396,7 +405,7 @@ eYo.data._p.handle_validate = function (prototype, key, model) {
         }
     )
   } else {
-    validate_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) value validate -> ${validate_m}`)
+    validate_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${validate_m}`)
   }
 }
 
@@ -530,14 +539,12 @@ eYo.attr._p.handle_change = function (prototype, key, model) {
  * @constructor
  */
 eYo.data.makeBase({
-  init (brick, key, model) {
+  init (brick, key) {
     brick || eYo.throw(`${this.eyo.name}: Missing brick`)
     key || eYo.throw(`${this.eyo.name}: Missing key in makeBase`)
-    model || eYo.throw(`${this.eyo.name}: Missing model`)
     this.reentrant_ = {}
     this.key_ = key
-    this.model_ = model
-    model = this.model
+    let model = this.model
     this.name = 'eyo:' + (model.name || key).toLowerCase()
     this.noUndo = !!model.noUndo
     var xml = model.xml

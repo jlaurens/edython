@@ -42,6 +42,7 @@ describe ('Tests: register', function () {
     let ns = eYo.o3d.makeNS()
     ns.makeBase()
     eYo.register.add(ns.Base, 'foo')
+    console.error('OK')
     let onr = {}
     let o = new ns.Base(onr)
     chai.assert(o.fooRegister)

@@ -48,20 +48,29 @@ eYo.model.allowModelShortcuts({
 // ANCHOR eYo.p6y.new
 
 /**
+ * The model path.
+ * @see The `new` method.
+ * @param {String} key
+ */
+eYo.p6y._p.modelPath = function (key) {
+  return eYo.isStr(key) ? `properties.${key}` : 'properties'
+}
+
+/**
  * For subclassers.
  * @param {Object} owner
  * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_model = function (_p, key, model) {
-  this.handle_value(_p, key, model)
-  this.handle_dispose(_p, key, model)
-  this.handle_validate(_p, key, model)
-  this.handle_get_set(_p, key, model)
-  this.handle_change(_p, key, model)
-  this.handle_stored(_p, key, model)
-  this.handle_reset(_p, key, model) // must be last
+eYo.p6y._p.modelHandle = function (_p, key, model) {
+  this.modelHandleValue(_p, key, model)
+  this.modelHandleDispose(_p, key, model)
+  this.modelHandleValidate(_p, key, model)
+  this.modelHandleGetSet(_p, key, model)
+  this.modelHandleChange(_p, key, model)
+  this.modelHandleStored(_p, key, model)
+  this.modelHandleReset(_p, key, model) // must be last
 }
 
 /**
@@ -74,7 +83,7 @@ eYo.p6y._p.handle_model = function (_p, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_value = function (prototype, key, model) {
+eYo.p6y._p.modelHandleValue = function (prototype, key, model) {
   let value_m = model.value
   if (!eYo.isNA(value_m)) {
     eYo.isNA(model.lazy) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected lazy`)
@@ -98,7 +107,7 @@ eYo.p6y._p.handle_value = function (prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_reset = function (prototype, key, model) {
+eYo.p6y._p.modelHandleReset = function (prototype, key, model) {
   let reset_m = model.reset
   if (eYo.isNA(reset_m)) {
     return
@@ -117,7 +126,7 @@ eYo.p6y._p.handle_reset = function (prototype, key, model) {
     } else {
       if (!model.value) {
         model.value = model.lazy || model.reset
-        this.handle_value(prototype, key, model)
+        this.modelHandleValue(prototype, key, model)
       }
       prototype.reset = function () {
         try {
@@ -131,7 +140,7 @@ eYo.p6y._p.handle_reset = function (prototype, key, model) {
   } else {
     if (!model.value && !model.lazy) {
       model.value = model.reset
-      this.handle_value(prototype, key, model)
+      this.modelHandleValue(prototype, key, model)
     }
     prototype.reset = function () {
       try {
@@ -151,50 +160,9 @@ eYo.p6y._p.handle_reset = function (prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_dispose = function (prototype, key, model) {
+eYo.p6y._p.modelHandleDispose = function (prototype, key, model) {
   if (model.dispose === false) {
     prototype.disposeStored_ = eYo.doNothing
-  }
-}
-
-/**
- * make the prototype's validate method based on the model's object for key validate.
- * The prototype may inherit a validate method.
- * Changing the ancestor prototype afterwards is not a good idea.
- * @param {Object} owner
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.p6y._p.handle_validate = function (prototype, key, model) {
-  let validate_m = model.validate
-  if (!prototype.eyo.C9r_s) {
-    console.error('BREAK HERE!!!')
-  }
-  let validate_s = prototype.eyo.C9r_s.validate
-  if (eYo.isF(validate_m)) {
-    prototype.validate = eYo.decorate.reentrant('validate', validate_m.length > 1
-    ? eYo.isDoIt(validate_s)
-      ? function (before, after) {
-        if (eYo.isVALID((after = validate_m.call(this.owner_, before, after)))) {
-          after = validate_s.call(this, before, after)
-        } 
-        return after
-      } : function (before, after) {
-        return validate_m.call(this.owner_, before, after)
-      }
-    : eYo.isDoIt(validate_s)
-      ? function (before, after) {
-        if (eYo.isVALID((after = validate_m.call(this.owner_, after)))) {
-          after = validate_s.call(this, before, after)
-        }
-        return after
-      } : function (before, after) {
-        return validate_m.call(this.owner_, after)
-      }
-    )
-  } else {
-    validate_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) value validate -> ${validate_m}`)
   }
 }
 
@@ -206,7 +174,7 @@ eYo.p6y._p.handle_validate = function (prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_get_set = function (prototype, key, model) {
+eYo.p6y._p.modelHandleGetSet = function (prototype, key, model) {
   var can_lazy = true
   var computed = false // true iff get and set are given with no builtin dependency
   let get_m = model.get // from model => suffix = '_m' and `@this` == property owner
@@ -330,7 +298,7 @@ eYo.p6y._p.handle_get_set = function (prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_change = function (prototype, key, model) {
+eYo.p6y._p.modelHandleChange = function (prototype, key, model) {
   eYo.p6y.HOOKS.forEach(when => {
     let when_m = model[when]
     let when_s = prototype.eyo.C9r_s[when]
@@ -384,7 +352,7 @@ eYo.p6y._p.handle_change = function (prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.handle_stored = function (prototype, key, model) {
+eYo.p6y._p.modelHandleStored = function (prototype, key, model) {
   let get__m = model.get_
   if (get__m === eYo.doNothing || get__m === false) {
     prototype.getStored = eYo.noGetter(function () {
@@ -452,7 +420,7 @@ eYo.p6y._p.handle_stored = function (prototype, key, model) {
  * @constructor
  */
 eYo.p6y.makeBase({
-  init (owner, key, model) {
+  init (owner, key) {
     this.stored__ = eYo.NA // this may be useless in some situations
     Object.defineProperties(this, {
       value: eYo.descriptorR({
@@ -549,6 +517,8 @@ eYo.p6y.makeBase({
     },
   },
 })
+
+eYo.p6y.enhanceO3dValidate('property', true)
 
 ;(() => {
   let _p = eYo.p6y.Base_p
@@ -754,7 +724,15 @@ eYo.c9r.makeC9r(eYo.p6y, 'List', {
         throw new Error('`values` attribute only accepts indexed accessors')
       }
     })
-    this.properties = new Proxy(this.list__, {
+    this.p6yByKey = new Proxy(this.list__, {
+      get(target, prop) {
+        if (eYo.isStr(prop)) {
+          return target[prop]
+        }
+        throw new Error('`properties` attribute only accepts indexed accessors')
+      }
+    })
+    this.propertyByIndex = new Proxy(this.list__, {
       get(target, prop) {
         if (!isNaN(prop)) {
           prop = parseInt(prop, 10)
@@ -800,9 +778,10 @@ eYo.c9r.makeC9r(eYo.p6y, 'List', {
       start = this.list__.length - start
     }
     let ans = this.list__.splice(start, deleteCount).map(p => p.value)
-    this.list__.splice(start, 0, ...(items.map(item => eYo.p6y.new(this, '', {
+    items = items.map(item => eYo.p6y.new(this, '', {
       value: item
-    }))))
+    }))
+    this.list__.splice(start, 0, ...items)
     return ans
   }
 

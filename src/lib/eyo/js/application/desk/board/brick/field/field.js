@@ -108,43 +108,24 @@ eYo.key.SUFFIX,
 eYo.key.COMMENT_MARK,
 eYo.key.COMMENT
 
-
-*/
 /**
- * Convenient maker.
- * @name{eYo.field.new}
- * @param{eYo.brick.Base|eYo.slot.Base} owner
- * @param{String} name
- * @param{Object} mode - a field model
+ * The model path.
+ * @see The `new` method.
+ * @param {String} key
  */
-eYo.field._p.new = function (owner, name, model) {
-  if (!model.C9r) {
-    this.modelExpand(model, `fields.${name}`)
-    model._starters = []
-    if (model.edit || model.endEditing || model.startEditing) {
-      model.C9r = eYo.field.makeC9r(
-        eYo.NULL_NS,
-        '',
-        eYo.field.Input,
-        model,
-      )
-    } else {
-      model.C9r = eYo.field.makeC9r(
-        eYo.NULL_NS,
-        '',
-        eYo.field.Label,
-        model,
-      )
-    }
-    Object.defineProperty(model.C9r.eyo, 'name', eYo.descriptorR(function () {
-      return `${model.C9r.eyo.super.name}(${name})`
-    }))
-    let _p = model.C9r.prototype
-    this.handle_model(_p, name, model)
-  }
-  let ans = new model.C9r(owner, name, model)
-  model._starters.forEach(f => f(ans))
-  return ans
+eYo.field._p.modelPath = function (key) {
+  return eYo.isStr(key) ? `fields.${key}` : 'fields'
+}
+
+/**
+ * The model Base used to derive a new class.
+ * @see The `new` method.
+ * @param {Object} model
+ */
+eYo.field._p.modelBase = function (model) {
+  return model.edit || model.endEditing || model.startEditing
+    ? eYo.field.Input
+    : eYo.field.Label
 }
 
 /**
@@ -153,7 +134,7 @@ eYo.field._p.new = function (owner, name, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.field._p.handle_model = function (_p, name, model) {
+eYo.field._p.modelHandle = function (_p, name, model) {
   let a = new Set('value', 'reserved', 'builtin', 'comment', 'edit')
   let b = Object.keys(mode).filter(x => a.has(x))
   b.length > 1 && eYo.throw(`Only one key of 'value', 'reserved', 'builtin', 'comment' in ${_p.eyo.name}/${name}`)
@@ -218,9 +199,9 @@ eYo.field._p.handle_model = function (_p, name, model) {
  * @constructor
  */
 eYo.field.makeBase({
-  init (bsm, name, model) {
+  init (bsm, name) {
     this.name_ = name
-    this.text_ = model.text__
+    this.text_ = this.model.text__
     this.reentrant_ = {}
     Object.defineProperty(bsm, `${name}_f`, { value: this})
     console.warn('Defer next line to the owner ?')

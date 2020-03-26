@@ -129,7 +129,7 @@ eYo.py.Exporter_p.exportAsExpression_ = function (brick, opt) {
     }
   }
   var field, slot
-  if ((field = brick.fieldAtStart)) {
+  if ((field = brick.fieldHead)) {
     do {
       this.exportField_(field, opt)
     } while ((field = field.nextField))
@@ -139,7 +139,7 @@ eYo.py.Exporter_p.exportAsExpression_ = function (brick, opt) {
       this.exportSlot_(slot, opt)
     } while ((slot = slot.next))
   }
-  if ((field = brick.toEndField)) {
+  if ((field = brick.fieldTail)) {
     do {
       this.exportField_(field, opt)
     } while ((field = field.nextField))
@@ -355,7 +355,7 @@ eYo.py.Exporter_p.exportSlot_ = function (slot) {
     bindField.visible = !m4t || !m4t.unwrappedTarget
   }
   var field
-  if ((field = slot.fieldAtStart)) {
+  if ((field = slot.fieldHead)) {
     do {
       this.exportField_(field)
     } while ((field = field.nextField))
@@ -368,7 +368,7 @@ eYo.py.Exporter_p.exportSlot_ = function (slot) {
       this.exportAsExpression_(t9k)
     }
   }
-  if ((field = slot.toEndField)) {
+  if ((field = slot.fieldTail)) {
     do {
       this.exportField_(field)
     } while ((field = field.nextField))

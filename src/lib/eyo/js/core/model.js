@@ -146,10 +146,13 @@ eYo.model._p.allowModelShortcuts = function (model) {
  * The real model syntax may be somehow relaxed.
  * The method will turn the given model into something strong
  * by expanding shortcuts. After this call, the model is well formed.
+ * @param {String} [path] - Defaults to a void string for the root path.
  * @param {Object} model - the tree in which we replace some node by objects
- * @param {String} path - Defaults to a void string for the root path.
  */
-eYo.model._p.modelExpand = function (model, path = '') {
+eYo.model._p.modelExpand = function (path, model) {
+  if (!eYo.isStr(path)) {
+    [path, model] = [model, path]
+  }
   Object.keys(model).forEach(k => {
     let p = path && `${path}.${k}` || k
     var M = model[k]
@@ -177,7 +180,7 @@ eYo.model._p.modelExpand = function (model, path = '') {
           }
         }
       })
-      eYo.isD(M = model[k]) && this.modelExpand(M, p)
+      eYo.isD(M = model[k]) && this.modelExpand(p, M)
     }
   })
 }

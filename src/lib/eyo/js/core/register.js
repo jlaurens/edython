@@ -13,6 +13,8 @@
  */
 'use strict'
 
+eYo.require('p6y')
+
 /**
  * @name {eYo.register}
  * @namespace
@@ -21,7 +23,7 @@ eYo.do.makeNS(eYo, 'register')
 
 /**
  * Adds `fooRegister` and `fooUnregister` methods, and
- * `fooRegister` array to the given object,
+ * `fooRegistered` array to the given object,
  * as soon as `foo` is the given key.
  * `fooForEach` and `fooSome` iterators are provided too.
  * Only new methods are allowed.
@@ -32,8 +34,8 @@ eYo.do.makeNS(eYo, 'register')
 eYo.register.add = function (object, key, filter) {
   let k = key + 'Registered'
   if (eYo.isC9r(object)) {
-    eYo.isF(object.eyo.propertiesMerge) || eYo.throw(`Not a proper subclass.`)
-    object.eyo.propertiesMerge({
+    eYo.isF(object.eyo.p6yMerge) || eYo.throw(`Not a proper subclass.`)
+    object.eyo.p6yMerge({
       [k] () {
         return new Set()
       }

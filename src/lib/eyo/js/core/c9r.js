@@ -14,8 +14,6 @@
 eYo.require('xre')
 
 eYo.forwardDeclare('t3')
-eYo.forwardDeclare('o4t')
-eYo.forwardDeclare('o3d')
 eYo.forwardDeclare('p6y')
 
 eYo.model.allowModelPaths({
@@ -149,29 +147,19 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
         console.error('BREAK HERE!!!')
       }
       model && eYo.throw(`Unexpected model(1): ${model}`)
-      model = register
-      register = Super
-      Super = key
-      key = ns
-      ns = this
+      ;[ns, key, Super, register, model] = [this, ns, key, Super, register]
     }
     if (!eYo.isStr(key)) {
       model && eYo.throw(`Unexpected model (2): ${model}`)
-      model = register
-      register = Super
-      Super = key
-      key = eYo.NA
+      ;[key, Super, register, model] = [eYo.NA, key, Super, register]
     }
     if (Super && !eYo.isC9r(Super)) {
       model && eYo.throw(`Unexpected model (3): ${model}`)
-      model = register
-      register = Super
-      Super = eYo.asF(key && this[key]) || this.Base
+      ;[Super, register, model] = [eYo.asF(key && this[key]) || this.Base, Super, register]
     }
     if (!eYo.isBool(register)) {
       model && eYo.throw(`Unexpected model (4): ${model}`)
-      model = register
-      register = false
+      ;[register, model] = [false, register]
     }
     model = eYo.called(model) || {}
     if (eYo.isStr(key)) {
@@ -362,7 +350,14 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
       console.error('BREAK HERE!')
     }
     this.init()
-    this.handleModel(model)
+    /**
+     * Extend the receiver and its associate constructor with the given model. It is called when the delegate is instantiated.
+     * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
+     */
+    if (Object.keys(model).length) {
+      (ns||eYo.c9r).modelExpand((ns||eYo.c9r).modelPath(key), model)
+      this.modelMerge(model)
+    }
     this.makeInit()
     this.makeDispose()
   } // AutoDlgt will never change and does not need to be suclassed
@@ -377,20 +372,11 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
    * Initialize the delegate.
    */
   _p.init = eYo.doNothing
-  /**
-   * Extend the receiver and its associate constructor with the given model.
-   * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
-   */
-  _p.handleModel = function (model) {
-    if (model) {
-      Object.keys(model).length && (this.eyo.ns||eYo.model).modelExpand(model)
-      this.modelMerge(model)
-    }
-  }
 
   /**
    * Declare the given model for the associate constructor.
-   * The default implementation calls `methodsMerge`.
+   * The default implementation just calls `methodsMerge`.
+   * 
    * @param {Object} model - Object, like for |makeC9r|.
    */
   _p.modelMerge = function (model) {
@@ -756,10 +742,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
 eYo.c9r._p.makeDlgt = function (ns, key, C9r, model) {
   if (eYo.isStr(ns)) {
     model && eYo.throw(`Unexpected model (1): ${model}`)
-    model = C9r
-    C9r = key
-    key = ns
-    ns = eYo.NA
+    ;[ns, key, C9r, model] = [eYo.NA, ns, key, C9r]
   } else {
     ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw('Bad namespace')
   }
@@ -909,10 +892,65 @@ eYo.c9r.Base_p.pureAbstract = () => {
 }
 
 /**
- * Convenient creator.
+ * The model path.
+ * @see The `new` method.
+ * @param {String} key
  */
-eYo.c9r._p.new = function (...$) {
-  return new this.Base(...$)
+eYo.c9r._p.modelPath = function (key) {
+  return ''
+}
+
+/**
+ * The model Base used to derive a new class.
+ * @see The `new` method.
+ * @param {Object} model
+ */
+eYo.c9r._p.modelBase = function (model) {
+  return this.Base
+}
+
+/**
+ * Create a new Base instance based on the model
+ * No need to subclass. Override `Base`, `modelPath` and `modelHandle`.
+ * @param {Object} owner
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.c9r._p.modelMakeC9r = function (key, model) {
+  this.modelExpand(this.modelPath(key), model)
+  model._starters = []
+  let C9r = model.C9r = this.makeC9r('', this.modelBase(model), model)
+  this.modelHandle(C9r.prototype, key, model)
+  Object.defineProperty(C9r.eyo, 'name', eYo.descriptorR(function () {
+    return `${C9r.eyo.super.name}(${key})`
+  }))
+  return C9r
+}
+
+/**
+ * Create a new Base instance based on the model
+ * No need to subclass. Override `Base`, `modelPath` and `modelHandle`.
+ * @param {Object} owner
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.c9r._p.new = function (owner, key, model) {
+  if (!model) {
+    return new this.Base(owner, key)
+  }
+  let C9r = model.C9r || this.modelMakeC9r(key, model)
+  let ans = new C9r(owner, key)
+  model._starters.forEach(f => f(ans))
+  return ans
+}
+
+/**
+ * For subclassers.
+ * @param {Object} prototype
+ * @param {String} key
+ * @param {Object} model
+ */
+eYo.c9r._p.modelHandle = function (_p, key, model) {
 }
 
 /**
@@ -938,5 +976,322 @@ eYo.c9r.Base_p.inheritedMethod = eYo.c9r.Dlgt_p.inheritedMethod = function (meth
     _p = _p.eyo.C9r_s
   }
   return eYo.doNothing
+}
+
+// ANCHOR Initers, Disposers
+/**
+ * This namespace method populates the namespace's base delegate
+ * with some methods to manage a data model with many possible attributes.
+ * 
+ * @param{String} key - Key is one of 'p6y', 'data', 'field', 'slots'
+ * @param{String} path - Path, the separator is '.'
+ * @param{String} manyModel - Object
+ */
+eYo.c9r._p.enhancedMany = function (key, path, manyModel) {
+  this._p.hasOwnProperty('Base') || eYo.throw(`Missing Base for ${this.name}`)
+  let _p = this.Dlgt_p
+  /* fooModelByKey__ is a key -> model object with no prototype.
+   * Void at startup.
+   * Populated with the `...Merge` method.
+   * Local to the delegate instance.
+   */
+  let kModelByKey__ = key + 'ModelByKey__' // local to the instance
+  /* fooModelMap_ is a key -> model map.
+   * It is computed from the fooModelByKey__ of the delegates and its super's.
+   * Cached.
+   */
+  let kModelMap_  = key + 'ModelMap_' // cached with inherited
+  /* fooModelMap is a key -> model map.
+   * Computed property that uses the cache above.
+   * If the cache does not exist, reads super's fooModelMap
+   * and adds the local fooModelByKey__.
+   * Then caches the result in fooModelMap_.
+   */
+  let kModelMap   = key + 'ModelMap' // computed property
+  let kMap        = key + 'Map' // property defined on instances
+  let kPrepare    = key + 'Prepare'
+  let kMerge      = key + 'Merge'
+  let kInit       = key + 'Init'
+  let kDispose    = key + 'Dispose'
+  // let kForEach    = key + 'ForEach'
+  // let kSome       = key + 'Some'
+  let kHead       = key + 'Head'
+  let kTail       = key + 'Tail'
+
+  this[kPrepare] || eYo.throw(`Missing ${kPrepare} method to ${this.name}`)
+
+  /**
+   * Expands the property, data, fields, slots section into the receiver's corresponding model.
+   * Usage: For the model `{foo: bar}`, run `C9r.eyo.fooMerge(bar)`
+   * @param{Object} source - A model object.
+   */
+  _p[kMerge] = function (source) {
+    delete this[kModelMap_] // delete the cache
+    this.forEachSubC9r(C9r => C9r.eyo[kMerge]({})) // delete the cache of descendants
+    ;(this.ns || eYo.c9r).modelExpand(source, path)
+    let map = this[kModelByKey__] || (this[kModelByKey__] = new Map())
+    for (let k in source) {
+      map.set(k, source[k])
+    }
+  }
+  Object.defineProperties(_p, {
+    [kModelMap]: eYo.descriptorR(function () {
+      let modelMap = this[kModelMap_] = new Map()
+      let superMap = this.super && this.super[kModelMap]
+      let map = superMap ? new Map(superMap) : new Map()
+      for (let [k, v] of this[kModelByKey__].entries()) {
+        map.set(k, v)
+      }
+      let todo = map.keys()
+      let done = []
+      let again = []
+      var more = false
+      var k
+      while (true) {
+        if ((k = todo.pop())) {
+          let model = map.get(k)
+          if (model.after) {
+            if (eYo.isStr(model.after)) {
+              if (!done.includes(model.after) && todo.includes(model.after)) {
+                again.push(k)
+                continue
+              }
+            } else if (model.after.some(k => (!done.includes(k) && todo.includes(k)))) {
+              again.push(k)
+              continue
+            }
+          }
+          modelMap.set(k, model)
+          done.push(k)
+          more = true
+        } else if (more) {
+          [more, todo] = [false, again]
+          again.length = 0
+        } else {
+          again.length && eYo.throw(`Cycling/Missing properties in ${object.eyo.name}: ${again}`)
+          break
+        }
+      }
+      Object.defineProperties(this, {
+        [kModelMap]: eYo.descriptorR(function () {
+          return this[kModelMap_]
+        }, true)
+      })
+      return this[kModelMap_]
+    }),
+  })
+  /**
+   * The maker is responsible of making new `key` objects from a model.
+   */
+  let maker = manyModel.maker || function (object, k, model) {
+    return eYo[key].new(object, k, model)
+  }
+  /**
+   * Prepares the *key* properties of the given object.
+   * This message is sent to prepare the object,
+   * which is an instance of the receiver's associate constructor.
+   * If we create an instance, the model is not expected to change afterwards.
+   * The delegate is now complete and the merge methods
+   * should not be called afterwards.
+   * 
+   * If the super also has a `*key*Prepare` method,
+   * it must not be called because there can be a conflict,
+   * two attributes may be asigned to the same key.
+   * 
+   * @param{*} object - An instance being created.
+   * @param{*} model - Must be falsy once an instance has already been created.
+   */
+  _p[kPrepare] = manyModel.prepare || function (object, model) {
+    if (model) {
+      // merge the given model with the existing one
+      this[kMerge](model)
+      this[kMerge] = function () {
+        eYo.throw(`Do not change the model of ${this.name} once an instance has been created`)
+      }
+      var super_dlgt = this
+      while ((super_dlgt = super_dlgt.super)) {
+        super_dlgt.hasOwnProperty(kMerge) || (super_dlgt[kMerge] = this[kMerge])
+      }
+    }
+    let attributes = []
+    let map = object[kMap] = new Map()
+    for (let [k, model] of this[kModelMap]) {
+      let attr = maker(object, k, model)
+      if (attr) {
+        map.set(k, attr)
+        attributes.push(attr)
+      }
+    }
+    var attr = object[kHead] = attributes.shift()
+    attributes.forEach(a => {
+      try {
+        attr.next = a
+        a.previous = attr
+        attr = a
+      } catch(e) {
+        console.error(e)
+        console.error('BREAK HERE, it is no a property')
+        attr.next = a
+      }
+    })
+    object[kTail] = attributes.pop() || object[kHead]
+  }
+  /**
+   * 
+   */
+  _p[kInit] = manyModel.init || function (object, ...$) {
+    this[key + 'ForEach'](object, x => {
+      let init = x && object[x.key + eYo.do.toTitleCase(key) + 'Init']
+      init && init.call(object, x, ...$)
+    })
+  }
+  _p[kDispose] = manyModel.dispose || function(object, ...$) {
+    this[key + 'ForEach'](object, x => {
+      if (x) {
+        let dispose = object[x.key + eYo.do.toTitleCase(key) + 'Dispose']
+        dispose && dispose.call(object, x, ...$)
+        x.dispose(...$)
+      }
+    })
+    object.bindField = object[key+'Head'] = object[key+'Tail'] = object[key+'ByKey'] = eYo.NA
+  }
+}
+
+// ANCHOR Iterators
+/**
+ * @param{String} k - Key
+ */
+eYo.c9r._p.enhancedIterate = function (key) {
+  let _p = this.Dlgt_p
+  _p[key + 'ForEach'] = function (object, $this, f) {
+    if (eYo.isF($this)) {
+      [$this, f] = [f, $this]
+    }
+    let byKey = object[key+'ByKey']
+    byKey && Object.values(byKey).forEach(v => f.call($this, v))
+  }
+  _p[key + 'Some'] = function (object, $this, f) {
+    if (eYo.isF($this)) {
+      [$this, f] = [f, $this]
+    }
+    let byKey = object[key+'ByKey']
+    return byKey && Object.values(byKey).some(v => f.call($this, v))
+  }
+}
+
+/**
+ * @param{String} type - One of 'property', 'data'
+ * @param{Boolean} thisIsOwner - whether `this` in the model, is the owner or the local object
+ */
+eYo.c9r._p.enhanceO3dValidate = function (_p, type, thisIsOwner) {
+  if (eYo.isStr(_p)) {
+    eYo.isDef(thisIsOwner) && eYo.throw(`Unexpected owner: ${thisIsOwner}`)
+    ;[_p, type, thisIsOwner] = [this.Base_p, _p, type]
+    this._p.hasOwnProperty('Base') || eYo.throw(`Missing own Base to ${this.name}`)
+  }
+  /**
+   * Fallback to validate the value of the attribute;
+   * Default implementation forwards to an eventual `fooValidate` method
+   * of the owner, where `foo` should be replaced by the key of the receiver.
+   * Validation chain of the attribute 'foo' of type 'bar': normal flow
+   * 1) the model's validate method if any
+   * 2) the owner's `barValidate` if any
+   * 3) the owner's `fooBarValidate` if any
+   * Notice that the `barValidate` is shared by all attributes of the same type.
+   * When in builtin flow, only the the model's validate method is called.
+   * The `barValidate` and `fooBarValidate` are passed to the model's validate as formal parameter named `builtin`.
+   * @param {Object} before
+   * @param {Object} after
+   */
+  _p.validate = function (before, after) {
+    var ans = after
+    if (this.owner && eYo.isVALID(ans)) {
+      var f_o = this.owner[type + 'Validate']
+      if (eYo.isF(f_o) && !eYo.isVALID(ans = f_o.call(this.owner, before, ans))) {
+        return ans
+      }
+      if (this.key) {
+        f_o = this.owner[this.key + eYo.do.toTitleCase(type) + 'Validate']
+        if (eYo.isF(f_o) && !eYo.isVALID(ans = f_o.call(this.owner, before, ans))) {
+          return ans
+        }
+      }
+    }
+    return ans
+  }
+  /**
+   * @param{*} before
+   * @param{*} after
+   */
+  this._p.modelHandleValidate = thisIsOwner
+  ? function(_p, key, model) {
+    let validate_m = model.validate
+    let validate_s = _p.eyo.C9r_s.validate
+    if (eYo.isF(validate_m)) {
+      if (validate_m.length > 2) {
+        // builtin/before/after
+        _p.validate = function (before, after) {
+          return validate_m.call(this.owner, (before, after) => {
+            return validate_s.call(this, before, after)
+          }, before, after)
+        }
+      } else if (XRegExp.exec(validate_m.toString(), eYo.xre.function_builtin)) {
+        _p.validate = function (before, after) {
+          return validate_m.call(this.owner, (after) => {
+            return validate_s.call(this, before, after)
+          }, after)
+        }
+      } else {
+        _p.validate = validate_m.length > 1
+        ? function (before, after) {
+          return validate_m.call(this.owner, before, after)
+        } : function (before, after) {
+          return validate_m.call(this.owner, after)
+        }
+      }
+    } else {
+      validate_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${validate_m}`)
+    }
+  } : function(_p, key, model) {
+    let validate_m = model.validate
+    let validate_s = _p.eyo.C9r_s.validate
+    if (eYo.isF(validate_m)) {
+      if (validate_m.length > 2) {
+        // builtin/before/after
+        _p.validate = eYo.decorate.reentrant('validate', function (before, after) {
+          return validate_m.call(this, (before, after) => {
+            return validate_s.call(this, before, after)
+          }, before, after)
+        })
+      } else if (XRegExp.exec(validate_m.toString(), eYo.xre.function_builtin)) {
+        _p.validate = eYo.decorate.reentrant('validate', function (before, after) {
+          return validate_m.call(this, (after) => {
+            return validate_s.call(this, before, after)
+          }, after)
+        })
+      } else {
+        _p.validate = validate_m.length > 1
+        ? function (before, after) {
+          try {
+            this.validate = validate_s
+            return validate_m.call(this, before, after)
+          } finally {
+            delete this.validate
+          }
+        } : function (before, after) {
+          try {
+            this.validate = function (after) {
+              return validate_s.call(this, before, after)
+            }
+            return validate_m.call(this, after)
+          } finally {
+            delete this.validate
+          }
+        }
+      }
+    } else {
+      validate_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${validate_m}`)
+    }
+  }
 }
 
