@@ -11,7 +11,7 @@ describe ('Tests: decorate', function () {
     chai.assert(eYo.decorate.reentrant)
   })
   it ('eYo.decorate.reentrant', function () {
-    let O = new (eYo.c9r.makeC9r(''))()
+    let O = new function(){}
     let _p = Object.getPrototypeOf(O)
     _p.bar = eYo.decorate.reentrant('bar', function (what) {
       flag.push(what)

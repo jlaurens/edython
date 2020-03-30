@@ -14,12 +14,10 @@
     sounds : false,
     oneBasedIndex : true,
   }
-  eYo.APP = eYo.app.new(options)
+  eYo.APP = eYo.app && eYo.app.new(options)
 }
 
-chai.assert(eYo.app, `MISSING eYo.app`)
-
-setTimeout(() => {
+eYo.py && setTimeout(() => {
   describe('PREPARE', function() {
     it('toBrick', function() {
       chai.assert(eYo.py.node.Base_p.toBrick, `MISSING toBrick`)
@@ -84,7 +82,7 @@ Object.defineProperties(eYo.test, {
 })
 
 eYo.test.makeDesk = options => {
-  if (!eYo.board) {
+  if (eYo.do && !eYo.board) {
     options = options || {}
     eYo.do.mixin(options, {
       collapse : true,
@@ -119,7 +117,11 @@ eYo.test.tearItDown = (opt) => {
   }
 }
 
-eYo.test.g = eYo.py.gmr._pyParser_Grammar
+try {
+  eYo.test.g = eYo.py.gmr._pyParser_Grammar
+} catch (e) {
+
+}
 
 eYo.test.c9r = (brick, k) => {
   chai.assert(brick.constructor.eyo.key === k, `MISSED CTOR KEY ${brick.constructor.eyo.key} === ${k}`)
@@ -214,13 +216,17 @@ eYo.test.All_variants = (d, required) => {
 
 eYo.test.linearizeCode_ = s => s.replace(/(?:\r\n|\r|\n)/g, '\\n').replace(/\s+/g, ' ').replace(/(\*) /g, '$1').replace(/(\s|\\n)+$/g, '').replace(/,?\s*(=|\]|\)|\})\s*/g, '$1').replace(/\s*(\[|\(|\{|:|\*\*|->|,|}|\+|-|=|#)\s*/g, '$1').replace(/(#)  +/g, '$1 ')
 
-Object.defineProperties(eYo.brick.Base_p, {
-  linearizedCode: {
-    get () {
-      return eYo.test.linearizeCode_(this.description)
+try {
+  Object.defineProperties(eYo.brick.Base_p, {
+    linearizedCode: {
+      get () {
+        return eYo.test.linearizeCode_(this.description)
+      }
     }
-  }
-})
+  })
+} catch (e) {
+
+}
 
 eYo.test.Code = (d, str) => {
   var s = d.description.replace(/\bNOM\d/g, 'NAME')

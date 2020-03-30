@@ -32,13 +32,15 @@ eYo.o4t.makeBase()
 
 eYo.o4t.enhancedMany('p6y', 'properties', {
   maker (object, k, model) {
+    return model.source
+    ? object.eyo.aliasNew(object, k, ...model.source)
+    : eYo.p6y.new(object, k, model)
+  },
+  makeShortcuts (object, k, p) {
     let k_p = k + '_p'
     if (object.hasOwnProperty(k_p)) {
       console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
     }
-    let p = model.source
-    ? object.eyo.aliasNew(object, k, ...model.source)
-    : eYo.p6y.new(object, k, model)
     Object.defineProperties(object, {
       [k_p]: eYo.descriptorR(function () {
         return p

@@ -919,7 +919,7 @@ eYo.c9r._p.modelBase = function (model) {
 eYo.c9r._p.modelMakeC9r = function (key, model) {
   this.modelExpand(this.modelPath(key), model)
   model._starters = []
-  let C9r = model.C9r = this.makeC9r('', this.modelBase(model), model)
+  let C9r = model._C9r = this.makeC9r('', this.modelBase(model), model)
   this.modelHandle(C9r.prototype, key, model)
   Object.defineProperty(C9r.eyo, 'name', eYo.descriptorR(function () {
     return `${C9r.eyo.super.name}(${key})`
@@ -938,8 +938,8 @@ eYo.c9r._p.new = function (owner, key, model) {
   if (!model) {
     return new this.Base(owner, key)
   }
-  let C9r = model.C9r || this.modelMakeC9r(key, model)
-  let ans = new C9r(owner, key)
+  let C9r = model._C9r || this.modelMakeC9r(key, model)
+  let ans = new C9r(owner, key, model)
   model._starters.forEach(f => f(ans))
   return ans
 }
@@ -985,9 +985,9 @@ eYo.c9r.Base_p.inheritedMethod = eYo.c9r.Dlgt_p.inheritedMethod = function (meth
  * 
  * @param{String} key - Key is one of 'p6y', 'data', 'field', 'slots'
  * @param{String} path - Path, the separator is '.'
- * @param{String} manyModel - Object
+ * @param{Object} [manyModel] - Object, read only.
  */
-eYo.c9r._p.enhancedMany = function (key, path, manyModel) {
+eYo.c9r._p.enhancedMany = function (key, path, manyModel = {}) {
   this._p.hasOwnProperty('Base') || eYo.throw(`Missing Base for ${this.name}`)
   let _p = this.Dlgt_p
   /* fooModelByKey__ is a key -> model object with no prototype.
@@ -1017,8 +1017,29 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel) {
   // let kSome       = key + 'Some'
   let kHead       = key + 'Head'
   let kTail       = key + 'Tail'
-
-  this[kPrepare] || eYo.throw(`Missing ${kPrepare} method to ${this.name}`)
+  /*
+   * Lazy model getter:
+   * 
+   */
+  Object.defineProperty(_p, kModelByKey__, {
+    get () {
+      let model = this.model || Object.create(null)
+      for (let k of path.split('.')) {
+        if (model = model[k]) {
+          continue
+        } else {
+          model = Object.create(null)
+          break
+        }
+      }
+      Object.defineProperty(this, kModelByKey__, {
+        get () {
+          return model
+        }
+      })
+      return model
+    },
+  })
 
   /**
    * Expands the property, data, fields, slots section into the receiver's corresponding model.
@@ -1029,20 +1050,20 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel) {
     delete this[kModelMap_] // delete the cache
     this.forEachSubC9r(C9r => C9r.eyo[kMerge]({})) // delete the cache of descendants
     ;(this.ns || eYo.c9r).modelExpand(source, path)
-    let map = this[kModelByKey__] || (this[kModelByKey__] = new Map())
-    for (let k in source) {
-      map.set(k, source[k])
-    }
+    let byKey = this[kModelByKey__]
+    eYo.provideR(byKey, source)
   }
   Object.defineProperties(_p, {
     [kModelMap]: eYo.descriptorR(function () {
       let modelMap = this[kModelMap_] = new Map()
       let superMap = this.super && this.super[kModelMap]
       let map = superMap ? new Map(superMap) : new Map()
-      for (let [k, v] of this[kModelByKey__].entries()) {
-        map.set(k, v)
+      if (this[kModelByKey__]) {
+        for (let [k, v] of Object.entries(this[kModelByKey__])) {
+          map.set(k, v)
+        }
       }
-      let todo = map.keys()
+      let todo = [...map.keys()]
       let done = []
       let again = []
       var more = false
@@ -1052,11 +1073,11 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel) {
           let model = map.get(k)
           if (model.after) {
             if (eYo.isStr(model.after)) {
-              if (!done.includes(model.after) && todo.includes(model.after)) {
+              if (!done.includes(model.after) && (todo.includes(model.after) || again.includes(model.after))) {
                 again.push(k)
                 continue
               }
-            } else if (model.after.some(k => (!done.includes(k) && todo.includes(k)))) {
+            } else if (model.after.some(k => (!done.includes(k) && (todo.includes(model.after) || again.includes(model.after))))) {
               again.push(k)
               continue
             }
@@ -1065,8 +1086,7 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel) {
           done.push(k)
           more = true
         } else if (more) {
-          [more, todo] = [false, again]
-          again.length = 0
+          [more, todo, again] = [false, again, todo]
         } else {
           again.length && eYo.throw(`Cycling/Missing properties in ${object.eyo.name}: ${again}`)
           break
@@ -1085,6 +1105,18 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel) {
    */
   let maker = manyModel.maker || function (object, k, model) {
     return eYo[key].new(object, k, model)
+  }
+  let makeShortcuts = manyModel.makeShortcuts || function (object, k, p) {
+    let k_p = k + (manyModel.suffix || `_${key[0]}`)
+    if (object.hasOwnProperty(k_p)) {
+      console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
+    }
+    Object.defineProperties(object, {
+      [k_p]: eYo.descriptorR(function () {
+        return p
+      }),
+    })
+    object[k_p] || eYo.throw('Missing property')
   }
   /**
    * Prepares the *key* properties of the given object.
@@ -1118,6 +1150,7 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel) {
     for (let [k, model] of this[kModelMap]) {
       let attr = maker(object, k, model)
       if (attr) {
+        makeShortcuts(object, k, attr)
         map.set(k, attr)
         attributes.push(attr)
       }

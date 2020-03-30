@@ -213,7 +213,7 @@ describe('eYo Tests', function () {
   it ('valueForKeyPath', function () {
     chai.expect(eYo.valueForKeyPath('eYo.test')).equal(eYo.test)
     chai.expect(eYo.valueForKeyPath('test')).equal(eYo.test)
-    var key = eYo.do.genUID(eYo.do.IDENT)
+    var key = eYo.genUID(eYo.IDENT)
     eYo.test[key] = {
       foo: {bar: 421}
     }

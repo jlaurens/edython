@@ -103,16 +103,16 @@ describe ('Tests: Object', function () {
   it ('O4t: properties(1)', function () {
     let ns = eYo.o4t.makeNS()
     let Foo = ns.makeC9r('foo')
-    chai.expect(Foo.eyo.p6yMap).equal(Foo.eyo.p6yMap)
+    chai.expect(Foo.eyo.p6yModelMap).equal(Foo.eyo.p6yModelMap)
     let Bar = ns.makeC9r('bar', Foo)
-    chai.expect(Bar.eyo.p6yMap).equal(Bar.eyo.p6yMap)
+    chai.expect(Bar.eyo.p6yModelMap).equal(Bar.eyo.p6yModelMap)
     Foo.eyo.p6yMerge({
       chi: 421
     })
-    chai.expect(Foo.eyo.p6yMap).equal(Foo.eyo.p6yMap)
-    chai.expect(Bar.eyo.p6yMap).equal(Bar.eyo.p6yMap)
-    chai.expect(Foo.eyo.p6yMap.get('chi')).equal(421)
-    chai.expect(Bar.eyo.p6yMap.get('chi')).equal(Foo.eyo.p6yMap.get('chi'))
+    chai.expect(Foo.eyo.p6yModelMap).equal(Foo.eyo.p6yModelMap)
+    chai.expect(Bar.eyo.p6yModelMap).equal(Bar.eyo.p6yModelMap)
+    chai.expect(Foo.eyo.p6yModelMap.get('chi')).equal(421)
+    chai.expect(Bar.eyo.p6yModelMap.get('chi')).equal(Foo.eyo.p6yModelMap.get('chi'))
   })
   it ('O4t: properties(2)', function () {
     let ns = eYo.o4t.makeNS()

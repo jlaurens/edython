@@ -152,7 +152,7 @@ eYo.brick.List_p.add = function (brick, opt_id) {
     }
   }
   brick.id = (opt_id && !this.getBrickById(opt_id))
-  ? opt_id : eYo.do.genUID()
+  ? opt_id : eYo.genUID()
   this.db.add(brick)
 }
 

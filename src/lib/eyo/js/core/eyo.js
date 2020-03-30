@@ -671,5 +671,37 @@ goog.require('goog.userAgent')
 // ANCHOR Assert
 eYo.mixinR(eYo, {
   userAgent: goog.userAgent,
+  LETTER: 'letter',
+  ALNUM: 'alnum',
+  IDENT: 'ident',
 }, false)
 
+;(() => {
+  // remove characters '`:()[]{}' for convenience
+  var letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_'
+  var alnum = letter + '0123456789'
+  var all = alnum + '!#$%*+,-./;=?@^|'
+  /**
+   * Generate a unique ID.  This should be globally unique.
+   * 79 characters ^ 20, length > 128 bits (better than a UUID).
+   * @return {string} A globally unique ID string.
+   */
+  eYo.genUID = (type, length) => {
+    if (!eYo.isStr(type)) {
+      [length, type] = [type, length]
+    }
+    length || (length = 20)
+    if (type === eYo.IDENT) {
+      return eYo.genUID(eYo.LETTER, 1) + eYo.genUID(eYo.ALNUM, length - 1)
+    }
+    let soup = type === eYo.LETTER ? letter :
+    type === eYo.ALNUM ? alnum : all
+    let soupLength = soup.length
+    let id = []
+    var i = length || 20
+    while (i) {
+      id[--i] = soup.charAt(Math.random() * soupLength)
+    }
+    return id.join('')
+  }
+}) ()

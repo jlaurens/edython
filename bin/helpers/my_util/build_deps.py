@@ -1,3 +1,13 @@
+"""
+Building dependencies.
+Given a bunch of javascript files,
+order them with respect to dependencies.
+A dependency is defined by different criteria:
+* usage of `eYo.require`, `eYo.provide`
+* usage of `eYo.makeNS`
+and so on.
+"""
+
 from .path import *
 
 import pathlib
@@ -5,8 +15,10 @@ import re
 import json
 import pprint
 
-class Foo:
-
+class Info:
+  """
+  Private class to parse a javascript file and extract the dependency information.
+  """
   re_provide = re.compile(r"""^\s*
   (?:eYo|goog)\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)
   \s*\(\s*
@@ -14,7 +26,7 @@ class Foo:
   .*""", re.X)
   #re_provide = re.compile(r"^\s*eYo.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
-  # eYo.foo.makeNS(ns, 'BAR')
+  # eYo.info.makeNS(ns, 'BAR')
   #eYo.Consolidator.makeC9r(ns, 'Dlgt', ...
   re_make = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
@@ -135,8 +147,11 @@ class Foo:
   pathByProvided = {}
   nsByClass = {}
 
-  # we scan all the files and look separately for provide, require, forwardDeclare, makeNS, makeClass, makeInheritedC9r lines.
   def __init__(self, path):
+    """
+    we scan the file and look separately for provide, require, forwardDeclare, makeNS, makeClass, makeInheritedC9r... lines.
+    Build a list of 'provided' and 'required' symbols.
+    """
     self.path = path
     with path.open('r', encoding='utf-8') as f:
       prompt = f'======= {path}\n'
@@ -332,44 +347,44 @@ def build_deps():
              if not x.name.endswith('test.js')
              if '/dev/' not in x.as_posix()]
     print(*files, sep='\n')
-    foos = []
+    infos = []
     for file in files:
-      foos.append(Foo(file))
+      infos.append(Info(file))
 
     dependency_lines = []
     requirement_lines = set()
 
-    for k in Foo.nsByClass:
-      print(k, '->', Foo.nsByClass[k])
+    for k in Info.nsByClass:
+      print(k, '->', Info.nsByClass[k])
 
     print('----------------------')
-    for foo in foos:
-      for x in foo.subclassed:
+    for info in infos:
+      for x in info.subclassed:
         makeInheritedC9r = x[0]
         what = x[1]
-        if makeInheritedC9r in Foo.nsByClass:
-          foo.provided.add(f'{Foo.nsByClass[makeInheritedC9r]}{what}')
+        if makeInheritedC9r in Info.nsByClass:
+          info.provided.add(f'{Info.nsByClass[makeInheritedC9r]}{what}')
         else:
           p = pathlib.Path(makeInheritedC9r)
-          foo.provided.add(p.with_suffix(what))
+          info.provided.add(p.with_suffix(what))
 
-    for foo in foos:
-      requirement_lines.update(foo.required)
-      requirement_lines.update(foo.forwarded)
+    for info in infos:
+      requirement_lines.update(info.required)
+      requirement_lines.update(info.forwarded)
       provide = '['
       provide_sep = ''
-      for what in foo.provided:
+      for what in info.provided:
         provide += f"{provide_sep}'{what}'"
         provide_sep = ', '
       require = '['
       require_sep = ''
-      for what in foo.required:
+      for what in info.required:
         require += f"{require_sep}'{what}'"
         require_sep = ', '
       if len(provide) + len(require)>2:
         provide += ']'
         require += ']'
-        relative = foo.path.relative_to(path_root)
+        relative = info.path.relative_to(path_root)
         dependency = f"eYo.addDependency('{relative.as_posix()}', {provide}, {require}, {{}});\n"
         dependency_lines.append(dependency)
 

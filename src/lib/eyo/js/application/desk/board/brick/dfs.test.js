@@ -35,7 +35,7 @@ describe('DFS Tests', function() {
   it(`eYo.dfs.enhancedMany 1`, function() {
     let ns = eYo.dfs.makeNS()
     ns.makeBase()
-    let unik = 'foo' + eYo.do.genUID(10, 'alnum')
+    let unik = 'foo' + eYo.genUID(10, 'alnum')
     ns.enhancedMany(unik)
     let onr = {}
     var b = ns.new(onr)
@@ -52,7 +52,7 @@ describe('DFS Tests', function() {
   it(`eYo.dfs.enhancedMany 1`, function() {
     let ns = eYo.dfs.makeNS()
     ns.makeBase()
-    let unik = 'foo' + eYo.do.genUID(10, 'alnum')
+    let unik = 'foo' + eYo.genUID(10, 'alnum')
     ns.enhancedMany(unik)
     let onr = {}
     var b = ns.new(onr)

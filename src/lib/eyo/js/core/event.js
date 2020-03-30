@@ -99,7 +99,7 @@ eYo.event.makeC9r('Mngr', {
         this.group__ = after
         this.level__ = 1
       } else if (!this.level__++) {
-        this.group__ = eYo.do.genUID()
+        this.group__ = eYo.genUID()
       }
     },
     endGroup () {

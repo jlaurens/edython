@@ -16,8 +16,6 @@
  * @namespace
  **/
 
-eYo.require('do')
-
 eYo.makeNS('xre')
 
 eYo.assert(XRegExp, 'load XRegExp before')

@@ -2,6 +2,9 @@ describe ('POC', function () {
   this.timeout(10000)
   flag = {
     v: 0,
+    reset () {
+      this.v = 0
+    },
     push (what) {
       this.v *= 10
       this.v += what
@@ -305,6 +308,15 @@ describe ('Tests: C9r', function () {
       chai.expect(eYo.c9r.makeC9r(ns).eyo.key).equal('')
       chai.expect(() => { eYo.c9r.makeC9r(ns, 'Base') }).to.throw()
       chai.expect(() => { ns.makeC9r('Base') }).to.throw()
+    })
+    it(`ns.makeBase({...})`, function () {
+      var ns = eYo.c9r.makeNS()
+      chai.expect(ns.Base).equal(eYo.c9r.Base)
+      let model = {}
+      ns.makeBase(model)
+      chai.expect(ns.Base.eyo.model).equal(model)
+      let f = ns.new()
+      chai.expect(f.eyo.model).equal(model)
     })
     it(`eYo.c9r.makeC9r('A', eYo.c9r.Base)`, function () {
       let ns = eYo.c9r.makeNS()
@@ -1086,7 +1098,327 @@ describe ('Tests: C9r', function () {
   })
   describe ('C9r enhanceMany:', function () {
     it ('Basic', function () {
-      
+      let foo = eYo.c9r.makeNS()
+      foo.makeBase()
+      foo.enhancedMany('foo', 'fooChiMi', {})
+      let _p = foo.Dlgt_p
+      chai.expect(_p.hasOwnProperty('fooModelMap')).true
+      chai.expect(_p.hasOwnProperty('fooMerge')).true
+      chai.expect(_p.hasOwnProperty('fooPrepare')).true
+      chai.expect(_p.hasOwnProperty('fooInit')).true
+      chai.expect(_p.hasOwnProperty('fooDispose')).true
+      chai.expect(_p.hasOwnProperty('fooModelByKey__')).true
+      let f = foo.new()
+      chai.expect(!!f).true
+    })
+    it ('Model: basics', function () {
+      let id = eYo.genUID(eYo.IDENT, 10)
+      let kFooChiMi = `fooChiMi${id}`
+      let foo = eYo.c9r.makeNS()
+      foo.allowModelPaths({
+        [eYo.model.ROOT]: kFooChiMi,
+      })
+      foo.makeBase({
+        fooChiMi: {
+          a: {
+            value: 1,
+          },
+          b: {
+            value: 2,
+          },
+        },
+      })
+      // create a namespace that hopefully will
+      // not conflict with any other namespace
+      let fooChiMi = eYo.c9r.makeNS(eYo, kFooChiMi)
+      flag.reset()
+      fooChiMi.makeBase({
+        init (owner, key, model) {
+          flag.push(5)
+          this.value = model.value
+        }
+      })
+      foo.enhancedMany(kFooChiMi, 'fooChiMi', {})
+      foo.Base.eyo[kFooChiMi + 'ModelMap']
+      foo.new()
+      chai.expect(foo.Base.eyo.model.fooChiMi.a.value).equal(1)
+      chai.expect(flag.v).equal(0)
+      let _p = foo.Dlgt_p
+      _p.prepareInstance = function (object) {
+        this[kFooChiMi + 'Prepare'](object)
+        this.super.prepareInstance(object)
+      }      
+      let f = foo.new()
+      chai.expect(flag.v).equal(55)
+      chai.expect(f.a_f.value).equal(1)
+      chai.expect(f.b_f.value).equal(2)
+    })
+    it ('Model: after', function () {
+      let id = eYo.genUID(eYo.IDENT, 10)
+      let kFooChiMi = `fooChiMi${id}`
+      let foo_ab = eYo.c9r.makeNS()
+      let foo_ba = eYo.c9r.makeNS()
+      foo_ab.allowModelPaths({
+        [eYo.model.ROOT]: kFooChiMi,
+      })
+      foo_ab.makeBase({
+        fooChiMi: {
+          a: {
+            value: 1,
+          },
+          b: {
+            after: 'a',
+            value: 2,
+          },
+        },
+      })
+      foo_ba.makeBase({
+        fooChiMi: {
+          a: {
+            after: 'b',
+            value: 1,
+          },
+          b: {
+            value: 2,
+          },
+        },
+      })
+      // create a namespace that hopefully will
+      // not conflict with any other namespace
+      let fooChiMi = eYo.c9r.makeNS(eYo, kFooChiMi)
+      fooChiMi.makeBase({
+        init (owner, key, model) {
+          flag.push(model.value)
+          this.id = eYo.genUID()
+        }
+      })
+      foo_ab.enhancedMany(kFooChiMi, 'fooChiMi', {})
+      foo_ba.enhancedMany(kFooChiMi, 'fooChiMi', {})
+      foo_ab.Dlgt_p.prepareInstance = foo_ba.Dlgt_p.prepareInstance = function (object) {
+        this[kFooChiMi + 'Prepare'](object)
+        this.super.prepareInstance(object)
+      }
+      let map_ab = foo_ab.Base.eyo[kFooChiMi + 'ModelMap']
+      let map_ba = foo_ba.Base.eyo[kFooChiMi + 'ModelMap']
+      chai.expect([...map_ab.keys()]).eql(['a', 'b'])
+      chai.expect([...map_ba.keys()]).eql(['b', 'a'])
+      flag.reset()
+      let f_ab = foo_ab.new()
+      chai.expect(flag.v).equal(12)
+      flag.reset()
+      let f_ba = foo_ba.new()
+      chai.expect(flag.v).equal(21)
+      chai.expect(f_ab[kFooChiMi+'Head']).eql(f_ab.a_f)
+      chai.expect(f_ab[kFooChiMi+'Tail']).eql(f_ab.b_f)
+      chai.expect(f_ba[kFooChiMi+'Head']).eql(f_ba.b_f)
+      chai.expect(f_ba[kFooChiMi+'Tail']).eql(f_ba.a_f)
+      chai.expect(f_ab.a_f.next.id).equal(f_ab.b_f.id)
+      chai.expect(eYo.isNA(f_ab.a_f.next.next)).true
+      chai.expect(f_ab.b_f.previous.id).equal(f_ab.a_f.id)
+      chai.expect(eYo.isNA(f_ab.b_f.previous.previous)).true
+      chai.expect(f_ba.b_f.next.id).equal(f_ba.a_f.id)
+      chai.expect(eYo.isNA(f_ba.b_f.next.next)).true
+      chai.expect(f_ba.a_f.previous.id).equal(f_ba.b_f.id)
+      chai.expect(eYo.isNA(f_ba.a_f.previous.previous)).true
+    })
+    it ('Model: maker', function () {
+      let id = eYo.genUID(eYo.IDENT, 10)
+      let kFooChiMi = `fooChiMi${id}`
+      let foo = eYo.c9r.makeNS()
+      foo.allowModelPaths({
+        [eYo.model.ROOT]: kFooChiMi,
+      })
+      foo.makeBase({
+        fooChiMi: {
+          a: {
+            value: 1,
+          },
+          b: {
+            value: 2,
+          },
+        },
+      })
+      foo.enhancedMany(kFooChiMi, 'fooChiMi', {
+        maker (object, k, model) {
+          flag.push(5)
+          return {
+            value: model.value,
+          }
+        }
+      })
+      foo.Dlgt_p.prepareInstance = function (object) {
+        this[kFooChiMi + 'Prepare'](object)
+        this.super.prepareInstance(object)
+      }
+      flag.reset()
+      let f = foo.new()
+      chai.expect(flag.v).equal(55)
+      chai.expect(f.a_f.value).equal(1)
+      chai.expect(f.b_f.value).equal(2)
+    })
+    it ('Model: makeShortcuts', function () {
+      let id = eYo.genUID(eYo.IDENT, 10)
+      let kFooChiMi = `fooChiMi${id}`
+      let foo = eYo.c9r.makeNS()
+      foo.allowModelPaths({
+        [eYo.model.ROOT]: kFooChiMi,
+      })
+      foo.makeBase({
+        fooChiMi: {
+          a: {
+            value: 1,
+          },
+          b: {
+            value: 2,
+          },
+        },
+      })
+      foo.enhancedMany(kFooChiMi, 'fooChiMi', {
+        maker (object, k, model) {
+          flag.push(5)
+          return {
+            value: model.value,
+          }
+        },
+        makeShortcuts (object, k, p) {
+          flag.push(p.value)
+        },
+      })
+      foo.Dlgt_p.prepareInstance = function (object) {
+        this[kFooChiMi + 'Prepare'](object)
+        this.super.prepareInstance(object)
+      }
+      flag.reset()
+      foo.new()
+      chai.expect([5152, 5251]).contains(flag.v)
+    })
+    it ('Model: inherits', function () {
+      let id = eYo.genUID(eYo.IDENT, 10)
+      let kFoo = `foo${id}`
+      let foo = eYo.c9r.makeNS()
+      foo.allowModelPaths({
+        [eYo.model.ROOT]: kFoo,
+      })
+      foo.makeBase({
+        foo: {
+          a: {
+            value: 1,
+          },
+          b: {
+            after: 'a',
+            value: 2,
+          },
+        },
+      })
+      foo.enhancedMany(kFoo, 'foo', {
+        maker (object, k, model) {
+          flag.push(model.value)
+          return {
+            value: model.value,
+          }
+        },
+      })
+      let map_foo = foo.Base.eyo[kFoo + 'ModelMap']
+      chai.expect([...map_foo.keys()]).eql(['a', 'b'])
+      foo.Dlgt_p.prepareInstance = function (object) {
+        this[kFoo + 'Prepare'](object)
+        let eyo = this.super
+        if (eyo) {
+          try {
+            eyo[kFoo + 'Prepare'] = eYo.doNothing // prevent to recreate the same properties
+            eyo.prepareInstance(object)
+          } finally {
+            delete eyo[kFoo + 'Prepare']
+          }
+        }
+      }
+      flag.reset()
+      foo.new()
+      chai.expect(flag.v).equal(12)
+      let bar = foo.makeNS()
+      bar.makeBase({
+        foo: {
+          c: {
+            after: 'b',
+            value: 3,
+          },
+          d: {
+            after: 'c',
+            value: 4,
+          },
+        },
+      })
+      let map_bar = bar.Base.eyo[kFoo + 'ModelMap']
+      chai.expect([...map_bar.keys()]).eql(['a', 'b', 'c', 'd'])
+      flag.reset()
+      bar.new()
+      chai.expect(flag.v).equal(1234)
+    })
+    it ('Model: override', function () {
+      let id = eYo.genUID(eYo.IDENT, 10)
+      let kFoo = `foo${id}`
+      let foo = eYo.c9r.makeNS()
+      foo.allowModelPaths({
+        [eYo.model.ROOT]: kFoo,
+      })
+      foo.makeBase({
+        foo: {
+          a: {
+            value: 1,
+          },
+          b: {
+            after: 'a',
+            value: 2,
+          },
+        },
+      })
+      foo.enhancedMany(kFoo, 'foo', {
+        maker (object, k, model) {
+          flag.push(model.value)
+          return {
+            value: model.value,
+          }
+        },
+      })
+      let map_foo = foo.Base.eyo[kFoo + 'ModelMap']
+      chai.expect([...map_foo.keys()]).eql(['a', 'b'])
+      foo.Dlgt_p.prepareInstance = function (object) {
+        this[kFoo + 'Prepare'](object)
+        let eyo = this.super
+        if (eyo) {
+          try {
+            eyo[kFoo + 'Prepare'] = eYo.doNothing // prevent to recreate the same properties
+            eyo.prepareInstance(object)
+          } finally {
+            delete eyo[kFoo + 'Prepare']
+          }
+        }
+      }
+      flag.reset()
+      foo.new()
+      chai.expect(flag.v).equal(12)
+      let bar = foo.makeNS()
+      bar.makeBase({
+        foo: {
+          c: {
+            after: 'a',
+            value: 3,
+          },
+          d: {
+            after: 'c',
+            value: 4,
+          },
+          b: {
+            after: 'd',
+            value: 5,
+          },
+        },
+      })
+      let map_bar = bar.Base.eyo[kFoo + 'ModelMap']
+      chai.expect([...map_bar.keys()]).eql(['a', 'c', 'd', 'b'])
+      flag.reset()
+      bar.new()
+      chai.expect(flag.v).equal(1345)
     })
   })
 })

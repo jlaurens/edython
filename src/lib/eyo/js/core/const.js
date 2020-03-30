@@ -11,13 +11,12 @@
  */
 'use strict'
 
+eYo.makeNS('id')
+
 /**
  * @name eYo.const
  * @namespace
  **/
-
-eYo.require('do')
-eYo.makeNS('id')
 
 eYo.makeNS('const', {
   ABOVE: 'ABOVE', // not for brick definition

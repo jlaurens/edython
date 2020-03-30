@@ -3,7 +3,7 @@ Generates a dependency javascript file from a directory.
 Build test html files.
 """
 
-import re, os, stat
+import re, os, stat, json
 from my_util import *
 from pathlib import Path
 
@@ -95,35 +95,42 @@ describe ('Tests: {js.stem}', function () {{
 def updateWebTests():
 
   print('Updating web tests...')
+
+  # dependencies: read path_deps_tree
+  dependencies = json.loads(path_deps_tree.read_text())
   tests = (x for x in path_js.rglob('*.test.js') if x.is_file())
   for path_test in tests:
+    relative = path_test.relative_to(path_root)
+    k = relative.with_suffix('').with_suffix('').as_posix()
+    deps = dependencies[k] if k in dependencies else None
     try:
-      relative = path_test.relative_to(path_root)
       root = '../' * (len(relative.parts) - 1)
       lines = [
         HTML.head(root),
-        HTML.deps(path_deps_web_test, root),
       ]
+      path_base = path_test.with_suffix('').with_suffix('')
+      basename = path_base.stem
+      if deps:
+        lines.append(HTML.deps(deps, root))
+        lines.append(HTML.test(basename))
+      else:
+        lines.append(HTML.deps(path_deps_web_test, root))
       relative = path_test.relative_to(path_js)
       js = '../' * (len(relative.parts) - 1)
       lines.append(HTML.body(root, js))
-      path_base = path_test.with_suffix('').with_suffix('')
-      basename = path_base.stem
-      lines.append(HTML.test(basename))
+      lines.append(HTML.test(basename, True))
       lines.append(HTML.mocha(root))
       try:
         path_in = path_base.with_suffix('.in.xml')
-        with path_in.open('r', encoding='utf-8') as f:
-          s = f.read()
-          lines.append(s)
-      except: pass
+        lines.append(path_in.read_text())
+      except FileNotFoundError: pass
       lines.append(f'''</body>
-  </html>
+</html>
   ''')
       path_out = path_base.with_suffix('.test.html')
       path_out.write_text(''.join(lines), encoding='utf-8')
       print(f'Updated: {path_out.relative_to(path_eyo)}')
-    except: pass
+    except Exception as e: raise e; pass
   print('... DONE')
   return 0
 
@@ -149,7 +156,7 @@ def updateWebTestWrappers():
   for path_dir in dirs:
     k = path_dir.relative_to(path_root).parent
     #print('k =', k, k.as_posix())
-    content = ''.join(f'''    <script src="ROOT_PLACE_HOLDER/{x.name}" charset="utf-8"></script>
+    content = ''.join(f'''  <script src="PATH_ROOT/{x.name}" charset="utf-8"></script>
 ''' for x in path_dir.glob('*.test.js'))
     if len(content):
       content = '''<!-- Automatically created by `npm run eyo:prepare` -->
@@ -190,21 +197,26 @@ def updateWebTestWrappers():
           # 
           try:
             lines.append(HTML.script(f.relative_to(path_test)))
-          except: pass
+          except Exception as e: print(e);pass
         lines.append(HTML.mocha(root))
       for f in tests:
         try:
           path_in = path_test.with_suffix('').with_suffix('').with_suffix('.in.xml')
-          with path_in.open('r', encoding='utf-8') as f:
-            s = f.read()
-            lines.append(s)
-        except: pass
+          lines.append(path_in.read_text())
+        except FileNotFoundError: pass
       lines.append(f'''</body>
 </html>
 ''')
       path_out = path_test / 'test_local.html'
       path_out.write_text(''.join(lines), encoding='utf-8')
       print(f'Updated: {path_out.relative_to(path_root)}...')
+
+  # second version
+  # read the contents of path_deps_test
+  with path_deps_test.open() as f:
+    for line in f:
+      line = line.rstrip()
+      # example: src/lib/eyo/js/core/eyo.test.js
 
   # Now deep test files
   dirs.append(path_js)
@@ -251,21 +263,21 @@ if __name__ == "__main__":
   out = updateBuild(
     path_bin / 'build.sh',
     path_bin / 'build.sh',
-    path_helpers / 'deps-build.txt'
+    path_deps_build
   )
   out and exit(out)
 
   out = updateWeb(
     path_src / 'index.ejs',
     path_src / 'index.ejs',
-    path_helpers / 'deps-vue.txt'
+    path_deps_vue
   )
   out and exit(out)
 
   out = updateTest(
     path_test / 'import.js',
     path_test / 'import.js',
-    path_helpers / 'deps-test-import.txt'
+    path_deps_test_import
   )
   out and exit(out)
 
@@ -278,7 +290,7 @@ if __name__ == "__main__":
   out = updateWeb(
     path_root / 'sandbox' / 'html' / 'toolbox.html',
     path_root / 'sandbox' / 'html' / 'toolbox.html',
-    path_helpers / 'deps-web-dev.txt'
+    path_deps_web_dev
   )
 
   exit(out)

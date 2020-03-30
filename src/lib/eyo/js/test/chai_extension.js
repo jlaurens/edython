@@ -20,9 +20,8 @@ chai.Assertion.addProperty('eyo_rect', function () {
  * Sets global tolerance and returns a function to be passed to chai.use
  * @see http://chaijs.com/guide/plugins/
  */
-eYo.test.chaiAlmost = function (standardTolerance = eYo.geom.EPSILON) {
+eYo.test.chaiAlmost = function (standardTolerance = eYo.geom && eYo.geom.EPSILON || 1.e-10) {
  
-
   /**
    * Makes a comparator function to be passed to deepEqual.
    * The returned function will return null if both arguments are not numbers,

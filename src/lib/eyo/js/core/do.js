@@ -11,11 +11,7 @@
  */
 'use strict'
 
-eYo.makeNS('do', {
-  LETTER: 'letter',
-  ALNUM: 'alnum',
-  IDENT: 'ident',
-})
+eYo.makeNS('do')
 
 //g@@g.forwardDeclare('g@@g.dom')
 
@@ -560,36 +556,6 @@ eYo.do._p.makeWrapper = ($this, start_f, begin_finally_f, end_finally_f) => {
     return ans
   }
 }
-
-;(() => {
-  // remove characters '`:()[]{}' for convenience
-  var letter = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_'
-  var alnum = letter + '0123456789'
-  var all = alnum + '!#$%*+,-./;=?@^|'
-  /**
-   * Generate a unique ID.  This should be globally unique.
-   * 79 characters ^ 20, length > 128 bits (better than a UUID).
-   * @return {string} A globally unique ID string.
-   */
-  eYo.do.genUID = (type, length) => {
-    if (!eYo.isStr(type)) {
-      [length, type] = [type, length]
-    }
-    length || (length = 20)
-    if (type === eYo.do.IDENT) {
-      return eYo.do.genUID(eYo.do.LETTER, 1) + eYo.do.genUID(eYo.do.ALNUM, length - 1)
-    }
-    let soup = type === eYo.do.LETTER ? letter :
-    type === eYo.do.ALNUM ? alnum : all
-    let soupLength = soup.length
-    let id = []
-    var i = length || 20
-    while (i) {
-      id[--i] = soup.charAt(Math.random() * soupLength)
-    }
-    return id.join('')
-  }
-}) ()
 
 /**
  * @param {String} str - the base string

@@ -8,7 +8,7 @@ describe('node brick', function () {
 //       eYo.test.setItUp()
 //       var err_ret = {}
 //       var n = eYo.py.parser.parseString('abc', g, eYo.py.file_input, err_ret)
-//       var d = n.toBrick(eYo.eYo.board)
+//       var d = n.toBrick(eYo.board)
 //       chai.assert(d, 'MISSING BLOCK')
 //       d.dispose()
 //       eYo.test.tearItDown()

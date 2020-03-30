@@ -270,7 +270,7 @@ eYo.board.makeBase({
 eYo.board.makeC9r('Main', {
   init (owner, options) {
     /** @type {string} */
-    this.id = eYo.do.genUID()    
+    this.id = eYo.genUID()    
   },
   properties: {
     board: {
