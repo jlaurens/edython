@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('dnd')
+eYo.forward('dnd')
 
 /**
  * Svg driver for DnD.

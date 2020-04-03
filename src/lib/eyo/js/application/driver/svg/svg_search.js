@@ -13,8 +13,8 @@
 
 eYo.require('dom.Search')
 
-eYo.forwardDeclare('section.Search')
-// eYo.forwardDeclare('searchToolbar')
+eYo.forward('section.Search')
+// eYo.forward('searchToolbar')
 
 /**
  * Svg driver for the search view.

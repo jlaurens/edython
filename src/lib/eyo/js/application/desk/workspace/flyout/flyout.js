@@ -13,12 +13,12 @@
 
 eYo.require('geom')
 
-eYo.forwardDeclare('event')
-eYo.forwardDeclare('library')
-eYo.forwardDeclare('style')
-eYo.forwardDeclare('brick')
-eYo.forwardDeclare('flyout.Toolbar')
-eYo.forwardDeclare('tooltip')
+eYo.forward('event')
+eYo.forward('library')
+eYo.forward('style')
+eYo.forward('brick')
+eYo.forward('flyout.Toolbar')
+eYo.forward('tooltip')
 
 /**
  * @name {eYo.flyout}

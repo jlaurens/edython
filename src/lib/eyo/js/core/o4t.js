@@ -11,11 +11,9 @@
  */
 'use strict'
 
-eYo.require('p6y')
-
 eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: ['CONST', 'aliases'],
-  CONST: '[A-Z_]+'
+  [eYo.model.ROOT]: ['CONST', 'aliases', 'properties', 'methods'],
+  CONST: '[A-Z_][A-Z_0-9]*'
 })
 
 /**
@@ -30,109 +28,7 @@ eYo.c9r.makeNS(eYo, 'o4t')
  */
 eYo.o4t.makeBase()
 
-eYo.o4t.enhancedMany('p6y', 'properties', {
-  maker (object, k, model) {
-    return model.source
-    ? object.eyo.aliasNew(object, k, ...model.source)
-    : eYo.p6y.new(object, k, model)
-  },
-  makeShortcuts (object, k, p) {
-    let k_p = k + '_p'
-    if (object.hasOwnProperty(k_p)) {
-      console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
-    }
-    Object.defineProperties(object, {
-      [k_p]: eYo.descriptorR(function () {
-        return p
-      }),
-    })
-    object[k_p] || eYo.throw('Missing property')
-    let _p = object.eyo.C9r_p
-    _p.hasOwnProperty(k) || Object.defineProperties(_p, {
-      [k]: eYo.descriptorR(function () {
-        if (!this[k_p]) {
-          console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
-        }
-        return this[k_p].getValue()
-      }),
-      [k + '_']: {
-        get: function () {
-          return this[k_p].getStored()
-        },
-        set (after) {
-          this[k_p].setValue(after)
-        },
-      },
-    })
-    return p
-  },
-})
-
-eYo.o4t.enhancedIterate('p6y')
-
-/**
- * Initialize an instance with given property models.
- * @param {Object} instance -  namespace or an instance of a subclass of the `C9r` of the receiver
- * @param {*} properties - a properties model
- * @param {Array<String>} keys_p - A list of keys
- */
-eYo.c9r._p.p6yPrepareX = function (object, properties, keys) {
-  if (!properties) {
-    return
-  }
-  this.modelExpand(properties, 'properties')
-  var _p = object._p || object.eyo.C9r_p // either a namespace or an instance
-  let todo = eYo.copyRA(Object.keys(properties))
-  let done = []
-  let again = []
-  var more = false
-  while(true) {
-    var k
-    if ((k = todo.pop())) {
-      let model = properties[k]
-      if (model.after) {
-        if (eYo.isStr(model.after)) {
-          if (!done.includes(model.after) && todo.includes(model.after)) {
-            again.push(k)
-            continue
-          }
-        } else if (model.after.some(k => (!done.includes(k) && todo.includes(k)))) {
-          again.push(k)
-          continue
-        }
-      }
-      p6yModel && (p6yModel[k] = model)
-      let k_p = k + '_p'
-      _p.hasOwnProperty(k) || Object.defineProperties(_p, {
-        [k]: eYo.descriptorR(function () {
-          if (!this[k_p]) {
-            console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
-          }
-          return this[k_p].getValue()
-        }),
-        [k + '_']: {
-          get: function () {
-            return this[k_p].getStored()
-          },
-          set (after) {
-            if (!this[k_p]) {
-              console.error('BREAK HERE: NO K_P !!!')
-            }
-            this[k_p].setValue(after)
-          },
-        },
-      }) 
-      done.push(k)
-      more = true
-    } else if (more) {
-      [more, todo] = [false, again]
-      again.length = 0
-    } else {
-      again.length && eYo.throw(`Cycling/Missing properties in ${object.eyo.name}: ${again}`)
-      break
-    }
-  }
-}
+eYo.o4t.p6yEnhanced()
 
 /**
  * Declare the given model for the associate constructor.
@@ -140,42 +36,72 @@ eYo.c9r._p.p6yPrepareX = function (object, properties, keys) {
  * @param {Object} model - Object, like for |makeC9r|.
  */
 eYo.o4t.Dlgt_p.modelMerge = function (model) {
-  model.methods && this.methodsMerge(model.methods)
   model.aliases && this.aliasesMerge(model.aliases)
   model.properties && this.p6yMerge(model.properties)
+  model.methods && this.methodsMerge(model.methods)
 }
 
 /**
  * Initialize an instance with properties.
- * The first time an object is initialized, some actions are taken to
- * facilitate the next creation.
  * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
  */
 eYo.o4t.Dlgt_p.prepareInstance = function (object) {
   this.p6yPrepare(object)
-  let eyo = this.super
-  if (eyo) {
+  let $super = this.super
+  if ($super) {
     try {
-      eyo.p6yPrepare = eYo.doNothing // prevent to recreate the same properties
-      eyo.prepareInstance(object)
+      $super.p6yPrepare = eYo.doNothing // prevent to recreate the same properties
+      $super.prepareInstance(object)
     } finally {
-      delete eyo.p6yPrepare
+      delete $super.p6yPrepare
     }
   }
 }
 
+/**
+ * Declare the given aliases.
+ * Used to declare synonyms.
+ * @param {Map<String, String|Array<String>>} model - Object, map source -> alias.
+ */
+eYo.c9r.Dlgt_p.aliasesMerge = function (aliases) {
+  let d = Object.create(null)
+  Object.keys(aliases).forEach(source => {
+    let components = source.split('.')
+    let d8r = {
+      source: components,
+      after: components[0],
+    }
+    let a = aliases[source]
+    if (eYo.isRA(a)) {
+      a.forEach(v => {
+        d[v] = d8r
+      })
+    } else {
+      d[a] = d8r
+    }
+  })
+  this.p6yMerge(d)
+}
+
 eYo.c9r._p.enhancedO4t = function () {
   let _p = this.Dlgt_p
-
+  _p.hasOwnProperty('p6yInit') || eYo.throw('Missing p6yInit')
+  _p.hasOwnProperty('p6yDispose') || eYo.throw('Missing p6yDispose')
   /**
    * Initialize an instance with valued, cached, owned and copied properties.
    * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
    */
   _p.initInstance = function (object, ...$) {
-    if (!object) {
-      console.error('BREAK HERE!')
-    }
     this.p6yInit(object, ...$)
+    let $super = this.super
+    if ($super) {
+      try {
+        $super.p6yInit = eYo.doNothing // prevent to recreate the same properties
+        $super.initInstance(object, ...$)
+      } finally {
+        delete $super.p6yInit
+      }
+    }
   }
   
   /**
@@ -286,30 +212,6 @@ eYo.c9r._p.enhancedO4t = function () {
   }
   
   /**
-   * Declare the given aliases.
-   * Used to declare synonyms.
-   * @param {Map<String, String|Array<String>>} model - Object, map source -> alias.
-   */
-  _p.aliasesMerge = function (aliases) {
-    let d = Object.create(null)
-    Object.keys(aliases).forEach(source => {
-      let components = source.split('.')
-      let d8r = {
-        source: components,
-        after: components[0],
-      }
-      let a = aliases[source]
-      if (eYo.isRA(a)) {
-        a.forEach(v => {
-          d[v] = d8r
-        })
-      } else {
-        d[a] = d8r
-      }
-    })
-    this.p6yMerge(d)
-  }
-  /**
    * Add a `consolidate` method to the receiver's .
    * The receiver is not the owner.
    * @param {String} k
@@ -351,30 +253,26 @@ eYo.c9r._p.enhancedO4t = function () {
    * @param {Function} f
    * @param {Boolean} owned
    */
-  _p.propertyForEach = function (object, $this, f, owned) {
+  _p.p6yForEach = function (object, $this, f, owned) {
     if (eYo.isF($this)) {
       [f, owned, $this] = [$this, f, owned]
     }
     if (owned) {
-      this.keys_p__.forEach(k_p => {
-        let p = object[k_p]
-        if (p) {
+      for (let p of object.p6yMap.values()) {
+        if (p.owner === object) {
           let v = p.stored__
-          if (v && v.eyo && p === v.eyo_p6y) {
-            f.call($this, v)
-          }
-        }
-      })
-    } else {
-      this.keys_p__.forEach(k_p => {
-        let p = object[k_p]
-        if (p) {
-          let v = p.getValue()
           if (v) {
             f.call($this, v)
           }
         }
-      })
+      }
+    } else {
+      for (let p of object.p6yMap.values()) {
+        let v = p.stored__
+        if (v) {
+          f.call($this, v)
+        }
+      }
     }
   }
   
@@ -385,27 +283,23 @@ eYo.c9r._p.enhancedO4t = function () {
    * @param {Function} f
    * @param {Boolean} owned
    */
-  _p.propertySome = function (object, $this, f, owned) {
+  _p.p6ySome = function (object, $this, f, owned) {
     if (owned) {
-      return this.keys_p__.some(k_p => {
-        let p = object[k_p]
-        if (p) {
+      for (let p of object.p6yMap.values()) {
+        if (p.owner === object) {
           let v = p.stored__
-          if (v && v.eyo && p === v.eyo_p6y) {
-            f.call($this, v)
+          if (v && /* v.eyo && p === v.eyo_p6y &&*/ f.call($this, v)) {
+            return true
           }
         }
-      })
+      }
     } else {
-      return this.keys_p__.some(k_p => {
-        let p = object[k_p]
-        if (p) {
-          let v = p.getValue()
-          if (v) {
-            f.call($this, v)
-          }
+      for (let p of object.p6yMap.values()) {
+        let v = p.getValue()
+        if (v && f.call($this, v)) {
+          return true
         }
-      })
+      }
     }
   }
   /**
@@ -414,7 +308,10 @@ eYo.c9r._p.enhancedO4t = function () {
    * @param{Function} f -  an helper with one argument which is the owned value.
    */
   this.Base_p.ownedForEach = function ($this, f) {
-    this.eyo.propertyForEach(this, $this, f, true)
+    if (eYo.isF($this)) {
+      [$this, f] = [f, $this]
+    }
+    return this.eyo.p6yForEach(this, $this, f, true)
   }
 
   /**
@@ -423,7 +320,10 @@ eYo.c9r._p.enhancedO4t = function () {
    * @param{Function} f -  an helper with one argument which is the owned value.
    */
   this.Base_p.ownedSome = function ($this, f) {
-    return this.eyo.propertySome(this, $this, f, true)
+    if (eYo.isF($this)) {
+      [$this, f] = [f, $this]
+    }
+    return this.eyo.p6ySome(this, $this, f, true)
   }
 }
 
@@ -449,14 +349,4 @@ eYo.o4t._p.modelDeclare = function (key, model) {
   _p[key] = function (C9r) {
     C9r.eyo.modelMerge(model)
   }
-}
-
-/**
- * Create a new property based on the model
- * No need to subclass. Override `Main` and `modelHandle`.
- * @param {Object} model
- */
-eYo.o4t._p.singleton = function (model) {
-  this.modelExpand('properties.foo', model)
-  return new (this.makeC9r('', model))()
 }

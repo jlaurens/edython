@@ -13,7 +13,7 @@
 
 eYo.require('svg')
 
-eYo.forwardDeclare('slot')
+eYo.forward('slot')
 
 /**
  * Svg driver for slots.

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('magnet')
+eYo.forward('magnet')
 
 /**
  * Svg driver for magnets.

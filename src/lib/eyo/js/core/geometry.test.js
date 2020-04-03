@@ -10,24 +10,24 @@ describe ('geometry', function () {
     chai.expect(473.85937500000006).almost.equal(473.859375)
   })
   it ('Geometry: Basic', function () {
-    chai.assert(eYo.geom.Point)
-    chai.assert(eYo.geom.Size)
-    chai.assert(eYo.geom.Rect)
+    chai.expect(eYo.isDef(eYo.geom.Point)).true
+    chai.expect(eYo.isDef(eYo.geom.Size)).true
+    chai.expect(eYo.isDef(eYo.geom.Rect)).true
   })
   it ('Geometry: units', function () {
-    chai.assert(eYo.geom.X)
-    chai.assert(eYo.geom.Y)
-    chai.assert(eYo.geom.REM)
-    chai.assert(eYo.geom.C>0)
-    chai.assert(eYo.geom.L>0)
-    chai.assert(eYo.geom.C === Math.round(eYo.geom.C))
-    chai.assert(eYo.geom.L === Math.round(eYo.geom.L))
+    chai.expect(eYo.isDef(eYo.geom.X)).true
+    chai.expect(eYo.isDef(eYo.geom.Y)).true
+    chai.expect(eYo.isDef(eYo.geom.REM)).true
+    chai.expect(eYo.geom.C>0).true
+    chai.expect(eYo.geom.L>0).true
+    chai.expect(eYo.geom.C === Math.round(eYo.geom.C)).true
+    chai.expect(eYo.geom.L === Math.round(eYo.geom.L)).true
   })
   describe('Point', function () {
     it ('new eYo.geom.Point()', function () {
       var whr = new eYo.geom.Point()
       chai.expect(whr).eyo_point
-      chai.assert(!['c', 'l', 'x', 'y'].some(k => whr[k] != 0))
+      chai.expect(!['c', 'l', 'x', 'y'].some(k => whr[k] != 0)).true
       whr.c_ = 1.23
       chai.expect(whr.c).almost.equal(1.23)
       chai.expect(whr.x).almost.equal(1.23 * eYo.geom.X)
@@ -43,8 +43,8 @@ describe ('geometry', function () {
     })
     it ('new eYo.geom.Point(true)', function () {
       var whr = new eYo.geom.Point(true)
-      chai.assert(whr.snap_)
-      chai.assert(!['c', 'l', 'x', 'y'].some(k => whr[k] != 0))
+      chai.expect(eYo.isDef(whr.snap_)).true
+      chai.expect(!['c', 'l', 'x', 'y'].some(k => whr[k] != 0)).true
       if (eYo.geom.C === 2) {
         whr.c_ = 1.23
         chai.expect(whr.c).almost.equal(1)
@@ -128,10 +128,10 @@ describe ('geometry', function () {
   describe('size', function () {
     it('setFromText', function() {
       var s = new eYo.geom.Size(0,0)
-      chai.assert(s.c === 0 && s.l === 0, '0')
+      chai.expect(s.c === 0 && s.l === 0, '0').true
       var f = (txt, c, l) => {
         s.setFromText(txt)
-        chai.assert(s.c === c && s.l === l, `MISSED <${txt}>: ${s.c} === ${c} (c) && ${s.l} === ${l} (l)`)
+        chai.expect(s.c === c && s.l === l, `MISSED <${txt}>: ${s.c} === ${c} (c) && ${s.l} === ${l} (l)`).true
       }
       var A = ['', 'a', 'aa', 'aaa']
       var B = ['', 'b', 'bb', 'bbb']
@@ -187,7 +187,7 @@ describe ('geometry', function () {
     })
     it ('Rect: alias', function () {
       let r = eYo.geom.randRect()
-      chai.assert(r.topLeft.equals(r.origin))
+      chai.expect(r.topLeft.equals(r.origin)).true
       chai.expect(r.origin.c).almost.equal(r.c).almost.equal(r.c_min)
       chai.expect(r.origin.l).almost.equal(r.l).almost.equal(r.l_min)
       chai.expect(r.size.w).almost.equal(r.w)
@@ -219,8 +219,8 @@ describe ('geometry', function () {
     it ('Intersection: a⊂b', function () {
       let a = new eYo.geom.Rect(0,0,1,1)
       let b = new eYo.geom.Rect(-1,-1,3,3)
-      chai.assert(eYo.geom.intersectionRect(a, b).equals(a))
-      chai.assert(eYo.geom.intersectionRect(b, a).equals(a))
+      chai.expect(eYo.geom.intersectionRect(a, b).equals(a)).true
+      chai.expect(eYo.geom.intersectionRect(b, a).equals(a)).true
     })
     it ('Intersection: a∩b=∅', function () {
       let a = new eYo.geom.Rect(0,0,1,1)
@@ -231,7 +231,7 @@ describe ('geometry', function () {
       let a = new eYo.geom.Rect(0,0,1,1)
       let b = new eYo.geom.Rect(1,1,1,1)
       let c = eYo.geom.intersectionRect(a, b)
-      chai.assert(c)
+      chai.expect(eYo.isDef(c)).true
       chai.expect(c.c_min).to.equal(1)
       chai.expect(c.l_min).to.equal(1)
       chai.expect(c.width).to.equal(0)
@@ -243,10 +243,10 @@ describe ('geometry', function () {
         var r1 = eYo.geom.randRect()
         var r2 = eYo.geom.randRect()
         var u = new eYo.geom.Rect(r1).unionRect(r2)
-        chai.assert(u.xyContains(r1.topLeft))
-        chai.assert(u.xyContains(r1.bottomRight))
-        chai.assert(u.xyContains(r2.topLeft))
-        chai.assert(u.xyContains(r2.bottomRight))
+        chai.expect(u.xyContains(r1.topLeft)).true
+        chai.expect(u.xyContains(r1.bottomRight)).true
+        chai.expect(u.xyContains(r2.topLeft)).true
+        chai.expect(u.xyContains(r2.bottomRight)).true
       }
     })
     it ('xy(In|Out)set)', function () {
@@ -296,16 +296,16 @@ describe ('geometry', function () {
       while(i--) {
         var r = eYo.geom.randRect()
         var yes = (x, y) => {
-          chai.assert(r.xyContains(x, y))
+          chai.expect(r.xyContains(x, y)).true
           let p = new eYo.geom.Point().xySet(x, y)
-          chai.assert(r.xyContains(p))
-          chai.assert(p.in(r))
+          chai.expect(r.xyContains(p)).true
+          chai.expect(p.in(r)).true
         }
         var no = (x, y) => {
-          chai.assert(!r.xyContains(x, y))
+          chai.expect(!r.xyContains(x, y)).true
           let p = new eYo.geom.Point().xySet(x, y)
-          chai.assert(!r.xyContains(p))
-          chai.assert(p.out(r))
+          chai.expect(!r.xyContains(p)).true
+          chai.expect(p.out(r)).true
         }
         yes(r.x_min, r.y_min)
         yes(r.x_min, r.y_max)
@@ -330,7 +330,7 @@ describe ('geometry', function () {
       var r = new eYo.geom.Rect(0,0,1,1)
       let test = (c, l) => {
         let w = new eYo.geom.Point(c, l)
-        chai.assert(w.out(r) && w.in(r))  
+        chai.expect(w.out(r) && w.in(r)).true  
       }
       test(0,0)
       test(1,0)

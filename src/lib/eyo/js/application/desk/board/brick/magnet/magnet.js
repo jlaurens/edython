@@ -17,8 +17,8 @@
  */
 eYo.bsm_o3d.makeNS(eYo, 'magnet')
 
-eYo.forwardDeclare('do')
-eYo.forwardDeclare('geom.Point')
+eYo.forward('do')
+eYo.forward('geom.Point')
 
 // Magnet types
 Object.defineProperties(eYo.magnet._p, {

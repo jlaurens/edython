@@ -14,13 +14,13 @@
 eYo.require('decorate')
 
 // Possible owner
-eYo.forwardDeclare('app')
+eYo.forward('app')
 // Possible owned
-eYo.forwardDeclare('view.Workspace')
-eYo.forwardDeclare('board')
-eYo.forwardDeclare('brick')
-eYo.forwardDeclare('slot')
-eYo.forwardDeclare('magnet')
+eYo.forward('view.Workspace')
+eYo.forward('board')
+eYo.forward('brick')
+eYo.forward('slot')
+eYo.forward('magnet')
 
 /**
  * Namespace for objects owned by bricks, slots or magnets.

@@ -89,20 +89,21 @@ eYo.model.allowModelShortcuts({
   },
 })
 
-eYo.require('do')
-eYo.require('xre')
+eYo.forward('do')
+eYo.forward('xre')
+eYo.forward('decorate')
 
-eYo.require('decorate')
 //g@@g.require('g@@g.dom')
 
 /**
  * @name {eYo.data}
  * @namespace
  */
-eYo.attr.makeNS(eYo, 'data')
+eYo.o3d.makeNS(eYo, 'data')
 
 /**
  * The model path.
+ * This is the parent's path in a brick model.
  * @see The `new` method.
  * @param {String} key
  */
@@ -112,7 +113,7 @@ eYo.data._p.modelPath = function (key) {
 
 /**
  * For subclassers.
- * @param {Object} prototype
+ * @param {Object} _p
  * @param {String} key
  * @param {Object} model
  */
@@ -169,11 +170,11 @@ eYo.data._p.handle_filter = function (prototype, key, model) {
 /**
  * make the prototype's fromField method based on the model's object for key fromField.
  * The prototype may inherit a fromField method.
- * @param {Object} prototype
+ * @param {Object} _p - prototype
  * @param {String} key
  * @param {Object} model
  */
-eYo.data._p.handle_fromField = function (prototype, key, model) {
+eYo.data._p.handle_fromField = function (_p, key, model) {
   /**
    * Set the value from the given text representation
    * as text field content.
@@ -186,15 +187,15 @@ eYo.data._p.handle_fromField = function (prototype, key, model) {
    */
   let f_m = model.fromField
   if (eYo.isF(f_m)) {
-    let f_s = prototype.eyo.C9r_s.fromField
+    let f_s = _p.eyo.C9r_s.fromField
     if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-      prototype.fromField = eYo.decorate.reentrant('fromField', function (...$) {
+      _p.fromField = eYo.decorate.reentrant('fromField', function (...$) {
         f_m.call(this, (...$) => {
           f_s.call(this, ...$)
         }, ...$)
       })
     } else {
-      prototype.fromField = function (...$) {
+      _p.fromField = function (...$) {
         try {
           this.fromField = f_s
           f_m.call(this, ...$)
@@ -204,7 +205,7 @@ eYo.data._p.handle_fromField = function (prototype, key, model) {
       }
     }
   } else {
-    f_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}): ${f_m}`)
+    f_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}): ${f_m}`)
   }
 }
 
@@ -215,22 +216,22 @@ eYo.data._p.handle_fromField = function (prototype, key, model) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.data._p.handle_toField = function (prototype, key, model) {
+eYo.data._p.handle_toField = function (_p, key, model) {
   /**
    * Returns the text representation of the data.
    * Called during synchronization.
    */
   let f_m = model.toField
   if (eYo.isF(f_m)) {
-    let f_s = prototype.eyo.C9r_s.toField
+    let f_s = _p.eyo.C9r_s.toField
     if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-      prototype.toField = eYo.decorate.reentrant('toField', function (...$) {
+      _p.toField = eYo.decorate.reentrant('toField', function (...$) {
         return f_m.call(this, (...$) => {
           return f_s.call(this, ...$)
         }, ...$)
       })
     } else {
-      prototype.toField = function (...$) {
+      _p.toField = function (...$) {
         try {
           this.toField = f_s
           return f_m.call(this, ...$)
@@ -240,7 +241,7 @@ eYo.data._p.handle_toField = function (prototype, key, model) {
       }
     }
   } else {
-    f_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}): ${f_m}`)
+    f_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}): ${f_m}`)
   }
 }
 
@@ -483,16 +484,17 @@ eYo.data._p.handle_synchronize = function (prototype, key, model) {
 
 /**
  * Expands a data model.
+ * @param {Object} _p - prototype
  * @param {Object} model - a data model object
  * @param {String} key - the data key
  * @return {Object}
  */
-eYo.attr._p.handle_change = function (prototype, key, model) {
+eYo.c9r._p.handle_change = function (_p, key, model) {
   ;['willChange', 'isChanging', 'didChange',
   'willUnchange', 'isUnchanging', 'didUnchange'].forEach(k => {
     let f_m = model[k] // use a closure to catch f
     if (eYo.isF(f_m)) {
-      let f_s = prototype.eyo.C9r_s[k]
+      let f_s = _p.eyo.C9r_s[k]
       let m = XRegExp.exec(f_m.toString(), eYo.xre.function_builtin_before)
       if (m) {
         let before = m.before
@@ -520,9 +522,9 @@ eYo.attr._p.handle_change = function (prototype, key, model) {
       } else {
         ff = f_m
       }
-      prototype[k] = eYo.decorate.reentrant(k, ff)
+      _p[k] = eYo.decorate.reentrant(k, ff)
     } else {
-      f_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) value synchronize -> ${f_m}`)
+      f_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value synchronize -> ${f_m}`)
     }
   })
 }
@@ -554,10 +556,10 @@ eYo.data.makeBase({
   },
 })
 
-eYo.data.enhancedO4t()
 
 eYo.data.Base.eyo.modelMerge({
   aliases: {
+    owner: 'brick',
     'brick.changer': 'changer',
     'brick.type': 'brickType',
     'brick.data': 'data',
@@ -565,12 +567,6 @@ eYo.data.Base.eyo.modelMerge({
     'brick.ui_driver': 'ui_driver',
   },
   properties: {
-    brick: {
-      get () {
-        return this.owner
-      },
-    },
-    key: eYo.NA,
     value: eYo.NA,
     required_from_model: false,
     /**

@@ -1,7 +1,5 @@
 from .path import *
-from .build_deps import build_deps
-from .sort_deps import sort_deps
-from .bdd import BDD, re_addDep
+from .bdd import BDD
 from .html import HTML
 
 bdd = None
@@ -19,6 +17,7 @@ def parse_args():
 
   global_args = parser.parse_args()
 
-def make_bdd(*args, verbose=False):
+def get_bdd(verbose=False):
   global bdd
-  bdd = BDD(*args, verbose=verbose)
+  if bdd is None: bdd = BDD()
+  return bdd

@@ -11,8 +11,8 @@
  */
 'use strict'
 
-eYo.forwardDeclare('brick')
-eYo.forwardDeclare('c9r.DB')
+eYo.forward('brick')
+eYo.forward('c9r.DB')
 
 //g@@g.forwardDeclare('g@@g.array')
 

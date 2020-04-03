@@ -14,8 +14,8 @@
 
 eYo.require('expr')
 
-eYo.forwardDeclare('xre')
-eYo.forwardDeclare('msg')
+eYo.forward('xre')
+eYo.forward('msg')
 
 //g@@g.forwardDeclare('g@@g.dom')
 

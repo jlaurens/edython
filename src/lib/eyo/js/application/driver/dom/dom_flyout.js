@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('flyout.View')
+eYo.forward('flyout.View')
 
 eYo.dom.makeNS('flyout', {
   /**

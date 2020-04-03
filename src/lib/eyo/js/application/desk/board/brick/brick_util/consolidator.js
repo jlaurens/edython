@@ -20,9 +20,9 @@ eYo.require('c9r')
  */
 eYo.o3d.makeNS(eYo, 'consolidator')
 
-eYo.forwardDeclare('brick')
-eYo.forwardDeclare('do')
-eYo.forwardDeclare('slot')
+eYo.forward('do')
+eYo.forward('slot')
+eYo.forward('brick')
 
 console.error('Manage reentrant_ more carefully')
 

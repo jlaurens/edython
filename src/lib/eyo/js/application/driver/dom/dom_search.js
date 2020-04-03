@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('section.Search')
+eYo.forward('section.Search')
 
 /**
  * Dom driver for the search view.

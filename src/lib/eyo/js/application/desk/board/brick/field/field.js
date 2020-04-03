@@ -72,8 +72,8 @@ eYo.model.allowModelPaths({
   })
 })()
 
-eYo.forwardDeclare('geom.Size')
-eYo.forwardDeclare('event')
+eYo.forward('geom.Size')
+eYo.forward('event')
 
 // actual field names
 /*

@@ -15,8 +15,8 @@ eYo.require('expr.List')
 
 eYo.provide('brick.assignment')
 
-eYo.forwardDeclare('msg')
-eYo.forwardDeclare('expr.primary')
+eYo.forward('msg')
+eYo.forward('expr.primary')
 //g@@g.forwardDeclare('g@@g.dom')
 
 /**

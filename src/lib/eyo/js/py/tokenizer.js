@@ -16,7 +16,7 @@ eYo.require('do')
 eYo.require('e')
 eYo.require('py.tkn')
 
-eYo.forwardDeclare('py.node')
+eYo.forward('py.node')
 
 /* Scan implementation */
 

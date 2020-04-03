@@ -12,9 +12,10 @@
 'use strict'
 
 eYo.require('xre')
+eYo.require('do')
+eYo.require('decorate')
 
-eYo.forwardDeclare('t3')
-eYo.forwardDeclare('p6y')
+eYo.forward('t3')
 
 eYo.model.allowModelPaths({
   [eYo.model.ROOT]: [
@@ -355,6 +356,10 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
      * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
      */
     if (Object.keys(model).length) {
+      let NS = ns||eYo.c9r
+      if (!NS.modelPath) {
+        console.error('BREAK HERE!')
+      }
       (ns||eYo.c9r).modelExpand((ns||eYo.c9r).modelPath(key), model)
       this.modelMerge(model)
     }
@@ -910,16 +915,19 @@ eYo.c9r._p.modelBase = function (model) {
 }
 
 /**
- * Create a new Base instance based on the model
- * No need to subclass. Override `Base`, `modelPath` and `modelHandle`.
+ * Create a new constructor based on the model.
+ * No need to subclass.
+ * Instead, override `Base`, `modelPath` and `modelHandle`.
  * @param {Object} owner
  * @param {String} key
  * @param {Object} model
  */
 eYo.c9r._p.modelMakeC9r = function (key, model) {
   this.modelExpand(this.modelPath(key), model)
+  let C9r = this.makeC9r('', this.modelBase(model), model)
+  model = C9r.eyo.model
+  model._C9r = C9r
   model._starters = []
-  let C9r = model._C9r = this.makeC9r('', this.modelBase(model), model)
   this.modelHandle(C9r.prototype, key, model)
   Object.defineProperty(C9r.eyo, 'name', eYo.descriptorR(function () {
     return `${C9r.eyo.super.name}(${key})`
@@ -1012,9 +1020,11 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel = {}) {
   let kPrepare    = key + 'Prepare'
   let kMerge      = key + 'Merge'
   let kInit       = key + 'Init'
+  let KInit       = eYo.do.toTitleCase(key) + 'Init'
   let kDispose    = key + 'Dispose'
-  // let kForEach    = key + 'ForEach'
-  // let kSome       = key + 'Some'
+  let KDispose    = eYo.do.toTitleCase(key) + 'Dispose'
+  let kForEach    = key + 'ForEach'
+  let kSome       = key + 'Some'
   let kHead       = key + 'Head'
   let kTail       = key + 'Tail'
   /*
@@ -1047,7 +1057,7 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel = {}) {
    * @param{Object} source - A model object.
    */
   _p[kMerge] = function (source) {
-    delete this[kModelMap_] // delete the cache
+    delete this[kModelMap] // delete the shortcut
     this.forEachSubC9r(C9r => C9r.eyo[kMerge]({})) // delete the cache of descendants
     ;(this.ns || eYo.c9r).modelExpand(source, path)
     let byKey = this[kModelByKey__]
@@ -1173,20 +1183,39 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel = {}) {
    * 
    */
   _p[kInit] = manyModel.init || function (object, ...$) {
-    this[key + 'ForEach'](object, x => {
-      let init = x && object[x.key + eYo.do.toTitleCase(key) + 'Init']
-      init && init.call(object, x, ...$)
-    })
+    for (let v of object[kMap].values()) {
+      let init = v && object[v.key + KInit]
+      init && init.call(object, v, ...$)
+      v.init && v.init(...$)
+    }
   }
   _p[kDispose] = manyModel.dispose || function(object, ...$) {
-    this[key + 'ForEach'](object, x => {
-      if (x) {
-        let dispose = object[x.key + eYo.do.toTitleCase(key) + 'Dispose']
-        dispose && dispose.call(object, x, ...$)
-        x.dispose(...$)
+    for (let v of object[kMap].values()) {
+      if (v.owner === object) {
+        let dispose = object[v.key + KDispose]
+        dispose && dispose.call(object, v, ...$)
+        v.dispose && v.dispose(...$)
       }
-    })
-    object.bindField = object[key+'Head'] = object[key+'Tail'] = object[key+'ByKey'] = eYo.NA
+    }
+    object.bindField = object[kHead] = object[kTail] = object[kModelByKey__] = eYo.NA
+  }
+  _p[kForEach] = function (object, $this, f) {
+    if (eYo.isF($this)) {
+      [$this, f] = [f, $this]
+    }
+    for (let v of object[kMap].values()) {
+      f.call($this, v)
+    }
+  }
+  _p[kSome] = function (object, $this, f) {
+    if (eYo.isF($this)) {
+      [$this, f] = [f, $this]
+    }
+    for (let v of object[kMap].values()) {
+      if (f.call($this, v)) {
+        return true
+      }
+    }
   }
 }
 
@@ -1196,24 +1225,27 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel = {}) {
  */
 eYo.c9r._p.enhancedIterate = function (key) {
   let _p = this.Dlgt_p
-  _p[key + 'ForEach'] = function (object, $this, f) {
+  let kForEach = key + 'ForEach'
+  let kSome = key + 'Some'
+  let kByKey = key + 'ByKey'
+  _p[kForEach] = function (object, $this, f) {
     if (eYo.isF($this)) {
       [$this, f] = [f, $this]
     }
-    let byKey = object[key+'ByKey']
+    let byKey = object[kByKey]
     byKey && Object.values(byKey).forEach(v => f.call($this, v))
   }
-  _p[key + 'Some'] = function (object, $this, f) {
+  _p[kSome] = function (object, $this, f) {
     if (eYo.isF($this)) {
       [$this, f] = [f, $this]
     }
-    let byKey = object[key+'ByKey']
+    let byKey = object[kByKey]
     return byKey && Object.values(byKey).some(v => f.call($this, v))
   }
 }
 
 /**
- * @param{String} type - One of 'property', 'data'
+ * @param{String} type - One of 'p6y', 'data'
  * @param{Boolean} thisIsOwner - whether `this` in the model, is the owner or the local object
  */
 eYo.c9r._p.enhanceO3dValidate = function (_p, type, thisIsOwner) {
@@ -1328,3 +1360,28 @@ eYo.c9r._p.enhanceO3dValidate = function (_p, type, thisIsOwner) {
   }
 }
 
+/**
+ * Create a new instance based on the model.
+ * @param {Object} model
+ */
+eYo.c9r._p.singleton = function (model) {
+  return new (this.makeC9r('', model))()
+}
+
+/**
+ * Create a new instance based on the model.
+ * @param {Object} [NS] - Optional namespace, defaults to the receiver.
+ * @param {Object} key - the result will be `NS[key]`
+ * @param {Object} model
+ */
+eYo.c9r._p.makeSingleton = function(NS, key, model) {
+  if (!eYo.isNS(NS)) {
+    !model || eYo.throw(`Unexpected model: ${model}`)
+    ;[NS, key, model] = [this, NS, key]
+  }
+  eYo.isStr(key) || eYo.throw(`Unexpected parameter ${key}`)
+  let ans = new (this.makeC9r('', model))()
+  Object.defineProperty(NS, key, eYo.descriptorR(function() {
+    return ans
+  }))
+}

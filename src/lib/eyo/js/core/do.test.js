@@ -1,4 +1,4 @@
-describe ('do', function () {
+describe ('Tests: do', function () {
   it ('BASIC: Do', function () {
     chai.assert(eYo.do)
     chai.assert(eYo.do.toTitleCase)

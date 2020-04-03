@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('dnd.Mngr')
+eYo.forward('dnd.Mngr')
 
 /**
  * @name {eYo.fcls.Dnd}

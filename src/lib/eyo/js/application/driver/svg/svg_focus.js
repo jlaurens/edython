@@ -13,7 +13,7 @@
 
 eYo.require('svg')
 
-eYo.forwardDeclare('focus')
+eYo.forward('focus')
 
 console.error('NYI')
 

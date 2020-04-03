@@ -25,9 +25,9 @@ eYo.view.makeNS(eYo, 'board', {
   SCAN_ANGLE: 3, // THIS IS OBSOLETE
 })
 
-eYo.forwardDeclare('view.Workspace')
-eYo.forwardDeclare('brick.List')
-eYo.forwardDeclare('geom.Metrics')
+eYo.forward('view.Workspace')
+eYo.forward('brick.List')
+eYo.forward('geom.Metrics')
 
 //g@@g.forwardDeclare('g@@g.array')
 //g@@g.forwardDeclare('g@@g.math')

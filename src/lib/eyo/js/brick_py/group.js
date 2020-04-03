@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('msg')
+eYo.forward('msg')
 
 //g@@g.forwardDeclare('g@@g.dom')
 

@@ -13,7 +13,7 @@
 
 eYo.require('e')
 
-eYo.forwardDeclare('py.node.brick')
+eYo.forward('py.node.brick')
 
 /* Parse tree node implementation *-/
 

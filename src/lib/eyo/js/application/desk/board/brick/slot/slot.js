@@ -20,14 +20,14 @@ eYo.bsm_o3d.makeNS(eYo, 'slot')
 eYo.require('do')
 eYo.require('decorate')
 
-eYo.forwardDeclare('geom.Point')
+eYo.forward('geom.Point')
 
-eYo.forwardDeclare('field')
-eYo.forwardDeclare('magnet')
+eYo.forward('field')
+eYo.forward('magnet')
 
-eYo.forwardDeclare('xml')
-eYo.forwardDeclare('key')
-eYo.forwardDeclare('expr.List')
+eYo.forward('xml')
+eYo.forward('key')
+eYo.forward('expr.List')
 
 /**
  * The model path.

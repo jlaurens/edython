@@ -21,13 +21,13 @@ eYo.require('decorate')
  */
 eYo.o4t.makeNS(eYo, 'app')
 
-eYo.forwardDeclare('css')
+eYo.forward('css')
 
-eYo.forwardDeclare('focus')
-eYo.forwardDeclare('event.Motion')
-eYo.forwardDeclare('view.Desk')
-eYo.forwardDeclare('driver')
-eYo.forwardDeclare('audio')
+eYo.forward('focus')
+eYo.forward('event.Motion')
+eYo.forward('view.Desk')
+eYo.forward('driver')
+eYo.forward('audio')
 
 /**
  * @name {eYo.app.Options}

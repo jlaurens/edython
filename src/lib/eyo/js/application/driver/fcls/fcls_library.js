@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('library')
+eYo.forward('library')
 
 /**
  * Shared application driver.

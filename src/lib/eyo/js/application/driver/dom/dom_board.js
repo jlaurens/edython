@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('board')
+eYo.forward('board')
 
 /**
  * Dom driver for boards.

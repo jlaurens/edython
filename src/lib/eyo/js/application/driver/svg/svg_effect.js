@@ -13,7 +13,7 @@
 
 eYo.require('brick')
 
-// eYo.forwardDeclare('effect')
+// eYo.forward('effect')
 
 /**
  * Svg driver for brick effects

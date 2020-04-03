@@ -1,5 +1,15 @@
 describe ('Tests: data', function () {
   this.timeout(10000)
+  let flag = {
+    v: 0,
+    reset () {
+      this.v = 0
+    },
+    push (what) {
+      this.v *= 10
+      this.v += what
+    },
+  }
   it ('Data: basic', function () {
     chai.assert(eYo.data)
   })
@@ -512,7 +522,6 @@ describe ('Tests: data', function () {
   it ('eYo.data.handle_toText', function () {
     let ns = eYo.c9r.makeNS()
     ns.makeBase()
-    var flag
     let test = (f, before, after, expected) => {
       let model = {
         toText: f,
@@ -520,47 +529,40 @@ describe ('Tests: data', function () {
       eYo.data.modelExpand(model, 'data.foo')
       let O = new (ns.makeC9r(''))()
       eYo.data.handle_toText(Object.getPrototypeOf(O), 'foo', model)
-      flag = 0
+      flag.reset()
       chai.expect(O.toText(before)).equal(after)
-      chai.expect(flag).equal(expected)
+      chai.expect(flag.v).equal(expected)
     }
     test(function (what) {
-      flag *= 100
-      flag += what
+      flag.push(what)
       return 2 * what
     }, 3, 6, 3)
     ns.Base_p.toText = function (what) {
-      flag *= 100
-      flag += 2 * what
+      flag.push(2*what % 10)
       return 3 * what
     }
     test(function (what) {
-      flag *= 100
-      flag += what
+      flag.push(what)
       return 2 * what
     }, 3, 6, 3)
     test(function (builtin, what) {
       builtin(what)
-      flag *= 100
-      flag += what
+      flag.push(what)
       return 2 * what
-    }, 3, 6, 603)
+    }, 3, 6, 63)
     test(function (what) {
       this.toText(what)
-      flag *= 100
-      flag += what
+      flag.push(what)
       return 2 * what
-    }, 3, 6, 603)
+    }, 3, 6, 63)
     test(function (builtin, what) {
-      flag *= 100
-      flag += what
+      flag.push(what)
       return 2 * builtin(what)
-    }, 3, 18, 306)
+    }, 3, 18, 36)
     test(function (what) {
-      flag *= 100
-      flag += what
+      flag.push(what)
       return 2 * this.toText(what)
-    }, 3, 18, 306)
+    }, 3, 18, 36)
   })
   it ('eYo.data.handle_consolidate', function () {
     let ns = eYo.c9r.makeNS()

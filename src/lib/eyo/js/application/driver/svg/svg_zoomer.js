@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('control.Zoomer')
+eYo.forward('control.Zoomer')
 
 /**
  * Svg driver for the zoomer.

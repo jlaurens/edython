@@ -427,7 +427,7 @@ class Formatter:
  * @namespace
  **/
 
-eYo.c9r.makeNS(eYo, 't3')
+eYo.makeNS('t3')
 
 """)
         self.feed_statements()

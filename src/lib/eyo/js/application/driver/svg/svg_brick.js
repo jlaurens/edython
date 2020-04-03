@@ -13,8 +13,8 @@
 
 eYo.require('dom.Brick')
 
-eYo.forwardDeclare('brick')
-eYo.forwardDeclare('focus')
+eYo.forward('brick')
+eYo.forward('focus')
 //g@@g.forwardDeclare('g@@g.dom')
 
 /**

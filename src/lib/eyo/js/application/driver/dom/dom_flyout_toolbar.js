@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('flyout.Toolbar')
+eYo.forward('flyout.Toolbar')
 
 /**
  * @name {eYo.dom.flyout.Toolbar}

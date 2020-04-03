@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('board')
+eYo.forward('board')
 
 /**
  * The `content` rect is enclosing all the bricks.

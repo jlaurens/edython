@@ -14,7 +14,7 @@
 
 eYo.require('do')
 
-eYo.forwardDeclare('xre')
+eYo.forward('xre')
 
 // ANCHOR eYo.p6y
 /**
@@ -58,7 +58,6 @@ eYo.p6y._p.modelPath = function (key) {
 
 /**
  * For subclassers.
- * @param {Object} owner
  * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
@@ -78,7 +77,6 @@ eYo.p6y._p.modelHandle = function (_p, key, model) {
  * If model's value object is a function, it is executed to return an object which will be the initial value.
  * If we want to initialize with a function, the model's value object must be a function that returns the expected function.
  * No change hook is reached.
- * @param {Object} owner
  * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
@@ -102,7 +100,6 @@ eYo.p6y._p.modelHandleValue = function (prototype, key, model) {
  * Make the prototype's `reset` method, based on the model's object for value key reset, either a function or an object.
  * If model's object is a function, it is executed to return an object which will be the new value.
  * If we want to reset with a function, the model's object must be a function that in turn returns the expected function.
- * @param {Object} owner
  * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
@@ -155,7 +152,6 @@ eYo.p6y._p.modelHandleReset = function (prototype, key, model) {
 
 /**
  * Make the prototype's dispose method according to the model's object for key dispose.
- * @param {Object} owner
  * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
@@ -169,7 +165,6 @@ eYo.p6y._p.modelHandleDispose = function (prototype, key, model) {
 /**
  * make the prototype's getValue method based on the model.
  * make the prototype' setValue method based on the model.
- * @param {Object} owner
  * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
@@ -293,7 +288,6 @@ eYo.p6y._p.modelHandleGetSet = function (prototype, key, model) {
  * make the prototype's change methods based on the model.
  * If a method is inherited, then the super method is called.
  * It may not be a good idea to change the inherited method afterwards.
- * @param {Object} owner
  * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
@@ -347,7 +341,6 @@ eYo.p6y._p.modelHandleChange = function (prototype, key, model) {
 /**
  * make the prototype's getStored method based on the model `get_` function.
  * make the prototype's setStored method based on the model's `set_` function.
- * @param {Object} owner
  * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
@@ -798,3 +791,43 @@ eYo.p6y.List.eyo_p.initInstance = function (object) {
     }
   }
 }
+
+eYo.c9r._p.p6yEnhanced = function (model = {}) {
+  eYo.isF(model.maker) || (model.maker = function (object, k, model) {
+    return model.source
+    ? object.eyo.aliasNew(object, k, ...model.source)
+    : eYo.p6y.new(object, k, model)
+  })
+  eYo.isF(model.makeShortcuts) || (model.makeShortcuts = function (object, k, p) {
+    let k_p = k + '_p'
+    if (object.hasOwnProperty(k_p)) {
+      console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
+    }
+    Object.defineProperties(object, {
+      [k_p]: eYo.descriptorR(function () {
+        return p
+      }),
+    })
+    object[k_p] || eYo.throw('Missing property')
+    let _p = object.eyo.C9r_p
+    _p.hasOwnProperty(k) || Object.defineProperties(_p, {
+      [k]: eYo.descriptorR(function () {
+        if (!this[k_p]) {
+          console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
+        }
+        return this[k_p].getValue()
+      }),
+      [k + '_']: {
+        get: function () {
+          return this[k_p].getStored()
+        },
+        set (after) {
+          this[k_p].setValue(after)
+        },
+      },
+    })
+    return p
+  })
+  this.enhancedMany ('p6y', 'properties', model)
+} 
+

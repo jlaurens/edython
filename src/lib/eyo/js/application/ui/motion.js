@@ -11,15 +11,15 @@
  */
 'use strict'
 
-eYo.forwardDeclare('board')
-eYo.forwardDeclare('brick')
-eYo.forwardDeclare('field')
-eYo.forwardDeclare('magnet')
+eYo.forward('board')
+eYo.forward('brick')
+eYo.forward('field')
+eYo.forward('magnet')
 
-eYo.forwardDeclare('dnd')
-eYo.forwardDeclare('event.Scaler')
+eYo.forward('dnd')
+eYo.forward('event.Scaler')
 
-eYo.forwardDeclare('dom')
+eYo.forward('dom')
 
 /*
  * Note: In this file "start" refers to touchstart,

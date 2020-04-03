@@ -13,7 +13,7 @@
 
 eYo.require('font')
 
-eYo.forwardDeclare('geom')
+eYo.forward('geom')
 
 //g@@g.forwardDeclare('g@@g.cssom')
 goog.require('goog.color')

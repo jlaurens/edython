@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('app')
+eYo.forward('app')
 
 /**
  * Dom driver for application.

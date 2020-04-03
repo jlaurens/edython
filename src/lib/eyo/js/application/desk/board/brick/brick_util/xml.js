@@ -86,17 +86,17 @@ eYo.provide('xml.compatibility')
 eYo.provide('xml.call')
 
 // Next are used to let the compiler know that we need them
-eYo.forwardDeclare('brick.functions');
-eYo.forwardDeclare('brick.stdtypes');
-eYo.forwardDeclare('brick.random');
-eYo.forwardDeclare('brick.math');
-eYo.forwardDeclare('brick.cmath');
-eYo.forwardDeclare('brick.turtle');
-eYo.forwardDeclare('brick.decimal');
-eYo.forwardDeclare('brick.fractions');
-eYo.forwardDeclare('brick.statistics');
-eYo.forwardDeclare('brick.range')
-eYo.forwardDeclare('expr')
+eYo.forward('brick.functions');
+eYo.forward('brick.stdtypes');
+eYo.forward('brick.random');
+eYo.forward('brick.math');
+eYo.forward('brick.cmath');
+eYo.forward('brick.turtle');
+eYo.forward('brick.decimal');
+eYo.forward('brick.fractions');
+eYo.forward('brick.statistics');
+eYo.forward('brick.range')
+eYo.forward('expr')
 
 /**
  * Converts a DOM structure into plain text.

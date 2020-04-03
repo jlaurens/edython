@@ -30,8 +30,8 @@ eYo.provide('dnd.dragger')
  */
 eYo.provide('dnd.dropper')
 
-eYo.forwardDeclare('event.Motion')
-eYo.forwardDeclare('driver')
+eYo.forward('event.Motion')
+eYo.forward('driver')
 
 /**
  * @name{eYo.dnd.Mngr}

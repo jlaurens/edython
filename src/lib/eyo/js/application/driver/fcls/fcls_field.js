@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('field')
+eYo.forward('field')
 
 /**
  * Faceless driver for fields.

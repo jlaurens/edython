@@ -14,7 +14,7 @@
 
 eYo.require('do')
 
-eYo.forwardDeclare('xre')
+eYo.forward('xre')
 
 // ANCHOR eYo.attr
 /**
@@ -66,14 +66,11 @@ eYo.attr.makeBase({
       key: eYo.descriptorR(function () {
         return this.key_
       }),
-      model: eYo.descriptorR(function () {
-        return this.model_
-      })
     })
   },
   dispose () {
     this.removeObservers()
-    this.key_ = this.owner_ = this.model_ = eYo.NA
+    this.key_ = this.owner_ = eYo.NA
   },
 })
 

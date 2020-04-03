@@ -553,7 +553,7 @@ eYo.mixinR(eYo._p, {
       eYo.assert((ns = ns[k]), `Missing required ${name}`)
     })
   },
-  forwardDeclare: eYo.doNothing,
+  forward: eYo.doNothing,
 }, false)
 
 // ANCHOR Assert
@@ -660,8 +660,6 @@ eYo.makeNS('version', {
 })
 
 eYo.makeNS('session')
-
-eYo.forwardDeclare('app')
 
 eYo.makeNS('temp')
 eYo.makeNS('debug')

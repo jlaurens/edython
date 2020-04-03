@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('control.TrashCan')
+eYo.forward('control.TrashCan')
 
 /**
  * @name {eYo.fcls.TrashCan}

@@ -13,9 +13,9 @@
 
 eYo.makeNS('keyHandler')
 
-eYo.forwardDeclare('xre')
-eYo.forwardDeclare('dom')
-eYo.forwardDeclare('navigate')
+eYo.forward('xre')
+eYo.forward('dom')
+eYo.forward('navigate')
 
 eYo.KHandler.makeC9r('Menu')
 

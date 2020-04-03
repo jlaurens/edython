@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('view.Scroller')
+eYo.forward('view.Scroller')
 
 /**
  * Svg driver for a scroller.

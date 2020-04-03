@@ -14,8 +14,8 @@
 eYo.require('field')
 eYo.require('brick')
 
-eYo.forwardDeclare('xre')
-eYo.forwardDeclare('slot')
+eYo.forward('xre')
+eYo.forward('slot')
 
 /**
  * Python code generator.

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('brick')
+eYo.forward('brick')
 
 /**
  * Dom driver for boards.

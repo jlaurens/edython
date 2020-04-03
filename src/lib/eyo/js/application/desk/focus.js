@@ -16,7 +16,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('app')
+eYo.forward('app')
 
 /**
  * @name{eYo.focus}

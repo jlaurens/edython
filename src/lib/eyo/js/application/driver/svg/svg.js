@@ -25,13 +25,13 @@ goog.require('goog.style')
  */
 eYo.dom.makeNS(eYo, 'svg')
 
-eYo.forwardDeclare('t3.profile')
-eYo.forwardDeclare('svg.Brick')
-eYo.forwardDeclare('svg.Slot')
-eYo.forwardDeclare('svg.Field')
-eYo.forwardDeclare('slot')
-eYo.forwardDeclare('brick')
-eYo.forwardDeclare('style')
+eYo.forward('t3.profile')
+eYo.forward('svg.Brick')
+eYo.forward('svg.Slot')
+eYo.forward('svg.Field')
+eYo.forward('slot')
+eYo.forward('brick')
+eYo.forward('style')
 
 //g@@g.forwardDeclare('g@@g.userAgent')
 

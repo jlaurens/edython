@@ -13,7 +13,7 @@
 
 eYo.require('svg')
 
-eYo.forwardDeclare('view.Scrollbar')
+eYo.forward('view.Scrollbar')
 
 /**
  * Svg driver for a scrollbar.

@@ -1,26 +1,13 @@
 """
-Building dependencies.
-Given a bunch of javascript files,
-order them with respect to dependencies.
-A dependency is defined by different criteria:
-* usage of `eYo.require`, `eYo.provide`
-* usage of `eYo.makeNS`
-and so on.
+Private class to parse a javascript file and extract the dependency information.
 """
 
 from .path import *
-
-import pathlib
 import re
-import json
-import pprint
 
 class Info:
-  """
-  Private class to parse a javascript file and extract the dependency information.
-  """
   re_provide = re.compile(r"""^\s*
-  (?:eYo|goog)\.(?:(?P<provide>provide)|(?P<require>require)|forwardDeclare)
+  (?:eYo|goog)\.(?:(?P<provide>provide)|(?P<require>require)|forward(?:Declare)?)
   \s*\(\s*
   (?:'|")(?P<what>[^'"]+)(?:'|")
   .*""", re.X)
@@ -30,11 +17,12 @@ class Info:
   #eYo.Consolidator.makeC9r(ns, 'Dlgt', ...
   re_make = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
-  \.make(?:Driver)?(?P<what>C9r|NS)\s*\(\s*
+  \.make(?:Driver)?(?P<what>C9r|NS|Singleton)\s*\(\s*
   (?P<suite>.*)""", re.X)
 
   assert re.match(re_make, "eYo.makeNS('Brick')"), 'BAD re_make 2'
   assert re.match(re_make, "eYo.dnd.makeC9r('Mngr', {"), 'BAD re_make 3'
+  assert re.match(re_make, "eYo.o4t.makeSingleton(eYo, 'font', {"), 'BAD re_make 3a'
 
   m = re.match(re_make, "eYo.o3d.makeC9r(eYo.pane, 'WorkspaceControl', {")
   assert m, 'BAD re_make 4'
@@ -134,9 +122,17 @@ class Info:
 
   # eYo.....allowPath, allowShortcut(
   re_model = re.compile(r"""^\s*
-  (?P<ns>eYo(?:\.[a-z]\w*)*)\.allow(?:Path|Shortcut)\s*\(""", re.X)
+  (?P<ns>eYo(?:\.[a-z]\w*)*)\.allowModel(?:Path|Shortcut)\s*\(""", re.X)
 
-  # eYo.....allowPath, allowShortcut(
+  # eYo.o4t.enhancedMany('p6y', 'properties', {
+  re_enhancedMany = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)\.enhancedMany\s*\(\s*(?:'|")(?P<key>[a-z]\w*)(?:'|")""", re.X)
+
+  # eYo.o4t.p6yEnhanced
+  re_p6yEnhanced = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)\.p6yEnhanced\s*\(""", re.X)
+
+  # eYo.....Merge(
   re_merge_MPA = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.[A^Z]\w*\.(?:methods|aliases|properties)Merge\s*\(""", re.X)
 
@@ -144,8 +140,12 @@ class Info:
   re_enhanced = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.enhanced[A-Z]\w+\s*\(""", re.X)
 
+  # eYo.mixinR(eYo.key, {
+  re_mixinR = re.compile(r"""^\s*eYo\.mixinR\s*\(\s*
+  (?P<ns>eYo\.[a-z]\w*)""", re.X)
+
   pathByProvided = {}
-  nsByClass = {}
+  ignored = []
 
   def __init__(self, path):
     """
@@ -155,28 +155,18 @@ class Info:
     self.path = path
     with path.open('r', encoding='utf-8') as f:
       prompt = f'======= {path}\n'
-      print('', path)
       relative = path.relative_to(path_root)
-      provided = set()
+      provided = []
       def addProvided(what):
         last = what.split('.')[-1]
         if last in ['DB'] or re.search('[a-z]', last):
-          provided.add(what)
+          if not what in provided:
+            provided.append(what) 
         else:
-          print(f'IGNORED provided {what}')
+          Info.ignored.append(what)
       required = set()
-      def addRequired(what, assigned = None):
-        nonlocal prompt
-        if what == 'eYo.Desk':
-          print(f'{prompt}*** Requirement {what}')
-          prompt = ''
-        if what == 'eYo.brick.eyo':
-          print(f'{prompt}*** Requirement {what}')
-          prompt = ''
-        required.add(what)
       forwarded = set()
       classed = set()
-      subclassed = set()
       namespaced = set()
       if path.stem == 'eyo':
         addProvided('eYo')
@@ -185,34 +175,34 @@ class Info:
       else:
         def base_require(l):
           if re.search(r'^\s*eYo', l):
-            addRequired('eYo')
+            required.add('eYo')
           if re.search(r'^\s*eYo\.c9r\.', l):
-            addRequired('eYo.c9r')
+            required.add('eYo.c9r')
       for l in f.readlines():
         base_require(l)
         m = self.re_makeBase.match(l)
         if m:
           ns = m.group('ns')
           k = m.group('key')
-          addRequired(f'{ns}')
+          required.add(f'{ns}')
           addProvided(f'{ns}.{k}.Base')
           continue
         m = self.re_makeMngr.match(l)
         if m:
           ns = m.group('ns')
-          addRequired(f'{ns}')
+          required.add(f'{ns}')
           addProvided(f'{ns}.Mngr')
           addProvided(f'{ns}.Base')
           continue
         m = self.re_makeForwarder.match(l)
         if m:
           ns = m.group('ns')
-          addRequired(f'{ns}')
+          required.add(f'{ns}')
           continue
         m = self.re_protocol.match(l)
         if m:
           K = m.group('Key')
-          addRequired(f'eYo.protocol.{K}')
+          required.add(f'eYo.protocol.{K}')
           continue
         m = self.re_assignment.match(l)
         if m:
@@ -221,42 +211,51 @@ class Info:
             ns = m.group('ns')
             if ns.endswith('.prototype') or re.search(r'_[ps]\b', ns):
               continue
-            addRequired(ns, assigned)
+            required.add(ns)
             addProvided(assigned)
           continue
         m = self.re_propertiesMerge.match(l)
         if m:
-          addRequired(m.group('extended'))
+          required.add(m.group('extended'))
           continue
         m = self.re_protocol2.match(l)
         if m:
           req = m.group('required')
           if not req.endswith('Dlgt'):
-            addRequired(req)
+            required.add(req)
           continue
         m = self.re_setup.match(l)
         if m:
-          addRequired(m.group('required'))
+          required.add(m.group('required'))
           continue
         m = self.re_register.match(l)
         if m:
-          addRequired(m.group('required'))
+          required.add(m.group('required'))
           continue
         m = self.re_merge.match(l)
         if m:
-          addRequired(m.group('ns'))
+          required.add(m.group('ns'))
           continue
         m = self.re_model.match(l)
         if m:
-          addRequired(m.group('ns'))
+          required.add(m.group('ns'))
+          continue
+        m = self.re_p6yEnhanced.match(l)
+        if m:
+          required.add('eYo.p6y')
+          continue
+        m = self.re_enhancedMany.match(l)
+        if m:
+          required.add(m.group('ns'))
+          required.add('eYo.' + m.group('key'))
           continue
         m = self.re_merge_MPA.match(l)
         if m:
-          addRequired(m.group('ns'))
+          required.add(m.group('ns'))
           continue
         m = self.re_enhanced.match(l)
         if m:
-          addRequired('eYo.o4t')
+          required.add('eYo.o4t')
           continue
         ns = key = superKey = None
         def parse_args(suite):
@@ -278,44 +277,40 @@ class Info:
               m = self.re_arg_Super.match(suite)
               if m:
                 superKey = m.group('key')
-          if path.stem == 'view':
-            print('parseArgs:', ns, key, superKey)
         m = self.re_make.match(l)
         if m:
           if m.group('what') != 'NS':
-            addRequired('eYo.c9r')
+            required.add('eYo.c9r')
           NS = m.group('NS')
-          addRequired(NS)
+          required.add(NS)
           parse_args(m.group('suite'))
           if key:
             if ns:
-              addRequired(ns)
+              required.add(ns)
               addProvided(f'{ns}.{key}')
             else:
               addProvided(f'{NS}.{key}')
           elif superKey:
             if ns:
-              addRequired(ns)
+              required.add(ns)
               addProvided(f'{ns}.{superKey}')
             else:
               addProvided(f'{NS}.{superKey}')
-          if path.stem == 'view':
-            print('????', l, NS, ns, key, superKey, provided)
           continue
         m = self.re_makeInheritedC9r.match(l)
         if m:
-          addRequired('eYo.c9r')
+          required.add('eYo.c9r')
           NS = m.group('NS')
           key = m.group('Super')
-          addRequired(f'{NS}.{key}')
+          required.add(f'{NS}.{key}')
           parse_args(m.group('suite'))
           if ns:
-            addRequired(ns)
+            required.add(ns)
             addProvided(f'{ns}.{key}')
           else:
             addProvided(f'{NS}.{key}')
           continue
-        
+
         m = self.re_provide.match(l)
         if m:
           what = m.group('what')
@@ -324,9 +319,12 @@ class Info:
           if m.group('provide'):
             addProvided(what)
           elif m.group('require'):
-            addRequired(what)
+            required.add(what)
           else:
             forwarded.add(what)
+        m = self.re_mixinR.match(l)
+        if m:
+          required.add(m.group('ns'))
         continue
       for p in provided:
         if p in self.pathByProvided:
@@ -335,66 +333,5 @@ class Info:
 {path}
 '''
       self.provided = provided
-      self.required = required - provided
+      self.required = required - set(provided)
       self.forwarded = forwarded
-      self.subclassed = subclassed
-
-def build_deps():
-    pathInput = path_src / 'lib' / 'eyo'
-    print('Scanning folder\n    ', pathInput, '\nfor `*.js` files:')
-    files = [x for x in pathInput.rglob('*')
-             if x.is_file() and x.suffix == '.js'
-             if not x.name.endswith('test.js')
-             if '/dev/' not in x.as_posix()]
-    print(*files, sep='\n')
-    infos = []
-    for file in files:
-      infos.append(Info(file))
-
-    dependency_lines = []
-    requirement_lines = set()
-
-    for k in Info.nsByClass:
-      print(k, '->', Info.nsByClass[k])
-
-    print('----------------------')
-    for info in infos:
-      for x in info.subclassed:
-        makeInheritedC9r = x[0]
-        what = x[1]
-        if makeInheritedC9r in Info.nsByClass:
-          info.provided.add(f'{Info.nsByClass[makeInheritedC9r]}{what}')
-        else:
-          p = pathlib.Path(makeInheritedC9r)
-          info.provided.add(p.with_suffix(what))
-
-    for info in infos:
-      requirement_lines.update(info.required)
-      requirement_lines.update(info.forwarded)
-      provide = '['
-      provide_sep = ''
-      for what in info.provided:
-        provide += f"{provide_sep}'{what}'"
-        provide_sep = ', '
-      require = '['
-      require_sep = ''
-      for what in info.required:
-        require += f"{require_sep}'{what}'"
-        require_sep = ', '
-      if len(provide) + len(require)>2:
-        provide += ']'
-        require += ']'
-        relative = info.path.relative_to(path_root)
-        dependency = f"eYo.addDependency('{relative.as_posix()}', {provide}, {require}, {{}});\n"
-        dependency_lines.append(dependency)
-
-    p_out = path_eyo_deps
-    print('Writing dependencies in\n   ', p_out)
-    dependency_lines.sort()
-    p_out.write_text(''.join(dependency_lines))
-
-    p_out = path_required
-    print('Writing requirements in\n   ', p_out)
-    requirement_lines = sorted(requirement_lines)
-    p_out.write_text('\n'.join(requirement_lines))
-

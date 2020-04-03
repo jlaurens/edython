@@ -11,8 +11,8 @@
  */
 'use strict'
 
-eYo.forwardDeclare('flyout.View')
-eYo.forwardDeclare('flyout.Toolbar')
+eYo.forward('flyout.View')
+eYo.forward('flyout.Toolbar')
 
 /**
  * Svg driver for the flyout

@@ -14,7 +14,7 @@
 eYo.require('decorate')
 eYo.require('do')
 
-eYo.forwardDeclare('changer')
+eYo.forward('changer')
 eYo.require('data')
 
 /**
@@ -27,22 +27,22 @@ eYo.o3d.makeNS(eYo, 'brick')
 
 // eYo.provide('brick.dflt')
 
-eYo.forwardDeclare('expr')
-eYo.forwardDeclare('stmt')
+eYo.forward('expr')
+eYo.forward('stmt')
 
-eYo.forwardDeclare('xre')
-eYo.forwardDeclare('t3')
-eYo.forwardDeclare('geom.Point')
-eYo.forwardDeclare('do')
+eYo.forward('xre')
+eYo.forward('t3')
+eYo.forward('geom.Point')
+eYo.forward('do')
 
-eYo.forwardDeclare('event')
-eYo.forwardDeclare('span')
-eYo.forwardDeclare('field')
-eYo.forwardDeclare('slot')
-eYo.forwardDeclare('magnet')
-eYo.forwardDeclare('expr')
-eYo.forwardDeclare('stmt')
-eYo.forwardDeclare('focus')
+eYo.forward('event')
+eYo.forward('span')
+eYo.forward('field')
+eYo.forward('slot')
+eYo.forward('magnet')
+eYo.forward('expr')
+eYo.forward('stmt')
+eYo.forward('focus')
 
 ;(() => {
   let Mngr = function () {}

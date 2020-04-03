@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('board')
+eYo.forward('board')
 
 //g@@g.forwardDeclare('g@@g.dom')
 //g@@g.forwardDeclare('g@@g.events')

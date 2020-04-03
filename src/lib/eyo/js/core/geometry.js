@@ -12,8 +12,7 @@
 'use strict'
 
 eYo.require('do')
-
-eYo.forwardDeclare('font')
+eYo.require('font')
 
 /**
  * unit
@@ -26,9 +25,7 @@ eYo.forwardDeclare('font')
  * @name{eYo.geom}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'geom', {
-  
-})
+eYo.o4t.makeNS(eYo, 'geom', {})
 
 Object.defineProperties(eYo.geom, {
   X: eYo.descriptorR(function () {

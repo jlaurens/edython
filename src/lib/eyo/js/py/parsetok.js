@@ -14,8 +14,8 @@
 eYo.require('py.gmr_init')
 eYo.require('py.parser')
 
-eYo.forwardDeclare('py.parser.Scan')
-eYo.forwardDeclare('e')
+eYo.forward('py.parser.Scan')
+eYo.forward('e')
 
 eYo.py.makeNS('parseTok')
 

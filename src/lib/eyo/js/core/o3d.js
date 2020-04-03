@@ -33,7 +33,7 @@ eYo.o3d.makeBase({
     this.key_ = key
   },
   dispose () {
-    this.owner_ = eYo.NA
+    this.owner_ = this.key_ = eYo.NA
   },
   properties: {
     owner: {

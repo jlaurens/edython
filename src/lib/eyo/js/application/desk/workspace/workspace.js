@@ -15,10 +15,10 @@
 
 eYo.require('decorate')
 
-eYo.forwardDeclare('flyout.View')
-eYo.forwardDeclare('app')
-eYo.forwardDeclare('event')
-eYo.forwardDeclare('view.Scrollbar')
+eYo.forward('flyout.View')
+eYo.forward('app')
+eYo.forward('event')
+eYo.forward('view.Scrollbar')
 
 //g@@g.forwardDeclare('g@@g.array');
 

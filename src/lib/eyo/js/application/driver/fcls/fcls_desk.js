@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('view.Desk')
+eYo.forward('view.Desk')
 
 /**
  * Shared application driver.

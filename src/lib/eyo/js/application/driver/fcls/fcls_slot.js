@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('slot')
+eYo.forward('slot')
 
 /**
  * Faceless driver for slots.

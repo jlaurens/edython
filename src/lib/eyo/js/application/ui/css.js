@@ -27,8 +27,8 @@ eYo.makeNS('css', {
   },
 )
 
-eYo.forwardDeclare('geom')
-eYo.forwardDeclare('font')
+eYo.forward('geom')
+eYo.forward('font')
 //g@@g.forwardDeclare('g@@g.cssom');
 
 eYo.css.insertRuleAt = (() => {

@@ -17,7 +17,7 @@ eYo.require('changer')
 
 eYo.provide('brick.try')
 
-eYo.forwardDeclare('msg')
+eYo.forward('msg')
 
 //g@@g.forwardDeclare('g@@g.dom')
 

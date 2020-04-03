@@ -712,19 +712,19 @@ describe ('Tests: C9r', function () {
   })
   it ('C9r: dlgt key', function () {
     var ns = eYo.c9r.makeNS()
-    var flag = 0
+    flag.reset()
     eYo.c9r.makeC9r(ns, 'A', {
       dlgt () {
-        flag += 100
+        flag.push(1)
       },
       init() {
-        flag += 1
+        flag.push(2)
       }
     })
-    chai.assert(flag === 100, `Unexpected flag: ${flag}`)
+    chai.expect(flag.v).equal(1)
     chai.assert(ns.A.makeInheritedC9r)
     ns.A.makeInheritedC9r('AB', {})
-    chai.expect(flag).equal(200)
+    chai.expect(flag.v).equal(11)
   })
   it ('C9r: subC9rs...', function () {
     var ns = eYo.c9r.makeNS()
@@ -827,274 +827,296 @@ describe ('Tests: C9r', function () {
     chai.expect(aaa.inheritedMethod('foo')).equal(AAA_foo)
     chai.expect(aaa.inheritedMethod('foo', true)).equal(AA_foo)
   })
-  it ('enhancedO3dValidate: Basic', function () {
-    let ns = eYo.c9r.makeNS()
-    chai.expect(() => {
-      ns.enhancedO3dValidate('foo')
-    }).throw
+  it ('makeBase({...})', function () {
+    var ns = eYo.c9r.makeNS()
     ns.makeBase()
-    ns.enhanceO3dValidate('foo')
-    chai.assert(ns.Base_p.validate)
-    chai.assert(ns.modelHandleValidate)
-  })
-  it ('enhancedO3dValidate, default', function () {
-    let ns = eYo.c9r.makeNS()
-    ns.makeBase()
-    ns.enhanceO3dValidate('foo')
-    var x = new ns.Base()
-    chai.expect(x.validate(123, 421)).equal(421)
-    x = ns.new()
-    let test = (onr, validated, expected) => {
-      x.owner = onr
-      flag.v = 0
-      chai.expect(x.validate(123, 421)).equal(validated)
-      chai.expect(flag.v).equal(expected)
+    chai.expect(ns.Base.eyo.model).eql({})
+    let model = {
+      foo: 421,
     }
-    test(eYo.NA, 421, 0)
-    test({}, 421, 0)
-    test({
-      fooValidate (before, after) {
-        flag.push(1)
-        return before + after * 1000
-      },
-    }, 421123, 1)
-    x.key = 'my'
-    test({
-      myFooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
-      },
-    }, 421123, 2)
-    test({
-      fooValidate (before, after) {
-        flag.push(1)
-        return before + after * 1000
-      },
-      myFooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
-      },
-    }, 421123123, 12)
-    test({
-      fooValidate (before, after) {
-        flag.push(1)
-        return before + after * 1000
-      },
-      myFooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
-      },
-    }, 421123123, 12)
-    test({
-      fooValidate (before, after) {
-        flag.push(1)
-        return eYo.INVALID
-      },
-      myFooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
-      },
-    }, eYo.INVALID, 1)
-    test({
-      fooValidate (before, after) {
-        flag.push(1)
-        return before + after * 1000
-      },
-      myFooValidate (before, after) {
-        flag.push(2)
-        return eYo.INVALID
-      },
-    }, eYo.INVALID, 12)
-  })
-  it ('enhancedO3dValidate, (after)', function () {
-    let ns = eYo.c9r.makeNS()
-    ns.makeBase()
-    var C9r = ns.makeC9r('Foo')
-    chai.expect(C9r.eyo.C9r_S).equal(ns.Base)
-    ns.enhanceO3dValidate('foo')
-    ns.modelHandleValidate(C9r.prototype, '', {
-      validate(after) {
-        flag.push(1)
-        return after + this.flag
-      }
-    })
-    x = new C9r()
-    x.flag = 1
-    let test = (onr, validated, expected) => {
-      x.owner = onr
-      flag.v = 0
-      chai.expect(x.validate(123, 421)).equal(validated)
-      chai.expect(flag.v).equal(expected)
+    ns = eYo.c9r.makeNS()
+    ns.makeBase(model)
+    chai.expect(ns.Base.eyo.model).equal(model)
+    flag.reset()
+    model.init = function () {
+      flag.push(1)
+      chai.expect(this.model).equal(model)
     }
-    test(eYo.NA, 422, 1)
-    test({}, 422, 1)
-    test({
-      fooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
-      }
-    }, 422, 1)
-    ns.modelHandleValidate(C9r.prototype, '', {
-      validate(after) {
-        flag.push(1)
-        return this.validate(after + this.flag)
-      }
+    ns = eYo.c9r.makeNS()
+    ns.makeBase(model)
+    new ns.Base()
+    chai.expect(flag.v).equal(1)
+  })
+  describe('c9r: enhancedO3dValidate', function () {
+    it ('enhancedO3dValidate: Basic', function () {
+      let ns = eYo.c9r.makeNS()
+      chai.expect(() => {
+        ns.enhancedO3dValidate('foo')
+      }).throw
+      ns.makeBase()
+      ns.enhanceO3dValidate('foo')
+      chai.assert(ns.Base_p.validate)
+      chai.assert(ns.modelHandleValidate)
     })
-    test({
-      fooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
+    it ('enhancedO3dValidate, default', function () {
+      let ns = eYo.c9r.makeNS()
+      ns.makeBase()
+      ns.enhanceO3dValidate('foo')
+      var x = new ns.Base()
+      chai.expect(x.validate(123, 421)).equal(421)
+      x = ns.new()
+      let test = (onr, validated, expected) => {
+        x.owner = onr
+        flag.v = 0
+        chai.expect(x.validate(123, 421)).equal(validated)
+        chai.expect(flag.v).equal(expected)
       }
-    }, 422123, 12)
+      test(eYo.NA, 421, 0)
+      test({}, 421, 0)
+      test({
+        fooValidate (before, after) {
+          flag.push(1)
+          return before + after * 1000
+        },
+      }, 421123, 1)
+      x.key = 'my'
+      test({
+        myFooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        },
+      }, 421123, 2)
+      test({
+        fooValidate (before, after) {
+          flag.push(1)
+          return before + after * 1000
+        },
+        myFooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        },
+      }, 421123123, 12)
+      test({
+        fooValidate (before, after) {
+          flag.push(1)
+          return before + after * 1000
+        },
+        myFooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        },
+      }, 421123123, 12)
+      test({
+        fooValidate (before, after) {
+          flag.push(1)
+          return eYo.INVALID
+        },
+        myFooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        },
+      }, eYo.INVALID, 1)
+      test({
+        fooValidate (before, after) {
+          flag.push(1)
+          return before + after * 1000
+        },
+        myFooValidate (before, after) {
+          flag.push(2)
+          return eYo.INVALID
+        },
+      }, eYo.INVALID, 12)
+    })
+    it ('enhancedO3dValidate, (after)', function () {
+      let ns = eYo.c9r.makeNS()
+      ns.makeBase()
+      var C9r = ns.makeC9r('Foo')
+      chai.expect(C9r.eyo.C9r_S).equal(ns.Base)
+      ns.enhanceO3dValidate('foo')
+      ns.modelHandleValidate(C9r.prototype, '', {
+        validate(after) {
+          flag.push(1)
+          return after + this.flag
+        }
+      })
+      x = new C9r()
+      x.flag = 1
+      let test = (onr, validated, expected) => {
+        x.owner = onr
+        flag.v = 0
+        chai.expect(x.validate(123, 421)).equal(validated)
+        chai.expect(flag.v).equal(expected)
+      }
+      test(eYo.NA, 422, 1)
+      test({}, 422, 1)
+      test({
+        fooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        }
+      }, 422, 1)
+      ns.modelHandleValidate(C9r.prototype, '', {
+        validate(after) {
+          flag.push(1)
+          return this.validate(after + this.flag)
+        }
+      })
+      test({
+        fooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        }
+      }, 422123, 12)
 
-  })
-  it ('enhancedO3dValidate, (before, after)', function () {
-    let ns = eYo.c9r.makeNS()
-    ns.makeBase()
-    var C9r = ns.makeC9r('Foo')
-    chai.expect(C9r.eyo.C9r_S).equal(ns.Base)
-    ns.enhanceO3dValidate('foo')
-    ns.modelHandleValidate(C9r.prototype, '', {
-      validate(before, after) {
-        flag.push(1)
-        return before + this.flag + 1000 * after
-      }
     })
-    x = new C9r()
-    x.flag = 1
-    let test = (onr, validated, expected) => {
-      x.owner = onr
-      flag.v = 0
-      chai.expect(x.validate(123, 421)).equal(validated)
-      chai.expect(flag.v).equal(expected)
-    }
-    test(eYo.NA, 421124, 1)
-    test({}, 421124, 1)
-    test({
-      fooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
+    it ('enhancedO3dValidate, (before, after)', function () {
+      let ns = eYo.c9r.makeNS()
+      ns.makeBase()
+      var C9r = ns.makeC9r('Foo')
+      chai.expect(C9r.eyo.C9r_S).equal(ns.Base)
+      ns.enhanceO3dValidate('foo')
+      ns.modelHandleValidate(C9r.prototype, '', {
+        validate(before, after) {
+          flag.push(1)
+          return before + this.flag + 1000 * after
+        }
+      })
+      x = new C9r()
+      x.flag = 1
+      let test = (onr, validated, expected) => {
+        x.owner = onr
+        flag.v = 0
+        chai.expect(x.validate(123, 421)).equal(validated)
+        chai.expect(flag.v).equal(expected)
       }
-    }, 421124, 1)
-    ns.modelHandleValidate(C9r.prototype, '', {
-      validate(before, after) {
-        flag.push(1)
-        return this.validate(before, before + this.flag + 1000 * after)
-      }
+      test(eYo.NA, 421124, 1)
+      test({}, 421124, 1)
+      test({
+        fooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        }
+      }, 421124, 1)
+      ns.modelHandleValidate(C9r.prototype, '', {
+        validate(before, after) {
+          flag.push(1)
+          return this.validate(before, before + this.flag + 1000 * after)
+        }
+      })
+      test({
+        fooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        }
+      }, 421124123, 12)
     })
-    test({
-      fooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
+    it ('enhancedO3dValidate (builtin, before, after)', function () {
+      let ns = eYo.c9r.makeNS()
+      ns.makeBase()
+      ns.enhanceO3dValidate('foo')
+      var C9r = ns.makeC9r('Bar')
+      ns.modelHandleValidate(C9r.prototype, '', {
+        validate(builtin, before, after) {
+          flag.push(1)
+          return builtin(before, after)
+        }
+      })
+      x = new C9r()
+      let test = (onr, validated, expected) => {
+        x.owner = onr
+        flag.v = 0
+        chai.expect(x.validate(123, 421)).equal(validated)
+        chai.expect(flag.v).equal(expected)
       }
-    }, 421124123, 12)
-  })
-  it ('enhancedO3dValidate (builtin, before, after)', function () {
-    let ns = eYo.c9r.makeNS()
-    ns.makeBase()
-    ns.enhanceO3dValidate('foo')
-    var C9r = ns.makeC9r('Bar')
-    ns.modelHandleValidate(C9r.prototype, '', {
-      validate(builtin, before, after) {
-        flag.push(1)
-        return builtin(before, after)
-      }
+      test(eYo.NA, 421, 1)
+      test({}, 421, 1)
+      test({}, 421, 1)
+      test({
+        fooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        },
+      }, 421123, 12)
+      x.key = 'my'
+      test({
+        fooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        },
+      }, 421123, 12)
+      test({
+        fooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        },
+        myFooValidate (before, after) {
+          flag.push(3)
+          return before + after * 1000
+        }
+      }, 421123123, 123)
     })
-    x = new C9r()
-    let test = (onr, validated, expected) => {
-      x.owner = onr
-      flag.v = 0
-      chai.expect(x.validate(123, 421)).equal(validated)
-      chai.expect(flag.v).equal(expected)
-    }
-    test(eYo.NA, 421, 1)
-    test({}, 421, 1)
-    test({}, 421, 1)
-    test({
-      fooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
-      },
-    }, 421123, 12)
-    x.key = 'my'
-    test({
-      fooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
-      },
-    }, 421123, 12)
-    test({
-      fooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
-      },
-      myFooValidate (before, after) {
-        flag.push(3)
-        return before + after * 1000
+    it ('enhancedO3dValidate (builtin, after)', function () {
+      let ns = eYo.c9r.makeNS()
+      ns.makeBase()
+      ns.enhanceO3dValidate('foo')
+      var C9r = ns.makeC9r('Bar')
+      ns.modelHandleValidate(C9r.prototype, '', {
+        validate(builtin, after) {
+          flag.push(1)
+          return builtin(after)
+        }
+      })
+      x = new C9r()
+      let test = (onr, validated, expected) => {
+        x.owner = onr
+        flag.v = 0
+        chai.expect(x.validate(123, 421)).equal(validated)
+        chai.expect(flag.v).equal(expected)
       }
-    }, 421123123, 123)
-  })
-  it ('enhancedO3dValidate (builtin, after)', function () {
-    let ns = eYo.c9r.makeNS()
-    ns.makeBase()
-    ns.enhanceO3dValidate('foo')
-    var C9r = ns.makeC9r('Bar')
-    ns.modelHandleValidate(C9r.prototype, '', {
-      validate(builtin, after) {
-        flag.push(1)
-        return builtin(after)
-      }
+      test(eYo.NA, 421, 1)
+      test({}, 421, 1)
+      test({}, 421, 1)
+      test({
+        fooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        },
+      }, 421123, 12)
+      x.key = 'my'
+      test({
+        fooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        },
+      }, 421123, 12)
+      test({
+        fooValidate (before, after) {
+          flag.push(2)
+          return before + after * 1000
+        },
+        myFooValidate (before, after) {
+          flag.push(3)
+          return before + after * 1000
+        }
+      }, 421123123, 123)
     })
-    x = new C9r()
-    let test = (onr, validated, expected) => {
-      x.owner = onr
-      flag.v = 0
-      chai.expect(x.validate(123, 421)).equal(validated)
-      chai.expect(flag.v).equal(expected)
-    }
-    test(eYo.NA, 421, 1)
-    test({}, 421, 1)
-    test({}, 421, 1)
-    test({
-      fooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
-      },
-    }, 421123, 12)
-    x.key = 'my'
-    test({
-      fooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
-      },
-    }, 421123, 12)
-    test({
-      fooValidate (before, after) {
-        flag.push(2)
-        return before + after * 1000
-      },
-      myFooValidate (before, after) {
-        flag.push(3)
-        return before + after * 1000
-      }
-    }, 421123123, 123)
-  })
-  it ('enhancedO3dValidate (owner)', function () {
-    let ns = eYo.c9r.makeNS()
-    chai.expect(() => {
-      ns.enhancedO3dValidate('foo')
-    }).throw
-    ns.makeBase()
-    ns.enhanceO3dValidate('foo', true)
-    var C9r = ns.makeC9r('Bar')
-    ns.modelHandleValidate(C9r.prototype, '', {
-      validate(after) {
-        return after + this.flag // this is the owner
-      }
+    it ('enhancedO3dValidate (owner)', function () {
+      let ns = eYo.c9r.makeNS()
+      chai.expect(() => {
+        ns.enhancedO3dValidate('foo')
+      }).throw
+      ns.makeBase()
+      ns.enhanceO3dValidate('foo', true)
+      var C9r = ns.makeC9r('Bar')
+      ns.modelHandleValidate(C9r.prototype, '', {
+        validate(after) {
+          return after + this.flag // this is the owner
+        }
+      })
+      x = new C9r()
+      x.owner = {flag: 111}
+      chai.expect(x.validate(123, 421)).equal(532)
     })
-    x = new C9r()
-    x.owner = {flag: 111}
-    chai.expect(x.validate(123, 421)).equal(532)
   })
   describe ('C9r enhanceMany:', function () {
     it ('Basic', function () {

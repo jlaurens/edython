@@ -13,9 +13,9 @@
 
 eYo.require('brick')
 
-eYo.forwardDeclare('xre')
-eYo.forwardDeclare('msg')
-eYo.forwardDeclare('brick.operator')
+eYo.forward('xre')
+eYo.forward('msg')
+eYo.forward('brick.operator')
 
 /**
  * @name {eYo.stmt}

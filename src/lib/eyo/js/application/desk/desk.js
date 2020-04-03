@@ -13,14 +13,14 @@
  */
 'use strict'
 
-eYo.forwardDeclare('app')
+eYo.forward('app')
 
-eYo.forwardDeclare('view.Terminal')
-eYo.forwardDeclare('view.Template')
-eYo.forwardDeclare('view.Turtle')
-eYo.forwardDeclare('view.Graphic')
-eYo.forwardDeclare('view.Variable')
-eYo.forwardDeclare('view.Workspace')
+eYo.forward('view.Terminal')
+eYo.forward('view.Template')
+eYo.forward('view.Turtle')
+eYo.forward('view.Graphic')
+eYo.forward('view.Variable')
+eYo.forward('view.Workspace')
 
 /**
  * @name{eYo.view.Desk}

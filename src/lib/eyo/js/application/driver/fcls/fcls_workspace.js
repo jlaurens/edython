@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.forwardDeclare('view.Workspace')
+eYo.forward('view.Workspace')
 /**
  * Shared application driver.
  */

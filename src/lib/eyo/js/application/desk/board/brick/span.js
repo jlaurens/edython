@@ -32,8 +32,8 @@
  */
 'use strict'
 
-eYo.forwardDeclare('geom')
-eYo.forwardDeclare('brick')
+eYo.forward('geom')
+eYo.forward('brick')
 
 /**
  * @name{sYo.span}

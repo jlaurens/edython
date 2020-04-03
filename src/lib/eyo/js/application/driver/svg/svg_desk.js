@@ -13,7 +13,7 @@
 
 eYo.require('dom.Desk')
 
-eYo.forwardDeclare('view.Desk')
+eYo.forward('view.Desk')
 
 /**
  * Svg driver for desk.

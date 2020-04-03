@@ -1,5 +1,6 @@
 describe ('Tests: changer', function () {
   it ('Changer: basic', function () {
+    chai.assert(eYo.changer)
     chai.assert(eYo.changer.Base)
   })
   it ('Changer: begin', function () {
