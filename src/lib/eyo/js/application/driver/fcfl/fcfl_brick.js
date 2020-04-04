@@ -1411,7 +1411,7 @@ eYo.fcfl.Brick._p.showMenu = function (brick, menu) {
  * @param {eYo.magnet.Base} targetOldM4t what was previously connected to the new targetConnection
  */
 eYo.fcfl.Brick._p.didConnect = function (brick, m4t, oldTargetM4t, targetOldM4t) {
-  if (m4t.isOutput) {
+  if (m4t.isOut) {
     m4t.brick.statusTopRemove_()
   }
 }
@@ -1423,7 +1423,7 @@ eYo.fcfl.Brick._p.didConnect = function (brick, m4t, oldTargetM4t, targetOldM4t)
  * @param {eYo.magnet.Base} oldTargetM4t what was previously connected in the brick
  */
 eYo.fcfl.Brick._p.didDisconnect = function (brick, m4t, oldTargetM4t) {
-  if (m4t.isOutput) {
+  if (m4t.isOut) {
     m4t.brick.statusTopAdd_()
   }
 }

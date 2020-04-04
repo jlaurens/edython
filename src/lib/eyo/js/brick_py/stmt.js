@@ -40,7 +40,7 @@ eYo.model.allowModelPaths({
 
 eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'foot',
-  foot: 'check'
+  foot: 'check',
 })
 
 /**

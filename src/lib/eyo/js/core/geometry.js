@@ -407,6 +407,9 @@ eYo.geom.Size = eYo.geom.Point
  * @return {eYo.geom.Size} the receiver.
  */
 eYo.geom.Point_p.setFromText = function (txt) {
+  if (!eYo.isDef(txt)) {
+    console.error('BREAK HERE!')
+  }
   var lines = txt.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/)
   var c = 0
   lines.forEach(l => (c < l.length) && (c = l.length) )

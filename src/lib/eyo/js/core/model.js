@@ -18,8 +18,136 @@
  * @namespace
  */
 eYo.makeNS('model', {
-  ROOT: '^$'
+  ROOT: '^$',
+  DOT: '.',
+  ANY: '*',
+  EXPAND: '...',
+  VALIDATE: '!',
 })
+
+/**
+ * A model is a tree.
+ * The shape of this tree is controlled by an instance of a 
+ * eYo.model.Controller.
+ * @param {eYo.model.Controller} [parent] - the parent if any
+ * @param {String} [key] - the relative location of the created controller within the parent, only when there is a parent
+ * @param {Object} tree - a standard object
+ */
+eYo.model.Controller = function (parent, key) {
+  this.parent = parent
+  if (parent) {
+    this.key = key || ''
+    this.pattern = key === eYo.model.ANY
+    ? '^\\w+$'
+    : key.startsWith('^')
+      ? key
+      : `^${key}$`
+  } else {
+    this.key = ''
+    this.pattern = '^$'
+  }
+  this.map = new Map()
+  this.expand = eYo.doNothing
+  this.validators = []
+}
+
+/**
+ * Private tree method.
+ * arguments is a list of strings and objects.
+ */
+eYo.model.Controller.prototype.allow = function (...$) {
+  var c = this
+  for (let arg in $) {
+    if (eYo.isStr(arg)) {
+      for (let k in arg.split('/')) {
+        let cc = c.map.get(k)
+        if (!cc) {
+          cc = new eYo.model.Controller(this, k)
+          c.map.set(k, cc)
+        }
+        c = cc
+      }
+    } else {
+      var v
+      if (eYo.isF((v = arg[eYo.model.EXPAND]))) {
+        eYo.isF(v) || eYo.throw(`Forbidden ${eYo.model.EXPAND} -> ${v}`)
+        c.expand = v
+        delete arg[eYo.model.EXPAND]
+      }
+      if (eYo.isF((v = arg[eYo.model.VALIDATE]))) {
+        eYo.isF(v) || eYo.throw(`Forbidden ${eYo.model.VALIDATE} -> ${v}`)
+        c.validators.append(v)
+        delete arg[eYo.model.VALIDATE]
+      }
+      for (let [k, v] of Object.entries(arg)) {
+        c.allow(k, v) // avoid recursivity ?
+      }
+    }
+  }
+}
+
+/**
+ * @name {eYo.model.Controller.prototype.path}
+ * Private computed property
+ */
+Object.defineProperties(eYo.model.Controller.prototype, {
+  all: eYo.desciptorR(function () {
+    var p = this
+    let ans = [p]
+    while ((p = p.parent)) {
+      ans.unshift(p)
+    }
+    return ans
+  }),
+  path: eYo.desciptorR(function () {
+    return this.all.map(x => x.key).join('/')
+  }),
+})
+
+/**
+ * expand and validates the given model
+ * @param {String} [path] - The path of the model object
+ * @param {Object} model - A model object to validate
+ */
+eYo.model.Controller.prototype.consolidate = function (path, model) {
+  var c = this
+  if (eYo.isStr(path)) {
+    for (let k in arg.split('/')) {
+      if (k) { // avoid ''
+        let cc = c.map.get(k)
+        cc || eYo.throw(`Unreachable path: ${c.path}/${k}`)
+        c = cc
+      }
+    }
+  }
+  c.validators.forEach(f => {
+    f (model)
+  })
+  Object.keys(model).forEach(k => {
+    var v = model[k]
+    if (!eYo.isO(v)) {
+      let cc = c.map.get(k)
+      if (cc) {
+        cc.consolidate(k, v)
+      }
+    }
+  })
+  Object.keys(model).forEach(k => {
+    var v = model[k]
+    if (!eYo.isO(v)) {
+      let cc = c.map.get(k)
+      if (cc) {
+        v = cc.expand(k, v, model)
+        if (eYo.isINVALID(v)) {
+          delete model[k]
+          eYo.throw(`Bad model : unexpected ${k} -> ${v}, at ${cc.path}`)
+        } else if (v) {
+          model[k] = v
+        }  
+      }
+    }
+  })
+}
 
 /**
  * Whether the argument is a model object once created with `{...}` syntax.
@@ -37,7 +165,19 @@ eYo.isModel = (what) => {
  * Here is a map from paths to a list of allowed keys.
  * @name {eYo.model.allowed}
  */
-eYo.model._p.allowed = Object.create(null)
+eYo.model._p.controller__ = new eYo.model.Controller()
+
+/**
+ * @name {eYo.model.allow}
+ */
+eYo.model._p.allow = eYo.model._p.controller__.allow.bind(eYo.model.controller__)
+
+/**
+ * @name {eYo.model.conslidate}
+ */
+eYo.model.consolidate = eYo.model._p.controller__.consolidate.bind(eYo.model.controller__)
+
+
 
 /**
  * @name{eYo.model.isAllowed}
@@ -153,6 +293,18 @@ eYo.model._p.modelExpand = function (path, model) {
   if (!eYo.isStr(path)) {
     [path, model] = [model, path]
   }
+  if (path) {
+    Object.keys(this.shortcut).forEach(pattern => {
+      if (XRegExp(`^${pattern}$`).test(path)) {
+        this.shortcut[pattern].forEach(f => {
+          eYo.isF(f) || eYo.throw(`Missing a function, got ${typeof f} instead: ${f}`)
+          if (eYo.isINVALID(f(model, path))) {
+            eYo.throw(`Bad model ${model} at ${path}`)
+          }
+        })
+      }
+    })
+  }
   Object.keys(model).forEach(k => {
     let p = path && `${path}.${k}` || k
     var M = model[k]
@@ -183,6 +335,7 @@ eYo.model._p.modelExpand = function (path, model) {
       eYo.isD(M = model[k]) && this.modelExpand(p, M)
     }
   })
+  return model
 }
 
 ;(() => {

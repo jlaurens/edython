@@ -64,3 +64,29 @@ eYo.o3d.makeBase({
     ownerDidChange: eYo.doNothing,
   }
 })
+
+/**
+ * Create a new instance based on the model.
+ * @param {Object} model
+ */
+eYo.o3d._p.singleton = function (owner, model) {
+  return new (this.makeC9r(this.makeNS(), 'foo', model))(owner, 'foo')
+}
+
+/**
+ * Create a new instance based on the model.
+ * @param {Object} [NS] - Optional namespace, defaults to the receiver.
+ * @param {Object} key - the result will be `NS[key]`
+ * @param {Object} model
+ */
+eYo.o3d._p.makeSingleton = function(NS, key, model) {
+  if (!eYo.isNS(NS)) {
+    !model || eYo.throw(`Unexpected model: ${model}`)
+    ;[NS, key, model] = [this, NS, key]
+  }
+  eYo.isStr(key) || eYo.throw(`Unexpected parameter ${key}`)
+  let ans = new (this.makeC9r(NS, key, model))(NS, key)
+  Object.defineProperty(NS, key, eYo.descriptorR(function() {
+    return ans
+  }))
+}

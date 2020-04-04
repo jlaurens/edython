@@ -15,7 +15,7 @@
  * @name{eYo.field}
  * @namespace
  */
-eYo.bsm_o3d.makeNS(eYo, 'field', {
+eYo.dfs.makeNS(eYo, 'field', {
   STATUS_NONE: '', // names correspond to `eyo-code-...` css class names
   STATUS_COMMENT: 'comment',
   STATUS_RESERVED: 'reserved',
@@ -23,7 +23,7 @@ eYo.bsm_o3d.makeNS(eYo, 'field', {
   BIND: 'bind',
 })
 
-eYo.model.allowModelPaths({
+eYo.field.allowModelPaths({
   [eYo.model.ROOT]: 'fields',
   '(?:slots\\.\\w+\\.)?fields\\.\\w+': [
     'order', // number,
@@ -52,28 +52,66 @@ eYo.model.allowModelPaths({
       this.text = data.toText()
     }
   }
-  eYo.model.allowModelShortcuts({
-    '(?:slots\\.\\w+\\.)?fields\\.\\w+': (before, p) => {
-      if (!eYo.isD(before)) {
+  eYo.field.allowModelShortcuts({
+    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+': (before, p) => {
+      if (eYo.isD(before)) {
+        let a = new Set('value', 'reserved', 'builtin', 'comment', 'edit')
+        let b = Object.keys(before).filter(x => a.has(x))
+        b.length > 1 && eYo.throw(`Only one key of 'value', 'reserved', 'builtin', 'comment' and 'edit' at ${p}`)
+        if (eYo.isStr(before.edit)) {
+          before.text__ = before.edit
+          before.status = eYo.field.STATUS_NONE
+        } else if (eYo.isStr(before.value)) {
+          before.text__ = before.value
+          // this is just a label field
+          // field = new eYo.field.Label(owner, name, model.value || '')
+          before.status = eYo.field.STATUS_NONE
+        } else if (eYo.isStr(before.reserved)) {
+          before.text__ = before.reserved
+          // this is just a label field
+          // field = new eYo.fieldLabel(owner, name, model.reserved)
+          before.status = eYo.field.STATUS_RESERVED
+        } else if (eYo.isStr(before.builtin)) {
+          before.text__ = before.builtin
+          // this is just a label field
+          // field = new eYo.field.Label(owner, name, model.builtin)
+          before.status = eYo.field.STATUS_BUILTIN
+        } else if (eYo.isStr(before.comment)) {
+          before.text__ = before.comment
+          // this is just a label field
+          // field = new eYo.field.Label(owner, name, model.comment)
+          status = eYo.field.STATUS_COMMENT
+        } else if ([
+          eYo.field.STATUS_NONE,
+          eYo.field.STATUS_COMMENT,
+          eYo.field.STATUS_RESERVED,
+          eYo.field.STATUS_BUILTIN,
+        ].includes(before.status)) {
+          before.text__ = ''
+        } else {
+          console.error(before)
+          eYo.throw(`Bad model ${before} at ${p}`)
+        }
+      } else {
         return {
           value: before,
         }
       }
     },
-    '(?:slots\\.\\w+\\.)?fields\\.\\w+.startEditing': (before, p) => {
+    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.startEditing': (before, p) => {
       return eYo.isF(before) ? before : eYo.doNothing
     },
-    '(?:slots\\.\\w+\\.)?fields\\.\\w+.endEditing': (before, p) => {
+    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.endEditing': (before, p) => {
       return eYo.isF(before) ? before : endEditing
     },
-    '(?:slots\\.\\w+\\.)?fields\\.\\w+.(?:didLoad|willRender)': (before, p) => {
+    '(?:slots\\.\\w+\\.|right\\.)?fields\\.\\w+.(?:didLoad|willRender)': (before, p) => {
       return eYo.isF(before) ? before : eYo.INVALID
     },
   })
 })()
 
-eYo.forward('geom.Size')
-eYo.forward('event')
+eYo.require('geom.Size')
+eYo.require('xre')
 
 // actual field names
 /*
@@ -130,47 +168,12 @@ eYo.field._p.modelBase = function (model) {
 
 /**
  * For subclassers.
+ * Called from ``modelMakeC9r``.
  * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
  */
 eYo.field._p.modelHandle = function (_p, name, model) {
-  let a = new Set('value', 'reserved', 'builtin', 'comment', 'edit')
-  let b = Object.keys(mode).filter(x => a.has(x))
-  b.length > 1 && eYo.throw(`Only one key of 'value', 'reserved', 'builtin', 'comment' in ${_p.eyo.name}/${name}`)
-  if (eYo.isStr(model.edit)) {
-    model.text__ = model.edit
-    model.status = eYo.field.STATUS_NONE
-  } else if (eYo.isStr(model.value)) {
-    model.text__ = model.value
-    // this is just a label field
-    // field = new eYo.field.Label(owner, name, model.value || '')
-    model.status = eYo.field.STATUS_NONE
-  } else if (eYo.isStr(model.reserved)) {
-    model.text__ = model.reserved
-    // this is just a label field
-    // field = new eYo.fieldLabel(owner, name, model.reserved)
-    model.status = eYo.field.STATUS_RESERVED
-  } else if (eYo.isStr(model.builtin)) {
-    model.text__ = model.builtin
-    // this is just a label field
-    // field = new eYo.field.Label(owner, name, model.builtin)
-    model.status = eYo.field.STATUS_BUILTIN
-  } else if (eYo.isStr(model.comment)) {
-    model.text__ = model.comment
-    // this is just a label field
-    // field = new eYo.field.Label(owner, name, model.comment)
-    status = eYo.field.STATUS_COMMENT
-  } else if ([
-    eYo.field.STATUS_NONE,
-    eYo.field.STATUS_COMMENT,
-    eYo.field.STATUS_RESERVED,
-    eYo.field.STATUS_BUILTIN,
-  ].includes(model.status)) {
-    model.text__ = ''
-  } else {
-    eYo.throw(`Bad model ${model} in ${_p.eyo.name}/${name}`)
-  }
   let willRender_m = model.willRender
   if (eYo.isF(willRender_m)) {
     if (willRender_m.length) {
@@ -227,16 +230,20 @@ eYo.field.makeBase({
       validate (after) {
         return after ? String(after) : eYo.INVALID
       },
+      willChange(before, after) {
+        this.brick.fireChangeEvent('field', this.name, before, after)
+      },
       /**
        * 
        */
       set (builtin, after) {
-        eYo.event.fireBrickChange(this.brick, 'field', this.name, this.text__, after)
         this.brick.changer.wrap(() => {
           builtin(after)
           this.size.setFromText(after)
         })
-        this.placeholder__ = !after || !after.length
+      },
+      didChange(after) {
+        this.placeholder_ = !after || !after.length
       },
     },
     /**

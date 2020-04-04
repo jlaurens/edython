@@ -285,7 +285,7 @@ eYo.brick.makeBase({
                     }
                     break
                   }
-                } while ((next = next.getMagnetAbove()))
+                } while ((next = next.above))
               }
             }
           }
@@ -2633,6 +2633,19 @@ eYo.brick.Base_p.disposeEffect = function () {
   this.driver.disposeEffect(this)
 }
 
+/**
+ * The default implementation forwards to the driver.
+ * This must take place while the brick is still in a consistent state.
+ * @param {String} element - 'field'
+ * @param {String} name - Element name
+ * @param {*} before - Value before the change
+ * @param {*} after - Value after the change
+ */
+eYo.brick.Base_p.fireChangeEvent = function (element, name, before, after) {
+  eYo.event.fireBrickChange(this.brick, element, name, before, after)
+}
+
 // register this delegate for all the T3 types
 eYo.brick.registerAll(eYo.t3.expr, eYo.brick.Base)
 eYo.brick.registerAll(eYo.t3.stmt, eYo.brick.Base)
+

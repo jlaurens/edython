@@ -141,7 +141,7 @@ eYo.focus.ChooseLeft = () => {
   }
   var m4t = eYo.focus.magnet
   if (m4t) {
-    if (m4t.isSlot || m4t.isOutput) {
+    if (m4t.isSlot || m4t.isOut) {
       eYo.focus.magnet = null
       b3k.wrapper.focusOn().scrollToVisible()
       return
@@ -197,7 +197,7 @@ eYo.focus.ChooseRight = function () {
   }
   var m4t = eYo.focus.magnet
   if (m4t) {
-    if (m4t.isSlot || m4t.isOutput) {
+    if (m4t.isSlot || m4t.isOut) {
       eYo.focus.magnet = null
       eYo.focus.ScrollToVisible()
       return

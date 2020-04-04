@@ -130,7 +130,7 @@ def update_test():
   return 0
 
 def save_html(path, tests):
-  if len(tests):
+  if len(tests) > 1:
     html = HTML(path)
     html.head_begin()
     required = set()

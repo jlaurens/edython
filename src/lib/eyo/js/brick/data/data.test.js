@@ -645,6 +645,9 @@ describe ('Tests: data', function () {
         ui_driver: 5,
       },
     })
+    chai.expect(onr.eyo.model.properties.changer.value).equal(1)
+    chai.expect(onr.changer).equal(1)
+    chai.expect(onr.type).equal(2)
     let d = eYo.data.new(onr, 'foo', {})
     chai.assert(d.brick_p)
     chai.assert(d.changer_p)
@@ -658,5 +661,147 @@ describe ('Tests: data', function () {
     chai.expect(d.data).equal(3)
     chai.expect(d.ui).equal(4)
     chai.expect(d.ui_driver).equal(5)
+  })
+  it('Data model', function () {
+    let ns = eYo.data.makeNS()
+    ns.makeBase()
+
+    let test = (key, value) => {
+      let one = ns.singleton({eyo: true}, {
+        [key]: value,
+      })
+      chai.expect(one.model[key]).equal(value)
+    }
+    ;['after', // key || [keys]
+    'all'].forEach(key => {
+      let one = ns.singleton({eyo: true}, {
+        [key]: 421,
+      })
+      chai.expect(one.model[key]).eql([421])
+    })
+    ;[
+      'order', // INTEGER
+      'main', // BOOLEAN
+      'placeholder', // STRING
+      'noUndo', // true
+    ].forEach(key => {
+      let one = ns.singleton({eyo: true}, {
+        [key]: 421,
+      })
+      chai.expect(one.model[key]).equal(421)
+    })
+    ;[
+      // 'init', // WHATEVER
+      'validate', // (...) => {} || false || true,
+      'validateIncog', // (...) => {}
+      'willChange', // (...) => {}
+      'isChanging', // (...) => {}
+      'didChange', // (...) => {}
+      'willUnchange', // (...) => {}
+      'isUnchanging', // (...) => {}
+      'didUnchange', // (...) => {}
+      'willLoad', // () => {}
+      'didLoad', // () => {}
+      'consolidate', // (...) => {}
+      'fromType', // () => {}
+      'fromField', // () => {}
+      'toField', // () => {}
+    ].forEach(key => {
+      let one = ns.singleton({eyo: true}, {
+        [key]: function () {},
+      })
+      chai.expect(eYo.isF(one.model[key])).true
+      let second = ns.singleton({eyo: true}, {
+        [key]: 421,
+      })
+      chai.expect(eYo.isDef(second.model[key])).false
+    })
+    var one = ns.singleton({eyo: true}, {
+      init: 421,
+    })
+    chai.expect(eYo.isF(one.model.init)).true
+    var one = ns.singleton({eyo: true}, {
+      xml: 421,
+    })
+    chai.expect(one.model.xml).not.equal(421)
+    one = ns.singleton({eyo: true}, {
+      xml: {},
+    })
+    chai.expect(one.model.xml).eql({})
+    ;[
+      'save', // () => {}
+      'load', // () => {}
+    ].forEach(key => {
+      let one = ns.singleton({eyo: true}, {
+        xml: {
+          [key]: function () {},
+        },
+      })
+      chai.expect(eYo.isF(one.model.xml[key])).true
+      let second = ns.singleton({eyo: true}, {
+        xml: {
+          [key]: 421,
+        },
+      })
+      chai.expect(eYo.isDef(second.model.xml[key])).false
+    })
+    /*
+    eYo.model.allowModelPaths({
+  [eYo.model.ROOT]: 'data',
+  'data': '\\w+',
+  'data\\.\\w+': [
+    'after', // key || [keys]
+    'order', // INTEGER
+    'all', // TYPE || [TYPE], // last is expected
+    'main', // BOOLEAN
+    'placeholder', // STRING
+    'noUndo', // true
+    'xml', // {}
+    'init', // WHATEVER
+    'validate', // (...) => {} || false || true,
+    'validateIncog', // (...) => {}
+    'willChange', // (...) => {}
+    'isChanging', // (...) => {}
+    'didChange', // (...) => {}
+    'willUnchange', // (...) => {}
+    'isUnchanging', // (...) => {}
+    'didUnchange', // (...) => {}
+    'willLoad', // () => {}
+    'didLoad', // () => {}
+    'consolidate', // (...) => {}
+    'fromType', // () => {}
+    'fromField', // () => {}
+    'toField', // () => {}
+  ],
+  'data\\.\\w+\.xml': [
+    'save', 'load',
+  ],
+})
+
+eYo.model.allowModelShortcuts({
+  'data\\.\\w+\\.init': (before, p) => {
+    if (!eYo.isF(before)) {
+      return function () {
+        return before
+      }
+    }
+  },
+  'data\\.\\w+\\.(?:all|after)': (before, p) => {
+    if (!eYo.isRA(before)) {
+      return [before]
+    }
+  },
+  'data\\.\\w+\\.(?:didLoad|after)': (before, p) => {
+    if (!eYo.isF(before)) {
+      return eYo.INVALID
+    }
+  },
+  'data\\.\\w+\\.xml\\.(?:toText|fromText|toField|fromField|save|load)': (before, p) => {
+    if (!eYo.isF(before)) {
+      return eYo.INVALID
+    }
+  },
+})
+*/
   })
 })

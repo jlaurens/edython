@@ -707,7 +707,7 @@ eYo.shape.Base_p.initWithMagnet = function(magnet, opt) {
       } else if (!brick.disabled) {
         this.initWithMagnet(magnet, {absolute: true})
       }
-    } else if (magnet.isOutput) {
+    } else if (magnet.isOut) {
       this.push(brick.ui.driver.pathValueDef_(magnet))
     } else { // statement connection
       var w = brick.span.width - eYo.geom.X / 2

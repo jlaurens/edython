@@ -45,7 +45,7 @@ eYo.svg.Magnet.prototype.hilight = function (m4t) {
       )
       return
     }
-  } else if (m4t.isOutput) {
+  } else if (m4t.isOut) {
     steps = eYo.shape.definitionWithBrick(node)
   } else {
     steps = eYo.shape.definitionWithMagnet(m4t)

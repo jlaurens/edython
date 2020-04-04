@@ -56,8 +56,10 @@ eYo.model.allowModelPaths({
     'didLoad', // () => {}
     'consolidate', // (...) => {}
     'fromType', // () => {}
-    'fromField', // () => {}
     'toField', // () => {}
+    'fromField', // () => {}
+    'toText', // () => {}
+    'fromText', // () => {}
   ],
   'data\\.\\w+\.xml': [
     'save', 'load',
@@ -77,12 +79,32 @@ eYo.model.allowModelShortcuts({
       return [before]
     }
   },
-  'data\\.\\w+\\.(?:didLoad|after)': (before, p) => {
+  'data\\.\\w+\\.(?:toText|fromText|toField|fromField|willLoad|didLoad)': (before, p) => {
     if (!eYo.isF(before)) {
       return eYo.INVALID
     }
   },
-  'data\\.\\w+\\.xml\\.(?:toText|fromText|toField|fromField|save|load)': (before, p) => {
+  'data\\.\\w+\\.(?:consolidate|fromType|toField|fromField|toText|fromText)': (before, p) => {
+    if (!eYo.isF(before)) {
+      return eYo.INVALID
+    }
+  },
+  'data\\.\\w+\\.(?:validate|validateIncog)': (before, p) => {
+    if (!eYo.isF(before)) {
+      return eYo.INVALID
+    }
+  },
+  'data\\.\\w+\\.(?:willChange|isChanging|didChange|willUnchange|isUnchanging|didUnchange|willLoad|didLoad)': (before, p) => {
+    if (!eYo.isF(before)) {
+      return eYo.INVALID
+    }
+  },
+  'data\\.\\w+\\.xml': (before, p) => {
+    if (!eYo.isD(before)) {
+      return eYo.INVALID
+    }
+  },
+  'data\\.\\w+\\.xml\\.(?:save|load)': (before, p) => {
     if (!eYo.isF(before)) {
       return eYo.INVALID
     }
@@ -543,7 +565,7 @@ eYo.c9r._p.handle_change = function (_p, key, model) {
 eYo.data.makeBase({
   init (brick, key) {
     brick || eYo.throw(`${this.eyo.name}: Missing brick`)
-    key || eYo.throw(`${this.eyo.name}: Missing key in makeBase`)
+    eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeBase`)
     this.reentrant_ = {}
     this.key_ = key
     let model = this.model

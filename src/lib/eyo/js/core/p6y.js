@@ -815,6 +815,9 @@ eYo.c9r._p.p6yEnhanced = function (model = {}) {
         if (!this[k_p]) {
           console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
         }
+        if (!this[k_p].getValue) {
+          console.error('BREAK HERE!')
+        }
         return this[k_p].getValue()
       }),
       [k + '_']: {

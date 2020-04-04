@@ -247,7 +247,7 @@ class Info:
         m = self.re_enhancedMany.match(l)
         if m:
           required.add(m.group('ns'))
-          required.add('eYo.' + m.group('key'))
+          forwarded.add('eYo.' + m.group('key'))
           continue
         m = self.re_merge_MPA.match(l)
         if m:

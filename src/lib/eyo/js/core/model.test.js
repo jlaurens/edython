@@ -15,11 +15,11 @@ describe ('Tests: Model', function () {
     chai.assert(eYo.model)
   })
   it ('Model: isModel', function () {
-    chai.assert(eYo.isModel({}))
+    chai.expect(eYo.isModel({})).true
     let x = new eYo.doNothing()
-    chai.assert(!eYo.isModel(x))
+    chai.expect(eYo.isModel(x)).true
     x.model__ = true
-    chai.assert(eYo.isModel(x))
+    chai.expect(eYo.isModel(x))
   })
   it ('eYo.model.isAllowed(path, k)', function () {
     eYo.model.allowModelPaths({

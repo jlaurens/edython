@@ -190,7 +190,7 @@ eYo.expr.List_p.createConsolidator = eYo.decorate.reentrant_method(
  */
 eYo.expr.List_p.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
   eYo.expr.List.eyo.C9r_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
-  if (m4t.isOutput) {
+  if (m4t.isOut) {
     this.createConsolidator(true)
   }
 }

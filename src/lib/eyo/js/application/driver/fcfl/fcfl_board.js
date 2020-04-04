@@ -1409,7 +1409,7 @@ eYo.fcfl.Board._p.showMenu = function (board, menu) {
  * @param {eYo.magnet.Base} targetOldM4t what was previously connected to the new targetConnection
  */
 eYo.fcfl.Board._p.didConnect = function (board, m4t, oldTargetM4t, targetOldM4t) {
-  if (m4t.isOutput) {
+  if (m4t.isOut) {
     m4t.board.statusTopRemove_()
   }
 }
@@ -1421,7 +1421,7 @@ eYo.fcfl.Board._p.didConnect = function (board, m4t, oldTargetM4t, targetOldM4t)
  * @param {eYo.magnet.Base} oldTargetM4t what was previously connected in the board
  */
 eYo.fcfl.Board._p.didDisconnect = function (board, m4t, oldTargetM4t) {
-  if (m4t.isOutput) {
+  if (m4t.isOut) {
     m4t.board.statusTopAdd_()
   }
 }

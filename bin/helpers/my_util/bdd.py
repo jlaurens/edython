@@ -50,6 +50,9 @@ class __:
 
   @staticmethod
   def add_dep(bdd, is_eyo, relative, provided, required, forwarded, is_complete=False):
+    for r in provided:
+      assert bdd.by_provide.get(r) is None, f'Same provide appears twice at least {r}, {is_eyo}, {relative}'
+
     dep = Dep(bdd, is_eyo, relative, provided, required, forwarded, is_complete)
     assert bdd.by_file_name.get(dep.file_name) is None, 'Same file_name appears twice at least ' + dep.file_name
     bdd.deps.append(dep)
@@ -58,7 +61,6 @@ class __:
       if bdd.by_provide.get(r) is dep:
         continue
       else:
-        assert bdd.by_provide.get(r) is None, f'Same provide appears twice at least {r}, {path.as_posix()}'
         bdd.by_provide[r] = dep
 
   @staticmethod
@@ -119,7 +121,11 @@ class __:
         again, todo = todo, again
       elif len(again):
         print('****')
-        print(*[x.file_name for x in again], len(again), sep='\n')
+        for d in again:
+          for r in d.__required_to_resolve:
+            dd = bdd[r]
+            if dd.level is None:
+              print(d.file_name, '->', r)
         raise Exception('Unresolved dependencies')
       else:
         break

@@ -15,7 +15,7 @@
  * @name{eYo.slot}
  * @namespace
  */
-eYo.bsm_o3d.makeNS(eYo, 'slot')
+eYo.dfs.makeNS(eYo, 'slot')
 
 eYo.require('do')
 eYo.require('decorate')
@@ -284,6 +284,12 @@ eYo.slot.makeBase({
     dispose () {
       this.fieldForEach(f => f.disposeUI())
     },
+  },
+})
+
+Object.defineProperty(eYo.slot.Base_p, 'isSlot', {
+  get () {
+    return true
   },
 })
 
