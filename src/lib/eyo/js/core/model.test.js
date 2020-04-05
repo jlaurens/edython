@@ -33,7 +33,7 @@ describe ('Tests: Model', function () {
     x.model__ = true
     chai.expect(eYo.isModel(x)).true
   })
-  it ('eYo.model.isAllowed(...)', function () {
+  it ('eYo.model.modelIsAllowed(...)', function () {
     let KEY = eYo.genUID(eYo.IDENT, 10)
     eYo.model.modelAllow({
       [KEY]: {
@@ -42,22 +42,22 @@ describe ('Tests: Model', function () {
         ],
       },
     })
-    chai.expect(eYo.model.isAllowed(KEY)).true
-    chai.expect(eYo.model.isAllowed('', KEY)).true
-    chai.expect(eYo.model.isAllowed(KEY, 'whatsoever')).true
-    chai.expect(eYo.model.isAllowed(`${KEY}/whatsoever`)).true
-    chai.expect(eYo.model.isAllowed(`${KEY}/whatsoever/`)).true
-    chai.expect(eYo.model.isAllowed(`${KEY}/whatsoever/.`)).true
-    chai.expect(eYo.model.isAllowed(`${KEY}//whatsoever`)).true
-    chai.expect(eYo.model.isAllowed(`${KEY}/./whatsoever`)).true
-    chai.expect(eYo.model.isAllowed(`/${KEY}/whatsoever`)).true
-    chai.expect(eYo.model.isAllowed(`./${KEY}/whatsoever`)).true
-    chai.expect(eYo.model.isAllowed(KEY + '/whatsoever', 'after')).true
-    chai.expect(eYo.model.isAllowed(KEY, 'whatsoever/after')).true
-    chai.expect(eYo.model.isAllowed(`${KEY}/whatsoever/after`)).true
-    chai.expect(eYo.model.isAllowed(`${KEY}/whatsoever/source`)).true
-    chai.expect(eYo.model.isAllowed(`${KEY}/whatsoever/init`)).false
-    chai.expect(eYo.model.isAllowed(`${KEY}/whatsoever/source/init`)).false
+    chai.expect(eYo.model.modelIsAllowed(KEY)).true
+    chai.expect(eYo.model.modelIsAllowed('', KEY)).true
+    chai.expect(eYo.model.modelIsAllowed(KEY, 'whatsoever')).true
+    chai.expect(eYo.model.modelIsAllowed(`${KEY}/whatsoever`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${KEY}/whatsoever/`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${KEY}/whatsoever/.`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${KEY}//whatsoever`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${KEY}/./whatsoever`)).true
+    chai.expect(eYo.model.modelIsAllowed(`/${KEY}/whatsoever`)).true
+    chai.expect(eYo.model.modelIsAllowed(`./${KEY}/whatsoever`)).true
+    chai.expect(eYo.model.modelIsAllowed(KEY + '/whatsoever', 'after')).true
+    chai.expect(eYo.model.modelIsAllowed(KEY, 'whatsoever/after')).true
+    chai.expect(eYo.model.modelIsAllowed(`${KEY}/whatsoever/after`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${KEY}/whatsoever/source`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${KEY}/whatsoever/init`)).false
+    chai.expect(eYo.model.modelIsAllowed(`${KEY}/whatsoever/source/init`)).false
     var a = eYo.genUID(eYo.IDENT, 10)
     eYo.model.modelAllow({
       [a]: {
@@ -66,22 +66,22 @@ describe ('Tests: Model', function () {
         ],
       },
     })
-    chai.expect(eYo.model.isAllowed(a)).true
-    chai.expect(eYo.model.isAllowed('', a)).true
-    chai.expect(eYo.model.isAllowed(a, 'whatsoever')).true
-    chai.expect(eYo.model.isAllowed(`${a}/whatsoever`)).true
-    chai.expect(eYo.model.isAllowed(`${a}/whatsoever/`)).true
-    chai.expect(eYo.model.isAllowed(`${a}/whatsoever/.`)).true
-    chai.expect(eYo.model.isAllowed(`${a}//whatsoever`)).true
-    chai.expect(eYo.model.isAllowed(`${a}/./whatsoever`)).true
-    chai.expect(eYo.model.isAllowed(`/${a}/whatsoever`)).true
-    chai.expect(eYo.model.isAllowed(`./${a}/whatsoever`)).true
-    chai.expect(eYo.model.isAllowed(a + '/whatsoever', 'after')).true
-    chai.expect(eYo.model.isAllowed(a, 'whatsoever/after')).true
-    chai.expect(eYo.model.isAllowed(`${a}/whatsoever/after`)).true
-    chai.expect(eYo.model.isAllowed(`${a}/whatsoever/source`)).true
-    chai.expect(eYo.model.isAllowed(`${a}/whatsoever/init`)).false
-    chai.expect(eYo.model.isAllowed(`${a}/whatsoever/source/init`)).false
+    chai.expect(eYo.model.modelIsAllowed(a)).true
+    chai.expect(eYo.model.modelIsAllowed('', a)).true
+    chai.expect(eYo.model.modelIsAllowed(a, 'whatsoever')).true
+    chai.expect(eYo.model.modelIsAllowed(`${a}/whatsoever`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${a}/whatsoever/`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${a}/whatsoever/.`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${a}//whatsoever`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${a}/./whatsoever`)).true
+    chai.expect(eYo.model.modelIsAllowed(`/${a}/whatsoever`)).true
+    chai.expect(eYo.model.modelIsAllowed(`./${a}/whatsoever`)).true
+    chai.expect(eYo.model.modelIsAllowed(a + '/whatsoever', 'after')).true
+    chai.expect(eYo.model.modelIsAllowed(a, 'whatsoever/after')).true
+    chai.expect(eYo.model.modelIsAllowed(`${a}/whatsoever/after`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${a}/whatsoever/source`)).true
+    chai.expect(eYo.model.modelIsAllowed(`${a}/whatsoever/init`)).false
+    chai.expect(eYo.model.modelIsAllowed(`${a}/whatsoever/source/init`)).false
   })
   it ('modelConsolidate', function () {
     let kFoo = `foo${eYo.genUID(eYo.IDENT, 10)}`
@@ -138,5 +138,26 @@ describe ('Tests: Model', function () {
     model[kFoo] = 123
     bar.modelConsolidate(model)
     chai.expect(model[kFoo].value).equal(123)
+  })
+  it ('...makeModelController()', function () {
+    let NS = eYo.model.makeNS()
+    NS.makeModelController()
+    chai.expect(eYo.model.modelController).not.equal(NS.modelController)
+  })
+  it ('...modelAllow("a", NSb)', function () {
+    let NSa = eYo.model.makeNS()
+    NSa.makeModelController()
+    let NSb = eYo.model.makeNS()
+    NSb.makeModelController()
+    NSb.modelAllow('b')
+    chai.expect(NSb.modelIsAllowed('b')).true
+    chai.expect(NSb.modelIsAllowed('b/c')).false
+    NSa.modelAllow('a', NSb)
+    chai.expect(NSa.modelIsAllowed('a')).true
+    chai.expect(NSa.modelIsAllowed('a/b')).true
+    chai.expect(NSa.modelIsAllowed('a/b/c')).false
+    NSb.modelAllow('b/c')
+    chai.expect(NSb.modelIsAllowed('b/c')).true
+    chai.expect(NSa.modelIsAllowed('a/b/c')).true
   })
 })

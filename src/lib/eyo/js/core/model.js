@@ -37,31 +37,23 @@ eYo.makeNS('model', {
  * A model is a tree.
  * The shape of this tree is controlled by an instance of a 
  * eYo.model.Controller.
+ * No subclassing.
  * @param {eYo.model.Controller} [parent] - the parent if any
  * @param {String} [key] - the relative location of the created controller within the parent, only when there is a parent
  * @param {Object} tree - a standard object
  */
 eYo.model.Controller = function (parent, key) {
   this.parent = parent
-  if (parent) {
-    this.key = key || ''
-    this.pattern = key === eYo.model.ANY
-    ? '^\\w+$'
-    : key.startsWith('^')
-      ? key
-      : `^${key}$`
-  } else {
-    this.key = ''
-    this.pattern = '^$'
-  }
+  this.key = parent ? key || '' : ''
   this.map = new Map()
   this.expand = eYo.doNothing
   this.validators = []
 }
 
 /**
- * Private tree method.
- * arguments is a list of strings and objects.
+ * Smart getter method.
+ * Navigate the controllers along the path, creating controllers when needed.
+ * Takes care of wildcard controllers.
  * @param {String} path - the required path, relative to the receiver
  * @param {Boolean} [create] - whether controllers are created.
  */
@@ -77,7 +69,7 @@ eYo.model.Controller.prototype.get = function (path, create) {
             cc = new eYo.model.Controller(this, k)
             c.map.set(k, cc)
           } else {
-            return
+            return // ... nothing
           }
         }
       }
@@ -91,7 +83,7 @@ eYo.model.Controller.prototype.get = function (path, create) {
  * Private tree method.
  * arguments is a list of strings, arrays or strings and objects.
  */
-eYo.model.Controller.prototype.isAllowed = function (...$) {
+eYo.model.Controller.prototype.modelIsAllowed = function (...$) {
   var c = this
   $.forEach(key => {
     c = c.get(key)
@@ -104,14 +96,29 @@ eYo.model.Controller.prototype.isAllowed = function (...$) {
 
 /**
  * Private tree method.
- * arguments is a list of strings, arrays or strings and objects.
+ * arguments is a list of strings, arrays or strings, objects or eYo.model.Controller instances.
  */
 eYo.model.Controller.prototype.allow = function (...$) {
   var c = this
+  var pending
   $.forEach(arg => {
+    let mc = arg.modelController || arg
+    if (mc && mc instanceof eYo.model.Controller) {
+      pending || eYo.throw(`Cannot allow a model controller with no preceding key`)
+      c.map.set(pending, mc)
+      c = mc
+      pending = eYo.NA
+      return
+    }
+    if (pending) {
+      c = c.get(pending, true)
+    }
     if (eYo.isStr(arg)) {
-      c = c.get(arg, true)
-    } else if (eYo.isRA(arg)) {
+      pending = arg
+      return
+    }
+    pending = eYo.NA
+    if (eYo.isRA(arg)) {
       arg.forEach(k => {
         c.get(k, true)
       })
@@ -133,6 +140,7 @@ eYo.model.Controller.prototype.allow = function (...$) {
       })
     }
   })
+  pending && c.get(pending, true)
 }
 
 /**
@@ -203,30 +211,51 @@ eYo.model.Controller.prototype.consolidate = function (path, model) {
 }
 
 /**
- * A model is an object representing a tree.
- * Each node is accessed by a path.
- * If `M` is the root node, the node `M.foo.bar` has path `foo.bar`.
- * Paths are given as regular expression to embrace many cases at a time.
- * Here is a map from paths to a list of allowed keys.
- * @name {eYo.model.allowed}
+ * The global model controller.
+ * Each namespace can have its own model controller.
+ * Subclass `modelController` for that purpose.
+ * @name {eYo.model.makeModelController}
  */
-eYo.model._p.controller__ = new eYo.model.Controller()
+eYo.model._p.makeModelController = function () {
+  let c = new eYo.model.Controller()
+  Object.defineProperty(
+    this._p,
+    'modelController',
+    eYo.descriptorR(true, function () {
+      return c
+    })
+  )
+}
+
+/**
+ * Make the model controller of that name space.
+ * Each namespace can have its own model controller.
+ * No inheritance between model controllers.
+ * @name {eYo.model.modelController}
+ */
+eYo.model.makeModelController()
 
 /**
  * @name {eYo.model.allow}
  */
-eYo.model._p.modelAllow = eYo.model.controller__.allow.bind(eYo.model.controller__)
+eYo.model._p.modelAllow = function (...$) {
+  return this.modelController.allow(...$)
+}
 
 /**
  * @name {eYo.model.modelConsolidate}
  */
-eYo.model._p.modelConsolidate = eYo.model.controller__.consolidate.bind(eYo.model.controller__)
+eYo.model._p.modelConsolidate = function (...$) {
+  return this.modelController.consolidate(...$)
+}
 
 /**
- * @name{eYo.model.isAllowed}
+ * @name{eYo.model.modelIsAllowed}
  * @return {Boolean} Whether the key is authorized with the given path.
  */
-eYo.model._p.isAllowed = eYo.model.controller__.isAllowed.bind(eYo.model.controller__)
+eYo.model._p.modelIsAllowed = function (...$) {
+  return this.modelController.modelIsAllowed(...$)
+}
 
 /**
  * Allow a new set of keys.
@@ -295,5 +324,3 @@ eYo.model._p.shortcut = Object.create(null)
 eYo.model._p.allowModelShortcuts = function (model) {
   return
 }
-
-eYo.model.extends = eYo.doNothing

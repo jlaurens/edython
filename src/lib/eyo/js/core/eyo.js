@@ -114,18 +114,27 @@ eYo.noSetter = function (msg) {
 }
 /**
  * Function used when defining a JS property.
- * @param {String|Object} [msg] - Diagnostic message,or object
+ * Parameters: one string, one function,
+ * something truthy than is neither a string nor a function.
+ * @param {String} [msg] - Diagnostic message,or object
  * with a `lazy` attribute for a function returning the diagnostic message.
- * @param {Function} getter
- * @param {Boolean} configurable
+ * @param {Function|Boolean} getter
+ * @param {Boolean|Function} configurable
  * @private
  */
 eYo.descriptorR = (msg, getter, configurable) => {
+  // Expected ordered parameter types : s, f, b
+  // f, b, NA -> b, f, NA -> NA, f, b
+  // b, f, NA -> NA, f, b
+  // s, b, f 
   if (eYo.isF(msg)) {
     [getter, msg] = [msg, getter]
   }
-  if (eYo.isBool(msg)) {
+  if (!eYo.isStr(msg)) {
     [configurable, msg] = [msg, configurable]
+  }
+  if (eYo.isF(configurable)) {
+    [configurable, getter] = [getter, configurable]
   }
   msg && msg.lazy && (msg = msg.lazy)
   getter || eYo.throw('Missing getter')
