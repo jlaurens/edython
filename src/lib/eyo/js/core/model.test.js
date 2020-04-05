@@ -10,7 +10,7 @@ describe ('Tests: Model', function () {
       this.v += what
     },
     expect (what) {
-      chai.expect(this.v).equal(1)
+      chai.expect(this.v).equal(what)
     },
   }
   it ('Model: POC', function () {
@@ -116,6 +116,29 @@ describe ('Tests: Model', function () {
     eYo.model.modelConsolidate(model)
     flag.expect(1)
     chai.expect(model[kFoo].bar.value).equal(123)
+  })
+  it ('modelConsolidate (validate)', function () {
+    let NS = eYo.model.makeNS()
+    NS.makeModelController()
+    flag.reset()
+    NS.modelAllow('a', {
+      [eYo.model.VALIDATE]: (model) => {
+        flag.push(model)
+      }
+    })
+    chai.expect(() => {
+      NS.modelConsolidate({a: 1})
+    }).throw()
+    flag.expect(1)
+    flag.reset()
+    NS.modelAllow('b', {
+      [eYo.model.VALIDATE]: (model) => {
+        flag.push(model)
+        return true
+      }
+    })
+    NS.modelConsolidate({b: 2})
+    flag.expect(2)
   })
   it ('modelConsolidate (global model)', function () {
     let foo = eYo.model.makeNS()

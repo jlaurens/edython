@@ -1570,7 +1570,7 @@ eYo.brick.DEBUG_ = Object.create(null)
       while (i < this.wrappedMagnets_.length) {
         var d = this.wrappedMagnets_[i]
         var ans = d.completeWrap()
-        if (eYo.isValid(ans)) {
+        if (eYo.isVALID(ans)) {
           this.wrappedMagnets_.splice(i)
         } else {
           ++i

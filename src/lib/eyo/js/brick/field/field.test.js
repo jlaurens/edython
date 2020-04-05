@@ -9,6 +9,9 @@ describe('Field', function () {
       this.v *= 10
       this.v += what
     },
+    expect (what) {
+      chai.expect(this.v).equal(what)
+    },
   }
   it ('Field: Basic', function () {
     chai.assert(eYo.field)

@@ -9,6 +9,9 @@ describe ('Tests: magnet', function () {
       this.v *= 10
       this.v += what
     },
+    expect (what) {
+      chai.expect(this.v).equal(what)
+    },
   }
   it ('Magnet: basic', function () {
     chai.expect(!eYo.magnet).false

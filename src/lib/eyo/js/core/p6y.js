@@ -23,17 +23,20 @@ eYo.forward('xre')
  */
 eYo.attr.makeNS(eYo, 'p6y')
 
-eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: 'properties',
-  'properties': '\\w+',
-  'properties\\.\\w+': [
-    'after', 'source',
-    'value', 'lazy', 'reset',
-    'validate', 'get', 'set', 'get_', 'set_',
-    eYo.p6y.BEFORE, eYo.p6y.DURING, eYo.p6y.AFTER,
-    'dispose',
-  ],
-})
+/**
+ * The model controller for properties.
+ * @name{eYo.p6y.modelController}
+ */
+eYo.p6y.makeModelController()
+
+eYo.p6y.modelAllow([
+  'after', 'source',
+  'value', 'lazy', 'reset',
+  'validate', 'get', 'set', 'get_', 'set_',
+  eYo.p6y.BEFORE, eYo.p6y.DURING, eYo.p6y.AFTER,
+  'dispose',
+])
+
 
 eYo.model.allowModelShortcuts({
   'properties\\.\\w+': (before, p) => {

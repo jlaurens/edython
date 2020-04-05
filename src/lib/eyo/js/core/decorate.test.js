@@ -5,6 +5,9 @@ describe ('Tests: decorate', function () {
       this.v *= 10
       this.v += what
     },
+    expect (what) {
+      chai.expect(this.v).equal(what)
+    },
   }
   it ('Decorate: basic', function () {
     chai.assert(eYo.decorate)
@@ -19,7 +22,7 @@ describe ('Tests: decorate', function () {
     })
     flag.v = 0
     chai.expect(eYo.isNA(O.bar(3))).true
-    chai.expect(flag.v).equal(3)
+    flag.expect(3)
     flag.v = 0
     _p.bar = eYo.decorate.reentrant('bar', function (what) {
       flag.push(what)
@@ -29,10 +32,10 @@ describe ('Tests: decorate', function () {
       return 3 * what
     })
     chai.expect(O.bar(2)).equal(6)
-    chai.expect(flag.v).equal(24)
+    flag.expect(24)
     flag.v = 0
     chai.expect(O.bar(3)).equal(9)
-    chai.expect(flag.v).equal(36)
+    flag.expect(36)
     flag.v = 0
     _p.bar = eYo.decorate.reentrant('bar', function (what) {
       let ans = this.bar(what)
@@ -43,10 +46,10 @@ describe ('Tests: decorate', function () {
       return 3 * what
     })
     chai.expect(O.bar(2)).equal(6)
-    chai.expect(flag.v).equal(42)
+    flag.expect(42)
     flag.v = 0
     chai.expect(O.bar(3)).equal(9)
-    chai.expect(flag.v).equal(63)
+    flag.expect(63)
     flag.v = 0
   })
 })

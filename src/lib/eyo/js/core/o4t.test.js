@@ -9,6 +9,9 @@ describe ('Tests: Object', function () {
       this.v *= 10
       this.v += what
     },
+    expect (what) {
+      chai.expect(this.v).equal(what)
+    },
   }
   it ('O4t: POC', function () {
     let C9r = function (target) {
@@ -195,12 +198,12 @@ describe ('Tests: Object', function () {
     }
     var o = new (eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', model)) ()
     o = o.dispose()
-    chai.expect(flag.v).equal(1)
+    flag.expect(1)
     flag.reset()
     model.properties.foo.dispose = false
     var o = new (eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', model)) ()
     o = o.dispose()
-    chai.expect(flag.v).equal(0)
+    flag.expect(0)
   })
   it ('O4t: dispose inherited', function () {
     let ns = eYo.o4t.makeNS()
@@ -750,14 +753,14 @@ describe ('Tests: Object', function () {
     })
     chai.expect(ns.B.eyo.p6yModelByKey__).property('foo')
     chai.expect(ns.BB.eyo.p6yModelByKey__).not.property('foo')
-    chai.expect(flag.v).equal(0)
+    flag.expect(0)
     chai.expect(bb.foo).not.equal(421)
     bb = new ns.BB()
-    chai.expect(flag.v).equal(1)
+    flag.expect(1)
     chai.expect(bb.foo).equal(421)
     chai.assert((bb.foo_ = 123) === bb.foo)
     bb.foo_p.reset()
-    chai.expect(flag.v).equal(11)
+    flag.expect(11)
     chai.expect(bb.foo).equal(421)
   })
   it (`O4t: modelDeclare({...})`, function () {

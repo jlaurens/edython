@@ -9,6 +9,9 @@ describe ('POC', function () {
       this.v *= 10
       this.v += what
     },
+    expect (what) {
+      chai.expect(this.v).equal(what)
+    },
   }
   it ('Dlgt infinite loop', function () {
     let AutoDlgt = function (ns, key, C9r, model) {
@@ -721,10 +724,10 @@ describe ('Tests: C9r', function () {
         flag.push(2)
       }
     })
-    chai.expect(flag.v).equal(1)
+    flag.expect(1)
     chai.assert(ns.A.makeInheritedC9r)
     ns.A.makeInheritedC9r('AB', {})
-    chai.expect(flag.v).equal(11)
+    flag.expect(11)
   })
   it ('C9r: subC9rs...', function () {
     var ns = eYo.c9r.makeNS()
@@ -845,7 +848,7 @@ describe ('Tests: C9r', function () {
     ns = eYo.c9r.makeNS()
     ns.makeBase(model)
     new ns.Base()
-    chai.expect(flag.v).equal(1)
+    flag.expect(1)
   })
   describe('c9r: enhancedO3dValidate', function () {
     it ('enhancedO3dValidate: Basic', function () {
@@ -869,7 +872,7 @@ describe ('Tests: C9r', function () {
         x.owner = onr
         flag.v = 0
         chai.expect(x.validate(123, 421)).equal(validated)
-        chai.expect(flag.v).equal(expected)
+        flag.expect(expected)
       }
       test(eYo.NA, 421, 0)
       test({}, 421, 0)
@@ -945,7 +948,7 @@ describe ('Tests: C9r', function () {
         x.owner = onr
         flag.v = 0
         chai.expect(x.validate(123, 421)).equal(validated)
-        chai.expect(flag.v).equal(expected)
+        flag.expect(expected)
       }
       test(eYo.NA, 422, 1)
       test({}, 422, 1)
@@ -987,7 +990,7 @@ describe ('Tests: C9r', function () {
         x.owner = onr
         flag.v = 0
         chai.expect(x.validate(123, 421)).equal(validated)
-        chai.expect(flag.v).equal(expected)
+        flag.expect(expected)
       }
       test(eYo.NA, 421124, 1)
       test({}, 421124, 1)
@@ -1026,7 +1029,7 @@ describe ('Tests: C9r', function () {
         x.owner = onr
         flag.v = 0
         chai.expect(x.validate(123, 421)).equal(validated)
-        chai.expect(flag.v).equal(expected)
+        flag.expect(expected)
       }
       test(eYo.NA, 421, 1)
       test({}, 421, 1)
@@ -1071,7 +1074,7 @@ describe ('Tests: C9r', function () {
         x.owner = onr
         flag.v = 0
         chai.expect(x.validate(123, 421)).equal(validated)
-        chai.expect(flag.v).equal(expected)
+        flag.expect(expected)
       }
       test(eYo.NA, 421, 1)
       test({}, 421, 1)
@@ -1164,14 +1167,14 @@ describe ('Tests: C9r', function () {
       foo.Base.eyo[kFooChiMi + 'ModelMap']
       foo.new()
       chai.expect(foo.Base.eyo.model.fooChiMi.a.value).equal(1)
-      chai.expect(flag.v).equal(0)
+      flag.expect(0)
       let _p = foo.Dlgt_p
       _p.prepareInstance = function (object) {
         this[kFooChiMi + 'Prepare'](object)
         this.super.prepareInstance(object)
       }      
       let f = foo.new()
-      chai.expect(flag.v).equal(55)
+      flag.expect(55)
       chai.expect(f.a_f.value).equal(1)
       chai.expect(f.b_f.value).equal(2)
     })
@@ -1226,10 +1229,10 @@ describe ('Tests: C9r', function () {
       chai.expect([...map_ba.keys()]).eql(['b', 'a'])
       flag.reset()
       let f_ab = foo_ab.new()
-      chai.expect(flag.v).equal(12)
+      flag.expect(12)
       flag.reset()
       let f_ba = foo_ba.new()
-      chai.expect(flag.v).equal(21)
+      flag.expect(21)
       chai.expect(f_ab[kFooChiMi+'Head']).eql(f_ab.a_f)
       chai.expect(f_ab[kFooChiMi+'Tail']).eql(f_ab.b_f)
       chai.expect(f_ba[kFooChiMi+'Head']).eql(f_ba.b_f)
@@ -1274,7 +1277,7 @@ describe ('Tests: C9r', function () {
       }
       flag.reset()
       let f = foo.new()
-      chai.expect(flag.v).equal(55)
+      flag.expect(55)
       chai.expect(f.a_f.value).equal(1)
       chai.expect(f.b_f.value).equal(2)
     })
@@ -1356,7 +1359,7 @@ describe ('Tests: C9r', function () {
       }
       flag.reset()
       foo.new()
-      chai.expect(flag.v).equal(12)
+      flag.expect(12)
       let bar = foo.makeNS()
       bar.makeBase({
         foo: {
@@ -1374,7 +1377,7 @@ describe ('Tests: C9r', function () {
       chai.expect([...map_bar.keys()]).eql(['a', 'b', 'c', 'd'])
       flag.reset()
       bar.new()
-      chai.expect(flag.v).equal(1234)
+      flag.expect(1234)
     })
     it ('Model: override', function () {
       let id = eYo.genUID(eYo.IDENT, 10)
@@ -1418,7 +1421,7 @@ describe ('Tests: C9r', function () {
       }
       flag.reset()
       foo.new()
-      chai.expect(flag.v).equal(12)
+      flag.expect(12)
       let bar = foo.makeNS()
       bar.makeBase({
         foo: {
@@ -1440,7 +1443,7 @@ describe ('Tests: C9r', function () {
       chai.expect([...map_bar.keys()]).eql(['a', 'c', 'd', 'b'])
       flag.reset()
       bar.new()
-      chai.expect(flag.v).equal(1345)
+      flag.expect(1345)
     })
   })
 })

@@ -46,8 +46,6 @@ eYo.model.Controller = function (parent, key) {
   this.parent = parent
   this.key = parent ? key || '' : ''
   this.map = new Map()
-  this.expand = eYo.doNothing
-  this.validators = []
 }
 
 /**
@@ -132,7 +130,7 @@ eYo.model.Controller.prototype.allow = function (...$) {
       }
       if (eYo.isF((v = arg[eYo.model.VALIDATE]))) {
         eYo.isF(v) || eYo.throw(`Forbidden ${eYo.model.VALIDATE} -> ${v}`)
-        c.validators.append(v)
+        c.validate = v
         keys.delete(eYo.model.VALIDATE)
       }
       keys.forEach(k => {
@@ -168,7 +166,7 @@ Object.defineProperties(eYo.model.Controller.prototype, {
  */
 eYo.model.Controller.prototype.consolidate = function (path, model) {
   var c = this
-  if (eYo.isStr(path)) {
+  if (eYo.isDef(model)) {
     path.split('/').forEach(k => {
       if (k) { // avoid ''
         let cc = c.map.get(k)
@@ -177,34 +175,27 @@ eYo.model.Controller.prototype.consolidate = function (path, model) {
       }
     })
   } else {
-    [path, model] = ['/', path]
+    [path, model] = [eYo.NA, path]
   }
-  if (model) {
+  if (eYo.isDef(model)) {
     // validate the model
-    c.validators.forEach(f => {
-      f (model)
-    })
+    if (c.validate && !c.validate(model)) {
+      console.error(`Bad model ${model}`)
+      eYo.throw(`Bad model at ${c.path} (see console)`)
+    }
     Object.keys(model).forEach(k => {
-      var v = model[k]
-      if (!eYo.isD(v)) {
-        let cc = c.get(k)
-        if (cc) {
-          v = cc.expand(v, k, model)
-          if (eYo.isINVALID(v)) {
+      let cc = c.get(k)
+      if (cc) {
+        var v = model[k]
+        if (!eYo.isD(v)) {
+          let vv = cc.expand && cc.expand(v, k, model)
+          if (eYo.isINVALID(vv)) {
             eYo.throw(`Bad model : unexpected ${k} -> ${v}, at ${cc.path}`)
-          } else if (v) {
-            model[k] = v
+          } else if (vv) {
+            v = model[k] = vv
           }  
         }
-      }
-    })
-    Object.keys(model).forEach(k => {
-      var v = model[k]
-      if (eYo.isD(v)) {
-        let cc = c.get(k)
-        if (cc) {
-          cc.consolidate(v)
-        }
+        cc.consolidate(v)
       }
     })
   }

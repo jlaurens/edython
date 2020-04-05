@@ -9,6 +9,9 @@ describe ('Tests: Property', function () {
       this.v *= 10
       this.v += what
     },
+    expect (what) {
+      chai.expect(this.v).equal(what)
+    },
   }
   it ('POC: function arguments', function () {
     chai.assert((() => {}).length === 0)

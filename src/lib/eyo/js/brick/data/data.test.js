@@ -9,6 +9,9 @@ describe ('Tests: data', function () {
       this.v *= 10
       this.v += what
     },
+    expect (what) {
+      chai.expect(this.v).equal(what)
+    },
   }
   it ('Data: basic', function () {
     chai.assert(eYo.data)
@@ -531,7 +534,7 @@ describe ('Tests: data', function () {
       eYo.data.handle_toText(Object.getPrototypeOf(O), 'foo', model)
       flag.reset()
       chai.expect(O.toText(before)).equal(after)
-      chai.expect(flag.v).equal(expected)
+      flag.expect(expected)
     }
     test(function (what) {
       flag.push(what)
