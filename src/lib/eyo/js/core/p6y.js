@@ -35,17 +35,14 @@ eYo.p6y.modelAllow([
   'validate', 'get', 'set', 'get_', 'set_',
   eYo.p6y.BEFORE, eYo.p6y.DURING, eYo.p6y.AFTER,
   'dispose',
-])
-
-
-eYo.model.allowModelShortcuts({
-  'properties\\.\\w+': (before, p) => {
+], {
+  [eYo.model.EXPAND]: (before) => {
     if (!eYo.isD(before)) {
       return {
         value: before
       }
     }
-  },
+  }
 })
 
 // ANCHOR eYo.p6y.new

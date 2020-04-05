@@ -22,6 +22,9 @@ describe ('Tests: Property', function () {
   it ('P6y: Basic', function () {
     chai.assert(eYo.p6y)
   })
+  it('P6y: eYo.p6y.modelController', function () {
+    
+  })
   it('P6y: eYo.model.modelExpand(…)', function () {
     var model = {
       properties: {

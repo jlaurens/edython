@@ -83,68 +83,75 @@ describe ('Tests: Model', function () {
     chai.expect(eYo.model.modelIsAllowed(`${a}/whatsoever/init`)).false
     chai.expect(eYo.model.modelIsAllowed(`${a}/whatsoever/source/init`)).false
   })
-  it ('modelConsolidate', function () {
-    let kFoo = `foo${eYo.genUID(eYo.IDENT, 10)}`
-    eYo.model.modelAllow(kFoo, {
-      [eYo.model.EXPAND]: (before, p) => {
+  it ('modelValidate', function () {
+    let NS = eYo.model.makeNS()
+    NS.makeModelController()
+    NS.modelAllow('foo', {
+      [eYo.model.VALIDATE]: (before) => {
         if (!eYo.isD(before)) {
+          flag.push(before)
           return {
             value: before,
           }
         }
       },
     })
+    chai.expect(NS.modelIsAllowed('foo')).true
     let model = {
-      [kFoo]: 421,
+      foo: 1,
     }
-    eYo.model.modelConsolidate(model)
-    chai.expect(model[kFoo].value).equal(421)
     flag.reset()
-    eYo.model.modelAllow(kFoo, eYo.model.ANY, {
-      [eYo.model.EXPAND]: (before, p) => {
-        flag.push(1)
+    NS.modelValidate(model)
+    flag.expect(1)
+    chai.expect(model.foo.value).equal(1)
+
+    flag.reset()
+    NS.modelAllow('foo', eYo.model.ANY, {
+      [eYo.model.VALIDATE]: (before) => {
         if (!eYo.isD(before)) {
+          flag.push(before)
           return {
             value: before,
           }
         }
       },
     })
-    model[kFoo] = {
-      bar: 123,
+    model.foo = {
+      bar: 2,
     }
-    eYo.model.modelConsolidate(model)
-    flag.expect(1)
-    chai.expect(model[kFoo].bar.value).equal(123)
+    flag.reset()
+    NS.modelValidate(model)
+    flag.expect(2)
+    chai.expect(model.foo.bar.value).equal(2)
   })
-  it ('modelConsolidate (validate)', function () {
+  it ('modelValidate (validate)', function () {
     let NS = eYo.model.makeNS()
     NS.makeModelController()
     flag.reset()
     NS.modelAllow('a', {
       [eYo.model.VALIDATE]: (model) => {
         flag.push(model)
+        return eYo.INVALID
       }
     })
     chai.expect(() => {
-      NS.modelConsolidate({a: 1})
+      NS.modelValidate({a: 1})
     }).throw()
     flag.expect(1)
     flag.reset()
     NS.modelAllow('b', {
       [eYo.model.VALIDATE]: (model) => {
         flag.push(model)
-        return true
       }
     })
-    NS.modelConsolidate({b: 2})
+    NS.modelValidate({b: 2})
     flag.expect(2)
   })
-  it ('modelConsolidate (global model)', function () {
+  it ('modelValidate (global model)', function () {
     let foo = eYo.model.makeNS()
     let kFoo = `foo${eYo.genUID(eYo.IDENT, 10)}`
     foo.modelAllow(kFoo, {
-      [eYo.model.EXPAND]: (before, p) => {
+      [eYo.model.VALIDATE]: (before, p) => {
         if (!eYo.isD(before)) {
           return {
             value: before,
@@ -155,11 +162,11 @@ describe ('Tests: Model', function () {
     let model = {
       [kFoo]: 421,
     }
-    foo.modelConsolidate(model)
+    foo.modelValidate(model)
     chai.expect(model[kFoo].value).equal(421)
     let bar = eYo.model.makeNS()
     model[kFoo] = 123
-    bar.modelConsolidate(model)
+    bar.modelValidate(model)
     chai.expect(model[kFoo].value).equal(123)
   })
   it ('...makeModelController()', function () {

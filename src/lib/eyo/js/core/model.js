@@ -29,7 +29,6 @@ eYo.makeNS('model', {
   ROOT: '^$',
   DOT: '.',
   ANY: '*',
-  EXPAND: '...',
   VALIDATE: '!',
 })
 
@@ -123,14 +122,9 @@ eYo.model.Controller.prototype.allow = function (...$) {
     } else {
       var v
       let keys = new Set(Object.keys(arg))
-      if (eYo.isF((v = arg[eYo.model.EXPAND]))) {
-        eYo.isF(v) || eYo.throw(`Forbidden ${eYo.model.EXPAND} -> ${v}`)
-        c.expand = v
-        keys.delete(eYo.model.EXPAND)
-      }
       if (eYo.isF((v = arg[eYo.model.VALIDATE]))) {
         eYo.isF(v) || eYo.throw(`Forbidden ${eYo.model.VALIDATE} -> ${v}`)
-        c.validate = v
+        c.validate_ = v
         keys.delete(eYo.model.VALIDATE)
       }
       keys.forEach(k => {
@@ -160,11 +154,12 @@ Object.defineProperties(eYo.model.Controller.prototype, {
 })
 
 /**
- * expand and validates the given model
+ * Validates the given model
  * @param {String} [path] - The path of the model object
  * @param {Object} model - A model object to validate
+ * @return {Object} the possibly validated model.
  */
-eYo.model.Controller.prototype.consolidate = function (path, model) {
+eYo.model.Controller.prototype.validate = function (path, model) {
   var c = this
   if (eYo.isDef(model)) {
     path.split('/').forEach(k => {
@@ -179,25 +174,25 @@ eYo.model.Controller.prototype.consolidate = function (path, model) {
   }
   if (eYo.isDef(model)) {
     // validate the model
-    if (c.validate && !c.validate(model)) {
-      console.error(`Bad model ${model}`)
-      eYo.throw(`Bad model at ${c.path} (see console)`)
+    if (c.validate_) {
+      let v = c.validate_(model)
+      if (eYo.isINVALID(v)) {
+        console.error(model)
+        eYo.throw(`Bad model at ${c.path} (see console)`)
+      } else if (v) {
+        var ans = model = v
+      }
     }
     Object.keys(model).forEach(k => {
       let cc = c.get(k)
       if (cc) {
-        var v = model[k]
-        if (!eYo.isD(v)) {
-          let vv = cc.expand && cc.expand(v, k, model)
-          if (eYo.isINVALID(vv)) {
-            eYo.throw(`Bad model : unexpected ${k} -> ${v}, at ${cc.path}`)
-          } else if (vv) {
-            v = model[k] = vv
-          }  
+        let m = cc.validate(model[k])
+        if (m) {
+          model[k] = m
         }
-        cc.consolidate(v)
       }
     })
+    return ans
   }
 }
 
@@ -234,10 +229,10 @@ eYo.model._p.modelAllow = function (...$) {
 }
 
 /**
- * @name {eYo.model.modelConsolidate}
+ * @name {eYo.model.modelValidate}
  */
-eYo.model._p.modelConsolidate = function (...$) {
-  return this.modelController.consolidate(...$)
+eYo.model._p.modelValidate = function (...$) {
+  return this.modelController.validate(...$)
 }
 
 /**
