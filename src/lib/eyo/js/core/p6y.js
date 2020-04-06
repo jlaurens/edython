@@ -29,32 +29,29 @@ eYo.attr.makeNS(eYo, 'p6y')
  */
 eYo.p6y.makeModelController()
 
-eYo.p6y.modelAllow([
-  'after', 'source',
-  'value', 'lazy', 'reset',
+eYo.p6y.modelAllow(eYo.model.ANY, [
+  'source', 'value', 'lazy', 'reset', 'copy',
   'validate', 'get', 'set', 'get_', 'set_',
   eYo.p6y.BEFORE, eYo.p6y.DURING, eYo.p6y.AFTER,
   'dispose',
 ], {
-  [eYo.model.EXPAND]: (before) => {
+  [eYo.model.VALIDATE]: before => {
     if (!eYo.isD(before)) {
       return {
         value: before
       }
     }
-  }
+  },
+  after: {
+    [eYo.model.VALIDATE]: before => {
+      if (!eYo.isStr(before)) {
+        return eYo.INVALID
+      }
+    },  
+  },
 })
 
 // ANCHOR eYo.p6y.new
-
-/**
- * The model path.
- * @see The `new` method.
- * @param {String} key
- */
-eYo.p6y._p.modelPath = function (key) {
-  return eYo.isStr(key) ? `properties.${key}` : 'properties'
-}
 
 /**
  * For subclassers.

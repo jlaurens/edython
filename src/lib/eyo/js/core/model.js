@@ -164,7 +164,7 @@ eYo.model.Controller.prototype.validate = function (path, model) {
   if (eYo.isDef(model)) {
     path.split('/').forEach(k => {
       if (k) { // avoid ''
-        let cc = c.map.get(k)
+        let cc = c.get(k)
         cc || eYo.throw(`Unreachable path: ${c.path}/${k}`)
         c = cc
       }
@@ -180,7 +180,7 @@ eYo.model.Controller.prototype.validate = function (path, model) {
         console.error(model)
         eYo.throw(`Bad model at ${c.path} (see console)`)
       } else if (v) {
-        var ans = model = v
+        model = v
       }
     }
     Object.keys(model).forEach(k => {
@@ -192,7 +192,7 @@ eYo.model.Controller.prototype.validate = function (path, model) {
         }
       }
     })
-    return ans
+    return model
   }
 }
 

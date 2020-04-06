@@ -22,26 +22,19 @@ describe ('Tests: Property', function () {
   it ('P6y: Basic', function () {
     chai.assert(eYo.p6y)
   })
-  it('P6y: eYo.p6y.modelController', function () {
-    
-  })
-  it('P6y: eYo.model.modelExpand(…)', function () {
+  it('P6y: eYo.model.modelValidate(…)', function () {
     var model = {
-      properties: {
-        drag: {
-          get () {},
-        },
+      foo: {
+        get () {},
       },
     }
-    eYo.model.modelExpand(model)
-    chai.assert(eYo.isF(model.properties.drag.get))
+    model = eYo.p6y.modelValidate(model)
+    chai.assert(eYo.isF(model.foo.get))
     var model = {
-      properties: {
-        drag () {},
-      },
+      foo () {},
     }
-    eYo.model.modelExpand(model)
-    chai.assert(eYo.isF(model.properties.drag.value))
+    eYo.p6y.modelValidate(model)
+    chai.assert(eYo.isF(model.foo.value))
   })
   it('P6y: {}', function () {
     let onr = {}

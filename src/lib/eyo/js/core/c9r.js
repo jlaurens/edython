@@ -356,11 +356,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
      * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
      */
     if (Object.keys(model).length) {
-      let NS = ns||eYo.c9r
-      if (!NS.modelPath) {
-        console.error('BREAK HERE!')
-      }
-      (ns||eYo.c9r).modelExpand((ns||eYo.c9r).modelPath(key), model)
+      ns.modelValidate(model)
       this.modelMerge(model)
     }
     this.makeInit()
@@ -391,11 +387,18 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
    * Make the init method of the associate contructor.
    */
   _p.makeInit = function () {
+    console.error('MAKE INIT')
     let init_m = this.model__.init
     let C9r_s = this.C9r_s
     let init_s = C9r_s && C9r_s.init
     if (init_m) {
-      if (XRegExp.exec(init_m.toString(), eYo.xre.function_builtin)) {
+      console.error(this.model__)
+      if (!eYo.isF(init_m)) {
+        console.error('BREAK HERE!')
+      } else {
+        console.error('OKAY')
+      }
+        if (XRegExp.exec(init_m.toString(), eYo.xre.function_builtin)) {
         if (init_s) {
           var f = function (...args) {
             try {
@@ -431,6 +434,10 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
             }
             this.doPrepare(...args)
             init_s.call(this, ...args)
+            if (!eYo.isF(init_m)) {
+              console.error(init_m)
+              console.error('BREAK HERE!')
+            }
             init_m.call(this, ...args)
             this.doInit(this, ...args)
           } finally {
@@ -923,7 +930,7 @@ eYo.c9r._p.modelBase = function (model) {
  * @param {Object} model
  */
 eYo.c9r._p.modelMakeC9r = function (key, model) {
-  this.modelExpand(this.modelPath(key), model)
+  model = this.modelValidate(key, model)
   let C9r = this.makeC9r('', this.modelBase(model), model)
   model = C9r.eyo.model
   model._C9r = C9r
