@@ -35,13 +35,13 @@ eYo.makeNS('model', {
 /**
  * A model is a tree.
  * The shape of this tree is controlled by an instance of a 
- * eYo.model.Controller.
+ * eYo.model.Validator.
  * No subclassing.
- * @param {eYo.model.Controller} [parent] - the parent if any
+ * @param {eYo.model.Validator} [parent] - the parent if any
  * @param {String} [key] - the relative location of the created controller within the parent, only when there is a parent
  * @param {Object} tree - a standard object
  */
-eYo.model.Controller = function (parent, key) {
+eYo.model.Validator = function (parent, key) {
   this.parent = parent
   this.key = parent ? key || '' : ''
   this.map = new Map()
@@ -54,7 +54,7 @@ eYo.model.Controller = function (parent, key) {
  * @param {String} path - the required path, relative to the receiver
  * @param {Boolean} [create] - whether controllers are created.
  */
-eYo.model.Controller.prototype.get = function (path, create) {
+eYo.model.Validator.prototype.get = function (path, create) {
   var c = this
   for (let k of path.split('/')) {
     if (k && k !== eYo.model.DOT) {
@@ -63,7 +63,7 @@ eYo.model.Controller.prototype.get = function (path, create) {
         cc = c.map.get(eYo.model.ANY)
         if (!cc) {
           if (create) {
-            cc = new eYo.model.Controller(this, k)
+            cc = new eYo.model.Validator(this, k)
             c.map.set(k, cc)
           } else {
             return // ... nothing
@@ -80,7 +80,7 @@ eYo.model.Controller.prototype.get = function (path, create) {
  * Private tree method.
  * arguments is a list of strings, arrays or strings and objects.
  */
-eYo.model.Controller.prototype.modelIsAllowed = function (...$) {
+eYo.model.Validator.prototype.isAllowed = function (...$) {
   var c = this
   $.forEach(key => {
     c = c.get(key)
@@ -93,14 +93,14 @@ eYo.model.Controller.prototype.modelIsAllowed = function (...$) {
 
 /**
  * Private tree method.
- * arguments is a list of strings, arrays or strings, objects or eYo.model.Controller instances.
+ * arguments is a list of strings, arrays or strings, objects or eYo.model.Validator instances.
  */
-eYo.model.Controller.prototype.allow = function (...$) {
+eYo.model.Validator.prototype.allow = function (...$) {
   var c = this
   var pending
   $.forEach(arg => {
     let mc = arg.modelController || arg
-    if (mc && mc instanceof eYo.model.Controller) {
+    if (mc && mc instanceof eYo.model.Validator) {
       pending || eYo.throw(`Cannot allow a model controller with no preceding key`)
       c.map.set(pending, mc)
       c = mc
@@ -136,10 +136,11 @@ eYo.model.Controller.prototype.allow = function (...$) {
 }
 
 /**
- * @name {eYo.model.Controller.prototype.path}
+ * @name {eYo.model.Validator.all}
+ * @name {eYo.model.Validator.path}
  * Private computed property
  */
-Object.defineProperties(eYo.model.Controller.prototype, {
+Object.defineProperties(eYo.model.Validator.prototype, {
   all: eYo.descriptorR(function () {
     var p = this
     let ans = [p]
@@ -159,12 +160,15 @@ Object.defineProperties(eYo.model.Controller.prototype, {
  * @param {Object} model - A model object to validate
  * @return {Object} the possibly validated model.
  */
-eYo.model.Controller.prototype.validate = function (path, model) {
+eYo.model.Validator.prototype.validate = function (path, model) {
   var c = this
   if (eYo.isDef(model)) {
     path.split('/').forEach(k => {
       if (k) { // avoid ''
         let cc = c.get(k)
+        if (!cc) {
+          eYo.throw(`Unreachable path: ${c.path}/${k}`)
+        }
         cc || eYo.throw(`Unreachable path: ${c.path}/${k}`)
         c = cc
       }
@@ -194,119 +198,4 @@ eYo.model.Controller.prototype.validate = function (path, model) {
     })
     return model
   }
-}
-
-/**
- * The global model controller.
- * Each namespace can have its own model controller.
- * Subclass `modelController` for that purpose.
- * @name {eYo.model.makeModelController}
- */
-eYo.model._p.makeModelController = function () {
-  let c = new eYo.model.Controller()
-  Object.defineProperty(
-    this._p,
-    'modelController',
-    eYo.descriptorR(true, function () {
-      return c
-    })
-  )
-}
-
-/**
- * Make the model controller of that name space.
- * Each namespace can have its own model controller.
- * No inheritance between model controllers.
- * @name {eYo.model.modelController}
- */
-eYo.model.makeModelController()
-
-/**
- * @name {eYo.model.allow}
- */
-eYo.model._p.modelAllow = function (...$) {
-  return this.modelController.allow(...$)
-}
-
-/**
- * @name {eYo.model.modelValidate}
- */
-eYo.model._p.modelValidate = function (...$) {
-  return this.modelController.validate(...$)
-}
-
-/**
- * @name{eYo.model.modelIsAllowed}
- * @return {Boolean} Whether the key is authorized with the given path.
- */
-eYo.model._p.modelIsAllowed = function (...$) {
-  return this.modelController.modelIsAllowed(...$)
-}
-
-/**
- * Allow a new set of keys.
- * @param {Map<String,String|Array<String>>} [model]
- */
-eYo.model._p.allowModelPaths = function (model) {
-  return
-}
-
-eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: [
-    'xml',
-  ],
-  xml: [
-    'attr', 'types', 'attribute',
-  ],
-})
-
-eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: 'slots',
-  'slots\\.\\w+': [
-    'order', // INTEGER,
-    'fields', // {},
-    'check', // :  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
-    'promise', // : eYo.t3.expr.value_list,
-    'validateIncog', //  () {},
-    'accept', //  () {},
-    'willConnect', //  () {},
-    'willDisconnect', //  () {},
-    'didConnect', //  () {},
-    'didDisconnect', //  () {},
-    'consolidate', // () {},
-    'wrap', // : TYPE,
-    'xml', // : (() => {} || true) || false||  first expected,
-    'plugged', // : eYo.t3.expr.primary,
-  ],
-  'slots\\.\\w+\.xml': [
-    'accept', //  () => {},
-  ],
-})
-
-eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: 'list',
-  list: [
-    'check',
-    'presep',
-    'postsep',
-    'ary',
-    'mandatory',
-    'unique',
-    'all',
-    'makeUnique'
-  ]
-})
-
-/**
- * Some shortcuts are allowed.
- * @name {eYo.model.shortcut}
- */
-eYo.model._p.shortcut = Object.create(null)
-
-/**
- * Allow new shortcuts.
- * @param {Map<String, Function>} [model] - Functions.
- */
-eYo.model._p.allowModelShortcuts = function (model) {
-  return
 }

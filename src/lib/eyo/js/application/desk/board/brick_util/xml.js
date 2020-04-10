@@ -85,6 +85,15 @@ eYo.provide('xml.group')
 eYo.provide('xml.compatibility')
 eYo.provide('xml.call')
 
+eYo.model.allowModelPaths({
+  [eYo.model.ROOT]: [
+    'xml',
+  ],
+  xml: [
+    'attr', 'types', 'attribute',
+  ],
+})
+
 // Next are used to let the compiler know that we need them
 eYo.forward('brick.functions');
 eYo.forward('brick.stdtypes');

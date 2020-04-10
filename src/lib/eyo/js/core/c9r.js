@@ -13,15 +13,10 @@
 
 eYo.require('xre')
 eYo.require('do')
+eYo.require('dlgt')
 eYo.require('decorate')
 
 eYo.forward('t3')
-
-eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: [
-    'dlgt', 'init', 'deinit', 'dispose',
-  ],
-})
 
 /**
  * Management of constructors and models.
@@ -29,22 +24,34 @@ eYo.model.allowModelPaths({
  * @name {eYo.c9r}
  * @namespace
  */
-eYo.model.makeNS(eYo,'c9r')
+eYo.makeNS('c9r')
+
+// ANCHOR: Utilities
+
+/**
+ * Convenient way to append code to an already existing method.
+ * This allows to define a method in different places.
+ * @param {Object} object - Object
+ * @param {String} key - Looking for or crating |Object[key]|
+ * @param {Function} f - the function we will append
+ */
+eYo.c9r._p.appendToMethod = (object, key, f) => {
+  let old = object[key]
+  if (old && old !== eYo.doNothing) {
+    eYo.ParameterAssert(eYo.isF(old), `Expecting a function ${old}`)
+    object[key] = function () {
+      old.apply(this, arguments)
+      f.apply(this, arguments)
+    }
+  } else {
+    object[key] = f
+  }
+}
 
 // ANCHOR Top level constructor utilities
 {
-  eYo.c9r._p.declareDlgt = function (_p) {
-    let d = eYo.descriptorR(function () {
-      return this.constructor.eyo__
-    })
-    Object.defineProperties(_p, {
-      eyo: d,
-      eyo_: d,
-      eyo__: d,
-    })
-  }
 /**
- * @name{eYo._p.doMakeC9r}
+ * @name{eYo.c9r._p.doMakeC9r}
  * Make a constructor with an 'eyo__' property.
  * Caveat, constructors must have the same arguments.
  * Use a key->value design if you do not want that.
@@ -63,7 +70,7 @@ eYo.model.makeNS(eYo,'c9r')
  * @param {Object|Function} model -  The dictionary of parameters.
  * @return {Function} the created constructor.
  */
-eYo._p.doMakeC9r = function (ns, key, Super, model) {
+eYo.c9r._p.doMakeC9r = function (ns, key, Super, model) {
   !ns || ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw(`doMakeC9r/Bad ns: ${ns}`)
   !key || eYo.isStr(key) || eYo.throw(`doMakeC9r/Bad key: ${key}`)
   !Super || eYo.isC9r(Super) || eYo.throw(`doMakeC9r/Bad Super: ${Super}`)
@@ -81,6 +88,9 @@ eYo._p.doMakeC9r = function (ns, key, Super, model) {
       }
       if (old !== eYo.doNothing) {
         delete this.dispose
+        if (!old) {
+          console.error('BREAK HERE!')
+        }
         old.apply(this, arguments)
       }
     }
@@ -121,10 +131,10 @@ eYo._p.doMakeC9r = function (ns, key, Super, model) {
         [key + '_p']: { value: _p },
       })
     }
-    eYo.c9r.declareDlgt(_p)
+    eYo.model.declareDlgt(_p) // computed properties `eyo`
     _p.doPrepare = _p.doInit = eYo.doNothing
   }
-  let eyo = this.makeDlgt(ns, key, C9r, model)
+  let eyo = eYo.dlgt.new(ns, key, C9r, model)
   eyo === C9r.eyo || eYo.throw('MISSED')
   C9r.makeInheritedC9r = eyo.makeInheritedC9r.bind(eyo)
   return C9r
@@ -196,26 +206,6 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
 }
 // ANCHOR Constructor utilities
 {
-  /**
-   * Convenient way to append code to an already existing method.
-   * This allows to define a method in different places.
-   * @param {Object} object - Object
-   * @param {String} key - Looking for or crating |Object[key]|
-   * @param {Function} f - the function we will append
-   */
-  eYo.c9r.appendToMethod = (object, key, f) => {
-    let old = object[key]
-    if (old && old !== eYo.doNothing) {
-      eYo.ParameterAsert(eYo.isF(old), `Expecting a function ${old}`)
-      object[key] = function () {
-        old.apply(this, arguments)
-        f.apply(this, arguments)
-      }
-    } else {
-      object[key] = f
-    }
-  }
-
   /**
    * All the created constructors, by name. Private storage.
    * @package
@@ -303,377 +293,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
   }
 }
 // ANCHOR eYo._p.makeDlgt
-(() => {
-  /**
-   * register a delegate of a constructor
-   * @param {Object} eyo - the delegate
-   * @param {Function} C9r - the associate constructor
-   */
-  eYo.c9r._p.registerDlgt = function (eyo, C9r) {
-  }
-
-  /**
-   * This is a root class, not to be subclassed except in singletons.
-   * @param {Object} ns - Namespace
-   * @param {String} key - a key...
-   * @param {Function} C9r - the associate constructor
-   * @param {Object} model - the model used for extension
-   */
-  /* AutoDlgt is an unexposed constructor
-    The problem of constructor delegation is te possibility of an infinite loop :
-    object->constructor->eyo__->contructor->eyo__->constructor->eyo__...
-  */
-  let AutoDlgt = function (ns, key, C9r, model) {
-    Object.defineProperties(this, {
-      ns: { value: eYo.isNS(ns) ? ns : eYo.NA },
-      key__: {value: key},
-      C9r__: { value: C9r },
-      model__: { value: model },
-      subC9rs__: { value: new Set() },
-    })
-    C9r.eyo__ = this
-    if (!C9r.eyo) { // true for subclasses of eYo.c9r.Dlgt
-      var d = eYo.descriptorR(function () {
-        return this.eyo__
-      })
-      Object.defineProperties(C9r, {
-        eyo: d,
-        eyo_: d,
-        eyo_p: eYo.descriptorR(function () {
-          return this.eyo__._p
-        }),
-      })
-    }
-  }
-  let Dlgt = eYo.c9r._p.Dlgt = function (ns, key, C9r, model) {
-    AutoDlgt.call(this, ns, key, C9r, model)
-    if (!this.init) {
-      console.error('BREAK HERE!')
-    }
-    this.init()
-    /**
-     * Extend the receiver and its associate constructor with the given model. It is called when the delegate is instantiated.
-     * @param {Object} model - The model contains informations to extend the receiver's associate constructor.
-     */
-    if (Object.keys(model).length) {
-      ns.modelValidate(model)
-      this.modelMerge(model)
-    }
-    this.makeInit()
-    this.makeDispose()
-  } // AutoDlgt will never change and does not need to be suclassed
-  eYo.inherits(Dlgt, AutoDlgt)
-  eYo.c9r.Dlgt_p = eYo.c9r.Dlgt.prototype
-  let _p = AutoDlgt.prototype
-
-  eYo.c9r.declareDlgt(_p)
-  // handling models is deferred to subclasses.
-
-  /**
-   * Initialize the delegate.
-   */
-  _p.init = eYo.doNothing
-
-  /**
-   * Declare the given model for the associate constructor.
-   * The default implementation just calls `methodsMerge`.
-   * 
-   * @param {Object} model - Object, like for |makeC9r|.
-   */
-  _p.modelMerge = function (model) {
-    model.methods && this.methodsMerge(model.methods)
-  }
-  /**
-   * Make the init method of the associate contructor.
-   */
-  _p.makeInit = function () {
-    console.error('MAKE INIT')
-    let init_m = this.model__.init
-    let C9r_s = this.C9r_s
-    let init_s = C9r_s && C9r_s.init
-    if (init_m) {
-      console.error(this.model__)
-      if (!eYo.isF(init_m)) {
-        console.error('BREAK HERE!')
-      } else {
-        console.error('OKAY')
-      }
-        if (XRegExp.exec(init_m.toString(), eYo.xre.function_builtin)) {
-        if (init_s) {
-          var f = function (...args) {
-            try {
-              this.init = eYo.doNothing
-              init_m.call(this, () => {
-                this.doPrepare(...args)
-                init_s.call(this, ...args)              
-                this.doInit(...args)
-              }, ...args)
-            } finally {
-              delete this.dispose
-            }
-          }
-        } else {
-          f = function (...args) {
-            try {
-              this.init = eYo.doNothing
-              this.doPrepare(...args)
-              init_m.call(this, () => {
-                this.doInit(...args)
-              }, ...args)
-            } finally {
-              delete this.dispose
-            }
-          }
-        }
-      } else if (init_s) {
-        f = function (...args) {
-          try {
-            this.init = eYo.doNothing
-            if (!this.doPrepare) {
-              console.error('BREAK HERE!!! !this.doPrepare')
-            }
-            this.doPrepare(...args)
-            init_s.call(this, ...args)
-            if (!eYo.isF(init_m)) {
-              console.error(init_m)
-              console.error('BREAK HERE!')
-            }
-            init_m.call(this, ...args)
-            this.doInit(this, ...args)
-          } finally {
-            delete this.dispose
-          }
-        }
-      } else {
-        f = function (...args) {
-          try {
-            this.init = eYo.doNothing
-            this.doPrepare(...args)
-            init_m.call(this, ...args)
-            this.doInit(this, ...args)
-          } finally {
-            delete this.dispose
-          }
-        }
-      }
-    } else if (init_s) {
-      f = function (...args) {
-        try {
-          this.init = eYo.doNothing
-          if (!this.eyo) {
-            console.error('BREAK HERE! NO EYO')
-          }
-          this.doPrepare(...args)
-          init_s.call(this, ...args)
-          this.doInit(...args) 
-        } finally {
-          delete this.dispose
-        }
-      }
-    } else {
-      f = function (...args) {
-        try {
-          this.init = eYo.doNothing
-          if (!this.eyo) {
-            console.error('BREAK HERE!')
-          }
-          this.doPrepare(...args)
-          this.doInit(...args) 
-        } finally {
-          delete this.dispose
-        }
-      }
-    }
-    this.C9r_p.init = f
-  }
-  /**
-   * Make the dispose method.
-   */
-  _p.makeDispose = function () {
-    let dispose_m = this.model__.dispose
-    let C9r_s = this.C9r_s
-    let dispose_s = C9r_s && C9r_s.dispose
-    if (dispose_m) {
-      if (XRegExp.exec(dispose_m.toString(), eYo.xre.function_builtin)) {
-        if (dispose_s) {
-          var f = function (...args) {
-            try {
-              this.dispose = eYo.doNothing
-              dispose_m.call(this, () => {
-                this.eyo.disposeInstance(this, ...args)
-                dispose_s.call(this, ...args)              
-              }, ...args)
-            } finally {
-              delete this.init
-            }
-          }
-        } else {
-          f = function (...args) {
-            try {
-              this.dispose = eYo.doNothing
-              dispose_m.call(this, () => {
-                this.eyo.disposeInstance(this, ...args)              
-              }, ...args)
-            } finally {
-              delete this.init
-            }
-          }
-        }
-      } else if (dispose_s) {
-        f = function (...args) {
-          try {
-            this.dispose = eYo.doNothing
-            dispose_m.call(this, ...args)
-            this.eyo.disposeInstance(this, ...args)
-            dispose_s.call(this, ...args)
-          } finally {
-            delete this.init
-          }
-        }
-      } else {
-        f = function (...args) {
-          try {
-            this.dispose = eYo.doNothing
-            dispose_m.call(this, ...args)
-            this.eyo.disposeInstance(this, ...args)
-          } finally {
-            delete this.init
-          }
-        }
-      }
-    } else if (dispose_s) {
-      f = function (...args) {
-        try {
-          this.dispose = eYo.doNothing
-          this.eyo.disposeInstance(this, ...args)
-          dispose_s.call(this, ...args)
-        } finally {
-          delete this.init
-        }
-      }
-    } else {
-      f = function (...args) {
-        try {
-          this.dispose = eYo.doNothing
-          this.eyo.disposeInstance(this, ...args)
-        } finally {
-          delete this.init
-        }
-      }
-    }
-    this.C9r_p.dispose = f
-  }
-  /**
-   * Prepare an instance.
-   * Default implementation does nothing.
-   * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
-   */
-  _p.prepareInstance = eYo.doNothing
-
-  /**
-   * Defined by subclassers.
-   * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
-   */
-  _p.initInstance = eYo.doNothing
-
-  /**
-   * Defined by subclassers.
-   */
-  _p.disposeInstance = eYo.doNothing
-
-  // convenient shortcut
-  Object.defineProperties(_p, {
-    _p: eYo.descriptorR(function () {
-      return this.constructor.prototype
-    }),
-  })
-  ;['ns', 'key', 'C9r', 'model'].forEach(k => {
-    let d = eYo.descriptorR(function () {
-      return this[k + '__']
-    })
-    Object.defineProperties(_p, {
-      [k]: d,
-      [k + '_']: d,
-    })
-  })
-  ;['name', 'super', 'genealogy'].forEach(k => {
-    let k_ = k + '_'
-    let k__ = k + '__'
-    Object.defineProperties(_p, {
-      [k_]: eYo.descriptorNORW(k_),
-      [k__]: eYo.descriptorNORW(k__),
-    })
-  })
-  Object.defineProperties(_p, {
-    C9r_p: eYo.descriptorR(function () {
-      return this.C9r__.prototype
-    }),
-    C9r_S: eYo.descriptorR(function () {
-      return this.C9r__.SuperC9r
-    }),
-    C9r_s: eYo.descriptorR(function () {
-      return this.C9r__.SuperC9r_p
-    }),
-    name: eYo.descriptorR(function () {
-      return this.ns && this.key__ && `${this.ns.name}.${this.key__}` || this.key
-    }),
-    super: eYo.descriptorR(function () {
-      var S = this.C9r__.SuperC9r
-      return S && S.eyo__
-    }),
-    super_p: eYo.descriptorR(function () {
-      var s = this.super
-      return s && s.constructor.prototype
-    }),
-    genealogy: eYo.descriptorR(function () {
-      var s = this
-      var ans = []
-      do {
-        ans.push(s.name)
-      } while ((s = s.super))
-      return ans
-    }),
-  })
-
-  /**
-   * Add a subclass
-   * @param {Function} C9r - constructor
-   */
-  _p.addSubC9r = function (C9r) {
-    eYo.isSubclass(C9r, this.C9r) || eYo.throw(`${C9r.eyo.name} is not a subclass of ${this.name}`)
-    if (!this.subC9rs__) {
-      console.error('BREAK!!! !this.subC9rs__')
-    }
-    this.subC9rs__.add(C9r)
-  }
-  
-  /**
-   * Iterator
-   * @param {Function} helper
-   * @param {Boolean} deep - Propagates when true.
-   */
-  _p.forEachSubC9r = function (f, deep) {
-    if (eYo.isF(deep)) {
-      [f, deep] = [deep, f]
-    }
-    this.subC9rs__.forEach(C9r => {
-      f(C9r)
-      deep && C9r.eyo.forEachSubC9r(f, deep)
-    })
-  }
-  
-  /**
-   * Iterator
-   * @param {Function} helper
-   */
-  _p.someSubC9r = function (f) {
-    return this.subC9rs__.someEach(c9r => f(C9r))
-  }
-  
-  // create the delegates
-  Dlgt.eyo__ = new AutoDlgt(eYo.c9r, 'Dlgt', Dlgt, {})
-  AutoDlgt.eyo__ = new AutoDlgt(eYo.c9r, 'Dlgt…', AutoDlgt, {})
-
+{
   /**
    * This decorator turns f with signature
    * function (ns, key, Super, model) {}
@@ -708,28 +328,6 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
   }
 
   /**
-   * Declare methods.
-   * Allows to split the definition of methods into different files,
-   * eventually.
-   * If the method is a function with exactly one argument named 'overriden',
-   * then we override the previously defined method.
-   * The model object is a function decorator.
-   * @param{Map<String, Function>} model - the model
-   */
-  _p.methodsMerge = function (model) {
-    let _p = this.C9r_p
-    Object.keys(model).forEach(k => {
-      let m = model[k]
-      eYo.isF(m) || eYo.throw(`Function expected: ${m}`)
-      if (m.length === 1 && _p[k] && XRegExp.exec(m.toString(), eYo.xre.function_overriden)) {
-        _p[k] = eYo.asF(m.call(this, eYo.toF(_p[k]).bind(this)))
-      } else {
-        _p[k] = m
-      }
-    })
-  }
-
-  /**
    * Convenient shortcut to create subclasses.
    * Forwards to the namespace which must exist!
    * @param {Object} [ns] -  The namespace, possibly `eYo.NA`.
@@ -741,61 +339,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
   _p.makeInheritedC9r = _p.makeInheritedC9rDecorate(function (ns, key, Super, model) {
     return this.doMakeC9r(ns, key, Super, model)
   })
-}) ()
-
-/**
- * Adds a delegate to the given constructor.
- * The delegate is a singleton.
- * @param {Object} [ns] - The namespace owning the constructor
- * @param {String} key - The key associate to the constructor.
- * @param {Function} C9r - the constructor associate to the delegate
- * @param {Object} model - the model object associate to the delegate, used for extension.
- */
-eYo.c9r._p.makeDlgt = function (ns, key, C9r, model) {
-  if (eYo.isStr(ns)) {
-    model && eYo.throw(`Unexpected model (1): ${model}`)
-    ;[ns, key, C9r, model] = [eYo.NA, ns, key, C9r]
-  } else {
-    ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw('Bad namespace')
-  }
-  !key || eYo.isStr(key) || eYo.throw(`Missing key string: ${key} in makeDlgt`)
-  !eYo.isF(C9r) && eYo.throw(`Unexpected C9r: ${C9r} in makeDlgt`)
-  eYo.isC9r(C9r) && eYo.throw(`Already a C9r: ${C9r} in makeDlgt`)
-  let SuperC9r = C9r.SuperC9r
-  let SuperDlgt = SuperC9r && SuperC9r.eyo && SuperC9r.eyo.constructor
-  var better = this.Dlgt
-  if ((better || (better = this.Dlgt_p && this.Dlgt_p.constructor)) && eYo.isSubclass(better, SuperDlgt)) {
-    SuperDlgt = better
-  }
-  let Dlgt = SuperDlgt ? function (ns, key, C9r, model) {
-    SuperDlgt.call(this, ns, key, C9r, model)
-  } : eYo.c9r.Dlgt
-  if (SuperDlgt) {
-    eYo.inherits(Dlgt, SuperDlgt)
-    ns === eYo.NULL_NS || eYo.isNS(ns) || (ns = SuperC9r.eyo.ns)
-  }
-  // initialization of the dlgt
-  // when defined, init must be a self contained function.
-  let dlgt_m = model.dlgt
-  if (eYo.isF(dlgt_m)) {
-    Dlgt.prototype.init = SuperDlgt
-    ? function (...args) {
-      this.init = eYo.doNothing
-      SuperDlgt.prototype.init.call(this, ...args)
-      dlgt_m.call(this, ...args)
-    } : function (...args) {
-      this.init = eYo.doNothing
-      dlgt_m.call(this, ...args)
-    }
-  }
-  // in next function call, all the parameters are required
-  // but some may be eYo.NA
-  Dlgt.eyo__ = new eYo.c9r.Dlgt.eyo__.constructor(ns, 'Dlgt', Dlgt, {})
-  return new Dlgt(ns, key, C9r, model)
 }
-
-// make the Dlgt for the namespaces too
-eYo._p.eyo = eYo.c9r.makeDlgt('NS', eYo.constructor, {})
 
 // ANCHOR Base
 {
@@ -896,21 +440,6 @@ eYo._p.eyo = eYo.c9r.makeDlgt('NS', eYo.constructor, {})
   }
 }
 
-/**
- * Convenient method
- */
-eYo.c9r.Base_p.pureAbstract = () => {
-  eYo.throw(`Missing implementation of a pure abstract method`)
-}
-
-/**
- * The model path.
- * @see The `new` method.
- * @param {String} key
- */
-eYo.c9r._p.modelPath = function (key) {
-  return ''
-}
 
 /**
  * The model Base used to derive a new class.
@@ -1123,7 +652,7 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel = {}) {
   let maker = manyModel.maker || function (object, k, model) {
     return eYo[key].new(object, k, model)
   }
-  let makeShortcuts = manyModel.makeShortcuts || function (object, k, p) {
+  let makeShortcut = manyModel.makeShortcut || function (object, k, p) {
     let k_p = k + (manyModel.suffix || `_${key[0]}`)
     if (object.hasOwnProperty(k_p)) {
       console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
@@ -1167,7 +696,7 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel = {}) {
     for (let [k, model] of this[kModelMap]) {
       let attr = maker(object, k, model)
       if (attr) {
-        makeShortcuts(object, k, attr)
+        makeShortcut(object, k, attr)
         map.set(k, attr)
         attributes.push(attr)
       }
@@ -1226,147 +755,6 @@ eYo.c9r._p.enhancedMany = function (key, path, manyModel = {}) {
   }
 }
 
-// ANCHOR Iterators
-/**
- * @param{String} k - Key
- */
-eYo.c9r._p.enhancedIterate = function (key) {
-  let _p = this.Dlgt_p
-  let kForEach = key + 'ForEach'
-  let kSome = key + 'Some'
-  let kByKey = key + 'ByKey'
-  _p[kForEach] = function (object, $this, f) {
-    if (eYo.isF($this)) {
-      [$this, f] = [f, $this]
-    }
-    let byKey = object[kByKey]
-    byKey && Object.values(byKey).forEach(v => f.call($this, v))
-  }
-  _p[kSome] = function (object, $this, f) {
-    if (eYo.isF($this)) {
-      [$this, f] = [f, $this]
-    }
-    let byKey = object[kByKey]
-    return byKey && Object.values(byKey).some(v => f.call($this, v))
-  }
-}
-
-/**
- * @param{String} type - One of 'p6y', 'data'
- * @param{Boolean} thisIsOwner - whether `this` in the model, is the owner or the local object
- */
-eYo.c9r._p.enhanceO3dValidate = function (_p, type, thisIsOwner) {
-  if (eYo.isStr(_p)) {
-    eYo.isDef(thisIsOwner) && eYo.throw(`Unexpected owner: ${thisIsOwner}`)
-    ;[_p, type, thisIsOwner] = [this.Base_p, _p, type]
-    this._p.hasOwnProperty('Base') || eYo.throw(`Missing own Base to ${this.name}`)
-  }
-  /**
-   * Fallback to validate the value of the attribute;
-   * Default implementation forwards to an eventual `fooValidate` method
-   * of the owner, where `foo` should be replaced by the key of the receiver.
-   * Validation chain of the attribute 'foo' of type 'bar': normal flow
-   * 1) the model's validate method if any
-   * 2) the owner's `barValidate` if any
-   * 3) the owner's `fooBarValidate` if any
-   * Notice that the `barValidate` is shared by all attributes of the same type.
-   * When in builtin flow, only the the model's validate method is called.
-   * The `barValidate` and `fooBarValidate` are passed to the model's validate as formal parameter named `builtin`.
-   * @param {Object} before
-   * @param {Object} after
-   */
-  _p.validate = function (before, after) {
-    var ans = after
-    if (this.owner && eYo.isVALID(ans)) {
-      var f_o = this.owner[type + 'Validate']
-      if (eYo.isF(f_o) && !eYo.isVALID(ans = f_o.call(this.owner, before, ans))) {
-        return ans
-      }
-      if (this.key) {
-        f_o = this.owner[this.key + eYo.do.toTitleCase(type) + 'Validate']
-        if (eYo.isF(f_o) && !eYo.isVALID(ans = f_o.call(this.owner, before, ans))) {
-          return ans
-        }
-      }
-    }
-    return ans
-  }
-  /**
-   * @param{*} before
-   * @param{*} after
-   */
-  this._p.modelHandleValidate = thisIsOwner
-  ? function(_p, key, model) {
-    let validate_m = model.validate
-    let validate_s = _p.eyo.C9r_s.validate
-    if (eYo.isF(validate_m)) {
-      if (validate_m.length > 2) {
-        // builtin/before/after
-        _p.validate = function (before, after) {
-          return validate_m.call(this.owner, (before, after) => {
-            return validate_s.call(this, before, after)
-          }, before, after)
-        }
-      } else if (XRegExp.exec(validate_m.toString(), eYo.xre.function_builtin)) {
-        _p.validate = function (before, after) {
-          return validate_m.call(this.owner, (after) => {
-            return validate_s.call(this, before, after)
-          }, after)
-        }
-      } else {
-        _p.validate = validate_m.length > 1
-        ? function (before, after) {
-          return validate_m.call(this.owner, before, after)
-        } : function (before, after) {
-          return validate_m.call(this.owner, after)
-        }
-      }
-    } else {
-      validate_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${validate_m}`)
-    }
-  } : function(_p, key, model) {
-    let validate_m = model.validate
-    let validate_s = _p.eyo.C9r_s.validate
-    if (eYo.isF(validate_m)) {
-      if (validate_m.length > 2) {
-        // builtin/before/after
-        _p.validate = eYo.decorate.reentrant('validate', function (before, after) {
-          return validate_m.call(this, (before, after) => {
-            return validate_s.call(this, before, after)
-          }, before, after)
-        })
-      } else if (XRegExp.exec(validate_m.toString(), eYo.xre.function_builtin)) {
-        _p.validate = eYo.decorate.reentrant('validate', function (before, after) {
-          return validate_m.call(this, (after) => {
-            return validate_s.call(this, before, after)
-          }, after)
-        })
-      } else {
-        _p.validate = validate_m.length > 1
-        ? function (before, after) {
-          try {
-            this.validate = validate_s
-            return validate_m.call(this, before, after)
-          } finally {
-            delete this.validate
-          }
-        } : function (before, after) {
-          try {
-            this.validate = function (after) {
-              return validate_s.call(this, before, after)
-            }
-            return validate_m.call(this, after)
-          } finally {
-            delete this.validate
-          }
-        }
-      }
-    } else {
-      validate_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${validate_m}`)
-    }
-  }
-}
-
 /**
  * Create a new instance based on the model.
  * @param {Object} model
@@ -1392,3 +780,40 @@ eYo.c9r._p.makeSingleton = function(NS, key, model) {
     return ans
   }))
 }
+
+// ANCHOR: Model
+{
+  let _p = eYo.c9r.__Dlgt_p // __Dlgt.prototype
+
+  /**
+   * Declare the given model for the associate constructor.
+   * The default implementation just calls `methodsMerge`.
+   * 
+   * @param {Object} model - Object, like for |makeC9r|.
+   */
+  _p.modelPrepare = function () {
+    let model = this.model
+    if (Object.keys(model).length) {
+      model = this.modelValidate(key, model)
+      this.modelMerge(model)
+    }
+  }
+
+  // default model validator for every delegate
+  // do nothing validator...
+  _p.modelValidator_ = new eYo.model.Validator()
+  Object.defineProperty(
+    _p,
+    'modelValidator',
+    eYo.descriptorR(function () {
+      return this.modelValidator_
+    })
+  )
+}
+
+// Prepares the constructors.
+eYo.c9r.__Dlgt.eyo__.modelAllow()
+
+eYo.c9r.Base.eyo.modelAllow([
+  'dlgt', 'init', 'deinit', 'dispose', 'methods',
+])

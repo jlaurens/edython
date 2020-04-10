@@ -31,10 +31,16 @@ describe ('Tests: Property', function () {
     model = eYo.p6y.modelValidate(model)
     chai.assert(eYo.isF(model.foo.get))
     var model = {
-      foo () {},
+      foo: 421
     }
-    eYo.p6y.modelValidate(model)
-    chai.assert(eYo.isF(model.foo.value))
+    model = eYo.p6y.modelValidate(model)
+    chai.expect(model.foo.value).equal(421)
+  })
+  it('P6y: eYo.model.modelValidate(key, {})', function () {
+  })
+  it('P6y: eYo.model.modelValidate(key, …)', function () {
+    var model = eYo.p6y.modelValidate('foo', {})
+    chai.expect(model).eql({})
   })
   it('P6y: {}', function () {
     let onr = {}

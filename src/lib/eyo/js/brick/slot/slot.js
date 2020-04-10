@@ -11,6 +11,31 @@
  */
 'use strict'
 
+
+eYo.model.allowModelPaths({
+  [eYo.model.ROOT]: 'slots',
+  'slots\\.\\w+': [
+    'order', // INTEGER,
+    'fields', // {},
+    'check', // :  BRICK_TYPE || [BRICK_TYPE] || () => {}, // last is expected
+    'promise', // : eYo.t3.expr.value_list,
+    'validateIncog', //  () {},
+    'accept', //  () {},
+    'willConnect', //  () {},
+    'willDisconnect', //  () {},
+    'didConnect', //  () {},
+    'didDisconnect', //  () {},
+    'consolidate', // () {},
+    'wrap', // : TYPE,
+    'xml', // : (() => {} || true) || false||  first expected,
+    'plugged', // : eYo.t3.expr.primary,
+  ],
+  'slots\\.\\w+\.xml': [
+    'accept', //  () => {},
+  ],
+})
+
+
 /**
  * @name{eYo.slot}
  * @namespace

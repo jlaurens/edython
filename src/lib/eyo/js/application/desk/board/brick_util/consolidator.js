@@ -12,7 +12,20 @@
 'use strict'
 
 eYo.require('decorate')
-eYo.require('c9r')
+
+eYo.model.allowModelPaths({
+  [eYo.model.ROOT]: 'list',
+  list: [
+    'check',
+    'presep',
+    'postsep',
+    'ary',
+    'mandatory',
+    'unique',
+    'all',
+    'makeUnique'
+  ]
+})
 
 /**
  * @name {eYo.consolidator}

@@ -399,6 +399,7 @@ Miscellaneous:
 --js "eyo/js/core/do.js" \
 --js "eyo/js/core/errcode.js" \
 --js "eyo/js/core/model.js" \
+--js "eyo/js/core/more.js" \
 --js "eyo/js/core/setup.js" \
 --js "eyo/js/core/t3.js" \
 --js "eyo/js/msg/base.js" \
@@ -411,13 +412,14 @@ Miscellaneous:
 --js "eyo/js/core/xre.js" \
 --js "closure-library/closure/goog/dom/safe.js" \
 --js "closure-library/closure/goog/html/uncheckedconversions.js" \
---js "eyo/js/core/c9r.js" \
+--js "eyo/js/core/dlgt.js" \
 --js "closure-library/closure/goog/dom/dom.js" \
+--js "eyo/js/core/c9r.js" \
+--js "closure-library/closure/goog/dom/xml.js" \
+--js "closure-library/closure/goog/style/style.js" \
 --js "eyo/js/core/attr.js" \
 --js "eyo/js/other/db.js" \
 --js "eyo/js/py/py.js" \
---js "closure-library/closure/goog/dom/xml.js" \
---js "closure-library/closure/goog/style/style.js" \
 --js "eyo/js/core/p6y.js" \
 --js "eyo/js/py/bitset.js" \
 --js "eyo/js/py/grammar.js" \

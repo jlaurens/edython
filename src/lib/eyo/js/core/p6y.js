@@ -23,17 +23,151 @@ eYo.forward('xre')
  */
 eYo.attr.makeNS(eYo, 'p6y')
 
+// ANCHOR eYo.p6y.Base_p
+/**
+ * @name{eYo.p6y.Base_p}
+ * Base property constructor.
+ * The bounds between the property and the arguments are immutable.
+ * For edython.
+ * @param {*} owner - The object owning the property.
+ * @param {string} key - name of the property.
+ * @param {Object} model - contains methods and properties.
+ * It is shared by all property controllers belonging to the same kind
+ * of owner. Great care should be taken when editing this model.
+ * @constructor
+ */
+eYo.p6y.makeBase({
+  init (owner, key) {
+    this.stored__ = eYo.NA // this may be useless in some situations
+    Object.defineProperties(this, {
+      value: eYo.descriptorR({
+          lazy () {
+            return `Unexpected setter ${key} in ${owner.eyo.key}'s instance property`
+          },
+        },
+        eYo.p6y.Base_p.valueGetter
+      ),
+    })
+  },
+  dispose (...args) {
+    this.disposeStored_(...args)
+  },
+  methods: {
+    /**
+     * Fallback to validate the value of the property;
+     * Default implementation forwards to an eventual `fooValidate` method
+     * of the owner, where `foo` should be replaced by the key of the receiver.
+     * @param {Object} before
+     * @param {Object} after
+     */
+    validate (before, after) {
+      let f_o = this.key && this.owner_ && this.owner_[this.key + 'Validate']
+      return eYo.isF(f_o) ? f_o.call(this.owner_, before, after) : after
+    },
+    /**
+     * Object disposer.
+     * Manage collections, takes care of ownership.
+     * @param {Object} what
+     */
+    disposeStored__ (what, ...args) {
+      if (what) {
+        if (what.eyo) {
+          what.eyo_p6y === this && eYo.isF(what.dispose) && what.dispose(...args)
+        } else if (eYo.isRA(what)) {
+          try {
+            what.forEach(x => this.disposeStored__(x, ...args))
+          } finally {
+            what.length = 0
+          }
+        } else {
+          Object.keys(what).forEach(k => {
+            if (what.hasOwnProperty(k)) {
+              this.disposeStored__(what[k], ...args)
+            }
+          })
+        }
+      }
+    },
+    /**
+     * Dispose of the stored object, if any.
+     * Private method, overriden to `eYo.doNothing`
+     * for objects that should not be disposed of.
+     * 
+     */
+    disposeStored_ (...args) {
+      let v = this.stored__
+      if (eYo.isDef(v) && v.eyo && v.eyo_p6y === this) {
+        try {
+          this.disposeStored__(v, ...args)
+        } finally {
+          this.stored__ = eYo.NA
+        }
+      }
+    },
+    /**
+     * recycle of the value.
+     * @private
+     */
+    recycle (...args) {
+      let before = this.stored__
+      if (!eYo.isNA(before)) {
+        try {
+          this.validate = eYo.doNothing
+          let dispose = before.eyo_p6y === this
+          this.setValue(eYo.NA)
+          if (dispose) {
+            before.eyo_p6y = eYo.NA
+            before.dispose(...args)
+          }
+        } finally {
+          delete this.validate
+        }
+      }
+    },
+    /**
+     * Set the value of the receiver.
+     * This can be overriden by the model's `set` key.
+     * @param {*} after - the new value after the change.
+     */
+    reset () {
+      this.setValue(this.start())
+    },
+  },
+})
+
+eYo.p6y.Base.eyo.modelValidator.allow(eYo.model.ANY, [
+  'source', 'value', 'lazy', 'reset', 'copy',
+  'validate', 'get', 'set', 'get_', 'set_',
+  eYo.p6y.BEFORE, eYo.p6y.DURING, eYo.p6y.AFTER,
+  'init', 'dispose',
+], {
+  [eYo.model.VALIDATE]: before => {
+    if (!eYo.isD(before)) {
+      return {
+        value: before
+      }
+    }
+  },
+  after: {
+    [eYo.model.VALIDATE]: before => {
+      if (!eYo.isStr(before)) {
+        return eYo.INVALID
+      }
+    },  
+  },
+})
+
 /**
  * The model controller for properties.
  * @name{eYo.p6y.modelController}
  */
-eYo.p6y.makeModelController()
+eYo.p6y.makeModelValidator()
 
-eYo.p6y.modelAllow(eYo.model.ANY, [
+eYo.p6y.modelAllow( eYo.model.ANY, [
   'source', 'value', 'lazy', 'reset', 'copy',
   'validate', 'get', 'set', 'get_', 'set_',
   eYo.p6y.BEFORE, eYo.p6y.DURING, eYo.p6y.AFTER,
-  'dispose',
+  'init', 'dispose',
 ], {
   [eYo.model.VALIDATE]: before => {
     if (!eYo.isD(before)) {
@@ -395,119 +529,7 @@ eYo.p6y._p.modelHandleStored = function (prototype, key, model) {
   }
 }
 
-
-// ANCHOR eYo.p6y.Base_p
-/**
- * @name{eYo.p6y.Base_p}
- * Base property constructor.
- * The bounds between the property and the arguments are immutable.
- * For edython.
- * @param {*} owner - The object owning the property.
- * @param {string} key - name of the property.
- * @param {Object} model - contains methods and properties.
- * It is shared by all property controllers belonging to the same kind
- * of owner. Great care should be taken when editing this model.
- * @constructor
- */
-eYo.p6y.makeBase({
-  init (owner, key) {
-    this.stored__ = eYo.NA // this may be useless in some situations
-    Object.defineProperties(this, {
-      value: eYo.descriptorR({
-          lazy () {
-            return `Unexpected setter ${key} in ${owner.eyo.key}'s instance property`
-          },
-        },
-        eYo.p6y.Base_p.valueGetter
-      ),
-    })
-  },
-  dispose (...args) {
-    this.disposeStored_(...args)
-  },
-  methods: {
-    /**
-     * Fallback to validate the value of the property;
-     * Default implementation forwards to an eventual `fooValidate` method
-     * of the owner, where `foo` should be replaced by the key of the receiver.
-     * @param {Object} before
-     * @param {Object} after
-     */
-    validate (before, after) {
-      let f_o = this.key && this.owner_ && this.owner_[this.key + 'Validate']
-      return eYo.isF(f_o) ? f_o.call(this.owner_, before, after) : after
-    },
-    /**
-     * Object disposer.
-     * Manage collections, takes care of ownership.
-     * @param {Object} what
-     */
-    disposeStored__ (what, ...args) {
-      if (what) {
-        if (what.eyo) {
-          what.eyo_p6y === this && eYo.isF(what.dispose) && what.dispose(...args)
-        } else if (eYo.isRA(what)) {
-          try {
-            what.forEach(x => this.disposeStored__(x, ...args))
-          } finally {
-            what.length = 0
-          }
-        } else {
-          Object.keys(what).forEach(k => {
-            if (what.hasOwnProperty(k)) {
-              this.disposeStored__(what[k], ...args)
-            }
-          })
-        }
-      }
-    },
-    /**
-     * Dispose of the stored object, if any.
-     * Private method, overriden to `eYo.doNothing`
-     * for objects that should not be disposed of.
-     * 
-     */
-    disposeStored_ (...args) {
-      let v = this.stored__
-      if (eYo.isDef(v) && v.eyo && v.eyo_p6y === this) {
-        try {
-          this.disposeStored__(v, ...args)
-        } finally {
-          this.stored__ = eYo.NA
-        }
-      }
-    },
-    /**
-     * recycle of the value.
-     * @private
-     */
-    recycle (...args) {
-      let before = this.stored__
-      if (!eYo.isNA(before)) {
-        try {
-          this.validate = eYo.doNothing
-          let dispose = before.eyo_p6y === this
-          this.setValue(eYo.NA)
-          if (dispose) {
-            before.eyo_p6y = eYo.NA
-            before.dispose(...args)
-          }
-        } finally {
-          delete this.validate
-        }
-      }
-    },
-    /**
-     * Set the value of the receiver.
-     * This can be overriden by the model's `set` key.
-     * @param {*} after - the new value after the change.
-     */
-    reset () {
-      this.setValue(this.start())
-    },
-  },
-})
-
+// ANCHOR: properties
 eYo.p6y.enhanceO3dValidate('property', true)
 
 ;(() => {
@@ -795,7 +817,7 @@ eYo.c9r._p.p6yEnhanced = function (model = {}) {
     ? object.eyo.aliasNew(object, k, ...model.source)
     : eYo.p6y.new(object, k, model)
   })
-  eYo.isF(model.makeShortcuts) || (model.makeShortcuts = function (object, k, p) {
+  eYo.isF(model.makeShortcut) || (model.makeShortcut = function (object, k, p) {
     let k_p = k + '_p'
     if (object.hasOwnProperty(k_p)) {
       console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)

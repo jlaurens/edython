@@ -13,53 +13,6 @@ describe ('POC', function () {
       chai.expect(this.v).equal(what)
     },
   }
-  it ('Dlgt infinite loop', function () {
-    let AutoDlgt = function (ns, key, C9r, model) {
-      Object.defineProperties(this, {
-        ns: { value: eYo.isNS(ns) ? ns : eYo.NA },
-        key__: {value: key},
-        C9r__: { value: C9r },
-        model__: { value: model },
-      })
-      C9r.eyo__ = this
-      let d = eYo.descriptorR(function () {
-        return this.eyo__
-      })
-      Object.defineProperties(C9r, {
-        eyo: d,
-        eyo_: d,
-        eyo_p: eYo.descriptorR(function () {
-          return this.eyo__._p
-        }),
-      })  
-    }
-    let d = eYo.descriptorR(function () {
-      return this.constructor.eyo__
-    })
-    Object.defineProperties(AutoDlgt.prototype, {
-      eyo: d,
-      eyo_: d,
-      eyo__: d,
-    })
-    let Dlgt = function (ns, key, C9r, model) {
-      AutoDlgt.call(this, ns, key, C9r, model)
-    } // DlgtDlgt will never change and does not need to be suclassed
-    eYo.inherits(Dlgt, AutoDlgt)
-    var dlgt = new AutoDlgt(eYo.c9r, 'Dlgt', Dlgt, {})
-    let auto = new AutoDlgt(eYo.c9r, 'Dlgt…', AutoDlgt, {})
-    chai.expect(dlgt).equal(Dlgt.eyo)
-    chai.expect(dlgt).equal(Dlgt.eyo_)
-    chai.expect(dlgt).equal(Dlgt.eyo__)
-    chai.expect(auto).equal(AutoDlgt.eyo)
-    chai.expect(auto).equal(AutoDlgt.eyo_)
-    chai.expect(auto).equal(AutoDlgt.eyo__)
-    chai.expect(auto).equal(AutoDlgt.eyo.eyo)
-    chai.expect(auto).equal(AutoDlgt.eyo_.eyo_)
-    chai.expect(auto).equal(AutoDlgt.eyo__.eyo__)
-    chai.expect(auto).equal(AutoDlgt.eyo.eyo.eyo)
-    chai.expect(auto).equal(AutoDlgt.eyo_.eyo_.eyo_)
-    chai.expect(auto).equal(AutoDlgt.eyo__.eyo__.eyo__)
-  })
   it ('Change constructor', function () {
     let OYE = function () {}
     OYE.prototype.version = 421
@@ -127,6 +80,20 @@ describe ('POC', function () {
 })
 describe ('Tests: C9r', function () {
   this.timeout(10000)
+  flag = {
+    v: 0,
+    reset () {
+      this.v = 0
+    },
+    push (what) {
+      this.v *= 10
+      this.v += what
+    },
+    expect (what) {
+      chai.expect(this.v).equal(what)
+      this.reset()
+    },
+  }
   it ('C9r: Basic', function () {
     chai.assert(eYo.makeNS)
     chai.assert(eYo.c9r)
@@ -144,6 +111,39 @@ describe ('Tests: C9r', function () {
     chai.assert(eYo.c9r.Dlgt.eyo)
     chai.assert(eYo.c9r.Dlgt.eyo.eyo)
     chai.expect(eYo.c9r.Dlgt.eyo.eyo.eyo).equal(eYo.c9r.Dlgt.eyo.eyo)
+  })
+  it ('C9r: appendToMethod', function () {
+    flag.reset()
+    var o = {}
+    eYo.c9r.appendToMethod(o, 'foo1', function (x) {
+      flag.push(x)
+    })
+    o.foo1(1)
+    flag.expect(1)
+    o = {
+      foo1: eYo.doNothing,
+    }
+    eYo.c9r.appendToMethod(o, 'foo1', function (x) {
+      flag.push(x)
+    })
+    o.foo1(1)
+    flag.expect(1)
+    o = {
+      foo1: 421,
+    }
+    chai.expect(() => {
+      eYo.c9r.appendToMethod(o, 'foo1', function (x) {})
+    }).throw()
+    o = {
+      foo (x) {
+        flag.push(x)
+      },
+    }
+    eYo.c9r.appendToMethod(o, 'foo1', function (x) {
+      flag.push(x+1)
+    })
+    o.foo1(1)
+    flag.expect(12)
   })
   it ('C9r: ns inherit', function () {
     let ns = eYo.c9r.makeNS()
@@ -729,39 +729,6 @@ describe ('Tests: C9r', function () {
     ns.A.makeInheritedC9r('AB', {})
     flag.expect(11)
   })
-  it ('C9r: subC9rs...', function () {
-    var ns = eYo.c9r.makeNS()
-    ns.makeBase()
-    var flag = 0
-    ns.Base.eyo_p.do_it = (x) => {
-      flag += 1
-    }
-    eYo.c9r.Base.eyo.forEachSubC9r(C9r => {
-      C9r.eyo.do_it && C9r.eyo.do_it()
-    })
-    chai.expect(flag).equal(1)
-    flag = 0
-    ns.makeC9r('A')
-    ns.makeC9r('B')
-    ns.Base.eyo.forEachSubC9r(C9r => {
-      C9r.eyo.do_it && C9r.eyo.do_it()
-    })
-    chai.expect(flag).equal(2)
-    ns.A.makeInheritedC9r('AA')
-    ns.A.makeInheritedC9r('AB')
-    ns.B.makeInheritedC9r('BA')
-    ns.B.makeInheritedC9r('BB')
-    flag = 0
-    ns.Base.eyo.forEachSubC9r(C9r => {
-      C9r.eyo.do_it && C9r.eyo.do_it()
-    })
-    chai.expect(flag).equal(2)
-    flag = 0
-    ns.Base.eyo.forEachSubC9r(C9r => {
-      C9r.eyo.do_it && C9r.eyo.do_it()
-    }, true)
-    chai.expect(flag).equal(6)
-  })
   it ('C9r: inheritedMethod', function () {
     var ns = eYo.c9r.makeNS()
     ns.makeBase()
@@ -849,601 +816,5 @@ describe ('Tests: C9r', function () {
     ns.makeBase(model)
     new ns.Base()
     flag.expect(1)
-  })
-  describe('c9r: enhancedO3dValidate', function () {
-    it ('enhancedO3dValidate: Basic', function () {
-      let ns = eYo.c9r.makeNS()
-      chai.expect(() => {
-        ns.enhancedO3dValidate('foo')
-      }).throw
-      ns.makeBase()
-      ns.enhanceO3dValidate('foo')
-      chai.assert(ns.Base_p.validate)
-      chai.assert(ns.modelHandleValidate)
-    })
-    it ('enhancedO3dValidate, default', function () {
-      let ns = eYo.c9r.makeNS()
-      ns.makeBase()
-      ns.enhanceO3dValidate('foo')
-      var x = new ns.Base()
-      chai.expect(x.validate(123, 421)).equal(421)
-      x = ns.new()
-      let test = (onr, validated, expected) => {
-        x.owner = onr
-        flag.v = 0
-        chai.expect(x.validate(123, 421)).equal(validated)
-        flag.expect(expected)
-      }
-      test(eYo.NA, 421, 0)
-      test({}, 421, 0)
-      test({
-        fooValidate (before, after) {
-          flag.push(1)
-          return before + after * 1000
-        },
-      }, 421123, 1)
-      x.key = 'my'
-      test({
-        myFooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        },
-      }, 421123, 2)
-      test({
-        fooValidate (before, after) {
-          flag.push(1)
-          return before + after * 1000
-        },
-        myFooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        },
-      }, 421123123, 12)
-      test({
-        fooValidate (before, after) {
-          flag.push(1)
-          return before + after * 1000
-        },
-        myFooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        },
-      }, 421123123, 12)
-      test({
-        fooValidate (before, after) {
-          flag.push(1)
-          return eYo.INVALID
-        },
-        myFooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        },
-      }, eYo.INVALID, 1)
-      test({
-        fooValidate (before, after) {
-          flag.push(1)
-          return before + after * 1000
-        },
-        myFooValidate (before, after) {
-          flag.push(2)
-          return eYo.INVALID
-        },
-      }, eYo.INVALID, 12)
-    })
-    it ('enhancedO3dValidate, (after)', function () {
-      let ns = eYo.c9r.makeNS()
-      ns.makeBase()
-      var C9r = ns.makeC9r('Foo')
-      chai.expect(C9r.eyo.C9r_S).equal(ns.Base)
-      ns.enhanceO3dValidate('foo')
-      ns.modelHandleValidate(C9r.prototype, '', {
-        validate(after) {
-          flag.push(1)
-          return after + this.flag
-        }
-      })
-      x = new C9r()
-      x.flag = 1
-      let test = (onr, validated, expected) => {
-        x.owner = onr
-        flag.v = 0
-        chai.expect(x.validate(123, 421)).equal(validated)
-        flag.expect(expected)
-      }
-      test(eYo.NA, 422, 1)
-      test({}, 422, 1)
-      test({
-        fooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        }
-      }, 422, 1)
-      ns.modelHandleValidate(C9r.prototype, '', {
-        validate(after) {
-          flag.push(1)
-          return this.validate(after + this.flag)
-        }
-      })
-      test({
-        fooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        }
-      }, 422123, 12)
-
-    })
-    it ('enhancedO3dValidate, (before, after)', function () {
-      let ns = eYo.c9r.makeNS()
-      ns.makeBase()
-      var C9r = ns.makeC9r('Foo')
-      chai.expect(C9r.eyo.C9r_S).equal(ns.Base)
-      ns.enhanceO3dValidate('foo')
-      ns.modelHandleValidate(C9r.prototype, '', {
-        validate(before, after) {
-          flag.push(1)
-          return before + this.flag + 1000 * after
-        }
-      })
-      x = new C9r()
-      x.flag = 1
-      let test = (onr, validated, expected) => {
-        x.owner = onr
-        flag.v = 0
-        chai.expect(x.validate(123, 421)).equal(validated)
-        flag.expect(expected)
-      }
-      test(eYo.NA, 421124, 1)
-      test({}, 421124, 1)
-      test({
-        fooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        }
-      }, 421124, 1)
-      ns.modelHandleValidate(C9r.prototype, '', {
-        validate(before, after) {
-          flag.push(1)
-          return this.validate(before, before + this.flag + 1000 * after)
-        }
-      })
-      test({
-        fooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        }
-      }, 421124123, 12)
-    })
-    it ('enhancedO3dValidate (builtin, before, after)', function () {
-      let ns = eYo.c9r.makeNS()
-      ns.makeBase()
-      ns.enhanceO3dValidate('foo')
-      var C9r = ns.makeC9r('Bar')
-      ns.modelHandleValidate(C9r.prototype, '', {
-        validate(builtin, before, after) {
-          flag.push(1)
-          return builtin(before, after)
-        }
-      })
-      x = new C9r()
-      let test = (onr, validated, expected) => {
-        x.owner = onr
-        flag.v = 0
-        chai.expect(x.validate(123, 421)).equal(validated)
-        flag.expect(expected)
-      }
-      test(eYo.NA, 421, 1)
-      test({}, 421, 1)
-      test({}, 421, 1)
-      test({
-        fooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        },
-      }, 421123, 12)
-      x.key = 'my'
-      test({
-        fooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        },
-      }, 421123, 12)
-      test({
-        fooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        },
-        myFooValidate (before, after) {
-          flag.push(3)
-          return before + after * 1000
-        }
-      }, 421123123, 123)
-    })
-    it ('enhancedO3dValidate (builtin, after)', function () {
-      let ns = eYo.c9r.makeNS()
-      ns.makeBase()
-      ns.enhanceO3dValidate('foo')
-      var C9r = ns.makeC9r('Bar')
-      ns.modelHandleValidate(C9r.prototype, '', {
-        validate(builtin, after) {
-          flag.push(1)
-          return builtin(after)
-        }
-      })
-      x = new C9r()
-      let test = (onr, validated, expected) => {
-        x.owner = onr
-        flag.v = 0
-        chai.expect(x.validate(123, 421)).equal(validated)
-        flag.expect(expected)
-      }
-      test(eYo.NA, 421, 1)
-      test({}, 421, 1)
-      test({}, 421, 1)
-      test({
-        fooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        },
-      }, 421123, 12)
-      x.key = 'my'
-      test({
-        fooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        },
-      }, 421123, 12)
-      test({
-        fooValidate (before, after) {
-          flag.push(2)
-          return before + after * 1000
-        },
-        myFooValidate (before, after) {
-          flag.push(3)
-          return before + after * 1000
-        }
-      }, 421123123, 123)
-    })
-    it ('enhancedO3dValidate (owner)', function () {
-      let ns = eYo.c9r.makeNS()
-      chai.expect(() => {
-        ns.enhancedO3dValidate('foo')
-      }).throw
-      ns.makeBase()
-      ns.enhanceO3dValidate('foo', true)
-      var C9r = ns.makeC9r('Bar')
-      ns.modelHandleValidate(C9r.prototype, '', {
-        validate(after) {
-          return after + this.flag // this is the owner
-        }
-      })
-      x = new C9r()
-      x.owner = {flag: 111}
-      chai.expect(x.validate(123, 421)).equal(532)
-    })
-  })
-  describe ('C9r enhanceMany:', function () {
-    it ('Basic', function () {
-      let foo = eYo.c9r.makeNS()
-      foo.makeBase()
-      foo.enhancedMany('foo', 'fooChiMi', {})
-      let _p = foo.Dlgt_p
-      chai.expect(_p.hasOwnProperty('fooModelMap')).true
-      chai.expect(_p.hasOwnProperty('fooMerge')).true
-      chai.expect(_p.hasOwnProperty('fooPrepare')).true
-      chai.expect(_p.hasOwnProperty('fooInit')).true
-      chai.expect(_p.hasOwnProperty('fooDispose')).true
-      chai.expect(_p.hasOwnProperty('fooModelByKey__')).true
-      let f = foo.new()
-      chai.expect(!!f).true
-    })
-    it ('Model: basics', function () {
-      let id = eYo.genUID(eYo.IDENT, 10)
-      let kFooChiMi = `fooChiMi${id}`
-      let foo = eYo.c9r.makeNS()
-      foo.allowModelPaths({
-        [eYo.model.ROOT]: kFooChiMi,
-      })
-      foo.makeBase({
-        fooChiMi: {
-          a: {
-            value: 1,
-          },
-          b: {
-            value: 2,
-          },
-        },
-      })
-      // create a namespace that hopefully will
-      // not conflict with any other namespace
-      let fooChiMi = eYo.c9r.makeNS(eYo, kFooChiMi)
-      flag.reset()
-      fooChiMi.makeBase({
-        init (owner, key, model) {
-          flag.push(5)
-          this.value = model.value
-        }
-      })
-      foo.enhancedMany(kFooChiMi, 'fooChiMi', {})
-      foo.Base.eyo[kFooChiMi + 'ModelMap']
-      foo.new()
-      chai.expect(foo.Base.eyo.model.fooChiMi.a.value).equal(1)
-      flag.expect(0)
-      let _p = foo.Dlgt_p
-      _p.prepareInstance = function (object) {
-        this[kFooChiMi + 'Prepare'](object)
-        this.super.prepareInstance(object)
-      }      
-      let f = foo.new()
-      flag.expect(55)
-      chai.expect(f.a_f.value).equal(1)
-      chai.expect(f.b_f.value).equal(2)
-    })
-    it ('Model: after', function () {
-      let id = eYo.genUID(eYo.IDENT, 10)
-      let kFooChiMi = `fooChiMi${id}`
-      let foo_ab = eYo.c9r.makeNS()
-      let foo_ba = eYo.c9r.makeNS()
-      foo_ab.allowModelPaths({
-        [eYo.model.ROOT]: kFooChiMi,
-      })
-      foo_ab.makeBase({
-        fooChiMi: {
-          a: {
-            value: 1,
-          },
-          b: {
-            after: 'a',
-            value: 2,
-          },
-        },
-      })
-      foo_ba.makeBase({
-        fooChiMi: {
-          a: {
-            after: 'b',
-            value: 1,
-          },
-          b: {
-            value: 2,
-          },
-        },
-      })
-      // create a namespace that hopefully will
-      // not conflict with any other namespace
-      let fooChiMi = eYo.c9r.makeNS(eYo, kFooChiMi)
-      fooChiMi.makeBase({
-        init (owner, key, model) {
-          flag.push(model.value)
-          this.id = eYo.genUID()
-        }
-      })
-      foo_ab.enhancedMany(kFooChiMi, 'fooChiMi', {})
-      foo_ba.enhancedMany(kFooChiMi, 'fooChiMi', {})
-      foo_ab.Dlgt_p.prepareInstance = foo_ba.Dlgt_p.prepareInstance = function (object) {
-        this[kFooChiMi + 'Prepare'](object)
-        this.super.prepareInstance(object)
-      }
-      let map_ab = foo_ab.Base.eyo[kFooChiMi + 'ModelMap']
-      let map_ba = foo_ba.Base.eyo[kFooChiMi + 'ModelMap']
-      chai.expect([...map_ab.keys()]).eql(['a', 'b'])
-      chai.expect([...map_ba.keys()]).eql(['b', 'a'])
-      flag.reset()
-      let f_ab = foo_ab.new()
-      flag.expect(12)
-      flag.reset()
-      let f_ba = foo_ba.new()
-      flag.expect(21)
-      chai.expect(f_ab[kFooChiMi+'Head']).eql(f_ab.a_f)
-      chai.expect(f_ab[kFooChiMi+'Tail']).eql(f_ab.b_f)
-      chai.expect(f_ba[kFooChiMi+'Head']).eql(f_ba.b_f)
-      chai.expect(f_ba[kFooChiMi+'Tail']).eql(f_ba.a_f)
-      chai.expect(f_ab.a_f.next.id).equal(f_ab.b_f.id)
-      chai.expect(eYo.isNA(f_ab.a_f.next.next)).true
-      chai.expect(f_ab.b_f.previous.id).equal(f_ab.a_f.id)
-      chai.expect(eYo.isNA(f_ab.b_f.previous.previous)).true
-      chai.expect(f_ba.b_f.next.id).equal(f_ba.a_f.id)
-      chai.expect(eYo.isNA(f_ba.b_f.next.next)).true
-      chai.expect(f_ba.a_f.previous.id).equal(f_ba.b_f.id)
-      chai.expect(eYo.isNA(f_ba.a_f.previous.previous)).true
-    })
-    it ('Model: maker', function () {
-      let id = eYo.genUID(eYo.IDENT, 10)
-      let kFooChiMi = `fooChiMi${id}`
-      let foo = eYo.c9r.makeNS()
-      foo.allowModelPaths({
-        [eYo.model.ROOT]: kFooChiMi,
-      })
-      foo.makeBase({
-        fooChiMi: {
-          a: {
-            value: 1,
-          },
-          b: {
-            value: 2,
-          },
-        },
-      })
-      foo.enhancedMany(kFooChiMi, 'fooChiMi', {
-        maker (object, k, model) {
-          flag.push(5)
-          return {
-            value: model.value,
-          }
-        }
-      })
-      foo.Dlgt_p.prepareInstance = function (object) {
-        this[kFooChiMi + 'Prepare'](object)
-        this.super.prepareInstance(object)
-      }
-      flag.reset()
-      let f = foo.new()
-      flag.expect(55)
-      chai.expect(f.a_f.value).equal(1)
-      chai.expect(f.b_f.value).equal(2)
-    })
-    it ('Model: makeShortcuts', function () {
-      let id = eYo.genUID(eYo.IDENT, 10)
-      let kFooChiMi = `fooChiMi${id}`
-      let foo = eYo.c9r.makeNS()
-      foo.allowModelPaths({
-        [eYo.model.ROOT]: kFooChiMi,
-      })
-      foo.makeBase({
-        fooChiMi: {
-          a: {
-            value: 1,
-          },
-          b: {
-            value: 2,
-          },
-        },
-      })
-      foo.enhancedMany(kFooChiMi, 'fooChiMi', {
-        maker (object, k, model) {
-          flag.push(5)
-          return {
-            value: model.value,
-          }
-        },
-        makeShortcuts (object, k, p) {
-          flag.push(p.value)
-        },
-      })
-      foo.Dlgt_p.prepareInstance = function (object) {
-        this[kFooChiMi + 'Prepare'](object)
-        this.super.prepareInstance(object)
-      }
-      flag.reset()
-      foo.new()
-      chai.expect([5152, 5251]).contains(flag.v)
-    })
-    it ('Model: inherits', function () {
-      let id = eYo.genUID(eYo.IDENT, 10)
-      let kFoo = `foo${id}`
-      let foo = eYo.c9r.makeNS()
-      foo.allowModelPaths({
-        [eYo.model.ROOT]: kFoo,
-      })
-      foo.makeBase({
-        foo: {
-          a: {
-            value: 1,
-          },
-          b: {
-            after: 'a',
-            value: 2,
-          },
-        },
-      })
-      foo.enhancedMany(kFoo, 'foo', {
-        maker (object, k, model) {
-          flag.push(model.value)
-          return {
-            value: model.value,
-          }
-        },
-      })
-      let map_foo = foo.Base.eyo[kFoo + 'ModelMap']
-      chai.expect([...map_foo.keys()]).eql(['a', 'b'])
-      foo.Dlgt_p.prepareInstance = function (object) {
-        this[kFoo + 'Prepare'](object)
-        let eyo = this.super
-        if (eyo) {
-          try {
-            eyo[kFoo + 'Prepare'] = eYo.doNothing // prevent to recreate the same properties
-            eyo.prepareInstance(object)
-          } finally {
-            delete eyo[kFoo + 'Prepare']
-          }
-        }
-      }
-      flag.reset()
-      foo.new()
-      flag.expect(12)
-      let bar = foo.makeNS()
-      bar.makeBase({
-        foo: {
-          c: {
-            after: 'b',
-            value: 3,
-          },
-          d: {
-            after: 'c',
-            value: 4,
-          },
-        },
-      })
-      let map_bar = bar.Base.eyo[kFoo + 'ModelMap']
-      chai.expect([...map_bar.keys()]).eql(['a', 'b', 'c', 'd'])
-      flag.reset()
-      bar.new()
-      flag.expect(1234)
-    })
-    it ('Model: override', function () {
-      let id = eYo.genUID(eYo.IDENT, 10)
-      let kFoo = `foo${id}`
-      let foo = eYo.c9r.makeNS()
-      foo.allowModelPaths({
-        [eYo.model.ROOT]: kFoo,
-      })
-      foo.makeBase({
-        foo: {
-          a: {
-            value: 1,
-          },
-          b: {
-            after: 'a',
-            value: 2,
-          },
-        },
-      })
-      foo.enhancedMany(kFoo, 'foo', {
-        maker (object, k, model) {
-          flag.push(model.value)
-          return {
-            value: model.value,
-          }
-        },
-      })
-      let map_foo = foo.Base.eyo[kFoo + 'ModelMap']
-      chai.expect([...map_foo.keys()]).eql(['a', 'b'])
-      foo.Dlgt_p.prepareInstance = function (object) {
-        this[kFoo + 'Prepare'](object)
-        let eyo = this.super
-        if (eyo) {
-          try {
-            eyo[kFoo + 'Prepare'] = eYo.doNothing // prevent to recreate the same properties
-            eyo.prepareInstance(object)
-          } finally {
-            delete eyo[kFoo + 'Prepare']
-          }
-        }
-      }
-      flag.reset()
-      foo.new()
-      flag.expect(12)
-      let bar = foo.makeNS()
-      bar.makeBase({
-        foo: {
-          c: {
-            after: 'a',
-            value: 3,
-          },
-          d: {
-            after: 'c',
-            value: 4,
-          },
-          b: {
-            after: 'd',
-            value: 5,
-          },
-        },
-      })
-      let map_bar = bar.Base.eyo[kFoo + 'ModelMap']
-      chai.expect([...map_bar.keys()]).eql(['a', 'c', 'd', 'b'])
-      flag.reset()
-      bar.new()
-      flag.expect(1345)
-    })
   })
 })
