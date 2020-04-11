@@ -135,7 +135,7 @@ eYo.p6y.makeBase({
   },
 })
 
-eYo.p6y.Base.eyo.modelValidator.allow(eYo.model.ANY, [
+eYo.p6y.Base.eyo.modelFormat.allow(eYo.model.ANY, [
   'source', 'value', 'lazy', 'reset', 'copy',
   'validate', 'get', 'set', 'get_', 'set_',
   eYo.p6y.BEFORE, eYo.p6y.DURING, eYo.p6y.AFTER,

@@ -47,13 +47,12 @@ describe ('POC', function () {
     chai.expect(oYe.version).equal(421)
   })
   it ('init', function () {
-    var flag = 123
     var model = {
       foo (builtin) {
         builtin()
       },
       bar (builtinX) {
-        builtiniX || (flag = 321)
+        builtiniX()
       }
     }
     var str = model.foo.toString()
@@ -76,6 +75,49 @@ describe ('POC', function () {
     let b = new F()
     a.foo.push(421)
     chai.expect(b.foo.pop()).equal(421)
+  })
+  it ('Function signature [F][O][B]', function() {
+    // Possible arguments FOB, OB, FB, FO, F, O, B, ...
+    let model_d = {}
+    let Super_d = function () {}
+    let unfinalize_d = 123
+    let f = (Super, model, unfinalize) => {
+      if (eYo.isF(Super)) {
+        if (eYo.isBool(model)) {
+          eYo.isDef(unfinalize) && eYo.throw(`Unexpected argument: ${unfinalize}`)
+          ;[unfinalize, model] = [model, model_d]
+        }
+      } else {
+        eYo.isDef(unfinalize) && eYo.throw(`Unexpected argument: ${unfinalize}`)
+        ;[Super, model, unfinalize] = [Super_d, Super, model]
+        if (eYo.isBool(model)) {
+          eYo.isDef(unfinalize) && eYo.throw(`Unexpected argument: ${unfinalize}`)
+          ;[unfinalize, model] = [model, model_d]
+        }
+        Super = Super_d
+      }
+      if (eYo.isNA(model)) {
+        model = model_d
+      }
+      if (!eYo.isBool(unfinalize)) {
+        unfinalize = unfinalize_d
+      }
+    return [Super, model, unfinalize]
+    }
+    let Super = function () {}
+    let model = {}
+    let unfinalize = true
+    let test = (before, after) => {
+      chai.expect(f(...before)).eql(after)
+    }
+    test([Super, model, unfinalize], [Super, model, unfinalize])
+    test([Super, model], [Super, model, unfinalize_d])
+    test([Super, unfinalize], [Super, model_d, unfinalize])
+    test([model, unfinalize], [Super_d, model, unfinalize])
+    test([Super], [Super, model_d, unfinalize_d])
+    test([unfinalize], [Super_d, model_d, unfinalize])
+    test([model], [Super_d, model, unfinalize_d])
+    test([], [Super_d, model_d, unfinalize_d])
   })
 })
 describe ('Tests: C9r', function () {
@@ -102,15 +144,15 @@ describe ('Tests: C9r', function () {
     chai.assert(C9r)
     chai.assert(C9r.eyo)
     chai.expect(C9r.eyo).not.equal(eYo.c9r.Base.eyo)
-    chai.assert(eYo.isSubclass(C9r.eyo.constructor, eYo.c9r.Dlgt))
+    chai.assert(eYo.isSubclass(C9r.eyo.constructor, eYo.dlgt.Base))
     chai.expect(C9r.eyo.key).equal('')
-    chai.assert(eYo.c9r.Dlgt)
+    chai.assert(eYo.dlgt.Base)
     chai.assert(eYo.c9r.Base)
     chai.assert(eYo.c9r.Dlgt_p)
     chai.assert(eYo.c9r.Base_p)
-    chai.assert(eYo.c9r.Dlgt.eyo)
-    chai.assert(eYo.c9r.Dlgt.eyo.eyo)
-    chai.expect(eYo.c9r.Dlgt.eyo.eyo.eyo).equal(eYo.c9r.Dlgt.eyo.eyo)
+    chai.assert(eYo.dlgt.Base.eyo)
+    chai.assert(eYo.dlgt.Base.eyo.eyo)
+    chai.expect(eYo.dlgt.Base.eyo.eyo.eyo).equal(eYo.dlgt.Base.eyo.eyo)
   })
   it ('C9r: appendToMethod', function () {
     flag.reset()
@@ -135,7 +177,7 @@ describe ('Tests: C9r', function () {
       eYo.c9r.appendToMethod(o, 'foo1', function (x) {})
     }).throw()
     o = {
-      foo (x) {
+      foo1 (x) {
         flag.push(x)
       },
     }
@@ -148,7 +190,6 @@ describe ('Tests: C9r', function () {
   it ('C9r: ns inherit', function () {
     let ns = eYo.c9r.makeNS()
     chai.expect(ns.Base).equal(eYo.c9r.Base)
-    chai.expect(ns.Dlgt).equal(eYo.c9r.Dlgt)
     chai.expect(ns.Base_p).equal(eYo.c9r.Base_p)
   })
   it ('C9r modelMerge', function () {
@@ -156,44 +197,42 @@ describe ('Tests: C9r', function () {
     ns.makeBase()
     var d = new ns.Base()
     chai.assert(!d.foo)
-    var flag = 0
+    flag.reset()
     ns.Base.eyo.modelMerge({
       methods: {
-        foo () {
-          flag = 421 - flag
+        foo (x) {
+          flag.push(x)
         },
       },
     })
     chai.assert(d.foo)
-    d.foo()
-    chai.expect(flag).equal(421)
+    d.foo(1)
+    flag.expect(1)
     d = new ns.Base()
-    d.foo()
-    chai.expect(flag).equal(0)
+    d.foo(2)
+    flag.expect(2)
   })
   it ('C9r modelMerge - overriden', function () {
+    flag.reset()
     var ns = eYo.c9r.makeNS()
     ns.makeBase()
     var d = new ns.Base()
     chai.assert(!d.foo)
-    var flag = 0
     ns.Base.eyo.methodsMerge({
       foo () {
-        flag = 421 - flag
+        flag.push(1)
       },
     })
-    var galf = 0
     ns.Base.eyo.methodsMerge({
       foo (overriden) {
         return function () {
           overriden()
-          galf = 421 - galf
+          flag.push(2)
         }
       },
     })
     new ns.Base().foo()
-    chai.expect(flag).equal(421)
-    chai.expect(galf).equal(421)
+    flag.expect(12)
   })
   describe('C9r: makeNS', function () {
     it ('makeNS(...)', function () {
@@ -260,22 +299,23 @@ describe ('Tests: C9r', function () {
     })
     it ('ns.A.makeInheritedC9r', function () {
       var ns = eYo.c9r.makeNS()
-      var flag = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', null, {
-        init() {
-          flag += 1
+        init(x) {
+          flag.push(x)
         }
       })
       chai.assert(ns.A.makeInheritedC9r)
       ns.A.makeInheritedC9r('AB', {
-        init() {
-          flag += 10
+        init(x) {
+          flag.push(x+1)
         },
       })
       chai.expect(ns.AB.SuperC9r_p).equal(ns.A.prototype)
-      flag = 0
-      new ns.AB()
-      chai.expect(flag).equal(11)
+      ns.A.eyo.finalizeC9r()
+      ns.AB.eyo.finalizeC9r()
+      new ns.AB(1)
+      flag.expect(12)
     })
   })
   describe ('C9r: makeC9r', function () {
@@ -338,20 +378,21 @@ describe ('Tests: C9r', function () {
       chai.expect(()=>{ eYo.c9r.makeC9r(ns, 'A') }).to.throw() // missing model
     })
     it (`eYo.c9r.makeC9r(ns, 'A', Super, model)`, function () {
+      flag.reset()
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
       var Super = ns.Base
       eYo.c9r.makeC9r(ns, 'A', Super, {
         init (x) {
-          flag += x
+          flag.push(x)
         }
       })
       chai.assert(ns.A)
       chai.assert(eYo.isSubclass(ns.A, ns.Base))
       chai.expect(ns.A_s).equal(ns.Base_p)
-      var flag = 0
-      new ns.A(123)
-      chai.expect(flag).equal(123)
+      ns.A.eyo.finalizeC9r()
+      new ns.A(1)
+      flag.expect(1)
     })
     it (`eYo.c9r.makeC9r('_A')`, function () {
       if (!eYo._A) {
@@ -376,176 +417,173 @@ describe ('Tests: C9r', function () {
       chai.expect(ns.A_s).equal(ns.Base_p)
     })
     it ('makeC9r: constructor call', function () {
+      flag.reset()
       var ns = eYo.c9r.makeNS()
-      var flag = 0
       eYo.c9r.makeC9r(ns, 'A', null, {
         init (x) {
-          flag += x
+          flag.push(x)
         }
       })
       chai.assert(!ns.A_s)
+      ns.A.eyo.finalizeC9r()
       var a = new ns.A(1)
-      chai.expect(flag).equal(1)
+      flag.expect(1)
       a = new ns.A(2)
-      chai.expect(flag).equal(3)
+      flag.expect(2)
     })
     it ('makeC9r: super !== null', function () {
       var ns = eYo.c9r.makeNS()
-      var flag_A = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', {
         init (x) {
-          flag_A += x
+          flag.push(x)
         },
       })
       chai.assert(ns.A.eyo instanceof eYo.c9r.Base.eyo.constructor)
+      ns.A.eyo.finalizeC9r()
       new ns.A(1)
-      chai.expect(flag_A).equal(1)
-      var flag_AB = flag_A = 0
+      flag.expect(1)
       ns.makeC9r('AB', ns.A, {
         init (x) {
-          flag_AB += x
+          flag.push(x+1)
         },
       })
       chai.assert(ns.AB)
       chai.assert(ns.AB.eyo instanceof eYo.c9r.Base.eyo.constructor)
-      new ns.AB(1)
-      chai.expect(flag_A).equal(1)
-      chai.expect(flag_AB).equal(1)
+      ns.AB.eyo.finalizeC9r()
+      new ns.AB(2)
+      flag.expect(23)
     })  
     it ('makeC9r: multi super !== null', function () {
       var ns = eYo.c9r.makeNS()
-      var flag_A = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', {
         init (x) {
-          flag_A += x
+          flag.push(x)
         },
       })
-      var flag_B = 0
       eYo.c9r.makeC9r(ns, 'B', {
         init (x) {
-          flag_B += 10 * x
+          flag.push(x+1)
         },
       })
-      var flag_AA = 0
       eYo.c9r.makeC9r(ns, 'AA', ns.A, {
         init (x) {
-          flag_AA += 100 * x
+          flag.push(x+2)
         },
       })
-      var flag_AB = 0
       eYo.c9r.makeC9r(ns, 'AB', ns.A, {
         init (x) {
-          flag_AB += 1000 * x
+          flag.push(x+3)
         },
       })
-      var flag_BA = 0
       eYo.c9r.makeC9r(ns, 'BA', ns.B, {
         init (x) {
-          flag_BA += 10000 * x
+          flag.push(x+4)
         },
       })
-      var flag_BB = 0
       eYo.c9r.makeC9r(ns, 'BB', ns.B, {
         init (x) {
-          flag_BB += 100000 * x
+          flag.push(x+5)
         },
       })
-      flag_A = flag_B = flag_AA = flag_AB = flag_BA = flag_BB = 0
-      var aa = new ns.AA(3)
-      chai.expect(flag_A).equal(3)
-      chai.expect(flag_AA).equal(300)
-      flag_A = flag_B = flag_AA = flag_AB = flag_BA = flag_BB = 0
-      var ab = new ns.AB(4)
-      chai.expect(flag_A).equal(4)
-      chai.expect(flag_AB).equal(4000)
-      flag_A = flag_B = flag_AA = flag_AB = flag_BA = flag_BB = 0
-      var ba = new ns.BA(5)
-      chai.expect(flag_B).equal(50)
-      chai.expect(flag_BA).equal(50000)
-      flag_A = flag_B = flag_AB = flag_BA = flag_BB = 0
-      var bb = new ns.BB(6)
-      chai.expect(flag_B).equal(60)
-      chai.expect(flag_BB).equal(600000)
+      ns.A.eyo.finalizeC9r()
+      ns.B.eyo.finalizeC9r()
+      ns.AA.eyo.finalizeC9r()
+      ns.AB.eyo.finalizeC9r()
+      ns.BA.eyo.finalizeC9r()
+      ns.BB.eyo.finalizeC9r()
+      new ns.AA(1)
+      flag.expect(13)
+      new ns.AB(2)
+      flag.expect(25)
+      new ns.BA(2)
+      flag.expect(36)
+      new ns.BB(3)
+      flag.expect(48)
     })
-    it ('makeC9r: undefined owner xor super', function () {
+    it ('makeC9r: undefined owner or super', function () {
       var ns = eYo.c9r.makeNS()
-      var flag_A = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', null, {
         init (x) {
-          flag_A += x
+          flag.push(x)
         }
       })
-      var flag_B = 0
-      eYo.c9r.makeC9r(ns, 'B', ns.A, {
+      eYo.c9r.makeC9r(ns, 'AB', ns.A, {
         init (x) {
-          flag_B += 10 * x
+          flag.push(x+1)
         },
       })
-      chai.expect(ns.B_s.constructor).equal(ns.A)
-      var ab = new ns.B(1)
-      chai.expect(flag_A).equal(1)
-      chai.expect(flag_B).equal(10)
+      chai.expect(ns.AB_s.constructor).equal(ns.A)
+      ns.A.eyo.finalizeC9r()
+      ns.AB.eyo.finalizeC9r()
+      new ns.AB(1)
+      flag.expect(12)
     })
     it ('makeC9r: init shortcuts 1', function () {
       var ns = eYo.c9r.makeNS()
-      var flag = 0
+      flag.reset()
       var make = (init) => {
         ns = eYo.c9r.makeNS()
         eYo.c9r.makeC9r(ns, 'A', null, {
           init: init
         })
+        ns.A.eyo.finalizeC9r()
         return new ns.A()
       }
       make(function () {
-        flag = 421
+        flag.push(2)
       })
-      chai.expect(flag).equal(421)
+      flag.expect(2)
       make(function (builtin) {
-        flag = 123
+        flag.push(1)
         builtin ()
-        flag += 421
+        flag.push(3)
       })
-      chai.expect(flag).equal(544)
+      flag.expect(13)
     })
     it ('makeC9r: init shortcuts 2', function () {
       var ns = eYo.c9r.makeNS()
-      var flag = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', null, {
-        init () {
-          flag += 123
+        init (x) {
+          flag.push(x)
         }
       })
-      new ns.A()
-      chai.expect(flag).equal(123)
+      ns.A.eyo.finalizeC9r()
+      new ns.A(2)
+      flag.expect(2)
       ns.A.makeInheritedC9r('AB', {
-        init (builtin) {
-          flag *= 1000
-          builtin ()
-          flag += 421
+        init (builtin, x) {
+          flag.push(x)
+          builtin () // no argument at all
+          flag.push(x+2)
         }
       })
-      new ns.AB()
-      chai.expect(flag).equal(123544)
+      ns.AB.eyo.finalizeC9r()
+      new ns.AB(1)
+      flag.expect(113)
     })
     it ('makeC9r: dispose', function () {
       var ns = eYo.c9r.makeNS()
-      var flag = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', null, {
         dispose(x) {
-          flag += x
+          flag.push(x)
         }
       })
       eYo.c9r.makeC9r(ns, 'AB', ns.A, {
         dispose(x) {
-          flag += x * 10
+          flag.push(x+1)
         }
       })
-      flag = 0
+      ns.A.eyo.finalizeC9r()
       new ns.A().dispose(1)
-      chai.expect(flag).equal(1)
-      flag = 0
-      new ns.AB().dispose(1)
-      chai.expect(flag).equal(11)
+      flag.expect(1)
+      ns.AB.eyo.finalizeC9r()
+      new ns.AB().dispose(2)
+      flag.expect(32)
     })
     var testX = (X, Super, Dlgt_p) => {
       chai.assert(X)
@@ -568,88 +606,96 @@ describe ('Tests: C9r', function () {
     it (`eYo.c9r.makeC9r('...', {...})`, function () {
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
-      var flag_A = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', {
         init () {
-          flag_A += 1
+          flag.push(1)
         }
       })
+      ns.A.eyo.finalizeC9r()
       testX(ns.A, eYo.c9r.Base, eYo.c9r.Dlgt_p)
-      chai.expect(flag_A).equal(1)
+      flag.expect(1)
     })
     it (`eYo.c9r.makeC9r(NS, '...')`, function () {
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
       eYo.c9r.makeC9r(ns, 'A')
+      ns.A.eyo.finalizeC9r()
       testX(ns.A, eYo.c9r.Base, eYo.c9r.Dlgt_p)
     })
     it (`eYo.c9r.makeC9r(ns, '...', {...})`, function () {
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
-      var flag_A = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', {
         init () {
-          flag_A += 1
+          flag.push(1)
         }
       })
+      ns.A.eyo.finalizeC9r()
       testX(ns.A, eYo.c9r.Base, eYo.c9r.Dlgt_p)
-      chai.expect(flag_A).equal(1)
+      flag.expect(1)
     })
     it (`eYo.c9r.makeC9r('...', Super = eYo.c9r.Base)`, function () {
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
       eYo.c9r.makeC9r(ns, 'A', ns.Base)
+      ns.A.eyo.finalizeC9r()
       testX(ns.A, ns.Base, eYo.c9r.Dlgt_p)
     })
     it (`eYo.c9r.makeC9r('...', Super = eYo.c9r.Base, {...})`, function () {
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
-      var flag_A = 0
+      flag.reset()
       ns.makeC9r('A', {
         init () {
-          flag_A += 1
+          flag.push(1)
         }
       })
+      ns.A.eyo.finalizeC9r()
       testX(ns.A, ns.Base, ns.Dlgt_p)
-      chai.expect(flag_A).equal(1)
+      flag.expect(1)
     })
     it (`eYo.c9r.makeC9r(NS, '...', Super = eYo.c9r.Base, {...})`, function () {
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
-      var flag_A = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', eYo.c9r.Base, {
         init () {
-          flag_A += 1
+          flag.push(1)
         }
       })
+      ns.A.eyo.finalizeC9r()
       testX(ns.A, eYo.c9r.Base, eYo.c9r.Dlgt_p)
-      chai.expect(flag_A).equal(1)
+      flag.expect(1)
     })
     it (`eYo.c9r.makeC9r('...', eYo.c9r.Base, {...}?)`, function () {
       var Super = eYo.c9r.Base
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
       eYo.c9r.makeC9r(ns, 'A', Super)
+      ns.A.eyo.finalizeC9r()
       chai.expect(ns.A.eyo.super).equal(Super.eyo)
       testX(ns.A, eYo.c9r.Base, eYo.c9r.Dlgt_p)
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
       chai.expect(ns.Dlgt_p).equal(ns.Dlgt_p)
       testX(ns.Base, eYo.c9r.Base, ns.Dlgt_p)
-      var flag_A = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', ns.Base, {
         init () {
-          flag_A += 1
+          flag.push(1)
         }
       })
+      ns.A.eyo.finalizeC9r()
       testX(ns.A, ns.Base, eYo.c9r.Dlgt_p)
-      chai.expect(flag_A).equal(1)
+      flag.expect(1)
     })
     it (`eYo.c9r.makeC9r('...', Super = eYo.c9r.Base, {...})`, function () {
-      var flag_A = 0
+      flag.reset()
       var A = eYo.c9r.makeC9r('___A', eYo.c9r.Base, {
         init () {
-          flag_A += 1
+          flag.push(1)
         }
       })
       chai.assert(A)
@@ -657,55 +703,56 @@ describe ('Tests: C9r', function () {
       chai.expect(A.eyo.super).equal(eYo.c9r.Base.eyo)
       chai.expect(A.SuperC9r_p).equal(eYo.c9r.Base_p)
       chai.expect(A.SuperC9r_p.constructor).equal(eYo.c9r.Base)
-      chai.expect(() => {
-        new A()
-      }).not.to.throw()
-      chai.expect(flag_A).equal(1)
+      A.eyo.finalizeC9r()
+      new A()
+      flag.expect(1)
     })
     it (`eYo.c9r.makeC9r(NS, '...', Super = eYo.c9r.Base)`, function () {
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
       eYo.c9r.makeC9r(ns, 'A', eYo.c9r.Base)
+      ns.A.eyo.finalizeC9r()
       testX(ns.A, eYo.c9r.Base, eYo.c9r.Dlgt_p)
     })
     it (`eYo.c9r.makeC9r(NS, '...', Super = eYo.c9r.Base, {...})`, function () {
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
-      var flag_A = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', eYo.c9r.Base, {
         init () {
-          flag_A += 1
+          flag.push(1)
         }
       })
+      ns.A.eyo.finalizeC9r()
       testX(ns.A, eYo.c9r.Base)
-      chai.expect(flag_A).equal(1)
+      flag.expect(1)
     })
     it (`?eYo.c9r.makeC9r(NS, '...', Super, Dlgt, {...})`, function () {
       var ns = eYo.c9r.makeNS()
       ns.makeBase()
-      var flag_A = 0
-      var flag_AB = 0
+      flag.reset()
       eYo.c9r.makeC9r(ns, 'A', {
         init () {
-          flag_A += 1
+          flag.push(1)
         }
       })
       eYo.c9r.makeC9r(ns, 'AB', ns.A, {
         init () {
-          flag_AB += 1
+          flag.push(2)
         }
       })
       chai.expect(ns.AB.eyo.super).equal(ns.A.eyo)
       chai.expect(ns.A.eyo.super).equal(eYo.c9r.Base.eyo)
+      ns.A.eyo.finalizeC9r()
+      ns.AB.eyo.finalizeC9r()
       new ns.AB()
-      chai.expect(flag_A).equal(1)
-      chai.expect(flag_AB).equal(1)
+      flag.expect(12)
     })
   })
   it ('C9r: eyo setter', function () {
     var ns = eYo.c9r.makeNS()
     eYo.c9r.makeC9r(ns, 'A', null, {})
-    chai.assert(eYo.isSubclass(ns.A.eyo.constructor, eYo.c9r.Dlgt))
+    chai.assert(eYo.isSubclass(ns.A.eyo.constructor, eYo.dlgt.Base))
     chai.expect(() => {
       ns.A.eyo = null
     }).to.throw()
@@ -727,7 +774,7 @@ describe ('Tests: C9r', function () {
     flag.expect(1)
     chai.assert(ns.A.makeInheritedC9r)
     ns.A.makeInheritedC9r('AB', {})
-    flag.expect(11)
+    flag.expect(1)
   })
   it ('C9r: inheritedMethod', function () {
     var ns = eYo.c9r.makeNS()

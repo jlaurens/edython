@@ -35,13 +35,13 @@ eYo.makeNS('model', {
 /**
  * A model is a tree.
  * The shape of this tree is controlled by an instance of a 
- * eYo.model.Validator.
+ * eYo.model.Format.
  * No subclassing.
- * @param {eYo.model.Validator} [parent] - the parent if any
+ * @param {eYo.model.Format} [parent] - the parent if any
  * @param {String} [key] - the relative location of the created controller within the parent, only when there is a parent
  * @param {Object} tree - a standard object
  */
-eYo.model.Validator = function (parent, key) {
+eYo.model.Format = function (parent, key) {
   this.parent = parent
   this.key = parent ? key || '' : ''
   this.map = new Map()
@@ -54,7 +54,7 @@ eYo.model.Validator = function (parent, key) {
  * @param {String} path - the required path, relative to the receiver
  * @param {Boolean} [create] - whether controllers are created.
  */
-eYo.model.Validator.prototype.get = function (path, create) {
+eYo.model.Format.prototype.get = function (path, create) {
   var c = this
   for (let k of path.split('/')) {
     if (k && k !== eYo.model.DOT) {
@@ -63,7 +63,7 @@ eYo.model.Validator.prototype.get = function (path, create) {
         cc = c.map.get(eYo.model.ANY)
         if (!cc) {
           if (create) {
-            cc = new eYo.model.Validator(this, k)
+            cc = new eYo.model.Format(this, k)
             c.map.set(k, cc)
           } else {
             return // ... nothing
@@ -80,7 +80,7 @@ eYo.model.Validator.prototype.get = function (path, create) {
  * Private tree method.
  * arguments is a list of strings, arrays or strings and objects.
  */
-eYo.model.Validator.prototype.isAllowed = function (...$) {
+eYo.model.Format.prototype.isAllowed = function (...$) {
   var c = this
   $.forEach(key => {
     c = c.get(key)
@@ -93,14 +93,14 @@ eYo.model.Validator.prototype.isAllowed = function (...$) {
 
 /**
  * Private tree method.
- * arguments is a list of strings, arrays or strings, objects or eYo.model.Validator instances.
+ * arguments is a list of strings, arrays or strings, objects or eYo.model.Format instances.
  */
-eYo.model.Validator.prototype.allow = function (...$) {
+eYo.model.Format.prototype.allow = function (...$) {
   var c = this
   var pending
   $.forEach(arg => {
     let mc = arg.modelController || arg
-    if (mc && mc instanceof eYo.model.Validator) {
+    if (mc && mc instanceof eYo.model.Format) {
       pending || eYo.throw(`Cannot allow a model controller with no preceding key`)
       c.map.set(pending, mc)
       c = mc
@@ -136,11 +136,11 @@ eYo.model.Validator.prototype.allow = function (...$) {
 }
 
 /**
- * @name {eYo.model.Validator.all}
- * @name {eYo.model.Validator.path}
+ * @name {eYo.model.Format.all}
+ * @name {eYo.model.Format.path}
  * Private computed property
  */
-Object.defineProperties(eYo.model.Validator.prototype, {
+Object.defineProperties(eYo.model.Format.prototype, {
   all: eYo.descriptorR(function () {
     var p = this
     let ans = [p]
@@ -160,7 +160,7 @@ Object.defineProperties(eYo.model.Validator.prototype, {
  * @param {Object} model - A model object to validate
  * @return {Object} the possibly validated model.
  */
-eYo.model.Validator.prototype.validate = function (path, model) {
+eYo.model.Format.prototype.validate = function (path, model) {
   var c = this
   if (eYo.isDef(model)) {
     path.split('/').forEach(k => {

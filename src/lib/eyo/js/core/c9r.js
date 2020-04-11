@@ -38,7 +38,7 @@ eYo.makeNS('c9r')
 eYo.c9r._p.appendToMethod = (object, key, f) => {
   let old = object[key]
   if (old && old !== eYo.doNothing) {
-    eYo.ParameterAssert(eYo.isF(old), `Expecting a function ${old}`)
+    eYo.isF(old) || eYo.throw(`Expecting a function ${old}`)
     object[key] = function () {
       old.apply(this, arguments)
       f.apply(this, arguments)
@@ -81,16 +81,14 @@ eYo.c9r._p.doMakeC9r = function (ns, key, Super, model) {
     var C9r = function () {
       // Class
       var old = this.init
-      this.init = eYo.doNothing
+      old || eYo.throw(`Unfinalized contructor: ${this.eyo.name}`)
+    this.init = eYo.doNothing
       Super.apply(this, arguments)
       if (!this) {
         console.error('BREAK HERE!')
       }
       if (old !== eYo.doNothing) {
         delete this.dispose
-        if (!old) {
-          console.error('BREAK HERE!')
-        }
         old.apply(this, arguments)
       }
     }
@@ -131,7 +129,7 @@ eYo.c9r._p.doMakeC9r = function (ns, key, Super, model) {
         [key + '_p']: { value: _p },
       })
     }
-    eYo.model.declareDlgt(_p) // computed properties `eyo`
+    eYo.dlgt.declareDlgt(_p) // computed properties `eyo`
     _p.doPrepare = _p.doInit = eYo.doNothing
   }
   let eyo = eYo.dlgt.new(ns, key, C9r, model)
@@ -294,6 +292,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
 }
 // ANCHOR eYo._p.makeDlgt
 {
+  let _p = eYo.dlgt.Base_p
   /**
    * This decorator turns f with signature
    * function (ns, key, Super, model) {}
@@ -334,7 +333,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
    * @param {String} key -  to create `ns[key]`
    * @param {Object} [model] -  Model object
    * @return {?Function} the constructor created or `eYo.NA` when the receiver has no namespace.
-   * @this {eYo.c9r.Dlgt}
+   * @this {eYo.dlgt.Base}
    */
   _p.makeInheritedC9r = _p.makeInheritedC9rDecorate(function (ns, key, Super, model) {
     return this.doMakeC9r(ns, key, Super, model)
@@ -345,15 +344,28 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
 {
   /**
    * Convenient method to create the Base class.
-   * @param {Object} [Super] - the ancestor class
+   * @param {Function} [Super] - the ancestor class
    * @param {Object} [model] - the model
+   * @param {Boolean} [unfinalize] - whether not to finalize the constructor
    */
-  eYo.c9r._p.makeBase = function (Super, model) {
+  eYo.c9r._p.makeBase = function (Super, model, unfinalize) {
     this.hasOwnProperty('Base') && eYo.throw(`${this.name}: Already Base`)
-    if (!eYo.isF(Super) || !Super.eyo) {
-      model && eYo.throw(`Unexpected model: ${model}`)
-      model = eYo.called(Super) || {}
-      Super = this.super && this.super.Base || eYo.NA
+    if (eYo.isF(Super) && Super.eyo) {
+      if (eYo.isBool(model)) {
+        eYo.isDef(unfinalize) && eYo.throw(`Unexpected argument: ${unfinalize}`)
+        ;[unfinalize, model] = [model, {}]
+      }
+    } else {
+      eYo.isDef(unfinalize) && eYo.throw(`Unexpected argument: ${unfinalize}`)
+      ;[Super, model, unfinalize] = [
+        this.super && this.super.Base || eYo.NA,
+        Super,
+        model,
+      ]
+      if (eYo.isBool(model)) {
+        eYo.isDef(unfinalize) && eYo.throw(`Unexpected argument: ${unfinalize}`)
+        ;[unfinalize, model] = [model, eYo.called(Super) || {}]
+      }
     }
     let C9r = this.makeC9r(this, 'Base', Super, model || {})
     let s = this.parent
@@ -361,6 +373,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, key, Super, model) {
       s[eYo.do.toTitleCase(this.key)] = C9r
     }
     this.Dlgt_p = C9r.eyo_p
+    !unfinalize && C9r.eyo.finalizeC9r()
     return C9r
   }
   
@@ -480,9 +493,17 @@ eYo.c9r._p.modelMakeC9r = function (key, model) {
  */
 eYo.c9r._p.new = function (owner, key, model) {
   if (!model) {
-    return new this.Base(owner, key)
+    var C9r = this.Base
+    if (C9r.eyo.shouldFinalizeC9r) {
+      C9r.eyo.finalizeC9r()
+    }
+    return new C9r(owner, key)
   }
-  let C9r = model._C9r || this.modelMakeC9r(key, model)
+  var C9r = model._C9r
+  if (!C9r) {
+    C9r = this.modelMakeC9r(key, model)
+    C9r.eyo.finalizeC9r()
+  }
   let ans = new C9r(owner, key, model)
   model._starters.forEach(f => f(ans))
   return ans
@@ -782,38 +803,9 @@ eYo.c9r._p.makeSingleton = function(NS, key, model) {
 }
 
 // ANCHOR: Model
-{
-  let _p = eYo.c9r.__Dlgt_p // __Dlgt.prototype
-
-  /**
-   * Declare the given model for the associate constructor.
-   * The default implementation just calls `methodsMerge`.
-   * 
-   * @param {Object} model - Object, like for |makeC9r|.
-   */
-  _p.modelPrepare = function () {
-    let model = this.model
-    if (Object.keys(model).length) {
-      model = this.modelValidate(key, model)
-      this.modelMerge(model)
-    }
-  }
-
-  // default model validator for every delegate
-  // do nothing validator...
-  _p.modelValidator_ = new eYo.model.Validator()
-  Object.defineProperty(
-    _p,
-    'modelValidator',
-    eYo.descriptorR(function () {
-      return this.modelValidator_
-    })
-  )
-}
 
 // Prepares the constructors.
-eYo.c9r.__Dlgt.eyo__.modelAllow()
 
-eYo.c9r.Base.eyo.modelAllow([
+eYo.c9r.Base.eyo.finalizeC9r([
   'dlgt', 'init', 'deinit', 'dispose', 'methods',
 ])

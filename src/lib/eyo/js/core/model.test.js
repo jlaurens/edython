@@ -25,7 +25,7 @@ describe ('Tests: Model', function () {
   })
   it ('Model: Basic', function () {
     chai.assert(eYo.model)
-    chai.assert(eYo.model.Validator)
+    chai.assert(eYo.model.Format)
   })
   it ('Model: isModel', function () {
     chai.expect(eYo.isModel({})).true
@@ -34,58 +34,58 @@ describe ('Tests: Model', function () {
     x.model__ = true
     chai.expect(eYo.isModel(x)).true
   })
-  it ('mv.isAllowed(...)', function () {
-    let mv = new eYo.model.Validator()
-    mv.allow({
+  it ('mf.isAllowed(...)', function () {
+    let mf = new eYo.model.Format()
+    mf.allow({
       foo: {
         [eYo.model.ANY]: [
           'after', 'source',
         ],
       },
     })
-    chai.expect(mv.isAllowed('foo')).true
-    chai.expect(mv.isAllowed('', 'foo')).true
-    chai.expect(mv.isAllowed('foo', 'whatsoever')).true
-    chai.expect(mv.isAllowed(`foo/whatsoever`)).true
-    chai.expect(mv.isAllowed(`foo/whatsoever/`)).true
-    chai.expect(mv.isAllowed(`foo/whatsoever/.`)).true
-    chai.expect(mv.isAllowed(`foo//whatsoever`)).true
-    chai.expect(mv.isAllowed(`foo/./whatsoever`)).true
-    chai.expect(mv.isAllowed(`/foo/whatsoever`)).true
-    chai.expect(mv.isAllowed(`./foo/whatsoever`)).true
-    chai.expect(mv.isAllowed('foo/whatsoever', 'after')).true
-    chai.expect(mv.isAllowed('foo', 'whatsoever/after')).true
-    chai.expect(mv.isAllowed(`foo/whatsoever/after`)).true
-    chai.expect(mv.isAllowed(`foo/whatsoever/source`)).true
-    chai.expect(mv.isAllowed(`foo/whatsoever/init`)).false
-    chai.expect(mv.isAllowed(`foo/whatsoever/source/init`)).false
-    mv.allow({
+    chai.expect(mf.isAllowed('foo')).true
+    chai.expect(mf.isAllowed('', 'foo')).true
+    chai.expect(mf.isAllowed('foo', 'whatsoever')).true
+    chai.expect(mf.isAllowed(`foo/whatsoever`)).true
+    chai.expect(mf.isAllowed(`foo/whatsoever/`)).true
+    chai.expect(mf.isAllowed(`foo/whatsoever/.`)).true
+    chai.expect(mf.isAllowed(`foo//whatsoever`)).true
+    chai.expect(mf.isAllowed(`foo/./whatsoever`)).true
+    chai.expect(mf.isAllowed(`/foo/whatsoever`)).true
+    chai.expect(mf.isAllowed(`./foo/whatsoever`)).true
+    chai.expect(mf.isAllowed('foo/whatsoever', 'after')).true
+    chai.expect(mf.isAllowed('foo', 'whatsoever/after')).true
+    chai.expect(mf.isAllowed(`foo/whatsoever/after`)).true
+    chai.expect(mf.isAllowed(`foo/whatsoever/source`)).true
+    chai.expect(mf.isAllowed(`foo/whatsoever/init`)).false
+    chai.expect(mf.isAllowed(`foo/whatsoever/source/init`)).false
+    mf.allow({
       bar: {
         [eYo.model.ANY]: [
           'after', 'source',
         ],
       },
     })
-    chai.expect(mv.isAllowed('bar')).true
-    chai.expect(mv.isAllowed('', 'bar')).true
-    chai.expect(mv.isAllowed('bar', 'whatsoever')).true
-    chai.expect(mv.isAllowed(`bar/whatsoever`)).true
-    chai.expect(mv.isAllowed(`bar/whatsoever/`)).true
-    chai.expect(mv.isAllowed(`bar/whatsoever/.`)).true
-    chai.expect(mv.isAllowed(`bar//whatsoever`)).true
-    chai.expect(mv.isAllowed(`bar/./whatsoever`)).true
-    chai.expect(mv.isAllowed(`/bar/whatsoever`)).true
-    chai.expect(mv.isAllowed(`./bar/whatsoever`)).true
-    chai.expect(mv.isAllowed('bar/whatsoever', 'after')).true
-    chai.expect(mv.isAllowed('bar', 'whatsoever/after')).true
-    chai.expect(mv.isAllowed(`bar/whatsoever/after`)).true
-    chai.expect(mv.isAllowed(`bar/whatsoever/source`)).true
-    chai.expect(mv.isAllowed(`bar/whatsoever/init`)).false
-    chai.expect(mv.isAllowed(`bar/whatsoever/source/init`)).false
+    chai.expect(mf.isAllowed('bar')).true
+    chai.expect(mf.isAllowed('', 'bar')).true
+    chai.expect(mf.isAllowed('bar', 'whatsoever')).true
+    chai.expect(mf.isAllowed(`bar/whatsoever`)).true
+    chai.expect(mf.isAllowed(`bar/whatsoever/`)).true
+    chai.expect(mf.isAllowed(`bar/whatsoever/.`)).true
+    chai.expect(mf.isAllowed(`bar//whatsoever`)).true
+    chai.expect(mf.isAllowed(`bar/./whatsoever`)).true
+    chai.expect(mf.isAllowed(`/bar/whatsoever`)).true
+    chai.expect(mf.isAllowed(`./bar/whatsoever`)).true
+    chai.expect(mf.isAllowed('bar/whatsoever', 'after')).true
+    chai.expect(mf.isAllowed('bar', 'whatsoever/after')).true
+    chai.expect(mf.isAllowed(`bar/whatsoever/after`)).true
+    chai.expect(mf.isAllowed(`bar/whatsoever/source`)).true
+    chai.expect(mf.isAllowed(`bar/whatsoever/init`)).false
+    chai.expect(mf.isAllowed(`bar/whatsoever/source/init`)).false
   })
   it ('modelValidate', function () {
-    let mv = new eYo.model.Validator()
-    mv.allow('foo', {
+    let mf = new eYo.model.Format()
+    mf.allow('foo', {
       [eYo.model.VALIDATE]: (before) => {
         if (!eYo.isD(before)) {
           flag.push(before)
@@ -95,17 +95,17 @@ describe ('Tests: Model', function () {
         }
       },
     })
-    chai.expect(mv.isAllowed('foo')).true
+    chai.expect(mf.isAllowed('foo')).true
     let model = {
       foo: 1,
     }
     flag.reset()
-    mv.validate(model)
+    mf.validate(model)
     flag.expect(1)
     chai.expect(model.foo.value).equal(1)
 
     flag.reset()
-    mv.allow('foo', eYo.model.ANY, {
+    mf.allow('foo', eYo.model.ANY, {
       [eYo.model.VALIDATE]: (before) => {
         if (!eYo.isD(before)) {
           flag.push(before)
@@ -119,44 +119,44 @@ describe ('Tests: Model', function () {
       bar: 2,
     }
     flag.reset()
-    mv.validate(model)
+    mf.validate(model)
     flag.expect(2)
     chai.expect(model.foo.bar.value).equal(2)
   })
   it ('modelValidate (validate)', function () {
     flag.reset()
-    let mv = new eYo.model.Validator()
-    mv.allow('a', {
+    let mf = new eYo.model.Format()
+    mf.allow('a', {
       [eYo.model.VALIDATE]: (model) => {
         flag.push(model)
         return eYo.INVALID
       }
     })
     chai.expect(() => {
-      mv.validate({a: 1})
+      mf.validate({a: 1})
     }).throw()
     flag.expect(1)
     flag.reset()
-    mv.allow('b', {
+    mf.allow('b', {
       [eYo.model.VALIDATE]: (model) => {
         flag.push(model)
       }
     })
-    mv.validate({b: 2})
+    mf.validate({b: 2})
     flag.expect(2)
   })
-  it ('...allow("a", mv_b)', function () {
-    let mv_a = new eYo.model.Validator()
-    let mv_b = new eYo.model.Validator()
-    mv_b.allow('b')
-    chai.expect(mv_b.isAllowed('b')).true
-    chai.expect(mv_b.isAllowed('b/c')).false
-    mv_a.allow('a', mv_b)
-    chai.expect(mv_a.isAllowed('a')).true
-    chai.expect(mv_a.isAllowed('a/b')).true
-    chai.expect(mv_a.isAllowed('a/b/c')).false
-    mv_b.allow('b/c')
-    chai.expect(mv_b.isAllowed('b/c')).true
-    chai.expect(mv_a.isAllowed('a/b/c')).true
+  it ('...allow("a", mf_b)', function () {
+    let mf_a = new eYo.model.Format()
+    let mf_b = new eYo.model.Format()
+    mf_b.allow('b')
+    chai.expect(mf_b.isAllowed('b')).true
+    chai.expect(mf_b.isAllowed('b/c')).false
+    mf_a.allow('a', mf_b)
+    chai.expect(mf_a.isAllowed('a')).true
+    chai.expect(mf_a.isAllowed('a/b')).true
+    chai.expect(mf_a.isAllowed('a/b/c')).false
+    mf_b.allow('b/c')
+    chai.expect(mf_b.isAllowed('b/c')).true
+    chai.expect(mf_a.isAllowed('a/b/c')).true
   })
 })

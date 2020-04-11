@@ -61,7 +61,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
     subC9rs__: { value: new Set() },
   })
   C9r.eyo__ = this
-  if (!C9r.eyo) { // true for subclasses of eYo.c9r.Dlgt
+  if (!C9r.eyo) { // true for subclasses of eYo.dlgt.Base
     var d = eYo.descriptorR(function () {
       return this.eyo__
     })
@@ -140,10 +140,9 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
   /**
    * Make the init method of the associate contructor.
    * Any constructor must have an init method.
-   * @this {eYo.c9r.Dlgt}
+   * @this {eYo.dlgt.Base}
    */
   _p.makeC9rInit = function () {
-    console.error('MAKE INIT')
     let init_m = this.model__.init
     let C9r_s = this.C9r_s
     let init_s = C9r_s && C9r_s.init
@@ -325,16 +324,6 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
   }
 
   /**
-   * Prepare the constructor associated to the receiver.
-   * 
-   * @this {eYo.c9r.Dlgt}
-   */
-  _p.prepareC9r = function () {
-    this.modelPrepare()
-    this.makeC9rInit()
-    this.makeC9rDispose()
-  }
-  /**
    * Prepare an instance.
    * Default implementation does nothing.
    * @param {Object} instance -  instance is an instance of a subclass of the `C9r_` of the receiver
@@ -369,7 +358,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
    * Iterator
    * @param {Function} helper
    * @param {Boolean} deep - Propagates when true.
-   * @this {eYo.c9r.Dlgt}
+   * @this {eYo.dlgt.Base}
    */
   _p.forEachSubC9r = function (f, deep) {
     if (eYo.isF(deep)) {
@@ -384,7 +373,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
   /**
    * Iterator
    * @param {Function} helper
-   * @this {eYo.c9r.Dlgt}
+   * @this {eYo.dlgt.Base}
    */
   _p.someSubC9r = function (f) {
     for (let C9r of this.subC9rs__) {
@@ -458,33 +447,53 @@ eYo.dlgt.declareDlgt(eYo._p)
   let _p = eYo.dlgt.Base_p
   
   /**
-   * Allow some model backbone.
+   * Finalize the associate constructor and allow some model format.
    * This must be called once for any delegate, raises otherwise.
-   * @name {eYo.c9r.Dlgt.modelAllow}
+   * Calls `modelPrepare`, `makeC9rInit` and `makeC9rDispose`.
+   * Raises if the `super` is not already finalized.
+   * This must be done by hand because we do not know
+   * what is the ancestor's model format.
+   * @name {eYo.dlgt.Base.modelAllow}
    */
-  _p.modelAllow = function (...$) {
-    if (this._p.hasOwnProperty('modelValidator_')) {
-      eYo.throw('modelAllow cannot be called twice on the same delegate.')
+  _p.finalizeC9r = function (...$) {
+    let $super = this.super
+    !$super || !$super.shouldFinalizeC9r || eYo.throw(`Parent is not finalized: ${$super.eyo.name}`)
+    if (!this.shouldFinalizeC9r) {
+      eYo.throw('finalizeC9r cannot be called twice on the same delegate.')
     }
-    let mv = this._p.modelValidator_ = new eYo.model.Validator()
-    let ans = mv.allow(...$)
-    this.prepareC9r()
+    let mf = this._p.modelFormat_ = new eYo.model.Format()
+    let ans = mf.allow(...$)
+    this.modelPrepare()
+    this.makeC9rInit()
+    this.makeC9rDispose()
     return ans
   }
-
   /**
-   * @name {eYo.c9r.Dlgt.modelValidate}
+   * Finalize the associate constructor and allow some model format.
+   * This must be called once for any delegate, raises otherwise.
+   * Calls `modelPrepare`, `makeC9rInit` and `makeC9rDispose`.
+   * @name {eYo.dlgt.Base.modelAllow}
    */
-  _p.modelValidate = function (...$) {
-    return this.modelValidator.validate(...$)
+  _p.unfinalizeC9r = function () {
+    if (this._p.hasOwnProperty('modelFormat_')) {
+      delete this._p.modelFormat_
+    }
+    this.forEachSubC9r(C9r => C9r.eyo.unfinalizeC9r())
   }
 
   /**
-   * @name{eYo.c9r.Dlgt.modelIsAllowed}
+   * @name {eYo.dlgt.Base.modelValidate}
+   */
+  _p.modelValidate = function (...$) {
+    return this.modelFormat.validate(...$)
+  }
+
+  /**
+   * @name{eYo.dlgt.Base.modelIsAllowed}
    * @return {Boolean} Whether the key is authorized with the given path.
    */
   _p.modelIsAllowed = function (...$) {
-    return this.modelValidator.isAllowed(...$)
+    return this.modelFormat.isAllowed(...$)
   }
 
   /**
@@ -527,25 +536,34 @@ eYo.dlgt.declareDlgt(eYo._p)
   /**
    * Declare the given model for the associate constructor.
    * The default implementation just calls `modelMerge` after `modelValidate`.
-   * Called by `prepareC9r`.
+   * Called by `finalizeC9r`.
    * 
    * @param {Object} model - Object, like for |makeC9r|.
    */
   _p.modelPrepare = function () {
     let model = this.model
     if (Object.keys(model).length) {
-      model = this.modelValidate(key, model)
+      model = this.modelValidate(model)
       this.modelMerge(model)
     }
   }
+  // default model validator for every delegate
+  // do nothing validator...
+  Object.defineProperties(_p, {
+    modelFormat: eYo.descriptorR(function () {
+      return this.modelFormat_
+    }),
+    shouldFinalizeC9r: eYo.descriptorR(function () {
+      let $super = this.super
+      return $super && $super.shouldFinalizeC9r || !this._p.hasOwnProperty('modelFormat_')
+    }),
+  })
 }
 
 // The delegate of `eYo.dlgt.Base` is an instance of itself.
 new eYo.dlgt.Base(eYo.dlgt, 'Base…', eYo.dlgt.Base, {})
-eYo.dlgt.Base.eyo.makeC9rInit()
-eYo.dlgt.Base.eyo.makeC9rDispose()
 
-eYo.dlgt.Base.eyo.modelAllow()
+eYo.dlgt.Base.eyo.finalizeC9r()
 
 /**
  * This namespace method populates the namespace's base delegate
