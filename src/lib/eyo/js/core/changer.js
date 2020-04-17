@@ -15,7 +15,7 @@
  * @name {eYo.changer}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'changer')
+eYo.o4t.makeNS(eYo, 'changer')
 
 /**
  * Decorate of change count hooks.
@@ -48,11 +48,11 @@ eYo.changer._p.memoize = function (key, do_it) {
 }
 
 /**
- * @name {eYo.changer.Base}
+ * @name {eYo.changer.BaseC9r}
  * @constructor
  * @param{Object} owner
  */
-eYo.changer.makeBase({
+eYo.changer.makeBaseC9r({
   init () {
     this.reset()
   },
@@ -116,8 +116,8 @@ eYo.changer.makeBase({
      */
     begin () {
       ++this.level_
-      let O = this.owner_
-      O.onChangeBegin && O.onChangeBegin()
+      let o = this.owner_
+      o.onChangeBegin && o.onChangeBegin()
     },
     /**
      * Ends a mutation.
@@ -129,8 +129,8 @@ eYo.changer.makeBase({
      */
     end () {
       --this.level_
-      let O = this.owner_
-      O.onChangeEnd && O.onChangeEnd()
+      let o = this.owner_
+      o.onChangeEnd && o.onChangeEnd()
       if (this.level === 0) {
         this.done()
       }
@@ -149,11 +149,11 @@ eYo.changer.makeBase({
      */
     done () {
       ++ this.count_
-      let O = this.owner_
-      if (!O.changeStepFreeze) {
+      let o = this.owner_
+      if (!o.changeStepFreeze) {
         this.step_ = this.count
       }
-      O.onChangeDone && O.onChangeDone(arguments)
+      o.onChangeDone && o.onChangeDone(arguments)
       this.listeners_.forEach(l => l())
     },
     /**

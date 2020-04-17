@@ -39,10 +39,10 @@ eYo.forward('geom.Metrics')
  * The flyout contains the flyout board.
  * There is also a board used to drag bricks around.
  * That makes at least 4 different boards.
- * @param {eYo.view.Desk|eYo.view.Workspace|eYo.section.Base} owner.
+ * @param {eYo.view.Desk|eYo.view.Workspace|eYo.section.BaseC9r} owner.
  * @constructor
  */
-eYo.board.makeBase({
+eYo.board.makeBaseC9r({
   aliases: {
     'owner.workspace': 'workspace',
   },
@@ -62,7 +62,7 @@ eYo.board.makeBase({
     /**
      * List of currently highlighted bricks.  Brick highlighting is often used to
      * visually mark bricks currently being executed.
-     * @type {Array<eYo.brick.Base>}
+     * @type {Array<eYo.brick.BaseC9r>}
      * @private
      */
     highlightedBricks: {
@@ -171,7 +171,7 @@ eYo.board.makeBase({
     /**
      * the top bricks of the board.
      * Returns a copy or the internal array.
-     * @type{Array<eYo.brick.Base>}
+     * @type{Array<eYo.brick.BaseC9r>}
      */
     topBricks: {
       get () {
@@ -180,7 +180,7 @@ eYo.board.makeBase({
     },
     /**
      * the ordered top bricks of the board.
-     * @type{Array<eYo.brick.Base>}
+     * @type{Array<eYo.brick.BaseC9r>}
      */
     orderedTopBricks: {
       get () {
@@ -189,7 +189,7 @@ eYo.board.makeBase({
     },
     /**
      * the main bricks of the board.
-     * @type{Array<eYo.brick.Base>}
+     * @type{Array<eYo.brick.BaseC9r>}
      */
     mainBricks: {
       get () {
@@ -275,7 +275,7 @@ eYo.board.makeC9r('Main', {
   properties: {
     board: {
       value () {
-        return new eYo.board.Base(this, {
+        return new eYo.board.BaseC9r(this, {
           backgroundClass: 'eyo-board-dragger-background'
         })
       },
@@ -288,7 +288,7 @@ eYo.board.makeC9r('Main', {
     /**
      * The change manager.
      * @readonly
-     * @type {eYo.changer.Base}
+     * @type {eYo.changer.BaseC9r}
      */
     change: {
       value () {
@@ -312,7 +312,7 @@ eYo.board.makeC9r('Main', {
      */
     isDragger: {
       get () {
-        return this.owner__ instanceof eYo.board.Base
+        return this.owner__ instanceof eYo.board.BaseC9r
       },
     },
     /**
@@ -427,7 +427,7 @@ eYo.board.makeC9r('Main', {
  * Update the UI according to the scale change.
  * The dimensions and the scroll offset are updated.
  */
-eYo.board.Base_p.didScale = function() {
+eYo.board.BaseC9r_p.didScale = function() {
   console.error('BEFORE', this.metrics)
   this.updateMetrics()
   console.error('AFTER', this.metrics)
@@ -451,7 +451,7 @@ eYo.board.Base_p.didScale = function() {
  * @param {boolean} ordered Sort the list if true.
  * @return {!Array<!eYo.brick>} The top-level brick objects.
  */
-eYo.board.Base_p.getTopBricks = function(ordered) {
+eYo.board.BaseC9r_p.getTopBricks = function(ordered) {
   // Copy the topBricks_ list.
   var bricks = this.topBricks_.slice()
   if (ordered && bricks.length > 1) {
@@ -468,7 +468,7 @@ eYo.board.Base_p.getTopBricks = function(ordered) {
 /**
  * Dispose of all bricks in board.
  */
-eYo.board.Base_p.clear = function() {
+eYo.board.BaseC9r_p.clear = function() {
   this.setResizesEnabled(false)
   this.list_.clear()
   this.setResizesEnabled(true)
@@ -490,9 +490,9 @@ eYo.board.Main_p.clear = function() {
  * @param {string} type - The type form `eYo.t3`.
  * @param {string=} opt_id Optional ID.  Use this ID if provided, otherwise
  *     create a new id.
- * @return {!eYo.brick.Base} The created brick.
+ * @return {!eYo.brick.BaseC9r} The created brick.
  */
-eYo.board.Base_p.newBrick = function (type, opt_id) {
+eYo.board.BaseC9r_p.newBrick = function (type, opt_id) {
   var C9r = eYo.c9r.forType(type)
   eYo.assert(C9r, 'No class for ' + type)
   var b3k = new C9r(this, type, opt_id)
@@ -505,7 +505,7 @@ eYo.board.Base_p.newBrick = function (type, opt_id) {
  * @return {!Function} Function that can be passed to
  *     removeChangeListener.
  */
-eYo.board.Base_p.addChangeListener = function(func) {
+eYo.board.BaseC9r_p.addChangeListener = function(func) {
   this.listeners_.push(func)
   return func
 }
@@ -514,7 +514,7 @@ eYo.board.Base_p.addChangeListener = function(func) {
  * Stop listening for this board's changes.
  * @param {Function} func Function to stop calling.
  */
-eYo.board.Base_p.removeChangeListener = function(func) {
+eYo.board.BaseC9r_p.removeChangeListener = function(func) {
   eYo.do.arrayRemove(this.listeners_, func)
 }
 
@@ -522,9 +522,9 @@ eYo.board.Base_p.removeChangeListener = function(func) {
  * Find the brick on this board with the specified ID.
  * Wrapped bricks have a complex id.
  * @param {string} id ID of brick to find.
- * @return {eYo.brick.Base} The sought after brick or null if not found.
+ * @return {eYo.brick.BaseC9r} The sought after brick or null if not found.
  */
-eYo.board.Base_p.getBrickById = eYo.board.Base_p.getBrickById = function(id) {
+eYo.board.BaseC9r_p.getBrickById = eYo.board.BaseC9r_p.getBrickById = function(id) {
   return this.list_.getBrickById(id)
 }
 
@@ -535,7 +535,7 @@ eYo.board.Base_p.getBrickById = eYo.board.Base_p.getBrickById = function(id) {
  *     whether shadow bricks are counted as filled. Defaults to true.
  * @return {boolean} True if all inputs are filled, false otherwise.
  */
-eYo.board.Base_p.allInputsFilled = function(opt_shadowBricksAreFilled) {
+eYo.board.BaseC9r_p.allInputsFilled = function(opt_shadowBricksAreFilled) {
   if (this.topBricks.some(b3k => !brick.allInputsFilled(opt_shadowBricksAreFilled))) {
     return false
   }
@@ -567,7 +567,7 @@ eYo.board._p.byId = function(id) {
  * @type {boolean}
  * @private
  */
-eYo.board.Base_p.resizesEnabled_ = true
+eYo.board.BaseC9r_p.resizesEnabled_ = true
 
 /**
  * Last known position of the page scroll.
@@ -576,20 +576,20 @@ eYo.board.Base_p.resizesEnabled_ = true
  * @type {!eYo.geom.Point}
  * @private
  */
-eYo.board.Base_p.lastPageScroll_ = null;
+eYo.board.BaseC9r_p.lastPageScroll_ = null;
 
 /**
  * Developers may define this function to add custom menu options to the
  * board's context menu or edit the board-created set of menu options.
  * @param {Array<!Object>} options List of menu options to add to.
  */
-eYo.board.Base_p.configureContextMenu = eYo.NA
+eYo.board.BaseC9r_p.configureContextMenu = eYo.NA
 
 /**
  * Save layout handler data so we can delete it later in dispose.
  * @param {Array<!Array>} handler Data that can be passed to unbindEvent.
  */
-eYo.board.Base_p.setResizeHandlerWrapper = function(handler) {
+eYo.board.BaseC9r_p.setResizeHandlerWrapper = function(handler) {
   this.resizeHandlerWrapper_ = handler;
 }
 
@@ -597,7 +597,7 @@ eYo.board.Base_p.setResizeHandlerWrapper = function(handler) {
  * Update the board metrics according to the desk.
  * NB: No css styling.
  */
-eYo.board.Base_p.updateMetrics = function() {
+eYo.board.BaseC9r_p.updateMetrics = function() {
   this.metrics_.view_.size = this.desk.viewRect.size
   this.resizePort()
   this.flyout_ && this.flyout_.updateMetrics()
@@ -606,7 +606,7 @@ eYo.board.Base_p.updateMetrics = function() {
 /**
  * Hook after a `metrics` change.
  */
-eYo.board.Base_p.metricsDidChange = function() {
+eYo.board.BaseC9r_p.metricsDidChange = function() {
   this.place()
 }
 
@@ -614,7 +614,7 @@ eYo.board.Base_p.metricsDidChange = function() {
  * If enabled, calculate the metrics' content related info.
  * Update UI accordingly.
  */
-eYo.board.Base_p.resizePort = function() {
+eYo.board.BaseC9r_p.resizePort = function() {
   if (!this.resizesEnabled_ || !this.rendered) {
     return
   }
@@ -669,7 +669,7 @@ eYo.board.Base_p.resizePort = function() {
  * requires recalculating dimensions and positions of the
  * chromes. (e.g. window layout).
  */
-eYo.board.Base_p.layout = function() {
+eYo.board.BaseC9r_p.layout = function() {
   this.updateMetrics()
   this.place()
   this.scrollbar && this.scrollbar.layout()
@@ -681,7 +681,7 @@ eYo.board.Base_p.layout = function() {
  * requires recalculating dimensions and positions of the
  * chromes. (e.g. window layout).
  */
-eYo.board.Base_p.place = function() {
+eYo.board.BaseC9r_p.place = function() {
   this.ui_driver_mngr && this.ui_driver_mngr.place(this)
   this.updateScreenCalculations_()
 }
@@ -690,7 +690,7 @@ eYo.board.Base_p.place = function() {
  * Resizes and repositions board chrome if the page has a new
  * scroll position.
  */
-eYo.board.Base_p.updateScreenCalculationsIfScrolled =
+eYo.board.BaseC9r_p.updateScreenCalculationsIfScrolled =
     function() {
   var currScroll = eYo.dom.getDocumentScroll()
   if (!this.lastPageScroll_ || !this.lastPageScroll_.equals(currScroll)) {
@@ -703,12 +703,12 @@ console.warn('NYI')
 /**
  * Update the calculations.
  */
-eYo.board.Base_p.updateScreenCalculations_ = eYo.doNothing
+eYo.board.BaseC9r_p.updateScreenCalculations_ = eYo.doNothing
 
 /**
  * Move the receiver to the new coordinates given by its metrics' scroll.
  */
-eYo.board.Base_p.move = function() {
+eYo.board.BaseC9r_p.move = function() {
   this.dragger && this.dragger.move()
 }
 
@@ -716,7 +716,7 @@ eYo.board.Base_p.move = function() {
  * Move the receiver to new coordinates.
  * @param {eYo.geom.Point} xy Translation.
  */
-eYo.board.Base_p.moveTo = function(xy) {
+eYo.board.BaseC9r_p.moveTo = function(xy) {
   console.log('moveTo', xy)
   this.metrics_.drag = xy
   this.move()
@@ -725,7 +725,7 @@ eYo.board.Base_p.moveTo = function(xy) {
 /**
  * Render all bricks in board.
  */
-eYo.board.Base_p.render = function() {
+eYo.board.BaseC9r_p.render = function() {
   var bricks = this.list.all
   // Render each brick
   var i = bricks.length
@@ -743,7 +743,7 @@ eYo.board.Base_p.render = function() {
  * automatically unhighlight all others.  If true or false, manually
  * highlight/unhighlight the specified brick.
  */
-eYo.board.Base_p.highlightBrick = function(id, opt_state) {
+eYo.board.BaseC9r_p.highlightBrick = function(id, opt_state) {
   if (opt_state === eYo.NA) {
     // Unhighlight all bricks.
     for (var i = 0, brick; brick = this.highlightedBricks_[i]; i++) {
@@ -768,7 +768,7 @@ eYo.board.Base_p.highlightBrick = function(id, opt_state) {
 /**
  * Paste the content of the clipboard onto the board.
  */
-eYo.board.Base_p.paste = function () {
+eYo.board.BaseC9r_p.paste = function () {
   var xml = eYo.clipboard.xml
   if (!eYo.clipboard.xml) {
     return
@@ -862,7 +862,7 @@ eYo.board.Base_p.paste = function () {
  * @return {?number} Null if not over a delete area, or an enum representing
  *     which delete area the event is over.
  */
-eYo.board.Base_p.inDeleteArea = function(motion) {
+eYo.board.BaseC9r_p.inDeleteArea = function(motion) {
   var xy = motion.where
   if (this.deleteRectTrash_ && this.deleteRectTrash_.contains(xy)) {
     return eYo.event.DELETE_AREA_TRASH
@@ -878,14 +878,14 @@ eYo.board.Base_p.inDeleteArea = function(motion) {
  * @param {Event} e Mouse down event.
  * @param {eYo.geom.Point} xy Starting location of object.
  */
-eYo.board.Base_p.eventWhere = function(e) {
+eYo.board.BaseC9r_p.eventWhere = function(e) {
   return this.ui_driver_mngr.eventWhere(this, e)
 }
 
 /**
  * Mark this board's desk main board as the currently focused main board.
  */
-eYo.board.Base_p.markFocused = function() {
+eYo.board.BaseC9r_p.markFocused = function() {
   var board = this.desk.board
   board.ui_driver_mngr.setBrowserFocus(board)
 }
@@ -896,7 +896,7 @@ eYo.board.Base_p.markFocused = function() {
  * @param {number} amount Amount of zooming
  *                        (negative zooms out and positive zooms in).
  */
-eYo.board.Base_p.zoom = function(center, amount) {
+eYo.board.BaseC9r_p.zoom = function(center, amount) {
   var options = this.options.zoom
   console.error(this.options)
   eYo.assert(options, `Forbidden zoom with no zoom options ${this.options}`)
@@ -924,7 +924,7 @@ eYo.board.Base_p.zoom = function(center, amount) {
  * Zooming the bricks centered in the center of view with zooming in or out.
  * @param {number} type Type of zooming (-1 zooming out and 1 zooming in).
  */
-eYo.board.Base_p.zoomCenter = function(type) {
+eYo.board.BaseC9r_p.zoomCenter = function(type) {
   this.zoom(this.metrics.view.center, type)
 }
 
@@ -935,7 +935,7 @@ eYo.board.Base_p.zoomCenter = function(type) {
  * @param {Boolean} horizontally
  * @param {Boolean} increase  true for a scroll up, false otherwise
  */
-eYo.board.Base_p.scrollPage = function(horizontally, increase) {
+eYo.board.BaseC9r_p.scrollPage = function(horizontally, increase) {
   // how many lines are visible actually
   var metrics = this.metrics_
   var drag = metrics.drag
@@ -961,7 +961,7 @@ eYo.board.Base_p.scrollPage = function(horizontally, increase) {
 /**
  * Zoom the bricks to fit in the view rect if possible.
  */
-eYo.board.Base_p.zoomToFit = function() {
+eYo.board.BaseC9r_p.zoomToFit = function() {
   var rect = this.bricksBoundingRect
   var width = rect.width
   if (!width) {
@@ -989,7 +989,7 @@ eYo.board.Base_p.zoomToFit = function() {
 /**
  * Center the board.
  */
-eYo.board.Base_p.scrollCenter = function() {
+eYo.board.BaseC9r_p.scrollCenter = function() {
   this.doRelativeScroll({x: 1 / 2, y: 1 / 2})
 }
   
@@ -998,7 +998,7 @@ eYo.board.Base_p.scrollCenter = function() {
  * @param {string} [id] ID of brick center on.
  * @public
  */
-eYo.board.Base_p.centerOnBrick = function(id) {
+eYo.board.BaseC9r_p.centerOnBrick = function(id) {
   if (!this.scrollbar) {
     console.warn('Tried to scroll a non-scrollable board.');
     return;
@@ -1046,7 +1046,7 @@ eYo.board.doRelativeScroll = function(xyRatio) {
  * Use to avoid resizing during a batch operation, for performance.
  * @param {boolean} enabled Whether resizes should be enabled.
  */
-eYo.board.Base_p.setResizesEnabled = function(enabled) {
+eYo.board.BaseC9r_p.setResizesEnabled = function(enabled) {
   var reenabled = (!this.resizesEnabled_ && enabled)
   this.resizesEnabled_ = enabled
   if (reenabled) {
@@ -1063,14 +1063,14 @@ eYo.board.Base_p.setResizesEnabled = function(enabled) {
  *     scale.
  * @private
  */
-eYo.board.Base_p.fromPixelUnit = function(xy) {
+eYo.board.BaseC9r_p.fromPixelUnit = function(xy) {
   return new eYo.geom.Point(xy).unscale(this.scale)
 }
 
 /**
  *
  */
-eYo.board.Base_p.getRecover = function () {
+eYo.board.BaseC9r_p.getRecover = function () {
   eYo.assert(!this.recover__, 'Collision: this.recover_')
   this.getRecover = function () {
     return this.recover__
@@ -1084,7 +1084,7 @@ eYo.board.Base_p.getRecover = function () {
  * @param {String} str
  * @return {Array<string>} An array containing new brick IDs.
  */
-eYo.board.Base_p.fromDom = function (dom) {
+eYo.board.BaseC9r_p.fromDom = function (dom) {
   return dom &&(eYo.xml.domToBoard(dom, this))
 }
 
@@ -1093,7 +1093,7 @@ eYo.board.Base_p.fromDom = function (dom) {
  * @param {String} str
  * @return {Array<string>} An array containing new brick IDs.
  */
-eYo.board.Base_p.fromString = function (str) {
+eYo.board.BaseC9r_p.fromString = function (str) {
   var parser = new DOMParser()
   var dom = parser.parseFromString(str, 'application/xml')
   return this.fromDom(dom)
@@ -1103,7 +1103,7 @@ eYo.board.Base_p.fromString = function (str) {
  * Convert the board to string.
  * @param {Object} [opt]  See eponym parameter in `eYo.xml.brickToDom`.
  */
-eYo.board.Base_p.toDom = function (opt) {
+eYo.board.BaseC9r_p.toDom = function (opt) {
   return eYo.xml.boardToDom(this, opt)
 }
 
@@ -1111,7 +1111,7 @@ eYo.board.Base_p.toDom = function (opt) {
  * Convert the board to string.
  * @param {Boolean} [opt_noId]
  */
-eYo.board.Base_p.description = function (opt_noId) {
+eYo.board.BaseC9r_p.description = function (opt_noId) {
   let oSerializer = new XMLSerializer()
   return oSerializer.serializeToString(this.toDom())
 }
@@ -1120,7 +1120,7 @@ eYo.board.Base_p.description = function (opt_noId) {
  * Convert the board to UTF8 byte array.
  * @param {Boolean} [opt_noId]
  */
-eYo.board.Base_p.toUTF8ByteArray = function (opt_noId) {
+eYo.board.BaseC9r_p.toUTF8ByteArray = function (opt_noId) {
   var s = '<?xml version="1.0" encoding="utf-8"?>\n' + this.toString(optNoId)
   return goog.crypt.toUTF8ByteArray(s)
 }
@@ -1130,17 +1130,17 @@ eYo.board.Base_p.toUTF8ByteArray = function (opt_noId) {
  * @param {Array} bytes
  * @return {Array<string>} An array containing new brick IDs.
  */
-eYo.board.Base_p.fromUTF8ByteArray = function (bytes) {
+eYo.board.BaseC9r_p.fromUTF8ByteArray = function (bytes) {
   var str = goog.crypt.utf8ByteArrayToString(bytes)
   return str && (this.fromString(str))
 }
 
 /**
  * Add a brick to the board.
- * @param {eYo.brick.Base} brick
+ * @param {eYo.brick.BaseC9r} brick
  * @param {String} [opt_id]
  */
-eYo.board.Base_p.addBrick = function (brick, opt_id, f, ...$) {
+eYo.board.BaseC9r_p.addBrick = function (brick, opt_id, f, ...$) {
   if (!eYo.isStr(opt_id)) {
     $ = [f, ...$]
     [opt_id, f] = [eYo.NA, opt_id]
@@ -1156,11 +1156,11 @@ eYo.board.Base_p.addBrick = function (brick, opt_id, f, ...$) {
 
 /**
  * Remove a brick from the board.
- * @param {eYo.brick.Base} brick
+ * @param {eYo.brick.BaseC9r} brick
  * @param {Function} [f] - to be executed after each brick removal
  * @param {...} [arguments] - Arguments to f, `this` is the receiver.
  */
-eYo.board.Base_p.removeBrick = function (brick, f, ...$) {
+eYo.board.BaseC9r_p.removeBrick = function (brick, f, ...$) {
   this.changer.wrap(() => {
     this.list.remove(brick)
     f && f.call(this, ...$)
@@ -1171,7 +1171,7 @@ eYo.board.Base_p.removeBrick = function (brick, f, ...$) {
  * Tidy up the nodes.
  * @param {Object} [kvargs]  key value arguments
  * IN PROGRESS
-eYo.board.Base_p.tidyUp = function (kvargs) {
+eYo.board.BaseC9r_p.tidyUp = function (kvargs) {
   // x + y < O / x + y > 0
   var x_plus_y = (l, r) => {
     var dx = r.xy.x - l.xy.x
@@ -1268,7 +1268,7 @@ eYo.board.Base_p.tidyUp = function (kvargs) {
  * @param {string} [id] ID of brick center on.
  * @public
  */
-eYo.board.Base_p.scrollBrickTopLeft = function(id) {
+eYo.board.BaseC9r_p.scrollBrickTopLeft = function(id) {
   if (!this.scrollbar) {
     console.warn('Tried to scroll a non-scrollable board.')
     return
@@ -1297,7 +1297,7 @@ eYo.board.Base_p.scrollBrickTopLeft = function(id) {
  * Fire a change event.
  * @param {eYo.event.Abstract} event Event to fire.
  */
-eYo.board.Base_p.eventDidFireChange = function(event) {
+eYo.board.BaseC9r_p.eventDidFireChange = function(event) {
   let task = () => {
     this.listeners_.forEach(f => f(event))
   }
@@ -1308,11 +1308,11 @@ eYo.board.Base_p.eventDidFireChange = function(event) {
   }
 }
 
-eYo.o3d.Base.eyo.aliasesMerge({
+eYo.o3d.BaseC9r.eyo.aliasesMerge({
   'owner.board': 'board',
 })
 
-eYo.board.Base_p.logAllConnections = function (comment) {
+eYo.board.BaseC9r_p.logAllConnections = function (comment) {
   comment = comment || ''
   ;[
     'IN',

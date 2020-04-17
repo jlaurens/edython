@@ -51,16 +51,17 @@ describe ('Tests: Dlgt', function () {
   this.timeout(10000)
   let flag = {
     v: 0,
-    reset () {
-      this.v = 0
+    reset (what) {
+      this.v = what || 0
     },
-    push (what) {
-      this.v *= 10
-      this.v += what
+    push (...$) {
+      $.forEach(what => {
+        what && (this.v = parseInt(this.v.toString() + what.toString()))
+      })
     },
     expect (what) {
       let ans = chai.expect(this.v).equal(what)
-      this.v = 0
+      this.reset()
       return ans
     },
   }
@@ -68,17 +69,22 @@ describe ('Tests: Dlgt', function () {
     chai.assert(eYo.dlgt)
   })
   it ('Dlgt: Base', function () {
-    chai.expect(eYo.dlgt.Base).not.undefined
-    chai.expect(eYo.dlgt.Base.eyo).not.undefined
-    chai.expect(eYo.dlgt.Base.eyo).equal(eYo.dlgt.Base.eyo.eyo)
-    chai.expect(eYo.dlgt.Base.eyo instanceof eYo.dlgt.Base).true
+    chai.expect(eYo.dlgt.BaseC9r).not.undefined
+    chai.expect(eYo.dlgt.BaseC9r.eyo).not.undefined
+    var set = new Set([
+      eYo.dlgt.BaseC9r.eyo,
+      eYo.dlgt.BaseC9r.eyo.eyo,
+      eYo.dlgt.BaseC9r.eyo.eyo.eyo,
+    ])
+    chai.expect(set.size).equal(1)
+    chai.expect(eYo.dlgt.BaseC9r.eyo instanceof eYo.dlgt.BaseC9r).true
   })
   it ('Dlgt: new', function () {
     chai.assert(eYo.dlgt.new)
     let C9r = function () {}
     let dlgt = eYo.dlgt.new('Foo', C9r, {})
     chai.expect(dlgt).not.undefined
-    chai.expect(dlgt.constructor).not.equal(eYo.dlgt.Base)
+    chai.expect(dlgt.constructor).not.equal(eYo.dlgt.BaseC9r)
     chai.expect(C9r.eyo).equal(dlgt)
     chai.expect(C9r).equal(dlgt.C9r)
     chai.expect(C9r.prototype).equal(dlgt.C9r_p)
@@ -102,7 +108,7 @@ describe ('Tests: Dlgt', function () {
     eYo.inherits(C9r, SuperC9r)
     let dlgt = eYo.dlgt.new('Foo', C9r, {})
     chai.expect(dlgt).not.undefined
-    chai.expect(dlgt.constructor).not.equal(eYo.dlgt.Base)
+    chai.expect(dlgt.constructor).not.equal(eYo.dlgt.BaseC9r)
     chai.expect(dlgt.constructor).not.equal(superDlgt)
     chai.expect(dlgt instanceof superDlgt.constructor)
     chai.expect(dlgt.super).equal(superDlgt)
@@ -365,5 +371,27 @@ describe ('Tests: Dlgt', function () {
     chai.expect(o.a_f).equal(o.fooMap.get('a'))
     chai.expect(o.b_f).equal(o.fooMap.get('b'))
     chai.expect(o.c_f).equal(o.fooMap.get('c'))
+  })
+  it (`C9r_(s|p)_(up|down)`, function () {
+    let SuperC9r = function () {}
+    let superDlgt = eYo.dlgt.new('Foo', SuperC9r, {})
+    let C9r = function () {}
+    eYo.inherits(C9r, SuperC9r)
+    let dlgt = eYo.dlgt.new('Chi', C9r, {})
+    let ChildC9r = function () {}
+    eYo.inherits(ChildC9r, C9r)
+    let childDlgt = eYo.dlgt.new('Mi', ChildC9r, {})
+    chai.expect(superDlgt.C9r_s_up).eql([])
+    chai.expect(superDlgt.C9r_s_down).eql([])
+    chai.expect(superDlgt.C9r_p_up).eql([SuperC9r.prototype])
+    chai.expect(superDlgt.C9r_p_down).eql([SuperC9r.prototype])
+    chai.expect(dlgt.C9r_s_up).eql([SuperC9r.prototype])
+    chai.expect(dlgt.C9r_s_down).eql([SuperC9r.prototype])
+    chai.expect(dlgt.C9r_p_up).eql([C9r.prototype, SuperC9r.prototype])
+    chai.expect(dlgt.C9r_p_down).eql([SuperC9r.prototype, C9r.prototype])
+    chai.expect(childDlgt.C9r_s_up).eql([C9r.prototype, SuperC9r.prototype])
+    chai.expect(childDlgt.C9r_s_down).eql([SuperC9r.prototype, C9r.prototype])
+    chai.expect(childDlgt.C9r_p_up).eql([ChildC9r.prototype, C9r.prototype, SuperC9r.prototype])
+    chai.expect(childDlgt.C9r_p_down).eql([SuperC9r.prototype, C9r.prototype, ChildC9r.prototype])
   })
 })

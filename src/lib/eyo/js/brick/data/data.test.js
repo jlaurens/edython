@@ -2,15 +2,18 @@ describe ('Tests: data', function () {
   this.timeout(10000)
   let flag = {
     v: 0,
-    reset () {
-      this.v = 0
+    reset (what) {
+      this.v = what || 0
     },
-    push (what) {
-      this.v *= 10
-      this.v += what
+    push (...$) {
+      $.forEach(what => {
+        what && (this.v = parseInt(this.v.toString() + what.toString()))
+      })
     },
     expect (what) {
-      chai.expect(this.v).equal(what)
+      let ans = chai.expect(this.v).equal(what)
+      this.reset()
+      return ans
     },
   }
   it ('Data: basic', function () {
@@ -30,7 +33,7 @@ describe ('Tests: data', function () {
   })
   it ('eYo.data.handle_validate: #', function () {
     let ns = eYo.c9r.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     // builtin, before, after, no super
     var onr = new (ns.makeC9r(''))()
     eYo.data.handle_validate(Object.getPrototypeOf(onr), 'foo', {
@@ -57,7 +60,7 @@ describe ('Tests: data', function () {
     chai.expect(onr.validate(123, 421)).equal(421)
     // Same with super
     var flag = 0
-    ns.Base_p.validate = function (before, after) {
+    ns.BaseC9r_p.validate = function (before, after) {
       flag = before + 1000 * after
       return after
     }
@@ -97,7 +100,7 @@ describe ('Tests: data', function () {
   })
   it ('eYo.data.handle_validateIncog: #', function () {
     let ns = eYo.c9r.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     // builtin, before, after, no super
     var onr = new (ns.makeC9r(''))()
     eYo.data.handle_validateIncog(Object.getPrototypeOf(onr), 'foo', {
@@ -124,7 +127,7 @@ describe ('Tests: data', function () {
     chai.expect(onr.validateIncog(123, 421)).equal(421)
     // Same with super
     var flag = 0
-    ns.Base_p.validateIncog = function (before, after) {
+    ns.BaseC9r_p.validateIncog = function (before, after) {
       flag = before + 1000 * after
       return after
     }
@@ -165,7 +168,7 @@ describe ('Tests: data', function () {
   it ('eYo.data.handle_synchronize: #', function () {
     var flag = 0
     let ns = eYo.c9r.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     // builtin, after, no super
     var onr = new (ns.makeC9r(''))()
     eYo.data.handle_synchronize(Object.getPrototypeOf(onr), 'foo', {
@@ -188,7 +191,7 @@ describe ('Tests: data', function () {
     chai.expect(flag).equal(421)
     // Same with super
     var flag = 0
-    ns.Base_p.synchronize = function (after) {
+    ns.BaseC9r_p.synchronize = function (after) {
       flag *= 1000
       flag += after
     }
@@ -221,7 +224,7 @@ describe ('Tests: data', function () {
   })
   it ('eYo.data.handle_change:', function () {
     let ns = eYo.c9r.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     // only test with `willChange`.
     var flag
     let test = (model, f) => {
@@ -301,7 +304,7 @@ describe ('Tests: data', function () {
       }
     }, 56)
     // With super
-    ns.Base_p.willChange = function (before, after) {
+    ns.BaseC9r_p.willChange = function (before, after) {
       flag *= 10
       flag += before
       flag *= 10
@@ -380,7 +383,7 @@ describe ('Tests: data', function () {
   it ('eYo.data.handle_load', function () {
     // only willLoad
     let ns = eYo.c9r.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     var flag
     let test = (f, what, expected) => {
       let model = {
@@ -399,7 +402,7 @@ describe ('Tests: data', function () {
   })
   it ('eYo.data.handle_fromField', function () {
     let ns = eYo.c9r.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     var flag
     let test = (f, what, expected) => {
       let model = {
@@ -415,7 +418,7 @@ describe ('Tests: data', function () {
     test(function (what) {
       flag = what
     }, 7, 7)
-    ns.Base_p.fromField = function (what) {
+    ns.BaseC9r_p.fromField = function (what) {
       flag *= 10
       flag += what
     }
@@ -435,7 +438,7 @@ describe ('Tests: data', function () {
   })
   it ('eYo.data.handle_toField', function () {
     let ns = eYo.c9r.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     var flag
     let test = (f, before, after, expected) => {
       let model = {
@@ -453,7 +456,7 @@ describe ('Tests: data', function () {
       flag += what
       return 2 * what
     }, 3, 6, 3)
-    ns.Base_p.toField = function (what) {
+    ns.BaseC9r_p.toField = function (what) {
       flag *= 100
       flag += 2 * what
       return 3 * what
@@ -488,7 +491,7 @@ describe ('Tests: data', function () {
   })
   it ('eYo.data.handle_fromText', function () {
     let ns = eYo.c9r.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     var flag
     let test = (f, what, expected) => {
       let model = {
@@ -504,7 +507,7 @@ describe ('Tests: data', function () {
     test(function (what) {
       flag = what
     }, 7, 7)
-    ns.Base_p.fromText = function (what) {
+    ns.BaseC9r_p.fromText = function (what) {
       flag *= 10
       flag += what
     }
@@ -524,7 +527,7 @@ describe ('Tests: data', function () {
   })
   it ('eYo.data.handle_toText', function () {
     let ns = eYo.c9r.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     let test = (f, before, after, expected) => {
       let model = {
         toText: f,
@@ -540,7 +543,7 @@ describe ('Tests: data', function () {
       flag.push(what)
       return 2 * what
     }, 3, 6, 3)
-    ns.Base_p.toText = function (what) {
+    ns.BaseC9r_p.toText = function (what) {
       flag.push(2*what % 10)
       return 3 * what
     }
@@ -569,7 +572,7 @@ describe ('Tests: data', function () {
   })
   it ('eYo.data.handle_consolidate', function () {
     let ns = eYo.c9r.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     var flag
     let test = (f, what, expected) => {
       let model = {
@@ -593,9 +596,9 @@ describe ('Tests: data', function () {
   })
   it ('eYo.data.handle_filter', function () {
     let ns = eYo.c9r.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     var flag
-    ns.Base_p.filter = function (what) {
+    ns.BaseC9r_p.filter = function (what) {
       flag *= 100
       flag += 2 * what
       return 3 * what
@@ -667,7 +670,7 @@ describe ('Tests: data', function () {
   })
   it('Data model', function () {
     let ns = eYo.data.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
 
     let test = (key, value) => {
       let one = ns.singleton({eyo: true}, {

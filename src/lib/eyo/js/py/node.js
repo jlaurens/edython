@@ -34,7 +34,7 @@ node * */
 eYo.py.makeNS('node')
 
 /**
- * @type {eYo.py.node.Base}
+ * @type {eYo.py.node.BaseC9r}
  * @constructor
  * @param {*} scan
  * @param {*} type
@@ -42,7 +42,7 @@ eYo.py.makeNS('node')
  * @readonly
  * @property {string} name  name is the human readable type of the node.
  */
-eYo.py.node.makeBase({
+eYo.py.node.makeBaseC9r({
   init (scan, type, subtype) {
     if (type === eYo.NA || type === eYo.py.tkn.ERRORTOKEN) {
       console.error('WTF')
@@ -381,12 +381,12 @@ eYo.py.node.makeBase({
   },
 })
 
-eYo.py.node.Base_p.be_keyword = function () {
+eYo.py.node.BaseC9r_p.be_keyword = function () {
   this.is_keyword = true
   return this
 }
 
-eYo.py.node.Base_p.be_close = function (open) {
+eYo.py.node.BaseC9r_p.be_close = function (open) {
   if (open) {
     this.open = open
     open.close = this
@@ -394,14 +394,14 @@ eYo.py.node.Base_p.be_close = function (open) {
   return this
 }
 
-// eYo.py.node.Base_p.parent = null
-// eYo.py.node.Base_p.children = null
+// eYo.py.node.BaseC9r_p.parent = null
+// eYo.py.node.BaseC9r_p.children = null
 
 /**
  * Add a comment to the node or one of its ancestors.
  * @param {eYo.py.tkn.Node} comment  the comment node token to add.
  */
-eYo.py.node.Base_p.pushComment = function (comment) {
+eYo.py.node.BaseC9r_p.pushComment = function (comment) {
   var n = this
   while (!n.acceptComments) {
     var p = n.parent

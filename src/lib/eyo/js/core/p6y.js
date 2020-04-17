@@ -13,6 +13,7 @@
 'use strict'
 
 eYo.require('do')
+eYo.require('observe')
 
 eYo.forward('xre')
 
@@ -21,11 +22,11 @@ eYo.forward('xre')
  * @name{eYo.p6y}
  * @namespace
  */
-eYo.attr.makeNS(eYo, 'p6y')
+eYo.o3d.makeNS(eYo, 'p6y')
 
-// ANCHOR eYo.p6y.Base_p
+// ANCHOR eYo.p6y.BaseC9r_p
 /**
- * @name{eYo.p6y.Base_p}
+ * @name{eYo.p6y.BaseC9r_p}
  * Base property constructor.
  * The bounds between the property and the arguments are immutable.
  * For edython.
@@ -36,7 +37,7 @@ eYo.attr.makeNS(eYo, 'p6y')
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.p6y.makeBase({
+eYo.p6y.makeBaseC9r(true, {
   init (owner, key) {
     this.stored__ = eYo.NA // this may be useless in some situations
     Object.defineProperties(this, {
@@ -45,11 +46,12 @@ eYo.p6y.makeBase({
             return `Unexpected setter ${key} in ${owner.eyo.key}'s instance property`
           },
         },
-        eYo.p6y.Base_p.valueGetter
+        eYo.p6y.BaseC9r_p.valueGetter
       ),
     })
   },
   dispose (...args) {
+    this.removeObservers()
     this.disposeStored_(...args)
   },
   methods: {
@@ -135,10 +137,16 @@ eYo.p6y.makeBase({
   },
 })
 
-eYo.p6y.Base.eyo.modelFormat.allow(eYo.model.ANY, [
+Object.defineProperties(eYo.p6y.BaseC9r_p, {
+  Id: {
+    value: 'P6y',
+  },
+})
+
+eYo.p6y.BaseC9r.eyo.finalizeC9r([
   'source', 'value', 'lazy', 'reset', 'copy',
   'validate', 'get', 'set', 'get_', 'set_',
-  eYo.p6y.BEFORE, eYo.p6y.DURING, eYo.p6y.AFTER,
+  eYo.observe.BEFORE, eYo.observe.DURING, eYo.observe.AFTER,
   'init', 'dispose',
 ], {
   [eYo.model.VALIDATE]: before => {
@@ -150,40 +158,14 @@ eYo.p6y.Base.eyo.modelFormat.allow(eYo.model.ANY, [
   },
   after: {
     [eYo.model.VALIDATE]: before => {
-      if (!eYo.isStr(before)) {
+      if (!eYo.isStr(before) && !eYo.isRA(before)) {
         return eYo.INVALID
       }
     },  
   },
 })
 
-/**
- * The model controller for properties.
- * @name{eYo.p6y.modelController}
- */
-eYo.p6y.makeModelValidator()
-
-eYo.p6y.modelAllow( eYo.model.ANY, [
-  'source', 'value', 'lazy', 'reset', 'copy',
-  'validate', 'get', 'set', 'get_', 'set_',
-  eYo.p6y.BEFORE, eYo.p6y.DURING, eYo.p6y.AFTER,
-  'init', 'dispose',
-], {
-  [eYo.model.VALIDATE]: before => {
-    if (!eYo.isD(before)) {
-      return {
-        value: before
-      }
-    }
-  },
-  after: {
-    [eYo.model.VALIDATE]: before => {
-      if (!eYo.isStr(before)) {
-        return eYo.INVALID
-      }
-    },  
-  },
-})
+eYo.more.enhanceO3dValidate(eYo.p6y.BaseC9r.eyo, 'p6y', true)
 
 // ANCHOR eYo.p6y.new
 
@@ -193,14 +175,17 @@ eYo.p6y.modelAllow( eYo.model.ANY, [
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.modelHandle = function (_p, key, model) {
-  this.modelHandleValue(_p, key, model)
-  this.modelHandleDispose(_p, key, model)
-  this.modelHandleValidate(_p, key, model)
-  this.modelHandleGetSet(_p, key, model)
-  this.modelHandleChange(_p, key, model)
-  this.modelHandleStored(_p, key, model)
-  this.modelHandleReset(_p, key, model) // must be last
+eYo.p6y.Dlgt_p.modelHandle = function (key, model) {
+  model || (model = this.model)
+  let ns = this.ns
+  let _p = this.C9r_p
+  ns.modelHandleValue(_p, key, model)
+  ns.modelHandleDispose(_p, key, model)
+  this.modelHandleValidate(key, model)
+  ns.modelHandleGetSet(_p, key, model)
+  ns.modelHandleChange(_p, key, model)
+  ns.modelHandleStored(_p, key, model)
+  ns.modelHandleReset(_p, key, model) // must be last
 }
 
 /**
@@ -306,7 +291,7 @@ eYo.p6y._p.modelHandleGetSet = function (prototype, key, model) {
   let get_m = model.get // from model => suffix = '_m' and `@this` == property owner
   if (model.copy) {
     model.get && eYo.throw(`Bad model (${prototype.eyo.name}/${key}): Unexpected get`)
-    prototype.getValue = eYo.p6y.Base_p.__getCopyValue
+    prototype.getValue = eYo.p6y.BaseC9r_p.__getCopyValue
   } else {
     if (get_m === eYo.doNothing || get_m === false) {
       can_lazy = false
@@ -424,17 +409,17 @@ eYo.p6y._p.modelHandleGetSet = function (prototype, key, model) {
  * @param {Object} model
  */
 eYo.p6y._p.modelHandleChange = function (prototype, key, model) {
-  eYo.p6y.HOOKS.forEach(when => {
+  eYo.observe.HOOKS.forEach(when => {
     let when_m = model[when]
-    let when_s = prototype.eyo.C9r_s[when]
+    let when_p = prototype[when]
     if (eYo.isF(when_m)) {
       prototype[when] = when_m.length > 1
-      ? when_s
+      ? when_p
         ? function (before, after) {
           try {
             this[when] = eYo.doNothing
             when_m.call(this.owner_, before, after)
-            when_s.call(this, before, after)
+            when_p.call(this, before, after)
           } finally {
             delete this[when]
           }
@@ -446,12 +431,12 @@ eYo.p6y._p.modelHandleChange = function (prototype, key, model) {
             delete this[when]
           }
         }
-      : when_s
+      : when_p
         ? function (before, after) {
           try {
             this[when] = eYo.doNothing
             when_m.call(this.owner_, after)  
-            when_s.call(this, before, after)
+            when_p.call(this, before, after)
           } finally {
             delete this[when]
           }
@@ -529,11 +514,179 @@ eYo.p6y._p.modelHandleStored = function (prototype, key, model) {
   }
 }
 
-// ANCHOR: properties
-eYo.p6y.enhanceO3dValidate('property', true)
+// ANCHOR eYo.p6y.List
 
-;(() => {
-  let _p = eYo.p6y.Base_p
+/**
+ * Maintains a list of properties.
+ * `eYo.o4t.BaseC9r` instances maintains properties by keys.
+ * Here properties are maintained by index.
+ * @name{eYo.p6y.List}
+ * @constructor
+ */
+eYo.o3d.makeC9r(eYo.p6y, 'List', {
+  init (owner, key, ...items) {
+    this.list__ = []
+    this.values = new Proxy(this.list__, {
+      get(target, prop) {
+        if (!isNaN(prop)) {
+          prop = parseInt(prop, 10)
+          if (prop < 0) {
+            prop += target.length
+          }
+          let p = target[prop]
+          return p && p.value
+        }
+        throw new Error('`values` attribute only accepts indexed accessors')
+      }
+    })
+    this.p6yByKey = new Proxy(this.list__, {
+      get(target, prop) {
+        if (eYo.isStr(prop)) {
+          return target[prop]
+        }
+        throw new Error('`properties` attribute only accepts indexed accessors')
+      }
+    })
+    this.propertyByIndex = new Proxy(this.list__, {
+      get(target, prop) {
+        if (!isNaN(prop)) {
+          prop = parseInt(prop, 10)
+          if (prop < 0) {
+            prop += target.length
+          }
+          return target[prop]
+        }
+        throw new Error('`properties` attribute only accepts indexed accessors')
+      }
+    })
+    this.splice(0, 0, ...items)
+  },
+  dispose(...args) {
+    for (const p of this.list__) {
+      p.dispose(...args)
+    }
+    this.list__.length = 0
+  }
+})
+
+eYo.p6y.List.eyo.finalizeC9r()
+
+{
+  let _p = eYo.p6y.List_p
+
+  Object.defineProperties(_p, {
+    length: {
+      get () {
+        return this.list__.length
+      },
+      set (after) {
+        this.list__.length = after
+      }
+    },
+  })
+ 
+  /**
+   * Insert something at index i.
+   * @param {Integer} start - The index at which to start changing the list.
+   * @param {...} item - items to be inserted.
+   */
+  _p.splice = function (start, deleteCount,  ...items) {
+    if (start < 0) {
+      start = this.list__.length - start
+    }
+    let ans = this.list__.splice(start, deleteCount).map(p => p.value)
+    items = items.map(item => eYo.p6y.new(this, '', {
+      value: item
+    }))
+    this.list__.splice(start, 0, ...items)
+    return ans
+  }
+
+}
+
+/**
+ * The @@iterator method
+ */
+eYo.p6y.List.eyo_p.initInstance = function (instance) {
+  eYo.p6y.List.eyo.super.initInstance(instance)
+  instance[Symbol.iterator] = function* () {
+    for (var p of this.list__) {
+      yield p.value
+    }
+  }
+}
+
+eYo.dlgt.BaseC9r_p.p6yEnhanced = function (manyModel = {}) {
+  eYo.isF(manyModel.maker) || (manyModel.maker = function (object, k, model) {
+    return model && model.source
+    ? object.eyo.aliasNew(object, k, ...model.source)
+    : eYo.p6y.new(object, k, model || {})
+  })
+  eYo.isF(manyModel.makeShortcut) || (manyModel.makeShortcut = function (object, k, p) {
+    let k_p = k + '_p'
+    if (object.hasOwnProperty(k_p)) {
+      console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
+    }
+    Object.defineProperties(object, {
+      [k_p]: eYo.descriptorR(function () {
+        return p
+      }),
+    })
+    object[k_p] || eYo.throw('Missing property')
+    let _p = object.eyo.C9r_p
+    _p.hasOwnProperty(k) || Object.defineProperties(_p, {
+      [k]: eYo.descriptorR(function () {
+        if (!this[k_p]) {
+          console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
+        }
+        if (!this[k_p].getValue) {
+          console.error('BREAK HERE!')
+        }
+        return this[k_p].getValue()
+      }),
+      [k + '_']: {
+        get: function () {
+          return this[k_p].getStored()
+        },
+        set (after) {
+          this[k_p].setValue(after)
+        },
+      },
+    })
+    return p
+  })
+
+  /**
+   * Declare the given aliases.
+   * Used to declare synonyms.
+   * @param {Map<String, String|Array<String>>} model - Object, map source -> alias.
+   */
+  this._p.aliasesMerge = function (aliases) {
+    let d = Object.create(null)
+    Object.keys(aliases).forEach(source => {
+      let components = source.split('.')
+      let d8r = {
+        source: components,
+        after: components[0],
+      }
+      let a = aliases[source]
+      if (eYo.isRA(a)) {
+        a.forEach(v => {
+          d[v] = d8r
+        })
+      } else {
+        d[a] = d8r
+      }
+    })
+    this.p6yMerge(d)
+  }
+  this.enhanceMany('p6y', 'properties', manyModel)
+} 
+
+eYo.observe.enhance(eYo.p6y.BaseC9r.eyo)
+
+{
+  let _p = eYo.p6y.BaseC9r_p
 
   /**
    * The parent of the property is the object who declares the property,
@@ -547,46 +700,6 @@ eYo.p6y.enhanceO3dValidate('property', true)
       return this.owner_
     })
   })  
-  /**
-   * @name{willChange}
-   * Before changing the value of the property.
-   * The signature is `willChange([before], after) → Boolean`
-   * May be overriden by the model.
-   * @param {Object} before
-   * @param {Object} after
-   * @return {Boolean} true when performed
-   */
-  /**
-   * @name{atChange}
-   * When changing the value of the property.
-   * The signature is `atChange( [before], after ) → Boolean`
-   * May be overriden by the model.
-   * @param {Object} before
-   * @param {Object} after
-   * @return {Boolean} true when performed
-   */
-  /**
-   * @name{didChange}
-   * Did change the value of the property.
-   * The signature is `didChange( [before], after ) → Boolean`
-   * May be overriden by the model.
-   * @param {Object} before
-   * @param {Object} after
-   * @return {Boolean} true when performed
-   */
-  eYo.p6y.HOOKS.forEach(when => {
-    let When = eYo.do.toTitleCase(when)
-    _p[when] = function (before, after) {
-      try {
-        this[when] = eYo.doNothing
-        let f_o = this.key && this.owner_ && this.owner_[this.key + When]
-        eYo.isF(f_o) && f_o.call(this.owner_, before, after)
-        this.fireObservers(when, before, after)
-      } finally {
-        delete this[when]
-      }
-    }
-  })
 
   /**
    * Returns the starting value.
@@ -677,7 +790,7 @@ eYo.p6y.enhanceO3dValidate('property', true)
   _p.__getCopyValue = function () {
     try {
       this.getValue = eYo.doNothing
-      var ans = eYo.p6y.Base_p.getValue.call(this)
+      var ans = eYo.p6y.BaseC9r_p.getValue.call(this)
       return ans && ans.copy
     } finally {
       delete this.getValue
@@ -709,147 +822,4 @@ eYo.p6y.enhanceO3dValidate('property', true)
    */
   _p.ownedForEach = eYo.doNothing
 
-}) ()
-
-// ANCHOR eYo.p6y.List
-
-/**
- * Maintains a list of properties.
- * `eYo.o4t.Base` instances maintains properties by keys.
- * Here properties are maintained by index.
- * @name{eYo.p6y.List}
- * @constructor
- */
-eYo.c9r.makeC9r(eYo.p6y, 'List', {
-  init (owner, ...items) {
-    this.list__ = []
-    this.values = new Proxy(this.list__, {
-      get(target, prop) {
-        if (!isNaN(prop)) {
-          prop = parseInt(prop, 10)
-          if (prop < 0) {
-            prop += target.length
-          }
-          let p = target[prop]
-          return p && p.value
-        }
-        throw new Error('`values` attribute only accepts indexed accessors')
-      }
-    })
-    this.p6yByKey = new Proxy(this.list__, {
-      get(target, prop) {
-        if (eYo.isStr(prop)) {
-          return target[prop]
-        }
-        throw new Error('`properties` attribute only accepts indexed accessors')
-      }
-    })
-    this.propertyByIndex = new Proxy(this.list__, {
-      get(target, prop) {
-        if (!isNaN(prop)) {
-          prop = parseInt(prop, 10)
-          if (prop < 0) {
-            prop += target.length
-          }
-          return target[prop]
-        }
-        throw new Error('`properties` attribute only accepts indexed accessors')
-      }
-    })
-    this.splice(0, 0, ...items)
-  },
-  dispose(...args) {
-    for (const p of this.list__) {
-      p.dispose(...args)
-    }
-    this.list__.length = 0
-  }
-})
-
-;(() => {
-  let _p = eYo.p6y.List_p
-
-  Object.defineProperties(_p, {
-    length: {
-      get () {
-        return this.list__.length
-      },
-      set (after) {
-        this.list__.length = after
-      }
-    },
-  })
- 
-  /**
-   * Insert something at index i.
-   * @param {Integer} start - The index at which to start changing the list.
-   * @param {...} item - items to be inserted.
-   */
-  _p.splice = function (start, deleteCount,  ...items) {
-    if (start < 0) {
-      start = this.list__.length - start
-    }
-    let ans = this.list__.splice(start, deleteCount).map(p => p.value)
-    items = items.map(item => eYo.p6y.new(this, '', {
-      value: item
-    }))
-    this.list__.splice(start, 0, ...items)
-    return ans
-  }
-
-}) ()
-
-/**
- * The @@iterator method
- */
-eYo.p6y.List.eyo_p.initInstance = function (object) {
-  eYo.p6y.List.eyo.super.initInstance(object)
-  object[Symbol.iterator] = function* () {
-    for (var p of this.list__) {
-      yield p.value
-    }
-  }
 }
-
-eYo.c9r._p.p6yEnhanced = function (model = {}) {
-  eYo.isF(model.maker) || (model.maker = function (object, k, model) {
-    return model.source
-    ? object.eyo.aliasNew(object, k, ...model.source)
-    : eYo.p6y.new(object, k, model)
-  })
-  eYo.isF(model.makeShortcut) || (model.makeShortcut = function (object, k, p) {
-    let k_p = k + '_p'
-    if (object.hasOwnProperty(k_p)) {
-      console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
-    }
-    Object.defineProperties(object, {
-      [k_p]: eYo.descriptorR(function () {
-        return p
-      }),
-    })
-    object[k_p] || eYo.throw('Missing property')
-    let _p = object.eyo.C9r_p
-    _p.hasOwnProperty(k) || Object.defineProperties(_p, {
-      [k]: eYo.descriptorR(function () {
-        if (!this[k_p]) {
-          console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
-        }
-        if (!this[k_p].getValue) {
-          console.error('BREAK HERE!')
-        }
-        return this[k_p].getValue()
-      }),
-      [k + '_']: {
-        get: function () {
-          return this[k_p].getStored()
-        },
-        set (after) {
-          this[k_p].setValue(after)
-        },
-      },
-    })
-    return p
-  })
-  this.enhancedMany ('p6y', 'properties', model)
-} 
-

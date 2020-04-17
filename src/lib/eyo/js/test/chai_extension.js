@@ -1,5 +1,7 @@
 eYo.test || eYo.makeNS('test')
 
+eYo.TESTING = true
+
 chai.Assertion.addProperty('eyo_point', function () {
   this.assert(
       this._obj instanceof eYo.geom.Point

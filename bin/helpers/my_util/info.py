@@ -90,9 +90,9 @@ class Info:
   (?:'|")(?P<Key>[^'"]+)(?:'|")
   .*""", re.X)
 
-  # eYo.widget.makeBase()
-  re_makeBase = re.compile(r"""^\s*
-  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeBase\s*\(.*""", re.X)
+  # eYo.widget.makeBaseC9r()
+  re_makeBaseC9r = re.compile(r"""^\s*
+  (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.(?P<key>[a-z]\w*))\.makeBaseC9r\s*\(.*""", re.X)
 
   # eYo.driver.makeMngr(model)
   re_makeMngr = re.compile(r"""^\s*
@@ -121,12 +121,12 @@ class Info:
   (?P<ns>eYo(?:\.[a-z]\w*)*)(?:\.[A-Z]\w*\.\w*)*\.(?:[a-z]\w*M|m)erge \s*\(""", re.X)
 
   # eYo.....allowPath, allowShortcut(
+  re_more = re.compile(r"""^\s*
+  (?P<ns>eYo\.more)""", re.X)
+
+  # eYo.....allowPath, allowShortcut(
   re_model = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.allowModel(?:Path|Shortcut)\s*\(""", re.X)
-
-  # eYo.o4t.enhancedMany('p6y', 'properties', {
-  re_enhancedMany = re.compile(r"""^\s*
-  (?P<ns>eYo(?:\.[a-z]\w*)*)\.enhancedMany\s*\(\s*(?:'|")(?P<key>[a-z]\w*)(?:'|")""", re.X)
 
   # eYo.o4t.p6yEnhanced
   re_p6yEnhanced = re.compile(r"""^\s*
@@ -180,19 +180,19 @@ class Info:
             required.add('eYo.c9r')
       for l in f.readlines():
         base_require(l)
-        m = self.re_makeBase.match(l)
+        m = self.re_makeBaseC9r.match(l)
         if m:
           ns = m.group('ns')
           k = m.group('key')
           required.add(f'{ns}')
-          addProvided(f'{ns}.{k}.Base')
+          addProvided(f'{ns}.{k}.BaseC9r')
           continue
         m = self.re_makeMngr.match(l)
         if m:
           ns = m.group('ns')
           required.add(f'{ns}')
           addProvided(f'{ns}.Mngr')
-          addProvided(f'{ns}.Base')
+          addProvided(f'{ns}.BaseC9r')
           continue
         m = self.re_makeForwarder.match(l)
         if m:
@@ -236,6 +236,10 @@ class Info:
         if m:
           required.add(m.group('ns'))
           continue
+        m = self.re_more.match(l)
+        if m:
+          required.add(m.group('ns'))
+          continue
         m = self.re_model.match(l)
         if m:
           required.add(m.group('ns'))
@@ -243,11 +247,6 @@ class Info:
         m = self.re_p6yEnhanced.match(l)
         if m:
           required.add('eYo.p6y')
-          continue
-        m = self.re_enhancedMany.match(l)
-        if m:
-          required.add(m.group('ns'))
-          forwarded.add('eYo.' + m.group('key'))
           continue
         m = self.re_merge_MPA.match(l)
         if m:

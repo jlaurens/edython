@@ -44,7 +44,7 @@ eYo.driver.makeC9r('Mngr', {
             throw new Error(`Missing driver property named ${prop} in object ${obj}`)
           }
         }
-        return new Proxy(new this.eyo.ns.Base (this), handler)
+        return new Proxy(new this.eyo.ns.BaseC9r (this), handler)
       },
     },
     drivers: {
@@ -80,10 +80,10 @@ eYo.driver.Mngr.eyo_p.makeDriverC9r = function (key, Super, driverModel) {
   if (!eYo.isSubclass(Super, eYo.Driver)) {
     driverModel && eYo.throw(`Unexpected model ${driverModel}`)
     driverModel = eYo.called(Super) || {}
-    Super = ns.super[key] || ns.Base
+    Super = ns.super[key] || ns.BaseC9r
   }
-  if (!eYo.isSubclass(Super, ns.Base)) {
-    Super = ns.Base
+  if (!eYo.isSubclass(Super, ns.BaseC9r)) {
+    Super = ns.BaseC9r
   }
   var Driver = eYo.c9r.makeC9r(ns, key, Super, driverModel)
   var x = Driver.eyo.name.split('.') // x = ['eYo', 'Dom', 'Brick']
@@ -121,7 +121,7 @@ eYo.driver._p.makeMngr = function (mngrModel) {
   if (this === eYo.driver) {
     return
   }
-  this._p.hasOwnProperty('Base') || this.hasOwnProperty('Base') || this.makeBase()
+  this._p.hasOwnProperty('BaseC9r') || this.hasOwnProperty('BaseC9r') || this.makeBaseC9r()
   let Super = this.super.Mngr
   var Mngr = this.makeC9r(Super, mngrModel)
   Mngr.prototype.initDrivers = function () {
@@ -155,7 +155,7 @@ eYo.driver._p.makeDriverC9r = function (key, Super, driverModel) {
  * Returns a driver, based on the given object's constructor name.
  * If the receiver is `eYo.fcfl.Mngr` and the object's constructor name is `Foo.Bar` then the returned driver is an instance of `eYo.fcfl.Foo.Bar`, `eYo.fcfl.Foo` as soon as it is a driver constructor, otherwise it is the all purpose driver.
  * @param {*} object - the object for which a driver is required.
- * @return {eYo.driver.Base}
+ * @return {eYo.driver.BaseC9r}
  */
 eYo.driver.Mngr_p.getDriver = function (object) {
   var components = object.eyo.name.split('.')
@@ -182,12 +182,12 @@ eYo.driver.Mngr_p.initDrivers = function () {
 }
 
 /**
- * @name {eYo.driver.Base}
+ * @name {eYo.driver.BaseC9r}
  * Default convenient driver, to be subclassed.
  * @param {Object} owner
  * @property {eYo.driver.Mgt} mngr,  the owning driver manager
  */
-eYo.driver.makeBase({
+eYo.driver.makeBaseC9r({
   properties: {
     mngr: {
       get () {
@@ -202,7 +202,7 @@ eYo.driver.makeBase({
  * @param {*} object
  * @return {Boolean}
  */
-eYo.driver.Base_p.doInitUI = function (unused) {
+eYo.driver.BaseC9r_p.doInitUI = function (unused) {
   return true
 }
 
@@ -210,7 +210,7 @@ eYo.driver.Base_p.doInitUI = function (unused) {
  * Dispose of the UI.
  * @param {*} object
  */
-eYo.driver.Base_p.doDisposeUI = function (unused) {
+eYo.driver.BaseC9r_p.doDisposeUI = function (unused) {
   return true
 }
 
@@ -223,7 +223,7 @@ eYo.driver._p.makeForwarder = (pttp, key) => {
   }
 }
 
-eYo.view.Base.eyo.p6yMerge({
+eYo.view.BaseC9r.eyo.p6yMerge({
   /**
    * The driver manager shared by all the instances in the app.
    * @type {eYo.driver.Mngr}
@@ -236,7 +236,7 @@ eYo.view.Base.eyo.p6yMerge({
   },
   /**
    * The driver.
-   * @type {eYo.driver.Base}
+   * @type {eYo.driver.BaseC9r}
    */
   ui_driver: {
     lazy () {
@@ -257,7 +257,7 @@ eYo.view.Base.eyo.p6yMerge({
  * Make the ui.
  * Default implementation forwards to the driver.
  */
-eYo.view.Base_p.doInitUI = function (...args) {
+eYo.view.BaseC9r_p.doInitUI = function (...args) {
   this.ui_driver.doInitUI(this, ...args)
 }
 
@@ -265,6 +265,6 @@ eYo.view.Base_p.doInitUI = function (...args) {
  * Dispose of the ui.
  * Default implementation forwards to the driver.
  */
-eYo.view.Base_p.doDisposeUI = function (...args) {
+eYo.view.BaseC9r_p.doDisposeUI = function (...args) {
   this.ui_driver.doDisposeUI(this, ...args)
 }

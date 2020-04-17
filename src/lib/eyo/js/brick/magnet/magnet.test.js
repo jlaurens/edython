@@ -2,22 +2,25 @@ describe ('Tests: magnet', function () {
   this.timeout(10000)
   let flag = {
     v: 0,
-    reset () {
-      this.v = 0
+    reset (what) {
+      this.v = what || 0
     },
-    push (what) {
-      this.v *= 10
-      this.v += what
+    push (...$) {
+      $.forEach(what => {
+        what && (this.v = parseInt(this.v.toString() + what.toString()))
+      })
     },
     expect (what) {
-      chai.expect(this.v).equal(what)
+      let ans = chai.expect(this.v).equal(what)
+      this.reset()
+      return ans
     },
   }
   it ('Magnet: basic', function () {
     chai.expect(!eYo.magnet).false
-    chai.expect(eYo.magnet._p.hasOwnProperty('Base')).true
+    chai.expect(eYo.magnet._p.hasOwnProperty('BaseC9r')).true
   })
-  describe('eYo.magnet.Base', function () {
+  describe('eYo.magnet.BaseC9r', function () {
     it ('eYo.magnet.new({})', function () {
       let bs = {
         changeDone () {

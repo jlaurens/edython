@@ -86,12 +86,12 @@ eYo.slot._p.modelPath = function (key) {
   // - wrap input
   // - insert input
   // It may contain label fields
- * @param {eYo.brick.Base} brick  The owner is a brick.
+ * @param {eYo.brick.BaseC9r} brick  The owner is a brick.
  * @param {string} key  One of the keys in `slots` section of the brick model.
  * @param {Object} model  the model for the given key in the above mention section.
  * @constructor
  */
-eYo.slot.makeBase({
+eYo.slot.makeBaseC9r({
   init (brick, key) {
     brick || eYo.throw('Missing slot owner brick')
     key || eYo.throw('Missing slot key')
@@ -122,7 +122,7 @@ eYo.slot.makeBase({
   properties: {
     magnet: eYo.NA,
     /**
-     * @property {eYo.data.Base} data  Bound data.
+     * @property {eYo.data.BaseC9r} data  Bound data.
      */
     data: eYo.NA,
     visible: true,
@@ -165,7 +165,7 @@ eYo.slot.makeBase({
     requiredFromModel: eYo.NA,
     /**
      * @readonly
-     * @property {eYo.brick.Base} brick  the immediate brick in which this is contained
+     * @property {eYo.brick.BaseC9r} brick  the immediate brick in which this is contained
      */
     brick: {
       get () {
@@ -174,7 +174,7 @@ eYo.slot.makeBase({
     },
     /**
      * @readonly
-     * @property {eYo.brick.Base} brick  the immediate brick in which this is contained
+     * @property {eYo.brick.BaseC9r} brick  the immediate brick in which this is contained
      */
     targetBrick: {
       get () {
@@ -312,7 +312,7 @@ eYo.slot.makeBase({
   },
 })
 
-Object.defineProperty(eYo.slot.Base_p, 'isSlot', {
+Object.defineProperty(eYo.slot.BaseC9r_p, 'isSlot', {
   get () {
     return true
   },
@@ -336,7 +336,7 @@ eYo.slot.Dlgt_p.initInstance = function (object) {
  * For edython.
  * @param {Function} do_it
  */
-eYo.slot.Base_p.whenRequiredFromModel = function (do_it) {
+eYo.slot.BaseC9r_p.whenRequiredFromModel = function (do_it) {
   if (this.isRequiredFromModel) {
     this.isRequiredFromModel = false
     if (eYo.isF(do_it)) {
@@ -353,7 +353,7 @@ eYo.slot.Base_p.whenRequiredFromModel = function (do_it) {
  * @param {Boolean} deep whether to consolidate connected bricks.
  * @param {Boolean} force whether to force synchronization.
  */
-eYo.slot.Base_p.consolidate = function (deep, force) {
+eYo.slot.BaseC9r_p.consolidate = function (deep, force) {
   var m4t = this.magnet
   if (m4t) {
     m4t.incog = this.incog
@@ -370,7 +370,7 @@ eYo.slot.Base_p.consolidate = function (deep, force) {
  * Called only by `synchronizeSlots`.
  * For edython.
  */
-eYo.slot.Base_p.synchronize = function () {
+eYo.slot.BaseC9r_p.synchronize = function () {
   var d = this.ui_driver
   if (!d) {
     return
@@ -392,7 +392,7 @@ eYo.slot.Base_p.synchronize = function () {
  * @return a dom element, void lists may return nothing
  * @this a brick
  */
-eYo.slot.Base_p.save = function (element, opt) {
+eYo.slot.BaseC9r_p.save = function (element, opt) {
   if (this.incog) {
     return
   }
@@ -439,7 +439,7 @@ eYo.slot.Base_p.save = function (element, opt) {
  * @param {Element} element a dom element in which to save the receiver
  * @param {Object} opt
  */
-eYo.slot.Base_p.saveRequired = function (element) {
+eYo.slot.BaseC9r_p.saveRequired = function (element) {
   var child = eYo.dom.createDom(eYo.xml.EXPR)
   child.setAttribute(eYo.key.EYO, eYo.key.PLACEHOLDER)
   child.setAttribute(eYo.xml.sLOT, this.xmlKey)
@@ -460,7 +460,7 @@ eYo.slot.Base_p.saveRequired = function (element) {
  * @param {Element} element a dom element in which to save the input
  * @return true if this is loaded
  */
-eYo.slot.Base_p.load = function (element) {
+eYo.slot.BaseC9r_p.load = function (element) {
   this.loaded_ = false
   var xml = this.model.xml
   if (xml === false) {
@@ -543,7 +543,7 @@ eYo.slot.Base_p.load = function (element) {
  * When all the slots and data have been loaded.
  * For edython.
  */
-eYo.slot.Base_p.willLoad = eYo.decorate.reentrant('willLoad', function () {
+eYo.slot.BaseC9r_p.willLoad = eYo.decorate.reentrant('willLoad', function () {
   let f = this.model.willLoad
   if (eYo.isF(f)) {
     f.apply(this, arguments)
@@ -556,7 +556,7 @@ eYo.slot.Base_p.willLoad = eYo.decorate.reentrant('willLoad', function () {
  * and possibly once when the saved representation has been loaded.
  * For edython.
  */
-eYo.slot.Base_p.didLoad = eYo.decorate.reentrant('didLoad', function () {
+eYo.slot.BaseC9r_p.didLoad = eYo.decorate.reentrant('didLoad', function () {
   let f = this.model.didLoad
   if (eYo.isF(f)) {
     f.apply(this, arguments)
@@ -568,7 +568,7 @@ eYo.slot.Base_p.didLoad = eYo.decorate.reentrant('didLoad', function () {
  * For edython.
  * @param {function} helper
  */
-eYo.slot.Base_p.forEach = function (helper, ...$) {
+eYo.slot.BaseC9r_p.forEach = function (helper, ...$) {
   var slot = this
   if (eYo.isF(helper)) {
     do {
@@ -583,7 +583,7 @@ eYo.slot.Base_p.forEach = function (helper, ...$) {
  * @param {function} helper
  * @return {boolean} whether there was an slot to act upon or no helper given
  */
-eYo.slot.Base_p.forEachPrevious = function (helper, ...$) {
+eYo.slot.BaseC9r_p.forEachPrevious = function (helper, ...$) {
   var slot = this
   if (eYo.isF(helper)) {
     do {
@@ -600,7 +600,7 @@ eYo.slot.Base_p.forEachPrevious = function (helper, ...$) {
  * @param {function} helper
  * @return {?Object} The slot that returned true, eventually.
  */
-eYo.slot.Base_p.some = function (helper, ...$) {
+eYo.slot.BaseC9r_p.some = function (helper, ...$) {
   var slot = this
   if (eYo.isF(helper)) {
     do {
@@ -616,18 +616,18 @@ eYo.slot.Base_p.some = function (helper, ...$) {
  * For edython.
  * @param {function} helper
  */
-eYo.slot.Base_p.fieldForEach = function ($this, helper) {
+eYo.slot.BaseC9r_p.fieldForEach = function ($this, helper) {
   this.eyo.fieldForEach(this, $this, helper)
 }
 
 /**
  * Connect the brick or magnet. When not given a magnet, the output magnet is used. It is natural for slots.
  * The slot corresponds to a wrapped list block.
- * @param {eYo.brick | eYo.magnet.Base} bm  either a brick or a magnet.
+ * @param {eYo.brick | eYo.magnet.BaseC9r} bm  either a brick or a magnet.
  * @param {String} [key] an input key. When not given the last free input is used.
- * @return {?eYo.magnet.Base} the eventual magnet target that was connected.
+ * @return {?eYo.magnet.BaseC9r} the eventual magnet target that was connected.
  */
-eYo.slot.Base_p.listConnect = function (bm, key) {
+eYo.slot.BaseC9r_p.listConnect = function (bm, key) {
   var t9k = this.targetBrick
   if (!t9k) {
     this.completePromise()
@@ -651,10 +651,10 @@ eYo.slot.Base_p.listConnect = function (bm, key) {
 /**
  * Connect to the target.
  * For edython.
- * @param {eYo.brick | eYo.magnet.Base} bm  The target is either a brick or another magnet.
- * @return {?eYo.magnet.Base} the eventual target magnet
+ * @param {eYo.brick | eYo.magnet.BaseC9r} bm  The target is either a brick or another magnet.
+ * @return {?eYo.magnet.BaseC9r} the eventual target magnet
  */
-eYo.slot.Base_p.connect = function (bm) {
+eYo.slot.BaseC9r_p.connect = function (bm) {
   var m4t = this.magnet
   if(m4t && bm) {
     var other = (bm.magnets && bm.out_m) || bm
@@ -670,7 +670,7 @@ eYo.slot.Base_p.connect = function (bm) {
  * One shot in case of success.
  * @return {Boolean} whether the complete was successfull
  */
-eYo.slot.Base_p.completePromise = function () {
+eYo.slot.BaseC9r_p.completePromise = function () {
   var m4t = this.magnet
   if (m4t && m4t.completePromise()) {
     this.completePromise = eYo.doNothing

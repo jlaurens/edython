@@ -141,7 +141,10 @@ class __:
     bdd.deps = sorted_deps
     for d in bdd.deps:
       del d.__required_to_resolve
-      d.required = sorted(d.__required, key=lambda x: bdd[x])
+      d.provided = sorted(d.provided)
+      required = set(bdd[x].file_name for x in d.__required)
+      required = list(bdd.by_file_name[x].provided[0] for x in required)
+      d.required = sorted(required, key=lambda x: bdd[x])
       del d.__required
       del d.__level_min
   

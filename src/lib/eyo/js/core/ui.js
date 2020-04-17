@@ -12,8 +12,7 @@
 'use strict'
 
 eYo.require('font')
-
-eYo.forward('geom')
+eYo.forward('svg')
 
 //g@@g.forwardDeclare('g@@g.cssom')
 goog.require('goog.color')
@@ -42,7 +41,7 @@ eYo.style._p.SEP_SPACE_X = 0
  */
 eYo.makeNS('padding')
 
-;(() => {
+{
   var g = {
     get () {
       return Math.round(8000 * eYo.style.weight(eYo.font.size / 10)) / 1000
@@ -69,7 +68,7 @@ eYo.makeNS('padding')
       v: g
     }
   )
-}) ()
+}
 
 /**
  * Offset of the text editor.

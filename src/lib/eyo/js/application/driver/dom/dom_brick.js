@@ -37,7 +37,7 @@ eYo.dom.makeDriverC9r('Brick', {
   },
   /**
    * Dispose of the desk dom resources.
-   * @param {eYo.brick.Base} brick
+   * @param {eYo.brick.BaseC9r} brick
    */
   disposeUI (brick) {
     if (brick.dom && brick.dom.div_) {

@@ -1,12 +1,18 @@
 describe ('Tests: decorate', function () {
   let flag = {
     v: 0,
-    push(what) {
-      this.v *= 10
-      this.v += what
+    reset (what) {
+      this.v = what || 0
+    },
+    push (...$) {
+      $.forEach(what => {
+        what && (this.v = parseInt(this.v.toString() + what.toString()))
+      })
     },
     expect (what) {
-      chai.expect(this.v).equal(what)
+      let ans = chai.expect(this.v).equal(what)
+      this.reset()
+      return ans
     },
   }
   it ('Decorate: basic', function () {

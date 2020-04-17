@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview eYo.data.Base is a class for a data controller.
+ * @fileoverview eYo.data.BaseC9r is a class for a data controller.
  * It merely provides the API.
  * There is a design problem concerning the binding between the model
  * and the ui.
@@ -555,17 +555,17 @@ eYo.c9r._p.handle_change = function (_p, key, model) {
  * Base property constructor.
  * The bounds between the data and the arguments are immutable.
  * For edython.
- * @param {eYo.brick.Base} brick The object owning the data.
+ * @param {eYo.brick.BaseC9r} brick The object owning the data.
  * @param {string} key name of the data.
  * @param {Object} model contains methods and properties.
  * It is shared by all data controllers belonging to the same kind
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.data.makeBase({
+eYo.data.makeBaseC9r({
   init (brick, key) {
     brick || eYo.throw(`${this.eyo.name}: Missing brick`)
-    eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeBase`)
+    eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeBaseC9r`)
     this.reentrant_ = {}
     this.key_ = key
     let model = this.model
@@ -579,7 +579,7 @@ eYo.data.makeBase({
 })
 
 
-eYo.data.Base.eyo.modelMerge({
+eYo.data.BaseC9r.eyo.modelMerge({
   aliases: {
     owner: 'brick',
     'brick.changer': 'changer',
@@ -636,7 +636,7 @@ eYo.data.Base.eyo.modelMerge({
 })
 
 ;(() => {
-  let _p = eYo.data.Base_p
+  let _p = eYo.data.BaseC9r_p
 
   /**
    * Get the value of the data

@@ -13,6 +13,8 @@
 
 eYo.require('do')
 eYo.require('font')
+eYo.require('p6y')
+eYo.require('o4t')
 
 /**
  * unit
@@ -25,7 +27,7 @@ eYo.require('font')
  * @name{eYo.geom}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'geom', {})
+eYo.c9r.makeNS(eYo, 'geom', {})
 
 Object.defineProperties(eYo.geom, {
   X: eYo.descriptorR(function () {
@@ -50,6 +52,27 @@ Object.defineProperties(eYo.geom, {
 
 eYo.geom._p.greater = function (left, right) {
   return left - right >= -this.EPSILON * (Math.abs(left) + Math.abs(right))
+}
+
+eYo.geom.makeBaseC9r(true)
+eYo.geom.BaseC9r.eyo.finalizeC9r(['aliases'], {
+  properties: {
+    [eYo.model.ANY]: eYo.p6y.BaseC9r
+  },
+})
+eYo.geom.BaseC9r.eyo.p6yEnhanced()
+
+eYo.geom.enhancedO4t()
+
+/**
+ * Declare the given model for the associate constructor.
+ * The default implementation calls `methodsMerge`.
+ * @param {Object} model - Object, like for |makeC9r|.
+ */
+eYo.geom.Dlgt_p.modelMerge = function (model) {
+  model.aliases && this.aliasesMerge(model.aliases)
+  model.properties && this.p6yMerge(model.properties)
+  model.methods && this.methodsMerge(model.methods)
 }
 
 /**
@@ -156,6 +179,8 @@ eYo.geom.makeC9r('Point', {
     y: ['dy', 'height'],
   }
 })
+
+eYo.geom.Point.eyo.finalizeC9r()
 
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
@@ -677,6 +702,8 @@ eYo.geom.makeC9r('Rect', {
     },
   },
 })
+
+eYo.geom.Rect.eyo.finalizeC9r()
 
 /**
  * Dispose of the receiver's resources.

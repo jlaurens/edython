@@ -27,7 +27,7 @@ eYo.o3d.makeNS(eYo, 'audio', {
  * @param {String} pathToMedia
  * @constructor
  */
-eYo.audio.makeBase({
+eYo.audio.makeBaseC9r({
   properties: {
     /**
      * Time that the last sound was played.

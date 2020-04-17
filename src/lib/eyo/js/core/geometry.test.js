@@ -6,6 +6,22 @@ eYo.geom.randRect = () => new eYo.geom.Rect(eYo.test.rand100(), eYo.test.rand100
 
 describe ('geometry', function () {
   this.timeout(10000)
+  let flag = {
+    v: 0,
+    reset (what) {
+      this.v = what || 0
+    },
+    push (...$) {
+      $.forEach(what => {
+        what && (this.v = parseInt(this.v.toString() + what.toString()))
+      })
+    },
+    expect (what) {
+      let ans = chai.expect(this.v).equal(what)
+      this.reset()
+      return ans
+    },
+  }
   it ('POC', function () {
     chai.expect(473.85937500000006).almost.equal(473.859375)
   })
@@ -27,7 +43,7 @@ describe ('geometry', function () {
     it ('new eYo.geom.Point()', function () {
       var whr = new eYo.geom.Point()
       chai.expect(whr).eyo_point
-      chai.expect(!['c', 'l', 'x', 'y'].some(k => whr[k] != 0)).true
+      chai.expect(!['c', 'l', 'x', 'y'].some(k => whr[k] !== 0)).true
       whr.c_ = 1.23
       chai.expect(whr.c).almost.equal(1.23)
       chai.expect(whr.x).almost.equal(1.23 * eYo.geom.X)

@@ -29,7 +29,7 @@ eYo.forward('focus')
  * @property {SvgPathElement} pathCollapsed_  A path.
  * @property {SvgPathElement} pathSelect_  A path.
  * @property {SvgPathElement} pathHilight_  A path.
- * @memberof eYo.brick.Base_p.dom
+ * @memberof eYo.brick.BaseC9r_p.dom
  */
 
 // Brick management
@@ -42,7 +42,7 @@ eYo.svg.makeDriverC9r('Brick', {
    * Initialize the given brick.
    * Adds to brick's renderer a `svg` attribute owning all the svg related resources.
    * The svg
-   * @param {eYo.brick.Base} brick  the brick the driver acts on
+   * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
    */
   initUI (brick) {
     var dom = brick.dom
@@ -186,7 +186,7 @@ eYo.svg.makeDriverC9r('Brick', {
   /**
    * Remove the svg related resources of brick.
    * This must be called just when changing the driver in the renderer.
-   * @param {eYo.brick.Base} brick  the brick the driver acts on
+   * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
    */
   disposeUI (brick) {
     var svg = brick.dom.svg
@@ -237,7 +237,7 @@ eYo.svg.Brick_p.withBBox = true
 /**
  * Whether the contour of the receiver is above or below the parent's one.
  * True for statements, false otherwise.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.ContourAboveParent_ = function (brick) {
@@ -246,7 +246,7 @@ eYo.svg.ContourAboveParent_ = function (brick) {
 
 /**
  * Return the bbox of the given brick.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @return {Object}
  * @private
  */
@@ -256,7 +256,7 @@ eYo.svg.Brick_p.getBBox = function (brick) {
 
 /**
  * Whether the brick is visually selected.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @return {Boolean}
  * @private
  */
@@ -266,7 +266,7 @@ eYo.svg.Brick_p.hasFocus = function (brick) {
 
 /**
  * Path definition for a statement brick selection.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathSelectDef_ = function (brick) {
@@ -275,7 +275,7 @@ eYo.svg.Brick_p.pathSelectDef_ = function (brick) {
 
 /**
  * Generic path definition based on shape.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathDef_ = function (brick) {
@@ -284,28 +284,28 @@ eYo.svg.Brick_p.pathDef_ = function (brick) {
 
 /**
  * Control brick path.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathControlDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Statement brick path.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathStatementDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Brick path.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathGroupShapeDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Brick path.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathValueDef_ = eYo.svg.Brick_p.pathDef_
@@ -313,28 +313,28 @@ eYo.svg.Brick_p.pathValueDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Brick outline. Default implementation forwards to pathDef_.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathContourDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Highlighted brick outline. Default implementation forwards to pathDef_.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathHilightDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Brick outline. Default implementation forwards to pathDef_.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathShapeDef_ = eYo.svg.Brick_p.pathDef_
 
 /**
  * Brick path when collapsed.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathCollapsedDef_ = eYo.svg.Brick_p.pathDef_
@@ -344,7 +344,7 @@ eYo.svg.Brick_p.pathCollapsedDef_ = eYo.svg.Brick_p.pathDef_
  * When a brick is selected and one of its magnet is also selected
  * the ui displays a bold line on the magnet. When the brick has wrapped slot,
  * the selected magnet may belong to a wrapped brick.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathMagnetDef_ = function (brick) {
@@ -355,7 +355,7 @@ eYo.svg.Brick_p.pathMagnetDef_ = function (brick) {
 
 /**
  * Rectangular outline of bricks, mainly for debugging purposes.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.pathBBoxDef_ = function (brick) {
@@ -365,7 +365,7 @@ eYo.svg.Brick_p.pathBBoxDef_ = function (brick) {
 /**
  * If the brick has been inited for rendering,
  * prepares the various paths.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @param {Object} recorder
  * @private
  */
@@ -400,7 +400,7 @@ eYo.svg.Brick_p.willRender = function (brick, recorder) {
 
 /**
  * Prepares the various paths.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @param {*} recorder
  * @private
  */
@@ -408,7 +408,7 @@ eYo.svg.Brick_p.didRender = eYo.doNothing
 
 /**
  * Compute the paths of the brick depending on its size.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @param {*} path
  * @param {*} def
  */
@@ -464,7 +464,7 @@ eYo.svg.Brick_p.updateShape = function (brick) {
 
 /**
  * Default implementation does nothing.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @param {Object} [io]
  * @private
  */
@@ -474,7 +474,7 @@ eYo.svg.Brick_p.drawModelBegin_ = function (brick, io) {
 
 /**
  * Default implementation does nothing.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @param {Object} [io]
  * @private
  */
@@ -485,7 +485,7 @@ eYo.svg.Brick_p.drawModelEnd_ = function (brick, io) {
 
 /**
  * Make the given field disabled eventually.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.updateDisabled = function (brick) {
   var brick = brick
@@ -502,7 +502,7 @@ eYo.svg.Brick_p.updateDisabled = function (brick) {
 /**
  * Show the given menu.
  * Should be obsoleted.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @param {Object} menu  the menu to be displayed
  */
 eYo.svg.Brick_p.menuShow = function (brick, menu) {
@@ -517,8 +517,8 @@ eYo.svg.Brick_p.menuShow = function (brick, menu) {
  * Called when the parent will just change.
  * This code is responsible to place the various path
  * in the proper domain of the dom tree.
- * @param {eYo.brick.Base} brick child.
- * @param {eYo.brick.Base} newParent to be connected.
+ * @param {eYo.brick.BaseC9r} brick child.
+ * @param {eYo.brick.BaseC9r} newParent to be connected.
  */
 eYo.svg.Brick_p.placeOnTop = function (brick) {
   var svg = brick.dom.svg
@@ -547,8 +547,8 @@ eYo.svg.Brick_p.placeOnTop = function (brick) {
  * Called when the parent will just change.
  * This code is responsible to place the various path
  * in the proper domain of the dom tree.
- * @param {eYo.brick.Base} brick child.
- * @param {eYo.brick.Base} newParent to be connected.
+ * @param {eYo.brick.BaseC9r} brick child.
+ * @param {eYo.brick.BaseC9r} newParent to be connected.
  */
 eYo.svg.Brick_p.parentWillChange = function (brick, newParent) {
   if (brick.parent) {
@@ -560,8 +560,8 @@ eYo.svg.Brick_p.parentWillChange = function (brick, newParent) {
  * Called when the parent did just change.
  * This code is responsible to place the various path
  * in the proper domain of the dom tree.
- * @param {eYo.brick.Base} oldParent child.
- * @param {eYo.brick.Base} oldParent replaced.
+ * @param {eYo.brick.BaseC9r} oldParent child.
+ * @param {eYo.brick.BaseC9r} oldParent replaced.
  */
 eYo.svg.Brick_p.parentDidChange = function (brick, oldParent) {
   var newParent = brick.parent
@@ -596,7 +596,7 @@ eYo.svg.Brick_p.parentDidChange = function (brick, oldParent) {
 /**
  * Make the given brick visually wrapped or unwrapped
  * according to the brick status.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.updateWrapped = function (brick) {
   var dom = brick.dom
@@ -614,7 +614,7 @@ eYo.svg.Brick_p.updateWrapped = function (brick) {
 
 /**
  * Send to front.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.sendToFront = function (brick) {
@@ -650,7 +650,7 @@ eYo.svg.Brick_p.sendToFront = function (brick) {
 
 /**
  * Send to back.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.sendToBack = function (brick) {
@@ -668,7 +668,7 @@ eYo.svg.Brick_p.sendToBack = function (brick) {
 
 /**
  * Translates the brick.
- * @param {eYo.brick.Base} brick The brick to place.
+ * @param {eYo.brick.BaseC9r} brick The brick to place.
  */
 eYo.svg.Brick_p.place = function(brick) {
   var xy = brick.xy
@@ -685,7 +685,7 @@ eYo.svg.Brick_p.place = function(brick) {
  * Move this brick during a drag, taking into account whether we are using a
  * drag surface to translate bricks.
  * This brick must be a top-level brick.
- * @param {eYo.brick.Base} brick  the brick.
+ * @param {eYo.brick.BaseC9r} brick  the brick.
  * @param {eYo.geom.Point} dxy  in board coordinates.
  */
 eYo.svg.Brick_p.setOffsetDuringDrag = function(brick, dxy) {
@@ -754,7 +754,7 @@ eYo.svg.Brick_p.whereInDesk = function (brick) {
 
 /**
  * Add the hilight path_.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.addHilight = function (brick) {
   var svg = brick.dom.svg
@@ -765,7 +765,7 @@ eYo.svg.Brick_p.addHilight = function (brick) {
 
 /**
  * Remove the hilight path.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.hilightRemove = function (brick) {
   eYo.dom.removeNode(brick.dom.svg.pathHilight_)
@@ -773,7 +773,7 @@ eYo.svg.Brick_p.hilightRemove = function (brick) {
 
 /**
  * Add the select path.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.selectAdd = function (brick) {
   var svg = brick.dom.svg
@@ -790,7 +790,7 @@ eYo.svg.Brick_p.selectAdd = function (brick) {
 
 /**
  * Remove the select path.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.selectRemove = function (brick) {
   eYo.dom.removeNode(brick.dom.svg.pathSelect_)
@@ -798,7 +798,7 @@ eYo.svg.Brick_p.selectRemove = function (brick) {
 
 /**
  * Add the hilight path_ to the dom.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.magnetAdd = function (brick) {
   var svg = brick.dom.svg
@@ -809,7 +809,7 @@ eYo.svg.Brick_p.magnetAdd = function (brick) {
 
 /**
  * Remove the select path from the dom.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.magnetRemove = function (brick) {
   eYo.dom.removeNode(brick.dom.svg.pathMagnet_)
@@ -817,7 +817,7 @@ eYo.svg.Brick_p.magnetRemove = function (brick) {
 
 /**
  * The svg group has an `eyo-top` class.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.statusTopAdd = function (brick) {
   eYo.dom.classlist.add(brick.dom.svg.group_, 'eyo-top')
@@ -825,7 +825,7 @@ eYo.svg.Brick_p.statusTopAdd = function (brick) {
 
 /**
  * The svg group has no `eyo-top` class.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.statusTopRemove = function (brick) {
   eYo.dom.classlist.remove(brick.dom.svg.group_, 'eyo-top')
@@ -833,7 +833,7 @@ eYo.svg.Brick_p.statusTopRemove = function (brick) {
 
 /**
  * The svg group has an `eyo-select` class.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.statusFocusAdd = function (brick) {
   var svg = brick.dom.svg
@@ -850,7 +850,7 @@ eYo.svg.Brick_p.statusFocusAdd = function (brick) {
 
 /**
  * The svg group has an `eyo-select` class.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.statusFocusRemove = function (brick) {
   var svg = brick.dom.svg
@@ -864,7 +864,7 @@ eYo.svg.Brick_p.statusFocusRemove = function (brick) {
 
 /**
  * Get the displayed status of the given brick.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.displayedGet = function (brick) {
   var g =  brick.dom.svg.group_
@@ -875,7 +875,7 @@ eYo.svg.Brick_p.displayedGet = function (brick) {
 
 /**
  * Set the displayed status of the given brick.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @param {boolean} visible  the expected visibility status
  */
 eYo.svg.Brick_p.displayedSet = function (brick, visible) {
@@ -892,7 +892,7 @@ eYo.svg.Brick_p.displayedSet = function (brick, visible) {
 
 /**
  * Draw/hide the sharp.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  * @private
  */
 eYo.svg.Brick_p.drawSharp = function (brick, visible) {
@@ -931,7 +931,7 @@ eYo.svg.Brick_p.drawSharp = function (brick, visible) {
 
 /**
  * Set the dosplay mode for bricks.
- * @param {eYo.brick.Base} mode  The brick to edit.
+ * @param {eYo.brick.BaseC9r} mode  The brick to edit.
  * @param {Boolean} dragging  The display mode for bocks.
  */
 eYo.svg.Brick_p.setDragging = (brick, dragging) => {
@@ -952,7 +952,7 @@ eYo.svg.Brick_p.setDragging = (brick, dragging) => {
 
 /**
  * Move the brick to the top level.
- * @param {eYo.brick.Base} brick  the brick the driver acts on
+ * @param {eYo.brick.BaseC9r} brick  the brick the driver acts on
  */
 eYo.svg.Brick_p.parentSet = function (brick, parent) {
   var svg = brick.dom.svg
@@ -984,7 +984,7 @@ eYo.svg.Brick_p.parentSet = function (brick, parent) {
 
 /**
  * Add tooltip to a brick
- * @param {eYo.brick.Base} brick
+ * @param {eYo.brick.BaseC9r} brick
  * @param {String} key
  * @param {Object} [options]
  */

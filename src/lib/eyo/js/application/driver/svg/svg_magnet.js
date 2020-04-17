@@ -20,7 +20,7 @@ eYo.svg.makeDriverC9r('Magnet')
 
 /**
  * Hilight the given magnet.
- * @param {eYo.magnet.Base} m4t
+ * @param {eYo.magnet.BaseC9r} m4t
  */
 eYo.svg.Magnet.prototype.hilight = function (m4t) {
   if (!m4t.board) {

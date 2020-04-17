@@ -44,7 +44,7 @@ eYo.dlgt.declareDlgt = function (_p) {
  * This is a root class, not to be subclassed except in singletons.
  * Any constructor's delegate is an instance of this subclass.
  * @param {Object} ns - Namespace
- * @param {String} key - a key...
+ * @param {String} id - a unique key within the namespace...
  * @param {Function} C9r - the associate constructor
  * @param {Object} model - the model used for extension
  */
@@ -52,16 +52,16 @@ eYo.dlgt.declareDlgt = function (_p) {
   object->constructor->eyo__->contructor->eyo__->constructor->eyo__...
   The Base is its own delegate's constructor
 */
-eYo.dlgt.Base = function (ns, key, C9r, model) {
+eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   Object.defineProperties(this, {
     ns: { value: eYo.isNS(ns) ? ns : eYo.NA },
-    key__: {value: key},
+    id__: {value: id},
     C9r__: { value: C9r },
     model__: { value: model },
     subC9rs__: { value: new Set() },
   })
   C9r.eyo__ = this
-  if (!C9r.eyo) { // true for subclasses of eYo.dlgt.Base
+  if (!C9r.eyo) { // true for subclasses of eYo.dlgt.BaseC9r
     var d = eYo.descriptorR(function () {
       return this.eyo__
     })
@@ -77,7 +77,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
 }
 
 {
-  let _p = eYo.dlgt.Base_p = eYo.dlgt.Base.prototype
+  let _p = eYo.dlgt.BaseC9r_p = eYo.dlgt.BaseC9r.prototype
 
   _p.init = eYo.doNothing
 
@@ -89,7 +89,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
       return this.constructor.prototype
     }),
   })
-  ;['ns', 'key', 'C9r', 'model'].forEach(k => {
+  ;['ns', 'id', 'C9r', 'model'].forEach(k => {
     let d = eYo.descriptorR(function () {
       return this[k + '__']
     })
@@ -117,7 +117,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
       return this.C9r__.SuperC9r_p
     }),
     name: eYo.descriptorR(function () {
-      return this.ns && this.key__ && `${this.ns.name}.${this.key__}` || this.key
+      return this.ns && this.id__ && `${this.ns.name}.${this.id__}` || this.id
     }),
     super: eYo.descriptorR(function () {
       var S = this.C9r__.SuperC9r
@@ -135,32 +135,57 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
       } while ((s = s.super))
       return ans
     }),
+    C9r_s_up: eYo.descriptorR(function () {
+      if (this.C9r_s_up__) {
+        return this.C9r_s_up__
+      }
+      var s = this
+      var ans = []
+      while ((s = s.super)) {
+        ans.push(s.C9r_p)
+      }
+      return (this.C9r_s_up__ = ans)
+    }),
+    C9r_s_down: eYo.descriptorR(function () {
+      return this.C9r_s_down__ || (this.C9r_s_down__ = this.C9r_s_up.reverse())
+    }),
+    C9r_p_up: eYo.descriptorR(function () {
+      if (this.C9r_p_up__) {
+        return this.C9r_p_up__
+      }
+      var s = this
+      var ans = []
+      do {
+        ans.push(s.C9r_p)
+      } while ((s = s.super))
+      return (this.C9r_p_up__ = ans)
+    }),
+    C9r_p_down: eYo.descriptorR(function () {
+      return this.C9r_p_down__ || (this.C9r_p_down__ = this.C9r_p_up.reverse())
+    }),
   })  
 
   /**
    * Make the init method of the associate contructor.
    * Any constructor must have an init method.
-   * @this {eYo.dlgt.Base}
+   * @this {eYo.dlgt.BaseC9r}
    */
   _p.makeC9rInit = function () {
     let init_m = this.model__.init
-    let C9r_s = this.C9r_s
-    let init_s = C9r_s && C9r_s.init
+    let C9r_p = this.C9r_p
+    let init_p = C9r_p && C9r_p.init
     if (init_m) {
-      console.error(this.model__)
       if (!eYo.isF(init_m)) {
         console.error('BREAK HERE!')
-      } else {
-        console.error('OKAY')
       }
       if (XRegExp.exec(init_m.toString(), eYo.xre.function_builtin)) {
-        if (init_s) {
+        if (init_p) {
           var f = function (...args) {
             try {
               this.init = eYo.doNothing
               init_m.call(this, () => {
                 this.doPrepare(...args)
-                init_s.call(this, ...args)              
+                init_p.call(this, ...args)              
                 this.doInit(...args)
               }, ...args)
             } finally {
@@ -180,7 +205,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
             }
           }
         }
-      } else if (init_s) {
+      } else if (init_p) {
         f = function (...args) {
           try {
             this.init = eYo.doNothing
@@ -188,7 +213,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
               console.error('BREAK HERE!!! !this.doPrepare')
             }
             this.doPrepare(...args)
-            init_s.call(this, ...args)
+            init_p.call(this, ...args)
             if (!eYo.isF(init_m)) {
               console.error(init_m)
               console.error('BREAK HERE!')
@@ -211,7 +236,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
           }
         }
       }
-    } else if (init_s) {
+    } else if (init_p) {
       f = function (...args) {
         try {
           this.init = eYo.doNothing
@@ -219,7 +244,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
             console.error('BREAK HERE! NO EYO')
           }
           this.doPrepare(...args)
-          init_s.call(this, ...args)
+          init_p.call(this, ...args)
           this.doInit(...args) 
         } finally {
           delete this.dispose
@@ -239,7 +264,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
         }
       }
     }
-    this.C9r_p.init = f
+    C9r_p.init = f
   }
   
   _p.doPrepare = eYo.doNothing
@@ -250,17 +275,17 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
    */
   _p.makeC9rDispose = function () {
     let dispose_m = this.model__.dispose
-    let C9r_s = this.C9r_s
-    let dispose_s = C9r_s && C9r_s.dispose
+    let C9r_p = this.C9r_p
+    let dispose_p = C9r_p && C9r_p.dispose
     if (dispose_m) {
       if (XRegExp.exec(dispose_m.toString(), eYo.xre.function_builtin)) {
-        if (dispose_s) {
+        if (dispose_p) {
           var f = function (...args) {
             try {
               this.dispose = eYo.doNothing
               dispose_m.call(this, () => {
                 this.eyo.disposeInstance(this, ...args)
-                dispose_s.call(this, ...args)              
+                dispose_p.call(this, ...args)              
               }, ...args)
             } finally {
               delete this.init
@@ -278,13 +303,13 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
             }
           }
         }
-      } else if (dispose_s) {
+      } else if (dispose_p) {
         f = function (...args) {
           try {
             this.dispose = eYo.doNothing
             dispose_m.call(this, ...args)
             this.eyo.disposeInstance(this, ...args)
-            dispose_s.call(this, ...args)
+            dispose_p.call(this, ...args)
           } finally {
             delete this.init
           }
@@ -300,12 +325,12 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
           }
         }
       }
-    } else if (dispose_s) {
+    } else if (dispose_p) {
       f = function (...args) {
         try {
           this.dispose = eYo.doNothing
           this.eyo.disposeInstance(this, ...args)
-          dispose_s.call(this, ...args)
+          dispose_p.call(this, ...args)
         } finally {
           delete this.init
         }
@@ -320,7 +345,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
         }
       }
     }
-    this.C9r_p.dispose = f
+    C9r_p.dispose = f
   }
 
   /**
@@ -358,7 +383,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
    * Iterator
    * @param {Function} helper
    * @param {Boolean} deep - Propagates when true.
-   * @this {eYo.dlgt.Base}
+   * @this {eYo.dlgt.BaseC9r}
    */
   _p.forEachSubC9r = function (f, deep) {
     if (eYo.isF(deep)) {
@@ -373,7 +398,7 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
   /**
    * Iterator
    * @param {Function} helper
-   * @this {eYo.dlgt.Base}
+   * @this {eYo.dlgt.BaseC9r}
    */
   _p.someSubC9r = function (f) {
     for (let C9r of this.subC9rs__) {
@@ -394,22 +419,22 @@ eYo.dlgt.Base = function (ns, key, C9r, model) {
  * @param {Function} C9r - the constructor associate to the delegate
  * @param {Object} model - the model object associate to the delegate, used for extension.
  */
-eYo.dlgt.new = function (ns, key, C9r, model) {
+eYo.dlgt.new = function (ns, id, C9r, model) {
   // prepare
   if (eYo.isStr(ns)) {
     model && eYo.throw(`Unexpected model (1): ${model}`)
-    ;[ns, key, C9r, model] = [eYo.NA, ns, key, C9r]
+    ;[ns, id, C9r, model] = [eYo.NA, ns, id, C9r]
   } else {
     ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw('Bad namespace')
   }
-  !key || eYo.isStr(key) || eYo.throw(`Missing key string: ${key} in eYo.dlgt.new`)
+  !id || eYo.isStr(id) || eYo.throw(`Missing id string: ${id} in eYo.dlgt.new`)
   !eYo.isF(C9r) && eYo.throw(`Unexpected C9r: ${C9r} in eYo.dlgt.new`)
   eYo.isC9r(C9r) && eYo.throw(`Already a C9r: ${C9r} in eYo.dlgt.new`)
   // process
   let SuperC9r = C9r.SuperC9r
-  let SuperDlgt = (SuperC9r && SuperC9r.eyo && SuperC9r.eyo.constructor) || eYo.dlgt.Base
-  let Dlgt = function (ns, key, C9r, model) {
-    SuperDlgt.call(this, ns, key, C9r, model)
+  let SuperDlgt = (SuperC9r && SuperC9r.eyo && SuperC9r.eyo.constructor) || eYo.dlgt.BaseC9r
+  let Dlgt = function (ns, id, C9r, model) {
+    SuperDlgt.call(this, ns, id, C9r, model)
   }
   eYo.inherits(Dlgt, SuperDlgt)
   ns === eYo.NULL_NS || eYo.isNS(ns) || (ns = SuperC9r.eyo.ns)
@@ -433,8 +458,8 @@ eYo.dlgt.new = function (ns, key, C9r, model) {
   }
   // in next function call, all the parameters are required
   // but some may be eYo.NA
-  Dlgt.eyo__ = new eYo.dlgt.Base(ns, 'Base', Dlgt, {})
-  return new Dlgt(ns, key, C9r, model)
+  Dlgt.eyo__ = new eYo.dlgt.BaseC9r(ns, 'BaseC9r', Dlgt, {})
+  return new Dlgt(ns, id, C9r, model)
 }
 
 // make a shared Dlgt for the namespaces too
@@ -444,7 +469,7 @@ eYo.dlgt.declareDlgt(eYo._p)
 // ANCHOR modelling
 {
 
-  let _p = eYo.dlgt.Base_p
+  let _p = eYo.dlgt.BaseC9r_p
   
   /**
    * Finalize the associate constructor and allow some model format.
@@ -453,7 +478,7 @@ eYo.dlgt.declareDlgt(eYo._p)
    * Raises if the `super` is not already finalized.
    * This must be done by hand because we do not know
    * what is the ancestor's model format.
-   * @name {eYo.dlgt.Base.modelAllow}
+   * @name {eYo.dlgt.BaseC9r.modelAllow}
    */
   _p.finalizeC9r = function (...$) {
     let $super = this.super
@@ -461,7 +486,7 @@ eYo.dlgt.declareDlgt(eYo._p)
     if (!this.shouldFinalizeC9r) {
       eYo.throw('finalizeC9r cannot be called twice on the same delegate.')
     }
-    let mf = this._p.modelFormat_ = new eYo.model.Format()
+    let mf = this._p.modelFormat_ = new eYo.model.Format($super && $super.modelFormat_)
     let ans = mf.allow(...$)
     this.modelPrepare()
     this.makeC9rInit()
@@ -472,7 +497,7 @@ eYo.dlgt.declareDlgt(eYo._p)
    * Finalize the associate constructor and allow some model format.
    * This must be called once for any delegate, raises otherwise.
    * Calls `modelPrepare`, `makeC9rInit` and `makeC9rDispose`.
-   * @name {eYo.dlgt.Base.modelAllow}
+   * @name {eYo.dlgt.BaseC9r.modelAllow}
    */
   _p.unfinalizeC9r = function () {
     if (this._p.hasOwnProperty('modelFormat_')) {
@@ -482,14 +507,16 @@ eYo.dlgt.declareDlgt(eYo._p)
   }
 
   /**
-   * @name {eYo.dlgt.Base.modelValidate}
+   * Forwards all the arguments to the `modelFormat` of the receiver.
+   * @name {eYo.dlgt.BaseC9r.modelValidate}
+   * @return {Object} a validated model object
    */
   _p.modelValidate = function (...$) {
     return this.modelFormat.validate(...$)
   }
 
   /**
-   * @name{eYo.dlgt.Base.modelIsAllowed}
+   * @name{eYo.dlgt.BaseC9r.modelIsAllowed}
    * @return {Boolean} Whether the key is authorized with the given path.
    */
   _p.modelIsAllowed = function (...$) {
@@ -521,7 +548,14 @@ eYo.dlgt.declareDlgt(eYo._p)
 
 // ANCHOR: Model
 {
-  let _p = eYo.dlgt.Base_p // Base.prototype
+  let _p = eYo.dlgt.BaseC9r_p // Base.prototype
+
+  /**
+   * For subclassers.
+   * @param {String} [key] - 
+   * @param {Object} model - model object
+   */
+  _p.modelHandle = eYo.doNothing
 
   /**
    * Declare the given model for the associate constructor.
@@ -534,7 +568,7 @@ eYo.dlgt.declareDlgt(eYo._p)
   }
 
   /**
-   * Declare the given model for the associate constructor.
+   * Prepare the model fo the receiver.
    * The default implementation just calls `modelMerge` after `modelValidate`.
    * Called by `finalizeC9r`.
    * 
@@ -560,20 +594,20 @@ eYo.dlgt.declareDlgt(eYo._p)
   })
 }
 
-// The delegate of `eYo.dlgt.Base` is an instance of itself.
-new eYo.dlgt.Base(eYo.dlgt, 'Base…', eYo.dlgt.Base, {})
+// The delegate of `eYo.dlgt.BaseC9r` is an instance of itself.
+new eYo.dlgt.BaseC9r(eYo.dlgt, 'Base…', eYo.dlgt.BaseC9r, {})
 
-eYo.dlgt.Base.eyo.finalizeC9r()
+eYo.dlgt.BaseC9r.eyo.finalizeC9r()
 
 /**
  * This namespace method populates the namespace's base delegate
  * with some methods to manage a data model with many possible attributes.
  * 
- * @param{String} key - Key is one of 'p6y', 'data', 'field', 'slots'
+ * @param{String} key - key is one of 'p6y', 'data', 'field', 'slots'
  * @param{String} path - Path, the separator is '/'
  * @param{Object} [manyModel] - Object, read only.
  */
-eYo.dlgt.Base_p.enhanceMany = function (key, path, manyModel = {}) {
+eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
   let _p = this._p
   /* fooModelByKey__ is a key -> model object with no prototype.
    * Void at startup.
@@ -638,7 +672,7 @@ eYo.dlgt.Base_p.enhanceMany = function (key, path, manyModel = {}) {
   _p[kMerge] = function (source) {
     delete this[kModelMap] // delete the shortcut
     this.forEachSubC9r(C9r => C9r.eyo[kMerge]({})) // delete the cache of descendants
-    ;(this.ns || eYo.c9r).modelExpand(source, path)
+    source = this.modelValidate(path, source)
     let byKey = this[kModelByKey__]
     eYo.provideR(byKey, source)
   }
@@ -660,7 +694,7 @@ eYo.dlgt.Base_p.enhanceMany = function (key, path, manyModel = {}) {
       while (true) {
         if ((k = todo.pop())) {
           let model = map.get(k)
-          if (model.after) {
+          if (model && model.after) {
             if (eYo.isStr(model.after)) {
               if (!done.includes(model.after) && (todo.includes(model.after) || again.includes(model.after))) {
                 again.push(k)
@@ -762,7 +796,7 @@ eYo.dlgt.Base_p.enhanceMany = function (key, path, manyModel = {}) {
    */
   _p[kInit] = manyModel.init || function (object, ...$) {
     for (let v of object[kMap].values()) {
-      let init = v && object[v.key + KInit]
+      let init = v && object[v.id + KInit]
       init && init.call(object, v, ...$)
       v.init && v.init(...$)
     }
@@ -770,7 +804,7 @@ eYo.dlgt.Base_p.enhanceMany = function (key, path, manyModel = {}) {
   _p[kDispose] = manyModel.dispose || function(object, ...$) {
     for (let v of object[kMap].values()) {
       if (v.owner === object) {
-        let dispose = object[v.key + KDispose]
+        let dispose = object[v.id + KDispose]
         dispose && dispose.call(object, v, ...$)
         v.dispose && v.dispose(...$)
       }

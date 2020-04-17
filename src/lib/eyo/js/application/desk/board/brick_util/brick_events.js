@@ -15,7 +15,7 @@
 
 /**
  * Convenient shortcut.
- * @param {eYo.brick.Base} brick  The newly created brick.
+ * @param {eYo.brick.BaseC9r} brick  The newly created brick.
  * @param {Boolean|String} [group]  eventually set a group.
  */
 eYo.event.Mngr_p.fireBrickCreate = function (brick, group) {
@@ -27,7 +27,7 @@ eYo.event.Mngr_p.fireBrickCreate = function (brick, group) {
 
 /**
  * Convenient shortcut.
- * @param {eYo.brick.Base} brick  The newly created brick.
+ * @param {eYo.brick.BaseC9r} brick  The newly created brick.
  */
 eYo.event.Mngr_p.fireBrickChange = function (brick, element, name, before, after) {
   if (this.enabled) {
@@ -37,7 +37,7 @@ eYo.event.Mngr_p.fireBrickChange = function (brick, element, name, before, after
 
 /**
  * Convenient shortcut.
- * @param {eYo.brick.Base} brick  The moved brick.
+ * @param {eYo.brick.BaseC9r} brick  The moved brick.
  * @param {Function} move  the move action, signature: (event) -> void
  */
 eYo.event.Mngr_p.fireBrickMove = function (brick, move) {
@@ -56,7 +56,7 @@ eYo.event.Mngr_p.fireBrickMove = function (brick, move) {
 
 /**
  * Abstract class for a brick event.
- * @param {eYo.brick.Base} brick The brick this event corresponds to.
+ * @param {eYo.brick.BaseC9r} brick The brick this event corresponds to.
  * @extends {eYo.event.Abstract}
  * @constructor
  */
@@ -80,7 +80,7 @@ eYo.event.Abstract.makeInheritedC9r('BrickBase', {
 
 /**
  * Class for a brick change event.
- * @param {eYo.brick.Base} brick The changed brick.
+ * @param {eYo.brick.BaseC9r} brick The changed brick.
  * @param {string} element One of 'field', 'collapsed', 'disabled', etc.
  * @param {string} [name] Name of slot or field affected, or null.
  * @param {*} before - Previous value of element.
@@ -166,7 +166,7 @@ eYo.event.BrickChange_p.run = function(redo) {
 
 /**
  * Class for a brick creation event.
- * @param {eYo.brick.Base} brick The created brick.
+ * @param {eYo.brick.BaseC9r} brick The created brick.
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
@@ -217,7 +217,7 @@ eYo.event.BrickCreate_p.run = function(forward) {
 
 /**
  * Class for a brick deletion event.
- * @param {eYo.brick.Base} brick The deleted brick.
+ * @param {eYo.brick.BaseC9r} brick The deleted brick.
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
@@ -271,7 +271,7 @@ eYo.event.BrickDelete_p.run = function(forward) {
 
 /**
  * Class for a brick move event.  Created before the move.
- * @param {eYo.brick.Base} brick The moved brick.
+ * @param {eYo.brick.BaseC9r} brick The moved brick.
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
@@ -399,7 +399,7 @@ eYo.event.BrickMove_p.run = function(forward) {
   }
 }
 
-eYo.data.Base.eyo.methodsMerge({
+eYo.data.BaseC9r.eyo.methodsMerge({
   /**
    * set the value of the property,
    * without validation but with undo and synchronization.

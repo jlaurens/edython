@@ -1,22 +1,22 @@
 describe('DFS Tests', function() {
   it(`DFS: Basic`, function() {
     chai.assert(eYo.dfs)
-    chai.assert(eYo.dfs.Base)
+    chai.assert(eYo.dfs.BaseC9r)
     chai.assert(eYo.dfs.Dlgt_p)
-    chai.assert(eYo.dfs.enhancedMany)
+    chai.assert(eYo.dfs.enhanceMany)
   })
-  it(`eYo.dfs.enhancedMany`, function() {
+  it(`eYo.dfs.enhanceMany`, function() {
     let ns = eYo.dfs.makeNS()
     chai.expect(() => {
-      ns.enhancedMany('foo')
+      ns.enhanceMany('foo')
     }).throw
   })
-  it(`eYo.dfs.enhancedMany 0`, function() {
+  it(`eYo.dfs.enhanceMany 0`, function() {
     let ns = eYo.dfs.makeNS()
-    ns.makeBase()
-    ns.enhancedMany('foo')
+    ns.makeBaseC9r()
+    ns.enhanceMany('foo')
     chai.expect(() => {
-      ns.enhancedMany('foo')
+      ns.enhanceMany('foo')
     }).throw
     let _p = ns.Dlgt_p
     ;[
@@ -32,11 +32,11 @@ describe('DFS Tests', function() {
       chai.assert(_p.hasOwnProperty('foo' + k))
     })
   })
-  it(`eYo.dfs.enhancedMany 1`, function() {
+  it(`eYo.dfs.enhanceMany 1`, function() {
     let ns = eYo.dfs.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     let unik = 'foo' + eYo.genUID(10, 'alnum')
-    ns.enhancedMany(unik)
+    ns.enhanceMany(unik)
     let onr = {}
     var b = ns.new(onr)
     let flag = []
@@ -49,11 +49,11 @@ describe('DFS Tests', function() {
     })
     chai.expect(flag.length).equal(0)
   })
-  it(`eYo.dfs.enhancedMany 1`, function() {
+  it(`eYo.dfs.enhanceMany 1`, function() {
     let ns = eYo.dfs.makeNS()
-    ns.makeBase()
+    ns.makeBaseC9r()
     let unik = 'foo' + eYo.genUID(10, 'alnum')
-    ns.enhancedMany(unik)
+    ns.enhanceMany(unik)
     let onr = {}
     var b = ns.new(onr)
     let flag = []
@@ -65,7 +65,7 @@ describe('DFS Tests', function() {
       flag.push(x)
     })
     chai.expect(flag.length).equal(0)
-    ns.Base.eyo[unik + 'Merge']({
+    ns.BaseC9r.eyo[unik + 'Merge']({
       a: {
         value: 1,
       },
@@ -77,7 +77,7 @@ describe('DFS Tests', function() {
       b = ns.new(onr)
     }).throw
     let foo = eYo.c9r.makeNS(eYo, unik)
-    foo.makeBase({
+    foo.makeBaseC9r({
       init (what) {
         this.value = what
       }

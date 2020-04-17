@@ -2,13 +2,13 @@ describe('driver', function() {
   it ('Driver: Basic', function () {
     chai.assert(eYo.driver)
     chai.assert(eYo.isF(eYo.driver.Dlgt))
-    chai.assert(eYo.isF(eYo.driver.Base))
+    chai.assert(eYo.isF(eYo.driver.BaseC9r))
     chai.assert(eYo.isF(eYo.driver.DlgtMngr))
     chai.assert(eYo.isF(eYo.driver.makeMngr))
     chai.assert(eYo.isF(eYo.driver.makeDriverC9r))
   })
   it ('Driver: Base', function () {
-    var d = new eYo.driver.Base(NS)
+    var d = new eYo.driver.BaseC9r(NS)
     chai.assert(d)
     chai.assert(eYo.isF(d.initUI))
     chai.assert(eYo.isF(d.disposeUI))
@@ -21,7 +21,7 @@ describe('driver', function() {
     chai.expect(ns.Mngr.eyo.constructor).equal(eYo.driver.DlgtMngr)
     chai.assert(ns.makeMngr)
     chai.assert(ns.makeDriverC9r)
-    chai.expect(ns.Base).equal(eYo.driver.Base)
+    chai.expect(ns.BaseC9r).equal(eYo.driver.BaseC9r)
     chai.expect(ns.Dlgt).equal(eYo.driver.Dlgt)
     chai.expect(ns.DlgtMngr).equal(eYo.driver.DlgtMngr)
     ns.makeNS('a')
@@ -54,7 +54,7 @@ describe('driver', function() {
     var ns = eYo.driver.makeNS()
     ns.makeMngr()
     var flag
-    ns.makeBase({
+    ns.makeBaseC9r({
       init () {
         flag += 421
       }
@@ -96,8 +96,8 @@ describe('driver', function() {
     var flag
     var ns = eYo.driver.makeNS()
     ns.makeMngr()
-    var Super = (ns.super && ns.super[name])|| ns.Base
-    chai.expect(Super).equal(ns.Base)
+    var Super = (ns.super && ns.super[name])|| ns.BaseC9r
+    chai.expect(Super).equal(ns.BaseC9r)
     ns.makeDriverC9r('Foo', {
       init () {
         flag += 1

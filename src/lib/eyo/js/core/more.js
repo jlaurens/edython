@@ -11,6 +11,7 @@
  */
 'use strict'
 
+eYo.forward('o3d')
 eYo.forward('do')
 eYo.forward('xre')
 eYo.forward('decorate')
@@ -61,6 +62,9 @@ eYo.more.iterators = function (what, key) {
  * @param{Boolean} thisIsOwner - whether `this` in the model, is the owner or the local object
  */
 eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
+
+  eyo instanceof eYo.o3d.Dlgt || eYo.throw(`Bar parameter ${this.name}/enhanceO3dValidate needs an instance of eYo.o3d.Dlgt instead fo ${eyo}`)
+
   /**
    * Fallback to validate the value of the attribute;
    * Default implementation forwards to an eventual `fooValidate` method
@@ -97,23 +101,25 @@ eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
    * @param{String} key - The key used in object constructors.
    * @param{Object} model - Models used in constructors.
    */
-  eyo.eyo.C9r_p.modelHandleValidate = thisIsOwner
+  eyo._p.modelHandleValidate = thisIsOwner
   ? function(key, model) {
     let _p = this.C9r_p
     let validate_m = model.validate
-    let validate_s = this.C9r_s.validate
+    let validate_p = _p.validate || function (before, after) {
+      return after
+    }
     if (eYo.isF(validate_m)) {
       if (validate_m.length > 2) {
         // builtin/before/after
         _p.validate = function (before, after) {
           return validate_m.call(this.owner, (before, after) => {
-            return validate_s.call(this, before, after)
+            return validate_p.call(this, before, after)
           }, before, after)
         }
       } else if (XRegExp.exec(validate_m.toString(), eYo.xre.function_builtin)) {
         _p.validate = function (before, after) {
           return validate_m.call(this.owner, (after) => {
-            return validate_s.call(this, before, after)
+            return validate_p.call(this, before, after)
           }, after)
         }
       } else {
@@ -130,35 +136,35 @@ eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
   } : function(key, model) {
     let _p = this.C9r_p
     let validate_m = model.validate
-    let validate_s = this.C9r_s.validate
+    let validate_p = _p.validate || function (before, after) {
+      return after
+    }
     if (eYo.isF(validate_m)) {
       if (validate_m.length > 2) {
         // builtin/before/after
         _p.validate = eYo.decorate.reentrant('validate', function (before, after) {
           return validate_m.call(this, (before, after) => {
-            return validate_s.call(this, before, after)
+            return validate_p.call(this, before, after)
           }, before, after)
         })
       } else if (XRegExp.exec(validate_m.toString(), eYo.xre.function_builtin)) {
         _p.validate = eYo.decorate.reentrant('validate', function (before, after) {
           return validate_m.call(this, (after) => {
-            return validate_s.call(this, before, after)
+            return validate_p.call(this, before, after)
           }, after)
         })
       } else {
         _p.validate = validate_m.length > 1
         ? function (before, after) {
           try {
-            this.validate = validate_s
+            this.validate = validate_p
             return validate_m.call(this, before, after)
           } finally {
             delete this.validate
           }
         } : function (before, after) {
           try {
-            this.validate = function (after) {
-              return validate_s.call(this, before, after)
-            }
+            this.validate = validate_p
             return validate_m.call(this, after)
           } finally {
             delete this.validate

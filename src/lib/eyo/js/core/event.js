@@ -17,7 +17,7 @@
  * @name {eYo.event}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'event', {
+eYo.o4t.makeNS(eYo, 'event', {
   /**
    * Maximum number of undo events in stack. `0` turns off undo, `Infinity` sets it to unlimited (provided there is enough memory!).
    * @type {number}
@@ -31,7 +31,7 @@ eYo.o3d.makeNS(eYo, 'event', {
 })
 
 // No special Base class
-eYo.event.makeBase()
+eYo.event.makeBaseC9r()
 
 /**
  * An event manager.
@@ -39,7 +39,7 @@ eYo.event.makeBase()
  * @constructor
  */
 eYo.event.makeC9r('Mngr', {
-  init (onr) {
+  init () {
     // Private properties
     this.group__ = ''
     this.level__ = 0
@@ -156,6 +156,8 @@ eYo.event.makeC9r('Mngr', {
     },
   },
 })
+
+eYo.event.Mngr.eyo.finalizeC9r()
 
 /**
  * Create a custom event and fire it.

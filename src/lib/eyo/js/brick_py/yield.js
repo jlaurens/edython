@@ -158,7 +158,7 @@ eYo.expr.makeC9r('yield_expr', true, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.Base} brick The brick.
+ * @param {eYo.brick.BaseC9r} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
  * @private
  */
@@ -178,7 +178,7 @@ eYo.stmt.makeC9r('yield_stmt', true, {
 
 /**
  * Populate the context menu for the given brick.
- * @param {eYo.brick.Base} brick The brick.
+ * @param {eYo.brick.BaseC9r} brick The brick.
  * @param {eYo.MenuManager} mngr - mngr.menu is the menu to populate.
  * @private
  */

@@ -1,6 +1,8 @@
 describe ('Tests: font', function () {
   it ('Font: basic', function () {
     chai.assert(eYo.font)
+  })
+  it ('Font: basic', function () {
     chai.expect(eYo.font.ascent).equal(13)
     chai.expect(eYo.isDef(eYo.font.familyMono)).true
     chai.expect(eYo.isDef(eYo.font.familySans)).true

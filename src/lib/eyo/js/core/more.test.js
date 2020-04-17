@@ -2,16 +2,18 @@ describe ('Tests: More', function () {
   this.timeout(10000)
   let flag = {
     v: 0,
-    reset () {
-      this.v = 0
+    reset (what) {
+      this.v = what || 0
     },
-    push (what) {
-      this.v *= 10
-      this.v += what
+    push (...$) {
+      $.forEach(what => {
+        what && (this.v = parseInt(this.v.toString() + what.toString()))
+      })
     },
     expect (what) {
-      chai.expect(this.v).equal(what)
-      this.v = 0
+      let ans = chai.expect(this.v).equal(what)
+      this.reset()
+      return ans
     },
   }
   it ('More: Basic', function () {
@@ -49,205 +51,231 @@ describe ('Tests: More', function () {
     flag.expect(12)
   })
   it ('eYo.more.enhanceO3dValidate(, , false)', function () {
-    let C9r_p = {}
-    let eyoC9r_p = {}
-    let eyo = {
-      C9r_p,
-      eyo: {
-        C9r_p: eyoC9r_p
-      }
-    }
-    eYo.more.enhanceO3dValidate(eyo, 'foo', false)
-    chai.expect(C9r_p.validate)
-    chai.expect(eyo.modelHandleValidate)
-    C9r_p.validate(1, 2)
+    let ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
+    chai.assert(ns.BaseC9r_p.validate)
+    chai.assert(ns.BaseC9r.eyo.modelHandleValidate)
+    ns.BaseC9r_p.validate(1, 2)
   })
   it ('eYo.more.enhanceO3dValidate(, , false)', function () {
     flag.reset()
-    let owner = {
-      flag: 9,
-    }
-    let C9r_p = {
-      owner,
-    }
-    let eyoC9r_p = {}
-    let eyo = {
-      C9r_p,
-      eyo: {
-        C9r_p: eyoC9r_p
-      }
-    }
-    eYo.more.enhanceO3dValidate(eyo, 'foo', false)
-    chai.expect(C9r_p.validate)
-    chai.expect(eyo.modelHandleValidate)
-    C9r_p.validate(1, 2)
+    let owner = eYo.c9r.new()
+    owner.flag = 9
+    var ns = eYo.c9r.makeNS()
+    ns.makeBaseC9r()
+    chai.expect(() => {
+      eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
+    }).throw()
+    ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
+    chai.expect(ns.BaseC9r_p.validate)
+    chai.expect(ns.BaseC9r.eyo.modelHandleValidate)
+    ns.BaseC9r_p.validate(1, 2)
     owner.fooValidate = function (before, after) {
       flag.push(before)
       flag.push(after)
       flag.push(this.flag)
       return after
     }
-    C9r_p.validate(1, 2)
+    var o = ns.new(owner, 'bar')
+    o.validate(1, 2)
     flag.expect(129)
-    C9r_p.key = 'bar'
     owner.barFooValidate = function (before, after) {
       flag.push(before)
       flag.push(after)
       flag.push(this.flag)
       return after
     }
-    C9r_p.validate(1, 2)
+    o.validate(1, 2)
     flag.expect(129129)
   })
-  it ('modelHandleValidate(..., false)', function () {
+  it ('modelHandleValidate(..., false) + inheritance', function () {
+    // `this` is not the owner in validate.
     flag.reset()
-    let owner_s = {
-      flag: 1,
-    }
-    let C9r_s = {
-      owner: owner_s,
-      flag: 2,
-    }
-    let owner_p = {
-      flag: 3,
-    }
-    let C9r_p = {
-      owner: owner_p,
-      flag: 4,
-    }
-    let eyo = {
-      C9r_p,
-      C9r_s,
-    }
-    eyo.eyo = {
-      C9r_p: eyo
-    }
-    eYo.more.enhanceO3dValidate(eyo, 'foo', false)
-    chai.expect(C9r_s.validate)
-    chai.expect(eyo.modelHandleValidate)
-    eyo.modelHandleValidate('foo', {})
-    eyo.C9r_p.validate(1, 2)
-    flag.expect(0)
-    C9r_s.validate = function (before, after) {
-      flag.push(before)
-      flag.push(after)
-      flag.push(this.flag)
-      return after
-    }
-    eyo.modelHandleValidate('foo', {})
-    eyo.C9r_p.validate(1, 2)
-    flag.expect(0)
-    eyo.modelHandleValidate('foo', {
+    let ns_o = eYo.c9r.makeNS()
+    ns_o.makeBaseC9r({
+      methods: {
+        fooValidate(before, after) {
+          flag.push(before)
+          flag.push(after)
+          return after
+        }
+      }
+    })
+    let owner = ns_o.new()
+    var ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
+    chai.expect(eYo.isF(ns.BaseC9r_p.validate)).true
+    ns.makeC9r('Foo')
+    var o = new ns.Foo(owner, 'foo')
+    o.flag = 9
+    chai.expect(o.validate)
+    chai.expect(ns.BaseC9r.eyo.modelHandleValidate)
+    ns.BaseC9r.eyo.modelHandleValidate('foo', {})
+    o.validate(1, 2)
+    flag.expect(12) // from the owner
+    ////
+    ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
+    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o.flag = 9
+    ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (before, after) {
-        flag.push(before)
-        flag.push(after)
-        flag.push(this.flag+1)
+        flag.push(before + 2)
+        flag.push(after + 2)
+        flag.push(this.flag)
         return after
       },
     })
-    eyo.C9r_p.validate(1, 2)
-    flag.expect(125)
-    eyo.modelHandleValidate('foo', {
+    o.validate(1, 2)
+    flag.expect(349) // from the receiver only
+    ////
+    ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
+    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o.flag = 9
+    ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (before, after) {
         after = this.validate(before, after)
-        flag.push(before)
-        flag.push(after)
-        flag.push(this.flag+1)
+        flag.push(before + 2)
+        flag.push(after + 2)
+        flag.push(this.flag)
         return after
       },
     })
-    eyo.C9r_p.validate(1, 2)
-    flag.expect(124125)
-    eyo.modelHandleValidate('foo', {
+    o.validate(1, 2)
+    flag.expect(12349) // from the receiver only
+    ////
+    ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
+    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o.flag = 9
+    ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (builtin, before, after) {
-        flag.push(before)
-        flag.push(after)
-        flag.push(this.flag+1)
+        flag.push(before + 2)
+        flag.push(after + 2)
+        flag.push(this.flag)
         return after
       },
     })
-    eyo.C9r_p.validate(1, 2)
-    flag.expect(125)
-    eyo.modelHandleValidate('foo', {
+    o.validate(1, 2)
+    flag.expect(349) // from the receiver only
+    ////
+    ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
+    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o.flag = 9
+    ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (builtin, before, after) {
         after = builtin(before, after)
-        flag.push(before)
-        flag.push(after)
-        flag.push(this.flag+1)
+        flag.push(before + 2)
+        flag.push(after + 2)
+        flag.push(this.flag)
         return after
       },
     })
-    eyo.C9r_p.validate(1, 2)
-    flag.expect(124125)
+    o.validate(1, 2)
+    flag.expect(12349) // from the receiver only
   })
   it ('eYo.more.enhanceO3dValidate(, , true)', function () {
-    let owner_s = {
-      flag: 1,
-    }
-    let C9r_s = {
-      owner: owner_s,
-      flag: 2,
-    }
-    let owner_p = {
-      flag: 3,
-    }
-    let C9r_p = {
-      owner: owner_p,
-      flag: 4,
-    }
-    let eyo = {
-      C9r_p,
-      C9r_s,
-    }
-    eyo.eyo = {
-      C9r_p: eyo
-    }
-    eYo.more.enhanceO3dValidate(eyo, 'foo', true)
-    chai.expect(C9r_s.validate)
-    chai.expect(eyo.modelHandleValidate)
-    eyo.modelHandleValidate('foo', {})
-    eyo.C9r_p.validate(1, 2)
-    flag.expect(0)
-    C9r_s.validate = function (before, after) {
-      flag.push(before)
-      flag.push(after)
-      flag.push(this.flag)
-      return after
-    }
-    eyo.modelHandleValidate('foo', {})
-    eyo.C9r_p.validate(1, 2)
-    flag.expect(0)
-    eyo.modelHandleValidate('foo', {
+    // `this` is the owner in validate.
+    flag.reset()
+    let ns_o = eYo.c9r.makeNS()
+    ns_o.makeBaseC9r({
+      methods: {
+        fooValidate(before, after) {
+          flag.push(before)
+          flag.push(after)
+          flag.push(this.flag)
+          return after
+        }
+      }
+    })
+    let owner = ns_o.new()
+    owner.flag = 9
+    var ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', true)
+    chai.expect(eYo.isF(ns.BaseC9r_p.validate)).true
+    ns.makeC9r('Foo')
+    var o = new ns.Foo(owner, 'foo')
+    chai.expect(o.validate)
+    chai.expect(ns.BaseC9r.eyo.modelHandleValidate)
+    ns.BaseC9r.eyo.modelHandleValidate('foo', {})
+    o.validate(1, 2)
+    flag.expect(129) // from the owner
+    ////
+    ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', true)
+    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (before, after) {
-        flag.push(before)
-        flag.push(after)
-        flag.push(this.flag+1) // expected 3+1
+        flag.push(before + 2)
+        flag.push(after + 2)
+        flag.push(this.flag)
         return after
       },
     })
-    eyo.C9r_p.validate(1, 2)
-    flag.expect(124)
-    eyo.modelHandleValidate('foo', {
+    o.validate(1, 2)
+    flag.expect(349) // from the receiver only
+    ////
+    ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', true)
+    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o.flag = 9
+    ns.BaseC9r.eyo.modelHandleValidate('foo', {
+      validate (before, after) {
+        after = this.validate(before, after)
+        flag.push(before + 2)
+        flag.push(after + 2)
+        flag.push(this.flag)
+        return after
+      },
+    })
+    chai.expect(() => {
+      o.validate(1, 2)
+    }).throw()
+    ////
+    ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', true)
+    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o.flag = 9
+    ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (builtin, before, after) {
-        flag.push(before)
-        flag.push(after)
-        flag.push(this.flag+1) // expected 3+1
+        flag.push(before + 2)
+        flag.push(after + 2)
+        flag.push(this.flag)
         return after
       },
     })
-    eyo.C9r_p.validate(1, 2)
-    flag.expect(124)
-    eyo.modelHandleValidate('foo', {
+    o.validate(1, 2)
+    flag.expect(349) // from the receiver only
+    ////
+    ns = eYo.o3d.makeNS()
+    ns.makeBaseC9r()
+    eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', true)
+    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o.flag = 9
+    ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (builtin, before, after) {
         after = builtin(before, after)
-        flag.push(before)
-        flag.push(after)
-        flag.push(this.flag+1)
+        flag.push(before + 2)
+        flag.push(after + 2)
+        flag.push(this.flag)
         return after
       },
     })
-    eyo.C9r_p.validate(1, 2)
-    flag.expect(124124)
-
+    o.validate(1, 2)
+    flag.expect(129349) // from the receiver only
   })
 })

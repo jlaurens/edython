@@ -32,19 +32,19 @@ eYo.o3d.makeNS(eYo, 'dfs', {
 /**
  * Class for a basic object indirectly owned by a brick.
  * 
- * @name {eYo.dfs.Base}
+ * @name {eYo.dfs.BaseC9r}
  * @constructor
- * @param {eYo.brick|eYo.slot.Base|eYo.magnet.Base} owner - the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
+ * @param {eYo.brick|eYo.slot.BaseC9r|eYo.magnet.BaseC9r} owner - the immediate owner of this magnet. When not a brick, it is indirectly owned by a brick.
  * @readonly
  * @property {eYo.brick.UI} ui - The ui object used for rendering.
  * @readonly
- * @property {eYo.brick.Base} brick - The brick.
+ * @property {eYo.brick.BaseC9r} brick - The brick.
  * @readonly
- * @property {eYo.slot.Base} slot - The slot.
+ * @property {eYo.slot.BaseC9r} slot - The slot.
  * @readonly
- * @property {eYo.magnet.Base} magnet - The magnet.
+ * @property {eYo.magnet.BaseC9r} magnet - The magnet.
  */
-eYo.dfs.makeBase({
+eYo.dfs.makeBaseC9r({
   aliases: {
     'brick.ui': 'ui',
   },
@@ -55,7 +55,7 @@ eYo.dfs.makeBase({
   },
 })
 
-eYo.dfs.Base_p.ownerDidChange = function (before, after) {
+eYo.dfs.BaseC9r_p.ownerDidChange = function (before, after) {
   let inherited = eYo.dfs.Base_s.ownerDidChange
   inherited && inherited.call(this, before, after)
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA

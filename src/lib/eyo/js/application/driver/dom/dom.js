@@ -69,11 +69,11 @@ eYo.dom.TagName = goog.dom.TagName
 //g@@g.forwardDeclare('g@@g.events')
 
 /**
- * @name{eYo.dom.Base}
+ * @name{eYo.dom.BaseC9r}
  * The Dom delegate default class.
  * @constructor
  */
-eYo.dom.makeBase()
+eYo.dom.makeBaseC9r()
 
 /**
  * @type {eYo.dom.Mngr}
@@ -628,11 +628,11 @@ eYo.dom.on_keydown = e => {
       if (e.keyCode == 67) {
         // 'c' for copy.
         eYo.app.hideChaff()
-        eYo.app.Base.CopyBrick(eYo.app.focus_mngr.brick, deep)
+        eYo.app.BaseC9r.CopyBrick(eYo.app.focus_mngr.brick, deep)
       } else if (e.keyCode == 88 && !eYo.app.focus_mngr.brick.board.readOnly) {
         // 'x' for cut, but not in a flyout.
         // Don't even copy the selected item in the flyout.
-        eYo.app.Base.CopyBrick(eYo.app.focus_mngr.brick, deep)
+        eYo.app.BaseC9r.CopyBrick(eYo.app.focus_mngr.brick, deep)
         eYo.app.deleteBrick(eYo.app.focus_mngr.brick, deep)
       }
     }

@@ -11,24 +11,28 @@
  */
 'use strict'
 
-eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: ['CONST', 'aliases', 'properties', 'methods'],
-  CONST: '[A-Z_][A-Z_0-9]*'
-})
+eYo.require('p6y')
 
 /**
  * @name {eYo.o4t}
  * @namespace
  */
-eYo.c9r.makeNS(eYo, 'o4t')
+eYo.o3d.makeNS(eYo, 'o4t')
 
 /**
- * @name {eYo.o4t.Base}
+ * @name {eYo.o4t.BaseC9r}
  * @constructor
  */
-eYo.o4t.makeBase()
+eYo.o4t.makeBaseC9r(true)
 
-eYo.o4t.p6yEnhanced()
+eYo.o4t.BaseC9r.eyo.finalizeC9r(['aliases', 'properties', 'methods'], {
+  CONST: '[A-Z_][A-Z_0-9]*',
+  properties: {
+    [eYo.model.ANY]: eYo.p6y.BaseC9r
+  },
+})
+
+eYo.o4t.BaseC9r.eyo.p6yEnhanced()
 
 /**
  * Declare the given model for the associate constructor.
@@ -41,52 +45,28 @@ eYo.o4t.Dlgt_p.modelMerge = function (model) {
   model.methods && this.methodsMerge(model.methods)
 }
 
-/**
- * Initialize an instance with properties.
- * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
- */
-eYo.o4t.Dlgt_p.prepareInstance = function (object) {
-  this.p6yPrepare(object)
-  let $super = this.super
-  if ($super) {
-    try {
-      $super.p6yPrepare = eYo.doNothing // prevent to recreate the same properties
-      $super.prepareInstance(object)
-    } finally {
-      delete $super.p6yPrepare
-    }
-  }
-}
-
-/**
- * Declare the given aliases.
- * Used to declare synonyms.
- * @param {Map<String, String|Array<String>>} model - Object, map source -> alias.
- */
-eYo.c9r.Dlgt_p.aliasesMerge = function (aliases) {
-  let d = Object.create(null)
-  Object.keys(aliases).forEach(source => {
-    let components = source.split('.')
-    let d8r = {
-      source: components,
-      after: components[0],
-    }
-    let a = aliases[source]
-    if (eYo.isRA(a)) {
-      a.forEach(v => {
-        d[v] = d8r
-      })
-    } else {
-      d[a] = d8r
-    }
-  })
-  this.p6yMerge(d)
-}
-
 eYo.c9r._p.enhancedO4t = function () {
   let _p = this.Dlgt_p
   _p.hasOwnProperty('p6yInit') || eYo.throw('Missing p6yInit')
   _p.hasOwnProperty('p6yDispose') || eYo.throw('Missing p6yDispose')
+
+  /**
+   * Prepare an instance with properties.
+   * @param {Object} instance -  object is an instance of a subclass of the `C9r` of the receiver
+   */
+  _p.prepareInstance = function (instance) {
+    this.p6yPrepare(instance)
+    let $super = this.super
+    if ($super) {
+      try {
+        $super.p6yPrepare = eYo.doNothing // prevent to recreate the same properties
+        $super.prepareInstance(instance)
+      } finally {
+        delete $super.p6yPrepare
+      }
+    }
+  }
+
   /**
    * Initialize an instance with valued, cached, owned and copied properties.
    * @param {Object} object -  object is an instance of a subclass of the `C9r_` of the receiver
@@ -307,7 +287,7 @@ eYo.c9r._p.enhancedO4t = function () {
    * @param {Object} [$this] - Optional this, cannot be a function
    * @param{Function} f -  an helper with one argument which is the owned value.
    */
-  this.Base_p.ownedForEach = function ($this, f) {
+  this.BaseC9r_p.ownedForEach = function ($this, f) {
     if (eYo.isF($this)) {
       [$this, f] = [f, $this]
     }
@@ -319,7 +299,7 @@ eYo.c9r._p.enhancedO4t = function () {
    * @param {Object} [$this] - Optional this, cannot be a function
    * @param{Function} f -  an helper with one argument which is the owned value.
    */
-  this.Base_p.ownedSome = function ($this, f) {
+  this.BaseC9r_p.ownedSome = function ($this, f) {
     if (eYo.isF($this)) {
       [$this, f] = [f, $this]
     }

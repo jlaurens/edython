@@ -10,7 +10,8 @@
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 
- eYo.forward('padding')
+eYo.require('shared')
+eYo.forward('padding')
  
 /**
  * @name{eYo.font}

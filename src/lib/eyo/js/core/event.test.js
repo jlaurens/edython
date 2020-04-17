@@ -1,14 +1,31 @@
 describe ('Tests: event', function () {
+  this.timeout(10000)
+  let flag = {
+    v: 0,
+    reset (what) {
+      this.v = what || 0
+    },
+    push (...$) {
+      $.forEach(what => {
+        what && (this.v = parseInt(this.v.toString() + what.toString()))
+      })
+    },
+    expect (what) {
+      let ans = chai.expect(this.v).equal(what)
+      this.reset()
+      return ans
+    },
+  }
+  let onr = eYo.c9r.new()
   it ('Event: basic', function () {
     chai.assert(eYo.event)
     chai.assert(eYo.event.MAX_UNDO)
     chai.assert(eYo.event.UI)
-    chai.assert(eYo.event._p.hasOwnProperty('Base'))
+    chai.assert(eYo.event._p.hasOwnProperty('BaseC9r'))
     chai.assert(eYo.event.Mngr)
   })
   it ('eYo.event.Mngr', function () {
-    let onr = {}
-    let mngr = new eYo.event.Mngr(onr)
+    let mngr = new eYo.event.Mngr(onr, 'mngr', {})
     chai.expect(mngr.MAX_UNDO).equal(eYo.event.MAX_UNDO)
     mngr.MAX_UNDO_ *= 2
     chai.expect(mngr.MAX_UNDO).equal(2 * eYo.event.MAX_UNDO)
@@ -25,8 +42,7 @@ describe ('Tests: event', function () {
     }).throw
   })
   it ('eYo.event.Mngr: wrap', function () {
-    let onr = new (eYo.c9r.makeC9r(''))()
-    let mngr = new eYo.event.Mngr(onr)
+    let mngr = new eYo.event.Mngr(onr, '', {})
     var flag = 0
     var try_f = () => {
       flag *= 10
@@ -47,8 +63,7 @@ describe ('Tests: event', function () {
     chai.expect(flag).equal(12)
   })
   it ('eYo.event.Mngr: enableWrap(0)', function () {
-    let onr = new (eYo.c9r.makeC9r(''))()
-    let mngr = new eYo.event.Mngr(onr)
+    let mngr = new eYo.event.Mngr(onr, 'foo', {})
     var try_f = () => {
       chai.expect(mngr.enabled).true
       chai.expect(mngr.disabled_).equal(0)
@@ -74,8 +89,7 @@ describe ('Tests: event', function () {
     mngr.enableWrap(try_f, finally_f)
   })
   it ('eYo.event.Mngr: enableWrap(421)', function () {
-    let onr = new (eYo.c9r.makeC9r(''))()
-    let mngr = new eYo.event.Mngr(onr)
+    let mngr = new eYo.event.Mngr(onr, 'foo', {})
     var try_f = () => {
       chai.expect(mngr.enabled).false
       chai.expect(mngr.disabled_).equal(420)

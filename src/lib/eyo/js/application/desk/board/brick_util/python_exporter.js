@@ -91,7 +91,7 @@ eYo.py.Exporter_p.linePush = function (s) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.brick.Base} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.BaseC9r} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  See the eponym parameter in `eYo.xml.domToBrick`.
  * @return some python code
  */
@@ -155,7 +155,7 @@ eYo.py.Exporter_p.exportAsExpression_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.brick.Base} eyo The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.BaseC9r} eyo The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -219,7 +219,7 @@ eYo.py.Exporter_p.exportBrick_ = function (brick, opt) {
 /**
  * Convert the brick to python code.
  * For edython.
- * @param {eYo.brick.Base} brick The owner of the receiver, to be converted to python.
+ * @param {eYo.brick.BaseC9r} brick The owner of the receiver, to be converted to python.
  * @param {Object} [opt]  flags, `is_deep` whether next bricks should be exported too.
  * @return some python code
  */
@@ -315,7 +315,7 @@ eYo.py.Exporter_p.exportField_ = function (field) {
 
 /**
  * Export the given slot in.
- * @param {eYo.slot.Base} slot
+ * @param {eYo.slot.BaseC9r} slot
  * @param {Object} opt
  * @private
  */
@@ -342,7 +342,7 @@ eYo.py.Exporter_p.exportSlot_ = function (slot, opt) {
 
 /**
  * Export the given slot in.
- * @param {eYo.slot.Base} slot
+ * @param {eYo.slot.BaseC9r} slot
  * @private
  */
 eYo.py.Exporter_p.exportSlot_ = function (slot) {
@@ -375,7 +375,7 @@ eYo.py.Exporter_p.exportSlot_ = function (slot) {
   }
 }
 
-Object.defineProperties(eYo.brick.Base_p, {
+Object.defineProperties(eYo.brick.BaseC9r_p, {
   description: {
     get () {
       return new eYo.py.Exporter().export(this, {is_deep: true})
@@ -395,7 +395,7 @@ Object.defineProperties(eYo.brick.Base_p, {
  * @private
  * @suppress{accessControls}
  */
-eYo.field.Base_p.getPythonText_ = function() {
+eYo.field.BaseC9r_p.getPythonText_ = function() {
   return this.text
 }
 

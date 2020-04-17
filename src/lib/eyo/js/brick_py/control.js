@@ -78,7 +78,7 @@ eYo.stmt.control_p.updateCreation = function () {
  * Run the script exported from the brick.
  * @private
  */
-eYo.brick.Base_p.runScript = function () {
+eYo.brick.BaseC9r_p.runScript = function () {
   console.log('Someone should everride this method to really run some script')
 }
 

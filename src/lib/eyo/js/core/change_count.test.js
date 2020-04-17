@@ -5,9 +5,10 @@ describe ('Tests: change_count', function () {
   })
   it ('Change_count: merge', function () {
     var ns = eYo.o4t.makeNS()
-    ns.makeBase()
-    eYo.o4t.changeCount.merge(ns.Base_p)
-    let d = new ns.Base()
+    ns.makeBaseC9r()
+    eYo.o4t.changeCount.merge(ns.BaseC9r_p)
+    let onr = eYo.c9r.new()
+    let d = new ns.BaseC9r(onr, 'd')
     chai.assert(d.changeCount_p)
     chai.assert(d.updateChangeCount)
     chai.assert(d.resetChangeCount)

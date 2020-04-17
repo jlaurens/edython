@@ -1,15 +1,21 @@
-# Edython's class management
+# Class management in Edython
+
+Class declaration has been designed to be highly flexible,
+in order to allow easy refactoring and meta programming.
 
 Various `makeC9r` function are utilities to create class objects with 
 properties and methods given in an model object.
 The idea is to use a rather straightforward syntax.
 
-## Class extensions
+## Namespaces
 
-Each class is extended through a property named `eyo`.
+`eYo.foo` namespace are used to collect technologies dedicated to some definite purpose. `eYo.c9r` is the namespace for the constructors, `eYo.dlgt` is the namespace for the constructor delegates.
+
+## Class extensions through delegation.
+
+Each constructor is extended through a property named `eyo`.
 This name is sufficiently weird to avoid collisions.
-Each class is a descendant of `eYo.C9r.Dflt` whereas `eyo` object is an instance of `eYo.C9r.Dlgt` or one of its
-subclasses.
+Each class is a descendant of `eYo.C9r.BaseC9r` whereas `eyo` object is an instance of `eYo.dlgt.BaseC9r`.
 
 This extension knows the namespace owning the class.
 It also knows the unique string identifying the class: its name.
@@ -23,17 +29,19 @@ object[0] -> constructor[0] -> eyo[1] -> constructor[1] -> eyo[2] -> constructor
 
 This list is turned into an infinite loop.
 
-* object[0] is not an instance of `eYo.c9r.Dlgt`.
-* eyo[1] is an instance of `eYo.c9r.Dlgt`
-* eyo[i] is an instance of the same unexposed class for i>1
+* object[0] is not an instance of `eYo.dlgt.BaseC9r`.
+* eyo[1] is an instance of a subclass of `eYo.dlgt.BaseC9r`
+* eyo[i] is the same instance of `eYo.dlgt.BaseC9r` for i>1
+
+`eYo.dlgt.BaseC9r` is instantiated only once.
 
 This means that constructor[2] does not depend on object[0]
 and that since eyo[3], all the delegates are the same.
 
 With the `eyo` property shortcut
 
-* `object.eyo` is an instance of `eYo.c9r.Dlgt`
-* `object.eyo.eyo` is an instance of an unexposed class
+* `object.eyo` is an instance of an unexposed subclass of `eYo.dlgt.BaseC9r`
+* `object.eyo.eyo` is an instance of `eYo.dlgt.BaseC9r`
 * `object.eyo.eyo.eyo` is another instance of this unexposed class which is the same for all objects
 * `object.eyo.eyo.eyo.eyo...` is exactly the same instance
 
@@ -70,7 +78,7 @@ If `Foo` inherits from `Bar`, then model of `Foo` also from the model of `Bar`.
 
 ## Base classes
 
-Each namespace `ns` contains `ns.Dflt` which is the root class for all thge classes in that namespace. It also contains `ns.Dlgt` which the root class of the constructor delegats in that namespace.
+Each namespace `ns` contains `ns.BaseC9r` which is the root class for all thge classes in that namespace. It also contains `ns.Dlgt` which the root class of the constructor delegats in that namespace.
 
 ## Class models for Edython
 

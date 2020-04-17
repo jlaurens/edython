@@ -137,7 +137,10 @@ eYo.descriptorR = (msg, getter, configurable) => {
     [configurable, getter] = [getter, configurable]
   }
   msg && msg.lazy && (msg = msg.lazy)
-  getter || eYo.throw('Missing getter')
+  if (!getter) {
+    console.error('BREAK HERE!')
+  }
+  getter || eYo.throw('descriptorR: Missing getter')
   return {
     get: getter,
     set: eYo.noSetter(msg),
@@ -157,7 +160,7 @@ eYo.descriptorW = (msg, setter) => {
     [msg, setter] = [setter, msg]
   }
   msg && msg.lazy && (msg = msg.lazy)
-  setter || eYo.throw('Missing getter')
+  setter || eYo.throw('descriptorW / Missing setter')
   return {
     get: eYo.noGetter(msg),
     set: setter,

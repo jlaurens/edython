@@ -37,9 +37,9 @@ Object.defineProperties(eYo.attr._p, {
   },
 })
 
-// ANCHOR eYo.attr.Base_p
+// ANCHOR eYo.attr.BaseC9r_p
 /**
- * @name{eYo.attr.Base_p}
+ * @name{eYo.attr.BaseC9r_p}
  * Base property constructor.
  * The bounds between the property and the arguments are immutable.
  * For edython.
@@ -50,7 +50,7 @@ Object.defineProperties(eYo.attr._p, {
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-eYo.attr.makeBase({
+eYo.attr.makeBaseC9r({
   init (owner, key) {
     owner || eYo.throw(`${this.eyo.name}: Missing owner in init`)
     if (!eYo.isStr(key)) {
@@ -74,8 +74,8 @@ eYo.attr.makeBase({
   },
 })
 
-;(() => {
-  let _p = eYo.attr._p.Base_p
+{
+  let _p = eYo.attr._p.BaseC9r_p
 
   /**
    * @name{willChange}
@@ -196,4 +196,4 @@ eYo.attr.makeBase({
       observers && observers.forEach(f => f(before, after))
     }
   }
-}) ()
+}

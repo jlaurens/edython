@@ -121,7 +121,7 @@ Object.defineProperties(eYo.svg, {
  * @param {Element} element SVG element to find the coordinates of.
  * @return {!eYo.geom.Point} Object with .x and .y properties.
  */
-eYo.svg.Base_p.xyInParent = function(element) {
+eYo.svg.BaseC9r_p.xyInParent = function(element) {
   var xy = new eYo.geom.Point()
   // First, check for x and y attributes.
   var x = element.getAttribute('x')
@@ -163,7 +163,7 @@ eYo.svg.Base_p.xyInParent = function(element) {
  * Add tooltip to an element
  * @param {String} key
  */
-eYo.svg.Base_p.addTooltip = function (el, title, options) {
+eYo.svg.BaseC9r_p.addTooltip = function (el, title, options) {
   if (eYo.isStr(title)) {
     el.setAttribute('title', title)
     tippy(el, options)

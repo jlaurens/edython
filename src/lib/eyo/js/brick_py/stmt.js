@@ -48,7 +48,7 @@ eYo.model.allowModelPaths({
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.makeBase({
+eYo.stmt.makeBaseC9r({
   left /** @suppress {globalThis} */ (type) {
     return this.brick.head || this.brick.foot
     ? [eYo.t3.stmt.comment_stmt]
@@ -90,7 +90,7 @@ eYo.stmt.makeBase({
   }
 })
 
-eYo.brick.registerAll(eYo.t3.stmt, eYo.stmt.Base, true)
+eYo.brick.registerAll(eYo.t3.stmt, eYo.stmt.BaseC9r, true)
 
 /**
  * Insert a brick above.
@@ -101,7 +101,7 @@ eYo.brick.registerAll(eYo.t3.stmt, eYo.stmt.Base, true)
  * @param {Object} model
  * @return the created brick
  */
-eYo.stmt.Base_p.insertParentWithModel = function (model) {
+eYo.stmt.BaseC9r_p.insertParentWithModel = function (model) {
   var magnet = this.head_m
   if (magnet) {
     var parent
@@ -151,7 +151,7 @@ eYo.stmt.Base_p.insertParentWithModel = function (model) {
  * @param {string} belowPrototypeName
  * @return the created brick
  */
-eYo.stmt.Base_p.insertBrickAfter = function (belowPrototypeName) {
+eYo.stmt.BaseC9r_p.insertBrickAfter = function (belowPrototypeName) {
   return eYo.event.groupWrap(() => {
     var below = eYo.brick.newReady(this, belowPrototypeName)
     var magnet = this.foot_m

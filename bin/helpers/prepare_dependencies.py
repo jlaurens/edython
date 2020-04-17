@@ -102,8 +102,6 @@ def update_test():
       for k, v in bdd.by_file_name.items():
         print('k', '->', v)
       raise e
-    for r in d.required:
-      dd = bdd[r]
     try:
       html = HTML(path_base.with_suffix('.test.html'))
       html.head_begin()

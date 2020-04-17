@@ -37,20 +37,42 @@ eYo.makeNS('model', {
  * The shape of this tree is controlled by an instance of a 
  * eYo.model.Format.
  * No subclassing.
- * @param {eYo.model.Format} [parent] - the parent if any
- * @param {String} [key] - the relative location of the created controller within the parent, only when there is a parent
- * @param {Object} tree - a standard object
+ * @param {eYo.model.Format} [parent] - the parent if any, required whe a key is given
+ * @param {String} [key] - the relative location of the created controller within the parent, required when there is a parent and no fallback
+ * @param {eYo.model.Format} [fallback] - map of fallback 
  */
-eYo.model.Format = function (parent, key) {
+eYo.model.Format = function (parent, key, fallback) {
+  // accepted combination of arguments:
+  // 1) parent, key, fallback
+  // 2) parent, key
+  // 3) parent, fallback
+  // 4) key, fallback
+  // 5) fallback
+  if (eYo.isStr(parent)) { // cases 4: shift arguments
+    fallback && eYo.throw(`eYo.model.Format: unexpected argument ${fallback}`)
+    key || eYo.throw(`eYo.model.Format: missing fallback`)
+    ;[parent, key, fallback] = [eYo.NA, parent, key] // case 1
+  } else if (eYo.isStr(key)) { // cases 1 and 2
+    parent || eYo.throw(`eYo.model.Format: missing parent`)
+  } else { // cases 3 and 5
+    fallback && eYo.throw(`eYo.model.Format: unexpected argument ${fallback} (2)`)
+    if (key) { // case 3
+      ;[key, fallback] = [eYo.NA, key]
+    } else { // case 6
+      ;[parent, fallback] = [eYo.NA, parent]
+    }
+  }
   this.parent = parent
-  this.key = parent ? key || '' : ''
+  this.key = parent ? key || fallback && fallback.key || '' : ''
   this.map = new Map()
+  this.fallback = fallback
 }
 
 /**
  * Smart getter method.
- * Navigate the controllers along the path, creating controllers when needed.
- * Takes care of wildcard controllers.
+ * Navigate the formats along the path, creating controllers when needed.
+ * Takes care of wildcard formats.
+ * Callbacks are used during format creation.
  * @param {String} path - the required path, relative to the receiver
  * @param {Boolean} [create] - whether controllers are created.
  */
@@ -62,11 +84,20 @@ eYo.model.Format.prototype.get = function (path, create) {
       if (!cc) {
         cc = c.map.get(eYo.model.ANY)
         if (!cc) {
-          if (create) {
-            cc = new eYo.model.Format(this, k)
-            c.map.set(k, cc)
-          } else {
-            return // ... nothing
+          let fb = c.fallback
+          if (fb) {
+            if ((cc = fb.get(k))) {
+              cc = new eYo.model.Format(c, cc.key, cc)
+              c.map.set(k, cc)
+            }
+          }
+          if (!cc) {
+            if (create) {
+              cc = new eYo.model.Format(this, k)
+              c.map.set(k, cc)
+            } else {
+              return // ... nothing
+            }
           }
         }
       }
@@ -99,37 +130,44 @@ eYo.model.Format.prototype.allow = function (...$) {
   var c = this
   var pending
   $.forEach(arg => {
-    let mc = arg.modelController || arg
-    if (mc && mc instanceof eYo.model.Format) {
-      pending || eYo.throw(`Cannot allow a model controller with no preceding key`)
-      c.map.set(pending, mc)
-      c = mc
-      pending = eYo.NA
-      return
-    }
-    if (pending) {
-      c = c.get(pending, true)
-    }
-    if (eYo.isStr(arg)) {
-      pending = arg
-      return
-    }
-    pending = eYo.NA
-    if (eYo.isRA(arg)) {
-      arg.forEach(k => {
-        c.get(k, true)
-      })
-    } else {
-      var v
-      let keys = new Set(Object.keys(arg))
-      if (eYo.isF((v = arg[eYo.model.VALIDATE]))) {
-        eYo.isF(v) || eYo.throw(`Forbidden ${eYo.model.VALIDATE} -> ${v}`)
-        c.validate_ = v
-        keys.delete(eYo.model.VALIDATE)
+    if (arg) {
+      let mf = arg.eyo && arg.eyo.modelFormat || arg
+      if (mf && mf instanceof eYo.model.Format) {
+        pending || eYo.throw(`Cannot allow a model controller with no preceding key`)
+        mf = new eYo.model.Format(c, pending, mf)
+        c.map.set(pending, (c = mf))
+        pending = eYo.NA
+        return
       }
-      keys.forEach(k => {
-        c.allow(k, arg[k]) // avoid recursivity ?
-      })
+      if (pending) {
+        c = c.get(pending, true)
+      }
+      if (eYo.isStr(arg)) {
+        pending = arg
+        return
+      }
+      pending = eYo.NA
+      if (eYo.isRA(arg)) {
+        arg.forEach(k => {
+          c.get(k, true)
+        })
+      } else {
+        var v
+        if (eYo.isRA(v = arg[eYo.model.DOT])) {
+          v.forEach(k => {
+            c.get(k, true)
+          })
+        }
+        let keys = new Set(Object.keys(arg))
+        if (eYo.isF((v = arg[eYo.model.VALIDATE]))) {
+          eYo.isF(v) || eYo.throw(`Forbidden ${eYo.model.VALIDATE} -> ${v}`)
+          c.validate_ = v
+          keys.delete(eYo.model.VALIDATE)
+        }
+        keys.forEach(k => {
+          c.allow(k, arg[k]) // avoid recursivity ?
+        })
+      }
     }
   })
   pending && c.get(pending, true)
@@ -167,31 +205,31 @@ eYo.model.Format.prototype.validate = function (path, model) {
       if (k) { // avoid ''
         let cc = c.get(k)
         if (!cc) {
-          eYo.throw(`Unreachable path: ${c.path}/${k}`)
+          eYo.throw(`validate: unreachable path ${c.path}/${k}`)
         }
-        cc || eYo.throw(`Unreachable path: ${c.path}/${k}`)
+        cc || eYo.throw(`validate: unreachable path: ${c.path}/${k}`)
         c = cc
       }
     })
   } else {
     [path, model] = [eYo.NA, path]
   }
-  if (eYo.isDef(model)) {
+  if (eYo.isDef(model)/* && !(model instanceof eYo.c9r.BaseC9r)*/) {
     // validate the model
-    if (c.validate_) {
-      let v = c.validate_(model)
-      if (eYo.isINVALID(v)) {
-        console.error(model)
-        eYo.throw(`Bad model at ${c.path} (see console)`)
-      } else if (v) {
-        model = v
-      }
+    let v = c.validate_
+    ? c.validate_(model)
+    : c.fallback && c.fallback.validate(model)
+    if (eYo.isINVALID(v)) {
+      eYo.TESTING || console.error(model)
+      eYo.throw(`validate: bad model at ${c.path} (see console)`)
+    } else if (v) {
+      model = v
     }
     Object.keys(model).forEach(k => {
       let cc = c.get(k)
       if (cc) {
         let m = cc.validate(model[k])
-        if (m) {
+        if (m && (model[k] !== m)) {
           model[k] = m
         }
       }

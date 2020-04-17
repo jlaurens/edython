@@ -7,7 +7,7 @@
  */
 
 /**
- * @fileoverview Top application class, eYo.app.Base is an instance.
+ * @fileoverview Top application class, eYo.app.BaseC9r is an instance.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -177,7 +177,7 @@ eYo.app._p.parseZoom_ = function (options) {
  * @property {eYo.focus.Main} focus_main
  *
  */
-eYo.app.makeBase({
+eYo.app.makeBaseC9r({
   init (options) {
     this.options_ = new eYo.app.Options(options || {})
   },
@@ -287,15 +287,15 @@ eYo.app.makeBase({
  * Paste a brick from the local clipboard.
  * @private
  */
-eYo.app.Base_p.paste = eYo.doNothing
+eYo.app.BaseC9r_p.paste = eYo.doNothing
 
 /**
  * Delete this brick and the next ones if requested.
  * For edython.
- * @param {eYo.brick.Base} b3k - The brick to delete.
+ * @param {eYo.brick.BaseC9r} b3k - The brick to delete.
  * @param {boolean} deep
  */
-eYo.app.Base_p.deleteBrick = function (b3k, deep) {
+eYo.app.BaseC9r_p.deleteBrick = function (b3k, deep) {
   let brd = b3k.clipboard
   if (b3k && b3k.deletable && !brd.readOnly) {
     if (b3k.hasFocus) {
@@ -328,10 +328,10 @@ eYo.app.Base_p.deleteBrick = function (b3k, deep) {
 
 /**
  * Copy a brick onto the local clipboard.
- * @param {eYo.brick.Base} brick - Brick to be copied.
+ * @param {eYo.brick.BaseC9r} brick - Brick to be copied.
  * @private
  */
-eYo.app.Base_p.copyBrick = function (brick, deep) {
+eYo.app.BaseC9r_p.copyBrick = function (brick, deep) {
   var xml = eYo.xml.brickToDom(brick, {noId: true, noNext: !deep})
   // Copy only the selected brick and internal bricks.
   // Encode start position in XML.
@@ -346,9 +346,9 @@ eYo.app.Base_p.copyBrick = function (brick, deep) {
 /**
  * Close tooltips, context menus, dropdown selections, etc.
  */
-eYo.app.Base_p.hideChaff = eYo.doNothing
+eYo.app.BaseC9r_p.hideChaff = eYo.doNothing
 
-eYo.o4t.Base.eyo.p6yMerge({
+eYo.o4t.BaseC9r.eyo.p6yMerge({
   /**
    * The root application
    * @type {eYo.app}
@@ -417,7 +417,7 @@ eYo.o4t.Base.eyo.p6yMerge({
   },
 })
 
-eYo.o3d.Base.eyo.modelMerge({
+eYo.o3d.BaseC9r.eyo.modelMerge({
   aliases: {
     /**
      * Options

@@ -160,7 +160,7 @@ eYo.field._p.modelPath = function (key) {
  * @see The `new` method.
  * @param {Object} model
  */
-eYo.field._p.modelBase = function (model) {
+eYo.field._p.modelBaseC9r = function (model) {
   return model.edit || model.endEditing || model.startEditing
     ? eYo.field.Input
     : eYo.field.Label
@@ -179,13 +179,13 @@ eYo.field._p.modelHandle = function (_p, name, model) {
     if (willRender_m.length) {
       _p.willRender = function () {
         willRender_m.call(this, () => {
-          eYo.field.Base_p.willRender.call(this)
+          eYo.field.BaseC9r_p.willRender.call(this)
         })
       }
     } else {
       _p.willRender = function () {
         try {
-          this.willRender = eYo.field.Base_p.willRender
+          this.willRender = eYo.field.BaseC9r_p.willRender
           willRender_m.call(this)
         } finally {
           delete this.willRender
@@ -197,11 +197,11 @@ eYo.field._p.modelHandle = function (_p, name, model) {
 
 /**
  * Abstract class for text fields.
- * @param {eYo.brick|eYo.slot.Base|eYo.magnet.Base} bsim The owner of the field.
+ * @param {eYo.brick|eYo.slot.BaseC9r|eYo.magnet.BaseC9r} bsim The owner of the field.
  * @param {string} text The initial content of the field.
  * @constructor
  */
-eYo.field.makeBase({
+eYo.field.makeBaseC9r({
   init (bsm, name) {
     this.name_ = name
     this.text_ = this.model.text__
@@ -340,14 +340,14 @@ eYo.field.makeBase({
  * Initializes the model of the field after it has been installed on a block.
  * No-op by default.
  */
-eYo.field.Base_p.initModel = eYo.doNothing
+eYo.field.BaseC9r_p.initModel = eYo.doNothing
 
 /**
  * Draws the border with the correct width.
  * Saves the computed width in a property.
  * @private
  */
-eYo.field.Base_p.render_ = function() {
+eYo.field.BaseC9r_p.render_ = function() {
   if (!this.visible_) {
     this.size_.width = 0
     return
@@ -360,7 +360,7 @@ eYo.field.Base_p.render_ = function() {
 /**
  * Updates the width of the field in the UI.
  **/
-eYo.field.Base_p.updateWidth = function() {
+eYo.field.BaseC9r_p.updateWidth = function() {
   var d = this.ui_driver
   d && (d.updateWidth(this))
 }
@@ -372,7 +372,7 @@ eYo.field.Base_p.updateWidth = function() {
  * @param {String} txt
  * @return {String}
  */
-eYo.field.Base_p.validate = function (txt) {
+eYo.field.BaseC9r_p.validate = function (txt) {
   var v = this.data.validate(eYo.isDef(txt) ? txt : this.text)
   return eYo.isVALID(v) ? v : eYo.NA
 }
@@ -381,7 +381,7 @@ eYo.field.Base_p.validate = function (txt) {
  * Will render the field.
  * We should call `this.willRender()` from the model.
  */
-eYo.field.Base_p.willRender = function () {
+eYo.field.BaseC9r_p.willRender = function () {
   var d = this.ui_driver
   if (d) {
     d.makePlaceholder(this, this.isPlaceholder)
@@ -392,7 +392,7 @@ eYo.field.Base_p.willRender = function () {
 /**
  * Class for a non-editable field.
  * The only purpose is to start with a different height.
- * @param {eYo.brick|eYo.slot.Base} bsi The owner of the field.
+ * @param {eYo.brick|eYo.slot.BaseC9r} bsi The owner of the field.
  * @param {string} name The required name of the field
  * @param {string} text The initial content of the field.
  * @extends {eYo.field}
@@ -406,7 +406,7 @@ eYo.field.makeC9r('Label', {
 
 /**
  * Class for an editable code field.
- * @param {eYo.brick.Base|eYo.slot.Base} bs The owner of the field.
+ * @param {eYo.brick.BaseC9r|eYo.slot.BaseC9r} bs The owner of the field.
  * @param {string=} name
  * @param {string} text The initial content of the field.
  * @extends {eYo.field}

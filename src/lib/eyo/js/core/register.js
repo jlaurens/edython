@@ -13,7 +13,7 @@
  */
 'use strict'
 
-eYo.require('p6y')
+eYo.require('o4t')
 
 /**
  * @name {eYo.register}
@@ -61,9 +61,7 @@ eYo.register.add = function (object, key, filter) {
     [key + 'Some']: function (handler) {
       var ans = false
       this[k].forEach((currentValue, currentKey, set) => {
-        if (!ans && handler(currentValue, currentKey, set)) {
-          ans = true
-        }
+        !ans && (ans = handler(currentValue, currentKey, set))
       }, this)
       return ans
     },
