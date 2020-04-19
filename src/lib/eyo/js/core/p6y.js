@@ -281,37 +281,37 @@ eYo.p6y._p.modelHandleDispose = function (prototype, key, model) {
 /**
  * make the prototype's getValue method based on the model.
  * make the prototype' setValue method based on the model.
- * @param {Object} prototype
+ * @param {Object} _p - Prototype
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.modelHandleGetSet = function (prototype, key, model) {
+eYo.p6y._p.modelHandleGetSet = function (_p, key, model) {
   var can_lazy = true
   var computed = false // true iff get and set are given with no builtin dependency
   let get_m = model.get // from model => suffix = '_m' and `@this` == property owner
   if (model.copy) {
-    model.get && eYo.throw(`Bad model (${prototype.eyo.name}/${key}): Unexpected get`)
-    prototype.getValue = eYo.p6y.BaseC9r_p.__getCopyValue
+    model.get && eYo.throw(`Bad model (${_p.eyo.name}/${key}): Unexpected get`)
+    _p.getValue = eYo.p6y.BaseC9r_p.__getCopyValue
   } else {
     if (get_m === eYo.doNothing || get_m === false) {
       can_lazy = false
-      prototype.getValue = eYo.noGetter(function () {
+      _p.getValue = eYo.noGetter(function () {
         return `Write only (${this.owner_.eyo.name}/${key})`
       })
     } else if (eYo.isF(get_m)) {
       if (get_m.length) {
-        prototype.getValue = function () {
+        _p.getValue = function () {
           try {
             this.getValue = eYo.doNothing
             return get_m.call(this.owner_, () => {
-              return prototype.eyo.C9r_s.getValue.call(this)
+              return _p.eyo.C9r_s.getValue.call(this)
             })
           } finally {
             delete this.getValue
           }
         }
       } else {
-        prototype.getStored = prototype.getValue = function () {
+        _p.getStored = _p.getValue = function () {
           try {
             this.getValue = eYo.doNothing
             return get_m.call(this.owner_)
@@ -324,18 +324,18 @@ eYo.p6y._p.modelHandleGetSet = function (prototype, key, model) {
         can_lazy = false
       }
     } else {
-      eYo.isNA(get_m) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected get -> ${get_m}`)
+      eYo.isNA(get_m) || eYo.throw(`Bad model (${_p.eyo.name}/${key}): unexpected get -> ${get_m}`)
     }
   }
   let set_m = model.set // from model => suffix = '_m' and `@this` == property owner
   if (set_m === eYo.doNothing || set_m === false) {
-    prototype.setValue = eYo.noSetter(function () {
+    _p.setValue = eYo.noSetter(function () {
       return `Read only ${this.owner_.eyo.name}/${key}`
     })
   } else if (eYo.isF(set_m)) {
     if (set_m.length > 1) {
-      computed && eYo.throw(`Bad model (${prototype.eyo.name}/${key}): Unexpected 'builtin|property' in set`)
-      prototype.setValue = prototype.resetValue = XRegExp.exec(set_m.toString(), eYo.xre.function_stored_after)
+      computed && eYo.throw(`Bad model (${_p.eyo.name}/${key}): Unexpected 'builtin|property' in set`)
+      _p.setValue = _p.resetValue = XRegExp.exec(set_m.toString(), eYo.xre.function_stored_after)
       ? function (after) {
         try {
           this.setValue = eYo.doNothing
@@ -347,7 +347,7 @@ eYo.p6y._p.modelHandleGetSet = function (prototype, key, model) {
         try {
           this.setValue = eYo.doNothing
           return set_m.call(this.owner_, after => {
-            prototype.eyo.C9r_s.setValue.call(this, after)
+            _p.eyo.C9r_s.setValue.call(this, after)
           }, after)
         } finally {
           delete this.setValue
@@ -355,13 +355,13 @@ eYo.p6y._p.modelHandleGetSet = function (prototype, key, model) {
       }
     } else {
       if (!computed) {
-        get_m && eYo.throw(`Bad model (${prototype.eyo.name}/${key}): Missing 'builtin|property' in set (2)`)
-        prototype.getStored = prototype.getValue = eYo.noGetter(function () {
+        get_m && eYo.throw(`Bad model (${_p.eyo.name}/${key}): Missing 'builtin|property' in set (2)`)
+        _p.getStored = _p.getValue = eYo.noGetter(function () {
           return `Write only ${this.owner_.eyo.name}/${key}`
         })
       }
       computed || !get_m 
-      prototype.setStored = prototype.setValue = prototype.resetValue = function (after) {
+      _p.setStored = _p.setValue = _p.resetValue = function (after) {
         try {
           this.setValue = eYo.doNothing
           return set_m.call(this.owner_, after)
@@ -371,17 +371,17 @@ eYo.p6y._p.modelHandleGetSet = function (prototype, key, model) {
       }
     }
   } else {
-    set_m && eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected set -> ${set_m}`)
+    set_m && eYo.throw(`Bad model (${_p.eyo.name}/${key}): unexpected set -> ${set_m}`)
     if (computed) {
-      eYo.isNA(model.reset) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected reset`)
-      prototype.setStored = prototype.setValue = eYo.noSetter(function () {
+      eYo.isNA(model.reset) || eYo.throw(`Bad model (${_p.eyo.name}/${key}): unexpected reset`)
+      _p.setStored = _p.setValue = eYo.noSetter(function () {
         return `Read only ${this.owner_.eyo.name}/${key}`
       })
-      prototype.reset = eYo.doNothing
+      _p.reset = eYo.doNothing
     }
   }
   if (computed) {
-    prototype.dispose = eYo.doNothing
+    _p.dispose = eYo.doNothing
   }
   if (can_lazy) {
     let lazy_m = model.lazy
@@ -389,14 +389,14 @@ eYo.p6y._p.modelHandleGetSet = function (prototype, key, model) {
       model._starters.push(object => {
         object.getStored = Object.getPrototypeOf(object).__getLazyStored
       })
-      prototype.start = eYo.isF(lazy_m) ? function () {
+      _p.start = eYo.isF(lazy_m) ? function () {
         return lazy_m.call(this.owner_)
       } : function () {
         return lazy_m
       }
     }
   } else {
-    eYo.isNA(model.lazy) && eYo.isNA(model.value) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected value or lazy`)
+    eYo.isNA(model.lazy) && eYo.isNA(model.value) || eYo.throw(`Bad model (${_p.eyo.name}/${key}): unexpected value or lazy`)
   }
 }
 
@@ -457,18 +457,18 @@ eYo.p6y._p.modelHandleChange = function (prototype, key, model) {
 /**
  * make the prototype's getStored method based on the model `get_` function.
  * make the prototype's setStored method based on the model's `set_` function.
- * @param {Object} prototype
+ * @param {Object} _p
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.modelHandleStored = function (prototype, key, model) {
+eYo.p6y._p.modelHandleStored = function (_p, key, model) {
   let get__m = model.get_
   if (get__m === eYo.doNothing || get__m === false) {
-    prototype.getStored = eYo.noGetter(function () {
+    _p.getStored = eYo.noGetter(function () {
       return `Write only ${this.owner_.eyo.name}/${key}`
     })
   } else if (eYo.isF(get__m)) {
-    prototype.getStored = get__m.length > 0 ? function () {
+    _p.getStored = get__m.length > 0 ? function () {
       try {
         this.getStored = eYo.doNothing
         return get__m.call(this.owner_, () => { return this.__getStored()})
@@ -484,15 +484,15 @@ eYo.p6y._p.modelHandleStored = function (prototype, key, model) {
       }
     }
   } else {
-    eYo.isNA(get__m) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected get_ object`)
+    eYo.isNA(get__m) || eYo.throw(`Bad model (${_p.eyo.name}/${key}): unexpected get_ object`)
   }
   let set__m = model.set_
   if (set__m === eYo.doNothing || set__m === false) {
-    prototype.setStored = eYo.noSetter(function () {
+    _p.setStored = eYo.noSetter(function () {
       return `Read only ${this.owner_.eyo.name}/${key}`
     })
   } else if (eYo.isF(set__m)) {
-    prototype.setStored = set__m.length > 1 ? function (after) {
+    _p.setStored = set__m.length > 1 ? function (after) {
       try {
         this.setStored = eYo.doNothing
         return set__m.call(this.owner_, after => {this.__setStored(after)}, after)
@@ -507,10 +507,10 @@ eYo.p6y._p.modelHandleStored = function (prototype, key, model) {
         delete this.setStored
       }
     }
-    prototype.resetValue || (prototype.resetValue = prototype.setStored)
+    _p.resetValue || (_p.resetValue = _p.setStored)
   } else {
-    eYo.isNA(set__m) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected set_ object.`)
-    prototype.resetValue || (prototype.resetValue = prototype.setStored)
+    eYo.isNA(set__m) || eYo.throw(`Bad model (${_p.eyo.name}/${key}): unexpected set_ object.`)
+    _p.resetValue || (_p.resetValue = _p.setStored)
   }
 }
 
@@ -646,6 +646,10 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (manyModel = {}) {
       }),
       [k + '_']: {
         get: function () {
+          if (!this[k_p].getStored) {
+            console.error('BREAK HERE!')
+            this[k_p].getStored
+          }
           return this[k_p].getStored()
         },
         set (after) {

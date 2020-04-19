@@ -39,7 +39,7 @@ eYo.forward('brick')
  * @name{sYo.span}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'span')
+eYo.o4t.makeNS(eYo, 'span')
 
 /**
  * @name {eYo.span.BaseC9r}

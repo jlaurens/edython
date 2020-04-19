@@ -32,85 +32,6 @@
  */
 'use strict'
 
-eYo.model.allowModelPaths({
-  [eYo.model.ROOT]: 'data',
-  'data': '\\w+',
-  'data\\.\\w+': [
-    'after', // key || [keys]
-    'order', // INTEGER
-    'all', // TYPE || [TYPE], // last is expected
-    'main', // BOOLEAN
-    'placeholder', // STRING
-    'noUndo', // true
-    'xml', // {}
-    'init', // WHATEVER
-    'validate', // (...) => {} || false || true,
-    'validateIncog', // (...) => {}
-    'willChange', // (...) => {}
-    'isChanging', // (...) => {}
-    'didChange', // (...) => {}
-    'willUnchange', // (...) => {}
-    'isUnchanging', // (...) => {}
-    'didUnchange', // (...) => {}
-    'willLoad', // () => {}
-    'didLoad', // () => {}
-    'consolidate', // (...) => {}
-    'fromType', // () => {}
-    'toField', // () => {}
-    'fromField', // () => {}
-    'toText', // () => {}
-    'fromText', // () => {}
-  ],
-  'data\\.\\w+\.xml': [
-    'save', 'load',
-  ],
-})
-
-eYo.model.allowModelShortcuts({
-  'data\\.\\w+\\.init': (before, p) => {
-    if (!eYo.isF(before)) {
-      return function () {
-        return before
-      }
-    }
-  },
-  'data\\.\\w+\\.(?:all|after)': (before, p) => {
-    if (!eYo.isRA(before)) {
-      return [before]
-    }
-  },
-  'data\\.\\w+\\.(?:toText|fromText|toField|fromField|willLoad|didLoad)': (before, p) => {
-    if (!eYo.isF(before)) {
-      return eYo.INVALID
-    }
-  },
-  'data\\.\\w+\\.(?:consolidate|fromType|toField|fromField|toText|fromText)': (before, p) => {
-    if (!eYo.isF(before)) {
-      return eYo.INVALID
-    }
-  },
-  'data\\.\\w+\\.(?:validate|validateIncog)': (before, p) => {
-    if (!eYo.isF(before)) {
-      return eYo.INVALID
-    }
-  },
-  'data\\.\\w+\\.(?:willChange|isChanging|didChange|willUnchange|isUnchanging|didUnchange|willLoad|didLoad)': (before, p) => {
-    if (!eYo.isF(before)) {
-      return eYo.INVALID
-    }
-  },
-  'data\\.\\w+\\.xml': (before, p) => {
-    if (!eYo.isD(before)) {
-      return eYo.INVALID
-    }
-  },
-  'data\\.\\w+\\.xml\\.(?:save|load)': (before, p) => {
-    if (!eYo.isF(before)) {
-      return eYo.INVALID
-    }
-  },
-})
-
 eYo.forward('do')
 eYo.forward('xre')
 eYo.forward('decorate')
@@ -121,437 +42,11 @@ eYo.forward('decorate')
  * @name {eYo.data}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'data')
+eYo.o4t.makeNS(eYo, 'data')
 
 /**
- * The model path.
- * This is the parent's path in a brick model.
- * @see The `new` method.
- * @param {String} key
- */
-eYo.data._p.modelPath = function (key) {
-  return eYo.isStr(key) ? `data.${key}` : 'data'
-}
-
-/**
- * For subclassers.
- * @param {Object} _p
- * @param {String} key
- * @param {Object} model
- */
-eYo.data._p.modelHandle = function (_p, key, model) {
-  if (key === 'variant' || key === 'option' || key === 'subtype') {
-    model.xml = false
-  }
-  /**
-    * Get the value of the data.
-    * One shot.
-    */
-  let getLazyValue = eYo.decorate.reentrant('get', function () {
-    if (!eYo.isDef(this.stored__)) {
-      this.setFiltered_(this.model.init.call(this.owner))
-    }
-    return this.stored__
-  })
-  model._starters.push(ans => (ans.get = getLazyValue))
-  this.handle_toField(_p, key, model)
-  this.handle_toText(_p, key, model)
-  this.handle_fromField(_p, key, model)
-  this.handle_fromText(_p, key, model)
-  this.handle_filter(_p, key, model)
-  this.handle_validate(_p, key, model)
-  this.handle_synchronize(_p, key, model)
-  this.handle_change(_p, key, model)
-  this.handle_load(_p, key, model)
-}
-
-/**
- * make the prototype's filter method based on the model's object for key filter.
- * The prototype does inherit a filter method.
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.data._p.handle_filter = function (prototype, key, model) {
-  let filter_m = model.filter
-  if (eYo.isF(filter_m)) {
-    let filter_s = prototype.eyo.C9r_s.filter
-    prototype.filter = function (after) {
-      try {
-        this.filter = filter_s
-        return filter_m.call(this, after)
-      } finally {
-        delete this.fister_s
-      }
-    }
-  } else if (!filter_m) {
-    prototype.filter = eYo.doReturn
-  }
-}
-
-/**
- * make the prototype's fromField method based on the model's object for key fromField.
- * The prototype may inherit a fromField method.
- * @param {Object} _p - prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.data._p.handle_fromField = function (_p, key, model) {
-  /**
-   * Set the value from the given text representation
-   * as text field content.
-   * In general, the given text either was entered by a user in a text field ot read from a persistent text formatted storage.
-   * Calls the javascript model, reentrant.
-   * Does nothing when the actual value and
-   * the actual argument are the same.
-   * @param {Object} txt
-   * @param {boolean=} dontValidate
-   */
-  let f_m = model.fromField
-  if (eYo.isF(f_m)) {
-    let f_s = _p.eyo.C9r_s.fromField
-    if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-      _p.fromField = eYo.decorate.reentrant('fromField', function (...$) {
-        f_m.call(this, (...$) => {
-          f_s.call(this, ...$)
-        }, ...$)
-      })
-    } else {
-      _p.fromField = function (...$) {
-        try {
-          this.fromField = f_s
-          f_m.call(this, ...$)
-        } finally {
-          delete this.fromField
-        }
-      }
-    }
-  } else {
-    f_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}): ${f_m}`)
-  }
-}
-
-/**
- * make the prototype's toField method based on the model's object for key toField.
- * The prototype may inherit a toField method.
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.data._p.handle_toField = function (_p, key, model) {
-  /**
-   * Returns the text representation of the data.
-   * Called during synchronization.
-   */
-  let f_m = model.toField
-  if (eYo.isF(f_m)) {
-    let f_s = _p.eyo.C9r_s.toField
-    if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-      _p.toField = eYo.decorate.reentrant('toField', function (...$) {
-        return f_m.call(this, (...$) => {
-          return f_s.call(this, ...$)
-        }, ...$)
-      })
-    } else {
-      _p.toField = function (...$) {
-        try {
-          this.toField = f_s
-          return f_m.call(this, ...$)
-        } finally {
-          delete this.toField
-        }
-      }
-    }
-  } else {
-    f_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}): ${f_m}`)
-  }
-}
-
-/**
- * make the prototype's fromText method based on the model's object for key fromText.
- * The prototype may inherit a fromText method.
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.data._p.handle_fromText = function (prototype, key, model) {
-  /**
-   * Set the value from the given text representation
-   * as text field content.
-   * In general, the given text either was entered by a user in a text field ot read from a persistent text formatted storage.
-   * Calls the javascript model, reentrant.
-   * Does nothing when the actual value and
-   * the actual argument are the same.
-   * @param {Object} txt
-   * @param {boolean=} dontValidate
-   */
-  let f_m = model.fromText
-  if (eYo.isF(f_m)) {
-    let f_s = prototype.eyo.C9r_s.fromText
-    if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-      prototype.fromText = eYo.decorate.reentrant('fromText', function (...$) {
-        f_m.call(this, (...$) => {
-          f_s.call(this, ...$)
-        }, ...$)
-      })
-    } else {
-      prototype.fromText = function (...$) {
-        try {
-          this.fromText = f_s
-          f_m.call(this, ...$)
-        } finally {
-          delete this.fromText
-        }
-      }
-    }
-  } else {
-    f_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}): ${f_m}`)
-  }
-}
-
-/**
- * make the prototype's toText method based on the model's object for key toText.
- * The prototype may inherit a toText method.
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.data._p.handle_toText = function (prototype, key, model) {
-  /**
-   * Returns the text representation of the data.
-   * Called during synchronization.
-   */
-  let f_m = model.toText
-  if (eYo.isF(f_m)) {
-    let f_s = prototype.eyo.C9r_s.toText
-    if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-      prototype.toText = eYo.decorate.reentrant('toText', function (...$) {
-        return f_m.call(this, (...$) => {
-          return f_s.call(this, ...$)
-        }, ...$)
-      })
-    } else {
-      prototype.toText = function (...$) {
-        try {
-          this.toText = f_s
-          return f_m.call(this, ...$)
-        } finally {
-          delete this.toText
-        }
-      }
-    }
-  } else {
-    f_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}): ${f_m}`)
-  }
-}
-
-/**
- * make the prototype's validate method based on the model's object for key validate.
- * The prototype may inherit a validate method.
- * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.data._p.handle_load = function (prototype, key, model) {
-  ;['willLoad', 'didLoad'].forEach(k => {
-    let load_m = model[k]
-    if (eYo.isF(load_m)) {
-      prototype[k] = load_m
-    } else {
-      load_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) ...Load -> ${load_m}`)
-    }
-  })
-}
-
-/**
- * make the prototype's validate method based on the model's object for key validate.
- * The prototype may inherit a validate method.
- * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.data._p.handle_consolidate = function (prototype, key, model) {
-  let consolidate_m = model.consolidate
-  if (eYo.isF(consolidate_m)) {
-    prototype.consolidate = eYo.decorate.reentrant('consolidate', function (...args) {
-      if (this.changer.level) {
-        return
-      }
-      consolidate_m.call(this, ...args)
-    })
-  } else {
-    consolidate_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) consolidate -> ${consolidate_m}`)
-  }
-}
-
-/**
- * make the prototype's validate method based on the model's object for key validate.
- * The prototype may inherit a validate method.
- * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.data._p.handle_validate = function (_p, key, model) {
-  let validate_m = model.validate
-  let validate_s = _p.eyo.C9r_s.validate
-  if (eYo.isF(validate_m)) {
-    _p.validate = eYo.decorate.reentrant('validate', validate_m.length > 2 // builtin, before, after
-    ? eYo.isDoIt(validate_s)
-      ? function (before, after) {
-        return validate_m.call(this, (_after = after) => {
-          return validate_s.call(this, before, _after)
-        }, before, after)
-      } : function (before, after) {
-        return validate_m.call(this, () => {
-          return after
-        }, before, after)
-      }
-    : validate_m.length > 1 // before, after
-      ? eYo.isDoIt(validate_s)
-        ? function (before, after) {
-          if (eYo.isVALID((after = validate_m.call(this, before, after)))) {
-            after = validate_s.call(this, before, after)
-          }
-          return after
-        } : validate_m
-      : eYo.isDoIt(validate_s)
-        ? function (before, after) {
-          if (eYo.isVALID((after = validate_m.call(this, after)))) {
-            after = validate_s.call(this, before, after)
-          }
-          return after
-        } : function (before, after) {
-          return validate_m.call(this, after)
-        }
-    )
-  } else {
-    validate_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${validate_m}`)
-  }
-}
-
-/**
- * make the prototype's validateIncog method based on the model's object for key validateIncog.
- * The prototype may inherit a validateIncog method.
- * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.data._p.handle_validateIncog = function (prototype, key, model) {
-  let validate_m = model.validateIncog
-  let validate_s = prototype.eyo.C9r_s.validateIncog
-  if (eYo.isF(validate_m)) {
-    prototype.validateIncog = eYo.decorate.reentrant('validateIncog', validate_m.length > 2 // builtin, before, after
-    ? eYo.isDoIt(validate_s)
-      ? function (before, after) {
-        return validate_m.call(this, (_after = after) => {
-          return validate_s.call(this, before, _after)
-        }, before, after)
-      } : function (before, after) {
-        return validate_m.call(this, () => {
-          return after
-        }, before, after)
-      }
-    : validate_m.length > 1 // before, after
-      ? eYo.isDoIt(validate_s)
-        ? function (before, after) {
-          if (eYo.isVALID((after = validate_m.call(this, before, after)))) {
-            after = validate_s.call(this, before, after)
-          }
-          return after
-        } : validate_m
-      : eYo.isDoIt(validate_s)
-        ? function (before, after) {
-          if (eYo.isVALID((after = validate_m.call(this, after)))) {
-            after = validate_s.call(this, before, after)
-          }
-          return after
-        } : function (before, after) {
-          return validate_m.call(this, after)
-        }
-    )
-  } else {
-    validate_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) value validateIncog -> ${validate_m}`)
-  }
-}
-
-/**
- * make the prototype's synchronize method based on the model's object for key synchronize.
- * The prototype may inherit a synchronize method.
- * Changing the ancestor prototype afterwards is not a good idea.
- * @param {Object} prototype
- * @param {String} key
- * @param {Object} model
- */
-eYo.data._p.handle_synchronize = function (prototype, key, model) {
-  let synchronize_m = model.synchronize
-  let synchronize_s = prototype.eyo.C9r_s.synchronize
-  if (eYo.isF(synchronize_m)) {
-    prototype.synchronize = eYo.decorate.reentrant('synchronize', synchronize_m.length > 1
-    ? synchronize_s
-      ? function (after) {
-        return synchronize_m.call(this, synchronize_s, after)
-      } : function (after) {
-        return synchronize_m.call(this, eYo.doNothing, after)
-      }
-    : synchronize_m
-    )
-  } else {
-    synchronize_m && eYo.throw(`Unexpected model (${prototype.eyo.name}/${key}) value synchronize -> ${synchronize_m}`)
-  }
-}
-
-/**
- * Expands a data model.
- * @param {Object} _p - prototype
- * @param {Object} model - a data model object
- * @param {String} key - the data key
- * @return {Object}
- */
-eYo.c9r._p.handle_change = function (_p, key, model) {
-  ;['willChange', 'isChanging', 'didChange',
-  'willUnchange', 'isUnchanging', 'didUnchange'].forEach(k => {
-    let f_m = model[k] // use a closure to catch f
-    if (eYo.isF(f_m)) {
-      let f_s = _p.eyo.C9r_s[k]
-      let m = XRegExp.exec(f_m.toString(), eYo.xre.function_builtin_before)
-      if (m) {
-        let before = m.before
-        if (m.builtin) {
-          var ff = before
-            ? eYo.isDoIt(f_s) ? function (before, after) {
-                f_m.call(this, () => {
-                  f_s.call(this, before, after)
-                }, before, after)
-              } : function (before, after) {
-                f_m.call(this, eYo.doNothing, before, after)
-              }
-            : eYo.isDoIt(f_s) ? function (before, after) {
-                f_m.call(this, () => {
-                  f_s.call(this, before, after)
-                }, after)
-              } : function (before, after) {
-                f_m.call(this, eYo.doNothing, after)
-              }
-        } else {
-          ff = before ? f_m : function (before, after) {
-            f_m.call(this, after)
-          }
-        }
-      } else {
-        ff = f_m
-      }
-      _p[k] = eYo.decorate.reentrant(k, ff)
-    } else {
-      f_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value synchronize -> ${f_m}`)
-    }
-  })
-}
-
-/**
+ * @name {eYo.data.BaseC9r}
+ * @constructor
  * Base property constructor.
  * The bounds between the data and the arguments are immutable.
  * For edython.
@@ -560,9 +55,8 @@ eYo.c9r._p.handle_change = function (_p, key, model) {
  * @param {Object} model contains methods and properties.
  * It is shared by all data controllers belonging to the same kind
  * of owner. Great care should be taken when editing this model.
- * @constructor
  */
-eYo.data.makeBaseC9r({
+eYo.data.makeBaseC9r(true, {
   init (brick, key) {
     brick || eYo.throw(`${this.eyo.name}: Missing brick`)
     eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeBaseC9r`)
@@ -576,12 +70,7 @@ eYo.data.makeBaseC9r({
       this.attributeName = (xml && xml.attribute) || key
     }
   },
-})
-
-
-eYo.data.BaseC9r.eyo.modelMerge({
   aliases: {
-    owner: 'brick',
     'brick.changer': 'changer',
     'brick.type': 'brickType',
     'brick.data': 'data',
@@ -589,6 +78,14 @@ eYo.data.BaseC9r.eyo.modelMerge({
     'brick.ui_driver': 'ui_driver',
   },
   properties: {
+    brick: {
+      get () {
+        return this.owner
+      },
+      set (after) {
+        this.owner_ = after
+      }
+    },
     value: eYo.NA,
     required_from_model: false,
     /**
@@ -635,7 +132,65 @@ eYo.data.BaseC9r.eyo.modelMerge({
   },
 })
 
-;(() => {
+eYo.doNothing({
+  [eYo.model.ROOT]: 'data',
+  'data': '\\w+',
+  'data\\.\\w+': [
+    'after', // key || [keys]
+    'order', // INTEGER
+    'all', // TYPE || [TYPE], // last is expected
+    'main', // BOOLEAN
+    'placeholder', // STRING
+    'noUndo', // true
+    'xml', // {}
+    'init', // WHATEVER
+    'validate', // (...) => {} || false || true,
+    'validateIncog', // (...) => {}
+    'willChange', // (...) => {}
+    'isChanging', // (...) => {}
+    'didChange', // (...) => {}
+    'willUnchange', // (...) => {}
+    'isUnchanging', // (...) => {}
+    'didUnchange', // (...) => {}
+    'willLoad', // () => {}
+    'didLoad', // () => {}
+    'consolidate', // (...) => {}
+    'fromType', // () => {}
+    'toField', // () => {}
+    'fromField', // () => {}
+    'toText', // () => {}
+    'fromText', // () => {}
+  ],
+  'data\\.\\w+\.xml': eYo.model.manyDescriptorF('save', 'load'),
+})
+
+eYo.data.BaseC9r.eyo.finalizeC9r(
+  eYo.model.asRA('all', 'after'),
+  eYo.model.manyDescriptorF(
+    'consolidate', 'fromType',
+    'toField', 'fromField',
+    'toText', 'fromText',
+    'validate', 'validateIncog',
+    'willLoad', 'didLoad',
+    'willChange', 'isChanging', 'didChange',
+    'willUnchange', 'isUnchanging', 'didUnchange',
+    'willLoad', 'didLoad'
+  ),
+  {
+    xml: (() => {
+      let ans = eYo.model.manyDescriptorF('save', 'load')
+      ans[eYo.model.VALIDATE] = function (before) {
+        if (xml && ['variant', 'option', 'subtype'].includes(this.parent.key)) {
+          return eYo.INVALID
+        }
+      }
+      return ans
+    })()
+  },
+)
+
+// ANCHOR: Methods
+{
   let _p = eYo.data.BaseC9r_p
 
   /**
@@ -695,9 +250,7 @@ eYo.data.BaseC9r.eyo.modelMerge({
    * The model is asked for a method.
    * @param {Object} type
    */
-  _p.setWithType = eYo.decorate.reentrant('setWithType', function (type) {
-    this.setFiltered_(this.model.fromType.call(this.owner, type))
-  })
+  _p.fromType = eYo.doNothing
 
   /**
    * When not eYo.NA, this is the array of all possible values.
@@ -726,16 +279,20 @@ eYo.data.BaseC9r.eyo.modelMerge({
   /**
    * Validates the value of the data
    * May be overriden by the model.
+   * @param {Object} before
    * @param {Object} after
    */
-  _p.validate = eYo.doReturn
+  _p.validate = function (before, after) {
+    return after
+  }
   
   /**
    * Validates the value of the data
    * May be overriden by the model.
+   * @param {Object} before
    * @param {Object} after
    */
-  _p.validateIncog =  eYo.doReturn
+  _p.validateIncog =  _p.validate
   
   /**
    * Returns the text representation of the data.
@@ -743,9 +300,7 @@ eYo.data.BaseC9r.eyo.modelMerge({
    */
   _p.toText = function () {
     var ans = this.get()
-    if (eYo.isNum(ans)) {
-      ans = ans.toString()
-    }
+    eYo.isNum(ans) && (ans = ans.toString())
     return ans || ''
   }
 
@@ -753,17 +308,7 @@ eYo.data.BaseC9r.eyo.modelMerge({
    * Returns the text representation of the data.
    * Called during synchronization.
    */
-  _p.toField = function () {
-    var f = eYo.decorate.reentrant_method(this, 'toField', this.model.toField || this.model.toText)
-    var result = this.get()
-    if (f) {
-      return eYo.whenVALID(f.call(this))
-    }
-    if (eYo.isNum(result)) {
-      result = result.toString()
-    }
-    return result || ''
-  }
+  _p.toField = _p.toText
 
   /*
   * Below are collected the various setters.
@@ -951,39 +496,30 @@ eYo.data.BaseC9r.eyo.modelMerge({
    * `synchronize: true`, and
    * synchronize: function() { this.synchronize()} are equivalent.
    * Raises when not bound to some field or slot, in the non model variant.
+   * @param {Object} before
    * @param {Object} after
    */
-  _p.synchronize = function (before, after) {
-    var d = this.ui_driver
-    if (!d) {
-      return
-    }
-    if (!eYo.isDef(after)) {
-      after = this.get()
-    }
-    if (this.model.synchronize === true) {
-      eYo.assert(this.field || this.slot || this.model.synchronize, `No field nor slot bound. ${this.key}/${this.brickType}`)
-      var field = this.field
-      if (field) {
-        if (this.incog) {
-          if (this.slot && this.slot.data === this) {
-            this.slot.incog = true
-          } else {
-            field.visible = false
-          }
+  _p.doSynchronize = function () {
+    let field = this.field
+    if (field) {
+      if (this.incog) {
+        if (this.slot && this.slot.data === this) {
+          this.slot.incog = true
         } else {
-          eYo.event.disableWrap(() => {
-            field.text = this.toField()
-            if (this.slot && this.slot.data === this) {
-              this.slot.incog = false
-              field.visible = !this.slot.unwrappedTarget && (!eYo.app.noBoundField || this.model.allwaysBoundField || this.get().length)
-            } else {
-              field.visible = true
-            }
-            var d = field.ui_driver
-            d && (d.makeError(field))
-          })
+          field.visible = false
         }
+      } else {
+        eYo.event.disableWrap(() => {
+          field.text = this.toField()
+          if (this.slot && this.slot.data === this) {
+            this.slot.incog = false
+            field.visible = !this.slot.unwrappedTarget && (!eYo.app.noBoundField || this.model.allwaysBoundField || this.get().length)
+          } else {
+            field.visible = true
+          }
+          let d = field.ui_driver
+          d && (d.makeError(field))
+        })
       }
     }
   }
@@ -1328,5 +864,288 @@ eYo.data.BaseC9r.eyo.modelMerge({
       })
     }
   }
+}
 
-}) ()
+// ANCHOR: Handling the model
+{
+  let _p = eYo.data.Dlgt_p
+  /**
+   * For subclassers.
+   * @param {String} key
+   * @param {Object} model
+   */
+  _p.modelHandle = function (key, model) {
+    model || (model = this.model)
+    /**
+      * Get the value of the data.
+      * One shot.
+      */
+    let getLazyValue = eYo.decorate.reentrant('get', function () {
+      if (!eYo.isDef(this.stored__)) {
+        this.setFiltered_(this.model.init.call(this.owner))
+      }
+      return this.stored__
+    })
+    model._starters.push(ans => (ans.get = getLazyValue))
+    ;[
+      'fromField', 'fromText',
+      'toField', 'toText',
+      'willLoad', 'didLoad'
+    ].forEach(K => {
+      this.handle_f(K, key, model)
+    })
+    this.handle_filter(key, model)
+    ;[
+      'validate', 'validateIncog'
+    ].forEach(K => {
+      this.handle_validate(K, key, model)
+    })
+    this.handle_synchronize(key, model)
+    ;[
+      'willChange', 'isChanging', 'didChange',
+      'willUnchange', 'isUnchanging', 'didUnchange'
+    ].forEach(K => {
+      this.handle_change(K, key, model)
+    })
+  }
+
+  /**
+   * make the prototype's filter method based on the model's object for key filter.
+   * The prototype does inherit a filter method.
+   * @param {Object} prototype
+   * @param {String} key
+   * @param {Object} model
+   */
+  _p.handle_filter = function (key, model) {
+    let _p = this.C9r_p
+    let f_m = model.filter
+    if (eYo.isDoIt(f_m)) {
+      let f_s = this.C9r_s.filter
+      _p.filter = function (after) {
+        try {
+          this.filter = f_s
+          return f_m.call(this, after)
+        } finally {
+          delete this.fister_s
+        }
+      }
+    } else if (!f_m) {
+      _p.filter = eYo.doReturn
+    }
+  }
+
+  /**
+   * make the prototype's fromField method based on the model's object for key fromField.
+   * The prototype may inherit a fromField method.
+   * @param {String} K - function name in the model and the prototype
+   * @param {String} key
+   * @param {Object} model
+   */
+  _p.handle_f = function (K, key, model) {
+    let _p = this.C9r_p
+    let f_m = model[K]
+    if (eYo.isDoIt(f_m)) {
+      let f_s = this.C9r_s[K]
+      if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+        _p[K] = eYo.decorate.reentrant(K, function (...$) {
+          f_m.call(this, (...$) => {
+            return f_s.call(this, ...$) // return is not used in from... but it saves some space
+          }, ...$)
+        })
+      } else {
+        _p[K] = function (...$) {
+          try {
+            this[K] = f_s
+            return f_m.call(this, ...$)
+          } finally {
+            delete this[K]
+          }
+        }
+      }
+    } else {
+      f_m && eYo.throw(`Unexpected model (${this.name}/${key}/${K}): ${f_m}`)
+    }
+  }
+
+  /**
+   * make the prototype's validate method based on the model's object for key validate.
+   * The prototype may inherit a validate method.
+   * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
+   * @param {String} key
+   * @param {Object} model
+   */
+  _p.handle_consolidate = function (key, model) {
+    let _p = this.C9r_p
+    let f_m = model.consolidate
+    if (eYo.isDoIt(f_m)) {
+      let f_s = this.C9r_s[K]
+      if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+        _p.consolidate = eYo.decorate.reentrant(K, function (...$) {
+          if (this.changer.level) {
+            return
+          }
+          f_m.call(this, (...$) => {
+            f_s.call(this, ...$)
+          }, ...$)
+        })
+      } else {
+        _p.consolidate = function (...$) {
+          if (this.changer.level) {
+            return
+          }
+          try {
+            this.consolidate = f_s
+            f_m.call(this, ...$)
+          } finally {
+            delete this.consolidate
+          }
+        }
+      }
+    } else {
+      f_m && eYo.throw(`Unexpected model (${this.name}/${key}/consolidate): ${f_m}`)
+    }
+  }
+
+  /**
+   * make the prototype's validate method based on the model's object for key validate.
+   * The prototype may inherit a validate method.
+   * The only difference with the property's eponym method is that in the model, `this` is the data object, not its owner.
+   * @param {String} key
+   * @param {Object} model
+   */
+  _p.handle_validate = function (K, key, model) {
+    let _p = this.C9r_p
+    let f_m = model[K]
+    let f_p = this.C9r_p[K]
+    eYo.isDoIt(f_p) || eYo.throw(`handle_validate: missing ${K}`)
+    if (eYo.isDoIt(f_m)) {
+      if (f_m.length > 2) {
+        _p[K] = eYo.decorate.reentrant(K, function (before, after) {
+          return f_m.call(this, ($after = after) => {
+            return f_p.call(this, before, $after)
+          }, before, after)
+        })
+      } else if (f_m.length > 1) {
+        _p[K] = function (before, after) {
+          try {
+            this[K] = ($after = after) => {
+              return f_p.call(this, before, $after)
+            }
+            return f_m.call(this, before, after)
+          } finally {
+            delete this[K]
+          }
+        }
+      } else {
+        _p[K] = function (before, after) {
+          try {
+            this[K] = ($after = after) => {
+              return f_p.call(this, before, $after)
+            }
+            return f_m.call(this, after)
+          } finally {
+            delete this[K]
+          }
+        }
+      }
+    } else {
+      f_m && eYo.throw(`Unexpected model (${this.name}/${key}/${K}) ${f_m}`)
+    }
+  }
+
+  /**
+   * make the prototype's synchronize method based on the model's object for key synchronize.
+   * The prototype may inherit a synchronize method.
+   * Changing the ancestor prototype afterwards is not a good idea.
+   * @param {String} key
+   * @param {Object} model
+   */
+  _p.handle_synchronize = function (key, model) {
+    let K = 'synchronize'
+    let _p = this.C9r_p
+    let f_m = model.synchronize
+    let f_p = _p.doSynchronize
+    eYo.isDoIt(f_p) || eYo.throw(`handle_validate: missing ${K}`)
+    if (eYo.isDoIt(f_m)) {
+      if (f_m.length > 2) {
+        _p[K] = eYo.decorate.reentrant(K, function (before, after) {
+          return f_m.call(this, ($after = after) => {
+            return f_p.call(this, before, $after)
+          }, before, after)
+        })
+      } else if (f_m.length > 1) {
+        _p[K] = function (before, after) {
+          try {
+            this[K] = ($after = after) => {
+              return f_p.call(this, before, $after)
+            }
+            return f_m.call(this, before, after)
+          } finally {
+            delete this[K]
+          }
+        }
+      } else {
+        _p[K] = function (before, after) {
+          try {
+            this[K] = ($after = after) => {
+              return f_p.call(this, before, $after)
+            }
+            return f_m.call(this, after)
+          } finally {
+            delete this[K]
+          }
+        }
+      }
+    } else if (f_m === true) {
+      this[K] = f_p
+    } else {
+      f_m && f_m !== eYo.doNothing && eYo.throw(`Unexpected model (${this.name}/${key}/synchronize) -> ${f_m}`)
+      this.synchronize = eYo.doNothing
+    }
+  }
+
+  /**
+   * Expands a data model.
+   * @param {String} K - type of change
+   * @param {Object} model - a data model object
+   * @param {String} key - the data key
+   * @return {Object}
+   */
+  _p.handle_change = function (K, key, model) {
+    let _p = this.C9r_p
+    let f_m = model[K]
+    if (eYo.isDoIt(f_m)) {
+      let f_s = this.C9r_s[K]
+      let m = XRegExp.exec(f_m.toString(), eYo.xre.function_builtin_before)
+      if (m) {
+        let before = m.before
+        if (m.builtin) {
+          var ff = before
+            ? eYo.isDoIt(f_s) ? function (before, after) {
+                f_m.call(this, () => {
+                  f_s.call(this, before, after)
+                }, before, after)
+              } : function (before, after) {
+                f_m.call(this, eYo.doNothing, before, after)
+              }
+            : eYo.isDoIt(f_s) ? function (before, after) {
+                f_m.call(this, () => {
+                  f_s.call(this, before, after)
+                }, after)
+              } : function (before, after) {
+                f_m.call(this, eYo.doNothing, after)
+              }
+        } else {
+          ff = before ? f_m : function (before, after) {
+            f_m.call(this, after)
+          }
+        }
+      } else {
+        ff = f_m
+      }
+      _p[K] = eYo.decorate.reentrant(K, ff)
+    } else {
+      f_m && eYo.throw(`Unexpected model (${this.name}/${key}/${K}) -> ${f_m}`)
+    }
+  }
+}

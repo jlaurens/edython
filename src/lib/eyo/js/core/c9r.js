@@ -579,5 +579,6 @@ eYo.c9r._p.makeSingleton = function(NS, id, model) {
 // Prepares the constructors.
 
 eYo.c9r.BaseC9r.eyo.finalizeC9r([
-  'dlgt', 'init', 'deinit', 'dispose', 'methods',
-])
+  'methods',
+], eYo.model.manyDescriptorF('dlgt', 'init', 'deinit', 'dispose'),
+)

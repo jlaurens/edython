@@ -30,7 +30,67 @@ eYo.makeNS('model', {
   DOT: '.',
   ANY: '*',
   VALIDATE: '!',
+  getF: (what) => {
+    return !eYo.isF(what) && eYo.INVALID
+  },
+  asRA: (what) => {
+    return !eYo.isRA(what) && [what]
+  },
+  getD: (what) => {
+    return !eYo.isD(what) && eYo.INVALID
+  },
 })
+
+eYo.model._p.descriptorF = function(model) {
+  model || (model = {})
+  model[eYo.model.VALIDATE] = eYo.model.getF
+  return model
+}
+
+eYo.model._p.descriptorRA = function(model) {
+  model || (model = {})
+  model[eYo.model.VALIDATE] = eYo.model.asRA
+  return model
+}
+
+eYo.model._p.descriptorD = function(model) {
+  model || (model = {})
+  model[eYo.model.VALIDATE] = eYo.model.getD
+  return model
+}
+
+/**
+ * Convenient method 
+ */
+eYo.model._p.manyDescriptorF = function (...$) {
+  let ans = {}
+  $.forEach(k => {
+    ans[k] = this.descriptorF()
+  })
+  return ans
+}
+
+/**
+ * Convenient method 
+ */
+eYo.model._p.manyDescriptorRA = function (...$) {
+  let ans = {}
+  $.forEach(k => {
+    ans[k] = this.descriptorRA()
+  })
+  return ans
+}
+
+/**
+ * Convenient method 
+ */
+eYo.model._p.manyDescriptorD = function (...$) {
+  let ans = {}
+  $.forEach(k => {
+    ans[k] = this.descriptorD()
+  })
+  return ans
+}
 
 /**
  * A model is a tree.

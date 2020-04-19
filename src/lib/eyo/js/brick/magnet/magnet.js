@@ -15,7 +15,7 @@
  * @name{eYo.magnet}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'magnet', {
+eYo.o4t.makeNS(eYo, 'magnet', {
   HEAD: 2,
   LEFT: 3,
   RIGHT: 4,

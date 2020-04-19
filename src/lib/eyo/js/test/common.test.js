@@ -27,6 +27,29 @@ eYo.py && setTimeout(() => {
 
 eYo.test || eYo.makeNS('test')
 
+/**
+ * Extends an existing method with the given functions.
+ * Convenient method used for testing.
+ * @param {Object} _p - Object, including prototypes
+ * @param {String} key - Object, including prototypes
+ * @param {Function} [before] - handler before
+ * @param {Function} after - handler after
+ */
+eYo.test.extend = function (_p, key, before, after) {
+  let f_p = _p[key]
+  _p[key] = eYo.isF(after)
+  ? function (...$) {
+    eYo.isF(before) && before.call(this, ...$)
+    var ans = eYo.isF(f_p) && f_p.call(this, ...$)
+    eYo.isF(after) && after.call(this, ...$)
+    return ans
+  } : function (...$) {
+    var ans = eYo.isF(f_p) && f_p.call(this, ...$)
+    eYo.isF(before) && before.call(this, ...$)
+    return ans
+  }
+}
+
 eYo.test.makeTestDesk = (id) => {
   var div0 = document.querySelector('#eyo-desk')
   var div1 = eYo.dom.createDom('div')
@@ -558,3 +581,21 @@ eYo.test.Span = (b, span) => {
   
 }
 
+eYo.test.flag = {
+  v: 0,
+  reset (what) {
+    this.v = what || 0
+  },
+  push (...$) {
+    $.forEach(what => {
+      what && (this.v = parseInt(this.v.toString() + what.toString()))
+    })
+  },
+  expect (what) {
+    let ans = chai.expect(this.v).equal(what)
+    this.reset()
+    return ans
+  },
+}
+
+eYo.test.onr = eYo.c9r.new()

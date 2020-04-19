@@ -23,7 +23,7 @@ eYo.require('data')
  * @name {eYo.brick.BaseC9r}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'brick')
+eYo.o4t.makeNS(eYo, 'brick')
 
 // eYo.provide('brick.dflt')
 
@@ -1154,7 +1154,7 @@ eYo.brick.DEBUG_ = Object.create(null)
    * @param {String} type
    */
   _p.setDataWithType = function (type) {
-    this.dataForEach(data => data.setWithType(type))
+    this.dataForEach(data => data.fromType(type))
   }
 
   /**

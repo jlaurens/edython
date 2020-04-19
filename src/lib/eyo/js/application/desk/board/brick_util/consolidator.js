@@ -31,7 +31,7 @@ eYo.model.allowModelPaths({
  * @name {eYo.consolidator}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'consolidator')
+eYo.o4t.makeNS(eYo, 'consolidator')
 
 eYo.forward('do')
 eYo.forward('slot')
@@ -73,14 +73,16 @@ eYo.consolidator.makeBaseC9r({
     D.check = eYo.decorate.ArrayFunction(D.check)
     this.model_ = D
   },
+  methods: {
+    /**
+     * Main and unique entry point.
+     * Removes empty place holders
+     * @param {eYo.brick.BaseC9r} brick - to be consolidated....
+     */
+    consolidate: eYo.doNothing,
+  }
 })
 
-/**
- * Main and unique entry point.
- * Removes empty place holders
- * @param {eYo.brick.BaseC9r} brick - to be consolidated....
- */
-eYo.consolidator.BaseC9r_p.consolidate = eYo.doNothing
 // TODO make a subclass for each consolidator
 /**
  * List consolidator.
@@ -784,7 +786,7 @@ eYo.consolidator.List_p.nextSlotForType = function (io, type) {
  * @param {Object} type - string or array of strings
  * @return the next keyword item slot, eYo.NA when at end.
  */
-eYo.consolidator.List_p.hasInputForType = function (brick, type) {
+eYo.consolidator.List_p.hasSlotForType = function (brick, type) {
   var io = this.getIO(brick)
   return !!this.nextSlotForType(io, type)
 }

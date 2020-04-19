@@ -28,7 +28,7 @@ eYo.forward('c9r.DB')
  * @param{?eYo.c9r.DB} db
  * @constructor
  */
-eYo.o3d.makeC9r(eYo.brick, 'List', {
+eYo.o4t.makeC9r(eYo.brick, 'List', {
   /**
    * Clear the list and sever all the links.
    */
