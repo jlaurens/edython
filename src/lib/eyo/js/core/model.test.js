@@ -349,4 +349,157 @@ describe ('Tests: Model', function () {
     chai.expect(mf_ABCDe.key).equal('d')
     chai.expect(mf_ABCDe.path).equal('/a/b/c/d')
   })
+  it (`eYo.model.validate...`, function () {
+    let expectOK = (yorn, K, what) => {
+      let expect = chai.expect(eYo.isVALID(eYo.model['validate' + K](what)))
+      yorn ? expect.true : expect.false
+    }
+    expectOK (false, 'F')
+    expectOK (false, 'F', eYo.NA)
+    expectOK(false, 'F', 421)
+    expectOK(true, 'F', eYo.doNothing)
+    expectOK(true, 'F', eYo.doReturn)
+    expectOK(true, 'F', function () {})
+    expectOK(true, 'F', () => {})
+    expectOK(true, 'F', {
+      foo () {}
+    }.foo)
+
+    expectOK (false, 'ForFalse')
+    expectOK (false, 'ForFalse', eYo.NA)
+    expectOK(false, 'ForFalse', 421)
+    expectOK(true, 'ForFalse', eYo.doNothing)
+    expectOK(true, 'ForFalse', eYo.doReturn)
+    expectOK(true, 'ForFalse', function () {})
+    expectOK(true, 'ForFalse', () => {})
+    expectOK(true, 'ForFalse', {
+      foo () {}
+    }.foo)
+    expectOK(true, 'ForFalse', false)
+
+    expectOK (false, 'Bool')
+    expectOK (false, 'Bool', eYo.NA)
+    expectOK(false, 'Bool', 421)
+    expectOK(true, 'Bool', true)
+    expectOK(true, 'Bool', false)
+
+    expectOK (false, 'D')
+    expectOK (false, 'D', eYo.NA)
+    expectOK(false, 'D', 421)
+    expectOK(true, 'D', {})
+
+    expectOK (false, 'RA')
+    expectOK (false, 'RA', eYo.NA)
+    expectOK(false, 'RA', 421)
+    expectOK(true, 'RA', [421])
+  })
+  it (`eYo.model.descriptor...`, function () {
+    let expectOK = (yorn, K, what) => {
+      var expect = chai.expect(() => {
+        let mf = new eYo.model.Format()
+        mf.allow('foo', eYo.model['descriptor' + K]())
+        mf.validate({
+          foo: what
+        })
+      })
+      if (yorn) {
+        expect = expect.not
+      }
+      expect.throw()
+    }
+    expectOK (true, 'F')
+    expectOK (true, 'F', eYo.NA)
+    expectOK(false, 'F', 421)
+    expectOK(true, 'F', eYo.doNothing)
+    expectOK(true, 'F', eYo.doReturn)
+    expectOK(true, 'F', function () {})
+    expectOK(true, 'F', () => {})
+    expectOK(true, 'F', {
+      foo () {}
+    }.foo)
+
+    expectOK (true, 'ForFalse')
+    expectOK (true, 'ForFalse', eYo.NA)
+    expectOK(false, 'ForFalse', 421)
+    expectOK(true, 'ForFalse', eYo.doNothing)
+    expectOK(true, 'ForFalse', eYo.doReturn)
+    expectOK(true, 'ForFalse', function () {})
+    expectOK(true, 'ForFalse', () => {})
+    expectOK(true, 'ForFalse', {
+      foo () {}
+    }.foo)
+    expectOK(true, 'ForFalse', false)
+
+    expectOK (true, 'Bool')
+    expectOK (true, 'Bool', eYo.NA)
+    expectOK(false, 'Bool', 421)
+    expectOK(true, 'Bool', true)
+    expectOK(true, 'Bool', false)
+
+    expectOK (true, 'D')
+    expectOK (true, 'D', eYo.NA)
+    expectOK(false, 'D', 421)
+    expectOK(true, 'D', {})
+
+    expectOK(true, 'RA')
+    expectOK(true, 'RA', eYo.NA)
+    expectOK(false, 'RA', 421)
+    expectOK(true, 'RA', [421])
+
+  })
+  it (`eYo.model.manyDescriptor...`, function () {
+    let expectOK = (yorn, K, what) => {
+      var expect = chai.expect(() => {
+        let mf = new eYo.model.Format()
+        mf.allow(eYo.model['manyDescriptor' + K]('foo', 'bar'))
+        mf.validate({
+          foo: what,
+          bar: what,
+        })
+      })
+      if (yorn) {
+        expect = expect.not
+      }
+      expect.throw()
+    }
+    expectOK (true, 'F')
+    expectOK (true, 'F', eYo.NA)
+    expectOK(false, 'F', 421)
+    expectOK(true, 'F', eYo.doNothing)
+    expectOK(true, 'F', eYo.doReturn)
+    expectOK(true, 'F', function () {})
+    expectOK(true, 'F', () => {})
+    expectOK(true, 'F', {
+      foo () {}
+    }.foo)
+
+    expectOK (true, 'ForFalse')
+    expectOK (true, 'ForFalse', eYo.NA)
+    expectOK(false, 'ForFalse', 421)
+    expectOK(true, 'ForFalse', eYo.doNothing)
+    expectOK(true, 'ForFalse', eYo.doReturn)
+    expectOK(true, 'ForFalse', function () {})
+    expectOK(true, 'ForFalse', () => {})
+    expectOK(true, 'ForFalse', {
+      foo () {}
+    }.foo)
+    expectOK(true, 'ForFalse', false)
+
+    expectOK (true, 'Bool')
+    expectOK (true, 'Bool', eYo.NA)
+    expectOK(false, 'Bool', 421)
+    expectOK(true, 'Bool', true)
+    expectOK(true, 'Bool', false)
+
+    expectOK (true, 'D')
+    expectOK (true, 'D', eYo.NA)
+    expectOK(false, 'D', 421)
+    expectOK(true, 'D', {})
+
+    expectOK(true, 'RA')
+    expectOK(true, 'RA', eYo.NA)
+    expectOK(false, 'RA', 421)
+    expectOK(true, 'RA', [421])
+
+  })
 })

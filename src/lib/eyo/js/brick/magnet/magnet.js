@@ -64,130 +64,7 @@ Object.defineProperties(eYo.magnet._p, {
   },
 })
 
-// ANCHOR: Magnet DB
-
-// Database of magnets
-{
-  /**
-   * Database of magnets.
-   * Magnets are stored in order of their vertical component.  This way
-   * connections in an area may be looked up quickly using a binary search.
-   * @constructor
-   */
-  let DB = function () {}
-
-  DB.prototype = new Array()
-  /**
-   * Don't inherit the constructor from Array.
-   * @type {!Function}
-   */
-  DB.constructor = DB
-
-  /**
-   * Initialize a set of connection DBs for a specified board.
-   * @param {eYo.board} board The board this DB is for.
-   */
-  eYo.magnet.initDB = (board) => {
-    // Create four databases, one for each connection type.
-    var dbList = []
-    dbList[eYo.magnet.IN] = new eYo.magnet.DB()
-    dbList[eYo.magnet.OUT] = new eYo.magnet.DB()
-    dbList[eYo.magnet.HEAD] = new eYo.magnet.DB()
-    dbList[eYo.magnet.LEFT] = new eYo.magnet.DB()
-    dbList[eYo.magnet.RIGHT] = new eYo.magnet.DB()
-    dbList[eYo.magnet.FOOT] = new eYo.magnet.DB()
-    board.magnetDBList = dbList
-  }
-
-  /**
-   * Finds a candidate position for inserting this magnet into the list.
-   * This will be in the correct y order
-   * but makes no guarantees about ordering in the x axis.
-   * @param {float} y  The y coordinate of the magnet to add.
-   * @return {number} The candidate index.
-   * @private
-   */
-  DB.prototype.findIndex_ = function(y) {
-    if (!this.length) {
-      return 0;
-    }
-    var min = 0
-    var max = this.length
-    while (min < max) {
-      var mid = Math.floor((min + max) / 2)
-      if (this[mid].y < y) {
-        min = mid + 1
-      } else if (this[mid].y > y) {
-        max = mid
-      } else {
-        min = mid
-        break
-      }
-    }
-    return min
-  }
-
-  /**
-   * Add a magnet to the database. Do not look for duplicates.
-   * @param {eYo.magnet.BaseC9r} magnet The magnet to be added.
-   */
-  DB.prototype.magnetAdd_ = function(magnet) {
-    var magnetIndex = this.findIndex_(magnet.y)
-    this.splice(magnetIndex, 0, magnet)
-  }
-
-  /*
-  * Find the given connection.
-  * Starts by doing a binary search to find the approximate location, then
-  *     linearly searches nearby for the exact connection.
-  * @param {eYo.Connection} conn The connection to find.
-  * @return {number} The index of the connection, or -1 if the connection was
-  *     not found.
-  */
-  var findMagnet = (db, magnet) => {
-    if (!db.length) {
-      return -1
-    }
-    var bestGuess = db.findIndex_(magnet.y)
-    if (bestGuess >= db.length) {
-      // Not in list
-      return -1
-    }
-    var y = magnet.y
-    // Walk forward and back on the y axis looking for the magnet.
-    var min = bestGuess
-    while (min >= 0 && db[min].y === y) {
-      if (db[min] === magnet) {
-        return min
-      }
-      min--
-    }
-    var max = bestGuess
-    while (max < db.length && db[max].y === y) {
-      if (db[max] === magnet) {
-        return max
-      }
-      max++
-    }
-    return -1
-  }
-  /**
-   * Remove a magnet from the database. Do not look for duplicates.
-   * @param {eYo.magnet.BaseC9r} magnet The magnet to be remove.
-   */
-  DB.prototype.magnetRemove_ = function(magnet) {
-    var magnetIndex = findMagnet(this, magnet)
-    magnetIndex >= 0 && (this.splice(magnetIndex, 1))
-  }
-}
-
-/**
- * Initialize a set of connection DBs for a specified board.
- * @param {eYo.board} board The board containing the DB to dispose of.
- */
-eYo.magnet.disposeDB = (board) => {
-  board.magnetDBList = null
-}
+// ANCHOR: Magnet Set
 
 /**
  * The set of magnets owned by a brick.
@@ -204,16 +81,16 @@ eYo.magnet.makeC9r('S', { // eYo.magnet.BaseC9r is not yet defined!
     } else if (D = model.suite && eYo.isDef(model.check)) {
       this.suite_ = eYo.magnet.new(brick, eYo.magnet.FOOT, model)
     }
-    if (D = model.head && eYo.isDef(model.check)) {
+    if ((D = model.head) && eYo.isDef(model.check)) {
       this.head_ = eYo.magnet.new(brick, eYo.magnet.HEAD, model)
     }
-    if (D = model.foot && eYo.isDef(model.check)) {
+    if ((D = model.foot) && eYo.isDef(model.check)) {
       this.foot_ = eYo.magnet.new(brick, eYo.magnet.FOOT, model)
     }
-    if (D = model.left && eYo.isDef(model.check)) {
+    if ((D = model.left) && eYo.isDef(model.check)) {
       this.left_ = eYo.magnet.new(brick, eYo.magnet.LEFT, model)
     }
-    if (D = model.right && eYo.isDef(model.check)) {
+    if ((D = model.right) && eYo.isDef(model.check)) {
       this.right_ = eYo.magnet.new(brick, eYo.magnet.RIGHT, model)
     }
   },
@@ -226,6 +103,17 @@ eYo.magnet.makeC9r('S', { // eYo.magnet.BaseC9r is not yet defined!
     foot: eYo.NA,
   },
 })
+
+// ANCHOR: Model
+
+eYo.magnet.BaseC9r.eyo.finalizeC9r((() => {
+  let ans = {}
+  let d = eYo.model.manyDescriptorF('willConnect', 'didConnect', 'willDisconnect', 'didDisconnect')
+  
+  ;['out', 'head', 'left', 'right', 'suite', 'foot'].forEach(k => {
+    ans[k] = eYo.model.manyDescriptorF('willConnect', 'didConnect', 'willDisconnect', 'didDisconnect')
+  })
+})())
 
 eYo.model._p.allowModelPaths({
   [eYo.model.ROOT]: ['out', 'head', 'left', 'right', 'suite', 'foot'],

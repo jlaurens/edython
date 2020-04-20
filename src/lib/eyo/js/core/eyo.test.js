@@ -220,4 +220,11 @@ describe('eYo Tests', function () {
     chai.expect(eYo.valueForKeyPath(`eYo.test.${key}.foo.bar`)).equal(421)
     delete eYo.test[key]
   })
+  it (`eYo.isBool`, function () {
+    chai.expect(eYo.isBool(true)).true
+    chai.expect(eYo.isBool(false)).true
+    chai.expect(eYo.isBool()).false
+    chai.expect(eYo.isBool(eYo.NA)).false
+    chai.expect(eYo.isBool(421)).false
+  })
 })

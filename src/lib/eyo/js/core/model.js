@@ -42,10 +42,10 @@ eYo.makeNS('model', {
   validateForFalse: (what) => {
     return what !== false && !eYo.isF(what) && eYo.INVALID
   },
-  asRA: (what) => {
-    return !eYo.isRA(what) && [what]
+  validateRA: (what) => {
+    return !eYo.isRA(what) && eYo.INVALID
   },
-  getD: (what) => {
+  validateD: (what) => {
     return !eYo.isD(what) && eYo.INVALID
   },
 })
@@ -76,21 +76,27 @@ eYo.model._p.descriptorForFalse = function(model) {
 
 eYo.model._p.descriptorRA = function(model) {
   model || (model = {})
-  model[eYo.model.VALIDATE] = eYo.model.asRA
+  model[eYo.model.VALIDATE] = eYo.model.validateRA
   return model
 }
 
 eYo.model._p.descriptorD = function(model) {
   model || (model = {})
-  model[eYo.model.VALIDATE] = eYo.model.getD
+  model[eYo.model.VALIDATE] = eYo.model.validateD
   return model
 }
 
 /**
  * Convenient method 
+ * @param {Object} [model]
  */
-eYo.model._p.manyDescriptorF = function (...$) {
-  let ans = {}
+eYo.model._p.manyDescriptorF = function (model, ...$) {
+  if (!eYo.isStr(model)) {
+    var ans = model
+  } else {
+    ans = {}
+    ans[model] = this.descriptorF()
+  }
   $.forEach(k => {
     ans[k] = this.descriptorF()
   })
@@ -99,9 +105,15 @@ eYo.model._p.manyDescriptorF = function (...$) {
 
 /**
  * Convenient method 
+ * @param {Object} [model]
  */
-eYo.model._p.manyDescriptorBool = function (...$) {
-  let ans = {}
+eYo.model._p.manyDescriptorBool = function (model, ...$) {
+  if (!eYo.isStr(model)) {
+    var ans = model
+  } else {
+    ans = {}
+    ans[model] = this.descriptorBool()
+  }
   $.forEach(k => {
     ans[k] = this.descriptorBool()
   })
@@ -110,9 +122,15 @@ eYo.model._p.manyDescriptorBool = function (...$) {
 
 /**
  * Convenient method 
+ * @param {Object} [model]
  */
-eYo.model._p.manyDescriptorStr = function (...$) {
-  let ans = {}
+eYo.model._p.manyDescriptorStr = function (model, ...$) {
+  if (!eYo.isStr(model)) {
+    var ans = model
+  } else {
+    ans = {}
+    ans[model] = this.descriptorStr()
+  }
   $.forEach(k => {
     ans[k] = this.descriptorStr()
   })
@@ -121,9 +139,15 @@ eYo.model._p.manyDescriptorStr = function (...$) {
 
 /**
  * Convenient method 
+ * @param {Object} [model]
  */
-eYo.model._p.manyDescriptorForFalse = function (...$) {
-  let ans = {}
+eYo.model._p.manyDescriptorForFalse = function (model, ...$) {
+  if (!eYo.isStr(model)) {
+    var ans = model
+  } else {
+    ans = {}
+    ans[model] = this.descriptorForFalse()
+  }
   $.forEach(k => {
     ans[k] = this.descriptorForFalse()
   })
@@ -132,9 +156,15 @@ eYo.model._p.manyDescriptorForFalse = function (...$) {
 
 /**
  * Convenient method 
+ * @param {Object} [model]
  */
-eYo.model._p.manyDescriptorRA = function (...$) {
-  let ans = {}
+eYo.model._p.manyDescriptorRA = function (model, ...$) {
+  if (!eYo.isStr(model)) {
+    var ans = model
+  } else {
+    ans = {}
+    ans[model] = this.descriptorRA()
+  }
   $.forEach(k => {
     ans[k] = this.descriptorRA()
   })
@@ -143,9 +173,15 @@ eYo.model._p.manyDescriptorRA = function (...$) {
 
 /**
  * Convenient method 
+ * @param {Object} [model]
  */
-eYo.model._p.manyDescriptorD = function (...$) {
-  let ans = {}
+eYo.model._p.manyDescriptorD = function (model, ...$) {
+  if (!eYo.isStr(model)) {
+    var ans = model
+  } else {
+    ans = {}
+    ans[model] = this.descriptorD()
+  }
   $.forEach(k => {
     ans[k] = this.descriptorD()
   })
@@ -188,6 +224,8 @@ eYo.model.Format = function (parent, key, fallback) {
   this.fallback = fallback
 }
 
+eYo.model.Format_p = eYo.model.Format.prototype
+
 /**
  * Smart getter method.
  * Navigate the formats along the path, creating controllers when needed.
@@ -196,7 +234,7 @@ eYo.model.Format = function (parent, key, fallback) {
  * @param {String} path - the required path, relative to the receiver
  * @param {Boolean} [create] - whether controllers are created.
  */
-eYo.model.Format.prototype.get = function (path, create) {
+eYo.model.Format_p.get = function (path, create) {
   var c = this
   for (let k of path.split('/')) {
     if (k && k !== eYo.model.DOT) {
@@ -231,7 +269,7 @@ eYo.model.Format.prototype.get = function (path, create) {
  * Private tree method.
  * arguments is a list of strings, arrays or strings and objects.
  */
-eYo.model.Format.prototype.isAllowed = function (...$) {
+eYo.model.Format_p.isAllowed = function (...$) {
   var c = this
   $.forEach(key => {
     c = c.get(key)
@@ -246,7 +284,7 @@ eYo.model.Format.prototype.isAllowed = function (...$) {
  * Private tree method.
  * arguments is a list of strings, arrays or strings, objects or eYo.model.Format instances.
  */
-eYo.model.Format.prototype.allow = function (...$) {
+eYo.model.Format_p.allow = function (...$) {
   var c = this
   var pending
   $.forEach(arg => {
@@ -298,7 +336,7 @@ eYo.model.Format.prototype.allow = function (...$) {
  * @name {eYo.model.Format.path}
  * Private computed property
  */
-Object.defineProperties(eYo.model.Format.prototype, {
+Object.defineProperties(eYo.model.Format_p, {
   all: eYo.descriptorR(function () {
     var p = this
     let ans = [p]
@@ -318,7 +356,7 @@ Object.defineProperties(eYo.model.Format.prototype, {
  * @param {Object} model - A model object to validate
  * @return {Object} the possibly validated model.
  */
-eYo.model.Format.prototype.validate = function (path, model) {
+eYo.model.Format_p.validate = function (path, model) {
   var c = this
   if (eYo.isDef(model)) {
     path.split('/').forEach(k => {

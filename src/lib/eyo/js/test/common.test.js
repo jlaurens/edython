@@ -606,6 +606,6 @@ eYo.test.flag = {
   },
 }
 
-eYo.test.onr = eYo.c9r.new()
+eYo.c9r && (eYo.test.onr = eYo.c9r.new())
 console.error('...DONE')
 clearTimeout(eYo.test.common_PID)
