@@ -499,8 +499,9 @@ eYo.c9r.BaseC9r_p.inheritedMethod = eYo.c9r.Dlgt_p.inheritedMethod = function (m
  * The model Base used to derive a new class.
  * @see The `new` method.
  * @param {Object} model
+ * @param {String} key
  */
-eYo.c9r._p.modelBaseC9r = function (model) {
+eYo.c9r._p.modelBaseC9r = function (model, key) {
   return this.BaseC9r
 }
 
@@ -508,12 +509,12 @@ eYo.c9r._p.modelBaseC9r = function (model) {
  * Create a new constructor based on the model.
  * No need to subclass.
  * Instead, override `Base` and `modelHandle`.
- * @param {Boolean} register
  * @param {Object} model
+ * @param {Boolean} [register]
  */
-eYo.c9r._p.modelMakeC9r = function (register, model) {
+eYo.c9r._p.modelMakeC9r = function (model, register) {
   if (!eYo.isBool(register)) {
-    [register, model] = [false, register]
+    register = false
   }
   let C9r = this.makeC9r('', this.modelBaseC9r(model), model)
   C9r.eyo.shouldFinalizeC9r && C9r.eyo.finalizeC9r()
@@ -523,6 +524,32 @@ eYo.c9r._p.modelMakeC9r = function (register, model) {
   C9r.eyo.modelHandle()
   Object.defineProperty(C9r.eyo, 'name', eYo.descriptorR(function () {
     return `${C9r.eyo.super.name}(${id})`
+  }))
+  register && this.register(C9r)
+  return C9r
+}
+
+/**
+ * Create a new constructor based on the model.
+ * No need to subclass.
+ * Instead, override `Base` and `modelHandle`.
+ * @param {Object} model
+ * @param {Boolean} [register]
+ * @param {String} key
+ */
+eYo.c9r._p.modelMakeC9r = function (model, register, key) {
+  if (!eYo.isBool(register)) {
+    eYo.isDef(key) && eYo.throw(`eYo.o3d._p.modelMakeC9r: Unexpected parameter ${key}`)
+    ;[register, key] = [false, register]
+  }
+  let C9r = this.makeC9r('', this.modelBaseC9r(model, key), model)
+  C9r.eyo.shouldFinalizeC9r && C9r.eyo.finalizeC9r()
+  model = C9r.eyo.model
+  model._C9r = C9r
+  model._starters = []
+  C9r.eyo.modelHandle(key)
+  Object.defineProperty(C9r.eyo, 'name', eYo.descriptorR(function () {
+    return `${C9r.eyo.super.name}(${key || '...'})`
   }))
   register && this.register(C9r)
   return C9r
@@ -562,10 +589,10 @@ eYo.c9r._p.singleton = function (model) {
  * @param {Object} id - the result will be `NS[id]`
  * @param {Object} model
  */
-eYo.c9r._p.makeSingleton = function(NS, id, model) {
+eYo.c9r._p.makeSingleton = function(NS, model, id) {
   if (!eYo.isNS(NS)) {
-    !model || eYo.throw(`Unexpected model: ${model}`)
-    ;[NS, id, model] = [this, NS, id]
+    id && eYo.throw(`Unexpected model: ${model}`)
+    ;[NS, model, id] = [this, NS, model]
   }
   eYo.isStr(id) || eYo.throw(`Unexpected parameter ${id}`)
   let ans = new (this.makeC9r('', model))()

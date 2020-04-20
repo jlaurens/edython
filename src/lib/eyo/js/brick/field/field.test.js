@@ -9,6 +9,7 @@ describe('Field', function () {
       $.forEach(what => {
         what && (this.v = parseInt(this.v.toString() + what.toString()))
       })
+      return this.v
     },
     expect (what) {
       let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
@@ -30,9 +31,9 @@ describe('Field', function () {
       },
     }
     ;['value', 'reserved', 'builtin', 'comment', 'edit'].forEach(k => {
-      let f = eYo.field.new(onr, 'foo', {
+      let f = eYo.field.new({
         [k]: '421',
-      })
+      }, 'foo', onr)
       chai.expect(!f).true
     })
 

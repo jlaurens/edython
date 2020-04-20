@@ -598,9 +598,10 @@ eYo.test.flag = {
     $.forEach(what => {
       what && (this.v = parseInt(this.v.toString() + what.toString()))
     })
+    return this.v
   },
   expect (what) {
-    let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
+  let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
     this.reset()
     return ans
   },

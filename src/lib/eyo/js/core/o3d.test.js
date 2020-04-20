@@ -9,6 +9,7 @@ describe ('Tests: Owned', function () {
       $.forEach(what => {
         what && (this.v = parseInt(this.v.toString() + what.toString()))
       })
+      return this.v
     },
     expect (what) {
       let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
@@ -29,12 +30,12 @@ describe ('Tests: Owned', function () {
     let ns = eYo.o3d.makeNS()
     ns.makeBaseC9r()
     var model = {}
-    ns.modelMakeC9r('foo', model)
+    ns.modelMakeC9r(model, 'foo')
     chai.expect(model._C9r.SuperC9r).equal(ns.BaseC9r)
   })
   it ('O3d: eYo.o3d.new', function () {
     let onr = new eYo.c9r.BaseC9r()
-    let o3d = eYo.o3d.new(onr, 'foo')
+    let o3d = eYo.o3d.new('foo', onr)
     chai.expect(o3d.owner).equal(onr)
     chai.expect(() => {
       o3d.owner = eYo.NA
@@ -47,7 +48,7 @@ describe ('Tests: Owned', function () {
     let ns = eYo.o3d.makeNS()
     ns.makeBaseC9r()
     let model = {}
-    let f = ns.new(onr, 'foo', model)
+    let f = ns.new(model, 'foo', onr)
     chai.expect(f.constructor).equal(model._C9r)
   })
   it ('O3d: time is on my side', function () {
@@ -56,21 +57,21 @@ describe ('Tests: Owned', function () {
     let onr = new eYo.c9r.BaseC9r()
     let ns = eYo.o3d.makeNS()
     ns.makeBaseC9r({
-      init (what) {
-        chai.expect(this.owner).equal(what)
+      init (key, owner) {
+        chai.expect(this.owner).equal(owner)
       }
     })
-    let o = ns.new(onr, 'abc')
+    let o = ns.new('abc', onr)
     chai.expect(o.owner).equal(onr)
   })
   it ('O3d: ownerDidChange', function () {
     let ns = eYo.o3d.makeNS()
     ns.makeBaseC9r({
-      init (what) {
-        chai.expect(this.owner).equal(what)
+      init (key, owner) {
+        chai.expect(this.owner).equal(owner)
       }
     })
-    let o = ns.new(new eYo.c9r.BaseC9r(), 'abc')
+    let o = ns.new('abc', eYo.c9r.new())
     o.eyo.C9r_p.ownerWillChange = function (before, after) {
       flag.push(1)
     }
@@ -78,7 +79,7 @@ describe ('Tests: Owned', function () {
       flag.push(2)
       o.eyo.C9r_s.ownerDidChange.call(this, before, after)
     }
-    let onr = new eYo.c9r.BaseC9r()
+    let onr = eYo.c9r.new()
     onr.hasUI = true
     o.eyo.C9r_p.initUI = function () {
       flag.push(3)

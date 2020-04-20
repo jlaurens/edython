@@ -101,7 +101,7 @@ eYo.c9r._p.enhancedO4t = function () {
    * @param {String} source
    * @param {String} key
    */
-  _p.aliasNew = function (object, k, source, key) {
+  _p.aliasNew = function (k, object, source, key) {
     var p
     if (key) {
       let source_ = source + '_'

@@ -159,8 +159,9 @@ eYo.field._p.modelPath = function (key) {
  * The model Base used to derive a new class.
  * @see The `new` method.
  * @param {Object} model
+ * @param {Object} key
  */
-eYo.field._p.modelBaseC9r = function (model) {
+eYo.field._p.modelBaseC9r = function (model, key) {
   return model.edit || model.endEditing || model.startEditing
     ? eYo.field.Input
     : eYo.field.Label

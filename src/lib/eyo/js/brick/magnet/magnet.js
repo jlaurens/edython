@@ -77,21 +77,21 @@ eYo.magnet.makeC9r('S', { // eYo.magnet.BaseC9r is not yet defined!
     var model = brick.model
     var D
     if ((D = model.out) && eYo.isVALID(D.check)) {
-      this.out_ = eYo.magnet.new(brick, eYo.magnet.OUT, D)
-    } else if (D = model.suite && eYo.isDef(model.check)) {
-      this.suite_ = eYo.magnet.new(brick, eYo.magnet.FOOT, model)
+      this.out_ = eYo.magnet.new(D, brick, eYo.magnet.OUT)
+    } else if ((D = model.suite) && eYo.isDef(D.check)) {
+      this.suite_ = eYo.magnet.new(D, brick, eYo.magnet.FOOT)
     }
-    if ((D = model.head) && eYo.isDef(model.check)) {
-      this.head_ = eYo.magnet.new(brick, eYo.magnet.HEAD, model)
+    if ((D = model.head) && eYo.isDef(D.check)) {
+      this.head_ = eYo.magnet.new(D, brick, eYo.magnet.HEAD)
     }
-    if ((D = model.foot) && eYo.isDef(model.check)) {
-      this.foot_ = eYo.magnet.new(brick, eYo.magnet.FOOT, model)
+    if ((D = model.foot) && eYo.isDef(D.check)) {
+      this.foot_ = eYo.magnet.new(D, brick, eYo.magnet.FOOT)
     }
-    if ((D = model.left) && eYo.isDef(model.check)) {
-      this.left_ = eYo.magnet.new(brick, eYo.magnet.LEFT, model)
+    if ((D = model.left) && eYo.isDef(D.check)) {
+      this.left_ = eYo.magnet.new(D, brick, eYo.magnet.LEFT)
     }
-    if ((D = model.right) && eYo.isDef(model.check)) {
-      this.right_ = eYo.magnet.new(brick, eYo.magnet.RIGHT, model)
+    if ((D = model.right) && eYo.isDef(D.check)) {
+      this.right_ = eYo.magnet.new(D, brick, eYo.magnet.RIGHT)
     }
   },
   properties: {
@@ -109,7 +109,7 @@ eYo.magnet.makeC9r('S', { // eYo.magnet.BaseC9r is not yet defined!
 eYo.magnet.BaseC9r.eyo.finalizeC9r((() => {
   let ans = {}
   let d = eYo.model.manyDescriptorF('willConnect', 'didConnect', 'willDisconnect', 'didDisconnect')
-  
+
   ;['out', 'head', 'left', 'right', 'suite', 'foot'].forEach(k => {
     ans[k] = eYo.model.manyDescriptorF('willConnect', 'didConnect', 'willDisconnect', 'didDisconnect')
   })

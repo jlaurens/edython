@@ -9,6 +9,7 @@ describe ('Tests: register', function () {
       $.forEach(what => {
         what && (this.v = parseInt(this.v.toString() + what.toString()))
       })
+      return this.v
     },
     expect (what) {
       let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
@@ -58,7 +59,7 @@ describe ('Tests: register', function () {
     ns.makeBaseC9r()
     eYo.register.add(ns.BaseC9r, 'foo')
     let onr = eYo.c9r.new()
-    let o = new ns.BaseC9r(onr, 'o')
+    let o = new ns.BaseC9r('o', onr)
     chai.assert(o.fooRegister)
     chai.assert(o.fooUnregister)
     chai.assert(o.fooForEach)

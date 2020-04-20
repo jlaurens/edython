@@ -94,7 +94,7 @@ eYo.observe.BaseC9r_p.callback = function (before, after) {
 }
 
 eYo.observe.enhance = function (eyo) {
-  eyo instanceof eYo.dlgt.BaseC9r || eYo.throw(`Bad parameter: and eYo.dlgt.BaseC9r instance was expected, got ${eyo}`)
+  eyo instanceof eYo.dlgt.BaseC9r || eYo.throw(`Bad parameter: an eYo.dlgt.BaseC9r instance was expected, got ${eyo}`)
   let _p = eyo.C9r_p
   /**
    * @name{willChange}

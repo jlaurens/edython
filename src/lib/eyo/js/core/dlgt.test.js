@@ -58,6 +58,7 @@ describe ('Tests: Dlgt', function () {
       $.forEach(what => {
         what && (this.v = parseInt(this.v.toString() + what.toString()))
       })
+      return this.v
     },
     expect (what) {
       let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
@@ -291,7 +292,7 @@ describe ('Tests: Dlgt', function () {
       dlgt.enhanceMany('foo1', 'bar', {})
     }).throw()
     dlgt.enhanceMany('foo2', 'bar', {
-      maker (object, k, model) {
+      maker (model, k, object) {
         flag.push(model)
         return model+1
       }
@@ -302,7 +303,7 @@ describe ('Tests: Dlgt', function () {
     chai.expect(o.foo2Head).equal(2)
     chai.expect(o.foo2Tail).equal(2)
     dlgt.enhanceMany('foo3', 'bar', {
-      maker (object, k, model) {
+      maker (model, k, object) {
         flag.push(model)
         return model+1
       },
@@ -312,11 +313,11 @@ describe ('Tests: Dlgt', function () {
     flag.expect(1)
     chai.expect(o.a_ff).equal(2)
     dlgt.enhanceMany('foo4', 'bar', {
-      maker (object, k, model) {
+      maker (model, k, object) {
         flag.push(model)
         return model+1
       },
-      makeShortcut (object, k, p) {
+      makeShortcut (k, object, p) {
         let k_p = k + '__ff'
         Object.defineProperties(object, {
           [k_p]: eYo.descriptorR(function () {
@@ -329,7 +330,7 @@ describe ('Tests: Dlgt', function () {
     flag.expect(1)
     chai.expect(o.a__ff).equal(2)
     dlgt.enhanceMany('foo5', 'bar', {
-      maker (object, k, model) {
+      maker (model, k, object) {
         flag.push(model)
         return model+1
       },
@@ -352,7 +353,7 @@ describe ('Tests: Dlgt', function () {
     })
     flag.reset()
     dlgt.enhanceMany('foo', 'bar', {
-      maker (object, k, model) {
+      maker (model, k, object) {
         return {
           value: model
         }

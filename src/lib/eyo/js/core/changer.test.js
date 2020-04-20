@@ -9,6 +9,7 @@ describe ('Tests: changer', function () {
       $.forEach(what => {
         what && (this.v = parseInt(this.v.toString() + what.toString()))
       })
+      return this.v
     },
     expect (what) {
       let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
@@ -34,7 +35,7 @@ describe ('Tests: changer', function () {
         },
       },
     })
-    let changer = eYo.changer.new(onr, 'foo')
+    let changer = eYo.changer.new('foo', onr)
     changer.begin()
     flag.expect(1)
     changer.end()
@@ -59,7 +60,7 @@ describe ('Tests: changer', function () {
   })
   it ('Changer: listener', function () {
     let onr = eYo.c9r.new()
-    let changer = eYo.changer.new(onr, 'foo')
+    let changer = eYo.changer.new('foo', onr)
     let listener = changer.addChangeDoneListener(() => {
       flag.push(1)
     })
@@ -76,7 +77,7 @@ describe ('Tests: changer', function () {
   it ('Changer: memoize', function () {
     flag.reset()
     let onr = eYo.c9r.new()
-    onr.changer = eYo.changer.new(onr, 'c')
+    onr.changer = eYo.changer.new('c', onr)
     onr.foo = eYo.changer.memoize('foo', (what) => {
       flag.push(what)
       return what

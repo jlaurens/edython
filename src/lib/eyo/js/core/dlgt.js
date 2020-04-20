@@ -726,10 +726,10 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
   /**
    * The maker is responsible of making new `key` objects from a model.
    */
-  let maker = manyModel.maker || function (object, k, model) {
-    return eYo[key].new(object, k, model)
+  let maker = manyModel.maker || function (model, k, object) {
+    return eYo[key].new(model, k, object)
   }
-  let makeShortcut = manyModel.makeShortcut || function (object, k, p) {
+  let makeShortcut = manyModel.makeShortcut || function (k, object, p) {
     let k_p = k + (manyModel.suffix || `_${key[0]}`)
     if (object.hasOwnProperty(k_p)) {
       console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
@@ -770,9 +770,9 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
     let attributes = []
     let map = object[kMap] = new Map()
     for (let [k, model] of this[kModelMap]) {
-      let attr = maker(object, k, model)
+      let attr = maker(model, k, object)
       if (attr) {
-        makeShortcut(object, k, attr)
+        makeShortcut(k, object, attr)
         map.set(k, attr)
         attributes.push(attr)
       }

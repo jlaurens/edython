@@ -1,17 +1,32 @@
-// Functional tests
-
-eYo.test.no_brick_type = true
-
 describe('Span expression', function () {
+  this.timeout(10000)
+  let flag = {
+    v: 0,
+    reset (what) {
+      this.v = what || 0
+    },
+    push (...$) {
+      $.forEach(what => {
+        what && (this.v = parseInt(this.v.toString() + what.toString()))
+      })
+      return this.v
+    },
+    expect (what) {
+      let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
+      this.reset()
+      return ans
+    },
+  }
   var b, s, b_g, s_g, b_s, s_s
   before(function() {
+    flag.reset()
     var type = 'test_expr_span'
-    eYo.expr.makeC9r(type, {
+    eYo.dfs.makeC9r(type, {
       out: {
         check: null
       }
-    })  
-    b = eYo.test.new_brick(type)
+    })
+    b = eYo.dfs.new(onr, 'b', type)
     s = b.span
     chai.assert(b.isExpr, 'MISSED')
     var type = 'test_stmt_span'

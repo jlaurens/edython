@@ -366,7 +366,7 @@ eYo.view.List.eyo_p.initInstance = function (instance) {
   eYo.view.List.eyo.super.initInstance.call(this, instance)
   let model = this.model
   Object.keys(model).forEach(k => {
-    this.views__.push(eYo.view.new(this, k, model[k]))
+    this.views__.push(eYo.view.new(model[k], this, k))
     instance.newView(model[k])
   })
 }

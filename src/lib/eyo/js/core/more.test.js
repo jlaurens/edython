@@ -9,6 +9,7 @@ describe ('Tests: More', function () {
       $.forEach(what => {
         what && (this.v = parseInt(this.v.toString() + what.toString()))
       })
+      return this.v
     },
     expect (what) {
       let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
@@ -79,7 +80,7 @@ describe ('Tests: More', function () {
       flag.push(this.flag)
       return after
     }
-    var o = ns.new(owner, 'bar')
+    var o = ns.new('bar', owner)
     o.validate(1, 2)
     flag.expect(129)
     owner.barFooValidate = function (before, after) {
@@ -110,7 +111,7 @@ describe ('Tests: More', function () {
     eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
     chai.expect(eYo.isF(ns.BaseC9r_p.validate)).true
     ns.makeC9r('Foo')
-    var o = new ns.Foo(owner, 'foo')
+    var o = new ns.Foo('foo', owner)
     o.flag = 9
     chai.expect(o.validate)
     chai.expect(ns.BaseC9r.eyo.modelHandleValidate)
@@ -121,7 +122,7 @@ describe ('Tests: More', function () {
     ns = eYo.o3d.makeNS()
     ns.makeBaseC9r()
     eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
-    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o = new (ns.makeC9r('Foo'))('foo', owner)
     o.flag = 9
     ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (before, after) {
@@ -137,7 +138,7 @@ describe ('Tests: More', function () {
     ns = eYo.o3d.makeNS()
     ns.makeBaseC9r()
     eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
-    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o = new (ns.makeC9r('Foo'))('foo', owner)
     o.flag = 9
     ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (before, after) {
@@ -154,7 +155,7 @@ describe ('Tests: More', function () {
     ns = eYo.o3d.makeNS()
     ns.makeBaseC9r()
     eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
-    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o = new (ns.makeC9r('Foo'))('foo', owner)
     o.flag = 9
     ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (builtin, before, after) {
@@ -170,7 +171,7 @@ describe ('Tests: More', function () {
     ns = eYo.o3d.makeNS()
     ns.makeBaseC9r()
     eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', false)
-    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o = new (ns.makeC9r('Foo'))('foo', owner)
     o.flag = 9
     ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (builtin, before, after) {
@@ -205,7 +206,7 @@ describe ('Tests: More', function () {
     eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', true)
     chai.expect(eYo.isF(ns.BaseC9r_p.validate)).true
     ns.makeC9r('Foo')
-    var o = new ns.Foo(owner, 'foo')
+    var o = new ns.Foo('foo', owner)
     chai.expect(o.validate)
     chai.expect(ns.BaseC9r.eyo.modelHandleValidate)
     ns.BaseC9r.eyo.modelHandleValidate('foo', {})
@@ -215,7 +216,7 @@ describe ('Tests: More', function () {
     ns = eYo.o3d.makeNS()
     ns.makeBaseC9r()
     eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', true)
-    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o = new (ns.makeC9r('Foo'))('foo', owner)
     ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (before, after) {
         flag.push(before + 2)
@@ -230,7 +231,7 @@ describe ('Tests: More', function () {
     ns = eYo.o3d.makeNS()
     ns.makeBaseC9r()
     eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', true)
-    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o = new (ns.makeC9r('Foo'))('foo', owner)
     o.flag = 9
     ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (before, after) {
@@ -248,7 +249,7 @@ describe ('Tests: More', function () {
     ns = eYo.o3d.makeNS()
     ns.makeBaseC9r()
     eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', true)
-    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o = new (ns.makeC9r('Foo'))('foo', owner)
     o.flag = 9
     ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (builtin, before, after) {
@@ -264,7 +265,7 @@ describe ('Tests: More', function () {
     ns = eYo.o3d.makeNS()
     ns.makeBaseC9r()
     eYo.more.enhanceO3dValidate(ns.BaseC9r.eyo, 'foo', true)
-    o = new (ns.makeC9r('Foo'))(owner, 'foo')
+    o = new (ns.makeC9r('Foo'))('foo', owner)
     o.flag = 9
     ns.BaseC9r.eyo.modelHandleValidate('foo', {
       validate (builtin, before, after) {

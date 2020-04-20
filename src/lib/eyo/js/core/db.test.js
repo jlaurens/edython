@@ -9,6 +9,7 @@ describe ('Tests: db', function () {
       $.forEach(what => {
         what && (this.v = parseInt(this.v.toString() + what.toString()))
       })
+      return this.v
     },
     expect (what) {
       let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
@@ -21,7 +22,7 @@ describe ('Tests: db', function () {
     chai.assert(eYo.o3d.DB)
   })
   it ('DB: add, remove', function () {
-    let db = new eYo.o3d.DB(onr, 'db')
+    let db = new eYo.o3d.DB('db', onr)
     let ns = eYo.c9r.makeNS()
     ns.makeBaseC9r({
       init (id) {

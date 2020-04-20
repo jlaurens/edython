@@ -9,6 +9,7 @@ describe ('Tests: data', function () {
       $.forEach(what => {
         what && (this.v = parseInt(this.v.toString() + what.toString()))
       })
+      return this.v
     },
     expect (what) {
       let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
@@ -42,9 +43,9 @@ describe ('Tests: data', function () {
     ;['validate', 'validateIncog'].forEach(K => {
       new_ns()
       let test = (expect, f) => {
-        d = ns.new(onr, 'd', {
+        d = ns.new({
           [K]: f,
-        })
+        }, 'd', onr)
         chai.expect(d[K](1, 2)).equal(3)
         flag.expect(expect)
       }
@@ -104,9 +105,9 @@ describe ('Tests: data', function () {
     let K = 'synchronize'
     flag.reset()
     let test = (expect, f) => {
-      d = ns.new(onr, 'd', {
+      d = ns.new({
         [K]: f,
-      })
+      }, 'd', onr)
       d[K](1, 2)
       flag.expect(expect)
     }
@@ -168,9 +169,9 @@ describe ('Tests: data', function () {
     ].forEach(K => {
       flag.reset()
       let test = (expect, f) => {
-        d = ns.new(onr, 'd', {
+        d = ns.new({
           [K]: f,
-        })
+        }, 'd', onr)
         d[K](1, 2)
         flag.expect(expect)
       }
@@ -239,20 +240,20 @@ describe ('Tests: data', function () {
     })
   })
   it ('eYo.data.handle_consolidate', function () {
-    let b3k = eYo.o4t.new(onr, 'b3k', {
+    let b3k = eYo.o4t.new({
       properties: {
         changer: {
           value () {
-            return eYo.changer.new(this, 'changer', {
+            return eYo.changer.new({
               wrap (f) {
                 flag.push(1)
                 f()
               },    
-            })
+            }, this, 'changer')
           },
         },
       },
-    })  
+    }, 'b3k', onr)  
     let d = eYo.data.new(b3k, 'd')
     chai.assert(b3k.changer)
     chai.expect(d.owner).equal(d.brick).equal(b3k)
@@ -260,9 +261,9 @@ describe ('Tests: data', function () {
     let K = 'consolidate'
     flag.reset()
     let test = (expect, f) => {
-      d = ns.new(b3k, 'd', {
+      d = ns.new({
         [K]: f,
-      })
+      }, b3k, 'd')
       d[K]()
       flag.expect(expect)
     }
@@ -304,9 +305,9 @@ describe ('Tests: data', function () {
     let K = 'filter'
     flag.reset()
     let test = (expect, f) => {
-      d = ns.new(onr, 'd', {
+      d = ns.new({
         [K]: f,
-      })
+      }, 'd', onr)
       d[K](1)
       flag.expect(expect)
     }
@@ -365,7 +366,7 @@ describe ('Tests: data', function () {
     chai.expect(b3k.eyo.model.properties.changer.value).equal(1)
     chai.expect(b3k.changer).equal(1)
     chai.expect(b3k.type).equal(2)
-    let d = eYo.data.new(b3k, 'd', {})
+    let d = eYo.data.new({}, b3k, 'd')
     chai.assert(d.brick_p)
     chai.assert(d.changer_p)
     chai.assert(d.brickType_p)

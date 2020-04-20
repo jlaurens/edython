@@ -9,6 +9,7 @@ describe ('Tests: event', function () {
       $.forEach(what => {
         what && (this.v = parseInt(this.v.toString() + what.toString()))
       })
+      return this.v
     },
     expect (what) {
       let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
@@ -25,7 +26,7 @@ describe ('Tests: event', function () {
     chai.assert(eYo.event.Mngr)
   })
   it ('eYo.event.Mngr', function () {
-    let mngr = new eYo.event.Mngr(onr, 'mngr', {})
+    let mngr = new eYo.event.Mngr('mngr', onr)
     chai.expect(mngr.MAX_UNDO).equal(eYo.event.MAX_UNDO)
     mngr.MAX_UNDO_ *= 2
     chai.expect(mngr.MAX_UNDO).equal(2 * eYo.event.MAX_UNDO)
@@ -42,7 +43,7 @@ describe ('Tests: event', function () {
     }).throw
   })
   it ('eYo.event.Mngr: wrap', function () {
-    let mngr = new eYo.event.Mngr(onr, '', {})
+    let mngr = new eYo.event.Mngr('mngr', onr)
     var flag = 0
     var try_f = () => {
       flag *= 10
@@ -63,7 +64,7 @@ describe ('Tests: event', function () {
     chai.expect(flag).equal(12)
   })
   it ('eYo.event.Mngr: enableWrap(0)', function () {
-    let mngr = new eYo.event.Mngr(onr, 'foo', {})
+    let mngr = new eYo.event.Mngr('mngr', onr)
     var try_f = () => {
       chai.expect(mngr.enabled).true
       chai.expect(mngr.disabled_).equal(0)
@@ -75,8 +76,7 @@ describe ('Tests: event', function () {
     mngr.enableWrap(try_f, finally_f)
   })
   it ('eYo.event.Mngr: enableWrap(1)', function () {
-    let onr = new (eYo.c9r.makeC9r(''))()
-    let mngr = new eYo.event.Mngr(onr)
+    let mngr = new eYo.event.Mngr('foo', onr)
     var try_f = () => {
       chai.expect(mngr.enabled).true
       chai.expect(mngr.disabled_).equal(0)
@@ -89,7 +89,7 @@ describe ('Tests: event', function () {
     mngr.enableWrap(try_f, finally_f)
   })
   it ('eYo.event.Mngr: enableWrap(421)', function () {
-    let mngr = new eYo.event.Mngr(onr, 'foo', {})
+    let mngr = new eYo.event.Mngr('foo', onr)
     var try_f = () => {
       chai.expect(mngr.enabled).false
       chai.expect(mngr.disabled_).equal(420)

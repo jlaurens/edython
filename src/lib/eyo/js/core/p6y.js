@@ -521,7 +521,7 @@ eYo.p6y._p.modelHandleStored = function (_p, key, model) {
  * @constructor
  */
 eYo.o3d.makeC9r(eYo.p6y, 'List', {
-  init (owner, key, ...items) {
+  init (key, owner, ...$) {
     this.list__ = []
     this.values = new Proxy(this.list__, {
       get(target, prop) {
@@ -556,7 +556,7 @@ eYo.o3d.makeC9r(eYo.p6y, 'List', {
         throw new Error('`properties` attribute only accepts indexed accessors')
       }
     })
-    this.splice(0, 0, ...items)
+    this.splice(0, 0, ...$)
   },
   dispose(...args) {
     for (const p of this.list__) {
@@ -592,9 +592,9 @@ eYo.p6y.List.eyo.finalizeC9r()
       start = this.list__.length - start
     }
     let ans = this.list__.splice(start, deleteCount).map(p => p.value)
-    items = items.map(item => eYo.p6y.new(this, '', {
+    items = items.map(item => eYo.p6y.new({
       value: item
-    }))
+    }, '', this))
     this.list__.splice(start, 0, ...items)
     return ans
   }
@@ -614,12 +614,12 @@ eYo.p6y.List.eyo_p.initInstance = function (instance) {
 }
 
 eYo.dlgt.BaseC9r_p.p6yEnhanced = function (manyModel = {}) {
-  eYo.isF(manyModel.maker) || (manyModel.maker = function (object, k, model) {
+  eYo.isF(manyModel.maker) || (manyModel.maker = function (model, k, object) {
     return model && model.source
-    ? object.eyo.aliasNew(object, k, ...model.source)
-    : eYo.p6y.new(object, k, model || {})
+    ? object.eyo.aliasNew(k, object, ...model.source)
+    : eYo.p6y.new(model || {}, k, object)
   })
-  eYo.isF(manyModel.makeShortcut) || (manyModel.makeShortcut = function (object, k, p) {
+  eYo.isF(manyModel.makeShortcut) || (manyModel.makeShortcut = function (k, object, p) {
     let k_p = k + '_p'
     if (object.hasOwnProperty(k_p)) {
       console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)

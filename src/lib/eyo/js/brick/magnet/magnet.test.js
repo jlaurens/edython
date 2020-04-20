@@ -9,6 +9,7 @@ describe ('Tests: magnet', function () {
       $.forEach(what => {
         what && (this.v = parseInt(this.v.toString() + what.toString()))
       })
+      return this.v
     },
     expect (what) {
       let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
@@ -30,12 +31,12 @@ describe ('Tests: magnet', function () {
       bs.brick = bs
       eYo.magnet.TYPES.forEach(type => {
         flag.reset()
-        let m = eYo.magnet.new(bs, type, {
+        let m = eYo.magnet.new({
           init () {
             flag.push(2)
             console.error(flag.v)
           },
-        })
+        }, bs, type)
         chai.expect(eYo.isDef(m))
         console.error(flag.v)
       })
