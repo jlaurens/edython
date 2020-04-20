@@ -12,7 +12,8 @@
 'use strict'
 
 eYo.forward('brick')
-eYo.forward('c9r.DB')
+
+eYo.require('o3d.DB')
 
 //g@@g.forwardDeclare('g@@g.array')
 
@@ -25,7 +26,7 @@ eYo.forward('c9r.DB')
  * The main board, the draft board, the flyout board and the drag board
  * both own exactly one such list.
  * The main board, the draft board and the drag should share the same database.
- * @param{?eYo.c9r.DB} db
+ * @param{?eYo.o3d.DB} db
  * @constructor
  */
 eYo.o4t.makeC9r(eYo.brick, 'List', {

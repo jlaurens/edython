@@ -113,11 +113,16 @@ eYo.c9r._p.enhancedO4t = function () {
           } else {
             let s = target[source_]
             if (eYo.isDef(s)) {
-              let p6y = s[key_p]
-              return eYo.isDef(p6y) ? p6y[prop] : eYo.NA
-            } else {
-              return eYo.NA
+              var x = s[key_p]
+              if (eYo.isDef(x)) {
+                return x[prop]
+              }
+              x = s[key]
+              if (eYo.isDef(x)) {
+                return x[prop]
+              }
             }
+            return eYo.NA
           }
         },
         set: function (target, prop, value) {

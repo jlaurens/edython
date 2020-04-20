@@ -35,6 +35,7 @@
 eYo.forward('do')
 eYo.forward('xre')
 eYo.forward('decorate')
+eYo.forward('changer')
 
 //g@@g.require('g@@g.dom')
 
@@ -132,38 +133,6 @@ eYo.data.makeBaseC9r(true, {
   },
 })
 
-eYo.doNothing({
-  [eYo.model.ROOT]: 'data',
-  'data': '\\w+',
-  'data\\.\\w+': [
-    'after', // key || [keys]
-    'order', // INTEGER
-    'all', // TYPE || [TYPE], // last is expected
-    'main', // BOOLEAN
-    'placeholder', // STRING
-    'noUndo', // true
-    'xml', // {}
-    'init', // WHATEVER
-    'validate', // (...) => {} || false || true,
-    'validateIncog', // (...) => {}
-    'willChange', // (...) => {}
-    'isChanging', // (...) => {}
-    'didChange', // (...) => {}
-    'willUnchange', // (...) => {}
-    'isUnchanging', // (...) => {}
-    'didUnchange', // (...) => {}
-    'willLoad', // () => {}
-    'didLoad', // () => {}
-    'consolidate', // (...) => {}
-    'fromType', // () => {}
-    'toField', // () => {}
-    'fromField', // () => {}
-    'toText', // () => {}
-    'fromText', // () => {}
-  ],
-  'data\\.\\w+\.xml': eYo.model.manyDescriptorF('save', 'load'),
-})
-
 eYo.data.BaseC9r.eyo.finalizeC9r(
   eYo.model.asRA('all', 'after'),
   eYo.model.manyDescriptorF(
@@ -174,7 +143,6 @@ eYo.data.BaseC9r.eyo.finalizeC9r(
     'willLoad', 'didLoad',
     'willChange', 'isChanging', 'didChange',
     'willUnchange', 'isUnchanging', 'didUnchange',
-    'willLoad', 'didLoad'
   ),
   {
     xml: (() => {
@@ -185,8 +153,13 @@ eYo.data.BaseC9r.eyo.finalizeC9r(
         }
       }
       return ans
-    })()
+    })(),
   },
+  [
+    'main', // BOOLEAN
+    'placeholder', // String
+    'noUndo', // BOOLEAN
+  ],
 )
 
 // ANCHOR: Methods
@@ -894,6 +867,7 @@ eYo.data.BaseC9r.eyo.finalizeC9r(
     ].forEach(K => {
       this.handle_f(K, key, model)
     })
+    this.handle_consolidate(key, model)
     this.handle_filter(key, model)
     ;[
       'validate', 'validateIncog'
@@ -917,20 +891,27 @@ eYo.data.BaseC9r.eyo.finalizeC9r(
    * @param {Object} model
    */
   _p.handle_filter = function (key, model) {
+    let K = 'filter'
     let _p = this.C9r_p
-    let f_m = model.filter
+    let f_m = model[K]
     if (eYo.isDoIt(f_m)) {
-      let f_s = this.C9r_s.filter
-      _p.filter = function (after) {
-        try {
-          this.filter = f_s
-          return f_m.call(this, after)
-        } finally {
-          delete this.fister_s
-        }
+      let f_p = _p[K]
+      if (f_m.length > 1) { // arguments are builtin, after
+        _p[K] = eYo.decorate.reentrant(K, function (after) {
+          return f_m.call(this, ($after = after) => {
+            return f_p.call(this, $after)
+          }, after)
+        }, eYo.doReturn)
+      } else { // arguments are after
+        _p[K] = function (after) {
+          try {
+            this[K] = f_p
+            return f_m.call(this, after)
+          } finally {
+            delete this[K]
+          }
+        }  
       }
-    } else if (!f_m) {
-      _p.filter = eYo.doReturn
     }
   }
 
@@ -945,17 +926,17 @@ eYo.data.BaseC9r.eyo.finalizeC9r(
     let _p = this.C9r_p
     let f_m = model[K]
     if (eYo.isDoIt(f_m)) {
-      let f_s = this.C9r_s[K]
+      let f_p = _p[K]
       if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
         _p[K] = eYo.decorate.reentrant(K, function (...$) {
           f_m.call(this, (...$) => {
-            return f_s.call(this, ...$) // return is not used in from... but it saves some space
+            return f_p.call(this, ...$) // return is not used in from... but it saves some space
           }, ...$)
         })
       } else {
         _p[K] = function (...$) {
           try {
-            this[K] = f_s
+            this[K] = f_p
             return f_m.call(this, ...$)
           } finally {
             delete this[K]
@@ -975,34 +956,35 @@ eYo.data.BaseC9r.eyo.finalizeC9r(
    * @param {Object} model
    */
   _p.handle_consolidate = function (key, model) {
-    let _p = this.C9r_p
-    let f_m = model.consolidate
+    let K = 'consolidate'
+    let f_m = model[K]
     if (eYo.isDoIt(f_m)) {
-      let f_s = this.C9r_s[K]
+      let _p = this.C9r_p
+      let f_p = _p[K]
       if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
-        _p.consolidate = eYo.decorate.reentrant(K, function (...$) {
+        _p[K] = eYo.decorate.reentrant(K, function (...$) {
           if (this.changer.level) {
             return
           }
           f_m.call(this, (...$) => {
-            f_s.call(this, ...$)
+            f_p.call(this, ...$)
           }, ...$)
         })
       } else {
-        _p.consolidate = function (...$) {
+        _p[K] = function (...$) {
           if (this.changer.level) {
             return
           }
           try {
-            this.consolidate = f_s
+            this[K] = f_p
             f_m.call(this, ...$)
           } finally {
-            delete this.consolidate
+            delete this[K]
           }
         }
       }
     } else {
-      f_m && eYo.throw(`Unexpected model (${this.name}/${key}/consolidate): ${f_m}`)
+      f_m && eYo.throw(`Unexpected model (${this.name}/${key}/${K}): ${f_m}`)
     }
   }
 
@@ -1097,10 +1079,10 @@ eYo.data.BaseC9r.eyo.finalizeC9r(
         }
       }
     } else if (f_m === true) {
-      this[K] = f_p
+      _p[K] = f_p
     } else {
       f_m && f_m !== eYo.doNothing && eYo.throw(`Unexpected model (${this.name}/${key}/synchronize) -> ${f_m}`)
-      this.synchronize = eYo.doNothing
+      _p[K] = eYo.doNothing
     }
   }
 
@@ -1114,38 +1096,60 @@ eYo.data.BaseC9r.eyo.finalizeC9r(
   _p.handle_change = function (K, key, model) {
     let _p = this.C9r_p
     let f_m = model[K]
+    var alt_f = eYo.doNothing
     if (eYo.isDoIt(f_m)) {
-      let f_s = this.C9r_s[K]
-      let m = XRegExp.exec(f_m.toString(), eYo.xre.function_builtin_before)
-      if (m) {
-        let before = m.before
-        if (m.builtin) {
-          var ff = before
-            ? eYo.isDoIt(f_s) ? function (before, after) {
-                f_m.call(this, () => {
-                  f_s.call(this, before, after)
-                }, before, after)
-              } : function (before, after) {
-                f_m.call(this, eYo.doNothing, before, after)
-              }
-            : eYo.isDoIt(f_s) ? function (before, after) {
-                f_m.call(this, () => {
-                  f_s.call(this, before, after)
-                }, after)
-              } : function (before, after) {
-                f_m.call(this, eYo.doNothing, after)
-              }
-        } else {
-          ff = before ? f_m : function (before, after) {
-            f_m.call(this, after)
+      let f_p = _p[K]
+      var f
+      var alt_f = f_p
+      if (f_m.length > 2) { // f_m arguments are builtin, before, after
+        _p[K] = eYo.decorate.reentrant(K, eYo.isDoIt(f_p)
+        ? function (before, after) {
+          f_m.call(this, () => {
+            f_p.call(this, before, after)
+          }, before, after)
+        } : function (before, after) {
+          f_m.call(this, eYo.doNothing, before, after)
+        })
+        return
+      } else if (f_m.length > 1) {
+        let m = XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)
+        if (m) { // f_m arguments are builtin, after
+          _p[K] = eYo.decorate.reentrant(K, eYo.isDoIt(f_p)
+          ? function (before, after) {
+            f_m.call(this, () => {
+              f_p.call(this, before, after)
+            }, after)
+          } : function (before, after) {
+            f_m.call(this, eYo.doNothing, after)
+          })
+          return
+        }
+        // f_m arguments are before, after
+        _p[K] = function (before, after) {
+          try {
+            this[K] = () => {
+              f_p.call(this, before, after)
+            }
+            f_m.call(this, before, after)
+          } finally {
+            delete this[K]
           }
         }
-      } else {
-        ff = f_m
+        return
       }
-      _p[K] = eYo.decorate.reentrant(K, ff)
-    } else {
-      f_m && eYo.throw(`Unexpected model (${this.name}/${key}/${K}) -> ${f_m}`)
+      // f_m arguments are after
+      _p[K] = function (before, after) {
+        try {
+          this[K] = () => {
+            f_p.call(this, before, after)
+          }
+          f_m.call(this, after)
+        } finally {
+          delete this[K]
+        }
+      }
+      return
     }
+    f_m && eYo.throw(`Unexpected model (${this.name}/${key}/${K}) -> ${f_m}`)
   }
 }

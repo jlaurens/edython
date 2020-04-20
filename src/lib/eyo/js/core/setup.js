@@ -24,10 +24,6 @@ eYo.makeNS('setup', {
 /**
  * finalize.
  */
-
-/**
- * finalize.
- */
 eYo.setup.finalize = function () {
   this.i9rsHead.forEach(i9r => i9r())
   this.i9rsHead = eYo.NA

@@ -11,7 +11,7 @@ describe ('Tests: Object', function () {
       })
     },
     expect (what) {
-      let ans = chai.expect(this.v).equal(what)
+      let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
       this.reset()
       return ans
     },
@@ -756,6 +756,21 @@ describe ('Tests: Object', function () {
     C9r.eyo.finalizeC9r()
     let o = new C9r(onr, 'o')
     chai.expect(o.foo).equal(421)
+  })
+  it ('O4t: eYo.o4t.new("", ...)', function () {
+    let o = eYo.o4t.new(onr, 'o', {
+      properties: {
+        foo: 421,
+      },
+      methods: {
+        bar (what) {
+          flag.push(what)
+        }
+      }
+    })
+    chai.expect(o.foo).equal(421)
+    o.bar(123)
+    flag.expect(123)
   })
   it ('O4t: eYo.o4t.singleton(...)', function () {
     let model = {

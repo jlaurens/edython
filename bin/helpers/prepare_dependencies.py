@@ -181,6 +181,7 @@ def update_test_local():
   return 0
 
 if __name__ == "__main__":
+
   print('Preparing dependencies:')
   print('=======================')
 

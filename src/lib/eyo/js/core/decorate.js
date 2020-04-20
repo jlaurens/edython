@@ -62,8 +62,8 @@ eYo.decorate.reentrant_method = (object, key, f) => {
  */
 eYo.decorate.reentrant = (key, f, alt_f = eYo.doNothing) => {
   return function(...$) {
-    this[key] = alt_f
     try {
+      this[key] = alt_f
       return f.call(this, ...$)
     } finally {
       delete this[key]

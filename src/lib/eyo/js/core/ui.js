@@ -12,7 +12,6 @@
 'use strict'
 
 eYo.require('font')
-eYo.forward('svg')
 
 //g@@g.forwardDeclare('g@@g.cssom')
 goog.require('goog.color')

@@ -30,8 +30,17 @@ eYo.makeNS('model', {
   DOT: '.',
   ANY: '*',
   VALIDATE: '!',
-  getF: (what) => {
+  validateStr: (what) => {
+    return !eYo.isStr(what) && eYo.INVALID
+  },
+  validateF: (what) => {
     return !eYo.isF(what) && eYo.INVALID
+  },
+  validateBool: (what) => {
+    return !eYo.isBool(what) && eYo.INVALID
+  },
+  validateForFalse: (what) => {
+    return what !== false && !eYo.isF(what) && eYo.INVALID
   },
   asRA: (what) => {
     return !eYo.isRA(what) && [what]
@@ -43,7 +52,25 @@ eYo.makeNS('model', {
 
 eYo.model._p.descriptorF = function(model) {
   model || (model = {})
-  model[eYo.model.VALIDATE] = eYo.model.getF
+  model[eYo.model.VALIDATE] = eYo.model.validateF
+  return model
+}
+
+eYo.model._p.descriptorBool = function(model) {
+  model || (model = {})
+  model[eYo.model.VALIDATE] = eYo.model.validateBool
+  return model
+}
+
+eYo.model._p.descriptorStr = function(model) {
+  model || (model = {})
+  model[eYo.model.VALIDATE] = eYo.model.validateStr
+  return model
+}
+
+eYo.model._p.descriptorForFalse = function(model) {
+  model || (model = {})
+  model[eYo.model.VALIDATE] = eYo.model.validateForFalse
   return model
 }
 
@@ -66,6 +93,39 @@ eYo.model._p.manyDescriptorF = function (...$) {
   let ans = {}
   $.forEach(k => {
     ans[k] = this.descriptorF()
+  })
+  return ans
+}
+
+/**
+ * Convenient method 
+ */
+eYo.model._p.manyDescriptorBool = function (...$) {
+  let ans = {}
+  $.forEach(k => {
+    ans[k] = this.descriptorBool()
+  })
+  return ans
+}
+
+/**
+ * Convenient method 
+ */
+eYo.model._p.manyDescriptorStr = function (...$) {
+  let ans = {}
+  $.forEach(k => {
+    ans[k] = this.descriptorStr()
+  })
+  return ans
+}
+
+/**
+ * Convenient method 
+ */
+eYo.model._p.manyDescriptorForFalse = function (...$) {
+  let ans = {}
+  $.forEach(k => {
+    ans[k] = this.descriptorForFalse()
   })
   return ans
 }
@@ -280,8 +340,10 @@ eYo.model.Format.prototype.validate = function (path, model) {
     ? c.validate_(model)
     : c.fallback && c.fallback.validate(model)
     if (eYo.isINVALID(v)) {
-      eYo.TESTING || console.error(model)
-      eYo.throw(`validate: bad model at ${c.path} (see console)`)
+      if (eYo.TESTING) {
+        console.error(model)
+      }
+      eYo.throw(`validate: bad model at ${c.path} (set eYo.TESTING to true and see console)`)
     } else if (v) {
       model = v
     }

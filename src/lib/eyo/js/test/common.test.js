@@ -26,6 +26,14 @@ eYo.py && setTimeout(() => {
 }, 0)
 
 eYo.test || eYo.makeNS('test')
+eYo.TESTING = true
+
+console.error('LOADING common.test.js...')
+
+eYo.test.common_PID = setTimeout(() => {
+  console.error('common.test.js NOT LOADED')
+}, 2000)
+
 
 /**
  * Extends an existing method with the given functions.
@@ -44,8 +52,8 @@ eYo.test.extend = function (_p, key, before, after) {
     eYo.isF(after) && after.call(this, ...$)
     return ans
   } : function (...$) {
-    var ans = eYo.isF(f_p) && f_p.call(this, ...$)
-    eYo.isF(before) && before.call(this, ...$)
+    var ans = eYo.isDoIt(f_p) && f_p.call(this, ...$)
+    eYo.isDoIt(before) && before.call(this, ...$)
     return ans
   }
 }
@@ -592,10 +600,12 @@ eYo.test.flag = {
     })
   },
   expect (what) {
-    let ans = chai.expect(this.v).equal(what)
+    let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
     this.reset()
     return ans
   },
 }
 
 eYo.test.onr = eYo.c9r.new()
+console.error('...DONE')
+clearTimeout(eYo.test.common_PID)

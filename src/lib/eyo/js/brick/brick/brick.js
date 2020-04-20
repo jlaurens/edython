@@ -14,8 +14,24 @@
 eYo.require('decorate')
 eYo.require('do')
 
-eYo.forward('changer')
+eYo.require('changer')
 eYo.require('data')
+
+eYo.require('xre')
+eYo.require('t3')
+eYo.require('geom')
+eYo.require('do')
+
+eYo.require('event')
+
+eYo.forward('span')
+eYo.forward('field')
+eYo.forward('slot')
+eYo.forward('magnet')
+
+// eYo.forward('expr')
+// eYo.forward('stmt')
+// eYo.forward('focus')
 
 /**
  * The namespace is expected to contain everything about bricks.
@@ -26,23 +42,6 @@ eYo.require('data')
 eYo.o4t.makeNS(eYo, 'brick')
 
 // eYo.provide('brick.dflt')
-
-eYo.forward('expr')
-eYo.forward('stmt')
-
-eYo.forward('xre')
-eYo.forward('t3')
-eYo.forward('geom.Point')
-eYo.forward('do')
-
-eYo.forward('event')
-eYo.forward('span')
-eYo.forward('field')
-eYo.forward('slot')
-eYo.forward('magnet')
-eYo.forward('expr')
-eYo.forward('stmt')
-eYo.forward('focus')
 
 ;(() => {
   let Mngr = function () {}

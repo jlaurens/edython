@@ -44,15 +44,14 @@ eYo.dfs.makeNS(eYo, 'slot')
 
 eYo.require('do')
 eYo.require('decorate')
-
-eYo.forward('geom.Point')
+eYo.require('geom')
 
 eYo.forward('field')
 eYo.forward('magnet')
 
-eYo.forward('xml')
-eYo.forward('key')
-eYo.forward('expr.List')
+// eYo.forward('xml')
+// eYo.forward('key')
+// eYo.forward('expr.List')
 
 /**
  * The model path.

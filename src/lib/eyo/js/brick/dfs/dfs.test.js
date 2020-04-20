@@ -1,98 +1,44 @@
 describe('DFS Tests', function() {
+  this.timeout(10000)
+  let flag = {
+    v: 0,
+    reset (what) {
+      this.v = what || 0
+    },
+    push (...$) {
+      $.forEach(what => {
+        what && (this.v = parseInt(this.v.toString() + what.toString()))
+      })
+    },
+    expect (what) {
+      let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
+      this.reset()
+      return ans
+    },
+  }
+  let onr = eYo.c9r.new()
   it(`DFS: Basic`, function() {
     chai.assert(eYo.dfs)
     chai.assert(eYo.dfs.BaseC9r)
     chai.assert(eYo.dfs.Dlgt_p)
-    chai.assert(eYo.dfs.enhanceMany)
   })
-  it(`eYo.dfs.enhanceMany`, function() {
-    let ns = eYo.dfs.makeNS()
-    chai.expect(() => {
-      ns.enhanceMany('foo')
-    }).throw
-  })
-  it(`eYo.dfs.enhanceMany 0`, function() {
+  it (`DFS: owner`, function () {
     let ns = eYo.dfs.makeNS()
     ns.makeBaseC9r()
-    ns.enhanceMany('foo')
-    chai.expect(() => {
-      ns.enhanceMany('foo')
-    }).throw
-    let _p = ns.Dlgt_p
-    ;[
-      'Prepare',
-      'Merge',
-      'ForEach',
-      'Some',
-      'ForEach',
-      'Init',
-      'Dispose',
-      'ByKey',
-    ].forEach(k => {
-      chai.assert(_p.hasOwnProperty('foo' + k))
+    ns.makeC9r('Brick')
+    ns.makeC9r('Slot')
+    ns.makeC9r('Magnet')
+    let X = {}
+    ;[ns.Brick, ns.Slot, ns.Magnet].forEach(C9r => {
+      let k = C9r.eyo.id[0].toLowerCase()
+      X[k] = new C9r(onr, k)
+      ;[ns.Brick, ns.Slot, ns.Magnet].forEach(C9r2 => {
+        if (C9r2 !== C9r) {
+          let k2 = C9r2.eyo.id[0].toLowerCase()
+          X[k + k2] = new C9r2(onr, k + k2)  
+        }
+      })
     })
-  })
-  it(`eYo.dfs.enhanceMany 1`, function() {
-    let ns = eYo.dfs.makeNS()
-    ns.makeBaseC9r()
-    let unik = 'foo' + eYo.genUID(10, 'alnum')
-    ns.enhanceMany(unik)
-    let onr = {}
-    var b = ns.new(onr)
-    let flag = []
-    b[unik + 'ForEach'](x => {
-      flag.push(x)
-    })
-    chai.expect(flag.length).equal(0)
-    b[unik + 'Some'](x => {
-      flag.push(x)
-    })
-    chai.expect(flag.length).equal(0)
-  })
-  it(`eYo.dfs.enhanceMany 1`, function() {
-    let ns = eYo.dfs.makeNS()
-    ns.makeBaseC9r()
-    let unik = 'foo' + eYo.genUID(10, 'alnum')
-    ns.enhanceMany(unik)
-    let onr = {}
-    var b = ns.new(onr)
-    let flag = []
-    b[unik + 'ForEach'](x => {
-      flag.push(x)
-    })
-    chai.expect(flag.length).equal(0)
-    b[unik + 'Some'](x => {
-      flag.push(x)
-    })
-    chai.expect(flag.length).equal(0)
-    ns.BaseC9r.eyo[unik + 'Merge']({
-      a: {
-        value: 1,
-      },
-      b: {
-        value: 2,
-      },
-    })
-    chai.expect(() => {
-      b = ns.new(onr)
-    }).throw
-    let foo = eYo.c9r.makeNS(eYo, unik)
-    foo.makeBaseC9r({
-      init (what) {
-        this.value = what
-      }
-    })
-    flag = 0
-    b[unik + 'ForEach'](x => {
-      flag *= 10
-      flag += x.value
-    })
-    chai.expect(flag).equal(12)
-    flag = 0
-    b[unik + 'Some'](x => {
-      flag *= 10
-      return flag += x.value
-    })
-    chai.expect(flag).equal(1)
+    
   })
 })

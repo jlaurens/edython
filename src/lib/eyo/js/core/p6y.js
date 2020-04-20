@@ -147,7 +147,6 @@ eYo.p6y.BaseC9r.eyo.finalizeC9r([
   'source', 'value', 'lazy', 'reset', 'copy',
   'validate', 'get', 'set', 'get_', 'set_',
   eYo.observe.BEFORE, eYo.observe.DURING, eYo.observe.AFTER,
-  'init', 'dispose',
 ], {
   [eYo.model.VALIDATE]: before => {
     if (!eYo.isD(before)) {
@@ -179,13 +178,13 @@ eYo.p6y.Dlgt_p.modelHandle = function (key, model) {
   model || (model = this.model)
   let ns = this.ns
   let _p = this.C9r_p
-  ns.modelHandleValue(_p, key, model)
+  this.modelHandleValue(key, model)
   ns.modelHandleDispose(_p, key, model)
   this.modelHandleValidate(key, model)
   ns.modelHandleGetSet(_p, key, model)
   ns.modelHandleChange(_p, key, model)
   ns.modelHandleStored(_p, key, model)
-  ns.modelHandleReset(_p, key, model) // must be last
+  this.modelHandleReset(key, model) // must be last
 }
 
 /**
@@ -193,15 +192,15 @@ eYo.p6y.Dlgt_p.modelHandle = function (key, model) {
  * If model's value object is a function, it is executed to return an object which will be the initial value.
  * If we want to initialize with a function, the model's value object must be a function that returns the expected function.
  * No change hook is reached.
- * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.modelHandleValue = function (prototype, key, model) {
+eYo.p6y.Dlgt_p.modelHandleValue = function (key, model) {
+  let _p = this.C9r_p
   let value_m = model.value
   if (!eYo.isNA(value_m)) {
-    eYo.isNA(model.lazy) || eYo.throw(`Bad model (${prototype.eyo.name}/${key}): unexpected lazy`)
-    prototype.start = eYo.isF(value_m) ? function() {
+    eYo.isNA(model.lazy) || eYo.throw(`Bad model (${_p.eyo.name}/${key}): unexpected lazy`)
+    _p.start = eYo.isF(value_m) ? function() {
       return value_m.call(this.owner_)
     } : function () {
       return value_m
@@ -216,53 +215,51 @@ eYo.p6y._p.modelHandleValue = function (prototype, key, model) {
  * Make the prototype's `reset` method, based on the model's object for value key reset, either a function or an object.
  * If model's object is a function, it is executed to return an object which will be the new value.
  * If we want to reset with a function, the model's object must be a function that in turn returns the expected function.
- * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.modelHandleReset = function (prototype, key, model) {
-  let reset_m = model.reset
-  if (eYo.isNA(reset_m)) {
+eYo.p6y.Dlgt_p.modelHandleReset = function (key, model) {
+  let K = 'reset'
+  let f_m = model[K]
+  if (eYo.isNA(f_m)) {
     return
-  } else if (eYo.isF(reset_m)) {
-    if (reset_m.length) {
-      prototype.reset = function () {
+  }
+  let _p = this.C9r_p
+  let f_p = _p[K]
+  if (eYo.isF(f_m)) {
+    if (f_m.length) {
+      _p[K] = function () {
         try {
-          this.reset = eYo.doNothing
-          reset_m.call(this.owner_, () => {
-            prototype.eyo.C9r_s.reset.call(this)
+          this[K] = eYo.doNothing
+          f_m.call(this.owner_, () => {
+            f_p.call(this)
           })
         } finally {
-          delete this.reset
+          delete this[K]
         }
       }
     } else {
       if (!model.value) {
         model.value = model.lazy || model.reset
-        this.modelHandleValue(prototype, key, model)
+        this.modelHandleValue(key, model)
       }
-      prototype.reset = function () {
+      _p[K] = function () {
         try {
-          this.reset = eYo.doNothing
-          this.resetValue(reset_m.call(this.owner_))
+          this[K] = f_p
+          this.resetValue(f_m.call(this.owner_))
         } finally {
-          delete this.reset
+          delete this[K]
         }
       }
     }
   } else {
     if (!model.value && !model.lazy) {
-      model.value = model.reset
-      this.modelHandleValue(prototype, key, model)
+      model.value = f_m
+      this.modelHandleValue(key, model)
     }
-    prototype.reset = function () {
-      try {
-        this.reset = eYo.doNothing
-        this.resetValue(reset_m)
-      } finally {
-        delete this.reset
-      }    
-    }
+    _p[K] = eYo.decorate.reentrant(K, function () {
+      this.resetValue(f_m)
+    })
   }
 }
 
@@ -636,13 +633,14 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (manyModel = {}) {
     let _p = object.eyo.C9r_p
     _p.hasOwnProperty(k) || Object.defineProperties(_p, {
       [k]: eYo.descriptorR(function () {
-        if (!this[k_p]) {
+        let p = this[k_p]
+        if (!p) {
           console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
         }
-        if (!this[k_p].getValue) {
+        if (!p.getValue) {
           console.error('BREAK HERE!')
         }
-        return this[k_p].getValue()
+        return p.getValue && p.getValue() || p.value
       }),
       [k + '_']: {
         get: function () {

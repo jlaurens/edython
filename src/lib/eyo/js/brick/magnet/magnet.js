@@ -11,6 +11,9 @@
  */
 'use strict'
 
+eYo.require('do')
+eYo.require('geom')
+
 /**
  * @name{eYo.magnet}
  * @namespace
@@ -32,9 +35,6 @@ eYo.o4t.makeNS(eYo, 'magnet', {
   REASON_CHECKS_FAILED: 4,
   REASON_DIFFERENT_WORKSPACES: 5,
 })
-
-eYo.forward('do')
-eYo.forward('geom.Point')
 
 // Magnet opposite types, once the types are created
 Object.defineProperties(eYo.magnet._p, {
@@ -67,7 +67,7 @@ Object.defineProperties(eYo.magnet._p, {
 // ANCHOR: Magnet DB
 
 // Database of magnets
-;(() => {
+{
   /**
    * Database of magnets.
    * Magnets are stored in order of their vertical component.  This way
@@ -179,11 +179,11 @@ Object.defineProperties(eYo.magnet._p, {
     var magnetIndex = findMagnet(this, magnet)
     magnetIndex >= 0 && (this.splice(magnetIndex, 1))
   }
-}) ()
+}
 
 /**
  * Initialize a set of connection DBs for a specified board.
- * @param {eYo.board} board The board containing the DB to disose of.
+ * @param {eYo.board} board The board containing the DB to dispose of.
  */
 eYo.magnet.disposeDB = (board) => {
   board.magnetDBList = null
@@ -274,7 +274,7 @@ eYo.model.allowModelShortcuts({
  * pure abstract base class for a magnet.
  * Use `eYo.magnet.new` to create a magnet.
  * 
- * @param {eYo.brick|eYo.slot.BaseC9r} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
+ * @param {eYo.brick.BaseC9r|eYo.slot.BaseC9r} owner  the immediate owner of this magnet. When not a brick, it is directly owned by a brick.
  * @param {String} type  the type of this magnet
  * @param {Object} model  the model of this magnet
  * @readonly
@@ -288,7 +288,7 @@ eYo.model.allowModelShortcuts({
  * @property {boolean} isSuperior  whether the connection is superior, true if connection faces down or right, false otherwise.
  * @constructor
  */
-eYo.magnet.makeBaseC9r({
+eYo.magnet.makeBaseC9r(true, {
   init (bs, type) {
     eYo.magnet.TYPES.includes(type) || eYo.throw(`Unexpected type: ${type}`)
     if (this.type === eYo.magnet.IN) {

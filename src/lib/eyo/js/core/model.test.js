@@ -11,7 +11,7 @@ describe ('Tests: Model', function () {
       })
     },
     expect (what) {
-      let ans = chai.expect(this.v).equal(what)
+      let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
       this.reset()
       return ans
     },
@@ -136,7 +136,9 @@ describe ('Tests: Model', function () {
       }
     })
     chai.expect(() => {
+      eYo.TESTING = false
       mf.validate({a: 1})
+      eYo.TESTING = true
     }).throw()
     flag.expect(1)
     flag.reset()

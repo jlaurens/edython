@@ -81,18 +81,18 @@ eYo.c9r._p.doMakeC9r = function (ns, id, Super, model) {
   if (Super) {
     // create the constructor
     // TODO: due to the makeInit method, this constructor may be badly designed.
-    var C9r = function () {
+    var C9r = function (...$) {
       // Class
       var old = this.init
       old || eYo.throw(`Unfinalized contructor: ${this.eyo.name}`)
       this.init = eYo.doNothing
-      Super.apply(this, arguments)
+      Super.call(this, ...$)
       if (!this) {
         console.error('BREAK HERE!')
       }
       if (old !== eYo.doNothing) {
         delete this.dispose
-        old.apply(this, arguments)
+        old.call(this, ...$)
       }
     }
     eYo.inherits(C9r, Super)
@@ -113,12 +113,12 @@ eYo.c9r._p.doMakeC9r = function (ns, id, Super, model) {
     }
   } else {
     // create the constructor
-    var C9r = function (...args) {
+    var C9r = function (...$) {
       // Class
       if (!this) {
         console.error('BREAK HERE! C9r')
       }
-      this.init.call(this, ...args)
+      this.init.call(this, ...$)
     }
     // store the constructor
     var _p = C9r.prototype
@@ -531,19 +531,19 @@ eYo.c9r._p.modelMakeC9r = function (register, model) {
 /**
  * Create a new Base instance based on the model
  */
-eYo.c9r._p.new = function (model) {
-  if (!model) {
+eYo.c9r._p.new = function (model, ...$) {
+  if (!eYo.isD(model)) {
     var C9r = this.BaseC9r
     if (C9r.eyo.shouldFinalizeC9r) {
       C9r.eyo.finalizeC9r()
     }
-    return new C9r()
+    return new C9r(model, ...$)
   }
   var C9r = model._C9r
   if (!C9r) {
     C9r = this.modelMakeC9r(model)
   }
-  let ans = new C9r(model)
+  let ans = new C9r(...$)
   model._starters.forEach(f => f(ans))
   return ans
 }
@@ -580,5 +580,5 @@ eYo.c9r._p.makeSingleton = function(NS, id, model) {
 
 eYo.c9r.BaseC9r.eyo.finalizeC9r([
   'methods',
-], eYo.model.manyDescriptorF('dlgt', 'init', 'deinit', 'dispose'),
+], eYo.model.manyDescriptorF('dlgt', 'init', 'deinit', 'dispose'), eYo.model.manyDescriptorForFalse('dispose'),
 )

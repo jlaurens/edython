@@ -11,10 +11,9 @@
  */
 'use strict'
 
-eYo.forward('geom')
-eYo.forward('geom.Point')
+eYo.require('geom')
+eYo.require('padding')
 
-eYo.forward('padding')
 //g@@g.forwardDeclare('g@@g.color')
 
 /**
