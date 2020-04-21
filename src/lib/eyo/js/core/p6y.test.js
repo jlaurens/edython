@@ -1,18 +1,23 @@
 describe ('Tests: Property', function () {
   this.timeout(10000)
   let flag = {
-    v: 0,
+    v: '',
     reset (what) {
-      this.v = what || 0
+      this.v = what && what.toString() || ''
     },
     push (...$) {
       $.forEach(what => {
-        what && (this.v = parseInt(this.v.toString() + what.toString()))
+        what && (this.v += what.toString())
       })
       return this.v
     },
     expect (what) {
-      let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
+      if (eYo.isRA(what)) {
+        what = what.map(x => x.toString())
+        var ans = chai.expect(what).include(this.v || '0')
+      } else {
+        ans = chai.expect(what.toString()).equal(this.v || '0')
+      }
       this.reset()
       return ans
     },
@@ -149,7 +154,7 @@ describe ('Tests: Property', function () {
     flag.expect(123)
     p.value_ = 666
     flag.expect(123666)
-    chai.expect(onr.flag).equal(123666)
+    chai.expect(onr.flag).equal('123666')
     var p = eYo.p6y.new({
       willChange (after) {
         this.flag = flag.push(after)
@@ -157,7 +162,7 @@ describe ('Tests: Property', function () {
     }, 'foo', onr)
     p.value_ = 421
     flag.expect(421)
-    chai.expect(onr.flag).equal(421)
+    chai.expect(onr.flag).equal('421')
     var p = eYo.p6y.new({
       didChange (before, after) {
         this.flag = flag.push(before, after)
@@ -168,7 +173,7 @@ describe ('Tests: Property', function () {
     flag.expect(123)
     p.value_ = 666
     flag.expect(123666)
-    chai.expect(onr.flag).equal(123666)
+    chai.expect(onr.flag).equal('123666')
     var p = eYo.p6y.new({
       didChange (after) {
         this.flag = flag.push(after)
@@ -177,7 +182,7 @@ describe ('Tests: Property', function () {
     }, 'foo', onr)
     p.value_ = 421
     flag.expect(421)
-    chai.expect(onr.flag).equal(421)
+    chai.expect(onr.flag).equal('421')
   })
   it('P6y: {set_ (builtin, after) ...}', function () {
     flag.reset()
@@ -265,7 +270,7 @@ describe ('Tests: Property', function () {
     chai.expect(p.value).equal(123)
     flag.expect(421)
   })
-  it('P6y: {set:...}', function () {
+  it('P6y: {get:..., set:...}', function () {
     let onr = eYo.c9r.new({
       methods: {
         do_it (what) {
@@ -309,7 +314,35 @@ describe ('Tests: Property', function () {
     chai.expect(p.value__).equal(421)
     chai.expect(p.stored__).equal(123)
   })
-  it('P6y: {set (builtin):...}', function () {
+  it('P6y: {set (builtin, after):..., no get}', function () {
+    var x = 0
+    let p = eYo.p6y.new({
+      set (builtin, after) {
+        flag.push(after)
+        builtin(x = after)
+      },
+    }, 'foo', onr)
+    flag.reset()
+    p.value_ = 123
+    flag.expect(123)
+    chai.expect(p.value).equal(123)
+    chai.expect(p.value_).equal(123)
+    chai.expect(p.value__).equal(123)
+    chai.expect(p.stored__).equal(123)
+    p.value__ = 421
+    flag.expect(0)
+    chai.expect(p.value).equal(421)
+    chai.expect(p.value_).equal(421)
+    chai.expect(p.value__).equal(421)
+    chai.expect(p.stored__).equal(421)
+    p.stored__ = 666
+    flag.expect(0)
+    chai.expect(p.value).equal(666)
+    chai.expect(p.value_).equal(666)
+    chai.expect(p.value__).equal(666)
+    chai.expect(p.stored__).equal(666)
+  })
+  it('P6y: {set (builtin, after):..., get(builtin)}', function () {
     let onr = eYo.c9r.new({
       methods: {
         do_it (what) {

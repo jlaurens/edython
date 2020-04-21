@@ -1,18 +1,23 @@
 describe('Span expression', function () {
   this.timeout(10000)
   let flag = {
-    v: 0,
+    v: '',
     reset (what) {
-      this.v = what || 0
+      this.v = what && what.toString() || ''
     },
     push (...$) {
       $.forEach(what => {
-        what && (this.v = parseInt(this.v.toString() + what.toString()))
+        what && (this.v += what.toString())
       })
       return this.v
     },
     expect (what) {
-      let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
+      if (eYo.isRA(what)) {
+        what = what.map(x => x.toString())
+        var ans = chai.expect(what).include(this.v || '0')
+      } else {
+        ans = chai.expect(what.toString()).equal(this.v || '0')
+      }
       this.reset()
       return ans
     },
@@ -20,20 +25,24 @@ describe('Span expression', function () {
   let ns_span = eYo.span.makeNS()
   ns_span.makeBaseC9r()
   let onr = eYo.c9r.new()
-  var b
+  var b, s
   before(function() {
     flag.reset()
     b = eYo.o4t.new({
       init () {
         this.span = ns_span.new('s', this)
       }
-    }, onr, 'b')
-    s = ns_span.new('s', onr)
+    }, 'b', onr)
+    s = b.span
   })
   after(function() {
   })
+  it('Span: Init', function() {
+    chai.expect(s.brick).equal(b)
+    chai.expect(s).eqlSpan({})
+  })
   it('(add|reset)C', function() {
-    var test = c => chai.expect(blur).eqlSpan({
+    chai.expect(s).eqlSpan({
       c_min: c,
       c: c,
     })

@@ -1,18 +1,23 @@
 describe('Field', function () {
   this.timeout(10000)
   let flag = {
-    v: 0,
+    v: '',
     reset (what) {
-      this.v = what || 0
+      this.v = what && what.toString() || ''
     },
     push (...$) {
       $.forEach(what => {
-        what && (this.v = parseInt(this.v.toString() + what.toString()))
+        what && (this.v += what.toString())
       })
       return this.v
     },
     expect (what) {
-      let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
+       if (eYo.isRA(what)) {
+        what = what.map(x => x.toString())
+        var ans = chai.expect(what).include(this.v || '0')
+      } else {
+        ans = chai.expect(what.toString()).equal(this.v || '0')
+      }
       this.reset()
       return ans
     },

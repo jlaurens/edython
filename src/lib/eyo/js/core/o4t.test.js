@@ -1,18 +1,23 @@
 describe ('Tests: Object', function () {
   this.timeout(10000)
   let flag = {
-    v: 0,
+    v: '',
     reset (what) {
-      this.v = what || 0
+      this.v = what && what.toString() || ''
     },
     push (...$) {
       $.forEach(what => {
-        what && (this.v = parseInt(this.v.toString() + what.toString()))
+        what && (this.v += what.toString())
       })
       return this.v
     },
     expect (what) {
-      let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
+      if (eYo.isRA(what)) {
+        what = what.map(x => x.toString())
+        var ans = chai.expect(what).include(this.v || '0')
+      } else {
+        ans = chai.expect(what.toString()).equal(this.v || '0')
+      }
       this.reset()
       return ans
     },
@@ -764,6 +769,26 @@ describe ('Tests: Object', function () {
     }, 'o', onr)
     flag.expect(421)
   })
+  it ('O4t: property setter with owner', function () {
+    let o = eYo.o4t.new({
+      properties: {
+        foo: {
+          value: 0,
+          set (builtin, after) {
+            this.do_it(after)
+          }
+        },
+      },
+      methods: {
+        do_it (what) {
+          flag.push(what)
+          this.foo_ = what
+        }
+      }
+    }, 'o', onr)
+    o.foo_ = 421
+    flag.expect(421)
+  })
   it ('O4t: eYo.o4t.makeC9r("", ...)', function () {
     let model = {
       properties: {
@@ -966,7 +991,7 @@ describe ('Tests: Object', function () {
     })
   })
   describe ('O4t: copy', function () {
-    it ('copy: Basic', function () {
+    it ('Copy: Basic', function () {
       var ns = eYo.o4t.makeNS()
       var B = eYo.c9r.makeC9r('', {
         init (value) {
@@ -1010,58 +1035,70 @@ describe ('Tests: Object', function () {
       b.value_ = 123
       chai.assert(bb.value_ = 421)
     })
-    it ('Clonable: hooks', function () {
-      var ns = eYo.o4t.makeNS()
+    it ('Copy: Hooks', function () {
       var x = 0
-      var B = function (value) {
-        this.value_ = value
-      }
-      B.prototype.dispose = function () {
-        this.disposed_ = true
-      }
-      B.prototype.set = function (other) {
-        this.value_ = other.value_
-      }
-      B.prototype.equals = function (other) {
-        return this.value_ === other.value_
-      }
-      Object.defineProperty(B.prototype, 'copy', {
-        get () {
-          return new B(this.value_)
+      let Foo = eYo.c9r.makeNS().makeBaseC9r({
+        init (value) {
+          this.value_ = value
+        },
+        methods: {
+          dispose () {
+            this.disposed_ = true
+          },
+          set (other) {
+            this.value_ = other.value_
+          },
+          equals (other) {
+            return this.value_ === other.value_
+          }
         }
       })
-      var foo_before = new B(421)
-      var foo_after = new B(123)
-      var test = function (before, after) {
-        chai.assert(this === a, `Missed: this === a`)
-        chai.assert(before === foo_before, `Missed: before ${before} === ${foo_before}`)
-        chai.assert(after === foo_after, `Missed: after ${after} === ${foo_after}`)
-      }
-      ns.makeC9r('A', {
+      Object.defineProperty(Foo.prototype, 'copy', {
+        get () {
+          return new Foo(this.value_)
+        }
+      })
+      var foo_1 = new Foo(1)
+      var foo_2 = new Foo(2)
+      let Bar = eYo.o4t.makeNS().makeBaseC9r({
         properties: {
           foo: {
             value () {
-              return foo_before
+              return foo_1
             },
             willChange (before, after) {
-              test.call(this, before, after)
-              return () => {
-                x = 421
-              }
+              flag.push(1)
+              before && flag.push(before.value_ + 1)
+              after && flag.push(after.value_ + 1)
             },
-            didChange: test,
+            didChange (before, after) {
+              flag.push(7)
+              flag.push(before && (before.value_ + 7) || 9)
+              flag.push(after && (after.value_ + 7) || 9)
+            },
             copy: true,
           }
         },
+        methods: {
+          fooWillChange (before, after) {
+            flag.push(4)
+            flag.push(before && (before.value_ + 4) || 9)
+            flag.push(after && (after.value_ + 4) || 9)
+          },
+          fooDidChange (before, after) {
+            flag.push(10)
+            flag.push(before && before.value_ || 9)
+            flag.push(after && after.value_ || 9)
+          }
+        }
       })
-      ns.A.prototype.fooWillChange = ns.A.prototype.fooDidChange = test
-      ns.A.eyo.finalizeC9r()
-      var a = new ns.A('a', onr)
-      chai.expect(a.foo_).equal(foo_before)
-      chai.assert(a.foo.equals(foo_before))
-      a.foo_ = foo_after
-      chai.expect(a.foo_).equal(foo_after)
-      chai.assert(a.foo.equals(foo_after))
+      flag.reset()
+      var bar = new Bar('bar', onr)
+      chai.assert(bar.foo.equals(foo_1))
+      flag.expect(0)
+      bar.foo_ = foo_2
+      chai.assert(bar.foo.equals(foo_2))
+      flag.expect(1234567891012) // 12345778101012
     })
   })
 })

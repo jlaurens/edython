@@ -19,35 +19,28 @@ chai.Assertion.addProperty('eyo_rect', function () {
 })
 
 // language chain method
-chai.Assertion.addMethod('eqlSpan', function (span) {
-  var b = this._obj
+chai.Assertion.addMethod('eqlSpan', function (expected) {
+  var actual = this._obj
 
   // first, our instanceof check, shortcut
-  new chai.Assertion(this._obj).instanceof(eYo.span.BaseC9r)
+  new chai.Assertion(actual).instanceof(eYo.span.BaseC9r)
   ;[
     'c_padding',
     'header',
     'footer',
     'suite',
     'foot',
-  ].forEach(k => span[k] || (span[k] = 0))
-  span.c_min || (span.c_min = b.wrapped
-    ? 0
-    : b.isGroup
-      ? 2 * eYo.span.INDENT
-      : b.isStmt
-        ? eYo.span.INDENT :
-        2
-  )
-  span.c || (span.c = span.c_min + span.c_padding)
-  span.main || (span.main = 1)
-  span.hole || (span.hole = b.isGroup && (!b.right || b.right.isComment) ? 1 : 0)
-  span.l || (span.l = 
-    b.isGroup
-    ? span.main + span.hole + span.suite
-    : b.isStmt
-      ? span.header + span.main + span.footer
-      : span.main
+  ].forEach(k => eYo.isNA(expected[k]) && (expected[k] = 0))
+  eYo.isNA(expected.c_min) && (expected.c_min = actual.c_min_0)
+  eYo.isNA(expected.c) && (expected.c = expected.c_min + expected.c_padding)
+  eYo.isNA(expected.main) && (expected.main = 1)
+  eYo.isNA(expected.hole) && (expected.hole = actual.isGroup && (!actual.right || actual.right.isComment) ? 1 : 0)
+  eYo.isNA(expected.l) && (expected.l = 
+    actual.isGroup
+    ? expected.main + expected.hole + expected.suite
+    : actual.isStmt
+      ? expected.header + expected.main + expected.footer
+      : expected.main
   )
   ;[
     'c_min',
@@ -61,11 +54,11 @@ chai.Assertion.addMethod('eqlSpan', function (span) {
     'foot',
   ].forEach(k => {
     this.assert(
-      b.span[k] === span[k]
+      actual[k] === expected[k]
       , `expected #{this}/${k} to be #{exp} but got #{act}`
       , `expected #{this}/${k} to not be of type #{act}`
-      , span[k]        // expected
-      , b.span[k]   // actual
+      , expected[k]        // expected
+      , actual[k]   // actual
     );
   })
 })

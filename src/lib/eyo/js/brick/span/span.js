@@ -65,16 +65,9 @@ eYo.o4t.makeNS(eYo, 'span', {
  */
 eYo.span.makeBaseC9r({
   init () {
-    this.c_min_0_ = this.brick.wrapped_
-      ? 0
-      : this.brick.isGroup
-        ? 2 * eYo.span.INDENT + 1
-        : this.brick.isStmt
-          ? eYo.span.INDENT + 1
-          : 2
-    this.c_min_ = this.c_min_0_
-    this.c_ = this.c_min_ + this.c_padding
-    this.l_ = this.header_ + this.main_ + this.hole_ + this.suite_ + this.footer_
+    this.c_min_ = this.c_min_0
+    this.c_ = this.c_min + this.c_padding
+    this.l_ = this.header + this.main + this.hole + this.suite + this.footer
   },
   aliases: {
     'size.x': ['x', 'width'],
@@ -105,14 +98,14 @@ eYo.span.makeBaseC9r({
     rightSpan: {
       after: 'brick',
       get () {
-        var b3k = this.brick.right
+        let b3k = this.brick.right
         return b3k && b3k.span
       },
     },
     leftSpan: {
       after: 'brick',
       get () {
-        var b3k = this.brick.left
+        let b3k = this.brick.left
         return b3k && b3k.span
       },
     },
@@ -139,7 +132,26 @@ eYo.span.makeBaseC9r({
      * @readonly
      * @property {number} c_min - The minimum number of columns
      */
+    c_min_0: {
+      after: 'brick',
+      get () {
+        let b3k = this.brick
+        return b3k.wrapped
+        ? 0
+        : b3k.isGroup
+          ? 2 * eYo.span.INDENT + 1
+          : b3k.isStmt
+            ? eYo.span.INDENT + 1
+            : 2
+      }
+    },
+    /**
+     * The minimum number of columns, at least `this.c_min_init`.
+     * @readonly
+     * @property {number} c_min - The minimum number of columns
+     */
     c_min: {
+      after: 'c_min_0',
       value: 0,
       set (builtin, after) {
         this.addC(after - this.c_min)
@@ -289,11 +301,12 @@ eYo.span.BaseC9r_p.resetC = function () {
  * @param {Number} delta  the difference from the old value to value and the old one.
  */
 eYo.span.BaseC9r_p.addC = function (delta) {
-  if (this.c_min_ + delta < this.c_min_0_) {
-    delta = this.c_min_0_ - this.c_min_
+  let c_min = this.c_min
+  if (c_min + delta < this.c_min_0_) {
+    delta = this.c_min_0_ - c_min
   }
   if (delta) {
-    this.c_min_ += delta
+    this.c_min_ = c_min + delta
     this.c_ += delta
     if (this.brick.isExpr) {
       var parent = this.parentSpan

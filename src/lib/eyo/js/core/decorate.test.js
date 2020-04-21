@@ -1,17 +1,22 @@
 describe ('Tests: decorate', function () {
   let flag = {
-    v: 0,
+    v: '',
     reset (what) {
-      this.v = what || 0
+      this.v = what && what.toString() || ''
     },
     push (...$) {
       $.forEach(what => {
-        what && (this.v = parseInt(this.v.toString() + what.toString()))
+        what && (this.v += what.toString())
       })
       return this.v
     },
     expect (what) {
-      let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
+      if (eYo.isRA(what)) {
+        what = what.map(x => x.toString())
+        var ans = chai.expect(what).include(this.v || '0')
+      } else {
+        ans = chai.expect(what.toString()).equal(this.v || '0')
+      }
       this.reset()
       return ans
     },
@@ -27,10 +32,10 @@ describe ('Tests: decorate', function () {
       flag.push(what)
       return this.bar()
     })
-    flag.v = 0
+    flag.reset()
     chai.expect(eYo.isNA(O.bar(3))).true
     flag.expect(3)
-    flag.v = 0
+    flag.reset()
     _p.bar = eYo.decorate.reentrant('bar', function (what) {
       flag.push(what)
       return this.bar(what)
@@ -40,10 +45,10 @@ describe ('Tests: decorate', function () {
     })
     chai.expect(O.bar(2)).equal(6)
     flag.expect(24)
-    flag.v = 0
+    flag.reset()
     chai.expect(O.bar(3)).equal(9)
     flag.expect(36)
-    flag.v = 0
+    flag.reset()
     _p.bar = eYo.decorate.reentrant('bar', function (what) {
       let ans = this.bar(what)
       flag.push(what)
@@ -54,9 +59,9 @@ describe ('Tests: decorate', function () {
     })
     chai.expect(O.bar(2)).equal(6)
     flag.expect(42)
-    flag.v = 0
+    flag.reset()
     chai.expect(O.bar(3)).equal(9)
     flag.expect(63)
-    flag.v = 0
+    flag.reset()
   })
 })

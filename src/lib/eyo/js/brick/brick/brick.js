@@ -130,9 +130,9 @@ eYo.brick.makeBaseC9r({
     },
     wrapped: {
       willChange (before, after) {
-        if (after && !this.wrapped__) {
+        if (after && !before) {
           this.duringBrickWrapped()
-        } else if (!after && this.wrapped__) {
+        } else if (!after && before) {
           this.duringBrickUnwrapped()
         }
       }

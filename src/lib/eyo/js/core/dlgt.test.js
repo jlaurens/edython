@@ -50,18 +50,23 @@ describe ('POC', function () {
 describe ('Tests: Dlgt', function () {
   this.timeout(10000)
   let flag = {
-    v: 0,
+    v: '',
     reset (what) {
-      this.v = what || 0
+      this.v = what && what.toString() || ''
     },
     push (...$) {
       $.forEach(what => {
-        what && (this.v = parseInt(this.v.toString() + what.toString()))
+        what && (this.v += what.toString())
       })
       return this.v
     },
     expect (what) {
-      let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
+      if (eYo.isRA(what)) {
+        what = what.map(x => x.toString())
+        var ans = chai.expect(what).include(this.v || '0')
+      } else {
+        ans = chai.expect(what.toString()).equal(this.v || '0')
+      }
       this.reset()
       return ans
     },
@@ -239,12 +244,12 @@ describe ('Tests: Dlgt', function () {
     superDlgt.forEachSubC9r(C9r => {
       C9r.eyo.do_it && C9r.eyo.do_it(3)
     })
-    chai.expect([45,54]).includes(flag.v)
+    flag.expect([45,54])
     flag.reset()
     chai.expect(superDlgt.someSubC9r(C9r => {
       return C9r.eyo.do_it && C9r.eyo.do_it(3)
     })).equal(6)
-    chai.expect([5,45]).includes(flag.v)
+    flag.expect([5,45])
   })
   it ('enhanceMany: Basics', function () {
     var C9r = function () {}

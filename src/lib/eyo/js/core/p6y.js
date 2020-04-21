@@ -175,15 +175,13 @@ eYo.more.enhanceO3dValidate(eYo.p6y.BaseC9r.eyo, 'p6y', true)
  */
 eYo.p6y.Dlgt_p.modelHandle = function (key, model) {
   model || (model = this.model)
-  let ns = this.ns
-  let _p = this.C9r_p
   this.modelHandleValue(key, model)
   this.modelHandleReset(key, model)
-  ns.modelHandleDispose(_p, key, model)
+  this.modelHandleDispose(key, model)
   this.modelHandleValidate(key, model)
-  ns.modelHandleGetSet(_p, key, model)
-  ns.modelHandleChange(_p, key, model)
-  ns.modelHandleStored(_p, key, model)
+  this.modelHandleGetSet(key, model)
+  this.modelHandleChange(key, model)
+  this.modelHandleStored(key, model)
 }
 
 /**
@@ -254,24 +252,23 @@ eYo.p6y.Dlgt_p.modelHandleReset = function (key, model) {
 
 /**
  * Make the prototype's dispose method according to the model's object for key dispose.
- * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.modelHandleDispose = function (prototype, key, model) {
+eYo.p6y.Dlgt_p.modelHandleDispose = function (key, model) {
   if (model.dispose === false) {
-    prototype.disposeStored_ = eYo.doNothing
+    this.C9r_p.disposeStored_ = eYo.doNothing
   }
 }
 
 /**
  * make the prototype's getValue method based on the model.
  * make the prototype' setValue method based on the model.
- * @param {Object} _p - Prototype
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.modelHandleGetSet = function (_p, key, model) {
+eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model) {
+  let _p = this.C9r_p
   var can_lazy = true
   var computed = false // true iff get and set are given with no builtin dependency
   let get_m = model.get // from model => suffix = '_m' and `@this` == property owner
@@ -382,50 +379,31 @@ eYo.p6y._p.modelHandleGetSet = function (_p, key, model) {
  * make the prototype's change methods based on the model.
  * If a method is inherited, then the super method is called.
  * It may not be a good idea to change the inherited method afterwards.
- * @param {Object} prototype
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.modelHandleChange = function (prototype, key, model) {
+eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
+  let _p = this.C9r_p
   eYo.observe.HOOKS.forEach(when => {
     let when_m = model[when]
-    let when_p = prototype[when]
+    let when_p = _p[when]
     if (eYo.isF(when_m)) {
-      prototype[when] = when_m.length > 1
+      _p[when] = eYo.decorate.reentrant(when, when_m.length > 1
       ? when_p
         ? function (before, after) {
-          try {
-            this[when] = eYo.doNothing
-            when_m.call(this.owner_, before, after)
-            when_p.call(this, before, after)
-          } finally {
-            delete this[when]
-          }
+          when_m.call(this.owner_, before, after)
+          when_p.call(this, before, after)
         } : function (before, after) {
-          try {
-            this[when] = eYo.doNothing
-            when_m.call(this.owner_, before, after)
-          } finally {
-            delete this[when]
-          }
+          when_m.call(this.owner_, before, after)
         }
       : when_p
         ? function (before, after) {
-          try {
-            this[when] = eYo.doNothing
-            when_m.call(this.owner_, after)  
-            when_p.call(this, before, after)
-          } finally {
-            delete this[when]
-          }
-        } : function (before, after) {
-          try {
-            this[when] = eYo.doNothing
-            when_m.call(this.owner_, after)
-          } finally {
-            delete this[when]
-          }
+          when_m.call(this.owner_, after)  
+          when_p.call(this, before, after)
+        }: function (before, after) {
+          when_m.call(this.owner_, after)
         }
+      )
     } else {
       when_m && eYo.throw(`Unexpected model value ${when} -> ${when_m}`)
     }
@@ -435,11 +413,11 @@ eYo.p6y._p.modelHandleChange = function (prototype, key, model) {
 /**
  * make the prototype's getStored method based on the model `get_` function.
  * make the prototype's setStored method based on the model's `set_` function.
- * @param {Object} _p
  * @param {String} key
  * @param {Object} model
  */
-eYo.p6y._p.modelHandleStored = function (_p, key, model) {
+eYo.p6y.Dlgt_p.modelHandleStored = function (key, model) {
+  let _p = this.C9r_p
   let get__m = model.get_
   if (get__m === eYo.doNothing || get__m === false) {
     _p.getStored = eYo.noGetter(function () {
@@ -602,6 +580,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (manyModel = {}) {
   })
   eYo.isF(manyModel.makeShortcut) || (manyModel.makeShortcut = function (k, object, p) {
     let k_p = k + '_p'
+    let k_ = k + '_'
     if (object.hasOwnProperty(k_p)) {
       console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
     }
@@ -620,10 +599,11 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (manyModel = {}) {
         }
         if (!p.getValue) {
           console.error('BREAK HERE!')
+          p.getValue
         }
         return p.getValue && p.getValue() || p.value
       }),
-      [k + '_']: {
+      [k_]: {
         get: function () {
           if (!this[k_p].getStored) {
             console.error('BREAK HERE!')
@@ -633,6 +613,18 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (manyModel = {}) {
         },
         set (after) {
           this[k_p].setValue(after)
+        },
+      },
+      [k + '__']: {
+        get: function () {
+          if (!this[k_p].getStored) {
+            console.error('BREAK HERE!')
+            this[k_p].getStored
+          }
+          return this[k_p].getStored()
+        },
+        set (after) {
+          this[k_p].setStored(after)
         },
       },
     })

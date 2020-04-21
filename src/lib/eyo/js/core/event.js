@@ -87,11 +87,7 @@ eYo.event.makeC9r('Mngr', {
      * Current group.
      * @return {string} ID string.
      */
-    group: {
-      get () {
-        return this.group__
-      },
-    },
+    group: '',
   },
   methods: {
     beginGroup(after) {
