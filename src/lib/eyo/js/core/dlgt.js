@@ -768,7 +768,14 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
       }
     }
     let attributes = []
-    let map = object[kMap] = new Map()
+    var map = object[kMap]
+    if (map) {
+      for (let k of [...map.keys()].reverse()) {
+        let attr = map.get(k)
+        eYo.isC9rInstance(attr) && attr.dispose()
+      }
+    }
+    map = object[kMap] = new Map()
     for (let [k, model] of this[kModelMap]) {
       let attr = make(model, k, object)
       if (attr) {
@@ -790,6 +797,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
       }
     })
     object[kTail] = attributes.pop() || object[kHead]
+    attr = object[kHead]
   }
   /**
    * 

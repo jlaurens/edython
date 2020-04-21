@@ -621,3 +621,10 @@ eYo.c9r.BaseC9r.eyo.finalizeC9r([
   'methods',
 ], eYo.model.manyDescriptorF('dlgt', 'init', 'deinit', 'dispose'), eYo.model.manyDescriptorForFalse('dispose'),
 )
+
+
+Object.defineProperties(eYo._p, {
+  isC9rInstance: eYo.descriptorR(function () {
+    return (what) => what instanceof eYo.c9r.BaseC9r
+  })
+})

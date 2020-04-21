@@ -118,6 +118,7 @@ eYo.noSetter = function (msg) {
  * something truthy than is neither a string nor a function.
  * @param {String} [msg] - Diagnostic message,or object
  * with a `lazy` attribute for a function returning the diagnostic message.
+ * @param {String} [msg]
  * @param {Function|Boolean} getter
  * @param {Boolean|Function} configurable
  * @private

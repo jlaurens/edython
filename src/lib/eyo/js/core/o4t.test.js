@@ -169,6 +169,8 @@ describe ('Tests: Object', function () {
     chai.assert(o.hasOwnProperty('foo_p'))
     chai.assert(!o.hasOwnProperty('foo'))
     chai.assert(o.eyo.C9r_p.hasOwnProperty('foo'))
+    chai.expect(o.foo).not.equal(421)
+    o.eyo.p6yInit(o)
     chai.expect(o.foo).equal(421)
     var oo = new O('foo', onr)
     chai.expect(oo.foo).equal(421)
@@ -735,9 +737,10 @@ describe ('Tests: Object', function () {
     let ns = eYo.o4t.makeNS()
     ns.makeBaseC9r()
     let o = new ns.BaseC9r('o', onr)
-    ns.BaseC9r.eyo.p6yPrepare(o, {
+    o.eyo.p6yPrepare(o, {
       foo: 421,
     })
+    o.eyo.p6yInit(o)
     chai.expect(o.foo).equal(421)
     chai.expect(() => {
       o.foo = 123

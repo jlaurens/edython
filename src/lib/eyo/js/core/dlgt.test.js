@@ -292,7 +292,7 @@ describe ('Tests: Dlgt', function () {
       dlgt.enhanceMany('foo1', 'bar', {})
     }).throw()
     dlgt.enhanceMany('foo2', 'bar', {
-      maker (model, k, object) {
+      make (model, k, object) {
         flag.push(model)
         return model+1
       }
@@ -303,7 +303,7 @@ describe ('Tests: Dlgt', function () {
     chai.expect(o.foo2Head).equal(2)
     chai.expect(o.foo2Tail).equal(2)
     dlgt.enhanceMany('foo3', 'bar', {
-      maker (model, k, object) {
+      make (model, k, object) {
         flag.push(model)
         return model+1
       },
@@ -313,7 +313,7 @@ describe ('Tests: Dlgt', function () {
     flag.expect(1)
     chai.expect(o.a_ff).equal(2)
     dlgt.enhanceMany('foo4', 'bar', {
-      maker (model, k, object) {
+      make (model, k, object) {
         flag.push(model)
         return model+1
       },
@@ -330,7 +330,7 @@ describe ('Tests: Dlgt', function () {
     flag.expect(1)
     chai.expect(o.a__ff).equal(2)
     dlgt.enhanceMany('foo5', 'bar', {
-      maker (model, k, object) {
+      make (model, k, object) {
         flag.push(model)
         return model+1
       },
@@ -353,7 +353,7 @@ describe ('Tests: Dlgt', function () {
     })
     flag.reset()
     dlgt.enhanceMany('foo', 'bar', {
-      maker (model, k, object) {
+      make (model, k, object) {
         return {
           value: model
         }
