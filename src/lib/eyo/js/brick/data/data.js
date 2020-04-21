@@ -134,7 +134,7 @@ eYo.data.makeBaseC9r(true, {
 })
 
 eYo.data.BaseC9r.eyo.finalizeC9r(
-  eYo.model.asRA('all', 'after'),
+  eYo.model.manyDescriptorRA('all', 'after'),
   eYo.model.manyDescriptorF(
     'consolidate', 'fromType',
     'toField', 'fromField',

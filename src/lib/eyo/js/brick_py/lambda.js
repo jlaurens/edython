@@ -312,7 +312,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
   var F = (modifier, flags, msg) => {
     var b3k
     eYo.event.disableWrap(() => {
-      b3k = eYo.brick.newReady(this, eYo.t3.expr.identifier)
+      b3k = eYo.brick.newReady(eYo.t3.expr.identifier, this)
       b3k.changer.wrap(() => {
         b3k.Modifier_p = modifier
         b3k.variant_ = flags

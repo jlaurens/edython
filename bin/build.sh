@@ -444,7 +444,6 @@ Miscellaneous:
 --js "eyo/js/application/desk/board/brick_util/consolidator.js" \
 --js "eyo/js/brick/data/data.js" \
 --js "eyo/js/brick/dfs/dfs.js" \
---js "eyo/js/brick/span/span.js" \
 --js "eyo/js/core/change_count.js" \
 --js "eyo/js/core/changer.js" \
 --js "eyo/js/core/font.js" \
@@ -465,6 +464,7 @@ Miscellaneous:
 --js "eyo/js/brick/magnet/magnet.js" \
 --js "eyo/js/brick/shape/shape.js" \
 --js "eyo/js/brick/slot/slot.js" \
+--js "eyo/js/brick/span/span.js" \
 --js "eyo/js/core/view.js" \
 --js "eyo/js/module/module_array.js" \
 --js "eyo/js/module/module_bisect.js" \

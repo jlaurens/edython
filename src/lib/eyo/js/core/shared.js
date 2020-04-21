@@ -19,5 +19,5 @@ eYo.require('c9r')
  * @namespace
  */
 eYo.makeNS('shared', {
-  OWNER: eYo.c9r.new()
+  OWNER: eYo.c9r.new(),
 })

@@ -170,21 +170,20 @@ eYo.more.enhanceO3dValidate(eYo.p6y.BaseC9r.eyo, 'p6y', true)
 
 /**
  * For subclassers.
- * @param {Object} prototype
  * @param {String} key
- * @param {Object} model
+ * @param {Object} [model]
  */
 eYo.p6y.Dlgt_p.modelHandle = function (key, model) {
   model || (model = this.model)
   let ns = this.ns
   let _p = this.C9r_p
   this.modelHandleValue(key, model)
+  this.modelHandleReset(key, model)
   ns.modelHandleDispose(_p, key, model)
   this.modelHandleValidate(key, model)
   ns.modelHandleGetSet(_p, key, model)
   ns.modelHandleChange(_p, key, model)
   ns.modelHandleStored(_p, key, model)
-  this.modelHandleReset(key, model) // must be last
 }
 
 /**
@@ -228,29 +227,19 @@ eYo.p6y.Dlgt_p.modelHandleReset = function (key, model) {
   let f_p = _p[K]
   if (eYo.isF(f_m)) {
     if (f_m.length) {
-      _p[K] = function () {
-        try {
-          this[K] = eYo.doNothing
-          f_m.call(this.owner_, () => {
-            f_p.call(this)
-          })
-        } finally {
-          delete this[K]
-        }
-      }
+      _p[K] = eYo.decorate.reentrant(K, function () {
+        f_m.call(this.owner_, () => {
+          f_p.call(this)
+        })
+      })
     } else {
       if (!model.value) {
         model.value = model.lazy || model.reset
         this.modelHandleValue(key, model)
       }
-      _p[K] = function () {
-        try {
-          this[K] = f_p
-          this.resetValue(f_m.call(this.owner_))
-        } finally {
-          delete this[K]
-        }
-      }
+      _p[K] = eYo.decorate.reentrant(K, function () {
+        this.resetValue(f_m.call(this.owner_))
+      }, f_p)
     }
   } else {
     if (!model.value && !model.lazy) {
@@ -331,40 +320,32 @@ eYo.p6y._p.modelHandleGetSet = function (_p, key, model) {
     })
   } else if (eYo.isF(set_m)) {
     if (set_m.length > 1) {
-      computed && eYo.throw(`Bad model (${_p.eyo.name}/${key}): Unexpected 'builtin|property' in set`)
-      _p.setValue = _p.resetValue = XRegExp.exec(set_m.toString(), eYo.xre.function_stored_after)
+      computed && eYo.throw(`Bad model (${_p.eyo.name}/${key}): Unexpected 'stored|builtin|property' in set`)
+      _p.setValue = _p.resetValue = eYo.decorate.reentrant('setValue', XRegExp.exec(set_m.toString(), eYo.xre.function_stored_after)
       ? function (after) {
-        try {
-          this.setValue = eYo.doNothing
-          return set_m.call(this.owner_, this.stored__, after)
-        } finally {
-          delete this.setValue
-        }
+        return set_m.call(this.owner_, this.stored__, after)
       } : function (after) {
-        try {
-          this.setValue = eYo.doNothing
-          return set_m.call(this.owner_, after => {
-            _p.eyo.C9r_s.setValue.call(this, after)
-          }, after)
-        } finally {
-          delete this.setValue
-        }
-      }
+        return set_m.call(this.owner_, after => {
+          _p.eyo.C9r_s.setValue.call(this, after)
+        }, after)
+      })
     } else {
-      if (!computed) {
-        get_m && eYo.throw(`Bad model (${_p.eyo.name}/${key}): Missing 'builtin|property' in set (2)`)
+      if (!computed && !eYo.isDoIt(_p.start) && !_p.reset) {
+        get_m && eYo.throw(`Bad model (${_p.eyo.name}/${key}): Missing 'stored|builtin|property' in set (2)`)
         _p.getStored = _p.getValue = eYo.noGetter(function () {
           return `Write only ${this.owner_.eyo.name}/${key}`
         })
       }
-      computed || !get_m 
-      _p.setStored = _p.setValue = _p.resetValue = function (after) {
+      _p.setValue = _p.resetValue = function (after) {
         try {
           this.setValue = eYo.doNothing
           return set_m.call(this.owner_, after)
         } finally {
           delete this.setValue
         }
+      }
+      if (!eYo.isDoIt(_p.start)) {
+        _p.setStored = _p.setValue
       }
     }
   } else {
@@ -614,10 +595,10 @@ eYo.p6y.List.eyo_p.initInstance = function (instance) {
 }
 
 eYo.dlgt.BaseC9r_p.p6yEnhanced = function (manyModel = {}) {
-  eYo.isF(manyModel.maker) || (manyModel.maker = function (model, k, object) {
+  eYo.isF(manyModel.make) || (manyModel.make = function (model, k, object) {
     return model && model.source
     ? object.eyo.aliasNew(k, object, ...model.source)
-    : eYo.p6y.new(model || {}, k, object)
+    : eYo.p6y.prepare(model || {}, k, object)
   })
   eYo.isF(manyModel.makeShortcut) || (manyModel.makeShortcut = function (k, object, p) {
     let k_p = k + '_p'

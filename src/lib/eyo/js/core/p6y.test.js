@@ -280,8 +280,7 @@ describe ('Tests: Property', function () {
         return x
       },
       set (after) {
-        this.do_it(after)
-        x = after
+        this.do_it(x = after)
       },
     }, 'foo', onr)
     p.value_ = 123
@@ -604,6 +603,22 @@ describe ('Tests: Property', function () {
     flag.reset(123)
     chai.expect(p.value).equal(421)
     flag.expect(123)
+  })
+  it('P6y: value + set', function () {
+    var p = eYo.p6y.new({
+      value: 421,
+      set (builtin, after) {
+        builtin(after)
+      },
+      didChange(after) {
+        flag.push(after)
+      }
+    }, 'foo', onr)
+    flag.reset(123)
+    chai.expect(p.value).equal(421)
+    flag.expect(123)
+    p.value_ = 666
+    flag.expect(666)
   })
   it('P6y: lazy', function () {
     flag.reset()

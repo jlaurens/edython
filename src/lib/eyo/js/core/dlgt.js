@@ -726,7 +726,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
   /**
    * The maker is responsible of making new `key` objects from a model.
    */
-  let maker = manyModel.maker || function (model, k, object) {
+  let make = manyModel.make || function (model, k, object) {
     return eYo[key].new(model, k, object)
   }
   let makeShortcut = manyModel.makeShortcut || function (k, object, p) {
@@ -770,7 +770,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
     let attributes = []
     let map = object[kMap] = new Map()
     for (let [k, model] of this[kModelMap]) {
-      let attr = maker(model, k, object)
+      let attr = make(model, k, object)
       if (attr) {
         makeShortcut(k, object, attr)
         map.set(k, attr)
@@ -796,6 +796,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
    */
   _p[kInit] = manyModel.init || function (object, ...$) {
     for (let v of object[kMap].values()) {
+      v.preInit && v.preInit()
       let init = v && object[v.id + KInit]
       init && init.call(object, v, ...$)
       v.init && v.init(...$)

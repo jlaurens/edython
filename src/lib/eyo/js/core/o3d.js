@@ -115,21 +115,21 @@ eYo.forward('shared')
 /**
  * Create a new singleton instance based on the given model.
  * @param {Object} [NS] - Optional namespace, defaults to the receiver.
+ * @param {String} id - the result will be `NS[key]`
  * @param {Object} model
- * @param {String} key - the result will be `NS[key]`
  * @return {Object}
  */
-eYo.o3d._p.makeSingleton = function(NS, model, key) {
+eYo.o3d._p.makeSingleton = function(NS, id, model) {
   if (!eYo.isNS(NS)) {
-    !key || eYo.throw(`Unexpected last parameter: ${key}`)
-    ;[NS, model, key] = [this, NS, model]
+    !model || eYo.throw(`Unexpected last parameter: ${model}`)
+    ;[NS, id, model] = [this, NS, id]
   }
-  eYo.isStr(key) || eYo.throw(`Unexpected parameter ${key}`)
-  let ans = this.new(model, key, eYo.shared.OWNER)
-  Object.defineProperty(eYo.shared, key, eYo.descriptorR(function() {
+  eYo.isStr(id) || eYo.throw(`Unexpected parameter ${id}`)
+  let ans = this.new(model, id, eYo.shared.OWNER)
+  Object.defineProperty(eYo.shared, id, eYo.descriptorR(function() {
     return ans
   }))
-  Object.defineProperty(NS, key, eYo.descriptorR(function() {
+  Object.defineProperty(NS, id, eYo.descriptorR(function() {
     return ans
   }))
   return ans
@@ -142,25 +142,28 @@ eYo.o3d._p.makeSingleton = function(NS, model, key) {
  * @param {String} key
  * @param {Object} model
  */
-eYo.o3d._p.new = function (model, key, owner, ...$) {
+eYo.o3d._p.prepare = function (model, key, owner, ...$) {
   if (!eYo.isD(model)) {
     let arg = owner
     ;[model, key, owner] = [eYo.NA, model, key]
-    eYo.isStr(key) || eYo.throw(`eYo.o3d._p.new: bad parameter, key is not a string`)
-    owner instanceof eYo.c9r.BaseC9r || eYo.throw(`eYo.o3d._p.new: bad parameter, owner is not an instance of eYo.c9r.BaseC9r`)
+    eYo.isStr(key) || eYo.throw(`eYo.o3d._p.prepare: bad parameter, key is not a string`)
+    owner instanceof eYo.c9r.BaseC9r || eYo.throw(`eYo.o3d._p.prepare: bad parameter, owner is not an instance of eYo.c9r.BaseC9r`)
     var C9r = this.BaseC9r
     if (C9r.eyo.shouldFinalizeC9r) {
       C9r.eyo.finalizeC9r()
     }
     return new C9r(key, owner, arg, ...$)
   }
-  eYo.isStr(key) || eYo.throw(`eYo.o3d._p.new(2): bad parameter, key is not a string`)
+  eYo.isStr(key) || eYo.throw(`eYo.o3d._p.prepare(2): bad parameter, key is not a string`)
   owner instanceof eYo.c9r.BaseC9r || eYo.throw(`eYo.o3d._p.new(2): bad parameter, owner is not an instance of eYo.c9r.BaseC9r`)
   var C9r = model._C9r
   if (!C9r) {
     C9r = this.modelMakeC9r(model, key)
   }
   let ans = new C9r(key, owner, ...$)
-  model._starters.forEach(f => f(ans))
+  ans.preInit = function () {
+    delete this.preInit
+    model._starters.forEach(f => f(ans))
+  }
   return ans
 }

@@ -584,7 +584,7 @@ eYo.test.Span = (b, span) => {
     'l',
     'foot',
   ].forEach(k => {
-    chai.assert(b.span[k] === span[k], `MISSED span ${k}: ${b.span[k]} === ${span[k]}`)
+    chai.expect(b.span[k]).equal(span[k])
   })
   
 }
@@ -601,7 +601,7 @@ eYo.test.flag = {
     return this.v
   },
   expect (what) {
-  let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
+    let ans = eYo.isRA(what) ? chai.expect(what).include(this.v) : chai.expect(what).equal(this.v)
     this.reset()
     return ans
   },

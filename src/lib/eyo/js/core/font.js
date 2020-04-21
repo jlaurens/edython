@@ -17,7 +17,7 @@ eYo.forward('padding')
  * @name{eYo.font}
  * @namespace
  */
-eYo.o4t.makeSingleton(eYo, {
+eYo.o4t.makeSingleton(eYo, 'font', {
   properties: {
     familyMono: {
       get () {
@@ -97,7 +97,7 @@ eYo.o4t.makeSingleton(eYo, {
       }
     },
   },
-}, 'font')
+})
 
 // Initialization of font dimensions
 /**

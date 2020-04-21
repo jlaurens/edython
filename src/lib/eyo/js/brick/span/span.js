@@ -32,14 +32,24 @@
  */
 'use strict'
 
-eYo.forward('geom')
-eYo.forward('brick')
+eYo.require('geom')
 
 /**
  * @name{sYo.span}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'span')
+eYo.o4t.makeNS(eYo, 'span', {
+  /**
+   * @type {Number} positive number of indentation spaces.
+   */
+  INDENT: 4,
+  /**
+   * The tab width in board unit.
+   */
+  TAB_WIDTH () {
+    return eYo.span.INDENT * eYo.geom.X
+  },
+})
 
 /**
  * @name {eYo.span.BaseC9r}
@@ -54,15 +64,15 @@ eYo.o4t.makeNS(eYo, 'span')
  * @constructor
  */
 eYo.span.makeBaseC9r({
-  init (brick) {
-    this.c_min_init_ = brick.wrapped_
+  init () {
+    this.c_min_0_ = this.brick.wrapped_
       ? 0
-      : brick.isGroup
+      : this.brick.isGroup
         ? 2 * eYo.span.INDENT + 1
-        : brick.isStmt
+        : this.brick.isStmt
           ? eYo.span.INDENT + 1
           : 2
-    this.c_min_ = this.c_min_init_
+    this.c_min_ = this.c_min_0_
     this.c_ = this.c_min_ + this.c_padding
     this.l_ = this.header_ + this.main_ + this.hole_ + this.suite_ + this.footer_
   },
@@ -86,18 +96,21 @@ eYo.span.makeBaseC9r({
       },
     },
     parentSpan: {
+      after: 'brick',
       get () {
         var p = this.brick.parent
         return p && p.span
       },
     },
     rightSpan: {
+      after: 'brick',
       get () {
         var b3k = this.brick.right
         return b3k && b3k.span
       },
     },
     leftSpan: {
+      after: 'brick',
       get () {
         var b3k = this.brick.left
         return b3k && b3k.span
@@ -110,6 +123,7 @@ eYo.span.makeBaseC9r({
      * @property {number} c - The full number of columns
      */
     c: {
+      after: ['c_min', 'c_padding'],
       get () {
         return this.c_min + this.c_padding
       },
@@ -135,17 +149,18 @@ eYo.span.makeBaseC9r({
      * @property {number} c_padding - The extra padding at the right
      */
     c_padding: {
+      after: ['brick', 'rightSpan', 'c_min'],
       value: 0,
       validate(after) {
         return after>=0 ? after : eYo.INVALID
       },
-      set (after) {
+      set (builtin, after) {
         if (after>=0) {
           var right = this.rightSpan
           if (right) {
             // cascade to all the right statements
             right.c_padding_ = after
-            this.c_padding_ = 0
+            builtin(0)
           } else {
             if (this.brick.isGroup && !this.brick.right) {
               this.c_min_ + after >= 2 * eYo.span.INDENT
@@ -154,7 +169,7 @@ eYo.span.makeBaseC9r({
                 after = min
               }
             }
-            this.c_padding_ = after 
+            builtin(after)
           }
         }
       },
@@ -246,21 +261,6 @@ eYo.span.makeBaseC9r({
   },
 })
 
-Object.defineProperties(eYo.span, {
-  /**
-   * @type {Number} positive number of indentation spaces.
-   */
-  INDENT: {value: 4},
-  /**
-   * The tab width in board unit.
-   */
-  TAB_WIDTH: {
-    get () {
-      return eYo.span.INDENT * eYo.geom.X
-    }
-  },
-})
-
 /**
  * Reset the padding to 0.
  * @result {Boolean}  true iff there was a positive padding.
@@ -276,7 +276,7 @@ eYo.span.BaseC9r_p.resetPadding = function () {
  * Reset the column counts to initial values.
  */
 eYo.span.BaseC9r_p.resetC = function () {
-  this.c_min_ = this.c_min_init_
+  this.c_min_ = this.c_min_0_
   this.c_padding_ = 0
   var c = this.c_min_ + this.c_padding_
   this.addC(c - this.c_)
@@ -289,8 +289,8 @@ eYo.span.BaseC9r_p.resetC = function () {
  * @param {Number} delta  the difference from the old value to value and the old one.
  */
 eYo.span.BaseC9r_p.addC = function (delta) {
-  if (this.c_min_ + delta < this.c_min_init_) {
-    delta = this.c_min_init_ - this.c_min_
+  if (this.c_min_ + delta < this.c_min_0_) {
+    delta = this.c_min_0_ - this.c_min_
   }
   if (delta) {
     this.c_min_ += delta

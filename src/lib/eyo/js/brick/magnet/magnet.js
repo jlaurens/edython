@@ -104,59 +104,6 @@ eYo.magnet.makeC9r('S', { // eYo.magnet.BaseC9r is not yet defined!
   },
 })
 
-// ANCHOR: Model
-
-eYo.magnet.BaseC9r.eyo.finalizeC9r((() => {
-  let ans = {}
-  let d = eYo.model.manyDescriptorF('willConnect', 'didConnect', 'willDisconnect', 'didDisconnect')
-
-  ;['out', 'head', 'left', 'right', 'suite', 'foot'].forEach(k => {
-    ans[k] = eYo.model.manyDescriptorF('willConnect', 'didConnect', 'willDisconnect', 'didDisconnect')
-  })
-})())
-
-eYo.model._p.allowModelPaths({
-  [eYo.model.ROOT]: ['out', 'head', 'left', 'right', 'suite', 'foot'],
-  '(?:out|head|left|right|suite|foot)': [
-    'willConnect', 'didConnect', 'willDisconnect', 'didDisconnect',
-    'validateIncog', 'optional', 'hidden', 'check', 'fields',
-  ],
-})
- 
-eYo.model.allowModelShortcuts({
-  '(?:out|head|left|right|suite|foot)': (before, p) => {
-    if (eYo.isD(before)) {
-      before.check || eYo.throw(`Missing 'check' key in magnet model.`)
-    } else {
-      return {
-        check: eYo.toRAF(before)
-      }
-    }
-  },
-  '(?:out|head|left|right|suite|foot)\\.validateIncog': f => {
-    return eYo.isF(f) ? f : eYo.INVALID
-  },
-  '(?:out|head|left|right|suite|foot)\\.check': f => {
-    return eYo.isF(f) ? f : eYo.toRAF(field)
-  },
-  '(?:out|head|left|right|suite|foot)\\.(?:will|did)(?:C|Disc)onnect': f => {
-    if (eYo.isF(f)) {
-      let m = XRegExp.exec(f.toString(), eYo.xre.function_builtin)
-      if (m && m.builtin) {
-        let builtin = eYo.asF(before)
-        return builtin
-        ? function (...args) {
-          f.call(this, () => {
-            builtin.call(this, ...args)
-          }, ...args)
-        } : function (...args) {
-          f.call(this, eYo.doNothing, ...args)
-        }
-      }
-    }
-  },
-})
-
 // ANCHOR: Base
 /**
  * pure abstract base class for a magnet.
@@ -177,7 +124,7 @@ eYo.model.allowModelShortcuts({
  * @constructor
  */
 eYo.magnet.makeBaseC9r(true, {
-  init (bs, type) {
+  init (key, bs, type) {
     eYo.magnet.TYPES.includes(type) || eYo.throw(`Unexpected type: ${type}`)
     if (this.type === eYo.magnet.IN) {
       this.name_ = this.slot.key
@@ -700,6 +647,17 @@ eYo.magnet.BaseC9r_p.setOffset = function(c = 0, l = 0) {
     console.error(this.x)
   }
 }
+
+// ANCHOR: finalizeC9r
+
+eYo.magnet.BaseC9r.eyo.finalizeC9r((() => {
+  let ans = {}
+  let d = eYo.model.manyDescriptorF('willConnect', 'didConnect', 'willDisconnect', 'didDisconnect')
+
+  ;['out', 'head', 'left', 'right', 'suite', 'foot'].forEach(k => {
+    ans[k] = eYo.model.manyDescriptorF('willConnect', 'didConnect', 'willDisconnect', 'didDisconnect')
+  })
+})())
 
 // ANCHOR: Iterators and methods
 /**
@@ -1354,8 +1312,8 @@ eYo.magnet.BaseC9r_p.completeWrap = function () {
       this.completeWrap = eYo.doNothing
       eYo.event.disableWrap(
         () => {
-          var brick = this.brick
-          t9k = eYo.brick.newReady(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
+          let brick = this.brick
+          t9k = this.newTargetBrick()
           t9k || eYo.throw(`completeWrap failed: ${this.wrapped_}`)
           t9k.out_m || eYo.throw(`Did you declare an expr brick typed ${t9k.type}`)
           ans = this.connect(t9k.out_m)
@@ -1366,6 +1324,15 @@ eYo.magnet.BaseC9r_p.completeWrap = function () {
       delete this.completeWrap
     }
   }
+}
+
+/**
+ * Create a new target brick.
+ * This is the only place where `eYo.brick` is required.
+ */
+eYo.magnet.BaseC9r_p.newTargetBrick = function () {
+  let brick = this.brick
+  return eYo.brick.newReady(brick, this.wrapped_, brick.id + '.wrapped:' + this.name_)
 }
 
 /**

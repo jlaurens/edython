@@ -272,7 +272,7 @@ eYo.xml.domToBoard = function (xml, owner) {
  */
 eYo.brick.newReady = (() => {
   var newReady = eYo.brick.newReady
-  return (owner, model, id) => {
+  return (model, id, owner) => {
     if (eYo.isStr(model)) {
       model = model.trim()
       if (model.startsWith('<')) {
@@ -281,7 +281,7 @@ eYo.brick.newReady = (() => {
     } else if (model.getAttribute) {
       brick = eYo.xml.domToBrick(model, owner)
     }
-    return brick || newReady(owner, model, id)
+    return brick || newReady(model, id, owner)
   }
 }) ()
 
@@ -437,18 +437,18 @@ eYo.xml.literal.domToComplete = (() => {
       case eYo.t3.expr.integer:
       case eYo.t3.expr.floatnumber:
       case eYo.t3.expr.imagnumber:
-        return eYo.brick.newReady(board, eYo.t3.expr.numberliteral, id)
+        return eYo.brick.newReady(eYo.t3.expr.numberliteral, id, board)
       case eYo.t3.expr.shortliteral:
       case eYo.t3.expr.shortstringliteral:
       case eYo.t3.expr.shortbytesliteral:
-        return eYo.brick.newReady(board, eYo.t3.expr.shortliteral, id)
+        return eYo.brick.newReady(eYo.t3.expr.shortliteral, id, board)
       case eYo.t3.expr.longliteral:
       case eYo.t3.expr.longstringliteral:
-        return eYo.brick.newReady(board, stmt_expected
+        return eYo.brick.newReady(stmt_expected
           ? eYo.t3.stmt.docstring_stmt
-          : eYo.t3.expr.longliteral, id)
+          : eYo.t3.expr.longliteral, id, board)
       case eYo.t3.expr.longbytesliteral:
-        return eYo.brick.newReady(board, eYo.t3.expr.longliteral, id)
+        return eYo.brick.newReady(board, eYo.t3.expr.longliteral, id, board)
       }
     }
   }
@@ -470,7 +470,7 @@ eYo.xml.literal.domToComplete = (() => {
       // there was no text node to infer the type
       brick = brickMaker(board, element.getAttribute(eYo.key.PLACEHOLDER), id, stmt_expected)
     }
-    return brick || eYo.brick.newReady(board, eYo.t3.expr.shortliteral, id)
+    return brick || eYo.brick.newReady(eYo.t3.expr.shortliteral, id, board)
   }
 }) ()
 
@@ -813,7 +813,7 @@ eYo.xml.Recover.prototype.domToBrick = function (dom, owner) {
           : owner.foot_m
         // return the first brick that would connect to the owner
         if (!best.types.some(type => {
-            var b3k = eYo.brick.newReady(board, type)
+            var b3k = eYo.brick.newReady(type, board)
             var m4t = b3k && b3k.out_m
             if (slot_m4t && m4t && slot_m4t.checkType_(m4t)) {
               ans = b3k
@@ -828,7 +828,7 @@ eYo.xml.Recover.prototype.domToBrick = function (dom, owner) {
           fallback = best.types[0]
         }
       }
-      ans || (ans = eYo.brick.newReady(board, fallback))
+      ans || (ans = eYo.brick.newReady(fallback, board))
     }
   )
   if (ans) {
@@ -907,7 +907,7 @@ eYo.xml.domToBrick = (() => {
               return
             }
           }
-          brick = eYo.brick.newReady(board, prototypeName, id)
+          brick = eYo.brick.newReady(prototypeName, id, boards)
         } else {
           if (!name) {
             name = dom.tagName.toLowerCase() === 's' ? 'expression_stmt': 'any_expression'
@@ -921,14 +921,14 @@ eYo.xml.domToBrick = (() => {
             } else if (eYo.isF(controller.domToBrick)) {
               return controller.domToBrick(dom, board, id)
             }
-            brick = eYo.brick.newReady(board, solid, id)
+            brick = eYo.brick.newReady(solid, id, board)
           } else if ((controller = eYo.model.forType(prototypeName))) {
             if (controller.eyo && eYo.isF(controller.eyo.domToBrick)) {
               return controller.eyo.domToBrick(dom, board, id)
             } else if (eYo.isF(controller.domToBrick)) {
               return controller.domToBrick(dom, board, id)
             }
-            brick = eYo.brick.newReady(board, prototypeName, id)
+            brick = eYo.brick.newReady(prototypeName, id, board)
           }
           // Now create the brick, either solid or not
         }

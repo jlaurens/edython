@@ -2442,14 +2442,18 @@ eYo.brick.DEBUG_ = Object.create(null)
  * If the model fits a number, then create a number
  * If the model fits a string literal, then create a string literal...
  * If the board is headless,
- * this is headless and should not render until a initUI message is sent.
- * @param {*} owner  board or brick
- * @param {String|Object} model
+ * this is headless and should not render until
+ * a `initUI` message is sent.
+ * @param {String|Object|Number} model
  * @param {String|Object} [id]
+ * @param {*} owner  board or brick
  * @param {eYo.brick.BaseC9r} [id]
  */
 eYo.brick.newReady = (() => {
-  var processModel = (board, model, id, brick) => {
+  var processModel = (model, id, board, brick) => {
+    if (!eYo.isStr(id)) {
+      [id, board, brick] = ['', id, board]
+    }
     var dataModel = model // may change below
     if (!brick) {
       if (eYo.model.forType(model.type)) {
@@ -2495,7 +2499,7 @@ eYo.brick.newReady = (() => {
           if (slot && slot.magnet) {
             var t9k = slot.targetBrick
             var V = Vs[k]
-            var b3k = processModel(board, V, null, t9k)
+            var b3k = processModel(V, null, board, t9k)
             if (!t9k && b3k && b3k.out_m) {
               b3k.changer.wrap(() => {
                 slot && (slot.incog = false)
@@ -2510,7 +2514,7 @@ eYo.brick.newReady = (() => {
       if (brick.foot_m) {
         var footModel = dataModel.next
         if (footModel) {
-          var b3k = processModel(board, footModel)
+          var b3k = processModel(footModel, board)
           if (b3k && b3k.head_m) {
             try {
               brick.foot_m.connect(b3k.head_m)
@@ -2526,9 +2530,9 @@ eYo.brick.newReady = (() => {
     })
     return brick
   }
-  return function (owner, model, id) {
+  return function (model, id, owner) {
     var board = owner.board || owner
-    var b3k = processModel(board, model, id)
+    var b3k = processModel(model, id, board)
     if (b3k) {
       b3k.consolidate()
       owner.hasUI && b3k.initUI()

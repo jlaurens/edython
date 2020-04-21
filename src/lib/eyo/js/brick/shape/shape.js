@@ -13,6 +13,7 @@
 
 eYo.require('geom')
 eYo.require('padding')
+eYo.require('shared')
 
 //g@@g.forwardDeclare('g@@g.color')
 
@@ -85,7 +86,7 @@ eYo.shape.makeBaseC9r({
   },
 })
 
-eYo.shape.shared = new eYo.shape.BaseC9r()
+eYo.shape.shared = eYo.shape.new('shape', eYo.shared.OWNER)
 
 eYo.shape.style = {
   Hilighted: {

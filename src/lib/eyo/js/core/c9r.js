@@ -213,26 +213,26 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
    * All the created constructors, by name. Private storage.
    * @package
    */
-  eYo.c9r.byName__ = Object.create(null)
+  eYo.c9r.byName__ = new Map()
 
   /**
    * All the created constructors, by id. Private storage.
    * @package
    */
-  eYo.c9r.byId__ = Object.create(null)
+  eYo.c9r.byId__ = new Map()
 
   /**
    * All the created constructors, by type. Private storage.
    * @package
    */
-  eYo.c9r.byType__ = Object.create(null)
+  eYo.c9r.byType__ = new Map()
 
   /**
    * All the created delegates. Public accessor by key.
    * @param{String} id - the key used to create the constructor.
    */
   eYo.c9r.forId = (id) => {
-    return eYo.c9r.byId__[id]
+    return eYo.c9r.byId__.get(id)
   }
 
   /**
@@ -240,7 +240,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
    * @param{String} name - the name used to create the constructor.
    */
   eYo.c9r.forName = (name) => {
-    return eYo.c9r.byName__[name]
+    return eYo.c9r.byName__.get(name)
   }
 
   /**
@@ -248,7 +248,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
    * @param{String} type - the type used to create the constructor.
    */
   eYo.c9r.forType = (type) => {
-    return eYo.c9r.byType__[type]
+    return eYo.c9r.byType__.get(type)
   }
 
   /**
@@ -256,7 +256,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
    * @property{types}
    */
   Object.defineProperty(eYo.c9r._p, 'types', eYo.descriptorR(function () {
-    return Object.keys(eYo.c9r.byType__)
+    return eYo.c9r.byType__.keys()
   }))
 
 
@@ -285,11 +285,11 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
     }
     var eyo = C9r.eyo
     var id = eyo.id
-    id && (eYo.c9r.byKey__[id] = C9r)
+    id && eYo.c9r.byId__.set(id, C9r)
     var name = eyo.name
-    name && (eYo.c9r.byName__[name] = C9r)
+    name && eYo.c9r.byName__.set(name, C9r)
     if (type) {
-      eYo.c9r.byType__[type] = C9r
+      eYo.c9r.byType__.set(type, C9r)
       // cache all the input, output and statement data at the prototype level
     }
   }
@@ -558,7 +558,7 @@ eYo.c9r._p.modelMakeC9r = function (model, register, key) {
 /**
  * Create a new Base instance based on the model
  */
-eYo.c9r._p.new = function (model, ...$) {
+eYo.c9r._p.prepare = function (model, ...$) {
   if (!eYo.isD(model)) {
     var C9r = this.BaseC9r
     if (C9r.eyo.shouldFinalizeC9r) {
@@ -571,7 +571,19 @@ eYo.c9r._p.new = function (model, ...$) {
     C9r = this.modelMakeC9r(model)
   }
   let ans = new C9r(...$)
-  model._starters.forEach(f => f(ans))
+  ans.preInit = function () {
+    delete this.preInit
+    model._starters.forEach(f => f(this))
+  }
+  return ans
+}
+
+/**
+ * Create a new Base instance based on the model
+ */
+eYo.c9r._p.new = function (...$) {
+  let ans = this.prepare(...$)
+  ans.preInit && ans.preInit()
   return ans
 }
 
@@ -589,7 +601,7 @@ eYo.c9r._p.singleton = function (model) {
  * @param {Object} id - the result will be `NS[id]`
  * @param {Object} model
  */
-eYo.c9r._p.makeSingleton = function(NS, model, id) {
+eYo.c9r._p.makeSingleton = function(NS, id, model) {
   if (!eYo.isNS(NS)) {
     id && eYo.throw(`Unexpected model: ${model}`)
     ;[NS, model, id] = [this, NS, model]

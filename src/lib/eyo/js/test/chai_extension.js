@@ -18,6 +18,58 @@ chai.Assertion.addProperty('eyo_rect', function () {
   )
 })
 
+// language chain method
+chai.Assertion.addMethod('eqlSpan', function (span) {
+  var b = this._obj
+
+  // first, our instanceof check, shortcut
+  new chai.Assertion(this._obj).instanceof(eYo.span.BaseC9r)
+  ;[
+    'c_padding',
+    'header',
+    'footer',
+    'suite',
+    'foot',
+  ].forEach(k => span[k] || (span[k] = 0))
+  span.c_min || (span.c_min = b.wrapped
+    ? 0
+    : b.isGroup
+      ? 2 * eYo.span.INDENT
+      : b.isStmt
+        ? eYo.span.INDENT :
+        2
+  )
+  span.c || (span.c = span.c_min + span.c_padding)
+  span.main || (span.main = 1)
+  span.hole || (span.hole = b.isGroup && (!b.right || b.right.isComment) ? 1 : 0)
+  span.l || (span.l = 
+    b.isGroup
+    ? span.main + span.hole + span.suite
+    : b.isStmt
+      ? span.header + span.main + span.footer
+      : span.main
+  )
+  ;[
+    'c_min',
+    'c_padding',
+    'c',
+    'main',
+    'header',
+    'footer',
+    'suite',
+    'l',
+    'foot',
+  ].forEach(k => {
+    this.assert(
+      b.span[k] === span[k]
+      , `expected #{this}/${k} to be #{exp} but got #{act}`
+      , `expected #{this}/${k} to not be of type #{act}`
+      , span[k]        // expected
+      , b.span[k]   // actual
+    );
+  })
+})
+
 /**
  * Sets global tolerance and returns a function to be passed to chai.use
  * @see http://chaijs.com/guide/plugins/

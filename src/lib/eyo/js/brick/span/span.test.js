@@ -17,39 +17,23 @@ describe('Span expression', function () {
       return ans
     },
   }
-  var b, s, b_g, s_g, b_s, s_s
+  let ns_span = eYo.span.makeNS()
+  ns_span.makeBaseC9r()
+  let onr = eYo.c9r.new()
+  var b
   before(function() {
     flag.reset()
-    var type = 'test_expr_span'
-    eYo.dfs.makeC9r(type, {
-      out: {
-        check: null
+    b = eYo.o4t.new({
+      init () {
+        this.span = ns_span.new('s', this)
       }
-    })
-    b = eYo.dfs.new(onr, 'b', type)
-    s = b.span
-    chai.assert(b.isExpr, 'MISSED')
-    var type = 'test_stmt_span'
-    eYo.stmt.makeC9r(type, {
-      out: {
-        check: null
-      }
-    })  
-    b_s = eYo.test.new_brick(type)
-    s_s = b_s.span
-    chai.assert(b_s.isStmt, 'MISSED')
-    var type = 'test_group_span'
-    eYo.stmt.group.makeInheritedC9r(type, {
-      out: {
-        check: null
-      }
-    })  
-    b_g = eYo.test.new_brick(type)
-    s_g = b_g.span
-    chai.assert(b_g.isGroup, 'MISSED')
+    }, onr, 'b')
+    s = ns_span.new('s', onr)
+  })
+  after(function() {
   })
   it('(add|reset)C', function() {
-    var test = c => eYo.test.Span(b, {
+    var test = c => chai.expect(blur).eqlSpan({
       c_min: c,
       c: c,
     })
@@ -164,11 +148,6 @@ describe('Span expression', function () {
     s_g.resetL()
     test(0)
   })
-  after(function() {
-    b.dispose()
-    b_s.dispose()
-    b_g.dispose()
-  })
 })
 
 describe('Current Field', function () {
@@ -187,7 +166,9 @@ describe('Current Field', function () {
     })  
     b_1 = eYo.test.new_brick(type)
     s_1 = b_1.span
-    chai.assert(b_1.isStmt, 'MISSED')
+    chai.expect(b_1.isStmt).true
+  })
+  after(function() {
   })
   it ('FIELD: 1234', function () {
     var test = (b, c, m) => eYo.test.Span(b, {
@@ -238,10 +219,5 @@ describe('Current Span statements', function () {
     test(b_1, 0, 1, 0)
     test(b_2, 0, 1, 0)
     test(b_3, 0, 1, 0)
-  })
-  after(function() {
-    b_3.dispose()
-    b_2.dispose()
-    b_1.dispose()
   })
 })

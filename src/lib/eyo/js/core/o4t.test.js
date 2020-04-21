@@ -745,6 +745,22 @@ describe ('Tests: Object', function () {
     o.foo_ = 123
     chai.expect(o.foo).equal(123)
   })
+  it ('O4t: property init', function () {
+    let o = eYo.o4t.new({
+      properties: {
+        foo () {
+          this.do_it(421)
+          return 421
+        }
+      },
+      methods: {
+        do_it (what) {
+          flag.push(what)
+        }
+      }
+    }, 'o', onr)
+    flag.expect(421)
+  })
   it ('O4t: eYo.o4t.makeC9r("", ...)', function () {
     let model = {
       properties: {
