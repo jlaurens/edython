@@ -127,7 +127,7 @@ chai.use(function (_chai, utils) {
       , actual[failure[0]]   // actual
     )
   })
-});
+})
 
 
 
@@ -223,4 +223,4 @@ chai.use(function (chai, utils) {
 
   Assertion.overwriteMethod('eql', overrideAssertEql)
   Assertion.overwriteMethod('eqls', overrideAssertEql)
-}())
+})
