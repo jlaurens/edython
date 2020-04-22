@@ -40,7 +40,7 @@ eYo.o4t.BaseC9r.eyo.p6yEnhanced()
  * @param {Object} model - Object, like for |makeC9r|.
  */
 eYo.o4t.Dlgt_p.modelMerge = function (model) {
-  model.aliases && this.aliasesMerge(model.aliases)
+  model.aliases && this.p6yAliasesMerge(model.aliases)
   model.properties && this.p6yMerge(model.properties)
   model.methods && this.methodsMerge(model.methods)
 }
@@ -90,110 +90,6 @@ eYo.c9r._p.enhancedO4t = function () {
    */
   _p.disposeInstance = function (object, ...$) {
     this.p6yDispose(object, ...$)
-  }
-  
-  /**
-   * Declare the given alias.
-   * It was declared in a model like
-   * `{aliases: { 'source.key': 'alias' } }`
-   * Implementation details : uses proxies.
-   * @param {String} alias
-   * @param {String} source
-   * @param {String} key
-   */
-  _p.aliasNew = function (k, object, source, key) {
-    var p
-    if (key) {
-      let source_ = source + '_'
-      let key_p = key + '_p'
-      p = new Proxy(object, {
-        get(target, prop) {
-          if (['previous', 'next'].includes(prop)) {
-            return this[prop]
-          } else {
-            let s = target[source_]
-            if (eYo.isDef(s)) {
-              var x = s[key_p]
-              if (eYo.isDef(x)) {
-                return x[prop]
-              }
-              x = s[key]
-              if (eYo.isDef(x)) {
-                return x[prop]
-              }
-            }
-            return eYo.NA
-          }
-        },
-        set: function (target, prop, value) {
-          if (['previous', 'next'].includes(prop)) {
-            this[prop] = value
-            return true
-          } else {
-            let s = target[source_]
-            if (eYo.isDef(s)) {
-              let p6y = s[key_p]
-              if (eYo.isDef(p6y)) {
-                p6y[prop] = value
-                return true
-              }
-            }
-          }
-        },
-        deleteProperty: function (target, prop) {
-          if (['previous', 'next'].includes(prop)) {
-            delete this[prop]
-            return true
-          } else {
-            let s = target[source_]
-            if (eYo.isDef(s)) {
-              let p6y = s[key_p]
-              if (eYo.isDef(p6y)) {
-                delete p6y[prop]
-                return true
-              }
-            }
-          }
-        },
-      })
-    } else {
-      let source_p = source + '_p'
-      p = new Proxy(object, {
-        get(target, prop) {
-          if (['previous', 'next'].includes(prop)) {
-            return this[prop]
-          } else {
-            let p6y = target[source_p]
-            return eYo.isDef(p6y) ? p6y[prop] : eYo.NA
-          }
-        },
-        set: function (target, prop, value) {
-          if (['previous', 'next'].includes(prop)) {
-            this[prop] = value
-            return true
-          } else {
-            let p6y = target[source_p]
-            if (eYo.isDef(p6y)) {
-              p6y[prop] = value
-              return true
-            }
-          }
-        },
-        deleteProperty: function (target, prop) {
-          if (['previous', 'next'].includes(prop)) {
-            delete this[prop]
-            return true
-          } else {
-            let p6y = target[source_p]
-            if (eYo.isDef(p6y)) {
-              delete p6y[prop]
-              return true
-            }
-          }
-        },
-      })
-    }
-    return p
   }
   
   /**

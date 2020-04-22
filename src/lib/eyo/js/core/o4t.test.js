@@ -264,75 +264,6 @@ describe ('Tests: Object', function () {
     bar = bar.dispose(1, 2)
     flag.expect(1234)
   })
-  it ('O4t: alias', function () {
-    var o = eYo.o4t.new({
-      properties: {
-        foo: {
-          value: 421
-        },
-      },
-      aliases: {
-        foo: 'bar',
-        bar: ['bar1', 'bar2'],
-      },
-    }, 'foo', onr)
-    chai.expect(o.foo_).equal(o.bar_)
-    chai.expect(o.foo).equal(o.bar)
-    chai.expect(o.foo_).equal(o.bar1_)
-    chai.expect(o.foo).equal(o.bar1)
-    chai.expect(o.foo_).equal(o.bar2_)
-    chai.expect(o.foo).equal(o.bar2)
-    o.foo_ = 123 - o.foo_
-    chai.expect(o.foo_).equal(o.bar1_)
-    chai.expect(o.foo).equal(o.bar1)
-    chai.expect(o.foo_).equal(o.bar2_)
-    chai.expect(o.foo).equal(o.bar2)
-    chai.expect(o.foo_).equal(o.bar_)
-    chai.expect(o.foo).equal(o.bar)
-    o.bar_ = 123 - o.bar_
-    chai.expect(o.foo_).equal(o.bar_)
-    chai.expect(o.foo).equal(o.bar)
-    chai.expect(o.foo_).equal(o.bar1_)
-    chai.expect(o.foo).equal(o.bar1)
-    chai.expect(o.foo_).equal(o.bar2_)
-    chai.expect(o.foo).equal(o.bar2)
-    o.bar1_ = 123 - o.bar1_
-    chai.expect(o.foo_).equal(o.bar_)
-    chai.expect(o.foo).equal(o.bar)
-    chai.expect(o.foo_).equal(o.bar1_)
-    chai.expect(o.foo).equal(o.bar1)
-    chai.expect(o.foo_).equal(o.bar2_)
-    chai.expect(o.foo).equal(o.bar2)
-    o.bar2_ = 123 - o.bar2_
-    chai.expect(o.foo_).equal(o.bar_)
-    chai.expect(o.foo).equal(o.bar)
-    chai.expect(o.foo_).equal(o.bar1_)
-    chai.expect(o.foo).equal(o.bar1)
-    chai.expect(o.foo_).equal(o.bar2_)
-    chai.expect(o.foo).equal(o.bar2)
-  })
-  it ('O4t: deep alias', function () {
-    var Foo = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
-      properties: {
-        chi: {},
-      },
-    })
-    Foo.eyo.finalizeC9r()
-    var Bar = eYo.o4t.makeC9r(eYo.NULL_NS, 'Bar', {
-      properties: {
-        foo: new Foo('foo', onr)
-      },
-      aliases: {
-        'foo.chi': 'chi',
-      },
-    })
-    Bar.eyo.finalizeC9r()
-    var bar = new Bar('bar', onr)
-    bar.chi_ = 421
-    chai.expect(bar.chi).equal(bar.foo.chi)
-    bar.foo.chi_ = 123
-    chai.expect(bar.chi).equal(bar.foo.chi)
-  })
   it ('O4t: override only get', function () {
     var flag = 123
     var Foo = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
@@ -1100,5 +1031,76 @@ describe ('Tests: Object', function () {
       chai.assert(bar.foo.equals(foo_2))
       flag.expect(1234567891012) // 12345778101012
     })
+  })
+  describe(`O4t: Alias`, function () {
+    it ('O4t: alias', function () {
+      var o = eYo.o4t.new({
+        properties: {
+          foo: {
+            value: 421
+          },
+        },
+        aliases: {
+          foo: 'bar',
+          bar: ['bar1', 'bar2'],
+        },
+      }, 'foo', onr)
+      chai.expect(o.foo_).equal(o.bar_)
+      chai.expect(o.foo).equal(o.bar)
+      chai.expect(o.foo_).equal(o.bar1_)
+      chai.expect(o.foo).equal(o.bar1)
+      chai.expect(o.foo_).equal(o.bar2_)
+      chai.expect(o.foo).equal(o.bar2)
+      o.foo_ = 123 - o.foo_
+      chai.expect(o.foo_).equal(o.bar1_)
+      chai.expect(o.foo).equal(o.bar1)
+      chai.expect(o.foo_).equal(o.bar2_)
+      chai.expect(o.foo).equal(o.bar2)
+      chai.expect(o.foo_).equal(o.bar_)
+      chai.expect(o.foo).equal(o.bar)
+      o.bar_ = 123 - o.bar_
+      chai.expect(o.foo_).equal(o.bar_)
+      chai.expect(o.foo).equal(o.bar)
+      chai.expect(o.foo_).equal(o.bar1_)
+      chai.expect(o.foo).equal(o.bar1)
+      chai.expect(o.foo_).equal(o.bar2_)
+      chai.expect(o.foo).equal(o.bar2)
+      o.bar1_ = 123 - o.bar1_
+      chai.expect(o.foo_).equal(o.bar_)
+      chai.expect(o.foo).equal(o.bar)
+      chai.expect(o.foo_).equal(o.bar1_)
+      chai.expect(o.foo).equal(o.bar1)
+      chai.expect(o.foo_).equal(o.bar2_)
+      chai.expect(o.foo).equal(o.bar2)
+      o.bar2_ = 123 - o.bar2_
+      chai.expect(o.foo_).equal(o.bar_)
+      chai.expect(o.foo).equal(o.bar)
+      chai.expect(o.foo_).equal(o.bar1_)
+      chai.expect(o.foo).equal(o.bar1)
+      chai.expect(o.foo_).equal(o.bar2_)
+      chai.expect(o.foo).equal(o.bar2)
+    })
+    it ('O4t: deep alias', function () {
+      var Foo = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
+        properties: {
+          chi: {},
+        },
+      })
+      Foo.eyo.finalizeC9r()
+      var Bar = eYo.o4t.makeC9r(eYo.NULL_NS, 'Bar', {
+        properties: {
+          foo: new Foo('foo', onr)
+        },
+        aliases: {
+          'foo.chi': 'chi',
+        },
+      })
+      Bar.eyo.finalizeC9r()
+      var bar = new Bar('bar', onr)
+      bar.chi_ = 421
+      chai.expect(bar.chi).equal(bar.foo.chi)
+      bar.foo.chi_ = 123
+      chai.expect(bar.chi).equal(bar.foo.chi)
+    })  
   })
 })

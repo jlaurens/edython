@@ -83,7 +83,7 @@ eYo.board.BaseC9r.eyo.p6yMerge({
     }
   },
 })
-eYo.board.BaseC9r.eyo.aliasesMerge({
+eYo.board.BaseC9r.eyo.p6yAliasesMerge({
   'xy': 'where',
 })
 

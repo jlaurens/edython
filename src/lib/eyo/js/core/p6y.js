@@ -271,7 +271,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model) {
   let _p = this.C9r_p
   var can_lazy = true
   var computed = false // true iff get and set are given with no builtin dependency
-  let get_m = model.get // from model => suffix = '_m' and `@this` == property owner
+  let get_m = model.get // from model => suffix = '_m' and `@this` === property owner
   if (model.copy) {
     model.get && eYo.throw(`Bad model (${_p.eyo.name}/${key}): Unexpected get`)
     _p.getValue = eYo.p6y.BaseC9r_p.__getCopyValue
@@ -310,7 +310,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model) {
       eYo.isNA(get_m) || eYo.throw(`Bad model (${_p.eyo.name}/${key}): unexpected get -> ${get_m}`)
     }
   }
-  let set_m = model.set // from model => suffix = '_m' and `@this` == property owner
+  let set_m = model.set // from model => suffix = '_m' and `@this` === property owner
   if (set_m === eYo.doNothing || set_m === false) {
     _p.setValue = eYo.noSetter(function () {
       return `Read only ${this.owner_.eyo.name}/${key}`
@@ -572,87 +572,238 @@ eYo.p6y.List.eyo_p.initInstance = function (instance) {
   }
 }
 
-eYo.dlgt.BaseC9r_p.p6yEnhanced = function (manyModel = {}) {
-  eYo.isF(manyModel.make) || (manyModel.make = function (model, k, object) {
-    return model && model.source
-    ? object.eyo.aliasNew(k, object, ...model.source)
-    : eYo.p6y.prepare(model || {}, k, object)
-  })
-  eYo.isF(manyModel.makeShortcut) || (manyModel.makeShortcut = function (k, object, p) {
-    let k_p = k + '_p'
-    let k_ = k + '_'
-    if (object.hasOwnProperty(k_p)) {
-      console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
+/**
+ * Declare the given alias.
+ * It was declared in a model like
+ * `{aliases: { 'source.key': 'alias' } }`
+ * Implementation details : uses proxies.
+ * @param {String} dest_key
+ * @param {Object} object
+ * @param {String|eYo.p6y.BaseC9r} source
+ * @param {String} key
+ */
+eYo.c9r.Dlgt_p.p6yAliasNew = function (dest_key, object, source, source_key) {
+  var target
+  var handler
+  let keys_RO = [
+    'owner', 'key',
+  ]
+  let write_keys = [
+    'previous', 'next', 'owner__', 'key_',
+    eYo.observe.BEFORE, eYo.observe.DURING, eYo.observe.AFTER,
+    'fireObservers', 'reset', 'setValue', 'getValue', 
+    'getStored', 'setStored', 'validate',
+  ]
+  let get = f => function (target, prop) {
+    if (prop === 'owner') {
+      return this.owner__
+    } else if (prop === 'key') {
+      return this.key_
+    } else if (this.hasOwnProperty(prop)) {
+      return this[prop]
+    } else {
+      return f(target, prop)
     }
-    Object.defineProperties(object, {
-      [k_p]: eYo.descriptorR(function () {
-        return p
-      }),
-    })
-    object[k_p] || eYo.throw('Missing property')
-    let _p = object.eyo.C9r_p
-    _p.hasOwnProperty(k) || Object.defineProperties(_p, {
-      [k]: eYo.descriptorR(function () {
-        let p = this[k_p]
-        if (!p) {
-          console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
-        }
-        if (!p.getValue) {
-          console.error('BREAK HERE!')
-          p.getValue
-        }
-        return p.getValue && p.getValue() || p.value
-      }),
-      [k_]: {
-        get: function () {
-          if (!this[k_p].getStored) {
-            console.error('BREAK HERE!')
-            this[k_p].getStored
+  }
+  let set = f => function (target, prop, value) {
+    if (keys_RO.includes(prop)) {
+      return false
+    } else if (prop === 'stored__') {
+      return f(target, prop, value)
+    } else if (write_keys.includes(prop)) {
+      this[prop] = value
+      return true  
+    } else {
+      return f(target, prop, value)
+    }
+  }
+  let deleteProperty = f => function (target, prop) {
+    if (write_keys.includes(prop)) {
+      delete this[prop]
+      return true
+    } else {
+      f(target, prop)
+    }
+  }
+  if (source_key) {
+    let source_ = source + '_'
+    let key_p = source_key + '_p'
+    target = object
+    handler = {
+      get: get(function (target, prop) {
+        let s = target[source_]
+        if (eYo.isDef(s)) {
+          var x = s[key_p]
+          if (eYo.isDef(x)) {
+            return x[prop]
           }
-          return this[k_p].getStored()
-        },
-        set (after) {
-          this[k_p].setValue(after)
-        },
-      },
-      [k + '__']: {
-        get: function () {
-          if (!this[k_p].getStored) {
-            console.error('BREAK HERE!')
-            this[k_p].getStored
+          x = s[source_key]
+          if (eYo.isDef(x)) {
+            return x[prop]
           }
-          return this[k_p].getStored()
-        },
-        set (after) {
-          this[k_p].setStored(after)
-        },
-      },
-    })
-    return p
+        }
+        return eYo.NA
+      }),
+      set: set(function (target, prop, value) {
+        let s = target[source_]
+        if (eYo.isDef(s)) {
+          let p6y = s[key_p]
+          if (eYo.isDef(p6y)) {
+            p6y[prop] = value
+            return true
+          }
+        }
+      }),
+      deleteProperty: deleteProperty(function (target, prop) {
+        let s = target[source_]
+        if (eYo.isDef(s)) {
+          let p6y = s[key_p]
+          if (eYo.isDef(p6y)) {
+            delete p6y[prop]
+            return true
+          }
+        }
+      }),
+    }
+  } else if (eYo.isStr(source)) {
+    let source_p = source + '_p'
+    target = object
+    handler = {
+      get: get(function (target, prop) {
+        let p6y = target[source_p]
+        return eYo.isDef(p6y) ? p6y[prop] : eYo.NA
+      }),
+      set: set(function (target, prop, value) {
+      let p6y = target[source_p]
+        if (eYo.isDef(p6y)) {
+          p6y[prop] = value
+          return true
+        }
+      }),
+      deleteProperty: deleteProperty(function (target, prop) {
+        let p6y = target[source_p]
+        if (eYo.isDef(p6y)) {
+          delete p6y[prop]
+          return true
+        }
+      }),
+    }
+  } else {
+    source instanceof eYo.p6y.BaseC9r || eYo.throw(`${this.name}/p6yAliasNew: bad source ${source}`)
+    target = source
+    handler = {
+      get: get(function (target, prop) {
+        return target[prop]
+      }),
+      set: set(function (target, prop, value) {
+        target[prop] = value
+        return true
+      }),
+      deleteProperty: deleteProperty(function (target, prop) {
+        delete target[prop]
+        return true
+      }),
+    }
+  }
+  handler.defineProperty = function (target, key, descriptor) {
+    return keys.includes(key)
+  }
+  let p = new Proxy(target, handler)
+  p.owner__ = object
+  p.key_ = dest_key
+  return p
+}
+
+/**
+ * Make a property
+ */
+eYo.dlgt.BaseC9r_p.p6yMakeInstance = function (model, k, object) {
+  return model && model.source
+  ? object.eyo.p6yAliasNew(k, object, ...model.source)
+  : eYo.p6y.prepare(model || {}, k, object)
+}
+/**
+ * Make a property
+ */
+eYo.dlgt.BaseC9r_p.p6yMakeShortcut = function (k, object, p) {
+  p || eYo.throw(`${this.name}/p6yMakeShortcut: Missing property ${k}`)
+  let k_p = k + '_p'
+  let k_ = k + '_'
+  if (object.hasOwnProperty(k_p)) {
+    console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
+  }
+  Object.defineProperties(object, {
+    [k_p]: eYo.descriptorR(function () {
+      return p
+    }),
   })
+  object[k_p] || eYo.throw('Missing property')
+  let _p = object.eyo.C9r_p
+  _p.hasOwnProperty(k) || Object.defineProperties(_p, {
+    [k]: eYo.descriptorR(function () {
+      let p = this[k_p]
+      if (!p) {
+        console.error('TOO EARLY OR INAPPROPRIATE! BREAK HERE!')
+      }
+      if (!p.getValue) {
+        console.error('BREAK HERE!')
+        p.getValue
+      }
+      return p.getValue && p.getValue() || p.value
+    }),
+    [k_]: {
+      get: function () {
+        if (!this[k_p].getStored) {
+          console.error('BREAK HERE!')
+          this[k_p].getStored
+        }
+        return this[k_p].getStored()
+      },
+      set (after) {
+        this[k_p].setValue(after)
+      },
+    },
+    [k + '__']: {
+      get: function () {
+        if (!this[k_p].getStored) {
+          console.error('BREAK HERE!')
+          this[k_p].getStored
+        }
+        return this[k_p].getStored()
+      },
+      set (after) {
+        this[k_p].setStored(after)
+      },
+    },
+  })
+  return p
+}
+
+eYo.dlgt.BaseC9r_p.p6yEnhanced = function (manyModel = {}) {
+  eYo.isF(manyModel.make) || (manyModel.make = eYo.dlgt.BaseC9r_p.p6yMakeInstance)
+  eYo.isF(manyModel.makeShortcut) || (manyModel.makeShortcut = eYo.dlgt.BaseC9r_p.p6yMakeShortcut)
 
   /**
    * Declare the given aliases.
    * Used to declare synonyms.
    * @param {Map<String, String|Array<String>>} model - Object, map source -> alias.
    */
-  this._p.aliasesMerge = function (aliases) {
+  this._p.p6yAliasesMerge = function (aliases) {
     let d = Object.create(null)
-    Object.keys(aliases).forEach(source => {
+    for(let [source, alias] of Object.entries(aliases)) {
       let components = source.split('.')
       let d8r = {
         source: components,
         after: components[0],
       }
-      let a = aliases[source]
-      if (eYo.isRA(a)) {
-        a.forEach(v => {
+      try {
+        alias.forEach(v => {
           d[v] = d8r
         })
-      } else {
-        d[a] = d8r
+      } catch {
+        d[alias] = d8r
       }
-    })
+    }
     this.p6yMerge(d)
   }
   this.enhanceMany('p6y', 'properties', manyModel)
@@ -782,6 +933,11 @@ eYo.observe.enhance(eYo.p6y.BaseC9r.eyo)
     after = this.validate(before, after)
     if (eYo.isVALID(after)) {
       if (before !== after) {
+        var f = this.willChange
+        if (!eYo.isF(f)) {
+          console.error('BREAK HERE!!!')
+          f = this.willChange
+        }
         this.willChange(before, after)
         try {
           this.setStored(after)

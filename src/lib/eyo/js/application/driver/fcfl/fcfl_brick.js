@@ -85,7 +85,7 @@ eYo.brick.BaseC9r.eyo.p6yMerge({
     }
   },
 })
-eYo.brick.BaseC9r.eyo.aliasesMerge({
+eYo.brick.BaseC9r.eyo.p6yAliasesMerge({
   'xy': 'where',
 })
 

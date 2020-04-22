@@ -603,47 +603,47 @@ eYo.dlgt.BaseC9r.eyo.finalizeC9r()
  * This namespace method populates the namespace's base delegate
  * with some methods to manage a data model with many possible attributes.
  * 
- * @param{String} key - key is one of 'p6y', 'data', 'field', 'slots'
+ * @param{String} type - type is one of 'p6y', 'data', 'field', 'slots'
  * @param{String} path - Path, the separator is '/'
  * @param{Object} [manyModel] - Object, read only.
  */
-eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
+eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
   let _p = this._p
   /* fooModelByKey__ is a key -> model object with no prototype.
    * Void at startup.
    * Populated with the `...Merge` method.
    * Local to the delegate instance.
    */
-  let kModelByKey__ = key + 'ModelByKey__' // local to the instance
+  let tModelByKey__ = type + 'ModelByKey__' // local to the instance
   /* fooModelMap_ is a key -> model map.
    * It is computed from the fooModelByKey__ of the delegates and its super's.
    * Cached.
    */
-  let kModelMap_  = key + 'ModelMap_'
+  let tModelMap_  = type + 'ModelMap_'
   /* fooModelMap is a key -> model map.
    * Computed property that uses the cache above.
    * If the cache does not exist, reads super's fooModelMap
    * and adds the local fooModelByKey__.
    * Then caches the result in fooModelMap_.
    */
-  let kModelMap   = key + 'ModelMap' // computed property
-  let kPrepare    = key + 'Prepare'
-  let kMerge      = key + 'Merge'
-  let kInit       = key + 'Init'
-  let KInit       = eYo.do.toTitleCase(key) + 'Init'
-  let kDispose    = key + 'Dispose'
-  let KDispose    = eYo.do.toTitleCase(key) + 'Dispose'
-  let kForEach    = key + 'ForEach'
-  let kSome       = key + 'Some'
+  let tModelMap   = type + 'ModelMap' // computed property
+  let tPrepare    = type + 'Prepare'
+  let tMerge      = type + 'Merge'
+  let tInit       = type + 'Init'
+  let TInit       = eYo.do.toTitleCase(type) + 'Init'
+  let tDispose    = type + 'Dispose'
+  let TDispose    = eYo.do.toTitleCase(type) + 'Dispose'
+  let tForEach    = type + 'ForEach'
+  let tSome       = type + 'Some'
   // object properties
-  let kMap        = key + 'Map' // property defined on instances
-  let kHead       = key + 'Head'
-  let kTail       = key + 'Tail'
+  let tMap        = type + 'Map' // property defined on instances
+  let tHead       = type + 'Head'
+  let tTail       = type + 'Tail'
   /*
    * Lazy model getter:
    * 
    */
-  Object.defineProperty(_p, kModelByKey__, {
+  Object.defineProperty(_p, tModelByKey__, {
     get () {
       let model = this.model || Object.create(null)
       for (let k of path.split('.')) {
@@ -654,7 +654,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
           break
         }
       }
-      Object.defineProperty(this, kModelByKey__, {
+      Object.defineProperty(this, tModelByKey__, {
         get () {
           return model
         }
@@ -669,20 +669,20 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
    * Usage: For the model `{foo: bar}`, run `C9r.eyo.fooMerge(bar)`
    * @param{Object} source - A model object.
    */
-  _p[kMerge] = function (source) {
-    delete this[kModelMap] // delete the shortcut
-    this.forEachSubC9r(C9r => C9r.eyo[kMerge]({})) // delete the cache of descendants
+  _p[tMerge] = function (source) {
+    delete this[tModelMap] // delete the shortcut
+    this.forEachSubC9r(C9r => C9r.eyo[tMerge]({})) // delete the cache of descendants
     source = this.modelValidate(path, source)
-    let byKey = this[kModelByKey__]
+    let byKey = this[tModelByKey__]
     eYo.provideR(byKey, source)
   }
   Object.defineProperties(_p, {
-    [kModelMap]: eYo.descriptorR(function () {
-      let modelMap = this[kModelMap_] = new Map()
-      let superMap = this.super && this.super[kModelMap]
+    [tModelMap]: eYo.descriptorR(function () {
+      let modelMap = this[tModelMap_] = new Map()
+      let superMap = this.super && this.super[tModelMap]
       let map = superMap ? new Map(superMap) : new Map()
-      if (this[kModelByKey__]) {
-        for (let [k, v] of Object.entries(this[kModelByKey__])) {
+      if (this[tModelByKey__]) {
+        for (let [k, v] of Object.entries(this[tModelByKey__])) {
           map.set(k, v)
         }
       }
@@ -716,27 +716,27 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
         }
       }
       Object.defineProperties(this, {
-        [kModelMap]: eYo.descriptorR(function () {
-          return this[kModelMap_]
+        [tModelMap]: eYo.descriptorR(function () {
+          return this[tModelMap_]
         }, true)
       })
-      return this[kModelMap_]
+      return this[tModelMap_]
     }),
   })
   /**
    * The maker is responsible of making new `key` objects from a model.
    */
   let make = manyModel.make || function (model, k, object) {
-    return eYo[key].new(model, k, object)
+    return eYo[type].new(model, k, object)
   }
   let makeShortcut = manyModel.makeShortcut || function (k, object, p) {
-    let k_p = k + (manyModel.suffix || `_${key[0]}`)
+    let k_p = k + (manyModel.suffix || `_${type[0]}`)
     if (object.hasOwnProperty(k_p)) {
       console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
     }
     Object.defineProperties(object, {
       [k_p]: eYo.descriptorR(function () {
-        return this[kMap].get(k)
+        return this[tMap].get(k)
       }),
     })
   }
@@ -755,28 +755,28 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
    * @param{*} object - An instance being created.
    * @param{*} [model] - Must be falsy once an instance has already been created.
    */
-  _p[kPrepare] = manyModel.prepare || function (object, model) {
+  _p[tPrepare] = manyModel.prepare || function (object, model) {
     if (model) {
       // merge the given model with the existing one
-      this[kMerge](model)
-      this[kMerge] = function () {
+      this[tMerge](model)
+      this[tMerge] = function () {
         eYo.throw(`Do not change the model of ${this.name} once an instance has been created`)
       }
       var super_dlgt = this
       while ((super_dlgt = super_dlgt.super)) {
-        super_dlgt.hasOwnProperty(kMerge) || (super_dlgt[kMerge] = this[kMerge])
+        super_dlgt.hasOwnProperty(tMerge) || (super_dlgt[tMerge] = this[tMerge])
       }
     }
     let attributes = []
-    var map = object[kMap]
+    var map = object[tMap]
     if (map) {
       for (let k of [...map.keys()].reverse()) {
         let attr = map.get(k)
         eYo.isC9rInstance(attr) && attr.dispose()
       }
     }
-    map = object[kMap] = new Map()
-    for (let [k, model] of this[kModelMap]) {
+    map = object[tMap] = new Map()
+    for (let [k, model] of this[tModelMap]) {
       let attr = make(model, k, object)
       if (attr) {
         makeShortcut(k, object, attr)
@@ -784,7 +784,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
         attributes.push(attr)
       }
     }
-    var attr = object[kHead] = attributes.shift()
+    var attr = object[tHead] = attributes.shift()
     attributes.forEach(a => {
       try {
         attr.next = a
@@ -796,43 +796,43 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (key, path, manyModel = {}) {
         attr.next = a
       }
     })
-    object[kTail] = attributes.pop() || object[kHead]
-    attr = object[kHead]
+    object[tTail] = attributes.pop() || object[tHead]
+    attr = object[tHead]
   }
   /**
    * 
    */
-  _p[kInit] = manyModel.init || function (object, ...$) {
-    for (let v of object[kMap].values()) {
+  _p[tInit] = manyModel.init || function (object, ...$) {
+    for (let v of object[tMap].values()) {
       v.preInit && v.preInit()
-      let init = v && object[v.id + KInit]
+      let init = v && object[v.id + TInit]
       init && init.call(object, v, ...$)
       v.init && v.init(...$)
     }
   }
-  _p[kDispose] = manyModel.dispose || function(object, ...$) {
-    for (let v of object[kMap].values()) {
+  _p[tDispose] = manyModel.dispose || function(object, ...$) {
+    for (let v of object[tMap].values()) {
       if (v.owner === object) {
-        let dispose = object[v.id + KDispose]
+        let dispose = object[v.id + TDispose]
         dispose && dispose.call(object, v, ...$)
         v.dispose && v.dispose(...$)
       }
     }
-    object.bindField = object[kHead] = object[kTail] = object[kModelByKey__] = eYo.NA
+    object.bindField = object[tHead] = object[tTail] = object[tModelByKey__] = eYo.NA
   }
-  _p[kForEach] = function (object, $this, f) {
+  _p[tForEach] = function (object, $this, f) {
     if (eYo.isF($this)) {
       [$this, f] = [f, $this]
     }
-    for (let v of object[kMap].values()) {
+    for (let v of object[tMap].values()) {
       f.call($this, v)
     }
   }
-  _p[kSome] = function (object, $this, f) {
+  _p[tSome] = function (object, $this, f) {
     if (eYo.isF($this)) {
       [$this, f] = [f, $this]
     }
-    for (let v of object[kMap].values()) {
+    for (let v of object[tMap].values()) {
       if (f.call($this, v)) {
         return true
       }

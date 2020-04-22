@@ -45,16 +45,10 @@ Object.defineProperties(eYo.geom, {
   L: eYo.descriptorR(function  () {
     return 4
   }),
-  EPSILON: eYo.descriptorR(function  () {
-    return 1e-10
-  }),
 })
 
-eYo.geom._p.greater = function (left, right) {
-  return left - right >= -this.EPSILON * (Math.abs(left) + Math.abs(right))
-}
-
 eYo.geom.makeBaseC9r(true)
+
 eYo.geom.BaseC9r.eyo.finalizeC9r(['aliases'], {
   properties: {
     [eYo.model.ANY]: eYo.p6y.BaseC9r
@@ -70,54 +64,21 @@ eYo.geom.enhancedO4t()
  * @param {Object} model - Object, like for |makeC9r|.
  */
 eYo.geom.Dlgt_p.modelMerge = function (model) {
-  model.aliases && this.aliasesMerge(model.aliases)
+  model.aliases && this.p6yAliasesMerge(model.aliases)
   model.properties && this.p6yMerge(model.properties)
   model.methods && this.methodsMerge(model.methods)
 }
 
 /**
- * `Point` is modelling a planar point that stores its coordinates in text units.
- * When `snap` is true, the coordinates are snapped to half integers horizontally and quarter integers vertically.
+ * `AbstractPoint` is modelling a planar point that stores its coordinates in text units.
+ * Only computed properties are declared.
  * Orientation is from top to bottom and from left to right.
- * @name {eYo.geom.Point}
+ * @name {eYo.geom.AbstractPoint}
  * @constructor
  * @param {Number} c - Horizontal coordinates, or another planar object.
  */
-eYo.geom.makeC9r('Point', {
-  init (c, l, snap) {
-    if (c === true || c === false) {
-      this.snap_ = c
-      c = l
-      l = snap
-    } else if (l === true || l === false) {
-      this.snap_ = l
-      l = snap
-    } else {
-      this.snap_ = c && !!c.snap || !!snap
-    }
-    this.set(c, l)
-  },
+eYo.geom.makeC9r('AbstractPoint', {
   properties: {
-    /**
-     * Horizontal position in text unit
-     * @type {Number}
-     */
-    c: {
-      value: 0,
-      validate (after) {
-        return this.snap_ ? Math.round(after * eYo.geom.C) / eYo.geom.C : after
-      },
-    },
-    /**
-     * Vertical position in text unit
-     * @type {Number}
-     */
-    l: {
-      value: 0,
-      validate (after) {
-        return this.snap_ ? Math.round(after * eYo.geom.L) / eYo.geom.L : after
-      },
-    },
     /**
      * Horizontal position in pixels
      * @type {Number}
@@ -180,7 +141,14 @@ eYo.geom.makeC9r('Point', {
   }
 })
 
-eYo.geom.Point.eyo.finalizeC9r()
+eYo.geom.AbstractPoint.eyo.finalizeC9r()
+
+/**
+ * Test equality between the receiver and the rhs.
+ */
+eYo.geom.AbstractPoint_p.equals = function (rhs) {
+  return rhs instanceof eYo.geom.Point && this.c_ == rhs.c_ && this.l_ == rhs.l_
+}
 
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
@@ -188,7 +156,7 @@ eYo.geom.Point.eyo.finalizeC9r()
  * @param {Number} [l]
  * @return {eYo.geom.Point} The receiver
  */
-eYo.geom.Point_p.set = function (c = 0, l = 0) {
+eYo.geom.AbstractPoint_p.set = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ = c.x
     this.y_ = c.y
@@ -208,19 +176,12 @@ eYo.geom.Point_p.set = function (c = 0, l = 0) {
 }
 
 /**
- * Test equality between the receiver and the rhs.
- */
-eYo.geom.Point_p.equals = function (rhs) {
-  return rhs instanceof eYo.geom.Point && this.c_ == rhs.c_ && this.l_ == rhs.l_
-}
-
-/**
  * Setter.
  * @param {Number} x  x coordinate
  * @param {Number} y  y coordinate
  * @return {eYo.geom.Point} The receiver
  */
-eYo.geom.Point_p.xySet = function (x = 0, y = 0) {
+eYo.geom.AbstractPoint_p.xySet = function (x = 0, y = 0) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     this.x_ = x.x
     this.y_ = x.y
@@ -240,47 +201,12 @@ eYo.geom.Point_p.xySet = function (x = 0, y = 0) {
 }
 
 /**
- * Convenient creator.
- * @param {Number} x - x coordinate
- * @param {Number} y - y coordinate
- * @param {Boolean} snap - Whether the receiver should snap to the grid
- * @return {eYo.geom.Point} The receiver
- */
-eYo.geom.xyPoint = function (x, y, snap) {
-  var y
-  if (eYo.isBool(x)) {
-    var _ = x
-    x = y
-    y = snap
-    snap = _
-  } else if (eYo.isBool(y)) {
-    var _ = y
-    y = snap
-    snap = _
-  } else {
-    snap = !!x.snap || !!snap
-  }
-  return new eYo.geom.Point(snap).xySet(x, y)
-}
-
-/**
- * Convenient creator in text units.
- * @param {Number} [c] - c coordinate. Defaults to 0.
- * @param {Number} [l] - l coordinate. Defaults to 0.
- * @param {Boolean} [snap] - snap flag. Defaults to false.
- * @return {eYo.geom.Point} The receiver
- */
-eYo.geom.clPoint = function (c, l, snap) {
-  return new eYo.geom.Point(c, l, snap)
-}
-
-/**
  * Like `set` but advance the coordinates, instead of setting them.
  * @param {number | eYo.geom.Point | eYo.geom.Size} c
  * @param {number} l
  * @return {eYo.geom.Point}
  */
-eYo.geom.Point_p.forward = function (c = 0, l = 0) {
+eYo.geom.AbstractPoint_p.forward = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ += c.x
     this.y_ += c.y
@@ -297,7 +223,7 @@ eYo.geom.Point_p.forward = function (c = 0, l = 0) {
  * @param {number} l
  * @return {eYo.geom.Point} c
  */
-eYo.geom.Point_p.backward = function (c = 0, l = 0) {
+eYo.geom.AbstractPoint_p.backward = function (c = 0, l = 0) {
   if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.x_ -= c.x
     this.y_ -= c.y
@@ -315,7 +241,7 @@ eYo.geom.Point_p.backward = function (c = 0, l = 0) {
  * @param {number} y
  * @return {eYo.geom.Point}
  */
-eYo.geom.Point_p.xyForward = function (x = 0, y = 0) {
+eYo.geom.AbstractPoint_p.xyForward = function (x = 0, y = 0) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     y = x.y
     x = x.x
@@ -332,7 +258,7 @@ eYo.geom.Point_p.xyForward = function (x = 0, y = 0) {
  * @param {number} y
  * @return {eYo.geom.Point}
  */
-eYo.geom.Point_p.xyBackward = function (x = 0, y = 0) {
+eYo.geom.AbstractPoint_p.xyBackward = function (x = 0, y = 0) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     y = x.y
     x = x.x
@@ -348,7 +274,7 @@ eYo.geom.Point_p.xyBackward = function (x = 0, y = 0) {
  * @param {Number} [scaleY] - Defaults to
  * @return {eYo.geom.Point} the receiver
  */
-eYo.geom.Point_p.scale = function (scaleX, scaleY) {
+eYo.geom.AbstractPoint_p.scale = function (scaleX, scaleY) {
   if (scaleX.x) {
     this.c_ *= scaleX.x
     this.l_ *= (scaleX.y || scaleX.x)
@@ -368,7 +294,7 @@ eYo.geom.Point_p.scale = function (scaleX, scaleY) {
  * @param {Number} [scaleY] - Defaults to scaleX
  * @return {eYo.geom.Point} the receiver
  */
-eYo.geom.Point_p.unscale = function (scaleX, scaleY) {
+eYo.geom.AbstractPoint_p.unscale = function (scaleX, scaleY) {
   if (scaleX.x) {
     this.c_ /= scaleX.x
     this.l_ /= (scaleX.y || scaleX.x)
@@ -387,7 +313,7 @@ eYo.geom.Point_p.unscale = function (scaleX, scaleY) {
  * @param {eYo.geom.Point} other
  * @return {number} non negative number
  */
-eYo.geom.Point_p.distance = function (other) {
+eYo.geom.AbstractPoint_p.distance = function (other) {
   var dx = this.x - other.x
   var dy = this.y - other.y
   return Math.sqrt(dx * dx + dy * dy)
@@ -400,11 +326,11 @@ eYo.geom.Point_p.distance = function (other) {
  * @param {eYo.geom.Rect} rect
  * @return {Boolean}
  */
-eYo.geom.Point_p.in = function (rect) {
-  return eYo.geom.greater(this.c, rect.c_min)
-    && eYo.geom.greater(rect.c_max, this.c)
-    && eYo.geom.greater(this.l, rect.l_min)
-    && eYo.geom.greater(rect.l_max, this.l)
+eYo.geom.AbstractPoint_p.in = function (rect) {
+  return eYo.greater(this.c, rect.c_min)
+    && eYo.greater(rect.c_max, this.c)
+    && eYo.greater(this.l, rect.l_min)
+    && eYo.greater(rect.l_max, this.l)
 }
 
 /**
@@ -414,11 +340,91 @@ eYo.geom.Point_p.in = function (rect) {
  * @param {eYo.geom.Rect} rect
  * @return {Boolean} non negative number
  */
-eYo.geom.Point_p.out = function (rect) {
-  return eYo.geom.greater(this.c, rect.c_max)
-    || eYo.geom.greater(rect.c_min, this.c)
-    || eYo.geom.greater(this.l, rect.l_max)
-    || eYo.geom.greater(rect.l_min, this.l)
+eYo.geom.AbstractPoint_p.out = function (rect) {
+  return eYo.greater(this.c, rect.c_max)
+    || eYo.greater(rect.c_min, this.c)
+    || eYo.greater(this.l, rect.l_max)
+    || eYo.greater(rect.l_min, this.l)
+}
+
+/**
+ * `Point` is modelling a planar point that stores its coordinates in text units.
+ * When `snap` is true, the coordinates are snapped to half integers horizontally and quarter integers vertically.
+ * Orientation is from top to bottom and from left to right.
+ * @name {eYo.geom.Point}
+ * @constructor
+ * @param {*} ... - See the implementation.
+ */
+eYo.geom.makeC9r('Point', eYo.geom.AbstractPoint, {
+  init (c, l, snap) {
+    if (eYo.isBool(c)) {
+      [snap, c, l] = [c, l, snap]
+    } else if (eYo.isBool(l)) {
+      [snap, l] = [l, snap]
+    } else {
+      snap = c && !!c.snap || !!snap
+    }
+    this.snap_ = snap
+    this.set(c, l)
+  },
+  properties: {
+    /**
+     * Horizontal position in text unit
+     * @type {Number}
+     */
+    c: {
+      value: 0,
+      validate (after) {
+        if (!eYo.isDef(this)) {
+          console.error('BREAK HERE!!!')
+        }
+        return this.snap_ ? Math.round(after * eYo.geom.C) / eYo.geom.C : after
+      },
+    },
+    /**
+     * Vertical position in text unit
+     * @type {Number}
+     */
+    l: {
+      value: 0,
+      validate (after) {
+        return this.snap_ ? Math.round(after * eYo.geom.L) / eYo.geom.L : after
+      },
+    },
+  },
+})
+
+eYo.geom.Point.eyo.finalizeC9r()
+
+/**
+ * Convenient creator.
+ * @param {Number} x - x coordinate
+ * @param {Number} y - y coordinate
+ * @param {Boolean} snap - Whether the receiver should snap to the grid
+ * @return {eYo.geom.Point} The receiver
+ */
+eYo.geom.xyPoint = function (x, y, snap) {
+  var y
+  if (eYo.isBool(x)) {
+    var _ = x
+    [x, y, snap] = [y, snap, x]
+  } else if (eYo.isBool(y)) {
+    [y, snap] = [snap, y]
+  } else {
+    snap = !!x.snap || !!snap
+  }
+  return new eYo.geom.Point(snap).xySet(x, y)
+}
+
+/**
+ * Convenient creator in text units.
+ * @param {Number} [c] - c coordinate. Defaults to 0.
+ * @param {Number} [l] - l coordinate. Defaults to 0.
+ * @param {Boolean} [snap] - snap flag. Defaults to false.
+ * @return {eYo.geom.Point} The receiver
+ */
+eYo.geom.clPoint = function (c, l, snap) {
+  return new eYo.geom.Point(c, l, snap)
 }
 
 /**
@@ -461,7 +467,7 @@ eYo.do.SizeOfText = function (txt) {
  * @struct
  * @constructor
  */
-eYo.geom.makeC9r('Rect', {
+eYo.geom.makeC9r('AbstractRect', {
   init (c, l, w, h, snap) {
     this.set(c, l, w, h, snap)
   },
@@ -703,12 +709,13 @@ eYo.geom.makeC9r('Rect', {
   },
 })
 
-eYo.geom.Rect.eyo.finalizeC9r()
+eYo.geom.AbstractRect.eyo.finalizeC9r()
+
 
 /**
  * Dispose of the receiver's resources.
  */
-eYo.geom.Rect_p.dispose = eYo.doNothing
+eYo.geom.AbstractRect_p.dispose = eYo.doNothing
 
 /**
  * set the `Rect`.
@@ -719,7 +726,7 @@ eYo.geom.Rect_p.dispose = eYo.doNothing
  * @param{?Number} h
  * @return {eYo.geom.Rect} The receiver
  */
-eYo.geom.Rect_p.set = function (c = 0, l = 0, w = 0, h = 0, snap) {
+eYo.geom.AbstractRect_p.set = function (c = 0, l = 0, w = 0, h = 0) {
   if (eYo.isDef(c.left) && eYo.isDef(c.right) && eYo.isDef(c.top) && eYo.isDef(c.bottom)) {
     // properties are evaluated twice
     this.left_ = c.left
@@ -761,7 +768,7 @@ eYo.geom.Rect_p.set = function (c = 0, l = 0, w = 0, h = 0, snap) {
  * @param {Number} height  y coordinate
  * @return {eYo.geom.Rect} The receiver
  */
-eYo.geom.Rect_p.xySet = function (x = 0, y = 0, width = 0, height = 0) {
+eYo.geom.AbstractRect_p.xySet = function (x = 0, y = 0, width = 0, height = 0) {
   if (eYo.isNA(x.x) || eYo.isNA(x.y)) {
     this.origin_.xySet(x, y)
     this.size_.xySet(width, height)
@@ -778,7 +785,7 @@ eYo.geom.Rect_p.xySet = function (x = 0, y = 0, width = 0, height = 0) {
  * @param {number} l
  * @return {eYo.geom.Rect}
  */
-eYo.geom.Rect_p.forward = function (c = 0, l = 0) {
+eYo.geom.AbstractRect_p.forward = function (c = 0, l = 0) {
   this.origin_.forward(c, l)
   return this
 }
@@ -789,28 +796,18 @@ eYo.geom.Rect_p.forward = function (c = 0, l = 0) {
  * @param {number} l
  * @return {eYo.geom.Rect}
  */
-eYo.geom.Rect_p.backward = function (c = 0, l = 0) {
+eYo.geom.AbstractRect_p.backward = function (c = 0, l = 0) {
   this.origin_.backward(c, l)
   return this
 }
 
-/**
- * Convenient creator.
- * @param {Number} x  x coordinate
- * @param {Number} y  y coordinate
- * @param {Number} width  x coordinate
- * @param {Number} height  y coordinate
- * @return {eYo.geom.Rect} The newly created rect instance.
- */
-eYo.geom.xyRect = function (x = 0, y = 0, width = 0, height = 0) {
-  return new eYo.geom.Rect().xySet(x, y, width, height)
-}
 
 /**
  * Test equality between the receiver and the rhs.
+ * Takes rounding errors into account.
  * @param {eYo.geom.Rect} rhs
  */
-eYo.geom.Rect_p.equals = function (rhs) {
+eYo.geom.AbstractRect_p.equals = function (rhs) {
   return rhs instanceof eYo.geom.Rect && this.origin_.equals(rhs.origin_) && this.size_.equals(rhs.size_)
 }
 
@@ -820,7 +817,7 @@ eYo.geom.Rect_p.equals = function (rhs) {
  * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
  * @return {!eYo.geom.Rect} the receiver
  */
-eYo.geom.Rect_p.scale = function (scaleX, scaleY) {
+eYo.geom.AbstractRect_p.scale = function (scaleX, scaleY) {
   this.origin_.scale(scaleX, scaleY)
   this.size_.scale(scaleX, scaleY)
   return this
@@ -832,7 +829,7 @@ eYo.geom.Rect_p.scale = function (scaleX, scaleY) {
  * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
  * @return {!eYo.geom.Rect} the receiver
  */
-eYo.geom.Rect_p.unscale = function (scaleX, scaleY) {
+eYo.geom.AbstractRect_p.unscale = function (scaleX, scaleY) {
   this.origin_.unscale(scaleX, scaleY)
   this.size_.unscale(scaleX, scaleY)
   return this
@@ -842,7 +839,7 @@ eYo.geom.Rect_p.unscale = function (scaleX, scaleY) {
  * Mirror the receiver vertically and horizontally.
  * @return {!eYo.geom.Rect} the receiver
  */
-eYo.geom.Rect_p.mirror = function () {
+eYo.geom.AbstractRect_p.mirror = function () {
   // size does not change, only max <-> -min
   this.x_max_ = -this.x
   this.y_max_ = -this.y
@@ -858,7 +855,7 @@ eYo.geom.Rect_p.mirror = function () {
  * @param {Number} [dy_max]
  * @return {!eYo.geom.Rect} the receiver
  */
-eYo.geom.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
+eYo.geom.AbstractRect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
   if (!eYo.isDef(dx_min)) {
     dx_min = dx_max = eYo.geom.X / eYo.geom.C
     dy_min = dy_max = eYo.geom.Y / eYo.geom.L
@@ -877,7 +874,7 @@ eYo.geom.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
     }
   }
   if (this.width > 0) {
-    if (eYo.geom.greater(dx_min + dx_max, this.width)) {
+    if (eYo.greater(dx_min + dx_max, this.width)) {
       dx_min = this.width * dx_min / (dx_min + dx_max)
       this.left_ += dx_min
       this.w_ = 0
@@ -887,7 +884,7 @@ eYo.geom.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
     }
   }
   if (this.height > 0) {
-    if (eYo.geom.greater(dy_min + dy_max, this.height)) {
+    if (eYo.greater(dy_min + dy_max, this.height)) {
       dy_min = this.height * dy_min / (dy_min + dy_max)
       this.top_ += dy_min
       this.h_ = 0
@@ -908,7 +905,7 @@ eYo.geom.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
  * @param {Number} [dy_max]
  * @return {!eYo.geom.Rect} the receiver
  */
-eYo.geom.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
+eYo.geom.AbstractRect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
   if (!eYo.isDef(dx_min)) {
     dx_min = dx_max = eYo.geom.X / eYo.geom.C
     dy_min = dy_max = eYo.geom.Y / eYo.geom.L
@@ -939,7 +936,7 @@ eYo.geom.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
  * @param {Number} [y]
  * @return {Boolean}
  */
-eYo.geom.Rect_p.xyContains = function (x, y) {
+eYo.geom.AbstractRect_p.xyContains = function (x, y) {
   if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
     var c = x.x / eYo.geom.X
     var l = x.y / eYo.geom.Y
@@ -951,10 +948,10 @@ eYo.geom.Rect_p.xyContains = function (x, y) {
       l = y / eYo.geom.Y
     }
   }
-  return eYo.geom.greater(c, this.c_min)
-  && eYo.geom.greater(this.c_max, c)
-  && eYo.geom.greater(l, this.l_min)
-  && eYo.geom.greater(this.l_max, l)
+  return eYo.greater(c, this.c_min)
+  && eYo.greater(this.c_max, c)
+  && eYo.greater(l, this.l_min)
+  && eYo.greater(this.l_max, l)
 }
 
 /**
@@ -963,7 +960,7 @@ eYo.geom.Rect_p.xyContains = function (x, y) {
  * @param {eYo.geom.Rect} rect
  * @return {eYo.geom.Rect} the receiver
  */
-eYo.geom.Rect_p.unionRect = function (rect) {
+eYo.geom.AbstractRect_p.unionRect = function (rect) {
   let left = Math.min(this.x_min, rect.x_min)
   let right = Math.max(this.x_max, rect.x_max)
   let top = Math.min(this.y_min, rect.y_min)
@@ -981,7 +978,7 @@ eYo.geom.Rect_p.unionRect = function (rect) {
  * @param {eYo.geom.Rect} rect
  * @return {eYo.geom.Rect} the receiver
  */
-eYo.geom.Rect_p.intersectionRect = function (rect) {
+eYo.geom.AbstractRect_p.intersectionRect = function (rect) {
   let left = Math.max(this.x_min, rect.x_min)
   let right = Math.min(this.x_max, rect.x_max)
   let top = Math.max(this.y_min, rect.y_min)
@@ -993,6 +990,22 @@ eYo.geom.Rect_p.intersectionRect = function (rect) {
     this.bottom_ = bottom
     return this  
   }
+}
+
+eYo.geom.makeC9r('Rect', eYo.geom.AbstractRect, {})
+
+eYo.geom.Rect.eyo.finalizeC9r()
+
+/**
+ * Convenient creator.
+ * @param {Number} x  x coordinate
+ * @param {Number} y  y coordinate
+ * @param {Number} width  x coordinate
+ * @param {Number} height  y coordinate
+ * @return {eYo.geom.Rect} The newly created rect instance.
+ */
+eYo.geom.xyRect = function (x = 0, y = 0, width = 0, height = 0) {
+  return new eYo.geom.Rect().xySet(x, y, width, height)
 }
 
 /**

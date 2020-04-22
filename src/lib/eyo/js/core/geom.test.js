@@ -28,10 +28,52 @@ describe ('geometry', function () {
       return ans
     },
   }
-  it ('POC', function () {
-    chai.expect(473.85937500000006).almost.equal(473.859375)
+  before(function () {
+    flag.reset()
+  })
+  describe ('POC', function () {
+    it (`chai.expect(...).almost.equal(...)`, function () {
+      chai.expect(473.85937500000006).almost.equal(473.859375)
+    })
+    it (`Shared properties`, function () {
+      chai.expect(() => {
+        new eYo.geom.AbstractPoint()
+      }).not.throw()
+      let P = new eYo.geom.Point()
+      let ns = eYo.geom.makeNS()
+      ns.makeBaseC9r(eYo.geom.AbstractPoint, {
+        init (c_p, l_p) {
+          chai.expect(this.hasOwnProperty('c_p')).false
+          chai.expect(this.hasOwnProperty('l_p')).false
+          if (!eYo.isDef(l_p)) {
+            l_p = c_p.l_p
+            c_p = c_p.c_p
+          }
+          c_p = this.eyo.p6yAliasNew('c', this, c_p)
+          this.eyo.p6yMakeShortcut('c', this, c_p)
+          l_p = this.eyo.p6yAliasNew('l', this, l_p)
+          this.eyo.p6yMakeShortcut('l', this, l_p)
+        }
+      })
+      let Q = ns.new(P)
+      P.c_ = 1
+      chai.expect(Q.c).equal(1)
+      Q.c_ = 2
+      chai.expect(P.c).equal(2)
+      let o = Q.c_p.addObserver(eYo.observe.ANY, function (before, after) {
+        flag.push(before, after)
+      })
+      P.c_ = 1
+      flag.expect(212121)
+      Q.c_ = 2
+      flag.expect(121212)
+      Q.c_p.removeObserver(o)
+      P.c_ = 1
+      flag.expect(0)
+    })
   })
   it ('Geometry: Basic', function () {
+    chai.expect(eYo.isDef(eYo.geom.AbstractPoint)).true
     chai.expect(eYo.isDef(eYo.geom.Point)).true
     chai.expect(eYo.isDef(eYo.geom.Size)).true
     chai.expect(eYo.isDef(eYo.geom.Rect)).true
@@ -121,30 +163,31 @@ describe ('geometry', function () {
     it('Mutation', function () {
       var w1 = new eYo.geom.Point()
       var w2 = new eYo.geom.Point(w1)
-      chai.expect(w1).deep.equal(w2)
+      chai.expect(w1).eql(w2)
       w1.forward(1)
-      chai.expect(w1).not.almost.deep.equal(w2)
+      chai.expect(w1).not.eql(w2)
+      chai.expect(w1).not.almost.eql(w2)
       w1.forward(-1)
-      chai.expect(w1).almost.deep.equal(w2)
+      chai.expect(w1).almost.eql(w2)
       var w3 = eYo.geom.xyPoint(12.34, 56.78)
       w1.forward(w3)
-      chai.expect(w1).not.almost.deep.equal(w2)
+      chai.expect(w1).not.almost.eql(w2)
       w2.forward(w3)
-      chai.expect(w1).almost.deep.equal(w2)
+      chai.expect(w1).almost.eql(w2)
       w1.backward(w3)
-      chai.expect(w1).not.almost.deep.equal(w2)
+      chai.expect(w1).not.almost.eql(w2)
       w2.backward(w3)
-      chai.expect(w1).almost.deep.equal(w2)
+      chai.expect(w1).almost.eql(w2)
       w1.forward(w3)
       w2.forward(w3)
       w1.scale(1.23)
-      chai.expect(w1).not.almost.deep.equal(w2)
+      chai.expect(w1).not.almost.eql(w2)
       w2.scale(1.23)
-      chai.expect(w1).almost.deep.equal(w2)
+      chai.expect(w1).almost.eql(w2)
       w1.unscale(1.23)
-      chai.expect(w1).not.almost.deep.equal(w2)
+      chai.expect(w1).not.almost.eql(w2)
       w2.unscale(1.23)
-      chai.expect(w1).almost.deep.equal(w2)
+      chai.expect(w1).almost.eql(w2)
     })
   })
   describe('size', function () {
@@ -190,9 +233,11 @@ describe ('geometry', function () {
       // by copy or not
       chai.expect(r.origin).not.equal(r.origin_)
       chai.expect(r.origin).not.equal(r.origin)
+      chai.expect(r.origin).eql(r.origin)
       chai.expect(r.origin_).equal(r.origin_)
       chai.expect(r.size).not.equal(r.size_)
       chai.expect(r.size).not.equal(r.size)
+      chai.expect(r.size).eql(r.size)
       chai.expect(r.size_).equal(r.size_)
       r.c_ = 123
       test(r, 123, 0, 0, 0)

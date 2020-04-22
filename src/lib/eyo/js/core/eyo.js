@@ -685,6 +685,16 @@ eYo.mixinR(eYo, {
   LETTER: 'letter',
   ALNUM: 'alnum',
   IDENT: 'ident',
+  EPSILON: 1e-10,
+})
+
+eYo.mixinR(eYo._p, {
+  greater (left, right, tol = eYo.EPSILON) {
+    return left - right >= -tol * (Math.abs(left) + Math.abs(right)+ 1)
+  },
+  equals (left, right, tol = eYo.EPSILON) {
+    return Math.abs(left - right) <= tol * (Math.abs(left) + Math.abs(right) + 1)
+  },
 }, false)
 
 ;(() => {
@@ -697,7 +707,7 @@ eYo.mixinR(eYo, {
    * 79 characters ^ 20, length > 128 bits (better than a UUID).
    * @return {string} A globally unique ID string.
    */
-  eYo.genUID = (type, length) => {
+  eYo._p.genUID = (type, length) => {
     if (!eYo.isStr(type)) {
       [length, type] = [type, length]
     }
@@ -715,4 +725,5 @@ eYo.mixinR(eYo, {
     }
     return id.join('')
   }
-}) ()
+})()
+

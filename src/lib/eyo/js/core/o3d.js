@@ -34,21 +34,7 @@ eYo.o3d.makeBaseC9r({
    * @param {eYo.c9r.BaseC9r} owner - the immediate owner of this object.
    */
   init (key, owner) {
-    if (!(owner instanceof eYo.c9r.BaseC9r)) {
-      console.error('BREAK HERE!')
-    }
-    owner instanceof eYo.c9r.BaseC9r || eYo.throw(`${this.eyo.name}: Very bad owner in init`)
-    eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Bad s key in init`)
-    this.owner__ = owner
-    this.key_ = key
-    Object.defineProperties(this, {
-      owner: eYo.descriptorR(function () {
-        return this.owner__
-      }),
-      key: eYo.descriptorR(function () {
-        return this.key_
-      }),
-    })
+    this.eyo.o3dInitInstance(this, key, owner)
     this.disposeUI = eYo.doNothing
   },
   dispose () {
@@ -60,10 +46,36 @@ eYo.o3d.makeBaseC9r({
 /**
  * The default implementation does nothing.
  * For subclassers.
+ * @param{Object} instance - the owner before the change
+ * @param{String} key - the owner before the change
+ * @param{Object} owner - the owner after the change
+ * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
+ */
+eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
+  if (!(owner instanceof eYo.c9r.BaseC9r)) {
+    console.error('BREAK HERE!')
+  }
+  owner instanceof eYo.c9r.BaseC9r || eYo.throw(`${this.name}/o3dInitInstance: Very bad owner`)
+  eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Bad key in init`)
+  instance.owner__ = owner
+  instance.key_ = key
+  Object.defineProperties(instance, {
+    owner: eYo.descriptorR(function () {
+      return this.owner__
+    }, !!configurable),
+    key: eYo.descriptorR(function () {
+      return this.key_
+    }, !!configurable),
+  })
+}
+
+/**
+ * The default implementation does nothing.
+ * For subclassers.
  * @param{*} before - the owner before the change
  * @param{*} after - the owner after the change
  */
-eYo.o3d.BaseC9r.prototype.ownerWillChange = eYo.doNothing
+eYo.o3d.BaseC9r_p.ownerWillChange = eYo.doNothing
 /**
  * The default implementation does nothing.
  * For subclassers.

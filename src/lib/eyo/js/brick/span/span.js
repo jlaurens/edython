@@ -65,9 +65,8 @@ eYo.o4t.makeNS(eYo, 'span', {
  */
 eYo.span.makeBaseC9r({
   init () {
-    this.c_min_ = this.c_min_0
-    this.c_ = this.c_min + this.c_padding
-    this.l_ = this.header + this.main + this.hole + this.suite + this.footer
+    this.resetC()
+    this.resetL()
   },
   aliases: {
     'size.x': ['x', 'width'],
@@ -110,7 +109,7 @@ eYo.span.makeBaseC9r({
       },
     },
     /**
-     * This is the total number of columns in that block.
+     * This is the total number of columns in that brick.
      * At least two.
      * @readonly
      * @property {number} c - The full number of columns
@@ -128,9 +127,9 @@ eYo.span.makeBaseC9r({
       }
     },
     /**
-     * The minimum number of columns, at least `this.c_min_init`.
+     * The minimum number of columns, read only.
      * @readonly
-     * @property {number} c_min - The minimum number of columns
+     * @property {number} c_min_0 - The minimum number of columns
      */
     c_min_0: {
       after: 'brick',
@@ -158,6 +157,8 @@ eYo.span.makeBaseC9r({
       }
     },
     /**
+     * The padding at the right is used to draw the outline of compound bricks.
+     * All statements in one list will have the same number of columns.
      * @property {number} c_padding - The extra padding at the right
      */
     c_padding: {
@@ -233,7 +234,7 @@ eYo.span.makeBaseC9r({
       }
     },
     /**
-     * This is the total number of lines in that block.
+     * This is the total number of lines in that brick.
      * At least one.
      * @property {number} l - The full number of lines
      * @readonly
@@ -242,7 +243,7 @@ eYo.span.makeBaseC9r({
     /**
      * If we have a suite, we do not have a header nor a footer.
      * It is the responsibility of the caller to verify that
-     * there is no right block, except a one line comment.
+     * there is no right brick, except a one line comment.
      * @property {number} suite - The number of suite lines
      */
     suite: {
@@ -255,7 +256,7 @@ eYo.span.makeBaseC9r({
      * Groups need a suite, but may not be provided with one.
      * The hole count is used to display a hole,
      * where bricks should be connected.
-     * If groups have a right connection, they have no suite
+     * If groups have a right connected statement, they have no suite
      * hence no suite hole.
      * @readonly
      * @property {number} hole - The number of hole lines
@@ -288,7 +289,7 @@ eYo.span.BaseC9r_p.resetPadding = function () {
  * Reset the column counts to initial values.
  */
 eYo.span.BaseC9r_p.resetC = function () {
-  this.c_min_ = this.c_min_0_
+  this.c_min__ = this.c_min_0_
   this.c_padding_ = 0
   var c = this.c_min_ + this.c_padding_
   this.addC(c - this.c_)
@@ -306,8 +307,7 @@ eYo.span.BaseC9r_p.addC = function (delta) {
     delta = this.c_min_0_ - c_min
   }
   if (delta) {
-    this.c_min_ = c_min + delta
-    this.c_ += delta
+    this.c_min__ = c_min + delta
     if (this.brick.isExpr) {
       var parent = this.parentSpan
       if (parent) {
@@ -325,16 +325,8 @@ eYo.span.BaseC9r_p.addC = function (delta) {
  */
 eYo.span.BaseC9r_p.addL = function (delta) {
   if (delta) {
-    this.l_ += delta
+    this.l__ += delta
   }
-}
-
-/**
- * Convenient method
- * @param {Object} delta  the value to add to the ressource.
- */
-eYo.span.BaseC9r_p.reset = function (where) {
-  console.error('WHAT IS THE PURPOSE ?')
 }
 
 /**
@@ -363,7 +355,7 @@ eYo.span.BaseC9r_p.resetL = function () {
  */
 eYo.span.BaseC9r_p.addHeader = function (delta) {
   if (delta) {
-    this.header_ += delta
+    this.header__ += delta
     this.l_ += delta
     // cascade to all the right statements
     var right = this.rightSpan
@@ -385,7 +377,7 @@ eYo.span.BaseC9r_p.addHeader = function (delta) {
  */
 eYo.span.BaseC9r_p.addMain = function (delta) {
   if (delta) {
-    this.main_ += delta
+    this.main__ += delta
     this.l_ += delta
     // propagates to the right
     var right = this.rightSpan
@@ -433,7 +425,7 @@ eYo.span.BaseC9r_p.addParent_ = function (delta) {
  */
 eYo.span.BaseC9r_p.addFooter = function (delta) {
   if (delta) {
-    this.footer_ += delta
+    this.footer__ += delta
     this.l_ += delta
     this.addLeft_(delta)
   }
@@ -449,7 +441,7 @@ eYo.span.BaseC9r_p.addFooter = function (delta) {
  */
 eYo.span.BaseC9r_p.addFoot = function (delta) {
   if (delta) {
-    this.foot_ += delta
+    this.foot__ += delta
     this.addParent_(delta)
   }
 }
@@ -462,7 +454,7 @@ eYo.span.BaseC9r_p.addFoot = function (delta) {
 eYo.span.BaseC9r_p.addSuite = function (delta) {
   var b = this.brick
   if (delta && b.isGroup) {
-    this.suite_ += delta
+    this.suite__ += delta
     if (this.suite_) {
       if (this.hole_) {
         delta -= this.hole_
@@ -479,3 +471,12 @@ eYo.span.BaseC9r_p.addSuite = function (delta) {
     this.addParent_(delta)
   }
 }
+
+/**
+ * Convenient method
+ * @param {Object} delta  the value to add to the ressource.
+ */
+eYo.span.BaseC9r_p.reset = function (where) {
+  console.error('WHAT IS THE PURPOSE ?')
+}
+

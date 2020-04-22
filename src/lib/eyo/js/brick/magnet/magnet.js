@@ -266,7 +266,7 @@ Object.defineProperty(eYo.magnet.BaseC9r_p, 'isMagnet', {
   },
 })
 
-eYo.magnet.BaseC9r.eyo.aliasesMerge({
+eYo.magnet.BaseC9r.eyo.p6yAliasesMerge({
   /**
    * Is it a slot magnet.
    * @return {boolean} True if the magnet is one of the brick's slot magnet.

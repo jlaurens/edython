@@ -4,86 +4,140 @@ eYo.TESTING = true
 
 chai.Assertion.addProperty('eyo_point', function () {
   this.assert(
-      this._obj instanceof eYo.geom.Point
-    , 'expected #{this} to be a eYo.geom.Point'
-    , 'expected #{this} to not be a eYo.geom.Point'
+      this._obj instanceof eYo.geom.AbstractPoint
+    , 'expected #{this} to be a eYo.geom.AbstractPoint'
+    , 'expected #{this} to not be a eYo.geom.AbstractPoint'
   )
 })
 
 chai.Assertion.addProperty('eyo_rect', function () {
   this.assert(
-      this._obj instanceof eYo.geom.Rect
-    , 'expected #{this} to be a eYo.geom.Rect'
-    , 'expected #{this} to not be a eYo.geom.Rect'
+      this._obj instanceof eYo.geom.AbstractRect
+    , 'expected #{this} to be a eYo.geom.AbstractRect'
+    , 'expected #{this} to not be a eYo.geom.AbstractRect'
   )
 })
 
-// language chain method
-chai.Assertion.addMethod('eqlSpan', function (expected) {
-  var actual = this._obj
+/**
+ * Makes a comparator function to be passed to deepEqual.
+ * The returned function will return `eYo.INVALID` if both arguments are not numbers,
+ * indicating that deepEqual should proceed with other equality checks
+ */
+eYo.test.makeComparator = function (tol = 0) {
+  return function (left, right) {
+    try {
+      return eYo.equals(left, right, tol) // true if left ~ right, false otherwise
+    } catch (e) {
+      return eYo.INVALID
+    }
+  }
+}
 
-  // first, our instanceof check, shortcut
-  new chai.Assertion(actual).instanceof(eYo.span.BaseC9r)
-  ;[
-    'c_padding',
-    'header',
-    'footer',
-    'suite',
-    'foot',
-  ].forEach(k => eYo.isNA(expected[k]) && (expected[k] = 0))
-  eYo.isNA(expected.c_min) && (expected.c_min = actual.c_min_0)
-  eYo.isNA(expected.c) && (expected.c = expected.c_min + expected.c_padding)
-  eYo.isNA(expected.main) && (expected.main = 1)
-  eYo.isNA(expected.hole) && (expected.hole = actual.isGroup && (!actual.right || actual.right.isComment) ? 1 : 0)
-  eYo.isNA(expected.l) && (expected.l = 
-    actual.isGroup
-    ? expected.main + expected.hole + expected.suite
-    : actual.isStmt
-      ? expected.header + expected.main + expected.footer
-      : expected.main
-  )
-  ;[
-    'c_min',
-    'c_padding',
-    'c',
-    'main',
-    'header',
-    'footer',
-    'suite',
-    'l',
-    'foot',
-  ].forEach(k => {
+chai.use(function (_chai, utils) {
+  // language chain method
+  chai.Assertion.addMethod('eqlPoint', function (expected) {
+    var actual = this._obj
+
+    // first, our instanceof check, shortcut
+    new chai.Assertion(actual).instanceof(eYo.geom.AbstractPoint)
+    // new chai.Assertion(expected).instanceof(eYo.geom.AbstractPoint)
+    let tol = utils.flag(this, 'tolerance')
+    let equal = eYo.test.makeComparator(tol)
+    let yorn = ['c', 'l'].map(k => {
+      let ans = equal(actual[k], expected[k])
+      return [eYo.isVALID(ans) && ans, k]
+    })
+    let success = yorn.filter(k => k[0] && k)
+    let failure = yorn.filter(k => !k[0] && k)
     this.assert(
-      actual[k] === expected[k]
-      , `expected #{this}/${k} to be #{exp} but got #{act}`
-      , `expected #{this}/${k} to not be of type #{act}`
-      , expected[k]        // expected
-      , actual[k]   // actual
+      failure.length === 0
+      , `expected #{this}/${failure[0]} to be ${expected[failure[0]]} but got ${actual[failure[0]]}`
+      , `expected #{this}/${success[0]} not to be ${expected[success[0]]}`
+      , expected[failure[0]]        // expected
+      , actual[failure[0]]   // actual
     );
   })
-})
+  chai.Assertion.addMethod('eqlRect', function (expected) {
+    var actual = this._obj
+    // first, our instanceof check, shortcut
+    new chai.Assertion(actual).instanceof(eYo.geom.AbstractRect)
+    // new chai.Assertion(expected).instanceof(eYo.geom.AbstractRect)
+    let tol = utils.flag(this, 'tolerance')
+    let equal = eYo.test.makeComparator(tol)
+    let yorn = ['c', 'l', 'w', 'h'].map(k => {
+      let ans = equal(actual[k], expected[k])
+      return [eYo.isVALID(ans) && ans, k]
+    })
+    let success = yorn.filter(k => k[0] && k)
+    let failure = yorn.filter(k => !k[0] && k)
+    this.assert(
+      failure.length === 0
+      , `expected #{this}/${failure[0]} to be ${expected[failure[0]]} but got ${actual[failure[0]]}`
+      , `expected #{this}/${success[0]} not to be ${expected[success[0]]}`
+      , expected[failure[0]]        // expected
+      , actual[failure[0]]   // actual
+    )
+  })
+  // language chain method
+  chai.Assertion.addMethod('eqlSpan', function (expected) {
+    var actual = this._obj
+    // first, our instanceof check, shortcut
+    new chai.Assertion(actual).instanceof(eYo.span.BaseC9r)
+    ;[
+      'c_padding',
+      'header',
+      'footer',
+      'suite',
+      'foot',
+    ].forEach(k => eYo.isNA(expected[k]) && (expected[k] = 0))
+    eYo.isNA(expected.c_min) && (expected.c_min = actual.c_min_0)
+    eYo.isNA(expected.c) && (expected.c = expected.c_min + expected.c_padding)
+    eYo.isNA(expected.main) && (expected.main = 1)
+    eYo.isNA(expected.hole) && (expected.hole = actual.isGroup && (!actual.right || actual.right.isComment) ? 1 : 0)
+    eYo.isNA(expected.l) && (expected.l = 
+      actual.isGroup
+      ? expected.main + expected.hole + expected.suite
+      : actual.isStmt
+        ? expected.header + expected.main + expected.footer
+        : expected.main
+    )
+    let tol = utils.flag(this, 'tolerance')
+    let equal = eYo.test.makeComparator(tol)
+    let yorn = [
+      'c_min',
+      'c_padding',
+      'c',
+      'main',
+      'header',
+      'footer',
+      'suite',
+      'l',
+      'foot',
+    ].map(k => {
+      let ans = equal(actual[k], expected[k])
+      return [eYo.isVALID(ans) && ans, k]
+    })
+    let success = yorn.filter(k => k[0] && k)
+    let failure = yorn.filter(k => !k[0] && k)
+    this.assert(
+      failure.length === 0
+      , `expected #{this}/${failure[0]} to be ${expected[failure[0]]} but got ${actual[failure[0]]}`
+      , `expected #{this}/${success[0]} not to be ${expected[success[0]]}`
+      , expected[failure[0]]        // expected
+      , actual[failure[0]]   // actual
+    )
+  })
+});
+
+
+
 
 /**
  * Sets global tolerance and returns a function to be passed to chai.use
  * @see http://chaijs.com/guide/plugins/
  */
-eYo.test.chaiAlmost = function (standardTolerance = eYo.geom && eYo.geom.EPSILON || 1.e-10) {
+eYo.test.chaiAlmost = function (standardTolerance) {
  
-  /**
-   * Makes a comparator function to be passed to deepEqual.
-   * The returned function will return null if both arguments are not numbers,
-   * indicating that deepEqual should proceed with other equality checks
-   */
-  function comparator (tol) {
-    let test = (left, right) => Math.abs(left - right) <= tol * (Math.abs(left) + Math.abs(right) + 1)
-    return function (left, right) {
-      try {
-        return test(left, right)
-      } catch (e) {
-        return null
-      }
-    }
-  }
   return function (chai, utils) {
     let Assertion = chai.Assertion
     let flag = utils.flag
@@ -104,7 +158,7 @@ eYo.test.chaiAlmost = function (standardTolerance = eYo.geom && eYo.geom.EPSILON
           return this.eql(val)
         }
         if (tol) {
-          var yorn = comparator(tol)(val,this._obj)
+          var yorn = eYo.test.makeComparator(tol)(val,this._obj)
           if (yorn !== null) {
             this.assert(yorn,
               `expected ${val.description} to almost equal ${this._obj.description}`,
@@ -127,31 +181,17 @@ eYo.test.chaiAlmost = function (standardTolerance = eYo.geom && eYo.geom.EPSILON
       return function assertEql (val, msg) {
         if (msg) flag(this, 'message', msg)
 
-        var tol = flag(this, 'tolerance')
-
-        if (tol) {
-          var yorn = true
-          var ans
-          var obj = this._obj
-          if ((ans = comparator(tol)(val.w, obj.w, tol)) !== null) {
-            yorn = ans && yorn
-            if ((ans = comparator(tol)(val.h, obj.h, tol)) !== null) {
-              yorn = ans && yorn
-              if ((ans = comparator(tol)(val.c, obj.c, tol)) !== null) {
-                yorn = ans && yorn
-                if ((ans = comparator(tol)(val.l, obj.l, tol)) !== null) {
-                  yorn = ans && yorn
-                  this.assert(
-                    yorn,
-                    'expected #{this} to deeply almost equal #{exp}',
-                    'expected #{this} to not deeply almost equal #{exp}',
-                    val,
-                    this._obj
-                  )
-                  return
-                }
-              }
-            }
+        if (eYo.geom) {
+          if (this._obj instanceof eYo.geom.AbstractPoint) {
+            return this.eqlPoint(val)
+          }
+          if (this._obj instanceof eYo.geom.AbstractRect) {
+            return this.eqlRect(val)
+          }
+        }
+        if (eYo.span) {
+          if (this._obj instanceof eYo.span.BaseC9r) {
+            return this.eqlSpan(val)
           }
         }
         return _super.apply(this, arguments)
@@ -187,5 +227,4 @@ eYo.test.chaiAlmost = function (standardTolerance = eYo.geom && eYo.geom.EPSILON
   }
 }
 
-chai.use(eYo.test.chaiAlmost())
-
+chai.use(eYo.test.chaiAlmost(eYo.geom && eYo.geom.EPSILON || 1e-10))

@@ -83,6 +83,9 @@ eYo.c9r._p.doMakeC9r = function (ns, id, Super, model) {
     // TODO: due to the makeInit method, this constructor may be badly designed.
     var C9r = function (...$) {
       // Class
+      if (!this) {
+        console.error('BREAK HERE!!!')
+      }
       var old = this.init
       old || eYo.throw(`Unfinalized contructor: ${this.eyo.name}`)
       this.init = eYo.doNothing
@@ -355,17 +358,17 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
   eYo.c9r._p.makeBaseC9r = function (unfinalize, Super, model) {
     this.hasOwnProperty('BaseC9r') && eYo.throw(`${this.name}: Already Base`)
     if (!eYo.isBool(unfinalize)) {
-      eYo.isDef(model) && eYo.throw(`Unexpected last argument: ${model}`)
+      eYo.isDef(model) && eYo.throw(`${this.name}/makeBaseC9r Unexpected last argument: ${model}`)
       ;[unfinalize, Super, model] = [false, unfinalize, Super]
     }
-    if (!eYo.isC9r(Super)) {
-      eYo.isDef(model) && eYo.throw(`Unexpected argument: ${model}`)
+    if (eYo.isC9r(Super)) {
+      model = eYo.called(model) || {}
+    } else {
+      eYo.isDef(model) && eYo.throw(`${this.name}/makeBaseC9r Unexpected argument: ${model}`)
       ;[Super, model] = [
         this.super && this.super.BaseC9r || eYo.NA,
         eYo.called(Super) || {},
       ]
-    } else {
-      model = eYo.called(Super) || {}
     }
     let C9r = this.makeC9r(this, 'BaseC9r', Super, model || {})
     let s = this.parent
@@ -510,39 +513,24 @@ eYo.c9r._p.modelBaseC9r = function (model, key) {
  * No need to subclass.
  * Instead, override `Base` and `modelHandle`.
  * @param {Object} model
- * @param {Boolean} [register]
- */
-eYo.c9r._p.modelMakeC9r = function (model, register) {
-  if (!eYo.isBool(register)) {
-    register = false
-  }
-  let C9r = this.makeC9r('', this.modelBaseC9r(model), model)
-  C9r.eyo.shouldFinalizeC9r && C9r.eyo.finalizeC9r()
-  model = C9r.eyo.model
-  model._C9r = C9r
-  model._starters = []
-  C9r.eyo.modelHandle()
-  Object.defineProperty(C9r.eyo, 'name', eYo.descriptorR(function () {
-    return `${C9r.eyo.super.name}(${id})`
-  }))
-  register && this.register(C9r)
-  return C9r
-}
-
-/**
- * Create a new constructor based on the model.
- * No need to subclass.
- * Instead, override `Base` and `modelHandle`.
- * @param {Object} model
+ * @param {Function} [SuperC9r]
  * @param {Boolean} [register]
  * @param {String} key
  */
-eYo.c9r._p.modelMakeC9r = function (model, register, key) {
+eYo.c9r._p.modelMakeC9r = function (model, SuperC9r, register, key) {
+  if (!eYo.isC9r(SuperC9r)) {
+    eYo.isDef(key) && eYo.throw(`eYo.o3d._p.modelMakeC9r: Unexpected parameter ${key}`)
+    ;[SuperC9r, register, key] = [eYo.NA, SuperC9r, register]
+  }
   if (!eYo.isBool(register)) {
     eYo.isDef(key) && eYo.throw(`eYo.o3d._p.modelMakeC9r: Unexpected parameter ${key}`)
     ;[register, key] = [false, register]
   }
-  let C9r = this.makeC9r('', this.modelBaseC9r(model, key), model)
+  let C9r = this.makeC9r(
+    '',
+    SuperC9r || this.modelBaseC9r(model, key),
+    model
+  )
   C9r.eyo.shouldFinalizeC9r && C9r.eyo.finalizeC9r()
   model = C9r.eyo.model
   model._C9r = C9r
@@ -557,20 +545,29 @@ eYo.c9r._p.modelMakeC9r = function (model, register, key) {
 
 /**
  * Create a new Base instance based on the model
+ * @param {Object} [model] - Optional model, 
+ * @param {Object} [SuperC9r] - Optional super constructor, only when there is a mode given 
  */
-eYo.c9r._p.prepare = function (model, ...$) {
+eYo.c9r._p.prepare = function (model, SuperC9r, ...$) {
   if (!eYo.isD(model)) {
     var C9r = this.BaseC9r
     if (C9r.eyo.shouldFinalizeC9r) {
       C9r.eyo.finalizeC9r()
     }
-    return new C9r(model, ...$)
+    return new C9r(model, SuperC9r, ...$)
   }
-  var C9r = model._C9r
-  if (!C9r) {
-    C9r = this.modelMakeC9r(model)
+  C9r = model._C9r
+  if (eYo.isC9r(SuperC9r)) {
+    if (!C9r) {
+      C9r = this.modelMakeC9r(model, SuperC9r)
+    }
+    var ans = new C9r(...$)
+  } else {
+    if (!C9r) {
+      C9r = this.modelMakeC9r(model, ...$)
+    }
+    ans = new C9r(SuperC9r, ...$)
   }
-  let ans = new C9r(...$)
   ans.preInit = function () {
     delete this.preInit
     model._starters.forEach(f => f(this))

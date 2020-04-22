@@ -25,7 +25,8 @@ describe('Span expression', function () {
   let ns_span = eYo.span.makeNS()
   ns_span.makeBaseC9r()
   let onr = eYo.c9r.new()
-  var b, s
+  var b
+  var b_g
   before(function() {
     flag.reset()
     b = eYo.o4t.new({
@@ -33,200 +34,202 @@ describe('Span expression', function () {
         this.span = ns_span.new('s', this)
       }
     }, 'b', onr)
-    s = b.span
+    b_g = eYo.o4t.new({
+      init () {
+        this.isGroup = true
+        this.span = ns_span.new('s', this)
+      }
+    }, 'b_g', onr)
   })
   after(function() {
   })
   it('Span: Init', function() {
-    chai.expect(s.brick).equal(b)
-    chai.expect(s).eqlSpan({})
+    chai.expect(b.span.brick).equal(b)
+    chai.expect(b.span).eqlSpan({})
   })
   it('(add|reset)C', function() {
-    chai.expect(s).eqlSpan({
+    let test = c => chai.expect(b.span).eqlSpan({
       c_min: c,
       c: c,
     })
-    s.addC(1)
+    b.span.addC(1)
     test(3)
-    s.addC(2)
+    b.span.addC(2)
     test(5)
-    s.addC(-1)
+    b.span.addC(-1)
     test(4)
-    s.addC(-2)
+    b.span.addC(-2)
     test(2)
-    s.addC(2)
+    b.span.addC(2)
     test(4)
-    s.resetC()
+    b.span.resetC()
     test(2)
   })
   it ('(re)setPadding', function () {
-    var test = p => eYo.test.Span(b, {
+    var test = p => chai.expect(b.span).eqlSpan({
       c_padding: p,
       c: 2 + p,
     })
     test(0)
-    s.setPadding(1)
+    b.span.c_padding_ = 1
     test(1)
-    s.setPadding(2)
+    b.span.c_padding_ = 2
     test(2)
-    s.setPadding(0)
+    b.span.c_padding_ = 0
     test(0)
-    s.setPadding(2)
+    b.span.c_padding_ = 2
     test(2)
-    s.resetPadding()
+    b.span.resetPadding()
     test(0)
   })
   it ('addHeader', function () {
-    var test = h => eYo.test.Span(b, {
+    var test = h => chai.expect(b.span).eqlSpan({
       header: h,
       l: 1 + h,
     })
-    s.resetL()
+    b.span.resetL()
     test(0)
-    s.addHeader(1)
+    b.span.addHeader(1)
     test(1)
-    s.addHeader(2)
+    b.span.addHeader(2)
     test(3)
-    s.addHeader(-1)
+    b.span.addHeader(-1)
     test(2)
-    s.addHeader(-2)
+    b.span.addHeader(-2)
     test(0  )
-    s.addHeader(2)
+    b.span.addHeader(2)
     test(2)
-    s.resetL()
+    b.span.resetL()
     test(0)
   })
   it ('addMain', function () {
-    var test = h => eYo.test.Span(b, {
+    var test = h => chai.expect(b.span).eqlSpan({
       main: 1 + h,
       l: 1 + h,
     })
-    s.resetL()
+    b.span.resetL()
     test(0)
-    s.addMain(1)
+    b.span.addMain(1)
     test(1)
-    s.addMain(2)
+    b.span.addMain(2)
     test(3)
-    s.addMain(-1)
+    b.span.addMain(-1)
     test(2)
-    s.addMain(-2)
+    b.span.addMain(-2)
     test(0)
-    s.addMain(2)
+    b.span.addMain(2)
     test(2)
-    s.resetL()
+    b.span.resetL()
     test(0)
   })
   it ('addFooter', function () {
-    var test = h => eYo.test.Span(b, {
+    var test = h => chai.expect(b.span).eqlSpan({
       footer: h,
       l: 1 + h,
     })
-    s.resetL()
+    b.span.resetL()
     test(0)
-    s.addFooter(1)
+    b.span.addFooter(1)
     test(1)
-    s.addFooter(2)
+    b.span.addFooter(2)
     test(3)
-    s.addFooter(-1)
+    b.span.addFooter(-1)
     test(2)
-    s.addFooter(-2)
+    b.span.addFooter(-2)
     test(0  )
-    s.addFooter(2)
+    b.span.addFooter(2)
     test(2)
-    s.resetL()
+    b.span.resetL()
     test(0)
   })
   it ('addSuite', function () {
-    console.error(b_g.span)
-    var test = h => eYo.test.Span(b_g, {
+    var test = h => chai.expect(b_g.span).eqlSpan({
       suite: h,
       l: Math.max(2, 1 + h),
     })
-    s_g.resetL()
+    b_g.span.resetL()
     test(0)
-    s_g.addSuite(1)
+    b_g.span.addSuite(1)
     test(1)
-    s_g.addSuite(2)
+    b_g.span.addSuite(2)
     test(3)
-    s_g.addSuite(-1)
+    b_g.span.addSuite(-1)
     test(2)
-    s_g.addSuite(-2)
+    b_g.span.addSuite(-2)
     test(0)
-    s_g.addSuite(2)
+    b_g.span.addSuite(2)
     test(2)
-    s_g.resetL()
+    b_g.span.resetL()
     test(0)
   })
 })
 
-describe('Current Field', function () {
-  var b_1
-  before(function() {
-    var type = 'test_stmt_span_reserved'
-    eYo.t3.stmt[type] = type
-    eYo.stmt.makeC9r(type, {
-      fields: {
-        FIELD: {
-          reserved: '1234'
-        }
-      },
-      left: { check: type },
-      right: { check: type },
-    })  
-    b_1 = eYo.test.new_brick(type)
-    s_1 = b_1.span
-    chai.expect(b_1.isStmt).true
-  })
-  after(function() {
-  })
-  it ('FIELD: 1234', function () {
-    var test = (b, c, m) => eYo.test.Span(b, {
-      c_min: c,
-      main: m,
-    })
-    test(b_1, 6)
-    // b_1.FIELD_f.text = '43xx21'
-    // test(b_1, 8)
-  })
-  after(function() {
-    // b_1.dispose()
-  })
-})
+// describe('Current Field', function () {
+//   var b_1
+//   before(function() {
+//     var type = 'test_stmt_span_reserved'
+//     eYo.t3.stmt[type] = type
+//     eYo.stmt.makeC9r(type, {
+//       fields: {
+//         FIELD: {
+//           reserved: '1234'
+//         }
+//       },
+//       left: { check: type },
+//       right: { check: type },
+//     })  
+//     b_1 = eYo.test.new_brick(type)
+//     s_1 = b_1.span
+//     chai.expect(b_1.isStmt).true
+//   })
+//   it ('FIELD: 1234', function () {
+//     var test = (b, c, m) => eYo.test.Span(b, {
+//       c_min: c,
+//       main: m,
+//     })
+//     test(b_1, 6)
+//     // b_1.FIELD_f.text = '43xx21'
+//     // test(b_1, 8)
+//   })
+//   after(function() {
+//     // b_1.dispose()
+//   })
+// })
 
-describe('Current Span statements', function () {
-  var b_1, s_1, b_2, s_2, b_3, s_3
-  before(function() {
-    var type = 'test_stmt_span'
-    eYo.t3.stmt[type] = type
-    eYo.stmt.makeC9r(type, {
-      fields: {
-        FIELD: {
-          reserved: '1234'
-        }
-      },
-      left: { check: type },
-      right: { check: type },
-    })  
-    b_1 = eYo.test.new_brick(type)
-    s_1 = b_1.span
-    chai.assert(b_1.isStmt, 'MISSED')
-    b_2 = eYo.test.new_brick(type)
-    s_2 = b_2.span
-    chai.assert(b_2.isStmt, 'MISSED')
-    b_3 = eYo.test.new_brick(type)
-    s_3 = b_3.span
-    chai.assert(b_3.isStmt, 'MISSED')
-  })
-  it ('left+middle+right', function () {
-    var test = (b, h, m, f) => eYo.test.Span(b, {
-      header: h,
-      main: m,
-      footer: f
-    })
-    b_1.right = b_2
-    b_2.right = b_3
-    test(b_1, 0, 1, 0)
-    test(b_2, 0, 1, 0)
-    test(b_3, 0, 1, 0)
-  })
-})
+// describe('Current Span statements', function () {
+//   var b_1, s_1, b_2, s_2, b_3, s_3
+//   before(function() {
+//     var type = 'test_stmt_span'
+//     eYo.t3.stmt[type] = type
+//     eYo.stmt.makeC9r(type, {
+//       fields: {
+//         FIELD: {
+//           reserved: '1234'
+//         }
+//       },
+//       left: { check: type },
+//       right: { check: type },
+//     })  
+//     b_1 = eYo.test.new_brick(type)
+//     s_1 = b_1.span
+//     chai.assert(b_1.isStmt, 'MISSED')
+//     b_2 = eYo.test.new_brick(type)
+//     s_2 = b_2.span
+//     chai.assert(b_2.isStmt, 'MISSED')
+//     b_3 = eYo.test.new_brick(type)
+//     s_3 = b_3.span
+//     chai.assert(b_3.isStmt, 'MISSED')
+//   })
+//   it ('left+middle+right', function () {
+//     var test = (b, h, m, f) => eYo.test.Span(b, {
+//       header: h,
+//       main: m,
+//       footer: f
+//     })
+//     b_1.right = b_2
+//     b_2.right = b_3
+//     test(b_1, 0, 1, 0)
+//     test(b_2, 0, 1, 0)
+//     test(b_3, 0, 1, 0)
+//   })
+// })

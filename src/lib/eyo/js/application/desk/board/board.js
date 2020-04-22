@@ -1308,7 +1308,7 @@ eYo.board.BaseC9r_p.eventDidFireChange = function(event) {
   }
 }
 
-eYo.o3d.BaseC9r.eyo.aliasesMerge({
+eYo.o3d.BaseC9r.eyo.p6yAliasesMerge({
   'owner.board': 'board',
 })
 

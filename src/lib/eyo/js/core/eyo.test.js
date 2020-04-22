@@ -227,4 +227,10 @@ describe('eYo Tests', function () {
     chai.expect(eYo.isBool(eYo.NA)).false
     chai.expect(eYo.isBool(421)).false
   })
+  it (`eYo.greater|equals`, function () {
+    chai.expect(eYo.equals(1, 1.1, 0.5)).true
+    chai.expect(eYo.greater(1, 1.1, 0.5)).true
+    chai.expect(eYo.equals(1, 1.1, 0.005)).false
+    chai.expect(eYo.greater(1, 1.1, 0.005)).false
+  })
 })
