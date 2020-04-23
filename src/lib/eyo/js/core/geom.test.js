@@ -275,6 +275,35 @@ describe ('geometry', function () {
       chai.expect(r.size.width).almost.equal(r.width)
       chai.expect(r.size.height).almost.equal(r.height)
     })
+    it ('makeSnapShared', function () {
+      let r = eYo.geom.xyRect()
+      let o = r.snap_p.addObserver(eYo.observe.ANY, () => {
+        flag.push(r.snap ? 1 : 2)
+      })
+      r.snap_ = true
+      flag.reset()
+      r.snap_ = false
+      flag.expect(122)
+      r.origin_.snap_ = true
+      flag.expect(211)
+      r.size_.snap_ = false
+      flag.expect(122)
+      r.origin_.snap_p.removeObserver(o)
+      r.snap_ = true
+      flag.expect(0)
+      r.origin_.snap_ = false
+      flag.expect(0)
+      r.size_.snap_ = true
+      flag.expect(0)
+      r.size_.snap_p.addObserver(o)
+      r.snap_ = false
+      flag.expect(122)
+      r.origin_.snap_ = true
+      flag.expect(211)
+      r.size_.snap_ = false
+      flag.expect(122)
+
+    })
     it ('Attributes', function () {
       let r = eYo.geom.randRect()
       chai.expect(r.bottomRight.c).almost.equal(r.c_max)
