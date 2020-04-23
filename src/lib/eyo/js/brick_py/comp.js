@@ -159,7 +159,7 @@ eYo.expr.makeC9r('comp_if', true, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeInheritedC9r('comp_iter_list', {
+eYo.expr.List.makeSubC9r('comp_iter_list', {
   list: {
     check: eYo.t3.expr.check.comp_iter,
     mandatory: 0,

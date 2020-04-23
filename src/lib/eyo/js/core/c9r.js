@@ -140,7 +140,7 @@ eYo.c9r._p.doMakeC9r = function (ns, id, Super, model) {
   }
   let eyo = eYo.dlgt.new(ns, id, C9r, model)
   eyo === C9r.eyo || eYo.throw('MISSED')
-  C9r.makeInheritedC9r = eyo.makeInheritedC9r.bind(eyo)
+  C9r.makeSubC9r = eyo.makeSubC9r.bind(eyo)
   return C9r
 }
 
@@ -312,7 +312,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
    * This decorator and the decorated function have a namespace as `this` object.
    * @param{Function} f - the Dlgt constructor maker to decorate.
    */
-  _p.makeInheritedC9rDecorate = (f) => {
+  _p.makeSubC9rDecorate = (f) => {
     return function (ns, id, register, model) {
       var Super = this.C9r
       if (ns && !eYo.isNS(ns)) {
@@ -342,7 +342,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
    * @return {?Function} the constructor created or `eYo.NA` when the receiver has no namespace.
    * @this {eYo.dlgt.BaseC9r}
    */
-  _p.makeInheritedC9r = _p.makeInheritedC9rDecorate(function (ns, id, Super, model) {
+  _p.makeSubC9r = _p.makeSubC9rDecorate(function (ns, id, Super, model) {
     return this.doMakeC9r(ns, id, Super, model)
   })
 }

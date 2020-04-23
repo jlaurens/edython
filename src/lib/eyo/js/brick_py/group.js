@@ -57,7 +57,7 @@ eYo.stmt.makeC9r('group', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('branch', true, {
+eYo.stmt.group.makeSubC9r('branch', true, {
   data: {
     variant: {
       all: [
@@ -240,7 +240,7 @@ eYo.stmt.group.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('for_part', true, {
+eYo.stmt.group.makeSubC9r('for_part', true, {
   slots: {
     for: {
       order: 1,
@@ -264,7 +264,7 @@ eYo.stmt.group.makeInheritedC9r('for_part', true, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('with_part', true, {
+eYo.stmt.group.makeSubC9r('with_part', true, {
   slots: {
     with: {
       order: 1,

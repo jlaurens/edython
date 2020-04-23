@@ -43,6 +43,11 @@ describe('Span expression', function () {
   })
   after(function() {
   })
+  it('Span: Basic', function() {
+    chai.assert(eYo.span)
+    chai.expect(eYo.span.INDENT > 0).true
+    chai.expect(eYo.span.TAB_WIDTH > 0).true
+  })
   it('Span: Init', function() {
     chai.expect(b.span.brick).equal(b)
     chai.expect(b.span).eqlSpan({})

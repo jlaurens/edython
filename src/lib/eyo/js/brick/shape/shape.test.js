@@ -69,7 +69,7 @@ describe('Statement shape', function () {
 describe('Group shape', function () {
   var type = 'test_shape_part'
   eYo.t3.stmt[type] = type
-  eYo.stmt.group.makeInheritedC9r(type, {}) 
+  eYo.stmt.group.makeSubC9r(type, {}) 
   chai.assert(eYo.stmt.test_shape_part)
   var b
   before(function() {

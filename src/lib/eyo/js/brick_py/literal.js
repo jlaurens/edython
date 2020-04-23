@@ -54,7 +54,7 @@ eYo.expr.literal.prototype.saveData = function (element, opt) {
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.expr.literal.makeInheritedC9r('numberliteral', {
+eYo.expr.literal.makeSubC9r('numberliteral', {
   data: {
     type: {
       all: [
@@ -126,7 +126,7 @@ eYo.expr.numberliteral.prototype.getBaseType = function () {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.expr.literal.makeInheritedC9r('shortliteral', {
+eYo.expr.literal.makeSubC9r('shortliteral', {
   data: {
     subtype: {
       all: [
@@ -392,7 +392,7 @@ eYo.expr.shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.expr.shortliteral.makeInheritedC9r('longliteral', {
+eYo.expr.shortliteral.makeSubC9r('longliteral', {
   data: {
     subtype: {
       all: [

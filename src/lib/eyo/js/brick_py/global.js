@@ -21,7 +21,7 @@ eYo.require('expr.List')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeInheritedC9r(eYo.t3.expr.non_void_identifier_list, {
+eYo.expr.List.makeSubC9r(eYo.t3.expr.non_void_identifier_list, {
   list: {
     check: eYo.t3.expr.check.non_void_identifier_list,
     presep: ',',

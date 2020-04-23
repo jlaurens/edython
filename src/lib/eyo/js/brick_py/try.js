@@ -26,7 +26,7 @@ eYo.forward('msg')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('try_part', true, {
+eYo.stmt.group.makeSubC9r('try_part', true, {
   fields: {
     prefix: 'try'
   }
@@ -37,7 +37,7 @@ eYo.stmt.group.makeInheritedC9r('try_part', true, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('except_part', true, {
+eYo.stmt.group.makeSubC9r('except_part', true, {
   data: {
     variant: {
       all: [

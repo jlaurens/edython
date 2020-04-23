@@ -34,7 +34,7 @@ keyword_item         ::=  identifier "=" expression
  * RULE 2 : expression << "**" expression
  * RULE 3 : "*" expression << "**" expression
  */
-eYo.consolidator.List.makeInheritedC9r('Arguments', {
+eYo.consolidator.List.makeSubC9r('Arguments', {
   list: {
     check: null,
     mandatory: 0,
@@ -208,7 +208,7 @@ eYo.consolidator.Arguments.prototype.getCheck = (() => {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeInheritedC9r('argument_list', {
+eYo.expr.List.makeSubC9r('argument_list', {
   data: {
     ary: {
       order: 200,
@@ -250,7 +250,7 @@ eYo.expr.List.makeInheritedC9r('argument_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.argument_list.makeInheritedC9r('argument_list_comprehensive', {
+eYo.expr.argument_list.makeSubC9r('argument_list_comprehensive', {
   list: {
     can_comprehension: true
   }

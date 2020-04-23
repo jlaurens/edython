@@ -2,6 +2,10 @@ eYo.test.almost = (a, b) => 10000 * Math.abs(a-b) <= (Math.abs(a) + Math.abs(b))
 
 eYo.test.rand100 = () => Math.round(Math.random()*10000)/100
 
+eYo.geom.randPoint = () => new eYo.geom.Point(eYo.test.rand100(), eYo.test.rand100())
+
+eYo.geom.randSize = () => new eYo.geom.Size(eYo.test.rand100(), eYo.test.rand100())
+
 eYo.geom.randRect = () => new eYo.geom.Rect(eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100())
 
 describe ('geometry', function () {
@@ -161,11 +165,11 @@ describe ('geometry', function () {
       }
     })
     it('Aliases', function () {
-      let p = new eYo.geom.Point().xySet(Math.random(), Math.random())
-      chai.expect(p.c).equal(p.dc).equal(p.w)
-      chai.expect(p.l).equal(p.dl).equal(p.h)
-      chai.expect(p.x).equal(p.dx).equal(p.width)
-      chai.expect(p.y).equal(p.dy).equal(p.height)  
+      let s = new eYo.geom.Size().set(eYo.test.rand100(), eYo.test.rand100())
+      chai.expect(s.c).equal(s.dc).equal(s.w)
+      chai.expect(s.l).equal(s.dl).equal(s.h)
+      chai.expect(s.x).equal(s.dx).equal(s.width)
+      chai.expect(s.y).equal(s.dy).equal(s.height)  
     })
     it('Mutation', function () {
       var w1 = new eYo.geom.Point()
@@ -195,6 +199,20 @@ describe ('geometry', function () {
       chai.expect(w1).not.almost.eql(w2)
       w2.unscale(1.23)
       chai.expect(w1).almost.eql(w2)
+    })
+  })
+  describe('Size', function () {
+    it (`Size Basics`, function () {
+      chai.expect(eYo.Size)
+      var s = new eYo.geom.Size()
+      chai.expect(eYo.isDef(s.snap_p)).true
+    })
+    it (`Size aliases`, function () {
+      var s = eYo.geom.randSize()
+      chai.expect(s.c).equal(s.dc).equal(s.w)
+      chai.expect(s.l).equal(s.dl).equal(s.h)
+      chai.expect(s.x).equal(s.dx).equal(s.width)
+      chai.expect(s.y).equal(s.dy).equal(s.height)
     })
   })
   describe('size', function () {
@@ -235,6 +253,8 @@ describe ('geometry', function () {
     it ('AbstractRect: Basics', function () {
       let r = new eYo.geom.AbstractRect()
       chai.expect(eYo.isDef(r.snap_p)).true
+      chai.expect(r.origin_).eyo_point
+      chai.expect(r.size_).eyo_size
     })
     it ('Rect: aliases', function () {
     })
@@ -260,8 +280,19 @@ describe ('geometry', function () {
       test(r, 123, 421, 666, 999)
     })
     it ('Rect: new eYo.geom.Rect(...)', function () {
-      let r = new eYo.geom.Rect(1, 2, 3, 4)
+      var r = new eYo.geom.Rect(1, 2, 3, 4)
       test(r, 1, 2, 3, 4)
+      let origin = eYo.geom.randPoint()
+      let size = eYo.geom.randPoint()
+      r = new eYo.geom.Rect(1, 2, size)
+      test(r, 1, 2, size.c, size.l)
+      r = new eYo.geom.Rect(origin, 3, 4)
+      test(r, origin.c, origin.l, 3, 4)
+      r = new eYo.geom.Rect(origin, size)
+      test(r, origin.c, origin.l, size.c, size.l)
+      let rr = new eYo.geom.Rect(r)
+      chai.expect(rr).not.equal(r)
+      chai.expect(rr).almost.eql(r)
     })
     it ('Rect: alias', function () {
       let r = eYo.geom.randRect()
@@ -302,7 +333,48 @@ describe ('geometry', function () {
       flag.expect(211)
       r.size_.snap_ = false
       flag.expect(122)
-
+    })
+    it ('...origin_|size_ = ...', function () {
+      let r = eYo.geom.randRect()
+      let p = eYo.geom.randPoint()
+      r.origin_ = p
+      chai.expect(r.origin_).not.equal(p)
+      chai.expect(r.origin_).almost.eql(p)
+      r.size_ = p
+      chai.expect(r.size_).not.equal(p)
+      chai.expect(r.size_).almost.eql(p)
+    })
+    it ('...topLeft_|bottomRight_ = ...', function () {
+      let r = eYo.geom.randRect()
+      let p = eYo.geom.randPoint()
+      r.topLeft_ = p
+      chai.expect(r.topLeft_).not.equal(p)
+      chai.expect(r.topLeft_).almost.eql(p)
+      r.bottomRight_ = p
+      chai.expect(r.bottomRight_).not.equal(p)
+      chai.expect(r.bottomRight).almost.eql(p)
+      chai.expect(r.bottomRight_).almost.eql(p)
+    })
+    it ('...center_ = ...', function () {
+      let r = eYo.geom.randRect()
+      r.backward(r.origin)
+      chai.expect(r.origin).almost.eql(new eYo.geom.Point())
+      chai.expect(r.center).almost.eql(r.size.unscale(2))
+      var p = eYo.geom.randPoint()
+      r.c_mid_ = p.c
+      chai.expect(r.c_mid).almost.eql(p.c)
+      r.l_mid_ = p.l
+      chai.expect(r.l_mid).almost.eql(p.l)
+      chai.expect(r.center).almost.eql(p)
+      let rr = r.copy
+      chai.expect(r).almost.eql(rr)
+      rr.center_ = p
+      chai.expect(rr.center).almost.eql(r.center)
+      chai.expect(rr.center).almost.eql(p)
+      rr.backward(p)
+      chai.expect(rr.center).almost.eql(new eYo.geom.Point())
+      rr.center_ = r.center
+      chai.expect(r).almost.eql(rr)
     })
     it ('Attributes', function () {
       let r = eYo.geom.randRect()

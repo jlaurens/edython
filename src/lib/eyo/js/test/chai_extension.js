@@ -10,6 +10,14 @@ chai.Assertion.addProperty('eyo_point', function () {
   )
 })
 
+chai.Assertion.addProperty('eyo_size', function () {
+  this.assert(
+      this._obj instanceof eYo.geom.Size
+    , 'expected #{this} to be a eYo.geom.Size'
+    , 'expected #{this} to not be a eYo.geom.Size'
+  )
+})
+
 chai.Assertion.addProperty('eyo_rect', function () {
   this.assert(
       this._obj instanceof eYo.geom.AbstractRect
@@ -160,10 +168,10 @@ chai.use(function (chai, utils) {
         var yorn = eYo.test.makeComparator(tol)(val,this._obj)
         if (yorn !== null) {
           this.assert(yorn,
-            `expected ${val.description} to almost equal ${this._obj.description}`,
-            `expected ${val.description} to not almost equal ${this._obj.description}`,
-            val.description,
-            this._obj.description
+            `expected ${val.description} to almost equal ${this._obj && this._obj.description}`,
+            `expected ${val.description} to not almost equal ${this._obj &&this._obj.description}`,
+            val,
+            this._obj
           )
           return
         }

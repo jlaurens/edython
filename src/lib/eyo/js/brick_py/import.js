@@ -38,7 +38,7 @@ module_name ::= identifier
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeInheritedC9r('non_void_module_as_list', {
+eYo.expr.List.makeSubC9r('non_void_module_as_list', {
   list: {
     check: eYo.t3.expr.check.non_void_module_as_list,
     mandatory: 1,
@@ -52,7 +52,7 @@ eYo.expr.List.makeInheritedC9r('non_void_module_as_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeInheritedC9r('non_void_import_identifier_as_list', {
+eYo.expr.List.makeSubC9r('non_void_import_identifier_as_list', {
   list: {
     check: eYo.t3.expr.check.non_void_import_identifier_as_list,
     mandatory: 1,

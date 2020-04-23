@@ -37,7 +37,7 @@ describe('Statement magnets', function () {
   before(function() {
     var type = 'test_stmt_magnets'
     eYo.t3.stmt[type] = type
-    eYo.stmt.makeInheritedC9r(type, {
+    eYo.stmt.makeSubC9r(type, {
       left: { check: type },
       right: { check: type },
     })  
@@ -94,7 +94,7 @@ describe('Group magnets', function () {
   before(function() {
     var type = 'test_group_magnets'
     eYo.t3.stmt[type] = type
-    eYo.stmt.group.makeInheritedC9r(type, {
+    eYo.stmt.group.makeSubC9r(type, {
       left: { check: type },
       right: { check: type },
     })  

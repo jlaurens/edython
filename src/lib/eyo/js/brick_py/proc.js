@@ -409,7 +409,7 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, funcdef_part.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('funcdef_part', true, {
+eYo.stmt.group.makeSubC9r('funcdef_part', true, {
   data: {
     variant: {
       all: [null, eYo.key.TYPE],
@@ -469,7 +469,7 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  * Class for a Delegate, classdef_part brick.
  * For edython.
  */
-eYo.stmt.group.makeInheritedC9r('classdef_part', true, {
+eYo.stmt.group.makeSubC9r('classdef_part', true, {
   data: {
     variant: {
       all: [eYo.key.NONE, eYo.key.N_ARY],

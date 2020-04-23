@@ -47,9 +47,9 @@ eYo.o4t.makeNS(eYo, 'span', {
    * The tab width in board unit.
    */
   TAB_WIDTH () {
-    return eYo.span.INDENT * eYo.geom.X
+    return eYo.span.INDENT * eYo.geom.X // this is a getter
   },
-})
+}, true)
 
 /**
  * @name {eYo.span.BaseC9r}
@@ -107,6 +107,15 @@ eYo.span.makeBaseC9r({
         let b3k = this.brick.left
         return b3k && b3k.span
       },
+    },
+    offset: {
+      value () {
+        return new eYo.geom.Point()
+      },
+      copy: true,
+      set (stored, after) {
+        stored.xySet(after)
+      }
     },
     /**
      * This is the total number of columns in that brick.

@@ -189,8 +189,8 @@ describe ('Tests: Observe', function () {
   it (`Inherited`, function () {
     let ns = eYo.c9r.makeNS()
     let SuperC9r = ns.makeBaseC9r()
-    let C9r = SuperC9r.makeInheritedC9r('Foo')
-    let ChildC9r = C9r.makeInheritedC9r('Bar')
+    let C9r = SuperC9r.makeSubC9r('Foo')
+    let ChildC9r = C9r.makeSubC9r('Bar')
     eYo.observe.enhance(SuperC9r.eyo)
     let o = new ChildC9r()
     let o_o = o.addObserver(eYo.observe.BEFORE, function (before, after) {

@@ -29,7 +29,7 @@ eYo.require('msg')
  * Main entry: consolidate
  * @param {String} single - the required type for a single element....
  */
-eYo.consolidator.List.makeInheritedC9r('Target', {
+eYo.consolidator.List.makeSubC9r('Target', {
   list: {
     check: null,
     mandatory: 1,
@@ -301,7 +301,7 @@ eYo.consolidator.Target_p.doFinalize = function (io) {
  * @name {eYo.expr.target_list}
  * @constructor
  */
-eYo.expr.List.makeInheritedC9r('target_list', {
+eYo.expr.List.makeSubC9r('target_list', {
   list: {
     consolidator: eYo.consolidator.Target
   }
@@ -1799,7 +1799,7 @@ eYo.stmt.makeC9r('base_call_stmt', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.base_call_stmt.makeInheritedC9r('call_stmt', {
+eYo.stmt.base_call_stmt.makeSubC9r('call_stmt', {
   data: {
     variant: {
       init: eYo.key.CALL_EXPR,

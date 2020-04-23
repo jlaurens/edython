@@ -126,7 +126,7 @@ eYo.geom.makeC9r('AbstractPoint', {
      */
     copy: {
       get () {
-        return new eYo.geom.Point(this)
+        return new this.eyo.C9r(this)
       }
     },
     /**
@@ -135,15 +135,9 @@ eYo.geom.makeC9r('AbstractPoint', {
      */
     description: {
       get () {
-        return `eYo.geom.Point(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
+        return `${this.eyo.name}(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
       },
     }
-  },
-  aliases: {
-    c: ['dc', 'w'],
-    l: ['dl', 'h'],
-    x: ['dx', 'width'],
-    y: ['dy', 'height'],
   },
   methods: {
     /**
@@ -364,7 +358,7 @@ eYo.geom.AbstractPoint_p.out = function (rect) {
  * @constructor
  * @param {*} ... - See the implementation.
  */
-eYo.geom.makeC9r('Point', eYo.geom.AbstractPoint, {
+eYo.geom.AbstractPoint.makeSubC9r('Point', {
   /**
    * Initialize the point forwarding to `set`.
    * @param {Boolean|eYo.geom.PointLike} [snap] - Defaults to true
@@ -373,7 +367,7 @@ eYo.geom.makeC9r('Point', eYo.geom.AbstractPoint, {
    */
   init (snap, c, l) {
     if (!eYo.isBool(snap)) {
-      eYo.isDef(l) && eYo.throw(`eYo.geom.Point/init: Unexpected last argument: ${snap}`)
+      eYo.isDef(l) && eYo.throw(`${this.eyo.name}/init: Unexpected last argument: ${snap}`)
       if (eYo.isDef(snap)) {
         let $snap = snap.snap
         if (eYo.isDef($snap)) {
@@ -433,9 +427,9 @@ eYo.geom.xyPoint = function (snap, x, y) {
 
 /**
  * Convenient creator in text units.
+ * @param {Boolean} [snap] - snap flag. Defaults to false.
  * @param {Number} [c] - c coordinate. Defaults to 0.
  * @param {Number} [l] - l coordinate. Defaults to 0.
- * @param {Boolean} [snap] - snap flag. Defaults to false.
  * @return {eYo.geom.Point} The receiver
  */
 eYo.geom.clPoint = function (snap, c, l) {
@@ -443,16 +437,36 @@ eYo.geom.clPoint = function (snap, c, l) {
 }
 
 /**
- * `Size` is a synonym of Where.
+ * `Size` is quite a synonym of Point with more aliases.
+ * It is more like a vector, but size is a shorter name...
  */
-eYo.geom.Size = eYo.geom.Point
+eYo.geom.Point.makeSubC9r('Size', {
+  aliases: {
+    c: ['dc', 'w'],
+    l: ['dl', 'h'],
+    x: ['dx', 'width'],
+    y: ['dy', 'height'],
+  },
+})
+eYo.geom.Size.eyo.finalizeC9r()
+
+/**
+ * Convenient creator in text units.
+ * @param {Boolean} [snap] - snap flag. Defaults to false.
+ * @param {Number} [c] - c coordinate. Defaults to 0.
+ * @param {Number} [l] - l coordinate. Defaults to 0.
+ * @return {eYo.geom.Point} The receiver
+ */
+eYo.geom.clSize = function (snap, c, l) {
+  return new eYo.geom.Size(snap, c, l)
+}
 
 /**
  * Sets from the given text.
  * @param {String!} s
  * @return {eYo.geom.Size} the receiver.
  */
-eYo.geom.Point_p.setFromText = function (txt) {
+eYo.geom.AbstractPoint_p.setFromText = function (txt) {
   if (!eYo.isDef(txt)) {
     console.error('BREAK HERE!')
   }
@@ -467,7 +481,7 @@ eYo.geom.Point_p.setFromText = function (txt) {
  * Sets from the given text.
  * @param {String!} s
  */
-eYo.geom.newSizeFromText = function (txt) {
+eYo.geom._p.newSizeFromText = function (txt) {
   return new eYo.geom.Size().setFromText(txt)
 }
 
@@ -669,7 +683,7 @@ eYo.geom.makeC9r('AbstractRect', {
        * Change the origin but keeps the size.
        */
       set (after) {
-        this.origin_ = after.addvance(this.size.unscale(-2))
+        this.origin_ = after.copy.backward(this.size.unscale(2))
       }
     },
     /**
@@ -738,36 +752,50 @@ eYo.geom.AbstractRect.eyo.finalizeC9r()
  * @param{?Number} h
  * @return {eYo.geom.Rect} The receiver
  */
-eYo.geom.AbstractRect_p.set = function (c = 0, l = 0, w = 0, h = 0) {
+eYo.geom.AbstractRect_p.set = function (c = 0, l, w, h) {
   if (eYo.isDef(c.left) && eYo.isDef(c.right) && eYo.isDef(c.top) && eYo.isDef(c.bottom)) {
     // properties are evaluated twice
     this.left_ = c.left
     this.right_ = c.right
     this.top_ = c.top
     this.bottom_ = c.bottom
+    return this
   } else if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
     this.origin_ = c
-    if (eYo.isDef(c.size)) {
-      this.size_ = c.size
-    } else if (eYo.isDef(l.x) && eYo.isDef(l.y)) {
-      this.size_ = l
-    } else if (eYo.isDef(l.width) && eYo.isDef(l.height)) {
-      this.size_ = l
+    if (eYo.isDef(c.w) && eYo.isDef(c.h)) {
+      eYo.isDef(l) && eYo.throw(`eYo.geom.AbstractRect.set: Unexpected argument ${l}`)
+      this.w_ = c.w
+      this.h_ = c.h
+      return this
+    } else if (eYo.isDef(c.size)) {
+      eYo.isDef(l) && eYo.throw(`eYo.geom.AbstractRect.set: Unexpected argument ${l}`)
+      this.size_ = c.size // hum
+      return this
     } else {
-      this.c_ = l
-      this.l_ = w
+      eYo.isDef(h) && eYo.throw(`eYo.geom.AbstractRect.set: Unexpected last argument ${h}`)
+      ;[w, h] = [l, w]
     }
   } else {
-    this.c_ = c
-    this.l_ = l
-    if (eYo.isDef(w.x) && eYo.isDef(w.y)) {
+    this.c_ = c || 0
+    this.l_ = l || 0
+  }
+  if (eYo.isDef(w)) {
+    if (eYo.isDef(w.w) && eYo.isDef(w.h)) {
+      eYo.isDef(h) && eYo.throw(`eYo.geom.AbstractRect.set: Unexpected (last?) argument ${h}`)
+      this.size_ = w
+    } else if (eYo.isDef(w.x) && eYo.isDef(w.y)) {
+      eYo.isDef(h) && eYo.throw(`eYo.geom.AbstractRect.set: Unexpected (last?) argument ${h}`)
       this.size_ = w
     } else if (eYo.isDef(w.width) && eYo.isDef(w.height)) {
+      eYo.isDef(h) && eYo.throw(`eYo.geom.AbstractRect.set: Unexpected (last?) argument ${h}`)
       this.size_ = w
     } else {
       this.w_ = w
-      this.h_ = h
+      this.h_ = h || 0
     }
+  } else {
+    eYo.isDef(h) && eYo.throw(`eYo.geom.AbstractRect.set: Unexpected last argument ${h}`)
+    this.w_ = this.h_ = 0
   }
   return this
 }
@@ -1004,7 +1032,7 @@ eYo.geom.AbstractRect_p.intersectionRect = function (rect) {
   }
 }
 
-eYo.geom.AbstractRect.makeInheritedC9r('Rect', {
+eYo.geom.AbstractRect.makeSubC9r('Rect', {
   /**
    * See the `set` function for argument description.
    * @param {Boolean|eYo.geom.RectLike} [snap] - Default to false
@@ -1018,9 +1046,9 @@ eYo.geom.AbstractRect.makeInheritedC9r('Rect', {
       eYo.isDef(h) && eYo.throw(`eYo.geom.Rect/init: Unexpected last argument ${h}`)
       if (eYo.isDef(snap)) {
         let $snap = snap.snap
-        if (eYo.isDef($snap)) { // array like
+        if (eYo.isDef($snap)) { // rect like
           this.snap_ = $snap
-          this.set(snap)
+          this.set(snap, c, l, w, h)
           return
         }
       }

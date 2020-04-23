@@ -44,7 +44,7 @@ eYo.require('magnet')
 //   presep: ',',
 // }
 
-eYo.consolidator.List.makeInheritedC9r('parameter', {
+eYo.consolidator.List.makeSubC9r('parameter', {
   list: {
     check: null,
     mandatory: 0,
@@ -297,7 +297,7 @@ eYo.consolidator.Parameter.prototype.getCheck = (() => {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeInheritedC9r('parameter_list', {
+eYo.expr.List.makeSubC9r('parameter_list', {
   list: {
     consolidator: eYo.consolidator.Parameter
   }

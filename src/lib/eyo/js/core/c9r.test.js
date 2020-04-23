@@ -340,18 +340,18 @@ describe ('Tests: C9r', function () {
       chai.expect(() => { nsbis.makeNS('bar') }).not.to.throw()
     })
   })
-  describe ('C9r: makeInheritedC9r', function () {
-    it (`eYo...makeInheritedC9r('AB')`, function () {
+  describe ('C9r: makeSubC9r', function () {
+    it (`eYo...makeSubC9r('AB')`, function () {
       var ns = eYo.c9r.makeNS()
       var A = ns.makeC9r('A')
-      var AB = A.makeInheritedC9r('AB')
+      var AB = A.makeSubC9r('AB')
       chai.assert(AB)
       chai.expect(AB.prototype.constructor).equal(AB)
     })
-    it (`ns.A.makeInheritedC9r('AB')`, function () {
+    it (`ns.A.makeSubC9r('AB')`, function () {
       var ns = eYo.c9r.makeNS()
       ns.makeC9r('A')
-      ns.A.makeInheritedC9r('AB')
+      ns.A.makeSubC9r('AB')
       chai.assert(eYo.isF(ns.AB))
       chai.assert(ns.AB.eyo.name.endsWith('.AB'))
       chai.expect(ns.AB.eyo.ns).equal(ns)
@@ -360,7 +360,7 @@ describe ('Tests: C9r', function () {
       chai.assert(eYo.isSubclass(ns.AB, ns.A))
       chai.assert(eYo.isSubclass(ns.AB.eyo.constructor, ns.A.eyo.constructor))
     })
-    it ('ns.A.makeInheritedC9r', function () {
+    it ('ns.A.makeSubC9r', function () {
       var ns = eYo.c9r.makeNS()
       flag.reset()
       eYo.c9r.makeC9r(ns, 'A', null, {
@@ -368,8 +368,8 @@ describe ('Tests: C9r', function () {
           flag.push(x)
         }
       })
-      chai.assert(ns.A.makeInheritedC9r)
-      ns.A.makeInheritedC9r('AB', {
+      chai.assert(ns.A.makeSubC9r)
+      ns.A.makeSubC9r('AB', {
         init(x) {
           flag.push(x+1)
         },
@@ -462,7 +462,7 @@ describe ('Tests: C9r', function () {
         var A = eYo.c9r.makeC9r('_A')
         chai.assert(A)
         chai.assert(!A.constructor.SuperC9r_p)
-        chai.assert(eYo.isF(A.makeInheritedC9r))
+        chai.assert(eYo.isF(A.makeSubC9r))
       }
     })
     it (`NO eYo.c9r.makeC9r('_A')`, function () {
@@ -617,7 +617,7 @@ describe ('Tests: C9r', function () {
       ns.A.eyo.finalizeC9r()
       new ns.A(2)
       flag.expect(2)
-      ns.A.makeInheritedC9r('AB', {
+      ns.A.makeSubC9r('AB', {
         init (builtin, x) {
           flag.push(x)
           builtin () // no argument at all
@@ -835,16 +835,16 @@ describe ('Tests: C9r', function () {
       }
     })
     flag.expect(1)
-    chai.assert(ns.A.makeInheritedC9r)
-    ns.A.makeInheritedC9r('AB', {})
+    chai.assert(ns.A.makeSubC9r)
+    ns.A.makeSubC9r('AB', {})
     flag.expect(1)
   })
   it ('C9r: inheritedMethod', function () {
     var ns = eYo.c9r.makeNS()
     ns.makeBaseC9r()
     ns.makeC9r('A')
-    ns.A.makeInheritedC9r('AA')
-    ns.AA.makeInheritedC9r('AAA')
+    ns.A.makeSubC9r('AA')
+    ns.AA.makeSubC9r('AAA')
     let A_foo = ns.A_p.foo = function () {}
     let AA_foo = ns.AA_p.foo = function () {}
     let AAA_foo = ns.AAA_p.foo = function () {}
@@ -877,8 +877,8 @@ describe ('Tests: C9r', function () {
     var ns = eYo.c9r.makeNS()
     ns.makeBaseC9r()
     ns.makeC9r('A')
-    ns.A.makeInheritedC9r('AA')
-    ns.AA.makeInheritedC9r('AAA')
+    ns.A.makeSubC9r('AA')
+    ns.AA.makeSubC9r('AAA')
     let A_foo = ns.A_p.foo = 1
     let AA_foo = ns.AA_p.foo = function () {}
     let AAA_foo = ns.AAA_p.foo = function () {}

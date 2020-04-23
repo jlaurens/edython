@@ -96,7 +96,7 @@ describe ('Tests: Object', function () {
     chai.assert(O.eyo instanceof eYo.o4t.BaseC9r.eyo.constructor)
     let o = new O('foo', onr)
     chai.assert(o)
-    let OO = O.makeInheritedC9r('Bar', {})
+    let OO = O.makeSubC9r('Bar', {})
     chai.assert(OO.eyo instanceof eYo.o4t.BaseC9r.eyo.constructor)
     let oo = new OO('foo', onr)
     chai.assert(oo)
@@ -108,7 +108,7 @@ describe ('Tests: Object', function () {
     chai.assert(O.eyo instanceof eYo.o4t.BaseC9r.eyo.constructor)
     let o = new O('foo', onr)
     chai.assert(o)
-    let OO = O.makeInheritedC9r('Bar', {})
+    let OO = O.makeSubC9r('Bar', {})
     chai.assert(OO.eyo instanceof eYo.o4t.BaseC9r.eyo.constructor)
     let oo = new OO('foo', onr)
     chai.assert(oo)
@@ -443,7 +443,7 @@ describe ('Tests: Object', function () {
         }
       },
     })
-    ns.A.makeInheritedC9r('AA', {
+    ns.A.makeSubC9r('AA', {
       properties: {
         foo () {
           flag.push(2)
@@ -470,7 +470,7 @@ describe ('Tests: Object', function () {
       properties: {foo: eYo.NA}
     })
     ns.A.eyo.finalizeC9r()
-    ns.A.makeInheritedC9r('AA', {
+    ns.A.makeSubC9r('AA', {
       properties: {foo: eYo.NA}
     })
     ns.AA.eyo.finalizeC9r()
@@ -500,7 +500,7 @@ describe ('Tests: Object', function () {
     chai.expect(a.bar).equal(123)
     ns.makeC9r('B')
     ns.B.eyo.finalizeC9r()
-    ns.B.makeInheritedC9r('BB')    
+    ns.B.makeSubC9r('BB')    
     ns.BB.eyo.finalizeC9r()
     var bb = new ns.BB('bb', onr)
     chai.expect(ns.BB.eyo.p6yModelByKey__).not.property('foo')
@@ -644,7 +644,7 @@ describe ('Tests: Object', function () {
       },
     })
     ns.Mud.eyo.finalizeC9r()
-    ns.Mud.makeInheritedC9r('Bar', {
+    ns.Mud.makeSubC9r('Bar', {
       properties: {
         mi: {
           after: 'chi',
@@ -1122,7 +1122,7 @@ describe ('Tests: Object', function () {
       let a = new ns.A('a', onr)
       chai.expect(a.foo).equal(421)
       flag.expect(a.bar(123))
-      ns.A.makeInheritedC9r('AB')
+      ns.A.makeSubC9r('AB')
       ns.AB.eyo.finalizeC9r()
       let ab = new ns.AB('ab', onr)
       chai.expect(ab.foo).equal(421)
@@ -1160,7 +1160,7 @@ describe ('Tests: Object', function () {
       let a = new ns.A()
       chai.expect(a.foo).equal(421)
       flag.expect(a.bar(123))
-      ns.A.makeInheritedC9r('AB')
+      ns.A.makeSubC9r('AB')
       ns.AB.eyo.finalizeC9r()
       let ab = new ns.AB()
       chai.expect(ab.foo).equal(421)

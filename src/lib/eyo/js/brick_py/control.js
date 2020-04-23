@@ -24,7 +24,7 @@ eYo.require('stmt.group')
  */
 ;(() => {
   var creation = 0
-  eYo.stmt.group.makeInheritedC9r('control', {
+  eYo.stmt.group.makeSubC9r('control', {
     data: {
       restart: {
         init: false,
@@ -87,7 +87,7 @@ eYo.brick.BaseC9r_p.runScript = function () {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.control.makeInheritedC9r('start_stmt', {
+eYo.stmt.control.makeSubC9r('start_stmt', {
   xml: {
     attr: 'start'
   },
