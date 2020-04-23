@@ -27,34 +27,34 @@ eYo.require('o4t')
  * @name{eYo.geom}
  * @namespace
  */
-eYo.c9r.makeNS(eYo, 'geom', {})
-
-Object.defineProperties(eYo.geom, {
-  X: eYo.descriptorR(function () {
+eYo.c9r.makeNS(eYo, 'geom', {
+  X () {
     return eYo.font.space
-  }),
-  Y: eYo.descriptorR(function  () {
-    return eYo.font.lineHeight
-  }),
-  REM: eYo.descriptorR(function  () {
-    return parseFloat(getComputedStyle(document.documentElement).fontSize)
-  }),
-  C: eYo.descriptorR(function  () {
-    return 2
-  }),
-  L: eYo.descriptorR(function  () {
-    return 4
-  }),
-})
-
-eYo.geom.makeBaseC9r(true)
-
-eYo.geom.BaseC9r.eyo.finalizeC9r(['aliases'], {
-  properties: {
-    [eYo.model.ANY]: eYo.p6y.BaseC9r
   },
+  Y () {
+    return eYo.font.lineHeight
+  },
+  REM () {
+    return parseFloat(getComputedStyle(document.documentElement).fontSize)
+  },
+  C () {
+    return 2
+  },
+  L () {
+    return 4
+  }
+}, true)
+
+eYo.geom.makeBaseC9r(true, {
+  properties: {
+    snap: false,
+  },
+  methods: {
+    shareSnap (snap_p) {
+      this.eyo.p6yMakeShortcut('snap', this, snap_p, true)
+    }
+  }
 })
-eYo.geom.BaseC9r.eyo.p6yEnhanced()
 
 eYo.geom.enhancedO4t()
 
@@ -68,6 +68,12 @@ eYo.geom.Dlgt_p.modelMerge = function (model) {
   model.properties && this.p6yMerge(model.properties)
   model.methods && this.methodsMerge(model.methods)
 }
+
+eYo.geom.BaseC9r.eyo.finalizeC9r(['aliases'], {
+  properties: {
+    [eYo.model.ANY]: eYo.p6y.BaseC9r.eyo.modelFormat
+  },
+})
 
 /**
  * `AbstractPoint` is modelling a planar point that stores its coordinates in text units.
@@ -138,17 +144,20 @@ eYo.geom.makeC9r('AbstractPoint', {
     l: ['dl', 'h'],
     x: ['dx', 'width'],
     y: ['dy', 'height'],
+  },
+  methods: {
+    /**
+     * Test equality between the receiver and the rhs.
+     * @param {*} rhs - Anything
+     * @param {*} tolerance - a non negative number, defaults to `eYo.EPSILON`
+     */
+    eql (rhs, tolerance = eYo.EPSILON) {
+      return rhs instanceof eYo.geom.Point && eYo.equals(this.c_, rhs.c_, tolerance) && eYo.equals(this.l_, rhs.l_, tolerance)
+    },
   }
 })
 
 eYo.geom.AbstractPoint.eyo.finalizeC9r()
-
-/**
- * Test equality between the receiver and the rhs.
- */
-eYo.geom.AbstractPoint_p.equals = function (rhs) {
-  return rhs instanceof eYo.geom.Point && this.c_ == rhs.c_ && this.l_ == rhs.l_
-}
 
 /**
  * Like `advance` but sets the coordinates, instead of advancing them.
@@ -313,7 +322,7 @@ eYo.geom.AbstractPoint_p.unscale = function (scaleX, scaleY) {
  * @param {eYo.geom.Point} other
  * @return {number} non negative number
  */
-eYo.geom.AbstractPoint_p.distance = function (other) {
+eYo.geom.AbstractPoint_p.xyDistance = function (other) {
   var dx = this.x - other.x
   var dy = this.y - other.y
   return Math.sqrt(dx * dx + dy * dy)
@@ -356,13 +365,24 @@ eYo.geom.AbstractPoint_p.out = function (rect) {
  * @param {*} ... - See the implementation.
  */
 eYo.geom.makeC9r('Point', eYo.geom.AbstractPoint, {
-  init (c, l, snap) {
-    if (eYo.isBool(c)) {
-      [snap, c, l] = [c, l, snap]
-    } else if (eYo.isBool(l)) {
-      [snap, l] = [l, snap]
-    } else {
-      snap = c && !!c.snap || !!snap
+  /**
+   * Initialize the point forwarding to `set`.
+   * @param {Boolean|eYo.geom.PointLike} [snap] - Defaults to true
+   * @param {*} c 
+   * @param {*} l 
+   */
+  init (snap, c, l) {
+    if (!eYo.isBool(snap)) {
+      eYo.isDef(l) && eYo.throw(`eYo.geom.Point/init: Unexpected last argument: ${snap}`)
+      if (eYo.isDef(snap)) {
+        let $snap = snap.snap
+        if (eYo.isDef($snap)) {
+          this.snap_ = $snap
+          this.set(snap)
+          return
+        }
+      }
+      ;[snap, c, l] = [false, snap, c]
     }
     this.snap_ = snap
     this.set(c, l)
@@ -398,20 +418,15 @@ eYo.geom.Point.eyo.finalizeC9r()
 
 /**
  * Convenient creator.
+ * @param {Boolean} [snap] - Whether the receiver should snap to the grid, defaults to false
  * @param {Number} x - x coordinate
  * @param {Number} y - y coordinate
- * @param {Boolean} snap - Whether the receiver should snap to the grid
  * @return {eYo.geom.Point} The receiver
  */
-eYo.geom.xyPoint = function (x, y, snap) {
-  var y
-  if (eYo.isBool(x)) {
-    var _ = x
-    [x, y, snap] = [y, snap, x]
-  } else if (eYo.isBool(y)) {
-    [y, snap] = [snap, y]
-  } else {
-    snap = !!x.snap || !!snap
+eYo.geom.xyPoint = function (snap, x, y) {
+  if (!eYo.isBool(snap)) {
+    eYo.isDef(y) && eYo.throw(`eYo.geom.xyPoint: Unexpected last argument: ${y}`)
+    ;[snap, x, y] = [false, snap, x]
   }
   return new eYo.geom.Point(snap).xySet(x, y)
 }
@@ -423,8 +438,8 @@ eYo.geom.xyPoint = function (x, y, snap) {
  * @param {Boolean} [snap] - snap flag. Defaults to false.
  * @return {eYo.geom.Point} The receiver
  */
-eYo.geom.clPoint = function (c, l, snap) {
-  return new eYo.geom.Point(c, l, snap)
+eYo.geom.clPoint = function (snap, c, l) {
+  return new eYo.geom.Point(snap, c, l)
 }
 
 /**
@@ -452,7 +467,7 @@ eYo.geom.Point_p.setFromText = function (txt) {
  * Sets from the given text.
  * @param {String!} s
  */
-eYo.do.SizeOfText = function (txt) {
+eYo.geom.newSizeFromText = function (txt) {
   return new eYo.geom.Size().setFromText(txt)
 }
 
@@ -468,9 +483,6 @@ eYo.do.SizeOfText = function (txt) {
  * @constructor
  */
 eYo.geom.makeC9r('AbstractRect', {
-  init (c, l, w, h, snap) {
-    this.set(c, l, w, h, snap)
-  },
   aliases: {
     origin: 'topLeft',
     // Basic properties in text dimensions.
@@ -707,15 +719,15 @@ eYo.geom.makeC9r('AbstractRect', {
       },
     },
   },
+  methods: {
+    makeSnapShared () {
+      this.origin_.shareSnap(this.snap_p)
+      this.size_.shareSnap(this.snap_p)
+    }
+  }
 })
 
 eYo.geom.AbstractRect.eyo.finalizeC9r()
-
-
-/**
- * Dispose of the receiver's resources.
- */
-eYo.geom.AbstractRect_p.dispose = eYo.doNothing
 
 /**
  * set the `Rect`.
@@ -807,8 +819,8 @@ eYo.geom.AbstractRect_p.backward = function (c = 0, l = 0) {
  * Takes rounding errors into account.
  * @param {eYo.geom.Rect} rhs
  */
-eYo.geom.AbstractRect_p.equals = function (rhs) {
-  return rhs instanceof eYo.geom.Rect && this.origin_.equals(rhs.origin_) && this.size_.equals(rhs.size_)
+eYo.geom.AbstractRect_p.eql = function (rhs, tolerance = eYo.EPSILON) {
+  return rhs instanceof eYo.geom.Rect && this.origin_.eql(rhs.origin_, tolerance) && this.size_.eql(rhs.size_, tolerance)
 }
 
 /**
@@ -992,7 +1004,37 @@ eYo.geom.AbstractRect_p.intersectionRect = function (rect) {
   }
 }
 
-eYo.geom.makeC9r('Rect', eYo.geom.AbstractRect, {})
+eYo.geom.AbstractRect.makeInheritedC9r('Rect', {
+  /**
+   * See the `set` function for argument description.
+   * @param {Boolean|eYo.geom.RectLike} [snap] - Default to false
+   * @param {*} c
+   * @param {*} l 
+   * @param {*} w 
+   * @param {*} h 
+   */
+  init (snap, c, l, w, h) {
+    if (!eYo.isBool(snap)) {
+      eYo.isDef(h) && eYo.throw(`eYo.geom.Rect/init: Unexpected last argument ${h}`)
+      if (eYo.isDef(snap)) {
+        let $snap = snap.snap
+        if (eYo.isDef($snap)) { // array like
+          this.snap_ = $snap
+          this.set(snap)
+          return
+        }
+      }
+      ;[snap, c, l, w, h] = [false, snap, c, l, w]
+    }
+    this.makeSnapShared()
+    this.snap_ = snap
+    this.set(c, l, w, h)
+  },
+  /**
+   * Dispose of the receiver's resources.
+   */
+  dispose: eYo.doNothing,
+})
 
 eYo.geom.Rect.eyo.finalizeC9r()
 
@@ -1004,7 +1046,7 @@ eYo.geom.Rect.eyo.finalizeC9r()
  * @param {Number} height  y coordinate
  * @return {eYo.geom.Rect} The newly created rect instance.
  */
-eYo.geom.xyRect = function (x = 0, y = 0, width = 0, height = 0) {
+eYo.geom._p.xyRect = function (x = 0, y = 0, width = 0, height = 0) {
   return new eYo.geom.Rect().xySet(x, y, width, height)
 }
 
@@ -1020,7 +1062,7 @@ eYo.geom.xyRect = function (x = 0, y = 0, width = 0, height = 0) {
  * @return {!Array<?eYo.geom.Rect>} An array with 4 rectangles which
  *     together define the difference area of rectangle a minus rectangle b.
  */
-eYo.geom.deltaRect = function(a, b) {
+eYo.geom._p.deltaRect = function(a, b) {
   var ans = [null, null, null, null]
 
   var top = a.top
@@ -1104,7 +1146,7 @@ eYo.geom.deltaRect = function(a, b) {
  * @param {eYo.geom.Rect} b - A Rectangle.
  * @return {eYo.geom.Rect}
  */
-eYo.geom.intersectionRect = function(a, b) {
+eYo.geom._p.intersectionRect = function(a, b) {
   var x_min = Math.max(a.x_min, b.x_min)
   var width = Math.min(a.x_max, b.x_max) - x_min
   if (width >= 0) {

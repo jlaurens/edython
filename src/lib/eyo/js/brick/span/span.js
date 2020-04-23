@@ -35,7 +35,7 @@
 eYo.require('geom')
 
 /**
- * @name{sYo.span}
+ * @name{eYo.span}
  * @namespace
  */
 eYo.o4t.makeNS(eYo, 'span', {

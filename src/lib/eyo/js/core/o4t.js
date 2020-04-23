@@ -47,6 +47,9 @@ eYo.o4t.Dlgt_p.modelMerge = function (model) {
 
 eYo.c9r._p.enhancedO4t = function () {
   let _p = this.Dlgt_p
+
+  eYo.isF(_p.p6yInit) || _p.p6yEnhanced()
+  
   _p.hasOwnProperty('p6yInit') || eYo.throw('Missing p6yInit')
   _p.hasOwnProperty('p6yDispose') || eYo.throw('Missing p6yDispose')
 

@@ -779,7 +779,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     for (let [k, model] of this[tModelMap]) {
       let attr = make(model, k, object)
       if (attr) {
-        makeShortcut(k, object, attr)
+        makeShortcut.call(this, k, object, attr)
         map.set(k, attr)
         attributes.push(attr)
       }

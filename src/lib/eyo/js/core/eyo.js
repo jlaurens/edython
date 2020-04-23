@@ -481,16 +481,20 @@ eYo.mixinR(eYo._p, {
    * Will create 'foo' namespace together with an 'foo_p' property to access the prototype.
    * @param {!Object} ns - a namespace, created object will be `ns[key]`. Defaults to the receiver.
    * @param {String} key - sentencecase name, created object will be `ns[key]`.
+   * @param {Object} [model] - Key/value pairs
+   * @param {Boolean} [getters] - Whether in the model, function values are getters
    * @return {Object}
    */
-  makeNS (ns, key, model) {
+  makeNS (ns, key, model, getters) {
     if (eYo.isStr(ns)) {
-      model && eYo.throw('Unexpected model argument')
-      model = key
-      key = ns
-      ns = this
+      eYo.isDef(getters) && eYo.throw(`${this.name}/makeNS: Unexpected last argument: ${getters}`)
+      ;[ns, key, model, getters] = [this, ns, key, model]
     }
-    if (ns && ns[key] !== eYo.NA) {
+    if (!eYo.isStr(key)) {
+      eYo.isDef(getters) && eYo.throw(`${this.name}/makeNS: Unexpected last argument: ${getters}`)
+      ;[key, model, getters] = [eYo.NA, key, model]
+    }
+    if (ns && key && ns[key] !== eYo.NA) {
       throw new Error(`${ns.name}[${key}] already exists.`)
     }
     var Super = this.constructor
@@ -507,24 +511,30 @@ eYo.mixinR(eYo._p, {
       writable: false,
     })
     model && Object.keys(model).forEach(k => {
-      Object.defineProperty(NS.prototype, k, {
-        value: model[k],
-        configurable: true,
-      })
+      let value = model[k]
+      Object.defineProperty(
+        NS.prototype,
+        k,
+        eYo.descriptorR(getters && eYo.isF(value) ? value : function () {
+          return value
+        }, true)
+      )
     })
     var ans = new NS()
-    ns && Object.defineProperties(ns, {
-      [key]: { value: ans, writable: false, },
-      [key + '_p']: { value: NS.prototype, writable: false, },
-      [key + '_s']: { value: Super.prototype, writable: false, },
-    })
-    Object.defineProperties(NS.prototype, {
-      key: {value: key, writable: false,},
-      name: {
-        value: ns ? `${ns.name}.${key}` : key || "No man's land",
-        writable: false,
-      },
-    })
+    if (key) {
+      ns && Object.defineProperties(ns, {
+        [key]: { value: ans, writable: false, },
+        [key + '_p']: { value: NS.prototype, writable: false, },
+        [key + '_s']: { value: Super.prototype, writable: false, },
+      })
+      Object.defineProperties(NS.prototype, {
+        key: {value: key, writable: false,},
+        name: {
+          value: ns ? `${ns.name}.${key}` : key || "No man's land",
+          writable: false,
+        },
+      })
+    }
     return ans
   },
   /**

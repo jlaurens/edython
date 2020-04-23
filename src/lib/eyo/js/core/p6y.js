@@ -527,7 +527,7 @@ eYo.o3d.makeC9r(eYo.p6y, 'List', {
 
 eYo.p6y.List.eyo.finalizeC9r()
 
-{
+;(() => {
   let _p = eYo.p6y.List_p
 
   Object.defineProperties(_p, {
@@ -558,7 +558,7 @@ eYo.p6y.List.eyo.finalizeC9r()
     return ans
   }
 
-}
+})()
 
 /**
  * The @@iterator method
@@ -589,6 +589,7 @@ eYo.c9r.Dlgt_p.p6yAliasNew = function (dest_key, object, source, source_key) {
     'owner', 'key',
   ]
   let write_keys = [
+    '__target', // expose the proxy target
     'previous', 'next', 'owner__', 'key_',
     eYo.observe.BEFORE, eYo.observe.DURING, eYo.observe.AFTER,
     'fireObservers', 'reset', 'setValue', 'getValue', 
@@ -599,6 +600,8 @@ eYo.c9r.Dlgt_p.p6yAliasNew = function (dest_key, object, source, source_key) {
       return this.owner__
     } else if (prop === 'key') {
       return this.key_
+    } else if (prop === '__target') {
+      return this.__target
     } else if (this.hasOwnProperty(prop)) {
       return this[prop]
     } else {
@@ -709,6 +712,7 @@ eYo.c9r.Dlgt_p.p6yAliasNew = function (dest_key, object, source, source_key) {
     return keys.includes(key)
   }
   let p = new Proxy(target, handler)
+  p.__target = target
   p.owner__ = object
   p.key_ = dest_key
   return p
@@ -724,18 +728,23 @@ eYo.dlgt.BaseC9r_p.p6yMakeInstance = function (model, k, object) {
 }
 /**
  * Make a property
+ * 
+ * @param {String} k 
+ * @param {*} object 
+ * @param {eYo.p6y.BaseC9r} p 
+ * @param {Boolean} [override] - defaults to false
  */
-eYo.dlgt.BaseC9r_p.p6yMakeShortcut = function (k, object, p) {
+eYo.dlgt.BaseC9r_p.p6yMakeShortcut = function (k, object, p, override) {
   p || eYo.throw(`${this.name}/p6yMakeShortcut: Missing property ${k}`)
   let k_p = k + '_p'
   let k_ = k + '_'
-  if (object.hasOwnProperty(k_p)) {
+  if (!override && object.hasOwnProperty(k_p)) {
     console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
   }
   Object.defineProperties(object, {
     [k_p]: eYo.descriptorR(function () {
       return p
-    }),
+    }, true),
   })
   object[k_p] || eYo.throw('Missing property')
   let _p = object.eyo.C9r_p
@@ -811,7 +820,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (manyModel = {}) {
 
 eYo.observe.enhance(eYo.p6y.BaseC9r.eyo)
 
-{
+;(() => {
   let _p = eYo.p6y.BaseC9r_p
 
   /**
@@ -953,4 +962,4 @@ eYo.observe.enhance(eYo.p6y.BaseC9r.eyo)
    */
   _p.ownedForEach = eYo.doNothing
 
-}
+})()

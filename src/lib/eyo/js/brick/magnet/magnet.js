@@ -1158,7 +1158,7 @@ eYo.magnet.BaseC9r_p.unhideAll = function() {
     var min = closestIndex - 1
     while (min >= 0) {
       temp = db[min--]
-      var radius = where.distance(temp.where)
+      var radius = where.xyDistance(temp.where)
       if (radius < maxRadius && magnet.isConnectionAllowed(temp)) {
         bestMagnet = temp
         bestRadius = radius
@@ -1167,7 +1167,7 @@ eYo.magnet.BaseC9r_p.unhideAll = function() {
     var max = closestIndex
     while (max < db.length) {
       temp = db[max++]
-      var radius = where.distance(temp.where)
+      var radius = where.xyDistance(temp.where)
       if (radius < maxRadius && magnet.isConnectionAllowed(temp)) {
         bestMagnet = temp
         bestRadius = radius
@@ -1235,8 +1235,8 @@ eYo.magnet.BaseC9r_p.moveBy = function(dxy) {
  *     the distance to.
  * @return {number} The distance between magnets, in board units.
  */
-eYo.magnet.BaseC9r_p.distance = function(other) {
-  return this.where.distance(other.where)
+eYo.magnet.BaseC9r_p.xyDistance = function(other) {
+  return this.where.xyDistance(other.where)
 }
 
 // ANCHOR: Wrapping
@@ -1648,7 +1648,7 @@ eYo.magnet.BaseC9r_p.isConnectionAllowed = function (candidate, maxRadius) {
   if (this.wrapped_ || candidate.wrapped_) {
     return false
   }
-  if (eYo.isDef(maxRadius) && this.distance(candidate) > maxRadius) {
+  if (eYo.isDef(maxRadius) && this.xyDistance(candidate) > maxRadius) {
     return false
   }
   // Type checking.

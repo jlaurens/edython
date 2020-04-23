@@ -1103,4 +1103,68 @@ describe ('Tests: Object', function () {
       chai.expect(bar.chi).equal(bar.foo.chi)
     })  
   })
+  describe(`O4t: Model`, function () {
+    it (`P6y inheritance`, function () {
+      let ns = eYo.o4t.makeNS()
+      ns.makeBaseC9r({
+        properties: {
+          foo: 421
+        },
+        methods: {
+          bar (what) {
+            flag.push(0, what)
+            return what
+          }
+        }
+      })
+      ns.makeC9r('A')
+      ns.A.eyo.finalizeC9r()
+      let a = new ns.A('a', onr)
+      chai.expect(a.foo).equal(421)
+      flag.expect(a.bar(123))
+      ns.A.makeInheritedC9r('AB')
+      ns.AB.eyo.finalizeC9r()
+      let ab = new ns.AB('ab', onr)
+      chai.expect(ab.foo).equal(421)
+      flag.expect(ab.bar(123))
+    })
+    it (`o4tEnhanced inheritance`, function () {
+      let ns = eYo.c9r.makeNS()
+      ns.makeBaseC9r(true, {
+        properties: {
+          foo: 421
+        },
+        methods: {
+          bar (what) {
+            flag.push(0, what)
+            return what
+          }
+        }
+      })
+      ns.enhancedO4t()
+      ns.Dlgt_p.modelMerge = function (model) {
+        model.aliases && this.p6yAliasesMerge(model.aliases)
+        model.properties && this.p6yMerge(model.properties)
+        model.methods && this.methodsMerge(model.methods)
+      }
+      ns.BaseC9r.eyo.finalizeC9r(['aliases'], {
+        properties: {
+          [eYo.model.ANY]: eYo.p6y.BaseC9r.eyo.modelFormat
+        },
+      })
+      let o = ns.new()
+      chai.expect(o.foo).equal(421)
+      flag.expect(o.bar(123))
+      ns.makeC9r('A')
+      ns.A.eyo.finalizeC9r()
+      let a = new ns.A()
+      chai.expect(a.foo).equal(421)
+      flag.expect(a.bar(123))
+      ns.A.makeInheritedC9r('AB')
+      ns.AB.eyo.finalizeC9r()
+      let ab = new ns.AB()
+      chai.expect(ab.foo).equal(421)
+      flag.expect(ab.bar(123))      
+    })
+  })
 })

@@ -76,7 +76,13 @@ describe ('geometry', function () {
     chai.expect(eYo.isDef(eYo.geom.AbstractPoint)).true
     chai.expect(eYo.isDef(eYo.geom.Point)).true
     chai.expect(eYo.isDef(eYo.geom.Size)).true
+    chai.expect(eYo.isDef(eYo.geom.AbstractRect)).true
     chai.expect(eYo.isDef(eYo.geom.Rect)).true
+    chai.expect(eYo.geom.X > 0).true
+    chai.expect(eYo.geom.Y > 0).true
+    chai.expect(eYo.geom.C > 0).true
+    chai.expect(eYo.geom.L > 0).true
+    chai.expect(eYo.geom.REM > 0).true
   })
   it ('Geometry: units', function () {
     chai.expect(eYo.isDef(eYo.geom.X)).true
@@ -89,21 +95,22 @@ describe ('geometry', function () {
   })
   describe('Point', function () {
     it ('new eYo.geom.Point()', function () {
-      var whr = new eYo.geom.Point()
-      chai.expect(whr).eyo_point
-      chai.expect(!['c', 'l', 'x', 'y'].some(k => whr[k] !== 0)).true
-      whr.c_ = 1.23
-      chai.expect(whr.c).almost.equal(1.23)
-      chai.expect(whr.x).almost.equal(1.23 * eYo.geom.X)
-      whr.x_ = 4.21 * eYo.geom.X
-      chai.expect(whr.c).almost.equal(4.21)
-      chai.expect(whr.x).almost.equal(4.21 * eYo.geom.X)
-      whr.l_ = 3.21
-      chai.expect(whr.l).almost.equal(3.21)
-      chai.expect(whr.y).almost.equal(3.21 * eYo.geom.Y)
-      whr.y_ = 1.24 * eYo.geom.Y
-      chai.expect(whr.l).almost.equal(1.24)
-      chai.expect(whr.y).almost.equal(1.24 * eYo.geom.Y)
+      var p = new eYo.geom.Point()
+      chai.expect(p).eyo_point
+      chai.expect(eYo.isDef(p.snap_p)).true
+      chai.expect(!['c', 'l', 'x', 'y'].some(k => p[k] !== 0)).true
+      p.c_ = 1.23
+      chai.expect(p.c).almost.equal(1.23)
+      chai.expect(p.x).almost.equal(1.23 * eYo.geom.X)
+      p.x_ = 4.21 * eYo.geom.X
+      chai.expect(p.c).almost.equal(4.21)
+      chai.expect(p.x).almost.equal(4.21 * eYo.geom.X)
+      p.l_ = 3.21
+      chai.expect(p.l).almost.equal(3.21)
+      chai.expect(p.y).almost.equal(3.21 * eYo.geom.Y)
+      p.y_ = 1.24 * eYo.geom.Y
+      chai.expect(p.l).almost.equal(1.24)
+      chai.expect(p.y).almost.equal(1.24 * eYo.geom.Y)
     })
     it ('new eYo.geom.Point(true)', function () {
       var whr = new eYo.geom.Point(true)
@@ -225,6 +232,10 @@ describe ('geometry', function () {
       chai.expect(r.w).almost.equal(w)
       chai.expect(r.h).almost.equal(h)
     }
+    it ('AbstractRect: Basics', function () {
+      let r = new eYo.geom.AbstractRect()
+      chai.expect(eYo.isDef(r.snap_p)).true
+    })
     it ('Rect: aliases', function () {
     })
     it ('Rect: new eYo.geom.Rect()', function () {
@@ -254,7 +265,7 @@ describe ('geometry', function () {
     })
     it ('Rect: alias', function () {
       let r = eYo.geom.randRect()
-      chai.expect(r.topLeft.equals(r.origin)).true
+      chai.expect(r.topLeft.eql(r.origin)).true
       chai.expect(r.origin.c).almost.equal(r.c).almost.equal(r.c_min)
       chai.expect(r.origin.l).almost.equal(r.l).almost.equal(r.l_min)
       chai.expect(r.size.w).almost.equal(r.w)
@@ -286,23 +297,23 @@ describe ('geometry', function () {
     it ('Intersection: a⊂b', function () {
       let a = new eYo.geom.Rect(0,0,1,1)
       let b = new eYo.geom.Rect(-1,-1,3,3)
-      chai.expect(eYo.geom.intersectionRect(a, b).equals(a)).true
-      chai.expect(eYo.geom.intersectionRect(b, a).equals(a)).true
+      chai.expect(eYo.geom.intersectionRect(a, b).eql(a)).true
+      chai.expect(eYo.geom.intersectionRect(b, a).eql(a)).true
     })
     it ('Intersection: a∩b=∅', function () {
       let a = new eYo.geom.Rect(0,0,1,1)
       let b = new eYo.geom.Rect(-2,-2,1,1)
-      chai.expect(eYo.geom.intersectionRect(a, b)).to.equal(eYo.NA)
+      chai.expect(eYo.geom.intersectionRect(a, b)).equal(eYo.NA)
     })
     it ('Intersection: a∩b≠∅', function () {
       let a = new eYo.geom.Rect(0,0,1,1)
       let b = new eYo.geom.Rect(1,1,1,1)
       let c = eYo.geom.intersectionRect(a, b)
       chai.expect(eYo.isDef(c)).true
-      chai.expect(c.c_min).to.equal(1)
-      chai.expect(c.l_min).to.equal(1)
-      chai.expect(c.width).to.equal(0)
-      chai.expect(c.height).to.equal(0)
+      chai.expect(c.c_min).equal(1)
+      chai.expect(c.l_min).equal(1)
+      chai.expect(c.width).equal(0)
+      chai.expect(c.height).equal(0)
     })
     it ('a∪=b', function () {
       var i = 20
