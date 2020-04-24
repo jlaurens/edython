@@ -49,28 +49,7 @@ describe ('POC', function () {
 })
 describe ('Tests: Dlgt', function () {
   this.timeout(10000)
-  let flag = {
-    v: '',
-    reset (what) {
-      this.v = what && what.toString() || ''
-    },
-    push (...$) {
-      $.forEach(what => {
-        what && (this.v += what.toString())
-      })
-      return this.v
-    },
-    expect (what) {
-      if (eYo.isRA(what)) {
-        what = what.map(x => x.toString())
-        var ans = chai.expect(what).include(this.v || '0')
-      } else {
-        ans = chai.expect(what.toString()).equal(this.v || '0')
-      }
-      this.reset()
-      return ans
-    },
-  }
+  let flag = new eYo.test.Flag()
   it ('Dlgt: Basic', function () {
     chai.assert(eYo.dlgt)
   })
@@ -322,7 +301,7 @@ describe ('Tests: Dlgt', function () {
         flag.push(model)
         return model+1
       },
-      makeShortcut (k, object, p) {
+      makeShortcut (object, k, p) {
         let k_p = k + '__ff'
         Object.defineProperties(object, {
           [k_p]: eYo.descriptorR(function () {

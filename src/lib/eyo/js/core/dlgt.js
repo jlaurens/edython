@@ -729,7 +729,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
   let make = manyModel.make || function (model, k, object) {
     return eYo[type].new(model, k, object)
   }
-  let makeShortcut = manyModel.makeShortcut || function (k, object, p) {
+  let makeShortcut = manyModel.makeShortcut || function (object, k, p) {
     let k_p = k + (manyModel.suffix || `_${type[0]}`)
     if (object.hasOwnProperty(k_p)) {
       console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
@@ -779,7 +779,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     for (let [k, model] of this[tModelMap]) {
       let attr = make(model, k, object)
       if (attr) {
-        makeShortcut.call(this, k, object, attr)
+        makeShortcut.call(this, object, k, attr)
         map.set(k, attr)
         attributes.push(attr)
       }

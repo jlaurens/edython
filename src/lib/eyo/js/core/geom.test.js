@@ -1,37 +1,6 @@
-eYo.test.almost = (a, b) => 10000 * Math.abs(a-b) <= (Math.abs(a) + Math.abs(b))
-
-eYo.test.rand100 = () => Math.round(Math.random()*10000)/100
-
-eYo.geom.randPoint = () => new eYo.geom.Point(eYo.test.rand100(), eYo.test.rand100())
-
-eYo.geom.randSize = () => new eYo.geom.Size(eYo.test.rand100(), eYo.test.rand100())
-
-eYo.geom.randRect = () => new eYo.geom.Rect(eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100())
-
 describe ('geometry', function () {
   this.timeout(10000)
-  let flag = {
-    v: '',
-    reset (what) {
-      this.v = what && what.toString() || ''
-    },
-    push (...$) {
-      $.forEach(what => {
-        what && (this.v += what.toString())
-      })
-      return this.v
-    },
-    expect (what) {
-      if (eYo.isRA(what)) {
-        what = what.map(x => x.toString())
-        var ans = chai.expect(what).include(this.v || '0')
-      } else {
-        ans = chai.expect(what.toString()).equal(this.v || '0')
-      }
-      this.reset()
-      return ans
-    },
-  }
+  let flag = new eYo.test.Flag()
   before(function () {
     flag.reset()
   })
@@ -54,9 +23,9 @@ describe ('geometry', function () {
             c_p = c_p.c_p
           }
           c_p = this.eyo.p6yAliasNew('c', this, c_p)
-          this.eyo.p6yMakeShortcut('c', this, c_p)
+          this.eyo.p6yMakeShortcut(this, 'c', c_p)
           l_p = this.eyo.p6yAliasNew('l', this, l_p)
-          this.eyo.p6yMakeShortcut('l', this, l_p)
+          this.eyo.p6yMakeShortcut(this, 'l', l_p)
         }
       })
       let Q = ns.new(P)
@@ -118,7 +87,8 @@ describe ('geometry', function () {
     })
     it ('new eYo.geom.Point(true)', function () {
       var whr = new eYo.geom.Point(true)
-      chai.expect(eYo.isDef(whr.snap_)).true
+      chai.expect(eYo.isDef(whr.snap_p)).true
+      chai.expect(whr.snap_).true
       chai.expect(!['c', 'l', 'x', 'y'].some(k => whr[k] != 0)).true
       if (eYo.geom.C === 2) {
         whr.c_ = 1.23
@@ -164,14 +134,35 @@ describe ('geometry', function () {
         chai.expect(whr.y).almost.equal(2 * eYo.geom.Y)
       }
     })
-    it('Aliases', function () {
-      let s = new eYo.geom.Size().set(eYo.test.rand100(), eYo.test.rand100())
-      chai.expect(s.c).equal(s.dc).equal(s.w)
-      chai.expect(s.l).equal(s.dl).equal(s.h)
-      chai.expect(s.x).equal(s.dx).equal(s.width)
-      chai.expect(s.y).equal(s.dy).equal(s.height)  
+    it ('new eYo.geom.Point(...)', function () {
+      let p = new eYo.geom.Point(1, 2)
+      chai.expect(p).eql({c: 1, l: 2})
+/*
+      if (eYo.isDef(c.c) && eYo.isDef(c.l)) {
+        this.c_ = c.c
+        this.l_ = c.l
+      } else if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
+        this.x_ = c.x
+        this.y_ = c.y
+      } else if (eYo.isDef(c.clientX) && eYo.isDef(c.clientY)) {
+        this.x_ = c.clientX
+        this.y_ = c.clientY
+      } else if (eYo.isDef(c.width) && eYo.isDef(c.height)) {
+        this.x_ = c.width
+        this.y_ = c.height
+      } else {
+        eYo.isaP6y(c)
+        ? this.origin_.eyo.p6yMakeShortcut(this, 'c', c, true)
+        : (this.c_ = c || 0)
+        eYo.isaP6y(l)
+        ? this.origin_.eyo.p6yMakeShortcut(this, 'l', l, true)
+        : (this.l_ = l || 0)
+        return this
+      }
+*/
+      
     })
-    it('Mutation', function () {
+    it('Point: Mutation', function () {
       var w1 = new eYo.geom.Point()
       var w2 = new eYo.geom.Point(w1)
       chai.expect(w1).eql(w2)

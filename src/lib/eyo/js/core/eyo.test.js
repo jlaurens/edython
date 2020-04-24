@@ -1,5 +1,9 @@
 describe('eYo Tests', function () {
   this.timeout(10000)
+  let flag = new eYo.test.Flag()
+  before (function() {
+    flag.reset()
+  })
   describe('eYo: POC', function () {
     it(`Catch the key? No need to...`, function () {
       var f = (object, k) => {
@@ -64,6 +68,21 @@ describe('eYo Tests', function () {
     eYo.mixinR(a, b)
     chai.expect(a.foo).equal(b.foo).equal(421)
     chai.expect(() => eYo.mixinR(a, b)).to.throw()
+    let c = {}
+    eYo.mixinR(c, {
+      foo () {
+        flag.push(1)
+      }
+    })
+    flag.expect(0)
+    eYo.mixinR(c, {
+      bar () {
+        flag.push(1)
+      }
+    }, false)
+    flag.expect(0)
+    c.bar()
+    flag.expect(1)
   })
   it ('eYo: provideR', function () {
     let a = {}
@@ -187,15 +206,14 @@ describe('eYo Tests', function () {
     chai.assert(!eYo.isVALID(eYo.INVALID))
     chai.assert(eYo.isVALID())
     chai.assert(eYo.isVALID({}))
-    var flag = 0
     eYo.whenVALID({}, () => {
-      flag = 421
+      flag.push(421)
     })
-    chai.expect(flag).equal(421)
+    flag.expect(421)
     eYo.whenVALID(eYo.INVALID, () => {
-      flag = 0
+      flag.push(421)
     })
-    chai.expect(flag).equal(421)
+    flag.expect(0)
   })
   it ('eYo.copyRA', function () {
     let original = []

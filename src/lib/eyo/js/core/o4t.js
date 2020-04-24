@@ -234,3 +234,95 @@ eYo.o4t._p.modelDeclare = function (key, model) {
     C9r.eyo.modelMerge(model)
   }
 }
+
+/**
+ * Replace a property shortcut
+ * 
+ * @param {*} object 
+ * @param {String} k 
+ * @param {eYo.p6y.BaseC9r} p 
+ */
+eYo.c9r.Dlgt_p.p6yReplace = function (object, k, source) {
+  let map = object.p6yMap
+  let old_p = map.get(k)
+  eYo.isDef(old_p) || eYo.throw(`${this.name}/p6yReplace: no replacement for ${k}`)
+  var p = eYo.c9r.Dlgt_p.p6yAliasNew(k, object, source)
+  this.p6yMakeShortcut(object, k, p, true)
+  if ((p.next = old_p.next)) {
+    p.next.previous = p
+  }
+  if((p.previous = old_p.previous)) {
+    p.previous.next = p
+    p = [...map.values()][0]
+  }
+  map.clear()
+  do {
+    map.set(p.key, p)
+  } while ((p = p.next))
+  //<??>P6Y<//>p6yReplace
+  //<./> let ns = eYo.o4t.makeNS()
+  //<./> ns.makeBaseC9r({
+  //<./>   properties: {
+  //<./>     foo: 1,
+  //<./>     chi: {
+  //<./>       after: 'foo',
+  //<./>       value: 2,
+  //<./>     },
+  //<./>     mi: {
+  //<./>       after: 'chi',
+  //<./>       value: 3,
+  //<./>     },
+  //<./>   },
+  //<./> })
+  //<./> var o = ns.new('o', onr)
+  //<./> o.eyo.p6yForEach(o, v => flag.push(v))
+  //<./> flag.expect(123)
+  //<./> let foo_p = eYo.p6y.new({
+  //<./>   value: 4,
+  //<./> }, 'foo', onr)
+  //<./> let chi_p = eYo.p6y.new({
+  //<./>   value: 5,
+  //<./> }, 'chi', onr)
+  //<./> let mi_p = eYo.p6y.new({
+  //<./>   value: 6,
+  //<./> }, 'mi', onr)
+  //<./> chai.expect(o.foo).equal(1)
+  //<./> o.eyo.p6yReplace(o, 'foo', foo_p)
+  //<./> o.eyo.p6yForEach(o, v => flag.push(v))
+  //<./> flag.expect(423)
+  //<./> chai.expect(o.foo_p.__target).equal(foo_p)
+  //<./> chai.expect(o.foo).equal(4)
+  //<./> o.foo_ -= 3
+  //<./> chai.expect(foo_p.value).equal(1)
+  //<./> o.eyo.p6yForEach(o, v => flag.push(v))
+  //<./> flag.expect(123)
+  //<./> foo_p.value_ += 3
+  //<./> chai.expect(o.foo).equal(4)
+  //<./> o = ns.new('o', onr)
+  //<./> chai.expect(o.chi).equal(2)
+  //<./> o.eyo.p6yReplace(o, 'chi', chi_p)
+  //<./> o.eyo.p6yForEach(o, v => flag.push(v))
+  //<./> flag.expect(153)
+  //<./> chai.expect(o.chi_p.__target).equal(chi_p)
+  //<./> chai.expect(o.chi).equal(5)
+  //<./> o.chi_ -= 3
+  //<./> chai.expect(chi_p.value).equal(2)
+  //<./> o.eyo.p6yForEach(o, v => flag.push(v))
+  //<./> flag.expect(123)
+  //<./> chi_p.value_ += 3
+  //<./> chai.expect(o.chi).equal(5)
+  //<./> o = ns.new('o', onr)
+  //<./> chai.expect(o.mi).equal(3)
+  //<./> o.eyo.p6yReplace(o, 'mi', mi_p)
+  //<./> o.eyo.p6yForEach(o, v => flag.push(v))
+  //<./> flag.expect(126)
+  //<./> chai.expect(o.mi_p.__target).equal(mi_p)
+  //<./> chai.expect(o.mi).equal(6)
+  //<./> o.mi_ -= 3
+  //<./> chai.expect(mi_p.value).equal(3)
+  //<./> o.eyo.p6yForEach(o, v => flag.push(v))
+  //<./> flag.expect(123)
+  //<./> mi_p.value_ += 3
+  //<./> chai.expect(o.mi).equal(6)
+  //</?>
+}

@@ -137,6 +137,12 @@ eYo.p6y.makeBaseC9r(true, {
   },
 })
 
+eYo.mixinR(eYo._p, {
+  isaP6y (what) {
+    return !!what && what instanceof eYo.p6y.BaseC9r
+  }
+}, false)
+
 Object.defineProperties(eYo.p6y.BaseC9r_p, {
   Id: {
     value: 'P6y',
@@ -692,7 +698,7 @@ eYo.c9r.Dlgt_p.p6yAliasNew = function (dest_key, object, source, source_key) {
       }),
     }
   } else {
-    source instanceof eYo.p6y.BaseC9r || eYo.throw(`${this.name}/p6yAliasNew: bad source ${source}`)
+    eYo.isaP6y(source) || eYo.throw(`${this.name}/p6yAliasNew: bad source ${source}`)
     target = source
     handler = {
       get: get(function (target, prop) {
@@ -726,15 +732,16 @@ eYo.dlgt.BaseC9r_p.p6yMakeInstance = function (model, k, object) {
   ? object.eyo.p6yAliasNew(k, object, ...model.source)
   : eYo.p6y.prepare(model || {}, k, object)
 }
+
 /**
- * Make a property
+ * Make a property shortcut
  * 
  * @param {String} k 
  * @param {*} object 
  * @param {eYo.p6y.BaseC9r} p 
  * @param {Boolean} [override] - defaults to false
  */
-eYo.dlgt.BaseC9r_p.p6yMakeShortcut = function (k, object, p, override) {
+eYo.dlgt.BaseC9r_p.p6yMakeShortcut = function (object, k, p, override) {
   p || eYo.throw(`${this.name}/p6yMakeShortcut: Missing property ${k}`)
   let k_p = k + '_p'
   let k_ = k + '_'

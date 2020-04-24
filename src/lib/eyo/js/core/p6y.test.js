@@ -1,27 +1,6 @@
 describe ('Tests: Property', function () {
   this.timeout(10000)
-  let flag = {
-    v: '',
-    reset (what) {
-      this.v = what && what.toString() || ''
-    },
-    push (...$) {
-      $.forEach(what => {
-        what && (this.v += what.toString())
-      })
-      return this.v
-    },
-    expect (what) {
-      if (eYo.isRA(what)) {
-        what = what.map(x => x.toString())
-        var ans = chai.expect(what).include(this.v || '0')
-      } else {
-        ans = chai.expect(what.toString()).equal(this.v || '0')
-      }
-      this.reset()
-      return ans
-    },
-  }
+  let flag = new eYo.test.Flag()
   let onr = eYo.c9r.new()
   let p6yMF = eYo.p6y.BaseC9r.eyo.modelFormat
   let p6yModelValidate = p6yMF.validate.bind(p6yMF)
@@ -36,6 +15,10 @@ describe ('Tests: Property', function () {
   })
   it ('P6y: Basic', function () {
     chai.assert(eYo.p6y)
+    let p = eYo.p6y.new({}, 'foo', onr)
+    chai.expect(eYo.isaP6y(p)).true
+    chai.expect(eYo.isaP6y()).false
+    chai.expect(eYo.isaP6y(1)).false
   })
   it('P6y: modelFormat', function () {
     var model = {

@@ -1,6 +1,7 @@
 from .path import *
 from .bdd import BDD
 from .html import HTML
+from .test import getInlineTest
 
 bdd = None
 

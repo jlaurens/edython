@@ -13,7 +13,7 @@ from pathlib import Path
 def loads(input):
     return json.loads(input.replace("'", '"'))
 
-# re to parse the 
+# re to parse the
 re_addDep = re.compile(r"""^goog\.addDependency\(
     (?P<file_name>'[^']+'),\s+
     (?P<provided>\[[^\]]*\])\s*,\s+
@@ -100,6 +100,9 @@ class __:
           dd = bdd[r]
           if dd is None:
             print(f'Missing provider for: {r}')
+            for dd in bdd.deps:
+              if r in dd.required:
+                print(f'Required by: {dd.file_name}')
             exit(-1)
           if dd.level is None:
             # this requirement is not resolved, break
@@ -147,7 +150,7 @@ class __:
       d.required = sorted(required, key=lambda x: bdd[x])
       del d.__required
       del d.__level_min
-  
+
   @staticmethod
   def complete_forwarded(bdd):
     """

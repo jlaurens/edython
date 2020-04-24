@@ -1,4 +1,43 @@
-eYo.test || eYo.makeNS('test')
+if (!eYo.test) {
+  eYo.makeNS('test')
+}
+
+eYo.test.almost = (a, b) => 10000 * Math.abs(a-b) <= (Math.abs(a) + Math.abs(b))
+
+eYo.test.rand100 = () => Math.round(Math.random()*10000)/100
+
+if (eYo.geom) {
+  eYo.geom.randPoint = () => new eYo.geom.Point(eYo.test.rand100(), eYo.test.rand100())
+
+  eYo.geom.randSize = () => new eYo.geom.Size(eYo.test.rand100(), eYo.test.rand100())
+  
+  eYo.geom.randRect = () => new eYo.geom.Rect(eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100())  
+}
+
+eYo.test.Flag = function (what) {
+  return {
+    v: what ? what.toString() : '',
+    reset (what) {
+      this.v = what && what.toString() || ''
+    },
+    push (...$) {
+      $.forEach(what => {
+        what && (this.v += what.toString())
+      })
+      return this.v
+    },
+    expect (what) {
+      if (eYo.isRA(what)) {
+        what = what.map(x => x.toString())
+        var ans = chai.expect(what).include(this.v || '0')
+      } else {
+        ans = chai.expect(what.toString()).equal(this.v || '0')
+      }
+      this.reset()
+      return ans
+    },
+  }
+}
 
 eYo.TESTING = true
 
@@ -52,6 +91,28 @@ chai.use(function (_chai, utils) {
     let tol = utils.flag(this, 'tolerance')
     let equal = eYo.test.makeComparator(tol)
     let yorn = ['c', 'l'].map(k => {
+      let ans = equal(actual[k], expected[k])
+      return [eYo.isVALID(ans) && ans, k]
+    })
+    let success = yorn.filter(k => k[0] && k)
+    let failure = yorn.filter(k => !k[0] && k)
+    this.assert(
+      failure.length === 0
+      , `expected #{this}/${failure[0]} to be ${expected[failure[0]]} but got ${actual[failure[0]]}`
+      , `expected #{this}/${success[0]} not to be ${expected[success[0]]}`
+      , expected[failure[0]]        // expected
+      , actual[failure[0]]   // actual
+    );
+  })
+  chai.Assertion.addMethod('eqlSize', function (expected) {
+    var actual = this._obj
+
+    // first, our instanceof check, shortcut
+    new chai.Assertion(actual).instanceof(eYo.geom.Size)
+    // new chai.Assertion(expected).instanceof(eYo.geom.AbstractPoint)
+    let tol = utils.flag(this, 'tolerance')
+    let equal = eYo.test.makeComparator(tol)
+    let yorn = ['w', 'h'].map(k => {
       let ans = equal(actual[k], expected[k])
       return [eYo.isVALID(ans) && ans, k]
     })
@@ -189,6 +250,9 @@ chai.use(function (chai, utils) {
       if (msg) flag(this, 'message', msg)
 
       if (eYo.geom) {
+        if (this._obj instanceof eYo.geom.Size) {
+          return this.eqlSize(val)
+        }
         if (this._obj instanceof eYo.geom.AbstractPoint) {
           return this.eqlPoint(val)
         }

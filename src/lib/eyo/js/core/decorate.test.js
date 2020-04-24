@@ -1,26 +1,5 @@
 describe ('Tests: decorate', function () {
-  let flag = {
-    v: '',
-    reset (what) {
-      this.v = what && what.toString() || ''
-    },
-    push (...$) {
-      $.forEach(what => {
-        what && (this.v += what.toString())
-      })
-      return this.v
-    },
-    expect (what) {
-      if (eYo.isRA(what)) {
-        what = what.map(x => x.toString())
-        var ans = chai.expect(what).include(this.v || '0')
-      } else {
-        ans = chai.expect(what.toString()).equal(this.v || '0')
-      }
-      this.reset()
-      return ans
-    },
-  }
+  let flag = new eYo.test.Flag()
   it ('Decorate: basic', function () {
     chai.assert(eYo.decorate)
     chai.assert(eYo.decorate.reentrant)

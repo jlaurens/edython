@@ -4,7 +4,11 @@ from .isa import IsA
 
 class HTML:
 
-  def __init__(self, path: IsA(Path, 'full path of the HTML file')):
+  def __init__(
+    self,
+    path: IsA(Path, 'full path of the HTML file'),
+    auto: IsA(bool, 'whether to include the automatically generated test file') = False
+  ):
     # for example .../src/lib/foo/.../bar/chi.test.html
     # all included script come from .../src/lib/
     # foo/.../bar/chi.test.html
@@ -14,7 +18,8 @@ class HTML:
     self.basename = path.with_suffix('').stem
     self.path = path
     self.parent = path.parent
-  
+    self.auto = auto
+
   def head_begin(self):
     self.lines = []
     self.lines.append(f'''<!DOCTYPE html>
@@ -64,7 +69,6 @@ eYo.path_js = '{self.to_root}src/lib/eyo/js'
 ''')
 
   def test(self, test=''):
-    test = '.test' if test else ''
     self.lines.append(f'''  <script src="{self.basename}{test}.js"></script>
 ''')
 
@@ -88,4 +92,3 @@ eYo.path_js = '{self.to_root}src/lib/eyo/js'
 
   def write(self):
     self.path.write_text(''.join(self.lines), encoding='utf-8')
-  

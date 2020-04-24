@@ -38,19 +38,19 @@ class Info:
   assert m, 'BAD re_arg_ns 1'
   assert m.group('ns') == "eYo.pane", 'BAD re_arg_ns 2'
 
-  # eYo.pane.WorkspaceControl.makeInheritedC9r('TrashCan', {
-  re_makeInheritedC9r = re.compile(r"""^\s*
+  # eYo.pane.WorkspaceControl.makeSubC9r('TrashCan', {
+  re_makeSubC9r = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
   \.(?P<Super>[A-Z][\w0-9_]*)
-  \.makeInheritedC9r\s*\(\s*
+  \.makeSubC9r\s*\(\s*
   (?P<suite>.*)""", re.X)
 
-  m = re.match(re_makeInheritedC9r, "eYo.pane.WorkspaceControl.makeInheritedC9r('TrashCan', {")
-  assert m, 'BAD re_makeInheritedC9r 1'
-  assert m.group('NS') == "eYo.pane", 'BAD re_makeInheritedC9r 2'
-  assert m.group('Super') == "WorkspaceControl", 'BAD re_makeInheritedC9r 3'
+  m = re.match(re_makeSubC9r, "eYo.pane.WorkspaceControl.makeSubC9r('TrashCan', {")
+  assert m, 'BAD re_makeSubC9r 1'
+  assert m.group('NS') == "eYo.pane", 'BAD re_makeSubC9r 2'
+  assert m.group('Super') == "WorkspaceControl", 'BAD re_makeSubC9r 3'
   suite = m.group('suite')
-  assert suite == "'TrashCan', {", 'BAD re_makeInheritedC9r 4'
+  assert suite == "'TrashCan', {", 'BAD re_makeSubC9r 4'
   m = re.match(re_arg_ns, suite)
   assert not m, 'BAD re_arg_ns 3'
 
@@ -149,7 +149,7 @@ class Info:
 
   def __init__(self, path):
     """
-    we scan the file and look separately for provide, require, forwardDeclare, makeNS, makeClass, makeInheritedC9r... lines.
+    we scan the file and look separately for provide, require, forwardDeclare, makeNS, makeClass, makeSubC9r... lines.
     Build a list of 'provided' and 'required' symbols.
     """
     self.path = path
@@ -296,7 +296,7 @@ class Info:
             else:
               addProvided(f'{NS}.{superKey}')
           continue
-        m = self.re_makeInheritedC9r.match(l)
+        m = self.re_makeSubC9r.match(l)
         if m:
           required.add('eYo.c9r')
           NS = m.group('NS')

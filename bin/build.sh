@@ -369,6 +369,8 @@ Miscellaneous:
 --js "closure-library/closure/goog/reflect/reflect.js" \
 --js "closure-library/closure/goog/string/string.js" \
 --js "closure-library/closure/goog/string/typedstring.js" \
+--js "eyo/js/core/geom.test.inline.js" \
+--js "eyo/js/core/o4t.test.inline.js" \
 --js "eyo/js/py/ctokenizer.js" \
 --js "eyo/js/test/common.js" \
 --js "closure-library/closure/goog/asserts/asserts.js" \

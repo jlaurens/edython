@@ -33,7 +33,8 @@
     "eyo:graminit": "python3 ./src/lib/eyo/Python/graminit.py",
     "eyo:t3": "python3 \"./src/lib/t3/python types.py\" && python3 ./\"src/lib/t3/install t3.py\"",
     "eyo:module": "python3 ./bin/helpers/modulebot.py --no-suffix functions stdtypes datastructures datamodel && python3 ./bin/helpers/modulebot.py string turtle math cmath decimal fractions random statistics datetime calendar collections collections.abc heapq  bisect array weakref types copy pprint reprlib enum",
-    "eyo:prepare": "python3 ./bin/helpers/prepare_dependencies.py",
+    "eyo:prepare": "python3 ./bin/helpers/prepare.py",
+    "eyo:update": "python3 ./bin/helpers/update.py",
     "eyo:build": "bash ./bin/build.sh"
   },
   "build": {
