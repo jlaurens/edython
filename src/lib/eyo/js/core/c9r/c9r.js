@@ -26,6 +26,8 @@ eYo.forward('t3')
  */
 eYo.makeNS('c9r')
 
+//<<< chai: C9r
+
 // ANCHOR: Utilities
 
 /**
@@ -401,6 +403,21 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
    */
   eYo.c9r.makeBaseC9r(true)
 
+  eYo.mixinR(eYo._p, {
+    /**
+     * Whether the argument is a property instance.
+     * @param {*} what 
+     */
+    isaC9r (what) {
+      return !!what && what instanceof eYo.c9r.BaseC9r
+      //<<< chai: isaC9r (what)
+      //... chai.expect(eYo.isaC9r(true)).false
+      //... chai.expect(eYo.isaC9r(new eYo.c9r.BaseC9r())).true
+      //>>>
+    }
+  }, false)
+  
+  
   /**
    * Prepare an instance.
    * Default implementation forwards to the delegate.
@@ -619,9 +636,4 @@ eYo.c9r.BaseC9r.eyo.finalizeC9r([
 ], eYo.model.manyDescriptorF('dlgt', 'init', 'deinit', 'dispose'), eYo.model.manyDescriptorForFalse('dispose'),
 )
 
-
-Object.defineProperties(eYo._p, {
-  isC9rInstance: eYo.descriptorR(function () {
-    return (what) => what instanceof eYo.c9r.BaseC9r
-  })
-})
+//>>>

@@ -369,6 +369,8 @@ Miscellaneous:
 --js "closure-library/closure/goog/reflect/reflect.js" \
 --js "closure-library/closure/goog/string/string.js" \
 --js "closure-library/closure/goog/string/typedstring.js" \
+--js "eyo/js/core/c9r/c9r.test.inline.js" \
+--js "eyo/js/core/dlgt/dlgt.test.inline.js" \
 --js "eyo/js/core/geom.test.inline.js" \
 --js "eyo/js/core/o4t.test.inline.js" \
 --js "eyo/js/py/ctokenizer.js" \
@@ -402,6 +404,7 @@ Miscellaneous:
 --js "eyo/js/core/errcode.js" \
 --js "eyo/js/core/model.js" \
 --js "eyo/js/core/more.js" \
+--js "eyo/js/core/p6y/p6y.test.inline.js" \
 --js "eyo/js/core/setup.js" \
 --js "eyo/js/core/t3.js" \
 --js "eyo/js/msg/base.js" \
@@ -414,9 +417,9 @@ Miscellaneous:
 --js "eyo/js/core/xre.js" \
 --js "closure-library/closure/goog/dom/safe.js" \
 --js "closure-library/closure/goog/html/uncheckedconversions.js" \
---js "eyo/js/core/dlgt.js" \
+--js "eyo/js/core/dlgt/dlgt.js" \
 --js "closure-library/closure/goog/dom/dom.js" \
---js "eyo/js/core/c9r.js" \
+--js "eyo/js/core/c9r/c9r.js" \
 --js "closure-library/closure/goog/dom/xml.js" \
 --js "closure-library/closure/goog/style/style.js" \
 --js "eyo/js/core/attr.js" \
@@ -428,7 +431,7 @@ Miscellaneous:
 --js "eyo/js/application/ui/audio.js" \
 --js "eyo/js/application/ui/dnd.js" \
 --js "eyo/js/core/db.js" \
---js "eyo/js/core/p6y.js" \
+--js "eyo/js/core/p6y/p6y.js" \
 --js "eyo/js/other/dragger.js" \
 --js "eyo/js/py/bitset.js" \
 --js "eyo/js/py/grammar.js" \

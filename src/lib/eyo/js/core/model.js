@@ -31,22 +31,23 @@ eYo.makeNS('model', {
   ANY: '*',
   VALIDATE: '!',
   validateStr: (what) => {
-    return !eYo.isStr(what) && eYo.INVALID
+    if (!eYo.isStr(what)) return eYo.INVALID
   },
   validateF: (what) => {
-    return !eYo.isF(what) && eYo.INVALID
+    if (!eYo.isF(what)) eYo.INVALID
   },
   validateBool: (what) => {
-    return !eYo.isBool(what) && eYo.INVALID
+    if (!eYo.isBool(what)) return eYo.INVALID
   },
   validateForFalse: (what) => {
-    return what !== false && !eYo.isF(what) && eYo.INVALID
+    if (what === false) return eYo.doNothing
+    if (!eYo.isF(what))return eYo.INVALID
   },
   validateRA: (what) => {
-    return !eYo.isRA(what) && eYo.INVALID
+    if (!eYo.isRA(what)) return eYo.INVALID
   },
   validateD: (what) => {
-    return !eYo.isD(what) && eYo.INVALID
+    if (!eYo.isD(what)) return eYo.INVALID
   },
 })
 
@@ -382,7 +383,7 @@ eYo.model.Format_p.validate = function (path, model) {
         console.error(model)
       }
       eYo.throw(`validate: bad model at ${c.path} (set eYo.TESTING to true and see console)`)
-    } else if (v) {
+    } else if (eYo.isDef(v)) {
       model = v
     }
     Object.keys(model).forEach(k => {

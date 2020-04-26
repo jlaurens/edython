@@ -7,11 +7,11 @@ eYo.test.almost = (a, b) => 10000 * Math.abs(a-b) <= (Math.abs(a) + Math.abs(b))
 eYo.test.rand100 = () => Math.round(Math.random()*10000)/100
 
 if (eYo.geom) {
-  eYo.geom.randPoint = () => new eYo.geom.Point(eYo.test.rand100(), eYo.test.rand100())
+  eYo.geom.randPoint = (snap = false) => new eYo.geom.Point(snap, eYo.test.rand100(), eYo.test.rand100())
 
-  eYo.geom.randSize = () => new eYo.geom.Size(eYo.test.rand100(), eYo.test.rand100())
+  eYo.geom.randSize = (snap = false) => new eYo.geom.Size(snap, eYo.test.rand100(), eYo.test.rand100())
   
-  eYo.geom.randRect = () => new eYo.geom.Rect(eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100())  
+  eYo.geom.randRect = (snap = false) => new eYo.geom.Rect(snap, eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100())  
 }
 
 eYo.test.Flag = function (what) {

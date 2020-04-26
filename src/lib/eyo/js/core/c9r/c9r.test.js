@@ -247,9 +247,9 @@ describe ('Tests: C9r', function () {
         },
       },
     })
-    chai.expect(eYo.isC9rInstance(d)).true
-    chai.expect(eYo.isC9rInstance(eYo.NA)).false
-    chai.expect(eYo.isC9rInstance(421)).false
+    chai.expect(eYo.isaC9r(d)).true
+    chai.expect(eYo.isaC9r(eYo.NA)).false
+    chai.expect(eYo.isaC9r(421)).false
     flag.reset()
     chai.assert(d.foo)
     d.foo(1)

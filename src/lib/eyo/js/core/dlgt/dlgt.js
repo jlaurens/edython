@@ -40,6 +40,8 @@ eYo.dlgt.declareDlgt = function (_p) {
   })
 }
 
+//<<< chai: eYo.dlgt.BaseC9r
+
 /**
  * This is a root class, not to be subclassed except in singletons.
  * Any constructor's delegate is an instance of this subclass.
@@ -169,35 +171,80 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
    * Make the init method of the associate contructor.
    * Any constructor must have an init method.
    * @this {eYo.dlgt.BaseC9r}
+   * @param {Object} model
    */
-  _p.makeC9rInit = function () {
-    let init_m = this.model__.init
+  _p.makeC9rInit = function (model) {
+    model || (model = this.model)
+    let K = 'init'
+    let f_m = model[K]
     let C9r_p = this.C9r_p
-    let init_p = C9r_p && C9r_p.init
-    if (init_m) {
-      if (!eYo.isF(init_m)) {
-        console.error('BREAK HERE!')
+    let f_p = C9r_p && C9r_p[K]
+    //<<< chai: eYo.dlgt.BaseC9r_p.makeC9rInit
+    //... var C9r, eyo
+    //... let prepare = model => {
+    //...   C9r = function (...$) {
+    //...     this.init(...$)
+    //...   }
+    //...   let _p = C9r.prototype
+    //...   _p.doPrepare = function (...$) {
+    //...     flag.push(1, ...$) 
+    //...   }
+    //...   _p.doInit = function (...$) {
+    //...     flag.push(2, ...$) 
+    //...   }
+    //...   eyo = eYo.dlgt.new('foo', C9r, model || {})
+    //... }
+    if (f_m) {
+      if (!eYo.isF(f_m)) {
+        console.error('BREAK HERE! BUG')
       }
-      if (XRegExp.exec(init_m.toString(), eYo.xre.function_builtin)) {
-        if (init_p) {
+      if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+        if (f_p) {
           var f = function (...args) {
             try {
-              this.init = eYo.doNothing
-              init_m.call(this, () => {
+              this[K] = eYo.doNothing
+              f_m.call(this, () => {
                 this.doPrepare(...args)
-                init_p.call(this, ...args)              
+                f_p.call(this, ...args)              
                 this.doInit(...args)
               }, ...args)
             } finally {
               delete this.dispose
             }
           }
+          //... prepare({
+          //...   init (builtin, ...$) {
+          //...     flag.push(8)
+          //...     builtin(...$)
+          //...     flag.push(9)
+          //...   }
+          //... })
+          //... C9r.prototype.init = function (...$) {
+          //...   flag.push(3, ...$) 
+          //... }
+          //... eyo.makeC9rInit()
+          //... new C9r(4, 7)
+          //... flag.expect(81473472479)
+          //... prepare()
+          //... C9r.prototype.init = function (...$) {
+          //...   flag.push(3, ...$) 
+          //... }
+          //... eyo.makeC9rInit({
+          //...   init (builtin, ...$) {
+          //...     flag.push(8)
+          //...     builtin(...$)
+          //...     flag.push(9)
+          //...   }
+          //... })
+          //... new C9r(4, 7)
+          //... flag.expect(81473472479)
+          //... prepare()
         } else {
           f = function (...args) {
             try {
-              this.init = eYo.doNothing
+              this[K] = eYo.doNothing
               this.doPrepare(...args)
-              init_m.call(this, () => {
+              f_m.call(this, () => {
                 this.doInit(...args)
               }, ...args)
             } finally {
@@ -205,20 +252,20 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
             }
           }
         }
-      } else if (init_p) {
+      } else if (f_p) {
         f = function (...args) {
           try {
-            this.init = eYo.doNothing
+            this[K] = eYo.doNothing
             if (!this.doPrepare) {
               console.error('BREAK HERE!!! !this.doPrepare')
             }
             this.doPrepare(...args)
-            init_p.call(this, ...args)
-            if (!eYo.isF(init_m)) {
-              console.error(init_m)
+            f_p.call(this, ...args)
+            if (!eYo.isF(f_m)) {
+              console.error(f_m)
               console.error('BREAK HERE!')
             }
-            init_m.call(this, ...args)
+            f_m.call(this, ...args)
             this.doInit(this, ...args)
           } finally {
             delete this.dispose
@@ -227,24 +274,24 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
       } else {
         f = function (...args) {
           try {
-            this.init = eYo.doNothing
+            this[K] = eYo.doNothing
             this.doPrepare(...args)
-            init_m.call(this, ...args)
+            f_m.call(this, ...args)
             this.doInit(this, ...args)
           } finally {
             delete this.dispose
           }
         }
       }
-    } else if (init_p) {
+    } else if (f_p) {
       f = function (...args) {
         try {
-          this.init = eYo.doNothing
+          this[K] = eYo.doNothing
           if (!this.eyo) {
             console.error('BREAK HERE! NO EYO')
           }
           this.doPrepare(...args)
-          init_p.call(this, ...args)
+          f_p.call(this, ...args)
           this.doInit(...args) 
         } finally {
           delete this.dispose
@@ -253,7 +300,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
     } else {
       f = function (...args) {
         try {
-          this.init = eYo.doNothing
+          this[K] = eYo.doNothing
           if (!this.eyo) {
             console.error('BREAK HERE!')
           }
@@ -264,7 +311,8 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         }
       }
     }
-    C9r_p.init = f
+    C9r_p[K] = f
+    //>>>
   }
   
   _p.doPrepare = eYo.doNothing
@@ -272,20 +320,23 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   
   /**
    * Make the dispose method.
+   * @param {Object} model
    */
-  _p.makeC9rDispose = function () {
-    let dispose_m = this.model__.dispose
+  _p.makeC9rDispose = function (model) {
+    model || (model = this.model)
+    let K = 'dispose'
+    let f_m = model[K]
     let C9r_p = this.C9r_p
-    let dispose_p = C9r_p && C9r_p.dispose
-    if (dispose_m) {
-      if (XRegExp.exec(dispose_m.toString(), eYo.xre.function_builtin)) {
-        if (dispose_p) {
+    let f_p = C9r_p && C9r_p[K]
+    if (f_m) {
+      if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+        if (f_p) {
           var f = function (...args) {
             try {
-              this.dispose = eYo.doNothing
-              dispose_m.call(this, () => {
+              this[K] = eYo.doNothing
+              f_m.call(this, () => {
                 this.eyo.disposeInstance(this, ...args)
-                dispose_p.call(this, ...args)              
+                f_p.call(this, ...args)              
               }, ...args)
             } finally {
               delete this.init
@@ -294,8 +345,8 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         } else {
           f = function (...args) {
             try {
-              this.dispose = eYo.doNothing
-              dispose_m.call(this, () => {
+              this[K] = eYo.doNothing
+              f_m.call(this, () => {
                 this.eyo.disposeInstance(this, ...args)              
               }, ...args)
             } finally {
@@ -303,13 +354,13 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
             }
           }
         }
-      } else if (dispose_p) {
+      } else if (f_p) {
         f = function (...args) {
           try {
-            this.dispose = eYo.doNothing
-            dispose_m.call(this, ...args)
+            this[K] = eYo.doNothing
+            f_m.call(this, ...args)
             this.eyo.disposeInstance(this, ...args)
-            dispose_p.call(this, ...args)
+            f_p.call(this, ...args)
           } finally {
             delete this.init
           }
@@ -317,20 +368,20 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
       } else {
         f = function (...args) {
           try {
-            this.dispose = eYo.doNothing
-            dispose_m.call(this, ...args)
+            this[K] = eYo.doNothing
+            f_m.call(this, ...args)
             this.eyo.disposeInstance(this, ...args)
           } finally {
             delete this.init
           }
         }
       }
-    } else if (dispose_p) {
+    } else if (f_p) {
       f = function (...args) {
         try {
-          this.dispose = eYo.doNothing
+          this[K] = eYo.doNothing
           this.eyo.disposeInstance(this, ...args)
-          dispose_p.call(this, ...args)
+          f_p.call(this, ...args)
         } finally {
           delete this.init
         }
@@ -338,14 +389,14 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
     } else {
       f = function (...args) {
         try {
-          this.dispose = eYo.doNothing
+          this[K] = eYo.doNothing
           this.eyo.disposeInstance(this, ...args)
         } finally {
           delete this.init
         }
       }
     }
-    C9r_p.dispose = f
+    C9r_p[K] = f
   }
 
   /**
@@ -599,6 +650,50 @@ new eYo.dlgt.BaseC9r(eYo.dlgt, 'Base…', eYo.dlgt.BaseC9r, {})
 
 eYo.dlgt.BaseC9r.eyo.finalizeC9r()
 
+eYo.mixinR(eYo, {
+  /**
+   * Realize `p.next === n` and `n.previous === p`.
+   * @param {*} p 
+   * @param {*} n 
+   */
+  linkPreviousNext (p, n) {
+    if (eYo.isDef(p) && p.next !== n) {
+      // remove old link
+      if (p.hasOwnProperty('next') && eYo.isDef(p.next)) {
+        Object.defineProperties(p.next, {
+          previous: {
+            value: eYo.NA,
+            configurable: true,
+          }
+        })
+      }
+      Object.defineProperties(p, {
+        next: {
+          value: n,
+          configurable: true,
+        }
+      })
+    }
+    if (eYo.isDef(n) && n.previous !== p) {
+      // remove old link
+      if (n.hasOwnProperty('previous') && eYo.isDef(n.previous)) {
+        Object.defineProperties(n.previous, {
+          next: {
+            value: eYo.NA,
+            configurable: true,
+          }
+        })
+      }
+      Object.defineProperties(n, {
+        previous: {
+          value: p,
+          configurable: true,
+        }
+      })
+    }
+  },
+}, false)
+
 /**
  * This namespace method populates the namespace's base delegate
  * with some methods to manage a data model with many possible attributes.
@@ -665,7 +760,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
   })
 
   /**
-   * Expands the property, data, fields, slots section into the receiver's corresponding model.
+   * Expands the property, data, fields, slots section into the receiver's corresponding model. Only works for objects.
    * Usage: For the model `{foo: bar}`, run `C9r.eyo.fooMerge(bar)`
    * @param{Object} source - A model object.
    */
@@ -772,7 +867,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     if (map) {
       for (let k of [...map.keys()].reverse()) {
         let attr = map.get(k)
-        eYo.isC9rInstance(attr) && attr.dispose()
+        eYo.isaC9r(attr) && attr.dispose()
       }
     }
     map = object[tMap] = new Map()
@@ -785,17 +880,12 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
       }
     }
     var attr = object[tHead] = attributes.shift()
+    eYo.linkPreviousNext(eYo.NA, attr)
     attributes.forEach(a => {
-      try {
-        attr.next = a
-        a.previous = attr
-        attr = a
-      } catch(e) {
-        console.error(e)
-        console.error('BREAK HERE, it is no a property')
-        attr.next = a
-      }
+      eYo.linkPreviousNext(attr, a)
+      attr = a
     })
+    eYo.linkPreviousNext(attr, eYo.NA)
     object[tTail] = attributes.pop() || object[tHead]
     attr = object[tHead]
   }
@@ -839,3 +929,4 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     }
   }
 }
+//>>>

@@ -66,17 +66,17 @@ describe ('Tests: Property', function () {
     chai.expect(p.stored__).equal(421)
   })
   it('P6y: dispose', function () {
-    let p = eYo.p6y.new({}, 'foo', onr)
-    let value = {
-      eyo: true,
+    let p6y = eYo.p6y.new({}, 'foo', onr)
+    let value = eYo.c9r.new({
       dispose () {
         flag.push(1)
       }
-    }
-    p.value_ = value
-    chai.expect(p.value).equal(value)
-    p.dispose()
-    chai.assert(eYo.isNA(p.value))
+    })
+    p6y.value_ = value
+    chai.expect(p6y.value).equal(value)
+    chai.expect(value.eyo_p6y).equal(p6y)
+    p6y.dispose()
+    chai.assert(eYo.isNA(p6y.value))
     flag.expect(1)
   })
   it('P6y: this is the owner', function () {
@@ -698,8 +698,8 @@ describe ('Tests: Property', function () {
     p.value_ = 123
     chai.expect(p.value).equal(123)
     flag = 666
-    chai.expect(p.start()).equal(flag)
-    p.setValue(p.start())
+    chai.expect(p.getStartValue()).equal(flag)
+    p.setValue(p.getStartValue())
     chai.expect(p.value).equal(flag)
     flag = 421
     p.reset()
@@ -820,45 +820,37 @@ describe ('Tests: Property', function () {
     chai.expect(p.value).equal(123)
   })
   it ('P6y: recycle', function () {
-    var flag = 421
+    var x = 421
     var p = eYo.p6y.new({
       value () {
-        return flag
+        return x
       },
     }, 'foo', onr)
-    var flag_what = 0
-    var flag_how = 0
-    let value = {
-      eyo: true,
-      eyo_p6y: 421,
+    let value = eYo.c9r.new({
       dispose (what, how) {
-        flag_what = what
-        flag_how = how
+        flag.push(what, how)
       }
-    }
+    })
+    value.eyo_p6y = 421
     chai.assert((p.value__ = value) === value)
     chai.expect(value.eyo_p6y).equal(421)
     chai.assert((p.value__ = eYo.NA) === eYo.NA)
     chai.expect(value.eyo_p6y).equal(421)
-    value.eyo_p6y = eYo.NA
+    delete value.eyo_p6y
     chai.assert((p.value__ = value) === value)
     chai.expect(value.eyo_p6y).equal(p)
     chai.assert((p.value__ = eYo.NA) === eYo.NA)
     chai.expect(value.eyo_p6y).equal(eYo.NA)
-
     p = eYo.p6y.new({}, 'foo', onr)
     value.eyo_p6y = 421
     chai.assert((p.value__ = value) === value)
     p.dispose(123,456)
-    chai.expect(flag_what).equal(0)
-    chai.expect(flag_how).equal(0)
-
+    flag.expect(0)
     p = eYo.p6y.new({}, 'foo', onr)
     value.eyo_p6y = eYo.NA
     chai.assert((p.value__ = value) === value)
     p.dispose(123,456)
-    chai.expect(flag_what).equal(123)
-    chai.expect(flag_how).equal(456)
+    flag.expect(123456)
   })
   it ('P6y: Shortcuts', function () {
     var model = 421
@@ -916,14 +908,12 @@ describe ('Tests: Property', function () {
     })
     it ('P6y: List dispose...', function () {
       var l = new eYo.p6y.List('foo', onr)
-      l.splice(0, 0, {
-        eyo: true,
+      l.splice(0, 0, eYo.c9r.new({
         dispose (x) {
           flag.push(x + 1)
         }
-      })
+      }))
       l.splice(0, 0, {
-        eyo: false,
         dispose (x) {
           flag.push(x + 2)
         }

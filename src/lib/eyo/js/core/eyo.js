@@ -271,6 +271,12 @@ eYo.mixinR(eYo, {
   doReturn (what) {
     return what
   },
+  /**
+   * Projection function frequently used.
+   */
+  doReturn2nd (what, $else) {
+    return $else
+  },
 }, false)
 
 // ANCHOR Utilities

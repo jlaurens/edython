@@ -1,10 +1,10 @@
 from .path import *
 import re
 
-re_begin = re.compile(r"""^\s*//<\?\?>\s*(?P<it>.*?)\s*$""", re.X)
-re_cont = re.compile(r"""^\s*//<\./>(?P<indent>\s*)(?P<cont>.*?)\s*$""", re.X)
-re_end = re.compile(r"""^\s*//</\?>""", re.X)
-re_it = re.compile(r"""\s*<//>\s*""", re.X)
+re_begin = re.compile(r"""^\s*//<<<\s*(.*?:\s*)?(?P<it>.*?)\s*$""", re.X)
+re_cont = re.compile(r"""^\s*//\.\.\.(?P<indent>\s*)(?P<cont>.*?)\s*$""", re.X)
+re_end = re.compile(r"""^\s*//>>>""", re.X)
+re_it = re.compile(r"""\s*\|\|\|\s*""", re.X)
 
 def getInlineTest(path):
   class Line:

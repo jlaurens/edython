@@ -27,7 +27,7 @@ def update_inline_test():
   return 0
 
 if __name__ == "__main__":
-  
+  print('''Maybe you should run `npm run eyo:prepare` instead.
+''')
   out = update_inline_test()
-
   exit(out)
