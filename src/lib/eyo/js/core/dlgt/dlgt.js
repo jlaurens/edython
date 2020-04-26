@@ -238,19 +238,38 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
           //... })
           //... new C9r(4, 7)
           //... flag.expect(81473472479)
-          //... prepare()
         } else {
           f = function (...args) {
             try {
               this[K] = eYo.doNothing
-              this.doPrepare(...args)
               f_m.call(this, () => {
+                this.doPrepare(...args)
                 this.doInit(...args)
               }, ...args)
             } finally {
               delete this.dispose
             }
           }
+          //... prepare({
+          //...   init (builtin, ...$) {
+          //...     flag.push(8)
+          //...     builtin(...$)
+          //...     flag.push(9)
+          //...   }
+          //... })
+          //... eyo.makeC9rInit()
+          //... new C9r(4, 7)
+          //... flag.expect(81472479)
+          //... prepare()
+          //... eyo.makeC9rInit({
+          //...   init (builtin, ...$) {
+          //...     flag.push(8)
+          //...     builtin(...$)
+          //...     flag.push(9)
+          //...   }
+          //... })
+          //... new C9r(4, 7)
+          //... flag.expect(81472479)
         }
       } else if (f_p) {
         f = function (...args) {
@@ -266,22 +285,68 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
               console.error('BREAK HERE!')
             }
             f_m.call(this, ...args)
-            this.doInit(this, ...args)
+            this.doInit(...args)
           } finally {
             delete this.dispose
           }
         }
+        //... prepare({
+        //...   init (...$) {
+        //...     flag.push(8)
+        //...     flag.push(...$)
+        //...     flag.push(9)
+        //...   }
+        //... })
+        //... C9r.prototype.init = function (...$) {
+        //...   flag.push(3, ...$) 
+        //... }
+        //... eyo.makeC9rInit()
+        //... new C9r(4, 7)
+        //... flag.expect(1473478479247)
+        //... prepare()
+        //... C9r.prototype.init = function (...$) {
+        //...   flag.push(3, ...$) 
+        //... }
+        //... eyo.makeC9rInit({
+        //...   init (...$) {
+        //...     flag.push(8)
+        //...     flag.push(...$)
+        //...     flag.push(9)
+        //...   }
+        //... })
+        //... new C9r(4, 7)
+        //... flag.expect(1473478479247)
       } else {
         f = function (...args) {
           try {
             this[K] = eYo.doNothing
             this.doPrepare(...args)
             f_m.call(this, ...args)
-            this.doInit(this, ...args)
+            this.doInit(...args)
           } finally {
             delete this.dispose
           }
         }
+        //... prepare({
+        //...   init (...$) {
+        //...     flag.push(8)
+        //...     flag.push(...$)
+        //...     flag.push(9)
+        //...   }
+        //... })
+        //... eyo.makeC9rInit()
+        //... new C9r(4, 7)
+        //... flag.expect(1478479247)
+        //... prepare()
+        //... eyo.makeC9rInit({
+        //...   init (...$) {
+        //...     flag.push(8)
+        //...     flag.push(...$)
+        //...     flag.push(9)
+        //...   }
+        //... })
+        //... new C9r(4, 7)
+        //... flag.expect(1478479247)
       }
     } else if (f_p) {
       f = function (...args) {
@@ -297,6 +362,20 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
           delete this.dispose
         }
       }
+      //... prepare()
+      //... C9r.prototype.init = function (...$) {
+      //...   flag.push(3, ...$) 
+      //... }
+      //... eyo.makeC9rInit()
+      //... new C9r(4, 7)
+      //... flag.expect(147347247)
+      //... prepare()
+      //... C9r.prototype.init = function (...$) {
+      //...   flag.push(3, ...$) 
+      //... }
+      //... eyo.makeC9rInit({})
+      //... new C9r(4, 7)
+      //... flag.expect(147347247)
     } else {
       f = function (...args) {
         try {
@@ -310,6 +389,14 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
           delete this.dispose
         }
       }
+      //... prepare()
+      //... eyo.makeC9rInit()
+      //... new C9r(4, 7)
+      //... flag.expect(147247)
+      //... prepare()
+      //... eyo.makeC9rInit({})
+      //... new C9r(4, 7)
+      //... flag.expect(147247)
     }
     C9r_p[K] = f
     //>>>
