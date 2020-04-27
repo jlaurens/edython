@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Utility to make a constructor with some edython specific data storage and methods.
+ * @fileoverview Models are used to extend existing classes by subclassing with a simple syntax.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -17,18 +17,19 @@
  * Whether the argument is a model object once created with `{...}` syntax.
  * @param {*} what
  */
-eYo.isModel = (what) => {
-  return what && (what.model__ || eYo.isD(what))
+eYo.isModel = what => {
+  return !!what && (!!what.model__ || eYo.isD(what))
+  //<<< chai: eYo.isModel
+  //... chai.assert(eYo.isModel)
+  //... chai.expect(eYo.isModel({})).true
+  //... chai.expect(eYo.isModel()).false
+  //... chai.expect(eYo.isModel(421)).false
+  //... let o = new function() {}
+  //... chai.expect(eYo.isModel(o)).false
+  //... o.model__ = 421
+  //... chai.expect(eYo.isModel(o)).true
+  //>>>
 }
-//<<< chai: eYo.isModel
-//... chai.expect(eYo.isModel({})).true
-//... chai.expect(eYo.isModel()).false
-//... chai.expect(eYo.isModel(421)).false
-//... let o = new function() {}
-//... chai.expect(eYo.isModel(o)).false
-//... o.model__ = 421
-//... chai.expect(eYo.isModel(o)).true
-//>>>
 
 /**
  * The model management.
@@ -37,66 +38,128 @@ eYo.isModel = (what) => {
  * @namespace
  */
 eYo.makeNS('model', {
+  //<<< chai: eYo.model
+  //... chai.assert(eYo.model)
+  //... chai.assert(eYo.model.Format)
+  //>>>
   ROOT: '^$',
   DOT: '.',
+  DOTDOT: '..',
   ANY: '*',
   VALIDATE: '!',
+  /**
+   * Return `eYo.INVALID` if the argument is defined and not 'true' nor 'false'.
+   * @param{*} what
+   * @return {Boolean}
+   */
+  validateBool: (what) => {
+    if (eYo.isDef(what) && !eYo.isBool(what)) return eYo.INVALID
+    //<<< chai: eYo.model.validateBool
+    //... chai.assert(!eYo.model.validateBool(true))
+    //... chai.assert(!eYo.model.validateBool(false))
+    //... chai.expect(!eYo.model.validateBool())
+    //... chai.expect(eYo.model.validateBool(1)).equal(eYo.INVALID)
+    //>>>
+  },
   validateStr: (what) => {
-    if (!eYo.isStr(what)) return eYo.INVALID
+    if (eYo.isDef(what) && !eYo.isStr(what)) return eYo.INVALID
+    //<<< chai: eYo.model.validateStr
+    //... chai.assert(!eYo.model.validateStr('ABC'))
+    //... chai.assert(!eYo.model.validateStr())
+    //... chai.expect(eYo.model.validateStr(1)).equal(eYo.INVALID)
+    //>>>
   },
   validateF: (what) => {
-    if (!eYo.isF(what)) eYo.INVALID
-  },
-  validateBool: (what) => {
-    if (!eYo.isBool(what)) return eYo.INVALID
+    if (eYo.isDef(what) && !eYo.isF(what)) return eYo.INVALID
+    //<<< chai: eYo.model.validateF
+    //... chai.assert(!eYo.model.validateF(() => {}))
+    //... chai.assert(!eYo.model.validateF())
+    //... chai.expect(eYo.model.validateF(1)).equal(eYo.INVALID)
+    //>>>
   },
   validateForFalse: (what) => {
+    //<<< chai: eYo.model.validateForFalse
     if (what === false) return eYo.doNothing
-    if (!eYo.isF(what))return eYo.INVALID
+    //... chai.expect(eYo.model.validateForFalse(false)).equal(eYo.doNothing)
+    if (eYo.isDef(what) && !eYo.isF(what))return eYo.INVALID
+    //... chai.assert(!eYo.model.validateForFalse(() => {}))
+    //... chai.assert(!eYo.model.validateForFalse())
+    //... chai.expect(eYo.model.validateForFalse(1)).equal(eYo.INVALID)
+    //... chai.expect(eYo.model.validateForFalse(true)).equal(eYo.INVALID)
+    //>>>
   },
   validateRA: (what) => {
-    if (!eYo.isRA(what)) return eYo.INVALID
+    if (eYo.isDef(what) && !eYo.isRA(what)) return eYo.INVALID
+    //<<< chai: eYo.model.validateRA
+    //... chai.assert(!eYo.model.validateRA([]))
+    //... chai.assert(!eYo.model.validateRA())
+    //... chai.expect(eYo.model.validateRA(1)).equal(eYo.INVALID)
+    //... chai.expect(eYo.model.validateRA(true)).equal(eYo.INVALID)
+    //>>>
   },
   validateD: (what) => {
-    if (!eYo.isD(what)) return eYo.INVALID
+    if (eYo.isDef(what) && !eYo.isD(what)) return eYo.INVALID
+    //<<< chai: eYo.model.validateD
+    //... chai.assert(!eYo.model.validateD({}))
+    //... chai.assert(!eYo.model.validateD())
+    //... chai.expect(eYo.model.validateD(1)).equal(eYo.INVALID)
+    //... chai.expect(eYo.model.validateD(true)).equal(eYo.INVALID)
+    //>>>
   },
 })
 
-eYo.model._p.descriptorF = function(model) {
-  model || (model = {})
-  model[eYo.model.VALIDATE] = eYo.model.validateF
-  return model
-}
-
-eYo.model._p.descriptorBool = function(model) {
-  model || (model = {})
-  model[eYo.model.VALIDATE] = eYo.model.validateBool
-  return model
-}
-
-eYo.model._p.descriptorStr = function(model) {
-  model || (model = {})
-  model[eYo.model.VALIDATE] = eYo.model.validateStr
-  return model
-}
-
-eYo.model._p.descriptorForFalse = function(model) {
-  model || (model = {})
-  model[eYo.model.VALIDATE] = eYo.model.validateForFalse
-  return model
-}
-
-eYo.model._p.descriptorRA = function(model) {
-  model || (model = {})
-  model[eYo.model.VALIDATE] = eYo.model.validateRA
-  return model
-}
-
-eYo.model._p.descriptorD = function(model) {
-  model || (model = {})
-  model[eYo.model.VALIDATE] = eYo.model.validateD
-  return model
-}
+/**
+ * Descriptor.
+ * @param {*} model
+ * @name {eYo.model.descriptorBool}
+ */
+/**
+ * Descriptor.
+ * @param {*} model
+ * @name {eYo.model.descriptorStr}
+ */
+/**
+ * Descriptor.
+ * @param {*} model
+ * @name {eYo.model.descriptorF}
+ */
+/**
+ * Descriptor.
+ * @param {*} model
+ * @name {eYo.model.descriptorForFalse}
+ */
+/**
+ * Descriptor.
+ * @param {*} model
+ * @name {eYo.model.descriptorRA}
+ */
+/**
+ * Descriptor.
+ * @param {*} model
+ * @name {eYo.model.descriptorD}
+ */
+;['Bool', 'Str', 'F', 'ForFalse', 'RA', 'D'].forEach(K => {
+  eYo.model._p['descriptor' + K] = function(model) {
+    model || (model = {})
+    model[eYo.model.VALIDATE] = eYo.model['validate' + K]
+    return model
+  }
+})
+//<<< chai: eYo.model.descriptor(Bool|Str|F|ForFalse|RA|D)
+//... var mf = new eYo.model.Format()
+//... var model = eYo.model.descriptorBool()
+//... mf.allow(model)
+//... chai.expect(mf.validate(true)).equal(true)
+//... chai.expect(mf.validate(false)).equal(false)
+//... 
+//... 
+//... 
+//... 
+//... 
+//... 
+//... 
+//... 
+//>>>
 
 /**
  * Convenient method 
@@ -216,9 +279,9 @@ eYo.model.Format = function (parent, key, fallback) {
   // 3) parent, fallback
   // 4) key, fallback
   // 5) fallback
+  // 6) None
   if (eYo.isStr(parent)) { // cases 4: shift arguments
     fallback && eYo.throw(`eYo.model.Format: unexpected argument ${fallback}`)
-    key || eYo.throw(`eYo.model.Format: missing fallback`)
     ;[parent, key, fallback] = [eYo.NA, parent, key] // case 1
   } else if (eYo.isStr(key)) { // cases 1 and 2
     parent || eYo.throw(`eYo.model.Format: missing parent`)
@@ -234,6 +297,35 @@ eYo.model.Format = function (parent, key, fallback) {
   this.key = parent ? key || fallback && fallback.key || '' : ''
   this.map = new Map()
   this.fallback = fallback
+  //<<< chai: eYo.model.Format
+  //... let parent = new eYo.model.Format()
+  //... let key = 'foo'
+  //... let fallback = new eYo.model.Format()
+  //... var mf = new eYo.model.Format(parent, key, fallback)
+  //... chai.expect(mf.parent).equal(parent)
+  //... chai.expect(mf.key).equal(key)
+  //... chai.expect(mf.fallback).equal(fallback)
+  //... var mf = new eYo.model.Format(parent, key)
+  //... chai.expect(mf.parent).equal(parent)
+  //... chai.expect(mf.key).equal(key)
+  //... chai.expect(mf.fallback).undefined
+  //... var mf = new eYo.model.Format(parent, fallback)
+  //... chai.expect(mf.parent).equal(parent)
+  //... chai.expect(mf.key).equal('')
+  //... chai.expect(mf.fallback).equal(fallback)
+  //... var mf = new eYo.model.Format(key, fallback)
+  //... chai.expect(mf.parent).undefined
+  //... chai.expect(mf.key).equal('') // no parent
+  //... chai.expect(mf.fallback).equal(fallback)
+  //... var mf = new eYo.model.Format(fallback)
+  //... chai.expect(mf.parent).undefined
+  //... chai.expect(mf.key).equal('')
+  //... chai.expect(mf.fallback).equal(fallback)
+  //... var mf = new eYo.model.Format()
+  //... chai.expect(mf.parent).undefined
+  //... chai.expect(mf.key).equal('')
+  //... chai.expect(mf.fallback).undefined
+  //>>>
 }
 
 eYo.model.Format_p = eYo.model.Format.prototype
@@ -249,47 +341,58 @@ eYo.model.Format_p = eYo.model.Format.prototype
 eYo.model.Format_p.get = function (path, create) {
   var c = this
   for (let k of path.split('/')) {
-    if (k && k !== eYo.model.DOT) {
-      var cc = c.map.get(k)
-      if (!cc) {
-        cc = c.map.get(eYo.model.ANY)
+    if (k) {
+      if (k === eYo.model.DOTDOT) {
+        c = c.parent
+      } else if (k !== eYo.model.DOT) {
+        var cc = c.map.get(k)
         if (!cc) {
-          let fb = c.fallback
-          if (fb) {
-            if ((cc = fb.get(k))) {
-              cc = new eYo.model.Format(c, cc.key, cc)
-              c.map.set(k, cc)
-            }
-          }
+          cc = c.map.get(eYo.model.ANY)
           if (!cc) {
-            if (create) {
-              cc = new eYo.model.Format(this, k)
-              c.map.set(k, cc)
-            } else {
-              return // ... nothing
+            let fb = c.fallback
+            if (fb) {
+              if ((cc = fb.get(k))) {
+                cc = new eYo.model.Format(c, cc.key, cc)
+                c.map.set(k, cc)
+              }
+            }
+            if (!cc) {
+              if (create) {
+                cc = new eYo.model.Format(c, k)
+                c.map.set(k, cc)
+              } else {
+                return // ... nothing
+              }
             }
           }
         }
+        c = cc       
       }
-      c = cc       
     }
   }
   return c
-}
+  //<<< chai: Yo.model.Format_p.get
+  //... var mf = new eYo.model.Format()
+  //... mf.allow('a')
+  //... var mf_a = mf.get('a')
+  //... chai.assert(mf_a)
+  //... chai.expect(mf_a.key).equal('a')
+  //... chai.expect(mf_a.parent).equal(mf)
+  //... mf.allow('a/b')
+  //... var mf_ab = mf.get('a/b')
+  //... chai.expect(mf_a.get('b')).equal(mf_ab)
+  //... chai.expect(mf_ab.key).equal('b')
+  //... chai.expect(mf_ab.parent).equal(mf_a)
+  //... chai.assert(mf.get('a/b'))
+  //... mf.allow('a/b/c')
+  //... chai.assert(mf.get('a/b/c'))
+  //... chai.expect(mf.get('a/b/c')).equal(mf.get('a').get('b').get('c'))
+  //... ;['/a', '//a', './a', 'a/.', '/a/.', '//a/.', './a/.', ].forEach(k => chai.expect(mf.get(k)).equal(mf.get('a')))
+  //... ;['/a//b//c', '/a/./b/./c', './a/b/./c/.', ].forEach(k => chai.expect(mf.get(k)).equal(mf.get('a/b/c')))
+  //... chai.expect(mf.get('a/b/c/../../..')).equal(mf)
+  //... chai.expect(() => mf.get('a/../../..')).throw()
+  //>>>
 
-/**
- * Private tree method.
- * arguments is a list of strings, arrays or strings and objects.
- */
-eYo.model.Format_p.isAllowed = function (...$) {
-  var c = this
-  $.forEach(key => {
-    c = c.get(key)
-    if (!c) {
-      return
-    }
-  })
-  return !!c
 }
 
 /**
@@ -297,50 +400,97 @@ eYo.model.Format_p.isAllowed = function (...$) {
  * arguments is a list of strings, arrays or strings, objects or eYo.model.Format instances.
  */
 eYo.model.Format_p.allow = function (...$) {
+  //<<< chai: eYo.model.Format_p.allow
   var c = this
-  var pending
   $.forEach(arg => {
     if (arg) {
-      let mf = arg.eyo && arg.eyo.modelFormat || arg
+      var mf = arg.eyo && arg.eyo.modelFormat || arg
       if (mf && mf instanceof eYo.model.Format) {
-        pending || eYo.throw(`Cannot allow a model controller with no preceding key`)
-        mf = new eYo.model.Format(c, pending, mf)
-        c.map.set(pending, (c = mf))
-        pending = eYo.NA
+        c.fallback = mf
+        //... var mf = new eYo.model.Format()
+        //... var fallback = new eYo.model.Format()
+        //... mf.allow(fallback)
+        //... chai.expect(mf.fallback).equal(fallback)
         return
-      }
-      if (pending) {
-        c = c.get(pending, true)
       }
       if (eYo.isStr(arg)) {
-        pending = arg
+        c = c.get(arg, true)
         return
+        //... var mf = new eYo.model.Format()
+        //... mf.allow('a')
+        //... chai.assert(mf.get('a'))
+        //... mf.allow('a', 'b')
+        //... chai.assert(mf.get('a').get('b'))
+        //... chai.expect(mf.get('a').get('b')).equal(mf.get('a/b'))
+        //... mf.allow('a/b/c')
+        //... chai.assert(mf.get('a').get('b').get('c'))
+        //... chai.expect(mf.get('a').get('b/c')).equal(mf.get('a/b/c'))
       }
-      pending = eYo.NA
       if (eYo.isRA(arg)) {
         arg.forEach(k => {
           c.get(k, true)
         })
+        //... var mf = new eYo.model.Format()
+        //... var RA = ['a', 'b', 'c']
+        //... mf.allow(RA)
+        //... RA.forEach(k => chai.assert(mf.get(k)))
       } else {
         var v
+        let keys = new Set(Object.keys(arg))
         if (eYo.isRA(v = arg[eYo.model.DOT])) {
           v.forEach(k => {
             c.get(k, true)
           })
+          keys.delete(eYo.model.DOT)
+          //... var mf = new eYo.model.Format()
+          //... var RA = ['a', 'b', 'c']
+          //... mf.allow({[eYo.model.DOT]: RA})
+          //... RA.forEach(k => chai.assert(mf.get(k)))
         }
-        let keys = new Set(Object.keys(arg))
-        if (eYo.isF((v = arg[eYo.model.VALIDATE]))) {
+        if (eYo.isDef(v = arg[eYo.model.VALIDATE])) {
           eYo.isF(v) || eYo.throw(`Forbidden ${eYo.model.VALIDATE} -> ${v}`)
+          //... var mf = new eYo.model.Format()
+          //... chai.expect(() => mf.allow({[eYo.model.VALIDATE]: 421})).throw()
           c.validate_ = v
           keys.delete(eYo.model.VALIDATE)
+          //... var mf = new eYo.model.Format()
+          //... var f = () => {
+          //...   flag.push(421)
+          //... }
+          //... mf.allow({[eYo.model.VALIDATE]: f})
+          //... chai.expect(mf.validate_).equal(f)
+          //... mf.validate_()
+          //... flag.expect(421)
+          //... mf.validate(0)
+          //... flag.expect(421)
         }
         keys.forEach(k => {
           c.allow(k, arg[k]) // avoid recursivity ?
+          //... var mf = new eYo.model.Format()
+          //... var model = {}
+          //... RA.forEach(k => model[k] = k)
+          //... mf.allow(model)
+          //... RA.forEach(k => chai.assert(mf.get(k)))
         })
       }
     }
   })
-  pending && c.get(pending, true)
+  //>>>
+}
+
+/**
+ * Private tree method.
+ * arguments is a list of strings, arrays or strings and objects. Exactly what was used to allow some model path.
+ */
+eYo.model.Format_p.isAllowed = function (...$) {
+  var c = this
+  $.forEach(key => {
+    if (!c) {
+      return
+    }
+    c = c.get(key)
+  })
+  return !!c
 }
 
 /**
@@ -349,6 +499,9 @@ eYo.model.Format_p.allow = function (...$) {
  * Private computed property
  */
 Object.defineProperties(eYo.model.Format_p, {
+  /**
+   * @property {eYo.model.Format_p.all}
+   */
   all: eYo.descriptorR(function () {
     var p = this
     let ans = [p]
@@ -357,9 +510,28 @@ Object.defineProperties(eYo.model.Format_p, {
     }
     return ans
   }),
+  /**
+   * @property {eYo.model.Format_p.path}
+   */
   path: eYo.descriptorR(function () {
     return this.all.map(x => x.key).join('/') || '/'
   }),
+  //<<< chai: eYo.model.Format_p.(all|path)
+  //... var mf = new eYo.model.Format()
+  //... chai.expect(mf.path).equal('/')
+  //... mf.allow('a')
+  //... chai.expect(mf.path).equal('/')
+  //... chai.expect(mf.get('a').path).equal('/a')
+  //... mf.allow('a', 'b')
+  //... chai.expect(mf.path).equal('/')
+  //... chai.expect(mf.get('a').path).equal('/a')
+  //... chai.expect(mf.get('a').get('b').path).equal('/a/b')
+  //... mf.allow('a', 'b', 'c')
+  //... chai.expect(mf.path).equal('/')
+  //... chai.expect(mf.get('a').path).equal('/a')
+  //... chai.expect(mf.get('a').get('b').path).equal('/a/b')
+  //... chai.expect(mf.get('a').get('b').get('c').path).equal('/a/b/c')
+  //>>>
 })
 
 /**
@@ -369,6 +541,7 @@ Object.defineProperties(eYo.model.Format_p, {
  * @return {Object} the possibly validated model.
  */
 eYo.model.Format_p.validate = function (path, model) {
+  //<<< chai: eYo.model.Format_p.validate
   var c = this
   if (eYo.isDef(model)) {
     path.split('/').forEach(k => {
@@ -379,6 +552,14 @@ eYo.model.Format_p.validate = function (path, model) {
         }
         cc || eYo.throw(`validate: unreachable path: ${c.path}/${k}`)
         c = cc
+        //... var mf = new eYo.model.Format()
+        //... chai.expect(() => mf.validate('a', 1)).throw()
+        //... mf.allow('a')
+        //... mf.validate('a', 1)
+        //... chai.expect(() => mf.validate('a/b', 1)).throw()
+        //... mf.allow('a', 'b')
+        //... mf.validate('a/b', 1)
+        //... mf.validate('/a/b', 1)
       }
     })
   } else {
@@ -408,6 +589,7 @@ eYo.model.Format_p.validate = function (path, model) {
     })
     return model
   }
+  //>>>
 }
 
 //>>>
