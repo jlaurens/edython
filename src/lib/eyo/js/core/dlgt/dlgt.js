@@ -756,9 +756,7 @@ eYo.dlgt.declareDlgt(eYo._p)
     return ans
   }
   /**
-   * Finalize the associate constructor and allow some model format.
-   * This must be called once for any delegate, raises otherwise.
-   * Calls `modelPrepare`, `makeC9rInit` and `makeC9rDispose`.
+   * Unfinalize the associate constructor and allow some model format.
    * @name {eYo.dlgt.BaseC9r.modelAllow}
    */
   _p.unfinalizeC9r = function () {

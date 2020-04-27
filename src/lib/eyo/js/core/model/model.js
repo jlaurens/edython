@@ -11,6 +11,8 @@
  */
 'use strict'
 
+//<<< chai: eYo.model
+
 /**
  * Whether the argument is a model object once created with `{...}` syntax.
  * @param {*} what
@@ -18,6 +20,15 @@
 eYo.isModel = (what) => {
   return what && (what.model__ || eYo.isD(what))
 }
+//<<< chai: eYo.isModel
+//... chai.expect(eYo.isModel({})).true
+//... chai.expect(eYo.isModel()).false
+//... chai.expect(eYo.isModel(421)).false
+//... let o = new function() {}
+//... chai.expect(eYo.isModel(o)).false
+//... o.model__ = 421
+//... chai.expect(eYo.isModel(o)).true
+//>>>
 
 /**
  * The model management.
@@ -380,7 +391,7 @@ eYo.model.Format_p.validate = function (path, model) {
     : c.fallback && c.fallback.validate(model)
     if (eYo.isINVALID(v)) {
       if (eYo.TESTING) {
-        console.error(model)
+        console.error(c.path, model)
       }
       eYo.throw(`validate: bad model at ${c.path} (set eYo.TESTING to true and see console)`)
     } else if (eYo.isDef(v)) {
@@ -398,3 +409,5 @@ eYo.model.Format_p.validate = function (path, model) {
     return model
   }
 }
+
+//>>>

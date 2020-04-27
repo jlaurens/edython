@@ -20,18 +20,6 @@ describe ('Tests: Property', function () {
     chai.expect(eYo.isaP6y()).false
     chai.expect(eYo.isaP6y(1)).false
   })
-  it('P6y: modelFormat', function () {
-    var model = {
-      foo: {
-        get () {},
-      },
-    }
-    model = p6yModelValidate(model)
-    chai.assert(eYo.isF(model.foo.get))
-    var model = 421
-    model = p6yModelValidate(model)
-    chai.expect(model.value).equal(421)
-  })
   it('P6y: eYo.model.modelValidate(key, {})', function () {
   })
   it('P6y: eYo.model.modelValidate(key, …)', function () {

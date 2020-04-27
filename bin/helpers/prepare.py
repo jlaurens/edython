@@ -9,14 +9,14 @@ from pathlib import Path
 import datetime
 
 verbose = global_args and global_args.verbose
-print('Collecting dependencies...')
+print(format.title('Collecting dependencies...'))
 bdd = get_bdd(verbose=verbose)
-print('... DONE')
+print(format.ok('... DONE'))
 
 print(*bdd['eYo.attr'].required, sep='\n')
 
 def minimalTests(path_src):
-  print('Updating minimal tests...')
+  print(format.title('Updating minimal tests...'))
   for js in [x for x in path_src.rglob('*.js')
     if x.is_file() if not x.name.endswith('test.js') if not x.name.endswith('test.inline.js')]:
     test = js.with_suffix('.test.js')
@@ -30,12 +30,12 @@ describe ('Tests: {js.stem}', function () {{
 }})
 ''')
       print('Creating ', test)
-  print('... DONE')
+  print(format.ok('... DONE'))
   return 0
 
 # read the build.sh, change it and save the modified file to the build
 def updateBuild():
-  print('Updating build.sh.')
+  print(format.title('Updating build.sh.'))
   p_in = path_out = path_bin / 'build.sh'
   re_good = re.compile(r"^--js ")
   with p_in.open('r', encoding='utf-8') as f:
@@ -55,7 +55,7 @@ def updateBuild():
     path_out.write_text(''.join(head), encoding='utf-8')
     st = os.stat(path_out.as_posix())
     os.chmod(path_out.as_posix(), st.st_mode | stat.S_IEXEC)
-    print('... DONE')
+    print(format.ok('... DONE'))
     return 0
   return 1
 
@@ -85,12 +85,12 @@ def update_ejs():
       head.append(rf'      <script src="{(path_lib / d.file_name).relative_to(path_src)}"></script>\n')
     head.extend(tail)
     path_out.write_text(''.join(head), encoding='utf-8')
-    print('... DONE')
+    print(format.ok('... DONE'))
     return 0
   return 1
 
 def update_test():
-  print('Updating web tests...')
+  print(format.title('Updating web tests...'))
   tests = (x for x in path_js.rglob('*.test.js') if x.is_file())
   for p_test in tests:
     p_base = p_test.parent / (p_test.stem.split('.')[0])
@@ -138,7 +138,7 @@ def update_test():
       html.write()
       print(html.path.relative_to(path_js))
     except Exception as e: raise e
-  print('... DONE')
+  print(format.ok('... DONE'))
   return 0
 
 def save_html(path, tests):
@@ -157,7 +157,7 @@ def save_html(path, tests):
         required.update(bdd[r] for r in d.required)
         required.update(bdd[r] for r in d.forwarded)
       except KeyError:
-        print('>>>> Error: ')
+        print(format.error('Error: '))
         for d in sorted(bdd.deps, key = lambda x: x.file_name):
           print(d.file_name)
         # raise RuntimeError(f'Missing dependency: {fn}')
@@ -179,31 +179,28 @@ def save_html(path, tests):
     print(html.path.relative_to(path_js))
 
 def update_test_local():
-  print('Updating ./**/test_local.html:')
+  print(format.title('Updating ./**/test_local.html:'))
   dirs = [x for x in path_js.rglob('*') if x.is_dir()]
   for dir_test in dirs:
     # p_test is path_js/.../
     tests = tuple(dir_test.glob('*.test.js'))
     save_html(dir_test / 'test_local.html', tests)
 
-  print('... DONE')
+  print(format.ok('... DONE'))
   return 0
 
 def update_test_dir():
-  print('Updating ./**/test.html:')
+  print(format.title('Updating ./**/test.html:'))
   dirs = [x for x in path_js.rglob('*') if x.is_dir() and x.name != 'test']
   dirs.append(path_js)
   for dir_test in dirs:
     tests = tuple(dir_test.rglob('*.test.js'))
     save_html(dir_test / 'test.html', tests)
 
-  print('... DONE')
+  print(format.ok('... DONE'))
   return 0
 
 if __name__ == "__main__":
-
-  print('Preparing dependencies:')
-  print('=======================')
 
   out = minimalTests(path_js)
   out and exit(out)

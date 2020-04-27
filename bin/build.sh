@@ -370,8 +370,8 @@ Miscellaneous:
 --js "closure-library/closure/goog/string/string.js" \
 --js "closure-library/closure/goog/string/typedstring.js" \
 --js "eyo/js/core/c9r/c9r.test.inline.js" \
---js "eyo/js/core/dlgt/dlgt.test.inline.js" \
 --js "eyo/js/core/geom.test.inline.js" \
+--js "eyo/js/core/model/model.test.inline.js" \
 --js "eyo/js/core/o4t.test.inline.js" \
 --js "eyo/js/py/ctokenizer.js" \
 --js "eyo/js/test/common.js" \
@@ -396,13 +396,15 @@ Miscellaneous:
 --js "closure-library/closure/goog/dom/vendor.js" \
 --js "closure-library/closure/goog/html/safestyle.js" \
 --js "closure-library/closure/goog/math/box.js" \
---js "eyo/js/core/eyo.js" \
+--js "eyo/js/core/eyo/eyo.js" \
 --js "closure-library/closure/goog/html/safestylesheet.js" \
 --js "closure-library/closure/goog/math/rect.js" \
 --js "eyo/js/core/const.js" \
+--js "eyo/js/core/dlgt/dlgt.test.inline.js" \
 --js "eyo/js/core/do.js" \
 --js "eyo/js/core/errcode.js" \
---js "eyo/js/core/model.js" \
+--js "eyo/js/core/eyo/eyo.test.inline.js" \
+--js "eyo/js/core/model/model.js" \
 --js "eyo/js/core/more.js" \
 --js "eyo/js/core/p6y/p6y.test.inline.js" \
 --js "eyo/js/core/setup.js" \

@@ -3,7 +3,7 @@ from sty import fg, bg, ef, rs, Style, RgbFg, Sgr
 class format:
 
   @classmethod
-  def title(cls, what): return f'{ef.b}{ef.u}{what}{rs.u}{rs.all}'
+  def title(cls, what): return f'{bg.li_white}{fg.da_blue}{ef.b}{ef.u}{what}{rs.u}{rs.all}{fg.rs}{bg.rs}'
 
   @classmethod
   def emph(cls, what): return f'{ef.b}{what}{rs.all}'

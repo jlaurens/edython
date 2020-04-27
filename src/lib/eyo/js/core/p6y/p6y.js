@@ -319,6 +319,20 @@ eYo.p6y.BaseC9r.eyo.finalizeC9r([
   ].forEach(k => m[k] = eYo.model.descriptorForFalse())
   return m
 })())
+//<<< chai: modelFormat
+//... var model = {
+//...   foo: {
+//...     get () {},
+//...   },
+//... }
+//... let p6yMF = eYo.p6y.BaseC9r.eyo.modelFormat
+//... let p6yModelValidate = p6yMF.validate.bind(p6yMF)
+//... model = p6yModelValidate(model)
+//... chai.assert(eYo.isF(model.foo.get))
+//... var model = 421
+//... model = p6yModelValidate(model)
+//... chai.expect(model.value).equal(421)
+//>>>
 
 eYo.more.enhanceO3dValidate(eYo.p6y.BaseC9r.eyo, 'p6y', true)
 
