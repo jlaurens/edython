@@ -193,6 +193,9 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
     //...     flag.push(2, ...$) 
     //...   }
     //...   eyo = eYo.dlgt.new('foo', C9r, model || {})
+    //...   eYo.dlgt.declareDlgt(C9r.prototype)
+    //...   chai.expect(C9r.eyo).equal(eyo)
+    //...   chai.expect(C9r.prototype.eyo).equal(eyo)
     //... }
     if (f_m) {
       if (!eYo.isF(f_m)) {
