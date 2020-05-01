@@ -53,7 +53,7 @@ def getInlineTest(path):
       l_start = l
       indent = None
     else:
-      assert l_start is not None, f'''Missing a '//<??>' line before line {l.n} at {path}'''
+      assert l_start is not None, f'''Missing a '//<<<' line before line {l.n} at {path}'''
       l.it = l_start.it
       if l.indent is None:
         l_start = stack.pop()
@@ -63,15 +63,22 @@ def getInlineTest(path):
       elif len(indent) <= len(l.indent):
         l.indent = l.indent[len(indent):]
 
-  assert l_start is None, f'''Missing a '//</?>' line after line {lines[-1].n} at {path}'''
+  assert l_start is None, f'''Missing a '//>>>' line after line {lines[-1].n} at {path}'''
   ans = []
   if len(lines):
     ans.append(f'describe(`Inline tests at {path.relative_to(path_js)}`' ''', function () {
   this.timeout(10000)
-  let flag = new eYo.test.Flag()
-  let onr = eYo.c9r && eYo.c9r.new('onr')
-  before (function() {
-    flag.reset()
+  var flag, onr
+  beforeEach (function() {
+    flag = new eYo.test.Flag()
+    onr = eYo.c9r && eYo.c9r.new({
+      methods: {
+        flag (what, ...$) {
+          flag.push(2, what, ...$)
+          return what
+        },
+      },
+    }, 'onr')
   })
 ''')
     depth = 1

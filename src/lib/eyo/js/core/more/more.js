@@ -22,38 +22,50 @@ eYo.forward('decorate')
  */
 eYo.makeNS('more')
 
+//<<< mochai: eYo.more
+
 /**
  * Add iterators to the given object.
- * When key is 'foo', iterators are 'fooForEach' and 'fooSome'.
- * They are base on an already existing 'fooMap__' property pointing
- * to a Map object.
- * @param{Object} what - The object to be enhanced.
- * @param{String} k - Key
+ * When type is 'foo', iterators are 'fooForEach' and 'fooSome'.
+ * They are base on an already existing 'fooMap' property pointing
+ * to a Map object. We iterate over the map values.
+ * @param{Object} _p - The object to be enhanced, in general a prototype.
+ * @param{String} type - Key identifying a type
  */
-eYo.more.iterators = function (what, key) {
-  let kForEach = key + 'ForEach'
-  let kSome = key + 'Some'
-  let kMap = key + 'Map'
-  what[kForEach] = function ($this, f) {
+eYo.more.iterators = function (_p, type) {
+  //<<< eYo.more.iterators
+  let tForEach = type + 'ForEach'
+  let tSome = type + 'Some'
+  let tMap = type + 'Map'
+  _p[tForEach] = function ($this, f) {
     if (!eYo.isF(f)) {
       [$this, f] = [f, $this]
     }
-    let map = this[kMap]
-    map && map.forEach((_, v) => f.call($this, v))
+    let map = this[tMap]
+    map && map.forEach(v => f.call($this, v))
+    //... var o = {}
+    //... o.fooMap = new Map([[1, 4], [2, 2], [3, 1]])
+    //... eYo.more.iterators(o, 'foo')
+    //... o.fooForEach(v => flag.push(v))
+    //... flag.expect(421)
   }
-  what[kSome] = function ($this, f) {
+  _p[tSome] = function ($this, f) {
     if (!eYo.isF(f)) {
       [$this, f] = [f, $this]
     }
-    let map = this[kMap]
+    let map = this[tMap]
     if (map) {
-      for (let [_, v] of map) {
-        if (f.call($this, v)) {
-          return true
+      for (let v of map.values()) {
+        let ans = f.call($this, v)
+        if (ans) {
+          return ans
         }
       }
     }
+    //... chai.expect(o.fooSome(v => v === 2)).true
+    //... chai.expect(!!o.fooSome(v => v === 3)).false
   }
+  //>>>
 }
 
 /**
@@ -131,45 +143,96 @@ eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
       f_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${f_m}`)
     }
   } : function(key, model) {
+    let K = 'validate'
     let _p = this.C9r_p
-    let validate_m = model[K]
-    let validate_p = _p[K] || function (before, after) {
+    let f_p = _p[K] || function (before, after) {
       return after
     }
-    if (eYo.isF(validate_m)) {
-      if (validate_m.length > 2) {
+    let f_m = model[K]
+    if (eYo.isF(f_m)) {
+      if (f_m.length > 2) {
         // builtin/before/after
-        _p[K] = eYo.decorate.reentrant('validate', function (before, after) {
-          return validate_m.call(this, (before, after) => {
-            return validate_p.call(this, before, after)
+        _p[K] = eYo.decorate.reentrant(K, function (before, after) {
+          return f_m.call(this, (before, after) => {
+            return f_p.call(this, before, after)
           }, before, after)
         })
-      } else if (XRegExp.exec(validate_m.toString(), eYo.xre.function_builtin)) {
-        _p[K] = eYo.decorate.reentrant('validate', function (before, after) {
-          return validate_m.call(this, (after) => {
-            return validate_p.call(this, before, after)
+      } else if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
+        _p[K] = eYo.decorate.reentrant(K, function (before, after) {
+          return f_m.call(this, (after) => {
+            return f_p.call(this, before, after)
           }, after)
         })
       } else {
-        _p[K] = validate_m.length > 1
+        _p[K] = f_m.length > 1
         ? function (before, after) {
           try {
-            this[K] = validate_p
-            return validate_m.call(this, before, after)
+            this[K] = f_p
+            return f_m.call(this, before, after)
           } finally {
             delete this[K]
           }
         } : function (before, after) {
           try {
-            this[K] = validate_p
-            return validate_m.call(this, after)
+            this[K] = f_p
+            return f_m.call(this, after)
           } finally {
             delete this[K]
           }
         }
       }
     } else {
-      validate_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${validate_m}`)
+      f_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${f_m}`)
     }
   }
 }
+
+/**
+ * @param{Object} _p - In general a prototype.
+ * @param{String} type - One of 'p6y', 'data',...
+ * @param{Boolean} thisIsOwner - whether `this` in the model, is the owner or the local object
+ */
+eYo.more.override = function (_p, K, f) {
+  //<<< mochai: eYo.more.override
+  //... var o = {
+  //...   flag (...$) {
+  //...     flag.push(...$)
+  //...   }
+  //... }
+  //... var f = function (overriden, ...$) {
+  //...   overriden(...$)
+  //...   this.flag(3)
+  //... }
+  let f_p = _p[K]
+  eYo.isF(f_p) || eYo.throw(`eYo.more.override: Nothing to override`)
+  //... chai.expect(() => {
+  //...   eYo.more.override(o, 'foo', f)
+  //... }).throw()
+  //... o.foo = function (...$) {
+  //...   flag.push(1)
+  //...   this.flag(...$)
+  //... }
+  eYo.isF(f) && (f === eYo.doNothing || f.length && XRegExp.exec(f.toString(), eYo.xre.function_overriden)) || eYo.throw(`eYo.more.override: Bad overrider`)
+  //... chai.expect(() => {
+  //...   eYo.more.override(o, 'foo', 421)
+  //... }).throw()
+  //... chai.expect(() => {
+  //...   eYo.more.override(o, 'foo', () => {})
+  //... }).throw()
+  //... chai.expect(() => {
+  //...   eYo.more.override(o, 'foo', eYo.doReturn2nd)
+  //... }).throw()
+  _p[K] = function (...$) {
+    f.call(this, f_p.bind(this), ...$)
+  }
+  //... o.foo(2)
+  //... flag.expect(12)
+  //... eYo.more.override(o, 'foo', f)
+  //... o.foo(2)
+  //... flag.expect(123)
+  //... eYo.more.override(o, 'foo', f)
+  //... o.foo(2)
+  //... flag.expect(1233)
+  //>>>
+}
+//>>>

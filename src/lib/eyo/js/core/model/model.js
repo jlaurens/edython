@@ -1,7 +1,7 @@
 /**
  * edython
  *
- * Copyright 2019 Jérôme LAURENS.
+ * Copyright 2020 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -11,7 +11,7 @@
  */
 'use strict'
 
-//<<< chai: eYo.model
+//<<< mochai: eYo.model
 
 /**
  * Whether the argument is a model object once created with `{...}` syntax.
@@ -19,7 +19,7 @@
  */
 eYo.isModel = what => {
   return !!what && (!!what.model__ || eYo.isD(what))
-  //<<< chai: eYo.isModel
+  //<<< mochai: eYo.isModel
   //... chai.assert(eYo.isModel)
   //... chai.expect(eYo.isModel({})).true
   //... chai.expect(eYo.isModel()).false
@@ -38,7 +38,7 @@ eYo.isModel = what => {
  * @namespace
  */
 eYo.makeNS('model', {
-  //<<< chai: eYo.model
+  //<<< mochai: eYo.model
   //... chai.assert(eYo.model)
   //... chai.assert(eYo.model.Format)
   //>>>
@@ -46,6 +46,7 @@ eYo.makeNS('model', {
   DOT: '.',
   DOTDOT: '..',
   ANY: '*',
+  OPTION: '?', // private use
   VALIDATE: '!',
   /**
    * Return `eYo.INVALID` if the argument is defined and not 'true' nor 'false'.
@@ -54,7 +55,7 @@ eYo.makeNS('model', {
    */
   validateBool: (what) => {
     if (eYo.isDef(what) && !eYo.isBool(what)) return eYo.INVALID
-    //<<< chai: eYo.model.validateBool
+    //<<< mochai: eYo.model.validateBool
     //... chai.assert(!eYo.model.validateBool(true))
     //... chai.assert(!eYo.model.validateBool(false))
     //... chai.expect(!eYo.model.validateBool())
@@ -63,7 +64,7 @@ eYo.makeNS('model', {
   },
   validateStr: (what) => {
     if (eYo.isDef(what) && !eYo.isStr(what)) return eYo.INVALID
-    //<<< chai: eYo.model.validateStr
+    //<<< mochai: eYo.model.validateStr
     //... chai.assert(!eYo.model.validateStr('ABC'))
     //... chai.assert(!eYo.model.validateStr())
     //... chai.expect(eYo.model.validateStr(1)).equal(eYo.INVALID)
@@ -71,14 +72,14 @@ eYo.makeNS('model', {
   },
   validateF: (what) => {
     if (eYo.isDef(what) && !eYo.isF(what)) return eYo.INVALID
-    //<<< chai: eYo.model.validateF
+    //<<< mochai: eYo.model.validateF
     //... chai.assert(!eYo.model.validateF(() => {}))
     //... chai.assert(!eYo.model.validateF())
     //... chai.expect(eYo.model.validateF(1)).equal(eYo.INVALID)
     //>>>
   },
   validateForFalse: (what) => {
-    //<<< chai: eYo.model.validateForFalse
+    //<<< mochai: eYo.model.validateForFalse
     if (what === false) return eYo.doNothing
     //... chai.expect(eYo.model.validateForFalse(false)).equal(eYo.doNothing)
     if (eYo.isDef(what) && !eYo.isF(what))return eYo.INVALID
@@ -90,7 +91,7 @@ eYo.makeNS('model', {
   },
   validateRA: (what) => {
     if (eYo.isDef(what) && !eYo.isRA(what)) return eYo.INVALID
-    //<<< chai: eYo.model.validateRA
+    //<<< mochai: eYo.model.validateRA
     //... chai.assert(!eYo.model.validateRA([]))
     //... chai.assert(!eYo.model.validateRA())
     //... chai.expect(eYo.model.validateRA(1)).equal(eYo.INVALID)
@@ -99,7 +100,7 @@ eYo.makeNS('model', {
   },
   validateD: (what) => {
     if (eYo.isDef(what) && !eYo.isD(what)) return eYo.INVALID
-    //<<< chai: eYo.model.validateD
+    //<<< mochai: eYo.model.validateD
     //... chai.assert(!eYo.model.validateD({}))
     //... chai.assert(!eYo.model.validateD())
     //... chai.expect(eYo.model.validateD(1)).equal(eYo.INVALID)
@@ -135,31 +136,30 @@ eYo.makeNS('model', {
  */
 /**
  * Descriptor.
- * @param {*} model
+ * @param {*} [model] - A JS object but a function.
+ * @param {Function} [fallback] - Signature: (model) -> model. Argument order does not matter.
  * @name {eYo.model.descriptorD}
  */
 ;['Bool', 'Str', 'F', 'ForFalse', 'RA', 'D'].forEach(K => {
-  eYo.model._p['descriptor' + K] = function(model) {
+  eYo.model._p['descriptor' + K] = function(model, fallback) {
+    var alt = eYo.isF(model)
+    if (alt) {
+      [model, fallback] = [fallback, model]
+    } else {
+      alt = eYo.isF(fallback)
+    }
     model || (model = {})
-    model[eYo.model.VALIDATE] = eYo.model['validate' + K]
+    model[eYo.model.VALIDATE] = alt
+    ? function (before) {
+      let ans = eYo.model['validate' + K](before)
+      if (eYo.isINVALID(ans)) {
+        ans = fallback(before)
+      }
+      return ans
+    } : eYo.model['validate' + K]
     return model
   }
 })
-//<<< chai: eYo.model.descriptor(Bool|Str|F|ForFalse|RA|D)
-//... var mf = new eYo.model.Format()
-//... var model = eYo.model.descriptorBool()
-//... mf.allow(model)
-//... chai.expect(mf.validate(true)).equal(true)
-//... chai.expect(mf.validate(false)).equal(false)
-//... 
-//... 
-//... 
-//... 
-//... 
-//... 
-//... 
-//... 
-//>>>
 
 /**
  * Convenient method 
@@ -297,7 +297,7 @@ eYo.model.Format = function (parent, key, fallback) {
   this.key = parent ? key || fallback && fallback.key || '' : ''
   this.map = new Map()
   this.fallback = fallback
-  //<<< chai: eYo.model.Format
+  //<<< mochai: eYo.model.Format
   //... let parent = new eYo.model.Format()
   //... let key = 'foo'
   //... let fallback = new eYo.model.Format()
@@ -371,7 +371,7 @@ eYo.model.Format_p.get = function (path, create) {
     }
   }
   return c
-  //<<< chai: Yo.model.Format_p.get
+  //<<< mochai: Yo.model.Format_p.get
   //... var mf = new eYo.model.Format()
   //... mf.allow('a')
   //... var mf_a = mf.get('a')
@@ -400,7 +400,7 @@ eYo.model.Format_p.get = function (path, create) {
  * arguments is a list of strings, arrays or strings, objects or eYo.model.Format instances.
  */
 eYo.model.Format_p.allow = function (...$) {
-  //<<< chai: eYo.model.Format_p.allow
+  //<<< mochai: eYo.model.Format_p.allow
   var c = this
   $.forEach(arg => {
     if (arg) {
@@ -455,6 +455,15 @@ eYo.model.Format_p.allow = function (...$) {
           keys.delete(eYo.model.VALIDATE)
           //... var mf = new eYo.model.Format()
           //... var f = () => {
+          //...   flag.push(421)
+          //... }
+          //... mf.allow({[eYo.model.VALIDATE]: f})
+          //... mf.validate_()
+          //... flag.expect(421)
+          //... mf.validate(0)
+          //... flag.expect(421)
+          //... var mf = new eYo.model.Format()
+          //... var f = (path, model) => {
           //...   flag.push(421)
           //... }
           //... mf.allow({[eYo.model.VALIDATE]: f})
@@ -516,7 +525,7 @@ Object.defineProperties(eYo.model.Format_p, {
   path: eYo.descriptorR(function () {
     return this.all.map(x => x.key).join('/') || '/'
   }),
-  //<<< chai: eYo.model.Format_p.(all|path)
+  //<<< mochai: eYo.model.Format_p.(all|path)
   //... var mf = new eYo.model.Format()
   //... chai.expect(mf.path).equal('/')
   //... mf.allow('a')
@@ -536,14 +545,15 @@ Object.defineProperties(eYo.model.Format_p, {
 
 /**
  * Validates the given model
- * @param {String} [path] - The path of the model object
+ * @param {String} [path] - The path of the model object. Required when model is a string.
  * @param {Object} model - A model object to validate
+ * @param {String} [key] - The key used
  * @return {Object} the possibly validated model.
  */
-eYo.model.Format_p.validate = function (path, model) {
-  //<<< chai: eYo.model.Format_p.validate
+eYo.model.Format_p.validate = function (path, model, key) {
+  //<<< mochai: eYo.model.Format_p.validate
   var c = this
-  if (eYo.isDef(model)) {
+  if (eYo.isStr(path)) {
     path.split('/').forEach(k => {
       if (k) { // avoid ''
         let cc = c.get(k)
@@ -562,17 +572,18 @@ eYo.model.Format_p.validate = function (path, model) {
         //... mf.validate('/a/b', 1)
       }
     })
-  } else {
-    [path, model] = [eYo.NA, path]
+  } else if (eYo.isDef(path)) {
+    key && eYo.throw(`eYo.model.Format_p.validate: unexpected last argument ${key}`)
+    ;[path, model, key] = [eYo.NA, path, model]
   }
   if (eYo.isDef(model)/* && !(model instanceof eYo.c9r.BaseC9r)*/) {
     // validate the model
     let v = c.validate_
-    ? c.validate_(model)
-    : c.fallback && c.fallback.validate(model)
+    ? c.validate_(model, key)
+    : c.fallback && c.fallback.validate(path, model, key)
     if (eYo.isINVALID(v)) {
       if (eYo.TESTING) {
-        console.error(c.path, model)
+        console.error(model, c.path)
       }
       eYo.throw(`validate: bad model at ${c.path} (set eYo.TESTING to true and see console)`)
     } else if (eYo.isDef(v)) {
@@ -581,7 +592,7 @@ eYo.model.Format_p.validate = function (path, model) {
     Object.keys(model).forEach(k => {
       let cc = c.get(k)
       if (cc) {
-        let m = cc.validate(model[k])
+        let m = cc.validate(eYo.NA, model[k], k)
         if (m && (model[k] !== m)) {
           model[k] = m
         }

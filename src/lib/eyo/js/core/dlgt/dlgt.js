@@ -40,7 +40,7 @@ eYo.dlgt.declareDlgt = function (_p) {
   })
 }
 
-//<<< chai: eYo.dlgt.BaseC9r
+//<<< mochai: eYo.dlgt.BaseC9r
 //... var C9r
 //... let preparator = f => {
 //...   return model => {
@@ -52,9 +52,10 @@ eYo.dlgt.declareDlgt = function (_p) {
 //...     chai.expect(C9r.eyo).equal(eyo)
 //...     chai.expect(C9r.prototype.eyo).equal(eyo)
 //...     let _p = C9r.prototype
-//...     _p.do_it = function (...$) {
+//...     _p.flag = function (...$) {
 //...       flag.push(9, ...$)
 //...     }
+//...     eyo.finalizeC9r()
 //...     f && f(C9r.prototype)
 //...   }
 //... }
@@ -196,7 +197,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
     let f_m = model[K]
     let C9r_p = this.C9r_p
     let f_p = C9r_p && C9r_p[K]
-    //<<< chai: eYo.dlgt.BaseC9r_p.makeC9rInit
+    //<<< mochai: eYo.dlgt.BaseC9r_p.makeC9rInit
     //... let prepare = preparator(_p => {
     //...   _p.doPrepare = function (...$) {
     //...     flag.push(1, ...$) 
@@ -426,10 +427,10 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
     let f_m = model[K]
     let C9r_p = this.C9r_p
     let f_p = C9r_p && C9r_p[K]
-    //<<< chai: eYo.dlgt.BaseC9r_p.makeC9rDispose
+    //<<< mochai: eYo.dlgt.BaseC9r_p.makeC9rDispose
     //... let prepare = preparator(_p => {
     //...   _p.eyo.disposeInstance = function (object, ...$) {
-    //...     object.do_it(1, ...$)
+    //...     object.flag(1, ...$)
     //...   }
     //... })
     if (f_m) {
@@ -454,14 +455,14 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
           //...   }
           //... })
           //... C9r.prototype.dispose = function (...$) {
-          //...   this.do_it(2, ...$) 
+          //...   this.flag(2, ...$) 
           //... }
           //... C9r.eyo.makeC9rDispose()
           //... new C9r().dispose(4, 6)
           //... flag.expect(8914692467)
           //... prepare()
           //... C9r.prototype.dispose = function (...$) {
-          //...   this.do_it(2, ...$) 
+          //...   this.flag(2, ...$) 
           //... }
           //... C9r.eyo.makeC9rDispose({
           //...   dispose (builtin, ...$) {
@@ -521,14 +522,14 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         //...   }
         //... })
         //... C9r.prototype.dispose = function (...$) {
-        //...   this.do_it(2, ...$) 
+        //...   this.flag(2, ...$) 
         //... }
         //... C9r.eyo.makeC9rDispose()
         //... new C9r().dispose(4, 6)
         //... flag.expect(846791469246)
         //... prepare()
         //... C9r.prototype.dispose = function (...$) {
-        //...   this.do_it(2, ...$) 
+        //...   this.flag(2, ...$) 
         //... }
         //... C9r.eyo.makeC9rDispose({
         //...   dispose (...$) {
@@ -576,14 +577,14 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
       }
       //... prepare()
       //... C9r.prototype.dispose = function (...$) {
-      //...   this.do_it(2, ...$) 
+      //...   this.flag(2, ...$) 
       //... }
       //... C9r.eyo.makeC9rDispose()
       //... new C9r().dispose(4, 6)
       //... flag.expect(91469246)
       //... prepare()
       //... C9r.prototype.dispose = function (...$) {
-      //...   this.do_it(2, ...$) 
+      //...   this.flag(2, ...$) 
       //... }
       //... C9r.eyo.makeC9rDispose({})
       //... new C9r().dispose(4, 6)
@@ -784,6 +785,38 @@ eYo.dlgt.declareDlgt(eYo._p)
   }
 
   /**
+   * Declare CONSTs.
+   * Allows to split the definition of CONST into different files,
+   * eventually.
+   * @param{Object} model - the model
+   */
+  _p.CONSTsMerge = function (model) {
+    let _p = this.C9r_p
+    eYo.mixinR(_p, model)
+    //<<< mochai: eYo.dlgt.BaseC9r_p.CONSTsMerge
+    //... let prepare = preparator(_p => {
+    //...   _p.doPrepare = function (...$) {
+    //...     flag.push(1, ...$) 
+    //...   }
+    //...   _p.doInit = function (...$) {
+    //...     flag.push(2, ...$) 
+    //...   }
+    //... })
+    //... prepare()
+    //... C9r.eyo.CONSTsMerge({
+    //...   FOO: 'bar',
+    //... })
+    //... chai.expect((new C9r()).FOO).equal('bar')
+    //... prepare({
+    //...   CONSTs: {
+    //...     FOO: 'bar',
+    //...   },
+    //... })
+    //... chai.expect((new C9r()).FOO).equal('bar')
+    //>>>
+  }
+
+  /**
    * Declare methods.
    * Allows to split the definition of methods into different files,
    * eventually.
@@ -796,12 +829,13 @@ eYo.dlgt.declareDlgt(eYo._p)
     let _p = this.C9r_p
     Object.keys(model).forEach(k => {
       let m = model[k]
-      eYo.isF(m) || eYo.throw(`Function expected: ${k}->${m}`)
-      if (m.length === 1 && _p[k] && XRegExp.exec(m.toString(), eYo.xre.function_overriden)) {
-        _p[k] = eYo.asF(m.call(this, eYo.toF(_p[k]).bind(this)))
-      } else {
-        _p[k] = m
-      }
+      if (eYo.isF(m)) {
+        if (m.length === 1 && _p[k] && XRegExp.exec(m.toString(), eYo.xre.function_overriden)) {
+          _p[k] = eYo.asF(m.call(this, eYo.toF(_p[k]).bind(this)))
+        } else {
+          _p[k] = m
+        }
+      } 
     })
   }
 }
@@ -825,6 +859,7 @@ eYo.dlgt.declareDlgt(eYo._p)
    */
   _p.modelMerge = function (model) {
     model.methods && this.methodsMerge(model.methods)
+    model.CONSTs && this.CONSTsMerge(model.CONSTs)
   }
 
   /**

@@ -1,6 +1,10 @@
 describe ('Tests: Model', function () {
   this.timeout(10000)
   let flag = new eYo.test.Flag()
+  /**
+   * 
+   * @param {*} expectOK - (yorn, type, value)
+   */
   var expectAll = expectOK => {
     expectBool(expectOK)
     expectStr(expectOK)
@@ -151,7 +155,7 @@ describe ('Tests: Model', function () {
     }
     flag.reset()
     mf.validate(model)
-    flag.expect(1)
+    flag.expect('1')
     chai.expect(model.foo.value).equal(1)
 
     flag.reset()
@@ -386,6 +390,13 @@ describe ('Tests: Model', function () {
     })
   })
   it (`eYo.model.descriptor...`, function () {
+    chai.expect(() => {
+      let mf = new eYo.model.Format()
+      mf.allow('foo', eYo.model.descriptorStr())
+      mf.validate({
+        foo: 'false'
+      })
+    }).not.throw()
     expectAll((yorn, K, what) => {
       var expect = chai.expect(() => {
         let mf = new eYo.model.Format()
@@ -393,6 +404,57 @@ describe ('Tests: Model', function () {
         mf.validate({
           foo: what
         })
+      })
+      if (yorn) {
+        expect = expect.not
+      }
+      expect.throw()
+    })
+    expectAll((yorn, K, what) => {
+      var expect = chai.expect(() => {
+        let mf = new eYo.model.Format()
+        mf.allow('foo', eYo.model['descriptor' + K]({})) // Notice the added '{}' here
+        mf.validate({
+          foo: what
+        })
+      })
+      if (yorn) {
+        expect = expect.not
+      }
+      expect.throw()
+    })
+  })
+  it (`eYo.model.descriptor with fallback`, function () {
+    expectAll((yorn, K, what) => {
+      let fallback = () => {
+        flag.push(421)
+        return eYo.INVALID
+      }
+      var expect = chai.expect(() => {
+        let mf = new eYo.model.Format()
+        mf.allow('foo', eYo.model['descriptor' + K](fallback))
+        mf.validate({
+          foo: what
+        })
+        yorn || flag.expect(421)
+      })
+      if (yorn) {
+        expect = expect.not
+      }
+      expect.throw()
+    })
+    expectAll((yorn, K, what) => {
+      let fallback = () => {
+        flag.push(421)
+        return eYo.INVALID
+      }
+      var expect = chai.expect(() => {
+        let mf = new eYo.model.Format()
+        mf.allow('foo', eYo.model['descriptor' + K]({}, fallback)) // Notice the added '{}, ' here
+        mf.validate({
+          foo: what
+        })
+        yorn || flag.expect(421)
       })
       if (yorn) {
         expect = expect.not

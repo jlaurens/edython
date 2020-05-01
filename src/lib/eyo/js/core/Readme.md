@@ -1,8 +1,9 @@
-# Core thechnologies for Edython
+# Core technologies for Edython
 
 From ground up, taking dependencies into account.
 
 1. `eyo`
+* `xre`, regular expressions
 * `model`, validated objects used to subclass
 * `dlgt`, delegates used to extend consructors
 * `c9r`, base edython object constructor

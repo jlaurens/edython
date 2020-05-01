@@ -43,6 +43,17 @@ eYo.o3d.makeBaseC9r({
   },  
 })
 
+eYo.mixinR(eYo._p, {
+  isaO3d (what) {
+    return !!what && what instanceof eYo.o3d.BaseC9r
+    //<<< mochai: eYo.isaO3d
+    //... chai.expect(eYo.isaO3d()).false
+    //... chai.expect(eYo.isaO3d(eYo.NA)).false
+    //... chai.expect(eYo.isaO3d(421)).false
+    //... chai.expect(eYo.isaO3d(eYo.o3d.new('foo', onr))).true
+    //>>>
+  }
+}, false)
 /**
  * The default implementation does nothing.
  * For subclassers.
@@ -52,10 +63,10 @@ eYo.o3d.makeBaseC9r({
  * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
  */
 eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
-  if (!(owner instanceof eYo.c9r.BaseC9r)) {
+  if (!eYo.isaC9r(owner)) {
     console.error('BREAK HERE!')
   }
-  owner instanceof eYo.c9r.BaseC9r || eYo.throw(`${this.name}/o3dInitInstance: Very bad owner`)
+  eYo.isaC9r(owner) || eYo.throw(`${this.name}.o3dInitInstance: Very bad owner`)
   eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Bad key in init`)
   instance.owner__ = owner
   instance.key_ = key

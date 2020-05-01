@@ -30,6 +30,7 @@ class __:
     files = [x for x in path_js.rglob('*')
       if x.is_file() and x.suffix == '.js'
       if not x.name.endswith('test.js')
+      if not x.name.endswith('test.inline.js')
       if '/dev/' not in x.as_posix()]
     for fn in files:
       info = Info(fn)

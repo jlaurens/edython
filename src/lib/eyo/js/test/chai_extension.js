@@ -1,6 +1,4 @@
-if (!eYo.test) {
-  eYo.makeNS('test')
-}
+eYo.provide('test')
 
 eYo.test.almost = (a, b) => 10000 * Math.abs(a-b) <= (Math.abs(a) + Math.abs(b))
 
@@ -250,18 +248,18 @@ chai.use(function (chai, utils) {
       if (msg) flag(this, 'message', msg)
 
       if (eYo.geom) {
-        if (this._obj instanceof eYo.geom.Size) {
+        if (eYo.geom.Size && this._obj instanceof eYo.geom.Size) {
           return this.eqlSize(val)
         }
-        if (this._obj instanceof eYo.geom.AbstractPoint) {
+        if (eYo.geom.AbstractPoint && this._obj instanceof eYo.geom.AbstractPoint) {
           return this.eqlPoint(val)
         }
-        if (this._obj instanceof eYo.geom.AbstractRect) {
+        if (eYo.geom.AbstractRect && this._obj instanceof eYo.geom.AbstractRect) {
           return this.eqlRect(val)
         }
       }
       if (eYo.span) {
-        if (this._obj instanceof eYo.span.BaseC9r) {
+        if (eYo.span.BaseC9r && this._obj instanceof eYo.span.BaseC9r) {
           return this.eqlSpan(val)
         }
       }

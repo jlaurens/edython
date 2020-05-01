@@ -289,5 +289,6 @@ eYo.mixinR(eYo.xre, {
   function_builtin: XRegExp('^[^(]*\\(\\s*\\bbuiltin\\b'),
   function_builtin_after: XRegExp('^[^(]*\\(\\s*\\bbuiltin\\b\\s*,\\s*\\bafter\\b'),
   function_stored_after: XRegExp('^[^(]*\\(\\s*\\bstored\\b\\s*,\\s*\\bafter\\b'),
-  function_overriden: XRegExp('^[^(]*\\(\\s*\\boverriden\\b\\s*\\)'),
+  function_overriden: XRegExp('^[^(]*\\(\\s*\\boverriden\\b'),
+  CONST: XRegExp('^[A-Z_][A-Z_0-9]*$'),
 })

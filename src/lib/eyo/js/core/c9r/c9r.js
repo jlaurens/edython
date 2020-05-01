@@ -26,7 +26,7 @@ eYo.forward('t3')
  */
 eYo.makeNS('c9r')
 
-//<<< chai: C9r
+//<<< mochai: C9r
 
 // ANCHOR: Utilities
 
@@ -410,7 +410,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
      */
     isaC9r (what) {
       return !!what && what instanceof eYo.c9r.BaseC9r
-      //<<< chai: isaC9r (what)
+      //<<< mochai: isaC9r (what)
       //... chai.expect(eYo.isaC9r(true)).false
       //... chai.expect(eYo.isaC9r(new eYo.c9r.BaseC9r())).true
       //>>>
@@ -631,9 +631,83 @@ eYo.c9r._p.makeSingleton = function(NS, id, model) {
 
 // Prepares the constructors.
 
-eYo.c9r.BaseC9r.eyo.finalizeC9r([
-  'methods',
-], eYo.model.manyDescriptorF('dlgt', 'init', 'deinit', 'dispose'), eYo.model.manyDescriptorForFalse('dispose'),
+eYo.c9r.BaseC9r.eyo.finalizeC9r(
+  //<<< mochai: eYo.c9r.BaseC9r.eyo.finalizeC9r
+  eYo.model.manyDescriptorF('dlgt', 'init'),
+  //... ;['dlgt', 'init'].forEach(K => {
+  //...   eYo.c9r.new({
+  //...     [K]: eYo.doNothing
+  //...   })
+  //...   eYo.c9r.new({
+  //...     [K]: eYo.NA
+  //...   })
+  //...   chai.expect(() => {
+  //...     eYo.c9r.new({
+  //...       [K]: 421
+  //...     })
+  //...   }).throw()
+  //... })
+  eYo.model.manyDescriptorForFalse('dispose'),
+  {
+    methods: {
+      [eYo.model.VALIDATE]: eYo.model.validateD,
+      //... eYo.c9r.new({
+      //...   methods: eYo.NA
+      //... })
+      //... chai.expect(() => {
+      //...   eYo.c9r.new({
+      //...     methods: 421,
+      //...   })
+      //... }).throw()
+      [eYo.model.ANY]: eYo.model.descriptorF(),
+      //... eYo.c9r.new({
+      //...   methods: {
+      //...     foo: eYo.NA,
+      //...     chi () {},
+      //...   }
+      //... })
+      //... chai.expect(() => {
+      //...   eYo.c9r.new({
+      //...     methods: {
+      //...       mi: 421,
+      //...     },
+      //...   })
+      //... }).throw()
+    },
+    CONSTs: {
+      [eYo.model.VALIDATE]: eYo.model.validateD,
+      //... eYo.c9r.new({
+      //...   CONSTs: eYo.NA
+      //... })
+      //... chai.expect(() => {
+      //...   eYo.c9r.new({
+      //...     CONSTs: 421,
+      //...   })
+      //... }).throw()
+      [eYo.model.ANY]: {
+        [eYo.model.VALIDATE]: function (before, key) {
+          if (key) {
+            if (!XRegExp.exec(key, eYo.xre.CONST)) {
+              return eYo.INVALID
+            }
+          }
+          //... eYo.c9r.new({
+          //...   CONSTs: {
+          //...     CONST_421: 421,
+          //...   }
+          //... })
+          //... chai.expect(() => {
+          //...   eYo.c9r.new({
+          //...     CONSTs: {
+          //...       cCONST_421: 421,
+          //...     },
+          //...   })
+          //... }).throw()
+        }
+      },
+    },
+  }
+  //>>>
 )
 
 //>>>

@@ -12,7 +12,7 @@
  */
 'use strict'
 
-//<<< chai: eYo
+//<<< mochai: eYo
 
 /**
  * @name {eYo}
@@ -28,7 +28,10 @@ let eYo = (() => {
   return new EYO()
 }) ()
 
-//<<< chai: Basics
+// Comment next line in production mode
+eYo.TESTING = true
+
+//<<< mochai: Basics
 //... chai.assert(eYo)
 //... chai.assert(eYo._p)
 //>>>
@@ -42,7 +45,7 @@ let eYo = (() => {
  */
 eYo.hasOwnProperty = function (object, key) {
   return !!object && !!key && (Object.prototype.hasOwnProperty.call(object, key))
-  //<<< chai: eYo.hasOwnProperty'
+  //<<< mochai: eYo.hasOwnProperty'
   //... chai.assert(eYo.hasOwnProperty)
   //... chai.expect(eYo.hasOwnProperty({eyo: true}, 'eyo')).true
   //... chai.expect(eYo.hasOwnProperty({}, 'eyo')).false
@@ -58,7 +61,7 @@ eYo.hasOwnProperty = function (object, key) {
  */
 eYo.isF = (what) => {
   return typeof what === 'function' && !!what.call
-  //<<< chai: eYo.isF
+  //<<< mochai: eYo.isF
   //... chai.assert(eYo.isF)
   //... chai.assert(eYo.isF(eYo.doNothing))
   //... chai.assert(eYo.isF(() => {}))
@@ -75,12 +78,6 @@ eYo.isF = (what) => {
   //... chai.assert(eYo.isF(eYo.toF()))
   //... chai.assert(eYo.isF(eYo.toF(421)))
   //... chai.expect(eYo.toF(421)()).equal(421)
-  //... chai.assert(eYo.isNA(eYo.called()))
-  //... chai.expect(eYo.called(421)).equal(421)
-  //... chai.expect(eYo.called(f)).equal(421)
-  //... chai.assert(eYo.called(() => {
-  //...   return 421
-  //... }) === 421)
   //... let C9r = function () {}
   //... chai.assert(!eYo.isC9r(C9r))
   //... C9r.eyo__ = true
@@ -97,7 +94,7 @@ eYo.isF = (what) => {
  */
 eYo.isDoIt = (what) => {
   return what !== eYo.doNothing && typeof what === 'function' && !!what.call
-  //<<< chai: eYo.isDoIt
+  //<<< mochai: eYo.isDoIt
   //... chai.assert(eYo.isDoIt)
   //... chai.expect(eYo.isDoIt()).false
   //... chai.expect(eYo.isDoIt(421)).false
@@ -114,7 +111,7 @@ eYo.isDoIt = (what) => {
  */
 eYo.isStr = (what) => {
   return typeof what === 'string'
-  //<<< chai: eYo.isStr
+  //<<< mochai: eYo.isStr
   //... chai.assert(eYo.isStr)
   //... chai.expect(eYo.isStr('')).true
   //... chai.expect(eYo.isStr()).false
@@ -127,7 +124,7 @@ eYo.isStr = (what) => {
  */
 eYo.isNA = (what) => {
   return what === eYo.NA
-  //<<< chai: eYo.isNA
+  //<<< mochai: eYo.isNA
   //... let x
   //... chai.expect(eYo.NA).equal(x)
   //... chai.assert(eYo.isNA(x))
@@ -142,7 +139,7 @@ eYo.isNA = (what) => {
  */
 eYo.isBool = (what) => {
   return what === true || what === false
-  //<<< chai: eYo.isBool
+  //<<< mochai: eYo.isBool
   //... chai.expect(eYo.isBool(true)).true
   //... chai.expect(eYo.isBool(false)).true
   //... chai.expect(eYo.isBool()).false
@@ -156,7 +153,7 @@ eYo.isBool = (what) => {
  */
 eYo.isNum = (what) => {
   return typeof what == 'number'
-  //<<< chai: eYo.isNum
+  //<<< mochai: eYo.isNum
   //... chai.assert(eYo.isNum)
   //... chai.expect(eYo.isNum()).false
   //... chai.expect(eYo.isNum(421)).true
@@ -176,7 +173,7 @@ eYo.isD = (() => {
   return (what) => {
     return !!what && Object.getPrototypeOf(what) === _p
   }
-  //<<< chai: eYo.isD
+  //<<< mochai: eYo.isD
   //... chai.assert(eYo.isD)
   //... chai.expect(eYo.isD({})).true
   //... chai.expect(eYo.isD()).false
@@ -189,7 +186,7 @@ eYo.isD = (() => {
  */
 eYo.isDef = what => {
   return what !== eYo.NA && what !== null
-  //<<< chai: eYo.isDef
+  //<<< mochai: eYo.isDef
   //... chai.expect(eYo.isDef({})).true
   //... chai.expect(eYo.isDef()).false
   //... chai.expect(eYo.isDef(null)).false
@@ -210,7 +207,7 @@ eYo.noGetter = function (msg) {
       : function () {
         throw new Error('Forbidden getter')
       }
-  //<<< chai: eYo.noGetter
+  //<<< mochai: eYo.noGetter
   //... chai.assert(eYo.noGetter)
   //... chai.expect(() => eYo.noGetter(421)).throw()
   //... chai.expect(() => eYo.noGetter()()).throw()
@@ -235,7 +232,7 @@ eYo.noSetter = function (msg) {
       : function () {
         throw new Error('Forbidden setter')
       }
-  //<<< chai: eYo.noSetter
+  //<<< mochai: eYo.noSetter
   //... chai.assert(eYo.noSetter)
   //... chai.expect(() => eYo.noSetter(421)).throw()
   //... chai.expect(() => eYo.noSetter()()).throw()
@@ -277,7 +274,7 @@ eYo.descriptorR = (msg, getter, configurable) => {
     set: eYo.noSetter(msg),
     configurable: !!configurable,
   }
-  //<<< chai: eYo.descriptorR
+  //<<< mochai: eYo.descriptorR
   //... chai.assert(eYo.descriptorR)
   //... let msg_1 = 'foo'
   //... let msg_2 = () => flag.push(421)
@@ -362,7 +359,7 @@ eYo.descriptorW = (msg, setter, configurable) => {
     set: setter,
     configurable: !!configurable
   }
-  //<<< chai: eYo.descriptorW
+  //<<< mochai: eYo.descriptorW
   //... chai.assert(eYo.descriptorW)
   //... let msg_1 = 'foo'
   //... let msg_2 = () => flag.push(421)
@@ -432,7 +429,7 @@ eYo.descriptorNORW = (msg, configurable) => {
     set: eYo.noSetter(msg),
     configurable: !!configurable,
   }
-  //<<< chai: eYo.descriptorNORW
+  //<<< mochai: eYo.descriptorNORW
   //... chai.assert(eYo.descriptorNORW)
   //... let msg_1 = 'foo'
   //... let msg_2 = () => flag.push(421)
@@ -515,7 +512,7 @@ eYo.mixinR = (object, props, getters = true) => {
     )
   })
   return object
-  //<<< chai: eYo.mixinR
+  //<<< mochai: eYo.mixinR
   //... let o = {}
   //... eYo.mixinR(o, {
   //...   foo: 421
@@ -587,7 +584,7 @@ eYo.provideR = (dest, props, getters = true) => {
     }
   })
   return dest
-  //<<< chai: eYo: provideR'
+  //<<< mochai: eYo: provideR'
   //... let a = {}
   //... let b = {}
   //... chai.expect(() => eYo.provideR(eYo.NS, eYo.NA)).to.throw()
@@ -682,7 +679,7 @@ eYo.mixinR(eYo, {
    */
   asDef (object, fallout) {
     return eYo.isDef(object) ? object : fallout
-    //<<< chai: eYo.asDef
+    //<<< mochai: eYo.asDef
     //... var what = {}
     //... chai.expect(eYo.asDef(what)).equal(what)
     //... chai.expect(eYo.isDef(eYo.asDef())).false
@@ -692,7 +689,7 @@ eYo.mixinR(eYo, {
   },
   INVALID: (() => {
     return new eYo.doNothing()
-    //<<< chai: eYo.INVALID
+    //<<< mochai: eYo.INVALID
     //... chai.expect(eYo.isDef(eYo.INVALID)).true
     //>>>
   })(),
@@ -702,7 +699,7 @@ eYo.mixinR(eYo, {
    */
   isVALID (what) {
     return what !== eYo.INVALID
-    //<<< chai: eYo.isVALID
+    //<<< mochai: eYo.isVALID
     //... chai.assert(eYo.isVALID)
     //... chai.expect(eYo.isVALID(eYo.INVALID)).false
     //... chai.expect(eYo.isVALID()).true
@@ -715,7 +712,7 @@ eYo.mixinR(eYo, {
    */
   isINVALID (what) {
     return what === eYo.INVALID
-    //<<< chai: eYo.isINVALID
+    //<<< mochai: eYo.isINVALID
     //... chai.assert(eYo.isVALID)
     //... chai.expect(eYo.isINVALID(eYo.INVALID)).true
     //... chai.expect(eYo.isINVALID()).false
@@ -735,7 +732,7 @@ eYo.mixinR(eYo, {
       return (eYo.isF(f) && f(ans)) || ans
     }
     return eYo.isF(f) ? eYo.NA : f
-    //<<< chai: eYo.INVALID
+    //<<< mochai: eYo.INVALID
     //... eYo.whenVALID({}, () => {
     //...   flag.push(421)
     //... })
@@ -752,7 +749,7 @@ eYo.mixinR(eYo, {
    */
   isRA (what) {
     return Array.isArray(what)
-    //<<< chai: eYo.isRA
+    //<<< mochai: eYo.isRA
     //... chai.assert(eYo.isRA)
     //... chai.expect(eYo.isRA([])).true
     //... chai.expect(eYo.isRA()).false
@@ -765,7 +762,7 @@ eYo.mixinR(eYo, {
    */
   copyRA (what) {
     return Array.prototype.slice.call(what, 0)
-    //<<< chai: eYo.copyRA
+    //<<< mochai: eYo.copyRA
     //... let original = []
     //... var copy = eYo.copyRA(original)
     //... chai.expect(copy).to.deep.equal(original)
@@ -795,7 +792,7 @@ eYo.mixinR(eYo, {
    */
   asF (what, defaults = eYo.NA) {
     return eYo.isF(what) ? what : defaults
-    //<<< chai: eYo.asF
+    //<<< mochai: eYo.asF
     //... chai.assert(eYo.asF)
     //... chai.expect(eYo.asF()).equals(eYo.NA)
     //... chai.expect(eYo.asF(1)).equals(eYo.NA)
@@ -817,7 +814,7 @@ eYo.mixinR(eYo, {
     return eYo.isF(what) ? what : () => {
       return what
     }
-    //<<< chai: eYo.toF
+    //<<< mochai: eYo.toF
     //... chai.assert(eYo.toF)
     //... let f = function () {}
     //... chai.expect(eYo.toF(f)).equal(f)
@@ -831,7 +828,7 @@ eYo.mixinR(eYo, {
    * a function that returns an array.
    */
   toRAF: (x) => {
-    //<<< chai: eYo.toRAF
+    //<<< mochai: eYo.toRAF
     //... chai.assert(eYo.toRAF)
     //... var what
     if (eYo.isRA(x)) {
@@ -871,10 +868,11 @@ eYo.mixinR(eYo, {
    */
   called (what) {
     return eYo.isF(what) ? what() : what
-    //<<< chai: eYo.called
+    //<<< mochai: eYo.called
     //... chai.assert(eYo.called)
+    //... chai.expect(eYo.called()).undefined
     //... chai.expect(eYo.called(421)).equal(421)
-    //... chai.expect(eYo.called(() => 421))).equal(421)
+    //... chai.expect(eYo.called(() => 421)).equal(421)
     //>>>
   },
   /**
@@ -902,7 +900,7 @@ eYo.mixinR(eYo, {
     Object.defineProperty(Child_p, 'constructor', {
       value: ChildC9r
     })
-    //<<< chai: eYo.isSubclass | eYo.inherits
+    //<<< mochai: eYo.isSubclass | eYo.inherits
     //... chai.assert(eYo.isSubclass)
     //... chai.expect(eYo.isSubclass()).false
     //... chai.expect(eYo.isSubclass(123)).false
@@ -935,7 +933,7 @@ eYo.mixinR(eYo._p, {
       }
     }
     return ans
-    //<<< chai: eYo.valueForKeyPath
+    //<<< mochai: eYo.valueForKeyPath
     //... chai.expect(eYo.valueForKeyPath('eYo.test')).equal(eYo.test)
     //... chai.expect(eYo.valueForKeyPath('test')).equal(eYo.test)
     //... var key = eYo.genUID(eYo.IDENT)
@@ -1204,7 +1202,7 @@ eYo.mixinR(eYo._p, {
   equals (left, right, tol = eYo.EPSILON) {
     return Math.abs(left - right) <= tol * (Math.abs(left) + Math.abs(right) + 1)
   },
-  //<<< chai: eYo.greater|equals
+  //<<< mochai: eYo.greater|equals
   //... chai.expect(eYo.equals(1, 1.1, 0.5)).true
   //... chai.expect(eYo.greater(1, 1.1, 0.5)).true
   //... chai.expect(eYo.equals(1, 1.1, 0.005)).false

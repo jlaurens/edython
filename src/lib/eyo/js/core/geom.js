@@ -75,7 +75,7 @@ eYo.geom.BaseC9r.eyo.finalizeC9r(['aliases'], {
   },
 })
 
-//<<< chai: Point
+//<<< mochai: Point
 
 /**
  * `AbstractPoint` is modelling a planar point that stores its coordinates in text units.
@@ -99,7 +99,7 @@ eYo.geom.makeC9r('AbstractPoint', {
         this.c_ = after / eYo.geom.X
       }
     },
-    //<<< chai: Point x
+    //<<< mochai: Point x
     //... var m = {c: 1, l: 2}
     //... var mm = {x: m.c * eYo.geom.X, y: m.l * eYo.geom.Y}
     //... var p = new eYo.geom.Point(false, mm)
@@ -119,7 +119,7 @@ eYo.geom.makeC9r('AbstractPoint', {
         this.l_ = after / eYo.geom.Y
       }
     },
-    //<<< chai: Point y
+    //<<< mochai: Point y
     //... var m = {c: 1, l: 2}
     //... var mm = {x: m.c * eYo.geom.X, y: m.l * eYo.geom.Y}
     //... var p = new eYo.geom.Point(false, mm)
@@ -138,7 +138,7 @@ eYo.geom.makeC9r('AbstractPoint', {
         return Math.sqrt(dx * dx + dy * dy)
       }
     },
-    //<<< chai: Point magnitude
+    //<<< mochai: Point magnitude
     //... var mm = {x: 3, y: 4}
     //... var p = new eYo.geom.Point(false, mm)
     //... chai.expect(p.magnitude).almost.eql(5)
@@ -183,7 +183,7 @@ eYo.geom.AbstractPoint.eyo.finalizeC9r()
  * @return {eYo.geom.Point} The receiver
  */
 eYo.geom.AbstractPoint_p.set = function (c = 0, l) {
-  //<<< chai: Point: set
+  //<<< mochai: Point: set
   //... var p, m, mm
     if (eYo.isDef(c.c) && eYo.isDef(c.l)) {
     this.c_ = c.c
@@ -509,7 +509,7 @@ eYo.geom.clPoint = function (snap, c, l) {
  * `Size` is quite a synonym of Point with more aliases.
  * It is more like a vector, but size is a shorter name...
  */
-//<<< chai: Size
+//<<< mochai: Size
 eYo.geom.AbstractPoint.makeSubC9r('Size', {
   /**
    * Initialize the point forwarding to `set`.
@@ -518,7 +518,7 @@ eYo.geom.AbstractPoint.makeSubC9r('Size', {
    * @param {*} h 
    */
   init (snap, w, h) {
-    //<<< chai: Size init
+    //<<< mochai: Size init
     //... var s, ss
     //... var m = {w: 3, h: 4}
     //... var p_snap = eYo.p6y.new('p', onr); p_snap.value_ = true
@@ -621,7 +621,7 @@ eYo.geom.Size.eyo.finalizeC9r()
  * @return {eYo.geom.Point} The receiver
  */
 eYo.geom.Size_p.set = function (w = 0, h) {
-  //<<< chai: Size: set
+  //<<< mochai: Size: set
   //... var s, m, mm
   if (eYo.isDef(w.w) && eYo.isDef(w.h)) {
     this.w_ = w.w
@@ -740,7 +740,7 @@ eYo.geom._p.newSizeFromText = function (txt) {
  * @struct
  * @constructor
  */
-//<<< chai:Rect
+//<<< mochai:Rect
 eYo.geom.makeC9r('AbstractRect', {
   properties: {
     origin: {
@@ -756,7 +756,7 @@ eYo.geom.makeC9r('AbstractRect', {
         }
       }
     },
-    //<<< chai: Rect origin
+    //<<< mochai: Rect origin
     //... var m = {c: 1, l: 2}
     //... var r = eYo.geom.randRect(false)
     //... let p = eYo.geom.randPoint(false)
@@ -789,7 +789,7 @@ eYo.geom.makeC9r('AbstractRect', {
         }
       }
     },
-    //<<< chai: Rect size
+    //<<< mochai: Rect size
     //... var m = {w: 3, h: 4}
     //... var r = eYo.geom.randRect(false)
     //... let s = eYo.geom.randSize(false)
@@ -824,7 +824,7 @@ eYo.geom.makeC9r('AbstractRect', {
         this.c_ = after - this.w / 2
       }
     },
-    //<<< chai: Rect c_mid
+    //<<< mochai: Rect c_mid
     //... var m = {c: 1, l: 2, w: 3, h: 4}
     //... var r = new eYo.geom.Rect(false, m)
     //... chai.expect(r).almost.eql(m)
@@ -841,7 +841,7 @@ eYo.geom.makeC9r('AbstractRect', {
         this.c_ = after - this.w
       }
     },
-    //<<< chai: Rect c_max
+    //<<< mochai: Rect c_max
     //... var m = {c: 1, l: 2, w: 3, h: 4}
     //... var r = new eYo.geom.Rect(false, m)
     //... chai.expect(r).almost.eql(m)
@@ -858,7 +858,7 @@ eYo.geom.makeC9r('AbstractRect', {
         this.l_ = after - this.h / 2
       }
     },
-    //<<< chai: Rect l_mid
+    //<<< mochai: Rect l_mid
     //... var m = {c: 1, l: 2, w: 3, h: 4}
     //... var r = new eYo.geom.Rect(false, m)
     //... chai.expect(r).almost.eql(m)
@@ -875,7 +875,7 @@ eYo.geom.makeC9r('AbstractRect', {
         this.l_ = after - this.h
       }
     },
-    //<<< chai: Rect l_max
+    //<<< mochai: Rect l_max
     //... var m = {c: 1, l: 2, w: 3, h: 4}
     //... var r = new eYo.geom.Rect(false, m)
     //... chai.expect(r).almost.eql(m)
@@ -884,7 +884,7 @@ eYo.geom.makeC9r('AbstractRect', {
     //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
     //>>>
     // Convenient setters in board coordinates
-    //<<< chai: Rect x
+    //<<< mochai: Rect x
     //... var m = {c: 1, l: 2, w: 3, h: 4}
     //... var r = new eYo.geom.Rect(false, m)
     //... chai.expect(r).almost.eql(m)
@@ -901,7 +901,7 @@ eYo.geom.makeC9r('AbstractRect', {
         this.x_ = after - this.width / 2
       }
     },
-    //<<< chai: Rect x_mid
+    //<<< mochai: Rect x_mid
     //... var m = {c: 1, l: 2, w: 3, h: 4}
     //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
     //... var r = new eYo.geom.Rect(false, mm)
@@ -919,7 +919,7 @@ eYo.geom.makeC9r('AbstractRect', {
         this.x_ = after - this.width
       }
     },
-    //<<< chai: Rect x_max
+    //<<< mochai: Rect x_max
     //... var m = {c: 1, l: 2, w: 3, h: 4}
     //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
     //... var r = new eYo.geom.Rect(false, mm)
@@ -937,7 +937,7 @@ eYo.geom.makeC9r('AbstractRect', {
         this.y_ = after - this.height / 2
       }
     },
-    //<<< chai: Rect y_mid
+    //<<< mochai: Rect y_mid
     //... var m = {c: 1, l: 2, w: 3, h: 4}
     //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
     //... var r = new eYo.geom.Rect(false, mm)
@@ -955,7 +955,7 @@ eYo.geom.makeC9r('AbstractRect', {
         this.y_ = after - this.height
       }
     },
-    //<<< chai: Rect y_max
+    //<<< mochai: Rect y_max
     //... var m = {c: 1, l: 2, w: 3, h: 4}
     //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
     //... var r = new eYo.geom.Rect(false, mm)
@@ -1122,7 +1122,7 @@ eYo.geom.AbstractRect.eyo.finalizeC9r()
  * @return {eYo.geom.Rect} The receiver
  */
 eYo.geom.AbstractRect_p.set = function (c = 0, l, w, h) {
-  //<<< chai: Rect: set
+  //<<< mochai: Rect: set
   //... var r, mm
   //... var m = {c: 1, l: 2, w: 3, h: 4}
   if (eYo.isDef(c.left) && eYo.isDef(c.right) && eYo.isDef(c.top) && eYo.isDef(c.bottom)) {

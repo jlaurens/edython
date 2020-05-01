@@ -26,7 +26,6 @@ eYo.o3d.makeNS(eYo, 'o4t')
 eYo.o4t.makeBaseC9r(true)
 
 eYo.o4t.BaseC9r.eyo.finalizeC9r(['aliases', 'properties', 'methods'], {
-  CONST: '[A-Z_][A-Z_0-9]*',
   properties: {
     [eYo.model.ANY]: eYo.p6y.BaseC9r
   },
@@ -260,7 +259,7 @@ eYo.c9r.Dlgt_p.p6yReplace = function (object, k, source) {
   do {
     map.set(p.key, p)
   } while ((p = p.next))
-  //<<< chai:P6Y ||| p6yReplace
+  //<<< mochai:P6Y ||| p6yReplace
   //... let ns = eYo.o4t.makeNS()
   //... ns.makeBaseC9r({
   //...   properties: {
