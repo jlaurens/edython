@@ -1423,8 +1423,8 @@ eYo.mixinR(eYo.p6y.handler.BaseC9r_p, {
  * @param {String|eYo.p6y.BaseC9r} source
  * @param {String} key
  */
-eYo.c9r.Dlgt_p.p6yAliasNew = function (key, owner, target, target_key) {
-  //<<< mochai: eYo.c9r.Dlgt_p.p6yAliasNew, Proxy alias
+eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
+  //<<< mochai: eYo.p6y.aliasNew, Proxy alias
   var handler
   if (target_key) {
     let source_ = target + '_'
@@ -1475,7 +1475,7 @@ eYo.c9r.Dlgt_p.p6yAliasNew = function (key, owner, target, target_key) {
     //... foo_.bar_p = bar_p
     //... var target = eYo.o3d.new('target', onr)
     //... target.foo_ = foo_
-    //... var bar_alias = onr.eyo.p6yAliasNew('foo', target, 'foo', 'bar')
+    //... var bar_alias = eYo.p6y.aliasNew('foo', target, 'foo', 'bar')
     //... chai.expect(bar_alias.value).equal(421)
     //... bar_alias.value_ = 666
     //... chai.expect(bar_p.value).equal(666)
@@ -1509,7 +1509,7 @@ eYo.c9r.Dlgt_p.p6yAliasNew = function (key, owner, target, target_key) {
     //... }, 'bar', onr)
     //... var target = eYo.o3d.new('target', onr)
     //... target.bar_p = bar_p
-    //... var bar_alias = onr.eyo.p6yAliasNew('foo', target, 'bar')
+    //... var bar_alias = eYo.p6y.aliasNew('foo', target, 'bar')
     //... chai.expect(bar_alias.value).equal(421)
     //... bar_alias.value_ = 666
     //... chai.expect(bar_p.value).equal(666)
@@ -1532,8 +1532,58 @@ eYo.c9r.Dlgt_p.p6yAliasNew = function (key, owner, target, target_key) {
         },    
       },
     }, key, owner)
+    //... var alias = eYo.p6y.aliasNew('p', onr, bar_p)
+    //... // key
+    //... chai.expect(alias.hasOwnProperty('key')).true
+    //... chai.expect(alias.key).equal('p')
+    //... chai.expect(() => alias.key = 0).throw()
+    //... alias.key_ = 'foo'
+    //... chai.expect(alias.key).equal('foo')
+    //... chai.expect(bar_p.key).equal('bar')
+    //... bar_p.key_ = 'barZ'
+    //... chai.expect(alias.key).equal('foo')
+    //... // owner
+    //... chai.expect(alias.owner).equal(onr)
+    //... chai.expect(() => alias.owner = 0).throw()
+    //... alias.owner__ = 0
+    //... chai.expect(alias.owner).equal(0)
+    //... chai.expect(bar_p.owner).equal(onr)
+    //... bar_p.owner__ = eYo.c9r.new('onr')
+    //... chai.expect(alias.owner).equal(0)
+    //... alias = eYo.p6y.aliasNew('p', onr, bar_p)
+    //... chai.expect(alias.hasOwnProperty('next')).false
+    //... Object.defineProperties(alias, {
+    //...   next: {
+    //...     value: 1,
+    //...     configurable: true,
+    //...   }
+    //... })
+    //... chai.expect(alias.hasOwnProperty('next')).true
+    //... chai.expect(alias.next).equal(1)
+    //... chai.expect(bar_p.next).not.equal(1)
+    //... chai.expect(() => alias.next = 2).throw()
+    //... Object.defineProperties(alias, {
+    //...   next: {
+    //...     value: 2,
+    //...     configurable: true,
+    //...   }
+    //... })
+    //... chai.expect(alias.next).equal(2)
+    //... alias = eYo.p6y.aliasNew('p', onr, bar_p)
+    //... Object.defineProperties(bar_p, {
+    //...   next: {
+    //...     value: 1,
+    //...     configurable: true,
+    //...   }
+    //... })
+    //... chai.expect(bar_p.hasOwnProperty('next')).true
+    //... chai.expect(bar_p.next).equal(1)
+    //... chai.expect(alias.hasOwnProperty('next')).false
+    //... chai.expect(alias.next).not.equal(1)
   } else {
-    eYo.throw(`${this.name}/p6yAliasNew: bad target ${target}`)
+    eYo.throw(`eYo.p6y.aliasNew: bad target ${target}`)
+    //... chai.expect(() => eYo.p6y.aliasNew('foo', onr, 421)).throw()
+    //... chai.expect(() => eYo.p6y.aliasNew('foo', onr)).throw()
   }
   var p = new Proxy(target, handler)
   Object.defineProperty(p, '__target', {
@@ -1542,54 +1592,6 @@ eYo.c9r.Dlgt_p.p6yAliasNew = function (key, owner, target, target_key) {
     configurable: true,
   })
   return p
-  //... var alias = onr.eyo.p6yAliasNew('p', onr, bar_p)
-  //... // key
-  //... chai.expect(alias.hasOwnProperty('key')).true
-  //... chai.expect(alias.key).equal('p')
-  //... chai.expect(() => alias.key = 0).throw()
-  //... alias.key_ = 'foo'
-  //... chai.expect(alias.key).equal('foo')
-  //... chai.expect(bar_p.key).equal('bar')
-  //... bar_p.key_ = 'barZ'
-  //... chai.expect(alias.key).equal('foo')
-  //... // owner
-  //... chai.expect(alias.owner).equal(onr)
-  //... chai.expect(() => alias.owner = 0).throw()
-  //... alias.owner__ = 0
-  //... chai.expect(alias.owner).equal(0)
-  //... chai.expect(bar_p.owner).equal(onr)
-  //... bar_p.owner__ = eYo.c9r.new('onr')
-  //... chai.expect(alias.owner).equal(0)
-  //... alias = onr.eyo.p6yAliasNew('p', onr, bar_p)
-  //... chai.expect(alias.hasOwnProperty('next')).false
-  //... Object.defineProperties(alias, {
-  //...   next: {
-  //...     value: 1,
-  //...     configurable: true,
-  //...   }
-  //... })
-  //... chai.expect(alias.hasOwnProperty('next')).true
-  //... chai.expect(alias.next).equal(1)
-  //... chai.expect(bar_p.next).not.equal(1)
-  //... chai.expect(() => alias.next = 2).throw()
-  //... Object.defineProperties(alias, {
-  //...   next: {
-  //...     value: 2,
-  //...     configurable: true,
-  //...   }
-  //... })
-  //... chai.expect(alias.next).equal(2)
-  //... alias = onr.eyo.p6yAliasNew('p', onr, bar_p)
-  //... Object.defineProperties(bar_p, {
-  //...   next: {
-  //...     value: 1,
-  //...     configurable: true,
-  //...   }
-  //... })
-  //... chai.expect(bar_p.hasOwnProperty('next')).true
-  //... chai.expect(bar_p.next).equal(1)
-  //... chai.expect(alias.hasOwnProperty('next')).false
-  //... chai.expect(alias.next).not.equal(1)
   //>>>
 }
 
