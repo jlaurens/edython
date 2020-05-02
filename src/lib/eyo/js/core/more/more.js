@@ -95,7 +95,7 @@ eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
     var ans = after
     if (this.owner && eYo.isVALID(ans)) {
       var f_o = this.owner[type + 'Validate']
-      if (eYo.isF(f_o) && !eYo.isVALID(ans = f_o.call(this.owner, before, ans))) {
+      if (eYo.isF(f_o) && !eYo.isVALID(ans = f_o.call(this.owner, this.key, before, ans))) {
         return ans
       }
       if (this.key) {

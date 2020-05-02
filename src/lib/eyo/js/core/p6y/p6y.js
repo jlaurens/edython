@@ -23,6 +23,19 @@ eYo.forward('xre')
  * @namespace
  */
 eYo.o3d.makeNS(eYo, 'p6y')
+//<<< mochai: P6y
+//... chai.assert(eYo.p6y)
+//<<< mochai: POC: function arguments'
+  //... chai.expect((() => {}).length).equal(0)
+  //... chai.expect(((...$) => {}).length).equal(0)
+  //... chai.expect((x => {}).length).equal(1)
+  //... chai.expect({foo () {}}.foo.length).equal(0)
+  //... chai.expect({foo (...$) {}}.foo.length).equal(0)
+  //... chai.expect({foo (x) {}}.foo.length).equal(1)
+  //... chai.expect((function (...$) {}).length).equal(0)
+  //... chai.expect((function () {}).length).equal(0)
+  //... chai.expect((function (x) {}).length).equal(1)
+  //>>>
 
 // ANCHOR eYo.p6y.BaseC9r_p
 /**
@@ -37,7 +50,6 @@ eYo.o3d.makeNS(eYo, 'p6y')
  * of owner. Great care should be taken when editing this model.
  * @constructor
  */
-//<<< mochai: P6y
 eYo.p6y.makeBaseC9r(true, {
   init () {
     this.stored__ = eYo.NA // this may be useless in some situations
@@ -51,57 +63,46 @@ eYo.p6y.makeBaseC9r(true, {
       ),
     })
     //<<< eYo.p6y.BaseC9r_p, init
-    //... let p6y = new eYo.p6y.BaseC9r('foo', onr)
-    //... chai.expect(p6y.key).equal('foo')
-    //... chai.expect(p6y.owner).equal(onr)
-    //... chai.expect(p6y.stored__).undefined
-    //... chai.expect(() => p6y.value = 0).throw()
+    //... ;[
+    //...     new eYo.p6y.BaseC9r('foo', onr),
+    //...     eYo.p6y.new('foo', onr),
+    //...     eYo.p6y.new({}, 'foo', onr),
+    //...   ].forEach(p6y => {
+    //...   chai.expect(p6y.key).equal('foo')
+    //...   chai.expect(p6y.owner).equal(onr)
+    //...   chai.expect(p6y.stored__).undefined
+    //...   chai.assert(eYo.isNA(p6y.value))
+    //...   chai.expect(() => p6y.value = 0).throw()
+    //...   p6y.value_ = 421
+    //...   chai.expect(p6y.value).equal(421)
+    //...   chai.expect(p6y.value_).equal(421)
+    //...   chai.expect(p6y.value__).equal(421)
+    //...   chai.expect(p6y.stored__).equal(421)
+    //...   var p6y = eYo.p6y.new({}, 'foo', onr)
+    //...   let value = eYo.c9r.new('bar')
+    //...   p6y.value_ = value
+    //...   chai.expect(p6y.value).equal(value)
+    //...   chai.expect(value.eyo_p6y).equal(p6y)
+    //... })
     //>>>
   },
   dispose (...$) {
+    //<<< eYo.p6y.BaseC9r_p, dispose
+    //... var p6y = eYo.p6y.new({}, 'foo', onr)
+    //... let value = eYo.o3d.new({
+    //...   dispose () {
+    //...     this.owner.flag(2)
+    //...   }
+    //... }, 'bar', onr)
+    //... p6y.value_ = value
+    //... p6y.dispose()
     this.removeObservers()
     this._disposeStored(...$)
+    //... chai.assert(eYo.isNA(p6y.value))
+    //... flag.expect(12)
+    //>>>
   },
   methods: {
-    /**
-     * Fallback to validate the value of the property;
-     * Default implementation forwards to an eventual `fooValidate` method
-     * of the owner, where `foo` should be replaced by the key of the receiver.
-     * @param {Object} before
-     * @param {Object} after
-     */
-    validate (before, after) {
-      //<<< mochai: eYo.p6y.BaseC9r_p.validate (before, after)
-      let f_o = this.key && this.owner && this.owner[this.key + 'Validate']
-      return eYo.isF(f_o) ? f_o.call(this.owner, before, after) : after
-      //... var p6y = new eYo.p6y.BaseC9r('p6y', onr)
-      //... chai.expect(p6y.validate(1, 2)).equal(2)
-      //... onr.p6yValidate = function (before, after) {
-      //...   this.flag(2, before, after)
-      //...   return after
-      //... }
-      //... chai.expect(p6y.validate(3, 4)).equal(4)
-      //... flag.expect(1234)
-      //... var p6y = eYo.p6y.new({
-      //...   validate (before, after) {
-      //...     this.flag(2, before, after)
-      //...     return after
-      //...   },
-      //... }, 'foo', onr)
-      //... p6y.value__ = 3
-      //... flag.expect(0)
-      //... p6y.value_ = 4
-      //... flag.expect(1234)
-      //... var p6y = eYo.p6y.new({
-      //...   validate (after) {
-      //...     this.flag(2, after)
-      //...     return after
-      //...   },
-      //... }, 'foo', onr)
-      //... p6y.value_ = 3
-      //... flag.expect(123)
-      //>>>
-    },
     /**
      * Object disposer.
      * Manage collections, and takes care of ownership.
@@ -391,10 +392,8 @@ eYo.p6y.BaseC9r.eyo.finalizeC9r([
     //...   copy: 421,
     //... }
     //... chai.expect(() => mf.validate(model)).throw()
-    get_: eYo.model.descriptorF(),
-    set_: eYo.model.descriptorF(),
     reset: eYo.model.descriptorF(),
-    //... ;['get_', 'set_', 'reset'].forEach(K => {
+    //... ;['reset'].forEach(K => {
     //...   var model = {
     //...     [K]: eYo.NA,
     //...   }
@@ -429,6 +428,8 @@ eYo.p6y.BaseC9r.eyo.finalizeC9r([
     'dispose',
     'get',
     'set',
+    'get_',
+    'set_',
     eYo.observe.BEFORE,
     eYo.observe.DURING,
     eYo.observe.AFTER
@@ -438,6 +439,8 @@ eYo.p6y.BaseC9r.eyo.finalizeC9r([
   //...   'dispose',
   //...   'get',
   //...   'set',
+  //...   'get_',
+  //...   'set_',
   //...   eYo.observe.BEFORE,
   //...   eYo.observe.DURING,
   //...   eYo.observe.AFTER
@@ -463,6 +466,50 @@ eYo.p6y.BaseC9r.eyo.finalizeC9r([
 //>>>
 
 eYo.more.enhanceO3dValidate(eYo.p6y.BaseC9r.eyo, 'p6y', true)
+
+//<<< mochai: validate
+//... var p6y = new eYo.p6y.BaseC9r('foo', onr)
+//... chai.expect(p6y.validate(1, 2)).equal(2)
+//... onr.p6yValidate = function (key, before, after) {
+//...   this.flag(2, key, before, after)
+//...   return after
+//... }
+//... chai.expect(p6y.validate(3, 4)).equal(4)
+//... flag.expect('12foo34')
+//... delete onr.p6yValidate
+//... onr.fooP6yValidate = function (before, after) {
+//...   this.flag(2, before, after)
+//...   return after
+//... }
+//... chai.expect(p6y.validate(3, 4)).equal(4)
+//... flag.expect(1234)
+//... delete onr.fooP6yValidate
+//... onr.p6yValidate = function (key, before, after) {
+//...   this.flag(2, before, after)
+//...   return after
+//... }
+//... onr.fooP6yValidate = function (before, after) {
+//...   this.flag(6, before+4, after+4)
+//...   return after
+//... }
+//... chai.expect(p6y.validate(3, 4)).equal(4)
+//... flag.expect('12341678')
+//... p6y.value__ = 3
+//... flag.expect(0)
+//... p6y.value_ = 4
+//... flag.expect(12341678)
+//... onr.p6yValidate = function (key, before, after) {
+//...   this.flag(2, before, after)
+//...   return eYo.INVALID
+//... }
+//... chai.expect(p6y.validate(3, 4)).equal(eYo.INVALID)
+//... flag.expect(1234)
+//... p6y.value__ = 3
+//... flag.expect(0)
+//... p6y.value_ = 4
+//... flag.expect(1234)
+//... chai.expect(p6y.value).equal(3)
+//>>>
 
 // ANCHOR eYo.p6y.new
 
@@ -659,6 +706,7 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
   let K = 'reset'
   let f_m = model[K]
   if (io.pure_reset) {
+    // should go with pure getters and pure setters
     _p.getStartValue = eYo.noGetter(function () {
       return `No getStartValue for pure computed reset (${this.name}.${key})`
     })
@@ -668,14 +716,22 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
     _p[K] = eYo.decorate.reentrant(K, function (...$) {
       return f_m.call(this.owner, ...$)
     })
+    //... var x = 421
     //... var p6y = eYo.p6y.new({
     //...   reset (...$) {
     //...     this.flag(2, ...$)
-    //...     return 421
+    //...     return x
     //...   }
     //... }, 'foo', onr)
-    //... chai.expect(p6y.reset(3, 4, 5)).equal(421)
+    //... chai.expect(p6y.value).undefined
+    //... p6y.value_ = 123
+    //... chai.expect(p6y.value).equal(123)
+    //... chai.expect(p6y.reset(3, 4, 5)).equal(x)
     //... flag.expect(12345)
+    //... x = 666
+    //... chai.expect(p6y.reset()).equal(x)
+    //... flag.expect(12)
+    //... chai.expect(p6y.value).equal(123)
     //... p6y.eyo.C9r_p.reset = function (...$) {
     //...   this.owner.flag(2, ...$)
     //... }
@@ -1086,15 +1142,76 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
           return eYo.isDef(ans) ? ans : before
         })
         //... var p6y = eYo.p6y.new({
-        //...   set (after) {
-        //...     this.flag(2, after)
-        //...     return after
-        //...   }
+        //...   set (builtin, after) {
+        //...     this.flag(3, builtin(after), after)
+        //...   },
         //... }, 'foo', onr)
-        //... p6y.stored__ = 421
-        //... chai.expect(p6y.setValue(3)).equal(3)
-        //... flag.expect(123)
+        //... p6y.value_ = 5
+        //... flag.expect(135)
+        //... var test = (what) => {
+        //...   chai.expect(p6y.value).equal(what)
+        //...   chai.expect(p6y.value_).equal(what)
+        //...   chai.expect(p6y.value__).equal(what)
+        //...   chai.expect(p6y.stored__).equal(what)
+        //... }
+        //... test(5)
+        //... p6y.value_ = 7
+        //... flag.expect(1357)
+        //... test(7)
+        //... p6y.value__ = 5
+        //... flag.expect(0)
+        //... test(5)
+        //... chai.expect(p6y.setValue(7)).equal(5)
+        //... flag.expect(1357)
+        //... test(7)
+        //... var p6y = eYo.p6y.new({
+        //...   get (builtin) {
+        //...     var ans = builtin()
+        //...     this.flag(2, ans)
+        //...     return ans
+        //...   },
+        //...   set (builtin, after) {
+        //...     this.flag(3, builtin(after), after)
+        //...   },
+        //... }, 'foo', onr)
+        //... p6y.value__ = 5
+        //... p6y.value_ = 7
+        //... flag.expect(1357)
+        //... var test = (what) => {
+        //...   chai.expect(p6y.value).equal(what)
+        //...   flag.expect(`12${what}`)
+        //...   chai.expect(p6y.value_).equal(what)
+        //...   flag.expect(`12${what}`)
+        //...   chai.expect(p6y.value__).equal(what)
+        //...   flag.expect(0)
+        //...   chai.expect(p6y.stored__).equal(what)
+        //...   flag.expect(0)
+        //... }
+        //... test(7)
+        //... p6y.value__ = 5
+        //... flag.expect(0)
+        //... test(5)
+        //... chai.expect(p6y.setValue(7)).equal(5)
+        //... flag.expect(1357)
+        //... test(7)
       }
+    } else {
+      _p[setK] = eYo.decorate.reentrant(setK, function (after) {
+        let before = this.stored__
+        let ans = set_m.call(this.owner, after => {
+          return set_p.call(this, after)
+        }, after)
+        return eYo.isDef(ans) ? ans : before
+      })
+      //... var p6y = eYo.p6y.new({
+      //...   set (after) {
+      //...     this.flag(2, after)
+      //...     return after
+      //...   }
+      //... }, 'foo', onr)
+      //... p6y.stored__ = 421
+      //... chai.expect(p6y.setValue(3)).equal(3)
+      //... flag.expect(123)
     }
   } else if (io.pure_get) {
     _p[setK] = eYo.noSetter(function () {
@@ -1157,6 +1274,10 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... flag.expect(123)
     //... chai.expect(p6y.value__).equal(3)
     //... flag.expect(123)
+  } else if (get__m === eYo.doNothing) {
+    _p[getK] = eYo.noGetter(function () {
+      return `Write only (${this.owner.eyo.name}/${key})`
+    })
   } else if (io.get_) {
     _p[getK] = eYo.decorate.reentrant(getK, function () {
       return get__m.call(this.owner, () => this.__getStored())
@@ -1178,14 +1299,14 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     _p[setK] = eYo.decorate.reentrant(setK, function (after) {
       return set__m.call(this.owner, after)
     })
-    //... var p = eYo.p6y.new({
+    //... var p6y = eYo.p6y.new({
     //...   set_ (after) {
     //...     this.flag(3, x = after)
     //...   },
     //... }, 'foo', onr)
-    //... p.value_ = 57
+    //... p6y.value_ = 57
     //... flag.expect(1357)
-    //... p.value__ = 579
+    //... p6y.value__ = 579
     //... flag.expect(13579)
     //... var p6y = eYo.p6y.new({
     //...   set_ (after) {
@@ -1195,6 +1316,25 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... }, 'p6y', onr)
     //... chai.expect(p6y.setStored(579)).equal(5791)
     //... flag.expect(13579)
+    //... var x = 0
+    //... var p6y = eYo.p6y.new({
+    //...   get_ () {
+    //...     this.flag(2, x)
+    //...     return x
+    //...   },
+    //...   set_ (after) {
+    //...     this.flag(3, after)
+    //...     return x = after
+    //...   },
+    //... }, 'foo', onr)
+    //... p6y.value_ = 5
+    //... flag.expect(12135)
+    //... chai.expect(p6y.value).equal(x).equal(5)
+    //... flag.expect(125)
+    //... p6y.value__ = 57
+    //... flag.expect(1357)
+    //... chai.expect(p6y.value).equal(x).equal(57)
+    //... flag.expect(1257)
   } else if (io.set_) {
     _p[setK] = eYo.decorate.reentrant(setK, function (after) {
       return set__m.call(this.owner, $after => {this.__setStored($after)}, after)
@@ -1205,9 +1345,15 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //...     this.flag(3, after)
     //...   },
     //... }, 'p6y', onr)
-    //... p6y.setStored(57)
+    //... p6y.setStored(5)
+    //... flag.expect(135)
+    //... chai.expect(p6y.getStored()).equal(5)
+    //... p6y.value_ = 57
     //... flag.expect(1357)
     //... chai.expect(p6y.getStored()).equal(57)
+    //... p6y.value__ = 579
+    //... flag.expect(13579)
+    //... chai.expect(p6y.getStored()).equal(579)
   } else if (io.pure_get) {
     _p[setK] = _p.setValue
     //... var p6y = eYo.p6y.new({
@@ -1253,6 +1399,10 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... chai.expect(p6y.value_).equal(3)
     //... chai.expect(p6y.value__).equal(3)
     //... chai.expect(p6y.stored__).equal(123)
+  } else if (set__m === eYo.doNothing) {
+    _p[setK] = eYo.noSetter(function () {
+      return `Read only (${this.owner.eyo.name}/${key})`
+    })
   }
   //>>>
 }
@@ -1267,7 +1417,7 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
  * @constructor
  */
 eYo.o3d.makeC9r(eYo.p6y, 'List', {
-  init () {
+  init (key, owner, ...$) {
     this.list__ = []
     this.values = new Proxy(this.list__, {
       get(target, prop) {
@@ -1765,7 +1915,7 @@ eYo.dlgt.BaseC9r_p.p6yMakeInstance = function (model, key, object) {
  */
 eYo.dlgt.BaseC9r_p.p6yMakeShortcut = function (object, key, p6y, override) {
   //<<< mochai: eYo.dlgt.BaseC9r_p.p6yMakeShortcut
-  //... let object = eYo.c9r.new({}) // Notice the explicit model !
+  //... let object = onr
   eYo.isaC9r(object) || eYo.throw(`${this.name}.p6yMakeShortcut: Bad owner ${object}`)
   if (!eYo.isStr(key)) {
     eYo.isDef(override) && eYo.throw(`${this.name}.p6yMakeShortcut: Unexpected last argument ${override}`)
@@ -1775,8 +1925,8 @@ eYo.dlgt.BaseC9r_p.p6yMakeShortcut = function (object, key, p6y, override) {
   eYo.isaP6y(p6y) || eYo.throw(`${this.name}.p6yMakeShortcut: Missing property ${p6y}`)
   //... chai.expect(() => object.eyo.p6yMakeShortcut(object, '', 421)).throws()
   //... let p6y = eYo.p6y.new('foo', object)
-  //... p6y.value_ = 421
-  //... chai.expect(p6y.value).equal(421)
+  //... p6y.value_ = 3
+  //... chai.expect(p6y.value).equal(3)
   let k_p = key + '_p'
   let k_ = key + '_'
   if (!override && object.hasOwnProperty(k_p)) {
@@ -1879,8 +2029,8 @@ eYo.dlgt.BaseC9r_p.p6yMakeShortcut = function (object, key, p6y, override) {
   //... flag.expect(14)
   //... object.bar_ = 5
   //... flag.expect(135)
-  //... object.bar__ = 57
-  //... flag.expect(1357)
+  //... object.bar__ = 9
+  //... flag.expect(159)
   return p6y
   //>>>
 }
