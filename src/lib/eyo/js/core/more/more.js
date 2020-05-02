@@ -23,6 +23,7 @@ eYo.forward('decorate')
 eYo.makeNS('more')
 
 //<<< mochai: eYo.more
+//... chai.assert(eYo.more)
 
 /**
  * Add iterators to the given object.
@@ -34,6 +35,7 @@ eYo.makeNS('more')
  */
 eYo.more.iterators = function (_p, type) {
   //<<< eYo.more.iterators
+  //... chai.assert(eYo.more.iterators)
   let tForEach = type + 'ForEach'
   let tSome = type + 'Some'
   let tMap = type + 'Map'
@@ -74,6 +76,8 @@ eYo.more.iterators = function (_p, type) {
  * @param{Boolean} thisIsOwner - whether `this` in the model, is the owner or the local object
  */
 eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
+  //<<< mochai: eYo.more.enhanceO3dValidate
+  //... chai.assert(eYo.more.enhanceO3dValidate)
 
   eyo instanceof eYo.o3d.Dlgt || eYo.throw(`Bar parameter ${this.name}/enhanceO3dValidate needs an instance of eYo.o3d.Dlgt instead fo ${eyo}`)
 
@@ -185,6 +189,7 @@ eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
       f_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${f_m}`)
     }
   }
+  //>>>
 }
 
 /**
