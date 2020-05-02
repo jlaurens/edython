@@ -74,7 +74,7 @@ def getInlineTest(path):
     onr = eYo.c9r && eYo.c9r.new({
       methods: {
         flag (what, ...$) {
-          flag.push(2, what, ...$)
+          flag.push(1, what, ...$)
           return what
         },
       },

@@ -1,12 +1,19 @@
 describe ('Tests: Property', function () {
   this.timeout(10000)
-  let flag = new eYo.test.Flag()
-  let onr = eYo.c9r.new()
+  var flag, onr
+  beforeEach (function() {
+    flag = new eYo.test.Flag()
+    onr = eYo.c9r && eYo.c9r.new({
+      methods: {
+        flag (what, ...$) {
+          flag.push(1, what, ...$)
+          return what
+        },
+      },
+    }, 'onr')
+  })
   let p6yMF = eYo.p6y.BaseC9r.eyo.modelFormat
   let p6yModelValidate = p6yMF.validate.bind(p6yMF)
-  before(function () {
-    flag.reset()
-  })
   it ('POC: function arguments', function () {
     chai.assert((() => {}).length === 0)
     chai.assert(((x) => {}).length === 1)
@@ -57,7 +64,7 @@ describe ('Tests: Property', function () {
     let p6y = eYo.p6y.new({}, 'foo', onr)
     let value = eYo.c9r.new({
       dispose () {
-        flag.push(1)
+        this.owner.flag(2)
       }
     })
     p6y.value_ = value
@@ -65,109 +72,13 @@ describe ('Tests: Property', function () {
     chai.expect(value.eyo_p6y).equal(p6y)
     p6y.dispose()
     chai.assert(eYo.isNA(p6y.value))
-    flag.expect(1)
-  })
-  it('P6y: this is the owner', function () {
-    var p = eYo.p6y.new({
-      get () {
-        flag.push(1)
-        return 421
-      },
-    }, 'foo', onr)
-    chai.expect(p.value).equal(421)
-    flag.expect(1)
-    var p = eYo.p6y.new({
-      get_ () {
-        flag.push(2)
-        return 123
-      },
-    }, 'foo', onr)
-    chai.expect(p.value).equal(123)
-    flag.expect(2)
-    var p = eYo.p6y.new({
-      set (after) {
-        flag.push(after)
-      },
-    }, 'foo', onr)
-    p.value_ = 421
-    flag.expect(421)
-    var p = eYo.p6y.new({
-      set_ (after) {
-        flag.push(after)
-      },
-    }, 'foo', onr)
-    p.value_ = 123
-    flag.expect(123)
-    var p = eYo.p6y.new({
-      validate (before, after) {
-        flag.push(before, after)
-        return after
-      },
-    }, 'foo', onr)
-    p.value_ = 123
-    flag.expect(123)
-    p.value_ = 456
-    flag.expect(123456)
-    var p = eYo.p6y.new({
-      validate (after) {
-        flag.push(after)
-        return after
-      },
-    }, 'foo', onr)
-    p.value_ = 421
-    flag.expect(421)
-    var p = eYo.p6y.new({
-      willChange (before, after) {
-        this.flag = flag.push(before, after)
-        return after
-      },
-    }, 'foo', onr)
-    p.value_ = 123
-    flag.expect(123)
-    p.value_ = 666
-    flag.expect(123666)
-    chai.expect(onr.flag).equal('123666')
-    var p = eYo.p6y.new({
-      willChange (after) {
-        this.flag = flag.push(after)
-      },
-    }, 'foo', onr)
-    p.value_ = 421
-    flag.expect(421)
-    chai.expect(onr.flag).equal('421')
-    var p = eYo.p6y.new({
-      didChange (before, after) {
-        this.flag = flag.push(before, after)
-        return after
-      },
-    }, 'foo', onr)
-    p.value_ = 123
-    flag.expect(123)
-    p.value_ = 666
-    flag.expect(123666)
-    chai.expect(onr.flag).equal('123666')
-    var p = eYo.p6y.new({
-      didChange (after) {
-        this.flag = flag.push(after)
-        return after
-      },
-    }, 'foo', onr)
-    p.value_ = 421
-    flag.expect(421)
-    chai.expect(onr.flag).equal('421')
+    flag.expect(12)
   })
   it('P6y: {set_ (builtin, after) ...}', function () {
-    let onr = eYo.c9r.new({
-      methods: {
-        do_it (what) {
-          flag.push(what)
-        }
-      },
-    })
     let p = eYo.p6y.new({
       set_ (builtin, after) {
         builtin(after)
-        this.do_it(456)
+        this.flag(456)
       }
     }, 'foo', onr)
     p.value_ = 123
@@ -175,16 +86,9 @@ describe ('Tests: Property', function () {
     flag.expect(456)
   })
   it('P6y: {get_ (builtin) ...}', function () {
-    let onr = eYo.c9r.new({
-      methods: {
-        do_it (what) {
-          flag.push(what)
-        }
-      },
-    })
     let p = eYo.p6y.new({
       get_ (builtin) {
-        this.do_it(456)
+        this.flag(456)
         return builtin()
       }
     }, 'foo', onr)
@@ -194,21 +98,14 @@ describe ('Tests: Property', function () {
     flag.expect(456)
   })
   it('P6y: {set_:..., get_:...}', function () {
-    let onr = eYo.c9r.new({
-      methods: {
-        do_it (what) {
-          flag.push(what)
-        }
-      },
-    })
     var x = 0
     let p = eYo.p6y.new({
       set_ (after) {
         x = after
-        this.do_it(after + 1)
+        this.flag(after + 1)
       },
       get_ () {
-        this.do_it(x)
+        this.flag(x)
         return x
       },
     }, 'foo', onr)
@@ -222,66 +119,15 @@ describe ('Tests: Property', function () {
     flag.expect(2)
   })
   it('P6y: {get (builtin) ...}', function () {
-    let onr = eYo.c9r.new({
-      methods: {
-        do_it (what) {
-          flag.push(what)
-        }
-      },
-    })
     let p = eYo.p6y.new({
       get (builtin) {
-        this.do_it(421)
+        this.flag(421)
         return builtin()
       }
     }, 'foo', onr)
     p.value__ = 123
     chai.expect(p.value).equal(123)
     flag.expect(421)
-  })
-  it('P6y: {get:..., set:...}', function () {
-    let onr = eYo.c9r.new({
-      methods: {
-        do_it (what) {
-          flag.push(what)
-        }
-      },
-    })
-    var x = 0
-    let p = eYo.p6y.new({
-      get () {
-        this.do_it(x)
-        return x
-      },
-      set (after) {
-        this.do_it(x = after)
-      },
-    }, 'foo', onr)
-    p.value_ = 123
-    flag.expect(123)
-    chai.expect(p.value).equal(123)
-    flag.expect(123)
-    chai.expect(p.value_).equal(123)
-    flag.expect(123)
-    chai.expect(p.value__).equal(123)
-    flag.expect(123)
-    chai.expect(p.stored__).equal(eYo.NA)
-    flag.expect(0)
-    p.value__ = 421
-    flag.expect(421)
-    chai.expect(p.value).equal(421)
-    flag.expect(421)
-    chai.expect(p.value_).equal(421)
-    flag.expect(421)
-    chai.expect(p.value__).equal(421)
-    flag.expect(421)
-    chai.expect(p.stored__).equal(eYo.NA)
-    p.stored__ = 123
-    flag.expect(0)
-    chai.expect(p.value).equal(421)
-    chai.expect(p.value_).equal(421)
-    chai.expect(p.value__).equal(421)
-    chai.expect(p.stored__).equal(123)
   })
   it('P6y: {set (builtin, after):..., no get}', function () {
     var x = 0
@@ -312,21 +158,14 @@ describe ('Tests: Property', function () {
     chai.expect(p.stored__).equal(666)
   })
   it('P6y: {set (builtin, after):..., get(builtin)}', function () {
-    let onr = eYo.c9r.new({
-      methods: {
-        do_it (what) {
-          flag.push(what)
-        }
-      },
-    })
     var x = 0
     let p = eYo.p6y.new({
       set (builtin, after) {
-        this.do_it(after)
+        this.flag(after)
         builtin(x = after)
       },
       get (builtin) {
-        this.do_it(x)
+        this.flag(x)
         return x*1000+builtin()
       },
     }, 'foo', onr)
@@ -345,16 +184,9 @@ describe ('Tests: Property', function () {
     chai.expect(p.value_).equal(123421)
   })
   it('P6y: validate(after)...', function () {
-    let onr = eYo.c9r.new({
-      methods: {
-        do_it (what) {
-          flag.push(what)
-        }
-      },
-    })
     let p = eYo.p6y.new({
       validate (after) {
-        this.do_it(after + 1)
+        this.flag(after + 1)
         return 10 * after
       },
     }, 'foo', onr)
@@ -364,16 +196,9 @@ describe ('Tests: Property', function () {
     flag.expect(2)
   })
   it('P6y: validate(before, after)...', function () {
-    let onr = eYo.c9r.new({
-      methods: {
-        do_it (what) {
-          flag.push(what)
-        }
-      },
-    })
     let p = eYo.p6y.new({
       validate (before, after) {
-        this.do_it(after)
+        this.flag(after)
         return 10 * after
       },
     }, 'foo', onr)
@@ -401,10 +226,10 @@ describe ('Tests: Property', function () {
     let onr = eYo.c9r.new({
       methods: {
         fooP6yValidate (before, after) {
-          this.do_it(before, after)
+          this.flag(before, after)
           return eYo.INVALID
         },
-        do_it (...$) {
+        flag (...$) {
           flag.push(...$)
         },
       },
@@ -415,20 +240,13 @@ describe ('Tests: Property', function () {
     chai.expect(p.value_).equal(eYo.NA)
   })
   it('P6y: (will|at|did)Change([before, ]after)...', function () {
-    let onr = eYo.c9r.new({
-      methods: {
-        do_it (...$) {
-          flag.push(...$)
-        }
-      },
-    })
     let f_after = function (after) {
       flag.push(9)
-      this.do_it(after)
+      this.flag(after)
     }
     let f_before_after = function (before, after) {
       flag.push(9)
-      this.do_it(after)
+      this.flag(after)
     }
     ;['will', 'at', 'did'].forEach(what => {
       let k = what + 'Change'
@@ -447,9 +265,9 @@ describe ('Tests: Property', function () {
       let onr = eYo.c9r.new({
         methods: {
           [k]: function (before, after) {
-            this.do_it(before, after)
+            this.flag(before, after)
           },
-          do_it (...$) {
+          flag (...$) {
             flag.push(...$)
           },
         },
@@ -460,27 +278,20 @@ describe ('Tests: Property', function () {
     })
   })
   it('P6y: get_/willChange/set_/didChange', function () {
-    let onr = eYo.c9r.new({
-      methods: {
-        do_it (...$) {
-          flag.push(...$)
-        }
-      },
-    })
     let p = eYo.p6y.new({
       get_ () {
-        this.do_it(1)
+        this.flag(1)
         return this.foo__
       },
       willChange (before, after) {
-        this.do_it(2, before, 3, after)
+        this.flag(2, before, 3, after)
       },
       set_ (after) {
-        this.do_it(4, after)
+        this.flag(4, after)
         this.foo__ = after
       },
       didChange (before, after) {
-        this.do_it(5, before, 6, after)
+        this.flag(5, before, 6, after)
       },
     }, 'foo', onr)
     onr.foo__ = 1
@@ -515,23 +326,6 @@ describe ('Tests: Property', function () {
     let p2 = eYo.p6y.new(model, 'bar', onr)
     chai.expect(p1.constructor).equal(p2.constructor)
     chai.expect(Object.getPrototypeOf(p1)).equal(Object.getPrototypeOf(p2))
-  })
-  it('P6y: get only', function () {
-    var flag = 421
-    let p = eYo.p6y.new({
-      get () {
-        return flag
-      }
-    }, 'foo', onr)
-    chai.expect(p.value === 421)
-    chai.expect(p.value_ === 421)
-    chai.expect(p.value__ === 421)
-    chai.expect(() => {
-      p.value_ = 123
-    }).to.throw()
-    chai.expect(() => {
-      p.value__ = 123
-    }).to.throw()
   })
   it('P6y: No getValue', function () {
     let p = eYo.p6y.new({
@@ -631,17 +425,10 @@ describe ('Tests: Property', function () {
     flag.expect(421)
   })
   it('P6y: lazy2', function () {
-    let onr = eYo.c9r.new({
-      methods: {
-        do_it (...$) {
-          flag.push(...$)
-        }
-      }
-    })
     var p = eYo.p6y.new({
       lazy () {
         flag.push(1)
-        this.do_it(2)
+        this.flag(2)
         return 3
       }
     }, 'foo', onr)
