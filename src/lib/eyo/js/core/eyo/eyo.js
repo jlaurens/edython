@@ -191,7 +191,31 @@ eYo.isDef = what => {
   //... chai.expect(eYo.isDef()).false
   //... chai.expect(eYo.isDef(null)).false
   //>>>
-},
+}
+/**
+ * Function used to disallow sending twice the same message.
+ */
+eYo.oneShot = function (msg) {
+  return eYo.isStr(msg)
+  ? function () {
+    throw new Error(`Forbidden call: ${msg}`)
+  } : eYo.isF(msg)
+    ? function () {
+      throw new Error(`Forbidden call ${msg.call(this)}`)
+    } : eYo.isDef(msg)
+      ? eYo.throw(`eYo.oneShot: Bad argument ${msg}`)
+      : function () {
+        throw new Error('Forbidden second shot')
+      }
+  //<<< mochai: eYo.oneShot
+  //... chai.assert(eYo.oneShot)
+  //... chai.expect(() => eYo.oneShot(421)).throw()
+  //... chai.expect(() => eYo.oneShot()()).throw()
+  //... chai.expect(() => eYo.oneShot('abc')()).throw()
+  //... chai.expect(() => eYo.oneShot(() => flag.push(421))()).throw()
+  //... flag.expect(421)
+  //>>>
+}
 /**
  * Function used when defining a JS property.
  */

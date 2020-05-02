@@ -53,10 +53,10 @@ eYo.dlgt.declareDlgt = function (_p) {
 //...     chai.expect(C9r.prototype.eyo).equal(eyo)
 //...     let _p = C9r.prototype
 //...     _p.flag = function (...$) {
-//...       flag.push(9, ...$)
+//...       flag.push(1, ...$)
 //...     }
+//...     f && f(_p)
 //...     eyo.finalizeC9r()
-//...     f && f(C9r.prototype)
 //...   }
 //... }
 
@@ -192,20 +192,24 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
    * @param {Object} model
    */
   _p.makeC9rInit = function (model) {
+    this.makeC9rInit = eYo.oneShot('makeC9rInit only once')
     model || (model = this.model)
     let K = 'init'
     let f_m = model[K]
     let C9r_p = this.C9r_p
     let f_p = C9r_p && C9r_p[K]
     //<<< mochai: eYo.dlgt.BaseC9r_p.makeC9rInit
-    //... let prepare = preparator(_p => {
-    //...   _p.doPrepare = function (...$) {
-    //...     flag.push(1, ...$) 
-    //...   }
-    //...   _p.doInit = function (...$) {
-    //...     flag.push(2, ...$) 
-    //...   }
-    //... })
+    //... let prepare = (model, f) => {
+    //...   return preparator(_p => {
+    //...     _p.doPrepare = function (...$) {
+    //...       flag.push(1, ...$) 
+    //...     }
+    //...     _p.doInit = function (...$) {
+    //...       flag.push(3, ...$) 
+    //...     }
+    //...     f && (_p.init = f)
+    //...   })(model)
+    //... }
     if (f_m) {
       if (!eYo.isF(f_m)) {
         console.error('BREAK HERE! BUG')
@@ -226,30 +230,15 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
           }
           //... prepare({
           //...   init (builtin, ...$) {
-          //...     flag.push(8)
+          //...     flag.push('<')
           //...     builtin(...$)
-          //...     flag.push(7)
+          //...     flag.push('>')
           //...   }
+          //... }, function (...$) {
+          //...   flag.push(2, ...$) 
           //... })
-          //... C9r.prototype.init = function (...$) {
-          //...   flag.push(3, ...$) 
-          //... }
-          //... C9r.eyo.makeC9rInit()
-          //... new C9r(4, 6)
-          //... flag.expect(81463462467)
-          //... prepare()
-          //... C9r.prototype.init = function (...$) {
-          //...   flag.push(3, ...$) 
-          //... }
-          //... C9r.eyo.makeC9rInit({
-          //...   init (builtin, ...$) {
-          //...     flag.push(8)
-          //...     builtin(...$)
-          //...     flag.push(7)
-          //...   }
-          //... })
-          //... new C9r(4, 6)
-          //... flag.expect(81463462467)
+          //... new C9r(4, 5)
+          //... flag.expect('<145245345>')
         } else {
           f = function (...$) {
             try {
@@ -262,26 +251,16 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
               delete this.dispose
             }
           }
+          //... // no inherited `init`.
           //... prepare({
           //...   init (builtin, ...$) {
-          //...     flag.push(8)
+          //...     flag.push('<')
           //...     builtin(...$)
-          //...     flag.push(7)
+          //...     flag.push('>')
           //...   }
           //... })
-          //... C9r.eyo.makeC9rInit()
-          //... new C9r(4, 6)
-          //... flag.expect(81462467)
-          //... prepare()
-          //... C9r.eyo.makeC9rInit({
-          //...   init (builtin, ...$) {
-          //...     flag.push(8)
-          //...     builtin(...$)
-          //...     flag.push(7)
-          //...   }
-          //... })
-          //... new C9r(4, 6)
-          //... flag.expect(81462467)
+          //... new C9r(4, 5)
+          //... flag.expect('<145345>')
         }
       } else if (f_p) {
         f = function (...$) {
@@ -304,30 +283,13 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         }
         //... prepare({
         //...   init (...$) {
-        //...     flag.push(8)
-        //...     flag.push(...$)
-        //...     flag.push(7)
+        //...     flag.push('<', ...$, '>')
         //...   }
+        //... }, function (...$) {
+        //...   flag.push(2, ...$) 
         //... })
-        //... C9r.prototype.init = function (...$) {
-        //...   flag.push(3, ...$) 
-        //... }
-        //... C9r.eyo.makeC9rInit()
-        //... new C9r(4, 6)
-        //... flag.expect(1463468467246)
-        //... prepare()
-        //... C9r.prototype.init = function (...$) {
-        //...   flag.push(3, ...$) 
-        //... }
-        //... C9r.eyo.makeC9rInit({
-        //...   init (...$) {
-        //...     flag.push(8)
-        //...     flag.push(...$)
-        //...     flag.push(7)
-        //...   }
-        //... })
-        //... new C9r(4, 6)
-        //... flag.expect(1463468467246)
+        //... new C9r(4, 5)
+        //... flag.expect('145245<45>345')
       } else {
         f = function (...$) {
           try {
@@ -341,24 +303,11 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         }
         //... prepare({
         //...   init (...$) {
-        //...     flag.push(8)
-        //...     flag.push(...$)
-        //...     flag.push(7)
+        //...     flag.push('<', ...$, '>')
         //...   }
         //... })
-        //... C9r.eyo.makeC9rInit()
-        //... new C9r(4, 6)
-        //... flag.expect(1468467246)
-        //... prepare()
-        //... C9r.eyo.makeC9rInit({
-        //...   init (...$) {
-        //...     flag.push(8)
-        //...     flag.push(...$)
-        //...     flag.push(7)
-        //...   }
-        //... })
-        //... new C9r(4, 6)
-        //... flag.expect(1468467246)
+        //... new C9r(4, 5)
+        //... flag.expect('145<45>345')
       }
     } else if (f_p) {
       f = function (...$) {
@@ -374,20 +323,11 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
           delete this.dispose
         }
       }
-      //... prepare()
-      //... C9r.prototype.init = function (...$) {
-      //...   flag.push(3, ...$) 
-      //... }
-      //... C9r.eyo.makeC9rInit()
-      //... new C9r(4, 6)
-      //... flag.expect(146346246)
-      //... prepare()
-      //... C9r.prototype.init = function (...$) {
-      //...   flag.push(3, ...$) 
-      //... }
-      //... C9r.eyo.makeC9rInit({})
-      //... new C9r(4, 6)
-      //... flag.expect(146346246)
+      //... prepare({}, function (...$) {
+      //...   flag.push(2, ...$) 
+      //... })
+      //... new C9r(4, 5)
+      //... flag.expect(145245345)
     } else {
       f = function (...$) {
         try {
@@ -402,13 +342,8 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         }
       }
       //... prepare()
-      //... C9r.eyo.makeC9rInit()
-      //... new C9r(4, 6)
-      //... flag.expect(146246)
-      //... prepare()
-      //... C9r.eyo.makeC9rInit({})
-      //... new C9r(4, 6)
-      //... flag.expect(146246)
+      //... new C9r(4, 5)
+      //... flag.expect(145345)
     }
     C9r_p[K] = f
     //>>>
@@ -422,17 +357,22 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
    * @param {Object} model
    */
   _p.makeC9rDispose = function (model) {
+    this.makeC9rDispose = eYo.oneShot('makeC9rDispose only once')
     model || (model = this.model)
     let K = 'dispose'
     let f_m = model[K]
     let C9r_p = this.C9r_p
     let f_p = C9r_p && C9r_p[K]
     //<<< mochai: eYo.dlgt.BaseC9r_p.makeC9rDispose
-    //... let prepare = preparator(_p => {
-    //...   _p.eyo.disposeInstance = function (object, ...$) {
-    //...     object.flag(1, ...$)
-    //...   }
-    //... })
+    //... let prepare = (model, f) => {
+    //...   return preparator(_p => {
+    //...     _p.doPrepare = _p.doInit = eYo.doNothing
+    //...     _p.eyo.disposeInstance = function (object, ...$) {
+    //...       flag.push('x', ...$)
+    //...     }
+    //...     f && (_p.dispose = f)
+    //...   })(model)
+    //... }
     if (f_m) {
       if (XRegExp.exec(f_m.toString(), eYo.xre.function_builtin)) {
         if (f_p) {
@@ -449,30 +389,15 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
           }
           //... prepare({
           //...   dispose (builtin, ...$) {
-          //...     flag.push(8)
+          //...     flag.push('<1')
           //...     builtin(...$)
-          //...     flag.push(7)
+          //...     flag.push('>')
           //...   }
-          //... })
-          //... C9r.prototype.dispose = function (...$) {
+          //... }, function (...$) {
           //...   this.flag(2, ...$) 
-          //... }
-          //... C9r.eyo.makeC9rDispose()
-          //... new C9r().dispose(4, 6)
-          //... flag.expect(8914692467)
-          //... prepare()
-          //... C9r.prototype.dispose = function (...$) {
-          //...   this.flag(2, ...$) 
-          //... }
-          //... C9r.eyo.makeC9rDispose({
-          //...   dispose (builtin, ...$) {
-          //...     flag.push(8)
-          //...     builtin(...$)
-          //...     flag.push(7)
-          //...   }
           //... })
-          //... new C9r().dispose(4, 6)
-          //... flag.expect(8914692467)
+          //... new C9r().dispose(3, 4)
+          //... flag.expect('<1x341234>')
         } else {
           f = function (...$) {
             try {
@@ -486,24 +411,13 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
           }
           //... prepare({
           //...   dispose (builtin, ...$) {
-          //...     flag.push(8)
+          //...     flag.push('<1')
           //...     builtin(...$)
-          //...     flag.push(7)
+          //...     flag.push('>')
           //...   }
           //... })
-          //... C9r.eyo.makeC9rDispose()
-          //... new C9r().dispose(4, 6)
-          //... flag.expect(891467)
-          //... prepare()
-          //... C9r.eyo.makeC9rDispose({
-          //...   dispose (builtin, ...$) {
-          //...     flag.push(8)
-          //...     builtin(...$)
-          //...     flag.push(7)
-          //...   }
-          //... })
-          //... new C9r().dispose(4, 6)
-          //... flag.expect(891467)
+          //... new C9r().dispose(3, 4)
+          //... flag.expect('<1x34>')
         }
       } else if (f_p) {
         f = function (...$) {
@@ -518,26 +432,13 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         }
         //... prepare({
         //...   dispose (...$) {
-        //...     flag.push(8, ...$, 7)
+        //...     flag.push('<12', ...$, '>')
         //...   }
-        //... })
-        //... C9r.prototype.dispose = function (...$) {
+        //... }, function (...$) {
         //...   this.flag(2, ...$) 
-        //... }
-        //... C9r.eyo.makeC9rDispose()
-        //... new C9r().dispose(4, 6)
-        //... flag.expect(846791469246)
-        //... prepare()
-        //... C9r.prototype.dispose = function (...$) {
-        //...   this.flag(2, ...$) 
-        //... }
-        //... C9r.eyo.makeC9rDispose({
-        //...   dispose (...$) {
-        //...     flag.push(8, ...$, 7)
-        //...   }
         //... })
-        //... new C9r().dispose(4, 6)
-        //... flag.expect(846791469246)
+        //... new C9r().dispose(3, 4)
+        //... flag.expect('<1234>x341234')
       } else {
         f = function (...$) {
           try {
@@ -550,20 +451,11 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         }
         //... prepare({
         //...   dispose (...$) {
-        //...     flag.push(8, ...$, 7)
+        //...     flag.push('<12', ...$, '>')
         //...   }
         //... })
-        //... C9r.eyo.makeC9rDispose()
-        //... new C9r().dispose(4, 6)
-        //... flag.expect(84679146)
-        //... prepare()
-        //... C9r.eyo.makeC9rDispose({
-        //...   dispose (...$) {
-        //...     flag.push(8, ...$, 7)
-        //...   }
-        //... })
-        //... new C9r().dispose(4, 6)
-        //... flag.expect(84679146)
+        //... new C9r().dispose(3, 4)
+        //... flag.expect('<1234>x34')
       }
     } else if (f_p) {
       f = function (...$) {
@@ -575,20 +467,11 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
           delete this.init
         }
       }
-      //... prepare()
-      //... C9r.prototype.dispose = function (...$) {
+      //... prepare({}, function (...$) {
       //...   this.flag(2, ...$) 
-      //... }
-      //... C9r.eyo.makeC9rDispose()
-      //... new C9r().dispose(4, 6)
-      //... flag.expect(91469246)
-      //... prepare()
-      //... C9r.prototype.dispose = function (...$) {
-      //...   this.flag(2, ...$) 
-      //... }
-      //... C9r.eyo.makeC9rDispose({})
-      //... new C9r().dispose(4, 6)
-      //... flag.expect(91469246)
+      //... })
+      //... new C9r().dispose(3, 4)
+      //... flag.expect('x341234')
     } else {
       f = function (...$) {
         try {
@@ -599,13 +482,8 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         }
       }
       //... prepare()
-      //... C9r.eyo.makeC9rDispose()
-      //... new C9r().dispose(4, 6)
-      //... flag.expect(9146)
-      //... prepare()
-      //... C9r.eyo.makeC9rDispose({})
-      //... new C9r().dispose(4, 6)
-      //... flag.expect(9146)
+      //... new C9r().dispose(3, 4)
+      //... flag.expect('x34')
     }
     C9r_p[K] = f
     //>>>
