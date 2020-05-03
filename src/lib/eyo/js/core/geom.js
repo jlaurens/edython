@@ -71,7 +71,7 @@ eYo.geom.Dlgt_p.modelMerge = function (model) {
 
 eYo.geom.BaseC9r.eyo.finalizeC9r(['aliases'], {
   properties: {
-    [eYo.model.ANY]: eYo.p6y.BaseC9r.eyo.modelFormat
+    [eYo.model.ANY]: eYo.P6y.eyo.modelFormat
   },
 })
 

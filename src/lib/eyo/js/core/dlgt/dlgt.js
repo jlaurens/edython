@@ -731,7 +731,7 @@ eYo.dlgt.declareDlgt(eYo._p)
 
   /**
    * Declare the given model for the associate constructor.
-   * The default implementation just calls `methodsMerge`.
+   * The default implementation just calls `methodsMerge` and `CONSTsMerge`.
    * 
    * @param {Object} model - Object, like for |makeC9r|.
    */

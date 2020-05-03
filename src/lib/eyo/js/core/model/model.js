@@ -580,7 +580,7 @@ eYo.model.Format_p.validate = function (path, model, key) {
     // validate the model
     let v = c.validate_
     ? c.validate_(model, key)
-    : c.fallback && c.fallback.validate(path, model, key)
+    : c.fallback && c.fallback.validate(eYo.NA, model, key)
     if (eYo.isINVALID(v)) {
       if (eYo.TESTING) {
         console.error(model, c.path)

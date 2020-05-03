@@ -39,6 +39,32 @@ eYo.test.Flag = function (what) {
 
 eYo.TESTING = true
 
+chai.Assertion.addProperty('eyo_NS', function () {
+  this.assert(
+      eYo.isNS(this._obj)
+    , 'expected #{this} to be a namespace'
+    , 'expected #{this} to not be a namespace'
+  )
+})
+
+chai.Assertion.addProperty('eyo_C9r', function () {
+  this.assert(
+    eYo.isC9r(this._obj),
+    'expected #{this} to be an eYo constructor',
+    'expected #{this} to not be an eYo constructor',
+  )
+})
+
+chai.Assertion.addProperty('eyo_BaseC9r', function () {
+  this.eyo_C9r
+  let C9r = this._obj
+  this.assert(
+    C9r.eyo.ns.BaseC9r === C9r,
+    'expected #{this} to be a base eYo constructor',
+    'expected #{this} to not be a base eYo constructor',
+  )
+})
+
 chai.Assertion.addProperty('eyo_point', function () {
   this.assert(
       this._obj instanceof eYo.geom.AbstractPoint

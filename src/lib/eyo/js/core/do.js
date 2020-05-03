@@ -566,6 +566,14 @@ eYo.do.toTitleCase = (str) => {
 }
 
 /**
+ * @param {String} str - the base string
+ */
+eYo.do.toSentenceCase = (str) => {
+  eYo.isStr(str) || eYo.throw(`eYo.do.toSentenceCase: string expected but got ${str}`)
+  return str.length ? str[0].toLowerCase()+str.substr(1) : str
+}
+
+/**
  * Remove the any instance of the given object from the given array.
  * @param {Array<*>} ra
  * @param {*} obj

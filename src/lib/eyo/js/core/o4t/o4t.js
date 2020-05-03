@@ -18,6 +18,8 @@ eYo.require('p6y')
  * @namespace
  */
 eYo.o3d.makeNS(eYo, 'o4t')
+//<<< mochai: eYo.o4t
+//... chai.assert(eYo.o4t)
 
 /**
  * @name {eYo.o4t.BaseC9r}
@@ -25,13 +27,16 @@ eYo.o3d.makeNS(eYo, 'o4t')
  */
 eYo.o4t.makeBaseC9r(true)
 
-eYo.o4t.BaseC9r.eyo.finalizeC9r(['aliases', 'properties', 'methods'], {
-  properties: {
-    [eYo.model.ANY]: eYo.p6y.BaseC9r
-  },
-})
+//... chai.expect(eYo.O4t).equal(eYo.o4t.BaseC9r)
 
 eYo.o4t.BaseC9r.eyo.p6yEnhanced()
+
+eYo.o4t.BaseC9r.eyo.finalizeC9r(['aliases'], {
+  properties: {
+    [eYo.model.ANY]: eYo.P6y.eyo.modelFormat,
+    [eYo.model.VALIDATE]: eYo.model.validateD,
+  },
+})
 
 /**
  * Declare the given model for the associate constructor.
@@ -42,6 +47,7 @@ eYo.o4t.Dlgt_p.modelMerge = function (model) {
   model.aliases && this.p6yAliasesMerge(model.aliases)
   model.properties && this.p6yMerge(model.properties)
   model.methods && this.methodsMerge(model.methods)
+  model.CONSTs && this.CONSTsMerge(model.methods)
 }
 
 eYo.c9r._p.enhancedO4t = function () {
@@ -248,7 +254,7 @@ eYo.c9r.Dlgt_p.p6yReplace = function (object, k, source) {
     console.error('BREAK HERE!!!')
   }
   eYo.isDef(old_p) || eYo.throw(`${this.name}/p6yReplace: no replacement for ${k}`)
-  var p = eYo.c9r.Dlgt_p.p6yAliasNew(k, object, source)
+  var p = eYo.p6y.aliasNew(k, object, source)
   this.p6yMakeShortcut(object, k, p, true)
   eYo.linkPreviousNext(old_p.previous, p)
   eYo.linkPreviousNext(p, old_p.next)
@@ -326,3 +332,4 @@ eYo.c9r.Dlgt_p.p6yReplace = function (object, k, source) {
   //... chai.expect(o.mi).equal(6)
   //>>>
 }
+//>>>

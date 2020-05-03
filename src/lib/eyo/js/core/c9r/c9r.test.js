@@ -1,6 +1,17 @@
 describe ('POC', function () {
   this.timeout(10000)
-  let flag = new eYo.test.Flag()
+  var flag, onr
+  beforeEach (function() {
+    flag = new eYo.test.Flag()
+    onr = eYo.c9r && eYo.c9r.new({
+      methods: {
+        flag (what, ...$) {
+          flag.push(1, what, ...$)
+          return what
+        },
+      },
+    }, 'onr')
+  })
   it ('Change constructor', function () {
     let OYE = function () {}
     OYE.prototype.version = 421
@@ -105,7 +116,18 @@ describe ('POC', function () {
 })
 describe ('Tests: C9r', function () {
   this.timeout(10000)
-  let flag = new eYo.test.Flag()
+  var flag, onr
+  beforeEach (function() {
+    flag = new eYo.test.Flag()
+    onr = eYo.c9r && eYo.c9r.new({
+      methods: {
+        flag (what, ...$) {
+          flag.push(1, what, ...$)
+          return what
+        },
+      },
+    }, 'onr')
+  })
   it ('C9r: Basic', function () {
     chai.assert(eYo.makeNS)
     chai.assert(eYo.c9r)
@@ -131,39 +153,6 @@ describe ('Tests: C9r', function () {
     chai.expect(C9r.eyo).not.equal(eYo.c9r.BaseC9r.eyo)
     chai.assert(eYo.isSubclass(C9r.eyo.constructor, eYo.dlgt.BaseC9r))
     chai.expect(C9r.eyo.id).equal('')
-  })
-  it ('C9r: appendToMethod', function () {
-    flag.reset()
-    var o = {}
-    eYo.c9r.appendToMethod(o, 'foo1', function (x) {
-      flag.push(x)
-    })
-    o.foo1(1)
-    flag.expect(1)
-    o = {
-      foo1: eYo.doNothing,
-    }
-    eYo.c9r.appendToMethod(o, 'foo1', function (x) {
-      flag.push(x)
-    })
-    o.foo1(1)
-    flag.expect(1)
-    o = {
-      foo1: 421,
-    }
-    chai.expect(() => {
-      eYo.c9r.appendToMethod(o, 'foo1', function (x) {})
-    }).throw()
-    o = {
-      foo1 (x) {
-        flag.push(x)
-      },
-    }
-    eYo.c9r.appendToMethod(o, 'foo1', function (x) {
-      flag.push(x+1)
-    })
-    o.foo1(1)
-    flag.expect(12)
   })
   it ('C9r: finalizeC9r', function () {
     let ns = eYo.c9r.makeNS()

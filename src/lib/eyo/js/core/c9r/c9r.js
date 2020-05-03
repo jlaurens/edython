@@ -38,6 +38,7 @@ eYo.makeNS('c9r')
  * @param {Function} f - the function we will append
  */
 eYo.c9r._p.appendToMethod = (object, key, f) => {
+  //<<< mochai: eYo.c9r.appendToMethod
   let old = object[key]
   if (old && old !== eYo.doNothing) {
     eYo.isF(old) || eYo.throw(`Expecting a function ${old}`)
@@ -48,6 +49,37 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
   } else {
     object[key] = f
   }
+  //... var o = {}
+  //... eYo.c9r.appendToMethod(o, 'foo1', function (x) {
+  //...   flag.push(x)
+  //... })
+  //... o.foo1(1)
+  //... flag.expect(1)
+  //... o = {
+  //...   foo1: eYo.doNothing,
+  //... }
+  //... eYo.c9r.appendToMethod(o, 'foo1', function (x) {
+  //...   flag.push(x)
+  //... })
+  //... o.foo1(1)
+  //... flag.expect(1)
+  //... o = {
+  //...   foo1: 421,
+  //... }
+  //... chai.expect(() => {
+  //...   eYo.c9r.appendToMethod(o, 'foo1', function (x) {})
+  //... }).throw()
+  //... o = {
+  //...   foo1 (x) {
+  //...     flag.push(x)
+  //...   },
+  //... }
+  //... eYo.c9r.appendToMethod(o, 'foo1', function (x) {
+  //...   flag.push(x+1)
+  //... })
+  //... o.foo1(1)
+  //... flag.expect(12)
+  //>>>
 }
 
 // ANCHOR Top level constructor utilities
@@ -358,7 +390,12 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
    * @param {Object} [model] - the model
    */
   eYo.c9r._p.makeBaseC9r = function (unfinalize, Super, model) {
+    //<<< mochai: eYo.c9r.makeBaseC9r
+    //... chai.assert(eYo.c9r.makeBaseC9r)
     this.hasOwnProperty('BaseC9r') && eYo.throw(`${this.name}: Already Base`)
+    //... var ns = eYo.c9r.makeNS()
+    //... ns.makeBaseC9r()
+    //... chai.expect(() => ns.makeBaseC9r()).throw()
     if (!eYo.isBool(unfinalize)) {
       eYo.isDef(model) && eYo.throw(`${this.name}/makeBaseC9r Unexpected last argument: ${model}`)
       ;[unfinalize, Super, model] = [false, unfinalize, Super]
@@ -373,20 +410,44 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
       ]
     }
     let C9r = this.makeC9r(this, 'BaseC9r', Super, model || {})
-    let s = this.parent
-    if (s && this.key) {
-      s[eYo.do.toTitleCase(this.key)] = C9r
+    //... var ns = eYo.c9r.makeNS()
+    //... var C9r = ns.makeBaseC9r()
+    //... chai.expect(C9r).eyo_BaseC9r
+    let onr = this.parentNS
+    if (onr && (this._p.hasOwnProperty('key') || this.hasOwnProperty('key'))) {
+      // Convenient shortcut
+      Object.defineProperties(onr, {
+        [eYo.do.toTitleCase(this.key)]: eYo.descriptorR(function () {
+          return C9r
+        })
+      })
+      //... var seed = eYo.genUID(eYo.ALNUM)
+      //... var key = 'x' + seed
+      //... var Key = 'X' + seed
+      //... var ns = eYo.c9r.makeNS(eYo, key)
+      //... chai.expect(ns).equal(eYo[key])
+      //... chai.expect(ns.key).equal(key)
+      //... chai.expect(ns.parentNS).equal(eYo)
+      //... ns.makeBaseC9r()
+      //... chai.expect(ns.BaseC9r).equal(eYo[Key])
     }
     Object.defineProperties(this, {
-      'Dlgt_p': eYo.descriptorR(function () {
+      Dlgt_p: eYo.descriptorR(function () {
         return C9r.eyo_p
+        //... var ns = eYo.c9r.makeNS()
+        //... ns.makeBaseC9r()
+        //... chai.expect(ns.Dlgt_p).equal(ns.BaseC9r.eyo_p)
       }),
-      'Dlgt': eYo.descriptorR(function () {
+      Dlgt: eYo.descriptorR(function () {
         return C9r.eyo_p.constructor
+        //... var ns = eYo.c9r.makeNS()
+        //... ns.makeBaseC9r()
+        //... chai.expect(ns.Dlgt).equal(ns.BaseC9r.eyo.constructor)
       }),
     })
     !unfinalize && C9r.eyo.finalizeC9r()
     return C9r
+    //>>>
   }
   
   /**

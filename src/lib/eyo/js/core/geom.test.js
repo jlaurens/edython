@@ -22,9 +22,9 @@ describe ('geometry', function () {
             l_p = c_p.l_p
             c_p = c_p.c_p
           }
-          c_p = this.eyo.p6yAliasNew('c', this, c_p)
+          c_p = eYo.p6y.aliasNew('c', this, c_p)
           this.eyo.p6yMakeShortcut(this, 'c', c_p)
-          l_p = this.eyo.p6yAliasNew('l', this, l_p)
+          l_p = eYo.p6y.aliasNew('l', this, l_p)
           this.eyo.p6yMakeShortcut(this, 'l', l_p)
         }
       })

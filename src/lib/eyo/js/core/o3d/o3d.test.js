@@ -1,9 +1,16 @@
 describe ('Tests: Owned', function () {
   this.timeout(10000)
-  let flag = new eYo.test.Flag()
-  it ('O3d: Basic', function () {
-    chai.assert(eYo.o3d)
-    chai.assert(eYo.o3d._p.hasOwnProperty('BaseC9r'))
+  var flag, onr
+  beforeEach (function() {
+    flag = new eYo.test.Flag()
+    onr = eYo.c9r && eYo.c9r.new({
+      methods: {
+        flag (what, ...$) {
+          flag.push(1, what, ...$)
+          return what
+        },
+      },
+    }, 'onr')
   })
   it ('O3d: modelBaseC9r', function () {
     let ns = eYo.o3d.makeNS()
@@ -18,7 +25,6 @@ describe ('Tests: Owned', function () {
     chai.expect(model._C9r.SuperC9r).equal(ns.BaseC9r)
   })
   it ('O3d: eYo.o3d.new', function () {
-    let onr = new eYo.c9r.BaseC9r()
     let o3d = eYo.o3d.new('foo', onr)
     chai.expect(o3d.owner).equal(onr)
     chai.expect(() => {
@@ -28,7 +34,6 @@ describe ('Tests: Owned', function () {
     chai.expect(o3d.owner).equal(eYo.NA)
   })
   it(`O3d: ns.new(model)`, function () {
-    let onr = new eYo.c9r.BaseC9r()
     let ns = eYo.o3d.makeNS()
     ns.makeBaseC9r()
     let model = {}
@@ -38,7 +43,6 @@ describe ('Tests: Owned', function () {
   it ('O3d: time is on my side', function () {
     // In the init method, the properties are available and initialized
     // when not lazy!
-    let onr = new eYo.c9r.BaseC9r()
     let ns = eYo.o3d.makeNS()
     ns.makeBaseC9r({
       init (key, owner) {
@@ -49,13 +53,13 @@ describe ('Tests: Owned', function () {
     chai.expect(o.owner).equal(onr)
   })
   it ('O3d: ownerDidChange', function () {
-    let ns = eYo.o3d.makeNS()
-    ns.makeBaseC9r({
+    let ns_o3d = eYo.o3d.makeNS()
+    ns_o3d.makeBaseC9r({
       init (key, owner) {
         chai.expect(this.owner).equal(owner)
       }
     })
-    let o = ns.new('abc', eYo.c9r.new())
+    let o = ns_o3d.new('abc', eYo.c9r.new())
     o.eyo.C9r_p.ownerWillChange = function (before, after) {
       flag.push(1)
     }
@@ -63,7 +67,6 @@ describe ('Tests: Owned', function () {
       flag.push(2)
       o.eyo.C9r_s.ownerDidChange.call(this, before, after)
     }
-    let onr = eYo.c9r.new()
     onr.hasUI = true
     o.eyo.C9r_p.initUI = function () {
       flag.push(3)

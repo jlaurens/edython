@@ -1,7 +1,17 @@
 describe ('Tests: Object', function () {
   this.timeout(10000)
-  let flag = new eYo.test.Flag()
-  let onr = eYo.c9r.new()
+  var flag, onr
+  beforeEach (function() {
+    flag = new eYo.test.Flag()
+    onr = eYo.c9r && eYo.c9r.new({
+      methods: {
+        flag (what, ...$) {
+          flag.push(1, what, ...$)
+          return what
+        },
+      },
+    }, 'onr')
+  })
   it ('O4t: POC', function () {
     let C9r = function (target) {
       this.p3y = new Proxy(target, {
@@ -94,19 +104,19 @@ describe ('Tests: Object', function () {
   })
   it ('O4t: model Shortcuts', function () {
     var model = 421
-    let mf_o4t = eYo.o4t.BaseC9r.eyo.modelFormat
-    let mf_p6y = eYo.p6y.BaseC9r.eyo.modelFormat
+    let mf_o4t = eYo.O4t.eyo.modelFormat
+    let mf_p6y = eYo.P6y.eyo.modelFormat
     let mf_p6y_alt = mf_o4t.get('properties/foo')
     chai.expect(mf_p6y_alt.fallback).equal(mf_p6y)
     var validated = mf_p6y.validate(model)
     chai.expect(eYo.isD(validated)).true
-    chai.expect(validated.value).equal(421)
+    chai.expect(validated.value()).equal(421)
     var validated = mf_p6y_alt.validate(model)
     chai.expect(eYo.isD(validated)).true
-    chai.expect(validated.value).equal(421)
+    chai.expect(validated.value()).equal(421)
     var validated = mf_o4t.validate('properties/foo', model)
     chai.expect(eYo.isD(validated)).true
-    chai.expect(validated.value).equal(421)
+    chai.expect(validated.value()).equal(421)
   })
   it ('O4t: properties(p6yModelMap)', function () {
     let ns = eYo.o4t.makeNS()
@@ -119,7 +129,7 @@ describe ('Tests: Object', function () {
     })
     chai.expect(Foo.eyo.p6yModelMap).equal(Foo.eyo.p6yModelMap)
     chai.expect(Bar.eyo.p6yModelMap).equal(Bar.eyo.p6yModelMap)
-    chai.expect(Foo.eyo.p6yModelMap.get('chi').value).equal(421)
+    chai.expect(Foo.eyo.p6yModelMap.get('chi').value()).equal(421)
     chai.expect(Bar.eyo.p6yModelMap.get('chi')).eql(Foo.eyo.p6yModelMap.get('chi'))
   })
   it ('O4t: properties(p6yModelByKey__)', function () {
@@ -132,7 +142,7 @@ describe ('Tests: Object', function () {
     ns.modelMakeC9r(model, 'foo')
     let C9r = model._C9r
     chai.expect(eYo.isDef(C9r.eyo.p6yModelByKey__)).true
-    chai.expect(C9r.eyo.p6yModelByKey__.chi.value).equal(421) // expanded
+    chai.expect(C9r.eyo.p6yModelByKey__.chi.value()).equal(421) // expanded
     chai.expect(C9r.eyo.p6yModelByKey__).equal(C9r.eyo.p6yModelByKey__)
     let Bar = ns.makeC9r('bar', C9r)
     chai.expect(eYo.isDef(Bar.eyo.p6yModelByKey__.chi)).false // chi is not inherited
@@ -194,7 +204,6 @@ describe ('Tests: Object', function () {
     }).throw()
   })
   it ('O4t: properties (owned)', function () {
-    flag.reset()
     let model = {
       properties: {
         foo: eYo.c9r.new({
@@ -229,7 +238,6 @@ describe ('Tests: Object', function () {
     var bar = new Bar('foo', onr)
     chai.expect(bar.foo).equal(421)
     chai.expect(bar.bar).equal(123)
-    flag.reset()
     bar.foo_ = eYo.c9r.new({
       dispose(x, y) {
         flag.push(x+2, y+2)
@@ -244,31 +252,33 @@ describe ('Tests: Object', function () {
     flag.expect(1234)
   })
   it ('O4t: override only get', function () {
-    var flag = 123
+    var x = 123
     var Foo = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
       properties: {
         foo: {
           get () {
-            return flag
+            return x
           },
         },
       },
     })
     Foo.eyo.finalizeC9r()
     var foo = new Foo('foo', onr)
-    chai.expect(foo.foo).equal(flag)
+    chai.expect(foo.foo).equal(x)
     var Bar = eYo.o4t.makeC9r(eYo.NULL_NS, 'Bar', Foo, {
       properties: {
         foo: {
           get () {
-            return 10 * flag
+            flag.push(1)
+            return x
           },
         },
       },
     })
     Bar.eyo.finalizeC9r()
     var bar = new Bar('bar', onr)
-    chai.assert(bar.foo !== flag)
+    chai.expect(bar.foo).equal(x)
+    flag.expect(1)
   })
   it ('O4t: override remove set', function () {
     var x = 421
@@ -276,6 +286,7 @@ describe ('Tests: Object', function () {
       properties: {
         foo: {
           get () {
+            flag.push(1)
             return x
           },
           set (after) {
@@ -287,19 +298,22 @@ describe ('Tests: Object', function () {
     Foo.eyo.finalizeC9r()
     var foo = new Foo('foo', onr)
     chai.expect(foo.foo).equal(x)
+    flag.expect(1)
     chai.assert((foo.foo_ = 123) === x)
     var Bar = eYo.o4t.makeC9r(eYo.NULL_NS, 'Bar', Foo, {
       properties: {
         foo: {
           get () {
-            return 10 * x
+            flag.push(2)
+            return x
           },
         },
       },
     })
     Bar.eyo.finalizeC9r()
     var bar = new Bar('bar', onr)
-    chai.assert(bar.foo !== x)
+    chai.expect(bar.foo).equal(x)
+    flag.expect(2)
     chai.expect(() => {
       bar.foo_ = 421
     }).to.throw()
@@ -310,6 +324,7 @@ describe ('Tests: Object', function () {
       properties: {
         foo: {
           get () {
+            flag.push(1)
             return x
           },
         },
@@ -318,6 +333,7 @@ describe ('Tests: Object', function () {
     Foo.eyo.finalizeC9r()
     var foo = new Foo('foo', onr)
     chai.expect(foo.foo).equal(x)
+    flag.expect(1)
     chai.expect(() => {
       foo.foo_ = 421
     }).to.throw()
@@ -325,18 +341,22 @@ describe ('Tests: Object', function () {
       properties: {
         foo: {
           get () {
-            return 10 * x
+            flag.push(2)
+            return x
           },
           set (after) {
-            x = 10 * after
+            flag.push(3, after)
+            x = after
           },
         },
       },
     })
     Bar.eyo.finalizeC9r()
     var bar = new Bar('foo', onr)
-    chai.assert(bar.foo !== x)
-    chai.assert((bar.foo_ = 2) * 10 === x)
+    chai.expect(bar.foo).equal(x)
+    flag.expect(2)
+    chai.expect(bar.foo_ = 2).equal(x)
+    flag.expect(32)
   })
   it ('O4t: inheritance', function () {
     var ns = eYo.o4t.makeNS()
@@ -377,7 +397,6 @@ describe ('Tests: Object', function () {
       })
       ns.A.eyo.finalizeC9r()
       let a = new ns.A('a', onr)
-      flag.reset()
       a.foo_ = 1
       flag.expect(1)
       a.bar_ = 1
@@ -413,7 +432,6 @@ describe ('Tests: Object', function () {
     var ns = eYo.o4t.makeNS()
     ns.makeBaseC9r()
     chai.expect(ns).equal(ns.BaseC9r.eyo.ns)
-    flag.reset()
     ns.makeC9r('A', {
       properties: {
         foo () {
@@ -484,7 +502,6 @@ describe ('Tests: Object', function () {
     var bb = new ns.BB('bb', onr)
     chai.expect(ns.BB.eyo.p6yModelByKey__).not.property('foo')
     chai.expect(bb.foo).not.equal(421)
-    flag.reset()
     ns.B.eyo.p6yMerge({
       foo: {
         value () {
@@ -506,16 +523,18 @@ describe ('Tests: Object', function () {
     chai.expect(bb.foo).equal(421)
   })
   it (`O4t: modelDeclare({...})`, function () {
-    let NS = eYo.o4t.makeNS()
-    let ns = NS.makeNS('foo')
+    let ns_super = eYo.o4t.makeNS()
+    var ns = ns_super.makeNS('foo')
     ns.makeBaseC9r()
-    let o = new ns.BaseC9r('o', onr)
+    var o = new ns.BaseC9r('o', onr)
     chai.expect(() =>{
       o.bar()
     }).to.throw()
     chai.assert(!o.foo)
-    var flag = 0
+    var ns = ns_super.makeNS('foo')
+    ns.makeBaseC9r(true)
     chai.assert(!ns.merge)
+    var x = 0
     ns.modelDeclare({
       properties: {
         foo: 421,
@@ -525,19 +544,23 @@ describe ('Tests: Object', function () {
       },
       methods: {
         bar () {
-          flag = 421 - flag
+          flag.push(1)
+          x = 421 - x
         }
       }
     })
     chai.assert(ns.merge)
-    ns.merge(ns.BaseC9r_p)
-    o.bar()
-    chai.expect(flag).equal(421)
-    o = new ns.BaseC9r('o', onr)
-    o.bar()
-    chai.expect(flag).equal(0)
+    ns.merge(ns.BaseC9r)
+    var o = new ns.BaseC9r('o', onr)
     chai.expect(o.foo).equal(421)
     chai.expect(o.mi).equal(o.foo)
+    o.bar()
+    chai.expect(x).equal(421)
+    flag.expect(1)
+    o = new ns.BaseC9r('o', onr)
+    o.bar()
+    chai.expect(x).equal(0)
+    flag.expect(1)
   })
   it (`O4t: modelDeclare('...', {...})`, function () {
     let NS = eYo.o4t.makeNS()
@@ -1002,7 +1025,6 @@ describe ('Tests: Object', function () {
           }
         }
       })
-      flag.reset()
       var bar = new Bar('bar', onr)
       chai.assert(bar.foo.equals(foo_1))
       flag.expect(0)
@@ -1091,7 +1113,7 @@ describe ('Tests: Object', function () {
         },
         methods: {
           bar (what) {
-            flag.push(0, what)
+            flag.push(1, what)
             return what
           }
         }
@@ -1115,7 +1137,7 @@ describe ('Tests: Object', function () {
         },
         methods: {
           bar (what) {
-            flag.push(0, what)
+            flag.push(1, what)
             return what
           }
         }

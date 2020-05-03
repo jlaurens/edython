@@ -418,7 +418,7 @@ Miscellaneous:
 --js "closure-library/closure/goog/dom/xml.js" \
 --js "closure-library/closure/goog/style/style.js" \
 --js "eyo/js/core/attr.js" \
---js "eyo/js/core/o3d.js" \
+--js "eyo/js/core/o3d/o3d.js" \
 --js "eyo/js/core/observe.js" \
 --js "eyo/js/core/shared.js" \
 --js "eyo/js/py/py.js" \
@@ -437,7 +437,7 @@ Miscellaneous:
 --js "eyo/js/application/desk/board/brick_util/node_brick.js" \
 --js "eyo/js/application/desk/workspace/flyout/draft.js" \
 --js "eyo/js/application/desk/workspace/flyout/search.js" \
---js "eyo/js/core/o4t.js" \
+--js "eyo/js/core/o4t/o4t.js" \
 --js "eyo/js/other/dragger_board.js" \
 --js "eyo/js/py/acceler.js" \
 --js "eyo/js/py/listnode.js" \

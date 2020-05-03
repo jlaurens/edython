@@ -19,7 +19,8 @@
  * @namespace
  */
 eYo.c9r.makeNS(eYo, 'o3d')
-
+//<<< mochai: eYo.o3d
+//... chai.assert(eYo.o3d)
 /**
  * @name{eYo.o3d.BaseC9r}
  * @constructor
@@ -42,6 +43,8 @@ eYo.o3d.makeBaseC9r({
     this.owner__ = this.key_ = eYo.NA
   },  
 })
+//... chai.assert(eYo.o3d._p.hasOwnProperty('BaseC9r'))
+//... chai.expect(eYo.o3d.BaseC9r).equal(eYo.O3d)
 
 eYo.mixinR(eYo._p, {
   isaO3d (what) {
@@ -190,3 +193,4 @@ eYo.o3d._p.prepare = function (model, key, owner, ...$) {
   }
   return ans
 }
+//>>>

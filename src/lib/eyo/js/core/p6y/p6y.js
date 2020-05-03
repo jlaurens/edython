@@ -51,6 +51,8 @@ eYo.o3d.makeNS(eYo, 'p6y')
  * @constructor
  */
 eYo.p6y.makeBaseC9r(true, {
+  //<<< mochai: eYo.p6y.BaseC9r | eYo.P6y
+  //... chai.expect(eYo.p6y.BaseC9r).equal(eYo.P6y)
   init () {
     this.stored__ = eYo.NA // this may be useless in some situations
     Object.defineProperties(this, {
@@ -62,7 +64,7 @@ eYo.p6y.makeBaseC9r(true, {
         eYo.p6y.BaseC9r_p._valueGetter
       ),
     })
-    //<<< eYo.p6y.BaseC9r_p, init
+    //<<< mochai: eYo.p6y.BaseC9r_p, init
     //... ;[
     //...     new eYo.p6y.BaseC9r('foo', onr),
     //...     eYo.p6y.new('foo', onr),
@@ -295,6 +297,7 @@ eYo.p6y.makeBaseC9r(true, {
       //>>>
     },
   },
+  //>>>
 })
 
 eYo.mixinR(eYo._p, {
@@ -331,7 +334,7 @@ eYo.mixinR(eYo.p6y.BaseC9r_p, {
 //...     get () {},
 //...   },
 //... }
-//... let mf = eYo.p6y.BaseC9r.eyo.modelFormat
+//... let mf = eYo.P6y.eyo.modelFormat
 //... model = mf.validate(model)
 //... chai.assert(eYo.isF(model.foo.get))
 eYo.p6y.BaseC9r.eyo.finalizeC9r([
@@ -1900,7 +1903,7 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
  */
 eYo.dlgt.BaseC9r_p.p6yMakeInstance = function (model, key, object) {
   return model && model.source
-  ? object.eyo.p6yAliasNew(key, object, ...model.source)
+  ? eYo.p6y.aliasNew(key, object, ...model.source)
   : eYo.p6y.prepare(model || {}, key, object)
 }
 

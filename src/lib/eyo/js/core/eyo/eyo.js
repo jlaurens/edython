@@ -979,28 +979,62 @@ eYo.mixinR(eYo._p, {
    * @return {Object}
    */
   makeNS (ns, key, model, getters) {
-    if (eYo.isStr(ns)) {
+    //<<<chai: eYo.makeNS'
+    //... chai.assert(eYo.isNS)
+    //... chai.expect(eYo).eyo_NS
+    //... chai.assert(eYo.makeNS)
+    if (eYo.isDef(ns) && !eYo.isNS(ns)) {
       eYo.isDef(getters) && eYo.throw(`${this.name}/makeNS: Unexpected last argument: ${getters}`)
       ;[ns, key, model, getters] = [this, ns, key, model]
     }
     if (!eYo.isStr(key)) {
-      eYo.isDef(getters) && eYo.throw(`${this.name}/makeNS: Unexpected last argument: ${getters}`)
+      eYo.isDef(getters) && eYo.throw(`${this.name}/makeNS: Unexpected last argument (2): ${getters}`)
       ;[key, model, getters] = [eYo.NA, key, model]
     }
     if (ns && key && ns[key] !== eYo.NA) {
       throw new Error(`${ns.name}[${key}] already exists.`)
     }
+    //... var ns = eYo.makeNS()
+    //... chai.expect(ns).eyo_NS
+    //... chai.expect(ns).not.equal(eYo)
     var Super = this.constructor
     var NS = function () {
       Super.call(this)
     }
     eYo.inherits(NS, Super)
+    //... var ns_super = eYo.makeNS()
+    //... chai.expect(ns_super).eyo_NS
+    //... var ns = ns_super.makeNS()
+    //... chai.expect(ns).eyo_NS
+    //... chai.expect(() => ns.foo()).throw()
+    //... ns_super._p.foo = eYo.doNothing
+    //... ns.foo()
+
+    //... var ns_super = eYo.makeNS()
+    //... var ns = ns_super.makeNS()
+    //... var key = eYo.genUID(eYo.IDENT)
+    //... var ns = ns_super.makeNS(eYo.NULL_NS, key)
+    //... chai.assert(ns)
+    //... chai.expect(ns_super[key]).undefined
+
     Object.defineProperty(NS.prototype, 'super', {
       value: this,
       writable: false,
     })
+    //... var ns_super = eYo.makeNS()
+    //... var ns = ns_super.makeNS()
+    //... chai.expect(ns).not.equal(ns_super)
+    //... chai.expect(ns.super).equal(ns_super)
     ns && Object.defineProperty(NS.prototype, 'parent', {
-      value: ns,
+      get () {
+        console.error('BREAK HERE!!! parent')
+        return ns
+      },
+      // value: ns, // used in makeBaseC9r
+      // writable: false,
+    })
+    ns && Object.defineProperty(NS.prototype, 'parentNS', {
+      value: ns, // used in makeBaseC9r
       writable: false,
     })
     model && Object.keys(model).forEach(k => {
@@ -1012,6 +1046,10 @@ eYo.mixinR(eYo._p, {
           return value
         }, true)
       )
+      //... var ns = eYo.makeNS(eYo.NULL_NS, 'fu', {
+      //...   shi: 421
+      //... })
+      //... chai.expect(ns.shi).equal(421)
     })
     var ans = new NS()
     if (key) {
@@ -1023,39 +1061,25 @@ eYo.mixinR(eYo._p, {
       Object.defineProperties(NS.prototype, {
         key: {value: key, writable: false,},
         name: {
-          value: ns ? `${ns.name}.${key}` : key || "No man's land",
+          value: ns ? `${ns.name}.${key}` : key,
+          writable: false,
+        },
+      })
+      //... var ns_super = eYo.makeNS()
+      //... var ns = ns_super.makeNS('foo')
+      //... chai.expect(ns).eyo_NS
+      //... chai.expect(ns).equal(ns_super.foo)
+      //... ns.makeNS('chi')
+      //... chai.expect(ns_super.foo.chi).eyo_NS
+    } else {
+      Object.defineProperties(NS.prototype, {
+        name: {
+          value: ns ? `${ns.name}.?` : "No man's land",
           writable: false,
         },
       })
     }
     return ans
-    //<<<chai: eYo.makeNS'
-    //... chai.assert(eYo.isNS)
-    //... chai.expect(eYo.isNS(eYo)).true
-    //... chai.assert(eYo.makeNS)
-    //... var ns = eYo.makeNS()
-    //... chai.assert(ns)
-    //... chai.expect(ns).not.equal(eYo)
-    //... ns = eYo.makeNS('foo421')
-    //... chai.assert(ns)
-    //... chai.expect(ns).equal(eYo.foo421)
-    //... chai.assert(eYo.isNS(ns))
-    //... chai.assert(eYo.foo421)
-    //... eYo.foo421.makeNS('bar')
-    //... chai.assert(eYo.foo421.bar)
-    //... eYo.makeNS(eYo.NULL_NS, 'bar')
-    //... chai.assert(ns)
-    //... chai.assert(!eYo.bar)
-    //... eYo.provide('foo421.bar')
-    //... chai.assert(eYo.foo421)
-    //... chai.assert(eYo.foo421.bar)
-    //... ns.makeNS('chi421')
-    //... chai.assert(ns.chi421)
-    //... chai.assert(eYo.foo421.chi421)
-    //... ns = eYo.makeNS(eYo.NULL_NS, 'fu', {
-    //...   shi: 421
-    //... })
-    //... chai.expect(ns.shi).equal(421)
     //>>>
   },
   /**
@@ -1063,6 +1087,7 @@ eYo.mixinR(eYo._p, {
    * @param {Object} value - When false, nothing is performed. Thit is the value used to create some object at the given path, instead of the default namespace.
    */
   provide (name, value) {
+    //<<< mochai: eYo.provide
     if (value === false) {
       return
     }
@@ -1087,15 +1112,29 @@ eYo.mixinR(eYo._p, {
       }
     }
     f(...args, value)
+    //... var key = eYo.genUID(eYo.IDENT)
+    //... eYo.provide(`${key}.bar`)
+    //... chai.expect(eYo[key]).eyo_NS
+    //... chai.expect(eYo[key].bar).eyo_NS
+    //>>>
   },
   /**
    * @param {String} name
    */
   require (name) {
+    //<<< mochai: eYo.require
     var ns = eYo
     name.split('.').forEach(k => {
-      eYo.assert((ns = ns[k]), `Missing required ${name}`)
+      eYo.isNS(ns = ns[k]) || eYo.throw(`Missing required ${name}`)
     })
+    //... var key = eYo.genUID(eYo.IDENT)
+    //... eYo.provide(`${key}.foo`)
+    //... eYo.require(`${key}`)
+    //... eYo.require(`${key}.foo`)
+    //... chai.expect(() => eYo.require(`${key}.foo.bar`)).throw()
+    //... chai.expect(() => eYo.require(`${key}.bor`)).throw()
+    //... chai.expect(() => eYo.require(`${key}1.foo`)).throw()
+    //>>>
   },
   forward: eYo.doNothing,
 }, false)
@@ -1242,6 +1281,7 @@ eYo.mixinR(eYo._p, {
   /**
    * Generate a unique ID.  This should be globally unique.
    * 79 characters ^ 20, length > 128 bits (better than a UUID).
+   * @param {type} String - One of `eYo.IDENT`, `eYo.LETTER`, `eYo.ALNUM`.
    * @return {string} A globally unique ID string.
    */
   eYo._p.genUID = (type, length) => {
