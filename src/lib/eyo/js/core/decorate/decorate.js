@@ -11,9 +11,11 @@
  */
 'use strict'
 
-eYo.makeNS('decorate')
-
 eYo.require('do')
+
+eYo.makeNS('decorate')
+//<<< mochai: eYo.decorate
+//... chai.assert(eYo.decorate)
 
 /**
  * Decorate the function to be reentrant.
@@ -61,6 +63,7 @@ eYo.decorate.reentrant_method = (object, key, f) => {
  * @return {*} Whathever `f` returns.
  */
 eYo.decorate.reentrant = (key, f, alt_f = eYo.doNothing) => {
+  //<<< mochai: eYo.decorate.reentrant
   return function(...$) {
     try {
       this[key] = alt_f
@@ -69,6 +72,34 @@ eYo.decorate.reentrant = (key, f, alt_f = eYo.doNothing) => {
       delete this[key]
     }
   }
+  //... chai.assert(eYo.decorate.reentrant)
+  //... let _p = Object.getPrototypeOf(onr)
+  //... _p.bar = eYo.decorate.reentrant('bar', function (what) {
+  //...   this.flag(2, what)
+  //...   return this.bar()
+  //... })
+  //... chai.expect(onr.bar(3)).undefined
+  //... flag.expect(123)
+  //... _p.bar = eYo.decorate.reentrant('bar', function (what) {
+  //...   this.flag(2, what)
+  //...   return this.bar(what)
+  //... }, function (what) {
+  //...   this.flag(3, what + 2)
+  //...   return what + 1
+  //... })
+  //... chai.expect(onr.bar(3)).equal(4)
+  //... flag.expect(123135)
+  //... _p.bar = eYo.decorate.reentrant('bar', function (what) {
+  //...   let ans = this.bar(what)
+  //...   this.flag(3, what + 2)
+  //...   return ans
+  //... }, function (what) {
+  //...   this.flag(2, what)
+  //...   return 3 * what
+  //... })
+  //... chai.expect(onr.bar(3)).equal(9)
+  //... flag.expect(123135)
+  //>>>
 }
 
 /**
@@ -107,3 +138,4 @@ eYo.decorate.ArrayFunction = object => {
         : () => object
   return did
 }
+//>>>

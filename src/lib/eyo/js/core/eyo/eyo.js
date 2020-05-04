@@ -171,11 +171,16 @@ eYo.isNum = (what) => {
 eYo.isD = (() => {
   let _p = Object.getPrototypeOf({})
   return (what) => {
-    return !!what && Object.getPrototypeOf(what) === _p
+    if (what) {
+      let p = Object.getPrototypeOf(what)
+      return !p || p === _p
+    }
+    return false
   }
   //<<< mochai: eYo.isD
   //... chai.assert(eYo.isD)
   //... chai.expect(eYo.isD({})).true
+  //... chai.expect(eYo.isD(Object.create(null))).true
   //... chai.expect(eYo.isD()).false
   //... chai.expect(eYo.isD('')).false
   //>>>
@@ -190,6 +195,30 @@ eYo.isDef = what => {
   //... chai.expect(eYo.isDef({})).true
   //... chai.expect(eYo.isDef()).false
   //... chai.expect(eYo.isDef(null)).false
+  //>>>
+}
+/**
+ * Function used to disallow sending twice the same message.
+ */
+eYo.neverShot = function (msg) {
+  return eYo.isStr(msg)
+  ? function () {
+    throw new Error(`Forbidden call: ${msg}`)
+  } : eYo.isF(msg)
+    ? function () {
+      throw new Error(`Forbidden call ${msg.call(this)}`)
+    } : eYo.isDef(msg)
+      ? eYo.throw(`eYo.neverShot: Bad argument ${msg}`)
+      : function () {
+        throw new Error('Forbidden shot')
+      }
+  //<<< mochai: eYo.neverShot
+  //... chai.assert(eYo.neverShot)
+  //... chai.expect(() => eYo.neverShot(421)).throw()
+  //... chai.expect(() => eYo.neverShot()()).throw()
+  //... chai.expect(() => eYo.neverShot('abc')()).throw()
+  //... chai.expect(() => eYo.neverShot(() => flag.push(421))()).throw()
+  //... flag.expect(421)
   //>>>
 }
 /**
@@ -1119,13 +1148,23 @@ eYo.mixinR(eYo._p, {
     //>>>
   },
   /**
-   * @param {String} name
+   * @param {String} path - dotted separated components.
    */
   require (name) {
     //<<< mochai: eYo.require
     var ns = eYo
     name.split('.').forEach(k => {
-      eYo.isNS(ns = ns[k]) || eYo.throw(`Missing required ${name}`)
+      if (eYo.isDef(ns)) {
+        ns = ns[k]
+        if (eYo.isNS(ns)) {
+          return
+        }
+        if (ns && ns.__singleton) {
+          ns = eYo.NA // no more component allowed
+          return
+        }
+      }
+      eYo.throw(`Missing required ${name}`)
     })
     //... var key = eYo.genUID(eYo.IDENT)
     //... eYo.provide(`${key}.foo`)

@@ -142,23 +142,28 @@ eYo.forward('shared')
  * Create a new singleton instance based on the given model.
  * @param {Object} [NS] - Optional namespace, defaults to the receiver.
  * @param {String} id - the result will be `NS[key]`
- * @param {Object} model
+ * @param {Object} [model]
  * @return {Object}
  */
 eYo.o3d._p.makeSingleton = function(NS, id, model) {
+  //<<< mochai: eYo.o3d.makeSingleton
   if (!eYo.isNS(NS)) {
     !model || eYo.throw(`Unexpected last parameter: ${model}`)
     ;[NS, id, model] = [this, NS, id]
   }
   eYo.isStr(id) || eYo.throw(`Unexpected parameter ${id}`)
-  let ans = this.new(model, id, eYo.shared.OWNER)
-  Object.defineProperty(eYo.shared, id, eYo.descriptorR(function() {
+  let ans = this.new(model || {}, id, eYo.shared.OWNER)
+  let d = eYo.descriptorR(function() {
     return ans
-  }))
-  Object.defineProperty(NS, id, eYo.descriptorR(function() {
-    return ans
-  }))
+  })
+  Object.defineProperty(eYo.shared, id, d)
+  Object.defineProperty(NS, id, d)
+  ans.__singleton = true
   return ans
+  //... var id = eYo.genUID(eYo.IDENT)
+  //... eYo.o3d.makeSingleton(id)
+  //... eYo.require(`o3d.${id}`)
+  //>>>
 }
 
 /**

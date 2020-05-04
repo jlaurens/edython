@@ -407,7 +407,7 @@ Miscellaneous:
 --js "eyo/js/py/ast.js" \
 --js "eyo/js/test/chai_extension.js" \
 --js "closure-library/closure/goog/html/safehtml.js" \
---js "eyo/js/core/decorate.js" \
+--js "eyo/js/core/decorate/decorate.js" \
 --js "eyo/js/core/t3_all.js" \
 --js "eyo/js/core/xre.js" \
 --js "closure-library/closure/goog/dom/safe.js" \
@@ -444,9 +444,9 @@ Miscellaneous:
 --js "eyo/js/application/desk/board/brick_util/consolidator.js" \
 --js "eyo/js/brick/data/data.js" \
 --js "eyo/js/brick/dfs/dfs.js" \
---js "eyo/js/core/change_count.js" \
+--js "eyo/js/core/change_count/change_count.js" \
 --js "eyo/js/core/changer.js" \
---js "eyo/js/core/font.js" \
+--js "eyo/js/core/font/font.js" \
 --js "eyo/js/core/register.js" \
 --js "eyo/js/py/parser.js" \
 --js "eyo/js/core/event.js" \

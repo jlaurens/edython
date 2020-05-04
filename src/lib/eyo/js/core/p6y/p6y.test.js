@@ -209,7 +209,7 @@ describe ('Tests: Property', function () {
     p.setValue(p.getStartValue())
     chai.expect(p.value).equal(x)
     x = 421
-    chai.expect(p.reset()).equal(p.value).equal(x)
+    chai.expect(p.reset().after).equal(p.value).equal(x)
   })
   it('P6y: dispose', function () {
     var p = eYo.p6y.new({}, 'foo', onr)

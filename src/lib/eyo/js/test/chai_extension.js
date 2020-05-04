@@ -39,6 +39,14 @@ eYo.test.Flag = function (what) {
 
 eYo.TESTING = true
 
+chai.Assertion.addProperty('eyo_Num', function () {
+  this.assert(
+      eYo.isNum(this._obj)
+    , 'expected #{this} to be a finite number'
+    , 'expected #{this} to not be a finite number'
+  )
+})
+
 chai.Assertion.addProperty('eyo_NS', function () {
   this.assert(
       eYo.isNS(this._obj)

@@ -27,6 +27,18 @@ eYo.o3d.makeNS(eYo, 'o4t')
  */
 eYo.o4t.makeBaseC9r(true)
 
+eYo.mixinR(eYo._p, {
+  isaO4t (what) {
+    return !!what && what instanceof eYo.o4t.BaseC9r
+    //<<< mochai: eYo.isaO4t
+    //... chai.expect(eYo.isaO4t()).false
+    //... chai.expect(eYo.isaO4t(eYo.NA)).false
+    //... chai.expect(eYo.isaO4t(421)).false
+    //... chai.expect(eYo.isaO4t(eYo.o4t.new('foo', onr))).true
+    //>>>
+  }
+}, false)
+
 //... chai.expect(eYo.O4t).equal(eYo.o4t.BaseC9r)
 
 eYo.o4t.BaseC9r.eyo.p6yEnhanced()
