@@ -23,9 +23,9 @@ describe ('geometry', function () {
             c_p = c_p.c_p
           }
           c_p = eYo.p6y.aliasNew('c', this, c_p)
-          this.eyo.p6yMakeShortcut(this, 'c', c_p)
+          this.eyo.p6yMakeShortcuts(this, 'c', c_p)
           l_p = eYo.p6y.aliasNew('l', this, l_p)
-          this.eyo.p6yMakeShortcut(this, 'l', l_p)
+          this.eyo.p6yMakeShortcuts(this, 'l', l_p)
         }
       })
       let Q = ns.new(P)
@@ -152,10 +152,10 @@ describe ('geometry', function () {
         this.y_ = c.height
       } else {
         eYo.isaP6y(c)
-        ? this.origin_.eyo.p6yMakeShortcut(this, 'c', c, true)
+        ? this.origin_.eyo.p6yMakeShortcuts(this, 'c', c, true)
         : (this.c_ = c || 0)
         eYo.isaP6y(l)
-        ? this.origin_.eyo.p6yMakeShortcut(this, 'l', l, true)
+        ? this.origin_.eyo.p6yMakeShortcuts(this, 'l', l, true)
         : (this.l_ = l || 0)
         return this
       }

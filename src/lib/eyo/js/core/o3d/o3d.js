@@ -19,8 +19,6 @@
  * @namespace
  */
 eYo.c9r.makeNS(eYo, 'o3d')
-//<<< mochai: eYo.o3d
-//... chai.assert(eYo.o3d)
 /**
  * @name{eYo.o3d.BaseC9r}
  * @constructor
@@ -43,10 +41,13 @@ eYo.o3d.makeBaseC9r({
     this.owner__ = this.key_ = eYo.NA
   },  
 })
+//<<< mochai: BaseC9r
+//... chai.assert(eYo.o3d)
 //... chai.assert(eYo.o3d._p.hasOwnProperty('BaseC9r'))
 //... chai.expect(eYo.o3d.BaseC9r).equal(eYo.O3d)
+//>>>
 
-eYo.mixinR(eYo._p, {
+eYo.mixinR(false, eYo._p, {
   isaO3d (what) {
     return !!what && what instanceof eYo.o3d.BaseC9r
     //<<< mochai: eYo.isaO3d
@@ -56,7 +57,7 @@ eYo.mixinR(eYo._p, {
     //... chai.expect(eYo.isaO3d(eYo.o3d.new('foo', onr))).true
     //>>>
   }
-}, false)
+})
 /**
  * The default implementation does nothing.
  * For subclassers.
@@ -180,9 +181,7 @@ eYo.o3d._p.prepare = function (model, key, owner, ...$) {
     eYo.isStr(key) || eYo.throw(`eYo.o3d._p.prepare: bad parameter, key is not a string`)
     owner instanceof eYo.c9r.BaseC9r || eYo.throw(`eYo.o3d._p.prepare: bad parameter, owner is not an instance of eYo.c9r.BaseC9r`)
     var C9r = this.BaseC9r
-    if (C9r.eyo.shouldFinalizeC9r) {
-      C9r.eyo.finalizeC9r()
-    }
+    C9r.eyo.hasFinalizedC9r || C9r.eyo.finalizeC9r()
     return new C9r(key, owner, arg, ...$)
   }
   eYo.isStr(key) || eYo.throw(`eYo.o3d._p.prepare(2): bad parameter, key is not a string`)
@@ -198,4 +197,3 @@ eYo.o3d._p.prepare = function (model, key, owner, ...$) {
   }
   return ans
 }
-//>>>

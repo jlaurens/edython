@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Objet for size and location.
+ * @fileoverview Objects for size and location.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -27,7 +27,10 @@ eYo.require('o4t')
  * @name{eYo.geom}
  * @namespace
  */
+//<<< mochai: eYo.geom
+
 eYo.c9r.makeNS(eYo, 'geom', {
+  //<<< mochai: CONST
   X () {
     return eYo.font.space
   },
@@ -43,17 +46,40 @@ eYo.c9r.makeNS(eYo, 'geom', {
   L () {
     return 4
   }
+  //... chai.expect(eYo.geom.X).eyo_Num
+  //... chai.expect(eYo.geom.Y).eyo_Num
+  //... chai.expect(eYo.geom.REM).eyo_Num
+  //... chai.expect(eYo.geom.C).eyo_Num
+  //... chai.expect(eYo.geom.L).eyo_Num
+  //... chai.expect(() => { eYo.geom.C = 10 }).throw()
+  //>>>
 }, true)
 
+
 eYo.geom.makeBaseC9r(true, {
+  //<<< mochai: eYo.geom.BaseC9r
   properties: {
     snap: false,
   },
+  //... var foo = eYo.geom.new('foo', onr)
+  //... chai.assert(foo.snap_p)
+  //... chai.expect(foo.snap).false
   methods: {
     shareSnap (snap_p) {
       this.eyo.p6yReplace(this, 'snap', snap_p)
     }
   }
+  //... var bar = eYo.geom.new('bar', onr)
+  //... bar.shareSnap(foo.snap_p)
+  //... foo.snap_ = true
+  //... chai.expect(bar.snap).equal(foo.snap)
+  //... foo.snap_ = false
+  //... chai.expect(bar.snap).equal(foo.snap)
+  //... bar.snap_ = true
+  //... chai.expect(bar.snap).equal(foo.snap)
+  //... bar.snap_ = false
+  //... chai.expect(bar.snap).equal(foo.snap)
+  //>>>
 })
 
 eYo.geom.enhancedO4t()
@@ -67,11 +93,13 @@ eYo.geom.Dlgt_p.modelMerge = function (model) {
   model.aliases && this.p6yAliasesMerge(model.aliases)
   model.properties && this.p6yMerge(model.properties)
   model.methods && this.methodsMerge(model.methods)
+  model.CONSTs && this.CONSTsMerge(model.CONSTs)
 }
 
 eYo.geom.BaseC9r.eyo.finalizeC9r(['aliases'], {
   properties: {
-    [eYo.model.ANY]: eYo.P6y.eyo.modelFormat
+    [eYo.model.ANY]: eYo.P6y.eyo.modelFormat,
+    [eYo.model.VALIDATE]: eYo.model.validateD,
   },
 })
 
@@ -503,6 +531,110 @@ eYo.geom.clPoint = function (snap, c, l) {
   return new eYo.geom.Point(snap, c, l)
 }
 
+eYo.o4t.Dlgt_p.makePointed = function (key) {
+  //<<< mochai: eYo.o4t.Dlgt.makePointed
+  //... let ns = eYo.o4t.makeNS()
+  //... ns.makeBaseC9r(true)
+  //... ns.BaseC9r.eyo.makePointed('origin')
+  //... ns.BaseC9r.eyo.finalizeC9r()
+  //... var o
+  this.modelMerge({
+    //<<< mochai: Text coordinates
+    properties: {
+      //<<< mochai: properties
+      [key]: {
+        //<<< mochai: makePointed origin
+        //... r = ns.new('foo', onr)
+        //... chai.expect(r.origin_p).not.undefined
+        value () {
+          return new eYo.geom.Point()
+        },
+        //... chai.expect(r.origin).eyo_point
+        copy: true,
+        //... // A copy is not the original
+        //... chai.expect(r.origin).not.equal(r.origin_)
+        //... // A copy is not another copy
+        //... chai.expect(r.origin).not.equal(r.origin)
+        //... chai.expect(r.origin).almost.eql(r.origin_)
+        //... chai.expect(r.origin).almost.eql(r.origin)
+        set (stored, after) {
+          stored.xySet(after)
+          //... r = ns.new('foo', onr)
+          //... var pt = eYo.geom.randPoint(false)
+          //... chai.expect(r.origin_).not.equal(pt)
+          //... r.origin_ = pt
+          //... chai.expect(r.origin_).not.equal(pt)
+          //... chai.expect(r.origin_).almost.eql(pt)
+        }
+        //>>>  
+      },
+      //>>>  
+    },
+    aliases: {
+      //<<< mochai: aliases
+      'origin.c': ['c', 'c_min'],
+        //... r = ns.new('foo', onr)
+        //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
+        //... r.c_ += 1
+        //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
+        //... r.c_min_ -= 1
+        //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
+        //... r.origin_.c_ += 1
+        //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
+      'origin.l': ['l', 'l_min'],
+        //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
+        //... r.l_ += 1
+        //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
+        //... r.l_min_ -= 1
+        //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
+        //... r.origin_.l_ += 1
+        //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
+      //>>> 
+    },
+    //>>>
+  })
+  this.modelMerge({
+    //<<< mochai: Board coordinates
+    aliases: {
+      //<<< mochai: aliases
+      //... r = ns.new('foo', onr)
+      //... var m = {c: 1, l: 2, w: 3, h: 4}
+      // basic properties in board dimensions
+      [key + '.x']: ['x', 'x_min'],
+        //<<< mochai: x, x_min
+        //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+        //... r.x_ += eYo.geom.X
+        //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+        //... r.x_min_ -= eYo.geom.X
+        //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+        //... r.origin_.x_ += eYo.geom.X
+        //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+        // Convenient setters in board coordinates
+        //... chai.expect(r).almost.eql(m)
+        //... chai.expect(r.x).almost.equal(m.c * eYo.geom.X)
+        //... r.x_ += 5 * eYo.geom.X
+        //... m.c += 5
+        //... chai.expect(r).almost.eql(m)
+        //>>>
+      [key + '.y']: ['y', 'y_min'],
+        //<<< mochai: y, y_min
+        //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
+        //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
+        //... r.y_min_ -= eYo.geom.Y
+        //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
+        //... r.origin_.y_ += eYo.geom.Y
+        //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
+        //... r.y_ += 4 * eYo.geom.Y
+        //... m.l += 4
+        //... chai.expect(r).almost.eql(m)
+        //>>>
+      //>>>
+    },
+    //>>>
+  })
+  //>>>
+}
+
 //>>>
 
 /**
@@ -604,6 +736,15 @@ eYo.geom.AbstractPoint.makeSubC9r('Size', {
         return this.snap_ ? Math.round(after * eYo.geom.L) / eYo.geom.L : after
       },
     },
+    /**
+     * Human readable description.
+     * @return {String}
+     */
+    description: {
+      get () {
+        return `${this.eyo.name}(w: ${this.w}, h: ${this.h}, width: ${this.width}, height: ${this.height})`
+      },
+    }
   },
   aliases: {
     c: ['dc', 'w'],
@@ -749,15 +890,10 @@ eYo.geom.makeC9r('AbstractRect', {
       },
       copy: true,
       set (stored, after) {
-        if (eYo.isaP6y(after)) {
-          this.eyo.p6yReplace(this, 'origin', after)
-        } else {
-          stored.xySet(after)
-        }
+        stored.xySet(after)
       }
     },
     //<<< mochai: Rect origin
-    //... var m = {c: 1, l: 2}
     //... var r = eYo.geom.randRect(false)
     //... let p = eYo.geom.randPoint(false)
     //... chai.expect(r.origin).not.equal(p)
@@ -772,8 +908,8 @@ eYo.geom.makeC9r('AbstractRect', {
     //... chai.expect(r.origin).not.equal(p6y)
     //... chai.expect(r.origin_p.__target).equal(p6y)
     //... chai.expect(r.origin).almost.eql(p)
-    //... r.c_ = m.c
-    //... r.l_ = m.l
+    //... var m = {c: p.c/2, l: p.l/2}
+    //... r.origin_.set(m)
     //... chai.expect(p).almost.eql(m)
     //>>>
     size: {
@@ -790,7 +926,6 @@ eYo.geom.makeC9r('AbstractRect', {
       }
     },
     //<<< mochai: Rect size
-    //... var m = {w: 3, h: 4}
     //... var r = eYo.geom.randRect(false)
     //... let s = eYo.geom.randSize(false)
     //... chai.expect(r.size).not.equal(s)
@@ -805,12 +940,73 @@ eYo.geom.makeC9r('AbstractRect', {
     //... chai.expect(r.size).not.equal(p6y)
     //... chai.expect(r.size_p.__target).equal(p6y)
     //... chai.expect(r.size).almost.eql(s)
-    //... r.w_ = m.w
-    //... r.h_ = m.h
+    //... var m = {w: s.w/2, h: s.h/2}
+    //... r.size_.set(m)
     //... chai.expect(s).almost.eql(m)
     //>>>
+  },
+  methods: {
+    makeSnapShared () {
+      this.origin_.shareSnap(this.snap_p)
+      this.size_.shareSnap(this.snap_p)
+    }
+  }
+})
+
+// text coordinates
+eYo.geom.AbstractRect.eyo.modelMerge({
+  //<<< mochai: text coordinates
+  aliases: {
+    //<<< mochai: aliases
+    //... var m = {c: 1, l: 2, w: 3, h: 4}
+    //... var r = new eYo.geom.Rect(false, m)
+    origin: 'topLeft',
+    //... chai.expect(r.topLeft).almost.eql(r.origin)
+    //... var p = r.origin.copy.forward(1, 1)
+    //... r.origin_ = p
+    //... chai.expect(r.topLeft).almost.eql(r.origin).eql(p)
+    //... var p = r.topLeft.copy.forward(-1, -1)
+    //... r.topLeft_ = p
+    //... chai.expect(r.topLeft).almost.eql(r.origin).eql(p)
+    // Basic properties in text dimensions.
+    // When in text dimensions, and snap to grid mode,
+    // setters round their arguments to half width and quarter height.
+    // Except for left, right, top and bottom,
+    // the position setters won't change the size.
+    'origin.c': ['c', 'c_min'],
+    //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
+    //... r.c_ += 1
+    //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
+    //... r.c_min_ -= 1
+    //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
+    //... r.origin_.c_ += 1
+    //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
+    'origin.l': ['l', 'l_min'],
+    //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
+    //... r.l_ += 1
+    //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
+    //... r.l_min_ -= 1
+    //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
+    //... r.origin_.l_ += 1
+    //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
+    'size.w': 'w',
+    //... chai.expect(r.size.w).equal(r.w)
+    //... r.w_ += 1
+    //... chai.expect(r.size.w).equal(r.w)
+    //... r.size_.w_ -= 1
+    //... chai.expect(r.size.w).equal(r.w)
+    'size.h': 'h',
+    //... chai.expect(r.size.h).equal(r.h)
+    //... r.h_ += 1
+    //... chai.expect(r.size.h).equal(r.h)
+    //... r.size_.h_ -= 1
+    //... chai.expect(r.size.h).equal(r.h)
+    //>>>
+  },
+  properties: {
+    //<<< mochai: Rect properties
     /**
-     * Translation: the size size does not change.
+     * Translation: the size does not change.
      */
     c_mid: {
       after: ['c', 'w'],
@@ -823,15 +1019,15 @@ eYo.geom.makeC9r('AbstractRect', {
       set (after) {
         this.c_ = after - this.w / 2
       }
+      //<<< mochai: Rect c_mid
+      //... var m = {c: 1, l: 2, w: 3, h: 4}
+      //... var r = new eYo.geom.Rect(false, m)
+      //... chai.expect(r).almost.eql(m)
+      //... chai.expect(r.c_mid).almost.equal(2.5)
+      //... r.c_mid_ += 5
+      //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
+      //>>>
     },
-    //<<< mochai: Rect c_mid
-    //... var m = {c: 1, l: 2, w: 3, h: 4}
-    //... var r = new eYo.geom.Rect(false, m)
-    //... chai.expect(r).almost.eql(m)
-    //... chai.expect(r.c_mid).almost.equal(2.5)
-    //... r.c_mid_ += 5
-    //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
-    //>>>
     c_max: {
       after: ['c', 'w'],
       get () {
@@ -840,15 +1036,15 @@ eYo.geom.makeC9r('AbstractRect', {
       set (after) {
         this.c_ = after - this.w
       }
+      //<<< mochai: Rect c_max
+      //... var m = {c: 1, l: 2, w: 3, h: 4}
+      //... var r = new eYo.geom.Rect(false, m)
+      //... chai.expect(r).almost.eql(m)
+      //... chai.expect(r.c_max).almost.equal(4)
+      //... r.c_max_ += 5
+      //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
+      //>>>
     },
-    //<<< mochai: Rect c_max
-    //... var m = {c: 1, l: 2, w: 3, h: 4}
-    //... var r = new eYo.geom.Rect(false, m)
-    //... chai.expect(r).almost.eql(m)
-    //... chai.expect(r.c_max).almost.equal(4)
-    //... r.c_max_ += 5
-    //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
-    //>>>
     l_mid: {
       after: ['l', 'h'],
       get () {
@@ -857,15 +1053,15 @@ eYo.geom.makeC9r('AbstractRect', {
       set (after) {
         this.l_ = after - this.h / 2
       }
+      //<<< mochai: Rect l_mid
+      //... var m = {c: 1, l: 2, w: 3, h: 4}
+      //... var r = new eYo.geom.Rect(false, m)
+      //... chai.expect(r).almost.eql(m)
+      //... chai.expect(r.l_mid).almost.equal(4)
+      //... r.l_mid_ += 5
+      //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
+      //>>>
     },
-    //<<< mochai: Rect l_mid
-    //... var m = {c: 1, l: 2, w: 3, h: 4}
-    //... var r = new eYo.geom.Rect(false, m)
-    //... chai.expect(r).almost.eql(m)
-    //... chai.expect(r.l_mid).almost.equal(4)
-    //... r.l_mid_ += 5
-    //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
-    //>>>
     l_max: {
       after: ['l', 'h'],
       get () {
@@ -874,24 +1070,79 @@ eYo.geom.makeC9r('AbstractRect', {
       set (after) {
         this.l_ = after - this.h
       }
+      //<<< mochai: Rect l_max
+      //... var m = {c: 1, l: 2, w: 3, h: 4}
+      //... var r = new eYo.geom.Rect(false, m)
+      //... chai.expect(r).almost.eql(m)
+      //... chai.expect(r.l_max).almost.equal(6)
+      //... r.l_max_ += 5
+      //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
+      //>>>
     },
-    //<<< mochai: Rect l_max
+    //>>>
+  },
+  //>>>
+})
+
+eYo.geom.AbstractRect.eyo.modelMerge({
+  //<<< mochai: board coordinates
+  aliases: {
+    //<<< mochai: aliases
     //... var m = {c: 1, l: 2, w: 3, h: 4}
     //... var r = new eYo.geom.Rect(false, m)
-    //... chai.expect(r).almost.eql(m)
-    //... chai.expect(r.l_max).almost.equal(6)
-    //... r.l_max_ += 5
-    //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
+    // basic properties in board dimensions
+    'origin.x': ['x', 'x_min'],
+      //<<< mochai: Rect x, x_min
+      //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+      //... r.x_ += eYo.geom.X
+      //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+      //... r.x_min_ -= eYo.geom.X
+      //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+      //... r.origin_.x_ += eYo.geom.X
+      //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+      // Convenient setters in board coordinates
+      //... chai.expect(r).almost.eql(m)
+      //... chai.expect(r.x).almost.equal(m.c * eYo.geom.X)
+      //... r.x_ += 5 * eYo.geom.X
+      //... m.c += 5
+      //... chai.expect(r).almost.eql(m)
+      //>>>
+    'origin.y': ['y', 'y_min'],
+      //<<< mochai: Rect y, y_min
+      //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
+      //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
+      //... r.y_min_ -= eYo.geom.Y
+      //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
+      //... r.origin_.y_ += eYo.geom.Y
+      //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
+      //... r.y_ += 4 * eYo.geom.Y
+      //... m.l += 4
+      //... chai.expect(r).almost.eql(m)
+      //>>>
+    'size.width': 'width',
+      //<<< mochai: Rect width
+      //... chai.expect(r.size.width).almost.equal(r.width)
+      //... r.width_ += 3 * eYo.geom.X
+      //... m.w += 3
+      //... chai.expect(r.size.width).almost.equal(r.width)
+      //... r.size_.width_ -= eYo.geom.X
+      //... chai.expect(r.size.width).almost.equal(r.width)
+      //... chai.expect(r).almost.eql(m)
+      //>>>
+    'size.height': 'height',
+      //<<< mochai: Rect height
+      //... chai.expect(r.size.height).almost.equal(r.height)
+      //... r.height_ += 2 * eYo.geom.Y
+      //... m.h += 2
+      //... chai.expect(r.size.height).almost.equal(r.height)
+      //... r.size_.height -= eYo.geom.Y
+      //... chai.expect(r.size.height).almost.equal(r.height)
+      //... chai.expect(r).almost.eql(m)
+      //>>>
     //>>>
-    // Convenient setters in board coordinates
-    //<<< mochai: Rect x
-    //... var m = {c: 1, l: 2, w: 3, h: 4}
-    //... var r = new eYo.geom.Rect(false, m)
-    //... chai.expect(r).almost.eql(m)
-    //... chai.expect(r.x).almost.equal(m.c * eYo.geom.X)
-    //... r.x_ += 5
-    //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
-    //>>>
+  },
+  properties: {
+    //<<< mochai: Rect properties
     x_mid: {
       after: ['x', 'width'],
       get () {
@@ -900,16 +1151,16 @@ eYo.geom.makeC9r('AbstractRect', {
       set (after) {
         this.x_ = after - this.width / 2
       }
+      //<<< mochai: Rect x_mid
+      //... var m = {c: 1, l: 2, w: 3, h: 4}
+      //... var mm = {x: m.c * eYo.geom.X, y: m.l * eYo.geom.Y, width: m.w * eYo.geom.X, height: m.h * eYo.geom.Y}
+      //... var r = new eYo.geom.Rect(false, mm)
+      //... chai.expect(r).almost.eql(m)
+      //... chai.expect(r.x_mid).almost.equal(2.5 * eYo.geom.X)
+      //... r.x_mid_ += 5 * eYo.geom.X
+      //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
+      //>>>
     },
-    //<<< mochai: Rect x_mid
-    //... var m = {c: 1, l: 2, w: 3, h: 4}
-    //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
-    //... var r = new eYo.geom.Rect(false, mm)
-    //... chai.expect(r).almost.eql(m)
-    //... chai.expect(r.x_mid).almost.equal(2.5 * eYo.geom.X)
-    //... r.x_mid_ += 5 * eYo.geom.X
-    //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
-    //>>>
     x_max: {
       after: ['x', 'width'],
       get () {
@@ -918,16 +1169,16 @@ eYo.geom.makeC9r('AbstractRect', {
       set (after) {
         this.x_ = after - this.width
       }
+      //<<< mochai: Rect x_max
+      //... var m = {c: 1, l: 2, w: 3, h: 4}
+      //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
+      //... var r = new eYo.geom.Rect(false, mm)
+      //... chai.expect(r).almost.eql(m)
+      //... chai.expect(r.x_max).almost.equal(4 * eYo.geom.X)
+      //... r.x_max_ += 5 * eYo.geom.X
+      //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
+      //>>>
     },
-    //<<< mochai: Rect x_max
-    //... var m = {c: 1, l: 2, w: 3, h: 4}
-    //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
-    //... var r = new eYo.geom.Rect(false, mm)
-    //... chai.expect(r).almost.eql(m)
-    //... chai.expect(r.x_max).almost.equal(4 * eYo.geom.X)
-    //... r.x_max_ += 5 * eYo.geom.X
-    //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
-    //>>>
     y_mid: {
       after: ['y', 'height'],
       get () {
@@ -936,16 +1187,16 @@ eYo.geom.makeC9r('AbstractRect', {
       set (after) {
         this.y_ = after - this.height / 2
       }
+      //<<< mochai: Rect y_mid
+      //... var m = {c: 1, l: 2, w: 3, h: 4}
+      //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
+      //... var r = new eYo.geom.Rect(false, mm)
+      //... chai.expect(r).almost.eql(m)
+      //... chai.expect(r.y_mid).almost.equal(4 * eYo.geom.Y)
+      //... r.y_mid_ += 5 * eYo.geom.Y
+      //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
+      //>>>
     },
-    //<<< mochai: Rect y_mid
-    //... var m = {c: 1, l: 2, w: 3, h: 4}
-    //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
-    //... var r = new eYo.geom.Rect(false, mm)
-    //... chai.expect(r).almost.eql(m)
-    //... chai.expect(r.y_mid).almost.equal(4 * eYo.geom.Y)
-    //... r.y_mid_ += 5 * eYo.geom.Y
-    //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
-    //>>>
     y_max: {
       after: ['y', 'height'],
       get () {
@@ -954,17 +1205,17 @@ eYo.geom.makeC9r('AbstractRect', {
       set (after) {
         this.y_ = after - this.height
       }
+      //<<< mochai: Rect y_max
+      //... var m = {c: 1, l: 2, w: 3, h: 4}
+      //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
+      //... var r = new eYo.geom.Rect(false, mm)
+      //... chai.expect(r).almost.eql(m)
+      //... chai.expect(r.y_max).almost.equal(6 * eYo.geom.Y)
+      //... r.y_max_ += 5 * eYo.geom.Y
+      //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
+      //>>>
+      //// The setters change the width, but does not change the `right`
     },
-    //<<< mochai: Rect y_max
-    //... var m = {c: 1, l: 2, w: 3, h: 4}
-    //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
-    //... var r = new eYo.geom.Rect(false, mm)
-    //... chai.expect(r).almost.eql(m)
-    //... chai.expect(r.y_max).almost.equal(6 * eYo.geom.Y)
-    //... r.y_max_ += 5 * eYo.geom.Y
-    //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
-    //>>>
-    //// The setters change the width, but does not change the `right`
     left: {
       after: ['x', 'width', 'x_min', 'x_max'],
       get () {
@@ -1084,33 +1335,329 @@ eYo.geom.makeC9r('AbstractRect', {
         return Math.min(this.width, this.width + this.x)
       },
     },
+    //>>>
   },
-  aliases: {
-    origin: 'topLeft',
-    // Basic properties in text dimensions.
-    // When in text dimensions,
-    // setters round their arguments to half width and quarter height.
-    // Except for left, right, top and bottom,
-    // the position setters won't change the size.
-    'origin.c': ['c', 'c_min'],
-    'origin.l': ['l', 'l_min'],
-    'size.w': 'w',
-    'size.h': 'h',
-    // basic properties in board dimensions
-    'origin.x': ['x', 'x_min'],
-    'origin.y': ['y', 'y_min'],
-    'size.width': 'width',
-    'size.height': 'height',
-  },
-  methods: {
-    makeSnapShared () {
-      this.origin_.shareSnap(this.snap_p)
-      this.size_.shareSnap(this.snap_p)
-    }
-  }
+  //>>>
 })
 
+// eYo.geom.AbstractRect.eyo.modelMerge({
+//   aliases: {
+//     //<<< mochai: aliases
+//     //... var m = {c: 1, l: 2, w: 3, h: 4}
+//     //... var r = new eYo.geom.Rect(false, m)
+//     // basic properties in board dimensions
+//     'origin.x': ['x', 'x_min'],
+//     //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+//     //... r.x_ += eYo.geom.X
+//     //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+//     //... r.x_min_ -= eYo.geom.X
+//     //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+//     //... r.origin_.x_ += eYo.geom.X
+//     //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
+//     'origin.y': ['y', 'y_min'],
+//     //... chai.expect(r.origin.y).almost.almost.equal(r.y).almost.equal(r.y_min)
+//     //... r.y_ += eYo.geom.X
+//     //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
+//     //... r.y_min_ -= eYo.geom.Y
+//     //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
+//     //... r.origin_.y_ += eYo.geom.Y
+//     //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
+//     'size.width': 'width',
+//     //... chai.expect(r.size.width).almost.equal(r.width)
+//     //... r.width_ += eYo.geom.X
+//     //... chai.expect(r.size.width).almost.equal(r.width)
+//     //... r.size_.width_ -= eYo.geom.X
+//     //... chai.expect(r.size.width).almost.equal(r.width)
+//     'size.height': 'height',
+//     //... chai.expect(r.size.height).almost.equal(r.height)
+//     //... r.height += eYo.geom.Y
+//     //... chai.expect(r.size.height).almost.equal(r.height)
+//     //... r.size_.height -= eYo.geom.Y
+//     //... chai.expect(r.size.height).almost.equal(r.height)
+//     //>>>
+//   },
+//   properties: {
+//     /**
+//      * Translation: the size size does not change.
+//      */
+//     c_mid: {
+//       after: ['c', 'w'],
+//       get () {
+//         return this.c + this.w / 2
+//       },
+//       /**
+//        * @param {Number} after 
+//        */
+//       set (after) {
+//         this.c_ = after - this.w / 2
+//       }
+//     },
+//     //<<< mochai: Rect c_mid
+//     //... var m = {c: 1, l: 2, w: 3, h: 4}
+//     //... var r = new eYo.geom.Rect(false, m)
+//     //... chai.expect(r).almost.eql(m)
+//     //... chai.expect(r.c_mid).almost.equal(2.5)
+//     //... r.c_mid_ += 5
+//     //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
+//     //>>>
+//     c_max: {
+//       after: ['c', 'w'],
+//       get () {
+//         return this.c + this.w
+//       },
+//       set (after) {
+//         this.c_ = after - this.w
+//       }
+//     },
+//     //<<< mochai: Rect c_max
+//     //... var m = {c: 1, l: 2, w: 3, h: 4}
+//     //... var r = new eYo.geom.Rect(false, m)
+//     //... chai.expect(r).almost.eql(m)
+//     //... chai.expect(r.c_max).almost.equal(4)
+//     //... r.c_max_ += 5
+//     //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
+//     //>>>
+//     l_mid: {
+//       after: ['l', 'h'],
+//       get () {
+//         return this.l + this.h / 2
+//       },
+//       set (after) {
+//         this.l_ = after - this.h / 2
+//       }
+//     },
+//     //<<< mochai: Rect l_mid
+//     //... var m = {c: 1, l: 2, w: 3, h: 4}
+//     //... var r = new eYo.geom.Rect(false, m)
+//     //... chai.expect(r).almost.eql(m)
+//     //... chai.expect(r.l_mid).almost.equal(4)
+//     //... r.l_mid_ += 5
+//     //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
+//     //>>>
+//     l_max: {
+//       after: ['l', 'h'],
+//       get () {
+//         return this.l + this.h
+//       },
+//       set (after) {
+//         this.l_ = after - this.h
+//       }
+//     },
+//     //<<< mochai: Rect l_max
+//     //... var m = {c: 1, l: 2, w: 3, h: 4}
+//     //... var r = new eYo.geom.Rect(false, m)
+//     //... chai.expect(r).almost.eql(m)
+//     //... chai.expect(r.l_max).almost.equal(6)
+//     //... r.l_max_ += 5
+//     //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
+//     //>>>
+//     // Convenient setters in board coordinates
+//     //<<< mochai: Rect x
+//     //... var m = {c: 1, l: 2, w: 3, h: 4}
+//     //... var r = new eYo.geom.Rect(false, m)
+//     //... chai.expect(r).almost.eql(m)
+//     //... chai.expect(r.x).almost.equal(m.c * eYo.geom.X)
+//     //... r.x_ += 5 * eYo.geom.X
+//     //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
+//     //>>>
+//     x_mid: {
+//       after: ['x', 'width'],
+//       get () {
+//         return this.x + this.width / 2
+//       },
+//       set (after) {
+//         this.x_ = after - this.width / 2
+//       }
+//     },
+//     //<<< mochai: Rect x_mid
+//     //... var m = {c: 1, l: 2, w: 3, h: 4}
+//     //... var mm = {x: m.c * eYo.geom.X, y: m.l * eYo.geom.Y, width: m.w * eYo.geom.X, height: m.h * eYo.geom.Y}
+//     //... var r = new eYo.geom.Rect(false, mm)
+//     //... chai.expect(r).almost.eql(m)
+//     //... chai.expect(r.x_mid).almost.equal(2.5 * eYo.geom.X)
+//     //... r.x_mid_ += 5 * eYo.geom.X
+//     //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
+//     //>>>
+//     x_max: {
+//       after: ['x', 'width'],
+//       get () {
+//         return this.x + this.width
+//       },
+//       set (after) {
+//         this.x_ = after - this.width
+//       }
+//     },
+//     //<<< mochai: Rect x_max
+//     //... var m = {c: 1, l: 2, w: 3, h: 4}
+//     //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
+//     //... var r = new eYo.geom.Rect(false, mm)
+//     //... chai.expect(r).almost.eql(m)
+//     //... chai.expect(r.x_max).almost.equal(4 * eYo.geom.X)
+//     //... r.x_max_ += 5 * eYo.geom.X
+//     //... chai.expect(r).almost.eql({c: m.c + 5, l: m.l, w: m.w, h: m.h})
+//     //>>>
+//     y_mid: {
+//       after: ['y', 'height'],
+//       get () {
+//         return this.y + this.height / 2
+//       },
+//       set (after) {
+//         this.y_ = after - this.height / 2
+//       }
+//     },
+//     //<<< mochai: Rect y_mid
+//     //... var m = {c: 1, l: 2, w: 3, h: 4}
+//     //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
+//     //... var r = new eYo.geom.Rect(false, mm)
+//     //... chai.expect(r).almost.eql(m)
+//     //... chai.expect(r.y_mid).almost.equal(4 * eYo.geom.Y)
+//     //... r.y_mid_ += 5 * eYo.geom.Y
+//     //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
+//     //>>>
+//     y_max: {
+//       after: ['y', 'height'],
+//       get () {
+//         return this.y + this.height
+//       },
+//       set (after) {
+//         this.y_ = after - this.height
+//       }
+//     },
+//     //<<< mochai: Rect y_max
+//     //... var m = {c: 1, l: 2, w: 3, h: 4}
+//     //... var mm = {x: 1 * eYo.geom.X, y: 2 * eYo.geom.Y, width: 3 * eYo.geom.X, height: 4 * eYo.geom.Y}
+//     //... var r = new eYo.geom.Rect(false, mm)
+//     //... chai.expect(r).almost.eql(m)
+//     //... chai.expect(r.y_max).almost.equal(6 * eYo.geom.Y)
+//     //... r.y_max_ += 5 * eYo.geom.Y
+//     //... chai.expect(r).almost.eql({c: m.c, l: m.l + 5, w: m.w, h: m.h})
+//     //>>>
+//     //// The setters change the width, but does not change the `right`
+//     left: {
+//       after: ['x', 'width', 'x_min', 'x_max'],
+//       get () {
+//         return this.x
+//       },
+//       set (after) {
+//         this.width_ = this.x_max - after
+//         this.x_min_ = after
+//       }
+//     },
+//     top: {
+//       after: ['y', 'height', 'y_min', 'y_max'],
+//       get () {
+//         return this.y
+//       },
+//       /**
+//        * The height does not change.
+//        * @param {Number} after 
+//        */
+//       set (after) {
+//         this.height_ = this.y_max - after
+//         this.y_min_ = after
+//       }
+//     },
+//     right: {
+//       after: ['left', 'width', 'x_max'],
+//       get () {
+//         return this.x_max
+//       },
+//       /**
+//        * Change the width, not the `left`.
+//        * No negative width.
+//        */
+//       set (after) {
+//         this.width_ = Math.max(0, after - this.left)
+//       }
+//     },
+//     bottom: {
+//       after: ['top', 'height', 'y_max'],
+//       get () {
+//         return this.y_max
+//       },
+//       /**
+//        * Change the height, not the `top`.
+//        * No negative height.
+//        */
+//       set (after) {
+//         this.height_ = Math.max(0, after - this.top)
+//       }
+//     },
+//     // Composed
+//     bottomRight: {
+//       after: ['x_max', 'y_max'],
+//       get () {
+//         return this.origin.forward(this.size_)
+//       },
+//       set (after) {
+//         this.x_max_ = after.x
+//         this.y_max_ = after.y
+//       }
+//     },
+//     center: {
+//       after: ['origin', 'size'],
+//       get () {
+//         return this.origin.forward(this.size.unscale(2))
+//       },
+//       /**
+//        * Change the origin but keeps the size.
+//        */
+//       set (after) {
+//         this.origin_ = after.copy.backward(this.size.unscale(2))
+//       }
+//     },
+//     /**
+//      * clone the receiver.
+//      * @type {eYo.geom.Rect}
+//      */
+//     copy: {
+//       get () {
+//         return new eYo.geom.Rect(this)
+//       },
+//     },
+//     /**
+//      * String representation of the receiver.
+//      * @return {String} a string
+//      */
+//     description: {
+//       get () {
+//         return `${this.eyo.name}(c: ${this.c}, l: ${this.l}, w: ${this.w}, h: ${this.h})`
+//       },
+//     },
+//     /**
+//      * String representation of the receiver.
+//      * @return {String} a string
+//      */
+//     xyDescription: {
+//       get () {
+//         return `${this.eyo.name}(x: ${this.x}, y: ${this.y}, width: ${this.width}, height: ${this.height})`
+//       },
+//     },
+//     /**
+//      * Width of the draft part of the board.
+//      * @return {number} non negative number
+//      */
+//     draft: {
+//       get () {
+//         return Math.max(0, -this.x)
+//       },
+//     },
+//     /**
+//      * Width of the main part of the board.
+//      * `0` when in flyout.
+//      * @return {number} non negative number
+//      */
+//     main: {
+//       get () {
+//         return Math.min(this.width, this.width + this.x)
+//       },
+//     },
+//   },
+// })
+
 eYo.geom.AbstractRect.eyo.finalizeC9r()
+
+//<<< mochai: Rect methods
 
 /**
  * set the `Rect`.
@@ -1469,6 +2016,7 @@ eYo.geom.AbstractRect_p.intersectionRect = function (rect) {
     return this  
   }
 }
+//>>>
 
 eYo.geom.AbstractRect.makeSubC9r('Rect', {
   /**
@@ -1630,3 +2178,4 @@ eYo.geom._p.intersectionRect = function(a, b) {
   }
   return eYo.NA
 }
+//>>>

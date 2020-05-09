@@ -13,9 +13,10 @@
 
 eYo.o4t.makeNS('changeCount')
 
-//<<< mochai: eYo.o4t.changeCount
+//<<< mochai: Basic
 //... chai.assert(eYo.o4t.changeCount)
 //... chai.assert(eYo.o4t.changeCount.merge)
+//>>>
 
 eYo.o4t.changeCount.modelDeclare({
   //<<< mochai: eYo.o4t.changeCount.modelDeclare
@@ -104,4 +105,3 @@ eYo.o4t.changeCount.modelDeclare({
   },
   //>>>
 })
-//>>>

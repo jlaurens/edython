@@ -152,16 +152,17 @@ eYo.isBool = (what) => {
  * @param {*} what
  */
 eYo.isNum = (what) => {
-  return typeof what == 'number'
+  return typeof what === 'number' && !isNaN(what)
   //<<< mochai: eYo.isNum
   //... chai.assert(eYo.isNum)
   //... chai.expect(eYo.isNum()).false
   //... chai.expect(eYo.isNum(421)).true
   //... chai.expect(eYo.isNum(421e20)).true
-  //... chai.expect(eYo.isDoIt(eYo.doNothing)).false
-  //... chai.expect(eYo.isDoIt({})).false
-  //... chai.expect(eYo.isDoIt([])).false
-  //... chai.expect(eYo.isDoIt('')).false
+  //... chai.expect(eYo.isNum(eYo.doNothing)).false
+  //... chai.expect(eYo.isNum({})).false
+  //... chai.expect(eYo.isNum([])).false
+  //... chai.expect(eYo.isNum('')).false
+  //... chai.expect(eYo.isNum(NaN)).false
   //>>>
 }
 /**
@@ -547,12 +548,18 @@ eYo.descriptorNORW = (msg, configurable) => {
 /**
  * The props dictionary is a `key=>value` mapping where values
  * are getters, not a dictionary containing a getter.
+ * @param {Boolean} [getters] - True if functions are considered as getter. No truthy value is allowed.
  * @param {*} object - The destination
  * @param {*} props - the source
- * @param {Boolean} getters - True if functions are considered as getter.
  * @return {*} the destination
  */
-eYo.mixinR = (object, props, getters = true) => {
+eYo.mixinR = (getters, object, props) => {
+  if (!eYo.isBool(getters)) {
+    if (eYo.isDef(props)) {
+      throw 'Unexpected last argument in eYo.mixinR'
+    }
+    ;[getters, object, props] = [true, getters, object]
+  }
   Object.keys(props).forEach(key => {
     eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys are forbidden: ${object}, ${key}`)
     let value = props[key]
@@ -603,11 +610,11 @@ eYo.mixinR = (object, props, getters = true) => {
   //...   }
   //... })
   //... flag.expect(0)
-  //... eYo.mixinR(c, {
+  //... eYo.mixinR(false, c, {
   //...   bar () {
   //...     flag.push(1)
   //...   }
-  //... }, false)
+  //... })
   //... flag.expect(0)
   //... c.bar()
   //... flag.expect(1)
@@ -655,7 +662,7 @@ eYo.provideR = (dest, props, getters = true) => {
   //>>>
 }
 
-eYo.mixinR(eYo, {
+eYo.mixinR(false, eYo, {
   /**
    * @const
    */
@@ -704,10 +711,10 @@ eYo.mixinR(eYo, {
   doReturn2nd (what, $else) {
     return $else
   },
-}, false)
+})
 
 // ANCHOR Utilities
-eYo.mixinR(eYo, {
+eYo.mixinR(false, eYo, {
   /**
    * Readonly undefined
    */
@@ -966,10 +973,10 @@ eYo.mixinR(eYo, {
     //... chai.expect(eYo.isSubclass(ChildC9r, SuperC9r)).true
     //>>>
   },
-}, false)
+})
 
 // ANCHOR makeNS, provide
-eYo.mixinR(eYo._p, {
+eYo.mixinR(false, eYo._p, {
   /**
    * 
    * @param {String} p 
@@ -1176,10 +1183,10 @@ eYo.mixinR(eYo._p, {
     //>>>
   },
   forward: eYo.doNothing,
-}, false)
+})
 
 // ANCHOR Assert
-eYo.mixinR(eYo, {
+eYo.mixinR(false, eYo, {
   /**
    * The default error handler.
    * @param {eYo.AssertionError} e The exception to be handled.
@@ -1250,7 +1257,7 @@ eYo.mixinR(eYo, {
     }
     return returnString + splitParts[subLast]
   },
-}, false)
+})
 
 /**
  * The handler responsible for throwing or logging assertion errors.
@@ -1297,7 +1304,7 @@ eYo.mixinR(eYo, {
   EPSILON: 1e-10,
 })
 
-eYo.mixinR(eYo._p, {
+eYo.mixinR(false, eYo._p, {
   greater (left, right, tol = eYo.EPSILON) {
     return left - right >= -tol * (Math.abs(left) + Math.abs(right)+ 1)
   },
@@ -1310,7 +1317,7 @@ eYo.mixinR(eYo._p, {
   //... chai.expect(eYo.equals(1, 1.1, 0.005)).false
   //... chai.expect(eYo.greater(1, 1.1, 0.005)).false
   //>>>
-}, false)
+})
 
 ;(() => {
   // remove characters '`:()[]{}' for convenience

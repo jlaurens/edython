@@ -22,8 +22,9 @@ eYo.forward('decorate')
  */
 eYo.makeNS('more')
 
-//<<< mochai: eYo.more
+//<<< mochai: Basic
 //... chai.assert(eYo.more)
+//>>>
 
 /**
  * Add iterators to the given object.
@@ -240,4 +241,3 @@ eYo.more.override = function (_p, K, f) {
   //... flag.expect(1233)
   //>>>
 }
-//>>>

@@ -14,8 +14,9 @@
 eYo.require('do')
 
 eYo.makeNS('decorate')
-//<<< mochai: eYo.decorate
+//<<< mochai: Basic
 //... chai.assert(eYo.decorate)
+//>>>
 
 /**
  * Decorate the function to be reentrant.
@@ -138,4 +139,3 @@ eYo.decorate.ArrayFunction = object => {
         : () => object
   return did
 }
-//>>>

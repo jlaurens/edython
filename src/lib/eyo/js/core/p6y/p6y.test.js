@@ -204,9 +204,9 @@ describe ('Tests: Property', function () {
     chai.expect(p.value).equal(3)
     flag.expect(123)
     x = 34
-    chai.expect(p.getStartValue()).equal(x)
+    chai.expect(p.getValueStart()).equal(x)
     flag.expect(1234)
-    p.setValue(p.getStartValue())
+    p.setValue(p.getValueStart())
     chai.expect(p.value).equal(x)
     x = 421
     chai.expect(p.reset().after).equal(p.value).equal(x)

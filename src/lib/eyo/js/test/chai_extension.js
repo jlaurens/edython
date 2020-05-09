@@ -63,6 +63,14 @@ chai.Assertion.addProperty('eyo_C9r', function () {
   )
 })
 
+chai.Assertion.addProperty('eyo_F', function () {
+  this.assert(
+    eYo.isF(this._obj),
+    'expected #{this} to be a function',
+    'expected #{this} to not be a function',
+  )
+})
+
 chai.Assertion.addProperty('eyo_BaseC9r', function () {
   this.eyo_C9r
   let C9r = this._obj
@@ -126,8 +134,8 @@ chai.use(function (_chai, utils) {
       let ans = equal(actual[k], expected[k])
       return [eYo.isVALID(ans) && ans, k]
     })
-    let success = yorn.filter(k => k[0] && k)
-    let failure = yorn.filter(k => !k[0] && k)
+    let success = yorn.filter(k => k[0]).map(k => k[1])
+    let failure = yorn.filter(k => !k[0]).map(k => k[1])
     this.assert(
       failure.length === 0
       , `expected #{this}/${failure[0]} to be ${expected[failure[0]]} but got ${actual[failure[0]]}`
@@ -148,8 +156,8 @@ chai.use(function (_chai, utils) {
       let ans = equal(actual[k], expected[k])
       return [eYo.isVALID(ans) && ans, k]
     })
-    let success = yorn.filter(k => k[0] && k)
-    let failure = yorn.filter(k => !k[0] && k)
+    let success = yorn.filter(k => k[0]).map(k => k[1])
+    let failure = yorn.filter(k => !k[0]).map(k => k[1])
     this.assert(
       failure.length === 0
       , `expected #{this}/${failure[0]} to be ${expected[failure[0]]} but got ${actual[failure[0]]}`
@@ -169,8 +177,8 @@ chai.use(function (_chai, utils) {
       let ans = equal(actual[k], expected[k])
       return [eYo.isVALID(ans) && ans, k]
     })
-    let success = yorn.filter(k => k[0] && k)
-    let failure = yorn.filter(k => !k[0] && k)
+    let success = yorn.filter(k => k[0]).map(k => k[1])
+    let failure = yorn.filter(k => !k[0]).map(k => k[1])
     this.assert(
       failure.length === 0
       , `expected #{this}/${failure[0]} to be ${expected[failure[0]]} but got ${actual[failure[0]]}`
@@ -261,8 +269,8 @@ chai.use(function (chai, utils) {
         var yorn = eYo.test.makeComparator(tol)(val,this._obj)
         if (yorn !== null) {
           this.assert(yorn,
-            `expected ${val.description} to almost equal ${this._obj && this._obj.description}`,
-            `expected ${val.description} to not almost equal ${this._obj &&this._obj.description}`,
+            `expected ${val && val.description} to almost equal ${this._obj && this._obj.description}`,
+            `expected ${val && val.description} to not almost equal ${this._obj &&this._obj.description}`,
             val,
             this._obj
           )

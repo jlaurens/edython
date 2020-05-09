@@ -450,7 +450,7 @@ Miscellaneous:
 --js "eyo/js/core/register.js" \
 --js "eyo/js/py/parser.js" \
 --js "eyo/js/core/event.js" \
---js "eyo/js/core/geom.js" \
+--js "eyo/js/core/geom/geom.js" \
 --js "eyo/js/core/ui.js" \
 --js "eyo/js/module/module.js" \
 --js "eyo/js/py/parsetok.js" \

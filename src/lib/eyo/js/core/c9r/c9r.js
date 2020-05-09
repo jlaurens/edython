@@ -416,9 +416,13 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
     let onr = this.parentNS
     if (onr && (this._p.hasOwnProperty('key') || this.hasOwnProperty('key'))) {
       // Convenient shortcut
+      var K = eYo.do.toTitleCase(this.key)
       Object.defineProperties(onr, {
-        [eYo.do.toTitleCase(this.key)]: eYo.descriptorR(function () {
+        [K]: eYo.descriptorR(function () {
           return C9r
+        }),
+        [K+'_p']: eYo.descriptorR(function () {
+          return C9r.prototype
         })
       })
       //... var seed = eYo.genUID(eYo.ALNUM)
@@ -464,7 +468,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
    */
   eYo.c9r.makeBaseC9r(true)
 
-  eYo.mixinR(eYo._p, {
+  eYo.mixinR(false, eYo._p, {
     /**
      * Whether the argument is a property instance.
      * @param {*} what 
@@ -476,7 +480,7 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
       //... chai.expect(eYo.isaC9r(new eYo.c9r.BaseC9r())).true
       //>>>
     }
-  }, false)
+  })
   
   
   /**
@@ -512,34 +516,33 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, Super, model) {
 }
 
 // ANCHOR model
-{
+
+eYo.mixinR(false, eYo.model, {
   /**
    * The created model, by key.
    * @param{String} key - the key used to create the constructor.
    */
-  eYo.model.forId = (id) => {
+  forId (id) {
     var C9r = eYo.c9r.byId__[id]
     return C9r && C9r.eyo.model
-  }
-
+  },
   /**
    * The created model, by name.
    * @param{String} name - the key used to create the constructor.
    */
-  eYo.model.forName = (name) => {
+  forName (name) {
     var C9r = eYo.c9r.byName(name)
     return C9r && C9r.eyo.model
-  }
-
+  },
   /**
    * The created models given its type.
    * @param{String} type - the key used to create the constructor.
    */
-  eYo.model.forType = (type) => {
+  forType (type) {
     var C9r = eYo.c9r.byType__[type]
     return C9r && C9r.eyo.model
-  }
-}
+  },
+})
 
 /**
  * For subclassers.
@@ -609,7 +612,7 @@ eYo.c9r._p.modelMakeC9r = function (model, SuperC9r, register, key) {
     SuperC9r || this.modelBaseC9r(model, key),
     model
   )
-  C9r.eyo.shouldFinalizeC9r && C9r.eyo.finalizeC9r()
+  C9r.eyo.hasFinalizedC9r || C9r.eyo.finalizeC9r()
   model = C9r.eyo.model
   model._C9r = C9r
   model._starters = []
@@ -629,9 +632,7 @@ eYo.c9r._p.modelMakeC9r = function (model, SuperC9r, register, key) {
 eYo.c9r._p.prepare = function (model, SuperC9r, ...$) {
   if (!eYo.isD(model)) {
     var C9r = this.BaseC9r
-    if (C9r.eyo.shouldFinalizeC9r) {
-      C9r.eyo.finalizeC9r()
-    }
+    C9r.eyo.hasFinalizedC9r || C9r.eyo.finalizeC9r()
     return new C9r(model, SuperC9r, ...$)
   }
   C9r = model._C9r
@@ -694,6 +695,7 @@ eYo.c9r._p.makeSingleton = function(NS, id, model) {
 
 eYo.c9r.BaseC9r.eyo.finalizeC9r(
   //<<< mochai: eYo.c9r.BaseC9r.eyo.finalizeC9r
+  //... chai.expect(eYo.C9r.eyo.hasFinalizedC9r).true
   eYo.model.manyDescriptorF('dlgt', 'init'),
   //... ;['dlgt', 'init'].forEach(K => {
   //...   eYo.c9r.new({

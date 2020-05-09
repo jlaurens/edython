@@ -40,7 +40,7 @@ eYo.dlgt.declareDlgt = function (_p) {
   })
 }
 
-//<<< mochai: eYo.dlgt.BaseC9r
+//<<< mochai: ...
 //... var C9r
 //... let preparator = f => {
 //...   return model => {
@@ -55,10 +55,17 @@ eYo.dlgt.declareDlgt = function (_p) {
 //...     _p.flag = function (...$) {
 //...       flag.push(1, ...$)
 //...     }
+//...     _p.doPrepare = function (...$) {
+//...       this.flag(2, ...$) 
+//...     }
+//...     _p.doInit = function (...$) {
+//...       this.flag(3, ...$) 
+//...     }
 //...     f && f(_p)
 //...     eyo.finalizeC9r()
 //...   }
 //... }
+//>>>
 
 /**
  * This is a root class, not to be subclassed except in singletons.
@@ -201,12 +208,6 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
     //<<< mochai: eYo.dlgt.BaseC9r_p.makeC9rInit
     //... let prepare = (model, f) => {
     //...   return preparator(_p => {
-    //...     _p.doPrepare = function (...$) {
-    //...       flag.push(1, ...$) 
-    //...     }
-    //...     _p.doInit = function (...$) {
-    //...       flag.push(3, ...$) 
-    //...     }
     //...     f && (_p.init = f)
     //...   })(model)
     //... }
@@ -235,10 +236,10 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
           //...     flag.push('>')
           //...   }
           //... }, function (...$) {
-          //...   flag.push(2, ...$) 
+          //...   this.flag(4, ...$) 
           //... })
-          //... new C9r(4, 5)
-          //... flag.expect('<145245345>')
+          //... new C9r(5, 6)
+          //... flag.expect('<125614561356>')
         } else {
           f = function (...$) {
             try {
@@ -259,8 +260,8 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
           //...     flag.push('>')
           //...   }
           //... })
-          //... new C9r(4, 5)
-          //... flag.expect('<145345>')
+          //... new C9r(5, 6)
+          //... flag.expect('<12561356>')
         }
       } else if (f_p) {
         f = function (...$) {
@@ -286,10 +287,10 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         //...     flag.push('<', ...$, '>')
         //...   }
         //... }, function (...$) {
-        //...   flag.push(2, ...$) 
+        //...   this.flag(4, ...$) 
         //... })
-        //... new C9r(4, 5)
-        //... flag.expect('145245<45>345')
+        //... new C9r(5, 6)
+        //... flag.expect('12561456<56>1356')
       } else {
         f = function (...$) {
           try {
@@ -306,8 +307,8 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         //...     flag.push('<', ...$, '>')
         //...   }
         //... })
-        //... new C9r(4, 5)
-        //... flag.expect('145<45>345')
+        //... new C9r(5, 6)
+        //... flag.expect('1256<56>1356')
       }
     } else if (f_p) {
       f = function (...$) {
@@ -324,10 +325,10 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         }
       }
       //... prepare({}, function (...$) {
-      //...   flag.push(2, ...$) 
+      //...   this.flag(4, ...$) 
       //... })
-      //... new C9r(4, 5)
-      //... flag.expect(145245345)
+      //... new C9r(5, 6)
+      //... flag.expect(125614561356)
     } else {
       f = function (...$) {
         try {
@@ -342,8 +343,8 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
         }
       }
       //... prepare()
-      //... new C9r(4, 5)
-      //... flag.expect(145345)
+      //... new C9r(5, 6)
+      //... flag.expect(12561356)
     }
     C9r_p[K] = f
     //>>>
@@ -612,6 +613,24 @@ eYo.dlgt.declareDlgt(eYo._p)
 
   let _p = eYo.dlgt.BaseC9r_p
   
+  Object.defineProperties(_p, {
+    modelFormat: eYo.descriptorR(function () {
+      if (!this.modelFormat_) {
+        let $super = this.super
+        this.modelFormat_ = new eYo.model.Format($super && $super.modelFormat)
+        Object.defineProperties(this, {
+          modelFormat: eYo.descriptorR(function () {
+            return this.modelFormat_
+          }, true)
+        })
+      }
+      return this.modelFormat_
+    }),
+    hasFinalizedC9r: eYo.descriptorR(function () {
+      let $super = this.super
+      return (!$super || $super.hasFinalizedC9r) && this.hasOwnProperty('finalizeC9r')
+    }),
+  })
   /**
    * Finalize the associate constructor and allow some model format.
    * This must be called once for any delegate, raises otherwise.
@@ -623,28 +642,18 @@ eYo.dlgt.declareDlgt(eYo._p)
    */
   _p.finalizeC9r = function (...$) {
     let $super = this.super
-    !$super || !$super.shouldFinalizeC9r || eYo.throw(`Parent is not finalized: ${$super.eyo.name}`)
-    if (!this.shouldFinalizeC9r) {
-      eYo.throw('finalizeC9r cannot be called twice on the same delegate.')
+    if ($super && !$super.hasFinalizedC9r) {
+      console.error('BREAK HERE!')
     }
-    let mf = this._p.modelFormat_ = new eYo.model.Format($super && $super.modelFormat_)
-    let ans = mf.allow(...$)
+    $super && !$super.hasFinalizedC9r && eYo.throw(`Parent is not finalized: ${$super.name}`)
+    let ans = this.modelFormat.allow(...$)
     this.modelPrepare()
     this.makeC9rInit()
     this.makeC9rDispose()
+    this.finalizeC9r = eYo.oneShot('finalizeC9r cannot be called twice on the same delegate.')
     return ans
   }
-  /**
-   * Unfinalize the associate constructor and allow some model format.
-   * @name {eYo.dlgt.BaseC9r.modelAllow}
-   */
-  _p.unfinalizeC9r = function () {
-    if (this._p.hasOwnProperty('modelFormat_')) {
-      delete this._p.modelFormat_
-    }
-    this.forEachSubC9r(C9r => C9r.eyo.unfinalizeC9r())
-  }
-
+  
   /**
    * Forwards all the arguments to the `modelFormat` of the receiver.
    * @name {eYo.dlgt.BaseC9r.modelValidate}
@@ -754,17 +763,6 @@ eYo.dlgt.declareDlgt(eYo._p)
       this.modelMerge(model)
     }
   }
-  // default model validator for every delegate
-  // do nothing validator...
-  Object.defineProperties(_p, {
-    modelFormat: eYo.descriptorR(function () {
-      return this.modelFormat_
-    }),
-    shouldFinalizeC9r: eYo.descriptorR(function () {
-      let $super = this.super
-      return $super && $super.shouldFinalizeC9r || !this._p.hasOwnProperty('modelFormat_')
-    }),
-  })
 }
 
 // The delegate of `eYo.dlgt.BaseC9r` is an instance of itself.
@@ -772,7 +770,7 @@ new eYo.dlgt.BaseC9r(eYo.dlgt, 'Base…', eYo.dlgt.BaseC9r, {})
 
 eYo.dlgt.BaseC9r.eyo.finalizeC9r()
 
-eYo.mixinR(eYo, {
+eYo.mixinR(false, eYo, {
   /**
    * Realize `p.next === n` and `n.previous === p`.
    * @param {*} p 
@@ -814,10 +812,10 @@ eYo.mixinR(eYo, {
       })
     }
   },
-}, false)
+})
 
 /**
- * This namespace method populates the namespace's base delegate
+ * This delegate method populates the namespace's base delegate
  * with some methods to manage a data model with many possible attributes.
  * 
  * @param{String} type - type is one of 'p6y', 'data', 'field', 'slots'
@@ -825,6 +823,7 @@ eYo.mixinR(eYo, {
  * @param{Object} [manyModel] - Object, read only.
  */
 eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
+  //<<< mochai: enhanceMany
   let _p = this._p
   /* fooModelByKey__ is a key -> model object with no prototype.
    * Void at startup.
@@ -832,30 +831,6 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
    * Local to the delegate instance.
    */
   let tModelByKey__ = type + 'ModelByKey__' // local to the instance
-  /* fooModelMap_ is a key -> model map.
-   * It is computed from the fooModelByKey__ of the delegates and its super's.
-   * Cached.
-   */
-  let tModelMap_  = type + 'ModelMap_'
-  /* fooModelMap is a key -> model map.
-   * Computed property that uses the cache above.
-   * If the cache does not exist, reads super's fooModelMap
-   * and adds the local fooModelByKey__.
-   * Then caches the result in fooModelMap_.
-   */
-  let tModelMap   = type + 'ModelMap' // computed property
-  let tPrepare    = type + 'Prepare'
-  let tMerge      = type + 'Merge'
-  let tInit       = type + 'Init'
-  let TInit       = eYo.do.toTitleCase(type) + 'Init'
-  let tDispose    = type + 'Dispose'
-  let TDispose    = eYo.do.toTitleCase(type) + 'Dispose'
-  let tForEach    = type + 'ForEach'
-  let tSome       = type + 'Some'
-  // object properties
-  let tMap        = type + 'Map' // property defined on instances
-  let tHead       = type + 'Head'
-  let tTail       = type + 'Tail'
   /*
    * Lazy model getter:
    * 
@@ -879,8 +854,40 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
       return model
     },
     configurable: true,
+    //<<< mochai: tModelByKey__
+    //... preparator()()
+    //... C9r.eyo.enhanceMany('foo')
+    //... var o = new C9r()
+    //... chai.expect(o.tModelByKey__)
+    //>>>
   })
 
+  /* fooModelMap_ is a key -> model map.
+   * It is computed from the fooModelByKey__ of the delegates and its super's.
+   * Cached.
+   */
+  let tModelMap_  = type + 'ModelMap_'
+  /* fooModelMap is a key -> model map.
+   * Computed property that uses the cache above.
+   * If the cache does not exist, reads super's fooModelMap
+   * and adds the local fooModelByKey__.
+   * Then caches the result in fooModelMap_.
+   */
+  // keys defined on delegate instances
+  let tModelMap   = type + 'ModelMap' // computed property
+
+  let tPrepare    = type + 'Prepare'
+  let tMerge      = type + 'Merge'
+  let tInit       = type + 'Init'
+  let TInit       = eYo.do.toTitleCase(type) + 'Init'
+  let tDispose    = type + 'Dispose'
+  let TDispose    = eYo.do.toTitleCase(type) + 'Dispose'
+  let tForEach    = type + 'ForEach'
+  let tSome       = type + 'Some'
+  // object properties
+  let tMap        = type + 'Map' // property defined on instances
+  let tHead       = type + 'Head'
+  let tTail       = type + 'Tail'
   /**
    * Expands the property, data, fields, slots section into the receiver's corresponding model. Only works for objects.
    * Usage: For the model `{foo: bar}`, run `C9r.eyo.fooMerge(bar)`
@@ -1050,5 +1057,5 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
       }
     }
   }
+  //>>>
 }
-//>>>

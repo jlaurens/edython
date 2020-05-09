@@ -135,9 +135,9 @@ describe ('Tests: Dlgt', function () {
   it ('Dlgt finalizeC9r', function () {
     let C9r = function () {}
     let dlgt = eYo.dlgt.new('Foo', C9r, {})
-    chai.expect(dlgt.shouldFinalizeC9r).true
+    chai.expect(!!dlgt.hasFinalizedC9r).false
     dlgt.finalizeC9r()
-    chai.expect(dlgt.shouldFinalizeC9r).false
+    chai.expect(dlgt.hasFinalizedC9r).true
     chai.assert(C9r.prototype.init)
     chai.assert(C9r.prototype.dispose)
     chai.expect(() => {
@@ -150,29 +150,15 @@ describe ('Tests: Dlgt', function () {
     var C9r = function () {}
     eYo.inherits(C9r, SuperC9r)
     let dlgt = eYo.dlgt.new('Bar', C9r, {})
-    chai.expect(superDlgt.shouldFinalizeC9r).true
-    chai.expect(dlgt.shouldFinalizeC9r).true
+    chai.expect(!!superDlgt.hasFinalizedC9r).false
+    chai.expect(!!dlgt.hasFinalizedC9r).false
     chai.expect(() => {
       dlgt.finalizeC9r()
     }).throw()
     superDlgt.finalizeC9r()
-    chai.expect(superDlgt.shouldFinalizeC9r).false
+    chai.expect(superDlgt.hasFinalizedC9r).true
     dlgt.finalizeC9r()
-    chai.expect(dlgt.shouldFinalizeC9r).false
-  })
-  it ('Dlgt unfinalizeC9r', function () {
-    let SuperC9r = function () {}
-    let superDlgt = eYo.dlgt.new('Foo', SuperC9r, {})
-    var C9r = function () {}
-    eYo.inherits(C9r, SuperC9r)
-    let dlgt = eYo.dlgt.new('Bar', C9r, {})
-    superDlgt.finalizeC9r()
-    dlgt.finalizeC9r()
-    chai.expect(superDlgt.shouldFinalizeC9r).false
-    chai.expect(dlgt.shouldFinalizeC9r).false
-    superDlgt.unfinalizeC9r()
-    chai.expect(superDlgt.shouldFinalizeC9r).true
-    chai.expect(dlgt.shouldFinalizeC9r).true
+    chai.expect(dlgt.hasFinalizedC9r).true
   })
   it ('Dlgt methodsMerge - overriden', function () {
     let C9r = function () {}
