@@ -750,8 +750,8 @@ eYo.shape.BaseC9r_p.initWithMagnet = function(magnet, opt) {
     this.v(true, - eYo.geom.Y + 8 * r)
     this.half_circle(r, true, 2)
     this.z()
-  } else if (magnet && magnet.bindField && !magnet.ignoreBindField) {
-    this.width = 1 + (magnet.bindField.visible
+  } else if (magnet && magnet.boundField && !magnet.ignoreBindField) {
+    this.width = 1 + (magnet.boundField.visible
       ? Math.max(this.width, 1)
       : 2)
     var w = this.width - 1

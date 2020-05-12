@@ -347,7 +347,7 @@ eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
         }
         return
       }
-      ;(x = x.target_s) && (x.bindField.visible = true)
+      ;(x = x.target_s) && (x.boundField.visible = true)
     }
   }
   eYo.expr.target_list.eyo.C9r_s.didDisconnect.call(this, m4t, oldTargetM4t)
@@ -366,7 +366,7 @@ eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) 
   if (m4t.isSlot) {
     var parent = this.parent
     if (parent) {
-      parent.target_s.bindField.visible = false
+      parent.target_s.boundField.visible = false
       if (Object.keys(this.slots).length > 1) {
         // this is the second brick we connect
         parent.variant_ = eYo.key.TARGET_VALUED
@@ -581,7 +581,7 @@ eYo.expr.makeC9r('primary', {
         var b3k = this.brick
         b3k.holder_d.requiredIncog_ = after === 1
         b3k.updateProfile()
-        b3k.target_s.bindField.optional_ = after > 0
+        b3k.target_s.boundField.optional_ = after > 0
       },
       fromType (type) /** @suppress {globalThis} */ {
         var p = this.brick.profile
@@ -1049,7 +1049,7 @@ eYo.expr.makeC9r('primary', {
         if (this.isSlot) {
           var parent = this.brick.parent
           if (parent) {
-            parent.target_s.bindField.visible = false
+            parent.target_s.boundField.visible = false
             if (Object.keys(this.brick.slots).length > 1) {
               // this is the second brick we connect
               parent.variant_ = eYo.key.TARGET_VALUED
@@ -1081,7 +1081,7 @@ eYo.expr.makeC9r('primary', {
         if (unwrappedB3k) {
           if (Object.keys(this.brick.slots).length < 4) { // bad design
             // this is the last brick we disconnected
-            var f = unwrappedB3k.target_s.bindField
+            var f = unwrappedB3k.target_s.boundField
             f && (f.visible = true)
           }
         }
@@ -1178,11 +1178,11 @@ eYo.expr.makeC9r('primary', {
         }
       },
       didConnect (oldTargetM4t, targetOldM4t) /** @suppress {globalThis} */ {
-        this.slot.bindField.visible = false
+        this.slot.boundField.visible = false
         this.brick.variant_ = eYo.key.ALIASED
       },
       didDisconnect (oldTargetM4t) /** @suppress {globalThis} */ {
-        this.slot.bindField.visible = true
+        this.slot.boundField.visible = true
       }
     }
   },

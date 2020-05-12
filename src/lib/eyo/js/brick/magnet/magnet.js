@@ -522,8 +522,8 @@ eYo.magnet.BaseC9r.eyo.p6yMerge({
   */
  w: {
    get () { // in text units
-      return this.bindField
-      ? this.bindField.size_.w + 1
+      return this.boundField
+      ? this.boundField.size_.w + 1
       : this.optional_ || this.s7r_
         ? 1
         : 3
@@ -547,7 +547,7 @@ eYo.magnet.BaseC9r.eyo.p6yMerge({
   bindField: {
     get () {
       if (this.slot) {
-        return this.slot.bindField
+        return this.slot.boundField
       }
       // in a void wrapped list
       var brick = this.brick
@@ -555,7 +555,7 @@ eYo.magnet.BaseC9r.eyo.p6yMerge({
       if (slot && (slot.magnet === this)) {
         var m4t = brick.out_m
         if (m4t && (m4t = m4t.target)) {
-          return m4t.bindField
+          return m4t.boundField
         }
       }
     },
@@ -986,7 +986,7 @@ eYo.magnet.BaseC9r_p.connect_ = function (childM4t) {
               parent.didConnect(parentM4t, oldChildT4t, oldParentT4t)
             })
           }, () => { // finally
-            unwrappedM4t.bindField && (unwrappedM4t.bindField.visible = false)
+            unwrappedM4t.boundField && (unwrappedM4t.boundField.visible = false)
             // next must absolutely run because of possible undo management
             parentM4t.didConnect(oldParentT4t, oldChildT4t)
             if (unwrappedM4t !== parentM4t) {
@@ -997,7 +997,7 @@ eYo.magnet.BaseC9r_p.connect_ = function (childM4t) {
         }, () => { // finally
           childM4t.didConnect(oldChildT4t, oldParentT4t)
           eYo.magnet.connectedParent = eYo.NA
-          childM4t.bindField && (childM4t.bindField.visible = false) // unreachable ?
+          childM4t.boundField && (childM4t.boundField.visible = false) // unreachable ?
         })
       })
     })
@@ -1532,8 +1532,8 @@ eYo.magnet.BaseC9r_p.updateCheck = function () {
                       // eYo.magnet.disconnectedParent = eYo.NA
                       // eYo.magnet.disconnectedChild = eYo.NA
                       parent.changeInputDone && (parent.changeInputDone()) // list are special
-                      parentM4t.bindField && (parentM4t.bindField.visible = true) // no wrapped test
-                      childM4t.bindField && (childM4t.bindField.visible = true) // unreachable ?
+                      parentM4t.boundField && (parentM4t.boundField.visible = true) // no wrapped test
+                      childM4t.boundField && (childM4t.boundField.visible = true) // unreachable ?
                     })
                   }, () => { // finally
                     child.didDisconnect(childM4t, parentM4t)

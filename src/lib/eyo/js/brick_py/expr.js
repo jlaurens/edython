@@ -258,7 +258,7 @@ eYo.expr.BaseC9r_p.insertParentWithModel = function (model) {
         var m4t = slot.magnet
         if (m4t) {
           var candidate
-          if (m4t.checkType_(this.out_m) && (!m4t.bindField || !m4t.bindField.text.length)) {
+          if (m4t.checkType_(this.out_m) && (!m4t.boundField || !m4t.boundField.text.length)) {
             candidate = m4t
           } else if ((t9k = m4t.targetBrick)) {
             candidate = findM4t(t9k)

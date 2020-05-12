@@ -12,6 +12,7 @@
 'use strict'
 
 eYo.require('p6y')
+eYo.require('many')
 
 /**
  * @name {eYo.o4t}
@@ -686,8 +687,8 @@ eYo.c9r.Dlgt_p.p6yReplace = function (object, k, source) {
   var p = eYo.p6y.aliasNew(k, object, source)
   this.p6yMakeShortcuts(object, k, p, true)
   if (map) {
-    eYo.linkPreviousNext(old_p.previous, p)
-    eYo.linkPreviousNext(p, old_p.next)
+    eYo.many.link(old_p.previous, p)
+    eYo.many.link(p, old_p.next)
     if(p.previous) {
       p = [...map.values()][0]
     }

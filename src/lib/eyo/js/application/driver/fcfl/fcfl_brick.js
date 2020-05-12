@@ -1230,7 +1230,7 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
   // if there is a slot.
   var t9k = m4t.targetBrick
   if (t9k) {
-    if (m4t.bindField && m4t.bindField.visible) {
+    if (m4t.boundField && m4t.boundField.visible) {
       m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
       // The `bind` field hides the connection.
       // The bind field is always the last field before the connection.
@@ -1287,7 +1287,7 @@ eYo.fcfl.Brick._p.drawInputMagnet_ = function (io) {
     if (!m4t.target) {
       brick.ui.someTargetIsMissing = true
     }
-    if (m4t.bindField && m4t.bindField.visible) {
+    if (m4t.boundField && m4t.boundField.visible) {
       m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
       // The `bind` field hides the connection.
       // The bind field is always the last field before the connection.
@@ -1589,7 +1589,7 @@ eYo.fcfl.Brick._p.getMagnetForEvent = function (brick, e) {
             return magnet
           }
         }
-        if (magnet.slot && magnet.slot.bindField) {
+        if (magnet.slot && magnet.slot.boundField) {
           R = new eYo.geom.Rect(
             magnet.x,
             magnet.y + eYo.padding.t,
@@ -1811,7 +1811,7 @@ eYo.fcfl.Brick._p.on_mouseup = function (brick, e) {
           } else if (magnet !== t9k.ui.lastSelectedMagnet__) {
             if (magnet.isSlot) {
               if (!magnet.targetBrick) {
-                magnet.bindField && magnet.focusOn()
+                magnet.boundField && magnet.focusOn()
               }
             } else {
               magnet.focusOn()

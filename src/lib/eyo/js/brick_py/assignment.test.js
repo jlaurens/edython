@@ -355,14 +355,14 @@ describe('One brick: annotated_stmt', function() {
     eYo.test.Input_length(d1.target_b, 1, `1`)
     d1.Annotated_p = 'fou+bar'
     chai.assert(d1.Annotated_p === 'fou+bar', 'MISSED ANNOTATION')
-    chai.assert(d1.annotated_s.bindField.visible_, 'UNEXPECTED HIDDEN')
-    chai.assert(d1.annotated_s.bindField.text === 'fou+bar', 'MISSED VALUE')
+    chai.assert(d1.annotated_s.boundField.visible_, 'UNEXPECTED HIDDEN')
+    chai.assert(d1.annotated_s.boundField.text === 'fou+bar', 'MISSED VALUE')
     eYo.test.Code(d1, 'x:fou+bar')
     var d3 =  eYo.test.new_brick(`<x eyo="a_expr" operator="+" xmlns="urn:edython:0.2" xmlns: eyo="urn:edython:0.2"><x eyo="identifier" name="abc" slot="lhs"></x><x eyo="identifier" name="bcd" slot="rhs"></x></x>`)
     eYo.test.Code(d3, 'abc + bcd')
     d1.annotated_s.connect(d3)
     chai.assert(d1.annotated_b === d3, 'MISSED M4T')
-    chai.assert(!d1.annotated_s.bindField.visible_, 'UNEXPECTED VISIBLE')
+    chai.assert(!d1.annotated_s.boundField.visible_, 'UNEXPECTED VISIBLE')
     eYo.test.Code(d1, 'x: abc + bcd')
     d1.dispose()
     eYo.test.tearItDown()
@@ -396,8 +396,8 @@ describe('One brick: annotated_assignment_stmt', function() {
     eYo.test.Input_length(d_main.target_b, 1, `MISSED M4T 1`)
     d_main.Annotated_p = 'fou + bar'
     chai.assert(d_main.Annotated_p === 'fou + bar', 'MISSED ANNOTATION')
-    chai.assert(d_main.annotated_s.bindField.visible_, 'UNEXPECTED HIDDEN')
-    chai.assert(d_main.annotated_s.bindField.text === 'fou + bar', 'MISSED VALUE')
+    chai.assert(d_main.annotated_s.boundField.visible_, 'UNEXPECTED HIDDEN')
+    chai.assert(d_main.annotated_s.boundField.text === 'fou + bar', 'MISSED VALUE')
     console.error(d_main.annotated_s)
     eYo.test.Code(d_main, 'x: fou + bar = <MISSING EXPRESSION>')
     d2.Target_p = 'xxx'
@@ -407,7 +407,7 @@ describe('One brick: annotated_assignment_stmt', function() {
     eYo.test.Code(d3, 'abc + bcd')
     d_main.annotated_s.connect(d3)
     chai.assert(d_main.annotated_b === d3, 'MISSED M4T')
-    chai.assert(!d_main.annotated_s.bindField.visible_, 'UNEXPECTED VISIBLE')
+    chai.assert(!d_main.annotated_s.boundField.visible_, 'UNEXPECTED VISIBLE')
     eYo.test.Code(d_main, 'xxx: abc + bcd=<MISSING EXPRESSION>')
     // then replace the target brick with an annotated identifier
     d3 = eYo.test.new_brick('Z')

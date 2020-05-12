@@ -326,7 +326,7 @@ eYo.py.Exporter_p.exportSlot_ = function (slot, opt) {
       var t9k = m4t.targetBrick
       if (t9k) {
         this.exportAsExpression_(t9k)
-      } else if (!m4t.optional_ && !m4t.disabled_ && !m4t.s7r_ && !slot.bindField) {
+      } else if (!m4t.optional_ && !m4t.disabled_ && !m4t.s7r_ && !slot.boundField) {
         console.error('BREAK HERE')
         this.shouldSeparateField && (this.addBoard())
         this.linePush('<MISSING INPUT>')
@@ -350,7 +350,7 @@ eYo.py.Exporter_p.exportSlot_ = function (slot) {
     return
   }
   var bindField
-  if ((bindField = slot.bindField)) {
+  if ((bindField = slot.boundField)) {
     var m4t = slot.magnet
     bindField.visible = !m4t || !m4t.unwrappedTarget
   }

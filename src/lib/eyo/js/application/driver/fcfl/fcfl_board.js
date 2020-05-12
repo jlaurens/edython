@@ -1228,7 +1228,7 @@ eYo.fcfl.Board._p.drawInputMagnet_ = function (io) {
   // if there is a slot.
   var t9k = m4t.targetBoard
   if (t9k) {
-    if (m4t.bindField && m4t.bindField.visible) {
+    if (m4t.boundField && m4t.boundField.visible) {
       m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
       // The `bind` field hides the connection.
       // The bind field is always the last field before the connection.
@@ -1285,7 +1285,7 @@ eYo.fcfl.Board._p.drawInputMagnet_ = function (io) {
     if (!m4t.target) {
       board.ui.someTargetIsMissing = true
     }
-    if (m4t.bindField && m4t.bindField.visible) {
+    if (m4t.boundField && m4t.boundField.visible) {
       m4t.setOffset(io.cursor.c - m4t.w, io.cursor.l)
       // The `bind` field hides the connection.
       // The bind field is always the last field before the connection.

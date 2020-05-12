@@ -625,12 +625,16 @@ eYo.mixinR = (getters, object, props) => {
  * The props dictionary is a `key=>value` mapping where values
  * are getters, not a dictionary containing a getter.
  * The difference with the `mixinR` is that an existing key is not overriden.
+ * @param {Boolean} [getters] - True if functions are considered as getter, false otherwise. Truthy values are not allowed.
  * @param {*} dest - The destination
  * @param {*} props - the source
- * @param {Boolean} getters - True if functions are considered as getter.
  * @return {*} the destination
  */
-eYo.provideR = (dest, props, getters = true) => {
+eYo.provideR = (getters, dest, props) => {
+  if (!eYo.isBool(getters)) {
+    eYo.isDef(props) && eYo.throw(`Unepected last argument ${props}`)
+    ;[getters, dest, props] = [true, getters, dest]
+  }
   Object.keys(props).forEach(key => {
     if (!eYo.hasOwnProperty(dest, key)) {
       let value = props[key]
@@ -1027,8 +1031,9 @@ eYo.mixinR(false, eYo._p, {
       eYo.isDef(getters) && eYo.throw(`${this.name}/makeNS: Unexpected last argument (2): ${getters}`)
       ;[key, model, getters] = [eYo.NA, key, model]
     }
-    if (ns && key && ns[key] !== eYo.NA) {
-      throw new Error(`${ns.name}[${key}] already exists.`)
+    ns && key && ns[key] !== eYo.NA && eYo.throw(`${ns.name}[${key}] already exists.`)
+    if (eYo.isBool(model)) {
+      [model, getters] = [getters, model]
     }
     //... var ns = eYo.makeNS()
     //... chai.expect(ns).eyo_NS

@@ -2226,7 +2226,7 @@ eYo.brick.DEBUG_ = Object.create(null)
                   }
                 } else if (!m4t.checkType_(foundM4t)) {
                   return
-                } else if (foundM4t.bindField) {
+                } else if (foundM4t.boundField) {
                   return
                 }
                 if (!foundM4t.disabled_ && !foundM4t.s7r_ && (!c8n_N || foundM4t.name_ === c8n_N)) {

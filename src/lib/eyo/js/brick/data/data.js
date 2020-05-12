@@ -658,7 +658,7 @@ eYo.data.BaseC9r.eyo.finalizeC9r(
       return
     }
     // do not save if there is an associate slot with a target brick.
-    if (this.slot && this.slot.bindField === this.field && this.slot.unwrappedTarget) {
+    if (this.slot && this.slot.boundField === this.field && this.slot.unwrappedTarget) {
       return
     }
     if (!this.incog || xml && eYo.do.valueOf(xml.force, this)) {
@@ -688,7 +688,7 @@ eYo.data.BaseC9r.eyo.finalizeC9r(
       } else if (this.required_from_model) {
         if (this.model.custom_placeholder) {
           element.setAttribute(this.attributeName + '_placeholder', this.model.custom_placeholder.toString())
-        } else if (this.slot && this.slot.bindField === this.field) {
+        } else if (this.slot && this.slot.boundField === this.field) {
           // let the slot do it
           this.slot.saveRequired(element, opt)
         } else {

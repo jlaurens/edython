@@ -161,7 +161,7 @@ eYo.KHandler = (() => {
             return eyo.slotSomeMagnet(m4t => {
               if (m4t.type === type) {
                 var t9k = m4t.targetBrick
-                if (!m4t.hidden_ && !t9k && (!m4t.source || !m4t.source.bindField)) {
+                if (!m4t.hidden_ && !t9k && (!m4t.source || !m4t.source.boundField)) {
                   m4t.focusOn()
                   return true
                 } else {
