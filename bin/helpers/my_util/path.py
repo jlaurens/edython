@@ -3,10 +3,14 @@ from pathlib import Path
 path_root = Path(__file__).resolve().parent.parent.parent.parent
 path_bin = path_root / 'bin'
 path_src = path_root / 'src'
-path_lib = path_src / 'lib'
+path_lib = path_src  / 'lib'
+path_eyo = path_lib  / 'eyo'
+path_js  = path_eyo  / 'js'
+path_core = path_js  / 'core'
+path_t3_src = path_eyo  / 't3'
+path_t3_dst = path_core / 't3'
 
 component_js = Path('eyo') / 'js'
-path_js = path_lib / component_js
 
 path_helpers = path_root / 'build' / 'helpers'
 path_helpers.mkdir(parents=True, exist_ok=True)

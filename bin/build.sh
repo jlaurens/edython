@@ -401,14 +401,14 @@ Miscellaneous:
 --js "eyo/js/core/model/model.js" \
 --js "eyo/js/core/more/more.js" \
 --js "eyo/js/core/setup.js" \
---js "eyo/js/core/t3.js" \
+--js "eyo/js/core/t3/t3.js" \
 --js "eyo/js/msg/base.js" \
 --js "eyo/js/other/key_handler.js" \
 --js "eyo/js/py/ast.js" \
 --js "eyo/js/test/chai_extension.js" \
 --js "closure-library/closure/goog/html/safehtml.js" \
 --js "eyo/js/core/decorate/decorate.js" \
---js "eyo/js/core/t3_all.js" \
+--js "eyo/js/core/t3/t3_all.js" \
 --js "eyo/js/core/xre.js" \
 --js "closure-library/closure/goog/dom/safe.js" \
 --js "closure-library/closure/goog/html/uncheckedconversions.js" \

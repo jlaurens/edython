@@ -31,7 +31,7 @@
     "postinstall": "npm run lint:fix",
     "eyo:test": "mocha src/lib/eyo/parser/*.test.js --timeout 10000",
     "eyo:graminit": "python3 ./src/lib/eyo/Python/graminit.py",
-    "eyo:t3": "python3 \"./src/lib/eyo/t3/python types.py\" && python3 ./\"src/lib/eyo/t3/install t3.py\"",
+    "eyo:t3": "python3 \"./src/lib/eyo/t3/python types.py\" && python3 \"./bin/helpers/install t3.py\"",
     "eyo:module": "python3 ./bin/helpers/modulebot.py --no-suffix functions stdtypes datastructures datamodel && python3 ./bin/helpers/modulebot.py string turtle math cmath decimal fractions random statistics datetime calendar collections collections.abc heapq  bisect array weakref types copy pprint reprlib enum",
     "eyo:prepare": "python3 ./bin/helpers/prepare.py",
     "eyo:update": "python3 ./bin/helpers/update.py",
