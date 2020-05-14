@@ -9,4 +9,5 @@ From ground up, taking dependencies into account.
 * `c9r`, base edython object constructor
 * `o3d`, owned objects
 * `p6y`, properties (observable, computed...)
-* `o4t`, owned objects with properties
+* `many`, add support for many objects of the same kind
+* `o4t`, owned objects with many properties

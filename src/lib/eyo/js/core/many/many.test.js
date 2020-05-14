@@ -13,11 +13,11 @@ describe ('Tests: many', function () {
       },
     }, 'onr')
   })
-  it ('enhanceMany: Basics', function () {
+  it ('manyEnhanced: Basics', function () {
     var C9r = function () {}
     let dlgt = eYo.dlgt.new('Foo', C9r, {})
     flag.reset()
-    dlgt.enhanceMany('foo', 'bar', {})
+    dlgt.manyEnhanced('foo', 'bar', {})
     ;[
       // 'ModelMap_',
       'ModelByKey__',
@@ -48,7 +48,7 @@ describe ('Tests: many', function () {
     chai.expect(o.fooHead).undefined
     chai.expect(o.fooTail).undefined
   })
-  it ('enhanceMany, one', function () {
+  it ('manyEnhanced, one', function () {
     var C9r = function () {}
     let o = new C9r()
     let dlgt = eYo.dlgt.new('Foo', C9r, {
@@ -57,14 +57,14 @@ describe ('Tests: many', function () {
       }
     })
     flag.reset()
-    dlgt.enhanceMany('foo1', 'bar', {})
+    dlgt.manyEnhanced('foo1', 'bar', {})
     chai.expect(() => {
       dlgt.foo1Prepare(o)
     }).throw()
     chai.expect(() => {
-      dlgt.enhanceMany('foo1', 'bar', {})
+      dlgt.manyEnhanced('foo1', 'bar', {})
     }).throw()
-    dlgt.enhanceMany('foo2', 'bar', {
+    dlgt.manyEnhanced('foo2', 'bar', {
       make (model, k, object) {
         flag.push(model)
         return model+1
@@ -72,10 +72,11 @@ describe ('Tests: many', function () {
     })
     dlgt.foo2Prepare(o)
     flag.expect(1)
+    dlgt.foo2Shortcuts(o)
     chai.expect(o.a_f).equal(2)
     chai.expect(o.foo2Head).equal(2)
     chai.expect(o.foo2Tail).equal(2)
-    dlgt.enhanceMany('foo3', 'bar', {
+    dlgt.manyEnhanced('foo3', 'bar', {
       make (model, k, object) {
         flag.push(model)
         return model+1
@@ -84,37 +85,41 @@ describe ('Tests: many', function () {
     })
     dlgt.foo3Prepare(o)
     flag.expect(1)
+    dlgt.foo3Shortcuts(o)
     chai.expect(o.a_ff).equal(2)
-    dlgt.enhanceMany('foo4', 'bar', {
+    dlgt.manyEnhanced('foo4', 'bar', {
       make (model, k, object) {
         flag.push(model)
         return model+1
       },
-      makeShortcut (object, k, p) {
-        let k_p = k + '__ff'
-        Object.defineProperties(object, {
-          [k_p]: eYo.descriptorR(function () {
-            return p
-          }),
-        })
+      shortcuts (object) {
+        for (let [k, v] of object.foo4Map) {
+          Object.defineProperties(object, {
+            [k + '__ff']: eYo.descriptorR(function () {
+              return v
+            }),
+          })
+        }
       },
     })
     dlgt.foo4Prepare(o)
     flag.expect(1)
+    dlgt.foo4Shortcuts(o)
     chai.expect(o.a__ff).equal(2)
-    dlgt.enhanceMany('foo5', 'bar', {
+    dlgt.manyEnhanced('foo5', 'bar', {
       make (model, k, object) {
         flag.push(model)
         return model+1
       },
       suffix: '_f5',
     })
+    dlgt.foo5Prepare(o)
     o.a_f5 = 421
     chai.expect(() => {
-      dlgt.foo5Prepare(o)
+      dlgt.foo5Shortcuts(o)
     }).throw()
   })
-  it ('enhanceMany, many', function () {
+  it ('manyEnhanced, many', function () {
     var C9r = function () {}
     let o = new C9r()
     let dlgt = eYo.dlgt.new('Foo', C9r, {
@@ -124,8 +129,7 @@ describe ('Tests: many', function () {
         c: 3,
       }
     })
-    flag.reset()
-    dlgt.enhanceMany('foo', 'bar', {
+    dlgt.manyEnhanced('foo', 'bar', {
       make (model, k, object) {
         return {
           value: model
@@ -133,6 +137,7 @@ describe ('Tests: many', function () {
       }
     })
     dlgt.fooPrepare(o)
+    dlgt.fooShortcuts(o)
     flag.push(o.a_f.value)
     flag.push(o.b_f.value)
     flag.push(o.c_f.value)

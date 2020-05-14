@@ -12,163 +12,177 @@ describe ('Tests: Object', function () {
       },
     }, 'onr')
   })
-  // it ('O4t: POC', function () {
-  //   let C9r = function (target) {
-  //     this.p3y = new Proxy(target, {
-  //       get(target, prop) {
-  //         if (['previous', 'next'].includes(prop)) {
-  //           return this[prop]
-  //         } else {
-  //           return target[prop]
-  //         }
-  //       },
-  //       set: function (target, prop, value) {
-  //         if (['previous', 'next'].includes(prop)) {
-  //           this[prop] = value
-  //         } else {
-  //           target[prop] = value
-  //         }
-  //       },
-  //       deleteProperty: function (target, prop) {
-  //         if (['previous', 'next'].includes(prop)) {
-  //           delete this[prop]
-  //         } else {
-  //           delete target[prop]
-  //         }
-  //       },
-  //     })
-  //   }
-  //   let target = {
-  //     who: 421
-  //   }
-  //   chai.expect(target.who).equal(421)
-  //   let o = new C9r(target)
-  //   let p = o.p3y
-  //   chai.expect(p.who).equal(421)
-  //   p.who = 123
-  //   chai.expect(target.who).equal(123)
-  //   delete p.who
-  //   chai.expect(target.who).equal(eYo.NA)
-  //   p.previous = 421
-  //   chai.expect(p.previous).equal(421)
-  //   chai.expect(target.previous).equal(eYo.NA)
-  //   target.previous = 123
-  //   chai.expect(p.previous).equal(421)
-  //   chai.expect(target.previous).equal(123)
-  //   delete p.previous
-  //   chai.expect(p.previous).equal(eYo.NA)
-  //   chai.expect(target.previous).equal(123)
-  // })
-  // it ('O4t: Basic', function () {
-  //   chai.assert(eYo.o4t)
-  //   let ns = eYo.o4t.makeNS()
-  //   let Foo = ns.makeC9r('foo')
-  //   chai.assert(Foo.eyo.p6yInit)
-  //   chai.assert(eYo.isF(Foo.eyo.p6yInit))
-  //   chai.assert(eYo.isF(Foo.eyo.p6yPrepare))
-  // })
-  // it ('O4t: eYo.o4t.makeC9r(eYo.NULL_NS, ...', function () {
-  //   let O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {})
-  //   chai.assert(O.eyo instanceof eYo.o4t.BaseC9r.eyo.constructor)
-  //   chai.assert(O.eyo instanceof eYo.o4t.Dlgt_p.constructor)
-  //   let o = new O('foo', onr)
-  //   chai.assert(o)
-  //   let OO = eYo.c9r.makeC9r(eYo.NULL_NS, 'Bar', O, {})
-  //   let oo = new OO('foo', onr)
-  //   chai.assert(oo)
-  //   chai.assert(oo instanceof O)
-  //   chai.assert(oo.eyo instanceof O.eyo.constructor)
-  // })
-  // it (`O4t: eYo.o4t.makeC9r(ns, 'Foo', {})`, function () {
-  //   let ns = eYo.o4t.makeNS()
-  //   let O = eYo.o4t.makeC9r(ns, 'Foo', {})
-  //   chai.assert(O.eyo instanceof eYo.o4t.BaseC9r.eyo.constructor)
-  //   let o = new O('foo', onr)
-  //   chai.assert(o)
-  //   let OO = O.makeSubC9r('Bar', {})
-  //   chai.assert(OO.eyo instanceof eYo.o4t.BaseC9r.eyo.constructor)
-  //   let oo = new OO('foo', onr)
-  //   chai.assert(oo)
-  // })
-  // it (`O4t: ns.makeC9r('Foo', {})`, function () {
-  //   let ns = eYo.o4t.makeNS()
-  //   ns.makeC9r('A')
-  //   let O = ns.makeC9r('Foo', {})
-  //   chai.assert(O.eyo instanceof eYo.o4t.BaseC9r.eyo.constructor)
-  //   let o = new O('foo', onr)
-  //   chai.assert(o)
-  //   let OO = O.makeSubC9r('Bar', {})
-  //   chai.assert(OO.eyo instanceof eYo.o4t.BaseC9r.eyo.constructor)
-  //   let oo = new OO('foo', onr)
-  //   chai.assert(oo)
-  // })
-  // it ('O4t: model Shortcuts', function () {
-  //   var model = 421
-  //   let mf_o4t = eYo.O4t.eyo.modelFormat
-  //   let mf_p6y = eYo.P6y.eyo.modelFormat
-  //   let mf_p6y_alt = mf_o4t.get('properties/foo')
-  //   chai.expect(mf_p6y_alt.fallback).equal(mf_p6y)
-  //   var validated = mf_p6y.validate(model)
-  //   chai.expect(eYo.isD(validated)).true
-  //   chai.expect(validated.value()).equal(421)
-  //   var validated = mf_p6y_alt.validate(model)
-  //   chai.expect(eYo.isD(validated)).true
-  //   chai.expect(validated.value()).equal(421)
-  //   var validated = mf_o4t.validate('properties/foo', model)
-  //   chai.expect(eYo.isD(validated)).true
-  //   chai.expect(validated.value()).equal(421)
-  // })
-  // it ('O4t: properties(p6yModelMap)', function () {
-  //   let ns = eYo.o4t.makeNS()
-  //   let Foo = ns.makeC9r('foo')
-  //   chai.expect(Foo.eyo.p6yModelMap).equal(Foo.eyo.p6yModelMap)
-  //   let Bar = ns.makeC9r('bar', Foo)
-  //   chai.expect(Bar.eyo.p6yModelMap).equal(Bar.eyo.p6yModelMap)
-  //   Foo.eyo.p6yMerge({
-  //     chi: 421
-  //   })
-  //   chai.expect(Foo.eyo.p6yModelMap).equal(Foo.eyo.p6yModelMap)
-  //   chai.expect(Bar.eyo.p6yModelMap).equal(Bar.eyo.p6yModelMap)
-  //   chai.expect(Foo.eyo.p6yModelMap.get('chi').value()).equal(421)
-  //   chai.expect(Bar.eyo.p6yModelMap.get('chi')).eql(Foo.eyo.p6yModelMap.get('chi'))
-  // })
-  // it ('O4t: properties(p6yModelByKey__)', function () {
-  //   let ns = eYo.o4t.makeNS()
-  //   let model = {
-  //     properties: {
-  //       chi: 421,
-  //     }
-  //   }
-  //   ns.modelMakeC9r(model, 'foo')
-  //   let C9r = model._C9r
-  //   chai.expect(eYo.isDef(C9r.eyo.p6yModelByKey__)).true
-  //   chai.expect(C9r.eyo.p6yModelByKey__.chi.value()).equal(421) // expanded
-  //   chai.expect(C9r.eyo.p6yModelByKey__).equal(C9r.eyo.p6yModelByKey__)
-  //   let Bar = ns.makeC9r('bar', C9r)
-  //   chai.expect(eYo.isDef(Bar.eyo.p6yModelByKey__.chi)).false // chi is not inherited
-  // })
-  // it ('O4t: p6yPrepare', function () {
-  //   let O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {})
-  //   chai.expect(O.eyo.super).equal(eYo.o4t.BaseC9r.eyo)
-  //   let o = new O('foo', onr)
-  //   chai.assert(!o.foo_p)
-  //   chai.assert(!o.foo)
-  //   O.eyo.p6yMerge({
-  //     foo: {
-  //       value: 421
-  //     },
-  //   })
-  //   o.eyo.p6yPrepare(o)
-  //   // creates `foo` in the prototype, `foo_p` in the object
-  //   chai.assert(o.hasOwnProperty('foo_p'))
-  //   chai.assert(!o.hasOwnProperty('foo'))
-  //   chai.assert(o.eyo.C9r_p.hasOwnProperty('foo'))
-  //   chai.expect(o.foo).not.equal(421)
-  //   o.eyo.p6yInit(o)
-  //   chai.expect(o.foo).equal(421)
-  //   var oo = new O('foo', onr)
-  //   chai.expect(oo.foo).equal(421)
-  // })
+  it ('O4t: POC (cache)', function () {
+    let C9r = function () {}
+    Object.defineProperties(C9r.prototype, {
+      foo: {
+        get () {
+          this.foo_ = 421
+          Object.defineProperties(this, {
+            foo: {
+              get () {
+                return this.foo_
+              },
+              configurable: true,
+            }
+          })
+          return 666
+        }
+      }
+    })
+    let o = new C9r()
+    chai.expect(o.foo).equal(666)
+    chai.expect(o.foo).equal(421)
+    delete o.foo
+    chai.expect(o.foo).equal(666)
+    chai.expect(o.foo).equal(421)
+  })
+  it ('O4t: POC (target)', function () {
+    let C9r = function (target) {
+      this.p3y = new Proxy(target, {
+        get(target, prop) {
+          if (['previous', 'next'].includes(prop)) {
+            return this[prop]
+          } else {
+            return target[prop]
+          }
+        },
+        set: function (target, prop, value) {
+          if (['previous', 'next'].includes(prop)) {
+            this[prop] = value
+          } else {
+            target[prop] = value
+          }
+        },
+        deleteProperty: function (target, prop) {
+          if (['previous', 'next'].includes(prop)) {
+            delete this[prop]
+          } else {
+            delete target[prop]
+          }
+        },
+      })
+    }
+    let target = {
+      who: 421
+    }
+    chai.expect(target.who).equal(421)
+    let o = new C9r(target)
+    let p = o.p3y
+    chai.expect(p.who).equal(421)
+    p.who = 123
+    chai.expect(target.who).equal(123)
+    delete p.who
+    chai.expect(target.who).equal(eYo.NA)
+    p.previous = 421
+    chai.expect(p.previous).equal(421)
+    chai.expect(target.previous).equal(eYo.NA)
+    target.previous = 123
+    chai.expect(p.previous).equal(421)
+    chai.expect(target.previous).equal(123)
+    delete p.previous
+    chai.expect(p.previous).equal(eYo.NA)
+    chai.expect(target.previous).equal(123)
+  })
+  it ('O4t: eYo.o4t.makeC9r(eYo.NULL_NS, ...', function () {
+    let O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {})
+    chai.expect(O.eyo).instanceof(eYo.O4t.eyo.constructor)
+    chai.expect(O.eyo).instanceof(eYo.o4t.Dlgt_p.constructor)
+    let o = new O('foo', onr)
+    chai.expect(o).not.undefined
+    let OO = eYo.c9r.makeC9r(eYo.NULL_NS, 'Bar', O, {})
+    let oo = new OO('foo', onr)
+    chai.assert(oo)
+    chai.expect(oo).instanceof(O)
+    chai.expect(oo.eyo)instanceof(O.eyo.constructor)
+  })
+  it (`O4t: eYo.o4t.makeC9r(ns, 'Foo', {})`, function () {
+    let ns = eYo.o4t.makeNS()
+    let O = eYo.o4t.makeC9r(ns, 'Foo', {})
+    chai.expect(O.eyo).instanceof(eYo.o4t.BaseC9r.eyo.constructor)
+    let o = new O('foo', onr)
+    chai.assert(o)
+    let OO = O.makeSubC9r('Bar', {})
+    chai.expect(OO.eyo).instanceof(eYo.o4t.BaseC9r.eyo.constructor)
+    let oo = new OO('foo', onr)
+    chai.assert(oo)
+  })
+  it (`O4t: ns.makeC9r('Foo', {})`, function () {
+    let ns = eYo.o4t.makeNS()
+    ns.makeC9r('A')
+    let O = ns.makeC9r('Foo', {})
+    chai.expect(O.eyo).instanceof(eYo.o4t.BaseC9r.eyo.constructor)
+    let o = new O('foo', onr)
+    chai.assert(o)
+    let OO = O.makeSubC9r('Bar', {})
+    chai.expect(OO.eyo).instanceof(eYo.o4t.BaseC9r.eyo.constructor)
+    let oo = new OO('foo', onr)
+    chai.assert(oo)
+  })
+  it ('O4t: model Shortcuts', function () {
+    var model = 421
+    let mf_o4t = eYo.O4t.eyo.modelFormat
+    let mf_p6y = eYo.P6y.eyo.modelFormat
+    let mf_p6y_alt = mf_o4t.get('properties/foo')
+    chai.expect(mf_p6y_alt.fallback).equal(mf_p6y)
+    var validated = mf_p6y.validate(model)
+    chai.expect(eYo.isD(validated)).true
+    chai.expect(validated.value()).equal(421)
+    var validated = mf_p6y_alt.validate(model)
+    chai.expect(eYo.isD(validated)).true
+    chai.expect(validated.value()).equal(421)
+    var validated = mf_o4t.validate('properties/foo', model)
+    chai.expect(eYo.isD(validated)).true
+    chai.expect(validated.value()).equal(421)
+  })
+  it ('O4t: properties(p6yModelMap)', function () {
+    let ns = eYo.o4t.makeNS()
+    let C9r = ns.makeBaseC9r()
+    chai.expect(C9r.eyo.p6yModelMap).equal(C9r.eyo.p6yModelMap)
+    let Bar = ns.makeC9r('bar', C9r)
+    chai.expect(Bar.eyo.p6yModelMap).equal(Bar.eyo.p6yModelMap)
+    C9r.eyo.p6yMerge({
+      chi: 421
+    })
+    chai.expect(C9r.eyo.p6yModelMap).equal(C9r.eyo.p6yModelMap)
+    chai.expect(Bar.eyo.p6yModelMap).equal(Bar.eyo.p6yModelMap)
+    chai.expect(C9r.eyo.p6yModelMap.get('chi').value()).equal(421)
+    chai.expect(Bar.eyo.p6yModelMap.get('chi')).eql(C9r.eyo.p6yModelMap.get('chi'))
+  })
+  it ('O4t: properties(p6yModelByKey__)', function () {
+    let ns = eYo.o4t.makeNS()
+    let model = {
+      properties: {
+        chi: 421,
+      }
+    }
+    ns.modelMakeC9r(model, 'foo')
+    let C9r = model._C9r
+    chai.expect(C9r.eyo.p6yModelByKey__).not.undefined
+    chai.expect(C9r.eyo.p6yModelByKey__.chi.value()).equal(421) // expanded
+    chai.expect(C9r.eyo.p6yModelByKey__).equal(C9r.eyo.p6yModelByKey__)
+    let Bar = ns.makeC9r('bar', C9r)
+    chai.expect(eYo.isDef(Bar.eyo.p6yModelByKey__.chi)).false // chi is not inherited
+  })
+  it ('O4t: p6yPrepare', function () {
+    let O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {})
+    chai.expect(O.eyo.super).equal(eYo.O4t.eyo)
+    O.eyo.p6yMerge({
+      foo: {
+        value: 421
+      },
+    })
+    O.eyo.finalizeC9r()
+    var o = new O('foo', onr)
+    o.eyo.p6yPrepare(o)
+    chai.expect(o.p6yMap.get('foo')).not.undefined
+    chai.expect(o.foo).not.equal(421)
+    o.eyo.p6yInit(o)
+    chai.expect(o.foo).equal(421)
+    var oo = new O('foo', onr)
+    oo.eyo.p6yInit(oo)
+    chai.expect(oo.foo).equal(421)
+  })
   // it ('O4t: properties (valued)', function () {
   //   var O = eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', {
   //     properties: {
@@ -1191,7 +1205,7 @@ describe ('Tests: Object', function () {
   //         }
   //       }
   //     })
-  //     ns.enhancedO4t()
+  //     ns.BaseC9r.eyo.o4tEnhanced()
   //     ns.Dlgt_p.modelMerge = function (model) {
   //       model.aliases && this.p6yAliasesMerge(model.aliases)
   //       model.properties && this.p6yMerge(model.properties)

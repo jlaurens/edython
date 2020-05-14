@@ -6,7 +6,7 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview Utility to add methors or attributes to objects.
+ * @fileoverview Utility to add methods or attributes to objects related to observation.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
@@ -24,21 +24,23 @@ eYo.c9r.makeNS(eYo, 'observe', {
   ANY: 'anyChange',
 })
 
-Object.defineProperties(eYo.observe._p, {
-  HOOKS: {
-    value: [
-      eYo.observe.BEFORE,
-      eYo.observe.DURING,
-      eYo.observe.AFTER,
-      eYo.observe.ANY,
-    ]
-  },
+eYo.mixinR(eYo.observe._p, {
+  HOOKS: [
+    eYo.observe.BEFORE,
+    eYo.observe.DURING,
+    eYo.observe.AFTER,
+    eYo.observe.ANY,
+  ],
 })
-
+//<<< mochai: Basics
+//... chai.assert(eYo.observe)
+//... eYo.observe.HOOKS.forEach(s => chai.expect(s).eyo_Str)
+//>>>
 eYo.observe.makeBaseC9r({
   /**
+   * Object containing information for observation.
    * @param {String} [when] - One of the observe HOOKS
-   * @param {Object} [$this | eYo.observe.BaseC9r] - Self explanatory
+   * @param {Object} [$this | eYo.Observe] - Self explanatory
    * @param {Function} [f] - function ([before], after) => void. arguments must ont have another name.
    */
   init (when, $this, callback) {
@@ -48,7 +50,24 @@ eYo.observe.makeBaseC9r({
   },
   dispose () {
     this.$this = this.callback = this.when = eYo.NA
-  }
+  },
+  methods: {
+    /**
+     * 
+     * @param {Object} before
+     * @param {Object} after
+     */
+    callback (before, after) {
+      let f = this.callback_.length > 1
+      ? function (before, after) {
+        this.callback_.call(this.$this, before, after)
+      } : function (before, after) {
+        this.callback_.call(this.$this, after)
+      }
+      this.callback = f
+      f.call(this, before, after)
+    }
+  },
 })
 
 /**
@@ -77,25 +96,23 @@ eYo.observe.new = function (when, $this, callback) {
   (!when && (when = eYo.observe.AFTER)) || eYo.observe.HOOKS.includes(when) || eYo.throw(`Unexpected when, got ${when}`)
   return new eYo.observe.BaseC9r(when, $this, callback)
 }
-/**
- * 
- * @param {Object} before
- * @param {Object} after
- */
-eYo.observe.BaseC9r_p.callback = function (before, after) {
-  let f = this.callback_.length > 1
-  ? function (before, after) {
-    this.callback_.call(this.$this, before, after)
-  } : function (before, after) {
-    this.callback_.call(this.$this, after)
-  }
-  this.callback = f
-  f.call(this, before, after)
-}
 
-eYo.observe.enhance = function (eyo) {
-  eyo instanceof eYo.dlgt.BaseC9r || eYo.throw(`Bad parameter: an eYo.dlgt.BaseC9r instance was expected, got ${eyo}`)
-  let _p = eyo.C9r_p
+eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
+  //<<< mochai: ...observeEnhanced
+  //<<< mochai: Basics
+  //... let ns = eYo.c9r.makeNS()
+  //... ns.makeBaseC9r()
+  //... ns.BaseC9r.eyo.observeEnhanced()
+  //... let o = ns.new()
+  //... chai.expect(o.willChange).eyo_F
+  //... chai.expect(o.atChange).eyo_F
+  //... chai.expect(o.didChange).eyo_F
+  //... chai.expect(o.addObserver).eyo_F
+  //... chai.expect(o.removeObserver).eyo_F
+  //... chai.expect(o.removeObservers).eyo_F
+  //... chai.expect(o.fireObservers).eyo_F
+  //>>>
+  let _p = this.C9r_p
   /**
    * @name{willChange}
    * Before changing the value of the property.
@@ -145,8 +162,47 @@ eYo.observe.enhance = function (eyo) {
         delete this[when]
       }
     }
+    //<<< mochai: (will|at|did)Change
+    //... let ns = eYo.c9r.makeNS()
+    //... ns.makeBaseC9r()
+    //... ns.BaseC9r.eyo.observeEnhanced()
+    //... for (let [k, v] of Object.entries({
+    //...   [eYo.observe.BEFORE]: [123, 0, 0,],
+    //...   [eYo.observe.DURING]: [0, 123, 0,],
+    //...   [eYo.observe.AFTER] : [0, 0, 123,],
+    //... })) {
+    //...   let o = ns.new()
+    //...   o.addObserver(k, function (before, after) {
+    //...     flag.push(1, before, after)
+    //...   })
+    //...   o.willChange(2, 3)
+    //...   flag.expect(v[0])
+    //...   o.atChange(2, 3)
+    //...   flag.expect(v[1])
+    //...   o.didChange(2, 3)
+    //...   flag.expect(v[2])
+    //... }
+    //... for (let [k, v] of Object.entries({
+    //...   [eYo.observe.BEFORE]: [123456, 123, 123],
+    //...   [eYo.observe.DURING]: [123, 123456, 123],
+    //...   [eYo.observe.AFTER] : [123, 123, 123456,],
+    //... })) {
+    //...   let o = ns.new()
+    //...   o.addObserver(eYo.observe.ANY, function (before, after) {
+    //...     flag.push(1, before, after)
+    //...   })
+    //...   o.addObserver(k, function (before, after) {
+    //...     flag.push(4, 3+before, 3+after)
+    //...   })
+    //...   o.willChange(2, 3)
+    //...   flag.expect(v[0])
+    //...   o.atChange(2, 3)
+    //...   flag.expect(v[1])
+    //...   o.didChange(2, 3)
+    //...   flag.expect(v[2])
+    //... }
+    //>>>
   })
-
   /**
    * Add the observer.
    * The observer is a bound method.
@@ -156,20 +212,43 @@ eYo.observe.enhance = function (eyo) {
    * @return {*} Private structure, to be used for removing the observer.
    */
   _p.addObserver = function (when, $this, callback) {
+    //<<< mochai: addObserver
     let observer = eYo.observe.new(when, $this, callback)
     when = observer.when
     let byWhen = this.observersByWhen__ || (this.observersByWhen__ = {})
     let observers = byWhen[when] || (byWhen[when] = [])
     observers.push(observer)
     return observer
+    //... let ns = eYo.c9r.makeNS()
+    //... ns.makeBaseC9r()
+    //... ns.BaseC9r.eyo.observeEnhanced()
+    //... let o = ns.new()
+    //... let observer1 = o.addObserver(eYo.observe.BEFORE, function (before, after) {
+    //...   flag.push(1, before + 1, after + 1)
+    //... })
+    //... let observer2 = o.addObserver(eYo.observe.BEFORE, function (before, after) {
+    //...   flag.push(4, before+4, after+4)
+    //... })
+    //... o.willChange(1, 2)
+    //... flag.expect(123456)
+    //... o.removeObserver(observer1)
+    //... o.willChange(1, 2)
+    //... flag.expect(456)
+    //... o.addObserver(observer1)
+    //... o.willChange(1, 2)
+    //... flag.expect(456123)
+    //... o.removeObservers()
+    //... o.willChange(1, 2)
+    //... flag.expect(0)
+    //>>>
   }
-
   /**
    * Remove the given observer.
    * @param {*} observer - Private object obtained from a previous call to `addObserver`.
    * @return {*} The observer, to be used for adding the observer again.
    */
   _p.removeObserver = function (observer) {
+    //<<< mochai: removeObserver
     let byWhen = this.observersByWhen__
     if (byWhen) {
       let observers = byWhen[observer.when]
@@ -178,8 +257,33 @@ eYo.observe.enhance = function (eyo) {
       }
     }
     return observer
+        //... let ns = eYo.c9r.makeNS()
+    //... ns.makeBaseC9r()
+    //... ns.BaseC9r.eyo.observeEnhanced()
+    //... let o = ns.new()
+    //... let observer = o.addObserver(eYo.observe.BEFORE, function (before, after) {
+    //...   flag.push(1, before, after)
+    //... })
+    //... o.willChange(2, 3)
+    //... flag.expect(123)
+    //... o.removeObserver(observer)
+    //... o.willChange(2, 3)
+    //... flag.expect(0)
+    //... o.addObserver(observer)
+    //... o.willChange(2, 3)
+    //... flag.expect(123)
+    //... let after = o.addObserver(eYo.observe.AFTER, observer)
+    //... o.willChange(2, 3)
+    //... flag.expect(123)
+    //... o.didChange(3, 5)
+    //... flag.expect(135)
+    //... o.removeObserver(observer)
+    //... o.willChange(2, 3)
+    //... flag.expect(0)
+    //... o.didChange(3, 5)
+    //... flag.expect(135)
+    //>>>
   }
-
   /**
    * Remove all the observers.
    */
@@ -219,4 +323,5 @@ eYo.observe.enhance = function (eyo) {
       delete this.fireObservers
     }
   }
+  //>>>
 }

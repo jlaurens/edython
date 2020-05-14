@@ -178,6 +178,9 @@ eYo.o3d._p.prepare = function (model, key, owner, ...$) {
   if (!eYo.isD(model)) {
     let arg = owner
     ;[model, key, owner] = [eYo.NA, model, key]
+    if (!eYo.isStr(key)) {
+      console.error('BREAK HERE!!!')
+    }
     eYo.isStr(key) || eYo.throw(`eYo.o3d._p.prepare: bad parameter, key is not a string`)
     owner instanceof eYo.c9r.BaseC9r || eYo.throw(`eYo.o3d._p.prepare: bad parameter, owner is not an instance of eYo.c9r.BaseC9r`)
     var C9r = this.BaseC9r

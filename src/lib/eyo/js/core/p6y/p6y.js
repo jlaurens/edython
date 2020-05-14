@@ -1977,19 +1977,8 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
 //>>>
 
 //<<< mochai: Utilities
-/**
- * Make a property
- * @param {Object} model 
- * @param {String} key 
- * @param {Object} object - the owner of the instance
- */
-eYo.dlgt.BaseC9r_p.p6yMakeInstance = function (model, key, object) {
-  return model && model.source
-  ? eYo.p6y.aliasNew(key, object, ...model.source)
-  : eYo.p6y.prepare(model || {}, key, object)
-}
 
-eYo.observe.enhance(eYo.p6y.BaseC9r.eyo)
+eYo.p6y.BaseC9r.eyo.observeEnhanced()
 
 ;(() => {
   let _p = eYo.p6y.BaseC9r_p

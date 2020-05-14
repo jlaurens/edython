@@ -82,7 +82,7 @@ eYo.geom.makeBaseC9r(true, {
   //>>>
 })
 
-eYo.geom.enhancedO4t()
+eYo.geom.o4tEnhanced()
 
 /**
  * Declare the given model for the associate constructor.

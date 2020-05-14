@@ -419,7 +419,7 @@ Miscellaneous:
 --js "closure-library/closure/goog/style/style.js" \
 --js "eyo/js/core/attr.js" \
 --js "eyo/js/core/o3d/o3d.js" \
---js "eyo/js/core/observe.js" \
+--js "eyo/js/core/observe/observe.js" \
 --js "eyo/js/core/shared.js" \
 --js "eyo/js/py/py.js" \
 --js "eyo/js/application/desk/workspace/flyout/section.js" \

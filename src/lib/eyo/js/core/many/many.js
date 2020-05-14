@@ -108,15 +108,17 @@ eYo.mixinR(false, eYo.many, {
  * `allow`
  * `model`
  * `make`
- * `makeShortcut`
+ * `shortcuts`
  * `suffix`
  * `prepare`
  * `init`
  * `dispose`
  * Both are optional.
  */
-eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
-  //<<< mochai: enhanceMany
+eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
+  // allow at least path in the model
+  this.modelFormat.allow(path, manyModel.allow) // at least
+  //<<< mochai: manyEnhanced
   var _p = this._p
   /* fooModelByKey__ is a key -> model object with no prototype.
    * Void at startup.
@@ -149,7 +151,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     configurable: true,
     //<<< mochai: fooModelByKey__
     //... preparator()()
-    //... C9r.eyo.enhanceMany('foo', 'foo')
+    //... C9r.eyo.manyEnhanced('foo', 'foo')
     //... chai.expect(C9r.eyo.fooModelByKey__).not.undefined
     //>>>
   })
@@ -160,18 +162,28 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
    * Usage: For the model `{foo: bar}`, run `C9r.eyo.fooMerge(bar)`
    * @param{Object} model - A model object.
    */
+  /* fooModelMap_ is a key -> model map.
+   * It is computed from the fooModelByKey__ of the delegates and its super's.
+   * Cached.
+   */
+  let tModelMap_ = type + 'ModelMap_'
+  /* fooModelMap is a key -> model map.
+   * Computed property that uses the cache above.
+   * If the cache does not exist, reads super's fooModelMap
+   * and adds the local fooModelByKey__.
+   * Then caches the result in fooModelMap_.
+   */
+  // keys defined on delegate instances
+  // Ordering is defined to take attributes dependency into account
+  let tModelMap = type + 'ModelMap' // computed property
   _p[tMerge] = function (model) {
-    delete this[tModelMap] // delete the shortcut
-    this.forEachSubC9r(C9r => C9r.eyo[tMerge]({})) // delete the cache of descendants
-    // allow at least path in the model
-    this.modelFormat.allow({
-      [path]: manyModel.allow,
-    }) // at least
     model = this.modelValidate(path, model)
     eYo.provideR(false, this[tModelByKey__], model)
+    delete this[tModelMap] // delete the shortcut
+    this.forEachSubC9r(C9r => C9r.eyo[tMerge]({})) // delete the cache of descendants
     //<<< mochai: fooMerge
     //... preparator()()
-    //... C9r.eyo.enhanceMany('foo', 'foo')
+    //... C9r.eyo.manyEnhanced('foo', 'foo')
     //... chai.expect(C9r.eyo.fooModelByKey__.chi).undefined
     //... C9r.eyo.fooMerge({
     //...   chi: 421
@@ -183,7 +195,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     //... })
     //... chai.expect(C9r.eyo.fooModelByKey__.mi).equal('421')
     //... preparator()()
-    //... C9r.eyo.enhanceMany('foo', 'foo', {
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
     //...   [eYo.model.VALIDATE]: eYo.model.validateF,
     //... })
     //... chai.expect(C9r.eyo.fooModelByKey__.chi).undefined
@@ -199,21 +211,6 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     //... flag.expect(1234)
     //>>>
   }
-
-  /* fooModelMap_ is a key -> model map.
-   * It is computed from the fooModelByKey__ of the delegates and its super's.
-   * Cached.
-   */
-  let tModelMap_ = type + 'ModelMap_'
-  /* fooModelMap is a key -> model map.
-   * Computed property that uses the cache above.
-   * If the cache does not exist, reads super's fooModelMap
-   * and adds the local fooModelByKey__.
-   * Then caches the result in fooModelMap_.
-   */
-  // keys defined on delegate instances
-  // Ordering is defined to take attributes dependency into account
-  let tModelMap = type + 'ModelMap' // computed property
   Object.defineProperties(_p, {
     [tModelMap]: eYo.descriptorR(function () {
       let modelMap = this[tModelMap_] = new Map()
@@ -262,10 +259,10 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     }),
     //<<< mochai: fooModelMap
     //... preparator()()
-    //... C9r.eyo.enhanceMany('foo', 'foo')
+    //... C9r.eyo.manyEnhanced('foo', 'foo')
     //... chai.expect(C9r.eyo.fooModelMap).not.undefined
     //... preparator()()
-    //... C9r.eyo.enhanceMany('foo', 'foo')
+    //... C9r.eyo.manyEnhanced('foo', 'foo')
     //... C9r.eyo.fooMerge({
     //...   foo: {
     //...     after: 'chi',
@@ -321,7 +318,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     }
     manyModel.prepare.call(this, object)
     //... preparator()()
-    //... C9r.eyo.enhanceMany('foo', 'foo', {
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
     //...   prepare (object) {
     //...     flag.push(12)  
     //...   }      
@@ -342,16 +339,15 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
         $super[tMerge] = this[tMerge]
       }
       //... preparator()()
-      //... C9r.eyo.enhanceMany('foo', 'foo')
+      //... C9r.eyo.manyEnhanced('foo', 'foo')
       //... var o = {}
       //... C9r.eyo.fooPrepare(o)
       //... chai.expect(() => C9r.eyo.fooMerge()).throw()
       //... // Not tested for $super
     }
     //... preparator()()
-    //... C9r.eyo.enhanceMany('foo', 'foo', {
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
     //...   make: flagor(1, true),
-    //...   makeShortcut: flagor(2, true),
     //...   suffix: '_x',
     //...   model: {
     //...     foo: 421,
@@ -359,12 +355,12 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     //... })
     //... var o = {}
     //... C9r.eyo.fooPrepare(o)
-    //... flag.expect(12)
+    //... flag.expect(1)
     let attributes = []
     var map = object[tMap]
     if (map) {
       //... preparator()()
-      //... C9r.eyo.enhanceMany('foo', 'foo')
+      //... C9r.eyo.manyEnhanced('foo', 'foo')
       //... var o = {
       //...   fooMap: new Map([['bar', eYo.c9r.new({
       //...     dispose () {
@@ -380,16 +376,15 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
       }
     }
     //... preparator()()
-    //... C9r.eyo.enhanceMany('foo', 'foo', {
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
     //...   make: flagor(1, true),
-    //...   makeShortcut: flagor(2, true),
     //...   model: {
     //...     foo: 421,
     //...   },
     //... })
     //... o = {}
     //... C9r.eyo.fooPrepare(o)
-    //... flag.expect(12)
+    //... flag.expect(1)
     map = object[tMap] = new Map()
     /**
      * The maker is responsible of making new `key` objects from a model.
@@ -397,46 +392,15 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     let make = manyModel.make || function (model, k, object) {
       return eYo[type].new(model, k, object)
     }
-    let makeShortcut = manyModel.makeShortcut || function (object, k, p) {
-      let k_p = k + (manyModel.suffix || `_${type[0]}`)
-      if (object.hasOwnProperty(k_p)) {
-        console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
-      }
-      Object.defineProperties(object, {
-        [k_p]: eYo.descriptorR(function () {
-          return this[tMap].get(k)
-        }),
-      })
-    }
-    //... preparator()()
-    //... C9r.eyo.enhanceMany('foo', 'foo', {
-    //...   make (model, k, object) {
-    //...     flag.push(1, k)
-    //...     return eYo.o3d.new(model, k, object)
-    //...   },
-    //...   model: {
-    //...     foo: {
-    //...       bar (...$) {
-    //...         flag.push(2, ...$)
-    //...       }
-    //...     },
-    //...   },
-    //...   suffix: '_x',
-    //... })
-    //... o = eYo.c9r.new('foo')
-    //... C9r.eyo.fooPrepare(o)
-    //... o.foo_x.eyo.model.bar(3)
-    //... flag.expect('1foo23')
     for (let [k, model] of this[tModelMap]) {
       let attr = make(model, k, object)
       if (attr) {
-        makeShortcut.call(this, object, k, attr)
         map.set(k, attr)
         attributes.push(attr)
       }
     }
     //... preparator()()
-    //... C9r.eyo.enhanceMany('foo', 'foo', {
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return eYo.o3d.new(model, k, object)
     //...   },
@@ -453,6 +417,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     //... })
     //... o = eYo.c9r.new('onr')
     //... C9r.eyo.fooPrepare(o)
+    //... C9r.eyo.fooShortcuts(o)
     //... chai.expect(o.fooHead).equal(o.mi_x)
     //... chai.expect(o.fooTail).equal(o.foo_x)
     //... chai.expect(o.foo_x.next).undefined
@@ -473,6 +438,43 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     //>>>
   }
 
+  let tShortcuts = type + 'Shortcuts'
+  _p.hasOwnProperty(tShortcuts) || (_p[tShortcuts] = manyModel.shortcuts || function (object) {
+    //<<< mochai: fooShortcuts
+    for (let k of object[tMap].keys()) {
+      let k_p = k + (manyModel.suffix || `_${type[0]}`)
+      if (object.hasOwnProperty(k_p)) {
+        console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
+      }
+      Object.defineProperties(object, {
+        [k_p]: eYo.descriptorR(function () {
+          return this[tMap].get(k)
+        }),
+      })
+    }
+    //... preparator()()
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
+    //...   make (model, k, object) {
+    //...     flag.push(1, k)
+    //...     return eYo.o3d.new(model, k, object)
+    //...   },
+    //...   model: {
+    //...     foo: {
+    //...       bar (...$) {
+    //...         flag.push(2, ...$)
+    //...       }
+    //...     },
+    //...   },
+    //...   suffix: '_x',
+    //... })
+    //... o = eYo.c9r.new('foo')
+    //... C9r.eyo.fooPrepare(o)
+    //... C9r.eyo.fooShortcuts(o)
+    //... o.foo_x.eyo.model.bar(3)
+    //... flag.expect('1foo23')
+    //>>>
+  })
+  
   let tInit    = type + 'Init'
   let TInit    = eYo.do.toTitleCase(type) + 'Init'
   // object properties
@@ -499,7 +501,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     //...     }
     //...   }
     //... })
-    //... C9r.eyo.enhanceMany('foo', 'foo', {
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)
     //...   },
@@ -538,7 +540,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     //...     flag.push(1, ...$)
     //...   },
     //... })
-    //... C9r.eyo.enhanceMany('foo', 'foo', {
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)
     //...   },
@@ -575,7 +577,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     //... preparator()()
     //... var ns = eYo.o3d.makeNS()
     //... ns.makeBaseC9r()
-    //... C9r.eyo.enhanceMany('foo', 'foo', {
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)
     //...   },
@@ -624,7 +626,7 @@ eYo.dlgt.BaseC9r_p.enhanceMany = function (type, path, manyModel = {}) {
     //... preparator()()
     //... var ns = eYo.o3d.makeNS()
     //... ns.makeBaseC9r()
-    //... C9r.eyo.enhanceMany('foo', 'foo', {
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
     //...     return ns.new(model, k, object)
     //...   },

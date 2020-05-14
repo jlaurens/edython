@@ -47,6 +47,14 @@ chai.Assertion.addProperty('eyo_Num', function () {
   )
 })
 
+chai.Assertion.addProperty('eyo_Str', function () {
+  this.assert(
+      eYo.isStr(this._obj)
+    , 'expected #{this} to be a string'
+    , 'expected #{this} to not be a string'
+  )
+})
+
 chai.Assertion.addProperty('eyo_NS', function () {
   this.assert(
       eYo.isNS(this._obj)
