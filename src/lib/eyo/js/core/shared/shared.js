@@ -21,3 +21,7 @@ eYo.require('c9r')
 eYo.makeNS('shared', {
   OWNER: eYo.c9r.new(),
 })
+//<<< mochai: Basics
+//... chai.assert(eYo.shared)
+//... chai.expect(eYo.shared.OWNER).instanceof(eYo.c9r.BaseC9r)
+//>>>
