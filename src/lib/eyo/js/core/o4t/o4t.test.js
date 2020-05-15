@@ -233,7 +233,7 @@ describe ('Tests: Object', function () {
   //   model.properties.foo.dispose = false
   //   var o = new (eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', model)) ('foo', onr)
   //   o = o.dispose()
-  //   flag.expect(0)
+  //   flag.expect()
   // })
   // it ('O4t: dispose inherited', function () {
   //   let ns = eYo.o4t.makeNS()
@@ -463,7 +463,7 @@ describe ('Tests: Object', function () {
   //     },
   //   })
   //   ns.A.eyo.finalizeC9r()
-  //   flag.expect(0)
+  //   flag.expect()
   //   var a = new ns.A('a', onr)
   //   chai.expect(a.foo).equal(421)
   //   flag.expect(1)
@@ -526,7 +526,7 @@ describe ('Tests: Object', function () {
   //   })
   //   chai.expect(ns.B.eyo.p6yModelByKey__).property('foo')
   //   chai.expect(ns.BB.eyo.p6yModelByKey__).not.property('foo')
-  //   flag.expect(0)
+  //   flag.expect()
   //   chai.expect(bb.foo).not.equal(421)
   //   bb = new ns.BB('bb', onr)
   //   flag.expect(1)
@@ -808,7 +808,7 @@ describe ('Tests: Object', function () {
   //       },
   //     }
   //   })
-  //   flag.expect(0)
+  //   flag.expect()
   //   ns2.new('foo', onr)
   //   flag.expect(12)
   // })
@@ -979,7 +979,7 @@ describe ('Tests: Object', function () {
   //     a.foo
   //     flag.expect('copy')
   //     a.foo_
-  //     flag.expect(0)
+  //     flag.expect()
   //     chai.expect(a.foo).not.equal(a.foo_)
   //   })
   //   it ('Copy: Hooks', function () {
@@ -1041,7 +1041,7 @@ describe ('Tests: Object', function () {
   //     })
   //     var bar = new Bar('bar', onr)
   //     chai.assert(bar.foo.equals(foo_1))
-  //     flag.expect(0)
+  //     flag.expect()
   //     bar.foo_ = foo_2
   //     chai.assert(bar.foo.equals(foo_2))
   //     flag.expect(1234567891012) // 12345778101012

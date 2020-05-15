@@ -20,12 +20,12 @@ describe ('Tests: More', function () {
     o.fooForEach(y => {
       flag.push(y)
     })
-    flag.expect(0)
+    flag.expect()
     chai.expect(!!o.fooSome(y => {
       flag.push(y)
       return y === 2
     })).false
-    flag.expect(0)
+    flag.expect()
     let m = o.fooMap = new Map()
     m.set(1,1)
     m.set(2,2)

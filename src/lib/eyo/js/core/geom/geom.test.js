@@ -42,7 +42,7 @@ describe ('geometry', function () {
       flag.expect(121212)
       Q.c_p.removeObserver(o)
       P.c_ = 1
-      flag.expect(0)
+      flag.expect()
     })
   })
   it ('Geometry: Basic', function () {
@@ -312,11 +312,11 @@ describe ('geometry', function () {
       flag.expect(122)
       r.origin_.snap_p.removeObserver(o)
       r.snap_ = true
-      flag.expect(0)
+      flag.expect()
       r.origin_.snap_ = false
-      flag.expect(0)
+      flag.expect()
       r.size_.snap_ = true
-      flag.expect(0)
+      flag.expect()
       r.size_.snap_p.addObserver(o)
       r.snap_ = false
       flag.expect(122)

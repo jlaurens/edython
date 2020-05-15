@@ -364,7 +364,7 @@ eYo.descriptorR = (msg, getter, configurable) => {
   //... o.bar
   //... flag.expect(666)
   //... chai.expect(() => o.bar = 123).throw()
-  //... flag.expect(0)
+  //... flag.expect()
   //... d = eYo.descriptorR(getter)
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
   //... o = {}
@@ -441,7 +441,7 @@ eYo.descriptorW = (msg, setter, configurable) => {
   //... o.bar = 123
   //... flag.expect(666)
   //... chai.expect(() => o.bar).throw()
-  //... flag.expect(0)
+  //... flag.expect()
   //... d = eYo.descriptorW(setter)
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
   //... o = {}
@@ -492,36 +492,36 @@ eYo.descriptorNORW = (msg, configurable) => {
   //... d = eYo.descriptorNORW()
   //... Object.defineProperty(o, 'bar', d)
   //... chai.expect(() => o.bar).throw()
-  //... flag.expect(0)
+  //... flag.expect()
   //... chai.expect(() => o.bar = 123).throw()
-  //... flag.expect(0)
+  //... flag.expect()
   //... d = eYo.descriptorNORW()
   //... chai.expect(() => Object.defineProperty(o, 'bar', d)).throw()
   //... o = {}
   //... d = eYo.descriptorNORW(true)
   //... Object.defineProperty(o, 'bar', d)
   //... chai.expect(() => o.bar).throw()
-  //... flag.expect(0)
+  //... flag.expect()
   //... chai.expect(() => o.bar = 123).throw()
-  //... flag.expect(0)
+  //... flag.expect()
   //... d = eYo.descriptorNORW()
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
   //... o = {}
   //... d = eYo.descriptorNORW(msg_1)
   //... Object.defineProperty(o, 'bar', d)
   //... chai.expect(() => o.bar).throw()
-  //... flag.expect(0)
+  //... flag.expect()
   //... chai.expect(() => o.bar = 123).throw()
-  //... flag.expect(0)
+  //... flag.expect()
   //... d = eYo.descriptorNORW()
   //... chai.expect(() => Object.defineProperty(o, 'bar', d)).throw()
   //... o = {}
   //... d = eYo.descriptorNORW(msg_1, true)
   //... Object.defineProperty(o, 'bar', d)
   //... chai.expect(() => o.bar).throw()
-  //... flag.expect(0)
+  //... flag.expect()
   //... chai.expect(() => o.bar = 123).throw()
-  //... flag.expect(0)
+  //... flag.expect()
   //... d = eYo.descriptorNORW()
   //... Object.defineProperty(o, 'bar', d) // now it is configurable
   //... o = {}
@@ -609,13 +609,13 @@ eYo.mixinR = (getters, object, props) => {
   //...     flag.push(1)
   //...   }
   //... })
-  //... flag.expect(0)
+  //... flag.expect()
   //... eYo.mixinR(false, c, {
   //...   bar () {
   //...     flag.push(1)
   //...   }
   //... })
-  //... flag.expect(0)
+  //... flag.expect()
   //... c.bar()
   //... flag.expect(1)
   //>>>
@@ -804,7 +804,7 @@ eYo.mixinR(false, eYo, {
     //... eYo.whenVALID(eYo.INVALID, () => {
     //...   flag.push(421)
     //... })
-    //... flag.expect(0)
+    //... flag.expect()
     //>>>
   },
   /**

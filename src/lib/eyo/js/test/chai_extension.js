@@ -28,8 +28,10 @@ eYo.test.Flag = function (what) {
       if (eYo.isRA(what)) {
         what = what.map(x => x.toString())
         var ans = chai.expect(what).include(this.v || '0')
-      } else {
+      } else if (eYo.isDef(what)) {
         ans = chai.expect(what.toString()).equal(this.v || '0')
+      } else {
+        ans = chai.expect('').equal(this.v)
       }
       this.reset()
       return ans

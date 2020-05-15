@@ -425,7 +425,7 @@ Miscellaneous:
 --js "eyo/js/application/desk/workspace/flyout/section.js" \
 --js "eyo/js/application/ui/audio.js" \
 --js "eyo/js/application/ui/dnd.js" \
---js "eyo/js/core/db.js" \
+--js "eyo/js/core/db/db.js" \
 --js "eyo/js/core/many/many.js" \
 --js "eyo/js/core/p6y/p6y.js" \
 --js "eyo/js/other/dragger.js" \

@@ -44,15 +44,15 @@ describe ('Tests: Property', function () {
     eYo.observe.HOOKS.forEach(when => {
       flag.reset()
       p.value_ = 123
-      flag.expect(0)
+      flag.expect()
       let o = p.addObserver(when, callback)
       p.value_ = 123
-      flag.expect(0)
+      flag.expect()
       p.value_ = 421
       flag.expect(when === eYo.observe.ANY ? 666666666 : 666)
       p.removeObserver(o)
       p.value_ = 123
-      flag.expect(0)
+      flag.expect()
     })
   })
   it('P6y: shared constructor/prototype', function () {
@@ -125,7 +125,7 @@ describe ('Tests: Property', function () {
       }
     }, 'foo', onr)
     chai.expect(p.value).equal(421)
-    flag.expect(0)
+    flag.expect()
     p = eYo.p6y.new({
       value () {
         return 421
@@ -161,7 +161,7 @@ describe ('Tests: Property', function () {
         return 123
       }
     }, 'foo', onr)
-    flag.expect(0)
+    flag.expect()
     chai.expect(p.value).equal(123)
     flag.expect(421)
   })
@@ -182,9 +182,9 @@ describe ('Tests: Property', function () {
       }
     }, 'foo', onr)
     chai.expect(p.value).equal(3)
-    flag.expect(0)
+    flag.expect()
     p.value_ = 3
-    flag.expect(0)
+    flag.expect()
     p.value_ = 34
     flag.expect(1234)
   })
@@ -337,7 +337,7 @@ describe ('Tests: Property', function () {
     value.eyo_p6y = 421
     chai.assert((p.value__ = value) === value)
     p.dispose(123,456)
-    flag.expect(0)
+    flag.expect()
     p = eYo.p6y.new({}, 'foo', onr)
     value.eyo_p6y = eYo.NA
     chai.assert((p.value__ = value) === value)

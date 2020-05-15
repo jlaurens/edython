@@ -239,7 +239,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
     //... flag.expect(456123)
     //... o.removeObservers()
     //... o.willChange(1, 2)
-    //... flag.expect(0)
+    //... flag.expect()
     //>>>
   }
   /**
@@ -268,7 +268,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
     //... flag.expect(123)
     //... o.removeObserver(observer)
     //... o.willChange(2, 3)
-    //... flag.expect(0)
+    //... flag.expect()
     //... o.addObserver(observer)
     //... o.willChange(2, 3)
     //... flag.expect(123)
@@ -279,7 +279,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
     //... flag.expect(135)
     //... o.removeObserver(observer)
     //... o.willChange(2, 3)
-    //... flag.expect(0)
+    //... flag.expect()
     //... o.didChange(3, 5)
     //... flag.expect(135)
     //>>>

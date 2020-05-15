@@ -66,14 +66,14 @@ describe ('Tests: Observe', function () {
     flag.expect(123)
     SuperC9r.prototype.removeObserver(o_SuperC9r)
     o.willChange(1, 2)
-    flag.expect(0)
+    flag.expect()
   })
   it (`Shared and inherited`, function () {
     let ns = eYo.c9r.makeNS()
     ns.makeBaseC9r()
     ns.BaseC9r.eyo.observeEnhanced()
     ns.new().willChange(1, 2)
-    flag.expect(0)
+    flag.expect()
     ns.BaseC9r_p.addObserver(eYo.observe.BEFORE, function (before, after) {
       flag.push(1, before+1, after+1)
     })

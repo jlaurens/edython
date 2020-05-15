@@ -94,10 +94,12 @@ def getInlineTest(path):
       },
     }, 'onr')
   }
-  beforeEach (function() {
+  let setup = function () {
     flag = new eYo.test.Flag()
     onr = makeOnr()
-  })
+  }
+  beforeEach (setup)
+  setup()
 ''')
     depth = 1
     for l in lines:

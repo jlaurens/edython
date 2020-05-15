@@ -551,7 +551,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
     //... })
     //... o = eYo.c9r.new('onr')
     //... C9r.eyo.fooPrepare(o)
-    //... flag.expect(0)
+    //... flag.expect()
     //... o.barFooDispose = function (v, ...$) {
     //...   v.dispose(...$)
     //...   v.dispose = function (...$$) {

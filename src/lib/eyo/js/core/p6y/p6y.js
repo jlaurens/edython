@@ -139,7 +139,7 @@ eYo.p6y.makeBaseC9r(true, {
         }
         //... what = []
         //... p6y.__disposeStored(what, 2, 3)
-        //... flag.expect(0)
+        //... flag.expect()
         //... var value_1 = eYo.c9r.new({
         //...   dispose (...$) {
         //...     flag.push(1, ...$)
@@ -172,7 +172,7 @@ eYo.p6y.makeBaseC9r(true, {
           what.clear()
           //... what = new Map([])
           //... p6y.__disposeStored(what, 1, 2, 3)
-          //... flag.expect(0)
+          //... flag.expect()
           //... var value_1 = eYo.c9r.new({
           //...   dispose (...$) {
           //...     flag.push(1, ...$)
@@ -205,7 +205,7 @@ eYo.p6y.makeBaseC9r(true, {
           })
           //... what = {}
           //... p6y.__disposeStored(what, 3, 4, 5)
-          //... flag.expect(0)
+          //... flag.expect()
           //... var value_1 = eYo.c9r.new({
           //...   dispose (...$) {
           //...     flag.push(1, ...$)
@@ -520,7 +520,7 @@ eYo.more.enhanceO3dValidate(eYo.p6y.BaseC9r.eyo, 'p6y', true)
 //... chai.expect(p6y.validate(3, 4)).equal(4)
 //... flag.expect('12341678')
 //... p6y.value__ = 3
-//... flag.expect(0)
+//... flag.expect()
 //... p6y.value_ = 4
 //... flag.expect(12341678)
 //... onr.p6yValidate = function (key, before, after) {
@@ -530,7 +530,7 @@ eYo.more.enhanceO3dValidate(eYo.p6y.BaseC9r.eyo, 'p6y', true)
 //... chai.expect(p6y.validate(3, 4)).equal(eYo.INVALID)
 //... flag.expect(1234)
 //... p6y.value__ = 3
-//... flag.expect(0)
+//... flag.expect()
 //... p6y.value_ = 4
 //... flag.expect(1234)
 //... chai.expect(p6y.value).equal(3)
@@ -859,7 +859,7 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
     //... chai.expect(p6y.getValueStart()).equal(3)
     //... chai.expect(p6y.stored__).undefined
     //... chai.expect(p6y.value__).equal(3)
-    //... flag.expect(0) // change events not fired
+    //... flag.expect() // change events not fired
     //... p6y.value_ = 4
     //... flag.expect(1234) // change events fired
     //... p6y.value_ = 4
@@ -904,7 +904,7 @@ eYo.p6y.Dlgt_p.modelHandleDispose = function (key, model) {
     //...   dispose: false
     //... }, 'foo', onr)
     //... p6y.dispose(2)
-    //... flag.expect(0)
+    //... flag.expect()
   }
   //>>>
 }
@@ -1051,9 +1051,9 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //... chai.expect(p6y.value).equal(v)
     //... flag.expect(13)
     //... chai.expect(p6y.value_).equal(v)
-    //... flag.expect(0)
+    //... flag.expect()
     //... chai.expect(p6y.value__).equal(v)
-    //... flag.expect(0)
+    //... flag.expect()
     //... var p6y = eYo.p6y.new({
     //...   copy: true,
     //...   get (builtin) {
@@ -1074,7 +1074,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //... chai.expect(p6y.value_).equal(v)
     //... flag.expect(12)
     //... chai.expect(p6y.value__).equal(v)
-    //... flag.expect(0)
+    //... flag.expect()
     //... chai.expect(() => eYo.p6y.new({
     //...   copy: true,
     //...   get () {}  
@@ -1135,13 +1135,13 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     //... chai.expect(p6y.getValue()).equal(3)
     //... flag.expect(123)
     //... chai.expect(p6y.getStored()).equal(3)
-    //... flag.expect(0)
+    //... flag.expect()
     //... chai.expect(p6y.value).equal(3)
     //... flag.expect(123)
     //... chai.expect(p6y.value_).equal(3)
     //... flag.expect(123)
     //... chai.expect(p6y.value__).equal(3)
-    //... flag.expect(0)
+    //... flag.expect()
   }
   let setK = 'setValue'
   let set_m = model.set
@@ -1222,7 +1222,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
         //... flag.expect(1357)
         //... test(7)
         //... p6y.value__ = 5
-        //... flag.expect(0)
+        //... flag.expect()
         //... test(5)
         //... chai.expect(p6y.setValue(7)).equal(5)
         //... flag.expect(1357)
@@ -1246,13 +1246,13 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
         //...   chai.expect(p6y.value_).equal(what)
         //...   flag.expect(`12${what}`)
         //...   chai.expect(p6y.value__).equal(what)
-        //...   flag.expect(0)
+        //...   flag.expect()
         //...   chai.expect(p6y.stored__).equal(what)
-        //...   flag.expect(0)
+        //...   flag.expect()
         //... }
         //... test(7)
         //... p6y.value__ = 5
-        //... flag.expect(0)
+        //... flag.expect()
         //... test(5)
         //... chai.expect(p6y.setValue(7)).equal(5)
         //... flag.expect(1357)
@@ -1446,7 +1446,7 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... chai.expect(p6y.value__).equal(57)
     //... flag.expect(1257)
     //... chai.expect(p6y.stored__).equal(eYo.NA)
-    //... flag.expect(0)
+    //... flag.expect()
     //... p6y.value__ = 3
     //... flag.expect(133)
     //... chai.expect(p6y.value).equal(3)
@@ -1457,7 +1457,7 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... flag.expect(123)
     //... chai.expect(p6y.stored__).equal(eYo.NA)
     //... p6y.stored__ = 123
-    //... flag.expect(0)
+    //... flag.expect()
     //... chai.expect(p6y.value).equal(3)
     //... chai.expect(p6y.value_).equal(3)
     //... chai.expect(p6y.value__).equal(3)
