@@ -25,8 +25,10 @@ eYo.o4t.changeCount.modelDeclare({
   //... eYo.o4t.changeCount.merge(ns.BaseC9r_p)
   properties: {
     changeCount: 0,
+    //<<< mochai: changeCount
     //... var o = new ns.BaseC9r('foo', onr)
-    //... chai.assert(o.changeCount_p)
+    //... chai.expect(o.changeCount_p).not.undefined
+    //>>>
   },
   methods: {
     /**
@@ -38,6 +40,7 @@ eYo.o4t.changeCount.modelDeclare({
      * @param {Event} [event]
      */
     updateChangeCount (redo, event) {
+      //<<< mochai: updateChangeCount
       //... var o = new ns.BaseC9r('foo', onr)
       //... chai.assert(o.updateChangeCount)
       if (redo === true) {
@@ -89,11 +92,13 @@ eYo.o4t.changeCount.modelDeclare({
         //... o.resetChangeCount()
         //... chai.expect(o.changeCount).equal(0)
       }
+      //>>>
     },
     /**
      * Resets the change count to 0.
      */
     resetChangeCount () {
+      //<<< mochai: resetChangeCount
       //... var o = new ns.BaseC9r('foo', onr)
       //... chai.assert(o.resetChangeCount)
       //... o.updateChangeCount()
@@ -101,6 +106,7 @@ eYo.o4t.changeCount.modelDeclare({
       //... o.resetChangeCount()
       //... chai.expect(o.changeCount).equal(0)
       this.changeCount_ = 0
+      //>>>
     }
   },
   //>>>
