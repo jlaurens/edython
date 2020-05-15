@@ -16,6 +16,10 @@
  * @namespace
  */
 eYo.o4t.makeNS(eYo, 'changer')
+//<<< mochai: Basics
+//... chai.assert(eYo.changer)
+//>>>
+
 
 /**
  * Decorate of change count hooks.
@@ -32,19 +36,53 @@ eYo.o4t.makeNS(eYo, 'changer')
  * @return {Function}
  */
 eYo.changer._p.memoize = function (key, do_it) {
+  //<<< mochai: memoize
   eYo.isF(do_it) || eYo.throw(`do_it MUST be a function, got: ${do_it}`)
   return function(...args) {
     var c = this.changer
-    if (c.save_[key] === c.count) {
-      return c.cache_[key]
+    if (c.save_.get(key) === c.count) {
+      return c.cache_.get(key)
     }
     var did_it = do_it.call(this.owner_, ...args)
     if (eYo.isVALID(did_it)) {
-      c.save_[key] = c.count
-      c.cache_[key] = did_it
+      c.save_.set(key, c.count)
+      c.cache_.set(key, did_it)
     }
-    return c.cache_[key]
+    return c.cache_.get(key)
   }
+  //... onr.changer = eYo.changer.new('c', onr)
+  //... onr.foo = eYo.changer.memoize('foo', (what) => {
+  //...   flag.push(what)
+  //...   return what
+  //... })
+  //... onr.bar = eYo.changer.memoize('bar', (what) => {
+  //...   flag.push(what)
+  //...   return 2 * what
+  //... })
+  //... chai.expect(onr.foo(421)).equal(421)
+  //... flag.expect(421)
+  //... chai.expect(onr.bar(421)).equal(842)
+  //... flag.expect(421)
+  //... // Values are cached
+  //... chai.expect(onr.foo(421)).equal(421)
+  //... flag.expect()
+  //... chai.expect(onr.bar(421)).equal(842)
+  //... flag.expect()
+  //... // Cached values are no longer
+  //... onr.changer.wrap(() => {
+  //...   flag.push(123)
+  //... })
+  //... flag.expect(123)
+  //... chai.expect(onr.foo(421)).equal(421)
+  //... flag.expect(421)
+  //... chai.expect(onr.bar(421)).equal(842)
+  //... flag.expect(421)
+  //... // Values are cached
+  //... chai.expect(onr.foo(421)).equal(421)
+  //... flag.expect()
+  //... chai.expect(onr.bar(421)).equal(842)
+  //... flag.expect()
+  //>>>
 }
 
 /**
@@ -53,6 +91,11 @@ eYo.changer._p.memoize = function (key, do_it) {
  * @param{Object} owner
  */
 eYo.changer.makeBaseC9r({
+//<<< mochai: eYo.changer.BaseC9r
+  //<<< mochai: Basics
+  //... chai.assert(eYo.changer.BaseC9r)
+  //... chai.expect(eYo.changer.BaseC9r).equal(eYo.Changer)
+  //>>>
   init () {
     this.reset()
   },
@@ -79,24 +122,29 @@ eYo.changer.makeBaseC9r({
      * the level is 0.
      */
     level: 0,
-    cache: {
-      value: Object.create(null)
-    },
-    save: {
-      value: Object.create(null)
-    },
-    listeners: {
-      value: []
-    },
+    cache: new Map(),
+    save: new Map(),
+    listeners: [],
   },
   methods: {
+    //<<< mochai: (add|remove)ChangeDoneListener
+    //... let changer = eYo.changer.new('foo', onr)
     addChangeDoneListener (do_it) {
       this.listeners.push(do_it)
       return do_it
+      //... let listener = changer.addChangeDoneListener(() => {
+      //...   flag.push(1)
+      //... })
+      //... changer.done()
+      //... flag.expect(1)
     },
     removeChangeDoneListener (listener) {
+      //... changer.removeChangeDoneListener(listener)
+      //... changer.done()
+      //... flag.expect()
       return eYo.do.arrayRemove(this.listeners, listener)
     },
+    //>>>
     /**
      * Reset the receiver.
      */
@@ -106,18 +154,30 @@ eYo.changer.makeBaseC9r({
       // In order to decide whether to run or do nothing,
       // we have to store the last change count when the operation was
       // last performed. See `eYo.changer.memoize` decorator.
-      this.save_ = Object.create(null)
+      this.save_.clear()
       // When these operations return values, they are cached below
       // until they are computed once again.
-      this.cache_ = Object.create(null)
+      this.cache_.clear()
     },
     /**
      * Increment the level.
      */
     begin () {
+      //<<< mochai: begin
       ++this.level_
       let o = this.owner_
       o.onChangeBegin && o.onChangeBegin()
+      //... let onr = eYo.c9r.new({
+      //...   methods: {
+      //...     onChangeBegin () {
+      //...       flag.push(1)
+      //...     },
+      //...   },
+      //... })
+      //... let changer = eYo.changer.new('foo', onr)
+      //... changer.begin()
+      //... flag.expect(1)
+      //>>>
     },
     /**
      * Ends a mutation.
@@ -128,12 +188,24 @@ eYo.changer.makeBaseC9r({
      * For edython.
      */
     end () {
+      //<<< mochai: end
+      //... let onr = eYo.c9r.new({
+      //...   methods: {
+      //...     onChangeEnd () {
+      //...       flag.push(2)
+      //...     },
+      //...   },
+      //... })
+      //... let changer = eYo.changer.new('foo', onr)
+      //... changer.end()
+      //... flag.expect(2)
       --this.level_
       let o = this.owner_
       o.onChangeEnd && o.onChangeEnd()
       if (this.level === 0) {
         this.done()
       }
+      //>>>
     },
     /**
      * Increment the change count.
@@ -148,13 +220,25 @@ eYo.changer.makeBaseC9r({
      * For edython.
      */
     done () {
+      //<<< mochai: done
+      //... let onr = eYo.c9r.new({
+      //...   methods: {
+      //...     onChangeDone () {
+      //...       flag.push(3)
+      //...     },
+      //...   },
+      //... })
+      //... let changer = eYo.changer.new('foo', onr)
+      //... changer.done()
+      //... flag.expect(3)
       ++ this.count_
       let o = this.owner_
       if (!o.changeStepFreeze) {
         this.step_ = this.count
       }
       o.onChangeDone && o.onChangeDone(arguments)
-      this.listeners_.forEach(l => l())
+      this.listeners_.forEach(l => l(this.count))
+      //>>>
     },
     /**
      * Wraps a mutation.
@@ -163,6 +247,42 @@ eYo.changer.makeBaseC9r({
      * @return {*} whatever `do_it` returns.
      */
     wrap (do_it) {
+      //<<< mochai: wrap+begin/end/done
+      //... let onr = eYo.c9r.new({
+      //...   methods: {
+      //...     onChangeBegin () {
+      //...       flag.push(1)
+      //...     },
+      //...     onChangeEnd () {
+      //...       flag.push(2)
+      //...     },
+      //...     onChangeDone () {
+      //...       flag.push(3)
+      //...     },
+      //...   },
+      //... })
+      //... let changer = eYo.changer.new('foo', onr)
+      //... changer.begin()
+      //... flag.expect(1)
+      //... changer.end()
+      //... flag.expect(23)
+      //... changer.begin()
+      //... changer.begin()
+      //... flag.expect(11)
+      //... changer.end()
+      //... flag.expect(2)
+      //... changer.end()
+      //... flag.expect(23)
+      //... changer.wrap(() => {
+      //...   flag.push(9)
+      //... })
+      //... flag.expect(1923)
+      //... changer.wrap(() => {
+      //...   changer.wrap(() => {
+      //...     flag.push(9)
+      //...   })
+      //... })
+      //... flag.expect(119223)
       if (eYo.isF(do_it)) {
         try {
           this.begin()
@@ -171,6 +291,8 @@ eYo.changer.makeBaseC9r({
           this.end()
         }
       }
+      //>>>
     },
   },
+  //>>>
 })

@@ -446,7 +446,7 @@ Miscellaneous:
 --js "eyo/js/brick/data/data.js" \
 --js "eyo/js/brick/dfs/dfs.js" \
 --js "eyo/js/core/change_count/change_count.js" \
---js "eyo/js/core/changer.js" \
+--js "eyo/js/core/changer/changer.js" \
 --js "eyo/js/core/font/font.js" \
 --js "eyo/js/core/register.js" \
 --js "eyo/js/py/parser.js" \
