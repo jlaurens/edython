@@ -448,7 +448,7 @@ Miscellaneous:
 --js "eyo/js/core/change_count/change_count.js" \
 --js "eyo/js/core/changer/changer.js" \
 --js "eyo/js/core/font/font.js" \
---js "eyo/js/core/register.js" \
+--js "eyo/js/core/register/register.js" \
 --js "eyo/js/py/parser.js" \
 --js "eyo/js/core/event.js" \
 --js "eyo/js/core/geom/geom.js" \

@@ -65,6 +65,14 @@ chai.Assertion.addProperty('eyo_NS', function () {
   )
 })
 
+chai.Assertion.addProperty('eyo_Dlgt', function () {
+  this.assert(
+    eYo.isaDlgt(this._obj),
+    'expected #{this} to be an eYo constructor',
+    'expected #{this} to not be an eYo constructor',
+  )
+})
+
 chai.Assertion.addProperty('eyo_C9r', function () {
   this.assert(
     eYo.isC9r(this._obj),

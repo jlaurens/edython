@@ -769,3 +769,22 @@ eYo.dlgt.declareDlgt(eYo._p)
 new eYo.dlgt.BaseC9r(eYo.dlgt, 'Base…', eYo.dlgt.BaseC9r, {})
 
 eYo.dlgt.BaseC9r.eyo.finalizeC9r()
+
+eYo.Dlgt = eYo.dlgt.BaseC9r
+
+eYo.mixinR(false, eYo, {
+  /**
+   * 
+   * @param {*} what 
+   * @return {Boolean}
+   */
+  isaDlgt (what) {
+    //<<< mochai: isaDlgt
+    //... C9r = function () {}
+    //... let eyo = eYo.dlgt.new('foo', C9r,{})
+    //... chai.expect(eyo).eyo_Dlgt
+    //... chai.expect(C9r).not.eyo_Dlgt
+    return !!what && what instanceof eYo.Dlgt
+    //>>>
+  }
+})
