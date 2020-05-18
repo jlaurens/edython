@@ -24,12 +24,22 @@ eYo.test.Flag = function (what) {
       })
       return this.v
     },
+    unshift (...$) {
+      $.forEach(what => {
+        what && (this.v = what.toString() + this.v)
+      })
+      return this.v
+    },
     expect (what) {
       if (eYo.isRA(what)) {
         what = what.map(x => x.toString())
         var ans = chai.expect(what).include(this.v || '0')
       } else if (eYo.isDef(what)) {
-        ans = chai.expect(what.toString()).equal(this.v || '0')
+        if (eYo.isDef(what.v)) {
+          ans = chai.expect(what.v).equal(this.v)
+        } else {
+          ans = chai.expect(what.toString()).equal(this.v || '0')
+        }
       } else {
         ans = chai.expect('').equal(this.v)
       }

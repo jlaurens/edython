@@ -524,18 +524,23 @@ eYo.do.tryFinally = function (try_f, finally_f) {
  * A wrapper creator.
  * This is used to populate prototypes and define functions at setup time.
  * No `this` in both arguments.
- * @param {Function} [start_f] - Optional arrow function
- * @param {Function} [begin_finally_f] - Optional arrow function
- * @param {Function} [end_finally_f] - Optional arrow function
- * @return {Function} with signature (this?, ()=>*, (ans)=>*) => *
+ * @private
+ * @param {Function} $this
+ * @param {Function} start_f
+ * @param {Function} begin_finally_f
+ * @param {Function} end_finally_f
+ * @return {Function} with signature (this?, ()=>*, (ans)=>*?) => *
  */
-eYo.do._p.makeWrapper = ($this, start_f, begin_finally_f, end_finally_f) => {
-  if (eYo.isF($this)) {
-    [start_f, begin_finally_f, end_finally_f, $this] = [$this, start_f, begin_finally_f, end_finally_f]
-  }
+eYo.do._p.makeWrapper_ = (
+  $this,
+  start_f,
+  begin_finally_f,
+  end_finally_f
+) => {
+  //<<< mochai: makeWrapper_
   return function ($$this, try_f, finally_f) {
     if (eYo.isF($$this)) {
-      [try_f, finally_f, $$this] = [$$this, try_f, finally_f || this]
+      [$$this, try_f, finally_f] = [finally_f || this || $this, $$this, try_f]
     }
     var old = start_f && start_f.call($this)
     var ans
@@ -555,6 +560,242 @@ eYo.do._p.makeWrapper = ($this, start_f, begin_finally_f, end_finally_f) => {
     }
     return ans
   }
+  //... var $flag
+  //... let $this = {
+  //...   flag (...$) {$flag.push(...$, 8)}
+  //... }
+  //... var $$flag
+  //... let $$this = {
+  //...   flag (...$) {$$flag.push(...$, 9)}
+  //... }
+  //... beforeEach (function () {
+  //...    $flag = $$flag = flag
+  //... })
+  //<<< mochai: no $this
+    //... var start_f = () => { flag.push(1); return 6}
+    //... var begin_finally_f = (...$) => flag.push(3, ...$)
+    //... var end_finally_f = (...$) => flag.push(5, ...$)
+    //<<< mochai: no $$this
+      //... var try_f = () => flag.push(2)
+      //... var finally_f = () => flag.push(4)
+      //... var wrapper = eYo.do.makeWrapper_()
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(24)
+      //... wrapper(try_f)
+      //... flag.expect(2)
+      //... wrapper(eYo.NA, finally_f)
+      //... flag.expect(4)
+      //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f)
+      //... wrapper(try_f)
+      //... flag.expect(12)
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(124)
+      //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f, eYo.NA, end_finally_f)
+      //... wrapper(try_f)
+      //... flag.expect(1256)
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(12456)
+      //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f, begin_finally_f, end_finally_f)
+      //... wrapper(try_f)
+      //... flag.expect(123656)
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(1236456)
+    //>>>
+    //<<< mochai: $$this
+      //... var try_f = function() {this.flag(2)}
+      //... var finally_f = function() {this.flag(4)}
+      //... var wrapper = eYo.do.makeWrapper_()
+      //... wrapper($$this, try_f)
+      //... flag.expect(29)
+      //... wrapper($$this, try_f, finally_f)
+      //... flag.expect(2949)
+      //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f)
+      //... wrapper($$this, try_f)
+      //... flag.expect(129)
+      //... wrapper($$this, try_f, finally_f)
+      //... flag.expect(12949)
+      //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f, eYo.NA, end_finally_f)
+      //... wrapper($$this, try_f)
+      //... flag.expect(12956)
+      //... wrapper($$this, try_f, finally_f)
+      //... flag.expect(1294956)
+      //... var wrapper = eYo.do.makeWrapper_(eYo.NA, start_f, begin_finally_f, end_finally_f)
+      //... wrapper($$this, try_f)
+      //... flag.expect(1293656)
+      //... wrapper($$this, try_f, finally_f)
+      //... flag.expect(129364956)
+    //>>>
+  //>>>
+  //<<< mochai: $this
+    //... var start_f = function () { this.flag(1); return 6 }
+    //... var begin_finally_f = function (...$) { this.flag(3, ...$) }
+    //... var end_finally_f = function (...$) { this.flag(5, ...$) }
+    //<<< mochai: no $$this
+      //... var try_f = () => flag.push(2)
+      //... var finally_f = () => flag.push(4)
+      //... var wrapper = eYo.do.makeWrapper_($this)
+      //... wrapper(try_f)
+      //... flag.expect(2)
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(24)
+      //... var wrapper = eYo.do.makeWrapper_($this, start_f)
+      //... wrapper(try_f)
+      //... flag.expect(182)
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(1824)
+      //... var wrapper = eYo.do.makeWrapper_($this, start_f, eYo.NA, end_finally_f)
+      //... wrapper(try_f)
+      //... flag.expect(182568)
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(1824568)
+      //... var wrapper = eYo.do.makeWrapper_($this, start_f, begin_finally_f, end_finally_f)
+      //... wrapper(try_f)
+      //... flag.expect(182368568)
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(1823684568)
+    //>>>
+    //<<< mochai: $$this <- $this
+      //... var try_f = function () {this.flag(2)}
+      //... var finally_f = function () {this.flag(4)}
+      //... var wrapper = eYo.do.makeWrapper_($this)
+      //... wrapper(try_f)
+      //... flag.expect(28)
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(2848)
+      //... var wrapper = eYo.do.makeWrapper_($this, start_f)
+      //... wrapper(try_f)
+      //... flag.expect(1828)
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(182848)
+      //... var wrapper = eYo.do.makeWrapper_($this, start_f, eYo.NA, end_finally_f)
+      //... wrapper(try_f)
+      //... flag.expect(1828568)
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(182848568)
+      //... var wrapper = eYo.do.makeWrapper_($this, start_f, begin_finally_f, end_finally_f)
+      //... wrapper(try_f)
+      //... flag.expect(1828368568)
+      //... wrapper(try_f, finally_f)
+      //... flag.expect(182836848568)
+    //>>>
+    //<<< mochai: $$this
+      //... var try_f = function() {this.flag(2)}
+      //... var finally_f = function() {this.flag(4)}
+      //... var wrapper = eYo.do.makeWrapper_($this)
+      //... wrapper($$this, try_f)
+      //... flag.expect(29)
+      //... wrapper($$this, try_f, finally_f)
+      //... flag.expect(2949)
+      //... var wrapper = eYo.do.makeWrapper_($this, start_f)
+      //... wrapper($$this, try_f)
+      //... flag.expect(1829)
+      //... wrapper($$this, try_f, finally_f)
+      //... flag.expect(182949)
+      //... var wrapper = eYo.do.makeWrapper_($this, start_f, eYo.NA, end_finally_f)
+      //... wrapper($$this, try_f)
+      //... flag.expect(1829568)
+      //... wrapper($$this, try_f, finally_f)
+      //... flag.expect(182949568)
+      //... var wrapper = eYo.do.makeWrapper_($this, start_f, begin_finally_f, end_finally_f)
+      //... wrapper($$this, try_f)
+      //... flag.expect(1829368568)
+      //... wrapper($$this, try_f, finally_f)
+      //... flag.expect(182936849568)
+    //>>>
+  //>>>
+  
+  //>>>
+}
+
+/**
+ * A wrapper creator.
+ * This is used to populate prototypes and define functions at setup time.
+ * No `this` in both arguments.
+ * @param {Function} [$this] - Optional this
+ * @param {Function} [start_f] - Optional function
+ * @param {Function} [begin_finally_f] - Optional function
+ * @param {Function} [end_finally_f] - Optional function. Required when one of `start_f` or `begin_finally_f` is a given function.
+ * @return {Function} with signature (this?, ()=>*, (ans)=>*?) => *
+ */
+eYo.do._p.makeWrapper = (
+  $this,
+  start_f,
+  begin_finally_f,
+  end_finally_f
+) => {
+  //<<< mochai: makeWrapper
+  //... let $this = {
+  //...   flag (...$) {flag.push(...$, 8)}
+  //... }
+  //... let $$this = {
+  //...   flag (...$) {flag.push(...$, 9)}
+  //... }
+  //... var start_f = () => { flag.push(1); return 6}
+  //... var begin_finally_f = (...$) => flag.push(3, ...$)
+  //... var end_finally_f = (...$) => flag.push(5, ...$)
+  //... var try_f = () => flag.push(2)
+  //... var finally_f = () => flag.push(4)
+  //... let test = (f, g) => {
+  //...   f(try_f, finally_f)
+  //...   let x = flag.v
+  //...   flag.reset()
+  //...   g(try_f, finally_f)
+  //...   flag.expect(x)
+  //... }
+  //<<< mochai: end_finally_f / 4 arguments
+    // $this|NA, start_f|NA, begin_finally_f|NA, end_finally_f
+    //... ;[eYo.NA, $this].forEach($this => {
+    //...   ;[eYo.NA, start_f].forEach(start_f => {
+    //...     ;[eYo.NA, begin_finally_f].forEach(begin_finally_f => {
+    //...       ;[eYo.NA, finally_f].forEach(finally_f => {
+    //...         test(
+    //...           eYo.do.makeWrapper_($this, start_f, begin_finally_f, end_finally_f),
+    //...           eYo.do.makeWrapper($this, start_f, begin_finally_f, end_finally_f),
+    //...         )
+    //...       })
+    //...     })
+    //...   })
+    //... })
+  //>>>
+  //<<< mochai: other possibilities
+  // possible arguments:
+  // $this, start_f, end_finally_f
+  // $this, end_finally_f
+  // start_f, begin_finally_f, end_finally_f
+  // start_f, end_finally_f
+  // end_finally_f
+  //... let map = new Map([
+  //...   [[$this, start_f, end_finally_f],[$this, start_f, eYo.NA, end_finally_f]],
+  //...   [[$this, eYo.NA, end_finally_f],[$this, eYo.NA, eYo.NA, end_finally_f]],
+  //...   [[$this, end_finally_f],[$this, eYo.NA, eYo.NA, end_finally_f]],
+  //...   [[start_f, begin_finally_f, end_finally_f],[eYo.NA, start_f, begin_finally_f, end_finally_f]],
+  //...   [[start_f, eYo.NA, end_finally_f],[eYo.NA, start_f, eYo.NA, end_finally_f]],
+  //...   [[eYo.NA, eYo.NA, end_finally_f],[eYo.NA, eYo.NA, eYo.NA, end_finally_f]],
+  //...   [[start_f, end_finally_f],[eYo.NA, start_f, eYo.NA, end_finally_f]],
+  //...   [[eYo.NA, end_finally_f],[eYo.NA, eYo.NA, eYo.NA, end_finally_f]],
+  //...   [[end_finally_f],[eYo.NA, eYo.NA, eYo.NA, end_finally_f]],
+  //...   [[],[]],
+  //... ])
+  //... for(let [k, v] of map) {
+  //...   test(eYo.do.makeWrapper(...k), eYo.do.makeWrapper_(...v))
+  //... }
+  //>>>
+
+  if (!eYo.isF(end_finally_f)) {
+    eYo.isDef(end_finally_f) && eYo.throw(`${this.name}/makeWrapper: bad last argument (${end_finally_f}/1)`)
+    if (eYo.isF($this)) {
+      [$this, start_f, begin_finally_f, end_finally_f] = [this, $this, start_f, begin_finally_f]
+
+    }
+  }
+  if (!end_finally_f) {
+    [begin_finally_f, end_finally_f] = [eYo.NA, begin_finally_f]
+    if (!end_finally_f) {
+      [start_f, end_finally_f] = [eYo.NA, start_f]
+    }
+  }
+  return eYo.do.makeWrapper_($this, start_f, begin_finally_f, end_finally_f)
+  //>>>
 }
 
 /**
