@@ -19,16 +19,31 @@
  */
 eYo.o4t.makeNS(eYo, 'event', {
   /**
-   * Maximum number of undo events in stack. `0` turns off undo, `Infinity` sets it to unlimited (provided there is enough memory!).
-   * @type {number}
-   */
-  MAX_UNDO: 1024,
-  /**
    * Name of event that records a UI change.
    * @const
    */
   UI: 'ui',
 })
+//<<< mochai: CONST
+//... chai.expect(eYo.event.UI).not.undefined
+//>>>
+
+/**
+ * Maximum number of undo events in stack. `0` turns off undo, `Infinity` sets it to unlimited (provided there is enough memory!).
+ * @type {number}
+ */
+eYo.event.MAX_UNDO = 1024,
+//<<< mochai: MAX_UNDO
+//... chai.expect(eYo.event.MAX_UNDO).not.undefined
+//... eYo.event.MAX_UNDO = Infinity
+//... chai.expect(eYo.event.MAX_UNDO).equal(Infinity)
+//... eYo.event.MAX_UNDO = 1024
+//>>>
+//<<< mochai: Basics
+//... chai.assert(eYo.event)
+//... chai.assert(eYo.event._p.hasOwnProperty('BaseC9r'))
+//... chai.assert(eYo.event.Mngr)
+//>>>
 
 // No special Base class
 eYo.event.makeBaseC9r()
@@ -39,27 +54,65 @@ eYo.event.makeBaseC9r()
  * @constructor
  */
 eYo.event.makeC9r('Mngr', {
-  init () {
-    // Private properties
-    this.group__ = ''
-    this.level__ = 0
+  //<<< mochai: eYo.event.Mngr
+  init (/*key, owner*/) {
+    // Private attributes
+    /**
+    * The queue.
+    * @type {Array<eYo.Event>}
+    * @private
+    */
+    this.fire_queue__ =  []
+    /**
+    * The stack.
+    * @type {Array<String>}
+    * @private
+    */
+    this.stack__ =  []
+  },
+  dispose () {
+    this.fire_queue__.length = this.stack__.length = 0
+    this.fire_queue__ = this.stack__ = eYo.NA
   },
   properties: {
+    //<<< mochai: properties
+    //... let mngr = new eYo.event.Mngr('mngr', onr)
     /**
      * Maximum number of undo events in stack. `0` turns off undo, `Infinity` sets it to unlimited (provided there is enough memory!).
      * @type {number}
      */
     MAX_UNDO: eYo.event.MAX_UNDO,
-      /**
+    //<<< mochai: MAX_UNDO
+      //... chai.expect(mngr.MAX_UNDO).equal(eYo.event.MAX_UNDO)
+      //... mngr.MAX_UNDO_ += 1
+      //... chai.expect(mngr.MAX_UNDO).equal(eYo.event.MAX_UNDO + 1)
+      //... mngr.MAX_UNDO_ -= 1
+      //... chai.expect(mngr.MAX_UNDO).equal(eYo.event.MAX_UNDO)
+    //...
+    //>>>
+    /**
      * Allow change events to be created and fired.
      * @type {number}
      * @private
      */
     disabled: {
+      //<<< mochai: disabled/enabled
       value: 0,
+      //... chai.expect(mngr.disabled).equal(0)
+      //... chai.expect(mngr.enabled).true
       validate (after) {
         return after > 0 ? after : 0
       }
+      //... mngr.disabled_ = 421
+      //... chai.expect(mngr.disabled).equal(421)
+      //... chai.expect(mngr.enabled).false
+      //... mngr.disabled_ = -421
+      //... chai.expect(mngr.disabled).equal(0)
+      //... chai.expect(mngr.enabled).true
+      //... chai.expect(() => {
+      //...   mngr.enabled_ = 1
+      //... }).throw
+      //>>>
     },
     enabled: { 
       get () {
@@ -70,41 +123,48 @@ eYo.event.makeC9r('Mngr', {
      * Sets whether the next event should be added to the undo stack.
      * @type {boolean}
      */
-    recordingUndo: true,
-    /**
-     * Allow change events to be created and fired.
-     * @type {number}
-     * @private
-     */
-    level: 0,
-    /**
-     * The queue.
-     * @type {number}
-     * @private
-     */
-    fire_queue: [],
+    recordingUndo: {
+      //<<< mochai: recordingUndo
+      value: true,
+      //... chai.expect(mngr.recordingUndo).true
+      validate (after) {
+        return !!after
+      },
+      //... mngr.recordingUndo_ = false
+      //... chai.expect(mngr.recordingUndo).false
+      //... mngr.recordingUndo_ = true
+      //... chai.expect(mngr.recordingUndo).true
+      //... mngr.recordingUndo_ = 0
+      //... chai.expect(mngr.recordingUndo).false
+      //... mngr.recordingUndo_ = 1
+      //... chai.expect(mngr.recordingUndo).true
+      //>>>
+    },
     /**
      * Current group.
      * @return {string} ID string.
      */
     group: '',
-  },
-  methods: {
-    beginGroup(after) {
-      if (eYo.isStr(after)) {
-        this.group__ = after
-        this.level__ = 1
-      } else if (!this.level__++) {
-        this.group__ = eYo.genUID()
+    /**
+     * Allow change events to be created and fired.
+     * @type {number}
+     * @private
+     */
+    level: {
+      get () {
+        return this.stack__.length
       }
     },
+    //>>>
+  },
+  methods: {
+    //<<< mochai: methods
+    //... let mngr = new eYo.event.Mngr('mngr', onr)
+    beginGroup(after) {
+      this.stack__.push(eYo.isStr(after) ? after : eYo.genUID())
+    },
     endGroup () {
-      if (this.level > 1) {
-        --this.level__
-      } else if (this.level) {
-        --this.level__
-        this.group__ = ''
-      }
+      this.stack__.pop()
     },
     /**
      * Event enabler.
@@ -113,14 +173,16 @@ eYo.event.makeC9r('Mngr', {
      * @param {Function} [finally_f] - Optional function
      */
     enableWrap ($this, try_f, finally_f) {
+      //<<< mochai: enableWrap
       return eYo.do.makeWrapper(
         () => {
           let old = this.disabled_
           this.disabled_--
           return old
         },
-        (old) => this.disabled_ = old
+        (old) => this.disabled_ = old,
       ) ($this, try_f, finally_f)
+      //>>>
     },
     /**
      * Event disabler.
@@ -131,7 +193,8 @@ eYo.event.makeC9r('Mngr', {
     disableWrap ($this, try_f, finally_f) {
       return eYo.do.makeWrapper(
         () => this.disabled_++,
-        (old) => this.disabled_ = old
+        (old) => this.disabled_ = old,
+        eYo.doNothing,
       ) ($this, try_f, finally_f)
     },
     /**
@@ -143,14 +206,24 @@ eYo.event.makeC9r('Mngr', {
      */
     groupWrap (group, $this, try_f, finally_f) {
       if (!eYo.isStr(group)) {
-        [$this, try_f, finally_f, group] = [group, $this, try_f, true]
+        eYo.isDef(finally_f) && eYo.throw(`${this.eyo.name}/groupWrap: unexpected last argument (${finally_f})`)
+        ;[group, $this, try_f, finally_f] = [true, group, $this, try_f]
       }
-      return eYo.do.makeWrapper(
+      if (eYo.isF($this)) {
+        eYo.isDef(finally_f) && eYo.throw(`${this.eyo.name}/groupWrap: unexpected last argument (${finally_f}/2)`)
+        ;[$this, try_f, finally_f] = [eYo.NA, $this, try_f]
+      }
+      return group
+      ? eYo.do.makeWrapper(
         () => this.beginGroup(group),
-        () => this.endGroup()
+        eYo.doNothing,
+        () => this.endGroup(),
       ) ($this, try_f, finally_f)
+      : eYo.do.makeWrapper() ($this, try_f, finally_f)
     },
+    //>>>
   },
+  //>>>
 })
 
 eYo.event.Mngr.eyo.finalizeC9r()
@@ -163,11 +236,11 @@ eYo.event.Mngr_p.fire = function(event) {
   if (!this.enabled) {
     return
   }
-  if (!this.fire_queue.length) {
+  if (!this.fire_queue__.length) {
     // First event added; schedule a firing of the event queue.
     setTimeout(() => {
-      let queue = this.filter(this.fire_queue, true)
-      this.fire_queue.length = 0
+      let queue = this.filter(this.fire_queue__, true)
+      this.fire_queue__.length = 0
       queue.forEach(event => {
         let board = eYo.board.byId(event.boardId)
         if (board) {
@@ -176,7 +249,7 @@ eYo.event.Mngr_p.fire = function(event) {
       })
     }, 0)
   }
-  this.fire_queue.push(event)
+  this.fire_queue__.push(event)
 }
 
 /**
@@ -184,7 +257,7 @@ eYo.event.Mngr_p.fire = function(event) {
  * in the undo stack.  Called by eYo.event.Mngr's clear.
  */
 eYo.event.Mngr_p.clearPendingUndo = function() {
-  this.fire_queue.forEach(event => (event.toUndoStack = false))
+  this.fire_queue__.forEach(event => (event.toUndoStack = false))
 }
 
 /**

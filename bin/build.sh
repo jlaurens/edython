@@ -396,7 +396,7 @@ Miscellaneous:
 --js "closure-library/closure/goog/html/safestylesheet.js" \
 --js "closure-library/closure/goog/math/rect.js" \
 --js "eyo/js/core/const.js" \
---js "eyo/js/core/do.js" \
+--js "eyo/js/core/do/do.js" \
 --js "eyo/js/core/errcode.js" \
 --js "eyo/js/core/model/model.js" \
 --js "eyo/js/core/more/more.js" \
@@ -450,7 +450,7 @@ Miscellaneous:
 --js "eyo/js/core/font/font.js" \
 --js "eyo/js/core/register/register.js" \
 --js "eyo/js/py/parser.js" \
---js "eyo/js/core/event.js" \
+--js "eyo/js/core/event/event.js" \
 --js "eyo/js/core/geom/geom.js" \
 --js "eyo/js/core/ui.js" \
 --js "eyo/js/module/module.js" \
