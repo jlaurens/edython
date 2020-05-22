@@ -825,7 +825,7 @@ eYo.board.BaseC9r_p.paste = function () {
                 }
               }) || b3k.getMagnets_(false).some(m4t => {
                   var neighbour = m4t.closest(eYo.event.SNAP_RADIUS,
-                    eYo.geom.xyPoint(dx, dy))
+                    eYo.geom.pPoint(dx, dy))
                   if (neighbour) {
                     return true
                   }
@@ -848,7 +848,7 @@ eYo.board.BaseC9r_p.paste = function () {
             dy = (view.y + view.height / 2) / scale - size.height / 2
             avoidCollision()
           }
-          b3k.moveBy(eYo.geom.xyPoint(dx, dy))
+          b3k.moveBy(eYo.geom.pPoint(dx, dy))
         }
         b3k.focusOn().scrollToVisible()
       }
@@ -982,7 +982,7 @@ eYo.board.BaseC9r_p.zoomToFit = function() {
   this.scale = Math.min(size.x, size.y)
   this.scrollCenter()
   if (this.flyout_) {
-    this.moveBy(eYo.geom.xyPoint(-this.flyout_.viewRect.width / 2, 0))
+    this.moveBy(eYo.geom.pPoint(-this.flyout_.viewRect.width / 2, 0))
   }
 }
 

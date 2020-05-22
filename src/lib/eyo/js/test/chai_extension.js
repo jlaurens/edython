@@ -1,15 +1,20 @@
 eYo.provide('test')
 
-eYo.test.almost = (a, b) => 10000 * Math.abs(a-b) <= (Math.abs(a) + Math.abs(b))
-
-eYo.test.rand100 = () => Math.round(Math.random()*10000)/100
+eYo.test.randN = (N = 2, rounded) => {
+  if (N === true || N === false) {
+    [N, rounded] = [2, N]
+  }
+  return rounded
+  ? Math.round(Math.random()*10**N)
+  : Math.round(Math.random()*10**(2*N))/10**(N)
+}
 
 if (eYo.geom) {
-  eYo.geom.randPoint = (snap = false) => new eYo.geom.Point(snap, eYo.test.rand100(), eYo.test.rand100())
+  eYo.geom.randPoint = (snap = false) => new eYo.geom.Point(snap, eYo.test.randN(), eYo.test.randN())
 
-  eYo.geom.randSize = (snap = false) => new eYo.geom.Size(snap, eYo.test.rand100(), eYo.test.rand100())
+  eYo.geom.randSize = (snap = false) => new eYo.geom.Size(snap, eYo.test.randN(), eYo.test.randN())
   
-  eYo.geom.randRect = (snap = false) => new eYo.geom.Rect(snap, eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100(), eYo.test.rand100())  
+  eYo.geom.randRect = (snap = false) => new eYo.geom.Rect(snap, eYo.test.randN(), eYo.test.randN(), eYo.test.randN(), eYo.test.randN())  
 }
 
 eYo.test.Flag = function (what) {
@@ -111,9 +116,9 @@ chai.Assertion.addProperty('eyo_BaseC9r', function () {
 
 chai.Assertion.addProperty('eyo_point', function () {
   this.assert(
-      this._obj instanceof eYo.geom.AbstractPoint
-    , 'expected #{this} to be a eYo.geom.AbstractPoint'
-    , 'expected #{this} to not be a eYo.geom.AbstractPoint'
+      this._obj instanceof eYo.geom.Point
+    , 'expected #{this} to be a eYo.geom.Point'
+    , 'expected #{this} to not be a eYo.geom.Point'
   )
 })
 
@@ -127,9 +132,9 @@ chai.Assertion.addProperty('eyo_size', function () {
 
 chai.Assertion.addProperty('eyo_rect', function () {
   this.assert(
-      this._obj instanceof eYo.geom.AbstractRect
-    , 'expected #{this} to be a eYo.geom.AbstractRect'
-    , 'expected #{this} to not be a eYo.geom.AbstractRect'
+      this._obj instanceof eYo.geom.Rect
+    , 'expected #{this} to be a eYo.geom.Rect'
+    , 'expected #{this} to not be a eYo.geom.Rect'
   )
 })
 
@@ -154,8 +159,8 @@ chai.use(function (_chai, utils) {
     var actual = this._obj
 
     // first, our instanceof check, shortcut
-    new chai.Assertion(actual).instanceof(eYo.geom.AbstractPoint)
-    // new chai.Assertion(expected).instanceof(eYo.geom.AbstractPoint)
+    new chai.Assertion(actual).instanceof(eYo.geom.Point)
+    // new chai.Assertion(expected).instanceof(eYo.geom.Point)
     let tol = utils.flag(this, 'tolerance')
     let equal = eYo.test.makeComparator(tol)
     let yorn = ['c', 'l'].map(k => {
@@ -177,7 +182,7 @@ chai.use(function (_chai, utils) {
 
     // first, our instanceof check, shortcut
     new chai.Assertion(actual).instanceof(eYo.geom.Size)
-    // new chai.Assertion(expected).instanceof(eYo.geom.AbstractPoint)
+    // new chai.Assertion(expected).instanceof(eYo.geom.Point)
     let tol = utils.flag(this, 'tolerance')
     let equal = eYo.test.makeComparator(tol)
     let yorn = ['w', 'h'].map(k => {
@@ -197,8 +202,8 @@ chai.use(function (_chai, utils) {
   chai.Assertion.addMethod('eqlRect', function (expected) {
     var actual = this._obj
     // first, our instanceof check, shortcut
-    new chai.Assertion(actual).instanceof(eYo.geom.AbstractRect)
-    // new chai.Assertion(expected).instanceof(eYo.geom.AbstractRect)
+    new chai.Assertion(actual).instanceof(eYo.geom.Rect)
+    // new chai.Assertion(expected).instanceof(eYo.geom.Rect)
     let tol = utils.flag(this, 'tolerance')
     let equal = eYo.test.makeComparator(tol)
     let yorn = ['c', 'l', 'w', 'h'].map(k => {
@@ -297,8 +302,8 @@ chai.use(function (chai, utils) {
         var yorn = eYo.test.makeComparator(tol)(val,this._obj)
         if (yorn !== null) {
           this.assert(yorn,
-            `expected ${val && val.description} to almost equal ${this._obj && this._obj.description}`,
-            `expected ${val && val.description} to not almost equal ${this._obj &&this._obj.description}`,
+            `expected ${val && val.description || val} to almost equal ${this._obj && this._obj.description || this._obj}`,
+            `expected ${val && val.description || val} to not almost equal ${this._obj &&this._obj.description || this._obj}`,
             val,
             this._obj
           )
@@ -321,10 +326,10 @@ chai.use(function (chai, utils) {
         if (eYo.geom.Size && this._obj instanceof eYo.geom.Size) {
           return this.eqlSize(val)
         }
-        if (eYo.geom.AbstractPoint && this._obj instanceof eYo.geom.AbstractPoint) {
+        if (eYo.geom.Point && this._obj instanceof eYo.geom.Point) {
           return this.eqlPoint(val)
         }
-        if (eYo.geom.AbstractRect && this._obj instanceof eYo.geom.AbstractRect) {
+        if (eYo.geom.Rect && this._obj instanceof eYo.geom.Rect) {
           return this.eqlRect(val)
         }
       }

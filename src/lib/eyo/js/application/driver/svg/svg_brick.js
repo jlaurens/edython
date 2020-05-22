@@ -747,7 +747,7 @@ eYo.svg.Brick_p.whereInDesk = function (brick) {
   var element = brick.dom.svg.group_
   do {
     // Loop through this brick and every parent.
-    ans.xyForward(this.xyInParent(element))
+    ans.pForward(this.xyInParent(element))
   } while ((element = element.parentNode) && element != boardRoot && element != bdsRoot)
   return ans
 }

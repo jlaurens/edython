@@ -461,11 +461,12 @@ Miscellaneous:
 --js "eyo/js/application/desk/board/metrics/metrics.js" \
 --js "eyo/js/application/ui/css.js" \
 --js "eyo/js/application/ui/motion.js" \
---js "eyo/js/brick/field/field.js" \
 --js "eyo/js/brick/magnet/magnet.js" \
 --js "eyo/js/brick/shape/shape.js" \
 --js "eyo/js/brick/slot/slot.js" \
 --js "eyo/js/brick/span/span.js" \
+--js "eyo/js/core/geom/point.js" \
+--js "eyo/js/core/geom/size.js" \
 --js "eyo/js/core/view.js" \
 --js "eyo/js/module/module_array.js" \
 --js "eyo/js/module/module_bisect.js" \
@@ -507,6 +508,8 @@ Miscellaneous:
 --js "eyo/js/application/desk/workspace/scroller/scroller.js" \
 --js "eyo/js/application/desk/workspace/workspace.js" \
 --js "eyo/js/application/driver/driver.js" \
+--js "eyo/js/brick/field/field.js" \
+--js "eyo/js/core/geom/rect.js" \
 --js "eyo/js/application/desk/workspace/flyout/flyout-toolbar.js" \
 --js "eyo/js/application/desk/workspace/trashcan/trashcan.js" \
 --js "eyo/js/application/desk/workspace/zoomer/zoomer.js" \

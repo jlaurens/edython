@@ -1171,7 +1171,7 @@ eYo.mixinR(false, eYo._p, {
         if (eYo.isNS(ns)) {
           return
         }
-        if (ns && ns.__singleton) {
+        if (ns) {
           ns = eYo.NA // no more component allowed
           return
         }
@@ -1311,16 +1311,87 @@ eYo.mixinR(eYo, {
 
 eYo.mixinR(false, eYo._p, {
   greater (left, right, tol = eYo.EPSILON) {
-    return left - right >= -tol * (Math.abs(left) + Math.abs(right)+ 1)
+    return left - right >= -tol * (Math.abs(left) + Math.abs(right) + 2)
   },
   equals (left, right, tol = eYo.EPSILON) {
-    return Math.abs(left - right) <= tol * (Math.abs(left) + Math.abs(right) + 1)
+    return Math.abs(left - right) <= tol * (Math.abs(left) + Math.abs(right) + 2)
+    /*
+    assume left < right with no restriction, let
+    0 < ∆ = (right - left) / 2
+    µ = (left+right) / 2
+    such that
+    left = µ - ∆
+    right = µ + ∆
+    Math.abs(left - right) <= tol * (Math.abs(left) + Math.abs(right) + 2)
+    becomes
+    (*) 2 ∆ ≤ ε * (|µ - ∆| + |µ + ∆| + 2)
+    * when 0 ≤ |µ| ≤ ∆, (*) becomes
+    2 ∆ ≤ ε * (∆ - |µ| + |µ| + ∆ + 2)
+    ∆ ≤ ε * (∆ + 1)
+    It is true when either
+    i) ∆ / (∆ + 1) ≤ ε
+    ii) ∆ ≤ ε / (1 - ε)
+    * when 0 ≤ ∆ ≤ |µ|, (*) becomes
+    2 ∆ ≤ ε * (|µ| - ∆ + |µ| + ∆ + 2)
+    ∆ ≤ ε * (|µ| + 1)
+    It is true when either
+    i) ∆ / (|µ| + 1) ≤ ε
+    ii) ∆ ≤ ε * (|µ| + 1)
+    */
   },
   //<<< mochai: eYo.greater|equals
-  //... chai.expect(eYo.equals(1, 1.1, 0.5)).true
-  //... chai.expect(eYo.greater(1, 1.1, 0.5)).true
-  //... chai.expect(eYo.equals(1, 1.1, 0.005)).false
-  //... chai.expect(eYo.greater(1, 1.1, 0.005)).false
+  // left = 0.9, right = 1.1, µ = 1, ∆ = 0.1
+  // 0 ≤ ∆ ≤ |µ|:
+  // ε_critical = ∆ / (|µ| + 1) = 0.05
+  // Math.abs(left - right) <= tol * (Math.abs(left) + Math.abs(right) + 2)
+  // 0.2 <= tol * 4 = 0.05 * 4 * 1.01 = 0.202
+  //... chai.expect(eYo.equals(0.9, 1.1, 1.01 * 0.05)).true
+  //... chai.expect(eYo.greater(0.9, 1.1, 1.01 * 0.05)).true
+  //... chai.expect(eYo.equals(0.9, 1.1, 0.99 * 0.05)).false
+  //... chai.expect(eYo.greater(0.9, 1.1, 0.99 * 0.05)).false
+  // left = -1, right = 3, µ = 1, ∆ = 2
+  // 0 ≤ |µ| ≤ ∆:
+  // ε_critical = ∆ / (∆ + 1) = 2/3
+  // Math.abs(left - right) <= tol * (Math.abs(left) + Math.abs(right) + 2)
+  // 4 <= tol * (6)
+  //... chai.expect(eYo.equals(-1, 3, 1.01 * 2/3)).true
+  //... chai.expect(eYo.greater(-1, 3, 1.01 * 2/3)).true
+  //... chai.expect(eYo.equals(-1, 3, 0.99 * 2/3)).false
+  //... chai.expect(eYo.greater(-1, 3, 0.99 * 2/3)).false
+  //... var mean = eYo.test.randN()
+  //... var delta = mean + eYo.test.randN()
+  //... var epsilon = delta / (delta + 1)
+  //... chai.expect(eYo.equals(mean - delta, mean + delta, 1.01 * epsilon)).true
+  //... chai.expect(eYo.equals(mean - delta, mean + delta, 0.99 * epsilon)).false
+  //... var delta = eYo.test.randN()
+  //... var mean = delta + eYo.test.randN()
+  //... var epsilon = delta / (mean + 1)
+  //... chai.expect(eYo.equals(mean - delta, mean + delta, 1.01 * epsilon)).true
+  //... chai.expect(eYo.equals(mean - delta, mean + delta, 0.99 * epsilon)).false
+  //... var c = 1.23
+  //... var epsilon = 0.01
+  /*
+  left = c
+  right = c + 2 ∆
+  Math.abs(left - right) <= tol * (Math.abs(left) + Math.abs(right) + 2)
+  2 ∆ ≤ ε * (c + c + 2 ∆ + 2)
+  ∆ ≤ ε * (c + ∆ + 1)
+  ∆ ≤ ε * (c + 1) / (1 - ε)
+  */
+  // 
+  //... var delta = epsilon * (c + 1) / (1 - epsilon)
+  /*
+  Math.abs(left - right) <= tol * (Math.abs(left) + Math.abs(right) + 2)
+  2 ∆ ≤ 0.99 * ε * (c + c + 2 ∆ + 2)
+  ∆ ≤ 0.99 * ε * (c + ∆ + 1)
+  ε * (c + 1) / (1 - ε) ≤ 0.99 * ε * (c + ε * (c + 1) / (1 - ε) + 1)
+  c + 1 ≤ 0.99 * (c + ε * (c + 1) / (1 - ε) + 1) * (1 - ε)
+  c + 1 ≤ 0.99 * (c * (1 - ε) + ε * (c + 1) + 1 - ε)
+  c + 1 ≤ 0.99 * (c - c * ε + ε * c + ε + 1 - ε)
+  c + 1 ≤ 0.99 * (c + 1)
+  */
+  //... chai.expect(eYo.equals(c, c + 2 * delta, 1.01 * epsilon)).true
+  //... chai.expect(eYo.equals(c, c + 2 * delta, 0.99 * epsilon)).false
   //>>>
 })
 

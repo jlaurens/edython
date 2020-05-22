@@ -1074,7 +1074,7 @@ eYo.magnet.BaseC9r_p.bumpAwayFrom_ = function (m4t) {
   // Raise it to the top for extra visibility.
   var selected = root.hasFocus
   selected || root.selectAdd()
-  var dxy = eYo.geom.xyPoint(eYo.event.SNAP_RADIUS, eYo.event.SNAP_RADIUS).backward(this.xy)
+  var dxy = eYo.geom.pPoint(eYo.event.SNAP_RADIUS, eYo.event.SNAP_RADIUS).backward(this.xy)
   if (reverse) {
     // When reversing a bump due to an uneditable brick, bump up.
     dxy.y = -dxy.y
@@ -1158,7 +1158,7 @@ eYo.magnet.BaseC9r_p.unhideAll = function() {
     var min = closestIndex - 1
     while (min >= 0) {
       temp = db[min--]
-      var radius = where.xyDistance(temp.where)
+      var radius = where.pDistance(temp.where)
       if (radius < maxRadius && magnet.isConnectionAllowed(temp)) {
         bestMagnet = temp
         bestRadius = radius
@@ -1167,7 +1167,7 @@ eYo.magnet.BaseC9r_p.unhideAll = function() {
     var max = closestIndex
     while (max < db.length) {
       temp = db[max++]
-      var radius = where.xyDistance(temp.where)
+      var radius = where.pDistance(temp.where)
       if (radius < maxRadius && magnet.isConnectionAllowed(temp)) {
         bestMagnet = temp
         bestRadius = radius
@@ -1235,8 +1235,8 @@ eYo.magnet.BaseC9r_p.moveBy = function(dxy) {
  *     the distance to.
  * @return {number} The distance between magnets, in board units.
  */
-eYo.magnet.BaseC9r_p.xyDistance = function(other) {
-  return this.where.xyDistance(other.where)
+eYo.magnet.BaseC9r_p.pDistance = function(other) {
+  return this.where.pDistance(other.where)
 }
 
 // ANCHOR: Wrapping
@@ -1648,7 +1648,7 @@ eYo.magnet.BaseC9r_p.isConnectionAllowed = function (candidate, maxRadius) {
   if (this.wrapped_ || candidate.wrapped_) {
     return false
   }
-  if (eYo.isDef(maxRadius) && this.xyDistance(candidate) > maxRadius) {
+  if (eYo.isDef(maxRadius) && this.pDistance(candidate) > maxRadius) {
     return false
   }
   // Type checking.

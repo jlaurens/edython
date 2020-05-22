@@ -285,8 +285,6 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
 
   let tPrepare = type + 'Prepare'
   let tMap     = type + 'Map' // property defined on instances
-  let tHead    = type + 'Head'
-  let tTail    = type + 'Tail'
   /**
    * Prepares the *key* properties of the given object.
    * This message is sent by a delegate to prepare the object,
@@ -418,6 +416,63 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
     //... o = eYo.c9r.new('onr')
     //... C9r.eyo.fooPrepare(o)
     //... C9r.eyo.fooShortcuts(o)
+    //>>>
+  }
+
+  let tLinks = type + 'Links'
+  let tHead    = type + 'Head'
+  let tTail    = type + 'Tail'
+  /**
+   * Prepares the *key* properties of the given object.
+   * This message is sent by a delegate to prepare the object,
+   * which is an instance of the receiver's associate constructor.
+   * If we create an instance, the model is not expected to change afterwards.
+   * The delegate is now complete and the merge methods
+   * should not be called afterwards.
+   * 
+   * If the super also has a `*key*Prepare` method,
+   * it must not be called because there can be a conflict,
+   * two attributes may be asigned to the same key.
+   * Once an instance has been created, `*key*Merge` is no longer available.
+   * @param{*} object - An instance being created.
+   */
+  _p[tLinks] = manyModel.links
+  ? function (object) {
+    manyModel.links.call(this, object)
+    //<<< mochai: links (1)
+    //... preparator()()
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
+    //...   links (object) {
+    //...     flag.push(12)  
+    //...   }      
+    //... })
+    //... var o = {}
+    //... C9r.eyo.fooLinks(o)
+    //... flag.expect(12)
+    //>>>
+  } : function (object) {
+    //<<< mochai: links (2)
+    let attributes = [...object[tMap].values()]
+    //... preparator()()
+    //... C9r.eyo.manyEnhanced('foo', 'foo', {
+    //...   make (model, k, object) {
+    //...     return eYo.o3d.new(model, k, object)
+    //...   },
+    //...   model: {
+    //...     foo: {
+    //...       after: 'chi'
+    //...     },
+    //...     chi: {
+    //...       after: 'mi'
+    //...     },
+    //...     mi: {},
+    //...   },
+    //...   suffix: '_x',
+    //... })
+    //... o = eYo.c9r.new('onr')
+    //... C9r.eyo.fooPrepare(o)
+    //... C9r.eyo.fooLinks(o)
+    //... C9r.eyo.fooShortcuts(o)
     //... chai.expect(o.fooHead).equal(o.mi_x)
     //... chai.expect(o.fooTail).equal(o.foo_x)
     //... chai.expect(o.foo_x.next).undefined
@@ -434,7 +489,6 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
     })
     eYo.many.link(attr, eYo.NA)
     object[tTail] = attributes.pop() || object[tHead]
-    attr = object[tHead]
     //>>>
   }
 
@@ -551,7 +605,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
     //... })
     //... o = eYo.c9r.new('onr')
     //... C9r.eyo.fooPrepare(o)
-    //... flag.expect()
+    //... flag.expect(0)
     //... o.barFooDispose = function (v, ...$) {
     //...   v.dispose(...$)
     //...   v.dispose = function (...$$) {

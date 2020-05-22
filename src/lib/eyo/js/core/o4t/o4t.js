@@ -336,6 +336,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     //... var o = ns.new('o', onr)
     //... o.eyo.p6yShortcuts()
     //... o.eyo.p6yPrepare(o)
+    //... o.eyo.p6yLinks(o)
     //... o.eyo.p6yInit(o)
     //... o.p6yForEach(v => flag.push(v.value))
     //... flag.expect(123)
@@ -348,13 +349,13 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     //... let mi_p = eYo.p6y.new({
     //...   value: 6,
     //... }, 'mi', onr)
-    //... chai.expect(o.foo_p.value).equal(1)
     //... chai.expect(o.foo_p.__target).undefined
+    //... chai.expect(o.foo_p.value).equal(1)
     //... o.p6yReplace('foo', foo_p)
-    //... chai.expect(o.foo_p.__target).equal(foo_p)
+    //... chai.expect(o.foo_p.__target).equal(o.foo_t).equal(foo_p)
+    //... chai.expect(o.foo_p.value).equal(4)
     //... o.p6yForEach(v => flag.push(v.value))
     //... flag.expect(423)
-    //... chai.expect(o.foo_p.value).equal(4)
     //... o.foo_ -= 3
     //... chai.expect(foo_p.value).equal(1)
     //... o.p6yForEach(v => flag.push(v.value))
@@ -363,6 +364,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     //... chai.expect(o.foo_p.value).equal(4)
     //... o = ns.new('o', onr)
     //... o.eyo.p6yPrepare(o)
+    //... o.eyo.p6yLinks(o)
     //... o.eyo.p6yInit(o)
     //... chai.expect(o.chi_p.value).equal(2)
     //... o.p6yReplace('chi', chi_p)
@@ -378,6 +380,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     //... chai.expect(o.chi_p.value).equal(5)
     //... o = ns.new('o', onr)
     //... o.eyo.p6yPrepare(o)
+    //... o.eyo.p6yLinks(o)
     //... o.eyo.p6yInit(o)
     //... chai.expect(o.mi_p.value).equal(3)
     //... o.p6yReplace('mi', mi_p)
@@ -433,6 +436,9 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //... chai.assert(C9r.eyo.p6yMerge)
       let d = Object.create(null)
       for(let [source, alias] of Object.entries(aliases)) {
+        if (alias === 'topLeft') {
+          console.error('BREAK HERE!!!')
+        }
         let components = source.split('.')
         let d8r = {
           source: components,
@@ -490,6 +496,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //<<< mochai: initInstance
       //... chai.assert(C9r.eyo.initInstance)
       this.p6yInit(object, ...$)
+      this.p6yLinks(object)
       let $super = this.super
       if ($super) {
         try {
@@ -677,4 +684,13 @@ eYo.o4t._p.modelDeclare = function (key, model) {
   _p[key] = function (C9r) {
     C9r.eyo.modelMerge(model)
   }
+}
+
+/**
+ * Create a new Base instance based on the model
+ */
+eYo.o4t._p.new = function (...$) {
+  let ans = this.prepare(...$)
+  ans.preInit && ans.preInit()
+  return ans
 }

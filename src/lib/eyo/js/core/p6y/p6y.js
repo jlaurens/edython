@@ -1561,7 +1561,7 @@ eYo.p6y.List.eyo.finalizeC9r()
 })()
 
 /**
- * The @@iterator method
+ * The initInstance method
  */
 eYo.p6y.List.eyo_p.initInstance = function (instance) {
   eYo.p6y.List.eyo.super.initInstance(instance)
@@ -1583,6 +1583,11 @@ eYo.o3d.makeNS(eYo.p6y, 'handler')
 /**
  * Abstract constructor for proxy handlers.
  * A property proxy aims to be transparent.
+ * 
+ * The target is either a property or a proxy to a property.
+ * Beware of loops.
+ * 
+ * The handlers covers the target either with its own keys or its internal `cover__` object.
  * @name {eYo.p6y.handler.BaseC9r}
  * @constructor
  */
@@ -1600,37 +1605,42 @@ eYo.p6y.handler.makeBaseC9r({
       console.error('BREAK HERE!!!')
     }
     !target || eYo.isaC9r(target) || eYo.throw(`${this.eyo.name}.init: target is not a C9r instance ${target}`)
-    this.target__ = target
     //... restart()
-    //... chai.expect(handler.target__).equal(target)
+    //... chai.expect(handler.__target).equal(target)
+    this.__target = target
+    this.cover__ = {
+      dispose: eYo.doNothing
+    }
   },
   dispose () {
-    this.target__ = eYo.NA
+    this.__target = this.cover__ = eYo.NA
   },
   methods: {
     get (target, prop) {
-      if (['owner', '__target', 'hasOwnProperty'].includes(prop)) {
+      if (this.cover__.hasOwnProperty(prop)) {
+        return this.cover__[prop]
+        //... restart()
+        //... for (let [k, v] of Object.entries(handler.cover__)) {
+        //...   chai.expect(p[k]).equal(v)
+        //... }
+      } else if (['owner', '__target'].includes(prop)) {
         return this[prop]
         //... restart()
-        //... ;['owner', '__target', 'hasOwnProperty'].forEach(K => {
+        //... ;['owner', '__target'].forEach(K => {
         //...   chai.expect(p[K]).equal(handler[K])
         //... })
       } else if (prop === 'key') {
         return this.key_
         //... restart()
         //... chai.expect(p.key).equal(handler.key_)
-      } else if (prop === 'dispose') {
-        return eYo.doNothing
-        //... restart()
-        //... chai.expect(p.dispose).equal(eYo.doNothing)
-      } else if (this.isOwnedKey(prop) || this.hasOwnProperty(prop)) {
+      } else if (this.isOwnedKey(prop)) {
         return this[prop]
         //... restart()
         //... handler.keys_owned.forEach(K => {
         //...   chai.expect(p[K]).equal(handler[K])
         //... })
-        //... handler.foo = 421
-        //... chai.expect(p.foo).equal(handler.foo).equal(421)
+        //... handler.cover__.foo = 421
+        //... chai.expect(p.foo).equal(handler.cover__.foo).equal(421)
       } else {
         return this.doGet(target, prop)
         //... restart()
@@ -1659,6 +1669,13 @@ eYo.p6y.handler.makeBaseC9r({
         //... flag.expect('12stored__421')
       } else if (this.isOwnedKey(prop)) {
         this[prop] = value
+        return true
+        //... restart()
+        //... handler.keys_owned.forEach(K => {
+        //...   p[K] = 421
+        //... })
+      } else if (this.isOwnedRWKey(prop)) {
+        this.cover__[prop] = value
         return true
         //... restart()
         //... handler.keys_owned.forEach(K => {
@@ -1705,7 +1722,14 @@ eYo.p6y.handler.makeBaseC9r({
         //... handler.keys_owned.forEach(K => {
         //...   p[K] = 421
         //... })
-
+      }
+      if (this.isOwnedKeyRW(key)) {
+        Object.defineProperty(this.cover__, key, descriptor)
+        return true
+        //... restart()
+        //... handler.keys_RW.forEach(K => {
+        //...   p[K] = 421
+        //... })
       }
       eYo.throw(`${this.eyo.name} instance: can't define property ${key}`)
       // return false
@@ -1717,25 +1741,22 @@ eYo.p6y.handler.makeBaseC9r({
       //... })
     },
     deleteProperty (target, prop) {
-      if (this.isOwnedKey(prop) || this.isOwnedRWKey(prop)) {
-        delete this[prop]
-        return true
-        //... handler.keys_owned.forEach(K => {
-        //...   restart()
-        //...   delete p[K]
-        //...   chai.expect(p[K]).undefined
-        //... })
-        //... handler.keys_RW.forEach(K => {
-        //...   restart()
-        //...   delete p[K]
-        //...   chai.expect(p[K]).undefined
-        //... })
-      } else {
-        doDelete(target, prop)
-        //... chai.expect(() => {
-        //...   delete p.foo
-        //... }).throw()
+      let x = this.isOwnedKey(prop) ? this : this.cover__
+      let ans = x.hasOwnProperty(prop)
+      if (ans) {
+        delete x[prop]
       }
+      return ans
+      //... handler.keys_RW.forEach(K => {
+      //...   restart()
+      //...   delete p[K]
+      //...   chai.expect(p[K]).undefined
+      //... })
+      //... handler.keys_owned.forEach(K => {
+      //...   restart()
+      //...   delete p[K]
+      //...   chai.expect(p[K]).undefined
+      //... })
     },
     isOwnedROKey (key) {
       return this.keys_RO.includes(key)
@@ -1900,8 +1921,9 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
         doDelete (target, prop) {
           if (keys_owned.includes(prop)) {
             delete this[prop]
+          } else {
+            this.cover__.delete(prop)
           }
-          delete target[prop]
           return true
         },    
       },

@@ -676,7 +676,7 @@ eYo.shape.BaseC9r_p.initWithMagnet = function(magnet, opt) {
     var brick = magnet.brick
     var m4t
     if (brick && brick.wrapped_ && opt && opt.absolute && (m4t = brick.out_m)) {
-      var where = eYo.geom.xyPoint(magnet)
+      var where = eYo.geom.pPoint(magnet)
       do {
         var t9k = m4t.targetBrick
         where.forward(t9k)

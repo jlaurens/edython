@@ -114,7 +114,7 @@ eYo.span.makeBaseC9r({
       },
       copy: true,
       set (stored, after) {
-        stored.xySet(after)
+        stored.pSet(after)
       }
     },
     /**

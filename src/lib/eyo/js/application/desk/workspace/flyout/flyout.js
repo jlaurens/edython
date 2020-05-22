@@ -511,7 +511,7 @@ eYo.flyout.View_p.createBrick = function(originalBrick) {
  */
 eYo.flyout.View_p.layout_ = function(contents) {
   this.board_.scale = this.desk.board.scale
-  var where = eYo.geom.xyPoint(this.ns.MARGIN, this.ns.MARGIN)
+  var where = eYo.geom.pPoint(this.ns.MARGIN, this.ns.MARGIN)
   contents.forEach(brick => {
     // Mark bricks as being inside a flyout.  This is used to detect and
     // prevent the closure of the flyout if the user right-clicks on such a

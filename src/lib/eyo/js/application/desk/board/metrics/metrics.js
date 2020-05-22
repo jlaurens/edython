@@ -141,7 +141,7 @@ eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
      */
     dragDefault: {
       get () {
-        return eYo.geom.clPoint(0*1.5, 0*0.25)
+        return eYo.geom.tPoint(0*1.5, 0*0.25)
       },
     },
     /**

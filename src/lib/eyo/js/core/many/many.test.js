@@ -72,6 +72,7 @@ describe ('Tests: many', function () {
     })
     dlgt.foo2Prepare(o)
     flag.expect(1)
+    dlgt.foo2Links(o)
     dlgt.foo2Shortcuts(o)
     chai.expect(o.a_f).equal(2)
     chai.expect(o.foo2Head).equal(2)
@@ -85,6 +86,7 @@ describe ('Tests: many', function () {
     })
     dlgt.foo3Prepare(o)
     flag.expect(1)
+    dlgt.foo3Links(o)
     dlgt.foo3Shortcuts(o)
     chai.expect(o.a_ff).equal(2)
     dlgt.manyEnhanced('foo4', 'bar', {
@@ -105,6 +107,7 @@ describe ('Tests: many', function () {
     dlgt.foo4Prepare(o)
     flag.expect(1)
     dlgt.foo4Shortcuts(o)
+    dlgt.foo4Links(o)
     chai.expect(o.a__ff).equal(2)
     dlgt.manyEnhanced('foo5', 'bar', {
       make (model, k, object) {
@@ -138,6 +141,7 @@ describe ('Tests: many', function () {
     })
     dlgt.fooPrepare(o)
     dlgt.fooShortcuts(o)
+    dlgt.fooLinks(o)
     flag.push(o.a_f.value)
     flag.push(o.b_f.value)
     flag.push(o.c_f.value)

@@ -121,9 +121,9 @@ eYo.dom.getDocumentScroll = () => {
     // The keyboard on IE10 touch devices shifts the page using the pageYOffset
     // without modifying scrollTop. For this case, we want the body scroll
     // offsets.
-    return eYo.geom.xyPoint(el.scrollLeft, el.scrollTop)
+    return eYo.geom.pPoint(el.scrollLeft, el.scrollTop)
   }
-  return eYo.geom.xyPoint(
+  return eYo.geom.pPoint(
       win.pageXOffset || el.scrollLeft, win.pageYOffset || el.scrollTop)
 }
 

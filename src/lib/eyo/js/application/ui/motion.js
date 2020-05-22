@@ -610,7 +610,7 @@ eYo.event.Motion.eyo.methodsMerge({
         this.touchIDs_.push(touch2nd.identifier)
         var xy1st = new eYo.geom.Point(touch1st)
         var xy2nd = new eYo.geom.Point(touch2nd)
-        this.startDistance_ = xy1st.xyDistance(xy2nd) // Screen coordinates ?
+        this.startDistance_ = xy1st.pDistance(xy2nd) // Screen coordinates ?
         // Simply ignore any supplemental touch:
         this.captureStart = eYo.doNothing
         eYo.dom.gobbleEvent(e)
