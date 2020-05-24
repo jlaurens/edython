@@ -409,7 +409,7 @@ Miscellaneous:
 --js "closure-library/closure/goog/html/safehtml.js" \
 --js "eyo/js/core/decorate/decorate.js" \
 --js "eyo/js/core/t3/t3_all.js" \
---js "eyo/js/core/xre.js" \
+--js "eyo/js/core/xre/xre.js" \
 --js "closure-library/closure/goog/dom/safe.js" \
 --js "closure-library/closure/goog/html/uncheckedconversions.js" \
 --js "eyo/js/core/dlgt/dlgt.js" \
