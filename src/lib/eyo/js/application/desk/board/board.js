@@ -123,7 +123,7 @@ eYo.board.makeBaseC9r({
         // JL: TODO separate main bricks and draft bricks
         var ans = new eYo.geom.Rect()
         var bricks = this.topBricks.filter(b3k => b3k.ui && b3k.hasUI)
-        bricks.length && bricks.forEach(b3k => ans.unionRect(b3k.ui.boundingRect))
+        bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
         return ans
       },
     },
@@ -138,7 +138,7 @@ eYo.board.makeBaseC9r({
       get () {
         var ans = new eYo.geom.Rect()
         var bricks = this.mainBricks.filter(b3k => b3k.ui && b3k.hasUI)
-        bricks.length && bricks.forEach(b3k => ans.unionRect(b3k.ui.boundingRect))
+        bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
         return ans
       },
     },
@@ -153,7 +153,7 @@ eYo.board.makeBaseC9r({
       get () {
         var ans = new eYo.geom.Rect()
         var bricks = this.draftBricks.filter(b3k => b3k.ui && b3k.hasUI)
-        bricks.length && bricks.forEach(b3k => ans.unionRect(b3k.ui.boundingRect))
+        bricks.length && bricks.forEach(b3k => ans.union(b3k.ui.boundingRect))
         return ans
       },
     },
@@ -843,7 +843,7 @@ eYo.board.BaseC9r_p.paste = function () {
           var size = b3k.size
           // the brick is in the visible area if we see its center
           var bounds = view.copy.unscale(scale).inset(size.width / 2, size.height / 2)
-          if (!bounds.xyContains(dx, dy)) {
+          if (!bounds.pContains(dx, dy)) {
             dx = (view.x + view.width / 2) / scale - size.width / 2
             dy = (view.y + view.height / 2) / scale - size.height / 2
             avoidCollision()

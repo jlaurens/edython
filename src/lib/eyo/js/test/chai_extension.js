@@ -1,20 +1,35 @@
 eYo.provide('test')
 
-eYo.test.randN = (N = 2, rounded) => {
+eYo.test.randN = (N = 2, snap) => {
   if (N === true || N === false) {
-    [N, rounded] = [2, N]
+    [N, snap] = [2, N]
   }
-  return rounded
+  return snap
   ? Math.round(Math.random()*10**N)
   : Math.round(Math.random()*10**(2*N))/10**(N)
 }
 
 if (eYo.geom) {
-  eYo.geom.randPoint = (snap = false) => new eYo.geom.Point(snap, eYo.test.randN(), eYo.test.randN())
+  eYo.geom.randPoint = (N, snap) => {
+    if (N === true || N === false) {
+      [N, snap] = [2, N]
+    }
+    return new eYo.geom.Point(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap))
+  }
 
-  eYo.geom.randSize = (snap = false) => new eYo.geom.Size(snap, eYo.test.randN(), eYo.test.randN())
+  eYo.geom.randSize = (N, snap) => {
+    if (N === true || N === false) {
+      [N, snap] = [2, N]
+    }
+    return new eYo.geom.Size(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap))
+  }
   
-  eYo.geom.randRect = (snap = false) => new eYo.geom.Rect(snap, eYo.test.randN(), eYo.test.randN(), eYo.test.randN(), eYo.test.randN())  
+  eYo.geom.randRect = (N, snap) => {
+    if (N === true || N === false) {
+      [N, snap] = [2, N]
+    }
+    return new eYo.geom.Rect(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap), eYo.test.randN(N, snap), eYo.test.randN(N, snap))  
+  }
 }
 
 eYo.test.Flag = function (what) {

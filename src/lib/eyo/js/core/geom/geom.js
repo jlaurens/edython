@@ -19,7 +19,11 @@ eYo.require('o4t')
 eYo.forward('geom.Point')
 eYo.forward('geom.Size')
 eYo.forward('geom.Rect')
-
+//<<< mochai: Basics
+//... chai.expect(eYo.isDef(eYo.geom.Point)).true
+//... chai.expect(eYo.isDef(eYo.geom.Size)).true
+//... chai.expect(eYo.isDef(eYo.geom.Rect)).true
+//>>>
 
 /**
  * unit
@@ -55,9 +59,10 @@ eYo.c9r.makeNS(eYo, 'geom', {
   //... chai.expect(eYo.geom.C).eyo_Num
   //... chai.expect(eYo.geom.L).eyo_Num
   //... chai.expect(() => { eYo.geom.C = 10 }).throw()
+  //... chai.expect(eYo.geom.C === Math.round(eYo.geom.C)).true
+  //... chai.expect(eYo.geom.L === Math.round(eYo.geom.L)).true
   //>>>
 }, true)
-
 
 eYo.geom.makeBaseC9r(true, {
   //<<< mochai: eYo.geom.BaseC9r

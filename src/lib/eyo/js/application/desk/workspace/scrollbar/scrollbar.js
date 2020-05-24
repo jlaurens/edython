@@ -215,7 +215,7 @@ eYo.view.Scrollbar_p.layoutHorizontal = function(hostMetrics, prepare) {
     r.left = view.left
     r.right = this.scroller_ && this.scroller_.vScroll.visible ? view.right - eYo.view.SCROLLBAR_THICKNESS : view.right
     r.top = (r.bottom = view.bottom) - eYo.view.SCROLLBAR_THICKNESS
-    r.xyInset(0.5)
+    r.pInset(0.5)
     // layout the content
     this.handleLength_ = view.width / content.width * r.width
     if (this.handleLength_ === -Infinity || this.handleLength_ === Infinity ||
@@ -264,7 +264,7 @@ eYo.view.Scrollbar_p.layoutVertical = function(hostMetrics, prepare) {
     ? view.bottom - eYo.view.SCROLLBAR_THICKNESS
     : view.bottom
     r.left = (r.right = view.right) - eYo.view.SCROLLBAR_THICKNESS
-    r.xyInset(0.5)
+    r.pInset(0.5)
     // layout the content
     this.handleLength_ = view.height / content.height * r.height
     if (this.handleLength_ === -Infinity || this.handleLength_ === Infinity ||

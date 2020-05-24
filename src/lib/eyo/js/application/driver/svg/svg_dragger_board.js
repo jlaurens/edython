@@ -75,7 +75,7 @@ eYo.svg.makeDriverC9r('DraggerBoard', {
       // While dragging, the visible area must be contained within these limits.
       var limits = bds.limits_ = new eYo.geom.Rect()
       var topBricks = board.topBricks.filter(b3k => b3k.ui && b3k.ui.rendered)
-      topBricks.forEach(b3k => limits.unionRect(b3k.ui.boundingRect))
+      topBricks.forEach(b3k => limits.union(b3k.ui.boundingRect))
       var brickBoundary = brick.ui.boundingRect
       var a = brickBoundary.w + 2
       limits.c -= a

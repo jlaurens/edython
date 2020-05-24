@@ -11,6 +11,44 @@
  */
 'use strict'
 
+eYo.forward('geom.Size')
+eYo.forward('geom.Rect')
+
+//... var P
+//... let C = eYo.test.randN()
+//... let L = eYo.test.randN()
+//... let snap_p = eYo.p6y.new('p', onr)
+//... snap_p.value_ = true
+//... let m = {
+//...   c: eYo.test.randN(),
+//...   l: eYo.test.randN(),
+//... }
+//... let mm = {
+//...   x: m.c * eYo.geom.X,
+//...   y: m.l * eYo.geom.Y,
+//... }
+//... let dm = {
+//...   dc: eYo.test.randN(),
+//...   dl: eYo.test.randN(),
+//... }
+//... let dmm = {
+//...   dx: dm.dc * eYo.geom.X,
+//...   dy: dm.dl * eYo.geom.Y,
+//... }
+//... let Cs = eYo.test.randN(true)
+//... let Ls = eYo.test.randN(true)
+//... let ms = {
+//...   c: eYo.test.randN(true),
+//...   l: eYo.test.randN(true),
+//... }
+//... let mms = {
+//...   x: ms.c * eYo.geom.X,
+//...   y: ms.l * eYo.geom.Y,
+//... }
+//... let isPcl = (P, c = 0, l = 0) => {
+//...   chai./**/expect(P).almost.eql({c, l})
+//... }
+
 /**
  * `Point` is modelling a planar point that stores its coordinates in text units.
  * When `snap` is true, the coordinates are snapped to half integers horizontally and quarter integers vertically.
@@ -23,31 +61,55 @@
 eYo.geom.makeC9r('Point', {
   //<<< mochai: Point
     //<<< mochai: Basics
-    //... var P = new eYo.geom.Point()
+    //... P = new eYo.geom.Point()
     //... chai.expect(P.snap_p).not.undefined
     //>>>
   /**
    * Initialize the point forwarding to `set`.
    * @param {Boolean|eYo.geom.PointLike} [snap] - Defaults to true
+   * @param {*} snap
    * @param {*} c 
    * @param {*} l 
    */
   init (snap, c, l) {
     //<<< mochai: init
     if (!eYo.isBool(snap)) {
-      eYo.isDef(l) && eYo.throw(`${this.eyo.name}/init: Unexpected last argument: ${l}`)
-      //... chai.expect(() => {
-      //...   new eYo.geom.Point(1, 2, 3)
-      //... }).throw()
-      if (eYo.isDef(snap)) {
+      if (eYo.isaP6y(snap)) {
+        this.p6yReplace('snap', snap)
+        this.set(c, l)
+        return
+        //... P = new eYo.geom.Point()
+        //... P.p6yReplace('snap', snap_p)
+        //... chai.expect(P.snap_p.__target).equal(snap_p)
+        //... chai.expect(P.snap_ = false).equal(snap_p.value)
+        //... chai.expect(snap_p.value_ = true).equal(P.snap)
+        //... P = new eYo.geom.Point(snap_p)
+        //... isPcl(P, 0, 0)
+        //... chai.expect(P.snap_ = false).equal(snap_p.value)
+        //... chai.expect(snap_p.value_ = true).equal(P.snap)
+        //... P = new eYo.geom.Point(snap_p, ms.c)
+        //... isPcl(P, ms.c, 0)
+        //... chai.expect(P.snap_ = false).equal(snap_p.value)
+        //... chai.expect(snap_p.value_ = true).equal(P.snap)
+        //... P = new eYo.geom.Point(snap_p, ms.c, ms.l)
+        //... chai.expect(P).almost.eql(ms)
+        //... chai.expect(P.snap_ = false).equal(snap_p.value)
+        //... chai.expect(snap_p.value_ = true).equal(P.snap)        
+      } else if (eYo.isDef(snap)) {
         let $snap = snap.snap
         if (eYo.isDef($snap)) {
           this.snap_ = $snap
           this.set(snap)
           return
         }
+        eYo.isDef(l) && eYo.throw(`${this.eyo.name}/init: Unexpected last argument: ${l}`)
+        //... chai.expect(() => {
+        //...   new eYo.geom.Point(1, 2, 3)
+        //... }).throw()
+        ;[snap, c, l] = [false, snap, c]
+      } else {
+        snap = false
       }
-      ;[snap, c, l] = [false, snap, c]
     }
     this.snap_ = snap
     this.set(c, l)
@@ -55,7 +117,7 @@ eYo.geom.makeC9r('Point', {
   },
   properties: {
     //<<< mochai: Properties
-    //... let P = new eYo.geom.Point()
+    //... P = new eYo.geom.Point()
     /**
      * Horizontal position in text unit
      * @type {Number}
@@ -117,12 +179,10 @@ eYo.geom.makeC9r('Point', {
         this.c_ = after / eYo.geom.X
       }
       //<<< mochai: x
-      //... var m = {c: 1, l: 2}
-      //... var mm = {x: m.c * eYo.geom.X, y: m.l * eYo.geom.Y}
-      //... var P = new eYo.geom.Point(false, mm)
+      //... P = new eYo.geom.Point(false, mm)
       //... chai.expect(P).almost.eql(m)
       //... P.x_ += 5 * eYo.geom.X
-      //... chai.expect(P).almost.eql({c: m.c + 5, l: m.l})
+      //... isPcl(P, m.c + 5, m.l)
       //>>>
     },
     /**
@@ -137,12 +197,10 @@ eYo.geom.makeC9r('Point', {
         this.l_ = after / eYo.geom.Y
       }
       //<<< mochai: y
-      //... var m = {c: 1, l: 2}
-      //... var mm = {x: m.c * eYo.geom.X, y: m.l * eYo.geom.Y}
-      //... var P = new eYo.geom.Point(false, mm)
+      //... P = new eYo.geom.Point(false, mm)
       //... chai.expect(P).almost.eql(m)
       //... P.y_ += 5 * eYo.geom.Y
-      //... chai.expect(P).almost.eql({c: m.c, l: m.l + 5})
+      //... isPcl(P, m.c, m.l + 5)
       //>>>
     },
     /**
@@ -156,8 +214,7 @@ eYo.geom.makeC9r('Point', {
         return Math.sqrt(dx * dx + dy * dy)
       }
       //<<< mochai: magnitude
-      //... var mm = {x: 3, y: 4}
-      //... var P = new eYo.geom.Point(false, mm)
+      //... P = new eYo.geom.Point(false, {x: 3, y: 4})
       //... chai.expect(P.magnitude).almost.eql(5)
       //>>>
     },
@@ -170,11 +227,25 @@ eYo.geom.makeC9r('Point', {
       get () {
         return new this.eyo.C9r(this)
       }
-      //... var m = {c: 3, l: 4}
-      //... var P = new eYo.geom.Point(false, m)
+      //... P = new eYo.geom.Point(false, m)
       //... let PP = P.copy
       //... chai.expect(P).not.equal(PP)
       //... chai.expect(P).almost.eql(PP)
+      //>>>
+    },
+    /**
+     * Convert the receiver to a `eYo.geom.Size` instance.
+     * @return {eYo.geom.Size}
+     */
+    asSize: {
+      //<<< mochai: asSize
+      get () {
+        return new eYo.geom.Size(this.snap_, this.c_, this.l_)
+      }
+      //... P = new eYo.geom.Point(false, m)
+      //... let S = P.asSize
+      //... chai.expect(S).eyo_size
+      //... chai.expect(S).almost.eql({w: m.c, h: m.l})
       //>>>
     },
     /**
@@ -201,11 +272,11 @@ eYo.geom.makeC9r('Point', {
       //... let m = {c: 1.23, l: 4.56}
       //... let epsilon = 0.01
       //... var delta = epsilon * (m.c + 1) / (1 - epsilon)
-      //... var P = new eYo.geom.Point(false, m.c + 2 * delta, m.l)
+      //... P = new eYo.geom.Point(false, m.c + 2 * delta, m.l)
       //... chai.expect(P.eql(m, 1.01 * epsilon)).true
       //... chai.expect(P.eql(m, 0.99 * epsilon)).false
       //... var delta = epsilon * (m.l + 1) / (1 - epsilon)
-      //... var P = new eYo.geom.Point(false, m.c, m.l + 2 * delta)
+      //... P = new eYo.geom.Point(false, m.c, m.l + 2 * delta)
       //... chai.expect(P.eql(m, 1.01 * epsilon)).true
       //... chai.expect(P.eql(m, 0.99 * epsilon)).false
       //>>>
@@ -218,14 +289,13 @@ eYo.geom.makeC9r('Point', {
      */
     set (c = 0, l) {
       //<<< mochai: set
-      //... var P, m, mm
       if (eYo.isDef(c.c) && eYo.isDef(c.l)) {
-        eYo.isDef(l) && eYo.throw(`Unexpected last argument ${this.eyo.name}/forward: ${l}`)
+        eYo.isDef(l) && eYo.throw(`Unexpected last argument ${this.eyo.name}/set: ${l}`)
         this.c_ = c.c
         this.l_ = c.l
         //... P = new eYo.geom.Point()
-        //... m = {c: 1, l: 2}
-        //... P.set(m); chai.expect(P).eql(m)
+        //... P.set(m)
+        //... chai.expect(P).eql(m)
         //... chai.expect(() => P.set(m, null)).not.throw()
         //... chai.expect(() => P.set(m, 1)).throw()
       } else if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
@@ -233,8 +303,8 @@ eYo.geom.makeC9r('Point', {
         this.x_ = c.x
         this.y_ = c.y
         //... P = new eYo.geom.Point()
-        //... mm = {x: m.c * eYo.geom.X, y: m.l * eYo.geom.Y}
-        //... P.set(mm); chai.expect(P).almost.eql(m)
+        //... P.set(mm)
+        //... chai.expect(P).almost.eql(m)
         //... chai.expect(() => P.set(mm, null)).not.throw()
         //... chai.expect(() => P.set(mm, 1)).throw()
       } else if (eYo.isDef(c.clientX) && eYo.isDef(c.clientY)) {
@@ -242,10 +312,11 @@ eYo.geom.makeC9r('Point', {
         this.x_ = c.clientX
         this.y_ = c.clientY
         //... P = new eYo.geom.Point()
-        //... mm = {clientX: m.c * eYo.geom.X, clientY: m.l * eYo.geom.Y}
-        //... P.set(mm); chai.expect(P).almost.eql(m)
-        //... chai.expect(() => P.set(mm, null)).not.throw()
-        //... chai.expect(() => P.set(mm, 1)).throw()
+        //... var mmClient = {clientX: mm.x, clientY: mm.y}
+        //... P.set(mmClient)
+        //... chai.expect(P).almost.eql(m)
+        //... chai.expect(() => P.set(mmClient, null)).not.throw()
+        //... chai.expect(() => P.set(mmClient, 1)).throw()
       } else {
         eYo.isaP6y(c)
         ? this.p6yReplace('c', c)
@@ -256,18 +327,18 @@ eYo.geom.makeC9r('Point', {
         return this
         //... let c_p = eYo.p6y.new('c', onr)
         //... let l_p = eYo.p6y.new('l', onr)
-        //... P = new eYo.geom.Point(); c_p.value_ = 1; l_p.value_ = 2
-        //... P.set(c_p, 2)
-        //... chai.expect(P).eql(m)
-        //... chai.expect(P.c_ = 2).equal(c_p.value)
-        //... P = new eYo.geom.Point(); c_p.value_ = 1; l_p.value_ = 2
-        //... P.set(1, l_p)
-        //... chai.expect(P).eql(m)
-        //... chai.expect(P.l_ = 1).equal(l_p.value)
-        //... P = new eYo.geom.Point(); c_p.value_ = 1; l_p.value_ = 2
+        //... P = new eYo.geom.Point(); c_p.value_ = C; l_p.value_ = L
+        //... P.set(c_p, L)
+        //... isPcl(P, C, L)
+        //... chai.expect(P.c_ = eYo.test.randN()).equal(c_p.value)
+        //... P = new eYo.geom.Point(); c_p.value_ = C; l_p.value_ = L
+        //... P.set(C, l_p)
+        //... isPcl(P, C, L)
+        //... chai.expect(P.l_ = eYo.test.randN()).equal(l_p.value)
+        //... P = new eYo.geom.Point(); c_p.value_ = C; l_p.value_ = L
         //... P.set(c_p, l_p)
-        //... chai.expect(P).eql(m)
-        //... chai.expect(P).eql({c: (c_p.value_ = 2), l: (l_p.value_ = 1)})
+        //... isPcl(P, C, L)
+        //... chai.expect(P).eql({c: (c_p.value_ = eYo.test.randN()), l: (l_p.value_ = eYo.test.randN())})
       }
       return this
       //>>>
@@ -280,23 +351,21 @@ eYo.geom.makeC9r('Point', {
      */
     pSet (x = 0, y) {
       //<<< mochai: pSet
-      //... let mm = {x: eYo.test.randN(), y: eYo.test.randN()}
-      //... let m = {c: mm.x / eYo.geom.X, l: mm.y / eYo.geom.Y}
       if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
         eYo.isDef(y) && eYo.throw(`Unexpected last argument ${this.eyo.name}/pSet: ${y}`)
-        //... var P = new eYo.geom.Point()
+        //... P = new eYo.geom.Point()
         //... P.pSet(mm)
         //... chai.expect(P).almost.eql(m)
         ;[x, y] = [x.x, x.y]
       } else if (eYo.isDef(x.clientX) && eYo.isDef(x.clientY)) {
-        //... var P = new eYo.geom.Point()
+        //... P = new eYo.geom.Point()
         //... P.pSet({clientX: mm.x, clientY: mm.y})
         //... chai.expect(P).almost.eql(m)
         [x, y] = [x.clientX, x.clientY]
       } else if (eYo.isDef(x.c) && eYo.isDef(x.l)) {
         eYo.isDef(y) && eYo.throw(`Unexpected last argument ${this.eyo.name}/pSet (2): ${y}`)
-        //... var P = new eYo.geom.Point()
-        //... P.pSet({c: m.c, l: m.l})
+        //... P = new eYo.geom.Point()
+        //... P.pSet(m)
         //... chai.expect(P).almost.eql(m)
         this.c_ = x.c
         this.l_ = x.l
@@ -304,14 +373,122 @@ eYo.geom.makeC9r('Point', {
       } else if (!eYo.isDef(y)) {
         y = 0
       }
-      //... var P = new eYo.geom.Point()
+      //... P = new eYo.geom.Point()
       //... P.pSet(mm.x, mm.y)
       //... chai.expect(P).almost.eql(m)
-      //... var P = new eYo.geom.Point()
+      //... P = new eYo.geom.Point()
       //... P.pSet(mm.x)
-      //... chai.expect(P).almost.eql({c: m.c, l: 0})
+      //... isPcl(P, m.c, 0)
       this.x_ = x
       this.y_ = y
+      return this
+      //>>>
+    },
+    /**
+     * Scale the receiver.
+     * @param {Number | Object} scaleX
+     * @param {Number} [scaleY] - Defaults to `scaleX`.
+     * @return {eYo.geom.Point} the receiver
+     */
+    scale (scaleX, scaleY) {
+      //<<< mochai: scale
+      //... let m = {c: eYo.test.randN(), l: eYo.test.randN()}
+      //... var scaleX = 1 + eYo.test.randN()
+      //... var scaleY = 1 + eYo.test.randN()
+      if (scaleX.x) {
+        eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
+        //... P = new eYo.geom.Point(m)
+        //... chai.expect(() => P.scale({x: 1}, 2)).throw()
+        this.c_ *= scaleX.x
+        this.l_ *= (scaleX.y || scaleX.x)
+        //... chai.expect(P).almost.eql(m)
+        //... P.scale({x: scaleX})
+        //... isPcl(P, m.c * scaleX, m.l * scaleX)
+        //... P.scale({x: 1 / scaleX})
+        //... chai.expect(P).almost.eql(m)
+        //... P.scale({x: scaleX, y: scaleY})
+        //... isPcl(P, m.c * scaleX, m.l * scaleY)
+        //... P.scale({x: 1 / scaleX, y: 1 / scaleY})
+        //... chai.expect(P).almost.eql(m)
+      } else if (scaleX.y) {
+        eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
+        //... P = new eYo.geom.Point(m)
+        //... chai.expect(() => P.scale({y: 1}, 2)).throw()
+        this.c_ *= scaleX.y
+        this.l_ *= scaleX.y
+        //... chai.expect(P).almost.eql(m)
+        //... P.scale({y: scaleY})
+        //... isPcl(P, m.c * scaleY, m.l * scaleY)
+        //... P.scale({y: 1 / scaleY})
+        //... chai.expect(P).almost.eql(m)
+      } else {
+        //... P = new eYo.geom.Point(m)
+        this.c_ *= scaleX
+        this.l_ *= (scaleY || scaleX)
+        //... chai.expect(P).almost.eql(m)
+        //... P.scale(scaleX)
+        //... isPcl(P, m.c * scaleX, m.l * scaleX)
+        //... P.scale(1 / scaleX)
+        //... chai.expect(P).almost.eql(m)
+        //... P.scale(scaleX, scaleY)
+        //... isPcl(P, m.c * scaleX, m.l * scaleY)
+        //... P.scale(1 / scaleX, 1 / scaleY)
+        //... chai.expect(P).almost.eql(m)
+      }
+      return this
+      //>>>
+    },
+    /**
+     * Unscale the receiver.
+     * @param {Number | Object} scaleX - The object has a `x` and  a `y` number field.
+     * @param {Number} [scaleY] - Defaults to scaleX
+     * @return {eYo.geom.Point} the receiver
+     */
+    unscale (scaleX, scaleY) {
+      //<<< mochai: unscale
+      //... let m = {c: eYo.test.randN(), l: eYo.test.randN()}
+      //... var scaleX = 1 + eYo.test.randN()
+      //... var scaleY = 1 + eYo.test.randN()
+      if (scaleX.x) {
+        eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
+        //... P = new eYo.geom.Point(m)
+        //... chai.expect(() => P.unscale({x: 1}, 2)).throw()
+        this.c_ /= scaleX.x
+        this.l_ /= (scaleX.y || scaleX.x)
+        //... chai.expect(P).almost.eql(m)
+        //... P.unscale({x: scaleX})
+        //... isPcl(P, m.c / scaleX, m.l / scaleX)
+        //... P.unscale({x: 1 / scaleX})
+        //... chai.expect(P).almost.eql(m)
+        //... P.unscale({x: scaleX, y: scaleY})
+        //... isPcl(P, m.c / scaleX, m.l / scaleY)
+        //... P.unscale({x: 1 / scaleX, y: 1 / scaleY})
+        //... chai.expect(P).almost.eql(m)
+      } else if (scaleX.y) {
+        eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
+        //... P = new eYo.geom.Point(m)
+        //... chai.expect(() => P.scale({y: 1}, 2)).throw()
+        this.c_ /= scaleX.y
+        this.l_ /= scaleX.y
+        //... chai.expect(P).almost.eql(m)
+        //... P.unscale({y: scaleY})
+        //... isPcl(P, m.c / scaleY, m.l / scaleY)
+        //... P.unscale({y: 1 / scaleY})
+        //... chai.expect(P).almost.eql(m)
+      } else {
+        //... P = new eYo.geom.Point(m)
+        this.c_ /= scaleX
+        this.l_ /= (scaleY || scaleX)
+        //... chai.expect(P).almost.eql(m)
+        //... P.unscale(scaleX)
+        //... isPcl(P, m.c / scaleX, m.l / scaleX)
+        //... P.unscale(1 / scaleX)
+        //... chai.expect(P).almost.eql(m)
+        //... P.unscale(scaleX, scaleY)
+        //... isPcl(P, m.c / scaleX, m.l / scaleY)
+        //... P.unscale(1 / scaleX, 1 / scaleY)
+        //... chai.expect(P).almost.eql(m)
+      }
       return this
       //>>>
     },
@@ -323,22 +500,27 @@ eYo.geom.makeC9r('Point', {
      */
     forward (dc = 0, dl) {
       //<<< mochai: forward
-      //... let P = new eYo.geom.Point()
-      //... let m = {c: eYo.test.randN(), l: eYo.test.randN()}
-      //... let dm = {dc: eYo.test.randN(), dl: eYo.test.randN()}
-      if (eYo.isDef(dc.dc) && eYo.isDef(dc.dl)) {
+      //... P = new eYo.geom.Point()
+      if (eYo.isDef(dc.w) && eYo.isDef(dc.h)) {
+        eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this.eyo.name}/forward: ${dl}`)
+        ;[dc, dl] = [dc.w, dc.h]
+        //... P.set(m)
+        //... P.forward({w: dm.dc, h: dm.dl})
+        //... isPcl(P, m.c+dm.dc, m.l+dm.dl)
+      } else if (eYo.isDef(dc.dc) && eYo.isDef(dc.dl)) {
         eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this.eyo.name}/forward: ${dl}`)
         ;[dc, dl] = [dc.dc, dc.dl]
         //... P.set(m)
         //... P.forward(dm)
-        //... chai.expect(P).almost.eql({c: m.c+dm.dc, l: m.l+dm.dl})
+        //... isPcl(P, m.c+dm.dc, m.l+dm.dl)
       }
+      eYo.isNum(dc) || eYo.throw(`Missing number argument ${this.eyo.name}/forward: ${dc}`)
       dc && (this.c_ += dc)
       dl && (this.l_ += dl)
       return this
       //... P.set(m)
       //... P.forward(dm.dc, dm.dl)
-      //... chai.expect(P).almost.eql({c: m.c+dm.dc, l: m.l+dm.dl})
+      //... isPcl(P, m.c+dm.dc, m.l+dm.dl)
       //>>>
     },
     /**
@@ -350,22 +532,27 @@ eYo.geom.makeC9r('Point', {
      */
     backward (dc = 0, dl) {
       //<<< mochai: backward
-      //... let P = new eYo.geom.Point()
-      //... let m = {c: eYo.test.randN(), l: eYo.test.randN()}
-      //... let dm = {dc: eYo.test.randN(), dl: eYo.test.randN()}
-      if (eYo.isDef(dc.dc) && eYo.isDef(dc.dl)) {
+      //... P = new eYo.geom.Point()
+      if (eYo.isDef(dc.w) && eYo.isDef(dc.h)) {
+        eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this.eyo.name}/backward: ${dl}`)
+        ;[dc, dl] = [dc.w, dc.h]
+        //... P.set(m)
+        //... P.backward({w: dm.dc, h: dm.dl})
+        //... isPcl(P, m.c-dm.dc, m.l-dm.dl)
+      } else if (eYo.isDef(dc.dc) && eYo.isDef(dc.dl)) {
         eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this.eyo.name}/forward: ${dl}`)
         ;[dc, dl] = [dc.dc, dc.dl]
         //... P.set(m)
         //... P.backward(dm)
-        //... chai.expect(P).almost.eql({c: m.c-dm.dc, l: m.l-dm.dl})
+        //... isPcl(P, m.c-dm.dc, m.l-dm.dl)
       }
+      eYo.isNum(dc) || eYo.throw(`Missing number argument ${this.eyo.name}/backward: ${dc}`)
       dc && (this.c_ -= dc)
       dl && (this.l_ -= dl)
       return this
       //... P.set(m)
       //... P.backward(dm.dc, dm.dl)
-      //... chai.expect(P).almost.eql({c: m.c-dm.dc, l: m.l-dm.dl})
+      //... isPcl(P, m.c-dm.dc, m.l-dm.dl)
       //>>>
     },
     /**
@@ -377,29 +564,26 @@ eYo.geom.makeC9r('Point', {
      */
     pForward (dx = 0, dy) {
       //<<< mochai: pForward
-      //... let P = new eYo.geom.Point()
-      //... let m = {c: eYo.test.randN(), l: eYo.test.randN()}
-      //... let mm = {x: m.c * eYo.geom.X, y: m.l * eYo.geom.Y}
-      //... let dm = {dc: eYo.test.randN(), dl: eYo.test.randN()}
-      //... let dmm = {dx: dm.dc * eYo.geom.X, dy: dm.dl * eYo.geom.Y}
+      //... P = new eYo.geom.Point()
       if (eYo.isDef(dx.dx) && eYo.isDef(dx.dy)) {
         eYo.isDef(dy) && eYo.throw(`Unexpected last argument ${this.eyo.name}/pForward: ${dy}`)
         ;[dx, dy] = [dx.dx, dx.dy]
         //... P.pSet(mm)
         //... P.pForward(dmm)
-        //... chai.expect(P).almost.eql({c: m.c+dm.dc, l: m.l+dm.dl})
+        //... isPcl(P, m.c+dm.dc, m.l+dm.dl)
         //... chai.expect(() => {P.pForward(dmm, null)}).not.throw()
         //... chai.expect(() => {P.pForward(dmm, 1)}).throw()
       }
+      eYo.isNum(dx) || eYo.throw(`Missing number argument ${this.eyo.name}/pForward: ${dx}`)
       dx && (this.x_ += dx)
       dy && (this.y_ += dy)
       return this
       //... P.pSet(mm)
       //... P.pForward(dmm.dx, dmm.dy)
-      //... chai.expect(P).almost.eql({c: m.c+dm.dc, l: m.l+dm.dl})
+      //... isPcl(P, m.c+dm.dc, m.l+dm.dl)
       //... P.pSet(mm)
       //... P.pForward(dmm.dx)
-      //... chai.expect(P).almost.eql({c: m.c+dm.dc, l: m.l})
+      //... isPcl(P, m.c+dm.dc, m.l)
       //>>>
     },
     /**
@@ -411,29 +595,26 @@ eYo.geom.makeC9r('Point', {
      */
     pBackward (dx = 0, dy) {
       //<<< mochai: pBackward
-      //... let P = new eYo.geom.Point()
-      //... let m = {c: eYo.test.randN(), l: eYo.test.randN()}
-      //... let mm = {x: m.c * eYo.geom.X, y: m.l * eYo.geom.Y}
-      //... let dm = {dc: eYo.test.randN(), dl: eYo.test.randN()}
-      //... let dmm = {dx: dm.dc * eYo.geom.X, dy: dm.dl * eYo.geom.Y}
+      //... P = new eYo.geom.Point()
       if (eYo.isDef(dx.dx) && eYo.isDef(dx.dy)) {
         eYo.isDef(dy) && eYo.throw(`Unexpected last argument ${this.eyo.name}/pBackward: ${dy}`)
         ;[dx, dy] = [dx.dx, dx.dy]
         //... P.pSet(mm)
         //... P.pBackward(dmm)
-        //... chai.expect(P).almost.eql({c: m.c-dm.dc, l: m.l-dm.dl})
+        //... isPcl(P, m.c-dm.dc, m.l-dm.dl)
         //... chai.expect(() => {P.pBackward(dmm, null)}).not.throw()
         //... chai.expect(() => {P.pBackward(dmm, 1)}).throw()
       }
+      eYo.isNum(dx) || eYo.throw(`Missing number argument ${this.eyo.name}/pBackward: ${dx}`)
       dx && (this.x_ -= dx)
       dy && (this.y_ -= dy)
       return this
       //... P.pSet(mm)
       //... P.pBackward(dmm.dx, dmm.dy)
-      //... chai.expect(P).almost.eql({c: m.c-dm.dc, l: m.l-dm.dl})
+      //... isPcl(P, m.c-dm.dc, m.l-dm.dl)
       //... P.pSet(mm)
       //... P.pBackward(dmm.dx)
-      //... chai.expect(P).almost.eql({c: m.c-dm.dc, l: m.l})
+      //... isPcl(P, m.c-dm.dc, m.l)
       //>>>
     },
     /**
@@ -450,19 +631,19 @@ eYo.geom.makeC9r('Point', {
       if (eYo.isDef(x.clientX) && eYo.isDef(x.clientY)) {
         var dx = this.x - x.clientX
         var dy = this.y - x.clientY
-        //... var P = new eYo.geom.Point()
+        //... P = new eYo.geom.Point()
         //... P.pSet(mm)
         //... chai.expect(d).almost.equal(P.pDistance({clientX: mm.x + dmm.dx, clientY: mm.y + dmm.dy}))
       } else if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
         dx = this.x - x.x
         dy = this.y - x.y
-        //... var P = new eYo.geom.Point()
+        //... P = new eYo.geom.Point()
         //... P.pSet(mm)
         //... chai.expect(d).almost.equal(P.pDistance({x: mm.x + dmm.dx, y: mm.y + dmm.dy}))
       } else {
         dx = this.x - x
         dy = this.y - (y || 0)
-        //... var P = new eYo.geom.Point()
+        //... P = new eYo.geom.Point()
         //... P.pSet(mm)
         //... chai.expect(d).almost.equal(P.pDistance(mm.x + dmm.dx, mm.y + dmm.dy))
       }
@@ -486,28 +667,24 @@ eYo.geom.Point.eyo.finalizeC9r()
  */
 eYo.geom.pPoint = function (snap, x, y) {
   //<<< mochai: pPoint
-  //... var m = {c: eYo.test.randN(), l: eYo.test.randN()}
-  //... var mm = {x: m.c * eYo.geom.X, y: m.l * eYo.geom.Y}
   if (!eYo.isBool(snap)) {
     eYo.isDef(y) && eYo.throw(`eYo.geom.pPoint: Unexpected last argument: ${y}`)
     //... chai.expect(() => {eYo.geom.pPoint(1, 2, 3)}).throw()
     ;[snap, x, y] = [false, snap, x]
-    //... var P = eYo.geom.pPoint(mm)
+    //... P = eYo.geom.pPoint(mm)
     //... chai.expect(P).almost.eql(m)
-    //... var P = eYo.geom.pPoint(mm.x, mm.y)
+    //... P = eYo.geom.pPoint(mm.x, mm.y)
     //... chai.expect(P).almost.eql(m)
   }
   return new eYo.geom.Point(snap).pSet(x, y)
-  //... var P = eYo.geom.pPoint(false, mm)
+  //... P = eYo.geom.pPoint(false, mm)
   //... chai.expect(P).almost.eql(m)
-  //... var P = eYo.geom.pPoint(false, mm.x, mm.y)
+  //... P = eYo.geom.pPoint(false, mm.x, mm.y)
   //... chai.expect(P).almost.eql(m)
-  //... var m = {c: eYo.test.randN(true), l: eYo.test.randN(true)}
-  //... var mm = {x: m.c * eYo.geom.X, y: m.l * eYo.geom.Y}
-  //... var P = eYo.geom.pPoint(true, mm)
-  //... chai.expect(P).almost.eql(m)
-  //... var P = eYo.geom.pPoint(true, mm.x, mm.y)
-  //... chai.expect(P).almost.eql(m)
+  //... P = eYo.geom.pPoint(true, mms)
+  //... chai.expect(P).almost.eql(ms)
+  //... P = eYo.geom.pPoint(true, mms.x, mms.y)
+  //... chai.expect(P).almost.eql(ms)
   //>>>
 }
 
@@ -532,34 +709,34 @@ eYo.c9r.Dlgt_p.makePointed = function (key) {
   //... ns.makeBaseC9r(true)
   //... ns.BaseC9r.eyo.makePointed('origin')
   //... ns.BaseC9r.eyo.finalizeC9r()
-  //... var r
+  //... var R
   this.modelMerge({
     //<<< mochai: Text coordinates
     properties: {
       //<<< mochai: properties
       [key]: {
         //<<< mochai: origin
-        //... r = ns.new('foo', onr)
-        //... chai.expect(r.origin_p).not.undefined
+        //... R = ns.new('foo', onr)
+        //... chai.expect(R.origin_p).not.undefined
         value () {
           return new eYo.geom.Point()
         },
-        //... chai.expect(r.origin).eyo_point
+        //... chai.expect(R.origin).eyo_point
         copy: true,
         //... // A copy is not the original
-        //... chai.expect(r.origin).not.equal(r.origin_)
+        //... chai.expect(R.origin).not.equal(R.origin_)
         //... // A copy is not another copy
-        //... chai.expect(r.origin).not.equal(r.origin)
-        //... chai.expect(r.origin).almost.eql(r.origin_)
-        //... chai.expect(r.origin).almost.eql(r.origin)
+        //... chai.expect(R.origin).not.equal(R.origin)
+        //... chai.expect(R.origin).almost.eql(R.origin_)
+        //... chai.expect(R.origin).almost.eql(R.origin)
         set (stored, after) {
           stored.pSet(after)
-          //... r = ns.new('foo', onr)
+          //... R = ns.new('foo', onr)
           //... var pt = eYo.geom.randPoint(false)
-          //... chai.expect(r.origin_).not.equal(pt)
-          //... r.origin_ = pt
-          //... chai.expect(r.origin_).not.equal(pt)
-          //... chai.expect(r.origin_).almost.eql(pt)
+          //... chai.expect(R.origin_).not.equal(pt)
+          //... R.origin_ = pt
+          //... chai.expect(R.origin_).not.equal(pt)
+          //... chai.expect(R.origin_).almost.eql(pt)
         }
         //>>>  
       },
@@ -569,24 +746,24 @@ eYo.c9r.Dlgt_p.makePointed = function (key) {
       //<<< mochai: aliases
       [key + '.c']: ['c', 'c_min'],
         //<<< mochai: c, c_min
-        //... r = ns.new('foo', onr)
-        //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
-        //... r.c_ += 1
-        //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
-        //... r.c_min_ -= 1
-        //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
-        //... r.origin_.c_ += 1
-        //... chai.expect(r.origin.c).equal(r.c).equal(r.c_min)
+        //... R = ns.new('foo', onr)
+        //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
+        //... R.c_ += 1
+        //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
+        //... R.c_min_ -= 1
+        //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
+        //... R.origin_.c_ += 1
+        //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
         //>>>
       [key + '.l']: ['l', 'l_min'],
         //<<< mochai: l, l_min
-        //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
-        //... r.l_ += 1
-        //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
-        //... r.l_min_ -= 1
-        //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
-        //... r.origin_.l_ += 1
-        //... chai.expect(r.origin.l).equal(r.l).equal(r.l_min)
+        //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
+        //... R.l_ += 1
+        //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
+        //... R.l_min_ -= 1
+        //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
+        //... R.origin_.l_ += 1
+        //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
         //>>>
       //>>> 
     },
@@ -596,39 +773,39 @@ eYo.c9r.Dlgt_p.makePointed = function (key) {
     //<<< mochai: Board coordinates
     aliases: {
       //<<< mochai: aliases
-      //... let r = ns.new('foo', onr)
+      //... let R = ns.new('foo', onr)
       //... let m = {c: 1, l: 2, w: 3, h: 4}
-      //... r.origin_.set(m)
+      //... R.origin_.set(m)
       // basic properties in board dimensions
       [key + '.x']: ['x', 'x_min'],
         //<<< mochai: x, x_min
-        //... chai.expect(r.origin.x).almost.equal(m.c * eYo.geom.X)
-        //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
-        //... r.x_ += 2 * eYo.geom.X
-        //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
-        //... r.x_min_ -= eYo.geom.X
-        //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min)
-        //... r.origin_.x_ -= eYo.geom.X
-        //... chai.expect(r.origin.x).almost.equal(r.x).almost.equal(r.x_min).almost.equal(m.c * eYo.geom.X)
+        //... chai.expect(R.origin.x).almost.equal(m.c * eYo.geom.X)
+        //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
+        //... R.x_ += 2 * eYo.geom.X
+        //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
+        //... R.x_min_ -= eYo.geom.X
+        //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
+        //... R.origin_.x_ -= eYo.geom.X
+        //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min).almost.equal(m.c * eYo.geom.X)
         // Convenient setters in board coordinates
-        //... r.x_ += 5 * eYo.geom.X
+        //... R.x_ += 5 * eYo.geom.X
         //... m.c += 5
-        //... chai.expect(r.x).almost.equal(m.c * eYo.geom.X)
+        //... chai.expect(R.x).almost.equal(m.c * eYo.geom.X)
         //>>>
       [key + '.y']: ['y', 'y_min'],
         //<<< mochai: y, y_min
-        //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min).almost.equal(m.l * eYo.geom.Y)
-        //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
-        //... r.y_ += 2 * eYo.geom.Y
-        //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
-        //... r.y_min_ -= eYo.geom.Y
-        //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
-        //... r.origin_.y_ -= eYo.geom.Y
-        //... chai.expect(r.origin.y).almost.equal(r.y).almost.equal(r.y_min)
-        //... chai.expect(r.y).almost.equal(m.l * eYo.geom.Y)
-        //... r.y_ += 4 * eYo.geom.Y
+        //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min).almost.equal(m.l * eYo.geom.Y)
+        //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
+        //... R.y_ += 2 * eYo.geom.Y
+        //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
+        //... R.y_min_ -= eYo.geom.Y
+        //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
+        //... R.origin_.y_ -= eYo.geom.Y
+        //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
+        //... chai.expect(R.y).almost.equal(m.l * eYo.geom.Y)
+        //... R.y_ += 4 * eYo.geom.Y
         //... m.l += 4
-        //... chai.expect(r.y).almost.equal(m.l * eYo.geom.Y)
+        //... chai.expect(R.y).almost.equal(m.l * eYo.geom.Y)
         //>>>
       //>>>
     },

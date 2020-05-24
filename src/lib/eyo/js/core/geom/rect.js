@@ -15,6 +15,7 @@ eYo.require('geom.Point')
 eYo.require('geom.Size')
 
 //<<< mochai: Rect
+//... var R
 //... var m = {
 //...   c: eYo.test.randN(true),
 //...   l: eYo.test.randN(true),
@@ -27,7 +28,23 @@ eYo.require('geom.Size')
 //...   width: m.w * eYo.geom.X,
 //...   height: m.h * eYo.geom.Y,
 //... }
-
+//... let P = eYo.geom.randPoint(true)
+//... let origin_p = eYo.p6y.new('origin', onr)
+//... origin_p.value_ = new eYo.geom.Point(m)
+//... let c_p = origin_p.value_.c_p
+//... let l_p = origin_p.value_.l_p
+//... let S = eYo.geom.randSize(true)
+//... let size_p = eYo.p6y.new('size', onr)
+//... size_p.value_ = new eYo.geom.Size(m)
+//... let w_p = size_p.value_.w_p
+//... let h_p = size_p.value_.h_p
+//<<< mochai: prepare
+//... chai.expect(origin_p.value).almost.eql(m)
+//... chai.expect(size_p.value).almost.eql(m)
+//>>>
+//... let isRclwh = (R, c=0, l=0, w=0, h=0) => {
+//...   chai./**/expect(R).almost.eql({c, l, w, h})
+//... }
 /**
  * @name{eYo.geom.Rect}
  * `Rect` stores its coordinates in text units.
@@ -58,35 +75,37 @@ eYo.geom.makeC9r('Rect', {
       this.set(c, l, w, h)
       return
       //... let snap_p = eYo.p6y.new('snap', onr)
-      //... var R = new eYo.geom.Rect(snap_p)
+      //... R = new eYo.geom.Rect(snap_p)
       //... chai.expect(R.snap_t).equal(snap_p)
       //... snap_p.value_ = false
       //... chai.expect(R.snap).equal(snap_p.value_)
       //... snap_p.value_ = !snap_p.value
       //... chai.expect(R.snap).equal(snap_p.value_)
     } else if (!eYo.isBool(snap)) {
-      eYo.isDef(h) && eYo.throw(`${this.eyo.name}/init: Unexpected last argument ${h}`)
-      //... chai.expect(() => {new eYo.geom.Rect(1, 2, 3, 4, 5)}).throw()
       if (eYo.isDef(snap)) {
         let $snap = snap.snap
         if (eYo.isDef($snap)) { // rect like
           this.snap_ = $snap
           this.set(snap, c, l, w, h)
           return
-          //... var R = new eYo.geom.Rect({snap: false})
+          //... R = new eYo.geom.Rect({snap: false})
           //... chai.expect(R.snap).false
-          //... var R = new eYo.geom.Rect({snap: true})
+          //... R = new eYo.geom.Rect({snap: true})
           //... chai.expect(R.snap).true
         }
+        eYo.isDef(h) && eYo.throw(`${this.eyo.name}/init: Unexpected last argument ${h}`)
+        //... chai.expect(() => {new eYo.geom.Rect(1, 2, 3, 4, 5)}).throw()
+        ;[snap, c, l, w, h] = [false, snap, c, l, w]
+      } else {
+        snap = false
       }
-      ;[snap, c, l, w, h] = [false, snap, c, l, w]
     }
     this.snap_ = snap
     this.set(c, l, w, h)
     this.makeSnapShared()
-    //... var R = new eYo.geom.Rect(false)
+    //... R = new eYo.geom.Rect(false)
     //... chai.expect(R.snap).false
-    //... var R = new eYo.geom.Rect(true)
+    //... R = new eYo.geom.Rect(true)
     //... chai.expect(R.snap).true
     //>>>
   },
@@ -101,11 +120,33 @@ eYo.geom.makeC9r('Rect', {
 eYo.geom.Rect.eyo.makePointed('origin')
 eYo.geom.Rect.eyo.makeSized('size')
 //<<< mochai: Basics
-//... let R = new eYo.geom.Rect()
+//... R = new eYo.geom.Rect()
+//... chai.expect(R).eyo_rect
+//... chai.expect(R.snap_p).not.undefined
 //... chai.expect(R.origin_p).not.undefined
 //... chai.expect(R.origin).eyo_point
+//... R.origin_ = P
+//... chai.expect(R.origin_).not.equal(P)
+//... chai.expect(R.origin_).almost.eql(P)
 //... chai.expect(R.size_p).not.undefined
 //... chai.expect(R.size).eyo_size
+//... R.size_ = S
+//... chai.expect(R.size_).not.equal(S)
+//... chai.expect(R.size_).almost.eql(S)
+//... R = new eYo.geom.Rect()
+//... chai.expect(R.c_p).not.undefined
+//... chai.expect(R.l_p).not.undefined
+//... chai.expect(R.w_p).not.undefined
+//... chai.expect(R.h_p).not.undefined
+//... isRclwh(R, 0, 0, 0, 0)
+//... R.c_ = 123
+//... isRclwh(R, 123, 0, 0, 0)
+//... R.l_ = 421
+//... isRclwh(R, 123, 421, 0, 0)
+//... R.w_ = 666
+//... isRclwh(R, 123, 421, 666, 0)
+//... R.h_ = 999
+//... isRclwh(R, 123, 421, 666, 999)
 //>>>
 eYo.geom.Rect.eyo.modelMerge({
   properties: {
@@ -115,7 +156,7 @@ eYo.geom.Rect.eyo.modelMerge({
      */
     c_mid: {
       //<<< mochai: c_mid
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R).almost.eql(m)
       after: ['c', 'w'],
       get () {
@@ -134,7 +175,7 @@ eYo.geom.Rect.eyo.modelMerge({
     },
     c_max: {
       //<<< mochai: c_max
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R).almost.eql(m)
       after: ['c', 'w'],
       get () {
@@ -150,7 +191,7 @@ eYo.geom.Rect.eyo.modelMerge({
     },
     l_mid: {
       //<<< mochai: l_mid
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R).almost.eql(m)
       after: ['l', 'h'],
       get () {
@@ -166,7 +207,7 @@ eYo.geom.Rect.eyo.modelMerge({
     },
     l_max: {
       //<<< mochai: l_max
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R).almost.eql(m)
       after: ['l', 'h'],
       get () {
@@ -194,8 +235,65 @@ eYo.geom.Rect.eyo.modelMerge({
       //... chai.expect(R.snap).equal(R.origin.snap).equal(R.size.snap)
       //... R.snap_ = !R.snap_
       //... chai.expect(R.snap).equal(R.origin.snap).equal(R.size.snap)
+      //... let o = R.snap_p.addObserver(eYo.observe.ANY, () => {
+      //...   flag.push(R.snap ? 1 : 2)
+      //... })
+      //... R.snap_ = true
+      //... flag.reset()
+      //... R.snap_ = false
+      //... flag.expect(122)
+      //... R.origin_.snap_ = true
+      //... flag.expect(211)
+      //... R.size_.snap_ = false
+      //... flag.expect(122)
+      //... R.origin_.snap_p.removeObserver(o)
+      //... R.snap_ = true
+      //... flag.expect()
+      //... R.origin_.snap_ = false
+      //... flag.expect()
+      //... R.size_.snap_ = true
+      //... flag.expect()
+      //... R.size_.snap_p.addObserver(o)
+      //... R.snap_ = false
+      //... flag.expect(122)
+      //... R.origin_.snap_ = true
+      //... flag.expect(211)
+      //... R.size_.snap_ = false
+      //... flag.expect(122)
       //>>>
-    }
+    },
+    //<<< mochai: forward/backward
+    //... R = new eYo.geom.Rect(false, m)
+    /**
+     * Like `set` but advance the coordinates, instead of setting them. Forwards to the origin.
+     * @param {number | eYo.geom.Size} c
+     * @param {number} l
+     * @return {eYo.geom.Rect}
+     */
+    forward (w, h) {
+      this.origin_.forward(w, h)
+      return this
+    },
+    /**
+     * Like `set` but advance the coordinates, instead of setting them.
+     * @param {number | eYo.geom.Size} c
+     * @param {number} l
+     * @return {eYo.geom.Rect}
+     */
+    backward (w, h) {
+      this.origin_.backward(w, h)
+      return this
+    },
+    //... R.forward(S)
+    //... chai.expect(R).almost.eql({
+    //...   c: m.c + S.w,
+    //...   l: m.l + S.h,
+    //...   w: m.w,
+    //...   h: m.h,
+    //... })
+    //... R.backward(S)
+    //... chai.expect(R).almost.eql(m)
+    //>>>
     //>>>
   }
 })
@@ -204,9 +302,9 @@ eYo.geom.Rect.eyo.modelMerge({
 eYo.geom.Rect.eyo.modelMerge({
   properties: {
     //<<< mochai: properties
-      x_mid: {
+    x_mid: {
       //<<< mochai: x_mid
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R).almost.eql(m)
       after: ['x', 'width'],
       get () {
@@ -229,7 +327,7 @@ eYo.geom.Rect.eyo.modelMerge({
       set (after) {
         this.x_ = after - this.width
       }
-      //... var R = new eYo.geom.Rect(false, mm)
+      //... R = new eYo.geom.Rect(false, mm)
       //... chai.expect(R).almost.eql(m)
       //... chai.expect(R.x_max).almost.equal(mm.x + mm.width)
       //... R.x_max_ += 5 * eYo.geom.X
@@ -245,7 +343,7 @@ eYo.geom.Rect.eyo.modelMerge({
       set (after) {
         this.y_ = after - this.height / 2
       }
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R).almost.eql(m)
       //... chai.expect(R.y_mid).almost.equal(mm.y + mm.height / 2)
       //... R.y_mid_ += 5 * eYo.geom.Y
@@ -261,7 +359,7 @@ eYo.geom.Rect.eyo.modelMerge({
       set (after) {
         this.y_ = after - this.height
       }
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R).almost.eql(m)
       //... chai.expect(R.y_max).almost.equal(mm.y + mm.height)
       //... R.y_max_ += 5 * eYo.geom.Y
@@ -271,7 +369,7 @@ eYo.geom.Rect.eyo.modelMerge({
     //// The setter changes the width, but does not change the `right` property
     left: {
       //<<< mochai: left
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R).almost.eql(m)
       after: ['x', 'width', 'x_min', 'x_max'],
       get () {
@@ -290,7 +388,7 @@ eYo.geom.Rect.eyo.modelMerge({
     },
     right: {
       //<<< mochai: right
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R).almost.eql(m)
       after: ['left', 'width', 'x_max'],
       get () {
@@ -312,7 +410,7 @@ eYo.geom.Rect.eyo.modelMerge({
     },
     top: {
       //<<< mochai: top
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R).almost.eql(m)
       after: ['y', 'height', 'y_min', 'y_max'],
       get () {
@@ -335,7 +433,7 @@ eYo.geom.Rect.eyo.modelMerge({
     },
     bottom: {
       //<<< mochai: bottom
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R).almost.eql(m)
       after: ['top', 'height', 'y_max'],
       get () {
@@ -358,20 +456,33 @@ eYo.geom.Rect.eyo.modelMerge({
     // Composed
     bottomRight: {
       //<<< mochai: bottomRight
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
+      //... let BR = {c: m.c + m.w, l: m.l + m.h}
       after: ['x_max', 'y_max'],
       get () {
         return this.origin.forward(this.size_)
         //... chai.expect(R.origin).almost.eql(m)
         //... chai.expect(R.size).almost.eql(m)
-        //... chai.expect(R.bottomRight).almost.eql({c: m.c + m.w, l: m.l + m.h})
+        //... chai.expect(R.bottomRight).almost.eql(BR)
       },
       set (after) {
-        this.x_max_ = after.x
-        this.y_max_ = after.y
-        //... var R = new eYo.geom.Rect(false)
-        //... R.bottomRight_ = {x: mm.x + mm.width, y: mm.y + mm.height}
-        //... chai.expect(R.bottomRight_).almost.eql({c: m.c + m.w, l: m.l + m.h})
+        if (eYo.isDef(after.x) && eYo.isDef(after.y)) {
+          this.x_max_ = after.x
+          this.y_max_ = after.y
+          //... R = new eYo.geom.Rect(false)
+          //... R.bottomRight_ = {x: mm.x + mm.width, y: mm.y + mm.height}
+          //... chai.expect(R.bottomRight_).almost.eql(BR)
+        } else {
+          this.c_max_ = after.c
+          this.l_max_ = after.l
+          //... R = new eYo.geom.Rect(false)
+          //... R.bottomRight_ = BR
+          //... chai.expect(R.bottomRight_).almost.eql(BR)
+        }
+        //... R = new eYo.geom.Rect(false)
+        //... R.bottomRight_ = P
+        //... chai.expect(R.bottomRight_).not.equal(P)
+        //... chai.expect(R.bottomRight).almost.eql(R.bottomRight_).almost.eql(P)
       }
       //>>>
     },
@@ -380,7 +491,7 @@ eYo.geom.Rect.eyo.modelMerge({
       after: ['origin', 'size'],
       get () {
         return this.origin.forward(this.size.unscale(2))
-        //... var R = new eYo.geom.Rect(false, m)
+        //... R = new eYo.geom.Rect(false, m)
         //... chai.expect(R.center).almost.eql({c: m.c + m.w / 2, l: m.l + m.h / 2})
       },
       /**
@@ -388,7 +499,7 @@ eYo.geom.Rect.eyo.modelMerge({
        */
       set (after) {
         this.origin_ = (new eYo.geom.Point(after)).backward(this.size.unscale(2))
-        //... var R = new eYo.geom.Rect(false, m)
+        //... R = new eYo.geom.Rect(false, m)
         //... R.center_ = {x: 0, y: 0}
         //... chai.expect(R).almost.eql({c: -m.w / 2, l: -m.h / 2, w: m.w, h: m.h})
       }
@@ -403,7 +514,7 @@ eYo.geom.Rect.eyo.modelMerge({
       get () {
         return new this.eyo.C9r(this)
       },
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... let RR = R.copy
       //... chai.expect(R).not.equal(RR)
       //... chai.expect(R).almost.eql(RR)
@@ -461,13 +572,7 @@ eYo.geom.Rect.eyo.modelMerge({
      */
     set (c = 0, l, w, h) {
       //<<< mochai: set
-      //... var R = new eYo.geom.Rect()
-      //... let origin_p = eYo.p6y.new('origin', onr)
-      //... origin_p.value_ = new eYo.geom.Point(m)
-      //... chai.expect(origin_p.value).almost.eql(m)
-      //... let size_p = eYo.p6y.new('size', onr)
-      //... size_p.value_ = new eYo.geom.Size(m)
-      //... chai.expect(size_p.value).almost.eql(m)
+      //... R = new eYo.geom.Rect()
       if (eYo.isaP6y(c)) {
         eYo.isDef(c.value_) || eYo.throw(`${this.eyo.name}.set: Unexpected white property (c)`)
         var v = c.value
@@ -484,15 +589,15 @@ eYo.geom.Rect.eyo.modelMerge({
           if (eYo.isaP6y(l)) {
             this.origin_.l_t = l
             //... R = new eYo.geom.Rect()
-            //... R.set(origin_p.value_.c_p, origin_p.value_.l_p, m.w, m.h)
-            //... chai.expect(R.origin_.c_t).equal(origin_p.value_.c_p)
-            //... chai.expect(R.origin_.l_t).equal(origin_p.value_.l_p)
+            //... R.set(c_p, l_p, m.w, m.h)
+            //... chai.expect(R.origin_.c_t).equal(c_p)
+            //... chai.expect(R.origin_.l_t).equal(l_p)
             //... chai.expect(R).almost.eql(m)
           } else {
             this.l_ = l
             //... R = new eYo.geom.Rect()
-            //... R.set(origin_p.value_.c_p, m.l, m.w, m.h)
-            //... chai.expect(R.origin_.c_t).equal(origin_p.value_.c_p)
+            //... R.set(c_p, m.l, m.w, m.h)
+            //... chai.expect(R.origin_.c_t).equal(c_p)
             //... chai.expect(R).almost.eql(m)
           }
         }
@@ -561,14 +666,21 @@ eYo.geom.Rect.eyo.modelMerge({
         if (eYo.isaP6y(l)) {
           this.origin_.l_t = l
           //... R = new eYo.geom.Rect()
-          //... R.set(m.c, origin_p.value_.l_p, m.w, m.h)
-          //... chai.expect(R.origin_.l_t).equal(origin_p.value_.l_p)
+          //... R.set(m.c, l_p, m.w, m.h)
+          //... chai.expect(R.origin_.l_t).equal(l_p)
           //... chai.expect(R).almost.eql(m)
         } else {
-          this.l_ = l
+          this.l_ = l || 0
           //... R = new eYo.geom.Rect()
           //... R.set(m.c, m.l, m.w, m.h)
           //... chai.expect(R).almost.eql(m)
+          //... R = new eYo.geom.Rect()
+          //... let $ = []
+          //... ;[eYo.NA, 1, 2, 3, 4].forEach(k => {
+          //...   k && $.push(k)        
+          //...   R.set(...$)
+          //...   isRclwh(R, ...$)
+          //... })
         }
       }
       if (eYo.isDef(w)) {
@@ -586,15 +698,15 @@ eYo.geom.Rect.eyo.modelMerge({
             if (eYo.isaP6y(h)) {
               this.size_.h_t = h
               //... R = new eYo.geom.Rect()
-              //... R.set(m.c, m.l, size_p.value_.w_p, size_p.value_.h_p)
-              //... chai.expect(R.size_.w_t).equal(size_p.value_.w_p)
-              //... chai.expect(R.size_.h_t).equal(size_p.value_.h_p)
+              //... R.set(m.c, m.l, w_p, h_p)
+              //... chai.expect(R.size_.w_t).equal(w_p)
+              //... chai.expect(R.size_.h_t).equal(h_p)
               //... chai.expect(R).almost.eql(m)
             } else {
               this.h_ = h
               //... R = new eYo.geom.Rect()
-              //... R.set(m.c, m.l, size_p.value_.w_p, m.h)
-              //... chai.expect(R.size_.w_t).equal(size_p.value_.w_p)
+              //... R.set(m.c, m.l, w_p, m.h)
+              //... chai.expect(R.size_.w_t).equal(w_p)
               //... chai.expect(R).almost.eql(m)
             }
           }
@@ -624,8 +736,8 @@ eYo.geom.Rect.eyo.modelMerge({
           if (eYo.isaP6y(h)) {
             this.size_.h_t = h
             //... R = new eYo.geom.Rect()
-            //... R.set(m.c, m.l, m.w, size_p.value_.h_p)
-            //... chai.expect(R.size_.h_t).equal(size_p.value_.h_p)
+            //... R.set(m.c, m.l, m.w, h_p)
+            //... chai.expect(R.size_.h_t).equal(h_p)
             //... chai.expect(R).almost.eql(m)
           } else {
             this.h_ = h || 0
@@ -657,17 +769,17 @@ eYo.geom.Rect.eyo.modelMerge({
     //<<< mochai: aliases
     origin: 'topLeft',
       //<<< mochai: topLeft
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R.origin_p).not.undefined
       //... chai.expect(R.topLeft_p).not.undefined
-      //... chai.expect(R.topLeft).almost.eql(R.origin)
-      //... var P = R.origin.copy.forward(1, 1)
+      //... chai.expect(R.topLeft).almost.eql(R.topLeft_).almost.eql(R.origin)
       //... R.origin_ = P
-      //... chai.expect(R.topLeft).almost.eql(R.origin).almost.eql(P)
-      //... var P = R.topLeft.copy.forward(-1, -1)
+      //... chai.expect(R.topLeft).almost.eql(R.topLeft_).almost.eql(R.origin).almost.eql(P)
+      //... R = new eYo.geom.Rect(false, m)
       //... R.topLeft_ = P
       //... chai.expect(R.topLeft).almost.eql(R.origin).almost.eql(P)
-      //>>>
+      //... chai.expect(R.topLeft).almost.eql(R.topLeft_).almost.eql(R.origin).almost.eql(P)
+    //>>>
     // Basic properties in text dimensions.
     // When in text dimensions, and snap to grid mode,
     // setters round their arguments to half width and quarter height.
@@ -675,7 +787,7 @@ eYo.geom.Rect.eyo.modelMerge({
     // the position setters won't change the size.
     'origin.c': ['c', 'c_min'],
       //<<< mochai: c, c_min
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R.origin.c).equal(R.c).equal(R.c_min)
       //... R.c_ += 1
       //... chai.expect(R).almost.eql({c: m.c+1, l: m.l, w: m.w, h: m.h})
@@ -689,7 +801,7 @@ eYo.geom.Rect.eyo.modelMerge({
       //>>>
     'origin.l': ['l', 'l_min'],
       //<<< mochai: l, l_min
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R.origin.l).equal(R.l).equal(R.l_min)
       //... R.l_ += 2
       //... chai.expect(R).almost.eql({c: m.c, l: m.l+2, w: m.w, h: m.h})
@@ -703,7 +815,7 @@ eYo.geom.Rect.eyo.modelMerge({
       //>>>
     'size.w': 'w',
       //<<< mochai: w
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R.size.w).equal(R.w)
       //... R.w_ += 1
       //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w+1, h: m.h})
@@ -714,7 +826,7 @@ eYo.geom.Rect.eyo.modelMerge({
       //>>>
     'size.h': 'h',
       //<<< mochai: h
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R.size.h).equal(R.h)
       //... R.h_ += 1
       //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w, h: m.h+1})
@@ -735,7 +847,7 @@ eYo.geom.Rect.eyo.modelMerge({
     // basic properties in board dimensions
     'origin.x': ['x', 'x_min'],
       //<<< mochai: Rect x, x_min
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
       //... R.x_ += eYo.geom.X
       //... chai.expect(R).almost.eql({c: m.c+1, l: m.l, w: m.w, h: m.h})
@@ -749,7 +861,7 @@ eYo.geom.Rect.eyo.modelMerge({
       //>>>
     'origin.y': ['y', 'y_min'],
       //<<< mochai: Rect y, y_min
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R.origin.y).almost.equal(R.y).almost.equal(R.y_min)
       //... R.y_min_ -= eYo.geom.Y
       //... chai.expect(R).almost.eql({c: m.c, l: m.l-1, w: m.w, h: m.h})
@@ -762,7 +874,7 @@ eYo.geom.Rect.eyo.modelMerge({
       //>>>
     'size.width': 'width',
       //<<< mochai: Rect width
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R.size.width).almost.equal(R.width)
       //... R.width_ += 3 * eYo.geom.X
       //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w+3, h: m.h})
@@ -773,7 +885,7 @@ eYo.geom.Rect.eyo.modelMerge({
       //>>>
     'size.height': 'height',
       //<<< mochai: Rect height
-      //... var R = new eYo.geom.Rect(false, m)
+      //... R = new eYo.geom.Rect(false, m)
       //... chai.expect(R.size.height).almost.equal(R.height)
       //... R.height_ += 4 * eYo.geom.Y
       //... chai.expect(R).almost.eql({c: m.c, l: m.l, w: m.w, h: m.h+4})
@@ -792,7 +904,7 @@ eYo.geom.Rect.eyo.finalizeC9r()
 // eYo.geom.AbstractRect.eyo.modelMerge({
 //   aliases: {
 //     //<<< mochai: aliases
-//     //... var R = new eYo.geom.Rect(false, m)
+//     //... R = new eYo.geom.Rect(false, m)
 //     // basic properties in board dimensions
 //     'origin.x': ['x', 'x_min'],
 //     //... chai.expect(R.origin.x).almost.equal(R.x).almost.equal(R.x_min)
@@ -841,7 +953,7 @@ eYo.geom.Rect.eyo.finalizeC9r()
 //       }
 //     },
 //     //<<< mochai: Rect c_mid
-//     //... var R = new eYo.geom.Rect(false, m)
+//     //... R = new eYo.geom.Rect(false, m)
 //     //... chai.expect(R).almost.eql(m)
 //     //... chai.expect(R.c_mid).almost.equal(2.5)
 //     //... R.c_mid_ += 5
@@ -857,7 +969,7 @@ eYo.geom.Rect.eyo.finalizeC9r()
 //       }
 //     },
 //     //<<< mochai: Rect c_max
-//     //... var R = new eYo.geom.Rect(false, m)
+//     //... R = new eYo.geom.Rect(false, m)
 //     //... chai.expect(R).almost.eql(m)
 //     //... chai.expect(R.c_max).almost.equal(4)
 //     //... R.c_max_ += 5
@@ -873,7 +985,7 @@ eYo.geom.Rect.eyo.finalizeC9r()
 //       }
 //     },
 //     //<<< mochai: Rect l_mid
-//     //... var R = new eYo.geom.Rect(false, m)
+//     //... R = new eYo.geom.Rect(false, m)
 //     //... chai.expect(R).almost.eql(m)
 //     //... chai.expect(R.l_mid).almost.equal(4)
 //     //... R.l_mid_ += 5
@@ -889,7 +1001,7 @@ eYo.geom.Rect.eyo.finalizeC9r()
 //       }
 //     },
 //     //<<< mochai: Rect l_max
-//     //... var R = new eYo.geom.Rect(false, m)
+//     //... R = new eYo.geom.Rect(false, m)
 //     //... chai.expect(R).almost.eql(m)
 //     //... chai.expect(R.l_max).almost.equal(6)
 //     //... R.l_max_ += 5
@@ -897,7 +1009,7 @@ eYo.geom.Rect.eyo.finalizeC9r()
 //     //>>>
 //     // Convenient setters in board coordinates
 //     //<<< mochai: Rect x
-//     //... var R = new eYo.geom.Rect(false, m)
+//     //... R = new eYo.geom.Rect(false, m)
 //     //... chai.expect(R).almost.eql(m)
 //     //... chai.expect(R.x).almost.equal(m.c * eYo.geom.X)
 //     //... R.x_ += 5 * eYo.geom.X
@@ -913,7 +1025,7 @@ eYo.geom.Rect.eyo.finalizeC9r()
 //       }
 //     },
 //     //<<< mochai: Rect x_mid
-//     //... var R = new eYo.geom.Rect(false, mm)
+//     //... R = new eYo.geom.Rect(false, mm)
 //     //... chai.expect(R).almost.eql(m)
 //     //... chai.expect(R.x_mid).almost.equal(2.5 * eYo.geom.X)
 //     //... R.x_mid_ += 5 * eYo.geom.X
@@ -929,7 +1041,7 @@ eYo.geom.Rect.eyo.finalizeC9r()
 //       }
 //     },
 //     //<<< mochai: Rect x_max
-//     //... var R = new eYo.geom.Rect(false, mm)
+//     //... R = new eYo.geom.Rect(false, mm)
 //     //... chai.expect(R).almost.eql(m)
 //     //... chai.expect(R.x_max).almost.equal(4 * eYo.geom.X)
 //     //... R.x_max_ += 5 * eYo.geom.X
@@ -945,7 +1057,7 @@ eYo.geom.Rect.eyo.finalizeC9r()
 //       }
 //     },
 //     //<<< mochai: Rect y_mid
-//     //... var R = new eYo.geom.Rect(false, mm)
+//     //... R = new eYo.geom.Rect(false, mm)
 //     //... chai.expect(R).almost.eql(m)
 //     //... chai.expect(R.y_mid).almost.equal(4 * eYo.geom.Y)
 //     //... R.y_mid_ += 5 * eYo.geom.Y
@@ -961,7 +1073,7 @@ eYo.geom.Rect.eyo.finalizeC9r()
 //       }
 //     },
 //     //<<< mochai: Rect y_max
-//     //... var R = new eYo.geom.Rect(false, mm)
+//     //... R = new eYo.geom.Rect(false, mm)
 //     //... chai.expect(R).almost.eql(m)
 //     //... chai.expect(R.y_max).almost.equal(6 * eYo.geom.Y)
 //     //... R.y_max_ += 5 * eYo.geom.Y
@@ -1083,219 +1195,326 @@ eYo.geom.Rect.eyo.finalizeC9r()
 
 //<<< mochai: Rect methods
 
-
-/**
- * Like `set` but advance the coordinates, instead of setting them.
- * @param {number | eYo.geom.Point | eYo.geom.Size} c
- * @param {number} l
- * @return {eYo.geom.Rect}
- */
-eYo.geom.Rect_p.forward = function (c = 0, l = 0) {
-  this.origin_.forward(c, l)
-  return this
-}
-
-/**
- * Like `set` but advance the coordinates, instead of setting them.
- * @param {number | eYo.geom.Point | eYo.geom.Size} c
- * @param {number} l
- * @return {eYo.geom.Rect}
- */
-eYo.geom.Rect_p.backward = function (c = 0, l = 0) {
-  this.origin_.backward(c, l)
-  return this
-}
-
-
-/**
- * Test equality between the receiver and the rhs.
- * Takes rounding errors into account.
- * @param {eYo.geom.Rect} rhs
- */
-eYo.geom.Rect_p.eql = function (rhs, tolerance = eYo.EPSILON) {
-  return rhs instanceof eYo.geom.Rect && this.origin_.eql(rhs.origin_, tolerance) && this.size_.eql(rhs.size_, tolerance)
-}
-
-/**
- * Scale the receiver.
- * @param {Number | Object} scaleX  Must be positive.
- * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
- * @return {!eYo.geom.Rect} the receiver
- */
-eYo.geom.Rect_p.scale = function (scaleX, scaleY) {
-  this.origin_.scale(scaleX, scaleY)
-  this.size_.scale(scaleX, scaleY)
-  return this
-}
-
-/**
- * Unscale the receiver.
- * @param {Number} scaleX  Must be positive.
- * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
- * @return {!eYo.geom.Rect} the receiver
- */
-eYo.geom.Rect_p.unscale = function (scaleX, scaleY) {
-  this.origin_.unscale(scaleX, scaleY)
-  this.size_.unscale(scaleX, scaleY)
-  return this
-}
-
-/**
- * Mirror the receiver vertically and horizontally.
- * @return {!eYo.geom.Rect} the receiver
- */
-eYo.geom.Rect_p.mirror = function () {
-  // size does not change, only max <-> -min
-  this.x_max_ = -this.x
-  this.y_max_ = -this.y
-  return this
-}
-
-/**
- * Inset the receiver.
- * Default values are `eYo.geom.X / eYo.geom.C` and `eYo.geom.Y / eYo.geom.L`
- * @param {Number|eYo.geom.Point} [dx_min]
- * @param {Number} [dy_min]
- * @param {Number} [dx_max]
- * @param {Number} [dy_max]
- * @return {!eYo.geom.Rect} the receiver
- */
-eYo.geom.Rect_p.xyInset = function (dx_min, dy_min, dx_max, dy_max) {
-  if (!eYo.isDef(dx_min)) {
-    dx_min = dx_max = eYo.geom.X / eYo.geom.C
-    dy_min = dy_max = eYo.geom.Y / eYo.geom.L
-  } else if (eYo.isDef(dx_min.x)) {
-    dy_min = dy_max = dx_min.y
-    dx_min = dx_max = dx_min.x
-  } else {
-    if (!eYo.isDef(dy_min)) {
-      dy_min = dx_min
-    }
-    if (!eYo.isDef(dx_max)) {
-      dx_max = dx_min
-    }
-    if (!eYo.isDef(dy_max)) {
-      dy_max = dy_min
-    }
+eYo.geom.Rect.eyo.modelMerge({
+  methods: {
+    //<<< mochai: methods
+    /**
+     * Test equality between the receiver and the rhs.
+     * Takes rounding errors into account.
+     * @param {eYo.geom.Rect} rhs
+     */
+    eql (rhs, tolerance = eYo.EPSILON) {
+      //<<< mochai: eql
+      return rhs instanceof eYo.geom.Rect && this.origin_.eql(rhs.origin_, tolerance) && this.size_.eql(rhs.size_, tolerance)
+      //... R = new eYo.geom.Rect(m)
+      //... chai.expect(R.eql(R.copy)).true
+      //>>>
+    },
+    /**
+     * Scale the receiver.
+     * @param {Number | Object} scaleX  Must be positive.
+     * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
+     * @return {!eYo.geom.Rect} the receiver
+     */
+    scale (scaleX, scaleY) {
+      //<<< mochai: scale
+      this.origin_.scale(scaleX, scaleY)
+      this.size_.scale(scaleX, scaleY)
+      return this
+      //... R = new eYo.geom.Rect(m)
+      //... var scaleX = 1 + eYo.test.randN()
+      //... var scaleY = 1 + eYo.test.randN()
+      //... R.scale(scaleX, scaleY)
+      //... isRclwh(R, m.c * scaleX, m.l * scaleY, m.w * scaleX, m.h * scaleY)
+      //>>>
+    },
+    /**
+     * Unscale the receiver.
+     * @param {Number} scaleX  Must be positive.
+     * @param {Number} [scaleY]  Must be positive when defines, defaults to scaleX.
+     * @return {!eYo.geom.Rect} the receiver
+     */
+    unscale (scaleX, scaleY) {
+      //<<< mochai: unscale
+      this.origin_.unscale(scaleX, scaleY)
+      this.size_.unscale(scaleX, scaleY)
+      return this
+      //... R = new eYo.geom.Rect(m)
+      //... var scaleX = 1 + eYo.test.randN()
+      //... var scaleY = 1 + eYo.test.randN()
+      //... R.unscale(scaleX, scaleY)
+      //... isRclwh(R, m.c / scaleX, m.l / scaleY, m.w / scaleX, m.h / scaleY)
+      //>>>
+    },
+    /**
+     * Mirror the receiver vertically and horizontally.
+     * @return {!eYo.geom.Rect} the receiver
+     */
+    mirrored () {
+      //<<< mochai: mirrored
+      // size does not change, only max <-> -min
+      this.x_max_ = -this.x
+      this.y_max_ = -this.y
+      return this
+      //... R = new eYo.geom.Rect(m)
+      //... var RR = R.copy.mirrored()
+      //... chai.expect(R.x_min).almost.equal(-RR.x_max)
+      //... chai.expect(R.x_max).almost.equal(-RR.x_min)
+      //... chai.expect(R.y_min).almost.equal(-RR.y_max)
+      //... chai.expect(R.y_max).almost.equal(-RR.y_min)
+      //>>>
+    },
+    /**
+     * Inset the receiver.
+     * Default values are `eYo.geom.X / eYo.geom.C` and `eYo.geom.Y / eYo.geom.L`
+     * @param {Number|eYo.geom.Point} [dx_min]
+     * @param {Number} [dy_min]
+     * @param {Number} [dx_max]
+     * @param {Number} [dy_max]
+     * @return {!eYo.geom.Rect} the receiver
+     */
+    pInset (dx_min, dy_min, dx_max, dy_max) {
+      //<<< mochai: pInset
+      if (eYo.isNA(dx_min)) {
+        dx_min = dx_max = eYo.geom.X / eYo.geom.C
+        dy_min = dy_max = eYo.geom.Y / eYo.geom.L
+        //... R = new eYo.geom.Rect(0,0,1,1)
+        //... R.pInset()
+        //... isRclwh(R,
+        //...   1 / eYo.geom.C,
+        //...   1 / eYo.geom.L,
+        //...   1 - 2 / eYo.geom.C,
+        //...   1 - 2 / eYo.geom.L,
+        //... )
+      } else if (eYo.isDef(dx_min.x)) {
+        dy_min = dy_max = dx_min.y
+        dx_min = dx_max = dx_min.x
+        //... R = new eYo.geom.Rect(0,0,3,3)
+        //... R.pInset({
+        //...   x: eYo.geom.X,
+        //...   y: eYo.geom.Y,
+        //... })
+        //... isRclwh(R, 1, 1, 1, 1)
+      } else {
+        if (eYo.isNA(dy_min)) {
+          dy_min = dx_min * eYo.geom.Y / eYo.geom.X
+        }
+        if (eYo.isNA(dx_max)) {
+          dx_max = dx_min
+        }
+        if (eYo.isNA(dy_max)) {
+          dy_max = dy_min
+        }
+        //... ;[
+        //...   [[eYo.NA, eYo.NA, eYo.NA], /*1, 1, 1, 1*/ [1, 1, 8, 8]],
+        //...   [[eYo.NA, eYo.NA, 4], /*1, 1, 1, 4*/ [1, 1, 8, 5]],
+        //...   [[eYo.NA, 3, eYo.NA], /*1, 1, 3, 1*/ [1, 1, 6, 8]],
+        //...   [[eYo.NA, 3, 4], /*1, 1, 3, 4*/ [1, 1, 6, 5]],
+        //...   [[2, eYo.NA, eYo.NA], /*1, 2, 1, 2*/ [1, 2, 8, 6]],
+        //...   [[2, eYo.NA, 4], /*1, 2, 1, 4*/ [1, 2, 8, 4]],
+        //...   [[2, 3, eYo.NA], /*1, 2, 3, 2*/ [1, 2, 6, 6]],
+        //...   [[2, 3, 4], /*1, 2, 3, 4*/ [1, 2, 6, 4]],
+        //... ].forEach(RA => {
+        //...   R = new eYo.geom.Rect(0, 0, 10, 10)
+        //...   let ra = RA[0]
+        //...   R.pInset(
+        //...     eYo.geom.X,
+        //...     eYo.isNA(ra[0]) ? ra[0] : ra[0] * eYo.geom.Y,
+        //...     eYo.isNA(ra[1]) ? ra[1] : ra[1] * eYo.geom.X,
+        //...     eYo.isNA(ra[2]) ? ra[2] : ra[2] * eYo.geom.Y,
+        //...   )
+        //...   isRclwh(R, ...RA[1])
+        //... })
+      }
+      if (this.width > 0) {
+        if (eYo.greater(dx_min + dx_max, this.width)) {
+          dx_min = this.width * dx_min / (dx_min + dx_max)
+          this.left_ += dx_min
+          this.w_ = 0
+          //... R = new eYo.geom.Rect(0, 0, 10, 10)
+          //... R.pInset(6 * eYo.geom.X, 0, 6 * eYo.geom.X, 0)
+          //... isRclwh(R, 5, 0, 0, 10)
+        } else {
+          this.left_ += dx_min
+          this.right_ -= dx_max  
+          //... R = new eYo.geom.Rect(0, 0, 10, 10)
+          //... R.pInset(3 * eYo.geom.X, 0, 3 * eYo.geom.X, 0)
+          //... isRclwh(R, 3, 0, 4, 10)
+        }
+      }
+      //... R = new eYo.geom.Rect(0, 0, -10, 10)
+      //... R.pInset(3 * eYo.geom.X, 0, 3 * eYo.geom.X, 0)
+      //... isRclwh(R, 0, 0, -10, 10)
+      //... R = new eYo.geom.Rect(0, 0, -10, 10)
+      //... R.pInset(3 * eYo.geom.X, eYo.geom.Y, 3 * eYo.geom.X, eYo.geom.Y)
+      //... isRclwh(R, 0, 1, -10, 8)
+      if (this.height > 0) {
+        if (eYo.greater(dy_min + dy_max, this.height)) {
+          dy_min = this.height * dy_min / (dy_min + dy_max)
+          this.top_ += dy_min
+          this.h_ = 0
+          //... R = new eYo.geom.Rect(0, 0, 10, 10)
+          //... R.pInset(0, 6 * eYo.geom.Y, 0, 6 * eYo.geom.Y)
+          //... isRclwh(R, 0, 5, 10, 0)
+        } else {
+          this.top_ += dy_min
+          this.bottom_ -= dy_max
+          //... R = new eYo.geom.Rect(0, 0, 10, 10)
+          //... R.pInset(0, 3 * eYo.geom.Y, 0, 3 * eYo.geom.Y)
+          //... isRclwh(R, 0, 3, 10, 4)
+        }
+      }
+      //... R = new eYo.geom.Rect(0, 0, 10, -10)
+      //... R.pInset(0, 3 * eYo.geom.Y, 0, 3 * eYo.geom.Y)
+      //... isRclwh(R, 0, 0, 10, -10)
+      //... R = new eYo.geom.Rect(0, 0, 10, -10)
+      //... R.pInset(eYo.geom.X, 3 * eYo.geom.Y, eYo.geom.X, 3 * eYo.geom.Y)
+      //... isRclwh(R, 1, 0, 8, -10)
+      return this
+      //... R = new eYo.geom.Rect(0,0,1,1)
+      //... R.pInset(0.1 * eYo.geom.X,0,0,0)
+      //... isRclwh(R, 0.1, 0, 0.9, 1)
+      //... R.pInset(0,0.1 * eYo.geom.Y,0,0)
+      //... isRclwh(R, 0.1, 0.1, 0.9, 0.9)
+      //... R.pInset(0,0,0.1 * eYo.geom.X,0)
+      //... isRclwh(R, 0.1, 0.1, 0.8, 0.9)
+      //... R.pInset(0, 0, 0, 0.1 * eYo.geom.Y)
+      //... isRclwh(R, 0.1, 0.1, 0.8, 0.8)
+      //... R = new eYo.geom.Rect(0,0,1,1)
+      //... R.pInset(-0.1 * eYo.geom.X,0,0,0)
+      //... isRclwh(R, -0.1, 0, 1.1, 1)
+      //... R.pInset(0,-0.1 * eYo.geom.Y,0,0)
+      //... isRclwh(R, -0.1, -0.1, 1.1, 1.1)
+      //... R.pInset(0,0,-0.1 * eYo.geom.X,0)
+      //... isRclwh(R, -0.1, -0.1, 1.2, 1.1)
+      //... pInset(0, 0, 0, -0.1 * eYo.geom.Y)
+      //... isRclwh(R, -0.1, -0.1, 1.2, 1.2)
+      //>>>
+    },
+    /**
+     * Whether the receiver contains the given point.
+     * @param {Number | eYo.geom.Point} x
+     * @param {Number} [y]
+     * @return {Boolean}
+     */
+    pContains (x, y) {
+      //<<< mochai: pContains
+      if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
+        var c = x.x / eYo.geom.X
+        var l = x.y / eYo.geom.Y
+      } else {
+        c = x.c
+        l = x.l
+        if (eYo.isNA(c) || eYo.isNA(l)) {
+          c = x / eYo.geom.X
+          l = y / eYo.geom.Y
+        }
+      }
+      return eYo.greater(c, this.c_min)
+      && eYo.greater(this.c_max, c)
+      && eYo.greater(l, this.l_min)
+      && eYo.greater(this.l_max, l)
+      //... var i = 20
+      //... while(i--) {
+      //...   var r = eYo.geom.randRect()
+      //...   var yes = (x, y) => {
+      //...     chai.expect(r.pContains(x, y)).true
+      //...     let p = new eYo.geom.Point().pSet(x, y)
+      //...     chai.expect(r.pContains(p)).true
+      //...     chai.expect(p.in(r)).true
+      //...   }
+      //...   var no = (x, y) => {
+      //...     chai.expect(!r.pContains(x, y)).true
+      //...     let p = new eYo.geom.Point().pSet(x, y)
+      //...     chai.expect(!r.pContains(p)).true
+      //...     chai.expect(p.out(r)).true
+      //...   }
+      //...   yes(r.x_min, r.y_min)
+      //...   yes(r.x_min, r.y_max)
+      //...   yes(r.x_max, r.y_min)
+      //...   yes(r.x_max, r.y_max)
+      //...   yes(r.x_mid, r.y_mid)
+      //...   no(r.x_min-0.1, r.y_mid)
+      //...   no(r.x_max+0.1, r.y_mid)
+      //...   no(r.x_mid, r.y_min-0.1)
+      //...   no(r.x_mid, r.y_max+0.1)
+      //... }
+      //>>>
+    },
+    /**
+     * Union with the `Rect`.
+     * Extendes the receiver to include the given rect.
+     * @param {eYo.geom.Rect} rect
+     * @return {eYo.geom.Rect} the receiver
+     */
+    union (rect) {
+      //<<< mochai: union  
+      let left = Math.min(this.x_min, rect.x_min)
+      let right = Math.max(this.x_max, rect.x_max)
+      let top = Math.min(this.y_min, rect.y_min)
+      let bottom = Math.max(this.y_max, rect.y_max)
+      this.left_ = left
+      this.right_ = right
+      this.top_ = top
+      this.bottom_ = bottom
+      return this
+      //... var i = 20
+      //... while (i--) {
+      //...   var R1 = eYo.geom.randRect()
+      //...   var R2 = eYo.geom.randRect()
+      //...   var U = new eYo.geom.Rect(R1).union(R2)
+      //...   chai.expect(U.pContains(R1.topLeft)).true
+      //...   chai.expect(U.pContains(R1.bottomRight)).true
+      //...   chai.expect(U.pContains(R2.topLeft)).true
+      //...   chai.expect(U.pContains(R2.bottomRight)).true
+      //... }
+      //>>>
+    },
+    /**
+     * Intersection with the `rect`.
+     * Extendes the receiver to include the given rect.
+     * @param {eYo.geom.Rect} rect
+     * @return {eYo.geom.Rect} the receiver
+     */
+    intersection (rect) {
+      //<<< mochai: intersection
+      //... var R1, R2
+      let left = Math.max(this.x_min, rect.x_min)
+      let right = Math.min(this.x_max, rect.x_max)
+      let top = Math.max(this.y_min, rect.y_min)
+      let bottom = Math.min(this.y_max, rect.y_max)
+      if (right >= left && bottom >= top) {
+        this.left_ = left
+        this.right_ = right
+        this.top_ = top
+        this.bottom_ = bottom
+        return this  
+      }
+      //... // Intersection: a∩b≠∅
+      //... R1 = new eYo.geom.Rect(0,0,1,1)
+      //... R2 = new eYo.geom.Rect(1,1,1,1)
+      //... var I = R1.intersection(R2)
+      //... chai.expect(eYo.isDef(I)).true
+      //... isRclwh(I, 1, 1, 0, 0)
+      //... var I = R2.intersection(R1)
+      //... chai.expect(eYo.isDef(I)).true
+      //... isRclwh(I, 1, 1, 0, 0)
+      //... // Intersection: a⊂b
+      //... R1 = new eYo.geom.Rect(0,0,1,1)
+      //... R2 = new eYo.geom.Rect(-1,-1,3,3)
+      //... chai.expect(R1.intersection(R2)).almost.eql(R1)
+      //... chai.expect(R2.intersection(R1)).almost.eql(R1)
+      //... // Intersection: a∩b=∅
+      //... R1 = new eYo.geom.Rect(0,0,1,1)
+      //... R2 = new eYo.geom.Rect(-2,-2,1,1)
+      //... chai.expect(R1.intersection(R2)).undefined
+      //... chai.expect(R2.intersection(R1)).undefined
+      //>>>
+    },
+    //>>>
   }
-  if (this.width > 0) {
-    if (eYo.greater(dx_min + dx_max, this.width)) {
-      dx_min = this.width * dx_min / (dx_min + dx_max)
-      this.left_ += dx_min
-      this.w_ = 0
-    } else {
-      this.left_ += dx_min
-      this.right_ -= dx_max  
-    }
-  }
-  if (this.height > 0) {
-    if (eYo.greater(dy_min + dy_max, this.height)) {
-      dy_min = this.height * dy_min / (dy_min + dy_max)
-      this.top_ += dy_min
-      this.h_ = 0
-    } else {
-      this.top_ += dy_min
-      this.bottom_ -= dy_max
-    }
-  }
-  return this
-}
+})
 
-/**
- * outset the receiver.
- * Default values are `eYo.geom.X / eYo.geom.C` and `eYo.geom.Y / eYo.geom.L`
- * @param {Number|eYo.geom.Point} [dx_min]
- * @param {Number} [dy_min]
- * @param {Number} [dx_max]
- * @param {Number} [dy_max]
- * @return {!eYo.geom.Rect} the receiver
- */
-eYo.geom.Rect_p.xyOutset = function (dx_min, dy_min, dx_max, dy_max) {
-  if (!eYo.isDef(dx_min)) {
-    dx_min = dx_max = eYo.geom.X / eYo.geom.C
-    dy_min = dy_max = eYo.geom.Y / eYo.geom.L
-  } else if (eYo.isDef(dx_min.x)) {
-    dy_min = dy_max = dx_min.y
-    dx_min = dx_max = dx_min.x
-  } else {
-    if (!eYo.isDef(dy_min)) {
-      dy_min = dx_min
-    }
-    if (!eYo.isDef(dx_max)) {
-      dx_max = dx_min
-    }
-    if (!eYo.isDef(dy_max)) {
-      dy_max = dy_min
-    }
-  }
-  this.left_ -= dx_min
-  this.right_ += dx_max
-  this.top_ -= dy_min
-  this.bottom_ += dy_max
-  return this
-}
-
-/**
- * Whether the receiver contains the given point.
- * @param {Number | eYo.geom.Point} x
- * @param {Number} [y]
- * @return {Boolean}
- */
-eYo.geom.Rect_p.xyContains = function (x, y) {
-  if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
-    var c = x.x / eYo.geom.X
-    var l = x.y / eYo.geom.Y
-  } else {
-    c = x.c
-    l = x.l
-    if (eYo.isNA(c) || eYo.isNA(l)) {
-      c = x / eYo.geom.X
-      l = y / eYo.geom.Y
-    }
-  }
-  return eYo.greater(c, this.c_min)
-  && eYo.greater(this.c_max, c)
-  && eYo.greater(l, this.l_min)
-  && eYo.greater(this.l_max, l)
-}
-
-/**
- * Union with the `Rect`.
- * Extendes the receiver to include the given rect.
- * @param {eYo.geom.Rect} rect
- * @return {eYo.geom.Rect} the receiver
- */
-eYo.geom.Rect_p.unionRect = function (rect) {
-  let left = Math.min(this.x_min, rect.x_min)
-  let right = Math.max(this.x_max, rect.x_max)
-  let top = Math.min(this.y_min, rect.y_min)
-  let bottom = Math.max(this.y_max, rect.y_max)
-  this.left_ = left
-  this.right_ = right
-  this.top_ = top
-  this.bottom_ = bottom
-  return this
-}
-
-/**
- * Union with the `Rect`.
- * Extendes the receiver to include the given rect.
- * @param {eYo.geom.Rect} rect
- * @return {eYo.geom.Rect} the receiver
- */
-eYo.geom.Rect_p.intersectionRect = function (rect) {
-  let left = Math.max(this.x_min, rect.x_min)
-  let right = Math.min(this.x_max, rect.x_max)
-  let top = Math.max(this.y_min, rect.y_min)
-  let bottom = Math.min(this.y_max, rect.y_max)
-  if (right >= left && bottom >= top) {
-    this.left_ = left
-    this.right_ = right
-    this.top_ = top
-    this.bottom_ = bottom
-    return this  
-  }
-}
 //>>>
 
 // /**
@@ -1346,7 +1565,7 @@ eYo.geom.Rect_p.intersectionRect = function (rect) {
 //   // a.top < b_bottom
 //   // Subtract off any area on top where A extends past B
 //   if (b.top > a.top) {
-//     var R = ans[0] = new eYo.geom.Rect(a)
+//     R = ans[0] = new eYo.geom.Rect(a)
 //     R.height_ = b.top - a.top
 //     top = b.top
 //     // If we're moving the top down, we also need to subtract the height diff.
@@ -1406,7 +1625,7 @@ eYo.geom.Rect_p.intersectionRect = function (rect) {
 //  * @param {eYo.geom.Rect} b - A Rectangle.
 //  * @return {eYo.geom.Rect}
 //  */
-// eYo.geom._p.intersectionRect = function(a, b) {
+// eYo.geom._p.intersection = function(a, b) {
 //   var x_min = Math.max(a.x_min, b.x_min)
 //   var width = Math.min(a.x_max, b.x_max) - x_min
 //   if (width >= 0) {
@@ -1419,32 +1638,48 @@ eYo.geom.Rect_p.intersectionRect = function (rect) {
 //   return eYo.NA
 // }
 
-// /**
-//  * Test container.
-//  * Returns true iff the receiver is inside the given rect.
-//  * Rounding errors are taken into account.
-//  * @param {eYo.geom.Rect} rect
-//  * @return {Boolean}
-//  */
-// eYo.geom.Point_p.in = function (rect) {
-//   return eYo.greater(this.c, rect.c_min)
-//     && eYo.greater(rect.c_max, this.c)
-//     && eYo.greater(this.l, rect.l_min)
-//     && eYo.greater(rect.l_max, this.l)
-// }
-
-// /**
-//  * Test container.
-//  * Opposite of `in`, except for the rect boundary. A point of the rect boundary is in and out the rect.
-//  * Rounding errors are taken into account.
-//  * @param {eYo.geom.Rect} rect
-//  * @return {Boolean} non negative number
-//  */
-// eYo.geom.Point_p.out = function (rect) {
-//   return eYo.greater(this.c, rect.c_max)
-//     || eYo.greater(rect.c_min, this.c)
-//     || eYo.greater(this.l, rect.l_max)
-//     || eYo.greater(rect.l_min, this.l)
-// }
+eYo.geom.Point.eyo.modelMerge({
+  methods: {
+  //<<< mochai: methods
+    /**
+     * Test container.
+     * Returns true iff the receiver is inside the given rect.
+     * Rounding errors are taken into account.
+     * @param {eYo.geom.Rect} rect
+     * @return {Boolean}
+     */
+    in (rect) {
+      return eYo.greater(this.c, rect.c_min)
+        && eYo.greater(rect.c_max, this.c)
+        && eYo.greater(this.l, rect.l_min)
+        && eYo.greater(rect.l_max, this.l)
+    },
+    /**
+     * Test container.
+     * Opposite of `in`, except for the rect boundary. A point of the rect boundary is in and out the rect.
+     * Rounding errors are taken into account.
+     * @param {eYo.geom.Rect} rect
+     * @return {Boolean} non negative number
+     */
+    out (rect) {
+      return eYo.greater(this.c, rect.c_max)
+        || eYo.greater(rect.c_min, this.c)
+        || eYo.greater(this.l, rect.l_max)
+        || eYo.greater(rect.l_min, this.l)
+    },
+    //<<< mochai: in + out
+    //... var R = new eYo.geom.Rect(0,0,1,1)
+    //... let test = (c, l) => {
+    //...   let w = new eYo.geom.Point(c, l)
+    //...   chai.expect(w.out(R) && w.in(R)).true  
+    //... }
+    //... test(0,0)
+    //... test(1,0)
+    //... test(0,1)
+    //... test(1,1)
+    //>>>
+    //>>>
+  }
+})
 
 //>>>

@@ -163,7 +163,7 @@ eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
      */
     scroll: {
       get () {
-        return this.drag.mirror
+        return this.drag.mirrored()
       },
     },
     /**
@@ -200,7 +200,7 @@ eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
         ans.bottom = d >= 0 ? d : 0
         d = ans.top - v.top
         ans.top = d <= 0 ? d : 0
-        ans.mirror()
+        ans.mirrored()
         return ans
       },
     },

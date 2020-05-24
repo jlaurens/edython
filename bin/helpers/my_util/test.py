@@ -61,8 +61,10 @@ def getInlineTest(path):
       indent = None
       raw = l.raw
     elif l.n is not None:
-      assert l_start is not None, f'''Missing a '//<<<' line before line {l.n} at {path}'''
-      l.what = l_start.what
+      if l_chai:
+        assert l_start is not None, f'''Missing a '//<<<' line before line {l.n} at {path}'''
+      if l_start:
+        l.what = l_start.what
       if l.chai and not raw:
         l_chai = True
       elif l.cont is None:

@@ -11,13 +11,38 @@
  */
 'use strict'
 
+eYo.forward('geom.Point')
+eYo.forward('geom.Rect')
+
+//... var S
+//... let W = eYo.test.randN()
+//... let H = eYo.test.randN()
+//... let m = {
+//...   w: eYo.test.randN(),
+//...   h: eYo.test.randN(),
+//... }
+//... let mm = {
+//...   width:  m.w * eYo.geom.X,
+//...   height: m.h * eYo.geom.Y,
+//... }
+//... let Ws = eYo.test.randN(true)
+//... let Hs = eYo.test.randN(true)
+//... let ms = {
+//...   w: eYo.test.randN(true),
+//...   h: eYo.test.randN(true),
+//... }
+//... let snap_p = eYo.p6y.new('p', onr)
+//... snap_p.value_ = true
+//... let isSwh = (S, w = 0, h = 0) => {
+//...   chai./**/expect(S).almost.eql({w, h})
+//... }
 /**
  * `Size` is like a vector, but size is a shorter name...
  */
 eYo.geom.makeC9r('Size', {
   //<<< mochai: Size
     //<<< mochai: Basics
-    //... var S = new eYo.geom.Size()
+    //... S = new eYo.geom.Size()
     //... chai.expect(S.snap_p).not.undefined
     //>>>
   /**
@@ -28,31 +53,29 @@ eYo.geom.makeC9r('Size', {
    */
   init (snap, w, h) {
     //<<< mochai: init
-    //... var s, ss
-    //... var m = {w: 3, h: 4}
-    //... var p_snap = eYo.p6y.new('p', onr); p_snap.value_ = true
+    //... var ss
     if (!eYo.isBool(snap)) {
       if (eYo.isaP6y(snap)) {
         this.p6yReplace('snap', snap)
         this.set(w, h)
         return
-        //... s = new eYo.geom.Size()
-        //... s.p6yReplace('snap', p_snap)
-        //... chai.expect(s.snap_p.__target).equal(p_snap)
-        //... chai.expect(s.snap_ = false).equal(p_snap.value)
-        //... chai.expect(p_snap.value_ = true).equal(s.snap)
-        //... s = new eYo.geom.Size(p_snap)
-        //... chai.expect(s).almost.eql({w: 0, h: 0})
-        //... chai.expect(s.snap_ = false).equal(p_snap.value)
-        //... chai.expect(p_snap.value_ = true).equal(s.snap)
-        //... s = new eYo.geom.Size(p_snap, m.w)
-        //... chai.expect(s).almost.eql({w: m.w, h: 0})
-        //... chai.expect(s.snap_ = false).equal(p_snap.value)
-        //... chai.expect(p_snap.value_ = true).equal(s.snap)
-        //... s = new eYo.geom.Size(p_snap, m.w, m.h)
-        //... chai.expect(s).almost.eql(m)
-        //... chai.expect(s.snap_ = false).equal(p_snap.value)
-        //... chai.expect(p_snap.value_ = true).equal(s.snap)        
+        //... S = new eYo.geom.Size()
+        //... S.p6yReplace('snap', snap_p)
+        //... chai.expect(S.snap_p.__target).equal(snap_p)
+        //... chai.expect(S.snap_ = false).equal(snap_p.value)
+        //... chai.expect(snap_p.value_ = true).equal(S.snap)
+        //... S = new eYo.geom.Size(snap_p)
+        //... isSwh(S, 0, 0)
+        //... chai.expect(S.snap_ = false).equal(snap_p.value)
+        //... chai.expect(snap_p.value_ = true).equal(S.snap)
+        //... S = new eYo.geom.Size(snap_p, ms.w)
+        //... isSwh(S, ms.w, 0)
+        //... chai.expect(S.snap_ = false).equal(snap_p.value)
+        //... chai.expect(snap_p.value_ = true).equal(S.snap)
+        //... S = new eYo.geom.Size(snap_p, ms.w, ms.h)
+        //... chai.expect(S).almost.eql(ms)
+        //... chai.expect(S.snap_ = false).equal(snap_p.value)
+        //... chai.expect(snap_p.value_ = true).equal(S.snap)        
       } else if (eYo.isDef(snap)) {
         eYo.isDef(h) && eYo.throw(`${this.eyo.name}/init: Unexpected last argument: ${h}`)
         let $snap = snap.snap
@@ -61,36 +84,38 @@ eYo.geom.makeC9r('Size', {
           this.set(snap)
           return
           //... ss = eYo.geom.randSize(true)
-          //... s = new eYo.geom.Size(ss)
-          //... chai.expect(s.snap).equal(ss.snap)
-          //... chai.expect(s).almost.eql(ss)
+          //... S = new eYo.geom.Size(ss)
+          //... chai.expect(S.snap).equal(ss.snap)
+          //... chai.expect(S).almost.eql(ss)
           //... ss = eYo.geom.randSize(false)
-          //... s = new eYo.geom.Size(ss)
-          //... chai.expect(s).almost.eql(ss)
-          //... chai.expect(s.snap).almost.eql(ss.snap)
+          //... S = new eYo.geom.Size(ss)
+          //... chai.expect(S).almost.eql(ss)
+          //... chai.expect(S.snap).almost.eql(ss.snap)
         }
+      } else {
+        snap = false
       }
       ;[snap, w, h] = [false, snap, w]
     }
     this.snap_ = snap
     this.set(w, h)
-    //... s = new eYo.geom.Size(true, m.w)
-    //... chai.expect(s).almost.eql({w: m.w, h: 0})
-    //... chai.expect(s.snap).true
-    //... s = new eYo.geom.Size(false, m.w)
-    //... chai.expect(s).almost.eql({w: m.w, h: 0})
-    //... chai.expect(s.snap).false
-    //... s = new eYo.geom.Size(true, m.w, m.h)
-    //... chai.expect(s).almost.eql(m)
-    //... chai.expect(s.snap).true
-    //... s = new eYo.geom.Size(false, m.w, m.h)
-    //... chai.expect(s).almost.eql(m)
-    //... chai.expect(s.snap).false
+    //... S = new eYo.geom.Size(true, ms.w)
+    //... isSwh(S, ms.w, 0)
+    //... chai.expect(S.snap).true
+    //... S = new eYo.geom.Size(false, m.w)
+    //... isSwh(S, m.w, 0)
+    //... chai.expect(S.snap).false
+    //... S = new eYo.geom.Size(true, ms.w, ms.h)
+    //... chai.expect(S).almost.eql(ms)
+    //... chai.expect(S.snap).true
+    //... S = new eYo.geom.Size(false, m.w, m.h)
+    //... chai.expect(S).almost.eql(m)
+    //... chai.expect(S.snap).false
     //>>>
   },
   properties: {
     //<<< mochai: properties
-    //... let S = new eYo.geom.Size()
+    //... S = new eYo.geom.Size()
     /**
      * Width in text unit
      * @type {Number}
@@ -152,12 +177,10 @@ eYo.geom.makeC9r('Size', {
         this.w_ = after / eYo.geom.X
       }
       //<<< mochai: width in pixels
-      //... var m = {w: 1, h: 2}
-      //... var mm = {width: m.w * eYo.geom.X, height: m.h * eYo.geom.Y}
-      //... var S = new eYo.geom.Size(false, mm)
+      //... S = new eYo.geom.Size(false, mm)
       //... chai.expect(S).almost.eql(m)
       //... S.width_ += 5 * eYo.geom.X
-      //... chai.expect(S).almost.eql({w: m.w + 5, h: m.h})
+      //... isSwh(S, m.w + 5, m.h)
       //>>>
     },
     /**
@@ -172,12 +195,10 @@ eYo.geom.makeC9r('Size', {
         this.h_ = after / eYo.geom.Y
       }
       //<<< mochai: height in pixels
-      //... var m = {w: 3, h: 4}
-      //... var mm = {width: m.w * eYo.geom.X, height: m.h * eYo.geom.Y}
-      //... var S = new eYo.geom.Size(false, mm)
+      //... S = new eYo.geom.Size(false, mm)
       //... chai.expect(S).almost.eql(m)
       //... S.height_ += 5 * eYo.geom.Y
-      //... chai.expect(S).almost.eql({w: m.w, h: m.h + 5})
+      //... isSwh(S, m.w, m.h + 5)
       //>>>
     },
     /**
@@ -190,10 +211,25 @@ eYo.geom.makeC9r('Size', {
       }
       //<<< mochai: copy
       //... var m = {w: 3, h: 4}
-      //... var S = new eYo.geom.Size(false, m)
+      //... S = new eYo.geom.Size(false, m)
       //... let SS = S.copy
       //... chai.expect(S).not.equal(SS)
       //... chai.expect(S).almost.eql(SS)
+      //>>>
+    },
+    /**
+     * Convert the receiver to a `eYo.geom.Point` instance.
+     * @return {eYo.geom.Point}
+     */
+    asPoint: {
+      //<<< mochai: asPoint
+      get () {
+        return new eYo.geom.Point(this.snap_, this.w_, this.h_)
+      }
+      //... S = new eYo.geom.Size(false, m)
+      //... let P = S.asPoint
+      //... chai.expect(P).eyo_point
+      //... chai.expect(P).almost.eql({c: m.w, l: m.h})
       //>>>
     },
     /**
@@ -220,11 +256,11 @@ eYo.geom.makeC9r('Size', {
       //... let m = {w: 1.23, h: 4.56}
       //... let epsilon = 0.01
       //... var delta = epsilon * (m.w + 1) / (1 - epsilon)
-      //... var S = new eYo.geom.Size(false, m.w + 2 * delta, m.h)
+      //... S = new eYo.geom.Size(false, m.w + 2 * delta, m.h)
       //... chai.expect(S.eql(m, 1.01 * epsilon)).true
       //... chai.expect(S.eql(m, 0.99 * epsilon)).false
       //... var delta = epsilon * (m.h + 1) / (1 - epsilon)
-      //... var S = new eYo.geom.Size(false, m.w, m.h + 2 * delta)
+      //... S = new eYo.geom.Size(false, m.w, m.h + 2 * delta)
       //... chai.expect(S.eql(m, 1.01 * epsilon)).true
       //... chai.expect(S.eql(m, 0.99 * epsilon)).false
       //>>>
@@ -237,12 +273,10 @@ eYo.geom.makeC9r('Size', {
      */
     set (w = 0, h) {
       //<<< mochai: set
-      //... var S, m, mm
       if (eYo.isDef(w.w) && eYo.isDef(w.h)) {
         this.w_ = w.w
         this.h_ = w.h
         //... S = new eYo.geom.Size()
-        //... m = {w: 3, h: 4}
         //... S.set(m)
         //... chai.expect(S).eql(m)
         //... chai.expect(() => S.set(m, null)).not.throw()
@@ -251,7 +285,6 @@ eYo.geom.makeC9r('Size', {
         this.width_ = w.width
         this.height_ = w.height
         //... S = new eYo.geom.Size()
-        //... mm = {width: m.w * eYo.geom.X, height: m.h * eYo.geom.Y}
         //... S.set(mm)
         //... chai.expect(S).almost.eql(m)
         //... chai.expect(() => S.set(mm, null)).not.throw()
@@ -260,20 +293,20 @@ eYo.geom.makeC9r('Size', {
         this.width_ = w.x
         this.height_ = w.y
         //... S = new eYo.geom.Size()
-        //... mm = {x: m.w * eYo.geom.X, y: m.h *  eYo.geom.Y}
-        //... S.set(mm)
+        //... let mmxy = {x: mm.width, y: mm.height}
+        //... S.set(mmxy)
         //... chai.expect(S).almost.eql(m)
-        //... chai.expect(() => S.set(mm, null)).not.throw()
-        //... chai.expect(() => S.set(mm, 1)).throw()
+        //... chai.expect(() => S.set(mmxy, null)).not.throw()
+        //... chai.expect(() => S.set(mmxy, 1)).throw()
       } else if (eYo.isDef(w.clientX) && eYo.isDef(w.clientY)) {
         this.width_ = w.clientX
         this.height_ = w.clientY
         //... S = new eYo.geom.Size()
-        //... mm = {clientX: m.w * eYo.geom.X, clientY: m.h *  eYo.geom.Y}
-        //... S.set(mm)
+        //... let mmClient = {clientX: mm.width, clientY: mm.height}
+        //... S.set(mmClient)
         //... chai.expect(S).almost.eql(m)
-        //... chai.expect(() => S.set(mm, null)).not.throw()
-        //... chai.expect(() => S.set(mm, 1)).throw()
+        //... chai.expect(() => S.set(mmClient, null)).not.throw()
+        //... chai.expect(() => S.set(mmClient, 1)).throw()
       } else {
         eYo.isaP6y(w)
         ? this.p6yReplace('w', w)
@@ -318,7 +351,7 @@ eYo.geom.makeC9r('Size', {
       //... let mm = {width: eYo.test.randN(), height: eYo.test.randN()}
       //... let m = {w: mm.width / eYo.geom.X, h: mm.height / eYo.geom.Y}
       if (eYo.isDef(width.width) && eYo.isDef(width.height)) {
-        //... var S = new eYo.geom.Size()
+        //... S = new eYo.geom.Size()
         //... S.pSet(mm)
         //... chai.expect(S).almost.eql(m)
         this.width_ = width.width
@@ -326,16 +359,16 @@ eYo.geom.makeC9r('Size', {
         return this
       } else if (eYo.isDef(width.w) && eYo.isDef(width.h)) {
         eYo.isDef(height) && eYo.throw(`${this.eyo.name}/pSet: Unexpected last argument ${height}`)
-        //... var S = new eYo.geom.Size()
+        //... S = new eYo.geom.Size()
         //... chai.expect(() => {S.pSet(m, 1)}).throw()
         this.w_ = width.w
         this.h_ = width.h
         return this
-        //... var S = new eYo.geom.Size()
+        //... S = new eYo.geom.Size()
         //... S.pSet(m)
         //... chai.expect(S).almost.eql(m)
       }
-      //... var S = new eYo.geom.Size()
+      //... S = new eYo.geom.Size()
       //... S.pSet(mm.width, mm.height)
       //... chai.expect(S).almost.eql(m)
       this.width_ = width
@@ -356,41 +389,41 @@ eYo.geom.makeC9r('Size', {
       //... var scaleY = 1 + eYo.test.randN()
       if (scaleX.x) {
         eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
-        //... var S = new eYo.geom.Size(m)
+        //... S = new eYo.geom.Size(m)
         //... chai.expect(() => S.scale({x: 1}, 2)).throw()
         this.w_ *= scaleX.x
         this.h_ *= (scaleX.y || scaleX.x)
         //... chai.expect(S).almost.eql(m)
         //... S.scale({x: scaleX})
-        //... chai.expect(S).almost.eql({w: scaleX * m.w, h: scaleX * m.h})
+        //... isSwh(S, m.w * scaleX, m.h * scaleX)
         //... S.scale({x: 1 / scaleX})
         //... chai.expect(S).almost.eql(m)
         //... S.scale({x: scaleX, y: scaleY})
-        //... chai.expect(S).almost.eql({w: scaleX * m.w, h: scaleY * m.h})
+        //... isSwh(S, m.w * scaleX, m.h * scaleY)
         //... S.scale({x: 1 / scaleX, y: 1 / scaleY})
         //... chai.expect(S).almost.eql(m)
       } else if (scaleX.y) {
         eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
-        //... var S = new eYo.geom.Size(m)
+        //... S = new eYo.geom.Size(m)
         //... chai.expect(() => S.scale({y: 1}, 2)).throw()
         this.w_ *= scaleX.y
         this.h_ *= scaleX.y
         //... chai.expect(S).almost.eql(m)
         //... S.scale({y: scaleY})
-        //... chai.expect(S).almost.eql({w: scaleY * m.w, h: scaleY * m.h})
+        //... isSwh(S, m.w * scaleY, m.h * scaleY)
         //... S.scale({y: 1 / scaleY})
         //... chai.expect(S).almost.eql(m)
       } else {
-        //... var S = new eYo.geom.Size(m)
+        //... S = new eYo.geom.Size(m)
         this.w_ *= scaleX
         this.h_ *= (scaleY || scaleX)
         //... chai.expect(S).almost.eql(m)
         //... S.scale(scaleX)
-        //... chai.expect(S).almost.eql({w: scaleX * m.w, h: scaleX * m.h})
+        //... isSwh(S, m.w * scaleX, m.h * scaleX)
         //... S.scale(1 / scaleX)
         //... chai.expect(S).almost.eql(m)
         //... S.scale(scaleX, scaleY)
-        //... chai.expect(S).almost.eql({w: scaleX * m.w, h: scaleY * m.h})
+        //... isSwh(S, m.w * scaleX, m.h * scaleY)
         //... S.scale(1 / scaleX, 1 / scaleY)
         //... chai.expect(S).almost.eql(m)
       }
@@ -410,41 +443,41 @@ eYo.geom.makeC9r('Size', {
       //... var scaleY = 1 + eYo.test.randN()
       if (scaleX.x) {
         eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
-        //... var S = new eYo.geom.Size(m)
+        //... S = new eYo.geom.Size(m)
         //... chai.expect(() => S.unscale({x: 1}, 2)).throw()
         this.w_ /= scaleX.x
         this.h_ /= (scaleX.y || scaleX.x)
         //... chai.expect(S).almost.eql(m)
         //... S.unscale({x: scaleX})
-        //... chai.expect(S).almost.eql({w: m.w / scaleX, h: m.h / scaleX})
+        //... isSwh(S, m.w / scaleX, m.h / scaleX)
         //... S.unscale({x: 1 / scaleX})
         //... chai.expect(S).almost.eql(m)
         //... S.unscale({x: scaleX, y: scaleY})
-        //... chai.expect(S).almost.eql({w: m.w / scaleX, h: m.h / scaleY})
+        //... isSwh(S, m.w / scaleX, m.h / scaleY)
         //... S.unscale({x: 1 / scaleX, y: 1 / scaleY})
         //... chai.expect(S).almost.eql(m)
       } else if (scaleX.y) {
         eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
-        //... var S = new eYo.geom.Size(m)
+        //... S = new eYo.geom.Size(m)
         //... chai.expect(() => S.scale({y: 1}, 2)).throw()
         this.w_ /= scaleX.y
         this.h_ /= scaleX.y
         //... chai.expect(S).almost.eql(m)
         //... S.unscale({y: scaleY})
-        //... chai.expect(S).almost.eql({w: m.w / scaleY, h: m.h / scaleY})
+        //... isSwh(S, m.w / scaleY, m.h / scaleY)
         //... S.unscale({y: 1 / scaleY})
         //... chai.expect(S).almost.eql(m)
       } else {
-        //... var S = new eYo.geom.Size(m)
+        //... S = new eYo.geom.Size(m)
         this.w_ /= scaleX
         this.h_ /= (scaleY || scaleX)
         //... chai.expect(S).almost.eql(m)
         //... S.unscale(scaleX)
-        //... chai.expect(S).almost.eql({w: m.w / scaleX, h: m.h / scaleX})
+        //... isSwh(S, m.w / scaleX, m.h / scaleX)
         //... S.unscale(1 / scaleX)
         //... chai.expect(S).almost.eql(m)
         //... S.unscale(scaleX, scaleY)
-        //... chai.expect(S).almost.eql({w: m.w / scaleX, h: m.h / scaleY})
+        //... isSwh(S, m.w / scaleX, m.h / scaleY)
         //... S.unscale(1 / scaleX, 1 / scaleY)
         //... chai.expect(S).almost.eql(m)
       }
@@ -453,7 +486,7 @@ eYo.geom.makeC9r('Size', {
     },
     /**
      * Sets from the given text.
-     * @param {String!} s
+     * @param {String!} txt
      * @return {eYo.geom.Size} the receiver.
      */
     setFromText (txt) {
@@ -461,21 +494,21 @@ eYo.geom.makeC9r('Size', {
       if (!eYo.isDef(txt)) {
         console.error('BREAK HERE!')
       }
-      var lines = txt.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/)
+      var lines = txt.split(/\R\n|[\n\v\f\R\x85\u2028\u2029]/)
       var c = 0
       lines.forEach(l => (c < l.length) && (c = l.length) )
       this.set(c, lines.length)
       return this
-      //... var S = new eYo.geom.Size(0,0)
+      //... S = new eYo.geom.Size(0,0)
       //... chai.expect(S.w === 0 && S.h === 0, '0').true
       //... var f = (txt, w, h) => {
       //...   S.setFromText(txt)
-      //...   chai.expect(S).almost.eql({w: w, h: h})
+      //...   isSwh(S, w, h)
       //... }
       //... var A = ['', 'a', 'aa', 'aaa']
       //... var B = ['', 'b', 'bb', 'bbb']
       //... var C = ['', 'c', 'cc', 'ccc']
-      //... var NL = ['\r', '\n', '\r\n', '\v', '\f', '\r', '\x85', '\u2028', '\u2029']
+      //... var NL = ['\R', '\n', '\R\n', '\v', '\f', '\R', '\x85', '\u2028', '\u2029']
       //... A.forEach(a => {
       //...   f(a, a.length, 1)
       //...   NL.forEach(nl1 => {
@@ -483,7 +516,7 @@ eYo.geom.makeC9r('Size', {
       //...       f(a+nl1+b, Math.max(a.length, b.length), 2)
       //...       NL.forEach(nl2 => {
       //...         C.forEach(c => {
-      //...           f(a+nl1+b+nl2+c, Math.max(a.length, b.length, c.length), nl1+b+nl2 === '\r\n' ? 2 : 3)
+      //...           f(a+nl1+b+nl2+c, Math.max(a.length, b.length, c.length), nl1+b+nl2 === '\R\n' ? 2 : 3)
       //...         })
       //...       })
       //...     })
@@ -496,7 +529,7 @@ eYo.geom.makeC9r('Size', {
   },
   aliases: {
     //<<< mochai: aliases
-    //... let S = new eYo.geom.Size()
+    //... S = new eYo.geom.Size()
     w: 'dc',
     //... chai.expect(S.w).equal(S.dc)
     //... S.dc_ = eYo.test.randN()
@@ -526,34 +559,34 @@ eYo.c9r.Dlgt_p.makeSized = function (key) {
   //... ns.makeBaseC9r(true)
   //... ns.BaseC9r.eyo.makeSized('size')
   //... ns.BaseC9r.eyo.finalizeC9r()
-  //... var r
+  //... var R
   this.modelMerge({
     //<<< mochai: Text coordinates
     properties: {
       //<<< mochai: properties
       [key]: {
         //<<< mochai: size
-        //... r = ns.new('foo', onr)
-        //... chai.expect(r.size_p).not.undefined
+        //... R = ns.new('foo', onr)
+        //... chai.expect(R.size_p).not.undefined
         value () {
           return new eYo.geom.Size()
         },
-        //... chai.expect(r.size).eyo_size
+        //... chai.expect(R.size).eyo_size
         copy: true,
         //... // A copy is not the original
-        //... chai.expect(r.size).not.equal(r.size_)
+        //... chai.expect(R.size).not.equal(R.size_)
         //... // A copy is not another copy
-        //... chai.expect(r.size).not.equal(r.size)
-        //... chai.expect(r.size).almost.eql(r.size_)
-        //... chai.expect(r.size).almost.eql(r.size)
+        //... chai.expect(R.size).not.equal(R.size)
+        //... chai.expect(R.size).almost.eql(R.size_)
+        //... chai.expect(R.size).almost.eql(R.size)
         set (stored, after) {
           stored.pSet(after)
-          //... r = ns.new('foo', onr)
+          //... R = ns.new('foo', onr)
           //... var sz = eYo.geom.randSize(false)
-          //... chai.expect(r.size_).not.equal(sz)
-          //... r.size_ = sz
-          //... chai.expect(r.size_).not.equal(sz)
-          //... chai.expect(r.size_).almost.eql(sz)
+          //... chai.expect(R.size_).not.equal(sz)
+          //... R.size_ = sz
+          //... chai.expect(R.size_).not.equal(sz)
+          //... chai.expect(R.size_).almost.eql(sz)
         }
         //>>>  
       },
@@ -563,20 +596,30 @@ eYo.c9r.Dlgt_p.makeSized = function (key) {
       //<<< mochai: aliases
       [key + '.w']: 'w',
         //<<< mochai: w
-        //... r = ns.new('foo', onr)
-        //... chai.expect(r.size.w).equal(r.w)
-        //... r.w_ += 1
-        //... chai.expect(r.size.w).equal(r.w)
-        //... r.size_.w_ += 1
-        //... chai.expect(r.size.w).equal(r.w)
+        //... R = ns.new('foo', onr)
+        //... chai.expect(R.w_p).not.undefined
+        //... chai.expect(R.size.w).equal(R.w)
+        //... R.w_ += 1
+        //... chai.expect(R.size.w).equal(R.w)
+        //... R.size_.w_ += 1
+        //... chai.expect(R.size.w).equal(R.w)
         //>>>
       [key + '.h']: 'h',
         //<<< mochai: h
-        //... chai.expect(r.size.h).equal(r.h)
-        //... r.h_ += 1
-        //... chai.expect(r.size.h).equal(r.h)
-        //... r.size_.h_ -= 1
-        //... chai.expect(r.size.h).equal(r.h)
+        //... R = ns.new('foo', onr)
+        //... chai.expect(R.h_p).not.undefined
+        //... chai.expect(R.size.h).equal(R.h)
+        //... R.h_ += 1
+        //... chai.expect(R.size.h).equal(R.h)
+        //... R.size_.h_ -= 1
+        //... chai.expect(R.size.h).equal(R.h)
+        //>>>
+        //<<< mochai: w + h
+        //... R = ns.new('foo', onr)
+        //... R.w_ = W
+        //... isSwh(R.size, W)
+        //... R.h_ = H
+        //... isSwh(R.size, W, H)
         //>>>
       //>>> 
     },
@@ -586,34 +629,43 @@ eYo.c9r.Dlgt_p.makeSized = function (key) {
     //<<< mochai: Board coordinates
     aliases: {
       //<<< mochai: aliases
-      //... let r = ns.new('foo', onr)
-      //... let m = {c: 1, l: 2, w: 3, h: 4}
-      //... r.size_.set(m)
+      //... R = ns.new('foo', onr)
       // basic properties in board dimensions
       [key + '.width']: 'width',
         //<<< mochai: width
-        //... chai.expect(r.size.width).almost.equal(m.w * eYo.geom.X)
-        //... chai.expect(r.size.width).almost.equal(r.width)
-        //... r.width_ += eYo.geom.X
-        //... chai.expect(r.size.width).almost.equal(r.width)
-        //... r.size_.width_ -= eYo.geom.X
-        //... chai.expect(r.size.width).almost.equal(r.width).almost.equal(m.w * eYo.geom.X)
+        //... R.size_.set(m)
+        //... chai.expect(R.size.width).almost.equal(mm.width)
+        //... R.width_ += eYo.geom.X
+        //... chai.expect(R.size.width).almost.equal(R.width)
+        //... R.size_.width_ -= eYo.geom.X
+        //... chai.expect(R.size.width).almost.equal(R.width).almost.equal(mm.width)
         // Convenient setters in board coordinates
-        //... r.width_ += 5 * eYo.geom.X
-        //... m.w += 5
-        //... chai.expect(r.width).almost.equal(m.w * eYo.geom.X)
+        //... R.width_ += 5 * eYo.geom.X
+        //... chai.expect(R.width).almost.equal(mm.width + 5 * eYo.geom.X)
         //>>>
       [key + '.height']: 'height',
         //<<< mochai: height
-        //... chai.expect(r.size.height).almost.equal(r.height).almost.equal(m.h * eYo.geom.Y)
-        //... r.height_ += eYo.geom.Y
-        //... chai.expect(r.size.height).almost.equal(r.height)
-        //... r.size_.height_ -= eYo.geom.Y
-        //... chai.expect(r.size.height).almost.equal(r.height)
-        //... chai.expect(r.height).almost.equal(m.h * eYo.geom.Y)
-        //... r.height_ += 4 * eYo.geom.Y
-        //... m.h += 4
-        //... chai.expect(r.height).almost.equal(m.h * eYo.geom.Y)
+        //... R.size_.set(m)
+        //... chai.expect(R.size.height).almost.equal(R.height).almost.equal(mm.height)
+        //... R.height_ += eYo.geom.Y
+        //... chai.expect(R.size.height).almost.equal(R.height)
+        //... R.size_.height_ -= eYo.geom.Y
+        //... chai.expect(R.size.height).almost.equal(R.height)
+        //... chai.expect(R.height).almost.equal(mm.height)
+        //... R.height_ += 4 * eYo.geom.Y
+        //... chai.expect(R.height).almost.equal(mm.height + 4 * eYo.geom.Y)
+        //>>>
+        //<<< mochai: width + height
+        //... R = ns.new('foo', onr)
+        //... R.width_ = mm.width
+        //... isSwh(R.size, m.w)
+        //... R.height_ = mm.height
+        //... isSwh(R.size, m.w, m.h)
+        //... R = ns.new('foo', onr)
+        //... R.size_.width_ = mm.width
+        //... chai.expect(R.width).almost.equal(mm.width)
+        //... R.size_.height_ = mm.height
+        //... chai.expect(R.height).almost.equal(mm.height)
         //>>>
       //>>>
     },
@@ -624,7 +676,7 @@ eYo.c9r.Dlgt_p.makeSized = function (key) {
 
 /**
  * Sets from the given text.
- * @param {String!} s
+ * @param {String!} txt
  */
 eYo.geom._p.newSizeFromText = function (txt) {
   return new eYo.geom.Size().setFromText(txt)

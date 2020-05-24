@@ -436,9 +436,6 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //... chai.assert(C9r.eyo.p6yMerge)
       let d = Object.create(null)
       for(let [source, alias] of Object.entries(aliases)) {
-        if (alias === 'topLeft') {
-          console.error('BREAK HERE!!!')
-        }
         let components = source.split('.')
         let d8r = {
           source: components,
