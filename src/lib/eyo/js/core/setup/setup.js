@@ -21,18 +21,9 @@ eYo.makeNS('setup', {
   i9rsTail: [],
 })
 
-/**
- * finalize.
- */
-eYo.setup.finalize = function () {
-  this.i9rsHead.forEach(i9r => i9r())
-  this.i9rsHead = eYo.NA
-  this.i9rsTail.reverse().forEach(i9r => i9r())
-  this.i9rsTail = eYo.NA
-  this.finalize = this.register = function () {
-    eYo.throw('eYo.setup: Too late to register or finalize')
-  }
-}
+//<<< mochai: setup
+//... chai.assert(eYo.setup)
+//>>>
 
 /**
  * @param {Integer} [when] - Where to place the installer
@@ -61,4 +52,17 @@ eYo.setup.register = function (when, i9r, key) {
     this.i9rsHead.splice(when, 0, i9r) // error if i9rsHead is undefined
   }
   i9r.eyo_register_key = key
+}
+
+/**
+ * finalize.
+ */
+eYo.setup.finalize = function () {
+  this.i9rsHead.forEach(i9r => i9r())
+  this.i9rsHead = eYo.NA
+  this.i9rsTail.reverse().forEach(i9r => i9r())
+  this.i9rsTail = eYo.NA
+  this.finalize = this.register = function () {
+    eYo.throw('eYo.setup: Too late to register or finalize')
+  }
 }
