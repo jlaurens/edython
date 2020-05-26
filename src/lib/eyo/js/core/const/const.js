@@ -210,3 +210,7 @@ eYo.makeNS('key', {
   },
 })
 
+//<<< mochai: Basics
+//... chai.assert(eYo.const)
+//... chai.assert(eYo.key)
+//>>>
