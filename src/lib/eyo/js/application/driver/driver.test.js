@@ -1,176 +1,120 @@
 describe('driver', function() {
-  it ('Driver: Basic', function () {
-    chai.assert(eYo.driver)
-    chai.assert(eYo.isF(eYo.driver.Dlgt))
-    chai.assert(eYo.isF(eYo.driver.BaseC9r))
-    chai.assert(eYo.isF(eYo.driver.DlgtMngr))
-    chai.assert(eYo.isF(eYo.driver.makeMngr))
-    chai.assert(eYo.isF(eYo.driver.makeDriverC9r))
-  })
-  it ('Driver: Base', function () {
-    var d = new eYo.driver.BaseC9r(NS)
-    chai.assert(d)
-    chai.assert(eYo.isF(d.initUI))
-    chai.assert(eYo.isF(d.disposeUI))
-  })
-  it ('Driver: makeMngr', function () {
-    var ns = eYo.driver.makeNS()
-    ns.makeMngr()
-    chai.assert(ns.Mngr)
-    chai.expect(ns.Mngr.eyo.C9r).equal(ns.Mngr)
-    chai.expect(ns.Mngr.eyo.constructor).equal(eYo.driver.DlgtMngr)
-    chai.assert(ns.makeMngr)
-    chai.assert(ns.makeDriverC9r)
-    chai.expect(ns.BaseC9r).equal(eYo.driver.BaseC9r)
-    chai.expect(ns.Dlgt).equal(eYo.driver.Dlgt)
-    chai.expect(ns.DlgtMngr).equal(eYo.driver.DlgtMngr)
-    ns.makeNS('a')
-    ns.a.makeMngr()
-  })
-  it ('Driver: manager', function () {
-    var ns = eYo.driver.makeNS()
-    ns.makeMngr()
-    chai.assert(ns.Mngr)
-    chai.expect(ns.Mngr.eyo.constructor).equal(ns.DlgtMngr)
-    var onr = {}
-    onr.mngr = new ns.Mngr(onr)
-    chai.assert(onr.mngr)
-    chai.expect(onr.mngr.owner).equal(onr)
-    chai.assert(onr.mngr.allPurposeDriver)
-  })
-  it ('Driver: makeDriverC9r basic', function () {
-    var ns = eYo.driver.makeNS()
-    ns.makeMngr()
-    ns.makeDriverC9r('Foo')
-    chai.assert(eYo.isF(ns.Foo))
-    var foo = new ns.Foo(NS)
-    chai.assert(foo.doInitUI)
-    chai.assert(!foo.doInitUI())
-    chai.expect(() => {
-      foo.disposeUI()
-    }).to.not.throw()
+  this.timeout(10000)
+  var flag, onr
+  beforeEach (function() {
+    flag = new eYo.test.Flag()
+    onr = eYo.c9r && eYo.c9r.new({
+      methods: {
+        flag (what, ...$) {
+          flag.push(1, what, ...$)
+          return what
+        },
+      },
+    }, 'onr')
   })
   it ('Driver: makeDriverC9r inherits', function () {
-    var ns = eYo.driver.makeNS()
-    ns.makeMngr()
-    var flag
-    ns.makeBaseC9r({
-      init () {
-        flag += 421
+    var NS = eYo.driver.makeNS()
+    NS.makeMngr()
+    NS.makeDriverC9r('Foo', {
+      init (...$) {
+        flag.push(1)
       }
     })
-    ns.makeDriverC9r('Foo')
-    chai.assert(eYo.isF(ns.Foo))
-    flag = 0
-    new ns.Foo(NS)
-    chai.expect(flag).equal(421)
+    chai.assert(eYo.isF(NS.Foo))
+    new NS.Foo('foo', onr)
+    flag.expect(1)
   })
   it ('Driver: makeDriverC9r inherits (2)', function () {
-    var flag
-    var ns = eYo.driver.makeNS()
-    ns.makeMngr()
-    ns.makeDriverC9r('Foo', {
-      init (owner, x) {
-        flag += x
+    var NS = eYo.driver.makeNS()
+    NS.makeMngr()
+    NS.makeDriverC9r('Foo', {
+      init (key, owner, ...$) {
+        owner.flag(2, ...$)
       },
     })
-    chai.assert(eYo.isF(ns.Foo))
-    flag = 0
-    new ns.Foo(NS, 1)
-    chai.expect(flag).equal(1)
-    ns.makeNS('a')
-    ns.a.makeMngr()
-    chai.expect(ns.a.super).equal(ns)
-    ns.a.makeDriverC9r('Foo', {
-      init (owner, x) {
-        flag += 10*x
+    chai.expect(NS.Foo).eyo_C9r
+    new NS.Foo('foo', onr, 3, 4)
+    flag.expect(1234)
+    NS.makeNS('a')
+    NS.a.makeMngr()
+    chai.expect(NS.a.super).equal(NS)
+    NS.a.makeDriverC9r('Foo', {
+      init (key, owner, ...$) {
+        owner.flag(3, ...$)
       },
     })
-    chai.assert(eYo.isF(ns.a.Foo))
-    flag = 0
-    new ns.a.Foo(NS, 1)
-    console.warn('flag', flag)
-    chai.expect(flag).equal(11)
+    chai.expect(NS.a.Foo).eyo_C9r
+    chai.expect(NS.a.Foo.SuperC9r).equal(NS.Foo)
+    new NS.a.Foo('foo', onr, 4, 5)
+    flag.expect(12451345)
   })
   it ('Driver: makeDriverC9r with model', function () {
-    var flag
-    var ns = eYo.driver.makeNS()
-    ns.makeMngr()
-    var Super = (ns.super && ns.super[name])|| ns.BaseC9r
-    chai.expect(Super).equal(ns.BaseC9r)
-    ns.makeDriverC9r('Foo', {
-      init () {
-        flag += 1
+    var NS = eYo.driver.makeNS()
+    NS.makeMngr()
+    NS.makeDriverC9r('Foo', {
+      init (key, owner, ...$) {
+        flag.push(1, ...$)
       },
       ui: {
-        doInit (what) {
-          flag += 10 * what
+        doInit (what, ...$) {
+          flag.push(2, ...$)
           return true
         },
-        doDispose (what) {
-          flag += 100 * what
+        doDispose (what, ...$) {
+          flag.push(3, ...$)
         }
       },
     })
-    flag = 0
-    var foo = new ns.Foo(NS)
-    chai.expect(flag).equal(1)
-    chai.assert(foo.doInitUI && foo.doInitUI(2))
-    chai.expect(flag).equal(21)
-    foo.doDisposeUI(3)
-    chai.assert(flag === 321, `Unexpected flag value: ${flag}`)
+    var foo = new NS.Foo('foo', onr, 2, 3)
+    flag.expect(123)
+    chai.expect(foo.doInitUI(2, 3, 4)).true
+    flag.expect(234)
+    foo.doDisposeUI(3, 4, 5)
+    flag.expect(345)
   })
   it ('Driver: makeDriverC9r concurrent', function () {
-    var ns = eYo.driver.makeNS()
-    var flag
-    ns.makeMngr()
-    ns.makeDriverC9r('Foo', {
-      init (owner, x = 1) {
-        flag += 1 * x
+    var NS = eYo.driver.makeNS()
+    NS.makeMngr()
+    NS.makeDriverC9r('Foo', {
+      init (key, owner, ...$) {
+        flag.push(1, ...$)
       },
       ui: {
-        doInit (x = 1) {
-          flag += 10 * x
+        doInit (what, ...$) {
+          flag.push(2, ...$)
           return true
         },
-        doDispose (x = 1) {
-          flag += 100 * x
+        doDispose (what, ...$) {
+          flag.push(3, ...$)
         },
       },
     })
-    ns.makeDriverC9r('Bar', {
-      init (owner, x = 1) {
-        flag += 1000 * x
+    NS.makeDriverC9r('Bar', {
+      init (key, owner, ...$) {
+        flag.push(4, ...$)
       },
       ui: {
-        doInit (x = 1) {
-          flag += 10000 * x
+        doInit (what, ...$) {
+          flag.push(5, ...$)
           return true
         },
-        doDispose (x = 1) {
-          flag += 100000 * x
+        doDispose (what, ...$) {
+          flag.push(6, ...$)
         },
       },
     })
-    flag = 0
-    var foo = new ns.Foo(NS)
-    chai.expect(flag).equal(1)
-    chai.assert(foo.doInitUI())
-    chai.expect(flag).equal(11)
-    foo.doDisposeUI()
-    chai.expect(flag).equal(111)
-    var bar = new ns.Bar(NS)
-    chai.expect(flag).equal(1111)
-    chai.assert(bar.doInitUI())
-    chai.expect(flag).equal(11111)
-    bar.doDisposeUI()
-    chai.expect(flag).equal(111111)
-  })
-  it ('Driver: new', function () {
-    let owner = {}
-    let mngr = new eYo.driver.Mngr(owner)
-    chai.assert(mngr)
-    chai.assert(mngr.drivers)
+    var foo = new NS.Foo('foo', onr, 2, 3)
+    flag.expect(123)
+    chai.expect(foo.doInitUI(0, 3, 4)).true
+    flag.expect(234)
+    foo.doDisposeUI(0, 4, 5)
+    flag.expect(345)
+    var bar = new NS.Bar('bar', onr, 5, 6)
+    flag.expect(456)
+    chai.expect(bar.doInitUI(0, 6, 7)).true
+    chai.expect(567)
+    bar.doDisposeUI(0, 7, 8)
+    chai.expect(678)
   })
 })
 

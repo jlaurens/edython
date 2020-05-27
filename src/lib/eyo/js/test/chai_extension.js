@@ -361,7 +361,7 @@ chai.use(function (chai, utils) {
    * expect(4).to.not.be.almost(5, 1.5). Simply adds tolerance flag then calls
    * .equal. This will redirect to .eql if deep flag set
    */
-  function method (val, tolerance = eYo.EPSILON) {
+  function almostEqual (val, tolerance = eYo.EPSILON) {
     flag(this, 'tolerance', tolerance)
     return this.equal(val)
   }
@@ -371,11 +371,22 @@ chai.use(function (chai, utils) {
    * expect(3.99999999).to.almost.equal(4). Simply adds
    * tolerance flag to be read by equality checking methods
    */
-  function chainingBehavior () {
+  function almostChainable () {
     flag(this, 'tolerance', eYo.EPSILON)
   }
 
-  Assertion.addChainableMethod('almost', method, chainingBehavior)
+  Assertion.addChainableMethod('almost', almostEqual, almostChainable)
+
+  chai.Assertion.addMethod('eyo_subclass', function (expected) {
+    var actual = this._obj
+    this.assert(
+      eYo.isSubclass(actual, expected),
+      `expected ${actual && actual.eyo && actual.eyo.name} to be a subclass of ${expected && expected.eyo && expected.eyo.name}`,
+      `expected ${actual && actual.eyo && actual.eyo.name} not to be a subclass of ${expected && expected.eyo && expected.eyo.name}`,
+      expected,
+      actual
+    )
+  })
 
   Assertion.overwriteMethod('equal', overrideAssertEqual)
   Assertion.overwriteMethod('equals', overrideAssertEqual)

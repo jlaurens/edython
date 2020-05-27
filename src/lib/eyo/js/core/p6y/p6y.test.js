@@ -12,7 +12,6 @@ describe ('Tests: Property', function () {
       },
     }, 'onr')
   })
-
   it('P6y: get_/willChange/set_/didChange', function () {
     let p = eYo.p6y.new({
       get_ () {
@@ -35,6 +34,22 @@ describe ('Tests: Property', function () {
     flag.expect(12)
     p.value_ = 9
     flag.expect(121384915916879)
+  })
+  it('P6y: lazy/didChange', function () {
+    let p = eYo.p6y.new({
+      lazy () {
+        this.flag(2)
+        return this.foo__
+      },
+      didChange (after) {
+        this.flag(2, after)
+      },
+    }, 'foo', onr)
+    onr.foo__ = 7
+    chai.expect(p.value).equal(7)
+    flag.expect(12)
+    p.value_ = 3
+    flag.expect(123)
   })
   it('P6y: observe', function () {
     let p = eYo.p6y.new({}, 'foo', onr)

@@ -70,7 +70,7 @@ eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
   if (!eYo.isaC9r(owner)) {
     console.error('BREAK HERE!')
   }
-  eYo.isaC9r(owner) || eYo.throw(`${this.name}.o3dInitInstance: Very bad owner`)
+  eYo.isaC9r(owner) || eYo.throw(`${this.name}.o3dInitInstance: Very bad owner (${owner})`)
   eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Bad key in init`)
   instance.owner__ = owner
   instance.key_ = key

@@ -7,7 +7,7 @@ describe('Svg driver', function() {
     chai.assert(eYo.svg.BaseC9r)
   })
   it ('Svg Dlgt: Drivers', function () {
-    for (let [name, Driver] of Object.entries(eYo.svg.Mngr.eyo.driverC9rByName)) {
+    for (let [name, Driver] of eYo.svg.Mngr.eyo.driverC9rMap) {
       console.warn(`${name} -> ${Driver.eyo.name}`)
     }
   })

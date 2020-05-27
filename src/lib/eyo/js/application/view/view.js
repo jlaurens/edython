@@ -6,14 +6,15 @@
  * @license EUPL-1.2
  */
 /**
- * @fileoverview namspace for all the view objects.
+ * @fileoverview namespace for all the view objects.
  * View object are displayed unless for a faceless application.
  * This is a view that contains other views.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
 'use strict'
 
-eYo.forward('geom')
+eYo.require('geom')
+eYo.require('driver')
 
 /**
  * @name {eYo.view}
@@ -362,6 +363,33 @@ eYo.view.makeBaseC9r(true, {
       //... V = new eYo.View('foo', onr, 1, 2, 3)
       //... chai.expect(V.viewRect).instanceOf(eYo.geom.Rect)
       //>>>
+    },
+    /**
+     * The driver manager shared by all the instances in the app.
+     * @type {eYo.driver.Mngr}
+     */
+    ui_driver_mngr: {
+      get () {
+        let a = this.app
+        return a && a.ui_driver_mngr
+      },
+    },
+    /**
+     * The driver.
+     * @type {eYo.driver.BaseC9r}
+     */
+    ui_driver: {
+      lazy () {
+        var mngr = this.ui_driver_mngr
+        return mngr && mngr.driver(this)
+      },
+      reset (builtin) {
+        this.ownedForEach(x => {
+          let p = x.ui_driver_p
+          p && p.reset()
+        })
+        builtin()
+      }
     },
     //>>>
   },

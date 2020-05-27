@@ -196,20 +196,20 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
       if(model) {
         console.error('BREAK HERE!!!')
       }
-      model && eYo.throw(`Unexpected model(1): ${model}`)
+      model && eYo.throw(`${this.name}/makeC9rDecorate: Unexpected model(1/${model})`)
       ;[ns, id, Super, register, model] = [this, ns, id, Super, register]
     }
     if (!eYo.isStr(id)) {
-      model && eYo.throw(`Unexpected model (2): ${model}`)
+      model && eYo.throw(`${this.name}/makeC9rDecorate: Unexpected model(2/${model})`)
       ;[id, Super, register, model] = [eYo.NA, id, Super, register]
     }
     // Default value for Super, when there are arguments
     if (Super && !eYo.isC9r(Super)) {
-      model && eYo.throw(`Unexpected model (3): ${model}`)
+      model && eYo.throw(`${this.name}/makeC9rDecorate: Unexpected model(3/${model})`)
       ;[Super, register, model] = [eYo.asF(id && this[id]) || this.BaseC9r, Super, register]
     }
     if (!eYo.isBool(register)) {
-      model && eYo.throw(`Unexpected model (4): ${model}`)
+      model && eYo.throw(`${this.name}/makeC9rDecorate: Unexpected model(4/${model})`)
       ;[register, model] = [false, register]
     }
     model = eYo.called(model) || {}
@@ -221,7 +221,7 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
     if (eYo.isSubclass(this.BaseC9r, Super)) {
       Super = this.BaseC9r
     }
-    !eYo.isNS(ns) || !eYo.isStr(id) && eYo.throw('Missing id in makeC9rDecorate')
+    !eYo.isNS(ns) || !eYo.isStr(id) && eYo.throw(`${this.name}/makeC9rDecorate: Missing id`)
     let C9r = f.call(this, ns, id, Super, model)
     register && eYo.c9r.register(C9r)
     return C9r
