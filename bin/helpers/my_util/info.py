@@ -186,6 +186,9 @@ class Info:
           k = m.group('key')
           required.add(f'{ns}')
           addProvided(f'{ns}.{k}.BaseC9r')
+          K = k.title()
+          if k != K:
+            addProvided(f'{ns}.{K}')
           continue
         m = self.re_makeMngr.match(l)
         if m:

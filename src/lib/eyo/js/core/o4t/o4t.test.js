@@ -1222,8 +1222,8 @@ describe ('Tests: Object', function () {
         },
       }, 'foo', onr)
       chai.expect(bar.foo).equal(421)
-      let ns = eYo.o4t.makeNS()
-      ns.makeBaseC9r({
+      let NS = eYo.o4t.makeNS()
+      NS.makeBaseC9r({
         properties: {
           bar,
         },
@@ -1231,7 +1231,7 @@ describe ('Tests: Object', function () {
           'bar.foo': 'foo',
         }
       })
-      var o = ns.new('foo', onr)
+      var o = NS.new('foo', onr)
       chai.expect(o.bar).equal(bar)
       chai.expect(o.bar.foo).equal(421)
       chai.expect(o.foo).equal(421)

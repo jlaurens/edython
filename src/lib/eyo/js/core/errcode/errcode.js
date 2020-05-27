@@ -29,9 +29,10 @@ eYo.makeNS('e', {
   EOLS: 24, /* EOL in single-quoted string */
   LINECONT: 25, /* Unexpected characters after a line continuation */
   IDENTIFIER: 26, /* Invalid characters in identifier */
-  BADSINGLE: 27 /* Ill-formed single statement input */
+  BADSINGLE: 27, /* Ill-formed single statement input */
 })
 
 //<<< mochai: Basics
-//... chai.expect(eYo.e.BADSINGLE).isNum
+//... chai.expect(eYo.e.OK).eyo_Num
+//... chai.expect(eYo.e.BADSINGLE).eyo_Num
 //>>>

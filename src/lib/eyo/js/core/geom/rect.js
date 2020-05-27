@@ -1387,7 +1387,7 @@ eYo.geom.Rect.eyo.modelMerge({
       //... isRclwh(R, -0.1, -0.1, 1.1, 1.1)
       //... R.pInset(0,0,-0.1 * eYo.geom.X,0)
       //... isRclwh(R, -0.1, -0.1, 1.2, 1.1)
-      //... pInset(0, 0, 0, -0.1 * eYo.geom.Y)
+      //... R.pInset(0, 0, 0, -0.1 * eYo.geom.Y)
       //... isRclwh(R, -0.1, -0.1, 1.2, 1.2)
       //>>>
     },

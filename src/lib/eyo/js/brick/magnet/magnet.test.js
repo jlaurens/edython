@@ -37,7 +37,7 @@ describe ('Tests: magnet', function () {
             flag.push(2)
             console.error(flag.v)
           },
-        }, bs, type)
+        }, type, bs)
         chai.expect(eYo.isDef(m))
         console.error(flag.v)
       })

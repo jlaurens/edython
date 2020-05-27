@@ -12,10 +12,10 @@
 'use strict'
 
 eYo.require('do')
-eYo.require('font')
 eYo.require('p6y')
 eYo.require('o4t')
 
+eYo.forward('font')
 eYo.forward('geom.Point')
 eYo.forward('geom.Size')
 eYo.forward('geom.Rect')
@@ -36,7 +36,7 @@ eYo.forward('geom.Rect')
  * @name{eYo.geom}
  * @namespace
  */
-eYo.c9r.makeNS(eYo, 'geom', {
+eYo.c9r.makeNS(eYo, 'geom', true, {
   //<<< mochai: CONST
   X () {
     return eYo.font.space
@@ -44,25 +44,26 @@ eYo.c9r.makeNS(eYo, 'geom', {
   Y () {
     return eYo.font.lineHeight
   },
-  REM () {
-    return parseFloat(getComputedStyle(document.documentElement).fonnewSize)
-  },
   C () {
     return 2
   },
   L () {
     return 4
-  }
+  },
+  REM () {
+    return parseFloat(getComputedStyle(document.documentElement).fontSize)
+  },
+  //... chai.expect(eYo.font.space).eyo_Num
   //... chai.expect(eYo.geom.X).eyo_Num
   //... chai.expect(eYo.geom.Y).eyo_Num
-  //... chai.expect(eYo.geom.REM).eyo_Num
   //... chai.expect(eYo.geom.C).eyo_Num
   //... chai.expect(eYo.geom.L).eyo_Num
+  //... chai.expect(eYo.geom.REM).eyo_Num
   //... chai.expect(() => { eYo.geom.C = 10 }).throw()
   //... chai.expect(eYo.geom.C === Math.round(eYo.geom.C)).true
   //... chai.expect(eYo.geom.L === Math.round(eYo.geom.L)).true
   //>>>
-}, true)
+})
 
 eYo.geom.makeBaseC9r(true, {
   //<<< mochai: eYo.geom.BaseC9r

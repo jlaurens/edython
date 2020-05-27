@@ -70,32 +70,34 @@ eYo.observe.makeBaseC9r({
   },
 })
 
-/**
- * @param {String} [when] - One of the observe HOOKS
- * @param {Object} [$this | eYo.observe.BaseC9r] - Self explanatory
- * @param {Function} [f] - function ([before], after) => void. arguments must ont have another name.
- */
-eYo.observe.new = function (when, $this, callback) {
-  if (!eYo.observe.HOOKS.includes(when)) {
-    eYo.isDef(callback) && eYo.throw(`${this.eyo.name}/addObserver: Too many arguments ${callback}`)
-    ;[when, $this, callback] = [eYo.NA, when, $this]
-  }
-  if ($this instanceof eYo.observe.BaseC9r) {
-    eYo.isDef(callback) && eYo.throw(`${this.eyo.name}/addObserver: Too many arguments ${callback}`)
-    if (!eYo.isDef(when) || when === $this.when) {
-      return $this
+eYo.mixinR(false, eYo.observe, {
+  /**
+   * @param {String} [when] - One of the observe HOOKS
+   * @param {Object} [$this | eYo.observe.BaseC9r] - Self explanatory
+   * @param {Function} [f] - function ([before], after) => void. arguments must ont have another name.
+   */
+  new (when, $this, callback) {
+    if (!eYo.observe.HOOKS.includes(when)) {
+      eYo.isDef(callback) && eYo.throw(`${this.eyo.name}/addObserver: Too many arguments ${callback}`)
+      ;[when, $this, callback] = [eYo.NA, when, $this]
     }
-    return new eYo.observe.BaseC9r(when, $this.$this, $this.callback_)
-  }
-  if (eYo.isF($this)) {
-    eYo.isDef(callback) && eYo.throw(`${this.eyo.name}: unexpected (last?) parameter, got ${callback}`)
-    ;[$this, callback] = [eYo.NA, $this]
-  } else {
-    eYo.isF(callback) || eYo.throw(`Callback must be a function, got ${callback}`)
-  }
-  (!when && (when = eYo.observe.AFTER)) || eYo.observe.HOOKS.includes(when) || eYo.throw(`Unexpected when, got ${when}`)
-  return new eYo.observe.BaseC9r(when, $this, callback)
-}
+    if ($this instanceof eYo.observe.BaseC9r) {
+      eYo.isDef(callback) && eYo.throw(`${this.eyo.name}/addObserver: Too many arguments ${callback}`)
+      if (!eYo.isDef(when) || when === $this.when) {
+        return $this
+      }
+      return new eYo.observe.BaseC9r(when, $this.$this, $this.callback_)
+    }
+    if (eYo.isF($this)) {
+      eYo.isDef(callback) && eYo.throw(`${this.eyo.name}: unexpected (last?) parameter, got ${callback}`)
+      ;[$this, callback] = [eYo.NA, $this]
+    } else {
+      eYo.isF(callback) || eYo.throw(`Callback must be a function, got ${callback}`)
+    }
+    (!when && (when = eYo.observe.AFTER)) || eYo.observe.HOOKS.includes(when) || eYo.throw(`Unexpected when, got ${when}`)
+    return new eYo.observe.BaseC9r(when, $this, callback)
+  },
+})
 
 eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
   //<<< mochai: ...observeEnhanced

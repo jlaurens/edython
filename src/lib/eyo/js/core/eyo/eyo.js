@@ -1019,7 +1019,7 @@ eYo.mixinR(false, eYo._p, {
    * @return {Object}
    */
   makeNS (ns, key, model, getters) {
-    //<<<chai: eYo.makeNS'
+    //<<< mochai: eYo.makeNS'
     //... chai.assert(eYo.isNS)
     //... chai.expect(eYo).eyo_NS
     //... chai.assert(eYo.makeNS)
@@ -1089,6 +1089,10 @@ eYo.mixinR(false, eYo._p, {
       )
       //... var ns = eYo.makeNS(eYo.NULL_NS, 'fu', {
       //...   shi: 421
+      //... })
+      //... chai.expect(ns.shi).equal(421)
+      //... var ns = eYo.makeNS(eYo.NULL_NS, 'fu', true, {
+      //...   shi () { return 421 }
       //... })
       //... chai.expect(ns.shi).equal(421)
     })
@@ -1273,10 +1277,12 @@ eYo.ENABLE_ASSERTS = true
 
 eYo.provide('eYo')
 
+//<<< mochai: version
 eYo.makeNS('version', {
+  //<<< mochai: CONST
   /** @define {number} */
   MAJOR: 0,
-
+  //... chai.expect(eYo.version.MAJOR).eyo_Num
   /** @define {number} */
   MINOR: 1,
 
@@ -1291,7 +1297,9 @@ eYo.makeNS('version', {
 
   /** @define {string} */
   GIT_HEAD: '',
+  //>>>
 })
+//>>>
 
 eYo.makeNS('session')
 

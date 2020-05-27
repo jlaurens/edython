@@ -105,7 +105,7 @@ eYo.slot.makeBaseC9r({
     }
     model.setup_ || setupModel(model)
     if (!eYo.isNA(model.check)) {
-      this.magnet_ = eYo.magnet.new(model, this, eYo.magnet.IN)
+      this.magnet_ = eYo.magnet.new(model, eYo.magnet.IN, this)
       if (model.wrap) {
         this.magnet_.wrapped = model.wrap   
       } else if (model.promise) {

@@ -238,7 +238,7 @@ describe ('Tests: data', function () {
         },
       },
     }, 'b3k', onr)  
-    let d = eYo.data.new(b3k, 'd')
+    let d = eYo.data.new({}, 'd', b3k)
     chai.assert(b3k.changer)
     chai.expect(d.owner).equal(d.brick).equal(b3k)
     chai.expect(d.changer).equal(b3k.changer)
@@ -247,7 +247,7 @@ describe ('Tests: data', function () {
     let test = (expect, f) => {
       d = ns.new({
         [K]: f,
-      }, b3k, 'd')
+      }, 'd', b3k)
       d[K]()
       flag.expect(expect)
     }
@@ -350,7 +350,7 @@ describe ('Tests: data', function () {
     chai.expect(b3k.eyo.model.properties.changer.value).equal(1)
     chai.expect(b3k.changer).equal(1)
     chai.expect(b3k.type).equal(2)
-    let d = eYo.data.new({}, b3k, 'd')
+    let d = eYo.data.new({}, 'd', b3k)
     chai.assert(d.brick_p)
     chai.assert(d.changer_p)
     chai.assert(d.brickType_p)

@@ -77,21 +77,21 @@ eYo.magnet.makeC9r('S', { // eYo.magnet.BaseC9r is not yet defined!
     var model = brick.model
     var D
     if ((D = model.out) && eYo.isVALID(D.check)) {
-      this.out_ = eYo.magnet.new(D, brick, eYo.magnet.OUT)
+      this.out_ = eYo.magnet.new(D, eYo.magnet.OUT, brick)
     } else if ((D = model.suite) && eYo.isDef(D.check)) {
-      this.suite_ = eYo.magnet.new(D, brick, eYo.magnet.FOOT)
+      this.suite_ = eYo.magnet.new(D, eYo.magnet.FOOT, brick)
     }
     if ((D = model.head) && eYo.isDef(D.check)) {
-      this.head_ = eYo.magnet.new(D, brick, eYo.magnet.HEAD)
+      this.head_ = eYo.magnet.new(D, eYo.magnet.HEAD, brick)
     }
     if ((D = model.foot) && eYo.isDef(D.check)) {
-      this.foot_ = eYo.magnet.new(D, brick, eYo.magnet.FOOT)
+      this.foot_ = eYo.magnet.new(D, eYo.magnet.FOOT, brick)
     }
     if ((D = model.left) && eYo.isDef(D.check)) {
-      this.left_ = eYo.magnet.new(D, brick, eYo.magnet.LEFT)
+      this.left_ = eYo.magnet.new(D, eYo.magnet.LEFT, brick)
     }
     if ((D = model.right) && eYo.isDef(D.check)) {
-      this.right_ = eYo.magnet.new(D, brick, eYo.magnet.RIGHT)
+      this.right_ = eYo.magnet.new(D, eYo.magnet.RIGHT, brick)
     }
   },
   properties: {
