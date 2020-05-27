@@ -13,8 +13,6 @@ print(format.title('Collecting dependencies...'))
 bdd = get_bdd(verbose=verbose)
 print(format.ok('... DONE'))
 
-print(*bdd['eYo.attr'].required, sep='\n')
-
 def minimalTests(path_src):
   print(format.title('Updating minimal tests...'))
   for js in [x for x in path_src.rglob('*.js')

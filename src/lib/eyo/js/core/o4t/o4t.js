@@ -276,7 +276,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
   //... o.eyo.p6yInit(o)
   //... chai.expect(o.p6yMap.get('foo').value).equal(421)
   //>>>
-  eYo.o4t.appendToMethod(this._p, 'p6yMerge', function () {
+  eYo.c9r.appendToMethod(this._p, 'p6yMerge', function () {
     this.p6yShortcuts()
     //<<< mochai: p6yMerge+p6yShortcuts
     //... let ns = eYo.c9r.makeNS()
@@ -419,8 +419,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
     },
     //>>>
   })
-  let _p = this._p
-  eYo.mixinR(false, _p, {
+  eYo.mixinR(false, this._p, {
     /**
      * Declare the given aliases.
      * Used to declare synonyms.
@@ -655,11 +654,8 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
 
 //<<< mochai: o4t
 eYo.O4t.eyo.finalizeC9r()
-
-//>>>
-
-
 eYo.O4t.eyo.o4tEnhanced()
+//>>>
 
 /**
  * Declares a model to be used by others. 
@@ -681,13 +677,4 @@ eYo.o4t._p.modelDeclare = function (key, model) {
   _p[key] = function (C9r) {
     C9r.eyo.modelMerge(model)
   }
-}
-
-/**
- * Create a new Base instance based on the model
- */
-eYo.o4t._p.new = function (...$) {
-  let ans = this.prepare(...$)
-  ans.preInit && ans.preInit()
-  return ans
 }
