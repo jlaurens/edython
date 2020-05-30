@@ -2452,7 +2452,7 @@ eYo.brick.DEBUG_ = Object.create(null)
 eYo.brick.newReady = (() => {
   var processModel = (model, id, board, brick) => {
     if (!eYo.isStr(id)) {
-      [id, board, brick] = ['', id, board]
+      ;[id, board, brick] = ['', id, board]
     }
     var dataModel = model // may change below
     if (!brick) {

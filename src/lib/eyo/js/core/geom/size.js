@@ -43,7 +43,7 @@ eYo.geom.makeC9r('Size', {
   //<<< mochai: Size
     //<<< mochai: Basics
     //... S = new eYo.geom.Size()
-    //... chai.expect(S.snap_p).not.undefined
+    //... chai.expect(S).property('snap_p')
     //>>>
   /**
    * Initialize the point forwarding to `set`.
@@ -129,7 +129,7 @@ eYo.geom.makeC9r('Size', {
         return this.snap_ ? Math.round(after * eYo.geom.C) / eYo.geom.C : after
       },
       //<<< mochai: w
-      //... chai.expect(S.w_p).not.undefined
+      //... chai.expect(S).property('w_p')
       //... S.snap_ = true
       //... S.w_ = 1 / eYo.geom.C
       //... chai.expect(S.w).almost.equal(1 / eYo.geom.C)
@@ -152,7 +152,7 @@ eYo.geom.makeC9r('Size', {
         return this.snap_ ? Math.round(after * eYo.geom.L) / eYo.geom.L : after
       },
       //<<< mochai: h
-      //... chai.expect(S.h_p).not.undefined
+      //... chai.expect(S).property('h_p')
       //... S.snap_ = true
       //... S.h_ = 1 / eYo.geom.L
       //... chai.expect(S.h).almost.equal(1 / eYo.geom.L)
@@ -567,7 +567,7 @@ eYo.c9r.Dlgt_p.makeSized = function (key) {
       [key]: {
         //<<< mochai: size
         //... R = ns.new('foo', onr)
-        //... chai.expect(R.size_p).not.undefined
+        //... chai.expect(R).property('size_p')
         value () {
           return new eYo.geom.Size()
         },
@@ -597,7 +597,7 @@ eYo.c9r.Dlgt_p.makeSized = function (key) {
       [key + '.w']: 'w',
         //<<< mochai: w
         //... R = ns.new('foo', onr)
-        //... chai.expect(R.w_p).not.undefined
+        //... chai.expect(R).property('w_p')
         //... chai.expect(R.size.w).equal(R.w)
         //... R.w_ += 1
         //... chai.expect(R.size.w).equal(R.w)
@@ -607,7 +607,7 @@ eYo.c9r.Dlgt_p.makeSized = function (key) {
       [key + '.h']: 'h',
         //<<< mochai: h
         //... R = ns.new('foo', onr)
-        //... chai.expect(R.h_p).not.undefined
+        //... chai.expect(R).property('h_p')
         //... chai.expect(R.size.h).equal(R.h)
         //... R.h_ += 1
         //... chai.expect(R.size.h).equal(R.h)

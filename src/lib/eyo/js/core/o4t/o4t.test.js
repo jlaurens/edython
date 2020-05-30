@@ -158,7 +158,7 @@ describe ('Tests: Object', function () {
     }
     ns.modelMakeC9r(model, 'foo')
     let C9r = model._C9r
-    chai.expect(C9r.eyo.p6yModelByKey__).not.undefined
+    chai.expect(C9r.eyo).property('p6yModelByKey__')
     chai.expect(C9r.eyo.p6yModelByKey__.chi.value()).equal(421) // expanded
     chai.expect(C9r.eyo.p6yModelByKey__).equal(C9r.eyo.p6yModelByKey__)
     let Bar = ns.makeC9r('bar', C9r)
@@ -216,24 +216,6 @@ describe ('Tests: Object', function () {
     chai.expect(() => {
       o.chi_ = 421
     }).throw()
-  })
-  it ('O4t: properties (owned)', function () {
-    let model = {
-      properties: {
-        foo: eYo.c9r.new({
-          dispose () {
-            flag.push(1)
-          }
-        }),
-      }
-    }
-    var o = eYo.o4t.new(model, 'foo', onr)
-    o = o.dispose()
-    flag.expect(1)
-    model.properties.foo.dispose = false
-    var o = new (eYo.o4t.makeC9r(eYo.NULL_NS, 'Foo', model)) ('foo', onr)
-    o = o.dispose()
-    flag.expect()
   })
   it ('O4t: dispose inherited', function () {
     let ns = eYo.o4t.makeNS()
@@ -473,143 +455,50 @@ describe ('Tests: Object', function () {
     chai.expect(aa.foo).equal(123)
     flag.expect(2)
   })
-  // it ('O4t: POC Override model rules for properties', function () {
-  //   var ns = eYo.o4t.makeNS()
-  //   ns.makeBaseC9r()
-  //   chai.expect(ns).equal(ns.BaseC9r.eyo.ns)
-  //   ns.makeC9r('A', {
-  //     properties: {foo: eYo.NA}
-  //   })
-  //   ns.A.eyo.finalizeC9r()
-  //   ns.A.makeSubC9r('AA', {
-  //     properties: {foo: eYo.NA}
-  //   })
-  //   ns.AA.eyo.finalizeC9r()
-  //   chai.expect(() => {
-  //     new ns.AA('aa', onr)
-  //   }).not.to.throw()
-  // })
-  // it ('O4t: p6yMerge', function () {
-  //   var ns = eYo.o4t.makeNS()
-  //   ns.makeBaseC9r()
-  //   chai.expect(ns).equal(ns.BaseC9r.eyo.ns)
-  //   ns.makeC9r('A', {
-  //     properties: {foo: 421}
-  //   })
-  //   chai.expect(ns.A.eyo.p6yModelByKey__).property('foo')
-  //   ns.A.eyo.finalizeC9r()
-  //   var a = new ns.A('a', onr)
-  //   chai.expect(a.foo).equal(421)
-  //   chai.assert(!a.bar)
-  //   ns.A.eyo.p6yMerge({
-  //     bar: 123,
-  //   })
-  //   chai.expect(ns.A.eyo.p6yModelByKey__).property('bar')
-  //   chai.expect(a.bar).not.equal(123)
-  //   a = new ns.A('a', onr)
-  //   chai.expect(a.foo).equal(421)
-  //   chai.expect(a.bar).equal(123)
-  //   ns.makeC9r('B')
-  //   ns.B.eyo.finalizeC9r()
-  //   ns.B.makeSubC9r('BB')    
-  //   ns.BB.eyo.finalizeC9r()
-  //   var bb = new ns.BB('bb', onr)
-  //   chai.expect(ns.BB.eyo.p6yModelByKey__).not.property('foo')
-  //   chai.expect(bb.foo).not.equal(421)
-  //   ns.B.eyo.p6yMerge({
-  //     foo: {
-  //       value () {
-  //         flag.push(1)
-  //         return 421
-  //       }
-  //     },
-  //   })
-  //   chai.expect(ns.B.eyo.p6yModelByKey__).property('foo')
-  //   chai.expect(ns.BB.eyo.p6yModelByKey__).not.property('foo')
-  //   flag.expect()
-  //   chai.expect(bb.foo).not.equal(421)
-  //   bb = new ns.BB('bb', onr)
-  //   flag.expect(1)
-  //   chai.expect(bb.foo).equal(421)
-  //   chai.assert((bb.foo_ = 123) === bb.foo)
-  //   bb.foo_p.reset()
-  //   flag.expect(1)
-  //   chai.expect(bb.foo).equal(421)
-  // })
-  it (`O4t: modelDeclare({...})`, function () {
-    let ns_super = eYo.o4t.makeNS()
-    var ns = ns_super.makeNS()
+  it ('O4t: POC Override model rules for properties', function () {
+    var ns = eYo.o4t.makeNS()
     ns.makeBaseC9r()
-    var o = new ns.BaseC9r('o', onr)
-    chai.expect(() =>{
-      o.bar()
-    }).to.throw()
-    chai.assert(!o.foo)
-    var ns = ns_super.makeNS()
-    ns.makeBaseC9r(true)
-    chai.assert(!ns.merge)
-    var x = 0
-    ns.modelDeclare({
-      properties: {
-        foo: 421,
-      },
-      aliases: {
-        foo: 'mi',
-      },
-      methods: {
-        bar () {
-          flag.push(1)
-          x = 421 - x
-        }
-      }
+    chai.expect(ns).equal(ns.BaseC9r.eyo.ns)
+    ns.makeC9r('A', {
+      properties: {foo: 123}
     })
-    chai.assert(ns.merge)
-    ns.merge(ns.BaseC9r)
-    var o = new ns.BaseC9r('o', onr)
-    chai.expect(o.foo).equal(421)
-    chai.expect(o.mi).equal(o.foo)
-    o.bar()
-    chai.expect(x).equal(421)
-    flag.expect(1)
-    o = new ns.BaseC9r('o', onr)
-    o.bar()
-    chai.expect(x).equal(0)
-    flag.expect(1)
+    ns.A.eyo.finalizeC9r()
+    ns.A.makeSubC9r('AA', {
+      properties: {foo: 456}
+    })
+    ns.AA.eyo.finalizeC9r()
+    chai.expect(() => {
+      new ns.AA('aa', onr)
+    }).not.to.throw()
+    chai.expect((new ns.A('a', onr)).foo).equal(123)
+    chai.expect((new ns.AA('aa', onr)).foo).equal(456)
   })
-  // it (`O4t: modelDeclare('...', {...})`, function () {
-  //   let NS = eYo.o4t.makeNS()
-  //   let ns = NS.makeNS('foo')
-  //   ns.makeBaseC9r()
-  //   let o = new ns.BaseC9r('o', onr)
-  //   chai.expect(() =>{
-  //     o.bar()
-  //   }).to.throw()
-  //   chai.assert(!o.foo)
-  //   var flag = 0
-  //   chai.assert(!ns.chiMerge)
-  //   ns.modelDeclare('chi', {
-  //     properties: {
-  //       foo: 421,
-  //     },
-  //     aliases: {
-  //       foo: 'mi',
-  //     },
-  //     methods: {
-  //       bar () {
-  //         flag = 421 - flag
-  //       }
-  //     }
-  //   })
-  //   chai.assert(ns.chiMerge)
-  //   ns.chiMerge(ns.BaseC9r_p)
-  //   o.bar()
-  //   chai.expect(flag).equal(421)
-  //   o = new ns.BaseC9r('o', onr)
-  //   o.bar()
-  //   chai.expect(flag).equal(0)
-  //   chai.expect(o.foo).equal(421)
-  //   chai.expect(o.mi).equal(o.foo)
-  // })
+  it ('O4t: p6yMerge', function () {
+    var ns = eYo.o4t.makeNS()
+    ns.makeBaseC9r()
+    chai.expect(ns).equal(ns.BaseC9r.eyo.ns)
+    ns.makeC9r('A', {
+      properties: {foo: 421}
+    })
+    chai.expect(ns.A.eyo.p6yModelMap.get('foo')).not.undefined
+    ns.A.eyo.finalizeC9r()
+    var a = new ns.A('a', onr)
+    chai.expect(a.foo).equal(421)
+
+    ns = eYo.o4t.makeNS()
+    ns.makeC9r('A', {
+      properties: {foo: 421}
+    })
+    chai.expect(ns.A.eyo.p6yModelMap.get('foo')).not.undefined
+    ns.A.eyo.p6yMerge({
+      bar: 123,
+    })
+    chai.expect(ns.A.eyo.p6yModelMap.get('bar')).not.undefined
+    ns.A.eyo.finalizeC9r()
+    var a = new ns.A('a', onr)
+    chai.expect(a.foo).equal(421)
+    chai.expect(a.bar).equal(123)
+  })
   it ('O4t: after:...', function () {
     let ns = eYo.o4t.makeNS()
     ns.makeBaseC9r()
@@ -1236,5 +1125,16 @@ describe ('Tests: Object', function () {
       chai.expect(o.bar.foo).equal(421)
       chai.expect(o.foo).equal(421)
     })
+  })
+  it (`makeSingleton`, function () {
+    let id = eYo.genUID(eYo.IDENT)
+    eYo.o4t.makeSingleton(eYo, id, {
+      properties: {
+        foo: 421,
+      },
+    })
+    chai.expect(eYo).property(id)
+    chai.expect(eYo[id]).property('foo')
+    chai.expect(eYo[id].foo).equal(421)
   })
 })

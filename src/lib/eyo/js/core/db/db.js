@@ -28,7 +28,7 @@ eYo.o3d.makeC9r('DB', {
   init (key, owner, id_key, is_owner) {
     //<<< mochai: init
     if (!eYo.isStr(id_key)) {
-      [id_key, is_owner] = ['id', id_key]
+      ;[id_key, is_owner] = ['id', id_key]
     }
     this.id_key__ = id_key
     this.is_owner__ = !!is_owner

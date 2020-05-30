@@ -91,7 +91,7 @@ eYo.view.makeC9r('Desk', {
      * Make the user interface.
      */
     forEachPane (f) {
-      [
+      ;[
         this.workspace,
         this.terminal,
         this.turtle,

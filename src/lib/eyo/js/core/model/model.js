@@ -144,7 +144,7 @@ eYo.makeNS('model', {
   eYo.model._p['descriptor' + K] = function(model, fallback) {
     var alt = eYo.isF(model)
     if (alt) {
-      [model, fallback] = [fallback, model]
+      ;[model, fallback] = [fallback, model]
     } else {
       alt = eYo.isF(fallback)
     }

@@ -122,22 +122,22 @@ eYo.geom.Rect.eyo.makeSized('size')
 //<<< mochai: Basics
 //... R = new eYo.geom.Rect()
 //... chai.expect(R).eyo_rect
-//... chai.expect(R.snap_p).not.undefined
-//... chai.expect(R.origin_p).not.undefined
+//... chai.expect(R).property('snap_p')
+//... chai.expect(R).property('origin_p')
 //... chai.expect(R.origin).eyo_point
 //... R.origin_ = P
 //... chai.expect(R.origin_).not.equal(P)
 //... chai.expect(R.origin_).almost.eql(P)
-//... chai.expect(R.size_p).not.undefined
+//... chai.expect(R).property('size_p')
 //... chai.expect(R.size).eyo_size
 //... R.size_ = S
 //... chai.expect(R.size_).not.equal(S)
 //... chai.expect(R.size_).almost.eql(S)
 //... R = new eYo.geom.Rect()
-//... chai.expect(R.c_p).not.undefined
-//... chai.expect(R.l_p).not.undefined
-//... chai.expect(R.w_p).not.undefined
-//... chai.expect(R.h_p).not.undefined
+//... chai.expect(R).property('c_p')
+//... chai.expect(R).property('l_p')
+//... chai.expect(R).property('w_p')
+//... chai.expect(R).property('h_p')
 //... isRclwh(R, 0, 0, 0, 0)
 //... R.c_ = 123
 //... isRclwh(R, 123, 0, 0, 0)
@@ -770,8 +770,8 @@ eYo.geom.Rect.eyo.modelMerge({
     origin: 'topLeft',
       //<<< mochai: topLeft
       //... R = new eYo.geom.Rect(false, m)
-      //... chai.expect(R.origin_p).not.undefined
-      //... chai.expect(R.topLeft_p).not.undefined
+      //... chai.expect(R).property('origin_p')
+      //... chai.expect(R).property('topLeft_p')
       //... chai.expect(R.topLeft).almost.eql(R.topLeft_).almost.eql(R.origin)
       //... R.origin_ = P
       //... chai.expect(R.topLeft).almost.eql(R.topLeft_).almost.eql(R.origin).almost.eql(P)

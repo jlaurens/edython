@@ -545,6 +545,7 @@ eYo.more.enhanceO3dValidate(eYo.p6y.BaseC9r.eyo, 'p6y', true)
  * @param {Object} [model]
  */
 eYo.p6y.Dlgt_p.modelHandle = function (key, model) {
+  key || (key = this.key)
   model || (model = this.model)
   let io = this.modelHandleCheck(key, model) // first
   this.modelHandleStart(key, model, io)

@@ -540,7 +540,7 @@ eYo.do._p.makeWrapper_ = (
   //<<< mochai: makeWrapper_
   return function ($$this, try_f, finally_f) {
     if (eYo.isF($$this)) {
-      [$$this, try_f, finally_f] = [finally_f || this || $this, $$this, try_f]
+      ;[$$this, try_f, finally_f] = [finally_f || this || $this, $$this, try_f]
     }
     var old = start_f && start_f.call($this)
     var ans
@@ -784,14 +784,14 @@ eYo.do._p.makeWrapper = (
   if (!eYo.isF(end_finally_f)) {
     eYo.isDef(end_finally_f) && eYo.throw(`${this.name}/makeWrapper: bad last argument (${end_finally_f}/1)`)
     if (eYo.isF($this)) {
-      [$this, start_f, begin_finally_f, end_finally_f] = [this, $this, start_f, begin_finally_f]
+      ;[$this, start_f, begin_finally_f, end_finally_f] = [this, $this, start_f, begin_finally_f]
 
     }
   }
   if (!end_finally_f) {
-    [begin_finally_f, end_finally_f] = [eYo.NA, begin_finally_f]
+    ;[begin_finally_f, end_finally_f] = [eYo.NA, begin_finally_f]
     if (!end_finally_f) {
-      [start_f, end_finally_f] = [eYo.NA, start_f]
+      ;[start_f, end_finally_f] = [eYo.NA, start_f]
     }
   }
   return eYo.do.makeWrapper_($this, start_f, begin_finally_f, end_finally_f)

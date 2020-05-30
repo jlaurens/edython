@@ -399,6 +399,22 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
   this.p6yShortcuts()
   //>>>
 }
+eYo.mixinR(false, eYo.O4t.eyo._p, {
+  /**
+   * Finalize the associate constructor and allow some model format.
+   * This must be called once for any delegate, raises otherwise.
+   * Calls `modelPrepare`, `makeC9rInit` and `makeC9rDispose`.
+   * Raises if the `super` is not already finalized.
+   * This must be done by hand because we do not know
+   * what is the ancestor's model format.
+   * @name {eYo.dlgt.BaseC9r.modelAllow}
+   */
+  finalizeC9r (...$) {
+    let ans = eYo.O4t.eyo.constructor.SuperC9r_p.finalizeC9r.call(this,...$)
+    this.p6yShortcuts()
+    return ans
+  },
+})
 
 /**
  * Enhance the constructor with object facilities,
@@ -512,6 +528,36 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //<<< mochai: disposeInstance
       //... chai.expect(C9r.eyo.disposeInstance).eyo_F
       this.p6yDispose(object, ...$)
+      //... eYo.c9r.new({
+      //...   dispose (...$) {
+      //...     flag.push(1, ...$, 4)
+      //...   }
+      //... }).dispose(2, 3)
+      //... flag.expect(1234)
+      //... let model = {
+      //...   properties: {
+      //...     foo: {
+      //...       value () {
+      //...         return  eYo.c9r.new({
+      //...           dispose (...$) {
+      //...             flag.push(1, ...$, 4)
+      //...           }
+      //...         })
+      //...       },
+      //...     },
+      //...   }
+      //... }
+      //... var o = eYo.o4t.new(model, 'foo', onr)
+      //... chai.expect(() => o.constructor.eyo.finalizeC9r()).throw()
+      //... o.foo.dispose(2, 3)
+      //... flag.expect(1234)
+      //... var o = eYo.o4t.new(model, 'foo', onr)
+      //... chai.expect(o.foo.dispose).not.equal(eYo.doNothing)
+      //... o.foo_p.dispose(2, 3)
+      //... flag.expect(1234)
+      //... var o = eYo.o4t.new(model, 'foo', onr)
+      //... o = o.eyo.disposeInstance(o, 2, 3)
+      //... flag.expect(1234)
       //>>>
     },
     /**
@@ -561,7 +607,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //<<< mochai: p6yValueForEach
       //... chai.expect(C9r.eyo.p6yValueForEach).eyo_F
       if (eYo.isF($this)) {
-        [f, owned, $this] = [$this, f, owned]
+        ;[f, owned, $this] = [$this, f, owned]
       }
       if (owned) {
         for (let p6y of object.p6yMap.values()) {
@@ -627,7 +673,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //<<< mochai: p6yOwnedValueForEach
       //... chai.expect(o.p6yOwnedValueForEach).eyo_F
       if (eYo.isF($this)) {
-        [$this, f] = [f, $this]
+        ;[$this, f] = [f, $this]
       }
       return this.eyo.p6yValueForEach(this, $this, f, true)
       //>>>
@@ -641,7 +687,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //<<< mochai: p6yOwnedValueSome
       //... chai.expect(o.p6yOwnedValueSome).eyo_F
       if (eYo.isF($this)) {
-        [$this, f] = [f, $this]
+        ;[$this, f] = [f, $this]
       }
       return this.eyo.p6yValueSome(this, $this, f, true)
       //>>>
@@ -653,28 +699,64 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
 
 
 //<<< mochai: o4t
-eYo.O4t.eyo.finalizeC9r()
 eYo.O4t.eyo.o4tEnhanced()
+eYo.O4t.eyo.finalizeC9r()
 //>>>
 
-/**
- * Declares a model to be used by others. 
- * It creates in the receiver's namespace a `merge` function or a `fooMerge` function,
- * which purpose is to enlarge the prototype of the given constructor.
- * @param{String} [key] - the key for that model
- * @param{Object} model - the model
- */
-eYo.o4t._p.modelDeclare = function (key, model) {
-  if (eYo.isStr(key)) {
-    key = key + 'Merge'
-  } else if (eYo.isStr(model)) {
-    [key, model] = [model + 'Merge', key]
-  } else {
-    [model, key] = [key, 'merge']
-  }
-  let _p = this._p
-  _p.hasOwnProperty(key) && eYo.throw(`Already done`)
-  _p[key] = function (C9r) {
-    C9r.eyo.modelMerge(model)
-  }
-}
+eYo.mixinR(false, eYo.o4t._p, {
+
+  /**
+   * Declares a model to be used by others. 
+   * It creates in the receiver's namespace a `merge` function or a `fooMerge` function,
+   * which purpose is to enlarge the prototype of the given constructor.
+   * @param{String} [key] - the key for that model
+   * @param{Object} model - the model
+   */
+  modelDeclare (key, model) {
+    //<<< mochai: modelDeclare
+    if (eYo.isStr(key)) {
+      key = key + 'Merge'
+    } else if (eYo.isStr(model)) {
+      ;[key, model] = [model + 'Merge', key]
+    } else {
+      ;[model, key] = [key, 'merge']
+    }
+    let _p = this._p
+    _p.hasOwnProperty(key) && eYo.throw(`Already done`)
+    _p[key] = function (C9r) {
+      C9r.eyo.modelMerge(model)
+    }
+    //... let NS_super = eYo.o4t.makeNS()
+    //... let NS = NS_super.makeNS('foo')
+    //... NS_super.makeBaseC9r()
+    //... let o = new NS_super.BaseC9r('o', onr)
+    //... chai.expect(() =>{
+    //...   o.bar()
+    //... }).to.throw()
+    //... chai.assert(!o.foo)
+    //... chai.assert(!NS_super.chiMerge)
+    //... NS_super.modelDeclare('chi', {
+    //...   properties: {
+    //...     foo: 421,
+    //...   },
+    //...   aliases: {
+    //...     foo: 'mi',
+    //...   },
+    //...   methods: {
+    //...     bar (...$) {
+    //...       flag.push(1, ...$)
+    //...     }
+    //...   }
+    //... })
+    //... chai.assert(NS_super.chiMerge)
+    //... chai.expect(() => NS_super.chiMerge(NS_super.BaseC9r_p)).throw()
+    //... NS.makeBaseC9r(true)
+    //... NS.chiMerge(NS.BaseC9r_p)
+    //... NS.BaseC9r.eyo.finalizeC9r()
+    //... o = new NS.BaseC9r('o', onr)
+    //... o.bar(2, 3)
+    //... flag.expect(123)
+    //... chai.expect(o.mi).equal(o.foo).equal(421)
+    //>>>
+  },
+})

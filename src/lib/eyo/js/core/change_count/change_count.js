@@ -27,7 +27,7 @@ eYo.o4t.changeCount.modelDeclare({
     changeCount: 0,
     //<<< mochai: changeCount
     //... var o = new ns.BaseC9r('foo', onr)
-    //... chai.expect(o.changeCount_p).not.undefined
+    //... chai.expect(o).property('changeCount_p')
     //>>>
   },
   methods: {

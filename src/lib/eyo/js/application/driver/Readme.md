@@ -1,6 +1,6 @@
 # Edython's ui driver
 
-The ui task are forwarded to a driver which is a delegate.
+The ui task are forwarded to a driver which is another kind of delegates. The driver only has methods and its state does not mutate at runtime.
 
 The main application owns a driver manager.
 This driver manager owns in turn different drivers for each kind of object that needs a specific UI. Each object indirectly owned by the application have a path to the driver manager and thus to its own specific driver.
@@ -11,50 +11,66 @@ This delegation design allows to make a faceless application rather efficiently 
 
 ### The namespaces
 
-There are at least 4 namespaces: `eYo.Driver`, `eYo.Fcls`, `eYo.Dom` and `eYo.Svg`.
+There are at least 4 namespaces: `eYo.driver`, `eYo.fcls`, `eYo.fcfl`, `eYo.dom` and `eYo.svg`.
 
-* `eYo.Driver` is used to implement the overall control of driver's architecture. It provides some default behaviour with drivers and constructors.
-* `eYo.Fcls` is a driver architecture dedicated to faceless applications
-* `eYo.Dom` is a driver architecture dedicated to dom technologies
-* `eYo.Svg` is a driver dedicated to svg technologies, it extends the previous one.
+* `eYo.driver` is used to implement the overall control of driver's architecture. It provides some default behaviour with drivers and constructors.
+* `eYo.fcls` is a driver architecture dedicated to faceless applications
+* `eYo.fcfl` is aa abstract driver architecture dedicated to facefull applications
+* `eYo.dom` is a driver architecture dedicated to dom technologies
+* `eYo.svg` is a driver dedicated to svg technologies, it extends the previous one.
+
+### The manager singleton.
 
 ### The manager and its drivers
 
 The application owns a driver manager. Each object with a UI has a link to it, through its `app` computed property.
 
-When a constructor `eYo.Foo` is created via `eYo.Constructor.UI.make`, the instance's `ui_driver` is a cached property returning the `Foo` property of the driver manager.
+When a constructor `eYo.Foo` is created via some `makeC9r` method, the instance's `driver` is a cached property returning the `Foo` property of the driver manager.
 
-All the driver classes are created with a call to some `makeDriverClass`. When created, a driver manager instance owns an instance of all the driver classes created that way.
+All the driver classes are created with a call to some `makeDriverC9r`. When created, a driver manager instance owns an instance of all the driver classes created that way.
 
 <span style="color:red">**LIMITATION:**</span>
-A driver class may have any name, except `Mgr`, `Dflt` and `Dlgt`. Instead, use full name `Manager`, `Default`, `Delegate` or some other name like that.
+A driver class may have any name, except `Mngr`, `BaseC9r` and `Dlgt`. Instead, use full name `Manager`, `BaseConstructor`, `Delegate` or some other name like that.
 
 ### Creating a namespace
 
 A namespace is just a static object.
 
-First, only the `eYo.Driver` namespace is available.
-It provides us with a method `eYo.Driver.makeMgrClass` to make a new manager class in an existing namespace.
+First, only the `eYo.driver` namespace is available.
+It provides us with a method `eYo.driver.makeMngr` to make a new manager class in an existing namespace.
 
 The purpose is to populate the namespace with a driver manager, a default driver and a driver class maker at least.
 
 ### Extension
 
-A namespace can inherit elements from another namespace, for exemple `eYo.Svg` somehow extends `eYo.Dom`, which in turn extends `eYo.Fcls`.
+A namespace can inherit elements from another namespace, for exemple `eYo.svg` somehow extends `eYo.Ddm`, which in turn extends `eYo.fcfl` which itself is an extension of `eYo.fcls`.
 
-The `eYo.Driver.makeMgrClass` also creates a local maager class maker. At some point, we have both
-`eYo.Fcls.makeMgrClass`, 
-`eYo.Dom.makeMgrClass` and
-`eYo.Svg.makeMgrClass` where extension is implemen ted.
+`eYo.svg` extends `eYo.dom` means that the driver `eYo.svg.Foo` is a subclass of `eYo.dom.Foo`.
 
-`eYo.Svg` extends `eYo.Dom` means that the driver `eYo.Svg.Foo` is a subclass of `eYo.Dom.Foo`.
+The `eYo.driver.makeMngr` also creates a local manager class maker. At some point, we have both
+`eYo.fcls.makeMngr`, 
+`eYo.fcls.makeMngr`, 
+`eYo.dom.makeMngr` and
+`eYo.svg.makeMngr` where extension is implemented.
 
 
+### The drivers
 
-### Creating a driver class
+#### Creating a driver class
 
-The `eYo.Driver.makeMgrClass` also creates a driver class maker. At some point, we have both
-`eYo.Fcls.makeDriverClass`, 
-`eYo.Dom.makeDriverClass` and
-`eYo.Svg.makeDriverClass`.
+The `eYo.Driver.makeMngr` also creates a driver class maker. At some point, we have both
+`eYo.fcls.makeDriverC9r`, 
+`eYo.fcfl.makeDriverC9r`, 
+`eYo.dom.makeDriverC9r ` and
+`eYo.svg.makeDriverC9r `.
 
+#### The multiple inheritance problem.
+
+Suppose we start with a driver constructor `eYo.dom.Bar`, then we have
+
+* `eYo.dom.Foo` is a subclass of `eYo.dom.Bar`
+* `eYo.svg.Bar` is another subclass of `eYo.dom.Bar`
+
+Then `eYo.svg.Foo` should be some kind of subclass of both `eYo.dom.Foo` and `eYo.svg.Bar`.
+
+In order to obtain some kind of multiple inheritancy, a driver is a proxy.

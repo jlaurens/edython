@@ -1142,8 +1142,8 @@ eYo.board.BaseC9r_p.fromUTF8ByteArray = function (bytes) {
  */
 eYo.board.BaseC9r_p.addBrick = function (brick, opt_id, f, ...$) {
   if (!eYo.isStr(opt_id)) {
-    $ = [f, ...$]
-    [opt_id, f] = [eYo.NA, opt_id]
+    $.unshift(f)
+    ;[opt_id, f] = [eYo.NA, opt_id]
   }
   this.changer.wrap(() => {
     this.list.add(brick, opt_id)

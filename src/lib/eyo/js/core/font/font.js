@@ -16,15 +16,15 @@ eYo.forward('padding')
 /**
  * @name{eYo.font}
  */
-//<<< mochai: eYo.font
 eYo.o4t.makeSingleton(eYo, 'font', {
   //<<< mochai: Basic
-  //... chai.assert(eYo.font)
+  //... chai.expect(eYo).property('font')
   //>>>
   properties: {
+    //<<< mochai: properties
     ascent: {
       //<<< mochai: eYo.o4t.font.ascent
-      //... chai.expect(eYo.font.ascent_p).not.undefined
+      //... chai.expect(eYo.font).property('ascent_p')
       /**
        * `after` is truncated to the `1/32th`
        * such that half value is still exact
@@ -45,14 +45,13 @@ eYo.o4t.makeSingleton(eYo, 'font', {
       }
       //>>>
     },
-    //<<< mochai: eYo.font properties
     descent: {
       reset_ (builtin, ascent) {
         return builtin(Math.round(ascent * 492 * 8 / 389) / 32)
       },
       set: false,
       //... chai.expect(eYo.font.ascent).eyo_Num
-      //... chai.expect(eYo.font.descent_p).not.undefined
+      //... chai.expect(eYo.font).property('descent_p')
       //... chai.expect(eYo.font.descent).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.descent_ = 234
@@ -63,7 +62,7 @@ eYo.o4t.makeSingleton(eYo, 'font', {
         return builtin(Math.round(ascent * 1120 * 8 / 389) / 32)
       },
       set: false,
-      //... chai.expect(eYo.font.xHeight_p).not.undefined
+      //... chai.expect(eYo.font).property('xHeight_p')
       //... chai.expect(eYo.font.xHeight).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.xHeight_ = 234
@@ -74,7 +73,7 @@ eYo.o4t.makeSingleton(eYo, 'font', {
         return builtin(Math.round(ascent * 1233 * 8 / 389) / 32)
       },
       set: false,
-      //... chai.expect(eYo.font.space_p).not.undefined
+      //... chai.expect(eYo.font).property('space_p')
       //... chai.expect(eYo.font.space).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.space_ = 234
@@ -85,7 +84,7 @@ eYo.o4t.makeSingleton(eYo, 'font', {
         return builtin(Math.round(ascent * 2048 * 8 / 389) / 32)
       },
       set: false,
-      //... chai.expect(eYo.font.totalAscent_p).not.undefined
+      //... chai.expect(eYo.font).property('totalAscent_p')
       //... chai.expect(eYo.font.totalAscent).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.totalAscent_ = 234
@@ -95,7 +94,7 @@ eYo.o4t.makeSingleton(eYo, 'font', {
       get () {
         return this.ascent
       }
-      //... chai.expect(eYo.font.size_p).not.undefined
+      //... chai.expect(eYo.font).property('size_p')
       //... chai.expect(eYo.font.size).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.size_ = 234
@@ -105,7 +104,7 @@ eYo.o4t.makeSingleton(eYo, 'font', {
       get () {
         return this.totalAscent + this.descent
       },
-      //... chai.expect(eYo.font.height_p).not.undefined
+      //... chai.expect(eYo.font).property('height_p')
       //... chai.expect(eYo.font.height).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.height_ = 234
@@ -115,7 +114,7 @@ eYo.o4t.makeSingleton(eYo, 'font', {
       get () {
         return this.height + eYo.padding.t + eYo.padding.b
       },
-      //... chai.expect(eYo.font.lineHeight_p).not.undefined
+      //... chai.expect(eYo.font).property('lineHeight_p')
       //... chai.expect(eYo.font.lineHeight).eyo_Num
       //... chai.expect(() => {
       //...   eYo.font.lineHeight_ = 234
@@ -125,21 +124,21 @@ eYo.o4t.makeSingleton(eYo, 'font', {
       get () {
         return 'DejaVuSansMono,monospace'
       }
-      //... chai.expect(eYo.font.familyMono).not.undefined
+      //... chai.expect(eYo.font).property('familyMono')
     },
     familySans: {
       get () {
         return 'DejaVuSans,sans-serif'
       }
-      //... chai.expect(eYo.font.familySans).not.undefined
+      //... chai.expect(eYo.font).property('familySans')
     },
     style: {
       after: ['familyMono', 'familySans', 'ascent'],
       get () {
         return `font-family:${this.familyMono}!important;font-size:${this.ascent}pt!important;`
       }
-      //... chai.expect(eYo.font.style_p).not.undefined
-      //... chai.expect(eYo.font.style).not.undefined
+      //... chai.expect(eYo.font).property('style_p')
+      //... chai.expect(eYo.font).property('style')
       //... chai.expect(() => {
       //...   eYo.font.style_ = 234
       //... }).throw()
@@ -149,8 +148,8 @@ eYo.o4t.makeSingleton(eYo, 'font', {
       get () {
         return `font-family:${this.familySans};font-size:${this.ascent}pt;`
       }
-      //... chai.expect(eYo.font.menuStyle_p).not.undefined
-      //... chai.expect(eYo.font.menuStyle).not.undefined
+      //... chai.expect(eYo.font).property('menuStyle_p')
+      //... chai.expect(eYo.font).property('menuStyle')
       //... chai.expect(() => {
       //...   eYo.font.menuStyle_ = 234
       //... }).throw()
@@ -164,5 +163,6 @@ eYo.o4t.makeSingleton(eYo, 'font', {
  * Point size of text.
  */
 eYo.font.ascent_ = 13
+//<<< mochai: init
 //... chai.expect(eYo.font.ascent).equal(13)
 //>>>

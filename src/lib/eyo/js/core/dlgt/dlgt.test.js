@@ -57,8 +57,8 @@ describe ('Tests: Dlgt', function () {
     chai.assert(eYo.dlgt)
   })
   it ('Dlgt: Base', function () {
-    chai.expect(eYo.dlgt.BaseC9r).not.undefined
-    chai.expect(eYo.dlgt.BaseC9r.eyo).not.undefined
+    chai.expect(eYo.dlgt).property('BaseC9r')
+    chai.expect(eYo.dlgt.BaseC9r).property('eyo')
     var set = new Set([
       eYo.dlgt.BaseC9r.eyo,
       eYo.dlgt.BaseC9r.eyo.eyo,
@@ -115,7 +115,7 @@ describe ('Tests: Dlgt', function () {
         flag.push(1)
       },
     })
-    chai.expect(dlgt.C9r_p.bar).not.undefined
+    chai.expect(dlgt.C9r_p).property('bar')
     dlgt.C9r_p.bar()
     flag.expect(1)
   })
@@ -131,7 +131,7 @@ describe ('Tests: Dlgt', function () {
         },
       },
     })
-    chai.expect(dlgt.C9r_p.bar).not.undefined
+    chai.expect(dlgt.C9r_p).property('bar')
     dlgt.C9r_p.bar()
     flag.expect(1)
   })

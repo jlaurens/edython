@@ -62,7 +62,7 @@ eYo.geom.makeC9r('Point', {
   //<<< mochai: Point
     //<<< mochai: Basics
     //... P = new eYo.geom.Point()
-    //... chai.expect(P.snap_p).not.undefined
+    //... chai.expect(P).property('snap_p')
     //>>>
   /**
    * Initialize the point forwarding to `set`.
@@ -131,7 +131,7 @@ eYo.geom.makeC9r('Point', {
         return this.snap_ ? Math.round(after * eYo.geom.C) / eYo.geom.C : after
       },
       //<<< mochai: c
-      //... chai.expect(P.c_p).not.undefined
+      //... chai.expect(P).property('c_p')
       //... P.snap_ = true
       //... P.c_ = 1 / eYo.geom.C
       //... chai.expect(P.c).almost.equal(1 / eYo.geom.C)
@@ -154,7 +154,7 @@ eYo.geom.makeC9r('Point', {
         return this.snap_ ? Math.round(after * eYo.geom.L) / eYo.geom.L : after
       },
       //<<< mochai: l
-      //... chai.expect(P.l_p).not.undefined
+      //... chai.expect(P).property('l_p')
       //... P.snap_ = true
       //... P.l_ = 1 / eYo.geom.L
       //... chai.expect(P.l).almost.equal(1 / eYo.geom.L)
@@ -361,7 +361,7 @@ eYo.geom.makeC9r('Point', {
         //... P = new eYo.geom.Point()
         //... P.pSet({clientX: mm.x, clientY: mm.y})
         //... chai.expect(P).almost.eql(m)
-        [x, y] = [x.clientX, x.clientY]
+        ;[x, y] = [x.clientX, x.clientY]
       } else if (eYo.isDef(x.c) && eYo.isDef(x.l)) {
         eYo.isDef(y) && eYo.throw(`Unexpected last argument ${this.eyo.name}/pSet (2): ${y}`)
         //... P = new eYo.geom.Point()
@@ -717,7 +717,7 @@ eYo.c9r.Dlgt_p.makePointed = function (key) {
       [key]: {
         //<<< mochai: origin
         //... R = ns.new('foo', onr)
-        //... chai.expect(R.origin_p).not.undefined
+        //... chai.expect(R).property('origin_p')
         value () {
           return new eYo.geom.Point()
         },

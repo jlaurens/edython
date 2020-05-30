@@ -14,8 +14,8 @@ describe ('Tests: db', function () {
   })
   it ('DB: add, remove', function () {
     let db = new eYo.o3d.DB('db', onr)
-    let ns = eYo.c9r.makeNS()
-    ns.makeBaseC9r({
+    let NS = eYo.c9r.makeNS()
+    NS.makeBaseC9r({
       init (id) {
         this.id = id
       },
@@ -25,8 +25,14 @@ describe ('Tests: db', function () {
         }
       }
     })
-    let a = ns.new(1)
-    let b = ns.new(2)
+    let a = NS.new(1)
+    chai.expect(a.id).equal(1)
+    a.flag(3, 4)
+    flag.expect(134)
+    let b = NS.new(2)
+    chai.expect(b.id).equal(2)
+    b.flag(3, 4)
+    flag.expect(234)
     db.forEach(o => o.flag(3, 4))
     flag.expect()
     db.add(a)

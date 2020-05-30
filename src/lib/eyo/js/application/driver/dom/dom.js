@@ -293,7 +293,7 @@ eYo.dom._p.unbindEvent = bindData => {
  * @param {Object} [opt]  Option data: suffix, option flags: willUnbind, and bindEventWithChecks_'s options
  */
 eYo.dom._p.bindMouseEvents = (listener, element, opt) => {
-  [
+  ;[
     'mousedown',
     'mousemove',
     'mouseup'

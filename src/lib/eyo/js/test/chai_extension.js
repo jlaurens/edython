@@ -2,7 +2,7 @@ eYo.provide('test')
 
 eYo.test.randN = (N = 2, snap) => {
   if (N === true || N === false) {
-    [N, snap] = [2, N]
+    ;[N, snap] = [2, N]
   }
   return snap
   ? Math.round(Math.random()*10**N)
@@ -12,21 +12,21 @@ eYo.test.randN = (N = 2, snap) => {
 if (eYo.geom) {
   eYo.geom.randPoint = (N, snap) => {
     if (N === true || N === false) {
-      [N, snap] = [2, N]
+      ;[N, snap] = [2, N]
     }
     return new eYo.geom.Point(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap))
   }
 
   eYo.geom.randSize = (N, snap) => {
     if (N === true || N === false) {
-      [N, snap] = [2, N]
+      ;[N, snap] = [2, N]
     }
     return new eYo.geom.Size(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap))
   }
   
   eYo.geom.randRect = (N, snap) => {
     if (N === true || N === false) {
-      [N, snap] = [2, N]
+      ;[N, snap] = [2, N]
     }
     return new eYo.geom.Rect(snap, eYo.test.randN(N, snap), eYo.test.randN(N, snap), eYo.test.randN(N, snap), eYo.test.randN(N, snap))  
   }

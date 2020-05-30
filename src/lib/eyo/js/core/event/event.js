@@ -25,7 +25,7 @@ eYo.o4t.makeNS(eYo, 'event', {
   UI: 'ui',
 })
 //<<< mochai: CONST
-//... chai.expect(eYo.event.UI).not.undefined
+//... chai.expect(eYo.event).property('UI')
 //>>>
 
 /**
@@ -34,7 +34,7 @@ eYo.o4t.makeNS(eYo, 'event', {
  */
 eYo.event.MAX_UNDO = 1024,
 //<<< mochai: MAX_UNDO
-//... chai.expect(eYo.event.MAX_UNDO).not.undefined
+//... chai.expect(eYo.event).property('MAX_UNDO')
 //... eYo.event.MAX_UNDO = Infinity
 //... chai.expect(eYo.event.MAX_UNDO).equal(Infinity)
 //... eYo.event.MAX_UNDO = 1024

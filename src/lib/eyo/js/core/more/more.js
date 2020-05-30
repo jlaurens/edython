@@ -42,7 +42,7 @@ eYo.more.iterators = function (_p, type) {
   let tMap = type + 'Map'
   _p[tForEach] = function ($this, f) {
     if (!eYo.isF(f)) {
-      [$this, f] = [f, $this]
+      ;[$this, f] = [f, $this]
     }
     let map = this[tMap]
     map && map.forEach(v => f.call($this, v))
@@ -54,7 +54,7 @@ eYo.more.iterators = function (_p, type) {
   }
   _p[tSome] = function ($this, f) {
     if (!eYo.isF(f)) {
-      [$this, f] = [f, $this]
+      ;[$this, f] = [f, $this]
     }
     let map = this[tMap]
     if (map) {

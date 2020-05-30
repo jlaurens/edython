@@ -179,7 +179,7 @@ eYo.register.add = function (object, key, filter) {
     [key + 'ForEach']: function ($this, handler) {
       //<<< mochai: fooForEach
       if (eYo.isF($this)) {
-        [$this, handler] = [handler || this, $this]
+        ;[$this, handler] = [handler || this, $this]
       }
       for (let r of this[k].keys()) {
         handler.call($this, r)
@@ -212,7 +212,7 @@ eYo.register.add = function (object, key, filter) {
     [key + 'Some']: function ($this, handler) {
       //<<< mochai: fooSome
       if (eYo.isF($this)) {
-        [$this, handler] = [handler || this, $this]
+        ;[$this, handler] = [handler || this, $this]
       }
       for (let r of this[k].keys()) {
         if (handler.call($this, r)) {

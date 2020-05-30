@@ -316,7 +316,7 @@ eYo.descriptorR = (msg, getter, configurable) => {
     eYo.isDef(configurable) && eYo.throw(`eYo.descriptorR: Unexpected last argument ${configurable}`)
     ;[msg, getter, configurable] = [eYo.NA, msg, getter]
   } else if (!eYo.isF(getter)) {
-    [getter, configurable] = [configurable, getter]
+    ;[getter, configurable] = [configurable, getter]
     if (!eYo.isF(getter)) {
       console.error('BREAK HERE!')
     }
@@ -401,7 +401,7 @@ eYo.descriptorW = (msg, setter, configurable) => {
     eYo.isNA(configurable) || eYo.throw(`eYo.descriptorW: Unexpected last argument ${configurable}`)
     ;[msg, setter, configurable] = [eYo.NA, msg, setter]
   } else if (!eYo.isF(setter)) {
-    [setter, configurable] = [configurable, setter]
+    ;[setter, configurable] = [configurable, setter]
     if (!eYo.isF(setter)) {
       console.error('BREAK HERE!')
     }
@@ -1033,7 +1033,7 @@ eYo.mixinR(false, eYo._p, {
     }
     ns && key && ns[key] !== eYo.NA && eYo.throw(`${ns.name}[${key}] already exists.`)
     if (eYo.isBool(model)) {
-      [model, getters] = [getters, model]
+      ;[model, getters] = [getters, model]
     }
     //... var ns = eYo.makeNS()
     //... chai.expect(ns).eyo_NS
@@ -1416,7 +1416,7 @@ eYo.mixinR(false, eYo._p, {
    */
   eYo._p.genUID = (type, length) => {
     if (!eYo.isStr(type)) {
-      [length, type] = [type, length]
+      ;[length, type] = [type, length]
     }
     length || (length = 20)
     if (type === eYo.IDENT) {

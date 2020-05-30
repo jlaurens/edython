@@ -152,7 +152,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
     //<<< mochai: fooModelByKey__
     //... preparator()()
     //... C9r.eyo.manyEnhanced('foo', 'foo')
-    //... chai.expect(C9r.eyo.fooModelByKey__).not.undefined
+    //... chai.expect(C9r.eyo).property('fooModelByKey__')
     //>>>
   })
 
@@ -244,7 +244,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
           done.push(k)
           more = true
         } else if (more) {
-          [more, todo, again] = [false, again, todo]
+          ;[more, todo, again] = [false, again, todo]
         } else {
           again.length && eYo.throw(`Cycling/Missing properties in ${object.eyo.name}: ${again}`)
           break
@@ -260,7 +260,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
     //<<< mochai: fooModelMap
     //... preparator()()
     //... C9r.eyo.manyEnhanced('foo', 'foo')
-    //... chai.expect(C9r.eyo.fooModelMap).not.undefined
+    //... chai.expect(C9r.eyo).property('fooModelMap')
     //... preparator()()
     //... C9r.eyo.manyEnhanced('foo', 'foo')
     //... C9r.eyo.fooMerge({
@@ -623,7 +623,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
   _p[tForEach] = function ($this, f) {
     //<<< mochai: fooForEach
     if (eYo.isF($this)) {
-      [$this, f] = [f, $this]
+      ;[$this, f] = [f, $this]
     }
     for (let v of this[tMap].values()) {
       f.call($this, v)
@@ -669,7 +669,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
   _p[tSome] = function ($this, f) {
     //<<< mochai: fooSome
     if (eYo.isF($this)) {
-      [$this, f] = [f, $this]
+      ;[$this, f] = [f, $this]
     }
     for (let v of this[tMap].values()) {
       if (f.call($this, v)) {

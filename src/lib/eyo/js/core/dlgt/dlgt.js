@@ -529,7 +529,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
    */
   _p.forEachSubC9r = function (f, deep) {
     if (eYo.isF(deep)) {
-      [f, deep] = [deep, f]
+      ;[f, deep] = [deep, f]
     }
     this.subC9rs__.forEach(C9r => {
       f(C9r)
@@ -650,7 +650,9 @@ eYo.dlgt.declareDlgt(eYo._p)
     this.modelPrepare()
     this.makeC9rInit()
     this.makeC9rDispose()
-    this.finalizeC9r = eYo.oneShot('finalizeC9r cannot be called twice on the same delegate.')
+    eYo.mixinR(false, this, {
+      finalizeC9r: eYo.oneShot('finalizeC9r cannot be called twice on the same delegate.')
+    })
     return ans
   }
   
