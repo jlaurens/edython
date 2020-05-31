@@ -573,21 +573,46 @@ eYo.descriptorNORW = (msg, configurable) => {
   //>>>
 }
 
+Object.defineProperty(eYo._p, 'Sym', {
+  //<<< mochai: eYo.Sym
+  //... chai.expect(eYo).property('Sym')
+  value: {}
+  //>>>
+})
+
+/**
+ * Creates a symbol uniquely attached to the given key
+ * @param {String} key - The result is `eYo.Sym[key]
+ */
+eYo._p.newSym = function (key) {
+  //<<< mochai: newSym
+  if (this.Sym.hasOwnProperty(key)) {
+    throw `Do not declare a symbol twice`
+  }
+  return this.Sym[key] = Symbol(key)
+  //... var id = eYo.genUID(eYo.IDENT)
+  //... chai.expect(eYo.newSym(id)).equal(eYo.Sym[id])
+  //... chai.expect(() => {
+  //...   eYo.newSym(id)
+  //... }).throw()
+  //>>>
+}
+
+eYo.newSym('FunctionsAreGetters')
+//<<< mochai: FunctionsAreGetters
+//... chai.expect(eYo.Sym).property('FunctionsAreGetters')
+//>>>
+
 /**
  * The props dictionary is a `key=>value` mapping where values
  * are getters, not a dictionary containing a getter.
- * @param {Boolean} [getters] - True if functions are considered as getter. No truthy value is allowed.
  * @param {*} object - The destination
  * @param {*} props - the source
  * @return {*} the destination
  */
-eYo.mixinR = (getters, object, props) => {
-  if (!eYo.isBool(getters)) {
-    if (eYo.isDef(props)) {
-      throw 'Unexpected last argument in eYo.mixinR'
-    }
-    ;[getters, object, props] = [true, getters, object]
-  }
+eYo.mixinR = (object, props) => {
+  var getters = props[eYo.Sym.FunctionsAreGetters]
+  eYo.isNA(getters) && (getters = true)
   Object.keys(props).forEach(key => {
     eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys are forbidden: ${object}, ${key}`)
     let value = props[key]
@@ -638,7 +663,8 @@ eYo.mixinR = (getters, object, props) => {
   //...   }
   //... })
   //... flag.expect()
-  //... eYo.mixinR(false, c, {
+  //... eYo.mixinR(c, {
+  //...   [eYo.Sym.FunctionsAreGetters]: false,
   //...   bar () {
   //...     flag.push(1)
   //...   }
@@ -694,7 +720,8 @@ eYo.provideR = (getters, dest, props) => {
   //>>>
 }
 
-eYo.mixinR(false, eYo, {
+eYo.mixinR(eYo, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * @const
    */
@@ -746,7 +773,8 @@ eYo.mixinR(false, eYo, {
 })
 
 // ANCHOR Utilities
-eYo.mixinR(false, eYo, {
+eYo.mixinR(eYo, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * Readonly undefined
    */
@@ -1008,7 +1036,8 @@ eYo.mixinR(false, eYo, {
 })
 
 // ANCHOR makeNS, provide
-eYo.mixinR(false, eYo._p, {
+eYo.mixinR(eYo._p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * 
    * @param {String} p 
@@ -1041,25 +1070,25 @@ eYo.mixinR(false, eYo._p, {
    * Make a namespace by subclassing the caller's constructor.
    * Will create 'foo' namespace together with an 'foo_p' property to access the prototype.
    * @param {!Object} ns - a namespace, created object will be `ns[key]`. Defaults to the receiver.
-   * @param {String} key - sentencecase name, created object will be `ns[key]`.
+   * @param {String|Symbol} id - When a string, sentencecase name. Created object will be `ns[id]`.
    * @param {Object} [model] - Key/value pairs
    * @param {Boolean} [getters] - Whether in the model, function values are getters
    * @return {Object}
    */
-  makeNS (ns, key, model, getters) {
+  makeNS (ns, id, model, getters) {
     //<<< mochai: eYo.makeNS'
     //... chai.assert(eYo.isNS)
     //... chai.expect(eYo).eyo_NS
     //... chai.assert(eYo.makeNS)
     if (eYo.isDef(ns) && !eYo.isNS(ns)) {
       eYo.isDef(getters) && eYo.throw(`${this.name}/makeNS: Unexpected last argument: ${getters}`)
-      ;[ns, key, model, getters] = [this, ns, key, model]
+      ;[ns, id, model, getters] = [this, ns, id, model]
     }
-    if (!eYo.isStr(key)) {
+    if (!eYo.isStr(id)) {
       eYo.isDef(getters) && eYo.throw(`${this.name}/makeNS: Unexpected last argument (2): ${getters}`)
-      ;[key, model, getters] = [eYo.NA, key, model]
+      ;[id, model, getters] = [eYo.NA, id, model]
     }
-    ns && key && ns[key] !== eYo.NA && eYo.throw(`${ns.name}[${key}] already exists.`)
+    ns && id && ns[id] !== eYo.NA && eYo.throw(`${ns.name}[${id}] already exists.`)
     if (eYo.isBool(model)) {
       ;[model, getters] = [getters, model]
     }
@@ -1125,16 +1154,16 @@ eYo.mixinR(false, eYo._p, {
       //... chai.expect(ns.shi).equal(421)
     })
     var ans = new NS()
-    if (key) {
+    if (id) {
       ns && Object.defineProperties(ns, {
-        [key]: { value: ans, writable: false, },
-        [key + '_p']: { value: NS.prototype, writable: false, },
-        [key + '_s']: { value: Super.prototype, writable: false, },
+        [id]: { value: ans, writable: false, },
+        [id + '_p']: { value: NS.prototype, writable: false, },
+        [id + '_s']: { value: Super.prototype, writable: false, },
       })
       Object.defineProperties(NS.prototype, {
-        key: {value: key, writable: false,},
+        key: {value: id, writable: false,},
         name: {
-          value: ns ? `${ns.name}.${key}` : key,
+          value: ns ? `${ns.name}.${id}` : id,
           writable: false,
         },
       })
@@ -1223,7 +1252,8 @@ eYo.mixinR(false, eYo._p, {
 })
 
 // ANCHOR Assert
-eYo.mixinR(false, eYo, {
+eYo.mixinR(eYo, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * The default error handler.
    * @param {eYo.AssertionError} e The exception to be handled.
@@ -1345,7 +1375,8 @@ eYo.mixinR(eYo, {
   EPSILON: 1e-10,
 })
 
-eYo.mixinR(false, eYo._p, {
+eYo.mixinR(eYo._p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   greater (left, right, tol = eYo.EPSILON) {
     return left - right >= -tol * (Math.abs(left) + Math.abs(right) + 2)
   },

@@ -650,7 +650,8 @@ eYo.dlgt.declareDlgt(eYo._p)
     this.modelPrepare()
     this.makeC9rInit()
     this.makeC9rDispose()
-    eYo.mixinR(false, this, {
+    eYo.mixinR(this, {
+      [eYo.Sym.FunctionsAreGetters]: false,
       finalizeC9r: eYo.oneShot('finalizeC9r cannot be called twice on the same delegate.')
     })
     return ans
@@ -772,7 +773,8 @@ new eYo.dlgt.BaseC9r(eYo.dlgt, 'Base…', eYo.dlgt.BaseC9r, {})
 
 eYo.dlgt.BaseC9r.eyo.finalizeC9r()
 
-eYo.mixinR(false, eYo, {
+eYo.mixinR(eYo, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   Dlgt: eYo.dlgt.BaseC9r,
   //<<< mochai: eYo.Dlgt
   //... chai.expect(eYo).property('Dlgt')

@@ -70,7 +70,8 @@ eYo.observe.makeBaseC9r({
   },
 })
 
-eYo.mixinR(false, eYo.observe, {
+eYo.mixinR(eYo.observe, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * @param {String} [when] - One of the observe HOOKS
    * @param {Object} [$this | eYo.observe.BaseC9r] - Self explanatory

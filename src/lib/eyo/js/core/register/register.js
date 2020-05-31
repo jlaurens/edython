@@ -80,7 +80,8 @@ eYo.register.add = function (object, key, filter) {
     Object.defineProperty(object, k, {value: new Map()})
     //>>>
   }
-  eYo.mixinR(false, object, {
+  eYo.mixinR(object, {
+    [eYo.Sym.FunctionsAreGetters]: false,
     //<<< mochai: methods
     //... let ns = eYo.c9r.makeNS()
     //... let C9r = ns.makeBaseC9r(true)

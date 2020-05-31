@@ -323,7 +323,8 @@ eYo.p6y.makeBaseC9r(true, {
   //>>>
 })
 //<<< mochai: methods
-eYo.mixinR(false, eYo._p, {
+eYo.mixinR(eYo._p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * Whether the argument is a property instance.
    * @param {*} what 

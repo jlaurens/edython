@@ -52,7 +52,8 @@ eYo.o3d.makeBaseC9r({
 //... chai.expect(eYo.o3d.BaseC9r).equal(eYo.O3d)
 //>>>
 
-eYo.mixinR(false, eYo._p, {
+eYo.mixinR(eYo._p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   isaO3d (what) {
     return !!what && what instanceof eYo.o3d.BaseC9r
     //<<< mochai: eYo.isaO3d
@@ -137,7 +138,8 @@ Object.defineProperties(eYo.o3d.BaseC9r.prototype, {
 
 eYo.forward('shared')
 
-eYo.mixinR(false, eYo.o3d._p, {
+eYo.mixinR(eYo.o3d._p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * Create a new instance based on the model.
    * @param {Object} model

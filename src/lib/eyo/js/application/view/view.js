@@ -48,7 +48,8 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
    * 
    * @param {*} object - The object receiving the new shortcuts,
    */
-  eYo.mixinR(false, this._p, {
+  eYo.mixinR(this._p, {
+    [eYo.Sym.FunctionsAreGetters]: false,
     //<<< mochai: eYo.dlgt.BaseC9r_p.viewShortcuts
     viewShortcuts () {
       //<<< mochai: viewShortcuts (foo_v)
@@ -134,7 +135,8 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
   //... C9r.eyo.viewEnhanced()
   //... var o = ns.new('o', onr)
   
-  eYo.mixinR(false, this._p, {
+  eYo.mixinR(this._p, {
+    [eYo.Sym.FunctionsAreGetters]: false,
     /**
      * Make the `doInitUI` and `doDisposeUI` methods.
      * @param {Object} ui - model with `init` and `dispose` keys.
@@ -439,7 +441,8 @@ eYo.View.eyo.finalizeC9r({
 
 eYo.View.eyo.viewEnhanced()
 
-eYo.mixinR(false, eYo.view._p, {
+eYo.mixinR(eYo.view._p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * The model Base used to derive a new class.
    * @see The `new` method.
@@ -494,7 +497,8 @@ eYo.mixinR(false, eYo.view._p, {
    */
   enhanceNew (enhancer) {
     let original = this.new
-    eYo.mixinR(false, this._p, {
+    eYo.mixinR(this._p, {
+      [eYo.Sym.FunctionsAreGetters]: false,
       new (...$) {
         let ans = enhancer(...$)
         if (ans instanceof eYo.View) { // -> eYo.c9r._p.enhanceNew = (enhancer, C9r) => {...}

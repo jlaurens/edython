@@ -229,7 +229,7 @@ eYo.driver.makeBaseC9r({
  * Owns instances of `eYo.Driver`'s descendants.
  * @param {Object} owner
  */
-eYo.c9r.makeSingleton(eYo.driver, 'mngr', {
+eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
   //<<< mochai: eYo.driver.mngr
   //<<< mochai: Basics
   //... chai.expect(eYo.driver).property('mngr')
@@ -381,7 +381,8 @@ eYo.c9r.makeSingleton(eYo.driver, 'mngr', {
       let Driver = eYo.c9r.makeC9r(NS, key, SuperC9r, driverModel)
       let ui_m = this.model.ui
       let ui_d = Driver.eyo.model.ui
-      eYo.mixinR(false, Driver.prototype, {
+      eYo.mixinR(Driver.prototype, {
+        [eYo.Sym.FunctionsAreGetters]: false,
         doInitUI (...$) {
           let ans = SuperC9r.prototype.doInitUI.call(this, ...$)
           var f = ui_m && ui_m.initMake
@@ -497,7 +498,8 @@ eYo.c9r.makeSingleton(eYo.driver, 'mngr', {
   //>>>
 })
 
-eYo.mixinR(false, eYo.driver._p, {
+eYo.mixinR(eYo.driver._p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   //<<< mochai: eYo.driver methods
   /**
    * Usage: `eYo.driver.makeMngr(model)`.
@@ -517,7 +519,7 @@ eYo.mixinR(false, eYo.driver._p, {
     while (!$super.mngr) {
       $super = $super.super // loop ends when at least $super === eYo.driver
     }
-    return eYo.c9r.makeSingleton(this, 'mngr', $super.mngr.constructor, mngrModel)
+    return eYo.o4t.makeSingleton(this, 'mngr', $super.mngr.constructor, mngrModel)
     //... let NS = eYo.driver.makeNS()
     //... chai.expect(NS).not.property('mngr')
     //... chai.expect(NS.BaseC9r).equal(eYo.driver.BaseC9r)

@@ -53,7 +53,8 @@ eYo.o3d.makeNS(eYo, 'o4t')
  */
 eYo.o4t.makeBaseC9r(true)
 
-eYo.mixinR(false, eYo._p, {
+eYo.mixinR(eYo._p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   isaO4t (what) {
     return !!what && what instanceof eYo.o4t.BaseC9r
     //<<< mochai: eYo.isaO4t
@@ -399,7 +400,8 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
   this.p6yShortcuts()
   //>>>
 }
-eYo.mixinR(false, eYo.O4t.eyo._p, {
+eYo.mixinR(eYo.O4t.eyo._p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * Finalize the associate constructor and allow some model format.
    * This must be called once for any delegate, raises otherwise.
@@ -435,7 +437,8 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
     },
     //>>>
   })
-  eYo.mixinR(false, this._p, {
+  eYo.mixinR(this._p, {
+    [eYo.Sym.FunctionsAreGetters]: false,
     /**
      * Declare the given aliases.
      * Used to declare synonyms.
@@ -658,7 +661,8 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //>>>
     }
   })
-  eYo.mixinR(false, this.C9r_p, {
+  eYo.mixinR(this.C9r_p, {
+    [eYo.Sym.FunctionsAreGetters]: false,
     //<<< mochai: iterators
     //... let ns = eYo.c9r.makeNS()
     //... let C9r = ns.makeBaseC9r()
@@ -703,8 +707,8 @@ eYo.O4t.eyo.o4tEnhanced()
 eYo.O4t.eyo.finalizeC9r()
 //>>>
 
-eYo.mixinR(false, eYo.o4t._p, {
-
+eYo.mixinR(eYo.o4t._p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * Declares a model to be used by others. 
    * It creates in the receiver's namespace a `merge` function or a `fooMerge` function,

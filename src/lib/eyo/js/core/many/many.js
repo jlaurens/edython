@@ -53,7 +53,8 @@ eYo.makeNS('many')
 //... }
 //>>>
 
-eYo.mixinR(false, eYo.many, {
+eYo.mixinR(eYo.many, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * Realize `p.next === n` and `n.previous === p`.
    * @param {*} p 

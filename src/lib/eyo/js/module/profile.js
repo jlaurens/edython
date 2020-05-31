@@ -29,37 +29,31 @@ eYo.require('do')
  */
 eYo.c9r.makeNS(eYo.t3, 'profile')
 
-eYo.mixinR(
-  eYo.t3.expr,
-  {
-    reserved_identifier: '.reserved identifier',
-    reserved_keyword: '.reserved keyword',
-    builtin__name: '.builtin name',
-    custom_literal: '.custom literal',
-    known_identifier: '.known identifier',
-    custom_identifier: '.custom identifier',
-    custom_dotted_name: '.custom dotted name',
-    custom_parent_module: '.custom parent module',
-    const: '.const',
-    unset: '.unset',
-    error: '.error',
-    bininteger: '.bininteger',
-    octinteger: '.octinteger',
-    decinteger: '.decinteger',
-    hexinteger: '.hexinteger',
-    singleQuoted: '.single quoted',
-    doubleQuoted: '.double quoted',
-    placehoder: '.placeholder',
-  }
-)
+eYo.mixinR(eYo.t3.expr, {
+  reserved_identifier: '.reserved identifier',
+  reserved_keyword: '.reserved keyword',
+  builtin__name: '.builtin name',
+  custom_literal: '.custom literal',
+  known_identifier: '.known identifier',
+  custom_identifier: '.custom identifier',
+  custom_dotted_name: '.custom dotted name',
+  custom_parent_module: '.custom parent module',
+  const: '.const',
+  unset: '.unset',
+  error: '.error',
+  bininteger: '.bininteger',
+  octinteger: '.octinteger',
+  decinteger: '.decinteger',
+  hexinteger: '.hexinteger',
+  singleQuoted: '.single quoted',
+  doubleQuoted: '.double quoted',
+  placehoder: '.placeholder',
+})
 
-eYo.mixinR(
-  eYo.t3.stmt,
-  {
-    control: '.control statement',
-    placehoder: '.placeholder',
-  }
-)
+eYo.mixinR(eYo.t3.stmt, {
+  control: '.control statement',
+  placehoder: '.placeholder',
+})
 
 /**
  * Get the profile for that identifier,
@@ -328,28 +322,25 @@ eYo.t3.makeC9r('Profiles', {
   }
 }) ()
 
-eYo.mixinR(
-  eYo.t3.profile,
-  {
-    /* Default void profile */
-    void: new eYo.t3.profile.BaseC9r(null, {
-      isVoid: true
-    }),
-    /* Profile for an unset identifier */
-    unset: new eYo.t3.profile.BaseC9r(null, {
-      expr: eYo.t3.expr.identifier,
-      isUnset: true
-    }),
-    /* Profile for an integer */
-    integer: new eYo.t3.profile.BaseC9r(null, {
-      expr: eYo.t3.expr.integer
-    }),
-    /* Profile for a float number */
-    floatnumber: new eYo.t3.profile.BaseC9r(null, {
-      expr: eYo.t3.expr.floatnumber
-    })
-  }
-)
+eYo.mixinR(eYo.t3.profile, {
+  /* Default void profile */
+  void: new eYo.t3.profile.BaseC9r(null, {
+    isVoid: true
+  }),
+  /* Profile for an unset identifier */
+  unset: new eYo.t3.profile.BaseC9r(null, {
+    expr: eYo.t3.expr.identifier,
+    isUnset: true
+  }),
+  /* Profile for an integer */
+  integer: new eYo.t3.profile.BaseC9r(null, {
+    expr: eYo.t3.expr.integer
+  }),
+  /* Profile for a float number */
+  floatnumber: new eYo.t3.profile.BaseC9r(null, {
+    expr: eYo.t3.expr.floatnumber
+  })
+})
 
 /**
  * Returns a profile if `candidate` is a dotted name

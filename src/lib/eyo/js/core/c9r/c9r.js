@@ -359,7 +359,8 @@ eYo.c9r._p.makeC9r = eYo.c9r.makeC9rDecorate(function (ns, id, SuperC9r, model) 
   }
 }
 // ANCHOR eYo._p.makeDlgt
-eYo.mixinR(false, eYo.dlgt.BaseC9r_p, {
+eYo.mixinR(eYo.dlgt.BaseC9r_p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * This decorator turns f with signature
    * function (ns, id, SuperC9r, model) {}
@@ -393,7 +394,8 @@ eYo.mixinR(false, eYo.dlgt.BaseC9r_p, {
     }
   }
 })
-eYo.mixinR(false, eYo.dlgt.BaseC9r_p, {
+eYo.mixinR(eYo.dlgt.BaseC9r_p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * Convenient shortcut to create subclasses.
    * Forwards to the namespace which must exist!
@@ -505,7 +507,8 @@ eYo.mixinR(false, eYo.dlgt.BaseC9r_p, {
    */
   eYo.c9r.makeBaseC9r(true)
 
-  eYo.mixinR(false, eYo._p, {
+  eYo.mixinR(eYo._p, {
+    [eYo.Sym.FunctionsAreGetters]: false,
     /**
      * Whether the argument is a property instance.
      * @param {*} what 
@@ -553,7 +556,8 @@ eYo.mixinR(false, eYo.dlgt.BaseC9r_p, {
 
 // ANCHOR model
 
-eYo.mixinR(false, eYo.model, {
+eYo.mixinR(eYo.model, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * The created model, by key.
    * @param{String} key - the key used to create the constructor.
@@ -615,7 +619,8 @@ eYo.c9r.BaseC9r_p.inheritedMethod = eYo.c9r.Dlgt_p.inheritedMethod = function (m
 
 // ANCHOR Initers, Disposers
 
-eYo.mixinR(false, eYo.c9r._p, {
+eYo.mixinR(eYo.c9r._p, {
+  [eYo.Sym.FunctionsAreGetters]: false,
   /**
    * The model Base used to derive a new class.
    * @see The `new` method.
