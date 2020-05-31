@@ -774,7 +774,7 @@ describe ('Tests: C9r', function () {
     var NS = eYo.c9r.makeNS()
     flag.reset()
     eYo.c9r.makeC9r(NS, 'A', {
-      dlgt () {
+      [eYo.Sym.dlgt] () {
         flag.push(1)
       },
       init() {

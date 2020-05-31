@@ -103,7 +103,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   this.init()
 }
 
-{
+;(() => {
   let _p = eYo.dlgt.BaseC9r_p = eYo.dlgt.BaseC9r.prototype
 
   _p.init = eYo.doNothing
@@ -550,7 +550,12 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
       }
     }
   }
-}
+})()
+
+eYo.newSym('dlgt')
+//<<< mochai: eYo.Sym.dlgt
+//... chai.expect(eYo.Sym).property('dlgt')
+//>>>
 
 /**
  * Adds a delegate to the given constructor.
@@ -583,7 +588,7 @@ eYo.dlgt.new = function (ns, id, C9r, model) {
   // initialization of the dlgt
   // when defined, init must be a self contained function,
   // ie with no inherited reference...
-  let dlgt_m = model.dlgt
+  let dlgt_m = model[eYo.Sym.dlgt]
   if (eYo.isF(dlgt_m)) {
     Dlgt.prototype.init = SuperDlgt
     ? function (...$) {
