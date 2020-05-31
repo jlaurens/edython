@@ -1,5 +1,5 @@
 describe('Field', function () {
-  this.timeout(10000)
+  this.timeout(20000)
   let flag = new eYo.test.Flag()
   it ('Field: Basic', function () {
     chai.assert(eYo.field)

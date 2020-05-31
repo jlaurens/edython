@@ -1,5 +1,5 @@
 describe ('Tests: magnet', function () {
-  this.timeout(10000)
+  this.timeout(20000)
   let flag = new eYo.test.Flag()
   let ns_b3k = eYo.o4t.makeNS()
   ns_b3k.makeBaseC9r()

@@ -1,5 +1,5 @@
 describe('eYo Tests', function () {
-  this.timeout(10000)
+  this.timeout(20000)
   let flag = new eYo.test.Flag()
   before (function() {
     flag.reset()

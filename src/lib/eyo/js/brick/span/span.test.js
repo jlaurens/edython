@@ -1,5 +1,5 @@
 describe('Span expression', function () {
-  this.timeout(10000)
+  this.timeout(20000)
   let flag = new eYo.test.Flag()
   let ns_span = eYo.span.makeNS()
   ns_span.makeBaseC9r()

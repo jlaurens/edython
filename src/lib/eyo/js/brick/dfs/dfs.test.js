@@ -1,5 +1,5 @@
 describe('DFS Tests', function() {
-  this.timeout(10000)
+  this.timeout(20000)
   let flag = new eYo.test.Flag()
   let onr = eYo.c9r.new()
   it(`DFS: Basic`, function() {

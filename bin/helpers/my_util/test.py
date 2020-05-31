@@ -84,7 +84,7 @@ def getInlineTest(path):
   ans = []
   if len(tuple(filter(lambda l: l.n is not None, lines))):
     ans.append(f'describe(`Inline tests at {path.relative_to(path_js)}`' ''', function () {
-  this.timeout(10000)
+  this.timeout(20000)
   var flag, onr
   let makeOnr = () => {
     return eYo.c9r && eYo.c9r.new({

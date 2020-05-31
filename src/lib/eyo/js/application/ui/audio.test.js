@@ -1,5 +1,5 @@
 describe ('Tests: audio', function () {
-  this.timeout(10000)
+  this.timeout(20000)
   it ('Audio: basic', function () {
     chai.assert(eYo.audio)
     chai.assert(eYo.audio.BaseC9r)

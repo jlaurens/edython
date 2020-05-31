@@ -48,7 +48,7 @@ describe ('POC', function () {
   })
 })
 describe ('Tests: Dlgt', function () {
-  this.timeout(10000)
+  this.timeout(20000)
   var flag
   beforeEach (function() {
     flag = new eYo.test.Flag()

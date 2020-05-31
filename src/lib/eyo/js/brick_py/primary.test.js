@@ -389,7 +389,7 @@ describe('Primary bind fields', function() {
     alias
 */
 describe('Primary slots', function() {
-  this.timeout(10000)
+  this.timeout(20000)
   // depending what you connect, the type may change
   // we do not manage the data content here
   it('Slot: holder/dotted', function() {

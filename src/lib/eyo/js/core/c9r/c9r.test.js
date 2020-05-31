@@ -1,5 +1,5 @@
 describe ('POC', function () {
-  this.timeout(10000)
+  this.timeout(20000)
   var flag, onr
   beforeEach (function() {
     flag = new eYo.test.Flag()
@@ -115,7 +115,7 @@ describe ('POC', function () {
   })
 })
 describe ('Tests: C9r', function () {
-  this.timeout(10000)
+  this.timeout(20000)
   var flag, onr
   beforeEach (function() {
     flag = new eYo.test.Flag()

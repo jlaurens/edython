@@ -1,5 +1,5 @@
 describe('Fcls driver', function() {
-  this.timeout(10000)
+  this.timeout(20000)
   it ('Fcls: Basics', function () {
     chai.assert(eYo.fcls)
     chai.assert(eYo.fcls.Mngr)
