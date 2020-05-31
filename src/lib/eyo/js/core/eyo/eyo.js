@@ -119,6 +119,34 @@ eYo.isStr = (what) => {
   //>>>
 }
 /**
+ * Whether the argument is a symbol.
+ * @param {*} what
+ */
+eYo.isSym = (what) => {
+  return typeof what === 'symbol'
+  //<<< mochai: eYo.isSym
+  //... chai.expect(eYo).property('isSym')
+  //... chai.expect(eYo.isSym(Symbol())).true
+  //... chai.expect(eYo.isSym('')).false
+  //... chai.expect(eYo.isSym()).false
+  //... chai.expect(eYo.isSym({})).false
+  //>>>
+}
+/**
+ * Whether the argument is a either a symbol or a string.
+ * @param {*} what
+ */
+eYo.isId = (what) => {
+  return typeof what === 'symbol' || typeof what === 'string'
+  //<<< mochai: eYo.isId
+  //... chai.expect(eYo).property('isId')
+  //... chai.expect(eYo.isId(Symbol())).true
+  //... chai.expect(eYo.isId('')).true
+  //... chai.expect(eYo.isId()).false
+  //... chai.expect(eYo.isId({})).false
+  //>>>
+}
+/**
  * Whether the argument is `eYo.NA`.
  * @param {*} what
  */

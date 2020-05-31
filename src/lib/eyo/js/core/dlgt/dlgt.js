@@ -71,7 +71,7 @@ eYo.dlgt.declareDlgt = function (_p) {
  * This is a root class, not to be subclassed except in singletons.
  * Any constructor's delegate is an instance of this subclass.
  * @param {Object} ns - Namespace
- * @param {String} id - a unique key within the namespace...
+ * @param {String|Symbol} id - a unique key or symbol within the namespace...
  * @param {Function} C9r - the associate constructor
  * @param {Object} model - the model used for extension
  */
@@ -144,7 +144,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
       return this.C9r__.SuperC9r_p
     }),
     name: eYo.descriptorR(function () {
-      return this.ns && this.id__ && `${this.ns.name}.${this.id__}` || this.id
+      return this.ns && this.id__ && `${this.ns.name}.${this.id__.toString()}` || this.id__.toString()
     }),
     super: eYo.descriptorR(function () {
       var S = this.C9r__.SuperC9r
@@ -563,13 +563,13 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
  */
 eYo.dlgt.new = function (ns, id, C9r, model) {
   // prepare
-  if (eYo.isStr(ns)) {
+  if (eYo.isId(ns)) {
     model && eYo.throw(`Unexpected model (1): ${model}`)
     ;[ns, id, C9r, model] = [eYo.NA, ns, id, C9r]
   } else {
     ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw('Bad namespace')
   }
-  !id || eYo.isStr(id) || eYo.throw(`Missing id string: ${id} in eYo.dlgt.new`)
+  !id || eYo.isId(id) || eYo.throw(`Missing id string/symbol: ${id.toString()} in eYo.dlgt.new`)
   !eYo.isF(C9r) && eYo.throw(`Unexpected C9r: ${C9r} in eYo.dlgt.new`)
   eYo.isC9r(C9r) && eYo.throw(`Already a C9r: ${C9r} in eYo.dlgt.new`)
   // process
@@ -772,9 +772,12 @@ new eYo.dlgt.BaseC9r(eYo.dlgt, 'Base…', eYo.dlgt.BaseC9r, {})
 
 eYo.dlgt.BaseC9r.eyo.finalizeC9r()
 
-eYo.Dlgt = eYo.dlgt.BaseC9r
-
 eYo.mixinR(false, eYo, {
+  Dlgt: eYo.dlgt.BaseC9r,
+  //<<< mochai: eYo.Dlgt
+  //... chai.expect(eYo).property('Dlgt')
+  //... chai.expect(eYo.Dlgt).equal(eYo.dlgt.BaseC9r)
+  //>>>
   /**
    * 
    * @param {*} what 

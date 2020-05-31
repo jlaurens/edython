@@ -11,11 +11,10 @@
  */
 'use strict'
 
-eYo.require('dom')
-
 eYo.require('decorate')
 
 goog.require('goog.style')
+
 //g@@g.forwardDeclare('g@@g.math.AffineTransform')
 
 /**
@@ -23,7 +22,9 @@ goog.require('goog.style')
  * @name{eYo.svg}
  * @namespace
  */
-eYo.dom.makeNS(eYo, 'svg')
+eYo.dom.makeNS(eYo, 'svg', {
+  OWNER: new eYo.C9r(),
+})
 
 eYo.forward('t3.profile')
 eYo.forward('svg.Brick')

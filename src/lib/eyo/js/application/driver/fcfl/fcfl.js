@@ -17,7 +17,9 @@ eYo.require('driver')
  * @name {eYo.fcls}
  * @namespace
  */
-eYo.fcls.makeNS(eYo, 'fcfl')
+eYo.fcls.makeNS(eYo, 'fcfl', {
+  OWNER: new eYo.C9r(),
+})
 
 /**
  * @name {eYo.fcfl.Mngr}

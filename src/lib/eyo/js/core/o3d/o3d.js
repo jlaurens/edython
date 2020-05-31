@@ -66,9 +66,9 @@ eYo.mixinR(false, eYo._p, {
 /**
  * The default implementation does nothing.
  * For subclassers.
- * @param{Object} instance - the owner before the change
- * @param{String} key - the owner before the change
- * @param{Object} owner - the owner after the change
+ * @param{Object} instance - the instance to initialize
+ * @param{String | Symbol} key - The key in the owner
+ * @param{Object} owner - the owner
  * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
  */
 eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
@@ -76,7 +76,7 @@ eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
     console.error('BREAK HERE!')
   }
   eYo.isaC9r(owner) || eYo.throw(`${this.name}.o3dInitInstance: Very bad owner (${owner})`)
-  eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Bad key in init`)
+  eYo.isId(key) || eYo.throw(`${this.eyo.name}: Bad key in init`)
   instance.owner__ = owner
   instance.key_ = key
   Object.defineProperties(instance, {
@@ -148,7 +148,7 @@ eYo.mixinR(false, eYo.o3d._p, {
   /**
    * Create a new singleton instance based on the given model.
    * @param {Object} [NS] - Optional namespace, defaults to the receiver.
-   * @param {String} id - the result will be `NS[key]`
+   * @param {String|Symbol} id - the result will be `NS[id]`
    * @param {Object} [model]
    * @return {Object}
    */
@@ -158,7 +158,7 @@ eYo.mixinR(false, eYo.o3d._p, {
       !model || eYo.throw(`Unexpected last parameter: ${model}`)
       ;[NS, id, model] = [this, NS, id]
     }
-    eYo.isStr(id) || eYo.throw(`Unexpected parameter ${id}`)
+    eYo.isId(id) || eYo.throw(`Unexpected parameter ${id.toString()}`)
     let owner =  NS.OWNER || this.OWNER || eYo.shared.OWNER
     var ans = owner[id]
     if (ans) {
@@ -168,8 +168,12 @@ eYo.mixinR(false, eYo.o3d._p, {
     let d = eYo.descriptorR(function() {
       return ans
     })
-    Object.defineProperty(owner, id, d)
-    Object.defineProperty(NS, id, d)
+    if (eYo.isStr(id)) {
+      Object.defineProperty(owner, id, d)
+      Object.defineProperty(NS, id, d)
+    } else {
+      owner[id] = NS[id] = ans
+    }
     ans.__singleton = true
     return ans
     //... var id = eYo.genUID(eYo.IDENT)
@@ -178,11 +182,32 @@ eYo.mixinR(false, eYo.o3d._p, {
     //... chai.expect(eYo.o3d[id]).equal(singleton)
     //... eYo.require(`o3d.${id}`)
     //... chai.expect(eYo.o3d.makeSingleton(id)).equal(singleton)
-    //... let NS = eYo.o3d.makeNS({
-    //...   OWNER: new eYo.C9r()
+    //... var NS = eYo.o3d.makeNS()
+    //... chai.expect(NS.OWNER).equal(eYo.o3d.OWNER)
+    //... chai.expect(NS.makeSingleton(id)).equal(singleton)
+    //... var NS = eYo.o3d.makeNS({
+    //...   OWNER: new eYo.C9r(),
     //... })
-    //... chai.expect(NS).not.property(id)
     //... var ss = NS.makeSingleton(id)
+    //... chai.expect(NS).property(id)
+    //... chai.expect(NS[id]).equal(ss)
+    //... chai.expect(ss).not.equal(singleton)
+    //... chai.expect(NS).property(id)
+    //... chai.expect(NS.makeSingleton(id)).equal(ss)
+    //... var id = Symbol(id)
+    //... var singleton = eYo.o3d.makeSingleton(id)
+    //... chai.expect(eYo.o3d).property(id)
+    //... chai.expect(eYo.o3d[id]).equal(singleton)
+    //... chai.expect(eYo.o3d.makeSingleton(id)).equal(singleton)
+    //... var NS = eYo.o3d.makeNS()
+    //... chai.expect(NS.OWNER).equal(eYo.o3d.OWNER)
+    //... chai.expect(NS.makeSingleton(id)).equal(singleton)
+    //... var NS = eYo.o3d.makeNS({
+    //...   OWNER: new eYo.C9r(),
+    //... })
+    //... var ss = NS.makeSingleton(id)
+    //... chai.expect(NS).property(id)
+    //... chai.expect(NS[id]).equal(ss)
     //... chai.expect(ss).not.equal(singleton)
     //... chai.expect(NS).property(id)
     //... chai.expect(NS.makeSingleton(id)).equal(ss)
