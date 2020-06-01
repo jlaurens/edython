@@ -113,7 +113,7 @@ eYo.setup.register(-1, () => {
  */
 eYo.css.inject = (hasCss, pathToMedia) => {
   // Placeholder for cursor rule.  Must be first rule (index 0).
-  var text = '[eYo.$]-draggable {}\n'
+  var text = 'eyo-draggable {}\n'
   if (hasCss) {
     text += eYo.css.CONTENT(pathToMedia).join('\n')
   }
@@ -137,16 +137,16 @@ eYo.css.CONTENT = path => {
   touch-action: none;
   background: orange;
 }`,
-    `[eYo.$]-board {
+    `eyo-board {
 }`, /* UNUSED */
 
-    `[eYo.$]-trash {
+    `eyo-trash {
 }`, /* UNUSED */
 
-    `[eYo.$]-brick-canvas {
+    `eyo-brick-canvas {
 }`, /* */
 
-    '[eYo.$]-board-drag-surface {',
+    'eyo-board-drag-surface {',
       'display: none;',
       'position: absolute;',
       'top: 0;',
@@ -155,23 +155,23 @@ eYo.css.CONTENT = path => {
     /* Added as a separate rule with multiple classes to make it more specific
       than a bootstrap rule that selects svg:root. See issue #1275 for context.
     */
-    `[eYo.$]-board-drag-surface[eYo.$]-overflow-visible {
+    `eyo-board-drag-surface, eyo-overflow-visible {
   overflow: visible;
 }
-[eYo.$]-flyout-scroolbar {
+eyo-flyout-scroolbar {
   z-index: 30;
 }
-[eYo.$]-zoom>image {
+eyo-zoom>image {
   opacity: .4;
 }
-[eYo.$]-zoom>image:hover {
+eyo-zoom>image:hover {
   opacity: .6;
 }
-[eYo.$]-zoom>image:active {
+eyo-zoom>image:active {
   opacity: .8;
 }`,
     /* IE overflows by default. */
-    `[eYo.$]-svg {
+    `eyo-svg {
   background-color: #fff;
   outline: none;
   overflow: hidden;
@@ -179,7 +179,7 @@ eYo.css.CONTENT = path => {
   display: block;
 }`,
   /* Display below flyout, but above everything else. */
-    `[eYo.$]-brick-drag-surface {
+    `eyo-brick-drag-surface {
   display: none;
   position: absolute;
   top: 0;
@@ -193,7 +193,7 @@ eYo.css.CONTENT = path => {
       ahead of block during a drag. This way the cursor is still a closed hand.
     */
     /* backup for browsers (e.g. IE11) that don't support grabbing */
-    `[eYo.$]-brick-drag-surface [eYo.$]-draggable {
+    `eyo-brick-drag-surface eyo-draggable {
   cursor: url("${path}/handclosed.cur"), auto;
   cursor: grabbing;
   cursor: -webkit-grabbing;
@@ -202,14 +202,14 @@ eYo.css.CONTENT = path => {
     Don't allow users to select text.  It gets annoying when trying to
     drag a block and selected text moves instead.
     */
-  `[eYo.$]-svg text, [eYo.$]-brick-drag-surface text {
+  `eyo-svg text, eyo-brick-drag-surface text {
   user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   -webkit-user-select: none;
   cursor: inherit;
 }`,
-    `[eYo.$]-dragging[eYo.$]-dragging-delete {
+    `eyo-draggingeyo-dragging-delete {
   cursor: url("${path}/handdelete.cur"), auto;
 }`,
 
@@ -225,14 +225,14 @@ eYo.css.CONTENT = path => {
       '-webkit-user-select: none;',
     '}',
 
-    '[eYo.$]-draggable {',
+    'eyo-draggable {',
       /* backup for browsers (e.g. IE11) that don't support grab */
       'cursor: url("${path}/handopen.cur"), auto;',
       'cursor: grab;',
       'cursor: -webkit-grab;',
     '}',
 
-    '[eYo.$]-dragging {',
+    'eyo-dragging {',
       /* backup for browsers (e.g. IE11) that don't support grabbing */
       'cursor: url("${path}/handclosed.cur"), auto;',
       'cursor: grabbing;',
@@ -240,7 +240,7 @@ eYo.css.CONTENT = path => {
     '}',
     /* Changes cursor on mouse down. Not effective in Firefox because of
       https://bugzilla.mozilla.org/show_bug.cgi?id=771241 */
-    '[eYo.$]-draggable:active {',
+    'eyo-draggable:active {',
       /* backup for browsers (e.g. IE11) that don't support grabbing */
       'cursor: url("${path}/handclosed.cur"), auto;',
       'cursor: grabbing;',
@@ -256,45 +256,45 @@ eYo.css.CONTENT = path => {
       'display: none;',
     '}',
 
-    '[eYo.$]-flyout-background {',
+    'eyo-flyout-background {',
       'fill: #ddd;',
       'fill-opacity: .8;',
     '}',
 
-    '[eYo.$]-transparent-background {',// used
+    'eyo-transparent-background {',// used
       'opacity: 0;',
     '}',
 
-    `[eYo.$]-main-board-scrollbar {
+    `eyo-main-board-scrollbar {
   z-index: 20;
 }`,
 
-    '[eYo.$]-scrollbar-horizontal, [eYo.$]-scrollbar-vertical {',
+    'eyo-scrollbar-horizontal, eyo-scrollbar-vertical {',
       'position: absolute;',
       'outline: none;',
     '}',
 
-    '[eYo.$]-scrollbar-background {',
+    'eyo-scrollbar-background {',
       'opacity: 0;',
     '}',
 
-    '[eYo.$]-scrollbar-handle {',
+    'eyo-scrollbar-handle {',
       'fill: #ccc;',
     '}',
 
-    '[eYo.$]-scrollbar-background:hover+[eYo.$]-scrollbar-handle,',
-    '[eYo.$]-scrollbar-handle:hover {',
+    'eyo-scrollbar-background:hover+eyo-scrollbar-handle,',
+    'eyo-scrollbar-handle:hover {',
       'fill: #bbb;',
     '}',
 
     /* Darken flyout scrollbars due to being on a grey background. */
     /* By contrast, board scrollbars are on a white background. */
-    '.blocklyFlyout [eYo.$]-scrollbar-handle {',
+    '.blocklyFlyout eyo-scrollbar-handle {',
       'fill: #bbb;',
     '}',
 
-    '.blocklyFlyout [eYo.$]-scrollbar-background:hover+[eYo.$]-scrollbar-handle,',
-    '.blocklyFlyout [eYo.$]-scrollbar-handle:hover {',
+    '.blocklyFlyout eyo-scrollbar-background:hover+eyo-scrollbar-handle,',
+    '.blocklyFlyout eyo-scrollbar-handle:hover {',
       'fill: #aaa;',
     '}',
 
@@ -310,19 +310,19 @@ eYo.css.CONTENT = path => {
       'padding: 0 !important;',
       'max-height: 300px !important;',
     '}',
-    `[eYo.$]-flyout {
+    `eyo-flyout {
   position: absolute;
   z-index: 20;
 }`,
-    `[eYo.$]-flyout-background {
+    `eyo-flyout-background {
   fill: #ddd;
   fill-opacity: .8;
   pointer-events: all;
 }`,
-    `[eYo.$]-flyout-scrollbar {
+    `eyo-flyout-scrollbar {
   z-index: 30;
 }`,
-    `[eYo.$]-flyout-toolbar {
+    `eyo-flyout-toolbar {
   position: absolute;
   pointer-events: all;
   height: 3.5rem;
@@ -331,7 +331,7 @@ eYo.css.CONTENT = path => {
   margin: 0;
   background: rgba(221,221,221,0.8);
 }`,
-    `[eYo.$]-flyout-toolbar-general {
+    `eyo-flyout-toolbar-general {
   position: absolute;
   pointer-events: all;
   height: 2rem;
@@ -339,7 +339,7 @@ eYo.css.CONTENT = path => {
   width: 100%;
   margin: 0;
 }`,
-    `[eYo.$]-flyout-toolbar-module {
+    `eyo-flyout-toolbar-module {
   position: absolute;
   pointer-events: all;
   height: 1.75rem;
@@ -348,15 +348,15 @@ eYo.css.CONTENT = path => {
   margin-top: 2.25rem;
   width: 100%;
 }`,
-    `[eYo.$]-flyout-select-general,
-[eYo.$]-flyout-select-module {
+    `eyo-flyout-select-general,
+eyo-flyout-select-module {
   height: 100%;
   width: 100%;
   padding-left: 0.25rem;
   padding-right:0.25rem;
   margin: 0
 }`,
-    `[eYo.$]-flyout-control {
+    `eyo-flyout-control {
   background: #ddd;
   opacity: 0.79;
   height: 50%;
@@ -365,7 +365,7 @@ eYo.css.CONTENT = path => {
   top: 0px;
 }`,
     (radius =>
-      `[eYo.$]-flyout-control left {
+      `eyo-flyout-control left {
   border-top-right-radius:${radius};
   border-bottom-right-radius:${radius};
   -webkit-border-top-right-radius:${radius};
@@ -376,7 +376,7 @@ eYo.css.CONTENT = path => {
   border-bottom-right-radius:${radius};
   right: -1.25rem;
 }
-[eYo.$]-flyout-control {
+eyo-flyout-control {
   border-top-left-radius:${radius};
   border-bottom-left-radius:${radius};
   -webkit-border-top-left-radius:${radius};
@@ -388,31 +388,31 @@ eYo.css.CONTENT = path => {
   left: -1.25rem;
 }`
     )('1.125rem;'),
-    `[eYo.$]-flyout-control-image {
+    `eyo-flyout-control-image {
   width: 1.125rem;
   height: 2.25rem;
 }
-[eYo.$]-flyout-control-image path {
+eyo-flyout-control-image path {
   fill: white;
 }
-[eYo.$]-flyout-control-image path:hover {
+eyo-flyout-control-image path:hover {
   fill:black;
   fill-opacity: 0.075;
 }
-[eYo.$]-flash [eYo.$]-flyout-control-image path,
-[eYo.$]-flash [eYo.$]-flyout-control-image path:hover {
+eyo-flash eyo-flyout-control-image path,
+eyo-flash eyo-flyout-control-image path:hover {
   fill:black;
   fill-opacity:0.2;
 }
-[eYo.$]-flyout-toolbar [eYo.$]-menu-button {
+eyo-flyout-toolbar eyo-menu-button {
   background: #952276;
   box-shadow: 0px 3px 8px #888;
   border:0;
 }
-[eYo.$]-flyout-toolbar [eYo.$]-menu-button:hover {
+eyo-flyout-toolbar eyo-menu-button:hover {
   box-shadow: 0px 2px 6px #444;
 }
-[eYo.$]-menu-button-outer-box {
+eyo-menu-button-outer-box {
   padding-left: 10px;
   width: 100%;
   height: 100%;
@@ -420,7 +420,7 @@ eYo.css.CONTENT = path => {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-[eYo.$]-menu-button-inner-box {
+eyo-menu-button-inner-box {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -428,214 +428,214 @@ eYo.css.CONTENT = path => {
   -webkit-box-sizing: border-box;
   padding-right: 30px;
 }
-[eYo.$]-flyout-toolbar [eYo.$]-menu-button-caption {
+eyo-flyout-toolbar eyo-menu-button-caption {
   color: white;
   vertical-align: middle;
 }
-[eYo.$]-menu-button-dropdown svg {
+eyo-menu-button-dropdown svg {
   position: absolute;
   top: 0px;
   width: 12px;
   height: 6px;
 }
-[eYo.$]-menu-button-dropdown-image {
+eyo-menu-button-dropdown-image {
   fill: white;
 }`,
     `.eyoMainBackground {
   stroke-width: 5;
   stroke: none;
 }
-[eYo.$]-brick .blocklyText,
-[eYo.$]-var,
-[eYo.$]-label,
-[eYo.$]-code,
-[eYo.$]-code-reserved,
-[eYo.$]-code-builtin,
-[eYo.$]-code-comment,
-[eYo.$]-code-placeholder,
-[eYo.$]-sharp-group{
+eyo-brick .blocklyText,
+eyo-var,
+eyo-label,
+eyo-code,
+eyo-code-reserved,
+eyo-code-builtin,
+eyo-code-comment,
+eyo-code-placeholder,
+eyo-sharp-group{
   ${eYo.font.Style};
 }
-[eYo.$]-error[eYo.$]-path-selected,
-[eYo.$]-error[eYo.$]-path-hilighted,
-[eYo.$]-error[eYo.$]-path-shape,
-[eYo.$]-error[eYo.$]-path-contour,
-[eYo.$]-error[eYo.$]-path-inner {
+eyo-erroreyo-path-selected,
+eyo-erroreyo-path-hilighted,
+eyo-erroreyo-path-shape,
+eyo-erroreyo-path-contour,
+eyo-erroreyo-path-inner {
   stroke:${eYo.style.path.Error.Colour};
   stroke-width: ${eYo.style.path.Error.width}px;
 }
-[eYo.$]-path-selected,
-[eYo.$]-path-hilighted {
+eyo-path-selected,
+eyo-path-hilighted {
   stroke: ${eYo.style.path.Hilighted.Colour};
   fill: none;
 }
-[eYo.$]-path-hilighted {
+eyo-path-hilighted {
   stroke-width: ${eYo.style.path.Hilighted.width}px;
 }
-[eYo.$]-select [eYo.$]-path-contour[eYo.$]-error,
-[eYo.$]-select [eYo.$]-path-inner[eYo.$]-error {
+eyo-select eyo-path-contoureyo-error,
+eyo-select eyo-path-innereyo-error {
   stroke: ${eYo.style.path.Error.Colour};
 }
-[eYo.$]-checkbox-icon-rect {
+eyo-checkbox-icon-rect {
   stroke: ${eYo.shape.style.Colour.light};
   stroke-width: ${eYo.shape.style.width.light}px;
   fill: white;
 }
-[eYo.$]-checkbox-icon-rect {
+eyo-checkbox-icon-rect {
   stroke: ${eYo.shape.style.Colour.light};
   stroke-width: ${eYo.shape.style.width.light}px;
   fill: white;
 }
-[eYo.$]-medium [eYo.$]-checkbox-icon-rect {
+eyo-medium eyo-checkbox-icon-rect {
   stroke: ${eYo.shape.style.Colour.medium};
   stroke-width: ${eYo.shape.style.width.medium}px;
   fill: white;
 }
-[eYo.$]-dark [eYo.$]-checkbox-icon-rect {
+eyo-dark eyo-checkbox-icon-rect {
   stroke: ${eYo.shape.style.Colour.dark};
   stroke-width: ${eYo.shape.style.width.dark}px;
   fill: white;
 }
-[eYo.$]-locked[eYo.$]-path-contour,
-[eYo.$]-locked[eYo.$]-path-inner,
-[eYo.$]-locked[eYo.$]-path-shape,
-[eYo.$]-locked[eYo.$]-edit,
-[eYo.$]-locked[eYo.$]-edit{
+eyo-lockedeyo-path-contour,
+eyo-lockedeyo-path-inner,
+eyo-lockedeyo-path-shape,
+eyo-lockedeyo-edit,
+eyo-lockedeyo-edit{
   display: none
 }
-[eYo.$]-path-shape {
+eyo-path-shape {
   stroke: none;
   fill: white;
   fill-opacity:0.92
 }
-[eYo.$]-path-bbox {
+eyo-path-bbox {
   stroke: ${eYo.style.path.Bbox_colour};
   stroke-width: ${eYo.shape.style.width.light}px;
   fill: none;
 }
-[eYo.$]-inner [eYo.$]-path-shape {
+eyo-inner eyo-path-shape {
   stroke: none;
   fill-opacity:0
 }
-[eYo.$]-stmt[eYo.$]-inner [eYo.$]-path-shape {
+eyo-stmteyo-inner eyo-path-shape {
   stroke: none;
   fill-opacity:0.92;
 }
-[eYo.$]-path-contour,
-[eYo.$]-path-inner,
-[eYo.$]-path-collapsed,
-[eYo.$]-path-play-contour {
+eyo-path-contour,
+eyo-path-inner,
+eyo-path-collapsed,
+eyo-path-play-contour {
   stroke: ${eYo.shape.style.Colour.light};
   stroke-width: ${eYo.shape.style.width.light}px;
   fill: none;
   pointer-events: all;
   stroke-linejoin: round;
 }
-[eYo.$]-medium [eYo.$]-path-contour,
-[eYo.$]-medium [eYo.$]-path-inner,
-[eYo.$]-medium [eYo.$]-path-collapsed,
-[eYo.$]-medium [eYo.$]-path-play-contour {
+eyo-medium eyo-path-contour,
+eyo-medium eyo-path-inner,
+eyo-medium eyo-path-collapsed,
+eyo-medium eyo-path-play-contour {
   stroke: ${eYo.shape.style.Colour.medium};
   stroke-width: ${eYo.shape.style.width.medium}px;
   fill: none;
   pointer-events: all;
   stroke-linejoin: round;
 }
-[eYo.$]-dark [eYo.$]-path-contour,
-[eYo.$]-dark [eYo.$]-path-inner,
-[eYo.$]-dark [eYo.$]-path-collapsed,
-[eYo.$]-dark [eYo.$]-path-play-contour {
+eyo-dark eyo-path-contour,
+eyo-dark eyo-path-inner,
+eyo-dark eyo-path-collapsed,
+eyo-dark eyo-path-play-contour {
   stroke: ${eYo.shape.style.Colour.dark};
   stroke-width: ${eYo.shape.style.width.dark}px;
   fill: none;
   pointer-events: all;
   stroke-linejoin: round;
 }
-[eYo.$]-path-selected {
+eyo-path-selected {
   pointer-events: none;
 }
-[eYo.$]-inner[eYo.$]-expr [eYo.$]-path-contour,
-[eYo.$]-inner[eYo.$]-expr [eYo.$]-path-collapsed {
+eyo-innereyo-expr eyo-path-contour,
+eyo-innereyo-expr eyo-path-collapsed {
   stroke: ${eYo.shape.style.inner_colour.light};
 }
-[eYo.$]-medium [eYo.$]-inner[eYo.$]-expr [eYo.$]-path-contour,
-[eYo.$]-medium [eYo.$]-inner[eYo.$]-expr [eYo.$]-path-collapsed {
+eyo-medium eyo-innereyo-expr eyo-path-contour,
+eyo-medium eyo-innereyo-expr eyo-path-collapsed {
   stroke: ${eYo.shape.style.inner_colour.medium};
 }
-[eYo.$]-dark [eYo.$]-inner[eYo.$]-expr [eYo.$]-path-contour,
-[eYo.$]-dark [eYo.$]-inner[eYo.$]-expr [eYo.$]-path-collapsed {
+eyo-dark eyo-innereyo-expr eyo-path-contour,
+eyo-dark eyo-innereyo-expr eyo-path-collapsed {
   stroke: ${eYo.shape.style.inner_colour.dark};
 }`,
-    `[eYo.$]-code-emph {
+    `eyo-code-emph {
   font-weight: bold;
 }
-[eYo.$]-code-reserved,
-[eYo.$]-code-builtin,
-[eYo.$]-sharp-group {
+eyo-code-reserved,
+eyo-code-builtin,
+eyo-sharp-group {
   font-weight: bold!important;
   color: rgba(0, 84, 147, 0.75)!important;
   fill: rgba(0, 84, 147, 0.75)!important;
 }
-[eYo.$]-code-builtin {
+eyo-code-builtin {
   font-weight: bold;
   color: rgba(60, 0, 145, 0.75);
   fill: rgba(60, 0, 145, 0.75);
 }`,
-    `[eYo.$]-start>g>[eYo.$]-code-comment {
+    `eyo-start>g>eyo-code-comment {
   font-style: normal;
   font-weight: bold;
 }
-[eYo.$]-start-path {
+eyo-start-path {
   fill: rgba(240, 240, 240, 0.97);
 }
-[eYo.$]-path-play-contour {
+eyo-path-play-contour {
   fill: rgba(255, 255, 255, 0.8);
 }
-[eYo.$]-start>text[eYo.$]-code-reserved[eYo.$]-label {
+eyo-start>texteyo-code-reservedeyo-label {
   opacity:0;
 }
-[eYo.$]-code-placeholder {
+eyo-code-placeholder {
   fill: rgba(0, 0, 0, 0.4);
 }
 input-code-error {
   color: red;
 }
-text[eYo.$]-code-error {
+texteyo-code-error {
   fill: red;
 }
-text[eYo.$]-code-comment {
+texteyo-code-comment {
   fill: rgba(42, 132, 45, 0.8);
 }
-[eYo.$]-code-disabled {
+eyo-code-disabled {
   color: #ccc;
 }`,
-    `[eYo.$]-select[eYo.$]-expr [eYo.$]-path-contour,
-[eYo.$]-select[eYo.$]-stmt [eYo.$]-path-contour,
-[eYo.$]-select[eYo.$]-expr [eYo.$]-path-inner {
+    `eyo-selecteyo-expr eyo-path-contour,
+eyo-selecteyo-stmt eyo-path-contour,
+eyo-selecteyo-expr eyo-path-inner {
   stroke: ${eYo.style.path.Hilighted.Colour};
 }
-[eYo.$]-select[eYo.$]-stmt>[eYo.$]-path-contour,
-[eYo.$]-select[eYo.$]-stmt>[eYo.$]-path-inner,
-[eYo.$]-select[eYo.$]-stmt>[eYo.$]-expr [eYo.$]-path-contour,
-[eYo.$]-select[eYo.$]-stmt>[eYo.$]-expr [eYo.$]-path-inner {
+eyo-selecteyo-stmt>eyo-path-contour,
+eyo-selecteyo-stmt>eyo-path-inner,
+eyo-selecteyo-stmt>eyo-expr eyo-path-contour,
+eyo-selecteyo-stmt>eyo-expr eyo-path-inner {
   stroke: ${eYo.style.path.Hilighted.Colour};
 }
-[eYo.$]-code-placeholder,
-[eYo.$]-code-comment {
+eyo-code-placeholder,
+eyo-code-comment {
   font-style: oblique;
 }
-[eYo.$]-hilighted-magnet-path{
+eyo-hilighted-magnet-path{
   stroke: ${eYo.style.path.Hilighted.Colour};
   stroke-width: ${eYo.style.path.Hilighted.width}px;
   fill: none;
 }`,
-`[eYo.$]-main-board-background {
+`eyo-main-board-background {
   fill: green;
 }`,
-`[eYo.$]-board-dragger-background {
+`eyo-board-dragger-background {
   fill: rgba(255, 0, 127, 0.3)
 }`,
-`[eYo.$]-main-board-background[eYo.$]-draft {
+`eyo-main-board-backgroundeyo-draft {
   fill: gainsboro;
 }`,
 `#eyo-desk svg { pointer-events: none; }

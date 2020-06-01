@@ -104,7 +104,7 @@ eYo.consolidator.makeC9r('List', {
     var D = this.model
     var DD = this.constructor[eYo.$].model 
     DD && DD.list && eYo.do.mixin(D, DD.list)
-    this[eYo.$].ns.modelExpand({list: D})
+    this.eyo.ns.modelExpand({list: D})
   }
 })
 
@@ -632,11 +632,11 @@ eYo.consolidator.List_p.getIO = function (brick) {
   var unwrapped = brick.wrapper
   var io = {
     brick: brick,
-    noLeftSeparator: brick.board && (brick.board[eYo.$].options.noLeftSeparator ||
-      brick.board[eYo.$].options.noDynamicList) &&
+    noLeftSeparator: brick.board && (brick.board.eyo.options.noLeftSeparator ||
+      brick.board.eyo.options.noDynamicList) &&
       (!unwrapped ||
         (!unwrapped.withLeftSeparator_ && !unwrapped.withDynamicList_)),
-    noDynamicList: brick.board && (brick.board[eYo.$].options.noDynamicList) &&
+    noDynamicList: brick.board && (brick.board.eyo.options.noDynamicList) &&
       (!unwrapped ||
         !unwrapped.withDynamicList_),
     list: brick.slots,

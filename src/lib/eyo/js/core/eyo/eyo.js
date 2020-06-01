@@ -1041,11 +1041,11 @@ eYo.mixinFR(eYo, {
    * Whether the argument is a constructor, in edython paradigm.
    * Such a constructor is a function with an `[eYo.$]` property pointing to
    * a delegate. It is not advisable to change this property on the fly.
-   * @param {*} what
+   * @param {*} What
    * @return {!Boolean}
    */
-  isC9r (what) {
-    return !!what && !!what[eYo.$] && eYo.isF(what)
+  isC9r (What) {
+    return !!What && !!What[eYo.$] && eYo.isF(What)
   },
   /**
    * Returns the evaluated argument if its a function,

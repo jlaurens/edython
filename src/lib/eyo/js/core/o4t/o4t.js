@@ -102,9 +102,9 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
           //... let _p = C9r[eYo.$].C9r_p
           //... chai.expect(_p.hasOwnProperty('foo_p')).true
           //... let o = ns.new('bar')
-          //... o[eYo.$].p6yPrepare(o)
+          //... o.eyo.p6yPrepare(o)
           //... chai.expect(o.foo_p.value).undefined
-          //... o[eYo.$].p6yInit(o)
+          //... o.eyo.p6yInit(o)
           //... chai.expect(o.foo_p.value).equal(421)
           //>>>
         }),
@@ -130,8 +130,8 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
           //... let _p = C9r[eYo.$].C9r_p
           //... chai.expect(_p.hasOwnProperty('foo_t')).true
           //... let o = ns.new('bar')
-          //... o[eYo.$].p6yPrepare(o)
-          //... o[eYo.$].p6yInit(o)
+          //... o.eyo.p6yPrepare(o)
+          //... o.eyo.p6yInit(o)
           //... var foo_p = eYo.p6y.new('foo', o)
           //... chai.expect(o.foo_t).undefined
           //... chai.expect(foo_p.value).not.equal(421)
@@ -160,8 +160,8 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
         //...     }
         //...   }
         //... }, 'o')
-        //... o[eYo.$].p6yPrepare(o)
-        //... o[eYo.$].p6yInit(o)
+        //... o.eyo.p6yPrepare(o)
+        //... o.eyo.p6yInit(o)
         //... let foo_p = o.p6yMap.get('foo')
         //... foo_p.flag = function (...$) {
         //...   this.owner.flag(...$)
@@ -271,9 +271,9 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
   //...   foo: 421,
   //... })
   //... var o = ns.new('bar')
-  //... o[eYo.$].p6yPrepare(o)
+  //... o.eyo.p6yPrepare(o)
   //... chai.expect(o.p6yMap.get('foo')).not.undefined
-  //... o[eYo.$].p6yInit(o)
+  //... o.eyo.p6yInit(o)
   //... chai.expect(o.p6yMap.get('foo').value).equal(421)
   //>>>
   eYo.c9r.appendToMethod(this._p, 'p6yMerge', function () {
@@ -290,7 +290,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     //...   bar: 666,
     //... })
     //... var o = ns.new('bar')
-    //... o[eYo.$].p6yPrepare(o)
+    //... o.eyo.p6yPrepare(o)
     //... chai.expect(o.p6yMap.get('foo')).not.undefined
     //... chai.expect(o.p6yMap.get('bar')).not.undefined
     //>>>
@@ -308,7 +308,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     if (!eYo.isDef(old_p)) {
       console.error('BREAK HERE!!!')
     }
-    eYo.isDef(old_p) || eYo.throw(`${this[eYo.$].name}/p6yReplace: no replacement for ${k}`)
+    eYo.isDef(old_p) || eYo.throw(`${this.eyo.name}/p6yReplace: no replacement for ${k}`)
     var p6y = eYo.p6y.aliasNew(k, this, source)
     eYo.many.link(old_p.previous, p6y)
     eYo.many.link(p6y, old_p.next)
@@ -334,10 +334,10 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     //...   },
     //... })
     //... var o = ns.new('o', onr)
-    //... o[eYo.$].p6yShortcuts()
-    //... o[eYo.$].p6yPrepare(o)
-    //... o[eYo.$].p6yLinks(o)
-    //... o[eYo.$].p6yInit(o)
+    //... o.eyo.p6yShortcuts()
+    //... o.eyo.p6yPrepare(o)
+    //... o.eyo.p6yLinks(o)
+    //... o.eyo.p6yInit(o)
     //... o.p6yForEach(v => flag.push(v.value))
     //... flag.expect(123)
     //... let foo_p = eYo.p6y.new({
@@ -363,9 +363,9 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     //... foo_p.value_ += 3
     //... chai.expect(o.foo_p.value).equal(4)
     //... o = ns.new('o', onr)
-    //... o[eYo.$].p6yPrepare(o)
-    //... o[eYo.$].p6yLinks(o)
-    //... o[eYo.$].p6yInit(o)
+    //... o.eyo.p6yPrepare(o)
+    //... o.eyo.p6yLinks(o)
+    //... o.eyo.p6yInit(o)
     //... chai.expect(o.chi_p.value).equal(2)
     //... o.p6yReplace('chi', chi_p)
     //... o.p6yForEach(v => flag.push(v.value))
@@ -379,9 +379,9 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     //... chi_p.value_ += 3
     //... chai.expect(o.chi_p.value).equal(5)
     //... o = ns.new('o', onr)
-    //... o[eYo.$].p6yPrepare(o)
-    //... o[eYo.$].p6yLinks(o)
-    //... o[eYo.$].p6yInit(o)
+    //... o.eyo.p6yPrepare(o)
+    //... o.eyo.p6yLinks(o)
+    //... o.eyo.p6yInit(o)
     //... chai.expect(o.mi_p.value).equal(3)
     //... o.p6yReplace('mi', mi_p)
     //... o.p6yForEach(v => flag.push(v.value))
@@ -556,7 +556,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       //... o.foo_p.dispose(2, 3)
       //... flag.expect(1234)
       //... var o = eYo.o4t.new(model, 'foo', onr)
-      //... o = o[eYo.$].disposeInstance(o, 2, 3)
+      //... o = o.eyo.disposeInstance(o, 2, 3)
       //... flag.expect(1234)
       //>>>
     },
@@ -642,7 +642,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
         for (let p of object.p6yMap.values()) {
           if (p.owner === object) {
             let v = p.stored__
-            if (v && /* v[eYo.$] && p === v.eyo_p6y &&*/ f.call($this, v)) {
+            if (v && /* v.eyo && p === v.eyo_p6y &&*/ f.call($this, v)) {
               return true
             }
           }
@@ -675,7 +675,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       if (eYo.isF($this)) {
         ;[$this, f] = [f, $this]
       }
-      return this[eYo.$].p6yValueForEach(this, $this, f, true)
+      return this.eyo.p6yValueForEach(this, $this, f, true)
       //>>>
     },
     /**
@@ -689,7 +689,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       if (eYo.isF($this)) {
         ;[$this, f] = [f, $this]
       }
-      return this[eYo.$].p6yValueSome(this, $this, f, true)
+      return this.eyo.p6yValueSome(this, $this, f, true)
       //>>>
     }
     //>>>

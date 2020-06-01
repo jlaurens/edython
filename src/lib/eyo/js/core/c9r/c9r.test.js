@@ -167,9 +167,10 @@ describe ('Tests: C9r', function () {
     NS.makeBaseC9r()
     chai.expect(NS.BaseC9r).not.equal(eYo.c9r.BaseC9r)
     chai.expect(NS.BaseC9r_p).not.equal(eYo.c9r.BaseC9r_p)
-    chai.expect(NS.makeC9r()[eYo.$SuperC9r]).undefined
-    let C9r = NS.makeC9r('Foo')
-    chai.expect(NS.makeC9r()[eYo.$SuperC9r]).undefined
+    chai.expect(NS.makeC9r()[eYo.$SuperC9r]).equal(NS.BaseC9r)
+    chai.expect(NS.makeC9r({
+      [eYo.$SuperC9r]: eYo.NA,
+    })[eYo.$SuperC9r]).undefined
   })
   it ('C9r modelMerge (adding methods)', function () {
     var NS = eYo.c9r.makeNS()
@@ -347,7 +348,7 @@ describe ('Tests: C9r', function () {
       chai.expect(NS.BaseC9r[eYo.$SuperC9r_p]).equal(eYo.c9r.BaseC9r_p)
     })
     it (`NS.makeBaseC9r()`, function () {
-      chai.assert(eYo.c9r.BaseC9r)
+      chai.expect(eYo.c9r).property('BaseC9r')
       var NS = eYo.c9r.makeNS()
       chai.expect(NS.BaseC9r).equal(eYo.c9r.BaseC9r)
       NS.makeBaseC9r()

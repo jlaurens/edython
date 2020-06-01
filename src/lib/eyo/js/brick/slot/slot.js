@@ -616,7 +616,7 @@ eYo.slot.BaseC9r_p.some = function (helper, ...$) {
  * @param {function} helper
  */
 eYo.slot.BaseC9r_p.fieldForEach = function ($this, helper) {
-  this[eYo.$].fieldForEach(this, $this, helper)
+  this.eyo.fieldForEach(this, $this, helper)
 }
 
 /**

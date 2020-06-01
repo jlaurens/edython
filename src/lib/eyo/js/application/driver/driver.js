@@ -29,7 +29,7 @@ eYo.c9r.makeC9r(eYo.driver, 'Handler', {
    */
   init (key, driver, alt) {
     //<<< mochai: init
-    key === driver.key || eYo.throw(`${this[eYo.$].name}/init: Missing ${key} === ${driver.key}`)
+    key === driver.key || eYo.throw(`${this.eyo.name}/init: Missing ${key} === ${driver.key}`)
     this.__key = key
     this.__driver = driver
     this.__alt = alt
@@ -43,16 +43,16 @@ eYo.c9r.makeC9r(eYo.driver, 'Handler', {
   methods: {
     //<<< mochai: methods
     apply (target, thisArg, argumentsList) {
-      eYo.throw(`${target[eYo.$].name} instances are not callable.`)
+      eYo.throw(`${target.eyo.name} instances are not callable.`)
     },
     construct(target, args) {
-      eYo.throw(`${target[eYo.$].name} instances are not constructors.`)
+      eYo.throw(`${target.eyo.name} instances are not constructors.`)
     },
     defineProperty(target, key, descriptor) {
-      eYo.throw(`${target[eYo.$].name} instances are frozen (no defineProperty).`)
+      eYo.throw(`${target.eyo.name} instances are frozen (no defineProperty).`)
     },
     deleteProperty(target, prop) {
-      eYo.throw(`${target[eYo.$].name} instances are frozen (no deleteProperty).`)
+      eYo.throw(`${target.eyo.name} instances are frozen (no deleteProperty).`)
     },
     //<<< mochai: frozen or forbidden
     //... let driver = new eYo.O4t('driver', onr)
@@ -258,7 +258,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
     allPurposeDriver: {
       //<<< mochai: allPurposeDriver
       value () {
-        let target = new this[eYo.$].ns.BaseC9r ('allPurposeDriver', this)
+        let target = new this.eyo.ns.BaseC9r ('allPurposeDriver', this)
         let handler = {
           get (target, prop) {
             if (prop === eYo.Sym.target) {
@@ -337,7 +337,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
       //... foo.disposeUI()
       var NS = this.ns
       if (!eYo.isSubclass(SuperC9r, eYo.Driver)) {
-        driverModel && eYo.throw(`${this[eYo.$].name}/makeDriverC9r: Unexpected model (${driverModel})`)
+        driverModel && eYo.throw(`${this.eyo.name}/makeDriverC9r: Unexpected model (${driverModel})`)
         ;[SuperC9r, driverModel] = [NS.super[key] || NS.BaseC9r, eYo.called(SuperC9r) || {}]
       }
       if (!eYo.isSubclass(SuperC9r, NS.BaseC9r)) {
@@ -462,7 +462,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
       //<<< mochai: getDriver
       var components
       try {
-        components = object[eYo.$].name.split('.')
+        components = object.eyo.name.split('.')
         components.shift()
       } catch(e) {
         components = object.split('.')
@@ -513,11 +513,15 @@ eYo.mixinFR(eYo.driver._p, {
       return this.mngr
     }
     this._p.hasOwnProperty('BaseC9r') || this.hasOwnProperty('BaseC9r') || this.makeBaseC9r()
-    var $super = this.super
-    while (!$super.mngr) {
-      $super = $super.super // loop ends when at least $super === eYo.driver
+    mngrModel || (mngrModel = {})
+    if (!eYo.isC9r(mngrModel[eYo.$SuperC9r])) {
+      var $super = this.super
+      while (!$super.mngr) {
+        $super = $super.super // loop ends when at least $super === eYo.driver
+      }
+      mngrModel[eYo.$SuperC9r] = $super.mngr.constructor
     }
-    return eYo.o4t.makeSingleton(this, 'mngr', $super.mngr.constructor, mngrModel)
+    return eYo.o4t.makeSingleton(this, 'mngr', mngrModel)
     //... let NS = eYo.driver.makeNS()
     //... chai.expect(NS).not.property('mngr')
     //... chai.expect(NS.BaseC9r).equal(eYo.driver.BaseC9r)

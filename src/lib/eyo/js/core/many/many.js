@@ -246,7 +246,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
         } else if (more) {
           ;[more, todo, again] = [false, again, todo]
         } else {
-          again.length && eYo.throw(`Cycling/Missing properties in ${object[eYo.$].name}: ${again}`)
+          again.length && eYo.throw(`Cycling/Missing properties in ${object.eyo.name}: ${again}`)
           break
         }
       }
@@ -498,7 +498,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
     for (let k of object[tMap].keys()) {
       let k_p = k + (manyModel.suffix || `_${type[0]}`)
       if (object.hasOwnProperty(k_p)) {
-        console.error(`BREAK HERE!!! ALREADY object ${object[eYo.$].name}/${k_p}`)
+        console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
       }
       Object.defineProperties(object, {
         [k_p]: eYo.descriptorR(function () {
@@ -524,7 +524,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
     //... o = eYo.c9r.new('foo')
     //... C9r[eYo.$].fooPrepare(o)
     //... C9r[eYo.$].fooShortcuts(o)
-    //... o.foo_x[eYo.$].model.bar(3)
+    //... o.foo_x.eyo.model.bar(3)
     //... flag.expect('1foo23')
     //>>>
   })

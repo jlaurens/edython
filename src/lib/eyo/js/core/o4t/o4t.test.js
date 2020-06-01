@@ -94,7 +94,7 @@ describe ('Tests: Object', function () {
     let oo = new OO('foo', onr)
     chai.assert(oo)
     chai.expect(oo).instanceof(O)
-    chai.expect(oo[eYo.$])instanceof(O[eYo.$].constructor)
+    chai.expect(oo.eyo)instanceof(O[eYo.$].constructor)
   })
   it (`O4t: eYo.o4t.makeC9r(ns, 'Foo', {})`, function () {
     let ns = eYo.o4t.makeNS()
@@ -174,13 +174,13 @@ describe ('Tests: Object', function () {
     })
     O[eYo.$].finalizeC9r()
     var o = new O('foo', onr)
-    o[eYo.$].p6yPrepare(o)
+    o.eyo.p6yPrepare(o)
     chai.expect(o.p6yMap.get('foo')).not.undefined
     chai.expect(o.foo).not.equal(421)
-    o[eYo.$].p6yInit(o)
+    o.eyo.p6yInit(o)
     chai.expect(o.foo).equal(421)
     var oo = new O('foo', onr)
-    oo[eYo.$].p6yInit(oo)
+    oo.eyo.p6yInit(oo)
     chai.expect(oo.foo).equal(421)
   })
   it ('O4t: properties (valued)', function () {

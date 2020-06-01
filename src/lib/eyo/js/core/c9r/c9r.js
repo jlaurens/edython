@@ -89,7 +89,7 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
   })
 /**
  * @name{eYo.c9r._p.doMakeC9r}
- * Make a constructor with an `[eYo.$]` property.
+ * Make a constructor with an `eYo.$` property.
  * Caveat, constructors must have the same arguments.
  * Use a key->value design if you do not want that.
  * The `model` object has template: `{init: function, dispose: function}`.
@@ -124,7 +124,7 @@ eYo.c9r._p.doMakeC9r = function (ns, id, SuperC9r, model) {
         console.error('BREAK HERE!!!')
       }
       var old = this.init
-      old || eYo.throw(`Unfinalized contructor: ${this[eYo.$].name}`)
+      old || eYo.throw(`Unfinalized contructor: ${this.eyo.name}`)
       this.init = eYo.doNothing
       SuperC9r.call(this, ...$)
       if (!this) {
@@ -226,7 +226,7 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
     // Default value for SuperC9r, when there are arguments
     if (SuperC9r && !eYo.isC9r(SuperC9r)) {
       model && eYo.throw(`${this.name}/makeC9rDecorate: Unexpected model(3/${model})`)
-      ;[SuperC9r, register, model] = [model && model[eYo.$SuperC9r] || eYo.asF(id && this[id]) || this.BaseC9r, SuperC9r, register]
+      ;[SuperC9r, register, model] = [eYo.NA, SuperC9r, register]
     }
     if (!eYo.isBool(register)) {
       model && eYo.throw(`${this.name}/makeC9rDecorate: Unexpected model(4/${model})`)
@@ -234,14 +234,29 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
     }
     model = eYo.called(model) || {}
     if (eYo.isId(id)) {
-      eYo.isNA(SuperC9r) && (SuperC9r = eYo.asF(id && this[id]) || this.BaseC9r)
+      eYo.isNA(SuperC9r) && (SuperC9r = model[eYo.$SuperC9r] || eYo.asF(id && this[id]) || this.BaseC9r)
+    } else if (SuperC9r || (SuperC9r = model[eYo.$SuperC9r])) {
+      id = SuperC9r[eYo.$] && SuperC9r[eYo.$].id
     } else {
-      id = SuperC9r && SuperC9r[eYo.$] && SuperC9r[eYo.$].id || ''
+      //... var NS = eYo.c9r.makeNS()
+      //... chai.expect(NS.BaseC9r).equal(eYo.c9r.BaseC9r)
+      //... chai.expect(NS.BaseC9r_p).equal(eYo.c9r.BaseC9r_p)
+      //... NS.makeBaseC9r()
+      //... chai.expect(NS.BaseC9r).not.equal(eYo.c9r.BaseC9r)
+      //... chai.expect(NS.BaseC9r_p).not.equal(eYo.c9r.BaseC9r_p)
+      //... chai.expect(NS.makeC9r({
+      //...   [eYo.$SuperC9r]: eYo.NA,
+      //... })[eYo.$SuperC9r]).undefined
+      if (!model.hasOwnProperty(eYo.$SuperC9r)) {
+        SuperC9r = this.BaseC9r
+        //... chai.expect(NS.makeC9r()[eYo.$SuperC9r]).equal(NS.BaseC9r)
+      }
+      id = ''
     }
     if (eYo.isSubclass(this.BaseC9r, SuperC9r)) {
       SuperC9r = this.BaseC9r
     }
-    !eYo.isNS(NS) || !eYo.isId(id) && eYo.throw(`${this.name}/makeC9rDecorate: Missing id`)
+    !eYo.isNS(NS) || eYo.isId(id) || eYo.throw(`${this.name}/makeC9rDecorate: Missing id`)
     let C9r = f.call(this, NS, id, SuperC9r, model)
     register && eYo.c9r.register(C9r)
     return C9r
@@ -527,7 +542,7 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
    */
   eYo.c9r.BaseC9r_p.doPrepare = function (...args) {
     this.doPrepare = eYo.doNothing
-    this[eYo.$].prepareInstance(this, ...args)
+    this.eyo.prepareInstance(this, ...args)
   }
   /**
    * Prepare an instance.
@@ -536,7 +551,7 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
    */
   eYo.c9r.BaseC9r_p.doInit = function (...args) {
     this.doInit = eYo.doNothing
-    this[eYo.$].initInstance(this, ...args)
+    this.eyo.initInstance(this, ...args)
   }
 
   eYo.mixinRO(eYo.c9r.BaseC9r_p, {
@@ -544,10 +559,10 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
      * Convenience shortcut to the model
      */
     model () {
-      return this[eYo.$].model
+      return this.eyo.model
     },
     ns () {
-      return this[eYo.$].ns
+      return this.eyo.ns
     },
   })
 }
@@ -597,7 +612,7 @@ eYo.c9r.Dlgt_p.modelHandle = function (key, model) {
  */
 eYo.c9r.BaseC9r_p.inheritedMethod = eYo.c9r.Dlgt_p.inheritedMethod = function (methodName, up) {
   let method = this[methodName]
-  var _p = up ? this[eYo.$].C9r_s : this[eYo.$].C9r_p
+  var _p = up ? this.eyo.C9r_s : this.eyo.C9r_p
   while (_p) {
     if (_p.hasOwnProperty(methodName)) {
       var ans = _p[methodName]
@@ -749,7 +764,7 @@ eYo.mixinFR(eYo.c9r._p, {
    * @param {Object} id - the result will be `NS[id]`
    * @param {Object} model
    */
-  makeSingleton (NS, id, SuperC9r, model) {
+  makeSingleton (NS, id, model) {
     //<<< mochai: makeSingleton
     //... let NS = eYo.c9r.makeNS()
     if (!eYo.isNS(NS)) {
@@ -757,21 +772,17 @@ eYo.mixinFR(eYo.c9r._p, {
       //... chai.expect(() => {
       //...   eYo.c9r.makeSingleton('foo', {}, 1)
       //... }).throw()
-      ;[NS, id, SuperC9r, model] = [this, NS, id, SuperC9r]
+      ;[NS, id, model] = [this, NS, id]
       //... var ident = eYo.genUID(eYo.IDENT)
       //... var ans = NS.makeSingleton(ident, {})
       //... chai.expect(ans).instanceof(eYo.C9r)
       //... chai.expect(ans).equal(NS[ident])
     }
-    eYo.isStr(id) || eYo.throw(`${this.name}/makeSingleton: Unexpected parameter ${id.toString()}`)
+    eYo.isId(id) || eYo.throw(`${this.name}/makeSingleton: Unexpected parameter ${eYo.isSym(id) ? id.toString(): id}`)
     //... chai.expect(() => {
     //...   eYo.c9r.makeSingleton(1, {})
     //... }).throw()
-    if (!eYo.isC9r(SuperC9r)) {
-      eYo.isNA(model) || eYo.throw(`${this.name}/makeSingleton: Unexpected parameter ${model}`)
-      ;[SuperC9r, model] = [model ? model[eYo.$SuperC9r] : eYo.NA, SuperC9r]
-    }
-    let C9r = this.makeC9r(Symbol(eYo.do.toTitleCase(id)), SuperC9r, model)
+    let C9r = this.makeC9r(Symbol(eYo.do.toTitleCase(id)), model)
     C9r[eYo.$].finalizeC9r()
     let ans = new C9r()
     Object.defineProperty(NS, id, eYo.descriptorR(function() {
@@ -796,7 +807,9 @@ eYo.mixinFR(eYo.c9r._p, {
     //... chai.expect(NS.id1.FOO).equal(421)
     //... var SuperC9r = eYo.c9r.makeC9r('')
     //... SuperC9r[eYo.$].finalizeC9r()
-    //... ans = NS.makeSingleton(NS, 'id2', SuperC9r, {})
+    //... ans = NS.makeSingleton(NS, 'id2', {
+    //...   [eYo.$SuperC9r]: SuperC9r
+    //... })
     //... chai.expect(ans).instanceof(SuperC9r)
     //>>>
   },

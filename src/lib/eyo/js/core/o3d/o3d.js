@@ -38,7 +38,7 @@ eYo.o3d.makeBaseC9r({
    * @param {eYo.c9r.BaseC9r} owner - the immediate owner of this object.
    */
   init (key, owner) {
-    this[eYo.$].o3dInitInstance(this, key, owner)
+    this.eyo.o3dInitInstance(this, key, owner)
     this.disposeUI = eYo.doNothing
   },
   dispose () {
@@ -76,7 +76,7 @@ eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
     console.error('BREAK HERE!')
   }
   eYo.isaC9r(owner) || eYo.throw(`${this.name}.o3dInitInstance: Very bad owner (${owner})`)
-  eYo.isId(key) || eYo.throw(`${this[eYo.$].name}: Bad key in init`)
+  eYo.isId(key) || eYo.throw(`${this.eyo.name}: Bad key in init`)
   instance.owner__ = owner
   instance.key_ = key
   Object.defineProperties(instance, {
@@ -137,9 +137,9 @@ Object.defineProperties(eYo.o3d.BaseC9r.prototype, {
 
 eYo.forward('shared')
 
-eYo.newSym('__singleton')
-//<<< mochai: eYo.Sym.__singleton
-//... chai.expect(eYo.Sym).property('__singleton')
+eYo.newSym('singleton')
+//<<< mochai: eYo.Sym.singleton
+//... chai.expect(eYo.Sym).property('singleton')
 //>>>
 
 eYo.mixinFR(eYo.o3d._p, {
@@ -183,7 +183,7 @@ eYo.mixinFR(eYo.o3d._p, {
     } else {
       NS[id] = ans
     }
-    ans[eYo.Sym.__singleton] = true
+    ans[eYo.Sym.singleton] = true
     return ans
     //... var id = eYo.genUID(eYo.IDENT)
     //... var singleton = eYo.o3d.makeSingleton(id)

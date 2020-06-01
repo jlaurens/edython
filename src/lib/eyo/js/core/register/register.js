@@ -90,8 +90,8 @@ eYo.register.add = function (object, key, filter) {
     //... var o
     //... let prepare = () => {
     //...   o = new C9r('o')
-    //...   o[eYo.$].p6yPrepare(o)
-    //...   o[eYo.$].p6yInit(o)
+    //...   o.eyo.p6yPrepare(o)
+    //...   o.eyo.p6yInit(o)
     //... }
     //... // Objects to register:
     //... let a = {

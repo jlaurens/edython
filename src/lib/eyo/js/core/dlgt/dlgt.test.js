@@ -81,7 +81,7 @@ describe ('Tests: Dlgt', function () {
     let dlgt = eYo.dlgt.new('Foo', C9r, {})
     let o = new C9r()
     eYo.dlgt.declareDlgt(C9r.prototype)
-    chai.expect(o[eYo.$]).equal(dlgt)
+    chai.expect(o.eyo).equal(dlgt)
   })
   it ('Dlgt subclass', function () {
     chai.assert(eYo.dlgt.new)

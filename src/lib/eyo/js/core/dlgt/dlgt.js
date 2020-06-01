@@ -39,6 +39,9 @@ eYo.dlgt.declareDlgt = function (_p) {
     [eYo.$] () {
       return this.constructor[eYo.$]
     },
+    eyo () {
+      return this.constructor[eYo.$]
+    },
   })
 }
 
@@ -52,7 +55,7 @@ eYo.dlgt.declareDlgt = function (_p) {
 //...     let eyo = eYo.dlgt.new('foo', C9r, model || {})
 //...     eYo.dlgt.declareDlgt(C9r.prototype)
 //...     chai.expect(C9r[eYo.$]).equal(eyo)
-//...     chai.expect(C9r.prototype[eYo.$]).equal(eyo)
+//...     chai.expect(C9r.prototype.eyo).equal(eyo)
 //...     let _p = C9r.prototype
 //...     _p.flag = function (...$) {
 //...       flag.push(1, ...$)
@@ -84,7 +87,7 @@ eYo.dlgt.declareDlgt = function (_p) {
  * @param {Object} model - the model used for extension
  */
 /* The problem of constructor delegation is the possibility of an infinite loop :
-  object->constructor->[eYo.$]->contructor->[eYo.$]->constructor->[eYo.$]...
+  object->constructor->eyo->contructor->eyo->constructor->[eYo.$]...
   The Base is its own delegate's constructor
 */
 eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
@@ -124,7 +127,7 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
 
   eYo.dlgt.declareDlgt(_p)
   //<<< mochai: delegate
-  //... chai.expect(eYo.dlgt[eYo.$]).equal(eYo.dlgt.constructor[eYo.$])
+  //... chai.expect(eYo.dlgt.eyo).equal(eYo.dlgt.constructor[eYo.$])
   // convenient shortcut
   Object.defineProperties(_p, {
     _p: eYo.descriptorR(function () {
@@ -360,7 +363,7 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
         f = function (...$) {
           try {
             this[K] = eYo.doNothing
-            if (!this[eYo.$]) {
+            if (!this.eyo) {
               console.error('BREAK HERE! NO EYO')
             }
             this.doPrepare(...$)
@@ -379,7 +382,7 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
         f = function (...$) {
           try {
             this[K] = eYo.doNothing
-            if (!this[eYo.$]) {
+            if (!this.eyo) {
               console.error('BREAK HERE!')
             }
             this.doPrepare(...$)
@@ -414,7 +417,7 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
       //... let prepare = (model, f) => {
       //...   return preparator(_p => {
       //...     _p.doPrepare = _p.doInit = eYo.doNothing
-      //...     eYo.mixinFR(_p[eYo.$], {
+      //...     eYo.mixinFR(_p.eyo, {
       //...       disposeInstance (object, ...$) {
       //...         flag.push('x', ...$)
       //...       },
@@ -429,7 +432,7 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
               try {
                 this[K] = eYo.doNothing
                 f_m.call(this, () => {
-                  this[eYo.$].disposeInstance(this, ...$)
+                  this.eyo.disposeInstance(this, ...$)
                   f_p.call(this, ...$)              
                 }, ...$)
               } finally {
@@ -452,7 +455,7 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
               try {
                 this[K] = eYo.doNothing
                 f_m.call(this, () => {
-                  this[eYo.$].disposeInstance(this, ...$)              
+                  this.eyo.disposeInstance(this, ...$)              
                 }, ...$)
               } finally {
                 delete this.init
@@ -473,7 +476,7 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
             try {
               this[K] = eYo.doNothing
               f_m.call(this, ...$)
-              this[eYo.$].disposeInstance(this, ...$)
+              this.eyo.disposeInstance(this, ...$)
               f_p.call(this, ...$)
             } finally {
               delete this.init
@@ -493,7 +496,7 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
             try {
               this[K] = eYo.doNothing
               f_m.call(this, ...$)
-              this[eYo.$].disposeInstance(this, ...$)
+              this.eyo.disposeInstance(this, ...$)
             } finally {
               delete this.init
             }
@@ -510,7 +513,7 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
         f = function (...$) {
           try {
             this[K] = eYo.doNothing
-            this[eYo.$].disposeInstance(this, ...$)
+            this.eyo.disposeInstance(this, ...$)
             f_p.call(this, ...$)
           } finally {
             delete this.init
@@ -525,7 +528,7 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
         f = function (...$) {
           try {
             this[K] = eYo.doNothing
-            this[eYo.$].disposeInstance(this, ...$)
+            this.eyo.disposeInstance(this, ...$)
           } finally {
             delete this.init
           }
