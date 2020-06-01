@@ -601,6 +601,8 @@ eYo._p.newSym = function (...$) {
   //>>>
 }
 
+eYo.newSym('target') // used by proxies
+
 /**
  * The props dictionary is a `key=>value` mapping where values
  * are getters, not a dictionary containing a getter.

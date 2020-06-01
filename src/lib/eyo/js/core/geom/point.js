@@ -80,7 +80,7 @@ eYo.geom.makeC9r('Point', {
         return
         //... P = new eYo.geom.Point()
         //... P.p6yReplace('snap', snap_p)
-        //... chai.expect(P.snap_p.__target).equal(snap_p)
+        //... chai.expect(P.snap_p[eYo.Sym.target]).equal(snap_p)
         //... chai.expect(P.snap_ = false).equal(snap_p.value)
         //... chai.expect(snap_p.value_ = true).equal(P.snap)
         //... P = new eYo.geom.Point(snap_p)

@@ -61,7 +61,7 @@ eYo.geom.makeC9r('Size', {
         return
         //... S = new eYo.geom.Size()
         //... S.p6yReplace('snap', snap_p)
-        //... chai.expect(S.snap_p.__target).equal(snap_p)
+        //... chai.expect(S.snap_p[eYo.Sym.target]).equal(snap_p)
         //... chai.expect(S.snap_ = false).equal(snap_p.value)
         //... chai.expect(snap_p.value_ = true).equal(S.snap)
         //... S = new eYo.geom.Size(snap_p)

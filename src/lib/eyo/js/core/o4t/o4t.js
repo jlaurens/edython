@@ -111,11 +111,11 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
         [k + '_t']: {
           get () {
             let p6y = this.p6yMap.get(k)
-            return p6y && p6y.__target
+            return p6y && p6y[eYo.Sym.target]
           },
           set (after) {
             let p6y = this.p6yMap.get(k)
-            if (p6y && after !== p6y.__target) {
+            if (p6y && after !== p6y[eYo.Sym.target]) {
               this.p6yReplace(k, after)
             }
           },
@@ -137,7 +137,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
           //... chai.expect(foo_p.value).not.equal(421)
           //... o.foo_t = foo_p
           //... chai.expect(o.foo_p).not.equal(foo_p)
-          //... chai.expect(o.foo_p.__target).equal(foo_p)
+          //... chai.expect(o.foo_p[eYo.Sym.target]).equal(foo_p)
           //... chai.expect(o.foo_t).equal(foo_p)
           //... foo_p.value_ = 421
           //... chai.expect(foo_p.value).equal(o.foo_p.value).equal(421)
@@ -349,10 +349,10 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     //... let mi_p = eYo.p6y.new({
     //...   value: 6,
     //... }, 'mi', onr)
-    //... chai.expect(o.foo_p.__target).undefined
+    //... chai.expect(o.foo_p[eYo.Sym.target]).undefined
     //... chai.expect(o.foo_p.value).equal(1)
     //... o.p6yReplace('foo', foo_p)
-    //... chai.expect(o.foo_p.__target).equal(o.foo_t).equal(foo_p)
+    //... chai.expect(o.foo_p[eYo.Sym.target]).equal(o.foo_t).equal(foo_p)
     //... chai.expect(o.foo_p.value).equal(4)
     //... o.p6yForEach(v => flag.push(v.value))
     //... flag.expect(423)
@@ -370,7 +370,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     //... o.p6yReplace('chi', chi_p)
     //... o.p6yForEach(v => flag.push(v.value))
     //... flag.expect(153)
-    //... chai.expect(o.chi_p.__target).equal(chi_p)
+    //... chai.expect(o.chi_p[eYo.Sym.target]).equal(chi_p)
     //... chai.expect(o.chi_p.value).equal(5)
     //... o.chi_ -= 3
     //... chai.expect(chi_p.value).equal(2)
@@ -386,7 +386,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function () {
     //... o.p6yReplace('mi', mi_p)
     //... o.p6yForEach(v => flag.push(v.value))
     //... flag.expect(126)
-    //... chai.expect(o.mi_p.__target).equal(mi_p)
+    //... chai.expect(o.mi_p[eYo.Sym.target]).equal(mi_p)
     //... chai.expect(o.mi_p.value).equal(6)
     //... o.mi_ -= 3
     //... chai.expect(mi_p.value).equal(3)
