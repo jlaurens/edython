@@ -348,7 +348,7 @@ eYo.app.BaseC9r_p.copyBrick = function (brick, deep) {
  */
 eYo.app.BaseC9r_p.hideChaff = eYo.doNothing
 
-eYo.o4t.BaseC9r.eyo.p6yMerge({
+eYo.o4t.BaseC9r[eYo.$].p6yMerge({
   /**
    * The root application
    * @type {eYo.app}
@@ -417,7 +417,7 @@ eYo.o4t.BaseC9r.eyo.p6yMerge({
   },
 })
 
-eYo.o3d.BaseC9r.eyo.modelMerge({
+eYo.o3d.BaseC9r[eYo.$].modelMerge({
   aliases: {
     /**
      * Options
@@ -437,7 +437,7 @@ eYo.o3d.BaseC9r.eyo.modelMerge({
   },
 })
 
-eYo.event.Mngr.eyo.methodsMerge({
+eYo.event.Mngr[eYo.$].methodsMerge({
   /**
    * Clear the undo/redo stacks.
    * Forwards to the owner.

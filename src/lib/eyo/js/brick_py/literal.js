@@ -44,7 +44,7 @@ eYo.expr.makeC9r('literal', {
  * @param {Object} [opt]
  */
 eYo.expr.literal.prototype.saveData = function (element, opt) {
-  eYo.expr.literal.eyo.C9r_s.saveData.apply(this, arguments)
+  eYo.expr.literal[eYo.$].C9r_s.saveData.apply(this, arguments)
   if (this.Value_p == '') {
     element.setAttribute(eYo.key.PLACEHOLDER, this.value_d.model.placeholder)
   }
@@ -54,7 +54,7 @@ eYo.expr.literal.prototype.saveData = function (element, opt) {
  * Class for a Delegate, number: integer, floatnumber or imagnumber.
  * For edython.
  */
-eYo.expr.literal.makeSubC9r('numberliteral', {
+eYo.expr.literal[eYo.$makeSubC9r]('numberliteral', {
   data: {
     type: {
       all: [
@@ -126,7 +126,7 @@ eYo.expr.numberliteral.prototype.getBaseType = function () {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.expr.literal.makeSubC9r('shortliteral', {
+eYo.expr.literal[eYo.$makeSubC9r]('shortliteral', {
   data: {
     subtype: {
       all: [
@@ -383,7 +383,7 @@ eYo.expr.literal.literalPopulateContextMenuFirst_ = function (mngr) {
  */
 eYo.expr.shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
   eYo.expr.literal.literalPopulateContextMenuFirst_.call(this, mngr)
-  eYo.expr.shortliteral.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  eYo.expr.shortliteral[eYo.$].C9r_s.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -392,7 +392,7 @@ eYo.expr.shortliteral.prototype.populateContextMenuFirst_ = function (mngr) {
  * The subtype is the kind of delimiters used.
  * For edython.
  */
-eYo.expr.shortliteral.makeSubC9r('longliteral', {
+eYo.expr.shortliteral[eYo.$makeSubC9r]('longliteral', {
   data: {
     subtype: {
       all: [

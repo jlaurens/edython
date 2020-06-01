@@ -38,14 +38,14 @@ class Info:
   assert m, 'BAD re_arg_ns 1'
   assert m.group('ns') == "eYo.pane", 'BAD re_arg_ns 2'
 
-  # eYo.pane.WorkspaceControl.makeSubC9r('TrashCan', {
+  # eYo.pane.WorkspaceControl[eYo.$makeSubC9r]('TrashCan', {
   re_makeSubC9r = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
   \.(?P<Super>[A-Z][\w0-9_]*)
-  \.makeSubC9r\s*\(\s*
+  \[eYo\.\$makeSubC9r\]\s*\(\s*
   (?P<suite>.*)""", re.X)
 
-  m = re.match(re_makeSubC9r, "eYo.pane.WorkspaceControl.makeSubC9r('TrashCan', {")
+  m = re.match(re_makeSubC9r, "eYo.pane.WorkspaceControl[eYo.$makeSubC9r]('TrashCan', {")
   assert m, 'BAD re_makeSubC9r 1'
   assert m.group('NS') == "eYo.pane", 'BAD re_makeSubC9r 2'
   assert m.group('Super') == "WorkspaceControl", 'BAD re_makeSubC9r 3'

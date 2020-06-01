@@ -141,7 +141,7 @@ eYo.expr.List.SlotsHandler = {
  * @return {eYo.slot.BaseC9r} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.expr.List_p.getSlot = function (name, dontCreate) {
-  var slot = eYo.expr.List.eyo.C9r_s.getSlot.call(this, name)
+  var slot = eYo.expr.List[eYo.$].C9r_s.getSlot.call(this, name)
   if (!slot) {
     this.createConsolidator()
     slot = this.consolidator.getSlot(this, name, dontCreate)
@@ -189,7 +189,7 @@ eYo.expr.List_p.createConsolidator = eYo.decorate.reentrant_method(
  * @param {eYo.magnet.BaseC9r} targetOldM4t
  */
 eYo.expr.List_p.didConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.expr.List.eyo.C9r_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+  eYo.expr.List[eYo.$].C9r_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   if (m4t.isOut) {
     this.createConsolidator(true)
   }
@@ -218,7 +218,7 @@ eYo.expr.List_p.doConsolidate = (() => {
       return
     }
     force = true  // always force consolidation because of the dynamics
-    if (eYo.expr.List.eyo.C9r_s.doConsolidate.call(this, deep, force)) {
+    if (eYo.expr.List[eYo.$].C9r_s.doConsolidate.call(this, deep, force)) {
       return !this.connectionsIncog && (this.consolidator.consolidate(this, deep, force))
     }
   }
@@ -279,7 +279,7 @@ Object.defineProperties(eYo.expr.List_p, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubC9r('optional_expression_list', {
+eYo.expr.List[eYo.$makeSubC9r]('optional_expression_list', {
   list: {
     check: eYo.t3.expr.check.expression,
     mandatory: 0,
@@ -293,7 +293,7 @@ eYo.expr.List.makeSubC9r('optional_expression_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubC9r('non_void_expression_list', {
+eYo.expr.List[eYo.$makeSubC9r]('non_void_expression_list', {
   list: {
     check: eYo.t3.expr.check.expression,
     mandatory: 1,
@@ -307,7 +307,7 @@ eYo.expr.List.makeSubC9r('non_void_expression_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubC9r('slice_list', {
+eYo.expr.List[eYo.$makeSubC9r]('slice_list', {
   list: {
     check: eYo.t3.expr.check.slice_item,
     mandatory: 1,
@@ -321,7 +321,7 @@ eYo.expr.List.makeSubC9r('slice_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubC9r('with_item_list', {
+eYo.expr.List[eYo.$makeSubC9r]('with_item_list', {
   list: {
     check: eYo.t3.expr.check.with_item,
     mandatory: 1,
@@ -361,7 +361,7 @@ eYo.expr.List.makeSubC9r('with_item_list', {
  * 2) singleton set_display: replacement for the unique connection: same as above
  * 3) singleton dict_display: replacement for the unique connection: same as above
  */
-eYo.expr.List.makeSubC9r('enclosure', {
+eYo.expr.List[eYo.$makeSubC9r]('enclosure', {
   data: {
     variant: {
       order: 0,

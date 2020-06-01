@@ -44,7 +44,7 @@ describe('driver', function() {
       },
     })
     chai.expect(NS.a.Foo).eyo_C9r
-    chai.expect(NS.a.Foo.SuperC9r).equal(NS.Foo)
+    chai.expect(NS.a.Foo[eYo.$SuperC9r]).equal(NS.Foo)
     new NS.a.Foo('foo', onr, 4, 5)
     flag.expect(12451345)
   })

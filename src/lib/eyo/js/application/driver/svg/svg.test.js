@@ -7,15 +7,15 @@ describe('Svg driver', function() {
     chai.assert(eYo.svg.BaseC9r)
   })
   it ('Svg Dlgt: Drivers', function () {
-    for (let [name, Driver] of eYo.svg.Mngr.eyo.driverC9rMap) {
-      console.warn(`${name} -> ${Driver.eyo.name}`)
+    for (let [name, Driver] of eYo.svg.Mngr[eYo.$].driverC9rMap) {
+      console.warn(`${name} -> ${Driver[eYo.$].name}`)
     }
   })
   it ('Svg: Drivers', function () {
     let onr = {}
     let mngr = new eYo.svg.Mngr(onr)
     for (let [name, Driver] of Object.entries(mngr.drivers)) {
-      console.log(`${name} -> ${Driver.eyo.name}`)
+      console.log(`${name} -> ${Driver[eYo.$].name}`)
     }
   })
 })

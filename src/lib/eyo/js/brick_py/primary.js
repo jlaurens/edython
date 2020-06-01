@@ -29,7 +29,7 @@ eYo.require('msg')
  * Main entry: consolidate
  * @param {String} single - the required type for a single element....
  */
-eYo.consolidator.List.makeSubC9r('Target', {
+eYo.consolidator.List[eYo.$makeSubC9r]('Target', {
   list: {
     check: null,
     mandatory: 1,
@@ -92,7 +92,7 @@ eYo.consolidator.List.makeSubC9r('Target', {
  * @param {eYo.brick.BaseC9r} brick - owner or the receiver.
  */
 eYo.consolidator.Target_p.getIO = function (brick) {
-  var io = eYo.consolidator.Target.eyo.C9r_s.getIO.call(this, brick)
+  var io = eYo.consolidator.Target[eYo.$].C9r_s.getIO.call(this, brick)
   io.first_starred = io.last = io.max = -1
   io.annotatedInput = eYo.NA
   io.subtype = brick.subtype
@@ -155,7 +155,7 @@ eYo.consolidator.Target_p.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.consolidator.Target.eyo.C9r_s.doCleanup.call(this, io)
+    eYo.consolidator.Target[eYo.$].C9r_s.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.first_starred >= 0) {
       // ther must be only one starred
@@ -246,7 +246,7 @@ eYo.consolidator.Target_p.getCheck = (() => {
  * @param {object} io
  */
 eYo.consolidator.Target_p.doFinalize = function (io) {
-  eYo.consolidator.Target.eyo.C9r_s.doFinalize.call(this, io)
+  eYo.consolidator.Target[eYo.$].C9r_s.doFinalize.call(this, io)
   if (this.setupIO(io, 0)) {
     do {
       io.m4t.incog = io.annotatedInput && io.annotatedInput !== io.slot // will ensure that there is only one annotated input
@@ -301,7 +301,7 @@ eYo.consolidator.Target_p.doFinalize = function (io) {
  * @name {eYo.expr.target_list}
  * @constructor
  */
-eYo.expr.List.makeSubC9r('target_list', {
+eYo.expr.List[eYo.$makeSubC9r]('target_list', {
   list: {
     consolidator: eYo.consolidator.Target
   }
@@ -350,7 +350,7 @@ eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
       ;(x = x.target_s) && (x.boundField.visible = true)
     }
   }
-  eYo.expr.target_list.eyo.C9r_s.didDisconnect.call(this, m4t, oldTargetM4t)
+  eYo.expr.target_list[eYo.$].C9r_s.didDisconnect.call(this, m4t, oldTargetM4t)
 }
 
 /**
@@ -361,7 +361,7 @@ eYo.expr.target_list_p.xdidDisconnect = function (m4t, oldTargetM4t) {
  * @param {eYo.magnet.BaseC9r} targetOldM4t
  */
 eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) {
-  eYo.expr.target_list.eyo.C9r_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
+  eYo.expr.target_list[eYo.$].C9r_s.didConnect.call(this, m4t, oldTargetM4t, targetOldM4t)
   // BEWARE: the brick is NOT consolidated
   if (m4t.isSlot) {
     var parent = this.parent
@@ -1255,7 +1255,7 @@ eYo.register.add(eYo.expr, 'primary', function (b3k) {
  * For subclassers eventually
  */
 eYo.expr.primary_p.init = function () {
-  eYo.expr.primary.eyo.C9r_s.init.call(this)
+  eYo.expr.primary[eYo.$].C9r_s.init.call(this)
   this.profile_ = eYo.NA
 }
 
@@ -1425,7 +1425,7 @@ eYo.expr.primary_p.getProfile = eYo.changer.memoize(
  * the brick type has changed.
  */
 eYo.expr.primary_p.consolidateMagnets = function () {
-  eYo.expr.primary.eyo.C9r_s.consolidateMagnets.call(this)
+  eYo.expr.primary[eYo.$].C9r_s.consolidateMagnets.call(this)
   this.target_s.magnet.hidden = this.variant === eYo.key.NONE && this.Dotted_p === 0
 }
 
@@ -1766,7 +1766,7 @@ eYo.expr.primary_p.getSubtype = function () {
  * @return {eYo.slot.BaseC9r} The slot object, or null if slot does not exist or eYo.NA for the default brick implementation.
  */
 eYo.expr.primary_p.getSlot = function (name) {
-  var slot = eYo.expr.primary.eyo.C9r_s.getSlot.call(this, name)
+  var slot = eYo.expr.primary[eYo.$].C9r_s.getSlot.call(this, name)
   if (!slot) {
     // we suppose that ary is set
     var f = (slot) => {
@@ -1799,7 +1799,7 @@ eYo.stmt.makeC9r('base_call_stmt', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.base_call_stmt.makeSubC9r('call_stmt', {
+eYo.stmt.base_call_stmt[eYo.$makeSubC9r]('call_stmt', {
   data: {
     variant: {
       init: eYo.key.CALL_EXPR,
@@ -1836,7 +1836,7 @@ eYo.stmt.call_stmt_p.getProfile = eYo.expr.primary_p.getProfile
  * For subclassers eventually
  */
 eYo.stmt.call_stmt_p.init = function () {
-  eYo.stmt.call_stmt.eyo.C9r_s.init.call(this)
+  eYo.stmt.call_stmt[eYo.$].C9r_s.init.call(this)
   this.profile = eYo.NA
 }
 

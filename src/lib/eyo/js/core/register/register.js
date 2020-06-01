@@ -41,14 +41,14 @@ eYo.register.add = function (object, key, filter) {
     //<<< mochai: C9r
     //... let ns = eYo.c9r.makeNS()
     //... let C9r = ns.makeBaseC9r(true)
-    //... C9r.eyo.p6yEnhanced()
+    //... C9r[eYo.$].p6yEnhanced()
     //... eYo.register.add(C9r, 'foo')
-    //... C9r.eyo.finalizeC9r()
+    //... C9r[eYo.$].finalizeC9r()
     //... let o = new C9r('foo')
     //... chai.expect(o.fooRegister).eyo_F
-    eYo.isF(object.eyo.p6yMerge) || eYo.throw(`Not a proper subclass (unknown p6yMerge/1).`)
+    eYo.isF(object[eYo.$].p6yMerge) || eYo.throw(`Not a proper subclass (unknown p6yMerge/1).`)
     //... chai.expect(() => eYo.register.add(ns.BaseC9r, 'foo')).throw()
-    object.eyo.p6yMerge({
+    object[eYo.$].p6yMerge({
       [k] () {
         return new Map()
       }
@@ -59,9 +59,9 @@ eYo.register.add = function (object, key, filter) {
     //<<< mochai: Dlgt
     //... let ns = eYo.c9r.makeNS()
     //... let C9r = ns.makeBaseC9r(true)
-    //... C9r.eyo.p6yEnhanced()
-    //... eYo.register.add(C9r.eyo, 'foo')
-    //... C9r.eyo.finalizeC9r()
+    //... C9r[eYo.$].p6yEnhanced()
+    //... eYo.register.add(C9r[eYo.$], 'foo')
+    //... C9r[eYo.$].finalizeC9r()
     //... let o = new C9r('foo')
     //... chai.expect(o.fooRegister).eyo_F
     eYo.isF(object.p6yMerge) || eYo.throw(`Not a proper subclass (unknown p6yMerge/2).`)
@@ -80,19 +80,18 @@ eYo.register.add = function (object, key, filter) {
     Object.defineProperty(object, k, {value: new Map()})
     //>>>
   }
-  eYo.mixinR(object, {
-    [eYo.Sym.FunctionsAreGetters]: false,
+  eYo.mixinFR(object, {
     //<<< mochai: methods
     //... let ns = eYo.c9r.makeNS()
     //... let C9r = ns.makeBaseC9r(true)
-    //... C9r.eyo.p6yEnhanced()
-    //... eYo.register.add(C9r.eyo, 'foo')
-    //... C9r.eyo.finalizeC9r()
+    //... C9r[eYo.$].p6yEnhanced()
+    //... eYo.register.add(C9r[eYo.$], 'foo')
+    //... C9r[eYo.$].finalizeC9r()
     //... var o
     //... let prepare = () => {
     //...   o = new C9r('o')
-    //...   o.eyo.p6yPrepare(o)
-    //...   o.eyo.p6yInit(o)
+    //...   o[eYo.$].p6yPrepare(o)
+    //...   o[eYo.$].p6yInit(o)
     //... }
     //... // Objects to register:
     //... let a = {

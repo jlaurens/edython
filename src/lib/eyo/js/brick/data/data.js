@@ -59,8 +59,8 @@ eYo.o4t.makeNS(eYo, 'data')
  */
 eYo.data.makeBaseC9r(true, {
   init (brick, key) {
-    brick || eYo.throw(`${this.eyo.name}: Missing brick`)
-    eYo.isStr(key) || eYo.throw(`${this.eyo.name}: Missing key in makeBaseC9r`)
+    brick || eYo.throw(`${this[eYo.$].name}: Missing brick`)
+    eYo.isStr(key) || eYo.throw(`${this[eYo.$].name}: Missing key in makeBaseC9r`)
     this.reentrant_ = {}
     this.key_ = key
     let model = this.model
@@ -133,7 +133,7 @@ eYo.data.makeBaseC9r(true, {
   },
 })
 
-eYo.data.BaseC9r.eyo.finalizeC9r(
+eYo.data.BaseC9r[eYo.$].finalizeC9r(
   eYo.model.manyDescriptorRA('all', 'after'),
   eYo.model.manyDescriptorF(
     'consolidate', 'fromType',

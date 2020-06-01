@@ -19,7 +19,7 @@ eYo.require('msg')
 eYo.require('expr.primary')
 //g@@g.require('g@@g.dom');
 
-eYo.mixinR(eYo.xre, {
+eYo.mixinRO(eYo.xre, {
   decorator: XRegExp(`^@?
     (?:
       (?<property> property) |
@@ -402,14 +402,14 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
     })
   }
   mngr.shouldSeparate()
-  return eYo.stmt.decorator_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.decorator_stmt[eYo.$].C9r_s.populateContextMenuFirst_.call(this, mngr)
 }
 
 /**
  * Class for a Delegate, funcdef_part.
  * For edython.
  */
-eYo.stmt.group.makeSubC9r('funcdef_part', true, {
+eYo.stmt.group[eYo.$makeSubC9r]('funcdef_part', true, {
   data: {
     variant: {
       all: [null, eYo.key.TYPE],
@@ -469,7 +469,7 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  * Class for a Delegate, classdef_part brick.
  * For edython.
  */
-eYo.stmt.group.makeSubC9r('classdef_part', true, {
+eYo.stmt.group[eYo.$makeSubC9r]('classdef_part', true, {
   data: {
     variant: {
       all: [eYo.key.NONE, eYo.key.N_ARY],

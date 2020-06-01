@@ -18,7 +18,7 @@ eYo.fcfl.makeDriverC9r('Board')
 
 console.error('NYI')
 
-eYo.board.BaseC9r.eyo.p6yMerge({
+eYo.board.BaseC9r[eYo.$].p6yMerge({
   ui () {
     return Object.create(null)
   },
@@ -83,7 +83,7 @@ eYo.board.BaseC9r.eyo.p6yMerge({
     }
   },
 })
-eYo.board.BaseC9r.eyo.p6yAliasesMerge({
+eYo.board.BaseC9r[eYo.$].p6yAliasesMerge({
   'xy': 'where',
 })
 

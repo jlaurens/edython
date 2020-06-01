@@ -29,7 +29,7 @@ eYo.assert(XRegExp, 'load XRegExp before')
 
 XRegExp.install('astral')// python supports astral
 
-eYo.mixinR(eYo.xre, {
+eYo.mixinRO(eYo.xre, {
   id_wrapped: XRegExp(`^(?<id>.*?)\\.wrapped:(?<name>[a-zA-Z_][a-zA-Z_0-9]*)$`, 'x'),
   //<<< mochai: id_wrapped
   //... xre = eYo.xre.id_wrapped
@@ -93,7 +93,7 @@ eYo.mixinR(eYo.xre, {
 })
   
   
-eYo.mixinR(eYo.xre, {
+eYo.mixinRO(eYo.xre, {
   integer: XRegExp(
     `^(?<sign>-)?(?:
     ((?<decinteger>  (?<nonzero>[1-9][0-9]*) | (?<zero>0+) ) |
@@ -154,55 +154,102 @@ eYo.mixinR(eYo.xre, {
 
 // strings:
 
-eYo.mixinR(eYo.key, {
-  _CHARACTER_SINGLE: '.character_single',
-  _LONG_CHARACTER_SINGLE: '.long_character_single',
-  _CHARACTER_DOUBLE: '.character_double',
-  _LONG_CHARACTER_DOUBLE: '.long_character_double'
+eYo.mixinRO(eYo.xre, {
+  $NO_SINGLE_QUOTE: Symbol('NO_SINGLE_QUOTE'),
+  $LONG_NO_SINGLE_QUOTE: Symbol('LONG_NO_SINGLE_QUOTE'),
+  $NO_DOUBLE_QUOTE: Symbol('NO_DOUBLE_QUOTE'),
+  $LONG_NO_DOUBLE_QUOTE: Symbol('LONG_NO_DOUBLE_QUOTE'),
 })
 
-eYo.mixinR(eYo.xre, {
-  [eYo.key._CHARACTER_SINGLE]: '(?:[\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF])',
-  [eYo.key._LONG_CHARACTER_SINGLE]: '(?:[\\x0A\\x0D\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF])',
-  [eYo.key._CHARACTER_DOUBLE]: '(?:[\\x20-\\x21\\x23-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF])',
-  [eYo.key._LONG_CHARACTER_DOUBLE]: '(?:[\\x0A\\x0D\\x20-\\x21\\x23-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF])'
+eYo.mixinRO(eYo.xre, {
+  [eYo.xre.$NO_SINGLE_QUOTE]: '(?:[\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF])',
+  [eYo.xre.$LONG_NO_SINGLE_QUOTE]: '(?:[\\x0A\\x0D\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF])',
+  [eYo.xre.$NO_DOUBLE_QUOTE]: '(?:[\\x20-\\x21\\x23-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF])',
+  [eYo.xre.$LONG_NO_DOUBLE_QUOTE]: '(?:[\\x0A\\x0D\\x20-\\x21\\x23-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF])'
+  //<<< mochai: $...CHARACTER...
+  //... var xre = XRegExp(
+  //...   `^(?:[\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF])$`
+  //... )
+  //... chai.assert(!XRegExp.exec('\'', xre), '\'')
+  //... chai.assert(m = XRegExp.exec('f', xre), 'f')
+  //... chai.assert(m = XRegExp.exec('"', xre), '"')
+  //... var xre = XRegExp(
+  //...   `^(?:[\\x20-\\x26\\x28-\\x5B\\x5D-\\uFFFF]|\\\\[\\x0A\\x0D\\x20-\\uFFFF])$`
+  //... )
+  //... chai.assert(!XRegExp.exec('\'', xre), '\'')
+  //... chai.assert(m = XRegExp.exec('f', xre), 'f')
+  //... chai.assert(m = XRegExp.exec('"', xre), '"')
+  //... var xre = XRegExp(
+  //...   `^${eYo.xre[eYo.xre.$NO_SINGLE_QUOTE]}$`
+  //... )
+  //... chai.assert(!XRegExp.exec('\'', xre), '\'')
+  //... chai.assert(m = XRegExp.exec('f', xre), 'f')
+  //... chai.assert(m = XRegExp.exec('"', xre), '"')
+  //... var xre = XRegExp(
+  //...   `^(?<content>
+  //...   ${eYo.xre[eYo.xre.$NO_SINGLE_QUOTE]}*
+  //...   )$`, 'x'
+  //... )
+  //... chai.assert(m = XRegExp.exec('f"o', xre), 'f"o')
+  //... var xre = XRegExp(
+  //...   `(?<content>
+  //...   ${eYo.xre[eYo.xre.$NO_DOUBLE_QUOTE]}*
+  //...   )$`, 'x'
+  //... )
+  //... chai.assert(m = XRegExp.exec("f'o", xre), "f'o")
+  //... var xre = XRegExp(
+  //...   `(?<content>
+  //...   ${eYo.xre[eYo.xre.$LONG_NO_SINGLE_QUOTE]}*
+  //...   )$`, 'x'
+  //... )
+  //... chai.assert(m = XRegExp.exec('f"o', xre), 'f"o')
+  //... var xre = XRegExp(
+  //...   `(?<content>
+  //...   ${eYo.xre[eYo.xre.$LONG_NO_DOUBLE_QUOTE]}*
+  //...   )$`, 'x'
+  //... )
+  //... chai.assert(m = XRegExp.exec("f'o", xre), "f'o")
+  //... var xre = XRegExp(
+  //...   `^(?<prefix> r|u|R|U|(?<formatted> f|F|fr|Fr|fR|FR|rf|rF|Rf|RF))?
+  //...   (?<delimiter> ')
+  //...   (?<content>${eYo.xre[eYo.xre.$NO_SINGLE_QUOTE]}*)
+  //...   \\k<delimiter>$`, 'x'
+  //... )
+  //... chai.assert(m = XRegExp.exec("'f\"o'", xre), "'f\"o'")
+  //>>>
 })
 
-eYo.mixinR(eYo.xre, {
+eYo.mixinRO(eYo.xre, {
   shortstringliteralSingle: XRegExp(
     `^(?<prefix> r|u|R|U|(?<formatted> f|F|fr|Fr|fR|FR|rf|rF|Rf|RF))?
     (?<delimiter> ')
-    (?<content>
-      ${eYo.xre[eYo.key._CHARACTER_SINGLE]}*
-    )
+    (?<content>${eYo.xre[eYo.xre.$NO_SINGLE_QUOTE]}*)
     \\k<delimiter>$`, 'x'),
   shortstringliteralDouble: XRegExp(
     `^(?<prefix> r|u|R|U|(?<formatted> f|F|fr|Fr|fR|FR|rf|rF|Rf|RF))?
     (?<delimiter> ")
-    (?<content>
-      ${eYo.xre[eYo.key._CHARACTER_DOUBLE]}*
-    )
+    (?<content>${eYo.xre[eYo.xre.$NO_DOUBLE_QUOTE]}*)
     \\k<delimiter>$`, 'x'),
   longstringliteralSingle: XRegExp(
     `^(?<prefix> r|u|R|U|(?<formatted> f|F|fr|Fr|fR|FR|rf|rF|Rf|RF))?
     (?<delimiter> (?<del> '){3})
     (?<content>
-      ${eYo.xre[eYo.key._LONG_CHARACTER_SINGLE]}*
-      (?:\\k<del>{1,2}${eYo.xre[eYo.key._LONG_CHARACTER_SINGLE]}+)*
+      ${eYo.xre[eYo.xre.$LONG_NO_SINGLE_QUOTE]}*
+      (?:\\k<del>{1,2}${eYo.xre[eYo.xre.$LONG_NO_SINGLE_QUOTE]}+)*
     )
     \\k<delimiter>$`, 'x'),
   longstringliteralDouble: XRegExp(
     `^(?<prefix> r|u|R|U|(?<formatted> f|F|fr|Fr|fR|FR|rf|rF|Rf|RF))?
     (?<delimiter> (?<del> "){3})
     (?<content>
-      ${eYo.xre[eYo.key._LONG_CHARACTER_DOUBLE]}*
-      (?:\\k<del>{1,2}${eYo.xre[eYo.key._LONG_CHARACTER_DOUBLE]}+)*
+      ${eYo.xre[eYo.xre.$LONG_NO_DOUBLE_QUOTE]}*
+      (?:\\k<del>{1,2}${eYo.xre[eYo.xre.$LONG_NO_DOUBLE_QUOTE]}+)*
     )
     \\k<delimiter>$`, 'x')
   //<<< mochai: (short|long)stringliteral(Single|Double)
   //... var xre, dlmtr, content
   //... let test = (s, prefix, formatted, content) => {
-  //...   chai.assert(m = XRegExp.exec(s, xre))
+  //...   chai.assert(m = XRegExp.exec(s, xre), `${s}/${prefix}/${formatted}/${content}`)
   //...   chai.expect(!m.prefix).equal(!prefix)
   //...   chai.expect(!m.formatted).equal(!formatted)
   //...   chai.expect(m.delimiter).equal(dlmtr)
@@ -213,10 +260,10 @@ eYo.mixinR(eYo.xre, {
   //...   [eYo.xre.shortstringliteralDouble, `"`, `foo`],
   //...   [eYo.xre.shortstringliteralSingle, `'`, `f"o`],
   //...   [eYo.xre.shortstringliteralDouble, `"`, `f'o`],
-  //...   [eYo.xre.longstringliteralSingle, `'''`, `foo`],
-  //...   [eYo.xre.longstringliteralDouble, `"""`, `foo`],
-  //...   [eYo.xre.longstringliteralSingle, `'''`, `f'o`],
-  //...   [eYo.xre.longstringliteralDouble, `"""`, `f"o`],
+  //...   [eYo.xre.longstringliteralSingle, `'''`, `fop`],
+  //...   [eYo.xre.longstringliteralDouble, `"""`, `fop`],
+  //...   [eYo.xre.longstringliteralSingle, `'''`, `f'p`],
+  //...   [eYo.xre.longstringliteralDouble, `"""`, `f"p`],
   //...   [eYo.xre.longstringliteralSingle, `'''`, `''o`],
   //...   [eYo.xre.longstringliteralDouble, `"""`, `""o`],
   //...   [eYo.xre.longstringliteralSingle, `'''`, `f"""o`],
@@ -238,38 +285,39 @@ eYo.mixinR(eYo.xre, {
 
 // bytes
 
-eYo.mixinR(eYo.key, {
-  _BYTE_SINGLE: '.byte_single',
-  _BYTE_DOUBLE: '.byte_double'
+eYo.mixinRO(eYo.xre, {
+  $BYTE_NO_SINGLE_QUOTE: Symbol('BYTE_NO_SINGLE_QUOTE'),
+  $BYTE_NO_DOUBLE_QUOTE: Symbol('BYTE_NO_DOUBLE_QUOTE'),
 })
 
-eYo.mixinR(eYo.xre, {
+eYo.mixinRO(eYo.xre, {
   bytes: XRegExp(`^(?:[\\x20-\\x5B\\x5D-\\xFF]|
     \\\\[\\x0A\\x0D\\x20-\\xFF])*$`, 'x'),
-  [eYo.key._BYTE_SINGLE]: '(?:[\\x00-\\x26\\x28-\\x5B\\x5D-\\x7F]|\\\\[\\x00-\\xFF])',
-  [eYo.key._BYTE_DOUBLE]: '(?:[\\x00-\\x21\\x23-\\x5B\\x5D-\\x7F]|\\\\[\\x00-\\xFF])'
+  [eYo.xre.$BYTE_NO_SINGLE_QUOTE]: '(?:[\\x00-\\x26\\x28-\\x5B\\x5D-\\x7F]|\\\\[\\x00-\\xFF])',
+  [eYo.xre.$BYTE_NO_DOUBLE_QUOTE]: '(?:[\\x00-\\x21\\x23-\\x5B\\x5D-\\x7F]|\\\\[\\x00-\\xFF])'
 })
 
-eYo.mixinR(eYo.xre, {
+eYo.mixinRO(eYo.xre, {
+  //<<< mochai: (short|long)bytesliteral(Single|Double)
   shortbytesliteralSingle: XRegExp(
     `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
     (?<delimiter> (?<del> '))
     (?<content>
-      ${eYo.xre[eYo.key._BYTE_SINGLE]}*?
+      ${eYo.xre[eYo.xre.$BYTE_NO_SINGLE_QUOTE]}*?
     )
     \\k<delimiter>$`, 'x'),
   shortbytesliteralDouble: XRegExp(
     `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
     (?<delimiter> (?<del> "))
     (?<content>
-      ${eYo.xre[eYo.key._BYTE_DOUBLE]}*?
+      ${eYo.xre[eYo.xre.$BYTE_NO_DOUBLE_QUOTE]}*?
     )
     \\k<delimiter>$`, 'x'),
   longbytesliteralSingle: XRegExp(
     `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
     (?<delimiter> (?<del> '){3})
     (?<content>
-      (?:${eYo.xre[eYo.key._BYTE_SINGLE]}|
+      (?:${eYo.xre[eYo.xre.$BYTE_NO_SINGLE_QUOTE]}|
         \\k<del>{1,2}(?!\\k<del>)|
         \\k<del>{1,2}(?=\\k<delimiter>$))*?
     )
@@ -278,22 +326,25 @@ eYo.mixinR(eYo.xre, {
     `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)
     (?<delimiter> (?<del> "){3})
     (?<content>
-      (?:${eYo.xre[eYo.key._BYTE_DOUBLE]}|
+      (?:${eYo.xre[eYo.xre.$BYTE_NO_DOUBLE_QUOTE]}|
         \\k<del>{1,2}(?!\\k<del>)|
         \\k<del>{1,2}(?=\\k<delimiter>$))*?
     )
     \\k<delimiter>$`, 'x'),
-  //<<< mochai: (short|long)bytesliteral(Single|Double)
   //... var xre, dlmtr, content
   //... let test = (s, prefix, content) => {
-  //...   chai.assert(m = XRegExp.exec(s, xre))
+  //...   chai.assert(m = XRegExp.exec(s, xre), `${s}/${prefix}/${content}`)
   //...   chai.expect(!m.prefix).equal(!prefix)
   //...   chai.expect(m.delimiter).equal(dlmtr)
   //...   chai.expect(m.content).equal(content)
   //... }
   //... ;[
+  //...   [eYo.xre.shortbytesliteralSingle, `'`, ``],
+  //...   [eYo.xre.shortbytesliteralDouble, `"`, ``],
   //...   [eYo.xre.shortbytesliteralSingle, `'`, `foo`],
   //...   [eYo.xre.shortbytesliteralDouble, `"`, `foo`],
+  //...   [eYo.xre.shortbytesliteralSingle, `'`, `""`],
+  //...   [eYo.xre.shortbytesliteralDouble, `"`, `'`],
   //...   [eYo.xre.shortbytesliteralSingle, `'`, `f"o`],
   //...   [eYo.xre.shortbytesliteralDouble, `"`, `f'o`],
   //...   [eYo.xre.longbytesliteralSingle, `'''`, `foo`],
@@ -317,21 +368,21 @@ eYo.mixinR(eYo.xre, {
     `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)?
     (?<delimiter> ')
     (?<content>
-      (?:${eYo.xre[eYo.key._BYTE_SINGLE]})*?
+      (?:${eYo.xre[eYo.xre.$BYTE_NO_SINGLE_QUOTE]})*?
     )
     \\k<delimiter>$`, 'x'),
   shortbytesliteralDoubleNoPrefix: XRegExp(
     `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)?
     (?<delimiter> ")
     (?<content>
-      (?:${eYo.xre[eYo.key._BYTE_DOUBLE]})*?
+      (?:${eYo.xre[eYo.xre.$BYTE_NO_DOUBLE_QUOTE]})*?
     )
     \\k<delimiter>$`, 'x'),
   longbytesliteralSingleNoPrefix: XRegExp(
     `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)?
     (?<delimiter> (?<del> '){3})
     (?<content>
-      (?:${eYo.xre[eYo.key._BYTE_SINGLE]}|
+      (?:${eYo.xre[eYo.xre.$BYTE_NO_SINGLE_QUOTE]}|
         \\k<del>{1,2}(?!\\k<del>)|
         \\k<del>{1,2}(?=\\k<delimiter>$))*?
     )
@@ -340,7 +391,7 @@ eYo.mixinR(eYo.xre, {
     `^(?<prefix> b|B|br|Br|bR|BR|rb|rB|Rb|RB)?
     (?<delimiter> (?<del> "){3})
     (?<content>
-      (?:${eYo.xre[eYo.key._BYTE_DOUBLE]}|
+      (?:${eYo.xre[eYo.xre.$BYTE_NO_DOUBLE_QUOTE]}|
         \\k<del>{1,2}(?!\\k<del>)|
         \\k<del>{1,2}(?=\\k<delimiter>$))*?
     )
@@ -380,12 +431,12 @@ eYo.mixinR(eYo.xre, {
 
 // identifier
 
-eYo.mixinR(eYo.key, {
-  _IDENTIFER: '.identifier'
+eYo.mixinRO(eYo.xre, {
+  $IDENTIFIER: Symbol('IDENTIFIER'),
 })
 
-eYo.mixinR(eYo.xre, {
-  [eYo.key._IDENTIFIER]: `(?:
+eYo.mixinRO(eYo.xre, {
+  [eYo.xre.$IDENTIFIER]: `(?:
     (?:_|\\p{L}|\\p{Nl}) # at least one character
     (?:_|\\p{L}|\\p{Nl}|\\p{Mn}|\\p{Mc}|\\p{Nd}|\\p{Pc}
     )*
@@ -419,8 +470,8 @@ eYo.mixinR(eYo.xre, {
   //>>>
 })
 
-eYo.mixinR(eYo.xre, {
-  identifier: XRegExp(`^${eYo.xre[eYo.key._IDENTIFIER]}$`, 'x'),
+eYo.mixinRO(eYo.xre, {
+  identifier: XRegExp(`^${eYo.xre[eYo.xre.$IDENTIFIER]}$`, 'x'),
   //<<< mochai: identifier
   //... xre = eYo.xre.identifier
   //... chai.assert(XRegExp.exec('foof', xre))
@@ -431,15 +482,15 @@ eYo.mixinR(eYo.xre, {
     (?<dots>\\.*)
     (?:
       (?<holder>
-        ${eYo.xre[eYo.key._IDENTIFIER]}
+        ${eYo.xre[eYo.xre.$IDENTIFIER]}
         (?:
-          \\.(?: ${eYo.xre[eYo.key._IDENTIFIER]})?
+          \\.(?: ${eYo.xre[eYo.xre.$IDENTIFIER]})?
         )*
       )
       \\.
     )?
   )
-  (?<name> ${eYo.xre[eYo.key._IDENTIFIER]})?  # must match 'foo.bar.' for partial validation, hence the '?'
+  (?<name> ${eYo.xre[eYo.xre.$IDENTIFIER]})?  # must match 'foo.bar.' for partial validation, hence the '?'
   $`, 'x'),
   //<<< mochai: dotted_name
   //... xre = eYo.xre.dotted_name
@@ -456,9 +507,9 @@ eYo.mixinR(eYo.xre, {
   //... })
   //>>>
   identifier_annotated_valued: XRegExp(`^
-    (?<name> ${eYo.xre[eYo.key._IDENTIFIER]})
-    (?:\\s*[:]\\s*(?<annotated> ${eYo.xre[eYo.key._IDENTIFIER]}))?
-    (?:\\s*=\\s*(?<valued> ${eYo.xre[eYo.key._IDENTIFIER]}))?
+    (?<name> ${eYo.xre[eYo.xre.$IDENTIFIER]})
+    (?:\\s*[:]\\s*(?<annotated> ${eYo.xre[eYo.xre.$IDENTIFIER]}))?
+    (?:\\s*=\\s*(?<valued> ${eYo.xre[eYo.xre.$IDENTIFIER]}))?
   $`, 'x')
   //<<< mochai: identifier_annotated_valued
   //... var xre = eYo.xre.identifier_annotated_valued
@@ -535,7 +586,7 @@ longbyteschar  ::=  <any ASCII character except "\">
 bytesescapeseq ::=  "\" <any ASCII character>
 */
 
-eYo.mixinR(eYo.xre, {
+eYo.mixinRO(eYo.xre, {
   function_builtin_before: XRegExp('^[^(]*\\(\\s*(?<builtin>\\bbuiltin\\b)?(?:\\s*,\\s*)?(?<before>\\bbefore\\b)?'),
   //<<< mochai: function_builtin_before
   //... xre = eYo.xre.function_builtin_before

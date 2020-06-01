@@ -33,7 +33,7 @@ eYo.require('magnet')
  * All the inputs are connectedÒ.
  */
 // eYo.consolidator.Parameter = function() {
-//   eYo.consolidator.Parameter.eyo.C9r_s.constructor.call(this, eYo.consolidator.Parameter.data)
+//   eYo.consolidator.Parameter[eYo.$].C9r_s.constructor.call(this, eYo.consolidator.Parameter.data)
 // }
 // //g@@g.require(eYo.consolidator.List)
 // goog.inherits(eYo.consolidator.Parameter, eYo.consolidator.List)
@@ -44,7 +44,7 @@ eYo.require('magnet')
 //   presep: ',',
 // }
 
-eYo.consolidator.List.makeSubC9r('parameter', {
+eYo.consolidator.List[eYo.$makeSubC9r]('parameter', {
   list: {
     check: null,
     mandatory: 0,
@@ -66,7 +66,7 @@ eYo.consolidator.Parameter.prototype.consolidate_connected = function (io) {
       return false
     }
   }
-  return eYo.consolidator.Parameter.eyo.C9r_s.consolidate_connected.call(this, io)
+  return eYo.consolidator.Parameter[eYo.$].C9r_s.consolidate_connected.call(this, io)
 }
 
 /**
@@ -75,7 +75,7 @@ eYo.consolidator.Parameter.prototype.consolidate_connected = function (io) {
  * @param {eYo.brick.BaseC9r} brick owner of the receiver
  */
 eYo.consolidator.Parameter.prototype.getIO = function (brick) {
-  var io = eYo.consolidator.Parameter.eyo.C9r_s.getIO.call(this, brick)
+  var io = eYo.consolidator.Parameter[eYo.$].C9r_s.getIO.call(this, brick)
   io.first_star_star = io.first_star = io.first_default = io.last_default = -1
   return io
 }
@@ -158,7 +158,7 @@ eYo.consolidator.Parameter.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.consolidator.Parameter.eyo.C9r_s.doCleanup.call(this, io)
+    eYo.consolidator.Parameter[eYo.$].C9r_s.doCleanup.call(this, io)
     setupFirst.call(this, io)
     // there must be an only one
     // first remove all the extra ** parameters
@@ -297,7 +297,7 @@ eYo.consolidator.Parameter.prototype.getCheck = (() => {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubC9r('parameter_list', {
+eYo.expr.List[eYo.$makeSubC9r]('parameter_list', {
   list: {
     consolidator: eYo.consolidator.Parameter
   }
@@ -354,7 +354,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
   F('*', 0, '*…')
   F('**', 0, '**…')
   mngr.shouldSeparateInsert()
-  eYo.expr.Parameter_list.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  eYo.expr.Parameter_list[eYo.$].C9r_s.populateContextMenuFirst_.call(this, mngr)
   return true
 }
 
@@ -424,7 +424,7 @@ eYo.expr.makeC9r('lambda', true, {
  * For edython.
  */
 eYo.magnet.BaseC9r_p.consolidateType = function () {
-  eYo.magnet.eyo.C9r_s.consolidateType.call(this)
+  eYo.magnet[eYo.$].C9r_s.consolidateType.call(this)
   var brick = this.brick
   var m4tOut = brick.out_m
   var slot = brick.getSlot(eYo.key.EXPRESSION)

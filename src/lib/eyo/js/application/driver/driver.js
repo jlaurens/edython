@@ -29,7 +29,7 @@ eYo.c9r.makeC9r(eYo.driver, 'Handler', {
    */
   init (key, driver, alt) {
     //<<< mochai: init
-    key === driver.key || eYo.throw(`${this.eyo.name}/init: Missing ${key} === ${driver.key}`)
+    key === driver.key || eYo.throw(`${this[eYo.$].name}/init: Missing ${key} === ${driver.key}`)
     this.__key = key
     this.__driver = driver
     this.__alt = alt
@@ -43,16 +43,16 @@ eYo.c9r.makeC9r(eYo.driver, 'Handler', {
   methods: {
     //<<< mochai: methods
     apply (target, thisArg, argumentsList) {
-      eYo.throw(`${target.eyo.name} instances are not callable.`)
+      eYo.throw(`${target[eYo.$].name} instances are not callable.`)
     },
     construct(target, args) {
-      eYo.throw(`${target.eyo.name} instances are not constructors.`)
+      eYo.throw(`${target[eYo.$].name} instances are not constructors.`)
     },
     defineProperty(target, key, descriptor) {
-      eYo.throw(`${target.eyo.name} instances are frozen (no defineProperty).`)
+      eYo.throw(`${target[eYo.$].name} instances are frozen (no defineProperty).`)
     },
     deleteProperty(target, prop) {
-      eYo.throw(`${target.eyo.name} instances are frozen (no deleteProperty).`)
+      eYo.throw(`${target[eYo.$].name} instances are frozen (no deleteProperty).`)
     },
     //<<< mochai: frozen or forbidden
     //... let driver = new eYo.O4t('driver', onr)
@@ -158,7 +158,7 @@ eYo.c9r.makeC9r(eYo.driver, 'Handler', {
   },
   //>>>
 })
-eYo.driver.Handler.eyo.finalizeC9r()
+eYo.driver.Handler[eYo.$].finalizeC9r()
 
 /**
  * @name {eYo.driver.BaseC9r}
@@ -258,7 +258,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
     allPurposeDriver: {
       //<<< mochai: allPurposeDriver
       value () {
-        let target = new this.eyo.ns.BaseC9r ('allPurposeDriver', this)
+        let target = new this[eYo.$].ns.BaseC9r ('allPurposeDriver', this)
         let handler = {
           get (target, prop) {
             if (prop === '__target') {
@@ -337,7 +337,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
       //... foo.disposeUI()
       var NS = this.ns
       if (!eYo.isSubclass(SuperC9r, eYo.Driver)) {
-        driverModel && eYo.throw(`${this.eyo.name}/makeDriverC9r: Unexpected model (${driverModel})`)
+        driverModel && eYo.throw(`${this[eYo.$].name}/makeDriverC9r: Unexpected model (${driverModel})`)
         ;[SuperC9r, driverModel] = [NS.super[key] || NS.BaseC9r, eYo.called(SuperC9r) || {}]
       }
       if (!eYo.isSubclass(SuperC9r, NS.BaseC9r)) {
@@ -373,16 +373,15 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
         //... bar.mee(8, 9)
         //... flag.expect(123456789)
         if (driverModel) {
-          eYo.provideR(driverModel, NS.BaseC9r.eyo.model)
+          eYo.provideR(driverModel, NS.BaseC9r[eYo.$].model)
         } else {
-          driverModel = NS.BaseC9r.eyo.model
+          driverModel = NS.BaseC9r[eYo.$].model
         }
       }
       let Driver = eYo.c9r.makeC9r(NS, key, SuperC9r, driverModel)
       let ui_m = this.model.ui
-      let ui_d = Driver.eyo.model.ui
-      eYo.mixinR(Driver.prototype, {
-        [eYo.Sym.FunctionsAreGetters]: false,
+      let ui_d = Driver[eYo.$].model.ui
+      eYo.mixinFR(Driver.prototype, {
         doInitUI (...$) {
           let ans = SuperC9r.prototype.doInitUI.call(this, ...$)
           var f = ui_m && ui_m.initMake
@@ -398,8 +397,8 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
           return SuperC9r.prototype.doDisposeUI.call(this, ...$) && ans
         },
       })
-      Driver.eyo.finalizeC9r()
-      var x = Driver.eyo.name.split('.')
+      Driver[eYo.$].finalizeC9r()
+      var x = Driver[eYo.$].name.split('.')
       x.shift()
       x = x.join('.') // 'eYo.foo.bar' -> 'foo.bar'
       this.driverC9rMap.set(x, Driver)
@@ -463,7 +462,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
       //<<< mochai: getDriver
       var components
       try {
-        components = object.eyo.name.split('.')
+        components = object[eYo.$].name.split('.')
         components.shift()
       } catch(e) {
         components = object.split('.')
@@ -484,7 +483,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
       }
       return this.allPurposeDriver
       //... var driver = mngr.getDriver({
-      //...   eyo: {
+      //...   [eYo.$]: {
       //...     name: `${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`,
       //...   },
       //... })
@@ -498,8 +497,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
   //>>>
 })
 
-eYo.mixinR(eYo.driver._p, {
-  [eYo.Sym.FunctionsAreGetters]: false,
+eYo.mixinFR(eYo.driver._p, {
   //<<< mochai: eYo.driver methods
   /**
    * Usage: `eYo.driver.makeMngr(model)`.

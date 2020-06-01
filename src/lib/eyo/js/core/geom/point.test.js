@@ -98,10 +98,10 @@ describe ('geometry/Point', function () {
         this.y_ = c.height
       } else {
         eYo.isaP6y(c)
-        ? this.origin_.eyo.p6yMakeShortcuts(this, 'c', c, true)
+        ? this.origin_[eYo.$].p6yMakeShortcuts(this, 'c', c, true)
         : (this.c_ = c || 0)
         eYo.isaP6y(l)
-        ? this.origin_.eyo.p6yMakeShortcuts(this, 'l', l, true)
+        ? this.origin_[eYo.$].p6yMakeShortcuts(this, 'l', l, true)
         : (this.l_ = l || 0)
         return this
       }

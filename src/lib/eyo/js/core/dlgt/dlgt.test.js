@@ -7,25 +7,21 @@ describe ('POC', function () {
         C9r__: { value: Dlgt },
         model__: { value: model },
       })
-      Dlgt.eyo__ = this
-      let d = eYo.descriptorR(function () {
-        return this.eyo__
-      })
+      let $this = this
       Object.defineProperties(Dlgt, {
-        eyo: d,
-        eyo_: d,
-        eyo_p: eYo.descriptorR(function () {
-          return this.eyo__._p
+        [eYo.$]: eYo.descriptorR(function () {
+          return $this
+        }),
+        [eYo.$_p]: eYo.descriptorR(function () {
+          return $this._p
         }),
       })  
     }
     let d = eYo.descriptorR(function () {
-      return this.constructor.eyo__
+      return this.constructor[eYo.$]
     })
     Object.defineProperties(AutoDlgt.prototype, {
-      eyo: d,
-      eyo_: d,
-      eyo__: d,
+      [eYo.$]: d,
     })
     let Dlgt = function (ns, key, Dlgt, model) {
       AutoDlgt.call(this, ns, key, Dlgt, model)
@@ -33,18 +29,18 @@ describe ('POC', function () {
     eYo.inherits(Dlgt, AutoDlgt)
     var dlgt = new AutoDlgt(eYo.c9r, 'Dlgt', Dlgt, {})
     let auto = new AutoDlgt(eYo.c9r, 'Dlgt…', AutoDlgt, {})
-    chai.expect(dlgt).equal(Dlgt.eyo)
-    chai.expect(dlgt).equal(Dlgt.eyo_)
-    chai.expect(dlgt).equal(Dlgt.eyo__)
-    chai.expect(auto).equal(AutoDlgt.eyo)
-    chai.expect(auto).equal(AutoDlgt.eyo_)
-    chai.expect(auto).equal(AutoDlgt.eyo__)
-    chai.expect(auto).equal(AutoDlgt.eyo.eyo)
-    chai.expect(auto).equal(AutoDlgt.eyo_.eyo_)
-    chai.expect(auto).equal(AutoDlgt.eyo__.eyo__)
-    chai.expect(auto).equal(AutoDlgt.eyo.eyo.eyo)
-    chai.expect(auto).equal(AutoDlgt.eyo_.eyo_.eyo_)
-    chai.expect(auto).equal(AutoDlgt.eyo__.eyo__.eyo__)
+    chai.expect(dlgt).equal(Dlgt[eYo.$])
+    chai.expect(dlgt).equal(Dlgt[eYo.$])
+    chai.expect(dlgt).equal(Dlgt[eYo.$])
+    chai.expect(auto).equal(AutoDlgt[eYo.$])
+    chai.expect(auto).equal(AutoDlgt[eYo.$])
+    chai.expect(auto).equal(AutoDlgt[eYo.$])
+    chai.expect(auto).equal(AutoDlgt[eYo.$][eYo.$])
+    chai.expect(auto).equal(AutoDlgt[eYo.$][eYo.$])
+    chai.expect(auto).equal(AutoDlgt[eYo.$][eYo.$])
+    chai.expect(auto).equal(AutoDlgt[eYo.$][eYo.$][eYo.$])
+    chai.expect(auto).equal(AutoDlgt[eYo.$][eYo.$][eYo.$])
+    chai.expect(auto).equal(AutoDlgt[eYo.$][eYo.$][eYo.$])
   })
 })
 describe ('Tests: Dlgt', function () {
@@ -57,15 +53,14 @@ describe ('Tests: Dlgt', function () {
     chai.assert(eYo.dlgt)
   })
   it ('Dlgt: Base', function () {
-    chai.expect(eYo.dlgt).property('BaseC9r')
-    chai.expect(eYo.dlgt.BaseC9r).property('eyo')
+    chai.expect(eYo.dlgt.BaseC9r).property(eYo.$)
     var set = new Set([
-      eYo.dlgt.BaseC9r.eyo,
-      eYo.dlgt.BaseC9r.eyo.eyo,
-      eYo.dlgt.BaseC9r.eyo.eyo.eyo,
+      eYo.dlgt.BaseC9r[eYo.$],
+      eYo.dlgt.BaseC9r[eYo.$][eYo.$],
+      eYo.dlgt.BaseC9r[eYo.$][eYo.$][eYo.$],
     ])
     chai.expect(set.size).equal(1)
-    chai.expect(eYo.dlgt.BaseC9r.eyo instanceof eYo.dlgt.BaseC9r).true
+    chai.expect(eYo.dlgt.BaseC9r[eYo.$] instanceof eYo.dlgt.BaseC9r).true
   })
   it ('Dlgt: new', function () {
     chai.assert(eYo.dlgt.new)
@@ -73,7 +68,7 @@ describe ('Tests: Dlgt', function () {
     let dlgt = eYo.dlgt.new('Foo', C9r, {})
     chai.expect(dlgt).not.undefined
     chai.expect(dlgt.constructor).not.equal(eYo.dlgt.BaseC9r)
-    chai.expect(C9r.eyo).equal(dlgt)
+    chai.expect(C9r[eYo.$]).equal(dlgt)
     chai.expect(C9r).equal(dlgt.C9r)
     chai.expect(C9r.prototype).equal(dlgt.C9r_p)
     chai.expect(() => {
@@ -86,7 +81,7 @@ describe ('Tests: Dlgt', function () {
     let dlgt = eYo.dlgt.new('Foo', C9r, {})
     let o = new C9r()
     eYo.dlgt.declareDlgt(C9r.prototype)
-    chai.expect(o.eyo).equal(dlgt)
+    chai.expect(o[eYo.$]).equal(dlgt)
   })
   it ('Dlgt subclass', function () {
     chai.assert(eYo.dlgt.new)
@@ -195,14 +190,14 @@ describe ('Tests: Dlgt', function () {
       flag.push(x+1)
     }
     superDlgt.forEachSubC9r(C9r => {
-      C9r.eyo.do_it && C9r.eyo.do_it(1)
+      C9r[eYo.$].do_it && C9r[eYo.$].do_it(1)
     })
     flag.expect(2)
     var C9r = function () {}
     eYo.inherits(C9r, SuperC9r)
     eYo.dlgt.new('Bar', C9r, {})
     superDlgt.forEachSubC9r(C9r => {
-      C9r.eyo.do_it && C9r.eyo.do_it(2)
+      C9r[eYo.$].do_it && C9r[eYo.$].do_it(2)
     })
     flag.expect(33)
     dlgt._p.do_it = (x) => {
@@ -210,12 +205,12 @@ describe ('Tests: Dlgt', function () {
       return x+3
     }
     superDlgt.forEachSubC9r(C9r => {
-      C9r.eyo.do_it && C9r.eyo.do_it(3)
+      C9r[eYo.$].do_it && C9r[eYo.$].do_it(3)
     })
     flag.expect([45,54])
     flag.reset()
     chai.expect(superDlgt.someSubC9r(C9r => {
-      return C9r.eyo.do_it && C9r.eyo.do_it(3)
+      return C9r[eYo.$].do_it && C9r[eYo.$].do_it(3)
     })).equal(6)
     flag.expect([5,45])
   })

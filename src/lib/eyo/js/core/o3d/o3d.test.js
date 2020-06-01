@@ -22,7 +22,7 @@ describe ('Tests: Owned', function () {
     ns.makeBaseC9r()
     var model = {}
     ns.modelMakeC9r(model, 'foo')
-    chai.expect(model._C9r.SuperC9r).equal(ns.BaseC9r)
+    chai.expect(model._C9r[eYo.$SuperC9r]).equal(ns.BaseC9r)
   })
   it ('O3d: eYo.o3d.new', function () {
     let o3d = eYo.o3d.new('foo', onr)
@@ -60,15 +60,15 @@ describe ('Tests: Owned', function () {
       }
     })
     let o = ns_o3d.new('abc', eYo.c9r.new())
-    o.eyo.C9r_p.ownerWillChange = function (before, after) {
+    o[eYo.$].C9r_p.ownerWillChange = function (before, after) {
       flag.push(1)
     }
-    o.eyo.C9r_p.ownerDidChange = function (before, after) {
+    o[eYo.$].C9r_p.ownerDidChange = function (before, after) {
       flag.push(2)
-      o.eyo.C9r_s.ownerDidChange.call(this, before, after)
+      o[eYo.$].C9r_s.ownerDidChange.call(this, before, after)
     }
     onr.hasUI = true
-    o.eyo.C9r_p.initUI = function () {
+    o[eYo.$].C9r_p.initUI = function () {
       flag.push(3)
     }
     o.owner_ = onr

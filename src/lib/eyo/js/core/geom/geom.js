@@ -91,11 +91,11 @@ eYo.geom.makeBaseC9r(true, {
   //>>>
 })
 
-eYo.Geom.eyo.o4tEnhanced()
+eYo.Geom[eYo.$].o4tEnhanced()
 
-eYo.geom.BaseC9r.eyo.finalizeC9r(['aliases'], {
+eYo.geom.BaseC9r[eYo.$].finalizeC9r(['aliases'], {
   properties: {
-    [eYo.model.ANY]: eYo.P6y.eyo.modelFormat,
+    [eYo.model.ANY]: eYo.P6y[eYo.$].modelFormat,
     [eYo.model.VALIDATE]: eYo.model.validateD,
   },
 })

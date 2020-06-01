@@ -40,17 +40,18 @@ eYo.TESTING = true
  * Convenient shortcut
  * For edython.
  * @param {Object} object
- * @param {string} key
- * @return {boolean}
+ * @param {String} key
+ * @return {Boolean}
  */
 eYo.hasOwnProperty = function (object, key) {
   return !!object && !!key && (Object.prototype.hasOwnProperty.call(object, key))
   //<<< mochai: eYo.hasOwnProperty'
   //... chai.assert(eYo.hasOwnProperty)
-  //... chai.expect(eYo.hasOwnProperty({eyo: true}, 'eyo')).true
-  //... chai.expect(eYo.hasOwnProperty({}, 'eyo')).false
+  //... chai.expect(eYo.hasOwnProperty({foo: true}, 'foo')).true
+  //... chai.expect(eYo.hasOwnProperty({}, 'foo')).false
   //... chai.expect(eYo.hasOwnProperty({}, '')).false
-  //... chai.expect(eYo.hasOwnProperty(eYo.NA, 'eyo')).false
+  //... chai.expect(eYo.hasOwnProperty(eYo.NA, 'foo')).false
+  //... chai.expect(eYo.hasOwnProperty(eYo.NA, [eYo.$])).false
   //>>>
 }
 
@@ -80,7 +81,7 @@ eYo.isF = (what) => {
   //... chai.expect(eYo.toF(421)()).equal(421)
   //... let C9r = function () {}
   //... chai.assert(!eYo.isC9r(C9r))
-  //... C9r.eyo__ = true
+  //... C9r[eYo.$] = true
   //... chai.assert(eYo.isC9r(C9r))
   //... chai.assert(!eYo.isC9r())
   //... chai.assert(!eYo.isC9r(''))
@@ -584,12 +585,14 @@ Object.defineProperty(eYo._p, 'Sym', {
  * Creates a symbol uniquely attached to the given key
  * @param {String} key - The result is `eYo.Sym[key]
  */
-eYo._p.newSym = function (key) {
+eYo._p.newSym = function (...$) {
   //<<< mochai: newSym
-  if (this.Sym.hasOwnProperty(key)) {
-    throw `Do not declare a symbol twice`
+  for(let key of $) {
+    if (this.Sym.hasOwnProperty(key)) {
+      throw `Do not declare a symbol twice`
+    }
+    return this.Sym[key] = Symbol(key)
   }
-  return this.Sym[key] = Symbol(key)
   //... var id = eYo.genUID(eYo.IDENT)
   //... chai.expect(eYo.newSym(id)).equal(eYo.Sym[id])
   //... chai.expect(() => {
@@ -598,11 +601,6 @@ eYo._p.newSym = function (key) {
   //>>>
 }
 
-eYo.newSym('FunctionsAreGetters')
-//<<< mochai: FunctionsAreGetters
-//... chai.expect(eYo.Sym).property('FunctionsAreGetters')
-//>>>
-
 /**
  * The props dictionary is a `key=>value` mapping where values
  * are getters, not a dictionary containing a getter.
@@ -610,24 +608,33 @@ eYo.newSym('FunctionsAreGetters')
  * @param {*} props - the source
  * @return {*} the destination
  */
-eYo.mixinR = (object, props) => {
-  var getters = props[eYo.Sym.FunctionsAreGetters]
-  eYo.isNA(getters) && (getters = true)
+eYo.mixinRO = (object, props) => {
   Object.keys(props).forEach(key => {
     eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys are forbidden: ${object}, ${key}`)
-    let value = props[key]
+    var value = props[key]
     Object.defineProperty(
       object,
       key,
-      eYo.descriptorR(getters && eYo.isF(value) ? value : function () {
+      eYo.descriptorR(eYo.isF(value) ? value : function () {
+        return value
+      })
+    )
+  })
+  Object.getOwnPropertySymbols(props).forEach(key => {
+    eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate symbols are forbidden: ${object}, ${key}`)
+    var value = props[key]
+    Object.defineProperty(
+      object,
+      key,
+      eYo.descriptorR(eYo.isF(value) ? value : function () {
         return value
       })
     )
   })
   return object
-  //<<< mochai: eYo.mixinR
+  //<<< mochai: mixinR
   //... let o = {}
-  //... eYo.mixinR(o, {
+  //... eYo.mixinRO(o, {
   //...   foo: 421
   //... })
   //... chai.expect(o.foo).equal(421)
@@ -635,36 +642,96 @@ eYo.mixinR = (object, props) => {
   //...   o.foo = 421
   //... }).throw()
   //... chai.expect(() => {
-  //...   eYo.mixinR(o, {
+  //...   eYo.mixinRO(o, {
   //...     foo: 123
   //...   })
   //... }).throw()
-  //... eYo.mixinR(o, {
+  //... eYo.mixinRO(o, {
   //...   bar: 123
   //... })
   //... chai.expect(o.foo).equal(421)
   //... chai.expect(o.bar).equal(123)
   //... let a = {}
   //... let b = {}
-  //... chai.expect(() => eYo.mixinR(eYo.NS, eYo.NA)).throw()
-  //... chai.expect(() => eYo.mixinR(a, eYo.NA)).throw()
-  //... eYo.mixinR(a, b)
+  //... chai.expect(() => eYo.mixinRO(eYo.NS, eYo.NA)).throw()
+  //... chai.expect(() => eYo.mixinRO(a, eYo.NA)).throw()
+  //... eYo.mixinRO(a, b)
   //... chai.expect(a).deep.equal(b)
   //... b.foo = 421
-  //... chai.expect(() => eYo.mixinR(eYo.NS, b)).throw()
+  //... chai.expect(() => eYo.mixinRO(eYo.NS, b)).throw()
   //... chai.expect(a).not.deep.equal(b)
-  //... eYo.mixinR(a, b)
+  //... eYo.mixinRO(a, b)
   //... chai.expect(a.foo).equal(b.foo).equal(421)
-  //... chai.expect(() => eYo.mixinR(a, b)).throw()
+  //... chai.expect(() => eYo.mixinRO(a, b)).throw()
   //... let c = {}
-  //... eYo.mixinR(c, {
+  //... eYo.mixinRO(c, {
   //...   foo () {
   //...     flag.push(1)
   //...   }
   //... })
   //... flag.expect()
-  //... eYo.mixinR(c, {
-  //...   [eYo.Sym.FunctionsAreGetters]: false,
+  //>>>
+}
+
+/**
+ * The props dictionary is a `key=>value` mapping where values
+ * are methods when a function.
+ * @param {*} object - The destination
+ * @param {*} props - the source
+ * @return {*} the destination
+ */
+eYo.mixinFR = (object, props) => {
+  Object.keys(props).forEach(key => {
+    eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys are forbidden: ${object}, ${key}`)
+    let value = props[key]
+    Object.defineProperty(
+      object,
+      key,
+      eYo.descriptorR(function () {
+        return value
+      })
+    )
+  })
+  return object
+  //<<< mochai: mixinMethodsR
+  //... let o = {}
+  //... eYo.mixinFR(o, {
+  //...   foo: 421
+  //... })
+  //... chai.expect(o.foo).equal(421)
+  //... chai.expect(() => {
+  //...   o.foo = 421
+  //... }).throw()
+  //... chai.expect(() => {
+  //...   eYo.mixinFR(o, {
+  //...     foo: 123
+  //...   })
+  //... }).throw()
+  //... eYo.mixinFR(o, {
+  //...   bar: 123
+  //... })
+  //... chai.expect(o.foo).equal(421)
+  //... chai.expect(o.bar).equal(123)
+  //... let a = {}
+  //... let b = {}
+  //... chai.expect(() => eYo.mixinFR(eYo.NS, eYo.NA)).throw()
+  //... chai.expect(() => eYo.mixinFR(a, eYo.NA)).throw()
+  //... eYo.mixinFR(a, b)
+  //... chai.expect(a).deep.equal(b)
+  //... b.foo = 421
+  //... chai.expect(() => eYo.mixinFR(eYo.NS, b)).throw()
+  //... chai.expect(a).not.deep.equal(b)
+  //... eYo.mixinFR(a, b)
+  //... chai.expect(a.foo).equal(b.foo).equal(421)
+  //... chai.expect(() => eYo.mixinFR(a, b)).throw()
+  //... let c = {}
+  //... eYo.mixinFR(c, {
+  //...   foo () {
+  //...     flag.push(1)
+  //...   }
+  //... })
+  //... flag.expect()
+  //... eYo.mixinFR(c, {
   //...   bar () {
   //...     flag.push(1)
   //...   }
@@ -720,8 +787,7 @@ eYo.provideR = (getters, dest, props) => {
   //>>>
 }
 
-eYo.mixinR(eYo, {
-  [eYo.Sym.FunctionsAreGetters]: false,
+eYo.mixinFR(eYo, {
   /**
    * @const
    */
@@ -773,8 +839,7 @@ eYo.mixinR(eYo, {
 })
 
 // ANCHOR Utilities
-eYo.mixinR(eYo, {
-  [eYo.Sym.FunctionsAreGetters]: false,
+eYo.mixinFR(eYo, {
   /**
    * Readonly undefined
    */
@@ -972,13 +1037,13 @@ eYo.mixinR(eYo, {
   },
   /**
    * Whether the argument is a constructor, in edython paradigm.
-   * Such a constructor is a function with an `eyo__` property pointing to
+   * Such a constructor is a function with an `[eYo.$]` property pointing to
    * a delegate. It is not advisable to change this property on the fly.
    * @param {*} what
    * @return {!Boolean}
    */
   isC9r (what) {
-    return !!what && !!what.eyo__ && eYo.isF(what)
+    return !!what && !!what[eYo.$] && eYo.isF(what)
   },
   /**
    * Returns the evaluated argument if its a function,
@@ -1004,40 +1069,45 @@ eYo.mixinR(eYo, {
   isSubclass (Sub, Super) {
     return !!Super && !!Sub && eYo.isF(Super) && (Sub === Super || Sub.prototype instanceof Super)
   },
+})
+
+eYo.mixinFR(eYo._p, {
+  $SuperC9r: Symbol('SuperC9r'),
+  $SuperC9r_p: Symbol('SuperC9r_p'),
   /**
    * Contrary to goog.inherits, does not erase the childC9r.prototype.
    * IE<11
-   * At the end, 
+   * No delegation managed yet.
    * @param {Function} ChildC9r
    * @param {Function} SuperC9r
    */
   inherits (ChildC9r, SuperC9r) {
-    ChildC9r.SuperC9r = SuperC9r
+    ChildC9r[eYo.$SuperC9r] = SuperC9r
     let Super_p = SuperC9r.prototype
     let Child_p = ChildC9r.prototype
-    ChildC9r.SuperC9r_p = Child_p.SuperC9r_p = Super_p
+    ChildC9r[eYo.$SuperC9r_p] = Child_p[eYo.$SuperC9r_p] = Super_p
     Object.setPrototypeOf(Child_p, Super_p)
     Object.defineProperty(Child_p, 'constructor', {
       value: ChildC9r
     })
-    //<<< mochai: eYo.isSubclass | eYo.inherits
-    //... chai.assert(eYo.isSubclass)
-    //... chai.expect(eYo.isSubclass()).false
-    //... chai.expect(eYo.isSubclass(123)).false
-    //... chai.expect(eYo.isSubclass(123, 421)).false
-    //... let SuperC9r = function () {}
-    //... chai.expect(eYo.isSubclass(SuperC9r, SuperC9r)).true
-    //... let ChildC9r = function () {}
-    //... chai.assert(eYo.inherits)
-    //... eYo.inherits(ChildC9r, SuperC9r)
-    //... chai.expect(eYo.isSubclass(ChildC9r, SuperC9r)).true
-    //>>>
   },
+  //<<< mochai: eYo.isSubclass | eYo.inherits
+  //... chai.assert(eYo.isSubclass)
+  //... chai.expect(eYo.isSubclass()).false
+  //... chai.expect(eYo.isSubclass(123)).false
+  //... chai.expect(eYo.isSubclass(123, 421)).false
+  //... let SuperC9r = function () {}
+  //... chai.expect(eYo.isSubclass(SuperC9r, SuperC9r)).true
+  //... let ChildC9r = function () {}
+  //... chai.expect(eYo).property('inherits')
+  //... eYo.inherits(ChildC9r, SuperC9r)
+  //... chai.expect(eYo.isSubclass(ChildC9r, SuperC9r)).true
+  //... chai.expect(ChildC9r[eYo.$SuperC9r_p]).equal(ChildC9r.prototype[eYo.$SuperC9r_p]).equal(SuperC9r.prototype)
+  //>>>
 })
 
 // ANCHOR makeNS, provide
-eYo.mixinR(eYo._p, {
-  [eYo.Sym.FunctionsAreGetters]: false,
+eYo.mixinFR(eYo._p, {
   /**
    * 
    * @param {String} p 
@@ -1252,8 +1322,7 @@ eYo.mixinR(eYo._p, {
 })
 
 // ANCHOR Assert
-eYo.mixinR(eYo, {
-  [eYo.Sym.FunctionsAreGetters]: false,
+eYo.mixinFR(eYo, {
   /**
    * The default error handler.
    * @param {eYo.AssertionError} e The exception to be handled.
@@ -1367,7 +1436,7 @@ eYo.makeNS('debug')
 goog.require('goog.userAgent')
 
 // ANCHOR Assert
-eYo.mixinR(eYo, {
+eYo.mixinRO(eYo, {
   userAgent: goog.userAgent,
   LETTER: 'letter',
   ALNUM: 'alnum',
@@ -1375,8 +1444,7 @@ eYo.mixinR(eYo, {
   EPSILON: 1e-10,
 })
 
-eYo.mixinR(eYo._p, {
-  [eYo.Sym.FunctionsAreGetters]: false,
+eYo.mixinFR(eYo._p, {
   greater (left, right, tol = eYo.EPSILON) {
     return left - right >= -tol * (Math.abs(left) + Math.abs(right) + 2)
   },

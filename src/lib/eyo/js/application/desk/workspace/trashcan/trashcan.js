@@ -69,7 +69,7 @@ eYo.control.makeC9r('TrashCan', {
      * Move the trash can to the bottom-right corner.
      */
     place (bottom) {
-      eYo.control.TrashCan.eyo.C9r_s.place.call(this, bottom)
+      eYo.control.TrashCan[eYo.$].C9r_s.place.call(this, bottom)
       this.ui_driver.place(this)
     },
     /**

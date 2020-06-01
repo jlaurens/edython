@@ -38,7 +38,7 @@ eYo.o3d.makeBaseC9r({
    * @param {eYo.c9r.BaseC9r} owner - the immediate owner of this object.
    */
   init (key, owner) {
-    this.eyo.o3dInitInstance(this, key, owner)
+    this[eYo.$].o3dInitInstance(this, key, owner)
     this.disposeUI = eYo.doNothing
   },
   dispose () {
@@ -52,8 +52,7 @@ eYo.o3d.makeBaseC9r({
 //... chai.expect(eYo.o3d.BaseC9r).equal(eYo.O3d)
 //>>>
 
-eYo.mixinR(eYo._p, {
-  [eYo.Sym.FunctionsAreGetters]: false,
+eYo.mixinFR(eYo._p, {
   isaO3d (what) {
     return !!what && what instanceof eYo.o3d.BaseC9r
     //<<< mochai: eYo.isaO3d
@@ -77,7 +76,7 @@ eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
     console.error('BREAK HERE!')
   }
   eYo.isaC9r(owner) || eYo.throw(`${this.name}.o3dInitInstance: Very bad owner (${owner})`)
-  eYo.isId(key) || eYo.throw(`${this.eyo.name}: Bad key in init`)
+  eYo.isId(key) || eYo.throw(`${this[eYo.$].name}: Bad key in init`)
   instance.owner__ = owner
   instance.key_ = key
   Object.defineProperties(instance, {
@@ -138,8 +137,12 @@ Object.defineProperties(eYo.o3d.BaseC9r.prototype, {
 
 eYo.forward('shared')
 
-eYo.mixinR(eYo.o3d._p, {
-  [eYo.Sym.FunctionsAreGetters]: false,
+eYo.newSym('__singleton')
+//<<< mochai: eYo.Sym.__singleton
+//... chai.expect(eYo.Sym).property('__singleton')
+//>>>
+
+eYo.mixinFR(eYo.o3d._p, {
   /**
    * Create a new instance based on the model.
    * @param {Object} model
@@ -160,23 +163,27 @@ eYo.mixinR(eYo.o3d._p, {
       !model || eYo.throw(`Unexpected last parameter: ${model}`)
       ;[NS, id, model] = [this, NS, id]
     }
-    eYo.isId(id) || eYo.throw(`Unexpected parameter ${id.toString()}`)
-    let owner =  NS.OWNER || this.OWNER || eYo.shared.OWNER
-    var ans = owner[id]
-    if (ans) {
-      return ans
-    }
-    ans = this.new(model || {}, id, owner)
-    let d = eYo.descriptorR(function() {
-      return ans
-    })
     if (eYo.isStr(id)) {
-      Object.defineProperty(owner, id, d)
-      Object.defineProperty(NS, id, d)
+      if (NS.hasOwnProperty(id)) {
+        return NS[id]
+      }
+    } else if (eYo.isSym(id)) {
+      if (Object.getOwnPropertySymbols(NS).includes(id)) {
+        return NS[id]
+      }
     } else {
-      owner[id] = NS[id] = ans
+      eYo.throw(`Unexpected parameter ${id.toString()}`)
     }
-    ans.__singleton = true
+    let owner =  NS.OWNER || this.OWNER || eYo.shared.OWNER
+    var ans = this.new(model || {}, id, owner)
+    if (eYo.isStr(id)) {
+      Object.defineProperty(NS, id, eYo.descriptorR(function() {
+        return ans
+      }))
+    } else {
+      NS[id] = ans
+    }
+    ans[eYo.Sym.__singleton] = true
     return ans
     //... var id = eYo.genUID(eYo.IDENT)
     //... var singleton = eYo.o3d.makeSingleton(id)
@@ -186,7 +193,7 @@ eYo.mixinR(eYo.o3d._p, {
     //... chai.expect(eYo.o3d.makeSingleton(id)).equal(singleton)
     //... var NS = eYo.o3d.makeNS()
     //... chai.expect(NS.OWNER).equal(eYo.o3d.OWNER)
-    //... chai.expect(NS.makeSingleton(id)).equal(singleton)
+    //... chai.expect(NS.makeSingleton(id)).not.equal(singleton)
     //... var NS = eYo.o3d.makeNS({
     //...   OWNER: new eYo.C9r(),
     //... })
@@ -203,7 +210,7 @@ eYo.mixinR(eYo.o3d._p, {
     //... chai.expect(eYo.o3d.makeSingleton(id)).equal(singleton)
     //... var NS = eYo.o3d.makeNS()
     //... chai.expect(NS.OWNER).equal(eYo.o3d.OWNER)
-    //... chai.expect(NS.makeSingleton(id)).equal(singleton)
+    //... chai.expect(NS.makeSingleton(id)).not.equal(singleton)
     //... var NS = eYo.o3d.makeNS({
     //...   OWNER: new eYo.C9r(),
     //... })

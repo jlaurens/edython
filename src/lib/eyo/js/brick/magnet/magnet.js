@@ -266,7 +266,7 @@ Object.defineProperty(eYo.magnet.BaseC9r_p, 'isMagnet', {
   },
 })
 
-eYo.magnet.BaseC9r.eyo.p6yAliasesMerge({
+eYo.magnet.BaseC9r[eYo.$].p6yAliasesMerge({
   /**
    * Is it a slot magnet.
    * @return {boolean} True if the magnet is one of the brick's slot magnet.
@@ -274,7 +274,7 @@ eYo.magnet.BaseC9r.eyo.p6yAliasesMerge({
   isSlot: 'isIn',
 })
 
-eYo.magnet.BaseC9r.eyo.p6yMerge({
+eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   typeName: {
     get () {
       return {
@@ -355,7 +355,7 @@ eYo.magnet.BaseC9r.eyo.p6yMerge({
 
 // ANCHOR: State
 
-eYo.magnet.BaseC9r.eyo.p6yMerge({
+eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   hidden: {
     validate (after) {
       // Incog magnets must stay hidden
@@ -431,7 +431,7 @@ eYo.magnet.BaseC9r.eyo.p6yMerge({
 
 // ANCHOR: Position
 
-eYo.magnet.BaseC9r.eyo.p6yMerge({
+eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   where: {
     value () {
       new eYo.geom.Point()
@@ -650,7 +650,7 @@ eYo.magnet.BaseC9r_p.setOffset = function(c = 0, l = 0) {
 
 // ANCHOR: finalizeC9r
 
-eYo.magnet.BaseC9r.eyo.finalizeC9r((() => {
+eYo.magnet.BaseC9r[eYo.$].finalizeC9r((() => {
   let ans = {}
   let d = eYo.model.manyDescriptorF('willConnect', 'didConnect', 'willDisconnect', 'didDisconnect')
 
@@ -679,7 +679,7 @@ t9k && (t9k.consolidate(deep, force))
 
 // ANCHOR: Navigate
 
-eYo.magnet.BaseC9r.eyo.p6yMerge({
+eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   /**
    * The right magnet is just at the right... Not used yet.
    * @private
@@ -1241,7 +1241,7 @@ eYo.magnet.BaseC9r_p.pDistance = function(other) {
 
 // ANCHOR: Wrapping
 
-eYo.magnet.BaseC9r.eyo.p6yMerge({
+eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   wrapped: {
     validate (after) {
       this.target && eYo.throw("ALREADY A WRAPPED BLOCK")
@@ -1350,7 +1350,7 @@ eYo.magnet.BaseC9r_p.completePromise = function () {
 
 // ANCHOR: Connection
 
-eYo.magnet.BaseC9r.eyo.p6yMerge({
+eYo.magnet.BaseC9r[eYo.$].p6yMerge({
   targetBrick: { // === this.target.brick
     get () {
       var t = this.target

@@ -105,7 +105,7 @@ eYo.view.Scroller_p.dispose = function() {
   this.hScroll = this.hScroll.dispose()
   this.vScroll = this.vScroll.dispose()
   this.cornerRect_ = this.cornerRect_.dispose()
-  eYo.view.Scroller.eyo.C9r_s.dispose.call(this)
+  eYo.view.Scroller[eYo.$].C9r_s.dispose.call(this)
 }
 
 /**

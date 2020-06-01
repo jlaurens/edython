@@ -369,7 +369,7 @@ eYo.event.makeC9r('Motion', {
   },
 })
 
-eYo.event.Motion.eyo.methodsMerge({
+eYo.event.Motion[eYo.$].methodsMerge({
   /**
    * @private
    */
@@ -445,7 +445,7 @@ eYo.event.Motion.eyo.methodsMerge({
 })
 
 // ANCHOR Mouse
-eYo.event.Motion.eyo.methodsMerge({
+eYo.event.Motion[eYo.$].methodsMerge({
   /**
    * Start capturing a mouse motion.
    * @private
@@ -554,7 +554,7 @@ eYo.event.Motion.eyo.methodsMerge({
 })
 
 // ANCHOR Touch
-eYo.event.Motion.eyo.methodsMerge({
+eYo.event.Motion[eYo.$].methodsMerge({
   /**
    * Start capturing a touch event.
    * The very first touch event captured will lead to
@@ -726,7 +726,7 @@ eYo.event.Motion.eyo.methodsMerge({
 })
 
 // ANCHOR long press
-eYo.event.Motion.eyo.methodsMerge({
+eYo.event.Motion[eYo.$].methodsMerge({
   /**
    * Schedule a long press.
    * Context menus on touch devices are activated using a long-press.
@@ -784,7 +784,7 @@ eYo.event.Motion.eyo.methodsMerge({
 })
 
 // ANCHOR click
-eYo.event.Motion.eyo.methodsMerge({
+eYo.event.Motion[eYo.$].methodsMerge({
   /**
    * Schedule a `handleClick_`.
    * @private

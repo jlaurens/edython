@@ -155,7 +155,7 @@ try {
 }
 
 eYo.test.c9r = (brick, k) => {
-  chai.assert(brick.constructor.eyo.key === k, `MISSED CTOR KEY ${brick.constructor.eyo.key} === ${k}`)
+  chai.assert(brick.constructor[eYo.$].key === k, `MISSED CTOR KEY ${brick.constructor[eYo.$].key} === ${k}`)
 }
 
 eYo.test.brick = (brick, t, str) => {

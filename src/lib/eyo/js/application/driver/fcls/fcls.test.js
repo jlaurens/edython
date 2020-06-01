@@ -3,8 +3,8 @@ describe('Fcls driver', function() {
   it ('Fcls: Basics', function () {
     chai.assert(eYo.fcls)
     chai.assert(eYo.fcls.Mngr)
-    chai.assert(eYo.fcls.Mngr.eyo)
-    chai.expect(eYo.fcls.Mngr.eyo.constructor).equal(eYo.fcls.DlgtMngr)
+    chai.assert(eYo.fcls.Mngr[eYo.$])
+    chai.expect(eYo.fcls.Mngr[eYo.$].constructor).equal(eYo.fcls.DlgtMngr)
   })
   it ('new eYo.fcls.Mngr(…)', function () {
     let owner = {}

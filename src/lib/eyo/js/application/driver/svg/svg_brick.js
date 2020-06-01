@@ -995,7 +995,7 @@ eYo.svg.Brick_p.addTooltip = function (brick, key, options) {
       g && g.parentNode && (eYo.tooltip.hideAll(g.parentNode))
     }
   })
-  var model = brick.constructor.eyo.model
+  var model = brick.constructor[eYo.$].model
   var title = eYo.tooltip.getTitle(key || model.tooltip || brick.tooltipKey || brick.type.substring(4))
   if (title) {
     this.addTooltip(g, title, options)

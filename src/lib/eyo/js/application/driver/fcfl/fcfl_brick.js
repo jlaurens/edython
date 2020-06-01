@@ -20,7 +20,7 @@ eYo.brick.BUMP_DELAY = 250
  */
 eYo.fcfl.makeDriverC9r('Brick')
 
-eYo.brick.BaseC9r.eyo.p6yMerge({
+eYo.brick.BaseC9r[eYo.$].p6yMerge({
   ui () {
     return Object.create(null)
   },
@@ -85,7 +85,7 @@ eYo.brick.BaseC9r.eyo.p6yMerge({
     }
   },
 })
-eYo.brick.BaseC9r.eyo.p6yAliasesMerge({
+eYo.brick.BaseC9r[eYo.$].p6yAliasesMerge({
   'xy': 'where',
 })
 

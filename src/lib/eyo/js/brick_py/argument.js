@@ -34,7 +34,7 @@ keyword_item         ::=  identifier "=" expression
  * RULE 2 : expression << "**" expression
  * RULE 3 : "*" expression << "**" expression
  */
-eYo.consolidator.List.makeSubC9r('Arguments', {
+eYo.consolidator.List[eYo.$makeSubC9r]('Arguments', {
   list: {
     check: null,
     mandatory: 0,
@@ -48,7 +48,7 @@ eYo.consolidator.List.makeSubC9r('Arguments', {
  * @param {eYo.brick.BaseC9r} brick - owner or the receiver.
  */
 eYo.consolidator.Arguments.prototype.getIO = function (brick) {
-  var io = eYo.consolidator.Arguments.eyo.C9r_s.getIO.call(this, brick)
+  var io = eYo.consolidator.Arguments[eYo.$].C9r_s.getIO.call(this, brick)
   io.last_expression = io.last_positional = io.unique = -Infinity
   io.first_keyword_star_star = io.first_star_star = Infinity
   return io
@@ -126,7 +126,7 @@ eYo.consolidator.Arguments.prototype.doCleanup = (() => {
     }
   }
   return function (io) {
-    eYo.consolidator.Arguments.eyo.C9r_s.doCleanup.call(this, io)
+    eYo.consolidator.Arguments[eYo.$].C9r_s.doCleanup.call(this, io)
     setupFirst.call(this, io)
     if (io.unique !== -Infinity) {
       // remove whatever comes before and after the io.unique
@@ -208,7 +208,7 @@ eYo.consolidator.Arguments.prototype.getCheck = (() => {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubC9r('argument_list', {
+eYo.expr.List[eYo.$makeSubC9r]('argument_list', {
   data: {
     ary: {
       order: 200,
@@ -250,7 +250,7 @@ eYo.expr.List.makeSubC9r('argument_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.argument_list.makeSubC9r('argument_list_comprehensive', {
+eYo.expr.argument_list[eYo.$makeSubC9r]('argument_list_comprehensive', {
   list: {
     can_comprehension: true
   }

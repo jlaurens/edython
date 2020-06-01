@@ -160,7 +160,7 @@ eYo.view.Desk_p.updateScreenCalculations_ = function() {
   this.workspace.recordDeleteAreas()
 }
 
-eYo.view.BaseC9r.eyo.p6yMerge({
+eYo.view.BaseC9r[eYo.$].p6yMerge({
   /**
    * The desk of the receiver.
    * @type {eYo.view.Desk}

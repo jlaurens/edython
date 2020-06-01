@@ -55,7 +55,7 @@ eYo.brick.registerAll(eYo.t3.expr, eYo.expr.BaseC9r, true)
  * @param {*} deep  Whether to propagate the message to children.
  */
 eYo.expr.BaseC9r_p.changeDone = function (deep) {
-  eYo.expr.BaseC9r.eyo.C9r_s.ChangeDone.call(this, deep)
+  eYo.expr.BaseC9r[eYo.$].C9r_s.ChangeDone.call(this, deep)
   var parent = this.parent
   parent && parent.changeDone()
 }
@@ -159,7 +159,7 @@ eYo.expr.BaseC9r_p.replaceBrick = function (brick) {
  * @private
  */
 eYo.expr.BaseC9r_p.willRender_ = function (recorder) {
-  eYo.expr.BaseC9r.eyo.C9r_s.willRender_.call(this, recorder)
+  eYo.expr.BaseC9r[eYo.$].C9r_s.willRender_.call(this, recorder)
   var field = this.await_f
   if (field) {
     field.visible = this.await_
@@ -194,7 +194,7 @@ eYo.expr.BaseC9r_p.awaitable = function () {
  * @private
  */
 eYo.expr.BaseC9r_p.populateContextMenuFirst_ = function (mngr) {
-  var yorn = eYo.expr.BaseC9r.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  var yorn = eYo.expr.BaseC9r[eYo.$].C9r_s.populateContextMenuFirst_.call(this, mngr)
   if (this.await_ || (this.awaitable && this.awaitable())) {
     var content = eYo.dom.createDom(eYo.dom.TagName.SPAN, null,
       eYo.do.CreateSPAN('await', 'eyo-code-reserved'),
@@ -334,7 +334,7 @@ eYo.expr.BaseC9r_p.insertParentWithModel = function (model) {
  * @return {Boolean} true when consolidation occurred, false otherwise
  */
 eYo.expr.BaseC9r_p.doConsolidate = function (deep, force) {
-  if (eYo.expr.BaseC9r.eyo.C9r_s.doConsolidate.call(this, deep, force)) {
+  if (eYo.expr.BaseC9r[eYo.$].C9r_s.doConsolidate.call(this, deep, force)) {
     var parent = this.parent
     return (parent && parent.consolidate()) || true
   }

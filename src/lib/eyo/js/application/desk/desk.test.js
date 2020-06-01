@@ -1,10 +1,10 @@
 describe('Desk', function () {
   it ('Desk: Basic', function () {
     let onr = {
-      eyo: true
+      [eYo.$]: true
     }
     var desk = new eYo.view.Desk(onr)
-    eYo.view.Desk.eyo.keys_p__.forEach(k => {
+    eYo.view.Desk[eYo.$].keys_p__.forEach(k => {
       chai.assert(desk[k], `MISSING property ${k} in desk`)
     })
   })

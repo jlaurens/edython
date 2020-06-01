@@ -79,7 +79,7 @@ eYo.py.parser.Scan_p.reset = function (str, start) {
   return this
 }
 
-eYo.mixinR(eYo.py, {
+eYo.mixinRO(eYo.py, {
   E: {},
   XRE: {},
   KW: {}
@@ -88,7 +88,7 @@ eYo.mixinR(eYo.py, {
 /**
  * Langage keywords
  */
-eYo.mixinR(eYo.py.KW, {
+eYo.mixinRO(eYo.py.KW, {
   FALSE: 'False',
   NONE: 'None',
   TRUE: 'True',
@@ -126,7 +126,7 @@ eYo.mixinR(eYo.py.KW, {
   YIELD: 'yield',
 })
 
-eYo.mixinR(eYo.py.E, {
+eYo.mixinRO(eYo.py.E, {
   DEDENT_AUGMENTED: 'DEDENT_AUGMENTED',
   INCONSISTENT_INDENTATION: 'INCONSISTENT_INDENTATION',
   EOLS: 'EOLS',
@@ -146,7 +146,7 @@ eYo.mixinR(eYo.py.E, {
 })
 
 /* NO sign, all are called in sticky mode so no ^ at start */
-eYo.mixinR(eYo.py.XRE, {
+eYo.mixinRO(eYo.py.XRE, {
   prefix: XRegExp(
     'u|r(?:f|b)?|(?:f|b)r?', 'i'),
   string: {

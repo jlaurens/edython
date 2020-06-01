@@ -1392,7 +1392,7 @@ eYo.brick.DEBUG_ = Object.create(null)
     if (optNewType === eYo.t3.expr.unset) {
       console.error('C\'est une erreur!')
     }
-    optNewType && (this.constructor.eyo.types.indexOf(optNewType) >= 0) && (this.pythonType_ = this.type_ = optNewType)
+    optNewType && (this.constructor[eYo.$].types.indexOf(optNewType) >= 0) && (this.pythonType_ = this.type_ = optNewType)
   }
 
   /**
@@ -2549,7 +2549,7 @@ eYo.brick.newReady = (() => {
 eYo.do.defineDataProperty = (object, k) => {
   var k_p = k + '_p'
   if (!(k_p in object)) {
-    // print("Data property", k_p, 'for', this.constructor.eyo.key)
+    // print("Data property", k_p, 'for', this.constructor[eYo.$].key)
     Object.defineProperty(object, k_p, {
       get () {
         return this.data[k].get()

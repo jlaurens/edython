@@ -24,7 +24,7 @@ eYo.c9r.makeNS(eYo, 'observe', {
   ANY: 'anyChange',
 })
 
-eYo.mixinR(eYo.observe._p, {
+eYo.mixinRO(eYo.observe._p, {
   HOOKS: [
     eYo.observe.BEFORE,
     eYo.observe.DURING,
@@ -70,8 +70,7 @@ eYo.observe.makeBaseC9r({
   },
 })
 
-eYo.mixinR(eYo.observe, {
-  [eYo.Sym.FunctionsAreGetters]: false,
+eYo.mixinFR(eYo.observe, {
   /**
    * @param {String} [when] - One of the observe HOOKS
    * @param {Object} [$this | eYo.observe.BaseC9r] - Self explanatory
@@ -79,18 +78,18 @@ eYo.mixinR(eYo.observe, {
    */
   new (when, $this, callback) {
     if (!eYo.observe.HOOKS.includes(when)) {
-      eYo.isDef(callback) && eYo.throw(`${this.eyo.name}/addObserver: Too many arguments ${callback}`)
+      eYo.isDef(callback) && eYo.throw(`${this[eYo.$].name}/addObserver: Too many arguments ${callback}`)
       ;[when, $this, callback] = [eYo.NA, when, $this]
     }
     if ($this instanceof eYo.observe.BaseC9r) {
-      eYo.isDef(callback) && eYo.throw(`${this.eyo.name}/addObserver: Too many arguments ${callback}`)
+      eYo.isDef(callback) && eYo.throw(`${this[eYo.$].name}/addObserver: Too many arguments ${callback}`)
       if (!eYo.isDef(when) || when === $this.when) {
         return $this
       }
       return new eYo.observe.BaseC9r(when, $this.$this, $this.callback_)
     }
     if (eYo.isF($this)) {
-      eYo.isDef(callback) && eYo.throw(`${this.eyo.name}: unexpected (last?) parameter, got ${callback}`)
+      eYo.isDef(callback) && eYo.throw(`${this[eYo.$].name}: unexpected (last?) parameter, got ${callback}`)
       ;[$this, callback] = [eYo.NA, $this]
     } else {
       eYo.isF(callback) || eYo.throw(`Callback must be a function, got ${callback}`)
@@ -105,7 +104,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
   //<<< mochai: Basics
   //... let ns = eYo.c9r.makeNS()
   //... ns.makeBaseC9r()
-  //... ns.BaseC9r.eyo.observeEnhanced()
+  //... ns.BaseC9r[eYo.$].observeEnhanced()
   //... let o = ns.new()
   //... chai.expect(o.willChange).eyo_F
   //... chai.expect(o.atChange).eyo_F
@@ -168,7 +167,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
     //<<< mochai: (will|at|did)Change
     //... let ns = eYo.c9r.makeNS()
     //... ns.makeBaseC9r()
-    //... ns.BaseC9r.eyo.observeEnhanced()
+    //... ns.BaseC9r[eYo.$].observeEnhanced()
     //... for (let [k, v] of Object.entries({
     //...   [eYo.observe.BEFORE]: [123, 0, 0,],
     //...   [eYo.observe.DURING]: [0, 123, 0,],
@@ -224,7 +223,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
     return observer
     //... let ns = eYo.c9r.makeNS()
     //... ns.makeBaseC9r()
-    //... ns.BaseC9r.eyo.observeEnhanced()
+    //... ns.BaseC9r[eYo.$].observeEnhanced()
     //... let o = ns.new()
     //... let observer1 = o.addObserver(eYo.observe.BEFORE, function (before, after) {
     //...   flag.push(1, before + 1, after + 1)
@@ -262,7 +261,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
     return observer
         //... let ns = eYo.c9r.makeNS()
     //... ns.makeBaseC9r()
-    //... ns.BaseC9r.eyo.observeEnhanced()
+    //... ns.BaseC9r[eYo.$].observeEnhanced()
     //... let o = ns.new()
     //... let observer = o.addObserver(eYo.observe.BEFORE, function (before, after) {
     //...   flag.push(1, before, after)
@@ -310,7 +309,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
   _p.fireObservers = function (when, before, after) {
     try {
       this.fireObservers = eYo.doNothing // do not reenter
-      this.eyo.C9r_p_down.forEach(_p => {
+      this[eYo.$].C9r_p_down.forEach(_p => {
         let byWhen = _p.observersByWhen__
         if (byWhen) {
           let observers = byWhen[when]

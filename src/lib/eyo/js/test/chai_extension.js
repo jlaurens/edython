@@ -123,7 +123,7 @@ chai.Assertion.addProperty('eyo_BaseC9r', function () {
   this.eyo_C9r
   let C9r = this._obj
   this.assert(
-    C9r.eyo.ns.BaseC9r === C9r,
+    C9r[eYo.$].ns.BaseC9r === C9r,
     'expected #{this} to be a base eYo constructor',
     'expected #{this} to not be a base eYo constructor',
   )
@@ -381,8 +381,8 @@ chai.use(function (chai, utils) {
     var actual = this._obj
     this.assert(
       eYo.isSubclass(actual, expected),
-      `expected ${actual && actual.eyo && actual.eyo.name} to be a subclass of ${expected && expected.eyo && expected.eyo.name}`,
-      `expected ${actual && actual.eyo && actual.eyo.name} not to be a subclass of ${expected && expected.eyo && expected.eyo.name}`,
+      `expected ${actual && actual[eYo.$] && actual[eYo.$].name} to be a subclass of ${expected && expected[eYo.$] && expected[eYo.$].name}`,
+      `expected ${actual && actual[eYo.$] && actual[eYo.$].name} not to be a subclass of ${expected && expected[eYo.$] && expected[eYo.$].name}`,
       expected,
       actual
     )

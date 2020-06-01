@@ -63,7 +63,7 @@ eYo.p6y.makeBaseC9r(true, {
     Object.defineProperties(this, {
       value: eYo.descriptorR({
           lazy () {
-            return `....value = ... forbidden for ${this.eyo.name} instances.`
+            return `....value = ... forbidden for ${this[eYo.$].name} instances.`
           },
         },
         function () {
@@ -323,8 +323,7 @@ eYo.p6y.makeBaseC9r(true, {
   //>>>
 })
 //<<< mochai: methods
-eYo.mixinR(eYo._p, {
-  [eYo.Sym.FunctionsAreGetters]: false,
+eYo.mixinFR(eYo._p, {
   /**
    * Whether the argument is a property instance.
    * @param {*} what 
@@ -345,7 +344,7 @@ eYo.mixinR(eYo._p, {
  * Id is used when observing
  * @name {eYo.p6y.BaseC9r_p.Id}
  */
-eYo.mixinR(eYo.p6y.BaseC9r_p, {
+eYo.mixinRO(eYo.p6y.BaseC9r_p, {
   Id: 'P6y',
   //<<< mochai: Id
   //... chai.expect((new eYo.p6y.BaseC9r('foo', onr)).Id).equal('P6y')
@@ -357,10 +356,10 @@ eYo.mixinR(eYo.p6y.BaseC9r_p, {
 //...     get () {},
 //...   },
 //... }
-//... let mf = eYo.P6y.eyo.modelFormat
+//... let mf = eYo.P6y[eYo.$].modelFormat
 //... model = mf.validate(model)
 //... chai.assert(eYo.isF(model.foo.get))
-eYo.p6y.BaseC9r.eyo.finalizeC9r([
+eYo.p6y.BaseC9r[eYo.$].finalizeC9r([
   'source',
 ], (() => {
   let m = eYo.model.descriptorD(before => {
@@ -491,7 +490,7 @@ eYo.p6y.BaseC9r.eyo.finalizeC9r([
 })())
 //>>>
 
-eYo.more.enhanceO3dValidate(eYo.p6y.BaseC9r.eyo, 'p6y', true)
+eYo.more.enhanceO3dValidate(eYo.p6y.BaseC9r[eYo.$], 'p6y', true)
 
 //<<< mochai: validate
 //... var p6y = new eYo.p6y.BaseC9r('foo', onr)
@@ -724,7 +723,7 @@ eYo.p6y.Dlgt_p.modelHandleCheck = function (key, model) {
   //... var model = {
   //...   lazy: 421,
   //... }
-  //... p6y.eyo.modelHandleCheck('foo', model)
+  //... p6y[eYo.$].modelHandleCheck('foo', model)
   //... chai.expect(model.lazy).equal(model.value)
   //>>>
   return io
@@ -773,10 +772,10 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
       //... chai.expect(p6y[K]().after).equal(x)
       //... flag.expect(12)
       //... chai.expect(p6y.value).equal(123)
-      //... p6y.eyo.C9r_p[K]= function (...$) {
+      //... p6y[eYo.$].C9r_p[K]= function (...$) {
       //...   this.owner.flag(2, ...$)
       //... }
-      //... p6y.eyo.modelHandleStart('foo', p6y.model)
+      //... p6y[eYo.$].modelHandleStart('foo', p6y.model)
       //... p6y[K](3, 4, 5)
       //... flag.expect(12345)
     } else if (io[K]) {
@@ -793,10 +792,10 @@ eYo.p6y.Dlgt_p.modelHandleStart = function (key, model, io) {
       //... }, 'foo', onr)
       //... chai.expect(p6y.reset(3, 4, 5).after).equal(3)
       //... flag.expect(12345)
-      //... p6y.eyo.C9r_p.reset = function (...$) {
+      //... p6y[eYo.$].C9r_p.reset = function (...$) {
       //...   this.owner.flag(9, ...$)
       //... }
-      //... p6y.eyo.modelHandleStart('foo', p6y.model)
+      //... p6y[eYo.$].modelHandleStart('foo', p6y.model)
       //... p6y.reset(3, 4, 5)
       //... flag.expect(1234519345)
     }
@@ -1089,7 +1088,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
   // get_m is computed means that it is meant to replace the standard getter
   if (get_m === eYo.doNothing) {
     _p[getK] = _p[getKRO] = eYo.noGetter(function () {
-      return `Write only (${this.owner.eyo.name}/${key})`
+      return `Write only (${this.owner[eYo.$].name}/${key})`
     })
     //... ;[eYo.doNothing, false].forEach(what => {
     //...   var p6y = eYo.p6y.new({
@@ -1149,7 +1148,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
   let set_m = model.set
   if (set_m === eYo.doNothing) {
     _p[setK] = eYo.noSetter(function () {
-      return `Read only ${this.owner.eyo.name}/${key}`
+      return `Read only ${this.owner[eYo.$].name}/${key}`
     })
     //... ;[eYo.doNothing, false].forEach(what => {
     //...   var p6y = eYo.p6y.new({
@@ -1280,7 +1279,7 @@ eYo.p6y.Dlgt_p.modelHandleGetSet = function (key, model, io) {
     }
   } else if (io.pure_get) {
     _p[setK] = eYo.noSetter(function () {
-      return `Read only ${this.owner.eyo.name}/${key}`
+      return `Read only ${this.owner[eYo.$].name}/${key}`
     })
     //... var x = 421
     //... let p = eYo.p6y.new({
@@ -1341,7 +1340,7 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... flag.expect(123)
   } else if (get__m === eYo.doNothing) {
     _p[getK] = eYo.noGetter(function () {
-      return `Write only (${this.owner.eyo.name}/${key})`
+      return `Write only (${this.owner[eYo.$].name}/${key})`
     })
   } else if (io.get_) {
     _p[getK] = eYo.decorate.reentrant(getK, function () {
@@ -1466,7 +1465,7 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
     //... chai.expect(p6y.stored__).equal(123)
   } else if (set__m === eYo.doNothing) {
     _p[setK] = eYo.noSetter(function () {
-      return `Read only (${this.owner.eyo.name}/${key})`
+      return `Read only (${this.owner[eYo.$].name}/${key})`
     })
   }
   //>>>
@@ -1505,7 +1504,7 @@ eYo.p6y.handler.makeBaseC9r({
     if (target && !eYo.isaC9r(target)) {
       console.error('BREAK HERE!!!')
     }
-    !target || eYo.isaC9r(target) || eYo.throw(`${this.eyo.name}.init: target is not a C9r instance ${target}`)
+    !target || eYo.isaC9r(target) || eYo.throw(`${this[eYo.$].name}.init: target is not a C9r instance ${target}`)
     //... restart()
     //... chai.expect(handler.__target).equal(target)
     this.__target = target
@@ -1554,7 +1553,7 @@ eYo.p6y.handler.makeBaseC9r({
     },
     set (target, prop, value) {
       if (this.isOwnedROKey(prop)) {
-        eYo.throw(`...${prop} = ... is forbidden for ${this.eyo.name} instances.`)
+        eYo.throw(`...${prop} = ... is forbidden for ${this[eYo.$].name} instances.`)
         return false
         //... restart()
         //... handler.keys_RO.forEach(K => {
@@ -1632,7 +1631,7 @@ eYo.p6y.handler.makeBaseC9r({
         //...   p[K] = 421
         //... })
       }
-      eYo.throw(`${this.eyo.name} instance: can't define property ${key}`)
+      eYo.throw(`${this[eYo.$].name} instance: can't define property ${key}`)
       // return false
       //... restart()
       //... ;['foo', 'bar'].forEach(K => {
@@ -1681,7 +1680,7 @@ eYo.p6y.handler.makeBaseC9r({
   //>>>
 })
 
-eYo.mixinR(eYo.p6y.handler.BaseC9r_p, {
+eYo.mixinRO(eYo.p6y.handler.BaseC9r_p, {
   keys_RO: [
     '__target', // expose the proxy target
     'owner', 'key', 'hasOwnProperty'
@@ -1901,7 +1900,7 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
 
 //<<< mochai: Utilities
 
-eYo.p6y.BaseC9r.eyo.observeEnhanced()
+eYo.p6y.BaseC9r[eYo.$].observeEnhanced()
 
 ;(() => {
   let _p = eYo.p6y.BaseC9r_p

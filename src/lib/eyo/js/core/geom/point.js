@@ -102,7 +102,7 @@ eYo.geom.makeC9r('Point', {
           this.set(snap)
           return
         }
-        eYo.isDef(l) && eYo.throw(`${this.eyo.name}/init: Unexpected last argument: ${l}`)
+        eYo.isDef(l) && eYo.throw(`${this[eYo.$].name}/init: Unexpected last argument: ${l}`)
         //... chai.expect(() => {
         //...   new eYo.geom.Point(1, 2, 3)
         //... }).throw()
@@ -225,7 +225,7 @@ eYo.geom.makeC9r('Point', {
     copy: {
       //<<< mochai: copy
       get () {
-        return new this.eyo.C9r(this)
+        return new this[eYo.$].C9r(this)
       }
       //... P = new eYo.geom.Point(false, m)
       //... let PP = P.copy
@@ -254,7 +254,7 @@ eYo.geom.makeC9r('Point', {
      */
     description: {
       get () {
-        return `${this.eyo.name}(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
+        return `${this[eYo.$].name}(c: ${this.c}, l: ${this.l}, x: ${this.x}, y: ${this.y})`
       },
     }
     //>>>
@@ -290,7 +290,7 @@ eYo.geom.makeC9r('Point', {
     set (c = 0, l) {
       //<<< mochai: set
       if (eYo.isDef(c.c) && eYo.isDef(c.l)) {
-        eYo.isDef(l) && eYo.throw(`Unexpected last argument ${this.eyo.name}/set: ${l}`)
+        eYo.isDef(l) && eYo.throw(`Unexpected last argument ${this[eYo.$].name}/set: ${l}`)
         this.c_ = c.c
         this.l_ = c.l
         //... P = new eYo.geom.Point()
@@ -299,7 +299,7 @@ eYo.geom.makeC9r('Point', {
         //... chai.expect(() => P.set(m, null)).not.throw()
         //... chai.expect(() => P.set(m, 1)).throw()
       } else if (eYo.isDef(c.x) && eYo.isDef(c.y)) {
-        eYo.isDef(l) && eYo.throw(`${this.eyo.name}/set: Unexpected argument 'l' ${l}`)
+        eYo.isDef(l) && eYo.throw(`${this[eYo.$].name}/set: Unexpected argument 'l' ${l}`)
         this.x_ = c.x
         this.y_ = c.y
         //... P = new eYo.geom.Point()
@@ -308,7 +308,7 @@ eYo.geom.makeC9r('Point', {
         //... chai.expect(() => P.set(mm, null)).not.throw()
         //... chai.expect(() => P.set(mm, 1)).throw()
       } else if (eYo.isDef(c.clientX) && eYo.isDef(c.clientY)) {
-        eYo.isDef(l) && eYo.throw(`${this.eyo.name}/set: Unexpected argument 'l' ${l}`)
+        eYo.isDef(l) && eYo.throw(`${this[eYo.$].name}/set: Unexpected argument 'l' ${l}`)
         this.x_ = c.clientX
         this.y_ = c.clientY
         //... P = new eYo.geom.Point()
@@ -352,7 +352,7 @@ eYo.geom.makeC9r('Point', {
     pSet (x = 0, y) {
       //<<< mochai: pSet
       if (eYo.isDef(x.x) && eYo.isDef(x.y)) {
-        eYo.isDef(y) && eYo.throw(`Unexpected last argument ${this.eyo.name}/pSet: ${y}`)
+        eYo.isDef(y) && eYo.throw(`Unexpected last argument ${this[eYo.$].name}/pSet: ${y}`)
         //... P = new eYo.geom.Point()
         //... P.pSet(mm)
         //... chai.expect(P).almost.eql(m)
@@ -363,7 +363,7 @@ eYo.geom.makeC9r('Point', {
         //... chai.expect(P).almost.eql(m)
         ;[x, y] = [x.clientX, x.clientY]
       } else if (eYo.isDef(x.c) && eYo.isDef(x.l)) {
-        eYo.isDef(y) && eYo.throw(`Unexpected last argument ${this.eyo.name}/pSet (2): ${y}`)
+        eYo.isDef(y) && eYo.throw(`Unexpected last argument ${this[eYo.$].name}/pSet (2): ${y}`)
         //... P = new eYo.geom.Point()
         //... P.pSet(m)
         //... chai.expect(P).almost.eql(m)
@@ -396,7 +396,7 @@ eYo.geom.makeC9r('Point', {
       //... var scaleX = 1 + eYo.test.randN()
       //... var scaleY = 1 + eYo.test.randN()
       if (scaleX.x) {
-        eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
+        eYo.isDef(scaleY) && eYo.throw(`${this[eYo.$].name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
         //... P = new eYo.geom.Point(m)
         //... chai.expect(() => P.scale({x: 1}, 2)).throw()
         this.c_ *= scaleX.x
@@ -411,7 +411,7 @@ eYo.geom.makeC9r('Point', {
         //... P.scale({x: 1 / scaleX, y: 1 / scaleY})
         //... chai.expect(P).almost.eql(m)
       } else if (scaleX.y) {
-        eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
+        eYo.isDef(scaleY) && eYo.throw(`${this[eYo.$].name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
         //... P = new eYo.geom.Point(m)
         //... chai.expect(() => P.scale({y: 1}, 2)).throw()
         this.c_ *= scaleX.y
@@ -450,7 +450,7 @@ eYo.geom.makeC9r('Point', {
       //... var scaleX = 1 + eYo.test.randN()
       //... var scaleY = 1 + eYo.test.randN()
       if (scaleX.x) {
-        eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
+        eYo.isDef(scaleY) && eYo.throw(`${this[eYo.$].name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
         //... P = new eYo.geom.Point(m)
         //... chai.expect(() => P.unscale({x: 1}, 2)).throw()
         this.c_ /= scaleX.x
@@ -465,7 +465,7 @@ eYo.geom.makeC9r('Point', {
         //... P.unscale({x: 1 / scaleX, y: 1 / scaleY})
         //... chai.expect(P).almost.eql(m)
       } else if (scaleX.y) {
-        eYo.isDef(scaleY) && eYo.throw(`${this.eyo.name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
+        eYo.isDef(scaleY) && eYo.throw(`${this[eYo.$].name}/scale: Unexpected last argument ${scaleY} (scaleY)`)
         //... P = new eYo.geom.Point(m)
         //... chai.expect(() => P.scale({y: 1}, 2)).throw()
         this.c_ /= scaleX.y
@@ -502,19 +502,19 @@ eYo.geom.makeC9r('Point', {
       //<<< mochai: forward
       //... P = new eYo.geom.Point()
       if (eYo.isDef(dc.w) && eYo.isDef(dc.h)) {
-        eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this.eyo.name}/forward: ${dl}`)
+        eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this[eYo.$].name}/forward: ${dl}`)
         ;[dc, dl] = [dc.w, dc.h]
         //... P.set(m)
         //... P.forward({w: dm.dc, h: dm.dl})
         //... isPcl(P, m.c+dm.dc, m.l+dm.dl)
       } else if (eYo.isDef(dc.dc) && eYo.isDef(dc.dl)) {
-        eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this.eyo.name}/forward: ${dl}`)
+        eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this[eYo.$].name}/forward: ${dl}`)
         ;[dc, dl] = [dc.dc, dc.dl]
         //... P.set(m)
         //... P.forward(dm)
         //... isPcl(P, m.c+dm.dc, m.l+dm.dl)
       }
-      eYo.isNum(dc) || eYo.throw(`Missing number argument ${this.eyo.name}/forward: ${dc}`)
+      eYo.isNum(dc) || eYo.throw(`Missing number argument ${this[eYo.$].name}/forward: ${dc}`)
       dc && (this.c_ += dc)
       dl && (this.l_ += dl)
       return this
@@ -534,19 +534,19 @@ eYo.geom.makeC9r('Point', {
       //<<< mochai: backward
       //... P = new eYo.geom.Point()
       if (eYo.isDef(dc.w) && eYo.isDef(dc.h)) {
-        eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this.eyo.name}/backward: ${dl}`)
+        eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this[eYo.$].name}/backward: ${dl}`)
         ;[dc, dl] = [dc.w, dc.h]
         //... P.set(m)
         //... P.backward({w: dm.dc, h: dm.dl})
         //... isPcl(P, m.c-dm.dc, m.l-dm.dl)
       } else if (eYo.isDef(dc.dc) && eYo.isDef(dc.dl)) {
-        eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this.eyo.name}/forward: ${dl}`)
+        eYo.isDef(dl) && eYo.throw(`Unexpected last argument ${this[eYo.$].name}/forward: ${dl}`)
         ;[dc, dl] = [dc.dc, dc.dl]
         //... P.set(m)
         //... P.backward(dm)
         //... isPcl(P, m.c-dm.dc, m.l-dm.dl)
       }
-      eYo.isNum(dc) || eYo.throw(`Missing number argument ${this.eyo.name}/backward: ${dc}`)
+      eYo.isNum(dc) || eYo.throw(`Missing number argument ${this[eYo.$].name}/backward: ${dc}`)
       dc && (this.c_ -= dc)
       dl && (this.l_ -= dl)
       return this
@@ -566,7 +566,7 @@ eYo.geom.makeC9r('Point', {
       //<<< mochai: pForward
       //... P = new eYo.geom.Point()
       if (eYo.isDef(dx.dx) && eYo.isDef(dx.dy)) {
-        eYo.isDef(dy) && eYo.throw(`Unexpected last argument ${this.eyo.name}/pForward: ${dy}`)
+        eYo.isDef(dy) && eYo.throw(`Unexpected last argument ${this[eYo.$].name}/pForward: ${dy}`)
         ;[dx, dy] = [dx.dx, dx.dy]
         //... P.pSet(mm)
         //... P.pForward(dmm)
@@ -574,7 +574,7 @@ eYo.geom.makeC9r('Point', {
         //... chai.expect(() => {P.pForward(dmm, null)}).not.throw()
         //... chai.expect(() => {P.pForward(dmm, 1)}).throw()
       }
-      eYo.isNum(dx) || eYo.throw(`Missing number argument ${this.eyo.name}/pForward: ${dx}`)
+      eYo.isNum(dx) || eYo.throw(`Missing number argument ${this[eYo.$].name}/pForward: ${dx}`)
       dx && (this.x_ += dx)
       dy && (this.y_ += dy)
       return this
@@ -597,7 +597,7 @@ eYo.geom.makeC9r('Point', {
       //<<< mochai: pBackward
       //... P = new eYo.geom.Point()
       if (eYo.isDef(dx.dx) && eYo.isDef(dx.dy)) {
-        eYo.isDef(dy) && eYo.throw(`Unexpected last argument ${this.eyo.name}/pBackward: ${dy}`)
+        eYo.isDef(dy) && eYo.throw(`Unexpected last argument ${this[eYo.$].name}/pBackward: ${dy}`)
         ;[dx, dy] = [dx.dx, dx.dy]
         //... P.pSet(mm)
         //... P.pBackward(dmm)
@@ -605,7 +605,7 @@ eYo.geom.makeC9r('Point', {
         //... chai.expect(() => {P.pBackward(dmm, null)}).not.throw()
         //... chai.expect(() => {P.pBackward(dmm, 1)}).throw()
       }
-      eYo.isNum(dx) || eYo.throw(`Missing number argument ${this.eyo.name}/pBackward: ${dx}`)
+      eYo.isNum(dx) || eYo.throw(`Missing number argument ${this[eYo.$].name}/pBackward: ${dx}`)
       dx && (this.x_ -= dx)
       dy && (this.y_ -= dy)
       return this
@@ -655,7 +655,7 @@ eYo.geom.makeC9r('Point', {
   //>>>
 })
 
-eYo.geom.Point.eyo.finalizeC9r()
+eYo.geom.Point[eYo.$].finalizeC9r()
 
 //<<< mochai: Util
 /**
@@ -707,8 +707,8 @@ eYo.c9r.Dlgt_p.makePointed = function (key) {
   //<<< mochai: eYo.o4t.Dlgt.makePointed
   //... let ns = eYo.o4t.makeNS()
   //... ns.makeBaseC9r(true)
-  //... ns.BaseC9r.eyo.makePointed('origin')
-  //... ns.BaseC9r.eyo.finalizeC9r()
+  //... ns.BaseC9r[eYo.$].makePointed('origin')
+  //... ns.BaseC9r[eYo.$].finalizeC9r()
   //... var R
   this.modelMerge({
     //<<< mochai: Text coordinates

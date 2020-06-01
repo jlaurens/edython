@@ -34,12 +34,12 @@ eYo.o4t.makeNS(eYo, 'view')
 eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
   //<<< mochai: viewEnhanced
 
-  eYo.isF(this.p6yPrepare) || eYo.throw(`${this.eyo.name}/viewEnhanced: Not a p6y aware delegate.`)
+  eYo.isF(this.p6yPrepare) || eYo.throw(`${this[eYo.$].name}/viewEnhanced: Not a p6y aware delegate.`)
 
   //<<< mochai: Basic
   //... let Foo = eYo.view.makeNS().makeC9r('Foo')
-  //... chai.expect(Foo.eyo.viewPrepare).eyo_F
-  //... chai.expect(Foo.eyo.viewInit).eyo_F
+  //... chai.expect(Foo[eYo.$].viewPrepare).eyo_F
+  //... chai.expect(Foo[eYo.$].viewInit).eyo_F
   //>>>
 
   /**
@@ -48,8 +48,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
    * 
    * @param {*} object - The object receiving the new shortcuts,
    */
-  eYo.mixinR(this._p, {
-    [eYo.Sym.FunctionsAreGetters]: false,
+  eYo.mixinFR(this._p, {
     //<<< mochai: eYo.dlgt.BaseC9r_p.viewShortcuts
     viewShortcuts () {
       //<<< mochai: viewShortcuts (foo_v)
@@ -61,14 +60,14 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
             return this.viewMap.get(k)
             //... let NS = eYo.o4t.makeNS()
             //... let C9r = NS.makeBaseC9r(true)
-            //... C9r.eyo.viewEnhanced()
-            //... C9r.eyo.finalizeC9r()
-            //... C9r.eyo.viewMerge({
+            //... C9r[eYo.$].viewEnhanced()
+            //... C9r[eYo.$].finalizeC9r()
+            //... C9r[eYo.$].viewMerge({
             //...   foo: {
             //...     chi: 421,
             //...   },
             //... })
-            //... let _p = C9r.eyo.C9r_p
+            //... let _p = C9r[eYo.$].C9r_p
             //... chai.expect(_p.hasOwnProperty('foo_v')).true
             //... let o = NS.new('o', onr)
             //... chai.expect(o.foo_v).instanceOf(eYo.View)
@@ -92,13 +91,13 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
     },
     allow: {
       //<<< mochai: viewEnhanced/allow
-      [eYo.model.ANY]: eYo.View.eyo.modelFormat,
+      [eYo.model.ANY]: eYo.View[eYo.$].modelFormat,
       [eYo.model.VALIDATE]: eYo.model.validateD,
       //... let ns = eYo.o4t.makeNS()
       //... let C9r = ns.makeBaseC9r(true)
-      //... C9r.eyo.viewEnhanced()
-      //... C9r.eyo.finalizeC9r()
-      //... chai.assert(C9r.eyo.modelFormat.get('views'))
+      //... C9r[eYo.$].viewEnhanced()
+      //... C9r[eYo.$].finalizeC9r()
+      //... chai.assert(C9r[eYo.$].modelFormat.get('views'))
       //>>>
     }
   }
@@ -108,20 +107,20 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
     //<<< mochai: viewMerge+viewShortcuts
     //... let ns = eYo.o4t.makeNS()
     //... let C9r = ns.makeBaseC9r(true)
-    //... C9r.eyo.viewEnhanced()
-    //... C9r.eyo.finalizeC9r()
-    //... C9r.eyo.viewMerge({
+    //... C9r[eYo.$].viewEnhanced()
+    //... C9r[eYo.$].finalizeC9r()
+    //... C9r[eYo.$].viewMerge({
     //...   foo: {
     //...     chi: 421,
     //...   },
     //... })
-    //... C9r.eyo.viewMerge({
+    //... C9r[eYo.$].viewMerge({
     //...   bar: {
     //...     chi: 666,
     //...   },
     //... })
     //... var o = ns.new('bar', onr)
-    //... o.eyo.viewPrepare(o)
+    //... o[eYo.$].viewPrepare(o)
     //... chai.expect(o.viewMap.get('foo')).not.undefined
     //... chai.expect(o.viewMap.get('bar')).not.undefined
     //... chai.expect(o.foo_v).instanceOf(eYo.View)
@@ -132,11 +131,10 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
 
   //... let ns = eYo.o4t.makeNS()
   //... let C9r = ns.makeBaseC9r()
-  //... C9r.eyo.viewEnhanced()
+  //... C9r[eYo.$].viewEnhanced()
   //... var o = ns.new('o', onr)
   
-  eYo.mixinR(this._p, {
-    [eYo.Sym.FunctionsAreGetters]: false,
+  eYo.mixinFR(this._p, {
     /**
      * Make the `doInitUI` and `doDisposeUI` methods.
      * @param {Object} ui - model with `init` and `dispose` keys.
@@ -230,7 +228,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
      */
     modelMerge (model) {
       //<<< mochai: modelMerge
-      eYo.view.Dlgt.SuperC9r.eyo.modelMerge.call(this, model)
+      eYo.view.Dlgt[eYo.$SuperC9r][eYo.$].modelMerge.call(this, model)
       model.views && this.viewMerge(model.views)
       model.ui && this.uiMerge(model.ui)
       //... chai.assert(eYo.view.Dlgt_p.modelMerge)
@@ -242,7 +240,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
      */
     prepareInstance (instance) {
       //<<< mochai: prepareInstance
-      //... chai.assert(C9r.eyo.prepareInstance)
+      //... chai.assert(C9r[eYo.$].prepareInstance)
       this.p6yPrepare(instance)
       this.viewPrepare(instance)
       let $super = this.super
@@ -263,7 +261,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
      */
     initInstance (instance, ...$) {
       //<<< mochai: initInstance
-      //... chai.assert(C9r.eyo.initInstance)
+      //... chai.assert(C9r[eYo.$].initInstance)
       this.p6yInit(instance)
       this.p6yLinks(instance)
       let $super = this.super
@@ -301,7 +299,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
      */
     disposeInstance (instance, ...$) {
       //<<< mochai: disposeInstance
-      //... chai.expect(C9r.eyo.disposeInstance).eyo_F
+      //... chai.expect(C9r[eYo.$].disposeInstance).eyo_F
       this.viewDispose(instance, ...$)
       this.p6yDispose(instance, ...$)
       //>>>
@@ -397,7 +395,7 @@ eYo.view.makeBaseC9r(true, {
   },
 })
 
-eYo.View.eyo.finalizeC9r({
+eYo.View[eYo.$].finalizeC9r({
   //<<< mochai: model
   views: {
     [eYo.model.ANY]: {
@@ -435,14 +433,13 @@ eYo.View.eyo.finalizeC9r({
 
 {
   // recursive definition of views inside views
-  let mf = eYo.view.BaseC9r.eyo.modelFormat
+  let mf = eYo.view.BaseC9r[eYo.$].modelFormat
   mf.get('views').get(eYo.model.ANY).fallback = mf
 }
 
-eYo.View.eyo.viewEnhanced()
+eYo.View[eYo.$].viewEnhanced()
 
-eYo.mixinR(eYo.view._p, {
-  [eYo.Sym.FunctionsAreGetters]: false,
+eYo.mixinFR(eYo.view._p, {
   /**
    * The model Base used to derive a new class.
    * @see The `new` method.
@@ -497,8 +494,7 @@ eYo.mixinR(eYo.view._p, {
    */
   enhanceNew (enhancer) {
     let original = this.new
-    eYo.mixinR(this._p, {
-      [eYo.Sym.FunctionsAreGetters]: false,
+    eYo.mixinFR(this._p, {
       new (...$) {
         let ans = enhancer(...$)
         if (ans instanceof eYo.View) { // -> eYo.c9r._p.enhanceNew = (enhancer, C9r) => {...}
@@ -514,7 +510,7 @@ eYo.mixinR(eYo.view._p, {
 
 // ANCHOR UI
 
-eYo.View.eyo.methodsMerge({
+eYo.View[eYo.$].methodsMerge({
   //<<< mochai: UI methods
   //... let model = {
   //...   bar: 4,
@@ -534,13 +530,13 @@ eYo.View.eyo.methodsMerge({
   //... }
   //... let ui_driver = {
   //...   prepareUI (instance, ...$) {
-  //...     flag.push(1, instance.eyo.model.bar, ...$)
+  //...     flag.push(1, instance[eYo.$].model.bar, ...$)
   //...   },
   //...   doInitUI (instance, ...$) {
-  //...     flag.push(2, instance.eyo.model.bar, ...$)
+  //...     flag.push(2, instance[eYo.$].model.bar, ...$)
   //...   },
   //...   doDisposeUI (instance, ...$) {
-  //...     flag.push(3, instance.eyo.model.bar, ...$)
+  //...     flag.push(3, instance[eYo.$].model.bar, ...$)
   //...   },
   //... }
   /**
@@ -561,7 +557,7 @@ eYo.View.eyo.methodsMerge({
     //... chai.expect(V.chi_v).instanceOf(eYo.View)
     //... chai.expect(V.foo_v).instanceOf(eYo.View)
     //... chai.expect(V.mee_v).instanceOf(eYo.View)
-    //... V.viewForEach(V => flag.push(V.eyo.model.bar))
+    //... V.viewForEach(V => flag.push(V[eYo.$].model.bar))
     //... flag.expect(567)
     //... V.ui_driver = ui_driver
     //... V.viewForEach(V => {
@@ -656,7 +652,7 @@ eYo.View.eyo.methodsMerge({
    * @param{*} after - the owner after the change
    */
   ownerDidChange (before, after) {
-    eYo.View.SuperC9r_p.ownerDidChange.call(this, before, after)
+    eYo.View[eYo.$SuperC9r_p].ownerDidChange.call(this, before, after)
     if (after) {
       if (after.hasUI) {
         this.initUI()

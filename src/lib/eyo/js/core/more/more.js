@@ -145,7 +145,7 @@ eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
         }
       }
     } else {
-      f_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${f_m}`)
+      f_m && eYo.throw(`Unexpected model (${_p[eYo.$].name}/${key}) value validate -> ${f_m}`)
     }
   } : function(key, model) {
     let K = 'validate'
@@ -187,7 +187,7 @@ eYo.more.enhanceO3dValidate = function (eyo, type, thisIsOwner) {
         }
       }
     } else {
-      f_m && eYo.throw(`Unexpected model (${_p.eyo.name}/${key}) value validate -> ${f_m}`)
+      f_m && eYo.throw(`Unexpected model (${_p[eYo.$].name}/${key}) value validate -> ${f_m}`)
     }
   }
   //>>>

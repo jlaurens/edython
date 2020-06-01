@@ -56,7 +56,7 @@ eYo.dfs.makeBaseC9r({
 })
 
 eYo.dfs.BaseC9r_p.ownerDidChange = function (before, after) {
-  let inherited = eYo.dfs.BaseC9r.SuperC9r_p.ownerDidChange
+  let inherited = eYo.dfs.BaseC9r[eYo.$SuperC9r_p].ownerDidChange
   inherited && inherited.call(this, before, after)
   this.slot_ = this.brick_ = this.magnet_ = eYo.NA
   if (after.isSlot) {

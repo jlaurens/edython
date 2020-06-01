@@ -21,7 +21,7 @@ eYo.require('expr.List')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List.makeSubC9r(eYo.t3.expr.non_void_identifier_list, {
+eYo.expr.List[eYo.$makeSubC9r](eYo.t3.expr.non_void_identifier_list, {
   list: {
     check: eYo.t3.expr.check.non_void_identifier_list,
     presep: ',',
@@ -208,5 +208,5 @@ eYo.stmt.global_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
   F(5)
   F(6)
   mngr.shouldSeparate()
-  return eYo.stmt.global_stmt.eyo.C9r_s.populateContextMenuFirst_.call(this, mngr)
+  return eYo.stmt.global_stmt[eYo.$].C9r_s.populateContextMenuFirst_.call(this, mngr)
 }

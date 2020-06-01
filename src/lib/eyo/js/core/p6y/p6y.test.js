@@ -248,7 +248,7 @@ describe ('Tests: Property', function () {
       dispose () {
         flag = 0
       },
-      eyo: true, // fake
+      [eYo.$]: true, // fake
     }
     p.dispose()
     chai.assert(flag !== 0)
@@ -361,7 +361,7 @@ describe ('Tests: Property', function () {
   })
   it ('P6y: Shortcuts', function () {
     var model = 421
-    let validated = eYo.p6y.BaseC9r.eyo.modelValidate(model)
+    let validated = eYo.p6y.BaseC9r[eYo.$].modelValidate(model)
     chai.expect(eYo.isD(validated)).true
     chai.expect(validated.value()).equal(421)
   })

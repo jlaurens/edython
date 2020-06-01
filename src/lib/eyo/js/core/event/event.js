@@ -206,11 +206,11 @@ eYo.event.makeC9r('Mngr', {
      */
     groupWrap (group, $this, try_f, finally_f) {
       if (!eYo.isStr(group)) {
-        eYo.isDef(finally_f) && eYo.throw(`${this.eyo.name}/groupWrap: unexpected last argument (${finally_f})`)
+        eYo.isDef(finally_f) && eYo.throw(`${this[eYo.$].name}/groupWrap: unexpected last argument (${finally_f})`)
         ;[group, $this, try_f, finally_f] = [true, group, $this, try_f]
       }
       if (eYo.isF($this)) {
-        eYo.isDef(finally_f) && eYo.throw(`${this.eyo.name}/groupWrap: unexpected last argument (${finally_f}/2)`)
+        eYo.isDef(finally_f) && eYo.throw(`${this[eYo.$].name}/groupWrap: unexpected last argument (${finally_f}/2)`)
         ;[$this, try_f, finally_f] = [eYo.NA, $this, try_f]
       }
       return group
@@ -226,7 +226,7 @@ eYo.event.makeC9r('Mngr', {
   //>>>
 })
 
-eYo.event.Mngr.eyo.finalizeC9r()
+eYo.event.Mngr[eYo.$].finalizeC9r()
 
 /**
  * Create a custom event and fire it.
@@ -383,7 +383,7 @@ eYo.event.makeC9r('Abstract', {
     },
     key: {
       get () {
-        return [this.eyo.key, this.brickId, this.boardId].join('.')
+        return [this[eYo.$].key, this.brickId, this.boardId].join('.')
       }
     },
     boardID: eYo.NA,
@@ -418,7 +418,7 @@ eYo.event.makeC9r('Abstract', {
   },
 })
 
-eYo.event.Mngr.eyo.p6yMerge({
+eYo.event.Mngr[eYo.$].p6yMerge({
   properties: {
     /**
      * @type {!Array<!eYo.event.Abstract>}

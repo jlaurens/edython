@@ -30,7 +30,7 @@ eYo.KHandler.makeC9r('Menu')
  */
 eYo.KHandler.Menu_p.handleKeyEventInternal = function (e) {
   // Give the highlighted control the chance to handle the key event.
-  if (eYo.KHandler.Menu.eyo.C9r_s.handleKeyEventInternal.call(this, e)) {
+  if (eYo.KHandler.Menu[eYo.$].C9r_s.handleKeyEventInternal.call(this, e)) {
     return true
   }
   return this.handleMenuKeyEvent(e)
@@ -50,7 +50,7 @@ eYo.KHandler = (() => {
   var current_ = []
   var target_
   var menu_ = new eYo.KHandler.Menu(/* eYo.NA, ContextMenuRenderer */)
-  // menu_.eyo = me
+  // menu_[eYo.$] = me
   /**
  * Setup the shared key handler.
  * For edython.

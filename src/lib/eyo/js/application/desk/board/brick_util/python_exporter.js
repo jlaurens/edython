@@ -406,7 +406,7 @@ eYo.field.BaseC9r_p.getPythonText_ = function() {
  * @suppress{accessControls}
  */
 eYo.field.Input_p.getPythonText_ = function () {
-  var t = eYo.field.Input.eyo.C9r_s.getPythonText_.call(this)
+  var t = eYo.field.Input[eYo.$].C9r_s.getPythonText_.call(this)
   if (!t.length && !this.optional_) {
     if (!this.model.canEmpty && (this.placeholder || (this.data && this.data.placeholder))) {
       var t = `<missing ${this.getPlaceholderText().trim()}>`.toUpperCase()

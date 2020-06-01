@@ -189,7 +189,7 @@ eYo.xml.domToBoard = function (xml, owner) {
   // children beyond the lists' length.  Trust the length, do not use the
   // looping pattern of checking the index for an object.
 
-  board.eyo.recover.whenRecovered(
+  board[eYo.$].recover.whenRecovered(
     brick => newBlockIds.push(brick.id)
   )
 
@@ -256,7 +256,7 @@ eYo.xml.domToBoard = function (xml, owner) {
     if (board.setResizesEnabled) {
       board.setResizesEnabled(true)
     }
-    board.eyo.recover.whenRecovered(null) // clean
+    board[eYo.$].recover.whenRecovered(null) // clean
   })
   return newBlockIds
 }
@@ -372,7 +372,7 @@ eYo.require('stmt.group')
  * @return attr name
  */
 eYo.brick.BaseC9r_p.xmlAttr = function () {
-  var attr = this.constructor.eyo.xmlAttr || (this.isExpr ? eYo.t3.xml.toDom.Expr : eYo.t3.xml.toDom.Stmt)[this.constructor.eyo.key]
+  var attr = this.constructor[eYo.$].xmlAttr || (this.isExpr ? eYo.t3.xml.toDom.Expr : eYo.t3.xml.toDom.Stmt)[this.constructor[eYo.$].key]
   return attr || (this.type && this.type.substring(4)) || eYo.key.PLACEHOLDER
 }
 
@@ -387,7 +387,7 @@ eYo.require('expr.List')
 eYo.expr.List_p.xmlAttr = function () {
   return this.wrapped_
     ? eYo.xml.LIST
-    : eYo.expr.List.eyo.C9r_s.xmlAttr.call(this)
+    : eYo.expr.List[eYo.$].C9r_s.xmlAttr.call(this)
 }
 
 eYo.require('expr.primary')
@@ -623,8 +623,8 @@ eYo.xml.registerAllTags = function () {
       }
       // register the reverse
       if (C9r) {
-        // console.warn('REGISTER XML ATTR:', c9r.eyo.key, eYo.t3.xml.toDom[mode][key], attr, key)
-        C9r.eyo.xmlAttr = eYo.t3.xml.toDom[mode][key] || attr || key // ERROR ? Dynamic tag name ?
+        // console.warn('REGISTER XML ATTR:', c9r[eYo.$].key, eYo.t3.xml.toDom[mode][key], attr, key)
+        C9r[eYo.$].xmlAttr = eYo.t3.xml.toDom[mode][key] || attr || key // ERROR ? Dynamic tag name ?
       }
     }
   }
@@ -867,7 +867,7 @@ eYo.xml.domToBrick = (() => {
     var prototypeName
     //
     var board = owner.board || owner
-    return board.eyo.recover.resitWrap(
+    return board[eYo.$].recover.resitWrap(
       dom,
       () => {
         var brick
@@ -898,7 +898,7 @@ eYo.xml.domToBrick = (() => {
                 for (var i = 0; i < prototypeName.length; i++) {
                   var candidate = prototypeName[i]
                   var C9r = eYo.model.forType(candidate)
-                  if (C9r && where[C9r.eyo.key]) {
+                  if (C9r && where[C9r[eYo.$].key]) {
                     return candidate
                   }
                 }
@@ -916,15 +916,15 @@ eYo.xml.domToBrick = (() => {
           var solid = prototypeName + ''
           var controller = eYo.model.forType(solid)
           if (controller) {
-            if (controller.eyo && eYo.isF(controller.eyo.domToBrick)) {
-              return controller.eyo.domToBrick(dom, board, id)
+            if (controller[eYo.$] && eYo.isF(controller[eYo.$].domToBrick)) {
+              return controller[eYo.$].domToBrick(dom, board, id)
             } else if (eYo.isF(controller.domToBrick)) {
               return controller.domToBrick(dom, board, id)
             }
             brick = eYo.brick.newReady(solid, id, board)
           } else if ((controller = eYo.model.forType(prototypeName))) {
-            if (controller.eyo && eYo.isF(controller.eyo.domToBrick)) {
-              return controller.eyo.domToBrick(dom, board, id)
+            if (controller[eYo.$] && eYo.isF(controller[eYo.$].domToBrick)) {
+              return controller[eYo.$].domToBrick(dom, board, id)
             } else if (eYo.isF(controller.domToBrick)) {
               return controller.domToBrick(dom, board, id)
             }
@@ -1027,7 +1027,7 @@ eYo.xml.fromDom = function (brick, element) {
         if (m4t) {
           return eYo.do.SomeElementChild(element, child => {
             if ((child.getAttribute(eYo.xml.FLOW) === key)) {
-              this.board.eyo.recover.dontResit(child)
+              this.board[eYo.$].recover.dontResit(child)
               var brick = eYo.xml.domToBrick(child, this)
               if (brick) { // still headless!
                 // we could create a brick from that child element
@@ -1175,14 +1175,14 @@ eYo.xml.comparison.domToComplete = function (element, owner) {
     var C9r, model
     var type = eYo.t3.expr.number_comparison
     if ((C9r = eYo.model.forType(type))
-      && (model = C9r.eyo.model.data)
+      && (model = C9r[eYo.$].model.data)
       && (model = model.operator)
       && model.all
       && (model.all.indexOf(op) >= 0)) {
       var b3k = eYo.brick.newReady(owner, type, id)
     } else if ((type = eYo.t3.expr.object_comparison)
       && (C9r = eYo.model.forType(type))
-      && (model = C9r.eyo.model.data)
+      && (model = C9r[eYo.$].model.data)
       && (model = model.operator)
       && model.all
       && (model.all.indexOf(op) >= 0)) {

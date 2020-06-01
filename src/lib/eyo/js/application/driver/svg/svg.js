@@ -58,7 +58,7 @@ eYo.svg.makeMngr({
         if (dom && dom.svg) {
           f && f.apply(object, rest)
           dom.svg = null
-          cls.SuperC9r_p.disposeUI.apply(object, ...rest)
+          cls[eYo.$SuperC9r_p].disposeUI.apply(object, ...rest)
         }
       }
     },

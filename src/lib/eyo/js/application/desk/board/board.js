@@ -481,7 +481,7 @@ eYo.board.BaseC9r_p.clear = function() {
 eYo.board.Main_p.clear = function() {
   this.setResizesEnabled(false)
   eYo.event.groupWrap(() => {
-    eYo.board.Main.eyo.C9r_s.clear.call(this)
+    eYo.board.Main[eYo.$].C9r_s.clear.call(this)
   })
 }
 
@@ -1308,7 +1308,7 @@ eYo.board.BaseC9r_p.eventDidFireChange = function(event) {
   }
 }
 
-eYo.o3d.BaseC9r.eyo.p6yAliasesMerge({
+eYo.o3d.BaseC9r[eYo.$].p6yAliasesMerge({
   'owner.board': 'board',
 })
 

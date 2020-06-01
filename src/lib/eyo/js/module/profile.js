@@ -29,7 +29,7 @@ eYo.require('do')
  */
 eYo.c9r.makeNS(eYo.t3, 'profile')
 
-eYo.mixinR(eYo.t3.expr, {
+eYo.mixinRO(eYo.t3.expr, {
   reserved_identifier: '.reserved identifier',
   reserved_keyword: '.reserved keyword',
   builtin__name: '.builtin name',
@@ -50,7 +50,7 @@ eYo.mixinR(eYo.t3.expr, {
   placehoder: '.placeholder',
 })
 
-eYo.mixinR(eYo.t3.stmt, {
+eYo.mixinRO(eYo.t3.stmt, {
   control: '.control statement',
   placehoder: '.placeholder',
 })
@@ -195,7 +195,7 @@ eYo.t3.profile.makeC9r('BaseC9r', {
         }
       }
     } else {
-      eYo.mixinR(this, m)
+      eYo.mixinRO(this, m)
     }
   },
 })
@@ -322,7 +322,7 @@ eYo.t3.makeC9r('Profiles', {
   }
 }) ()
 
-eYo.mixinR(eYo.t3.profile, {
+eYo.mixinRO(eYo.t3.profile, {
   /* Default void profile */
   void: new eYo.t3.profile.BaseC9r(null, {
     isVoid: true
