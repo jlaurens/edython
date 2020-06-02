@@ -1074,6 +1074,7 @@ eYo.mixinFR(eYo, {
 })
 
 eYo.mixinFR(eYo._p, {
+  $C9r: Symbol('C9r'),
   $SuperC9r: Symbol('SuperC9r'),
   $SuperC9r_p: Symbol('SuperC9r_p'),
   /**

@@ -653,7 +653,7 @@ eYo.mixinFR(eYo.c9r._p, {
     let C9r = this.makeC9r('', model)
     C9r[eYo.$].finalizeC9r()
     model = C9r[eYo.$].model
-    model._C9r = C9r
+    model[eYo.$C9r] = C9r
     //... var model = {}
     //... var C9r = eYo.c9r.modelMakeC9r(model)
     //... chai.expect(model._C9r).equal(C9r)
@@ -693,7 +693,7 @@ eYo.mixinFR(eYo.c9r._p, {
       //... chai.expect(o).instanceOf(NS.BaseC9r)
       //... flag.expect(123)
     }
-    C9r = model._C9r
+    C9r = model[eYo.$C9r]
     if (!C9r) {
       C9r = this.modelMakeC9r(model, ...$)
       //... var o = NS.prepare({}, 2, 3)
@@ -807,10 +807,14 @@ eYo.mixinFR(eYo.c9r._p, {
     //... chai.expect(NS.id1.FOO).equal(421)
     //... var SuperC9r = eYo.c9r.makeC9r('')
     //... SuperC9r[eYo.$].finalizeC9r()
-    //... ans = NS.makeSingleton(NS, 'id2', {
+    //... ans = NS.makeSingleton('id2', {
     //...   [eYo.$SuperC9r]: SuperC9r
     //... })
     //... chai.expect(ans).instanceof(SuperC9r)
+    //... ans = NS.makeSingleton('id3', {
+    //...   [eYo.$SuperC9r]: eYo.NA
+    //... })
+    //... chai.expect(ans.eyo.SuperC9r).undefined
     //>>>
   },
 })
