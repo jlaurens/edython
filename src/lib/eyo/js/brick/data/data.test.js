@@ -369,14 +369,14 @@ describe ('Tests: data', function () {
 //     ns.makeBaseC9r()
 
 //     let test = (key, value) => {
-//       let one = ns.singleton({[eYo.$]: true}, {
+//       let one = ns.singleton({eyo: true}, {
 //         [key]: value,
 //       })
 //       chai.expect(one.model[key]).equal(value)
 //     }
 //     ;['after', // key || [keys]
 //     'all'].forEach(key => {
-//       let one = ns.singleton({[eYo.$]: true}, {
+//       let one = ns.singleton({eyo: true}, {
 //         [key]: 421,
 //       })
 //       chai.expect(one.model[key]).eql([421])
@@ -387,7 +387,7 @@ describe ('Tests: data', function () {
 //       'placeholder', // STRING
 //       'noUndo', // true
 //     ].forEach(key => {
-//       let one = ns.singleton({[eYo.$]: true}, {
+//       let one = ns.singleton({eyo: true}, {
 //         [key]: 421,
 //       })
 //       chai.expect(one.model[key]).equal(421)
@@ -409,24 +409,24 @@ describe ('Tests: data', function () {
 //       'fromField', // () => {}
 //       'toField', // () => {}
 //     ].forEach(key => {
-//       let one = ns.singleton({[eYo.$]: true}, {
+//       let one = ns.singleton({eyo: true}, {
 //         [key]: function () {},
 //       })
 //       chai.expect(eYo.isF(one.model[key])).true
-//       let second = ns.singleton({[eYo.$]: true}, {
+//       let second = ns.singleton({eyo: true}, {
 //         [key]: 421,
 //       })
 //       chai.expect(eYo.isDef(second.model[key])).false
 //     })
-//     var one = ns.singleton({[eYo.$]: true}, {
+//     var one = ns.singleton({eyo: true}, {
 //       init: 421,
 //     })
 //     chai.expect(eYo.isF(one.model.init)).true
-//     var one = ns.singleton({[eYo.$]: true}, {
+//     var one = ns.singleton({eyo: true}, {
 //       xml: 421,
 //     })
 //     chai.expect(one.model.xml).not.equal(421)
-//     one = ns.singleton({[eYo.$]: true}, {
+//     one = ns.singleton({eyo: true}, {
 //       xml: {},
 //     })
 //     chai.expect(one.model.xml).eql({})
@@ -434,13 +434,13 @@ describe ('Tests: data', function () {
 //       'save', // () => {}
 //       'load', // () => {}
 //     ].forEach(key => {
-//       let one = ns.singleton({[eYo.$]: true}, {
+//       let one = ns.singleton({eyo: true}, {
 //         xml: {
 //           [key]: function () {},
 //         },
 //       })
 //       chai.expect(eYo.isF(one.model.xml[key])).true
-//       let second = ns.singleton({[eYo.$]: true}, {
+//       let second = ns.singleton({eyo: true}, {
 //         xml: {
 //           [key]: 421,
 //         },

@@ -1,7 +1,7 @@
 describe('Desk', function () {
   it ('Desk: Basic', function () {
     let onr = {
-      [eYo.$]: true
+      eyo: true
     }
     var desk = new eYo.view.Desk(onr)
     eYo.view.Desk[eYo.$].keys_p__.forEach(k => {

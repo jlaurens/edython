@@ -1,7 +1,7 @@
 describe('app', function() {
   it ('O3d: app p6y', function () {
     let onr = {
-      [eYo.$]: true,
+      eyo: true,
       app: 421
     }
     let o = new eYo.o3d.BaseC9r(onr)
