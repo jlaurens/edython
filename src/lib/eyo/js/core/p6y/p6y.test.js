@@ -248,7 +248,7 @@ describe ('Tests: Property', function () {
       dispose () {
         flag = 0
       },
-      [eYo.$]: true, // fake
+      eyo: true, // fake
     }
     p.dispose()
     chai.assert(flag !== 0)
@@ -338,23 +338,23 @@ describe ('Tests: Property', function () {
         flag.push(what, how)
       }
     })
-    value.eyo_p6y = 421
+    value[eYo.$p6y] = 421
     chai.assert((p.value__ = value) === value)
-    chai.expect(value.eyo_p6y).equal(421)
+    chai.expect(value[eYo.$p6y]).equal(421)
     chai.assert((p.value__ = eYo.NA) === eYo.NA)
-    chai.expect(value.eyo_p6y).equal(421)
-    delete value.eyo_p6y
+    chai.expect(value[eYo.$p6y]).equal(421)
+    delete value[eYo.$p6y]
     chai.assert((p.value__ = value) === value)
-    chai.expect(value.eyo_p6y).equal(p)
+    chai.expect(value[eYo.$p6y]).equal(p)
     chai.assert((p.value__ = eYo.NA) === eYo.NA)
-    chai.expect(value.eyo_p6y).equal(eYo.NA)
+    chai.expect(value[eYo.$p6y]).equal(eYo.NA)
     p = eYo.p6y.new({}, 'foo', onr)
-    value.eyo_p6y = 421
+    value[eYo.$p6y] = 421
     chai.assert((p.value__ = value) === value)
     p.dispose(123,456)
     flag.expect()
     p = eYo.p6y.new({}, 'foo', onr)
-    value.eyo_p6y = eYo.NA
+    value[eYo.$p6y] = eYo.NA
     chai.assert((p.value__ = value) === value)
     p.dispose(123,456)
     flag.expect(123456)

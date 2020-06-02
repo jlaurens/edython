@@ -642,7 +642,7 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
         for (let p of object.p6yMap.values()) {
           if (p.owner === object) {
             let v = p.stored__
-            if (v && /* v.eyo && p === v.eyo_p6y &&*/ f.call($this, v)) {
+            if (v && /* v.eyo && p === v[eYo.$p6y] &&*/ f.call($this, v)) {
               return true
             }
           }

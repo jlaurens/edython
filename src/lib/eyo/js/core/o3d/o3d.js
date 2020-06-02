@@ -18,7 +18,7 @@
  * @name {eYo.o3d}
  * @namespace
  */
-eYo.c9r.makeNS(eYo, 'o3d', {
+eYo.c9r.newNS(eYo, 'o3d', {
   //<<< mochai: CONST
   OWNER: new eYo.C9r('OWNER')
   //... chai.expect(eYo.isaC9r(eYo.o3d.OWNER)).true
@@ -148,7 +148,7 @@ eYo.mixinFR(eYo.o3d._p, {
    * @param {Object} model
    */
   singleton (model, owner) {
-    return this.makeNS().new(model, 'foo', owner)
+    return this.newNS().new(model, 'foo', owner)
   },
   /**
    * Create a new singleton instance based on the given model.
@@ -157,69 +157,100 @@ eYo.mixinFR(eYo.o3d._p, {
    * @param {Object} [model]
    * @return {Object}
    */
-  makeSingleton (NS, id, model) {
-    //<<< mochai: eYo.o3d.makeSingleton
+  newSingleton (NS, id, model) {
+    //<<< mochai: newSingleton
+    //... var id = eYo.genUID(eYo.IDENT)
+    //... var sym = Symbol(id)
+    //<<< mochai: basics
+    //... var ans = eYo.o3d.newSingleton(id)
+    //... chai.expect(eYo.o3d).property(id)
+    //... chai.expect(eYo.o3d[id]).equal(ans)
+    //... eYo.require(`o3d.${id}`)
+    //... var ans = eYo.o3d.newSingleton(sym)
+    //... chai.expect(eYo.o3d).property(sym)
+    //... chai.expect(eYo.o3d[sym]).equal(ans)
+    //... chai.expect(eYo.o3d.newSingleton(sym)).equal(ans)
+    //>>>
     if (!eYo.isNS(NS)) {
       !model || eYo.throw(`Unexpected last parameter: ${model}`)
       ;[NS, id, model] = [this, NS, id]
+      //<<< mochai: NS
+      //... chai.expect(() => eYo.o3d.newSingleton(id, {}, 1)).throw()
+      //>>>
     }
-    if (eYo.isStr(id)) {
+    if (eYo.isId(id)) {
       if (NS.hasOwnProperty(id)) {
         return NS[id]
-      }
-    } else if (eYo.isSym(id)) {
-      if (Object.getOwnPropertySymbols(NS).includes(id)) {
-        return NS[id]
+        //<<< mochai: unique
+        //... chai.expect(eYo.o3d.newSingleton(id)).equal(eYo.o3d.newSingleton(id))
+        //... chai.expect(eYo.o3d.newSingleton(sym)).equal(eYo.o3d.newSingleton(sym))
+        //>>>
       }
     } else {
-      eYo.throw(`Unexpected parameter ${id.toString()}`)
+      //<<< mochai: id
+      eYo.throw(`Unexpected parameter ${id}`)
+      //... chai.expect(() => eYo.o3d.newSingleton(1)).throw()
+      //>>>
     }
-    let owner =  NS.OWNER || this.OWNER || eYo.shared.OWNER
+    //<<< mochai: SuperC9r
+    //... var NS = eYo.o3d.newNS()
+    //... NS.makeBaseC9r()
+    if (model) {
+      if (!model.hasOwnProperty(eYo.$SuperC9r)) {
+        model[eYo.$SuperC9r] = this.BaseC9r
+        //... chai.expect(NS.newSingleton(Symbol(), {})).instanceOf(NS.BaseC9r)
+      }
+      //... var SuperC9r = NS.newC9r()
+      //... SuperC9r[eYo.$].finalizeC9r()
+      //... chai.expect(NS.newSingleton(Symbol(), {
+      //...   [eYo.$SuperC9r]: SuperC9r,
+      //... })).instanceOf(NS.BaseC9r)
+      //... chai.expect(NS.newSingleton(Symbol(), {
+      //...   [eYo.$SuperC9r]: eYo.NA,
+      //... }).eyo.SuperC9r).undefined
+    } else {
+      model = {
+        [eYo.$SuperC9r]: this.BaseC9r,
+      }
+      //... chai.expect(NS.newSingleton(Symbol())).instanceOf(NS.BaseC9r)
+    }
+    //>>>
+    //<<< mochai: owner
+    let owner =  NS.OWNER || this.OWNER
+    //... var NS0 = eYo.newNS()
+    //... var NS1 = eYo.o3d.newNS()
+    //... var NS2 = eYo.o3d.newNS({
+    //...   OWNER: new eYo.C9r(),  
+    //... })
+    //... chai.expect(NS0.OWNER).undefined
+    //... chai.expect(NS1.OWNER).equal(eYo.o3d.OWNER)
+    //... chai.expect(NS2.OWNER).not.equal(NS1.OWNER)
+    //... var ans = eYo.o3d.newSingleton(id)
+    //... chai.expect(ans.owner).equal(eYo.o3d.OWNER)
+    //... var ans = eYo.o3d.newSingleton(NS0, id)
+    //... chai.expect(ans.owner).equal(eYo.o3d.OWNER)
+    //... var ans = eYo.o3d.newSingleton(NS1, id)
+    //... chai.expect(ans.owner).equal(NS1.OWNER)
+    //... var ans = eYo.o3d.newSingleton(NS2, id)
+    //... chai.expect(ans.owner).equal(NS2.OWNER)
+    //... var ans = NS1.newSingleton(eYo.o3d, id)
+    //... chai.expect(ans.owner).equal(eYo.o3d.OWNER)
+    //... var ans = NS2.newSingleton(eYo.o3d, id)
+    //... chai.expect(ans.owner).equal(eYo.o3d.OWNER)
+    //>>>
     var ans = this.new(model || {}, id, owner)
-    if (eYo.isStr(id)) {
-      Object.defineProperty(NS, id, eYo.descriptorR(function() {
-        return ans
-      }))
-    } else {
-      NS[id] = ans
-    }
+    Object.defineProperty(NS, id, eYo.descriptorR(function() {
+      return ans
+    }))
+    //<<< mochai: namespace
+    //... chai.expect(eYo.o3d.newNS().newSingleton(id)).not.equal(eYo.o3d.newSingleton(id))
+    //... chai.expect(eYo.o3d.newNS().newSingleton(sym)).not.equal(eYo.o3d.newSingleton(sym))
+    //>>>
     ans[eYo.Sym.singleton] = true
+    //<<< mochai: private
+    //... chai.expect(eYo.o3d.newSingleton(id)[eYo.Sym.singleton]).true
+    //>>>
     return ans
-    //... var id = eYo.genUID(eYo.IDENT)
-    //... var singleton = eYo.o3d.makeSingleton(id)
-    //... chai.expect(eYo.o3d).property(id)
-    //... chai.expect(eYo.o3d[id]).equal(singleton)
-    //... eYo.require(`o3d.${id}`)
-    //... chai.expect(eYo.o3d.makeSingleton(id)).equal(singleton)
-    //... var NS = eYo.o3d.makeNS()
-    //... chai.expect(NS.OWNER).equal(eYo.o3d.OWNER)
-    //... chai.expect(NS.makeSingleton(id)).not.equal(singleton)
-    //... var NS = eYo.o3d.makeNS({
-    //...   OWNER: new eYo.C9r(),
-    //... })
-    //... var ss = NS.makeSingleton(id)
-    //... chai.expect(NS).property(id)
-    //... chai.expect(NS[id]).equal(ss)
-    //... chai.expect(ss).not.equal(singleton)
-    //... chai.expect(NS).property(id)
-    //... chai.expect(NS.makeSingleton(id)).equal(ss)
-    //... var id = Symbol(id)
-    //... var singleton = eYo.o3d.makeSingleton(id)
-    //... chai.expect(eYo.o3d).property(id)
-    //... chai.expect(eYo.o3d[id]).equal(singleton)
-    //... chai.expect(eYo.o3d.makeSingleton(id)).equal(singleton)
-    //... var NS = eYo.o3d.makeNS()
-    //... chai.expect(NS.OWNER).equal(eYo.o3d.OWNER)
-    //... chai.expect(NS.makeSingleton(id)).not.equal(singleton)
-    //... var NS = eYo.o3d.makeNS({
-    //...   OWNER: new eYo.C9r(),
-    //... })
-    //... var ss = NS.makeSingleton(id)
-    //... chai.expect(NS).property(id)
-    //... chai.expect(NS[id]).equal(ss)
-    //... chai.expect(ss).not.equal(singleton)
-    //... chai.expect(NS).property(id)
-    //... chai.expect(NS.makeSingleton(id)).equal(ss)
     //>>>
   },
 })

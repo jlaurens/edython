@@ -1070,6 +1070,7 @@ eYo.mixinFR(eYo._p, {
   $SuperC9r: Symbol('SuperC9r'),
   $newSubC9r: Symbol('newSubC9r'),
   $SuperC9r_p: Symbol('SuperC9r_p'),
+  $Handler: Symbol('Handler'),
   //>>>
   /**
    * Whether sub_ is a subclass of Super, or equals to Super...

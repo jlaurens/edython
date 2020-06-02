@@ -18,6 +18,13 @@ eYo.require('xre')
 
 eYo.forward('o4t')
 
+eYo.mixinRO(eYo, {
+  //<<< mochai: eYo.$p6y
+  $p6y: Symbol('p6y')
+  //... chai.expect(eYo).property('$p6y')
+  //>>>
+})
+
 //<<< mochai: POC: function arguments'
 //... chai.expect((() => {}).length).equal(0)
 //... chai.expect(((...$) => {}).length).equal(0)
@@ -91,7 +98,7 @@ eYo.p6y.makeBaseC9r(true, {
     //...   let value = eYo.c9r.new('bar')
     //...   p6y.value_ = value
     //...   chai.expect(p6y.value).equal(value)
-    //...   chai.expect(value.eyo_p6y).equal(p6y)
+    //...   chai.expect(value[eYo.$p6y]).equal(p6y)
     //... })
     //>>>
   },
@@ -120,7 +127,7 @@ eYo.p6y.makeBaseC9r(true, {
     __disposeStored (what, ...$) {
       //<<< mochai: eYo.p6y.BaseC9r_p.__disposeStored(what, ...$)
       if (eYo.isaC9r(what)) {
-        what.eyo_p6y === this && what.dispose(...$)
+        what[eYo.$p6y] === this && what.dispose(...$)
         //... var p6y = new eYo.p6y.BaseC9r('p6y', onr)
         //... what = eYo.c9r.new({
         //...   dispose (...$) {
@@ -128,7 +135,7 @@ eYo.p6y.makeBaseC9r(true, {
         //...   }
         //... })
         //... flag.reset()
-        //... what.eyo_p6y = p6y
+        //... what[eYo.$p6y] = p6y
         //... p6y.__disposeStored(what, 2, 3)
         //... flag.expect(123)
       } else if (eYo.isRA(what)) {
@@ -145,7 +152,7 @@ eYo.p6y.makeBaseC9r(true, {
         //...     flag.push(1, ...$)
         //...   }
         //... })
-        //... value_1.eyo_p6y = p6y
+        //... value_1[eYo.$p6y] = p6y
         //... what = [value_1]
         //... p6y.__disposeStored(what, 2, 3)
         //... flag.expect(123)
@@ -154,13 +161,13 @@ eYo.p6y.makeBaseC9r(true, {
         //...     flag.push(8, ...$)
         //...   }
         //... })
-        //... value_1.eyo_p6y = p6y
+        //... value_1[eYo.$p6y] = p6y
         //... var value_2 = eYo.c9r.new({
         //...   dispose (...$) {
         //...     flag.push(9, ...$)
         //...   }
         //... })
-        //... value_2.eyo_p6y = p6y
+        //... value_2[eYo.$p6y] = p6y
         //... what = [value_1, value_2]
         //... p6y.__disposeStored(what, 2, 3)
         //... flag.expect(823923)
@@ -178,7 +185,7 @@ eYo.p6y.makeBaseC9r(true, {
           //...     flag.push(1, ...$)
           //...   }
           //... })
-          //... value_1.eyo_p6y = p6y
+          //... value_1[eYo.$p6y] = p6y
           //... what = new Map([[1, value_1]])
           //... p6y.__disposeStored(what, 2, 3)
           //... flag.expect(123)
@@ -187,13 +194,13 @@ eYo.p6y.makeBaseC9r(true, {
           //...     flag.push(8, ...$)
           //...   }
           //... })
-          //... value_1.eyo_p6y = p6y
+          //... value_1[eYo.$p6y] = p6y
           //... var value_2 = eYo.c9r.new({
           //...   dispose (...$) {
           //...     flag.push(9, ...$)
           //...   }
           //... })
-          //... value_2.eyo_p6y = p6y
+          //... value_2[eYo.$p6y] = p6y
           //... what = new Map([[1, value_1], [2, value_2]])
           //... p6y.__disposeStored(what, 2, 3)
           //... flag.expect(823923)
@@ -211,7 +218,7 @@ eYo.p6y.makeBaseC9r(true, {
           //...     flag.push(1, ...$)
           //...   }
           //... })
-          //... value_1.eyo_p6y = p6y
+          //... value_1[eYo.$p6y] = p6y
           //... what = {'1': value_1}
           //... p6y.__disposeStored(what, 2, 3)
           //... flag.expect(123)
@@ -220,13 +227,13 @@ eYo.p6y.makeBaseC9r(true, {
           //...     flag.push(8, ...$)
           //...   }
           //... })
-          //... value_1.eyo_p6y = p6y
+          //... value_1[eYo.$p6y] = p6y
           //... var value_2 = eYo.c9r.new({
           //...   dispose (...$) {
           //...     flag.push(9, ...$)
           //...   }
           //... })
-          //... value_2.eyo_p6y = p6y
+          //... value_2[eYo.$p6y] = p6y
           //... what = {'1': value_1, '2': value_2}
           //... p6y.__disposeStored(what, 2, 3)
           //... flag.expect(823923)
@@ -242,7 +249,7 @@ eYo.p6y.makeBaseC9r(true, {
      */
     _disposeStored (...args) {
       let v = this.stored__
-      if (eYo.isaC9r(v) && v.eyo_p6y === this) {
+      if (eYo.isaC9r(v) && v[eYo.$p6y] === this) {
         try {
           this.__disposeStored(v, ...args)
         } finally {
@@ -260,10 +267,10 @@ eYo.p6y.makeBaseC9r(true, {
       if (eYo.isDef(before)) {
         try {
           this.validate = eYo.doReturn2nd
-          let dispose = before.eyo_p6y === this
+          let dispose = before[eYo.$p6y] === this
           this.setValue(eYo.NA)
           if (dispose) {
-            before.eyo_p6y = eYo.NA
+            before[eYo.$p6y] = eYo.NA
             before.dispose(...$)
           }
         } finally {
@@ -1935,14 +1942,14 @@ eYo.p6y.BaseC9r[eYo.$].observeEnhanced()
    */
   _p.setStored = _p.__setStored = function (after) {
     let before = this.stored__
-    if (before && before.eyo_p6y === this) {
+    if (before && before[eYo.$p6y] === this) {
       // resign ownership
-      before.eyo_p6y = eYo.NA
+      before[eYo.$p6y] = eYo.NA
     }
     this.stored__ = after
-    if (eYo.isaC9r(after) && !eYo.isDef(after.eyo_p6y)) {
+    if (eYo.isaC9r(after) && !eYo.isDef(after[eYo.$p6y])) {
       // gain ownership
-      after.eyo_p6y = this
+      after[eYo.$p6y] = this
     }
     return {before, after}
   }
