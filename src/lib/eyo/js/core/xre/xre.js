@@ -16,7 +16,7 @@
  * @namespace
  **/
 
-eYo.makeNS('xre')
+eYo.newNS('xre')
 
 eYo.assert(XRegExp, 'load XRegExp before')
 

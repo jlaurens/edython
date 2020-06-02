@@ -15,7 +15,7 @@
  * @name {eYo.module}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'module')
+eYo.o3d.newNS(eYo, 'module')
 
 /**
  * @name {eYo.module.BaseC9r}
@@ -56,7 +56,7 @@ eYo.module.makeBaseC9r({
  * @name{eYo.module.Item}
  * @param {Object} item_model
  */
-eYo.o4t.makeC9r(eYo.module, 'Item', {
+eYo.o4t.newC9r(eYo.module, 'Item', {
   init (owner, item_model) {
     Object.keys(item_model).forEach(key => {
       Object.defineProperty(
@@ -145,7 +145,7 @@ eYo.module.Item || eYo.throw('MISSING eYo.module.Item')
 
 eYo.module._p.makeNewItem = function () {
   this === eYo.module && eYo.throw('Only derived modules can make Items')
-  var Item = this.makeC9r('Item', this.Item, {
+  var Item = this.newC9r('Item', this.Item, {
     properties: {
       url: eYo.descriptorR(function () {
         return this.href

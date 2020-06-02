@@ -15,7 +15,7 @@
  * @name {eYo.py.gmr.accelerators}
  * @namespace
  */
-eYo.py.gmr.makeNS('accelerators')
+eYo.py.gmr.newNS('accelerators')
 
 /* Parser accelerator module */
 

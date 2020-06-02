@@ -23,7 +23,7 @@ eYo.forward('event.BrickMove')
  * @param {eYo.board} destination The board to drag on.
  * @constructor
  */
-eYo.dragger.makeC9r('Brick', {
+eYo.dragger.newC9r('Brick', {
   init (destination) {
     this.destination_ = destination
   },

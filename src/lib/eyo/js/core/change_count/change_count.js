@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.o4t.makeNS('changeCount')
+eYo.o4t.newNS('changeCount')
 
 //<<< mochai: Basic
 //... chai.assert(eYo.o4t.changeCount)
@@ -20,7 +20,7 @@ eYo.o4t.makeNS('changeCount')
 
 eYo.o4t.changeCount.modelDeclare({
   //<<< mochai: eYo.o4t.changeCount.modelDeclare
-  //... var ns = eYo.o4t.makeNS()
+  //... var ns = eYo.o4t.newNS()
   //... ns.makeBaseC9r()
   //... eYo.o4t.changeCount.merge(ns.BaseC9r_p)
   properties: {

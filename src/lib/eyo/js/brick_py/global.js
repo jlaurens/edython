@@ -21,7 +21,7 @@ eYo.require('expr.List')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List[eYo.$makeSubC9r](eYo.t3.expr.non_void_identifier_list, {
+eYo.expr.List[eYo.$newSubC9r](eYo.t3.expr.non_void_identifier_list, {
   list: {
     check: eYo.t3.expr.check.non_void_identifier_list,
     presep: ',',
@@ -33,7 +33,7 @@ eYo.expr.List[eYo.$makeSubC9r](eYo.t3.expr.non_void_identifier_list, {
  * Class for a Delegate, global_stmt.
  * For edython.
  */
-eYo.stmt.makeC9r(eYo.t3.stmt.global_stmt, {
+eYo.stmt.newC9r(eYo.t3.stmt.global_stmt, {
   data: {
     variant: {
       all: [

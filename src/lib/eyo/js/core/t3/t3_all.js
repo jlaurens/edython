@@ -18,7 +18,7 @@
  * @namespace
  **/
 
-eYo.t3.makeNS('all')
+eYo.t3.newNS('all')
 
 
 eYo.t3.all.core_expressions = [ // count 79

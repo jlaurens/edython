@@ -31,7 +31,7 @@ eYo.forward('py.node.brick')
 
 node * */
 
-eYo.py.makeNS('node')
+eYo.py.newNS('node')
 
 /**
  * @type {eYo.py.node.BaseC9r}

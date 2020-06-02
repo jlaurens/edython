@@ -60,7 +60,7 @@ eYo.event.Mngr_p.fireBrickMove = function (brick, move) {
  * @extends {eYo.event.Abstract}
  * @constructor
  */
-eYo.event.Abstract[eYo.$makeSubC9r]('BrickBase', {
+eYo.event.Abstract[eYo.$newSubC9r]('BrickBase', {
   init (mngr, brick) {
     /**
      * The brick id for the brick this event pertains to
@@ -88,7 +88,7 @@ eYo.event.Abstract[eYo.$makeSubC9r]('BrickBase', {
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
-eYo.event.BrickBase[eYo.$makeSubC9r]('BrickChange', {
+eYo.event.BrickBase[eYo.$newSubC9r]('BrickChange', {
   init (mngr, brick, element, name, before, after) {
     this.element_ = element
     this.name_ = name
@@ -170,7 +170,7 @@ eYo.event.BrickChange_p.run = function(redo) {
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
-eYo.event.BrickBase[eYo.$makeSubC9r]('BrickCreate', {
+eYo.event.BrickBase[eYo.$newSubC9r]('BrickCreate', {
   init(mngr, brick) {
     if (brick.board.rendered) {
       this.xml = eYo.xml.brickToDomWithWhere(brick)
@@ -221,7 +221,7 @@ eYo.event.BrickCreate_p.run = function(forward) {
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
-eYo.event.BrickBase[eYo.$makeSubC9r]('BrickDelete', {
+eYo.event.BrickBase[eYo.$newSubC9r]('BrickDelete', {
   init (mngr, brick) {
     if (brick.parent) {
       throw 'Connected bricks cannot be deleted.'
@@ -275,7 +275,7 @@ eYo.event.BrickDelete_p.run = function(forward) {
  * @extends {eYo.event.BrickBase}
  * @constructor
  */
-eYo.event.BrickBase[eYo.$makeSubC9r]('BrickMove', {
+eYo.event.BrickBase[eYo.$newSubC9r]('BrickMove', {
   init (mngr, brick) {
     var location = this.currentLocation
     this.oldParentId = location.parentId

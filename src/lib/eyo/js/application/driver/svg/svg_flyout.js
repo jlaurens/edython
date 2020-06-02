@@ -17,7 +17,7 @@ eYo.forward('flyout.Toolbar')
 /**
  * Svg driver for the flyout
  */
-eYo.svg.makeDriverC9r('Flyout', {
+eYo.svg.newDriverC9r('Flyout', {
   /**
    * Initializes the flyout SVG ressources.
    * @param {eYo.flyout.View} flyout
@@ -94,7 +94,7 @@ eYo.svg.Flyout.prototype.displayGet = function (flyout) {
 /**
  * Svg driver for the flyout toolbar.
  */
-eYo.svg.makeDriverC9r('FlyoutToolbar', {
+eYo.svg.newDriverC9r('FlyoutToolbar', {
   /**
    * Initializes the flyout toolbar SVG ressources.
    * @param {eYo.flyout.Toolbar} flyoutToolbar

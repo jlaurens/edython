@@ -13,7 +13,7 @@
 
 eYo.forward('flyout.View')
 
-eYo.dom.makeNS('flyout', {
+eYo.dom.newNS('flyout', {
   /**
    * Default CSS class of the flyout panel.
    * @type {string}
@@ -26,7 +26,7 @@ eYo.dom.makeNS('flyout', {
  * @constructor
  * Dom driver for the flyout.
  */
-eYo.dom.flyout.makeDriverC9r('View', {
+eYo.dom.flyout.newDriverC9r('View', {
     /**
    * Initialize the flyout dom ressources.
    * @param {eYo.flyout.View} flyout

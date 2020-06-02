@@ -16,7 +16,7 @@ eYo.forward('field')
 /**
  * Faceless driver for fields.
  */
-eYo.fcls.makeDriverC9r('Field')
+eYo.fcls.newDriverC9r('Field')
 
 /**
  * Set the location.

@@ -21,7 +21,7 @@ eYo.forward('brick.operator')
  * @name {eYo.stmt}
  * @namespace
  */
-eYo.brick.makeNS(eYo, 'stmt')
+eYo.brick.newNS(eYo, 'stmt')
 
 eYo.model.allowModelPaths({
   [eYo.model.ROOT]: 'left',

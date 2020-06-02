@@ -17,7 +17,7 @@
  * @name {eYo.event}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'event', {
+eYo.o4t.newNS(eYo, 'event', {
   /**
    * Name of event that records a UI change.
    * @const
@@ -53,7 +53,7 @@ eYo.event.makeBaseC9r()
  * @name {eYo.event.Mngr}
  * @constructor
  */
-eYo.event.makeC9r('Mngr', {
+eYo.event.newC9r('Mngr', {
   //<<< mochai: eYo.event.Mngr
   init (/*key, owner*/) {
     // Private attributes
@@ -314,7 +314,7 @@ eYo.event.Mngr_p.filter = function(queueIn, forward) {
  * Abstract class for an event.
  * @constructor
  */
-eYo.event.makeC9r('Abstract', {
+eYo.event.newC9r('Abstract', {
   /**
    * 
    * @param {*} owner - The event manager is the owner

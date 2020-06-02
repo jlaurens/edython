@@ -13,7 +13,7 @@
 
 eYo.require('do')
 
-eYo.makeNS('decorate')
+eYo.newNS('decorate')
 //<<< mochai: Basic
 //... chai.assert(eYo.decorate)
 //>>>

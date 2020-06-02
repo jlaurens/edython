@@ -27,7 +27,7 @@ eYo.require('do')
  * @name{eYo.t3.profile}
  * @namespace
  */
-eYo.c9r.makeNS(eYo.t3, 'profile')
+eYo.c9r.newNS(eYo.t3, 'profile')
 
 eYo.mixinRO(eYo.t3.expr, {
   reserved_identifier: '.reserved identifier',
@@ -90,7 +90,7 @@ eYo.module.BaseC9r_p.getProfile = function(identifier) {
  * @param {*} model  a dictionary
  * @constructor
  */
-eYo.t3.profile.makeC9r('BaseC9r', {
+eYo.t3.profile.newC9r('BaseC9r', {
   init (owner, model) {
     this.owner = owner
     var m = {
@@ -209,7 +209,7 @@ eYo.t3.profile.makeC9r('BaseC9r', {
  * @param {*} model  a dictionary of properties
  * @constructor
  */
-eYo.t3.profile.makeC9r('Dotted', {
+eYo.t3.profile.newC9r('Dotted', {
   init (owner, profile, model) {
     this.profile = profile
     if (model) {
@@ -254,7 +254,7 @@ eYo.t3.profile.prototype.type = eYo.NA
  *
  * @param {String} identifier
  */
-eYo.t3.makeC9r('Profiles', {
+eYo.t3.newC9r('Profiles', {
   init (identifier) {
     this.identifier = identifier
     this.profiles = {}

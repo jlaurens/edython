@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.py.makeNS('tkn', {
+eYo.py.newNS('tkn', {
   ENDMARKER: 0,
   NAME: 1,
   NUMBER: 2,

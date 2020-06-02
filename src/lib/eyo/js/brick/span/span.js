@@ -38,7 +38,7 @@ eYo.require('geom')
  * @name{eYo.span}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'span', {
+eYo.o4t.newNS(eYo, 'span', {
   /**
    * @type {Number} positive number of indentation spaces.
    */

@@ -16,7 +16,7 @@
  * @name {eYo.o3d.DB}
  * @constructor
  */
-eYo.o3d.makeC9r('DB', {
+eYo.o3d.newC9r('DB', {
   //<<< mochai: Basics
   //... chai.assert(eYo.o3d.DB)
   //>>>

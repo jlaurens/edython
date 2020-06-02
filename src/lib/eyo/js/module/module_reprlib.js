@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('reprlib__module', {
+eYo.module.newNS('reprlib__module', {
   URL: 'https://docs.python.org/3.6/library/reprlib.html'
 })
 

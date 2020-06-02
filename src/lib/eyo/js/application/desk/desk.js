@@ -29,7 +29,7 @@ eYo.forward('view.Workspace')
  * @param {eYo.app.BaseC9r|Object} owner Owner application.
  * @constructor
  */
-eYo.view.makeC9r('Desk', {
+eYo.view.newC9r('Desk', {
   views: {
     /**
      * Terminal.

@@ -43,7 +43,7 @@ eYo.forward('changer')
  * @name {eYo.data}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'data')
+eYo.o4t.newNS(eYo, 'data')
 
 /**
  * @name {eYo.data.BaseC9r}

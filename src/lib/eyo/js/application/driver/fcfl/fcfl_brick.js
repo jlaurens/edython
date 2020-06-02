@@ -18,7 +18,7 @@ eYo.brick.BUMP_DELAY = 250
 /**
  * Facefull driver for bricks.
  */
-eYo.fcfl.makeDriverC9r('Brick')
+eYo.fcfl.newDriverC9r('Brick')
 
 eYo.brick.BaseC9r[eYo.$].p6yMerge({
   ui () {

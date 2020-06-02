@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('statistics__module', {
+eYo.module.newNS('statistics__module', {
   URL: 'https://docs.python.org/3.6/library/statistics.html'
 })
 

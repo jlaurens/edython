@@ -32,7 +32,7 @@ eYo.forward('view.Scrollbar')
  * @param {eYo.app.BaseC9r|Object} owner Owner application.
  * @constructor
  */
-eYo.view.makeC9r('Workspace', {
+eYo.view.newC9r('Workspace', {
   properties: {
     /**
      * @type {?eYo.board.Main} 

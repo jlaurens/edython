@@ -15,7 +15,7 @@
  * Class for a Delegate, comment_stmt.
  * For edython.
  */
-eYo.stmt.makeC9r(eYo.t3.stmt.comment_stmt, {
+eYo.stmt.newC9r(eYo.t3.stmt.comment_stmt, {
   data: {
     variant: {
       all: [

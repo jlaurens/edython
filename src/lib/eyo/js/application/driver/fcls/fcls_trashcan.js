@@ -18,7 +18,7 @@ eYo.forward('control.TrashCan')
  * @constructor
  * Faceless driver for the trash can.
  */
-eYo.fcls.makeDriverC9r('TrashCan')
+eYo.fcls.newDriverC9r('TrashCan')
 
 /**
  * Initiate the trash can UI.

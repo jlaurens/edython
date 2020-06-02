@@ -19,7 +19,7 @@ eYo.require('o4t')
  * @name {eYo.register}
  * @namespace
  */
-eYo.do.makeNS(eYo, 'register')
+eYo.do.newNS(eYo, 'register')
 //<<< mochai: Basics
 //...  chai.assert(eYo.register)
 //>>>
@@ -39,7 +39,7 @@ eYo.register.add = function (object, key, filter) {
   let k = key + '__Registered'
   if (eYo.isC9r(object)) {
     //<<< mochai: C9r
-    //... let ns = eYo.c9r.makeNS()
+    //... let ns = eYo.c9r.newNS()
     //... let C9r = ns.makeBaseC9r(true)
     //... C9r[eYo.$].p6yEnhanced()
     //... eYo.register.add(C9r, 'foo')
@@ -57,7 +57,7 @@ eYo.register.add = function (object, key, filter) {
     //>>>
   } else if (eYo.isaDlgt(object)) {
     //<<< mochai: Dlgt
-    //... let ns = eYo.c9r.makeNS()
+    //... let ns = eYo.c9r.newNS()
     //... let C9r = ns.makeBaseC9r(true)
     //... C9r[eYo.$].p6yEnhanced()
     //... eYo.register.add(C9r[eYo.$], 'foo')
@@ -82,7 +82,7 @@ eYo.register.add = function (object, key, filter) {
   }
   eYo.mixinFR(object, {
     //<<< mochai: methods
-    //... let ns = eYo.c9r.makeNS()
+    //... let ns = eYo.c9r.newNS()
     //... let C9r = ns.makeBaseC9r(true)
     //... C9r[eYo.$].p6yEnhanced()
     //... eYo.register.add(C9r[eYo.$], 'foo')

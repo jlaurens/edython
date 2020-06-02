@@ -149,7 +149,7 @@ describe ('geometry/Point', function () {
     it (`Shared properties(2)`, function () {
       let c_p = eYo.p6y.new('c', onr)
       let l_p = eYo.p6y.new('l', onr)
-      let ns = eYo.geom.makeNS()
+      let ns = eYo.geom.newNS()
       ns.makeBaseC9r(eYo.geom.Point, {
         init (c_p, l_p) {
           chai.expect(this.hasOwnProperty('c_p')).false

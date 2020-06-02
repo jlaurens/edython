@@ -16,7 +16,7 @@
  * @param {eYo.Workspace} workspace Workspace to zoom.
  * @constructor
  */
-eYo.control.makeC9r('Zoomer', {
+eYo.control.newC9r('Zoomer', {
   properties: {
     HEIGHT_: 110,
   }

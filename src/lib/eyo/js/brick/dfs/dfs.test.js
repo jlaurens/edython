@@ -8,11 +8,11 @@ describe('DFS Tests', function() {
     chai.assert(eYo.dfs.Dlgt_p)
   })
   it (`DFS: owner`, function () {
-    let ns = eYo.dfs.makeNS()
+    let ns = eYo.dfs.newNS()
     ns.makeBaseC9r()
-    ns.makeC9r('Brick')
-    ns.makeC9r('Slot')
-    ns.makeC9r('Magnet')
+    ns.newC9r('Brick')
+    ns.newC9r('Slot')
+    ns.newC9r('Magnet')
     let X = {}
     ;[ns.Brick, ns.Slot, ns.Magnet].forEach(C9r => {
       let k = C9r[eYo.$].id[0].toLowerCase()

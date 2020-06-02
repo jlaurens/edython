@@ -67,7 +67,7 @@ eYo.forward('board')
  * When true, an extra margin at the right of the draft board is added
  * to display line numbers.
  */
-eYo.o3d.makeC9r(eYo.geom, 'Metrics', {
+eYo.o3d.newC9r(eYo.geom, 'Metrics', {
   properties: {
     port: {
       value () {

@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('functions', {
+eYo.module.newNS('functions', {
   URL: 'https://docs.python.org/3.6/library/functions.html'
 })
 

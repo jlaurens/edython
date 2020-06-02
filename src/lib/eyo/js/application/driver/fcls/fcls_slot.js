@@ -16,7 +16,7 @@ eYo.forward('slot')
 /**
  * Faceless driver for slots.
  */
-eYo.fcls.makeDriverC9r('Slot')
+eYo.fcls.newDriverC9r('Slot')
 
 /**
  * Whether the slot is displayed.

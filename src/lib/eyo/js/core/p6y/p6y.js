@@ -35,7 +35,7 @@ eYo.forward('o4t')
  * @name{eYo.p6y}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'p6y')
+eYo.o3d.newNS(eYo, 'p6y')
 //<<< mochai: P6y
 //... chai.assert(eYo.p6y)
 //>>> mochai: P6y
@@ -891,7 +891,7 @@ eYo.p6y.Dlgt_p.modelHandleDispose = function (key, model) {
   let _p = this.C9r_p
   let K = '_disposeStored'
   //... chai.assert(eYo.p6y.BaseC9r_p._disposeStored)
-  //... let ns = eYo.p6y.makeNS()
+  //... let ns = eYo.p6y.newNS()
   //... ns.makeBaseC9r()
   //... ns.BaseC9r_p._disposeStored = function(...$) {
   //...   this.owner.flag(2, ...$)
@@ -938,7 +938,7 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
             when_m.call(this.owner, before, after)
             when_p.call(this, before, after)
           })
-          //... var ns = eYo.p6y.makeNS()
+          //... var ns = eYo.p6y.newNS()
           //... ns.makeBaseC9r()
           //... ns.BaseC9r_p[when] = function (before, after) {
           //...   this.owner.flag(5, before, after)
@@ -965,7 +965,7 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
           _p[when] = eYo.decorate.reentrant(when,function (before, after) {
             when_m.call(this.owner, before, after)
           })
-          //... var ns = eYo.p6y.makeNS()
+          //... var ns = eYo.p6y.newNS()
           //... ns.makeBaseC9r()
           //... var p6y = ns.new({
           //...   [when]: f_before_after,
@@ -986,7 +986,7 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
             when_m.call(this.owner, after)  
             when_p.call(this, before, after)
           })
-          //... var ns = eYo.p6y.makeNS()
+          //... var ns = eYo.p6y.newNS()
           //... ns.makeBaseC9r()
           //... ns.BaseC9r_p[when] = function (before, after) {
           //...   this.owner.flag(5, before, after)
@@ -1001,7 +1001,7 @@ eYo.p6y.Dlgt_p.modelHandleChange = function (key, model) {
           _p[when] = eYo.decorate.reentrant(when,function (before, after) {
             when_m.call(this.owner, after)
           })
-          //... var ns = eYo.p6y.makeNS()
+          //... var ns = eYo.p6y.newNS()
           //... ns.makeBaseC9r()
           //... var p6y = ns.new({
           //...   [when]: f_after,
@@ -1478,7 +1478,7 @@ eYo.p6y.Dlgt_p.modelHandleStored = function (key, model, io) {
  * @name {eYo.p6y.handler}
  * @namespace
  */
-eYo.o3d.makeNS(eYo.p6y, 'handler')
+eYo.o3d.newNS(eYo.p6y, 'handler')
 //<<< mochai: Alias
 /**
  * Abstract constructor for proxy handlers.

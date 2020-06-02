@@ -18,7 +18,7 @@ eYo.require('style')
  * @namespace
  */
 
-eYo.makeNS('css', {
+eYo.newNS('css', {
   Cursor: {
     OPEN: 'handopen',
     CLOSED: 'handclosed',

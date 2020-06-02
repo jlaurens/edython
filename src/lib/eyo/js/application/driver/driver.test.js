@@ -12,10 +12,10 @@ describe('driver', function() {
       },
     }, 'onr')
   })
-  it ('Driver: makeDriverC9r inherits', function () {
-    var NS = eYo.driver.makeNS()
+  it ('Driver: newDriverC9r inherits', function () {
+    var NS = eYo.driver.newNS()
     NS.makeMngr()
-    NS.makeDriverC9r('Foo', {
+    NS.newDriverC9r('Foo', {
       init (...$) {
         flag.push(1)
       }
@@ -24,10 +24,10 @@ describe('driver', function() {
     new NS.Foo('foo', onr)
     flag.expect(1)
   })
-  it ('Driver: makeDriverC9r inherits (2)', function () {
-    var NS = eYo.driver.makeNS()
+  it ('Driver: newDriverC9r inherits (2)', function () {
+    var NS = eYo.driver.newNS()
     NS.makeMngr()
-    NS.makeDriverC9r('Foo', {
+    NS.newDriverC9r('Foo', {
       init (key, owner, ...$) {
         owner.flag(2, ...$)
       },
@@ -35,10 +35,10 @@ describe('driver', function() {
     chai.expect(NS.Foo).eyo_C9r
     new NS.Foo('foo', onr, 3, 4)
     flag.expect(1234)
-    NS.makeNS('a')
+    NS.newNS('a')
     NS.a.makeMngr()
     chai.expect(NS.a.super).equal(NS)
-    NS.a.makeDriverC9r('Foo', {
+    NS.a.newDriverC9r('Foo', {
       init (key, owner, ...$) {
         owner.flag(3, ...$)
       },
@@ -48,10 +48,10 @@ describe('driver', function() {
     new NS.a.Foo('foo', onr, 4, 5)
     flag.expect(12451345)
   })
-  it ('Driver: makeDriverC9r with model', function () {
-    var NS = eYo.driver.makeNS()
+  it ('Driver: newDriverC9r with model', function () {
+    var NS = eYo.driver.newNS()
     NS.makeMngr()
-    NS.makeDriverC9r('Foo', {
+    NS.newDriverC9r('Foo', {
       init (key, owner, ...$) {
         flag.push(1, ...$)
       },
@@ -72,10 +72,10 @@ describe('driver', function() {
     foo.doDisposeUI(3, 4, 5)
     flag.expect(345)
   })
-  it ('Driver: makeDriverC9r concurrent', function () {
-    var NS = eYo.driver.makeNS()
+  it ('Driver: newDriverC9r concurrent', function () {
+    var NS = eYo.driver.newNS()
     NS.makeMngr()
-    NS.makeDriverC9r('Foo', {
+    NS.newDriverC9r('Foo', {
       init (key, owner, ...$) {
         flag.push(1, ...$)
       },
@@ -89,7 +89,7 @@ describe('driver', function() {
         },
       },
     })
-    NS.makeDriverC9r('Bar', {
+    NS.newDriverC9r('Bar', {
       init (key, owner, ...$) {
         flag.push(4, ...$)
       },

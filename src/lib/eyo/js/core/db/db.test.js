@@ -14,7 +14,7 @@ describe ('Tests: db', function () {
   })
   it ('DB: add, remove', function () {
     let db = new eYo.o3d.DB('db', onr)
-    let NS = eYo.c9r.makeNS()
+    let NS = eYo.c9r.newNS()
     NS.makeBaseC9r({
       init (id) {
         this.id = id

@@ -115,7 +115,7 @@ Object.defineProperties(eYo.event._p, {
  * @param {eYo.app.BaseC9r} application - The top application where the event occured.
  * @constructor
  */
-eYo.event.makeC9r('Motion', {
+eYo.event.newC9r('Motion', {
   /**
    * Reset and sever all links from this object.
    */

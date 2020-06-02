@@ -13,7 +13,7 @@
 
 eYo.require('brick')
 
-eYo.makeNS('tooltip')
+eYo.newNS('tooltip')
 
 /**
  * Add a tooltip programatically to an element

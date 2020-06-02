@@ -29,7 +29,7 @@ eYo.require('o3d.DB')
  * @param{?eYo.o3d.DB} db
  * @constructor
  */
-eYo.o4t.makeC9r(eYo.brick, 'List', {
+eYo.o4t.newC9r(eYo.brick, 'List', {
   /**
    * Clear the list and sever all the links.
    */

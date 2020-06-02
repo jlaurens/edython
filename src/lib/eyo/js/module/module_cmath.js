@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('cmath__module', {
+eYo.module.newNS('cmath__module', {
   URL: 'https://docs.python.org/3.6/library/cmath.html'
 })
 

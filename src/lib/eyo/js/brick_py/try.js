@@ -26,7 +26,7 @@ eYo.forward('msg')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group[eYo.$makeSubC9r]('try_part', true, {
+eYo.stmt.group[eYo.$newSubC9r]('try_part', true, {
   fields: {
     prefix: 'try'
   }
@@ -37,7 +37,7 @@ eYo.stmt.group[eYo.$makeSubC9r]('try_part', true, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group[eYo.$makeSubC9r]('except_part', true, {
+eYo.stmt.group[eYo.$newSubC9r]('except_part', true, {
   data: {
     variant: {
       all: [
@@ -187,7 +187,7 @@ eYo.stmt.except_part.prototype.getType = eYo.changer.memoize(
  * Class for a Delegate, raise_stmt.
  * For edython.
  */
-eYo.stmt.makeC9r('raise_stmt', true, {
+eYo.stmt.newC9r('raise_stmt', true, {
   data: {
     variant: {
       all: [
@@ -286,7 +286,7 @@ eYo.stmt.makeC9r('raise_stmt', true, {
  * Class for a Delegate, assert_stmt.
  * For edython.
  */
-eYo.stmt.makeC9r('assert_stmt', true, {
+eYo.stmt.newC9r('assert_stmt', true, {
   data: {
     variant: {
       all: [

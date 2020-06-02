@@ -18,4 +18,4 @@ eYo.forward('flyout.View')
  * @constructor
  * Shared application driver.
  */
-eYo.fcls.makeDriverC9r('flyout.View')
+eYo.fcls.newDriverC9r('flyout.View')

@@ -16,7 +16,7 @@
  * @param {eYo.Workspace} workspace The workspace to sit in.
  * @constructor
  */
-eYo.control.makeC9r('TrashCan', {
+eYo.control.newC9r('TrashCan', {
   properties: {
     isOpen: {
       get () {

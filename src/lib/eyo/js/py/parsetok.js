@@ -17,7 +17,7 @@ eYo.require('py.parser')
 eYo.forward('py.parser.Scan')
 eYo.forward('e')
 
-eYo.py.makeNS('parseTok')
+eYo.py.newNS('parseTok')
 
 ;(function(){
 

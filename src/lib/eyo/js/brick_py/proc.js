@@ -48,7 +48,7 @@ eYo.mixinRO(eYo.xre, {
  * Class for a Delegate, decorator.
  * For edython.
  */
-eYo.stmt.makeC9r('decorator_stmt', true, {
+eYo.stmt.newC9r('decorator_stmt', true, {
   xml: {
     attr: '@'
   },
@@ -409,7 +409,7 @@ eYo.stmt.decorator_stmt.prototype.populateContextMenuFirst_ = function (mngr) {
  * Class for a Delegate, funcdef_part.
  * For edython.
  */
-eYo.stmt.group[eYo.$makeSubC9r]('funcdef_part', true, {
+eYo.stmt.group[eYo.$newSubC9r]('funcdef_part', true, {
   data: {
     variant: {
       all: [null, eYo.key.TYPE],
@@ -469,7 +469,7 @@ classdef_part ::=  "class" classname [parenth_argument_list] ':'
  * Class for a Delegate, classdef_part brick.
  * For edython.
  */
-eYo.stmt.group[eYo.$makeSubC9r]('classdef_part', true, {
+eYo.stmt.group[eYo.$newSubC9r]('classdef_part', true, {
   data: {
     variant: {
       all: [eYo.key.NONE, eYo.key.N_ARY],

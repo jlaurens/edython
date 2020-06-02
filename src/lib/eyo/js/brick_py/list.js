@@ -25,7 +25,7 @@ eYo.require('consolidator.List')
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeC9r('List', {
+eYo.expr.newC9r('List', {
   init: function () {
     this.slotList_ = new Proxy(this, eYo.expr.List.SlotsHandler)
   },
@@ -279,7 +279,7 @@ Object.defineProperties(eYo.expr.List_p, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List[eYo.$makeSubC9r]('optional_expression_list', {
+eYo.expr.List[eYo.$newSubC9r]('optional_expression_list', {
   list: {
     check: eYo.t3.expr.check.expression,
     mandatory: 0,
@@ -293,7 +293,7 @@ eYo.expr.List[eYo.$makeSubC9r]('optional_expression_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List[eYo.$makeSubC9r]('non_void_expression_list', {
+eYo.expr.List[eYo.$newSubC9r]('non_void_expression_list', {
   list: {
     check: eYo.t3.expr.check.expression,
     mandatory: 1,
@@ -307,7 +307,7 @@ eYo.expr.List[eYo.$makeSubC9r]('non_void_expression_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List[eYo.$makeSubC9r]('slice_list', {
+eYo.expr.List[eYo.$newSubC9r]('slice_list', {
   list: {
     check: eYo.t3.expr.check.slice_item,
     mandatory: 1,
@@ -321,7 +321,7 @@ eYo.expr.List[eYo.$makeSubC9r]('slice_list', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List[eYo.$makeSubC9r]('with_item_list', {
+eYo.expr.List[eYo.$newSubC9r]('with_item_list', {
   list: {
     check: eYo.t3.expr.check.with_item,
     mandatory: 1,
@@ -361,7 +361,7 @@ eYo.expr.List[eYo.$makeSubC9r]('with_item_list', {
  * 2) singleton set_display: replacement for the unique connection: same as above
  * 3) singleton dict_display: replacement for the unique connection: same as above
  */
-eYo.expr.List[eYo.$makeSubC9r]('enclosure', {
+eYo.expr.List[eYo.$newSubC9r]('enclosure', {
   data: {
     variant: {
       order: 0,

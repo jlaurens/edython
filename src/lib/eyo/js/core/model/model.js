@@ -37,7 +37,7 @@ eYo.isModel = what => {
  * @name {eYo.model}
  * @namespace
  */
-eYo.makeNS('model', {
+eYo.newNS('model', {
   //<<< mochai: eYo.model
   //... chai.assert(eYo.model)
   //... chai.assert(eYo.model.Format)

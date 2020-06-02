@@ -29,7 +29,7 @@ eYo.require('msg')
  * Main entry: consolidate
  * @param {String} single - the required type for a single element....
  */
-eYo.consolidator.List[eYo.$makeSubC9r]('Target', {
+eYo.consolidator.List[eYo.$newSubC9r]('Target', {
   list: {
     check: null,
     mandatory: 1,
@@ -301,7 +301,7 @@ eYo.consolidator.Target_p.doFinalize = function (io) {
  * @name {eYo.expr.target_list}
  * @constructor
  */
-eYo.expr.List[eYo.$makeSubC9r]('target_list', {
+eYo.expr.List[eYo.$newSubC9r]('target_list', {
   list: {
     consolidator: eYo.consolidator.Target
   }
@@ -530,7 +530,7 @@ eYo.expr.target_list_p.xdidConnect = function (m4t, oldTargetM4t, targetOldM4t) 
 
  * For edython.
  */
-eYo.expr.makeC9r('primary', {
+eYo.expr.newC9r('primary', {
   xml: {
     types: [
       eYo.t3.expr.identifier,
@@ -1790,7 +1790,7 @@ eYo.expr.primary_p.getSlot = function (name) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.makeC9r('base_call_stmt', {
+eYo.stmt.newC9r('base_call_stmt', {
   link: eYo.t3.expr.primary
 })
 
@@ -1799,7 +1799,7 @@ eYo.stmt.makeC9r('base_call_stmt', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.base_call_stmt[eYo.$makeSubC9r]('call_stmt', {
+eYo.stmt.base_call_stmt[eYo.$newSubC9r]('call_stmt', {
   data: {
     variant: {
       init: eYo.key.CALL_EXPR,

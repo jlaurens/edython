@@ -21,7 +21,7 @@ eYo.forward('msg')
  * Base group is subclassed into Group and Control.
  * For edython.
  */
-eYo.stmt.makeC9r('group', {
+eYo.stmt.newC9r('group', {
   head (type) /** @suppress {globalThis} */ {
     return null
   },
@@ -57,7 +57,7 @@ eYo.stmt.makeC9r('group', {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group[eYo.$makeSubC9r]('branch', true, {
+eYo.stmt.group[eYo.$newSubC9r]('branch', true, {
   data: {
     variant: {
       all: [
@@ -240,7 +240,7 @@ eYo.stmt.group.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group[eYo.$makeSubC9r]('for_part', true, {
+eYo.stmt.group[eYo.$newSubC9r]('for_part', true, {
   slots: {
     for: {
       order: 1,
@@ -264,7 +264,7 @@ eYo.stmt.group[eYo.$makeSubC9r]('for_part', true, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.group[eYo.$makeSubC9r]('with_part', true, {
+eYo.stmt.group[eYo.$newSubC9r]('with_part', true, {
   slots: {
     with: {
       order: 1,

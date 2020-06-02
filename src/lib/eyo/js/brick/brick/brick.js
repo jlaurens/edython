@@ -39,7 +39,7 @@ eYo.forward('magnet')
  * @name {eYo.brick.BaseC9r}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'brick')
+eYo.o4t.newNS(eYo, 'brick')
 
 // eYo.provide('brick.dflt')
 

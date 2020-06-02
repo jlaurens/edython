@@ -24,7 +24,7 @@ eYo.require('stmt.group')
  */
 ;(() => {
   var creation = 0
-  eYo.stmt.group[eYo.$makeSubC9r]('control', {
+  eYo.stmt.group[eYo.$newSubC9r]('control', {
     data: {
       restart: {
         init: false,
@@ -87,7 +87,7 @@ eYo.brick.BaseC9r_p.runScript = function () {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.stmt.control[eYo.$makeSubC9r]('start_stmt', {
+eYo.stmt.control[eYo.$newSubC9r]('start_stmt', {
   xml: {
     attr: 'start'
   },

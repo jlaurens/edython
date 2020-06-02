@@ -18,7 +18,7 @@
  * @namespace
  **/
 
-eYo.makeNS('t3')
+eYo.newNS('t3')
 
 
 eYo.t3.stmt = {

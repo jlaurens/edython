@@ -17,7 +17,7 @@ eYo.forward('do')
  * @name{eYo.observe}
  * @namespace
  */
-eYo.c9r.makeNS(eYo, 'observe', {
+eYo.c9r.newNS(eYo, 'observe', {
   BEFORE: 'willChange',
   DURING: 'atChange',
   AFTER: 'didChange',
@@ -102,7 +102,7 @@ eYo.mixinFR(eYo.observe, {
 eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
   //<<< mochai: ...observeEnhanced
   //<<< mochai: Basics
-  //... let ns = eYo.c9r.makeNS()
+  //... let ns = eYo.c9r.newNS()
   //... ns.makeBaseC9r()
   //... ns.BaseC9r[eYo.$].observeEnhanced()
   //... let o = ns.new()
@@ -165,7 +165,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
       }
     }
     //<<< mochai: (will|at|did)Change
-    //... let ns = eYo.c9r.makeNS()
+    //... let ns = eYo.c9r.newNS()
     //... ns.makeBaseC9r()
     //... ns.BaseC9r[eYo.$].observeEnhanced()
     //... for (let [k, v] of Object.entries({
@@ -221,7 +221,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
     let observers = byWhen[when] || (byWhen[when] = [])
     observers.push(observer)
     return observer
-    //... let ns = eYo.c9r.makeNS()
+    //... let ns = eYo.c9r.newNS()
     //... ns.makeBaseC9r()
     //... ns.BaseC9r[eYo.$].observeEnhanced()
     //... let o = ns.new()
@@ -259,7 +259,7 @@ eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
       }
     }
     return observer
-        //... let ns = eYo.c9r.makeNS()
+        //... let ns = eYo.c9r.newNS()
     //... ns.makeBaseC9r()
     //... ns.BaseC9r[eYo.$].observeEnhanced()
     //... let o = ns.new()

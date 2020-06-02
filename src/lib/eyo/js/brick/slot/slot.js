@@ -40,7 +40,7 @@ eYo.model.allowModelPaths({
  * @name{eYo.slot}
  * @namespace
  */
-eYo.dfs.makeNS(eYo, 'slot')
+eYo.dfs.newNS(eYo, 'slot')
 
 eYo.require('do')
 eYo.require('decorate')

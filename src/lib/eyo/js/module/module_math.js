@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('math__module', {
+eYo.module.newNS('math__module', {
   URL: 'https://docs.python.org/3.6/library/math.html'
 })
 

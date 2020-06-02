@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('pprint__module', {
+eYo.module.newNS('pprint__module', {
   URL: 'https://docs.python.org/3.6/library/pprint.html'
 })
 

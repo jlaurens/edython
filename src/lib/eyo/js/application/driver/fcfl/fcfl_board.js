@@ -14,7 +14,7 @@
 /**
  * Facefull driver for boards.
  */
-eYo.fcfl.makeDriverC9r('Board')
+eYo.fcfl.newDriverC9r('Board')
 
 console.error('NYI')
 

@@ -16,4 +16,4 @@ eYo.forward('view.Desk')
 /**
  * Shared application driver.
  */
-eYo.fcls.makeDriverC9r('Desk')
+eYo.fcls.newDriverC9r('Desk')

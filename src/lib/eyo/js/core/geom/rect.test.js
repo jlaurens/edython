@@ -21,7 +21,7 @@ describe ('geometry', function () {
         new eYo.geom.Point()
       }).not.throw()
       let P = new eYo.geom.Point()
-      let ns = eYo.geom.makeNS()
+      let ns = eYo.geom.newNS()
       ns.makeBaseC9r(eYo.geom.Point, {
         init (c_p, l_p) {
           chai.expect(this.hasOwnProperty('c_p')).false

@@ -19,7 +19,7 @@ eYo.require('decorate')
  * @name{eYo.app}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'app')
+eYo.o4t.newNS(eYo, 'app')
 
 eYo.forward('css')
 
@@ -75,7 +75,7 @@ eYo.forward('audio')
  *           minScale: 0.1,
  *           scaleSpeed: 1.2}
  */
-eYo.app.makeC9r('Options', {
+eYo.app.newC9r('Options', {
   init (options) {
     var readOnly = !!options.readOnly
     if (readOnly) {
@@ -499,7 +499,7 @@ console.error('In progress')
 /**
  * 
  */
-eYo.o3d.makeC9r(eYo.app, 'Clipboard', {
+eYo.o3d.newC9r(eYo.app, 'Clipboard', {
   aliases: {
     'desk.board': 'board',
     'source.desk': 'desk',

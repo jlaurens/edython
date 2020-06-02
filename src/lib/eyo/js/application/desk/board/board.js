@@ -15,7 +15,7 @@
  * @name{eYo.board}
  * @namespace
  */
-eYo.view.makeNS(eYo, 'board', {
+eYo.view.newNS(eYo, 'board', {
   /**
    * Angle away from the horizontal to sweep for bricks.  Order of execution is
    * generally top to bottom, but a small angle changes the scan to give a bit of
@@ -267,7 +267,7 @@ eYo.board.makeBaseC9r({
  * @param {eYo.view.Desk} owner The main board belongs to a workspace. We allways have `this === owner.board`, which means that each kind of owner may have only one board.
  * @constructor
  */
-eYo.board.makeC9r('Main', {
+eYo.board.newC9r('Main', {
   init (owner, options) {
     /** @type {string} */
     this.id = eYo.genUID()    

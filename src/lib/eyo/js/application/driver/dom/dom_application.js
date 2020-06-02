@@ -16,7 +16,7 @@ eYo.forward('app')
 /**
  * Dom driver for application.
  */
-eYo.dom.makeDriverC9r('App', {
+eYo.dom.newDriverC9r('App', {
   /**
    * Initialize the application's dom ressources.
    * @param {eYo.app.BaseC9r} app

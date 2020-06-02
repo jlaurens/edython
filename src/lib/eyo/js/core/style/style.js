@@ -20,7 +20,7 @@ goog.require('goog.color')
  * @name {eYo.color}
  * @namespace
  */
-eYo.makeNS('color')
+eYo.newNS('color')
 
 eYo.color.rgbArrayToHex = goog.color.rgbArrayToHex
 eYo.color.hslToRgb = goog.color.hslToRgb
@@ -29,7 +29,7 @@ eYo.color.hslToRgb = goog.color.hslToRgb
  * @name{eYo.style}
  * @namespace
  */
-eYo.makeNS('style')
+eYo.newNS('style')
 
 eYo.style._p.weight = x => x / (1 + x), // 0↦0, 1↦1/2, 2↦2/3, 3↦3/4, ∞↦1
 eYo.style._p.SEP_SPACE_X = 0
@@ -38,7 +38,7 @@ eYo.style._p.SEP_SPACE_X = 0
  * @name{eYo.padding}
  * @namespace
  */
-eYo.makeNS('padding')
+eYo.newNS('padding')
 
 //<<< mochai: Basics
 //... chai.assert(eYo.color)

@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('string__module', {
+eYo.module.newNS('string__module', {
   URL: 'https://docs.python.org/3.6/library/string.html'
 })
 

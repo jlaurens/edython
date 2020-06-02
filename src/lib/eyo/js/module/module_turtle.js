@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('turtle__module', {
+eYo.module.newNS('turtle__module', {
   URL: 'https://docs.python.org/3.6/library/turtle.html'
 })
 

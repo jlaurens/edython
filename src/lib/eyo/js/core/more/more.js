@@ -20,7 +20,7 @@ eYo.forward('decorate')
  * @name{eYo.more}
  * @namespace
  */
-eYo.makeNS('more')
+eYo.newNS('more')
 
 //<<< mochai: Basic
 //... chai.assert(eYo.more)

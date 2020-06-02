@@ -17,7 +17,7 @@
  * @param {String} pathToMedia
  * @constructor
  */
-eYo.dom.makeDriverC9r('Audio', {
+eYo.dom.newDriverC9r('Audio', {
   ui: {
     init(audio) {
       /**

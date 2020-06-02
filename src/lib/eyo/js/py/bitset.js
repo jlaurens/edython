@@ -15,7 +15,7 @@
  * @name {eYo.py.bitset}
  * @namespace
  */
-eYo.py.makeNS('bitset')
+eYo.py.newNS('bitset')
 
 /* Bitset primitives used by the parser generator *-/
 

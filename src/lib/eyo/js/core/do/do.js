@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.makeNS('do')
+eYo.newNS('do')
 
 //g@@g.forwardDeclare('g@@g.dom')
 

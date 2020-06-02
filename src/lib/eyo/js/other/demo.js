@@ -12,5 +12,5 @@
 'use strict';
 
 eYo.require('xml')
-eYo.makeNS('demo')
+eYo.newNS('demo')
 

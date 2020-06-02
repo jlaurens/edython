@@ -13,7 +13,7 @@ describe ('Tests: register', function () {
     }, 'onr')
   })
   it ('Register: C9r(2)', function () {
-    let ns = eYo.o4t.makeNS()
+    let ns = eYo.o4t.newNS()
     ns.makeBaseC9r()
     eYo.register.add(ns.BaseC9r, 'foo')
     let onr = eYo.c9r.new()

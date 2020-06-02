@@ -24,7 +24,7 @@ eYo.svg.SPRITE = {
  * @constructor
  * Svg driver for the trash can.
  */
-eYo.svg.makeDriverC9r('TrashCan', {
+eYo.svg.newDriverC9r('TrashCan', {
   ui: {
     /**
      * Initialize the trash can SVG ressources.

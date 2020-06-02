@@ -22,7 +22,7 @@ eYo.require('tooltip')
  * @name {eYo.library}
  * @namespace
  */
-eYo.section.makeNS(eYo, 'library', {
+eYo.section.newNS(eYo, 'library', {
   DATA: {
     test: [
       {

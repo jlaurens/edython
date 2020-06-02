@@ -21,7 +21,7 @@ eYo.require('py.gmr')
  * @name {eYo.py.node.brick}
  * @namespace
  */
-eYo.py.node.makeNS('brick')
+eYo.py.node.newNS('brick')
 
 /**
  * Converts the receiver to a visual brick.

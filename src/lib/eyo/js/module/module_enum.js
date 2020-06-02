@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('enum__module', {
+eYo.module.newNS('enum__module', {
   URL: 'https://docs.python.org/3.6/library/enum.html'
 })
 

@@ -23,7 +23,7 @@ describe('Basic metrics', function () {
   it ('Create block', function () {
     var type = `simple`
     eYo.t3.expr[type] = type
-    eYo.expr.makeC9r(type, {})
+    eYo.expr.newC9r(type, {})
     var b3k = eYo.brick.newReady(type, eYo.board)
   })
 })

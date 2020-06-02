@@ -16,7 +16,7 @@ eYo.forward('padding')
 /**
  * @name{eYo.font}
  */
-eYo.o4t.makeSingleton(eYo, 'font', {
+eYo.o4t.newSingleton(eYo, 'font', {
   //<<< mochai: Basic
   //... chai.expect(eYo).property('font')
   //>>>

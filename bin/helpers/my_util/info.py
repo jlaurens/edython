@@ -13,22 +13,24 @@ class Info:
   .*""", re.X)
   #re_provide = re.compile(r"^\s*eYo.(?P<provide>provide)\('(?P<what>[^']+)'\)[;\s]*$")
 
-  # eYo.info.makeNS(ns, 'BAR')
-  #eYo.Consolidator.makeC9r(ns, 'Dlgt', ...
-  re_make = re.compile(r"""^\s*
+  # eYo.info.newNS(ns, 'BAR')
+  #eYo.Consolidator.newC9r(ns, 'Dlgt', ...
+  #eYo.dom.newDriver('Dlgt', ...
+  #eYo.dom.newSingleton('Dlgt', ...
+  re_new = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
-  \.make(?:Driver)?(?P<what>C9r|NS|Singleton)\s*\(\s*
+  \.new(?:Driver)?(?P<what>C9r|NS|Singleton)\s*\(\s*
   (?P<suite>.*)""", re.X)
 
-  assert re.match(re_make, "eYo.makeNS('Brick')"), 'BAD re_make 2'
-  assert re.match(re_make, "eYo.dnd.makeC9r('Mngr', {"), 'BAD re_make 3'
-  assert re.match(re_make, "eYo.o4t.makeSingleton(eYo, 'font', {"), 'BAD re_make 3a'
+  assert re.match(re_new, "eYo.newNS('Brick')"), 'BAD re_new 2'
+  assert re.match(re_new, "eYo.dnd.newC9r('Mngr', {"), 'BAD re_new 3'
+  assert re.match(re_new, "eYo.o4t.newSingleton(eYo, 'font', {"), 'BAD re_new 3a'
 
-  m = re.match(re_make, "eYo.o3d.makeC9r(eYo.pane, 'WorkspaceControl', {")
-  assert m, 'BAD re_make 4'
-  assert m.group('NS') == "eYo.o3d", 'BAD re_make 5'
+  m = re.match(re_new, "eYo.o3d.newC9r(eYo.pane, 'WorkspaceControl', {")
+  assert m, 'BAD re_new 4'
+  assert m.group('NS') == "eYo.o3d", 'BAD re_new 5'
   suite = m.group('suite')
-  assert suite == "eYo.pane, 'WorkspaceControl', {", 'BAD re_make 6'
+  assert suite == "eYo.pane, 'WorkspaceControl', {", 'BAD re_new 6'
 
   re_arg_ns = re.compile(r"""^
   (?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)
@@ -39,18 +41,18 @@ class Info:
   assert m.group('ns') == "eYo.pane", 'BAD re_arg_ns 2'
 
   # eYo.pane.WorkspaceControl[eYo.$makeSubC9r]('TrashCan', {
-  re_makeSubC9r = re.compile(r"""^\s*
+  re_newSubC9r = re.compile(r"""^\s*
   (?P<NS>eYo(?:\.[a-z][\w0-9_]*)*)
   \.(?P<Super>[A-Z][\w0-9_]*)
-  \[eYo\.\$makeSubC9r\]\s*\(\s*
+  \[eYo\.\$newSubC9r\]\s*\(\s*
   (?P<suite>.*)""", re.X)
 
-  m = re.match(re_makeSubC9r, "eYo.pane.WorkspaceControl[eYo.$makeSubC9r]('TrashCan', {")
-  assert m, 'BAD re_makeSubC9r 1'
-  assert m.group('NS') == "eYo.pane", 'BAD re_makeSubC9r 2'
-  assert m.group('Super') == "WorkspaceControl", 'BAD re_makeSubC9r 3'
+  m = re.match(re_newSubC9r, "eYo.pane.WorkspaceControl[eYo.$newSubC9r]('TrashCan', {")
+  assert m, 'BAD re_newSubC9r 1'
+  assert m.group('NS') == "eYo.pane", 'BAD re_newSubC9r 2'
+  assert m.group('Super') == "WorkspaceControl", 'BAD re_newSubC9r 3'
   suite = m.group('suite')
-  assert suite == "'TrashCan', {", 'BAD re_makeSubC9r 4'
+  assert suite == "'TrashCan', {", 'BAD re_newSubC9r 4'
   m = re.match(re_arg_ns, suite)
   assert not m, 'BAD re_arg_ns 3'
 
@@ -71,11 +73,11 @@ class Info:
   (?P<ns>eYo(?:\.[a-z][\w0-9_]*)*)\.(?P<key>[A-Z][\w0-9_]*)
   (?:\s*,\s*(?P<suite>.*)|\W*)?""", re.X)
   
-  m = re.match(re_make, "eYo.view.makeC9r(eYo.p6y.List)")
-  assert m, 'BAD re_make 7'
-  assert m.group('NS') == "eYo.view", 'BAD re_make 8'
+  m = re.match(re_new, "eYo.view.newC9r(eYo.p6y.List)")
+  assert m, 'BAD re_new 7'
+  assert m.group('NS') == "eYo.view", 'BAD re_new 8'
   suite = m.group('suite')
-  assert suite == "eYo.p6y.List)", 'BAD re_make 9'
+  assert suite == "eYo.p6y.List)", 'BAD re_new 9'
   m = re.match(re_arg_Super, suite)
   assert m, 'BAD re_arg_Super 1'
 
@@ -279,7 +281,7 @@ class Info:
               m = self.re_arg_Super.match(suite)
               if m:
                 superKey = m.group('key')
-        m = self.re_make.match(l)
+        m = self.re_new.match(l)
         if m:
           if m.group('what') != 'NS':
             required.add('eYo.c9r')
@@ -299,7 +301,7 @@ class Info:
             else:
               addProvided(f'{NS}.{superKey}')
           continue
-        m = self.re_makeSubC9r.match(l)
+        m = self.re_newSubC9r.match(l)
         if m:
           required.add('eYo.c9r')
           NS = m.group('NS')

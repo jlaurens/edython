@@ -56,7 +56,7 @@ eYo.require('geom.Size')
  * @struct
  * @constructor
  */
-eYo.geom.makeC9r('Rect', {
+eYo.geom.newC9r('Rect', {
   //<<< mochai: eYo.geom.Rect
   /**
    * See the `set` function for argument description.

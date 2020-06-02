@@ -31,7 +31,7 @@ eYo.model.allowModelPaths({
  * @name {eYo.consolidator}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'consolidator')
+eYo.o4t.newNS(eYo, 'consolidator')
 
 eYo.forward('do')
 eYo.forward('slot')
@@ -95,7 +95,7 @@ eYo.consolidator.makeBaseC9r({
  * of the slot, which means that naming should be done
  * dynamically.
  */
-eYo.consolidator.makeC9r('List', {
+eYo.consolidator.newC9r('List', {
   /**
    * Initialize the list consolidator.
    * @param {Object} d model.

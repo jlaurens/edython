@@ -15,7 +15,7 @@
  * @name{eYo.field}
  * @namespace
  */
-eYo.dfs.makeNS(eYo, 'field', {
+eYo.dfs.newNS(eYo, 'field', {
   STATUS_NONE: '', // names correspond to `eyo-code-...` css class names
   STATUS_COMMENT: 'comment',
   STATUS_RESERVED: 'reserved',
@@ -399,7 +399,7 @@ eYo.field.BaseC9r_p.willRender = function () {
  * @extends {eYo.field}
  * @constructor
  */
-eYo.field.makeC9r('Label', {
+eYo.field.newC9r('Label', {
   properties: {
     isLabel: true
   },
@@ -413,7 +413,7 @@ eYo.field.makeC9r('Label', {
  * @extends {eYo.field}
  * @constructor
  */
-eYo.field.makeC9r('Input', {
+eYo.field.newC9r('Input', {
   properties: {
     /**
      * css class for both the text element and html input.

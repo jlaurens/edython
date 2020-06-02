@@ -16,8 +16,8 @@
  * @namespace
  */
 
-eYo.fcfl.makeNS(eYo, 'dom', {
-  OWNER: new eYo.C9r(),,
+eYo.fcfl.newNS(eYo, 'dom', {
+  OWNER: new eYo.C9r(),
   CSS_CLASS: 'dom',
 })
 

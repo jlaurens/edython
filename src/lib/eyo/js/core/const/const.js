@@ -11,14 +11,14 @@
  */
 'use strict'
 
-eYo.makeNS('id')
+eYo.newNS('id')
 
 /**
  * @name eYo.const
  * @namespace
  **/
 
-eYo.makeNS('const', {
+eYo.newNS('const', {
   ABOVE: 'ABOVE', // not for brick definition
   BELOW: 'BELOW',
   FIELD: {
@@ -45,7 +45,7 @@ eYo.assert(XRegExp, 'load XRegExp before')
  * @name{eYo.key}
  * @namespace
  */
-eYo.makeNS('key', {
+eYo.newNS('key', {
   EYO: 'eyo',
   PLACEHOLDER: 'placeholder', // this MUST be in lower case
   TERM: 'term', // this MUST be in lower case

@@ -14,7 +14,7 @@
 /**
  * Faceless driver for Focus managers.
  */
-eYo.fcls.makeDriverC9r('Focus')
+eYo.fcls.newDriverC9r('Focus')
 
 /**
  * Init the main focus manager.

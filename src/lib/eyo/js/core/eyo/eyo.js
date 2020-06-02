@@ -1062,6 +1062,15 @@ eYo.mixinFR(eYo, {
     //... chai.expect(eYo.called(() => 421)).equal(421)
     //>>>
   },
+})
+
+eYo.mixinFR(eYo._p, {
+  //<<< mochai: symbols
+  $C9r: Symbol('C9r'),
+  $SuperC9r: Symbol('SuperC9r'),
+  $newSubC9r: Symbol('newSubC9r'),
+  $SuperC9r_p: Symbol('SuperC9r_p'),
+  //>>>
   /**
    * Whether sub_ is a subclass of Super, or equals to Super...
    * @param {Function} Sub
@@ -1071,12 +1080,6 @@ eYo.mixinFR(eYo, {
   isSubclass (Sub, Super) {
     return !!Super && !!Sub && eYo.isF(Super) && (Sub === Super || Sub.prototype instanceof Super)
   },
-})
-
-eYo.mixinFR(eYo._p, {
-  $C9r: Symbol('C9r'),
-  $SuperC9r: Symbol('SuperC9r'),
-  $SuperC9r_p: Symbol('SuperC9r_p'),
   /**
    * Contrary to goog.inherits, does not erase the childC9r.prototype.
    * IE<11
@@ -1093,23 +1096,23 @@ eYo.mixinFR(eYo._p, {
     Object.defineProperty(Child_p, 'constructor', {
       value: ChildC9r
     })
+    //<<< mochai: eYo.isSubclass | eYo.inherits
+    //... chai.assert(eYo.isSubclass)
+    //... chai.expect(eYo.isSubclass()).false
+    //... chai.expect(eYo.isSubclass(123)).false
+    //... chai.expect(eYo.isSubclass(123, 421)).false
+    //... let SuperC9r = function () {}
+    //... chai.expect(eYo.isSubclass(SuperC9r, SuperC9r)).true
+    //... let ChildC9r = function () {}
+    //... chai.expect(eYo).property('inherits')
+    //... eYo.inherits(ChildC9r, SuperC9r)
+    //... chai.expect(eYo.isSubclass(ChildC9r, SuperC9r)).true
+    //... chai.expect(ChildC9r[eYo.$SuperC9r_p]).equal(ChildC9r.prototype[eYo.$SuperC9r_p]).equal(SuperC9r.prototype)
+    //>>>
   },
-  //<<< mochai: eYo.isSubclass | eYo.inherits
-  //... chai.assert(eYo.isSubclass)
-  //... chai.expect(eYo.isSubclass()).false
-  //... chai.expect(eYo.isSubclass(123)).false
-  //... chai.expect(eYo.isSubclass(123, 421)).false
-  //... let SuperC9r = function () {}
-  //... chai.expect(eYo.isSubclass(SuperC9r, SuperC9r)).true
-  //... let ChildC9r = function () {}
-  //... chai.expect(eYo).property('inherits')
-  //... eYo.inherits(ChildC9r, SuperC9r)
-  //... chai.expect(eYo.isSubclass(ChildC9r, SuperC9r)).true
-  //... chai.expect(ChildC9r[eYo.$SuperC9r_p]).equal(ChildC9r.prototype[eYo.$SuperC9r_p]).equal(SuperC9r.prototype)
-  //>>>
 })
 
-// ANCHOR makeNS, provide
+// ANCHOR newNS, provide
 eYo.mixinFR(eYo._p, {
   /**
    * 
@@ -1139,7 +1142,7 @@ eYo.mixinFR(eYo._p, {
     //>>>
   },
   /**
-   * @name {eYo.makeNS}
+   * @name {eYo.newNS}
    * Make a namespace by subclassing the caller's constructor.
    * Will create 'foo' namespace together with an 'foo_p' property to access the prototype.
    * @param {!Object} ns - a namespace, created object will be `ns[key]`. Defaults to the receiver.
@@ -1148,24 +1151,24 @@ eYo.mixinFR(eYo._p, {
    * @param {Boolean} [getters] - Whether in the model, function values are getters
    * @return {Object}
    */
-  makeNS (ns, id, model, getters) {
-    //<<< mochai: eYo.makeNS'
+  newNS (ns, id, model, getters) {
+    //<<< mochai: eYo.newNS'
     //... chai.assert(eYo.isNS)
     //... chai.expect(eYo).eyo_NS
-    //... chai.assert(eYo.makeNS)
+    //... chai.assert(eYo.newNS)
     if (eYo.isDef(ns) && !eYo.isNS(ns)) {
-      eYo.isDef(getters) && eYo.throw(`${this.name}/makeNS: Unexpected last argument: ${getters}`)
+      eYo.isDef(getters) && eYo.throw(`${this.name}/newNS: Unexpected last argument: ${getters}`)
       ;[ns, id, model, getters] = [this, ns, id, model]
     }
     if (!eYo.isStr(id)) {
-      eYo.isDef(getters) && eYo.throw(`${this.name}/makeNS: Unexpected last argument (2): ${getters}`)
+      eYo.isDef(getters) && eYo.throw(`${this.name}/newNS: Unexpected last argument (2): ${getters}`)
       ;[id, model, getters] = [eYo.NA, id, model]
     }
     ns && id && ns[id] !== eYo.NA && eYo.throw(`${ns.name}[${id}] already exists.`)
     if (eYo.isBool(model)) {
       ;[model, getters] = [getters, model]
     }
-    //... var ns = eYo.makeNS()
+    //... var ns = eYo.newNS()
     //... chai.expect(ns).eyo_NS
     //... chai.expect(ns).not.equal(eYo)
     var Super = this.constructor
@@ -1173,18 +1176,18 @@ eYo.mixinFR(eYo._p, {
       Super.call(this)
     }
     eYo.inherits(NS, Super)
-    //... var ns_super = eYo.makeNS()
+    //... var ns_super = eYo.newNS()
     //... chai.expect(ns_super).eyo_NS
-    //... var ns = ns_super.makeNS()
+    //... var ns = ns_super.newNS()
     //... chai.expect(ns).eyo_NS
     //... chai.expect(() => ns.foo()).throw()
     //... ns_super._p.foo = eYo.doNothing
     //... ns.foo()
 
-    //... var ns_super = eYo.makeNS()
-    //... var ns = ns_super.makeNS()
+    //... var ns_super = eYo.newNS()
+    //... var ns = ns_super.newNS()
     //... var key = eYo.genUID(eYo.IDENT)
-    //... var ns = ns_super.makeNS(eYo.NULL_NS, key)
+    //... var ns = ns_super.newNS(eYo.NULL_NS, key)
     //... chai.assert(ns)
     //... chai.expect(ns_super[key]).undefined
 
@@ -1192,8 +1195,8 @@ eYo.mixinFR(eYo._p, {
       value: this,
       writable: false,
     })
-    //... var ns_super = eYo.makeNS()
-    //... var ns = ns_super.makeNS()
+    //... var ns_super = eYo.newNS()
+    //... var ns = ns_super.newNS()
     //... chai.expect(ns).not.equal(ns_super)
     //... chai.expect(ns.super).equal(ns_super)
     ns && Object.defineProperty(NS.prototype, 'parent', {
@@ -1217,11 +1220,11 @@ eYo.mixinFR(eYo._p, {
           return value
         }, true)
       )
-      //... var ns = eYo.makeNS(eYo.NULL_NS, 'fu', {
+      //... var ns = eYo.newNS(eYo.NULL_NS, 'fu', {
       //...   shi: 421
       //... })
       //... chai.expect(ns.shi).equal(421)
-      //... var ns = eYo.makeNS(eYo.NULL_NS, 'fu', true, {
+      //... var ns = eYo.newNS(eYo.NULL_NS, 'fu', true, {
       //...   shi () { return 421 }
       //... })
       //... chai.expect(ns.shi).equal(421)
@@ -1240,11 +1243,11 @@ eYo.mixinFR(eYo._p, {
           writable: false,
         },
       })
-      //... var ns_super = eYo.makeNS()
-      //... var ns = ns_super.makeNS('foo')
+      //... var ns_super = eYo.newNS()
+      //... var ns = ns_super.newNS('foo')
       //... chai.expect(ns).eyo_NS
       //... chai.expect(ns).equal(ns_super.foo)
-      //... ns.makeNS('chi')
+      //... ns.newNS('chi')
       //... chai.expect(ns_super.foo.chi).eyo_NS
     } else {
       Object.defineProperties(NS.prototype, {
@@ -1275,10 +1278,10 @@ eYo.mixinFR(eYo._p, {
       if (first) {
         if (!ns[first]) {
           if (eYo.isStr(second)) {
-            ns = ns.makeNS(first)
+            ns = ns.newNS(first)
             f(second, ...args)
           } else {
-            (ns[first] = second) || ns.makeNS(first)
+            (ns[first] = second) || ns.newNS(first)
           }
         } else if (eYo.isStr(second)) {
           ns = ns[first]
@@ -1408,7 +1411,7 @@ eYo.ENABLE_ASSERTS = true
 eYo.provide('eYo')
 
 //<<< mochai: version
-eYo.makeNS('version', {
+eYo.newNS('version', {
   //<<< mochai: CONST
   /** @define {number} */
   MAJOR: 0,
@@ -1431,10 +1434,10 @@ eYo.makeNS('version', {
 })
 //>>>
 
-eYo.makeNS('session')
+eYo.newNS('session')
 
-eYo.makeNS('temp')
-eYo.makeNS('debug')
+eYo.newNS('temp')
+eYo.newNS('debug')
 
 goog.require('goog.userAgent')
 

@@ -15,7 +15,7 @@
  * @name {eYo.py.parser}
  * @namespace
  */
-eYo.py.makeNS('parser')
+eYo.py.newNS('parser')
 
 /* Parser implementation */
 
@@ -40,7 +40,7 @@ extern int Py_DEBUG
 #endif
 */
 
-eYo.o4t.makeC9r(eYo.py, 'Stack', {
+eYo.o4t.newC9r(eYo.py, 'Stack', {
   init () {
     this.s_base = []
   },

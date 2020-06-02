@@ -37,7 +37,7 @@ eYo.forward('focus')
 /**
  * Svg driver for bricks.
  */
-eYo.svg.makeDriverC9r('Brick', {
+eYo.svg.newDriverC9r('Brick', {
   /**
    * Initialize the given brick.
    * Adds to brick's renderer a `svg` attribute owning all the svg related resources.

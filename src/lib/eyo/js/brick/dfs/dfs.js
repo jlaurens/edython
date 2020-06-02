@@ -16,7 +16,7 @@
  * @name {eYo.dfs}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'dfs', {
+eYo.o4t.newNS(eYo, 'dfs', {
   MODIFIER: 'modifier', // this MUST be in lower case
   PREFIX: 'prefix', // lowercase
   LABEL: 'label', // lowercase

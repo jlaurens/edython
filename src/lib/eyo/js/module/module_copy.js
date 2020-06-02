@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('copy__module', {
+eYo.module.newNS('copy__module', {
   URL: 'https://docs.python.org/3.6/library/copy.html'
 })
 

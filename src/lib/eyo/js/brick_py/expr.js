@@ -24,7 +24,7 @@ eYo.require('t3.all')
  * @name{eYo.expr}
  * @namespace
  */
-eYo.stmt.makeNS(eYo, 'expr')
+eYo.stmt.newNS(eYo, 'expr')
 
 /**
  * @name {eYo.expr.BaseC9r}
@@ -345,7 +345,7 @@ eYo.expr.BaseC9r_p.doConsolidate = function (deep, force) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeC9r('proper_slice', true, {
+eYo.expr.newC9r('proper_slice', true, {
   data: {
     variant: {
       all: [
@@ -446,7 +446,7 @@ eYo.expr.makeC9r('proper_slice', true, {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeC9r('conditional_expression', true, {
+eYo.expr.newC9r('conditional_expression', true, {
   slots: {
     expression: {
       order: 1,
@@ -473,7 +473,7 @@ eYo.expr.makeC9r('conditional_expression', true, {
  * Class for a Delegate, builtin object.
  * For edython.
  */
-eYo.expr.makeC9r('builtin__object', true, {
+eYo.expr.newC9r('builtin__object', true, {
   data: {
     value: {
       all: ['True', 'False', 'None', 'Ellipsis', '...', 'NotImplemented'],
@@ -514,7 +514,7 @@ eYo.expr.builtin__object_p.makeTitle = function (op) {
  * Class for a Delegate, any object.
  * For edython.
  */
-eYo.expr.makeC9r('Any', true, {
+eYo.expr.newC9r('Any', true, {
   data: {
     expression: {
       init: '',

@@ -5,12 +5,12 @@ describe ('Tests: focus', function () {
     chai.assert(eYo.focus.Main)
   })
   it ('new eYo.focus.Main', function () {
-    let onr = new (eYo.o4t.makeC9r(''))()
+    let onr = new (eYo.o4t.newC9r(''))()
     let main = new eYo.focus.Main(onr)
     chai.expect(main.owner).equal(onr)
   })
   let wsOne = () => {
-    return new (eYo.o4t.makeC9r('', {
+    return new (eYo.o4t.newC9r('', {
       properties: {
         focus_main: {
           value: new eYo.focus.Main(this)
@@ -24,7 +24,7 @@ describe ('Tests: focus', function () {
     }))()
   }
   let whatOne = (mngr, on, off) => {
-    return new (eYo.o4t.makeC9r('', {
+    return new (eYo.o4t.newC9r('', {
       properties: {
         focus_mngr: mngr,
         ui_driver: {

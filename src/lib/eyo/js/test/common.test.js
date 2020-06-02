@@ -25,7 +25,7 @@ eYo.py && setTimeout(() => {
   })
 }, 0)
 
-eYo.test || eYo.makeNS('test')
+eYo.test || eYo.newNS('test')
 eYo.TESTING = true
 
 console.error('LOADING common.test.js...')

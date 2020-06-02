@@ -18,7 +18,7 @@ eYo.require('geom')
  * @name{eYo.magnet}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'magnet', {
+eYo.o4t.newNS(eYo, 'magnet', {
   HEAD: 2,
   LEFT: 3,
   RIGHT: 4,
@@ -71,7 +71,7 @@ Object.defineProperties(eYo.magnet._p, {
  * @name{eYo.magnet.S}
  * @param {eYo.brick.BaseC9r} brick  brick is the owner
  */
-eYo.magnet.makeC9r('S', { // eYo.magnet.BaseC9r is not yet defined!
+eYo.magnet.newC9r('S', { // eYo.magnet.BaseC9r is not yet defined!
   init (brick) {
     // configure the connections
     var model = brick.model

@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('weakref__module', {
+eYo.module.newNS('weakref__module', {
   URL: 'https://docs.python.org/3.6/library/weakref.html'
 })
 

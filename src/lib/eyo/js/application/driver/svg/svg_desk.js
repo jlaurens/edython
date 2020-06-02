@@ -18,7 +18,7 @@ eYo.forward('view.Desk')
 /**
  * Svg driver for desk.
  */
-eYo.svg.makeDriverC9r('Desk', {
+eYo.svg.newDriverC9r('Desk', {
   /**
    * Initialize the desk SVG ressources.
    * @param {eYo.view.Desk} desk

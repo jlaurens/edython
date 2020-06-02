@@ -16,4 +16,4 @@ eYo.forward('app')
 /**
  * Svg driver for application.
  */
-eYo.svg.makeDriverC9r('App')
+eYo.svg.newDriverC9r('App')

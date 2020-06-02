@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('array__module', {
+eYo.module.newNS('array__module', {
   URL: 'https://docs.python.org/3.6/library/array.html'
 })
 

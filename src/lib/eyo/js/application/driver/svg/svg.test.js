@@ -2,7 +2,7 @@ describe('Svg driver', function() {
   it ('Svg: Basic', function () {
     chai.assert(eYo.svg)
     chai.assert(eYo.svg.Mngr)
-    chai.assert(eYo.svg.makeDriverC9r)
+    chai.assert(eYo.svg.newDriverC9r)
     chai.assert(eYo.svg.makeMngr)
     chai.assert(eYo.svg.BaseC9r)
   })

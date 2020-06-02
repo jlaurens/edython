@@ -16,7 +16,7 @@ eYo.forward('board')
 /**
  * Svg driver for boards.
  */
-eYo.svg.makeDriverC9r('Board', {
+eYo.svg.newDriverC9r('Board', {
     /**
    * Initialize the board dom ressources.
    * @param {eYo.board} board

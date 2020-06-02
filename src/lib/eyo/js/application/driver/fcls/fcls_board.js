@@ -16,4 +16,4 @@ eYo.forward('board')
 /**
  * Shared application driver.
  */
-eYo.fcls.makeDriverC9r('Board')
+eYo.fcls.newDriverC9r('Board')

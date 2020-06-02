@@ -18,7 +18,7 @@ eYo.require('c9r')
  * @name{eYo.attr}
  * @namespace
  */
-eYo.makeNS('shared', {
+eYo.newNS('shared', {
   OWNER: eYo.c9r.new(),
 })
 //<<< mochai: Basics

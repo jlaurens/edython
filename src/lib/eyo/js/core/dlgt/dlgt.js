@@ -21,7 +21,7 @@ eYo.require('do')
  * @name {eYo.dlgt}
  * @namespace
  */
-eYo.makeNS('dlgt')
+eYo.newNS('dlgt')
 
 eYo.mixinRO(eYo, {
   $: Symbol('$'),
@@ -72,7 +72,7 @@ eYo.dlgt.declareDlgt = function (_p) {
 //... }
 //>>>
 
-//... var NS = eYo.makeNS()
+//... var NS = eYo.newNS()
 //... var id = 'foo'
 //... var C9r = function () {}
 //... model = {}
@@ -796,7 +796,7 @@ eYo.dlgt.declareDlgt(eYo._p)
    * Declare the given model for the associate constructor.
    * The default implementation just calls `methodsMerge` and `CONSTsMerge`.
    * 
-   * @param {Object} model - Object, like for |makeC9r|.
+   * @param {Object} model - Object, like for |newC9r|.
    */
   _p.modelMerge = function (model) {
     model.methods && this.methodsMerge(model.methods)
@@ -808,7 +808,7 @@ eYo.dlgt.declareDlgt(eYo._p)
    * The default implementation just calls `modelMerge` after `modelValidate`.
    * Called by `finalizeC9r`.
    * 
-   * @param {Object} model - Object, like for |makeC9r|.
+   * @param {Object} model - Object, like for |newC9r|.
    */
   _p.modelPrepare = function () {
     let model = this.model

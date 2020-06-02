@@ -16,7 +16,7 @@
  * @name {eYo.section}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'section')
+eYo.o3d.newNS(eYo, 'section')
 
 /**
  * Class for a flyout's section.

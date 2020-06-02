@@ -16,7 +16,7 @@
  * @name{eYo.setup}
  * @namespace
  */
-eYo.makeNS('setup', {
+eYo.newNS('setup', {
   i9rsHead: [],
   i9rsTail: [],
 })

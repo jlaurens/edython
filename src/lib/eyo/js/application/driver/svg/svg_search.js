@@ -19,7 +19,7 @@ eYo.forward('section.Search')
 /**
  * Svg driver for the search view.
  */
-eYo.svg.makeDriverC9r('Search', {
+eYo.svg.newDriverC9r('Search', {
     /**
    * Initializes the search SVG ressources.
    * @param {eYo.dom.Search} search
@@ -251,7 +251,7 @@ eYo.svg.Search_p.on_mousedown = function(e) {
 /**
  * Svg driver for the search tool bar.
  */
-eYo.svg.makeDriverC9r('SearchToolbar', {
+eYo.svg.newDriverC9r('SearchToolbar', {
   /**
    * Initializes the search toolbar SVG ressources.
    * @param {eYo.dom.SearchToolbar} searchToolbar

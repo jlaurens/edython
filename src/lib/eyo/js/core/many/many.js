@@ -34,14 +34,14 @@ eYo.O3d[eYo.$].modelFormat.allow({
  * @name {eYo.many}
  * @namespace
  */
-eYo.makeNS('many')
+eYo.newNS('many')
 
 //<<< mochai: ...
 //... let flagor = (what, simple) => simple ? () => flag.push(what) : (...$) => flag.push(what, ...$)
 //... var C9r
 //... let preparator = f => {
 //...   return model => {
-//...     C9r = eYo.c9r.makeNS().makeBaseC9r(true)
+//...     C9r = eYo.c9r.newNS().makeBaseC9r(true)
 //...     let eyo = C9r[eYo.$]
 //...     let _p = C9r.prototype
 //...     _p.flag = flagor(1)
@@ -544,7 +544,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
       v.init && v.init(...$)
     }
     //... preparator()()
-    //... var ns = eYo.o3d.makeNS()
+    //... var ns = eYo.o3d.newNS()
     //... ns.makeBaseC9r({
     //...   init (model, k, object) {
     //...     flag.push(123)
@@ -588,7 +588,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
     object[tHead] = object[tTail] = object[tModelByKey__] = eYo.NA
     object.boundField = eYo.NA // not here
     //... preparator()()
-    //... var ns = eYo.o3d.makeNS()
+    //... var ns = eYo.o3d.newNS()
     //... ns.makeBaseC9r({
     //...   dispose (...$) {
     //...     flag.push(1, ...$)
@@ -629,7 +629,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
       f.call($this, v)
     }
     //... preparator()()
-    //... var ns = eYo.o3d.makeNS()
+    //... var ns = eYo.o3d.newNS()
     //... ns.makeBaseC9r()
     //... C9r[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {
@@ -678,7 +678,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (type, path, manyModel = {}) {
     }
     return false
     //... preparator()()
-    //... var ns = eYo.o3d.makeNS()
+    //... var ns = eYo.o3d.newNS()
     //... ns.makeBaseC9r()
     //... C9r[eYo.$].manyEnhanced('foo', 'foo', {
     //...   make (model, k, object) {

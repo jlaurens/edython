@@ -21,7 +21,7 @@ eYo.require('shared')
  * @name {eYo.o4t.Shape}
  * @constructor
  */
-eYo.o4t.makeNS(eYo, 'shape')
+eYo.o4t.newNS(eYo, 'shape')
 /**
  * @name {eYo.shape.BaseC9r}
  * @constructor

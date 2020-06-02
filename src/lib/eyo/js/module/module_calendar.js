@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('calendar__module', {
+eYo.module.newNS('calendar__module', {
   URL: 'https://docs.python.org/3.6/library/calendar.html'
 })
 

@@ -35,7 +35,7 @@ Object.defineProperties(eYo.view, {
  * @param {string=} opt_css_class A class to be applied to this scrollbar.
  * @constructor
  */
-eYo.view.makeC9r('Scrollbar', {
+eYo.view.newC9r('Scrollbar', {
   init(bs, horizontal, opt_css_class) {
     if (bs instanceof eYo.view.Scroller) {
       this.scroller_ = bs  

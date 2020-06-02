@@ -17,7 +17,7 @@ eYo.require('do')
  * @name{eYo.gmr}
  * @namespace
  */
-eYo.py.makeNS('gmr')
+eYo.py.newNS('gmr')
 
 /* Grammar implementation *-/
 
@@ -33,7 +33,7 @@ eYo.py.makeNS('gmr')
 /**
  * A grammar book contains the grammar...
  */
-eYo.py.gmr.makeC9r('Book', {
+eYo.py.gmr.newC9r('Book', {
   init (dfas, labels, start) {
     this.g_dfa = dfas || []
     this.g_start = start
@@ -69,7 +69,7 @@ typedef struct {
 } label
 */
 
-eYo.py.gmr.makeC9r('Label', {
+eYo.py.gmr.newC9r('Label', {
   init (type, str) {
     this.lb_type = type
     this.lb_str = str
@@ -94,7 +94,7 @@ typedef struct {
 } arc
 */
 
-eYo.py.gmr.makeC9r('Arc', {
+eYo.py.gmr.newC9r('Arc', {
   init (lbl, arrow) {
     this.a_lbl = lbl
     this.a_arrow = arrow
@@ -115,7 +115,7 @@ typedef struct {
 } state
 */
 
-eYo.py.gmr.makeC9r('State', {
+eYo.py.gmr.newC9r('State', {
   init (arcs) {
     this.s_arc = arcs || []
     this.s_lower = 0
@@ -144,7 +144,7 @@ typedef struct {
 } dfa
 */
 
-eYo.py.gmr.makeC9r('DFA', {
+eYo.py.gmr.newC9r('DFA', {
   init (type, name, initial, states, first) {
     /*
     {256, "single_input", 0, 3, states_0,

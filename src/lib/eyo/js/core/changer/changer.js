@@ -15,7 +15,7 @@
  * @name {eYo.changer}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'changer')
+eYo.o4t.newNS(eYo, 'changer')
 //<<< mochai: Basics
 //... chai.assert(eYo.changer)
 //>>>

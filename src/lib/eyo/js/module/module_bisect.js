@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('bisect__module', {
+eYo.module.newNS('bisect__module', {
   URL: 'https://docs.python.org/3.6/library/bisect.html'
 })
 

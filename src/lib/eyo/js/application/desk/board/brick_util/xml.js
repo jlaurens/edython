@@ -35,7 +35,7 @@ eYo.require('brick')
 
 //g@@g.require('g@@g.dom');
 
-eYo.makeNS('xml', {
+eYo.newNS('xml', {
   URN: 'urn:edython:',
   XMLNS: 'urn:edython:0.2',
   PYTHON: 'python',

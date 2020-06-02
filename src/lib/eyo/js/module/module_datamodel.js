@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('datamodel', {
+eYo.module.newNS('datamodel', {
   URL: 'https://docs.python.org/3.6/library/datamodel.html'
 })
 

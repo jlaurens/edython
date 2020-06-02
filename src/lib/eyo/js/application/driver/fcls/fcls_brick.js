@@ -16,7 +16,7 @@ eYo.forward('brick')
 /**
  * Faceless driver for bricks.
  */
-eYo.fcls.makeDriverC9r('Brick')
+eYo.fcls.newDriverC9r('Brick')
 
 /**
  * The default implementation does nothing.

@@ -24,7 +24,7 @@ eYo.forward('tooltip')
  * @name {eYo.flyout}
  * @namespace
  */
-eYo.view.makeNS(eYo, 'flyout', {
+eYo.view.newNS(eYo, 'flyout', {
   AT_RIGHT: 1,
   AT_LEFT: 2,
   /**
@@ -94,7 +94,7 @@ eYo.view.makeNS(eYo, 'flyout', {
  * @property {number} height_ Height of flyout.
  * @private
  */
-eYo.flyout.makeC9r('View', {
+eYo.flyout.newC9r('View', {
   init (owner) {
     // First
     if (!this.autoClose) {

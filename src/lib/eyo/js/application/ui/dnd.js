@@ -16,7 +16,7 @@
  * @name{eYo.dnd}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'dnd')
+eYo.o3d.newNS(eYo, 'dnd')
 
 /**
  * @name{eYo.dnd.dragger}
@@ -41,7 +41,7 @@ eYo.forward('driver')
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param{eYo.event.Motion} [motion] -  the owning motion
  */
-eYo.dnd.makeC9r('Mngr', {
+eYo.dnd.newC9r('Mngr', {
   init (owner, motion) {
     this.motion_ = motion
     /** the dragger_ that started a drag, not owned */
@@ -267,7 +267,7 @@ eYo.dnd.dragger.BaseC9r_p.complete = eYo.dnd.dragger.BaseC9r_p.reset
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeC9r('Board')
+eYo.dnd.dragger.newC9r('Board')
 
 /**
  * Start a drag operation.
@@ -315,7 +315,7 @@ eYo.dnd.dragger.Board_p.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeC9r('DraftBoard')
+eYo.dnd.dragger.newC9r('DraftBoard')
 
 /**
  * Sever all the links.
@@ -370,7 +370,7 @@ eYo.dnd.dragger.DraftBoard.prototype.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeC9r('LibraryBoard')
+eYo.dnd.dragger.newC9r('LibraryBoard')
 
 /**
  * Start a drag operation.
@@ -418,7 +418,7 @@ eYo.dnd.dragger.LibraryBoard.prototype.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeC9r('Brick')
+eYo.dnd.dragger.newC9r('Brick')
 
 /**
  * Start a drag operation.
@@ -466,7 +466,7 @@ eYo.dnd.dragger.Brick_p.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeC9r('LibraryBrick')
+eYo.dnd.dragger.newC9r('LibraryBrick')
 
 /**
  * Start a drag operation.
@@ -514,7 +514,7 @@ eYo.dnd.dragger.LibraryBrick_p.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dragger.makeC9r('DraftBrick')
+eYo.dnd.dragger.newC9r('DraftBrick')
 
 /**
  * Start a drag operation.
@@ -629,7 +629,7 @@ eYo.dnd.dropper.BaseC9r_p.complete = eYo.dnd.dropper.BaseC9r_p.reset
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dropper.makeC9r('Board')
+eYo.dnd.dropper.newC9r('Board')
 
 /**
  * Start a drop operation.
@@ -677,7 +677,7 @@ eYo.dnd.dropper.Board_p.complete = function () {
  * Main methods, `start`, `update`, `cancel`, `complete` and `reset`.
  * @param {eYo.dnd.Mngr} manager -  the owning drag and drop manager.
  */
-eYo.dnd.dropper.makeC9r('Brick')
+eYo.dnd.dropper.newC9r('Brick')
 
 /**
  * Start a drop operation.

@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.makeNS('e', {
+eYo.newNS('e', {
   OK: 10, /* No error */
   EOF: 11, /* End Of File */
   INTR: 12, /* Interrupted */

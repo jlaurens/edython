@@ -15,7 +15,7 @@
  * @name {eYo.control}
  * @namespace
  */
-eYo.view.makeNS(eYo, 'control')
+eYo.view.newNS(eYo, 'control')
 
 Object.defineProperties(eYo.control._p, {
   WIDTH_: {value: 47},

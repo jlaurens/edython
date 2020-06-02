@@ -11,13 +11,13 @@
  */
 'use strict'
 
-eYo.makeNS('keyHandler')
+eYo.newNS('keyHandler')
 
 eYo.forward('xre')
 eYo.forward('dom')
 eYo.forward('navigate')
 
-eYo.KHandler.makeC9r('Menu')
+eYo.KHandler.newC9r('Menu')
 
 /**
  * Attempts to handle a keyboard event; returns true if the event was handled,

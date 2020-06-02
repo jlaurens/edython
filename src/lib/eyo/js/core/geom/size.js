@@ -39,7 +39,7 @@ eYo.forward('geom.Rect')
 /**
  * `Size` is like a vector, but size is a shorter name...
  */
-eYo.geom.makeC9r('Size', {
+eYo.geom.newC9r('Size', {
   //<<< mochai: Size
     //<<< mochai: Basics
     //... S = new eYo.geom.Size()
@@ -555,7 +555,7 @@ eYo.geom.Size[eYo.$].finalizeC9r()
 
 eYo.c9r.Dlgt_p.makeSized = function (key) {
   //<<< mochai: eYo.o4t.Dlgt.makeSized
-  //... let ns = eYo.o4t.makeNS()
+  //... let ns = eYo.o4t.newNS()
   //... ns.makeBaseC9r(true)
   //... ns.BaseC9r[eYo.$].makeSized('size')
   //... ns.BaseC9r[eYo.$].finalizeC9r()

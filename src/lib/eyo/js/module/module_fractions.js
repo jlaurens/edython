@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('fractions__module', {
+eYo.module.newNS('fractions__module', {
   URL: 'https://docs.python.org/3.6/library/fractions.html'
 })
 

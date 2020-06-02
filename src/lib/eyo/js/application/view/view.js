@@ -20,7 +20,7 @@ eYo.require('driver')
  * @name {eYo.view}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'view')
+eYo.o4t.newNS(eYo, 'view')
 
 //<<< mochai: Basics
 //... chai.assert(eYo.view)
@@ -37,7 +37,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
   eYo.isF(this.p6yPrepare) || eYo.throw(`${this.eyo.name}/viewEnhanced: Not a p6y aware delegate.`)
 
   //<<< mochai: Basic
-  //... let Foo = eYo.view.makeNS().makeC9r('Foo')
+  //... let Foo = eYo.view.newNS().newC9r('Foo')
   //... chai.expect(Foo[eYo.$].viewPrepare).eyo_F
   //... chai.expect(Foo[eYo.$].viewInit).eyo_F
   //>>>
@@ -58,7 +58,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
         _p.hasOwnProperty(k_v) || Object.defineProperties(_p, {
           [k_v]: eYo.descriptorR(function () {
             return this.viewMap.get(k)
-            //... let NS = eYo.o4t.makeNS()
+            //... let NS = eYo.o4t.newNS()
             //... let C9r = NS.makeBaseC9r(true)
             //... C9r[eYo.$].viewEnhanced()
             //... C9r[eYo.$].finalizeC9r()
@@ -93,7 +93,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
       //<<< mochai: viewEnhanced/allow
       [eYo.model.ANY]: eYo.View[eYo.$].modelFormat,
       [eYo.model.VALIDATE]: eYo.model.validateD,
-      //... let ns = eYo.o4t.makeNS()
+      //... let ns = eYo.o4t.newNS()
       //... let C9r = ns.makeBaseC9r(true)
       //... C9r[eYo.$].viewEnhanced()
       //... C9r[eYo.$].finalizeC9r()
@@ -105,7 +105,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
   eYo.c9r.appendToMethod(this._p, 'viewMerge', function () {
     this.viewShortcuts()
     //<<< mochai: viewMerge+viewShortcuts
-    //... let ns = eYo.o4t.makeNS()
+    //... let ns = eYo.o4t.newNS()
     //... let C9r = ns.makeBaseC9r(true)
     //... C9r[eYo.$].viewEnhanced()
     //... C9r[eYo.$].finalizeC9r()
@@ -129,7 +129,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
   })
   this.viewShortcuts()
 
-  //... let ns = eYo.o4t.makeNS()
+  //... let ns = eYo.o4t.newNS()
   //... let C9r = ns.makeBaseC9r()
   //... C9r[eYo.$].viewEnhanced()
   //... var o = ns.new('o', onr)
@@ -158,7 +158,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
         //... var seed = eYo.genUID(eYo.IDENT)
         //... var key = 'x' + seed
         //... var Key = 'X' + seed
-        //... var NS = eYo.view.makeNS()
+        //... var NS = eYo.view.newNS()
         //... NS.makeBaseC9r({
         //...   ui: {
         //...     init (...$) {
@@ -197,7 +197,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
         //... var seed = eYo.genUID(eYo.IDENT)
         //... var key = 'x' + seed
         //... var Key = 'X' + seed
-        //... var NS = eYo.view.makeNS()
+        //... var NS = eYo.view.newNS()
         //... NS.makeBaseC9r({
         //...   ui: {
         //...     dispose (...$) {
@@ -224,7 +224,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
     /**
      * Declare the given model for the associate constructor.
      * The default implementation calls `methodsMerge`.
-     * @param {Object} model - Object, like for |makeC9r|.
+     * @param {Object} model - Object, like for |newC9r|.
      */
     modelMerge (model) {
       //<<< mochai: modelMerge

@@ -22,7 +22,7 @@ eYo.forward('board')
  * @param {eYo.board} board Board to bind the scrollbars to.
  * @constructor
  */
-eYo.view.makeC9r('Scroller', {
+eYo.view.newC9r('Scroller', {
   init (board) {
     this.hScroll = new eYo.view.Scrollbar(
       this,

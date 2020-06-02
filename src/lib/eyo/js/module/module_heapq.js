@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('heapq__module', {
+eYo.module.newNS('heapq__module', {
   URL: 'https://docs.python.org/3.6/library/heapq.html'
 })
 

@@ -42,7 +42,7 @@ eYo.forward('expr.primary')
  * or a augtarget_annotated which is a particular case of key_datum.
  * For edython.
  */
-eYo.stmt.makeC9r('assignment_stmt', true, {
+eYo.stmt.newC9r('assignment_stmt', true, {
   data: {
     variant: {
       all: [
@@ -351,7 +351,7 @@ eYo.stmt.assignment_stmt_p.getType = function () {
  * Used only in assignment statement as wrapped value,
  * and in primary as promised value.
  */
-eYo.expr.List[eYo.$makeSubC9r]('value_list', {
+eYo.expr.List[eYo.$newSubC9r]('value_list', {
   list: (() => {
     /*
      * For each given type, returns the list of brick types that can be unique.
@@ -500,7 +500,7 @@ eYo.expr.value_list.prototype.getSubtype = function () {
   return (t && (this.subtype_ = t.type)) || this.subtype_
 }
 
-eYo.expr.List[eYo.$makeSubC9r]('augassigned_list', () => {
+eYo.expr.List[eYo.$newSubC9r]('augassigned_list', () => {
   var D = {
     check: eYo.t3.expr.check.expression,
     unique: eYo.t3.expr.yield_expr,

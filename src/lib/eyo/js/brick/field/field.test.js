@@ -33,7 +33,7 @@ describe('Field', function () {
     // RA.forEach(X => {
     //   var type = `one_slot_one_field_${X[0]}`
     //   eYo.t3.expr[type] = type
-    //   eYo.expr.makeC9r(type, {
+    //   eYo.expr.newC9r(type, {
     //     slots: {
     //       SLOT: {
     //         order: 1,

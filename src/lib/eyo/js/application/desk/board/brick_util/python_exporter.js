@@ -23,7 +23,7 @@ eYo.forward('slot')
  * @param {string} [One] indentation, defaults to 4 spaces.
  * @constructor
  */
-eYo.py.makeC9r('Exporter', {
+eYo.py.newC9r('Exporter', {
   init (oneIndent) {
     this.oneIndent = oneIndent || this.ns.INDENT
   },

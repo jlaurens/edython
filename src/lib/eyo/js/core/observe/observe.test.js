@@ -13,7 +13,7 @@ describe ('Tests: Observe', function () {
     }, 'onr')
   })
   it (`$this`, function () {
-    let ns = eYo.c9r.makeNS()
+    let ns = eYo.c9r.newNS()
     ns.makeBaseC9r()
     ns.BaseC9r[eYo.$].observeEnhanced()
     let o = ns.new()
@@ -29,10 +29,10 @@ describe ('Tests: Observe', function () {
     flag.expect(1234)
   })
   it (`Inherited`, function () {
-    let ns = eYo.c9r.makeNS()
+    let ns = eYo.c9r.newNS()
     let SuperC9r = ns.makeBaseC9r()
-    let C9r = SuperC9r[eYo.$makeSubC9r]('Foo')
-    let ChildC9r = C9r[eYo.$makeSubC9r]('Bar')
+    let C9r = SuperC9r[eYo.$newSubC9r]('Foo')
+    let ChildC9r = C9r[eYo.$newSubC9r]('Bar')
     SuperC9r[eYo.$].observeEnhanced()
     let o = new ChildC9r()
     let o_o = o.addObserver(eYo.observe.BEFORE, function (before, after) {
@@ -69,7 +69,7 @@ describe ('Tests: Observe', function () {
     flag.expect()
   })
   it (`Shared and inherited`, function () {
-    let ns = eYo.c9r.makeNS()
+    let ns = eYo.c9r.newNS()
     ns.makeBaseC9r()
     ns.BaseC9r[eYo.$].observeEnhanced()
     ns.new().willChange(1, 2)

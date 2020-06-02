@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('datastructures', {
+eYo.module.newNS('datastructures', {
   URL: 'https://docs.python.org/3.6/library/datastructures.html'
 })
 

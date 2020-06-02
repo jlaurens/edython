@@ -11,7 +11,7 @@
  */
 'use strict'
 
-eYo.o3d.makeNS(eYo, 'audio', {
+eYo.o3d.newNS(eYo, 'audio', {
   /**
    * Play a sound at least this amount of milliseconds.
    */

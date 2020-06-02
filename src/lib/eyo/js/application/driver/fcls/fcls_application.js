@@ -16,4 +16,4 @@ eYo.forward('app')
 /**
  * Shared application driver.
  */
-eYo.fcls.makeDriverC9r('App')
+eYo.fcls.newDriverC9r('App')

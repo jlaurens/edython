@@ -3,7 +3,7 @@ eYo.test.no_brick_type = true
 describe('Expression shape', function () {
   var type = 'test_shape_out'
   eYo.t3.expr[type] = type
-  eYo.expr.makeC9r(type, {
+  eYo.expr.newC9r(type, {
     out: {
       check: null
     }
@@ -35,7 +35,7 @@ describe('Expression shape', function () {
 describe('Statement shape', function () {
   var type = 'test_shape_stmt'
   eYo.t3.stmt[type] = type
-  eYo.stmt.makeC9r(type, {}) 
+  eYo.stmt.newC9r(type, {}) 
   chai.assert(eYo.stmt.test_shape_stmt)
   var b
   before(function() {
@@ -69,7 +69,7 @@ describe('Statement shape', function () {
 describe('Group shape', function () {
   var type = 'test_shape_part'
   eYo.t3.stmt[type] = type
-  eYo.stmt.group[eYo.$makeSubC9r](type, {}) 
+  eYo.stmt.group[eYo.$newSubC9r](type, {}) 
   chai.assert(eYo.stmt.test_shape_part)
   var b
   before(function() {

@@ -22,7 +22,7 @@ eYo.forward('app')
  * @name{eYo.focus}
  * @namespace
  */
-eYo.o3d.makeNS(eYo, 'focus')
+eYo.o3d.newNS(eYo, 'focus')
 
 /**
  * @name {eYo.focus.Main}
@@ -32,7 +32,7 @@ eYo.o3d.makeNS(eYo, 'focus')
  * @param {eYo.app.BaseC9r} app -  the owning application.
  * @constructor
  */
-eYo.focus.makeC9r('Main', {
+eYo.focus.newC9r('Main', {
   properties: {
     /**
      * The manager that has the current focus
@@ -127,7 +127,7 @@ eYo.register.add(eYo.focus.Main, 'mngr')
  * @param {eYo.focus.Main} main -  The main focus manager.
  * @constructor
  */
-eYo.focus.makeC9r('Mngr', {
+eYo.focus.newC9r('Mngr', {
   /**
    * 
    * @param {eYo.focus.Main} owner 

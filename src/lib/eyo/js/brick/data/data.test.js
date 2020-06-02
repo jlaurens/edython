@@ -5,7 +5,7 @@ describe ('Tests: data', function () {
   var ns, d
   let new_ns = () => {
     flag.reset()
-    ns = eYo.data.makeNS()
+    ns = eYo.data.newNS()
     ns.makeBaseC9r()
   }
   it ('Data: basic', function () {
@@ -365,7 +365,7 @@ describe ('Tests: data', function () {
     chai.expect(d.ui_driver).equal(5)
   })
 //   it('Data model', function () {
-//     let ns = eYo.data.makeNS()
+//     let ns = eYo.data.newNS()
 //     ns.makeBaseC9r()
 
 //     let test = (key, value) => {

@@ -18,7 +18,7 @@ eYo.forward('flyout.Toolbar')
  * @constructor
  * Dom driver for the flyout.
  */
-eYo.dom.flyout.makeDriverC9r('Toolbar', {
+eYo.dom.flyout.newDriverC9r('Toolbar', {
     /**
    * Initialize the flyout dom ressources.
    * @param {eYo.flyout.View} flyout

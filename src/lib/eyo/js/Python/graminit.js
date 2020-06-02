@@ -2,7 +2,7 @@
 
 eYo.require('py.tkn')
 
-eYo.py.makeNS('gmr_init')
+eYo.py.newNS('gmr_init')
 
 eYo.forward('py.bitset')
 

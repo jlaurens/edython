@@ -16,7 +16,7 @@ eYo.forward('control.Zoomer')
 /**
  * Faceless driver for the zoomer.
  */
-eYo.fcls.makeDriverC9r('Zoomer')
+eYo.fcls.newDriverC9r('Zoomer')
 
 /**
  * Initiate the zoomer UI.

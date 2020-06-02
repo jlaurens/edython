@@ -58,7 +58,7 @@ eYo.forward('geom.Rect')
  * @constructor
  * @param {*} ... - See the implementation.
  */
-eYo.geom.makeC9r('Point', {
+eYo.geom.newC9r('Point', {
   //<<< mochai: Point
     //<<< mochai: Basics
     //... P = new eYo.geom.Point()
@@ -705,7 +705,7 @@ eYo.geom.tPoint = function (snap, c, l) {
 
 eYo.c9r.Dlgt_p.makePointed = function (key) {
   //<<< mochai: eYo.o4t.Dlgt.makePointed
-  //... let ns = eYo.o4t.makeNS()
+  //... let ns = eYo.o4t.newNS()
   //... ns.makeBaseC9r(true)
   //... ns.BaseC9r[eYo.$].makePointed('origin')
   //... ns.BaseC9r[eYo.$].finalizeC9r()

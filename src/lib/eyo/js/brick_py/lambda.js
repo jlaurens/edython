@@ -44,7 +44,7 @@ eYo.require('magnet')
 //   presep: ',',
 // }
 
-eYo.consolidator.List[eYo.$makeSubC9r]('parameter', {
+eYo.consolidator.List[eYo.$newSubC9r]('parameter', {
   list: {
     check: null,
     mandatory: 0,
@@ -297,7 +297,7 @@ eYo.consolidator.Parameter.prototype.getCheck = (() => {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.List[eYo.$makeSubC9r]('parameter_list', {
+eYo.expr.List[eYo.$newSubC9r]('parameter_list', {
   list: {
     consolidator: eYo.consolidator.Parameter
   }
@@ -369,7 +369,7 @@ eYo.expr.Parameter_list.prototype.populateContextMenuFirst_ = function (mngr) {
  * Not normally called directly, eYo.brick.Create(...) is preferred.
  * For edython.
  */
-eYo.expr.makeC9r('lambda', true, {
+eYo.expr.newC9r('lambda', true, {
   slots: {
     parameters: {
       order: 1,

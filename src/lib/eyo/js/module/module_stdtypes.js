@@ -12,7 +12,7 @@
  */
 'use strict'
 
-eYo.module.makeNS('stdtypes', {
+eYo.module.newNS('stdtypes', {
   URL: 'https://docs.python.org/3.6/library/stdtypes.html'
 })
 

@@ -22,7 +22,7 @@ goog.require('goog.style')
  * @name{eYo.svg}
  * @namespace
  */
-eYo.dom.makeNS(eYo, 'svg', {
+eYo.dom.newNS(eYo, 'svg', {
   OWNER: new eYo.C9r(),
 })
 
