@@ -15,13 +15,16 @@
  * @name {eYo.driver}
  * @namespace
  */
-eYo.o4t.makeNS(eYo, 'driver')
+eYo.o4t.newNS(eYo, 'driver')
 //<<< mochai: Basics
 //... chai.assert(eYo.driver)
 //>>>
 
-eYo.c9r.makeC9r(eYo.driver, 'Handler', {
-  //<<< mochai: eYo.driver.Handler
+eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
+  //<<< mochai: eYo.driver[eYo.$Handler]
+  //<<< mochai: Basics
+  //... chai.expect(eYo.driver).property(eYo.$Handler)
+  //>>>
   /**
    * @param {String} key - the name of the driver, eg 'Audio'
    * @param {eYo.Driver} driver - the main driver
@@ -57,7 +60,7 @@ eYo.c9r.makeC9r(eYo.driver, 'Handler', {
     //<<< mochai: frozen or forbidden
     //... let driver = new eYo.O4t('driver', onr)
     //... let alt = new eYo.O4t('alt', onr)
-    //... let handler = new eYo.driver.Handler(driver.key, driver, alt)
+    //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, alt)
     //... let p = new Proxy(driver, handler)
     //... chai.expect(() => p()).throw()
     //... chai.expect(() => new p()).throw()
@@ -83,7 +86,7 @@ eYo.c9r.makeC9r(eYo.driver, 'Handler', {
       //...     },
       //...   },
       //... }, 'alt', onr)
-      //... let handler = new eYo.driver.Handler(driver.key, driver, alt)
+      //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, alt)
       //... let p = new Proxy(driver, handler)
       if (prop === '__driver') {
         return this.__driver
@@ -146,7 +149,7 @@ eYo.c9r.makeC9r(eYo.driver, 'Handler', {
       return Reflect.set(...arguments)
       //... let driver = new eYo.O4t('driver', onr)
       //... let alt = new eYo.O4t('alt', onr)
-      //... let handler = new eYo.driver.Handler(driver.key, driver, alt)
+      //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, alt)
       //... let p = new Proxy(driver, handler)
       //... chai.expect(() => p.foo = 'bar').throw()
       //>>>
@@ -158,7 +161,7 @@ eYo.c9r.makeC9r(eYo.driver, 'Handler', {
   },
   //>>>
 })
-eYo.driver.Handler[eYo.$].finalizeC9r()
+eYo.driver[eYo.$Handler][eYo.$].finalizeC9r()
 
 /**
  * @name {eYo.driver.BaseC9r}
@@ -229,21 +232,25 @@ eYo.driver.makeBaseC9r({
  * Owns instances of `eYo.Driver`'s descendants.
  * @param {Object} owner
  */
-eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
+eYo.driver.newSingleton('mngr', {
   //<<< mochai: eYo.driver.mngr
   //<<< mochai: Basics
   //... chai.expect(eYo.driver).property('mngr')
   //>>>
   //... var mngr = eYo.driver.mngr
+  [eYo.$SuperC9r]: eYo.O4t,
+  //<<< mochai: inherits
+  //... chai.expect(mngr).instanceof(eYo.O4t)
+  //>>>
   properties: {
     //<<< mochai: properties
-    driverC9rs: {
-      //<<< mochai: driverC9rs
+    driverC9rMap: {
+      //<<< mochai: driverC9rMap
       value () {
         return new Map()
       }
-      //... chai.expect(mngr.driverC9rs_p).instanceof(eYo.P6y)
-      ///... chai.expect(mngr.driverC9rs).instanceof(Map)
+      //... chai.expect(mngr.driverC9rMap_p).instanceof(eYo.P6y)
+      ///... chai.expect(mngr.driverC9rMap).instanceof(Map)
       //>>>
     },
     drivers: {
@@ -271,7 +278,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
             if (ans) {
               return ans
             }
-            if (prop === 'eyo_p6y') {
+            if (prop === eYo.$p6y) {
               return eYo.NA
             }
             if (prop === 'inspect') {
@@ -287,7 +294,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
               target[prop] = value
               return true
             }
-            if (prop === 'eyo_p6y') {
+            if (prop === eYo.$p6y) {
               target[prop] = value
               return true
             }
@@ -306,7 +313,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
   methods: {
     //<<< mochai: methods
     /**
-     * Usage: `eYo.driver.mngr.makeDriverC9r('Foo', model)`.
+     * Usage: `eYo.driver.mngr.newDriverC9r('Foo', model)`.
      * Actual implementation with fcls, fcfl, dom and svg drivers.
      * {Code: ns.mngr} is used by the main application object.
      * Convenient driver constructor maker.
@@ -325,11 +332,11 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
      * - doInitUI: an optional function with signature (object, ...)->eYo.NA
      * - doDisposeUI: an optional function with signature (object)->eYo.NA
      */
-    makeDriverC9r (key, SuperC9r, driverModel) {
-      //<<< mochai: makeDriverC9r
-      //... var NS = eYo.driver.makeNS()
+    newDriverC9r (key, SuperC9r, driverModel) {
+      //<<< mochai: newDriverC9r
+      //... var NS = eYo.driver.newNS()
       //... NS.makeMngr()
-      //... NS.mngr.makeDriverC9r('Foo')
+      //... NS.mngr.newDriverC9r('Foo')
       //... chai.expect(NS.Foo).eyo_C9r
       //... var foo = new NS.Foo('foo', onr)
       //... chai.assert(foo.doInitUI)
@@ -337,11 +344,11 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
       //... foo.disposeUI()
       var NS = this.ns
       if (!eYo.isSubclass(SuperC9r, eYo.Driver)) {
-        driverModel && eYo.throw(`${this.eyo.name}/makeDriverC9r: Unexpected model (${driverModel})`)
+        driverModel && eYo.throw(`${this.eyo.name}/newDriverC9r: Unexpected model (${driverModel})`)
         ;[SuperC9r, driverModel] = [NS.super[key] || NS.BaseC9r, eYo.called(SuperC9r) || {}]
       }
       if (!eYo.isSubclass(SuperC9r, NS.BaseC9r)) {
-        //... var NS = eYo.driver.makeNS()
+        //... var NS = eYo.driver.newNS()
         //... NS.makeBaseC9r({
         //...   methods: {
         //...     chi (...$) {
@@ -350,14 +357,14 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
         //...   }
         //... })
         //... NS.makeMngr()
-        //... NS.mngr.makeDriverC9r('Bar', {
+        //... NS.mngr.newDriverC9r('Bar', {
         //...   methods: {
         //...     foo (...$) {
         //...       flag.push(4, ...$)
         //...     }
         //...   }
         //... })
-        //... NS.makeNS('a')
+        //... NS.newNS('a')
         //... NS.a.makeBaseC9r({
         //...   methods: {
         //...     mee (...$) {
@@ -366,7 +373,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
         //...   }
         //... })
         //... NS.a.makeMngr()
-        //... NS.a.mngr.makeDriverC9r('Bar')
+        //... NS.a.mngr.newDriverC9r('Bar')
         //... var bar = new NS.a.Bar('bar', onr)
         //... bar.chi(2, 3)
         //... bar.foo(5, 6)
@@ -378,7 +385,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
           driverModel = NS.BaseC9r[eYo.$].model
         }
       }
-      let Driver = eYo.c9r.makeC9r(NS, key, SuperC9r, driverModel)
+      let Driver = eYo.c9r.newC9r(NS, key, SuperC9r, driverModel)
       let ui_m = this.model.ui
       let ui_d = Driver[eYo.$].model.ui
       eYo.mixinFR(Driver.prototype, {
@@ -405,14 +412,14 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
       return Driver
       //... var id = eYo.genUID(eYo.IDENT)
       //... var x = `driver.${id}`
-      //... var D1 = mngr.makeDriverC9r(id)
+      //... var D1 = mngr.newDriverC9r(id)
       //... var Drvr = mngr.getDriverC9r(x)
       //... chai.expect(D1).equal(Drvr)
       //... var drvr = mngr.getDriver(x)
       //... chai.expect(drvr).instanceOf(Drvr)
       //... var id = eYo.genUID(eYo.IDENT)
       //... var x = `driver.${id}`
-      //... var D2 = mngr.makeDriverC9r(id, D1)
+      //... var D2 = mngr.newDriverC9r(id, D1)
       //... var Drvr = mngr.getDriverC9r(x)
       //... chai.expect(D2).equal(Drvr)
       //... var drvr = mngr.getDriver(x)
@@ -420,7 +427,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
       //... chai.expect(drvr).instanceOf(D2)
       //... var id = eYo.genUID(eYo.IDENT)
       //... var x = `driver.${id}`
-      //... mngr.makeDriverC9r(id, {
+      //... mngr.newDriverC9r(id, {
       //...   ui: {
       //...     doInit (onr, ...$) {
       //...       onr.flag(2, ...$)
@@ -432,7 +439,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
       //... flag.expect(1234)
       //... var id = eYo.genUID(eYo.IDENT)
       //... var x = `driver.${id}`
-      //... mngr.makeDriverC9r(id, {
+      //... mngr.newDriverC9r(id, {
       //...   ui: {
       //...     doDispose (onr, ...$) {
       //...       onr.flag(2, ...$)
@@ -449,7 +456,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
      * @param {String} name
      */
     getDriverC9r (name) {
-      return this.driverC9rs.get(name)
+      return this.driverC9rMap.get(name)
     },
     /**
      * @name{getDriver}
@@ -483,7 +490,7 @@ eYo.o4t.makeSingleton(eYo.driver, 'mngr', {
       }
       return this.allPurposeDriver
       //... var driver = mngr.getDriver({
-      //...   [eYo.$]: {
+      //...   eyo: {
       //...     name: `${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`,
       //...   },
       //... })
@@ -504,7 +511,7 @@ eYo.mixinFR(eYo.driver._p, {
    * Actual implementation with Fcls, Fcfl, Dom and Svg drivers.
    * {Code: ns.Mngr} is instantiated by the main application object.
    * The `Base` class is also created.
-   ** @param {Object} [mngrModel] -  model used for creation, see `makeC9r`.
+   ** @param {Object} [mngrModel] -  model used for creation, see `newC9r`.
   * @return {Function} a constructor equals to ns.Mngr
   */
   makeMngr (mngrModel) {
@@ -521,8 +528,8 @@ eYo.mixinFR(eYo.driver._p, {
       }
       mngrModel[eYo.$SuperC9r] = $super.mngr.constructor
     }
-    return eYo.o4t.makeSingleton(this, 'mngr', mngrModel)
-    //... let NS = eYo.driver.makeNS()
+    return this.newSingleton('mngr', mngrModel)
+    //... let NS = eYo.driver.newNS()
     //... chai.expect(NS).not.property('mngr')
     //... chai.expect(NS.BaseC9r).equal(eYo.driver.BaseC9r)
     //... NS.makeMngr()
@@ -530,22 +537,22 @@ eYo.mixinFR(eYo.driver._p, {
     //... chai.expect(()=>NS.makeBaseC9r()).throw()
     //... chai.expect(NS.BaseC9r).eyo_subclass(eYo.driver.BaseC9r)
     //... chai.expect(NS.mngr.constructor).eyo_subclass(eYo.driver.mngr.constructor)
-    //... chai.expect(NS.mngr).property('makeDriverC9r')
-    //... NS.makeNS('a')
+    //... chai.expect(NS.mngr).property('newDriverC9r')
+    //... NS.newNS('a')
     //... NS.a.makeMngr()
-    //... let NS1 = eYo.driver.makeNS()
+    //... let NS1 = eYo.driver.newNS()
     //... NS1.makeMngr()
     //... chai.expect(NS1.mngr).instanceOf(eYo.driver.mngr.constructor)
-    //... let NS2 = NS1.makeNS()
+    //... let NS2 = NS1.newNS()
     //... NS2.makeMngr()
     //... chai.expect(NS2.mngr).instanceOf(NS1.mngr.constructor)
-    //... let NS3 = NS2.makeNS()
+    //... let NS3 = NS2.newNS()
     //... NS3.makeMngr({
     //...   properties: {
     //...     foo: 421,
     //...   },
     //...   methods: {
-    //...     flag () {
+    //...     flag (...$) {
     //...       flag.push(1, ...$)  
     //...     },
     //...   },

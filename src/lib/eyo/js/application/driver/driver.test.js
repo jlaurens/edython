@@ -15,19 +15,19 @@ describe('driver', function() {
   it ('Driver: newDriverC9r inherits', function () {
     var NS = eYo.driver.newNS()
     NS.makeMngr()
-    NS.newDriverC9r('Foo', {
+    NS.mngr.newDriverC9r('Foo', {
       init (...$) {
         flag.push(1)
       }
     })
-    chai.assert(eYo.isF(NS.Foo))
+    chai.assert(eYo.isC9r(NS.Foo))
     new NS.Foo('foo', onr)
     flag.expect(1)
   })
   it ('Driver: newDriverC9r inherits (2)', function () {
     var NS = eYo.driver.newNS()
     NS.makeMngr()
-    NS.newDriverC9r('Foo', {
+    NS.mngr.newDriverC9r('Foo', {
       init (key, owner, ...$) {
         owner.flag(2, ...$)
       },
@@ -38,7 +38,7 @@ describe('driver', function() {
     NS.newNS('a')
     NS.a.makeMngr()
     chai.expect(NS.a.super).equal(NS)
-    NS.a.newDriverC9r('Foo', {
+    NS.a.mngr.newDriverC9r('Foo', {
       init (key, owner, ...$) {
         owner.flag(3, ...$)
       },
@@ -51,7 +51,7 @@ describe('driver', function() {
   it ('Driver: newDriverC9r with model', function () {
     var NS = eYo.driver.newNS()
     NS.makeMngr()
-    NS.newDriverC9r('Foo', {
+    NS.mngr.newDriverC9r('Foo', {
       init (key, owner, ...$) {
         flag.push(1, ...$)
       },
@@ -75,7 +75,7 @@ describe('driver', function() {
   it ('Driver: newDriverC9r concurrent', function () {
     var NS = eYo.driver.newNS()
     NS.makeMngr()
-    NS.newDriverC9r('Foo', {
+    NS.mngr.newDriverC9r('Foo', {
       init (key, owner, ...$) {
         flag.push(1, ...$)
       },
@@ -89,7 +89,7 @@ describe('driver', function() {
         },
       },
     })
-    NS.newDriverC9r('Bar', {
+    NS.mngr.newDriverC9r('Bar', {
       init (key, owner, ...$) {
         flag.push(4, ...$)
       },
