@@ -136,17 +136,19 @@ eYo.c9r._p.doMakeC9r = function (ns, id, SuperC9r, model) {
     SuperC9r[eYo.$].addSubC9r(C9r)
     eYo.assert(eYo.isSubclass(C9r, SuperC9r), 'MISSED inheritance)')
     // syntactic sugar shortcuts
-    if (ns && id.length) {
-      if (id && id.startsWith('eyo:')) {
-        id = id.substring(4)
-      }
+    if (ns && id) {
       (ns.hasOwnProperty(id) || ns._p.hasOwnProperty(id)) && eYo.throw(`${id.toString()} is already a property of ns: ${ns.name}`)
-      Object.defineProperties(ns._p, {
-        [id]: { value: C9r},
-        [id + '_p']: { value: C9r.prototype },
-        [id + '_s']: { value: SuperC9r.prototype },
-        [id + '_S']: { value: SuperC9r },
-      })
+      Object.defineProperty(ns._p, id, {value: C9r})
+      if (id.length) {
+        if (id.startsWith('eyo:')) {
+          id = id.substring(4)
+        }
+        Object.defineProperties(ns._p, {
+          [id + '_p']: { value: C9r.prototype },
+          [id + '_s']: { value: SuperC9r.prototype },
+          [id + '_S']: { value: SuperC9r },
+        })
+      }
     }
   } else {
     // create the constructor
@@ -159,15 +161,15 @@ eYo.c9r._p.doMakeC9r = function (ns, id, SuperC9r, model) {
     }
     // store the constructor
     var _p = C9r.prototype
-    if (ns && id.length) {
-      if (id && id.startsWith('eyo:')) {
-        id = id.substring(4)
-      }
+    if (ns && id) {
       (ns.hasOwnProperty(id) || ns._p.hasOwnProperty(id)) && eYo.throw(`${id.toString()} is already a property of ns: ${ns.name}`)
-      Object.defineProperties(ns._p, {
-        [id]: { value: C9r},
-        [id + '_p']: { value: _p },
-      })
+      Object.defineProperty(ns._p, id, {value: C9r})
+      if (id.length) {
+        if (id.startsWith('eyo:')) {
+          id = id.substring(4)
+        }
+        Object.defineProperty(ns._p, id + '_p', {value: _p})
+      }
     }
     eYo.dlgt.declareDlgt(_p) // computed properties `eyo`
     _p.doPrepare = _p.doInit = eYo.doNothing
