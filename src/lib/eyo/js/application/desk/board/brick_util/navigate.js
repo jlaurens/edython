@@ -380,7 +380,7 @@ eYo.focus.ChooseNext = () => {
   if (!b3k) {
     return
   }
-  if ((b3k = b3k.next)) {
+  if ((b3k = b3k[eYo.$next])) {
     b3k.focusOn()
     eYo.focus.ScrollToVisible()
   }

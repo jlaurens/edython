@@ -108,7 +108,7 @@ eYo.t3.stmt.previous = {
 }
 
 
-eYo.t3.stmt.next = {
+eYo.t3.stmt[eYo.$next] = {
   try_part: [ // count 3
     eYo.t3.stmt.except_part,
     eYo.t3.stmt.void_except_part,

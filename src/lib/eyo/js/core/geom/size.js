@@ -56,12 +56,12 @@ eYo.geom.newC9r('Size', {
     //... var ss
     if (!eYo.isBool(snap)) {
       if (eYo.isaP6y(snap)) {
-        this.p6yReplace('snap', snap)
+        this[this.p6y$.replace]('snap', snap)
         this.set(w, h)
         return
         //... S = new eYo.geom.Size()
         //... S.p6yReplace('snap', snap_p)
-        //... chai.expect(S.snap_p[eYo.Sym.target]).equal(snap_p)
+        //... chai.expect(S.snap_p[eYo.Sym$.target]).equal(snap_p)
         //... chai.expect(S.snap_ = false).equal(snap_p.value)
         //... chai.expect(snap_p.value_ = true).equal(S.snap)
         //... S = new eYo.geom.Size(snap_p)
@@ -309,10 +309,10 @@ eYo.geom.newC9r('Size', {
         //... chai.expect(() => S.set(mmClient, 1)).throw()
       } else {
         eYo.isaP6y(w)
-        ? this.p6yReplace('w', w)
+        ? this[this.p6y$.replace]('w', w)
         : (this.w_ = w || 0)
         eYo.isaP6y(h)
-        ? this.p6yReplace('h', h)
+        ? this[this.p6y$.replace]('h', h)
         : (this.h_ = h || 0)
         return this
         //... let w_p = eYo.p6y.new('w', onr)

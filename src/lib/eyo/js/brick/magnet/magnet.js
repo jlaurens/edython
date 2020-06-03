@@ -688,7 +688,7 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
     get () {
       var slot = this.slot
       if (slot) {
-        while((slot = slot.next)) {
+        while((slot = slot[eYo.$next])) {
           if (!slot.incog && slot.magnet && !slot.magnet.hidden) {
             return slot.magnet
           }
@@ -751,7 +751,7 @@ eYo.magnet.BaseC9r[eYo.$].p6yMerge({
     get () {
       var slot = this.slot
       if (slot) {
-        while((slot = slot.previous)) {
+        while((slot = slot[eYo.$previous])) {
           if (!slot.incog && slot.magnet && !slot.magnet.hidden) {
             return slot.magnet
           }

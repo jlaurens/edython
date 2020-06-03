@@ -759,7 +759,7 @@ eYo.fcfl.Board._p.drawModel_ = function (io) {
   if ((io.slot = board.slotAtHead)) {
     do {
       this.slotDraw_(io)
-    } while ((io.slot = io.slot.next))
+    } while ((io.slot = io.slot[eYo.$next]))
   }
   this.fieldDrawFrom_(board.fieldTail, io)
   return

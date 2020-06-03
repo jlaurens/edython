@@ -149,15 +149,15 @@ eYo.stmt.group[eYo.$newSubC9r]('except_part', true, {
   head: {
     check (type) /** @suppress {globalThis} */ {
       return type === eYo.t3.stmt.except_part
-      ? eYo.t3.stmt.previous.except_part
-      : eYo.t3.stmt.previous.void_except_part
+      ? eYo.t3.stmt[eYo.$previous].except_part
+      : eYo.t3.stmt[eYo.$previous].void_except_part
     }
   },
   foot: {
     check (type) /** @suppress {globalThis} */ {
       return type === eYo.t3.stmt.except_part
-      ? eYo.t3.stmt.next.except_part
-      : eYo.t3.stmt.next.void_except_part
+      ? eYo.t3.stmt[eYo.$next].except_part
+      : eYo.t3.stmt[eYo.$next].void_except_part
     }
   }
 })

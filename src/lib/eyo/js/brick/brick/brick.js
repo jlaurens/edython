@@ -90,7 +90,7 @@ eYo.brick.makeBaseC9r({
    * @param {Object} C9r -  the object to which this instance is attached.
    * @param {Object} model -  the model used to create the constructor.
    */
-  [eYo.Sym.dlgt] (ns, key, C9r, model) {
+  [eYo.Sym$.dlgt] (ns, key, C9r, model) {
     this.types = []
   },
   aliases: {
@@ -550,8 +550,8 @@ eYo.brick.makeBaseC9r({
       get () {
         var ans = this.slotAtHead
         if (ans) {
-          while (ans.next) {
-            ans = ans.next
+          while (ans[eYo.$next]) {
+            ans = ans[eYo.$next]
           }
         }
         return ans
@@ -1022,8 +1022,8 @@ eYo.brick.DEBUG_ = Object.create(null)
   _p.slotForEachReverse = function (helper) {
     var slot = this.slotAtHead
     if (slot) {
-      while(slot.next) {
-        slot = slot.next
+      while(slot[eYo.$next]) {
+        slot = slot[eYo.$next]
       }
       slot.forEachPrevious(helper)
     }
@@ -1060,7 +1060,7 @@ eYo.brick.DEBUG_ = Object.create(null)
       var last
       do {
         last = helper(data)
-      } while (!last && (data = data.next))
+      } while (!last && (data = data[eYo.$next]))
       return !!last
     }
   }
@@ -1092,7 +1092,7 @@ eYo.brick.DEBUG_ = Object.create(null)
   _p.stmtForEach = function (helper) {
     var e8r = this.statementEnumerator()
     var b3k
-    while ((b3k = e8r.next)) {
+    while ((b3k = e8r[eYo.$next])) {
       helper(b3k, e8r.depth)
     }
   }
@@ -1304,7 +1304,7 @@ eYo.brick.DEBUG_ = Object.create(null)
                 eYo.assert(!eYo.isDef(slots[next.key]),
                   'Duplicate inserted slot key %s/%s/%s', next.key, insert, brick.type)
                 slots[next.key] = next
-              } while ((next = next.next))
+              } while ((next = next[eYo.$next]))
             } else {
               continue
             }
@@ -1333,8 +1333,8 @@ eYo.brick.DEBUG_ = Object.create(null)
       if ((slot = ordered[0])) {
         i = 1
         while ((next = ordered[i++])) {
-          slot.next = next
-          next.previous = slot
+          slot[eYo.$next] = next
+          next[eYo.$previous] = slot
           slot = next
         }
         ordered[0].last = slot
@@ -1700,7 +1700,7 @@ eYo.brick.DEBUG_ = Object.create(null)
         do {
           hasActive = hasActive || (!t9k.disabled_ && !t9k.isWhite)
           n += t9k.getStatementCount()
-        } while ((t9k = t9k.next))
+        } while ((t9k = t9k[eYo.$next]))
       }
     }
     return n + (hasNext && !hasActive ? 1 : 0)
@@ -1912,7 +1912,7 @@ eYo.brick.DEBUG_ = Object.create(null)
     if ((slot = this.slotAtHead)) {
       do {
         if (f(slot.fields)) return ans
-      } while ((slot = slot.next))
+      } while ((slot = slot[eYo.$next]))
     }
     this.slotSome(slot => slot.fieldRow.some(f => (f.name === name) && (ans = f)))
     return ans
@@ -2012,7 +2012,7 @@ eYo.brick.DEBUG_ = Object.create(null)
     var e8r = this.statementEnumerator()
     var b3k
     var ans
-    while ((b3k = e8r.next)) {
+    while ((b3k = e8r[eYo.$next])) {
       if ((ans = helper(b3k, e8r.depth))) {
         return ans === true ? b3k : ans
       }
@@ -2512,7 +2512,7 @@ eYo.brick.newReady = (() => {
       // now bricks and slots have been set
       brick.didLoad()
       if (brick.foot_m) {
-        var footModel = dataModel.next
+        var footModel = dataModel[eYo.$next]
         if (footModel) {
           var b3k = processModel(footModel, board)
           if (b3k && b3k.head_m) {

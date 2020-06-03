@@ -75,7 +75,7 @@ eYo.geom.makeBaseC9r(true, {
   //... chai.expect(foo.snap).false
   methods: {
     shareSnap (snap_p) {
-      this.p6yReplace('snap', snap_p)
+      this[this.p6y$.replace]('snap', snap_p)
     }
   }
   //... var bar = eYo.geom.new('bar', onr)

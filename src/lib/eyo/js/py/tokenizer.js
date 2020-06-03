@@ -222,7 +222,7 @@ eYo.py.parser.Scan_p.nextToken = function () {
     if (token) {
       this.tokens.push(token)
       if (this.last) {
-        this.last.next = token
+        this.last[eYo.$next] = token
       } else {
         this.first_ = token
       }

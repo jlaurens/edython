@@ -268,7 +268,7 @@ eYo.driver.newSingleton('mngr', {
         let target = new this.eyo.ns.BaseC9r ('allPurposeDriver', this)
         let handler = {
           get (target, prop) {
-            if (prop === eYo.Sym.target) {
+            if (prop === eYo.Sym$.target) {
               return target
             }
             if (prop in target) {
@@ -304,7 +304,7 @@ eYo.driver.newSingleton('mngr', {
         return new Proxy(target, handler)
       },
       //... let driver = mngr.allPurposeDriver
-      //... chai.expect(driver[eYo.Sym.target]).instanceof(eYo.Driver)
+      //... chai.expect(driver[eYo.Sym$.target]).instanceof(eYo.Driver)
       //... chai.expect(() => driver[eYo.genUID(eYo.IDENT)]).throw()
       //>>>
     },

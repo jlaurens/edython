@@ -136,7 +136,7 @@ eYo.py.newNS('parseTok')
 
       if (tkn.type === eYo.py.tkn.TYPE_IGNORE) {
         type_ignores.push(tkn.lineno)
-        if((tkn = tkn.next)) {
+        if((tkn = tkn[eYo.$next])) {
           continue
         } else {
           break
@@ -149,7 +149,7 @@ eYo.py.newNS('parseTok')
         comment.start_comment = tkn.start_comment
         // store the comment in the last token
         ps.p_stack.last_tkn.pushComment(comment)
-        if((tkn = tkn.next)) {
+        if((tkn = tkn[eYo.$next])) {
           continue
         }
         break
@@ -167,7 +167,7 @@ eYo.py.newNS('parseTok')
         }
       }
       // we have scanned something meaningful
-      if((tkn = tkn.next)) {
+      if((tkn = tkn[eYo.$next])) {
         continue
       }
       break
@@ -199,7 +199,7 @@ eYo.py.newNS('parseTok')
             console.error('UNEXPECTED', t.type, eYo.py.tkn._NAMES[t.type])
             break
           }
-          t = t.next
+          t = t[eYo.$next]
         }
       }
       eYo.py.node._finalizeEndPos(parent)

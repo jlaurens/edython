@@ -426,7 +426,6 @@ Miscellaneous:
 --js "eyo/js/application/ui/dnd.js" \
 --js "eyo/js/core/db/db.js" \
 --js "eyo/js/core/many/many.js" \
---js "eyo/js/core/p6y/p6y.js" \
 --js "eyo/js/other/dragger.js" \
 --js "eyo/js/py/bitset.js" \
 --js "eyo/js/py/grammar.js" \
@@ -437,10 +436,11 @@ Miscellaneous:
 --js "eyo/js/application/desk/board/brick_util/node_brick.js" \
 --js "eyo/js/application/desk/workspace/flyout/draft.js" \
 --js "eyo/js/application/desk/workspace/flyout/search.js" \
---js "eyo/js/core/o4t/o4t.js" \
+--js "eyo/js/core/p6y/p6y.js" \
 --js "eyo/js/other/dragger_board.js" \
 --js "eyo/js/py/acceler.js" \
 --js "eyo/js/py/listnode.js" \
+--js "eyo/js/core/o4t/o4t.js" \
 --js "eyo/js/application/app.js" \
 --js "eyo/js/application/desk/board/brick_util/consolidator.js" \
 --js "eyo/js/application/driver/driver.js" \

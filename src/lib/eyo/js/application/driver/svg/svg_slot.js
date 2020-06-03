@@ -30,8 +30,8 @@ eYo.svg.newDriverC9r('Slot', {
       class: 'eyo-slot'
     }, null)
     g.dataset && (g.dataset.slot = slot.key)
-    if (slot.previous) {
-      eYo.dom.insertSiblingAfter(g, slot.previous.dom.svg.group_)
+    if (slot[eYo.$previous]) {
+      eYo.dom.insertSiblingAfter(g, slot[eYo.$previous].dom.svg.group_)
     } else {
       eYo.assert(slot.brick.slotAtHead === slot, 'Unexpected head slot not at head')
       eYo.dom.appendChild(slot.brick.dom.svg.group_, g)

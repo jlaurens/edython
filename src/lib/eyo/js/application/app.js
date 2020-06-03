@@ -348,74 +348,76 @@ eYo.app.BaseC9r_p.copyBrick = function (brick, deep) {
  */
 eYo.app.BaseC9r_p.hideChaff = eYo.doNothing
 
-eYo.o4t.BaseC9r[eYo.$].p6yMerge({
-  /**
-   * The root application
-   * @type {eYo.app}
-   */
-  app: {
-    lazy () {
-      let o = this.owner
-      return o && o.app
-    },
-    reset (resetter) {
-      this.ownedForEach(x => {
-        x.app_p && x.app_p.reset()
-      })
-      resetter()
-    },
+;((eyo) => {
+  eyo[eyo.p6y$.merge]({
     /**
-     * The app's audio manager
-     * @readonly
-     * @type {eYo.dom.Audio}
+     * The root application
+     * @type {eYo.app}
      */
-    audio: {
-      get () {
-        let a = this.app ; return a && a.audio
+    app: {
+      lazy () {
+        let o = this.owner
+        return o && o.app
+      },
+      reset (resetter) {
+        this.ownedForEach(x => {
+          x.app_p && x.app_p.reset()
+        })
+        resetter()
+      },
+      /**
+       * The app's audio manager
+       * @readonly
+       * @type {eYo.dom.Audio}
+       */
+      audio: {
+        get () {
+          let a = this.app ; return a && a.audio
+        },
+      },
+      /**
+       * The app's desk
+       * @readonly
+       * @type {eYo.view.Desk}
+       */
+      desk: {
+        get () {
+          let a = this.app ; return a && a.desk
+        },
+      },
+      /**
+       * The desk's flyout...
+       * @readonly
+       * @type {eYo.flyout.View}
+       */
+      flyout: {
+        get () {
+          let d = this.desk ; return d && d.flyout
+        },
+      },
+      /**
+       * The desk's board
+       * @readonly
+       * @type {eYo.board}
+       */
+      board: {
+        get () {
+          let d = this.desk ; return d && d.board
+        },
+      },
+      /**
+       * The desk's workspace...
+       * @readonly
+       * @type {eYo.view.Workspace}
+       */
+      workspace: {
+        get () {
+          let d = this.desk ; return d && d.workspace
+        },
       },
     },
-    /**
-     * The app's desk
-     * @readonly
-     * @type {eYo.view.Desk}
-     */
-    desk: {
-      get () {
-        let a = this.app ; return a && a.desk
-      },
-    },
-    /**
-     * The desk's flyout...
-     * @readonly
-     * @type {eYo.flyout.View}
-     */
-    flyout: {
-      get () {
-        let d = this.desk ; return d && d.flyout
-      },
-    },
-    /**
-     * The desk's board
-     * @readonly
-     * @type {eYo.board}
-     */
-    board: {
-      get () {
-        let d = this.desk ; return d && d.board
-      },
-    },
-    /**
-     * The desk's workspace...
-     * @readonly
-     * @type {eYo.view.Workspace}
-     */
-    workspace: {
-      get () {
-        let d = this.desk ; return d && d.workspace
-      },
-    },
-  },
-})
+  })
+})(eYo.o4t.BaseC9r[eYo.$])
 
 eYo.o3d.BaseC9r[eYo.$].modelMerge({
   aliases: {

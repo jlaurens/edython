@@ -418,52 +418,54 @@ eYo.event.newC9r('Abstract', {
   },
 })
 
-eYo.event.Mngr[eYo.$].p6yMerge({
-  properties: {
-    /**
-     * @type {!Array<!eYo.event.Abstract>}
-     * @protected
-     */
-    undoStack: {
-      value () {
-        return []
+;((eyo) => {
+  eyo[eyo.p6y$.merge]({
+    properties: {
+      /**
+       * @type {!Array<!eYo.event.Abstract>}
+       * @protected
+       */
+      undoStack: {
+        value () {
+          return []
+        },
+      },
+      /**
+       * @type {!Array<!eYo.event.Abstract>}
+       * @protected
+       */
+      redoStack: {
+        value () {
+          return []
+        },
+      },
+      /**
+       * Data to create an undo menu item.
+       */
+      undoMenuItemData: {
+        value () {
+          return {
+            text: eYo.msg.UNDO,
+            enabled: this.undoStack.length > 0,
+            callback: this.undo.bind(this, false)
+          }
+        },
+      },
+      /**
+       * Data to create a redo menu item.
+       */
+      redoMenuItemData: {
+        get () {
+          return {
+            text: eYo.msg.REDO,
+            enabled: this.redoStack_.length > 0,
+            callback: this.undo.bind(this, true)
+          }
+        },
       },
     },
-    /**
-     * @type {!Array<!eYo.event.Abstract>}
-     * @protected
-     */
-    redoStack: {
-      value () {
-        return []
-      },
-    },
-    /**
-     * Data to create an undo menu item.
-     */
-    undoMenuItemData: {
-      value () {
-        return {
-          text: eYo.msg.UNDO,
-          enabled: this.undoStack.length > 0,
-          callback: this.undo.bind(this, false)
-        }
-      },
-    },
-    /**
-     * Data to create a redo menu item.
-     */
-    redoMenuItemData: {
-      get () {
-        return {
-          text: eYo.msg.REDO,
-          enabled: this.redoStack_.length > 0,
-          callback: this.undo.bind(this, true)
-        }
-      },
-    },
-  },
-})
+  })
+})(eYo.event.Mngr[eYo.$])
 
 eYo.o4t.changeCount.merge(eYo.event.Mngr)
 

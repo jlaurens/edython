@@ -123,10 +123,10 @@ eYo.stmt.group[eYo.$newSubC9r]('branch', true, {
     }
   },
   head (type) /** @suppress {globalThis} */ {
-    return eYo.t3.stmt.previous[type.substring(4)]
+    return eYo.t3.stmt[eYo.$previous][type.substring(4)]
   },
   foot (type) /** @suppress {globalThis} */ {
-    return eYo.t3.stmt.next[type.substring(4)]
+    return eYo.t3.stmt[eYo.$next][type.substring(4)]
   },
 })
 

@@ -39,22 +39,22 @@ eYo.expr.List.SlotsHandler = {
       var ans = 0
       while (slot) {
         ++ans
-        slot = slot.next
+        slot = slot[eYo.$next]
       }
       return ans
     } else if (k === 'push') {
       return function (what) {
         var slot = brick.slotAtHead
         if (slot) {
-          while (slot.next) {
-            slot = slot.next
+          while (slot[eYo.$next]) {
+            slot = slot[eYo.$next]
           }
-          slot.next = what
+          slot[eYo.$next] = what
         } else {
 
           return brick.slotAtHead = what
         }
-        what && (what.previous = slot)
+        what && (what[eYo.$previous] = slot)
       }
     } else if (k === 'insert') {
       return function (what, where) {
@@ -62,21 +62,21 @@ eYo.expr.List.SlotsHandler = {
         if (head) {
           var i = where
           while (i-- > 0) {
-            if (head.next) {
-              head = head.next
+            if (head[eYo.$next]) {
+              head = head[eYo.$next]
             } else {
-              head.next = what
-              what && (what.previous = head)
+              head[eYo.$next] = what
+              what && (what[eYo.$previous] = head)
               return what
             }
           }
-          var b = what.previous = head.previous
-          ;(b && (b.next = what)) || (brick.slotAtHead = what)
-          while (what.next) {
-            what = what.next
+          var b = what[eYo.$previous] = head[eYo.$previous]
+          ;(b && (b[eYo.$next] = what)) || (brick.slotAtHead = what)
+          while (what[eYo.$next]) {
+            what = what[eYo.$next]
           }
-          what.next = head
-          head && (head.previous = what)
+          what[eYo.$next] = head
+          head && (head[eYo.$previous] = what)
         } else {
           return brick.slotAtHead = what
         }
@@ -95,7 +95,7 @@ eYo.expr.List.SlotsHandler = {
     var ans = brick.slotAtHead
     var i = k
     while (i-- > 0) {
-      ans = ans.next
+      ans = ans[eYo.$next]
     }
     return ans
   },
@@ -106,13 +106,13 @@ eYo.expr.List.SlotsHandler = {
     var i = k
     var ans = brick.slotAtHead
     while (i-- > 0) {
-      ans = ans.next
+      ans = ans[eYo.$next]
     }
-    var v = value.previous = ans.previous
-    v ? (v.next = value) : (brick.slotAtHead = value)
-    v = value.next = ans.next
-    v && (v.previous = value)
-    ans.previous = ans.next = null
+    var v = value[eYo.$previous] = ans[eYo.$previous]
+    v ? (v[eYo.$next] = value) : (brick.slotAtHead = value)
+    v = value[eYo.$next] = ans[eYo.$next]
+    v && (v[eYo.$previous] = value)
+    ans[eYo.$previous] = ans[eYo.$next] = null
     return true
   },
   deleteProperty: function (brick, k) {
@@ -122,14 +122,14 @@ eYo.expr.List.SlotsHandler = {
     var i = k
     var ans = brick.slotAtHead
     while (i-- > 0) {
-      ans = ans.next
+      ans = ans[eYo.$next]
     }
     // remove the ans object
-    var v = ans.previous
-    v ? (v.next = ans.next) : (brick.slotAtHead = ans.next)
-    v = ans.next
-    v && (v.previous = ans.previous)
-    ans.previous = ans.next = null
+    var v = ans[eYo.$previous]
+    v ? (v[eYo.$next] = ans[eYo.$next]) : (brick.slotAtHead = ans[eYo.$next])
+    v = ans[eYo.$next]
+    v && (v[eYo.$previous] = ans[eYo.$previous])
+    ans[eYo.$previous] = ans[eYo.$next] = null
     return true
   }
 }

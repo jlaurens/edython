@@ -121,13 +121,13 @@ eYo.py.node.makeBaseC9r({
           return (this.next_ = null)
         }
         if (this.scan.last === this) {
-          return (this.next = this.scan.nextToken())
+          return (this[eYo.$next] = this.scan.nextToken())
         }
         throw 'Unexpected situation'
       },
       set (after) {
         this.next_ = after || null
-        after && (after.previous = this)
+        after && (after[eYo.$previous] = this)
       }
     },
     n0: {

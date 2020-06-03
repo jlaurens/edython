@@ -137,7 +137,7 @@ eYo.py.Exporter_p.exportAsExpression_ = function (brick, opt) {
   if ((slot = brick.slotAtHead)) {
     do {
       this.exportSlot_(slot, opt)
-    } while ((slot = slot.next))
+    } while ((slot = slot[eYo.$next]))
   }
   if ((field = brick.fieldTail)) {
     do {

@@ -62,7 +62,7 @@ describe('Enclosure connections', function() {
     eYo.test.Input_length(d, 3)
     chai.assert(!dd2.out_m.target)
     chai.assert(!d.slotAtHead.connect(dd2), 'UNEXPECTED connection')
-    chai.assert(!d.slotAtHead.next.next.connect(dd2), 'UNEXPECTED connection')
+    chai.assert(!d.slotAtHead[eYo.$next][eYo.$next].connect(dd2), 'UNEXPECTED connection')
     dd2.dispose()
     dd1 = eYo.test.new_brick(124)
     eYo.test.brick(dd1, 'integer')

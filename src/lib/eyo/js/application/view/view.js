@@ -7,7 +7,7 @@
  */
 /**
  * @fileoverview namespace for all the view objects.
- * View object are displayed unless for a faceless application.
+ * View object are displayed unless in a faceless application.
  * This is a view that contains other views.
  * @author jerome.laurens@u-bourgogne.fr (Jérôme LAURENS)
  */
@@ -34,7 +34,7 @@ eYo.o4t.newNS(eYo, 'view')
 eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
   //<<< mochai: viewEnhanced
 
-  eYo.isF(this.p6yPrepare) || eYo.throw(`${this.eyo.name}/viewEnhanced: Not a p6y aware delegate.`)
+  this.p6y$ || eYo.throw(`${this.eyo.name}/viewEnhanced: Not a p6y aware delegate.`)
 
   //<<< mochai: Basic
   //... let Foo = eYo.view.newNS().newC9r('Foo')
@@ -241,15 +241,16 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
     prepareInstance (instance) {
       //<<< mochai: prepareInstance
       //... chai.assert(C9r[eYo.$].prepareInstance)
-      this.p6yPrepare(instance)
+      let $prepare = this.p6y$.prepare
+      this[$prepare](instance)
       this.viewPrepare(instance)
       let $super = this.super
       if ($super) {
         try {
-          $super.p6yPrepare = $super.viewPrepare = eYo.doNothing // prevent to eventually recreate the same properties and views
+          $super[$prepare] = $super.viewPrepare = eYo.doNothing // prevent to eventually recreate the same properties and views
           $super.prepareInstance(instance)
         } finally {
-          delete $super.p6yPrepare
+          delete [$prepare]
           delete $super.viewPrepare
         }
       }
@@ -262,16 +263,18 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
     initInstance (instance, ...$) {
       //<<< mochai: initInstance
       //... chai.assert(C9r[eYo.$].initInstance)
-      this.p6yInit(instance)
-      this.p6yLinks(instance)
+      let $init = this.p6y$.init
+      let $links = this.p6y$.links
+      this[$init](instance)
+      this[$links](instance)
       let $super = this.super
       if ($super) {
         try {
-          $super.p6yInit = $super.p6yLinks = $super.viewInit = $super.viewLinks = eYo.doNothing // prevent to recreate the same properties
+          $super[$init] = $super[$links] = $super.viewInit = $super.viewLinks = eYo.doNothing // prevent to recreate the same properties
           $super.initInstance(instance, ...$)
         } finally {
-          delete $super.p6yInit
-          delete $super.p6yLinks
+          delete $super[$init]
+          delete $super[$links]
           delete $super.viewInit
           delete $super.viewLinks
         }
@@ -301,7 +304,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
       //<<< mochai: disposeInstance
       //... chai.expect(C9r[eYo.$].disposeInstance).eyo_F
       this.viewDispose(instance, ...$)
-      this.p6yDispose(instance, ...$)
+      this[this.p6y$.dispose](instance, ...$)
       //>>>
     },
   })

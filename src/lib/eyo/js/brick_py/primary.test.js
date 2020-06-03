@@ -641,8 +641,8 @@ describe('Primary slots', function() {
     dc.Target_p = 'c'
     eYo.test.Code(dc, 'c')
     // console.error(da.value_b.slotAtHead.magnet.check_)
-    // console.error(da.value_b.slotAtHead.next.magnet.check_)
-    // console.error(da.value_b.slotAtHead.next.next.magnet.check_)
+    // console.error(da.value_b.slotAtHead[eYo.$next].magnet.check_)
+    // console.error(da.value_b.slotAtHead[eYo.$next][eYo.$next].magnet.check_)
     chai.assert(da.value_b.lastConnect(dc), 'MISSED')
     eYo.test.Code(da, 'a = d, c')
     da.variant_ = eYo.key.ANNOTATED
@@ -664,12 +664,12 @@ describe('Primary slots', function() {
     chai.assert(da.value_b.lastConnect(d), 'MISSED')
     eYo.test.Input_length(da.value_b, 5)
     eYo.test.Code(da, 'a = c[<MISSING INPUT>], d')
-    chai.assert(da.value_b.slotAtHead.next.next.next.next.connect(dc), 'MISSED')
+    chai.assert(da.value_b.slotAtHead[eYo.$next][eYo.$next][eYo.$next][eYo.$next].connect(dc), 'MISSED')
     eYo.test.Code(da, 'a = d, c[<MISSING INPUT>]')
     eYo.test.Input_length(da.value_b, 5)
     d.dispose()
     d = eYo.test.new_brick('yield_expr')
-    chai.assert(da.value_b.slotAtHead.next.connect(d), 'MISSED')
+    chai.assert(da.value_b.slotAtHead[eYo.$next].connect(d), 'MISSED')
     eYo.test.Input_length(da.value_b, 1)
     chai.assert(!dc.out_m.targetBrick)
     dc.dispose()
@@ -792,11 +792,11 @@ describe('Primary(value_list)', function() {
     chai.assert(chai.expect(check).equal(model_check), `MISMATCH 01`)
     chai.assert(chai.expect(check).to.not.equal(model_all), `MISMATCH 02`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 03`)
-    check = d.slotAtHead.next.magnet.check_
+    check = d.slotAtHead[eYo.$next].magnet.check_
     chai.assert(chai.expect(check).equal(model_all), `MISMATCH 11`)
     chai.assert(chai.expect(check).to.not.equal(model_check), `MISMATCH 12`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 13`)
-    check = d.slotAtHead.next.next.magnet.check_
+    check = d.slotAtHead[eYo.$next][eYo.$next].magnet.check_
     chai.assert(chai.expect(check).equal(model_check), `MISMATCH 21`)
     chai.assert(chai.expect(check).to.not.equal(model_all), `MISMATCH 22`)
     chai.assert(chai.expect(check).to.not.equal(model_unique), `MISMATCH 23`)
@@ -860,7 +860,7 @@ describe('Primary(DEFINED)', function() {
     u = d.value_s.unwrappedTarget
     chai.assert(u.Target_p === rhs_a, `MISSED ${u.Target_p} === ${rhs_a}`)
     eYo.test.Input_length(d.value_b, 5)
-    var name = d.value_b.slotAtHead.next.next.next.targetBrick.Target_p
+    var name = d.value_b.slotAtHead[eYo.$next][eYo.$next][eYo.$next].targetBrick.Target_p
     chai.assert(name = rhs_b, `MISSED ${name} = ${rhs_b}`)
     d.dispose()
   })

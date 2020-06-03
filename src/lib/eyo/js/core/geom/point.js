@@ -75,12 +75,12 @@ eYo.geom.newC9r('Point', {
     //<<< mochai: init
     if (!eYo.isBool(snap)) {
       if (eYo.isaP6y(snap)) {
-        this.p6yReplace('snap', snap)
+        this[this.p6y$.replace]('snap', snap)
         this.set(c, l)
         return
         //... P = new eYo.geom.Point()
         //... P.p6yReplace('snap', snap_p)
-        //... chai.expect(P.snap_p[eYo.Sym.target]).equal(snap_p)
+        //... chai.expect(P.snap_p[eYo.Sym$.target]).equal(snap_p)
         //... chai.expect(P.snap_ = false).equal(snap_p.value)
         //... chai.expect(snap_p.value_ = true).equal(P.snap)
         //... P = new eYo.geom.Point(snap_p)
@@ -319,10 +319,10 @@ eYo.geom.newC9r('Point', {
         //... chai.expect(() => P.set(mmClient, 1)).throw()
       } else {
         eYo.isaP6y(c)
-        ? this.p6yReplace('c', c)
+        ? this[this.p6y$.replace]('c', c)
         : (this.c_ = c)
         eYo.isaP6y(l)
-        ? this.p6yReplace('l', l)
+        ? this[this.p6y$.replace]('l', l)
         : (this.l_ = l || 0)
         return this
         //... let c_p = eYo.p6y.new('c', onr)

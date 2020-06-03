@@ -572,7 +572,7 @@ eYo.slot.BaseC9r_p.forEach = function (helper, ...$) {
   if (eYo.isF(helper)) {
     do {
       helper.call(slot, ...$)
-    } while ((slot = slot.next))
+    } while ((slot = slot[eYo.$next]))
   }
 }
 
@@ -587,7 +587,7 @@ eYo.slot.BaseC9r_p.forEachPrevious = function (helper, ...$) {
   if (eYo.isF(helper)) {
     do {
       helper.call(slot, ...$)
-    } while ((slot = slot.previous))
+    } while ((slot = slot[eYo.$previous]))
   }
 }
 
@@ -606,7 +606,7 @@ eYo.slot.BaseC9r_p.some = function (helper, ...$) {
       if (helper.call(slot, ...$)) {
         return slot
       }
-    } while ((slot = slot.next))
+    } while ((slot = slot[eYo.$next]))
   }
 }
 

@@ -574,27 +574,27 @@ eYo.descriptorNORW = (msg, configurable) => {
   //>>>
 }
 
-Object.defineProperty(eYo._p, 'Sym', {
-  //<<< mochai: eYo.Sym
-  //... chai.expect(eYo).property('Sym')
+Object.defineProperty(eYo._p, 'Sym$', {
+  //<<< mochai: eYo.Sym$
+  //... chai.expect(eYo).property('Sym$')
   value: {}
   //>>>
 })
 
 /**
  * Creates a symbol uniquely attached to the given key
- * @param {String} key - The result is `eYo.Sym[key]
+ * @param {String} key - The result is `eYo.Sym$[key]
  */
 eYo._p.newSym = function (...$) {
   //<<< mochai: newSym
   for(let key of $) {
-    if (this.Sym.hasOwnProperty(key)) {
+    if (this.Sym$.hasOwnProperty(key)) {
       throw `Do not declare a symbol twice`
     }
-    return this.Sym[key] = Symbol(key)
+    return this.Sym$[key] = Symbol(key)
   }
   //... var id = eYo.genUID(eYo.IDENT)
-  //... chai.expect(eYo.newSym(id)).equal(eYo.Sym[id])
+  //... chai.expect(eYo.newSym(id)).equal(eYo.Sym$[id])
   //... chai.expect(() => {
   //...   eYo.newSym(id)
   //... }).throw()
@@ -686,6 +686,17 @@ eYo.mixinFR = (object, props) => {
   Object.keys(props).forEach(key => {
     eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys are forbidden: ${object}, ${key}`)
     let value = props[key]
+    Object.defineProperty(
+      object,
+      key,
+      eYo.descriptorR(function () {
+        return value
+      })
+    )
+  })
+  Object.getOwnPropertySymbols(props).forEach(key => {
+    eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate symbols are forbidden: ${object}, ${key}`)
+    var value = props[key]
     Object.defineProperty(
       object,
       key,
