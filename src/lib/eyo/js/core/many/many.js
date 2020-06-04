@@ -220,7 +220,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
   
   _p[type$.merge] = function (model) {
     model = this.modelValidate(path, model)
-    eYo.provideR(false, this[type$.modelByKey], model)
+    eYo.provideFR(this[type$.modelByKey], model)
     delete this[type$.modelMap] // delete the shortcut
     this.forEachSubC9r(C9r => C9r[eYo.$][type$.merge]({})) // delete the cache of descendants
     //<<< mochai: merge
@@ -258,9 +258,13 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
       let modelMap = this[type$.modelMap_] = new Map()
       let superMap = this.super && this.super[type$.modelMap]
       let map = superMap ? new Map(superMap) : new Map()
-      if (this[type$.modelByKey]) {
-        for (let [k, v] of Object.entries(this[type$.modelByKey])) {
+      let byKey = this[type$.modelByKey]
+      if (byKey) {
+        for (let [k, v] of Object.entries(byKey)) {
           map.set(k, v)
+        }
+        for (let k of Object.getOwnPropertySymbols(byKey)) {
+          map.set(k, byKey[k])
         }
       }
       let todo = [...map.keys()]
@@ -531,6 +535,15 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     //<<< mochai: shortcuts
     let suffix = (manyModel.suffix || `_${type[0]}`)
     for (let k of object[type$.map].keys()) {
+      if (eYo.isSym(k)) {
+        object.hasOwnProperty(k) && eYo.throw(`${this.eyo.name}/${id}$.shortcuts: Already property ${object.eyo.name}/${k.toString()}`)
+        eYo.mixinRO(object, {
+          [k] () {
+            return this[type$.map].get(k).value
+          },
+        })  
+        continue
+      }
       let k_p = k + suffix
       if (object.hasOwnProperty(k_p)) {
         console.error(`BREAK HERE!!! ALREADY object ${object.eyo.name}/${k_p}`)
@@ -574,8 +587,10 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     //<<< mochai: init
     for (let v of object[type$.map].values()) {
       v.preInit && v.preInit()
-      let init = object[v.key + TInit]
-      init && init.call(object, v, ...$)
+      if (eYo.isStr(v.key)) {
+        let init = object[v.key + TInit]
+        init && init.call(object, v, ...$)
+      }
       v.init && v.init(...$)
     }
     //... preparator()()
@@ -614,8 +629,10 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     //<<< mochai: dispose
     for (let v of object[type$.map].values()) {
       if (v.owner === object) {
-        let dispose = object[v.key + TDispose]
-        dispose && dispose.call(object, v, ...$)
+        if (eYo.isStr(v.key)) {
+          let dispose = object[v.key + TDispose]
+          dispose && dispose.call(object, v, ...$)
+        }
         v.dispose && v.dispose(...$)
       }
     }

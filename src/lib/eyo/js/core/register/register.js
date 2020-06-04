@@ -32,26 +32,39 @@ eYo.do.newNS(eYo, 'register')
  * Only new methods are allowed.
  * @param {Object} object - the object to extend, or the constructor whose prototype will be extended.
  * @param {String} key - The unique key prefixing the added methods
- * @param {Function} filter - The function to filter out objects before registering.
+ * @param {Function} [filter] - A function to filter out objects before registering.
+ * @return {Symbol} the symbol used to store the registered objects. Mainly for debugging purposes.
  */
 eYo.register.add = function (object, key, filter) {
   //<<< mochai: add
-  let k = key + '__Registered'
+  let $k = Symbol(key + ' registered map')
   if (eYo.isC9r(object)) {
     //<<< mochai: C9r
     //... let ns = eYo.c9r.newNS()
     //... let C9r = ns.makeBaseC9r(true)
-    //... C9r[eYo.$].p6yEnhanced()
-    //... eYo.register.add(C9r, 'foo')
-    //... C9r[eYo.$].finalizeC9r()
-    //... let o = new C9r('foo')
+    //... let eyo = C9r[eYo.$]
+    //... let p6y$ = eyo.p6yEnhanced()
+    //... let $k = eYo.register.add(C9r, 'foo')
+    //... eyo.finalizeC9r()
+    //... let o = ns.new('foo')
     //... chai.expect(o.fooRegister).eyo_F
-    eYo.isF(object[eYo.$].p6yMerge) || eYo.throw(`Not a proper subclass (unknown p6yMerge/1).`)
+    //... chai.expect(o.fooUnregister).eyo_F
+    //... eyo[p6y$.prepare](o)
+    //... chai.expect(o[eyo.p6y$.map].get($k)).not.undefined
+    //... eyo[p6y$.init](o)
+    //... chai.expect(o[eyo.p6y$.map].get($k).value).not.undefined
+    //... eyo[p6y$.shortcuts]()
+    //... chai.expect(o[eyo.p6y$.map].get($k).value).equal(o[$k])
+    let eyo = object[eYo.$]
+    var p6y$ = eyo.p6y$
+    p6y$ || eYo.throw(`Not a proper subclass (unknown p6y$/1).`)
     //... chai.expect(() => eYo.register.add(ns.BaseC9r, 'foo')).throw()
-    object[eYo.$].p6yMerge({
-      [k] () {
-        return new Map()
-      }
+    eyo[p6y$.merge]({
+      [$k]: {
+        value () {
+          return new Map()
+        },
+      },
     })
     object = object.prototype
     //>>>
@@ -59,39 +72,54 @@ eYo.register.add = function (object, key, filter) {
     //<<< mochai: Dlgt
     //... let ns = eYo.c9r.newNS()
     //... let C9r = ns.makeBaseC9r(true)
-    //... C9r[eYo.$].p6yEnhanced()
-    //... eYo.register.add(C9r[eYo.$], 'foo')
-    //... C9r[eYo.$].finalizeC9r()
-    //... let o = new C9r('foo')
+    //... let eyo = C9r[eYo.$]
+    //... let p6y$ = eyo.p6yEnhanced()
+    //... let $k = eYo.register.add(eyo, 'foo')
+    //... eyo.finalizeC9r()
+    //... let o = ns.new('foo')
     //... chai.expect(o.fooRegister).eyo_F
-    eYo.isF(object.p6yMerge) || eYo.throw(`Not a proper subclass (unknown p6yMerge/2).`)
-    object.p6yMerge({
-      [k] () {
-        return new Map() // use map keys as ordered set.
-      }
+    //... chai.expect(o.fooUnregister).eyo_F
+    //... eyo[p6y$.prepare](o)
+    //... chai.expect(o[eyo.p6y$.map].get($k)).not.undefined
+    //... eyo[p6y$.init](o)
+    //... chai.expect(o[eyo.p6y$.map].get($k).value).not.undefined
+    //... eyo[p6y$.shortcuts]()
+    //... chai.expect(o[eyo.p6y$.map].get($k).value).equal(o[$k])
+    var p6y$ = object.p6y$
+    p6y$ || eYo.throw(`Not a proper subclass (unknown p6y$/2).`)
+    object[p6y$.merge]({
+      [$k]: {
+        value () {
+          return new Map()
+        },
+      },
     })
     object = object.C9r_p
     //>>>
   } else {
     //<<< mochai: else
     //... let o = {}
-    //... eYo.register.add(o, 'foo')
+    //... let $k = eYo.register.add(o, 'foo')
+    //... chai.expect(o[$k]).not.undefined
     //... chai.expect(o.fooRegister).eyo_F
-    Object.defineProperty(object, k, {value: new Map()})
+    //... chai.expect(o.fooUnregister).eyo_F
+    Reflect.defineProperty(object, $k, {value: new Map()}) || eYo.throw(`eYo.register.add: ${object}, ${key}`)
     //>>>
   }
   eYo.mixinFR(object, {
     //<<< mochai: methods
     //... let ns = eYo.c9r.newNS()
     //... let C9r = ns.makeBaseC9r(true)
-    //... C9r[eYo.$].p6yEnhanced()
-    //... eYo.register.add(C9r[eYo.$], 'foo')
-    //... C9r[eYo.$].finalizeC9r()
+    //... let eyo = C9r[eYo.$]
+    //... let p6y$ = eyo.p6yEnhanced()
+    //... let $k = eYo.register.add(eyo, 'foo')
+    //... eyo.finalizeC9r()
     //... var o
     //... let prepare = () => {
     //...   o = new C9r('o')
-    //...   o.eyo.p6yPrepare(o)
-    //...   o.eyo.p6yInit(o)
+    //...   eyo[p6y$.prepare](o)
+    //...   eyo[p6y$.shortcuts](o)
+    //...   eyo[p6y$.init](o)
     //... }
     //... // Objects to register:
     //... let a = {
@@ -116,7 +144,7 @@ eYo.register.add = function (object, key, filter) {
     [key + 'Register']: function (object) {
       //<<< mochai: fooRegister/fooForEach
       if (!filter || filter(object)) {
-        this[k].set(object, eYo.NA)
+        this[$k].set(object, eYo.NA)
       }
       //... let test = (o) => {
       //...   o.fooRegister(a)
@@ -134,7 +162,7 @@ eYo.register.add = function (object, key, filter) {
       //...   flag.expect(134234)
       //... }
       //... o = {}
-      //... eYo.register.add(o, 'foo')
+      //... let $k = eYo.register.add(o, 'foo')
       //... test(o)
       //... prepare()
       //... test(o)
@@ -147,9 +175,9 @@ eYo.register.add = function (object, key, filter) {
      */
     [key + 'Unregister']: function (object) {
       //<<< mochai: fooUnregister
-      return this[k].delete(object)
+      return this[$k].delete(object)
       //... o = {}
-      //... eYo.register.add(o, 'foo')
+      //... let $k = eYo.register.add(o, 'foo')
       //... let test = (o) => {
       //...   o.fooRegister(a)
       //...   o.fooRegister(b)
@@ -181,12 +209,12 @@ eYo.register.add = function (object, key, filter) {
       if (eYo.isF($this)) {
         ;[$this, handler] = [handler || this, $this]
       }
-      for (let r of this[k].keys()) {
+      for (let r of this[$k].keys()) {
         handler.call($this, r)
       }
         //<<< mochai: no $this
           //... o = {}
-          //... eYo.register.add(o, 'foo')
+          //... let $k = eYo.register.add(o, 'foo')
           //... o.fooRegister(a)
           //... o.fooRegister(b)
           //... o.fooForEach(x => x.flag(3, 4))
@@ -194,7 +222,7 @@ eYo.register.add = function (object, key, filter) {
         //>>>
         //<<< mochai: $this
           //... o = {}
-          //... eYo.register.add(o, 'foo')
+          //... let $k = eYo.register.add(o, 'foo')
           //... o.fooRegister(a)
           //... o.fooRegister(b)
           //... o.fooForEach($this, function(x) {
@@ -214,7 +242,7 @@ eYo.register.add = function (object, key, filter) {
       if (eYo.isF($this)) {
         ;[$this, handler] = [handler || this, $this]
       }
-      for (let r of this[k].keys()) {
+      for (let r of this[$k].keys()) {
         if (handler.call($this, r)) {
           return true
         }
@@ -222,7 +250,7 @@ eYo.register.add = function (object, key, filter) {
       return false
         //<<< mochai: no $this
           //... o = {}
-          //... eYo.register.add(o, 'foo')
+          //... let $k = eYo.register.add(o, 'foo')
           //... o.fooRegister(a)
           //... o.fooRegister(b)
           //... chai.expect(o.fooSome(x => {
@@ -243,7 +271,7 @@ eYo.register.add = function (object, key, filter) {
         //>>>
         //<<< mochai: $this
           //... o = {}
-          //... eYo.register.add(o, 'foo')
+          //... let $k = eYo.register.add(o, 'foo')
           //... o.fooRegister(a)
           //... o.fooRegister(b)
           //... chai.expect(o.fooSome($this, function(x) {
@@ -269,5 +297,6 @@ eYo.register.add = function (object, key, filter) {
     },
     //>>>
   })
+  return $k
   //>>>
 }

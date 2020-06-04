@@ -26,7 +26,7 @@ class HTML:
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Mocha Tests</title>
+  <title>Mocha Tests: {self.basename}</title>
 ''')
     self.script_lib('xregexp-all/xregexp-all.js')
     self.script_lib('brython/www/src/brython.js')

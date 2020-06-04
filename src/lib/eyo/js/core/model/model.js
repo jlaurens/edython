@@ -335,40 +335,49 @@ eYo.model.Format_p = eYo.model.Format.prototype
  * Navigate the formats along the path, creating controllers when needed.
  * Takes care of wildcard formats.
  * Callbacks are used during format creation.
- * @param {String} path - the required path, relative to the receiver
+ * @param {String|Symbol} path - the required path, relative to the receiver, or a symbol
  * @param {Boolean} [create] - whether controllers are created.
  */
 eYo.model.Format_p.get = function (path, create) {
   var c = this
-  for (let k of path.split('/')) {
-    if (k) {
-      if (k === eYo.model.DOTDOT) {
-        c = c.parent
-      } else if (k !== eYo.model.DOT) {
-        var cc = c.map.get(k)
-        if (!cc) {
-          cc = c.map.get(eYo.model.ANY)
-          if (!cc) {
-            let fb = c.fallback
-            if (fb) {
-              if ((cc = fb.get(k))) {
-                cc = new eYo.model.Format(c, cc.key, cc)
-                c.map.set(k, cc)
-              }
-            }
-            if (!cc) {
-              if (create) {
-                cc = new eYo.model.Format(c, k)
-                c.map.set(k, cc)
-              } else {
-                return // ... nothing
-              }
-            }
+  let f = k => {
+    var cc = c.map.get(k)
+    if (!cc) {
+      cc = c.map.get(eYo.model.ANY)
+      if (!cc) {
+        let fb = c.fallback
+        if (fb) {
+          if ((cc = fb.get(k))) {
+            cc = new eYo.model.Format(c, cc.key, cc)
+            c.map.set(k, cc)
           }
         }
-        c = cc       
+        if (!cc) {
+          if (create) {
+            cc = new eYo.model.Format(c, k)
+            c.map.set(k, cc)
+          } else {
+            return // ... nothing
+          }
+        }
       }
     }
+    return cc
+  }
+  if (path.split) {
+    for (let k of path.split('/')) {
+      if (k) {
+        if (k === eYo.model.DOTDOT) {
+          c = c.parent
+        } else if (k !== eYo.model.DOT) {
+          if (!(c = f(k))) {
+            break
+          }      
+        }
+      }
+    }
+  } else {
+    c = f(path)
   }
   return c
   //<<< mochai: Yo.model.Format_p.get
@@ -589,14 +598,16 @@ eYo.model.Format_p.validate = function (path, model, key) {
     } else if (eYo.isDef(v)) {
       model = v
     }
-    Object.keys(model).forEach(k => {
-      let cc = c.get(k)
-      if (cc) {
-        let m = cc.validate(eYo.NA, model[k], k)
-        if (m && (model[k] !== m)) {
-          model[k] = m
+    ;[Object.keys, Object.getOwnPropertySymbols].forEach(f => {
+      f(model).forEach(k => {
+        let cc = c.get(k)
+        if (cc) {
+          let m = cc.validate(eYo.NA, model[k], k)
+          if (m && (model[k] !== m)) {
+            model[k] = m
+          }
         }
-      }
+      })
     })
     return model
   }

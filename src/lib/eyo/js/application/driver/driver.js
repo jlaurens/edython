@@ -380,7 +380,7 @@ eYo.driver.newSingleton('mngr', {
         //... bar.mee(8, 9)
         //... flag.expect(123456789)
         if (driverModel) {
-          eYo.provideR(driverModel, NS.BaseC9r[eYo.$].model)
+          eYo.provideRO(driverModel, NS.BaseC9r[eYo.$].model)
         } else {
           driverModel = NS.BaseC9r[eYo.$].model
         }

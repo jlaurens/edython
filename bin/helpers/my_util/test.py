@@ -71,6 +71,7 @@ def getInlineTest(path):
         l_chai = False
         l.raw = raw
       if l.indent is None:
+        assert len(stack), f'''Missing a '//<<<' line before line {l.n} at {path}'''
         l_start = stack.pop()
         l_chai = False
         raw = False

@@ -41,21 +41,21 @@ describe ('Tests: Object', function () {
     let C9r = function (target) {
       this.p3y = new Proxy(target, {
         get(target, prop) {
-          if (['previous', 'next'].includes(prop)) {
+          if ([eYo.$previous, eYo.$next].includes(prop)) {
             return this[prop]
           } else {
             return target[prop]
           }
         },
         set: function (target, prop, value) {
-          if (['previous', 'next'].includes(prop)) {
+          if ([eYo.$previous, eYo.$next].includes(prop)) {
             this[prop] = value
           } else {
             target[prop] = value
           }
         },
         deleteProperty: function (target, prop) {
-          if (['previous', 'next'].includes(prop)) {
+          if ([eYo.$previous, eYo.$next].includes(prop)) {
             delete this[prop]
           } else {
             delete target[prop]
@@ -135,19 +135,21 @@ describe ('Tests: Object', function () {
     chai.expect(eYo.isD(validated)).true
     chai.expect(validated.value()).equal(421)
   })
-  it ('O4t: properties(p6yModelMap)', function () {
+  it ('O4t: p6y$.modelMap)', function () {
     let ns = eYo.o4t.newNS()
     let C9r = ns.makeBaseC9r()
-    chai.expect(C9r[eYo.$].p6yModelMap).equal(C9r[eYo.$].p6yModelMap)
+    let eyo = C9r[eYo.$]
+    let p6y$ = eyo.p6y$
+    chai.expect(eyo[p6y$.modelMap]).equal(eyo[p6y$.modelMap])
     let Bar = ns.newC9r('bar', C9r)
-    chai.expect(Bar[eYo.$].p6yModelMap).equal(Bar[eYo.$].p6yModelMap)
-    C9r[eYo.$].p6yMerge({
+    chai.expect(Bar[eYo.$][p6y$.modelMap]).equal(Bar[eYo.$][p6y$.modelMap])
+    eyo.p6yMerge({
       chi: 421
     })
-    chai.expect(C9r[eYo.$].p6yModelMap).equal(C9r[eYo.$].p6yModelMap)
-    chai.expect(Bar[eYo.$].p6yModelMap).equal(Bar[eYo.$].p6yModelMap)
-    chai.expect(C9r[eYo.$].p6yModelMap.get('chi').value()).equal(421)
-    chai.expect(Bar[eYo.$].p6yModelMap.get('chi')).eql(C9r[eYo.$].p6yModelMap.get('chi'))
+    chai.expect(eyo[p6y$.modelMap]).equal(eyo[p6y$.modelMap])
+    chai.expect(Bar[eYo.$][p6y$.modelMap]).equal(Bar[eYo.$][p6y$.modelMap])
+    chai.expect(eyo[p6y$.modelMap].get('chi').value()).equal(421)
+    chai.expect(Bar[eYo.$][p6y$.modelMap].get('chi')).eql(eyo[p6y$.modelMap].get('chi'))
   })
   it ('O4t: properties(p6y$.modelByKey)', function () {
     let ns = eYo.o4t.newNS()
@@ -160,29 +162,31 @@ describe ('Tests: Object', function () {
     let C9r = model[eYo.$C9r]
     let eyo = C9r[eYo.$]
     let p6y$ = eyo.p6y$
-    chai.expect(eyo).property('p6y$modelByKey')
+    chai.expect(eyo).property(p6y$.modelByKey)
     chai.expect(eyo[p6y$.modelByKey].chi.value()).equal(421) // expanded
     chai.expect(eyo[p6y$.modelByKey]).equal(eyo[p6y$.modelByKey])
     let Bar = ns.newC9r('bar', C9r)
-    chai.expect(eYo.isDef(Bar[eYo.$][p6y$.modelByKey].chi)).false // chi is not inherited
+    chai.expect(Bar[eYo.$][p6y$.modelByKey].chi).undefined // chi is not inherited
   })
   it ('O4t: p6yPrepare', function () {
     let O = eYo.o4t.newC9r(eYo.NULL_NS, 'Foo', {})
-    chai.expect(O[eYo.$].super).equal(eYo.O4t[eYo.$])
-    O[eYo.$].p6yMerge({
+    let eyo = O[eYo.$]
+    let p6y$ = eyo.p6y$
+    chai.expect(eyo.super).equal(eYo.O4t[eYo.$])
+    eyo[p6y$.merge]({
       foo: {
         value: 421
       },
     })
-    O[eYo.$].finalizeC9r()
+    eyo.finalizeC9r()
     var o = new O('foo', onr)
-    o.eyo.p6yPrepare(o)
-    chai.expect(o.p6yMap.get('foo')).not.undefined
+    eyo[p6y$.prepare](o)
+    chai.expect(o[p6y$.map].get('foo')).not.undefined
     chai.expect(o.foo).not.equal(421)
-    o.eyo.p6yInit(o)
+    eyo[p6y$.init](o)
     chai.expect(o.foo).equal(421)
     var oo = new O('foo', onr)
-    oo.eyo.p6yInit(oo)
+    oo.eyo[p6y$.init](oo)
     chai.expect(oo.foo).equal(421)
   })
   it ('O4t: properties (valued)', function () {
@@ -199,8 +203,10 @@ describe ('Tests: Object', function () {
         },
       }
     })
-    O[eYo.$].finalizeC9r()
-    ;['foo', 'bar', 'chi'].forEach(k => chai.expect(Object.keys(O[eYo.$][O[eYo.$].p6y$.modelByKey])).include(k))
+    let eyo = O[eYo.$]
+    let p6y$ = eyo.p6y$
+    eyo.finalizeC9r()
+    ;['foo', 'bar', 'chi'].forEach(k => chai.expect(Object.keys(eyo[eyo.p6y$.modelByKey])).include(k))
     var o = new O('foo', onr)
     chai.assert(o.foo_p)
     chai.expect(o.foo_p.owner).equal(o)
@@ -475,28 +481,30 @@ describe ('Tests: Object', function () {
     chai.expect((new ns.A('a', onr)).foo).equal(123)
     chai.expect((new ns.AA('aa', onr)).foo).equal(456)
   })
-  it ('O4t: p6yMerge', function () {
+  it ('O4t: p6y$.merge', function () {
     var ns = eYo.o4t.newNS()
     ns.makeBaseC9r()
     chai.expect(ns).equal(ns.BaseC9r[eYo.$].ns)
     ns.newC9r('A', {
       properties: {foo: 421}
     })
-    chai.expect(ns.A[eYo.$].p6yModelMap.get('foo')).not.undefined
-    ns.A[eYo.$].finalizeC9r()
+    let eyo = ns.A[eYo.$]
+    let p6y$ = eyo.p6y$
+    chai.expect(eyo[p6y$.modelMap].get('foo')).not.undefined
+    eyo.finalizeC9r()
     var a = new ns.A('a', onr)
     chai.expect(a.foo).equal(421)
-
     ns = eYo.o4t.newNS()
     ns.newC9r('A', {
       properties: {foo: 421}
     })
-    chai.expect(ns.A[eYo.$].p6yModelMap.get('foo')).not.undefined
-    ns.A[eYo.$].p6yMerge({
+    chai.expect(eyo[p6y$.modelMap].get('foo')).not.undefined
+    ns.A[eYo.$][p6y$.merge]({
       bar: 123,
     })
-    chai.expect(ns.A[eYo.$].p6yModelMap.get('bar')).not.undefined
-    ns.A[eYo.$].finalizeC9r()
+    eyo = ns.A[eYo.$]
+    chai.expect(eyo[p6y$.modelMap].get('bar')).not.undefined
+    eyo.finalizeC9r()
     var a = new ns.A('a', onr)
     chai.expect(a.foo).equal(421)
     chai.expect(a.bar).equal(123)

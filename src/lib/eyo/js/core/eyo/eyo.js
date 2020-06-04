@@ -611,27 +611,18 @@ eYo.newSym('target') // used by proxies
  * @return {*} the destination
  */
 eYo.mixinRO = (object, props) => {
-  Object.keys(props).forEach(key => {
-    eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys are forbidden: ${object}, ${key}`)
-    var value = props[key]
-    Object.defineProperty(
-      object,
-      key,
-      eYo.descriptorR(eYo.isF(value) ? value : function () {
-        return value
-      })
-    )
-  })
-  Object.getOwnPropertySymbols(props).forEach(key => {
-    eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate symbols are forbidden: ${object}, ${key}`)
-    var value = props[key]
-    Object.defineProperty(
-      object,
-      key,
-      eYo.descriptorR(eYo.isF(value) ? value : function () {
-        return value
-      })
-    )
+  ;[Object.keys, Object.getOwnPropertySymbols].forEach(f => {
+    f(props).forEach(key => {
+      eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys|symbols are forbidden: ${object}, ${key.toString ? key.toString() : keys}`)
+      var value = props[key]
+      Reflect.defineProperty(
+        object,
+        key,
+        eYo.descriptorR(eYo.isF(value) ? value : function () {
+          return value
+        })
+      ) || eYo.throw(`eYo.mixinRO: problem with ${key.toString ? key.toString() : key}`)
+    })
   })
   return object
   //<<< mochai: mixinR
@@ -683,30 +674,21 @@ eYo.mixinRO = (object, props) => {
  * @return {*} the destination
  */
 eYo.mixinFR = (object, props) => {
-  Object.keys(props).forEach(key => {
-    eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys are forbidden: ${object}, ${key}`)
-    let value = props[key]
-    Object.defineProperty(
-      object,
-      key,
-      eYo.descriptorR(function () {
-        return value
-      })
-    )
-  })
-  Object.getOwnPropertySymbols(props).forEach(key => {
-    eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate symbols are forbidden: ${object}, ${key}`)
-    var value = props[key]
-    Object.defineProperty(
-      object,
-      key,
-      eYo.descriptorR(function () {
-        return value
-      })
-    )
+  ;[Object.keys, Object.getOwnPropertySymbols].forEach(f => {
+    f(props).forEach(key => {
+      eYo.hasOwnProperty(object, key) && eYo.throw(`Duplicate keys|symbols are forbidden: ${object}, ${key.toString ? key.toString() : key}`)
+      let value = props[key]
+      Reflect.defineProperty(
+        object,
+        key,
+        eYo.descriptorR(function () {
+          return value
+        })
+      ) || eYo.throw(`eYo.mixinFR: problem with ${key.toString ? key.toString() : key}`)
+    })
   })
   return object
-  //<<< mochai: mixinMethodsR
+  //<<< mochai: mixinFR
   //... let o = {}
   //... eYo.mixinFR(o, {
   //...   foo: 421
@@ -759,43 +741,82 @@ eYo.mixinFR = (object, props) => {
  * The props dictionary is a `key=>value` mapping where values
  * are getters, not a dictionary containing a getter.
  * The difference with the `mixinR` is that an existing key is not overriden.
- * @param {Boolean} [getters] - True if functions are considered as getter, false otherwise. Truthy values are not allowed.
  * @param {*} dest - The destination
  * @param {*} props - the source
  * @return {*} the destination
  */
-eYo.provideR = (getters, dest, props) => {
-  if (!eYo.isBool(getters)) {
-    eYo.isDef(props) && eYo.throw(`Unepected last argument ${props}`)
-    ;[getters, dest, props] = [true, getters, dest]
-  }
-  Object.keys(props).forEach(key => {
-    if (!eYo.hasOwnProperty(dest, key)) {
-      let value = props[key]
-      let d = eYo.descriptorR(getters && eYo.isF(value) ? value : function () {
-        return value
-      })
-      let dd = Object.getOwnPropertyDescriptor(props, key)
-      d.enumerable = dd.enumerable
-      d.configurable = dd.configurable
-      Object.defineProperty(dest, key, d)
-    }
+eYo.provideRO = (dest, props) => {
+  [Object.keys, Object.getOwnPropertySymbols].forEach(f => {
+    f(props).forEach(key => {
+      if (!eYo.hasOwnProperty(dest, key)) {
+        let value = props[key]
+        let d = eYo.descriptorR(eYo.isF(value) ? value : function () {
+          return value
+        })
+        let dd = Object.getOwnPropertyDescriptor(props, key)
+        d.enumerable = dd.enumerable
+        d.configurable = dd.configurable
+        Reflect.defineProperty(dest, key, d) || eYo.throw(`eYo.provideRO: problem with ${key.toString ? key.toString() : key}`)
+      }
+    })
   })
   return dest
-  //<<< mochai: eYo: provideR'
+  //<<< mochai: eYo: provideRO'
   //... let a = {}
   //... let b = {}
-  //... chai.expect(() => eYo.provideR(eYo.NS, eYo.NA)).to.throw()
-  //... chai.expect(() => eYo.provideR(a, eYo.NA)).to.throw()
-  //... eYo.provideR(a, b)
+  //... chai.expect(() => eYo.provideRO(eYo.NS, eYo.NA)).to.throw()
+  //... chai.expect(() => eYo.provideRO(a, eYo.NA)).to.throw()
+  //... eYo.provideRO(a, b)
   //... chai.expect(a).to.deep.equal(b)
   //... b.foo = 421
-  //... chai.expect(() => eYo.provideR(eYo.NS, b)).to.throw()
+  //... chai.expect(() => eYo.provideRO(eYo.NS, b)).to.throw()
   //... chai.expect(a).not.to.deep.equal(b)
-  //... eYo.provideR(a, b)
+  //... eYo.provideRO(a, b)
   //... chai.expect(a.foo).equal(b.foo).equal(421)
   //... b.foo = 123
-  //... chai.expect(() => eYo.provideR(a, b)).not.to.throw()
+  //... chai.expect(() => eYo.provideRO(a, b)).not.to.throw()
+  //... chai.expect(a.foo).not.equal(b.foo)
+  //>>>
+}
+
+/**
+ * The props dictionary is a `key=>value` mapping where values
+ * are getters, not a dictionary containing a getter.
+ * The difference with the `mixinR` is that an existing key is not overriden.
+ * @param {*} dest - The destination
+ * @param {*} props - the source
+ * @return {*} the destination
+ */
+eYo.provideFR = (dest, props) => {
+  ;[Object.keys, Object.getOwnPropertySymbols].forEach(f => {
+    f(props).forEach(key => {
+      if (!eYo.hasOwnProperty(dest, key)) {
+        let value = props[key]
+        let d = eYo.descriptorR(function () {
+          return value
+        })
+        let dd = Object.getOwnPropertyDescriptor(props, key)
+        d.enumerable = dd.enumerable
+        d.configurable = dd.configurable
+        Reflect.defineProperty(dest, key, d) || eYo.throw(`eYo.provideFR: problem with ${key.toString ? key.toString() : key}`)
+      }
+    })
+  })
+  return dest
+  //<<< mochai: eYo: provideRO'
+  //... let a = {}
+  //... let b = {}
+  //... chai.expect(() => eYo.provideRO(eYo.NS, eYo.NA)).to.throw()
+  //... chai.expect(() => eYo.provideRO(a, eYo.NA)).to.throw()
+  //... eYo.provideRO(a, b)
+  //... chai.expect(a).to.deep.equal(b)
+  //... b.foo = 421
+  //... chai.expect(() => eYo.provideRO(eYo.NS, b)).to.throw()
+  //... chai.expect(a).not.to.deep.equal(b)
+  //... eYo.provideRO(a, b)
+  //... chai.expect(a.foo).equal(b.foo).equal(421)
+  //... b.foo = 123
+  //... chai.expect(() => eYo.provideRO(a, b)).not.to.throw()
   //... chai.expect(a.foo).not.equal(b.foo)
   //>>>
 }

@@ -113,11 +113,40 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
    * 
    * @param {*} object - The object receiving the new shortcuts,
    */
-  //<<< mochai: p6y$.shortcuts
   this._p[p6y$.shortcuts] = function () {
+    //<<< mochai: p6y$.shortcuts
     let _p = this.C9r_p
     for (let k of this[this.p6y$.modelMap].keys()) {
-      _p.hasOwnProperty(k) || Object.defineProperties(_p, {
+      if (_p.hasOwnProperty(k)) {
+        continue
+      }
+      if (eYo.isSym(k)) {
+        Object.defineProperties(_p, {
+          [k]: eYo.descriptorR(function () {
+            return this[this.p6y$.map].get(k).value
+            //<<< mochai: $foo
+            //... let ns = eYo.c9r.newNS()
+            //... let C9r = ns.makeBaseC9r(true)
+            //... let eyo = C9r[eYo.$]
+            //... eyo.p6yEnhanced()
+            //... eyo.finalizeC9r()
+            //... let $foo = Symbol('foo')
+            //... eyo[eyo.p6y$.merge]({
+            //...   [$foo]: 421,
+            //... })
+            //... let _p = eyo.C9r_p
+            //... chai.expect(_p.hasOwnProperty($foo)).true
+            //... let o = ns.new('bar')
+            //... eyo[eyo.p6y$.prepare](o)
+            //... chai.expect(o[$foo]).undefined
+            //... eyo[eyo.p6y$.init](o)
+            //... chai.expect(o[$foo]).equal(421)
+            //>>>
+          }),
+        })
+        continue
+      }
+      Object.defineProperties(_p, {
         [k + '_p']: eYo.descriptorR(function () {
           return this[this.p6y$.map].get(k)
           //<<< mochai: foo_p
@@ -266,8 +295,8 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
         //>>>
       })
     }
+    //>>>
   }
-  //>>>
   //<<< mochai: p6y$.merge
   //... let ns = eYo.c9r.newNS()
   //... let C9r = ns.makeBaseC9r(true)
