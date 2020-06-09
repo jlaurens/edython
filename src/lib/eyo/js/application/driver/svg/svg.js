@@ -42,7 +42,7 @@ eYo.forward('style')
  */
 eYo.svg.makeMngr({
   ui: {
-    initMake (f) {
+    initMaker (f) {
       return function (object, ...rest) {
         var dom = object.dom
         if (dom && !dom.svg) {
@@ -52,7 +52,7 @@ eYo.svg.makeMngr({
         }
       }
     },
-    disposeMake (f) {
+    disposeMaker (f) {
       return function (object, ...rest) {
         var dom = object.dom
         if (dom && dom.svg) {

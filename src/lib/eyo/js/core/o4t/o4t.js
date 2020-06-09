@@ -639,16 +639,16 @@ eYo.dlgt.BaseC9r_p.o4tEnhanced = function () {
       let consolidate_s = C9r_s[kC]
       C9r_p[kC] = consolidators[k] = consolidate_m
       ? consolidate_s
-        ? function (...args) {
-          consolidate_s.call(this, ...args)
-          consolidate_m.call(this, ...args)
+        ? function (...$init) {
+          consolidate_s.call(this, ...$)
+          consolidate_m.call(this, ...$)
           this.ownedForEach(x => {
-            let f = x[kC] ; f && f.call(this, ...args)
+            let f = x[kC] ; f && f.call(this, ...$)
           })
-        } : function (...args) {
-          consolidate_m.call(this, ...args)
+        } : function (...$init) {
+          consolidate_m.call(this, ...$next)
           this.ownedForEach(x => {
-            let f = x[kC] ; f && f.call(this, ...args)
+            let f = x[kC] ; f && f.call(this, ...$)
           })
         }
       : consolidate_s || function () {

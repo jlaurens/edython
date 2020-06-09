@@ -73,16 +73,17 @@ eYo.dlgt.declareDlgt = function (_p) {
 //>>>
 
 //... var NS = eYo.newNS()
-//... var id = 'foo'
+//... var key = 'foo'
+//... var $id = Symbol('foo')
 //... var C9r = function () {}
 //... model = {}
-//... var dlgt = new eYo.dlgt.BaseC9r(NS, id, C9r, model)
+//... var dlgt = new eYo.dlgt.BaseC9r(NS, key, C9r, model)
 
 /**
  * This is a root class, not to be subclassed except in singletons.
  * Any constructor's delegate is an instance of this subclass.
  * @param {Object} NS - Namespace, can be eYo.NULL_NS
- * @param {String|Symbol} id - a unique key or symbol within the namespace...
+ * @param {String|Symbol} [id] - a unique key or symbol within the namespace...
  * @param {Function} C9r - the associate constructor
  * @param {Object} model - the model used for extension
  */
@@ -90,18 +91,50 @@ eYo.dlgt.declareDlgt = function (_p) {
   object->constructor->eyo->contructor->eyo->constructor->[eYo.$]...
   The Base is its own delegate's constructor
 */
-eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
+eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   //<<< mochai: eYo.dlgt.BaseC9r
   //... chai.expect(eYo.dlgt).property('BaseC9r')
+  if (ns && !eYo.isNS(ns)) {
+    model && eYo.throw(`eYo.dlgt.BaseC9r: unexpected model (${model})`)
+    //... chai.expect(() => {new eYo.delegate.BaseC9r(1, 2, 3, 4)}).throw()
+    ;[ns, id, C9r, model] = [eYo.NA, ns, id, C9r]
+  }
+  var $id, key
+  if (ns) {
+    if (eYo.isSym(id)) {
+      ;[$id, key] = [id, id.description]
+    } else {
+      if (eYo.isStr(id)) {
+        key = id
+      } else {
+        key = '?'
+        this.anonymous = true
+      }
+      $id = Symbol(`${ns.name}.${key}`)
+    }
+  } else if (eYo.isSym(id)) {
+    ;[$id, key] = [id, id.description]
+  } else {
+    if (eYo.isStr(id)) {
+      key = id
+    } else {
+      key = '?'
+      this.anonymous = true
+    }
+    $id = Symbol(`(...).${key}`)
+  }
+
   Object.defineProperties(this, {
-    ns__: { value: eYo.isNS(NS) ? NS : eYo.NA },
-    id__: {value: id},
+    ns__: { value: eYo.isNS(ns) ? ns : eYo.NA },
+    $id__: {value: $id},
+    key__: {value: key},
     C9r__: { value: C9r },
     model__: { value: model },
     subC9rs__: { value: new Set() }, // change it to map ?
   })
   //... chai.expect(dlgt.ns).equal(NS)
-  //... chai.expect(dlgt.id__).equal(id)
+  //... chai.expect(dlgt.key__).equal(key)
+  //... chai.expect(dlgt.$id__.description).equal(`(eYo).${key}`)
   //... chai.expect(dlgt.C9r__).equal(C9r)
   //... chai.expect(dlgt.model__).equal(model)
   var $this = this
@@ -135,7 +168,7 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
     }),
     //... chai.expect(dlgt._p).equal(eYo.Dlgt_p).equal(eYo.dlgt.BaseC9r_p).equal(eYo.dlgt.BaseC9r.prototype)
   })
-  ;['ns', 'id', 'C9r', 'model'].forEach(k => {
+  ;['ns', 'key', '$id', 'C9r', 'model'].forEach(k => {
     let d = eYo.descriptorR(function () {
       return this[k + '__']
     })
@@ -173,22 +206,8 @@ eYo.dlgt.BaseC9r = function (NS, id, C9r, model) {
       //... chai.expect(dlgt.C9r_s).equal(dlgt.C9r__[eYo.$SuperC9r_p])
     },
     name () {
-      if (this.ns) {
-        if (eYo.isStr(this.id__)) {
-          return `${this.ns.name}.${this.id__}`
-        } else if (this.id__) {
-          return `${this.ns.name}.${this.id__.toString()}`          
-        } else {
-          return `${this.ns.name}(...)}`
-        }        
-      } else if (eYo.isStr(this.id__)) {
-        return `(...).${this.id__}`
-      } else if (this.id__) {
-        return `(...).${this.id__.toString()}`
-      } else {
-        return `(...)`
-      }
-      //... chai.expect(dlgt.name).equal(`No man's land.foo`)
+      return this.$id__.description
+      //... chai.expect(dlgt.name).equal('(eYo).foo')
     },
     super () {
       var S = this.C9r__[eYo.$SuperC9r]
@@ -615,8 +634,8 @@ eYo.newSym('dlgt')
  */
 eYo.dlgt.new = function (ns, id, C9r, model) {
   // prepare
-  if (eYo.isId(ns)) {
-    model && eYo.throw(`Unexpected model (1): ${model}`)
+  if (ns && !eYo.isNS(ns)) {
+    model && eYo.throw(`eYo.dlgt.new: Unexpected model (1) ${model}`)
     ;[ns, id, C9r, model] = [eYo.NA, ns, id, C9r]
   } else {
     ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw('Bad namespace')

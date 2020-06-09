@@ -42,7 +42,7 @@ eYo.svg.newDriverC9r('Slot', {
    * Dispose of the given slot's rendering resources.
    * @param {eYo.slot.BaseC9r} slot
    */
-  disposeMake (slot) {
+  disposeMaker (slot) {
     eYo.dom.removeNode(slot.dom.svg.group_)
     slot.dom.svg.group_ = null
     slot.dom.svg = null

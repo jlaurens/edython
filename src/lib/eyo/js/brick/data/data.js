@@ -534,8 +534,8 @@ eYo.data.BaseC9r[eYo.$].finalizeC9r(
    * @param {Object} after
    * @param {Boolean} noRender
    */
-  _p.setTrusted = eYo.decorate.reentrant('setTrusted', function (...args) {
-    this.setTrusted_.call(this, ...args)
+  _p.setTrusted = eYo.decorate.reentrant('setTrusted', function (..._$) {
+    this.setTrusted_.call(this, ...$)
   })
 
   /**

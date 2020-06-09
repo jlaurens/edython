@@ -24,8 +24,8 @@ eYo.fcfl.newNS(eYo, 'dom', {
 /**
  * Turns a list of components into a class name.
  */
-eYo.dom._p.getCssClass = (...args) => {
-  return ['eyo', this.cssClass, ...args].join('-')
+eYo.dom._p.getCssClass = (...$) => {
+  return ['eyo', this.cssClass, ...$].join('-')
 }
 
 /**
@@ -83,7 +83,7 @@ eYo.dom.makeBaseC9r()
  */
 eYo.dom.makeMngr({
   ui: {
-    initMake (f) {
+    initMaker (f) {
       return function () {
         if (object.dom) {
           return
@@ -94,7 +94,7 @@ eYo.dom.makeMngr({
         return dom
       }
     },
-    disposeMake (f) {
+    disposeMaker (f) {
       return function (object, ...rest) {
         var dom = object.dom
         if (dom) {

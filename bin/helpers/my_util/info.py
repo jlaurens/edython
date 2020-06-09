@@ -142,8 +142,8 @@ class Info:
   re_enhanced = re.compile(r"""^\s*
   (?P<ns>eYo(?:\.[a-z]\w*)*)\.enhanced[A-Z]\w+\s*\(""", re.X)
 
-  # eYo.mixinR(eYo.key, {
-  re_mixinR = re.compile(r"""^\s*eYo\.mixinR\s*\(\s*
+  # eYo.mixinRO(eYo.key, {
+  re_mixin = re.compile(r"""^eYo\.mixin(?:RO|FR)\s*\(\s*
   (?P<ns>eYo\.[a-z]\w*)""", re.X)
 
   pathByProvided = {}
@@ -326,7 +326,7 @@ class Info:
             required.add(what)
           else:
             forwarded.add(what)
-        m = self.re_mixinR.match(l)
+        m = self.re_mixin.match(l)
         if m:
           required.add(m.group('ns'))
         continue

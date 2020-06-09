@@ -10,7 +10,7 @@ describe('Fcls driver', function() {
     let owner = {}
     let mngr = new eYo.fcls.Mngr(owner)
     chai.assert(mngr)
-    chai.assert(mngr.allPurposeDriver)
+    chai.assert(mngr.baseDriver)
     chai.assert(mngr.drivers)
     chai.expect(() => {
       mngr.initDrivers()

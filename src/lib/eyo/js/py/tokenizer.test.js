@@ -33,21 +33,21 @@ describe('Tokenizer', function() {
     });
   });
 
-  var Tester = function (...args) {
+  var Tester = function (...$) {
     this.done = 0
     this.keys = []
     this.strs = []
     strs = []
     var key, str
-    while (args.length > 1) {
-      key = args.shift()
+    while ($.length > 1) {
+      key = $.shift()
       this.keys.push(key)
-      str = args.shift()
+      str = $.shift()
       this.strs.push(str)
       strs.push(str)
     }
-    if (args.length) {
-      key = args.shift()
+    if ($.length) {
+      key = $.shift()
       this.keys.push(key)
       str = ''
       this.strs.push(str)

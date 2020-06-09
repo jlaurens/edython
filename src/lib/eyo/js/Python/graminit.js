@@ -203,10 +203,10 @@ Object.defineProperties(eYo.py.tkn, {
   var a = (lbl, arrow) => new eYo.py.gmr.Arc(lbl, arrow)
   var s = (arcs) => new eYo.py.gmr.State(arcs)
   var d = (type, name, initial, n_states, states, first) => new eYo.py.gmr.DFA(type, name, initial, states, first)
-  var b = (...args) => {
-    var ss = eYo.py.bitset.new(args.length * 8)
-    for (var i = 0 ; i < args.length ; i++) {
-      ss.ra[i] = args[i]
+  var b = (...$) => {
+    var ss = eYo.py.bitset.new($.length * 8)
+    for (var i = 0 ; i < $.length ; i++) {
+      ss.ra[i] = $[i]
     }
     return ss
   }

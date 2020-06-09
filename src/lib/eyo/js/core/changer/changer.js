@@ -38,12 +38,12 @@ eYo.o4t.newNS(eYo, 'changer')
 eYo.changer._p.memoize = function (key, do_it) {
   //<<< mochai: memoize
   eYo.isF(do_it) || eYo.throw(`do_it MUST be a function, got: ${do_it}`)
-  return function(...args) {
+  return function(...$) {
     var c = this.changer
     if (c.save_.get(key) === c.count) {
       return c.cache_.get(key)
     }
-    var did_it = do_it.call(this.owner_, ...args)
+    var did_it = do_it.call(this.owner_, ...$)
     if (eYo.isVALID(did_it)) {
       c.save_.set(key, c.count)
       c.cache_.set(key, did_it)

@@ -53,7 +53,7 @@ eYo.newNS('model', {
    * @param{*} what
    * @return {Boolean}
    */
-  validateBool: (what) => {
+  validateBool (what) {
     if (eYo.isDef(what) && !eYo.isBool(what)) return eYo.INVALID
     //<<< mochai: eYo.model.validateBool
     //... chai.assert(!eYo.model.validateBool(true))
@@ -62,7 +62,7 @@ eYo.newNS('model', {
     //... chai.expect(eYo.model.validateBool(1)).equal(eYo.INVALID)
     //>>>
   },
-  validateStr: (what) => {
+  validateStr (what) {
     if (eYo.isDef(what) && !eYo.isStr(what)) return eYo.INVALID
     //<<< mochai: eYo.model.validateStr
     //... chai.assert(!eYo.model.validateStr('ABC'))
@@ -70,7 +70,7 @@ eYo.newNS('model', {
     //... chai.expect(eYo.model.validateStr(1)).equal(eYo.INVALID)
     //>>>
   },
-  validateF: (what) => {
+  validateF (what) {
     if (eYo.isDef(what) && !eYo.isF(what)) return eYo.INVALID
     //<<< mochai: eYo.model.validateF
     //... chai.assert(!eYo.model.validateF(() => {}))
@@ -78,7 +78,7 @@ eYo.newNS('model', {
     //... chai.expect(eYo.model.validateF(1)).equal(eYo.INVALID)
     //>>>
   },
-  validateForFalse: (what) => {
+  validateForFalse (what) {
     //<<< mochai: eYo.model.validateForFalse
     if (what === false) return eYo.doNothing
     //... chai.expect(eYo.model.validateForFalse(false)).equal(eYo.doNothing)
@@ -89,7 +89,7 @@ eYo.newNS('model', {
     //... chai.expect(eYo.model.validateForFalse(true)).equal(eYo.INVALID)
     //>>>
   },
-  validateRA: (what) => {
+  validateRA (what) {
     if (eYo.isDef(what) && !eYo.isRA(what)) return eYo.INVALID
     //<<< mochai: eYo.model.validateRA
     //... chai.assert(!eYo.model.validateRA([]))
@@ -98,7 +98,7 @@ eYo.newNS('model', {
     //... chai.expect(eYo.model.validateRA(true)).equal(eYo.INVALID)
     //>>>
   },
-  validateD: (what) => {
+  validateD (what) {
     if (eYo.isDef(what) && !eYo.isD(what)) return eYo.INVALID
     //<<< mochai: eYo.model.validateD
     //... chai.assert(!eYo.model.validateD({}))

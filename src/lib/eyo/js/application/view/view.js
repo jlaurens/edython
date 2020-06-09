@@ -430,7 +430,7 @@ eYo.View[eYo.$].finalizeC9r({
       },
     }
   },
-  ui: ['init', 'dispose', 'doInit', 'doDispose', 'initMake', 'disposeMake'],
+  ui: ['init', 'dispose', 'doInit', 'doDispose', 'initMaker', 'disposeMaker'],
   //>>>
 })
 
@@ -575,11 +575,11 @@ eYo.View[eYo.$].methodsMerge({
    * Default implementation calls the inherited method
    * and forwards to the views.
    */
-  doInitUI (...args) {
+  doInitUI (...$) {
     //<<< mochai: doInitUI
     this.initUI = eYo.doNothing
-    this.ui_driver.doInitUI(this, ...args)
-    this.viewForEach(v => v.doInitUI(...args))
+    this.ui_driver.doInitUI(this, ...$)
+    this.viewForEach(v => v.doInitUI(...$))
     //... let V = eYo.view.new(model, 'V', onr)
     //... V.ui_driver = ui_driver
     //... V.viewForEach(V => {

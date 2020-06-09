@@ -11,14 +11,51 @@
  */
 'use strict'
 
+//... let NAMES = [
+//...   ['Foo', 'Foo'],
+//...   ['foo.Bar', 'foo.Bar'],
+//...   ['(chi).Foo', 'Foo'],
+//...   ['(chi).foo.Bar', 'foo.Bar'],
+//...   ['eYo.Bar', 'Bar'],
+//...   ['eYo.foo.Bar', 'foo.Bar'],
+//... ]
+
+eYo.mixinRO(eYo.xre, {
+  //<<< mochai: xre
+  driverId: XRegExp(`^(?:\\(.*?\\)\\.|eYo\\.)?(?<id>.*)$`),
+  //<<< mochai: driverId
+  //... NAMES.forEach(ra => {
+  //...   let m = XRegExp.exec(ra[0], eYo.xre.driverId)
+  //...   chai.expect(m).not.undefined
+  //...   chai.expect(m['id'] || m[0]).equal(ra[1])
+  //... })
+  //>>>
+  driverSuperId: XRegExp(`^(?<superId>.*?)\\.[^\\.]*$`),//
+  //<<< mochai: driverSuperId
+  //... var m = XRegExp.exec('foo', eYo.xre.driverSuperId)
+  //... chai.expect(!!m).false
+  //... var m = XRegExp.exec('foo.bar', eYo.xre.driverSuperId)
+  //... chai.expect(m).not.undefined
+  //... chai.expect(m['superId']).equal('foo')
+  //... var m = XRegExp.exec('foo.bar.mee', eYo.xre.driverSuperId)
+  //... chai.expect(m).not.undefined
+  //... chai.expect(m['superId']).equal('foo.bar')
+  //>>>
+  //>>>
+})
+
 /**
  * @name {eYo.driver}
  * @namespace
  */
-eYo.o4t.newNS(eYo, 'driver')
+eYo.o3t.newNS(eYo, 'driver')
 //<<< mochai: Basics
 //... chai.assert(eYo.driver)
 //>>>
+
+eYo.mixinRO(eYo.driver, {
+  $superId: Symbol('superId'),
+})
 
 eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
   //<<< mochai: eYo.driver[eYo.$Handler]
@@ -28,14 +65,14 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
   /**
    * @param {String} key - the name of the driver, eg 'Audio'
    * @param {eYo.Driver} driver - the main driver
-   * @param {eYo.Driver} alt - the alternate driver
+   * @param {eYo.Driver} base - the baseernate driver
    */
-  init (key, driver, alt) {
+  init (key, driver, base) {
     //<<< mochai: init
     key === driver.key || eYo.throw(`${this.eyo.name}/init: Missing ${key} === ${driver.key}`)
     this.__key = key
     this.__driver = driver
-    this.__alt = alt
+    this.__base = base
     this.cache = new Map()
     //>>>
   },
@@ -59,8 +96,8 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
     },
     //<<< mochai: frozen or forbidden
     //... let driver = new eYo.O4t('driver', onr)
-    //... let alt = new eYo.O4t('alt', onr)
-    //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, alt)
+    //... let base = new eYo.O4t('base', onr)
+    //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, base)
     //... let p = new Proxy(driver, handler)
     //... chai.expect(() => p()).throw()
     //... chai.expect(() => new p()).throw()
@@ -79,33 +116,92 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
       //...     },
       //...   },
       //... }, 'driver', onr)
-      //... let alt = eYo.o4t.new({
+      //... let base = eYo.o4t.new({
       //...   methods: {
       //...     do_it_2 (...$) {
       //...       flag.push(...$, 5)  
       //...     },
       //...   },
-      //... }, 'alt', onr)
-      //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, alt)
+      //... }, 'base', onr)
+      //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, base)
       //... let p = new Proxy(driver, handler)
       if (prop === '__driver') {
         return this.__driver
+        //... chai.expect(p.__driver).equal(driver)
       }
-      //... chai.expect(p.__driver).equal(driver)
-      if (prop === '__alt') {
-        return this.__alt
+      if (prop === '__base') {
+        return this.__base
+        //... chai.expect(p.__base).equal(base)
       }
-      //... chai.expect(p.__alt).equal(alt)
       var ans = this.cache.get(prop)
       if (ans) {
         return ans
       }
       ans = Reflect.get(...arguments)
       if (eYo.isF(ans)) { // cache functions
-        var alt = Reflect.get(this.__alt, prop)
-        var ans_f = eYo.isF(alt)
+        // go for the diamond problem
+        var superId = id[eYo.$superID]
+        if (!superId) {
+          var m = XRegExp.exec(id, eYo.xre.driverSuperId)
+          if (m) {
+            id = m['superId']
+            if (ns.getDriverC9r(id)) {
+              var left = ns.getDriver(id)
+            }
+          }  
+        }
+        var m = XRegExp.exec(id, eYo.xre.driverSuperId)
+        if (m) {
+          id = m['superId']
+          if (ns.getDriverC9r(id)) {
+            var left = ns.getDriver(id)
+          }
+        } else {
+          left = ns.getDriver('')
+        }
+        var left_f = left[prop]
+
+        if (target.hasOwnProperty(prop)) {
+          var ans_f = function (...$) {
+
+          }
+        } else {
+  
+        }
+          
+          /**
+           * The driver 
+           * @property {eYo.Driver}
+           */
+          super () {
+            let ns = this.eyo.ns.super
+            return ns && ns.getDriver && ns.getDriver(this.name)
+          },
+      /**
+       * @property {eYo.Driver}
+       */
+      base () {
+        let ns = this.eyo.ns
+        while (true) {
+          var m = XRegExp.exec(id, eYo.xre.driverSuperId)
+          if (m) {
+            id = m['superId']
+            if (ns.getDriverC9r(id)) {
+              return ns.getDriver(id)
+            }
+          } else {
+            break
+          }
+        }
+        return ns.getDriver('')
+      }
+      let ns = target.eyo.ns
+
+
+      var base = this.__base && Reflect.get(this.__base, prop)
+        var ans_f = eYo.isF(base)
         ? function (...$) {
-          alt.call(target, ...$)
+          base.call(target, ...$)
           return ans.call(target, ...$)
         } : ans
         this.cache.set(prop, ans_f)
@@ -127,7 +223,7 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
       //>>>
     },
     getOwnPropertyDescriptor(target, prop) {
-      return Object.getOwnPropertyDescriptor(target, prop) || Object.getOwnPropertyDescriptor(this.__alt, prop)
+      return Object.getOwnPropertyDescriptor(target, prop) || this.__base && Object.getOwnPropertyDescriptor(this.__base, prop)
     },
     getPrototypeOf(target) {
       return Object.getPrototypeOf(target)
@@ -148,8 +244,8 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
       //<<< mochai: set
       return Reflect.set(...arguments)
       //... let driver = new eYo.O4t('driver', onr)
-      //... let alt = new eYo.O4t('alt', onr)
-      //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, alt)
+      //... let base = new eYo.O4t('base', onr)
+      //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, base)
       //... let p = new Proxy(driver, handler)
       //... chai.expect(() => p.foo = 'bar').throw()
       //>>>
@@ -160,37 +256,443 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
     //>>>
   },
   //>>>
-})
-eYo.driver[eYo.$Handler][eYo.$].finalizeC9r()
+})[eYo.$].finalizeC9r()
+
+;(() => {
+  let $C9rMap = Symbol('C9rMap')
+  let $map = Symbol('map')
+  eYo.mixinFR(eYo.driver, {
+    [$C9rMap]: new Map(),
+    [$map]: new Map(),
+  })
+  eYo.mixinFR(eYo.driver._p, {
+    //<<< mochai: eYo.driver extensions
+    newNS (...$) {
+      //<<< mochai: newNS
+      let NS = eYo.driver.super.newNS.call(this, ...$)
+      eYo.mixinFR(NS, {
+        [$C9rMap]: new Map(),
+        [$map]: new Map(),
+      })
+      return NS
+      //... chai.expect(eYo.driver.newNS).not.equal(eYo.driver.super.newNS)
+      //... var NS1 = eYo.driver.newNS()
+      //... chai.expect(NS1.newNS).not.equal(eYo.driver.super.newNS)
+      //... var NS2 = NS1.newNS()
+      //... chai.expect(NS2.newNS).not.equal(eYo.driver.super.newNS)
+      //>>>
+    },
+    /**
+     * Get the driver constructor for the given id.
+     * @param {String} id
+     */
+    getDriverC9r (id) {
+      var m = XRegExp.exec(id, eYo.xre.driverId)
+      id = m['id'] || id
+      return this[$C9rMap].get(id)
+    },
+    /**
+     * Set the driver constructor for the given id.
+     * @param {String} id
+     */
+    setDriverC9r (id, C9r) {
+      //<<< mochai: (set|get)DriverC9r
+      var m = XRegExp.exec(id, eYo.xre.driverId)
+      id = m['id'] || id
+      this[$C9rMap].set(id, C9r)
+      return C9r
+      //... var NS0 = eYo.driver.newNS()
+      //... var C9r0 = NS0.newDriverC9r()
+      //... NAMES.forEach(ra => {
+      //...   NS0.setDriverC9r(ra[0], C9r0)
+      //...   var Drvr = NS0.getDriverC9r(ra[0])
+      //...   chai.expect(Drvr).equal(C9r0)
+      //...   chai.expect(NS0.getDriverC9r(ra[1])).equal(Drvr)
+      //... })
+      //... ;[eYo.driver, NS0].forEach(NS => {
+      //...   var NS1 = NS.newNS()
+      //...   var C9r1 = NS1.newDriverC9r()
+      //...   NAMES.forEach(ra => {
+      //...     NS1.setDriverC9r(ra[0], C9r1)
+      //...     var Drvr = NS1.getDriverC9r(ra[0])
+      //...     chai.expect(Drvr).equal(C9r1)
+      //...     chai.expect(Drvr).not.equal(C9r0)
+      //...     chai.expect(NS1.getDriverC9r(ra[1])).equal(Drvr)
+      //...     NS1.setDriverC9r(ra[1], C9r1)
+      //...     var Drvr = NS1.getDriverC9r(ra[0])
+      //...     chai.expect(Drvr).equal(C9r1)
+      //...     chai.expect(Drvr).not.equal(C9r0)
+      //...     chai.expect(NS1.getDriverC9r(ra[1])).equal(Drvr)
+      //...   })
+      //... })
+      //>>>
+    },
+    /**
+     * @name{getDriver}
+     * Returns a driver, based on the given object's constructor name.
+     * If the receiver is `eYo.fcfl.mngr` and the object's constructor name is `Foo.Bar` then the returned driver is an instance of `eYo.fcfl.Foo.Bar`, `eYo.fcfl.Foo` as soon as it is a driver constructor, otherwise it is the all purpose driver.
+     * @param {*} object - the object for which a driver is required.
+     * @return {eYo.driver.BaseC9r}
+     */
+    getDriver (object) {
+      //<<< mochai: (get|set)Driver
+      object.eyo && (object = object.eyo.name)
+      var m = XRegExp.exec(object, eYo.xre.driverId)
+      var id = m['id'] || m[0]
+      //... var NS = eYo.driver.newNS()
+      //... var drvr
+      //... NAMES.forEach(ra => {
+      //...   var NS = eYo.driver.newNS()
+      //...   let drvr = eYo.genUID()
+      //...   NS.setDriver(ra[0], drvr)
+      //...   chai.expect(NS.getDriver(ra[0])).equal(drvr)
+      //...   chai.expect(NS.getDriver(ra[1])).equal(drvr)
+      //...   NS.setDriver(ra[1], drvr)
+      //...   chai.expect(NS.getDriver(ra[0])).equal(drvr)
+      //...   chai.expect(NS.getDriver(ra[1])).equal(drvr)
+      //... })
+      while(true) {
+        var driver = this[$map].get(id)
+        if (driver) {
+          return driver
+        }
+        var C9r = this.getDriverC9r(id)
+        if (C9r) {
+          //... var NS1 = eYo.driver.newNS()
+          //... NS1.makeBaseC9r({
+          //...   methods: {
+          //...     base (...$) {
+          //...       flag.push(1, ...$)
+          //...     },
+          //...   },
+          //... })
+          //... NS1.setDriverC9r('NS1.BaseC9r', NS1.BaseC9r)
+          //... drvr = NS1.getDriver('NS1.BaseC9r')
+          //... drvr.base(2, 3)
+          //... flag.expect(123)
+          //... var C9r1 = NS1.newDriverC9r('C9r1', {
+          //...   methods: {
+          //...     flag1 (...$) {
+          //...       this.base(...$, 1)
+          //...     },
+          //...   },
+          //... })
+          //... NS1.setDriverC9r('C9r1', C9r1)
+          //... drvr = NS1.getDriver('C9r1')
+          //... drvr.base(2, 3)
+          //... flag.expect(123)
+          //... drvr.flag1(2, 3)
+          //... flag.expect(1231)
+          //... var NS2 = NS1.newNS()
+          //... NS2.makeBaseC9r({
+          //...   methods: {
+          //...     base (...$) {
+          //...       flag.push(12, ...$)
+          //...     },
+          //...     base2 (...$) {
+          //...       flag.push(2, ...$)
+          //...     },
+          //...   },
+          //... })
+          //... NS2.setDriverC9r('NS2.BaseC9r', NS2.BaseC9r)
+          //... drvr = NS2.getDriver('NS2.BaseC9r')
+          //... drvr.base(3, 4)
+          //... flag.expect(1234)
+          //... drvr.base2(3, 4)
+          //... flag.expect(234)
+          
+          driver = new C9r(id, this)
+        } else if (this.super && this.super.getDriver) {
+          driver = this.super.getDriver(id)
+          //... drvr = NS2.getDriver('NS1.BaseC9r')
+          //... drvr.base(2, 3)
+          //... flag.expect(123)
+          //... chai.expect(() => drvr.flag1(2, 3)).throw()
+        }
+        if (driver) {
+          if (!driver instanceof this.BaseC9r) {
+            //... var C9r12 = NS2.newDriverC9r('C9r12', NS1.C9r1, {
+            //...   methods: {
+            //...     flag12 (...$) {
+            //...       this.base(...$, 12)
+            //...     },
+            //...   },
+            //... })
+            //... NS2.setDriverC9r('C9r12', C9r12)
+            //... drvr = NS2.getDriver('C9r12')
+            //... drvr.base(3, 4)
+            //... flag.expect(1234)
+            //... drvr.base2(3, 4)
+            //... flag.expect(234)
+            //... drvr.flag1(3, 4)
+            //... flag.expect(12341)
+            //... drvr.flag12(3, 4)
+            //... flag.expect(123412)
+            while (true) {
+              var m = XRegExp.exec(id, eYo.xre.driverSuperId)
+              if (m) {
+                id = m['superId']
+                if (this.getDriverC9r(id)) {
+                  var base = this.getDriver(id)
+                  break
+                }
+              } else {
+                id = ''
+                base = this.getDriver(id)
+                break
+              }
+            }
+            var handler = new eYo.driver[eYo.$Handler](driver.key, driver, base)
+            driver = new Proxy(driver, handler)
+          }
+          return this.setDriver(id, driver)
+        }
+        var m = XRegExp.exec(id, eYo.xre.driverSuperId)
+        if (m) {
+          id = m['superId']
+        } else {
+          id = ''
+          break
+        }
+        //... var NS = eYo.driver.newNS()
+        //... NS.makeBaseC9r({
+        //...   methods: {
+        //...     base (...$) {
+        //...       flag.push(1, ...$)
+        //...     },
+        //...   },
+        //... })
+        //... var C9r = NS.newDriverC9r('C9r', {
+        //...   methods: {
+        //...     flag (...$) {
+        //...       this.base(...$, 4)
+        //...     },
+        //...   },
+        //... })
+        //... NS.setDriverC9r('C9r', C9r)
+        //... chai.expect(NS.getDriver('C9r.foo')).equal(NS.getDriver('C9r'))
+      }
+      if (!(driver = this[$map].get(id))) {
+        driver = this.setDriver(id, this.new(id))
+      }
+      return driver
+      //... var NS = eYo.driver.newNS()
+      //... var driver = NS.getDriver({
+      //...   eyo: {
+      //...     name: `${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`,
+      //...   },
+      //... })
+      //... chai.expect(driver).equal(NS.getDriver(''))
+      //... var driver = NS.getDriver(`${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`)
+      //... chai.expect(driver).equal(NS.getDriver(''))
+      //>>>
+    },
+    /**
+     * Set the driver constructor for the given id.
+     * @param {String} id
+     */
+    setDriver (object, driver) {
+      object.eyo && (object = object.eyo.name)
+      var m = XRegExp.exec(object, eYo.xre.driverId)
+      var id = m['id'] || m[0]
+      this[$map].set(id, driver)
+      return driver
+    },
+    //>>>
+  })
+})()
+
+eYo.mixinFR(eYo.driver._p, {
+  //<<< mochai: eYo driver methods
+  makeBaseC9r (...$) {
+    var C9r = eYo.driver.super._p.makeBaseC9r.call(this, ...$)
+    this.setDriverC9r('', C9r)
+    return C9r
+  },
+  /**
+   * Usage: `eYo.driver.newDriverC9r('Foo', model)`.
+   * Actual implementation with fcls, fcfl, dom and svg drivers.
+   * {Code: ns.mngr} is used by the main application object.
+   * Convenient driver constructor maker.
+   * The prototype will have eventually an `doInitUI` or `doDisposeUI`
+   * wrapping the model's eponym methods, if any.
+   * The owner will have a dafault driver named `Base`,
+   * which is expected to be the ancestor of all drivers.
+   * @param {String} id - a (titlecased) word, the name of the subclass (last component)
+   * @param {Function} [SuperC9r] - the super class of the driver constructor,
+   * defaults to the owner's super_'s key property or the owner's `Base`.
+   * @param {Object} [driverModel]
+   * An object with various keys:
+   * - owner: An object owning the class, basically a namespace object.
+   * If the owner is `Foo` and the key is 'Bar', the created constructor
+   * is `Foo.Bar`. Actually used with `eYo` as owner, 'dom' or 'svg' as key.
+   * - doInitUI: an optional function with signature (object, ...)->eYo.NA
+   * - doDisposeUI: an optional function with signature (object)->eYo.NA
+   */
+  newDriverC9r (id, SuperC9r, driverModel) {
+    //<<< mochai: newDriverC9r
+    //<<<   mochai: Basics
+    //...   
+    //>>>
+    //... var NS = eYo.driver.newNS()
+    //... chai.expect(NS.newDriverC9r('Foo')).equal(NS.Foo)
+    //... chai.expect(NS.Foo).eyo_C9r
+    //... var foo = new NS.Foo('foo', onr)
+    //... chai.assert(foo.doInitUI)
+    //... chai.expect(foo.doInitUI()).true
+    //... foo.doDisposeUI()
+    if (!eYo.isSubclass(SuperC9r, eYo.Driver)) {
+      ;[SuperC9r, driverModel] = [this.super.getDriverC9r && this.super.getDriverC9r(id) || this.BaseC9r, eYo.called(SuperC9r) || {}]
+    }
+    if (!eYo.isSubclass(SuperC9r, this.BaseC9r)) {
+      //... var NS = eYo.driver.newNS()
+      //... NS.makeBaseC9r({
+      //...   methods: {
+      //...     chi (...$) {
+      //...       flag.push(1, ...$)
+      //...     }
+      //...   }
+      //... })
+      //... NS.newDriverC9r('Bar', {
+      //...   methods: {
+      //...     foo (...$) {
+      //...       flag.push(4, ...$)
+      //...     }
+      //...   }
+      //... })
+      //... NS.newNS('a')
+      //... NS.a.makeBaseC9r({
+      //...   methods: {
+      //...     mee (...$) {
+      //...       flag.push(7, ...$)
+      //...     }
+      //...   }
+      //... })
+      //... NS.a.newDriverC9r('Bar')
+      //... var bar = new NS.a.Bar('bar', onr)
+      //... bar.chi(2, 3)
+      //... bar.foo(5, 6)
+      //... bar.mee(8, 9)
+      //... flag.expect(123456789)
+      if (driverModel) {
+        eYo.provideRO(driverModel, this.BaseC9r[eYo.$].model)
+      } else {
+        driverModel = this.BaseC9r[eYo.$].model
+      }
+    } else if (!driverModel) {
+      driverModel = {}
+    }
+    let Driver = eYo.c9r.doNewC9r(this, id, SuperC9r, driverModel)
+    let ui_m = this.model && this.model.ui
+    let ui_d = Driver[eYo.$].model.ui
+    eYo.mixinFR(Driver.prototype, {
+      doInitUI (...$) {
+        let ans = SuperC9r.prototype.doInitUI.call(this, ...$)
+        var f = ui_m && ui_m.initMaker
+        var ff = ui_d && ui_d.doInit
+        f = (f && f(ff)) || ff
+        return f ? f.call(this, ...$) && ans: ans
+      },
+      doDisposeUI (...$) {
+        var f = ui_m && ui_m.disposeMaker
+        var ff = ui_d && ui_d.doDispose
+        f = (f && f(ff)) || ff
+        var ans = !!f && f.call(this, ...$)
+        return SuperC9r.prototype.doDisposeUI.call(this, ...$) && ans
+      },
+    })
+    Driver[eYo.$].finalizeC9r()
+    var m = XRegExp.exec(id, eYo.xre.driverId)
+    var x = m ? m['id'] : id // 'eYo.foo.Bar' -> 'foo.Bar'
+    this.setDriverC9r(x, Driver)
+    return Driver
+    //... NAMES.forEach(ra => {
+    //...   var NS = eYo.driver.newNS()
+    //...   var Drvr = NS.newDriverC9r(ra[0])
+    //...   chai.expect(Drvr).equal(NS[ra[0]])
+    //...   var NS = eYo.driver.newNS()
+    //...   var Drvr = NS.newDriverC9r(ra[1])
+    //...   chai.expect(Drvr).equal(NS[ra[1]])
+    //... })
+    //... var NS = eYo.driver.newNS()
+    //... var id = `X${eYo.genUID(eYo.IDENT)}`
+    //... var D1 = NS.newDriverC9r(id)
+    //... chai.expect(D1).equal(NS[id])
+    //... var Drvr = NS.getDriverC9r(id)
+    //... chai.expect(D1).equal(Drvr)
+    //... var drvr = NS.getDriver(id)
+    //... chai.expect(drvr).instanceOf(Drvr)
+    //... var id = `X${eYo.genUID(eYo.IDENT)}`
+    //... var D2 = NS.newDriverC9r(id, D1)
+    //... var Drvr = NS.getDriverC9r(id)
+    //... chai.expect(D2).equal(Drvr)
+    //... var drvr = NS.getDriver(id)
+    //... chai.expect(drvr).instanceOf(D1)
+    //... chai.expect(drvr).instanceOf(D2)
+    //... var id = eYo.genUID(eYo.IDENT)
+    //... NS.newDriverC9r(id, {
+    //...   ui: {
+    //...     doInit (onr, ...$) {
+    //...       onr.flag(2, ...$)
+    //...     }
+    //...   }
+    //... })
+    //... var drvr = NS.getDriver(id)
+    //... drvr.doInitUI(onr, 3, 4)
+    //... flag.expect(1234)
+    //... var id = eYo.genUID(eYo.IDENT)
+    //... NS.newDriverC9r(id, {
+    //...   ui: {
+    //...     doDispose (onr, ...$) {
+    //...       onr.flag(2, ...$)
+    //...     }
+    //...   }
+    //... })
+    //... var drvr = NS.getDriver(id)
+    //... drvr.doDisposeUI(onr, 3, 4)
+    //... flag.expect(1234)
+    //>>>
+  },
+  /**
+   * Convenient method to make simple driver forwarders.
+   * Usefull when some methods should simply forward the eponym message to the driver.
+   * @param {Object} pttp - a prototype
+   * @param {String} key - a function name
+   */
+  makeForwarder (pttp, key) {
+    //<<< mochai: makeForwarder
+    pttp[key] = function (...$) {
+      return this.driver[key](this, ...$)
+    }
+    //... var o = eYo.c9r.new({})
+    //... o.tag = 1
+    //... o.driver = new eYo.Driver('foo', onr)
+    //... o.driver.do_it = function (object, ...$) {
+    //...   flag.push(object.tag, 2, ...$, 5)
+    //... }
+    //... eYo.driver.makeForwarder(o, 'do_it')
+    //... o.do_it(3, 4)
+    //... flag.expect(12345)
+    //>>>
+  },
+  //>>>
+})  
 
 /**
  * @name {eYo.driver.BaseC9r}
  * Default convenient driver, to be subclassed.
- * @param {Object} owner
- * @property {eYo.driver.Mgt} mngr,  the owning driver manager
  */
 eYo.driver.makeBaseC9r({
   //<<< mochai: eYo.Driver
-  //<<< mochai: Basics
-  //... var drvr = new eYo.Driver('foo', onr)
-  //... chai.assert(drvr)
-  //... chai.expect(drvr.initUI).eyo_F
-  //... chai.expect(drvr.disposeUI).eyo_F
-  //>>>
-  properties: {
-    //<<< mochai: properties
-    mngr: {
-      //<<< mochai: mngr
-      /**
-       * @property{Object} mngr - the manager of a driver is the owner
-       */
-      get () {
-        return this.owner
-      },
-      //... let drvr = new eYo.Driver('foo', onr)
-      //... chai.expect(drvr.mngr).equal(onr)
-      //>>>
-    },
+  init (id, mngr) {
+    //<<< mochai: init
+    //... var drvr = new eYo.Driver('foo', onr)
+    //... chai.expect(drvr).not.undefined
+    //... chai.expect(drvr.key).equal('foo')
+    //... chai.expect(drvr.mngr).equal(onr)
+    //... chai.expect(drvr.doInitUI).eyo_F
+    //... chai.expect(drvr.doDisposeUI).eyo_F
+    eYo.mixinRO(this, {mngr})
     //>>>
   },
   methods: {
@@ -221,368 +723,6 @@ eYo.driver.makeBaseC9r({
       //... chai.expect(drvr.doDisposeUI(1, 2, 3)).true
       //>>>
     },
-    //>>>
-  },
-  //>>>
-})
-
-/**
- * @name {eYo.driver.mngr}
- * Default driver manager.
- * Owns instances of `eYo.Driver`'s descendants.
- * @param {Object} owner
- */
-eYo.driver.newSingleton('mngr', {
-  //<<< mochai: eYo.driver.mngr
-  //<<< mochai: Basics
-  //... chai.expect(eYo.driver).property('mngr')
-  //>>>
-  //... var mngr = eYo.driver.mngr
-  [eYo.$SuperC9r]: eYo.O4t,
-  //<<< mochai: inherits
-  //... chai.expect(mngr).instanceof(eYo.O4t)
-  //>>>
-  properties: {
-    //<<< mochai: properties
-    driverC9rMap: {
-      //<<< mochai: driverC9rMap
-      value () {
-        return new Map()
-      }
-      //... chai.expect(mngr.driverC9rMap_p).instanceof(eYo.P6y)
-      ///... chai.expect(mngr.driverC9rMap).instanceof(Map)
-      //>>>
-    },
-    drivers: {
-      //<<< mochai: drivers
-      value () {
-        return new Map()
-      },
-      //... chai.expect(mngr.drivers_p).instanceof(eYo.P6y)
-      //... chai.expect(mngr.drivers).instanceof(Map)
-      //>>>
-    },
-    allPurposeDriver: {
-      //<<< mochai: allPurposeDriver
-      value () {
-        let target = new this.eyo.ns.BaseC9r ('allPurposeDriver', this)
-        let handler = {
-          get (target, prop) {
-            if (prop === eYo.Sym$.target) {
-              return target
-            }
-            if (prop in target) {
-              return target[prop]
-            }
-            var ans = target[prop]
-            if (ans) {
-              return ans
-            }
-            if (prop === eYo.$p6y) {
-              return eYo.NA
-            }
-            if (prop === 'inspect') {
-              return eYo.NA
-            }
-            if (prop === Symbol.toStringTag) {
-              return eYo.NA
-            }
-            eYo.throw(`Missing driver property named ${prop.toString()} in object ${target}`)
-          },
-          set (target, prop, value) {
-            if (prop in target) {
-              target[prop] = value
-              return true
-            }
-            if (prop === eYo.$p6y) {
-              target[prop] = value
-              return true
-            }
-            eYo.throw(`Missing driver property named ${prop} in object ${target}`)
-          }
-        }
-        return new Proxy(target, handler)
-      },
-      //... let driver = mngr.allPurposeDriver
-      //... chai.expect(driver[eYo.Sym$.target]).instanceof(eYo.Driver)
-      //... chai.expect(() => driver[eYo.genUID(eYo.IDENT)]).throw()
-      //>>>
-    },
-    //>>>
-  },
-  methods: {
-    //<<< mochai: methods
-    /**
-     * Usage: `eYo.driver.mngr.newDriverC9r('Foo', model)`.
-     * Actual implementation with fcls, fcfl, dom and svg drivers.
-     * {Code: ns.mngr} is used by the main application object.
-     * Convenient driver constructor maker.
-     * The prototype will have eventually an `doInitUI` or `doDisposeUI`
-     * wrapping the model's eponym methods, if any.
-     * The owner will have a dafault driver named `Base`,
-     * which is expected to be the ancestor of all drivers.
-     * @param {String} key - a (titlecased) word, the name of the subclass (last component)
-     * @param {Function} [SuperC9r] - the super class of the driver constructor,
-     * defaults to the owner's super_'s key property or the owner's `Base`.
-     * @param {Object} driverModel
-     * An object with various keys:
-     * - owner: An object owning the class, basically a namespace object.
-     * If the owner is `Foo` and the key is 'Bar', the created constructor
-     * is `Foo.Bar`. Actually used with `eYo` as owner, 'dom' or 'svg' as key.
-     * - doInitUI: an optional function with signature (object, ...)->eYo.NA
-     * - doDisposeUI: an optional function with signature (object)->eYo.NA
-     */
-    newDriverC9r (key, SuperC9r, driverModel) {
-      //<<< mochai: newDriverC9r
-      //... var NS = eYo.driver.newNS()
-      //... NS.makeMngr()
-      //... NS.mngr.newDriverC9r('Foo')
-      //... chai.expect(NS.Foo).eyo_C9r
-      //... var foo = new NS.Foo('foo', onr)
-      //... chai.assert(foo.doInitUI)
-      //... chai.expect(foo.doInitUI()).true
-      //... foo.disposeUI()
-      var NS = this.ns
-      if (!eYo.isSubclass(SuperC9r, eYo.Driver)) {
-        driverModel && eYo.throw(`${this.eyo.name}/newDriverC9r: Unexpected model (${driverModel})`)
-        ;[SuperC9r, driverModel] = [NS.super[key] || NS.BaseC9r, eYo.called(SuperC9r) || {}]
-      }
-      if (!eYo.isSubclass(SuperC9r, NS.BaseC9r)) {
-        //... var NS = eYo.driver.newNS()
-        //... NS.makeBaseC9r({
-        //...   methods: {
-        //...     chi (...$) {
-        //...       flag.push(1, ...$)
-        //...     }
-        //...   }
-        //... })
-        //... NS.makeMngr()
-        //... NS.mngr.newDriverC9r('Bar', {
-        //...   methods: {
-        //...     foo (...$) {
-        //...       flag.push(4, ...$)
-        //...     }
-        //...   }
-        //... })
-        //... NS.newNS('a')
-        //... NS.a.makeBaseC9r({
-        //...   methods: {
-        //...     mee (...$) {
-        //...       flag.push(7, ...$)
-        //...     }
-        //...   }
-        //... })
-        //... NS.a.makeMngr()
-        //... NS.a.mngr.newDriverC9r('Bar')
-        //... var bar = new NS.a.Bar('bar', onr)
-        //... bar.chi(2, 3)
-        //... bar.foo(5, 6)
-        //... bar.mee(8, 9)
-        //... flag.expect(123456789)
-        if (driverModel) {
-          eYo.provideRO(driverModel, NS.BaseC9r[eYo.$].model)
-        } else {
-          driverModel = NS.BaseC9r[eYo.$].model
-        }
-      }
-      let Driver = eYo.c9r.newC9r(NS, key, SuperC9r, driverModel)
-      let ui_m = this.model.ui
-      let ui_d = Driver[eYo.$].model.ui
-      eYo.mixinFR(Driver.prototype, {
-        doInitUI (...$) {
-          let ans = SuperC9r.prototype.doInitUI.call(this, ...$)
-          var f = ui_m && ui_m.initMake
-          var ff = ui_d && ui_d.doInit
-          f = (f && f(ff)) || ff
-          return f ? f.call(this, ...$) && ans: ans
-        },
-        doDisposeUI (...$) {
-          var f = ui_m && ui_m.disposeMake
-          var ff = ui_d && ui_d.doDispose
-          f = (f && f(ff)) || ff
-          var ans = !!f && f.call(this, ...$)
-          return SuperC9r.prototype.doDisposeUI.call(this, ...$) && ans
-        },
-      })
-      Driver[eYo.$].finalizeC9r()
-      var x = Driver[eYo.$].name.split('.')
-      x.shift()
-      x = x.join('.') // 'eYo.foo.bar' -> 'foo.bar'
-      this.driverC9rMap.set(x, Driver)
-      return Driver
-      //... var id = eYo.genUID(eYo.IDENT)
-      //... var x = `driver.${id}`
-      //... var D1 = mngr.newDriverC9r(id)
-      //... var Drvr = mngr.getDriverC9r(x)
-      //... chai.expect(D1).equal(Drvr)
-      //... var drvr = mngr.getDriver(x)
-      //... chai.expect(drvr).instanceOf(Drvr)
-      //... var id = eYo.genUID(eYo.IDENT)
-      //... var x = `driver.${id}`
-      //... var D2 = mngr.newDriverC9r(id, D1)
-      //... var Drvr = mngr.getDriverC9r(x)
-      //... chai.expect(D2).equal(Drvr)
-      //... var drvr = mngr.getDriver(x)
-      //... chai.expect(drvr).instanceOf(D1)
-      //... chai.expect(drvr).instanceOf(D2)
-      //... var id = eYo.genUID(eYo.IDENT)
-      //... var x = `driver.${id}`
-      //... mngr.newDriverC9r(id, {
-      //...   ui: {
-      //...     doInit (onr, ...$) {
-      //...       onr.flag(2, ...$)
-      //...     }
-      //...   }
-      //... })
-      //... var drvr = mngr.getDriver(x)
-      //... drvr.doInitUI(onr, 3, 4)
-      //... flag.expect(1234)
-      //... var id = eYo.genUID(eYo.IDENT)
-      //... var x = `driver.${id}`
-      //... mngr.newDriverC9r(id, {
-      //...   ui: {
-      //...     doDispose (onr, ...$) {
-      //...       onr.flag(2, ...$)
-      //...     }
-      //...   }
-      //... })
-      //... var drvr = mngr.getDriver(x)
-      //... drvr.doDisposeUI(onr, 3, 4)
-      //... flag.expect(1234)
-      //>>>
-    },
-    /**
-     * Get the driver constructor for the given name.
-     * @param {String} name
-     */
-    getDriverC9r (name) {
-      return this.driverC9rMap.get(name)
-    },
-    /**
-     * @name{getDriver}
-     * Returns a driver, based on the given object's constructor name.
-     * If the receiver is `eYo.fcfl.mngr` and the object's constructor name is `Foo.Bar` then the returned driver is an instance of `eYo.fcfl.Foo.Bar`, `eYo.fcfl.Foo` as soon as it is a driver constructor, otherwise it is the all purpose driver.
-     * @param {*} object - the object for which a driver is required.
-     * @return {eYo.driver.BaseC9r}
-     */
-    getDriver (object) {
-      //<<< mochai: getDriver
-      var components
-      try {
-        components = object.eyo.name.split('.')
-        components.shift()
-      } catch(e) {
-        components = object.split('.')
-      }
-      while (components.length) {
-        name = components.join('.')
-        var driver = this.drivers.get(name)
-        if (driver) {
-          return driver
-        }
-        var C9r = this.getDriverC9r(name)
-        if (C9r) {
-          driver = new C9r(name, this)
-          this.drivers.set(name, driver)
-          return driver
-        }
-        components.pop()
-      }
-      return this.allPurposeDriver
-      //... var driver = mngr.getDriver({
-      //...   eyo: {
-      //...     name: `${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`,
-      //...   },
-      //... })
-      //... chai.expect(driver).equal(mngr.allPurposeDriver)
-      //... var driver = mngr.getDriver(`${eYo.genUID(eYo.IDENT)}.${eYo.genUID(eYo.IDENT)}`)
-      //... chai.expect(driver).equal(mngr.allPurposeDriver)
-      //>>>
-    },
-    //>>>
-  },
-  //>>>
-})
-
-eYo.mixinFR(eYo.driver._p, {
-  //<<< mochai: eYo.driver methods
-  /**
-   * Usage: `eYo.driver.makeMngr(model)`.
-   * Actual implementation with Fcls, Fcfl, Dom and Svg drivers.
-   * {Code: ns.Mngr} is instantiated by the main application object.
-   * The `Base` class is also created.
-   ** @param {Object} [mngrModel] -  model used for creation, see `newC9r`.
-  * @return {Function} a constructor equals to ns.Mngr
-  */
-  makeMngr (mngrModel) {
-    //<<< mochai: makeMngr
-    if (this.hasOwnProperty('mngr')) {
-      return this.mngr
-    }
-    this._p.hasOwnProperty('BaseC9r') || this.hasOwnProperty('BaseC9r') || this.makeBaseC9r()
-    mngrModel || (mngrModel = {})
-    if (!eYo.isC9r(mngrModel[eYo.$SuperC9r])) {
-      var $super = this.super
-      while (!$super.mngr) {
-        $super = $super.super // loop ends when at least $super === eYo.driver
-      }
-      mngrModel[eYo.$SuperC9r] = $super.mngr.constructor
-    }
-    return this.newSingleton('mngr', mngrModel)
-    //... let NS = eYo.driver.newNS()
-    //... chai.expect(NS).not.property('mngr')
-    //... chai.expect(NS.BaseC9r).equal(eYo.driver.BaseC9r)
-    //... NS.makeMngr()
-    //... chai.expect(NS).property('mngr')
-    //... chai.expect(()=>NS.makeBaseC9r()).throw()
-    //... chai.expect(NS.BaseC9r).eyo_subclass(eYo.driver.BaseC9r)
-    //... chai.expect(NS.mngr.constructor).eyo_subclass(eYo.driver.mngr.constructor)
-    //... chai.expect(NS.mngr).property('newDriverC9r')
-    //... NS.newNS('a')
-    //... NS.a.makeMngr()
-    //... let NS1 = eYo.driver.newNS()
-    //... NS1.makeMngr()
-    //... chai.expect(NS1.mngr).instanceOf(eYo.driver.mngr.constructor)
-    //... let NS2 = NS1.newNS()
-    //... NS2.makeMngr()
-    //... chai.expect(NS2.mngr).instanceOf(NS1.mngr.constructor)
-    //... let NS3 = NS2.newNS()
-    //... NS3.makeMngr({
-    //...   properties: {
-    //...     foo: 421,
-    //...   },
-    //...   methods: {
-    //...     flag (...$) {
-    //...       flag.push(1, ...$)  
-    //...     },
-    //...   },
-    //... })
-    //... chai.expect(NS3.mngr).instanceOf(NS2.mngr.constructor)
-    //... chai.expect(NS3.mngr.foo).equal(421)
-    //... NS3.mngr.flag(2, 3)
-    //... flag.expect(123)
-    //>>>
-  },
-  /**
-   * Convenient method to make simple driver forwarders.
-   * Usefull when some methods should simply forward the eponym message to the driver.
-   * @param {Object} pttp - a prototype
-   * @param {String} key - a function name
-   */
-  makeForwarder (pttp, key) {
-    //<<< mochai: makeForwarder
-    pttp[key] = function (...$) {
-      return this.driver[key](this, ...$)
-    }
-    //... var o = eYo.c9r.new({})
-    //... o.tag = 1
-    //... o.driver = new eYo.Driver('foo', onr)
-    //... o.driver.do_it = function (object, ...$) {
-    //...   flag.push(object.tag, 2, ...$, 5)
-    //... }
-    //... eYo.driver.makeForwarder(o, 'do_it')
-    //... o.do_it(3, 4)
-    //... flag.expect(12345)
     //>>>
   },
   //>>>

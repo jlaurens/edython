@@ -1,7 +1,7 @@
 /*
  * edython
  *
- * Copyright 2018 Jérôme LAURENS.
+ * Copyright 2018-2020 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -225,54 +225,6 @@ eYo.isDef = what => {
   //... chai.expect(eYo.isDef({})).true
   //... chai.expect(eYo.isDef()).false
   //... chai.expect(eYo.isDef(null)).false
-  //>>>
-}
-/**
- * Function used to disallow sending twice the same message.
- */
-eYo.neverShot = function (msg) {
-  return eYo.isStr(msg)
-  ? function () {
-    throw new Error(`Forbidden call: ${msg}`)
-  } : eYo.isF(msg)
-    ? function () {
-      throw new Error(`Forbidden call ${msg.call(this)}`)
-    } : eYo.isDef(msg)
-      ? eYo.throw(`eYo.neverShot: Bad argument ${msg}`)
-      : function () {
-        throw new Error('Forbidden shot')
-      }
-  //<<< mochai: eYo.neverShot
-  //... chai.assert(eYo.neverShot)
-  //... chai.expect(() => eYo.neverShot(421)).throw()
-  //... chai.expect(() => eYo.neverShot()()).throw()
-  //... chai.expect(() => eYo.neverShot('abc')()).throw()
-  //... chai.expect(() => eYo.neverShot(() => flag.push(421))()).throw()
-  //... flag.expect(421)
-  //>>>
-}
-/**
- * Function used to disallow sending twice the same message.
- */
-eYo.oneShot = function (msg) {
-  return eYo.isStr(msg)
-  ? function () {
-    throw new Error(`Forbidden call: ${msg}`)
-  } : eYo.isF(msg)
-    ? function () {
-      throw new Error(`Forbidden call ${msg.call(this)}`)
-    } : eYo.isDef(msg)
-      ? eYo.throw(`eYo.oneShot: Bad argument ${msg}`)
-      : function () {
-        throw new Error('Forbidden second shot')
-      }
-  //<<< mochai: eYo.oneShot
-  //... chai.assert(eYo.oneShot)
-  //... chai.expect(() => eYo.oneShot(421)).throw()
-  //... chai.expect(() => eYo.oneShot()()).throw()
-  //... chai.expect(() => eYo.oneShot('abc')()).throw()
-  //... chai.expect(() => eYo.oneShot(() => flag.push(421))()).throw()
-  //... flag.expect(421)
   //>>>
 }
 /**
@@ -761,7 +713,7 @@ eYo.provideRO = (dest, props) => {
     })
   })
   return dest
-  //<<< mochai: eYo: provideRO'
+  //<<< mochai: provideRO
   //... let a = {}
   //... let b = {}
   //... chai.expect(() => eYo.provideRO(eYo.NS, eYo.NA)).to.throw()
@@ -803,29 +755,30 @@ eYo.provideFR = (dest, props) => {
     })
   })
   return dest
-  //<<< mochai: eYo: provideRO'
+  //<<< mochai: eYo: provideFR
   //... let a = {}
   //... let b = {}
-  //... chai.expect(() => eYo.provideRO(eYo.NS, eYo.NA)).to.throw()
-  //... chai.expect(() => eYo.provideRO(a, eYo.NA)).to.throw()
-  //... eYo.provideRO(a, b)
+  //... chai.expect(() => eYo.provideFR(eYo.NS, eYo.NA)).to.throw()
+  //... chai.expect(() => eYo.provideFR(a, eYo.NA)).to.throw()
+  //... eYo.provideFR(a, b)
   //... chai.expect(a).to.deep.equal(b)
   //... b.foo = 421
-  //... chai.expect(() => eYo.provideRO(eYo.NS, b)).to.throw()
+  //... chai.expect(() => eYo.provideFR(eYo.NS, b)).to.throw()
   //... chai.expect(a).not.to.deep.equal(b)
-  //... eYo.provideRO(a, b)
+  //... eYo.provideFR(a, b)
   //... chai.expect(a.foo).equal(b.foo).equal(421)
   //... b.foo = 123
-  //... chai.expect(() => eYo.provideRO(a, b)).not.to.throw()
+  //... chai.expect(() => eYo.provideFR(a, b)).not.to.throw()
   //... chai.expect(a.foo).not.equal(b.foo)
   //>>>
 }
 
+//<<< mochai: utilities (1)
 eYo.mixinFR(eYo, {
   /**
    * @const
    */
-  name: 'eYo',
+  $id: Symbol('eYo'),
   /**
    * Reference to the global object.
    * https://www.ecma-international.org/ecma-262/9.0/index.html#sec-global-object
@@ -870,10 +823,65 @@ eYo.mixinFR(eYo, {
   doReturn2nd (what, $else) {
     return $else
   },
+  /**
+   * Function used to disallow sending twice the same message.
+   */
+  neverShot (msg) {
+    return eYo.isStr(msg)
+    ? function () {
+      throw new Error(`Forbidden call: ${msg}`)
+    } : eYo.isF(msg)
+      ? function () {
+        throw new Error(`Forbidden call ${msg.call(this)}`)
+      } : eYo.isDef(msg)
+        ? eYo.throw(`eYo.neverShot: Bad argument ${msg}`)
+        : function () {
+          throw new Error('Forbidden shot')
+        }
+    //<<< mochai: eYo.neverShot
+    //... chai.assert(eYo.neverShot)
+    //... chai.expect(() => eYo.neverShot(421)).throw()
+    //... chai.expect(() => eYo.neverShot()()).throw()
+    //... chai.expect(() => eYo.neverShot('abc')()).throw()
+    //... chai.expect(() => eYo.neverShot(() => flag.push(421))()).throw()
+    //... flag.expect(421)
+    //>>>
+  },
+  /**
+   * Function used to disallow sending twice the same message.
+   */
+  oneShot (msg) {
+    return eYo.isStr(msg)
+    ? function () {
+      throw new Error(`Forbidden call: ${msg}`)
+    } : eYo.isF(msg)
+      ? function () {
+        throw new Error(`Forbidden call ${msg.call(this)}`)
+      } : eYo.isDef(msg)
+        ? eYo.throw(`eYo.oneShot: Bad argument ${msg}`)
+        : function () {
+          throw new Error('Forbidden second shot')
+        }
+    //<<< mochai: eYo.oneShot
+    //... chai.assert(eYo.oneShot)
+    //... chai.expect(() => eYo.oneShot(421)).throw()
+    //... chai.expect(() => eYo.oneShot()()).throw()
+    //... chai.expect(() => eYo.oneShot('abc')()).throw()
+    //... chai.expect(() => eYo.oneShot(() => flag.push(421))()).throw()
+    //... flag.expect(421)
+    //>>>
+  }
 })
+
+eYo.mixinRO(eYo, {
+  [eYo.$id]: eYo,
+})
+
+//>>>
 
 // ANCHOR Utilities
 eYo.mixinFR(eYo, {
+  //<<< mochai: utilities (2)
   /**
    * Readonly undefined
    */
@@ -906,12 +914,10 @@ eYo.mixinFR(eYo, {
     //... chai.expect(eYo.asDef(null, what)).equal(what)
     //>>>
   },
-  INVALID: (() => {
-    return new eYo.doNothing()
-    //<<< mochai: eYo.INVALID
-    //... chai.expect(eYo.isDef(eYo.INVALID)).true
-    //>>>
-  })(),
+  INVALID: Symbol('eYo.INVALID'),
+  //<<< mochai: eYo.INVALID
+  //... chai.expect(eYo.INVALID).not.undefined
+  //>>>
   /**
    * Whether the argument is not `eYo.INVALID`.
    * @param {*} what
@@ -1094,9 +1100,10 @@ eYo.mixinFR(eYo, {
     //... chai.expect(eYo.called(() => 421)).equal(421)
     //>>>
   },
+  //>>>
 })
 
-eYo.mixinFR(eYo._p, {
+eYo.mixinRO(eYo._p, {
   //<<< mochai: symbols
   $C9r: Symbol('C9r'),
   $SuperC9r: Symbol('SuperC9r'),
@@ -1105,7 +1112,82 @@ eYo.mixinFR(eYo._p, {
   $Handler: Symbol('Handler'),
   //>>>
   /**
-   * Whether sub_ is a subclass of Super, or equals to Super...
+   * The name of the namespace.
+   */
+  name () {
+    //<<< mochai: name
+    return this.$id.description
+    //... var A = eYo.genUID(eYo.IDENT)
+    //... var ns0 = eYo.newNS()
+    //... var ns1 = ns0.newNS()
+    //... var foo0 = eYo.newNS(eYo.NULL_NS, 'foo')
+    //... var foo1 = foo0.newNS()
+    //... ;[
+    //...    [eYo, 'eYo'],
+    //...    [ns0, '(eYo)'],
+    //...    [ns1, '((eYo))'],
+    //...    [eYo.newNS(A), `eYo.${A}`],
+    //...    [ns0.newNS(A), `(eYo).${A}`],
+    //...    [ns1.newNS(A), `((eYo)).${A}`],
+    //...    [foo0, `foo`],
+    //...    [foo0.newNS(A), `foo.${A}`],
+    //...    [foo1, `(foo)`],
+    //...    [foo1.newNS(A), `(foo).${A}`],
+    //... ].forEach(ra => chai.expect(ra[0].name).equal(ra[1]))
+    //... 
+
+    //... var A = eYo.genUID(eYo.IDENT)
+    //... var $A = Symbol(A)
+    //... var nsA = eYo.newNS($A)
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var ns0A = ns0.newNS($A)
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var ns1A = ns1.newNS($A)
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var ns0 = eYo.newNS()
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var ns1 = ns0.newNS()
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var A = eYo.genUID(eYo.IDENT)
+    //... var $A = Symbol(A)
+    //... var nsA = eYo.newNS($A)
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var ns0A = ns0.newNS($A)
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var ns1A = ns1.newNS($A)
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var ns0 = eYo.newNS(eYo.NULL_NS, 'foo')
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var ns1 = ns0.newNS()
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var A = eYo.genUID(eYo.IDENT)
+    //... var $A = Symbol(A)
+    //... var nsA = eYo.newNS($A)
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var ns0A = ns0.newNS($A)
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //... var ns1A = ns1.newNS($A)
+    //... chai.expect(nsA.name).equal(A)
+    //... chai.expect(nsA.$id).equal($A)
+    //>>>
+  },
+})
+
+eYo.mixinFR(eYo._p, {
+  /**
+   * Whether Sub is a subclass of Super, or equals to Super...
    * @param {Function} Sub
    * @param {Function} Super
    * @return {Boolean}
@@ -1178,8 +1260,8 @@ eYo.mixinFR(eYo._p, {
    * @name {eYo.newNS}
    * Make a namespace by subclassing the caller's constructor.
    * Will create 'foo' namespace together with an 'foo_p' property to access the prototype.
-   * @param {!Object} ns - a namespace, created object will be `ns[key]`. Defaults to the receiver.
-   * @param {String|Symbol} id - When a string, sentencecase name. Created object will be `ns[id]`.
+   * @param {!Object} [ns] - a namespace, created object will be `ns[key]`. Defaults to the receiver.
+   * @param {String|Symbol} [id] - Sentence case name when a string. Created object will be `ns[id]` and `eYo[ns.$id]`.
    * @param {Object} [model] - Key/value pairs
    * @param {Boolean} [getters] - Whether in the model, function values are getters
    * @return {Object}
@@ -1189,17 +1271,37 @@ eYo.mixinFR(eYo._p, {
     //... chai.assert(eYo.isNS)
     //... chai.expect(eYo).eyo_NS
     //... chai.assert(eYo.newNS)
-    if (eYo.isDef(ns) && !eYo.isNS(ns)) {
+    if (ns && !eYo.isNS(ns)) {
       eYo.isDef(getters) && eYo.throw(`${this.name}/newNS: Unexpected last argument: ${getters}`)
+      //... chai.expect(() => {eYo.newNS(1, 2, 3, 4)}).throw()
       ;[ns, id, model, getters] = [this, ns, id, model]
     }
-    if (!eYo.isStr(id)) {
+    var $id, key
+    if (eYo.isSym(id)) {
+      key = id.description
+      $id = id
+    } else if (eYo.isStr(id)) {
+      key = id
+      $id = Symbol(ns ? `${ns.name}.${key}` : key)
+    } else {
       eYo.isDef(getters) && eYo.throw(`${this.name}/newNS: Unexpected last argument (2): ${getters}`)
-      ;[id, model, getters] = [eYo.NA, id, model]
+      //... chai.expect(() => {eYo.newNS(2, 3, 4)}).throw()
+      //... chai.expect(() => {eYo.newNS(eYo.NA, 2, 3, 4)}).throw()
+      ;[model, getters] = [id, model]
+      var anonymous = true
+      if (ns) {
+        key = '?'
+        $id = Symbol(`${ns.name}.${key}`)
+      } else {
+        key = `(${this.name})`
+        $id = Symbol(key)
+      }
     }
-    ns && id && ns[id] !== eYo.NA && eYo.throw(`${ns.name}[${id}] already exists.`)
     if (eYo.isBool(model)) {
       ;[model, getters] = [getters, model]
+    }
+    if (anonymous) {
+      ns && key && !eYo.isNA(ns[key]) && eYo.throw(`${ns.name}[${key}] already exists.`)
     }
     //... var ns = eYo.newNS()
     //... chai.expect(ns).eyo_NS
@@ -1223,7 +1325,6 @@ eYo.mixinFR(eYo._p, {
     //... var ns = ns_super.newNS(eYo.NULL_NS, key)
     //... chai.assert(ns)
     //... chai.expect(ns_super[key]).undefined
-
     Object.defineProperty(NS.prototype, 'super', {
       value: this,
       writable: false,
@@ -1232,63 +1333,67 @@ eYo.mixinFR(eYo._p, {
     //... var ns = ns_super.newNS()
     //... chai.expect(ns).not.equal(ns_super)
     //... chai.expect(ns.super).equal(ns_super)
-    ns && Object.defineProperty(NS.prototype, 'parent', {
-      get () {
-        console.error('BREAK HERE!!! parent')
-        return ns
-      },
-      // value: ns, // used in makeBaseC9r
-      // writable: false,
-    })
-    ns && Object.defineProperty(NS.prototype, 'parentNS', {
-      value: ns, // used in makeBaseC9r
-      writable: false,
-    })
-    model && Object.keys(model).forEach(k => {
-      let value = model[k]
-      Object.defineProperty(
-        NS.prototype,
-        k,
-        eYo.descriptorR(getters && eYo.isF(value) ? value : function () {
-          return value
-        }, true)
-      )
-      //... var ns = eYo.newNS(eYo.NULL_NS, 'fu', {
-      //...   shi: 421
-      //... })
-      //... chai.expect(ns.shi).equal(421)
-      //... var ns = eYo.newNS(eYo.NULL_NS, 'fu', true, {
-      //...   shi () { return 421 }
-      //... })
-      //... chai.expect(ns.shi).equal(421)
-    })
-    var ans = new NS()
-    if (id) {
-      ns && Object.defineProperties(ns, {
-        [id]: { value: ans, writable: false, },
-        [id + '_p']: { value: NS.prototype, writable: false, },
-        [id + '_s']: { value: Super.prototype, writable: false, },
-      })
-      Object.defineProperties(NS.prototype, {
-        key: {value: id, writable: false,},
-        name: {
-          value: ns ? `${ns.name}.${id}` : id,
-          writable: false,
+    if (ns) {
+      Object.defineProperty(NS.prototype, 'parent', {
+        get () {
+          console.error('BREAK HERE!!! parent')
+          return ns
         },
+        // value: ns, // used in makeBaseC9r
+        // writable: false,
       })
+      Object.defineProperty(NS.prototype, 'parentNS', {
+        value: ns, // used in makeBaseC9r
+        writable: false,
+      })
+    }
+    model && (getters
+    ? eYo.mixinRO(NS.prototype, model)
+    : eYo.mixinFR(NS.prototype, model))
+    //... var ns = eYo.newNS(eYo.NULL_NS, 'fu', {
+    //...   shi: 421
+    //... })
+    //... chai.expect(ns.shi).equal(421)
+    //... var ns = eYo.newNS(eYo.NULL_NS, 'fu', true, {
+    //...   shi () { return 421 }
+    //... })
+    //... chai.expect(ns.shi).equal(421)
+    var ans = new NS()
+    anonymous && (ans.anonymous = anonymous)
+    if (key) {
+      if (!anonymous && ns) {
+        ns.hasOwnProperty(key) && eYo.throw(`${this.name}/newNS: already property (${key})`)
+        Object.defineProperties(ns, {
+          [key]: { value: ans, writable: false, },
+          [key + '_p']: { value: NS.prototype, writable: false, },
+          [key + '_s']: { value: Super.prototype, writable: false, },
+        })
+      }
+      Object.defineProperties(ans, {
+        key: {value: key, writable: false,},
+        $id: {value: $id, writable: false,},
+      })
+      var parentNS = ns
+      if (ns && !eYo.isSym(id)) {
+        while (true) {
+          if ((parentNS = ns.parentNS)) {
+            ns = parentNS
+            continue
+          }
+          if (ns !== eYo) {
+            Object.defineProperties(eYo, {
+              [$id]: { value: ans, writable: false, },
+            })
+          }
+          break
+        }
+      }
       //... var ns_super = eYo.newNS()
       //... var ns = ns_super.newNS('foo')
       //... chai.expect(ns).eyo_NS
       //... chai.expect(ns).equal(ns_super.foo)
       //... ns.newNS('chi')
       //... chai.expect(ns_super.foo.chi).eyo_NS
-    } else {
-      Object.defineProperties(NS.prototype, {
-        name: {
-          value: ns ? `${ns.name}.?` : "No man's land",
-          writable: false,
-        },
-      })
     }
     return ans
     //>>>
@@ -1302,27 +1407,29 @@ eYo.mixinFR(eYo._p, {
     if (value === false) {
       return
     }
-    var args = name.split('.')
-    if (args[0] === 'eYo') {
+    var $ = name.split('.')
+    if ($[0] === 'eYo') {
       return
     }
     var ns = eYo
-    var f = (first, second, ...args) => {
+    var f = (first, second, ...$$) => {
       if (first) {
         if (!ns[first]) {
           if (eYo.isStr(second)) {
             ns = ns.newNS(first)
-            f(second, ...args)
+            f(second, ...$$)
+          } else if (second) {
+            ns[first] = second
           } else {
-            (ns[first] = second) || ns.newNS(first)
+            ns.newNS(first)
           }
         } else if (eYo.isStr(second)) {
           ns = ns[first]
-          f(second, ...args)
+          f(second, ...$$)
         } 
       }
     }
-    f(...args, value)
+    f(...$, value)
     //... var key = eYo.genUID(eYo.IDENT)
     //... eYo.provide(`${key}.bar`)
     //... chai.expect(eYo[key]).eyo_NS
@@ -1379,8 +1486,8 @@ eYo.mixinFR(eYo, {
    * @final
    */
   AssertionError: (() => {
-    let AE = function(pattern, ...args) {
-      this.message = eYo.subs_(pattern, ...args)
+    let AE = function(pattern, ...$) {
+      this.message = eYo.subs_(pattern, ...$)
       this.stack = Error().stack
       /**
        * The message pattern used to format the error message. Error handlers can
@@ -1403,9 +1510,9 @@ eYo.mixinFR(eYo, {
    * @throws {eYo.AssertionError} When the condition evaluates to false.
    * @closurePrimitive {asserts.truthy}
    */
-  assert (condition, message, ...args) {
+  assert (condition, message, ...$) {
     if (eYo.ENABLE_ASSERTS && !condition) {
-      var e = new eYo.AssertionError(message, ...args)
+      var e = new eYo.AssertionError(message, ...$)
       eYo.errorHandler_(e)
     }
     return condition

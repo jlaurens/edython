@@ -152,7 +152,7 @@ describe ('Tests: C9r', function () {
     chai.expect(set.size).equal(3)
     chai.expect(C9r[eYo.$]).not.equal(eYo.c9r.BaseC9r[eYo.$])
     chai.assert(eYo.isSubclass(C9r[eYo.$].constructor, eYo.dlgt.BaseC9r))
-    chai.expect(C9r[eYo.$].id).equal('')
+    chai.expect(C9r[eYo.$].key__).equal('?')
   })
   it ('C9r: finalizeC9r', function () {
     let NS = eYo.c9r.newNS()
@@ -352,14 +352,14 @@ describe ('Tests: C9r', function () {
       var NS = eYo.c9r.newNS()
       chai.expect(NS.BaseC9r).equal(eYo.c9r.BaseC9r)
       NS.makeBaseC9r()
-      chai.assert(NS.BaseC9r && NS.BaseC9r !== eYo.c9r.BaseC9r)
+      chai.expect(NS.BaseC9r).not.equal(eYo.c9r.BaseC9r)
       chai.expect(NS.BaseC9r[eYo.$].ns).equal(NS)
       var NS = eYo.c9r.newNS()
       Object.defineProperty(NS, 'BaseC9r', {
         value: 421
       })
       chai.expect(() => { NS.makeBaseC9r() }).to.throw()
-      chai.expect(eYo.c9r.newC9r(NS)[eYo.$].id).equal('')
+      chai.expect(eYo.c9r.newC9r(NS)[eYo.$].key).equal('?')
       chai.expect(() => { eYo.c9r.newC9r(NS, 'BaseC9r') }).to.throw()
       chai.expect(() => { NS.newC9r('BaseC9r') }).to.throw()
     })

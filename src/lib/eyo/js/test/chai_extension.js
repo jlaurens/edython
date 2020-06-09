@@ -284,6 +284,18 @@ chai.use(function (_chai, utils) {
       , actual[failure[0]]   // actual
     )
   })
+  // language chain method
+  chai.Assertion.addMethod('eyo_Subclass', function (C9r) {
+    this.eyo_C9r
+    chai.expect(C9r).eyo_C9r
+    var actual = this._obj[eYo.$].name
+    var expected = C9r && C9r[eYo.$].name
+    this.assert(
+      eYo.isSubclass(this._obj, C9r)
+    , `expected ${actual} to be a subclass of ${expected}\n`
+    , `expected ${actual} not to be a subclass of ${expected}\n`
+  )
+  })
 })
 
 

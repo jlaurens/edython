@@ -249,11 +249,11 @@ eYo.p6y.makeBaseC9r(true, {
      * for objects that should not be disposed of.
      * 
      */
-    _disposeStored (...args) {
+    _disposeStored (...$) {
       let v = this.stored__
       if (eYo.isaC9r(v) && v[eYo.$p6y] === this) {
         try {
-          this.__disposeStored(v, ...args)
+          this.__disposeStored(v, ...$)
         } finally {
           this.stored__ = eYo.NA
         }
