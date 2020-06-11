@@ -537,16 +537,16 @@ Object.defineProperty(eYo._p, '$$', {
  * Creates a symbol uniquely attached to the given key
  * @param {String} key - The result is `eYo.$$[key]
  */
-eYo._p.new$ = function (key) {
-  //<<< mochai: make$
+eYo._p.new$$ = function (key) {
+  //<<< mochai: make$$
   if (this.$$.hasOwnProperty(key)) {
     throw `Do not declare a symbol twice`
   }
   return this.$$[key] = Symbol(key)
   //... var id = eYo.genUID(eYo.IDENT)
-  //... chai.expect(eYo.new$(id)).equal(eYo.$$[id])
+  //... chai.expect(eYo.new$$(id)).equal(eYo.$$[id])
   //... chai.expect(() => {
-  //...   eYo.new$(id)
+  //...   eYo.new$$(id)
   //... }).throw()
   //>>>
 }
@@ -555,23 +555,23 @@ eYo._p.new$ = function (key) {
  * To create many symbols in one instruction.
  * @param {String} ...
  */
-eYo._p.make$ = function (...$) {
-  //<<< mochai: make$
+eYo._p.make$$ = function (...$) {
+  //<<< mochai: make$$
   for(let key of $) {
-    this.new$(key)
+    this.new$$(key)
   }
   //... var id1 = eYo.genUID(eYo.IDENT)
   //... var id2 = eYo.genUID(eYo.IDENT)
-  //... eYo.make$(id1, id2)
+  //... eYo.make$$(id1, id2)
   //... chai.expect(eYo.$$).property(id1)
   //... chai.expect(eYo.$$).property(id2)
   //... chai.expect(() => {
-  //...   eYo.make$(id1)
+  //...   eYo.make$$(id1)
   //... }).throw()
   //>>>
 }
 
-eYo.make$('target') // used by proxies
+eYo.make$$('target') // used by proxies
 
 /**
  * The props dictionary is a `key=>value` mapping where values

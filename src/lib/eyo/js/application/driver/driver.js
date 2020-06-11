@@ -30,7 +30,7 @@ eYo.mixinRO(eYo.xre, {
   //...   chai.expect(m['id'] || m[0]).equal(ra[1])
   //... })
   //>>>
-  driverParentId: XRegExp(`^(?<superId>.*)\\..*?$`),//
+  driverParentId: XRegExp(`^(?<parentId>.*)\\..*?$`),//
   //<<< mochai: driverParentId
   //... var m = XRegExp.exec('foo', eYo.xre.driverParentId)
   //... chai.expect(!!m).false
@@ -55,7 +55,7 @@ eYo.o4t.newNS(eYo, 'driver')
 //... chai.assert(eYo.driver)
 //>>>
 
-eYo.make$('parentId', 'Handler')
+eYo.make$$('parentId', 'Handler')
 
 eYo.c9r.newC9r(eYo.driver, eYo.$$.Handler, {
   //<<< mochai: eYo.driver[eYo.$$.Handler]

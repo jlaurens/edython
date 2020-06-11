@@ -137,7 +137,7 @@ Object.defineProperties(eYo.o3d.BaseC9r.prototype, {
 
 eYo.forward('shared')
 
-eYo.make$('singleton')
+eYo.make$$('singleton')
 //<<< mochai: eYo.$$.singleton
 //... chai.expect(eYo.$$).property('singleton')
 //>>>

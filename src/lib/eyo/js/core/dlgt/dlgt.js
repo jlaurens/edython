@@ -617,7 +617,7 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   //>>>
 })()
 
-eYo.make$('unknown')
+eYo.make$$('unknown')
 
 //<<< mochai: eYo.$$.unknown
 //... chai.expect(eYo.$$).property('unknown')
