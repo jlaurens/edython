@@ -1,4 +1,9 @@
 describe ('POC', function () {
+  this.timeout(20000)
+  var flag
+  beforeEach (function() {
+    flag = new eYo.test.Flag()
+  })
   it ('Dlgt infinite loop', function () {
     let AutoDlgt = function (ns, key, Dlgt, model) {
       Object.defineProperties(this, {
@@ -41,6 +46,34 @@ describe ('POC', function () {
     chai.expect(auto).equal(AutoDlgt[eYo.$][eYo.$][eYo.$])
     chai.expect(auto).equal(AutoDlgt[eYo.$][eYo.$][eYo.$])
     chai.expect(auto).equal(AutoDlgt[eYo.$][eYo.$][eYo.$])
+  })
+  it (`Subclassing and defineProperty`, function () {
+    let A = function () {}
+    var B = function () {}
+    eYo.inherits(B, A)
+    eYo.mixinFR(A.prototype, {
+      foo: 421,
+      bar (...$) {
+        flag.push(1, ...$)
+      },
+    })
+    eYo.mixinFR(B.prototype, {
+      foo: 123,
+      bar (...$) {
+        flag.push(2, ...$)
+      },
+    })
+    let a = new A()
+    chai.expect(a.foo).equal(421)
+    a.bar(2, 3)
+    flag.expect(123)
+    var b = new B()
+    chai.expect(b.foo).equal(123)
+    b.bar(4, 6)
+    flag.expect(246)
+    var B = function () {}
+    eYo.inherits(B, A)
+    chai.expect(() => {b.foo = 123}).throw()
   })
 })
 describe ('Tests: Dlgt', function () {

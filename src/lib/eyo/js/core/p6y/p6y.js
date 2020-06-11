@@ -1515,14 +1515,14 @@ eYo.p6y.handler.makeBaseC9r({
     }
     !target || eYo.isaC9r(target) || eYo.throw(`${this.eyo.name}.init: target is not a C9r instance ${target}`)
     //... restart()
-    //... chai.expect(handler[eYo.Sym$.target]).equal(target)
-    this[eYo.Sym$.target] = target
+    //... chai.expect(handler[eYo.$$.target]).equal(target)
+    this[eYo.$$.target] = target
     this.cover__ = {
       dispose: eYo.doNothing
     }
   },
   dispose () {
-    this[eYo.Sym$.target] = this.cover__ = eYo.NA
+    this[eYo.$$.target] = this.cover__ = eYo.NA
   },
   methods: {
     get (target, prop) {
@@ -1532,10 +1532,10 @@ eYo.p6y.handler.makeBaseC9r({
         //... for (let [k, v] of Object.entries(handler.cover__)) {
         //...   chai.expect(p[k]).equal(v)
         //... }
-      } else if (['owner', eYo.Sym$.target].includes(prop)) {
+      } else if (['owner', eYo.$$.target].includes(prop)) {
         return this[prop]
         //... restart()
-        //... ;['owner', eYo.Sym$.target].forEach(K => {
+        //... ;['owner', eYo.$$.target].forEach(K => {
         //...   chai.expect(p[K]).equal(handler[K])
         //... })
       } else if (prop === 'key') {
@@ -1602,7 +1602,7 @@ eYo.p6y.handler.makeBaseC9r({
     },
     getOwnPropertyDescriptor (target, name) {
       return Object.getOwnPropertyDescriptor(
-        this.isOwnedKey(name) || name === eYo.Sym$.target
+        this.isOwnedKey(name) || name === eYo.$$.target
         ? this
         : target,
         name
@@ -1611,7 +1611,7 @@ eYo.p6y.handler.makeBaseC9r({
       //... handler.keys_owned.forEach(K => {
       //...   chai.expect(Object.getOwnPropertyDescriptor(p, K)).eql(Object.getOwnPropertyDescriptor(handler, K))
       //... })
-      //... chai.expect(Object.getOwnPropertyDescriptor(p, eYo.Sym$.target)).eql(Object.getOwnPropertyDescriptor(handler, eYo.Sym$.target))
+      //... chai.expect(Object.getOwnPropertyDescriptor(p, eYo.$$.target)).eql(Object.getOwnPropertyDescriptor(handler, eYo.$$.target))
       //... ;['foo', 'bar'].forEach(K => {
       //...   chai.expect(Object.getOwnPropertyDescriptor(p, K)).eql(Object.getOwnPropertyDescriptor(target, K))
       //... })
@@ -1624,7 +1624,7 @@ eYo.p6y.handler.makeBaseC9r({
       //... })
     },
     defineProperty (target, key, descriptor) {
-      if (this.isOwnedKey(key) || key === eYo.Sym$.target) {
+      if (this.isOwnedKey(key) || key === eYo.$$.target) {
         Object.defineProperty(this, key, descriptor)
         return true
         //... restart()
@@ -1691,7 +1691,7 @@ eYo.p6y.handler.makeBaseC9r({
 
 eYo.mixinRO(eYo.p6y.handler.BaseC9r_p, {
   keys_RO: [
-    eYo.Sym$.target, // expose the proxy target
+    eYo.$$.target, // expose the proxy target
     'owner', 'key', 'hasOwnProperty'
   ],
   keys_owned: [
@@ -1816,7 +1816,7 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
     //... bar_alias.value_ = 666
     //... chai.expect(bar_p.value).equal(666)
     //>>>
-  } else if (eYo.isaP6y(target) || eYo.Def(target = target[eYo.Sym$.target])) {
+  } else if (eYo.isaP6y(target) || eYo.Def(target = target[eYo.$$.target])) {
     //<<< mochai: eYo.isaP6y(target)
     handler = eYo.p6y.handler.new({
       methods: {
@@ -1897,7 +1897,7 @@ eYo.p6y._p.aliasNew = function (key, owner, target, target_key) {
     //>>>
   }
   var p = new Proxy(target, handler)
-  handler[eYo.Sym$.target] = target
+  handler[eYo.$$.target] = target
   return p
   //>>>
 }

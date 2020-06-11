@@ -90,7 +90,7 @@ eYo.brick.makeBaseC9r({
    * @param {Object} C9r -  the object to which this instance is attached.
    * @param {Object} model -  the model used to create the constructor.
    */
-  [eYo.Sym$.dlgt] (ns, key, C9r, model) {
+  [eYo.$$.dlgt] (ns, key, C9r, model) {
     this.types = []
   },
   aliases: {

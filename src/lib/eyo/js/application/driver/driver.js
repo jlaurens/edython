@@ -12,17 +12,17 @@
 'use strict'
 
 //... let NAMES = [
-//...   ['Foo', 'Foo'],
-//...   ['foo.Bar', 'foo.Bar'],
-//...   ['(chi).Foo', 'Foo'],
-//...   ['(chi).foo.Bar', 'foo.Bar'],
-//...   ['eYo.Bar', 'Bar'],
-//...   ['eYo.foo.Bar', 'foo.Bar'],
+//...   ['Bar', 'Bar'],
+//...   ['mee.Bar', 'mee.Bar'],
+//...   ['eYo.mee.Bar', 'Bar'],
+//...   ['eYo.foo.mee.Bar', 'mee.Bar'],
+//...   ['(foo).mee.Bar', 'Bar'],
+//...   ['(chi).foo.mee.Bar', 'mee.Bar'],
 //... ]
 
 eYo.mixinRO(eYo.xre, {
   //<<< mochai: xre
-  driverId: XRegExp(`^(?:\\(.*?\\)\\.|eYo\\.)?(?<id>.*)$`),
+  driverId: XRegExp(`^(?:(?:\\(.*?\\)|eYo)\\..*?\\.)?(?<path>.*\\.)?(?<Id>.*)$`),
   //<<< mochai: driverId
   //... NAMES.forEach(ra => {
   //...   let m = XRegExp.exec(ra[0], eYo.xre.driverId)
@@ -30,16 +30,18 @@ eYo.mixinRO(eYo.xre, {
   //...   chai.expect(m['id'] || m[0]).equal(ra[1])
   //... })
   //>>>
-  driverSuperId: XRegExp(`^(?<superId>.*?)\\.[^\\.]*$`),//
-  //<<< mochai: driverSuperId
-  //... var m = XRegExp.exec('foo', eYo.xre.driverSuperId)
+  driverParentId: XRegExp(`^(?<superId>.*)\\..*?$`),//
+  //<<< mochai: driverParentId
+  //... var m = XRegExp.exec('foo', eYo.xre.driverParentId)
   //... chai.expect(!!m).false
-  //... var m = XRegExp.exec('foo.bar', eYo.xre.driverSuperId)
-  //... chai.expect(m).not.undefined
-  //... chai.expect(m['superId']).equal('foo')
-  //... var m = XRegExp.exec('foo.bar.mee', eYo.xre.driverSuperId)
-  //... chai.expect(m).not.undefined
-  //... chai.expect(m['superId']).equal('foo.bar')
+  //... ;[
+  //...   ['foo.bar.mee', 'foo.bar'],
+  //...   ['foo.bar', 'foo'],
+  //... ].forEach(ra => {
+  //...   var m = XRegExp.exec(ra[0], eYo.xre.driverParentId)
+  //...   chai.expect(m).not.undefined
+  //...   chai.expect(m['parentId']).equal(ra[1])
+  //... })
   //>>>
   //>>>
 })
@@ -48,19 +50,17 @@ eYo.mixinRO(eYo.xre, {
  * @name {eYo.driver}
  * @namespace
  */
-eYo.o3t.newNS(eYo, 'driver')
+eYo.o4t.newNS(eYo, 'driver')
 //<<< mochai: Basics
 //... chai.assert(eYo.driver)
 //>>>
 
-eYo.mixinRO(eYo.driver, {
-  $superId: Symbol('superId'),
-})
+eYo.make$('parentId', 'Handler')
 
-eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
-  //<<< mochai: eYo.driver[eYo.$Handler]
+eYo.c9r.newC9r(eYo.driver, eYo.$$.Handler, {
+  //<<< mochai: eYo.driver[eYo.$$.Handler]
   //<<< mochai: Basics
-  //... chai.expect(eYo.driver).property(eYo.$Handler)
+  //... chai.expect(eYo.driver).property(eYo.$$.Handler)
   //>>>
   /**
    * @param {String} key - the name of the driver, eg 'Audio'
@@ -97,7 +97,7 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
     //<<< mochai: frozen or forbidden
     //... let driver = new eYo.O4t('driver', onr)
     //... let base = new eYo.O4t('base', onr)
-    //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, base)
+    //... let handler = new eYo.driver[eYo.$$.Handler](driver.key, driver, base)
     //... let p = new Proxy(driver, handler)
     //... chai.expect(() => p()).throw()
     //... chai.expect(() => new p()).throw()
@@ -123,7 +123,7 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
       //...     },
       //...   },
       //... }, 'base', onr)
-      //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, base)
+      //... let handler = new eYo.driver[eYo.$$.Handler](driver.key, driver, base)
       //... let p = new Proxy(driver, handler)
       if (prop === '__driver') {
         return this.__driver
@@ -140,70 +140,38 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
       ans = Reflect.get(...arguments)
       if (eYo.isF(ans)) { // cache functions
         // go for the diamond problem
-        var superId = id[eYo.$superID]
-        if (!superId) {
-          var m = XRegExp.exec(id, eYo.xre.driverSuperId)
-          if (m) {
-            id = m['superId']
-            if (ns.getDriverC9r(id)) {
-              var left = ns.getDriver(id)
+        var ans_f = (() => {
+          // list all the model methods
+          // make the table entries of all the drivers
+          var ra = target.eyo.driverId.split('.')
+          var x = ra.shift()
+          var ids = [eYo.Do.toTitleCase(x)]
+          var component
+          while ((component = ra.shift())) {
+            ids.push(`${x}.${eYo.Do.toTitleCase(component)}`)
+            x = `${x}.${component}`
+          }
+          var nss = [x = this]
+          while ((x = x.super)) {
+            nss.unshift(x)
+          }
+          ra = [] // enclosed
+          nss.forEach(ns => {
+            ids.forEach(id => {
+              var C9r = ns.getDriverC9r(id)
+              if (C9r) {
+                var f_m = C9r[eYo.$].getModelMethod(prop)
+                eYo.isF(f_m) && ra.push(f_m)
+              }
+            })
+          })
+          return {
+            f (...$) {
+              var ans = true
+              ra.forEach(f => ans = f.call(this, ...$) && ans)
             }
-          }  
-        }
-        var m = XRegExp.exec(id, eYo.xre.driverSuperId)
-        if (m) {
-          id = m['superId']
-          if (ns.getDriverC9r(id)) {
-            var left = ns.getDriver(id)
-          }
-        } else {
-          left = ns.getDriver('')
-        }
-        var left_f = left[prop]
-
-        if (target.hasOwnProperty(prop)) {
-          var ans_f = function (...$) {
-
-          }
-        } else {
-  
-        }
-          
-          /**
-           * The driver 
-           * @property {eYo.Driver}
-           */
-          super () {
-            let ns = this.eyo.ns.super
-            return ns && ns.getDriver && ns.getDriver(this.name)
-          },
-      /**
-       * @property {eYo.Driver}
-       */
-      base () {
-        let ns = this.eyo.ns
-        while (true) {
-          var m = XRegExp.exec(id, eYo.xre.driverSuperId)
-          if (m) {
-            id = m['superId']
-            if (ns.getDriverC9r(id)) {
-              return ns.getDriver(id)
-            }
-          } else {
-            break
-          }
-        }
-        return ns.getDriver('')
-      }
-      let ns = target.eyo.ns
-
-
-      var base = this.__base && Reflect.get(this.__base, prop)
-        var ans_f = eYo.isF(base)
-        ? function (...$) {
-          base.call(target, ...$)
-          return ans.call(target, ...$)
-        } : ans
+          }.f // not a constructor
+        })()
         this.cache.set(prop, ans_f)
         return ans_f
       }
@@ -245,7 +213,7 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
       return Reflect.set(...arguments)
       //... let driver = new eYo.O4t('driver', onr)
       //... let base = new eYo.O4t('base', onr)
-      //... let handler = new eYo.driver[eYo.$Handler](driver.key, driver, base)
+      //... let handler = new eYo.driver[eYo.$$.Handler](driver.key, driver, base)
       //... let p = new Proxy(driver, handler)
       //... chai.expect(() => p.foo = 'bar').throw()
       //>>>
@@ -283,23 +251,43 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
       //>>>
     },
     /**
-     * Get the driver constructor for the given id.
-     * @param {String} id
+     * Turns the given string into a formatted driver Id.
+     * @param {String} id 
      */
-    getDriverC9r (id) {
-      var m = XRegExp.exec(id, eYo.xre.driverId)
-      id = m['id'] || id
-      return this[$C9rMap].get(id)
+    getDriverId (id) {
+      //<<< mochai: getDriverId
+      var m = XRegExp.exec(driverId, eYo.xre.driverId)
+      return (m['path'] + eYo.do.toTitleCase(m['id'])) || m[0]
+      //... ;[
+      //...   ['', ''],
+      //...   ['foo', 'Foo'],
+      //...   ['Foo', 'Foo'],
+      //...   ['foo.bar', 'foo.Bar'],
+      //...   ['foo.Bar', 'foo.Bar'],
+      //...   ['foo.bar.mee', 'foo.bar.Mee'],
+      //...   ['foo.bar.Mee', 'foo.bar.Mee'],
+      //... ].forEach(ra => {
+      //...   chai.expect(eYo.driver.getDriverId(ra[0])).equal(ra[1])
+      //... })
+      //>>>
+    },
+    /**
+     * Get the driver constructor for the given id.
+     * @param {String} driverId
+     */
+    getDriverC9r (driverId) {
+      return this[$C9rMap].get(this.getDriverId(driverId))
     },
     /**
      * Set the driver constructor for the given id.
-     * @param {String} id
+     * @param {String} driverId
+     * @param {C9r} C9r
      */
-    setDriverC9r (id, C9r) {
+    setDriverC9r (driverId, C9r) {
       //<<< mochai: (set|get)DriverC9r
-      var m = XRegExp.exec(id, eYo.xre.driverId)
-      id = m['id'] || id
-      this[$C9rMap].set(id, C9r)
+      driverId = this.getDriverId(driverId)
+      this[$C9rMap].set(driverId, C9r)
+      C9r[eYo.$].driverId = driverId
       return C9r
       //... var NS0 = eYo.driver.newNS()
       //... var C9r0 = NS0.newDriverC9r()
@@ -337,8 +325,7 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
     getDriver (object) {
       //<<< mochai: (get|set)Driver
       object.eyo && (object = object.eyo.name)
-      var m = XRegExp.exec(object, eYo.xre.driverId)
-      var id = m['id'] || m[0]
+      var driverId = this.getDriverId(object)
       //... var NS = eYo.driver.newNS()
       //... var drvr
       //... NAMES.forEach(ra => {
@@ -352,11 +339,11 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
       //...   chai.expect(NS.getDriver(ra[1])).equal(drvr)
       //... })
       while(true) {
-        var driver = this[$map].get(id)
+        var driver = this[$map].get(driverId)
         if (driver) {
           return driver
         }
-        var C9r = this.getDriverC9r(id)
+        var C9r = this.getDriverC9r(driverId)
         if (C9r) {
           //... var NS1 = eYo.driver.newNS()
           //... NS1.makeBaseC9r({
@@ -401,9 +388,9 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
           //... drvr.base2(3, 4)
           //... flag.expect(234)
           
-          driver = new C9r(id, this)
+          driver = new C9r(driverId, this)
         } else if (this.super && this.super.getDriver) {
-          driver = this.super.getDriver(id)
+          driver = this.super.getDriver(driverId)
           //... drvr = NS2.getDriver('NS1.BaseC9r')
           //... drvr.base(2, 3)
           //... flag.expect(123)
@@ -429,29 +416,29 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
             //... drvr.flag12(3, 4)
             //... flag.expect(123412)
             while (true) {
-              var m = XRegExp.exec(id, eYo.xre.driverSuperId)
+              var m = XRegExp.exec(driverId, eYo.xre.driverParentId)
               if (m) {
-                id = m['superId']
-                if (this.getDriverC9r(id)) {
-                  var base = this.getDriver(id)
+                driverId = m['parentId']
+                if (this.getDriverC9r(driverId)) {
+                  var base = this.getDriver(driverId)
                   break
                 }
               } else {
-                id = ''
-                base = this.getDriver(id)
+                driverId = ''
+                base = this.getDriver(driverId)
                 break
               }
             }
-            var handler = new eYo.driver[eYo.$Handler](driver.key, driver, base)
+            var handler = new eYo.driver[eYo.$$.Handler](driver.key, driver, base)
             driver = new Proxy(driver, handler)
           }
-          return this.setDriver(id, driver)
+          return this.setDriver(driverId, driver)
         }
-        var m = XRegExp.exec(id, eYo.xre.driverSuperId)
+        var m = XRegExp.exec(driverId, eYo.xre.driverParentId)
         if (m) {
-          id = m['superId']
+          driverId = m['parentId']
         } else {
-          id = ''
+          driverId = ''
           break
         }
         //... var NS = eYo.driver.newNS()
@@ -472,8 +459,8 @@ eYo.c9r.newC9r(eYo.driver, eYo.$Handler, {
         //... NS.setDriverC9r('C9r', C9r)
         //... chai.expect(NS.getDriver('C9r.foo')).equal(NS.getDriver('C9r'))
       }
-      if (!(driver = this[$map].get(id))) {
-        driver = this.setDriver(id, this.new(id))
+      if (!(driver = this[$map].get(driverId))) {
+        driver = this.setDriver(driverId, this.new(driverId))
       }
       return driver
       //... var NS = eYo.driver.newNS()
@@ -602,9 +589,7 @@ eYo.mixinFR(eYo.driver._p, {
       },
     })
     Driver[eYo.$].finalizeC9r()
-    var m = XRegExp.exec(id, eYo.xre.driverId)
-    var x = m ? m['id'] : id // 'eYo.foo.Bar' -> 'foo.Bar'
-    this.setDriverC9r(x, Driver)
+    this.setDriverC9r(this.getDriverId(id), Driver)
     return Driver
     //... NAMES.forEach(ra => {
     //...   var NS = eYo.driver.newNS()

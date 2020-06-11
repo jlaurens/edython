@@ -526,34 +526,52 @@ eYo.descriptorNORW = (msg, configurable) => {
   //>>>
 }
 
-Object.defineProperty(eYo._p, 'Sym$', {
-  //<<< mochai: eYo.Sym$
-  //... chai.expect(eYo).property('Sym$')
+Object.defineProperty(eYo._p, '$$', {
+  //<<< mochai: eYo.$$
+  //... chai.expect(eYo).property('$$')
   value: {}
   //>>>
 })
 
 /**
  * Creates a symbol uniquely attached to the given key
- * @param {String} key - The result is `eYo.Sym$[key]
+ * @param {String} key - The result is `eYo.$$[key]
  */
-eYo._p.newSym = function (...$) {
-  //<<< mochai: newSym
-  for(let key of $) {
-    if (this.Sym$.hasOwnProperty(key)) {
-      throw `Do not declare a symbol twice`
-    }
-    return this.Sym$[key] = Symbol(key)
+eYo._p.new$ = function (key) {
+  //<<< mochai: make$
+  if (this.$$.hasOwnProperty(key)) {
+    throw `Do not declare a symbol twice`
   }
+  return this.$$[key] = Symbol(key)
   //... var id = eYo.genUID(eYo.IDENT)
-  //... chai.expect(eYo.newSym(id)).equal(eYo.Sym$[id])
+  //... chai.expect(eYo.new$(id)).equal(eYo.$$[id])
   //... chai.expect(() => {
-  //...   eYo.newSym(id)
+  //...   eYo.new$(id)
   //... }).throw()
   //>>>
 }
 
-eYo.newSym('target') // used by proxies
+/**
+ * To create many symbols in one instruction.
+ * @param {String} ...
+ */
+eYo._p.make$ = function (...$) {
+  //<<< mochai: make$
+  for(let key of $) {
+    this.new$(key)
+  }
+  //... var id1 = eYo.genUID(eYo.IDENT)
+  //... var id2 = eYo.genUID(eYo.IDENT)
+  //... eYo.make$(id1, id2)
+  //... chai.expect(eYo.$$).property(id1)
+  //... chai.expect(eYo.$$).property(id2)
+  //... chai.expect(() => {
+  //...   eYo.make$(id1)
+  //... }).throw()
+  //>>>
+}
+
+eYo.make$('target') // used by proxies
 
 /**
  * The props dictionary is a `key=>value` mapping where values
@@ -1109,7 +1127,6 @@ eYo.mixinRO(eYo._p, {
   $SuperC9r: Symbol('SuperC9r'),
   $newSubC9r: Symbol('newSubC9r'),
   $SuperC9r_p: Symbol('SuperC9r_p'),
-  $Handler: Symbol('Handler'),
   //>>>
   /**
    * The name of the namespace.

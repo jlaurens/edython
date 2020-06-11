@@ -1,7 +1,7 @@
 /**
  * edython
  *
- * Copyright 2019 Jérôme LAURENS.
+ * Copyright 2020 Jérôme LAURENS.
  *
  * @license EUPL-1.2
  */
@@ -617,10 +617,10 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   //>>>
 })()
 
-eYo.newSym('dlgt')
+eYo.make$('unknown')
 
-//<<< mochai: eYo.Sym$.dlgt
-//... chai.expect(eYo.Sym$).property('dlgt')
+//<<< mochai: eYo.$$.unknown
+//... chai.expect(eYo.$$).property('unknown')
 //>>>
 
 /**
@@ -628,7 +628,7 @@ eYo.newSym('dlgt')
  * The added delegate is a singleton.
  * This is the recommended way to create a new delegate.
  * @param {Object} [ns] - The namespace owning the constructor
- * @param {String} key - The key associate to the constructor.
+ * @param {String|Symbol} id - The id associate to the constructor.
  * @param {Function} C9r - the constructor associate to the delegate
  * @param {Object} model - the model object associate to the delegate, used for extension.
  */
@@ -640,7 +640,14 @@ eYo.dlgt.new = function (ns, id, C9r, model) {
   } else {
     ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw('Bad namespace')
   }
-  !id || eYo.isId(id) || eYo.throw(`Missing id string/symbol: ${id.toString()} in eYo.dlgt.new`)
+  if (!eYo.isId(id)) {
+    if (id) {
+      model && eYo.throw(`eYo.dlgt.new: Unexpected model (2) ${model}`)
+      ;[id, C9r, model] = [eYo.$$.unknown, id, C9r]
+    } else {
+      id = eYo.$$.unknown
+    }
+  }
   eYo.isF(C9r) || eYo.throw(`Unexpected C9r: ${C9r} in eYo.dlgt.new`)
   eYo.isC9r(C9r) && eYo.throw(`Already a C9r: ${C9r} in eYo.dlgt.new`)
   // process
@@ -654,7 +661,7 @@ eYo.dlgt.new = function (ns, id, C9r, model) {
   // initialization of the dlgt
   // when defined, init must be a self contained function,
   // ie with no inherited reference...
-  let dlgt_m = model[eYo.Sym$.dlgt]
+  let dlgt_m = model[eYo.$]
   if (eYo.isF(dlgt_m)) {
     Dlgt.prototype.init = SuperDlgt
     ? function (...$) {
@@ -679,29 +686,28 @@ eYo.dlgt.new = function (ns, id, C9r, model) {
 eYo.dlgt.new(eYo, 'NS', eYo.constructor, {})
 eYo.dlgt.declareDlgt(eYo._p)
 
-// ANCHOR modelling
-{
-
-  let _p = eYo.dlgt.BaseC9r_p
-  
-  Object.defineProperties(_p, {
-    modelFormat: eYo.descriptorR(function () {
-      if (!this.modelFormat_) {
-        let $super = this.super
-        this.modelFormat_ = new eYo.model.Format($super && $super.modelFormat)
-        Object.defineProperties(this, {
-          modelFormat: eYo.descriptorR(function () {
-            return this.modelFormat_
-          }, true)
-        })
-      }
-      return this.modelFormat_
-    }),
-    hasFinalizedC9r: eYo.descriptorR(function () {
+// ANCHOR modelling properties
+Object.defineProperties(eYo.dlgt.BaseC9r_p, {
+  modelFormat: eYo.descriptorR(function () {
+    if (!this.modelFormat_) {
       let $super = this.super
-      return (!$super || $super.hasFinalizedC9r) && this.hasOwnProperty('finalizeC9r')
-    }),
-  })
+      this.modelFormat_ = new eYo.model.Format($super && $super.modelFormat)
+      Object.defineProperties(this, {
+        modelFormat: eYo.descriptorR(function () {
+          return this.modelFormat_
+        }, true)
+      })
+    }
+    return this.modelFormat_
+  }),
+  hasFinalizedC9r: eYo.descriptorR(function () {
+    let $super = this.super
+    return (!$super || $super.hasFinalizedC9r) && this.hasOwnProperty('finalizeC9r')
+  }),
+})
+// ANCHOR modelling functions
+eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
+  //<<< mochai: model
   /**
    * Finalize the associate constructor and allow some model format.
    * This must be called once for any delegate, raises otherwise.
@@ -711,7 +717,7 @@ eYo.dlgt.declareDlgt(eYo._p)
    * what is the ancestor's model format.
    * @name {eYo.dlgt.BaseC9r.modelAllow}
    */
-  _p.finalizeC9r = function (...$) {
+  finalizeC9r (...$) {
     let $super = this.super
     if ($super && !$super.hasFinalizedC9r) {
       console.error('BREAK HERE!')
@@ -725,32 +731,29 @@ eYo.dlgt.declareDlgt(eYo._p)
       finalizeC9r: eYo.oneShot('finalizeC9r cannot be called twice on the same delegate.')
     })
     return ans
-  }
-  
+  }, 
   /**
    * Forwards all the arguments to the `modelFormat` of the receiver.
    * @name {eYo.dlgt.BaseC9r.modelValidate}
    * @return {Object} a validated model object
    */
-  _p.modelValidate = function (...$) {
+  modelValidate (...$) {
     return this.modelFormat.validate(...$)
-  }
-
+  },
   /**
    * @name{eYo.dlgt.BaseC9r.modelIsAllowed}
    * @return {Boolean} Whether the key is authorized with the given path.
    */
-  _p.modelIsAllowed = function (...$) {
+  modelIsAllowed (...$) {
     return this.modelFormat.isAllowed(...$)
-  }
-
+  },
   /**
    * Declare CONSTs.
    * Allows to split the definition of CONST into different files,
    * eventually.
    * @param{Object} model - the model
    */
-  _p.CONSTsMerge = function (model) {
+  CONSTsMerge (model) {
     let _p = this.C9r_p
     eYo.mixinRO(_p, model)
     //<<< mochai: eYo.dlgt.BaseC9r_p.CONSTsMerge
@@ -774,8 +777,7 @@ eYo.dlgt.declareDlgt(eYo._p)
     //... })
     //... chai.expect((new C9r()).FOO).equal('bar')
     //>>>
-  }
-
+  },
   /**
    * Declare methods.
    * Allows to split the definition of methods into different files,
@@ -785,7 +787,7 @@ eYo.dlgt.declareDlgt(eYo._p)
    * The model object is a function decorator.
    * @param{Object} model - the model
    */
-  _p.methodsMerge = function (model) {
+  methodsMerge (model) {
     let _p = this.C9r_p
     Object.keys(model).forEach(k => {
       let m = model[k]
@@ -797,46 +799,58 @@ eYo.dlgt.declareDlgt(eYo._p)
         }
       } 
     })
-  }
-}
-
-// ANCHOR: Model
-{
-  let _p = eYo.dlgt.BaseC9r_p // Base.prototype
-
+  },
   /**
    * For subclassers.
    * @param {String} [key] - 
    * @param {Object} model - model object
    */
-  _p.modelHandle = eYo.doNothing
-
+  // modelHandle: eYo.doNothing,
   /**
    * Declare the given model for the associate constructor.
    * The default implementation just calls `methodsMerge` and `CONSTsMerge`.
    * 
    * @param {Object} model - Object, like for |newC9r|.
    */
-  _p.modelMerge = function (model) {
+  modelMerge (model) {
     model.methods && this.methodsMerge(model.methods)
     model.CONSTs && this.CONSTsMerge(model.CONSTs)
-  }
-
+  },
   /**
    * Prepare the model fo the receiver.
    * The default implementation just calls `modelMerge` after `modelValidate`.
    * Called by `finalizeC9r`.
-   * 
-   * @param {Object} model - Object, like for |newC9r|.
    */
-  _p.modelPrepare = function () {
+  modelPrepare () {
     let model = this.model
     if (Object.keys(model).length) {
       model = this.modelValidate(model)
       this.modelMerge(model)
     }
-  }
-}
+  },
+  /**
+   * Get the model method with the given id
+   * @param {String| Symbol} id 
+   */
+  getModelMethod (id) {
+    //<<< mochai: getModelMethod
+    var methods = this.model.methods
+    return methods && methods[id]
+    //... var dlgt = eYo.dlgt.new(function () {}, {
+    //...   methods: {
+    //...     foo (...$) {
+    //...       flag.push(1, ...$)
+    //...     },
+    //...   },
+    //... })
+    //... var f = dlgt.getModelMethod('foo')
+    //... chai.expect(f).eyo_F
+    //... f.call(dlgt, 2, 3)
+    //... flag.expect(123)
+    //>>>
+  },
+  //>>>
+})
 
 // The delegate of `eYo.dlgt.BaseC9r` is an instance of itself.
 new eYo.dlgt.BaseC9r(eYo.dlgt, 'Base…', eYo.dlgt.BaseC9r, {})

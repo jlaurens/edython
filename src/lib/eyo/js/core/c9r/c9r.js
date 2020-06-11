@@ -449,7 +449,7 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
       eYo.isNA(model) || eYo.throw(`${this.name}/makeBaseC9r: Unexpected argument (${model})`)
       //... chai.expect(() => NS.makeBaseC9r({}, 1)).throw()
       model = eYo.called(SuperC9r) || {}
-      SuperC9r = model && model[eYo.Sym$[eYo.$SuperC9r]] || this.super && this.super.BaseC9r || eYo.NA
+      SuperC9r = model && model[eYo.$$[eYo.$SuperC9r]] || this.super && this.super.BaseC9r || eYo.NA
     }
     let C9r = this.newC9r(this, 'BaseC9r', SuperC9r, model)
     //... var ns = eYo.c9r.newNS()

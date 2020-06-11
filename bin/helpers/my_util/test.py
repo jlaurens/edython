@@ -81,7 +81,7 @@ def getInlineTest(path):
       elif len(indent) <= len(l.indent):
         l.indent = l.indent[len(indent):]
 
-  assert l_start is None, f'''Missing a '//>>>' line after line {lines[-1].n} at {path}'''
+  assert l_start is None, f'''Missing a '//>>>' line after line {lines[-1].n} to close '//<<<' at line {l_start.n} in {path}'''
   ans = []
   if len(tuple(filter(lambda l: l.n is not None, lines))):
     ans.append(f'describe(`Inline tests at {path.relative_to(path_js)}`' ''', function () {

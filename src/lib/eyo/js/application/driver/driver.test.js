@@ -34,7 +34,7 @@ describe('driver', function() {
     chai.expect(fooDrvr).instanceOf(NS.Foo)
     chai.expect(fooDrvr).not.equal(NS.mngr.baseDriver)
     chai.expect(fooDrvr).equal(NS.mngr.getDriver('Foo'))
-    chai.expect(fooDrvr).not.property(eYo.Sym$.target)
+    chai.expect(fooDrvr).not.property(eYo.$$.target)
     var NSNS = NS.newNS()
     NSNS.makeMngr()
     var Foo = NSNS.mngr.newDriverC9r('Foo', {
@@ -53,7 +53,7 @@ describe('driver', function() {
     chai.expect(fooSubDrvr).instanceOf(Foo)
     chai.expect(fooSubDrvr).not.equal(NSNS.mngr.baseDriver)
     chai.expect(fooSubDrvr).equal(NSNS.mngr.getDriver('Foo'))
-    chai.expect(fooSubDrvr).property(eYo.Sym$.target)
+    chai.expect(fooSubDrvr).property(eYo.$$.target)
    })
   it ('Driver: newDriverC9r inherits (2)', function () {
     var NS = eYo.driver.newNS()

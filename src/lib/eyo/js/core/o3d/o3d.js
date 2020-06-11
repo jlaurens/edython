@@ -137,9 +137,9 @@ Object.defineProperties(eYo.o3d.BaseC9r.prototype, {
 
 eYo.forward('shared')
 
-eYo.newSym('singleton')
-//<<< mochai: eYo.Sym$.singleton
-//... chai.expect(eYo.Sym$).property('singleton')
+eYo.make$('singleton')
+//<<< mochai: eYo.$$.singleton
+//... chai.expect(eYo.$$).property('singleton')
 //>>>
 
 eYo.mixinFR(eYo.o3d._p, {
@@ -246,9 +246,9 @@ eYo.mixinFR(eYo.o3d._p, {
     //... chai.expect(eYo.o3d.newNS().newSingleton(id)).not.equal(eYo.o3d.newSingleton(id))
     //... chai.expect(eYo.o3d.newNS().newSingleton(sym)).not.equal(eYo.o3d.newSingleton(sym))
     //>>>
-    ans[eYo.Sym$.singleton] = true
+    ans[eYo.$$.singleton] = true
     //<<< mochai: private
-    //... chai.expect(eYo.o3d.newSingleton(id)[eYo.Sym$.singleton]).true
+    //... chai.expect(eYo.o3d.newSingleton(id)[eYo.$$.singleton]).true
     //>>>
     return ans
     //>>>
