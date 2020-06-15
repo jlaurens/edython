@@ -84,13 +84,13 @@ describe ('Tests: Object', function () {
     chai.expect(p[eYo.$previous]).equal(eYo.NA)
     chai.expect(target[eYo.$previous]).equal(123)
   })
-  it ('O4t: eYo.o4t.newC9r(eYo.NULL_NS, ...', function () {
-    let O = eYo.o4t.newC9r(eYo.NULL_NS, 'Foo', {})
+  it ('O4t: eYo.o4t.newC9r(...)', function () {
+    let O = eYo.o4t.newC9r({})
     chai.expect(O[eYo.$]).instanceof(eYo.O4t[eYo.$].constructor)
     chai.expect(O[eYo.$]).instanceof(eYo.o4t.Dlgt_p.constructor)
     let o = new O('foo', onr)
     chai.expect(o).not.undefined
-    let OO = eYo.c9r.newC9r(eYo.NULL_NS, 'Bar', O, {})
+    let OO = eYo.c9r.newC9r(O, {})
     let oo = new OO('foo', onr)
     chai.assert(oo)
     chai.expect(oo).instanceof(O)
@@ -169,7 +169,7 @@ describe ('Tests: Object', function () {
     chai.expect(Bar[eYo.$][p6y$.modelByKey].chi).undefined // chi is not inherited
   })
   it ('O4t: p6yPrepare', function () {
-    let O = eYo.o4t.newC9r(eYo.NULL_NS, 'Foo', {})
+    let O = eYo.o4t.newC9r({})
     let eyo = O[eYo.$]
     let p6y$ = eyo.p6y$
     chai.expect(eyo.super).equal(eYo.O4t[eYo.$])
@@ -190,7 +190,7 @@ describe ('Tests: Object', function () {
     chai.expect(oo.foo).equal(421)
   })
   it ('O4t: properties (valued)', function () {
-    var O = eYo.o4t.newC9r(eYo.NULL_NS, 'Foo', {
+    var O = eYo.o4t.newC9r({
       properties: {
         foo: {
           value: 421
@@ -257,7 +257,7 @@ describe ('Tests: Object', function () {
   })
   it ('O4t: override only get', function () {
     var x = 123
-    var Foo = eYo.o4t.newC9r(eYo.NULL_NS, 'Foo', {
+    var Foo = eYo.o4t.newC9r({
       properties: {
         foo: {
           get () {
@@ -269,7 +269,7 @@ describe ('Tests: Object', function () {
     Foo[eYo.$].finalizeC9r()
     var foo = new Foo('foo', onr)
     chai.expect(foo.foo).equal(x)
-    var Bar = eYo.o4t.newC9r(eYo.NULL_NS, 'Bar', Foo, {
+    var Bar = eYo.o4t.newC9r(Foo, {
       properties: {
         foo: {
           get () {
@@ -286,7 +286,7 @@ describe ('Tests: Object', function () {
   })
   it ('O4t: override remove set', function () {
     var x = 421
-    var Foo = eYo.o4t.newC9r(eYo.NULL_NS, 'Foo', {
+    var Foo = eYo.o4t.newC9r({
       properties: {
         foo: {
           get () {
@@ -304,7 +304,7 @@ describe ('Tests: Object', function () {
     chai.expect(foo.foo).equal(x)
     flag.expect(1)
     chai.assert((foo.foo_ = 123) === x)
-    var Bar = eYo.o4t.newC9r(eYo.NULL_NS, 'Bar', Foo, {
+    var Bar = eYo.o4t.newC9r(Foo, {
       properties: {
         foo: {
           get () {
@@ -324,7 +324,7 @@ describe ('Tests: Object', function () {
   })
   it ('O4t: override add set', function () {
     var x = 421
-    var Foo = eYo.o4t.newC9r(eYo.NULL_NS, 'Foo', {
+    var Foo = eYo.o4t.newC9r({
       properties: {
         foo: {
           get () {
@@ -341,7 +341,7 @@ describe ('Tests: Object', function () {
     chai.expect(() => {
       foo.foo_ = 421
     }).to.throw()
-    var Bar = eYo.o4t.newC9r(eYo.NULL_NS, 'Bar', Foo, {
+    var Bar = eYo.o4t.newC9r(Foo, {
       properties: {
         foo: {
           get () {
@@ -980,13 +980,13 @@ describe ('Tests: Object', function () {
       chai.expect(o.foo).equal(o.bar2)
     })
     it ('O4t: deep alias', function () {
-      var Foo = eYo.o4t.newC9r(eYo.NULL_NS, 'Foo', {
+      var Foo = eYo.o4t.newC9r({
         properties: {
           chi: {},
         },
       })
       Foo[eYo.$].finalizeC9r()
-      var Bar = eYo.o4t.newC9r(eYo.NULL_NS, 'Bar', {
+      var Bar = eYo.o4t.newC9r({
         properties: {
           foo: new Foo('foo', onr)
         },
@@ -1011,7 +1011,7 @@ describe ('Tests: Object', function () {
       test(421)
     })  
     it ('O4t: deeper alias', function () {
-      var Foo = eYo.o4t.newC9r(eYo.NULL_NS, 'Foo', {
+      var Foo = eYo.o4t.newC9r({
         properties: {
           mi: {},
         },
@@ -1020,7 +1020,7 @@ describe ('Tests: Object', function () {
         }
       })
       Foo[eYo.$].finalizeC9r()
-      var Bar = eYo.o4t.newC9r(eYo.NULL_NS, 'Bar', {
+      var Bar = eYo.o4t.newC9r({
         properties: {
           foo: new Foo('foo', onr)
         },

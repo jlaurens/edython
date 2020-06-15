@@ -36,7 +36,7 @@ eYo.O3d[eYo.$].modelFormat.allow({
  */
 eYo.newNS('many')
 
-//<<< mochai: ...
+//<<< mochai: ../
 //... let flagor = (what, simple) => simple ? () => flag.push(what) : (...$) => flag.push(what, ...$)
 //... var C9r, foo$
 //... let preparator = f => {

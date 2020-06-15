@@ -105,13 +105,13 @@ eYo.c9r._p.appendToMethod = (object, key, f) => {
  * @return {Function} the created constructor.
  */
 eYo.c9r._p.doNewC9r = function (ns, id, SuperC9r, model) {
-  !ns || ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw(`doNewC9r/Bad ns: ${ns}`)
-  !id || eYo.isId(id) || eYo.throw(`doNewC9r/Bad id: ${id.toString()}`)
-  !SuperC9r || eYo.isC9r(SuperC9r) || eYo.throw(`doNewC9r/Bad SuperC9r: ${SuperC9r}`)
+  !ns || ns === eYo.NULL_NS || eYo.isNS(ns) || eYo.throw(`${this.name}/doNewC9r: Bad ns: ${ns}`)
+  !id || eYo.isId(id) || eYo.throw(`${this.name}/doNewC9r: Bad id: ${id.toString()}`)
+  !SuperC9r || eYo.isC9r(SuperC9r) || eYo.throw(`${this.name}/doNewC9r: Bad SuperC9r: ${SuperC9r}`)
   if (!eYo.isD(model)) {
     console.error(model)
   }
-  eYo.isD(model) || eYo.throw(`doNewC9r/Bad model: ${model}`)
+  eYo.isD(model) || eYo.throw(`${this.name}/doNewC9r: Bad model: ${model}`)
   if (SuperC9r) {
     // create the constructor
     // TODO: due to the makeInit method, this constructor may be badly designed.
@@ -196,7 +196,7 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
   return function (NS, id, SuperC9r, register, model) {
     // makeC9rDecorate
     //... var NS = eYo.c9r.newNS()
-    if (NS !== eYo.NULL_NS && !eYo.isNS(NS)) {
+    if (!eYo.isNS(NS)) {
       if(model) {
         console.error('BREAK HERE!!!')
       }
@@ -232,11 +232,12 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
       ;[register, model] = [false, register]
     }
     model = eYo.called(model) || {}
-    if (eYo.isId(id)) {
-      eYo.isNA(SuperC9r) && (SuperC9r = model[eYo.$SuperC9r] || eYo.asF(id && this[id]) || this.BaseC9r)
+    if (id) {
+      SuperC9r || (SuperC9r = model[eYo.$SuperC9r] || eYo.asF(this[id]) || this.BaseC9r)
     } else if (SuperC9r || (SuperC9r = model[eYo.$SuperC9r])) {
       id = SuperC9r[eYo.$] && SuperC9r[eYo.$].id
     } else {
+      id = Symbol(`${this.name}.?`)
       //... var NS = eYo.c9r.newNS()
       //... chai.expect(NS.BaseC9r).equal(eYo.c9r.BaseC9r)
       //... chai.expect(NS.BaseC9r_p).equal(eYo.c9r.BaseC9r_p)
@@ -254,7 +255,6 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
     if (eYo.isSubclass(this.BaseC9r, SuperC9r)) {
       SuperC9r = this.BaseC9r
     }
-    !eYo.isNS(NS) || NS.anonymous || eYo.isId(id) || eYo.throw(`${this.name}/makeC9rDecorate: Missing id`)
     let C9r = f.call(this, NS, id, SuperC9r, model)
     register && eYo.c9r.register(C9r)
     return C9r
@@ -392,13 +392,13 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
   makeSubC9rDecorate (f) {
     return function (ns, id, register, model) {
       var SuperC9r = this.C9r
-      if (ns && !eYo.isNS(ns)) {
+      if (!eYo.isNS(ns)) {
         model && eYo.throw(`Unexpected model (1): ${model}`)
         ;[ns, id, register, model] = [this.ns, ns, id, register]
       }
       if (!eYo.isId(id)) {
         model && eYo.throw(`Unexpected model (2): ${model}`)
-        ;[id, register, model] = [ns ? this.key : '', id, register]
+        ;[id, register, model] = [ns ? this.key : '?', id, register]
       }
       var ff = (this.ns||eYo.c9r).makeC9rDecorate(f)
       return ff.call(this.ns||eYo.c9r, ns, id, SuperC9r, register, model)

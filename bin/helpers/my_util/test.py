@@ -108,7 +108,7 @@ def getInlineTest(path):
     for l in lines:
       if l.begin is not None:
         for x in l.what:
-          if x == l.what[-1] and x == '...':
+          if x == l.what[-1] and x == '../':
             pass
           else:
             name = 'describe' if l.describe or x != l.what[-1] else 'it'
@@ -118,7 +118,7 @@ def getInlineTest(path):
         ans.append('  ' * depth + l.indent + l.cont)
       elif l.n is not None:
         for x in l.what:
-          if x == l.what[-1] and x == '...':
+          if x == l.what[-1] and x == '../':
             pass
           else:
             depth -= 1

@@ -45,7 +45,7 @@ eYo.dlgt.declareDlgt = function (_p) {
   })
 }
 
-//<<< mochai: ...
+//<<< mochai: ../
 //... var C9r
 //... let preparator = f => {
 //...   return model => {
@@ -844,6 +844,27 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
     //...   },
     //... })
     //... var f = dlgt.getModelMethod('foo')
+    //... chai.expect(f).eyo_F
+    //... f.call(dlgt, 2, 3)
+    //... flag.expect(123)
+    //>>>
+  },
+  /**
+   * Get the model UI method with the given id
+   * @param {String| Symbol} id 
+   */
+  getModelMethodUI (id) {
+    //<<< mochai: getModelMethodUI
+    var methods = this.model.ui
+    return methods && methods[id]
+    //... var dlgt = eYo.dlgt.new(function () {}, {
+    //...   ui: {
+    //...     foo (...$) {
+    //...       flag.push(1, ...$)
+    //...     },
+    //...   },
+    //... })
+    //... var f = dlgt.getModelMethodUI('foo')
     //... chai.expect(f).eyo_F
     //... f.call(dlgt, 2, 3)
     //... flag.expect(123)

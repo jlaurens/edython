@@ -152,7 +152,7 @@ describe ('Tests: C9r', function () {
     chai.expect(set.size).equal(3)
     chai.expect(C9r[eYo.$]).not.equal(eYo.c9r.BaseC9r[eYo.$])
     chai.assert(eYo.isSubclass(C9r[eYo.$].constructor, eYo.dlgt.BaseC9r))
-    chai.expect(C9r[eYo.$].key__).equal('unknown')
+    chai.expect(C9r[eYo.$].key__).equal('eYo.c9r.?')
   })
   it ('C9r: finalizeC9r', function () {
     let NS = eYo.c9r.newNS()
@@ -359,7 +359,7 @@ describe ('Tests: C9r', function () {
         value: 421
       })
       chai.expect(() => { NS.makeBaseC9r() }).to.throw()
-      chai.expect(eYo.c9r.newC9r(NS)[eYo.$].key).equal('unknown')
+      chai.expect(eYo.c9r.newC9r(NS)[eYo.$].key).equal('eYo.c9r.?')
       chai.expect(() => { eYo.c9r.newC9r(NS, 'BaseC9r') }).to.throw()
       chai.expect(() => { NS.newC9r('BaseC9r') }).to.throw()
     })
@@ -435,7 +435,6 @@ describe ('Tests: C9r', function () {
           flag.push(x)
         }
       })
-      chai.assert(!NS.A_s)
       NS.A[eYo.$].finalizeC9r()
       var a = new NS.A(1)
       flag.expect(1)

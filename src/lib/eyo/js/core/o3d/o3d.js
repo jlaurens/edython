@@ -172,11 +172,11 @@ eYo.mixinFR(eYo.o3d._p, {
     //... chai.expect(eYo.o3d.newSingleton(sym)).equal(ans)
     //>>>
     if (!eYo.isNS(NS)) {
-      !model || eYo.throw(`Unexpected last parameter: ${model}`)
-      ;[NS, id, model] = [this, NS, id]
+      !model || eYo.throw(`${this.name}/newSingleton: Unexpected last parameter (${model})`)
       //<<< mochai: NS
       //... chai.expect(() => eYo.o3d.newSingleton(id, {}, 1)).throw()
       //>>>
+      ;[NS, id, model] = [this, NS, id]
     }
     if (eYo.isId(id)) {
       if (NS.hasOwnProperty(id)) {
@@ -188,7 +188,7 @@ eYo.mixinFR(eYo.o3d._p, {
       }
     } else {
       //<<< mochai: id
-      eYo.throw(`Unexpected parameter ${id}`)
+      eYo.throw(`${this.name}/newSingleton: Unexpected parameter ${id}`)
       //... chai.expect(() => eYo.o3d.newSingleton(1)).throw()
       //>>>
     }
@@ -196,7 +196,7 @@ eYo.mixinFR(eYo.o3d._p, {
     //... var NS = eYo.o3d.newNS()
     //... NS.makeBaseC9r()
     if (model) {
-      if (!model.hasOwnProperty(eYo.$SuperC9r)) {
+      if (!model[eYo.$SuperC9r]) {
         model[eYo.$SuperC9r] = this.BaseC9r
         //... chai.expect(NS.newSingleton(Symbol(), {})).instanceOf(NS.BaseC9r)
       }

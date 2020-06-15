@@ -100,7 +100,7 @@ eYo.mixinFR(eYo.observe, {
 })
 
 eYo.dlgt.BaseC9r_p.observeEnhanced = function () {
-  //<<< mochai: ...observeEnhanced
+  //<<< mochai: ../observeEnhanced
   //<<< mochai: Basics
   //... let ns = eYo.c9r.newNS()
   //... ns.makeBaseC9r()
