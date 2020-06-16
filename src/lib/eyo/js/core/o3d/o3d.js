@@ -68,15 +68,15 @@ eYo.mixinFR(eYo._p, {
  * For subclassers.
  * @param{Object} instance - the instance to initialize
  * @param{String | Symbol} key - The key in the owner
- * @param{Object} owner - the owner
+ * @param{Object} [owner] - Defaults to the name space
  * @param{Boolean} [configurable] - Whether descriptors should be configurable, necessary for proxy.
  */
 eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
-  if (!eYo.isaC9r(owner) && !eYo.isNS(owner)) {
-    console.error('BREAK HERE!')
-  }
-  eYo.isaC9r(owner) || eYo.isNS(owner) || eYo.throw(`${this.name}.o3dInitInstance: Very bad owner (${owner})`)
   eYo.isId(key) || eYo.throw(`${this.eyo.name}: Bad key in init`)
+  if (!eYo.isaC9r(owner)) {
+    eYo.isNA(configurable) || eYo.throw(`${this.name}.o3dInitInstance: Unexpected argument (${configurable})`)
+    ;[owner, configurable] = [this.ns, owner]
+  }
   instance.owner__ = owner
   instance.key_ = key
   Object.defineProperties(instance, {

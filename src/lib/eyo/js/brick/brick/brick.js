@@ -93,9 +93,6 @@ eYo.brick.makeBaseC9r({
   [eYo.$$.dlgt] (ns, key, C9r, model) {
     this.types = []
   },
-  aliases: {
-    owner: 'board',
-  },
   properties: {
     /** @type {string} */
     parent: {
@@ -671,6 +668,7 @@ eYo.brick.makeBaseC9r({
     ui: eYo.NA,
   },
   aliases: {
+    owner: 'board',
     'span.width': 'width',
     'span.height': 'height',
     'board.recover': 'recover',

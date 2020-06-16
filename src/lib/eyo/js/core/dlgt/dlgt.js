@@ -258,6 +258,8 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   //>>>
   })
   eYo.mixinFR(_p, {
+    doPrepare: eYo.doNothing,
+    doInit: eYo.doNothing,
     /**
      * Make the init method of the associate contructor.
      * Any constructor must have an init method.
@@ -417,8 +419,6 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
       C9r_p[K] = f
       //>>>
     },
-    doPrepare: eYo.doNothing,
-    doInit: eYo.doNothing,
     /**
      * Make the dispose method.
      * @param {Object} model
@@ -844,27 +844,6 @@ eYo.mixinFR(eYo.dlgt.BaseC9r_p, {
     //...   },
     //... })
     //... var f = dlgt.getModelMethod('foo')
-    //... chai.expect(f).eyo_F
-    //... f.call(dlgt, 2, 3)
-    //... flag.expect(123)
-    //>>>
-  },
-  /**
-   * Get the model UI method with the given id
-   * @param {String| Symbol} id 
-   */
-  getModelMethodUI (id) {
-    //<<< mochai: getModelMethodUI
-    var methods = this.model.ui
-    return methods && methods[id]
-    //... var dlgt = eYo.dlgt.new(function () {}, {
-    //...   ui: {
-    //...     foo (...$) {
-    //...       flag.push(1, ...$)
-    //...     },
-    //...   },
-    //... })
-    //... var f = dlgt.getModelMethodUI('foo')
     //... chai.expect(f).eyo_F
     //... f.call(dlgt, 2, 3)
     //... flag.expect(123)

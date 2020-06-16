@@ -114,7 +114,7 @@ eYo.c9r._p.doNewC9r = function (ns, id, SuperC9r, model) {
   eYo.isD(model) || eYo.throw(`${this.name}/doNewC9r: Bad model: ${model}`)
   if (SuperC9r) {
     // create the constructor
-    // TODO: due to the makeInit method, this constructor may be badly designed.
+    // TODO: due to the makeC9rInit method, this constructor may be badly designed.
     var C9r = function (...$) {
       // Class
       if (!this) {
@@ -228,7 +228,7 @@ eYo.c9r._p.makeC9rDecorate = (f) => {
       ;[SuperC9r, register, model] = [eYo.NA, SuperC9r, register]
     }
     if (!eYo.isBool(register)) {
-      model && eYo.throw(`${this.name}/makeC9rDecorate: Unexpected model(4/${model})`)
+      model && eYo.throw(`${this.name}/makeC9rDecorate: Unexpected model (4/${model})`)
       ;[register, model] = [false, register]
     }
     model = eYo.called(model) || {}

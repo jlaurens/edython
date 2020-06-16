@@ -14,51 +14,35 @@ describe('driver', function() {
   })
   it ('Driver: newDriverC9r inherits', function () {
     var NS = eYo.driver.newNS()
-    chai.expect(NS.makeMngr({
-      methods: {
-        flag (...$) {
-          flag.push(1, ...$)
-        },
-      },
-    })).equal(NS.mngr)
-    NS.mngr.newDriverC9r('Foo', {
+    NS.newDriverC9r('Foo', {
       init (key, owner, ...$) {
         owner.flag(...$, 4)
       }
     })
-    chai.expect(NS.mngr.getDriverC9r('Foo')).equal(NS.Foo)
+    chai.expect(NS.getDriverC9r('Foo')).equal(NS.Foo)
     new NS.Foo('foo', onr, 2, 3)
     flag.expect(1234)
-    var fooDrvr = NS.mngr.getDriver('Foo')
-    flag.expect(14)
-    chai.expect(fooDrvr).instanceOf(NS.Foo)
-    chai.expect(fooDrvr).not.equal(NS.mngr.baseDriver)
-    chai.expect(fooDrvr).equal(NS.mngr.getDriver('Foo'))
-    chai.expect(fooDrvr).not.property(eYo.$$.target)
+    NS._p.flag = (...$) => {
+      flag.push(1, ...$)
+    }
+    var fooDrvr = NS.getDriver('Foo', 2, 3)
+    flag.expect(1234)
+    chai.expect(fooDrvr[eYo.$$.target]).not.undefined
+    chai.expect(fooDrvr[eYo.$$.target]).instanceOf(NS.Foo)
+    chai.expect(fooDrvr).equal(NS.getDriver('Foo'))
     var NSNS = NS.newNS()
-    NSNS.makeMngr()
-    var Foo = NSNS.mngr.newDriverC9r('Foo', {
-      init (key, owner, ...$) {
-        owner.flag(...$, 5)
-      }
-    })
-    chai.expect(NSNS.Foo).equal(Foo)
-    chai.expect(NSNS.Foo).eyo_C9r
-    chai.expect(NSNS.Foo).eyo_Subclass(NS.Foo)
-    chai.expect(NSNS.mngr.getDriverC9r('Foo')).equal(Foo)
+    chai.expect(NSNS.Foo).equal(NS.Foo)
+    chai.expect(NSNS.getDriverC9r('Foo')).undefined
     new NSNS.Foo('foo', onr, 2, 3)
-    flag.expect(12341235)
-    var fooSubDrvr = NSNS.mngr.getDriver('Foo')
-    flag.expect(1415)
-    chai.expect(fooSubDrvr).instanceOf(Foo)
-    chai.expect(fooSubDrvr).not.equal(NSNS.mngr.baseDriver)
-    chai.expect(fooSubDrvr).equal(NSNS.mngr.getDriver('Foo'))
-    chai.expect(fooSubDrvr).property(eYo.$$.target)
+    flag.expect(1234)
+    var fooSubDrvr = NSNS.getDriver('Foo')
+    flag.expect(0)
+    chai.expect(fooSubDrvr[eYo.$$.target]).instanceOf(NS.Foo)
+    chai.expect(fooSubDrvr).equal(NSNS.getDriver('Foo'))
    })
   it ('Driver: newDriverC9r inherits (2)', function () {
     var NS = eYo.driver.newNS()
-    NS.makeMngr()
-    NS.mngr.newDriverC9r('Foo', {
+    NS.newDriverC9r('Foo', {
       init (key, owner, ...$) {
         owner.flag(2, ...$)
       },
@@ -67,9 +51,8 @@ describe('driver', function() {
     new NS.Foo('foo', onr, 3, 4)
     flag.expect(1234)
     NS.newNS('a')
-    NS.a.makeMngr()
     chai.expect(NS.a.super).equal(NS)
-    NS.a.mngr.newDriverC9r('Foo', {
+    NS.a.newDriverC9r('Foo', {
       init (key, owner, ...$) {
         owner.flag(3, ...$)
       },
@@ -79,76 +62,50 @@ describe('driver', function() {
     new NS.a.Foo('foo', onr, 4, 5)
     flag.expect(12451345)
   })
-  it ('Driver: newDriverC9r with model', function () {
-    var NS = eYo.driver.newNS()
-    NS.makeMngr()
-    NS.mngr.newDriverC9r('Foo', {
-      init (key, owner, ...$) {
-        flag.push(1, ...$)
-      },
-      ui: {
-        doInit (what, ...$) {
-          flag.push(2, ...$)
-          return true
-        },
-        doDispose (what, ...$) {
-          flag.push(3, ...$)
-        }
-      },
-    })
-    var foo = new NS.Foo('foo', onr, 2, 3)
-    flag.expect(123)
-    chai.expect(foo.doInitUI(2, 3, 4)).true
-    flag.expect(234)
-    foo.doDisposeUI(3, 4, 5)
-    flag.expect(345)
-  })
   it ('Driver: newDriverC9r concurrent', function () {
     var NS = eYo.driver.newNS()
-    NS.makeMngr()
-    NS.mngr.newDriverC9r('Foo', {
+    NS.newDriverC9r('Foo', {
       init (key, owner, ...$) {
-        flag.push(1, ...$)
+        owner.flag(2, ...$)
       },
-      ui: {
-        doInit (what, ...$) {
-          flag.push(2, ...$)
-          return true
-        },
-        doDispose (what, ...$) {
-          flag.push(3, ...$)
-        },
+      doInitUI (what, ...$) {
+        what.flag(2, ...$)
+        return true
+      },
+      doDisposeUI (what, ...$) {
+        what.flag(...$, 4)
       },
     })
-    NS.mngr.newDriverC9r('Bar', {
+    NS.newDriverC9r('Bar', {
       init (key, owner, ...$) {
-        flag.push(4, ...$)
+        owner.flag(2, ...$)
       },
-      ui: {
-        doInit (what, ...$) {
-          flag.push(5, ...$)
-          return true
-        },
-        doDispose (what, ...$) {
-          flag.push(6, ...$)
-        },
+      doInitUI (what, ...$) {
+        what.flag(2, ...$)
+        return true
+      },
+      doDisposeUI (what, ...$) {
+        what.flag(...$, 4)
       },
     })
-    var foo = new NS.Foo('foo', onr, 2, 3)
-    flag.expect(123)
-    chai.expect(foo.doInitUI(0, 3, 4)).true
-    flag.expect(234)
-    foo.doDisposeUI(0, 4, 5)
-    flag.expect(345)
-    var bar = new NS.Bar('bar', onr, 5, 6)
-    flag.expect(456)
-    chai.expect(bar.doInitUI(0, 6, 7)).true
-    chai.expect(567)
-    bar.doDisposeUI(0, 7, 8)
-    chai.expect(678)
+    var foo = new NS.Foo('foo', onr, 3, 4)
+    flag.expect(1234)
+    chai.expect(foo.doInitUI(onr, 3, 4)).true
+    flag.expect(1234)
+    foo.doDisposeUI(onr, 2, 3)
+    flag.expect(1234)
+    var bar = new NS.Bar('bar', onr, 3, 4)
+    flag.expect(1234)
+    chai.expect(bar.doInitUI(onr, 3, 4)).true
+    chai.expect(1234)
+    bar.doDisposeUI(onr, 2, 3)
+    chai.expect(1234)
   })
   it ('Driver: diamond', function () {
     var NS = eYo.driver.newNS()
+    NS._p.flag = (...$) => {
+      flag.push(1, ...$)
+    }
     NS.makeBaseC9r({
       methods: {
         base (...$) {
@@ -161,8 +118,7 @@ describe('driver', function() {
     chai.expect(base).instanceOf(NS.BaseC9r)
     base.base(3, 4)
     flag.expect(1234)
-    NS.makeMngr()
-    var C9r = NS.mngr.newDriverC9r('Foo', {
+    var C9r = NS.newDriverC9r('Foo', {
       methods: {
         foo (...$) {
           this.owner.flag(3, ...$)
@@ -170,7 +126,7 @@ describe('driver', function() {
       },
     })
     chai.expect(C9r).equal(NS.Foo)
-    var foo = new NS.Foo('foo', onr)
+    var foo = NS.getDriver('Foo')
     foo.foo(5, 7)
     flag.expect(1357)
     NS.newNS('chi')
@@ -181,17 +137,10 @@ describe('driver', function() {
         },
       },
     })
-    var chi = NS.chi.new('chi', onr)
+    var chi = NS.chi.getDriver('')
     chi.chi(7)
     flag.expect(147)
-    NS.chi.makeMngr({
-      methods: {
-        flag (...$) {
-          flag.push(1, ...$)
-        },
-      },
-    })
-    var C9r = NS.chi.mngr.newDriverC9r('Foo', {
+    var C9r = NS.chi.newDriverC9r('Foo', {
       methods: {
         mee (...$) {
           this.owner.flag(5, ...$)
@@ -210,7 +159,7 @@ describe('driver', function() {
     }).throw()
     drvr.mee(9)
     flag.expect(159)
-    var diamond = NS.chi.mngr.getDriver('Foo')
+    var diamond = NS.chi.getDriver('Foo')
     diamond.base(3)
     flag.expect(123)
     diamond.foo(5)
