@@ -2,7 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const CssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 var ConfigEyo = function (target, dist, env) {
@@ -47,6 +47,8 @@ var ConfigEyo = function (target, dist, env) {
   this.env = env
   this.rootPath = path.resolve(__dirname, '..')
   this.distPath = path.join(this.rootPath, 'dist', dist)
+  this.distStaticPath = path.join(this.distPath, 'static')
+  this.distLibPath = path.join(this.distPath, 'lib')
   this.staticPath = path.join(this.rootPath, 'static')
   this.srcPath = path.join(this.rootPath, 'src')
   this.jsPath = path.join(this.srcPath, 'js')
@@ -209,7 +211,7 @@ ConfigEyo.prototype.getConfig = function () {
     })
   }
   config.plugins = [
-    new ExtractTextPlugin('styles.css'),
+    new CssExtractPlugin('styles.css'),
     new HtmlWebpackPlugin(
       {
         filename: 'index.html',
@@ -285,8 +287,9 @@ ConfigEyo.prototype.enablePolyFills = function (config) {
   config.plugins.push(
     new CopyWebpackPlugin([
       {
-        from: path.join(this.srcPath, 'lib/polyfills/Array/some.js'),
-        to: path.join(this.distPath, 'lib/polyfills/Array/some.js')
+        context: this.srcPath,
+        from: 'lib/polyfills/Array/some.js',
+        to: path.join(this.distLibPath, 'polyfills/Array/some.js')
       }
     ], {debug: 'debug'})
   )
@@ -297,12 +300,15 @@ ConfigEyo.prototype.enableXRegExp = function (config) {
     return
   }
   config.plugins.push(
-    new CopyWebpackPlugin([
-      {
-        from: path.join(this.srcPath, 'lib/xregexp-all/xregexp-all.js'),
-        to: path.join(this.distPath, 'lib/xregexp-all.js')
-      }
-    ], {debug: 'debug'})
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          context: this.srcPath,
+          from: 'lib/xregexp-all/xregexp-all.js',
+          to: path.join(this.distLibPath, 'xregexp-all.js')
+        },
+      ],
+    }, {debug: 'debug'})// <-- lost when upgrading to webpack 4
   )
 }
 
@@ -311,23 +317,26 @@ ConfigEyo.prototype.enableBrython = function (config) {
     return
   }
   config.plugins.push(
-    new CopyWebpackPlugin(
-      [
+    new CopyWebpackPlugin({
+      patterns: [
         {
-          from: path.join(this.srcPath, 'lib/brython/www/src/**'),
-          to: path.join(this.distPath, '[1]'),
-          test: /^.*\/src\/lib\/brython\/www\/(src\/.+)$/,
+          context: path.join(this.srcPath, 'lib/brython/www/src/'),
+          from: '**/*',
+          to: path.join(this.distPath, 'src'),
+          toType: 'dir',
         },
         {
-          from: path.join(this.srcPath, 'lib/site-packages/**'),
-          to: path.join(this.distPath, 'src/Lib/[1]'),
-          test: /..\/src\/lib(\/.+\.py)$/,
+          context: path.join(this.srcPath, 'lib/site-packages/'),
+          from: '**/*',
+          to: path.join(this.distPath, 'src/Lib/'),
+          toType: 'dir',
         },
         {
-          from: path.join(this.srcPath, 'lib/site-packages/consoleJL.py'),
+          context: path.join(this.srcPath, 'lib/site-packages/'),
+          from: 'consoleJL.py',
           to: path.join(this.distPath, 'consoleJL.py')
         }
-      ], {debug: 'debug'}
+      ]}, {debug: 'debug'}
     )
   )
 }
@@ -340,14 +349,15 @@ ConfigEyo.prototype.enableBrythonSources = function (config) {
    * this one is for embedding brython sources
    */
   config.plugins.push(
-    new CopyWebpackPlugin(
-      [
+    new CopyWebpackPlugin({
+      patterns: [
         {
-          from: path.join(this.srcPath, 'lib/brython/www/src/**'),
-          to: path.join(this.distPath, '[1]'),
-          test: /^.*\/src\/lib\/brython\/www\/(src\/.+)$/,
+          context: path.join(this.srcPath, 'lib/brython/www/'),
+          from: 'src/**/*',
+          to: this.distPath,
+          toType: 'dir',
         }
-      ], {debug: 'debug'}
+      ]}, {debug: 'debug'}
     )
   )
 }
@@ -357,18 +367,15 @@ ConfigEyo.prototype.enableEdython = function (config) {
     return
   }
   config.plugins.push(
-    new CopyWebpackPlugin(
-      [
+    new CopyWebpackPlugin({
+      patterns: [
         { from: path.join(this.rootPath, 'build/base/edython.js'),
-          to: path.join(this.distPath, 'lib/edython.js')
+          to: path.join(this.distLibPath, 'edython.js')
         },
         { from: path.join(this.srcPath, 'lib/eyo/css/eyo.css'),
-          to: path.join(this.distPath, 'lib/edython.css')
+          to: path.join(this.distLibPath, 'edython.css')
         }
-      ],
-      {
-        debug: 'debug'
-      }
+      ]}, {debug: 'debug'}
     )
   )
 }
@@ -378,18 +385,15 @@ ConfigEyo.prototype.enableTippy = function (config) {
     return
   }
   config.plugins.push(
-    new CopyWebpackPlugin(
-      [
+    new CopyWebpackPlugin({
+      patterns: [
         { from: path.join(this.rootPath, 'node_modules/tippy.js/dist/tippy.min.js'),
-          to: path.join(this.distPath, 'lib/tippy.min.js')
+          to: path.join(this.distLibPath, 'tippy.min.js')
         },
         { from: path.join(this.rootPath, 'node_modules/tippy.js/dist/tippy.css'),
-          to: path.join(this.distPath, 'lib/tippy.css')
+          to: path.join(this.distLibPath, 'tippy.css')
         }
-      ],
-      {
-        debug: 'debug'
-      }
+      ]}, {debug: 'debug'}
     )
   )
 }
@@ -399,30 +403,39 @@ ConfigEyo.prototype.enableResources = function (config) {
     return
   }
   config.plugins.push(
-    new CopyWebpackPlugin(
-      [
+    new CopyWebpackPlugin({
+      patterns: [
         {
-          from: path.join(this.srcPath, 'lib/eyo/media/**'),
-          to: path.join(this.distPath, 'static[1]'),
-          test: /..\/src\/lib\/eyo(\/media\/.+)$/,
+          context: path.join(this.srcPath, 'lib/eyo/'),
+          from: path.join(this.srcPath, '**/*'),
+          to: this.distStaticPath,
+          toType: 'dir',
         },
         {
-          from: path.join(this.rootPath, 'font/*.woff'),
-          to: path.join(this.distPath, 'static/')
+          context: this.rootPath,
+          from: path.join(this.srcPath, 'font/*.woff'),
+          to: this.distStaticPath,
+          toType: 'dir',
         },
         {
-          from: path.join(this.rootPath, 'gfx/icon.svg'),
-          to: path.join(this.distPath, 'static/icon.svg')
+          context: path.join(this.rootPath, 'gfx'),
+          from: 'icon.svg',
+          to: this.distStaticPath,
+          toType: 'dir',
         },
         {
-          from: path.join(this.rootPath, 'gfx/icon_light.svg'),
-          to: path.join(this.distPath, 'static/icon_light.svg')
+          context: path.join(this.rootPath, 'gfx'),
+          from: 'icon_light.svg',
+          to: this.distStaticPath,
+          toType: 'dir',
         },
         {
-          from: path.join(this.rootPath, 'src/lib/eyo/web_workers/**'),
-          to: path.join(this.distPath, 'web_workers/')
-        }
-      ],
+          context: path.join(this.rootPath, 'src/lib/eyo/'),
+          from: 'web_workers/**',
+          to: this.distPath,
+          toType: 'dir',
+        },
+      ]},
       {
         debug: 'debug'
       }

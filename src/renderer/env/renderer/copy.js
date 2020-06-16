@@ -9,7 +9,7 @@ eYo.App.copyTextToClipboard = function (text) {
 eYo.App.didCopyBrick = function (brick, xml) {
   const { clipboard } = require('electron')
   const p = new eYo.Py.Exporter()
-  const code = p.export(brick, {is_deep: true})
+  const code = p.export(brick, { is_deep: true })
   clipboard.write({ text: code, html: xml })
   console.error('didCopyBrick', xml)
   store.commit('Clipboard/didCopyBrick', xml)

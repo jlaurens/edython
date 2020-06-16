@@ -23,6 +23,8 @@ let whiteListedModules = ['vue']
 
 let rendererConfig = eYoConfig.get('electron-renderer', 'electron', process.env.BABEL_ENV)
 
+rendererConfig.mode = 'development'
+
 rendererConfig.output.libraryTarget = 'commonjs2'
 rendererConfig.externals = [
   ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d))
@@ -33,6 +35,7 @@ rendererConfig.externals = [
  * Adjust rendererConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
+  rendererConfig.mode = 'production'
   rendererConfig.devtool = ''
 
   rendererConfig.plugins.push(
@@ -48,7 +51,8 @@ if (process.env.NODE_ENV === 'production') {
       'process.env.NODE_ENV': '"production"'
     }),
     new webpack.LoaderOptionsPlugin({
-      minimize: true
+      minimize: true,
+      options: {},// https://github.com/webpack/webpack/issues/6556
     })
   )
 }

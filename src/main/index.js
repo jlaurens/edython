@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== 'development') {
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
+  ? 'http://localhost:9080'
   : `file://${__dirname}/index.html`
 
 function createWindow () {
@@ -39,7 +39,7 @@ function createWindow () {
   if (process.env.BABEL_ENV !== 'web') {
     global.pathToDocumentsFolder = app.getPath('documents')
     // Dans le processus principal .
-    const {ipcMain} = require('electron')
+    const { ipcMain } = require('electron')
     var promptResponse
     ipcMain.on('prompt', function (eventRet, arg) {
       promptResponse = null
@@ -107,7 +107,7 @@ function createWindow () {
 if (process.env.BABEL_ENV !== 'web') {
   var electron = require('electron')
   var Menu = electron.Menu
-  let template = [{
+  const template = [{
     label: 'Fichier',
     submenu: [{
       label: 'Nouveau',
@@ -274,7 +274,7 @@ if (process.env.BABEL_ENV !== 'web') {
   function addUpdateMenuItems (items, position) { // eslint-disable-line no-inner-declarations
     if (process.mas) return
     const version = app.getVersion()
-    let updateItems = [{
+    const updateItems = [{
       label: `Version ${version}`,
       enabled: false
     }, {
@@ -368,11 +368,11 @@ if (process.env.BABEL_ENV !== 'web') {
     Menu.setApplicationMenu(menu)
   })
   app.on('browser-window-created', function () {
-    let reopenMenuItem = findReopenMenuItem()
+    const reopenMenuItem = findReopenMenuItem()
     if (reopenMenuItem) reopenMenuItem.enabled = false
   })
   app.on('window-all-closed', function () {
-    let reopenMenuItem = findReopenMenuItem()
+    const reopenMenuItem = findReopenMenuItem()
     if (reopenMenuItem) reopenMenuItem.enabled = true
   })
 

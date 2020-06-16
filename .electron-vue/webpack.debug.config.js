@@ -20,7 +20,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
  */
 let whiteListedModules = ['vue']
 
-let rendererConfig = {
+let debugConfig = {
+  mode: 'development',
   devtool: '#cheap-module-eval-source-map',
   entry: {
     renderer: path.join(__dirname, '../src/main/index.dev.js')
@@ -165,11 +166,11 @@ let rendererConfig = {
  * The process is not fully automatized.
  */
 if (process.env.EYO_BUILD_MODE === 'debug') {
-  rendererConfig.plugins.push(new CopyWebpackPlugin([
+  debugConfig.plugins.push(new CopyWebpackPlugin([
     { from: path.resolve(__dirname, '../src/lib/closure-library/closure/goog/'),
     to: path.resolve(__dirname, '../dist/electron/lib/closure-library/closure/goog/')
   }], {debug: 'debug'}))
-  rendererConfig.plugins.push(new CopyWebpackPlugin([
+  debugConfig.plugins.push(new CopyWebpackPlugin([
     { from: path.resolve(__dirname, '../src/lib/eyo/'),
     to: path.resolve(__dirname, '../dist/electron/lib/eyo/')
   }], {debug: 'debug'}))
@@ -179,7 +180,7 @@ if (process.env.EYO_BUILD_MODE === 'debug') {
  * Adjust rendererConfig for development settings
  */
 if (process.env.NODE_ENV !== 'production') {
-  rendererConfig.plugins.push(
+  debugConfig.plugins.push(
     new webpack.DefinePlugin({
       '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
     })
@@ -190,9 +191,9 @@ if (process.env.NODE_ENV !== 'production') {
  * Adjust rendererConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
-  rendererConfig.devtool = ''
+  debugConfig.devtool = ''
 
-  rendererConfig.plugins.push(
+  debugConfig.plugins.push(
     new BabiliWebpackPlugin(),
     new CopyWebpackPlugin([
       {
@@ -205,9 +206,9 @@ if (process.env.NODE_ENV === 'production') {
       'process.env.NODE_ENV': '"production"'
     }),
     new webpack.LoaderOptionsPlugin({
-      minimize: true
+      minimize: true,
+      options: {},// https://github.com/webpack/webpack/issues/6556
     })
   )
 }
-
-module.exports = rendererConfig
+module.exports = debugConfig

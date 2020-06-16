@@ -204,4 +204,4 @@ const model = {
   getters
 }
 
-export {model as default, cfg as layoutcfg}
+export { model as default, cfg as layoutcfg }

@@ -3,3 +3,5 @@ test/unit/*.js
 test/e2e/*.js
 src/lib/**
 build/*
+src/renderer/setup/i18n-setup.js
+*.vue

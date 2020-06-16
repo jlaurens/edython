@@ -31,12 +31,12 @@ eYoAppDocument.install = function (Vue, options) {
         tops.forEach(brick => brick.eyo.beReady())
       })
     })
-    var dom = eYo.App.workspace.eyo.toDom({noId: true})
+    var dom = eYo.App.workspace.eyo.toDom({ noId: true })
     eYo.App.doPrefToDom(dom)
-    let oSerializer = new XMLSerializer()
+    const oSerializer = new XMLSerializer()
     var content = '<?xml version="1.0" encoding="utf-8"?>' + oSerializer.serializeToString(dom)
-    let ecoSave = store.state.Document.ecoSave
-    let deflate = ecoSave
+    const ecoSave = store.state.Document.ecoSave
+    const deflate = ecoSave
       ? pako.gzip(content)
       : content // use gzip to ungzip from the CLI
     return {

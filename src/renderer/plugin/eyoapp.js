@@ -1,4 +1,4 @@
-import {layoutcfg} from '@@/../store/modules/Layout'
+import { layoutcfg } from '@@/../store/modules/Layout'
 
 var eYoApp = {}
 
@@ -125,7 +125,7 @@ eYoApp.install = function (Vue, options) {
   // listen to connections
   eYo.brick.Base_p.didConnect = (() => {
     // this is a closure
-    let didConnect = eYo.brick.Base_p.didConnect
+    const didConnect = eYo.brick.Base_p.didConnect
     return function (connection, oldTargetC8n, targetOldC8n) {
       didConnect.call(this, connection, oldTargetC8n, targetOldC8n)
       Vue.nextTick(() => {

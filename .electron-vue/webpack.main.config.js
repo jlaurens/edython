@@ -11,6 +11,7 @@ const BabiliWebpackPlugin = require('babili-webpack-plugin')
 // remove electron dependencies when web only ?
 
 let mainConfig = {
+  mode: 'development',
   entry: {
     main: path.join(__dirname, '../src/main/index.js')
   },
@@ -51,7 +52,8 @@ let mainConfig = {
     path: path.join(__dirname, '../dist/electron')
   },
   plugins: [
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.LoaderOptionsPlugin({ options: {} }),
   ],
   resolve: {
     extensions: ['.js', '.json', '.node']
@@ -63,6 +65,7 @@ let mainConfig = {
  * Adjust mainConfig for development settings
  */
 if (process.env.NODE_ENV !== 'production') {
+  mainConfig.mode = 'production'
   mainConfig.plugins.push(
     new webpack.DefinePlugin({
       '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`

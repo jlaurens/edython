@@ -20,7 +20,7 @@ const messages = {
 }
 
 const dateTimeFormats = {
-  'en_US': {
+  en_US: {
     short: {
       year: 'numeric',
       month: 'short',
@@ -36,7 +36,7 @@ const dateTimeFormats = {
       hour12: true
     }
   },
-  'fr_FR': {
+  fr_FR: {
     short: {
       year: 'numeric',
       month: 'short',
@@ -54,7 +54,7 @@ const dateTimeFormats = {
 }
 
 const numberFormats = {
-  'en_US': {
+  en_US: {
     currency: {
       style: 'currency', currency: 'USD'
     },
@@ -62,7 +62,7 @@ const numberFormats = {
       style: 'percent'
     }
   },
-  'fr_FR': {
+  fr_FR: {
     currency: {
       style: 'currency', currency: 'EUR'
     },

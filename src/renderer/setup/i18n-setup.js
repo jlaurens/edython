@@ -20,6 +20,7 @@ function setI18nLanguage (lang) {
   document.querySelector('html').setAttribute('lang', lang)
   return lang
 }
+/*eslint template-curly-spacing: "error"*/
 
 export function loadLanguageAsync (lang) {
   if (i18n.locale !== lang) {

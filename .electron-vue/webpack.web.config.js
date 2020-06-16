@@ -17,6 +17,8 @@ let webConfig = eYoConfig.get('web', 'web', process.env.BABEL_ENV)
  * Adjust webConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
+  webConfig.mode = 'production'
+  
   webConfig.devtool = ''
 
   webConfig.plugins.push(
@@ -35,7 +37,8 @@ if (process.env.NODE_ENV === 'production') {
     }),
     new webpack.LoaderOptionsPlugin(
       {
-        minimize: false
+        minimize: false,
+        options: {}, // https://github.com/webpack/webpack/issues/6556
       }
     // ),
     // new webpack.optimize.UglifyJsPlugin(
