@@ -1,74 +1,80 @@
 <template>
   <b-btn-group
-    variant="outline-secondary">
+    variant="outline-secondary"
+  >
     <b-btn
       id="toolbar-back"
-      v-on:click="doBack()"
-      :title="titleBack"
       v-tippy
-      :disabled="!eyo">
+      :title="titleBack"
+      :disabled="!eyo"
+      @click="doBack()"
+    >
       <icon-base
         :width="24"
         :height="24"
-        icon-name="back">
+        icon-name="back"
+      >
         <icon-front-back
-        :front="false" />
+          :front="false"
+        />
       </icon-base>
     </b-btn>
     <b-btn
       id="toolbar-show"
-      v-on:click="doShow()"
-      :title="titleShow"
       v-tippy
-      :disabled="!eyo">
+      :title="titleShow"
+      :disabled="!eyo"
+      @click="doShow()"
+    >
       <icon-base
         :width="24"
         :height="24"
-        icon-name="show">
-        <icon-show/>
+        icon-name="show"
+      >
+        <icon-show />
       </icon-base>
     </b-btn>
   </b-btn-group>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+import {mapGetters} from 'vuex'
 
-  import IconBase from '@@/Icon/IconBase.vue'
-  import IconFrontBack from '@@/Icon/IconFrontBack.vue'
-  import IconShow from '@@/Icon/IconShow.vue'
+import IconBase from '@@/Icon/IconBase.vue'
+import IconFrontBack from '@@/Icon/IconFrontBack.vue'
+import IconShow from '@@/Icon/IconShow.vue'
 
-  export default {
-    name: 'page-toolbar-layout',
+export default {
+    name: 'PageToolbarLayout',
     components: {
-      IconBase,
-      IconFrontBack,
-      IconShow
+        IconBase,
+        IconFrontBack,
+        IconShow
     },
     computed: {
-      ...mapGetters('Selected', [
-        'eyo'
-      ]),
-      locale () {
-        return this.$i18n.locale
-      },
-      titleBack () {
-        return this.$$t('toolbar.tooltip.selection.send_to_back', this.locale)
-      },
-      titleShow () {
-        return this.$$t('toolbar.tooltip.selection.show', this.locale)
-      }
+        ...mapGetters('Selected', [
+            'eyo'
+        ]),
+        locale () {
+            return this.$i18n.locale
+        },
+        titleBack () {
+            return this.$$t('toolbar.tooltip.selection.send_to_back', this.locale)
+        },
+        titleShow () {
+            return this.$$t('toolbar.tooltip.selection.show', this.locale)
+        }
     },
     methods: {
-      doFront () {
-        eYo.App.doFront()
-      },
-      doBack () {
-        eYo.App.doBack()
-      },
-      doShow () {
-        eYo.App.doFocus()
-      }
+        doFront () {
+            eYo.App.doFront()
+        },
+        doBack () {
+            eYo.App.doBack()
+        },
+        doShow () {
+            eYo.App.doFocus()
+        }
     }
-  }
+}
 </script>

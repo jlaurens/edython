@@ -1,59 +1,65 @@
 <template>
   <b-dd
+    v-if="values && values.length"
     id="brick-builtin"
     class="item text"
-    v-if="values && values.length"
-    variant="outline-secondary">
+    variant="outline-secondary"
+  >
     <template
-      slot="button-content"><span
+      slot="button-content"
+    >
+      <span
         class="brick-value eyo-code-reserved eyo-content" 
-        v-html="value"></span></template>
+        v-html="value"
+      />
+    </template>
     <b-dd-item-button
       v-for="item in values" 
-      v-on:click="value = item"
       :key="item"
-      class="brick-value eyo-code-reserved" 
-      v-html="item"></b-dd-item-button>
+      class="brick-value eyo-code-reserved"
+      @click="value = item" 
+      v-html="item"
+    />
   </b-dd>
 </template>
 
 <script>
-  import {mapState, mapGetters} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 
-  export default {
-    name: 'info-value',
+export default {
+    name: 'InfoValue',
     data () {
-      return {
-        saved_step: undefined,
-        value_: undefined
-      }
+        return {
+            saved_step: undefined,
+            value_: undefined
+        }
     },
     computed: {
-      ...mapState('Selected', [
-        'step'
-      ]),
-      ...mapGetters('Selected', [
-        'eyo'
-      ]),
-      value: {
-        get () {
-          this.$$synchronize(this.step)
-          return this.value_
+        ...mapState('Selected', [
+            'step'
+        ]),
+        ...mapGetters('Selected', [
+            'eyo'
+        ]),
+        value: {
+            get () {
+                this.$$synchronize(this.step)
+                return this.value_
+            },
+            set (newValue) {
+                this.eyo.value_p = newValue
+            }
         },
-        set (newValue) {
-          this.eyo.value_p = newValue
+        values () {
+            return this.eyo.value_d.getAll()
         }
-      },
-      values () {
-        return this.eyo.value_d.getAll()
-      }
     },
     methods: {
-      $$doSynchronize (eyo) {
-        this.value_ = eyo.value_p
-      }
+        $$doSynchronize (eyo) {
+            this.value_ = eyo.value_p
+        }
     }
-  }
+}
 </script>
 <style>
 </style>

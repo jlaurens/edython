@@ -56,7 +56,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
       for (let k of this.viewModelMap.keys()) {
         let k_v = k + '_v'
         _p.hasOwnProperty(k_v) || Object.defineProperties(_p, {
-          [k_v]: eYo.descriptorR(function () {
+          [k_v]: eYo.descriptorR({$ () {
             return this.viewMap.get(k)
             //... let NS = eYo.o4t.newNS()
             //... let C9r = NS.makeBaseC9r(true)
@@ -71,7 +71,7 @@ eYo.dlgt.BaseC9r_p.viewEnhanced = function () {
             //... chai.expect(_p.hasOwnProperty('foo_v')).true
             //... let o = NS.new('o', onr)
             //... chai.expect(o.foo_v).instanceOf(eYo.View)
-          }),
+          }}.$),
         })
       }
       //>>>

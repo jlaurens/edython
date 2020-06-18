@@ -147,11 +147,11 @@ eYo.module._p.makeNewItem = function () {
   this === eYo.module && eYo.throw('Only derived modules can make Items')
   var Item = this.newC9r('Item', this.Item, {
     properties: {
-      url: eYo.descriptorR(function () {
+      url: eYo.descriptorR({$ () {
         return this.href
           ? this.owner_.URL + this.href
           : this.owner_.URL
-      }),
+      }}.$),
     },
   })
   this.makeNewItem = function () {

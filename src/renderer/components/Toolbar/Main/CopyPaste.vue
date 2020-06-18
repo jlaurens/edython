@@ -2,27 +2,31 @@
   <b-btn-group>
     <copy-paste
       :copy="false"
-      :duplicate="true" />
+      :duplicate="true"
+    />
     <copy-paste
       :copy="true"
-      :deep="false" />
+      :deep="false"
+    />
     <copy-paste
       :copy="true"
-      :deep="true" />
+      :deep="true"
+    />
     <copy-paste
-      :copy="false" />
+      :copy="false"
+    />
   </b-btn-group>
 </template>
 
 <script>
-  import CopyPaste from '@@/Util/CopyPaste.vue'
+import CopyPaste from '@@/Util/CopyPaste.vue'
 
-  export default {
-    name: 'page-toolbar',
+export default {
+    name: 'PageToolbar',
     components: {
-      CopyPaste
+        CopyPaste
     }
-  }
+}
 </script>
 <style>
 </style>

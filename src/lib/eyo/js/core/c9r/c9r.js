@@ -658,9 +658,9 @@ eYo.mixinFR(eYo.c9r._p, {
     //... chai.expect(eYo.isSubclass(C9r, model[eYo.$SuperC9r]))
     model._starters = []
     C9r[eYo.$].modelHandle()
-    Object.defineProperty(C9r[eYo.$], 'name', eYo.descriptorR(function () {
+    Object.defineProperty(C9r[eYo.$], 'name', eYo.descriptorR({$ () {
       return `${C9r[eYo.$].super.name}(${model.register || '...'})`
-    }))
+    }}.$))
     model.register && this.register(model.register, C9r)
     return C9r
     //>>>
@@ -790,9 +790,9 @@ eYo.mixinFR(eYo.c9r._p, {
     let C9r = this.newC9r(Symbol(eYo.do.toTitleCase(id)), model)
     C9r[eYo.$].finalizeC9r()
     let ans = new C9r()
-    Object.defineProperty(NS, id, eYo.descriptorR(function() {
+    Object.defineProperty(NS, id, eYo.descriptorR({$ () {
       return ans
-    }))
+    }}.$))
     return ans
     //... var ans = eYo.c9r.newSingleton(NS, 'id', {})
     //... chai.expect(ans).instanceof(eYo.C9r)

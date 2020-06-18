@@ -520,20 +520,20 @@ Object.defineProperties(eYo.model.Format_p, {
   /**
    * @property {eYo.model.Format_p.all}
    */
-  all: eYo.descriptorR(function () {
+  all: eYo.descriptorR({$ () {
     var p = this
     let ans = [p]
     while ((p = p.parent)) {
       ans.unshift(p)
     }
     return ans
-  }),
+  }}.$),
   /**
    * @property {eYo.model.Format_p.path}
    */
-  path: eYo.descriptorR(function () {
+  path: eYo.descriptorR({$ () {
     return this.all.map(x => x.key).join('/') || '/'
-  }),
+  }}.$),
   //<<< mochai: eYo.model.Format_p.(all|path)
   //... var mf = new eYo.model.Format()
   //... chai.expect(mf.path).equal('/')

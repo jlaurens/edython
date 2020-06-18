@@ -254,7 +254,7 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
     //>>>
   }
   Object.defineProperties(_p, {
-    [type$.modelMap]: eYo.descriptorR(function () {
+    [type$.modelMap]: eYo.descriptorR({$ () {
       let modelMap = this[type$.modelMap_] = new Map()
       let superMap = this.super && this.super[type$.modelMap]
       let map = superMap ? new Map(superMap) : new Map()
@@ -297,12 +297,12 @@ eYo.dlgt.BaseC9r_p.manyEnhanced = function (id, type, path, manyModel) {
         }
       }
       Object.defineProperties(this, {
-        [type$.modelMap]: eYo.descriptorR(function () {
+        [type$.modelMap]: eYo.descriptorR({$ () {
           return this[type$.modelMap_]
-        }, true)
+        }}.$, true)
       })
       return this[type$.modelMap_]
-    }),
+    }}.$),
     //<<< mochai: modelMap
     //... preparator()()
     //... var foo$ = C9r[eYo.$].manyEnhanced('foo', 'foo')

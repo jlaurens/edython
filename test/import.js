@@ -5,13 +5,13 @@ var vm = require('vm')
 // at least where npm is run from the project root
 
 var import_file = (path) => {
-  try {
-    var code = fs.readFileSync(path)
-    vm.runInThisContext(code)
-  } catch (err) {
-    console.error('FAILURE', path)
-    throw err
-  }
+    try {
+        var code = fs.readFileSync(path)
+        vm.runInThisContext(code)
+    } catch (err) {
+        console.error('FAILURE', path)
+        throw err
+    }
 }
 
 import_file('src/lib/xregexp-all/xregexp-all.js')

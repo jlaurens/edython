@@ -3,85 +3,94 @@
     <b-dd
       class="eyo-dropdown item text"
       variant="outline-secondary"
-      :text="operator">
-      <b-dd-item-button v-for="item in operators" v-on:click="operator = item" :key="item" class="brick-unary-operator eyo-code" v-html="item"></b-dd-item-button>
-      </b-dd-item-button>
+      :text="operator"
+    >
+      <b-dd-item-button
+        v-for="item in operators"
+        :key="item"
+        class="brick-unary-operator eyo-code"
+        @click="operator = item"
+        v-html="item"
+      />
     </b-dd>
     <b-input
       v-if="!eyo.rhs_t"
       v-model="rhs"
       type="text"
       :class="$$class(rhs)"
-      :style='{fontFamily: $$.eYo.Font.familyMono}'
-      :placeholder="$$t('brick.placeholder.number')"></b-input>
+      :style="{fontFamily: $$.eYo.Font.familyMono}"
+      :placeholder="$$t('brick.placeholder.number')"
+    />
     <div
-      v-else class="item text"
-      v-html="slotholder('eyo-slotholder-inline')"></div>
+      v-else
+      class="item text"
+      v-html="slotholder('eyo-slotholder-inline')"
+    />
   </b-btn-group>
 </template>
 
 <script>
-  import {mapState, mapGetters} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 
-  export default {
-    name: 'info-unary-operator',
-    data () {
-      return {
-        saved_step: undefined,
-        operator_: 0,
-        rhs_: undefined
-      }
-    },
+export default {
+    name: 'InfoUnaryOperator',
     props: {
-      slotholder: {
-        type: Function,
-        default: function (item) {
-          return item
+        slotholder: {
+            type: Function,
+            default: function (item) {
+                return item
+            }
         }
-      }
+    },
+    data () {
+        return {
+            saved_step: undefined,
+            operator_: 0,
+            rhs_: undefined
+        }
     },
     computed: {
-      ...mapState('Selected', [
-        'step'
-      ]),
-      ...mapGetters('Selected', [
-        'eyo'
-      ]),
-      rhs: {
-        get () {
-          this.$$synchronize(this.step)
-          return this.rhs_
+        ...mapState('Selected', [
+            'step'
+        ]),
+        ...mapGetters('Selected', [
+            'eyo'
+        ]),
+        rhs: {
+            get () {
+                this.$$synchronize(this.step)
+                return this.rhs_
+            },
+            set (newValue) {
+                this.eyo.rhs_p = newValue
+            }
         },
-        set (newValue) {
-          this.eyo.rhs_p = newValue
-        }
-      },
-      operator: {
-        get () {
-          this.$$synchronize(this.step)
-          return this.operator_
+        operator: {
+            get () {
+                this.$$synchronize(this.step)
+                return this.operator_
+            },
+            set (newValue) {
+                this.eyo.operator_p = newValue
+            }
         },
-        set (newValue) {
-          this.eyo.operator_p = newValue
+        operators () {
+            return this.eyo.operator_d.getAll()
+        },
+        slot () {
+            return this.slotholder('eyo-slotholder')
         }
-      },
-      operators () {
-        return this.eyo.operator_d.getAll()
-      },
-      slot () {
-        return this.slotholder('eyo-slotholder')
-      }
     },
     methods: {
-      $$doSynchronize (eyo) {
-        this.operator_ = eyo.operator_p
-        this.rhs_ = eyo.rhs_p
-      },
-      $$class (key) {
-        return `eyo-code and item text${key.length ? '' : ' placeholder'}`
-      }
+        $$doSynchronize (eyo) {
+            this.operator_ = eyo.operator_p
+            this.rhs_ = eyo.rhs_p
+        },
+        $$class (key) {
+            return `eyo-code and item text${key.length ? '' : ' placeholder'}`
+        }
     }
-  }
+}
 </script>
 <style>
 </style>

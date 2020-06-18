@@ -7,13 +7,13 @@ import axios from 'axios'
 import Stacktrace from 'stack-trace'
 
 eYo.$$ = {
-  process, // usefull only in electron
-  goog,
-  eYo,
-  pako,
-  _: lodash,
-  TweenLite,
-  tippy,
-  http: axios,
-  Stacktrace
+    process, // usefull only in electron
+    goog,
+    eYo,
+    pako,
+    _: lodash,
+    TweenLite,
+    tippy,
+    http: axios,
+    Stacktrace
 }

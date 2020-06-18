@@ -1,14 +1,22 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: 'vue-eslint-parser',
   parserOptions: {
-    sourceType: 'module'
+    parser: 'babel-eslint',
+    sourceType: 'module',
+    ecmaVersion: 2020,
   },
+
   env: {
     browser: true,
     node: true
   },
-  extends: 'standard',
+
+  extends: [
+    'plugin:vue/recommended',
+    'eslint:recommended'
+  ],
+
   globals: {
     __static: true,
     goog: true,
@@ -17,18 +25,29 @@ module.exports = {
     XRegExp: true,
     brython: true,
   },
+
   plugins: [
-    'html'
+    'vue',
   ],
-  'rules': {
-    "indent": [2, 2],
-    // allow paren-less arrow functions
+
+  'rules': [
+    'plugin:vue/vue3-recommended',
+    'eslint:recommended',
+    'plugin:vue/essential'
+  ],
+
+  rules: {
+    indent: [
+      2
+    ],
     'arrow-parens': 0,
-    // allow async-await
     'generator-star-spacing': 0,
-    // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'camelcase': 'off',
-    'comma-dangle': ["error", "only-multiline"]
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    camelcase: 'off',
+    'comma-dangle': [
+      'error',
+      'only-multiline'
+    ],
+    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
   }
 }

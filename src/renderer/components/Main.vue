@@ -1,75 +1,79 @@
 <template>
   <b-container
     id="Main"
-    class="h-100 fluid">
+    class="h-100 fluid"
+  >
     <div
       id="MainToolbar"
-      ref="elMainToolbar">
-        <main-toolbar></main-toolbar>
+      ref="elMainToolbar"
+    >
+      <main-toolbar />
     </div>
     <div
       id="MainPage"
-      ref="elMainPage">
-      <main-page></main-page>
+      ref="elMainPage"
+    >
+      <main-page />
     </div>
     <document-controller
-      ref="documentController"></document-controller>
+      ref="documentController"
+    />
     <dialog-library
-      ref="dialogLibrary"></dialog-library>
+      ref="dialogLibrary"
+    />
   </b-container>
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+import {mapState} from 'vuex'
   
-  import MainToolbar from '@@/Toolbar/Main'
-  import MainPage from './Main/Page'
-  import DocumentController from '@env/DocumentController'
-  // import DocumentController from '@@/../env/web/DocumentController'
-  import DialogLibrary from './DialogLibrary'
+import MainToolbar from '@@/Toolbar/Main'
+import MainPage from './Main/Page'
+import DocumentController from '@env/DocumentController'
+// import DocumentController from '@@/../env/web/DocumentController'
+import DialogLibrary from './DialogLibrary'
 
-  export default {
+export default {
     name: 'Main',
     components: {
-      MainToolbar,
-      MainPage,
-      DocumentController,
-      DialogLibrary
+        MainToolbar,
+        MainPage,
+        DocumentController,
+        DialogLibrary
     },
     computed: {
-      ...mapState('Pref', [
-        'tipsDisabled'
-      ]),
-      ...mapState('Page', [
-        'toolbarMainHeight'
-      ])
+        ...mapState('Pref', [
+            'tipsDisabled'
+        ]),
+        ...mapState('Page', [
+            'toolbarMainHeight'
+        ])
     },
     watch: {
-      toolbarMainHeight (newValue, oldValue) {
-        var div = this.$refs.elMainToolbar
-        div.style.height = `${newValue}px`
-        div = this.$refs.elMainPage
-        div.style.top = `${newValue}px`
-        div.style.height = `calc(100% - ${newValue}px)`
-      },
-      tipsDisabled (newValue, oldValue) {
-        var tippies = Array.from(document.querySelectorAll('[data-tippy]'), el => el._tippy)
-        var i = 0
-        if (newValue) {
-          for (var t in tippies) {
-            if (t.state.visible) {
-              t.hide()
+        toolbarMainHeight (newValue, oldValue) { //eslint-disable-line no-unused-vars
+            var div = this.$refs.elMainToolbar
+            div.style.height = `${newValue}px`
+            div = this.$refs.elMainPage
+            div.style.top = `${newValue}px`
+            div.style.height = `calc(100% - ${newValue}px)`
+        },
+        tipsDisabled (newValue, oldValue) { //eslint-disable-line no-unused-vars
+            var tippies = Array.from(document.querySelectorAll('[data-tippy]'), el => el._tippy)
+            if (newValue) {
+                for (let t of tippies) {
+                    if (t.state.visible) {
+                        t.hide()
+                    }
+                    t.disable()
+                }
+            } else {
+                for (let t of tippies) {
+                    t.enable()
+                }
             }
-            t.disable()
-          }
-        } else {
-          for (var t in tippies) {
-            t.enable()
-          }
         }
-      }
     }
-  }
+}
 </script>
 <style>
   #Main {

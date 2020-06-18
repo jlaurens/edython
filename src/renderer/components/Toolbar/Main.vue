@@ -4,27 +4,34 @@
     ref="toolbar"
     key-nav
     aria-label="Main toolbar"
-    justify>
+    justify
+  >
     <b-btn-group>
       <b-btn
         id="toolbar-site"
-        v-on:click=" doSite('https://edython.eu')"
+        v-tippy
         title="Aller au site Edython"
-        v-tippy>
+        @click=" doSite('https://edython.eu')"
+      >
         <img
           src="static/icon_light.svg"
           height="32"
-          alt="Edython"/>
+          alt="Edython"
+        >
       </b-btn>
       <b-btn
         id="main-toolbar-debug"
-        v-on:click="doSite('https://github.com/jlaurens/edython/issues')"
+        v-tippy
         title="Demander une correction, une amélioration"
-        v-tippy>
+        @click="doSite('https://github.com/jlaurens/edython/issues')"
+      >
         <icon-base
-          icon-name="bug"><icon-bug /></icon-base>
+          icon-name="bug"
+        >
+          <icon-bug />
+        </icon-base>
       </b-btn>
-      <main-demo/>
+      <main-demo />
       <main-mode />
     </b-btn-group>
     <main-storage />
@@ -35,91 +42,94 @@
     <brick-layout />    
     <b-btn-group>
       <main-undo-redo
-        :redo="false" />
+        :redo="false"
+      />
       <main-undo-redo
-        :redo="true" />
+        :redo="true"
+      />
     </b-btn-group>
     <main-menu
-      ref="menu" />
+      ref="menu"
+    />
   </b-btn-toolbar>
 </template>
 
 <script>
-  import {mapMutations} from 'vuex'
+import {mapMutations} from 'vuex'
 
-  import MainMenu from './Main/Menu.vue'
-  import MainUndoRedo from './Main/UndoRedo.vue'
-  import MainDemo from './Main/Demo.vue'
-  import RunPython from './Main/RunPython.vue'
-  import CopyPaste from './Main/CopyPaste.vue'
-  import BlockLayout from './Main/BlockLayout.vue'
-  import MainStorage from './Main/Storage.vue'
-  import MainMode from './Main/Mode.vue'
+import MainMenu from './Main/Menu.vue'
+import MainUndoRedo from './Main/UndoRedo.vue'
+import MainDemo from './Main/Demo.vue'
+import RunPython from './Main/RunPython.vue'
+import CopyPaste from './Main/CopyPaste.vue'
+import BrickLayout from './Main/BrickLayout.vue'
+import MainStorage from './Main/Storage.vue'
+import MainMode from './Main/Mode.vue'
   
-  import IconBase from '@@/Icon/IconBase.vue'
-  import IconBug from '@@/Icon/IconBug.vue'
-  import IconTogglePanels from '@@/Icon/IconTogglePanels.vue'
+import IconBase from '@@/Icon/IconBase.vue'
+import IconBug from '@@/Icon/IconBug.vue'
+import IconTogglePanels from '@@/Icon/IconTogglePanels.vue'
 
-  var ResizeSensor = require('css-element-queries/src/ResizeSensor')
+var ResizeSensor = require('css-element-queries/src/ResizeSensor')
 
-  export default {
-    name: 'main-toolbar',
-    data: function () {
-      return {
-        selected: eYo.$$.eYo.App.CONSOLE,
-        titles: {
-          console: eYo.$$.eYo.App.CONSOLE,
-          turtle: eYo.$$.eYo.App.Turtle
-        },
-        resizeSensor: undefined
-      }
-    },
+export default {
+    name: 'MainToolbar',
     components: {
-      IconBase,
-      IconBug,
-      IconTogglePanels,
-      MainMenu,
-      MainUndoRedo,
-      MainDemo,
-      RunPython,
-      CopyPaste,
-      BlockLayout,
-      MainStorage,
-      MainMode
+        IconBase,
+        IconBug,
+        IconTogglePanels, // eslint-disable-line 
+        MainMenu,
+        MainUndoRedo,
+        MainDemo,
+        RunPython,
+        CopyPaste,
+        BrickLayout,
+        MainStorage,
+        MainMode
+    },
+    data: function () {
+        return {
+            selected: eYo.$$.eYo.App.CONSOLE,
+            titles: {
+                console: eYo.$$.eYo.App.CONSOLE,
+                turtle: eYo.$$.eYo.App.Turtle
+            },
+            resizeSensor: undefined
+        }
     },
     mounted () {
-      if (!this.resizeSensor) {
-        this.resizeSensor = new ResizeSensor(
-          this.$refs.toolbar.$el,
-          this.$$didResize.bind(this)
+        if (!this.resizeSensor) {
+            this.resizeSensor = new ResizeSensor(
+                this.$refs.toolbar.$el,
+                this.$$didResize.bind(this)
+            )
+        }
+        this.$$.bus.$on('toolbar-resize',
+            this.$$didResize.bind(this)
         )
-      }
-      this.$$.bus.$on('toolbar-resize',
-        this.$$didResize.bind(this)
-      )
-      this.$$didResize()
+        this.$$didResize()
     },
     methods: {
-      ...mapMutations('Page', [
-        'setToolbarMainHeight'
-      ]),
-      $$didResize () {
-        this.setToolbarMainHeight(
-          this.$refs.menu.$el.offsetTop +
+        ...mapMutations('Page', [
+            'setToolbarMainHeight'
+        ]),
+        $$didResize () {
+            this.setToolbarMainHeight(
+                this.$refs.menu.$el.offsetTop +
           this.$refs.menu.$el.clientHeight
-        )
-      },
-      doSite (url) {
-        if (this.$electron && this.$electron.shell) {
-          // we *are in electron
-          this.$electron.shell.openExternal(url)
-        } else {
-          var win = window.open(url, '_blank')
-          win.focus()
+            )
+        },
+        doSite (url) {
+            if (this.$electron && this.$electron.shell) {
+                // we *are in electron
+                this.$electron.shell.openExternal(url)
+            } else {
+                var win = window.open(url, '_blank')
+                win.focus()
+            }
         }
-      }
     }
-  }
+}
 </script>
 <style>
   #main-toolbar {

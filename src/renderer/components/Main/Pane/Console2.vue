@@ -1,91 +1,95 @@
 <template>
   <div
+    ref="wrapper"
     class="eyo-wrapper"
-    ref="wrapper">
+  >
     <toolbar
       :where="where"
       what="console2"
-      v-on="$listeners"></toolbar>
+      v-on="$listeners"
+    />
     <div
+      ref="elContent"
       class="content"
-      ref="elContent">
+    >
       <textarea
         id="eyo-console2-area"
         ref="elInner"
-        rows=20
-        v-bind:style="{fontFamily: $$.eYo.Font.familyMono, fontSize: $$.eYo.Font.totalAscent + 'px'}"></textarea>
+        rows="20"
+        :style="{fontFamily: $$.eYo.Font.familyMono, fontSize: $$.eYo.Font.totalAscent + 'px'}"
+      />
     </div>
   </div>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
-  import Toolbar from './Toolbar'
-  var ResizeSensor = require('css-element-queries/src/ResizeSensor')
-  export default {
-    name: 'panel-console2',
+import {mapGetters} from 'vuex'
+import Toolbar from './Toolbar'
+var ResizeSensor = require('css-element-queries/src/ResizeSensor')
+export default {
+    name: 'PanelConsole2',
     components: {
-      Toolbar
-    },
-    data: function () {
-      return {
-        resizeSensor: null
-      }
+        Toolbar
     },
     props: {
-      where: {
-        type: String,
-        default: undefined
-      }
+        where: {
+            type: String,
+            default: undefined
+        }
+    },
+    data: function () {
+        return {
+            resizeSensor: null
+        }
     },
     computed: {
-      ...mapGetters('Console2', [
-        'scaleFactor'
-      ])
+        ...mapGetters('Console2', [
+            'scaleFactor'
+        ])
     },
     watch: {
-      scaleFactor (newValue, oldValue) {
-        this.$$resize()
-      }
-    },
-    methods: {
-      $$resize: function (e) {
-        var content = this.$refs.elContent
-        var w = content.offsetWidth
-        var h = content.offsetHeight
-        if (w && h) {
-          var newW = w / this.scaleFactor
-          var newH = h / this.scaleFactor
-          var style = this.$refs.elInner.style
-          style.position = 'relative'
-          style.width = `${newW}px`
-          style.height = `${newH}px`
-          style.left = `${(w - newW) / 2}px`
-          style.top = `${(h - newH) / 2}px`
-          style.overflow = 'auto'
-          style.transform = `scale(${this.scaleFactor.toString().replace(',', '.')})`
+        scaleFactor (newValue, oldValue) { // eslint-disable-line no-unused-vars
+            this.$$resize()
         }
-      },
-      willUnplace () { // this is necessary due to the scale feature
-        if (this.resizeSensor) {
-          this.resizeSensor.detach()
-          this.resizeSensor = null
-        }
-      },
-      didPlace () { // this is necessary due to the scale feature
-        this.resizeSensor = new ResizeSensor(
-          this.$refs.elContent,
-          this.$$resize.bind(this)
-        )
-        this.$$resize()
-      }
     },
     mounted () {
-      this.$nextTick(() => {
-        this.$$resize()
-      })
+        this.$nextTick(() => {
+            this.$$resize()
+        })
+    },
+    methods: {
+        $$resize: function (e) { // eslint-disable-line no-unused-vars
+            var content = this.$refs.elContent
+            var w = content.offsetWidth
+            var h = content.offsetHeight
+            if (w && h) {
+                var newW = w / this.scaleFactor
+                var newH = h / this.scaleFactor
+                var style = this.$refs.elInner.style
+                style.position = 'relative'
+                style.width = `${newW}px`
+                style.height = `${newH}px`
+                style.left = `${(w - newW) / 2}px`
+                style.top = `${(h - newH) / 2}px`
+                style.overflow = 'auto'
+                style.transform = `scale(${this.scaleFactor.toString().replace(',', '.')})`
+            }
+        },
+        willUnplace () { // this is necessary due to the scale feature
+            if (this.resizeSensor) {
+                this.resizeSensor.detach()
+                this.resizeSensor = null
+            }
+        },
+        didPlace () { // this is necessary due to the scale feature
+            this.resizeSensor = new ResizeSensor(
+                this.$refs.elContent,
+                this.$$resize.bind(this)
+            )
+            this.$$resize()
+        }
     }
-  }
+}
 </script>
 
 <style>

@@ -163,15 +163,15 @@ eYo.dlgt.BaseC9r = function (ns, id, C9r, model) {
   //... chai.expect(eYo.dlgt.eyo).equal(eYo.dlgt.constructor[eYo.$])
   // convenient shortcut
   Object.defineProperties(_p, {
-    _p: eYo.descriptorR(function () {
+    _p: eYo.descriptorR({$ () {
       return this.constructor.prototype
-    }),
+    }}.$),
     //... chai.expect(dlgt._p).equal(eYo.Dlgt_p).equal(eYo.dlgt.BaseC9r_p).equal(eYo.dlgt.BaseC9r.prototype)
   })
   ;['ns', 'key', '$id', 'C9r', 'model'].forEach(k => {
-    let d = eYo.descriptorR(function () {
+    let d = eYo.descriptorR({$ () {
       return this[k + '__']
-    })
+    }}.$)
     Object.defineProperties(_p, {
       [k]: d,
       [k + '_']: d,
@@ -688,22 +688,22 @@ eYo.dlgt.declareDlgt(eYo._p)
 
 // ANCHOR modelling properties
 Object.defineProperties(eYo.dlgt.BaseC9r_p, {
-  modelFormat: eYo.descriptorR(function () {
+  modelFormat: eYo.descriptorR({$ () {
     if (!this.modelFormat_) {
       let $super = this.super
       this.modelFormat_ = new eYo.model.Format($super && $super.modelFormat)
       Object.defineProperties(this, {
-        modelFormat: eYo.descriptorR(function () {
+        modelFormat: eYo.descriptorR({$ () {
           return this.modelFormat_
-        }, true)
+        }}.$, true)
       })
     }
     return this.modelFormat_
-  }),
-  hasFinalizedC9r: eYo.descriptorR(function () {
+  }}.$),
+  hasFinalizedC9r: eYo.descriptorR({$ () {
     let $super = this.super
     return (!$super || $super.hasFinalizedC9r) && this.hasOwnProperty('finalizeC9r')
-  }),
+  }}.$),
 })
 // ANCHOR modelling functions
 eYo.mixinFR(eYo.dlgt.BaseC9r_p, {

@@ -26,9 +26,9 @@ eYo.require('many')
 //...       this.bar = after
 //...     },
 //...   },
-//...   fooRO: eYo.descriptorR(function () {
+//...   fooRO: eYo.descriptorR({$ () {
 //...     return this.foo
-//...   }),
+//...   }}.$),
 //... })
 //... let chi = ns.new('chi')
 //... let mi = ns.new('mi')
@@ -122,7 +122,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
       }
       if (eYo.isSym(k)) {
         Object.defineProperties(_p, {
-          [k]: eYo.descriptorR(function () {
+          [k]: eYo.descriptorR({$ () {
             return this[this.p6y$.map].get(k).value
             //<<< mochai: $foo
             //... let ns = eYo.c9r.newNS()
@@ -142,12 +142,12 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
             //... eyo[eyo.p6y$.init](o)
             //... chai.expect(o[$foo]).equal(421)
             //>>>
-          }),
+          }}.$),
         })
         continue
       }
       Object.defineProperties(_p, {
-        [k + '_p']: eYo.descriptorR(function () {
+        [k + '_p']: eYo.descriptorR({$ () {
           return this[this.p6y$.map].get(k)
           //<<< mochai: foo_p
           //... let ns = eYo.c9r.newNS()
@@ -166,7 +166,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
           //... eyo[eyo.p6y$.init](o)
           //... chai.expect(o.foo_p.value).equal(421)
           //>>>
-        }),
+        }}.$),
         [k + '_t']: {
           get () {
             let p6y = this[this.eyo.p6y$.map].get(k)
@@ -242,7 +242,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
         //... foo_p.setStored = function (...$) {
         //...   this.flag(6, ...$)
         //... }
-        [k]: eYo.descriptorR(function () {
+        [k]: eYo.descriptorR({$ () {
           //... chai.expect(_p.hasOwnProperty('foo')).true
           let p6y = this[this.p6y$.map].get(k)
           if (!p6y) {
@@ -255,7 +255,7 @@ eYo.dlgt.BaseC9r_p.p6yEnhanced = function (id = 'p6y') {
           return p6y.getValueRO()
           //... o.foo
           //... flag.expect(12)
-        }),
+        }}.$),
         [k + '_']: {
           //... chai.expect(_p.hasOwnProperty('foo_')).true
           get: function () {

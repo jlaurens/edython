@@ -2,8 +2,9 @@
   <b-container
     id="app"
     fluid
-    class="app">
-    <router-view></router-view>
+    class="app"
+  >
+    <router-view />
   </b-container>
 </template>
 
@@ -11,46 +12,46 @@
 import {mapState} from 'vuex'
 
 export default {
-  name: 'app',
-  data: function () {
-    return {
-      copyBrick: 0
-    }
-  },
-  created () {
+    name: 'App',
+    data () {
+        return {
+            copyBrick: 0
+        }
+    },
+    computed: {
+        ...mapState('Pref', [
+            'deepCopy'
+        ])
+    },
+    watch: {
+        deepCopy (newValue, oldValue) { //eslint-disable-line no-unused-vars
+            eYo.copyBrick = this.getCopyBrick(newValue)
+        }
+    },
+    created () {
     // put this preload for main-window to give it prompt()
-    const ipcRenderer = require('electron').ipcRenderer
-    if (ipcRenderer) {
-      window.prompt = (text, defaultText) => {
-        return ipcRenderer.sendSync('prompt', {
-          text: text,
-          defaultText: defaultText
-        })
-      }
+        const ipcRenderer = require('electron').ipcRenderer
+        if (ipcRenderer) {
+            window.prompt = (text, defaultText) => {
+                return ipcRenderer.sendSync('prompt', {
+                    text: text,
+                    defaultText: defaultText
+                })
+            }
+        }
+    },
+    mounted () {
+        this.copyBrick = eYo.copyBrick
+        eYo.copyBrick = this.getCopyBrick(this.deepCopy)
+    },
+    methods: {
+        getCopyBrick (value) {
+            var copyBrick = this.copyBrick
+            return function (brick, deep) {
+                return copyBrick.call(this, brick, !value === !!deep)
+            }
+        }
     }
-  },
-  computed: {
-    ...mapState('Pref', [
-      'deepCopy'
-    ])
-  },
-  mounted () {
-    this.copyBrick = eYo.copyBrick
-    eYo.copyBrick = this.getCopyBrick(this.deepCopy)
-  },
-  methods: {
-    getCopyBrick (value) {
-      var copyBrick = this.copyBrick
-      return function (brick, deep) {
-        return copyBrick.call(this, brick, !value === !!deep)
-      }
-    }
-  },
-  watch: {
-    deepCopy (newValue, oldValue) {
-      eYo.copyBrick = this.getCopyBrick(newValue)
-    }
-  }
 }
 </script>
 

@@ -1,44 +1,48 @@
 <template>
   <div
+    ref="wrapper"
     class="eyo-wrapper"
-    ref="wrapper">
+  >
     <div
+      ref="workspace"
       class="eyo-workspace"
-      ref="workspace">
+    >
       <toolbar
+        ref="toolbar"
         :where="where"
         what="workspace"
         v-on="$listeners"
-        ref="toolbar"></toolbar>
+      />
       <workspace-content
+        ref="content"
         v-on="$listeners"
-        ref="content"></workspace-content>  
+      />  
     </div>
   </div>
 </template>
 
 <script>
-  import Toolbar from './Toolbar'
-  import WorkspaceContent from './Workspace/Content'
+import Toolbar from './Toolbar'
+import WorkspaceContent from './Workspace/Content'
 
-  export default {
-    name: 'workspace',
+export default {
+    name: 'Workspace',
     components: {
-      Toolbar,
-      WorkspaceContent
+        Toolbar,
+        WorkspaceContent
     },
     props: {
-      where: {
-        type: String,
-        default: undefined
-      }
+        where: {
+            type: String,
+            default: undefined
+        }
     },
     methods: {
-      didPlace () {
-        this.$refs.content.didPlace()
-      }
+        didPlace () {
+            this.$refs.content.didPlace()
+        }
     }
-  }
+}
 </script>
 
 <style>

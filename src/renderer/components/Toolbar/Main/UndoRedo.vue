@@ -1,40 +1,52 @@
 <template>
-  <b-btn :class="redo ? 'toolbar-redo' : 'toolbar-undo'" v-on:click="doIt()" :disabled="!canRevert(redo)" :title="title" v-tippy>
-    <icon-base :width="32" :height="32" icon-name="undo/redo"><icon-undo-redo :redo="redo"/></icon-base>
+  <b-btn
+    v-tippy
+    :class="redo ? 'toolbar-redo' : 'toolbar-undo'"
+    :disabled="!canRevert(redo)"
+    :title="title"
+    @click="doIt()"
+  >
+    <icon-base
+      :width="32"
+      :height="32"
+      icon-name="undo/redo"
+    >
+      <icon-undo-redo :redo="redo" />
+    </icon-base>
   </b-btn>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
-  import IconBase from '@@/Icon/IconBase.vue'
-  import IconUndoRedo from '@@/Icon/IconUndoRedo.vue'
+import {mapGetters} from 'vuex'
+import IconBase from '@@/Icon/IconBase.vue'
+import IconUndoRedo from '@@/Icon/IconUndoRedo.vue'
 
-  export default {
-    name: 'page-toolbar-undo-redo',
+export default {
+    name: 'PageToolbarUndoRedo',
     components: {
-      IconBase,
-      IconUndoRedo
-    },
-    computed: {
-      title () {
-        return this.redo
-          ? "Refaire l'action de blocs"
-          : "Annuler l'action de blocs"
-      },
-      ...mapGetters('Undo', [
-        'canRevert'
-      ])
+        IconBase,
+        IconUndoRedo
     },
     props: {
-      redo: {
-        type: Boolean,
-        default: false
-      }
+        redo: {
+            type: Boolean,
+            default: false
+        }
+    },
+    computed: {
+        title () {
+            return this.redo
+                ? "Refaire l'action de blocs"
+                : "Annuler l'action de blocs"
+        },
+        ...mapGetters('Undo', [
+            'canRevert'
+        ])
     },
     methods: {
-      doIt () {
-        eYo.App.workspace && eYo.App.workspace.undo(this.redo)
-      }
+        doIt () {
+            eYo.App.workspace && eYo.App.workspace.undo(this.redo)
+        }
     }
-  }
+}
 </script>

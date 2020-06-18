@@ -651,9 +651,9 @@ eYo.mixinFR = (object, props) => {
       Reflect.defineProperty(
         object,
         key,
-        eYo.descriptorR(function () {
+        eYo.descriptorR({$ () {
           return value
-        })
+        }}.$)
       ) || eYo.throw(`eYo.mixinFR: problem with ${key.toString ? key.toString() : key}`)
     })
   })
@@ -720,9 +720,9 @@ eYo.provideRO = (dest, props) => {
     f(props).forEach(key => {
       if (!eYo.hasOwnProperty(dest, key)) {
         let value = props[key]
-        let d = eYo.descriptorR(eYo.isF(value) ? value : function () {
+        let d = eYo.descriptorR(eYo.isF(value) ? value : {$ () {
           return value
-        })
+        }}.$)
         let dd = Object.getOwnPropertyDescriptor(props, key)
         d.enumerable = dd.enumerable
         d.configurable = dd.configurable
@@ -762,9 +762,9 @@ eYo.provideFR = (dest, props) => {
     f(props).forEach(key => {
       if (!eYo.hasOwnProperty(dest, key)) {
         let value = props[key]
-        let d = eYo.descriptorR(function () {
+        let d = eYo.descriptorR({$ () {
           return value
-        })
+        }}.$)
         let dd = Object.getOwnPropertyDescriptor(props, key)
         d.enumerable = dd.enumerable
         d.configurable = dd.configurable

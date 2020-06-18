@@ -75,9 +75,9 @@ eYo.p6y.makeBaseC9r(true, {
             return `....value = ... forbidden for ${this.eyo.name} instances.`
           },
         },
-        function () {
+        {$ () {
           return this.getValueRO()
-        },
+        }}.$,
       ),
     })
     //<<< mochai: eYo.p6y.BaseC9r_p, init
@@ -1918,9 +1918,9 @@ eYo.p6y.BaseC9r[eYo.$].observeEnhanced()
    * @type {Object} parent
    */
   Object.defineProperties(_p, {
-    parent: eYo.descriptorR(function () {
+    parent: eYo.descriptorR({$ () {
       return this.owner
-    })
+    }}.$)
     //<<< mochai: parent
     //... var foo_p = eYo.p6y.new('foo', onr)
     //... chai.expect(foo_p.parent).equal(onr)

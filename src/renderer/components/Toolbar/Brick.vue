@@ -14,7 +14,8 @@
     key-nav
     aria-label="Brick toolbar"
     justify
-    :style="style">
+    :style="style"
+  >
     <b-btn-group class="b3k-edit">
       <brick-primary
         v-if="isSelected($$.eYo.DelegateSvg.Expr.primary.eyo.getModel().xml.types) || isSelected([$$.eYo.T3.Stmt.call_stmt])"
@@ -128,10 +129,10 @@
       />
       <brick-enclosure
         v-else-if="isSelected([
-        $$.eYo.T3.Expr.parenth_form,
-        $$.eYo.T3.Expr.list_display,
-        $$.eYo.T3.Expr.set_display,
-        $$.eYo.T3.Expr.dict_display,
+          $$.eYo.T3.Expr.parenth_form,
+          $$.eYo.T3.Expr.list_display,
+          $$.eYo.T3.Expr.set_display,
+          $$.eYo.T3.Expr.dict_display,
         ])"
         :slotholder="slotholder"
       />
@@ -185,12 +186,17 @@
           $$.eYo.T3.Stmt.try_else_part,
           $$.eYo.T3.Stmt.while_part
         ])"
-        :slotholder="slotholder" />
+        :slotholder="slotholder"
+      />
       <brick-default
         v-else-if="eyo"
         :slotholder="slotholder"
-        :modifiable="modifiable"></brick-default>
-      <span v-else class="info">{{this.$$t('brick.no_selection')}}</span>
+        :modifiable="modifiable"
+      />
+      <span
+        v-else
+        class="info"
+      >{{ this.$$t('brick.no_selection') }}</span>
       <brick-comment />
     </b-btn-group>
     <brick-common />
@@ -198,139 +204,139 @@
 </template>
 
 <script>
-  import {mapState, mapMutations, mapGetters} from 'vuex'
+import {mapState, mapMutations, mapGetters} from 'vuex'
 
-  import BrickCommon from './Brick/Common.vue'
-  import BrickComment from './Brick/Comment.vue'
-  import BrickBuiltin from './Brick/Builtin.vue'
-  import BrickModifier from './Brick/Modifier.vue'
-  import BrickPrimary from './Brick/Primary.vue'
-  import BrickLiteral from './Brick/Literal.vue'
-  import BrickNumber from './Brick/Number.vue'
-  import BrickUnary from './Brick/Unary.vue'
-  import BrickBinary from './Brick/Binary.vue'
-  import BrickComparison from './Brick/Comparison.vue'
-  import BrickTest from './Brick/Test.vue'
-  import BrickAnyExpression from './Brick/AnyExpression.vue'
-  import BrickExpressionStatement from './Brick/ExpressionStatement.vue'
-  import BrickAssignment from './Brick/Assignment.vue'
-  import BrickAugmentedAssignment from './Brick/AugmentedAssignment.vue'
-  import BrickValue from './Brick/Value.vue'
-  import BrickVariant from './Brick/Variant.vue'
-  import BrickDefault from './Brick/Default.vue'
-  import BrickDecorator from './Brick/Decorator.vue'
-  import BrickStarred from './Brick/Starred.vue'
-  import BrickExcept from './Brick/Except.vue'
-  import BrickFuncdef from './Brick/Funcdef.vue'
-  import BrickClassdef from './Brick/Classdef.vue'
-  import BrickImport from './Brick/Import.vue'
-  import BrickProperSlice from './Brick/ProperSlice.vue'
-  import BrickPcbGndR from './Brick/PcbGndR.vue'
-  import BrickAssert from './Brick/Assert.vue'
-  import BrickRaise from './Brick/Raise.vue'
-  import BrickYield from './Brick/Yield.vue'
-  import BrickRange from './Brick/Range.vue'
-  import BrickBranch from './Brick/Branch.vue'
-  import BrickEnclosure from './Brick/Enclosure.vue'
+import BrickCommon from './Brick/Common.vue'
+import BrickComment from './Brick/Comment.vue'
+import BrickBuiltin from './Brick/Builtin.vue'
+import BrickModifier from './Brick/Modifier.vue'
+import BrickPrimary from './Brick/Primary.vue'
+import BrickLiteral from './Brick/Literal.vue'
+import BrickNumber from './Brick/Number.vue'
+import BrickUnary from './Brick/Unary.vue'
+import BrickBinary from './Brick/Binary.vue'
+import BrickComparison from './Brick/Comparison.vue'
+import BrickTest from './Brick/Test.vue'
+import BrickAnyExpression from './Brick/AnyExpression.vue'
+import BrickExpressionStatement from './Brick/ExpressionStatement.vue'
+import BrickAssignment from './Brick/Assignment.vue'
+import BrickAugmentedAssignment from './Brick/AugmentedAssignment.vue'
+import BrickValue from './Brick/Value.vue'
+import BrickVariant from './Brick/Variant.vue'
+import BrickDefault from './Brick/Default.vue'
+import BrickDecorator from './Brick/Decorator.vue'
+import BrickStarred from './Brick/Starred.vue'
+import BrickExcept from './Brick/Except.vue'
+import BrickFuncdef from './Brick/Funcdef.vue'
+import BrickClassdef from './Brick/Classdef.vue'
+import BrickImport from './Brick/Import.vue'
+import BrickProperSlice from './Brick/ProperSlice.vue'
+import BrickPcbGndR from './Brick/PcbGndR.vue'
+import BrickAssert from './Brick/Assert.vue'
+import BrickRaise from './Brick/Raise.vue'
+import BrickYield from './Brick/Yield.vue'
+import BrickRange from './Brick/Range.vue'
+import BrickBranch from './Brick/Branch.vue'
+import BrickEnclosure from './Brick/Enclosure.vue'
 
-  var ResizeSensor = require('css-element-queries/src/ResizeSensor')
+var ResizeSensor = require('css-element-queries/src/ResizeSensor')
 
-  export default {
-    name: 'toolbar-brick',
-    data: function () {
-      return {
-        theta: 0,
-        resizeSensor: undefined
-      }
-    },
+export default {
+    name: 'ToolbarBrick',
     components: {
-      BrickComment,
-      BrickCommon,
-      BrickBuiltin,
-      BrickModifier,
-      BrickPrimary,
-      BrickLiteral,
-      BrickNumber,
-      BrickUnary,
-      BrickBinary,
-      BrickComparison,
-      BrickTest,
-      BrickAnyExpression,
-      BrickExpressionStatement,
-      BrickAssignment,
-      BrickAugmentedAssignment,
-      BrickValue,
-      BrickVariant,
-      BrickDefault,
-      BrickDecorator,
-      BrickStarred,
-      BrickExcept,
-      BrickFuncdef,
-      BrickClassdef,
-      BrickImport,
-      BrickProperSlice,
-      BrickPcbGndR,
-      BrickAssert,
-      BrickRaise,
-      BrickYield,
-      BrickRange,
-      BrickBranch,
-      BrickEnclosure
+        BrickComment,
+        BrickCommon,
+        BrickBuiltin,
+        BrickModifier, // eslint-disable-line 
+        BrickPrimary,
+        BrickLiteral,
+        BrickNumber,
+        BrickUnary,
+        BrickBinary,
+        BrickComparison,
+        BrickTest,
+        BrickAnyExpression,
+        BrickExpressionStatement,
+        BrickAssignment,
+        BrickAugmentedAssignment,
+        BrickValue, // eslint-disable-line 
+        BrickVariant, // eslint-disable-line 
+        BrickDefault,
+        BrickDecorator,
+        BrickStarred,
+        BrickExcept,
+        BrickFuncdef,
+        BrickClassdef,
+        BrickImport,
+        BrickProperSlice,
+        BrickPcbGndR,
+        BrickAssert,
+        BrickRaise,
+        BrickYield,
+        BrickRange,
+        BrickBranch,
+        BrickEnclosure
+    },
+    data: function () {
+        return {
+            theta: 0,
+            resizeSensor: undefined
+        }
     },
     computed: {
-      ...mapState('UI', [
-        'toolbarBrickVisible'
-      ]),
-      ...mapGetters('Selected', [
-        'eyo',
-        'type'
-      ]),
-      slotholder () {
-        var d = eYo.Shape.definitionWithConnection()
-        var one_rem = eYo.Unit.rem
-        return function (className) {
-          return `<div class="eyo-slotholder${className ? ' ' + className : ''}"><svg xmlns="http://www.w3.org/2000/svg" height="${Math.trunc(1.75 * one_rem)}" width="${Math.trunc(2 * one_rem)}"><path class="eyo-path-contour" d="${d} z"></path></svg></div>`
+        ...mapState('UI', [
+            'toolbarBrickVisible'
+        ]),
+        ...mapGetters('Selected', [
+            'eyo',
+            'type'
+        ]),
+        slotholder () {
+            var d = eYo.Shape.definitionWithConnection()
+            var one_rem = eYo.Unit.rem
+            return function (className) {
+                return `<div class="eyo-slotholder${className ? ' ' + className : ''}"><svg xmlns="http://www.w3.org/2000/svg" height="${Math.trunc(1.75 * one_rem)}" width="${Math.trunc(2 * one_rem)}"><path class="eyo-path-contour" d="${d} z"></path></svg></div>`
+            }
+        },
+        style () {
+            return `right: ${100 * (1 - this.theta)}%;`
+        },
+        modifiable () {
+            return this.isSelected(eYo.T3.Expr.Check.or_expr_all)
         }
-      },
-      style () {
-        return `right: ${100 * (1 - this.theta)}%;`
-      },
-      modifiable () {
-        return this.isSelected(eYo.T3.Expr.Check.or_expr_all)
-      }
-    },
-    mounted () {
-      this.theta = this.toolbarBrickVisible ? 1 : 0
-      if (!this.resizeSensor) {
-        this.resizeSensor = new ResizeSensor(
-          this.$refs.toolbar.$el,
-          this.$$didResize.bind(this)
-        )
-      }
-      this.$$didResize()
     },
     watch: {
-      toolbarBrickVisible (newValue, oldValue) {
-        this.theta = newValue ? 0 : 1
-        eYo.$$.TweenLite.to(this, 1, {theta: 1 - this.theta})
-      }
+        toolbarBrickVisible (newValue, oldValue) { // eslint-disable-line no-unused-vars
+            this.theta = newValue ? 0 : 1
+            eYo.$$.TweenLite.to(this, 1, {theta: 1 - this.theta})
+        }
+    },
+    mounted () {
+        this.theta = this.toolbarBrickVisible ? 1 : 0
+        if (!this.resizeSensor) {
+            this.resizeSensor = new ResizeSensor(
+                this.$refs.toolbar.$el,
+                this.$$didResize.bind(this)
+            )
+        }
+        this.$$didResize()
     },
     methods: {
-      ...mapMutations('Page', [
-        'setToolbarBrickHeight'
-      ]),
-      $$didResize () {
-        var top = this.$$top()
-        var bottom = this.$$bottom()
-        if (bottom - top < Infinity) {
-          this.setToolbarBrickHeight(bottom - top)
+        ...mapMutations('Page', [
+            'setToolbarBrickHeight'
+        ]),
+        $$didResize () {
+            var top = this.$$top()
+            var bottom = this.$$bottom()
+            if (bottom - top < Infinity) {
+                this.setToolbarBrickHeight(bottom - top)
+            }
+        },
+        isSelected (type) {
+            return (type.some && type.some(t => t === this.type)) || type === this.type
         }
-      },
-      isSelected (type) {
-        return (type.some && type.some(t => t === this.type)) || type === this.type
-      }
     }
-  }
+}
 </script>
 <style>
   #toolbar-brick {

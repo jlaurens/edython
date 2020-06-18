@@ -14,17 +14,17 @@ describe ('POC', function () {
       })
       let $this = this
       Object.defineProperties(Dlgt, {
-        [eYo.$]: eYo.descriptorR(function () {
+        [eYo.$]: eYo.descriptorR({$ () {
           return $this
-        }),
-        [eYo.$_p]: eYo.descriptorR(function () {
+        }}.$),
+        [eYo.$_p]: eYo.descriptorR({$ () {
           return $this._p
-        }),
+        }}.$),
       })  
     }
-    let d = eYo.descriptorR(function () {
+    let d = eYo.descriptorR({$ () {
       return this.constructor[eYo.$]
-    })
+    }}.$)
     Object.defineProperties(AutoDlgt.prototype, {
       [eYo.$]: d,
     })

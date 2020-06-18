@@ -47,9 +47,9 @@ Object.defineProperties(eYo.dom._p, {
    * @return {string} Renderer-specific CSS class.
    * @override
    */
-  cssClass: eYo.descriptorR(function() {
+  cssClass: eYo.descriptorR({$ () {
     return this.CSS_CLASS
-  }),
+  }}.$),
 })
 
 goog.require('goog.dom')

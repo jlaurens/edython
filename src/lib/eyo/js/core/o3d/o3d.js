@@ -80,12 +80,12 @@ eYo.o3d.Dlgt_p.o3dInitInstance = function (instance, key, owner, configurable) {
   instance.owner__ = owner
   instance.key_ = key
   Object.defineProperties(instance, {
-    owner: eYo.descriptorR(function () {
+    owner: eYo.descriptorR({$ () {
       return this.owner__
-    }, !!configurable),
-    key: eYo.descriptorR(function () {
+    }}.$, !!configurable),
+    key: eYo.descriptorR({$ () {
       return this.key_
-    }, !!configurable),
+    }}.$, !!configurable),
   })
 }
 
@@ -239,9 +239,9 @@ eYo.mixinFR(eYo.o3d._p, {
     //... chai.expect(ans.owner).equal(eYo.o3d.OWNER)
     //>>>
     var ans = this.new(model || {}, id, owner)
-    Object.defineProperty(NS, id, eYo.descriptorR(function() {
+    Object.defineProperty(NS, id, eYo.descriptorR({$ () {
       return ans
-    }))
+    }}.$))
     //<<< mochai: namespace
     //... chai.expect(eYo.o3d.newNS().newSingleton(id)).not.equal(eYo.o3d.newSingleton(id))
     //... chai.expect(eYo.o3d.newNS().newSingleton(sym)).not.equal(eYo.o3d.newSingleton(sym))
