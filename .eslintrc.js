@@ -30,16 +30,8 @@ module.exports = {
     'vue',
   ],
 
-  'rules': [
-    'plugin:vue/vue3-recommended',
-    'eslint:recommended',
-    'plugin:vue/essential'
-  ],
-
   rules: {
-    indent: [
-      2
-    ],
+    "indent": ["error", 2],
     'arrow-parens': 0,
     'generator-star-spacing': 0,
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',

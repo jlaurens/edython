@@ -8,7 +8,7 @@ const webpack = require('webpack')
 
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 /**
@@ -44,7 +44,7 @@ let debugConfig = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
+        use: MiniCssExtractPlugin.extract({
           fallback: 'style-loader',
           use: 'css-loader'
         })
@@ -91,7 +91,7 @@ let debugConfig = {
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
+        use: MiniCssExtractPlugin.extract({
           fallback: 'style-loader',
           use: 'css-loader'
         })
@@ -121,7 +121,7 @@ let debugConfig = {
     __filename: process.env.NODE_ENV !== 'production'
   },
   plugins: [
-    new ExtractTextPlugin('styles.css'),
+    new MiniCssExtractPlugin('styles.css'),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),

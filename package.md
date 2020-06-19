@@ -13,12 +13,20 @@ sudo npm install -g @vue/cli
 ## Scratch install
 
 ```
-npm install --save debug
-npm install --save follow-redirects
-npm install --save axios
+npm install --save debug follow-redirects axios
 npm install --save vue
-npm install --save vue-drawer-layout vue-i18n vue-router vue-split-panel vue-tippy vue-template-compiler
-npm install --save jquery bootstrap-vue
+npm install --save vue-drawer-layout
+npm install --save vue-i18n
+npm install --save vue-router
+npm install --save vue-split-panel
+npm install --save vue-tippy
+npm install --save vue-template-compiler
+npm install --save vuex
+npm install --save vuex-persist
+npm install --save vue-electron
+npm install --save @intlify/vue-i18n-loader
+npm install --save jquery
+npm install --save bootstrap-vue
 npm install --save css-element-queries
 npm install --save element-resize-detector
 npm install --save file-saver
@@ -26,39 +34,43 @@ npm install --save gsap
 npm install --save lodash
 npm install --save pako
 npm install --save stack-trace
-npm install --save braces
-npm install --save popper tippy.js
+npm install --save popper
+npm install --save tippy.js
 npm install --save xregexp
 npm install --save electron
 npm install --save chalk
 npm install --save cfonts
 npm install --save del
-
 ```
 
 ```
 npm install --save-dev --ignore-scripts install-peers
-npm install --save-dev webpack
-npm install --save-dev webpack-dev-server
-npm install --save-dev webpack-hot-middleware
-npm install --save-dev raw-loader
-npm install --save-dev sass-loader
-npm install --save-dev style-loader
-npm install --save-dev url-loader
-npm install --save-dev node-loader
-npm install --save-dev copy-webpack-plugin
 npm install --save-dev eslint
-npm install --save-dev eslint-plugin-vue@latest
+npm install --save-dev eslint-config-standard eslint-plugin-standard eslint-plugin-promise eslint-plugin-import eslint-plugin-node
 npm install --save-dev eslint-friendly-formatter
+npm install --save-dev eslint-loader
+npm install --save-dev eslint-plugin-vue@next
+npm install --save-dev babel-eslint
 npm install --save-dev clean-css
 npm install --save-dev terser
 npm install --save-dev electron-builder
 npm install --save-dev electron-debug
 npm install --save-dev electron-devtools-installer
-npm install --save-dev devtron
+npm install --save-dev webpack webpack-dev-server webpack-hot-middleware
+npm install --save-dev html-webpack-plugin
 npm install --save-dev file-loader
+npm install --save-dev raw-loader
+npm install --save-dev vue-loader
+npm install --save-dev vue-html-loader
+npm install --save-dev css-loader
+npm install --save-dev node-loader
 npm install --save-dev sass-loader
 npm install --save-dev style-loader
+npm install --save-dev url-loader
+npm install --save-dev node-loader
+npm install --save-dev babili-webpack-plugin
+npm install --save-dev copy-webpack-plugin
+npm install --save-dev mini-css-extract-plugin
 npm install --save-dev karma
 npm install --save-dev mocha
 npm install --save-dev node-sass
@@ -66,7 +78,12 @@ npm install --save-dev postcss-import
 npm install --save-dev postcss-url
 npm install --save-dev chai
 npm install --save-dev cross-env
-npm install --save-dev babel-eslint
+npm install --save-dev devtron
+npm install --save-dev babel-register
+npm install --save-dev babel-loader
+npm install --save-dev babel-plugin-transform-runtime
+npm install --save-dev babel-preset-minify
+npm install --save-dev babel-preset-stage-0
 ```
 
 ```
@@ -91,7 +108,7 @@ npm install --save debug follow-redirects axios
 npm install --save vue
 ```
 
-### vue extensions
+#### vue extensions
 
 ```
 npm install --save vue-drawer-layout
@@ -102,17 +119,23 @@ npm install --save vue-tippy
 npm install --save vue-template-compiler
 ```
 
-### vuex
+#### vuex
 
 ```
 npm install --save vuex
 npm install --save vuex-persist
 ```
 
-### vue-electron
+#### vue-electron
 
 ```
 npm install --save vue-electron
+```
+
+#### @intlify/vue-i18n-loader: vue-i18n loader for custom blocks
+
+```
+npm install --save @intlify/vue-i18n-loader
 ```
 
 ### jquery
@@ -223,13 +246,38 @@ npm install --save-dev --ignore-scripts install-peers
 ### ESLint
 
 ```
-npm install --save-dev eslint eslint-plugin-vue@next
+npm install --save-dev eslint
 ```
 
-### eslint-friendly-formatter
+#### Standard: Is it necessary ?
+
+```
+npm install --save-dev eslint-config-standard eslint-plugin-standard eslint-plugin-promise eslint-plugin-import eslint-plugin-node
+```
+
+#### eslint-friendly-formatter
 
 ```
 npm install --save-dev eslint-friendly-formatter
+```
+
+#### eslint-loader: A ESlint loader for webpack
+See `webpack.debug.config.js` for example.
+
+```
+npm install --save-dev eslint-loader
+```
+
+#### Vue
+
+```
+npm install --save-dev eslint-plugin-vue@next
+```
+
+#### babel-eslint
+
+```
+npm install --save-dev babel-eslint
 ```
 
 ### clean-css is a fast and efficient CSS optimizer
@@ -244,20 +292,21 @@ npm install --save-dev clean-css
 ```
 npm install --save-dev terser
 ```
+### Electron
 
-### electron-builder
+#### electron-builder
 
 ```
 npm install --save-dev electron-builder
 ```
 
-### electron-debug
+#### electron-debug
 
 ```
 npm install --save-dev electron-debug
 ```
 
-### electron-devtools-installer
+#### electron-devtools-installer
 
 ```
 npm install --save-dev electron-devtools-installer
@@ -269,31 +318,57 @@ npm install --save-dev electron-devtools-installer
 npm install --save-dev webpack webpack-dev-server webpack-hot-middleware
 ```
 
-### file-loader: resolves import/require()
+#### html-webpack-plugin: Plugin that simplifies creation of HTML files to serve your bundles
+See `webpack.debug.config.js` for example.
 
+```
+npm install --save-dev html-webpack-plugin
+```
+
+#### file-loader: resolves import/require()
+
+UNUSED.
 ```
 npm install --save-dev file-loader
 ```
 
-### karma: A simple tool that allows you to execute JavaScript code in multiple real browsers.
-
-```
-npm install --save-dev karma
-```
-
-### mocha: Simple, flexible, fun JavaScript test framework for Node.js & The Browser
-
-```
-npm install --save-dev mocha
-```
-
-### raw-loader: A loader for webpack that allows importing files as a String.
+#### raw-loader: A loader for webpack that allows importing files as a String.
+See `webpack.debug.config.js` for example.
 
 ```
 npm install --save-dev raw-loader
 ```
 
-### sass-loader: Loads a Sass/SCSS file and compiles it to CSS.
+#### vue-loader: webpack loader for Vue Single-File Components.
+See `webpack.debug.config.js` for example.
+
+```
+npm install --save-dev vue-loader
+```
+
+#### vue-html-loader: Exports HTML as string.
+HTML is minimized when the compiler demands.
+See `webpack.debug.config.js` for example.
+
+```
+npm install --save-dev vue-html-loader
+```
+
+#### css-loader: interprets @import and url() like import/require() and will resolve them.
+See `webpack.debug.config.js` for example.
+
+```
+npm install --save-dev css-loader
+```
+
+#### node-loader:
+See `webpack.debug.config.js` for example.
+
+```
+npm install --save-dev node-loader
+```
+
+#### sass-loader: Loads a Sass/SCSS file and compiles it to CSS.
 
 ```
 npm install --save-dev sass-loader
@@ -317,18 +392,44 @@ npm install --save-dev url-loader
 npm install --save-dev node-loader
 ```
 
-### node-sass: Wrapper around libsass.
+#### babili-webpack-plugin:
+See `webpack.debug.config.js` for example.
 
 ```
-npm install --save-dev node-sass
+npm install --save-dev babili-webpack-plugin
 ```
 
-### copy-webpack-plugin: Copies individual files or entire directories, which already exist, to the build directory.
+#### copy-webpack-plugin: Copies individual files or entire directories, which already exist, to the build directory.
+See `webpack.debug.config.js` for example.
 
 ```
 npm install --save-dev copy-webpack-plugin
 ```
 
+#### mini-css-extract-plugin: Copies individual files or entire directories, which already exist, to the build directory.
+See `webpack.debug.config.js` for example.
+
+```
+npm install --save-dev mini-css-extract-plugin
+```
+
+### karma: A simple tool that allows you to execute JavaScript code in multiple real browsers.
+
+```
+npm install --save-dev karma
+```
+
+### mocha: Simple, flexible, fun JavaScript test framework for Node.js & The Browser
+
+```
+npm install --save-dev mocha
+```
+
+### node-sass: Wrapper around libsass.
+
+```
+npm install --save-dev node-sass
+```
 
 ### postcss-import: PostCSS plugin to transform @import rules by inlining content.
 
@@ -348,12 +449,6 @@ npm install --save-dev postcss-url
 npm install --save-dev chai
 ```
 
-### css-loader: interprets @import and url() like import/require() and will resolve them.
-
-```
-npm install --save-dev css-loader
-```
-
 ### cross-env: Run scripts that set and use environment variables across platforms
 
 ```
@@ -368,10 +463,42 @@ npm install --save-dev cross-env
 npm install --save-dev devtron
 ```
 
-### babel
+### Babel
 
-#### babel-eslint
+#### babel-register
+The require hook will bind itself to node's require and automatically compile files on the fly.
 
 ```
-npm install --save-dev babel-eslint
-````
+npm install --save-dev babel-register
+```
+
+#### babel-loader:
+See `webpack.debug.config.js` for example.
+
+```
+npm install --save-dev babel-loader
+```
+
+#### babel-plugin-transform-runtime:
+Externalise references to helpers and builtins, automatically polyfilling your code without polluting globals. (This plugin is recommended in a library/tool)
+See `.babelrc`.
+
+```
+npm install --save-dev babel-plugin-transform-runtime
+```
+
+#### babel-preset-minify: Babel preset for all minify plugins.
+See `.babelrc`.
+
+```
+npm install --save-dev babel-preset-minify
+```
+
+#### babel-preset-stage-0: Babel preset for all stage-0 plugins.
+See `.babelrc`.
+To be removed in a forthcoming future.
+
+```
+npm install --save-dev babel-preset-stage-0
+```
+
